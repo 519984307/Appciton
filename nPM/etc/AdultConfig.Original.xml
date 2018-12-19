@@ -112,6 +112,7 @@
         <StatFunction>1</StatFunction>
         <AutomaticRetry>0</AutomaticRetry>
         <AdultInitialCuffInflation>160</AdultInitialCuffInflation>
+	<Homonymy>0</Homonymy>
     </NIBP>
     <SPO2>
         <AverageTime>2</AverageTime>
