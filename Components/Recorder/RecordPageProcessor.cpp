@@ -130,6 +130,13 @@ void RecordPageProcessor::stopProcess()
 
     d_ptr->stopProcessing();
     emit processFinished();
+
+    // check whether speed need to update
+    if (d_ptr->updateSpeed)
+    {
+        d_ptr->updateSpeed = false;
+        d_ptr->iface->setPrintSpeed(d_ptr->curSpeed);
+    }
 }
 
 void RecordPageProcessor::pauseProcessing(bool pause)
@@ -146,13 +153,6 @@ void RecordPageProcessor::timerEvent(QTimerEvent *ev)
 {
     if (d_ptr->timerID == ev->timerId())
     {
-        // check whether speed need to update
-        if (d_ptr->updateSpeed)
-        {
-            d_ptr->updateSpeed = false;
-            d_ptr->iface->setPrintSpeed(d_ptr->curSpeed);
-        }
-
         // update page queue status
         if (d_ptr->queueIsFull && d_ptr->pages.size() < PAGE_QUEUE_SIZE)
         {
