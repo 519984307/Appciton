@@ -24,6 +24,7 @@
 #include "SPO2Symbol.h"
 #include "CO2Symbol.h"
 #include "ContinuousPageGenerator.h"
+#include "TimeManager.h"
 
 class PrintSettingMenuContentPrivate
 {
@@ -309,7 +310,7 @@ void PrintSettingMenuContent::onSelectWaveChanged(const QString &waveName)
         if (recorderManager.isPrinting())
         {
             recorderManager.stopPrint();
-            recorderManager.addPageGenerator(new ContinuousPageGenerator());
+            recorderManager.addPageGenerator(new ContinuousPageGenerator(timeManager.getCurTime()));
         }
         return;
     }
@@ -325,7 +326,7 @@ void PrintSettingMenuContent::onSelectWaveChanged(const QString &waveName)
     if (recorderManager.isPrinting())
     {
         recorderManager.stopPrint();
-        recorderManager.addPageGenerator(new ContinuousPageGenerator());
+        recorderManager.addPageGenerator(new ContinuousPageGenerator(timeManager.getCurTime()));
     }
 
     // 收集当前所有选择菜单选择的波形id

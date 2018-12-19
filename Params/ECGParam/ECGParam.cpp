@@ -499,7 +499,6 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
         }
         // 当前带宽
         flag |= bandwidth;
-        waveformCache.addData((WaveformID)i, ((flag & 0xFFFF) << 16) | (waveform[i] & 0xFFFF));
 
         static int flagUnsaved[ECG_LEAD_NR] = {0};
         // 在普通模式中，在监控模式下所有的波形数据要扔掉一半，以250显示
@@ -529,6 +528,8 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
         {
             _waveWidget[i]->addWaveformData(-waveform[i], norfalg & 0xFFFF);
         }
+
+        waveformCache.addData((WaveformID)i, ((flag & 0xFFFF) << 16) | (waveform[i] & 0xFFFF));
 
         flagUnsaved[i] = 0;
     }
