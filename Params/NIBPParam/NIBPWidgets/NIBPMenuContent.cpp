@@ -316,6 +316,7 @@ void NIBPMenuContent::onComboBoxIndexChanged(int index)
         break;
     case NIBPMenuContentPrivate::ITEM_CBO_HOMONYMY:
         currentConfig.setNumValue("NIBP|Homonymy", combos->currentIndex());
+        nibpParam.setHomonymy(combos->currentIndex());
         break;
     default:
         break;

@@ -12,6 +12,7 @@
 #include "SPO2Param.h"
 #include "SPO2Alarm.h"
 #include "Debug.h"
+#include "NIBPParam.h"
 
 #define SOM             (0x02)
 #define EOM             (0x03)
@@ -370,13 +371,16 @@ void MasimoSetProvider::handlePacket(unsigned char *data, int /*len*/)
             spo2Param.setValidStatus(true);
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, false);
             spo2Param.setSearchForPulse(isSearching);  // search pulse标志。
-            if (isSearching)
+            if (!nibpParam.isHomonymy() || !nibpParam.isMeasuring())
             {
-                spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, false);
-            }
-            else
-            {
-                spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, _isLowPerfusionFlag);
+                if (isSearching)
+                {
+                    spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, false);
+                }
+                else
+                {
+                    spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, _isLowPerfusionFlag);
+                }
             }
         }
 

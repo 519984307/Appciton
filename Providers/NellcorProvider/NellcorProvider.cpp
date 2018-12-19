@@ -12,6 +12,7 @@
 #include "SPO2Param.h"
 #include "SPO2Alarm.h"
 #include "Debug.h"
+#include "NIBPParam.h"
 
 
 enum OxismartReport
@@ -429,13 +430,16 @@ bool NellcorSetProvider::isStatus(unsigned char *packet)
         spo2Param.setValidStatus(true);
         spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, false);
         spo2Param.setSearchForPulse(isSearching);  // search pulse标志。
-        if (isSearching)
+        if (!nibpParam.isHomonymy() || !nibpParam.isMeasuring())
         {
-            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, false);
-        }
-        else
-        {
-            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, _isLowPerfusionFlag);
+            if (isSearching)
+            {
+                spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, false);
+            }
+            else
+            {
+                spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, _isLowPerfusionFlag);
+            }
         }
     }
     return true;
