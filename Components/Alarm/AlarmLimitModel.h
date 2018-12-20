@@ -97,6 +97,12 @@ public:
      */
     int curEditRow() const;
 
+    /**
+     * @brief setEachPageRowCount 设置每页显示多少行
+     * @param rows
+     */
+    void setEachPageRowCount(int rows);
+
 protected:
     /**
      * @brief alarmDataUpdate callback when specific alarm config changed

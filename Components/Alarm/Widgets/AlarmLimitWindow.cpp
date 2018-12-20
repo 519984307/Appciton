@@ -96,6 +96,7 @@ void AlarmLimitWindowPrivate::loadoptions()
     }
     this->infos = infos;
     model->setupAlarmDataInfos(infos);
+    model->setEachPageRowCount(TABLE_ROW_NUM);
 }
 
 AlarmLimitWindow::AlarmLimitWindow(const QString &param)
@@ -360,4 +361,5 @@ void AlarmLimitWindow::restoreDefaults()
     }
     d_ptr->infos = infos;
     d_ptr->model->setupAlarmDataInfos(infos);
+    d_ptr->model->setEachPageRowCount(TABLE_ROW_NUM);
 }
