@@ -630,7 +630,7 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
     printInfo.list = d_ptr->displayList;
     for (int i = 0; i < d_ptr->trendDataPack.count(); i ++)
     {
-        if (d_ptr->trendDataPack.at(i)->status > TrendDataStorageManager::CollectStatusPeriod)
+        if (d_ptr->trendDataPack.at(i)->alarmFlag == true)
         {
             printInfo.eventList.append(true);
         }
@@ -772,12 +772,17 @@ void TrendTableModelPrivate::getTrendData()
         // 筛选数据：剔除不能整除时间间隔的且没有报警状态的数据包
         unsigned timeStamp = dataSeg->timestamp;
         unsigned status = dataSeg->status;
-        if (timeStamp % interval != 0)
+        if (timeInterval != RESOLUTION_RATIO_NIBP && timeStamp % interval != 0)
         {
             if (status <= TrendDataStorageManager::CollectStatusPeriod)
             {
                 continue;
             }
+        }
+        // 选择nibp选项时只筛选触发nibp测量的数据
+        if (timeInterval == RESOLUTION_RATIO_NIBP && status != TrendDataStorageManager::CollectStatusNIBP)
+        {
+            continue;
         }
 
         // 把dataSeg中的数据加载到pack中
@@ -1067,5 +1072,15 @@ void TrendTableModelPrivate::loadTableTitle()
         }
         rowCount++;
         displayList.append(id);
+    }
+    // nibp选项时，调整趋势表垂直参数顺序
+    int index = displayList.indexOf(SUB_PARAM_NIBP_SYS);
+    if (index < 0)
+    {
+        return;
+    }
+    if (timeInterval == RESOLUTION_RATIO_NIBP)
+    {
+        displayList.move(index, 0);
     }
 }
