@@ -389,11 +389,6 @@ bool NIBPParam::analysisResult(const unsigned char *packet, int /*len*/, short &
         dia = InvData();
         map = InvData();
     }
-    else
-    {
-        // 测量出结果后，收集一次趋势数据
-        trendDataStorageManager.storeData(timeDate.time(), TrendDataStorageManager::CollectStatusNIBP);
-    }
     return true;
 }
 
@@ -458,6 +453,12 @@ void NIBPParam::setResult(int16_t sys, int16_t dia, int16_t map, int16_t pr, NIB
     // 保存起来。
     setMeasureResult(NIBP_MEASURE_SUCCESS);
     createSnapshot(err);
+
+    if (_sysValue != InvData() && _diaValue != InvData() && _mapVaule != InvData())
+    {
+        // 测量出结果后，收集一次趋势数据
+        trendDataStorageManager.storeData(timeDate.time(), TrendDataStorageManager::CollectStatusNIBP);
+    }
 }
 
 
