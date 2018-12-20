@@ -108,7 +108,7 @@ void NormalModeKeyAction::keyF3Pressed(bool multiBtnPress)
     }
     else if (!recorderManager.getPrintStatus())
     {
-        recorderManager.addPageGenerator(new ContinuousPageGenerator());
+        recorderManager.addPageGenerator(new ContinuousPageGenerator(timeManager.getCurTime()));
     }
 }
 
