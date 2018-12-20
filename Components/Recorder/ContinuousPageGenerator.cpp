@@ -71,7 +71,7 @@ public:
 
     QList<RecordWaveSegmentInfo> getPrintWaveInfos();
 
-    void fetchWaveData(bool isReadtime);
+    void fetchWaveData(bool isRealtime);
 
     bool isParamStop(WaveformID id);
 
@@ -111,7 +111,7 @@ QList<RecordWaveSegmentInfo> ContinuousPageGeneratorPrivate::getPrintWaveInfos()
  *          we should fetch 1 second wave data form the realtimeChannel,
  *          if wavecache don't have enough data, we fill invalid data.
  */
-void ContinuousPageGeneratorPrivate::fetchWaveData(bool isReadtime)
+void ContinuousPageGeneratorPrivate::fetchWaveData(bool isRealtime)
 {
     QList<RecordWaveSegmentInfo>::iterator iter;
     for (iter = waveInfos.begin(); iter < waveInfos.end(); ++iter)
@@ -122,7 +122,7 @@ void ContinuousPageGeneratorPrivate::fetchWaveData(bool isReadtime)
         }
 
         int retryCount = 0;
-        if (isReadtime)
+        if (isRealtime)
         {
             int lastReadSize = 0;
             int curSize = 0;
