@@ -62,14 +62,18 @@ struct TrendDataPackage
     TrendDataPackage()
     {
         time = 0;
-        alarmFlag = false;
         co2Baro  = 0;
+        alarmFlag = false;
+        index = 0;
+        status = 0;
     }
     unsigned time;
     QMap<SubParamID, TrendDataType> subparamValue;
     QMap<SubParamID, bool> subparamAlarm;
     short co2Baro;
-    unsigned char alarmFlag;
+    bool alarmFlag;
+    unsigned index;
+    unsigned status;
 };
 
 /* 分辨率 */
