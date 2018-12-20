@@ -141,8 +141,13 @@ int Window::exec()
     }
     else
     {
+        WindowManager::ShowBehavior beHaviors = windowManager.getWindowBehaviors();
         // add this window to the window stack
         windowManager.showWindow(this, WindowManager::ShowBehaviorModal);
+        if (beHaviors & WindowManager::ShowBehaviorForbidAutoClose)
+        {
+            windowManager.startWindowTimer(false);
+        }
         return this->result();
     }
 }

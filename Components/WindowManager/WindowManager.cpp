@@ -45,13 +45,14 @@ public:
         :q_ptr(q_ptr),
           timer(NULL),
           demoWidget(NULL)
+        , windowShowBeheaviors(WindowManager::ShowBehaviorNone)
     {}
 
     WindowManager * const q_ptr;
     QList<QPointer<Window> > windowStacks;
     QTimer *timer;              // timer to auto close the windows
     QWidget *demoWidget;
-
+    WindowManager::ShowBehavior windowShowBeheaviors;
     /**
      * @brief menuProperPos 菜单显示合适的位置
      * @param w
@@ -181,6 +182,8 @@ void WindowManager::showWindow(Window *w, ShowBehavior behaviors)
         return;
     }
 
+    d_ptr->windowShowBeheaviors = behaviors;
+
     Window *top = topWindow();
 
     if (top == w)
@@ -232,6 +235,11 @@ void WindowManager::showWindow(Window *w, ShowBehavior behaviors)
     if (!(behaviors & ShowBehaviorNoAutoClose))
     {
         d_ptr->timer->start();
+    }
+
+    if (behaviors & ShowBehaviorForbidAutoClose)
+    {
+        d_ptr->timer->stop();
     }
 
     QPointer<Window> newP = w;
@@ -329,6 +337,28 @@ bool WindowManager::eventFilter(QObject *obj, QEvent *ev)
     }
 
     return false;
+}
+
+WindowManager::ShowBehavior WindowManager::getWindowBehaviors() const
+{
+    return d_ptr->windowShowBeheaviors;
+}
+
+void WindowManager::startWindowTimer(bool enable)
+{
+    if (d_ptr->timer == NULL)
+    {
+        return;
+    }
+    if (enable)
+    {
+        d_ptr->timer->start();
+    }
+    else
+    {
+        d_ptr->timer->stop();
+        d_ptr->windowShowBeheaviors |= ShowBehaviorForbidAutoClose;
+    }
 }
 
 void WindowManager::closeAllWidows()
