@@ -15,6 +15,7 @@
 #include "PatientManager.h"
 #include "AlarmConfig.h"
 #include "SystemManager.h"
+#include "NIBPParam.h"
 
 SPO2LimitAlarm *SPO2LimitAlarm::_selfObj = NULL;
 
@@ -102,6 +103,11 @@ int SPO2LimitAlarm::getLower(int id)
  *************************************************************************************************/
 int SPO2LimitAlarm::getCompare(int value, int id)
 {
+    if (nibpParam.isHomonymy() && nibpParam.isMeasuring())
+    {
+        // 如果打开同侧功能，且nibp正在测量，则不设置报警
+        return 0;
+    }
     switch (id)
     {
         case SPO2_LIMIT_ALARM_SPO2_HIGH:

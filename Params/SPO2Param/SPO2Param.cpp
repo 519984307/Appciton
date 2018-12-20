@@ -22,6 +22,7 @@
 #include "ErrorLogItem.h"
 #include <QTimer>
 #include "OxyCRGSPO2TrendWidget.h"
+#include "NIBPParam.h"
 
 SPO2Param *SPO2Param::_selfObj = NULL;
 
@@ -527,6 +528,11 @@ void SPO2Param::setOneShotAlarm(SPO2OneShotType t, bool f)
  *************************************************************************************************/
 void SPO2Param::noticeLimitAlarm(bool isAlarm)
 {
+    if (nibpParam.isHomonymy() && nibpParam.isMeasuring())
+    {
+        // 如果打开同侧功能，且nibp正在测量，则不设置报警
+        return;
+    }
     if (NULL != _trendWidget)
     {
         _trendWidget->isAlarm(isAlarm);
