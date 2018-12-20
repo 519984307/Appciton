@@ -336,7 +336,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
             {
                 if (isZeroInProgress && !_status.zeroInProgress)
                 {
-                    co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZEROING_COMPLETED, _status.zeroInProgress);
+                    co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS, _status.zeroInProgress);
                 }
             }
 
@@ -346,7 +346,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
         {
             if (isZeroInProgress && !_status.zeroInProgress)
             {
-                co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZEROING_COMPLETED, _status.zeroInProgress);
+                co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS, _status.zeroInProgress);
             }
 
             co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_DISABLE, _status.zeroDisable);
