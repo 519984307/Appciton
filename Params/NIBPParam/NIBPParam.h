@@ -306,7 +306,6 @@ private:
     bool _SwitchFlagTime;                   // 切换时间标志
     bool _SwitchFlagType;                   // 切换病人类型标志
     bool _additionalMeasureFlag;            // 额外充气标志
-    bool _homonymyFlag;                     // 同侧功能标志
     bool _autoMeasureFlag;                  // 自动模式中的手动测量标志
     bool _statModelFlag;                    // STAT模式打开关闭标志
     bool _statCloseFlag;                    // STAT模式在5分钟时间未到的情况下被手动关闭的标志
