@@ -53,7 +53,7 @@ void NIBPCalibrationMenuContent::onBtnSlot()
 //    windowManager.showWindow(w, WindowManager::ShowBehaviorModal);
     windowManager.showWindow(NIBPRepairMenuWindow::getInstance(),
                              WindowManager::ShowBehaviorHideOthers
-                             | WindowManager::ShowBehaviorForbidAutoClose);
+                             | WindowManager::ShowBehaviorNoAutoClose);
     NIBPRepairMenuWindow::getInstance()->focusFirstMenuItem();
     NIBPRepairMenuWindow::getInstance()->init();
 }

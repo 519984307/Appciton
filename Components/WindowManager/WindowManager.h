@@ -40,7 +40,6 @@ public:
         ShowBehaviorHideOthers = 0x04,      // show the window and hide others window, the other windows still in the window stack
         ShowBehaviorCloseOthers = 0x08,     // show the window and close others window, the other windows will remove from the window stack
         ShowBehaviorNoAutoClose = 0x10,     // don't automatically close this window when there isn't any user action
-        ShowBehaviorForbidAutoClose = 0x20,     // forbid automatically close this window whenever
     };
     Q_DECLARE_FLAGS(ShowBehavior, ShowBehaviorFlags)
 
@@ -77,18 +76,6 @@ public:
      * @return always false
      */
     bool eventFilter(QObject *obj, QEvent *ev);
-
-    /**
-     * @brief getWindowBehaviors 获取菜单显示形式
-     * @return 菜单显示形式
-     */
-    WindowManager::ShowBehavior getWindowBehaviors(void) const;
-
-    /**
-     * @brief startWindowTimer  开始窗口显示计时器
-     * @param enable 使能位
-     */
-    void startWindowTimer(bool enable);
 
 public slots:
     /**
