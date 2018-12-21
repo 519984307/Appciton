@@ -141,3 +141,8 @@ enum WaveUpdateType
     WAVE_UPDATE_NR  // 无效值
 };
 
+enum RainbowLineFrequency
+{
+    RB_LINE_FREQ_50HZ,
+    RB_LINE_FREQ_60HZ,
+};

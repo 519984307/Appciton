@@ -40,6 +40,7 @@ enum RBSendPacketType
     RB_CMD_CONF_AVERAGE_TIME         = 0x01,     // configure average time
     RB_CMD_CONF_SENSITIVITY_MODE     = 0x02,     // configure sensitivity mode
     RB_CMD_CONF_FASTSAT_MODE         = 0x03,     // configure fastsat mode
+    RB_CMD_CONF_LINE_FREQ            = 0x04,     // configure line frequency
     RB_CMD_CONF_SMART_TONE_MODE      = 0x08,     // configure smart tone mode
     RB_CMD_CONF_WAVEFORM_MODE        = 0x09,     // configure waveform mode
     RB_CMD_CONF_PERIOD_PARAM_OUTPUT  = 0x20,     // configure periodic parameter output
@@ -285,6 +286,12 @@ void RainbowProvider::reconnected()
 {
     spo2OneShotAlarm.setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, false);
     spo2Param.setConnected(true);
+}
+
+void RainbowProvider::setLineFrequency(RainbowLineFrequency freq)
+{
+    unsigned char data[2] = {RB_CMD_CONF_LINE_FREQ, freq};
+    d_ptr->sendCmd(data, 2);
 }
 
 

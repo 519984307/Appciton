@@ -60,6 +60,13 @@ public:
     /* reimplment */
     void reconnected();
 
+public:
+    /**
+     * @brief setLineFrequency
+     * @param freq
+     */
+    void setLineFrequency(RainbowLineFrequency freq);
+
 private:
     RainbowProviderPrivate *const d_ptr;
 };
