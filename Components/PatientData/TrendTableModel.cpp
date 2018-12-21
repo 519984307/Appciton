@@ -562,7 +562,7 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
     IStorageBackend *backend;
     if (d_ptr->isHistory)
     {
-        backend = StorageManager::open(d_ptr->historyDataPath + TREND_DATA_FILE_NAME, QIODevice::ReadWrite);
+        backend = StorageManager::open(d_ptr->historyDataPath + TREND_DATA_FILE_NAME, QIODevice::ReadOnly);
     }
     else
     {
@@ -745,7 +745,7 @@ void TrendTableModelPrivate::getTrendData()
     IStorageBackend *backend;
     if (isHistory)
     {
-        backend = StorageManager::open(historyDataPath + TREND_DATA_FILE_NAME, QIODevice::ReadWrite);
+        backend = StorageManager::open(historyDataPath + TREND_DATA_FILE_NAME, QIODevice::ReadOnly);
     }
     else
     {
