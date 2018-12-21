@@ -792,16 +792,6 @@ bool NIBPParam::isAdditionalMeasure()
     return _additionalMeasureFlag;
 }
 
-void NIBPParam::setHomonymy(bool flag)
-{
-    _homonymyFlag = flag;
-}
-
-bool NIBPParam::isHomonymy()
-{
-    return _homonymyFlag;
-}
-
 /**************************************************************************************************
  * STAT模式在5分钟时间未到的情况下被手动关闭的标志。
  *************************************************************************************************/

@@ -430,7 +430,7 @@ bool NellcorSetProvider::isStatus(unsigned char *packet)
         spo2Param.setValidStatus(true);
         spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, false);
         spo2Param.setSearchForPulse(isSearching);  // search pulse标志。
-        if (!nibpParam.isHomonymy() || !nibpParam.isMeasuring())
+        if (!spo2Param.isNibpSameSide() || !nibpParam.isMeasuring())
         {
             if (isSearching)
             {

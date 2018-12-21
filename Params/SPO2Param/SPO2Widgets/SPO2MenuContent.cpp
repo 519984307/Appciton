@@ -37,6 +37,7 @@ public:
         ITEM_CBO_SMART_TONE,
         ITEM_CBO_GAIN,
         ITEM_CBO_BEAT_VOL,
+        ITEM_CBO_NIBP_SAME_SIDE
     };
 
     SPO2MenuContentPrivate() {}
@@ -55,7 +56,7 @@ public:
 
 void SPO2MenuContentPrivate::setCboBlockSignalsStatus(bool isBlocked)
 {
-    for (int i = ITEM_CBO_WAVE_SPEED; i <= ITEM_CBO_BEAT_VOL; i++)
+    for (int i = ITEM_CBO_WAVE_SPEED; i <= ITEM_CBO_NIBP_SAME_SIDE; i++)
     {
         MenuItem item = static_cast<MenuItem>(i);
         combos[item]->blockSignals(isBlocked);
@@ -103,6 +104,8 @@ void SPO2MenuContentPrivate::loadOptions()
     {
         combos[ITEM_CBO_BEAT_VOL]->setEnabled(true);
     }
+
+    combos[ITEM_CBO_NIBP_SAME_SIDE]->setCurrentIndex(spo2Param.isNibpSameSide());
 
     setCboBlockSignalsStatus(false);
 }
@@ -254,6 +257,19 @@ void SPO2MenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_BEAT_VOL, comboBox);
 
+    // NIBP同侧功能
+    label = new QLabel(trs("NIBPSameSide"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                       << trs("Off")
+                       << trs("On"));
+    itemID = static_cast<int>(SPO2MenuContentPrivate::ITEM_CBO_NIBP_SAME_SIDE);
+    comboBox->setProperty("Item", qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_NIBP_SAME_SIDE, comboBox);
+
     // 添加报警设置链接
     Button *btn = new Button(QString("%1%2").
                              arg(trs("AlarmSettingUp")).
@@ -295,6 +311,8 @@ void SPO2MenuContent::onComboBoxIndexChanged(int index)
         case SPO2MenuContentPrivate::ITEM_CBO_BEAT_VOL:
             spo2Param.setBeatVol(static_cast<SoundManager::VolumeLevel>(index));
             break;
+        case SPO2MenuContentPrivate::ITEM_CBO_NIBP_SAME_SIDE:
+            spo2Param.setNibpSameSide(box->currentIndex());
         default:
             break;
         }

@@ -112,7 +112,6 @@
         <StatFunction>1</StatFunction>
         <AutomaticRetry>0</AutomaticRetry>
         <AdultInitialCuffInflation>160</AdultInitialCuffInflation>
-	<Homonymy>0</Homonymy>
     </NIBP>
     <SPO2>
         <AverageTime>2</AverageTime>
@@ -123,6 +122,7 @@
         <Gain>0</Gain>
         <BeatVol>1</BeatVol>
         <ModuleControl>1</ModuleControl>
+	<NIBPSameSide>0</NIBPSameSide>
     </SPO2>
     <CO2>
         <CO2ModeDefault>1</CO2ModeDefault>

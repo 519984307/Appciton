@@ -188,10 +188,6 @@ public:
     void setAdditionalMeasure(bool flag);
     bool isAdditionalMeasure(void);
 
-    // 同侧功能
-    void setHomonymy(bool flag);
-    bool isHomonymy(void);
-
     // STAT模式在5分钟时间未到的情况下被手动关闭的标志
     void setSTATClose(bool flag);
     bool isSTATClose(void);

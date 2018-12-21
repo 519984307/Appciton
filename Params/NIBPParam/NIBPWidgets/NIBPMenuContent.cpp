@@ -32,7 +32,6 @@ public:
         ITEM_CBO_MEASURE_MODE = 0,
         ITEM_CBO_AUTO_INTERVAL = 1,
         ITEM_CBO_INITIAL_CUFF = 2,
-        ITEM_CBO_HOMONYMY = 3,
 
         ITEM_BTN_START_STAT = 0,
         ITEM_BTN_ADDITION_MEASURE = 1
@@ -115,19 +114,6 @@ void NIBPMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(NIBPMenuContentPrivate::ITEM_CBO_AUTO_INTERVAL, comboBox);
 
-    // 同侧功能
-    label = new QLabel(trs("Homonymy"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs("Off")
-                       << trs("On"));
-    itemID = static_cast<int>(NIBPMenuContentPrivate::ITEM_CBO_HOMONYMY);
-    comboBox->setProperty("Item", qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(NIBPMenuContentPrivate::ITEM_CBO_HOMONYMY, comboBox);
-
     // initial cuff
     label = new QLabel(trs("NIBPInitialCuff"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -185,9 +171,6 @@ void NIBPMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_MEASURE_MODE]->setCurrentIndex(index);
     // 时间
     combos[ITEM_CBO_AUTO_INTERVAL]->setCurrentIndex(nibpParam.getAutoInterval());
-
-    currentConfig.getNumValue("NIBP|Homonymy", index);
-    combos[ITEM_CBO_HOMONYMY]->setCurrentIndex(index);
 
     PatientType type = patientManager.getType();
     int initVal;
@@ -313,10 +296,6 @@ void NIBPMenuContent::onComboBoxIndexChanged(int index)
         break;
     case NIBPMenuContentPrivate::ITEM_CBO_AUTO_INTERVAL:
         nibpParam.setAutoInterval((NIBPAutoInterval)index);
-        break;
-    case NIBPMenuContentPrivate::ITEM_CBO_HOMONYMY:
-        currentConfig.setNumValue("NIBP|Homonymy", combos->currentIndex());
-        nibpParam.setHomonymy(combos->currentIndex());
         break;
     default:
         break;

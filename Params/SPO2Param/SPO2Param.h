@@ -198,6 +198,13 @@ public:
      */
     SPO2ModuleType getModuleType() const;
 
+    /**
+     * @brief setNibpSameSide 设置NIBP同侧功能
+     * @param flag
+     */
+    void setNibpSameSide(bool flag);
+    bool isNibpSameSide(void);
+
 private slots:
     void checkSelftest();
     void onPaletteChanged(ParamID id);

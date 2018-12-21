@@ -103,7 +103,7 @@ int SPO2LimitAlarm::getLower(int id)
  *************************************************************************************************/
 int SPO2LimitAlarm::getCompare(int value, int id)
 {
-    if (nibpParam.isHomonymy() && nibpParam.isMeasuring())
+    if (spo2Param.isNibpSameSide() && nibpParam.isMeasuring())
     {
         // 如果打开同侧功能，且nibp正在测量，则不设置报警
         return 0;
