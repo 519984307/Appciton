@@ -22,6 +22,7 @@ struct TrendTablePrintInfo
     int interval;
     QList<SubParamID> list;
     QList<bool> eventList;      // 是否有事件发生
+    QList<unsigned> timestampList;
 };
 
 class TrendTablePageGeneratorPrivate;

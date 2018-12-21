@@ -43,6 +43,7 @@ public:
     int interval;
     QList<SubParamID> subParamList;
     QList<bool> eventList;
+    QList<unsigned> timestampList;
 };
 
 bool  dataPacketLessThan(const TrendDataPackage &d1, const TrendDataPackage &d2)
@@ -84,7 +85,8 @@ bool TrendTablePageGeneratorPrivate::loadStringList()
 
         TrendDataSegment *dataSeg = reinterpret_cast<TrendDataSegment *>(data.data());
 
-        if (dataSeg->timestamp % interval != 0)
+        // 使得趋势表显示内容与打印内容保持一致
+        if (timestampList.indexOf(dataSeg->timestamp) < 0)
         {
             continue;
         }
@@ -530,6 +532,7 @@ TrendTablePageGenerator::TrendTablePageGenerator(IStorageBackend *backend, Trend
     d_ptr->interval = printInfo.interval;
     d_ptr->subParamList = printInfo.list;
     d_ptr->eventList = printInfo.eventList;
+    d_ptr->timestampList = printInfo.timestampList;
 }
 
 TrendTablePageGenerator::~TrendTablePageGenerator()

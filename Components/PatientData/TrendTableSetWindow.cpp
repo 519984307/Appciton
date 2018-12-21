@@ -27,12 +27,11 @@ class TrendTableSetWindowPrivate
 {
 public:
     TrendTableSetWindowPrivate()
-        : resolutionRatioCbo(NULL), trendGroupCbo(NULL), eventTypeCbo(NULL)
+        : resolutionRatioCbo(NULL), trendGroupCbo(NULL)
     {}
 
     ComboBox *resolutionRatioCbo;
     ComboBox *trendGroupCbo;
-    ComboBox *eventTypeCbo;
 };
 
 TrendTableSetWindow::~TrendTableSetWindow()
@@ -74,14 +73,11 @@ void TrendTableSetWindow::trendGroupReleased(int g)
     TrendTableWindow::getInstance()->setTrendGroup(g);
 }
 
-void TrendTableSetWindow::incidentReleased(int type)
-{
-    Q_UNUSED(type)
-}
-
 TrendTableSetWindow::TrendTableSetWindow()
     : Window(), d_ptr(new TrendTableSetWindowPrivate())
 {
+    setFixedSize(240, 240);
+
     setWindowTitle(trs("TrendTableSet"));
 
     QGridLayout *gridLayout = new QGridLayout();
@@ -111,12 +107,6 @@ TrendTableSetWindow::TrendTableSetWindow()
     connect(d_ptr->trendGroupCbo, SIGNAL(currentIndexChanged(int)), this, SLOT(trendGroupReleased(int)));
     gridLayout->addWidget(label, 1, 0);
     gridLayout->addWidget(d_ptr->trendGroupCbo, 1, 1);
-
-    label = new QLabel(trs("Incident"));
-    d_ptr->eventTypeCbo = new ComboBox();
-    connect(d_ptr->eventTypeCbo, SIGNAL(currentIndexChanged(int)), this, SLOT(incidentReleased(int)));
-    gridLayout->addWidget(label, 2, 0);
-    gridLayout->addWidget(d_ptr->eventTypeCbo, 2, 1);
 
     setWindowLayout(gridLayout);
 }
