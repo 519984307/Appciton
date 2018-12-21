@@ -152,6 +152,13 @@ void ContinuousPageGeneratorPrivate::fetchWaveData(bool isRealtime)
                     }
                 }
 
+                if (retryCount > 100 && curSize == 0)
+                {
+                    // not data after 100 try, no data for this waveform id
+                    // stop any further try.
+                    break;
+                }
+
                 lastReadSize = curSize;
                 Util::waitInEventLoop(5);
             }
@@ -161,6 +168,7 @@ void ContinuousPageGeneratorPrivate::fetchWaveData(bool isRealtime)
                 // no enough data, fill with invalid
                 qFill(iter->secondWaveBuff.data() + curSize, iter->secondWaveBuff.data() + iter->sampleRate,
                       (WaveDataType) INVALID_WAVE_FALG_BIT);
+                qDebug() << Q_FUNC_INFO << "no enough data, fill invalid";
             }
         }
         else
