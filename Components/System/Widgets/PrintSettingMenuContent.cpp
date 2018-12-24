@@ -149,6 +149,7 @@ void PrintSettingMenuContentPrivate::loadOptions()
         if (savedWaveIds[i] == WAVE_NONE)
         {
             selectWaves[i]->setCurrentIndex(0);
+            selectWaves[i]->blockSignals(false);
             continue;
         }
 
@@ -164,14 +165,15 @@ void PrintSettingMenuContentPrivate::loadOptions()
         if (cboIndex == -1)
         {
             selectWaves[i]->setCurrentIndex(0);
+            selectWaves[i]->blockSignals(false);
             continue;
         }
 
         if (cboIndex < selectWaves[i]->count() && cboIndex >= 0)
         {
             selectWaves[i]->setCurrentIndex(cboIndex);
+            selectWaves[i]->blockSignals(false);
         }
-        selectWaves[i]->blockSignals(false);
     }
 }
 
