@@ -12,13 +12,14 @@
 #include "SPO2Param.h"
 #include "Debug.h"
 #include "SPO2Alarm.h"
+#include <QTimer>
 
 #define SOM  (0xA1)
 #define EOM  (0xAF)
 #define DEFALUT_BAUD_RATE  (9600)
 #define MIN_PACKET_LEN  (5)
 #define TEMP_BUFF_SIZE  (64)
-
+#define MANU_ID    (0x23ae5d53)
 
 enum RBRecvPacketType
 {
@@ -75,11 +76,25 @@ public:
 
     /**
      * @brief handleParamInfo  处理参数信息
-     * @param data 参数
+     * @param data 数据
      * @param id  参数id
      * @param len 参数长度
      */
     void handleParamInfo(unsigned char *data, RBParamIDType id, int len);
+
+    /**
+     * @brief handleWaveformInfo  处理波形信息
+     * @param data  数据
+     * @param len  数据长度
+     */
+    void handleWaveformInfo(unsigned char *data, int len);
+
+    /**
+     * @brief handleBoardInfo  处理面板信息
+     * @param data  数据
+     * @param len  数据长度
+     */
+    void handleBoardInfo(unsigned char *data, int len);
 
     /**
      * @brief sendCmd  发送指令
@@ -103,6 +118,18 @@ public:
      */
     unsigned char calcChecksum(const unsigned char *data, int len);
 
+    /**
+     * @brief unlockBoard  解锁rainbow模块
+     * @param sn  SN序列号
+     * @param flag 使能相关参数状态位
+     */
+    void unlockBoard(unsigned int sn, unsigned int flag);
+
+    /**
+     * @brief requestBoardInfo  请求底板信息，获取序列号
+     */
+    void requestBoardInfo();
+
     static const unsigned char minPacketLen = MIN_PACKET_LEN;
     RainbowProvider *q_ptr;
 };
@@ -114,6 +141,7 @@ RainbowProvider::RainbowProvider()
 {
     UartAttrDesc attr(DEFALUT_BAUD_RATE, 8, 'N', 1);
     initPort(attr);
+    QTimer::singleShot(200, this, SLOT(onTimeOut()));
 }
 
 RainbowProvider::~RainbowProvider()
@@ -288,6 +316,11 @@ void RainbowProvider::reconnected()
     spo2Param.setConnected(true);
 }
 
+void RainbowProvider::onTimeOut()
+{
+    d_ptr->requestBoardInfo();
+}
+
 void RainbowProvider::setLineFrequency(RainbowLineFrequency freq)
 {
     unsigned char data[2] = {RB_CMD_CONF_LINE_FREQ, freq};
@@ -345,7 +378,7 @@ void RainbowProviderPrivate::handlePacket(unsigned char *data, int len)
     break;
     case  RB_WAVEFORM:
     {
-        // TODO:
+        handleWaveformInfo(&data[1], len - 1);
     }
     break;
     case  RB_ENTER_PROGRAM_MODE:
@@ -355,7 +388,10 @@ void RainbowProviderPrivate::handlePacket(unsigned char *data, int len)
     case  RB_PROGRAM_ERROR:
         break;
     case  RB_BOARD_INFO:
-        break;
+    {
+        handleBoardInfo(&data[1], len - 1);
+    }
+    break;
     case  RB_PLETH_CONTROL:
         break;
     default:
@@ -468,6 +504,49 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     }
 }
 
+void RainbowProviderPrivate::handleWaveformInfo(unsigned char *data, int len)
+{
+    if (data == NULL)
+    {
+        return;
+    }
+    if (len < 8)
+    {
+        return;
+    }
+
+    int16_t waveData = data[0] << 8;
+    waveData |= data[1];
+    spo2Param.addWaveformData(waveData);
+
+    if (data[5] & 0x80)
+    {
+        spo2Param.setPulseAudio(true);
+    }
+}
+
+void RainbowProviderPrivate::handleBoardInfo(unsigned char *data, int len)
+{
+    if (data == NULL)
+    {
+        return;
+    }
+    if (len < 8)
+    {
+        return;
+    }
+    unsigned int sn = data[0] << 24;
+    sn |= data[1] << 16;
+    sn |= data[2] << 8;
+    sn |= data[3];
+    unsigned int falg = data[4] << 24;
+    falg |= data[5] << 16;
+    falg |= data[6] << 8;
+    falg |= data[7];
+
+    unlockBoard(sn, falg);
+}
+
 void RainbowProviderPrivate::sendCmd(const unsigned char *data, unsigned int len)
 {
     int index = 0;
@@ -501,4 +580,28 @@ unsigned char RainbowProviderPrivate::calcChecksum(const unsigned char *data, in
     }
     sum = sum & 0xFF;
     return sum;
+}
+
+void RainbowProviderPrivate::unlockBoard(unsigned int sn, unsigned int flag)
+{
+    unsigned char data[9] = {0};
+    unsigned int unlockKey = MANU_ID ^ sn;
+    data[0] = RB_CMD_UNLOCK_BOARD;
+    data[1] = (unlockKey >> 24) & 0xff;
+    data[2] = (unlockKey >> 16) & 0xff;
+    data[3] = (unlockKey >>  8) & 0xff;
+    data[4] = unlockKey & 0xff;
+    data[5] = (flag >> 24) & 0xff;
+    data[6] = (flag >> 16) & 0xff;
+    data[7] = (flag >>  8) & 0xff;
+    data[8] = flag & 0xff;
+
+    sendCmd(data, sizeof(data));
+}
+
+void RainbowProviderPrivate::requestBoardInfo()
+{
+    unsigned char data[1] = {RB_CMD_REQUEST_BOARD_INFO};
+
+    sendCmd(data, sizeof(data));
 }

@@ -15,6 +15,8 @@
 class RainbowProviderPrivate;
 class RainbowProvider : public Provider, public SPO2ProviderIFace
 {
+    Q_OBJECT
+
     friend class RainbowProviderPrivate;
 public:
     RainbowProvider();
@@ -59,6 +61,12 @@ public:
 
     /* reimplment */
     void reconnected();
+
+public slots:
+    /**
+     * @brief onTimeOut
+     */
+    void onTimeOut();
 
 public:
     /**
