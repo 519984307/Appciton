@@ -34,6 +34,8 @@
 #include "DataStorageDefine.h"
 #include "MoveButton.h"
 
+#define STOP_PRINT_TIMEOUT          (100)
+
 struct OxyCRGEventContex
 {
     OxyCRGEventContex()
@@ -83,7 +85,12 @@ public:
           cursorMoveBtn(NULL), eventMoveBtn(NULL), printBtn(NULL),
           setBtn(NULL), tableWidget(NULL), chartWidget(NULL),
           stackLayout(NULL), backend(NULL), eventNum(0),
-          curDisplayEventNum(0), isHistory(false)
+          curDisplayEventNum(0), isHistory(false),
+          printTimerId(-1),
+          waitTimerId(-1),
+          isWait(false),
+          timeoutNum(0),
+          generator(NULL)
     {
         waveInfo.id = WAVE_RESP;
         backend = eventStorageManager.backend();
@@ -206,6 +213,12 @@ public:
 
     bool isHistory;                             // 历史回顾标志
     QString historyDataPath;                    // 历史数据路径
+
+    int printTimerId;
+    int waitTimerId;
+    bool isWait;
+    int timeoutNum;
+    RecordPageGenerator *generator;
 };
 
 OxyCRGEventWindow *OxyCRGEventWindow::getInstance()
@@ -275,6 +288,35 @@ void OxyCRGEventWindow::showEvent(QShowEvent *ev)
     }
 }
 
+void OxyCRGEventWindow::timerEvent(QTimerEvent *ev)
+{
+    if (d_ptr->printTimerId == ev->timerId())
+    {
+        if (!recorderManager.isPrinting() || d_ptr->timeoutNum == 10)
+        {
+            if (!recorderManager.isPrinting())
+            {
+                recorderManager.addPageGenerator(d_ptr->generator);
+            }
+            else
+            {
+                d_ptr->generator->deleteLater();
+                d_ptr->generator = NULL;
+            }
+            killTimer(d_ptr->printTimerId);
+            d_ptr->printTimerId = -1;
+            d_ptr->timeoutNum = 0;
+        }
+        else if (d_ptr->waitTimerId == ev->timerId())
+        {
+            d_ptr->printTimerId = startTimer(STOP_PRINT_TIMEOUT);
+            killTimer(d_ptr->waitTimerId);
+            d_ptr->waitTimerId = -1;
+            d_ptr->isWait = false;
+        }
+    }
+}
+
 void OxyCRGEventWindow::waveInfoReleased(QModelIndex index)
 {
     waveInfoReleased(index.row());
@@ -335,7 +377,7 @@ void OxyCRGEventWindow::printReleased()
     trendInfos.append(d_ptr->trendInfoList.at(0));
     trendInfos.append(d_ptr->trendInfoList.at(1));
     RecordPageGenerator *generator = new OxyCRGPageGenerator(trendInfos, d_ptr->waveInfo, d_ptr->eventTitle);
-    if (recorderManager.isPrinting())
+    if (recorderManager.isPrinting() && !d_ptr->isWait)
     {
         if (generator->getPriority() <= recorderManager.getCurPrintPriority())
         {
@@ -344,12 +386,18 @@ void OxyCRGEventWindow::printReleased()
         else
         {
             recorderManager.stopPrint();
-            recorderManager.addPageGenerator(generator);
+            d_ptr->generator = generator;
+            d_ptr->waitTimerId = startTimer(2000);
+            d_ptr->isWait = true;
         }
     }
     else if (!recorderManager.getPrintStatus())
     {
         recorderManager.addPageGenerator(generator);
+    }
+    else
+    {
+        generator->deleteLater();
     }
 }
 

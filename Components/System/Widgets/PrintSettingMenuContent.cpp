@@ -26,6 +26,8 @@
 #include "ContinuousPageGenerator.h"
 #include "TimeManager.h"
 
+#define STOP_PRINT_TIMEOUT          (100)
+
 class PrintSettingMenuContentPrivate
 {
 public:
@@ -37,7 +39,11 @@ public:
 
     PrintSettingMenuContentPrivate()
         : printTimeCbo(NULL),
-          printSpeedCbo(NULL)
+          printSpeedCbo(NULL),
+          printTimerId(-1),
+          waitTimerId(-1),
+          isWait(false),
+          timeoutNum(0)
     {
     }
     /**
@@ -57,6 +63,11 @@ public:
     QStringList waveNames;
     ComboBox *printTimeCbo;
     ComboBox *printSpeedCbo;
+
+    int printTimerId;
+    int waitTimerId;
+    bool isWait;
+    int timeoutNum;
 };
 
 void PrintSettingMenuContentPrivate::loadOptions()
@@ -276,6 +287,31 @@ void PrintSettingMenuContent::layoutExec()
     glayout->setRowStretch(index, 1);
 }
 
+void PrintSettingMenuContent::timerEvent(QTimerEvent *ev)
+{
+    if (d_ptr->printTimerId == ev->timerId())
+    {
+        if (!recorderManager.isPrinting() || d_ptr->timeoutNum == 10)
+        {
+            if (!recorderManager.isPrinting())
+            {
+                recorderManager.addPageGenerator(new ContinuousPageGenerator(timeManager.getCurTime()));
+            }
+            killTimer(d_ptr->printTimerId);
+            d_ptr->printTimerId = -1;
+            d_ptr->timeoutNum = 0;
+        }
+        d_ptr->timeoutNum++;
+    }
+    else if (d_ptr->waitTimerId == ev->timerId())
+    {
+        d_ptr->printTimerId = startTimer(STOP_PRINT_TIMEOUT);
+        killTimer(d_ptr->waitTimerId);
+        d_ptr->waitTimerId = -1;
+        d_ptr->isWait = false;
+    }
+}
+
 void PrintSettingMenuContent::onComboxIndexChanged(int index)
 {
     ComboBox *combo = qobject_cast<ComboBox *>(sender());
@@ -309,10 +345,11 @@ void PrintSettingMenuContent::onSelectWaveChanged(const QString &waveName)
     if (curWaveCbo->currentIndex() == 0)
     {
         systemConfig.setNumValue(path, static_cast<int>(WAVE_NONE));
-        if (recorderManager.isPrinting())
+        if (recorderManager.isPrinting() && !d_ptr->isWait)
         {
             recorderManager.stopPrint();
-            recorderManager.addPageGenerator(new ContinuousPageGenerator(timeManager.getCurTime()));
+            d_ptr->waitTimerId = startTimer(2000);
+            d_ptr->isWait = true;
         }
         return;
     }
@@ -325,10 +362,11 @@ void PrintSettingMenuContent::onSelectWaveChanged(const QString &waveName)
     {
         systemConfig.setNumValue(path, d_ptr->waveIDs.at(waveIndex));
     }
-    if (recorderManager.isPrinting())
+    if (recorderManager.isPrinting() && !d_ptr->isWait)
     {
         recorderManager.stopPrint();
-        recorderManager.addPageGenerator(new ContinuousPageGenerator(timeManager.getCurTime()));
+        d_ptr->waitTimerId = startTimer(2000);
+        d_ptr->isWait = true;
     }
 
     // 收集当前所有选择菜单选择的波形id
