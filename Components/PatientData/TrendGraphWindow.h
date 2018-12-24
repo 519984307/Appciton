@@ -64,6 +64,9 @@ public:
      */
     void setHistoryData(bool flag);
 
+protected:
+    void timerEvent(QTimerEvent *ev);
+
 private slots:
     void onButtonReleased(void);
 

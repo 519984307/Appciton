@@ -47,6 +47,7 @@ public:
     void findEventIndex(SubParamID id, unsigned time);
 protected:
     void showEvent(QShowEvent *ev);
+    void timerEvent(QTimerEvent *ev);
 
 private slots:
     void waveInfoReleased(QModelIndex index);

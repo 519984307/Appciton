@@ -77,6 +77,9 @@ public:
      */
     void getCurIndexInfo(unsigned &curIndex, unsigned &totalIndex) const;
 
+protected:
+    void timerEvent(QTimerEvent *ev);
+
 private:
     TrendTableModelPrivate * const d_ptr;
 };

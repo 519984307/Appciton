@@ -22,6 +22,7 @@ public:
 protected:
     virtual void showEvent(QShowEvent *ev);
     virtual void hideEvent(QHideEvent *ev);
+    virtual void timerEvent(QTimerEvent *ev);
     // virtual void keyPressEvent(QKeyEvent *e);
 
 private slots:

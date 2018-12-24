@@ -49,6 +49,7 @@
 
 #define TABLE_SPACING               (4)
 #define PAGE_ROW_COUNT               7      // 每页多少行
+#define STOP_PRINT_TIMEOUT          (100)
 
 class EventWindowPrivate
 {
@@ -62,7 +63,12 @@ public:
           setBtn(NULL), upParamBtn(NULL), downParamBtn(NULL),
           tableWidget(NULL), chartWidget(NULL), stackLayout(NULL),
           backend(NULL), eventNum(0), curDisplayEventNum(0),
-          isHistory(false), q_ptr(q_ptr)
+          isHistory(false), q_ptr(q_ptr),
+          printTimerId(-1),
+          waitTimerId(-1),
+          isWait(false),
+          timeoutNum(0),
+          generator(NULL)
     {
         backend = eventStorageManager.backend();
         curEventType = EventAll;
@@ -141,6 +147,12 @@ public:
     QString historyDataPath;            // 历史数据路径
 
     EventWindow *q_ptr;
+
+    int printTimerId;
+    int waitTimerId;
+    bool isWait;
+    int timeoutNum;
+    RecordPageGenerator *generator;
 };
 
 EventWindow *EventWindow::getInstance()
@@ -240,6 +252,36 @@ void EventWindow::showEvent(QShowEvent *ev)
     else
     {
         d_ptr->eventTable->setFocusPolicy(Qt::StrongFocus);
+    }
+}
+
+void EventWindow::timerEvent(QTimerEvent *ev)
+{
+    if (d_ptr->printTimerId == ev->timerId())
+    {
+        if (!recorderManager.isPrinting() || d_ptr->timeoutNum == 10)
+        {
+            if (!recorderManager.isPrinting())
+            {
+                recorderManager.addPageGenerator(d_ptr->generator);
+            }
+            else
+            {
+                d_ptr->generator->deleteLater();
+                d_ptr->generator = NULL;
+            }
+            killTimer(d_ptr->printTimerId);
+            d_ptr->printTimerId = -1;
+            d_ptr->timeoutNum = 0;
+        }
+        d_ptr->timeoutNum++;
+    }
+    else if (d_ptr->waitTimerId == ev->timerId())
+    {
+        d_ptr->printTimerId = startTimer(STOP_PRINT_TIMEOUT);
+        killTimer(d_ptr->waitTimerId);
+        d_ptr->waitTimerId = -1;
+        d_ptr->isWait = false;
     }
 }
 
@@ -443,7 +485,7 @@ void EventWindow::printRelease()
             curIndex >= 0)
     {
         RecordPageGenerator *gen = new EventPageGenerator(d_ptr->backend, d_ptr->dataIndex.at(curIndex));
-        if (recorderManager.isPrinting())
+        if (recorderManager.isPrinting() && !d_ptr->isWait)
         {
             if (gen->getPriority() <= recorderManager.getCurPrintPriority())
             {
@@ -452,12 +494,18 @@ void EventWindow::printRelease()
             else
             {
                 recorderManager.stopPrint();
-                recorderManager.addPageGenerator(gen);
+                d_ptr->generator = gen;
+                d_ptr->waitTimerId = startTimer(2000);
+                d_ptr->isWait = true;
             }
         }
         else if (!recorderManager.getPrintStatus())
         {
             recorderManager.addPageGenerator(gen);
+        }
+        else
+        {
+            gen->deleteLater();
         }
     }
 }
