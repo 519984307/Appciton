@@ -37,13 +37,6 @@
 #include "TopBarWidget.h"
 #include "LayoutManager.h"
 
-struct WindowStacksInfo{
-    WindowStacksInfo()
-       : timerStart(true)
-    {}
-    QPointer<Window> window;
-    bool timerStart;
-};
 
 class WindowManagerPrivate
 {
@@ -52,14 +45,13 @@ public:
         :q_ptr(q_ptr),
           timer(NULL),
           demoWidget(NULL)
-        , curWindow(NULL)
     {}
 
     WindowManager * const q_ptr;
-    QList<WindowStacksInfo> windowStacksInfo;
+    QList<QPointer<Window> > windowStacks;
     QTimer *timer;              // timer to auto close the windows
     QWidget *demoWidget;
-    Window *curWindow;
+
     /**
      * @brief menuProperPos 菜单显示合适的位置
      * @param w
@@ -167,10 +159,10 @@ QPoint WindowManagerPrivate::menuProperPos(Window *w)
             r.adjust(0, r.height() - w->height(), 0, 0);
         }
         globalTopLeft = r.topLeft();
-        if (windowStacksInfo.count() > 1)
+        if (windowStacks.count() > 1)
         {
             // 二级以上的菜单在一级菜单区域中居中显示
-            Window *win = windowStacksInfo.at(0).window;
+            Window *win = windowStacks.at(0);
             QPoint tmp = globalTopLeft - QPoint((win->width() - w->width()) / 2, -(win->height() - w->height()) / 2);
             if (tmp.rx() + w->width() <= r.topRight().rx())
             {
@@ -188,8 +180,6 @@ void WindowManager::showWindow(Window *w, ShowBehavior behaviors)
         qWarning() << "Invalid window";
         return;
     }
-
-    d_ptr->curWindow = w;
 
     Window *top = topWindow();
 
@@ -211,9 +201,9 @@ void WindowManager::showWindow(Window *w, ShowBehavior behaviors)
 
     if (behaviors & ShowBehaviorCloseOthers)
     {
-        while (!d_ptr->windowStacksInfo.isEmpty())
+        while (!d_ptr->windowStacks.isEmpty())
         {
-            Window *p = d_ptr->windowStacksInfo.last().window;
+            Window *p = d_ptr->windowStacks.last();
             if (p)
             {
                 p->close();
@@ -239,28 +229,23 @@ void WindowManager::showWindow(Window *w, ShowBehavior behaviors)
         }
     }
 
+    if (!(behaviors & ShowBehaviorNoAutoClose))
+    {
+        d_ptr->timer->start();
+    }
+
     QPointer<Window> newP = w;
     // remove the window in the stack if it's already exist.
-    WindowStacksInfo stackInfo;
-    for (int i = 0; i < d_ptr->windowStacksInfo.count(); i++)
+    QList<QPointer<Window> >::Iterator iter = d_ptr->windowStacks.begin();
+    for (; iter != d_ptr->windowStacks.end(); ++iter)
     {
-        stackInfo = d_ptr->windowStacksInfo.at(i);
-        if (newP == stackInfo.window)
+        if (iter->data() == w)
         {
-            d_ptr->windowStacksInfo.removeAt(i);
+            d_ptr->windowStacks.erase(iter);
             break;
         }
     }
-    stackInfo.window = newP;
-    if (behaviors & ShowBehaviorNoAutoClose)
-    {
-        stackInfo.timerStart = false;
-    }
-    else
-    {
-        stackInfo.timerStart = true;
-    }
-    d_ptr->windowStacksInfo.append(stackInfo);
+    d_ptr->windowStacks.append(newP);
     connect(w, SIGNAL(windowHide(Window *)), this, SLOT(onWindowHide(Window *)), Qt::DirectConnection);
 
     if (behaviors & ShowBehaviorModal)
@@ -282,16 +267,16 @@ Window *WindowManager::topWindow()
 {
     // find top window
     QPointer<Window> top;
-    while (!d_ptr->windowStacksInfo.isEmpty())
+    while (!d_ptr->windowStacks.isEmpty())
     {
-        top = d_ptr->windowStacksInfo.last().window;
+        top = d_ptr->windowStacks.last();
         if (top)
         {
             break;
         }
         else
         {
-            d_ptr->windowStacksInfo.takeLast();
+            d_ptr->windowStacks.takeLast();
         }
     }
     return top.data();
@@ -329,31 +314,9 @@ void WindowManager::showDemoWidget(bool flag)
 bool WindowManager::eventFilter(QObject *obj, QEvent *ev)
 {
     Q_UNUSED(obj)
-    if (d_ptr->windowStacksInfo.isEmpty())
+    if (d_ptr->windowStacks.isEmpty())
     {
         return false;
-    }
-
-    if (ev->type() == QEvent::Show)
-    {
-        bool start = true;
-        for (int i = 0; i < d_ptr->windowStacksInfo.count(); i++)
-        {
-            WindowStacksInfo stackInfo = d_ptr->windowStacksInfo.at(i);
-            if (d_ptr->curWindow == stackInfo.window)
-            {
-                start = stackInfo.timerStart;
-                break;
-            }
-        }
-        if (start == true)
-        {
-            d_ptr->timer->start();
-        }
-        else
-        {
-            d_ptr->timer->stop();
-        }
     }
 
     if ((ev->type() == QEvent::KeyPress) || (ev->type() == QEvent::MouseButtonPress))
@@ -368,7 +331,6 @@ bool WindowManager::eventFilter(QObject *obj, QEvent *ev)
     return false;
 }
 
-
 void WindowManager::closeAllWidows()
 {
 
@@ -380,9 +342,9 @@ void WindowManager::closeAllWidows()
     }
 
     // close the window in the window stack
-    while (!d_ptr->windowStacksInfo.isEmpty())
+    while (!d_ptr->windowStacks.isEmpty())
     {
-        Window *p = d_ptr->windowStacksInfo.last().window;
+        Window *p = d_ptr->windowStacks.last();
         if (p)
         {
             p->close();
@@ -410,7 +372,7 @@ void WindowManager::onWindowHide(Window *w)
     if (top == w)
     {
         // remove the window,
-        d_ptr->windowStacksInfo.takeLast();
+        d_ptr->windowStacks.takeLast();
         disconnect(w, SIGNAL(windowHide(Window *)), this, SLOT(onWindowHide(Window *)));
 
         // show the previous window
@@ -418,7 +380,6 @@ void WindowManager::onWindowHide(Window *w)
         if (top)
         {
             top->showMask(false);
-            d_ptr->curWindow = top;
             top->show();
         }
         else
@@ -426,7 +387,7 @@ void WindowManager::onWindowHide(Window *w)
             d_ptr->timer->stop();
         }
     }
-    else if (d_ptr->windowStacksInfo.isEmpty())
+    else if (d_ptr->windowStacks.isEmpty())
     {
         disconnect(w, SIGNAL(windowHide(Window *)), this, SLOT(onWindowHide(Window *)));
         d_ptr->timer->stop();
