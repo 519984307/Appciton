@@ -25,19 +25,16 @@
 #include "MessageBox.h"
 #include "LightManager.h"
 #include "AlarmIndicator.h"
+#include "ParamDataDefine.h"
 
 class ModuleMaintainMenuContentPrivate
 {
 public:
     enum MenuItem
     {
-#ifndef HIDE_AG_MODULE_CALIBRATE
         ITEM_BTN_AG_MODULE_CALIBRATION,
-#endif
-#ifndef HIDE_IBP_PRESSURE_CALIBRATE
         ITEM_BTN_IBP1_PRESSURE_CALIBRATION,
         ITEM_BTN_IBP2_PRESSURE_CALIBRATION,
-#endif
         ITEM_BTN_CO2_MODULE_MAINTAIN,
         ITEM_BTN_ECG_MODULE_CALIBRATION,
 #ifdef  Q_WS_QWS
@@ -80,42 +77,44 @@ void ModuleMaintainMenuContent::layoutExec()
     QLabel *label;
     int itemID;
 
-#ifndef HIDE_AG_MODULE_CALIBRATE
-    // ag module calibration
-    label = new QLabel(trs("AnaesthesiaModuleCalibration"));
-    layout->addWidget(label, d_ptr->buttons.count(), 0);
-    button = new Button(trs("Start"));
-    button->setButtonStyle(Button::ButtonTextOnly);
-    itemID = static_cast<int>(ModuleMaintainMenuContentPrivate::ITEM_BTN_AG_MODULE_CALIBRATION);
-    button->setProperty("Item", qVariantFromValue(itemID));
-    connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
-    layout->addWidget(button, d_ptr->buttons.count(), 1);
-    d_ptr->buttons.insert(ModuleMaintainMenuContentPrivate::ITEM_BTN_AG_MODULE_CALIBRATION, button);
-#endif
+    if (systemManager.isSupport(PARAM_AG))
+    {
+        // ag module calibration
+        label = new QLabel(trs("AnaesthesiaModuleCalibration"));
+        layout->addWidget(label, d_ptr->buttons.count(), 0);
+        button = new Button(trs("Start"));
+        button->setButtonStyle(Button::ButtonTextOnly);
+        itemID = static_cast<int>(ModuleMaintainMenuContentPrivate::ITEM_BTN_AG_MODULE_CALIBRATION);
+        button->setProperty("Item", qVariantFromValue(itemID));
+        connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
+        layout->addWidget(button, d_ptr->buttons.count(), 1);
+        d_ptr->buttons.insert(ModuleMaintainMenuContentPrivate::ITEM_BTN_AG_MODULE_CALIBRATION, button);
+    }
 
-#ifndef HIDE_IBP_PRESSURE_CALIBRATE
-    // IBP1 pressure calibration
-    label = new QLabel(trs("IBP1PressureCalibration"));
-    layout->addWidget(label, d_ptr->buttons.count(), 0);
-    button = new Button("80");
-    button->setButtonStyle(Button::ButtonTextOnly);
-    itemID = static_cast<int>(ModuleMaintainMenuContentPrivate::ITEM_BTN_IBP1_PRESSURE_CALIBRATION);
-    button->setProperty("Item", qVariantFromValue(itemID));
-    connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
-    layout->addWidget(button, d_ptr->buttons.count(), 1);
-    d_ptr->buttons.insert(ModuleMaintainMenuContentPrivate::ITEM_BTN_IBP1_PRESSURE_CALIBRATION, button);
+    if (systemManager.isSupport(PARAM_IBP))
+    {
+        // IBP1 pressure calibration
+        label = new QLabel(trs("IBP1PressureCalibration"));
+        layout->addWidget(label, d_ptr->buttons.count(), 0);
+        button = new Button("80");
+        button->setButtonStyle(Button::ButtonTextOnly);
+        itemID = static_cast<int>(ModuleMaintainMenuContentPrivate::ITEM_BTN_IBP1_PRESSURE_CALIBRATION);
+        button->setProperty("Item", qVariantFromValue(itemID));
+        connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
+        layout->addWidget(button, d_ptr->buttons.count(), 1);
+        d_ptr->buttons.insert(ModuleMaintainMenuContentPrivate::ITEM_BTN_IBP1_PRESSURE_CALIBRATION, button);
 
-    // IBP2 pressure calibration
-    label = new QLabel(trs("IBP2PressureCalibration"));
-    layout->addWidget(label, d_ptr->buttons.count(), 0);
-    button = new Button("80");
-    button->setButtonStyle(Button::ButtonTextOnly);
-    itemID = static_cast<int>(ModuleMaintainMenuContentPrivate::ITEM_BTN_IBP2_PRESSURE_CALIBRATION);
-    button->setProperty("Item", qVariantFromValue(itemID));
-    connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
-    layout->addWidget(button, d_ptr->buttons.count(), 1);
-    d_ptr->buttons.insert(ModuleMaintainMenuContentPrivate::ITEM_BTN_IBP2_PRESSURE_CALIBRATION, button);
-#endif
+        // IBP2 pressure calibration
+        label = new QLabel(trs("IBP2PressureCalibration"));
+        layout->addWidget(label, d_ptr->buttons.count(), 0);
+        button = new Button("80");
+        button->setButtonStyle(Button::ButtonTextOnly);
+        itemID = static_cast<int>(ModuleMaintainMenuContentPrivate::ITEM_BTN_IBP2_PRESSURE_CALIBRATION);
+        button->setProperty("Item", qVariantFromValue(itemID));
+        connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
+        layout->addWidget(button, d_ptr->buttons.count(), 1);
+        d_ptr->buttons.insert(ModuleMaintainMenuContentPrivate::ITEM_BTN_IBP2_PRESSURE_CALIBRATION, button);
+    }
 
     // CO2 ModuleMaintenance
     label = new QLabel(trs("CO2ModuleMaintenance"));
@@ -170,12 +169,9 @@ void ModuleMaintainMenuContent::onButtonReleased()
         ModuleMaintainMenuContentPrivate::MenuItem item
                 = (ModuleMaintainMenuContentPrivate::MenuItem)button->property("Item").toInt();
         switch (item) {
-#ifndef HIDE_AG_MODULE_CALIBRATE
         case ModuleMaintainMenuContentPrivate::ITEM_BTN_AG_MODULE_CALIBRATION:
 
             break;
-#endif
-#ifndef HIDE_IBP_PRESSURE_CALIBRATE
         case ModuleMaintainMenuContentPrivate::ITEM_BTN_IBP1_PRESSURE_CALIBRATION:
         {
             KeyInputPanel numberPad;
@@ -230,7 +226,6 @@ void ModuleMaintainMenuContent::onButtonReleased()
             }
             break;
         }
-#endif
         case ModuleMaintainMenuContentPrivate::ITEM_BTN_CO2_MODULE_MAINTAIN:
 
             break;
