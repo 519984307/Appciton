@@ -82,6 +82,13 @@ public:
     // 获取当前报警的个数。
     int getAlarmCount(AlarmType type);
     int getAlarmCount();
+    /**
+     * @brief getAlarmCount 获取当前报警个数
+     * @param priority  筛选出与其等级一致的报警
+     * @return
+     */
+    int getAlarmCount(AlarmPriority priority);
+
     void getAlarmInfo(int index, AlarmInfoNode &node);
     bool getAlarmInfo(AlarmType type, const char *alArmMessage, AlarmInfoNode &node);
 
@@ -93,6 +100,8 @@ public:
      * @param seconds the left pause time
      */
     void updateAlarmPauseTime(int seconds);
+
+    bool phyAlarmResetStatusHandle();
 
 private:
     AlarmIndicator();

@@ -806,6 +806,31 @@ int AlarmIndicator::getAlarmCount(void)
     return _alarmInfoDisplayPool.count();
 }
 
+int AlarmIndicator::getAlarmCount(AlarmPriority priority)
+{
+    int count = 0;
+    AlarmInfoList *list = &_alarmInfoDisplayPool;
+
+    // 无数据。
+    if (list->empty())
+    {
+        return count;
+    }
+
+    // 查找报警信息并更新。
+    AlarmInfoList::iterator it = list->begin();
+    for (; it != list->end(); ++it)
+    {
+        if (it->alarmPriority == priority)
+        {
+            ++count;
+            continue;
+        }
+    }
+
+    return count;
+}
+
 /**************************************************************************************************
  * 功能：获取指定的报警信息
  * 参数：
@@ -889,4 +914,30 @@ void AlarmIndicator::updateAlarmPauseTime(int seconds)
     {
         _alarmPhyInfoWidget->setAlarmPause(seconds);
     }
+}
+
+bool AlarmIndicator::phyAlarmResetStatusHandle()
+{
+    bool ret = false;
+    AlarmInfoList *list;
+    AlarmInfoList::iterator it;
+    list = &_alarmInfoDisplayPool;
+    it = list->begin();
+    for (; it != list->end(); ++it)
+    {
+        if (it->alarmType != ALARM_TYPE_TECH)
+        {
+            AlarmInfoNode node = *it;
+            if (0 == it->pauseTime)
+            {
+                if (!node.acknowledge)
+                {
+                    node.acknowledge = true;
+                    ret = true;
+                }
+            }
+            *it = node;
+        }
+    }
+    return ret;
 }

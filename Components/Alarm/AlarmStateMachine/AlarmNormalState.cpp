@@ -49,9 +49,10 @@ void AlarmNormalState::handAlarmEvent(AlarmStateEvent event, unsigned char */*da
         //删除栓锁报警
         alarmIndicator.delLatchPhyAlarm();
         alarmIndicator.techAlarmPauseStatusHandle();
-        if (alarmIndicator.getAlarmCount())
+        alarmIndicator.phyAlarmResetStatusHandle();
+        if (alarmIndicator.getAlarmCount(ALARM_PRIO_MED) + alarmIndicator.getAlarmCount(ALARM_PRIO_HIGH))
         {
-            // must has alarm before enter the reset state
+            // must has med priority alarm or high priority alarm before enter the reset state
             alarmStateMachine.switchState(ALARM_RESET_STATE);
         }
         break;
