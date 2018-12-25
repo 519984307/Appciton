@@ -30,6 +30,7 @@ public:
 ErrorLogViewerWindow::ErrorLogViewerWindow()
     : Window(), d_ptr(new ErrorLogViewerWindowPrivate())
 {
+    setFocusPolicy(Qt::NoFocus);
     setFixedSize(500, 400);
     d_ptr->textEdit = new QTextEdit();
     d_ptr->textEdit->setReadOnly(true);
@@ -38,6 +39,7 @@ ErrorLogViewerWindow::ErrorLogViewerWindow()
     d_ptr->textEdit->installEventFilter(this);
     d_ptr->textEdit->setFrameStyle(QFrame::NoFrame);
     d_ptr->textEdit->setTextInteractionFlags(Qt::NoTextInteraction);
+    d_ptr->textEdit->setFocusPolicy(Qt::NoFocus);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(d_ptr->textEdit);
@@ -48,6 +50,7 @@ ErrorLogViewerWindow::ErrorLogViewerWindow()
 ErrorLogViewerWindow::ErrorLogViewerWindow(ErrorLogItemBase *item)
     : Window(), d_ptr(new ErrorLogViewerWindowPrivate(item))
 {
+    setFocusPolicy(Qt::NoFocus);
     setFixedSize(500, 400);
     setWindowTitle(item->name());
     d_ptr->textEdit = new QTextEdit();
@@ -56,6 +59,7 @@ ErrorLogViewerWindow::ErrorLogViewerWindow(ErrorLogItemBase *item)
     d_ptr->textEdit->setTabChangesFocus(true);
     d_ptr->textEdit->setFrameStyle(QFrame::NoFrame);
     d_ptr->textEdit->setTextInteractionFlags(Qt::NoTextInteraction);
+    d_ptr->textEdit->setFocusPolicy(Qt::NoFocus);
     QString str;
     QTextStream stream(&str);
     item->outputInfo(stream);
