@@ -119,6 +119,7 @@ public:
         TrendOxyCRGPage,
         WaveScalePage,
         WaveSegmentPage,
+        EventListPage,
         EndPage,
         NullPage,
     };

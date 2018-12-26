@@ -46,6 +46,7 @@
 #include "TableViewItemDelegate.h"
 #include "MessageBox.h"
 #include "CO2Param.h"
+#include "EventListPageGenerator.h"
 
 #define TABLE_SPACING               (4)
 #define PAGE_ROW_COUNT               7      // 每页多少行
@@ -56,7 +57,7 @@ class EventWindowPrivate
 public:
     explicit EventWindowPrivate(EventWindow * const q_ptr)
         : eventTable(NULL), model(NULL), upPageBtn(NULL),
-          downPageBtn(NULL), typeCbo(NULL), levelCbo(NULL),
+          downPageBtn(NULL), typeCbo(NULL), levelCbo(NULL), listPrintBtn(NULL),
           infoWidget(NULL), trendListWidget(NULL), waveWidget(NULL),
           eventListBtn(NULL), coordinateMoveBtn(NULL), eventMoveBtn(NULL),
           printBtn(NULL),
@@ -119,6 +120,7 @@ public:
     Button *downPageBtn;
     ComboBox *typeCbo;
     ComboBox *levelCbo;
+    Button *listPrintBtn;
 
     EventInfoWidget *infoWidget;
     QListWidget *trendListWidget;
@@ -153,6 +155,8 @@ public:
     bool isWait;
     int timeoutNum;
     RecordPageGenerator *generator;
+
+    QStringList printList;              // 事件列表打印
 };
 
 EventWindow *EventWindow::getInstance()
@@ -331,6 +335,33 @@ void EventWindow::eventLevelSelect(int index)
     else
     {
         d_ptr->eventTable->setFocusPolicy(Qt::NoFocus);
+    }
+}
+
+void EventWindow::eventListPrintReleased()
+{
+    RecordPageGenerator *generator = new EventListPageGenerator(d_ptr->printList);
+    if (recorderManager.isPrinting() && !d_ptr->isWait)
+    {
+        if (generator->getPriority() <= recorderManager.getCurPrintPriority())
+        {
+            generator->deleteLater();
+        }
+        else
+        {
+            recorderManager.stopPrint();
+            d_ptr->generator = generator;
+            d_ptr->waitTimerId = startTimer(2000);
+            d_ptr->isWait = true;
+        }
+    }
+    else if (!recorderManager.getPrintStatus())
+    {
+        recorderManager.addPageGenerator(generator);
+    }
+    else
+    {
+        generator->deleteLater();
     }
 }
 
@@ -596,6 +627,10 @@ EventWindow::EventWindow()
     }
     connect(d_ptr->levelCbo, SIGNAL(currentIndexChanged(int)), this, SLOT(eventLevelSelect(int)));
 
+    d_ptr->listPrintBtn = new Button(trs("PrintList"));
+    d_ptr->listPrintBtn->setButtonStyle(Button::ButtonTextOnly);
+    connect(d_ptr->listPrintBtn, SIGNAL(released()), this, SLOT(eventListPrintReleased()));
+
     d_ptr->upPageBtn = new Button("", QIcon("/usr/local/nPM/icons/up.png"));
     d_ptr->upPageBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->upPageBtn, SIGNAL(released()), this, SLOT(upPageReleased()));
@@ -607,13 +642,15 @@ EventWindow::EventWindow()
     QHBoxLayout *hTableLayout = new QHBoxLayout();
     hTableLayout->addStretch(1);
     hTableLayout->addWidget(typeLabel, 1);
-    hTableLayout->addWidget(d_ptr->typeCbo, 3);
+    hTableLayout->addWidget(d_ptr->typeCbo, 6);
     hTableLayout->addStretch(1);
     hTableLayout->addWidget(levelLabel, 1);
-    hTableLayout->addWidget(d_ptr->levelCbo, 3);
+    hTableLayout->addWidget(d_ptr->levelCbo, 6);
     hTableLayout->addStretch(1);
-    hTableLayout->addWidget(d_ptr->upPageBtn, 1);
-    hTableLayout->addWidget(d_ptr->downPageBtn, 1);
+    hTableLayout->addWidget(d_ptr->listPrintBtn, 3);
+    hTableLayout->addStretch(1);
+    hTableLayout->addWidget(d_ptr->upPageBtn, 2);
+    hTableLayout->addWidget(d_ptr->downPageBtn, 2);
 
     QVBoxLayout *vTableLayout = new QVBoxLayout();
     vTableLayout->addSpacing(TABLE_SPACING);
@@ -837,8 +874,11 @@ void EventWindowPrivate::loadEventData()
                 break;
             }
             default:
-                break;
+                continue;
             }
+            QString printStr = timeItemStr + " " + infoStr;
+            printList.append(printStr);
+
             dataIndex.append(i);
         }
     }
