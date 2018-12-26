@@ -101,7 +101,16 @@ public:
      */
     void updateAlarmPauseTime(int seconds);
 
+    /**
+     * @brief phyAlarmResetStatusHandle 处理复位后的生理报警状态
+     * @return 是否有新被确认的生理报警
+     */
     bool phyAlarmResetStatusHandle();
+    /**
+     * @brief techAlarmResetStatusHandle 处理复位后的技术报警状态
+     * @return 是否有新被确认的技术报警
+     */
+    bool techAlarmResetStatusHandle();
 
 private:
     AlarmIndicator();
