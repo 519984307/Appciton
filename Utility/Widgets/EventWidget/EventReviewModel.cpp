@@ -169,7 +169,7 @@ int EventReviewModel::totalPage()
     return d_ptr->calTotalPage();
 }
 
-int EventReviewModel::getHintHeight() const
+int EventReviewModel::getHeightHint() const
 {
     return ROW_HEIGHT_HINT;
 }
