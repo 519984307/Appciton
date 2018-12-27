@@ -72,6 +72,9 @@ DEFINES += DISABLED_ALARM_LATCH
 #取消报警音关闭和报警暂停功能
 DEFINES += CLOSE_ALARM_AUDIO_OFF_ALARM_OFF
 
+#关闭报警维护菜单中无用的功能接口
+DEFINES += CLOSE_USELESS_ALARM_FUNCTION
+
 
 # Depending libraries
 LIBS += -ldl -lasound -lz

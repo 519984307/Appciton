@@ -67,18 +67,18 @@ void AlarmMaintainMenuContentPrivate::loadOptions()
     systemConfig.getNumValue("Alarms|MinimumAlarmVolume", index);
     combos[ITEM_CBO_MIN_ALARM_VOLUME]->setCurrentIndex(index);
 
-#ifndef CLOSE_ALARM_AUDIO_OFF_ALARM_OFF
+#ifndef CLOSE_USELESS_ALARM_FUNCTION
     systemConfig.getNumValue("Alarms|AlarmPauseTime", index);
     combos[ITEM_CBO_ALARAM_PAUSE_TIME]->setCurrentIndex(index);
-#endif
 
     systemConfig.getNumValue("Alarms|AlarmOffPrompting", index);
     combos[ITEM_CBO_ALARM_CLOSE_PROMPT_TIME]->setCurrentIndex(index);
+#endif
 
     systemConfig.getNumValue("Alarms|AlarmAudioOff", index);
     combos[ITEM_CBO_ALARM_AUDIO_OFF]->setCurrentIndex(index);
 
-#ifndef CLOSE_ALARM_AUDIO_OFF_ALARM_OFF
+#ifndef CLOSE_USELESS_ALARM_FUNCTION
     systemConfig.getNumValue("Alarms|EnableAlarmOff", index);
     combos[ITEM_CBO_ENABLE_ALARM_OFF]->setCurrentIndex(index);
 
@@ -92,7 +92,6 @@ void AlarmMaintainMenuContentPrivate::loadOptions()
     }
     systemConfig.getNumValue("Alarms|AlarmOffAtPowerOn", index);
     combos[ITEM_CBO_POWERON_ALARM_OFF]->setCurrentIndex(index);
-#endif
 
     systemConfig.getNumValue("Alarms|PauseMaxAlarm15Min", index);
     combos[ITEM_CBO_PAUSE_MAX_ALARM_15MIN]->setCurrentIndex(index);
@@ -102,6 +101,7 @@ void AlarmMaintainMenuContentPrivate::loadOptions()
 
     systemConfig.getNumValue("Alarms|ReminderToneIntervals", index);
     combos[ITEM_CBO_REMINDER_TONE_INTERVAL]->setCurrentIndex(index);
+#endif
 
     systemConfig.getNumValue("Alarms|AlarmLightOnAlarmReset", index);
     combos[ITEM_CBO_ALARM_LIGHT_RESET]->setCurrentIndex(index);
@@ -133,6 +133,7 @@ void AlarmMaintainMenuContentPrivate::HandlingComboIndexChanged(AlarmMaintainMen
         break;
     case ITEM_CBO_ENABLE_ALARM_OFF:
         systemConfig.setNumValue("Alarms|EnableAlarmOff", index);
+#ifndef CLOSE_USELESS_ALARM_FUNCTION
         if (0 == index)
         {
             combos[ITEM_CBO_POWERON_ALARM_OFF]->setDisabled(true);
@@ -141,6 +142,7 @@ void AlarmMaintainMenuContentPrivate::HandlingComboIndexChanged(AlarmMaintainMen
         {
             combos[ITEM_CBO_POWERON_ALARM_OFF]->setDisabled(false);
         }
+#endif
         break;
     case ITEM_CBO_POWERON_ALARM_OFF:
         systemConfig.setNumValue("Alarms|AlarmOffAtPowerOn", index);
@@ -182,15 +184,15 @@ void AlarmMaintainMenuContentPrivate::defaultIndexInit()
     defalutConfig.getNumValue("Alarms|MinimumAlarmVolume", index);
     defaultIndexMap[ITEM_CBO_MIN_ALARM_VOLUME] = index;
 
-#ifndef CLOSE_ALARM_AUDIO_OFF_ALARM_OFF
+#ifndef CLOSE_USELESS_ALARM_FUNCTION
     index = 0;
     defalutConfig.getNumValue("Alarms|AlarmPauseTime", index);
     defaultIndexMap[ITEM_CBO_ALARAM_PAUSE_TIME] = index;
-#endif
 
     index = 0;
     defalutConfig.getNumValue("Alarms|AlarmOffPrompting", index);
     defaultIndexMap[ITEM_CBO_ALARM_CLOSE_PROMPT_TIME] = index;
+#endif
 
     index = 0;
     defalutConfig.getNumValue("Alarms|EnableAlarmAudioOff", index);
@@ -204,7 +206,6 @@ void AlarmMaintainMenuContentPrivate::defaultIndexInit()
     index = 0;
     defalutConfig.getNumValue("Alarms|AlarmOffAtPowerOn", index);
     defaultIndexMap[ITEM_CBO_POWERON_ALARM_OFF] = index;
-#endif
 
     index = 0;
     defalutConfig.getNumValue("Alarms|PauseMaxAlarm15Min", index);
@@ -217,14 +218,17 @@ void AlarmMaintainMenuContentPrivate::defaultIndexInit()
     index = 0;
     defalutConfig.getNumValue("Alarms|ReminderToneIntervals", index);
     defaultIndexMap[ITEM_CBO_REMINDER_TONE_INTERVAL] = index;
+#endif
 
     index = 0;
     defalutConfig.getNumValue("Alarms|AlarmLightOnAlarmReset", index);
     defaultIndexMap[ITEM_CBO_ALARM_LIGHT_RESET] = index;
 
+#ifndef DISABLED_ALARM_LATCH
     index = 0;
     defalutConfig.getNumValue("Alarms|PhyParAlarmLatchlockOn", index);
     defaultIndexMap[ITEM_CBO_ALARM_LATCH_LOCK] = index;
+#endif
 }
 
 AlarmMaintainMenuContent::AlarmMaintainMenuContent()
@@ -270,7 +274,7 @@ void AlarmMaintainMenuContent::layoutExec()
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_MIN_ALARM_VOLUME, comboBox);
 
     // 报警暂停时间
-#ifndef CLOSE_ALARM_AUDIO_OFF_ALARM_OFF
+#ifndef CLOSE_USELESS_ALARM_FUNCTION
     label = new QLabel(trs("AlarmPauseTime"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
@@ -288,7 +292,6 @@ void AlarmMaintainMenuContent::layoutExec()
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARAM_PAUSE_TIME, comboBox);
-#endif
 
     // 报警关闭,报警音关闭提示时间
     label = new QLabel(trs("AlarmOffPromptMechanism"));
@@ -305,6 +308,7 @@ void AlarmMaintainMenuContent::layoutExec()
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_CLOSE_PROMPT_TIME, comboBox);
+#endif
 
     // enable alarm audio off
     label = new QLabel(trs("AlarmAudioOff"));
@@ -348,7 +352,6 @@ void AlarmMaintainMenuContent::layoutExec()
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_POWERON_ALARM_OFF, comboBox);
-#endif
 
     // pause max alarm 15min
     label = new QLabel(trs("IsPauseMaxAlarm15Min"));
@@ -393,6 +396,7 @@ void AlarmMaintainMenuContent::layoutExec()
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_REMINDER_TONE_INTERVAL, comboBox);
+#endif
 
     // alarmLight On Alarm Reset
     label = new QLabel(trs("AlarmLightOnAlarmReset"));
