@@ -29,8 +29,14 @@ MeasureSettingWindow *MeasureSettingWindow::getInstance()
         instance = new MeasureSettingWindow();
         // initialize the window content
         instance->addMenuContent(new ECGMenuContent);
-        instance->addMenuContent(new RESPMenuContent);
-        instance->addMenuContent(new TEMPMenuContent);
+        if (systemManager.isSupport(CONFIG_RESP))
+        {
+            instance->addMenuContent(new RESPMenuContent);
+        }
+        if (systemManager.isSupport(CONFIG_TEMP))
+        {
+            instance->addMenuContent(new TEMPMenuContent);
+        }
         if (systemManager.isSupport(CONFIG_AG))
         {
             instance->addMenuContent(new AGMenuContent);

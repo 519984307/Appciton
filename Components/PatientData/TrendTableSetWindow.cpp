@@ -47,6 +47,10 @@ void TrendTableSetWindow::showEvent(QShowEvent *ev)
 
     QString ratioPrefix = prefix + "ResolutionRatio";
     systemConfig.getNumValue(ratioPrefix, index);
+    if (index == RESOLUTION_RATIO_NIBP && systemManager.isSupport(CONFIG_NIBP) == false)
+    {
+        index = 0;
+    }
     d_ptr->resolutionRatioCbo->setCurrentIndex(index);
 
     QString groupPrefix = prefix + "TrendGroup";
@@ -87,6 +91,11 @@ TrendTableSetWindow::TrendTableSetWindow()
     d_ptr->resolutionRatioCbo = new ComboBox();
     for (int i = 0; i < RESOLUTION_RATIO_NR; i ++)
     {
+        if (i == RESOLUTION_RATIO_NIBP && systemManager.isSupport(CONFIG_NIBP) == false)
+        {
+            continue;
+        }
+
         d_ptr->resolutionRatioCbo->addItem(trs(TrendDataSymbol::convert((ResolutionRatio)i)));
     }
     connect(d_ptr->resolutionRatioCbo, SIGNAL(currentIndexChanged(int)), this, SLOT(timeIntervalReleased(int)));
