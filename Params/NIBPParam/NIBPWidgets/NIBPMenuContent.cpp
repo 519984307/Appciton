@@ -297,5 +297,7 @@ void NIBPMenuContent::onComboBoxIndexChanged(int index)
     case NIBPMenuContentPrivate::ITEM_CBO_AUTO_INTERVAL:
         nibpParam.setAutoInterval((NIBPAutoInterval)index);
         break;
+    default:
+        break;
     }
 }
