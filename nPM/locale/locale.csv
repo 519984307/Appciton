@@ -120,7 +120,7 @@ Back,后退,Back
 PatientID,病人ID,ID
 PatientType,病人类型,Type
 PatientSex,病人性别,Sex
-PatientPacemarker,起搏器,Pacemarker
+PatientPacemarker,起搏器,Pacemaker
 PatientBloodType,血型,Blood
 PatientWeight,体重,Weight
 PatientHeight,身高,Height

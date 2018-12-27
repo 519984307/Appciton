@@ -280,7 +280,7 @@ PatientInfoWindow::PatientInfoWindow()
     QLabel *label;
     int itemId;
     int itemPos = 0;
-    int itemWidth = this->width() / 3.5;
+    int itemWidth = 200;
 
     // patient type
     label = new QLabel(trs("PatientType"));
