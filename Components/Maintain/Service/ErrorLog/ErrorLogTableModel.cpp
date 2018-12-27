@@ -13,9 +13,12 @@
 #include "LanguageManager.h"
 #include "ErrorLogItem.h"
 #include "ErrorLog.h"
+#include <QIcon>
 
-#define COLUMN_COUNT        2
+#define COLUMN_COUNT        3
 #define MAX_ROW_COUNT       7
+#define DEFAULT_WIDTH       (800)
+#define DEFAULT_ICON_WIDTH          (80)
 
 #define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
 #define HEADER_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
@@ -30,6 +33,7 @@ public:
 public:
     QList<QString> timeList;
     QList<QString> infoList;
+    QList<bool> detailedInfoStatList;
     QList<QColor> colorList;
     QList<int> dataIndex;     // 当前选中事件项对应的数据所在索引
 
@@ -83,9 +87,28 @@ QVariant ErrorLogTableModel::data(const QModelIndex &index, int role) const
         }
         break;
     }
+    case Qt::DecorationRole:
+    {
+        if (column == 2)
+        {
+            if (d_ptr->detailedInfoStatList.at(row) == true)
+            {
+                return QIcon("/usr/local/nPM/icons/file.png");
+            }
+        }
+    }
+    break;
     case Qt::SizeHintRole:
     {
-        int w = 800 / COLUMN_COUNT;
+        int w;
+        if (column < 2)
+        {
+            w = (DEFAULT_WIDTH - DEFAULT_ICON_WIDTH) / (COLUMN_COUNT - 1);
+        }
+        else
+        {
+            w = DEFAULT_ICON_WIDTH;
+        }
         return QSize(w, HEADER_HEIGHT_HINT);
     }
     case Qt::TextAlignmentRole:
@@ -112,13 +135,22 @@ QVariant ErrorLogTableModel::headerData(int section, Qt::Orientation orientation
     {
     case Qt::SizeHintRole:
     {
-        if (orientation == Qt::Horizontal)
+        if (orientation == Qt::Vertical)
         {
-            int w = 800 / (COLUMN_COUNT);
-            return QSize(w, HEADER_HEIGHT_HINT);
+            break;
         }
-        break;
+        int w;
+        if (section < 2)
+        {
+            w = (DEFAULT_WIDTH - DEFAULT_ICON_WIDTH) / (COLUMN_COUNT - 1);
+        }
+        else
+        {
+            w = DEFAULT_ICON_WIDTH;
+        }
+        return QSize(w, HEADER_HEIGHT_HINT);
     }
+    break;
     case Qt::TextAlignmentRole:
         return QVariant(Qt::AlignCenter);
     case Qt::DisplayRole:
@@ -167,6 +199,7 @@ void ErrorLogTableModel::loadData()
     beginResetModel();
     d_ptr->timeList.clear();
     d_ptr->infoList.clear();
+    d_ptr->detailedInfoStatList.clear();
     d_ptr->colorList.clear();
     d_ptr->dataIndex.clear();
     int index = d_ptr->currentPage * MAX_ROW_COUNT;
@@ -188,6 +221,17 @@ void ErrorLogTableModel::loadData()
             {
                 d_ptr->colorList.append(QColor("#2C405A"));
             }
+
+            // 添加详细信息状态位
+            if (errLogItem->isLogEmpty())
+            {
+                d_ptr->detailedInfoStatList.append(false);
+            }
+            else
+            {
+                d_ptr->detailedInfoStatList.append(true);
+            }
+
             delete errLogItem;
             errLogItem = NULL;
         }
