@@ -17,6 +17,8 @@
 
 #define COLUMN_COUNT        3
 #define MAX_ROW_COUNT       7
+#define DEFAULT_WIDTH       (800)
+#define DEFAULT_ICON_WIDTH          (80)
 
 #define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
 #define HEADER_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
@@ -31,7 +33,7 @@ public:
 public:
     QList<QString> timeList;
     QList<QString> infoList;
-    QList<bool> detailedInfoSatList;
+    QList<bool> detailedInfoStatList;
     QList<QColor> colorList;
     QList<int> dataIndex;     // 当前选中事件项对应的数据所在索引
 
@@ -89,7 +91,7 @@ QVariant ErrorLogTableModel::data(const QModelIndex &index, int role) const
     {
         if (column == 2)
         {
-            if (d_ptr->detailedInfoSatList.at(row) == true)
+            if (d_ptr->detailedInfoStatList.at(row) == true)
             {
                 return QIcon("/usr/local/nPM/icons/file.png");
             }
@@ -101,11 +103,11 @@ QVariant ErrorLogTableModel::data(const QModelIndex &index, int role) const
         int w;
         if (column < 2)
         {
-            w = (800 - 80) / (COLUMN_COUNT - 1);
+            w = (DEFAULT_WIDTH - DEFAULT_ICON_WIDTH) / (COLUMN_COUNT - 1);
         }
         else
         {
-            w = 80;
+            w = DEFAULT_ICON_WIDTH;
         }
         return QSize(w, HEADER_HEIGHT_HINT);
     }
@@ -140,11 +142,11 @@ QVariant ErrorLogTableModel::headerData(int section, Qt::Orientation orientation
         int w;
         if (section < 2)
         {
-            w = (800 - 80) / (COLUMN_COUNT - 1);
+            w = (DEFAULT_WIDTH - DEFAULT_ICON_WIDTH) / (COLUMN_COUNT - 1);
         }
         else
         {
-            w = 80;
+            w = DEFAULT_ICON_WIDTH;
         }
         return QSize(w, HEADER_HEIGHT_HINT);
     }
@@ -197,7 +199,7 @@ void ErrorLogTableModel::loadData()
     beginResetModel();
     d_ptr->timeList.clear();
     d_ptr->infoList.clear();
-    d_ptr->detailedInfoSatList.clear();
+    d_ptr->detailedInfoStatList.clear();
     d_ptr->colorList.clear();
     d_ptr->dataIndex.clear();
     int index = d_ptr->currentPage * MAX_ROW_COUNT;
@@ -223,11 +225,11 @@ void ErrorLogTableModel::loadData()
             // 添加详细信息状态位
             if (errLogItem->isLogEmpty())
             {
-                d_ptr->detailedInfoSatList.append(false);
+                d_ptr->detailedInfoStatList.append(false);
             }
             else
             {
-                d_ptr->detailedInfoSatList.append(true);
+                d_ptr->detailedInfoStatList.append(true);
             }
 
             delete errLogItem;
