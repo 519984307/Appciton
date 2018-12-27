@@ -630,6 +630,12 @@ void NIBPParam::transferResults(int16_t sys, int16_t dia, int16_t map, unsigned 
 {
     if (NULL != _trendWidget)
     {
+        if (sys == 0 || dia == 0 || map == 0)
+        {
+            sys = InvData();
+            dia = InvData();
+            map = InvData();
+        }
         _trendWidget->setResults(sys, dia, map, time);
     }
 }
