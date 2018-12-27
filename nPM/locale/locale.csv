@@ -120,7 +120,7 @@ Back,后退,Back
 PatientID,病人ID,ID
 PatientType,病人类型,Type
 PatientSex,病人性别,Sex
-PatientPacemarker,起搏器,Paced
+PatientPacemarker,起搏器,Pacemarker
 PatientBloodType,血型,Blood
 PatientWeight,体重,Weight
 PatientHeight,身高,Height
@@ -1399,7 +1399,7 @@ Physiology,生理,Physiology
 UserMaintainPassword,用户维护密码,User Maintain Password
 UserMaintainSystem,用户维护系统,User Maintain
 Department,部门,Department
-BedNumber,床号,Bed Number
+BedNumber,床号,Bed No.
 ModifyPassword,密码,Password
 ChangeBedNumberRight,更改床号权限,Changing Bed Number
 Language,语言,Language
