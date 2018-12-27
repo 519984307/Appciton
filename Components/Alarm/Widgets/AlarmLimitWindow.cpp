@@ -66,6 +66,11 @@ void AlarmLimitWindowPrivate::loadoptions()
         SubParamID subId = static_cast<SubParamID>(i);
         ParamID pid = paramInfo.getParamID(subId);
 
+        if (!systemManager.isSupport(pid))
+        {
+            continue;
+        }
+
         if (pid == PARAM_IBP && systemManager.isSupport(PARAM_IBP))
         {
             IBPPressureName pressName1 = ibpParam.getEntitle(IBP_INPUT_1);
