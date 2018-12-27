@@ -758,6 +758,7 @@ void EventWindowPrivate::loadEventData()
     AlarmLimitIFace *alarmLimit;
     QList<QString> timeList;
     QList<QString> eventList;
+    printList.clear();
     for (int i = eventNum - 1; i >= 0; i --)
     {
         priority = ALARM_PRIO_PROMPT;

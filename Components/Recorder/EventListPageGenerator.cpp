@@ -18,13 +18,15 @@ class EventListPageGeneratorPrivate
 {
 public:
     EventListPageGeneratorPrivate()
-        : curPageType(RecordPageGenerator::TitlePage)
+        : curPageType(RecordPageGenerator::TitlePage),
+          isWait(false)
     {}
 
     RecordPage *drawEventListPage();
 
     RecordPageGenerator::PageType curPageType;
     QStringList eventList;
+    bool isWait;                // 线程加锁
 };
 
 EventListPageGenerator::EventListPageGenerator(QStringList &eventList, QObject *parent)
@@ -45,8 +47,9 @@ RecordPage *EventListPageGenerator::createPage()
         d_ptr->curPageType = EventListPage;
         return createTitlePage(QString(trs("EventListPrint")), patientManager.getPatientInfo());
     case EventListPage:
-        if (!d_ptr->eventList.isEmpty())
+        if (!d_ptr->eventList.isEmpty() && !d_ptr->isWait)
         {
+            d_ptr->isWait = true;
             return d_ptr->drawEventListPage();
         }
     case EndPage:
@@ -90,5 +93,6 @@ RecordPage *EventListPageGeneratorPrivate::drawEventListPage()
         textRect.translate(0, fontH);
         num++;
     }
+    isWait = false;
     return page;
 }
