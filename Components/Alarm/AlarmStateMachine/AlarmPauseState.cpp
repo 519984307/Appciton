@@ -103,19 +103,7 @@ void AlarmPauseState::handAlarmEvent(AlarmStateEvent event, unsigned char */*dat
 #if 1
     case ALARM_STATE_EVENT_RESET_BTN_PRESSED:
     {
-        // 有栓锁的报警和新的技术报警
-        alarmIndicator.techAlarmPauseStatusHandle();
-        if (alarmIndicator.hasLatchPhyAlarm())
-        {
-            alarmIndicator.delLatchPhyAlarm();
-        }
-
-        // 有处于未暂停的报警
-        if (alarmIndicator.hasNonPausePhyAlarm())
-        {
-            alarmIndicator.phyAlarmPauseStatusHandle();
-        }
-
+        // do noting at pause state
         break;
     }
 

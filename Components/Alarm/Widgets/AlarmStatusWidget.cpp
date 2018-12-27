@@ -18,6 +18,7 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include "TopBarWidget.h"
+#include "IConfig.h"
 
 class AlarmStatusWidgetPrivate
 {
@@ -45,12 +46,16 @@ void AlarmStatusWidget::paintEvent(QPaintEvent *e)
 {
     IWidget::paintEvent(e);
     QPainter painter(this);
+    int alarmAudioOff = false;
+    systemConfig.getNumValue("Alarms|AlarmAudioOff", alarmAudioOff);
 
     // 显示正常报警。
     if (d_ptr->alarmStatus == ALARM_STATUS_NORMAL)
     {
-        // painter.fillRect(rect(), topBarWidget.getTopBarBlackGroundColor());
-        return;
+        if (!alarmAudioOff)
+        {
+            return;
+        }
     }
 
     // 显示报警暂停/停止信息。
@@ -64,6 +69,13 @@ void AlarmStatusWidget::paintEvent(QPaintEvent *e)
 
     int offx = (rect().width() - (rect().height() - 10)) / 2;
     QRect r = rect().adjusted(offx, 5, -offx, -5);
+    if (d_ptr->alarmStatus == ALARM_STATUS_NORMAL)
+    {
+        if (alarmAudioOff)
+        {
+            painter.drawPixmap(r, d_ptr->audioOffPixmap, d_ptr->alarmPausePixmap.rect());
+        }
+    }
     if (d_ptr->alarmStatus == ALARM_STATUS_AUDIO_OFF)
     {
         painter.drawPixmap(r, d_ptr->audioOffPixmap, d_ptr->audioOffPixmap.rect());

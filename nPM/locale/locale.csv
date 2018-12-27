@@ -1311,7 +1311,7 @@ MinimumALarmVolume,最小报警音量,Minimum Alarm Volume
 AlarmPauseTime,报警暂停时间,Alarm PauseTime
 RESPWaveGain,增益,Gain
 AlarmOffPromptMechanism,报警关闭提示机制,Alarm Off Prompt Mechanism
-EnableAlarmAudioOff,报警音关闭,Enable Alarm Audio Off
+AlarmAudioOff,报警音关闭,Alarm Audio Off
 EnableAlarmOff,报警关闭,Enable Alarm Off
 AlarmOffAtPowerOn,接通电源报警,Alarm Off At Power On
 No,否,No
@@ -1631,3 +1631,4 @@ SPO2CableOff,血氧电缆断开,SPO2 Cable Off
 SPO2FingerOff,未检测到手指,SPO2 Finger Off
 SPO2LEDFault,血氧LED错误,SPO2 LED Fault
 SPO2LowPerfusion,血氧低弱灌注,SPO2 Low Perfusion
+NIBPSameSide,NIBP同侧,NIBP Simul
