@@ -108,6 +108,10 @@ void AlarmMaintainMenuContentPrivate::loadOptions()
 
     systemConfig.getNumValue("Alarms|PhyParAlarmLatchlockOn", index);
     combos[ITEM_CBO_ALARM_LATCH_LOCK]->setCurrentIndex(index);
+
+#ifdef DISABLED_ALARM_LATCH
+    combos[ITEM_CBO_ALARM_LATCH_LOCK]->setEnabled(false);
+#endif
 }
 
 void AlarmMaintainMenuContentPrivate::HandlingComboIndexChanged(AlarmMaintainMenuContentPrivate::MenuItem item, int index)

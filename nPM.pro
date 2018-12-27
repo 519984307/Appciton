@@ -66,8 +66,12 @@ DEFINES += HIDE_IBP_CALIBRATE_ZERO
 #隐藏ECG心率失常功能
 DEFINES += HIDE_ECG_ARRHYTHMIA_FUNCTION
 
+#去使能报警栓锁功能
+DEFINES += DISABLED_ALARM_LATCH
+
 #取消报警音关闭和报警暂停功能
 DEFINES += CLOSE_ALARM_AUDIO_OFF_ALARM_OFF
+
 
 # Depending libraries
 LIBS += -ldl -lasound -lz
