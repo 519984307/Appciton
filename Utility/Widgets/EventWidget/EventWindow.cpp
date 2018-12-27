@@ -608,6 +608,7 @@ EventWindow::EventWindow()
     d_ptr->eventTable->setShowGrid(false);
     d_ptr->model = new EventReviewModel();
     d_ptr->eventTable->setModel(d_ptr->model);
+    d_ptr->eventTable->setFixedHeight((PAGE_ROW_COUNT + 1) * d_ptr->model->getHeightHint());
     connect(d_ptr->eventTable, SIGNAL(clicked(QModelIndex)), this, SLOT(waveInfoReleased(QModelIndex)));
     connect(d_ptr->eventTable, SIGNAL(rowClicked(int)), this, SLOT(waveInfoReleased(int)));
 
@@ -1151,6 +1152,11 @@ void EventWindowPrivate::refreshPageInfo()
     int curPage = 1;
     int totalPage = 1;
     eventTable->getPageInfo(curPage, totalPage);
+    if (totalPage == 0 && curPage == 0)
+    {
+        curPage = 1;
+        totalPage = 1;
+    }
     QString title = QString("%1( %2/%3 )").arg(trs("EventReview"))
                                           .arg(QString::number(curPage))
                                           .arg(totalPage);

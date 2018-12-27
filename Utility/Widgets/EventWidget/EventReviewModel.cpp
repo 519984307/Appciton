@@ -168,6 +168,11 @@ int EventReviewModel::totalPage()
 {
     return d_ptr->calTotalPage();
 }
+
+int EventReviewModel::getHeightHint() const
+{
+    return ROW_HEIGHT_HINT;
+}
 int EventReviewModelPrivate::calTotalPage()
 {
     int page = timeList.count() / eachPageRowCount;
