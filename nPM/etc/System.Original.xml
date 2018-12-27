@@ -53,7 +53,7 @@
         <MedAlarmIntervals>3</MedAlarmIntervals>
         <LowAlarmIntervals>16</LowAlarmIntervals>
         <ReminderTone>1</ReminderTone>
-        <PhyParAlarmLatchlockOn>1</PhyParAlarmLatchlockOn>
+        <PhyParAlarmLatchlockOn>0</PhyParAlarmLatchlockOn>
 	<AlarmOffPrompting>1</AlarmOffPrompting>
 	<EnableAlarmAudioOff>1</EnableAlarmAudioOff>
 	<EnableAlarmOff>1</EnableAlarmOff>
