@@ -14,6 +14,7 @@
 #include "ComboBox.h"
 #include <QGridLayout>
 #include "IConfig.h"
+#include "SystemManager.h"
 
 class SupervisorPrintMenuContentPrivate
 {
@@ -42,8 +43,11 @@ void SupervisorPrintMenuContentPrivate::loadOptions()
     currentConfig.getNumValue("Print|CoderMarker", index);
     combos[ITEM_CBO_PRINT_CODEMARKER]->setCurrentIndex(index);
 
-    currentConfig.getNumValue("Print|NIBPReading", index);
-    combos[ITEM_CBO_PRINT_NIBP]->setCurrentIndex(index);
+    if (systemManager.isSupport(CONFIG_NIBP))
+    {
+        currentConfig.getNumValue("Print|NIBPReading", index);
+        combos[ITEM_CBO_PRINT_NIBP]->setCurrentIndex(index);
+    }
 
     currentConfig.getNumValue("Print|WaveFreeze", index);
     combos[ITEM_CBO_PRINT_WAVE_FREEZE]->setCurrentIndex(index);
@@ -103,20 +107,23 @@ void SupervisorPrintMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_CODEMARKER, comboBox);
 
-    // NIBP Reading
-    label = new QLabel(trs("NIBPReading"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs("Disable")
-                       << trs("Enable")
-                      );
-    itemID = static_cast<int>(SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_NIBP);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_NIBP, comboBox);
+    if (systemManager.isSupport(CONFIG_NIBP))
+    {
+        // NIBP Reading
+        label = new QLabel(trs("NIBPReading"));
+        layout->addWidget(label, d_ptr->combos.count(), 0);
+        comboBox = new ComboBox();
+        comboBox->addItems(QStringList()
+                           << trs("Disable")
+                           << trs("Enable")
+                          );
+        itemID = static_cast<int>(SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_NIBP);
+        comboBox->setProperty("Item",
+                              qVariantFromValue(itemID));
+        connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+        layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+        d_ptr->combos.insert(SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_NIBP, comboBox);
+    }
 
     // Wave Freeze
     label = new QLabel(trs("WaveFreeze"));
