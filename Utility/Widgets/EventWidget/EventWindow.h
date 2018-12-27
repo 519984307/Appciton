@@ -54,6 +54,7 @@ private slots:
     void waveInfoReleased(int index);
     void eventTypeSelect(int);
     void eventLevelSelect(int);
+    void eventListPrintReleased(void);
     void upPageReleased(void);
     void downPageReleased(void);
     void eventListReleased(void);

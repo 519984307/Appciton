@@ -353,6 +353,7 @@ SOURCES +=                                                                      
     Components/Recorder/TrendGraphPageGenerator.cpp                             \
     Components/Recorder/TriggerPageGenerator.cpp                                \
     Components/Recorder/RecordPageProcessor.cpp                                 \
+    Components/Recorder/EventListPageGenerator.cpp                              \
     Components/KeyHandle/SoftKeyManager.cpp                                     \
     Components/KeyHandle/SoftKeyWidget.cpp                                      \
     Components/KeyHandle/SoftkeyActionBase.cpp                                  \
@@ -856,6 +857,7 @@ HEADERS +=                                                                      
     Components/Recorder/TrendGraphPageGenerator.h                               \
     Components/Recorder/TriggerPageGenerator.h                                  \
     Components/Recorder/RecordPageProcessor.h                                   \
+    Components/Recorder/EventListPageGenerator.h                                \
     Components/KeyHandle/SoftKeyManager.h                                       \
     Components/KeyHandle/SoftKeyWidget.h                                        \
     Components/KeyHandle/SoftkeyActionBase.h                                    \
