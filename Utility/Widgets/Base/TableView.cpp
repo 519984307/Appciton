@@ -198,7 +198,7 @@ void TableView::setModel(QAbstractItemModel *model)
 
 void TableView::getPageInfo(int &curPage, int &totalPage)
 {
-    int eachPageRowCount = rowAt(viewport()->height()) - rowAt(0) + 1;
+    int eachPageRowCount = rowAt(viewport()->height() - 1) - rowAt(1) + 1;
     if (model()->rowCount() % eachPageRowCount)
     {
         totalPage = model()->rowCount() / eachPageRowCount + 1;

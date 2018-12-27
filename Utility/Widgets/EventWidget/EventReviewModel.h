@@ -52,6 +52,12 @@ public:
      */
     int totalPage();
 
+    /**
+     * @brief getHintHeight 获取每一行高度
+     * @return
+     */
+    int getHintHeight() const;
+
 private:
     QScopedPointer<EventReviewModelPrivate> d_ptr;
 };
