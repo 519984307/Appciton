@@ -1111,6 +1111,11 @@ void EventWindowPrivate::refreshPageInfo()
     int curPage = 1;
     int totalPage = 1;
     eventTable->getPageInfo(curPage, totalPage);
+    if (totalPage == 0 && curPage == 0)
+    {
+        curPage = 1;
+        totalPage = 1;
+    }
     QString title = QString("%1( %2/%3 )").arg(trs("EventReview"))
                                           .arg(QString::number(curPage))
                                           .arg(totalPage);
