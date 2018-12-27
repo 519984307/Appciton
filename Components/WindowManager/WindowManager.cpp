@@ -45,12 +45,14 @@ public:
         :q_ptr(q_ptr),
           timer(NULL),
           demoWidget(NULL)
+        , curWindow(NULL)
     {}
 
     WindowManager * const q_ptr;
     QList<QPointer<Window> > windowStacks;
     QTimer *timer;              // timer to auto close the windows
     QWidget *demoWidget;
+    Window *curWindow;
 
     /**
      * @brief menuProperPos 菜单显示合适的位置
@@ -181,6 +183,8 @@ void WindowManager::showWindow(Window *w, ShowBehavior behaviors)
         return;
     }
 
+    d_ptr->curWindow = w;
+
     Window *top = topWindow();
 
     if (top == w)
@@ -229,11 +233,6 @@ void WindowManager::showWindow(Window *w, ShowBehavior behaviors)
         }
     }
 
-    if (!(behaviors & ShowBehaviorNoAutoClose))
-    {
-        d_ptr->timer->start();
-    }
-
     QPointer<Window> newP = w;
     // remove the window in the stack if it's already exist.
     QList<QPointer<Window> >::Iterator iter = d_ptr->windowStacks.begin();
@@ -245,6 +244,15 @@ void WindowManager::showWindow(Window *w, ShowBehavior behaviors)
             break;
         }
     }
+
+    // 添加窗口定时器是否启动属性
+    bool timerStart = true;
+    if (behaviors & ShowBehaviorNoAutoClose)
+    {
+        timerStart = false;
+    }
+    newP->setProperty("TimerStart", qVariantFromValue(timerStart));
+
     d_ptr->windowStacks.append(newP);
     connect(w, SIGNAL(windowHide(Window *)), this, SLOT(onWindowHide(Window *)), Qt::DirectConnection);
 
@@ -319,6 +327,28 @@ bool WindowManager::eventFilter(QObject *obj, QEvent *ev)
         return false;
     }
 
+    if (ev->type() == QEvent::Show)
+    {
+        bool timerStart = true;
+        QList<QPointer<Window> >::Iterator iter = d_ptr->windowStacks.begin();
+        for (; iter != d_ptr->windowStacks.end(); ++iter)
+        {
+            if (iter->data() == d_ptr->curWindow)
+            {
+                timerStart = d_ptr->curWindow->property("TimerStart").toBool();
+                break;
+            }
+        }
+        if (timerStart == true)
+        {
+            d_ptr->timer->start();
+        }
+        else
+        {
+            d_ptr->timer->stop();
+        }
+    }
+
     if ((ev->type() == QEvent::KeyPress) || (ev->type() == QEvent::MouseButtonPress))
     {
         // reactive the timer
@@ -381,6 +411,7 @@ void WindowManager::onWindowHide(Window *w)
         {
             top->showMask(false);
             top->show();
+            d_ptr->curWindow = top;
         }
         else
         {
