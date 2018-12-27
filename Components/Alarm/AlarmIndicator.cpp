@@ -299,9 +299,18 @@ void AlarmIndicator::_displayTechSet(AlarmInfoNode &node)
 
 bool AlarmIndicator::_canPlayAudio(AlarmStatus status, bool isTechAlarm)
 {
+    int alarmOffStatus = 0;
+    systemConfig.getNumValue("Alarms|AlarmAudioOff", alarmOffStatus);
     if (status == ALARM_STATUS_NORMAL)
     {
-        return true;
+        if (alarmOffStatus)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 
     if (isTechAlarm && status != ALARM_STATUS_OFF)
@@ -977,4 +986,9 @@ bool AlarmIndicator::techAlarmResetStatusHandle()
         }
     }
     return ret;
+}
+
+void AlarmIndicator::updateAlarmStateWidget()
+{
+    _alarmStatusWidget->update();
 }

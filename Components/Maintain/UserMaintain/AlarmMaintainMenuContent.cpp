@@ -125,6 +125,7 @@ void AlarmMaintainMenuContentPrivate::HandlingComboIndexChanged(AlarmMaintainMen
         break;
     case ITEM_CBO_ALARM_AUDIO_OFF:
         systemConfig.setNumValue("Alarms|AlarmAudioOff", index);
+        alarmIndicator.updateAlarmStateWidget();
         break;
     case ITEM_CBO_ENABLE_ALARM_OFF:
         systemConfig.setNumValue("Alarms|EnableAlarmOff", index);

@@ -112,6 +112,11 @@ public:
      */
     bool techAlarmResetStatusHandle();
 
+    /**
+     * @brief updateAlarmStateWidget 刷新报警状态图标
+     */
+    void updateAlarmStateWidget();
+
 private:
     AlarmIndicator();
 

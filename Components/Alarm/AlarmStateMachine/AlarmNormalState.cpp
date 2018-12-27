@@ -33,6 +33,7 @@ AlarmNormalState::~AlarmNormalState()
 void AlarmNormalState::enter()
 {
     alarmIndicator.setAlarmStatus(ALARM_STATUS_NORMAL);
+    alarmIndicator.updateAlarmStateWidget();
     lightManager.enableAlarmAudioMute(false);
 }
 
