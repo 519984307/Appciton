@@ -307,7 +307,7 @@ void MasimoSetProvider::handlePacket(unsigned char *data, int /*len*/)
         temp = ((temp % 10) < 5) ? (temp / 10) : (temp / 10 + 1);
         if (_isLowPerfusionFlag)
         {
-            spo2Param.setSPO2(UnknownData());
+            spo2Param.setSPO2(InvData());
         }
         else
         {
@@ -319,7 +319,7 @@ void MasimoSetProvider::handlePacket(unsigned char *data, int /*len*/)
         temp = data[2];
         if (_isLowPerfusionFlag)
         {
-            spo2Param.setPR(UnknownData());
+            spo2Param.setPR(InvData());
         }
         else
         {
@@ -386,8 +386,8 @@ void MasimoSetProvider::handlePacket(unsigned char *data, int /*len*/)
 
         if (_isLowPerfusionFlag)
         {
-            spo2Param.setSPO2(UnknownData());
-            spo2Param.setPR(UnknownData());
+            spo2Param.setSPO2(InvData());
+            spo2Param.setPR(InvData());
         }
     }
     break;
