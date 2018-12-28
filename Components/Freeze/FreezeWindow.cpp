@@ -24,6 +24,9 @@
 #include "LayoutManager.h"
 #include "WaveWidget.h"
 #include "TimeManager.h"
+#include <QDebug>
+
+#define STOP_PRINT_TIMEOUT          (100)
 
 #define RECORD_FREEZE_WAVE_NUM 3
 class FreezeWindowPrivate
@@ -34,11 +37,21 @@ public:
     MoveButton *waveMoveBtn;
     Button *printBtn;
     QList<int> waveIDs;
+    int printTimerId;
+    int waitTimerId;
+    bool isWait;
+    int timeoutNum;
+    RecordPageGenerator *generator;
 };
 
 FreezeWindowPrivate::FreezeWindowPrivate()
     : waveMoveBtn(NULL),
-      printBtn(NULL)
+      printBtn(NULL),
+      printTimerId(-1),
+      waitTimerId(-1),
+      isWait(false),
+      timeoutNum(0),
+      generator(NULL)
 {
     for (int i = 0; i < RECORD_FREEZE_WAVE_NUM; i++)
     {
@@ -89,7 +102,7 @@ FreezeWindow::FreezeWindow()
     layout->addLayout(hl, 0, 0);
 
     hl = new QHBoxLayout;
-    d_ptr->waveMoveBtn = new MoveButton(trs("WaveformMove"));
+    d_ptr->waveMoveBtn = new MoveButton(trs("Scroll"));
     d_ptr->waveMoveBtn->setButtonStyle(Button::ButtonTextOnly);
     connect(d_ptr->waveMoveBtn, SIGNAL(leftMove()), this, SLOT(leftMoveWaveformSlot()));
     connect(d_ptr->waveMoveBtn, SIGNAL(rightMove()), this, SLOT(rightMoveWaveformSlot()));
@@ -130,6 +143,36 @@ void FreezeWindow::hideEvent(QHideEvent *ev)
 {
     Window::hideEvent(ev);
     freezeManager.stopFreeze();
+}
+
+void FreezeWindow::timerEvent(QTimerEvent *ev)
+{
+    if (d_ptr->printTimerId == ev->timerId())
+    {
+        if (!recorderManager.isPrinting() || d_ptr->timeoutNum == 10) // 1000ms超时处理
+        {
+            if (!recorderManager.isPrinting())
+            {
+                recorderManager.addPageGenerator(d_ptr->generator);
+            }
+            else
+            {
+                d_ptr->generator->deleteLater();
+                d_ptr->generator = NULL;
+            }
+            killTimer(d_ptr->printTimerId);
+            d_ptr->printTimerId = -1;
+            d_ptr->timeoutNum = 0;
+        }
+        d_ptr->timeoutNum++;
+    }
+    else if (d_ptr->waitTimerId == ev->timerId())
+    {
+        d_ptr->printTimerId = startTimer(STOP_PRINT_TIMEOUT);
+        killTimer(d_ptr->waitTimerId);
+        d_ptr->waitTimerId = -1;
+        d_ptr->isWait = false;
+    }
 }
 
 void FreezeWindow::onSelectWaveChanged(const QString &waveName)
@@ -226,7 +269,28 @@ void FreezeWindow::onBtnClick()
         RecordPageGenerator *generator = new FreezePageGenerator(freezeManager.getTrendData(),
                 waveinfos);
 
-        recorderManager.addPageGenerator(generator);
+        if (recorderManager.isPrinting() && !d_ptr->isWait)
+        {
+            if (generator->getPriority() <= recorderManager.getCurPrintPriority())
+            {
+                generator->deleteLater();
+            }
+            else
+            {
+                recorderManager.stopPrint();
+                d_ptr->generator = generator;
+                d_ptr->waitTimerId = startTimer(2000); // 等待2000ms
+                d_ptr->isWait = true;
+            }
+        }
+        else if (!recorderManager.getPrintStatus())
+        {
+            recorderManager.addPageGenerator(generator);
+        }
+        else
+        {
+            generator->deleteLater();
+        }
     }
 }
 

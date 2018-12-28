@@ -45,6 +45,10 @@ private slots:
      */
     void onAlarmBtnReleased(void);
 
+    /**
+     * @brief onSpinBoxReleased
+     */
+    void onSpinBoxReleased(int value, int scale);
 private:
     NIBPMenuContentPrivate * const d_ptr;
 };

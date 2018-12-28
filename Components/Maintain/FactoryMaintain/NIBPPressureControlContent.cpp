@@ -33,7 +33,7 @@ class NIBPPressureControlContentPrivate
 public:
     NIBPPressureControlContentPrivate();
     SpinBox *chargePressure;          // 设定充气压力值
-    ComboBox *patientType;           // 病人类型
+    ComboBox *overpressureCbo;          // 过压保护开关
     Button *inflateBtn;             // 充气、放气控制按钮
     QLabel *value;
     int inflatePressure;               //  充气压力值
@@ -54,7 +54,7 @@ public:
 
 NIBPPressureControlContentPrivate::NIBPPressureControlContentPrivate()
     : chargePressure(NULL),
-      patientType(NULL),
+      overpressureCbo(NULL),
       inflateBtn(NULL),
       value(NULL),
       inflatePressure(0),
@@ -85,34 +85,43 @@ void NIBPPressureControlContent::layoutExec()
     connect(button, SIGNAL(released()), this, SLOT(enterPressureContrlReleased()));
     d_ptr->modeBtn = button;
 
-    label = new QLabel(trs("InflationPressure"));
+    label = new QLabel(trs("OverpressureProtect"));
     layout->addWidget(label, 1, 0, Qt::AlignCenter);
+    d_ptr->overpressureCbo = new ComboBox();
+    d_ptr->overpressureCbo->setEnabled(false);
+    d_ptr->overpressureCbo->addItem(trs("ON"));
+    d_ptr->overpressureCbo->addItem(trs("Off"));
+    layout->addWidget(d_ptr->overpressureCbo, 1, 2);
+    connect(d_ptr->overpressureCbo, SIGNAL(currentIndexChanged(int)), this, SLOT(onOverpressureReleased(int)));
+
+    label = new QLabel(trs("InflationPressure"));
+    layout->addWidget(label, 2, 0, Qt::AlignCenter);
 
     d_ptr->chargePressure = new SpinBox();
     d_ptr->chargePressure->setRange(50, 300);
     d_ptr->chargePressure->setValue(250);
     d_ptr->chargePressure->setStep(5);
-    layout->addWidget(d_ptr->chargePressure, 1, 1);
+    layout->addWidget(d_ptr->chargePressure, 2, 1);
 
     button  = new Button(trs("ServiceInflate"));
     button->setButtonStyle(Button::ButtonTextOnly);
     button->setEnabled(false);
-    layout->addWidget(button, 1, 2);
+    layout->addWidget(button, 2, 2);
     connect(button, SIGNAL(released()), this, SLOT(inflateBtnReleased()));
     d_ptr->inflateBtn = button;
 
     label = new QLabel(trs("ServicePressure"));
-    layout->addWidget(label, 2, 0, Qt::AlignCenter);
+    layout->addWidget(label, 3, 0, Qt::AlignCenter);
 
     label = new QLabel(InvStr());
-    layout->addWidget(label, 2, 1, Qt::AlignCenter);
+    layout->addWidget(label, 3, 1, Qt::AlignCenter);
     d_ptr->value = label;
 
     label = new QLabel();
     label->setText(Unit::getSymbol(nibpParam.getUnit()));
-    layout->addWidget(label, 2, 2, Qt::AlignCenter);
+    layout->addWidget(label, 3, 2, Qt::AlignCenter);
 
-    layout->setRowStretch(3, 1);
+    layout->setRowStretch(4, 1);
 }
 
 void NIBPPressureControlContent::timerEvent(QTimerEvent *ev)
@@ -122,6 +131,7 @@ void NIBPPressureControlContent::timerEvent(QTimerEvent *ev)
         bool reply = nibpParam.geReply();
         if (reply || d_ptr->timeoutNum == INFLATE_WAIT_NUMBER)
         {
+            d_ptr->modeBtn->setEnabled(true);
             if (reply && nibpParam.getResult())
             {
                 if (d_ptr->isPressureControlMode)
@@ -129,6 +139,7 @@ void NIBPPressureControlContent::timerEvent(QTimerEvent *ev)
                     d_ptr->isPressureControlMode = false;
                     d_ptr->modeBtn->setText(trs("EnterPressureContrlMode"));
                     d_ptr->inflateBtn->setEnabled(false);
+                    d_ptr->overpressureCbo->setEnabled(false);
                     killTimer(d_ptr->pressureTimerID);
                     d_ptr->pressureTimerID = -1;
                 }
@@ -137,6 +148,7 @@ void NIBPPressureControlContent::timerEvent(QTimerEvent *ev)
                     d_ptr->isPressureControlMode = true;
                     d_ptr->modeBtn->setText(trs("QuitPressureContrlMode"));
                     d_ptr->inflateBtn->setEnabled(true);
+                    d_ptr->overpressureCbo->setEnabled(true);
                     d_ptr->pressureTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
                 }
             }
@@ -199,6 +211,13 @@ void NIBPPressureControlContent::timerEvent(QTimerEvent *ev)
     }
 }
 
+void NIBPPressureControlContent::showEvent(QShowEvent *e)
+{
+    Q_UNUSED(e)
+    // 默认设置为过压保护开启
+    d_ptr->overpressureCbo->setCurrentIndex(0);
+}
+
 /**************************************************************************************************
  * 充气、放气控制按钮。
  *************************************************************************************************/
@@ -221,6 +240,7 @@ void NIBPPressureControlContent::inflateBtnReleased()
 void NIBPPressureControlContent::enterPressureContrlReleased()
 {
     d_ptr->inModeTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
+    d_ptr->modeBtn->setEnabled(false);
     if (d_ptr->isPressureControlMode)
     {
         nibpParam.provider().servicePressurecontrol(false);
@@ -230,6 +250,11 @@ void NIBPPressureControlContent::enterPressureContrlReleased()
     {
         nibpParam.switchState(NIBP_SERVICE_PRESSURECONTROL_STATE);
     }
+}
+
+void NIBPPressureControlContent::onOverpressureReleased(int index)
+{
+    nibpParam.provider().servicePressureProtect(!index);
 }
 
 NIBPPressureControlContent *NIBPPressureControlContent::getInstance()
@@ -258,5 +283,14 @@ NIBPPressureControlContent::NIBPPressureControlContent()
 NIBPPressureControlContent::~NIBPPressureControlContent()
 {
     delete d_ptr;
+}
+
+void NIBPPressureControlContent::init()
+{
+    d_ptr->isPressureControlMode = false;
+    d_ptr->modeBtn->setEnabled(true);
+    d_ptr->modeBtn->setText(trs("EnterPressureContrlMode"));
+    d_ptr->overpressureCbo->setEnabled(false);
+    d_ptr->inflateBtn->setEnabled(false);
 }
 

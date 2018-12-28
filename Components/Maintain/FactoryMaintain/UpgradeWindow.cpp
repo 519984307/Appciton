@@ -119,6 +119,8 @@ UpgradeWindow::UpgradeWindow()
             this, SLOT(upgradeProgressChanged(int)));
     connect(UpgradeManager::getInstance(), SIGNAL(upgradeResult(UpgradeManager::UpgradeResult)),
             this, SLOT(onUpgradeFinished(UpgradeManager::UpgradeResult)));
+    connect(UpgradeManager::getInstance(), SIGNAL(reboot()),
+            this, SLOT(accept()));
 
     resize(600, 480);
 
@@ -136,8 +138,10 @@ void UpgradeWindow::exec()
     windowManager.setVisible(false);
     QRect r = windowManager.geometry();
     this->move(r.center() - this->rect().center());
-    QDialog::exec();
-    windowManager.setVisible(true);
+    if (QDialog::Rejected == QDialog::exec())
+    {
+        windowManager.setVisible(true);
+    }
 }
 
 void UpgradeWindow::timerEvent(QTimerEvent *ev)

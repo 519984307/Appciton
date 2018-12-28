@@ -13,6 +13,7 @@
 #include "ThemeManager.h"
 #include <QDateTime>
 #include "TimeDate.h"
+#include "WindowManager.h"
 
 #define COLUMN_COUNT        2
 #define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
@@ -84,7 +85,7 @@ QVariant HistoryDataSelModel::data(const QModelIndex &index, int role) const
     }
     case Qt::SizeHintRole:
     {
-        int w = 800 / COLUMN_COUNT;
+        int w = windowManager.getPopWindowWidth() / COLUMN_COUNT;
         return QSize(w, ROW_HEIGHT_HINT);
     }
     case Qt::TextAlignmentRole:
@@ -136,6 +137,7 @@ void HistoryDataSelModel::updateData()
     QStringList list;
     dataStorageDirManager.getRescueEvent(list);
     d_ptr->strList.append(list);
+    d_ptr->strList.removeFirst();   // 不提供当前文件夹的数据回顾
 
     int count = d_ptr->strList.count();
     d_ptr->row = count / 2;

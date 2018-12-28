@@ -28,11 +28,16 @@ public:
     void showError(QString str);
 
 protected:
+    /* reimplment */
     void hideEvent(QHideEvent *e);
+
+    /* reimplment */
     virtual void readyShow();
 
+    /* reimplment */
     virtual void layoutExec();
 
+    /* reimplment */
     void timerEvent(QTimerEvent *ev);
 
 private slots:

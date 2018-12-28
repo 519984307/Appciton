@@ -78,55 +78,6 @@ void ConfigEditNIBPMenuContentPrivate::loadOptions()
 
     int unit = UNIT_MMHG;
     config->getNumValue("Local|NIBPUnit", unit);
-    combos[ITEM_CBO_INIT_CUFF]->blockSignals(true);
-    combos[ITEM_CBO_INIT_CUFF]->clear();
-    PatientType type = patientManager.getType();
-    if (type == PATIENT_TYPE_ADULT)
-    {
-        for (unsigned i = 0; i < NIBP_ADULT_INITIAL_CUFF_NR; ++i)
-        {
-            QString str = NIBPSymbol::convert((NIBPAdultInitialCuff)i);
-            if (unit == UNIT_KPA)
-            {
-                str = Unit::convert((UnitType)unit, UNIT_MMHG, str.toInt());
-            }
-            str = str + " " + Unit::getSymbol((UnitType)unit);
-            combos[ITEM_CBO_INIT_CUFF]->addItem(str);
-        }
-        config->getNumValue("NIBP|AdultInitialCuffInflation", index);
-        combos[ITEM_CBO_INIT_CUFF]->setCurrentIndex(index);
-    }
-    else if (type == PATIENT_TYPE_PED)
-    {
-        for (unsigned i = 0; i < NIBP_PREDIATRIC_INITIAL_CUFF_NR; ++i)
-        {
-            QString str = NIBPSymbol::convert((NIBPPrediatrictInitialCuff)i);
-            if (unit == UNIT_KPA)
-            {
-                str = Unit::convert((UnitType)unit, UNIT_MMHG, str.toInt());
-            }
-            str = str + " " + Unit::getSymbol((UnitType)unit);
-            combos[ITEM_CBO_INIT_CUFF]->addItem(str);
-        }
-        config->getNumValue("NIBP|PedInitialCuffInflation", index);
-        combos[ITEM_CBO_INIT_CUFF]->setCurrentIndex(index);
-    }
-    else if (type == PATIENT_TYPE_NEO)
-    {
-        for (unsigned i = 0; i < NIBP_NEONATAL_INITIAL_CUFF_NR; ++i)
-        {
-            QString str = NIBPSymbol::convert((NIBPNeonatalInitialCuff)i);
-            if (unit == UNIT_KPA)
-            {
-                str = Unit::convert((UnitType)unit, UNIT_MMHG, str.toInt());
-            }
-            str = str + " " + Unit::getSymbol((UnitType)unit);
-            combos[ITEM_CBO_INIT_CUFF]->addItem(str);
-        }
-        config->getNumValue("NIBP|NeoInitialCuffInflation", index);
-        combos[ITEM_CBO_INIT_CUFF]->setCurrentIndex(index);
-    }
-    combos[ITEM_CBO_INIT_CUFF]->blockSignals(false);
 }
 
 void ConfigEditNIBPMenuContentPrivate::setInitPressure(int index)
@@ -225,16 +176,16 @@ void ConfigEditNIBPMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox;
     comboBox->addItems(QStringList()
-                       << NIBPSymbol::convert(NIBP_AUTO_INTERVAL_2_5)
-                       << NIBPSymbol::convert(NIBP_AUTO_INTERVAL_5)
-                       << NIBPSymbol::convert(NIBP_AUTO_INTERVAL_10)
-                       << NIBPSymbol::convert(NIBP_AUTO_INTERVAL_15)
-                       << NIBPSymbol::convert(NIBP_AUTO_INTERVAL_20)
-                       << NIBPSymbol::convert(NIBP_AUTO_INTERVAL_30)
-                       << NIBPSymbol::convert(NIBP_AUTO_INTERVAL_45)
-                       << NIBPSymbol::convert(NIBP_AUTO_INTERVAL_60)
-                       << NIBPSymbol::convert(NIBP_AUTO_INTERVAL_90)
-                       << NIBPSymbol::convert(NIBP_AUTO_INTERVAL_120));
+                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_2_5))
+                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_5))
+                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_10))
+                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_15))
+                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_20))
+                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_30))
+                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_45))
+                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_60))
+                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_90))
+                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_120)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditNIBPMenuContentPrivate
                          ::ITEM_CBO_INTERVAL_TIME, comboBox);
@@ -247,8 +198,8 @@ void ConfigEditNIBPMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox;
     comboBox->addItems(QStringList()
-                       << NIBPSymbol::convert(NIBP_MODE_MANUAL)
-                       << NIBPSymbol::convert(NIBP_MODE_AUTO));
+                       << trs(NIBPSymbol::convert(NIBP_MODE_MANUAL))
+                       << trs(NIBPSymbol::convert(NIBP_MODE_AUTO)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditNIBPMenuContentPrivate
                          ::ITEM_CBO_INIT_CUFF, comboBox);

@@ -54,7 +54,7 @@ DEFINES += CONFIG_CAPTURE_SCREEN
 DEFINES += CONFIG_ECG_TEST
 
 #用于隐藏待机功能
-DEFINES += HIDE_STANDBY_FUNCTION
+#DEFINES += HIDE_STANDBY_FUNCTION
 DEFINES += HIDE_PARAM_SWITCH
 
 #用于隐藏ST功能
@@ -62,6 +62,19 @@ DEFINES += HIDE_ECG_ST_PVCS_SUBPARAM
 
 #隐藏IBP校零软按键
 DEFINES += HIDE_IBP_CALIBRATE_ZERO
+
+#隐藏ECG心率失常功能
+DEFINES += HIDE_ECG_ARRHYTHMIA_FUNCTION
+
+#去使能报警栓锁功能
+DEFINES += DISABLED_ALARM_LATCH
+
+#取消报警音关闭和报警暂停功能
+DEFINES += CLOSE_ALARM_AUDIO_OFF_ALARM_OFF
+
+#关闭报警维护菜单中无用的功能接口
+DEFINES += CLOSE_USELESS_ALARM_FUNCTION
+
 
 # Depending libraries
 LIBS += -ldl -lasound -lz
@@ -304,13 +317,11 @@ SOURCES +=                                                                      
     Components/PatientManager/PatientManagementMenuContent.cpp                  \
     Components/PatientManager/PatientInfoWindow.cpp                             \
     Components/PatientManager/DischargePatientWindow.cpp                        \
-    Components/PowerManager/BatteryMessage.cpp                                  \
     Components/PowerManager/BatteryAlarm.cpp                                    \
     Components/PowerManager/BatteryIndicatorWindow.cpp                          \
     Components/PowerManager/BatteryBarWidget.cpp                                \
     Components/PowerManager/BatteryIconWidget.cpp                               \
     Components/PowerManager/PowerManager.cpp                                    \
-    Components/PowerManager/PowerManagerBrief.cpp                               \
     Components/WindowManager/IWidget.cpp                                        \
     Components/WindowManager/WindowManager.cpp                                  \
     Components/WindowManager/PromptInfoBarWidget.cpp                            \
@@ -345,6 +356,7 @@ SOURCES +=                                                                      
     Components/Recorder/TrendGraphPageGenerator.cpp                             \
     Components/Recorder/TriggerPageGenerator.cpp                                \
     Components/Recorder/RecordPageProcessor.cpp                                 \
+    Components/Recorder/EventListPageGenerator.cpp                              \
     Components/KeyHandle/SoftKeyManager.cpp                                     \
     Components/KeyHandle/SoftKeyWidget.cpp                                      \
     Components/KeyHandle/SoftkeyActionBase.cpp                                  \
@@ -799,13 +811,11 @@ HEADERS +=                                                                      
     Components/PatientManager/PatientInfoWindow.h                               \
     Components/PatientManager/DischargePatientWindow.h                          \
     Components/PowerManager/BatteryAlarm.h                                      \
-    Components/PowerManager/BatteryMessage.h                                    \
     Components/PowerManager/BatteryDefine.h                                     \
     Components/PowerManager/BatteryIndicatorWindow.h                            \
     Components/PowerManager/BatteryBarWidget.h                                  \
     Components/PowerManager/BatteryIconWidget.h                                 \
     Components/PowerManager/PowerManager.h                                      \
-    Components/PowerManager/PowerManagerBrief.h                                 \
     Components/PowerManager/PowerManagerProviderIFace.h                         \
     Components/TimeManager/DateTimeWidget.h                                     \
     Components/TimeManager/ElapseTimeWidget.h                                   \
@@ -850,6 +860,7 @@ HEADERS +=                                                                      
     Components/Recorder/TrendGraphPageGenerator.h                               \
     Components/Recorder/TriggerPageGenerator.h                                  \
     Components/Recorder/RecordPageProcessor.h                                   \
+    Components/Recorder/EventListPageGenerator.h                                \
     Components/KeyHandle/SoftKeyManager.h                                       \
     Components/KeyHandle/SoftKeyWidget.h                                        \
     Components/KeyHandle/SoftkeyActionBase.h                                    \

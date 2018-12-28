@@ -74,6 +74,10 @@ void RESPParamPrivate::setWaveformSpeed(RESPSweepSpeed speed)
         waveWidget->setWaveSpeed(25.0);
         break;
 
+    case RESP_SWEEP_SPEED_50_0:
+        waveWidget->setWaveSpeed(50.0);
+        break;
+
     default:
         break;
     }
@@ -471,11 +475,17 @@ int RESPParam::getRespMonitoring()
  *************************************************************************************************/
 void RESPParam::setCalcLead(RESPLead lead)
 {
-    systemConfig.setNumValue("PrimaryCfg|RESP|RespLead", static_cast<int>(lead));
+    RESPLead respLead = lead;
+    currentConfig.setNumValue("RESP|BreathLead", static_cast<int>(lead));
     if (NULL != d_ptr->provider)
     {
+        if (lead == RESP_LEAD_AUTO)
+        {
+            lead = RESP_LEAD_I;
+        }
         d_ptr->provider->setRESPCalcLead(lead);
     }
+    emit calcLeadChanged(respLead);
 }
 
 /**************************************************************************************************
@@ -484,9 +494,9 @@ void RESPParam::setCalcLead(RESPLead lead)
 RESPLead RESPParam::getCalcLead(void)
 {
     int lead = RESP_LEAD_I;
-    systemConfig.getNumValue("PrimaryCfg|RESP|RespLead", lead);
+    currentConfig.getNumValue("RESP|BreathLead", lead);
 
-    return (RESPLead)lead;
+    return static_cast<RESPLead>(lead);
 }
 
 /**************************************************************************************************
@@ -507,7 +517,7 @@ void RESPParam::enableRespCalc(bool enable)
 
 void RESPParam::onPaletteChanged(ParamID id)
 {
-    if (id != PARAM_RESP)
+    if (id != PARAM_RESP || !systemManager.isSupport(CONFIG_RESP))
     {
         return;
     }

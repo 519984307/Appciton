@@ -103,6 +103,12 @@ public:
      */
     void selfTest();
 
+    /**
+     * @brief stopHandlingSound  是否停止处理声音
+     * @param enable  true-不允许播放  false-允许播放
+     */
+    void stopHandlingSound(bool enable);
+
 private slots:
     /**
      * @brief alarmTimeout handle looping timer timeout event

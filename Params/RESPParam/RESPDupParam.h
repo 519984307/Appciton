@@ -23,7 +23,7 @@ class RESPDupParam: public Param
 public:
     enum BrSourceType {
         BR_SOURCE_CO2,
-        BR_SOURCE_RESP,
+        BR_SOURCE_ECG,
     };
 
     enum ParamSourceType {

@@ -27,6 +27,9 @@ public:
     static PowerOffWindow* _selfObj;
     ~PowerOffWindow();
 
+    /* reimplement */
+    int exec();
+
 private:
     PowerOffWindow();
     PowerOffWindowPrivate * const d_ptr;

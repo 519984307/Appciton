@@ -59,6 +59,9 @@ public:
      */
     int getErrorLogIndex(int index);
 
+signals:
+    void pageInfoUpdate(int curPage, int totalPage);
+
 private slots:
     void upBtnReleased(void);
     void downBtnReleased(void);

@@ -29,8 +29,10 @@ class TrendSubWaveWidget : public IWidget
 {
     Q_OBJECT
 public:
-    TrendSubWaveWidget(SubParamID id, TrendGraphType type);
+    explicit TrendSubWaveWidget(SubParamID id = SUB_PARAM_HR_PR, TrendGraphType type = TREND_GRAPH_TYPE_NORMAL);
     ~TrendSubWaveWidget();
+
+    void setWidgetParam(SubParamID id, TrendGraphType type);
 
     /**
      * @brief trendDataInfo 载入趋势图数据
@@ -44,7 +46,13 @@ public:
      */
     void loadTrendSubWidgetInfo(TrendSubWidgetInfo &info);
 
-    void getValueLimit(int &max, int &min);
+    /**
+     * @brief getValueLimit 获取子窗口趋势上下限
+     * @param max
+     * @param min
+     * @param scale
+     */
+    void getValueLimit(int &max, int &min, int &scale);
 
 public:
     /**
@@ -61,10 +69,18 @@ public:
     void setRulerRange(int down, int up, int scale);
 
     /**
-     * @brief setAutoRuler  设置自动标尺
-     * @param isAuto        是否自动
+     * @brief rulerRange 获取标尺上下限
+     * @param down 下限
+     * @param up 上限
+     * @param scale 比例
      */
-    void setAutoRuler(bool isAuto);
+    void rulerRange(int &down, int &up, int &scale);
+
+    /**
+     * @brief getAutoRuler 获取是否为自动标尺
+     * @return
+     */
+    int getAutoRuler(void);
 
     /**
      * @brief setTimeRange 设置两端时间范围
@@ -89,6 +105,7 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *e);
+    void showEvent(QShowEvent *e);
 
 private:
     /**
@@ -113,7 +130,6 @@ private:
     QString _paramName;             // 参数名称
     QString _paramUnit;             // 参数单位
     int _cursorPosIndex;            // 游标位置
-    bool _isAuto;                    // 是否自动标尺
     int _maxValue;                  // 数据中最大值
     int _minValue;                  // 数据中最小值
     bool _fristValue;               // 是否为第一个数据

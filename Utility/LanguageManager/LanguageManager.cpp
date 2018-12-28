@@ -24,14 +24,14 @@ LanguageManager::LanguageManager()
 {
     // 获得当前使用的语言。
     int langNo = 0;
-    currentConfig.getNumAttr("Local|Language", "CurrentOption", langNo);
+    systemConfig.getNumAttr("General|Language", "CurrentOption", langNo);
 
     _curLanguage = (LanguageName) langNo;
 
     // 获取语言文件的名称。
-    QString language = QString("Local|Language|Opt%1").arg(langNo);
+    QString language = QString("General|Language|Opt%1").arg(langNo);
 
-    currentConfig.getStrAttr(language, "XmlFileName", language);
+    systemConfig.getStrAttr(language, "XmlFileName", language);
     QString path =  LOCALE_FILE_PATH + language + ".xml";
 
     _xmlParser.open(path);

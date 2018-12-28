@@ -54,7 +54,7 @@ public:
     void getAlarmSourceValue(qint32 *data, int len);
 
     // 获取报警源参数的报警状态。
-    char getAlarmSourceStatus(const QString &sourceName, SubParamID id);
+    char getAlarmSourceStatus(const QString &sourceName, SubParamID id, bool ignoreLatched = true);
 
     // 主运行，需1秒调用一次。
     void mainRun(unsigned t);
@@ -84,12 +84,6 @@ public:
      * @param status 栓锁打开状态
      */
     void setLatchLockSta(bool status);
-
-    /**
-     * @brief updateStandbyMode  更新待机模式
-     * @param isEnable  true--更新为待机模式；false--更新为非待机模式
-     */
-    void updateStandbyMode(bool isEnable);
 
 private:
     unsigned _timestamp;

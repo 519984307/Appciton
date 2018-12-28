@@ -17,6 +17,7 @@
 #include "TopBarWidget.h"
 #include "IConfig.h"
 #include <QPainter>
+#include "BatteryIndicatorWindow.h"
 
 #define blackgroundColor QColor(20 , 20 , 20)
 
@@ -122,6 +123,8 @@ void BatteryBarWidget::paintEvent(QPaintEvent *e)
 void BatteryBarWidget::_batRealsed(IWidget * iWidget)
 {
     Q_UNUSED(iWidget)
+    BatteryIndicatorWindow batWin;
+    batWin.exec();
 }
 
 /**************************************************************************************************
@@ -131,7 +134,6 @@ BatteryBarWidget::BatteryBarWidget() : IWidget("BatteryBarWidget")
 {
     _batteryIconWidget = new BatteryIconWidget(blackgroundColor);
     _batteryStatus = BATTERY_NORMAL;
-    setFocusPolicy(Qt::NoFocus);
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setMargin(0);

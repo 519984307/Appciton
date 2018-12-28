@@ -130,6 +130,11 @@ public:
      */
     void updateTabOrder();
 
+    /**
+     * @brief updateLayoutWidgetsConfig  更新布局窗口配置
+     */
+    void updateLayoutWidgetsConfig();
+
 public slots:
     /**
      * @brief updateLayout update the layout info and re-perform layout stuff

@@ -121,10 +121,10 @@ MenuWidget::MenuWidget(const QString &name)
     setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
     setWindowModality(Qt::WindowModal);
 
-    setFixedSize(windowManager.getPopMenuWidth(), windowManager.getPopMenuHeight());
-    _listWidth = windowManager.getPopMenuWidth() / 4;
-    _submenuWidth = windowManager.getPopMenuWidth() - _listWidth - 20;
-    _submenuHeight = windowManager.getPopMenuHeight() - 30 - 30 - 20;
+    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
+    _listWidth = windowManager.getPopWindowWidth() / 4;
+    _submenuWidth = windowManager.getPopWindowWidth() - _listWidth - 20;
+    _submenuHeight = windowManager.getPopWindowHeight() - 30 - 30 - 20;
 
     // 创建资源。
     QPalette p;

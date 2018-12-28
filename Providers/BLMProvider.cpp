@@ -270,7 +270,14 @@ void BLMProvider::dataArrived(unsigned char *buff, unsigned int length)
 
         if (_checkPacketValid(packet, len))
         {
-            handlePacket(&packet[3], len - 4);
+            if (upgradeIface)
+            {
+                upgradeIface->handlePacket(&packet[3], len - 4);
+            }
+            else
+            {
+                handlePacket(&packet[3], len - 4);
+            }
         }
         else
         {

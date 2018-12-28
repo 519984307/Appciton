@@ -64,18 +64,39 @@ void RESPWaveWidget::_getItemIndex(int index)
     _currentItemIndex = index;
 }
 
+void RESPWaveWidget::_onCalcLeadChanged(RESPLead lead)
+{
+    if (_lead == NULL)
+    {
+        return;
+    }
+    _lead->setText(trs(RESPSymbol::convert(lead)));
+    _adjustLabelLayout();
+}
+
+void RESPWaveWidget::_adjustLabelLayout()
+{
+     _name->move(0, 0);
+
+    int x = _name->x() + _name->width();
+    _gain->move(x, 0);
+
+    x = _gain->x() + _gain->width();
+    _notify->move(x, 0);
+
+    x = _notify->x() + _notify->width();
+    _lead->move(x, 0);
+}
+
 /**************************************************************************************************
  * 构造函数。
  *************************************************************************************************/
 RESPWaveWidget::RESPWaveWidget(const QString &waveName, const QString &title)
     : WaveWidget(waveName, title), _notify(NULL), _gain(NULL), _gainList(NULL)
-    , _currentItemIndex(-1)
+    , _currentItemIndex(-1), _lead(NULL)
 {
     setFocusPolicy(Qt::NoFocus);
     setID(WAVE_RESP);
-
-    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_RESP));
-    setPalette(palette);
 
     int infoFont = fontManager.getFontSize(4);;
     int fontH = fontManager.textHeightInPixels(fontManager.textFont(infoFont)) + 4;
@@ -93,8 +114,19 @@ RESPWaveWidget::RESPWaveWidget(const QString &waveName, const QString &title)
     _notify = new WaveWidgetLabel(" ", Qt::AlignCenter, this);
     _notify->setFont(fontManager.textFont(infoFont));
     _notify->setFixedHeight(fontH);
+    _notify->setFixedWidth(200);
     _notify->setFocusPolicy(Qt::NoFocus);
     addItem(_notify);
+
+    _lead = new WaveWidgetLabel("", Qt::AlignCenter, this);
+    _lead->setFont(fontManager.textFont(infoFont));
+    _lead->setFixedHeight(fontH);
+    _lead->setFixedWidth(100);
+    _lead->setFocusPolicy(Qt::NoFocus);
+    addItem(_lead);
+    connect(&respParam, SIGNAL(calcLeadChanged(RESPLead)), this, SLOT(_onCalcLeadChanged(RESPLead)));
+    RESPLead lead = respParam.getCalcLead();
+    _onCalcLeadChanged(lead);
 
     // 加载配置
     _loadConfig();
@@ -116,6 +148,14 @@ void RESPWaveWidget::setZoom(int zoom)
 {
     switch (zoom)
     {
+    case RESP_ZOOM_X025:
+        setValueRange(-0x10000, 0xFFFC);
+        break;
+
+    case RESP_ZOOM_X050:
+        setValueRange(-0x8000, 0x7FFE);
+        break;
+
     case RESP_ZOOM_X100:
         setValueRange(-0x4000, 0x3FFF);
         break;
@@ -162,6 +202,7 @@ void RESPWaveWidget::leadoff(bool flag)
     {
         _notify->setText("");
     }
+    _adjustLabelLayout();
 }
 
 /**************************************************************************************************
@@ -172,11 +213,20 @@ bool RESPWaveWidget::waveEnable()
     return respParam.isEnabled();
 }
 
+void RESPWaveWidget::updateWidgetConfig()
+{
+   _loadConfig();
+   WaveWidget::updateWidgetConfig();
+}
+
 /**************************************************************************************************
  * 加载配置。
  *************************************************************************************************/
 void RESPWaveWidget::_loadConfig()
 {
+    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_RESP));
+    setPalette(palette);
+
     RESPSweepSpeed speed = respParam.getSweepSpeed();
     if (speed == RESP_SWEEP_SPEED_6_25)
     {
@@ -189,6 +239,10 @@ void RESPWaveWidget::_loadConfig()
     else if (speed == RESP_SWEEP_SPEED_25_0)
     {
         setWaveSpeed(25.0);
+    }
+    else if (speed == RESP_SWEEP_SPEED_50_0)
+    {
+        setWaveSpeed(50.0);
     }
 
     setZoom(static_cast<int>(respParam.getZoom()));
@@ -203,13 +257,7 @@ void RESPWaveWidget::resizeEvent(QResizeEvent *e)
 {
     WaveWidget::resizeEvent(e);
 
-    _name->move(0, 0);
-    _gain->move(_name->rect().width(), 0);
-
-    // 居中显示。
-    _notify->setFixedWidth(width() / 2);
-    _notify->move((width() - _notify->width()) / 2,
-                  qmargins().top() + (height() - qmargins().top()) / 2 - _notify->height() - 1);
+    _adjustLabelLayout();
 
     if (NULL != _gainList)
     {

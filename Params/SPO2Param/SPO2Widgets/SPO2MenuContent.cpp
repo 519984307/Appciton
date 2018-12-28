@@ -23,6 +23,7 @@
 #include "Button.h"
 #include "AlarmLimitWindow.h"
 #include "ECGParam.h"
+#include "NightModeManager.h"
 
 class SPO2MenuContentPrivate
 {
@@ -36,9 +37,16 @@ public:
         ITEM_CBO_SMART_TONE,
         ITEM_CBO_GAIN,
         ITEM_CBO_BEAT_VOL,
+        ITEM_CBO_NIBP_SAME_SIDE
     };
 
     SPO2MenuContentPrivate() {}
+
+    /**
+     * @brief setCboBlockSignalsStatus  设置cobomo信号锁住状态
+     * @param isBlocked  true--锁住  false--解开
+     */
+    void setCboBlockSignalsStatus(bool isBlocked);
 
     // load settings
     void loadOptions();
@@ -46,22 +54,60 @@ public:
     QMap<MenuItem, ComboBox *> combos;
 };
 
+void SPO2MenuContentPrivate::setCboBlockSignalsStatus(bool isBlocked)
+{
+    for (int i = ITEM_CBO_WAVE_SPEED; i <= ITEM_CBO_NIBP_SAME_SIDE; i++)
+    {
+        MenuItem item = static_cast<MenuItem>(i);
+        combos[item]->blockSignals(isBlocked);
+    }
+}
+
 void SPO2MenuContentPrivate::loadOptions()
 {
+    setCboBlockSignalsStatus(true);
+
+    combos[ITEM_CBO_SENSITIVITY]->clear();
+    SPO2ModuleType moduleType = spo2Param.getModuleType();
+    if (moduleType == MODULE_MASIMO_SPO2)
+    {
+        for (int i = SPO2_MASIMO_SENS_MAX; i < SPO2_MASIMO_SENS_NR; i++)
+        {
+            combos[ITEM_CBO_SENSITIVITY]->addItem(trs(SPO2Symbol
+                                                      ::convert(static_cast<SensitivityMode>(i))));
+        }
+    }
+    else if (moduleType != MODULE_SPO2_NR)
+    {
+        for (int i = SPO2_SENS_LOW; i < SPO2_SENS_NR; i++)
+        {
+            combos[ITEM_CBO_SENSITIVITY]->addItem(trs(SPO2Symbol
+                                                      ::convert(static_cast<SPO2Sensitive>(i))));
+        }
+    }
+
     combos[ITEM_CBO_WAVE_SPEED]->setCurrentIndex(spo2Param.getSweepSpeed());
     combos[ITEM_CBO_AVERAGE_TIME]->setCurrentIndex(spo2Param.getAverageTime());
     combos[ITEM_CBO_SENSITIVITY]->setCurrentIndex(spo2Param.getSensitivity());
     combos[ITEM_CBO_FAST_SAT]->setCurrentIndex(spo2Param.getFastSat());
     combos[ITEM_CBO_SMART_TONE]->setCurrentIndex(spo2Param.getSmartPulseTone());
     combos[ITEM_CBO_GAIN]->setCurrentIndex(spo2Param.getGain());
-    int volSPO2 = spo2Param.getBeatVol();
-    int volECG = ecgParam.getQRSToneVolume();
-    if (volSPO2 != volECG)
+
+    int volIndex;
+    currentConfig.getNumValue("SPO2|BeatVol", volIndex);
+    combos[ITEM_CBO_BEAT_VOL]->setCurrentIndex(volIndex);
+    if (nightModeManager.nightMode())
     {
-        // 保持脉搏音与心跳音同步
-        ecgParam.setQRSToneVolume(static_cast<SoundManager::VolumeLevel>(volSPO2));
+        combos[ITEM_CBO_BEAT_VOL]->setEnabled(false);
     }
-    combos[ITEM_CBO_BEAT_VOL]->setCurrentIndex(volSPO2);
+    else
+    {
+        combos[ITEM_CBO_BEAT_VOL]->setEnabled(true);
+    }
+
+    combos[ITEM_CBO_NIBP_SAME_SIDE]->setCurrentIndex(spo2Param.isNibpSameSide());
+
+    setCboBlockSignalsStatus(false);
 }
 
 SPO2MenuContent::SPO2MenuContent()
@@ -96,7 +142,6 @@ void SPO2MenuContent::layoutExec()
                        << SPO2Symbol::convert(SPO2_WAVE_VELOCITY_62D5)
                        << SPO2Symbol::convert(SPO2_WAVE_VELOCITY_125)
                        << SPO2Symbol::convert(SPO2_WAVE_VELOCITY_250)
-                       << SPO2Symbol::convert(SPO2_WAVE_VELOCITY_500)
                       );
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
@@ -123,10 +168,22 @@ void SPO2MenuContent::layoutExec()
     label = new QLabel(trs("Sensitivity"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
-    for (int i = 0; i < SPO2_MASIMO_SENS_NR; i++)
+    SPO2ModuleType moduleType = spo2Param.getModuleType();
+    if (moduleType == MODULE_MASIMO_SPO2)
     {
-        comboBox->addItem(trs(SPO2Symbol::convert((SensitivityMode)i)));
+        for (int i = SPO2_MASIMO_SENS_MAX; i < SPO2_MASIMO_SENS_NR; i++)
+        {
+            comboBox->addItem(trs(SPO2Symbol::convert(static_cast<SensitivityMode>(i))));
+        }
     }
+    else if (moduleType != MODULE_SPO2_NR)
+    {
+        for (int i = SPO2_SENS_LOW; i < SPO2_SENS_NR; i++)
+        {
+            comboBox->addItem(trs(SPO2Symbol::convert(static_cast<SPO2Sensitive>(i))));
+        }
+    }
+
     itemID = static_cast<int>(SPO2MenuContentPrivate::ITEM_CBO_SENSITIVITY);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -200,6 +257,19 @@ void SPO2MenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_BEAT_VOL, comboBox);
 
+    // NIBP同侧功能
+    label = new QLabel(trs("NIBPSameSide"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                       << trs("Off")
+                       << trs("On"));
+    itemID = static_cast<int>(SPO2MenuContentPrivate::ITEM_CBO_NIBP_SAME_SIDE);
+    comboBox->setProperty("Item", qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_NIBP_SAME_SIDE, comboBox);
+
     // 添加报警设置链接
     Button *btn = new Button(QString("%1%2").
                              arg(trs("AlarmSettingUp")).
@@ -227,7 +297,7 @@ void SPO2MenuContent::onComboBoxIndexChanged(int index)
             spo2Param.setAverageTime((AverageTime)index);
             break;
         case SPO2MenuContentPrivate::ITEM_CBO_SENSITIVITY:
-            spo2Param.setSensitivity((SensitivityMode)index);
+            spo2Param.setSensitivity(index);
             break;
         case SPO2MenuContentPrivate::ITEM_CBO_FAST_SAT:
             spo2Param.setFastSat(static_cast<bool>(index));
@@ -241,6 +311,8 @@ void SPO2MenuContent::onComboBoxIndexChanged(int index)
         case SPO2MenuContentPrivate::ITEM_CBO_BEAT_VOL:
             spo2Param.setBeatVol(static_cast<SoundManager::VolumeLevel>(index));
             break;
+        case SPO2MenuContentPrivate::ITEM_CBO_NIBP_SAME_SIDE:
+            spo2Param.setNibpSameSide(box->currentIndex());
         default:
             break;
         }

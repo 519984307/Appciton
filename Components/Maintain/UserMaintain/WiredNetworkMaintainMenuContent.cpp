@@ -122,7 +122,7 @@ void WiredNetworkMaintainMenuContent::layoutExec()
     layout->addWidget(label, 0, 0);
     d_ptr->addressTypeCbx = new ComboBox;
     d_ptr->addressTypeCbx->addItems(QStringList()
-                                 << trs("manual")
+                                 << trs("Static")
                                  << trs("DHCP")
                                 );
     itemID = static_cast<int>(WiredNetworkMaintainMenuContentPrivate::ITEM_CBO_ADDRESS_TYPE);

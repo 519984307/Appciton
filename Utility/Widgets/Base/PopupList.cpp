@@ -228,9 +228,13 @@ void PopupList::showEvent(QShowEvent *e)
         int borderRadius = themeManger.getBorderRadius();
 
         int screenHeight = desktop->height();
+
+        int popHeight = d_ptr->properItemsHeight() + borderRadius * 2
+                + (d_ptr->concatToParent ? 0 : DEFAULT_GAP);
+        this->setFixedHeight(popHeight);
+
         // need gap between when not cancat to the parent widget
-        int lowestHeight = pos.y() + d_ptr->properItemsHeight() + borderRadius * 2
-                           + (d_ptr->concatToParent ? 0 : DEFAULT_GAP);
+        int lowestHeight = pos.y() + popHeight;
 
         if (lowestHeight < screenHeight)
         {

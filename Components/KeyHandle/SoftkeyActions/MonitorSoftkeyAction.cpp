@@ -22,6 +22,7 @@ static KeyActionDesc _monitorKeys[] =
 {
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_INFO),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_NEW),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_DISCHARGE),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_ECG_LEAD_MODE),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_ALARM_LIMIT),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_CODE_MARKER),

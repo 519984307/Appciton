@@ -82,6 +82,13 @@ public:
     // 获取当前报警的个数。
     int getAlarmCount(AlarmType type);
     int getAlarmCount();
+    /**
+     * @brief getAlarmCount 获取当前报警个数
+     * @param priority  筛选出与其等级一致的报警
+     * @return
+     */
+    int getAlarmCount(AlarmPriority priority);
+
     void getAlarmInfo(int index, AlarmInfoNode &node);
     bool getAlarmInfo(AlarmType type, const char *alArmMessage, AlarmInfoNode &node);
 
@@ -93,6 +100,22 @@ public:
      * @param seconds the left pause time
      */
     void updateAlarmPauseTime(int seconds);
+
+    /**
+     * @brief phyAlarmResetStatusHandle 处理复位后的生理报警状态
+     * @return 是否有新被确认的生理报警
+     */
+    bool phyAlarmResetStatusHandle();
+    /**
+     * @brief techAlarmResetStatusHandle 处理复位后的技术报警状态
+     * @return 是否有新被确认的技术报警
+     */
+    bool techAlarmResetStatusHandle();
+
+    /**
+     * @brief updateAlarmStateWidget 刷新报警状态图标
+     */
+    void updateAlarmStateWidget();
 
 private:
     AlarmIndicator();
@@ -125,6 +148,8 @@ private:
     AlarmStatus _audioStatus;
     int _audioPauseTime;
     static const int _checkPatientAlarmPauseTime = 12;
+
+    bool _isForbidLight;
 };
 #define alarmIndicator (AlarmIndicator::construction())
 #define deleteAlarmIndicator() (delete AlarmIndicator::_selfObj)

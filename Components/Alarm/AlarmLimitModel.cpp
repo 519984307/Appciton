@@ -28,7 +28,8 @@ class AlarmLimitModelPrivate
 public:
     AlarmLimitModelPrivate()
         : viewWidth(400),  // set default value to 400
-          editRow(-1)
+          editRow(-1),
+          eachPageRowCount(0)
     {
     }
 
@@ -36,6 +37,13 @@ public:
     int viewWidth;
     int editRow;
     QModelIndex editIndex;
+    int eachPageRowCount;
+
+    /**
+     * @brief calTotalRowCount 计算总页数
+     * @return
+     */
+    int calTotalPage();
 };
 
 AlarmLimitModel::AlarmLimitModel(QObject *parent)
@@ -57,7 +65,7 @@ int AlarmLimitModel::columnCount(const QModelIndex &parent) const
 int AlarmLimitModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return d_ptr->alarmDataInfos.count();
+    return d_ptr->calTotalPage() * d_ptr->eachPageRowCount;
 }
 
 void AlarmLimitModel::alarmDataUpdate(const AlarmDataInfo &info, int type)
@@ -173,6 +181,10 @@ QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
         break;
     case Qt::DisplayRole:
     {
+        if (row >= d_ptr->alarmDataInfos.count())
+        {
+            break;
+        }
         switch (column)
         {
         case SECTION_PARAM_NAME:
@@ -194,15 +206,15 @@ QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
             char limit = d_ptr->alarmDataInfos.at(row).alarmLevel;
             if (limit == 1)
             {
-                return trs("normal");
+                return trs("Medium");
             }
             else if (limit == 2)
             {
-                return trs("high");
+                return trs("High");
             }
             else
             {
-                return trs("low");
+                return trs("Low");
             }
         }
         break;
@@ -214,7 +226,7 @@ QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
 
     case Qt::EditRole:
     {
-        if (index == d_ptr->editIndex)
+        if (index == d_ptr->editIndex && row < d_ptr->alarmDataInfos.count())
         {
             int row = index.row();
             ItemEditInfo editInfo;
@@ -227,7 +239,7 @@ QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
                 break;
             case SECTION_LEVEL:
                 editInfo.type = ItemEditInfo::LIST;
-                editInfo.list << trs("low") << trs("normal") << trs("high");
+                editInfo.list << trs("Low") << trs("Medium") << trs("High");
                 editInfo.curValue = d_ptr->alarmDataInfos.at(row).alarmLevel;
                 break;
             case SECTION_LOW_LIMIT:
@@ -255,7 +267,8 @@ QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
     break;
 
     case Qt::CheckStateRole:
-        if (index.row() == d_ptr->editRow && index.column() > SECTION_PARAM_NAME)
+        if (index.row() == d_ptr->editRow && index.column() > SECTION_PARAM_NAME
+                && row < d_ptr->alarmDataInfos.count())
         {
             if (index == d_ptr->editIndex)
             {
@@ -461,4 +474,19 @@ void AlarmLimitModel::stopEditRow()
 int AlarmLimitModel::curEditRow() const
 {
     return d_ptr->editRow;
+}
+
+void AlarmLimitModel::setEachPageRowCount(int rows)
+{
+    d_ptr->eachPageRowCount = rows;
+}
+
+int AlarmLimitModelPrivate::calTotalPage()
+{
+    if (!eachPageRowCount)
+    {
+        return 0;
+    }
+    int pages = alarmDataInfos.count() / eachPageRowCount + 1;
+    return pages;
 }

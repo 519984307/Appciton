@@ -88,7 +88,7 @@ void RecordPageProcessor::addPage(RecordPage *page)
         return;
     }
 
-#if 0
+#if 1
 #ifdef Q_WS_QWS
     QString path("/mnt/nfs/tmp/");
 #else
@@ -130,6 +130,13 @@ void RecordPageProcessor::stopProcess()
 
     d_ptr->stopProcessing();
     emit processFinished();
+
+    // check whether speed need to update
+    if (d_ptr->updateSpeed)
+    {
+        d_ptr->updateSpeed = false;
+        d_ptr->iface->setPrintSpeed(d_ptr->curSpeed);
+    }
 }
 
 void RecordPageProcessor::pauseProcessing(bool pause)
@@ -146,13 +153,6 @@ void RecordPageProcessor::timerEvent(QTimerEvent *ev)
 {
     if (d_ptr->timerID == ev->timerId())
     {
-        // check whether speed need to update
-        if (d_ptr->updateSpeed)
-        {
-            d_ptr->updateSpeed = false;
-            d_ptr->iface->setPrintSpeed(d_ptr->curSpeed);
-        }
-
         // update page queue status
         if (d_ptr->queueIsFull && d_ptr->pages.size() < PAGE_QUEUE_SIZE)
         {
@@ -192,7 +192,12 @@ void RecordPageProcessor::timerEvent(QTimerEvent *ev)
         while (count < BATCH_LINE_NUM)
         {
             d_ptr->curProcessingPage->getColumnData(d_ptr->curPageXPos++, data);
-            d_ptr->iface->sendBitmapData(data, dataLen);
+            bool isComplete = d_ptr->iface->sendBitmapData(data, dataLen);
+            while (!isComplete)
+            {
+                Util::waitInEventLoop(100);
+                isComplete = d_ptr->iface->sendBitmapData(data, dataLen);
+            }
             count++;
 
             if (d_ptr->curPageXPos >= pageWidth)

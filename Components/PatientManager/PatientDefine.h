@@ -120,7 +120,7 @@ public:
     {
         static const char *symbol[PATIENT_TYPE_NR + 1] =
         {
-            "Adult", "PED", "NEO", "NULL"
+            "Adult", "Pediatric", "Neonate", "NULL"
         };
         return symbol[index];
     }

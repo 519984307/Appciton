@@ -48,6 +48,7 @@ public:
 
 protected:
     void showEvent(QShowEvent *ev);
+    void timerEvent(QTimerEvent *ev);
 
 private slots:
     void waveInfoReleased(QModelIndex index);

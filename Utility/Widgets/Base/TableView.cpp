@@ -101,7 +101,6 @@ public:
         return index;
     }
 
-
     TableView *const q_ptr;
     int mouseClickRow;
     QModelIndex lastIndex;  // the last index that has been mouse press or key press
@@ -160,7 +159,7 @@ void TableView::scrollToPreviousPage()
     int row = rowAt(-1);
     if (row >= 0)
     {
-        QModelIndex index = model()->index(row, 0);
+        QModelIndex index = model()->index(row - 1, 0);
         scrollTo(index, QAbstractItemView::PositionAtBottom);
     }
 }
@@ -195,6 +194,20 @@ void TableView::setModel(QAbstractItemModel *model)
             }
         }
     }
+}
+
+void TableView::getPageInfo(int &curPage, int &totalPage)
+{
+    int eachPageRowCount = rowAt(viewport()->height() - 1) - rowAt(1) + 1;
+    if (model()->rowCount() % eachPageRowCount)
+    {
+        totalPage = model()->rowCount() / eachPageRowCount + 1;
+    }
+    else
+    {
+        totalPage = model()->rowCount() / eachPageRowCount;
+    }
+    curPage = rowAt(0) / eachPageRowCount + 1;
 }
 
 // void TableView::mouseMoveEvent(QMouseEvent *ev)
@@ -253,7 +266,7 @@ void TableView::keyReleaseEvent(QKeyEvent *ev)
             }
             int nextRow = index.row() - 1;
             QModelIndex nextIndex = model()->index(nextRow, index.column());
-            if (index.isValid())
+            if (index.isValid() && nextIndex.data().isValid())
             {
                 QRect r = visualRect(nextIndex);
                 if (rect().contains(r))
@@ -267,7 +280,7 @@ void TableView::keyReleaseEvent(QKeyEvent *ev)
         else if (selectionBehavior() == QAbstractItemView::SelectItems)
         {
             QModelIndex preIndex = d_ptr->findNextPreviousSelectableItem(index, false);
-            if (preIndex.isValid())
+            if (preIndex.isValid() && preIndex.data().isValid())
             {
                 setCurrentIndex(preIndex);
                 break;
@@ -306,7 +319,7 @@ void TableView::keyReleaseEvent(QKeyEvent *ev)
             {
                 QModelIndex nextIndex = model()->index(nextRow, index.column());
                 QRect r = visualRect(nextIndex);
-                if (rect().contains(r))
+                if (rect().contains(r) && nextIndex.data().isValid())
                 {
                     selectRow(nextRow);
                     emit selectRowChanged(nextRow);
@@ -317,7 +330,7 @@ void TableView::keyReleaseEvent(QKeyEvent *ev)
         else if (selectionBehavior() == QAbstractItemView::SelectItems)
         {
             QModelIndex nextIndex = d_ptr->findNextPreviousSelectableItem(index, true);
-            if (nextIndex.isValid())
+            if (nextIndex.isValid() && nextIndex.data().isValid())
             {
                 setCurrentIndex(nextIndex);
                 break;
@@ -424,13 +437,24 @@ void TableView::focusInEvent(QFocusEvent *ev)
         if (this->selectionBehavior() == QAbstractItemView::SelectRows)
         {
             int row = rowAt(viewport()->rect().height() - 1);
-            if (row >= 0)
+            QModelIndex index = model()->index(row, 0);
+            if (row >= 0 && index.data().isValid())
             {
                 selectRow(row);
             }
             else if (model() && model()->rowCount() > 0)
             {
-                selectRow(model()->rowCount() - 1);
+                int rows = model()->rowCount();
+                int realRowCount = 0;
+                for (int i = 0; i< rows; i++)
+                {
+                    QModelIndex focusIndex = model()->index(i, 0);
+                    if (focusIndex.data().isValid())
+                    {
+                        realRowCount++;
+                    }
+                }
+                selectRow(realRowCount - 1);
             }
         }
         else if (this->selectionBehavior() == QAbstractItemView::SelectItems)

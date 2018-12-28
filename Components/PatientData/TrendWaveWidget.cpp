@@ -25,21 +25,24 @@
 #include "DataStorageDefine.h"
 #include <QMouseEvent>
 #include "ParamManager.h"
+#include "FontManager.h"
+#include "TimeDefine.h"
 
 #define GRAPH_DISPLAY_DATA_NUMBER           4
 #define GRAPH_POINT_NUMBER                  120                     // 一屏数据量
-#define DATA_INTERVAL_PIXEL                 5                       // 两数据之间的像素点个数
-#define GRAPH_DATA_WIDTH                    480                     // 一屏数据所占像素点
-#define SCALE_REGION_HEIGHT                 34                      // 时间刻度区域高度
+#define DATA_INTERVAL_PIXEL                 3                       // 两数据之间的像素点个数
+#define GRAPH_DATA_WIDTH                    360                    // 一屏数据所占像素点
+#define SCALE_REGION_HEIGHT                 35                      // 时间刻度区域高度
+#define INIT_WAVE_NUM                       3                       // 初始化波形数
 
-TrendWaveWidget::TrendWaveWidget() :
+TrendWaveWidget::TrendWaveWidget() : _hLayoutTrend(NULL),
     _timeInterval(RESOLUTION_RATIO_5_SECOND),
     _waveRegionWidth(0), _oneFrameWidth(0),
     _initTime(0),
-    _cursorPosIndex(0), _currentCursorTime(0),
+    _cursorPosIndex(0), _currentCursorTime(0), _subWidget(NULL),
     _displayGraphNum(3), _totalGraphNum(3), _curVScroller(0),
-    _totalPage(0), _currentPage(0), _pagingNum(0), _leftTime(0), _rightTime(0),
-    _trendGraphInfo(TrendGraphInfo()), _isHistory(false)
+    _totalPage(0), _currentPage(0),  _leftTime(0), _rightTime(0),
+    _curIndex(0), _trendGraphInfo(TrendGraphInfo()), _isHistory(false)
 {
     QString prefix = "TrendGraph|";
     int index = 0;
@@ -59,50 +62,26 @@ TrendWaveWidget::TrendWaveWidget() :
     setAutoFillBackground(true);
     setFocusPolicy(Qt::NoFocus);
 
-    _subWidget = new IWidget();
-    _subWidget->setFocusPolicy(Qt::NoFocus);
-    _subWidget->setAttribute(Qt::WA_TransparentForMouseEvents, true);
-    _subWidgetScrollArea = new QScrollArea();
-
-    // 隐藏垂直滚动条
-    _subWidgetScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
-    // 重新调整子部件的大小
-    _subWidgetScrollArea->setWidgetResizable(true);
-
-    // 滚动区域透明处理
-    _subWidgetScrollArea->setStyleSheet("QScrollArea {background-color:transparent;}");
-    _subWidgetScrollArea->viewport()->setStyleSheet("background-color:transparent;");
-
-    _subWidgetScrollArea->setFocusPolicy(Qt::NoFocus);
-
-    _subWidgetScrollArea->verticalScrollBar()->setStyleSheet(
-        "QScrollBar:vertical"
-        "{"
-        "width:12px;"
-        "}"
-    );
-
     _mainLayout = new QVBoxLayout();
     _mainLayout->setMargin(0);
+    _mainLayout->addSpacing(SCALE_REGION_HEIGHT);
 
-    _hLayoutTrend = new QVBoxLayout();
-    _hLayoutTrend->setMargin(0);
-    _hLayoutTrend->setSpacing(0);
-    _subWidget->setLayout(_hLayoutTrend);
+    // 初始化三道波形
 
-    _subWidgetScrollArea->setWidget(_subWidget);
-
-    _mainLayout->addSpacing(30);
-    _mainLayout->addWidget(_subWidgetScrollArea);
-
+    for (int i = 0; i < INIT_WAVE_NUM; i++)
+    {
+        TrendSubWaveWidget *subWidget;
+        subWidget = new TrendSubWaveWidget();
+        _mainLayout->addWidget(subWidget, 1);
+        _subWidgetList.append(subWidget);
+    }
     setLayout(_mainLayout);
 }
 
 TrendWaveWidget::~TrendWaveWidget()
 {
     _trendDataPack.clear();
-    _subWidgetMap.clear();
+    _subWidgetList.clear();
     _trendGraphInfo.reset();
 }
 
@@ -154,15 +133,10 @@ void TrendWaveWidget::leftMoveCursor()
         _cursorPosIndex++;
     }
 
-    int count = _hLayoutTrend->count();
+    int count = _displayGraphNum;
     for (int i = 0; i < count; i++)
     {
-        QLayoutItem *item = _hLayoutTrend->itemAt(i);
-        TrendSubWaveWidget *widget = dynamic_cast<TrendSubWaveWidget *>(item->widget());
-        if (widget != NULL)
-        {
-            widget->cursorMove(_cursorPosIndex);
-        }
+        _subWidgetList.at(i)->cursorMove(_cursorPosIndex);
     }
     update();
 }
@@ -178,15 +152,10 @@ void TrendWaveWidget::rightMoveCursor()
         _cursorPosIndex--;
     }
 
-    int count = _hLayoutTrend->count();
+    int count = _displayGraphNum;
     for (int i = 0; i < count; i++)
     {
-        QLayoutItem *item = _hLayoutTrend->itemAt(i);
-        TrendSubWaveWidget *widget = dynamic_cast<TrendSubWaveWidget *>(item->widget());
-        if (widget != NULL)
-        {
-            widget->cursorMove(_cursorPosIndex);
-        }
+        _subWidgetList.at(i)->cursorMove(_cursorPosIndex);
     }
     update();
 }
@@ -222,15 +191,10 @@ void TrendWaveWidget::leftMoveEvent()
                 int index = (curTime - alarmTime) / timeInterval;
                 _cursorPosIndex = _cursorPosIndex + index;
 
-                int count = _hLayoutTrend->count();
+                int count = _displayGraphNum;
                 for (int i = 0; i < count; i++)
                 {
-                    QLayoutItem *item = _hLayoutTrend->itemAt(i);
-                    TrendSubWaveWidget *widget = qobject_cast<TrendSubWaveWidget *>(item->widget());
-                    if (widget != NULL)
-                    {
-                        widget->cursorMove(_cursorPosIndex);
-                    }
+                    _subWidgetList.at(i)->cursorMove(_cursorPosIndex);
                 }
                 update();
             }
@@ -267,15 +231,10 @@ void TrendWaveWidget::rightMoveEvent()
                 int index = (alarmTime - curTime) / timeInterval;
                 _cursorPosIndex = _cursorPosIndex - index;
 
-                int count = _hLayoutTrend->count();
+                int count = _displayGraphNum;
                 for (int i = 0; i < count; i++)
                 {
-                    QLayoutItem *item = _hLayoutTrend->itemAt(i);
-                    TrendSubWaveWidget *widget = qobject_cast<TrendSubWaveWidget *>(item->widget());
-                    if (widget != NULL)
-                    {
-                        widget->cursorMove(_cursorPosIndex);
-                    }
+                    _subWidgetList.at(i)->cursorMove(_cursorPosIndex);
                 }
                 update();
             }
@@ -286,42 +245,52 @@ void TrendWaveWidget::rightMoveEvent()
 
 void TrendWaveWidget::pageUpParam()
 {
-    int maxValue = _subWidgetScrollArea->verticalScrollBar()->maximum();
-    _curVScroller = _subWidgetScrollArea->verticalScrollBar()->value();
-    if (_curVScroller > 0)
+    if ((_curIndex - _displayGraphNum * 2) >= 0)
     {
-        QScrollBar *scrollBar = _subWidgetScrollArea->verticalScrollBar();
-        // 当前位置　－　最大位置乘以总行数除以看不见的行数
-        int positon = _curVScroller - (maxValue * _displayGraphNum) / (_totalGraphNum - _displayGraphNum);
-        scrollBar->setSliderPosition(positon);
-        _pagingNum--;
+        _curIndex = _curIndex - _displayGraphNum;
     }
+    else
+    {
+        _curIndex = 0;
+    }
+    updateTimeRange();
 }
 
 bool TrendWaveWidget::hasUpPage()
 {
-    _curVScroller = _subWidgetScrollArea->verticalScrollBar()->value();
-    return _curVScroller > 0;
+    if (_curIndex == 0)
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
 }
 
 void TrendWaveWidget::pageDownParam()
 {
-    int maxValue = _subWidgetScrollArea->verticalScrollBar()->maximum();
-    _curVScroller = _subWidgetScrollArea->verticalScrollBar()->value();
-    if (_curVScroller < maxValue && _totalGraphNum != _displayGraphNum)
+    if ((_curIndex + _displayGraphNum * 2) < _subParams.count())
     {
-        QScrollBar *scrollBar = _subWidgetScrollArea->verticalScrollBar();
-        int positon = _curVScroller + (maxValue * _displayGraphNum) / (_totalGraphNum - _displayGraphNum);
-        scrollBar->setSliderPosition(positon);
-        _pagingNum++;
+        _curIndex = _curIndex + _displayGraphNum;
     }
+    else
+    {
+        _curIndex = _subParams.count() - _displayGraphNum;
+    }
+    updateTimeRange();
 }
 
 bool TrendWaveWidget::hasDownPage()
 {
-    int maxValue = _subWidgetScrollArea->verticalScrollBar()->maximum();
-    _curVScroller = _subWidgetScrollArea->verticalScrollBar()->value();
-    return _curVScroller < maxValue;
+    if (_curIndex == _subParams.count() - _displayGraphNum)
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
 }
 
 void TrendWaveWidget::setTimeInterval(ResolutionRatio timeInterval)
@@ -340,33 +309,11 @@ void TrendWaveWidget::setWaveNumber(int num)
     updateTimeRange();
 }
 
-void TrendWaveWidget::setRulerLimit(SubParamID id, int down, int up, int scale)
+void TrendWaveWidget::setRulerLimit(int index, int down, int up, int scale)
 {
-    int count = _hLayoutTrend->count();
-    for (int i = 0; i < count; i ++)
+    if (index < _subWidgetList.count())
     {
-        QLayoutItem *item = _hLayoutTrend->itemAt(i);
-        TrendSubWaveWidget *widget = qobject_cast<TrendSubWaveWidget *>(item->widget());
-        if (widget->getSubParamID() == id)
-        {
-            widget->setRulerRange(down, up, scale);
-            return;
-        }
-    }
-}
-
-void TrendWaveWidget::setAutoRuler(SubParamID id, bool isAuto)
-{
-    int count = _hLayoutTrend->count();
-    for (int i = 0; i < count; i++)
-    {
-        QLayoutItem *item = _hLayoutTrend->itemAt(i);
-        TrendSubWaveWidget *widget = qobject_cast<TrendSubWaveWidget *>(item->widget());
-        if (widget->getSubParamID() == id)
-        {
-            widget->setAutoRuler(isAuto);
-            return;
-        }
+        _subWidgetList.at(index)->setRulerRange(down, up, scale);
     }
 }
 
@@ -615,22 +562,22 @@ void TrendWaveWidget::updateTimeRange()
 
 void TrendWaveWidget::trendWaveReset()
 {
-    _pagingNum = 0;
-    _subWidgetScrollArea->verticalScrollBar()->setSliderPosition(0);
+    _curIndex = 0;
 }
 
 const QList<TrendGraphInfo> TrendWaveWidget::getTrendGraphPrint()
 {
-    QList<TrendGraphInfo> printList;
-    int j = 0;
-    int i = _subWidgetScrollArea->verticalScrollBar()->value() / ((height() - 34) / _displayGraphNum);
-    for (; j < _displayGraphNum && _infosList.count() > i; i ++)
+    for (int i = 0; i < _displayGraphNum; i++)
     {
-        TrendGraphInfo info = _infosList.at(i);
-        printList.append(info);
-        j++;
+        int down;
+        int up;
+        int scale;
+        _subWidgetList.at(i)->rulerRange(down, up, scale);
+        _infosList[i].scale.min = down;
+        _infosList[i].scale.max = up;
+        _infosList[i].scale.scale = scale;
     }
-    return printList;
+    return _infosList;
 }
 
 const QList<unsigned> TrendWaveWidget::getEventList()
@@ -646,6 +593,22 @@ void TrendWaveWidget::setHistoryDataPath(QString path)
 void TrendWaveWidget::setHistoryData(bool flag)
 {
     _isHistory = flag;
+}
+
+QList<SubParamID> TrendWaveWidget::getCurParamList()
+{
+    return _curDisplaySubList;
+}
+
+void TrendWaveWidget::setAllParamAutoRuler()
+{
+    for (int i = 0; i < _subParams.count(); i++)
+    {
+        SubParamID sid = _subParams.at(i);
+        QString prefix = "TrendGraph|Ruler|";
+        prefix += paramInfo.getSubParamName(sid, true);
+        systemConfig.setNumAttr(prefix, "Auto", 1);
+    }
 }
 
 void TrendWaveWidget::paintEvent(QPaintEvent *event)
@@ -672,7 +635,20 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
     for (int i = GRAPH_DISPLAY_DATA_NUMBER; i >= 0; i --)
     {
         timeDate.getTime(t, tStr, true);
-        barPainter.drawText(rectAdjust.topLeft().x() + (_waveRegionWidth - GRAPH_DATA_WIDTH) / 2 + i * _oneFrameWidth - 30,
+        int timeFormat = 0;
+        systemConfig.getNumValue("DateTime|TimeFormat", timeFormat);
+        if (timeFormat == TIME_FORMAT_24)
+        {
+            QFont font = fontManager.textFont(fontManager.getFontSize(3));
+            barPainter.setFont(font);
+        }
+        else
+        {
+            QFont font = fontManager.textFont(fontManager.getFontSize(1));
+            barPainter.setFont(font);
+        }
+
+        barPainter.drawText(rectAdjust.topLeft().x() + (_waveRegionWidth - GRAPH_DATA_WIDTH) / 2 + i * _oneFrameWidth - 40,
                             rectAdjust.topLeft().y() - 5, tStr);
         t = t - onePixelTime * GRAPH_POINT_NUMBER / GRAPH_DISPLAY_DATA_NUMBER;
         barPainter.drawLine(rectAdjust.topLeft().x() + (_waveRegionWidth - GRAPH_DATA_WIDTH) / 2 + i * _oneFrameWidth,
@@ -685,8 +661,8 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
                         cursorPos, rectAdjust.bottomLeft().y());
 
     // 当前趋势记录的时间
-    QRect timeRect = rect().adjusted(_waveRegionWidth + 5, 9, -5, 0);
-    if (_cursorPosIndex < _trendGraphInfo.alarmInfo.count())
+    QRect timeRect = rect().adjusted(_waveRegionWidth + 5, 12, -5, 0);
+    if (_cursorPosIndex < _trendGraphInfo.alarmInfo.count() && _cursorPosIndex >= 0)
     {
         timeDate.getDate(_trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp, tStr);
         barPainter.drawText(timeRect, Qt::AlignLeft, tStr);
@@ -755,15 +731,10 @@ void TrendWaveWidget::mousePressEvent(QMouseEvent *e)
                 break;
             }
         }
-        int count = _hLayoutTrend->count();
+        int count = _displayGraphNum;
         for (int i = 0; i < count; i++)
         {
-            QLayoutItem *item = _hLayoutTrend->itemAt(i);
-            TrendSubWaveWidget *widget = dynamic_cast<TrendSubWaveWidget *>(item->widget());
-            if (widget != NULL)
-            {
-                widget->cursorMove(_cursorPosIndex);
-            }
+            _subWidgetList.at(i)->cursorMove(_cursorPosIndex);
         }
         update();
     }
@@ -772,6 +743,7 @@ void TrendWaveWidget::mousePressEvent(QMouseEvent *e)
 void TrendWaveWidget::_trendLayout()
 {
     _infosList.clear();
+    _curDisplaySubList.clear();
     int subWidgetHeight = (height() - SCALE_REGION_HEIGHT) / _displayGraphNum;
     TrendSubWidgetInfo info;
     info.xHead = (_waveRegionWidth - GRAPH_DATA_WIDTH) / 2;
@@ -782,92 +754,43 @@ void TrendWaveWidget::_trendLayout()
     int startIndex;
     int endIndex;
     dataIndex(startIndex, endIndex);
-    QMap<SubParamID, TrendSubWaveWidget *>::iterator it = _subWidgetMap.begin();
-    for (; it != _subWidgetMap.end(); ++it)
+    for (int i = 0; i < _displayGraphNum; i++)
     {
-        SubParamID subId = it.key();
-        if (trendGraphSetWindow.getTrendGroup() == TREND_GROUP_RESP)
+        int index = _curIndex + i;
+        if (index < 0 || index + 1 > _subParams.count())
         {
-            switch (subId)
-            {
-            case SUB_PARAM_HR_PR:
-            case SUB_PARAM_SPO2:
-            case SUB_PARAM_RR_BR:
-            case SUB_PARAM_NIBP_SYS:
-            case SUB_PARAM_ETCO2:
-            case SUB_PARAM_T1:
-                loadTrendData(subId, startIndex, endIndex);
-                it.value()->trendDataInfo(_trendGraphInfo);
-                break;
-            default:
-                it.value()->setVisible(false);
-                continue;
-            }
+            continue;
         }
-        else if (trendGraphSetWindow.getTrendGroup() == TREND_GROUP_IBP)
-        {
-            SubParamID ibp1;
-            SubParamID ibp2;
-            ibpParam.getSubParamID(ibp1, ibp2);
-            if (subId != ibp1 && subId != ibp2 &&
-                    subId != SUB_PARAM_HR_PR && subId != SUB_PARAM_SPO2 &&
-                    subId != SUB_PARAM_NIBP_SYS && subId != SUB_PARAM_T1)
-            {
-                it.value()->setVisible(false);
-                continue;
-            }
-            switch (subId)
-            {
-            case SUB_PARAM_HR_PR:
-            case SUB_PARAM_SPO2:
-            case SUB_PARAM_CVP_MAP:
-            case SUB_PARAM_LAP_MAP:
-            case SUB_PARAM_RAP_MAP:
-            case SUB_PARAM_ICP_MAP:
-            case SUB_PARAM_NIBP_SYS:
-            case SUB_PARAM_T1:
-            case SUB_PARAM_ART_SYS:
-            case SUB_PARAM_PA_SYS:
-            case SUB_PARAM_AUXP1_SYS:
-            case SUB_PARAM_AUXP2_SYS:
-                loadTrendData(subId, startIndex, endIndex);
-                it.value()->trendDataInfo(_trendGraphInfo);
-                break;
-            default:
-                it.value()->setVisible(false);
-                continue;
-            }
-        }
-        else if (trendGraphSetWindow.getTrendGroup() == TREND_GROUP_AG)
-        {
-            switch (subId)
-            {
-            case SUB_PARAM_HR_PR:
-            case SUB_PARAM_SPO2:
-            case SUB_PARAM_NIBP_SYS:
-            case SUB_PARAM_ETCO2:
-            case SUB_PARAM_ETN2O:
-            case SUB_PARAM_ETAA1:
-            case SUB_PARAM_ETAA2:
-            case SUB_PARAM_ETO2:
-            case SUB_PARAM_T1:
-                loadTrendData(subId, startIndex, endIndex);
-                it.value()->trendDataInfo(_trendGraphInfo);
-                break;
-            default:
-                it.value()->setVisible(false);
-                continue;
-            }
-        }
+        SubParamID  subId = _subParams.at(index);
+        _curDisplaySubList.append(subId);
+        _subWidgetList.at(i)->setWidgetParam(subId, getTrendGraphType(subId));
+        _subWidgetList.at(i)->setThemeColor(colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(subId))));
 
-        it.value()->setFixedHeight(subWidgetHeight);
-        it.value()->loadTrendSubWidgetInfo(info);
-        it.value()->setTimeRange(_leftTime, _rightTime);
-        it.value()->setVisible(true);
+        loadTrendData(subId, startIndex, endIndex);
+        _subWidgetList.at(i)->trendDataInfo(_trendGraphInfo);
+        _subWidgetList.at(i)->setFixedHeight(subWidgetHeight);
+        _subWidgetList.at(i)->loadTrendSubWidgetInfo(info);
+        _subWidgetList.at(i)->setTimeRange(_leftTime, _rightTime);
         _trendGraphInfo.unit = paramInfo.getUnitOfSubParam(subId);
-        it.value()->getValueLimit(_trendGraphInfo.scale.max, _trendGraphInfo.scale.min);
+        _subWidgetList.at(i)->update();
+        _subWidgetList.at(i)->getValueLimit(_trendGraphInfo.scale.max, _trendGraphInfo.scale.min, _trendGraphInfo.scale.scale);
         _infosList.append(_trendGraphInfo);
         _totalGraphNum++;
+    }
+    if (_displayGraphNum == 3)
+    {
+        _subWidgetList.at(1)->setVisible(true);
+        _subWidgetList.at(2)->setVisible(true);
+    }
+    else if (_displayGraphNum == 2)
+    {
+        _subWidgetList.at(1)->setVisible(true);
+        _subWidgetList.at(2)->setVisible(false);
+    }
+    else if (_displayGraphNum == 1)
+    {
+        _subWidgetList.at(1)->setVisible(false);
+        _subWidgetList.at(2)->setVisible(false);
     }
 }
 
@@ -915,9 +838,10 @@ void TrendWaveWidget::_getTrendData()
 
 void TrendWaveWidget::_initWaveSubWidget()
 {
-    TrendGraphType type;
     QList<ParamID> pids;
     paramManager.getParams(pids);
+    // 初始化前三道波形
+    int num = 0;
     for (int i = 0; i < SUB_PARAM_NR; i ++)
     {
         SubParamID subID = static_cast<SubParamID>(i);
@@ -926,45 +850,24 @@ void TrendWaveWidget::_initWaveSubWidget()
         {
             continue;
         }
-        switch (i)
+
+        if (getTrendGraphType(subID) == TREND_GRAPH_TYPE_NR)
         {
-        case SUB_PARAM_HR_PR:
-        case SUB_PARAM_SPO2:
-        case SUB_PARAM_RR_BR:
-        case SUB_PARAM_CVP_MAP:
-        case SUB_PARAM_LAP_MAP:
-        case SUB_PARAM_RAP_MAP:
-        case SUB_PARAM_ICP_MAP:
-            type = TREND_GRAPH_TYPE_NORMAL;
-            break;
-        case SUB_PARAM_NIBP_SYS:
-            type = TREND_GRAPH_TYPE_NIBP;
-            break;
-        case SUB_PARAM_ETCO2:
-        case SUB_PARAM_ETN2O:
-        case SUB_PARAM_ETAA1:
-        case SUB_PARAM_ETAA2:
-        case SUB_PARAM_ETO2:
-        case SUB_PARAM_T1:
-            type = TREND_GRAPH_TYPE_AG_TEMP;
-            break;
-        case SUB_PARAM_ART_SYS:
-        case SUB_PARAM_PA_SYS:
-        case SUB_PARAM_AUXP1_SYS:
-        case SUB_PARAM_AUXP2_SYS:
-            type = TREND_GRAPH_TYPE_ART_IBP;
-            break;
-        default:
             continue;
         }
 
-        TrendSubWaveWidget *subWidget = new TrendSubWaveWidget((SubParamID)i, type);
-        subWidget->setVisible(true);
-        subWidget->setParent(this);
-        subWidget->setThemeColor(colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID((SubParamID)i))));
-        subWidget->setFocusPolicy(Qt::NoFocus);
-        _subWidgetMap.insert((SubParamID)i, subWidget);
-        _hLayoutTrend->addWidget(subWidget);
+        _subParams.append(subID);
+
+        if (num < _subWidgetList.count())
+        {
+            TrendSubWaveWidget *subWidget = _subWidgetList.at(num);
+            subWidget->setWidgetParam(subID, getTrendGraphType(subID));
+            subWidget->setVisible(true);
+            subWidget->setParent(this);
+            subWidget->setThemeColor(colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID((SubParamID)i))));
+            subWidget->setFocusPolicy(Qt::NoFocus);
+            num++;
+        }
     }
 }
 
@@ -1037,5 +940,36 @@ void TrendWaveWidget::_updateEventIndex()
 
             lastTime = lastTime + timeInterval;
         }
+    }
+}
+
+TrendGraphType TrendWaveWidget::getTrendGraphType(SubParamID id)
+{
+    switch (id)
+    {
+    case SUB_PARAM_HR_PR:
+    case SUB_PARAM_SPO2:
+    case SUB_PARAM_RR_BR:
+    case SUB_PARAM_CVP_MAP:
+    case SUB_PARAM_LAP_MAP:
+    case SUB_PARAM_RAP_MAP:
+    case SUB_PARAM_ICP_MAP:
+        return TREND_GRAPH_TYPE_NORMAL;
+    case SUB_PARAM_NIBP_SYS:
+        return TREND_GRAPH_TYPE_NIBP;
+    case SUB_PARAM_ETCO2:
+    case SUB_PARAM_ETN2O:
+    case SUB_PARAM_ETAA1:
+    case SUB_PARAM_ETAA2:
+    case SUB_PARAM_ETO2:
+    case SUB_PARAM_T1:
+        return TREND_GRAPH_TYPE_AG_TEMP;
+    case SUB_PARAM_ART_SYS:
+    case SUB_PARAM_PA_SYS:
+    case SUB_PARAM_AUXP1_SYS:
+    case SUB_PARAM_AUXP2_SYS:
+        return TREND_GRAPH_TYPE_ART_IBP;
+    default:
+        return TREND_GRAPH_TYPE_NR;
     }
 }

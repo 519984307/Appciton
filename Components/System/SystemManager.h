@@ -13,6 +13,7 @@
 #include <QBitArray>
 #include "Param.h"
 #include "SystemDefine.h"
+#include "TimeDefine.h"
 
 #ifdef Q_WS_X11
 #include <QTcpSocket>
@@ -95,6 +96,7 @@ enum WorkMode
 {
     WORK_MODE_NORMAL = 0,
     WORK_MODE_DEMO,
+    WORK_MODE_STANDBY,
     WORK_MODE_NR,
 };
 
@@ -205,6 +207,18 @@ signals:
 
 signals:
     void workModeChanged(WorkMode mode);
+
+    /**
+     * @brief systemTimeFormatUpdated  系统时间格式更新
+     * @param format  时间格式--12小时制、24小时制
+     */
+    void systemTimeFormatUpdated(TimeFormat format);
+
+    /**
+     * @brief standbySignal 待机信号
+     * @param flag 待机标志
+     */
+    void standbySignal(bool flag);
 
 private slots:
     void publishTestResult();

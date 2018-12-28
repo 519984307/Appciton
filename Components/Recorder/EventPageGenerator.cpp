@@ -102,6 +102,8 @@ public:
                 LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subparamID, unit);
 
                 titleStr += Util::convertToString(ctx.almSegment->alarmLimit, config.scale);
+                titleStr += " ";
+                titleStr += Unit::localeSymbol(unit);
             }
 
             eventTitle = titleStr;
@@ -221,7 +223,7 @@ public:
 
             captionLength = fontManager.textWidthInPixels(caption, q_ptr->font());
             info.drawCtx.captionPixLength = captionLength;
-            Util::strlcpy(info.drawCtx.caption, qPrintable(caption), sizeof(info.drawCtx.caption));
+            info.drawCtx.caption = caption;
             info.drawCtx.curPageFirstXpos = 0.0;
             info.drawCtx.prevSegmentLastYpos = 0.0;
             info.drawCtx.dashOffset = 0.0;

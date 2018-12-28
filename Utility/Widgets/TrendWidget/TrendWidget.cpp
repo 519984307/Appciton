@@ -120,7 +120,6 @@ void TrendWidget::showAlarmStatus(QWidget *value)
 void TrendWidget::showAlarmParamLimit(QWidget *valueWidget, const QString &valueStr, QPalette psrc)
 {
     normalPalette(psrc);
-    QPalette p = upLimit->palette();
     double value = valueStr.toDouble();
     double up = upLimit->text().toDouble();
     double down = downLimit->text().toDouble();
@@ -133,7 +132,6 @@ void TrendWidget::showAlarmParamLimit(QWidget *valueWidget, const QString &value
         upLimit->setPalette(psrc);
     }
 
-    p = downLimit->palette();
     if (value < down)
     {
         downLimit->setPalette(valueWidget->palette());

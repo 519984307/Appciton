@@ -76,52 +76,23 @@ void CO2WaveWidget::setWaveformMode(CO2SweepMode mode)
  *************************************************************************************************/
 void CO2WaveWidget::setRuler(CO2DisplayZoom zoom)
 {
-    float zoomValue = 0;
     switch (zoom)
     {
     case CO2_DISPLAY_ZOOM_4:
         _ruler->setRuler(4.0, 2.0, 0);
-        zoomValue = 4.0;
         break;
     case CO2_DISPLAY_ZOOM_8:
         _ruler->setRuler(8.0, 4.0, 0);
-        zoomValue = 8.0;
         break;
     case CO2_DISPLAY_ZOOM_12:
         _ruler->setRuler(12.0, 6.0, 0);
-        zoomValue = 12.0;
         break;
     case CO2_DISPLAY_ZOOM_20:
         _ruler->setRuler(20.0, 10.0, 0);
-        zoomValue = 20.0;
         break;
     default:
         break;
     }
-
-    UnitType unit = co2Param.getUnit();
-    QString str;
-    if (unit == UNIT_KPA)
-    {
-        float tempVal = Unit::convert(UNIT_KPA, UNIT_PERCENT, zoomValue).toFloat();
-        str = QString("0.0~%1").arg(QString::number(
-                        static_cast<float>(
-                            static_cast<int>(tempVal + 0.5)), 'f', 1));
-    }
-    else if (unit == UNIT_MMHG)
-    {
-        str = "0~";
-        int tempVal = Unit::convert(UNIT_MMHG, UNIT_PERCENT, zoomValue).toInt();
-        tempVal = (tempVal + 5) / 10 * 10;
-        str += QString::number(tempVal);
-    }
-    else
-    {
-        str = QString("0.0~%1").arg(QString::number(zoomValue, 'f', 1));
-    }
-    str += " ";
-    str += Unit::localeSymbol(unit);
-    //    _zoom->setText(str);
 }
 
 void CO2WaveWidget::updatePalette(const QPalette &pal)
@@ -149,17 +120,6 @@ CO2WaveWidget::CO2WaveWidget(const QString &waveName, const QString &title)
     setFocusPolicy(Qt::NoFocus);
     setID(WAVE_CO2);
 
-    QPalette palette = colorManager.getPalette(paramInfo.getParamName(PARAM_CO2));
-    setPalette(palette);
-
-    // 标尺的颜色更深。
-    QColor color = palette.color(QPalette::WindowText);
-    palette.setColor(QPalette::Highlight, color);
-    color.setRed(color.red() * 2 / 3);
-    color.setGreen(color.green() * 2 / 3);
-    color.setBlue(color.blue() * 2 / 3);
-    palette.setColor(QPalette::WindowText, color);
-
     int infoFont = fontManager.getFontSize(4);
     int fontH = fontManager.textHeightInPixels(fontManager.textFont(infoFont)) + 4;
 //    _name = new WaveWidgetLabel(" ", Qt::AlignLeft | Qt::AlignVCenter, this);
@@ -169,11 +129,12 @@ CO2WaveWidget::CO2WaveWidget(const QString &waveName, const QString &title)
 //    addItem(_name);
 
     _ruler = new CO2WaveRuler(this);
-    _ruler->setPalette(palette);
     _ruler->setFont(fontManager.textFont(infoFont - 2));
     addItem(_ruler);
 
     setMargin(QMargins(WAVE_X_OFFSET, 2, 2, 2));
+
+    _loadConfig();
 }
 
 void CO2WaveWidget::_getItemIndex(int index)
@@ -181,9 +142,30 @@ void CO2WaveWidget::_getItemIndex(int index)
     _currentItemIndex = index;
 }
 
+void CO2WaveWidget::_loadConfig()
+{
+    QPalette palette = colorManager.getPalette(paramInfo.getParamName(PARAM_CO2));
+    setPalette(palette);
+    // 标尺的颜色更深。
+    QColor color = palette.color(QPalette::WindowText);
+    palette.setColor(QPalette::Highlight, color);
+    color.setRed(color.red() * 2 / 3);
+    color.setGreen(color.green() * 2 / 3);
+    color.setBlue(color.blue() * 2 / 3);
+    palette.setColor(QPalette::WindowText, color);
+    _ruler->setPalette(palette);
+}
+
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
 CO2WaveWidget::~CO2WaveWidget()
 {
+}
+
+void CO2WaveWidget::updateWidgetConfig()
+{
+    _loadConfig();
+    // 待加入波形配置代码
+    WaveWidget::updateWidgetConfig();
 }

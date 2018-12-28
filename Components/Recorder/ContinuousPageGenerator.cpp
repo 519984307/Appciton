@@ -8,8 +8,6 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/9/13
  **/
 
-
-
 #include "ContinuousPageGenerator.h"
 #include "LanguageManager.h"
 #include "PatientManager.h"
@@ -30,6 +28,7 @@
 #include "IConfig.h"
 #include "PrintSettingMenuContent.h"
 #include "LayoutManager.h"
+#include "EventStorageItem.h"
 
 class ContinuousPageGeneratorPrivate
 {
@@ -37,6 +36,7 @@ public:
     explicit ContinuousPageGeneratorPrivate(ContinuousPageGenerator *const q_ptr)
         : q_ptr(q_ptr),
           curPageType(RecordPageGenerator::TitlePage),
+          item(NULL),
           curDrawWaveSegment(0),
           totalDrawWaveSegment(-1)
     {
@@ -71,7 +71,7 @@ public:
 
     QList<RecordWaveSegmentInfo> getPrintWaveInfos();
 
-    void fetchWaveData();
+    void fetchWaveData(bool isRealtime);
 
     bool isParamStop(WaveformID id);
 
@@ -79,6 +79,7 @@ public:
     RecordPageGenerator::PageType curPageType;
     TrendDataPackage trendData;
     QList<RecordWaveSegmentInfo> waveInfos;
+    EventStorageItem *item;
     int curDrawWaveSegment;
     int totalDrawWaveSegment;   // total wave segments that need to draw, -1 means unlimit
 };
@@ -110,7 +111,7 @@ QList<RecordWaveSegmentInfo> ContinuousPageGeneratorPrivate::getPrintWaveInfos()
  *          we should fetch 1 second wave data form the realtimeChannel,
  *          if wavecache don't have enough data, we fill invalid data.
  */
-void ContinuousPageGeneratorPrivate::fetchWaveData()
+void ContinuousPageGeneratorPrivate::fetchWaveData(bool isRealtime)
 {
     QList<RecordWaveSegmentInfo>::iterator iter;
     for (iter = waveInfos.begin(); iter < waveInfos.end(); ++iter)
@@ -120,44 +121,83 @@ void ContinuousPageGeneratorPrivate::fetchWaveData()
             iter->secondWaveBuff.resize(iter->sampleRate);
         }
 
-        int curSize = 0;
         int retryCount = 0;
-        int lastReadSize = 0;
-        while (curSize < iter->sampleRate)
+        if (isRealtime)
         {
-            if (recorderManager.isAbort())
+            int lastReadSize = 0;
+            int curSize = 0;
+            while (curSize < iter->sampleRate)
             {
-                // param stop
-                break;
+                if (recorderManager.isAbort())
+                {
+                    // param stop
+                    break;
+                }
+
+                if (isParamStop(iter->id))
+                {
+                    // param stop
+                    break;
+                }
+
+                curSize += waveformCache.readRealtimeChannel(iter->id,
+                           iter->sampleRate - curSize,
+                           iter->secondWaveBuff.data() + curSize);
+
+                if (++retryCount >= 200)  // 1000 ms has passed and haven't finished reading
+                {
+                    if (curSize == lastReadSize)
+                    {
+                        break;
+                    }
+                }
+
+                if (retryCount > 100 && curSize == 0)
+                {
+                    // not data after 100 try, no data for this waveform id
+                    // stop any further try.
+                    break;
+                }
+
+                lastReadSize = curSize;
+                Util::waitInEventLoop(5);
             }
 
-            if (isParamStop(iter->id))
+            if (curSize < iter->sampleRate)
             {
-                // param stop
-                break;
+                // no enough data, fill with invalid
+                qFill(iter->secondWaveBuff.data() + curSize, iter->secondWaveBuff.data() + iter->sampleRate,
+                      (WaveDataType) INVALID_WAVE_FALG_BIT);
+                qDebug() << Q_FUNC_INFO << "no enough data, fill invalid";
             }
-
-            curSize += waveformCache.readRealtimeChannel(iter->id,
-                       iter->sampleRate - curSize,
-                       iter->secondWaveBuff.data() + curSize);
-
-            if (++retryCount >= 200)  // 1000 ms has passed and haven't finished reading
+        }
+        else
+        {
+            while (curDrawWaveSegment >= item->getCurWaveCacheDuration(iter->id))
             {
-                if (curSize == lastReadSize)
+                if (recorderManager.isAbort())
+                {
+                    // print abort
+                    break;
+                }
+
+                if (++retryCount >= 220) // wait more than 1 second
                 {
                     break;
                 }
+
+                Util::waitInEventLoop(5);
             }
 
-            lastReadSize = curSize;
-            Util::waitInEventLoop(5);
-        }
-
-        if (curSize < iter->sampleRate)
-        {
-            // no enough data, fill with invalid
-            qFill(iter->secondWaveBuff.data() + curSize, iter->secondWaveBuff.data() + iter->sampleRate,
-                  (WaveDataType) INVALID_WAVE_FALG_BIT);
+            if (curDrawWaveSegment < item->getCurWaveCacheDuration(iter->id))
+            {
+                item->getOneSecondWaveform(iter->id, iter->secondWaveBuff.data(), curDrawWaveSegment);
+            }
+            else
+            {
+                // fill with invalid data
+                iter->secondWaveBuff.fill((WaveDataType)INVALID_WAVE_FALG_BIT);
+            }
         }
     }
 }
@@ -172,14 +212,24 @@ bool ContinuousPageGeneratorPrivate::isParamStop(WaveformID id)
     return paramManager.isParamStopped(paramInfo.getParamID(id));
 }
 
-ContinuousPageGenerator::ContinuousPageGenerator(QObject *parent)
+ContinuousPageGenerator::ContinuousPageGenerator(unsigned curTime, QObject *parent)
     : RecordPageGenerator(parent), d_ptr(new ContinuousPageGeneratorPrivate(this))
 {
     d_ptr->waveInfos = d_ptr->getPrintWaveInfos();
+    QList<WaveformID> waves;
+    for (int i = 0; i < d_ptr->waveInfos.count(); i++)
+    {
+        waves.append(d_ptr->waveInfos.at(i).id);
+    }
+    EventStorageItem *item = new EventStorageItem(EventRealtimePrint,
+            waves);
+    item->startCollectTrendAndWaveformData(curTime);
+    d_ptr->item = item;
 }
 
 ContinuousPageGenerator::~ContinuousPageGenerator()
 {
+    delete d_ptr->item;
 }
 
 int ContinuousPageGenerator::type() const
@@ -198,7 +248,7 @@ RecordPage *ContinuousPageGenerator::createPage()
     {
     case TitlePage:
         d_ptr->curPageType = TrendPage;
-        return createTitlePage(QString(trs("RealtimeSegmentWaveRecording")), patientManager.getPatientInfo(), 0);
+        return createTitlePage(QString(trs("RealtimeSegmentWavePrint")), patientManager.getPatientInfo(), 0);
     case TrendPage:
         d_ptr->curPageType = WaveScalePage;
         return createTrendPage(d_ptr->trendData, false);
@@ -209,7 +259,14 @@ RecordPage *ContinuousPageGenerator::createPage()
         if (!recorderManager.isAbort())
         {
             RecordPage *page;
-            d_ptr->fetchWaveData();
+            if (d_ptr->curDrawWaveSegment < d_ptr->totalDrawWaveSegment / 2)
+            {
+                d_ptr->fetchWaveData(false);
+            }
+            else
+            {
+                d_ptr->fetchWaveData(true);
+            }
 
             page = createWaveSegments(d_ptr->waveInfos, d_ptr->curDrawWaveSegment++, recorderManager.getPrintSpeed());
 

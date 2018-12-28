@@ -11,6 +11,7 @@
 #include "AlarmInfoModel.h"
 #include <QStringList>
 #include "ThemeManager.h"
+#include <QIcon>
 
 #define DEFAULT_ROW_HEIGHT (themeManger.getAcceptableControlHeight())
 
@@ -20,6 +21,7 @@ public:
     AlarmInfoModelPrivate(){}
     QStringList nameList;
     QStringList timeList;
+    QList<QIcon> iconList;
 };
 
 AlarmInfoModel::AlarmInfoModel(QObject *parent)
@@ -66,6 +68,14 @@ QVariant AlarmInfoModel::data(const QModelIndex &index, int role) const
         }
         break;
 
+    case Qt::DecorationRole:
+    {
+        if (column == 0)
+        {
+            return QVariant(d_ptr->iconList[index.row()]);
+        }
+        break;
+    }
     case Qt::SizeHintRole:
     {
         return QSize(10, DEFAULT_ROW_HEIGHT);
@@ -106,11 +116,30 @@ QVariant AlarmInfoModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
+bool AlarmInfoModel::setData(const QModelIndex &index, const QVariant &value, int role) const
+{
+    int row = index.row();
+    switch (role)
+    {
+    case Qt::DecorationRole:
+        d_ptr->iconList[row] = qvariant_cast<QIcon>(value);
+        break;
+    default:
+        break;
+    }
+    return true;
+}
+
 void AlarmInfoModel::setStringList(const QStringList &nameList, const QStringList &timeList)
 {
     beginResetModel();
     d_ptr->nameList = nameList;
     d_ptr->timeList = timeList;
+    d_ptr->iconList.clear();
+    for (int i = 0; i < d_ptr->nameList.count(); i++)
+    {
+        d_ptr->iconList.append(QIcon());
+    }
     endResetModel();
 }
 

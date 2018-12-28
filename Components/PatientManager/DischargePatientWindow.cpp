@@ -27,13 +27,15 @@ public:
     Button *yesBtn;                     // 确定按键
     Button *noBtn;                      // 确定按键
     bool isStandby;                     // 是否待机
+    QLabel *hintLbl;                    // 提示信息标签
 };
 
 DischaregePatientWindowPrivate::DischaregePatientWindowPrivate()
     : standbyChk(NULL),
       yesBtn(NULL),
       noBtn(NULL),
-      isStandby(false)
+      isStandby(false),
+      hintLbl(NULL)
 {
 }
 
@@ -51,7 +53,7 @@ DischargePatientWindow::~DischargePatientWindow()
 void DischargePatientWindow::layoutExec()
 {
     setWindowTitle(trs("RelievePatient"));
-    setFixedSize(400, 200);
+    setFixedSize(450, 250);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setMargin(10);
@@ -66,20 +68,19 @@ void DischargePatientWindow::layoutExec()
     d_ptr->standbyChk->setFixedSize(32, 32);
 
     QLabel *lbl = new QLabel;
+    lbl->setText(trs("isRelievePatient"));
+    lbl->setAlignment(Qt::AlignCenter);
+    d_ptr->hintLbl = lbl;
+    layout->addWidget(d_ptr->hintLbl);
+    layout->addStretch();
+
 #ifndef HIDE_STANDBY_FUNCTION
+    lbl = new QLabel;
     lbl->setText(trs("Standby"));
     lbl->setFixedWidth(100);
-#else
-    lbl->setText(trs("isRelievePatient"));
-#endif
-
-    lbl->setAlignment(Qt::AlignCenter);
-    hlayout->addStretch();
-#ifndef HIDE_STANDBY_FUNCTION
     hlayout->addWidget(d_ptr->standbyChk);
-#endif
     hlayout->addWidget(lbl);
-    hlayout->addStretch();
+#endif
     layout->addLayout(hlayout);
     layout->addStretch();
 
@@ -106,14 +107,19 @@ void DischargePatientWindow::layoutExec()
     setWindowLayout(layout);
 }
 
-/***************************************************************************************************
- * 显示事件
- **************************************************************************************************/
 void DischargePatientWindow::showEvent(QShowEvent *e)
 {
+    if (patientManager.isMonitoring())
+    {
+        setWindowTitle(trs("RelievePatient"));
+        d_ptr->hintLbl->setText(trs("isRelievePatient"));
+    }
+    else
+    {
+        setWindowTitle(trs("CleanPatientData"));
+        d_ptr->hintLbl->setText(trs("isCleanPatient"));
+    }
     Window::showEvent(e);
-    QRect r = layoutManager.getMenuArea();
-    move(r.x() + (r.width() - width()) / 2, r.y() + (r.height() - height()) / 2);
 }
 
 void DischargePatientWindow::onBtnRelease()

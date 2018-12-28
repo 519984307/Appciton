@@ -204,9 +204,8 @@ public:
 
     /**
      * @brief dischargePatient 解除病人
-     * @param isShowStandbyWin 是否显示待机窗口
      */
-    void dischargePatient(bool isShowStandbyWin = true);
+    void dischargePatient();
 
     /**
      * @brief finishPatientInfo 完成病人信息处理

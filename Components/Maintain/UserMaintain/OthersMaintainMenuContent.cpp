@@ -20,6 +20,7 @@
 #include "Button.h"
 #include "NurseCallSettingWindow.h"
 #include "ECGParam.h"
+#include "CO2Param.h"
 
 class OthersMaintainMenuContentPrivate
 {
@@ -31,6 +32,7 @@ public:
         ITEM_CBO_FREQUENCY_NOTCH,
         ITEM_CBO_PARAM_SWITCH_PREM,
         ITEM_CBO_CONFIG_SET,
+        ITEM_CBO_CO2_WAVE_MODE,
     };
 
     OthersMaintainMenuContentPrivate()
@@ -102,6 +104,9 @@ void OthersMaintainMenuContentPrivate::loadOptions()
     {
         combos[ITEM_CBO_CONFIG_SET]->setCurrentIndex(tmpStr.toInt());
     }
+
+    int mode = co2Param.getSweepMode();
+    combos[ITEM_CBO_CO2_WAVE_MODE]->setCurrentIndex(mode);
 }
 
 OthersMaintainMenuContent::OthersMaintainMenuContent()
@@ -204,6 +209,21 @@ void OthersMaintainMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(OthersMaintainMenuContentPrivate::ITEM_CBO_CONFIG_SET, comboBox);
 
+    // CO2波形模式
+    label = new QLabel(trs("CO2WaveMode"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                       << trs("CO2Curve")
+                       << trs("CO2Filled")
+                      );
+    itemID = static_cast<int>(OthersMaintainMenuContentPrivate::ITEM_CBO_CO2_WAVE_MODE);
+    comboBox->setProperty("Item",
+                          qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(OthersMaintainMenuContentPrivate::ITEM_CBO_CO2_WAVE_MODE, comboBox);
+
     // nurse Call Setting
     label = new QLabel(trs("NurseCallSetting"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -240,6 +260,9 @@ void OthersMaintainMenuContent::onComboBoxIndexChanged(int index)
         case OthersMaintainMenuContentPrivate::ITEM_CBO_PARAM_SWITCH_PREM:
             string = "ParaSwitchPrem";
             systemConfig.setNumValue(QString("Others|%1").arg(string), index);
+            break;
+        case OthersMaintainMenuContentPrivate::ITEM_CBO_CO2_WAVE_MODE:
+            co2Param.setSweepMode(static_cast<CO2SweepMode>(index));
             break;
         default:
             break;

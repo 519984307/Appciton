@@ -105,54 +105,6 @@ public:
         return symbol[index];
     }
 
-    static const char *convert(NIBPAdultInitialCuff index)
-    {
-        static const char *symbol[NIBP_ADULT_INITIAL_CUFF_NR] =
-        {
-            "120",
-            "140",
-            "160",
-            "180",
-            "200",
-            "220",
-            "240",
-            "260",
-        };
-        return symbol[index];
-    }
-
-    static const char *convert(NIBPPrediatrictInitialCuff index)
-    {
-        static const char *symbol[NIBP_PREDIATRIC_INITIAL_CUFF_NR] =
-        {
-            "80",
-            "90",
-            "100",
-            "110",
-            "120",
-            "130",
-            "140",
-            "150",
-        };
-        return symbol[index];
-    }
-
-    static const char *convert(NIBPNeonatalInitialCuff index)
-    {
-        static const char *symbol[NIBP_NEONATAL_INITIAL_CUFF_NR] =
-        {
-            "60",
-            "70",
-            "80",
-            "90",
-            "100",
-            "110",
-            "120",
-            "130",
-        };
-        return symbol[index];
-    }
-
     static const char *convert(NIBPCalibratePressure index)
     {
         static const char *symbol[NIBP_Calibrate_Pressure_NR] =

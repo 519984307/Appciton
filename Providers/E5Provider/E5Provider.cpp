@@ -98,9 +98,12 @@ public:
           ecgLeadMode(ECG_LEAD_MODE_5),
           respApneaTime(APNEA_ALARM_TIME_OFF),
           resplead(RESP_LEAD_II),
-          enableRespCalc(false)
+          enableRespCalc(false),
+          isFristConnect(false),
+          isSupportResp(true)
     {
         qMemSet(selftestResult, 0, sizeof(selftestResult));
+        isSupportResp = systemManager.isSupport(PARAM_RESP);
     }
 
     void handleEcgRawData(unsigned char *data, int len);
@@ -114,6 +117,8 @@ public:
     ApneaAlarmTime respApneaTime;
     RESPLead resplead;
     bool enableRespCalc;
+    bool isFristConnect;            // 是否第一次正确连接导联
+    bool isSupportResp;
 };
 
 /* parse the data from the module and pass it to the algorithm interface */
@@ -143,6 +148,12 @@ void E5ProviderPrivate::handleEcgRawData(unsigned char *data, int len)
         if (ecgParam.getLeadMode() == ECG_LEAD_MODE_5)
         {
             leadoff &= 0xFFE0;
+        }
+
+        if (!leadoff && !isFristConnect)
+        {
+            ecgParam.setFristConnect();
+            isFristConnect = true;
         }
 
         if (ecgParam.getLeadMode() == ECG_LEAD_MODE_3)
@@ -294,7 +305,10 @@ void E5Provider::handlePacket(unsigned char *data, int len)
     if (!isConnected)
     {
         ecgParam.setConnected(true);
-        respParam.setConnected(true);
+        if (d_ptr->isSupportResp)
+        {
+            respParam.setConnected(true);
+        }
     }
 
     switch (data[0])
@@ -343,14 +357,17 @@ void E5Provider::handlePacket(unsigned char *data, int len)
     }
     break;
     case E5_NOTIFY_RESP_ALARM:
-        // apnea alarm status
-        if (data[1])
+        if (d_ptr->isSupportResp)
         {
-            respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_APNEA, true);
-        }
-        else
-        {
-            respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_APNEA, false);
+            // apnea alarm status
+            if (data[1])
+            {
+                respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_APNEA, true);
+            }
+            else
+            {
+                respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_APNEA, false);
+            }
         }
         break;
     case E5_PERIODIC_ALIVE:
@@ -367,16 +384,22 @@ void E5Provider::handlePacket(unsigned char *data, int len)
     }
     break;
     case E5_PERIODIC_RESP_DATA:
-        d_ptr->handleRESPRawData(data + 1, len - 1);
+        if (d_ptr->isSupportResp)
+        {
+            d_ptr->handleRESPRawData(data + 1, len - 1);
+        }
         break;
     case E5_PERIODIC_RR:
     {
-        short rr = data[1] + (data[2] << 8);
-        if (rr == -1)
+        if (d_ptr->isSupportResp)
         {
-            rr = InvData();
+            short rr = data[1] + (data[2] << 8);
+            if (rr == -1)
+            {
+                rr = InvData();
+            }
+            respParam.setRR(rr);
         }
-        respParam.setRR(rr);
     }
     break;
     case E5_STATUS_ERROR_OR_WARN:

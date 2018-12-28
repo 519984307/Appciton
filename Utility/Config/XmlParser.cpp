@@ -593,6 +593,15 @@ void XmlParser::setConfig(const QString &indexStr, const QVariantMap &map)
     parent.appendChild(createDomElement(tagName, map, _xml));
 }
 
+void XmlParser::setCurrentFilePath(QString &path)
+{
+    if (path.isEmpty())
+    {
+        return;
+    }
+   _fileName = path;
+}
+
 /*******************************************************************************
  * 功能： 根据标签元素路径查找对应的标签元素对象。
  * 参数：

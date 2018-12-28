@@ -30,8 +30,6 @@ static void _initSystem(void)
 
     // superRunConfig.construction();
 
-    timeManager.checkAndFixSystemTime();
-
     // 新会话，需要恢复主配置文件
     if (timeManager.getPowerOnSession() == POWER_ON_SESSION_NEW)
     {
@@ -115,6 +113,12 @@ static void _initSystem(void)
 
     //消息提示框
     pMessageBox.construction();
+
+    // 初始化夜间模式
+    if (nightModeManager.nightMode())
+    {
+        nightModeManager.setNightMode(true);
+    }
 }
 
 /**************************************************************************************************
@@ -156,7 +160,7 @@ static void _initComponents(void)
 
     // 电源
     BatteryBarWidget *bar = &batteryBarWidget;
-    powerMangerBrief.construction();
+    powerManger.construction();
     alertor.addOneShotSource(batteryOneShotAlarm.construction());
     layoutManager.addLayoutWidget(bar);
 
@@ -180,7 +184,7 @@ static void _initComponents(void)
 
     // running status
     runningStatus.setPacerStatus(patientManager.getPacermaker());
-    runningStatus.setNightModeStatus(nightModeManager.isNightMode());
+    runningStatus.setNightModeStatus(nightModeManager.nightMode());
 #ifdef Q_WS_QWS
     if (systemManager.isSupport(CONFIG_TOUCH))
     {
@@ -340,14 +344,17 @@ static void _initProviderParam(void)
         if (str == "MASIMO_SPO2")
         {
             paramManager.addProvider(*new MasimoSetProvider());
+            spo2Param.setModuleType(MODULE_MASIMO_SPO2);
         }
         else if (str == "BLM_S5")
         {
             paramManager.addProvider(*new S5Provider());
+            spo2Param.setModuleType(MODULE_BLM_S5);
         }
         else if (str == "NELLCOR_SPO2")
         {
             paramManager.addProvider(*new NellcorSetProvider());
+            spo2Param.setModuleType(MODULE_NELLCOR_SPO2);
         }
         paramManager.addParam(spo2Param.construction());
         alertor.addLimtSource(spo2LimitAlarm.construction());
@@ -560,6 +567,7 @@ static void _initPrint(void)
     PRT48Provider *prtProvider = new PRT48Provider();
     recorderManager.setPrintPrividerIFace(prtProvider);
     recorderManager.selfTest();
+    recorderManager.printWavesInit();
 }
 
 /**************************************************************************************************

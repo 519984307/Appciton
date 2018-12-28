@@ -18,6 +18,7 @@
 #include "MessageBox.h"
 #include <QApplication>
 #include "RescueDataDeleteWindow.h"
+#include "DischargePatientWindow.h"
 
 class PatientManagementMenuContentPrivate
 {
@@ -122,8 +123,7 @@ void PatientManagementMenuContent::onBtnReleased()
             {
                 patientManager.newPatient();
             }
-            windowManager.showWindow(&patientInfoWindow , WindowManager::ShowBehaviorCloseOthers
-                                     | WindowManager::ShowBehaviorCloseIfVisiable);
+            windowManager.showWindow(&patientInfoWindow , WindowManager::ShowBehaviorCloseIfVisiable);
         }
         break;
         case PatientManagementMenuContentPrivate::ITEM_BTN_NEW_PATIENT:
@@ -137,7 +137,7 @@ void PatientManagementMenuContent::onBtnReleased()
             // 创建新病人
             QStringList slist;
             slist << trs("No") << trs("EnglishYESChineseSURE");
-            MessageBox messageBox(trs("Warn"), trs("RemoveAndRecePatient"), slist);
+            MessageBox messageBox(trs("Warn"), trs("RemoveAndRecePatient"), slist, true);
             if (messageBox.exec() == 1)
             {
                 patientManager.newPatient();
@@ -147,7 +147,11 @@ void PatientManagementMenuContent::onBtnReleased()
         break;
         case PatientManagementMenuContentPrivate::ITEM_BTN_DISCHARGE_PATIENT:
         {
-            patientManager.dischargePatient();
+            DischargePatientWindow dischargeWin;
+            if (dischargeWin.exec() == QDialog::Accepted)
+            {
+                patientManager.dischargePatient();
+            }
         }
         break;
         case PatientManagementMenuContentPrivate::ITEM_BTN_DATA_DELETE_CASE:
@@ -163,7 +167,7 @@ void PatientManagementMenuContent::onBtnReleased()
             {
                 return;
             }
-            windowManager.showWindow(&rescueDataDeleteWindow , WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorCloseOthers);
+            windowManager.showWindow(&rescueDataDeleteWindow , WindowManager::ShowBehaviorCloseIfVisiable);
         }
         break;
         default:

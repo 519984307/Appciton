@@ -32,8 +32,9 @@ public:
      * @param type the data type
      * @param data pointer to the raw data
      * @param len the data length
+     * @param stop stop collection flag
      */
-    void collectData(CollectDataType type, const unsigned char *data, int len);
+    void collectData(CollectDataType type, const unsigned char *data, int len, bool stop = false);
 
     /**
      * @brief setCollectStatus enable or disable the collection of specific type

@@ -17,6 +17,9 @@
 #include "Button.h"
 #include "ConfigManager.h"
 #include "UnitManager.h"
+#include "TEMPParam.h"
+#include "CO2Param.h"
+#include "NIBPParam.h"
 
 class UnitSetupMenuContentPrivate
 {
@@ -130,7 +133,7 @@ void UnitSetupMenuContentPrivate::loadOptions()
     }
     combos[ITEM_CBO_ICP_UNIT]->setCurrentIndex(index);
 
-    systemConfig.getNumValue("Unit|CO2Unit", unit);
+    currentConfig.getNumValue("Local|CO2Unit", unit);
     if (unit == UNIT_MMHG)
     {
         index = 0;
@@ -364,7 +367,7 @@ void UnitSetupMenuContent::onComboBoxIndexChanged(int index)
             {
                 index = UNIT_MMHG;
             }
-            systemConfig.setNumValue("Unit|PressureUnit", index);
+            nibpParam.setUnit(static_cast<UnitType>(index));
             break;
         case UnitSetupMenuContentPrivate::ITEM_CBO_TEMP_UNIT:
             if (index == 0)
@@ -379,7 +382,7 @@ void UnitSetupMenuContent::onComboBoxIndexChanged(int index)
             {
                 index = UNIT_TF;
             }
-            systemConfig.setNumValue("Unit|TemperatureUnit", index);
+            tempParam.setUnit(static_cast<UnitType>(index));
             break;
         case UnitSetupMenuContentPrivate::ITEM_CBO_CVP_UNIT:
             if (index == 0)
@@ -436,7 +439,8 @@ void UnitSetupMenuContent::onComboBoxIndexChanged(int index)
             {
                 index = UNIT_MMHG;
             }
-            systemConfig.setNumValue("Unit|CO2Unit", index);
+            currentConfig.setNumValue("Local|CO2Unit", index);
+            co2Param.updateUnit();
             break;
         default:
             break;

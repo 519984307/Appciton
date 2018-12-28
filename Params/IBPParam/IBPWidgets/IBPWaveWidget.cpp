@@ -178,6 +178,11 @@ void IBPWaveWidget::updatePalette(const QPalette &pal)
     updateBackground();
 }
 
+void IBPWaveWidget::updateWidgetConfig()
+{
+    WaveWidget::updateWidgetConfig();
+}
+
 /**************************************************************************************************
  * 尺寸变化。
  *************************************************************************************************/

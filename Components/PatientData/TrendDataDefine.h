@@ -62,14 +62,18 @@ struct TrendDataPackage
     TrendDataPackage()
     {
         time = 0;
-        alarmFlag = false;
         co2Baro  = 0;
+        alarmFlag = false;
+        index = 0;
+        status = 0;
     }
     unsigned time;
     QMap<SubParamID, TrendDataType> subparamValue;
     QMap<SubParamID, bool> subparamAlarm;
     short co2Baro;
-    unsigned char alarmFlag;
+    bool alarmFlag;
+    unsigned index;
+    unsigned status;
 };
 
 /* 分辨率 */
@@ -85,6 +89,7 @@ enum ResolutionRatio
     RESOLUTION_RATIO_1_HOUR,
     RESOLUTION_RATIO_2_HOUR,
     RESOLUTION_RATIO_3_HOUR,
+    RESOLUTION_RATIO_NIBP,
     RESOLUTION_RATIO_NR
 };
 
@@ -103,6 +108,7 @@ enum TrendGraphType
     TREND_GRAPH_TYPE_NIBP,
     TREND_GRAPH_TYPE_ART_IBP,           // IBP动脉类型
     TREND_GRAPH_TYPE_AG_TEMP,
+    TREND_GRAPH_TYPE_NR,
 };
 
 /* short trend store interval */
@@ -174,6 +180,7 @@ struct TrendGraphInfo
     {
         int max;
         int min;
+        int scale;
     } scale;
     QVector<TrendGraphData> trendData;
     QVector<TrendGraphDataV2> trendDataV2;

@@ -499,7 +499,6 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
         }
         // 当前带宽
         flag |= bandwidth;
-        waveformCache.addData((WaveformID)i, ((flag & 0xFFFF) << 16) | (waveform[i] & 0xFFFF));
 
         static int flagUnsaved[ECG_LEAD_NR] = {0};
         // 在普通模式中，在监控模式下所有的波形数据要扔掉一半，以250显示
@@ -529,6 +528,8 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
         {
             _waveWidget[i]->addWaveformData(-waveform[i], norfalg & 0xFFFF);
         }
+
+        waveformCache.addData((WaveformID)i, ((flag & 0xFFFF) << 16) | (waveform[i] & 0xFFFF));
 
         flagUnsaved[i] = 0;
     }
@@ -688,7 +689,7 @@ void ECGParam::updateECGNotifyMesg(ECGLead lead, bool isAlarm)
 
     if (isConnected())
     {
-        if (1 == _leadOff[lead])
+        if (1 == _leadOff[lead] && _isFristConnect)
         {
             mesg = ECG_WAVE_NOTIFY_LEAD_OFF;
         }
@@ -1145,6 +1146,48 @@ void ECGParam::handleSelfTestResult()
         item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
         errorLog.append(item);
     }
+}
+
+HRSourceType ECGParam::getHrSourceTypeFromId(ParamID id)
+{
+    switch (id)
+    {
+        case PARAM_ECG:
+        return HR_SOURCE_ECG;
+        break;
+        case PARAM_SPO2:
+        return HR_SOURCE_SPO2;
+        break;
+        case PARAM_IBP:
+        return HR_SOURCE_IBP;
+        break;
+        case PARAM_NR:
+        return HR_SOURCE_AUTO;
+        break;
+        default:
+        break;
+    }
+    return HR_SOURCE_NR;
+}
+
+ParamID ECGParam::getIdFromHrSourceType(HRSourceType type)
+{
+    switch (type)
+    {
+        case HR_SOURCE_ECG:
+        return PARAM_ECG;
+        break;
+        case HR_SOURCE_SPO2:
+        return PARAM_SPO2;
+        break;
+        case HR_SOURCE_IBP:
+        return PARAM_IBP;
+        break;
+        case HR_SOURCE_AUTO:
+        case HR_SOURCE_NR:
+        break;
+    }
+    return PARAM_NR;
 }
 
 /**************************************************************************************************
@@ -1804,6 +1847,18 @@ int ECGParam::getWaveDataRate() const
     return _provider->getWaveformSample();
 }
 
+void ECGParam::setGain(ECGGain gain)
+{
+    currentConfig.setNumValue("ECG|FullScreenGain", static_cast<int>(gain));
+    for (int i = 0; i < ECG_LEAD_NR; i++)
+    {
+        if (_waveWidget[i] == NULL)
+        {
+            continue;
+        }
+        _waveWidget[i]->setGain(gain);
+    }
+}
 
 /**************************************************************************************************
  * 设置增益。
@@ -1885,10 +1940,16 @@ ECGGain ECGParam::getGain(ECGLead lead)
         return ECG_GAIN_X10;
     }
 
-    QString waveName = _waveWidget[lead]->name();
-
     int gain = ECG_GAIN_X10;
-    currentConfig.getNumValue("ECG|Gain|" + waveName, gain);
+    if (layoutManager.getUFaceType() == UFACE_MONITOR_ECG_FULLSCREEN)
+    {
+        currentConfig.getNumValue("ECG|FullScreenGain", gain);
+    }
+    else
+    {
+        QString waveName = _waveWidget[lead]->name();
+        currentConfig.getNumValue("ECG|Gain|" + waveName, gain);
+    }
     return static_cast<ECGGain>(gain);
 }
 
@@ -1978,9 +2039,8 @@ void ECGParam::setQRSToneVolume(SoundManager::VolumeLevel vol)
  *************************************************************************************************/
 int ECGParam::getQRSToneVolume(void)
 {
-    int vol = SoundManager::VOLUME_LEV_2;
-    currentConfig.getNumValue("ECG|QRSVolume", vol);
-    return vol;
+    SoundManager::VolumeLevel vol = soundManager.getVolume(SoundManager::SOUND_TYPE_HEARTBEAT);
+    return static_cast<int>(vol);
 }
 
 /**************************************************************************************************
@@ -2181,11 +2241,21 @@ ECGLeadNameConvention ECGParam::getLeadNameConvention() const
     return _ecgStandard;
 }
 
+void ECGParam::setFristConnect()
+{
+    _isFristConnect = true;
+}
+
+bool ECGParam::getFristConnect()
+{
+    return _isFristConnect;
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
 ECGParam::ECGParam() : Param(PARAM_ECG),
-    _updateNum(0), _connectedProvider(false)
+    _updateNum(0), _connectedProvider(false), _isFristConnect(false)
 {
     // 初始化成员。
     _provider = NULL;
@@ -2297,8 +2367,10 @@ void ECGParam::onPaletteChanged(ParamID id)
     {
         _waveWidget[i]->updatePalette(psrc);
     }
-    _pvcsTrendWidget->updatePalette(psrc);
+#ifndef HIDE_ECG_ST_PVCS_SUBPARAM
     _ecgSTTrendWidget->updatePalette(psrc);
+    _pvcsTrendWidget->updatePalette(psrc);
+#endif
 }
 /**************************************************************************************************
  * 发送协议命令。

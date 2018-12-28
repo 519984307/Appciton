@@ -14,17 +14,17 @@
 #include "ComboBox.h"
 #include <QGridLayout>
 #include "IConfig.h"
+#include "SystemManager.h"
 
 class SupervisorPrintMenuContentPrivate
 {
 public:
     enum MenuItem
     {
-        ITEM_CBO_PRINT_ECG_RHYTHM,
-        ITEM_CBO_PRINT_PATIENT_ALARM,
         ITEM_CBO_PRINT_PHY_ALARM,
         ITEM_CBO_PRINT_CODEMARKER,
-        ITEM_CBO_PRINT_NIBP
+        ITEM_CBO_PRINT_NIBP,
+        ITEM_CBO_PRINT_WAVE_FREEZE
     };
 
     SupervisorPrintMenuContentPrivate() {}
@@ -37,20 +37,20 @@ public:
 void SupervisorPrintMenuContentPrivate::loadOptions()
 {
     int index = 0;
-    currentConfig.getNumValue("Print|PresentingECG", index);
-    combos[ITEM_CBO_PRINT_ECG_RHYTHM]->setCurrentIndex(index);
-
-    currentConfig.getNumValue("Print|CheckPatient", index);
-    combos[ITEM_CBO_PRINT_PATIENT_ALARM]->setCurrentIndex(index);
-
     currentConfig.getNumValue("Print|PhysiologicalAlarm", index);
     combos[ITEM_CBO_PRINT_PHY_ALARM]->setCurrentIndex(index);
 
     currentConfig.getNumValue("Print|CoderMarker", index);
     combos[ITEM_CBO_PRINT_CODEMARKER]->setCurrentIndex(index);
 
-    currentConfig.getNumValue("Print|NIBPReading", index);
-    combos[ITEM_CBO_PRINT_NIBP]->setCurrentIndex(index);
+    if (systemManager.isSupport(CONFIG_NIBP))
+    {
+        currentConfig.getNumValue("Print|NIBPReading", index);
+        combos[ITEM_CBO_PRINT_NIBP]->setCurrentIndex(index);
+    }
+
+    currentConfig.getNumValue("Print|WaveFreeze", index);
+    combos[ITEM_CBO_PRINT_WAVE_FREEZE]->setCurrentIndex(index);
 }
 
 SupervisorPrintMenuContent::SupervisorPrintMenuContent()
@@ -76,36 +76,6 @@ void SupervisorPrintMenuContent::layoutExec()
     ComboBox *comboBox;
     QLabel *label;
     int itemID;
-
-    // ecg rhythm
-    label = new QLabel(trs("ECGRhythm"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs("Disable")
-                       << trs("Enable")
-                      );
-    itemID = static_cast<int>(SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_ECG_RHYTHM);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_ECG_RHYTHM, comboBox);
-
-    // check patient
-    label = new QLabel(trs("CheckPatient"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs("Disable")
-                       << trs("Enable")
-                      );
-    itemID = static_cast<int>(SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_PATIENT_ALARM);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_PATIENT_ALARM, comboBox);
 
     // phy alarm
     label = new QLabel(trs("PhyAlarm"));
@@ -137,20 +107,38 @@ void SupervisorPrintMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_CODEMARKER, comboBox);
 
-    // NIBP Reading
-    label = new QLabel(trs("NIBPReading"));
+    if (systemManager.isSupport(CONFIG_NIBP))
+    {
+        // NIBP Reading
+        label = new QLabel(trs("NIBPReading"));
+        layout->addWidget(label, d_ptr->combos.count(), 0);
+        comboBox = new ComboBox();
+        comboBox->addItems(QStringList()
+                           << trs("Disable")
+                           << trs("Enable")
+                          );
+        itemID = static_cast<int>(SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_NIBP);
+        comboBox->setProperty("Item",
+                              qVariantFromValue(itemID));
+        connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+        layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+        d_ptr->combos.insert(SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_NIBP, comboBox);
+    }
+
+    // Wave Freeze
+    label = new QLabel(trs("WaveFreeze"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("Disable")
                        << trs("Enable")
                       );
-    itemID = static_cast<int>(SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_NIBP);
+    itemID = static_cast<int>(SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_WAVE_FREEZE);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_NIBP, comboBox);
+    d_ptr->combos.insert(SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_WAVE_FREEZE, comboBox);
 
     layout->setRowStretch(d_ptr->combos.count(), 1);
 }
@@ -164,12 +152,6 @@ void SupervisorPrintMenuContent::onComboBoxIndexChanged(int index)
                 = (SupervisorPrintMenuContentPrivate::MenuItem)box->property("Item").toInt();
         switch (item)
         {
-        case SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_ECG_RHYTHM:
-            currentConfig.setNumValue("Print|PresentingECG", index);
-            break;
-        case SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_PATIENT_ALARM:
-            currentConfig.setNumValue("Print|CheckPatient", index);
-            break;
         case SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_PHY_ALARM:
             currentConfig.setNumValue("Print|PhysiologicalAlarm", index);
             break;
@@ -178,6 +160,9 @@ void SupervisorPrintMenuContent::onComboBoxIndexChanged(int index)
             break;
         case SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_NIBP:
             currentConfig.setNumValue("Print|NIBPReading", index);
+            break;
+        case SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_WAVE_FREEZE:
+            currentConfig.setNumValue("Print|WaveFreeze", index);
             break;
         default:
             break;

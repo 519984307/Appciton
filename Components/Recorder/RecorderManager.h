@@ -75,6 +75,7 @@ public:
      * @return  true if printing, otherwise, false
      */
     bool isPrinting() const;
+    void setPrintStatus(bool sta);
 
     /**
      * @brief abort abort current printing
@@ -124,6 +125,23 @@ public:
      * @return
      */
     PrintTime getPrintTime(void) const;
+
+    /**
+     * @brief stopPrint 停止打印
+     * @return
+     */
+    void stopPrint(void);
+
+    /**
+     * @brief getCurPrintPriority 获取当前打印优先级
+     * @return
+     */
+    RecordPageGenerator::PrintPriority getCurPrintPriority(void);
+
+    /**
+     * @brief printWavesInit  打印波形初始化--配置文件初始化时需要重新更新打印波形id
+     */
+    void printWavesInit(void);
 
 private slots:
 

@@ -121,6 +121,11 @@ public:
      */
     bool hasExistConfig(const QString &name);
 
+    /**
+     * @brief loadConfig 加载相应的配置（只能加载预设的配置）
+     * @param type　病人类型
+     */
+    void loadConfig(PatientType type);
 signals:
     /**
      * @brief configChange

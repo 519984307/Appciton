@@ -14,7 +14,6 @@
 #include "IConfig.h"
 #include "ECGParam.h"
 #include "DataStorageDirManager.h"
-#include "DischargePatientWindow.h"
 #include "NIBPParam.h"
 #include "NIBPProviderIFace.h"
 
@@ -58,15 +57,13 @@ void PatientManager::setPatientInfoWidget(PatientInfoWidget &widget)
  *************************************************************************************************/
 void PatientManager::setType(PatientType type)
 {
-    PatientType oldType = d_ptr->patientInfo.type;
+    if (type == d_ptr->patientInfo.type)
+    {
+        return;
+    }
 
     d_ptr->patientInfo.type = type;
     systemConfig.setNumValue("General|PatientType", static_cast<int>(type));
-
-    if (d_ptr->patientInfo.type == oldType)
-    {
-//        return;
-    }
 
     // 病人类型被修改了，重新加载配置后，通知需要关注次事件的对象。
     d_ptr->patientInfoWidget->loadPatientInfo();
@@ -79,6 +76,7 @@ void PatientManager::setType(PatientType type)
 
     ecgParam.setPatientType((unsigned char)(d_ptr->patientInfo.type));
     nibpParam.provider().setPatientType(type);
+    configManager.loadConfig(type);
 }
 
 /**************************************************************************************************
@@ -297,20 +295,9 @@ void PatientManager::newPatient()
     dataStorageDirManager.createDir(true);
 }
 
-void PatientManager::dischargePatient(bool isShowStandbyWin)
+void PatientManager::dischargePatient()
 {
-    if (isShowStandbyWin)
-    {
-        DischargePatientWindow dischargeWin;
-        if (dischargeWin.exec() == QDialog::Accepted)
-        {
-            d_ptr->handleDischarge();
-        }
-    }
-    else
-    {
-        d_ptr->handleDischarge();
-    }
+    d_ptr->handleDischarge();
 }
 
 void PatientManager::finishPatientInfo()
@@ -369,7 +356,7 @@ void PatientManagerPrivate::handleDischarge()
     }
     else
     {
-        // TODO 清除当前病人历史数据
+        dataStorageDirManager.cleanCurData();
     }
 }
 

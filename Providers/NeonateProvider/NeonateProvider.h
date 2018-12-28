@@ -27,6 +27,8 @@ enum NeonatePacketType
     NEONATE_RSP_CALIBRATION         = 0x17,
     NEONATE_CMD_MOTOR_CONTROL       = 0x18,     // 马达控制
     NEONATE_RSP_MOTOR_CONTROL       = 0x19,
+    NEONATE_CMD_VIBRATION_INTENSITY = 0x1A,     // 震动强度
+    NEONATE_RSP_VIBRATION_INTENSITY = 0x1B,
 
     NEONATE_NOTIFY_START_UP         = 0x40,     // 启动帧
     NEONATE_NOTIFY_PROBE_MOTOR      = 0x41,     // 马达与探头状态帧
@@ -72,6 +74,9 @@ public: // O2ProviderIFace的接口
 
     // 马达控制
     virtual void sendMotorControl(bool status);
+
+    // 震动强度控制
+    virtual void sendVibrationIntensity(int intensity);
 
     // 应答
     void sendACK(unsigned char type);

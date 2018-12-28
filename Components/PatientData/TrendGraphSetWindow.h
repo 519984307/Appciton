@@ -22,12 +22,10 @@ class RulerItem : public QWidget
 {
     Q_OBJECT
 public:
-    RulerItem(ParamID ppid, SubParamID ssid) : QWidget()
+    RulerItem() : QWidget()
     {
-        pid = ppid;
-        sid = ssid;
-
         label = new QLabel();
+        label->setAlignment(Qt::AlignCenter);
         combo = new ComboBox();
         downRuler = new SpinBox();
         upRuler = new SpinBox();
@@ -51,7 +49,6 @@ public:
     }
 
 public:
-    ParamID pid;
     SubParamID sid;
 
     QLabel *label;
@@ -87,11 +84,15 @@ public:
      */
     void upDateTrendGroup(void);
 
+
+    /**
+     * @brief setCurParam 设置当前显示参数的标尺更新窗口
+     * @param subList
+     */
+    void setCurParam(QList<SubParamID> subList);
+
 protected:
     void showEvent(QShowEvent *ev);
-
-    /* reimplment */
-    bool focusNextPrevChild(bool next);
 
 private slots:
     /**

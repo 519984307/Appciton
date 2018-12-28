@@ -132,6 +132,9 @@ public:
     // 使能呼吸计算
     void enableRespCalc(bool enable);
 
+signals:
+    void calcLeadChanged(RESPLead lead);
+
 private slots:
     void onPaletteChanged(ParamID id);
 

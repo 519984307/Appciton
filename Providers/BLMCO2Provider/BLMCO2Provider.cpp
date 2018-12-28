@@ -325,15 +325,9 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
         isZeroInProgress = _status.zeroInProgress;
         _status.zeroInProgress = ((val & BIT1) == BIT1) ? true : false;
 
-//            co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS, _status.zeroInProgress);
         if (!isZeroInProgress && _status.zeroInProgress)
         {
-            if (pMessageBox.isVisible())
-            {
-                pMessageBox._exit();
-            }
-            pMessageBox.setMessBoxInfo(trs("CO2ZeroInprogress"));
-            pMessageBox.show();
+            co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS, _status.zeroInProgress);
         }
 
         if (_status.sidestreamConfig)
@@ -342,12 +336,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
             {
                 if (isZeroInProgress && !_status.zeroInProgress)
                 {
-                    if (pMessageBox.isVisible())
-                    {
-                        pMessageBox._exit();
-                    }
-                    pMessageBox.setMessBoxInfo(trs("CO2ZeroingCompleted"));
-                    pMessageBox.show();
+                    co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS, _status.zeroInProgress);
                 }
             }
 
@@ -357,12 +346,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
         {
             if (isZeroInProgress && !_status.zeroInProgress)
             {
-                if (pMessageBox.isVisible())
-                {
-                    pMessageBox._exit();
-                }
-                pMessageBox.setMessBoxInfo(trs("CO2ZeroingCompleted"));
-                pMessageBox.show();
+                co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS, _status.zeroInProgress);
             }
 
             co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_DISABLE, _status.zeroDisable);

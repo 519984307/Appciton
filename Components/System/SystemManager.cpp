@@ -45,6 +45,8 @@
 #include <QWSServer>
 #include "RunningStatusBar.h"
 #endif
+#include "PatientManager.h"
+#include "DataStorageDirManager.h"
 
 #define BACKLIGHT_DEV   "/sys/class/backlight/backlight/brightness"       // 背光控制文件接口
 
@@ -92,6 +94,7 @@ public:
         alarmIndicator.delAllPhyAlarm();
         windowManager.showDemoWidget(true);
         paramManager.connectDemoParamProvider();
+        patientManager.newPatient();
     }
 
     /**
@@ -102,6 +105,11 @@ public:
         alarmIndicator.delAllPhyAlarm();
         windowManager.showDemoWidget(false);
         paramManager.connectParamProvider(WORK_MODE_DEMO);
+        QString curFolderPath = dataStorageDirManager.getCurFolder();
+        QFileInfo fileInfo(curFolderPath);
+        QString curFolderName = fileInfo.fileName();
+        patientManager.dischargePatient();
+        dataStorageDirManager.deleteData(curFolderName);
     }
 
     /**
@@ -305,6 +313,9 @@ void SystemManager::setTouchScreenOnOff(bool onOff)
     {
         runningStatus.clearTouchStatus();
     }
+
+    // 将触摸屏使能的状态保存在系统配置文件中
+    systemConfig.setNumValue("General|TouchScreen", static_cast<int>(d_ptr->isTouchScreenOn));
 
     return;
 }
@@ -608,6 +619,14 @@ void SystemManager::setWorkMode(WorkMode workmode)
 void SystemManager::setStandbyStatus(bool standby)
 {
     d_ptr->isStandby = standby;
+    if (standby)
+    {
+        paramManager.disconnectParamProvider(WORK_MODE_STANDBY);
+    }
+    else
+    {
+        paramManager.connectParamProvider(WORK_MODE_STANDBY);
+    }
 }
 
 bool SystemManager::isStandby() const

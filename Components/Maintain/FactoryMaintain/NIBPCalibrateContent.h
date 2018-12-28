@@ -62,6 +62,11 @@ public:
 
     ~NIBPCalibrateContent();
 
+    /**
+     * @brief init
+     */
+    void init(void);
+
 protected:
     /**
      * @brief layoutExec

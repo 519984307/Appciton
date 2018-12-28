@@ -28,7 +28,7 @@ void CO2WaveRuler::paintItem(QPainter &painter)
     int xRight = x() + width();
     int yUp = y();
     int yLow = y() + height() - 2;
-    int yMid = (_mid - _low) * (yUp - yLow) / (_up - _low) + yLow;
+    int yMid = (yLow - yUp) / 2;
 
     int fontSize = fontManager.getFontSize(1);
     painter.setFont(fontManager.textFont(fontSize));
@@ -52,9 +52,22 @@ void CO2WaveRuler::paintItem(QPainter &painter)
  *************************************************************************************************/
 void CO2WaveRuler::setRuler(double up, double mid, double low)
 {
-    _up = up;
-    _mid = mid;
-    _low = low;
+    UnitType unit = co2Param.getUnit();
+    if (unit == UNIT_MMHG)
+    {
+        int upV = Unit::convert(UNIT_MMHG, UNIT_PERCENT, up).toInt();
+        int midV = Unit::convert(UNIT_MMHG, UNIT_PERCENT, mid).toInt();
+        int lowV = Unit::convert(UNIT_MMHG, UNIT_PERCENT, low).toInt();
+        _up = (upV + 5) / 10 * 10;
+        _mid = (midV + 5) / 10 * 10;
+        _low = (lowV + 5) / 10 * 10;
+    }
+    else
+    {
+        _up = up;
+        _mid = mid;
+        _low = low;
+    }
 
     update();
 }

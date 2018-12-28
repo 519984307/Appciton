@@ -86,7 +86,8 @@ void UserConfigEditMenuContentPrivate::updateConfigList()
     QStringList configNameList;
     for (int i = 0; i < configs.count(); i++)
     {
-        configNameList.append(configs.at(i).name);
+        QString nameStr = QString("%1(%2)").arg(configs.at(i).name).arg(trs(configs.at(i).patType));
+        configNameList.append(nameStr);
     }
     configDataModel->setStringList(configNameList);
 
@@ -195,7 +196,7 @@ void UserConfigEditMenuContent::onBtnClick()
                 delete d_ptr->curConfig;
             }
 
-            PatientType type;
+            PatientType type = PATIENT_TYPE_NULL;
             QString configPath;
             patientW.getConfigInfo(type, configPath);
 

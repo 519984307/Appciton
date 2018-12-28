@@ -52,6 +52,7 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
     int techAlarmNum = getAlarmCount(ALARM_TYPE_TECH);
     bool hasNonLatchedPhyAlarm = false;
     bool hasPausedPhyAlarm = false;
+    bool hasAcknowledgAlarm = false;
     AlarmPriority phySoundPriority = ALARM_PRIO_PROMPT;
     AlarmPriority techSoundPriority = ALARM_PRIO_PROMPT;
     AlarmPriority lightPriority = ALARM_PRIO_PROMPT;
@@ -60,6 +61,11 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
     for (; it != list->end(); ++it)
     {
         AlarmInfoNode node = *it;
+
+        if (0 != node.acknowledge)
+        {
+            hasAcknowledgAlarm = true;
+        }
 
         if (ALARM_STATUS_OFF != status && ALARM_TYPE_TECH != node.alarmType)
         {
@@ -93,10 +99,10 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
                 hasPausedPhyAlarm = true;
             }
         }
-        else if (ALARM_TYPE_TECH == node.alarmType)
+        else if (ALARM_TYPE_TECH == node.alarmType && ALARM_STATUS_PAUSE != status)
         {
-            // 技术报警只处理没有被acknowledge
-            if ((!node.acknowledge || node.latch) && node.alarmPriority != ALARM_PRIO_PROMPT)
+            // 技术报警只处理没有被acknowledge和不处理报警暂停状态
+            if ((!node.acknowledge || node.latch) && node.alarmPriority != ALARM_PRIO_PROMPT )
             {
                 if (techSoundPriority < node.alarmPriority)
                 {
@@ -251,6 +257,12 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
     {
         alarmStateMachine.handAlarmEvent(ALARM_STATE_EVENT_NO_PAUSED_PHY_ALARM, 0, 0);
     }
+
+    // 没有被确认的报警
+    if (!hasAcknowledgAlarm)
+    {
+        alarmStateMachine.handAlarmEvent(ALARM_STATE_EVENT_NO_ACKNOWLEDG_ALARM, 0, 0);
+    }
 }
 
 /**************************************************************************************************
@@ -287,9 +299,18 @@ void AlarmIndicator::_displayTechSet(AlarmInfoNode &node)
 
 bool AlarmIndicator::_canPlayAudio(AlarmStatus status, bool isTechAlarm)
 {
+    int alarmOffStatus = 0;
+    systemConfig.getNumValue("Alarms|AlarmAudioOff", alarmOffStatus);
     if (status == ALARM_STATUS_NORMAL)
     {
-        return true;
+        if (alarmOffStatus)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 
     if (isTechAlarm && status != ALARM_STATUS_OFF)
@@ -806,6 +827,31 @@ int AlarmIndicator::getAlarmCount(void)
     return _alarmInfoDisplayPool.count();
 }
 
+int AlarmIndicator::getAlarmCount(AlarmPriority priority)
+{
+    int count = 0;
+    AlarmInfoList *list = &_alarmInfoDisplayPool;
+
+    // 无数据。
+    if (list->empty())
+    {
+        return count;
+    }
+
+    // 查找报警信息并更新。
+    AlarmInfoList::iterator it = list->begin();
+    for (; it != list->end(); ++it)
+    {
+        if (it->alarmPriority == priority)
+        {
+            ++count;
+            continue;
+        }
+    }
+
+    return count;
+}
+
 /**************************************************************************************************
  * 功能：获取指定的报警信息
  * 参数：
@@ -867,7 +913,7 @@ AlarmIndicator::AlarmIndicator()
     // 记录报警暂停时间
     int pauseTimeIndex = 0;
     _audioPauseTime = 90;
-    currentConfig.getNumValue("Alarm|AlarmPauseTime", pauseTimeIndex);
+    systemConfig.getNumValue("Alarms|AlarmPauseTime", pauseTimeIndex);
     if (pauseTimeIndex > ALARM_PAUSE_TIME_NR)
     {
         pauseTimeIndex = ALARM_PAUSE_TIME_90S;
@@ -889,4 +935,60 @@ void AlarmIndicator::updateAlarmPauseTime(int seconds)
     {
         _alarmPhyInfoWidget->setAlarmPause(seconds);
     }
+}
+
+bool AlarmIndicator::phyAlarmResetStatusHandle()
+{
+    bool ret = false;
+    AlarmInfoList *list;
+    AlarmInfoList::iterator it;
+    list = &_alarmInfoDisplayPool;
+    it = list->begin();
+    for (; it != list->end(); ++it)
+    {
+        if (it->alarmType == ALARM_TYPE_PHY && it->alarmPriority > ALARM_PRIO_LOW)
+        {
+            // 只确认中级和高级的报警
+            AlarmInfoNode node = *it;
+            if (0 == it->pauseTime)
+            {
+                if (!node.acknowledge)
+                {
+                    node.acknowledge = true;
+                    ret = true;
+                }
+            }
+            *it = node;
+        }
+    }
+    return ret;
+}
+
+bool AlarmIndicator::techAlarmResetStatusHandle()
+{
+    bool ret = false;
+    AlarmInfoList *list;
+    AlarmInfoList::iterator it;
+    list = &_alarmInfoDisplayPool;
+    it = list->begin();
+    for (; it != list->end(); ++it)
+    {
+        if (it->alarmType == ALARM_TYPE_TECH && it->alarmPriority > ALARM_PRIO_LOW)
+        {
+            // 只确认中级和高级的报警
+            AlarmInfoNode node = *it;
+            if (!node.acknowledge)
+            {
+                node.acknowledge = true;
+                ret = true;
+            }
+            *it = node;
+        }
+    }
+    return ret;
+}
+
+void AlarmIndicator::updateAlarmStateWidget()
+{
+    _alarmStatusWidget->update();
 }

@@ -22,6 +22,7 @@
 #include "NIBPMonitorStateDefine.h"
 #include "MainMenuWindow.h"
 #include "AlarmLimitWindow.h"
+#include "SpinBox.h"
 
 class NIBPMenuContentPrivate
 {
@@ -33,9 +34,10 @@ public:
         ITEM_CBO_INITIAL_CUFF = 2,
 
         ITEM_BTN_START_STAT = 0,
+        ITEM_BTN_ADDITION_MEASURE = 1
     };
 
-    NIBPMenuContentPrivate() {}
+    NIBPMenuContentPrivate() : initCuffSpb(NULL) {}
     /**
      * @brief loadOptions  //load settings
      */
@@ -47,6 +49,7 @@ public:
 
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, Button *> btns;
+    SpinBox *initCuffSpb;
 };
 
 
@@ -114,22 +117,24 @@ void NIBPMenuContent::layoutExec()
     // initial cuff
     label = new QLabel(trs("NIBPInitialCuff"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    itemID = static_cast<int>(NIBPMenuContentPrivate::ITEM_CBO_INITIAL_CUFF);
-    comboBox->setProperty("Item", qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this,
-            SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(NIBPMenuContentPrivate::ITEM_CBO_INITIAL_CUFF, comboBox);
+    d_ptr->initCuffSpb = new SpinBox();
+    d_ptr->initCuffSpb->setStep(10);
+    connect(d_ptr->initCuffSpb, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxReleased(int, int)));
+    QHBoxLayout *hLayout = new QHBoxLayout();
+    label = new QLabel("mmHg");
+    hLayout->addWidget(d_ptr->initCuffSpb);
+    hLayout->addWidget(label);
+    layout->addLayout(hLayout, d_ptr->combos.count(), 1);
+
 
     Button *button;
-    int row = d_ptr->combos.count();
+    int row = d_ptr->combos.count() + 1;
 
     // start stat
-    label = new QLabel(trs("Stat"));
+    label = new QLabel(trs("STAT"));
     layout->addWidget(label, row + d_ptr->btns.count(), 0);
     button = new Button();
-    button->setText(trs("StatStart"));
+    button->setText(trs("STATSTART"));
     button->setButtonStyle(Button::ButtonTextOnly);
     itemID = static_cast<int>(NIBPMenuContentPrivate::ITEM_BTN_START_STAT);
     button->setProperty("Btn", qVariantFromValue(itemID));
@@ -137,6 +142,17 @@ void NIBPMenuContent::layoutExec()
             SLOT(onBtnReleasedChanged()));
     layout->addWidget(button, row + d_ptr->btns.count(), 1);
     d_ptr->btns.insert(NIBPMenuContentPrivate::ITEM_BTN_START_STAT, button);
+
+    // nibp auto addition measure
+    label = new QLabel(trs("NIBPAdditionMeasure"));
+    layout->addWidget(label, row + d_ptr->btns.count(), 0);
+    button = new Button();
+    button->setButtonStyle(Button::ButtonTextOnly);
+    itemID = static_cast<int>(NIBPMenuContentPrivate::ITEM_BTN_ADDITION_MEASURE);
+    button->setProperty("Btn", qVariantFromValue(itemID));
+    connect(button, SIGNAL(released()), this, SLOT(onBtnReleasedChanged()));
+    layout->addWidget(button, row + d_ptr->btns.count(), 1);
+    d_ptr->btns.insert(NIBPMenuContentPrivate::ITEM_BTN_ADDITION_MEASURE, button);
 
     // 添加报警设置链接
     Button *btn = new Button(QString("%1%2").
@@ -156,58 +172,36 @@ void NIBPMenuContentPrivate::loadOptions()
     // 时间
     combos[ITEM_CBO_AUTO_INTERVAL]->setCurrentIndex(nibpParam.getAutoInterval());
 
-    int unit = UNIT_MMHG;
-    currentConfig.getNumValue("Local|NIBPUnit", unit);
-    combos[ITEM_CBO_INITIAL_CUFF]->blockSignals(true);
-    combos[ITEM_CBO_INITIAL_CUFF]->clear();
     PatientType type = patientManager.getType();
+    int initVal;
     if (type == PATIENT_TYPE_ADULT)
     {
-        for (unsigned i = 0; i < NIBP_ADULT_INITIAL_CUFF_NR; ++i)
-        {
-            QString str = NIBPSymbol::convert((NIBPAdultInitialCuff)i);
-            if (unit == UNIT_KPA)
-            {
-                str = Unit::convert((UnitType)unit, UNIT_MMHG, str.toInt());
-            }
-            str = str + " " + Unit::getSymbol((UnitType)unit);
-            combos[ITEM_CBO_INITIAL_CUFF]->addItem(str);
-        }
-        currentConfig.getNumValue("NIBP|AdultInitialCuffInflation", index);
-        combos[ITEM_CBO_INITIAL_CUFF]->setCurrentIndex(index);
+        initCuffSpb->setRange(80, 280);
+        currentConfig.getNumValue("NIBP|AdultInitialCuffInflation", initVal);
+        initCuffSpb->setValue(initVal);
     }
     else if (type == PATIENT_TYPE_PED)
     {
-        for (unsigned i = 0; i < NIBP_PREDIATRIC_INITIAL_CUFF_NR; ++i)
-        {
-            QString str = NIBPSymbol::convert((NIBPPrediatrictInitialCuff)i);
-            if (unit == UNIT_KPA)
-            {
-                str = Unit::convert((UnitType)unit, UNIT_MMHG, str.toInt());
-            }
-            str = str + " " + Unit::getSymbol((UnitType)unit);
-            combos[ITEM_CBO_INITIAL_CUFF]->addItem(str);
-        }
-        currentConfig.getNumValue("NIBP|PedInitialCuffInflation", index);
-        combos[ITEM_CBO_INITIAL_CUFF]->setCurrentIndex(index);
+        initCuffSpb->setRange(80, 210);
+        currentConfig.getNumValue("NIBP|PedInitialCuffInflation", initVal);
+        initCuffSpb->setValue(initVal);
     }
     else if (type == PATIENT_TYPE_NEO)
     {
-        for (unsigned i = 0; i < NIBP_NEONATAL_INITIAL_CUFF_NR; ++i)
-        {
-            QString str = NIBPSymbol::convert((NIBPNeonatalInitialCuff)i);
-            if (unit == UNIT_KPA)
-            {
-                str = Unit::convert((UnitType)unit, UNIT_MMHG, str.toInt());
-            }
-            str = str + " " + Unit::getSymbol((UnitType)unit);
-            combos[ITEM_CBO_INITIAL_CUFF]->addItem(str);
-        }
-        currentConfig.getNumValue("NIBP|NeoInitialCuffInflation", index);
-        combos[ITEM_CBO_INITIAL_CUFF]->setCurrentIndex(index);
+        initCuffSpb->setRange(60, 140);
+        currentConfig.getNumValue("NIBP|NeoInitialCuffInflation", initVal);
+        initCuffSpb->setValue(initVal);
     }
-    combos[ITEM_CBO_INITIAL_CUFF]->blockSignals(false);
 
+    currentConfig.getNumValue("NIBP|AutomaticRetry", index);
+    if (index)
+    {
+        btns[ITEM_BTN_ADDITION_MEASURE]->setText(trs("On"));
+    }
+    else
+    {
+        btns[ITEM_BTN_ADDITION_MEASURE]->setText(trs("Off"));
+    }
     statBtnShow();
 }
 
@@ -239,24 +233,43 @@ void NIBPMenuContent::onBtnReleasedChanged()
     int index = btns->property("Btn").toInt();
     switch (index)
     {
-    case NIBPMenuContentPrivate::ITEM_BTN_START_STAT:
-        if (nibpParam.curStatusType() == NIBP_MONITOR_ERROR_STATE)
+        case NIBPMenuContentPrivate::ITEM_BTN_START_STAT:
         {
-            return;
+            if (nibpParam.curStatusType() == NIBP_MONITOR_ERROR_STATE)
+            {
+                return;
+            }
+            // 退出STAT模式
+            if (nibpParam.isSTATMeasure())
+            {
+                btns->setText(trs("STATSTART"));
+                nibpCountdownTime.STATMeasureStop();
+            }
+            // 进入STAT模式
+            else
+            {
+                btns->setText(trs("STATSTOP"));
+            }
+            nibpParam.setMeasurMode(NIBP_MODE_STAT);
+            break;
         }
-        // 退出STAT模式
-        if (nibpParam.isSTATMeasure())
+        case NIBPMenuContentPrivate::ITEM_BTN_ADDITION_MEASURE:
         {
-            btns->setText(trs("STATSTART"));
-            nibpCountdownTime.STATMeasureStop();
+            bool flag = nibpParam.isAdditionalMeasure();
+            if (flag)
+            {
+                btns->setText(trs("Off"));
+            }
+            else
+            {
+                btns->setText(trs("On"));
+            }
+            nibpParam.setAdditionalMeasure(!flag);
+            currentConfig.setNumValue("NIBP|AutomaticRetry", static_cast<int>(!flag));
+            break;
         }
-        // 进入STAT模式
-        else
-        {
-            btns->setText(trs("STATSTOP"));
-        }
-        nibpParam.setMeasurMode(NIBP_MODE_STAT);
-        break;
+        default:
+            break;
     }
 }
 
@@ -267,9 +280,13 @@ void NIBPMenuContent::onAlarmBtnReleased()
     windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
 }
 
+void NIBPMenuContent::onSpinBoxReleased(int value, int scale)
+{
+    nibpParam.setInitPressure(value * scale);
+}
+
 void NIBPMenuContent::onComboBoxIndexChanged(int index)
 {
-    static int i = 0;
     ComboBox *combos = qobject_cast<ComboBox *>(sender());
     int indexType = combos->property("Item").toInt();
     switch (indexType)
@@ -280,10 +297,7 @@ void NIBPMenuContent::onComboBoxIndexChanged(int index)
     case NIBPMenuContentPrivate::ITEM_CBO_AUTO_INTERVAL:
         nibpParam.setAutoInterval((NIBPAutoInterval)index);
         break;
-    case NIBPMenuContentPrivate::ITEM_CBO_INITIAL_CUFF:
-        nibpParam.setInitPressure(index);
-        i++;
-        qDebug() << "NIBPMenuContent::onComboBoxIndexChanged(int index)----" << i << "---" << index << endl;
+    default:
         break;
     }
 }

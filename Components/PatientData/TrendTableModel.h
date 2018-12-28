@@ -35,9 +35,6 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
     /* reimplement */
-    Qt::ItemFlags flags(const QModelIndex &index) const;
-
-    /* reimplement */
     bool eventFilter(QObject *obj, QEvent *ev);
 
     int getHeaderHeightHint();
@@ -72,10 +69,16 @@ public:
      * @brief getColumnCount  每次显示的最大固定列数
      */
     unsigned getColumnCount(void) const;
+
     /**
-     * @brief getRightTime  获取当前趋势表右侧时间
+     * @brief getCurIndexInfo  获取当前model索引信息
+     * @param curIndex 当前索引
+     * @param totalIndex 总索引
      */
-    unsigned getRightTime(void) const;
+    void getCurIndexInfo(unsigned &curIndex, unsigned &totalIndex) const;
+
+protected:
+    void timerEvent(QTimerEvent *ev);
 
 private:
     TrendTableModelPrivate * const d_ptr;

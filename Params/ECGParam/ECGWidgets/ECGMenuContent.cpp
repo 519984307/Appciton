@@ -28,6 +28,7 @@
 #include "ECGDupParam.h"
 #include "AlarmLimitWindow.h"
 #include "SPO2Param.h"
+#include "NightModeManager.h"
 
 #define PRINT_WAVE_NUM (3)
 
@@ -50,7 +51,9 @@ public:
 
     ECGMenuContentPrivate()
         : selfLearnBtn(NULL)
+    #ifndef HIDE_ECG_ARRHYTHMIA_FUNCTION
         , arrhythmiaBtn(NULL)
+    #endif
         , sTSwitchBtn(NULL)
         , ecg1Label(NULL)
         , ecg2Label(NULL)
@@ -60,13 +63,21 @@ public:
     void loadOptions();
 
     /**
+     * @brief setCboBlockSignal 设置下拉框信号阻塞
+     * @param flag
+     */
+    void setCboBlockSignal(bool flag);
+
+    /**
      * @brief updatePrintWaveIds
      */
     void updatePrintWaveIds();
 
     QMap<MenuItem, ComboBox *> combos;
     Button *selfLearnBtn;
+#ifndef HIDE_ECG_ARRHYTHMIA_FUNCTION
     Button *arrhythmiaBtn;
+#endif
     Button *sTSwitchBtn;
     QStringList ecgWaveforms;
     QStringList ecgWaveformTitles;
@@ -77,18 +88,44 @@ public:
 
 void ECGMenuContentPrivate::loadOptions()
 {
-    int index = 0;
+    int id = 0;;
+    setCboBlockSignal(true);
+    combos[ITEM_CBO_HRPR_SOURCE]->clear();
+    currentConfig.getNumValue("ECG|HRSource", id);
+    int sourceType = ecgParam.getHrSourceTypeFromId(static_cast<ParamID>(id));
+    int cboIndex = 0;
+    int itemCount = 0;
+    for (int i = HR_SOURCE_ECG; i < HR_SOURCE_NR; ++i)
+    {
+        if (i == HR_SOURCE_SPO2 && !systemManager.isSupport(PARAM_SPO2))
+        {
+            continue;
+        }
+        if (i == HR_SOURCE_IBP && !systemManager.isSupport(PARAM_IBP))
+        {
+            continue;
+        }
 
-    currentConfig.getNumValue("ECG|HRSource", index);
-    combos[ITEM_CBO_HRPR_SOURCE]->setCurrentIndex(index);
+        if (i == sourceType)
+        {
+            cboIndex = itemCount;
+        }
+        itemCount++;
+        combos[ITEM_CBO_HRPR_SOURCE]->addItem(trs(ECGSymbol::convert(static_cast<HRSourceType>(i))));
+    }
+
+    if (cboIndex > combos[ITEM_CBO_HRPR_SOURCE]->count())
+    {
+        cboIndex = 0;
+        id = ecgParam.getIdFromHrSourceType(static_cast<HRSourceType>(cboIndex));
+        currentConfig.setNumValue("ECG|HRSource", id);
+    }
+    combos[ITEM_CBO_HRPR_SOURCE]->setCurrentIndex(cboIndex);
+
 
     ECGLeadMode leadMode = ecgParam.getLeadMode();
-    combos[ITEM_CBO_LEAD_MODE]->blockSignals(true);
     combos[ITEM_CBO_LEAD_MODE]->setCurrentIndex(leadMode);
-    combos[ITEM_CBO_LEAD_MODE]->blockSignals(false);
 
-    combos[ITEM_CBO_ECG1]->blockSignals(true);
-    combos[ITEM_CBO_ECG2]->blockSignals(true);
     ecgParam.getAvailableWaveforms(ecgWaveforms, ecgWaveformTitles, true);
     combos[ITEM_CBO_ECG1]->clear();
     combos[ITEM_CBO_ECG2]->clear();
@@ -98,6 +135,32 @@ void ECGMenuContentPrivate::loadOptions()
     int index2 = 0;
     currentConfig.getNumValue("ECG|Ecg2Wave", index2);
     currentConfig.getNumValue("ECG|Ecg1Wave", index1);
+
+    // 保证当前的ecg1、2的索引值小于当前ecg波形的数量
+    int items = combos[ITEM_CBO_ECG1]->count();
+    if (index1 >= items)
+    {
+        index1 = ecgParam.getCalcLead();
+        if (index1 >= items)
+        {
+            index1 = ECG_LEAD_I;
+        }
+        currentConfig.setNumValue("ECG|Ecg1Wave", index1);
+    }
+    // 非3导联模式下，改变ecg2索引
+    if (leadMode != ECG_LEAD_MODE_3)
+    {
+        if (index2 >= items)
+        {
+            index2 = ECG_LEAD_I;
+            if (index2 == index1)
+            {
+                index2 += 1;
+            }
+            currentConfig.setNumValue("ECG|Ecg2Wave", index2);
+        }
+    }
+
     // 读取的ecg1wave、ecg2wave如果item相同，则复位为0、1.
     if (index2 == index1)
     {
@@ -124,19 +187,15 @@ void ECGMenuContentPrivate::loadOptions()
         ecgParam.setCalcLead(static_cast<ECGLead>(index1));
     }
     QString ecgTopWaveform = ecgParam.getCalcLeadWaveformName();
-    index = ecgWaveforms.indexOf(ecgTopWaveform);
+    int index = ecgWaveforms.indexOf(ecgTopWaveform);
     if (index >= 0)
     {
-        combos[ITEM_CBO_ECG_GAIN]->blockSignals(true);
         ECGGain gain = ecgParam.getGain(static_cast<ECGLead>(index));
         combos[ITEM_CBO_ECG_GAIN]->setCurrentIndex(gain);
-        combos[ITEM_CBO_ECG_GAIN]->blockSignals(false);
         combos[ITEM_CBO_ECG1]->setCurrentIndex(index);
     }
-    combos[ITEM_CBO_ECG1]->blockSignals(false);
 
     combos[ITEM_CBO_ECG2]->setCurrentIndex(index2);
-    combos[ITEM_CBO_ECG2]->blockSignals(false);
 
     ECGFilterMode filterMode = ecgParam.getFilterMode();
 
@@ -169,9 +228,7 @@ void ECGMenuContentPrivate::loadOptions()
     }
 
     ECGNotchFilter notchFilter = ecgParam.getNotchFilter();
-    combos[ITEM_CBO_FILTER_MODE]->blockSignals(true);
     combos[ITEM_CBO_FILTER_MODE]->setCurrentIndex(filterMode);
-    combos[ITEM_CBO_FILTER_MODE]->blockSignals(false);
 
     combos[ITEM_CBO_NOTCH_FITER]->clear();
     switch (filterMode)
@@ -210,15 +267,16 @@ void ECGMenuContentPrivate::loadOptions()
 
     combos[ITEM_CBO_SWEEP_SPEED]->setCurrentIndex(ecgParam.getSweepSpeed());
 
-    int volSPO2 = spo2Param.getBeatVol();
-    int volECG = ecgParam.getQRSToneVolume();
-    if (volSPO2 != volECG)
+    currentConfig.getNumValue("ECG|QRSVolume", index);
+    combos[ITEM_CBO_QRS_TONE]->setCurrentIndex(index);
+    if (nightModeManager.nightMode())
     {
-        // 保持脉搏音与心跳音同步
-        spo2Param.setBeatVol(static_cast<SoundManager::VolumeLevel>(volECG));
+        combos[ITEM_CBO_QRS_TONE]->setEnabled(false);
     }
-
-    combos[ITEM_CBO_QRS_TONE]->setCurrentIndex(volECG);
+    else
+    {
+        combos[ITEM_CBO_QRS_TONE]->setEnabled(true);
+    }
 
     bool isHide = true;
 
@@ -236,6 +294,17 @@ void ECGMenuContentPrivate::loadOptions()
     }
     ecg2Label->setVisible(!isHide);
     combos[ITEM_CBO_ECG2]->setVisible(!isHide);
+
+    setCboBlockSignal(false);
+}
+
+void ECGMenuContentPrivate::setCboBlockSignal(bool flag)
+{
+    for (int i = ITEM_CBO_HRPR_SOURCE; i <=  ITEM_CBO_QRS_TONE; ++i)
+    {
+        MenuItem itemId = static_cast<MenuItem>(i);
+        combos[itemId]->blockSignals(flag);
+    }
 }
 
 void ECGMenuContentPrivate::updatePrintWaveIds()
@@ -331,12 +400,6 @@ void ECGMenuContent::layoutExec()
     label = new QLabel(trs("HR_PRSource"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs(ECGSymbol::convert(HR_SOURCE_ECG))
-                       << trs(ECGSymbol::convert(HR_SOURCE_SPO2))
-                       << trs(ECGSymbol::convert(HR_SOURCE_IBP))
-                       << trs(ECGSymbol::convert(HR_SOURCE_AUTO))
-                      );
     itemID = ECGMenuContentPrivate::ITEM_CBO_HRPR_SOURCE;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -447,6 +510,7 @@ void ECGMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
+                       << trs(ECGSymbol::convert(ECG_SWEEP_SPEED_625))
                        << trs(ECGSymbol::convert(ECG_SWEEP_SPEED_125))
                        << trs(ECGSymbol::convert(ECG_SWEEP_SPEED_250))
                        << trs(ECGSymbol::convert(ECG_SWEEP_SPEED_500))
@@ -485,11 +549,13 @@ void ECGMenuContent::layoutExec()
     layout->addWidget(d_ptr->selfLearnBtn, d_ptr->combos.count(), 1);
     connect(d_ptr->selfLearnBtn, SIGNAL(released()), this, SLOT(selfLearnBtnReleased()));
 
+#ifndef HIDE_ECG_ARRHYTHMIA_FUNCTION
     // 心律失常
     d_ptr->arrhythmiaBtn = new Button(trs("Arrhythmia"));
     d_ptr->arrhythmiaBtn->setButtonStyle(Button::ButtonTextOnly);
     layout->addWidget(d_ptr->arrhythmiaBtn, d_ptr->combos.count() + 1, 1);
     connect(d_ptr->arrhythmiaBtn, SIGNAL(released()), this, SLOT(arrhythmiaBtnReleased()));
+#endif
 
     // ST 段开关
     d_ptr->sTSwitchBtn = new Button;
@@ -524,7 +590,18 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
         {
         case ECGMenuContentPrivate::ITEM_CBO_HRPR_SOURCE:
         {
-            HRSourceType sourceType = static_cast<HRSourceType>(index);
+            HRSourceType sourceType = HR_SOURCE_NR;
+            QString itemText = box->currentText();
+            for (int i = HR_SOURCE_ECG; i < HR_SOURCE_NR; i++)
+            {
+                HRSourceType type = static_cast<HRSourceType>(i);
+                if (itemText == trs(ECGSymbol::convert(type)))
+                {
+                    sourceType = type;
+                    break;
+                }
+            }
+
             ecgDupParam.setHrSource(sourceType);
 
             // 切换类型时手动更新hr/pr值，避免上次pr/hr值为无效值
@@ -569,11 +646,33 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
             // 如果ecg2与ecg1选择相同的item时
             if (waveIndex == index)
             {
-                waveIndex = ecgParam.getCalcLead();
-                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(true);
-                ECGGain gain = ecgParam.getGain(static_cast<ECGLead>(waveIndex));
-                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->setCurrentIndex(gain);
-                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(false);
+                int calLead = ecgParam.getCalcLead();
+                // 在导联模式先于ecg1波形索引发生改变的情况下,如果此时的计算导联与旧ecg2的波形索引一致
+                // 那么预设ecg2的波形索引向后加1,避免与计算导联选择相同
+                if (waveIndex == calLead)
+                {
+                    waveIndex = calLead + 1;
+
+                    ECGLeadMode leadMode = ecgParam.getLeadMode();
+                    ECGLead leadLimit = ECG_LEAD_V6;
+                    if (leadMode == ECG_LEAD_MODE_3)
+                    {
+                        leadLimit = ECG_LEAD_III;
+                    }
+                    else if (leadMode == ECG_LEAD_MODE_5)
+                    {
+                        leadLimit = ECG_LEAD_V1;
+                    }
+                    if (waveIndex > leadLimit)
+                    {
+                        waveIndex = ECG_LEAD_I;
+                    }
+                }
+                else
+                {
+                    waveIndex =  calLead;
+                }
+
                 // 更新ecg2的item选择
                 d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG2]->blockSignals(true);
                 d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG2]->setCurrentIndex(waveIndex);
@@ -635,8 +734,15 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
 
         case ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN:
         {
-            ECGLead ecg = static_cast<ECGLead>(d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG1]->currentIndex());
-            ecgParam.setGain(static_cast<ECGGain>(index), ecg);
+            if (layoutManager.getUFaceType() == UFACE_MONITOR_ECG_FULLSCREEN)
+            {
+                ecgParam.setGain(static_cast<ECGGain>(index));
+            }
+            else
+            {
+                ECGLead ecg = static_cast<ECGLead>(d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG1]->currentIndex());
+                ecgParam.setGain(static_cast<ECGGain>(index), ecg);
+            }
             break;
         }
         case ECGMenuContentPrivate::ITEM_CBO_FILTER_MODE:
@@ -704,11 +810,13 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
     }
 }
 
+#ifndef HIDE_ECG_ARRHYTHMIA_FUNCTION
 void ECGMenuContent::arrhythmiaBtnReleased()
 {
     ArrhythmiaMenuWindow *instance = ArrhythmiaMenuWindow::getInstance();
     windowManager.showWindow(instance, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorHideOthers);
 }
+#endif
 
 void ECGMenuContent::selfLearnBtnReleased()
 {

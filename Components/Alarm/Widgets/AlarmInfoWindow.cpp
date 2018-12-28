@@ -13,7 +13,7 @@
 #include "AlarmInfoModel.h"
 #include "ListView.h"
 #include "ListDataModel.h"
-#include "TableItemDelegate.h"
+#include "TableViewItemDelegate.h"
 #include "ListViewItemDelegate.h"
 #include "LanguageManager.h"
 #include "Button.h"
@@ -27,6 +27,7 @@
 
 #define PATH_ICON_UP "/usr/local/nPM/icons/ArrowUp.png"
 #define PATH_ICON_DOWN "/usr/local/nPM/icons/ArrowDown.png"
+#define PATH_ICON_CHECKED "/usr/local/nPM/icons/Checked.png"
 #define LISTVIEW_MAX_VISIABLE_SIZE 6    // 一页最大显示数
 
 class AlarmInfoWindowPrivate
@@ -66,6 +67,11 @@ public:
 
     bool hasPrevPage();
     bool hasNextPage();
+
+    /**
+     * @brief updateAcknowledgeFlag 更新被确认标志
+     */
+    void updateAcknowledgeFlag();
 };
 
 AlarmInfoWindow::AlarmInfoWindow(const QString &title, AlarmType type)
@@ -112,7 +118,8 @@ void AlarmInfoWindow::layout()
         tableView->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
         tableView->setSelectionMode(QAbstractItemView::SingleSelection);
         tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
-        tableView->setItemDelegate(new TableItemDelegate);
+        tableView->setIconSize(QSize(24, 24));
+        tableView->setItemDelegate(new TableViewItemDelegate(tableView));
         AlarmInfoModel *model = new AlarmInfoModel(this);
         tableView->setModel(model);
         tableView->setFixedHeight(model->getRowHeightHint() * LISTVIEW_MAX_VISIABLE_SIZE);
@@ -127,12 +134,12 @@ void AlarmInfoWindow::layout()
     else if (d_ptr->alarmType == ALARM_TYPE_TECH)
     {
         ListView *listView = new ListView();
+        listView->setIconSize(QSize(24, 24));
         listView->setItemDelegate(new ListViewItemDelegate);
         listView->setSelectionMode(QAbstractItemView::NoSelection);
         ListDataModel *model = new ListDataModel(this);
         listView->setModel(model);
         listView->setFixedHeight(model->getRowHeightHint() * LISTVIEW_MAX_VISIABLE_SIZE);
-        listView->setDrawIcon(false);
         listView->setSpacing(0);
         listView->setFocusPolicy(Qt::NoFocus);
         d_ptr->listModel = model;
@@ -248,18 +255,13 @@ void AlarmInfoWindowPrivate::loadOption()
         return;
     }
     start = (curPage - 1) * LISTVIEW_MAX_VISIABLE_SIZE;
-    if (count > LISTVIEW_MAX_VISIABLE_SIZE)
+    if (curPage < totalPage)
     {
-        end = start + LISTVIEW_MAX_VISIABLE_SIZE;
-        if (end > count)
-        {
-            end = count;
-            start = count - LISTVIEW_MAX_VISIABLE_SIZE;
-        }
+        end = (curPage - 1) * LISTVIEW_MAX_VISIABLE_SIZE + LISTVIEW_MAX_VISIABLE_SIZE;
     }
-    else
+    else if (curPage == totalPage)
     {
-        end = LISTVIEW_MAX_VISIABLE_SIZE;
+        end = count;
     }
 
     if (alarmType == ALARM_TYPE_PHY)
@@ -333,6 +335,7 @@ void AlarmInfoWindowPrivate::loadOption()
     {
         prevBtn->setEnabled(false);
     }
+    updateAcknowledgeFlag();
 }
 
 bool AlarmInfoWindowPrivate::hasPrevPage()
@@ -343,4 +346,33 @@ bool AlarmInfoWindowPrivate::hasPrevPage()
 bool AlarmInfoWindowPrivate::hasNextPage()
 {
     return curPage < totalPage;
+}
+
+void AlarmInfoWindowPrivate::updateAcknowledgeFlag()
+{
+    for (int i = 0; i < nodeList.count(); i++)
+    {
+        if (i >= (curPage - 1) * LISTVIEW_MAX_VISIABLE_SIZE && i < (curPage) * LISTVIEW_MAX_VISIABLE_SIZE
+                && nodeList.at(i).acknowledge)
+        {
+            // 只刷新当前页的确认标志
+            int row = i % LISTVIEW_MAX_VISIABLE_SIZE;
+            if (nodeList.at(i).alarmType == ALARM_TYPE_TECH)
+            {
+                QModelIndex index = listModel->index(row, 0);
+                if (index.isValid())
+                {
+                    listModel->setData(index, QIcon(PATH_ICON_CHECKED), Qt::DecorationRole);
+                }
+            }
+            else if (nodeList.at(i).alarmType == ALARM_TYPE_PHY)
+            {
+                QModelIndex index = dataModel->index(row, 0);
+                if (index.isValid())
+                {
+                    dataModel->setData(index, QIcon(PATH_ICON_CHECKED), Qt::DecorationRole);
+                }
+            }
+        }
+    }
 }

@@ -18,7 +18,7 @@
 #include "ParamInfo.h"
 #include "Utility.h"
 #include "AlarmConfig.h"
-
+#include "TimeDate.h"
 
 #define AXIS_X_SECTION_WIDTH (RECORDER_PIXEL_PER_MM * 16)
 #define AXIS_Y_SECTION_HEIGHT (RECORDER_PIXEL_PER_MM * 8)
@@ -127,9 +127,11 @@ GraphAxisInfo TrendGraphPageGeneratorPrivate::getAxisInfo(const RecordPage *page
         QList<int> dayList;
         for (int i = 0; i < AXIS_X_SECTION_NUM && t < endTime; i++)
         {
-            QDateTime dt = QDateTime::fromTime_t(t);
-            timeList.append(dt.toString("hh:mm:ss"));
-            dayList.append(dt.date().day());
+            QString timeStr;
+            timeDate.getTime(t, timeStr, true);
+            int day = timeDate.getDateDay(t);
+            timeList.append(timeStr);
+            dayList.append(day);
             t += deltaT;
         }
 
@@ -158,10 +160,9 @@ GraphAxisInfo TrendGraphPageGeneratorPrivate::getAxisInfo(const RecordPage *page
         }
     }
 
-    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subParamID, unit);
-    axisInfo.yLabels = QStringList() << Util::convertToString(graphInfo.scale.min, config.scale)
+    axisInfo.yLabels = QStringList() << Util::convertToString(graphInfo.scale.min, graphInfo.scale.scale)
                        << QString()
-                       << Util::convertToString(graphInfo.scale.max, config.scale);
+                       << Util::convertToString(graphInfo.scale.max, graphInfo.scale.scale);
     return axisInfo;
 }
 
@@ -243,7 +244,7 @@ RecordPage *TrendGraphPageGenerator::createPage()
     case TitlePage:
         // BUG: patient info of the event might not be the current session patient
         d_ptr->curPageType = TrendGraphPage;
-        return createTitlePage(QString(trs("GraphTrendRecording")), patientManager.getPatientInfo());
+        return createTitlePage(QString(trs("GraphicTrendsPrint")), patientManager.getPatientInfo());
 
     case TrendGraphPage:
         if (d_ptr->curDrawnGraph < d_ptr->trendGraphInfos.size())

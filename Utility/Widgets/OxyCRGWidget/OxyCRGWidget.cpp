@@ -549,6 +549,4 @@ void OxyCRGWidget::onAutoClicked()
         currentConfig.setNumValue("OxyCRG|Ruler|CO2Low", static_cast<int>(CO2_LOW_0));
         currentConfig.setNumValue("OxyCRG|Ruler|CO2High", static_cast<int>(CO2_HIGH_40));
     }
-    // 当触发自动标尺按钮后，强制移动聚焦点到下一个
-    focusNextChild();
 }

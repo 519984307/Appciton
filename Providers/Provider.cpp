@@ -126,6 +126,11 @@ void Provider::detachParam(Param &param)
  *************************************************************************************************/
 void Provider::checkConnection(void)
 {
+    if (_stopCheckConnect)
+    {
+        // 如果在待机中，不检查超时是否连接
+        return;
+    }
     _disconnectCount++;
     if (_disconnectCount > _disconnectThreshold)
     {
@@ -156,6 +161,11 @@ void Provider::closePort()
 bool Provider::connected()
 {
     return isConnected;
+}
+
+bool Provider::connectedToParam()
+{
+    return isConnectedToParam;
 }
 
 /**************************************************************************************************
@@ -189,6 +199,7 @@ Provider::Provider(const QString &name) : QObject(), ringBuff(ringBuffLen), _nam
     isConnected = false;
     _firstCheck = true;
     isConnectedToParam = true;
+    _stopCheckConnect = false;
 // #ifdef Q_WS_X11
 //    uart = new UartSocket();
 // #else
@@ -204,4 +215,9 @@ Provider::Provider(const QString &name) : QObject(), ringBuff(ringBuffLen), _nam
 Provider::~Provider()
 {
     disconnect(uart, SIGNAL(activated(int)), this, SLOT(dataArrived()));
+}
+
+void Provider::stopCheckConnect(bool flag)
+{
+    _stopCheckConnect = flag;
 }

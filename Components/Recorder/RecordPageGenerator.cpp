@@ -32,6 +32,8 @@
 #include "LayoutManager.h"
 #include <QDebug>
 #include "RecorderManager.h"
+#include "TimeDate.h"
+#include "AlarmConfig.h"
 
 #define DEFAULT_PAGE_WIDTH 200
 #define PEN_WIDTH 2
@@ -185,13 +187,15 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
         textWidth =  w;
     }
 
-    QDateTime dt = QDateTime::currentDateTime();
+    unsigned t = timeDate.time();
     if (timestamp)
     {
-        dt = QDateTime::fromTime_t(timestamp);
+        t = timestamp;
     }
 
-    QString timeStr = QString("%1: %2").arg(trs("RecordTime")).arg(dt.toString("yyyy-MM-dd HH:mm:ss"));
+    QString timeDateStr;
+    timeDate.getDateTime(t, timeDateStr, true, true);
+    QString timeStr = QString("%1: %2").arg(trs("PrintTime")).arg(timeDateStr);
 
     // record time width
     w = fontManager.textWidthInPixels(timeStr, font);
@@ -1000,7 +1004,11 @@ static void drawCaption(RecordPage *page, QPainter *painter, const RecordWaveSeg
     painter->save();
     painter->setPen(Qt::white);
     painter->translate(-segIndex * page->width(), 0);
-    painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, waveInfo.drawCtx.caption);
+    QString caption = waveInfo.drawCtx.caption;
+    QString mode = trs(caption.section(" ", 3));
+    caption = caption.section(" ", 0, 2);
+    caption = caption + mode;
+    painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, caption);
     painter->restore();
 }
 
@@ -1606,7 +1614,8 @@ static inline qreal timestampToX(unsigned t, const GraphAxisInfo &axisInfo, cons
 static inline qreal mapTrendYValue(TrendDataType val, const GraphAxisInfo &axisInfo, const TrendGraphInfo &graphInfo)
 {
     qreal validHeight = axisInfo.validHeight;
-    qreal mapH = (val - graphInfo.scale.min) * 1.0 * validHeight / (graphInfo.scale.max -  graphInfo.scale.min);
+    qreal mapH = (val * graphInfo.scale.scale - graphInfo.scale.min) * 1.0 * validHeight /
+            (graphInfo.scale.max -  graphInfo.scale.min);
     if (mapH > validHeight)
     {
         mapH = validHeight;
@@ -1742,6 +1751,96 @@ QList<QPainterPath> generatorPainterPath(const GraphAxisInfo &axisInfo, const Tr
         paths.append(mapPath);
     }
     break;
+    case SUB_PARAM_ETCO2:
+    case SUB_PARAM_ETN2O:
+    case SUB_PARAM_ETAA1:
+    case SUB_PARAM_ETAA2:
+    case SUB_PARAM_ETO2:
+    case SUB_PARAM_T1:
+    {
+        QPainterPath etPath;
+        QPainterPath fiPath;
+
+        bool lastPointInvalid = true;
+        QPointF etLastPoint;
+        QPointF fiLastPoint;
+
+        QVector<TrendGraphDataV2>::ConstIterator iter = graphInfo.trendDataV2.constBegin();
+        for (; iter != graphInfo.trendDataV2.constEnd(); iter++)
+        {
+            if (iter->data[0] == InvData())
+            {
+                if (!lastPointInvalid)
+                {
+                    etPath.lineTo(etLastPoint);
+                    fiPath.lineTo(fiLastPoint);
+                    lastPointInvalid = true;
+                }
+                continue;
+            }
+
+            qreal x = timestampToX(iter->timestamp, axisInfo, graphInfo);
+            ParamID paramId = paramInfo.getParamID(graphInfo.subParamID);
+            UnitType type = paramManager.getSubParamUnit(paramId, graphInfo.subParamID);
+            int v1 = 0;
+            int v2 = 0;
+            if (paramId == PARAM_CO2)
+            {
+                v1 = Unit::convert(type, UNIT_PERCENT, iter->data[0] / 10.0, co2Param.getBaro()).toDouble();
+                v2 = Unit::convert(type, UNIT_PERCENT, iter->data[1] / 10.0, co2Param.getBaro()).toDouble();
+            }
+            else if (paramId == PARAM_TEMP)
+            {
+                QString v1Str = Unit::convert(type, UNIT_TC, iter->data[0] / 10.0);
+                QString v2Str = Unit::convert(type, UNIT_TC, iter->data[1] / 10.0);
+                v1 = v1Str.toDouble();
+                v2 = v2Str.toDouble();
+            }
+            else
+            {
+                v1 = iter->data[0] / 10;
+                v2 = iter->data[1] / 10;
+            }
+            qreal et = mapTrendYValue(v1, axisInfo, graphInfo);
+            qreal fi = mapTrendYValue(v2, axisInfo, graphInfo);
+
+            if (lastPointInvalid)
+            {
+                etPath.moveTo(x, et);
+                fiPath.moveTo(x, fi);
+                lastPointInvalid = false;
+            }
+            else
+            {
+                if (!isEqual(etLastPoint.y(), et))
+                {
+                    etPath.lineTo(etLastPoint);
+                    etPath.lineTo(x, et);
+                }
+
+                if (!isEqual(fiLastPoint.y(), fi))
+                {
+                    fiPath.lineTo(fiLastPoint);
+                    fiPath.lineTo(x, fi);
+                }
+            }
+
+            etLastPoint.rx() = x;
+            etLastPoint.ry() = et;
+            fiLastPoint.rx() = x;
+            fiLastPoint.ry() = fi;
+        }
+
+        if (!lastPointInvalid)
+        {
+            etPath.lineTo(etLastPoint);
+            fiPath.lineTo(fiLastPoint);
+        }
+
+        paths.append(etPath);
+        paths.append(fiPath);
+    }
+    break;
     default:
     {
         QPainterPath path;
@@ -1872,9 +1971,20 @@ QList<RecordWaveSegmentInfo> RecordPageGenerator::getWaveInfos(const QList<Wavef
         case WAVE_ECG_V5:
         case WAVE_ECG_V6:
             info.waveInfo.ecg.gain = ecgParam.getGain(ecgParam.waveIDToLeadID(id));
-            caption = QString("%1   %2").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
-                                             ecgParam.getLeadConvention()))
-                      .arg(ECGSymbol::convert(ecgParam.getFilterMode()));
+            if (ecgParam.getFilterMode() == ECG_FILTERMODE_DIAGNOSTIC)
+            {
+                caption = QString("%1   %2   %3%4").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
+                                                                           ecgParam.getLeadConvention()))
+                        .arg(trs(ECGSymbol::convert(ecgParam.getFilterMode()))).arg(trs("Notch"))
+                        .arg(trs(ECGSymbol::convert(ecgParam.getNotchFilter())));
+            }
+            else
+            {
+                caption = QString("%1   %2").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
+                                                                           ecgParam.getLeadConvention()))
+                        .arg(trs(ECGSymbol::convert(ecgParam.getFilterMode())));
+            }
+
             info.waveInfo.ecg.in12LeadMode = layoutManager.getUFaceType() == UFACE_MONITOR_ECG_FULLSCREEN;
             info.waveInfo.ecg._12LeadDisplayFormat = ecgParam.get12LDisplayFormat();
             captionLength = fontManager.textWidthInPixels(caption, font());
@@ -1926,7 +2036,7 @@ QList<RecordWaveSegmentInfo> RecordPageGenerator::getWaveInfos(const QList<Wavef
 
         captionLength = fontManager.textWidthInPixels(caption, font());
         info.drawCtx.captionPixLength = captionLength;
-        Util::strlcpy(info.drawCtx.caption, qPrintable(caption), sizeof(info.drawCtx.caption));
+        info.drawCtx.caption = caption;
         info.drawCtx.curPageFirstXpos = 0.0;
         info.drawCtx.prevSegmentLastYpos = 0.0;
         info.drawCtx.dashOffset = 0.0;
@@ -2203,7 +2313,6 @@ void RecordPageGenerator::timerEvent(QTimerEvent *ev)
         }
         else if (_requestStop)
         {
-            emit generatePage(createEndPage());
             _requestStop = false;
             delete page;
             emit stopped();

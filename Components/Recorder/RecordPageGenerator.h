@@ -45,7 +45,7 @@ struct RecordWaveSegmentInfo
         qreal dashOffset;           // dash offset when draw the dash line
         unsigned short lastWaveFlags; // the wave flags of the last draw wave point
         int captionPixLength;       // store the caption pixel length of the wave caption
-        char caption[64];           // wave caption string
+        QString caption;            // wave caption string
     } drawCtx;                      // wave draw context
 
     union {
@@ -119,6 +119,7 @@ public:
         TrendOxyCRGPage,
         WaveScalePage,
         WaveSegmentPage,
+        EventListPage,
         EndPage,
         NullPage,
     };

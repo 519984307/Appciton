@@ -215,7 +215,7 @@ RESPDupParam::BrSourceType RESPDupParam::getBrSource() const
         BrSourceType sourceType;
         if (_brValue == InvData() && _rrValue != InvData())
         {
-            sourceType = BR_SOURCE_RESP;
+            sourceType = BR_SOURCE_ECG;
         }
         else
         {
@@ -266,7 +266,7 @@ void RESPDupParam::updateSubParamLimit(SubParamID id)
 
 void RESPDupParam::onPaletteChanged(ParamID id)
 {
-    if (id != PARAM_RESP)
+    if (id != PARAM_RESP || !systemManager.isSupport(CONFIG_RESP))
     {
         return;
     }
@@ -284,7 +284,7 @@ RESPDupParam::RESPDupParam()
       _brValue(InvData()),
       _isAlarm(false),
       _isAutoBrSource(true),
-      _manualBrSourceType(BR_SOURCE_RESP)
+      _manualBrSourceType(BR_SOURCE_ECG)
 {
 }
 

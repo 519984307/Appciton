@@ -470,7 +470,9 @@ void ECGDupParam::setHrSource(HRSourceType type)
     {
         _prSource = PR_SOURCE_AUTO;
     }
-    currentConfig.setNumValue("ECG|HRSource", static_cast<int>(type));
+
+    int id = ecgParam.getIdFromHrSourceType(type);
+    currentConfig.setNumValue("ECG|HRSource", id);
 }
 
 bool ECGDupParam::isAutoTypeHrSouce() const
@@ -510,10 +512,28 @@ ECGDupParam::ECGDupParam()
       _prValueFromSPO2(InvData()),
       _prValueFromIBP(InvData()),
       _hrBeatFlag(true),
-      _isAlarm(false),
-      _hrSource(HR_SOURCE_ECG),
-      _prSource(PR_SOURCE_AUTO)
+      _isAlarm(false)
 {
+    // 初始化hr/pr来源
+    int id = PARAM_ECG;
+    currentConfig.getNumValue("ECG|HRSource", id);
+    HRSourceType type = ecgParam.getHrSourceTypeFromId(static_cast<ParamID>(id));
+    _hrSource = type;
+
+    switch (_hrSource)
+    {
+        case HR_SOURCE_ECG:
+        case HR_SOURCE_AUTO:
+        case HR_SOURCE_NR:
+            _prSource = PR_SOURCE_AUTO;
+        break;
+        case HR_SOURCE_SPO2:
+            _prSource = PR_SOURCE_SPO2;
+        break;
+        case HR_SOURCE_IBP:
+            _prSource = PR_SOURCE_IBP;
+        break;
+    }
 }
 
 /**************************************************************************************************

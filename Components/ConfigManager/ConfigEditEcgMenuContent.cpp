@@ -26,7 +26,7 @@ class ConfigEditECGMenuContentPrivate
 public:
     enum MenuItem
     {
-        ITEM_CBO_ALARM_SOURCE = 0,
+        ITEM_CBO_HRPR_SOURCE = 0,
         ITEM_CBO_ECG1_WAVE,
         ITEM_CBO_ECG2_WAVE,
         ITEM_CBO_ECG1_GAIN,
@@ -61,10 +61,40 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
         combos[item]->blockSignals(true);
     }
 
+    // 加载hr/pr来源
     int index = 0;
+    config->getNumValue("ECG|HRSource", index);
+    int sourceType = ecgParam.getHrSourceTypeFromId(static_cast<ParamID>(index));
+    int cboIndex = 0;
+    int itemCount = 0;
+     combos[ITEM_CBO_HRPR_SOURCE]->clear();
+    for (int i = HR_SOURCE_ECG; i < HR_SOURCE_NR; ++i)
+    {
+        if (i == HR_SOURCE_SPO2 && !systemManager.isSupport(PARAM_SPO2))
+        {
+            continue;
+        }
+        if (i == HR_SOURCE_IBP && !systemManager.isSupport(PARAM_IBP))
+        {
+            continue;
+        }
 
-    config->getNumValue("ECG|AlarmSource", index);
-    combos[ITEM_CBO_ALARM_SOURCE]->setCurrentIndex(index);
+        if (i == sourceType)
+        {
+            cboIndex = itemCount;
+        }
+        itemCount++;
+        combos[ITEM_CBO_HRPR_SOURCE]->addItem(trs(ECGSymbol::convert(static_cast<HRSourceType>(i))));
+    }
+
+    if (cboIndex > combos[ITEM_CBO_HRPR_SOURCE]->count())
+    {
+        cboIndex = 0;
+        index = ecgParam.getIdFromHrSourceType(static_cast<HRSourceType>(cboIndex));
+        currentConfig.setNumValue("ECG|HRSource", index);
+    }
+    combos[ITEM_CBO_HRPR_SOURCE]->setCurrentIndex(cboIndex);
+
 
     int leadmode = 0;
     config->getNumValue("ECG|LeadMode", leadmode);
@@ -144,14 +174,46 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
     config->getNumValue("ECG|SweepSpeed", index);
     combos[ITEM_CBO_SWEEP_SPEED]->setCurrentIndex(index);
 
-    config->getNumValue("ECG|Filter", index);
-    combos[ITEM_CBO_FILTER_MODE]->setCurrentIndex(index);
+    int filterMode =  0;
+    config->getNumValue("ECG|Filter", filterMode);
+    combos[ITEM_CBO_FILTER_MODE]->setCurrentIndex(filterMode);
 
     config->getNumValue("ECG|QRSVolume", index);
     combos[ITEM_CBO_HTBT_VOL]->setCurrentIndex(index);
 
     config->getNumValue("ECG|NotchFilter", index);
-    combos[ITEM_CBO_NOTCH_FILTER]->setCurrentIndex(index);
+    combos[ITEM_CBO_NOTCH_FILTER]->clear();
+    switch (filterMode)
+    {
+    case ECG_FILTERMODE_MONITOR:
+    case ECG_FILTERMODE_SURGERY:
+        combos[ITEM_CBO_NOTCH_FILTER]->
+        addItems(QStringList()
+                 << trs(ECGSymbol::convert(ECG_NOTCH_OFF))
+                 << trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ))
+                );
+        if (index == ECG_NOTCH_50_AND_60HZ)
+        {
+            combos[ITEM_CBO_NOTCH_FILTER]->setCurrentIndex(1);
+        }
+        else
+        {
+            combos[ITEM_CBO_NOTCH_FILTER]->setCurrentIndex(index);
+        }
+        break;
+    case ECG_FILTERMODE_DIAGNOSTIC:
+    case ECG_FILTERMODE_ST:
+        combos[ITEM_CBO_NOTCH_FILTER]->
+        addItems(QStringList()
+                 << trs(ECGSymbol::convert(ECG_NOTCH_OFF))
+                 << trs(ECGSymbol::convert(ECG_NOTCH_50HZ))
+                 << trs(ECGSymbol::convert(ECG_NOTCH_60HZ))
+                );
+        combos[ITEM_CBO_NOTCH_FILTER]->setCurrentIndex(index);
+        break;
+    default:
+        break;
+    }
 
     for (unsigned i = 0; i < ITEM_CBO_MAX; i++)
     {
@@ -193,20 +255,16 @@ void ConfigEditECGMenuContent::layoutExec()
     int itemID;
 
     // alarm source
-    label = new QLabel(trs("AlarmSource"));
-    d_ptr->comboLabels.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_ALARM_SOURCE,
+    label = new QLabel(trs("HR_PRSource"));
+    d_ptr->comboLabels.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_HRPR_SOURCE,
                               label);
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs(ECGSymbol::convert(ECG_ALARM_SRC_HR))
-                       << trs(ECGSymbol::convert(ECG_ALARM_SRC_PR))
-                       << trs(ECGSymbol::convert(ECG_ALARM_SRC_AUTO)));
-    itemID = static_cast<int>(ConfigEditECGMenuContentPrivate::ITEM_CBO_ALARM_SOURCE);
+    itemID = static_cast<int>(ConfigEditECGMenuContentPrivate::ITEM_CBO_HRPR_SOURCE);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_ALARM_SOURCE, comboBox);
+    d_ptr->combos.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_HRPR_SOURCE, comboBox);
 
     // ecg1 wave
     label = new QLabel(trs("Ecg1Wave"));
@@ -282,7 +340,7 @@ void ConfigEditECGMenuContent::layoutExec()
     d_ptr->combos.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_FILTER_MODE, comboBox);
 
     // heart beat volume
-    label = new QLabel(trs("QRSVolume"));
+    label = new QLabel(trs("ECGQRSToneVolume"));
     d_ptr->comboLabels.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_HTBT_VOL,
                               label);
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -353,8 +411,6 @@ void ConfigEditECGMenuContent::layoutExec()
 void ConfigEditECGMenuContent::onComboBoxIndexChanged(int index)
 {
     ComboBox *box = qobject_cast<ComboBox *>(sender());
-    static int iiii = 0;
-    iiii++;
     if (box)
     {
         ConfigEditECGMenuContentPrivate::MenuItem item
@@ -366,13 +422,36 @@ void ConfigEditECGMenuContent::onComboBoxIndexChanged(int index)
             d_ptr->loadOptions();
             break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_FILTER_MODE:
+        {
             d_ptr->config->setNumValue("ECG|Filter", index);
+            d_ptr->combos[ConfigEditECGMenuContentPrivate::ITEM_CBO_NOTCH_FILTER]->clear();
+            switch (index)
+            {
+            case ECG_FILTERMODE_MONITOR:
+            case ECG_FILTERMODE_SURGERY:
+                d_ptr->combos[ConfigEditECGMenuContentPrivate::ITEM_CBO_NOTCH_FILTER]->
+                addItems(QStringList()
+                         << trs(ECGSymbol::convert(ECG_NOTCH_OFF))
+                         << trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ))
+                        );
+                break;
+            case ECG_FILTERMODE_DIAGNOSTIC:
+            case ECG_FILTERMODE_ST:
+                d_ptr->combos[ConfigEditECGMenuContentPrivate::ITEM_CBO_NOTCH_FILTER]->
+                addItems(QStringList()
+                         << trs(ECGSymbol::convert(ECG_NOTCH_OFF))
+                         << trs(ECGSymbol::convert(ECG_NOTCH_50HZ))
+                         << trs(ECGSymbol::convert(ECG_NOTCH_60HZ))
+                        );
+                break;
+            }
+         }
             break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_NOTCH_FILTER:
             d_ptr->config->setNumValue("ECG|NotchFilter", index);
             break;
-        case ConfigEditECGMenuContentPrivate::ITEM_CBO_ALARM_SOURCE:
-            d_ptr->config->setNumValue("ECG|AlarmSource", index);
+        case ConfigEditECGMenuContentPrivate::ITEM_CBO_HRPR_SOURCE:
+            d_ptr->config->setNumValue("ECG|HRSource", index);
             break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG1_WAVE:
         {

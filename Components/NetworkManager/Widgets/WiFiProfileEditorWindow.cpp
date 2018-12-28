@@ -29,9 +29,6 @@
 #define MAX_IP_STRING_LENGTH 15
 #define DEFAULT_WIDGET_WIDTH 540
 
-#define WINDOW_WIDTH            800
-#define WINDOW_HEIGHT           580
-
 /***************************************************************************************************
  * constructor
  **************************************************************************************************/
@@ -141,7 +138,7 @@ void WiFiProfileEditorWindowPrivate::init(const WiFiProfileWindowInfo &profile)
 {
     Q_Q(WiFiProfileEditorWindow);
 
-    q->resize(WINDOW_WIDTH, WINDOW_HEIGHT);
+    q->resize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
     q->setToolTip(trs("WiFiProfileEdit"));
 
     QGridLayout *layout = new QGridLayout;
@@ -151,17 +148,17 @@ void WiFiProfileEditorWindowPrivate::init(const WiFiProfileWindowInfo &profile)
     QLabel *label;
 
     label = new QLabel(trs("ProfileName"));
-    label->setFixedWidth(150);
     layout->addWidget(label, 0, 0);
     profileNameBtn = new Button(profile.profileName);
     profileNameBtn->setButtonStyle(Button::ButtonTextOnly);
+    profileNameBtn->setFixedWidth(q->width() / 4);
     layout->addWidget(profileNameBtn, 0, 1);
 
     label = new QLabel(trs("WiFiAP"));
-    label->setFixedWidth(150);
     layout->addWidget(label, 0, 2);
     ssidBtn = new Button(profile.ssid);
     ssidBtn->setButtonStyle(Button::ButtonTextOnly);
+    ssidBtn->setFixedWidth(q->width() / 4);
     layout->addWidget(ssidBtn, 0, 3);
 
     label = new QLabel(trs("EncryptType"));
@@ -173,6 +170,7 @@ void WiFiProfileEditorWindowPrivate::init(const WiFiProfileWindowInfo &profile)
                              << "WPA2 PSK"
                             );
     authTypeComboL->setCurrentIndex(profile.authType);
+    authTypeComboL->setFixedWidth(q->width() / 4);
     layout->addWidget(authTypeComboL, 1, 1);
 
     label = new QLabel(trs("PassWord"));
@@ -183,6 +181,7 @@ void WiFiProfileEditorWindowPrivate::init(const WiFiProfileWindowInfo &profile)
     {
         securityKeyBtn->setEnabled(false);
     }
+    securityKeyBtn->setFixedWidth(q->width() / 4);
     layout->addWidget(securityKeyBtn, 1, 3);
 
     label = new QLabel(trs("NetworkSetting"));
@@ -193,45 +192,51 @@ void WiFiProfileEditorWindowPrivate::init(const WiFiProfileWindowInfo &profile)
                                    << trs("StaticIp")
                                   );
     networkSettingComboL->setCurrentIndex(profile.isStatic);
+    networkSettingComboL->setFixedWidth(q->width() / 4);
     layout->addWidget(networkSettingComboL, 2, 1);
 
     label = new QLabel(trs("StaticIp"));
     layout->addWidget(label, 2, 2);
     staticIpBtn = new Button(profile.staticIp);
     staticIpBtn->setButtonStyle(Button::ButtonTextOnly);
+    staticIpBtn->setFixedWidth(q->width() / 4);
     layout->addWidget(staticIpBtn, 2, 3);
 
     label = new QLabel(trs("GateWay"));
     layout->addWidget(label, 3, 0);
     defaultGatewayBtn = new Button(profile.defaultGateway);
     defaultGatewayBtn->setButtonStyle(Button::ButtonTextOnly);
+    defaultGatewayBtn->setFixedWidth(q->width() / 4);
     layout->addWidget(defaultGatewayBtn, 3, 1);
 
     label = new QLabel(trs("SubnetMask"));
     layout->addWidget(label, 3, 2);
     subnetMaskBtn = new Button(profile.subnetMask);
     subnetMaskBtn->setButtonStyle(Button::ButtonTextOnly);
+    subnetMaskBtn->setFixedWidth(q->width() / 4);
     layout->addWidget(subnetMaskBtn, 3, 3);
 
     label = new QLabel(trs("PreferrendDNS"));
     layout->addWidget(label, 4, 0);
     preferedDNSBtn = new Button(profile.preferedDNS);
     preferedDNSBtn->setButtonStyle(Button::ButtonTextOnly);
+    preferedDNSBtn->setFixedWidth(q->width() / 4);
     layout->addWidget(preferedDNSBtn, 4, 1);
 
     label = new QLabel(trs("AlternateDNS"));
     layout->addWidget(label, 4, 2);
     alternateDNSBtn = new Button(profile.alternateDNS);
     alternateDNSBtn->setButtonStyle(Button::ButtonTextOnly);
+    alternateDNSBtn->setFixedWidth(q->width() / 4);
     layout->addWidget(alternateDNSBtn, 4, 3);
 
     commitBtn = new Button(trs("Enter"));
     commitBtn->setButtonStyle(Button::ButtonTextOnly);
-    commitBtn->setFixedWidth(200);
+    commitBtn->setFixedWidth(q->width() / 3);
     hLayout->addWidget(commitBtn);
     cancelBtn = new Button(trs("Cancel"));
     cancelBtn->setButtonStyle(Button::ButtonTextOnly);
-    cancelBtn->setFixedWidth(200);
+    cancelBtn->setFixedWidth(q->width() / 3);
     hLayout->addWidget(cancelBtn);
 
     layout->setMargin(2);
@@ -401,7 +406,7 @@ void WiFiProfileEditorWindowPrivate::onCommit()
         if (keylen < 8 || keylen >= 64)
         {
             MessageBox(QString(trs("SecurityKeyError")), QString(trs("WpaPskRequires")),
-                        QStringList(trs("EnglishYESChineseSURE"))).exec();
+                        QStringList(trs("EnglishYESChineseSURE")), true).exec();
             return;
         }
     }

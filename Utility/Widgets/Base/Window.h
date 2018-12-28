@@ -67,6 +67,12 @@ protected:
     void paintEvent(QPaintEvent *ev);
 
 
+    /**
+     * @brief getTitleHeight 获取标题栏高度
+     * @return
+     */
+    int getTitleHeight() const;
+
 private:
     QScopedPointer<WindowPrivate> d_ptr;
 };

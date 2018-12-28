@@ -66,6 +66,11 @@ void AlarmLimitWindowPrivate::loadoptions()
         SubParamID subId = static_cast<SubParamID>(i);
         ParamID pid = paramInfo.getParamID(subId);
 
+        if (!systemManager.isSupport(pid))
+        {
+            continue;
+        }
+
         if (pid == PARAM_IBP && systemManager.isSupport(PARAM_IBP))
         {
             IBPPressureName pressName1 = ibpParam.getEntitle(IBP_INPUT_1);
@@ -96,6 +101,7 @@ void AlarmLimitWindowPrivate::loadoptions()
     }
     this->infos = infos;
     model->setupAlarmDataInfos(infos);
+    model->setEachPageRowCount(TABLE_ROW_NUM);
 }
 
 AlarmLimitWindow::AlarmLimitWindow(const QString &param)
@@ -230,10 +236,15 @@ void AlarmLimitWindow::layoutExec()
 void AlarmLimitWindow::onbtnClick()
 {
     bool focusPrevBtn = false;
+    bool focusNextBtn = false;
     Button *btn = qobject_cast<Button *>(sender());
     if (btn == d_ptr->prevBtn)
     {
         d_ptr->table->scrollToPreviousPage();
+        if (!d_ptr->table->hasPreivousPage())
+        {
+            focusNextBtn = true;
+        }
     }
     else if (btn == d_ptr->nextBtn)
     {
@@ -249,6 +260,10 @@ void AlarmLimitWindow::onbtnClick()
     if (focusPrevBtn)
     {
         d_ptr->prevBtn->setFocus();
+    }
+    if (focusNextBtn)
+    {
+        d_ptr->nextBtn->setFocus();
     }
 }
 
@@ -351,4 +366,5 @@ void AlarmLimitWindow::restoreDefaults()
     }
     d_ptr->infos = infos;
     d_ptr->model->setupAlarmDataInfos(infos);
+    d_ptr->model->setEachPageRowCount(TABLE_ROW_NUM);
 }
