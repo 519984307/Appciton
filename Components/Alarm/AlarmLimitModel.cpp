@@ -487,6 +487,13 @@ int AlarmLimitModelPrivate::calTotalPage()
     {
         return 0;
     }
-    int pages = alarmDataInfos.count() / eachPageRowCount + 1;
+
+    int count = alarmDataInfos.count();
+    int remainder = count % eachPageRowCount;
+    int pages = count / eachPageRowCount;
+    if (remainder > 0)
+    {
+        pages += 1;
+    }
     return pages;
 }

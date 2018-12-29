@@ -550,6 +550,7 @@ RecordPage *RecordPageGenerator::createTrendPage(const TrendDataPackage &trendDa
         QRect rect(xoffset, startYoffset, page->width(), fontH);
         painter.drawText(rect, trendPageTitle, textOption);
         startYoffset += fontH;
+        avaliableLine--;
     }
 
     for (int i = 0; i < segmentWidths.size(); i += 3)
@@ -642,12 +643,34 @@ QStringList RecordPageGenerator::getTrendStringList(const TrendDataPackage &tren
         paramid = paramInfo.getParamID(subparamID);
         if (!isPressSubParam(subparamID))
         {
-            strList.append(contructNormalTrendStringItem(subparamID,
-                           trendData.subparamValue[subparamID],
-                           trendData.subparamAlarm[subparamID],
-                           paramManager.getSubParamUnit(paramid, subparamID),
-                           paramInfo.getUnitOfSubParam(subparamID),
-                           trendData.co2Baro));
+            if (subparamID == SUB_PARAM_TD)
+            {
+                QString t1Str = Unit::convert(paramManager.getSubParamUnit(paramid, subparamID),
+                                              paramInfo.getUnitOfSubParam(subparamID),
+                                              trendData.subparamValue[SUB_PARAM_T1] / 10.0,
+                                              trendData.co2Baro);
+                QString t2Str = Unit::convert(paramManager.getSubParamUnit(paramid, subparamID),
+                                              paramInfo.getUnitOfSubParam(subparamID),
+                                              trendData.subparamValue[SUB_PARAM_T2] / 10.0,
+                                              trendData.co2Baro);
+                TrendDataType td = fabs(t1Str.toDouble() * 10 - t2Str.toDouble() * 10);
+
+                strList.append(contructNormalTrendStringItem(subparamID,
+                               td,
+                               trendData.subparamAlarm[subparamID],
+                               paramManager.getSubParamUnit(paramid, subparamID),
+                               paramManager.getSubParamUnit(paramid, subparamID),
+                               trendData.co2Baro));
+            }
+            else
+            {
+                strList.append(contructNormalTrendStringItem(subparamID,
+                               trendData.subparamValue[subparamID],
+                               trendData.subparamAlarm[subparamID],
+                               paramManager.getSubParamUnit(paramid, subparamID),
+                               paramInfo.getUnitOfSubParam(subparamID),
+                               trendData.co2Baro));
+            }
         }
         else
         {
@@ -875,7 +898,10 @@ static void drawRespZoom(RecordPage *page, QPainter *painter, const RecordWaveSe
 
 RecordPage *RecordPageGenerator::createWaveScalePage(const QList<RecordWaveSegmentInfo> &waveInfos, PrintSpeed speed)
 {
-    Q_ASSERT(waveInfos.size() > 0);
+    if (waveInfos.count() == 0)
+    {
+        return NULL;
+    }
     int pageWidth = 25 * RECORDER_PIXEL_PER_MM;
 
     RecordPage *page = new RecordPage(pageWidth);

@@ -47,6 +47,12 @@ public:
     QLabel *brRRSouce;
 
     QMap<MenuItem, ComboBox *> combos;
+
+    /**
+     * @brief blockItemSignal 阻塞信号
+     * @param flag
+     */
+    void blockItemSignal(bool flag);
 };
 
 void RESPMenuContentPrivate::loadOptions()
@@ -88,6 +94,15 @@ void RESPMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_WAVE_GAIN]->setCurrentIndex(respParam.getZoom());
 }
 
+void RESPMenuContentPrivate::blockItemSignal(bool flag)
+{
+    for (int i = ITEM_CBO_APNEA_DELAY; i <= ITEM_CBO_SWEEP_SPEED; ++i)
+    {
+        MenuItem index = static_cast<MenuItem>(i);
+        combos[index]->blockSignals(flag);
+    }
+}
+
 RESPMenuContent::RESPMenuContent()
     : MenuContent(trs("RESPMenu"), trs("RESPMenuDesc")),
       d_ptr(new RESPMenuContentPrivate())
@@ -101,7 +116,9 @@ RESPMenuContent::~RESPMenuContent()
 
 void RESPMenuContent::readyShow()
 {
+    d_ptr->blockItemSignal(true);
     d_ptr->loadOptions();
+    d_ptr->blockItemSignal(false);
 }
 
 void RESPMenuContent::layoutExec()

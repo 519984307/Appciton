@@ -143,6 +143,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
         if (_curAlarmStatus == ALARM_STATUS_OFF || _curAlarmStatus == ALARM_STATUS_PAUSE)
         {
             traceCtrl->Reset();
+            traceCtrl->alarmTimesCount = ALARM_LIMIT_TIMES;     // 处理目的：报警状态恢复正常后，马上刷新报警状态
             alarmSource->notifyAlarm(i, false);
             continue;
         }
