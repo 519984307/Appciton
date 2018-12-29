@@ -28,9 +28,9 @@
     <!--数据记录使能选择-->
     <Record>
         <ECG>0</ECG>
-        <SPO2>1</SPO2>
+        <SPO2>0</SPO2>
         <Battery>0</Battery>
-        <NIBP>1</NIBP>
+        <NIBP>0</NIBP>
         <TEMP>0</TEMP>
     </Record>
     <!--参数与Provider的关系-->
