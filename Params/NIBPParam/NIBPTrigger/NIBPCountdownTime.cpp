@@ -180,12 +180,12 @@ void NIBPCountdownTime::setAutoMeasureTimeout(bool flag)
  * 状态机主运行。
  *************************************************************************************************/
 NIBPCountdownTime::NIBPCountdownTime()
+    : _currentState(NULL), _autoMeasureTimer(NULL),
+      _STATMeasureTimer(NULL), _isAutoMeasureTimeout(false),
+      _isSTATMeasureTimeout(true), _autoTime(AUTO_TIME * 1000),
+      _autoElapseTime(0), _STATTime(STAT_Time * 1000),
+      _STATElapseTime(0)
 {
-    _isAutoMeasureTimeout = false;
-    _isSTATMeasureTimeout = true;
-    _STATTime = STAT_Time * 1000;
-
-
     _autoMeasureTimer = new QTimer();
     connect(_autoMeasureTimer, SIGNAL(timeout()), this, SLOT(_autoMeasureTimeout()));
 
