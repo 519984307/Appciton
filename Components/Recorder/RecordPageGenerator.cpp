@@ -898,7 +898,10 @@ static void drawRespZoom(RecordPage *page, QPainter *painter, const RecordWaveSe
 
 RecordPage *RecordPageGenerator::createWaveScalePage(const QList<RecordWaveSegmentInfo> &waveInfos, PrintSpeed speed)
 {
-    Q_ASSERT(waveInfos.size() > 0);
+    if (waveInfos.count() == 0)
+    {
+        return NULL;
+    }
     int pageWidth = 25 * RECORDER_PIXEL_PER_MM;
 
     RecordPage *page = new RecordPage(pageWidth);
