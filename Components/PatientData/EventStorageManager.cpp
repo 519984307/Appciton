@@ -163,7 +163,7 @@ void EventStorageManager::triggerAlarmEvent(const AlarmInfoSegment &almInfo, Wav
                 d->generator = generator;
                 d->waitTimerId = startTimer(2000); // 等待2000ms
                 d->isWait = true;
-                item->setWaitForTriggerPrintFlag(false);
+                item->setWaitForTriggerPrintFlag(true);
             }
         }
         else if (!recorderManager.getPrintStatus())
