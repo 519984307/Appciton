@@ -550,6 +550,7 @@ RecordPage *RecordPageGenerator::createTrendPage(const TrendDataPackage &trendDa
         QRect rect(xoffset, startYoffset, page->width(), fontH);
         painter.drawText(rect, trendPageTitle, textOption);
         startYoffset += fontH;
+        avaliableLine--;
     }
 
     for (int i = 0; i < segmentWidths.size(); i += 3)
