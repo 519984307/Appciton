@@ -642,12 +642,34 @@ QStringList RecordPageGenerator::getTrendStringList(const TrendDataPackage &tren
         paramid = paramInfo.getParamID(subparamID);
         if (!isPressSubParam(subparamID))
         {
-            strList.append(contructNormalTrendStringItem(subparamID,
-                           trendData.subparamValue[subparamID],
-                           trendData.subparamAlarm[subparamID],
-                           paramManager.getSubParamUnit(paramid, subparamID),
-                           paramInfo.getUnitOfSubParam(subparamID),
-                           trendData.co2Baro));
+            if (subparamID == SUB_PARAM_TD)
+            {
+                QString t1Str = Unit::convert(paramManager.getSubParamUnit(paramid, subparamID),
+                                              paramInfo.getUnitOfSubParam(subparamID),
+                                              trendData.subparamValue[SUB_PARAM_T1] / 10.0,
+                                              trendData.co2Baro);
+                QString t2Str = Unit::convert(paramManager.getSubParamUnit(paramid, subparamID),
+                                              paramInfo.getUnitOfSubParam(subparamID),
+                                              trendData.subparamValue[SUB_PARAM_T2] / 10.0,
+                                              trendData.co2Baro);
+                TrendDataType td = fabs(t1Str.toDouble() * 10 - t2Str.toDouble() * 10);
+
+                strList.append(contructNormalTrendStringItem(subparamID,
+                               td,
+                               trendData.subparamAlarm[subparamID],
+                               paramManager.getSubParamUnit(paramid, subparamID),
+                               paramManager.getSubParamUnit(paramid, subparamID),
+                               trendData.co2Baro));
+            }
+            else
+            {
+                strList.append(contructNormalTrendStringItem(subparamID,
+                               trendData.subparamValue[subparamID],
+                               trendData.subparamAlarm[subparamID],
+                               paramManager.getSubParamUnit(paramid, subparamID),
+                               paramInfo.getUnitOfSubParam(subparamID),
+                               trendData.co2Baro));
+            }
         }
         else
         {
