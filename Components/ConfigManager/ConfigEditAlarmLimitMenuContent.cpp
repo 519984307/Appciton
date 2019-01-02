@@ -127,7 +127,7 @@ void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
         }
     }
     this->infos = infos;
-    model->setupAlarmDataInfos(infos);
+    model->setupAlarmDataInfos(infos, false);
     model->setEachPageRowCount(TABLE_ROW_NUM);
 }
 

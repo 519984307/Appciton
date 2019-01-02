@@ -62,8 +62,10 @@ public:
     /**
      * @brief setupAlarmDataInfos setup the alarm data infos
      * @param dataInfos alarm data info list
+     * @param isDeliverInfosToSystemParam 是否传递信息到系统参数中
      */
-    void setupAlarmDataInfos(const QList<AlarmDataInfo> &dataInfos);
+    void setupAlarmDataInfos(const QList<AlarmDataInfo> &dataInfos,
+                             bool isDeliverInfosToSystemParam = true);
 
     /* reimplement */
     bool eventFilter(QObject *obj, QEvent *ev);

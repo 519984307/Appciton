@@ -391,11 +391,18 @@ Qt::ItemFlags AlarmLimitModel::flags(const QModelIndex &index) const
     return flags;
 }
 
-void AlarmLimitModel::setupAlarmDataInfos(const QList<AlarmDataInfo> &dataInfos)
+void AlarmLimitModel::setupAlarmDataInfos(const QList<AlarmDataInfo> &dataInfos,
+                                          bool isDeliverInfosToSystemParam)
 {
     beginResetModel();
     d_ptr->alarmDataInfos = dataInfos;
     endResetModel();
+
+    if (isDeliverInfosToSystemParam == false)
+    {
+        return;
+    }
+
     for (int i = 0; i < dataInfos.count(); i++)
     {
         AlarmDataInfo info = dataInfos.at(i);
