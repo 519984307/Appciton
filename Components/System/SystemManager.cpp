@@ -116,15 +116,12 @@ public:
     /**
      * @brief enterStandbyMode enter standby mode
      */
-    void enterStandbyMode(WorkMode lastWorkMode)
+    void enterStandbyMode()
     {
-        if (lastWorkMode != WORK_MODE_DEMO)
-        {
-            // demo模式不进入待机模式
-            setStandbyStatus(true);
-            StandbyWindow w;
-            w.exec();
-        }
+        // demo模式不进入待机模式
+        setStandbyStatus(true);
+        StandbyWindow w;
+        w.exec();
     }
 
 
@@ -620,20 +617,25 @@ void SystemManager::setWorkMode(WorkMode workmode)
         return;
     }
 
-    WorkMode lastWorkMode = d_ptr->workMode;
-    d_ptr->workMode = workmode;
-
     switch (workmode)
     {
     case WORK_MODE_NORMAL:
+        d_ptr->workMode = workmode;
         d_ptr->enterNormalMode();
         break;
     case WORK_MODE_DEMO:
+        d_ptr->workMode = workmode;
         d_ptr->enterDemoMode();
         break;
     case WORK_MODE_STANDBY:
-        d_ptr->enterStandbyMode(lastWorkMode);
+    {
+        if (d_ptr->workMode != WORK_MODE_DEMO)
+        {
+            d_ptr->workMode = workmode;
+            d_ptr->enterStandbyMode();
+        }
         break;
+    }
     default:
         break;
     }
@@ -653,11 +655,6 @@ void SystemManagerPrivate::setStandbyStatus(bool standby)
     {
         paramManager.connectParamProvider(WORK_MODE_STANDBY);
     }
-}
-
-bool SystemManager::isStandby() const
-{
-    return d_ptr->isStandby;
 }
 
 #ifdef Q_WS_X11

@@ -66,6 +66,15 @@ void DischargePatientWindow::layoutExec()
     d_ptr->standbyChk->setIconSize(QSize(32, 32));
     d_ptr->standbyChk->setBorderWidth(0);
     d_ptr->standbyChk->setFixedSize(32, 32);
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        // 演示模式下，不能待机
+        d_ptr->standbyChk->setEnabled(false);
+    }
+    else
+    {
+        d_ptr->standbyChk->setEnabled(true);
+    }
 
     QLabel *lbl = new QLabel;
     lbl->setText(trs("isRelievePatient"));

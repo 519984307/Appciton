@@ -55,13 +55,14 @@ public:
     };
 
     NormalFunctionMenuContentPrivate()
-                    : demoBtn(NULL)
+                    : demoBtn(NULL), standbyBtn(NULL)
     {}
 
     // load settings
     void loadOptions();
 
     Button *demoBtn;
+    Button *standbyBtn;
 
     QMap<MenuItem, ComboBox *> combos;
 };
@@ -104,6 +105,15 @@ void NormalFunctionMenuContentPrivate::loadOptions()
 
         systemConfig.getNumValue("General|KeyPressVolume", index);
         combos[ITEM_CBO_KEYPRESS_VOLUME]->setCurrentIndex(index);
+    }
+
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+         standbyBtn->setEnabled(false);
+    }
+    else
+    {
+        standbyBtn->setEnabled(true);
     }
 
 #ifdef Q_WS_QWS
@@ -275,6 +285,7 @@ void NormalFunctionMenuContent::layoutExec()
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
     itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_BTN_ENTER_STANDY);
     btn->setProperty("Item", qVariantFromValue(itemID));
+    d_ptr->standbyBtn = btn;
 #ifndef HIDE_STANDBY_FUNCTION
     layout->addWidget(btn, row, 1);
     row++;
