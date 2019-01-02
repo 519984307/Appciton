@@ -30,8 +30,5 @@ protected:
     void mouseReleaseEvent(QMouseEvent *ev);
 
     /* reimplement */
-    void showEvent(QShowEvent *ev);
-
-    /* reimplement */
     void hideEvent(QHideEvent *ev);
 };

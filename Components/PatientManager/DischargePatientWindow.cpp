@@ -16,8 +16,8 @@
 #include "PatientInfoWindow.h"
 #include <QGridLayout>
 #include "LayoutManager.h"
-#include "StandbyWindow.h"
 #include "PatientManager.h"
+#include "SystemManager.h"
 
 class DischaregePatientWindowPrivate
 {
@@ -143,8 +143,7 @@ void DischargePatientWindow::onBtnRelease()
         windowManager.closeAllWidows();
         if (d_ptr->isStandby)
         {
-            StandbyWindow standyWin;
-            standyWin.exec();
+            systemManager.setWorkMode(WORK_MODE_STANDBY);
         }
     }
     else if (btn == d_ptr->noBtn)

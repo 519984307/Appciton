@@ -27,7 +27,6 @@
 #include "WiFiProfileWindow.h"
 #include "SoftWareVersionWindow.h"
 #include "NightModeWindow.h"
-#include "StandbyWindow.h"
 #include "PasswordWindow.h"
 #ifdef Q_WS_QWS
 #include <QWSServer>
@@ -405,8 +404,7 @@ void NormalFunctionMenuContent::onBtnReleasd()
         break;
         case NormalFunctionMenuContentPrivate::ITEM_BTN_ENTER_STANDY:
         {
-            StandbyWindow w;
-            w.exec();
+            systemManager.setWorkMode(WORK_MODE_STANDBY);
         }
         break;
         case NormalFunctionMenuContentPrivate::ITEM_BTN_NIGHT_MODE:

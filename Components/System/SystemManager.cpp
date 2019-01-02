@@ -47,6 +47,7 @@
 #endif
 #include "PatientManager.h"
 #include "DataStorageDirManager.h"
+#include "StandbyWindow.h"
 
 #define BACKLIGHT_DEV   "/sys/class/backlight/backlight/brightness"       // 背光控制文件接口
 
@@ -111,6 +112,27 @@ public:
         patientManager.dischargePatient();
         dataStorageDirManager.deleteData(curFolderName);
     }
+
+    /**
+     * @brief enterStandbyMode enter standby mode
+     */
+    void enterStandbyMode(WorkMode lastWorkMode)
+    {
+        if (lastWorkMode != WORK_MODE_DEMO)
+        {
+            // demo模式不进入待机模式
+            setStandbyStatus(true);
+            StandbyWindow w;
+            w.exec();
+        }
+    }
+
+
+    /**
+     * @brief setStandbyStatus set the system standby status
+     * @param standby standby status
+     */
+    void setStandbyStatus(bool standby);
 
     /**
      * @brief handleBMode handle the board mode
@@ -598,6 +620,7 @@ void SystemManager::setWorkMode(WorkMode workmode)
         return;
     }
 
+    WorkMode lastWorkMode = d_ptr->workMode;
     d_ptr->workMode = workmode;
 
     switch (workmode)
@@ -608,6 +631,9 @@ void SystemManager::setWorkMode(WorkMode workmode)
     case WORK_MODE_DEMO:
         d_ptr->enterDemoMode();
         break;
+    case WORK_MODE_STANDBY:
+        d_ptr->enterStandbyMode(lastWorkMode);
+        break;
     default:
         break;
     }
@@ -616,9 +642,9 @@ void SystemManager::setWorkMode(WorkMode workmode)
     emit workModeChanged(workmode);
 }
 
-void SystemManager::setStandbyStatus(bool standby)
+void SystemManagerPrivate::setStandbyStatus(bool standby)
 {
-    d_ptr->isStandby = standby;
+    isStandby = standby;
     if (standby)
     {
         paramManager.disconnectParamProvider(WORK_MODE_STANDBY);
