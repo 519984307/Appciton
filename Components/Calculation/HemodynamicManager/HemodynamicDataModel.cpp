@@ -15,8 +15,9 @@
 #include "WindowManager.h"
 
 #define MAX_ROW_COUNT  8
-#define ROW_HEIGHT_HINT 46
-#define HEADER_HEIGHT_HINT 46
+#define ROW_HEIGHT_HINT 45
+#define HEADER_HEIGHT_HINT 42
+
 class HemodynamicDataModelPrivate
 {
 public:
