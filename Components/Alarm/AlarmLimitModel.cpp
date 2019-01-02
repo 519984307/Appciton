@@ -391,14 +391,13 @@ Qt::ItemFlags AlarmLimitModel::flags(const QModelIndex &index) const
     return flags;
 }
 
-void AlarmLimitModel::setupAlarmDataInfos(const QList<AlarmDataInfo> &dataInfos,
-                                          bool isDeliverInfosToSystemParam)
+void AlarmLimitModel::setupAlarmDataInfos(const QList<AlarmDataInfo> &dataInfos, bool updateImmediately)
 {
     beginResetModel();
     d_ptr->alarmDataInfos = dataInfos;
     endResetModel();
 
-    if (isDeliverInfosToSystemParam == false)
+    if (updateImmediately == false)
     {
         return;
     }
