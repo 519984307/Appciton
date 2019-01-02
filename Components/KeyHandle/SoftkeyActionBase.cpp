@@ -202,7 +202,7 @@ void SoftkeyActionBase::patientNew(bool isPressed)
     // patientMenu.createPatient();
     QStringList slist;
     slist << trs("No") << trs("Yes");
-    MessageBox messageBox(trs("Warn"), trs("RemoveAndRecePatient"), slist);
+    MessageBox messageBox(trs("Warn"), trs("RemoveAndRecePatient"), slist, true);
     if (messageBox.exec() == 1)
     {
         patientManager.newPatient();
