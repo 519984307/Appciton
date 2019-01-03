@@ -578,12 +578,12 @@ void EventWaveWidget::_drawWave(int index, QPainter &painter)
         }
         // invaild data
         unsigned short flag = waveData->waveData[i]>>16;
-        if (flag == INVALID_WAVE_FALG_BIT)
+        if (flag & INVALID_WAVE_FALG_BIT)
         {
             y1 = y2 = waveValue;
             int j = i + 1;
             flag = waveData->waveData[j]>>16;
-            while (flag & INVALID_WAVE_FALG_BIT)
+            while (flag & INVALID_WAVE_FALG_BIT && x2 - d_ptr->startX < d_ptr->waveRagWidth)
             {
                 flag = waveData->waveData[j]>>16;
                 x2 += waveDesc.offsetX;
