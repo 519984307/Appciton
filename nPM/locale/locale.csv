@@ -798,7 +798,7 @@ NIBPVersion,NIBP,NIBP
 SPO2Version,SPO2,SPO2
 TEMPVersion,TEMP,TEMP
 iDMBoardVersion,iDMBoard,iDMBoard
-PRT72Version,PRT72,PRT72
+PRT48Version,PRT48,PRT48
 PDVersion,PD,PD
 COREVersion,CORE,CORE
 VersionReturn,返回,Return

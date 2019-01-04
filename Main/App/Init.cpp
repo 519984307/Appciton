@@ -213,6 +213,8 @@ static void _initProviderParam(void)
 {
     paramInfo.construction();
 
+    paramManager.addProvider(systemBoardProvider);
+
     // 创建Provider.
     DemoProvider *demo = new DemoProvider();
     paramManager.addProvider(*demo);
@@ -533,8 +535,6 @@ static void _initProviderParam(void)
     ShortTrendContainer *trendContainer = new ShortTrendContainer;
     layoutManager.addLayoutWidget(trendContainer);
 
-    paramManager.getVersion();
-
     // 关联设备和参数对象。
     paramManager.connectParamProvider(WORK_MODE_NORMAL);
 
@@ -568,6 +568,9 @@ static void _initPrint(void)
     recorderManager.setPrintPrividerIFace(prtProvider);
     recorderManager.selfTest();
     recorderManager.printWavesInit();
+    paramManager.addProvider(*prtProvider);
+
+    paramManager.getVersion();
 }
 
 /**************************************************************************************************
