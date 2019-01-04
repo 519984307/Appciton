@@ -34,7 +34,7 @@ public:
         ITEM_LAB_NIBP_VERSION,
         ITEM_LAB_SPO2_VERSION,
         ITEM_LAB_TEMP_VERSION,
-        ITEM_LAB_PRT72_VERSION,
+        ITEM_LAB_PRT48_VERSION,
         ITEM_LAB_MAX,
     };
 
@@ -139,14 +139,14 @@ void FactoryVersionInfo::layoutExec()
                            ::ITEM_LAB_TEMP_VERSION, labelRight);
     }
 
-    labelLeft = new QLabel(trs("PRT72Version") + "    ");
+    labelLeft = new QLabel(trs("PRT48Version") + "    ");
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
 
     labelRight = new QLabel;
 
     layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
     d_ptr->labs.insert(FactoryVersionInfoPrivate
-                       ::ITEM_LAB_PRT72_VERSION, labelRight);
+                       ::ITEM_LAB_PRT48_VERSION, labelRight);
 
     layout->setRowStretch(d_ptr->labs.count(), 1);
 }
@@ -167,9 +167,16 @@ void FactoryVersionInfoPrivate::loadOptions()
         labs[ITEM_LAB_HARDWARE_VERSION]->setText(tmpStr);
     }
 
-    tmpStr.clear();
-    systemConfig.getStrValue("SoftWareVersion|KeyboardModule", tmpStr);
-    labs[ITEM_LAB_KEYBD_MOD]->setText(trs(tmpStr));
+    if (labs[ITEM_LAB_KEYBD_MOD])
+    {
+        Provider *p = paramManager.getProvider("SystemBoard");
+        QString version;
+        if (p)
+        {
+            version = p->getVersionString();
+        }
+        labs[ITEM_LAB_KEYBD_MOD]->setText(version);
+    }
 
     tmpStr.clear();
     systemConfig.getStrValue("SoftWareVersion|ECGAlgorithmType", tmpStr);
@@ -185,7 +192,7 @@ void FactoryVersionInfoPrivate::loadOptions()
 
     if (labs[ITEM_LAB_NIBP_VERSION])
     {
-        Provider *p = paramManager.getProvider("BLM_TN3");
+        Provider *p = paramManager.getProvider("BLM_N5");
         QString version;
         if (p)
         {
@@ -217,10 +224,10 @@ void FactoryVersionInfoPrivate::loadOptions()
     }
 
     version.clear();
-    p = paramManager.getProvider("PRT72");
+    p = paramManager.getProvider("PRT48");
     if (p)
     {
         version = p->getVersionString();
     }
-    labs[ITEM_LAB_PRT72_VERSION]->setText(version);
+    labs[ITEM_LAB_PRT48_VERSION]->setText(version);
 }
