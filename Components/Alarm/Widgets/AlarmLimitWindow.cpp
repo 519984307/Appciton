@@ -285,7 +285,7 @@ void AlarmLimitWindow::onDefaultsClick()
 {
     QStringList slist;
     slist << trs("No") << trs("Ok");
-    MessageBox messageBox(trs("Warn"), trs("SureAllAlarmDefaults"), slist);
+    MessageBox messageBox(trs("Warn"), trs("SureAllAlarmDefaults"), slist, true);
     if (messageBox.exec() == 1)
     {
         restoreDefaults();

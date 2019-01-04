@@ -284,6 +284,7 @@ PatientInfoWindow::PatientInfoWindow()
 
     // patient type
     label = new QLabel(trs("PatientType"));
+    label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     layout->addWidget(label
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , itemPos++ % 4);
@@ -304,6 +305,7 @@ PatientInfoWindow::PatientInfoWindow()
     // bed num
     label = new QLabel();
     label->setText(trs("BedNumber"));
+    label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     layout->addWidget(label,
                       (d_ptr->combos.count() + d_ptr->buttons.count()) / 2,
                       itemPos++ % 4);
@@ -319,6 +321,7 @@ PatientInfoWindow::PatientInfoWindow()
 
     // patient pace marker
     label = new QLabel(trs("PatientPacemarker"));
+    label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     layout->addWidget(label
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , itemPos++ % 4);
@@ -341,6 +344,7 @@ PatientInfoWindow::PatientInfoWindow()
 
     // patient id
     label = new QLabel(trs("PatientID"));
+    label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     layout->addWidget(label
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , itemPos++ % 4);
@@ -358,6 +362,7 @@ PatientInfoWindow::PatientInfoWindow()
 
     // patient sex
     label = new QLabel(trs("PatientSex"));
+    label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     layout->addWidget(label
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , itemPos++ % 4);
@@ -378,6 +383,7 @@ PatientInfoWindow::PatientInfoWindow()
 
     // blood type
     label = new QLabel(trs("PatientBloodType"));
+    label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     layout->addWidget(label
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , itemPos++ % 4);
@@ -400,6 +406,7 @@ PatientInfoWindow::PatientInfoWindow()
 
     // patient name
     label = new QLabel(trs("PatientName"));
+    label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     layout->addWidget(label
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , itemPos++ % 4);
@@ -417,6 +424,7 @@ PatientInfoWindow::PatientInfoWindow()
 
     // patient age
     label = new QLabel(trs("PatientAge"));
+    label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     layout->addWidget(label
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , itemPos++ % 4);
@@ -435,6 +443,7 @@ PatientInfoWindow::PatientInfoWindow()
 
     // Patient Height
     label = new QLabel();
+    label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     layout->addWidget(label
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , itemPos++ % 4);
@@ -453,6 +462,7 @@ PatientInfoWindow::PatientInfoWindow()
 
     // Patient Weight
     label = new QLabel();
+    label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     layout->addWidget(label
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , itemPos++ % 4);

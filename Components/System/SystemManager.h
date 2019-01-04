@@ -182,18 +182,6 @@ public:
      */
     void setWorkMode(WorkMode workmode);
 
-    /**
-     * @brief setStandbyStatus set the system standby status
-     * @param standby standby status
-     */
-    void setStandbyStatus(bool standby);
-
-    /**
-     * @brief isStandby get the standby status
-     * @return true is in standby, otherwise, false
-     */
-    bool isStandby() const;
-
 #ifdef Q_WS_X11
 public:
     bool sendCommand(const QByteArray &cmd);
