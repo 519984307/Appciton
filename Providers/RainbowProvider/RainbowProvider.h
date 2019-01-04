@@ -45,7 +45,7 @@ public:
     int getSPO2MaxValue();
 
     /* reimplment */
-    void sendVersion() {}
+    void sendVersion();
 
     /* reimplment */
     void setSensitivityFastSat(SensitivityMode mode, bool fastSat);
@@ -73,7 +73,7 @@ public:
      * @brief setLineFrequency
      * @param freq
      */
-    void setLineFrequency(RainbowLineFrequency freq);
+    void setLineFrequency(RainbowLineFrequency freq); 
 
 private:
     RainbowProviderPrivate *const d_ptr;

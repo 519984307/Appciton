@@ -30,6 +30,7 @@ enum RBRecvPacketType
     RB_ENTER_PROGRAM_MODE            = 0X20,     // resquest to enter programming mode
     RB_PROGRAM_COMPLETE              = 0X21,     // programming complete
     RB_PROGRAM_ERROR                 = 0X22,     // programming error
+    RB_BASELINE_PI                   = 0X2B,     // baseline pi
     RB_BOARD_INFO                    = 0X70,     // board info
     RB_PLETH_CONTROL                 = 0X90,     // pleth control
 };
@@ -44,6 +45,7 @@ enum RBSendPacketType
     RB_CMD_CONF_LINE_FREQ            = 0x04,     // configure line frequency
     RB_CMD_CONF_SMART_TONE_MODE      = 0x08,     // configure smart tone mode
     RB_CMD_CONF_WAVEFORM_MODE        = 0x09,     // configure waveform mode
+    RB_CMD_REQ_PARAM_INFO            = 0x10,     // request parameter info by force
     RB_CMD_CONF_PERIOD_PARAM_OUTPUT  = 0x20,     // configure periodic parameter output
     RB_CMD_CONF_PERIOD_WAVE_OUTPUT   = 0x21,     // configure periodic waveform output
 };
@@ -54,7 +56,17 @@ enum RBParamIDType
     RB_PARAM_OF_PR                   = 0X02,     // pluse rate value and exceptions
     RB_PARAM_OF_PI                   = 0X03,     // pi value and exceptions
     RB_PARAM_OF_OXI_SYSTEM_EXCEPTION = 0X0C,     // plus Oximeter System Exceptions
+    RB_PARAM_OF_VERSION_INFO         = 0X0F,     // dsp version,base board params,mcu version and so on
     RB_PARAM_MAX_ITEM,
+};
+
+enum RBWaveformSelectionBitsType
+{
+    AUTOSCALE_DATA                   = 0X010000,  // Autoscale data(IR_LED)
+    CLIPPED_AUTOSCALE_DATA           = 0X020000,  // Clipped autoscal data
+    SIGNAL_IQ_DATA                   = 0X040000,  // Signal IQ data
+    SIGNAL_IQ_AUDIO_VISUAL_DATA      = 0X100000,  // Signal IQ Audio-Visual data
+    ACOUSTIC_DISPLAY_DATA            = 0X400000,  // Acoustic display data
 };
 
 class RainbowProviderPrivate
@@ -129,6 +141,20 @@ public:
      * @brief requestBoardInfo  请求底板信息，获取序列号
      */
     void requestBoardInfo();
+
+    /**
+     * @brief configPeriodParamOut  配置参数输出周期
+     * @param paramId  参数id
+     * @param periodTime  周期时间
+     */
+    void configPeriodParamOut(RBParamIDType paramId, unsigned int periodTime);
+
+    /**
+     * @brief configPeriodWaveformOut  配置波形输出周期
+     * @param bitsType  参数类型
+     * @param periodTime  周期时间
+     */
+    void configPeriodWaveformOut(RBWaveformSelectionBitsType bitsType, unsigned char periodTime);
 
     static const unsigned char minPacketLen = MIN_PACKET_LEN;
     RainbowProvider *q_ptr;
@@ -278,6 +304,12 @@ int RainbowProvider::getSPO2BaseLine()
 int RainbowProvider::getSPO2MaxValue()
 {
     return 128;
+}
+
+void RainbowProvider::sendVersion()
+{
+    unsigned char data[2] = {RB_CMD_REQ_PARAM_INFO, RB_PARAM_OF_VERSION_INFO};
+    d_ptr->sendCmd(data, sizeof(data));
 }
 
 
@@ -498,7 +530,10 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         }
     }
     break;
+    case RB_PARAM_OF_VERSION_INFO:
+        break;
     case RB_PARAM_MAX_ITEM:
+        break;
     default:
         break;
     }
@@ -602,6 +637,26 @@ void RainbowProviderPrivate::unlockBoard(unsigned int sn, unsigned int flag)
 void RainbowProviderPrivate::requestBoardInfo()
 {
     unsigned char data[1] = {RB_CMD_REQUEST_BOARD_INFO};
+
+    sendCmd(data, sizeof(data));
+}
+
+void RainbowProviderPrivate::configPeriodParamOut(RBParamIDType paramId, unsigned int periodTime)
+{
+    unsigned char data[4] = {RB_CMD_CONF_PERIOD_PARAM_OUTPUT, paramId};
+    data[2] = periodTime >> 8;
+    data[3] = periodTime & 0xff;
+
+    sendCmd(data, sizeof(data));
+}
+
+void RainbowProviderPrivate::configPeriodWaveformOut(RBWaveformSelectionBitsType bitsType, unsigned char periodTime)
+{
+    unsigned char data[5] = {RB_CMD_CONF_PERIOD_WAVE_OUTPUT};
+    data[1] = (bitsType >> 16) & 0xff;
+    data[2] = (bitsType >>  8) & 0xff;
+    data[3] = (bitsType) & 0xff;
+    data[4] = periodTime;
 
     sendCmd(data, sizeof(data));
 }
