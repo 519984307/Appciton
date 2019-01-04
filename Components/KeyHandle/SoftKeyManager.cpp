@@ -60,7 +60,7 @@ public:
         else
         {
             int dynamicNum = dynamicKeyWidgets.count();
-            totalPages = (currentAction->getActionDescNR()  + dynamicNum - 1) / dynamicNum;
+            totalPages = (keyTypeList.count()  + dynamicNum - 1) / dynamicNum;
         }
     }
 
