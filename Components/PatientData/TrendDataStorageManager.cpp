@@ -90,9 +90,9 @@ void TrendDataStorageManagerPrivate::updateAdditionInfo()
         changed = true;
     }
 
-    if (dataDesc.patientAge != patientManager.getAge())
+    if (strcmp(dataDesc.patientBornDate, patientManager.getBornDate()))
     {
-        dataDesc.patientAge = patientManager.getAge();
+        Util::strlcpy(dataDesc.patientBornDate, patientManager.getBornDate(), MAX_PATIENT_BORN_DATE_LEN);
         changed = true;
     }
 

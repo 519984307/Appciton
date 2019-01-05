@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/1/5
+ **/
+
+
 #pragma once
 
 typedef short TrendDataType;
@@ -20,6 +31,7 @@ enum WaveFlagBit
 
 #define MAX_PATIENT_ID_LEN      (30 + 1)
 #define MAX_PATIENT_NAME_LEN    (30 + 1)
+#define MAX_PATIENT_BORN_DATE_LEN (10 + 1)
 
 #define MAX_TIME_LEN      (32)    // 单位:秒
 #define MAX_SAMPLE_RATE   (250)   // 单位:个

@@ -131,21 +131,48 @@ PatientSex PatientManager::getSex(void)
     return d_ptr->patientInfo.sex;
 }
 
-/**************************************************************************************************
- * 功能： 设置年龄。
- *************************************************************************************************/
-void PatientManager::setAge(int age)
+void PatientManager::setBornDate(const QString &bornDate, int format)
 {
-    d_ptr->patientInfo.age = age;
-    systemConfig.setNumValue("PrimaryCfg|PatientInfo|Age", age);
+    ::strncpy(d_ptr->patientInfo.bornDate, bornDate.toUtf8().constData(),
+              sizeof(d_ptr->patientInfo.bornDate));
+    d_ptr->patientInfo.bornDateFormat = format;
+    systemConfig.setStrValue("PrimaryCfg|PatientInfo|BornDate", bornDate);
+    systemConfig.setNumValue("PrimaryCfg|PatientInfo|BornDateFormat", format);
 }
 
-/**************************************************************************************************
- * 功能： 获取年龄。
- *************************************************************************************************/
-int PatientManager::getAge(void)
+char *PatientManager::getBornDate()
 {
-    return d_ptr->patientInfo.age;
+    return d_ptr->patientInfo.bornDate;
+}
+
+void PatientManager::getBornDate(unsigned int &year, unsigned int &month, unsigned int &day)
+{
+    QString bornDate = QString::fromAscii(d_ptr->patientInfo.bornDate, sizeof(d_ptr->patientInfo.bornDate));
+    bornDate = bornDate.left(bornDate.size()-1); // 去除'\0'
+    QStringList dates = bornDate.split("-");
+    if (dates.count() < 3)
+    {
+        return;
+    }
+    switch (d_ptr->patientInfo.bornDateFormat) {
+    case DATE_FORMAT_Y_M_D:
+        year = dates.at(0).toInt();
+        month = dates.at(1).toInt();
+        day = dates.at(2).toInt();
+        break;
+    case DATE_FORMAT_M_D_Y:
+        year = dates.at(2).toInt();
+        month = dates.at(0).toInt();
+        day = dates.at(1).toInt();
+        break;
+    case DATE_FORMAT_D_M_Y:
+        year = dates.at(2).toInt();
+        month = dates.at(1).toInt();
+        day = dates.at(0).toInt();
+        break;
+    default:
+        break;
+    }
 }
 
 void PatientManager::setBlood(PatientBloodType blood)
@@ -283,7 +310,9 @@ bool PatientManager::isMonitoring()
 void PatientManager::newPatient()
 {
     d_ptr->patientNew = true;
-    patientManager.setAge(-1);
+    int dateFormat = 0;
+    systemConfig.getNumValue("DateTime|DateFormat", dateFormat);
+    patientManager.setBornDate(QString(""), dateFormat);
     patientManager.setBlood(PATIENT_BLOOD_TYPE_NULL);
     patientManager.setHeight(0.0);
     patientManager.setName(QString(""));
@@ -328,9 +357,6 @@ void PatientManagerPrivate::loadPatientInfo(PatientInfo &info)
     systemConfig.getNumValue("PrimaryCfg|PatientInfo|Sex", numValue);
     info.sex = (PatientSex)numValue;
 
-    systemConfig.getNumValue("PrimaryCfg|PatientInfo|Age", numValue);
-    info.age = numValue;
-
     systemConfig.getNumValue("PrimaryCfg|PatientInfo|Blood", numValue);
     info.blood = (PatientBloodType)numValue;
 
@@ -345,6 +371,12 @@ void PatientManagerPrivate::loadPatientInfo(PatientInfo &info)
 
     systemConfig.getStrValue("PrimaryCfg|PatientInfo|ID", strValue);
     ::strncpy(info.id, strValue.toUtf8().constData(), sizeof(info.id));
+
+    systemConfig.getStrValue("PrimaryCfg|PatientInfo|BornDate", strValue);
+    ::strncpy(info.bornDate, strValue.toUtf8().constData(), sizeof(info.bornDate));
+
+    systemConfig.getNumValue("PrimaryCfg|PatientInfo|BornDateFormat", numValue);
+    info.bornDateFormat = numValue;
 }
 
 void PatientManagerPrivate::handleDischarge()

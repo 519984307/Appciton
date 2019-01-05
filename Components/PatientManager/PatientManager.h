@@ -76,16 +76,19 @@ public:
     PatientSex getSex(void);
 
     /**
-     * @brief setAge 设置年龄
-     * @param age
+     * @brief setBornDate 设置出生日期
+     * @param bornDate
+     * @param format
      */
-    void setAge(int age);
+    void setBornDate(const QString &bornDate, int format);
 
     /**
-     * @brief getAge 获取年龄
+     * @brief getBornDate 获取出生日期
      * @return
      */
-    int getAge(void);
+    char *getBornDate(void);
+
+    void getBornDate(unsigned int &year, unsigned int &month, unsigned int &day);
 
     /**
      * @brief setBlood 设置血型

@@ -44,7 +44,7 @@ struct TrendDataDescription
 {
     unsigned startTime;                 /* rescue event start time */
     unsigned moduleConfig;              /* module config */
-    char patientAge;                    /* patient age */
+    char patientBornDate[MAX_PATIENT_BORN_DATE_LEN]; /* patient born date */
     char patientGender;                 /* patient gender */
     char patientType;                   /* patient type */
     char patientPacer;                  /* patient wear pacer or not */

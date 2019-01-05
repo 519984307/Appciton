@@ -49,13 +49,7 @@ public:
      * @brief loadOptions
      */
     void loadOptions();
-    /**
-     * @brief getMaxDay
-     * @param year
-     * @param month
-     * @return
-     */
-    int getMaxDay(int year, int month);
+
     /**
      * @brief setSysTime
      */
@@ -91,34 +85,6 @@ void TimeEditWindowPrivate::loadOptions()
 
     systemConfig.getNumValue("DateTime|DisplaySecond", value);
     combos[ITEM_CBO_DISPLAY_SEC]->setCurrentIndex(value);
-}
-
-int TimeEditWindowPrivate::getMaxDay(int year, int month)
-{
-    int day31[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-
-    bool isleapYear = false;
-    if (0 == year % 100)
-    {
-        if (0 == year % 400)
-        {
-            isleapYear = true;
-        }
-    }
-    else if (0 == year % 4)
-    {
-        isleapYear = true;
-    }
-
-    if (2 == month)
-    {
-        if (isleapYear)
-        {
-            return 29;
-        }
-    }
-
-    return day31[month - 1];
 }
 
 void TimeEditWindowPrivate::setSysTime()
@@ -370,7 +336,7 @@ void TimeEditWindow::onSpinBoxValueChanged(int value, int scale)
                 int min = 0;
                 int max = 0;
                 d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getRange(min, max);
-                int curMax = d_ptr->getMaxDay(val, 2);
+                int curMax = timeDate.getMaxDay(val, 2);
                 int curVal = d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getValue();
                 if (max != curMax)
                 {
@@ -389,7 +355,7 @@ void TimeEditWindow::onSpinBoxValueChanged(int value, int scale)
             int min = 0;
             int max = 0;
             d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getRange(min, max);
-            int curMax = d_ptr->getMaxDay(d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_YEAR]->getValue(), val);
+            int curMax = timeDate.getMaxDay(d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_YEAR]->getValue(), val);
             int curVal = d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getValue();
             if (max != curMax)
             {

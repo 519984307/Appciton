@@ -334,6 +334,34 @@ unsigned int TimeDate::getTimeMsec(void)
     return currentDateTime.time().msec();
 }
 
+int TimeDate::getMaxDay(int year, int month)
+{
+    int day31[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+    bool isleapYear = false;
+    if (0 == year % 100)
+    {
+        if (0 == year % 400)
+        {
+            isleapYear = true;
+        }
+    }
+    else if (0 == year % 4)
+    {
+        isleapYear = true;
+    }
+
+    if (2 == month)
+    {
+        if (isleapYear)
+        {
+            return 29;
+        }
+    }
+
+    return day31[month - 1];
+}
+
 /**************************************************************************************************
  * 功能：构造。
  *************************************************************************************************/

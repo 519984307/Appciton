@@ -144,11 +144,7 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
     infos.append(QString("%1: %2").arg(trs("PatientType")).arg(PatientSymbol::convert(patInfo.type)));
     infos.append(QString("%1: %2").arg(trs("Blood")).arg(PatientSymbol::convert(patInfo.blood)));
     QString str;
-    str = QString("%1: ").arg(trs("Age"));
-    if (patInfo.age > 0)
-    {
-        str += QString::number(patInfo.age);
-    }
+    str = QString("%1: %2").arg(trs("BornDate")).arg(patInfo.bornDate);
     infos.append(str);
 
     str = QString("%1: ").arg(trs("Weight"));
