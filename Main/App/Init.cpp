@@ -641,8 +641,6 @@ void deleteObjects(void)
     deleteRescueDataExportWidget();
     deleteRescueDataDeleteWidget();
 
-    deleteRecorderManager();
-
 //    deleteNetworkManager();
     deleteUsbManager();
     deleteActivityLogManager();

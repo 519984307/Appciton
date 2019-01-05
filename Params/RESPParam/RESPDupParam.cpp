@@ -230,6 +230,7 @@ RESPDupParam::BrSourceType RESPDupParam::getBrSource() const
 void RESPDupParam::setBrSource(RESPDupParam::BrSourceType type)
 {
     _manualBrSourceType = type;
+    emit brSourceStatusChanged();
 }
 
 RESPDupParam::ParamSourceType RESPDupParam::getParamSourceType() const
@@ -249,6 +250,7 @@ RESPDupParam::ParamSourceType RESPDupParam::getParamSourceType() const
 void RESPDupParam::setAutoBrSourceStatue(bool isEnabled)
 {
     _isAutoBrSource = isEnabled;
+    emit brSourceStatusChanged();
 }
 
 bool RESPDupParam::isAutoBrSourceEnabled() const

@@ -111,6 +111,13 @@ public:
 
     // 刷新参数上下限
     virtual void updateSubParamLimit(SubParamID id);
+
+signals:
+    /**
+     * @brief brSourceStatusChanged  br来源状态改变
+     */
+    void brSourceStatusChanged();
+
 private slots:
     void onPaletteChanged(ParamID id);
 

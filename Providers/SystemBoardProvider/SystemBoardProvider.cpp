@@ -62,7 +62,7 @@ enum SystemBoardMessageType
     MSG_UPGRADE_ALIVE              = 0xFE,    //升级保活帧
 };
 
-SystemBoardProvider *SystemBoardProvider::_selfObj = NULL;
+QPointer<SystemBoardProvider> SystemBoardProvider::_selfObj = NULL;
 
 /***************************************************************************************************
  * 版本信息解析

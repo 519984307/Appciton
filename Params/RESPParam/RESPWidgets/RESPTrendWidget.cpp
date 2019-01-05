@@ -18,6 +18,8 @@
 #include "MeasureSettingWindow.h"
 #include "AlarmConfig.h"
 #include "ParamManager.h"
+#include "FontManager.h"
+#include "RESPDupParam.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -27,6 +29,22 @@ void RESPTrendWidget::_releaseHandle(IWidget *iWidget)
     Q_UNUSED(iWidget)
     MeasureSettingWindow *p = MeasureSettingWindow::getInstance();
     p->popup(trs("RESPMenu"));
+}
+
+void RESPTrendWidget::_onBrSourceStatusChanged()
+{
+    // 只有在来源为co2时才会显示
+    RESPDupParam::BrSourceType type = respDupParam.getBrSource();
+    if (type == RESPDupParam::BR_SOURCE_CO2)
+    {
+        _rrSource->setVisible(true);
+        _rrSource->setText(trs("SourceOfCO2"));
+    }
+    else
+    {
+        _rrSource->setVisible(false);
+        _rrSource->setText("");
+    }
 }
 
 void RESPTrendWidget::_loadConfig()
@@ -142,20 +160,27 @@ RESPTrendWidget::RESPTrendWidget() : TrendWidget("RESPTrendWidget")
     _rrValue->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     _rrValue->setText(InvStr());
 
+    // RR来源
+    _rrSource = new QLabel();
+    _rrSource->setAlignment(Qt::AlignRight | Qt::AlignBottom);
+    _rrSource->setFont(fontManager.textFont(18));
+
     // 布局。
     QHBoxLayout *mainLayout = new QHBoxLayout();
     mainLayout->setMargin(1);
     mainLayout->setSpacing(1);
     mainLayout->addStretch(1);
-    mainLayout->addWidget(_rrValue);
-    mainLayout->addStretch(1);
+    mainLayout->addWidget(_rrValue, 2);
+    mainLayout->addStretch(3);
+    mainLayout->addWidget(_rrSource, 1);
 
     contentLayout->addStretch(1);
     contentLayout->addLayout(mainLayout, 3);
-    contentLayout->addStretch(1);
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
+
+    connect(&respDupParam, SIGNAL(brSourceStatusChanged()), this, SLOT(_onBrSourceStatusChanged()));
 
     _loadConfig();
 }
