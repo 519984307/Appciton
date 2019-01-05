@@ -50,9 +50,9 @@ private slots:
     void _releaseHandle(IWidget *);
 
     /**
-     * @brief _onBrSourceStatusChanged  br来源状态改变槽函数
+     * @brief _onBrSourceStatusUpdate  br来源状态更新槽函数
      */
-    void _onBrSourceStatusChanged();
+    void _onBrSourceStatusUpdate();
 
 private:
     /**

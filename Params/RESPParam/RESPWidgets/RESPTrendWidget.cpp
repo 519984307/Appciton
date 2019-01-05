@@ -31,11 +31,11 @@ void RESPTrendWidget::_releaseHandle(IWidget *iWidget)
     p->popup(trs("RESPMenu"));
 }
 
-void RESPTrendWidget::_onBrSourceStatusChanged()
+void RESPTrendWidget::_onBrSourceStatusUpdate()
 {
     // 只有在来源为co2时才会显示
     RESPDupParam::BrSourceType type = respDupParam.getBrSource();
-    if (type == RESPDupParam::BR_SOURCE_CO2)
+    if (type == RESPDupParam::BR_SOURCE_CO2 && respDupParam.getRR() != InvData())
     {
         _rrSource->setVisible(true);
         _rrSource->setText(trs("SourceOfCO2"));
@@ -162,7 +162,7 @@ RESPTrendWidget::RESPTrendWidget() : TrendWidget("RESPTrendWidget")
 
     // RR来源
     _rrSource = new QLabel();
-    _rrSource->setAlignment(Qt::AlignRight | Qt::AlignBottom);
+    _rrSource->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
     _rrSource->setFont(fontManager.textFont(18));
 
     // 布局。
@@ -173,6 +173,7 @@ RESPTrendWidget::RESPTrendWidget() : TrendWidget("RESPTrendWidget")
     mainLayout->addWidget(_rrValue, 2);
     mainLayout->addStretch(3);
     mainLayout->addWidget(_rrSource, 1);
+    mainLayout->addStretch(1);
 
     contentLayout->addStretch(1);
     contentLayout->addLayout(mainLayout, 3);
@@ -180,7 +181,8 @@ RESPTrendWidget::RESPTrendWidget() : TrendWidget("RESPTrendWidget")
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 
-    connect(&respDupParam, SIGNAL(brSourceStatusChanged()), this, SLOT(_onBrSourceStatusChanged()));
+    connect(&respDupParam, SIGNAL(brSourceStatusUpdate()), this, SLOT(_onBrSourceStatusUpdate()));
+    _onBrSourceStatusUpdate();
 
     _loadConfig();
 }

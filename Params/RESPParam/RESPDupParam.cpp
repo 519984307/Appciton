@@ -183,6 +183,7 @@ void RESPDupParam::updateBR(short br)
     else // HR和PR都为无效时。
     {
         _trendWidget->setRRValue(_brValue, false);
+        emit brSourceStatusUpdate();
     }
 }
 
@@ -230,7 +231,7 @@ RESPDupParam::BrSourceType RESPDupParam::getBrSource() const
 void RESPDupParam::setBrSource(RESPDupParam::BrSourceType type)
 {
     _manualBrSourceType = type;
-    emit brSourceStatusChanged();
+    emit brSourceStatusUpdate();
 }
 
 RESPDupParam::ParamSourceType RESPDupParam::getParamSourceType() const
@@ -250,7 +251,7 @@ RESPDupParam::ParamSourceType RESPDupParam::getParamSourceType() const
 void RESPDupParam::setAutoBrSourceStatue(bool isEnabled)
 {
     _isAutoBrSource = isEnabled;
-    emit brSourceStatusChanged();
+    emit brSourceStatusUpdate();
 }
 
 bool RESPDupParam::isAutoBrSourceEnabled() const

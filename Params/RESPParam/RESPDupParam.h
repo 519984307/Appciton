@@ -114,9 +114,9 @@ public:
 
 signals:
     /**
-     * @brief brSourceStatusChanged  br来源状态改变
+     * @brief brSourceStatusUpdate  br来源状态更新
      */
-    void brSourceStatusChanged();
+    void brSourceStatusUpdate();
 
 private slots:
     void onPaletteChanged(ParamID id);
