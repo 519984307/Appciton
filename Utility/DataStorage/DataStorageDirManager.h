@@ -122,6 +122,16 @@ signals:
      */
     void newPatient();
 
+    /**
+     * @brief rescueStorageSpaceFull 营救数据满
+     */
+    void rescueStorageSpaceFull();
+
+    /**
+     * @brief rescueStorageSpaceNotFull 营救数据未满
+     */
+    void rescueStorageSpaceNotFull();
+
 private:
     DataStorageDirManager();
     int _deleteDir(const QString &path);

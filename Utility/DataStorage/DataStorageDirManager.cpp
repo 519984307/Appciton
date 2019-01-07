@@ -486,9 +486,10 @@ bool DataStorageDirManager::isCurRescueFolderFull()
 {
     if (_curDataSize > (unsigned) SIGNAL_RESCUE_MAX_DATA_SIZE)
     {
+        emit rescueStorageSpaceFull();
         return true;
     }
-
+    emit rescueStorageSpaceNotFull();
     return false;
 }
 

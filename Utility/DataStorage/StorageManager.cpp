@@ -15,6 +15,10 @@
 #include <QMutexLocker>
 #include "StorageFile.h"
 #include "DataStorageDirManager.h"
+#include "MessageBox.h"
+#include "LanguageManager.h"
+
+bool StorageManagerPrivate::spaceFullFlag = false;
 
 StorageManagerPrivate::~StorageManagerPrivate()
 {
@@ -40,6 +44,8 @@ StorageManager::StorageManager(IStorageBackend *backend)
     Q_D(StorageManager);
     d->backend = backend;
     connect(&dataStorageDirManager, SIGNAL(newPatient()), this, SLOT(onNewPatientHandle()));
+    connect(&dataStorageDirManager, SIGNAL(rescueStorageSpaceFull()), this, SLOT(onStorageSpaceFull()));
+    connect(&dataStorageDirManager, SIGNAL(rescueStorageSpaceNotFull()), this, SLOT(onStorageSpaceNotFull()));
 }
 
 /***************************************************************************************************
@@ -196,6 +202,8 @@ StorageManager::StorageManager(StorageManagerPrivate *d_ptr, IStorageBackend *ba
     Q_D(StorageManager);
     d->backend = backend;
     connect(&dataStorageDirManager, SIGNAL(newPatient()), this, SLOT(onNewPatientHandle()));
+    connect(&dataStorageDirManager, SIGNAL(rescueStorageSpaceFull()), this, SLOT(onStorageSpaceFull()));
+    connect(&dataStorageDirManager, SIGNAL(rescueStorageSpaceNotFull()), this, SLOT(onStorageSpaceNotFull()));
 }
 
 void StorageManager::saveDataCallback(quint32 dataID, const char *data, quint32 len)
@@ -208,6 +216,23 @@ void StorageManager::saveDataCallback(quint32 dataID, const char *data, quint32 
 void StorageManager::onNewPatientHandle()
 {
     newPatientHandle();
+}
+
+void StorageManager::onStorageSpaceFull()
+{
+    Q_D(StorageManager);
+    if (!d->spaceFullFlag)
+    {
+        d->spaceFullFlag = true;
+        MessageBox mess(trs("Prompt"), trs("RescueStorageSpaceFull"));
+        mess.exec();
+    }
+}
+
+void StorageManager::onStorageSpaceNotFull()
+{
+    Q_D(StorageManager);
+    d->spaceFullFlag = false;
 }
 
 
