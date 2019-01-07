@@ -2020,7 +2020,7 @@ QList<RecordWaveSegmentInfo> RecordPageGenerator::getWaveInfos(const QList<Wavef
             break;
         case WAVE_SPO2:
             info.waveInfo.spo2.gain = spo2Param.getGain();
-            caption = "Pleth";
+            caption = trs(paramInfo.getParamWaveformName(WAVE_SPO2));
             break;
         case WAVE_CO2:
             info.waveInfo.co2.zoom = co2Param.getDisplayZoom();
