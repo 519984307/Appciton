@@ -654,7 +654,18 @@ QStringList RecordPageGenerator::getTrendStringList(const TrendDataPackage &tren
                                               paramInfo.getUnitOfSubParam(subparamID),
                                               trendData.subparamValue[SUB_PARAM_T2] / 10.0,
                                               trendData.co2Baro);
-                TrendDataType td = fabs(t1Str.toDouble() * 10 - t2Str.toDouble() * 10);
+
+                TrendDataType td;
+                if (trendData.subparamValue[SUB_PARAM_T1] == InvData()
+                        || trendData.subparamValue[SUB_PARAM_T2] == InvData())
+                {
+                    // 有一个无效数据，计算的温度差则无效
+                    td = InvData();
+                }
+                else
+                {
+                    td = fabs(t1Str.toDouble() * 10 - t2Str.toDouble() * 10);
+                }
 
                 strList.append(contructNormalTrendStringItem(subparamID,
                                td,
