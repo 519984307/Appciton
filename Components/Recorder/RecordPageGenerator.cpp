@@ -468,14 +468,15 @@ RecordPage *RecordPageGenerator::createTrendPage(const TrendDataPackage &trendDa
     QString timeStr;
     if (showEventTime)
     {
-        QDateTime dt = QDateTime::fromTime_t(trendData.time);
+        QString timeDateStr;
+        timeDate.getDateTime(trendData.time, timeDateStr, true, true);
         if (timeStringCaption.isEmpty())
         {
-            timeStr = QString("%1: %2").arg(trs("EventTime")).arg(dt.toString("yyyy-MM-dd HH:mm:ss"));
+            timeStr = QString("%1: %2").arg(trs("EventTime")).arg(timeDateStr);
         }
         else
         {
-            timeStr = QString("%1: %2").arg(timeStringCaption).arg(dt.toString("yyyy-MM-dd HH:mm:ss"));
+            timeStr = QString("%1: %2").arg(timeStringCaption).arg(timeDateStr);
         }
     }
 
