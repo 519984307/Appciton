@@ -27,7 +27,8 @@ public:
         : q_ptr(q_ptr),
           patientInfoWidget(NULL),
           patientNew(false),
-          relieveFlag(true)
+          relieveFlag(true),
+          bornDateFormat(QString())
     {}
     PatientManager * const q_ptr;
     PatientInfo patientInfo;
@@ -41,6 +42,7 @@ public:
 
     bool patientNew;                 // 新建病人标志
     bool relieveFlag;                // 解除病人标志
+    QString bornDateFormat;          // 出生日期格式
 };
 
 /**************************************************************************************************
@@ -137,6 +139,7 @@ void PatientManager::setBornDate(const QString &bornDate)
     ::strncpy(d_ptr->patientInfo.bornDate, bornDate.toUtf8().constData(),
               sizeof(d_ptr->patientInfo.bornDate));
     systemConfig.setStrValue("PrimaryCfg|PatientInfo|BornDate", bornDate);
+    timeDate.getDateFormat(d_ptr->bornDateFormat, true);
 }
 
 char *PatientManager::getBornDate()
@@ -148,9 +151,17 @@ void PatientManager::getBornDate(unsigned int &year, unsigned int &month, unsign
 {
     QString bornDate = QString::fromAscii(d_ptr->patientInfo.bornDate, sizeof(d_ptr->patientInfo.bornDate));
     bornDate = bornDate.left(bornDate.size()-1); // 去除'\0'
-    QString format;
-    timeDate.getDateFormat(format, true);
-    QDate date = QDate::fromString(bornDate, format);
+    QDate date;
+    if (d_ptr->bornDateFormat.isEmpty())
+    {
+        // 没有出生日期时，采用当前日期格式
+        timeDate.getDateFormat(d_ptr->bornDateFormat, true);
+        date = QDate::fromString(bornDate, d_ptr->bornDateFormat);
+    }
+    else
+    {
+        date = QDate::fromString(bornDate, d_ptr->bornDateFormat);
+    }
     if (!date.isValid())
     {
         return;
