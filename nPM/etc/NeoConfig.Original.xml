@@ -49,8 +49,8 @@
         <QRSVolume>3</QRSVolume>
         <ECGLeadConvention>0</ECGLeadConvention>
         <AlarmSource>0</AlarmSource>
-        <Ecg1Wave>0</Ecg1Wave>
-        <Ecg2Wave>1</Ecg2Wave>
+        <Ecg1Wave>1</Ecg1Wave>
+        <Ecg2Wave>0</Ecg2Wave>
         <Ecg1Gain>0</Ecg1Gain>
         <SweepSpeed>1</SweepSpeed>
         <HRSource>0</HRSource>
