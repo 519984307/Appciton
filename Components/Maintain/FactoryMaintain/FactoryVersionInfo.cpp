@@ -182,7 +182,9 @@ void FactoryVersionInfoPrivate::loadOptions()
     systemConfig.getStrValue("SoftWareVersion|ECGAlgorithmType", tmpStr);
     labs[ITEM_LAB_ECG_ALGHTP]->setText(trs(tmpStr));
 
-    Provider *p = paramManager.getProvider("BLM_E5");
+    QString str;
+    machineConfig.getStrValue("ECG", str);
+    Provider *p = paramManager.getProvider(str);
     QString version;
     if (p)
     {

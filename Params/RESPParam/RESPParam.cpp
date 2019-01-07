@@ -481,7 +481,7 @@ void RESPParam::setCalcLead(RESPLead lead)
     {
         if (lead == RESP_LEAD_AUTO)
         {
-            lead = RESP_LEAD_I;
+            lead = RESP_LEAD_II;
         }
         d_ptr->provider->setRESPCalcLead(lead);
     }

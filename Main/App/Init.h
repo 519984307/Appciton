@@ -149,6 +149,7 @@
 #include "ECGSTTrendWidget.h"
 
 #include "E5Provider.h"
+#include "TE3Provider.h"
 #include "RawDataCollector.h"
 
 #include "USBManager.h"
