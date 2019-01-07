@@ -61,6 +61,13 @@ public:
      */
     int getMaxDay(int year, int month);
 
+    /**
+     * @brief getDateFormat 获取日期格式
+     * @param format
+     * @param year4Bits
+     */
+    void getDateFormat(QString &format, bool year4Bits);
+
 private:
     TimeDate();
 };

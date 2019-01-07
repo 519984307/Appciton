@@ -16,6 +16,7 @@
 #include "DataStorageDirManager.h"
 #include "NIBPParam.h"
 #include "NIBPProviderIFace.h"
+#include "TimeDate.h"
 
 PatientManager *PatientManager::_selfObj = NULL;
 
@@ -131,13 +132,11 @@ PatientSex PatientManager::getSex(void)
     return d_ptr->patientInfo.sex;
 }
 
-void PatientManager::setBornDate(const QString &bornDate, int format)
+void PatientManager::setBornDate(const QString &bornDate)
 {
     ::strncpy(d_ptr->patientInfo.bornDate, bornDate.toUtf8().constData(),
               sizeof(d_ptr->patientInfo.bornDate));
-    d_ptr->patientInfo.bornDateFormat = format;
     systemConfig.setStrValue("PrimaryCfg|PatientInfo|BornDate", bornDate);
-    systemConfig.setNumValue("PrimaryCfg|PatientInfo|BornDateFormat", format);
 }
 
 char *PatientManager::getBornDate()
@@ -149,30 +148,16 @@ void PatientManager::getBornDate(unsigned int &year, unsigned int &month, unsign
 {
     QString bornDate = QString::fromAscii(d_ptr->patientInfo.bornDate, sizeof(d_ptr->patientInfo.bornDate));
     bornDate = bornDate.left(bornDate.size()-1); // 去除'\0'
-    QStringList dates = bornDate.split("-");
-    if (dates.count() < 3)
+    QString format;
+    timeDate.getDateFormat(format, true);
+    QDate date = QDate::fromString(bornDate, format);
+    if (!date.isValid())
     {
         return;
     }
-    switch (d_ptr->patientInfo.bornDateFormat) {
-    case DATE_FORMAT_Y_M_D:
-        year = dates.at(0).toInt();
-        month = dates.at(1).toInt();
-        day = dates.at(2).toInt();
-        break;
-    case DATE_FORMAT_M_D_Y:
-        year = dates.at(2).toInt();
-        month = dates.at(0).toInt();
-        day = dates.at(1).toInt();
-        break;
-    case DATE_FORMAT_D_M_Y:
-        year = dates.at(2).toInt();
-        month = dates.at(1).toInt();
-        day = dates.at(0).toInt();
-        break;
-    default:
-        break;
-    }
+    year = static_cast<unsigned int>(date.year());
+    month = static_cast<unsigned int>(date.month());
+    day = static_cast<unsigned int>(date.day());
 }
 
 void PatientManager::setBlood(PatientBloodType blood)
@@ -310,9 +295,7 @@ bool PatientManager::isMonitoring()
 void PatientManager::newPatient()
 {
     d_ptr->patientNew = true;
-    int dateFormat = 0;
-    systemConfig.getNumValue("DateTime|DateFormat", dateFormat);
-    patientManager.setBornDate(QString(""), dateFormat);
+    patientManager.setBornDate(QString(""));
     patientManager.setBlood(PATIENT_BLOOD_TYPE_NULL);
     patientManager.setHeight(0.0);
     patientManager.setName(QString(""));
@@ -374,9 +357,6 @@ void PatientManagerPrivate::loadPatientInfo(PatientInfo &info)
 
     systemConfig.getStrValue("PrimaryCfg|PatientInfo|BornDate", strValue);
     ::strncpy(info.bornDate, strValue.toUtf8().constData(), sizeof(info.bornDate));
-
-    systemConfig.getNumValue("PrimaryCfg|PatientInfo|BornDateFormat", numValue);
-    info.bornDateFormat = numValue;
 }
 
 void PatientManagerPrivate::handleDischarge()

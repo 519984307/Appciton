@@ -28,6 +28,7 @@
 #include "SpinBox.h"
 #include "TimeDate.h"
 #include "TimeSymbol.h"
+#include <QDate>
 
 PatientInfoWindow *PatientInfoWindow::_selfObj = NULL;
 class PatientInfoWindowPrivate
@@ -532,23 +533,13 @@ PatientInfoWindow::PatientInfoWindow()
 
 void PatientInfoWindowPrivate::savePatientInfoToManager()
 {
-    int index;
-    systemConfig.getNumValue("DateTime|DateFormat", index);
-    QString bornDate = QString("%1-%2-%3");
-    QMap<MenuItem, SpinBox *>::iterator iter = spinBoxs.begin();
-    for (; iter != spinBoxs.end(); ++iter)
-    {
-        int value = iter.value()->getValue();
-        if (0 < value && value < 99)
-        {
-            bornDate = bornDate.arg(value, 2, 10, QLatin1Char('0'));
-        }
-        else
-        {
-            bornDate = bornDate.arg(value);
-        }
-    }
-    patientManager.setBornDate(bornDate, index);
+    QString format;
+    timeDate.getDateFormat(format, true);
+    QDate date(dateItem[Born_Date_Year]->getValue(),
+               dateItem[Born_Date_Month]->getValue(),
+               dateItem[Born_Date_Day]->getValue());
+    QString bornDate = date.toString(format);
+    patientManager.setBornDate(bornDate);
     patientManager.setBlood(static_cast<PatientBloodType>(blood->currentIndex()));
     patientManager.setHeight(height->text().toFloat());
     patientManager.setName(name->text());

@@ -63,7 +63,6 @@ struct PatientInfo
         :type(PATIENT_TYPE_ADULT),
           pacer(PATIENT_PACER_ON),
           sex(PATIENT_SEX_NULL),  //  性别为空主要用于开机时性别框要显示为空白
-          bornDateFormat(0),
           blood(PATIENT_BLOOD_TYPE_NULL),
           weightUnit(PATIENT_WEIGHT_UNIT_KG),
           weight(0.0),
@@ -80,7 +79,6 @@ struct PatientInfo
         type = other.type;
         sex = other.sex;
         ::memcpy(bornDate, other.bornDate, sizeof(bornDate));
-        bornDateFormat = other.bornDateFormat;
         blood = other.blood;
         weight = other.weight;
         height = other.height;
@@ -96,7 +94,6 @@ struct PatientInfo
                 (type == other.type) &&
                 (sex == other.sex) &&
                 (::strcmp(bornDate, other.bornDate) == 0) &&
-                (bornDateFormat == other.bornDateFormat) &&
                 (blood == other.blood) &&
                 (weight == other.weight) &&
                 (height == other.height) &&
@@ -108,7 +105,6 @@ struct PatientInfo
     PatientPacer pacer;
     PatientSex sex;
     char bornDate[MAX_PATIENT_BORN_DATE_LEN];
-    int bornDateFormat;
     PatientBloodType blood;
     PatientWeightUnit weightUnit;
     float weight;

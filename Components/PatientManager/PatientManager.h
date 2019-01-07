@@ -78,9 +78,8 @@ public:
     /**
      * @brief setBornDate 设置出生日期
      * @param bornDate
-     * @param format
      */
-    void setBornDate(const QString &bornDate, int format);
+    void setBornDate(const QString &bornDate);
 
     /**
      * @brief getBornDate 获取出生日期
