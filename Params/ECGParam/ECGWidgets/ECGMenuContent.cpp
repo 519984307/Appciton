@@ -162,10 +162,10 @@ void ECGMenuContentPrivate::loadOptions()
     }
 
     // 读取的ecg1wave、ecg2wave如果item相同，则复位为0、1.
-    if (leadMode != ECG_LEAD_MODE_3 && index2 == index1)
+    if (index2 == index1)
     {
-        index1 = 0;
-        index2 = 1;
+        index1 = 1;
+        index2 = 0;
         currentConfig.setNumValue("ECG|Ecg1Wave", index1);
         currentConfig.setNumValue("ECG|Ecg2Wave", index2);
     }
