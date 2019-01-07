@@ -96,7 +96,7 @@ struct PatientInfo
                 (type == other.type) &&
                 (sex == other.sex) &&
                 (::strcmp(bornDate, other.bornDate) == 0) &&
-                (bornDateFormat = other.bornDateFormat) &&
+                (bornDateFormat == other.bornDateFormat) &&
                 (blood == other.blood) &&
                 (weight == other.weight) &&
                 (height == other.height) &&
