@@ -144,9 +144,6 @@ void LoadConfigMenuContent::layoutExec()
     layout->setAlignment(Qt::AlignTop);
 
     // load config
-    QLabel *label = new QLabel(trs("LoadConfig"));
-    layout->addWidget(label);
-
     ListView *listView = new ListView();
     listView->setItemDelegate(new ListViewItemDelegate(listView));
     layout->addWidget(listView);
