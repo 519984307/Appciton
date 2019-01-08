@@ -49,10 +49,10 @@
         <QRSVolume>3</QRSVolume>
         <ECGLeadConvention>0</ECGLeadConvention>
         <AlarmSource>0</AlarmSource>
-        <Ecg1Wave>0</Ecg1Wave>
-        <Ecg2Wave>1</Ecg2Wave>
+        <Ecg1Wave>1</Ecg1Wave>
+        <Ecg2Wave>0</Ecg2Wave>
         <Ecg1Gain>0</Ecg1Gain>
-        <SweepSpeed>1</SweepSpeed>
+        <SweepSpeed>2</SweepSpeed>
         <HRSource>0</HRSource>
         <Filter>0</Filter>
         <DisplayMode>0</DisplayMode>
@@ -144,7 +144,7 @@
         <MeasureMode>1</MeasureMode>
     </CO>
     <RESP>
-        <AutoActivation>0</AutoActivation>
+        <AutoActivation>1</AutoActivation>
         <ApneaDelay>2</ApneaDelay>
         <BreathLead>0</BreathLead>
         <Gain>0</Gain>

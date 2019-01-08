@@ -5,7 +5,7 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/1/5
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/1/7
  **/
 
 
@@ -30,7 +30,7 @@ enum WaveFlagBit
 #define UnknownStr()  ("???")
 
 #define MAX_PATIENT_ID_LEN      (30 + 1)
-#define MAX_PATIENT_NAME_LEN    (30 + 1)
+#define MAX_PATIENT_NAME_LEN    (120 + 1)
 
 #define MAX_TIME_LEN      (32)    // 单位:秒
 #define MAX_SAMPLE_RATE   (250)   // 单位:个

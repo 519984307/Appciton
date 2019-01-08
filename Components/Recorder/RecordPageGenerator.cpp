@@ -140,8 +140,8 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
 {
     QStringList infos;
     infos.append(QString("%1: %2").arg(trs("Name")).arg(patInfo.name));
-    infos.append(QString("%1: %2").arg(trs("Gender")).arg(PatientSymbol::convert(patInfo.sex)));
-    infos.append(QString("%1: %2").arg(trs("PatientType")).arg(PatientSymbol::convert(patInfo.type)));
+    infos.append(QString("%1: %2").arg(trs("Gender")).arg(trs(PatientSymbol::convert(patInfo.sex))));
+    infos.append(QString("%1: %2").arg(trs("PatientType")).arg(trs(PatientSymbol::convert(patInfo.type))));
     infos.append(QString("%1: %2").arg(trs("Blood")).arg(PatientSymbol::convert(patInfo.blood)));
     QString str;
     QString fotmat;
@@ -466,14 +466,15 @@ RecordPage *RecordPageGenerator::createTrendPage(const TrendDataPackage &trendDa
     QString timeStr;
     if (showEventTime)
     {
-        QDateTime dt = QDateTime::fromTime_t(trendData.time);
+        QString timeDateStr;
+        timeDate.getDateTime(trendData.time, timeDateStr, true, true);
         if (timeStringCaption.isEmpty())
         {
-            timeStr = QString("%1: %2").arg(trs("EventTime")).arg(dt.toString("yyyy-MM-dd HH:mm:ss"));
+            timeStr = QString("%1: %2").arg(trs("EventTime")).arg(timeDateStr);
         }
         else
         {
-            timeStr = QString("%1: %2").arg(timeStringCaption).arg(dt.toString("yyyy-MM-dd HH:mm:ss"));
+            timeStr = QString("%1: %2").arg(timeStringCaption).arg(timeDateStr);
         }
     }
 
@@ -651,7 +652,18 @@ QStringList RecordPageGenerator::getTrendStringList(const TrendDataPackage &tren
                                               paramInfo.getUnitOfSubParam(subparamID),
                                               trendData.subparamValue[SUB_PARAM_T2] / 10.0,
                                               trendData.co2Baro);
-                TrendDataType td = fabs(t1Str.toDouble() * 10 - t2Str.toDouble() * 10);
+
+                TrendDataType td;
+                if (trendData.subparamValue[SUB_PARAM_T1] == InvData()
+                        || trendData.subparamValue[SUB_PARAM_T2] == InvData())
+                {
+                    // 有一个无效数据，计算的温度差则无效
+                    td = InvData();
+                }
+                else
+                {
+                    td = fabs(t1Str.toDouble() * 10 - t2Str.toDouble() * 10);
+                }
 
                 strList.append(contructNormalTrendStringItem(subparamID,
                                td,
@@ -2018,7 +2030,7 @@ QList<RecordWaveSegmentInfo> RecordPageGenerator::getWaveInfos(const QList<Wavef
             break;
         case WAVE_SPO2:
             info.waveInfo.spo2.gain = spo2Param.getGain();
-            caption = "Pleth";
+            caption = trs(paramInfo.getParamWaveformName(WAVE_SPO2));
             break;
         case WAVE_CO2:
             info.waveInfo.co2.zoom = co2Param.getDisplayZoom();

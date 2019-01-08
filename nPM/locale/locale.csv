@@ -798,7 +798,7 @@ NIBPVersion,NIBP,NIBP
 SPO2Version,SPO2,SPO2
 TEMPVersion,TEMP,TEMP
 iDMBoardVersion,iDMBoard,iDMBoard
-PRT72Version,PRT72,PRT72
+PRT48Version,PRT48,PRT48
 PDVersion,PD,PD
 COREVersion,CORE,CORE
 VersionReturn,返回,Return
@@ -1627,7 +1627,7 @@ HasExistConfig,该配置名称与监护仪上配置重名。请重新命名！,T
 ECGFullScreen,心电全屏,ECG Full Screen
 isSaveLayout,是否保存布局配置？,Do you want to save the layout config?
 LowBattery,电量过低,Low quantity of electricity
-RESPCheckElectrodes,RESP电极检查,RESP Check Electrodes
+RESPCheckElectrodes,电极检查,Check Electrodes
 SPO2SignalWeak,检测血氧信号弱,SPO2 Signal Weak
 SPO2CableOff,血氧电缆断开,SPO2 Cable Off
 SPO2FingerOff,未检测到手指,SPO2 Finger Off

@@ -542,6 +542,7 @@ SOURCES +=                                                                      
     Providers/MasimoProvider/MasimoProvider.cpp                                 \
     Providers/NellcorProvider/NellcorProvider.cpp                               \
     Providers/E5Provider/E5Provider.cpp                                         \
+    Providers/TE3Provider/TE3Provider.cpp                                       \
     Providers/T5Provider/T5Provider.cpp                                         \
     Providers/DemoProvider/DemoProvider.cpp                                     \
     Providers/N5Provider/N5Provider.cpp                                         \
@@ -1085,6 +1086,7 @@ HEADERS +=                                                                      
     Providers/MasimoProvider/MasimoProvider.h                                   \
     Providers/NellcorProvider/NellcorProvider.h                                 \
     Providers/E5Provider/E5Provider.h                                           \
+    Providers/TE3Provider/TE3Provider.h                                         \
     Providers/T5Provider/T5Provider.h                                           \
     Providers/DemoProvider/DemoProvider.h                                       \
     Providers/N5Provider/N5Provider.h                                           \
@@ -1195,6 +1197,7 @@ DEPENDPATH +=                                                                   
     Providers/T5Provider                                                        \
     Providers/N5Provider                                                        \
     Providers/E5Provider                                                        \
+    Providers/TE3Provider                                                        \
     Providers/DemoProvider                                                      \
     Providers/PRT48Provider                                                     \
     Providers/PRT72Provider                                                     \
@@ -1321,6 +1324,7 @@ INCLUDEPATH +=                                                                  
     Providers/T5Provider                                                        \
     Providers/N5Provider                                                       \
     Providers/E5Provider                                                        \
+    Providers/TE3Provider                                                        \
     Providers/DemoProvider                                                      \
     Providers/PRT48Provider                                                     \
     Providers/PRT72Provider                                                     \
