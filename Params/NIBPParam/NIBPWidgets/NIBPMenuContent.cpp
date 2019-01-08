@@ -176,7 +176,7 @@ void NIBPMenuContentPrivate::loadOptions()
     int initVal;
     if (type == PATIENT_TYPE_ADULT)
     {
-        initCuffSpb->setRange(80, 280);
+        initCuffSpb->setRange(80, 240);
         currentConfig.getNumValue("NIBP|AdultInitialCuffInflation", initVal);
         initCuffSpb->setValue(initVal);
     }
