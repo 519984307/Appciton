@@ -79,7 +79,7 @@ void CO2MenuContentPrivate::loadOptions()
     combos[ITEM_CBO_WAVE_RULER]->blockSignals(true);
     combos[ITEM_CBO_WAVE_RULER]->clear();
     int maxZoom = CO2_DISPLAY_ZOOM_NR;
-    float zoomArray[CO2_DISPLAY_ZOOM_NR] = {4.0, 8.0, 12.0, 20.0};
+    float zoomArray[CO2_DISPLAY_ZOOM_NR] = {4.0, 8.0, 13.0, 20.0};
     QString str;
     UnitType unit = co2Param.getUnit();
     for (int i = 0; i < maxZoom; i++)
