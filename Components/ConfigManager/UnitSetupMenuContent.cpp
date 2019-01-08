@@ -331,13 +331,7 @@ void UnitSetupMenuContent::onComboBoxIndexChanged(int index)
             {
                 index = UNIT_INCH;
             }
-            int oldType;
-            systemConfig.getNumValue("Unit|HeightUnit", oldType);
             systemConfig.setNumValue("Unit|HeightUnit", index);
-            // 修改单位后，计算转换相应的高度值
-            float patientHeight = patientManager.getHeight();
-            QString ret = Unit::convert(static_cast<UnitType>(index), static_cast<UnitType>(oldType), patientHeight);
-            patientManager.setHeight(ret.toFloat());
             break;
         }
         case UnitSetupMenuContentPrivate::ITEM_CBO_WEIGHT_UNIT:
@@ -350,13 +344,7 @@ void UnitSetupMenuContent::onComboBoxIndexChanged(int index)
             {
                 index = UNIT_LB;
             }
-            int oldType;
-            systemConfig.getNumValue("Unit|WeightUnit", oldType);
             systemConfig.setNumValue("Unit|WeightUnit", index);
-            // 修改单位后，计算转换相应的体重值
-            float patientWeight = patientManager.getWeight();
-            QString ret = Unit::convert(static_cast<UnitType>(index), static_cast<UnitType>(oldType), patientWeight);
-            patientManager.setWeight(ret.toFloat());
             break;
         }
         case UnitSetupMenuContentPrivate::ITEM_CBO_ST_UNIT:

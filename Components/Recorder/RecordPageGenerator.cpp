@@ -156,14 +156,18 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
     str = QString("%1: ").arg(trs("Weight"));
     if (patInfo.weight)
     {
-        str += QString("%1 %2").arg(QString::number(patInfo.weight)).arg(Unit::localeSymbol(patientManager.getWeightUnit()));
+        float weight = patientManager.getWeight();
+        QString weightStr = Unit::convert(patientManager.getWeightUnit(), UNIT_KG, weight);
+        str += QString("%1 %2").arg(weightStr).arg(Unit::localeSymbol(patientManager.getWeightUnit()));
     }
     infos.append(str);
 
     str = QString("%1: ").arg(trs("Height"));
     if (patInfo.height)
     {
-        str += QString("%1 %2").arg(QString::number(patInfo.height)).arg(Unit::localeSymbol(patientManager.getHeightUnit()));
+        float height = patientManager.getHeight();
+        QString heightStr = Unit::convert(patientManager.getHeightUnit(), UNIT_CM, height);
+        str += QString("%1 %2").arg(heightStr).arg(Unit::localeSymbol(patientManager.getHeightUnit()));
     }
     infos.append(str);
 
