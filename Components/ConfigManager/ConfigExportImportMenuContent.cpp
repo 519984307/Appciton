@@ -48,14 +48,14 @@ class ConfigExportImportMenuContentPrivate
 {
 public:
     ConfigExportImportMenuContentPrivate()
-                    : valid(false)
-                    , configListView(NULL)
-                    , configDataModel(NULL)
-                    , exportBtn(NULL)
-                    , importBtn(NULL)
-                    , infoLab(NULL)
-                    , timer(NULL)
-                    , message(NULL)
+        : valid(false)
+        , configListView(NULL)
+        , configDataModel(NULL)
+        , exportBtn(NULL)
+        , importBtn(NULL)
+        , infoLab(NULL)
+        , timer(NULL)
+        , message(NULL)
     {
     }
 
@@ -77,7 +77,7 @@ public:
      * @param importTag        import tag
      * @return 返回：ture-valid;false-invalid；
      */
-    bool checkXMLContent(QList<QDomElement> &importTagList, QDomElement &importTag);
+    bool checkXMLContent(QList<QDomElement> *importTagList, QDomElement *importTag);
 
     /**
      * @brief tagFindElement  find tag elements
@@ -92,7 +92,7 @@ public:
      * @param localtag    local check tag
      * @return ture-valid;false-invalid；
      */
-    bool compareTagAttribute(QDomElement importtag, QDomElement localtag);//
+    bool compareTagAttribute(QDomElement importtag, QDomElement localtag);
 
     /**
      * @brief loadConfigs  装载配置
@@ -105,7 +105,7 @@ public:
     void updateConfigList();
 
 
-    QList<ConfigManager::UserDefineConfigInfo> configs; // 用户自定义的配置文件信息
+    QList<ConfigManager::UserDefineConfigInfo> configs;  // 用户自定义的配置文件信息
     QStringList  exportFileName;  // 导出的XML文件名称
     QStringList  importFileName;  // 导入的XML文件名称
     QDomDocument checkXml;  // 本地检查文件内容
@@ -284,7 +284,7 @@ TransferResult ConfigExportImportMenuContentPrivate::insertFileFromUSB()
         // 检查导入文件是否合乎要求
         QList<QDomElement> tagList;
         QDomElement  tag = importXml.documentElement();
-        bool flag = checkXMLContent(tagList, tag);
+        bool flag = checkXMLContent(&tagList, &tag);
         if (false == flag)
         {
             return TRANSFER_FAIL;
@@ -499,9 +499,6 @@ void ConfigExportImportMenuContent::layoutExec()
     layout->setMargin(10);
     layout->setAlignment(Qt::AlignTop);
 
-    QLabel *label = new QLabel(trs("ExportImportConfig"));
-    layout->addWidget(label);
-
     ListView *listView = new ListView();
     listView->setItemDelegate(new ListViewItemDelegate(listView));
     layout->addWidget(listView);
@@ -532,7 +529,7 @@ void ConfigExportImportMenuContent::layoutExec()
     layout->addLayout(hl);
     layout->addStretch(1);
 
-    label = new QLabel(trs("WarningNoUSB"));
+    QLabel *label = new QLabel(trs("WarningNoUSB"));
     label->setFixedHeight(HEIGHT_HINT);
     d_ptr->infoLab = label;
     layout->addWidget(label, 1, Qt::AlignRight);
@@ -600,18 +597,18 @@ QDomElement ConfigExportImportMenuContentPrivate::tagFindElement(const QStringLi
 
 bool ConfigExportImportMenuContentPrivate::compareTagAttribute(QDomElement importTag, QDomElement localTag)
 {
-    #define PARAMETER_PREFIX_NUM0   (4)  // 参数前缀的长度
-    #define PARAMETER_PREFIX_NUM1   (2)  // 参数前缀的长度
-    #define PARAMETER_PREFIX0       ("Enable")  // 参数前缀
-    #define PARAMETER_PREFIX1       ("Min")  // 参数前缀
+#define PARAMETER_PREFIX_NUM0   (4)  // 参数前缀的长度
+#define PARAMETER_PREFIX_NUM1   (2)  // 参数前缀的长度
+#define PARAMETER_PREFIX0       ("Enable")  // 参数前缀
+#define PARAMETER_PREFIX1       ("Min")  // 参数前缀
 
     float numArrary[] = {1.0, 2.0};
     QString attrString[] = {"Enable", "Prio"};
     QDomNamedNodeMap localDomNameNodeMap = localTag.attributes();
 
-    if (localDomNameNodeMap.count() == PARAMETER_PREFIX_NUM0) // 导入标签无属性值
+    if (localDomNameNodeMap.count() == PARAMETER_PREFIX_NUM0)  // 导入标签无属性值
     {
-        if (localDomNameNodeMap.namedItem("cAttr0").nodeValue().toFloat() == 0)  //数字属性 需要比较上下限
+        if (localDomNameNodeMap.namedItem("cAttr0").nodeValue().toFloat() == 0)  // 数字属性 需要比较上下限
         {
             if (importTag.text().toFloat() < localDomNameNodeMap.namedItem("cMin").nodeValue().toFloat() || \
                     importTag.text().toFloat() > localDomNameNodeMap.namedItem("cMax").nodeValue().toFloat())
@@ -653,21 +650,21 @@ bool ConfigExportImportMenuContentPrivate::compareTagAttribute(QDomElement impor
     return true;
 }
 
-bool ConfigExportImportMenuContentPrivate::checkXMLContent(QList<QDomElement> &importTagList, QDomElement &importTag)
+bool ConfigExportImportMenuContentPrivate::checkXMLContent(QList<QDomElement> *importTagList, QDomElement *importTag)
 {
-    if (importTag.isNull())
+    if (importTag->isNull())
     {
         QStringList nameList;
 
-        for (int i = 0; i < importTagList.count(); i++)
+        for (int i = 0; i < importTagList->count(); i++)
         {
-            nameList.append(importTagList.at(i).nodeName());
+            nameList.append(importTagList->at(i).nodeName());
         }
 
         QDomElement localTag = tagFindElement(nameList);
         if (!localTag.isNull())
         {
-            bool attrFlag = compareTagAttribute(importTagList.at(importTagList.count() - 1), localTag);
+            bool attrFlag = compareTagAttribute(importTagList->at(importTagList->count() - 1), localTag);
 
             if (attrFlag == false)
             {
@@ -676,31 +673,31 @@ bool ConfigExportImportMenuContentPrivate::checkXMLContent(QList<QDomElement> &i
             }
         }
 
-        if (importTagList.empty())
+        if (importTagList->empty())
         {
-           valid = true;
+            valid = true;
             return valid;
         }
-        importTag = importTagList.last().nextSiblingElement();  // 下一个同类子节点
-        importTagList.removeLast();  // 移除最后一个子节点
-        if (importTagList.empty())
+        *importTag = importTagList->last().nextSiblingElement();  // 下一个同类子节点
+        importTagList->removeLast();  // 移除最后一个子节点
+        if (importTagList->empty())
         {
             valid = true;
             return valid;
         }
 
-        if (importTag.isNull())
+        if (importTag->isNull())
         {
-            importTag = importTagList.last();
-            importTag = importTag.nextSiblingElement();  // 下一个同类子节点
-            importTagList.removeLast();  // 移除最后一个子节点
+            *importTag = importTagList->last();
+            *importTag = importTag->nextSiblingElement();  // 下一个同类子节点
+            importTagList->removeLast();  // 移除最后一个子节点
         }
         checkXMLContent(importTagList, importTag);
     }
     else
     {
-        importTagList.append(importTag);
-        importTag = importTag.firstChildElement();
+        importTagList->append(*importTag);
+        *importTag = importTag->firstChildElement();
         checkXMLContent(importTagList, importTag);
     }
 
@@ -727,22 +724,22 @@ void ConfigExportImportMenuContent::onBtnClick()
         TransferResult result = d_ptr->insertFileFromUSB();
         switch (result)
         {
-            case TRANSFER_FAIL:
-            {
-                MessageBox messageBox(trs("Import"), trs("ImportFileFailed"), false);
-                messageBox.exec();
-            }
+        case TRANSFER_FAIL:
+        {
+            MessageBox messageBox(trs("Import"), trs("ImportFileFailed"), false);
+            messageBox.exec();
+        }
+        break;
+        case TRANSFER_IGNORE:
             break;
-            case TRANSFER_IGNORE:
-            break;
-            case TRANSFER_SUCCESS:
-            {
-                MessageBox messageBox(trs("Import"), trs("ImportFileCompleted"), false);
-                d_ptr->message = &messageBox;
-                messageBox.exec();
-                d_ptr->message = NULL;
-            }
-            break;
+        case TRANSFER_SUCCESS:
+        {
+            MessageBox messageBox(trs("Import"), trs("ImportFileCompleted"), false);
+            d_ptr->message = &messageBox;
+            messageBox.exec();
+            d_ptr->message = NULL;
+        }
+        break;
         }
     }
 }

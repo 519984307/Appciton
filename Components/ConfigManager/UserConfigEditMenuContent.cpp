@@ -298,7 +298,7 @@ void UserConfigEditMenuContent::onBtnClick()
 void UserConfigEditMenuContent::onEditFinished()
 {
     //  can't add, too many
-    //  TODO show some message
+    //  todo show some message
     QString configName = d_ptr->editWindow->getCurrentEditConfigName();
     if (configName.isEmpty())
     {
@@ -334,9 +334,6 @@ void UserConfigEditMenuContent::layoutExec()
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setMargin(10);
     layout->setAlignment(Qt::AlignTop);
-
-    QLabel *label = new QLabel(trs("ConfigManagerment"));
-    layout->addWidget(label);
 
     ListView *listView = new ListView(this);
     listView->setItemDelegate(new ListViewItemDelegate(listView));
