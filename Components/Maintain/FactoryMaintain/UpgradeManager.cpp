@@ -903,7 +903,7 @@ void UpgradeManager::noResponseTimeout()
     switch (d_ptr->state)
     {
     case STATE_REQUEST_ENTER_UPGRADE_MODE:
-        if (d_ptr->noResponeCount < 2)
+        if (d_ptr->noResponeCount < 3)
         {
             d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_ENTER, NULL, 0);
         }
