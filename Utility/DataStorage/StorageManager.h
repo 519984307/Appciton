@@ -66,16 +66,6 @@ private slots:
      */
     void onNewPatientHandle();
 
-    /**
-     * @brief onStorageSpaceFull 存储空间满处理
-     */
-    void onStorageSpaceFull();
-
-    /**
-     * @brief onStorageSpaceNotFull 存储空间未满处理
-     */
-    void onStorageSpaceNotFull();
-
 private:
     Q_DECLARE_PRIVATE(StorageManager)
     Q_DISABLE_COPY(StorageManager)
