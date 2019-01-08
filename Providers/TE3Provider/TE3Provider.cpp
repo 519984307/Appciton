@@ -723,7 +723,10 @@ void TE3Provider::setSelfLearn(bool onOff)
 }
 
 void TE3Provider::setARRThreshold(ECGAlg::ARRPara parameter, short value)
-{}
+{
+    Q_UNUSED(parameter)
+    Q_UNUSED(value)
+}
 
 /**************************************************************************************************
  * 起搏器设置。
@@ -749,33 +752,6 @@ void TE3Provider::setNotchFilter(ECGNotchFilter notch)
 void TE3Provider::enableSTAnalysis(bool onoff)
 {
     Q_UNUSED(onoff)
-}
-
-/**************************************************************************************************
- * 使能Pace sync控制。
- *************************************************************************************************/
-void TE3Provider::enablePaceSyncCtrl(bool enable)
-{
-    unsigned char data = enable;
-    sendCmd(TE3_CMD_ENABLE_PACE_SYNC, &data, 1);
-}
-
-/***************************************************************************************************
- * enable data sync control
- **************************************************************************************************/
-void TE3Provider::enableDataSyncCtrl(bool enable)
-{
-    unsigned char data = enable;
-    sendCmd(TE3_CMD_SET_DATA_SYNC, &data, 1);
-}
-
-/**************************************************************************************************
- * 使能PD Blank控制。
- *************************************************************************************************/
-void TE3Provider::enablePDBlankCtrl(bool enable)
-{
-    unsigned char data = enable;
-    sendCmd(TE3_CMD_ENABLE_PD_BLANK_SIGNAL, &data, 1);
 }
 
 /***************************************************************************************************

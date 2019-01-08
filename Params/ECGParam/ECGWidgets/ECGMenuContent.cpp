@@ -231,19 +231,13 @@ void ECGMenuContentPrivate::loadOptions()
     switch (filterMode)
     {
     case ECG_FILTERMODE_MONITOR:
-        combos[ITEM_CBO_NOTCH_FITER]->
-        addItems(QStringList()
-                 << trs(ECGSymbol::convert(ECG_NOTCH_50HZ))
-                 << trs(ECGSymbol::convert(ECG_NOTCH_60HZ))
-                 << trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ))
-                );
+        combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_50HZ)), ECG_NOTCH_50HZ);
+        combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_60HZ)), ECG_NOTCH_60HZ);
+        combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ)), ECG_NOTCH_50_AND_60HZ);
         break;
     case ECG_FILTERMODE_SURGERY:
-        combos[ITEM_CBO_NOTCH_FITER]->
-        addItems(QStringList()
-                 << trs(ECGSymbol::convert(ECG_NOTCH_OFF))
-                 << trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ))
-                );
+        combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_OFF)), ECG_NOTCH_OFF);
+        combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ)), ECG_NOTCH_50_AND_60HZ);
         if (notchFilter == ECG_NOTCH_50_AND_60HZ)
         {
             combos[ITEM_CBO_NOTCH_FITER]->setCurrentIndex(1);
@@ -255,12 +249,9 @@ void ECGMenuContentPrivate::loadOptions()
         break;
     case ECG_FILTERMODE_DIAGNOSTIC:
     case ECG_FILTERMODE_ST:
-        combos[ITEM_CBO_NOTCH_FITER]->
-        addItems(QStringList()
-                 << trs(ECGSymbol::convert(ECG_NOTCH_OFF))
-                 << trs(ECGSymbol::convert(ECG_NOTCH_50HZ))
-                 << trs(ECGSymbol::convert(ECG_NOTCH_60HZ))
-                );
+        combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_OFF)), ECG_NOTCH_OFF);
+        combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_50HZ)), ECG_NOTCH_50HZ);
+        combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_60HZ)), ECG_NOTCH_60HZ);
         combos[ITEM_CBO_NOTCH_FITER]->setCurrentIndex(notchFilter);
         break;
     default:
@@ -742,28 +733,19 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
             switch (index)
             {
             case ECG_FILTERMODE_MONITOR:
-                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
-                addItems(QStringList()
-                         << trs(ECGSymbol::convert(ECG_NOTCH_50HZ))
-                         << trs(ECGSymbol::convert(ECG_NOTCH_60HZ))
-                         << trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ))
-                        );
+                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_50HZ)), ECG_NOTCH_50HZ);
+                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_60HZ)), ECG_NOTCH_60HZ);
+                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ)), ECG_NOTCH_50_AND_60HZ);
                 break;
             case ECG_FILTERMODE_SURGERY:
-                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
-                addItems(QStringList()
-                         << trs(ECGSymbol::convert(ECG_NOTCH_OFF))
-                         << trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ))
-                        );
+                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_OFF)), ECG_NOTCH_OFF);
+                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ)), ECG_NOTCH_50_AND_60HZ);
                 break;
             case ECG_FILTERMODE_DIAGNOSTIC:
             case ECG_FILTERMODE_ST:
-                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
-                addItems(QStringList()
-                         << trs(ECGSymbol::convert(ECG_NOTCH_OFF))
-                         << trs(ECGSymbol::convert(ECG_NOTCH_50HZ))
-                         << trs(ECGSymbol::convert(ECG_NOTCH_60HZ))
-                        );
+                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_OFF)), ECG_NOTCH_OFF);
+                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_50HZ)), ECG_NOTCH_50HZ);
+                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_60HZ)), ECG_NOTCH_60HZ);
                 break;
             default:
                 break;
@@ -774,19 +756,8 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
         }
         case ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER:
         {
-            ECGFilterMode filterMode = ecgParam.getFilterMode();
-            if (filterMode == ECG_FILTERMODE_SURGERY)
-            {
-                if (index == 1)
-                {
-                    index = ECG_NOTCH_50_AND_60HZ;
-                }
-            }
-            else if (filterMode == ECG_FILTERMODE_MONITOR)
-            {
-                index = index + 1;
-            }
-            ecgParam.setNotchFilter(static_cast<ECGNotchFilter>(index));
+            ECGNotchFilter notch = static_cast<ECGNotchFilter>(d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->itemData(index).toInt());
+            ecgParam.setNotchFilter(notch);
             break;
         }
         case ECGMenuContentPrivate::ITEM_CBO_PACER_MARK:

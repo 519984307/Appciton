@@ -149,15 +149,6 @@ public: // ECGProviderIFace 的接口。
     // ST开关。
     virtual void enableSTAnalysis(bool onoff);
 
-    // 使能Pace sync控制
-    virtual void enablePaceSyncCtrl(bool enable);
-
-    // 使能PD Blank控制
-    virtual void enablePDBlankCtrl(bool enable);
-
-    // enable data sync control
-    virtual void enableDataSyncCtrl(bool enable);
-
     // enable vf calc control
     virtual void enableVFCalcCtrl(bool enable);
 
