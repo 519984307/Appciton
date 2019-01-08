@@ -16,8 +16,6 @@
 #include "StorageFile.h"
 #include "DataStorageDirManager.h"
 
-bool StorageManagerPrivate::spaceFullFlag = false;
-
 StorageManagerPrivate::~StorageManagerPrivate()
 {
     delete backend;

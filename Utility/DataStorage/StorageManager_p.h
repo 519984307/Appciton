@@ -46,5 +46,4 @@ public:
     QList<StorageItem> storageItemList[2];
     QMutex mutex;
     quint8 currentCacheList;
-    static bool spaceFullFlag;         // 存储空间满标志
 };
