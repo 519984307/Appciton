@@ -743,36 +743,36 @@
 		</FIO2>
 		<T1 Enable="0" Prio="2">
 		<celsius>
-		    <Low Min="1" Max="490">350</Low>
-		    <High Min="11" Max="500">378</High>
+		    <Low Min="0" Max="490">350</Low>
+		    <High Min="1" Max="500">378</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</celsius>
 		<fahrenheit>
-		    <Low Min="590" Max="1219">950</Low>
-		    <High Min="591" Max="1220">1000</High>
+		    <Low Min="320" Max="1219">950</Low>
+		    <High Min="321" Max="1220">1000</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</fahrenheit>
 		</T1>
 		<T2 Enable="0" Prio="2">
 		<celsius>
-		    <Low Min="1" Max="490">350</Low>
-		    <High Min="11" Max="500">378</High>
+		    <Low Min="0" Max="490">350</Low>
+		    <High Min="1" Max="500">378</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</celsius>
 		<fahrenheit>
-		    <Low Min="590" Max="1219">950</Low>
-		    <High Min="591" Max="1220">1000</High>
+		    <Low Min="320" Max="1219">950</Low>
+		    <High Min="321" Max="1220">1000</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</fahrenheit>
 		</T2>
 		<TD Enable="0" Prio="2">
 		<celsius>
-		    <Low Min="1" Max="490">1</Low>
-		    <High Min="11" Max="500">5</High>
+		    <Low Min="0" Max="49">0</Low>
+		    <High Min="1" Max="50">5</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</celsius>
