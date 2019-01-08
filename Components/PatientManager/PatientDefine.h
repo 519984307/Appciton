@@ -49,13 +49,6 @@ enum PatientBloodType
     PATIENT_BLOOD_TYPE_NR
 };
 
-enum PatientWeightUnit
-{
-    PATIENT_WEIGHT_UNIT_KG,
-    PATIENT_WEIGHT_UNIT_LB,
-    PATIENT_WEIGHT_UNIT_NR
-};
-
 // 描述病人信息。
 struct PatientInfo
 {
@@ -65,7 +58,6 @@ struct PatientInfo
           sex(PATIENT_SEX_NULL),  //  性别为空主要用于开机时性别框要显示为空白
           age(-1), //  年纪设置为-1主要用于开机时年纪框不让设置数据要显示为空白
           blood(PATIENT_BLOOD_TYPE_NULL),
-          weightUnit(PATIENT_WEIGHT_UNIT_KG),
           weight(0.0),
           height(0.0)
     {
@@ -82,7 +74,6 @@ struct PatientInfo
         blood = other.blood;
         weight = other.weight;
         height = other.height;
-        weightUnit = other.weightUnit;
         ::memcpy(name, other.name, sizeof(name));
         ::memcpy(id, other.id, sizeof(id));
         return *this;
@@ -106,7 +97,6 @@ struct PatientInfo
     PatientSex sex;
     int age;
     PatientBloodType blood;
-    PatientWeightUnit weightUnit;
     float weight;
     float height;
     char id[MAX_PATIENT_ID_LEN];
@@ -148,15 +138,6 @@ public:
         static const char *symbol[PATIENT_BLOOD_TYPE_NR] =
         {
             "", "A", "B", "AB", "O"
-        };
-        return symbol[index];
-    }
-
-    static const char *convert(PatientWeightUnit index)
-    {
-        static const char *symbol[PATIENT_WEIGHT_UNIT_NR] =
-        {
-            "kg", "lb"
         };
         return symbol[index];
     }

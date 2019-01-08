@@ -236,32 +236,15 @@ void PatientInfoWindowPrivate::loadOptions()
     buttons[ITEM_BTN_PATIENT_ID]->setText(patientManager.getPatID());
     bedNum->setText(patientManager.getBedNum());
 
-    UnitType oldHeightType = heightType;
     heightType = patientManager.getHeightUnit();
 
     heightLbl->setText(QString("%1(%2)").arg(trs("PatientHeight"))
                        .arg(Unit::getSymbol(heightType)));
 
-    UnitType oldWeightType = weightType;
     weightType = patientManager.getWeightUnit();
 
     weightLbl->setText(QString("%1(%2)").arg(trs("PatientWeight"))
                        .arg(Unit::getSymbol(weightType)));
-
-    bool ok;
-    float heightValue = height->text().toFloat(&ok);
-    if (ok)
-    {
-        QString ret = Unit::convert(heightType, oldHeightType, heightValue);
-        height->setText(ret);
-    }
-
-    float weightValue = weight->text().toFloat(&ok);
-    if (ok)
-    {
-        QString ret = Unit::convert(weightType, oldWeightType, weightValue);
-        weight->setText(ret);
-    }
 
     int index = 0;
     systemConfig.getNumValue("General|ChangeBedNumberRight", index);
