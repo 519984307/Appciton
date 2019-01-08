@@ -221,19 +221,8 @@ static void _initProviderParam(void)
     // TE3Provider *te3 = new TE3Provider();
     // paramManager.addProvider(*te3);
 
-    QString str;
-    machineConfig.getStrValue("ECG", str);
-    if (str == "BLM_E5")
-    {
-        E5Provider *e5 = new E5Provider();
-        paramManager.addProvider(*e5);
-    }
-    else if (str == "BLM_TE3")
-    {
-        TE3Provider *te3 = new TE3Provider();
-        paramManager.addProvider(*te3);
-    }
-
+    E5Provider *te3 = new E5Provider();
+    paramManager.addProvider(*te3);
 
     DataDispatcher::addDataDispatcher(new DataDispatcher("DataDispatcher"));
 
