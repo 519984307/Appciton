@@ -36,9 +36,10 @@ public:
         ITEM_CBO_NIBP,
         ITEM_CBO_RESP,
         ITEM_CBO_CO2,
-        ITEM_CBO_AG,
-        ITEM_CBO_CO,
-        ITEM_CBO_IBP,
+//        ITEM_CBO_AG,
+//        ITEM_CBO_CO,
+//        ITEM_CBO_IBP,
+//        ITEM_CBO_O2,
         ITEM_CBO_TEMP,
         ITEM_CBO_WIFI,
 #ifdef Q_WS_QWS
@@ -134,20 +135,25 @@ void MachineConfigModuleContentPrivte::loadOptions()
     combos[ITEM_CBO_CO2]->setCurrentIndex(index);
     itemChangedMap[ITEM_CBO_CO2] = index;
 
-    index = 0;
-    machineConfig.getNumValue("AGEnable", index);
-    combos[ITEM_CBO_AG]->setCurrentIndex(index);
-    itemChangedMap[ITEM_CBO_AG] = index;
+//    index = 0;
+//    machineConfig.getNumValue("AGEnable", index);
+//    combos[ITEM_CBO_AG]->setCurrentIndex(index);
+//    itemChangedMap[ITEM_CBO_AG] = index;
 
-    index = 0;
-    machineConfig.getNumValue("COEnable", index);
-    combos[ITEM_CBO_CO]->setCurrentIndex(index);
-    itemChangedMap[ITEM_CBO_CO] = index;
+//    index = 0;
+//    machineConfig.getNumValue("COEnable", index);
+//    combos[ITEM_CBO_CO]->setCurrentIndex(index);
+//    itemChangedMap[ITEM_CBO_CO] = index;
 
-    index = 0;
-    machineConfig.getNumValue("IBPEnable", index);
-    combos[ITEM_CBO_IBP]->setCurrentIndex(index);
-    itemChangedMap[ITEM_CBO_IBP] = index;
+//    index = 0;
+//    machineConfig.getNumValue("IBPEnable", index);
+//    combos[ITEM_CBO_IBP]->setCurrentIndex(index);
+//    itemChangedMap[ITEM_CBO_IBP] = index;
+
+//    index = 0;
+//    machineConfig.getNumValue("O2Enable", index);
+//    combos[ITEM_CBO_O2]->setCurrentIndex(index);
+//    itemChangedMap[ITEM_CBO_O2] = index;
 
 #ifdef Q_WS_QWS
     index = 0;
@@ -297,50 +303,65 @@ void MachineConfigModuleContent::layoutExec()
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
-    // ag module
-    label = new QLabel(trs("AGModule"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    combo = new ComboBox;
-    combo->addItems(QStringList()
-                    << trs("Off")
-                    << trs("On")
-                   );
-    layout->addWidget(combo, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(MachineConfigModuleContentPrivte
-                         ::ITEM_CBO_AG, combo);
-    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_AG;
-    combo->setProperty("Item", qVariantFromValue(itemId));
-    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+//    // ag module
+//    label = new QLabel(trs("AGModule"));
+//    layout->addWidget(label, d_ptr->combos.count(), 0);
+//    combo = new ComboBox;
+//    combo->addItems(QStringList()
+//                    << trs("Off")
+//                    << trs("On")
+//                   );
+//    layout->addWidget(combo, d_ptr->combos.count(), 1);
+//    d_ptr->combos.insert(MachineConfigModuleContentPrivte
+//                         ::ITEM_CBO_AG, combo);
+//    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_AG;
+//    combo->setProperty("Item", qVariantFromValue(itemId));
+//    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
-    // co module
-    label = new QLabel(trs("COModule"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    combo = new ComboBox;
-    combo->addItems(QStringList()
-                    << trs("Off")
-                    << trs("On")
-                   );
-    layout->addWidget(combo, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(MachineConfigModuleContentPrivte
-                         ::ITEM_CBO_CO, combo);
-    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_CO;
-    combo->setProperty("Item", qVariantFromValue(itemId));
-    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+//    // co module
+//    label = new QLabel(trs("COModule"));
+//    layout->addWidget(label, d_ptr->combos.count(), 0);
+//    combo = new ComboBox;
+//    combo->addItems(QStringList()
+//                    << trs("Off")
+//                    << trs("On")
+//                   );
+//    layout->addWidget(combo, d_ptr->combos.count(), 1);
+//    d_ptr->combos.insert(MachineConfigModuleContentPrivte
+//                         ::ITEM_CBO_CO, combo);
+//    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_CO;
+//    combo->setProperty("Item", qVariantFromValue(itemId));
+//    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
-    // ibp module
-    label = new QLabel(trs("IBPModule"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    combo = new ComboBox;
-    combo->addItems(QStringList()
-                    << trs("Off")
-                    << trs("On")
-                   );
-    layout->addWidget(combo, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(MachineConfigModuleContentPrivte
-                         ::ITEM_CBO_IBP, combo);
-    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_IBP;
-    combo->setProperty("Item", qVariantFromValue(itemId));
-    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+//    // ibp module
+//    label = new QLabel(trs("IBPModule"));
+//    layout->addWidget(label, d_ptr->combos.count(), 0);
+//    combo = new ComboBox;
+//    combo->addItems(QStringList()
+//                    << trs("Off")
+//                    << trs("On")
+//                   );
+//    layout->addWidget(combo, d_ptr->combos.count(), 1);
+//    d_ptr->combos.insert(MachineConfigModuleContentPrivte
+//                         ::ITEM_CBO_IBP, combo);
+//    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_IBP;
+//    combo->setProperty("Item", qVariantFromValue(itemId));
+//    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+
+//    // O2 module
+//    label = new QLabel(trs("O2Module"));
+//    layout->addWidget(label, d_ptr->combos.count(), 0);
+//    combo = new ComboBox;
+//    combo->addItems(QStringList()
+//                    << trs("Off")
+//                    << trs("On")
+//                   );
+//    layout->addWidget(combo, d_ptr->combos.count(), 1);
+//    d_ptr->combos.insert(MachineConfigModuleContentPrivte
+//                         ::ITEM_CBO_O2, combo);
+//    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_O2;
+//    combo->setProperty("Item", qVariantFromValue(itemId));
+//    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
     // temp module
     label = new QLabel(trs("TEMPModule"));
@@ -453,21 +474,26 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
             enablePath = "CO2Enable";
             break;
         }
-        case MachineConfigModuleContentPrivte::ITEM_CBO_AG:
-        {
-            enablePath = "AGEnable";
-            break;
-        }
-        case MachineConfigModuleContentPrivte::ITEM_CBO_CO:
-        {
-            enablePath = "COEnable";
-            break;
-        }
-        case MachineConfigModuleContentPrivte::ITEM_CBO_IBP:
-        {
-            enablePath = "IBPEnable";
-            break;
-        }
+//        case MachineConfigModuleContentPrivte::ITEM_CBO_AG:
+//        {
+//            enablePath = "AGEnable";
+//            break;
+//        }
+//        case MachineConfigModuleContentPrivte::ITEM_CBO_CO:
+//        {
+//            enablePath = "COEnable";
+//            break;
+//        }
+//        case MachineConfigModuleContentPrivte::ITEM_CBO_IBP:
+//        {
+//            enablePath = "IBPEnable";
+//            break;
+//        }
+//        case MachineConfigModuleContentPrivte::ITEM_CBO_O2:
+//        {
+//            enablePath = "O2Enable";
+//            break;
+//        }
         case MachineConfigModuleContentPrivte::ITEM_CBO_TEMP:
         {
             enablePath = "TEMPEnable";
@@ -506,31 +532,31 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
     }
     machineConfig.setNumValue(enablePath, enableIndex);
 
-    // ibp模块和co模块使能位形成联动
-    if (d_ptr->isSyncIBPCO)
-    {
-        if (enablePath == "COEnable")
-        {
-            machineConfig.setNumValue("IBPEnable", index);
-            MachineConfigModuleContentPrivte::MenuItem item;
-            item = MachineConfigModuleContentPrivte::ITEM_CBO_IBP;
-            d_ptr->combos[item]->blockSignals(true);
-            d_ptr->combos[MachineConfigModuleContentPrivte::ITEM_CBO_IBP]
-                    ->setCurrentIndex(index);
-            d_ptr->combos[MachineConfigModuleContentPrivte::ITEM_CBO_IBP]
-                    ->blockSignals(false);
-        }
-        else if (enablePath == "IBPEnable")
-        {
-            machineConfig.setNumValue("COEnable", index);
-            d_ptr->combos[MachineConfigModuleContentPrivte::ITEM_CBO_CO]
-                    ->blockSignals(true);
-            d_ptr->combos[MachineConfigModuleContentPrivte::ITEM_CBO_CO]
-                    ->setCurrentIndex(index);
-            d_ptr->combos[MachineConfigModuleContentPrivte::ITEM_CBO_CO]
-                    ->blockSignals(false);
-        }
-    }
+//    // ibp模块和co模块使能位形成联动
+//    if (d_ptr->isSyncIBPCO)
+//    {
+//        if (enablePath == "COEnable")
+//        {
+//            machineConfig.setNumValue("IBPEnable", index);
+//            MachineConfigModuleContentPrivte::MenuItem item;
+//            item = MachineConfigModuleContentPrivte::ITEM_CBO_IBP;
+//            d_ptr->combos[item]->blockSignals(true);
+//            d_ptr->combos[MachineConfigModuleContentPrivte::ITEM_CBO_IBP]
+//                    ->setCurrentIndex(index);
+//            d_ptr->combos[MachineConfigModuleContentPrivte::ITEM_CBO_IBP]
+//                    ->blockSignals(false);
+//        }
+//        else if (enablePath == "IBPEnable")
+//        {
+//            machineConfig.setNumValue("COEnable", index);
+//            d_ptr->combos[MachineConfigModuleContentPrivte::ITEM_CBO_CO]
+//                    ->blockSignals(true);
+//            d_ptr->combos[MachineConfigModuleContentPrivte::ITEM_CBO_CO]
+//                    ->setCurrentIndex(index);
+//            d_ptr->combos[MachineConfigModuleContentPrivte::ITEM_CBO_CO]
+//                    ->blockSignals(false);
+//        }
+//    }
 
     if (index && !modulePath.isEmpty() && !moduleName.isEmpty())
     {
