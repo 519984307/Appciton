@@ -336,7 +336,8 @@ void TimeEditWindow::onSpinBoxValueChanged(int value, int scale)
                 int min = 0;
                 int max = 0;
                 d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getRange(min, max);
-                int curMax = timeDate.getMaxDay(val, 2);
+                QDate date(val, 2, 1);
+                int curMax = date.daysInMonth();
                 int curVal = d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getValue();
                 if (max != curMax)
                 {
@@ -355,7 +356,8 @@ void TimeEditWindow::onSpinBoxValueChanged(int value, int scale)
             int min = 0;
             int max = 0;
             d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getRange(min, max);
-            int curMax = timeDate.getMaxDay(d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_YEAR]->getValue(), val);
+            QDate date(d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_YEAR]->getValue(), val, 1);
+            int curMax = date.daysInMonth();
             int curVal = d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getValue();
             if (max != curMax)
             {

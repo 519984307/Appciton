@@ -14,6 +14,7 @@
 #include <string.h>
 #include "BaseDefine.h"
 #include <QString>
+#include <QDate>
 
 enum PatientType
 {
@@ -70,7 +71,6 @@ struct PatientInfo
     {
         memset(name, 0, sizeof(name));
         memset(id, 0, sizeof(id));
-        memset(bornDate, 0, sizeof(bornDate));
     }
 
     PatientInfo &operator=(const PatientInfo &other)
@@ -78,7 +78,7 @@ struct PatientInfo
         pacer = other.pacer;
         type = other.type;
         sex = other.sex;
-        ::memcpy(bornDate, other.bornDate, sizeof(bornDate));
+        bornDate = other.bornDate;
         blood = other.blood;
         weight = other.weight;
         height = other.height;
@@ -93,7 +93,7 @@ struct PatientInfo
         return ((pacer == other.pacer) &&
                 (type == other.type) &&
                 (sex == other.sex) &&
-                (::strcmp(bornDate, other.bornDate) == 0) &&
+                (bornDate == other.bornDate) &&
                 (blood == other.blood) &&
                 (weight == other.weight) &&
                 (height == other.height) &&
@@ -104,7 +104,7 @@ struct PatientInfo
     PatientType type;
     PatientPacer pacer;
     PatientSex sex;
-    char bornDate[MAX_PATIENT_BORN_DATE_LEN];
+    QDate bornDate;
     PatientBloodType blood;
     PatientWeightUnit weightUnit;
     float weight;

@@ -54,14 +54,6 @@ public:
     unsigned int getTimeMsec(void);
 
     /**
-     * @brief getMaxDay
-     * @param year
-     * @param month
-     * @return
-     */
-    int getMaxDay(int year, int month);
-
-    /**
      * @brief getDateFormat 获取日期格式
      * @param format
      * @param year4Bits

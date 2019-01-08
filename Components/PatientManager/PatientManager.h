@@ -79,13 +79,13 @@ public:
      * @brief setBornDate 设置出生日期
      * @param bornDate
      */
-    void setBornDate(const QString &bornDate);
+    void setBornDate(QDate bornDate);
 
     /**
      * @brief getBornDate 获取出生日期
      * @return
      */
-    char *getBornDate(void);
+    QDate getBornDate(void);
 
     void getBornDate(unsigned int &year, unsigned int &month, unsigned int &day);
 

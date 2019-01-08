@@ -134,41 +134,27 @@ PatientSex PatientManager::getSex(void)
     return d_ptr->patientInfo.sex;
 }
 
-void PatientManager::setBornDate(const QString &bornDate)
+void PatientManager::setBornDate(QDate bornDate)
 {
-    ::strncpy(d_ptr->patientInfo.bornDate, bornDate.toUtf8().constData(),
-              sizeof(d_ptr->patientInfo.bornDate));
-    systemConfig.setStrValue("PrimaryCfg|PatientInfo|BornDate", bornDate);
-    timeDate.getDateFormat(d_ptr->bornDateFormat, true);
+    systemConfig.setStrValue("PrimaryCfg|PatientInfo|BornDate", bornDate.toString("yyyy/MM/dd"));
+    d_ptr->patientInfo.bornDate = bornDate;
 }
 
-char *PatientManager::getBornDate()
+QDate PatientManager::getBornDate()
 {
     return d_ptr->patientInfo.bornDate;
 }
 
 void PatientManager::getBornDate(unsigned int &year, unsigned int &month, unsigned int &day)
 {
-    QString bornDate = QString::fromAscii(d_ptr->patientInfo.bornDate, sizeof(d_ptr->patientInfo.bornDate));
-    bornDate = bornDate.left(bornDate.size()-1); // 去除'\0'
-    QDate date;
-    if (d_ptr->bornDateFormat.isEmpty())
-    {
-        // 没有出生日期时，采用当前日期格式
-        timeDate.getDateFormat(d_ptr->bornDateFormat, true);
-        date = QDate::fromString(bornDate, d_ptr->bornDateFormat);
-    }
-    else
-    {
-        date = QDate::fromString(bornDate, d_ptr->bornDateFormat);
-    }
-    if (!date.isValid())
+    QDate bornDate = d_ptr->patientInfo.bornDate;
+    if (!bornDate.isValid())
     {
         return;
     }
-    year = static_cast<unsigned int>(date.year());
-    month = static_cast<unsigned int>(date.month());
-    day = static_cast<unsigned int>(date.day());
+    year = static_cast<unsigned int>(bornDate.year());
+    month = static_cast<unsigned int>(bornDate.month());
+    day = static_cast<unsigned int>(bornDate.day());
 }
 
 void PatientManager::setBlood(PatientBloodType blood)
@@ -306,7 +292,7 @@ bool PatientManager::isMonitoring()
 void PatientManager::newPatient()
 {
     d_ptr->patientNew = true;
-    patientManager.setBornDate(QString(""));
+    patientManager.setBornDate(QDate());
     patientManager.setBlood(PATIENT_BLOOD_TYPE_NULL);
     patientManager.setHeight(0.0);
     patientManager.setName(QString(""));
@@ -367,7 +353,7 @@ void PatientManagerPrivate::loadPatientInfo(PatientInfo &info)
     ::strncpy(info.id, strValue.toUtf8().constData(), sizeof(info.id));
 
     systemConfig.getStrValue("PrimaryCfg|PatientInfo|BornDate", strValue);
-    ::strncpy(info.bornDate, strValue.toUtf8().constData(), sizeof(info.bornDate));
+    info.bornDate = QDate::fromString(strValue, "yyyy/MM/dd");
 }
 
 void PatientManagerPrivate::handleDischarge()

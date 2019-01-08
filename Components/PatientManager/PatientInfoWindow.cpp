@@ -533,13 +533,10 @@ PatientInfoWindow::PatientInfoWindow()
 
 void PatientInfoWindowPrivate::savePatientInfoToManager()
 {
-    QString format;
-    timeDate.getDateFormat(format, true);
     QDate date(dateItem[Born_Date_Year]->getValue(),
                dateItem[Born_Date_Month]->getValue(),
                dateItem[Born_Date_Day]->getValue());
-    QString bornDate = date.toString(format);
-    patientManager.setBornDate(bornDate);
+    patientManager.setBornDate(date);
     patientManager.setBlood(static_cast<PatientBloodType>(blood->currentIndex()));
     patientManager.setHeight(height->text().toFloat());
     patientManager.setName(name->text());
@@ -706,7 +703,8 @@ void PatientInfoWindow::onSpinBoxValueChanged(int, int)
         }
         else
         {
-            d_ptr->dateItem[PatientInfoWindowPrivate::Born_Date_Day]->setRange(1, timeDate.getMaxDay(year, month));
+            QDate date(year, month, day);
+            d_ptr->dateItem[PatientInfoWindowPrivate::Born_Date_Day]->setRange(1, date.daysInMonth());
         }
         d_ptr->dateItem[PatientInfoWindowPrivate::Born_Date_Day]->setValue(day);
     }
