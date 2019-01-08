@@ -28,6 +28,7 @@
 #include "WindowManager.h"
 #include "SystemManager.h"
 #include "LayoutManager.h"
+#include "SoundManager.h"
 
 #define CONFIG_DIR "/usr/local/nPM/etc"
 #define USER_DEFINE_CONFIG_NAME "UserConfig"
@@ -247,6 +248,7 @@ void LoadConfigMenuContent::onBtnClick()
         currentConfig.setCurrentFilePath(curConfigName);
         currentConfig.load(loadPath);
 
+        soundManager.selfTest();
         layoutManager.updateLayoutWidgetsConfig();
 
         QString title(trs("LoadConfig"));
