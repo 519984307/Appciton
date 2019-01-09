@@ -248,7 +248,7 @@ void LoadConfigMenuContent::onBtnClick()
         currentConfig.setCurrentFilePath(curConfigName);
         currentConfig.load(loadPath);
 
-        soundManager.selfTest();
+        soundManager.volumeInit();
         layoutManager.updateLayoutWidgetsConfig();
 
         QString title(trs("LoadConfig"));
