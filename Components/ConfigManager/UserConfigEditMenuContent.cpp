@@ -31,18 +31,17 @@
 #define CONFIG_MAX_NUM 3
 #define LISTVIEW_MAX_VISIABLE_TIME 6
 
+enum MenuItem
+{
+    ITEM_BTN_ADD_CONFIG = 0,
+    ITEM_BTN_EDIT_CONFIG,
+    ITEM_BTN_DEL_CONFIG,
+
+    ITEM_LTW_CONFIG_LIST = 0,
+};
 class UserConfigEditMenuContentPrivate
 {
 public:
-    enum MenuItem
-    {
-        ITEM_BTN_ADD_CONFIG = 0,
-        ITEM_BTN_EDIT_CONFIG,
-        ITEM_BTN_DEL_CONFIG,
-
-        ITEM_LTW_CONFIG_LIST = 0,
-    };
-
     UserConfigEditMenuContentPrivate()
         :  curConfig(NULL), curEditIndex(-1),
            configDataModel(NULL), configListView(NULL),
@@ -177,7 +176,7 @@ void UserConfigEditMenuContent::onBtnClick()
 
     switch (indexType)
     {
-        case UserConfigEditMenuContentPrivate::ITEM_BTN_ADD_CONFIG:
+        case ITEM_BTN_ADD_CONFIG:
         {
             PatientTypeSelectWindow patientW;
             // 选择有效item后退出时返回：1
@@ -236,7 +235,7 @@ void UserConfigEditMenuContent::onBtnClick()
             d_ptr->editWindow->focusFirstMenuItem();
         }
         break;
-        case UserConfigEditMenuContentPrivate::ITEM_BTN_EDIT_CONFIG:
+        case ITEM_BTN_EDIT_CONFIG:
         {
             if (d_ptr->curConfig)
             {
@@ -275,7 +274,7 @@ void UserConfigEditMenuContent::onBtnClick()
             d_ptr->editWindow->focusFirstMenuItem();
         }
         break;
-        case UserConfigEditMenuContentPrivate::ITEM_BTN_DEL_CONFIG:
+        case ITEM_BTN_DEL_CONFIG:
         {
             int index = d_ptr->configListView->curCheckedRow();
             QString filename  = QString("%1/%2").arg(CONFIG_DIR).arg(d_ptr->configs.at(index).fileName);
@@ -297,8 +296,8 @@ void UserConfigEditMenuContent::onBtnClick()
 
 void UserConfigEditMenuContent::onEditFinished()
 {
-    //  can't add, too many
-    //  todo show some message
+    // can't add, too many
+    // TODO: show some message
     QString configName = d_ptr->editWindow->getCurrentEditConfigName();
     if (configName.isEmpty())
     {
@@ -356,9 +355,9 @@ void UserConfigEditMenuContent::layoutExec()
     button->setButtonStyle(Button::ButtonTextOnly);
     connect(button, SIGNAL(released()), this, SLOT(onBtnClick()));
     hl->addWidget(button);
-    index = UserConfigEditMenuContentPrivate::ITEM_BTN_ADD_CONFIG;
+    index = ITEM_BTN_ADD_CONFIG;
     button->setProperty("item", qVariantFromValue(index));
-    d_ptr->btns.insert(UserConfigEditMenuContentPrivate::ITEM_BTN_ADD_CONFIG, button);
+    d_ptr->btns.insert(ITEM_BTN_ADD_CONFIG, button);
 
     //  edit buttons
     button = new Button(trs("Edit"));
@@ -366,9 +365,9 @@ void UserConfigEditMenuContent::layoutExec()
     button->setEnabled(false);
     connect(button, SIGNAL(released()), this, SLOT(onBtnClick()));
     hl->addWidget(button);
-    index = UserConfigEditMenuContentPrivate::ITEM_BTN_EDIT_CONFIG;
+    index = ITEM_BTN_EDIT_CONFIG;
     button->setProperty("item", qVariantFromValue(index));
-    d_ptr->btns.insert(UserConfigEditMenuContentPrivate::ITEM_BTN_EDIT_CONFIG, button);
+    d_ptr->btns.insert(ITEM_BTN_EDIT_CONFIG, button);
 
     //  del buttons
     button = new Button(trs("Delete"));
@@ -376,9 +375,9 @@ void UserConfigEditMenuContent::layoutExec()
     button->setEnabled(false);
     connect(button, SIGNAL(released()), this, SLOT(onBtnClick()));
     hl->addWidget(button);
-    index = UserConfigEditMenuContentPrivate::ITEM_BTN_DEL_CONFIG;
+    index = ITEM_BTN_DEL_CONFIG;
     button->setProperty("item", qVariantFromValue(index));
-    d_ptr->btns.insert(UserConfigEditMenuContentPrivate::ITEM_BTN_DEL_CONFIG, button);
+    d_ptr->btns.insert(ITEM_BTN_DEL_CONFIG, button);
 
     layout->addLayout(hl);
     layout->addStretch(1);
@@ -396,6 +395,6 @@ void UserConfigEditMenuContent::updateBtnStatus()
     {
         isEnable = true;
     }
-    d_ptr->btns[d_ptr->ITEM_BTN_DEL_CONFIG]->setEnabled(isEnable);
-    d_ptr->btns[d_ptr->ITEM_BTN_EDIT_CONFIG]->setEnabled(isEnable);
+    d_ptr->btns[ITEM_BTN_DEL_CONFIG]->setEnabled(isEnable);
+    d_ptr->btns[ITEM_BTN_EDIT_CONFIG]->setEnabled(isEnable);
 }
