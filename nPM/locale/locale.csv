@@ -608,18 +608,21 @@ CO2BRHigh,BR 高,BR High
 CO2Apnea,呼吸窒息,Apnea
 CO2SoftwareError,CO2软件错,CO2 Software Error
 CO2HardwareError,CO2硬件错,CO2 Hardware Error
-CO2MotorError,CO2马达超速,CO2 Motor Speed Error
+CO2MotorError,CO2电机转速超限,CO2 Motor Speed Out of bounds
 CO2MissFactoryCali,CO2未校准,CO2 Miss Factory Calib
-CO2ReplaceAdapter,CO2替换适配器,CO2 Replace Adapter
+CO2ReplaceAdapter,CO2更换适配器,CO2 Replace Adapter
 CO2NoAdapter,CO2无适配器,CO2 No Adapter
-CO2OutRange,CO2超出精度范围,CO2 Out Accuracy Range
-CO2TempOutRange,CO2内部温度超界,CO2 Temp Out Range
-CO2BaroPressOutRange,CO2气压超界,CO2 BaroPress Out Range
+CO2OutRange,CO2超出精度范围,CO2 Out of Accuracy Range
+CO2TempOutRange,CO2内部温度超界,CO2 Temp Out of Range
+CO2BaroPressOutRange,CO2大气压力超限,CO2 BaroPress Out of Range
 CO2ZeroRequired,CO2需要校零,CO2 Zero Required
-CO2ZeroDisable,CO2禁止校零,CO2 Zero Disable
+CO2ZeroDisable,CO2校零失败,CO2 Zero Disable
 CO2ZeroInprogress,CO2校零中,CO2 Zero In Progress
-CO2SpanCalibFailed,CO2校准量程失败,CO2 Span Calib Failed
-CO2SpanCalibInprogress,CO2正在校准量程,CO2 Span Calib Inprogress
+CO2SpanCalibFailed,CO2校准失败,CO2 Span Calib Failed
+CO2SpanCalibInprogress,CO2正在校准,CO2 Span Calib In Progress
+CO2ZeroandSpanDisable,CO2校零和校准错误,CO2 Zero and Span Disable
+CO2SampleLineClogged,CO2采样管堵塞,CO2 Sample Line Clogged
+CO2NoSampleLine,CO2没有采样线,CO2 No Sample Line
 IBP1LeadOff,IBP通道1导联脱落,IBP1 lead off
 IBP2LeadOff,IBP通道2导联脱落,IBP2 lead off
 IBP1ZeroCalibSuccess,IBP通道1校零成功,IBP1 zero success
