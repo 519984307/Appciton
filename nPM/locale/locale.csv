@@ -606,8 +606,8 @@ CO2FiCO2High,FiCO2 高,FiCO2 High
 CO2BRLow,BR 低,BR Low
 CO2BRHigh,BR 高,BR High
 CO2Apnea,呼吸窒息,Apnea
-CO2SoftwareError,CO2软件错,CO2 Software Error
-CO2HardwareError,CO2硬件错,CO2 Hardware Error
+CO2SoftwareError,CO2软件错误,CO2 Software Error
+CO2HardwareError,CO2硬件错误,CO2 Hardware Error
 CO2MotorError,CO2马达超速,CO2 Motor Speed Error
 CO2MissFactoryCali,CO2未校准,CO2 Miss Factory Calib
 CO2ReplaceAdapter,CO2替换适配器,CO2 Replace Adapter
