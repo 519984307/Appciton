@@ -16,8 +16,8 @@ BuildTime,编译时间,Build Time
 ChannelPressureEntitle1,压力标名1,Pressure Entitle1
 ChannelPressureEntitle2,压力标名2,Pressure Entitle2
 Adult,成人,Adu
-PED,小儿,Ped
-NEO,新生儿,Neo
+Pediatric,小儿,Ped
+Neonate,新生儿,Neo
 AlarmLimit,报警限,Alarm Limit
 Other,其它,Other
 Notch,陷波,Notch
@@ -1608,15 +1608,11 @@ _12Hour,12 小时,12 Hour
 _24Hour,24 小时,24 Hour
 System,系统,System
 Machine,机器,Machine
-Ped,小儿,Pediatric
-Neo,新生儿,Neonate
 AdultConfig.Original.xml,成人缺省,Default Adult Config.
 NeoConfig.Original.xml,新生儿缺省,Default Neo Config.
 PedConfig.Original.xml,小儿缺省,Default Ped Config.
 System.Original.xml,系统配置,System Config.
 Machine.xml,机器配置,Machine Config.
-Pediatric,小儿,Pediatric
-Neonate,新生儿,Neonate
 SaveCurrentSetting,保存设置,Save Current Setting
 SaveCurrentSettingAs,保存设置,Save Setting
 SaveCurrentSettingAsDesc,保存设置,Save Setting
