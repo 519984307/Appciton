@@ -294,13 +294,13 @@ PrintSettingMenuDesc,打印设置,Print Setting
 ClearPrintTask,清除打印任务,ClearPrintTask
 Continous,连续,Continous
 TEMP2SensorOff,体温2探头脱落,TEMP2 Sensor Off
-TEMPSensorOffAll,体温探头全部脱落,TEMP Sensor Off All
-TEMP1OverRange,体温1超界,TEMP1 Over Range
-TEMP2OverRange,体温2超界,TEMP2 Over Range
-TEMPOverRangeAll,体温全部超界,TEMP Over Range All
-TEMP1ProbeTypeError,体温1探头类型错误,TEMP1ProbeTypeError
-TEMP2ProbeTypeError,体温2探头类型错误,TEMP2ProbeTypeError
-TEMPProbeTypeErrorAll,体温探头类型全部错误,TEMPProbeTypeErrorAll
+TEMPSensorOffAll,体温探头全部脱落,All TEMP Sensor Off
+TEMP1OverRange,体温1超界,TEMP1 Out of Range
+TEMP2OverRange,体温2超界,TEMP2 Out of Range
+TEMPOverRangeAll,体温全部超界,All TEMP Out of Range
+TEMP1ProbeTypeError,体温1探头类型错误,TEMP1 Probe Type Error
+TEMP2ProbeTypeError,体温2探头类型错误,TEMP2 Probe Type Error
+TEMPProbeTypeErrorAll,体温探头类型全部错误,All TEMP Probe Type Error
 TEMPCommunicationStop,体温通讯停止,Communication Stop
 celsius,℃,℃
 fahrenheit,℉,℉
