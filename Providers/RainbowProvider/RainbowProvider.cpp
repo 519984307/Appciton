@@ -96,33 +96,38 @@ enum RBInitializeStep
 
 enum RBPulseOximeterSystemExceptions
 {
-    RB_NO_CABLE_CONNECTED = (1 << 0),  // no cable connected
-    RB_CABLE_EXPIRED = (1 << 1),  // cable expired
-    RB_INCOMPATIBLE_CABLE = (1 << 2),  // incompatible cable
-    RB_UNRECONGNIZED_CABLE = (1 << 3),  // unrecongnized cable
-    RB_DEFECTIVE_CABLE = (1 << 4),  // defective cable
-    RB_CABLE_NEAR_EXPIRATION = (1 << 5),  // cable near expiration
-    RB_RESERVED = (1 << 6),  // reserved
-    RB_NOSENSOR_CONNECTED = (1 << 7),  // no sensor connected
-    RB_SENSOR_EXPIRED = (1 << 8),  // sensor expired
-    RB_INCOMPATIBLE_SENSOR = (1 << 9),  // incompatible sensor
-    RB_UNRECONGNIZED_SENSOR = (1 << 10),  // unrecongnized sensor
-    RB_DEFECTIVE_SENSOR = (1 << 11),  // defective sensor
-    RB_CHECK_CABLE_AND_SENSOR_FAULT = (1 << 12),  // check cable and sensor fault
-    RB_RESERVED_TWO = (1 << 13),  // reserved
-    RB_SENSOR_NEAR_EXPIRATION = (1 << 13),  // sensor near expiration
-    RB_NO_ADHESIVE_SENSOR = (1 << 14),  // no adhesive sensor
-    RB_ADHESIVE_SENSOR_EXPIRATION = (1 << 15),  // adhesive sensor expiraton
-    RB_INCOMPATIBLE_ADHESIVE_SENSOR = (1 << 16),  // incompatible adhesive sensor
-    RB_UNRECONGNIZED_ADHESIVE_SENSOR = (1 << 17),  // unrecongnized adhesive sensor
-    RB_DEFECTIVE_ADHESIVE_SENSOR = (1 << 18),  // defective adhesive sensor
-    RB_SENSOR_INITING = (1 << 19),  // sensor initing
-    RB_SENSOR_OFF_PATIENT = (1 << 20),  // sensor off patient
-    RB_PULSE_SEARCH = (1 << 21),  // pulse search
-    RB_INTERFERENCE_DETECTED = (1 << 22),  // interference detected
-    RB_LOW_PERFUSION_INDEX = (1 << 23),  // low perfusion index
-    RB_DEMO_MODE = (1 << 24),  // demo mode
-    RB_ADHESIVE_SENSOR_NEAR_EXPIRATION = (1 << 25),  // adhesive sensor near expiration
+    RB_NO_CABLE_CONNECTED                        = (1 << 0),  // no cable connected
+    RB_CABLE_EXPIRED                             = (1 << 1),  // cable expired
+    RB_INCOMPATIBLE_CABLE                        = (1 << 2),  // incompatible cable
+    RB_UNRECONGNIZED_CABLE                       = (1 << 3),  // unrecongnized cable
+    RB_DEFECTIVE_CABLE                           = (1 << 4),  // defective cable
+    RB_CABLE_NEAR_EXPIRATION                     = (1 << 5),  // cable near expiration
+    RB_RESERVED                                  = (1 << 6),  // reserved
+    RB_NOSENSOR_CONNECTED                        = (1 << 7),  // no sensor connected
+    RB_SENSOR_EXPIRED                            = (1 << 8),  // sensor expired
+    RB_INCOMPATIBLE_SENSOR                       = (1 << 9),  // incompatible sensor
+    RB_UNRECONGNIZED_SENSOR                      = (1 << 10),  // unrecongnized sensor
+    RB_DEFECTIVE_SENSOR                          = (1 << 11),  // defective sensor
+    RB_CHECK_CABLE_AND_SENSOR_FAULT              = (1 << 12),  // check cable and sensor fault
+    RB_RESERVED_TWO                              = (1 << 13),  // reserved
+    RB_SENSOR_NEAR_EXPIRATION                    = (1 << 14),  // sensor near expiration
+    RB_NO_ADHESIVE_SENSOR                        = (1 << 15),  // no adhesive sensor
+    RB_ADHESIVE_SENSOR_EXPIRATION                = (1 << 16),  // adhesive sensor expiraton
+    RB_INCOMPATIBLE_ADHESIVE_SENSOR              = (1 << 17),  // incompatible adhesive sensor
+    RB_UNRECONGNIZED_ADHESIVE_SENSOR             = (1 << 18),  // unrecongnized adhesive sensor
+    RB_DEFECTIVE_ADHESIVE_SENSOR                 = (1 << 19),  // defective adhesive sensor
+    RB_SENSOR_INITING                            = (1 << 20),  // sensor initing
+    RB_SENSOR_OFF_PATIENT                        = (1 << 21),  // sensor off patient
+    RB_PULSE_SEARCH                              = (1 << 22),  // pulse search
+    RB_INTERFERENCE_DETECTED                     = (1 << 23),  // interference detected
+    RB_LOW_PERFUSION_INDEX                       = (1 << 24),  // low perfusion index
+    RB_DEMO_MODE                                 = (1 << 25),                         // demo mode
+    RB_ADHESIVE_SENSOR_NEAR_EXPIRATION           = (1 << 26),    // adhesive sensor near expiration
+    RB_RESERVED_THREE                            = (1 << 27),  // reserved
+    RB_CHECK_SENSOR_CONNECTION                   = (1 << 28),  // check sensor connection
+    RB_SPO2_ONLY_MODE                            = (1 << 29),  // spo2 only mode
+    RB_RESERVED_FOUR                             = (1 << 30),  // reserved
+    RB_RESERVED_FIVE                             = (1 << 31),  // reserved
 };
 
 
@@ -635,13 +640,13 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     {
         unsigned int temp = (data[0] << 24) + (data[1] << 16) + (data[2] << 8) + data[3];
 
-        bool isCableOff = !!(temp & (1 << 7));  // no sensor connected
+        bool isCableOff = !!(temp & RB_NOSENSOR_CONNECTED);  // no sensor connected
 
-        isCableOff |= !!(temp & (1 << 21));  // sensor off patient
+        isCableOff |= !!(temp & RB_SENSOR_OFF_PATIENT);  // sensor off patient
 
-        bool  isSearching = !!(temp & (1 << 22));  // pulse search
+        bool  isSearching = !!(temp & RB_PULSE_SEARCH);  // pulse search
 
-        bool isLowPerfusionIndex = !!(temp & (1 << 24));  // low perfusion index
+        bool isLowPerfusionIndex = !!(temp & RB_LOW_PERFUSION_INDEX);  // low perfusion index
 
         if (isCableOff == true)
         {
@@ -838,116 +843,6 @@ void RainbowProviderPrivate::configPeriodWaveformOut(unsigned int selectionBits,
 
     sendCmd(data, sizeof(data));
 }
-
-#if 0
-void RainbowProviderPrivate::init()
-{
-    if (isOkOfInit == true)
-    {
-        initFlag = 0;
-        return;
-    }
-
-    switch (initFlag)
-    {
-        case RB_INIT_BAUDRATE:
-        {
-            if (isUpdatingBaudrate)
-            {
-                UartAttrDesc attr(57600, 8, 'N', 1);
-                q_ptr->uart->updateSetting(attr);
-                isUpdatingBaudrate = false;
-                QTimer::singleShot(0, q_ptr, SLOT(onTimeOut()));
-            }
-            else
-            {
-                configPeriodParamOut(RB_PARAM_OF_SENSOR_PARAM_CHECK, 500);
-            }
-
-            initFlag++;
-        }
-        break;
-        case RB_INIT_SENSOR_PARAM_CHECK:
-        {
-            configPeriodParamOut(RB_PARAM_OF_SENSOR_PARAM_CHECK, 500);
-            initFlag++;
-        }
-        break;
-        case RB_INIT_SET_LINE_FREQ:
-        {
-            q_ptr->setLineFrequency(lineFreq);
-            initFlag++;
-        }
-        break;
-        case RB_INIT_SET_AVERAGE_TIME:
-        {
-            q_ptr->setAverageTime(averTime);
-            initFlag++;
-        }
-        break;
-        case RB_INIT_SET_FAST_SAT:
-        {
-            q_ptr->setSensitivityFastSat(sensMode, fastSat);
-            initFlag++;
-        }
-        break;
-        case RB_INIT_SMART_TONE:
-        {
-            q_ptr->setSmartTone(enableSmartTone);
-            initFlag++;
-        }
-        break;
-        case RB_INIT_GET_SYSTEM_EXECPTION:
-        {
-            configPeriodParamOut(RB_PARAM_OF_OXI_SYSTEM_EXCEPTION, 100);  // 每100ms检查一次异常
-            initFlag++;
-        }
-        break;
-        case RB_INIT_SET_PI:
-        {
-            configPeriodParamOut(RB_PARAM_OF_PI, 200);  // 每200ms输出一次灌注PI
-            initFlag++;
-        }
-        break;
-        case RB_INIT_GET_BOARD_FAILURE:
-        {
-            configPeriodWaveformOut(CLIPPED_AUTOSCALE_DATA | SIGNAL_IQ_AUDIO_VISUAL_DATA, 16);  // 每16ms输出一次波形
-            initFlag++;
-        }
-        break;
-        case 10:
-        {
-            configPeriodParamOut(RB_PARAM_OF_SPO2, 110);  // 每110ms输出一次spo2
-            initFlag++;
-        }
-        break;
-        case RB_INIT_SET_BASELINE:
-        {
-            configPeriodParamOut(RB_PARAM_OF_PR, 120);  // 每120ms输出一次脉率
-            initFlag++;
-        }
-        break;
-        case 12:
-        {
-            configPeriodParamOut(RB_PARAM_OF_BOARD_FAILURE, 180);  // 每180ms输出一次board failure
-            initFlag++;
-        }
-        break;
-        case 13:
-        {
-            configPeriodParamOut(RB_PARAM_OF_BASELINE, 170);  //每170ms输出一次Baseline PI
-            initFlag++;
-        }
-        break;
-        case 14:
-        {
-            initFlag++;
-            isOkOfInit = true;
-        }
-        break;
-    }
-}
-#endif
 
 void RainbowProviderPrivate::handleACK()
 {
