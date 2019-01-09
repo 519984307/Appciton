@@ -177,21 +177,17 @@ void NIBPMenuContentPrivate::loadOptions()
     if (type == PATIENT_TYPE_ADULT)
     {
         initCuffSpb->setRange(80, 240);
-        currentConfig.getNumValue("NIBP|AdultInitialCuffInflation", initVal);
-        initCuffSpb->setValue(initVal);
     }
     else if (type == PATIENT_TYPE_PED)
     {
         initCuffSpb->setRange(80, 210);
-        currentConfig.getNumValue("NIBP|PedInitialCuffInflation", initVal);
-        initCuffSpb->setValue(initVal);
     }
     else if (type == PATIENT_TYPE_NEO)
     {
         initCuffSpb->setRange(60, 140);
-        currentConfig.getNumValue("NIBP|NeoInitialCuffInflation", initVal);
-        initCuffSpb->setValue(initVal);
     }
+    currentConfig.getNumValue("NIBP|InitialCuffInflation", initVal);
+    initCuffSpb->setValue(initVal);
 
     currentConfig.getNumValue("NIBP|AutomaticRetry", index);
     if (index)
@@ -283,6 +279,7 @@ void NIBPMenuContent::onAlarmBtnReleased()
 void NIBPMenuContent::onSpinBoxReleased(int value, int scale)
 {
     nibpParam.setInitPressure(value * scale);
+    currentConfig.setNumValue("NIBP|InitialCuffInflation", value);
 }
 
 void NIBPMenuContent::onComboBoxIndexChanged(int index)
