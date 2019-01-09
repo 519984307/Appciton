@@ -223,7 +223,7 @@ void SPO2Param::setProvider(SPO2ProviderIFace *provider)
         //设置灵敏度
         _provider->setSensitivityFastSat(static_cast<SensitivityMode>(getSensitivity()), getFastSat());
     }
-    else if (str == "MASIMO_SPO2")
+    else if (str == "MASIMO_SPO2" || str == "RAINBOW_SPO2")
     {
         _provider->setSensitivityFastSat(SPO2_MASIMO_SENS_NORMAL, false);
         _provider->setAverageTime(SPO2_AVER_TIME_8SEC);
@@ -660,7 +660,7 @@ void SPO2Param::setSensitivity(int sens)
     currentConfig.setNumValue("SPO2|Sensitivity", static_cast<int>(sens));
     if (NULL != _provider)
     {
-        if (_moduleType == MODULE_MASIMO_SPO2)
+        if (_moduleType == MODULE_MASIMO_SPO2 || _moduleType == MODULE_RAINBOW_SPO2)
         {
             _provider->setSensitivityFastSat(static_cast<SensitivityMode>(sens), getFastSat());
         }

@@ -121,8 +121,8 @@ enum RBPulseOximeterSystemExceptions
     RB_PULSE_SEARCH                              = (1 << 22),  // pulse search
     RB_INTERFERENCE_DETECTED                     = (1 << 23),  // interference detected
     RB_LOW_PERFUSION_INDEX                       = (1 << 24),  // low perfusion index
-    RB_DEMO_MODE                                 = (1 << 25),                         // demo mode
-    RB_ADHESIVE_SENSOR_NEAR_EXPIRATION           = (1 << 26),    // adhesive sensor near expiration
+    RB_DEMO_MODE                                 = (1 << 25),  // demo mode
+    RB_ADHESIVE_SENSOR_NEAR_EXPIRATION           = (1 << 26),  // adhesive sensor near expiration
     RB_RESERVED_THREE                            = (1 << 27),  // reserved
     RB_CHECK_SENSOR_CONNECTION                   = (1 << 28),  // check sensor connection
     RB_SPO2_ONLY_MODE                            = (1 << 29),  // spo2 only mode
@@ -137,8 +137,6 @@ public:
     explicit RainbowProviderPrivate(RainbowProvider *p)
         : q_ptr(p)
         , isUpdatingBaudrate(false)
-        , initFlag(false)
-        , isOkOfInit(false)
         , lineFreq(RB_LINE_FREQ_50HZ)
         , averTime(SPO2_AVER_TIME_2_4SEC)
         , sensMode(SPO2_MASIMO_SENS_MAX)
@@ -235,10 +233,8 @@ public:
     void configPeriodWaveformOut(unsigned int selectionBits, unsigned char periodTime);
 
     /**
-     * @brief init  模块初始化
+     * @brief handleACK  接收ack处理
      */
-    void init();
-
     void handleACK();
 
     /**
@@ -251,10 +247,6 @@ public:
     RainbowProvider *q_ptr;
 
     bool isUpdatingBaudrate;  // need to update the baudrate after reset
-
-    int initFlag;  // 初始化标志位
-
-    bool isOkOfInit;  // 是否初始化完成
 
     RainbowLineFrequency lineFreq;
 
@@ -289,8 +281,6 @@ RainbowProvider::RainbowProvider()
     {
         QTimer::singleShot(200, this, SLOT(changeBaudrate()));
     }
-
-    // QTimer::singleShot(200, this, SLOT(onTimeOut()));
 }
 
 RainbowProvider::~RainbowProvider()
@@ -728,6 +718,7 @@ void RainbowProviderPrivate::handleWaveformInfo(unsigned char *data, int len)
     waveData = (waveData + 32768) / 256;    // change to a positive value, in range of [0, 255)
     waveData = 256 - waveData;      // upside down
     spo2Param.addWaveformData(waveData);
+    spo2Param.addWaveformData(waveData);  // add wavedata twice for rounding SPO2 Waveform Sample  62.5 * 2 = 125
 
     if (data[2] & 0x80)
     {
