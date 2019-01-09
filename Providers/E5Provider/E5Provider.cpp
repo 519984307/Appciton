@@ -60,8 +60,8 @@ void E5Provider::_handleECGRawData(const unsigned char *data, unsigned len)
     static bool epaceMark = false;
     static bool qrsTone = false;
 
-    int rawData[13];
-    unsigned int v = 0;
+    short rawData[12];
+    unsigned short v = 0;
 
     for (unsigned j = 5; j < len ; j += 28)
     {
@@ -69,7 +69,8 @@ void E5Provider::_handleECGRawData(const unsigned char *data, unsigned len)
         for (unsigned i = j + 2; i < j + 28; i += 2)
         {
             v = (data[i + 1] << 8) | (data[i]);
-            rawData[rawDataIndex++] = static_cast<int>((v & 0x8000) ? (-((~(v - 1)) & 0xffff)) : v);
+//            rawData[rawDataIndex++] = static_cast<int>((v & 0x8000) ? (-((~(v - 1)) & 0xffff)) : v);
+            rawData[rawDataIndex++] = (short) v;
         }
 
         int leadData[ECG_LEAD_NR];
@@ -85,7 +86,6 @@ void E5Provider::_handleECGRawData(const unsigned char *data, unsigned len)
         leadData[ECG_LEAD_V4]  = rawData[9];
         leadData[ECG_LEAD_V5]  = rawData[10];
         leadData[ECG_LEAD_V6]  = rawData[11];
-        leadData[ECG_LEAD_V6 + 1] = rawData[12];
 
         // 记录下各种标记的状态以免丢失。
         leadoff |= (data[j + 1] | ((data[j] & 0x03) << 8));
@@ -249,9 +249,6 @@ void E5Provider::_handleECGRawData(const unsigned char *data, unsigned len)
         {
             ecgParam.setLeadOff((ECGLead)i, leadOff[i]);
         }
-
-        // diagnostic ecg lead off flag is same as calc Lead
-        leadOff[ECG_LEAD_V6 + 1] = leadOff[ecgParam.getCalcLead()];
 
         if (ecgParam.getCalcLead() != ECG_LEAD_NR)
         {
