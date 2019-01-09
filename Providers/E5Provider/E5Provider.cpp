@@ -60,7 +60,7 @@ void E5Provider::_handleECGRawData(const unsigned char *data, unsigned len)
     static bool epaceMark = false;
     static bool qrsTone = false;
 
-    short rawData[12];
+    short rawData[13];
     unsigned short v = 0;
 
     for (unsigned j = 5; j < len ; j += 28)
@@ -319,6 +319,10 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         startTime = endTime;
     }
 #endif
+    if (!isConnectedToParam)
+    {
+        return;
+    }
 
     BLMProvider::handlePacket(data, len);
 
@@ -873,6 +877,8 @@ void E5Provider::disconnected(void)
             needFreshWave = true;
         }
     }
+    ecgParam.setConnected(false);
+    respParam.setConnected(false);
     Q_UNUSED(needFreshWave)
 }
 
@@ -906,6 +912,8 @@ void E5Provider::reconnected(void)
             needFreshWave = true;
         }
     }
+    ecgParam.setConnected(true);
+    respParam.setConnected(true);
     Q_UNUSED(needFreshWave)
 }
 
