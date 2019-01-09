@@ -34,8 +34,8 @@
         <TEMP>0</TEMP>
     </Record>
     <!--参数与Provider的关系-->
-    <ECG SptProvider="DemoProvider,BLM_E5,BLM_TE3">BLM_TE3</ECG>
-    <RESP SptProvider="DemoProvider,BLM_E5, BLM_TE3">BLM_TE3</RESP>
+    <ECG SptProvider="DemoProvider,BLM_E5">BLM_E5</ECG>
+    <RESP SptProvider="DemoProvider,BLM_E5">BLM_E5</RESP>
     <SPO2 SptProvider="DemoProvider,BLM_S5,MASIMO_SPO2,NELLCOR_SPO2">BLM_S5</SPO2>
     <NIBP SptProvider="DemoProvider,BLM_N5,SUNTECH_NIBP">BLM_N5</NIBP>
     <CO2 SptProvider="DemoProvider,BLM_CO2">BLM_CO2</CO2>
@@ -47,7 +47,6 @@
     <!--Provider端口信息-->
     <PRT48Port>/dev/ttyS3</PRT48Port>
     <BLM_E5Port>/dev/ttyS1</BLM_E5Port>
-    <BLM_TE3Port>/dev/ttyS1</BLM_TE3Port>
     <BLM_N5Port>/dev/ttyPM1</BLM_N5Port>
     <SUNTECH_NIBPPort>/dev/ttyPM1</SUNTECH_NIBPPort>
     <BLM_S5Port>DataDispatcher</BLM_S5Port>

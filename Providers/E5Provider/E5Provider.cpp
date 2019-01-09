@@ -5,155 +5,112 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/9
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2019/1/7
  **/
 
+#include <QString>
 #include "E5Provider.h"
 #include "ECGParam.h"
-#include "RESPParam.h"
-#include "PatientDefine.h"
-#include "ECGAlg2SoftInterface.h"
-#include "Uart.h"
-#include "ECGParam.h"
 #include "ECGAlarm.h"
+#include "ECGDupParam.h"
+#include "RESPParam.h"
 #include "RESPAlarm.h"
+#include "ECGAlarm.h"
+#include "Debug.h"
 #include "SystemManager.h"
-#include <Debug.h>
-#include <QTextStream>
-#include <QFile>
+
+#include "TimeManager.h"
+#include "TimeDate.h"
+#include "ServiceVersion.h"
+#include <sys/time.h>
+#include "ErrorLog.h"
+#include "ErrorLogItem.h"
 #include "IConfig.h"
-#include "RawDataCollector.h"
+#include "WindowManager.h"
 
-enum E5RecvPacketType
+/**************************************************************************************************
+ * 模块与参数对接。
+ *************************************************************************************************/
+bool E5Provider::attachParam(Param &param)
 {
-    E5_RSP_VERSION              = 0x11,         // version response
-
-    E5_RSP_SELFLEARN_ONOFF      = 0x13,         // get selflearn onoff
-    E5_RSP_LEAD_MODE            = 0x17,         // get lead mode
-    E5_RSP_CALC_MODE            = 0x19,         // get calculation mode
-    E5_RSP_NOTCH_TYPE           = 0x1B,         // get notch type
-    E5_RSP_CALC_LEAD            = 0x1F,         // get calculation lead
-    E5_RSP_PACE_ONOFF           = 0x21,         // get pace onoff
-    E5_RSP_PATIENT_TYPE         = 0x23,         // get patient type
-
-    E5_RSP_ST_TEST              = 0x33,         // get ST test
-    E5_RSP_ST_ISO_POS           = 0x35,         // get ST ISO position
-    E5_RSP_ST_J_POS             = 0x37,         // get ST J position
-    E5_RSP_ST_STANDJ_POS        = 0x39,         // get ST ST and J position
-
-    E5_RSP_RESP_APNEA_TIME      = 0x4F,         // response of set resp apnea time
-    E5_RSP_RESP_CALC_LEAD       = 0x51,         // response of set resp calculate lead
-    E5_RSP_RESP_CALC_SWITCH     = 0x61,         // response of set resp calculate switch
-
-    E5_RSP_SELFTEST_RESULT      = 0x7F,         // selftest result
-
-    E5_NOTIFY_SYSTEM_START      = 0x80,         // module start notification
-    E5_NOTIFY_ST_RESULT         = 0x90,         // ST result
-    E5_NOTIFY_ST_WAVE_RESULT    = 0x91,         // ST wave result
-    E5_NOTIFY_ASYS_ALARM        = 0xA1,         // notify asys alarm status
-    E5_PERIODIC_ALIVE           = 0xB0,         // module alive packet, receive frequency will be 1Hz
-    E5_PERIODIC_TXT_DATA        = 0xB9,         // store TXT data
-    E5_PERIODIC_ECG_DATA        = 0xBA,         // ecg data
-    E5_PERIODIC_HR              = 0xBB,         // HR, -1 means invalid
-    E5_PERIODIC_RESP_DATA       = 0xD0,         // resp data
-    E5_PERIODIC_RR              = 0xD1,         // respiration rate
-    E5_NOTIFY_RESP_ALARM        = 0xD2,         // notify resp alarm status
-    E5_PERIODIC_TEMP_DATA       = 0xE0,         // temp data
-    E5_STATUS_ERROR_OR_WARN     = 0xF0,         // error or warning
-};
-
-enum E5SendPacketType
-{
-    E5_CMD_GET_VERSION          = 0x10,         // get version
-
-    E5_CMD_SET_SELFLEARN_ONOFF  = 0x12,         // set selflearn onoff
-    E5_CMD_SET_LEAD_MODE        = 0x16,         // set lead mode
-    E5_CMD_SET_CALC_MODE        = 0x18,         // set calculation mode
-    E5_CMD_SET_NOTCH_TYPE       = 0x1A,         // set notch type
-    E5_CMD_SET_CALC_LEAD        = 0x1E,         // set calculation lead
-    E5_CMD_SET_PACE_ONOFF       = 0x20,         // set pace onoff
-    E5_CMD_SET_PATIENT_TYPE     = 0x22,         // set patient type
-
-    E5_CMD_SET_ST_TEST          = 0x32,         // set ST test
-    E5_CMD_SET_ST_ISO_POS       = 0x34,         // set ST ISO position
-    E5_CMD_SET_ST_J_POS         = 0x36,         // set ST J position
-    E5_CMD_SET_ST_STANDJ_POS    = 0x38,         // set ST ST and J position
-
-    E5_CMD_SET_RESP_APNEA_TIME  = 0x4E,         // set resp apnea time
-    E5_CMD_SET_RESP_CALC_LEAD   = 0x50,         // set resp calculate lead
-    E5_CMD_SET_RESP_CALC_SWITCH = 0x60,         // set resp calculate switch
-
-    E5_CMD_GET_SELFTEST_RESULT  = 0x7E,         // get system test result
-
-    E5_CMD_UPGRADE              = 0xF6,         // enter upgrade mode
-};
-
-class E5ProviderPrivate
-{
-public:
-    explicit E5ProviderPrivate(E5Provider *const q_ptr)
-        : q_ptr(q_ptr),
-          lastLeadOff(1),
-          support12Lead(false),
-          ecgLeadMode(ECG_LEAD_MODE_5),
-          respApneaTime(APNEA_ALARM_TIME_OFF),
-          resplead(RESP_LEAD_II),
-          enableRespCalc(false),
-          isFristConnect(false),
-          isSupportResp(true)
+    if (param.getParamID() == PARAM_ECG)
     {
-        qMemSet(selftestResult, 0, sizeof(selftestResult));
-        isSupportResp = systemManager.isSupport(PARAM_RESP);
+        ecgParam.setProvider(this);
+        return true;
     }
-
-    void handleEcgRawData(unsigned char *data, int len);
-    void handleRESPRawData(unsigned char *data, int len);
-
-    E5Provider *const q_ptr;
-    short lastLeadOff;
-    bool support12Lead;
-    char selftestResult[8];
-    ECGLeadMode ecgLeadMode;
-    ApneaAlarmTime respApneaTime;
-    RESPLead resplead;
-    bool enableRespCalc;
-    bool isFristConnect;            // 是否第一次正确连接导联
-    bool isSupportResp;
-};
-
-/* parse the data from the module and pass it to the algorithm interface */
-void E5ProviderPrivate::handleEcgRawData(unsigned char *data, int len)
-{
-    Q_ASSERT(len == 524);
-
-    for (int n = 0; n < 20; n++)
+    if (param.getParamID() == PARAM_RESP)
     {
-        int leadData[ECG_LEAD_NR] = {0};
-        bool leadOFFStatus[ECG_LEAD_NR] = {0};
-        short leadoff;
-        bool qrsflag;
-        bool paceflag;
-        bool overload;
-        leadoff = ((data[4 + n * 26] & 0x3) << 8) | data[5 + n * 26];
-        paceflag = data[4 + n * 26] & 0x10;
-        qrsflag = data[4 + n * 26] & 0x40;
-        overload = data[4 + n * 26] & 0x20;
+        respParam.setProvider(this);
+        return true;
+    }
+    return false;
+}
 
-        for (int j = 0; j < ECG_LEAD_NR; j++)
+/**************************************************************************************************
+ * 处理心电数据。
+ *************************************************************************************************/
+void E5Provider::_handleECGRawData(const unsigned char *data, unsigned len)
+{
+    // 记录下各种标记的状态以免丢失。
+    static short leadoff = 0;
+    static bool overLoad = false;
+    static bool ipaceMark = false;
+    static bool rMark = false;
+    static bool pdBlank = false;
+    static bool epaceMark = false;
+    static bool qrsTone = false;
+
+    short rawData[13];
+    unsigned short v = 0;
+
+    for (unsigned j = 5; j < len ; j += 28)
+    {
+        int rawDataIndex = 0;
+        for (unsigned i = j + 2; i < j + 28; i += 2)
         {
-            short v = data[6 + n * 26 + j * 2] | (data[7 + n * 26 + j * 2] << 8);
-            leadData[j] = v;
+            v = (data[i + 1] << 8) | (data[i]);
+//            rawData[rawDataIndex++] = static_cast<int>((v & 0x8000) ? (-((~(v - 1)) & 0xffff)) : v);
+            rawData[rawDataIndex++] = (short) v;
         }
+
+        int leadData[ECG_LEAD_NR];
+        leadData[ECG_LEAD_I]   = rawData[0];
+        leadData[ECG_LEAD_II]  = rawData[1];
+        leadData[ECG_LEAD_III] = rawData[2];
+        leadData[ECG_LEAD_AVR] = rawData[3];
+        leadData[ECG_LEAD_AVL] = rawData[4];
+        leadData[ECG_LEAD_AVF] = rawData[5];
+        leadData[ECG_LEAD_V1]  = rawData[6];
+        leadData[ECG_LEAD_V2]  = rawData[7];
+        leadData[ECG_LEAD_V3]  = rawData[8];
+        leadData[ECG_LEAD_V4]  = rawData[9];
+        leadData[ECG_LEAD_V5]  = rawData[10];
+        leadData[ECG_LEAD_V6]  = rawData[11];
+
+        // 记录下各种标记的状态以免丢失。
+        leadoff |= (data[j + 1] | ((data[j] & 0x03) << 8));
+        overLoad |= (data[j] >> 5) & 0x01;
+
+        if (_waveSampleRate == WAVE_SAMPLE_RATE_500)
+        {
+            ipaceMark |= (data[j] >> 4) & 0x01;
+        }
+        else
+        {
+            ipaceMark |= (data[j] >> 3) & 0x01;
+        }
+
+        rMark |= (data[j] >> 2) & 0x01;
+        qrsTone += (data[j] >> 6) & 0x01;
+        pdBlank |= (data[j] >> 7) & 0x01;
+        epaceMark |= (data[j] >> 7) & 0x01;
+
+        bool leadOff[ECG_LEAD_NR];
+        memset(leadOff, 0, ECG_LEAD_NR);
 
         if (ecgParam.getLeadMode() == ECG_LEAD_MODE_5)
         {
             leadoff &= 0xFFE0;
-        }
-
-        if (!leadoff && !isFristConnect)
-        {
-            ecgParam.setFristConnect();
-            isFristConnect = true;
         }
 
         if (ecgParam.getLeadMode() == ECG_LEAD_MODE_3)
@@ -161,13 +118,96 @@ void E5ProviderPrivate::handleEcgRawData(unsigned char *data, int len)
             leadoff &= 0xFFC0;
         }
 
+        // 根据导联脱落处理各导联的数据。
+#ifdef CONFIG_ECG_TEST    //此选项供算法组调试使用
+        // bit9 RL, bit8 LA, bit7 LL, bit6 RA,
+        if (leadoff & 0x200) // RL
+        {
+            for (int i = 0; i < ECG_LEAD_NR - 1; i++)
+            {
+                leadData[i] = 0;
+                leadOff[i] = true;
+            }
+        }
+        if (leadoff & 0x100) // LA
+        {
+            leadOff[ECG_LEAD_I] = true;
+            leadOff[ECG_LEAD_III] = true;
+            leadOff[ECG_LEAD_AVR] = true;
+            leadOff[ECG_LEAD_AVL] = true;
+            leadOff[ECG_LEAD_AVF] = true;
+
+            leadData[ECG_LEAD_I] = 0;
+            leadData[ECG_LEAD_III] = 0;
+            leadData[ECG_LEAD_AVR] = 0;
+            leadData[ECG_LEAD_AVL] = 0;
+            leadData[ECG_LEAD_AVF] = 0;
+        }
+        if (leadoff & 0x80)  // LL
+        {
+            leadOff[ECG_LEAD_II] = true;
+            leadOff[ECG_LEAD_III] = true;
+            leadOff[ECG_LEAD_AVR] = true;
+            leadOff[ECG_LEAD_AVL] = true;
+            leadOff[ECG_LEAD_AVF] = true;
+
+            leadData[ECG_LEAD_II] = 0;
+            leadData[ECG_LEAD_III] = 0;
+            leadData[ECG_LEAD_AVR] = 0;
+            leadData[ECG_LEAD_AVL] = 0;
+            leadData[ECG_LEAD_AVF] = 0;
+        }
+        if (leadoff & 0x40)  // RA
+        {
+            leadOff[ECG_LEAD_I] = true;
+            leadOff[ECG_LEAD_II] = true;
+            leadOff[ECG_LEAD_AVR] = true;
+            leadOff[ECG_LEAD_AVL] = true;
+            leadOff[ECG_LEAD_AVF] = true;
+
+            leadData[ECG_LEAD_I] = 0;
+            leadData[ECG_LEAD_II] = 0;
+            leadData[ECG_LEAD_AVR] = 0;
+            leadData[ECG_LEAD_AVL] = 0;
+            leadData[ECG_LEAD_AVF] = 0;
+        }
+        if (leadoff & 0x20)                // bit5 V1
+        {
+            leadData[ECG_LEAD_V1] = 0;
+            leadOff[ECG_LEAD_V1] = true;
+        }
+        if (leadoff & 0x10)                // bit4 V2
+        {
+            leadData[ECG_LEAD_V2] = 0;
+            leadOff[ECG_LEAD_V2] = true;
+        }
+        if (leadoff & 0x08)                // bit3 V3
+        {
+            leadData[ECG_LEAD_V3] = 0;
+            leadOff[ECG_LEAD_V3] = true;
+        }
+        if (leadoff & 0x04)                // bit2 V4
+        {
+            leadData[ECG_LEAD_V4] = 0;
+            leadOff[ECG_LEAD_V4] = true;
+        }
+        if (leadoff & 0x02)               // bit1 V5
+        {
+            leadData[ECG_LEAD_V5] = 0;
+            leadOff[ECG_LEAD_V5] = true;
+        }
+        if (leadoff & 0x01)               // bit0 V6
+        {
+            leadData[ECG_LEAD_V6] = 0;
+            leadOff[ECG_LEAD_V6] = true;
+        }
+#else
         if (leadoff & 0x3C0) // RL/LA/LL/RA
         {
-            // all lead will be off if any limb lead is off
-            for (int j = 0; j < ECG_LEAD_NR; j++)
+            for (int i = 0; i < ECG_LEAD_NR - 1; i++)
             {
-                leadData[j] = 0;
-                leadOFFStatus[j] = true;
+                leadData[i] = 0;
+                leadOff[i] = true;
             }
         }
         else
@@ -175,126 +215,110 @@ void E5ProviderPrivate::handleEcgRawData(unsigned char *data, int len)
             if (leadoff & 0x20)                // bit5 V1
             {
                 leadData[ECG_LEAD_V1] = 0;
-                leadOFFStatus[ECG_LEAD_V1] = true;
+                leadOff[ECG_LEAD_V1] = true;
             }
             if (leadoff & 0x10)                // bit4 V2
             {
                 leadData[ECG_LEAD_V2] = 0;
-                leadOFFStatus[ECG_LEAD_V2] = true;
+                leadOff[ECG_LEAD_V2] = true;
             }
             if (leadoff & 0x08)                // bit3 V3
             {
                 leadData[ECG_LEAD_V3] = 0;
-                leadOFFStatus[ECG_LEAD_V3] = true;
+                leadOff[ECG_LEAD_V3] = true;
             }
             if (leadoff & 0x04)                // bit2 V4
             {
                 leadData[ECG_LEAD_V4] = 0;
-                leadOFFStatus[ECG_LEAD_V4] = true;
+                leadOff[ECG_LEAD_V4] = true;
             }
             if (leadoff & 0x02)               // bit1 V5
             {
                 leadData[ECG_LEAD_V5] = 0;
-                leadOFFStatus[ECG_LEAD_V5] = true;
+                leadOff[ECG_LEAD_V5] = true;
             }
             if (leadoff & 0x01)               // bit0 V6
             {
                 leadData[ECG_LEAD_V6] = 0;
-                leadOFFStatus[ECG_LEAD_V6] = true;
+                leadOff[ECG_LEAD_V6] = true;
             }
         }
+#endif
 
-        if (lastLeadOff != leadoff)
+        for (int i = ECG_LEAD_I; i < ECG_LEAD_NR; i++)
         {
-            lastLeadOff = leadoff;
-
-            for (int i = 0; i < ECG_LEAD_NR; i++)
-            {
-                ecgParam.setLeadOff((ECGLead)i, leadOFFStatus[i]);
-            }
+            ecgParam.setLeadOff((ECGLead)i, leadOff[i]);
         }
 
-        ecgParam.setOverLoad(overload);
-        ecgParam.updateWaveform(leadData, leadOFFStatus, paceflag, false, qrsflag);
+        if (ecgParam.getCalcLead() != ECG_LEAD_NR)
+        {
+            ecgParam.setOverLoad(overLoad);
+        }
+        ecgParam.updateWaveform(leadData, leadOff, ipaceMark, epaceMark, qrsTone);
+
+        leadoff = 0;
+        overLoad = false;
+        ipaceMark = false;
+        rMark = false;
+        pdBlank = false;
+        epaceMark = false;
+        qrsTone = false;
     }
 }
 
-void E5ProviderPrivate::handleRESPRawData(unsigned char *data, int /*len*/)
+/**************************************************************************************************
+ * 处理呼吸数据。
+ *************************************************************************************************/
+void E5Provider::_handleRESPRawData(const unsigned char *data, unsigned /*len*/)
 {
-    bool leadOff = data[0] & 0x80;
-    int resp;
+    int resp = (data[2] << 8) | data[1];
+
+    if (0 == respParam.getRespMonitoring())
+    {
+        resp = 0;
+    }
+
     int flag = 0;
-    if (leadOff)
+    if (resp & 0x8000)
     {
         flag |= INVALID_WAVE_FALG_BIT;
-        resp = q_ptr->getRESPBaseLine();
+        resp = getRESPBaseLine();
         respParam.setLeadoff(true);
     }
     else
     {
-        short waveValue = ((data[0] & 0x7F) << 8) | data[1];
-
-        if (waveValue & 0x4000)
-        {
-            // negative value
-            waveValue |= 0x8000;
-        }
-        resp = waveValue;
         respParam.setLeadoff(false);
     }
+
+    resp &= 0x7FFF;
+    resp = ((resp & 0x4000) ? (-((~(resp - 1)) & 0x7FFF)) : resp);
+
     respParam.addWaveformData(resp, flag);
 }
 
-E5Provider::E5Provider()
-    : BLMProvider("BLM_E5"),
-      d_ptr(new E5ProviderPrivate(this))
-{
-    // UartAttrDesc portAttr(460800, 8, 'N', 1, 0, FlOW_CTRL_HARD);
-    UartAttrDesc portAttr(230400, 8, 'N', 1);
-    initPort(portAttr);
-
-    // set lead mode
-    int leadMode;
-    currentConfig.getNumValue("ECG|LeadMode", leadMode);
-    setLeadSystem(static_cast<ECGLeadMode>(leadMode));
-
-    // set calculation lead
-    int calcLead;
-    currentConfig.getNumValue("ECG|CalcLead", calcLead);
-    setCalcLead(static_cast<ECGLead>(calcLead));
-
-    // get selftest result
-    sendCmd(E5_CMD_GET_SELFTEST_RESULT, NULL, 0);
-}
-
-E5Provider::~E5Provider()
-{
-}
-
-bool E5Provider::attachParam(Param &param)
-{
-    bool ret = false;
-    if (param.getParamID() == PARAM_ECG)
-    {
-        // TODO: fix the relation between param and provider, should use the abstrace class to
-        //      set the provider, in other word, setprovider should be virtual.
-        ecgParam.setProvider(this);
-        ret = true;
-    }
-    else if (param.getParamID() == PARAM_RESP)
-    {
-        respParam.setProvider(this);
-        ret = true;
-    }
-    if (ret)
-    {
-        Provider::attachParam(param);
-    }
-    return ret;
-}
-
+/**************************************************************************************************
+ * 读取数据。
+ *************************************************************************************************/
 void E5Provider::handlePacket(unsigned char *data, int len)
 {
+#if 0
+    static struct timeval startTime = {0, 0};
+    static struct timeval endTime = {0, 0};
+    static int dataCount = 0;
+    if (startTime.tv_sec == 0)
+    {
+        gettimeofday(&startTime, NULL);
+    }
+    dataCount += len + 4;
+    gettimeofday(&endTime, NULL);
+    int timeElaspe = (endTime.tv_sec - startTime.tv_sec) * 1000000 + (endTime.tv_usec - startTime.tv_usec);
+    if (timeElaspe >= 1000000)
+    {
+        qdebug("dataRate: %d bytes/sec", dataCount * 1000 / (timeElaspe / 1000));
+        dataCount = 0;
+        startTime = endTime;
+    }
+#endif
     if (!isConnectedToParam)
     {
         return;
@@ -302,246 +326,401 @@ void E5Provider::handlePacket(unsigned char *data, int len)
 
     BLMProvider::handlePacket(data, len);
 
-    if (!isConnected)
+    switch (data[0])
     {
-        ecgParam.setConnected(true);
-        if (d_ptr->isSupportResp)
-        {
-            respParam.setConnected(true);
-        }
+    case TE3_CYCLE_ACTIVE:
+    case TE3_UPGRADE_ALIVE:
+        feed();
+        break;
+
+    case TE3_RSP_VERSION:
+        serviceVersion.getECGVersion(data, len);
+        return;
+
+    case TE3_NOTIFY_SYSTEM_STARTED:
+    {
+        unsigned char data = TE3_NOTIFY_SYSTEM_STARTED;
+        sendCmd(TE3_CMD_ASK, &data, 1);
+        break;
+    }
+
+    default:
+        break;
     }
 
     switch (data[0])
     {
-    case E5_RSP_VERSION:
+    case TE3_RSP_VERSION:
         break;
-    case E5_RSP_SELFLEARN_ONOFF:
+
+    case TE3_RSP_SYSTEM_TEST: // 系统测试命令反馈
         break;
-    case E5_RSP_SELFTEST_RESULT:
-        qMemCopy(d_ptr->selftestResult, data + 1, sizeof(d_ptr->selftestResult));
+
+    case TE3_RSP_PACE_SYNC_STATUS:
         break;
-    case E5_RSP_LEAD_MODE:
+
+    case TE3_RSP_ECG_DATA_SYNC:
         break;
-    case E5_RSP_CALC_MODE:
+
+    case TE3_RSP_ECG_LEAD_MODE:
         break;
-    case E5_RSP_CALC_LEAD:
+
+    case TE3_RSP_FILTER_PARAMETER:
         break;
-    case E5_RSP_NOTCH_TYPE:
+
+    case TE3_RSP_NOTCH_FILTER:
         break;
-    case E5_RSP_PATIENT_TYPE:
+
+    case TE3_RSP_ECG_SAMPLE_CONFIG:
         break;
-    case E5_RSP_PACE_ONOFF:
+
+    case TE3_RSP_ECG_PATIENT_TYPE:
+        enableVFCalcCtrl(true);
         break;
-    case E5_RSP_RESP_CALC_LEAD:
+
+    case TE3_RSP_ECG_LEAD_CABLE_TYPE:
+        ecgParam.handleECGLeadCabelType(data[1]);
         break;
-    case E5_RSP_RESP_APNEA_TIME:
+
+    case TE3_RSP_RESP_APNEA_INTERVAL:
         break;
-    case E5_RSP_RESP_CALC_SWITCH:
-        break;
-    case E5_NOTIFY_SYSTEM_START:
+
+    case TE3_RSP_SELFTEST_RESULT:
     {
-        // module restart, perfrom initialize
-
-        // get selftest result
-        sendCmd(E5_CMD_GET_SELFTEST_RESULT, NULL, 0);
-
-        // set lead mode again
-//        setLeadSystem(d_ptr->ecgLeadMode);
-
-        // resp setting
-        setRESPCalcLead(d_ptr->resplead);
-        // resp apnea time
-        setApneaTime(d_ptr->respApneaTime);
-        // resp calculation
-        enableRESPCalc(d_ptr->enableRespCalc);
-    }
-    break;
-    case E5_NOTIFY_RESP_ALARM:
-        if (d_ptr->isSupportResp)
+        unsigned result = 0;
+        if (0 == data[1])
         {
-            // apnea alarm status
-            if (data[1])
+            result |= MAJOR_SAMPLE_MODULE_INIT_FAILED;
+        }
+
+        if (0 == data[2])
+        {
+            result |= MINOR_SAMPLE_MODULE_INIT_FAILED;
+        }
+        Q_UNUSED(result)
+        break;
+    }
+
+    case TE3_NOTIFY_SYSTEM_STARTED:
+    {
+        ErrorLogItem *item = new CriticalFaultLogItem();
+        item->setName("TE3 Start");
+        item->setSubSystem(ErrorLogItem::SUB_SYS_TE3);
+        item->setSystemState(ErrorLogItem::SYS_STAT_RUNTIME);
+        item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
+        errorLog.append(item);
+
+        ecgParam.reset();
+        respParam.reset();
+
+        const unsigned char data = TE3_NOTIFY_SYSTEM_STARTED;
+        sendCmd(TE3_CMD_ASK, &data, 1);
+        break;
+    }
+
+    case TE3_NOTIFY_SYSTEM_TEST_RESULT:
+        break;
+
+    case TE3_NOTIFY_ECG_LEAD_CABEL_TYPE:
+        ecgParam.handleECGLeadCabelType(data[1]);
+        break;
+
+    case TE3_NOTIFY_RESP_ALARM:
+        respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_APNEA, data[1]);
+        break;
+
+    case TE3_NOTIFY_VF_ALARM:
+        ecgParam.setCheckPatient(data[1]);
+        break;
+
+    case TE3_NOTIFY_ASYS_ALARM:
+        ecgOneShotAlarm.setOneShotAlarm(ECG_ONESHOT_ARR_ASYSTOLE, data[1]);
+        break;
+
+    case TE3_CYCLE_ACTIVE:
+        feed();
+        break;
+
+    case TE3_CYCLE_ECG: // 收到心电数据包。
+        _handleECGRawData(data, len);
+        break;
+
+    case TE3_CYCLE_RESP:
+        _handleRESPRawData(data, len);
+        break;
+
+    case TE3_CYCLE_RR:
+    {
+        short rr = (data[2] << 8) | data[1];
+        rr = (rr == -1) ? InvData() : rr;
+        if (0 == respParam.getRespMonitoring())
+        {
+            rr = InvData();
+        }
+        respParam.setRR(rr);
+        break;
+    }
+
+    case TE3_CYCLE_HR:
+    {
+        short hrValue = (data[2] << 8) | data[1];
+        hrValue = (hrValue == -1) ? InvData() : hrValue;
+        if (ecgParam.getCalcLead() != ECG_LEAD_NR)
+        {
+            ecgParam.updateHR(hrValue);
+        }
+        break;
+    }
+
+    case TE3_CYCLE_VFVT:
+    {
+        short vfvtValue = (data[2] << 8) | data[1];
+        vfvtValue = (vfvtValue == -1) ? InvData() : vfvtValue;
+        ecgParam.updateVFVT(vfvtValue);
+        break;
+    }
+
+    case TE3_CYCLE_STORE:
+    {
+        int enable = 0;
+        machineConfig.getNumValue("Record|ECG", enable);
+        break;
+    }
+
+    case TE3_WARNING_ERROR_CODE:
+    {
+        QString errorStr("");
+        unsigned num = 0;
+        switch (data[1])
+        {
+        case 0x01:
+            if (0 == data[2])
             {
-                respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_APNEA, true);
+                errorStr = "Major Collection Module Has No Data.\r\n";
             }
             else
             {
-                respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_APNEA, false);
+                errorStr = "Minor Collection Module Has No Data.\r\n";
             }
-        }
-        break;
-    case E5_PERIODIC_ALIVE:
-        feed();
-        break;
-    case E5_PERIODIC_ECG_DATA:
-        rawDataCollector.collectData(RawDataCollector::ECG_DATA, data + 1, len -1);
-        d_ptr->handleEcgRawData(data + 1, len - 1);
-        break;
-    case E5_PERIODIC_HR:
-    {
-        short hr = data[1] + (data[2] << 8);
-        ecgParam.updateHR(hr);
-    }
-    break;
-    case E5_PERIODIC_RESP_DATA:
-        if (d_ptr->isSupportResp)
-        {
-            d_ptr->handleRESPRawData(data + 1, len - 1);
-        }
-        break;
-    case E5_PERIODIC_RR:
-    {
-        if (d_ptr->isSupportResp)
-        {
-            short rr = data[1] + (data[2] << 8);
-            if (rr == -1)
+            break;
+
+        case 0x02:
+            num = ((data[5] << 24) | (data[4] << 16) | (data[3] << 8) | data[2]);
+            errorStr = QString("Major Collection Module %d Packet Loss.\r\n").arg(num);
+            break;
+
+        case 0x03:
+            num = ((data[5] << 24) | (data[4] << 16) | (data[3] << 8) | data[2]);
+            errorStr = QString("Minor Collection Module %d Packet Loss.\r\n").arg(num);
+            break;
+
+        case 0x04:
+            num = ((data[5] << 24) | (data[4] << 16) | (data[3] << 8) | data[2]);
+            errorStr = QString("Major Collecting %d Error Data Frames.\r\n").arg(num);
+            break;
+
+        case 0x05:
+            num = ((data[5] << 24) | (data[4] << 16) | (data[3] << 8) | data[2]);
+            errorStr = QString("Minor Collecting %1 Error Data Frames.\r\n").arg(num);
+            break;
+
+        case 0x06:
+            if (0 == data[2])
             {
-                rr = InvData();
+                errorStr = "Internal Flash Flag OK.\r\n";
             }
-            respParam.setRR(rr);
+            else
+            {
+                errorStr = "Internal Flash Flag Error.\r\n";
+            }
+
+        default:
+            break;
         }
-    }
-    break;
-    case E5_STATUS_ERROR_OR_WARN:
+
+        if (!errorStr.isEmpty())
+        {
+            ErrorLogItem *item = new CriticalFaultLogItem();
+            item->setName(QString("TE3 Error:0x%1").arg(data[1], 2, 16, QChar('0')));
+            item->setLog(errorStr);
+            item->setSubSystem(ErrorLogItem::SUB_SYS_TE3);
+            item->setSystemState(ErrorLogItem::SYS_STAT_RUNTIME);
+            item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
+            errorLog.append(item);
+        }
         break;
-    default:
-        qdebug("unknown packet type 0x%02x", data[0]);
-        break;
+    }
     }
 }
 
-void E5Provider::sendVersion()
+/**************************************************************************************************
+ * 发送协议命令。
+ *************************************************************************************************/
+void E5Provider::sendCmdData(unsigned char cmdId, const unsigned char *data, unsigned int len)
 {
-    sendCmd(E5_CMD_GET_VERSION, NULL, 0);
+    sendCmd(cmdId, data, len);
 }
 
-/* module disconnect */
-void E5Provider::disconnected()
+/**************************************************************************************************
+ * 获取自检状态。
+ *************************************************************************************************/
+void E5Provider::getSelfTestStatus(void)
 {
-    ecgOneShotAlarm.clear();
-    respOneShotAlarm.clear();
-    ecgOneShotAlarm.setOneShotAlarm(ECG_ONESHOT_ALARM_COMMUNICATION_STOP, true);
-    respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_COMMUNICATION_STOP, true);
-    for (int i = ECG_LEAD_I; i < ECG_LEAD_NR; i++)
-    {
-        ecgParam.setLeadOff((ECGLead)i, true);
-    }
-    respParam.setLeadoff(true);
-
-    systemManager.setPoweronTestResult(E5_MODULE_SELFTEST_RESULT, SELFTEST_FAILED);
-    ecgParam.setConnected(false);
-    respParam.setConnected(false);
+    sendCmd(TE3_CMD_GET_SELFTEST_RESULT, NULL, 0);
 }
 
-
-void E5Provider::reconnected()
+/**************************************************************************************************
+ * 获取波形的采样速度。
+ *************************************************************************************************/
+int E5Provider::getWaveformSample(void)
 {
-    ecgOneShotAlarm.setOneShotAlarm(ECG_ONESHOT_ALARM_COMMUNICATION_STOP, false);
-    respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
-    ecgParam.setConnected(true);
-    respParam.setConnected(true);
+    return _waveSampleRate;
 }
 
-int E5Provider::getWaveformSample()
-{
-    return 250;
-}
-
+/**************************************************************************************************
+ * 设置波形的采样速度。
+ *************************************************************************************************/
 void E5Provider::setWaveformSample(int rate)
 {
-    Q_UNUSED(rate)
+    _waveSampleRate = rate;
 }
 
+/**************************************************************************************************
+ * 获取+/-0.5mV对应的数值。
+ *************************************************************************************************/
 void E5Provider::get05mV(int &p05mv, int &n05mv)
 {
-    // about 1.224 uV per unit
+    // about 1.225uV per unit
     p05mv = 408;
     n05mv = -408;
 }
 
+/**************************************************************************************************
+ * 获取导联线类型
+ *************************************************************************************************/
 void E5Provider::getLeadCabelType()
 {
-    // TODO
+    sendCmd(TE3_CMD_GET_LEAD_CABLE_TYPE, NULL, 0);
 }
 
+/**************************************************************************************************
+ * 设置导联系统。
+ *************************************************************************************************/
 void E5Provider::setLeadSystem(ECGLeadMode leadSystem)
 {
-    d_ptr->ecgLeadMode = leadSystem;
-    unsigned char dataPayload = (unsigned char) leadSystem;
-    sendCmd(E5_CMD_SET_LEAD_MODE, &dataPayload, 1);
+    unsigned char dataPayload = (unsigned char)leadSystem;
+    sendCmd(TE3_CMD_SET_ECG_LEAD_MODE, &dataPayload, 1);
 }
 
+/**************************************************************************************************
+ * 设置计算导联。
+ *************************************************************************************************/
 void E5Provider::setCalcLead(ECGLead lead)
 {
-    unsigned char calcLead = lead;
-    sendCmd(E5_CMD_SET_CALC_LEAD, &calcLead, 1);
+    if (lead <= ECG_LEAD_V6)
+    {
+        // 协议顺序和导联定义顺序不一致
+        unsigned char dataCalcMode = (unsigned char)lead;
+        switch (lead)
+        {
+        case ECG_LEAD_AVR:
+        case ECG_LEAD_AVL:
+        case ECG_LEAD_AVF:
+            dataCalcMode = 9 + lead - ECG_LEAD_AVR;
+            break;
+
+        case ECG_LEAD_V1:
+        case ECG_LEAD_V2:
+        case ECG_LEAD_V3:
+        case ECG_LEAD_V4:
+        case ECG_LEAD_V5:
+        case ECG_LEAD_V6:
+            dataCalcMode = 3 + lead - ECG_LEAD_V1;
+            break;
+
+        default:
+            dataCalcMode = (unsigned char)lead;
+            break;
+        }
+
+        sendCmd(TE3_CMD_SET_ECG_CALC_LEAD, &dataCalcMode, 1);
+    }
 }
 
+/**************************************************************************************************
+ * 设置病人类型。0表示成人，1表示小孩，2表示新生儿，3表示空
+ *************************************************************************************************/
 void E5Provider::setPatientType(unsigned char type)
 {
-    unsigned char patientType = type;
-    sendCmd(E5_CMD_SET_PATIENT_TYPE, &patientType, 1);
-}
-
-void E5Provider::setBandwidth(ECGBandwidth bandwidth)
-{
-    ECGFilterMode mode;
-    switch (bandwidth)
+    unsigned char cmd;
+    cmd = type & 0xFF;
+    if (cmd > 0x03)
     {
-    case ECG_BANDWIDTH_067_20HZ:
-        mode = ECG_FILTERMODE_SURGERY;
-        break;
-    case ECG_BANDWIDTH_067_40HZ:
-        mode = ECG_FILTERMODE_MONITOR;
-        break;
-    case ECG_BANDWIDTH_0525_40HZ:
-        mode = ECG_FILTERMODE_ST;
-        break;
-    case ECG_BANDWIDTH_0525_150HZ:
-        mode = ECG_FILTERMODE_DIAGNOSTIC;
-        break;
-    default:
-        mode = ECG_FILTERMODE_MONITOR;
-        break;
+        cmd = 0;
     }
 
-    unsigned char filterMode = mode;
-    sendCmd(E5_CMD_SET_CALC_MODE, &filterMode, 1);
+    sendCmd(TE3_CMD_SET_PATIENT_TYPE, &cmd, 1);
 }
 
 void E5Provider::setFilterMode(ECGFilterMode mode)
 {
-    unsigned char filterMode = mode;
-    sendCmd(E5_CMD_SET_CALC_MODE, &filterMode, 1);
+    unsigned char filterMode;
+    switch (mode)
+    {
+    case ECG_FILTERMODE_SURGERY:
+        filterMode = 0x02;
+        break;
+    case ECG_FILTERMODE_MONITOR:
+        filterMode = 0x03;
+        break;
+    case ECG_FILTERMODE_ST:
+        filterMode = 0x00;
+        break;
+    case ECG_FILTERMODE_DIAGNOSTIC:
+        filterMode = 0x01;
+        break;
+    default:
+        break;
+    }
+    sendCmd(TE3_CMD_SET_FILTER_PARAMETER, &filterMode, 1);
 }
 
-void E5Provider::enablePacermaker(ECGPaceMode onoff)
+/**************************************************************************************************
+ * 设置带宽。
+ *************************************************************************************************/
+void E5Provider::setBandwidth(ECGBandwidth bandwidth)
 {
-    unsigned char pacemaker = onoff;
-    sendCmd(E5_CMD_SET_PACE_ONOFF, &pacemaker, 1);
-}
+    unsigned char dataPayload = 0;
 
-void E5Provider::setNotchFilter(ECGNotchFilter notch)
-{
-    unsigned char notchChar = notch;
-    sendCmd(E5_CMD_SET_NOTCH_TYPE, &notchChar, 1);
-}
+    switch (bandwidth)
+    {
+    case ECG_BANDWIDTH_067_20HZ:
+        dataPayload = 0x12;
+        break;
 
-void E5Provider::enableSTAnalysis(bool onoff)
-{
-    Q_UNUSED(onoff)
-    // TODO
-}
+    case ECG_BANDWIDTH_067_40HZ:
+        dataPayload = 0x13;
+        break;
 
-void E5Provider::setSTPoints(int /*iso*/, int /*st*/)
-{
-    // TODO
+    case ECG_BANDWIDTH_0525_40HZ:
+        dataPayload = 0x00;
+        break;
+
+    case ECG_BANDWIDTH_0525_150HZ:
+        dataPayload = 0x01;
+        break;
+
+    default:
+        return;
+    }
+
+    sendCmd(TE3_CMD_SET_FILTER_PARAMETER, &dataPayload, 1);
 }
 
 void E5Provider::setSelfLearn(bool onOff)
 {
     unsigned char learn = onOff;
-    sendCmd(E5_CMD_SET_SELFLEARN_ONOFF, &learn, 1);
+    Q_UNUSED(learn)
 }
 
 void E5Provider::setARRThreshold(ECGAlg::ARRPara parameter, short value)
@@ -550,41 +729,207 @@ void E5Provider::setARRThreshold(ECGAlg::ARRPara parameter, short value)
     Q_UNUSED(value)
 }
 
-int E5Provider::getRESPWaveformSample()
+/**************************************************************************************************
+ * 起搏器设置。
+ *************************************************************************************************/
+void E5Provider::enablePacermaker(ECGPaceMode onoff)
+{
+    unsigned char enable = onoff;
+    sendCmd(TE3_CMD_SET_PACEMARK_ONOFF, &enable, 1);
+}
+
+/**************************************************************************************************
+ * 设置工频滤波。
+ *************************************************************************************************/
+void E5Provider::setNotchFilter(ECGNotchFilter notch)
+{
+    unsigned char data = notch;
+    sendCmd(TE3_CMD_SET_NOTCH_FILTER, &data, 1);
+}
+
+/**************************************************************************************************
+ * ST开关。
+ *************************************************************************************************/
+void E5Provider::enableSTAnalysis(bool onoff)
+{
+    Q_UNUSED(onoff)
+}
+
+/***************************************************************************************************
+ * enable vf calc control
+ **************************************************************************************************/
+void E5Provider::enableVFCalcCtrl(bool enable)
+{
+    unsigned char data = enable;
+    sendCmd(TE3_CMD_ENABLE_VF_CALC, &data, 1);
+}
+
+/**************************************************************************************************
+ * ST点设置。
+ *************************************************************************************************/
+void E5Provider::setSTPoints(int iso, int st)
+{
+    Q_UNUSED(iso)
+    Q_UNUSED(st)
+}
+
+/**************************************************************************************************
+ * 获取版本号。
+ *************************************************************************************************/
+void E5Provider::sendVersion(void)
+{
+    sendCmd(TE3_CMD_GET_VERSION, NULL, 0);
+}
+
+/**************************************************************************************************
+ * 获取波形的采样速度。
+ *************************************************************************************************/
+int E5Provider::getRESPWaveformSample(void)
 {
     return 125;
 }
 
-void E5Provider::disableApnea()
+/**************************************************************************************************
+ * 关闭窒息处理。
+ *************************************************************************************************/
+void E5Provider::disableApnea(void)
 {
-    d_ptr->respApneaTime = APNEA_ALARM_TIME_OFF;
-    unsigned char apneaTime = d_ptr->respApneaTime;
-    sendCmd(E5_CMD_SET_RESP_APNEA_TIME, &apneaTime, 1);
 }
 
+/**************************************************************************************************
+ * 设置窒息时间。
+ *************************************************************************************************/
 void E5Provider::setApneaTime(ApneaAlarmTime t)
 {
-    d_ptr->respApneaTime = t;
-    unsigned char apneaTime = t;
-    sendCmd(E5_CMD_SET_RESP_APNEA_TIME, &apneaTime, 1);
+    unsigned char data = t;
+
+    sendCmd(TE3_CMD_SET_RESP_APNEA_INTERVAL, &data, 1);
 }
 
-void E5Provider::setWaveformZoom(RESPZoom /*zoom*/)
+/**************************************************************************************************
+ * 获取波形的采样速度。
+ *************************************************************************************************/
+void E5Provider::setWaveformZoom(RESPZoom zoom)
 {
-    // TODO
+    zoom = zoom;
 }
 
+/**************************************************************************************************
+ * 设置呼吸导联。
+ *************************************************************************************************/
 void E5Provider::setRESPCalcLead(RESPLead lead)
 {
-    d_ptr->resplead = lead;
-    unsigned char l = lead;
-    sendCmd(E5_CMD_SET_RESP_CALC_LEAD, &l, 1);
+    unsigned char data = 0;
+    switch (lead)
+    {
+    case RESP_LEAD_I:
+        data = 1;
+        break;
+
+    case RESP_LEAD_II:
+        data = 0;
+        break;
+
+    default:
+        break;
+    }
+
+    sendCmd(TE3_CMD_SET_RESP_CALC_LEAD, &data, 1);
 }
 
+/**************************************************************************************************
+ * 启用呼吸计算。
+ *************************************************************************************************/
 void E5Provider::enableRESPCalc(bool enable)
 {
-    d_ptr->enableRespCalc = enable;
-//    unsigned char onOff = enable ? 1 : 0;
-//    sendCmd(E5_CMD_ENABLE_RESP_CALC, &onOff, 1);
+    unsigned char data = enable;
+    sendCmd(TE3_CMD_SET_RESP_CALS_SWITCH, &data, 1);
 }
 
+/**************************************************************************************************
+ * 连接中断。
+ *************************************************************************************************/
+void E5Provider::disconnected(void)
+{
+    ecgOneShotAlarm.clear();
+    ecgOneShotAlarm.setOneShotAlarm(ECG_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+    ecgParam.updateHR(InvData());
+
+    QList<int> waveID;
+    bool needFreshWave = false;
+    for (int i = ECG_LEAD_I; i < ECG_LEAD_NR; ++i)
+    {
+        ecgParam.setLeadOff((ECGLead)i, true);
+        if (-1 != waveID.indexOf(ecgParam.leadToWaveID((ECGLead)i)))
+        {
+            needFreshWave = true;
+        }
+    }
+
+    if (systemManager.isSupport(CONFIG_RESP))
+    {
+        respOneShotAlarm.clear();
+        respParam.setLeadoff(false);
+        respParam.setRR(InvData());
+        respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+        if (-1 != waveID.indexOf(WAVE_RESP))
+        {
+            needFreshWave = true;
+        }
+    }
+    ecgParam.setConnected(false);
+    respParam.setConnected(false);
+    Q_UNUSED(needFreshWave)
+}
+
+/**************************************************************************************************
+ * 连接恢复。
+ *************************************************************************************************/
+void E5Provider::reconnected(void)
+{
+    ecgOneShotAlarm.setOneShotAlarm(ECG_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+    respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+
+    QList<int> waveID;
+    bool needFreshWave = false;
+    for (int i = ECG_LEAD_I; i < ECG_LEAD_NR; ++i)
+    {
+        ecgParam.setLeadOff((ECGLead)i, true);
+        if (-1 != waveID.indexOf(ecgParam.leadToWaveID((ECGLead)i)))
+        {
+            needFreshWave = true;
+        }
+    }
+
+    if (systemManager.isSupport(CONFIG_RESP))
+    {
+        respOneShotAlarm.clear();
+        respParam.setLeadoff(false);
+        respParam.setRR(InvData());
+        respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+        if (-1 != waveID.indexOf(WAVE_RESP))
+        {
+            needFreshWave = true;
+        }
+    }
+    ecgParam.setConnected(true);
+    respParam.setConnected(true);
+    Q_UNUSED(needFreshWave)
+}
+
+/**************************************************************************************************
+ * 构造。
+ *************************************************************************************************/
+E5Provider::E5Provider() : BLMProvider("BLM_E5"), ECGProviderIFace()
+{
+    UartAttrDesc portAttr(230400, 8, 'N', 1);
+    initPort(portAttr);
+    _waveSampleRate = WAVE_SAMPLE_RATE_500;
+}
+
+/**************************************************************************************************
+ * 析构。
+ *************************************************************************************************/
+E5Provider::~E5Provider()
+{
+}
