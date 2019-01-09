@@ -99,9 +99,9 @@ void DoseCalculationWindow::layoutExec()
     layout->addWidget(label, index, 0);
     combo = new ComboBox;
     combo->addItems(QStringList()
-                    << trs(DoseCalculationSymbol::convert(PATIENT_TYPE_ADULT))
-                    << trs(DoseCalculationSymbol::convert(PATIENT_TYPE_PED))
-                    << trs(DoseCalculationSymbol::convert(PATIENT_TYPE_NEO))
+                    << trs(PatientSymbol::convert(PATIENT_TYPE_ADULT))
+                    << trs(PatientSymbol::convert(PATIENT_TYPE_PED))
+                    << trs(PatientSymbol::convert(PATIENT_TYPE_NEO))
                    );
     layout->addWidget(combo, index, 1);
     index++;
