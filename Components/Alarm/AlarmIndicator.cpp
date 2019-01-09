@@ -973,11 +973,17 @@ bool AlarmIndicator::techAlarmResetStatusHandle()
     it = list->begin();
     for (; it != list->end(); ++it)
     {
-        if (it->alarmType == ALARM_TYPE_TECH && it->alarmPriority > ALARM_PRIO_LOW)
+        if (it->alarmType == ALARM_TYPE_TECH && it->alarmPriority != ALARM_PRIO_PROMPT)
         {
             // 只确认中级和高级的报警
             AlarmInfoNode node = *it;
-            if (!node.acknowledge)
+            if (it->removeAfterLatch)
+            {
+                it = list->erase(it);
+                ret = true;
+                continue;
+            }
+            else if (!node.acknowledge)
             {
                 node.acknowledge = true;
                 ret = true;
