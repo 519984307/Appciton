@@ -593,35 +593,47 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
         double value1 = _trendInfo.trendDataV2.at(_cursorPosIndex).data[0];
         double value2 = _trendInfo.trendDataV2.at(_cursorPosIndex).data[1];
 
-        if (value1 != InvData() && value2 != InvData())
+        QString trendStr = QString("%1/%2");
+        QString str1 = InvStr();
+        QString str2 = InvStr();
+        ParamID paramId = paramInfo.getParamID(_id);
+        UnitType type = paramManager.getSubParamUnit(paramId, _id);
+
+        if (paramId == PARAM_TEMP)
         {
-            QString trendStr;
-            ParamID paramId = paramInfo.getParamID(_id);
-            UnitType type = paramManager.getSubParamUnit(paramId, _id);
-            if (paramId == PARAM_TEMP)
+            if (value1 != InvData())
             {
-                QString t1Str = Unit::convert(type, UNIT_TC, value1 / 10.0);
-                QString t2Str = Unit::convert(type, UNIT_TC, value2 / 10.0);
-                trendStr = t1Str + "/" + t2Str;
+                str1 = Unit::convert(type, UNIT_TC, value1 / 10.0);
             }
-            else if (paramId == PARAM_CO2)
+            if (value2 != InvData())
             {
-                QString t1Str = Unit::convert(type, UNIT_PERCENT, value1 / 10.0, co2Param.getBaro());
-                QString t2Str = Unit::convert(type, UNIT_PERCENT, value2 / 10.0, co2Param.getBaro());
-                trendStr = t1Str + "/" + t2Str;
+                str2 = Unit::convert(type, UNIT_TC, value2 / 10.0);
             }
-            else
+        }
+        else if (paramId == PARAM_CO2)
+        {
+            if (value1 != InvData())
             {
-                value1 /= 10;
-                value2 /= 10;
-                trendStr = QString::number(value1, 'f', 1) + "/" + QString::number(value2, 'f', 1);
+                str1 = Unit::convert(type, UNIT_PERCENT, value1 / 10.0, co2Param.getBaro());
             }
-            barPainter.drawText(dataRect, trendStr, option);
+            if (value2 != InvData())
+            {
+                str2 = Unit::convert(type, UNIT_PERCENT, value2 / 10.0, co2Param.getBaro());
+            }
         }
         else
         {
-            barPainter.drawText(dataRect, "---/---", option);
+            if (value1 != InvData())
+            {
+                str1 = QString::number((value1 / 10), 'f', 1);
+            }
+            if (value2 != InvData())
+            {
+                str2 = QString::number((value2 / 10), 'f', 1);
+            }
         }
+        trendStr = trendStr.arg(str1).arg(str2);
+        barPainter.drawText(dataRect, trendStr, option);
     }
 }
 
