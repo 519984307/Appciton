@@ -28,6 +28,7 @@
 #include "WindowManager.h"
 #include "SystemManager.h"
 #include "LayoutManager.h"
+#include "SoundManager.h"
 
 #define CONFIG_DIR "/usr/local/nPM/etc"
 #define USER_DEFINE_CONFIG_NAME "UserConfig"
@@ -144,9 +145,6 @@ void LoadConfigMenuContent::layoutExec()
     layout->setAlignment(Qt::AlignTop);
 
     // load config
-    QLabel *label = new QLabel(trs("LoadConfig"));
-    layout->addWidget(label);
-
     ListView *listView = new ListView();
     listView->setItemDelegate(new ListViewItemDelegate(listView));
     layout->addWidget(listView);
@@ -250,6 +248,7 @@ void LoadConfigMenuContent::onBtnClick()
         currentConfig.setCurrentFilePath(curConfigName);
         currentConfig.load(loadPath);
 
+        soundManager.volumeInit();
         layoutManager.updateLayoutWidgetsConfig();
 
         QString title(trs("LoadConfig"));

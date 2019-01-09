@@ -16,6 +16,7 @@
 #include "Debug.h"
 #include "unistd.h"
 #include <QTimerEvent>
+#include <QPointer>
 
 #define PAGE_QUEUE_SIZE 32
 
@@ -130,6 +131,13 @@ void RecordPageProcessor::stopProcess()
 
     d_ptr->stopProcessing();
     emit processFinished();
+
+    // check whether speed need to update
+    if (d_ptr->updateSpeed)
+    {
+        d_ptr->updateSpeed = false;
+        d_ptr->iface->setPrintSpeed(d_ptr->curSpeed);
+    }
 }
 
 void RecordPageProcessor::pauseProcessing(bool pause)
@@ -146,13 +154,6 @@ void RecordPageProcessor::timerEvent(QTimerEvent *ev)
 {
     if (d_ptr->timerID == ev->timerId())
     {
-        // check whether speed need to update
-        if (d_ptr->updateSpeed)
-        {
-            d_ptr->updateSpeed = false;
-            d_ptr->iface->setPrintSpeed(d_ptr->curSpeed);
-        }
-
         // update page queue status
         if (d_ptr->queueIsFull && d_ptr->pages.size() < PAGE_QUEUE_SIZE)
         {
@@ -189,11 +190,25 @@ void RecordPageProcessor::timerEvent(QTimerEvent *ev)
 
         // send data
         int count = 0;
+        QPointer<RecordPageProcessor> guard(this);
         while (count < BATCH_LINE_NUM)
         {
             d_ptr->curProcessingPage->getColumnData(d_ptr->curPageXPos++, data);
-            d_ptr->iface->sendBitmapData(data, dataLen);
+            bool isComplete = d_ptr->iface->sendBitmapData(data, dataLen);
+            int waitNum = 0;
+            while (!isComplete && waitNum < 10)
+            {
+                Util::waitInEventLoop(100);
+                isComplete = d_ptr->iface->sendBitmapData(data, dataLen);
+                waitNum++;
+            }
             count++;
+
+            if (!guard || !d_ptr->curProcessingPage)
+            {
+                // the processor or the page has been deleted somewhere else.
+                return;
+            }
 
             if (d_ptr->curPageXPos >= pageWidth)
             {

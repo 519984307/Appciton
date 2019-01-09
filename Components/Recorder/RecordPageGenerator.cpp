@@ -34,6 +34,8 @@
 #include "RecorderManager.h"
 #include "TimeDate.h"
 #include "AlarmConfig.h"
+#include "UnitManager.h"
+#include "PatientManager.h"
 
 #define DEFAULT_PAGE_WIDTH 200
 #define PEN_WIDTH 2
@@ -140,8 +142,8 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
 {
     QStringList infos;
     infos.append(QString("%1: %2").arg(trs("Name")).arg(patInfo.name));
-    infos.append(QString("%1: %2").arg(trs("Gender")).arg(PatientSymbol::convert(patInfo.sex)));
-    infos.append(QString("%1: %2").arg(trs("PatientType")).arg(PatientSymbol::convert(patInfo.type)));
+    infos.append(QString("%1: %2").arg(trs("Gender")).arg(trs(PatientSymbol::convert(patInfo.sex))));
+    infos.append(QString("%1: %2").arg(trs("PatientType")).arg(trs(PatientSymbol::convert(patInfo.type))));
     infos.append(QString("%1: %2").arg(trs("Blood")).arg(PatientSymbol::convert(patInfo.blood)));
     QString str;
     str = QString("%1: ").arg(trs("Age"));
@@ -154,14 +156,18 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
     str = QString("%1: ").arg(trs("Weight"));
     if (patInfo.weight)
     {
-        str += QString("%1 %2").arg(QString::number(patInfo.weight)).arg(PatientSymbol::convert(patInfo.weightUnit));
+        float weight = patientManager.getWeight();
+        QString weightStr = Unit::convert(patientManager.getWeightUnit(), UNIT_KG, weight);
+        str += QString("%1 %2").arg(weightStr).arg(Unit::localeSymbol(patientManager.getWeightUnit()));
     }
     infos.append(str);
 
     str = QString("%1: ").arg(trs("Height"));
     if (patInfo.height)
     {
-        str += QString::number(patInfo.height);
+        float height = patientManager.getHeight();
+        QString heightStr = Unit::convert(patientManager.getHeightUnit(), UNIT_CM, height);
+        str += QString("%1 %2").arg(heightStr).arg(Unit::localeSymbol(patientManager.getHeightUnit()));
     }
     infos.append(str);
 
@@ -468,14 +474,15 @@ RecordPage *RecordPageGenerator::createTrendPage(const TrendDataPackage &trendDa
     QString timeStr;
     if (showEventTime)
     {
-        QDateTime dt = QDateTime::fromTime_t(trendData.time);
+        QString timeDateStr;
+        timeDate.getDateTime(trendData.time, timeDateStr, true, true);
         if (timeStringCaption.isEmpty())
         {
-            timeStr = QString("%1: %2").arg(trs("EventTime")).arg(dt.toString("yyyy-MM-dd HH:mm:ss"));
+            timeStr = QString("%1: %2").arg(trs("EventTime")).arg(timeDateStr);
         }
         else
         {
-            timeStr = QString("%1: %2").arg(timeStringCaption).arg(dt.toString("yyyy-MM-dd HH:mm:ss"));
+            timeStr = QString("%1: %2").arg(timeStringCaption).arg(timeDateStr);
         }
     }
 
@@ -550,6 +557,7 @@ RecordPage *RecordPageGenerator::createTrendPage(const TrendDataPackage &trendDa
         QRect rect(xoffset, startYoffset, page->width(), fontH);
         painter.drawText(rect, trendPageTitle, textOption);
         startYoffset += fontH;
+        avaliableLine--;
     }
 
     for (int i = 0; i < segmentWidths.size(); i += 3)
@@ -642,12 +650,45 @@ QStringList RecordPageGenerator::getTrendStringList(const TrendDataPackage &tren
         paramid = paramInfo.getParamID(subparamID);
         if (!isPressSubParam(subparamID))
         {
-            strList.append(contructNormalTrendStringItem(subparamID,
-                           trendData.subparamValue[subparamID],
-                           trendData.subparamAlarm[subparamID],
-                           paramManager.getSubParamUnit(paramid, subparamID),
-                           paramInfo.getUnitOfSubParam(subparamID),
-                           trendData.co2Baro));
+            if (subparamID == SUB_PARAM_TD)
+            {
+                QString t1Str = Unit::convert(paramManager.getSubParamUnit(paramid, subparamID),
+                                              paramInfo.getUnitOfSubParam(subparamID),
+                                              trendData.subparamValue[SUB_PARAM_T1] / 10.0,
+                                              trendData.co2Baro);
+                QString t2Str = Unit::convert(paramManager.getSubParamUnit(paramid, subparamID),
+                                              paramInfo.getUnitOfSubParam(subparamID),
+                                              trendData.subparamValue[SUB_PARAM_T2] / 10.0,
+                                              trendData.co2Baro);
+
+                TrendDataType td;
+                if (trendData.subparamValue[SUB_PARAM_T1] == InvData()
+                        || trendData.subparamValue[SUB_PARAM_T2] == InvData())
+                {
+                    // 有一个无效数据，计算的温度差则无效
+                    td = InvData();
+                }
+                else
+                {
+                    td = fabs(t1Str.toDouble() * 10 - t2Str.toDouble() * 10);
+                }
+
+                strList.append(contructNormalTrendStringItem(subparamID,
+                               td,
+                               trendData.subparamAlarm[subparamID],
+                               paramManager.getSubParamUnit(paramid, subparamID),
+                               paramManager.getSubParamUnit(paramid, subparamID),
+                               trendData.co2Baro));
+            }
+            else
+            {
+                strList.append(contructNormalTrendStringItem(subparamID,
+                               trendData.subparamValue[subparamID],
+                               trendData.subparamAlarm[subparamID],
+                               paramManager.getSubParamUnit(paramid, subparamID),
+                               paramInfo.getUnitOfSubParam(subparamID),
+                               trendData.co2Baro));
+            }
         }
         else
         {
@@ -875,7 +916,10 @@ static void drawRespZoom(RecordPage *page, QPainter *painter, const RecordWaveSe
 
 RecordPage *RecordPageGenerator::createWaveScalePage(const QList<RecordWaveSegmentInfo> &waveInfos, PrintSpeed speed)
 {
-    Q_ASSERT(waveInfos.size() > 0);
+    if (waveInfos.count() == 0)
+    {
+        return NULL;
+    }
     int pageWidth = 25 * RECORDER_PIXEL_PER_MM;
 
     RecordPage *page = new RecordPage(pageWidth);
@@ -1973,16 +2017,16 @@ QList<RecordWaveSegmentInfo> RecordPageGenerator::getWaveInfos(const QList<Wavef
             info.waveInfo.ecg.gain = ecgParam.getGain(ecgParam.waveIDToLeadID(id));
             if (ecgParam.getFilterMode() == ECG_FILTERMODE_DIAGNOSTIC)
             {
-                caption = QString("%1   %2   %3 %4").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
+                caption = QString("%1   %2   %3%4").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
                                                                            ecgParam.getLeadConvention()))
-                        .arg(ECGSymbol::convert(ecgParam.getFilterMode())).arg("Notch")
-                        .arg(ECGSymbol::convert(ecgParam.getNotchFilter()));
+                        .arg(trs(ECGSymbol::convert(ecgParam.getFilterMode()))).arg(trs("Notch"))
+                        .arg(trs(ECGSymbol::convert(ecgParam.getNotchFilter())));
             }
             else
             {
                 caption = QString("%1   %2").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
                                                                            ecgParam.getLeadConvention()))
-                        .arg(ECGSymbol::convert(ecgParam.getFilterMode()));
+                        .arg(trs(ECGSymbol::convert(ecgParam.getFilterMode())));
             }
 
             info.waveInfo.ecg.in12LeadMode = layoutManager.getUFaceType() == UFACE_MONITOR_ECG_FULLSCREEN;
@@ -1994,7 +2038,7 @@ QList<RecordWaveSegmentInfo> RecordPageGenerator::getWaveInfos(const QList<Wavef
             break;
         case WAVE_SPO2:
             info.waveInfo.spo2.gain = spo2Param.getGain();
-            caption = "Pleth";
+            caption = trs(paramInfo.getParamWaveformName(WAVE_SPO2));
             break;
         case WAVE_CO2:
             info.waveInfo.co2.zoom = co2Param.getDisplayZoom();
@@ -2036,7 +2080,7 @@ QList<RecordWaveSegmentInfo> RecordPageGenerator::getWaveInfos(const QList<Wavef
 
         captionLength = fontManager.textWidthInPixels(caption, font());
         info.drawCtx.captionPixLength = captionLength;
-        Util::strlcpy(info.drawCtx.caption, qPrintable(caption), sizeof(info.drawCtx.caption));
+        info.drawCtx.caption = caption;
         info.drawCtx.curPageFirstXpos = 0.0;
         info.drawCtx.prevSegmentLastYpos = 0.0;
         info.drawCtx.dashOffset = 0.0;
@@ -2313,7 +2357,6 @@ void RecordPageGenerator::timerEvent(QTimerEvent *ev)
         }
         else if (_requestStop)
         {
-            emit generatePage(createEndPage());
             _requestStop = false;
             delete page;
             emit stopped();

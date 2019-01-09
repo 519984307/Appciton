@@ -5,87 +5,134 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/9
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2019/1/7
  **/
 
 #pragma once
 #include "BLMProvider.h"
 #include "ECGProviderIFace.h"
 #include "RESPProviderIFace.h"
-#include "ECGAlg2SoftInterface.h"
-#include <QScopedPointer>
 
-class E5ProviderPrivate;
-class E5Provider : public BLMProvider, public ECGProviderIFace, public RESPProviderIFace
+#include <QFile>
+#include <QTextStream>
+
+// 收到的数据帧类型。
+enum RevPacketType
 {
+    TE3_RSP_VERSION                        = 0x11,       // 版本。
+    TE3_RSP_SYSTEM_TEST                    = 0x13,       // 系统测试结果。
+    TE3_RSP_PACE_SYNC_STATUS               = 0x15,       // PACE_SYNC信号使能控制。
+    TE3_RSP_ECG_LEAD_MODE                  = 0x17,       // ECG导联模式。
+    TE3_RSP_FILTER_PARAMETER               = 0x19,       // 滤波参数。
+    TE3_RSP_NOTCH_FILTER                   = 0x1B,       // 工频滤波参数。
+    TE3_RSP_ECG_SAMPLE_CONFIG              = 0x1D,       // 心电的采集配置。
+    TE3_RSP_ECG_CALC_LEAD                  = 0x1F,       // 心电计算导联。
+    TE3_RSP_SET_PACEMARK_ONOFF             = 0x21,       // pace检测开关状态。
+    TE3_RSP_ECG_PATIENT_TYPE               = 0x23,       // 设置病人类型的回复
+    TE3_RSP_ECG_DATA_SYNC                  = 0x25,       // data sync response
+    TE3_RSP_SET_WORK_MODE_IN_MONITOR       = 0x27,       // 设置监护下工作模式回复
+    TE3_RSP_SET_WORK_MODE                  = 0x29,       // 设置工作模式回复
+    TE3_RSP_ENABLE_PD_BLANK_SIGANL         = 0x31,       // 使能pd blank回复
+    TE3_RSP_ENABLE_VF_CALC                 = 0x33,       // enable vf calc response
+    TE3_RSP_RESP_APNEA_INTERVAL            = 0x4F,       // 呼吸的窒息结果。
+    TE3_RSP_ECG_LEAD_CABLE_TYPE            = 0x7D,       // 心电导联类型。
+    TE3_RSP_SELFTEST_RESULT                = 0x7F,       // 发送自测结果。
 
-public:
-    E5Provider();
-    ~E5Provider();
+    TE3_NOTIFY_SYSTEM_STARTED              = 0x80,       // TE3启动了。
+    TE3_NOTIFY_SYSTEM_TEST_RESULT          = 0x81,       // 发送自测结果。
+    TE3_NOTIFY_ECG_LEAD_CABEL_TYPE         = 0x90,       // 心电导联线类型。
+    TE3_NOTIFY_RESP_ALARM                  = 0xD2,       // RESP报警
+    TE3_NOTIFY_VF_ALARM                    = 0xA0,       // VF报警
+    TE3_NOTIFY_ASYS_ALARM                  = 0xA1,       // 停搏报警
 
-public:
-    // provider interface
-    // attach to param
+    TE3_CYCLE_ACTIVE                       = 0xB0,       // 保活。
+    TE3_CYCLE_STORE                        = 0xB9,       // 需要将数据存储至TXT
+    TE3_CYCLE_ECG                          = 0xBA,       // ECG数据。
+    TE3_CYCLE_RESP                         = 0xD0,       // 呼吸数据。
+    TE3_CYCLE_RR                           = 0xD1,       // 呼吸率数据。
+    TE3_CYCLE_HR                           = 0xBB,       // HR value
+    TE3_CYCLE_VFVT                         = 0xBC,       // vfvt value
+
+    TE3_WARNING_ERROR_CODE                 = 0xF0,       // 错误报告。
+};
+
+// 发送的数据帧类型。
+enum SendPacketType
+{
+    TE3_CMD_NASK                           = 0x00,   // nask
+    TE3_CMD_ASK                            = 0x01,   // 应答
+
+    TE3_CMD_GET_VERSION                    = 0x10,       // 获取版本。
+    TE3_CMD_SYSTEM_TEST                    = 0x12,       // 系统测试。
+    TE3_CMD_ENABLE_PACE_SYNC               = 0x14,       // PACE_SYNC信号使能控制。
+    TE3_CMD_SET_ECG_LEAD_MODE              = 0x16,       // ECG导联模式。
+    TE3_CMD_SET_FILTER_PARAMETER           = 0x18,       // 滤波参数。
+    TE3_CMD_SET_NOTCH_FILTER               = 0x1A,       // 工频滤波参数。
+    TE3_CMD_GET_ECG_SAMPLE_CONFIG          = 0x1C,       // 心电的采集配置。
+    TE3_CMD_SET_ECG_CALC_LEAD              = 0x1E,       // 设置心电计算导联。
+    TE3_CMD_SET_PACEMARK_ONOFF             = 0x20,       // 设置pace检测开关。
+    TE3_CMD_SET_PATIENT_TYPE               = 0x22,       // 设置病人类型
+    TE3_CMD_SET_DATA_SYNC                  = 0x24,       // data sync control
+    TE3_CMD_SET_WORK_MODE_IN_MONITOR       = 0x26,       // 设置监护工作模式
+    TE3_CMD_SET_WORK_MODE                  = 0x28,       // 设置工作模式
+    TE3_CMD_ENABLE_PD_BLANK_SIGNAL         = 0x30,       // 使能PD Blank信号
+    TE3_CMD_ENABLE_VF_CALC                 = 0x32,       // vt calc
+    TE3_CMD_SET_RESP_APNEA_INTERVAL        = 0x4E,       // 设置呼吸的窒息时间。
+    TE3_CMD_SET_RESP_CALC_LEAD             = 0x50,       // 设置呼吸计算导联
+    TE3_CMD_SET_RESP_CALS_SWITCH           = 0x60,       // 设置呼吸计算开关
+    TE3_CMD_GET_LEAD_CABLE_TYPE            = 0x7C,       // 获取导联线类型
+    TE3_CMD_GET_SELFTEST_RESULT            = 0x7E,       // 获取自测结果。
+    TE3_UPGRADE_ALIVE                      = 0xFE,       // 升级保活帧
+};
+
+class E5Provider: public BLMProvider, public ECGProviderIFace,
+        public RESPProviderIFace
+{
+#ifdef CONFIG_UNIT_TEST
+friend class TestParamFunction;
+#endif
+public: // Provider的接口。
     virtual bool attachParam(Param &param);
 
-    // handle packet
+    // 协议命令解析
     virtual void handlePacket(unsigned char *data, int len);
 
-    // send command to get version
-    virtual void sendVersion(void);
+    // 发送协议命令
+    virtual void sendCmdData(unsigned char cmdId, const unsigned char *data, unsigned int len);
 
-    // disconnected callback
-    virtual void disconnected(void);
+public: // ECGProviderIFace 的接口。
+    // 获取自检结果。
+    virtual void getSelfTestStatus(void);
 
-    // reconnect callback
-    virtual void reconnected(void);
-
-public:
-    // ECG Provider interface
-    // get the waveform sample
+    // 获取波形的采样速度。
     virtual int getWaveformSample(void);
 
-    // set the sample rate
+    // 设置波形的采样速度。
     virtual void setWaveformSample(int rate);
 
-    // waveform baseline
-    virtual int getBaseLine(void)
-    {
-        return 0;
-    }
+    // 获取波形基线
+    virtual int getBaseLine(void) {return 0;}
 
-    // the corespond value for +/- 0.5mv
+    // 获取+/-0.5mV对应的数值。
     virtual void get05mV(int &p05mv, int &n05mv);
 
-    // get the lead type
+    // 获取导联线类型
     virtual void getLeadCabelType();
 
-    // set lead system
+    // 设置导联系统。
     virtual void setLeadSystem(ECGLeadMode leadSystem);
 
-    // set calculate lead
+    // 设置计算导联。
     virtual void setCalcLead(ECGLead lead);
 
-    // set patient type
+    // 设置病人类型。0表示成人，1表示小孩，2表示新生儿，3表示空
     virtual void setPatientType(unsigned char type);
-
-    // set bandwidth
-    virtual void setBandwidth(ECGBandwidth bandwidth);
 
     // set filter mode
     virtual void setFilterMode(ECGFilterMode mode);
 
-    // set the pacer status
-    virtual void enablePacermaker(ECGPaceMode onoff);
-
-    // set the notch filter
-    virtual void setNotchFilter(ECGNotchFilter notch);
-
-    // enabel ST analysis
-    virtual void enableSTAnalysis(bool onoff);
-
-    // ST point setting
-    virtual void setSTPoints(int iso, int st);
+    // 设置带宽。
+    virtual void setBandwidth(ECGBandwidth bandwidth);
 
     // set self learn
     virtual void setSelfLearn(bool onOff);
@@ -93,46 +140,64 @@ public:
     // set threshold
     virtual void setARRThreshold(ECGAlg::ARRPara parameter, short value);
 
-public:
-    // RESP provider interface
-    // max wave value
-    virtual int maxRESPWaveValue()
-    {
-//        return 0x3FFF;
-        return 255;
-    }
+    // 起搏器设置。
+    virtual void enablePacermaker(ECGPaceMode onoff);
 
-    // min wave value
-    virtual int minRESPWaveValue()
-    {
-//        return -0x4000;
-        return 0;
-    }
+    // 设置工频滤波。
+    virtual void setNotchFilter(ECGNotchFilter notch);
 
-    // get wave sample rate
+    // ST开关。
+    virtual void enableSTAnalysis(bool onoff);
+
+    // enable vf calc control
+    virtual void enableVFCalcCtrl(bool enable);
+
+    // ST点设置。
+    virtual void setSTPoints(int iso, int st);
+
+    //获取版本号
+    virtual void sendVersion(void);
+
+public: // RESPProviderIFace的接口。
+    // 获取最大值
+    virtual int maxRESPWaveValue() {return 0x3FFF;}
+
+    // 获取最小值
+    virtual int minRESPWaveValue() {return -0x4000;}
+
+    // 获取波形的采样速度。
     virtual int getRESPWaveformSample(void);
 
-    // get the waveform baseline
-    virtual int getRESPBaseLine()
-    {
-        return 0;
-    }
+    // 获取波形基线
+    virtual int getRESPBaseLine(void) {return 0;}
 
-    // disable apnea handling
-    virtual void disableApnea();
+    // 关闭窒息处理。
+    virtual void disableApnea(void);
 
-    // set apnea time
+    // 设置窒息时间。
     virtual void setApneaTime(ApneaAlarmTime t);
 
-    // set the waveform gain
+    // 获取波形的采样速度。
     virtual void setWaveformZoom(RESPZoom zoom);
 
-    // set the resp calculate lead
+    // 设置呼吸导联
     virtual void setRESPCalcLead(RESPLead lead);
 
-    // enable resp
+    // 启用RESP
     virtual void enableRESPCalc(bool enable);
 
+public:
+    E5Provider();
+    ~E5Provider();
+
+protected:
+    virtual void disconnected(void);
+    virtual void reconnected(void);
+
 private:
-    QScopedPointer<E5ProviderPrivate> d_ptr;
+    int _waveSampleRate;
+
+private:
+    void _handleECGRawData(const unsigned char *data, unsigned len);
+    void _handleRESPRawData(const unsigned char *data, unsigned len);
 };

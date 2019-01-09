@@ -1,11 +1,23 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/12/29
+ **/
+
 #include "TriggerPageGenerator.h"
 #include "Utility.h"
+#include <QPointer>
+#include <QDebug>
 
 class TriggerPageGeneratorPrivate
 {
 public:
-    TriggerPageGeneratorPrivate(EventStorageItem *item)
-        :curPageType(RecordPageGenerator::TrendPage),
+    explicit TriggerPageGeneratorPrivate(EventStorageItem *item)
+        : curPageType(RecordPageGenerator::TrendPage),
           item(item),
           curDrawWaveSegment(0)
     {
@@ -26,15 +38,16 @@ public:
 bool TriggerPageGeneratorPrivate::fetchWaveData()
 {
     QList<RecordWaveSegmentInfo>::iterator iter;
-    for(iter = waveInfos.begin(); iter < waveInfos.end(); iter++)
+    for (iter = waveInfos.begin(); iter < waveInfos.end(); ++iter)
     {
-        if(iter->secondWaveBuff.size() != iter->sampleRate)
+        if (iter->secondWaveBuff.size() != iter->sampleRate)
         {
             iter->secondWaveBuff.resize(iter->sampleRate);
         }
 
         int retryCount = 0;
-        while(curDrawWaveSegment >= item->getCurWaveCacheDuration(iter->id))
+        QPointer<EventStorageItem> itemGuard(item);
+        while (curDrawWaveSegment >= item->getCurWaveCacheDuration(iter->id))
         {
             if (recorderManager.isAbort())
             {
@@ -42,21 +55,26 @@ bool TriggerPageGeneratorPrivate::fetchWaveData()
                 return false;
             }
 
-            if(++retryCount >= 220) //wait more than 1 second
+            if (++retryCount >= 220) // wait more than 1 second
             {
                 break;
             }
 
             Util::waitInEventLoop(5);
+
+            if (!itemGuard)
+            {
+                return false;
+            }
         }
 
-        if(curDrawWaveSegment < item->getCurWaveCacheDuration(iter->id))
+        if (curDrawWaveSegment < item->getCurWaveCacheDuration(iter->id))
         {
             item->getOneSecondWaveform(iter->id, iter->secondWaveBuff.data(), curDrawWaveSegment);
         }
         else
         {
-            //fill with invalid data
+            // fill with invalid data
             iter->secondWaveBuff.fill((WaveDataType)INVALID_WAVE_FALG_BIT);
         }
     }
@@ -65,15 +83,15 @@ bool TriggerPageGeneratorPrivate::fetchWaveData()
 }
 
 TriggerPageGenerator::TriggerPageGenerator(EventStorageItem *item,
-                                           QObject *parent)
-    :RecordPageGenerator(parent), d_ptr(new TriggerPageGeneratorPrivate(item))
+        QObject *parent)
+    : RecordPageGenerator(parent), d_ptr(new TriggerPageGeneratorPrivate(item))
 {
     connect(this, SIGNAL(stopped()), item, SLOT(onTriggerPrintStopped()));
 }
 
 TriggerPageGenerator::~TriggerPageGenerator()
 {
-
+    qDebug() << Q_FUNC_INFO;
 }
 
 int TriggerPageGenerator::type() const
@@ -88,7 +106,8 @@ RecordPageGenerator::PrintPriority TriggerPageGenerator::getPriority() const
 
 RecordPage *TriggerPageGenerator::createPage()
 {
-    switch (d_ptr->curPageType) {
+    switch (d_ptr->curPageType)
+    {
     case TrendPage:
         d_ptr->curPageType = WaveScalePage;
         return createTrendPage(d_ptr->item->getTrendData(), true,
@@ -100,16 +119,16 @@ RecordPage *TriggerPageGenerator::createPage()
         return createWaveScalePage(d_ptr->waveInfos, recorderManager.getPrintSpeed());
 
     case WaveSegmentPage:
-        if(d_ptr->curDrawWaveSegment < d_ptr->item->getTotalWaveCacheDuration())
+        if (d_ptr->curDrawWaveSegment < d_ptr->item->getTotalWaveCacheDuration())
         {
-            if(!d_ptr->fetchWaveData())
+            if (!d_ptr->fetchWaveData())
             {
                 // fail to fetch wave data
                 return NULL;
             }
             return createWaveSegments(d_ptr->waveInfos, d_ptr->curDrawWaveSegment++, recorderManager.getPrintSpeed());
         }
-        //fall through
+    // fall through
 
     case EndPage:
         d_ptr->curPageType = NullPage;

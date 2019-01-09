@@ -26,7 +26,7 @@
 #include "ConfigEditAlarmLimitModel.h"
 #include "SystemManager.h"
 
-#define TABLE_ROW_NUM 7
+#define TABLE_ROW_NUM 6
 
 class ConfigEditAlarmLimitMenuContentPrivate
 {
@@ -127,7 +127,8 @@ void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
         }
     }
     this->infos = infos;
-    model->setupAlarmDataInfos(infos);
+    model->setupAlarmDataInfos(infos, false);
+    model->setEachPageRowCount(TABLE_ROW_NUM);
 }
 
 ConfigEditAlarmLimitMenuContent::ConfigEditAlarmLimitMenuContent(Config *const config)

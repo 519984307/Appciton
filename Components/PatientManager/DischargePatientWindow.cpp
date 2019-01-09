@@ -16,8 +16,8 @@
 #include "PatientInfoWindow.h"
 #include <QGridLayout>
 #include "LayoutManager.h"
-#include "StandbyWindow.h"
 #include "PatientManager.h"
+#include "SystemManager.h"
 
 class DischaregePatientWindowPrivate
 {
@@ -53,7 +53,7 @@ DischargePatientWindow::~DischargePatientWindow()
 void DischargePatientWindow::layoutExec()
 {
     setWindowTitle(trs("RelievePatient"));
-    setFixedSize(400, 200);
+    setFixedSize(450, 250);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setMargin(10);
@@ -66,23 +66,30 @@ void DischargePatientWindow::layoutExec()
     d_ptr->standbyChk->setIconSize(QSize(32, 32));
     d_ptr->standbyChk->setBorderWidth(0);
     d_ptr->standbyChk->setFixedSize(32, 32);
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        // 演示模式下，不能待机
+        d_ptr->standbyChk->setEnabled(false);
+    }
+    else
+    {
+        d_ptr->standbyChk->setEnabled(true);
+    }
 
     QLabel *lbl = new QLabel;
-#ifndef HIDE_STANDBY_FUNCTION
-    lbl->setText(trs("Standby"));
-    lbl->setFixedWidth(100);
-#else
     lbl->setText(trs("isRelievePatient"));
-#endif
-
     lbl->setAlignment(Qt::AlignCenter);
     d_ptr->hintLbl = lbl;
-    hlayout->addStretch();
+    layout->addWidget(d_ptr->hintLbl);
+    layout->addStretch();
+
 #ifndef HIDE_STANDBY_FUNCTION
+    lbl = new QLabel;
+    lbl->setText(trs("Standby"));
+    lbl->setFixedWidth(100);
     hlayout->addWidget(d_ptr->standbyChk);
-#endif
     hlayout->addWidget(lbl);
-    hlayout->addStretch();
+#endif
     layout->addLayout(hlayout);
     layout->addStretch();
 
@@ -114,16 +121,12 @@ void DischargePatientWindow::showEvent(QShowEvent *e)
     if (patientManager.isMonitoring())
     {
         setWindowTitle(trs("RelievePatient"));
-#ifdef HIDE_STANDBY_FUNCTION
         d_ptr->hintLbl->setText(trs("isRelievePatient"));
-#endif
     }
     else
     {
         setWindowTitle(trs("CleanPatientData"));
-#ifdef HIDE_STANDBY_FUNCTION
         d_ptr->hintLbl->setText(trs("isCleanPatient"));
-#endif
     }
     Window::showEvent(e);
 }
@@ -149,8 +152,7 @@ void DischargePatientWindow::onBtnRelease()
         windowManager.closeAllWidows();
         if (d_ptr->isStandby)
         {
-            StandbyWindow standyWin;
-            standyWin.exec();
+            systemManager.setWorkMode(WORK_MODE_STANDBY);
         }
     }
     else if (btn == d_ptr->noBtn)

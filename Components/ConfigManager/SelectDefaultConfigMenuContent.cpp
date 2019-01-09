@@ -62,9 +62,9 @@ void SelectDefaultConfigMenuContentPrivate::updateUserConfig()
     QString type;
     QString prefix = "ConfigManager|Default|";
 
-    for (int i = 0; i < ITEM_CBO_MENU_MAX; i++)
+    for (int i = ITEM_CBO_ADULT_DEFCONFIG; i < ITEM_CBO_MENU_MAX; i++)
     {
-        MenuItem menuItem = (MenuItem)i;
+        MenuItem menuItem = static_cast<MenuItem>(i);
         combos[menuItem]->blockSignals(true);
         //  remove the previous user define configs
         while (combos[menuItem]->count() > 2)
@@ -73,30 +73,34 @@ void SelectDefaultConfigMenuContentPrivate::updateUserConfig()
         }
 
         //  load new user define configs
+        QString patientType = PatientSymbol::convert(static_cast<PatientType>(i));
         for (int j = 0; j < infos.size(); j++)
         {
+            // 剔除病人类型不匹配的item
+            if (infos.at(j).patType != patientType)
+            {
+                continue;
+            }
             combos[menuItem]->addItem(infos.at(j).name);
         }
 
-        QString index = prefix + combos[menuItem]->property("nodeName").toString();
-        int nodeNameIndex = i;
-        switch (nodeNameIndex)
+        QString nodeName = prefix + combos[menuItem]->property("nodeName").toString();
+        switch (menuItem)
         {
-        case 0:
-            index = index + "Adult";
+        case ITEM_CBO_ADULT_DEFCONFIG:
+            nodeName += PatientSymbol::convert(PATIENT_TYPE_ADULT);
             break;
-        case 1:
-            index = index + "PED";
+        case ITEM_CBO_PED_DEFCONFIG:
+            nodeName += PatientSymbol::convert(PATIENT_TYPE_PED);;
             break;
-        case 2:
-            index = index + "NEO";
+        case ITEM_CBO_NEO_DEFCONFIG:
+            nodeName += PatientSymbol::convert(PATIENT_TYPE_NEO);;
             break;
         default:
-            index = index + "";
             break;
         }
 
-        systemConfig.getStrAttr(index, "type", type);
+        systemConfig.getStrAttr(nodeName, "type", type);
         if (type.toUpper() == "FACTORY")
         {
             combos[menuItem]->setCurrentIndex(0);
@@ -109,8 +113,8 @@ void SelectDefaultConfigMenuContentPrivate::updateUserConfig()
         {
             QString name;
             QString filename;
-            systemConfig.getStrAttr(index, "name", name);
-            systemConfig.getStrValue(index, filename);
+            systemConfig.getStrAttr(nodeName, "name", name);
+            systemConfig.getStrValue(nodeName, filename);
             int j = 0;
             for (; j < infos.size(); j++)
             {
@@ -151,13 +155,13 @@ void SelectDefaultConfigMenuContent::onCurrentIndexChanged(int index)
         switch (itemId)
         {
         case 0:
-            nodeIndex = nodeIndex + "Adult";
+            nodeIndex = nodeIndex + PatientSymbol::convert(PATIENT_TYPE_ADULT);
             break;
         case 1:
-            nodeIndex = nodeIndex + "PED";
+            nodeIndex = nodeIndex + PatientSymbol::convert(PATIENT_TYPE_PED);
             break;
         case 2:
-            nodeIndex = nodeIndex + "NEO";
+            nodeIndex = nodeIndex + PatientSymbol::convert(PATIENT_TYPE_NEO);
             break;
         default:
             nodeIndex = nodeIndex + "";

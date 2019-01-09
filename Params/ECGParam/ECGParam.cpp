@@ -499,7 +499,6 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
         }
         // 当前带宽
         flag |= bandwidth;
-        waveformCache.addData((WaveformID)i, ((flag & 0xFFFF) << 16) | (waveform[i] & 0xFFFF));
 
         static int flagUnsaved[ECG_LEAD_NR] = {0};
         // 在普通模式中，在监控模式下所有的波形数据要扔掉一半，以250显示
@@ -529,6 +528,8 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
         {
             _waveWidget[i]->addWaveformData(-waveform[i], norfalg & 0xFFFF);
         }
+
+        waveformCache.addData((WaveformID)i, ((flag & 0xFFFF) << 16) | (waveform[i] & 0xFFFF));
 
         flagUnsaved[i] = 0;
     }
@@ -1145,6 +1146,48 @@ void ECGParam::handleSelfTestResult()
         item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
         errorLog.append(item);
     }
+}
+
+HRSourceType ECGParam::getHrSourceTypeFromId(ParamID id)
+{
+    switch (id)
+    {
+        case PARAM_ECG:
+        return HR_SOURCE_ECG;
+        break;
+        case PARAM_SPO2:
+        return HR_SOURCE_SPO2;
+        break;
+        case PARAM_IBP:
+        return HR_SOURCE_IBP;
+        break;
+        case PARAM_NR:
+        return HR_SOURCE_AUTO;
+        break;
+        default:
+        break;
+    }
+    return HR_SOURCE_NR;
+}
+
+ParamID ECGParam::getIdFromHrSourceType(HRSourceType type)
+{
+    switch (type)
+    {
+        case HR_SOURCE_ECG:
+        return PARAM_ECG;
+        break;
+        case HR_SOURCE_SPO2:
+        return PARAM_SPO2;
+        break;
+        case HR_SOURCE_IBP:
+        return PARAM_IBP;
+        break;
+        case HR_SOURCE_AUTO:
+        case HR_SOURCE_NR:
+        break;
+    }
+    return PARAM_NR;
 }
 
 /**************************************************************************************************

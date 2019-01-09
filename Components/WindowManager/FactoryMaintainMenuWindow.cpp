@@ -20,6 +20,7 @@
 #include "FactoryTempMenuContent.h"
 #include "O2CalibrationMenuContent.h"
 #include "LanguageManager.h"
+#include "SystemManager.h"
 
 FactoryMaintainMenuWindow *FactoryMaintainMenuWindow::getInstance()
 {
@@ -31,12 +32,21 @@ FactoryMaintainMenuWindow *FactoryMaintainMenuWindow::getInstance()
         instance->addMenuContent(new FactoryVersionInfo);
         instance->addMenuContent(new FactoryDataRecordContent);
         instance->addMenuContent(new FactorySystemInfoMenuContent);
-//        instance->addMenuContent(new FactoryImportExportMenuContent);
+        instance->addMenuContent(new FactoryImportExportMenuContent);
         instance->addMenuContent(new ServiceUpdateEntranceContent);
-        instance->addMenuContent(new NIBPCalibrationMenuContent);
+        if (systemManager.isSupport(CONFIG_NIBP))
+        {
+            instance->addMenuContent(new NIBPCalibrationMenuContent);
+        }
         instance->addMenuContent(new FactoryTestMenuContent);
-        instance->addMenuContent(new FactoryTempMenuContent);
-        instance->addMenuContent(new O2CalibrationMenuContent);
+        if (systemManager.isSupport(CONFIG_TEMP))
+        {
+            instance->addMenuContent(new FactoryTempMenuContent);
+        }
+        if (systemManager.isSupport(CONFIG_O2))
+        {
+            instance->addMenuContent(new O2CalibrationMenuContent);
+        }
     }
 
     return instance;

@@ -217,17 +217,33 @@ void PatientInfoWindowPrivate::loadOptions()
     {
         buttons[ITEM_BTN_PATIENT_AGE]->setText("");
     }
+
+    // height
+    heightType = patientManager.getHeightUnit();
+
+    heightLbl->setText(QString("%1(%2)").arg(trs("PatientHeight"))
+                       .arg(Unit::getSymbol(heightType)));
+
+    QString heightStr = Unit::convert(heightType, UNIT_CM, patientManager.getHeight());
     if (patientManager.getHeight() > 0.000001)
     {
-        buttons[ITEM_BTN_PATIENT_HEIGHT]->setText(QString::number(patientManager.getHeight()));
+        buttons[ITEM_BTN_PATIENT_HEIGHT]->setText(heightStr);
     }
     else
     {
         buttons[ITEM_BTN_PATIENT_HEIGHT]->setText("");
     }
+
+    // weight
+    weightType = patientManager.getWeightUnit();
+
+    weightLbl->setText(QString("%1(%2)").arg(trs("PatientWeight"))
+                       .arg(Unit::getSymbol(weightType)));
+
+    QString weightStr = Unit::convert(weightType, UNIT_KG, patientManager.getWeight());
     if (patientManager.getWeight() > 0.000001)
     {
-        buttons[ITEM_BTN_PATIENT_WEIGHT]->setText(QString::number(patientManager.getWeight()));
+        buttons[ITEM_BTN_PATIENT_WEIGHT]->setText(weightStr);
     }
     else
     {
@@ -235,33 +251,6 @@ void PatientInfoWindowPrivate::loadOptions()
     }
     buttons[ITEM_BTN_PATIENT_ID]->setText(patientManager.getPatID());
     bedNum->setText(patientManager.getBedNum());
-
-    UnitType oldHeightType = heightType;
-    heightType = patientManager.getHeightUnit();
-
-    heightLbl->setText(QString("%1(%2)").arg(trs("PatientHeight"))
-                       .arg(Unit::getSymbol(heightType)));
-
-    UnitType oldWeightType = weightType;
-    weightType = patientManager.getWeightUnit();
-
-    weightLbl->setText(QString("%1(%2)").arg(trs("PatientWeight"))
-                       .arg(Unit::getSymbol(weightType)));
-
-    bool ok;
-    float heightValue = height->text().toFloat(&ok);
-    if (ok)
-    {
-        QString ret = Unit::convert(heightType, oldHeightType, heightValue);
-        height->setText(ret);
-    }
-
-    float weightValue = weight->text().toFloat(&ok);
-    if (ok)
-    {
-        QString ret = Unit::convert(weightType, oldWeightType, weightValue);
-        weight->setText(ret);
-    }
 
     int index = 0;
     systemConfig.getNumValue("General|ChangeBedNumberRight", index);
@@ -280,10 +269,11 @@ PatientInfoWindow::PatientInfoWindow()
     QLabel *label;
     int itemId;
     int itemPos = 0;
-    int itemWidth = this->width() / 3.2;
+    int itemWidth = 200;
 
     // patient type
     label = new QLabel(trs("PatientType"));
+    label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     layout->addWidget(label
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , itemPos++ % 4);
@@ -304,6 +294,7 @@ PatientInfoWindow::PatientInfoWindow()
     // bed num
     label = new QLabel();
     label->setText(trs("BedNumber"));
+    label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     layout->addWidget(label,
                       (d_ptr->combos.count() + d_ptr->buttons.count()) / 2,
                       itemPos++ % 4);
@@ -319,6 +310,7 @@ PatientInfoWindow::PatientInfoWindow()
 
     // patient pace marker
     label = new QLabel(trs("PatientPacemarker"));
+    label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     layout->addWidget(label
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , itemPos++ % 4);
@@ -341,6 +333,7 @@ PatientInfoWindow::PatientInfoWindow()
 
     // patient id
     label = new QLabel(trs("PatientID"));
+    label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     layout->addWidget(label
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , itemPos++ % 4);
@@ -358,6 +351,7 @@ PatientInfoWindow::PatientInfoWindow()
 
     // patient sex
     label = new QLabel(trs("PatientSex"));
+    label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     layout->addWidget(label
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , itemPos++ % 4);
@@ -378,6 +372,7 @@ PatientInfoWindow::PatientInfoWindow()
 
     // blood type
     label = new QLabel(trs("PatientBloodType"));
+    label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     layout->addWidget(label
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , itemPos++ % 4);
@@ -400,6 +395,7 @@ PatientInfoWindow::PatientInfoWindow()
 
     // patient name
     label = new QLabel(trs("PatientName"));
+    label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     layout->addWidget(label
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , itemPos++ % 4);
@@ -417,6 +413,7 @@ PatientInfoWindow::PatientInfoWindow()
 
     // patient age
     label = new QLabel(trs("PatientAge"));
+    label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     layout->addWidget(label
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , itemPos++ % 4);
@@ -435,6 +432,7 @@ PatientInfoWindow::PatientInfoWindow()
 
     // Patient Height
     label = new QLabel();
+    label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     layout->addWidget(label
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , itemPos++ % 4);
@@ -453,6 +451,7 @@ PatientInfoWindow::PatientInfoWindow()
 
     // Patient Weight
     label = new QLabel();
+    label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     layout->addWidget(label
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , itemPos++ % 4);
@@ -499,12 +498,14 @@ void PatientInfoWindowPrivate::savePatientInfoToManager()
 {
     patientManager.setAge(age->text().toInt());
     patientManager.setBlood(static_cast<PatientBloodType>(blood->currentIndex()));
-    patientManager.setHeight(height->text().toFloat());
+    QString heightStr = Unit::convert(UNIT_CM, heightType, height->text().toFloat()); // 病人信息保存的身高默认是cm单位
+    patientManager.setHeight(heightStr.toFloat());
     patientManager.setName(name->text());
     patientManager.setPatID(id->text());
     patientManager.setSex(static_cast<PatientSex>(sex->currentIndex()));
     patientManager.setType(static_cast<PatientType>(type->currentIndex()));
-    patientManager.setWeight(weight->text().toFloat());
+    QString weightStr = Unit::convert(UNIT_KG, weightType, weight->text().toFloat()); // 病人信息保存的体重默认是kg单位
+    patientManager.setWeight(weightStr.toFloat());
     patientManager.setPacermaker(static_cast<PatientPacer>(pacer->currentIndex()));
 }
 

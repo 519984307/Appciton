@@ -75,6 +75,7 @@ public:
 protected:
     /*reimplement*/
     void newPatientHandle();
+    void timerEvent(QTimerEvent *ev);
 
 private:
     Q_DECLARE_PRIVATE(EventStorageManager)

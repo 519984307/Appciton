@@ -81,7 +81,7 @@ void ECGTrendWidget::_loadConfig()
 
     int index = 0;
     currentConfig.getNumValue("ECG|HRSource", index);
-    HRSourceType type = static_cast<HRSourceType>(index);
+    HRSourceType type = ecgParam.getHrSourceTypeFromId(static_cast<ParamID>(index));
     SubDupParamID subId;
     switch (type)
     {

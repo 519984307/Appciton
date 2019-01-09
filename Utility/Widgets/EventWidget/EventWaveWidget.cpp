@@ -107,9 +107,6 @@ public:
         // 事件波形宽带按照合适的像素大小,高度按照实际的像素大小;
         pixelWPicth = 0.25;
         pixelHPitch = systemManager.getScreenPixelHPitch();
-        Config &conf =  configManager.getCurConfig();
-        conf.getNumValue("Event|WaveLengthBefore", durationBefore);
-        conf.getNumValue("Event|WaveLengthAfter", durationAfter);
     }
 
     ~EventWaveWidgetPrivate()
@@ -405,6 +402,12 @@ void EventWaveWidget::setWaveSegments(const QVector<WaveformDataSegment *> waveS
     update();
 }
 
+void EventWaveWidget::setInfoSegments(EventInfoSegment *info)
+{
+    d_ptr->durationAfter = info->duration_after;
+    d_ptr->durationBefore = info->duration_before;
+}
+
 void EventWaveWidget::setGain(ECGEventGain gain)
 {
     d_ptr->gain = gain;
@@ -575,12 +578,12 @@ void EventWaveWidget::_drawWave(int index, QPainter &painter)
         }
         // invaild data
         unsigned short flag = waveData->waveData[i]>>16;
-        if (flag == INVALID_WAVE_FALG_BIT)
+        if (flag & INVALID_WAVE_FALG_BIT)
         {
             y1 = y2 = waveValue;
             int j = i + 1;
             flag = waveData->waveData[j]>>16;
-            while (flag & INVALID_WAVE_FALG_BIT)
+            while (flag & INVALID_WAVE_FALG_BIT && x2 - d_ptr->startX < d_ptr->waveRagWidth)
             {
                 flag = waveData->waveData[j]>>16;
                 x2 += waveDesc.offsetX;

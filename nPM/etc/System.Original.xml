@@ -53,9 +53,9 @@
         <MedAlarmIntervals>3</MedAlarmIntervals>
         <LowAlarmIntervals>16</LowAlarmIntervals>
         <ReminderTone>1</ReminderTone>
-        <PhyParAlarmLatchlockOn>1</PhyParAlarmLatchlockOn>
+        <PhyParAlarmLatchlockOn>0</PhyParAlarmLatchlockOn>
 	<AlarmOffPrompting>1</AlarmOffPrompting>
-	<EnableAlarmAudioOff>1</EnableAlarmAudioOff>
+	<AlarmAudioOff>0</AlarmAudioOff>
 	<EnableAlarmOff>1</EnableAlarmOff>
 	<AlarmOffAtPowerOn>1</AlarmOffAtPowerOn>
     </Alarms>
@@ -966,10 +966,10 @@
                     </MonitorBigFont>
                 </BigFont>
                 <ECG12Lead>
-                    <Standard>ECGIWaveWidget,ECGV1WaveWidget,ECGIIWaveWidget,ECGV2WaveWidget,ECGIIIWaveWidget,ECGV3WaveWidget,ECGaVRWaveWidget,ECGV4WaveWidget,ECGaVLWaveWidget,ECGV5WaveWidget,ECGaVFWaveWidget,ECGV6WaveWidget</Standard>
+		    <Standard>ECGIWaveWidget,ECGIIWaveWidget,ECGIIIWaveWidget,ECGaVRWaveWidget,ECGaVLWaveWidget,ECGaVFWaveWidget,ECGV1WaveWidget,ECGV2WaveWidget,ECGV3WaveWidget,ECGV4WaveWidget,ECGV5WaveWidget,ECGV6WaveWidget</Standard>
                     <Cabrera>ECGaVLWaveWidget,ECGV1WaveWidget,ECGIWaveWidget,ECGV2WaveWidget,ECGaVRWaveWidget,ECGV3WaveWidget,ECGIIWaveWidget,ECGV4WaveWidget,ECGaVFWaveWidget,ECGV5WaveWidget,ECGIIIWaveWidget,ECGV6WaveWidget</Cabrera>
                 </ECG12Lead>
-                <ECG7Lead>ECGIWaveWidget,ECGIIWaveWidget,ECGIIIWaveWidget,ECGaVLWaveWidget,ECGaVRWaveWidget,ECGaVFWaveWidget,ECGV1WaveWidget</ECG7Lead>
+                <ECG7Lead>ECGIWaveWidget,ECGIIWaveWidget,ECGIIIWaveWidget,ECGaVRWaveWidget,ECGaVLWaveWidget,ECGaVFWaveWidget,ECGV1WaveWidget</ECG7Lead>
             </ContentLayout>
             <WidgetsOrder>
                 <FontSize>

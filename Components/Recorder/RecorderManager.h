@@ -75,6 +75,7 @@ public:
      * @return  true if printing, otherwise, false
      */
     bool isPrinting() const;
+    void setPrintStatus(bool sta);
 
     /**
      * @brief abort abort current printing

@@ -46,6 +46,7 @@ struct AlarmTraceCtrl
         priority = ALARM_PRIO_LOW;
         alarmMessage = NULL;
         lastAlarmed = false;
+        isLatched = true;
         overHighLimit = false;
         normalTimesCount = 0;
         alarmTimesCount = 0;
@@ -57,6 +58,7 @@ struct AlarmTraceCtrl
     AlarmPriority priority;
     const char *alarmMessage;
     bool lastAlarmed;               //报警、拴锁报警
+    bool isLatched;
     bool overHighLimit;
     char order;
     unsigned normalTimesCount;
@@ -141,6 +143,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
         if (_curAlarmStatus == ALARM_STATUS_OFF || _curAlarmStatus == ALARM_STATUS_PAUSE)
         {
             traceCtrl->Reset();
+            traceCtrl->alarmTimesCount = ALARM_LIMIT_TIMES;     // 处理目的：报警状态恢复正常后，马上刷新报警状态
             alarmSource->notifyAlarm(i, false);
             continue;
         }
@@ -175,6 +178,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
                         if (alarmIndicator.latchAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage))
                         {
                             alarmSource->notifyAlarm(i, true);
+                            traceCtrl->isLatched = true;
                             continue;
                         }
                     }
@@ -206,6 +210,8 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
                 alarmSource->notifyAlarm(i, false);
                 continue;
             }
+
+            traceCtrl->isLatched = false;
 
             alarmSource->notifyAlarm(i, true);
             if (completeResult < 0) // 超低限。
@@ -274,6 +280,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
                 continue;
             }
 
+            traceCtrl->isLatched = false;
             alarmSource->notifyAlarm(i, true);
             if (traceCtrl->normalTimesCount >= ALARM_LIMIT_TIMES)
             {
@@ -566,9 +573,10 @@ void Alarm::getAlarmSourceValue(qint32 *data, int len)
  * 参数：
  *      sourceName:报警源名称
  *      id：子参数的ID。
+ * 		ignoreLatched: ignore latch alarm status
  *      return value: 0, No alarm ; 1, low limit alarm; 2, high limit alarm
  *************************************************************************************************/
-char Alarm::getAlarmSourceStatus(const QString &sourceName, SubParamID id)
+char Alarm::getAlarmSourceStatus(const QString &sourceName, SubParamID id, bool ignoreLatched)
 {
     unsigned char flag = 0;
     int i = 0;
@@ -600,6 +608,13 @@ char Alarm::getAlarmSourceStatus(const QString &sourceName, SubParamID id)
                 if (traceCtrl->lastAlarmed)
                 {
                     flag = traceCtrl->overHighLimit ? HighLimitAlarm : LowLimitAlarm;
+                    if (ignoreLatched)
+                    {
+                        if (traceCtrl->isLatched)
+                        {
+                            flag = NotLimitAlarm;
+                        }
+                    }
                     break;
                 }
             }

@@ -96,6 +96,7 @@ enum WorkMode
 {
     WORK_MODE_NORMAL = 0,
     WORK_MODE_DEMO,
+    WORK_MODE_STANDBY,
     WORK_MODE_NR,
 };
 
@@ -181,18 +182,6 @@ public:
      */
     void setWorkMode(WorkMode workmode);
 
-    /**
-     * @brief setStandbyStatus set the system standby status
-     * @param standby standby status
-     */
-    void setStandbyStatus(bool standby);
-
-    /**
-     * @brief isStandby get the standby status
-     * @return true is in standby, otherwise, false
-     */
-    bool isStandby() const;
-
 #ifdef Q_WS_X11
 public:
     bool sendCommand(const QByteArray &cmd);
@@ -212,6 +201,12 @@ signals:
      * @param format  时间格式--12小时制、24小时制
      */
     void systemTimeFormatUpdated(TimeFormat format);
+
+    /**
+     * @brief standbySignal 待机信号
+     * @param flag 待机标志
+     */
+    void standbySignal(bool flag);
 
 private slots:
     void publishTestResult();

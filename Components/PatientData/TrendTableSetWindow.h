@@ -32,7 +32,6 @@ protected:
 private slots:
     void timeIntervalReleased(int);
     void trendGroupReleased(int);
-    void incidentReleased(int);
 
 private:
     TrendTableSetWindow();

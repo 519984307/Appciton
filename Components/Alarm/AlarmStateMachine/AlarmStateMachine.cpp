@@ -32,14 +32,18 @@ AlarmStateMachine::AlarmStateMachine()
 
     AlarmNormalState *normalState = new AlarmNormalState();
     AlarmPauseState *pauseState = new AlarmPauseState();
-    AlarmAudioOffState *audioOffState = new AlarmAudioOffState();
-    AlarmOffState *offState = new AlarmOffState();
     AlarmResetState *resetState = new AlarmResetState();
 
     _alarmStateMap.insert(normalState->type(), normalState);
     _alarmStateMap.insert(pauseState->type(), pauseState);
+
+#ifndef CLOSE_ALARM_AUDIO_OFF_ALARM_OFF
+    AlarmAudioOffState *audioOffState = new AlarmAudioOffState();
+    AlarmOffState *offState = new AlarmOffState();
     _alarmStateMap.insert(audioOffState->type(), audioOffState);
     _alarmStateMap.insert(offState->type(), offState);
+#endif
+
     _alarmStateMap.insert(resetState->type(), resetState);
     _currentState = normalState;
 

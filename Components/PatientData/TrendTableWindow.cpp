@@ -126,51 +126,25 @@ void TrendTableWindow::printTrendData(unsigned startTime, unsigned endTime)
 
 void TrendTableWindow::updatePages()
 {
-    unsigned startTime = 0;
-    unsigned endTime = 0;
-    unsigned rightTime = 0;
-    unsigned allPagesNum = 1;
-    unsigned curPageNum = 1;
+    unsigned start;
+    unsigned total;
+    unsigned column = d_ptr->model->getColumnCount();
+    d_ptr->model->getCurIndexInfo(start, total);
 
-    d_ptr->model->getDataTimeRange(startTime, endTime);
+    unsigned coef = total / column;
+    unsigned allPagesNum = (total % column == 0)?(coef):(coef + 1);
+    unsigned curPageNum = start / column + 1;
 
-    unsigned timeInterval = TrendDataSymbol::convertValue(d_ptr->timeInterval);
-
-    // 初始状态下起始时间与结束时间相同时显示页数1/1
-    if (endTime == startTime)
-    {
-        allPagesNum = curPageNum = 1;
-        setWindowTitle(QString("%1 ( %2 / %3 %4 )")
-                       .arg(trs("TrendTable"))
-                       .arg(curPageNum)
-                       .arg(allPagesNum)
-                       .arg(trs("Page")));
-        return;
-    }
-
-    if (startTime % timeInterval != 0)
-    {
-        startTime = startTime + (timeInterval - startTime % timeInterval);
-    }
-    endTime = endTime - endTime % timeInterval;
-    rightTime = d_ptr->model->getRightTime();
-
-    if (endTime <= startTime)
+    if (allPagesNum < curPageNum)
     {
         allPagesNum = curPageNum = 1;
     }
-    else
-    {
-        // 获取数据的总页数
-        allPagesNum = 1 + (endTime - startTime) * 1.0 / timeInterval / d_ptr->model->getColumnCount();
-        // 获取数据的当前页数
-        curPageNum = 1 + (rightTime - startTime) * 1.0 / ((endTime - startTime) * 1.0) * (allPagesNum - 1);
-    }
+
     setWindowTitle(QString("%1 ( %2 / %3 %4 )")
                    .arg(trs("TrendTable"))
                    .arg(curPageNum)
                    .arg(allPagesNum)
-                   .arg(trs("Page")));
+                   .arg(trs("PageNum")));
 }
 
 void TrendTableWindow::showEvent(QShowEvent *ev)

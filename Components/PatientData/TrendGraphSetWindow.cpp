@@ -271,6 +271,10 @@ TrendGraphSetWindow::TrendGraphSetWindow()
     d_ptr->timeIntervalList->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
     for (int i = 0; i < RESOLUTION_RATIO_NR; i ++)
     {
+        if (i == RESOLUTION_RATIO_NIBP)
+        {
+            continue;
+        }
         d_ptr->timeIntervalList->addItem(TrendDataSymbol::convert((ResolutionRatio)i));
     }
     d_ptr->timeIntervalList->setCurrentIndex(index);

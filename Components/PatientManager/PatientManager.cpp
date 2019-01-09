@@ -75,7 +75,10 @@ void PatientManager::setType(PatientType type)
     emit signalPatientType(d_ptr->patientInfo.type);
 
     ecgParam.setPatientType((unsigned char)(d_ptr->patientInfo.type));
-    nibpParam.provider().setPatientType(type);
+    if (systemManager.isSupport(PARAM_NIBP))
+    {
+        nibpParam.provider().setPatientType(type);
+    }
     configManager.loadConfig(type);
 }
 

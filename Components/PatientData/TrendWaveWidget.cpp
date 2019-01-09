@@ -756,7 +756,12 @@ void TrendWaveWidget::_trendLayout()
     dataIndex(startIndex, endIndex);
     for (int i = 0; i < _displayGraphNum; i++)
     {
-        SubParamID  subId = _subParams.at(_curIndex + i);
+        int index = _curIndex + i;
+        if (index < 0 || index + 1 > _subParams.count())
+        {
+            continue;
+        }
+        SubParamID  subId = _subParams.at(index);
         _curDisplaySubList.append(subId);
         _subWidgetList.at(i)->setWidgetParam(subId, getTrendGraphType(subId));
         _subWidgetList.at(i)->setThemeColor(colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(subId))));

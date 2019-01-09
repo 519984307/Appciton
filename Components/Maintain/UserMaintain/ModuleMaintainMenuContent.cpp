@@ -25,6 +25,7 @@
 #include "MessageBox.h"
 #include "LightManager.h"
 #include "AlarmIndicator.h"
+#include "ParamDataDefine.h"
 
 class ModuleMaintainMenuContentPrivate
 {
@@ -35,8 +36,6 @@ public:
         ITEM_BTN_IBP1_PRESSURE_CALIBRATION,
         ITEM_BTN_IBP2_PRESSURE_CALIBRATION,
         ITEM_BTN_CO2_MODULE_MAINTAIN,
-        ITEM_BTN_NIBP_PRESSURE_TEST,
-        ITEM_BTN_NIBP_LEAKAGE_DETECTION,
         ITEM_BTN_ECG_MODULE_CALIBRATION,
 #ifdef  Q_WS_QWS
         ITEM_BTN_TOUCH_SCREEN_CALIBRATION,
@@ -78,38 +77,44 @@ void ModuleMaintainMenuContent::layoutExec()
     QLabel *label;
     int itemID;
 
-    // ag module calibration
-    label = new QLabel(trs("AnaesthesiaModuleCalibration"));
-    layout->addWidget(label, d_ptr->buttons.count(), 0);
-    button = new Button(trs("Start"));
-    button->setButtonStyle(Button::ButtonTextOnly);
-    itemID = static_cast<int>(ModuleMaintainMenuContentPrivate::ITEM_BTN_AG_MODULE_CALIBRATION);
-    button->setProperty("Item", qVariantFromValue(itemID));
-    connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
-    layout->addWidget(button, d_ptr->buttons.count(), 1);
-    d_ptr->buttons.insert(ModuleMaintainMenuContentPrivate::ITEM_BTN_AG_MODULE_CALIBRATION, button);
+    if (systemManager.isSupport(PARAM_AG))
+    {
+        // ag module calibration
+        label = new QLabel(trs("AnaesthesiaModuleCalibration"));
+        layout->addWidget(label, d_ptr->buttons.count(), 0);
+        button = new Button(trs("Start"));
+        button->setButtonStyle(Button::ButtonTextOnly);
+        itemID = static_cast<int>(ModuleMaintainMenuContentPrivate::ITEM_BTN_AG_MODULE_CALIBRATION);
+        button->setProperty("Item", qVariantFromValue(itemID));
+        connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
+        layout->addWidget(button, d_ptr->buttons.count(), 1);
+        d_ptr->buttons.insert(ModuleMaintainMenuContentPrivate::ITEM_BTN_AG_MODULE_CALIBRATION, button);
+    }
 
-    // IBP1 pressure calibration
-    label = new QLabel(trs("IBP1PressureCalibration"));
-    layout->addWidget(label, d_ptr->buttons.count(), 0);
-    button = new Button("80");
-    button->setButtonStyle(Button::ButtonTextOnly);
-    itemID = static_cast<int>(ModuleMaintainMenuContentPrivate::ITEM_BTN_IBP1_PRESSURE_CALIBRATION);
-    button->setProperty("Item", qVariantFromValue(itemID));
-    connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
-    layout->addWidget(button, d_ptr->buttons.count(), 1);
-    d_ptr->buttons.insert(ModuleMaintainMenuContentPrivate::ITEM_BTN_IBP1_PRESSURE_CALIBRATION, button);
+    if (systemManager.isSupport(PARAM_IBP))
+    {
+        // IBP1 pressure calibration
+        label = new QLabel(trs("IBP1PressureCalibration"));
+        layout->addWidget(label, d_ptr->buttons.count(), 0);
+        button = new Button("80");
+        button->setButtonStyle(Button::ButtonTextOnly);
+        itemID = static_cast<int>(ModuleMaintainMenuContentPrivate::ITEM_BTN_IBP1_PRESSURE_CALIBRATION);
+        button->setProperty("Item", qVariantFromValue(itemID));
+        connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
+        layout->addWidget(button, d_ptr->buttons.count(), 1);
+        d_ptr->buttons.insert(ModuleMaintainMenuContentPrivate::ITEM_BTN_IBP1_PRESSURE_CALIBRATION, button);
 
-    // IBP2 pressure calibration
-    label = new QLabel(trs("IBP2PressureCalibration"));
-    layout->addWidget(label, d_ptr->buttons.count(), 0);
-    button = new Button("80");
-    button->setButtonStyle(Button::ButtonTextOnly);
-    itemID = static_cast<int>(ModuleMaintainMenuContentPrivate::ITEM_BTN_IBP2_PRESSURE_CALIBRATION);
-    button->setProperty("Item", qVariantFromValue(itemID));
-    connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
-    layout->addWidget(button, d_ptr->buttons.count(), 1);
-    d_ptr->buttons.insert(ModuleMaintainMenuContentPrivate::ITEM_BTN_IBP2_PRESSURE_CALIBRATION, button);
+        // IBP2 pressure calibration
+        label = new QLabel(trs("IBP2PressureCalibration"));
+        layout->addWidget(label, d_ptr->buttons.count(), 0);
+        button = new Button("80");
+        button->setButtonStyle(Button::ButtonTextOnly);
+        itemID = static_cast<int>(ModuleMaintainMenuContentPrivate::ITEM_BTN_IBP2_PRESSURE_CALIBRATION);
+        button->setProperty("Item", qVariantFromValue(itemID));
+        connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
+        layout->addWidget(button, d_ptr->buttons.count(), 1);
+        d_ptr->buttons.insert(ModuleMaintainMenuContentPrivate::ITEM_BTN_IBP2_PRESSURE_CALIBRATION, button);
+    }
 
     // CO2 ModuleMaintenance
     label = new QLabel(trs("CO2ModuleMaintenance"));
@@ -121,28 +126,6 @@ void ModuleMaintainMenuContent::layoutExec()
     connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
     layout->addWidget(button, d_ptr->buttons.count(), 1);
     d_ptr->buttons.insert(ModuleMaintainMenuContentPrivate::ITEM_BTN_CO2_MODULE_MAINTAIN, button);
-
-    // NIBP Pressure Test
-    label = new QLabel(trs("NIBPPressureTest"));
-    layout->addWidget(label, d_ptr->buttons.count(), 0);
-    button = new Button(trs("Start"));
-    button->setButtonStyle(Button::ButtonTextOnly);
-    itemID = static_cast<int>(ModuleMaintainMenuContentPrivate::ITEM_BTN_NIBP_PRESSURE_TEST);
-    button->setProperty("Item", qVariantFromValue(itemID));
-    connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
-    layout->addWidget(button, d_ptr->buttons.count(), 1);
-    d_ptr->buttons.insert(ModuleMaintainMenuContentPrivate::ITEM_BTN_NIBP_PRESSURE_TEST, button);
-
-    // NIBP Leakage Detection
-    label = new QLabel(trs("NIBPLeakageDetection"));
-    layout->addWidget(label, d_ptr->buttons.count(), 0);
-    button = new Button(trs("Start"));
-    button->setButtonStyle(Button::ButtonTextOnly);
-    itemID = static_cast<int>(ModuleMaintainMenuContentPrivate::ITEM_BTN_NIBP_LEAKAGE_DETECTION);
-    button->setProperty("Item", qVariantFromValue(itemID));
-    connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
-    layout->addWidget(button, d_ptr->buttons.count(), 1);
-    d_ptr->buttons.insert(ModuleMaintainMenuContentPrivate::ITEM_BTN_NIBP_LEAKAGE_DETECTION, button);
 
     // ECG Module Calibration
     label = new QLabel(trs("ECGModuleCalibration"));
@@ -244,12 +227,6 @@ void ModuleMaintainMenuContent::onButtonReleased()
             break;
         }
         case ModuleMaintainMenuContentPrivate::ITEM_BTN_CO2_MODULE_MAINTAIN:
-
-            break;
-        case ModuleMaintainMenuContentPrivate::ITEM_BTN_NIBP_PRESSURE_TEST:
-
-            break;
-        case ModuleMaintainMenuContentPrivate::ITEM_BTN_NIBP_LEAKAGE_DETECTION:
 
             break;
         case ModuleMaintainMenuContentPrivate::ITEM_BTN_ECG_MODULE_CALIBRATION:

@@ -24,6 +24,9 @@
 #include "SPO2Symbol.h"
 #include "CO2Symbol.h"
 #include "ContinuousPageGenerator.h"
+#include "TimeManager.h"
+
+#define STOP_PRINT_TIMEOUT          (100)
 
 class PrintSettingMenuContentPrivate
 {
@@ -36,7 +39,11 @@ public:
 
     PrintSettingMenuContentPrivate()
         : printTimeCbo(NULL),
-          printSpeedCbo(NULL)
+          printSpeedCbo(NULL),
+          printTimerId(-1),
+          waitTimerId(-1),
+          isWait(false),
+          timeoutNum(0)
     {
     }
     /**
@@ -56,6 +63,11 @@ public:
     QStringList waveNames;
     ComboBox *printTimeCbo;
     ComboBox *printSpeedCbo;
+
+    int printTimerId;
+    int waitTimerId;
+    bool isWait;
+    int timeoutNum;
 };
 
 void PrintSettingMenuContentPrivate::loadOptions()
@@ -143,10 +155,12 @@ void PrintSettingMenuContentPrivate::loadOptions()
     // 选择波形id对应的菜单索引
     for (int i = 0; i < PRINT_WAVE_NUM; i++)
     {
+        selectWaves[i]->blockSignals(true);
         // 选择空波形的索引
         if (savedWaveIds[i] == WAVE_NONE)
         {
             selectWaves[i]->setCurrentIndex(0);
+            selectWaves[i]->blockSignals(false);
             continue;
         }
 
@@ -162,12 +176,14 @@ void PrintSettingMenuContentPrivate::loadOptions()
         if (cboIndex == -1)
         {
             selectWaves[i]->setCurrentIndex(0);
+            selectWaves[i]->blockSignals(false);
             continue;
         }
 
         if (cboIndex < selectWaves[i]->count() && cboIndex >= 0)
         {
             selectWaves[i]->setCurrentIndex(cboIndex);
+            selectWaves[i]->blockSignals(false);
         }
     }
 }
@@ -226,7 +242,9 @@ void PrintSettingMenuContent::layoutExec()
         }
         else
         {
+            combo->blockSignals(true);
             combo->setCurrentIndex(i + 1);
+            combo->blockSignals(false);
         }
         combo->setProperty("comboItem", qVariantFromValue(i));
         connect(combo, SIGNAL(currentIndexChanged(QString)), this, SLOT(onSelectWaveChanged(QString)));
@@ -269,6 +287,31 @@ void PrintSettingMenuContent::layoutExec()
     glayout->setRowStretch(index, 1);
 }
 
+void PrintSettingMenuContent::timerEvent(QTimerEvent *ev)
+{
+    if (d_ptr->printTimerId == ev->timerId())
+    {
+        if (!recorderManager.isPrinting() || d_ptr->timeoutNum == 10)
+        {
+            if (!recorderManager.isPrinting())
+            {
+                recorderManager.addPageGenerator(new ContinuousPageGenerator(timeManager.getCurTime()));
+            }
+            killTimer(d_ptr->printTimerId);
+            d_ptr->printTimerId = -1;
+            d_ptr->timeoutNum = 0;
+        }
+        d_ptr->timeoutNum++;
+    }
+    else if (d_ptr->waitTimerId == ev->timerId())
+    {
+        d_ptr->printTimerId = startTimer(STOP_PRINT_TIMEOUT);
+        killTimer(d_ptr->waitTimerId);
+        d_ptr->waitTimerId = -1;
+        d_ptr->isWait = false;
+    }
+}
+
 void PrintSettingMenuContent::onComboxIndexChanged(int index)
 {
     ComboBox *combo = qobject_cast<ComboBox *>(sender());
@@ -302,10 +345,11 @@ void PrintSettingMenuContent::onSelectWaveChanged(const QString &waveName)
     if (curWaveCbo->currentIndex() == 0)
     {
         systemConfig.setNumValue(path, static_cast<int>(WAVE_NONE));
-        if (recorderManager.isPrinting())
+        if (recorderManager.isPrinting() && !d_ptr->isWait)
         {
             recorderManager.stopPrint();
-            recorderManager.addPageGenerator(new ContinuousPageGenerator());
+            d_ptr->waitTimerId = startTimer(2000);
+            d_ptr->isWait = true;
         }
         return;
     }
@@ -318,10 +362,11 @@ void PrintSettingMenuContent::onSelectWaveChanged(const QString &waveName)
     {
         systemConfig.setNumValue(path, d_ptr->waveIDs.at(waveIndex));
     }
-    if (recorderManager.isPrinting())
+    if (recorderManager.isPrinting() && !d_ptr->isWait)
     {
         recorderManager.stopPrint();
-        recorderManager.addPageGenerator(new ContinuousPageGenerator());
+        d_ptr->waitTimerId = startTimer(2000);
+        d_ptr->isWait = true;
     }
 
     // 收集当前所有选择菜单选择的波形id
@@ -407,7 +452,7 @@ void PrintSettingMenuContentPrivate::wavesUpdate(QList<int> &waveIDs, QStringLis
     {
         // spo2
         waveIDs.append(WAVE_SPO2);
-        waveNames.append(paramInfo.getParamWaveformName(WAVE_SPO2));
+        waveNames.append(trs(paramInfo.getParamWaveformName(WAVE_SPO2)));
     }
 
     if (systemManager.isSupport(CONFIG_IBP))

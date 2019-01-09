@@ -28,6 +28,9 @@ public:
     /* reimplement */
     QVariant data(const QModelIndex &index, int role) const;
 
+    /* reimplement */
+    bool setData(const QModelIndex &index, const QVariant &value, int role) const;
+
     /**
      * @brief setStringList set the string list
      * @param list the string list

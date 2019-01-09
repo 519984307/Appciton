@@ -19,7 +19,7 @@
     <TEMPEnable>1</TEMPEnable>
     <WIFIEnable>1</WIFIEnable>
     <TouchEnable>1</TouchEnable>
-    <O2Enable>1</O2Enable>
+    <O2Enable>0</O2Enable>
     <!--系统信息-->
     <SerialNumber>20180725222</SerialNumber>
     <SoftwareVersion>0.0.0.1</SoftwareVersion>
@@ -30,7 +30,7 @@
         <ECG>0</ECG>
         <SPO2>0</SPO2>
         <Battery>0</Battery>
-        <NIBP>1</NIBP>
+        <NIBP>0</NIBP>
         <TEMP>0</TEMP>
     </Record>
     <!--参数与Provider的关系-->

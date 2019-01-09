@@ -30,7 +30,6 @@
 #include "IBPParam.h"
 #include "IConfig.h"
 #include "NightModeManager.h"
-#include "StandbyWindow.h"
 #include "CalculateWindow.h"
 #include "DischargePatientWindow.h"
 
@@ -202,7 +201,7 @@ void SoftkeyActionBase::patientNew(bool isPressed)
     // patientMenu.createPatient();
     QStringList slist;
     slist << trs("No") << trs("Yes");
-    MessageBox messageBox(trs("Warn"), trs("RemoveAndRecePatient"), slist);
+    MessageBox messageBox(trs("Warn"), trs("RemoveAndRecePatient"), slist, true);
     if (messageBox.exec() == 1)
     {
         patientManager.newPatient();
@@ -310,8 +309,7 @@ void SoftkeyActionBase::standby(bool isPressed)
     {
         return;
     }
-    StandbyWindow w;
-    w.exec();
+    systemManager.setWorkMode(WORK_MODE_STANDBY);
 }
 
 void SoftkeyActionBase::CO2Zero(bool isPressed)

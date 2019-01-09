@@ -29,6 +29,8 @@ protected:
     /* reimplement */
     void layoutExec();
 
+    void timerEvent(QTimerEvent *ev);
+
 private slots:
     /**
      * @brief onComboxIndexChanged

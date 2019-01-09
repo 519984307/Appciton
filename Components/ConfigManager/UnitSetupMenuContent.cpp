@@ -322,6 +322,7 @@ void UnitSetupMenuContent::onComboBoxIndexChanged(int index)
         switch (item)
         {
         case UnitSetupMenuContentPrivate::ITEM_CBO_HEIGHT_UNIT:
+        {
             if (index == 0)
             {
                 index = UNIT_CM;
@@ -332,7 +333,9 @@ void UnitSetupMenuContent::onComboBoxIndexChanged(int index)
             }
             systemConfig.setNumValue("Unit|HeightUnit", index);
             break;
+        }
         case UnitSetupMenuContentPrivate::ITEM_CBO_WEIGHT_UNIT:
+        {
             if (index == 0)
             {
                 index = UNIT_KG;
@@ -343,6 +346,7 @@ void UnitSetupMenuContent::onComboBoxIndexChanged(int index)
             }
             systemConfig.setNumValue("Unit|WeightUnit", index);
             break;
+        }
         case UnitSetupMenuContentPrivate::ITEM_CBO_ST_UNIT:
             if (index == 0)
             {

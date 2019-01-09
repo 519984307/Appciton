@@ -60,6 +60,14 @@ public:
     void handleECGRawData(const unsigned char *data,  int len, bool stop);
 
     /**
+     * @brief handleSPO2RawData handle the SPO2 raw data
+     * @param data pointer to the data
+     * @param len the data length
+     * @param stop
+     */
+    void handleSPO2RawData(const unsigned char *data, int len, bool stop);
+
+    /**
      * @brief handleNIBPRawData handle the NIBP raw data
      * @param data pointer to the data
      * @param len the data length
@@ -71,6 +79,12 @@ public:
      * @param data the data struct contain data need to store
      */
     void saveEcgRawData(const StoreDataType *data);
+
+    /**
+     * @brief saveSPO2RawData and the spo2 raw data to file
+     * @param data the data struct contain data need to store
+     */
+    void saveSPO2RawData(const StoreDataType *data);
 
     /**
      * @brief saveNIBPRawData and the NIBP raw data to file
@@ -124,6 +138,42 @@ void RawDataCollectorPrivate::handleECGRawData(const unsigned char *data, int le
 
         mutex.lock();
         dataBuffer.append(new StoreDataType(RawDataCollector::ECG_DATA, content, stop));
+        mutex.unlock();
+    }
+}
+
+void RawDataCollectorPrivate::handleSPO2RawData(const unsigned char *data, int len, bool stop)
+{
+    QByteArray content;
+    if (stop)
+    {
+        mutex.lock();
+        dataBuffer.append(new StoreDataType(RawDataCollector::SPO2_DATA, content, stop));
+        mutex.unlock();
+    }
+    else
+    {
+        Q_UNUSED(len)
+        Q_ASSERT(len == 16);
+        QTextStream stream(&content);
+
+        data += 1;
+        for (int n = 0; n < 5; n++)
+        {
+
+            int v = data[0] | (data[1] << 8) | (data[2] << 16);
+            data += 3;
+            stream << v;
+            if (n != 4)
+            {
+                stream << ",";
+            }
+        }
+        stream << endl;
+        stream.flush();
+
+        mutex.lock();
+        dataBuffer.append(new StoreDataType(RawDataCollector::SPO2_DATA, content, stop));
         mutex.unlock();
     }
 }
@@ -217,6 +267,60 @@ void RawDataCollectorPrivate::saveEcgRawData(const StoreDataType *data)
         f->close();
         delete f;
         files[RawDataCollector::ECG_DATA] = NULL;
+    }
+}
+
+void RawDataCollectorPrivate::saveSPO2RawData(const StoreDataType *data)
+{
+    QFile *f = files[RawDataCollector::SPO2_DATA];
+
+    if (f == NULL && data->stop)
+    {
+        // do nothing
+        return;
+    }
+    else if (f && data->stop)
+    {
+        // close the file and delete the file descriptor
+        fsync(f->handle());
+        f->close();
+        delete f;
+        files[RawDataCollector::SPO2_DATA] = NULL;
+        return;
+    }
+    else if (f == NULL)
+    {
+        QString dirname = usbManager.getUdiskMountPoint() + "/SPO2_DATA/";
+        if (!QDir(dirname).exists())
+        {
+            if (!QDir().mkpath(dirname))
+            {
+                qDebug() << "Fail to create directory " << dirname;
+                return;
+            }
+        }
+        QString name = dirname + QDateTime::currentDateTime().toString("yyyy.MM.dd-HH.mm.ss") + ".txt";
+
+        // not open the file yet, open now
+        f = new QFile(name);
+        if (!f->open(QIODevice::WriteOnly))
+        {
+            qDebug() << "Fail to create file " << name;
+            delete f;
+            return;
+        }
+        files[RawDataCollector::SPO2_DATA] = f;
+    }
+
+    f->write(data->data);
+
+    if (f->size() > 10 * 1024 * 1024)
+    {
+        // store 10 M data in each file
+        fsync(f->handle());
+        f->close();
+        delete f;
+        files[RawDataCollector::SPO2_DATA] = NULL;
     }
 }
 
@@ -315,6 +419,9 @@ void RawDataCollector::run()
         case ECG_DATA:
             d_ptr->saveEcgRawData(data);
             break;
+        case SPO2_DATA:
+            d_ptr->saveSPO2RawData(data);
+            break;
         case NIBP_DATA:
             d_ptr->saveNIBPRawData(data);
             break;
@@ -346,6 +453,9 @@ void RawDataCollector::collectData(RawDataCollector::CollectDataType type, const
     {
     case RawDataCollector::ECG_DATA:
         d_ptr->handleECGRawData(data, len, stop);
+        break;
+    case RawDataCollector::SPO2_DATA:
+        d_ptr->handleSPO2RawData(data, len, stop);
         break;
     case RawDataCollector::NIBP_DATA:
         d_ptr->handleNIBPRawData(data, len, stop);

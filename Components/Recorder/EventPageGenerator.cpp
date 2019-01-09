@@ -182,7 +182,7 @@ public:
                 break;
             case WAVE_SPO2:
                 info.waveInfo.spo2.gain = spo2Param.getGain();
-                caption = "Pleth";
+                caption = trs(paramInfo.getParamWaveformName(WAVE_SPO2));
                 break;
             case WAVE_CO2:
                 info.waveInfo.co2.zoom = co2Param.getDisplayZoom();
@@ -223,7 +223,7 @@ public:
 
             captionLength = fontManager.textWidthInPixels(caption, q_ptr->font());
             info.drawCtx.captionPixLength = captionLength;
-            Util::strlcpy(info.drawCtx.caption, qPrintable(caption), sizeof(info.drawCtx.caption));
+            info.drawCtx.caption = caption;
             info.drawCtx.curPageFirstXpos = 0.0;
             info.drawCtx.prevSegmentLastYpos = 0.0;
             info.drawCtx.dashOffset = 0.0;

@@ -22,6 +22,8 @@
 #include "MoveButton.h"
 #include "ThemeManager.h"
 
+#define STOP_PRINT_TIMEOUT          (100)
+
 class TrendGraphWindowPrivate
 {
 public:
@@ -33,7 +35,12 @@ public:
         ACTION_BTN_DOWN_PAGE
     };
     TrendGraphWindowPrivate() : waveWidget(NULL), coordinateMoveBtn(NULL),
-        cursorMoveBtn(NULL), eventMoveBtn(NULL)
+        cursorMoveBtn(NULL), eventMoveBtn(NULL),
+        printTimerId(-1),
+        waitTimerId(-1),
+        isWait(false),
+        timeoutNum(0),
+        generator(NULL)
     {}
 
     void checkPageEnabled();
@@ -44,6 +51,11 @@ public:
     MoveButton *coordinateMoveBtn;
     MoveButton *cursorMoveBtn;
     MoveButton *eventMoveBtn;
+    int printTimerId;
+    int waitTimerId;
+    bool isWait;
+    int timeoutNum;
+    RecordPageGenerator *generator;
 };
 TrendGraphWindow *TrendGraphWindow::getInstance()
 {
@@ -112,6 +124,36 @@ void TrendGraphWindow::setHistoryData(bool flag)
     }
 }
 
+void TrendGraphWindow::timerEvent(QTimerEvent *ev)
+{
+    if (d_ptr->printTimerId == ev->timerId())
+    {
+        if (!recorderManager.isPrinting() || d_ptr->timeoutNum == 10) // 1000ms超时处理
+        {
+            if (!recorderManager.isPrinting())
+            {
+                recorderManager.addPageGenerator(d_ptr->generator);
+            }
+            else
+            {
+                d_ptr->generator->deleteLater();
+                d_ptr->generator = NULL;
+            }
+            killTimer(d_ptr->printTimerId);
+            d_ptr->printTimerId = -1;
+            d_ptr->timeoutNum = 0;
+        }
+        d_ptr->timeoutNum++;
+    }
+    else if (d_ptr->waitTimerId == ev->timerId())
+    {
+        d_ptr->printTimerId = startTimer(STOP_PRINT_TIMEOUT);
+        killTimer(d_ptr->waitTimerId);
+        d_ptr->waitTimerId = -1;
+        d_ptr->isWait = false;
+    }
+}
+
 void TrendGraphWindow::onButtonReleased()
 {
     Button *button = qobject_cast<Button *>(sender());
@@ -127,7 +169,7 @@ void TrendGraphWindow::onButtonReleased()
             QList<unsigned> eventTimeList = d_ptr->waveWidget->getEventList();
             RecordPageGenerator *pageGenerator = new TrendGraphPageGenerator(trendGraphList, eventTimeList);
 
-            if (recorderManager.isPrinting())
+            if (recorderManager.isPrinting() && !d_ptr->isWait)
             {
                 if (pageGenerator->getPriority() <= recorderManager.getCurPrintPriority())
                 {
@@ -136,12 +178,18 @@ void TrendGraphWindow::onButtonReleased()
                 else
                 {
                     recorderManager.stopPrint();
-                    recorderManager.addPageGenerator(pageGenerator);
+                    d_ptr->generator = pageGenerator;
+                    d_ptr->waitTimerId = startTimer(2000); // 等待2000ms
+                    d_ptr->isWait = true;
                 }
+            }
+            else if (!recorderManager.getPrintStatus())
+            {
+                recorderManager.addPageGenerator(pageGenerator);
             }
             else
             {
-                recorderManager.addPageGenerator(pageGenerator);
+                pageGenerator->deleteLater();
             }
             break;
         }
