@@ -52,6 +52,12 @@ void MasimoSetProvider::dataArrived(void)
             continue;
         }
 
+        if (ringBuff.dataSize() < 13)
+        {
+            // no enough data
+            break;
+        }
+
         if (ringBuff.at(13) != EOM)
         {
             // debug("discard (%s:%d)\n", qPrintable(getName()), ringBuff.at(0));

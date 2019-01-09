@@ -25,12 +25,23 @@ do { \
     QString().sprintf(args).toStdString().c_str()).toStdString().c_str());\
 } while(false)
 
+#if 0
 #define outHex(buff, len) \
 for(int i = 0; i < len; i++) \
 {\
     fprintf(stderr, "0x%02x, ", buff[i]); \
 } \
 fprintf(stderr, "\t%s:%d\n", basename(__FILE__), __LINE__)
+#endif
+
+#define outHex(buff, len) \
+    do { \
+        QString s; \
+        for (int i = 0; i < len; ++i) \
+            s += QString::number(buff[i], 16) + " "; \
+        qDebug() << s; \
+    } while (0)
+
 
 #define outDec(buff, len) \
 for(int i = 0; i < len; i++) \

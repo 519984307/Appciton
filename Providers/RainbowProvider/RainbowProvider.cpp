@@ -17,6 +17,7 @@
 #define SOM  (0xA1)
 #define EOM  (0xAF)
 #define DEFALUT_BAUD_RATE  (9600)
+#define RUN_BAUD_RATE  (57600)
 #define MIN_PACKET_LEN  (5)
 #define TEMP_BUFF_SIZE  (64)
 #define MANU_ID    (0x23ae5d53)
@@ -48,6 +49,7 @@ enum RBSendPacketType
     RB_CMD_REQ_PARAM_INFO            = 0x10,     // request parameter info by force
     RB_CMD_CONF_PERIOD_PARAM_OUTPUT  = 0x20,     // configure periodic parameter output
     RB_CMD_CONF_PERIOD_WAVE_OUTPUT   = 0x21,     // configure periodic waveform output
+    RB_CMD_CONF_UPDATE_BAUDRATE      = 0x23,     // upgrade the baudrate
 };
 
 enum RBParamIDType
@@ -56,7 +58,10 @@ enum RBParamIDType
     RB_PARAM_OF_PR                   = 0X02,     // pluse rate value and exceptions
     RB_PARAM_OF_PI                   = 0X03,     // pi value and exceptions
     RB_PARAM_OF_OXI_SYSTEM_EXCEPTION = 0X0C,     // plus Oximeter System Exceptions
+    RB_PARAM_OF_BOARD_FAILURE        = 0X0D,     // board failure
+    RB_PARAM_OF_SENSOR_PARAM_CHECK   = 0X0E,     // sensor param check
     RB_PARAM_OF_VERSION_INFO         = 0X0F,     // dsp version,base board params,mcu version and so on
+    RB_PARAM_OF_BASELINE             = 0X2B,     // baseline
     RB_PARAM_MAX_ITEM,
 };
 
@@ -69,11 +74,74 @@ enum RBWaveformSelectionBitsType
     ACOUSTIC_DISPLAY_DATA            = 0X400000,  // Acoustic display data
 };
 
+
+enum RBInitializeStep
+{
+    RB_INIT_BAUDRATE,
+    RB_INIT_GET_BOARD_INFO,
+    RB_INIT_UNLOCK_BOARD,
+    RB_INIT_SENSOR_PARAM_CHECK,
+    RB_INIT_SET_LINE_FREQ,
+    RB_INIT_SET_AVERAGE_TIME,
+    RB_INIT_SET_FAST_SAT,
+    RB_INIT_SMART_TONE,
+    RB_INIT_GET_SYSTEM_EXECPTION,
+    RB_INIT_SET_PI,
+    RB_INIT_GET_BOARD_FAILURE,
+    RB_INIT_SET_SPO2,
+    RB_INIT_SET_BASELINE,
+    RB_INIT_SET_WAVEFORM,
+    RB_INIT_COMPLETED,
+};
+
+enum RBPulseOximeterSystemExceptions
+{
+    RB_NO_CABLE_CONNECTED = (1 << 0),  // no cable connected
+    RB_CABLE_EXPIRED = (1 << 1),  // cable expired
+    RB_INCOMPATIBLE_CABLE = (1 << 2),  // incompatible cable
+    RB_UNRECONGNIZED_CABLE = (1 << 3),  // unrecongnized cable
+    RB_DEFECTIVE_CABLE = (1 << 4),  // defective cable
+    RB_CABLE_NEAR_EXPIRATION = (1 << 5),  // cable near expiration
+    RB_RESERVED = (1 << 6),  // reserved
+    RB_NOSENSOR_CONNECTED = (1 << 7),  // no sensor connected
+    RB_SENSOR_EXPIRED = (1 << 8),  // sensor expired
+    RB_INCOMPATIBLE_SENSOR = (1 << 9),  // incompatible sensor
+    RB_UNRECONGNIZED_SENSOR = (1 << 10),  // unrecongnized sensor
+    RB_DEFECTIVE_SENSOR = (1 << 11),  // defective sensor
+    RB_CHECK_CABLE_AND_SENSOR_FAULT = (1 << 12),  // check cable and sensor fault
+    RB_RESERVED_TWO = (1 << 13),  // reserved
+    RB_SENSOR_NEAR_EXPIRATION = (1 << 13),  // sensor near expiration
+    RB_NO_ADHESIVE_SENSOR = (1 << 14),  // no adhesive sensor
+    RB_ADHESIVE_SENSOR_EXPIRATION = (1 << 15),  // adhesive sensor expiraton
+    RB_INCOMPATIBLE_ADHESIVE_SENSOR = (1 << 16),  // incompatible adhesive sensor
+    RB_UNRECONGNIZED_ADHESIVE_SENSOR = (1 << 17),  // unrecongnized adhesive sensor
+    RB_DEFECTIVE_ADHESIVE_SENSOR = (1 << 18),  // defective adhesive sensor
+    RB_SENSOR_INITING = (1 << 19),  // sensor initing
+    RB_SENSOR_OFF_PATIENT = (1 << 20),  // sensor off patient
+    RB_PULSE_SEARCH = (1 << 21),  // pulse search
+    RB_INTERFERENCE_DETECTED = (1 << 22),  // interference detected
+    RB_LOW_PERFUSION_INDEX = (1 << 23),  // low perfusion index
+    RB_DEMO_MODE = (1 << 24),  // demo mode
+    RB_ADHESIVE_SENSOR_NEAR_EXPIRATION = (1 << 25),  // adhesive sensor near expiration
+};
+
+
 class RainbowProviderPrivate
 {
 public:
     explicit RainbowProviderPrivate(RainbowProvider *p)
         : q_ptr(p)
+        , isUpdatingBaudrate(false)
+        , initFlag(false)
+        , isOkOfInit(false)
+        , lineFreq(RB_LINE_FREQ_50HZ)
+        , averTime(SPO2_AVER_TIME_2_4SEC)
+        , sensMode(SPO2_MASIMO_SENS_MAX)
+        , fastSat(false)
+        , enableSmartTone(false)
+        , curInitializeStep(RB_INIT_BAUDRATE)
+        , noSensor(true)
+        , needReset(true)
     {
     }
 
@@ -143,6 +211,11 @@ public:
     void requestBoardInfo();
 
     /**
+     * @brief upgradeBaudRate upgrade the baudrate
+     */
+    void updateBaudRate();
+
+    /**
      * @brief configPeriodParamOut  配置参数输出周期
      * @param paramId  参数id
      * @param periodTime  周期时间
@@ -151,13 +224,48 @@ public:
 
     /**
      * @brief configPeriodWaveformOut  配置波形输出周期
-     * @param bitsType  参数类型
+     * @param selectionBits  波形参数选择
      * @param periodTime  周期时间
      */
-    void configPeriodWaveformOut(RBWaveformSelectionBitsType bitsType, unsigned char periodTime);
+    void configPeriodWaveformOut(unsigned int selectionBits, unsigned char periodTime);
+
+    /**
+     * @brief init  模块初始化
+     */
+    void init();
+
+    void handleACK();
+
+    /**
+     * @brief requestParamStatus  请求参数状态
+     */
+    void requestParamStatus();
 
     static const unsigned char minPacketLen = MIN_PACKET_LEN;
+
     RainbowProvider *q_ptr;
+
+    bool isUpdatingBaudrate;  // need to update the baudrate after reset
+
+    int initFlag;  // 初始化标志位
+
+    bool isOkOfInit;  // 是否初始化完成
+
+    RainbowLineFrequency lineFreq;
+
+    AverageTime averTime;
+
+    SensitivityMode sensMode;
+
+    bool fastSat;
+
+    bool enableSmartTone;
+
+    RBInitializeStep curInitializeStep;
+
+    bool noSensor;
+
+    bool needReset;
 };
 
 RainbowProvider::RainbowProvider()
@@ -167,7 +275,17 @@ RainbowProvider::RainbowProvider()
 {
     UartAttrDesc attr(DEFALUT_BAUD_RATE, 8, 'N', 1);
     initPort(attr);
-    QTimer::singleShot(200, this, SLOT(onTimeOut()));
+
+    if (d_ptr->curInitializeStep == RB_INIT_GET_BOARD_INFO)
+    {
+        QTimer::singleShot(200, this, SLOT(requestBoardInfo()));
+    }
+    else
+    {
+        QTimer::singleShot(200, this, SLOT(changeBaudrate()));
+    }
+
+    // QTimer::singleShot(200, this, SLOT(onTimeOut()));
 }
 
 RainbowProvider::~RainbowProvider()
@@ -180,6 +298,7 @@ bool RainbowProvider::attachParam(Param &param)
     {
         spo2Param.setProvider(this);
         Provider::attachParam(param);
+        return true;
     }
     return false;
 }
@@ -196,25 +315,33 @@ void RainbowProvider::dataArrived()
     }
 
     // 处理数据
-    unsigned char buff[TEMP_BUFF_SIZE];
     while (ringBuff.dataSize() >= d_ptr->minPacketLen)
     {
         // 如果查询不到帧头，移除ringbuff缓冲区最旧的数据，下次继续查询
+        bool popHead = false;
         if (ringBuff.at(0) != SOM)
         {
-            ringBuff.pop(1);
-            continue;
+            popHead = true;
         }
 
+
         // 如果查询不到帧尾，移除ringbuff缓冲区最旧的数据，下次继续查询
-        unsigned char len = ringBuff.at(1);
-        unsigned char totalLen = 2 + len + 2;
-        if (ringBuff.at(totalLen - 1) != EOM)
+        unsigned char len = ringBuff.at(1);     // data field length
+        unsigned char totalLen = 2 + len + 2;   // 1 frame head + 1 lenblmpr byte + data length + 1 checksum + 1 frame end
+
+        if (ringBuff.dataSize() < totalLen)
+        {
+            // no enough data
+            break;
+        }
+
+        if (ringBuff.at(totalLen - 1) != EOM || popHead == true)
         {
             ringBuff.pop(1);
             continue;
         }
 
+        unsigned char buff[TEMP_BUFF_SIZE] = {0};
         // 将ringbuff中数据读取到临时缓冲区buff中,并移除ringbuff的旧数据
         for (int i = 0; i < totalLen; i++)
         {
@@ -256,16 +383,23 @@ void RainbowProvider::dataArrived(unsigned char *data, unsigned char length)
     while (ringBuff.dataSize() >= d_ptr->minPacketLen)
     {
         // 如果查询不到帧头，移除ringbuff缓冲区最旧的数据，下次继续查询
+        bool popHead = false;
         if (ringBuff.at(0) != SOM)
         {
-            ringBuff.pop(1);
-            continue;
+            popHead = true;
         }
 
         // 如果查询不到帧尾，移除ringbuff缓冲区最旧的数据，下次继续查询
-        unsigned char len = ringBuff.at(1);
-        unsigned char totalLen = 2 + len + 2;
-        if (ringBuff.at(totalLen - 1) != EOM)
+        unsigned char len = ringBuff.at(1);     // data field length
+        unsigned char totalLen = 2 + len + 2;   // 1 frame head + 1 len byte + data length + 1 checksum + 1 frame end
+
+        if (ringBuff.dataSize() < totalLen)
+        {
+            // no enough data
+            break;
+        }
+
+        if (ringBuff.at(totalLen - 1) != EOM || popHead == true)
         {
             ringBuff.pop(1);
             continue;
@@ -298,18 +432,17 @@ void RainbowProvider::dataArrived(unsigned char *data, unsigned char length)
 
 int RainbowProvider::getSPO2BaseLine()
 {
-    return 128;
+    return 0;
 }
 
 int RainbowProvider::getSPO2MaxValue()
 {
-    return 128;
+    return 255;
 }
 
 void RainbowProvider::sendVersion()
 {
-    unsigned char data[2] = {RB_CMD_REQ_PARAM_INFO, RB_PARAM_OF_VERSION_INFO};
-    d_ptr->sendCmd(data, sizeof(data));
+    return;
 }
 
 
@@ -350,7 +483,20 @@ void RainbowProvider::reconnected()
 
 void RainbowProvider::onTimeOut()
 {
+    if (d_ptr->curInitializeStep != RB_INIT_COMPLETED)
+    {
+        d_ptr->handleACK();
+    }
+}
+
+void RainbowProvider::requestBoardInfo()
+{
     d_ptr->requestBoardInfo();
+}
+
+void RainbowProvider::changeBaudrate()
+{
+    d_ptr->updateBaudRate();
 }
 
 void RainbowProvider::setLineFrequency(RainbowLineFrequency freq)
@@ -358,17 +504,6 @@ void RainbowProvider::setLineFrequency(RainbowLineFrequency freq)
     unsigned char data[2] = {RB_CMD_CONF_LINE_FREQ, freq};
     d_ptr->sendCmd(data, 2);
 }
-
-
-
-
-
-
-
-
-
-
-
 
 void RainbowProviderPrivate::handlePacket(unsigned char *data, int len)
 {
@@ -381,7 +516,7 @@ void RainbowProviderPrivate::handlePacket(unsigned char *data, int len)
     // 如果主机与该模块未连接成功，直接退出
     if (q_ptr->isConnected == false)
     {
-        return;
+        spo2Param.setConnected(true);
     }
 
     // 发送保活帧
@@ -392,10 +527,13 @@ void RainbowProviderPrivate::handlePacket(unsigned char *data, int len)
     switch (packetType)
     {
     case  RB_ACK:
-        break;
+    {
+        handleACK();
+    }
+    break;
     case  RB_NCK:
     {
-        qDebug() << "Bad Packet Sended of RainBow Provider\n";
+        qDebug() << Q_FUNC_INFO << "Receive NAK type "<<data[1];
     }
     break;
     case  RB_PARAM:
@@ -419,6 +557,7 @@ void RainbowProviderPrivate::handlePacket(unsigned char *data, int len)
         break;
     case  RB_PROGRAM_ERROR:
         break;
+
     case  RB_BOARD_INFO:
     {
         handleBoardInfo(&data[1], len - 1);
@@ -447,7 +586,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     case RB_PARAM_OF_SPO2:
     {
         temp = (data[4] << 8) + data[5];
-        bool valid = !!(temp & 0x0004);
+        bool valid = !(temp & 0x0004);
 
         if (valid == true)
         {
@@ -464,7 +603,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     case RB_PARAM_OF_PR:
     {
         temp = (data[4] << 8) + data[5];
-        bool valid = !!(temp & 0x0004);
+        bool valid = !(temp & 0x0004);
         if (valid == true)
         {
             temp = (data[0] << 8) + data[1];
@@ -479,7 +618,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     case RB_PARAM_OF_PI:
     {
         temp = (data[4] << 8) + data[5];
-        bool valid = !!(temp & 0x0004);
+        bool valid = !(temp & 0x0004);
         if (valid == true)
         {
             temp = (data[0] << 8) + data[1];
@@ -495,12 +634,14 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     case RB_PARAM_OF_OXI_SYSTEM_EXCEPTION:
     {
         unsigned int temp = (data[0] << 24) + (data[1] << 16) + (data[2] << 8) + data[3];
-        bool isCableOff = !!(temp & 0x80);
-        isCableOff |= !!(temp & 0x00200000);
 
-        bool  isSearching = !!(temp & 0x00400000);
+        bool isCableOff = !!(temp & (1 << 7));  // no sensor connected
 
-        bool isLowPerfusionIndex = !!(temp & 0x01000000);
+        isCableOff |= !!(temp & (1 << 21));  // sensor off patient
+
+        bool  isSearching = !!(temp & (1 << 22));  // pulse search
+
+        bool isLowPerfusionIndex = !!(temp & (1 << 24));  // low perfusion index
 
         if (isCableOff == true)
         {
@@ -534,6 +675,33 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         break;
     case RB_PARAM_MAX_ITEM:
         break;
+    case RB_PARAM_OF_BOARD_FAILURE:
+    {
+        unsigned short tmp = (data[0] << 8) | data[1];
+        if (tmp > 0)
+        {
+            needReset = true;
+        }
+        else
+        {
+            needReset = false;
+        }
+    }
+    break;
+    case RB_PARAM_OF_SENSOR_PARAM_CHECK:
+    {
+        unsigned short sensorType = (data[0] << 8) | data[1];
+        unsigned short sensorFamilyMember = (data[2] << 8) | data[3];
+        if (sensorFamilyMember == 8 || sensorType == 0)
+        {
+            noSensor = true;
+        }
+        else
+        {
+            noSensor = false;
+        }
+    }
+    break;
     default:
         break;
     }
@@ -545,16 +713,18 @@ void RainbowProviderPrivate::handleWaveformInfo(unsigned char *data, int len)
     {
         return;
     }
-    if (len < 8)
+
+    if (len < 3)
     {
         return;
     }
 
-    int16_t waveData = data[0] << 8;
-    waveData |= data[1];
+    short waveData = (data[0] << 8) | data[1];
+    waveData = (waveData + 32768) / 256;    // change to a positive value, in range of [0, 255)
+    waveData = 256 - waveData;      // upside down
     spo2Param.addWaveformData(waveData);
 
-    if (data[5] & 0x80)
+    if (data[2] & 0x80)
     {
         spo2Param.setPulseAudio(true);
     }
@@ -580,6 +750,7 @@ void RainbowProviderPrivate::handleBoardInfo(unsigned char *data, int len)
     falg |= data[7];
 
     unlockBoard(sn, falg);
+    curInitializeStep = RB_INIT_UNLOCK_BOARD;
 }
 
 void RainbowProviderPrivate::sendCmd(const unsigned char *data, unsigned int len)
@@ -641,22 +812,228 @@ void RainbowProviderPrivate::requestBoardInfo()
     sendCmd(data, sizeof(data));
 }
 
+void RainbowProviderPrivate::updateBaudRate()
+{
+    unsigned char data[2] = {RB_CMD_CONF_UPDATE_BAUDRATE, 0x04};    // upgrade the baudrate to 57600
+    sendCmd(data, sizeof(data));
+}
+
 void RainbowProviderPrivate::configPeriodParamOut(RBParamIDType paramId, unsigned int periodTime)
 {
-    unsigned char data[4] = {RB_CMD_CONF_PERIOD_PARAM_OUTPUT, paramId};
+    unsigned char id = static_cast<unsigned char>(paramId);
+    unsigned char data[4] = {RB_CMD_CONF_PERIOD_PARAM_OUTPUT, id};
     data[2] = periodTime >> 8;
     data[3] = periodTime & 0xff;
 
     sendCmd(data, sizeof(data));
 }
 
-void RainbowProviderPrivate::configPeriodWaveformOut(RBWaveformSelectionBitsType bitsType, unsigned char periodTime)
+void RainbowProviderPrivate::configPeriodWaveformOut(unsigned int selectionBits, unsigned char periodTime)
 {
     unsigned char data[5] = {RB_CMD_CONF_PERIOD_WAVE_OUTPUT};
-    data[1] = (bitsType >> 16) & 0xff;
-    data[2] = (bitsType >>  8) & 0xff;
-    data[3] = (bitsType) & 0xff;
+    data[1] = (selectionBits >> 16) & 0xff;
+    data[2] = (selectionBits >>  8) & 0xff;
+    data[3] = (selectionBits) & 0xff;
     data[4] = periodTime;
 
+    sendCmd(data, sizeof(data));
+}
+
+#if 0
+void RainbowProviderPrivate::init()
+{
+    if (isOkOfInit == true)
+    {
+        initFlag = 0;
+        return;
+    }
+
+    switch (initFlag)
+    {
+        case RB_INIT_BAUDRATE:
+        {
+            if (isUpdatingBaudrate)
+            {
+                UartAttrDesc attr(57600, 8, 'N', 1);
+                q_ptr->uart->updateSetting(attr);
+                isUpdatingBaudrate = false;
+                QTimer::singleShot(0, q_ptr, SLOT(onTimeOut()));
+            }
+            else
+            {
+                configPeriodParamOut(RB_PARAM_OF_SENSOR_PARAM_CHECK, 500);
+            }
+
+            initFlag++;
+        }
+        break;
+        case RB_INIT_SENSOR_PARAM_CHECK:
+        {
+            configPeriodParamOut(RB_PARAM_OF_SENSOR_PARAM_CHECK, 500);
+            initFlag++;
+        }
+        break;
+        case RB_INIT_SET_LINE_FREQ:
+        {
+            q_ptr->setLineFrequency(lineFreq);
+            initFlag++;
+        }
+        break;
+        case RB_INIT_SET_AVERAGE_TIME:
+        {
+            q_ptr->setAverageTime(averTime);
+            initFlag++;
+        }
+        break;
+        case RB_INIT_SET_FAST_SAT:
+        {
+            q_ptr->setSensitivityFastSat(sensMode, fastSat);
+            initFlag++;
+        }
+        break;
+        case RB_INIT_SMART_TONE:
+        {
+            q_ptr->setSmartTone(enableSmartTone);
+            initFlag++;
+        }
+        break;
+        case RB_INIT_GET_SYSTEM_EXECPTION:
+        {
+            configPeriodParamOut(RB_PARAM_OF_OXI_SYSTEM_EXCEPTION, 100);  // 每100ms检查一次异常
+            initFlag++;
+        }
+        break;
+        case RB_INIT_SET_PI:
+        {
+            configPeriodParamOut(RB_PARAM_OF_PI, 200);  // 每200ms输出一次灌注PI
+            initFlag++;
+        }
+        break;
+        case RB_INIT_GET_BOARD_FAILURE:
+        {
+            configPeriodWaveformOut(CLIPPED_AUTOSCALE_DATA | SIGNAL_IQ_AUDIO_VISUAL_DATA, 16);  // 每16ms输出一次波形
+            initFlag++;
+        }
+        break;
+        case 10:
+        {
+            configPeriodParamOut(RB_PARAM_OF_SPO2, 110);  // 每110ms输出一次spo2
+            initFlag++;
+        }
+        break;
+        case RB_INIT_SET_BASELINE:
+        {
+            configPeriodParamOut(RB_PARAM_OF_PR, 120);  // 每120ms输出一次脉率
+            initFlag++;
+        }
+        break;
+        case 12:
+        {
+            configPeriodParamOut(RB_PARAM_OF_BOARD_FAILURE, 180);  // 每180ms输出一次board failure
+            initFlag++;
+        }
+        break;
+        case 13:
+        {
+            configPeriodParamOut(RB_PARAM_OF_BASELINE, 170);  //每170ms输出一次Baseline PI
+            initFlag++;
+        }
+        break;
+        case 14:
+        {
+            initFlag++;
+            isOkOfInit = true;
+        }
+        break;
+    }
+}
+#endif
+
+void RainbowProviderPrivate::handleACK()
+{
+    if (curInitializeStep != RB_INIT_COMPLETED)
+    {
+        switch (curInitializeStep) {
+        case RB_INIT_BAUDRATE:
+        {
+            // baudrate has been update, switch to new baudrate
+            UartAttrDesc attr(RUN_BAUD_RATE, 8, 'N', 1);
+            q_ptr->uart->updateSetting(attr);
+            curInitializeStep = RB_INIT_GET_BOARD_INFO;
+            QTimer::singleShot(0, q_ptr, SLOT(requestBoardInfo()));
+        }
+            break;
+        case RB_INIT_GET_BOARD_INFO:
+            // board info response is not a ack message
+            break;
+        case RB_INIT_UNLOCK_BOARD:
+            // get here after board unlock
+            configPeriodParamOut(RB_PARAM_OF_SENSOR_PARAM_CHECK, 500);
+            curInitializeStep = RB_INIT_SENSOR_PARAM_CHECK;
+            break;
+        case RB_INIT_SENSOR_PARAM_CHECK:
+            // get here after the param check command success
+            q_ptr->setLineFrequency(lineFreq);
+            curInitializeStep = RB_INIT_SET_LINE_FREQ;
+            break;
+        case RB_INIT_SET_LINE_FREQ:
+            // get here after the line frequency
+            q_ptr->setAverageTime(averTime);
+            curInitializeStep = RB_INIT_SET_AVERAGE_TIME;
+            break;
+        case RB_INIT_SET_AVERAGE_TIME:
+            // get here after the line frequency
+            q_ptr->setSensitivityFastSat(sensMode, fastSat);
+            curInitializeStep = RB_INIT_SET_FAST_SAT;
+            break;
+        case RB_INIT_SET_FAST_SAT:
+            // get here after the fast sat
+            q_ptr->setSmartTone(enableSmartTone);
+            curInitializeStep = RB_INIT_SMART_TONE;
+            break;
+        case RB_INIT_SMART_TONE:
+            // get here after the smart tone
+            configPeriodParamOut(RB_PARAM_OF_OXI_SYSTEM_EXCEPTION, 100);  // 每100ms检查一次异常
+            curInitializeStep = RB_INIT_GET_SYSTEM_EXECPTION;
+            break;
+        case RB_INIT_GET_SYSTEM_EXECPTION:
+            // get here after the system execption
+            configPeriodParamOut(RB_PARAM_OF_PI, 200);  // 每200ms输出一次灌注PI
+            curInitializeStep = RB_INIT_SET_PI;
+            break;
+        case RB_INIT_SET_PI:
+            // get here after the setting pi
+            configPeriodParamOut(RB_PARAM_OF_BOARD_FAILURE, 180);  // 每180ms输出一次board failure
+            curInitializeStep = RB_INIT_GET_BOARD_FAILURE;
+            break;
+        case RB_INIT_GET_BOARD_FAILURE:
+            // get here after the board failure
+            configPeriodParamOut(RB_PARAM_OF_SPO2, 110);  // 每110ms输出一次spo2
+            curInitializeStep = RB_INIT_SET_SPO2;
+            break;
+        case RB_INIT_SET_SPO2:
+            // get here after the spo2
+            configPeriodParamOut(RB_PARAM_OF_PR, 120);  // 每120ms输出一次脉率
+            curInitializeStep = RB_INIT_SET_BASELINE;
+            break;
+        case RB_INIT_SET_BASELINE:
+            // get here after the baseline
+            configPeriodParamOut(RB_PARAM_OF_BASELINE, 170);  //每170ms输出一次Baseline PI
+            curInitializeStep = RB_INIT_SET_WAVEFORM;
+            break;
+        case RB_INIT_SET_WAVEFORM:
+            // get here after the baseline
+            configPeriodWaveformOut(CLIPPED_AUTOSCALE_DATA | SIGNAL_IQ_AUDIO_VISUAL_DATA, 16);  // 每16ms输出一次波形
+            curInitializeStep = RB_INIT_COMPLETED;
+            break;
+        default:
+            break;
+        }
+    }
+}
+
+void RainbowProviderPrivate::requestParamStatus()
+{
+    unsigned char data[2] = {RB_CMD_REQ_PARAM_INFO, RB_PARAM_OF_VERSION_INFO};
     sendCmd(data, sizeof(data));
 }

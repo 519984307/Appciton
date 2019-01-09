@@ -68,6 +68,17 @@ public slots:
      */
     void onTimeOut();
 
+private slots:
+    /**
+     * @brief requestBoardInfo send get board info command
+     */
+    void requestBoardInfo();
+
+    /**
+     * @brief changeBaudrate change the baudrate
+     */
+    void changeBaudrate();
+
 public:
     /**
      * @brief setLineFrequency

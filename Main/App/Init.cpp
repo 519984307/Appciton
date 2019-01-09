@@ -15,6 +15,7 @@
 #include "ShortTrendContainer.h"
 #include "NightModeManager.h"
 #include "RunningStatusBar.h"
+#include "RainbowProvider.h"
 
 /**************************************************************************************************
  * 功能： 初始化系统。
@@ -355,6 +356,11 @@ static void _initProviderParam(void)
         {
             paramManager.addProvider(*new NellcorSetProvider());
             spo2Param.setModuleType(MODULE_NELLCOR_SPO2);
+        }
+        else if (str == "RAINBOW_SPO2")
+        {
+            paramManager.addProvider(*new RainbowProvider());
+            spo2Param.setModuleType(MODULE_RAINBOW_SPO2);
         }
         paramManager.addParam(spo2Param.construction());
         alertor.addLimtSource(spo2LimitAlarm.construction());
