@@ -203,6 +203,7 @@ void ConfigEditCO2MenuContent::layoutExec()
                        << CO2Symbol::convert(CO2_SWEEP_SPEED_62_5)
                        << CO2Symbol::convert(CO2_SWEEP_SPEED_125)
                        << CO2Symbol::convert(CO2_SWEEP_SPEED_250)
+                       << CO2Symbol::convert(CO2_SWEEP_SPEED_500)
                       );
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);

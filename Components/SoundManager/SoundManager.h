@@ -109,16 +109,17 @@ public:
      */
     void stopHandlingSound(bool enable);
 
+public slots:
+    /**
+     * @brief volumeInit volume initialize slot, call after selftest
+     */
+    void volumeInit();
+
 private slots:
     /**
      * @brief alarmTimeout handle looping timer timeout event
      */
     void alarmTimeout();
-
-    /**
-     * @brief volumeInit volume initialize slot, call after selftest
-     */
-    void volumeInit();
 
     /**
      * @brief playFinished  callback when finished, no matter play success or not

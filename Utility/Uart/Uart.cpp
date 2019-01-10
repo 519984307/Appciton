@@ -392,6 +392,14 @@ bool Uart::initPort(const QString &port, const UartAttrDesc &desc, bool needNoti
     return true;
 }
 
+void Uart::updateSetting(const UartAttrDesc &desc)
+{
+    if (_fd != -1)
+    {
+        _settingFD(_fd, desc);
+    }
+}
+
 /**************************************************************************************************
  * 功能： 构造。
  *************************************************************************************************/

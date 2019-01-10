@@ -19,6 +19,7 @@
 #include <QProgressBar>
 #include "SystemManager.h"
 #include "WindowManager.h"
+#include "MessageBox.h"
 
 class UpgradeWindowPrivate
 {
@@ -211,7 +212,24 @@ void UpgradeWindow::onStartBtnClick()
         module = static_cast<UpgradeManager::UpgradeModuleType>(i);
         if (moduleName == trs(UpgradeManager::getUpgradeModuleName(module)))
         {
-            d_ptr->upgradeModule = module;
+            if (module == UpgradeManager::UPGRADE_MOD_HOST)
+            {
+                QStringList slist;
+                slist << trs("No") << trs("Ok");
+                MessageBox messageBox(trs("Warn"), trs("SureAllDataErase"), slist, true);
+                if (messageBox.exec())
+                {
+                    d_ptr->upgradeModule = module;
+                }
+                else
+                {
+                    return;
+                }
+            }
+            else
+            {
+                d_ptr->upgradeModule = module;
+            }
             break;
         }
     }

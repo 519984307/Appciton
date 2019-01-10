@@ -200,17 +200,33 @@ void PatientInfoWindowPrivate::loadOptions()
     combos[ITEM_CBO_PATIENT_SEX]->setCurrentIndex(patientManager.getSex());
     combos[ITEM_CBO_BLOOD_TYPE]->setCurrentIndex(patientManager.getBlood());
     buttons[ITEM_BTN_PATIENT_NAME]->setText(patientManager.getName());
+
+    // height
+    heightType = patientManager.getHeightUnit();
+
+    heightLbl->setText(QString("%1(%2)").arg(trs("PatientHeight"))
+                       .arg(Unit::getSymbol(heightType)));
+
+    QString heightStr = Unit::convert(heightType, UNIT_CM, patientManager.getHeight());
     if (patientManager.getHeight() > 0.000001)
     {
-        buttons[ITEM_BTN_PATIENT_HEIGHT]->setText(QString::number(patientManager.getHeight()));
+        buttons[ITEM_BTN_PATIENT_HEIGHT]->setText(heightStr);
     }
     else
     {
         buttons[ITEM_BTN_PATIENT_HEIGHT]->setText("");
     }
+
+    // weight
+    weightType = patientManager.getWeightUnit();
+
+    weightLbl->setText(QString("%1(%2)").arg(trs("PatientWeight"))
+                       .arg(Unit::getSymbol(weightType)));
+
+    QString weightStr = Unit::convert(weightType, UNIT_KG, patientManager.getWeight());
     if (patientManager.getWeight() > 0.000001)
     {
-        buttons[ITEM_BTN_PATIENT_WEIGHT]->setText(QString::number(patientManager.getWeight()));
+        buttons[ITEM_BTN_PATIENT_WEIGHT]->setText(weightStr);
     }
     else
     {
@@ -218,33 +234,6 @@ void PatientInfoWindowPrivate::loadOptions()
     }
     buttons[ITEM_BTN_PATIENT_ID]->setText(patientManager.getPatID());
     bedNum->setText(patientManager.getBedNum());
-
-    UnitType oldHeightType = heightType;
-    heightType = patientManager.getHeightUnit();
-
-    heightLbl->setText(QString("%1(%2)").arg(trs("PatientHeight"))
-                       .arg(Unit::getSymbol(heightType)));
-
-    UnitType oldWeightType = weightType;
-    weightType = patientManager.getWeightUnit();
-
-    weightLbl->setText(QString("%1(%2)").arg(trs("PatientWeight"))
-                       .arg(Unit::getSymbol(weightType)));
-
-    bool ok;
-    float heightValue = height->text().toFloat(&ok);
-    if (ok)
-    {
-        QString ret = Unit::convert(heightType, oldHeightType, heightValue);
-        height->setText(ret);
-    }
-
-    float weightValue = weight->text().toFloat(&ok);
-    if (ok)
-    {
-        QString ret = Unit::convert(weightType, oldWeightType, weightValue);
-        weight->setText(ret);
-    }
 
     int index = 0;
     systemConfig.getNumValue("General|ChangeBedNumberRight", index);
@@ -538,12 +527,14 @@ void PatientInfoWindowPrivate::savePatientInfoToManager()
                dateItem[Born_Date_Day]->getValue());
     patientManager.setBornDate(date);
     patientManager.setBlood(static_cast<PatientBloodType>(blood->currentIndex()));
-    patientManager.setHeight(height->text().toFloat());
+    QString heightStr = Unit::convert(UNIT_CM, heightType, height->text().toFloat()); // 病人信息保存的身高默认是cm单位
+    patientManager.setHeight(heightStr.toFloat());
     patientManager.setName(name->text());
     patientManager.setPatID(id->text());
     patientManager.setSex(static_cast<PatientSex>(sex->currentIndex()));
     patientManager.setType(static_cast<PatientType>(type->currentIndex()));
-    patientManager.setWeight(weight->text().toFloat());
+    QString weightStr = Unit::convert(UNIT_KG, weightType, weight->text().toFloat()); // 病人信息保存的体重默认是kg单位
+    patientManager.setWeight(weightStr.toFloat());
     patientManager.setPacermaker(static_cast<PatientPacer>(pacer->currentIndex()));
 }
 
