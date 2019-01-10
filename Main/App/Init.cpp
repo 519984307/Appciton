@@ -620,6 +620,7 @@ void newObjects(void)
  *************************************************************************************************/
 void deleteObjects(void)
 {
+    // 优先析构打印管理实例
     deleteRecorderManager();
 
     //    deleteWaveWidgetSelectMenu();
