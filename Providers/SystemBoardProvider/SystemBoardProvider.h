@@ -13,7 +13,6 @@
 #include "SystemDefine.h"
 #include "PowerManagerProviderIFace.h"
 #include "LightProviderIFace.h"
-#include <QPointer>
 
 /***************************************************************************************************
  * 系统前面板数据提供者对象定义
@@ -33,7 +32,7 @@ public:
         }
         return *_selfObj;
     }
-    static QPointer<SystemBoardProvider> _selfObj;
+    static SystemBoardProvider *_selfObj;
 
     SystemBoardProvider();
     ~SystemBoardProvider();
