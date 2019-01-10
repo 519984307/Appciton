@@ -20,6 +20,7 @@
 #include "Button.h"
 #include "ParamInfo.h"
 #include "ParamDefine.h"
+#include "SPO2Param.h"
 
 class ConfigEditSpO2MenuContentPrivate
 {
@@ -34,7 +35,7 @@ public:
         ITEM_CBO_MAX,
     };
 
-    explicit ConfigEditSpO2MenuContentPrivate(Config * const config);
+    explicit ConfigEditSpO2MenuContentPrivate(Config *const config);
     /**
      * @brief loadOptions
      */
@@ -45,13 +46,13 @@ public:
 };
 
 ConfigEditSpO2MenuContentPrivate
-    ::ConfigEditSpO2MenuContentPrivate(Config * const config)
+::ConfigEditSpO2MenuContentPrivate(Config *const config)
     : config(config)
 {
     combos.clear();
 }
 
-ConfigEditSpO2MenuContent::ConfigEditSpO2MenuContent(Config * const config):
+ConfigEditSpO2MenuContent::ConfigEditSpO2MenuContent(Config *const config):
     MenuContent(trs("SPO2Menu"),
                 trs("SPO2MenuDesc")),
     d_ptr(new ConfigEditSpO2MenuContentPrivate(config))
@@ -89,7 +90,7 @@ void ConfigEditSpO2MenuContent::readyShow()
     for (int i = 0; i < ConfigEditSpO2MenuContentPrivate::ITEM_CBO_MAX; i++)
     {
         d_ptr->combos[ConfigEditSpO2MenuContentPrivate
-                ::MenuItem(i)]->setEnabled(!isOnlyToRead);
+                      ::MenuItem(i)]->setEnabled(!isOnlyToRead);
     }
 }
 
@@ -106,11 +107,21 @@ void ConfigEditSpO2MenuContent::layoutExec()
     label = new QLabel(trs("Sensitivity"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox;
-    comboBox->addItems(QStringList()
-                       << trs(SPO2Symbol::convert(SPO2_MASIMO_SENS_MAX))
-                       << trs(SPO2Symbol::convert(SPO2_MASIMO_SENS_NORMAL))
-                       << trs(SPO2Symbol::convert(SPO2_MASIMO_SENS_APOD))
-                      );
+    SPO2ModuleType moduleType = spo2Param.getModuleType();
+    if (moduleType == MODULE_MASIMO_SPO2)
+    {
+        for (int i = SPO2_MASIMO_SENS_MAX; i < SPO2_MASIMO_SENS_NR; i++)
+        {
+            comboBox->addItem(trs(SPO2Symbol::convert(static_cast<SensitivityMode>(i))));
+        }
+    }
+    else if (moduleType != MODULE_SPO2_NR)
+    {
+        for (int i = SPO2_SENS_LOW; i < SPO2_SENS_NR; i++)
+        {
+            comboBox->addItem(trs(SPO2Symbol::convert(static_cast<SPO2Sensitive>(i))));
+        }
+    }
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditSpO2MenuContentPrivate
                          ::ITEM_CBO_SPO2_SENS, comboBox);
@@ -125,8 +136,7 @@ void ConfigEditSpO2MenuContent::layoutExec()
     comboBox = new ComboBox;
     comboBox->addItems(QStringList()
                        << trs(SPO2Symbol::convert(SPO2_SMART_PLUSE_TONE_OFF))
-                       << trs(SPO2Symbol::convert(SPO2_SMART_PLUSE_TONE_ON))
-                      );
+                       << trs(SPO2Symbol::convert(SPO2_SMART_PLUSE_TONE_ON)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditSpO2MenuContentPrivate
                          ::ITEM_CBO_SMART_PTONE, comboBox);
@@ -143,8 +153,7 @@ void ConfigEditSpO2MenuContent::layoutExec()
     comboBox->addItems(QStringList()
                        << trs(SPO2Symbol::convert(SPO2_WAVE_VELOCITY_62D5))
                        << trs(SPO2Symbol::convert(SPO2_WAVE_VELOCITY_125))
-                       << trs(SPO2Symbol::convert(SPO2_WAVE_VELOCITY_250))
-                      );
+                       << trs(SPO2Symbol::convert(SPO2_WAVE_VELOCITY_250)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditSpO2MenuContentPrivate
                          ::ITEM_CBO_WAVE_VEL, comboBox);
@@ -161,8 +170,7 @@ void ConfigEditSpO2MenuContent::layoutExec()
                        << trs(SPO2Symbol::convert(SPO2_GAIN_X10))
                        << trs(SPO2Symbol::convert(SPO2_GAIN_X20))
                        << trs(SPO2Symbol::convert(SPO2_GAIN_X40))
-                       << trs(SPO2Symbol::convert(SPO2_GAIN_X80))
-                      );
+                       << trs(SPO2Symbol::convert(SPO2_GAIN_X80)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditSpO2MenuContentPrivate
                          ::ITEM_CBO_SPO2_GAIN, comboBox);
@@ -177,8 +185,7 @@ void ConfigEditSpO2MenuContent::layoutExec()
     comboBox = new ComboBox;
     comboBox->addItems(QStringList()
                        << trs(SPO2Symbol::convert(SPO2_MODULE_DISABLE))
-                       << trs(SPO2Symbol::convert(SPO2_MODULE_ENABLE))
-                      );
+                       << trs(SPO2Symbol::convert(SPO2_MODULE_ENABLE)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditSpO2MenuContentPrivate
                          ::ITEM_CBO_MODULE_CONTROL, comboBox);
