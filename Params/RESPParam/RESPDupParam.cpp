@@ -180,10 +180,9 @@ void RESPDupParam::updateBR(short br)
     {
         _trendWidget->setRRValue(_rrValue, true);
     }
-    else // HR和PR都为无效时。
+    else  // HR和PR都为无效时。
     {
         _trendWidget->setRRValue(_brValue, false);
-        emit brSourceStatusUpdate();
     }
 }
 
