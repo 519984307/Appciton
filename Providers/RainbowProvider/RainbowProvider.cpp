@@ -143,6 +143,7 @@ public:
         , fastSat(false)
         , enableSmartTone(false)
         , curInitializeStep(RB_INIT_BAUDRATE)
+          // , curInitializeStep(RB_INIT_GET_BOARD_INFO)
         , noSensor(true)
         , needReset(true)
     {
@@ -270,8 +271,15 @@ RainbowProvider::RainbowProvider()
     , SPO2ProviderIFace()
     , d_ptr(new RainbowProviderPrivate(this))
 {
+    disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_SPO2;
     UartAttrDesc attr(DEFALUT_BAUD_RATE, 8, 'N', 1);
     initPort(attr);
+
+    if (disPatchInfo.dispatcher)
+    {
+        // reset the hardware
+        disPatchInfo.dispatcher->resetPacketPort(disPatchInfo.packetType);
+    }
 
     if (d_ptr->curInitializeStep == RB_INIT_GET_BOARD_INFO)
     {
@@ -362,7 +370,7 @@ void RainbowProvider::dataArrived()
     }
 }
 
-void RainbowProvider::dataArrived(unsigned char *data, unsigned char length)
+void RainbowProvider::dataArrived(unsigned char *data, unsigned int length)
 {
     // 接收数据
     d_ptr->readData(data, length);
@@ -523,12 +531,13 @@ void RainbowProviderPrivate::handlePacket(unsigned char *data, int len)
     {
     case  RB_ACK:
     {
+        qDebug() << Q_FUNC_INFO << "ACK" << curInitializeStep;
         handleACK();
     }
     break;
     case  RB_NCK:
     {
-        qDebug() << Q_FUNC_INFO << "Receive NAK type "<<data[1];
+        qDebug() << Q_FUNC_INFO << "Receive NAK type " << data[1];
     }
     break;
     case  RB_PARAM:
@@ -839,16 +848,30 @@ void RainbowProviderPrivate::handleACK()
 {
     if (curInitializeStep != RB_INIT_COMPLETED)
     {
-        switch (curInitializeStep) {
+        switch (curInitializeStep)
+        {
         case RB_INIT_BAUDRATE:
         {
             // baudrate has been update, switch to new baudrate
-            UartAttrDesc attr(RUN_BAUD_RATE, 8, 'N', 1);
-            q_ptr->uart->updateSetting(attr);
-            curInitializeStep = RB_INIT_GET_BOARD_INFO;
-            QTimer::singleShot(0, q_ptr, SLOT(requestBoardInfo()));
+            if (q_ptr->disPatchInfo.dispatcher)
+            {
+                // data is tramsmited through the dispatcher
+                // tell the dispatch to change the baudrate
+                q_ptr->disPatchInfo.dispatcher->setPacketPortBaudrate(q_ptr->disPatchInfo.packetType,
+                        DataDispatcher::BAUDRATE_57600);
+                QTimer::singleShot(50, q_ptr, SLOT(requestBoardInfo()));
+            }
+            else
+            {
+                // data is transmited directly through the uart port
+                // set the port's baudrate
+                UartAttrDesc attr(RUN_BAUD_RATE, 8, 'N', 1);
+                q_ptr->uart->updateSetting(attr);
+                curInitializeStep = RB_INIT_GET_BOARD_INFO;
+                QTimer::singleShot(0, q_ptr, SLOT(requestBoardInfo()));
+            }
         }
-            break;
+        break;
         case RB_INIT_GET_BOARD_INFO:
             // board info response is not a ack message
             break;
@@ -904,7 +927,7 @@ void RainbowProviderPrivate::handleACK()
             break;
         case RB_INIT_SET_BASELINE:
             // get here after the baseline
-            configPeriodParamOut(RB_PARAM_OF_BASELINE, 170);  //每170ms输出一次Baseline PI
+            configPeriodParamOut(RB_PARAM_OF_BASELINE, 170);  // 每170ms输出一次Baseline PI
             curInitializeStep = RB_INIT_SET_WAVEFORM;
             break;
         case RB_INIT_SET_WAVEFORM:

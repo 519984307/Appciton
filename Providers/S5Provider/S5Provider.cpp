@@ -372,7 +372,7 @@ void S5Provider::sendCmdData(unsigned char cmdId, const unsigned char *data, uns
  *************************************************************************************************/
 S5Provider::S5Provider() : BLMProvider("BLM_S5"), SPO2ProviderIFace()
 {
-    disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_S5;
+    disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_SPO2;
 
     UartAttrDesc portAttr(115200, 8, 'N', 1);
     initPort(portAttr);
@@ -383,6 +383,12 @@ S5Provider::S5Provider() : BLMProvider("BLM_S5"), SPO2ProviderIFace()
     _ledFault = false;
     _logicStatus = S5_LOGIC_NC;
     _isValuePR = false;
+
+    if (disPatchInfo.dispatcher)
+    {
+        // reset the hardware
+        disPatchInfo.dispatcher->resetPacketPort(disPatchInfo.packetType);
+    }
 }
 
 /**************************************************************************************************

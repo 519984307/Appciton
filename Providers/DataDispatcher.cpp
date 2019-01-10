@@ -139,6 +139,10 @@ public:
         {
             dataHandlers[type]->dataArrived(data + 1, len - 1);
         }
+        else
+        {
+            qWarning() << Q_FUNC_INFO << "Invalid dispatch packet type 0x" << hex << data[0];
+        }
     }
 
     bool isLastSOHPaired; // 遗留在ringBuff最后一个数据（该数据为SOH）是否已经剃掉了多余的SOH
@@ -235,6 +239,8 @@ int DataDispatcher::sendData(DataDispatcher::PacketType type, const unsigned cha
 
     int sendLength =  d_ptr->uart->write(sendBuf, i);
 
+    qDebug() << "send";
+    outHex(sendBuf, sendLength);
     if (sendLength != i)
     {
         // partially send
@@ -370,6 +376,7 @@ void DataDispatcher::dataArrived()
 
         if (d_ptr->checkPacketValid(packet, len))
         {
+            outHex(packet, len);
             d_ptr->handlePacket(&packet[3], len - 4);
         }
         else
