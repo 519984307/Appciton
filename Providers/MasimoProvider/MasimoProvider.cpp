@@ -257,11 +257,17 @@ void MasimoSetProvider::setSmartTone(bool enable)
  *************************************************************************************************/
 MasimoSetProvider::MasimoSetProvider() : Provider("MASIMO_SPO2"), SPO2ProviderIFace()
 {
-    disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_S5;
+    disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_SPO2;
     UartAttrDesc portAttr(9600, 8, 'N', 1);
     initPort(portAttr);
 
     _isLowPerfusionFlag = false;
+
+    if (disPatchInfo.dispatcher)
+    {
+        // reset the hardware
+        disPatchInfo.dispatcher->resetPacketPort(disPatchInfo.packetType);
+    }
 }
 
 /**************************************************************************************************

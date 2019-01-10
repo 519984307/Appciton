@@ -29,7 +29,7 @@ public:
     void dataArrived();
 
     /* reimplment */
-    void dataArrived(unsigned char *data, unsigned char length);
+    void dataArrived(unsigned char *data, unsigned int length);
 
     /* reimplment */
     void setSensitive(SPO2Sensitive /*sens*/) { }
@@ -84,7 +84,7 @@ public:
      * @brief setLineFrequency
      * @param freq
      */
-    void setLineFrequency(RainbowLineFrequency freq); 
+    void setLineFrequency(RainbowLineFrequency freq);
 
 private:
     RainbowProviderPrivate *const d_ptr;

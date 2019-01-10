@@ -22,7 +22,7 @@ public:
         PACKET_TYPE_INVALID = -1,    // invalid packet type
         PACKET_TYPE_CTRL = 0xF0,     // control packet type
         PACKET_TYPE_T5 = 0xF1,       // 温度
-        PACKET_TYPE_S5 = 0xF2        // 血氧
+        PACKET_TYPE_SPO2 = 0xF2        // 血氧
     };
 
     enum PacketPortBaudrate
