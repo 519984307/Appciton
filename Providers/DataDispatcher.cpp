@@ -123,13 +123,18 @@ public:
         {
             // control packet responsoe
             unsigned char *responseData = data + 1;
-            switch (responseData[1])
+            DataDispatcher::PacketType portType = static_cast<DataDispatcher::PacketType>(responseData[0]);
+            PacketPortCommand portCmdRSP = static_cast<PacketPortCommand>(responseData[1]);
+            switch (portCmdRSP)
             {
             case PORT_CMD_RESET_RSP:
-                qDebug() << "DataDispatcher: reset response of packet port 0x" << hex << responseData[0];
+            {
+                qDebug() << "DataDispatcher: reset response of packet port 0x" << hex << portType;
+                dataHandlers[portType]->dispatchPortHasReset();
+            }
                 break;
             case PORT_CMD_BAUDRATE_RSP:
-                qDebug() << "DataDispatcher: baudrate response of packet port 0x" << hex << responseData[0];
+                qDebug() << "DataDispatcher: baudrate response of packet port 0x" << hex << portType;
                 break;
             default:
                 break;

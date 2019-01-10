@@ -32,6 +32,9 @@ public:
     void dataArrived(unsigned char *data, unsigned int length);
 
     /* reimplment */
+    void dispatchPortHasReset();
+
+    /* reimplment */
     void setSensitive(SPO2Sensitive /*sens*/) { }
 
     /* reimplment */

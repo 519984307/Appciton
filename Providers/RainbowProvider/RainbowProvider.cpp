@@ -136,16 +136,14 @@ class RainbowProviderPrivate
 public:
     explicit RainbowProviderPrivate(RainbowProvider *p)
         : q_ptr(p)
-        , isUpdatingBaudrate(false)
         , lineFreq(RB_LINE_FREQ_50HZ)
         , averTime(SPO2_AVER_TIME_2_4SEC)
         , sensMode(SPO2_MASIMO_SENS_MAX)
         , fastSat(false)
         , enableSmartTone(false)
         , curInitializeStep(RB_INIT_BAUDRATE)
-          // , curInitializeStep(RB_INIT_GET_BOARD_INFO)
         , noSensor(true)
-        , needReset(true)
+        , isReseting(false)
     {
     }
 
@@ -247,8 +245,6 @@ public:
 
     RainbowProvider *q_ptr;
 
-    bool isUpdatingBaudrate;  // need to update the baudrate after reset
-
     RainbowLineFrequency lineFreq;
 
     AverageTime averTime;
@@ -263,7 +259,7 @@ public:
 
     bool noSensor;
 
-    bool needReset;
+    bool isReseting;
 };
 
 RainbowProvider::RainbowProvider()
@@ -279,11 +275,7 @@ RainbowProvider::RainbowProvider()
     {
         // reset the hardware
         disPatchInfo.dispatcher->resetPacketPort(disPatchInfo.packetType);
-    }
-
-    if (d_ptr->curInitializeStep == RB_INIT_GET_BOARD_INFO)
-    {
-        QTimer::singleShot(200, this, SLOT(requestBoardInfo()));
+        d_ptr->isReseting = true;
     }
     else
     {
@@ -321,10 +313,10 @@ void RainbowProvider::dataArrived()
     while (ringBuff.dataSize() >= d_ptr->minPacketLen)
     {
         // 如果查询不到帧头，移除ringbuff缓冲区最旧的数据，下次继续查询
-        bool popHead = false;
         if (ringBuff.at(0) != SOM)
         {
-            popHead = true;
+            ringBuff.pop(1);
+            continue;
         }
 
 
@@ -338,7 +330,7 @@ void RainbowProvider::dataArrived()
             break;
         }
 
-        if (ringBuff.at(totalLen - 1) != EOM || popHead == true)
+        if (ringBuff.at(totalLen - 1) != EOM)
         {
             ringBuff.pop(1);
             continue;
@@ -375,6 +367,14 @@ void RainbowProvider::dataArrived(unsigned char *data, unsigned int length)
     // 接收数据
     d_ptr->readData(data, length);
 
+    if (d_ptr->isReseting)
+    {
+        while (ringBuff.dataSize())
+        {
+            ringBuff.pop(1);
+        }
+    }
+
     // 无效数据退出处理
     if (ringBuff.dataSize() < d_ptr->minPacketLen)
     {
@@ -386,15 +386,24 @@ void RainbowProvider::dataArrived(unsigned char *data, unsigned int length)
     while (ringBuff.dataSize() >= d_ptr->minPacketLen)
     {
         // 如果查询不到帧头，移除ringbuff缓冲区最旧的数据，下次继续查询
-        bool popHead = false;
         if (ringBuff.at(0) != SOM)
         {
-            popHead = true;
+            ringBuff.pop(1);
+            continue;
         }
 
         // 如果查询不到帧尾，移除ringbuff缓冲区最旧的数据，下次继续查询
         unsigned char len = ringBuff.at(1);     // data field length
         unsigned char totalLen = 2 + len + 2;   // 1 frame head + 1 len byte + data length + 1 checksum + 1 frame end
+
+#if 0   // TODO: check the packet length
+        if (totalLen > 40)
+        {
+            qDebug() << "packet too large";
+            ringBuff.pop(1);
+            continue;
+        }
+#endif
 
         if (ringBuff.dataSize() < totalLen)
         {
@@ -402,7 +411,7 @@ void RainbowProvider::dataArrived(unsigned char *data, unsigned int length)
             break;
         }
 
-        if (ringBuff.at(totalLen - 1) != EOM || popHead == true)
+        if (ringBuff.at(totalLen - 1) != EOM)
         {
             ringBuff.pop(1);
             continue;
@@ -431,6 +440,12 @@ void RainbowProvider::dataArrived(unsigned char *data, unsigned int length)
             ringBuff.pop(1);
         }
     }
+}
+
+void RainbowProvider::dispatchPortHasReset()
+{
+    d_ptr->isReseting = false;
+    QTimer::singleShot(0, this, SLOT(changeBaudrate()));
 }
 
 int RainbowProvider::getSPO2BaseLine()
@@ -684,11 +699,13 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         unsigned short tmp = (data[0] << 8) | data[1];
         if (tmp > 0)
         {
-            needReset = true;
-        }
-        else
-        {
-            needReset = false;
+            qWarning("Rainbow Board failure, reseting...");
+            if (q_ptr->disPatchInfo.dispatcher)
+            {
+                q_ptr->disPatchInfo.dispatcher->resetPacketPort(q_ptr->disPatchInfo.packetType);
+                isReseting = true;
+                curInitializeStep = RB_INIT_BAUDRATE;
+            }
         }
     }
     break;
