@@ -258,7 +258,7 @@ void SPO2MenuContent::layoutExec()
     d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_BEAT_VOL, comboBox);
 
     // NIBP同侧功能
-    label = new QLabel(trs("NIBPSameSide"));
+    label = new QLabel(trs("NIBPSimul"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
