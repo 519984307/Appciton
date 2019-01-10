@@ -239,8 +239,6 @@ int DataDispatcher::sendData(DataDispatcher::PacketType type, const unsigned cha
 
     int sendLength =  d_ptr->uart->write(sendBuf, i);
 
-    qDebug() << "send";
-    outHex(sendBuf, sendLength);
     if (sendLength != i)
     {
         // partially send
@@ -376,7 +374,6 @@ void DataDispatcher::dataArrived()
 
         if (d_ptr->checkPacketValid(packet, len))
         {
-            outHex(packet, len);
             d_ptr->handlePacket(&packet[3], len - 4);
         }
         else
