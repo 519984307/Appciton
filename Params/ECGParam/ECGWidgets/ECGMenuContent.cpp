@@ -409,8 +409,7 @@ void ECGMenuContent::layoutExec()
     comboBox->addItems(QStringList()
                        << trs(ECGSymbol::convert(ECG_LEAD_MODE_3))
                        << trs(ECGSymbol::convert(ECG_LEAD_MODE_5))
-                       << trs(ECGSymbol::convert(ECG_LEAD_MODE_12))
-                      );
+                       << trs(ECGSymbol::convert(ECG_LEAD_MODE_12)));
     itemID = ECGMenuContentPrivate::ITEM_CBO_LEAD_MODE;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -419,7 +418,7 @@ void ECGMenuContent::layoutExec()
     d_ptr->combos.insert(ECGMenuContentPrivate::ITEM_CBO_LEAD_MODE, comboBox);
 
     // ECG
-    label = new QLabel("ECG1");
+    label = new QLabel(trs("ECG1"));
     d_ptr->ecg1Label = label;
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
@@ -431,7 +430,7 @@ void ECGMenuContent::layoutExec()
     d_ptr->combos.insert(ECGMenuContentPrivate::ITEM_CBO_ECG1, comboBox);
 
     // ECG2
-    label = new QLabel("ECG2");
+    label = new QLabel(trs("ECG2"));
     d_ptr->ecg2Label = label;
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
@@ -465,8 +464,7 @@ void ECGMenuContent::layoutExec()
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_SURGERY))
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_MONITOR))
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_DIAGNOSTIC))
-                       << trs(ECGSymbol::convert(ECG_FILTERMODE_ST))
-                      );
+                       << trs(ECGSymbol::convert(ECG_FILTERMODE_ST)));
     itemID = ECGMenuContentPrivate::ITEM_CBO_FILTER_MODE;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -491,8 +489,7 @@ void ECGMenuContent::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs(ECGSymbol::convert(ECG_PACE_OFF))
-                       << trs(ECGSymbol::convert(ECG_PACE_ON))
-                      );
+                       << trs(ECGSymbol::convert(ECG_PACE_ON)));
     itemID = ECGMenuContentPrivate::ITEM_CBO_PACER_MARK;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -508,8 +505,7 @@ void ECGMenuContent::layoutExec()
                        << trs(ECGSymbol::convert(ECG_SWEEP_SPEED_625))
                        << trs(ECGSymbol::convert(ECG_SWEEP_SPEED_125))
                        << trs(ECGSymbol::convert(ECG_SWEEP_SPEED_250))
-                       << trs(ECGSymbol::convert(ECG_SWEEP_SPEED_500))
-                      );
+                       << trs(ECGSymbol::convert(ECG_SWEEP_SPEED_500)));
     itemID = ECGMenuContentPrivate::ITEM_CBO_SWEEP_SPEED;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -733,19 +729,27 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
             switch (index)
             {
             case ECG_FILTERMODE_MONITOR:
-                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_50HZ)), ECG_NOTCH_50HZ);
-                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_60HZ)), ECG_NOTCH_60HZ);
-                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ)), ECG_NOTCH_50_AND_60HZ);
+                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
+                        addItem(trs(ECGSymbol::convert(ECG_NOTCH_50HZ)), ECG_NOTCH_50HZ);
+                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
+                        addItem(trs(ECGSymbol::convert(ECG_NOTCH_60HZ)), ECG_NOTCH_60HZ);
+                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
+                        addItem(trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ)), ECG_NOTCH_50_AND_60HZ);
                 break;
             case ECG_FILTERMODE_SURGERY:
-                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_OFF)), ECG_NOTCH_OFF);
-                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ)), ECG_NOTCH_50_AND_60HZ);
+                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
+                        addItem(trs(ECGSymbol::convert(ECG_NOTCH_OFF)), ECG_NOTCH_OFF);
+                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
+                        addItem(trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ)), ECG_NOTCH_50_AND_60HZ);
                 break;
             case ECG_FILTERMODE_DIAGNOSTIC:
             case ECG_FILTERMODE_ST:
-                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_OFF)), ECG_NOTCH_OFF);
-                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_50HZ)), ECG_NOTCH_50HZ);
-                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_60HZ)), ECG_NOTCH_60HZ);
+                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
+                        addItem(trs(ECGSymbol::convert(ECG_NOTCH_OFF)), ECG_NOTCH_OFF);
+                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
+                        addItem(trs(ECGSymbol::convert(ECG_NOTCH_50HZ)), ECG_NOTCH_50HZ);
+                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
+                        addItem(trs(ECGSymbol::convert(ECG_NOTCH_60HZ)), ECG_NOTCH_60HZ);
                 break;
             default:
                 break;
@@ -756,7 +760,8 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
         }
         case ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER:
         {
-            ECGNotchFilter notch = static_cast<ECGNotchFilter>(d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->itemData(index).toInt());
+            ECGNotchFilter notch = static_cast<ECGNotchFilter>(d_ptr->combos[ECGMenuContentPrivate
+                                                               ::ITEM_CBO_NOTCH_FITER]->itemData(index).toInt());
             ecgParam.setNotchFilter(notch);
             break;
         }

@@ -1428,10 +1428,10 @@ SetConfigName,设置配置项名称,Set Config Name
 GeneralDesc,通用设置,General Desc
 ConfigName,配置名称,Config Name
 AalrmSource,报警源,Aalrm Source
-Ecg1Wave,波形1,Ecg1 Wave
-Ecg2Wave,波形2,Ecg2 Wave
+Ecg1Wave,波形1,ECG1 Wave
+Ecg2Wave,波形2,ECG2 Wave
 ECG1,ECG1,ECG1
-Ecg1Gain,增益,Ecg Gain
+Ecg1Gain,增益,ECG Gain
 Filter,滤波器,Filter
 QRSVolume,音量,QRS Volume
 ConfigIBPMenu,有创血压,Config IBP
