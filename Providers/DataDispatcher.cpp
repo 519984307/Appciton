@@ -203,28 +203,27 @@ int DataDispatcher::sendData(DataDispatcher::PacketType type, const unsigned cha
     unsigned short length = len + 5;
     sendBuf[i] = SOH;
     crc = crcDigest(crc, sendBuf[i++]);
-    if (sendBuf[i] == SOH)
-    {
-        sendBuf[i++] = SOH;
-    }
     sendBuf[i] = length & 0xFF;
-    crc = crcDigest(crc, sendBuf[i++]);
     if (sendBuf[i] == SOH)
     {
-        sendBuf[i++] = SOH;
+        sendBuf[++i] = SOH;
     }
+    crc = crcDigest(crc, sendBuf[i++]);
+
     sendBuf[i] = length >> 8;
-    crc = crcDigest(crc, sendBuf[i++]);
     if (sendBuf[i] == SOH)
     {
-        sendBuf[i++] = SOH;
+        sendBuf[++i] = SOH;
     }
+    crc = crcDigest(crc, sendBuf[i++]);
+
     sendBuf[i] = type;
-    crc = crcDigest(crc, sendBuf[i++]);
     if (sendBuf[i] == SOH)
     {
-        sendBuf[i++] = SOH;
+        sendBuf[++i] = SOH;
     }
+    crc = crcDigest(crc, sendBuf[i++]);
+
     for (int j = 0; j < len; ++j)
     {
         sendBuf[i++] = buff[j];
