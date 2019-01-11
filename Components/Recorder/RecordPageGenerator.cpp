@@ -970,7 +970,7 @@ RecordPage *RecordPageGenerator::createWaveScalePage(const QList<RecordWaveSegme
             case CO2_DISPLAY_ZOOM_8:
                 high = 8;
                 break;
-            case CO2_DISPLAY_ZOOM_12:
+            case CO2_DISPLAY_ZOOM_13:
                 high = 12;
                 break;
             case CO2_DISPLAY_ZOOM_20:
@@ -1170,7 +1170,7 @@ static qreal mapWaveValue(const RecordWaveSegmentInfo &waveInfo, short wave)
         case CO2_DISPLAY_ZOOM_8:
             max  = max * 8 / 20;
             break;
-        case CO2_DISPLAY_ZOOM_12:
+        case CO2_DISPLAY_ZOOM_13:
             max = max * 12 / 20;
             break;
         default:
@@ -1282,7 +1282,7 @@ static qreal mapOxyCRGWaveValue(const OxyCRGWaveInfo &waveInfo, qreal waveHeight
         case CO2_DISPLAY_ZOOM_8:
             max  = max * 8 / 20;
             break;
-        case CO2_DISPLAY_ZOOM_12:
+        case CO2_DISPLAY_ZOOM_13:
             max = max * 12 / 20;
             break;
         default:
@@ -2265,7 +2265,7 @@ RecordPage *RecordPageGenerator::createOxyCRGGraph(const QList<TrendGraphInfo> &
         case CO2_DISPLAY_ZOOM_8:
             high = 8;
             break;
-        case CO2_DISPLAY_ZOOM_12:
+        case CO2_DISPLAY_ZOOM_13:
             high = 12;
             break;
         case CO2_DISPLAY_ZOOM_20:
