@@ -639,44 +639,6 @@ bool AlarmIndicator::phyAlarmPauseStatusHandle()
 }
 
 /**************************************************************************************************
- * 功能：技术报警报警暂停状态处理。
- *************************************************************************************************/
-bool AlarmIndicator::techAlarmPauseStatusHandle()
-{
-    bool ret = false;
-
-    //技术报警
-    AlarmInfoList *list = &_alarmInfoDisplayPool;
-    AlarmInfoList::iterator it = list->begin();
-    for (; it != list->end();)
-    {
-        if (it->alarmType == ALARM_TYPE_TECH && it->alarmPriority != ALARM_PRIO_PROMPT)
-        {
-            if (it->removeAfterLatch)
-            {
-                it = list->erase(it);
-                ret = true;
-                continue;
-            }
-            else
-            {
-                AlarmInfoNode node = *it;
-                if (!node.acknowledge)
-                {
-                    node.acknowledge = true;
-                    *it = node;
-                    ret = true;
-                }
-            }
-        }
-
-        ++it;
-    }
-
-    return ret;
-}
-
-/**************************************************************************************************
  * 功能：是否有处于非暂停的生理报警。
  * 返回:
  * true,有， false，没有
@@ -973,7 +935,7 @@ bool AlarmIndicator::techAlarmResetStatusHandle()
     it = list->begin();
     for (; it != list->end(); ++it)
     {
-        if (it->alarmType == ALARM_TYPE_TECH && it->alarmPriority != ALARM_PRIO_PROMPT)
+        if (it->alarmType == ALARM_TYPE_TECH && it->alarmPriority > ALARM_PRIO_PROMPT)
         {
             // 只确认中级和高级的报警
             AlarmInfoNode node = *it;
