@@ -36,6 +36,10 @@
 #define CONFIG_DIR         ("/usr/local/nPM/etc/")
 #define LISTVIEW_MAX_VISIABLE_TIME (5)
 #define HEIGHT_HINT (themeManger.getAcceptableControlHeight())
+#define PARAMETER_PREFIX_NUM0   (4)  // 参数前缀的长度
+#define PARAMETER_PREFIX_NUM1   (2)  // 参数前缀的长度
+#define PARAMETER_PREFIX0       ("Enable")  // 参数前缀
+#define PARAMETER_PREFIX1       ("Min")  // 参数前缀
 
 enum TransferResult
 {
@@ -597,11 +601,6 @@ QDomElement ConfigExportImportMenuContentPrivate::tagFindElement(const QStringLi
 
 bool ConfigExportImportMenuContentPrivate::compareTagAttribute(QDomElement importTag, QDomElement localTag)
 {
-#define PARAMETER_PREFIX_NUM0   (4)  // 参数前缀的长度
-#define PARAMETER_PREFIX_NUM1   (2)  // 参数前缀的长度
-#define PARAMETER_PREFIX0       ("Enable")  // 参数前缀
-#define PARAMETER_PREFIX1       ("Min")  // 参数前缀
-
     float numArrary[] = {1.0, 2.0};
     QString attrString[] = {"Enable", "Prio"};
     QDomNamedNodeMap localDomNameNodeMap = localTag.attributes();
