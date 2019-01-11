@@ -296,7 +296,7 @@ void UserMaintainGeneralMenuContent::onButtonReleased()
             idPanel.setInitString(button->text(), true);
 
             idPanel.setCheckValueHook(checkPasswordValue);
-            QString invaildHint = QString(trs("InputEightBitPassword"));
+            QString invaildHint = QString(trs("Input8DigitsPassword"));
             idPanel.setInvalidHint(invaildHint);
 
             if (1 == idPanel.exec())

@@ -81,7 +81,7 @@ void ConfigManagerPassWordEditMenuContent::onBtnReleased()
     lastPassword = QString("%1:%2").arg(trs("LastPassword")).arg(lastPassword);
     numberPad.setInitString(lastPassword, true);
     numberPad.setCheckValueHook(checkPasswordValue);
-    QString invalidStr = trs("InputEightBitPassword");
+    QString invalidStr = trs("Input8DigitsPassword");
     numberPad.setInvalidHint(invalidStr);
 
     if (!numberPad.exec())
