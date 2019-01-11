@@ -456,23 +456,23 @@ NIBPWAITING,NIBP等待,NIBP Waiting
 NIBPNoResponse,无响应,No Response
 NIBPTemporarily,临时,Temporarily
 NIBPDisable,禁用,Disable
-_1min,1 min,1 min
-_1.5min,1.5 分,1.5 min
-_2min,2 min,2 min
-_2.5min,2.5 分,2.5 min
-_3min,3 分,3 min
-_3.5min,3.5 分,3.5 min
-_4min,4 min,4 min
-_5min,5 分,5 min
-_8min,8 min,8 min
-_10min,10 分,10 min
-_15min,15 分,15 min
-_20min,20 分,20 min
-_30min,30 分,30 min
-_45min,45 分,45 min
-_60min,60 分,60 min
-_90min,90 分,90 min
-_120min,120 分,120 min
+_1min,1 分钟,1 min
+_1.5min,1.5 分钟,1.5 min
+_2min,2 分钟,2 min
+_2.5min,2.5 分钟,2.5 min
+_3min,3 分钟,3 min
+_3.5min,3.5 分钟,3.5 min
+_4min,4 分钟,4 min
+_5min,5 分钟,5 min
+_8min,8 分钟,8 min
+_10min,10 分钟,10 min
+_15min,15 分钟,15 min
+_20min,20 分钟,20 min
+_30min,30 分钟,30 min
+_45min,45 分钟,45 min
+_60min,60 分钟,60 min
+_90min,90 分钟,90 min
+_120min,120 分钟,120 min
 min,分,min
 Parameter,参数,Parameter
 AlarmStatus,状态,Status

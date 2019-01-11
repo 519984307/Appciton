@@ -916,7 +916,7 @@ AlarmIndicator::AlarmIndicator()
     systemConfig.getNumValue("Alarms|AlarmPauseTime", pauseTimeIndex);
     if (pauseTimeIndex > ALARM_PAUSE_TIME_NR)
     {
-        pauseTimeIndex = ALARM_PAUSE_TIME_90S;
+        pauseTimeIndex = ALARM_PAUSE_TIME_2MIN;
     }
     _audioPauseTime = 60 + 30 * pauseTimeIndex;
 }
