@@ -59,7 +59,7 @@
         <LeadMode>1</LeadMode>
         <NotchFilter>0</NotchFilter>
         <SmartLeadOff>0</SmartLeadOff>
-        <FilterMode>0</FilterMode>
+        <FilterMode>1</FilterMode>
         <SelfLearn>0</SelfLearn>
         <ECG12LeadPacerMaker>0</ECG12LeadPacerMaker>	
         <PacerMaker>1</PacerMaker>
@@ -111,14 +111,14 @@
         <AutoInterval>5</AutoInterval>
         <StatFunction>1</StatFunction>
         <AutomaticRetry>0</AutomaticRetry>
-        <InitialCuffInflation>140</InitialCuffInflation>
+        <InitialCuffInflation>120</InitialCuffInflation>
     </NIBP>
     <SPO2>
         <AverageTime>2</AverageTime>
         <Sensitivity>1</Sensitivity>
         <FastSat>0</FastSat>
         <SmartPluseTone>1</SmartPluseTone>
-        <SweepSpeed>2</SweepSpeed>
+        <SweepSpeed>1</SweepSpeed>
         <Gain>0</Gain>
         <BeatVol>1</BeatVol>
         <ModuleControl>1</ModuleControl>
@@ -127,7 +127,7 @@
     <CO2>
         <CO2ModeDefault>1</CO2ModeDefault>
         <CO2SweepMode>0</CO2SweepMode>
-        <SweepSpeed>1</SweepSpeed>
+        <SweepSpeed>2</SweepSpeed>
         <FICO2Display>0</FICO2Display>
         <DisplayZoom>3</DisplayZoom>
         <Compensation>
@@ -145,16 +145,16 @@
     </CO>
     <RESP>
         <AutoActivation>0</AutoActivation>
-        <ApneaDelay>2</ApneaDelay>
-        <BreathLead>0</BreathLead>
-        <Gain>0</Gain>
-        <SweepSpeed>1</SweepSpeed>
+        <ApneaDelay>1</ApneaDelay>
+        <BreathLead>2</BreathLead>
+        <Gain>2</Gain>
+        <SweepSpeed>2</SweepSpeed>
     </RESP>
     <Event>
         <WaveLength>16</WaveLength>
     </Event>
     <Alarm>
-        <ApneaTime>2</ApneaTime>
+        <ApneaTime>1</ApneaTime>
     </Alarm>
     <AlarmSource>
 		<HR_PR Enable="1" Prio="2">
@@ -858,7 +858,7 @@
 	<WaveFreeze>0</WaveFreeze>
         <DiagnosticECG>1</DiagnosticECG>
         <Print30JSelfTestReport>0</Print30JSelfTestReport>
-        <PrintSpeed>0</PrintSpeed>
+        <PrintSpeed>1</PrintSpeed>
     </Print>
     <ECG12L>
         <NotchFilter>0</NotchFilter>
