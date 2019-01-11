@@ -1624,6 +1624,7 @@ SPO2CableOff,血氧电缆断开,SPO2 Cable Off
 SPO2FingerOff,未检测到手指,SPO2 Finger Off
 SPO2LEDFault,血氧LED错误,SPO2 LED Fault
 SPO2LowPerfusion,血氧低弱灌注,SPO2 Low Perfusion
-NIBPSameSide,NIBP同侧,NIBP Simul
+NIBPSimul,NIBP同侧,NIBP Simul
+Input8DigitsPassword,请输入8位数字密码,Please input 8 digits password
 BornDate,出生日期,Born Date
 RescueStorageSpaceFull,营救数据存储空间满,Rescue storage space full
