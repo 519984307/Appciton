@@ -15,6 +15,7 @@
 #include "UnitManager.h"
 #include "RESPDefine.h"
 #include "CO2Define.h"
+#include <QDate>
 
 /* data structure to store each sub param value */
 struct TrendValueSegment
@@ -44,7 +45,7 @@ struct TrendDataDescription
 {
     unsigned startTime;                 /* rescue event start time */
     unsigned moduleConfig;              /* module config */
-    char patientAge;                    /* patient age */
+    QDate bornDate;                      /* patient born date */
     char patientGender;                 /* patient gender */
     char patientType;                   /* patient type */
     char patientPacer;                  /* patient wear pacer or not */

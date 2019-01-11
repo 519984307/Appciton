@@ -100,18 +100,6 @@ struct DoseCalculationInfo
 class DoseCalculationSymbol
 {
 public:
-    static const char *convert(PatientType index)
-    {
-        static const char *symbol[PATIENT_TYPE_NR] =
-        {
-            "Adult",
-            "PED",
-            "NEO",
-            "NULL"
-        };
-        return symbol[index];
-    }
-
     static const char *convert(DrugName index)
     {
         static const char *symbol[DRUG_NAME_NR] =

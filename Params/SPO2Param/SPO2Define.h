@@ -18,6 +18,7 @@ enum SPO2ModuleType
     MODULE_BLM_S5,
     MODULE_MASIMO_SPO2,
     MODULE_NELLCOR_SPO2,
+    MODULE_RAINBOW_SPO2,
     MODULE_SPO2_NR,
 };
 /**************************************************************************************************
@@ -141,3 +142,8 @@ enum WaveUpdateType
     WAVE_UPDATE_NR  // 无效值
 };
 
+enum RainbowLineFrequency
+{
+    RB_LINE_FREQ_50HZ,
+    RB_LINE_FREQ_60HZ,
+};

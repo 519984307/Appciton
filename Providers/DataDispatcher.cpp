@@ -123,13 +123,18 @@ public:
         {
             // control packet responsoe
             unsigned char *responseData = data + 1;
-            switch (responseData[1])
+            DataDispatcher::PacketType portType = static_cast<DataDispatcher::PacketType>(responseData[0]);
+            PacketPortCommand portCmdRSP = static_cast<PacketPortCommand>(responseData[1]);
+            switch (portCmdRSP)
             {
             case PORT_CMD_RESET_RSP:
-                qDebug() << "DataDispatcher: reset response of packet port 0x" << hex << responseData[0];
+            {
+                qDebug() << "DataDispatcher: reset response of packet port 0x" << hex << portType;
+                dataHandlers[portType]->dispatchPortHasReset();
+            }
                 break;
             case PORT_CMD_BAUDRATE_RSP:
-                qDebug() << "DataDispatcher: baudrate response of packet port 0x" << hex << responseData[0];
+                qDebug() << "DataDispatcher: baudrate response of packet port 0x" << hex << portType;
                 break;
             default:
                 break;
@@ -138,6 +143,10 @@ public:
         else if (dataHandlers.contains(type))
         {
             dataHandlers[type]->dataArrived(data + 1, len - 1);
+        }
+        else
+        {
+            qWarning() << Q_FUNC_INFO << "Invalid dispatch packet type 0x" << hex << data[0];
         }
     }
 
@@ -194,28 +203,27 @@ int DataDispatcher::sendData(DataDispatcher::PacketType type, const unsigned cha
     unsigned short length = len + 5;
     sendBuf[i] = SOH;
     crc = crcDigest(crc, sendBuf[i++]);
-    if (sendBuf[i] == SOH)
-    {
-        sendBuf[i++] = SOH;
-    }
     sendBuf[i] = length & 0xFF;
-    crc = crcDigest(crc, sendBuf[i++]);
     if (sendBuf[i] == SOH)
     {
-        sendBuf[i++] = SOH;
+        sendBuf[++i] = SOH;
     }
+    crc = crcDigest(crc, sendBuf[i++]);
+
     sendBuf[i] = length >> 8;
-    crc = crcDigest(crc, sendBuf[i++]);
     if (sendBuf[i] == SOH)
     {
-        sendBuf[i++] = SOH;
+        sendBuf[++i] = SOH;
     }
+    crc = crcDigest(crc, sendBuf[i++]);
+
     sendBuf[i] = type;
-    crc = crcDigest(crc, sendBuf[i++]);
     if (sendBuf[i] == SOH)
     {
-        sendBuf[i++] = SOH;
+        sendBuf[++i] = SOH;
     }
+    crc = crcDigest(crc, sendBuf[i++]);
+
     for (int j = 0; j < len; ++j)
     {
         sendBuf[i++] = buff[j];
