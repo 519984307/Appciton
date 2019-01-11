@@ -1,4 +1,4 @@
-/**
+﻿/**
  ** This file is part of the nPM project.
  ** Copyright(C) Better Life Medical Technology Co., Ltd.
  ** All Rights Reserved.
@@ -612,7 +612,6 @@ void RainbowProviderPrivate::handlePacket(unsigned char *data, int len)
     break;
     case  RB_NCK:
     {
-        qDebug() << Q_FUNC_INFO << "Receive NAK type " << data[1];
     }
     break;
     case  RB_PARAM:

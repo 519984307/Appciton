@@ -29,12 +29,6 @@
 //     funlockfile(stderr);
 // } while(false)
 
-#define debug(args...) \
-do { \
-    qDebug()<<(QString().sprintf("%s(line %d): %s", basename(__FILE__), __LINE__, \
-    QString().sprintf(args).toStdString().c_str()).toStdString().c_str());\
-} while(false)
-
 #if 0
 #define outHex(buff, len) \
 for(int i = 0; i < len; i++) \
@@ -67,7 +61,16 @@ for(int i = 0; i < len; i++) \
 } \
 fprintf(stderr, "\t%s:%d\n", basename(__FILE__), __LINE__)
 
-#define qdebug(args...) do{qDebug() << Q_FUNC_INFO << QString().sprintf(args);} while(0)
+#define qdebug(args...)
+#define debug(args...)
+
+// #define qdebug(args...) do{qDebug() << Q_FUNC_INFO << QString().sprintf(args);} while(0)
+
+// #define debug(args...)
+// do {
+//    qDebug()<<(QString().sprintf("%s(line %d): %s", basename(__FILE__), __LINE__,
+//    QString().sprintf(args).toStdString().c_str()).toStdString().c_str());
+// } while(false)
 
 #else
 
