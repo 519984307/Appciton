@@ -65,12 +65,6 @@ public:
     /* reimplment */
     void reconnected();
 
-public slots:
-    /**
-     * @brief onTimeOut
-     */
-    void onTimeOut();
-
 private slots:
     /**
      * @brief requestBoardInfo send get board info command

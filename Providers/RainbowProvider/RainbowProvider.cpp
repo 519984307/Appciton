@@ -396,10 +396,10 @@ void RainbowProvider::dataArrived(unsigned char *data, unsigned int length)
         unsigned char len = ringBuff.at(1);     // data field length
         unsigned char totalLen = 2 + len + 2;   // 1 frame head + 1 len byte + data length + 1 checksum + 1 frame end
 
-#if 0   // TODO: check the packet length
+#if 1   // TODO: check the packet length
         if (totalLen > 40)
         {
-            qDebug() << "packet too large";
+            qWarning() << "packet too large, drop " << hex << ringBuff.at(0);
             ringBuff.pop(1);
             continue;
         }
@@ -466,6 +466,13 @@ void RainbowProvider::sendVersion()
 
 void RainbowProvider::setSensitivityFastSat(SensitivityMode mode, bool fastSat)
 {
+    if (d_ptr->isReseting)
+    {
+        d_ptr->sensMode = mode;
+        d_ptr->fastSat = fastSat;
+        return;
+    }
+
     unsigned char data[2] = {RB_CMD_CONF_SENSITIVITY_MODE, mode};
     d_ptr->sendCmd(data, 2);
 
@@ -476,12 +483,24 @@ void RainbowProvider::setSensitivityFastSat(SensitivityMode mode, bool fastSat)
 
 void RainbowProvider::setAverageTime(AverageTime mode)
 {
+    if (d_ptr->isReseting)
+    {
+        d_ptr->averTime = mode;
+        return;
+    }
+
     unsigned char data[2] = {RB_CMD_CONF_AVERAGE_TIME, mode};
     d_ptr->sendCmd(data, 2);
 }
 
 void RainbowProvider::setSmartTone(bool enable)
 {
+    if (d_ptr->isReseting)
+    {
+        d_ptr->enableSmartTone = enable;
+        return;
+    }
+
     unsigned char data[2] = {RB_CMD_CONF_SMART_TONE_MODE, !!enable};
     d_ptr->sendCmd(data, 2);
 }
@@ -497,14 +516,6 @@ void RainbowProvider::reconnected()
 {
     spo2OneShotAlarm.setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, false);
     spo2Param.setConnected(true);
-}
-
-void RainbowProvider::onTimeOut()
-{
-    if (d_ptr->curInitializeStep != RB_INIT_COMPLETED)
-    {
-        d_ptr->handleACK();
-    }
 }
 
 void RainbowProvider::requestBoardInfo()
@@ -546,7 +557,6 @@ void RainbowProviderPrivate::handlePacket(unsigned char *data, int len)
     {
     case  RB_ACK:
     {
-        qDebug() << Q_FUNC_INFO << "ACK" << curInitializeStep;
         handleACK();
     }
     break;
@@ -877,6 +887,7 @@ void RainbowProviderPrivate::handleACK()
                 q_ptr->disPatchInfo.dispatcher->setPacketPortBaudrate(q_ptr->disPatchInfo.packetType,
                         DataDispatcher::BAUDRATE_57600);
                 QTimer::singleShot(50, q_ptr, SLOT(requestBoardInfo()));
+                qDebug() << "Rainbow baudrate has changed, update packet port baudrate.";
             }
             else
             {
@@ -890,7 +901,7 @@ void RainbowProviderPrivate::handleACK()
         }
         break;
         case RB_INIT_GET_BOARD_INFO:
-            // board info response is not a ack message
+            // board info response is not a ack message, should no get here
             break;
         case RB_INIT_UNLOCK_BOARD:
             // get here after board unlock
