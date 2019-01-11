@@ -50,18 +50,74 @@ public:
 void ScreenMenuContentPrivate::loadOptions()
 {
     reloadScreenType();
+}
+
+void ScreenMenuContentPrivate::reloadScreenType()
+{
+    QStringList screenTypeTextList;
+    QList<int> screenTypeList;
+    if (ecgParam.getLeadMode() == ECG_LEAD_MODE_3)
+    {
+        screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_STANDARD)));
+#ifndef HIDE_MONITOR_OXYCRG
+        screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_OXYCRG)));
+#endif
+#ifndef HIDE_MONITOR_TREND
+        screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_TREND)));
+#endif
+        screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_BIGFONT)));
+
+        screenTypeList << UFACE_MONITOR_STANDARD
+                  #ifndef HIDE_MONITOR_OXYCRG
+                       << UFACE_MONITOR_OXYCRG
+                  #endif
+                  #ifndef HIDE_MONITOR_TREND
+                       << UFACE_MONITOR_TREND
+                  #endif
+                       << UFACE_MONITOR_BIGFONT;
+    }
+    else
+    {
+        screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_STANDARD)));
+        screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_ECG_FULLSCREEN)));
+#ifndef HIDE_MONITOR_OXYCRG
+        screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_OXYCRG)));
+#endif
+#ifndef HIDE_MONITOR_TREND
+        screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_TREND)));
+#endif
+        screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_BIGFONT)));
+
+        screenTypeList << UFACE_MONITOR_STANDARD
+                       << UFACE_MONITOR_ECG_FULLSCREEN
+                  #ifndef HIDE_MONITOR_OXYCRG
+                       << UFACE_MONITOR_OXYCRG
+                  #endif
+                  #ifndef HIDE_MONITOR_TREND
+                       << UFACE_MONITOR_TREND
+                  #endif
+                       << UFACE_MONITOR_BIGFONT;
+    }
+
+    interfaceCbo->blockSignals(true);
+    interfaceCbo->clear();
+    int index = 0;
     int type = UFACE_MONITOR_STANDARD;
     systemConfig.getNumValue("UserFaceType", type);
-    int index = 0;
-    for (; index < interfaceCbo->count(); ++index)
+    UserFaceType faceType = static_cast<UserFaceType>(type);
+    for (int i = 0; i< screenTypeList.count(); ++i)
     {
-        if (interfaceCbo->itemData(index).toInt() == type)
+        interfaceCbo->addItem(screenTypeTextList.at(i), screenTypeList.at(i));
+        if (trs(SystemSymbol::convert(faceType)) == screenTypeTextList.at(i))
         {
-            type = index;
-            break;
+            // 获取当前的索引
+            index =  interfaceCbo->count() - 1;
         }
     }
-    interfaceCbo->setCurrentIndex(type);
+
+    interfaceCbo->blockSignals(false);
+    interfaceCbo->setCurrentIndex(index);
+
     layoutCbo->blockSignals(true);
     if (type == UFACE_MONITOR_BIGFONT)
     {
@@ -72,44 +128,6 @@ void ScreenMenuContentPrivate::loadOptions()
         layoutCbo->setCurrentIndex(SCREEN_LAYOUT_STANDARD);
     }
     layoutCbo->blockSignals(false);
-}
-
-void ScreenMenuContentPrivate::reloadScreenType()
-{
-    QStringList screenTypeTextList;
-    QList<int> screenTypeList;
-    if (ecgParam.getLeadMode() == ECG_LEAD_MODE_3)
-    {
-        screenTypeTextList<< trs("Standard")
-                       << trs("OxyCRG")
-                       << trs("Trend")
-                       << trs("BigFont");
-        screenTypeList << UFACE_MONITOR_STANDARD
-                       << UFACE_MONITOR_OXYCRG
-                       << UFACE_MONITOR_TREND
-                       << UFACE_MONITOR_BIGFONT;
-    }
-    else
-    {
-        screenTypeTextList<< trs("Standard")
-                       << trs("ECGFullScreen")
-                       << trs("OxyCRG")
-                       << trs("Trend")
-                       << trs("BigFont");
-        screenTypeList << UFACE_MONITOR_STANDARD
-                       << UFACE_MONITOR_ECG_FULLSCREEN
-                       << UFACE_MONITOR_OXYCRG
-                       << UFACE_MONITOR_TREND
-                       << UFACE_MONITOR_BIGFONT;
-    }
-
-    interfaceCbo->blockSignals(true);
-    interfaceCbo->clear();
-    for (int i = 0; i< screenTypeList.count(); ++i)
-    {
-        interfaceCbo->addItem(screenTypeTextList.at(i), screenTypeList.at(i));
-    }
-    interfaceCbo->blockSignals(false);
 }
 
 ScreenMenuContent::ScreenMenuContent()
@@ -169,8 +187,19 @@ void ScreenMenuContent::onComboxIndexChanged(int index)
     ComboBox *cbo = qobject_cast<ComboBox *>(sender());
     if (cbo == d_ptr->interfaceCbo)
     {
-        UserFaceType type = static_cast<UserFaceType>(d_ptr->interfaceCbo->itemData(index).toInt());
-        if (type > UFACE_NR)
+        // 通过比较类型字符串查找匹配界面
+        UserFaceType type = UFACE_MONITOR_STANDARD;
+        QString text = d_ptr->interfaceCbo->currentText();
+        for (int i = UFACE_MONITOR_STANDARD; i < UFACE_NR; i++)
+        {
+            UserFaceType faceType = static_cast<UserFaceType>(i);
+            if (trs(SystemSymbol::convert(faceType)) == text)
+            {
+                type = faceType;
+                break;
+            }
+        }
+        if (type >= UFACE_NR)
         {
             return;
         }
