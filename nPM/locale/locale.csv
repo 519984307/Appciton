@@ -803,6 +803,7 @@ SPO2Version,SPO2,SPO2
 TEMPVersion,TEMP,TEMP
 iDMBoardVersion,iDMBoard,iDMBoard
 PRT48Version,PRT48,PRT48
+SourceOfCO2,来源CO2,Source of CO2
 PDVersion,PD,PD
 COREVersion,CORE,CORE
 VersionReturn,返回,Return
