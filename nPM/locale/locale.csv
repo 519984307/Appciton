@@ -1625,3 +1625,4 @@ SPO2FingerOff,未检测到手指,SPO2 Finger Off
 SPO2LEDFault,血氧LED错误,SPO2 LED Fault
 SPO2LowPerfusion,血氧低弱灌注,SPO2 Low Perfusion
 NIBPSameSide,NIBP同侧,NIBP Simul
+RescueStorageSpaceFull,营救数据存储空间满,Rescue storage space full

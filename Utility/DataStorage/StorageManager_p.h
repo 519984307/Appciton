@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/1/7
+ **/
+
+
 #pragma once
 #include "StorageManager.h"
 #include <QList>
@@ -14,7 +25,6 @@ struct StorageItem
 
     StorageItem(quint32 type, char *buf, quint32 len, quint32 extraData = 0)
         : datatype(type), content(buf, len), extraData(extraData) {
-
     }
     quint32 datatype;
     QByteArray content;
@@ -26,7 +36,7 @@ class StorageManagerPrivate
 public:
     Q_DECLARE_PUBLIC(StorageManager)
 
-    StorageManagerPrivate(StorageManager *q_ptr):q_ptr(q_ptr), backend(NULL), currentCacheList(0){}
+    explicit StorageManagerPrivate(StorageManager *q_ptr) : q_ptr(q_ptr), backend(NULL), currentCacheList(0){}
     virtual ~StorageManagerPrivate();
 
     void switchList();
