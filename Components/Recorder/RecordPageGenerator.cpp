@@ -34,6 +34,8 @@
 #include "RecorderManager.h"
 #include "TimeDate.h"
 #include "AlarmConfig.h"
+#include "UnitManager.h"
+#include "PatientManager.h"
 
 #define DEFAULT_PAGE_WIDTH 200
 #define PEN_WIDTH 2
@@ -144,24 +146,26 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
     infos.append(QString("%1: %2").arg(trs("PatientType")).arg(trs(PatientSymbol::convert(patInfo.type))));
     infos.append(QString("%1: %2").arg(trs("Blood")).arg(PatientSymbol::convert(patInfo.blood)));
     QString str;
-    str = QString("%1: ").arg(trs("Age"));
-    if (patInfo.age > 0)
-    {
-        str += QString::number(patInfo.age);
-    }
+    QString fotmat;
+    timeDate.getDateFormat(fotmat, true);
+    str = QString("%1: %2").arg(trs("BornDate")).arg(patInfo.bornDate.toString(fotmat));
     infos.append(str);
 
     str = QString("%1: ").arg(trs("Weight"));
     if (patInfo.weight)
     {
-        str += QString("%1 %2").arg(QString::number(patInfo.weight)).arg(PatientSymbol::convert(patInfo.weightUnit));
+        float weight = patientManager.getWeight();
+        QString weightStr = Unit::convert(patientManager.getWeightUnit(), UNIT_KG, weight);
+        str += QString("%1 %2").arg(weightStr).arg(Unit::localeSymbol(patientManager.getWeightUnit()));
     }
     infos.append(str);
 
     str = QString("%1: ").arg(trs("Height"));
     if (patInfo.height)
     {
-        str += QString::number(patInfo.height);
+        float height = patientManager.getHeight();
+        QString heightStr = Unit::convert(patientManager.getHeightUnit(), UNIT_CM, height);
+        str += QString("%1 %2").arg(heightStr).arg(Unit::localeSymbol(patientManager.getHeightUnit()));
     }
     infos.append(str);
 
@@ -966,7 +970,7 @@ RecordPage *RecordPageGenerator::createWaveScalePage(const QList<RecordWaveSegme
             case CO2_DISPLAY_ZOOM_8:
                 high = 8;
                 break;
-            case CO2_DISPLAY_ZOOM_12:
+            case CO2_DISPLAY_ZOOM_13:
                 high = 12;
                 break;
             case CO2_DISPLAY_ZOOM_20:
@@ -1166,7 +1170,7 @@ static qreal mapWaveValue(const RecordWaveSegmentInfo &waveInfo, short wave)
         case CO2_DISPLAY_ZOOM_8:
             max  = max * 8 / 20;
             break;
-        case CO2_DISPLAY_ZOOM_12:
+        case CO2_DISPLAY_ZOOM_13:
             max = max * 12 / 20;
             break;
         default:
@@ -1278,7 +1282,7 @@ static qreal mapOxyCRGWaveValue(const OxyCRGWaveInfo &waveInfo, qreal waveHeight
         case CO2_DISPLAY_ZOOM_8:
             max  = max * 8 / 20;
             break;
-        case CO2_DISPLAY_ZOOM_12:
+        case CO2_DISPLAY_ZOOM_13:
             max = max * 12 / 20;
             break;
         default:
@@ -2261,7 +2265,7 @@ RecordPage *RecordPageGenerator::createOxyCRGGraph(const QList<TrendGraphInfo> &
         case CO2_DISPLAY_ZOOM_8:
             high = 8;
             break;
-        case CO2_DISPLAY_ZOOM_12:
+        case CO2_DISPLAY_ZOOM_13:
             high = 12;
             break;
         case CO2_DISPLAY_ZOOM_20:

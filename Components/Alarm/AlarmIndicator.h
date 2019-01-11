@@ -49,7 +49,6 @@ public:
 
     // 报警暂停状态处理
     bool phyAlarmPauseStatusHandle();
-    bool techAlarmPauseStatusHandle();
 
     // 是否有处于非暂停的生理报警
     bool hasNonPausePhyAlarm();

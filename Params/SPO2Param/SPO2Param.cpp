@@ -223,11 +223,20 @@ void SPO2Param::setProvider(SPO2ProviderIFace *provider)
         //设置灵敏度
         _provider->setSensitivityFastSat(static_cast<SensitivityMode>(getSensitivity()), getFastSat());
     }
-    else if (str == "MASIMO_SPO2")
+    else if (str == "MASIMO_SPO2" || str == "RAINBOW_SPO2")
     {
         _provider->setSensitivityFastSat(SPO2_MASIMO_SENS_NORMAL, false);
         _provider->setAverageTime(SPO2_AVER_TIME_8SEC);
-        _provider->setSmartTone(false);
+
+        SPO2SMARTPLUSETONE pulseTone = getSmartPulseTone();
+        if (pulseTone == SPO2_SMART_PLUSE_TONE_ON)
+        {
+            _provider->setSmartTone(true);
+        }
+        else if (pulseTone == SPO2_SMART_PLUSE_TONE_OFF)
+        {
+            _provider->setSmartTone(false);
+        }
     }
 
     if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
@@ -660,7 +669,7 @@ void SPO2Param::setSensitivity(int sens)
     currentConfig.setNumValue("SPO2|Sensitivity", static_cast<int>(sens));
     if (NULL != _provider)
     {
-        if (_moduleType == MODULE_MASIMO_SPO2)
+        if (_moduleType == MODULE_MASIMO_SPO2 || _moduleType == MODULE_RAINBOW_SPO2)
         {
             _provider->setSensitivityFastSat(static_cast<SensitivityMode>(sens), getFastSat());
         }
@@ -699,6 +708,17 @@ bool SPO2Param::getFastSat()
  *************************************************************************************************/
 void SPO2Param::setSmartPulseTone(SPO2SMARTPLUSETONE sens)
 {
+    if (_provider)
+    {
+        if (sens == SPO2_SMART_PLUSE_TONE_ON)
+        {
+            _provider->setSmartTone(true);
+        }
+        else if (sens == SPO2_SMART_PLUSE_TONE_OFF)
+        {
+            _provider->setSmartTone(false);
+        }
+    }
     currentConfig.setNumValue("SPO2|SmartPluseTone", static_cast<int>(sens));
 }
 

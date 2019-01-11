@@ -813,7 +813,7 @@
     <PrimaryCfg>
         <PatientInfo>
        	    <Sex>0</Sex>
-            <Age>-1</Age>
+	    <BornDate></BornDate>
             <Blood>0</Blood>
             <Name></Name>
             <ID></ID>

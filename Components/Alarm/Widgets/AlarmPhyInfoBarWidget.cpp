@@ -39,7 +39,8 @@ void AlarmPhyInfoBarWidget::_drawBackground(void)
     }
     else if (priority == ALARM_PRIO_PROMPT)
     {
-        painter.setBrush(QColor(0, 175, 219));
+        painter.setBrush(QColor(30, 30, 30));
+        painter.setPen(QColor(30, 30, 30));
     }
     else
     {

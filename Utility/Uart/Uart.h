@@ -46,6 +46,12 @@ public:
     // 初始化数据端口，派生类调用。
     virtual bool initPort(const QString &port, const UartAttrDesc &desc, bool needNotify = true);
 
+    /**
+     * @brief updateBaudrate upgrade the uart port setting
+     * @param baudrate the new baudrate
+     */
+    void updateSetting(const UartAttrDesc &desc);
+
     // 写数据。
     virtual int write(const unsigned char buff[], int len);
 

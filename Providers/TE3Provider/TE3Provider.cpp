@@ -450,13 +450,16 @@ void TE3Provider::handlePacket(unsigned char *data, int len)
 
     case TE3_CYCLE_RR:
     {
-        short rr = (data[2] << 8) | data[1];
-        rr = (rr == -1) ? InvData() : rr;
-        if (0 == respParam.getRespMonitoring())
+        if (systemManager.isSupport(PARAM_RESP))
         {
-            rr = InvData();
+            short rr = (data[2] << 8) | data[1];
+            rr = (rr == -1) ? InvData() : rr;
+            if (0 == respParam.getRespMonitoring())
+            {
+                rr = InvData();
+            }
+            respParam.setRR(rr);
         }
-        respParam.setRR(rr);
         break;
     }
 

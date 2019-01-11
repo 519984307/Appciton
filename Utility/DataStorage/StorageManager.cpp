@@ -210,4 +210,3 @@ void StorageManager::onNewPatientHandle()
     newPatientHandle();
 }
 
-

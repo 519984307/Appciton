@@ -16,8 +16,8 @@ BuildTime,编译时间,Build Time
 ChannelPressureEntitle1,压力标名1,Pressure Entitle1
 ChannelPressureEntitle2,压力标名2,Pressure Entitle2
 Adult,成人,Adu
-PED,小儿,Ped
-NEO,新生儿,Neo
+Pediatric,小儿,Ped
+Neonate,新生儿,Neo
 AlarmLimit,报警限,Alarm Limit
 Other,其它,Other
 Notch,陷波,Notch
@@ -294,19 +294,20 @@ PrintSettingMenuDesc,打印设置,Print Setting
 ClearPrintTask,清除打印任务,ClearPrintTask
 Continous,连续,Continous
 TEMP2SensorOff,体温2探头脱落,TEMP2 Sensor Off
-TEMPSensorOffAll,体温探头全部脱落,TEMP Sensor Off All
-TEMP1OverRange,体温1超界,TEMP1 Over Range
-TEMP2OverRange,体温2超界,TEMP2 Over Range
-TEMPOverRangeAll,体温全部超界,TEMP Over Range All
-TEMP1ProbeTypeError,体温1探头类型错误,TEMP1ProbeTypeError
-TEMP2ProbeTypeError,体温2探头类型错误,TEMP2ProbeTypeError
-TEMPProbeTypeErrorAll,体温探头类型全部错误,TEMPProbeTypeErrorAll
+TEMPSensorOffAll,体温探头全部脱落,All TEMP Sensor Off
+TEMP1OverRange,体温1超界,TEMP1 Out of Range
+TEMP2OverRange,体温2超界,TEMP2 Out of Range
+TEMPOverRangeAll,体温全部超界,All TEMP Out of Range
+TEMP1ProbeTypeError,体温1探头类型错误,TEMP1 Probe Type Error
+TEMP2ProbeTypeError,体温2探头类型错误,TEMP2 Probe Type Error
+TEMPProbeTypeErrorAll,体温探头类型全部错误,All TEMP Probe Type Error
 TEMPCommunicationStop,体温通讯停止,Communication Stop
 celsius,℃,℃
 fahrenheit,℉,℉
 percent,%,%
 Defaults,恢复默认值,Defaults
 SureAllAlarmDefaults,"所有报警设置将恢复默认值,您确定进行吗?",All alarm settings will reset to the defaults. Are you sure to continue?
+SureAllDataErase,"所有历史数据会被擦除,您确定进行吗?","All historical data will be erased,Are you sure to continue?"
 AlarmSettingUp,报警限设置,Alarm Setting Up
 LatchLockSwitch,报警栓锁,Alarm Latch Lock
 AlarmLimitMenu,报警限,Alarm Limit
@@ -606,20 +607,23 @@ CO2FiCO2High,FiCO2 高,FiCO2 High
 CO2BRLow,BR 低,BR Low
 CO2BRHigh,BR 高,BR High
 CO2Apnea,呼吸窒息,Apnea
-CO2SoftwareError,CO2软件错,CO2 Software Error
-CO2HardwareError,CO2硬件错,CO2 Hardware Error
-CO2MotorError,CO2马达超速,CO2 Motor Speed Error
+CO2MotorError,CO2电机转速超限,CO2 Motor Speed Out of bounds
+CO2SoftwareError,CO2软件错误,CO2 Software Error
+CO2HardwareError,CO2硬件错误,CO2 Hardware Error
 CO2MissFactoryCali,CO2未校准,CO2 Miss Factory Calib
-CO2ReplaceAdapter,CO2替换适配器,CO2 Replace Adapter
+CO2ReplaceAdapter,CO2更换适配器,CO2 Replace Adapter
 CO2NoAdapter,CO2无适配器,CO2 No Adapter
-CO2OutRange,CO2超出精度范围,CO2 Out Accuracy Range
-CO2TempOutRange,CO2内部温度超界,CO2 Temp Out Range
-CO2BaroPressOutRange,CO2气压超界,CO2 BaroPress Out Range
+CO2OutRange,CO2超出精度范围,CO2 Out of Accuracy Range
+CO2TempOutRange,CO2内部温度超界,CO2 Temp Out of Range
+CO2BaroPressOutRange,CO2大气压力超限,CO2 Baro Pressure Out of Range
 CO2ZeroRequired,CO2需要校零,CO2 Zero Required
 CO2ZeroDisable,CO2禁止校零,CO2 Zero Disable
 CO2ZeroInprogress,CO2校零中,CO2 Zero In Progress
-CO2SpanCalibFailed,CO2校准量程失败,CO2 Span Calib Failed
-CO2SpanCalibInprogress,CO2正在校准量程,CO2 Span Calib Inprogress
+CO2SpanCalibFailed,CO2校准失败,CO2 Span Calib Failed
+CO2SpanCalibInprogress,CO2正在校准,CO2 Span Calib In Progress
+CO2ZeroandSpanDisable,CO2禁止校零和校准,CO2 Zero and Span Disable
+CO2SampleLineClogged,CO2采样管堵塞,CO2 Sample Line Clogged
+CO2NoSampleLine,CO2没有采样线,CO2 No Sample Line
 IBP1LeadOff,IBP通道1导联脱落,IBP1 lead off
 IBP2LeadOff,IBP通道2导联脱落,IBP2 lead off
 IBP1ZeroCalibSuccess,IBP通道1校零成功,IBP1 zero success
@@ -799,6 +803,7 @@ SPO2Version,SPO2,SPO2
 TEMPVersion,TEMP,TEMP
 iDMBoardVersion,iDMBoard,iDMBoard
 PRT48Version,PRT48,PRT48
+SourceOfCO2,来源CO2,Source of CO2
 PDVersion,PD,PD
 COREVersion,CORE,CORE
 VersionReturn,返回,Return
@@ -1196,20 +1201,10 @@ Calculation ,计算,Calculation
 ReferenceRange,参考范围,Reference Range
 CheckInput,查看输入,Check Input
 PrimitiveCalculation,原始计算,Primitive Calculation
-InOutValue,输入/输出值,
-ZeroCalibSuccess,校零成功,
+InOutValue,输入/输出值,In/Out Value
 ZeroInProgress,校零进行中,Zero in progress
 CalibrationSuccess,校准成功,Success
 CalibrationFail,校准失败,Fail
-MeasurePressureIsPulse,测量压力是脉动的,
-ZeroCalibPressureBeyondMeasureRange,校零压力超出测量范围,
-CalibrationPressureBeyondMeasureRange,校准压力超出测量范围,
-NoZeroCalib,未校零,
-LeadOffZeroCalibFail,导联脱落（校零失败）,
-LeadOffCalibrationFail,导联脱落（校准失败）,
-NoSetZeroCalibTime,没有设置校零时间,
-NoSetCalibrationTime,没有设置校准时间,
-ManualRulerSet,手动标尺设置,Manual Ruler Set
 UpperScale,压力上标尺,Upper Scale
 LowerScale,压力下标尺,Lower Scale
 Ruler,标尺,Ruler
@@ -1607,15 +1602,11 @@ _12Hour,12 小时,12 Hour
 _24Hour,24 小时,24 Hour
 System,系统,System
 Machine,机器,Machine
-Ped,小儿,Pediatric
-Neo,新生儿,Neonate
 AdultConfig.Original.xml,成人缺省,Default Adult Config.
 NeoConfig.Original.xml,新生儿缺省,Default Neo Config.
 PedConfig.Original.xml,小儿缺省,Default Ped Config.
 System.Original.xml,系统配置,System Config.
 Machine.xml,机器配置,Machine Config.
-Pediatric,小儿,Pediatric
-Neonate,新生儿,Neonate
 SaveCurrentSetting,保存设置,Save Current Setting
 SaveCurrentSettingAs,保存设置,Save Setting
 SaveCurrentSettingAsDesc,保存设置,Save Setting
@@ -1635,3 +1626,5 @@ SPO2LEDFault,血氧LED错误,SPO2 LED Fault
 SPO2LowPerfusion,血氧低弱灌注,SPO2 Low Perfusion
 NIBPSimul,NIBP同侧,NIBP Simul
 Input8DigitsPassword,请输入8位数字密码,Please input 8 digits password
+BornDate,出生日期,Born Date
+RescueStorageSpaceFull,营救数据存储空间满,Rescue storage space full
