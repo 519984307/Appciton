@@ -130,6 +130,37 @@ enum RBPulseOximeterSystemExceptions
     RB_RESERVED_FIVE                             = (1 << 31),  // reserved
 };
 
+enum BaudRateType
+{
+    BAUD_RATE_9600,
+    BAUD_RATE_19200,
+    BAUD_RATE_28800,
+    BAUD_RATE_38400,
+    BAUD_RATE_57600,
+    BAUD_RATE_115200,
+    BAUD_RATE_230400,
+    BAUD_RATE_INVAILD
+};
+
+enum PerfusionIndexExceptions
+{
+    INVAILD_PI = 0X0004,  // invaild pi
+};
+
+enum RespirationRateExceptions
+{
+    INVAILD_RR = 0X0004,  // invaild respiration rate
+};
+
+enum PulseRateExceptions
+{
+    INVAILD_PR = 0X0004,  // invaild pulse rate
+};
+
+enum Spo2Exceptions
+{
+    INVAILD_SPO2 = 0X0004,  // invaild functional spo2
+};
 
 class RainbowProviderPrivate
 {
@@ -142,7 +173,6 @@ public:
         , fastSat(false)
         , enableSmartTone(false)
         , curInitializeStep(RB_INIT_BAUDRATE)
-        , noSensor(true)
         , isReseting(false)
     {
     }
@@ -257,8 +287,6 @@ public:
 
     RBInitializeStep curInitializeStep;
 
-    bool noSensor;
-
     bool isReseting;
 };
 
@@ -303,6 +331,14 @@ void RainbowProvider::dataArrived()
     // 接收数据
     readData();
 
+    if (d_ptr->isReseting)
+    {
+        while (ringBuff.dataSize())
+        {
+            ringBuff.pop(1);
+        }
+    }
+
     // 无效数据退出处理
     if (ringBuff.dataSize() < d_ptr->minPacketLen)
     {
@@ -323,6 +359,15 @@ void RainbowProvider::dataArrived()
         // 如果查询不到帧尾，移除ringbuff缓冲区最旧的数据，下次继续查询
         unsigned char len = ringBuff.at(1);     // data field length
         unsigned char totalLen = 2 + len + 2;   // 1 frame head + 1 lenblmpr byte + data length + 1 checksum + 1 frame end
+
+#if 0   // TODO: check the packet length
+        if (totalLen > 40)
+        {
+            qDebug() << "packet too large";
+            ringBuff.pop(1);
+            continue;
+        }
+#endif
 
         if (ringBuff.dataSize() < totalLen)
         {
@@ -478,7 +523,7 @@ void RainbowProvider::setSensitivityFastSat(SensitivityMode mode, bool fastSat)
 
     data[0] = RB_CMD_CONF_FASTSAT_MODE;
     data[1] = fastSat;
-    d_ptr->sendCmd(data, 2);
+    d_ptr->sendCmd(data, sizeof(data));
 }
 
 void RainbowProvider::setAverageTime(AverageTime mode)
@@ -490,7 +535,7 @@ void RainbowProvider::setAverageTime(AverageTime mode)
     }
 
     unsigned char data[2] = {RB_CMD_CONF_AVERAGE_TIME, mode};
-    d_ptr->sendCmd(data, 2);
+    d_ptr->sendCmd(data, sizeof(data));
 }
 
 void RainbowProvider::setSmartTone(bool enable)
@@ -530,6 +575,11 @@ void RainbowProvider::changeBaudrate()
 
 void RainbowProvider::setLineFrequency(RainbowLineFrequency freq)
 {
+    if (d_ptr->isReseting)
+    {
+        return;
+    }
+
     unsigned char data[2] = {RB_CMD_CONF_LINE_FREQ, freq};
     d_ptr->sendCmd(data, 2);
 }
@@ -615,7 +665,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     case RB_PARAM_OF_SPO2:
     {
         temp = (data[4] << 8) + data[5];
-        bool valid = !(temp & 0x0004);
+        bool valid = !(temp & INVAILD_SPO2);
 
         if (valid == true)
         {
@@ -632,7 +682,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     case RB_PARAM_OF_PR:
     {
         temp = (data[4] << 8) + data[5];
-        bool valid = !(temp & 0x0004);
+        bool valid = !(temp & INVAILD_PR);
         if (valid == true)
         {
             temp = (data[0] << 8) + data[1];
@@ -647,7 +697,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     case RB_PARAM_OF_PI:
     {
         temp = (data[4] << 8) + data[5];
-        bool valid = !(temp & 0x0004);
+        bool valid = !(temp & INVAILD_PI);
         if (valid == true)
         {
             temp = (data[0] << 8) + data[1];
@@ -701,6 +751,16 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     }
     break;
     case RB_PARAM_OF_VERSION_INFO:
+    {
+        unsigned short dspVersion = (data[0] << 8) | data[1];
+        unsigned short mcuVersion = (data[6] << 8) | data[7];
+        unsigned short protocolVersion = (data[14] << 8) | data[15];
+        q_ptr->versionInfo = QString::number(dspVersion);
+        q_ptr->versionInfo += "-";
+        q_ptr->versionInfo += QString::number(mcuVersion);
+        q_ptr->versionInfo += "-";
+        q_ptr->versionInfo += QString::number(protocolVersion);
+    }
         break;
     case RB_PARAM_MAX_ITEM:
         break;
@@ -725,11 +785,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         unsigned short sensorFamilyMember = (data[2] << 8) | data[3];
         if (sensorFamilyMember == 8 || sensorType == 0)
         {
-            noSensor = true;
-        }
-        else
-        {
-            noSensor = false;
+            qDebug() << "No Sensor Connected!";
         }
     }
     break;
@@ -756,7 +812,7 @@ void RainbowProviderPrivate::handleWaveformInfo(unsigned char *data, int len)
     spo2Param.addWaveformData(waveData);
     spo2Param.addWaveformData(waveData);  // add wavedata twice for rounding SPO2 Waveform Sample  62.5 * 2 = 125
 
-    if (data[2] & 0x80)
+    if (data[2] & 0x80)  // get beep pulse audio status
     {
         spo2Param.setPulseAudio(true);
     }
@@ -846,7 +902,7 @@ void RainbowProviderPrivate::requestBoardInfo()
 
 void RainbowProviderPrivate::updateBaudRate()
 {
-    unsigned char data[2] = {RB_CMD_CONF_UPDATE_BAUDRATE, 0x04};    // upgrade the baudrate to 57600
+    unsigned char data[2] = {RB_CMD_CONF_UPDATE_BAUDRATE, BAUD_RATE_57600};    // upgrade the baudrate to 57600
     sendCmd(data, sizeof(data));
 }
 
@@ -905,7 +961,7 @@ void RainbowProviderPrivate::handleACK()
             break;
         case RB_INIT_UNLOCK_BOARD:
             // get here after board unlock
-            configPeriodParamOut(RB_PARAM_OF_SENSOR_PARAM_CHECK, 500);
+            configPeriodParamOut(RB_PARAM_OF_SENSOR_PARAM_CHECK, 500);  // 每500ms检查一次传感器参数
             curInitializeStep = RB_INIT_SENSOR_PARAM_CHECK;
             break;
         case RB_INIT_SENSOR_PARAM_CHECK:
@@ -966,6 +1022,10 @@ void RainbowProviderPrivate::handleACK()
         default:
             break;
         }
+    }
+    else  // 当初始化完成时，请求参数状态（里面含有版本信息）
+    {
+        requestParamStatus();
     }
 }
 
