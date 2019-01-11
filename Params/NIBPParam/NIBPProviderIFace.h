@@ -175,6 +175,9 @@ public:
     virtual void sendCmdData(unsigned char /*cmdId*/, const unsigned char */*data*/,
                              unsigned int /*len*/) { }
 
+    // 转换错误码
+    virtual unsigned char convertErrcode(unsigned char /*code*/) {return 0;}
+
 public:
     NIBPProviderIFace() {  }
     virtual ~NIBPProviderIFace() { }

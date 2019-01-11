@@ -21,7 +21,7 @@ public:
     virtual bool attachParam(Param &param);
     virtual void dataArrived(void);
 
-    virtual void sendVersion(void) { }
+    virtual void sendVersion(void);
 
 public:
     // 起停测量。
@@ -40,6 +40,9 @@ public:
     //校准点压力值输入
     virtual void servicePressurepoint(const unsigned char *data, unsigned int len);
 
+    // 获取校准结果
+    void getCalibrateResult();
+
     // 是否为错误数据包。
     virtual NIBPOneShotType isMeasureError(unsigned char *packet);
 
@@ -49,6 +52,12 @@ public:
     // 是否为结果包。
     virtual bool isResult(unsigned char *packet, short &sys,
                           short &dia, short &map, short &pr, NIBPOneShotType &err);
+
+    // 获取模块信息
+    void getReturnString(void);
+
+    // 转换错误码
+    virtual unsigned char convertErrcode(unsigned char code);
 
     // 构造与析构。
     SuntechProvider();
@@ -78,4 +87,7 @@ private:
     int _flagStartCmdSend;
 
     QTimer *_timer;
+
+    bool _isModuleDataRespond;              // 是否为版本信息回复
+    bool _isCalibrationRespond;             // 是否为校准回复
 };

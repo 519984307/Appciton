@@ -176,11 +176,11 @@ void NIBPMenuContentPrivate::loadOptions()
     int initVal;
     if (type == PATIENT_TYPE_ADULT)
     {
-        initCuffSpb->setRange(80, 240);
+        initCuffSpb->setRange(120, 280);
     }
     else if (type == PATIENT_TYPE_PED)
     {
-        initCuffSpb->setRange(80, 210);
+        initCuffSpb->setRange(80, 250);
     }
     else if (type == PATIENT_TYPE_NEO)
     {
