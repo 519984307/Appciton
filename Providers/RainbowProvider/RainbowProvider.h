@@ -29,14 +29,17 @@ public:
     void dataArrived();
 
     /* reimplment */
-    void dataArrived(unsigned char *data, unsigned char length);
+    void dataArrived(unsigned char *data, unsigned int length);
+
+    /* reimplment */
+    void dispatchPortHasReset();
 
     /* reimplment */
     void setSensitive(SPO2Sensitive /*sens*/) { }
 
     /* reimplment */
-    // 实际为62.5,取整为62
-    int getSPO2WaveformSample() {return 62;}
+    // 实际为62.5, 62.5 * 2 = 125  波形数据增加2次
+    int getSPO2WaveformSample() {return 125;}
 
     /* reimplment */
     int getSPO2BaseLine();
