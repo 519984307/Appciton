@@ -31,20 +31,18 @@ public:
     {
         switch (time)
         {
-        case ALARM_PAUSE_TIME_60S:
+        case ALARM_PAUSE_TIME_1MIN:
             return 60;
-        case ALARM_PAUSE_TIME_90S:
-            return 90;
-        case ALARM_PAUSE_TIME_120S:
+        case ALARM_PAUSE_TIME_2MIN:
             return 120;
-        case ALARM_PAUSE_TIME_150S:
-            return 150;
-        case ALARM_PAUSE_TIME_180S:
+        case ALARM_PAUSE_TIME_3MIN:
             return 180;
-        case ALARM_PAUSE_TIME_210S:
-            return 210;
-        case ALARM_PAUSE_TIME_240S:
-            return 240;
+        case ALARM_PAUSE_TIME_5MIN:
+            return 300;
+        case ALARM_PAUSE_TIME_10MIN:
+            return 600;
+        case ALARM_PAUSE_TIME_15MIN:
+            return 900;
         default:
             break;
         }
@@ -80,7 +78,7 @@ void AlarmPauseState::enter()
     alarmIndicator.delAllPhyAlarm();
     lightManager.enableAlarmAudioMute(true);
     beginTimer(1000);
-    int index = ALARM_PAUSE_TIME_120S;
+    int index = ALARM_PAUSE_TIME_2MIN;
     systemConfig.getNumValue("Alarms|AlarmPauseTime", index);
     d_ptr->leftPauseTime = d_ptr->getAlarmPausetime(static_cast<AlarmPauseTime>(index));
     alarmIndicator.updateAlarmPauseTime(d_ptr->leftPauseTime);

@@ -37,7 +37,7 @@
     <Alarms>
         <DefaultAlarmVolume>3</DefaultAlarmVolume>
         <MinimumAlarmVolume>2</MinimumAlarmVolume>
-        <AlarmPauseTime>2</AlarmPauseTime>
+        <AlarmPauseTime>1</AlarmPauseTime>
         <STAlarmDraly>1</STAlarmDraly>
         <PauseMaxAlarm15Min>1</PauseMaxAlarm15Min>
         <AlarmVol>1</AlarmVol>
