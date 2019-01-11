@@ -62,6 +62,11 @@ public:
         Q_UNUSED(length)
     }
 
+    /**
+     * @brief dispatchPortHasReset called when the dispatch port reset is complete
+     */
+    virtual void dispatchPortHasReset() {}
+
     virtual void disconnected(void) = 0;          // 模块连接恢复时回调，之类实现。
     virtual void reconnected(void) = 0;          // 模块连接恢复时回调，之类实现。
 

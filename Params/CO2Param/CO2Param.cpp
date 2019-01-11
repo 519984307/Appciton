@@ -107,6 +107,9 @@ void CO2ParamPrivate::setWaveformSpeed(CO2SweepSpeed speed)
     case CO2_SWEEP_SPEED_250:
         waveWidget->setWaveSpeed(25);
         break;
+    case CO2_SWEEP_SPEED_500:
+        waveWidget->setWaveSpeed(50);
+        break;
     default:
         break;
     }

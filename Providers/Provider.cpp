@@ -41,6 +41,32 @@ bool Provider::initPort(const UartAttrDesc &desc, bool needNotify)
               qPrintable(port),
               disPatchInfo.packetType);
         disPatchInfo.dispatcher->connectProvider(disPatchInfo.packetType, this);
+
+        DataDispatcher::PacketPortBaudrate portBaud = DataDispatcher::BAUDRATE_9600;
+        switch (desc.baud) {
+        case 9600:
+            portBaud = DataDispatcher::BAUDRATE_9600;
+            break;
+        case 19200:
+            portBaud = DataDispatcher::BAUDRATE_19200;
+            break;
+        case 28800:
+            portBaud = DataDispatcher::BAUDRATE_28800;
+            break;
+        case 38400:
+            portBaud = DataDispatcher::BAUDRATE_38400;
+            break;
+        case 57600:
+            portBaud = DataDispatcher::BAUDRATE_57600;
+            break;
+        case 115200:
+            portBaud = DataDispatcher::BAUDRATE_115200;
+            break;
+        default:
+            qWarning("Unsupport dispatch port baudrate: %d\n", desc.baud);
+            break;
+        }
+        disPatchInfo.dispatcher->setPacketPortBaudrate(disPatchInfo.packetType, portBaud);
         return true;
     }
 

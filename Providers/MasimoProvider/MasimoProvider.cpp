@@ -53,6 +53,12 @@ void MasimoSetProvider::dataArrived(void)
             continue;
         }
 
+        if (ringBuff.dataSize() < 13)
+        {
+            // no enough data
+            break;
+        }
+
         if (ringBuff.at(13) != EOM)
         {
             // debug("discard (%s:%d)\n", qPrintable(getName()), ringBuff.at(0));
@@ -251,11 +257,17 @@ void MasimoSetProvider::setSmartTone(bool enable)
  *************************************************************************************************/
 MasimoSetProvider::MasimoSetProvider() : Provider("MASIMO_SPO2"), SPO2ProviderIFace()
 {
-    disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_S5;
+    disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_SPO2;
     UartAttrDesc portAttr(9600, 8, 'N', 1);
     initPort(portAttr);
 
     _isLowPerfusionFlag = false;
+
+    if (disPatchInfo.dispatcher)
+    {
+        // reset the hardware
+        disPatchInfo.dispatcher->resetPacketPort(disPatchInfo.packetType);
+    }
 }
 
 /**************************************************************************************************
