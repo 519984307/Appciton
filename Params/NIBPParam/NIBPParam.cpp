@@ -29,6 +29,7 @@
 #include "NIBPMonitorStartingState.h"
 #include "EventStorageManager.h"
 #include "TrendDataStorageManager.h"
+#include "SoundManager.h"
 
 NIBPParam *NIBPParam::_selfObj = NULL;
 
@@ -453,6 +454,8 @@ void NIBPParam::setResult(int16_t sys, int16_t dia, int16_t map, int16_t pr, NIB
     // 保存起来。
     setMeasureResult(NIBP_MEASURE_SUCCESS);
     createSnapshot(err);
+
+    soundManager.nibpCompleteTone();
 
     if (_sysValue != InvData() && _diaValue != InvData() && _mapVaule != InvData())
     {
@@ -1302,6 +1305,11 @@ void NIBPParam::updateSubParamLimit(SubParamID id)
     {
         _trendWidget->updateLimit();
     }
+}
+
+void NIBPParam::setNIBPCompleteTone(int volume)
+{
+    soundManager.setVolume(SoundManager::SOUND_TYPE_NIBP_COMPLETE, static_cast<SoundManager::VolumeLevel>(volume));
 }
 
 /**************************************************************************************************

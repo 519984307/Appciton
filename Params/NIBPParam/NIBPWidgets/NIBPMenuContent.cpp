@@ -32,6 +32,7 @@ public:
         ITEM_CBO_MEASURE_MODE = 0,
         ITEM_CBO_AUTO_INTERVAL = 1,
         ITEM_CBO_INITIAL_CUFF = 2,
+        ITEM_CBO_COMPLETE_TONE = 3,
 
         ITEM_BTN_START_STAT = 0,
         ITEM_BTN_ADDITION_MEASURE = 1
@@ -113,6 +114,25 @@ void NIBPMenuContent::layoutExec()
             SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(NIBPMenuContentPrivate::ITEM_CBO_AUTO_INTERVAL, comboBox);
+
+    // complete tone
+    label = new QLabel(trs("NIBPCompleteTone"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                       << trs("Off")
+                       << QString::number(SoundManager::VOLUME_LEV_1)
+                       << QString::number(SoundManager::VOLUME_LEV_2)
+                       << QString::number(SoundManager::VOLUME_LEV_3)
+                       << QString::number(SoundManager::VOLUME_LEV_4)
+                       << QString::number(SoundManager::VOLUME_LEV_5)
+                      );
+    itemID = static_cast<int>(NIBPMenuContentPrivate::ITEM_CBO_COMPLETE_TONE);
+    comboBox->setProperty("Item", qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    connect(comboBox, SIGNAL(itemFocusChanged(int)), this, SLOT(onCboItemFocusChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(NIBPMenuContentPrivate::ITEM_CBO_COMPLETE_TONE, comboBox);
 
     // initial cuff
     label = new QLabel(trs("NIBPInitialCuff"));
@@ -198,6 +218,9 @@ void NIBPMenuContentPrivate::loadOptions()
     {
         btns[ITEM_BTN_ADDITION_MEASURE]->setText(trs("Off"));
     }
+
+    currentConfig.getNumValue("NIBP|CompleteTone", index);
+    combos[ITEM_CBO_COMPLETE_TONE]->setCurrentIndex(index);
     statBtnShow();
 }
 
@@ -282,6 +305,17 @@ void NIBPMenuContent::onSpinBoxReleased(int value, int scale)
     currentConfig.setNumValue("NIBP|InitialCuffInflation", value);
 }
 
+void NIBPMenuContent::onCboItemFocusChanged(int index)
+{
+    ComboBox *cbo = qobject_cast<ComboBox *>(sender());
+    int indexType = cbo->property("Item").toInt();
+    if (indexType == NIBPMenuContentPrivate::ITEM_CBO_COMPLETE_TONE)
+    {
+        nibpParam.setNIBPCompleteTone(index);
+        soundManager.nibpCompleteTone();
+    }
+}
+
 void NIBPMenuContent::onComboBoxIndexChanged(int index)
 {
     ComboBox *combos = qobject_cast<ComboBox *>(sender());
@@ -294,6 +328,8 @@ void NIBPMenuContent::onComboBoxIndexChanged(int index)
     case NIBPMenuContentPrivate::ITEM_CBO_AUTO_INTERVAL:
         nibpParam.setAutoInterval((NIBPAutoInterval)index);
         break;
+    case NIBPMenuContentPrivate::ITEM_CBO_COMPLETE_TONE:
+        currentConfig.setNumValue("NIBP|CompleteTone", index);
     default:
         break;
     }

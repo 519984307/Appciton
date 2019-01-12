@@ -282,6 +282,12 @@ public:
 
     // 刷新参数上下限
     virtual void updateSubParamLimit(SubParamID id);
+
+    /**
+     * @brief setNIBPCompleteTone 设置NIBP完成音
+     * @param flag  true：开启  false：关闭
+     */
+    void setNIBPCompleteTone(int volume);
 private slots:
     void _patientTypeChangeSlot(PatientType type);
     void _btnTimeOut();

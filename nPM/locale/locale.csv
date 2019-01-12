@@ -183,6 +183,7 @@ NIBPMeasurement,无创血压测量,NIBP
 NIBPMeasureMode,测量模式,Measure Mode
 NIBPIntervalTime,间隔时间,NIBP Interval Time
 NIBPAutoInterval,自动间隔,Auto Interval
+NIBPCompleteTone,NIBP完成音,NIBP Complete Tone
 NIBPMenu,NIBP,NIBP
 NIBPMenuDesc,NIBP,NIBP
 NIBPDirectiveTimeout,指令超时,Directive Timeout
