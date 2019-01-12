@@ -90,6 +90,9 @@ DEFINES += HIDE_OXYCRG_REVIEW_FUNCTION
 #隐藏有线网络功能
 DEFINES += HIDE_WIRED_NETWORK_FUNCTION
 
+#隐藏护士呼叫功能
+DEFINES += HIDE_NURSE_CALL_FUNCTION
+
 # Depending libraries
 LIBS += -ldl -lasound -lz
 

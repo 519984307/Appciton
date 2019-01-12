@@ -31,7 +31,7 @@ class MachineConfigModuleContentPrivte
 public:
     enum MenuItem
     {
-        ITEM_CBO_ECG12,
+//        ITEM_CBO_ECG12,
         ITEM_CBO_SPO2,
         ITEM_CBO_NIBP,
         ITEM_CBO_RESP,
@@ -41,7 +41,7 @@ public:
 //        ITEM_CBO_IBP,
 //        ITEM_CBO_O2,
         ITEM_CBO_TEMP,
-        ITEM_CBO_WIFI,
+//        ITEM_CBO_WIFI,
 #ifdef Q_WS_QWS
         ITEM_CBO_TSCREEN,
 #endif
@@ -84,10 +84,10 @@ void MachineConfigModuleContentPrivte::loadOptions()
 
     setCombosBlockSignalStatus(true);
 
-    index = 0;
-    machineConfig.getNumValue("ECG12LEADEnable", index);
-    combos[ITEM_CBO_ECG12]->setCurrentIndex(index);
-    itemChangedMap[ITEM_CBO_ECG12] = index;
+//    index = 0;
+//    machineConfig.getNumValue("ECG12LEADEnable", index);
+//    combos[ITEM_CBO_ECG12]->setCurrentIndex(index);
+//    itemChangedMap[ITEM_CBO_ECG12] = index;
 
     index = 0;
     moduleName.clear();
@@ -166,10 +166,10 @@ void MachineConfigModuleContentPrivte::loadOptions()
     combos[ITEM_CBO_TEMP]->setCurrentIndex(index);
     itemChangedMap[ITEM_CBO_TEMP] = index;
 
-    index = 0;
-    machineConfig.getNumValue("WIFIEnable", index);
-    combos[ITEM_CBO_WIFI]->setCurrentIndex(index);
-    itemChangedMap[ITEM_CBO_WIFI] = index;
+//    index = 0;
+//    machineConfig.getNumValue("WIFIEnable", index);
+//    combos[ITEM_CBO_WIFI]->setCurrentIndex(index);
+//    itemChangedMap[ITEM_CBO_WIFI] = index;
 
     itemInitMap = itemChangedMap;
 
@@ -192,9 +192,16 @@ void MachineConfigModuleContentPrivte::configUpdateHint()
 
 void MachineConfigModuleContentPrivte::setCombosBlockSignalStatus(bool isBlockSignals)
 {
-    for (int i = ITEM_CBO_ECG12; i < ITEM_CBO_MAX; i++)
+    // 当前ecg12导功能没有，暂时屏蔽此部分代码
+//    for (int i = ITEM_CBO_ECG12; i < ITEM_CBO_MAX; i++)
+//    {
+//       MenuItem item = static_cast<MenuItem>(i);
+//       combos[item]->blockSignals(isBlockSignals);
+//    }
+
+    for (int i = ITEM_CBO_SPO2; i < ITEM_CBO_MAX; i++)
     {
-        MenuItem item = static_cast<MenuItem>(i);
+       MenuItem item = static_cast<MenuItem>(i);
        combos[item]->blockSignals(isBlockSignals);
     }
 }
@@ -225,20 +232,20 @@ void MachineConfigModuleContent::layoutExec()
     ComboBox *combo;
     int itemId;
 
-    // ecg12lead
-    label = new QLabel(trs("ECG12LeadsModule"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    combo = new ComboBox;
-    combo->addItems(QStringList()
-                    << trs("Off")
-                    << trs("On")
-                   );
-    layout->addWidget(combo, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(MachineConfigModuleContentPrivte
-                         ::ITEM_CBO_ECG12, combo);
-    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_ECG12;
-    combo->setProperty("Item", qVariantFromValue(itemId));
-    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+//    // ecg12lead
+//    label = new QLabel(trs("ECG12LeadsModule"));
+//    layout->addWidget(label, d_ptr->combos.count(), 0);
+//    combo = new ComboBox;
+//    combo->addItems(QStringList()
+//                    << trs("Off")
+//                    << trs("On")
+//                   );
+//    layout->addWidget(combo, d_ptr->combos.count(), 1);
+//    d_ptr->combos.insert(MachineConfigModuleContentPrivte
+//                         ::ITEM_CBO_ECG12, combo);
+//    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_ECG12;
+//    combo->setProperty("Item", qVariantFromValue(itemId));
+//    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
     // spo2 module
     label = new QLabel(trs("SPO2Module"));
@@ -379,20 +386,20 @@ void MachineConfigModuleContent::layoutExec()
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
-    // wifi module
-    label = new QLabel(trs("WIFIModule"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    combo = new ComboBox;
-    combo->addItems(QStringList()
-                    << trs("Off")
-                    << trs("On")
-                   );
-    layout->addWidget(combo, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(MachineConfigModuleContentPrivte
-                         ::ITEM_CBO_WIFI, combo);
-    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_WIFI;
-    combo->setProperty("Item", qVariantFromValue(itemId));
-    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+//    // wifi module
+//    label = new QLabel(trs("WIFIModule"));
+//    layout->addWidget(label, d_ptr->combos.count(), 0);
+//    combo = new ComboBox;
+//    combo->addItems(QStringList()
+//                    << trs("Off")
+//                    << trs("On")
+//                   );
+//    layout->addWidget(combo, d_ptr->combos.count(), 1);
+//    d_ptr->combos.insert(MachineConfigModuleContentPrivte
+//                         ::ITEM_CBO_WIFI, combo);
+//    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_WIFI;
+//    combo->setProperty("Item", qVariantFromValue(itemId));
+//    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
 #ifdef Q_WS_QWS
     // touch screen module
@@ -440,11 +447,11 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
     QString moduleName("");
     switch (indexType)
     {
-        case MachineConfigModuleContentPrivte::ITEM_CBO_ECG12:
-        {
-            enablePath = "ECG12LEADEnable";
-            break;
-        }
+//        case MachineConfigModuleContentPrivte::ITEM_CBO_ECG12:
+//        {
+//            enablePath = "ECG12LEADEnable";
+//            break;
+//        }
         case MachineConfigModuleContentPrivte::ITEM_CBO_SPO2:
         {
             enablePath = "SPO2Enable";
@@ -500,11 +507,11 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
             enablePath = "TEMPEnable";
             break;
         }
-        case MachineConfigModuleContentPrivte::ITEM_CBO_WIFI:
-        {
-            enablePath = "WIFIEnable";
-            break;
-        }
+//        case MachineConfigModuleContentPrivte::ITEM_CBO_WIFI:
+//        {
+//            enablePath = "WIFIEnable";
+//            break;
+//        }
 #ifdef Q_WS_QWS
         case MachineConfigModuleContentPrivte::ITEM_CBO_TSCREEN:
             machineConfig.setNumValue("TouchEnable", index);

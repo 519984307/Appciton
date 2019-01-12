@@ -20,6 +20,7 @@
 #include "TEMPParam.h"
 #include "CO2Param.h"
 #include "NIBPParam.h"
+#include "SystemManager.h"
 
 class UnitSetupMenuContentPrivate
 {
@@ -70,6 +71,7 @@ void UnitSetupMenuContentPrivate::loadOptions()
     }
     combos[ITEM_CBO_WEIGHT_UNIT]->setCurrentIndex(index);
 
+#ifndef HIDE_ECG_ST_PVCS_SUBPARAM
     systemConfig.getNumValue("Unit|STUnit", unit);
     if (unit == UNIT_MV)
     {
@@ -80,6 +82,7 @@ void UnitSetupMenuContentPrivate::loadOptions()
         index = 1;
     }
     combos[ITEM_CBO_ST_UNIT]->setCurrentIndex(index);
+#endif
 
     systemConfig.getNumValue("Unit|PressureUnit", unit);
     if (unit == UNIT_MMHG)
@@ -103,35 +106,38 @@ void UnitSetupMenuContentPrivate::loadOptions()
     }
     combos[ITEM_CBO_TEMP_UNIT]->setCurrentIndex(index);
 
-    systemConfig.getNumValue("Unit|CVPUnit", unit);
-    if (unit == UNIT_MMHG)
+    if (systemManager.isSupport(CONFIG_IBP))
     {
-        index = 0;
-    }
-    else if (unit == UNIT_KPA)
-    {
-        index = 1;
-    }
-    else if (unit == UNIT_CMH2O)
-    {
-        index = 2;
-    }
-    combos[ITEM_CBO_CVP_UNIT]->setCurrentIndex(index);
+        systemConfig.getNumValue("Unit|CVPUnit", unit);
+        if (unit == UNIT_MMHG)
+        {
+            index = 0;
+        }
+        else if (unit == UNIT_KPA)
+        {
+            index = 1;
+        }
+        else if (unit == UNIT_CMH2O)
+        {
+            index = 2;
+        }
+        combos[ITEM_CBO_CVP_UNIT]->setCurrentIndex(index);
 
-    systemConfig.getNumValue("Unit|ICPUnit", unit);
-    if (unit == UNIT_MMHG)
-    {
-        index = 0;
+        systemConfig.getNumValue("Unit|ICPUnit", unit);
+        if (unit == UNIT_MMHG)
+        {
+            index = 0;
+        }
+        else if (unit == UNIT_KPA)
+        {
+            index = 1;
+        }
+        else if (unit == UNIT_CMH2O)
+        {
+            index = 2;
+        }
+        combos[ITEM_CBO_ICP_UNIT]->setCurrentIndex(index);
     }
-    else if (unit == UNIT_KPA)
-    {
-        index = 1;
-    }
-    else if (unit == UNIT_CMH2O)
-    {
-        index = 2;
-    }
-    combos[ITEM_CBO_ICP_UNIT]->setCurrentIndex(index);
 
     currentConfig.getNumValue("Local|CO2Unit", unit);
     if (unit == UNIT_MMHG)
@@ -216,6 +222,7 @@ void UnitSetupMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(UnitSetupMenuContentPrivate::ITEM_CBO_WEIGHT_UNIT, comboBox);
 
+#ifndef HIDE_ECG_ST_PVCS_SUBPARAM
     // ST unit
     label = new QLabel(trs("STUnit"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -230,6 +237,7 @@ void UnitSetupMenuContent::layoutExec()
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(UnitSetupMenuContentPrivate::ITEM_CBO_ST_UNIT, comboBox);
+#endif
 
     // Pressure unit
     label = new QLabel(trs("PressureUnit"));
@@ -261,37 +269,40 @@ void UnitSetupMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(UnitSetupMenuContentPrivate::ITEM_CBO_TEMP_UNIT, comboBox);
 
-    // cvp unit
-    label = new QLabel(trs("CVPUnit"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs(Unit::getSymbol(UnitType(UNIT_MMHG)))
-                       << trs(Unit::getSymbol(UnitType(UNIT_KPA)))
-                       << trs(Unit::getSymbol(UnitType(UNIT_CMH2O)))
-                      );
-    itemID = static_cast<int>(UnitSetupMenuContentPrivate::ITEM_CBO_CVP_UNIT);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(UnitSetupMenuContentPrivate::ITEM_CBO_CVP_UNIT, comboBox);
+    if (systemManager.isSupport(CONFIG_IBP))
+    {
+        // cvp unit
+        label = new QLabel(trs("CVPUnit"));
+        layout->addWidget(label, d_ptr->combos.count(), 0);
+        comboBox = new ComboBox();
+        comboBox->addItems(QStringList()
+                           << trs(Unit::getSymbol(UnitType(UNIT_MMHG)))
+                           << trs(Unit::getSymbol(UnitType(UNIT_KPA)))
+                           << trs(Unit::getSymbol(UnitType(UNIT_CMH2O)))
+                          );
+        itemID = static_cast<int>(UnitSetupMenuContentPrivate::ITEM_CBO_CVP_UNIT);
+        comboBox->setProperty("Item",
+                              qVariantFromValue(itemID));
+        connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+        layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+        d_ptr->combos.insert(UnitSetupMenuContentPrivate::ITEM_CBO_CVP_UNIT, comboBox);
 
-    // ICP unit
-    label = new QLabel(trs("ICPUnit"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs(Unit::getSymbol(UnitType(UNIT_MMHG)))
-                       << trs(Unit::getSymbol(UnitType(UNIT_KPA)))
-                       << trs(Unit::getSymbol(UnitType(UNIT_CMH2O)))
-                      );
-    itemID = static_cast<int>(UnitSetupMenuContentPrivate::ITEM_CBO_ICP_UNIT);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(UnitSetupMenuContentPrivate::ITEM_CBO_ICP_UNIT, comboBox);
+        // ICP unit
+        label = new QLabel(trs("ICPUnit"));
+        layout->addWidget(label, d_ptr->combos.count(), 0);
+        comboBox = new ComboBox();
+        comboBox->addItems(QStringList()
+                           << trs(Unit::getSymbol(UnitType(UNIT_MMHG)))
+                           << trs(Unit::getSymbol(UnitType(UNIT_KPA)))
+                           << trs(Unit::getSymbol(UnitType(UNIT_CMH2O)))
+                          );
+        itemID = static_cast<int>(UnitSetupMenuContentPrivate::ITEM_CBO_ICP_UNIT);
+        comboBox->setProperty("Item",
+                              qVariantFromValue(itemID));
+        connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+        layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+        d_ptr->combos.insert(UnitSetupMenuContentPrivate::ITEM_CBO_ICP_UNIT, comboBox);
+    }
 
     // CO2 unit
     label = new QLabel(trs("CO2Unit"));
