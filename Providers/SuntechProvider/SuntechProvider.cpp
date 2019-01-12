@@ -419,6 +419,16 @@ unsigned char SuntechProvider::convertErrcode(unsigned char code)
     }
     return err;
 }
+
+void SuntechProvider::controlPneumatics(unsigned char pump, unsigned char controlValve, unsigned char dumpValve)
+{
+    unsigned char cmd[4] = {0};
+    cmd[0] = SUNTECH_CMD_CONTROL_PNEUMATICS;
+    cmd[1] = pump;
+    cmd[2] = controlValve;
+    cmd[3] = dumpValve;
+    _sendCmd(cmd, 4);
+}
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
@@ -491,14 +501,12 @@ void SuntechProvider::_handlePacket(unsigned char *data, int len)
         return;
     }
 
-    qDebug() << Q_FUNC_INFO << data[0];
     switch (data[0])
     {
     case MODULE_ACK:
         // "O"
         if (data[1] == MODULE_RECEIVED)
         {
-            qDebug() << Q_FUNC_INFO << "O";
             if (_flagStartCmdSend == 1)
             {
                 // 启动测量
@@ -526,7 +534,6 @@ void SuntechProvider::_handlePacket(unsigned char *data, int len)
         // "AK"  "OK"
         else if (data[1] == MODULE_EXECUTED)
         {
-            qDebug() << Q_FUNC_INFO << "K";
             if (_isModuleDataRespond)
             {
                 _isModuleDataRespond = false;
@@ -557,8 +564,16 @@ void SuntechProvider::_handlePacket(unsigned char *data, int len)
 
     // 当前压力
     case SUNTECH_RSP_CUFF_PRESSURE:
+    {
         nibpParam.handleNIBPEvent(NIBP_EVENT_CURRENT_PRESSURE, &data[1], 2);
+        int16_t pressure;
+        pressure = (data[2] << 8) + data[1];
+        if (pressure != -1)
+        {
+            nibpParam.setManometerPressure(pressure);
+        }
         break;
+    }
     // 测量结果
     case SUNTECH_RSP_GET_MEASUREMENT:
     {

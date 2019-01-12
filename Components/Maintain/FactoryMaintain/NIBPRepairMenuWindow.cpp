@@ -60,11 +60,11 @@ NIBPRepairMenuWindow *NIBPRepairMenuWindow::getInstance()
     {
         instance = new NIBPRepairMenuWindow();
         instance->addMenuContent(NIBPCalibrateContent::getInstance());
+        instance->addMenuContent(NIBPManometerContent::getInstance());
         QString str;
         machineConfig.getStrValue("NIBP", str);
         if (str != "SUNTECH_NIBP")
         {
-            instance->addMenuContent(NIBPManometerContent::getInstance());
             instance->addMenuContent(NIBPZeroPointContent::getInstance());
         }
         instance->addMenuContent(NIBPPressureControlContent::getInstance());

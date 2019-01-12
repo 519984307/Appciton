@@ -178,6 +178,11 @@ public:
     // 转换错误码
     virtual unsigned char convertErrcode(unsigned char /*code*/) {return 0;}
 
+    // 气动控制
+    virtual void controlPneumatics(unsigned char /*pump*/,
+                                   unsigned char /*controlValve*/,
+                                   unsigned char /*dumpValve*/) { }
+
 public:
     NIBPProviderIFace() {  }
     virtual ~NIBPProviderIFace() { }

@@ -59,6 +59,11 @@ public:
     // 转换错误码
     virtual unsigned char convertErrcode(unsigned char code);
 
+    // 气动控制
+    virtual void controlPneumatics(unsigned char pump,
+                                   unsigned char controlValve,
+                                   unsigned char dumpValve);
+
     // 构造与析构。
     SuntechProvider();
     ~SuntechProvider();
