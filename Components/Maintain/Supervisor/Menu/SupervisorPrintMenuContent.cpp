@@ -54,7 +54,7 @@ void SupervisorPrintMenuContentPrivate::loadOptions()
 }
 
 SupervisorPrintMenuContent::SupervisorPrintMenuContent()
-    : MenuContent(trs("SupervisorPrintMenu"), trs("SupervisorPrintMenuDesc")),
+    : MenuContent(trs("TriggerPrintMenu"), trs("TriggerPrintMenuDesc")),
       d_ptr(new SupervisorPrintMenuContentPrivate)
 {
 }
@@ -83,8 +83,7 @@ void SupervisorPrintMenuContent::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("Disable")
-                       << trs("Enable")
-                      );
+                       << trs("Enable"));
     itemID = static_cast<int>(SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_PHY_ALARM);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -98,8 +97,7 @@ void SupervisorPrintMenuContent::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("Disable")
-                       << trs("Enable")
-                      );
+                       << trs("Enable"));
     itemID = static_cast<int>(SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_CODEMARKER);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -115,8 +113,7 @@ void SupervisorPrintMenuContent::layoutExec()
         comboBox = new ComboBox();
         comboBox->addItems(QStringList()
                            << trs("Disable")
-                           << trs("Enable")
-                          );
+                           << trs("Enable"));
         itemID = static_cast<int>(SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_NIBP);
         comboBox->setProperty("Item",
                               qVariantFromValue(itemID));
@@ -131,8 +128,7 @@ void SupervisorPrintMenuContent::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("Disable")
-                       << trs("Enable")
-                      );
+                       << trs("Enable"));
     itemID = static_cast<int>(SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_WAVE_FREEZE);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
