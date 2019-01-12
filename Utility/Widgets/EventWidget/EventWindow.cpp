@@ -1077,7 +1077,7 @@ void EventWindowPrivate::eventTrendUpdate()
         case SUB_PARAM_AUXP2_MAP:
             map = dataStr;
             valueStr = sys + "/" + dia + "(" + map + ")";
-            titleStr = trs(paramInfo.getSubParamName(subId));
+            titleStr = paramInfo.getSubParamName(subId);
             titleStr = titleStr.left(titleStr.length() - 4);
             valueFont = fontManager.numFont(25);
             break;
