@@ -1115,7 +1115,7 @@ MailAddress,邮箱地址,Mail Address
 E-mailAddressList,邮箱地址列表,E-mail Address List
 ECGGain,ECG增益,ECG Gain
 Printspeed,打印速度,Print speed
-SerialNum,系列号,Serial Number
+SerialNum,序列号,Serial Number
 SWVersion,软件版本,Software Version
 CodeMarker,Code Marker,Code Marker
 CodeMarkerSnapshot,CodeMarker Snapshot,CodeMarker Snapshot

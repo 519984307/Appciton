@@ -47,10 +47,6 @@ private slots:
 
 private slots:
     /**
-     * @brief onBtnReleasedChanged  按钮释放槽函数
-     */
-    void onBtnReleasedChanged();
-    /**
      * @brief onTimeOutExec 定时器执行接口
      */
     void onTimeOutExec(void);
