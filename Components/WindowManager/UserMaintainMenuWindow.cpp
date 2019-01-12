@@ -21,6 +21,7 @@
 #include "ErrorLogEntranceContent.h"
 #include "DemoMenuContent.h"
 #include "LanguageManager.h"
+#include "SystemManager.h"
 
 UserMaintainMenuWindow *UserMaintainMenuWindow::getInstance()
 {
@@ -32,8 +33,13 @@ UserMaintainMenuWindow *UserMaintainMenuWindow::getInstance()
         instance->addMenuContent(new UserMaintainGeneralMenuContent);
         instance->addMenuContent(new ModuleMaintainMenuContent);
         instance->addMenuContent(new AlarmMaintainMenuContent);
-        instance->addMenuContent(new WifiMaintainMenuContent);
+        if (systemManager.isSupport(CONFIG_WIFI))
+        {
+            instance->addMenuContent(new WifiMaintainMenuContent);
+        }
+#ifndef HIDE_WIRED_NETWORK_FUNCTION
         instance->addMenuContent(new WiredNetworkMaintainMenuContent);
+#endif
         instance->addMenuContent(new OthersMaintainMenuContent);
         instance->addMenuContent(new UnitSetupMenuContent);
         instance->addMenuContent(new ErrorLogEntranceContent);

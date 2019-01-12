@@ -84,6 +84,12 @@ DEFINES += HIDE_MONITOR_OXYCRG
 #隐藏趋势窗口
 DEFINES += HIDE_MONITOR_TREND
 
+#隐藏呼吸氧合回顾功能
+DEFINES += HIDE_OXYCRG_REVIEW_FUNCTION
+
+#隐藏有线网络功能
+DEFINES += HIDE_WIRED_NETWORK_FUNCTION
+
 # Depending libraries
 LIBS += -ldl -lasound -lz
 

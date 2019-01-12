@@ -30,7 +30,9 @@ public:
         ITEM_BTN_TREND_TABLE = 0,
         ITEM_BTN_TREND_GRAPH,
         ITEM_BTN_EVENT_REVIEW,
+#ifndef  HIDE_OXYCRG_REVIEW_FUNCTION
         ITEM_BTN_OXYCRG_REVIEW,
+#endif
         ITEM_BTN_HISTORY_REVIEW,
     };
 
@@ -94,6 +96,7 @@ void DataReviewMenuContent::layoutExec()
     d_ptr->btns.insert(DataReviewMenuContentPrivate::ITEM_BTN_EVENT_REVIEW, btn);
     row++;
 
+#ifndef  HIDE_OXYCRG_REVIEW_FUNCTION
     // oxycrg review
     btn = new Button(trs("OxyCRGEventReview"));
     btn->setButtonStyle(Button::ButtonTextOnly);
@@ -104,6 +107,7 @@ void DataReviewMenuContent::layoutExec()
     d_ptr->btns.insert(DataReviewMenuContentPrivate
                        ::ITEM_BTN_OXYCRG_REVIEW, btn);
     row++;
+#endif
 
     // history  review
     btn = new Button(trs("HistoryTrend"));
@@ -169,6 +173,7 @@ void DataReviewMenuContent::onBtnReleased()
     }
     break;
 
+#ifndef  HIDE_OXYCRG_REVIEW_FUNCTION
     case DataReviewMenuContentPrivate::ITEM_BTN_OXYCRG_REVIEW:
     {
         OxyCRGEventWindow::getInstance()->setHistoryData(false);
@@ -177,6 +182,7 @@ void DataReviewMenuContent::onBtnReleased()
                                  ShowBehaviorHideOthers);
     }
     break;
+#endif
 
     case DataReviewMenuContentPrivate::ITEM_BTN_HISTORY_REVIEW:
     {
