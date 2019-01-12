@@ -406,7 +406,6 @@ SOURCES +=                                                                      
     Components/Maintain/UserMaintain/WiredNetworkMaintainMenuContent.cpp        \
     Components/Maintain/UserMaintain/ErrorLogEntranceContent.cpp                \
     Components/Maintain/UserMaintain/DemoMenuContent.cpp                        \
-    Components/Maintain/FactoryMaintain/FactorySystemInfoMenuContent.cpp        \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.cpp              \
     Components/Maintain/FactoryMaintain/SoftWareVersionWindow.cpp               \
     Components/Maintain/FactoryMaintain/MonitorInfoWindow.cpp                   \
@@ -915,7 +914,6 @@ HEADERS +=                                                                      
     Components/Maintain/UserMaintain/WiredNetworkMaintainMenuContent.h          \
     Components/Maintain/UserMaintain/ErrorLogEntranceContent.h                  \
     Components/Maintain/UserMaintain/DemoMenuContent.h                          \
-    Components/Maintain/FactoryMaintain/FactorySystemInfoMenuContent.h          \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.h                \
     Components/Maintain/FactoryMaintain/SoftWareVersionWindow.h                 \
     Components/Maintain/FactoryMaintain/MonitorInfoWindow.h                     \
