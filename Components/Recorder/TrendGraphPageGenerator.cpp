@@ -97,8 +97,8 @@ GraphAxisInfo TrendGraphPageGeneratorPrivate::getAxisInfo(const RecordPage *page
     case SUB_PARAM_ETAA2:
     case SUB_PARAM_ETO2:
     case SUB_PARAM_ETCO2:
-        name = paramInfo.getParamName(PARAM_CO2);
-        name += "(Et/Fi)";
+        name = paramInfo.getSubParamName(subParamID);
+        name = name.right(name.length() - 2) + "(Et/Fi)";
         break;
     case SUB_PARAM_T1:
         name = "T1/T2";
