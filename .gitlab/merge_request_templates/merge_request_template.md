@@ -10,10 +10,10 @@ Closes #issueid
 
 ## Type of change
 
-- [ ] Bug fix (没有做重大修改只是修复了Bug)
-- [ ] New feature (增加了新功能，没有作重大修改)
-- [ ] Breaking change (重大修改，有可能会导致现在的功能模块工作不正常)
-- [ ] Requirement update (需求更新)
+* Bug fix (没有做重大修改只是修复了Bug)
+* New feature (增加了新功能，没有作重大修改)
+* Breaking change (重大修改，有可能会导致现在的功能模块工作不正常)
+* Requirement update (需求更新)
 
 ## Checklist:
 
