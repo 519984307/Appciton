@@ -286,7 +286,7 @@ public:
 
     /**
      * @brief setNIBPCompleteTone 设置NIBP完成音
-     * @param volume 设置的音量（0 - 5）
+     * @param volume 设置的音量
      */
     void setNIBPCompleteTone(SoundManager::VolumeLevel volume);
 private slots:
