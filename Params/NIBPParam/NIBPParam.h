@@ -18,6 +18,7 @@
 #include "TimeManager.h"
 #include "NIBPCountdownTime.h"
 #include <QMap>
+#include "SoundManager.h"
 
 struct NIBPMeasureResultInfo
 {
@@ -287,7 +288,7 @@ public:
      * @brief setNIBPCompleteTone 设置NIBP完成音
      * @param volume 设置的音量（0 - 5）
      */
-    void setNIBPCompleteTone(int volume);
+    void setNIBPCompleteTone(SoundManager::VolumeLevel volume);
 private slots:
     void _patientTypeChangeSlot(PatientType type);
     void _btnTimeOut();

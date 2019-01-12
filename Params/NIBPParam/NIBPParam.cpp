@@ -29,7 +29,6 @@
 #include "NIBPMonitorStartingState.h"
 #include "EventStorageManager.h"
 #include "TrendDataStorageManager.h"
-#include "SoundManager.h"
 
 NIBPParam *NIBPParam::_selfObj = NULL;
 
@@ -1307,9 +1306,9 @@ void NIBPParam::updateSubParamLimit(SubParamID id)
     }
 }
 
-void NIBPParam::setNIBPCompleteTone(int volume)
+void NIBPParam::setNIBPCompleteTone(SoundManager::VolumeLevel volume)
 {
-    soundManager.setVolume(SoundManager::SOUND_TYPE_NIBP_COMPLETE, static_cast<SoundManager::VolumeLevel>(volume));
+    soundManager.setVolume(SoundManager::SOUND_TYPE_NIBP_COMPLETE, volume);
 }
 
 /**************************************************************************************************

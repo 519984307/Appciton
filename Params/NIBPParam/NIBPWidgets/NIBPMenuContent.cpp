@@ -311,7 +311,8 @@ void NIBPMenuContent::onCboItemFocusChanged(int index)
     int indexType = cbo->property("Item").toInt();
     if (indexType == NIBPMenuContentPrivate::ITEM_CBO_COMPLETE_TONE)
     {
-        nibpParam.setNIBPCompleteTone(index);
+        SoundManager::VolumeLevel volume = static_cast<SoundManager::VolumeLevel>(index);
+        nibpParam.setNIBPCompleteTone(volume);
         soundManager.nibpCompleteTone();
     }
 }
