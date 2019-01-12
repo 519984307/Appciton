@@ -22,6 +22,7 @@
 #include "LayoutManager.h"
 #include "ConfigManager.h"
 #include <QTimerEvent>
+#include "IConfig.h"
 
 #define MAX_STORE_WAVE_NUM 3
 #define STOP_PRINT_TIMEOUT          (100)
@@ -147,7 +148,7 @@ void EventStorageManager::triggerAlarmEvent(const AlarmInfoSegment &almInfo, Wav
     item->startCollectTrendAndWaveformData(t);
 
     int index = 0;
-    currentConfig.getNumValue("Print|PhysiologicalAlarm", index);
+    systemConfig.getNumValue("Print|PhysiologicalAlarm", index);
     if (index)
     {
         RecordPageGenerator *generator = new TriggerPageGenerator(item);
@@ -195,7 +196,7 @@ void EventStorageManager::triggerCodeMarkerEvent(const char *codeName, unsigned 
     item->startCollectTrendAndWaveformData(t);
 
     int index = 0;
-    currentConfig.getNumValue("Print|CoderMarker", index);
+    systemConfig.getNumValue("Print|CoderMarker", index);
     if (index)
     {
         RecordPageGenerator *generator = new TriggerPageGenerator(item);
@@ -257,7 +258,7 @@ void EventStorageManager::triggerNIBPMeasurementEvent(unsigned t)
     item->startCollectTrendAndWaveformData(t);
 
     int index = 0;
-    currentConfig.getNumValue("Print|NIBPReading", index);
+    systemConfig.getNumValue("Print|NIBPReading", index);
     if (index)
     {
         RecordPageGenerator *generator = new TriggerPageGenerator(item);
@@ -304,7 +305,7 @@ void EventStorageManager::triggerWaveFreezeEvent(unsigned t)
     item->startCollectTrendAndWaveformData(t);
 
     int index = 0;
-    currentConfig.getNumValue("Print|WaveFreeze", index);
+    systemConfig.getNumValue("Print|WaveFreeze", index);
     if (index)
     {
         RecordPageGenerator *generator = new TriggerPageGenerator(item);
@@ -318,7 +319,7 @@ void EventStorageManager::triggerWaveFreezeEvent(unsigned t)
             {
                 recorderManager.stopPrint();
                 d->generator = generator;
-                d->waitTimerId = startTimer(2000); // 等待2000ms
+                d->waitTimerId = startTimer(2000);  // 等待2000ms
                 d->isWait = true;
                 item->setWaitForTriggerPrintFlag(false);
             }

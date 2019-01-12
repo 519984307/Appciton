@@ -861,10 +861,6 @@
         <ECGAnalysis>0</ECGAnalysis>
         <ShockDelivery>0</ShockDelivery>
         <PacerStartUp>0</PacerStartUp>
-        <PhysiologicalAlarm>1</PhysiologicalAlarm>
-        <CoderMarker>0</CoderMarker>
-        <NIBPReading>0</NIBPReading>
-	<WaveFreeze>0</WaveFreeze>
         <DiagnosticECG>1</DiagnosticECG>
         <Print30JSelfTestReport>0</Print30JSelfTestReport>
         <PrintSpeed>0</PrintSpeed>
