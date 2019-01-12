@@ -285,7 +285,7 @@ public:
 
     /**
      * @brief setNIBPCompleteTone 设置NIBP完成音
-     * @param flag  true：开启  false：关闭
+     * @param volume 设置的音量（0 - 5）
      */
     void setNIBPCompleteTone(int volume);
 private slots:
