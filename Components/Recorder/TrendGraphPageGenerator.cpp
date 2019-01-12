@@ -92,6 +92,17 @@ GraphAxisInfo TrendGraphPageGeneratorPrivate::getAxisInfo(const RecordPage *page
     case SUB_PARAM_AUXP2_SYS:
         name = paramInfo.getIBPPressName(subParamID);
         break;
+    case SUB_PARAM_ETN2O:
+    case SUB_PARAM_ETAA1:
+    case SUB_PARAM_ETAA2:
+    case SUB_PARAM_ETO2:
+    case SUB_PARAM_ETCO2:
+        name = paramInfo.getParamName(PARAM_CO2);
+        name += "(Et/Fi)";
+        break;
+    case SUB_PARAM_T1:
+        name = "T1/T2";
+        break;
     default:
         name = paramInfo.getSubParamName(subParamID);
         break;
