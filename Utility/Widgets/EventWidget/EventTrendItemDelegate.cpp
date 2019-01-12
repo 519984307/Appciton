@@ -57,7 +57,7 @@ void EventTrendItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem
         value  = opt.font;
     }
     painter->setFont(font);
-    painter->drawText(textRect, Qt::AlignVCenter | Qt::AlignRight, text);
+    painter->drawText(textRect, Qt::AlignBottom | Qt::AlignRight, text);
 
     // draw title
     value = index.data(TitleFontRole);

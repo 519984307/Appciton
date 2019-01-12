@@ -92,30 +92,14 @@ void MonitorInfoWindowPrivate::loadOptions()
     labs[ITEM_LAB_MAC_ADDR]->setText(trs(temStr));
 
     temStr.clear();
-    systemConfig.getStrValue("MonitorInfo|ElectronicSerialNumber", temStr);
-    button->setText(trs(temStr));
+    machineConfig.getStrValue("SerialNumber", temStr);
+    button->setText(temStr);
 }
 
 void MonitorInfoWindow::readyShow()
 {
     d_ptr->loadOptions();
     onTimeOutExec();
-}
-
-void MonitorInfoWindow::onBtnReleasedChanged()
-{
-    KeyInputPanel setSerialNumber;
-    setSerialNumber.setMaxInputLength(16);
-    setSerialNumber.setWindowTitle(trs("SetElectronicSerialNumber"));
-    setSerialNumber.setInitString(d_ptr->button->text());
-    QString regKeyStr("[a-zA-Z][0-9]|_");
-    setSerialNumber.setBtnEnable(regKeyStr);
-    if (setSerialNumber.exec())
-    {
-        QString serialNum = setSerialNumber.getStrValue();
-        systemConfig.setStrValue("MonitorInfo|ElectronicSerialNumber", serialNum);
-        d_ptr->button->setText(trs(serialNum));
-    }
 }
 
 void MonitorInfoWindow::onTimeOutExec()
@@ -189,9 +173,9 @@ void MonitorInfoWindow::layoutExec()
     d_ptr->button = new Button("");
     d_ptr->button->setBorderWidth(0);
     d_ptr->button->setButtonStyle(Button::ButtonTextBesideIcon);
+    d_ptr->button->setFocusPolicy(Qt::NoFocus);
     layout->addWidget(d_ptr->button, d_ptr->labs.count(), 1,
                       Qt::AlignCenter|Qt::AlignRight);
-    connect(d_ptr->button, SIGNAL(released()), this, SLOT(onBtnReleasedChanged()));
 
     layout->setRowStretch((layout->rowCount() + 1), 1);
     setWindowLayout(layout);

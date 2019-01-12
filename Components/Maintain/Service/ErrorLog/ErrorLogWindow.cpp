@@ -154,7 +154,14 @@ void ErrorLogWindow::init()
     {
         d_ptr->infoLab->hide();
     }
-
+    if (d_ptr->table->model()->rowCount() == 0)
+    {
+        d_ptr->table->setFocusPolicy(Qt::NoFocus);
+    }
+    else
+    {
+        d_ptr->table->setFocusPolicy(Qt::StrongFocus);
+    }
     d_ptr->usbCheckTimer->start();
 }
 
@@ -222,7 +229,8 @@ void ErrorLogWindow::exportReleased()
     if (usbManager.isUSBExist())
     {
         ExportDataWidget exportDataWidget(EXPORT_ERROR_LOG_BY_USB);
-        connect(&usbManager, SIGNAL(exportProcessChanged(unsigned char)), &exportDataWidget, SLOT(setBarValue(unsigned char)));
+        connect(&usbManager, SIGNAL(exportProcessChanged(unsigned char)),
+                                        &exportDataWidget, SLOT(setBarValue(unsigned char)));
         connect(&usbManager, SIGNAL(exportError()), &exportDataWidget, SLOT(reject()));
         connect(&exportDataWidget, SIGNAL(cancel()), &usbManager, SLOT(cancelExport()));
 

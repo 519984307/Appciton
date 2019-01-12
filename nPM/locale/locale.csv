@@ -1115,7 +1115,7 @@ MailAddress,邮箱地址,Mail Address
 E-mailAddressList,邮箱地址列表,E-mail Address List
 ECGGain,ECG增益,ECG Gain
 Printspeed,打印速度,Print speed
-SerialNum,系列号,Serial Number
+SerialNum,序列号,Serial Number
 SWVersion,软件版本,Software Version
 CodeMarker,Code Marker,Code Marker
 CodeMarkerSnapshot,CodeMarker Snapshot,CodeMarker Snapshot
@@ -1383,7 +1383,7 @@ ParaSwitch,参数开关,Parameters Switch
 NurseCallSetting,护士呼叫设置,Nurse Call Setting
 Setting,设置,Setting
 RealtimePrintSegment,实时打印,Real Time Print
-NibpMeasurement,NIBP测量,Nibp Measurement
+NibpMeasurement,NIBP测量,NIBP Measurement
 StopSetting,停止设置,Stop Setting
 SignalType,信号类型,Signal Type
 Continuity,连续,Continuity
