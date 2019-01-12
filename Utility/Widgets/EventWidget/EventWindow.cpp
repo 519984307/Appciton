@@ -646,7 +646,7 @@ EventWindow::EventWindow()
     hTableLayout->addWidget(d_ptr->typeCbo, 6);
     hTableLayout->addStretch(1);
     hTableLayout->addWidget(levelLabel, 1);
-    hTableLayout->addWidget(d_ptr->levelCbo, 6);
+    hTableLayout->addWidget(d_ptr->levelCbo, 4);
     hTableLayout->addStretch(1);
     hTableLayout->addWidget(d_ptr->listPrintBtn, 3);
     hTableLayout->addStretch(1);
