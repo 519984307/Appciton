@@ -2,7 +2,7 @@
 
 请在此写下合并请求所作的修改以及解决了那个issue。如果所解决的issue是一个BUG，请说明这个BUG产生的原因。
 
-Closes #(issueid)
+Closes #issueid
 
 ## Type of change
 
