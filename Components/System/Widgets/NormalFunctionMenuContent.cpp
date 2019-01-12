@@ -96,9 +96,21 @@ void NormalFunctionMenuContentPrivate::loadOptions()
         combos[ITEM_CBO_KEYPRESS_VOLUME]->setEnabled(true);
         combos[ITEM_CBO_ALARM_VOLUME]->setEnabled(true);
 
+        combos[ITEM_CBO_ALARM_VOLUME]->blockSignals(true);
+        combos[ITEM_CBO_ALARM_VOLUME]->clear();
         int index = 0;
-        systemConfig.getNumValue("Alarms|DefaultAlarmVolume", index);
-        combos[ITEM_CBO_ALARM_VOLUME]->setCurrentIndex(index - 1);
+        systemConfig.getNumValue("Alarms|MinimumAlarmVolume", index);
+        int volume = 0;
+        systemConfig.getNumValue("Alarms|DefaultAlarmVolume", volume);
+        for (int i = index; i <= SoundManager::VOLUME_LEV_5; i++)
+        {
+            combos[ITEM_CBO_ALARM_VOLUME]->addItem(QString::number(i));
+            if (volume == i)
+            {
+                combos[ITEM_CBO_ALARM_VOLUME]->setCurrentIndex(combos[ITEM_CBO_ALARM_VOLUME]->count() - 1);
+            }
+        }
+        combos[ITEM_CBO_ALARM_VOLUME]->blockSignals(false);
 
         index = systemManager.getBrightness();
         combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setCurrentIndex(index);
@@ -185,13 +197,13 @@ void NormalFunctionMenuContent::layoutExec()
     connect(comboBox, SIGNAL(itemFocusChanged(int)),
             this, SLOT(onPopupListItemFocusChanged(int)));
 
-    comboBox->addItems(QStringList()
-                       << QString::number(SoundManager::VOLUME_LEV_1)
-                       << QString::number(SoundManager::VOLUME_LEV_2)
-                       << QString::number(SoundManager::VOLUME_LEV_3)
-                       << QString::number(SoundManager::VOLUME_LEV_4)
-                       << QString::number(SoundManager::VOLUME_LEV_5)
-                      );
+    int index = 0;
+    systemConfig.getNumValue("Alarms|MinimumAlarmVolume", index);
+    for (int i = index; i <= SoundManager::VOLUME_LEV_5; i++)
+    {
+        comboBox->addItem(QString::number(i));
+    }
+
     itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
