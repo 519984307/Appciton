@@ -32,7 +32,7 @@
         <TouchScreen>1</TouchScreen>
         <DefaultPatientType>0</DefaultPatientType>
         <DefaultDisplayBrightness>7</DefaultDisplayBrightness>
-	<KeyPressVolume>3</KeyPressVolume>
+	<KeyPressVolume>0</KeyPressVolume>
     </General>
     <Alarms>
         <DefaultAlarmVolume>3</DefaultAlarmVolume>
@@ -61,9 +61,9 @@
     </Alarms>
     <NightMode>
         <ScreenBrightness>1</ScreenBrightness>
-        <AlarmVolume>3</AlarmVolume>
-        <HeartBeatVolume>2</HeartBeatVolume>
-        <KeyPressVolume>2</KeyPressVolume>
+        <AlarmVolume>1</AlarmVolume>
+        <HeartBeatVolume>0</HeartBeatVolume>
+        <KeyPressVolume>0</KeyPressVolume>
         <NIBPCompletedTips>1</NIBPCompletedTips>
         <StopNIBPMeasure>1</StopNIBPMeasure>
         <EnterNightMode>0</EnterNightMode>
@@ -73,7 +73,7 @@
         <WeightUnit>12</WeightUnit>
         <STUnit>11</STUnit>
         <PressureUnit>5</PressureUnit>
-        <TemperatureUnit>2</TemperatureUnit>
+        <TemperatureUnit>1</TemperatureUnit>
         <CVPUnit>5</CVPUnit>
         <ICPUnit>5</ICPUnit>
         <CO2Unit>5</CO2Unit>
@@ -145,7 +145,7 @@
         <SelectWave1>1</SelectWave1>
         <SelectWave2>2</SelectWave2>
         <SelectWave3>3</SelectWave3>
-        <PrintTime>0</PrintTime> <!--0:continous 1:8s-->
+        <PrintTime>1</PrintTime> <!--0:continous 1:8s-->
         <PhysiologicalAlarm>1</PhysiologicalAlarm>
         <CoderMarker>0</CoderMarker>
         <NIBPReading>0</NIBPReading>
@@ -808,7 +808,7 @@
         <!--0:5s  1:30s  2:1min-->
         <TimeInterval>1</TimeInterval>
         <!--0:1    1:2    2:3-->
-        <WaveNumber>1</WaveNumber>
+        <WaveNumber>2</WaveNumber>
     </TrendGraph>
 
     <UserFaceType>0</UserFaceType>
@@ -863,7 +863,7 @@
             </EverLeadOn>
         </ECG>
         <RESP>
-            <Zoom>0</Zoom>		
+            <Zoom>2</Zoom>		
         </RESP>
         <CO2>
             <O2Compensation>16</O2Compensation>
