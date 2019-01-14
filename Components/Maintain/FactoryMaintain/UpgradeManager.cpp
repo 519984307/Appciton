@@ -70,7 +70,7 @@ enum UpgradePacketType
 
     UPGRADE_NOTIFY_STATE = 0xFD,        // module upgrade state
 
-    UPGRADE_NOTIFY_UPGRADE_ALIVE = 0xFE, // upgrade moudle alive packet
+    UPGRADE_NOTIFY_UPGRADE_ALIVE = 0xFE,  // upgrade moudle alive packet
 };
 
 enum UpgradeErrorType
@@ -95,7 +95,8 @@ enum UpgradeErrorType
 
 static const char *errorString(UpgradeErrorType errorType)
 {
-    static const char *errors[UPGRADE_ERR_NR] = {
+    static const char *errors[UPGRADE_ERR_NR] =
+    {
         "",
         "UDiskNotFound",
         "UpgradeFileNotFound",
@@ -281,7 +282,8 @@ bool UpgradeManagerPrivate::checkUpgradeFile()
                     break;
                 }
             }
-        } while (!line.isEmpty());
+        }
+        while (!line.isEmpty());
 
         return foundUpgradeFile;
     }
@@ -313,7 +315,7 @@ QString UpgradeManagerPrivate::getUpgradeFile() const
     if (type == UpgradeManager::UPGRADE_MOD_LOGO)
     {
         nameFilters << moduleName + ".*";
-        dir.setSorting(QDir::Name|QDir::IgnoreCase);
+        dir.setSorting(QDir::Name | QDir::IgnoreCase);
     }
     else
     {
@@ -365,7 +367,6 @@ QString UpgradeManagerPrivate::getProviderName(UpgradeManager::UpgradeModuleType
 
 void UpgradeManagerPrivate::upgradeExit(UpgradeManager::UpgradeResult result, UpgradeErrorType error)
 {
-
     qdebug("Upgrade exit, result:%d, error:%d", result, error);
     type = UpgradeManager::UPGRADE_MOD_NONE;
     state = STATE_IDLE;
@@ -778,7 +779,7 @@ void UpgradeManager::upgradeProcess()
     {
         emit upgradeInfoChanged(trs("WriteDeviceAttribute"));
         char data[49];
-        data[0] = 0x1; // write attr
+        data[0] = 0x1;  // write attr
         // module name
         ::snprintf(data + 1, 32, "%s", qPrintable(getUpgradeModuleName(d_ptr->type)));  // NOLINT
         // module hardware version
@@ -839,7 +840,8 @@ void UpgradeManager::upgradeProcess()
         QRect screenRect = QApplication::desktop()->screenGeometry();
         if (image.width() > screenRect.width() || image.height() > screenRect.height())
         {
-            upgradeInfoChanged(trs("ImageTooLarge"));
+            QString s = QString("%1 %2*%3").arg(trs("ImageTooLarge")).arg(screenRect.width()).arg(screenRect.height());
+            upgradeInfoChanged(s);
 
             d_ptr->upgradeExit(UPGRADE_FAIL, UPGRADE_ERR_NONE);
             break;
@@ -889,7 +891,7 @@ void UpgradeManager::upgradeProcess()
         system("umount /mnt/boot");
         qdebug("boot partition umount.");
     }
-        break;
+    break;
 
     default:
         break;
@@ -932,7 +934,7 @@ void UpgradeManager::noResponseTimeout()
         if (d_ptr->noResponeCount < 2)
         {
             char data[49];
-            data[0] = 0x1; // write attr
+            data[0] = 0x1;   // write attr
             // module name
             ::snprintf(data + 1, 32, "%s", qPrintable(getUpgradeModuleName(d_ptr->type))); // NOLINT
             // module hardware version

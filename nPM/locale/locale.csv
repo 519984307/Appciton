@@ -790,7 +790,7 @@ WriteSegmentFail,写入片段失败,Write segment fail
 CommunicationFail,通讯失败,Communication fail
 WriteFail,写入失败,Write Fail
 InvalidImageFormat,无效图片格式,Invalid image format
-ImageTooLarge,"图片文件过大,图片像素不能超过1280*800","Image too large,picture pixels should not exceed 1280*800"
+ImageTooLarge,"图片文件过大,图片像素不能超过:","Image too large,picture pixels should not exceed :"
 Age,年龄,Age
 FoundLogoFile,找到Logo文件,Found logo file
 UpdateSystemLogo,更新系统,Update system logo
