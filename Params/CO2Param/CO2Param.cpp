@@ -742,7 +742,10 @@ CO2SweepSpeed CO2Param::getSweepSpeed(void)
 void CO2Param::setSweepMode(CO2SweepMode mode)
 {
     currentConfig.setNumValue("CO2|CO2SweepMode", static_cast<int>(mode));
-    d_ptr->waveWidget->setWaveformMode(mode);
+    if (d_ptr->waveWidget)
+    {
+        d_ptr->waveWidget->setWaveformMode(mode);
+    }
 }
 
 /**************************************************************************************************
