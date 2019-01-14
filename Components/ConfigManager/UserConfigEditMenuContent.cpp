@@ -297,7 +297,7 @@ void UserConfigEditMenuContent::onBtnClick()
 void UserConfigEditMenuContent::onEditFinished()
 {
     // can't add, too many
-    // TODO(fangtongzhou) :show some message
+    // TODO :show some message
     QString configName = d_ptr->editWindow->getCurrentEditConfigName();
     if (configName.isEmpty())
     {
