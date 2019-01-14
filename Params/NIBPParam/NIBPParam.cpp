@@ -454,6 +454,8 @@ void NIBPParam::setResult(int16_t sys, int16_t dia, int16_t map, int16_t pr, NIB
     setMeasureResult(NIBP_MEASURE_SUCCESS);
     createSnapshot(err);
 
+    soundManager.nibpCompleteTone();
+
     if (_sysValue != InvData() && _diaValue != InvData() && _mapVaule != InvData())
     {
         // 测量出结果后，收集一次趋势数据
@@ -1302,6 +1304,11 @@ void NIBPParam::updateSubParamLimit(SubParamID id)
     {
         _trendWidget->updateLimit();
     }
+}
+
+void NIBPParam::setNIBPCompleteTone(SoundManager::VolumeLevel volume)
+{
+    soundManager.setVolume(SoundManager::SOUND_TYPE_NIBP_COMPLETE, volume);
 }
 
 /**************************************************************************************************
