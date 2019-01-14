@@ -139,7 +139,8 @@ void FreezeWaveReviewMode::_loadWaveData()
     for (int i = _wave->_tail; i != _wave->_head; i = _wave->_bufNext(i))
     {
         _wave->_waveBuf[i].setX(_wave->_xBuf[i]);
-        _wave->_waveBuf[i].setY(valueToY(_wave->_dataBuf[i] & 0xFFFF));
+        short yValue = _wave->_dataBuf[i] & 0xFFFF;
+        _wave->_waveBuf[i].setY(valueToY(yValue));
         _wave->_flagBuf[i] = (_wave->_dataBuf[i] & 0xFFFF0000) >> 16;
         _wave->_setDyBuf(i);
     }
