@@ -14,6 +14,7 @@
 #include <QMouseEvent>
 #include <QApplication>
 #include <QTimer>
+#include <QDebug>
 
 class TableViewPrivate
 {
@@ -92,6 +93,11 @@ public:
 
             index = model->index(q_ptr->rowAt(q_ptr->viewport()->height() - 1),
                                  q_ptr->columnAt(q_ptr->viewport()->width() - 1));
+            if (!index.isValid())
+            {
+                // if not find the item, focus the last item.
+                index = model->index(model->rowCount() - 1, model->columnCount() - 1);
+            }
         }
 
         if (!(model->flags(index) & Qt::ItemIsSelectable))
