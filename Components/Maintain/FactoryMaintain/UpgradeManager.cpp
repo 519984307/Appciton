@@ -282,8 +282,7 @@ bool UpgradeManagerPrivate::checkUpgradeFile()
                     break;
                 }
             }
-        }
-        while (!line.isEmpty());
+        } while (!line.isEmpty());
 
         return foundUpgradeFile;
     }
