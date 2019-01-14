@@ -79,7 +79,9 @@ void ScreenMenuContentPrivate::reloadScreenType()
     else
     {
         screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_STANDARD)));
+#ifndef HIDE_ECG_12_LEAD_FUNCTION
         screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_ECG_FULLSCREEN)));
+#endif
 #ifndef HIDE_MONITOR_OXYCRG
         screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_OXYCRG)));
 #endif
@@ -89,7 +91,9 @@ void ScreenMenuContentPrivate::reloadScreenType()
         screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_BIGFONT)));
 
         screenTypeList << UFACE_MONITOR_STANDARD
+#ifndef HIDE_ECG_12_LEAD_FUNCTION
                        << UFACE_MONITOR_ECG_FULLSCREEN
+#endif
                   #ifndef HIDE_MONITOR_OXYCRG
                        << UFACE_MONITOR_OXYCRG
                   #endif
