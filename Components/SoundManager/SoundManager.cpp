@@ -158,6 +158,8 @@ public:
             break;
         case SoundManager::SOUND_TYPE_HEARTBEAT:
             return SOUND_DIR"heart_beep.wav";
+        case SoundManager::SOUND_TYPE_NIBP_COMPLETE:
+            return SOUND_DIR"lo_lev.wav";
         case SoundManager::SOUND_TYPE_ALARM:
             switch ((AlarmPriority)specType)
             {
@@ -392,6 +394,11 @@ void SoundManager::alarmTone()
     d_ptr->playSound(SOUND_TYPE_ALARM);
 }
 
+void SoundManager::nibpCompleteTone()
+{
+    d_ptr->playSound(SOUND_TYPE_NIBP_COMPLETE);
+}
+
 void SoundManager::updateAlarm(bool hasAlarm, AlarmPriority curHighestPriority)
 {
     if (!d_ptr->almTimer)
@@ -483,6 +490,7 @@ void SoundManager::volumeInit()
     int alarmVolume = VOLUME_LEV_3;
     int keyVolume = VOLUME_LEV_3;
     int qrsVolume = VOLUME_LEV_3;
+    int nibpVolume = VOLUME_LEV_0;
 
     if (nightModeManager.nightMode())
     {
@@ -497,9 +505,11 @@ void SoundManager::volumeInit()
         currentConfig.getNumValue("ECG|QRSVolume", qrsVolume);
     }
 
+    currentConfig.getNumValue("NIBP|CompleteTone", nibpVolume);
     d_ptr->soundVolumes[SOUND_TYPE_ALARM] = static_cast<VolumeLevel>(alarmVolume);
     d_ptr->soundVolumes[SOUND_TYPE_KEY_PRESS] = static_cast<VolumeLevel>(keyVolume);
     d_ptr->soundVolumes[SOUND_TYPE_HEARTBEAT] = static_cast<VolumeLevel>(qrsVolume);
+    d_ptr->soundVolumes[SOUND_TYPE_NIBP_COMPLETE] = static_cast<VolumeLevel>(nibpVolume);
 }
 
 void SoundManager::playFinished()

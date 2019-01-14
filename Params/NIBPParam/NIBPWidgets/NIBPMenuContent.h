@@ -49,6 +49,12 @@ private slots:
      * @brief onSpinBoxReleased
      */
     void onSpinBoxReleased(int value, int scale);
+
+    /**
+     * @brief onCboItemFocusChanged combox item focus changed
+     * @param index
+     */
+    void onCboItemFocusChanged(int index);
 private:
     NIBPMenuContentPrivate * const d_ptr;
 };
