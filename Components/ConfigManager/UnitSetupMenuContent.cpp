@@ -158,7 +158,10 @@ void UnitSetupMenuContentPrivate::loadOptions()
     QMap<MenuItem, ComboBox *>::iterator it =  combos.begin();
     for (; it != combos.end(); ++it)
     {
-        it.value()->setEnabled(!isOnlyToRead);
+        if (it.value())
+        {
+            it.value()->setEnabled(!isOnlyToRead);
+        }
     }
 }
 
@@ -179,8 +182,11 @@ void UnitSetupMenuContent::readyShow()
     bool isOnlyToRead = configManager.isReadOnly();
     for (int i = 0; i < UnitSetupMenuContentPrivate::ITEM_CBO_MAX; i++)
     {
-        d_ptr->combos[UnitSetupMenuContentPrivate
-                ::MenuItem(i)]->setEnabled(!isOnlyToRead);
+        ComboBox *box = d_ptr->combos[UnitSetupMenuContentPrivate::MenuItem(i)];
+        if (box)
+        {
+            box->setEnabled(!isOnlyToRead);
+        }
     }
 }
 

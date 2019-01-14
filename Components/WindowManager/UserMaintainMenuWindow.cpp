@@ -43,7 +43,7 @@ UserMaintainMenuWindow *UserMaintainMenuWindow::getInstance()
         instance->addMenuContent(new OthersMaintainMenuContent);
         instance->addMenuContent(new UnitSetupMenuContent);
         instance->addMenuContent(new ErrorLogEntranceContent);
-        instance->addMenuContent(new Supervisor12LMenuContent);
+//        instance->addMenuContent(new Supervisor12LMenuContent);
         instance->addMenuContent(new SupervisorPrintMenuContent);
 //        instance->addMenuContent(new DemoMenuContent);
         instance->setWindowTitle(trs("UserMaintainGeneralMenuDesc"));

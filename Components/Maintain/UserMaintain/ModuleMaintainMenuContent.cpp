@@ -116,16 +116,16 @@ void ModuleMaintainMenuContent::layoutExec()
         d_ptr->buttons.insert(ModuleMaintainMenuContentPrivate::ITEM_BTN_IBP2_PRESSURE_CALIBRATION, button);
     }
 
-    // CO2 ModuleMaintenance
-    label = new QLabel(trs("CO2ModuleMaintenance"));
-    layout->addWidget(label, d_ptr->buttons.count(), 0);
-    button = new Button(trs("Start"));
-    button->setButtonStyle(Button::ButtonTextOnly);
-    itemID = static_cast<int>(ModuleMaintainMenuContentPrivate::ITEM_BTN_CO2_MODULE_MAINTAIN);
-    button->setProperty("Item", qVariantFromValue(itemID));
-    connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
-    layout->addWidget(button, d_ptr->buttons.count(), 1);
-    d_ptr->buttons.insert(ModuleMaintainMenuContentPrivate::ITEM_BTN_CO2_MODULE_MAINTAIN, button);
+//    // CO2 ModuleMaintenance
+//    label = new QLabel(trs("CO2ModuleMaintenance"));
+//    layout->addWidget(label, d_ptr->buttons.count(), 0);
+//    button = new Button(trs("Start"));
+//    button->setButtonStyle(Button::ButtonTextOnly);
+//    itemID = static_cast<int>(ModuleMaintainMenuContentPrivate::ITEM_BTN_CO2_MODULE_MAINTAIN);
+//    button->setProperty("Item", qVariantFromValue(itemID));
+//    connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
+//    layout->addWidget(button, d_ptr->buttons.count(), 1);
+//    d_ptr->buttons.insert(ModuleMaintainMenuContentPrivate::ITEM_BTN_CO2_MODULE_MAINTAIN, button);
 
     // ECG Module Calibration
     label = new QLabel(trs("ECGModuleCalibration"));
