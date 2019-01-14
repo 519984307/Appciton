@@ -43,7 +43,9 @@ UserMaintainMenuWindow *UserMaintainMenuWindow::getInstance()
         instance->addMenuContent(new OthersMaintainMenuContent);
         instance->addMenuContent(new UnitSetupMenuContent);
         instance->addMenuContent(new ErrorLogEntranceContent);
-//        instance->addMenuContent(new Supervisor12LMenuContent);
+#ifndef HIDE_ECG_12_LEAD_FUNCTION
+        instance->addMenuContent(new Supervisor12LMenuContent);
+#endif
         instance->addMenuContent(new SupervisorPrintMenuContent);
 //        instance->addMenuContent(new DemoMenuContent);
         instance->setWindowTitle(trs("UserMaintainGeneralMenuDesc"));
