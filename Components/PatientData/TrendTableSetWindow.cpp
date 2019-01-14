@@ -80,7 +80,7 @@ void TrendTableSetWindow::trendGroupReleased(int g)
 TrendTableSetWindow::TrendTableSetWindow()
     : Window(), d_ptr(new TrendTableSetWindowPrivate())
 {
-    setFixedSize(240, 240);
+    setFixedSize(340, 240);
 
     setWindowTitle(trs("TrendTableSet"));
 
