@@ -274,7 +274,10 @@ void TEMPParam::getCalibrateData(unsigned char *packet)
 
 void TEMPParam::updateSubParamLimit(SubParamID id)
 {
-    Q_UNUSED(id)
+    if (id == SUB_PARAM_T1)
+    {
+        _trendWidget->updateLimit();
+    }
 }
 
 bool TEMPParam::getCalibrationReply()
