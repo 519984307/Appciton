@@ -351,30 +351,7 @@ bool NIBPParam::analysisResult(const unsigned char *packet, int /*len*/, short &
     // 测量有错误，获取错误码。
     if (info.errCode != 0x00)
     {
-        switch (info.errCode)
-        {
-        case 0x02:
-            err = NIBP_ONESHOT_ALARM_CUFF_ERROR;
-            break;
-        case 0x05:
-            err = NIBP_ONESHOT_ALARM_SIGNAL_WEAK;
-            break;
-        case 0x06:
-            err = NIBP_ONESHOT_ALARM_MEASURE_OVER_RANGE;
-            break;
-        case 0x08:
-            err = NIBP_ONESHOT_ALARM_CUFF_OVER_PRESSURE;
-            break;
-        case 0x09:
-            err = NIBP_ONESHOT_ALARM_SIGNAL_SATURATION;
-            break;
-        case 0x0A:
-            err = NIBP_ONESHOT_ALARM_MEASURE_TIMEOUT;
-            break;
-        default:
-            break;
-        }
-
+        err = (NIBPOneShotType)_provider->convertErrcode(info.errCode);
         return true;
     }
     // 测量无错，获取测量结果。
@@ -453,6 +430,8 @@ void NIBPParam::setResult(int16_t sys, int16_t dia, int16_t map, int16_t pr, NIB
     // 保存起来。
     setMeasureResult(NIBP_MEASURE_SUCCESS);
     createSnapshot(err);
+
+    soundManager.nibpCompleteTone();
 
     if (_sysValue != InvData() && _diaValue != InvData() && _mapVaule != InvData())
     {
@@ -1302,6 +1281,11 @@ void NIBPParam::updateSubParamLimit(SubParamID id)
     {
         _trendWidget->updateLimit();
     }
+}
+
+void NIBPParam::setNIBPCompleteTone(SoundManager::VolumeLevel volume)
+{
+    soundManager.setVolume(SoundManager::SOUND_TYPE_NIBP_COMPLETE, volume);
 }
 
 /**************************************************************************************************

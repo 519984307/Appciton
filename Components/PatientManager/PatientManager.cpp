@@ -16,6 +16,7 @@
 #include "DataStorageDirManager.h"
 #include "NIBPParam.h"
 #include "NIBPProviderIFace.h"
+#include "TimeDate.h"
 
 PatientManager *PatientManager::_selfObj = NULL;
 
@@ -26,7 +27,8 @@ public:
         : q_ptr(q_ptr),
           patientInfoWidget(NULL),
           patientNew(false),
-          relieveFlag(true)
+          relieveFlag(true),
+          bornDateFormat(QString())
     {}
     PatientManager * const q_ptr;
     PatientInfo patientInfo;
@@ -40,6 +42,7 @@ public:
 
     bool patientNew;                 // 新建病人标志
     bool relieveFlag;                // 解除病人标志
+    QString bornDateFormat;          // 出生日期格式
 };
 
 /**************************************************************************************************
@@ -75,7 +78,10 @@ void PatientManager::setType(PatientType type)
     emit signalPatientType(d_ptr->patientInfo.type);
 
     ecgParam.setPatientType((unsigned char)(d_ptr->patientInfo.type));
-    nibpParam.provider().setPatientType(type);
+    if (systemManager.isSupport(PARAM_NIBP))
+    {
+        nibpParam.provider().setPatientType(type);
+    }
     configManager.loadConfig(type);
 }
 
@@ -131,21 +137,27 @@ PatientSex PatientManager::getSex(void)
     return d_ptr->patientInfo.sex;
 }
 
-/**************************************************************************************************
- * 功能： 设置年龄。
- *************************************************************************************************/
-void PatientManager::setAge(int age)
+void PatientManager::setBornDate(QDate bornDate)
 {
-    d_ptr->patientInfo.age = age;
-    systemConfig.setNumValue("PrimaryCfg|PatientInfo|Age", age);
+    systemConfig.setStrValue("PrimaryCfg|PatientInfo|BornDate", bornDate.toString("yyyy/MM/dd"));
+    d_ptr->patientInfo.bornDate = bornDate;
 }
 
-/**************************************************************************************************
- * 功能： 获取年龄。
- *************************************************************************************************/
-int PatientManager::getAge(void)
+QDate PatientManager::getBornDate()
 {
-    return d_ptr->patientInfo.age;
+    return d_ptr->patientInfo.bornDate;
+}
+
+void PatientManager::getBornDate(unsigned int &year, unsigned int &month, unsigned int &day)
+{
+    QDate bornDate = d_ptr->patientInfo.bornDate;
+    if (!bornDate.isValid())
+    {
+        return;
+    }
+    year = static_cast<unsigned int>(bornDate.year());
+    month = static_cast<unsigned int>(bornDate.month());
+    day = static_cast<unsigned int>(bornDate.day());
 }
 
 void PatientManager::setBlood(PatientBloodType blood)
@@ -283,7 +295,7 @@ bool PatientManager::isMonitoring()
 void PatientManager::newPatient()
 {
     d_ptr->patientNew = true;
-    patientManager.setAge(-1);
+    patientManager.setBornDate(QDate());
     patientManager.setBlood(PATIENT_BLOOD_TYPE_NULL);
     patientManager.setHeight(0.0);
     patientManager.setName(QString(""));
@@ -328,9 +340,6 @@ void PatientManagerPrivate::loadPatientInfo(PatientInfo &info)
     systemConfig.getNumValue("PrimaryCfg|PatientInfo|Sex", numValue);
     info.sex = (PatientSex)numValue;
 
-    systemConfig.getNumValue("PrimaryCfg|PatientInfo|Age", numValue);
-    info.age = numValue;
-
     systemConfig.getNumValue("PrimaryCfg|PatientInfo|Blood", numValue);
     info.blood = (PatientBloodType)numValue;
 
@@ -345,6 +354,9 @@ void PatientManagerPrivate::loadPatientInfo(PatientInfo &info)
 
     systemConfig.getStrValue("PrimaryCfg|PatientInfo|ID", strValue);
     ::strncpy(info.id, strValue.toUtf8().constData(), sizeof(info.id));
+
+    systemConfig.getStrValue("PrimaryCfg|PatientInfo|BornDate", strValue);
+    info.bornDate = QDate::fromString(strValue, "yyyy/MM/dd");
 }
 
 void PatientManagerPrivate::handleDischarge()

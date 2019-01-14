@@ -88,13 +88,13 @@ void SelectDefaultConfigMenuContentPrivate::updateUserConfig()
         switch (menuItem)
         {
         case ITEM_CBO_ADULT_DEFCONFIG:
-            nodeName += "Adult";
+            nodeName += PatientSymbol::convert(PATIENT_TYPE_ADULT);
             break;
         case ITEM_CBO_PED_DEFCONFIG:
-            nodeName += "PED";
+            nodeName += PatientSymbol::convert(PATIENT_TYPE_PED);;
             break;
         case ITEM_CBO_NEO_DEFCONFIG:
-            nodeName += "NEO";
+            nodeName += PatientSymbol::convert(PATIENT_TYPE_NEO);;
             break;
         default:
             break;
@@ -155,13 +155,13 @@ void SelectDefaultConfigMenuContent::onCurrentIndexChanged(int index)
         switch (itemId)
         {
         case 0:
-            nodeIndex = nodeIndex + "Adult";
+            nodeIndex = nodeIndex + PatientSymbol::convert(PATIENT_TYPE_ADULT);
             break;
         case 1:
-            nodeIndex = nodeIndex + "PED";
+            nodeIndex = nodeIndex + PatientSymbol::convert(PATIENT_TYPE_PED);
             break;
         case 2:
-            nodeIndex = nodeIndex + "NEO";
+            nodeIndex = nodeIndex + PatientSymbol::convert(PATIENT_TYPE_NEO);
             break;
         default:
             nodeIndex = nodeIndex + "";

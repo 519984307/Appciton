@@ -14,6 +14,7 @@
 #include <string.h>
 #include "BaseDefine.h"
 #include <QString>
+#include <QDate>
 
 enum PatientType
 {
@@ -49,13 +50,6 @@ enum PatientBloodType
     PATIENT_BLOOD_TYPE_NR
 };
 
-enum PatientWeightUnit
-{
-    PATIENT_WEIGHT_UNIT_KG,
-    PATIENT_WEIGHT_UNIT_LB,
-    PATIENT_WEIGHT_UNIT_NR
-};
-
 // 描述病人信息。
 struct PatientInfo
 {
@@ -63,9 +57,7 @@ struct PatientInfo
         :type(PATIENT_TYPE_ADULT),
           pacer(PATIENT_PACER_ON),
           sex(PATIENT_SEX_NULL),  //  性别为空主要用于开机时性别框要显示为空白
-          age(-1), //  年纪设置为-1主要用于开机时年纪框不让设置数据要显示为空白
           blood(PATIENT_BLOOD_TYPE_NULL),
-          weightUnit(PATIENT_WEIGHT_UNIT_KG),
           weight(0.0),
           height(0.0)
     {
@@ -78,11 +70,10 @@ struct PatientInfo
         pacer = other.pacer;
         type = other.type;
         sex = other.sex;
-        age = other.age;
+        bornDate = other.bornDate;
         blood = other.blood;
         weight = other.weight;
         height = other.height;
-        weightUnit = other.weightUnit;
         ::memcpy(name, other.name, sizeof(name));
         ::memcpy(id, other.id, sizeof(id));
         return *this;
@@ -93,7 +84,7 @@ struct PatientInfo
         return ((pacer == other.pacer) &&
                 (type == other.type) &&
                 (sex == other.sex) &&
-                (age == other.age) &&
+                (bornDate == other.bornDate) &&
                 (blood == other.blood) &&
                 (weight == other.weight) &&
                 (height == other.height) &&
@@ -104,9 +95,8 @@ struct PatientInfo
     PatientType type;
     PatientPacer pacer;
     PatientSex sex;
-    int age;
+    QDate bornDate;
     PatientBloodType blood;
-    PatientWeightUnit weightUnit;
     float weight;
     float height;
     char id[MAX_PATIENT_ID_LEN];
@@ -148,15 +138,6 @@ public:
         static const char *symbol[PATIENT_BLOOD_TYPE_NR] =
         {
             "", "A", "B", "AB", "O"
-        };
-        return symbol[index];
-    }
-
-    static const char *convert(PatientWeightUnit index)
-    {
-        static const char *symbol[PATIENT_WEIGHT_UNIT_NR] =
-        {
-            "kg", "lb"
         };
         return symbol[index];
     }

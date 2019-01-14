@@ -28,8 +28,12 @@ public:
 
 protected:
     virtual void layoutExec(void);
+    void n5LayoutExec(void);
+    void suntechLayoutExec(void);
+
     void timerEvent(QTimerEvent *ev);
     void showEvent(QShowEvent *e);
+    void hideEvent(QHideEvent *e);
 
 private slots:
     void inflateBtnReleased(void);            //  充气、放气控制按钮信号
@@ -40,6 +44,8 @@ private slots:
     void onOverpressureReleased(int);
 
     void enterPressureContrlReleased();
+
+    void onComboBoxIndexChanged(int index);
 
 private:
     NIBPPressureControlContent();

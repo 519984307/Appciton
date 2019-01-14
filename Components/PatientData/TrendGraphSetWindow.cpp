@@ -78,6 +78,10 @@ void TrendGraphSetWindow::setCurParam(QList<SubParamID> subList)
             {
                 item->label->setText("T1/T2");
             }
+            else if (sid == SUB_PARAM_NIBP_SYS)
+            {
+                item->label->setText("NIBP");
+            }
             else
             {
                 item->label->setText(trs(name));

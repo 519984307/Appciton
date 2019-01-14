@@ -15,6 +15,7 @@
 #include "ShortTrendContainer.h"
 #include "NightModeManager.h"
 #include "RunningStatusBar.h"
+#include "RainbowProvider.h"
 
 /**************************************************************************************************
  * 功能： 初始化系统。
@@ -221,8 +222,8 @@ static void _initProviderParam(void)
     // TE3Provider *te3 = new TE3Provider();
     // paramManager.addProvider(*te3);
 
-    E5Provider *e5 = new E5Provider();
-    paramManager.addProvider(*e5);
+    E5Provider *te3 = new E5Provider();
+    paramManager.addProvider(*te3);
 
     DataDispatcher::addDataDispatcher(new DataDispatcher("DataDispatcher"));
 
@@ -357,6 +358,11 @@ static void _initProviderParam(void)
         {
             paramManager.addProvider(*new NellcorSetProvider());
             spo2Param.setModuleType(MODULE_NELLCOR_SPO2);
+        }
+        else if (str == "RAINBOW_SPO2")
+        {
+            paramManager.addProvider(*new RainbowProvider());
+            spo2Param.setModuleType(MODULE_RAINBOW_SPO2);
         }
         paramManager.addParam(spo2Param.construction());
         alertor.addLimtSource(spo2LimitAlarm.construction());
@@ -609,7 +615,10 @@ void newObjects(void)
  *************************************************************************************************/
 void deleteObjects(void)
 {
-//    deleteWaveWidgetSelectMenu();
+    // 优先析构打印管理实例
+    deleteRecorderManager();
+
+    //    deleteWaveWidgetSelectMenu();
     deleteSupervisorMenuManager();
     deleteMenuManager();
     // deletePatientMenu();
@@ -623,7 +632,6 @@ void deleteObjects(void)
     // deleteSuperConfig();
     deleteSuperRunConfig();
     deleteSystemTick();
-    deleteSystemBoardProvider();
     deleteKeyActionManager();
 
     deleteDataStorageDirManager();
@@ -641,12 +649,9 @@ void deleteObjects(void)
     deleteRescueDataExportWidget();
     deleteRescueDataDeleteWidget();
 
-    deleteRecorderManager();
-
 //    deleteNetworkManager();
     deleteUsbManager();
     deleteActivityLogManager();
-
 
     deleteColorManager();
     deleteFontManager();

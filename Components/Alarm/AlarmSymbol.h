@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/1/11
+ **/
+
+
 #pragma once
 #include "AlarmDefine.h"
 
@@ -11,7 +22,7 @@ public:
     {
         const char *pauseTime[] =
         {
-            "_60sec", "_90sec", "_120sec", "_150sec", "_180sec", "_210sec", "_240sec"
+            "_1min", "_2min", "_3min", "_5min", "_10min", "_15min"
         };
 
         return pauseTime[index];

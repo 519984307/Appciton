@@ -16,8 +16,8 @@ BuildTime,编译时间,Build Time
 ChannelPressureEntitle1,压力标名1,Pressure Entitle1
 ChannelPressureEntitle2,压力标名2,Pressure Entitle2
 Adult,成人,Adu
-PED,小儿,Ped
-NEO,新生儿,Neo
+Pediatric,小儿,Ped
+Neonate,新生儿,Neo
 AlarmLimit,报警限,Alarm Limit
 Other,其它,Other
 Notch,陷波,Notch
@@ -183,6 +183,7 @@ NIBPMeasurement,无创血压测量,NIBP
 NIBPMeasureMode,测量模式,Measure Mode
 NIBPIntervalTime,间隔时间,NIBP Interval Time
 NIBPAutoInterval,自动间隔,Auto Interval
+NIBPCompleteTone,NIBP完成音,NIBP Complete Tone
 NIBPMenu,NIBP,NIBP
 NIBPMenuDesc,NIBP,NIBP
 NIBPDirectiveTimeout,指令超时,Directive Timeout
@@ -294,19 +295,20 @@ PrintSettingMenuDesc,打印设置,Print Setting
 ClearPrintTask,清除打印任务,ClearPrintTask
 Continous,连续,Continous
 TEMP2SensorOff,体温2探头脱落,TEMP2 Sensor Off
-TEMPSensorOffAll,体温探头全部脱落,TEMP Sensor Off All
-TEMP1OverRange,体温1超界,TEMP1 Over Range
-TEMP2OverRange,体温2超界,TEMP2 Over Range
-TEMPOverRangeAll,体温全部超界,TEMP Over Range All
-TEMP1ProbeTypeError,体温1探头类型错误,TEMP1ProbeTypeError
-TEMP2ProbeTypeError,体温2探头类型错误,TEMP2ProbeTypeError
-TEMPProbeTypeErrorAll,体温探头类型全部错误,TEMPProbeTypeErrorAll
+TEMPSensorOffAll,体温探头全部脱落,All TEMP Sensor Off
+TEMP1OverRange,体温1超界,TEMP1 Out of Range
+TEMP2OverRange,体温2超界,TEMP2 Out of Range
+TEMPOverRangeAll,体温全部超界,All TEMP Out of Range
+TEMP1ProbeTypeError,体温1探头类型错误,TEMP1 Probe Type Error
+TEMP2ProbeTypeError,体温2探头类型错误,TEMP2 Probe Type Error
+TEMPProbeTypeErrorAll,体温探头类型全部错误,All TEMP Probe Type Error
 TEMPCommunicationStop,体温通讯停止,Communication Stop
 celsius,℃,℃
 fahrenheit,℉,℉
 percent,%,%
 Defaults,恢复默认值,Defaults
 SureAllAlarmDefaults,"所有报警设置将恢复默认值,您确定进行吗?",All alarm settings will reset to the defaults. Are you sure to continue?
+SureAllDataErase,"所有历史数据会被擦除,您确定进行吗?","All historical data will be erased,Are you sure to continue?"
 AlarmSettingUp,报警限设置,Alarm Setting Up
 LatchLockSwitch,报警栓锁,Alarm Latch Lock
 AlarmLimitMenu,报警限,Alarm Limit
@@ -455,23 +457,23 @@ NIBPWAITING,NIBP等待,NIBP Waiting
 NIBPNoResponse,无响应,No Response
 NIBPTemporarily,临时,Temporarily
 NIBPDisable,禁用,Disable
-_1min,1 min,1 min
-_1.5min,1.5 分,1.5 min
-_2min,2 min,2 min
-_2.5min,2.5 分,2.5 min
-_3min,3 分,3 min
-_3.5min,3.5 分,3.5 min
-_4min,4 min,4 min
-_5min,5 分,5 min
-_8min,8 min,8 min
-_10min,10 分,10 min
-_15min,15 分,15 min
-_20min,20 分,20 min
-_30min,30 分,30 min
-_45min,45 分,45 min
-_60min,60 分,60 min
-_90min,90 分,90 min
-_120min,120 分,120 min
+_1min,1 分钟,1 min
+_1.5min,1.5 分钟,1.5 min
+_2min,2 分钟,2 min
+_2.5min,2.5 分钟,2.5 min
+_3min,3 分钟,3 min
+_3.5min,3.5 分钟,3.5 min
+_4min,4 分钟,4 min
+_5min,5 分钟,5 min
+_8min,8 分钟,8 min
+_10min,10 分钟,10 min
+_15min,15 分钟,15 min
+_20min,20 分钟,20 min
+_30min,30 分钟,30 min
+_45min,45 分钟,45 min
+_60min,60 分钟,60 min
+_90min,90 分钟,90 min
+_120min,120 分钟,120 min
 min,分,min
 Parameter,参数,Parameter
 AlarmStatus,状态,Status
@@ -606,20 +608,23 @@ CO2FiCO2High,FiCO2 高,FiCO2 High
 CO2BRLow,BR 低,BR Low
 CO2BRHigh,BR 高,BR High
 CO2Apnea,呼吸窒息,Apnea
-CO2SoftwareError,CO2软件错,CO2 Software Error
-CO2HardwareError,CO2硬件错,CO2 Hardware Error
-CO2MotorError,CO2马达超速,CO2 Motor Speed Error
+CO2MotorError,CO2电机转速超限,CO2 Motor Speed Out of bounds
+CO2SoftwareError,CO2软件错误,CO2 Software Error
+CO2HardwareError,CO2硬件错误,CO2 Hardware Error
 CO2MissFactoryCali,CO2未校准,CO2 Miss Factory Calib
-CO2ReplaceAdapter,CO2替换适配器,CO2 Replace Adapter
+CO2ReplaceAdapter,CO2更换适配器,CO2 Replace Adapter
 CO2NoAdapter,CO2无适配器,CO2 No Adapter
-CO2OutRange,CO2超出精度范围,CO2 Out Accuracy Range
-CO2TempOutRange,CO2内部温度超界,CO2 Temp Out Range
-CO2BaroPressOutRange,CO2气压超界,CO2 BaroPress Out Range
+CO2OutRange,CO2超出精度范围,CO2 Out of Accuracy Range
+CO2TempOutRange,CO2内部温度超界,CO2 Temp Out of Range
+CO2BaroPressOutRange,CO2大气压力超限,CO2 Baro Pressure Out of Range
 CO2ZeroRequired,CO2需要校零,CO2 Zero Required
 CO2ZeroDisable,CO2禁止校零,CO2 Zero Disable
 CO2ZeroInprogress,CO2校零中,CO2 Zero In Progress
-CO2SpanCalibFailed,CO2校准量程失败,CO2 Span Calib Failed
-CO2SpanCalibInprogress,CO2正在校准量程,CO2 Span Calib Inprogress
+CO2SpanCalibFailed,CO2校准失败,CO2 Span Calib Failed
+CO2SpanCalibInprogress,CO2正在校准,CO2 Span Calib In Progress
+CO2ZeroandSpanDisable,CO2禁止校零和校准,CO2 Zero and Span Disable
+CO2SampleLineClogged,CO2采样管堵塞,CO2 Sample Line Clogged
+CO2NoSampleLine,CO2没有采样线,CO2 No Sample Line
 IBP1LeadOff,IBP通道1导联脱落,IBP1 lead off
 IBP2LeadOff,IBP通道2导联脱落,IBP2 lead off
 IBP1ZeroCalibSuccess,IBP通道1校零成功,IBP1 zero success
@@ -740,6 +745,9 @@ ServicePressure,压力值,Pressure
 ServicePressureControl,压力控制,Pressure Control
 ServicePressureControlDesc,压力控制模式,Pressure Control
 NIBPPressureControlModel,压力控制模式,NIBP Pressure Control Model
+Pump,气泵,Pump
+ControlValve,控制阀,Control Valve
+DumpValve,安全阀,Dump Valve
 ServicePatientType,病人类型,Patient Type
 ServiceChargePressure,预充气压力,Charge Pressure
 TEMPModuleDisConnect,温度模块未连接,TEMP Module DisConnected
@@ -799,6 +807,7 @@ SPO2Version,SPO2,SPO2
 TEMPVersion,TEMP,TEMP
 iDMBoardVersion,iDMBoard,iDMBoard
 PRT48Version,PRT48,PRT48
+SourceOfCO2,来源CO2,Source of CO2
 PDVersion,PD,PD
 COREVersion,CORE,CORE
 VersionReturn,返回,Return
@@ -904,8 +913,8 @@ SupervisorDisplayUserPrompt,显示用户提示信息,Display User Prompt
 SupervisorDisplayAnalysisKey,显示分析按键,Display Analyze Key
 SupervisorPhyAlarmVisualIndicator,生理报警视觉信号,Physiological Alarm Visual Indicator
 DisplayFixRateKey,固定速率,Fixed Rate Pacing
-SupervisorPrintMenu,触发打印,Print
-SupervisorPrintMenuDesc,触发打印,Print Setting
+TriggerPrintMenu,触发打印,Trigger Print
+TriggerPrintMenuDesc,触发打印,Trigger Print 
 SupervisorAutoPrint30Jtest,自动打印30J自测结果,Print 30J Self-test Results
 SupervisorAutoPrint12L,打印12导,Automatic Printing Of 12-Lead Report
 Supervisor12LMenu,12导,12-Lead
@@ -1110,7 +1119,7 @@ MailAddress,邮箱地址,Mail Address
 E-mailAddressList,邮箱地址列表,E-mail Address List
 ECGGain,ECG增益,ECG Gain
 Printspeed,打印速度,Print speed
-SerialNum,系列号,Serial Number
+SerialNum,序列号,Serial Number
 SWVersion,软件版本,Software Version
 CodeMarker,Code Marker,Code Marker
 CodeMarkerSnapshot,CodeMarker Snapshot,CodeMarker Snapshot
@@ -1196,20 +1205,10 @@ Calculation ,计算,Calculation
 ReferenceRange,参考范围,Reference Range
 CheckInput,查看输入,Check Input
 PrimitiveCalculation,原始计算,Primitive Calculation
-InOutValue,输入/输出值,
-ZeroCalibSuccess,校零成功,
+InOutValue,输入/输出值,In/Out Value
 ZeroInProgress,校零进行中,Zero in progress
 CalibrationSuccess,校准成功,Success
 CalibrationFail,校准失败,Fail
-MeasurePressureIsPulse,测量压力是脉动的,
-ZeroCalibPressureBeyondMeasureRange,校零压力超出测量范围,
-CalibrationPressureBeyondMeasureRange,校准压力超出测量范围,
-NoZeroCalib,未校零,
-LeadOffZeroCalibFail,导联脱落（校零失败）,
-LeadOffCalibrationFail,导联脱落（校准失败）,
-NoSetZeroCalibTime,没有设置校零时间,
-NoSetCalibrationTime,没有设置校准时间,
-ManualRulerSet,手动标尺设置,Manual Ruler Set
 UpperScale,压力上标尺,Upper Scale
 LowerScale,压力下标尺,Lower Scale
 Ruler,标尺,Ruler
@@ -1388,7 +1387,7 @@ ParaSwitch,参数开关,Parameters Switch
 NurseCallSetting,护士呼叫设置,Nurse Call Setting
 Setting,设置,Setting
 RealtimePrintSegment,实时打印,Real Time Print
-NibpMeasurement,NIBP测量,Nibp Measurement
+NibpMeasurement,NIBP测量,NIBP Measurement
 StopSetting,停止设置,Stop Setting
 SignalType,信号类型,Signal Type
 Continuity,连续,Continuity
@@ -1433,10 +1432,10 @@ SetConfigName,设置配置项名称,Set Config Name
 GeneralDesc,通用设置,General Desc
 ConfigName,配置名称,Config Name
 AalrmSource,报警源,Aalrm Source
-Ecg1Wave,波形1,Ecg1 Wave
-Ecg2Wave,波形2,Ecg2 Wave
+Ecg1Wave,波形1,ECG1 Wave
+Ecg2Wave,波形2,ECG2 Wave
 ECG1,ECG1,ECG1
-Ecg1Gain,增益,Ecg Gain
+Ecg1Gain,增益,ECG Gain
 Filter,滤波器,Filter
 QRSVolume,音量,QRS Volume
 ConfigIBPMenu,有创血压,Config IBP
@@ -1607,15 +1606,11 @@ _12Hour,12 小时,12 Hour
 _24Hour,24 小时,24 Hour
 System,系统,System
 Machine,机器,Machine
-Ped,小儿,Pediatric
-Neo,新生儿,Neonate
 AdultConfig.Original.xml,成人缺省,Default Adult Config.
 NeoConfig.Original.xml,新生儿缺省,Default Neo Config.
 PedConfig.Original.xml,小儿缺省,Default Ped Config.
 System.Original.xml,系统配置,System Config.
 Machine.xml,机器配置,Machine Config.
-Pediatric,小儿,Pediatric
-Neonate,新生儿,Neonate
 SaveCurrentSetting,保存设置,Save Current Setting
 SaveCurrentSettingAs,保存设置,Save Setting
 SaveCurrentSettingAsDesc,保存设置,Save Setting
@@ -1633,4 +1628,7 @@ SPO2CableOff,血氧电缆断开,SPO2 Cable Off
 SPO2FingerOff,未检测到手指,SPO2 Finger Off
 SPO2LEDFault,血氧LED错误,SPO2 LED Fault
 SPO2LowPerfusion,血氧低弱灌注,SPO2 Low Perfusion
-NIBPSameSide,NIBP同侧,NIBP Simul
+NIBPSimul,NIBP同侧,NIBP Simul
+Input8DigitsPassword,请输入8位数字密码,Please input 8 digits password
+BornDate,出生日期,Born Date
+RescueStorageSpaceFull,营救数据存储空间满,Rescue storage space full

@@ -20,6 +20,15 @@
 #define RING_BUFFER_LENGTH 4096
 #define MAXIMUM_PACKET_SIZE 256 // largest packet size, should be larger enough
 
+
+enum PacketPortCommand
+{
+    PORT_CMD_RESET  = 0x10,         // reset port
+    PORT_CMD_RESET_RSP = 0x11,      // reset port response
+    PORT_CMD_BAUDRATE = 0x12,       // baudrate
+    PORT_CMD_BAUDRATE_RSP = 0x13,   // baudrate
+};
+
 class DataDispatcherPrivate
 {
 public:
@@ -110,9 +119,34 @@ public:
     void handlePacket(unsigned char *data, int len)
     {
         DataDispatcher::PacketType type = static_cast<DataDispatcher::PacketType>(data[0]);
-        if (dataHandlers.contains(type))
+        if (type == DataDispatcher::PACKET_TYPE_CTRL)
+        {
+            // control packet responsoe
+            unsigned char *responseData = data + 1;
+            DataDispatcher::PacketType portType = static_cast<DataDispatcher::PacketType>(responseData[0]);
+            PacketPortCommand portCmdRSP = static_cast<PacketPortCommand>(responseData[1]);
+            switch (portCmdRSP)
+            {
+            case PORT_CMD_RESET_RSP:
+            {
+                qDebug() << "DataDispatcher: reset response of packet port 0x" << hex << portType;
+                dataHandlers[portType]->dispatchPortHasReset();
+            }
+                break;
+            case PORT_CMD_BAUDRATE_RSP:
+                qDebug() << "DataDispatcher: baudrate response of packet port 0x" << hex << portType;
+                break;
+            default:
+                break;
+            }
+        }
+        else if (dataHandlers.contains(type))
         {
             dataHandlers[type]->dataArrived(data + 1, len - 1);
+        }
+        else
+        {
+            qWarning() << Q_FUNC_INFO << "Invalid dispatch packet type 0x" << hex << data[0];
         }
     }
 
@@ -170,11 +204,26 @@ int DataDispatcher::sendData(DataDispatcher::PacketType type, const unsigned cha
     sendBuf[i] = SOH;
     crc = crcDigest(crc, sendBuf[i++]);
     sendBuf[i] = length & 0xFF;
+    if (sendBuf[i] == SOH)
+    {
+        sendBuf[++i] = SOH;
+    }
     crc = crcDigest(crc, sendBuf[i++]);
+
     sendBuf[i] = length >> 8;
+    if (sendBuf[i] == SOH)
+    {
+        sendBuf[++i] = SOH;
+    }
     crc = crcDigest(crc, sendBuf[i++]);
+
     sendBuf[i] = type;
+    if (sendBuf[i] == SOH)
+    {
+        sendBuf[++i] = SOH;
+    }
     crc = crcDigest(crc, sendBuf[i++]);
+
     for (int j = 0; j < len; ++j)
     {
         sendBuf[i++] = buff[j];
@@ -187,6 +236,10 @@ int DataDispatcher::sendData(DataDispatcher::PacketType type, const unsigned cha
     }
 
     sendBuf[i++] = crc;
+    if (sendBuf[i] == SOH)
+    {
+        sendBuf[i++] = SOH;
+    }
 
     int sendLength =  d_ptr->uart->write(sendBuf, i);
 
@@ -211,6 +264,76 @@ void DataDispatcher::addDataDispatcher(DataDispatcher *dispatcher)
 DataDispatcher *DataDispatcher::getDataDispatcher(const QString &name)
 {
     return DataDispatcherPrivate::dispatchers.value(name, NULL);
+}
+
+#define ArraySize(arr) ((int)(sizeof(arr)/sizeof(arr[0])))      // NOLINT
+bool DataDispatcher::resetPacketPort(DataDispatcher::PacketType type)
+{
+    unsigned char crc = 0;
+    unsigned char sendBuf[16];
+    unsigned char frameData[]  = { 0, 0, PACKET_TYPE_CTRL, 0, PORT_CMD_RESET};
+    unsigned short length = 1 + ArraySize(frameData) + 1;   // frame head byte + frame data field + crc byte
+    frameData[0] = length & 0xFF;
+    frameData[1] = length >> 8;
+    frameData[3] = type;
+
+    int i = 0;
+    sendBuf[i] = SOH;
+    crc = crcDigest(crc, sendBuf[i++]);
+
+    for (int j = 0; j < ArraySize(frameData); j++)
+    {
+        sendBuf[i++] = frameData[j];
+        crc = crcDigest(crc, frameData[j]);
+
+        if (frameData[j] == SOH)
+        {
+            sendBuf[i++] = SOH;     // duplicated SOH
+        }
+    }
+
+    sendBuf[i++] = crc;
+    if (sendBuf[i] == SOH)
+    {
+        sendBuf[i++] = SOH;
+    }
+
+    return d_ptr->uart->write(sendBuf, i) == i;
+}
+
+bool DataDispatcher::setPacketPortBaudrate(DataDispatcher::PacketType type, DataDispatcher::PacketPortBaudrate baud)
+{
+    unsigned char crc = 0;
+    unsigned char sendBuf[16];
+    unsigned char frameData[]  = { 0, 0, PACKET_TYPE_CTRL, 0, PORT_CMD_BAUDRATE, 0};
+    unsigned short length = 1 + ArraySize(frameData) + 1;   // frame head byte + frame data field + crc byte
+    frameData[0] = length & 0xFF;
+    frameData[1] = length >> 8;
+    frameData[3] = type;
+    frameData[5] = baud;
+
+    int i = 0;
+    sendBuf[i] = SOH;
+    crc = crcDigest(crc, sendBuf[i++]);
+
+    for (int j = 0; j < ArraySize(frameData); j++)
+    {
+        sendBuf[i++] = frameData[j];
+        crc = crcDigest(crc, frameData[j]);
+
+        if (frameData[j] == SOH)
+        {
+            sendBuf[i++] = SOH;     // duplicated SOH
+        }
+    }
+
+    sendBuf[i++] = crc;
+    if (sendBuf[i] == SOH)
+    {
+        sendBuf[i++] = SOH;
+    }
+
+    return d_ptr->uart->write(sendBuf, i) == i;
 }
 
 void DataDispatcher::dataArrived()

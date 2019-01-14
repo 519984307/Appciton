@@ -69,7 +69,7 @@ void SPO2MenuContentPrivate::loadOptions()
 
     combos[ITEM_CBO_SENSITIVITY]->clear();
     SPO2ModuleType moduleType = spo2Param.getModuleType();
-    if (moduleType == MODULE_MASIMO_SPO2)
+    if (moduleType == MODULE_MASIMO_SPO2 || moduleType == MODULE_RAINBOW_SPO2)
     {
         for (int i = SPO2_MASIMO_SENS_MAX; i < SPO2_MASIMO_SENS_NR; i++)
         {
@@ -258,7 +258,7 @@ void SPO2MenuContent::layoutExec()
     d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_BEAT_VOL, comboBox);
 
     // NIBP同侧功能
-    label = new QLabel(trs("NIBPSameSide"));
+    label = new QLabel(trs("NIBPSimul"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()

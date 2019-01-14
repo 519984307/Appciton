@@ -31,7 +31,7 @@
 #include "NIBPZeroPointContent.h"
 #include "NIBPManometerContent.h"
 #include "NIBPPressureControlContent.h"
-
+#include "IConfig.h"
 
 class NIBPRepairMenuWindowPrivate
 {
@@ -61,7 +61,12 @@ NIBPRepairMenuWindow *NIBPRepairMenuWindow::getInstance()
         instance = new NIBPRepairMenuWindow();
         instance->addMenuContent(NIBPCalibrateContent::getInstance());
         instance->addMenuContent(NIBPManometerContent::getInstance());
-        instance->addMenuContent(NIBPZeroPointContent::getInstance());
+        QString str;
+        machineConfig.getStrValue("NIBP", str);
+        if (str != "SUNTECH_NIBP")
+        {
+            instance->addMenuContent(NIBPZeroPointContent::getInstance());
+        }
         instance->addMenuContent(NIBPPressureControlContent::getInstance());
     }
     return instance;
@@ -76,12 +81,20 @@ void NIBPRepairMenuWindow::init()
     d_ptr->replyFlag = false;
 
     // 进入服务模式。
-    nibpParam.changeMode(NIBP_STATE_MACHINE_SERVICE);
+    QString str;
+    machineConfig.getStrValue("NIBP", str);
+    if (str != "SUNTECH_NIBP")
+    {
+        nibpParam.changeMode(NIBP_STATE_MACHINE_SERVICE);
+    }
 
     // 初始化各个子菜单
     NIBPCalibrateContent::getInstance()->init();
-    NIBPManometerContent::getInstance()->init();
-    NIBPZeroPointContent::getInstance()->init();
+    if (str != "SUNTECH_NIBP")
+    {
+        NIBPManometerContent::getInstance()->init();
+        NIBPZeroPointContent::getInstance()->init();
+    }
     NIBPPressureControlContent::getInstance()->init();
 }
 

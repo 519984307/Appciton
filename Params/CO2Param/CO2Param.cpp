@@ -107,6 +107,9 @@ void CO2ParamPrivate::setWaveformSpeed(CO2SweepSpeed speed)
     case CO2_SWEEP_SPEED_250:
         waveWidget->setWaveSpeed(25);
         break;
+    case CO2_SWEEP_SPEED_500:
+        waveWidget->setWaveSpeed(50);
+        break;
     default:
         break;
     }
@@ -149,8 +152,8 @@ void CO2ParamPrivate::setWaveformZoom(CO2DisplayZoom zoom)
         waveWidget->setRuler(zoom);
         break;
 
-    case CO2_DISPLAY_ZOOM_12:
-        waveWidget->setValueRange(0, (provider->getCO2MaxWaveform() * 12 + 19) / 20);
+    case CO2_DISPLAY_ZOOM_13:
+        waveWidget->setValueRange(0, (provider->getCO2MaxWaveform() * 13 + 19) / 20);
         waveWidget->setRuler(zoom);
         break;
 
@@ -739,7 +742,10 @@ CO2SweepSpeed CO2Param::getSweepSpeed(void)
 void CO2Param::setSweepMode(CO2SweepMode mode)
 {
     currentConfig.setNumValue("CO2|CO2SweepMode", static_cast<int>(mode));
-    d_ptr->waveWidget->setWaveformMode(mode);
+    if (d_ptr->waveWidget)
+    {
+        d_ptr->waveWidget->setWaveformMode(mode);
+    }
 }
 
 /**************************************************************************************************

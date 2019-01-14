@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/1/5
+ **/
+
+
 #pragma once
 #include <QString>
 
@@ -41,6 +52,13 @@ public:
     unsigned int getTimeMinute(unsigned time = 0);
     unsigned int getTimeSenonds(unsigned time = 0);
     unsigned int getTimeMsec(void);
+
+    /**
+     * @brief getDateFormat 获取日期格式
+     * @param format
+     * @param year4Bits
+     */
+    void getDateFormat(QString &format, bool year4Bits);
 
 private:
     TimeDate();

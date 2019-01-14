@@ -50,13 +50,12 @@ public:
     };
 
     ECGMenuContentPrivate()
-        : selfLearnBtn(NULL)
+        :
     #ifndef HIDE_ECG_ARRHYTHMIA_FUNCTION
-        , arrhythmiaBtn(NULL)
+         arrhythmiaBtn(NULL),
     #endif
-        , sTSwitchBtn(NULL)
-        , ecg1Label(NULL)
-        , ecg2Label(NULL)
+         ecg1Label(NULL),
+         ecg2Label(NULL)
     {}
 
     // load settings
@@ -74,11 +73,9 @@ public:
     void updatePrintWaveIds();
 
     QMap<MenuItem, ComboBox *> combos;
-    Button *selfLearnBtn;
 #ifndef HIDE_ECG_ARRHYTHMIA_FUNCTION
     Button *arrhythmiaBtn;
 #endif
-    Button *sTSwitchBtn;
     QStringList ecgWaveforms;
     QStringList ecgWaveformTitles;
     QLabel *ecg1Label;
@@ -164,8 +161,8 @@ void ECGMenuContentPrivate::loadOptions()
     // 读取的ecg1wave、ecg2wave如果item相同，则复位为0、1.
     if (index2 == index1)
     {
-        index1 = 0;
-        index2 = 1;
+        index1 = 1;
+        index2 = 0;
         currentConfig.setNumValue("ECG|Ecg1Wave", index1);
         currentConfig.setNumValue("ECG|Ecg2Wave", index2);
     }
@@ -234,12 +231,13 @@ void ECGMenuContentPrivate::loadOptions()
     switch (filterMode)
     {
     case ECG_FILTERMODE_MONITOR:
+        combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_50HZ)), ECG_NOTCH_50HZ);
+        combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_60HZ)), ECG_NOTCH_60HZ);
+        combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ)), ECG_NOTCH_50_AND_60HZ);
+        break;
     case ECG_FILTERMODE_SURGERY:
-        combos[ITEM_CBO_NOTCH_FITER]->
-        addItems(QStringList()
-                 << trs(ECGSymbol::convert(ECG_NOTCH_OFF))
-                 << trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ))
-                );
+        combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_OFF)), ECG_NOTCH_OFF);
+        combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ)), ECG_NOTCH_50_AND_60HZ);
         if (notchFilter == ECG_NOTCH_50_AND_60HZ)
         {
             combos[ITEM_CBO_NOTCH_FITER]->setCurrentIndex(1);
@@ -251,12 +249,9 @@ void ECGMenuContentPrivate::loadOptions()
         break;
     case ECG_FILTERMODE_DIAGNOSTIC:
     case ECG_FILTERMODE_ST:
-        combos[ITEM_CBO_NOTCH_FITER]->
-        addItems(QStringList()
-                 << trs(ECGSymbol::convert(ECG_NOTCH_OFF))
-                 << trs(ECGSymbol::convert(ECG_NOTCH_50HZ))
-                 << trs(ECGSymbol::convert(ECG_NOTCH_60HZ))
-                );
+        combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_OFF)), ECG_NOTCH_OFF);
+        combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_50HZ)), ECG_NOTCH_50HZ);
+        combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_60HZ)), ECG_NOTCH_60HZ);
         combos[ITEM_CBO_NOTCH_FITER]->setCurrentIndex(notchFilter);
         break;
     default:
@@ -414,8 +409,7 @@ void ECGMenuContent::layoutExec()
     comboBox->addItems(QStringList()
                        << trs(ECGSymbol::convert(ECG_LEAD_MODE_3))
                        << trs(ECGSymbol::convert(ECG_LEAD_MODE_5))
-                       << trs(ECGSymbol::convert(ECG_LEAD_MODE_12))
-                      );
+                       << trs(ECGSymbol::convert(ECG_LEAD_MODE_12)));
     itemID = ECGMenuContentPrivate::ITEM_CBO_LEAD_MODE;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -424,7 +418,7 @@ void ECGMenuContent::layoutExec()
     d_ptr->combos.insert(ECGMenuContentPrivate::ITEM_CBO_LEAD_MODE, comboBox);
 
     // ECG
-    label = new QLabel("ECG1");
+    label = new QLabel(trs("ECG1"));
     d_ptr->ecg1Label = label;
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
@@ -436,7 +430,7 @@ void ECGMenuContent::layoutExec()
     d_ptr->combos.insert(ECGMenuContentPrivate::ITEM_CBO_ECG1, comboBox);
 
     // ECG2
-    label = new QLabel("ECG2");
+    label = new QLabel(trs("ECG2"));
     d_ptr->ecg2Label = label;
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
@@ -470,8 +464,7 @@ void ECGMenuContent::layoutExec()
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_SURGERY))
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_MONITOR))
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_DIAGNOSTIC))
-                       << trs(ECGSymbol::convert(ECG_FILTERMODE_ST))
-                      );
+                       << trs(ECGSymbol::convert(ECG_FILTERMODE_ST)));
     itemID = ECGMenuContentPrivate::ITEM_CBO_FILTER_MODE;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -496,8 +489,7 @@ void ECGMenuContent::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs(ECGSymbol::convert(ECG_PACE_OFF))
-                       << trs(ECGSymbol::convert(ECG_PACE_ON))
-                      );
+                       << trs(ECGSymbol::convert(ECG_PACE_ON)));
     itemID = ECGMenuContentPrivate::ITEM_CBO_PACER_MARK;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -513,8 +505,7 @@ void ECGMenuContent::layoutExec()
                        << trs(ECGSymbol::convert(ECG_SWEEP_SPEED_625))
                        << trs(ECGSymbol::convert(ECG_SWEEP_SPEED_125))
                        << trs(ECGSymbol::convert(ECG_SWEEP_SPEED_250))
-                       << trs(ECGSymbol::convert(ECG_SWEEP_SPEED_500))
-                      );
+                       << trs(ECGSymbol::convert(ECG_SWEEP_SPEED_500)));
     itemID = ECGMenuContentPrivate::ITEM_CBO_SWEEP_SPEED;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -543,12 +534,6 @@ void ECGMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ECGMenuContentPrivate::ITEM_CBO_QRS_TONE, comboBox);
 
-    // self learn
-    d_ptr->selfLearnBtn = new Button(trs("SelfLearn"));
-    d_ptr->selfLearnBtn->setButtonStyle(Button::ButtonTextOnly);
-    layout->addWidget(d_ptr->selfLearnBtn, d_ptr->combos.count(), 1);
-    connect(d_ptr->selfLearnBtn, SIGNAL(released()), this, SLOT(selfLearnBtnReleased()));
-
 #ifndef HIDE_ECG_ARRHYTHMIA_FUNCTION
     // 心律失常
     d_ptr->arrhythmiaBtn = new Button(trs("Arrhythmia"));
@@ -556,23 +541,15 @@ void ECGMenuContent::layoutExec()
     layout->addWidget(d_ptr->arrhythmiaBtn, d_ptr->combos.count() + 1, 1);
     connect(d_ptr->arrhythmiaBtn, SIGNAL(released()), this, SLOT(arrhythmiaBtnReleased()));
 #endif
-
-    // ST 段开关
-    d_ptr->sTSwitchBtn = new Button;
-    d_ptr->sTSwitchBtn->setText(QString("%1 >>").arg(trs("STAnalysize")));
-    d_ptr->sTSwitchBtn->setButtonStyle(Button::ButtonTextOnly);
-    layout->addWidget(d_ptr->sTSwitchBtn, d_ptr->combos.count() + 2, 1);
-    connect(d_ptr->sTSwitchBtn, SIGNAL(released()), this, SLOT(onSTSwitchBtnReleased()));
-
     // 添加报警设置链接
     Button *btn = new Button(QString("%1%2").
                              arg(trs("AlarmSettingUp")).
                              arg(" >>"));
     btn->setButtonStyle(Button::ButtonTextOnly);
-    layout->addWidget(btn, d_ptr->combos.count() + 3, 1);
+    layout->addWidget(btn, d_ptr->combos.count() + 1, 1);
     connect(btn, SIGNAL(released()), this, SLOT(onAlarmBtnReleased()));
 
-    layout->setRowStretch(d_ptr->combos.count() + 4, 1);
+    layout->setRowStretch(d_ptr->combos.count() + 2, 1);
 }
 
 void ECGMenuContent::onComboBoxIndexChanged(int index)
@@ -752,21 +729,27 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
             switch (index)
             {
             case ECG_FILTERMODE_MONITOR:
+                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
+                        addItem(trs(ECGSymbol::convert(ECG_NOTCH_50HZ)), ECG_NOTCH_50HZ);
+                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
+                        addItem(trs(ECGSymbol::convert(ECG_NOTCH_60HZ)), ECG_NOTCH_60HZ);
+                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
+                        addItem(trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ)), ECG_NOTCH_50_AND_60HZ);
+                break;
             case ECG_FILTERMODE_SURGERY:
                 d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
-                addItems(QStringList()
-                         << trs(ECGSymbol::convert(ECG_NOTCH_OFF))
-                         << trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ))
-                        );
+                        addItem(trs(ECGSymbol::convert(ECG_NOTCH_OFF)), ECG_NOTCH_OFF);
+                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
+                        addItem(trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ)), ECG_NOTCH_50_AND_60HZ);
                 break;
             case ECG_FILTERMODE_DIAGNOSTIC:
             case ECG_FILTERMODE_ST:
                 d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
-                addItems(QStringList()
-                         << trs(ECGSymbol::convert(ECG_NOTCH_OFF))
-                         << trs(ECGSymbol::convert(ECG_NOTCH_50HZ))
-                         << trs(ECGSymbol::convert(ECG_NOTCH_60HZ))
-                        );
+                        addItem(trs(ECGSymbol::convert(ECG_NOTCH_OFF)), ECG_NOTCH_OFF);
+                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
+                        addItem(trs(ECGSymbol::convert(ECG_NOTCH_50HZ)), ECG_NOTCH_50HZ);
+                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
+                        addItem(trs(ECGSymbol::convert(ECG_NOTCH_60HZ)), ECG_NOTCH_60HZ);
                 break;
             default:
                 break;
@@ -777,15 +760,9 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
         }
         case ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER:
         {
-            ECGFilterMode filterMode = ecgParam.getFilterMode();
-            if (filterMode == ECG_FILTERMODE_MONITOR || filterMode == ECG_FILTERMODE_SURGERY)
-            {
-                if (index == 1)
-                {
-                    index = ECG_NOTCH_50_AND_60HZ;
-                }
-            }
-            ecgParam.setNotchFilter(static_cast<ECGNotchFilter>(index));
+            ECGNotchFilter notch = static_cast<ECGNotchFilter>(d_ptr->combos[ECGMenuContentPrivate
+                                                               ::ITEM_CBO_NOTCH_FITER]->itemData(index).toInt());
+            ecgParam.setNotchFilter(notch);
             break;
         }
         case ECGMenuContentPrivate::ITEM_CBO_PACER_MARK:
@@ -817,15 +794,6 @@ void ECGMenuContent::arrhythmiaBtnReleased()
     windowManager.showWindow(instance, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorHideOthers);
 }
 #endif
-
-void ECGMenuContent::selfLearnBtnReleased()
-{
-    ecgParam.setSelfLearn(1);
-}
-
-void ECGMenuContent::onSTSwitchBtnReleased()
-{
-}
 
 void ECGMenuContent::onAlarmBtnReleased()
 {

@@ -49,17 +49,17 @@
         <QRSVolume>3</QRSVolume>
         <ECGLeadConvention>0</ECGLeadConvention>
         <AlarmSource>0</AlarmSource>
-        <Ecg1Wave>0</Ecg1Wave>
-        <Ecg2Wave>1</Ecg2Wave>
+        <Ecg1Wave>1</Ecg1Wave>
+        <Ecg2Wave>0</Ecg2Wave>
         <Ecg1Gain>0</Ecg1Gain>
-        <SweepSpeed>1</SweepSpeed>
+        <SweepSpeed>2</SweepSpeed>
         <HRSource>0</HRSource>
         <Filter>0</Filter>
         <DisplayMode>0</DisplayMode>
         <LeadMode>1</LeadMode>
         <NotchFilter>0</NotchFilter>
         <SmartLeadOff>0</SmartLeadOff>
-        <FilterMode>0</FilterMode>
+        <FilterMode>1</FilterMode>
         <SelfLearn>0</SelfLearn>
         <ECG12LeadPacerMaker>0</ECG12LeadPacerMaker>	
         <PacerMaker>1</PacerMaker>
@@ -111,14 +111,15 @@
         <AutoInterval>5</AutoInterval>
         <StatFunction>1</StatFunction>
         <AutomaticRetry>0</AutomaticRetry>
-        <PedInitialCuffInflation>140</PedInitialCuffInflation>
+        <InitialCuffInflation>120</InitialCuffInflation>
+	<CompleteTone>0</CompleteTone>
     </NIBP>
     <SPO2>
         <AverageTime>2</AverageTime>
         <Sensitivity>1</Sensitivity>
         <FastSat>0</FastSat>
         <SmartPluseTone>1</SmartPluseTone>
-        <SweepSpeed>2</SweepSpeed>
+        <SweepSpeed>1</SweepSpeed>
         <Gain>0</Gain>
         <BeatVol>1</BeatVol>
         <ModuleControl>1</ModuleControl>
@@ -127,7 +128,7 @@
     <CO2>
         <CO2ModeDefault>1</CO2ModeDefault>
         <CO2SweepMode>0</CO2SweepMode>
-        <SweepSpeed>1</SweepSpeed>
+        <SweepSpeed>2</SweepSpeed>
         <FICO2Display>0</FICO2Display>
         <DisplayZoom>3</DisplayZoom>
         <Compensation>
@@ -145,16 +146,16 @@
     </CO>
     <RESP>
         <AutoActivation>0</AutoActivation>
-        <ApneaDelay>2</ApneaDelay>
-        <BreathLead>0</BreathLead>
-        <Gain>0</Gain>
-        <SweepSpeed>1</SweepSpeed>
+        <ApneaDelay>1</ApneaDelay>
+        <BreathLead>2</BreathLead>
+        <Gain>2</Gain>
+        <SweepSpeed>2</SweepSpeed>
     </RESP>
     <Event>
         <WaveLength>16</WaveLength>
     </Event>
     <Alarm>
-        <ApneaTime>2</ApneaTime>
+        <ApneaTime>1</ApneaTime>
     </Alarm>
     <AlarmSource>
 		<HR_PR Enable="1" Prio="2">
@@ -190,7 +191,7 @@
 		</mmHg>
 		<kPa>
 		    <Low Min="53" Max="339">100</Low>
-		    <High Min="54" Max="340">293</High>
+		    <High Min="54" Max="340">193</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</kPa>
@@ -204,7 +205,7 @@
 		</mmHg>
 		<kPa>
 		    <Low Min="13" Max="199">47</Low>
-		    <High Min="14" Max="200">147</High>
+		    <High Min="14" Max="200">133</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</kPa>
@@ -743,36 +744,36 @@
 		</FIO2>
 		<T1 Enable="0" Prio="2">
 		<celsius>
-		    <Low Min="1" Max="490">350</Low>
-		    <High Min="11" Max="500">378</High>
+		    <Low Min="0" Max="499">350</Low>
+		    <High Min="1" Max="500">378</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</celsius>
 		<fahrenheit>
-		    <Low Min="590" Max="1219">950</Low>
-		    <High Min="591" Max="1220">1000</High>
+		    <Low Min="320" Max="1219">950</Low>
+		    <High Min="321" Max="1220">1000</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</fahrenheit>
 		</T1>
 		<T2 Enable="0" Prio="2">
 		<celsius>
-		    <Low Min="1" Max="490">350</Low>
-		    <High Min="11" Max="500">378</High>
+		    <Low Min="0" Max="499">350</Low>
+		    <High Min="1" Max="500">378</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</celsius>
 		<fahrenheit>
-		    <Low Min="590" Max="1219">950</Low>
-		    <High Min="591" Max="1220">1000</High>
+		    <Low Min="320" Max="1219">950</Low>
+		    <High Min="321" Max="1220">1000</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</fahrenheit>
 		</T2>
 		<TD Enable="0" Prio="2">
 		<celsius>
-		    <Low Min="1" Max="490">1</Low>
-		    <High Min="11" Max="500">5</High>
+		    <Low Min="0" Max="49">0</Low>
+		    <High Min="1" Max="50">5</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</celsius>
@@ -852,13 +853,9 @@
         <ECGAnalysis>0</ECGAnalysis>
         <ShockDelivery>0</ShockDelivery>
         <PacerStartUp>0</PacerStartUp>
-        <PhysiologicalAlarm>1</PhysiologicalAlarm>
-        <CoderMarker>0</CoderMarker>
-        <NIBPReading>0</NIBPReading>
-	<WaveFreeze>0</WaveFreeze>
         <DiagnosticECG>1</DiagnosticECG>
         <Print30JSelfTestReport>0</Print30JSelfTestReport>
-        <PrintSpeed>0</PrintSpeed>
+        <PrintSpeed>1</PrintSpeed>
     </Print>
     <ECG12L>
         <NotchFilter>0</NotchFilter>

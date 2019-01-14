@@ -19,6 +19,7 @@
 #include "NIBPEventDefine.h"
 #include "NIBPServiceStateDefine.h"
 #include "MessageBox.h"
+#include "IConfig.h"
 
 #define CALIBRATION_INTERVAL_TIME              (100)
 #define TIMEOUT_WAIT_NUMBER                    (5000 / CALIBRATION_INTERVAL_TIME)
@@ -54,6 +55,8 @@ public:
     int inModeTimerID;                      // 进入校准模式定时器ID
     bool isCalibrateMode;                   // 是否处于校准模式
     Button *modeBtn;                        // 进入/退出模式按钮
+
+    QString moduleStr;                      // 运行模块字符串
 };
 
 NIBPCalibrateContent *NIBPCalibrateContent::getInstance()
@@ -75,6 +78,7 @@ NIBPCalibrateContent::NIBPCalibrateContent() :
                 trs("ServiceCalibrateDesc")),
     d_ptr(new NIBPCalibrateContentPrivate)
 {
+    machineConfig.getStrValue("NIBP", d_ptr->moduleStr);
 }
 
 /**************************************************************************************************
@@ -215,8 +219,14 @@ void NIBPCalibrateContent::onBtn1Calibrated()
         unsigned char cmd[2];
         cmd[0] = 0x00;
         cmd[1] = 0x00;
-
-        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_CMD_PRESSURE_POINT, cmd, 2);
+        if (d_ptr->moduleStr != "SUNTECH_NIBP")
+        {
+            nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_CMD_PRESSURE_POINT, cmd, 2);
+        }
+        else
+        {
+            nibpParam.provider().servicePressurepoint(cmd, 2);
+        }
 
         Button *btn = d_ptr->btnList.at(0);
         btn->setText(trs("ServiceCalibrating"));
@@ -244,7 +254,14 @@ void NIBPCalibrateContent::onBtn2Calibrated()
         unsigned char cmd[2];
         cmd[0] = d_ptr->pressurevalue & 0xFF;
         cmd[1] = (d_ptr->pressurevalue & 0xFF00) >> 8;
-        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_CMD_PRESSURE_POINT, cmd, 2);
+        if (d_ptr->moduleStr != "SUNTECH_NIBP")
+        {
+            nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_CMD_PRESSURE_POINT, cmd, 2);
+        }
+        else
+        {
+            nibpParam.provider().servicePressurepoint(cmd, 2);
+        }
 
         btn->setText(trs("ServiceCalibrating"));
 
@@ -259,16 +276,42 @@ void NIBPCalibrateContent::onBtn2Calibrated()
 
 void NIBPCalibrateContent::inCalibrateMode()
 {
-    d_ptr->inModeTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
-    d_ptr->modeBtn->setEnabled(false);
-    if (d_ptr->isCalibrateMode)
+    if (d_ptr->moduleStr != "SUNTECH_NIBP")
     {
-        nibpParam.provider().serviceCalibrate(false);
-        nibpParam.switchState(NIBP_SERVICE_STANDBY_STATE);
+        d_ptr->inModeTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
+        d_ptr->modeBtn->setEnabled(false);
+        if (d_ptr->isCalibrateMode)
+        {
+            nibpParam.provider().serviceCalibrate(false);
+            nibpParam.switchState(NIBP_SERVICE_STANDBY_STATE);
+        }
+        else
+        {
+            nibpParam.switchState(NIBP_SERVICE_CALIBRATE_STATE);
+        }
     }
     else
     {
-        nibpParam.switchState(NIBP_SERVICE_CALIBRATE_STATE);
+        if (d_ptr->isCalibrateMode)
+        {
+            d_ptr->modeBtn->setText(trs("EnterCalibrateMode"));
+            d_ptr->isCalibrateMode = false;
+            Button *btn = d_ptr->btnList.at(0);
+            btn->setEnabled(false);
+            btn = d_ptr->btnList.at(1);
+            btn->setEnabled(false);
+            d_ptr->calibrateFlag = false;
+        }
+        else
+        {
+            d_ptr->modeBtn->setText(trs("QuitCalibrateMode"));
+            d_ptr->isCalibrateMode = true;
+            Button *btn = d_ptr->btnList.at(0);
+            btn->setEnabled(true);
+            btn = d_ptr->btnList.at(1);
+            btn->setEnabled(true);
+            d_ptr->calibrateFlag = true;
+        }
     }
 }
 

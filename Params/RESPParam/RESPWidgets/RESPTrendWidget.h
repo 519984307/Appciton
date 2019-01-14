@@ -49,6 +49,11 @@ protected:
 private slots:
     void _releaseHandle(IWidget *);
 
+    /**
+     * @brief _onBrSourceStatusUpdate  br来源状态更新槽函数
+     */
+    void _onBrSourceStatusUpdate();
+
 private:
     /**
      * @brief _loadConfig  加载配置
@@ -58,4 +63,5 @@ private:
     QLabel *_rrValue;
     bool _isAlarm;
     QString _rrString;
+    QLabel *_rrSource;
 };
