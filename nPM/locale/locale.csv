@@ -745,6 +745,9 @@ ServicePressure,压力值,Pressure
 ServicePressureControl,压力控制,Pressure Control
 ServicePressureControlDesc,压力控制模式,Pressure Control
 NIBPPressureControlModel,压力控制模式,NIBP Pressure Control Model
+Pump,气泵,Pump
+ControlValve,控制阀,Control Valve
+DumpValve,安全阀,Dump Valve
 ServicePatientType,病人类型,Patient Type
 ServiceChargePressure,预充气压力,Charge Pressure
 TEMPModuleDisConnect,温度模块未连接,TEMP Module DisConnected

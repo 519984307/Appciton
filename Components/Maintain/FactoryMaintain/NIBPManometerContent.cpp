@@ -16,6 +16,7 @@
 #include "NIBPServiceStateDefine.h"
 #include "Button.h"
 #include "MessageBox.h"
+#include "IConfig.h"
 
 class NIBPManometerContentPrivate
 {
@@ -25,7 +26,9 @@ public:
           timeoutNum(0), pressureTimerID(-1),
           pressure(InvData()), isManometerMode(false),
           modeBtn(NULL)
-    {}
+    {
+        machineConfig.getStrValue("NIBP", moduleStr);
+    }
 
     QLabel *value;
     int inModeTimerID;          // 进入压力计模式定时器ID
@@ -34,6 +37,8 @@ public:
     int pressure;
     bool isManometerMode;       // 是否处于压力计模式
     Button *modeBtn;            // 进入/退出模式
+
+    QString moduleStr;         // 运行模块字符串
 };
 
 NIBPManometerContent *NIBPManometerContent::getInstance()
@@ -138,16 +143,35 @@ void NIBPManometerContent::timerEvent(QTimerEvent *ev)
 
 void NIBPManometerContent::enterManometerReleased()
 {
-    d_ptr->inModeTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
-    d_ptr->modeBtn->setEnabled(false);
-    if (d_ptr->isManometerMode)
+    if (d_ptr->moduleStr != "SUNTECH_NIBP")
     {
-        nibpParam.provider().serviceManometer(false);
-        nibpParam.switchState(NIBP_SERVICE_STANDBY_STATE);
+        d_ptr->inModeTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
+        d_ptr->modeBtn->setEnabled(false);
+        if (d_ptr->isManometerMode)
+        {
+            nibpParam.provider().serviceManometer(false);
+            nibpParam.switchState(NIBP_SERVICE_STANDBY_STATE);
+        }
+        else
+        {
+            nibpParam.switchState(NIBP_SERVICE_MANOMETER_STATE);
+        }
     }
     else
     {
-        nibpParam.switchState(NIBP_SERVICE_MANOMETER_STATE);
+        if (d_ptr->isManometerMode)
+        {
+            d_ptr->modeBtn->setText(trs("EnterManometerMode"));
+            d_ptr->isManometerMode = false;
+            killTimer(d_ptr->pressureTimerID);
+            d_ptr->pressureTimerID = -1;
+        }
+        else
+        {
+            d_ptr->modeBtn->setText(trs("QuitManometerMode"));
+            d_ptr->isManometerMode = true;
+            d_ptr->pressureTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
+        }
     }
 }
 
