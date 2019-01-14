@@ -11,6 +11,18 @@ and verify the issue you're about to submit isn't a duplicate.
 
 (Summarize the bug encountered concisely)
 
+### Version:
+
+|  Module  |  Version |
+| -------- | -------- |
+|   HOST   | V0.0.2e1 |
+|   ECG    |   xxxx   |
+|   SPO2   |   xxxx   |
+| nPMBoard |   xxxx   |
+|   TEMP   |   xxxx   |
+|   CO2    |   xxxx   |
+|   NIBP   |   xxxx   |
+
 ### Steps to reproduce
 
 (How one can reproduce the issue - this is very important)
