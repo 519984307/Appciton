@@ -913,8 +913,8 @@ SupervisorDisplayUserPrompt,显示用户提示信息,Display User Prompt
 SupervisorDisplayAnalysisKey,显示分析按键,Display Analyze Key
 SupervisorPhyAlarmVisualIndicator,生理报警视觉信号,Physiological Alarm Visual Indicator
 DisplayFixRateKey,固定速率,Fixed Rate Pacing
-SupervisorPrintMenu,触发打印,Print
-SupervisorPrintMenuDesc,触发打印,Print Setting
+TriggerPrintMenu,触发打印,Trigger Print
+TriggerPrintMenuDesc,触发打印,Trigger Print 
 SupervisorAutoPrint30Jtest,自动打印30J自测结果,Print 30J Self-test Results
 SupervisorAutoPrint12L,打印12导,Automatic Printing Of 12-Lead Report
 Supervisor12LMenu,12导,12-Lead
