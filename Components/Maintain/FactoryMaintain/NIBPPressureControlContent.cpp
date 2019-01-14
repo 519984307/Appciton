@@ -209,6 +209,7 @@ void NIBPPressureControlContent::suntechLayoutExec()
     QHBoxLayout *hLayout = new QHBoxLayout();
     label = new QLabel(InvStr());
     hLayout->addWidget(label);
+    d_ptr->value = label;
     label = new QLabel();
     label->setText(Unit::getSymbol(nibpParam.getUnit()));
     hLayout->addWidget(label);
