@@ -677,10 +677,17 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
     barPainter.drawLine(_waveRegionWidth, 0, _waveRegionWidth, height());
 
     // 报警事件的标志
-    barPainter.setPen(QPen(Qt::yellow, 2, Qt::SolidLine));
     for (int i = 0; i < _eventList.count(); i ++)
     {
         EventInfoSegment event = _eventList.at(i);
+        if (event.type == EventPhysiologicalAlarm)
+        {
+            barPainter.setPen(QPen(Qt::yellow, 2, Qt::SolidLine));
+        }
+        else if (event.type != EventOxyCRG)
+        {
+            barPainter.setPen(QPen(Qt::green, 2, Qt::SolidLine));
+        }
         unsigned alarmTime = event.timestamp;
         if (alarmTime <= _rightTime && alarmTime >= _leftTime)
         {
@@ -909,7 +916,15 @@ void TrendWaveWidget::_calculationPage()
 
 void TrendWaveWidget::_updateEventIndex()
 {
-    IStorageBackend *backend = eventStorageManager.backend();
+    IStorageBackend *backend = NULL;
+    if ((_historyDataPath != "") && _isHistory)
+    {
+        backend =  StorageManager::open(_historyDataPath + EVENT_DATA_FILE_NAME, QIODevice::ReadOnly);
+    }
+    else
+    {
+        backend = eventStorageManager.backend();
+    }
     int eventNum = backend->getBlockNR();
     EventDataPraseContext ctx;
     _eventList.clear();

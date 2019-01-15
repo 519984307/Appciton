@@ -1971,6 +1971,11 @@ void RecordPageGenerator::drawTrendGraphEventSymbol(QPainter *painter, const Gra
     for (int i = 0; i < eventList.count(); ++i)
     {
         QRectF eventRect;
+        unsigned eventTime = eventList.at(i).timestamp;
+        if (eventTime < graphInfo.startTime || eventTime > graphInfo.endTime)
+        {
+            continue;
+        }
         qreal timeX = timestampToX(eventList.at(i).timestamp, axisInfo, graphInfo);
         if (timeX > axisInfo.width - 10)
         {
@@ -1984,7 +1989,7 @@ void RecordPageGenerator::drawTrendGraphEventSymbol(QPainter *painter, const Gra
             eventRect.setTop(aEventFlagHeight);
             painter->drawText(eventRect, Qt::AlignLeft | Qt::AlignVCenter, "A");
         }
-        else
+        else if (eventList.at(i).type != EventOxyCRG)
         {
             eventRect.setTop(mEventFlagHeight);
             painter->drawText(eventRect, Qt::AlignLeft | Qt::AlignVCenter, "M");
