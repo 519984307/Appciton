@@ -14,9 +14,11 @@
 #include "AlarmIndicator.h"
 #include "SoundManager.h"
 #include <QMultiMap>
+#include <QObject>
 
-class Alarm
+class Alarm : public QObject
 {
+    Q_OBJECT
 public:
     struct AlarmInfo
     {
@@ -85,6 +87,12 @@ public:
      */
     void setLatchLockSta(bool status);
 
+private slots:
+    /**
+     * @brief resetPhyAlarmLastAlarm 重设生理报警上一次报警的状态为false
+     */
+    void resetPhyAlarmLastAlarm();
+
 private:
     unsigned _timestamp;
     QMultiMap<ParamID, AlarmLimitIFace *> _limitSources;
@@ -103,6 +111,8 @@ private:
     void _handleOneShotAlarm(AlarmOneShotIFace *alarmSource);
 
     void _handleAlarm(void);
+
+    bool _newPatient;
 };
 #define alertor (Alarm::construction())
 #define deleteAlarm() (delete Alarm::_selfObj)

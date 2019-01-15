@@ -29,6 +29,7 @@
 #include "TEMPSymbol.h"
 #include "NIBPSymbol.h"
 #include "TrendDataStorageManager.h"
+#include "DataStorageDirManager.h"
 
 #define ALARM_LIMIT_TIMES (3)   // 超限3次后，发生报警
 static int curSecondAlarmNum = 0; // record the number of alarms happend in the save seconds
@@ -803,7 +804,9 @@ AlarmLimitIFace *Alarm::getAlarmLimitIFace(SubParamID id)
 /**************************************************************************************************
  * 功能： 构造。
  *************************************************************************************************/
-Alarm::Alarm() : _isLatchLock(true)
+Alarm::Alarm() :
+    QObject(),
+    _isLatchLock(true)
 {
     // 栓锁状态初始化
     int boltLockIndex = 0;
@@ -818,6 +821,8 @@ Alarm::Alarm() : _isLatchLock(true)
     }
     _alarmStatusList.clear();
     _curAlarmStatus = ALARM_STATUS_NORMAL;
+    // 新建病人时，刷新上次报警标志，目的新建病人后，可以重新产生生理报警数据
+    connect(&dataStorageDirManager, SIGNAL(newPatient()), this, SLOT(resetPhyAlarmLastAlarm()));
 }
 
 /**************************************************************************************************
@@ -966,4 +971,24 @@ QString Alarm::getPhyAlarmMessage(ParamID paramId, int alarmType, bool isOneShot
 void Alarm::setLatchLockSta(bool status)
 {
     _isLatchLock = status;
+}
+
+void Alarm::resetPhyAlarmLastAlarm()
+{
+    QList<AlarmLimitIFace *> limitAlarmSourceList = _limitSources.values();
+    foreach(AlarmLimitIFace *source, limitAlarmSourceList)
+    {
+        int n = source->getAlarmSourceNR();
+        for (int i = 0; i < n; i++)
+        {
+            QString traceID;
+            _getAlarmID(source, i, traceID);
+            AlarmTraceCtrl *traceCtrl = &_getAlarmTraceCtrl(traceID);
+            qDebug()<< "trace ID: "<< traceID;
+            alarmIndicator.delAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage);
+            traceCtrl->Reset();
+            traceCtrl->alarmTimesCount = ALARM_LIMIT_TIMES;     // 处理目的：报警状态恢复正常后，马上刷新报警状态
+            source->notifyAlarm(i, false);
+        }
+    }
 }
