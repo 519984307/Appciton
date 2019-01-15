@@ -89,9 +89,9 @@ void DischargePatientWindow::layoutExec()
     lbl->setFixedWidth(100);
     hlayout->addWidget(d_ptr->standbyChk);
     hlayout->addWidget(lbl);
-#endif
     layout->addLayout(hlayout);
     layout->addStretch();
+#endif
 
     connect(d_ptr->standbyChk, SIGNAL(released()), this, SLOT(onBtnRelease()));
 
