@@ -942,6 +942,10 @@ void TrendWaveWidget::_updateEventIndex()
             _eventList.append(event);
         }
     }
+    if ((_historyDataPath != "") && _isHistory)
+    {
+        delete backend;
+    }
 }
 
 TrendGraphType TrendWaveWidget::getTrendGraphType(SubParamID id)
