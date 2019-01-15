@@ -154,6 +154,7 @@ void CO2WaveWidget::_loadConfig()
     color.setBlue(color.blue() * 2 / 3);
     palette.setColor(QPalette::WindowText, color);
     _ruler->setPalette(palette);
+    updateBackground();
 }
 
 /**************************************************************************************************

@@ -113,6 +113,11 @@ public:
     // utility function to convert the low limit to string
     static QString getLowLimitStr(const LimitAlarmConfig &config);
 
+    /**
+     * @brief clearLimitAlarmInfo  清除报警限信息
+     */
+    void clearLimitAlarmInfo();
+
 signals:
     void alarmOff(SubParamID subParamId);
 

@@ -768,7 +768,7 @@ void CO2Param::setCompensation(CO2Compensation which, int v)
         return;
     }
 
-    QString path("PrimaryCfg|CO2|");
+    QString path("CO2|");
     if (which == CO2_COMPEN_O2)
     {
         path += "O2Compensation";
@@ -780,7 +780,7 @@ void CO2Param::setCompensation(CO2Compensation which, int v)
         d_ptr->provider->setN2OCompensation(v);
     }
 
-    systemConfig.setNumValue(path, v);
+    currentConfig.setNumValue(path, v);
 }
 
 /**************************************************************************************************
@@ -788,7 +788,7 @@ void CO2Param::setCompensation(CO2Compensation which, int v)
  *************************************************************************************************/
 int CO2Param::getCompensation(CO2Compensation which)
 {
-    QString path("PrimaryCfg|CO2|");
+    QString path("CO2|");
     if (which == CO2_COMPEN_O2)
     {
         path += "O2Compensation";
@@ -799,7 +799,7 @@ int CO2Param::getCompensation(CO2Compensation which)
     }
 
     int compensation = 0;
-    systemConfig.getNumValue(path, compensation);
+    currentConfig.getNumValue(path, compensation);
     return compensation;
 }
 
@@ -827,7 +827,7 @@ CO2DisplayZoom CO2Param::getDisplayZoom(void)
  *************************************************************************************************/
 void CO2Param::setFiCO2Display(CO2FICO2Display disp)
 {
-    systemConfig.setNumValue("PrimaryCfg|CO2|FiCO2Display", static_cast<int>(disp));
+    currentConfig.setNumValue("CO2|FiCO2Display", static_cast<int>(disp));
     if (NULL != d_ptr->trendWidget)
     {
         d_ptr->trendWidget->setFiCO2Display(disp);
@@ -840,7 +840,7 @@ void CO2Param::setFiCO2Display(CO2FICO2Display disp)
 CO2FICO2Display CO2Param::getFICO2Display(void)
 {
     int onoff = CO2_FICO2_DISPLAY_OFF;
-    systemConfig.getNumValue("PrimaryCfg|CO2|FiCO2Display", onoff);
+    currentConfig.getNumValue("CO2|FiCO2Display", onoff);
     return (CO2FICO2Display)onoff;
 }
 

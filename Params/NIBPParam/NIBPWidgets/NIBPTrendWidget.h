@@ -72,6 +72,9 @@ public:
 public:
     virtual void doRestoreNormalStatus();
 
+    /* reimplment */
+    void updateWidgetConfig();
+
 protected:
     virtual void setTextSize(void);
 

@@ -1114,6 +1114,10 @@ void ECGWaveWidget::updateWidgetConfig()
             setMargin(QMargins(WAVE_X_OFFSET + 4, 2, 2, 2));
         }
     }
+    // 设置前景色。
+    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
+    setPalette(palette);
+    _ruler->setPalette(palette);
 
     WaveWidget::updateWidgetConfig();
 }

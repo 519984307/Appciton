@@ -169,3 +169,8 @@ ColorManager::~ColorManager()
         delete it.value();
     }
 }
+
+void ColorManager::clearColorMap()
+{
+    _colorMap.clear();
+}

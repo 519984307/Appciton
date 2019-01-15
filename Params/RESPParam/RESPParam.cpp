@@ -387,7 +387,7 @@ ApneaAlarmTime RESPParam::getApneaTime(void)
  *************************************************************************************************/
 void RESPParam::setZoom(RESPZoom zoom)
 {
-    systemConfig.setNumValue("PrimaryCfg|RESP|Zoom", static_cast<int>(zoom));
+    currentConfig.setNumValue("RESP|Gain", static_cast<int>(zoom));
     if (NULL != d_ptr->provider)
     {
         d_ptr->provider->setWaveformZoom(zoom);
@@ -413,7 +413,7 @@ void RESPParam::setZoom(RESPZoom zoom)
 RESPZoom RESPParam::getZoom(void)
 {
     int zoom = RESP_ZOOM_X100;
-    systemConfig.getNumValue("PrimaryCfg|RESP|Zoom", zoom);
+    currentConfig.getNumValue("RESP|Gain", zoom);
 
     return (RESPZoom)zoom;
 }

@@ -178,6 +178,8 @@ void ConfigEditRespMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox;
     comboBox->addItems(QStringList()
+                       << trs(RESPSymbol::convert(RESP_ZOOM_X025))
+                       << trs(RESPSymbol::convert(RESP_ZOOM_X050))
                        << trs(RESPSymbol::convert(RESP_ZOOM_X100))
                        << trs(RESPSymbol::convert(RESP_ZOOM_X200))
                        << trs(RESPSymbol::convert(RESP_ZOOM_X300))

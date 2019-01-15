@@ -29,6 +29,8 @@
 #include "SystemManager.h"
 #include "LayoutManager.h"
 #include "SoundManager.h"
+#include "AlarmConfig.h"
+#include "ColorManager.h"
 
 #define CONFIG_DIR "/usr/local/nPM/etc"
 #define USER_DEFINE_CONFIG_NAME "UserConfig"
@@ -51,6 +53,7 @@ public:
     Button *ViewBtn;
     ListView *configListView;
     ListDataModel *configDataModel;
+    QMutex cpLock;
 };
 
 LoadConfigMenuContentPrivate::LoadConfigMenuContentPrivate():
@@ -242,11 +245,15 @@ void LoadConfigMenuContent::onBtnClick()
 
         // 更新当前选择的文件
         QString curConfigName = systemConfig.getCurConfigName();
+        d_ptr->cpLock.lock();
         QFile::remove(curConfigName);
         QString loadPath = QString("%1/%2").arg(CONFIG_DIR).arg(d_ptr->configs.at(index).fileName);
         QFile::copy(loadPath, curConfigName);
         currentConfig.setCurrentFilePath(curConfigName);
+        d_ptr->cpLock.unlock();
         currentConfig.load(loadPath);
+        alarmConfig.clearLimitAlarmInfo();
+        colorManager.clearColorMap();
 
         soundManager.volumeInit();
         layoutManager.updateLayoutWidgetsConfig();
