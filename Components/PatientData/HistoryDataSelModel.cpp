@@ -16,6 +16,7 @@
 #include "WindowManager.h"
 
 #define COLUMN_COUNT        2
+#define ROW_COUNT       8  // 每页8行
 #define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
 
 class HistoryDataSelModelPrivate
@@ -56,7 +57,19 @@ int HistoryDataSelModel::columnCount(const QModelIndex &parent) const
 int HistoryDataSelModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return d_ptr->firstDataList.count();
+    // 获取8的倍数的总行数
+    int totalRowCount = (d_ptr->firstDataList.count() / 8 + 1) * 8;
+    if (d_ptr->firstDataList.count() % ROW_COUNT)
+    {
+        // 如果最后一页未满
+        totalRowCount = (d_ptr->firstDataList.count() / ROW_COUNT + 1) * 8;
+    }
+    else
+    {
+        // 如果最后一页已满
+        totalRowCount = (d_ptr->firstDataList.count() / ROW_COUNT) * 8;
+    }
+    return totalRowCount;
 }
 
 QVariant HistoryDataSelModel::data(const QModelIndex &index, int role) const
@@ -164,6 +177,11 @@ QString HistoryDataSelModel::getDateTimeStr(int index)
     QString str = d_ptr->strList.at(index);
     str = d_ptr->convertTimeStr(str);
     return str;
+}
+
+int HistoryDataSelModel::getEachPageRowCount()
+{
+    return ROW_COUNT;
 }
 
 QString HistoryDataSelModelPrivate::convertTimeStr(const QString str)
