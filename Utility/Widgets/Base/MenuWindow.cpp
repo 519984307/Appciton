@@ -20,7 +20,6 @@
 #include "LanguageManager.h"
 #include <QList>
 #include <QPainter>
-#include <QScrollBar>
 
 class MenuWindowPrivate
 {
@@ -220,7 +219,6 @@ bool MenuWindow::focusNextPrevChild(bool next)
             MenuSidebarItem *item = d_ptr->sidebar->itemAt(newIndex);
             item->setFocus(next ? Qt::TabFocusReason : Qt::BacktabFocusReason);
         }
-
         return true;
     }
 
@@ -249,7 +247,6 @@ bool MenuWindow::focusNextPrevChild(bool next)
             {
                 area->ensureWidgetVisible(w);
             }
-
             return true;
         }
     }
