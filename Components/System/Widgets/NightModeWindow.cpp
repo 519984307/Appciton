@@ -279,11 +279,22 @@ void NightModeWindow::onComboBoxIndexChanged(int index)
         node = "StopNIBPMeasure";
         break;
     }
-    bool ok = false;
-    int tmp = combo->itemText(index).toInt(&ok);
-    if (!ok)
+    int tmp = 0;
+    if (indexType == NightModeWindowPrivate::ITEM_CBO_SCREEN_BRIGHTNESS
+            || indexType == NightModeWindowPrivate::ITEM_CBO_ALARM_VOLUME)
     {
-        tmp = 0;
+        // 报警音和屏幕亮度存储值应直接存储实际值
+        bool ok;
+        tmp = combo->itemText(index).toInt(&ok);
+        if (!ok)
+        {
+            tmp = 1;
+        }
+    }
+    else
+    {
+        // 其余项存储是其序号（index）
+        tmp = index;
     }
     systemConfig.setNumValue(QString("NightMode|%1").arg(node), tmp);
 }
