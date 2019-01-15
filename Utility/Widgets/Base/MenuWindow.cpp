@@ -20,6 +20,7 @@
 #include "LanguageManager.h"
 #include <QList>
 #include <QPainter>
+#include <QScrollBar>
 
 class MenuWindowPrivate
 {
@@ -249,6 +250,15 @@ bool MenuWindow::focusNextPrevChild(bool next)
             {
                 area->ensureWidgetVisible(w);
             }
+
+            // 顺时针旋转飞梭，如果旋转到返回按钮时，强制调整area的视图
+            if (w == d_ptr->retBtn)
+            {
+                QRect r = area->widget()->rect();
+                QScrollBar *scrollBar = area->verticalScrollBar();
+                scrollBar->setValue(r.bottom());
+            }
+
             return true;
         }
     }
@@ -277,6 +287,14 @@ bool MenuWindow::focusNextPrevChild(bool next)
             {
                 area->ensureWidgetVisible(w);
             }
+
+            // 逆时针旋转飞梭，如果旋转到关闭按钮时，强制调整area的视图
+            if (w == closeBtn)
+            {
+                QScrollBar *scrollBar = area->verticalScrollBar();
+                scrollBar->setValue(0);
+            }
+
             return true;
         }
     }
