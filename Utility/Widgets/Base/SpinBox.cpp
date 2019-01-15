@@ -74,6 +74,11 @@ bool SpinBox::isArrow() const
 
 void SpinBox::setValue(int value)
 {
+    if (value == d_ptr->info.curValue)
+    {
+        return;
+    }
+
     int min, max;
     getRange(min, max);
     if (value < min || value > max)
@@ -81,9 +86,10 @@ void SpinBox::setValue(int value)
         // 设置的值不是有效范围内
         value = min;
     }
+
     d_ptr->info.curValue = value;
     update();
-    emit valueChange(value, d_ptr->info.scale);
+    emit valueChange(d_ptr->info.curValue, d_ptr->info.scale);
 }
 
 int SpinBox::getValue()

@@ -16,6 +16,7 @@
 #include "ParamInfo.h"
 #include <QDateTime>
 #include "TimeDate.h"
+#include "TrendDataStorageManager.h"
 
 #define RECORD_PER_PAGE 10
 class TrendTablePageGeneratorPrivate
@@ -33,7 +34,7 @@ public:
     bool loadStringList();
 
     // add sub param value to the string list
-    void addSubParamValueToStringList(const TrendDataPackage &datapack, const QList<SubParamID> &subParamIDs, const bool isEvent);
+    void addSubParamValueToStringList(const TrendDataPackage &datapack, const QList<SubParamID> &subParamIDs, const unsigned eventType);
 
     RecordPageGenerator::PageType curPageType;
     IStorageBackend *backend;
@@ -42,7 +43,7 @@ public:
     int stopIndex;
     int interval;
     QList<SubParamID> subParamList;
-    QList<bool> eventList;
+    QList<unsigned> eventList;
     QList<unsigned> timestampList;
 };
 
@@ -93,8 +94,8 @@ bool TrendTablePageGeneratorPrivate::loadStringList()
 
         TrendDataPackage dataPackage = parseTrendSegment(dataSeg);
 
-        bool isEvent = eventList.at(eventList.count() - 1 - count);
-        addSubParamValueToStringList(dataPackage, subParamList, isEvent);
+        unsigned eventType = eventList.at(eventList.count() - 1 - count);
+        addSubParamValueToStringList(dataPackage, subParamList, eventType);
 
         count++;
     }
@@ -309,7 +310,7 @@ static QString constructNormalValueString(SubParamID subParamId, TrendDataType d
 }
 
 void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDataPackage &datapack,
-        const QList<SubParamID> &subParamIDs, const bool isEvent)
+        const QList<SubParamID> &subParamIDs, const unsigned eventType)
 {
     bool needAddCaption = stringLists.isEmpty(); // if the stringLists is empty, we need to add caption;
 
@@ -325,7 +326,13 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
     timeDate.getDateTime(datapack.time, timeDateStr, true, true);
     stringLists[index++].append(timeDateStr);
 
-    if (isEvent)
+    if (eventType & TrendDataStorageManager::CollectStatusPrint ||
+            eventType & TrendDataStorageManager::CollectStatusFreeze ||
+            eventType & TrendDataStorageManager::CollectStatusNIBP)
+    {
+        stringLists[index++].append("M");
+    }
+    else if (eventType & TrendDataStorageManager::CollectStatusAlarm)
     {
         stringLists[index++].append("A");
     }

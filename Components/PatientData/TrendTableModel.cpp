@@ -36,6 +36,7 @@
 
 #define HIGH_PRIO_ALARM_COLOR (QColor(Qt::red))
 #define MED_PRIO_ALARM_COLOR (QColor(Qt::yellow))
+#define MANUAL_EVENT_COLOR (QColor(Qt::green))
 #define NORMAL_PRIO_ALARM_COLOR (QColor(Qt::white))
 #define EVENT_SELECTED_BACKGROUND_COLOR (QColor("#98BFE7"))
 
@@ -185,7 +186,10 @@ QVariant TrendTableModel::data(const QModelIndex &index, int role) const
 
         QColor colorHead = d_ptr->colHeadList.at(column).backGroundColor;
         int curSecIndex = d_ptr->indexInfo.event % COLUMN_COUNT;
-        if (curSecIndex == column && (colorHead == HIGH_PRIO_ALARM_COLOR || colorHead == MED_PRIO_ALARM_COLOR))
+        if (curSecIndex == column &&
+                (colorHead != themeManger.getColor(ThemeManager::ControlTypeNR,
+                                        ThemeManager::ElementBackgound,
+                                        ThemeManager::StateDisabled)))
         {
             return QBrush(EVENT_SELECTED_BACKGROUND_COLOR);
         }
@@ -636,16 +640,9 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
     printInfo.stopIndex = endIndex;
     printInfo.interval = TrendDataSymbol::convertValue(d_ptr->timeInterval);
     printInfo.list = d_ptr->displayList;
-    for (int i = 0; i < d_ptr->trendDataPack.count(); i ++)
+    for (int i = 0; i < d_ptr->trendDataPack.count(); i++)
     {
-        if (d_ptr->trendDataPack.at(i)->alarmFlag == true)
-        {
-            printInfo.eventList.append(true);
-        }
-        else
-        {
-            printInfo.eventList.append(false);
-        }
+        printInfo.eventList.append(d_ptr->trendDataPack.at(i)->status);
         printInfo.timestampList.append(d_ptr->trendDataPack.at(i)->time);
     }
     RecordPageGenerator *gen = new TrendTablePageGenerator(backend, printInfo);
@@ -829,7 +826,7 @@ void TrendTableModelPrivate::getTrendData()
             }
         }
         // 选择nibp选项时只筛选触发nibp测量的数据
-        if (timeInterval == RESOLUTION_RATIO_NIBP && status != TrendDataStorageManager::CollectStatusNIBP)
+        if (timeInterval == RESOLUTION_RATIO_NIBP && (status & TrendDataStorageManager::CollectStatusNIBP))
         {
             continue;
         }
@@ -849,7 +846,10 @@ void TrendTableModelPrivate::getTrendData()
         trendDataPack.append(pack);
 
         // 更新生理报警事件列表
-        if (pack->alarmFlag == true)
+        if ((pack->status & TrendDataStorageManager::CollectStatusAlarm)
+                || (pack->status & TrendDataStorageManager::CollectStatusPrint)
+                || (pack->status & TrendDataStorageManager::CollectStatusFreeze)
+                || (pack->status & TrendDataStorageManager::CollectStatusNIBP) )
         {
             eventList.append(count);
         }
@@ -919,6 +919,13 @@ void TrendTableModelPrivate::loadTrendData()
             {
                 colHeadContent.backGroundColor = MED_PRIO_ALARM_COLOR;
             }
+        }
+
+        if ((pack->status & TrendDataStorageManager::CollectStatusPrint)
+                || (pack->status & TrendDataStorageManager::CollectStatusFreeze)
+                || (pack->status & TrendDataStorageManager::CollectStatusNIBP))
+        {
+            colHeadContent.backGroundColor = MANUAL_EVENT_COLOR;
         }
 
         // 填充colHeadList链表

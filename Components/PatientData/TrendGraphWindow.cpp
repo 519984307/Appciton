@@ -166,8 +166,8 @@ void TrendGraphWindow::onButtonReleased()
         case TrendGraphWindowPrivate::ACTION_BTN_PRINT:
         {
             QList<TrendGraphInfo>  trendGraphList = d_ptr->waveWidget->getTrendGraphPrint();
-            QList<unsigned> eventTimeList = d_ptr->waveWidget->getEventList();
-            RecordPageGenerator *pageGenerator = new TrendGraphPageGenerator(trendGraphList, eventTimeList);
+            QList<EventInfoSegment> eventList = d_ptr->waveWidget->getEventList();
+            RecordPageGenerator *pageGenerator = new TrendGraphPageGenerator(trendGraphList, eventList);
 
             if (recorderManager.isPrinting() && !d_ptr->isWait)
             {

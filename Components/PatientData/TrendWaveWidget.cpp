@@ -27,6 +27,7 @@
 #include "ParamManager.h"
 #include "FontManager.h"
 #include "TimeDefine.h"
+#include "EventDataParseContext.h"
 
 #define GRAPH_DISPLAY_DATA_NUMBER           4
 #define GRAPH_POINT_NUMBER                  120                     // 一屏数据量
@@ -163,9 +164,10 @@ void TrendWaveWidget::rightMoveCursor()
 void TrendWaveWidget::leftMoveEvent()
 {
     // 遍历找到下一个事件发生时间
-    for (int i = _alarmTimeList.count() - 1; i >= 0; i --)
+    for (int i = _eventList.count() - 1; i >= 0; i --)
     {
-        unsigned alarmTime = _alarmTimeList.at(i);
+        EventInfoSegment event = _eventList.at(i);
+        unsigned alarmTime = event.timestamp;
         unsigned curTime = _trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp;
         int timeInterval = TrendDataSymbol::convertValue(_timeInterval);
         if (alarmTime < curTime)
@@ -205,9 +207,10 @@ void TrendWaveWidget::leftMoveEvent()
 
 void TrendWaveWidget::rightMoveEvent()
 {
-    for (int i = 0; i < _alarmTimeList.count(); i ++)
+    for (int i = 0; i < _eventList.count(); i ++)
     {
-        unsigned alarmTime = _alarmTimeList.at(i);
+        EventInfoSegment event = _eventList.at(i);
+        unsigned alarmTime = event.timestamp;
         unsigned curTime = _trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp;
         int timeInterval = TrendDataSymbol::convertValue(_timeInterval);
         if (alarmTime > curTime)
@@ -580,9 +583,9 @@ const QList<TrendGraphInfo> TrendWaveWidget::getTrendGraphPrint()
     return _infosList;
 }
 
-const QList<unsigned> TrendWaveWidget::getEventList()
+const QList<EventInfoSegment> TrendWaveWidget::getEventList()
 {
-    return _alarmTimeList;
+    return _eventList;
 }
 
 void TrendWaveWidget::setHistoryDataPath(QString path)
@@ -675,9 +678,10 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
 
     // 报警事件的标志
     barPainter.setPen(QPen(Qt::yellow, 2, Qt::SolidLine));
-    for (int i = 0; i < _alarmTimeList.count(); i ++)
+    for (int i = 0; i < _eventList.count(); i ++)
     {
-        unsigned alarmTime = _alarmTimeList.at(i);
+        EventInfoSegment event = _eventList.at(i);
+        unsigned alarmTime = event.timestamp;
         if (alarmTime <= _rightTime && alarmTime >= _leftTime)
         {
             double pos = _getCursorPos(alarmTime);
@@ -810,7 +814,7 @@ void TrendWaveWidget::_getTrendData()
     TrendDataSegment *dataSeg;
     qDeleteAll(_trendDataPack);
     _trendDataPack.clear();
-    _alarmTimeList.clear();
+    _eventList.clear();
     // TODO: low efficiency
     for (int i = 0; i < blockNum; i ++)
     {
@@ -905,40 +909,22 @@ void TrendWaveWidget::_calculationPage()
 
 void TrendWaveWidget::_updateEventIndex()
 {
-    if (_trendDataPack.count() != 0)
+    IStorageBackend *backend = eventStorageManager.backend();
+    int eventNum = backend->getBlockNR();
+    EventDataPraseContext ctx;
+    _eventList.clear();
+    for (int i = 0; i < eventNum; i++)
     {
-        _alarmTimeList.clear();
-        int timeInterval = TrendDataSymbol::convertValue(_timeInterval);
-        unsigned diffTime = (_trendDataPack.last()->time - _trendDataPack.first()->time) % timeInterval;
-        unsigned lastTime = _trendDataPack.first()->time + diffTime;
-
-        TrendDataPackage *pack;
-        bool isEvent = false;
-        for (int i = 0; i < _trendDataPack.count(); i ++)
+        ctx.reset();
+        if (ctx.parse(backend, i))
         {
-            pack = _trendDataPack.at(i);
-            unsigned t = pack->time;
-
-            // 判断是否有事件发生
-            if (pack->alarmFlag)
-            {
-                isEvent = true;
-            }
-
-            // 是否满足时间间隔的时间
-            if (t != lastTime)
-            {
-                continue;
-            }
-
-            // 该时间间隔内是否发生事件
-            if (isEvent)
-            {
-                _alarmTimeList.append(t);
-                isEvent = false;
-            }
-
-            lastTime = lastTime + timeInterval;
+            unsigned t = ctx.infoSegment->timestamp;
+            int interval = TrendDataSymbol::convertValue(_timeInterval);
+            t = t - t % interval + interval;
+            EventInfoSegment event;
+            event.type = ctx.infoSegment->type;
+            event.timestamp = t;
+            _eventList.append(event);
         }
     }
 }
