@@ -41,7 +41,8 @@ public:
 
     explicit ConfigEditECGMenuContentPrivate(Config *const config)
         : config(config),
-          sTSwitchBtn(NULL)
+          sTSwitchBtn(NULL),
+          hrLabel(NULL)
     {}
 
     // load settings
@@ -51,6 +52,7 @@ public:
     QMap<MenuItem, QLabel *> comboLabels;
     Config *const config;
     Button *sTSwitchBtn;
+    QLabel * hrLabel;  // 仅查看该菜单时,设置该label为可聚焦方式，便于旋转飞梭查看视图
 };
 
 void ConfigEditECGMenuContentPrivate::loadOptions()
@@ -242,6 +244,14 @@ void ConfigEditECGMenuContent::readyShow()
                       ::MenuItem(i)]->setEnabled(!isOnlyToRead);
     }
     d_ptr->sTSwitchBtn->setEnabled(!isOnlyToRead);
+    if (isOnlyToRead)
+    {
+        d_ptr->hrLabel->setFocusPolicy(Qt::StrongFocus);
+    }
+    else
+    {
+        d_ptr->hrLabel->setFocusPolicy(Qt::NoFocus);
+    }
 }
 
 void ConfigEditECGMenuContent::layoutExec()
@@ -254,6 +264,7 @@ void ConfigEditECGMenuContent::layoutExec()
 
     // alarm source
     label = new QLabel(trs("HR_PRSource"));
+    d_ptr->hrLabel = label;
     d_ptr->comboLabels.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_HRPR_SOURCE,
                               label);
     layout->addWidget(label, d_ptr->combos.count(), 0);
