@@ -20,7 +20,7 @@ class NightModeManagerPrivate
 {
 public:
     NightModeManagerPrivate();
-    ~NightModeManagerPrivate(){}
+    ~NightModeManagerPrivate() {}
 
     // 显示夜间模式图标
     void setSystemModeBar();
@@ -39,15 +39,6 @@ public:
 NightModeManager::NightModeManager()
     : d_ptr(new NightModeManagerPrivate)
 {
-}
-
-NightModeManager::NightModeManager(const NightModeManager &handle)
-{
-    d_ptr->isNightMode = handle.d_ptr->isNightMode;
-    d_ptr->normalScreenBrightness = handle.d_ptr->normalScreenBrightness;
-    d_ptr->normalAlarmVolume = handle.d_ptr->normalAlarmVolume;
-    d_ptr->normalHeartBeatVolume = handle.d_ptr->normalHeartBeatVolume;
-    d_ptr->normalKeyVolume = handle.d_ptr->normalKeyVolume;
 }
 
 NightModeManager::~NightModeManager()
@@ -91,13 +82,18 @@ void NightModeManager::setNightMode(bool nightMode)
     }
     else
     {
-        screenBrightness = d_ptr->normalScreenBrightness;
+        int b = 0;
 
-        alarmVolume = d_ptr->normalAlarmVolume;
+        screenBrightness = systemManager.getBrightness();
 
-        heartBeatVolume = d_ptr->normalHeartBeatVolume;
+        systemConfig.getNumValue("Alarms|DefaultAlarmVolume", b);
+        alarmVolume = b;
 
-        keyVolume = d_ptr->normalKeyVolume;
+        currentConfig.getNumValue("ECG|QRSVolume", b);
+        heartBeatVolume = b;
+
+        systemConfig.getNumValue("General|KeyPressVolume", b);
+        keyVolume = b;
 
         runningStatus.setNightModeStatus(false);
     }

@@ -249,12 +249,12 @@ void EventStorageManager::triggerRealtimePrintEvent(unsigned t)
     }
 }
 
-void EventStorageManager::triggerNIBPMeasurementEvent(unsigned t)
+void EventStorageManager::triggerNIBPMeasurementEvent(unsigned t, NIBPOneShotType result)
 {
     Q_D(EventStorageManager);
 
     EventStorageItem *item = new EventStorageItem(EventNIBPMeasurement,
-            d->getStoreWaveList(WAVE_NONE));
+            d->getStoreWaveList(WAVE_NONE), result);
     item->startCollectTrendAndWaveformData(t);
 
     int index = 0;

@@ -28,7 +28,7 @@
 #include "IBPParam.h"
 #include "CO2Param.h"
 #include "LayoutManager.h"
-
+#include "NIBPSymbol.h"
 
 class EventPageGeneratorPrivate
 {
@@ -122,6 +122,15 @@ public:
         case EventNIBPMeasurement:
         {
             eventTitle = trs("NibpMeasurement");
+            if (ctx.measureSegment->measureResult == NIBP_ONESHOT_NONE)
+            {
+                extraInfo = trs("NIBPMEASURE") + trs("ServiceSuccess");
+            }
+            else
+            {
+                extraInfo = trs("NIBPMEASURE") + trs("NIBPFAILED") + ",";
+                extraInfo += trs(NIBPSymbol::convert((NIBPOneShotType)(ctx.measureSegment->measureResult)));
+            }
         }
         break;
         case EventWaveFreeze:
@@ -301,6 +310,7 @@ public:
     EventPageGenerator *const q_ptr;
     RecordPageGenerator::PageType curPageType;
     QString eventTitle;
+    QString extraInfo;
     TrendDataPackage trendData;
     QList<RecordWaveSegmentInfo> waveInfos;
     int curDrawWaveSegment;
@@ -356,7 +366,7 @@ RecordPage *EventPageGenerator::createPage()
         if (d_ptr->ctx.trendSegment)
         {
             d_ptr->trendData = parseTrendSegment(d_ptr->ctx.trendSegment);
-            return createTrendPage(d_ptr->trendData, true);
+            return createTrendPage(d_ptr->trendData, true, QString(), QString(), d_ptr->extraInfo);
         }
     // fall through
     case WaveScalePage:

@@ -72,6 +72,11 @@ public:
 
     virtual void updatePalette(const QPalette &pal);
 
+    /**
+     * @brief updateWidgetConfig
+     */
+    void updateWidgetConfig();
+
     NIBPDataTrendWidget();
     ~NIBPDataTrendWidget();
 

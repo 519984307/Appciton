@@ -170,7 +170,11 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
         combos[ITEM_CBO_ECG1_GAIN]->addItem(trs(ECGSymbol::convert(static_cast<ECGGain>(i))));
     }
 
-    config->getNumValue("ECG|Ecg1Gain", index);
+    QString leadName = "ECG";
+    leadName += ECGSymbol::convert(static_cast<ECGLead>(index), ECG_CONVENTION_AAMI);
+    leadName += "WaveWidget";
+
+    config->getNumValue(QString("ECG|Gain|%1").arg(leadName), index);
     combos[ITEM_CBO_ECG1_GAIN]->setCurrentIndex(index);
 
     config->getNumValue("ECG|SweepSpeed", index);
@@ -475,6 +479,17 @@ void ConfigEditECGMenuContent::onComboBoxIndexChanged(int index)
             }
 
             d_ptr->config->setNumValue("ECG|Ecg1Wave", index);
+
+            // 加载对应的增益
+            QString leadName = "ECG";
+            leadName += ECGSymbol::convert(static_cast<ECGLead>(index), ECG_CONVENTION_AAMI);
+            leadName += "WaveWidget";
+            d_ptr->config->getNumValue(QString("ECG|Gain|%1").arg(leadName), index);
+            ConfigEditECGMenuContentPrivate::MenuItem menuItem =
+                ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG1_GAIN;
+            d_ptr->combos[menuItem]->blockSignals(true);
+            d_ptr->combos[menuItem]->setCurrentIndex(index);
+            d_ptr->combos[menuItem]->blockSignals(false);
         }
         break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG2_WAVE:
@@ -498,8 +513,15 @@ void ConfigEditECGMenuContent::onComboBoxIndexChanged(int index)
         }
         break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG1_GAIN:
-            d_ptr->config->setNumValue("ECG|Ecg1Gain", index);
-            break;
+        {
+            int lead = 0;
+            d_ptr->config->getNumValue("ECG|Ecg1Wave", lead);
+            QString leadName = "ECG";
+            leadName += ECGSymbol::convert(static_cast<ECGLead>(lead), ECG_CONVENTION_AAMI);
+            leadName += "WaveWidget";
+            d_ptr->config->setNumValue(QString("ECG|Gain|%1").arg(leadName), index);
+        }
+        break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_HTBT_VOL:
             d_ptr->config->setNumValue("ECG|QRSVolume", index);
             break;
