@@ -93,7 +93,7 @@ void NIBPMonitorGetResultState::handleNIBPEvent(NIBPEvent event, const unsigned 
         debug("0x%02x, %d", args[1], err);
 
         unsigned currentTime = timeManager.getCurTime();
-        eventStorageManager.triggerNIBPMeasurementEvent(currentTime);
+        eventStorageManager.triggerNIBPMeasurementEvent(currentTime, err);
 
         switchState(NIBP_MONITOR_SAFEWAITTIME_STATE);
         break;

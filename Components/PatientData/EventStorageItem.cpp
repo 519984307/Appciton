@@ -39,7 +39,8 @@ public:
         triggerPrintStopped(false),
         almInfo(NULL),
         codeMarkerInfo(NULL),
-        oxyCRGInfo(NULL)
+        oxyCRGInfo(NULL),
+        measureInfo(NULL)
     {
         int duration_after_event;
         int duration_before_event;
@@ -105,6 +106,7 @@ public:
     AlarmInfoSegment *almInfo;
     CodeMarkerSegment *codeMarkerInfo;
     OxyCRGSegment *oxyCRGInfo;
+    NIBPMeasureSegment *measureInfo;
 };
 
 void EventStorageItemPrivate::saveTrendData(unsigned timestamp, const TrendCacheData &data,
@@ -259,6 +261,14 @@ EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &stor
 {
     d_ptr->oxyCRGInfo = new OxyCRGSegment;
     d_ptr->oxyCRGInfo->type = oxyCRGtype;
+    qDebug() << "Create Event Stroage Item:" << this << " type: " << type;
+}
+
+EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms, NIBPOneShotType measureResult)
+    : d_ptr(new EventStorageItemPrivate(this, type, storeWaveforms))
+{
+    d_ptr->measureInfo = new NIBPMeasureSegment;
+    d_ptr->measureInfo->measureResult = measureResult;
     qDebug() << "Create Event Stroage Item:" << this << " type: " << type;
 }
 
@@ -427,6 +437,14 @@ QByteArray EventStorageItem::getStorageData() const
         type = EVENT_OXYCRG_SEGMENT;
         buffer.write(reinterpret_cast<char *>(&type), sizeof(type));
         buffer.write(reinterpret_cast<char *>(d_ptr->oxyCRGInfo), sizeof(OxyCRGSegment));
+    }
+
+    if (d_ptr->measureInfo)
+    {
+        // store the oxyCRG info
+        type = EVENT_NIBPMEASURE_SEGMENT;
+        buffer.write(reinterpret_cast<char *>(&type), sizeof(type));
+        buffer.write(reinterpret_cast<char *>(d_ptr->measureInfo), sizeof(NIBPMeasureSegment));
     }
 
     // write trend segments

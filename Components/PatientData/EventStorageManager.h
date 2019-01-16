@@ -36,7 +36,7 @@ public:
     void triggerRealtimePrintEvent(unsigned t);
 
     // trigger a nibp measurement event
-    void triggerNIBPMeasurementEvent(unsigned t);
+    void triggerNIBPMeasurementEvent(unsigned t, NIBPOneShotType result);
 
     // trigger a wave freeze event
     void triggerWaveFreezeEvent(unsigned t);

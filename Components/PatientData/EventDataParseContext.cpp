@@ -16,7 +16,8 @@ EventDataPraseContext::EventDataPraseContext()
       infoSegment(NULL),
       trendSegment(NULL),
       almSegment(NULL),
-      codeMarkerSegment(NULL)
+      codeMarkerSegment(NULL),
+      measureSegment(NULL)
 {
 }
 
@@ -32,6 +33,7 @@ void EventDataPraseContext::reset()
     waveSegments.clear();
     almSegment = NULL;
     codeMarkerSegment = NULL;
+    measureSegment = NULL;
 }
 
 bool EventDataPraseContext::parse(IStorageBackend *backend, int index)
@@ -96,6 +98,11 @@ bool EventDataPraseContext::parse(IStorageBackend *backend, int index)
             parseBuffer += sizeof(EventSegmentType);
             codeMarkerSegment = reinterpret_cast<CodeMarkerSegment *>(parseBuffer);
             parseBuffer += sizeof(CodeMarkerSegment);
+            break;
+        case EVENT_NIBPMEASURE_SEGMENT:
+            parseBuffer += sizeof(EventSegmentType);
+            measureSegment = reinterpret_cast<NIBPMeasureSegment *>(parseBuffer);
+            parseBuffer += sizeof(NIBPMeasureSegment);
             break;
         default:
             qdebug("unknown segment type %d, stop parsing.",  *eventType);
