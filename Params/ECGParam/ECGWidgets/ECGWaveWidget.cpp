@@ -295,7 +295,7 @@ void ECGWaveWidget::_loadConfig(void)
                                           ecgParam.getLeadConvention(), true, ecgParam.get12LDisplayFormat()));
 
         _name->setFixedWidth(70);
-        _notify->setVisible(false);
+//        _notify->setVisible(false);
     }
     else
     {
@@ -315,7 +315,7 @@ void ECGWaveWidget::_loadConfig(void)
         ecgParam.updateECGNotifyMesg(lead, false);
 
         _name->setFixedWidth(130);
-        _notify->setVisible(true);
+//        _notify->setVisible(true);
     }
 }
 

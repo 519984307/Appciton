@@ -183,7 +183,8 @@ public: // NIBPProviderIFace的接口。
     // 发送协议命令
     virtual void sendCmdData(unsigned char cmdId, const unsigned char *data, unsigned int len);
 
-
+    // 转换错误码
+    virtual unsigned char convertErrcode(unsigned char code);
 
     N5Provider();
     ~N5Provider();

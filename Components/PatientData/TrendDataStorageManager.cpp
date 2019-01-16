@@ -90,9 +90,9 @@ void TrendDataStorageManagerPrivate::updateAdditionInfo()
         changed = true;
     }
 
-    if (dataDesc.patientAge != patientManager.getAge())
+    if (dataDesc.bornDate != patientManager.getBornDate())
     {
-        dataDesc.patientAge = patientManager.getAge();
+        dataDesc.bornDate = patientManager.getBornDate();
         changed = true;
     }
 

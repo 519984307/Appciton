@@ -81,7 +81,7 @@ void AlarmAudioOffState::handAlarmEvent(AlarmStateEvent event, unsigned char */*
 #if 1
     case ALARM_STATE_EVENT_RESET_BTN_PRESSED:
     {
-        alarmIndicator.techAlarmPauseStatusHandle();
+        alarmIndicator.techAlarmResetStatusHandle();
         if (alarmIndicator.hasLatchPhyAlarm())
         {
             alarmIndicator.delLatchPhyAlarm();

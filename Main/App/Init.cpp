@@ -615,7 +615,10 @@ void newObjects(void)
  *************************************************************************************************/
 void deleteObjects(void)
 {
-//    deleteWaveWidgetSelectMenu();
+    // 优先析构打印管理实例
+    deleteRecorderManager();
+
+    //    deleteWaveWidgetSelectMenu();
     deleteSupervisorMenuManager();
     deleteMenuManager();
     // deletePatientMenu();
@@ -629,7 +632,6 @@ void deleteObjects(void)
     // deleteSuperConfig();
     deleteSuperRunConfig();
     deleteSystemTick();
-    deleteSystemBoardProvider();
     deleteKeyActionManager();
 
     deleteDataStorageDirManager();
@@ -647,12 +649,9 @@ void deleteObjects(void)
     deleteRescueDataExportWidget();
     deleteRescueDataDeleteWidget();
 
-    deleteRecorderManager();
-
 //    deleteNetworkManager();
     deleteUsbManager();
     deleteActivityLogManager();
-
 
     deleteColorManager();
     deleteFontManager();

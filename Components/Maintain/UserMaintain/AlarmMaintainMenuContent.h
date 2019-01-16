@@ -30,6 +30,12 @@ private slots:
     void onComboBoxIndexChanged(int index);
     void onButtonReleased(void);
 
+    /**
+     * @brief onPopupListItemFocusChanged
+     * @param volume
+     */
+    void onPopupListItemFocusChanged(int volume);
+
 private:
     AlarmMaintainMenuContentPrivate * const d_ptr;
 };

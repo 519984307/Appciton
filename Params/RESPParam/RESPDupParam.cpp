@@ -180,7 +180,7 @@ void RESPDupParam::updateBR(short br)
     {
         _trendWidget->setRRValue(_rrValue, true);
     }
-    else // HR和PR都为无效时。
+    else  // HR和PR都为无效时。
     {
         _trendWidget->setRRValue(_brValue, false);
     }
@@ -230,6 +230,7 @@ RESPDupParam::BrSourceType RESPDupParam::getBrSource() const
 void RESPDupParam::setBrSource(RESPDupParam::BrSourceType type)
 {
     _manualBrSourceType = type;
+    emit brSourceStatusUpdate();
 }
 
 RESPDupParam::ParamSourceType RESPDupParam::getParamSourceType() const
@@ -249,6 +250,7 @@ RESPDupParam::ParamSourceType RESPDupParam::getParamSourceType() const
 void RESPDupParam::setAutoBrSourceStatue(bool isEnabled)
 {
     _isAutoBrSource = isEnabled;
+    emit brSourceStatusUpdate();
 }
 
 bool RESPDupParam::isAutoBrSourceEnabled() const

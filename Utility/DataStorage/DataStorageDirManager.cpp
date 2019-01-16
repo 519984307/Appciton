@@ -18,6 +18,7 @@
 #include "StorageManager.h"
 #include <QDateTime>
 #include "SystemManager.h"
+#include "SystemAlarm.h"
 
 DataStorageDirManager *DataStorageDirManager::_selfObj = NULL;
 static QString _lastFolder;
@@ -338,7 +339,7 @@ QString DataStorageDirManager::getRescueDataDir(int index)
     }
 
     int count = _folderNameList.count() - 1;
-    index = count - index;
+    index = count - 1 - index;
     if (index < 0 || index > count)
     {
         return QString("");
@@ -486,9 +487,10 @@ bool DataStorageDirManager::isCurRescueFolderFull()
 {
     if (_curDataSize > (unsigned) SIGNAL_RESCUE_MAX_DATA_SIZE)
     {
+        systemAlarm.setOneShotAlarm(STORAGE_SPACE_FULL, true);
         return true;
     }
-
+    systemAlarm.setOneShotAlarm(STORAGE_SPACE_FULL, false);
     return false;
 }
 

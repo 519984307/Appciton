@@ -37,24 +37,24 @@ public:
 void SupervisorPrintMenuContentPrivate::loadOptions()
 {
     int index = 0;
-    currentConfig.getNumValue("Print|PhysiologicalAlarm", index);
+    systemConfig.getNumValue("Print|PhysiologicalAlarm", index);
     combos[ITEM_CBO_PRINT_PHY_ALARM]->setCurrentIndex(index);
 
-    currentConfig.getNumValue("Print|CoderMarker", index);
+    systemConfig.getNumValue("Print|CoderMarker", index);
     combos[ITEM_CBO_PRINT_CODEMARKER]->setCurrentIndex(index);
 
     if (systemManager.isSupport(CONFIG_NIBP))
     {
-        currentConfig.getNumValue("Print|NIBPReading", index);
+        systemConfig.getNumValue("Print|NIBPReading", index);
         combos[ITEM_CBO_PRINT_NIBP]->setCurrentIndex(index);
     }
 
-    currentConfig.getNumValue("Print|WaveFreeze", index);
+    systemConfig.getNumValue("Print|WaveFreeze", index);
     combos[ITEM_CBO_PRINT_WAVE_FREEZE]->setCurrentIndex(index);
 }
 
 SupervisorPrintMenuContent::SupervisorPrintMenuContent()
-    : MenuContent(trs("SupervisorPrintMenu"), trs("SupervisorPrintMenuDesc")),
+    : MenuContent(trs("TriggerPrintMenu"), trs("TriggerPrintMenuDesc")),
       d_ptr(new SupervisorPrintMenuContentPrivate)
 {
 }
@@ -83,8 +83,7 @@ void SupervisorPrintMenuContent::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("Disable")
-                       << trs("Enable")
-                      );
+                       << trs("Enable"));
     itemID = static_cast<int>(SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_PHY_ALARM);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -98,8 +97,7 @@ void SupervisorPrintMenuContent::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("Disable")
-                       << trs("Enable")
-                      );
+                       << trs("Enable"));
     itemID = static_cast<int>(SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_CODEMARKER);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -115,8 +113,7 @@ void SupervisorPrintMenuContent::layoutExec()
         comboBox = new ComboBox();
         comboBox->addItems(QStringList()
                            << trs("Disable")
-                           << trs("Enable")
-                          );
+                           << trs("Enable"));
         itemID = static_cast<int>(SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_NIBP);
         comboBox->setProperty("Item",
                               qVariantFromValue(itemID));
@@ -131,8 +128,7 @@ void SupervisorPrintMenuContent::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("Disable")
-                       << trs("Enable")
-                      );
+                       << trs("Enable"));
     itemID = static_cast<int>(SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_WAVE_FREEZE);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -153,16 +149,16 @@ void SupervisorPrintMenuContent::onComboBoxIndexChanged(int index)
         switch (item)
         {
         case SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_PHY_ALARM:
-            currentConfig.setNumValue("Print|PhysiologicalAlarm", index);
+            systemConfig.setNumValue("Print|PhysiologicalAlarm", index);
             break;
         case SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_CODEMARKER:
-            currentConfig.setNumValue("Print|CoderMarker", index);
+            systemConfig.setNumValue("Print|CoderMarker", index);
             break;
         case SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_NIBP:
-            currentConfig.setNumValue("Print|NIBPReading", index);
+            systemConfig.setNumValue("Print|NIBPReading", index);
             break;
         case SupervisorPrintMenuContentPrivate::ITEM_CBO_PRINT_WAVE_FREEZE:
-            currentConfig.setNumValue("Print|WaveFreeze", index);
+            systemConfig.setNumValue("Print|WaveFreeze", index);
             break;
         default:
             break;

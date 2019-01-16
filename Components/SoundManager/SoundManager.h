@@ -25,6 +25,7 @@ public:
         SOUND_TYPE_ERROR,
         SOUND_TYPE_PULSE,
         SOUND_TYPE_HEARTBEAT,
+        SOUND_TYPE_NIBP_COMPLETE,
         SOUND_TYPE_ALARM,
         SOUND_TYPE_NR,
     };
@@ -76,6 +77,11 @@ public:
      * @brief alarmTone  play alarm sound
      */
     void alarmTone();
+
+    /**
+     * @brief nibpCompleteTone play nibp complete tone
+     */
+    void nibpCompleteTone();
 
     /**
      * @brief updateAlarm update alarm info

@@ -646,7 +646,7 @@ EventWindow::EventWindow()
     hTableLayout->addWidget(d_ptr->typeCbo, 6);
     hTableLayout->addStretch(1);
     hTableLayout->addWidget(levelLabel, 1);
-    hTableLayout->addWidget(d_ptr->levelCbo, 6);
+    hTableLayout->addWidget(d_ptr->levelCbo, 4);
     hTableLayout->addStretch(1);
     hTableLayout->addWidget(d_ptr->listPrintBtn, 3);
     hTableLayout->addStretch(1);
@@ -1077,7 +1077,7 @@ void EventWindowPrivate::eventTrendUpdate()
         case SUB_PARAM_AUXP2_MAP:
             map = dataStr;
             valueStr = sys + "/" + dia + "(" + map + ")";
-            titleStr = trs(paramInfo.getSubParamName(subId));
+            titleStr = paramInfo.getSubParamName(subId);
             titleStr = titleStr.left(titleStr.length() - 4);
             valueFont = fontManager.numFont(25);
             break;

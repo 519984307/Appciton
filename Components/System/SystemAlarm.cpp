@@ -53,6 +53,9 @@ AlarmPriority SystemAlarm::getAlarmPriority(int id)
     case SOME_LIMIT_ALARM_DISABLED:
         return ALARM_PRIO_PROMPT;
 
+    case STORAGE_SPACE_FULL:
+        return ALARM_PRIO_PROMPT;
+
     default:
         return ALARM_PRIO_LOW;
     }
@@ -94,7 +97,8 @@ static const char *alarmLimitOneshotStr[] =
 {
     "SomeLimitAlarmDisabled",
     "PowerupRecorderPressed",
-    "PowerupCommunicationStop"
+    "PowerupCommunicationStop",
+    "RescueStorageSpaceFull"
 };
 
 /**************************************************************************************************

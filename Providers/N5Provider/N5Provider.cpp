@@ -798,6 +798,36 @@ void N5Provider::sendCmdData(unsigned char cmdId, const unsigned char *data, uns
     sendCmd(cmdId, data, len);
 }
 
+unsigned char N5Provider::convertErrcode(unsigned char code)
+{
+    unsigned char err;
+    switch (code)
+    {
+    case 0x02:
+        err = NIBP_ONESHOT_ALARM_CUFF_ERROR;
+        break;
+    case 0x05:
+        err = NIBP_ONESHOT_ALARM_SIGNAL_WEAK;
+        break;
+    case 0x06:
+        err = NIBP_ONESHOT_ALARM_MEASURE_OVER_RANGE;
+        break;
+    case 0x08:
+        err = NIBP_ONESHOT_ALARM_CUFF_OVER_PRESSURE;
+        break;
+    case 0x09:
+        err = NIBP_ONESHOT_ALARM_SIGNAL_SATURATION;
+        break;
+    case 0x0A:
+        err = NIBP_ONESHOT_ALARM_MEASURE_TIMEOUT;
+        break;
+    default:
+        err = NIBP_ONESHOT_NONE;
+        break;
+    }
+    return err;
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/

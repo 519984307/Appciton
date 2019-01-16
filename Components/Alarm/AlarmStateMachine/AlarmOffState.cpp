@@ -82,7 +82,7 @@ void AlarmOffState::handAlarmEvent(AlarmStateEvent event, unsigned char */*data*
     case ALARM_STATE_EVENT_RESET_BTN_PRESSED:
     {
         alarmIndicator.delLatchPhyAlarm();
-        alarmIndicator.techAlarmPauseStatusHandle();
+        alarmIndicator.techAlarmResetStatusHandle();
         break;
     }
 

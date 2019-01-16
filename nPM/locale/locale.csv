@@ -183,6 +183,7 @@ NIBPMeasurement,无创血压测量,NIBP
 NIBPMeasureMode,测量模式,Measure Mode
 NIBPIntervalTime,间隔时间,NIBP Interval Time
 NIBPAutoInterval,自动间隔,Auto Interval
+NIBPCompleteTone,NIBP完成音,NIBP Complete Tone
 NIBPMenu,NIBP,NIBP
 NIBPMenuDesc,NIBP,NIBP
 NIBPDirectiveTimeout,指令超时,Directive Timeout
@@ -456,23 +457,23 @@ NIBPWAITING,NIBP等待,NIBP Waiting
 NIBPNoResponse,无响应,No Response
 NIBPTemporarily,临时,Temporarily
 NIBPDisable,禁用,Disable
-_1min,1 min,1 min
-_1.5min,1.5 分,1.5 min
-_2min,2 min,2 min
-_2.5min,2.5 分,2.5 min
-_3min,3 分,3 min
-_3.5min,3.5 分,3.5 min
-_4min,4 min,4 min
-_5min,5 分,5 min
-_8min,8 min,8 min
-_10min,10 分,10 min
-_15min,15 分,15 min
-_20min,20 分,20 min
-_30min,30 分,30 min
-_45min,45 分,45 min
-_60min,60 分,60 min
-_90min,90 分,90 min
-_120min,120 分,120 min
+_1min,1 分钟,1 min
+_1.5min,1.5 分钟,1.5 min
+_2min,2 分钟,2 min
+_2.5min,2.5 分钟,2.5 min
+_3min,3 分钟,3 min
+_3.5min,3.5 分钟,3.5 min
+_4min,4 分钟,4 min
+_5min,5 分钟,5 min
+_8min,8 分钟,8 min
+_10min,10 分钟,10 min
+_15min,15 分钟,15 min
+_20min,20 分钟,20 min
+_30min,30 分钟,30 min
+_45min,45 分钟,45 min
+_60min,60 分钟,60 min
+_90min,90 分钟,90 min
+_120min,120 分钟,120 min
 min,分,min
 Parameter,参数,Parameter
 AlarmStatus,状态,Status
@@ -744,6 +745,9 @@ ServicePressure,压力值,Pressure
 ServicePressureControl,压力控制,Pressure Control
 ServicePressureControlDesc,压力控制模式,Pressure Control
 NIBPPressureControlModel,压力控制模式,NIBP Pressure Control Model
+Pump,气泵,Pump
+ControlValve,控制阀,Control Valve
+DumpValve,安全阀,Dump Valve
 ServicePatientType,病人类型,Patient Type
 ServiceChargePressure,预充气压力,Charge Pressure
 TEMPModuleDisConnect,温度模块未连接,TEMP Module DisConnected
@@ -789,7 +793,7 @@ WriteSegmentFail,写入片段失败,Write segment fail
 CommunicationFail,通讯失败,Communication fail
 WriteFail,写入失败,Write Fail
 InvalidImageFormat,无效图片格式,Invalid image format
-ImageTooLarge,图片文件过大,Image too large
+ImageTooLarge,"图片文件过大,图片像素不能超过:","Image too large,picture pixels should not exceed :"
 Age,年龄,Age
 FoundLogoFile,找到Logo文件,Found logo file
 UpdateSystemLogo,更新系统,Update system logo
@@ -803,6 +807,7 @@ SPO2Version,SPO2,SPO2
 TEMPVersion,TEMP,TEMP
 iDMBoardVersion,iDMBoard,iDMBoard
 PRT48Version,PRT48,PRT48
+SourceOfCO2,来源CO2,Source of CO2
 PDVersion,PD,PD
 COREVersion,CORE,CORE
 VersionReturn,返回,Return
@@ -908,8 +913,8 @@ SupervisorDisplayUserPrompt,显示用户提示信息,Display User Prompt
 SupervisorDisplayAnalysisKey,显示分析按键,Display Analyze Key
 SupervisorPhyAlarmVisualIndicator,生理报警视觉信号,Physiological Alarm Visual Indicator
 DisplayFixRateKey,固定速率,Fixed Rate Pacing
-SupervisorPrintMenu,触发打印,Print
-SupervisorPrintMenuDesc,触发打印,Print Setting
+TriggerPrintMenu,触发打印,Trigger Print
+TriggerPrintMenuDesc,触发打印,Trigger Print 
 SupervisorAutoPrint30Jtest,自动打印30J自测结果,Print 30J Self-test Results
 SupervisorAutoPrint12L,打印12导,Automatic Printing Of 12-Lead Report
 Supervisor12LMenu,12导,12-Lead
@@ -1114,7 +1119,7 @@ MailAddress,邮箱地址,Mail Address
 E-mailAddressList,邮箱地址列表,E-mail Address List
 ECGGain,ECG增益,ECG Gain
 Printspeed,打印速度,Print speed
-SerialNum,系列号,Serial Number
+SerialNum,序列号,Serial Number
 SWVersion,软件版本,Software Version
 CodeMarker,Code Marker,Code Marker
 CodeMarkerSnapshot,CodeMarker Snapshot,CodeMarker Snapshot
@@ -1295,7 +1300,7 @@ SystemSoftwareVersion,版本,Version
 PowerManagerSoftwareVersion,电源管理软件版本,Power Manager Software Version
 Uboot,系统引导文件,Uboot
 Kernel,内核,Kernel
-SystemboardModule,系统版,System Board Module
+SystemboardModule,系统板,System Board Module
 RecorderModule,记录模块,Recorder Module
 ECGAlgorithmType,心电算法类型,ECG Algorithm Type
 UserMaintainGeneralMenuDesc,通用,General
@@ -1382,7 +1387,7 @@ ParaSwitch,参数开关,Parameters Switch
 NurseCallSetting,护士呼叫设置,Nurse Call Setting
 Setting,设置,Setting
 RealtimePrintSegment,实时打印,Real Time Print
-NibpMeasurement,NIBP测量,Nibp Measurement
+NibpMeasurement,NIBP测量,NIBP Measurement
 StopSetting,停止设置,Stop Setting
 SignalType,信号类型,Signal Type
 Continuity,连续,Continuity
@@ -1427,10 +1432,10 @@ SetConfigName,设置配置项名称,Set Config Name
 GeneralDesc,通用设置,General Desc
 ConfigName,配置名称,Config Name
 AalrmSource,报警源,Aalrm Source
-Ecg1Wave,波形1,Ecg1 Wave
-Ecg2Wave,波形2,Ecg2 Wave
+Ecg1Wave,波形1,ECG1 Wave
+Ecg2Wave,波形2,ECG2 Wave
 ECG1,ECG1,ECG1
-Ecg1Gain,增益,Ecg Gain
+Ecg1Gain,增益,ECG Gain
 Filter,滤波器,Filter
 QRSVolume,音量,QRS Volume
 ConfigIBPMenu,有创血压,Config IBP
@@ -1623,4 +1628,7 @@ SPO2CableOff,血氧电缆断开,SPO2 Cable Off
 SPO2FingerOff,未检测到手指,SPO2 Finger Off
 SPO2LEDFault,血氧LED错误,SPO2 LED Fault
 SPO2LowPerfusion,血氧低弱灌注,SPO2 Low Perfusion
-NIBPSameSide,NIBP同侧,NIBP Simul
+NIBPSimul,NIBP同侧,NIBP Simul
+Input8DigitsPassword,请输入8位数字密码,Please input 8 digits password
+BornDate,出生日期,Born Date
+RescueStorageSpaceFull,营救数据存储空间满,Rescue storage space full

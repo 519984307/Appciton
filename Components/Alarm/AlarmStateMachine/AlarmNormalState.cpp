@@ -51,7 +51,7 @@ void AlarmNormalState::handAlarmEvent(AlarmStateEvent event, unsigned char */*da
         alarmIndicator.delLatchPhyAlarm();
         alarmIndicator.phyAlarmResetStatusHandle();
         alarmIndicator.techAlarmResetStatusHandle();
-        if (alarmIndicator.getAlarmCount(ALARM_PRIO_MED) + alarmIndicator.getAlarmCount(ALARM_PRIO_HIGH) > 0)
+        if (alarmIndicator.getAlarmCount())
         {
             // must has med priority alarm or high priority alarm before enter the reset state
             alarmStateMachine.switchState(ALARM_RESET_STATE);

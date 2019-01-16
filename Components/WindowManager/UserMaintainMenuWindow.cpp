@@ -40,7 +40,7 @@ UserMaintainMenuWindow *UserMaintainMenuWindow::getInstance()
 #ifndef HIDE_WIRED_NETWORK_FUNCTION
         instance->addMenuContent(new WiredNetworkMaintainMenuContent);
 #endif
-        instance->addMenuContent(new OthersMaintainMenuContent);
+//        instance->addMenuContent(new OthersMaintainMenuContent);
         instance->addMenuContent(new UnitSetupMenuContent);
         instance->addMenuContent(new ErrorLogEntranceContent);
 #ifndef HIDE_ECG_12_LEAD_FUNCTION

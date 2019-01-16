@@ -42,7 +42,6 @@ public:
 
         ITEM_LTW_CONFIG_LIST = 0,
     };
-
     UserConfigEditMenuContentPrivate()
         :  curConfig(NULL), curEditIndex(-1),
            configDataModel(NULL), configListView(NULL),
@@ -297,8 +296,8 @@ void UserConfigEditMenuContent::onBtnClick()
 
 void UserConfigEditMenuContent::onEditFinished()
 {
-    //  can't add, too many
-    //  TODO show some message
+    // can't add, too many
+    // TODO :show some message
     QString configName = d_ptr->editWindow->getCurrentEditConfigName();
     if (configName.isEmpty())
     {
@@ -334,9 +333,6 @@ void UserConfigEditMenuContent::layoutExec()
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setMargin(10);
     layout->setAlignment(Qt::AlignTop);
-
-    QLabel *label = new QLabel(trs("ConfigManagerment"));
-    layout->addWidget(label);
 
     ListView *listView = new ListView(this);
     listView->setItemDelegate(new ListViewItemDelegate(listView));

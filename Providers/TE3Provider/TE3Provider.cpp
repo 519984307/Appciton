@@ -9,7 +9,7 @@
  **/
 
 #include <QString>
-#include "E5Provider.h"
+#include "TE3Provider.h"
 #include "ECGParam.h"
 #include "ECGAlarm.h"
 #include "ECGDupParam.h"
@@ -31,7 +31,7 @@
 /**************************************************************************************************
  * 模块与参数对接。
  *************************************************************************************************/
-bool E5Provider::attachParam(Param &param)
+bool TE3Provider::attachParam(Param &param)
 {
     if (param.getParamID() == PARAM_ECG)
     {
@@ -49,7 +49,7 @@ bool E5Provider::attachParam(Param &param)
 /**************************************************************************************************
  * 处理心电数据。
  *************************************************************************************************/
-void E5Provider::_handleECGRawData(const unsigned char *data, unsigned len)
+void TE3Provider::_handleECGRawData(const unsigned char *data, unsigned len)
 {
     // 记录下各种标记的状态以免丢失。
     static short leadoff = 0;
@@ -60,8 +60,8 @@ void E5Provider::_handleECGRawData(const unsigned char *data, unsigned len)
     static bool epaceMark = false;
     static bool qrsTone = false;
 
-    short rawData[13];
-    unsigned short v = 0;
+    int rawData[13];
+    unsigned int v = 0;
 
     for (unsigned j = 5; j < len ; j += 28)
     {
@@ -69,8 +69,7 @@ void E5Provider::_handleECGRawData(const unsigned char *data, unsigned len)
         for (unsigned i = j + 2; i < j + 28; i += 2)
         {
             v = (data[i + 1] << 8) | (data[i]);
-//            rawData[rawDataIndex++] = static_cast<int>((v & 0x8000) ? (-((~(v - 1)) & 0xffff)) : v);
-            rawData[rawDataIndex++] = (short) v;
+            rawData[rawDataIndex++] = static_cast<int>((v & 0x8000) ? (-((~(v - 1)) & 0xffff)) : v);
         }
 
         int leadData[ECG_LEAD_NR];
@@ -86,6 +85,7 @@ void E5Provider::_handleECGRawData(const unsigned char *data, unsigned len)
         leadData[ECG_LEAD_V4]  = rawData[9];
         leadData[ECG_LEAD_V5]  = rawData[10];
         leadData[ECG_LEAD_V6]  = rawData[11];
+        leadData[ECG_LEAD_V6 + 1] = rawData[12];
 
         // 记录下各种标记的状态以免丢失。
         leadoff |= (data[j + 1] | ((data[j] & 0x03) << 8));
@@ -111,12 +111,6 @@ void E5Provider::_handleECGRawData(const unsigned char *data, unsigned len)
         if (ecgParam.getLeadMode() == ECG_LEAD_MODE_5)
         {
             leadoff &= 0xFFE0;
-        }
-
-        if (!leadoff && !_isFristConnect)
-        {
-            ecgParam.setFristConnect();
-            _isFristConnect = true;
         }
 
         if (ecgParam.getLeadMode() == ECG_LEAD_MODE_3)
@@ -256,6 +250,9 @@ void E5Provider::_handleECGRawData(const unsigned char *data, unsigned len)
             ecgParam.setLeadOff((ECGLead)i, leadOff[i]);
         }
 
+        // diagnostic ecg lead off flag is same as calc Lead
+        leadOff[ECG_LEAD_V6 + 1] = leadOff[ecgParam.getCalcLead()];
+
         if (ecgParam.getCalcLead() != ECG_LEAD_NR)
         {
             ecgParam.setOverLoad(overLoad);
@@ -275,7 +272,7 @@ void E5Provider::_handleECGRawData(const unsigned char *data, unsigned len)
 /**************************************************************************************************
  * 处理呼吸数据。
  *************************************************************************************************/
-void E5Provider::_handleRESPRawData(const unsigned char *data, unsigned /*len*/)
+void TE3Provider::_handleRESPRawData(const unsigned char *data, unsigned /*len*/)
 {
     int resp = (data[2] << 8) | data[1];
 
@@ -305,7 +302,7 @@ void E5Provider::_handleRESPRawData(const unsigned char *data, unsigned /*len*/)
 /**************************************************************************************************
  * 读取数据。
  *************************************************************************************************/
-void E5Provider::handlePacket(unsigned char *data, int len)
+void TE3Provider::handlePacket(unsigned char *data, int len)
 {
 #if 0
     static struct timeval startTime = {0, 0};
@@ -325,10 +322,6 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         startTime = endTime;
     }
 #endif
-    if (!isConnectedToParam)
-    {
-        return;
-    }
 
     BLMProvider::handlePacket(data, len);
 
@@ -457,13 +450,16 @@ void E5Provider::handlePacket(unsigned char *data, int len)
 
     case TE3_CYCLE_RR:
     {
-        short rr = (data[2] << 8) | data[1];
-        rr = (rr == -1) ? InvData() : rr;
-        if (0 == respParam.getRespMonitoring())
+        if (systemManager.isSupport(PARAM_RESP))
         {
-            rr = InvData();
+            short rr = (data[2] << 8) | data[1];
+            rr = (rr == -1) ? InvData() : rr;
+            if (0 == respParam.getRespMonitoring())
+            {
+                rr = InvData();
+            }
+            respParam.setRR(rr);
         }
-        respParam.setRR(rr);
         break;
     }
 
@@ -562,7 +558,7 @@ void E5Provider::handlePacket(unsigned char *data, int len)
 /**************************************************************************************************
  * 发送协议命令。
  *************************************************************************************************/
-void E5Provider::sendCmdData(unsigned char cmdId, const unsigned char *data, unsigned int len)
+void TE3Provider::sendCmdData(unsigned char cmdId, const unsigned char *data, unsigned int len)
 {
     sendCmd(cmdId, data, len);
 }
@@ -570,7 +566,7 @@ void E5Provider::sendCmdData(unsigned char cmdId, const unsigned char *data, uns
 /**************************************************************************************************
  * 获取自检状态。
  *************************************************************************************************/
-void E5Provider::getSelfTestStatus(void)
+void TE3Provider::getSelfTestStatus(void)
 {
     sendCmd(TE3_CMD_GET_SELFTEST_RESULT, NULL, 0);
 }
@@ -578,7 +574,7 @@ void E5Provider::getSelfTestStatus(void)
 /**************************************************************************************************
  * 获取波形的采样速度。
  *************************************************************************************************/
-int E5Provider::getWaveformSample(void)
+int TE3Provider::getWaveformSample(void)
 {
     return _waveSampleRate;
 }
@@ -586,7 +582,7 @@ int E5Provider::getWaveformSample(void)
 /**************************************************************************************************
  * 设置波形的采样速度。
  *************************************************************************************************/
-void E5Provider::setWaveformSample(int rate)
+void TE3Provider::setWaveformSample(int rate)
 {
     _waveSampleRate = rate;
 }
@@ -594,7 +590,7 @@ void E5Provider::setWaveformSample(int rate)
 /**************************************************************************************************
  * 获取+/-0.5mV对应的数值。
  *************************************************************************************************/
-void E5Provider::get05mV(int &p05mv, int &n05mv)
+void TE3Provider::get05mV(int &p05mv, int &n05mv)
 {
     // about 1.225uV per unit
     p05mv = 408;
@@ -604,7 +600,7 @@ void E5Provider::get05mV(int &p05mv, int &n05mv)
 /**************************************************************************************************
  * 获取导联线类型
  *************************************************************************************************/
-void E5Provider::getLeadCabelType()
+void TE3Provider::getLeadCabelType()
 {
     sendCmd(TE3_CMD_GET_LEAD_CABLE_TYPE, NULL, 0);
 }
@@ -612,7 +608,7 @@ void E5Provider::getLeadCabelType()
 /**************************************************************************************************
  * 设置导联系统。
  *************************************************************************************************/
-void E5Provider::setLeadSystem(ECGLeadMode leadSystem)
+void TE3Provider::setLeadSystem(ECGLeadMode leadSystem)
 {
     unsigned char dataPayload = (unsigned char)leadSystem;
     sendCmd(TE3_CMD_SET_ECG_LEAD_MODE, &dataPayload, 1);
@@ -621,7 +617,7 @@ void E5Provider::setLeadSystem(ECGLeadMode leadSystem)
 /**************************************************************************************************
  * 设置计算导联。
  *************************************************************************************************/
-void E5Provider::setCalcLead(ECGLead lead)
+void TE3Provider::setCalcLead(ECGLead lead)
 {
     if (lead <= ECG_LEAD_V6)
     {
@@ -656,7 +652,7 @@ void E5Provider::setCalcLead(ECGLead lead)
 /**************************************************************************************************
  * 设置病人类型。0表示成人，1表示小孩，2表示新生儿，3表示空
  *************************************************************************************************/
-void E5Provider::setPatientType(unsigned char type)
+void TE3Provider::setPatientType(unsigned char type)
 {
     unsigned char cmd;
     cmd = type & 0xFF;
@@ -668,7 +664,7 @@ void E5Provider::setPatientType(unsigned char type)
     sendCmd(TE3_CMD_SET_PATIENT_TYPE, &cmd, 1);
 }
 
-void E5Provider::setFilterMode(ECGFilterMode mode)
+void TE3Provider::setFilterMode(ECGFilterMode mode)
 {
     unsigned char filterMode;
     switch (mode)
@@ -694,7 +690,7 @@ void E5Provider::setFilterMode(ECGFilterMode mode)
 /**************************************************************************************************
  * 设置带宽。
  *************************************************************************************************/
-void E5Provider::setBandwidth(ECGBandwidth bandwidth)
+void TE3Provider::setBandwidth(ECGBandwidth bandwidth)
 {
     unsigned char dataPayload = 0;
 
@@ -723,13 +719,13 @@ void E5Provider::setBandwidth(ECGBandwidth bandwidth)
     sendCmd(TE3_CMD_SET_FILTER_PARAMETER, &dataPayload, 1);
 }
 
-void E5Provider::setSelfLearn(bool onOff)
+void TE3Provider::setSelfLearn(bool onOff)
 {
     unsigned char learn = onOff;
     Q_UNUSED(learn)
 }
 
-void E5Provider::setARRThreshold(ECGAlg::ARRPara parameter, short value)
+void TE3Provider::setARRThreshold(ECGAlg::ARRPara parameter, short value)
 {
     Q_UNUSED(parameter)
     Q_UNUSED(value)
@@ -738,7 +734,7 @@ void E5Provider::setARRThreshold(ECGAlg::ARRPara parameter, short value)
 /**************************************************************************************************
  * 起搏器设置。
  *************************************************************************************************/
-void E5Provider::enablePacermaker(ECGPaceMode onoff)
+void TE3Provider::enablePacermaker(ECGPaceMode onoff)
 {
     unsigned char enable = onoff;
     sendCmd(TE3_CMD_SET_PACEMARK_ONOFF, &enable, 1);
@@ -747,7 +743,7 @@ void E5Provider::enablePacermaker(ECGPaceMode onoff)
 /**************************************************************************************************
  * 设置工频滤波。
  *************************************************************************************************/
-void E5Provider::setNotchFilter(ECGNotchFilter notch)
+void TE3Provider::setNotchFilter(ECGNotchFilter notch)
 {
     unsigned char data = notch;
     sendCmd(TE3_CMD_SET_NOTCH_FILTER, &data, 1);
@@ -756,7 +752,7 @@ void E5Provider::setNotchFilter(ECGNotchFilter notch)
 /**************************************************************************************************
  * ST开关。
  *************************************************************************************************/
-void E5Provider::enableSTAnalysis(bool onoff)
+void TE3Provider::enableSTAnalysis(bool onoff)
 {
     Q_UNUSED(onoff)
 }
@@ -764,7 +760,7 @@ void E5Provider::enableSTAnalysis(bool onoff)
 /***************************************************************************************************
  * enable vf calc control
  **************************************************************************************************/
-void E5Provider::enableVFCalcCtrl(bool enable)
+void TE3Provider::enableVFCalcCtrl(bool enable)
 {
     unsigned char data = enable;
     sendCmd(TE3_CMD_ENABLE_VF_CALC, &data, 1);
@@ -773,7 +769,7 @@ void E5Provider::enableVFCalcCtrl(bool enable)
 /**************************************************************************************************
  * ST点设置。
  *************************************************************************************************/
-void E5Provider::setSTPoints(int iso, int st)
+void TE3Provider::setSTPoints(int iso, int st)
 {
     Q_UNUSED(iso)
     Q_UNUSED(st)
@@ -782,7 +778,7 @@ void E5Provider::setSTPoints(int iso, int st)
 /**************************************************************************************************
  * 获取版本号。
  *************************************************************************************************/
-void E5Provider::sendVersion(void)
+void TE3Provider::sendVersion(void)
 {
     sendCmd(TE3_CMD_GET_VERSION, NULL, 0);
 }
@@ -790,7 +786,7 @@ void E5Provider::sendVersion(void)
 /**************************************************************************************************
  * 获取波形的采样速度。
  *************************************************************************************************/
-int E5Provider::getRESPWaveformSample(void)
+int TE3Provider::getRESPWaveformSample(void)
 {
     return 125;
 }
@@ -798,14 +794,14 @@ int E5Provider::getRESPWaveformSample(void)
 /**************************************************************************************************
  * 关闭窒息处理。
  *************************************************************************************************/
-void E5Provider::disableApnea(void)
+void TE3Provider::disableApnea(void)
 {
 }
 
 /**************************************************************************************************
  * 设置窒息时间。
  *************************************************************************************************/
-void E5Provider::setApneaTime(ApneaAlarmTime t)
+void TE3Provider::setApneaTime(ApneaAlarmTime t)
 {
     unsigned char data = t;
 
@@ -815,7 +811,7 @@ void E5Provider::setApneaTime(ApneaAlarmTime t)
 /**************************************************************************************************
  * 获取波形的采样速度。
  *************************************************************************************************/
-void E5Provider::setWaveformZoom(RESPZoom zoom)
+void TE3Provider::setWaveformZoom(RESPZoom zoom)
 {
     zoom = zoom;
 }
@@ -823,7 +819,7 @@ void E5Provider::setWaveformZoom(RESPZoom zoom)
 /**************************************************************************************************
  * 设置呼吸导联。
  *************************************************************************************************/
-void E5Provider::setRESPCalcLead(RESPLead lead)
+void TE3Provider::setRESPCalcLead(RESPLead lead)
 {
     unsigned char data = 0;
     switch (lead)
@@ -846,7 +842,7 @@ void E5Provider::setRESPCalcLead(RESPLead lead)
 /**************************************************************************************************
  * 启用呼吸计算。
  *************************************************************************************************/
-void E5Provider::enableRESPCalc(bool enable)
+void TE3Provider::enableRESPCalc(bool enable)
 {
     unsigned char data = enable;
     sendCmd(TE3_CMD_SET_RESP_CALS_SWITCH, &data, 1);
@@ -855,7 +851,7 @@ void E5Provider::enableRESPCalc(bool enable)
 /**************************************************************************************************
  * 连接中断。
  *************************************************************************************************/
-void E5Provider::disconnected(void)
+void TE3Provider::disconnected(void)
 {
     ecgOneShotAlarm.clear();
     ecgOneShotAlarm.setOneShotAlarm(ECG_ONESHOT_ALARM_COMMUNICATION_STOP, true);
@@ -883,15 +879,13 @@ void E5Provider::disconnected(void)
             needFreshWave = true;
         }
     }
-    ecgParam.setConnected(false);
-    respParam.setConnected(false);
     Q_UNUSED(needFreshWave)
 }
 
 /**************************************************************************************************
  * 连接恢复。
  *************************************************************************************************/
-void E5Provider::reconnected(void)
+void TE3Provider::reconnected(void)
 {
     ecgOneShotAlarm.setOneShotAlarm(ECG_ONESHOT_ALARM_COMMUNICATION_STOP, false);
     respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
@@ -918,24 +912,22 @@ void E5Provider::reconnected(void)
             needFreshWave = true;
         }
     }
-    ecgParam.setConnected(true);
-    respParam.setConnected(true);
     Q_UNUSED(needFreshWave)
 }
 
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-E5Provider::E5Provider() : BLMProvider("BLM_E5"), ECGProviderIFace(), _waveSampleRate(WAVE_SAMPLE_RATE_500),
-    _isFristConnect(false)
+TE3Provider::TE3Provider() : BLMProvider("BLM_TE3"), ECGProviderIFace()
 {
     UartAttrDesc portAttr(230400, 8, 'N', 1);
     initPort(portAttr);
+    _waveSampleRate = WAVE_SAMPLE_RATE_500;
 }
 
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
-E5Provider::~E5Provider()
+TE3Provider::~TE3Provider()
 {
 }

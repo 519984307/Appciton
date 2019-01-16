@@ -13,6 +13,7 @@
 #include "TrendSubWaveWidget.h"
 #include "TrendDataDefine.h"
 #include <QScrollArea>
+#include "EventStorageManager.h"
 
 class QHBoxLayout;
 class QVBoxLayout;
@@ -101,7 +102,7 @@ public:
      * @brief 获取趋势图打印的数据及其事件发生时刻列表
      */
     const QList<TrendGraphInfo> getTrendGraphPrint();
-    const QList<unsigned> getEventList();
+    const QList<EventInfoSegment> getEventList();
 
     /**
      * @brief setHistoryDataPath 设置历史回顾数据的文件路径
@@ -231,7 +232,7 @@ private:
     QList<SubParamID> _curDisplaySubList;           // 当前显示子参数集合
     int _curIndex;
     TrendGraphInfo _trendGraphInfo;                 // 趋势图数据集合
-    QList<unsigned> _alarmTimeList;                 // 报警发生时间
+    QList<EventInfoSegment> _eventList;            // 报警类型和时间
     QList<TrendGraphInfo> _infosList;                    // 打印趋势图数据链表
 
     bool _isHistory;                                // 历史回顾标志

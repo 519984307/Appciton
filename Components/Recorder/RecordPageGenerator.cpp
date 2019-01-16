@@ -36,6 +36,7 @@
 #include "AlarmConfig.h"
 #include "UnitManager.h"
 #include "PatientManager.h"
+#include "EventDataDefine.h"
 
 #define DEFAULT_PAGE_WIDTH 200
 #define PEN_WIDTH 2
@@ -146,11 +147,9 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
     infos.append(QString("%1: %2").arg(trs("PatientType")).arg(trs(PatientSymbol::convert(patInfo.type))));
     infos.append(QString("%1: %2").arg(trs("Blood")).arg(PatientSymbol::convert(patInfo.blood)));
     QString str;
-    str = QString("%1: ").arg(trs("Age"));
-    if (patInfo.age > 0)
-    {
-        str += QString::number(patInfo.age);
-    }
+    QString fotmat;
+    timeDate.getDateFormat(fotmat, true);
+    str = QString("%1: %2").arg(trs("BornDate")).arg(patInfo.bornDate.toString(fotmat));
     infos.append(str);
 
     str = QString("%1: ").arg(trs("Weight"));
@@ -972,7 +971,7 @@ RecordPage *RecordPageGenerator::createWaveScalePage(const QList<RecordWaveSegme
             case CO2_DISPLAY_ZOOM_8:
                 high = 8;
                 break;
-            case CO2_DISPLAY_ZOOM_12:
+            case CO2_DISPLAY_ZOOM_13:
                 high = 12;
                 break;
             case CO2_DISPLAY_ZOOM_20:
@@ -1172,7 +1171,7 @@ static qreal mapWaveValue(const RecordWaveSegmentInfo &waveInfo, short wave)
         case CO2_DISPLAY_ZOOM_8:
             max  = max * 8 / 20;
             break;
-        case CO2_DISPLAY_ZOOM_12:
+        case CO2_DISPLAY_ZOOM_13:
             max = max * 12 / 20;
             break;
         default:
@@ -1284,7 +1283,7 @@ static qreal mapOxyCRGWaveValue(const OxyCRGWaveInfo &waveInfo, qreal waveHeight
         case CO2_DISPLAY_ZOOM_8:
             max  = max * 8 / 20;
             break;
-        case CO2_DISPLAY_ZOOM_12:
+        case CO2_DISPLAY_ZOOM_13:
             max = max * 12 / 20;
             break;
         default:
@@ -1956,7 +1955,7 @@ void RecordPageGenerator::drawTrendGraph(QPainter *painter, const GraphAxisInfo 
     painter->restore();
 }
 
-void RecordPageGenerator::drawTrendGraphEventSymbol(QPainter *painter, const GraphAxisInfo &axisInfo, const TrendGraphInfo &graphInfo, const QList<unsigned> &eventList)
+void RecordPageGenerator::drawTrendGraphEventSymbol(QPainter *painter, const GraphAxisInfo &axisInfo, const TrendGraphInfo &graphInfo, const QList<EventInfoSegment> &eventList)
 {
     painter->save();
     painter->translate(axisInfo.origin);
@@ -1967,20 +1966,34 @@ void RecordPageGenerator::drawTrendGraphEventSymbol(QPainter *painter, const Gra
     painter->setFont(font);
     qreal fontH = fontManager.textHeightInPixels(font);
 
-    int  symbolHeigth = -140;
+    int aEventFlagHeight = -300;
+    int mEventFlagHeight = aEventFlagHeight - fontH;
     for (int i = 0; i < eventList.count(); ++i)
     {
         QRectF eventRect;
-        qreal timeX = timestampToX(eventList.at(i), axisInfo, graphInfo);
+        unsigned eventTime = eventList.at(i).timestamp;
+        if (eventTime < graphInfo.startTime || eventTime > graphInfo.endTime)
+        {
+            continue;
+        }
+        qreal timeX = timestampToX(eventList.at(i).timestamp, axisInfo, graphInfo);
         if (timeX > axisInfo.width - 10)
         {
             timeX =  axisInfo.width - 10;
         }
         eventRect.setLeft(timeX);
         eventRect.setWidth(axisInfo.xSectionWidth); // should be enough
-        eventRect.setTop(symbolHeigth);
         eventRect.setHeight(fontH);
-        painter->drawText(eventRect, Qt::AlignLeft | Qt::AlignVCenter, "A");
+        if (eventList.at(i).type == EventPhysiologicalAlarm)
+        {
+            eventRect.setTop(aEventFlagHeight);
+            painter->drawText(eventRect, Qt::AlignLeft | Qt::AlignVCenter, "A");
+        }
+        else if (eventList.at(i).type != EventOxyCRG)
+        {
+            eventRect.setTop(mEventFlagHeight);
+            painter->drawText(eventRect, Qt::AlignLeft | Qt::AlignVCenter, "M");
+        }
     }
 
     painter->restore();
@@ -2267,7 +2280,7 @@ RecordPage *RecordPageGenerator::createOxyCRGGraph(const QList<TrendGraphInfo> &
         case CO2_DISPLAY_ZOOM_8:
             high = 8;
             break;
-        case CO2_DISPLAY_ZOOM_12:
+        case CO2_DISPLAY_ZOOM_13:
             high = 12;
             break;
         case CO2_DISPLAY_ZOOM_20:

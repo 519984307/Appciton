@@ -161,6 +161,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
                 }
             }
 
+            alarmIndicator.delAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage);      // 关闭了报警则取消该生理报警
             traceCtrl->Reset();
             alarmSource->notifyAlarm(i, false);
             continue;

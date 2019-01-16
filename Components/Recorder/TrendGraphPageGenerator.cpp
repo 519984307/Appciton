@@ -62,7 +62,7 @@ public:
     unsigned endTime;
     unsigned deltaT;
     QList<TrendGraphInfo> trendGraphInfos;
-    QList<unsigned> eventTimeList;
+    QList<EventInfoSegment> eventList;
     int curDrawnGraph;
     int marginLeft;
 };
@@ -91,6 +91,17 @@ GraphAxisInfo TrendGraphPageGeneratorPrivate::getAxisInfo(const RecordPage *page
     case SUB_PARAM_AUXP1_SYS:
     case SUB_PARAM_AUXP2_SYS:
         name = paramInfo.getIBPPressName(subParamID);
+        break;
+    case SUB_PARAM_ETN2O:
+    case SUB_PARAM_ETAA1:
+    case SUB_PARAM_ETAA2:
+    case SUB_PARAM_ETO2:
+    case SUB_PARAM_ETCO2:
+        name = paramInfo.getSubParamName(subParamID);
+        name = name.right(name.length() - 2) + "(Et/Fi)";
+        break;
+    case SUB_PARAM_T1:
+        name = "T1/T2";
         break;
     default:
         name = paramInfo.getSubParamName(subParamID);
@@ -192,7 +203,7 @@ RecordPage *TrendGraphPageGeneratorPrivate::drawGraphPage()
         RecordPageGenerator::drawTrendGraph(&painter, axisInfo, trendGraphInfos.at(curDrawnGraph));
 
         // draw event symbol
-        RecordPageGenerator::drawTrendGraphEventSymbol(&painter, axisInfo, trendGraphInfos.at(curDrawnGraph), eventTimeList);
+        RecordPageGenerator::drawTrendGraphEventSymbol(&painter, axisInfo, trendGraphInfos.at(curDrawnGraph), eventList);
 
         curDrawnGraph++;
 
@@ -207,7 +218,7 @@ RecordPage *TrendGraphPageGeneratorPrivate::drawGraphPage()
         GraphAxisInfo axisInfo = getAxisInfo(page, trendGraphInfos.at(curDrawnGraph), false);
         RecordPageGenerator::drawGraphAxis(&painter, axisInfo);
         RecordPageGenerator::drawTrendGraph(&painter, axisInfo, trendGraphInfos.at(curDrawnGraph));
-        RecordPageGenerator::drawTrendGraphEventSymbol(&painter, axisInfo, trendGraphInfos.at(curDrawnGraph), eventTimeList);
+        RecordPageGenerator::drawTrendGraphEventSymbol(&painter, axisInfo, trendGraphInfos.at(curDrawnGraph), eventList);
         curDrawnGraph++;
     }
 
@@ -215,7 +226,7 @@ RecordPage *TrendGraphPageGeneratorPrivate::drawGraphPage()
 }
 
 TrendGraphPageGenerator::TrendGraphPageGenerator(const QList<TrendGraphInfo> &trendInfos,
-        const QList<unsigned> &eventList, QObject *parent)
+        const QList<EventInfoSegment> &eventList, QObject *parent)
     : RecordPageGenerator(parent), d_ptr(new TrendGraphPageGeneratorPrivate)
 {
     if (trendInfos.size() > 0)
@@ -224,7 +235,7 @@ TrendGraphPageGenerator::TrendGraphPageGenerator(const QList<TrendGraphInfo> &tr
         d_ptr->endTime = trendInfos.first().endTime;
     }
     d_ptr->trendGraphInfos = trendInfos;
-    d_ptr->eventTimeList = eventList;
+    d_ptr->eventList = eventList;
     d_ptr->deltaT = (d_ptr->endTime - d_ptr->startTime) /  AXIS_X_SECTION_NUM;
 }
 

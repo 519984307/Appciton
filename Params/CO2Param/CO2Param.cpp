@@ -152,8 +152,8 @@ void CO2ParamPrivate::setWaveformZoom(CO2DisplayZoom zoom)
         waveWidget->setRuler(zoom);
         break;
 
-    case CO2_DISPLAY_ZOOM_12:
-        waveWidget->setValueRange(0, (provider->getCO2MaxWaveform() * 12 + 19) / 20);
+    case CO2_DISPLAY_ZOOM_13:
+        waveWidget->setValueRange(0, (provider->getCO2MaxWaveform() * 13 + 19) / 20);
         waveWidget->setRuler(zoom);
         break;
 
@@ -572,6 +572,10 @@ void CO2Param::setConnected(bool isConnected)
             if (needUpdate)
             {
                 layoutManager.updateLayout();
+                // 显示co2相关的软按键
+                softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_CO2_CALIBRATION, true);
+                softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_CO2_HANDLE, true);
+                softkeyManager.refreshPage();
             }
         }
     }
@@ -589,6 +593,10 @@ void CO2Param::setConnected(bool isConnected)
         if (needUpdate)
         {
             layoutManager.updateLayout();
+            // 隐藏co2相关的软按键
+            softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_CO2_CALIBRATION, false);
+            softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_CO2_HANDLE, false);
+            softkeyManager.refreshPage();
         }
     }
 }
@@ -742,7 +750,10 @@ CO2SweepSpeed CO2Param::getSweepSpeed(void)
 void CO2Param::setSweepMode(CO2SweepMode mode)
 {
     currentConfig.setNumValue("CO2|CO2SweepMode", static_cast<int>(mode));
-    d_ptr->waveWidget->setWaveformMode(mode);
+    if (d_ptr->waveWidget)
+    {
+        d_ptr->waveWidget->setWaveformMode(mode);
+    }
 }
 
 /**************************************************************************************************
