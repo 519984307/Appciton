@@ -21,6 +21,7 @@
 #include "LayoutManager.h"
 #include "WiFiProfileWindow.h"
 #include "IConfig.h"
+#include "SystemManager.h"
 
 SystemStatusBarWidget *SystemStatusBarWidget::_selfObj = NULL;
 #define ICON_WIDTH 32
@@ -113,7 +114,7 @@ void SystemStatusBarWidget::getSubFocusWidget(QList<QWidget *> &subWidgets) cons
  *************************************************************************************************/
 void SystemStatusBarWidget::onIconClicked(int iconLabel)
 {
-    if (iconLabel == SYSTEM_ICON_LABEL_WIFI)
+    if (iconLabel == SYSTEM_ICON_LABEL_WIFI && systemManager.isSupport(CONFIG_WIFI))
     {
         WiFiProfileWindow w;
         windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
@@ -149,12 +150,12 @@ void SystemStatusBarWidget::timerEvent(QTimerEvent *e)
             }
             else
             {
-                changeIcon(SYSTEM_ICON_LABEL_WIFI, SYSTEM_ICON_WIFI_CLOSED, true);
+                changeIcon(SYSTEM_ICON_LABEL_WIFI, SYSTEM_ICON_WIFI_DISCONNECTED, true);
             }
         }
         else
         {
-            changeIcon(SYSTEM_ICON_LABEL_WIFI, SYSTEM_ICON_WIFI_DISCONNECTED, true);
+            changeIcon(SYSTEM_ICON_LABEL_WIFI, SYSTEM_ICON_WIFI_CLOSED, false);
         }
     }
 }
@@ -192,7 +193,7 @@ SystemStatusBarWidget::SystemStatusBarWidget() : IWidget("SystemStatusBarWidget"
     _icons[SYSTEM_ICON_WIFI_DISCONNECTED] = QPixmap("/usr/local/nPM/icons/wifi_disconnected.png");
     _icons[SYSTEM_ICON_WIFI_CLOSED] = QPixmap("/usr/local/nPM/icons/wifi_closed.png");
     _icons[SYSTEM_ICON_PACER_OFF] = QPixmap("/usr/local/nPM/icons/PaceMarkerOff.png");
-    _icons[SYSTEM_ICON_PACER_ON] = QPixmap("");// "/usr/local/nPM/icons/Pacemarkeron.png");打开时不需要图标。
+    _icons[SYSTEM_ICON_PACER_ON] = QPixmap("");  // "/usr/local/nPM/icons/Pacemarkeron.png");打开时不需要图标。
 
     setFocusPolicy(Qt::NoFocus);
 

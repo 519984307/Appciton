@@ -117,8 +117,12 @@ QString FactoryTestMenuContentPrivate::btnStr[FACTORY_CONTENT_TEST_NR] =
     "USB High Speed Test packet",
     "USB Full Speed Test Packet",
 #endif
+#ifndef HIDE_WIFI_FUNCTION
     "FactoryWifi",
+#endif
+#ifndef HIDE_WIRED_NETWORK_FUNCTION
     "FactoryEnthernet",
+#endif
     "FactoryBattery"
 };
 

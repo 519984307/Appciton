@@ -27,6 +27,7 @@
 #include "LayoutManager.h"
 #include <QApplication>
 #include <QTimer>
+#include "CO2Param.h"
 
 #define PREFER_SOFTKEY_WIDTH 98
 #define SOFTKEY_SPACING 2
@@ -341,11 +342,15 @@ void SoftKeyManager::setContent(SoftKeyActionType type)
         d_ptr->keyTypeStatueMap[keyType] = true;
     }
 
-    if (!systemManager.isSupport(PARAM_CO2))
+    if (!systemManager.isSupport(PARAM_CO2) || !co2Param.isConnected())
     {
         setKeyTypeAvailable(SOFT_BASE_KEY_CO2_CALIBRATION, false);
         setKeyTypeAvailable(SOFT_BASE_KEY_CO2_HANDLE, false);
     }
+
+#ifdef HIDE_CALCULATE_FUNCITON
+    setKeyTypeAvailable(SOFT_BASE_KEY_CALCULATION, false);
+#endif
 
     int index = 0;
     machineConfig.getNumValue("TouchEnable", index);

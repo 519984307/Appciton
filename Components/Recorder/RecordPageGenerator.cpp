@@ -36,6 +36,7 @@
 #include "AlarmConfig.h"
 #include "UnitManager.h"
 #include "PatientManager.h"
+#include "EventDataDefine.h"
 
 #define DEFAULT_PAGE_WIDTH 200
 #define PEN_WIDTH 2
@@ -1954,7 +1955,7 @@ void RecordPageGenerator::drawTrendGraph(QPainter *painter, const GraphAxisInfo 
     painter->restore();
 }
 
-void RecordPageGenerator::drawTrendGraphEventSymbol(QPainter *painter, const GraphAxisInfo &axisInfo, const TrendGraphInfo &graphInfo, const QList<unsigned> &eventList)
+void RecordPageGenerator::drawTrendGraphEventSymbol(QPainter *painter, const GraphAxisInfo &axisInfo, const TrendGraphInfo &graphInfo, const QList<EventInfoSegment> &eventList)
 {
     painter->save();
     painter->translate(axisInfo.origin);
@@ -1965,20 +1966,34 @@ void RecordPageGenerator::drawTrendGraphEventSymbol(QPainter *painter, const Gra
     painter->setFont(font);
     qreal fontH = fontManager.textHeightInPixels(font);
 
-    int  symbolHeigth = -140;
+    int aEventFlagHeight = -300;
+    int mEventFlagHeight = aEventFlagHeight - fontH;
     for (int i = 0; i < eventList.count(); ++i)
     {
         QRectF eventRect;
-        qreal timeX = timestampToX(eventList.at(i), axisInfo, graphInfo);
+        unsigned eventTime = eventList.at(i).timestamp;
+        if (eventTime < graphInfo.startTime || eventTime > graphInfo.endTime)
+        {
+            continue;
+        }
+        qreal timeX = timestampToX(eventList.at(i).timestamp, axisInfo, graphInfo);
         if (timeX > axisInfo.width - 10)
         {
             timeX =  axisInfo.width - 10;
         }
         eventRect.setLeft(timeX);
         eventRect.setWidth(axisInfo.xSectionWidth); // should be enough
-        eventRect.setTop(symbolHeigth);
         eventRect.setHeight(fontH);
-        painter->drawText(eventRect, Qt::AlignLeft | Qt::AlignVCenter, "A");
+        if (eventList.at(i).type == EventPhysiologicalAlarm)
+        {
+            eventRect.setTop(aEventFlagHeight);
+            painter->drawText(eventRect, Qt::AlignLeft | Qt::AlignVCenter, "A");
+        }
+        else if (eventList.at(i).type != EventOxyCRG)
+        {
+            eventRect.setTop(mEventFlagHeight);
+            painter->drawText(eventRect, Qt::AlignLeft | Qt::AlignVCenter, "M");
+        }
     }
 
     painter->restore();

@@ -113,6 +113,12 @@ void E5Provider::_handleECGRawData(const unsigned char *data, unsigned len)
             leadoff &= 0xFFE0;
         }
 
+        if (!leadoff && !_isFristConnect)
+        {
+            ecgParam.setFristConnect();
+            _isFristConnect = true;
+        }
+
         if (ecgParam.getLeadMode() == ECG_LEAD_MODE_3)
         {
             leadoff &= 0xFFC0;
@@ -920,11 +926,11 @@ void E5Provider::reconnected(void)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-E5Provider::E5Provider() : BLMProvider("BLM_E5"), ECGProviderIFace()
+E5Provider::E5Provider() : BLMProvider("BLM_E5"), ECGProviderIFace(), _waveSampleRate(WAVE_SAMPLE_RATE_250),
+    _isFristConnect(false)
 {
     UartAttrDesc portAttr(230400, 8, 'N', 1);
     initPort(portAttr);
-    _waveSampleRate = WAVE_SAMPLE_RATE_500;
 }
 
 /**************************************************************************************************

@@ -20,25 +20,27 @@
 #include <QScrollBar>
 #include "WindowManager.h"
 
-#define ROW_COUNT       8
-
 class HistoryDataSelWindowPrivate
 {
 public:
-    HistoryDataSelWindowPrivate()
+    explicit HistoryDataSelWindowPrivate(HistoryDataSelWindow * const q_ptr)
         : table(NULL), model(NULL), upPageBtn(NULL),
-          downPageBtn(NULL)
+          downPageBtn(NULL), q_ptr(q_ptr)
     {}
 
-    void pageBtnEnable(void);
+    /**
+     * @brief refreshPage 刷新页面信息，页码和按键的使能情况
+     */
+    void refreshPage(void);
 public:
     TableView *table;
     HistoryDataSelModel *model;
     Button *upPageBtn;
     Button *downPageBtn;
+    HistoryDataSelWindow *const q_ptr;
 };
 HistoryDataSelWindow::HistoryDataSelWindow()
-    : Window(), d_ptr(new HistoryDataSelWindowPrivate())
+    : Window(), d_ptr(new HistoryDataSelWindowPrivate(this))
 {
     setWindowTitle(trs("HistoryDataList"));
     setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
@@ -55,7 +57,7 @@ HistoryDataSelWindow::HistoryDataSelWindow()
     d_ptr->table->setShowGrid(false);
     d_ptr->model = new HistoryDataSelModel();
     d_ptr->table->setModel(d_ptr->model);
-    d_ptr->table->setFixedHeight(ROW_COUNT * d_ptr->model->getRowHeightHint());
+    d_ptr->table->setFixedHeight(d_ptr->model->getEachPageRowCount() * d_ptr->model->getRowHeightHint());
     connect(d_ptr->table, SIGNAL(itemClicked(QModelIndex)), this, SLOT(itemSelReleased(QModelIndex)));
     connect(d_ptr->table, SIGNAL(clicked(QModelIndex)), this, SLOT(itemSelReleased(QModelIndex)));
 
@@ -88,7 +90,7 @@ HistoryDataSelWindow::~HistoryDataSelWindow()
 void HistoryDataSelWindow::showEvent(QShowEvent *ev)
 {
     Window::showEvent(ev);
-    d_ptr->pageBtnEnable();
+    d_ptr->refreshPage();
 }
 
 void HistoryDataSelWindow::itemSelReleased(QModelIndex index)
@@ -105,12 +107,13 @@ void HistoryDataSelWindow::upReleased()
     int curScroller = d_ptr->table->verticalScrollBar()->value();
     if (curScroller > 0)
     {
+        int rowCount = d_ptr->model->getEachPageRowCount();
         QScrollBar *scrollBar = d_ptr->table->verticalScrollBar();
-        int position = curScroller - (maxValue * ROW_COUNT) / (d_ptr->model->rowCount(QModelIndex()) - ROW_COUNT);
+        int position = curScroller - (maxValue * rowCount) / (d_ptr->model->rowCount(QModelIndex()) - rowCount);
         scrollBar->setSliderPosition(position);
     }
 
-    d_ptr->pageBtnEnable();
+    d_ptr->refreshPage();
     if (!d_ptr->upPageBtn->isEnabled())
     {
         d_ptr->downPageBtn->setFocus();
@@ -123,19 +126,20 @@ void HistoryDataSelWindow::downReleased()
     int curScroller = d_ptr->table->verticalScrollBar()->value();
     if (curScroller < maxValue)
     {
+        int rowCount = d_ptr->model->getEachPageRowCount();
         QScrollBar *scrollBar = d_ptr->table->verticalScrollBar();
-        int position = curScroller + (maxValue * ROW_COUNT) / (d_ptr->model->rowCount(QModelIndex()) - ROW_COUNT);
+        int position = curScroller + (maxValue * rowCount) / (d_ptr->model->rowCount(QModelIndex()) - rowCount);
         scrollBar->setSliderPosition(position);
     }
 
-    d_ptr->pageBtnEnable();
+    d_ptr->refreshPage();
     if (!d_ptr->downPageBtn->isEnabled())
     {
         d_ptr->upPageBtn->setFocus();
     }
 }
 
-void HistoryDataSelWindowPrivate::pageBtnEnable()
+void HistoryDataSelWindowPrivate::refreshPage()
 {
     int curScroller = table->verticalScrollBar()->value();
     int maxValue = table->verticalScrollBar()->maximum();
@@ -143,4 +147,10 @@ void HistoryDataSelWindowPrivate::pageBtnEnable()
     upPageBtn->setEnabled(hasBtn);
     hasBtn = curScroller < maxValue;
     downPageBtn->setEnabled(hasBtn);
+    int totalPage = 1, curPage = 1;
+    table->getPageInfo(curPage, totalPage);
+    curPage = curPage == 0 ? 1 : curPage;
+    totalPage = totalPage == 0 ? 1 : totalPage;
+    QString title = QString("%1(%2 / %3)").arg(trs("HistoryDataList")).arg(curPage).arg(totalPage);
+    q_ptr->setWindowTitle(title);
 }

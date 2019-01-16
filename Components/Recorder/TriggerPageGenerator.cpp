@@ -75,7 +75,7 @@ bool TriggerPageGeneratorPrivate::fetchWaveData()
         else
         {
             // fill with invalid data
-            iter->secondWaveBuff.fill((WaveDataType)INVALID_WAVE_FALG_BIT);
+            iter->secondWaveBuff.fill((WaveDataType)(INVALID_WAVE_FALG_BIT << 16));
         }
     }
 

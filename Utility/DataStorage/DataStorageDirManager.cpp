@@ -339,7 +339,7 @@ QString DataStorageDirManager::getRescueDataDir(int index)
     }
 
     int count = _folderNameList.count() - 1;
-    index = count - index;
+    index = count - 1 - index;
     if (index < 0 || index > count)
     {
         return QString("");

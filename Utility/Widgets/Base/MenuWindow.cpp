@@ -219,7 +219,6 @@ bool MenuWindow::focusNextPrevChild(bool next)
             MenuSidebarItem *item = d_ptr->sidebar->itemAt(newIndex);
             item->setFocus(next ? Qt::TabFocusReason : Qt::BacktabFocusReason);
         }
-
         return true;
     }
 
@@ -234,7 +233,6 @@ bool MenuWindow::focusNextPrevChild(bool next)
             if (w->isEnabled()
                     && (w->focusPolicy() & Qt::TabFocus)
                     && w->isVisibleTo(this)
-                    && w->isEnabled()
                     && !d_ptr->sidebar->isAncestorOf(w))
             {
                 break;
@@ -262,7 +260,6 @@ bool MenuWindow::focusNextPrevChild(bool next)
             if (w->isEnabled()
                     && (w->focusPolicy() & Qt::TabFocus)
                     && w->isVisibleTo(this)
-                    && w->isEnabled()
                     && !d_ptr->sidebar->isAncestorOf(w))
             {
                 break;
@@ -277,6 +274,7 @@ bool MenuWindow::focusNextPrevChild(bool next)
             {
                 area->ensureWidgetVisible(w);
             }
+
             return true;
         }
     }

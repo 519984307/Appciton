@@ -49,6 +49,12 @@ public:
      * @return
      */
     QString getDateTimeStr(int index);
+
+    /**
+     * @brief getEachPageRowCount 获取每页多少行
+     * @return
+     */
+    int getEachPageRowCount();
 private:
     QScopedPointer<HistoryDataSelModelPrivate> d_ptr;
 };

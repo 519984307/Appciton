@@ -160,8 +160,8 @@
     <AlarmSource>
 		<HR_PR Enable="1" Prio="2">
 			<bpm>
-			    <Low Min="15" Max="298">100</Low>
-			    <High Min="17" Max="300">200</High>
+			    <Low Min="15" Max="348">100</Low>
+			    <High Min="17" Max="350">200</High>
 			    <Step>1</Step>
 			    <Scale>1</Scale>
 			</bpm>

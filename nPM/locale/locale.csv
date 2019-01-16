@@ -793,7 +793,7 @@ WriteSegmentFail,写入片段失败,Write segment fail
 CommunicationFail,通讯失败,Communication fail
 WriteFail,写入失败,Write Fail
 InvalidImageFormat,无效图片格式,Invalid image format
-ImageTooLarge,图片文件过大,Image too large
+ImageTooLarge,"图片文件过大,图片像素不能超过:","Image too large,picture pixels should not exceed :"
 Age,年龄,Age
 FoundLogoFile,找到Logo文件,Found logo file
 UpdateSystemLogo,更新系统,Update system logo
@@ -1300,7 +1300,7 @@ SystemSoftwareVersion,版本,Version
 PowerManagerSoftwareVersion,电源管理软件版本,Power Manager Software Version
 Uboot,系统引导文件,Uboot
 Kernel,内核,Kernel
-SystemboardModule,系统版,System Board Module
+SystemboardModule,系统板,System Board Module
 RecorderModule,记录模块,Recorder Module
 ECGAlgorithmType,心电算法类型,ECG Algorithm Type
 UserMaintainGeneralMenuDesc,通用,General
