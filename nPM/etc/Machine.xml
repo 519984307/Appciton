@@ -17,8 +17,8 @@
     <COEnable>0</COEnable>
     <IBPEnable>0</IBPEnable>
     <TEMPEnable>1</TEMPEnable>
-    <WIFIEnable>1</WIFIEnable>
-    <TouchEnable>1</TouchEnable>
+    <WIFIEnable>0</WIFIEnable>
+    <TouchEnable>0</TouchEnable>
     <O2Enable>0</O2Enable>
     <!--系统信息-->
     <SerialNumber>20180725222</SerialNumber>

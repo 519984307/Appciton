@@ -224,6 +224,7 @@ void OthersMaintainMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(OthersMaintainMenuContentPrivate::ITEM_CBO_CO2_WAVE_MODE, comboBox);
 
+#ifndef HIDE_NURSE_CALL_FUNCTION
     // nurse Call Setting
     label = new QLabel(trs("NurseCallSetting"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -232,6 +233,7 @@ void OthersMaintainMenuContent::layoutExec()
     button->setButtonStyle(Button::ButtonTextOnly);
     layout->addWidget(button, d_ptr->combos.count(), 1);
     connect(button, SIGNAL(released()), this, SLOT(onBtnReleased()));
+#endif
 
     layout->setRowStretch(d_ptr->combos.count() + 1, 1);
 }

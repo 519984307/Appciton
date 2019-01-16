@@ -165,6 +165,7 @@ void NormalFunctionMenuContent::layoutExec()
 
     Button *btn;
 
+#ifndef HIDE_CALCULATE_FUNCITON
     // calculate
     btn = new Button(trs("Calculate"));
     btn->setButtonStyle(Button::ButtonTextOnly);
@@ -173,6 +174,7 @@ void NormalFunctionMenuContent::layoutExec()
     btn->setProperty("Item", qVariantFromValue(itemID));
     layout->addWidget(btn, row, 1);
     row++;
+#endif
 
     // 波形长度
     label = new QLabel(trs("WaveLength"));
