@@ -60,6 +60,13 @@ public:
      */
     EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms, OxyCRGEventType oxyCRGtype);
 
+    /**
+     * @brief EventStorageItem user for NIBPMeasure event
+     * @param type event type
+     * @param storeWaveforms waveforms this event to store
+     * @param measureResult measure result
+     */
+    EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms, NIBPOneShotType measureResult);
 
     virtual ~EventStorageItem();
 

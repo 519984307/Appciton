@@ -466,9 +466,13 @@ static void converToStringSegmets(const QStringList &trendStringList, QList<Tren
 }
 
 RecordPage *RecordPageGenerator::createTrendPage(const TrendDataPackage &trendData, bool showEventTime,
-        const QString &timeStringCaption, const QString &trendPageTitle)
+        const QString &timeStringCaption, const QString &trendPageTitle, const QString &extraInfo)
 {
     QStringList trendStringList = getTrendStringList(trendData);
+    if (extraInfo != QString())
+    {
+        trendStringList.append(extraInfo);
+    }
 
     QString timeStr;
     if (showEventTime)

@@ -257,7 +257,8 @@ protected:
      * @return a record page
      */
     static RecordPage *createTrendPage(const TrendDataPackage& trendData, bool showEventTime = false,
-                                       const QString  &timeStringCaption = QString(), const QString &trendPageTitle = QString());
+                                       const QString  &timeStringCaption = QString(), const QString &trendPageTitle = QString(),
+                                       const QString &extraInfo = QString());
 
     /**
      * @brief getTrendStringList get a trend string list from the trend data,
