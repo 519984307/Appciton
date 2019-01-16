@@ -824,7 +824,15 @@ void TrendTableModelPrivate::getTrendData()
             {
                 continue;
             }
+
+            // 剔除不符合时间间隔的后续报警数据
+            unsigned sta = status & (~TrendDataStorageManager::CollectStatusPeriod);
+            if (sta == TrendDataStorageManager::HasAlarm && dataSeg->eventFlag == 0)
+            {
+                continue;
+            }
         }
+
         // 选择nibp选项时只筛选触发nibp测量的数据
         if (timeInterval == RESOLUTION_RATIO_NIBP && (status & TrendDataStorageManager::CollectStatusNIBP))
         {
