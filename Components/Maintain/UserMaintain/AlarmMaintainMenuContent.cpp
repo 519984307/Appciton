@@ -119,8 +119,19 @@ void AlarmMaintainMenuContentPrivate::HandlingComboIndexChanged(AlarmMaintainMen
     switch (item)
     {
     case ITEM_CBO_MIN_ALARM_VOLUME:
+    {
         systemConfig.setNumValue("Alarms|MinimumAlarmVolume", index);
-        break;
+
+        int volume = 0;
+        systemConfig.getNumValue("Alarms|DefaultAlarmVolume", volume);
+        if (volume < index)
+        {
+            volume = index;
+            systemConfig.setNumValue("Alarms|DefaultAlarmVolume", volume);
+        }
+        soundManager.setVolume(SoundManager::SOUND_TYPE_ALARM, static_cast<SoundManager::VolumeLevel>(volume));
+    }
+    break;
     case ITEM_CBO_ALARAM_PAUSE_TIME:
         systemConfig.setNumValue("Alarms|AlarmPauseTime", index);
         break;
@@ -261,6 +272,7 @@ void AlarmMaintainMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
+                       << QString::number(SoundManager::VOLUME_LEV_0)
                        << QString::number(SoundManager::VOLUME_LEV_1)
                        << QString::number(SoundManager::VOLUME_LEV_2)
                        << QString::number(SoundManager::VOLUME_LEV_3)
@@ -272,6 +284,8 @@ void AlarmMaintainMenuContent::layoutExec()
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_MIN_ALARM_VOLUME, comboBox);
+    // 设置声音触发方式
+    connect(comboBox, SIGNAL(itemFocusChanged(int)), this, SLOT(onPopupListItemFocusChanged(int)));
 
     // 报警暂停时间
     label = new QLabel(trs("AlarmPauseTime"));
@@ -474,3 +488,12 @@ void AlarmMaintainMenuContent::onButtonReleased()
     }
 }
 
+void AlarmMaintainMenuContent::onPopupListItemFocusChanged(int volume)
+{
+    ComboBox *w = qobject_cast<ComboBox*>(sender());
+    if (w == d_ptr->combos[AlarmMaintainMenuContentPrivate::ITEM_CBO_MIN_ALARM_VOLUME])
+    {
+        soundManager.setVolume(SoundManager::SOUND_TYPE_ALARM , static_cast<SoundManager::VolumeLevel>(volume));
+        soundManager.alarmTone();
+    }
+}

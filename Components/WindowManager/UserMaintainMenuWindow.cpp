@@ -34,7 +34,7 @@ UserMaintainMenuWindow *UserMaintainMenuWindow::getInstance()
         instance->addMenuContent(new AlarmMaintainMenuContent);
         instance->addMenuContent(new WifiMaintainMenuContent);
         instance->addMenuContent(new WiredNetworkMaintainMenuContent);
-        instance->addMenuContent(new OthersMaintainMenuContent);
+//        instance->addMenuContent(new OthersMaintainMenuContent);
         instance->addMenuContent(new UnitSetupMenuContent);
         instance->addMenuContent(new ErrorLogEntranceContent);
         instance->addMenuContent(new Supervisor12LMenuContent);
