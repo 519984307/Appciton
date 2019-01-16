@@ -87,7 +87,7 @@ void ConfigEditCO2MenuContentPrivate::loadOptions()
     // 气体补偿。
     config->getNumValue("CO2|O2Compensation", index);
     btns[ITEM_BTN_O2_COMPEN]->setText(QString::number(index));
-    config->getNumValue("CO2|NO2Compensation", index);
+    config->getNumValue("CO2|N2OCompensation", index);
     btns[ITEM_BTN_N2O_COMPEN]->setText(QString::number(index));
 
     // 显示控制。
