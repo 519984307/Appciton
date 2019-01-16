@@ -27,7 +27,6 @@ public:
     static NightModeManager *_selfObj;
 
     // 复制构造函数
-    NightModeManager(const NightModeManager &handle);
     ~NightModeManager();
 
     /**
@@ -44,6 +43,7 @@ public:
 
 private:
     NightModeManager();
+    NightModeManager(const NightModeManager &handle);  // stop the cppcheck complain
     NightModeManagerPrivate *d_ptr;
 };
 #define nightModeManager (NightModeManager::construction())

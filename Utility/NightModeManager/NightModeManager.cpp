@@ -41,15 +41,6 @@ NightModeManager::NightModeManager()
 {
 }
 
-NightModeManager::NightModeManager(const NightModeManager &handle)
-{
-    d_ptr->isNightMode = handle.d_ptr->isNightMode;
-    d_ptr->normalScreenBrightness = handle.d_ptr->normalScreenBrightness;
-    d_ptr->normalAlarmVolume = handle.d_ptr->normalAlarmVolume;
-    d_ptr->normalHeartBeatVolume = handle.d_ptr->normalHeartBeatVolume;
-    d_ptr->normalKeyVolume = handle.d_ptr->normalKeyVolume;
-}
-
 NightModeManager::~NightModeManager()
 {
     delete d_ptr;
