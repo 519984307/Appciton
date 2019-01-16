@@ -80,6 +80,16 @@ public:
         {
             delete codeMarkerInfo;
         }
+
+        if (oxyCRGInfo)
+        {
+            delete oxyCRGInfo;
+        }
+
+        if (measureInfo)
+        {
+            delete measureInfo;
+        }
     }
 
     void saveTrendData(unsigned timestamp, const TrendCacheData &data, const TrendAlarmStatus &almStatus);
