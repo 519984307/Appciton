@@ -119,8 +119,8 @@ void NIBPCalibrateContent::layoutExec()
     layout->addWidget(label, 2, 0);
 
     spinBox = new SpinBox();
-    spinBox->setValue(250);
     spinBox->setRange(0, 250);
+    spinBox->setValue(250);
     spinBox->setEnabled(false);
     layout->addWidget(spinBox, 2, 1);
     d_ptr->point2Spb = spinBox;
