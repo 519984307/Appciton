@@ -933,25 +933,24 @@ bool AlarmIndicator::techAlarmResetStatusHandle()
     AlarmInfoList::iterator it;
     list = &_alarmInfoDisplayPool;
     it = list->begin();
-    for (; it != list->end(); ++it)
+    while (it != list->end())
     {
         if (it->alarmType == ALARM_TYPE_TECH && it->alarmPriority > ALARM_PRIO_PROMPT)
         {
             // 只确认中级和高级的报警
-            AlarmInfoNode node = *it;
             if (it->removeAfterLatch)
             {
                 it = list->erase(it);
                 ret = true;
                 continue;
             }
-            else if (!node.acknowledge)
+            else if (!it->acknowledge)
             {
-                node.acknowledge = true;
+                it->acknowledge = true;
                 ret = true;
             }
-            *it = node;
         }
+        ++it;
     }
     return ret;
 }
