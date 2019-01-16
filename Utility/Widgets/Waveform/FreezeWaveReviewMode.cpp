@@ -132,7 +132,7 @@ void FreezeWaveReviewMode::_loadWaveData()
     _wave->_tail = 0;
 
     // load data
-    _wave->_freezeDataModel->getWaveData(static_cast<WaveDataType *>(_wave->_dataBuf), _wave->_size);
+    _wave->_freezeDataModel->getWaveData(reinterpret_cast<WaveDataType *>(_wave->_dataBuf), _wave->_size);
     _wave->_head = _wave->_size - 1;
 
     // fill the buffer
