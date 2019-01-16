@@ -12,7 +12,7 @@
 #pragma once
 
 typedef short TrendDataType;
-typedef int WaveDataType;
+typedef unsigned WaveDataType;
 
 enum WaveFlagBit
 {

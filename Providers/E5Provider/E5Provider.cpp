@@ -926,7 +926,7 @@ void E5Provider::reconnected(void)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-E5Provider::E5Provider() : BLMProvider("BLM_E5"), ECGProviderIFace(), _waveSampleRate(WAVE_SAMPLE_RATE_500),
+E5Provider::E5Provider() : BLMProvider("BLM_E5"), ECGProviderIFace(), _waveSampleRate(WAVE_SAMPLE_RATE_250),
     _isFristConnect(false)
 {
     UartAttrDesc portAttr(230400, 8, 'N', 1);

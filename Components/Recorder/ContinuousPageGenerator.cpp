@@ -167,7 +167,7 @@ void ContinuousPageGeneratorPrivate::fetchWaveData(bool isRealtime)
             {
                 // no enough data, fill with invalid
                 qFill(iter->secondWaveBuff.data() + curSize, iter->secondWaveBuff.data() + iter->sampleRate,
-                      (WaveDataType) INVALID_WAVE_FALG_BIT);
+                       (WaveDataType)(INVALID_WAVE_FALG_BIT << 16));
                 qDebug() << Q_FUNC_INFO << "no enough data, fill invalid";
             }
         }
