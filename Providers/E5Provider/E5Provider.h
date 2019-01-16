@@ -196,6 +196,7 @@ protected:
 
 private:
     int _waveSampleRate;
+    int _isFristConnect;
 
 private:
     void _handleECGRawData(const unsigned char *data, unsigned len);
