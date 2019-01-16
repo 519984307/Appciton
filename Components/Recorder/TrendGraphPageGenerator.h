@@ -13,6 +13,7 @@
 #include <QScopedPointer>
 #include "IStorageBackend.h"
 #include <QList>
+#include "EventDataDefine.h"
 
 class TrendGraphPageGeneratorPrivate;
 class TrendGraphPageGenerator : public RecordPageGenerator
@@ -22,7 +23,7 @@ public:
         Type = 5
     };
 
-    TrendGraphPageGenerator(const QList<TrendGraphInfo>& trendInfos, const QList<unsigned>& eventList, QObject *parent = NULL);
+    TrendGraphPageGenerator(const QList<TrendGraphInfo>& trendInfos, const QList<EventInfoSegment>& eventList, QObject *parent = NULL);
 
     ~TrendGraphPageGenerator();
 
