@@ -20,7 +20,7 @@ class NightModeManagerPrivate
 {
 public:
     NightModeManagerPrivate();
-    ~NightModeManagerPrivate(){}
+    ~NightModeManagerPrivate() {}
 
     // 显示夜间模式图标
     void setSystemModeBar();
@@ -91,13 +91,18 @@ void NightModeManager::setNightMode(bool nightMode)
     }
     else
     {
-        screenBrightness = d_ptr->normalScreenBrightness;
+        int b = 0;
 
-        alarmVolume = d_ptr->normalAlarmVolume;
+        screenBrightness = systemManager.getBrightness();
 
-        heartBeatVolume = d_ptr->normalHeartBeatVolume;
+        systemConfig.getNumValue("Alarms|DefaultAlarmVolume", b);
+        alarmVolume = b;
 
-        keyVolume = d_ptr->normalKeyVolume;
+        currentConfig.getNumValue("ECG|QRSVolume", b);
+        heartBeatVolume = b;
+
+        systemConfig.getNumValue("General|KeyPressVolume", b);
+        keyVolume = b;
 
         runningStatus.setNightModeStatus(false);
     }
