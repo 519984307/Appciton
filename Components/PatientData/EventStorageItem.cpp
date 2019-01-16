@@ -451,7 +451,7 @@ QByteArray EventStorageItem::getStorageData() const
 
     if (d_ptr->measureInfo)
     {
-        // store the oxyCRG info
+        // store the nibp measure info
         type = EVENT_NIBPMEASURE_SEGMENT;
         buffer.write(reinterpret_cast<char *>(&type), sizeof(type));
         buffer.write(reinterpret_cast<char *>(d_ptr->measureInfo), sizeof(NIBPMeasureSegment));
