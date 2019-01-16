@@ -631,3 +631,26 @@ void NIBPTrendWidget::doRestoreNormalStatus()
     showNormalStatus(d_ptr->mapValue, psrc);
     showNormalParamLimit(psrc);
 }
+
+void NIBPTrendWidget::updateWidgetConfig()
+{
+    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
+    setPalette(palette);
+    setName(trs(paramInfo.getParamName(PARAM_NIBP)));
+    setUnit(Unit::getSymbol(nibpParam.getUnit()));
+    // 设置上下限
+    updateLimit();
+
+    // 设置报警关闭标志
+    showAlarmOff();
+
+    d_ptr->nibpValue->setPalette(palette);
+    d_ptr->sysValue->setPalette(palette);
+    d_ptr->diaValue->setPalette(palette);
+    d_ptr->mapValue->setPalette(palette);
+    d_ptr->pressureValue->setPalette(palette);
+    d_ptr->countDown->setPalette(palette);
+    d_ptr->lastMeasureCount->setPalette(palette);
+    d_ptr->model->setPalette(palette);
+    d_ptr->message->setPalette(palette);
+}

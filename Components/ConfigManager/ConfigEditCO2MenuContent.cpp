@@ -85,9 +85,9 @@ void ConfigEditCO2MenuContentPrivate::loadOptions()
     combos[ITEM_CBO_WAVE_SPEED]->setCurrentIndex(index);
 
     // 气体补偿。
-    config->getNumValue("CO2|Compensation|O2", index);
+    config->getNumValue("CO2|O2Compensation", index);
     btns[ITEM_BTN_O2_COMPEN]->setText(QString::number(index));
-    config->getNumValue("CO2|Compensation|NO2", index);
+    config->getNumValue("CO2|N2OCompensation", index);
     btns[ITEM_BTN_N2O_COMPEN]->setText(QString::number(index));
 
     // 显示控制。
@@ -143,7 +143,7 @@ void ConfigEditCO2MenuContent::onBtnReleasedChanged()
             num = strValue.toShort();
             if (num <= 100)
             {
-                d_ptr->config->setNumValue("CO2|Compensation|O2", num);
+                d_ptr->config->setNumValue("CO2|O2Compensation", num);
                 button->setText(QString::number(num));
             }
             else
@@ -161,7 +161,7 @@ void ConfigEditCO2MenuContent::onBtnReleasedChanged()
             num = strValue.toShort();
             if (num <= 100)
             {
-                d_ptr->config->setNumValue("CO2|Compensation|NO2", num);
+                d_ptr->config->setNumValue("CO2|N2OCompensation", num);
                 button->setText(QString::number(num));
             }
             else

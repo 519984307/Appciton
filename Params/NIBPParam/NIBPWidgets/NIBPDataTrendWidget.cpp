@@ -356,6 +356,12 @@ void NIBPDataTrendWidget::updatePalette(const QPalette &pal)
     _table->horizontalHeader()->setStyleSheet(headStyle);
 }
 
+void NIBPDataTrendWidget::updateWidgetConfig()
+{
+    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
+    updatePalette(palette);
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
