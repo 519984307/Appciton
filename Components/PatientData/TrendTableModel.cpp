@@ -820,21 +820,18 @@ void TrendTableModelPrivate::getTrendData()
         unsigned status = dataSeg->status;
         if (timeInterval != RESOLUTION_RATIO_NIBP && timeStamp % interval != 0)
         {
-            if (status <= TrendDataStorageManager::CollectStatusPeriod)
-            {
-                continue;
-            }
-
-            // 剔除不符合时间间隔的后续报警数据
-            unsigned sta = status & (~TrendDataStorageManager::CollectStatusPeriod);
-            if (sta == TrendDataStorageManager::HasAlarm && dataSeg->eventFlag == 0)
+            if (!(status & (TrendDataStorageManager::CollectStatusAlarm
+                       |TrendDataStorageManager::CollectStatusNIBP
+                       |TrendDataStorageManager::CollectStatusFreeze
+                       |TrendDataStorageManager::CollectStatusPrint
+                       |TrendDataStorageManager::CollectStatusCOResult)))
             {
                 continue;
             }
         }
 
         // 选择nibp选项时只筛选触发nibp测量的数据
-        if (timeInterval == RESOLUTION_RATIO_NIBP && (status & TrendDataStorageManager::CollectStatusNIBP))
+        if (timeInterval == RESOLUTION_RATIO_NIBP && !(status & TrendDataStorageManager::CollectStatusNIBP))
         {
             continue;
         }
