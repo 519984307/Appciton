@@ -25,6 +25,7 @@
 #include "WaveWidget.h"
 #include "TimeManager.h"
 #include <QDebug>
+#include <TrendCache.h>
 
 #define STOP_PRINT_TIMEOUT          (100)
 
@@ -137,6 +138,7 @@ void FreezeWindow::showEvent(QShowEvent *ev)
 
     unsigned currentTime = timeManager.getCurTime();
     eventStorageManager.triggerWaveFreezeEvent(currentTime);
+    trendCache.collectTrendData(currentTime, true);
 }
 
 void FreezeWindow::hideEvent(QHideEvent *ev)
@@ -149,7 +151,7 @@ void FreezeWindow::timerEvent(QTimerEvent *ev)
 {
     if (d_ptr->printTimerId == ev->timerId())
     {
-        if (!recorderManager.isPrinting() || d_ptr->timeoutNum == 10) // 1000ms超时处理
+        if (!recorderManager.isPrinting() || d_ptr->timeoutNum == 10)  // 1000ms超时处理
         {
             if (!recorderManager.isPrinting())
             {
@@ -188,7 +190,7 @@ void FreezeWindow::onSelectWaveChanged(const QString &waveName)
     for (int i = 0; i < RECORD_FREEZE_WAVE_NUM; i++)
     {
         ComboBox *curCmbList = d_ptr->combos[i];
-        if (curCmbList->currentIndex() != 0) // not in off state
+        if (curCmbList->currentIndex() != 0)  // not in off state
         {
             wavenames.insert(curCmbList->currentText());
             count++;
@@ -279,7 +281,7 @@ void FreezeWindow::onBtnClick()
             {
                 recorderManager.stopPrint();
                 d_ptr->generator = generator;
-                d_ptr->waitTimerId = startTimer(2000); // 等待2000ms
+                d_ptr->waitTimerId = startTimer(2000);  // 等待2000ms
                 d_ptr->isWait = true;
             }
         }
