@@ -133,10 +133,11 @@ void FreezeWindow::showEvent(QShowEvent *ev)
 
     move(rect.x() + (rect.width() - width()) / 2, rect.y() + rect.height() - height());
 
-    freezeManager.startFreeze();
-
     unsigned currentTime = timeManager.getCurTime();
     eventStorageManager.triggerWaveFreezeEvent(currentTime);
+
+    // 将开始冻结打印接口放在触发波形冻结事件后面，这样该接口内部的趋势表数据缓冲容器可以及时获取有效缓冲数据
+    freezeManager.startFreeze();
 }
 
 void FreezeWindow::hideEvent(QHideEvent *ev)
