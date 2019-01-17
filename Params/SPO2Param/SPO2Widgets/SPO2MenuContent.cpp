@@ -35,7 +35,6 @@ public:
         ITEM_CBO_SENSITIVITY,
         ITEM_CBO_FAST_SAT,
         ITEM_CBO_SMART_TONE,
-        ITEM_CBO_GAIN,
         ITEM_CBO_BEAT_VOL,
         ITEM_CBO_NIBP_SAME_SIDE
     };
@@ -91,7 +90,6 @@ void SPO2MenuContentPrivate::loadOptions()
     combos[ITEM_CBO_SENSITIVITY]->setCurrentIndex(spo2Param.getSensitivity());
     combos[ITEM_CBO_FAST_SAT]->setCurrentIndex(spo2Param.getFastSat());
     combos[ITEM_CBO_SMART_TONE]->setCurrentIndex(spo2Param.getSmartPulseTone());
-    combos[ITEM_CBO_GAIN]->setCurrentIndex(spo2Param.getGain());
 
     int volIndex;
     currentConfig.getNumValue("SPO2|BeatVol", volIndex);
@@ -221,21 +219,6 @@ void SPO2MenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_SMART_TONE, comboBox);
 
-    // 增益
-    label = new QLabel(trs("Gain"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    for (int i = 0; i < SPO2_GAIN_NR; i ++)
-    {
-        comboBox->addItem(SPO2Symbol::convert(static_cast<SPO2Gain>(i)));
-    }
-    itemID = static_cast<int>(SPO2MenuContentPrivate::ITEM_CBO_GAIN);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_GAIN, comboBox);
-
     // 音量
     label = new QLabel(trs("BeatVol"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -304,9 +287,6 @@ void SPO2MenuContent::onComboBoxIndexChanged(int index)
             break;
         case SPO2MenuContentPrivate::ITEM_CBO_SMART_TONE:
             spo2Param.setSmartPulseTone((SPO2SMARTPLUSETONE)index);
-            break;
-        case SPO2MenuContentPrivate::ITEM_CBO_GAIN:
-            spo2Param.setGain(static_cast<SPO2Gain>(index));
             break;
         case SPO2MenuContentPrivate::ITEM_CBO_BEAT_VOL:
             spo2Param.setBeatVol(static_cast<SoundManager::VolumeLevel>(index));

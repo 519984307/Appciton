@@ -61,10 +61,6 @@ struct RecordWaveSegmentInfo
         } resp;
 
         struct {
-            SPO2Gain gain;
-        } spo2;
-
-        struct {
             CO2DisplayZoom zoom;
         } co2;
 

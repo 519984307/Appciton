@@ -30,7 +30,6 @@ public:
         ITEM_CBO_SPO2_SENS = 0,
         ITEM_CBO_SMART_PTONE,
         ITEM_CBO_WAVE_VEL,
-        ITEM_CBO_SPO2_GAIN,
         ITEM_CBO_MODULE_CONTROL,
         ITEM_CBO_MAX,
     };
@@ -162,23 +161,6 @@ void ConfigEditSpO2MenuContent::layoutExec()
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
-    // spo2 gain
-    label = new QLabel(trs("Gain"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox;
-    comboBox->addItems(QStringList()
-                       << trs(SPO2Symbol::convert(SPO2_GAIN_X10))
-                       << trs(SPO2Symbol::convert(SPO2_GAIN_X20))
-                       << trs(SPO2Symbol::convert(SPO2_GAIN_X40))
-                       << trs(SPO2Symbol::convert(SPO2_GAIN_X80)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(ConfigEditSpO2MenuContentPrivate
-                         ::ITEM_CBO_SPO2_GAIN, comboBox);
-    itemID = ConfigEditSpO2MenuContentPrivate
-             ::ITEM_CBO_SPO2_GAIN;
-    comboBox->setProperty("Item", qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-
     // module control
     label = new QLabel(trs("ModuleControl"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -214,9 +196,6 @@ void ConfigEditSpO2MenuContent::onComboBoxIndexChanged(int index)
     {
     case ConfigEditSpO2MenuContentPrivate::ITEM_CBO_MODULE_CONTROL:
         str = "ModuleCntrol";
-        break;
-    case ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SPO2_GAIN:
-        str = "Gain";
         break;
     case ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SMART_PTONE:
         str = "SmartPluseTone";

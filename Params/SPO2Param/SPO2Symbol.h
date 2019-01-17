@@ -106,14 +106,4 @@ public:
         };
         return symbol[index];
     }
-
-    static const char *convert(SPO2Gain index)
-    {
-        static const char *symbol[SPO2_GAIN_NR] =
-        {
-            "x1.0", "x2.0", "x4.0", "x8.0"
-        };
-
-        return symbol[index];
-    }
 };
