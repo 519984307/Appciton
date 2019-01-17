@@ -28,6 +28,7 @@
 #include "FontManager.h"
 #include "TimeDefine.h"
 #include "EventDataParseContext.h"
+#include "Debug.h"
 
 #define GRAPH_DISPLAY_DATA_NUMBER           4
 #define GRAPH_POINT_NUMBER                  120                     // 一屏数据量
@@ -680,17 +681,17 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
     for (int i = 0; i < _eventList.count(); i ++)
     {
         EventInfoSegment event = _eventList.at(i);
-        if (event.type == EventPhysiologicalAlarm)
-        {
-            barPainter.setPen(QPen(Qt::yellow, 2, Qt::SolidLine));
-        }
-        else if (event.type != EventOxyCRG)
-        {
-            barPainter.setPen(QPen(Qt::green, 2, Qt::SolidLine));
-        }
         unsigned alarmTime = event.timestamp;
         if (alarmTime <= _rightTime && alarmTime >= _leftTime)
         {
+            if (event.type == EventPhysiologicalAlarm)
+            {
+                barPainter.setPen(QPen(Qt::yellow, 2, Qt::SolidLine));
+            }
+            else if (event.type != EventOxyCRG)
+            {
+                barPainter.setPen(QPen(Qt::green, 2, Qt::SolidLine));
+            }
             double pos = _getCursorPos(alarmTime);
             barPainter.drawLine(pos, 0, pos, 5);
         }
@@ -702,8 +703,8 @@ void TrendWaveWidget::showEvent(QShowEvent *e)
     IWidget::showEvent(e);
     _getTrendData();
     _cursorPosIndex = 0;
-    _updateEventIndex();
     updateTimeRange();
+    _updateEventIndex();
 }
 
 void TrendWaveWidget::mousePressEvent(QMouseEvent *e)
@@ -928,6 +929,7 @@ void TrendWaveWidget::_updateEventIndex()
     int eventNum = backend->getBlockNR();
     EventDataPraseContext ctx;
     _eventList.clear();
+    unsigned preTime = 0;
     for (int i = 0; i < eventNum; i++)
     {
         ctx.reset();
@@ -935,10 +937,19 @@ void TrendWaveWidget::_updateEventIndex()
         {
             unsigned t = ctx.infoSegment->timestamp;
             int interval = TrendDataSymbol::convertValue(_timeInterval);
-            t = t - t % interval + interval;
+            // 最右边时间 - 最右边时间与事件之间的整数个时间间隔
+            t = _rightTime - (_rightTime - t) / interval * interval;
             EventInfoSegment event;
             event.type = ctx.infoSegment->type;
             event.timestamp = t;
+            if (i != 0)
+            {
+                if (preTime == t)
+                {
+                    continue;       // 相同时间不重复添加进事件列表
+                }
+            }
+            preTime = t;
             _eventList.append(event);
         }
     }
