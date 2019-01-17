@@ -827,13 +827,18 @@ void TrendTableModelPrivate::getTrendData()
         unsigned status = dataSeg->status;
         if (timeInterval != RESOLUTION_RATIO_NIBP && timeStamp % interval != 0)
         {
-            if (status <= TrendDataStorageManager::CollectStatusPeriod)
+            if (!(status & (TrendDataStorageManager::CollectStatusAlarm
+                       |TrendDataStorageManager::CollectStatusNIBP
+                       |TrendDataStorageManager::CollectStatusFreeze
+                       |TrendDataStorageManager::CollectStatusPrint
+                       |TrendDataStorageManager::CollectStatusCOResult)))
             {
                 continue;
             }
         }
+
         // 选择nibp选项时只筛选触发nibp测量的数据
-        if (timeInterval == RESOLUTION_RATIO_NIBP && (status & TrendDataStorageManager::CollectStatusNIBP))
+        if (timeInterval == RESOLUTION_RATIO_NIBP && !(status & TrendDataStorageManager::CollectStatusNIBP))
         {
             continue;
         }
