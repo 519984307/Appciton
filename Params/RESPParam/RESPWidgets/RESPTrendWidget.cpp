@@ -33,17 +33,28 @@ void RESPTrendWidget::_releaseHandle(IWidget *iWidget)
 
 void RESPTrendWidget::_onBrSourceStatusUpdate()
 {
-    // 只有在来源为co2时才会显示
+    bool isAuto = respDupParam.isAutoBrSourceEnabled();
     RESPDupParam::BrSourceType type = respDupParam.getBrSource();
-    if (type == RESPDupParam::BR_SOURCE_CO2 && respDupParam.getRR() != InvData())
+
+    _rrSource->setVisible(false);
+    _rrSource->setText("");
+    if (respDupParam.getRR() == InvData())
+    {
+        return;
+    }
+    if (isAuto == true)
+    {
+        if (type == RESPDupParam::BR_SOURCE_CO2)
+        {
+            _rrSource->setVisible(true);
+            _rrSource->setText(trs("AutoOfCO2"));
+        }
+        return;
+    }
+    if (type == RESPDupParam::BR_SOURCE_CO2)
     {
         _rrSource->setVisible(true);
         _rrSource->setText(trs("SourceOfCO2"));
-    }
-    else
-    {
-        _rrSource->setVisible(false);
-        _rrSource->setText("");
     }
 }
 
