@@ -47,6 +47,7 @@
 #include "MessageBox.h"
 #include "CO2Param.h"
 #include "EventListPageGenerator.h"
+#include "NIBPSymbol.h"
 
 #define TABLE_SPACING               (4)
 #define PAGE_ROW_COUNT               7      // 每页多少行
@@ -1000,14 +1001,26 @@ void EventWindowPrivate::eventInfoUpdate(int curRow)
     }
     case EventRealtimePrint:
     {
+        infoStr = trs("RealtimePrintSegment");
         break;
     }
     case EventNIBPMeasurement:
     {
+        infoStr = trs("NibpMeasurement");
+        if (ctx.measureSegment->measureResult == NIBP_ONESHOT_NONE)
+        {
+            infoStr = trs("NIBPMEASURE") + trs("ServiceSuccess");
+        }
+        else
+        {
+            infoStr = trs("NIBPMEASURE") + trs("NIBPFAILED") + ",";
+            infoStr += trs(NIBPSymbol::convert((NIBPOneShotType)(ctx.measureSegment->measureResult)));
+        }
         break;
     }
     case EventWaveFreeze:
     {
+        infoStr = trs("WaveFreeze");
         break;
     }
     default:
