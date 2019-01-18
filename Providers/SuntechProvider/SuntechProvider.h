@@ -69,8 +69,8 @@ public:
     ~SuntechProvider();
 
 protected:
-    virtual void disconnected(void) { }
-    virtual void reconnected(void) { }
+    virtual void disconnected(void);
+    virtual void reconnected(void);
 
 private slots:
     void _getCuffPressure(void);
