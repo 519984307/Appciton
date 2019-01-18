@@ -26,6 +26,7 @@
 #include "TimeManager.h"
 #include <QDebug>
 #include <TrendCache.h>
+#include "WindowManager.h"
 
 #define STOP_PRINT_TIMEOUT          (100)
 
@@ -145,6 +146,7 @@ void FreezeWindow::hideEvent(QHideEvent *ev)
 {
     Window::hideEvent(ev);
     freezeManager.stopFreeze();
+    windowManager.closeAllWidows();
 }
 
 void FreezeWindow::timerEvent(QTimerEvent *ev)
