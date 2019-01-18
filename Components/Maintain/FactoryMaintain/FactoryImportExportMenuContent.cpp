@@ -381,8 +381,7 @@ void FactoryImportExportMenuContent::layoutExec()
     layout->setMargin(10);
     layout->setAlignment(Qt::AlignTop);
 
-    QLabel *label = new QLabel(trs("ExportImportConfig"));
-    layout->addWidget(label);
+    QLabel *label = NULL;
 
     ListView *listView = new ListView();
     listView->setItemDelegate(new ListViewItemDelegate(listView));
