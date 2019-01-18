@@ -139,7 +139,7 @@ void UnitSetupMenuContentPrivate::loadOptions()
         combos[ITEM_CBO_ICP_UNIT]->setCurrentIndex(index);
     }
 
-    currentConfig.getNumValue("Unit|CO2Unit", unit);
+    currentConfig.getNumValue("Local|CO2Unit", unit);
     if (unit == UNIT_MMHG)
     {
         index = 0;
