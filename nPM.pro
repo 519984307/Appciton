@@ -105,6 +105,9 @@ DEFINES += HIDE_MACHINE_CONFIG_ITEMS
 #失能co2模块维护
 DEFINES += DISABLE_CO2_MODULE_MAINTAIN
 
+#失能工厂维护中测试菜单里的item
+DEFINES += DISABLE_FACTORY_MODULE_SELFTEST
+
 # Depending libraries
 LIBS += -ldl -lasound -lz
 
