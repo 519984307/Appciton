@@ -536,9 +536,9 @@ RecordPage *RecordPageGenerator::createTrendPage(const TrendDataPackage &trendDa
     }
 
     // check time string width, time string is drawn at the bottom
-    if (showEventTime && pageWidth < fontManager.textWidthInPixels(timeStr))
+    if (showEventTime && pageWidth < fontManager.textWidthInPixels(timeStr, font))
     {
-        pageWidth = fontManager.textWidthInPixels(timeStr);
+        pageWidth = fontManager.textWidthInPixels(timeStr, font);
     }
 
     // add the gap between group

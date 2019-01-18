@@ -156,7 +156,14 @@ void TableView::scrollToNextPage()
     if (row >= 0)
     {
         QModelIndex index = model()->index(row, 0);
-        scrollTo(index, QAbstractItemView::PositionAtTop);
+        if (index.isValid())  // 加入model逻辑索引的有效性判断
+        {
+            scrollTo(index, QAbstractItemView::PositionAtTop);
+        }
+        else
+        {
+            scrollToBottom();  // 发现无效逻辑索引时，翻到尾页
+        }
     }
 }
 
@@ -166,7 +173,14 @@ void TableView::scrollToPreviousPage()
     if (row >= 0)
     {
         QModelIndex index = model()->index(row - 1, 0);
-        scrollTo(index, QAbstractItemView::PositionAtBottom);
+        if (index.isValid())  // 加入model逻辑索引的有效性判断
+        {
+            scrollTo(index, QAbstractItemView::PositionAtBottom);
+        }
+        else
+        {
+            scrollToTop();  // 发现无效逻辑索引时，翻到首页
+        }
     }
 }
 

@@ -72,6 +72,13 @@ public:
      */
     QString getParamName(int section);
 
+    /**
+     * @brief addModuleCheck  加入模块支持检查
+     * @param trendGroup 趋势组
+     * @return 调整过的趋势组
+     */
+    int addModuleCheck(int trendGroup);
+
 public:
     struct TrendDataContent
     {
@@ -128,7 +135,7 @@ TrendTableModel::TrendTableModel(QObject *parent)
     index = 0;
     QString groupPrefix = prefix + "TrendGroup";
     systemConfig.getNumValue(groupPrefix, index);
-    loadCurParam(index);
+    loadCurParam(d_ptr->addModuleCheck(index));
     updateData();
 }
 
@@ -820,13 +827,18 @@ void TrendTableModelPrivate::getTrendData()
         unsigned status = dataSeg->status;
         if (timeInterval != RESOLUTION_RATIO_NIBP && timeStamp % interval != 0)
         {
-            if (status <= TrendDataStorageManager::CollectStatusPeriod)
+            if (!(status & (TrendDataStorageManager::CollectStatusAlarm
+                       |TrendDataStorageManager::CollectStatusNIBP
+                       |TrendDataStorageManager::CollectStatusFreeze
+                       |TrendDataStorageManager::CollectStatusPrint
+                       |TrendDataStorageManager::CollectStatusCOResult)))
             {
                 continue;
             }
         }
+
         // 选择nibp选项时只筛选触发nibp测量的数据
-        if (timeInterval == RESOLUTION_RATIO_NIBP && (status & TrendDataStorageManager::CollectStatusNIBP))
+        if (timeInterval == RESOLUTION_RATIO_NIBP && !(status & TrendDataStorageManager::CollectStatusNIBP))
         {
             continue;
         }
@@ -1095,6 +1107,48 @@ QString TrendTableModelPrivate::getParamName(int section)
     str += ")";
 
     return str;
+}
+
+int TrendTableModelPrivate::addModuleCheck(int trendGroup)
+{
+    int index = trendGroup;
+    // 加入模块支持条件判断
+    while (index >= 0)
+    {
+        switch (index)
+        {
+            case TREND_GROUP_RESP:
+            {
+                if (!systemManager.isSupport(CONFIG_RESP))
+                {
+                    index = -1;
+                }
+                return index;
+            }
+            break;
+            case TREND_GROUP_IBP:
+            {
+                if (!systemManager.isSupport(CONFIG_IBP))
+                {
+                    index = TREND_GROUP_RESP;
+                    break;
+                }
+                return index;
+            }
+            break;
+            case TREND_GROUP_AG:
+            {
+                if (!systemManager.isSupport(CONFIG_AG))
+                {
+                    index = TREND_GROUP_IBP;
+                    break;
+                }
+                return index;
+            }
+            break;
+        }
+    }
+    return index;
 }
 
 void TrendTableModelPrivate::loadTableTitle()
