@@ -409,7 +409,10 @@ void ECGMenuContent::layoutExec()
     comboBox->addItems(QStringList()
                        << trs(ECGSymbol::convert(ECG_LEAD_MODE_3))
                        << trs(ECGSymbol::convert(ECG_LEAD_MODE_5))
-                       << trs(ECGSymbol::convert(ECG_LEAD_MODE_12)));
+                   #ifndef HIDE_ECG_12_LEAD_FUNCTION
+                       << trs(ECGSymbol::convert(ECG_LEAD_MODE_12))
+                   #endif
+                       );
     itemID = ECGMenuContentPrivate::ITEM_CBO_LEAD_MODE;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));

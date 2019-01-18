@@ -40,7 +40,7 @@ StopNIBPMeasure,停止NIBP测量,Stop NIBP Measure
 EnterNightMode,进入夜间模式,Enter Night Mode
 ExitNightMode,退出夜间模式,Exit Night Mode
 UserFaceStandard,标准,Standard
-UserFace12Lead,12导,12 Lead
+UserFaceFullScreen,ECG全屏,ECG Full Screen
 UserFaceOxyCRG,呼吸氧合图,OxyCRG
 UserFaceTrend,趋势,Trend
 UserFaceBigFont,大字体,Big Font

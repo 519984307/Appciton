@@ -69,7 +69,7 @@ public:
     {
         static const char *symbol[UFACE_NR] =
         {
-            "UserFaceStandard", "UserFace12Lead", "UserFaceOxyCRG",
+            "UserFaceStandard", "UserFaceFullScreen", "UserFaceOxyCRG",
             "UserFaceTrend", "UserFaceBigFont", "UserFaceCustom", "UserFaceUnknow"
         };
         return symbol[index];
