@@ -116,6 +116,13 @@ public:
      */
     void updateUnit(void);
 
+    /**
+     * @brief setModuleWorkMode  设置模块的工作模式
+     * @param mode  工作模式
+     * @return   是否设置成功
+     */
+    bool setModuleWorkMode(CO2WorkMode mode);
+
 public:
     // 校零。
     void zeroCalibration(void);

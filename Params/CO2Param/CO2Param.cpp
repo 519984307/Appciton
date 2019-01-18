@@ -683,6 +683,34 @@ void CO2Param::updateUnit()
     }
 }
 
+bool CO2Param::setModuleWorkMode(CO2WorkMode mode)
+{
+    if (mode == CO2_WORK_SELFTEST)
+    {
+        return false;
+    }
+    if (d_ptr->provider == NULL)
+    {
+        return false;
+    }
+    if (mode == C02_WORK_SLEEP)
+    {
+        d_ptr->provider->setWorkMode(mode);
+        return true;
+    }
+
+    if (mode == CO2_WORK_MEASUREMENT)
+    {
+        if (getCO2Switch() == false)  // 主机在关闭状态
+        {
+            return false;
+        }
+        d_ptr->provider->setWorkMode(mode);
+        return true;
+    }
+    return false;
+}
+
 /**************************************************************************************************
  * 校零。
  *************************************************************************************************/
@@ -936,6 +964,12 @@ CO2Param::CO2Param()
     QString highPath = path + "High";
     currentConfig.getNumAttr(lowPath, "Min", d_ptr->etco2MinVal);
     currentConfig.getNumAttr(highPath, "Max", d_ptr->etco2MaxVal);
+
+    // 开机初始化时与界面上的软按键图标显示保持一致为待机模式
+    if (d_ptr->provider)
+    {
+        d_ptr->provider->setWorkMode(C02_WORK_SLEEP);
+    }
 }
 
 /**************************************************************************************************

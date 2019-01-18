@@ -33,11 +33,8 @@
 #include "CalculateWindow.h"
 #include "DischargePatientWindow.h"
 
-enum Co2Mode
-{
-    CO2_MODE_STANDBY,
-    CO2_MODE_MEASURE
-};
+#define CO2_STANDY_HINT      (trs("CO2Standby"))
+#define CO2_MEASURE_HINT     (trs("CO2Measure"))
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -328,22 +325,22 @@ void SoftkeyActionBase::CO2Handle(bool isPressed)
         return;
     }
 
-    static Co2Mode co2Mode = CO2_MODE_STANDBY;
-    if (co2Mode == CO2_MODE_STANDBY)
+    QString lastHint = _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].hint;
+    if (lastHint == CO2_STANDY_HINT)
     {
-        co2Mode = CO2_MODE_MEASURE;
-        _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].iconPath = QString("measure.png");
-        _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].hint = trs("CO2Measure");
-
-        // TODO: CO2待机
+        if (co2Param.setModuleWorkMode(CO2_WORK_MEASUREMENT) == true)
+        {
+            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].iconPath = QString("measure.png");
+            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].hint = trs("CO2Measure");
+        }
     }
-    else
+    else if (lastHint == CO2_MEASURE_HINT)
     {
-        co2Mode = CO2_MODE_STANDBY;
-        _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].iconPath = QString("standby.png");
-        _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].hint = trs("CO2Standby");
-
-        // TODO: CO2测量
+        if (co2Param.setModuleWorkMode(C02_WORK_SLEEP) == true)
+        {
+            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].iconPath = QString("standby.png");
+            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].hint = trs("CO2Standby");
+        }
     }
     softkeyManager.refreshPage(false);
 }
