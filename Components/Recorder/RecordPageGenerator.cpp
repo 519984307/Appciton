@@ -2054,7 +2054,6 @@ QList<RecordWaveSegmentInfo> RecordPageGenerator::getWaveInfos(const QList<Wavef
             info.waveInfo.resp.zoom = respParam.getZoom();
             break;
         case WAVE_SPO2:
-            info.waveInfo.spo2.gain = spo2Param.getGain();
             caption = trs(paramInfo.getParamWaveformName(WAVE_SPO2));
             break;
         case WAVE_CO2:

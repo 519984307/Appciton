@@ -91,18 +91,6 @@ enum SPO2LimitAlarmType
     SPO2_LIMIT_ALARM_NR
 };
 
-/**************************************************************************************************
- * ECG增益
- *************************************************************************************************/
-enum SPO2Gain
-{
-    SPO2_GAIN_X10,      // x1
-    SPO2_GAIN_X20,      // x2
-    SPO2_GAIN_X40,      // x4
-    SPO2_GAIN_X80,      // x8
-    SPO2_GAIN_NR
-};
-
 enum SensitivityMode
 {
     SPO2_MASIMO_SENS_MAX,

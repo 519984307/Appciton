@@ -24,74 +24,6 @@
 #include "SystemManager.h"
 
 /**************************************************************************************************
- * 设置波形增益
- *************************************************************************************************/
-void SPO2WaveWidget::setGain(SPO2Gain gain)
-{
-    if (!_gain)
-    {
-        return;
-    }
-
-    _initValueRange(gain);
-    QString text = NULL;
-    switch (gain)
-    {
-    case SPO2_GAIN_X10:
-    case SPO2_GAIN_X20:
-    case SPO2_GAIN_X40:
-    case SPO2_GAIN_X80:
-        text += SPO2Symbol::convert(gain);
-        break;
-
-    default:
-        text += "X1";
-        break;
-    }
-
-    _gain->setText(text);
-}
-
-/**************************************************************************************************
- * 获取极值。
- *************************************************************************************************/
-void SPO2WaveWidget::getGainToValue(SPO2Gain gain, int &min, int &max)
-{
-    int mid = spo2Param.getSPO2MaxValue() / 2;
-    int diff;
-    switch (gain)
-    {
-    case SPO2_GAIN_X10:
-        min = 0;
-        max = spo2Param.getSPO2MaxValue();
-        break;
-
-    case SPO2_GAIN_X20:
-        diff = spo2Param.getSPO2MaxValue() / 4;
-        min = mid - diff;
-        max = mid + diff;
-        break;
-
-    case SPO2_GAIN_X40:
-        diff = spo2Param.getSPO2MaxValue() / 8;
-        min = mid - diff;
-        max = mid + diff;
-        break;
-
-    case SPO2_GAIN_X80:
-        diff = spo2Param.getSPO2MaxValue() / 16;
-        min = mid - diff;
-        max = mid + diff;
-        break;
-
-    default:
-        min = 0;
-        max = spo2Param.getSPO2MaxValue();
-        break;
-    }
-}
-
-/**************************************************************************************************
  * wave is enable。
  *************************************************************************************************/
 bool SPO2WaveWidget::waveEnable()
@@ -102,21 +34,7 @@ bool SPO2WaveWidget::waveEnable()
 void SPO2WaveWidget::updateWidgetConfig()
 {
     _loadConfig();
-
-    int gain = SPO2_GAIN_X10;
-    currentConfig.getNumValue("SPO2|Gain", gain);
-    spo2Param.setGain(static_cast<SPO2Gain>(gain));
-    setGain(static_cast<SPO2Gain>(gain));
-
     WaveWidget::updateWidgetConfig();
-}
-
-void SPO2WaveWidget::_initValueRange(SPO2Gain gain)
-{
-    int min = 0;
-    int max = 0;
-    getGainToValue(gain, min, max);
-    setValueRange(min, max);
 }
 
 /**************************************************************************************************
@@ -128,19 +46,16 @@ void SPO2WaveWidget::resizeEvent(QResizeEvent *e)
 {
     WaveWidget::resizeEvent(e);
 
-    if (!_name || !_gain || !_notify)
+    if (!_name || !_notify)
     {
         return;
     }
 
     _name->move(0, 0);
-    _gain->move(0 + _name->rect().width(), 0);
 
     // 设定为固定的高度和宽度后，居中显示。
     _notify->move((width() - _notify->width()) / 2,
                   qmargins().top() + (height() - qmargins().top()) / 2 - _notify->height() - 1);
-
-    _initValueRange(spo2Param.getGain());
 }
 
 /**************************************************************************************************
@@ -204,7 +119,6 @@ void SPO2WaveWidget::setNotify(bool enable, QString str)
  *************************************************************************************************/
 SPO2WaveWidget::SPO2WaveWidget(const QString &waveName, const QString &title)
     : WaveWidget(waveName, title)
-    , _gain(NULL)
     , _notify(NULL)
 {
     setFocusPolicy(Qt::NoFocus);
@@ -217,12 +131,6 @@ SPO2WaveWidget::SPO2WaveWidget(const QString &waveName, const QString &title)
     _name->setFixedSize(130, fontH);
     _name->setText(title);
 
-    _gain = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
-    _gain->setFont(fontManager.textFont(fontSize));
-    _gain->setFixedSize(120, fontH);
-    _gain->setText("");
-    addItem(_gain);
-
     _notify = new WaveWidgetLabel(" ", Qt::AlignCenter, this);
     _notify->setFont(fontManager.textFont(fontSize));
     _notify->setFocusPolicy(Qt::NoFocus);
@@ -232,7 +140,6 @@ SPO2WaveWidget::SPO2WaveWidget(const QString &waveName, const QString &title)
     addItem(_notify);
     // 加载配置
     _loadConfig();
-    setGain(spo2Param.getGain());
 
     setMargin(QMargins(WAVE_X_OFFSET, fontH, 2, 2));
 }

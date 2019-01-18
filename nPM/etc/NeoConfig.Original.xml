@@ -120,7 +120,6 @@
         <FastSat>0</FastSat>
         <SmartPluseTone>1</SmartPluseTone>
         <SweepSpeed>1</SweepSpeed>
-        <Gain>0</Gain>
         <BeatVol>1</BeatVol>
         <ModuleControl>1</ModuleControl>
 	<NIBPSameSide>0</NIBPSameSide>
