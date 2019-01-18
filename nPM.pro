@@ -105,6 +105,9 @@ DEFINES += HIDE_MACHINE_CONFIG_ITEMS
 #失能co2模块维护
 DEFINES += DISABLE_CO2_MODULE_MAINTAIN
 
+#失能ecg模块校准
+DEFINES += DISABLE_ECG_MODULE_CALIBRATION
+
 # Depending libraries
 LIBS += -ldl -lasound -lz
 
