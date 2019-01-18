@@ -18,7 +18,8 @@
 #include "TimeDate.h"
 #include "TrendDataStorageManager.h"
 
-#define RECORD_PER_PAGE 10
+// 打印纸每页最多打印10行数据（1 head title + 9 data）
+#define RECORD_PER_PAGE 9
 class TrendTablePageGeneratorPrivate
 {
 public:
