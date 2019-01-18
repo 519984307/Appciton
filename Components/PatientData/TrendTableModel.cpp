@@ -562,17 +562,13 @@ bool TrendTableModel::getDataTimeRange(unsigned &start, unsigned &end)
 
 void TrendTableModel::displayDataTimeRange(unsigned &start, unsigned &end)
 {
-    if (d_ptr->trendDataPack.count() < d_ptr->indexInfo.end)
+    if (d_ptr->indexInfo.end <= d_ptr->indexInfo.start
+            || d_ptr->indexInfo.end < 1
+            || d_ptr->trendDataPack.count() < d_ptr->indexInfo.end)
     {
         start = 0;
         end = 0;
-        return;
-    }
-    // 判断当前页的索引是否在正常范围内
-    if (d_ptr->indexInfo.end <= d_ptr->indexInfo.start || d_ptr->indexInfo.end < 1)
-    {
-        start = 0;
-        end = 0;
+        qDebug() << Q_FUNC_INFO << "Trend table print time wrong";
         return;
     }
     start = d_ptr->trendDataPack.at(d_ptr->indexInfo.start)->time;
