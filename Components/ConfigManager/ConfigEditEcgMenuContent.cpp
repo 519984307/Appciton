@@ -339,9 +339,9 @@ void ConfigEditECGMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
+                       << trs(ECGSymbol::convert(ECG_FILTERMODE_SURGERY))
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_MONITOR))
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_DIAGNOSTIC))
-                       << trs(ECGSymbol::convert(ECG_FILTERMODE_SURGERY))
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_ST)));
     itemID = static_cast<int>(ConfigEditECGMenuContentPrivate::ITEM_CBO_FILTER_MODE);
     comboBox->setProperty("Item",
