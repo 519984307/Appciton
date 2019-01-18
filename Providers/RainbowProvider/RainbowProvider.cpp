@@ -785,6 +785,9 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         if (sensorFamilyMember == 8 || sensorType == 0)
         {
             qDebug() << "No Sensor Connected!";
+
+            // 传感器探头突然脱落时，会一直进来这里,添加报警
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, true);
         }
     }
     break;
