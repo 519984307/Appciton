@@ -381,8 +381,6 @@ void FactoryImportExportMenuContent::layoutExec()
     layout->setMargin(10);
     layout->setAlignment(Qt::AlignTop);
 
-    QLabel *label = NULL;
-
     ListView *listView = new ListView();
     listView->setItemDelegate(new ListViewItemDelegate(listView));
     layout->addWidget(listView);
@@ -413,7 +411,7 @@ void FactoryImportExportMenuContent::layoutExec()
     layout->addLayout(hl);
     layout->addStretch(1);
 
-    label = new QLabel(trs("WarningNoUSB"));
+    QLabel *label = new QLabel(trs("WarningNoUSB"));
     label->setFixedHeight(HEIGHT_HINT);
     d_ptr->infoLab = label;
     layout->addWidget(label, 1, Qt::AlignRight);
