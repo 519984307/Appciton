@@ -54,6 +54,9 @@ void ModuleMaintainMenuContentPrivate::loadOption()
 #ifdef DISABLE_CO2_MODULE_MAINTAIN
     buttons[ITEM_BTN_CO2_MODULE_MAINTAIN]->setEnabled(false);
 #endif
+#ifdef DISABLE_ECG_MODULE_CALIBRATION
+    buttons[ITEM_BTN_ECG_MODULE_CALIBRATION]->setEnabled(false);
+#endif
 }
 
 ModuleMaintainMenuContent::ModuleMaintainMenuContent()

@@ -108,6 +108,9 @@ DEFINES += DISABLE_CO2_MODULE_MAINTAIN
 #失能工厂维护中测试菜单里的item
 DEFINES += DISABLE_FACTORY_MODULE_SELFTEST
 
+#失能ecg模块校准
+DEFINES += DISABLE_ECG_MODULE_CALIBRATION
+
 # Depending libraries
 LIBS += -ldl -lasound -lz
 
