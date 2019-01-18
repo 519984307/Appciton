@@ -103,6 +103,15 @@ public:
 
     QList<QPainterPath> generatorPainterPath(const TrendGraphInfo &graphInfo);
 
+    /**
+     * @brief getTrendPainterPath 获取参数趋势数据Path
+     * @param dataVertor 数据容器
+     * @param index 参数在容器中的索引
+     * @return
+     */
+    QPainterPath getTrendPainterPath(QVector<TrendGraphDataV2> dataVertor, int index);
+    QPainterPath getTrendPainterPath(QVector<TrendGraphDataV3> dataVertor, int index);
+
 protected:
     void paintEvent(QPaintEvent *e);
     void showEvent(QShowEvent *e);
