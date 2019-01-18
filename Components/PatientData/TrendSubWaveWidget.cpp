@@ -150,7 +150,7 @@ SubParamID TrendSubWaveWidget::getSubParamID()
     return _id;
 }
 
-QPainterPath TrendSubWaveWidget::getTrendPainterPath(QVector<TrendGraphDataV2> dataVertor, int index)
+QPainterPath TrendSubWaveWidget::getTrendPainterPath(const QVector<TrendGraphDataV2> &dataVertor, int index)
 {
     QPainterPath path;
     bool lastPointInvalid = true;
@@ -213,7 +213,7 @@ QPainterPath TrendSubWaveWidget::getTrendPainterPath(QVector<TrendGraphDataV2> d
     return path;
 }
 
-QPainterPath TrendSubWaveWidget::getTrendPainterPath(QVector<TrendGraphDataV3> dataVertor, int index)
+QPainterPath TrendSubWaveWidget::getTrendPainterPath(const QVector<TrendGraphDataV3> &dataVertor, int index)
 {
     QPainterPath path;
     bool lastPointInvalid = true;
@@ -224,6 +224,7 @@ QPainterPath TrendSubWaveWidget::getTrendPainterPath(QVector<TrendGraphDataV3> d
         TrendDataType data = iter->data[index];
         if (data == InvData())
         {
+            // 画连续无效点
             if (!lastPointInvalid)
             {
                 path.lineTo(point);
@@ -235,6 +236,7 @@ QPainterPath TrendSubWaveWidget::getTrendPainterPath(QVector<TrendGraphDataV3> d
         qreal x = _mapValue(_timeX, iter->timestamp);
         qreal value = _mapValue(_valueY, data);
 
+        // 判断是否为最后一个点
         if (lastPointInvalid)
         {
             path.moveTo(x, value);

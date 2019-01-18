@@ -109,8 +109,8 @@ public:
      * @param index 参数在容器中的索引
      * @return
      */
-    QPainterPath getTrendPainterPath(QVector<TrendGraphDataV2> dataVertor, int index);
-    QPainterPath getTrendPainterPath(QVector<TrendGraphDataV3> dataVertor, int index);
+    QPainterPath getTrendPainterPath(const QVector<TrendGraphDataV2> &dataVertor, int index);
+    QPainterPath getTrendPainterPath(const QVector<TrendGraphDataV3> &dataVertor, int index);
 
 protected:
     void paintEvent(QPaintEvent *e);
