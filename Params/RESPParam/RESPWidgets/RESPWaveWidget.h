@@ -34,6 +34,12 @@ public:
     /* reimplment */
     void updateWidgetConfig();
 
+    /**
+     * @brief setWaveformMode  设置波形模式
+     * @param mode  模式
+     */
+    void setWaveformMode(RESPSweepMode mode);
+
 protected:
     void resizeEvent(QResizeEvent *e);
     void focusInEvent(QFocusEvent */*e*/);

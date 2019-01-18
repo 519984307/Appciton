@@ -175,6 +175,9 @@ RESPApneaTime,窒息时间,Apnea Time
 RESPZoom,缩放,Zoom
 RESPLead,呼吸导联,RESP Lead
 RESPMenu,RESP,RESP
+RESPWaveMode,RESP波形模式,RESP Wave Mode
+RESPCurve,曲线,Curve
+RESPFilled,填充,Filled
 RRLow,RR低,RR Low
 RRHigh,RR高,RR High
 RESPApnea,呼吸窒息,RESP Apnea

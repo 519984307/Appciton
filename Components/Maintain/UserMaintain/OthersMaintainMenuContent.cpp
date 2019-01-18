@@ -21,6 +21,7 @@
 #include "NurseCallSettingWindow.h"
 #include "ECGParam.h"
 #include "CO2Param.h"
+#include "RESPParam.h"
 
 class OthersMaintainMenuContentPrivate
 {
@@ -33,6 +34,7 @@ public:
         ITEM_CBO_PARAM_SWITCH_PREM,
         ITEM_CBO_CONFIG_SET,
         ITEM_CBO_CO2_WAVE_MODE,
+        ITEM_CBO_RESP_WAVE_MODE,
     };
 
     OthersMaintainMenuContentPrivate()
@@ -51,6 +53,7 @@ public:
 void OthersMaintainMenuContentPrivate::loadOptions()
 {
     QString tmpStr;
+#ifndef HIDE_OTHER_MAINTAIN_ITEMS
     systemConfig.getStrValue("Others|WaveLine", tmpStr);
     if (tmpStr.toInt() >= combos[ITEM_CBO_WAVE_LINE]->count())
     {
@@ -104,9 +107,13 @@ void OthersMaintainMenuContentPrivate::loadOptions()
     {
         combos[ITEM_CBO_CONFIG_SET]->setCurrentIndex(tmpStr.toInt());
     }
+#endif
 
     int mode = co2Param.getSweepMode();
     combos[ITEM_CBO_CO2_WAVE_MODE]->setCurrentIndex(mode);
+
+    mode = respParam.getSweepMode();
+    combos[ITEM_CBO_RESP_WAVE_MODE]->setCurrentIndex(mode);
 }
 
 OthersMaintainMenuContent::OthersMaintainMenuContent()
@@ -132,7 +139,7 @@ void OthersMaintainMenuContent::layoutExec()
     ComboBox *comboBox;
     QLabel *label;
     int itemID;
-
+#ifndef HIDE_OTHER_MAINTAIN_ITEMS
     // waveline setup
     label = new QLabel(trs("WaveLine"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -208,6 +215,7 @@ void OthersMaintainMenuContent::layoutExec()
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(OthersMaintainMenuContentPrivate::ITEM_CBO_CONFIG_SET, comboBox);
+#endif
 
     // CO2波形模式
     label = new QLabel(trs("CO2WaveMode"));
@@ -223,6 +231,21 @@ void OthersMaintainMenuContent::layoutExec()
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(OthersMaintainMenuContentPrivate::ITEM_CBO_CO2_WAVE_MODE, comboBox);
+
+    // resp波形模式
+    label = new QLabel(trs("RESPWaveMode"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                       << trs("RESPCurve")
+                       << trs("RESPFilled")
+                      );
+    itemID = static_cast<int>(OthersMaintainMenuContentPrivate::ITEM_CBO_RESP_WAVE_MODE);
+    comboBox->setProperty("Item",
+                          qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(OthersMaintainMenuContentPrivate::ITEM_CBO_RESP_WAVE_MODE, comboBox);
 
 #ifndef HIDE_NURSE_CALL_FUNCTION
     // nurse Call Setting
@@ -265,6 +288,9 @@ void OthersMaintainMenuContent::onComboBoxIndexChanged(int index)
             break;
         case OthersMaintainMenuContentPrivate::ITEM_CBO_CO2_WAVE_MODE:
             co2Param.setSweepMode(static_cast<CO2SweepMode>(index));
+            break;
+        case OthersMaintainMenuContentPrivate::ITEM_CBO_RESP_WAVE_MODE:
+            respParam.setSweepMode(static_cast<RESPSweepMode>(index));
             break;
         default:
             break;

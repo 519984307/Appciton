@@ -142,6 +142,7 @@
         <MeasureMode>1</MeasureMode>
     </CO>
     <RESP>
+        <RESPSweepMode>0</RESPSweepMode>
         <AutoActivation>1</AutoActivation>
         <ApneaDelay>1</ApneaDelay>
         <BreathLead>2</BreathLead>

@@ -219,6 +219,18 @@ void RESPWaveWidget::updateWidgetConfig()
    WaveWidget::updateWidgetConfig();
 }
 
+void RESPWaveWidget::setWaveformMode(RESPSweepMode mode)
+{
+    if (mode == RESP_SWEEP_MODE_FILLED)
+    {
+        enableFill(true);
+    }
+    else
+    {
+        enableFill(false);
+    }
+}
+
 /**************************************************************************************************
  * 加载配置。
  *************************************************************************************************/
