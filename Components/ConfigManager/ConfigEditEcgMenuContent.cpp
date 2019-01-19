@@ -247,7 +247,9 @@ void ConfigEditECGMenuContent::readyShow()
         d_ptr->combos[ConfigEditECGMenuContentPrivate
                       ::MenuItem(i)]->setEnabled(!isOnlyToRead);
     }
+#ifndef HIDE_ECG_ST_PVCS_SUBPARAM
     d_ptr->sTSwitchBtn->setEnabled(!isOnlyToRead);
+#endif
     if (isOnlyToRead)
     {
         d_ptr->hrLabel->setFocusPolicy(Qt::StrongFocus);
@@ -339,10 +341,13 @@ void ConfigEditECGMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
+                       << trs(ECGSymbol::convert(ECG_FILTERMODE_SURGERY))
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_MONITOR))
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_DIAGNOSTIC))
-                       << trs(ECGSymbol::convert(ECG_FILTERMODE_SURGERY))
-                       << trs(ECGSymbol::convert(ECG_FILTERMODE_ST)));
+                   #ifndef  HIDE_ECG_ST_PVCS_SUBPARAM
+                       << trs(ECGSymbol::convert(ECG_FILTERMODE_ST))
+                   #endif
+                       );
     itemID = static_cast<int>(ConfigEditECGMenuContentPrivate::ITEM_CBO_FILTER_MODE);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -400,12 +405,14 @@ void ConfigEditECGMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_NOTCH_FILTER, comboBox);
 
+#ifndef  HIDE_ECG_ST_PVCS_SUBPARAM
     // ST 段开关
     d_ptr->sTSwitchBtn = new Button;
     d_ptr->sTSwitchBtn->setText(QString("%1 >>").arg(trs("STAnalysize")));
     d_ptr->sTSwitchBtn->setButtonStyle(Button::ButtonTextOnly);
     layout->addWidget(d_ptr->sTSwitchBtn, d_ptr->combos.count(), 1);
     connect(d_ptr->sTSwitchBtn, SIGNAL(released()), this, SLOT(onSTSwitchBtnReleased()));
+#endif
 
     // 添加报警设置链接
     Button *btn = new Button(QString("%1%2").
