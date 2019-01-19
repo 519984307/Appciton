@@ -130,8 +130,8 @@
         <SweepSpeed>2</SweepSpeed>
         <FICO2Display>0</FICO2Display>
         <DisplayZoom>3</DisplayZoom>
-        <O2Compensation>12</O2Compensation>
-        <N2OCompensation>12</N2OCompensation>
+        <O2Compensation>16</O2Compensation>
+        <N2OCompensation>0</N2OCompensation>
         <CeroCalibration>0</CeroCalibration>
     </CO2>
     <CO>
