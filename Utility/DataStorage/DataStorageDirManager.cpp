@@ -19,6 +19,7 @@
 #include <QDateTime>
 #include "SystemManager.h"
 #include "SystemAlarm.h"
+#include "Alarm.h"
 
 DataStorageDirManager *DataStorageDirManager::_selfObj = NULL;
 static QString _lastFolder;
@@ -456,6 +457,7 @@ void DataStorageDirManager::createDir(bool createNew)
         Config systemDefCfg(systemConfig.getCurConfigName());
         systemConfig.setNodeValue("PrimaryCfg", systemDefCfg);
         emit newPatient();
+        alertor.resetPhyAlarmLastAlarm();
     }
 }
 

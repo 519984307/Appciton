@@ -29,7 +29,6 @@
 #include "TEMPSymbol.h"
 #include "NIBPSymbol.h"
 #include "TrendDataStorageManager.h"
-#include "DataStorageDirManager.h"
 
 #define ALARM_LIMIT_TIMES (3)   // 超限3次后，发生报警
 static int curSecondAlarmNum = 0; // record the number of alarms happend in the save seconds
@@ -805,7 +804,6 @@ AlarmLimitIFace *Alarm::getAlarmLimitIFace(SubParamID id)
  * 功能： 构造。
  *************************************************************************************************/
 Alarm::Alarm() :
-    QObject(),
     _isLatchLock(true)
 {
     // 栓锁状态初始化
@@ -821,8 +819,6 @@ Alarm::Alarm() :
     }
     _alarmStatusList.clear();
     _curAlarmStatus = ALARM_STATUS_NORMAL;
-    // 新建病人时，刷新上次报警标志，目的新建病人后，可以重新产生生理报警数据
-    connect(&dataStorageDirManager, SIGNAL(newPatient()), this, SLOT(resetPhyAlarmLastAlarm()));
 }
 
 /**************************************************************************************************

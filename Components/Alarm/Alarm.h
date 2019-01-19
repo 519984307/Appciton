@@ -14,11 +14,9 @@
 #include "AlarmIndicator.h"
 #include "SoundManager.h"
 #include <QMultiMap>
-#include <QObject>
 
-class Alarm : public QObject
+class Alarm
 {
-    Q_OBJECT
 public:
     struct AlarmInfo
     {
@@ -87,7 +85,6 @@ public:
      */
     void setLatchLockSta(bool status);
 
-private slots:
     /**
      * @brief resetPhyAlarmLastAlarm 重设生理报警上一次报警的状态为false
      */
