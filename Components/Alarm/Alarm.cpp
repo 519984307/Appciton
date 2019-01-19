@@ -984,10 +984,8 @@ void Alarm::resetPhyAlarmLastAlarm()
             QString traceID;
             _getAlarmID(source, i, traceID);
             AlarmTraceCtrl *traceCtrl = &_getAlarmTraceCtrl(traceID);
-            qDebug()<< "trace ID: "<< traceID;
             alarmIndicator.delAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage);
             traceCtrl->Reset();
-            traceCtrl->alarmTimesCount = ALARM_LIMIT_TIMES;     // 处理目的：报警状态恢复正常后，马上刷新报警状态
             source->notifyAlarm(i, false);
         }
     }
