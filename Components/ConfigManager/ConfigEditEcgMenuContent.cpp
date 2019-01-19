@@ -344,7 +344,7 @@ void ConfigEditECGMenuContent::layoutExec()
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_SURGERY))
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_MONITOR))
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_DIAGNOSTIC))
-                   #ifndef  HIDE_ECG_12_LEAD_FUNCTION
+                   #ifndef  HIDE_ECG_ST_PVCS_SUBPARAM
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_ST))
                    #endif
                        );
