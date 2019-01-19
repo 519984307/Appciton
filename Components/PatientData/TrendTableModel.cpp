@@ -577,7 +577,8 @@ void TrendTableModel::displayDataTimeRange(unsigned &start, unsigned &end)
 
 void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
 {
-    if (startTime >= endTime)
+    // 开始时间与结束时间相同时也要打印开始时刻的数据
+    if (startTime > endTime)
     {
         return;
     }
