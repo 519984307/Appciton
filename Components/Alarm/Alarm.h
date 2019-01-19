@@ -111,8 +111,6 @@ private:
     void _handleOneShotAlarm(AlarmOneShotIFace *alarmSource);
 
     void _handleAlarm(void);
-
-    bool _newPatient;
 };
 #define alertor (Alarm::construction())
 #define deleteAlarm() (delete Alarm::_selfObj)
