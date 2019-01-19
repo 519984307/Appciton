@@ -125,6 +125,17 @@ private:
      */
     double _mapValue(TrendParamDesc desc, int data);
 
+    /**
+     * @brief _autoRulerCal 计算自动标尺
+     */
+    void _autoRulerCal(void);
+
+    /**
+     * @brief _updateAutoRuler 更新自动标尺
+     * @param data 数据
+     */
+    void _updateAutoRuler(TrendDataType data);
+
 private:
     TrendSubWidgetInfo _info;
     SubParamID _id;
