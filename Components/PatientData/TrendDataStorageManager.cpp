@@ -219,7 +219,7 @@ void TrendDataStorageManager::periodRun(unsigned t)
 {
     Q_D(TrendDataStorageManager);
 
-    if (d->lastStoreTimestamp >= t)
+    if (d->lastStoreTimestamp == t)
     {
         return;
     }
@@ -244,7 +244,7 @@ void TrendDataStorageManager::periodRun(unsigned t)
 void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
 {
     Q_D(TrendDataStorageManager);
-    if (dataStorageDirManager.isCurRescueFolderFull() || d->lastStoreTimestamp >= t)
+    if (dataStorageDirManager.isCurRescueFolderFull() || d->lastStoreTimestamp == t)
     {
         return;
     }

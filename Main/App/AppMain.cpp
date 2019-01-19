@@ -17,6 +17,7 @@
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"
 #include "LayoutManager.h"
+#include <unistd.h>
 
 static IThread *_storageThread = NULL;
 static QThread *_networkThread = NULL;
@@ -166,7 +167,7 @@ static void _storageThreadEntry(void)
         errorLog.run();
     }
 
-    IThread::msleep(300);
+    usleep(300 * 1000);
 }
 
 /**************************************************************************************************
