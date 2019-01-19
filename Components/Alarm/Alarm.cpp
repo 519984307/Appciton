@@ -607,11 +607,10 @@ char Alarm::getAlarmSourceStatus(const QString &sourceName, SubParamID id, bool 
         {
             if (id == source->getSubParamID(i))
             {
-                AlarmTraceCtrl *traceCtrl;
                 QString traceID;
 
                 _getAlarmID(source, i, traceID);
-                traceCtrl = &_getAlarmTraceCtrl(traceID);
+                AlarmTraceCtrl *traceCtrl = &_getAlarmTraceCtrl(traceID);
 
                 if (traceCtrl->lastAlarmed)
                 {
@@ -724,11 +723,10 @@ QList<Alarm::AlarmInfo> Alarm::getCurrentPhyAlarmInfo()
         int  n = source->getAlarmSourceNR();
         for (int i = 0; i < n; i++)
         {
-            AlarmTraceCtrl *traceCtrl;
             QString traceID;
 
             _getAlarmID(source, i, traceID);
-            traceCtrl = &_getAlarmTraceCtrl(traceID);
+           AlarmTraceCtrl *traceCtrl = &_getAlarmTraceCtrl(traceID);
             if (traceCtrl->lastAlarmed)
             {
                 almInfo.paramid = source->getParamID();
@@ -750,11 +748,10 @@ QList<Alarm::AlarmInfo> Alarm::getCurrentPhyAlarmInfo()
             if (source->getAlarmType(i) == ALARM_TYPE_PHY
                     || source->getAlarmType(i) == ALARM_TYPE_LIFE)
             {
-                AlarmTraceCtrl *traceCtrl;
                 QString traceID;
 
                 _getAlarmID(source, i, traceID);
-                traceCtrl = &_getAlarmTraceCtrl(traceID);
+                 AlarmTraceCtrl *traceCtrl = &_getAlarmTraceCtrl(traceID);
                 if (traceCtrl->lastAlarmed)
                 {
                     almInfo.paramid = source->getParamID();
@@ -782,10 +779,9 @@ bool Alarm::getOneShotAlarmStatus(AlarmOneShotIFace *iface, int alarmId)
     QList<AlarmOneShotIFace *> oneshotAlarmSouceList = _oneshotSources.values();
     if (oneshotAlarmSouceList.contains(iface))
     {
-        AlarmTraceCtrl *traceCtrl;
         QString traceID;
         _getAlarmID(iface, alarmId, traceID);
-        traceCtrl = &_getAlarmTraceCtrl(traceID);
+         AlarmTraceCtrl *traceCtrl = &_getAlarmTraceCtrl(traceID);
         return traceCtrl->lastAlarmed;
     }
     else
