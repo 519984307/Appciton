@@ -650,10 +650,9 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
     printInfo.stopIndex = endIndex;
     printInfo.interval = TrendDataSymbol::convertValue(d_ptr->timeInterval);
     printInfo.list = d_ptr->displayList;
-    for (int i = 0; i < d_ptr->trendDataPack.count(); i++)
+    for (int i = startIndex; i < endIndex; i++)
     {
-        printInfo.eventList.append(d_ptr->trendDataPack.at(i)->status);
-        printInfo.timestampList.append(d_ptr->trendDataPack.at(i)->time);
+        printInfo.timestampEventMap[d_ptr->trendDataPack.at(i)->time] = d_ptr->trendDataPack.at(i)->status;
     }
     RecordPageGenerator *gen = new TrendTablePageGenerator(backend, printInfo);
     if (recorderManager.isPrinting() && !d_ptr->isWait)
@@ -852,8 +851,21 @@ void TrendTableModelPrivate::getTrendData()
         pack->co2Baro = dataSeg->co2Baro;
         for (int j = 0; j < dataSeg->trendValueNum; j ++)
         {
-            pack->subparamValue[static_cast<SubParamID>(dataSeg->values[j].subParamId)] = dataSeg->values[j].value;
-            pack->subparamAlarm[static_cast<SubParamID>(dataSeg->values[j].subParamId)] = dataSeg->values[j].alarmFlag;
+            // 非nibp事件的nibp参数强制显示为无效数据
+            SubParamID id = static_cast<SubParamID>(dataSeg->values[j].subParamId);
+            TrendDataType value = dataSeg->values[j].value;
+            if (id == SUB_PARAM_NIBP_SYS
+                    || id == SUB_PARAM_NIBP_DIA
+                    || id == SUB_PARAM_NIBP_MAP)
+            {
+                if (!(status & TrendDataStorageManager::CollectStatusNIBP))
+                {
+                    value = InvData();
+                }
+            }
+
+            pack->subparamValue[id] = value;
+            pack->subparamAlarm[id] = dataSeg->values[j].alarmFlag;
         }
         pack->status = status;
         pack->alarmFlag = dataSeg->eventFlag;
