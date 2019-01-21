@@ -627,6 +627,12 @@ void SPO2Param::checkSelftest()
             errorLog.append(item);
         }
     }
+
+    // update spo2 value range
+    if (_waveWidget && _provider)
+    {
+        _waveWidget->setValueRange(_provider->getSPO2BaseLine(), _provider->getSPO2MaxValue());
+    }
 }
 
 void SPO2Param::onPaletteChanged(ParamID id)
@@ -781,6 +787,7 @@ SPO2Param::SPO2Param() : Param(PARAM_SPO2),
     systemConfig.getNumValue("PrimaryCfg|SPO2|EverSensorOn", _isEverSensorOn);
 
     QTimer::singleShot(2000, this, SLOT(checkSelftest()));
+
 }
 
 /**************************************************************************************************
