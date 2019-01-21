@@ -166,15 +166,20 @@ void RESPDupParam::updateRR(short rr)
         _trendWidget->setRRValue(_brValue, false);
     }
 
-    // emit brSourceStatusUpdate signal only when the value is invalid first.
-    if (_invaildBRRRValueFirst == false && _brValue == InvData() && _rrValue == InvData())
+    // emit brSourceStatusUpdate signal when the value is invalid.
+    if (_invaildBRRRValue == false && _brValue == InvData() && _rrValue == InvData())
     {
-        _invaildBRRRValueFirst = true;
+        _invaildBRRRValue = true;
         emit brSourceStatusUpdate();
     }
-    if (_brValue != InvData() || _rrValue != InvData())
+    if (_invaildBRRRValue == true && (_brValue != InvData() || _rrValue != InvData()))
     {
-        _invaildBRRRValueFirst = false;
+        _invaildBRRRValue = false;
+        emit brSourceStatusUpdate();
+    }
+    else if (_isAutoBrSource)  // emit brSourceStatusUpdate signal when the value type is auto
+    {
+        emit brSourceStatusUpdate();
     }
 }
 
@@ -210,15 +215,20 @@ void RESPDupParam::updateBR(short br)
         _trendWidget->setRRValue(_rrValue, true);
     }
 
-    // emit brSourceStatusUpdate signal only when the value is invalid first.
-    if (_invaildBRRRValueFirst == false && _brValue == InvData() && _rrValue == InvData())
+    // emit brSourceStatusUpdate signal when the value is invalid.
+    if (_invaildBRRRValue == false && _brValue == InvData() && _rrValue == InvData())
     {
-        _invaildBRRRValueFirst = true;
+        _invaildBRRRValue = true;
         emit brSourceStatusUpdate();
     }
-    if (_brValue != InvData() || _rrValue != InvData())
+    else if (_invaildBRRRValue == true && (_brValue != InvData() || _rrValue != InvData()))
     {
-        _invaildBRRRValueFirst = false;
+        _invaildBRRRValue = false;
+        emit brSourceStatusUpdate();
+    }
+    else if (_isAutoBrSource)  // emit brSourceStatusUpdate signal when the value type is auto
+    {
+        emit brSourceStatusUpdate();
     }
 }
 
@@ -334,7 +344,7 @@ RESPDupParam::RESPDupParam()
       _isAlarm(false),
       _isAutoBrSource(true),
       _manualBrSourceType(BR_SOURCE_ECG),
-      _invaildBRRRValueFirst(false)
+      _invaildBRRRValue(false)
 {
 }
 
