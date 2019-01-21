@@ -128,6 +128,9 @@ public: // ECGProviderIFace 的接口。
     // 设置病人类型。0表示成人，1表示小孩，2表示新生儿，3表示空
     virtual void setPatientType(unsigned char type);
 
+    // 设置工作模式
+    virtual void setWorkMode(ECGWorkMode workMode);
+
     // set filter mode
     virtual void setFilterMode(ECGFilterMode mode);
 
