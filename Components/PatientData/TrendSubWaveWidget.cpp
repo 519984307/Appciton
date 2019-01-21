@@ -285,9 +285,20 @@ QList<QPainterPath> TrendSubWaveWidget::generatorPainterPath(const TrendGraphInf
             }
 
             qreal x = _mapValue(_timeX, iter->timestamp);
-            qreal sys = _mapValue(_valueY, iter->data[0]);
-            qreal dia = _mapValue(_valueY, iter->data[1]);
-            qreal map = _mapValue(_valueY, iter->data[2]);
+            ParamID paramId = paramInfo.getParamID(_id);
+            UnitType type = paramManager.getSubParamUnit(paramId, _id);
+            int sysData = iter->data[0];
+            int diaData = iter->data[1];
+            int mapData = iter->data[2];
+            if (type != UNIT_MMHG)
+            {
+                sysData = Unit::convert(type, UNIT_MMHG, iter->data[0], co2Param.getBaro()).toDouble();
+                diaData = Unit::convert(type, UNIT_MMHG, iter->data[1], co2Param.getBaro()).toDouble();
+                mapData = Unit::convert(type, UNIT_MMHG, iter->data[2], co2Param.getBaro()).toDouble();
+            }
+            qreal sys = _mapValue(_valueY, sysData);
+            qreal dia = _mapValue(_valueY, diaData);
+            qreal map = _mapValue(_valueY, mapData);
 
             path.moveTo(x - 3, sys - 3);
             path.lineTo(x, sys);
@@ -411,8 +422,8 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
         }
         else
         {
-            barPainter.drawText(upRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_valueY.max));
-            barPainter.drawText(downRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_valueY.min));
+            barPainter.drawText(upRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_valueY.max / _valueY.scale));
+            barPainter.drawText(downRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_valueY.min / _valueY.scale));
         }
 
         QFont font;
@@ -459,8 +470,8 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     }
     else
     {
-        barPainter.drawText(upRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_valueY.max));
-        barPainter.drawText(downRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_valueY.min));
+        barPainter.drawText(upRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_valueY.max / _valueY.scale));
+        barPainter.drawText(downRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_valueY.min / _valueY.scale));
     }
 
     QFont font;
@@ -524,17 +535,34 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
         TrendDataType sys =  _trendInfo.trendDataV3.at(_cursorPosIndex).data[0];
         TrendDataType dia = _trendInfo.trendDataV3.at(_cursorPosIndex).data[1];
         TrendDataType map = _trendInfo.trendDataV3.at(_cursorPosIndex).data[2];
+        QString sysStr;
+        QString diaStr;
+        QString mapStr;
+        ParamID paramId = paramInfo.getParamID(_id);
+        UnitType type = paramManager.getSubParamUnit(paramId, _id);
+        if (type != UNIT_MMHG)
+        {
+            sysStr = Unit::convert(type, UNIT_MMHG, sys, co2Param.getBaro());
+            diaStr = Unit::convert(type, UNIT_MMHG, dia, co2Param.getBaro());
+            mapStr = Unit::convert(type, UNIT_MMHG, map, co2Param.getBaro());
+        }
+        else
+        {
+            sysStr = QString::number(sys);
+            diaStr = QString::number(dia);
+            mapStr = QString::number(map);
+        }
 
         QRect upDataRect = dataRect.adjusted(0, 0, 0, - dataRect.height() / 2);
         QRect downDataRect = dataRect.adjusted(0, dataRect.height() / 2, 0, 0);
         QTextOption nibpOption;
         if (map != InvData() && dia != InvData() && sys != InvData())
         {
-            QString trendStr = QString::number(sys) + "/" + QString::number(dia);
+            QString trendStr = sysStr + "/" + diaStr;
             nibpOption.setAlignment(Qt::AlignBottom | Qt::AlignHCenter);
             barPainter.drawText(upDataRect, trendStr, nibpOption);
             nibpOption.setAlignment(Qt::AlignTop | Qt::AlignHCenter);
-            barPainter.drawText(downDataRect, QString::number(map), nibpOption);
+            barPainter.drawText(downDataRect, mapStr, nibpOption);
         }
         else
         {
@@ -656,7 +684,14 @@ void TrendSubWaveWidget::_autoRulerCal()
                 {
                     continue;
                 }
-                _updateAutoRuler(data);
+                ParamID paramId = paramInfo.getParamID(_id);
+                UnitType type = paramManager.getSubParamUnit(paramId, _id);
+                int v = data;
+                if (type != UNIT_MMHG)
+                {
+                    v = Unit::convert(type, UNIT_MMHG, data, co2Param.getBaro()).toDouble();
+                }
+                _updateAutoRuler(v);
             }
         }
         break;
