@@ -159,6 +159,8 @@ void NIBPParam::exitDemo()
     _diaValue = InvData();
     _mapVaule = InvData();
     _prVaule = InvData();
+
+    switchState(_lastDemoState);
 }
 
 /**************************************************************************************************
@@ -244,6 +246,7 @@ void NIBPParam::setProvider(NIBPProviderIFace *provider)
 
     if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
     {
+        _lastDemoState = curStatusType();
         switchState(NIBP_SERVICE_STANDBY_STATE);
     }
 }
