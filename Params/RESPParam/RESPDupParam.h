@@ -133,6 +133,7 @@ private:
 
     bool _isAutoBrSource;
     BrSourceType _manualBrSourceType;
+    bool _invaildBRRRValueFirst;
 };
 #define respDupParam (RESPDupParam::construction())
 

@@ -142,20 +142,39 @@ void RESPDupParam::updateRR(short rr)
         return;
     }
 
-    // BR为有效时即显示。
-    if (_brValue != InvData())
+    if (_isAutoBrSource)
     {
-        return;
+        if (_brValue == InvData())
+        {
+            // 当BR为无效值时才使用RR。
+            if (_rrValue != InvData())
+            {
+                _trendWidget->setRRValue(_rrValue, true);
+            }
+            else
+            {
+                _trendWidget->setRRValue(_brValue, false);
+            }
+        }
     }
-
-    // 当BR为无效值时才使用RR。
-    if (_rrValue != InvData())
+    else if (_manualBrSourceType == BR_SOURCE_ECG)
     {
         _trendWidget->setRRValue(_rrValue, true);
     }
-    else
+    else if (_manualBrSourceType == BR_SOURCE_CO2)
     {
         _trendWidget->setRRValue(_brValue, false);
+    }
+
+    // emit brSourceStatusUpdate signal only when the value is invalid first.
+    if (_invaildBRRRValueFirst == false && _brValue == InvData() && _rrValue == InvData())
+    {
+        _invaildBRRRValueFirst = true;
+        emit brSourceStatusUpdate();
+    }
+    if (_brValue != InvData() || _rrValue != InvData())
+    {
+        _invaildBRRRValueFirst = false;
     }
 }
 
@@ -171,18 +190,35 @@ void RESPDupParam::updateBR(short br)
         return;
     }
 
-    // BR不为无效时即显示。
-    if (_brValue != InvData())
+    if (_isAutoBrSource)
+    {
+        if (_rrValue != InvData() && _brValue == InvData())
+        {
+            _trendWidget->setRRValue(_rrValue, true);
+        }
+        else
+        {
+            _trendWidget->setRRValue(_brValue, false);
+        }
+    }
+    else if (_manualBrSourceType == BR_SOURCE_CO2)
     {
         _trendWidget->setRRValue(_brValue, false);
     }
-    else if (_rrValue != InvData())
+    else if (_manualBrSourceType == BR_SOURCE_ECG)
     {
         _trendWidget->setRRValue(_rrValue, true);
     }
-    else  // HR和PR都为无效时。
+
+    // emit brSourceStatusUpdate signal only when the value is invalid first.
+    if (_invaildBRRRValueFirst == false && _brValue == InvData() && _rrValue == InvData())
     {
-        _trendWidget->setRRValue(_brValue, false);
+        _invaildBRRRValueFirst = true;
+        emit brSourceStatusUpdate();
+    }
+    if (_brValue != InvData() || _rrValue != InvData())
+    {
+        _invaildBRRRValueFirst = false;
     }
 }
 
@@ -191,16 +227,27 @@ void RESPDupParam::updateBR(short br)
  *************************************************************************************************/
 short RESPDupParam::getRR(void)
 {
-    if (InvData() != _brValue)
+    if (_isAutoBrSource)
     {
-        return _brValue;
-    }
+        if (InvData() != _brValue)
+        {
+            return _brValue;
+        }
 
-    if (InvData() != _rrValue)
+        if (InvData() != _rrValue)
+        {
+            return _rrValue;
+        }
+        return InvData();
+    }
+    if (_manualBrSourceType == BR_SOURCE_ECG)
     {
         return _rrValue;
     }
-
+    else if (_manualBrSourceType == BR_SOURCE_CO2)
+    {
+        return _brValue;
+    }
     return InvData();
 }
 
@@ -286,7 +333,8 @@ RESPDupParam::RESPDupParam()
       _brValue(InvData()),
       _isAlarm(false),
       _isAutoBrSource(true),
-      _manualBrSourceType(BR_SOURCE_ECG)
+      _manualBrSourceType(BR_SOURCE_ECG),
+      _invaildBRRRValueFirst(false)
 {
 }
 
