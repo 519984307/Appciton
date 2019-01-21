@@ -43,7 +43,8 @@ public:
           curPage(1),
           prevBtn(NULL),
           nextBtn(NULL),
-          title(QString())
+          title(QString()),
+          refreshModelData(true)
     {}
     ~AlarmInfoWindowPrivate() {}
 
@@ -59,6 +60,7 @@ public:
     Button *nextBtn;
     QString title;
     QList<AlarmInfoNode> nodeList;
+    bool refreshModelData;  // 用于确实是否刷新窗口数据
 
     /**
      * @brief loadOption　加载列表的值
@@ -172,6 +174,7 @@ void AlarmInfoWindow::layout()
 
 void AlarmInfoWindow::showEvent(QShowEvent *ev)
 {
+    d_ptr->refreshModelData = true;
     updateData(true);
     Window::showEvent(ev);
 }
@@ -220,15 +223,19 @@ void AlarmInfoWindow::_accessEventWindow(int index)
 void AlarmInfoWindowPrivate::loadOption()
 {
     AlarmInfoNode node;
-    nodeList.clear();
-    for (int i = totalList - 1; i >= 0; --i)
+    if (refreshModelData)
     {
-        alarmIndicator.getAlarmInfo(i, node);
-        if (node.alarmType != alarmType)
+        nodeList.clear();
+        for (int i = totalList - 1; i >= 0; --i)
         {
-            continue;
+            alarmIndicator.getAlarmInfo(i, node);
+            if (node.alarmType != alarmType)
+            {
+                continue;
+            }
+            nodeList.append(node);
         }
-        nodeList.append(node);
+        refreshModelData = false;
     }
 
     int start = 0, end = 0;
