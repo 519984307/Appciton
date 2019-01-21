@@ -529,7 +529,7 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
             _waveWidget[i]->addWaveformData(-waveform[i], norfalg & 0xFFFF);
         }
 
-        waveformCache.addData((WaveformID)i, ((flag & 0xFFFF) << 16) | (waveform[i] & 0xFFFF));
+        waveformCache.addData((WaveformID)i, ((norfalg & 0xFFFF) << 16) | (waveform[i] & 0xFFFF));
 
         flagUnsaved[i] = 0;
     }
