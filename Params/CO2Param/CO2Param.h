@@ -157,8 +157,15 @@ public:
     // 获取单位。
     UnitType getUnit(void);
 
-    // 设置/获取CO2开关
-    void setCO2Switch(int onoff);
+    /**
+     * @brief setCO2Switch 设置CO2开关
+     * @param on  if is on
+     */
+    void setCO2Switch(bool on);
+    /**
+     * @brief getCO2Switch  获取CO2开关
+     * @return  返回CO2开关状态
+     */
     bool getCO2Switch();
 
     // 获取CO2

@@ -890,6 +890,13 @@ UnitType CO2Param::getUnit(void)
     return static_cast<UnitType>(unit);
 }
 
+void CO2Param::setCO2Switch(bool on)
+{
+    int index = on;
+    currentConfig.setNumValue("CO2|CO2ModeDefault", index);
+    d_ptr->co2Switch = on;
+}
+
 /**************************************************************************************************
  * 获取CO2开关。
  *************************************************************************************************/

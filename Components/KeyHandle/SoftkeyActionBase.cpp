@@ -330,16 +330,18 @@ void SoftkeyActionBase::CO2Handle(bool isPressed)
     {
         if (co2Param.setModuleWorkMode(CO2_WORK_MEASUREMENT) == true)
         {
-            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].iconPath = QString("measure.png");
-            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].hint = trs("CO2Measure");
+            co2Param.setCO2Switch(true);
+            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].iconPath = QString("standby.png");
+            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].hint = trs("CO2Standby");
         }
     }
     else if (lastHint == CO2_MEASURE_HINT)
     {
         if (co2Param.setModuleWorkMode(C02_WORK_SLEEP) == true)
         {
-            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].iconPath = QString("standby.png");
-            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].hint = trs("CO2Standby");
+            co2Param.setCO2Switch(false);
+            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].iconPath = QString("measure.png");
+            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].hint = trs("CO2Measure");
         }
     }
     softkeyManager.refreshPage(false);
