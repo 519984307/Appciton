@@ -913,7 +913,7 @@ void E5Provider::reconnected(void)
         respOneShotAlarm.clear();
         respParam.setLeadoff(false);
         respParam.setRR(InvData());
-        respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+        respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
         if (-1 != waveID.indexOf(WAVE_RESP))
         {
             needFreshWave = true;
