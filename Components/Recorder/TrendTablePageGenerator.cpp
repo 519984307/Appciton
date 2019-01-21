@@ -87,7 +87,7 @@ bool TrendTablePageGeneratorPrivate::loadStringList()
         TrendDataSegment *dataSeg = reinterpret_cast<TrendDataSegment *>(data.data());
 
         // 使得趋势表显示内容与打印内容保持一致
-        if (timestampEventMap.keys().indexOf(dataSeg->timestamp) < 0)
+        if (timestampEventMap.contains(dataSeg->timestamp) < 0)
         {
             continue;
         }
