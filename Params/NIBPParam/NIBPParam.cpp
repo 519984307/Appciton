@@ -161,6 +161,11 @@ void NIBPParam::exitDemo()
     _prVaule = InvData();
 
     switchState(_lastDemoState);
+    if (curStatusType() == NIBP_SERVICE_STANDBY_STATE)
+    {
+        // 若返回的时准备模式，则清除显示数据
+        invResultData();
+    }
 }
 
 /**************************************************************************************************
