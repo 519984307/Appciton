@@ -47,10 +47,6 @@ bool TriggerPageGeneratorPrivate::fetchWaveData()
 
         int retryCount = 0;
         QPointer<EventStorageItem> itemGuard(item);
-        if (item == NULL)
-        {
-            continue;
-        }
         while (curDrawWaveSegment >= item->getCurWaveCacheDuration(iter->id))
         {
             if (recorderManager.isAbort())

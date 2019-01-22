@@ -26,7 +26,6 @@
 #include "OxyCRGEventWaveWidget.h"
 #include "Alarm.h"
 #include "AlarmConfig.h"
-#include "RecorderManager.h"
 
 class EventStorageItemPrivate
 {
@@ -295,7 +294,7 @@ EventType EventStorageItem::getType() const
 
 bool EventStorageItem::checkCompleted()
 {
-    if (recorderManager.isConnected() && d_ptr->waitForTriggerPrintFlag && !d_ptr->triggerPrintStopped)
+    if (d_ptr->waitForTriggerPrintFlag && !d_ptr->triggerPrintStopped)
     {
         // have to wait until the page generator is stopped if connect recorder
         return false;
