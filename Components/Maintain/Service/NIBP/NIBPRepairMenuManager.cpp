@@ -165,7 +165,7 @@ NIBPRepairMenuManager::NIBPRepairMenuManager() : MenuGroup("SupervisorMenuManage
     _replyFlag = false;
     messageBoxWait = new  MessageBox(trs("Warn"), trs("NIBPServiceWaitAgain"), QStringList(trs("EnglishYESChineseSURE")));
     messageBoxError = new MessageBox(trs("Warn"), trs("NIBPServiceModuleErrorQuitTryAgain"),
-                                     QStringList(trs("EnglishYESChineseSURE")));
+                                     QStringList(trs("EnglishYESChineseSURE")), true);
 }
 
 /**************************************************************************************************
