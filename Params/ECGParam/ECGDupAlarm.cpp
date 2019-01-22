@@ -122,7 +122,7 @@ int ECGDupLimitAlarm::getCompare(int value, int id)
 {
     int isHR = 0;
     currentConfig.getNumValue("ECG|HRSource", isHR);
-    if (isHR == 0)
+    if (isHR == HR_SOURCE_ECG)
     {
         if (id == ECG_DUP_LIMIT_ALARM_HR_HIGH)
         {
@@ -145,14 +145,14 @@ int ECGDupLimitAlarm::getCompare(int value, int id)
         {
             if (value > getUpper(id))
             {
-                return 2;
+                return 1;
             }
         }
         else if (id == ECG_DUP_LIMIT_ALARM_PR_LOW)
         {
             if (value < getLower(id))
             {
-                return -2;
+                return -1;
             }
         }
     }
