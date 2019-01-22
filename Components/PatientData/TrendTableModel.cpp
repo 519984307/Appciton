@@ -977,12 +977,24 @@ void TrendTableModelPrivate::loadTrendData()
             {
             case SUB_PARAM_NIBP_SYS:
             {
-                qint16 nibpSys = pack->subparamValue.value(static_cast<SubParamID>(id), InvData());
-                qint16 nibpDia = pack->subparamValue.value(static_cast<SubParamID>(id + 1), InvData());
-                qint16 nibpMap = pack->subparamValue.value(static_cast<SubParamID>(id + 2), InvData());
-                QString sysStr = nibpSys == InvData() ? "---" : QString::number(nibpSys);
-                QString diaStr = nibpDia == InvData() ? "---" : QString::number(nibpDia);
-                QString mapStr = nibpMap == InvData() ? "---" : QString::number(nibpMap);
+                ParamID paramId = paramInfo.getParamID(static_cast<SubParamID>(id));
+                UnitType type = paramManager.getSubParamUnit(paramId, static_cast<SubParamID>(id));
+                int sysData = pack->subparamValue.value(static_cast<SubParamID>(id), InvData());;
+                int diaData = pack->subparamValue.value(static_cast<SubParamID>(id + 1), InvData());
+                int mapData = pack->subparamValue.value(static_cast<SubParamID>(id + 2), InvData());
+                QString sysStr = QString::number(sysData);
+                QString diaStr = QString::number(diaData);
+                QString mapStr = QString::number(mapData);
+                if (type != UNIT_MMHG && sysData != InvData() &&
+                        diaData != InvData() && mapData != InvData())
+                {
+                    sysStr = Unit::convert(type, UNIT_MMHG, sysData, co2Param.getBaro());
+                    diaStr = Unit::convert(type, UNIT_MMHG, diaData, co2Param.getBaro());
+                    mapStr = Unit::convert(type, UNIT_MMHG, mapData, co2Param.getBaro());
+                }
+                sysStr = sysData == InvData() ? "---" : sysStr;
+                diaStr = diaData == InvData() ? "---" : diaStr;
+                mapStr = mapData == InvData() ? "---" : mapStr;
                 dContent.dataStr = sysStr + "/" + diaStr + "\n(" + mapStr + ")";
             }
             break;
