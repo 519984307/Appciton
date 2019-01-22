@@ -72,7 +72,7 @@ void RESPTrendWidget::_loadConfig()
 /**************************************************************************************************
  * 设置PR的值。
  *************************************************************************************************/
-void RESPTrendWidget::setRRValue(int16_t rr , bool isRR)
+void RESPTrendWidget::setRRValue(int16_t rr , bool isRR, bool isAutoType)
 {
     if (isRR)
     {
@@ -81,6 +81,13 @@ void RESPTrendWidget::setRRValue(int16_t rr , bool isRR)
     else
     {
         setName(trs(paramInfo.getSubParamName(SUB_DUP_PARAM_BR)));
+    }
+
+    if ((rr == InvData() && _rrString != InvStr())  // invalid value  first
+            || (rr != InvData() && _rrString == InvStr())  // valid value  first
+            || (isAutoType == true))  // if br/rr value is from auto type
+    {
+        _onBrSourceStatusUpdate();
     }
 
     if (rr != InvData())

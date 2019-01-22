@@ -144,17 +144,14 @@ void RESPDupParam::updateRR(short rr)
 
     if (_isAutoBrSource)
     {
-        if (_brValue == InvData())
+        // 当BR为无效值时才使用RR。
+        if (_brValue != InvData() && _rrValue != InvData())
         {
-            // 当BR为无效值时才使用RR。
-            if (_rrValue != InvData())
-            {
-                _trendWidget->setRRValue(_rrValue, true);
-            }
-            else
-            {
-                _trendWidget->setRRValue(_brValue, false);
-            }
+            _trendWidget->setRRValue(_rrValue, true, true);
+        }
+        else if (_brValue != InvData())
+        {
+            _trendWidget->setRRValue(_brValue, false, true);
         }
     }
     else if (_manualBrSourceType == BR_SOURCE_ECG)
@@ -164,22 +161,6 @@ void RESPDupParam::updateRR(short rr)
     else if (_manualBrSourceType == BR_SOURCE_CO2)
     {
         _trendWidget->setRRValue(_brValue, false);
-    }
-
-    // emit brSourceStatusUpdate signal when the value is invalid.
-    if (_invaildBRRRValue == false && _brValue == InvData() && _rrValue == InvData())
-    {
-        _invaildBRRRValue = true;
-        emit brSourceStatusUpdate();
-    }
-    if (_invaildBRRRValue == true && (_brValue != InvData() || _rrValue != InvData()))
-    {
-        _invaildBRRRValue = false;
-        emit brSourceStatusUpdate();
-    }
-    else if (_isAutoBrSource)  // emit brSourceStatusUpdate signal when the value type is auto
-    {
-        emit brSourceStatusUpdate();
     }
 }
 
@@ -199,11 +180,11 @@ void RESPDupParam::updateBR(short br)
     {
         if (_rrValue != InvData() && _brValue == InvData())
         {
-            _trendWidget->setRRValue(_rrValue, true);
+            _trendWidget->setRRValue(_rrValue, true, true);
         }
         else
         {
-            _trendWidget->setRRValue(_brValue, false);
+            _trendWidget->setRRValue(_brValue, false, true);
         }
     }
     else if (_manualBrSourceType == BR_SOURCE_CO2)
@@ -213,22 +194,6 @@ void RESPDupParam::updateBR(short br)
     else if (_manualBrSourceType == BR_SOURCE_ECG)
     {
         _trendWidget->setRRValue(_rrValue, true);
-    }
-
-    // emit brSourceStatusUpdate signal when the value is invalid.
-    if (_invaildBRRRValue == false && _brValue == InvData() && _rrValue == InvData())
-    {
-        _invaildBRRRValue = true;
-        emit brSourceStatusUpdate();
-    }
-    else if (_invaildBRRRValue == true && (_brValue != InvData() || _rrValue != InvData()))
-    {
-        _invaildBRRRValue = false;
-        emit brSourceStatusUpdate();
-    }
-    else if (_isAutoBrSource)  // emit brSourceStatusUpdate signal when the value type is auto
-    {
-        emit brSourceStatusUpdate();
     }
 }
 
