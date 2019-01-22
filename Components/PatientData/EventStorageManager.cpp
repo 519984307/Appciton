@@ -38,7 +38,8 @@ public:
           waitTimerId(-1),
           isWait(false),
           timeoutNum(0),
-          generator(NULL)
+          generator(NULL),
+          item(NULL)
     {
     }
 
@@ -54,6 +55,7 @@ public:
     bool isWait;
     int timeoutNum;
     RecordPageGenerator *generator;
+    EventStorageItem *item;
 };
 
 QList<WaveformID> EventStorageManagerPrivate::getStoreWaveList(WaveformID paramWave)
@@ -152,21 +154,25 @@ void EventStorageManager::triggerAlarmEvent(const AlarmInfoSegment &almInfo, Wav
     if (index && recorderManager.isConnected())   // don't start trigger printing when the printer is not connected
     {
         RecordPageGenerator *generator = new TriggerPageGenerator(item);
+        // 是否处于正在打印且不处于等待状态
         if (recorderManager.isPrinting() && !d->isWait)
         {
+            // 打印优先级小于当前打印时不处理
             if (generator->getPriority() <= recorderManager.getCurPrintPriority())
             {
                 generator->deleteLater();
             }
+            // 打印优先级大于当前打印优先级时停止当前打印,等待2000ms打印此刻打印任务
             else
             {
                 recorderManager.stopPrint();
                 d->generator = generator;
                 d->waitTimerId = startTimer(2000); // 等待2000ms
                 d->isWait = true;
-                item->setWaitForTriggerPrintFlag(true);
+                d->item = item;
             }
         }
+        // 当前无打印任务
         else if (!recorderManager.getPrintStatus())
         {
             recorderManager.addPageGenerator(generator);
@@ -212,7 +218,7 @@ void EventStorageManager::triggerCodeMarkerEvent(const char *codeName, unsigned 
                 d->generator = generator;
                 d->waitTimerId = startTimer(2000); // 等待2000ms
                 d->isWait = true;
-                item->setWaitForTriggerPrintFlag(false);
+                d->item = item;
             }
         }
         else if (!recorderManager.getPrintStatus())
@@ -274,7 +280,7 @@ void EventStorageManager::triggerNIBPMeasurementEvent(unsigned t, NIBPOneShotTyp
                 d->generator = generator;
                 d->waitTimerId = startTimer(2000); // 等待2000ms
                 d->isWait = true;
-                item->setWaitForTriggerPrintFlag(false);
+                d->item = item;
             }
         }
         else if (!recorderManager.getPrintStatus())
@@ -321,7 +327,7 @@ void EventStorageManager::triggerWaveFreezeEvent(unsigned t)
                 d->generator = generator;
                 d->waitTimerId = startTimer(2000);  // 等待2000ms
                 d->isWait = true;
-                item->setWaitForTriggerPrintFlag(false);
+                d->item = item;
             }
         }
         else if (!recorderManager.getPrintStatus())
@@ -434,10 +440,16 @@ void EventStorageManager::timerEvent(QTimerEvent *ev)
     {
         if (!recorderManager.isPrinting() || d->timeoutNum == 10) // 1000ms超时处理
         {
+            // 没有打印任务时打印当前任务
             if (!recorderManager.isPrinting())
             {
                 recorderManager.addPageGenerator(d->generator);
+                if (d->item)
+                {
+                    d->item->setWaitForTriggerPrintFlag(true);
+                }
             }
+            // 超时时不处理当前打印任务
             else
             {
                 d->generator->deleteLater();
