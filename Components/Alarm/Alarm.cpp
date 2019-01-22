@@ -979,9 +979,7 @@ void Alarm::resetPhyAlarmLastAlarm()
         {
             QString traceID;
             _getAlarmID(source, i, traceID);
-            AlarmTraceCtrl *traceCtrl = &_getAlarmTraceCtrl(traceID);
-            alarmIndicator.delAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage);
-            traceCtrl->Reset();
+            _traceCtrl.remove(traceID);
             source->notifyAlarm(i, false);
         }
     }
