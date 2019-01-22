@@ -806,7 +806,8 @@ AlarmLimitIFace *Alarm::getAlarmLimitIFace(SubParamID id)
 /**************************************************************************************************
  * 功能： 构造。
  *************************************************************************************************/
-Alarm::Alarm() : _isLatchLock(true)
+Alarm::Alarm() :
+    _isLatchLock(true)
 {
     // 栓锁状态初始化
     int boltLockIndex = 0;
@@ -969,4 +970,20 @@ QString Alarm::getPhyAlarmMessage(ParamID paramId, int alarmType, bool isOneShot
 void Alarm::setLatchLockSta(bool status)
 {
     _isLatchLock = status;
+}
+
+void Alarm::removeAllPhyAlarm()
+{
+    QList<AlarmLimitIFace *> limitAlarmSourceList = _limitSources.values();
+    foreach(AlarmLimitIFace *source, limitAlarmSourceList)
+    {
+        int n = source->getAlarmSourceNR();
+        for (int i = 0; i < n; i++)
+        {
+            QString traceID;
+            _getAlarmID(source, i, traceID);
+            _traceCtrl.remove(traceID);
+            source->notifyAlarm(i, false);
+        }
+    }
 }
