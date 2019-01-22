@@ -337,5 +337,7 @@ private:
     NIBPStateMachine *_activityMachine;       // 当前活跃状态机。
 
     QTimer *_btnTimer;
+
+    int _stateBeforeDemo;       // 保存进入demo模式前的NIBP状态
 };
 #define nibpParam (NIBPParam::construction())
