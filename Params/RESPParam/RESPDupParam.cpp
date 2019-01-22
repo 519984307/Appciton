@@ -308,8 +308,7 @@ RESPDupParam::RESPDupParam()
       _brValue(InvData()),
       _isAlarm(false),
       _isAutoBrSource(true),
-      _manualBrSourceType(BR_SOURCE_ECG),
-      _invaildBRRRValue(false)
+      _manualBrSourceType(BR_SOURCE_ECG)
 {
 }
 
