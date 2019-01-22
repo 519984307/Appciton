@@ -307,7 +307,10 @@ PrintTime RecorderManager::getPrintTime() const
 void RecorderManager::stopPrint(void)
 {
     // stop current generator
-    QMetaObject::invokeMethod(d_ptr->generator.data(), "stop", Qt::QueuedConnection);
+    if (d_ptr->generator)
+    {
+        QMetaObject::invokeMethod(d_ptr->generator.data(), "stop", Qt::QueuedConnection);
+    }
     // stop page processor
     QMetaObject::invokeMethod(d_ptr->processor, "stopProcess", Qt::QueuedConnection);
 
@@ -353,6 +356,12 @@ void RecorderManager::providerConnectionChanged(bool isConnected)
         // disconected
         printOneShotAlarm.clear();
         printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_FAULT, true);
+
+        if (d_ptr->generator)
+        {
+            // stop the page generator if we has any page generator
+            QMetaObject::invokeMethod(d_ptr->generator.data(), "stop", Qt::QueuedConnection);
+        }
 
         QMetaObject::invokeMethod(d_ptr->processor, "stopProcess", Qt::QueuedConnection);
     }

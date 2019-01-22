@@ -2338,6 +2338,16 @@ void RecordPageGenerator::timerEvent(QTimerEvent *ev)
     {
         _timer.stop();
 
+        if (_requestStop)
+        {
+            // we need to check stop condition here because we're unabled to stop if
+            // the _generate flag is set to false.
+            _requestStop = false;
+            emit stopped();
+            onStopGenerate();
+            return;
+        }
+
         if (!_generate)
         {
             return;
