@@ -325,15 +325,16 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
     timeDate.getDateTime(datapack.time, timeDateStr, true, true);
     stringLists[index++].append(timeDateStr);
 
-    if (eventType & TrendDataStorageManager::CollectStatusPrint ||
+    // 优先打印报警事件状态
+    if (eventType & TrendDataStorageManager::CollectStatusAlarm)
+    {
+        stringLists[index++].append("A");
+    }
+    else if (eventType & TrendDataStorageManager::CollectStatusPrint ||
             eventType & TrendDataStorageManager::CollectStatusFreeze ||
             eventType & TrendDataStorageManager::CollectStatusNIBP)
     {
         stringLists[index++].append("M");
-    }
-    else if (eventType & TrendDataStorageManager::CollectStatusAlarm)
-    {
-        stringLists[index++].append("A");
     }
     else
     {
