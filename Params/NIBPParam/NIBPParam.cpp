@@ -1379,7 +1379,7 @@ NIBPParam::NIBPParam()
       _connectedFlag(false), _connectedProvider(false),
       _text(InvStr()),
       _reply(false), _result(false), _manometerPressure(InvData()),
-      _activityMachine(NULL)
+      _activityMachine(NULL), _lastDemoState(NIBP_MONITOR_STANDBY_STATE)
 {
     nibpCountdownTime.construction();
 
