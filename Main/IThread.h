@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/1/21
+ **/
+
+
 #pragma once
 #include <QThread>
 #include <QTimer>
@@ -12,9 +23,7 @@ public:
     void stop(void);
 
     // 休眠。
-    static void sleep(unsigned long d) { QThread::sleep(d); }
-    static void msleep(unsigned long d) { QThread::msleep(d); }
-    static void usleep(unsigned long d) { QThread::usleep(d); }
+    static void msleep(unsigned long d);
 
     // 构造与析构。
     IThread(const QString &name, iThreadEntry entry);

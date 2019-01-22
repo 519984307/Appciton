@@ -17,6 +17,7 @@
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"
 #include "LayoutManager.h"
+#include <unistd.h>
 
 static IThread *_storageThread = NULL;
 static QThread *_networkThread = NULL;
