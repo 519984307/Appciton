@@ -28,7 +28,6 @@ public:
         ITEM_CBO_MIN_ALARM_VOLUME,
         ITEM_CBO_ALARAM_PAUSE_TIME,
         ITEM_CBO_ALARM_CLOSE_PROMPT_TIME,
-        ITEM_CBO_ALARM_AUDIO_OFF,
         ITEM_CBO_ENABLE_ALARM_OFF,
         ITEM_CBO_POWERON_ALARM_OFF,
         ITEM_CBO_PAUSE_MAX_ALARM_15MIN,
@@ -73,12 +72,7 @@ void AlarmMaintainMenuContentPrivate::loadOptions()
 #ifndef CLOSE_USELESS_ALARM_FUNCTION
     systemConfig.getNumValue("Alarms|AlarmOffPrompting", index);
     combos[ITEM_CBO_ALARM_CLOSE_PROMPT_TIME]->setCurrentIndex(index);
-#endif
 
-    systemConfig.getNumValue("Alarms|AlarmAudioOff", index);
-    combos[ITEM_CBO_ALARM_AUDIO_OFF]->setCurrentIndex(index);
-
-#ifndef CLOSE_USELESS_ALARM_FUNCTION
     systemConfig.getNumValue("Alarms|EnableAlarmOff", index);
     combos[ITEM_CBO_ENABLE_ALARM_OFF]->setCurrentIndex(index);
 
@@ -112,6 +106,7 @@ void AlarmMaintainMenuContentPrivate::loadOptions()
 #ifdef DISABLED_ALARM_LATCH
     combos[ITEM_CBO_ALARM_LATCH_LOCK]->setEnabled(false);
 #endif
+    combos[ITEM_CBO_MIN_ALARM_VOLUME]->setEnabled(false);
 }
 
 void AlarmMaintainMenuContentPrivate::HandlingComboIndexChanged(AlarmMaintainMenuContentPrivate::MenuItem item, int index)
@@ -137,10 +132,6 @@ void AlarmMaintainMenuContentPrivate::HandlingComboIndexChanged(AlarmMaintainMen
         break;
     case ITEM_CBO_ALARM_CLOSE_PROMPT_TIME:
         systemConfig.setNumValue("Alarms|AlarmOffPrompting", index);
-        break;
-    case ITEM_CBO_ALARM_AUDIO_OFF:
-        systemConfig.setNumValue("Alarms|AlarmAudioOff", index);
-        alarmIndicator.updateAlarmStateWidget();
         break;
     case ITEM_CBO_ENABLE_ALARM_OFF:
         systemConfig.setNumValue("Alarms|EnableAlarmOff", index);
@@ -203,13 +194,7 @@ void AlarmMaintainMenuContentPrivate::defaultIndexInit()
     index = 0;
     defalutConfig.getNumValue("Alarms|AlarmOffPrompting", index);
     defaultIndexMap[ITEM_CBO_ALARM_CLOSE_PROMPT_TIME] = index;
-#endif
 
-    index = 0;
-    defalutConfig.getNumValue("Alarms|EnableAlarmAudioOff", index);
-    defaultIndexMap[ITEM_CBO_ALARM_AUDIO_OFF] = index;
-
-#ifndef CLOSE_ALARM_AUDIO_OFF_ALARM_OFF
     index = 0;
     defalutConfig.getNumValue("Alarms|EnableAlarmOff", index);
     defaultIndexMap[ITEM_CBO_ENABLE_ALARM_OFF] = index;
@@ -321,23 +306,7 @@ void AlarmMaintainMenuContent::layoutExec()
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_CLOSE_PROMPT_TIME, comboBox);
-#endif
 
-    // enable alarm audio off
-    label = new QLabel(trs("AlarmAudioOff"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs("No")
-                       << trs("Yes")
-                      );
-    itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_AUDIO_OFF);
-    comboBox->setProperty("Item", qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_AUDIO_OFF, comboBox);
-
-#ifndef CLOSE_ALARM_AUDIO_OFF_ALARM_OFF
     // enable alarm off
     label = new QLabel(trs("EnableAlarmOff"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
