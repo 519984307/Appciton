@@ -865,11 +865,6 @@
         <RESP>
             <Zoom>2</Zoom>		
         </RESP>
-        <CO2>
-            <O2Compensation>16</O2Compensation>
-            <N2OCompensation>0</N2OCompensation>
-            <FiCO2Display>0</FiCO2Display>
-        </CO2>
         <ECG12Lead>
             <EmailOffset>0</EmailOffset>
             <ECG12LeadBandwidth>0</ECG12LeadBandwidth>

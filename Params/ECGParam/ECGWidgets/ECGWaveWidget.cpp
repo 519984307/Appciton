@@ -534,23 +534,6 @@ void ECGWaveWidget::paintEvent(QPaintEvent *e)
 {
     WaveWidget::paintEvent(e);
 
-    if (ECG_DISPLAY_NORMAL == ecgParam.getDisplayMode())
-    {
-        if (getID() != ecgParam.getCalcLead())
-        {
-            return;
-        }
-    }
-    else if (ECG_DISPLAY_12_LEAD_FULL == ecgParam.getDisplayMode())
-    {
-        QStringList currentWaveforms = layoutManager.getDisplayedWaveforms();
-        if (!((ECG_PACE_ON == (ECGPaceMode)ecgParam.get12LPacermaker()) && (!currentWaveforms.empty())
-                && (currentWaveforms[0] == name())))
-        {
-            return;
-        }
-    }
-
     if (bufIsEmpty())
     {
         return;

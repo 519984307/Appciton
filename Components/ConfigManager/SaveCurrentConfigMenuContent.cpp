@@ -57,11 +57,13 @@ void SaveCurrentConfigMenuContent::onBtnReleased()
                            false,
                            true);
         message.setFixedSize(360, 220);
-        windowManager.showWindow(&message, WindowManager::ShowBehaviorModal);
+        windowManager.showWindow(&message,
+                                 WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
     }
     else
     {
         SaveUserConfigWindow win;
-        windowManager.showWindow(&win, WindowManager::ShowBehaviorModal);
+        windowManager.showWindow(&win,
+                                 WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
     }
 }

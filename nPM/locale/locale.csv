@@ -1082,7 +1082,7 @@ BatteryCapacityIcons,电池容量图标,Battery Capacity Incons
 SmtpServer,SMTP服务器,SMTP Server
 SmtpServerPort,SMTP 服务端口,SMTP Server Port
 Username,用户名,Username
-Hardware,硬件,Hard Ware
+Hardware,硬件,Hardware
 ConnectionSecurity,连接安全性,Connection Security
 ConfiguredMailRecipients,配置邮件接收者,Configured Mail Recipients
 Mail,邮件,Mail
@@ -1622,7 +1622,7 @@ HasExistConfig,该配置名称与监护仪上配置重名。请重新命名！,T
 ECGFullScreen,心电全屏,ECG Full Screen
 isSaveLayout,是否保存布局配置？,Do you want to save the layout config?
 LowBattery,电量过低,Low quantity of electricity
-RESPCheckElectrodes,电极检查,Check Electrodes
+RESPCheckElectrodes,检查电极,Check Electrodes
 SPO2SignalWeak,检测血氧信号弱,SPO2 Signal Weak
 SPO2CableOff,血氧电缆断开,SPO2 Cable Off
 SPO2FingerOff,未检测到手指,SPO2 Finger Off

@@ -82,10 +82,10 @@ void RESPWaveWidget::_adjustLabelLayout()
     _gain->move(x, 0);
 
     x = _gain->x() + _gain->width();
-    _notify->move(x, 0);
-
-    x = _notify->x() + _notify->width();
     _lead->move(x, 0);
+
+    _notify->move((width() - _notify->width()) / 2,
+                  qmargins().top() + (height() - qmargins().top()) / 2 - _notify->height() - 1);
 }
 
 /**************************************************************************************************
@@ -111,7 +111,7 @@ RESPWaveWidget::RESPWaveWidget(const QString &waveName, const QString &title)
     addItem(_gain);
     connect(_gain, SIGNAL(released(IWidget *)), this, SLOT(_respZoom(IWidget *)));
 
-    _notify = new WaveWidgetLabel(" ", Qt::AlignCenter, this);
+    _notify = new WaveWidgetLabel(" ", Qt::AlignLeft | Qt::AlignVCenter, this);
     _notify->setFont(fontManager.textFont(infoFont));
     _notify->setFixedHeight(fontH);
     _notify->setFixedWidth(200);

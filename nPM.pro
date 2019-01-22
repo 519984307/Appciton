@@ -136,6 +136,7 @@ OTHER_FILES +=                                                                  
     nPM/etc/AdultConfig.Original.xml                                            \
     nPM/etc/PedConfig.Original.xml                                              \
     nPM/etc/NeoConfig.Original.xml                                              \
+    nPM/etc/usercheck.xml                                                       \
 
 SOURCES +=                                                                      \
     SOUP/Json/json_parser.cc                                                    \
