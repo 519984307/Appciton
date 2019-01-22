@@ -19,6 +19,7 @@
 #include "FontManager.h"
 #include "CO2Param.h"
 #include "IConfig.h"
+#include "TrendDataStorageManager.h"
 
 #define GRAPH_POINT_NUMBER          120
 #define DATA_INTERVAL_PIXEL         5
@@ -279,7 +280,7 @@ QList<QPainterPath> TrendSubWaveWidget::generatorPainterPath(const TrendGraphInf
         QVector<TrendGraphDataV3>::ConstIterator iter = graphInfo.trendDataV3.constBegin();
         for (; iter != graphInfo.trendDataV3.constEnd(); iter ++)
         {
-            if (iter->data[0] == InvData())
+            if (iter->data[0] == InvData() || !(iter->status & TrendDataStorageManager::CollectStatusNIBP))
             {
                 continue;
             }
@@ -524,11 +525,13 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
         TrendDataType sys =  _trendInfo.trendDataV3.at(_cursorPosIndex).data[0];
         TrendDataType dia = _trendInfo.trendDataV3.at(_cursorPosIndex).data[1];
         TrendDataType map = _trendInfo.trendDataV3.at(_cursorPosIndex).data[2];
+        unsigned status = _trendInfo.trendDataV3.at(_cursorPosIndex).status;
 
         QRect upDataRect = dataRect.adjusted(0, 0, 0, - dataRect.height() / 2);
         QRect downDataRect = dataRect.adjusted(0, dataRect.height() / 2, 0, 0);
         QTextOption nibpOption;
-        if (map != InvData() && dia != InvData() && sys != InvData())
+        if (map != InvData() && dia != InvData() && sys != InvData() &&
+                (status & TrendDataStorageManager::CollectStatusNIBP))
         {
             QString trendStr = QString::number(sys) + "/" + QString::number(dia);
             nibpOption.setAlignment(Qt::AlignBottom | Qt::AlignHCenter);
