@@ -251,6 +251,9 @@ void SPO2Param::setProvider(SPO2ProviderIFace *provider)
     // 请求波形缓冲区。
     waveformCache.registerSource(WAVE_SPO2, _provider->getSPO2WaveformSample(), 0, _provider->getSPO2MaxValue(),
                                  tile, _provider->getSPO2BaseLine());
+
+    // update spo2 value range
+    _waveWidget->setValueRange(0, _provider->getSPO2MaxValue());
 }
 
 /**************************************************************************************************
