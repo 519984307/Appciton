@@ -120,9 +120,9 @@ int ECGDupLimitAlarm::getLower(int paramID)
  *************************************************************************************************/
 int ECGDupLimitAlarm::getCompare(int value, int id)
 {
-    bool isHR = ecgDupParam.isHRValid();
-
-    if (isHR)
+    int isHR = 0;
+    currentConfig.getNumValue("ECG|HRSource", isHR);
+    if (isHR == 0)
     {
         if (id == ECG_DUP_LIMIT_ALARM_HR_HIGH)
         {
@@ -145,14 +145,14 @@ int ECGDupLimitAlarm::getCompare(int value, int id)
         {
             if (value > getUpper(id))
             {
-                return 1;
+                return 2;
             }
         }
         else if (id == ECG_DUP_LIMIT_ALARM_PR_LOW)
         {
             if (value < getLower(id))
             {
-                return -1;
+                return -2;
             }
         }
     }
@@ -165,10 +165,6 @@ int ECGDupLimitAlarm::getCompare(int value, int id)
  *************************************************************************************************/
 const char *ECGDupLimitAlarm::toString(int id)
 {
-    if (ecgDupParam.getCurHRSource() == HR_SOURCE_SPO2)
-    {
-        id = id + 2;
-    }
     return ECGSymbol::convert((ECGDupLimitAlarmType)id);
 }
 
