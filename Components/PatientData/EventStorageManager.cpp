@@ -149,7 +149,7 @@ void EventStorageManager::triggerAlarmEvent(const AlarmInfoSegment &almInfo, Wav
 
     int index = 0;
     systemConfig.getNumValue("Print|PhysiologicalAlarm", index);
-    if (index)
+    if (index && recorderManager.isConnected())   // don't start trigger printing when the printer is not connected
     {
         RecordPageGenerator *generator = new TriggerPageGenerator(item);
         if (recorderManager.isPrinting() && !d->isWait)
@@ -197,7 +197,7 @@ void EventStorageManager::triggerCodeMarkerEvent(const char *codeName, unsigned 
 
     int index = 0;
     systemConfig.getNumValue("Print|CoderMarker", index);
-    if (index)
+    if (index && recorderManager.isConnected())  // don't start trigger printing when the printer is not connected
     {
         RecordPageGenerator *generator = new TriggerPageGenerator(item);
         if (recorderManager.isPrinting() && !d->isWait)
@@ -259,7 +259,7 @@ void EventStorageManager::triggerNIBPMeasurementEvent(unsigned t, NIBPOneShotTyp
 
     int index = 0;
     systemConfig.getNumValue("Print|NIBPReading", index);
-    if (index)
+    if (index && recorderManager.isConnected())  // don't start trigger printing when the printer is not connected
     {
         RecordPageGenerator *generator = new TriggerPageGenerator(item);
         if (recorderManager.isPrinting() && !d->isWait)
@@ -306,7 +306,7 @@ void EventStorageManager::triggerWaveFreezeEvent(unsigned t)
 
     int index = 0;
     systemConfig.getNumValue("Print|WaveFreeze", index);
-    if (index)
+    if (index && recorderManager.isConnected())     // don't start trigger printing when the printer is not connected
     {
         RecordPageGenerator *generator = new TriggerPageGenerator(item);
         if (recorderManager.isPrinting() && !d->isWait)
