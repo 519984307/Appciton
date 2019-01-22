@@ -38,7 +38,8 @@ public:
           waitTimerId(-1),
           isWait(false),
           timeoutNum(0),
-          generator(NULL)
+          generator(NULL),
+          item(NULL)
     {
     }
 
@@ -54,6 +55,7 @@ public:
     bool isWait;
     int timeoutNum;
     RecordPageGenerator *generator;
+    EventStorageItem *item;
 };
 
 QList<WaveformID> EventStorageManagerPrivate::getStoreWaveList(WaveformID paramWave)
@@ -167,6 +169,7 @@ void EventStorageManager::triggerAlarmEvent(const AlarmInfoSegment &almInfo, Wav
                 d->generator = generator;
                 d->waitTimerId = startTimer(2000); // 等待2000ms
                 d->isWait = true;
+                d->item = item;
             }
         }
         // 当前无打印任务
@@ -215,6 +218,7 @@ void EventStorageManager::triggerCodeMarkerEvent(const char *codeName, unsigned 
                 d->generator = generator;
                 d->waitTimerId = startTimer(2000); // 等待2000ms
                 d->isWait = true;
+                d->item = item;
             }
         }
         else if (!recorderManager.getPrintStatus())
@@ -276,6 +280,7 @@ void EventStorageManager::triggerNIBPMeasurementEvent(unsigned t, NIBPOneShotTyp
                 d->generator = generator;
                 d->waitTimerId = startTimer(2000); // 等待2000ms
                 d->isWait = true;
+                d->item = item;
             }
         }
         else if (!recorderManager.getPrintStatus())
@@ -322,6 +327,7 @@ void EventStorageManager::triggerWaveFreezeEvent(unsigned t)
                 d->generator = generator;
                 d->waitTimerId = startTimer(2000);  // 等待2000ms
                 d->isWait = true;
+                d->item = item;
             }
         }
         else if (!recorderManager.getPrintStatus())
@@ -438,7 +444,10 @@ void EventStorageManager::timerEvent(QTimerEvent *ev)
             if (!recorderManager.isPrinting())
             {
                 recorderManager.addPageGenerator(d->generator);
-                item->setWaitForTriggerPrintFlag(true);
+                if (d->item)
+                {
+                    d->item->setWaitForTriggerPrintFlag(true);
+                }
             }
             // 超时时不处理当前打印任务
             else
