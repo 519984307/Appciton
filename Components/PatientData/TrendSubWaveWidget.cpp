@@ -530,14 +530,16 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
         QRect upDataRect = dataRect.adjusted(0, 0, 0, - dataRect.height() / 2);
         QRect downDataRect = dataRect.adjusted(0, dataRect.height() / 2, 0, 0);
         QTextOption nibpOption;
-        if (map != InvData() && dia != InvData() && sys != InvData() &&
-                (status & TrendDataStorageManager::CollectStatusNIBP))
+        if (map != InvData() && dia != InvData() && sys != InvData())
         {
-            QString trendStr = QString::number(sys) + "/" + QString::number(dia);
-            nibpOption.setAlignment(Qt::AlignBottom | Qt::AlignHCenter);
-            barPainter.drawText(upDataRect, trendStr, nibpOption);
-            nibpOption.setAlignment(Qt::AlignTop | Qt::AlignHCenter);
-            barPainter.drawText(downDataRect, QString::number(map), nibpOption);
+            if ((status & TrendDataStorageManager::CollectStatusNIBP) || _type == TREND_GRAPH_TYPE_ART_IBP)
+            {
+                QString trendStr = QString::number(sys) + "/" + QString::number(dia);
+                nibpOption.setAlignment(Qt::AlignBottom | Qt::AlignHCenter);
+                barPainter.drawText(upDataRect, trendStr, nibpOption);
+                nibpOption.setAlignment(Qt::AlignTop | Qt::AlignHCenter);
+                barPainter.drawText(downDataRect, QString::number(map), nibpOption);
+            }
         }
         else
         {

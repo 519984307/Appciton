@@ -419,13 +419,16 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
                 }
                 else if (t > lastTime)
                 {
-                    // NIBP测量标志位保存在后一个时间间隔的数据中.
-                    unsigned status = _trendDataPack.at(i)->status;
-                    if (status & TrendDataStorageManager::CollectStatusNIBP)
+                    if (subID == SUB_PARAM_NIBP_SYS)
                     {
-                        if (_trendGraphInfo.trendDataV3.count())
+                        // NIBP测量标志位保存在后一个时间间隔的数据中.
+                        unsigned status = _trendDataPack.at(i)->status;
+                        if (status & TrendDataStorageManager::CollectStatusNIBP)
                         {
-                            _trendGraphInfo.trendDataV3.last().status = status;
+                            if (_trendGraphInfo.trendDataV3.count())
+                            {
+                                _trendGraphInfo.trendDataV3.last().status = status;
+                            }
                         }
                     }
                     continue;
