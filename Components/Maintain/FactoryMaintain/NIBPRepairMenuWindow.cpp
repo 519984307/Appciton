@@ -202,7 +202,7 @@ NIBPRepairMenuWindow::NIBPRepairMenuWindow()
     d_ptr->messageBoxWait = new MessageBox(trs("Warn"), trs("NIBPServiceWaitAgain"),
                                             QStringList(trs("EnglishYESChineseSURE")));
     d_ptr->messageBoxError = new MessageBox(trs("Warn"), trs("NIBPServiceModuleErrorQuitTryAgain"),
-            QStringList(trs("EnglishYESChineseSURE")));
+            QStringList(trs("EnglishYESChineseSURE")), true);
 }
 
 /**************************************************************************************************
