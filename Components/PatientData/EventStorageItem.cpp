@@ -297,7 +297,7 @@ bool EventStorageItem::checkCompleted()
 {
     if (recorderManager.isConnected() && d_ptr->waitForTriggerPrintFlag && !d_ptr->triggerPrintStopped)
     {
-        // have to wait until the page generator is stopped
+        // have to wait until the page generator is stopped if connect recorder
         return false;
     }
 
