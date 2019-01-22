@@ -632,13 +632,9 @@ void PatientInfoWindow::onBtnReleased()
     if (btn == d_ptr->savePatientInfo)
     {
         d_ptr->savePatientInfoToManager();
+        patientManager.setPacermaker(static_cast<PatientPacer>(d_ptr->pacer->currentIndex()));
     }
     this->hide();
-}
-
-void PatientInfoWindow::pacerMakerReleased(int index)
-{
-    patientManager.setPacermaker(static_cast<PatientPacer>(index));
 }
 
 void PatientInfoWindow::bedNumReleased()
