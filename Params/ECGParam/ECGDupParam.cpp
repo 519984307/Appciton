@@ -5,10 +5,8 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/9/29
+ ** Written by TongZhou Fang fangtongzhou@blmed.cn, 2019/1/19
  **/
-
-
 
 #include "ECGDupParam.h"
 #include "BaseDefine.h"
