@@ -385,10 +385,7 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         break;
 
     case TE3_RSP_ECG_LEAD_CABLE_TYPE:
-        if (systemManager.isSupport(PARAM_RESP))
-        {
-            ecgParam.handleECGLeadCabelType(data[1]);
-        }
+        ecgParam.handleECGLeadCabelType(data[1]);
         break;
 
     case TE3_RSP_RESP_APNEA_INTERVAL:
@@ -455,24 +452,18 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         break;
 
     case TE3_CYCLE_RESP:
-        if (systemManager.isSupport(PARAM_RESP))
-        {
-            _handleRESPRawData(data, len);
-        }
+        _handleRESPRawData(data, len);
         break;
 
     case TE3_CYCLE_RR:
     {
-        if (systemManager.isSupport(PARAM_RESP))
+        short rr = (data[2] << 8) | data[1];
+        rr = (rr == -1) ? InvData() : rr;
+        if (0 == respParam.getRespMonitoring())
         {
-            short rr = (data[2] << 8) | data[1];
-            rr = (rr == -1) ? InvData() : rr;
-            if (0 == respParam.getRespMonitoring())
-            {
-                rr = InvData();
-            }
-            respParam.setRR(rr);
+            rr = InvData();
         }
+        respParam.setRR(rr);
         break;
     }
 

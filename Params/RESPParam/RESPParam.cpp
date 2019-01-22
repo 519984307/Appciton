@@ -278,7 +278,10 @@ void RESPParam::addWaveformData(int wave, int flag)
 void RESPParam::setRR(short rrValue)
 {
     respDupParam.updateRR(rrValue);
-     d_ptr->oxyCRGRrHrTrend->addRrTrendData(rrValue);
+    if (d_ptr->oxyCRGRrHrTrend)
+    {
+        d_ptr->oxyCRGRrHrTrend->addRrTrendData(rrValue);
+    }
 }
 
 /**************************************************************************************************
