@@ -22,7 +22,7 @@
 #define INVALID_AXIS_VALUE ((1<<30) - 1)
 
 #define WAVE_TOP_MARGIN             20                                      // 波形顶部边缘距
-#define WAVE_REG_HIGH               320                                     // 波形域高度
+#define WAVE_REG_HIGH               300                                     // 波形域高度
 #define WAVE_NUM                    3                                       // 波形数目
 #define WAVE_DATA_REG_HIGH          (WAVE_REG_HIGH / WAVE_NUM -20)          // 单参数波形数据域高度
 

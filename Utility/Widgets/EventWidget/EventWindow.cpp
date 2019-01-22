@@ -610,6 +610,7 @@ EventWindow::EventWindow()
     d_ptr->model = new EventReviewModel();
     d_ptr->eventTable->setModel(d_ptr->model);
     d_ptr->eventTable->setFixedHeight((PAGE_ROW_COUNT + 1) * d_ptr->model->getHeightHint());
+    d_ptr->eventTable->setItemDelegate(new TableViewItemDelegate(this));
     connect(d_ptr->eventTable, SIGNAL(clicked(QModelIndex)), this, SLOT(waveInfoReleased(QModelIndex)));
     connect(d_ptr->eventTable, SIGNAL(rowClicked(int)), this, SLOT(waveInfoReleased(int)));
 
@@ -649,7 +650,7 @@ EventWindow::EventWindow()
     hTableLayout->addWidget(levelLabel, 1);
     hTableLayout->addWidget(d_ptr->levelCbo, 4);
     hTableLayout->addStretch(1);
-    hTableLayout->addWidget(d_ptr->listPrintBtn, 3);
+    hTableLayout->addWidget(d_ptr->listPrintBtn, 4);
     hTableLayout->addStretch(1);
     hTableLayout->addWidget(d_ptr->upPageBtn, 2);
     hTableLayout->addWidget(d_ptr->downPageBtn, 2);
@@ -726,11 +727,13 @@ EventWindow::EventWindow()
     QVBoxLayout *vWaveLayout = new QVBoxLayout();
     vWaveLayout->addWidget(d_ptr->infoWidget, 1);
     vWaveLayout->addLayout(hLayout, 15);
-    vWaveLayout->addLayout(btnLayout);
     vWaveLayout->setSpacing(0);
+    QVBoxLayout *vLayout = new QVBoxLayout();
+    vLayout->addLayout(vWaveLayout);
+    vLayout->addLayout(btnLayout);
 
     d_ptr->chartWidget = new QWidget();
-    d_ptr->chartWidget->setLayout(vWaveLayout);
+    d_ptr->chartWidget->setLayout(vLayout);
 
     d_ptr->stackLayout = new QStackedLayout();
     d_ptr->stackLayout->addWidget(d_ptr->tableWidget);
