@@ -781,7 +781,6 @@ SPO2Param::SPO2Param() : Param(PARAM_SPO2),
     systemConfig.getNumValue("PrimaryCfg|SPO2|EverSensorOn", _isEverSensorOn);
 
     QTimer::singleShot(2000, this, SLOT(checkSelftest()));
-
 }
 
 /**************************************************************************************************

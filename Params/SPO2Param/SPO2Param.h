@@ -67,12 +67,6 @@ public:
     // 取值范围
     int getSPO2MaxValue(void);
 
-    /**
-     * @brief getSPO2BaseLine  get spo2 value base line
-     * @return
-     */
-    int getSPO2BaseLine(void);
-
     // 设置服务模式升级数据提供对象。
     void setServiceProvider(SPO2ProviderIFace *provider);
 
