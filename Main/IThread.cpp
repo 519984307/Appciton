@@ -9,11 +9,7 @@
  **/
 
 #include "IThread.h"
-
-namespace IUnistd
-{
 #include "unistd.h"
-}
 
 /**************************************************************************************************
  * 功能： 主运行入口。
@@ -49,22 +45,9 @@ debug("%s enter wait\n", qPrintable(_name));
     debug("%s exit wait\n", qPrintable(_name));
 }
 
-void IThread::sleep(unsigned long d)
-{
-    using IUnistd::sleep;
-    IUnistd::sleep(d);
-}
-
 void IThread::msleep(unsigned long d)
 {
-    using IUnistd::usleep;
-    IUnistd::usleep(d * 1000);
-}
-
-void IThread::usleep(unsigned long d)
-{
-    using IUnistd::usleep;
-    IUnistd::usleep(d);
+    ::usleep(d * 1000);
 }
 
 /**************************************************************************************************

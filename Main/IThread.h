@@ -23,9 +23,7 @@ public:
     void stop(void);
 
     // 休眠。
-    static void sleep(unsigned long d);
     static void msleep(unsigned long d);
-    static void usleep(unsigned long d);
 
     // 构造与析构。
     IThread(const QString &name, iThreadEntry entry);
