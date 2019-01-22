@@ -969,7 +969,7 @@ void Alarm::setLatchLockSta(bool status)
     _isLatchLock = status;
 }
 
-void Alarm::resetPhyAlarmLastAlarm()
+void Alarm::removeAllPhyAlarm()
 {
     QList<AlarmLimitIFace *> limitAlarmSourceList = _limitSources.values();
     foreach(AlarmLimitIFace *source, limitAlarmSourceList)

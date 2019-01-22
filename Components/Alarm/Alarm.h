@@ -86,9 +86,9 @@ public:
     void setLatchLockSta(bool status);
 
     /**
-     * @brief resetPhyAlarmLastAlarm 重设生理报警上一次报警的状态为false
+     * @brief removeAllPhyAlarm 移除生理报警的跟踪对象
      */
-    void resetPhyAlarmLastAlarm();
+    void removeAllPhyAlarm();
 
 private:
     unsigned _timestamp;

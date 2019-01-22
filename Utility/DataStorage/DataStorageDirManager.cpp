@@ -457,7 +457,7 @@ void DataStorageDirManager::createDir(bool createNew)
         Config systemDefCfg(systemConfig.getCurConfigName());
         systemConfig.setNodeValue("PrimaryCfg", systemDefCfg);
         emit newPatient();
-        alertor.resetPhyAlarmLastAlarm();
+        alertor.removeAllPhyAlarm();
     }
 }
 
