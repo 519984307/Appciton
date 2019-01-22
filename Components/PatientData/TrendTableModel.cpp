@@ -681,6 +681,11 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
     }
 }
 
+const QList<TrendDataPackage *> &TrendTableModel::getTrendDataPack()
+{
+    return d_ptr->trendDataPack;
+}
+
 unsigned TrendTableModel::getColumnCount() const
 {
     return COLUMN_COUNT;
