@@ -389,8 +389,9 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
             // 上次报警，现在恢复正常了。
             if (traceCtrl->lastAlarmed)
             {
-                if (traceCtrl->type != ALARM_TYPE_TECH)
+                if (traceCtrl->type != ALARM_TYPE_TECH && _isLatchLock)
                 {
+                    // 栓锁打开时，才栓锁PhyOneShotAlarm
                     if (!alarmIndicator.latchAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage))
                     {
                         alarmSource->notifyAlarm(i, false);
