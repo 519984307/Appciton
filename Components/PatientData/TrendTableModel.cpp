@@ -602,6 +602,7 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
     // 二分查找时间索引
     int lowPos = 0;
     int highPos = d_ptr->trendDataPack.count() - 1;
+    int startPrintId = 0;
     while (lowPos <= highPos)
     {
         int midPos = (lowPos + highPos) / 2;
@@ -619,12 +620,14 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
         if (timeDiff == 0 || lowPos > highPos)
         {
             startIndex = d_ptr->trendDataPack.at(midPos)->index;
+            startPrintId = midPos;  // 获取趋势数据包中开始打印时刻的索引
             break;
         }
     }
 
     lowPos = 0;
     highPos = d_ptr->trendDataPack.count() - 1;
+    int endPrintId = 0;
     while (lowPos <= highPos)
     {
         int midPos = (lowPos + highPos) / 2;
@@ -642,6 +645,7 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
         if (timeDiff == 0 || lowPos > highPos)
         {
             endIndex = d_ptr->trendDataPack.at(midPos)->index;
+            endPrintId = midPos;  // 获取趋势数据包中结束打印时刻的索引
             break;
         }
     }
@@ -651,7 +655,7 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
     printInfo.stopIndex = endIndex;
     printInfo.interval = TrendDataSymbol::convertValue(d_ptr->timeInterval);
     printInfo.list = d_ptr->displayList;
-    for (int i = startIndex; i < endIndex; i++)
+    for (int i = startPrintId; i <= endPrintId; i++)
     {
         printInfo.timestampEventMap[d_ptr->trendDataPack.at(i)->time] = d_ptr->trendDataPack.at(i)->status;
     }
@@ -929,6 +933,14 @@ void TrendTableModelPrivate::loadTrendData()
         timeDate.getTime(pack->time, time, true);
         TrendDataContent colHeadContent(time);
 
+        // 手动触发事件发生时，表头颜色显示优先级低于报警事件显示
+        if ((pack->status & TrendDataStorageManager::CollectStatusPrint)
+                || (pack->status & TrendDataStorageManager::CollectStatusFreeze)
+                || (pack->status & TrendDataStorageManager::CollectStatusNIBP))
+        {
+            colHeadContent.backGroundColor = MANUAL_EVENT_COLOR;
+        }
+
         // 填充TrendDataContent结构体backGroundColor成员
         if (pack->alarmFlag == true)
         {
@@ -952,13 +964,6 @@ void TrendTableModelPrivate::loadTrendData()
             {
                 colHeadContent.backGroundColor = MED_PRIO_ALARM_COLOR;
             }
-        }
-
-        if ((pack->status & TrendDataStorageManager::CollectStatusPrint)
-                || (pack->status & TrendDataStorageManager::CollectStatusFreeze)
-                || (pack->status & TrendDataStorageManager::CollectStatusNIBP))
-        {
-            colHeadContent.backGroundColor = MANUAL_EVENT_COLOR;
         }
 
         // 填充colHeadList链表
