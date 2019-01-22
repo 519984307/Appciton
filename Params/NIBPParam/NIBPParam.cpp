@@ -160,7 +160,7 @@ void NIBPParam::exitDemo()
     _mapVaule = InvData();
     _prVaule = InvData();
 
-    switchState(_lastDemoState);
+    switchState(_stateBeforeDemo);
     if (curStatusType() == NIBP_SERVICE_STANDBY_STATE)
     {
         // 若返回的时准备模式，则清除显示数据
@@ -251,7 +251,7 @@ void NIBPParam::setProvider(NIBPProviderIFace *provider)
 
     if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
     {
-        _lastDemoState = curStatusType();
+        _stateBeforeDemo = curStatusType();
         switchState(NIBP_SERVICE_STANDBY_STATE);
     }
 }
@@ -1379,7 +1379,7 @@ NIBPParam::NIBPParam()
       _connectedFlag(false), _connectedProvider(false),
       _text(InvStr()),
       _reply(false), _result(false), _manometerPressure(InvData()),
-      _activityMachine(NULL), _lastDemoState(NIBP_MONITOR_STANDBY_STATE)
+      _activityMachine(NULL), _stateBeforeDemo(NIBP_MONITOR_STANDBY_STATE)
 {
     nibpCountdownTime.construction();
 
