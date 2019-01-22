@@ -22,6 +22,7 @@
 #include "Debug.h"
 #include "WindowManager.h"
 #include "SystemManager.h"
+#include <QTimer>
 
 /**************************************************************************************************
  * wave is enable。
@@ -69,6 +70,12 @@ void SPO2WaveWidget::focusInEvent(QFocusEvent *e)
     _name->setFocus();
 }
 
+void SPO2WaveWidget::onTimeout()
+{
+    // update spo2 value range
+    setValueRange(0, spo2Param.getSPO2MaxValue());
+}
+
 /**************************************************************************************************
  * 载入配置。
  *************************************************************************************************/
@@ -91,6 +98,9 @@ void SPO2WaveWidget::_loadConfig(void)
     {
         setWaveSpeed(25.0);
     }
+
+    // wait 2000ms for the provider initializing completely
+    QTimer::singleShot(2000, this, SLOT(onTimeout()));
 }
 
 void SPO2WaveWidget::setNotify(bool enable, QString str)

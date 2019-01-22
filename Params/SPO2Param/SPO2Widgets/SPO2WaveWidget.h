@@ -36,6 +36,12 @@ protected:
     virtual void resizeEvent(QResizeEvent *e);
     virtual void focusInEvent(QFocusEvent */*e*/);
 
+private slots:
+    /**
+     * @brief onTimeout  time out handle
+     */
+    void onTimeout(void);
+
 private:
     void _loadConfig(void);
 //    WaveWidgetLabel *_name;

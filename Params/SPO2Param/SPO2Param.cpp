@@ -627,12 +627,6 @@ void SPO2Param::checkSelftest()
             errorLog.append(item);
         }
     }
-
-    // update spo2 value range
-    if (_waveWidget && _provider)
-    {
-        _waveWidget->setValueRange(_provider->getSPO2BaseLine(), _provider->getSPO2MaxValue());
-    }
 }
 
 void SPO2Param::onPaletteChanged(ParamID id)
