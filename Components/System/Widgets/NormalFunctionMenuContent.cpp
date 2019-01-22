@@ -28,6 +28,7 @@
 #include "SoftWareVersionWindow.h"
 #include "NightModeWindow.h"
 #include "PasswordWindow.h"
+#include "AlarmIndicator.h"
 #ifdef Q_WS_QWS
 #include <QWSServer>
 #endif
@@ -43,6 +44,7 @@ public:
         ITEM_CBO_ALARM_VOLUME,
         ITEM_CBO_SCREEN_BRIGHTNESS,
         ITEM_CBO_KEYPRESS_VOLUME,
+        ITEM_CBO_ALARM_AUDIO_OFF,
 #ifdef Q_WS_QWS
         ITEM_CBO_TOUCH_SCREEN,
 #endif
@@ -84,6 +86,10 @@ void NormalFunctionMenuContentPrivate::loadOptions()
         combos[ITEM_CBO_WAVE_LEN]->setCurrentIndex(2);
     }
 
+    int isAlarmAudioOff = 0;
+    systemConfig.getNumValue("Alarms|AlarmAudioOff", isAlarmAudioOff);
+    combos[ITEM_CBO_ALARM_AUDIO_OFF]->setCurrentIndex(isAlarmAudioOff);
+
     if (nightModeManager.nightMode())
     {
         combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setEnabled(false);
@@ -94,7 +100,15 @@ void NormalFunctionMenuContentPrivate::loadOptions()
     {
         combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setEnabled(true);
         combos[ITEM_CBO_KEYPRESS_VOLUME]->setEnabled(true);
-        combos[ITEM_CBO_ALARM_VOLUME]->setEnabled(true);
+        if (!isAlarmAudioOff)
+        {
+            // 报警音没有关闭才可以设置报警音
+            combos[ITEM_CBO_ALARM_VOLUME]->setEnabled(true);
+        }
+        else
+        {
+            combos[ITEM_CBO_ALARM_VOLUME]->setEnabled(false);
+        }
 
         combos[ITEM_CBO_ALARM_VOLUME]->blockSignals(true);
         combos[ITEM_CBO_ALARM_VOLUME]->clear();
@@ -213,6 +227,20 @@ void NormalFunctionMenuContent::layoutExec()
     layout->addWidget(comboBox, row, 1);
     row++;
     d_ptr->combos.insert(NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME, comboBox);
+
+    // alarm audio off
+    label = new QLabel(trs("AlarmAudioOff"));
+    layout->addWidget(label, row, 0);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                       << trs("No")
+                       << trs("Yes"));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_AUDIO_OFF);
+    comboBox->setProperty("Item", qVariantFromValue(itemID));
+    layout->addWidget(comboBox, row, 1);
+    d_ptr->combos.insert(NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_AUDIO_OFF, comboBox);
+    row++;
 
     // screen brightness
     label = new QLabel(trs("SystemBrightness"));
@@ -375,6 +403,20 @@ void NormalFunctionMenuContent::onComboBoxIndexChanged(int index)
             int volume = box->itemText(index).toInt();
             soundManager.setVolume(SoundManager::SOUND_TYPE_ALARM, static_cast<SoundManager::VolumeLevel>(volume));
             systemConfig.setNumValue("Alarms|DefaultAlarmVolume", volume);
+            break;
+        }
+        case NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_AUDIO_OFF:
+        {
+            systemConfig.setNumValue("Alarms|AlarmAudioOff", index);
+            alarmIndicator.updateAlarmStateWidget();
+            if (!index)
+            {
+                d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME]->setEnabled(true);
+            }
+            else
+            {
+                d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME]->setEnabled(false);
+            }
             break;
         }
         case NormalFunctionMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS:

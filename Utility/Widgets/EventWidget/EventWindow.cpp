@@ -48,6 +48,7 @@
 #include "CO2Param.h"
 #include "EventListPageGenerator.h"
 #include "NIBPSymbol.h"
+#include "ThemeManager.h"
 
 #define TABLE_SPACING               (4)
 #define PAGE_ROW_COUNT               7      // 每页多少行
@@ -610,6 +611,7 @@ EventWindow::EventWindow()
     d_ptr->model = new EventReviewModel();
     d_ptr->eventTable->setModel(d_ptr->model);
     d_ptr->eventTable->setFixedHeight((PAGE_ROW_COUNT + 1) * d_ptr->model->getHeightHint());
+    d_ptr->eventTable->setItemDelegate(new TableViewItemDelegate(this));
     connect(d_ptr->eventTable, SIGNAL(clicked(QModelIndex)), this, SLOT(waveInfoReleased(QModelIndex)));
     connect(d_ptr->eventTable, SIGNAL(rowClicked(int)), this, SLOT(waveInfoReleased(int)));
 
@@ -633,11 +635,14 @@ EventWindow::EventWindow()
     d_ptr->listPrintBtn->setButtonStyle(Button::ButtonTextOnly);
     connect(d_ptr->listPrintBtn, SIGNAL(released()), this, SLOT(eventListPrintReleased()));
 
-    d_ptr->upPageBtn = new Button("", QIcon("/usr/local/nPM/icons/up.png"));
+    QSize iconsize(24, 24);
+    d_ptr->upPageBtn = new Button("", themeManger.getIcon(ThemeManager::IconUp, iconsize));
+    d_ptr->upPageBtn->setIconSize(iconsize);
     d_ptr->upPageBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->upPageBtn, SIGNAL(released()), this, SLOT(upPageReleased()));
 
-    d_ptr->downPageBtn = new Button("", QIcon("/usr/local/nPM/icons/down.png"));
+    d_ptr->downPageBtn = new Button("", themeManger.getIcon(ThemeManager::IconDown, iconsize));
+    d_ptr->downPageBtn->setIconSize(iconsize);
     d_ptr->downPageBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->downPageBtn, SIGNAL(released()), this, SLOT(downPageReleased()));
 
@@ -649,7 +654,7 @@ EventWindow::EventWindow()
     hTableLayout->addWidget(levelLabel, 1);
     hTableLayout->addWidget(d_ptr->levelCbo, 4);
     hTableLayout->addStretch(1);
-    hTableLayout->addWidget(d_ptr->listPrintBtn, 3);
+    hTableLayout->addWidget(d_ptr->listPrintBtn, 4);
     hTableLayout->addStretch(1);
     hTableLayout->addWidget(d_ptr->upPageBtn, 2);
     hTableLayout->addWidget(d_ptr->downPageBtn, 2);
@@ -706,11 +711,13 @@ EventWindow::EventWindow()
     d_ptr->setBtn->setButtonStyle(Button::ButtonTextOnly);
     connect(d_ptr->setBtn, SIGNAL(released()), this, SLOT(setReleased()));
 
-    d_ptr->upParamBtn = new Button("", QIcon("/usr/local/nPM/icons/up.png"));
+    d_ptr->upParamBtn = new Button("", themeManger.getIcon(ThemeManager::IconUp, iconsize));
+    d_ptr->upParamBtn->setIconSize(iconsize);
     d_ptr->upParamBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->upParamBtn, SIGNAL(released()), this, SLOT(upReleased()));
 
-    d_ptr->downParamBtn = new Button("", QIcon("/usr/local/nPM/icons/down.png"));
+    d_ptr->downParamBtn = new Button("", themeManger.getIcon(ThemeManager::IconDown, iconsize));
+    d_ptr->downParamBtn->setIconSize(iconsize);
     d_ptr->downParamBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->downParamBtn, SIGNAL(released()), this, SLOT(downReleased()));
 
@@ -726,11 +733,13 @@ EventWindow::EventWindow()
     QVBoxLayout *vWaveLayout = new QVBoxLayout();
     vWaveLayout->addWidget(d_ptr->infoWidget, 1);
     vWaveLayout->addLayout(hLayout, 15);
-    vWaveLayout->addLayout(btnLayout);
     vWaveLayout->setSpacing(0);
+    QVBoxLayout *vLayout = new QVBoxLayout();
+    vLayout->addLayout(vWaveLayout);
+    vLayout->addLayout(btnLayout);
 
     d_ptr->chartWidget = new QWidget();
-    d_ptr->chartWidget->setLayout(vWaveLayout);
+    d_ptr->chartWidget->setLayout(vLayout);
 
     d_ptr->stackLayout = new QStackedLayout();
     d_ptr->stackLayout->addWidget(d_ptr->tableWidget);

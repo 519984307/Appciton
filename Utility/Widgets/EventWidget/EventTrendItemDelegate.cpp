@@ -131,7 +131,7 @@ QSize EventTrendItemDelegate::sizeHint(const QStyleOptionViewItem &option, const
     }
 
 //    height += 2 * MARGIN;
-    height += 12 * MARGIN;
+    height += 11 * MARGIN;
 
     QString valueText = index.data(ValueTextRole).toString();
     QString unitText = index.data(UnitTextRole).toString();

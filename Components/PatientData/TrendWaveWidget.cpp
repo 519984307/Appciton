@@ -419,6 +419,18 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
                 }
                 else if (t > lastTime)
                 {
+                    if (subID == SUB_PARAM_NIBP_SYS)
+                    {
+                        // NIBP测量标志位保存在后一个时间间隔的数据中.
+                        unsigned status = _trendDataPack.at(i)->status;
+                        if (status & TrendDataStorageManager::CollectStatusNIBP)
+                        {
+                            if (_trendGraphInfo.trendDataV3.count())
+                            {
+                                _trendGraphInfo.trendDataV3.last().status = status;
+                            }
+                        }
+                    }
                     continue;
                 }
             }
@@ -427,6 +439,7 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
             dataV3.data[2] = _trendDataPack.at(i)->subparamValue.value(SubParamID(subID + 2), InvData());
             dataV3.isAlarm = _trendDataPack.at(i)->subparamAlarm.value(subID, false);
             dataV3.timestamp = _trendDataPack.at(i)->time;
+            dataV3.status = _trendDataPack.at(i)->status;
             alarm.isAlarmEvent = _trendDataPack.at(i)->alarmFlag;
             alarm.timestamp = _trendDataPack.at(i)->time;
             _trendGraphInfo.alarmInfo.append(alarm);
@@ -836,6 +849,7 @@ void TrendWaveWidget::_getTrendData()
             pack->subparamValue[(SubParamID)dataSeg->values[j].subParamId] = dataSeg->values[j].value;
             pack->subparamAlarm[(SubParamID)dataSeg->values[j].subParamId] = dataSeg->values[j].alarmFlag;
             pack->alarmFlag = dataSeg->eventFlag;
+            pack->status = dataSeg->status;
         }
         _trendDataPack.append(pack);
     }

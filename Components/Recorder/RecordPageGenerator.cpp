@@ -1352,6 +1352,8 @@ static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegme
 
     int wavebuffSize = waveInfo.secondWaveBuff.size();
 
+    float pixelPitch = systemManager.getScreenPixelHPitch();
+    ParamID paramId = paramInfo.getParamID(waveInfo.id);
     for (i = 0; i < waveInfo.sampleRate && i < wavebuffSize; i++)
     {
         unsigned short flag = waveInfo.secondWaveBuff[i] >> 16;
@@ -1449,6 +1451,15 @@ static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegme
             y2 = waveData;
             QLineF line(x1, y1, x2, y2);
             painter->drawLine(line);
+
+            if (flag & ECG_INTERNAL_FLAG_BIT && paramId == PARAM_ECG)
+            {
+                QPen pen = painter->pen();
+                painter->setPen(QPen(Qt::white, 1, Qt::DashLine));
+                painter->drawLine(x2, waveInfo.middleYOffset - 10 / pixelPitch / 2,
+                                  x2, waveInfo.middleYOffset + 10 / pixelPitch / 2);
+                painter->setPen(pen);
+            }
 
             x1 = x2;
             x2 += offsetX;
@@ -2326,6 +2337,16 @@ void RecordPageGenerator::timerEvent(QTimerEvent *ev)
     if (_timer.timerId() == ev->timerId())
     {
         _timer.stop();
+
+        if (_requestStop)
+        {
+            // we need to check stop condition here because we're unabled to stop if
+            // the _generate flag is set to false.
+            _requestStop = false;
+            emit stopped();
+            onStopGenerate();
+            return;
+        }
 
         if (!_generate)
         {

@@ -33,6 +33,7 @@
  *************************************************************************************************/
 bool E5Provider::attachParam(Param &param)
 {
+    Provider::attachParam(param);
     if (param.getParamID() == PARAM_ECG)
     {
         ecgParam.setProvider(this);
@@ -127,7 +128,7 @@ void E5Provider::_handleECGRawData(const unsigned char *data, unsigned len)
         // 根据导联脱落处理各导联的数据。
 #ifdef CONFIG_ECG_TEST    //此选项供算法组调试使用
         // bit9 RL, bit8 LA, bit7 LL, bit6 RA,
-        if (leadoff & 0x200) // RL
+        if (leadoff & 0x200)  // RL
         {
             for (int i = 0; i < ECG_LEAD_NR - 1; i++)
             {
@@ -135,7 +136,7 @@ void E5Provider::_handleECGRawData(const unsigned char *data, unsigned len)
                 leadOff[i] = true;
             }
         }
-        if (leadoff & 0x100) // LA
+        if (leadoff & 0x100)  // LA
         {
             leadOff[ECG_LEAD_I] = true;
             leadOff[ECG_LEAD_III] = true;
@@ -208,7 +209,7 @@ void E5Provider::_handleECGRawData(const unsigned char *data, unsigned len)
             leadOff[ECG_LEAD_V6] = true;
         }
 #else
-        if (leadoff & 0x3C0) // RL/LA/LL/RA
+        if (leadoff & 0x3C0)  // RL/LA/LL/RA
         {
             for (int i = 0; i < ECG_LEAD_NR - 1; i++)
             {
@@ -359,7 +360,7 @@ void E5Provider::handlePacket(unsigned char *data, int len)
     case TE3_RSP_VERSION:
         break;
 
-    case TE3_RSP_SYSTEM_TEST: // 系统测试命令反馈
+    case TE3_RSP_SYSTEM_TEST:  // 系统测试命令反馈
         break;
 
     case TE3_RSP_PACE_SYNC_STATUS:
@@ -447,7 +448,7 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         feed();
         break;
 
-    case TE3_CYCLE_ECG: // 收到心电数据包。
+    case TE3_CYCLE_ECG:  // 收到心电数据包。
         _handleECGRawData(data, len);
         break;
 
@@ -670,25 +671,26 @@ void E5Provider::setPatientType(unsigned char type)
 
 void E5Provider::setFilterMode(ECGFilterMode mode)
 {
-    unsigned char filterMode;
+    ECGBandwidth band;
     switch (mode)
     {
     case ECG_FILTERMODE_SURGERY:
-        filterMode = 0x02;
+        band = ECG_BANDWIDTH_067_20HZ;
         break;
     case ECG_FILTERMODE_MONITOR:
-        filterMode = 0x03;
+        band = ECG_BANDWIDTH_067_40HZ;
         break;
     case ECG_FILTERMODE_ST:
-        filterMode = 0x00;
+        band = ECG_BANDWIDTH_0525_40HZ;
         break;
     case ECG_FILTERMODE_DIAGNOSTIC:
-        filterMode = 0x01;
+        band = ECG_BANDWIDTH_0525_150HZ;
         break;
     default:
+        band = ECG_BANDWIDTH_067_40HZ;
         break;
     }
-    sendCmd(TE3_CMD_SET_FILTER_PARAMETER, &filterMode, 1);
+    setBandwidth(band);
 }
 
 /**************************************************************************************************
@@ -912,7 +914,7 @@ void E5Provider::reconnected(void)
         respOneShotAlarm.clear();
         respParam.setLeadoff(false);
         respParam.setRR(InvData());
-        respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+        respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
         if (-1 != waveID.indexOf(WAVE_RESP))
         {
             needFreshWave = true;

@@ -20,6 +20,7 @@
 #include "LanguageManager.h"
 #include <QList>
 #include <QPainter>
+#include "ThemeManager.h"
 
 class MenuWindowPrivate
 {
@@ -295,9 +296,11 @@ void MenuWindow::showEvent(QShowEvent *ev)
         bottomLayout->setContentsMargins(4, 4, 8, 4);
         bottomLayout->addStretch(1);
 
-        d_ptr->retBtn = new Button("", QIcon("/usr/local/nPM/icons/BackLeft.png"));
+        QSize iconSize(32, 32);
+        QIcon icon = themeManger.getIcon(ThemeManager::IconReturn, iconSize);
+        d_ptr->retBtn = new Button(QString(), icon);
         d_ptr->retBtn->setButtonStyle(Button::ButtonIconOnly);
-        d_ptr->retBtn->setIconSize(QSize(32, 32));
+        d_ptr->retBtn->setIconSize(iconSize);
         d_ptr->retBtn->setMinimumWidth(100);
         bottomLayout->addWidget(d_ptr->retBtn);
         d_ptr->rightLayout->addLayout(bottomLayout);

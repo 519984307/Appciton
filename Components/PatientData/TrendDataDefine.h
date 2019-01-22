@@ -154,11 +154,12 @@ struct TrendGraphDataV2     // trend graph draw 2 values
 
 struct TrendGraphDataV3     // trend graph draw 3 values
 {
-    TrendGraphDataV3() : isAlarm(false), timestamp(0)
+    TrendGraphDataV3() : isAlarm(false), timestamp(0), status(0)
     {
     }
     bool isAlarm;
     unsigned timestamp;
+    unsigned status;
     TrendDataType data[3];
 };
 

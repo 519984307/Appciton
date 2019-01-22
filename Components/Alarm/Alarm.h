@@ -85,6 +85,11 @@ public:
      */
     void setLatchLockSta(bool status);
 
+    /**
+     * @brief removeAllPhyAlarm 移除生理报警的跟踪对象
+     */
+    void removeAllPhyAlarm();
+
 private:
     unsigned _timestamp;
     QMultiMap<ParamID, AlarmLimitIFace *> _limitSources;

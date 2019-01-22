@@ -51,7 +51,7 @@
 	    </CO>
 	    <RESP>
 		<ApneaDelay cAttr0="0" cMin="0" cMax="9" cLen="1">2</ApneaDelay>
-		<BreathLead cAttr0="0" cMin="0" cMax="1" cLen="1">0</BreathLead>
+                <BreathLead cAttr0="0" cMin="0" cMax="2" cLen="1">0</BreathLead>
 		<Gain cAttr0="0" cMin="0" cMax="6" cLen="1">0</Gain>
 		<SweepSpeed cAttr0="0" cMin="0" cMax="2" cLen="1">1</SweepSpeed>
 	    </RESP>

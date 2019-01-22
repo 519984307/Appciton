@@ -274,7 +274,7 @@ void ECGParam::setProvider(ECGProviderIFace *provider)
     _provider->setPatientType(getPatientType());
 
     // 设置带宽。
-    _provider->setBandwidth((ECGBandwidth)getBandwidth());
+//    _provider->setBandwidth((ECGBandwidth)getBandwidth());
 
     // set fitler mode
     _provider->setFilterMode((ECGFilterMode)getFilterMode());
@@ -529,7 +529,7 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
             _waveWidget[i]->addWaveformData(-waveform[i], norfalg & 0xFFFF);
         }
 
-        waveformCache.addData((WaveformID)i, ((flag & 0xFFFF) << 16) | (waveform[i] & 0xFFFF));
+        waveformCache.addData((WaveformID)i, ((norfalg & 0xFFFF) << 16) | (waveform[i] & 0xFFFF));
 
         flagUnsaved[i] = 0;
     }
@@ -1091,7 +1091,7 @@ void ECGParam::reset(void)
     _provider->setPatientType(getPatientType());
 
     // 设置带宽。
-    _provider->setBandwidth((ECGBandwidth)getBandwidth());
+//    _provider->setBandwidth((ECGBandwidth)getBandwidth());
 
     // 设置起搏检测。
     _provider->enablePacermaker(getPacermaker());
@@ -1378,27 +1378,27 @@ ECGLeadMode ECGParam::getLeadMode(void) const
  *************************************************************************************************/
 void ECGParam::setDisplayMode(ECGDisplayMode mode, bool refresh)
 {
-    int band = 0;
+//    int band = 0;
     int filter = 0;
     ECGPaceMode ecgPaceMaker = getPacermaker();
     ECGPaceMode ecg12LPaceMaker = get12LPacermaker();
 
     if (mode == ECG_DISPLAY_NORMAL)
     {
-        band = _chestFreqBand;
+//        band = _chestFreqBand;
         filter = ECG_NOTCH_50_AND_60HZ;
     }
     else
     {
         // 进入12L模式前，如果是在诊断时间范围內则先关闭诊断功能
-        band = _12LeadFreqBand;
+//        band = _12LeadFreqBand;
 
         currentConfig.getNumValue("ECG|NotchFilter", filter);
     }
 
     if (NULL != _provider)
     {
-        _provider->setBandwidth((ECGBandwidth)band);
+//        _provider->setBandwidth((ECGBandwidth)band);
         _provider->setNotchFilter((ECGNotchFilter)filter);
     }
 
@@ -1660,10 +1660,10 @@ void ECGParam::setBandwidth(int band)
         }
     }
 
-    if (NULL != _provider)
-    {
-        _provider->setBandwidth(static_cast<ECGBandwidth>(band));
-    }
+    //    if (NULL != _provider)
+    //    {
+    //        _provider->setBandwidth(static_cast<ECGBandwidth>(band));
+    //    }
 }
 
 /***************************************************************************************************
