@@ -76,6 +76,11 @@ void TrendSubWaveWidget::trendDataInfo(TrendGraphInfo &info)
 {
     _trendInfo = info;
     _cursorPosIndex = 0;
+    // 数据更新时判断是否为自动标尺,是则刷新标尺
+    if (getAutoRuler())
+    {
+        _autoRulerCal();
+    }
 }
 
 void TrendSubWaveWidget::loadTrendSubWidgetInfo(TrendSubWidgetInfo &info)
@@ -150,6 +155,118 @@ SubParamID TrendSubWaveWidget::getSubParamID()
     return _id;
 }
 
+QPainterPath TrendSubWaveWidget::getTrendPainterPath(const QVector<TrendGraphDataV2> &dataVertor, int index)
+{
+    QPainterPath path;
+    bool lastPointInvalid = true;
+    QPointF lastPoint;
+    QVector<TrendGraphDataV2>::ConstIterator iter = dataVertor.constBegin();
+    for (; iter != dataVertor.constEnd(); iter++)
+    {
+        TrendDataType data = iter->data[index];
+        if (data == InvData())
+        {
+            if (!lastPointInvalid)
+            {
+                path.lineTo(lastPoint);
+                lastPointInvalid = true;
+            }
+            continue;
+        }
+
+        qreal x = _mapValue(_timeX, iter->timestamp);
+        ParamID paramId = paramInfo.getParamID(_id);
+        UnitType type = paramManager.getSubParamUnit(paramId, _id);
+        int v = 0;
+        if (paramId == PARAM_CO2)
+        {
+            v = Unit::convert(type, UNIT_PERCENT, data / 10.0, co2Param.getBaro()).toDouble();
+        }
+        else if (paramId == PARAM_TEMP)
+        {
+            QString vStr = Unit::convert(type, UNIT_TC, data / 10.0);
+            v = vStr.toDouble();
+        }
+        else
+        {
+            v = data / 10;
+        }
+        qreal value = _mapValue(_valueY, v);
+
+        if (lastPointInvalid)
+        {
+            path.moveTo(x, value);
+            lastPointInvalid = false;
+        }
+        else
+        {
+            if (!isEqual(lastPoint.y(), value))
+            {
+                path.lineTo(lastPoint);
+                path.lineTo(x, value);
+            }
+        }
+
+        lastPoint.rx() = x;
+        lastPoint.ry() = value;
+    }
+
+    if (!lastPointInvalid)
+    {
+        path.lineTo(lastPoint);
+    }
+    return path;
+}
+
+QPainterPath TrendSubWaveWidget::getTrendPainterPath(const QVector<TrendGraphDataV3> &dataVertor, int index)
+{
+    QPainterPath path;
+    bool lastPointInvalid = true;
+    QPointF point;
+    QVector<TrendGraphDataV3>::ConstIterator iter = dataVertor.constBegin();
+    for (; iter != dataVertor.constEnd(); iter++)
+    {
+        TrendDataType data = iter->data[index];
+        if (data == InvData())
+        {
+            // 画连续无效点
+            if (!lastPointInvalid)
+            {
+                path.lineTo(point);
+                lastPointInvalid = true;
+            }
+            continue;
+        }
+
+        qreal x = _mapValue(_timeX, iter->timestamp);
+        qreal value = _mapValue(_valueY, data);
+
+        // 判断是否为最后一个点
+        if (lastPointInvalid)
+        {
+            path.moveTo(x, value);
+            lastPointInvalid = false;
+        }
+        else
+        {
+            if (!isEqual(point.y(), value))
+            {
+                path.lineTo(point);
+                path.lineTo(x, value);
+            }
+        }
+
+        point.rx() = x;
+        point.ry() = value;
+    }
+
+    if (!lastPointInvalid)
+    {
+        path.lineTo(point);
+    }
+    return path;
+}
+
 QList<QPainterPath> TrendSubWaveWidget::generatorPainterPath(const TrendGraphInfo &graphInfo)
 {
     QList<QPainterPath> paths;
@@ -191,166 +308,22 @@ QList<QPainterPath> TrendSubWaveWidget::generatorPainterPath(const TrendGraphInf
         break;
     case TREND_GRAPH_TYPE_AG_TEMP:
     {
-        QPainterPath fristPath;
-        QPainterPath secondPath;
-
-        bool lastPointInvalid = true;
-        QPointF fristPoint;
-        QPointF secondPoint;
-
-        QVector<TrendGraphDataV2>::ConstIterator iter = graphInfo.trendDataV2.constBegin();
-        for (; iter != graphInfo.trendDataV2.constEnd(); iter++)
+        int trendNum = 2;       // 体温和co2有2个趋势参数
+        for (int i = 0; i < trendNum; i++)
         {
-            if (iter->data[0] == InvData())
-            {
-                if (!lastPointInvalid)
-                {
-                    fristPath.lineTo(fristPoint);
-                    secondPath.lineTo(secondPoint);
-                    lastPointInvalid = true;
-                }
-                continue;
-            }
-
-            qreal x = _mapValue(_timeX, iter->timestamp);
-            ParamID paramId = paramInfo.getParamID(_id);
-            UnitType type = paramManager.getSubParamUnit(paramId, _id);
-            int v1 = 0;
-            int v2 = 0;
-            if (paramId == PARAM_CO2)
-            {
-                v1 = Unit::convert(type, UNIT_PERCENT, iter->data[0] / 10.0, co2Param.getBaro()).toDouble();
-                v2 = Unit::convert(type, UNIT_PERCENT, iter->data[1] / 10.0, co2Param.getBaro()).toDouble();
-            }
-            else if (paramId == PARAM_TEMP)
-            {
-                QString v1Str = Unit::convert(type, UNIT_TC, iter->data[0] / 10.0);
-                QString v2Str = Unit::convert(type, UNIT_TC, iter->data[1] / 10.0);
-                v1 = v1Str.toDouble();
-                v2 = v2Str.toDouble();
-            }
-            else
-            {
-                v1 = iter->data[0] / 10;
-                v2 = iter->data[1] / 10;
-            }
-            qreal value1 = _mapValue(_valueY, v1);
-            qreal value2 = _mapValue(_valueY, v2);
-
-            if (lastPointInvalid)
-            {
-                fristPath.moveTo(x, value1);
-                secondPath.moveTo(x, value2);
-                lastPointInvalid = false;
-            }
-            else
-            {
-                if (!isEqual(fristPoint.y(), value1))
-                {
-                    fristPath.lineTo(fristPoint);
-                    fristPath.lineTo(x, value1);
-                }
-
-                if (!isEqual(secondPoint.y(), value2))
-                {
-                    secondPath.lineTo(secondPoint);
-                    secondPath.lineTo(x, value2);
-                }
-            }
-
-            fristPoint.rx() = x;
-            fristPoint.ry() = value1;
-            secondPoint.rx() = x;
-            secondPoint.ry() = value2;
+            QPainterPath path = getTrendPainterPath(graphInfo.trendDataV2, i);
+            paths.append(path);
         }
-
-        if (!lastPointInvalid)
-        {
-            fristPath.lineTo(fristPoint);
-            secondPath.lineTo(secondPoint);
-        }
-
-        paths.append(fristPath);
-        paths.append(secondPath);
     }
         break;
     case TREND_GRAPH_TYPE_ART_IBP:
     {
-        QPainterPath sysPath;
-        QPainterPath diaPath;
-        QPainterPath mapPath;
-
-        bool lastPointInvalid = true;
-        QPointF sysLastPoint;
-        QPointF diaLastPoint;
-        QPointF mapLastPoint;
-
-        QVector<TrendGraphDataV3>::ConstIterator iter = graphInfo.trendDataV3.constBegin();
-        for (; iter != graphInfo.trendDataV3.constEnd(); iter++)
+        int trendNum = 3;       // IBP 动脉压有3个趋势参数
+        for (int i = 0; i < trendNum; i++)
         {
-            if (iter->data[0] == InvData())
-            {
-                if (!lastPointInvalid)
-                {
-                    sysPath.lineTo(sysLastPoint);
-                    diaPath.lineTo(diaLastPoint);
-                    mapPath.lineTo(mapLastPoint);
-                    lastPointInvalid = true;
-                }
-                continue;
-            }
-
-            qreal x = _mapValue(_timeX, iter->timestamp);
-            qreal sys = _mapValue(_valueY, iter->data[0]);
-            qreal dia = _mapValue(_valueY, iter->data[1]);
-            qreal map = _mapValue(_valueY, iter->data[2]);
-
-            if (lastPointInvalid)
-            {
-                sysPath.moveTo(x, sys);
-                diaPath.moveTo(x, dia);
-                mapPath.moveTo(x, map);
-                lastPointInvalid = false;
-            }
-            else
-            {
-                if (!isEqual(sysLastPoint.y(), sys))
-                {
-                    sysPath.lineTo(sysLastPoint);
-                    sysPath.lineTo(x, sys);
-                }
-
-                if (!isEqual(diaLastPoint.y(), dia))
-                {
-                    diaPath.lineTo(diaLastPoint);
-                    diaPath.lineTo(x, dia);
-                }
-
-                if (!isEqual(mapLastPoint.y(), map))
-                {
-                    mapPath.lineTo(mapLastPoint);
-                    mapPath.lineTo(x, map);
-                }
-            }
-
-            sysLastPoint.rx() = x;
-            sysLastPoint.ry() = sys;
-            diaLastPoint.rx() = x;
-            diaLastPoint.ry() = dia;
-            mapLastPoint.rx() = x;
-            mapLastPoint.ry() = map;
+            QPainterPath path = getTrendPainterPath(graphInfo.trendDataV3, i);
+            paths.append(path);
         }
-
-        if (!lastPointInvalid)
-        {
-            sysPath.lineTo(sysLastPoint);
-            diaPath.lineTo(diaLastPoint);
-            mapPath.lineTo(mapLastPoint);
-        }
-
-        paths.append(sysPath);
-        paths.append(diaPath);
-        paths.append(mapPath);
     }
         break;
     case TREND_GRAPH_TYPE_NORMAL:
@@ -463,7 +436,6 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
         return;
     }
     barPainter.save();
-    _fristValue = true;
     QList<QPainterPath> paths = generatorPainterPath(_trendInfo);
     QList<QPainterPath>::ConstIterator iter;
     for (iter = paths.constBegin(); iter != paths.constEnd(); iter++)
@@ -649,68 +621,6 @@ double TrendSubWaveWidget::_mapValue(TrendParamDesc desc, int data)
         return InvData();
     }
 
-    if (getAutoRuler() && desc.max != _timeX.max)
-    {
-        if (_fristValue)
-        {
-            _maxValue = data;
-            _minValue = data;
-            _fristValue = false;
-            int maxDiff = desc.max - _maxValue * desc.scale;
-            if (maxDiff <= 0 || maxDiff > 10 || (static_cast<int>(desc.max / desc.scale) % 10))
-            {
-                desc.max = (_maxValue + (10 - _maxValue % 10)) * desc.scale;
-                _valueY.max = desc.max;
-                UnitType unit = paramInfo.getUnitOfSubParam(_id);
-                alarmConfig.setParamRulerConfig(_id, unit,
-                                                _valueY.min,
-                                                _valueY.max);
-            }
-            int minDiff = _minValue - desc.min * desc.scale;
-            if (minDiff <= 0 || minDiff > 10 || (static_cast<int>(desc.min / desc.scale) % 10))
-            {
-                int value = (_minValue % 10) ? (_minValue % 10) : 10;
-                desc.min = (_minValue - value) * desc.scale;
-                _valueY.min = desc.min;
-                UnitType unit = paramInfo.getUnitOfSubParam(_id);
-                alarmConfig.setParamRulerConfig(_id, unit,
-                                                _valueY.min,
-                                                _valueY.max);
-            }
-        }
-
-        if (data > _maxValue)
-        {
-            _maxValue = data;
-            int maxDiff = desc.max - _maxValue * desc.scale;
-            if (maxDiff <= 0 || maxDiff > 10 || (static_cast<int>(desc.max / desc.scale) % 10))
-            {
-                desc.max = (_maxValue + (10 - _maxValue % 10)) * desc.scale;
-                _valueY.max = desc.max;
-                UnitType unit = paramInfo.getUnitOfSubParam(_id);
-                alarmConfig.setParamRulerConfig(_id, unit,
-                                                _valueY.min,
-                                                _valueY.max);
-            }
-        }
-
-        if (data < _minValue)
-        {
-            _minValue = data;
-            int minDiff = _minValue - desc.min * desc.scale;
-            if (minDiff <= 0 || minDiff > 10 || (static_cast<int>(desc.min / desc.scale) % 10))
-            {
-                int value = (_minValue % 10) ? (_minValue % 10) : 10;
-                desc.min = (_minValue - value) * desc.scale;
-                _valueY.min = desc.min;
-                UnitType unit = paramInfo.getUnitOfSubParam(_id);
-                alarmConfig.setParamRulerConfig(_id, unit,
-                                                _valueY.min,
-                                                _valueY.max);
-            }
-        }
-    }
-
     double dpos = 0;
     dpos = (desc.max - data * desc.scale) * (desc.end - desc.start) / (desc.max - desc.min) + desc.start;
 
@@ -724,4 +634,144 @@ double TrendSubWaveWidget::_mapValue(TrendParamDesc desc, int data)
     }
 
     return dpos;
+}
+
+void TrendSubWaveWidget::_autoRulerCal()
+{
+    _fristValue = true;  // 以第一个数据为基准开始遍历
+    switch (_type)
+    {
+    case TREND_GRAPH_TYPE_NIBP:
+    case TREND_GRAPH_TYPE_ART_IBP:
+    {
+        QVector<TrendGraphDataV3>::ConstIterator iter = _trendInfo.trendDataV3.constBegin();
+        for (; iter != _trendInfo.trendDataV3.constEnd(); iter++)
+        {
+            int num = 3;        // 参数数据为3个
+            // 遍历每一个数据保证数据在标尺范围内
+            for (int i = 0; i < num; i++)
+            {
+                TrendDataType data = iter->data[i];
+                if (data == InvData())
+                {
+                    continue;
+                }
+                _updateAutoRuler(data);
+            }
+        }
+        break;
+    }
+    case TREND_GRAPH_TYPE_AG_TEMP:
+    {
+        QVector<TrendGraphDataV2>::ConstIterator iter = _trendInfo.trendDataV2.constBegin();
+        for (; iter != _trendInfo.trendDataV2.constEnd(); iter++)
+        {
+            int num = 2;        // 参数数据为2个
+            // 遍历每一个数据保证数据在标尺范围内
+            for (int i = 0; i < num; i++)
+            {
+                TrendDataType data = iter->data[i];
+                if (data == InvData())
+                {
+                    continue;
+                }
+                ParamID paramId = paramInfo.getParamID(_id);
+                UnitType type = paramManager.getSubParamUnit(paramId, _id);
+                int v = 0;
+                if (paramId == PARAM_CO2)
+                {
+                    v = Unit::convert(type, UNIT_PERCENT, data / 10.0, co2Param.getBaro()).toDouble();
+                }
+                else if (paramId == PARAM_TEMP)
+                {
+                    QString vStr = Unit::convert(type, UNIT_TC, data / 10.0);
+                    v = vStr.toDouble();
+                }
+                else
+                {
+                    v = data / 10;
+                }
+                _updateAutoRuler(v);
+            }
+        }
+        break;
+    }
+    case TREND_GRAPH_TYPE_NORMAL:
+    {
+        QVector<TrendGraphData>::ConstIterator iter = _trendInfo.trendData.constBegin();
+        for (; iter != _trendInfo.trendData.constEnd(); iter++)
+        {
+                TrendDataType data = iter->data;
+                if (data == InvData())
+                {
+                    continue;
+                }
+                _updateAutoRuler(data);
+        }
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+void TrendSubWaveWidget::_updateAutoRuler(TrendDataType data)
+{
+    // 数据的最大值和最小值以第一个数据为准
+    if (_fristValue)
+    {
+        _maxValue = data;
+        _minValue = data;
+        _fristValue = false;
+        int maxDiff = _valueY.max - _maxValue * _valueY.scale;
+        if (maxDiff <= 0 || maxDiff > 10 || (static_cast<int>(_valueY.max / _valueY.scale) % 10))
+        {
+            _valueY.max = (_maxValue + (10 - _maxValue % 10)) * _valueY.scale;
+            UnitType unit = paramInfo.getUnitOfSubParam(_id);
+            alarmConfig.setParamRulerConfig(_id, unit,
+                                            _valueY.min,
+                                            _valueY.max);
+        }
+        int minDiff = _minValue - _valueY.min * _valueY.scale;
+        if (minDiff <= 0 || minDiff > 10 || (static_cast<int>(_valueY.min / _valueY.scale) % 10))
+        {
+            int value = (_minValue % 10) ? (_minValue % 10) : 10;
+            _valueY.min = (_minValue - value) * _valueY.scale;
+            UnitType unit = paramInfo.getUnitOfSubParam(_id);
+            alarmConfig.setParamRulerConfig(_id, unit,
+                                            _valueY.min,
+                                            _valueY.max);
+        }
+    }
+
+    // 大于当前数据最大值.
+    if (data > _maxValue)
+    {
+        _maxValue = data;
+        int maxDiff = _valueY.max - _maxValue * _valueY.scale;
+        if (maxDiff <= 0 || maxDiff > 10 || (static_cast<int>(_valueY.max / _valueY.scale) % 10))
+        {
+            _valueY.max = (_maxValue + (10 - _maxValue % 10)) * _valueY.scale;
+            UnitType unit = paramInfo.getUnitOfSubParam(_id);
+            alarmConfig.setParamRulerConfig(_id, unit,
+                                            _valueY.min,
+                                            _valueY.max);
+        }
+    }
+
+    // 小于当前数据最小值.
+    if (data < _minValue)
+    {
+        _minValue = data;
+        int minDiff = _minValue - _valueY.min * _valueY.scale;
+        if (minDiff <= 0 || minDiff > 10 || (static_cast<int>(_valueY.min / _valueY.scale) % 10))
+        {
+            int value = (_minValue % 10) ? (_minValue % 10) : 10;
+            _valueY.min = (_minValue - value) * _valueY.scale;
+            UnitType unit = paramInfo.getUnitOfSubParam(_id);
+            alarmConfig.setParamRulerConfig(_id, unit,
+                                            _valueY.min,
+                                            _valueY.max);
+        }
+    }
 }

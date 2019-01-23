@@ -108,6 +108,12 @@ DEFINES += DISABLE_CO2_MODULE_MAINTAIN
 #隐藏其它维护菜单中的部分选项
 DEFINES += HIDE_OTHER_MAINTAIN_ITEMS
 
+#失能工厂维护中测试菜单里的item
+DEFINES += DISABLE_FACTORY_MODULE_SELFTEST
+
+#失能ecg模块校准
+DEFINES += DISABLE_ECG_MODULE_CALIBRATION
+
 # Depending libraries
 LIBS += -ldl -lasound -lz
 
@@ -133,6 +139,7 @@ OTHER_FILES +=                                                                  
     nPM/etc/AdultConfig.Original.xml                                            \
     nPM/etc/PedConfig.Original.xml                                              \
     nPM/etc/NeoConfig.Original.xml                                              \
+    nPM/etc/usercheck.xml                                                       \
 
 SOURCES +=                                                                      \
     SOUP/Json/json_parser.cc                                                    \

@@ -64,6 +64,7 @@ void OthersMaintainMenuContentPrivate::loadOptions()
         combos[ITEM_CBO_WAVE_LINE]->setCurrentIndex(tmpStr.toInt());
     }
     tmpStr.clear();
+#endif
 
     systemConfig.getStrValue("Others|ECGStandard", tmpStr);
     if (tmpStr.toInt() >= combos[ITEM_CBO_ECG_STANDARD]->count())
@@ -76,6 +77,7 @@ void OthersMaintainMenuContentPrivate::loadOptions()
     }
     tmpStr.clear();
 
+#ifndef HIDE_OTHER_MAINTAIN_ITEMS
     systemConfig.getStrValue("Others|FrequencyNotch", tmpStr);
     if (tmpStr.toInt() >= combos[ITEM_CBO_FREQUENCY_NOTCH]->count())
     {
@@ -155,7 +157,7 @@ void OthersMaintainMenuContent::layoutExec()
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(OthersMaintainMenuContentPrivate::ITEM_CBO_WAVE_LINE, comboBox);
-
+#endif
     // ecg Standard
     label = new QLabel(trs("ECGStandard"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -171,6 +173,7 @@ void OthersMaintainMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(OthersMaintainMenuContentPrivate::ITEM_CBO_ECG_STANDARD, comboBox);
 
+#ifndef HIDE_OTHER_MAINTAIN_ITEMS
     // frequency Notch
     label = new QLabel(trs("FrequencyNotch"));
     layout->addWidget(label, d_ptr->combos.count(), 0);

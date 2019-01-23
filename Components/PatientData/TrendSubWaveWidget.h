@@ -103,6 +103,15 @@ public:
 
     QList<QPainterPath> generatorPainterPath(const TrendGraphInfo &graphInfo);
 
+    /**
+     * @brief getTrendPainterPath 获取参数趋势数据Path
+     * @param dataVertor 数据容器
+     * @param index 参数在容器中的索引
+     * @return
+     */
+    QPainterPath getTrendPainterPath(const QVector<TrendGraphDataV2> &dataVertor, int index);
+    QPainterPath getTrendPainterPath(const QVector<TrendGraphDataV3> &dataVertor, int index);
+
 protected:
     void paintEvent(QPaintEvent *e);
     void showEvent(QShowEvent *e);
@@ -115,6 +124,17 @@ private:
      * @return 像素位置
      */
     double _mapValue(TrendParamDesc desc, int data);
+
+    /**
+     * @brief _autoRulerCal 计算自动标尺
+     */
+    void _autoRulerCal(void);
+
+    /**
+     * @brief _updateAutoRuler 更新自动标尺
+     * @param data 数据
+     */
+    void _updateAutoRuler(TrendDataType data);
 
 private:
     TrendSubWidgetInfo _info;

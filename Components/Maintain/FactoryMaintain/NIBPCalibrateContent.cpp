@@ -174,8 +174,10 @@ void NIBPCalibrateContent::timerEvent(QTimerEvent *ev)
                     d_ptr->modeBtn->setText(trs("EnterCalibrateMode"));
                     Button *btn = d_ptr->btnList.at(0);
                     btn->setEnabled(false);
+                    btn->setText(trs("ServiceCalibrate"));
                     btn = d_ptr->btnList.at(1);
                     btn->setEnabled(false);
+                    btn->setText(trs("ServiceCalibrate"));
                     d_ptr->point2Spb->setEnabled(false);
                     d_ptr->calibrateFlag = false;
                 }
@@ -298,8 +300,10 @@ void NIBPCalibrateContent::inCalibrateMode()
             d_ptr->isCalibrateMode = false;
             Button *btn = d_ptr->btnList.at(0);
             btn->setEnabled(false);
+            btn->setText(trs("ServiceCalibrate"));
             btn = d_ptr->btnList.at(1);
             btn->setEnabled(false);
+            btn->setText(trs("ServiceCalibrate"));
             d_ptr->calibrateFlag = false;
         }
         else

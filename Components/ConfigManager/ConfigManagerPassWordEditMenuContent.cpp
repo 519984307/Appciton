@@ -15,6 +15,7 @@
 #include "KeyInputPanel.h"
 #include "IConfig.h"
 #include "MessageBox.h"
+#include "WindowManager.h"
 
 class ConfigManagerPassWordEditMenuContentPrivate
 {
@@ -84,7 +85,9 @@ void ConfigManagerPassWordEditMenuContent::onBtnReleased()
     QString invalidStr = trs("Input8DigitsPassword");
     numberPad.setInvalidHint(invalidStr);
 
-    if (!numberPad.exec())
+    windowManager.showWindow(&numberPad,
+                             WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
+    if (numberPad.result() == QDialog::Rejected)
     {
         return;
     }

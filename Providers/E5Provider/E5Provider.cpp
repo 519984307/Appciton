@@ -670,25 +670,26 @@ void E5Provider::setPatientType(unsigned char type)
 
 void E5Provider::setFilterMode(ECGFilterMode mode)
 {
-    unsigned char filterMode;
+    ECGBandwidth band;
     switch (mode)
     {
     case ECG_FILTERMODE_SURGERY:
-        filterMode = 0x02;
+        band = ECG_BANDWIDTH_067_20HZ;
         break;
     case ECG_FILTERMODE_MONITOR:
-        filterMode = 0x03;
+        band = ECG_BANDWIDTH_067_40HZ;
         break;
     case ECG_FILTERMODE_ST:
-        filterMode = 0x00;
+        band = ECG_BANDWIDTH_0525_40HZ;
         break;
     case ECG_FILTERMODE_DIAGNOSTIC:
-        filterMode = 0x01;
+        band = ECG_BANDWIDTH_0525_150HZ;
         break;
     default:
+        band = ECG_BANDWIDTH_067_40HZ;
         break;
     }
-    sendCmd(TE3_CMD_SET_FILTER_PARAMETER, &filterMode, 1);
+    setBandwidth(band);
 }
 
 /**************************************************************************************************
@@ -912,7 +913,7 @@ void E5Provider::reconnected(void)
         respOneShotAlarm.clear();
         respParam.setLeadoff(false);
         respParam.setRR(InvData());
-        respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+        respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
         if (-1 != waveID.indexOf(WAVE_RESP))
         {
             needFreshWave = true;

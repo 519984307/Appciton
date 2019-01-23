@@ -409,7 +409,10 @@ void ECGMenuContent::layoutExec()
     comboBox->addItems(QStringList()
                        << trs(ECGSymbol::convert(ECG_LEAD_MODE_3))
                        << trs(ECGSymbol::convert(ECG_LEAD_MODE_5))
-                       << trs(ECGSymbol::convert(ECG_LEAD_MODE_12)));
+                   #ifndef HIDE_ECG_12_LEAD_FUNCTION
+                       << trs(ECGSymbol::convert(ECG_LEAD_MODE_12))
+                   #endif
+                       );
     itemID = ECGMenuContentPrivate::ITEM_CBO_LEAD_MODE;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -464,7 +467,10 @@ void ECGMenuContent::layoutExec()
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_SURGERY))
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_MONITOR))
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_DIAGNOSTIC))
-                       << trs(ECGSymbol::convert(ECG_FILTERMODE_ST)));
+                   #ifndef  HIDE_ECG_ST_PVCS_SUBPARAM
+                       << trs(ECGSymbol::convert(ECG_FILTERMODE_ST))
+                   #endif
+                       );
     itemID = ECGMenuContentPrivate::ITEM_CBO_FILTER_MODE;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));

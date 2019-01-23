@@ -525,6 +525,7 @@ void EventWaveWidget::_drawWave(int index, QPainter &painter)
     waveDesc.mediumY = waveDesc.startY + WAVE_DATA_REG_HIGH / 2;
     waveDesc.endY = waveDesc.startY + WAVE_DATA_REG_HIGH;
     waveDesc.waveID = waveData->waveID;
+    ParamID paramId = paramInfo.getParamID(waveData->waveID);
     waveformCache.getRange(waveDesc.waveID, waveDesc.waveRangeMin, waveDesc.waveRangeMax);
     if (waveData->sampleRate)
     {
@@ -646,6 +647,15 @@ void EventWaveWidget::_drawWave(int index, QPainter &painter)
         x1 = x2;
         x2 += waveDesc.offsetX;
         y1 = y2;
+
+        if (flag & ECG_INTERNAL_FLAG_BIT && paramId == PARAM_ECG)
+        {
+            QPen pen = painter.pen();
+            painter.setPen(QPen(Qt::white, 1, Qt::DashLine));
+            painter.drawLine(x2, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 2,
+                              x2, waveDesc.mediumY + 10 / d_ptr->pixelHPitch / 2);
+            painter.setPen(pen);
+        }
     }
 }
 

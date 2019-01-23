@@ -17,9 +17,10 @@
 #include "IConfig.h"
 #include "ParamManager.h"
 #include "Provider.h"
-#include <QProcess>
+#include <QFile>
+#include <QTextStream>
 
-#define READ_HARDWARE_VERSION ("cat /sys/class/pmos/hardware")
+#define HARDWARE_VERSION ("/sys/class/pmos/hardware")
 
 class FactoryVersionInfoPrivate
 {
@@ -159,13 +160,21 @@ void FactoryVersionInfoPrivate::loadOptions()
     labs[ITEM_LAB_U_BOOT]->setText(trs(tmpStr));
 
     tmpStr.clear();
-    QProcess process;
-    process.start(READ_HARDWARE_VERSION);
-    if (process.waitForFinished(1000))
+    QFile file(HARDWARE_VERSION);
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        tmpStr = process.readAll();
-        labs[ITEM_LAB_HARDWARE_VERSION]->setText(tmpStr);
+        QTextStream in(&file);
+         while (!in.atEnd())
+         {
+            QString tmp = in.readLine();
+            tmp = tmp.trimmed();
+            int id = tmp.toInt() + 1;
+            tmpStr = "V";
+            tmpStr += QString::number(id);
+            break;
+        }
     }
+    labs[ITEM_LAB_HARDWARE_VERSION]->setText(tmpStr);
 
     if (labs[ITEM_LAB_KEYBD_MOD])
     {

@@ -562,14 +562,17 @@ bool TrendTableModel::getDataTimeRange(unsigned &start, unsigned &end)
 
 void TrendTableModel::displayDataTimeRange(unsigned &start, unsigned &end)
 {
-    if (d_ptr->trendDataPack.count() == 0)
+    if (d_ptr->indexInfo.end <= d_ptr->indexInfo.start
+            || d_ptr->indexInfo.end < 1
+            || d_ptr->trendDataPack.count() < d_ptr->indexInfo.end)
     {
         start = 0;
         end = 0;
+        qDebug() << Q_FUNC_INFO << "Trend table print time wrong";
         return;
     }
-    start = d_ptr->trendDataPack.first()->time;
-    end = d_ptr->trendDataPack.last()->time;
+    start = d_ptr->trendDataPack.at(d_ptr->indexInfo.start)->time;
+    end = d_ptr->trendDataPack.at(d_ptr->indexInfo.end - 1)->time;
 }
 
 void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
@@ -647,10 +650,9 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
     printInfo.stopIndex = endIndex;
     printInfo.interval = TrendDataSymbol::convertValue(d_ptr->timeInterval);
     printInfo.list = d_ptr->displayList;
-    for (int i = 0; i < d_ptr->trendDataPack.count(); i++)
+    for (int i = startIndex; i < endIndex; i++)
     {
-        printInfo.eventList.append(d_ptr->trendDataPack.at(i)->status);
-        printInfo.timestampList.append(d_ptr->trendDataPack.at(i)->time);
+        printInfo.timestampEventMap[d_ptr->trendDataPack.at(i)->time] = d_ptr->trendDataPack.at(i)->status;
     }
     RecordPageGenerator *gen = new TrendTablePageGenerator(backend, printInfo);
     if (recorderManager.isPrinting() && !d_ptr->isWait)
@@ -849,8 +851,21 @@ void TrendTableModelPrivate::getTrendData()
         pack->co2Baro = dataSeg->co2Baro;
         for (int j = 0; j < dataSeg->trendValueNum; j ++)
         {
-            pack->subparamValue[static_cast<SubParamID>(dataSeg->values[j].subParamId)] = dataSeg->values[j].value;
-            pack->subparamAlarm[static_cast<SubParamID>(dataSeg->values[j].subParamId)] = dataSeg->values[j].alarmFlag;
+            // 非nibp事件的nibp参数强制显示为无效数据
+            SubParamID id = static_cast<SubParamID>(dataSeg->values[j].subParamId);
+            TrendDataType value = dataSeg->values[j].value;
+            if (id == SUB_PARAM_NIBP_SYS
+                    || id == SUB_PARAM_NIBP_DIA
+                    || id == SUB_PARAM_NIBP_MAP)
+            {
+                if (!(status & TrendDataStorageManager::CollectStatusNIBP))
+                {
+                    value = InvData();
+                }
+            }
+
+            pack->subparamValue[id] = value;
+            pack->subparamAlarm[id] = dataSeg->values[j].alarmFlag;
         }
         pack->status = status;
         pack->alarmFlag = dataSeg->eventFlag;

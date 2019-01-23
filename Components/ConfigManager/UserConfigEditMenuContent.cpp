@@ -179,8 +179,10 @@ void UserConfigEditMenuContent::onBtnClick()
         case UserConfigEditMenuContentPrivate::ITEM_BTN_ADD_CONFIG:
         {
             PatientTypeSelectWindow patientW;
+            windowManager.showWindow(&patientW,
+                                     WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
             // 选择有效item后退出时返回：1
-            if (patientW.exec() != QDialog::Accepted)
+            if (patientW.result() != QDialog::Accepted)
             {
                 break;
             }

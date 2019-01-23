@@ -31,7 +31,7 @@
 #include "TrendDataStorageManager.h"
 
 #define ALARM_LIMIT_TIMES (3)   // 超限3次后，发生报警
-static int curSecondAlarmNum = 0; // record the number of alarms happend in the save seconds
+static int curSecondAlarmNum = 0;  // record the number of alarms happend in the save seconds
 
 struct AlarmTraceCtrl
 {
@@ -131,7 +131,13 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
         // 获取该参数报警的跟踪ID，再取得跟踪对象。
         _getAlarmID(alarmSource, i, traceID);
         AlarmTraceCtrl *traceCtrl = &_getAlarmTraceCtrl(traceID);
-
+        AlarmPriority priority = alarmSource->getAlarmPriority(i);
+        // 更新报警级别
+        if (priority != traceCtrl->priority && NULL != traceCtrl->alarmMessage)
+        {
+            traceCtrl->priority = priority;
+            alarmIndicator.updataAlarmPriority(traceCtrl->type, traceCtrl->alarmMessage, priority);
+        }
         TrendCacheData data;
         trendCache.getTendData(_timestamp, data);
         curValue = data.values[alarmSource->getSubParamID(i)];
@@ -143,7 +149,8 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
         if (_curAlarmStatus == ALARM_STATUS_OFF || _curAlarmStatus == ALARM_STATUS_PAUSE)
         {
             traceCtrl->Reset();
-            traceCtrl->alarmTimesCount = ALARM_LIMIT_TIMES;     // 处理目的：报警状态恢复正常后，马上刷新报警状态
+            traceCtrl->alarmTimesCount =
+                ALARM_LIMIT_TIMES;     // 处理目的：报警状态恢复正常后，马上刷新报警状态
             alarmSource->notifyAlarm(i, false);
             continue;
         }
@@ -215,7 +222,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
             traceCtrl->isLatched = false;
 
             alarmSource->notifyAlarm(i, true);
-            if (completeResult < 0) // 超低限。
+            if (completeResult < 0)  // 超低限。
             {
                 traceCtrl->lastAlarmed = true;
                 traceCtrl->overHighLimit = false;
@@ -233,7 +240,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
                 infoSegment.alarmLimit = alarmSource->getLower(i);
                 infoSegment.alarmInfo = 0;
             }
-            else if (completeResult > 0) // 超高限。
+            else if (completeResult > 0)  // 超高限。
             {
                 traceCtrl->lastAlarmed = true;
                 traceCtrl->overHighLimit = true;
@@ -270,7 +277,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
                 break;
             }
             alarmStateMachine.handAlarmEvent(ALARM_STATE_EVENT_NEW_PHY_ALARM, 0, 0);
-        }//栓锁的报警重新发生报警
+        }  //栓锁的报警重新发生报警
         else
         {
             if (!alarmIndicator.checkAlarmIsExist(traceCtrl->type, traceCtrl->alarmMessage))
@@ -600,11 +607,10 @@ char Alarm::getAlarmSourceStatus(const QString &sourceName, SubParamID id, bool 
         {
             if (id == source->getSubParamID(i))
             {
-                AlarmTraceCtrl *traceCtrl = NULL;
                 QString traceID;
 
                 _getAlarmID(source, i, traceID);
-                traceCtrl = &_getAlarmTraceCtrl(traceID);
+                AlarmTraceCtrl *traceCtrl = &_getAlarmTraceCtrl(traceID);
 
                 if (traceCtrl->lastAlarmed)
                 {
@@ -717,11 +723,10 @@ QList<Alarm::AlarmInfo> Alarm::getCurrentPhyAlarmInfo()
         int  n = source->getAlarmSourceNR();
         for (int i = 0; i < n; i++)
         {
-            AlarmTraceCtrl *traceCtrl = NULL;
             QString traceID;
 
             _getAlarmID(source, i, traceID);
-            traceCtrl = &_getAlarmTraceCtrl(traceID);
+           AlarmTraceCtrl *traceCtrl = &_getAlarmTraceCtrl(traceID);
             if (traceCtrl->lastAlarmed)
             {
                 almInfo.paramid = source->getParamID();
@@ -743,11 +748,10 @@ QList<Alarm::AlarmInfo> Alarm::getCurrentPhyAlarmInfo()
             if (source->getAlarmType(i) == ALARM_TYPE_PHY
                     || source->getAlarmType(i) == ALARM_TYPE_LIFE)
             {
-                AlarmTraceCtrl *traceCtrl = NULL;
                 QString traceID;
 
                 _getAlarmID(source, i, traceID);
-                traceCtrl = &_getAlarmTraceCtrl(traceID);
+                 AlarmTraceCtrl *traceCtrl = &_getAlarmTraceCtrl(traceID);
                 if (traceCtrl->lastAlarmed)
                 {
                     almInfo.paramid = source->getParamID();
@@ -775,10 +779,9 @@ bool Alarm::getOneShotAlarmStatus(AlarmOneShotIFace *iface, int alarmId)
     QList<AlarmOneShotIFace *> oneshotAlarmSouceList = _oneshotSources.values();
     if (oneshotAlarmSouceList.contains(iface))
     {
-        AlarmTraceCtrl *traceCtrl = NULL;
         QString traceID;
         _getAlarmID(iface, alarmId, traceID);
-        traceCtrl = &_getAlarmTraceCtrl(traceID);
+         AlarmTraceCtrl *traceCtrl = &_getAlarmTraceCtrl(traceID);
         return traceCtrl->lastAlarmed;
     }
     else

@@ -460,6 +460,16 @@ SuntechProvider::~SuntechProvider()
     }
 }
 
+void SuntechProvider::disconnected()
+{
+    nibpParam.setConnected(false);
+}
+
+void SuntechProvider::reconnected()
+{
+    nibpParam.setConnected(true);
+}
+
 /**************************************************************************************************
  * get cuff pressure。
  *************************************************************************************************/
@@ -499,6 +509,11 @@ void SuntechProvider::_handlePacket(unsigned char *data, int len)
     if (!isConnectedToParam)
     {
         return;
+    }
+
+    if (!isConnected)
+    {
+        nibpParam.setConnected(true);
     }
 
     switch (data[0])
