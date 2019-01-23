@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/1/23
+ **/
+
+
 #include "NIBPAlarm.h"
 #include "NIBPParam.h"
 #include "IConfig.h"
@@ -51,8 +62,9 @@ int NIBPLimitAlarm::getAlarmSourceNR(void)
 /**************************************************************************************************
  * 获取报警对应的波形ID，该波形将被存储。
  *************************************************************************************************/
-WaveformID NIBPLimitAlarm::getWaveformID(int /*id*/)
+WaveformID NIBPLimitAlarm::getWaveformID(int id)
 {
+    Q_UNUSED(id)
     return WAVE_NONE;
 }
 
@@ -175,8 +187,8 @@ int NIBPLimitAlarm::getCompare(int value, int id)
     }
     else
     {
-        float low = (float)limitConfig.lowLimit / limitConfig.scale;
-        float high = (float)limitConfig.highLimit / limitConfig.scale;
+        float low = static_cast<float>(limitConfig.lowLimit) / limitConfig.scale;
+        float high = static_cast<float>(limitConfig.highLimit) / limitConfig.scale;
         float v = 0;
         float v1 = value * 1.0 / mul;
         QString valueStr = Unit::convert(curUnit, defUnit, v1);
@@ -275,7 +287,6 @@ NIBPLimitAlarm::NIBPLimitAlarm()
  *************************************************************************************************/
 NIBPLimitAlarm::~NIBPLimitAlarm()
 {
-
 }
 
 /**************************************************************************************************
@@ -304,8 +315,9 @@ int NIBPOneShotAlarm::getAlarmSourceNR(void)
 /**************************************************************************************************
  * 获取报警对应的波形ID，该波形将被存储。
  *************************************************************************************************/
-WaveformID NIBPOneShotAlarm::getWaveformID(int /*id*/)
+WaveformID NIBPOneShotAlarm::getWaveformID(int id)
 {
+    Q_UNUSED(id)
     return WAVE_NONE;
 }
 
@@ -317,8 +329,8 @@ AlarmPriority NIBPOneShotAlarm::getAlarmPriority(int id)
     switch (id)
     {
         case NIBP_ONESHOT_ALARM_MODULE_DISABLE:
+        case NIBP_ONESHOT_ALARM_COMMUNICATION_STOP:
             return ALARM_PRIO_HIGH;
-
         default:
             return ALARM_PRIO_MED;
     }
@@ -327,8 +339,9 @@ AlarmPriority NIBPOneShotAlarm::getAlarmPriority(int id)
 /**************************************************************************************************
  * 该报警是否为生命报警，技术报警和生理/生命报警分开存放。
  *************************************************************************************************/
-AlarmType NIBPOneShotAlarm::getAlarmType(int /*id*/)
+AlarmType NIBPOneShotAlarm::getAlarmType(int id)
 {
+    Q_UNUSED(id)
     return ALARM_TYPE_TECH;
 }
 
@@ -372,7 +385,6 @@ bool NIBPOneShotAlarm::isAlarmed(int id)
  *************************************************************************************************/
 NIBPOneShotAlarm::NIBPOneShotAlarm()
 {
-
 }
 
 /**************************************************************************************************
@@ -380,5 +392,4 @@ NIBPOneShotAlarm::NIBPOneShotAlarm()
  *************************************************************************************************/
 NIBPOneShotAlarm::~NIBPOneShotAlarm()
 {
-
 }

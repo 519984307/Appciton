@@ -184,6 +184,7 @@ AlarmPriority RESPOneShotAlarm::getAlarmPriority(int id)
     switch (id)
     {
         case RESP_ONESHOT_ALARM_APNEA:
+        case RESP_ONESHOT_ALARM_COMMUNICATION_STOP:
             return ALARM_PRIO_HIGH;
 
         default:
