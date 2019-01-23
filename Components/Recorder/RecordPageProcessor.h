@@ -42,12 +42,12 @@ signals:
 
 public slots:
     /**
-     * @brief updatePrintSpeed update the print speed
+     * @brief updatePrintSpeed set print speed after current printing
      */
     void updatePrintSpeed(PrintSpeed speed);
 
     /**
-     * @brief setPrintSpeed immediately set print speed
+     * @brief setPrintSpeed set print speed immediately
      */
     void setPrintSpeed(PrintSpeed speed);
 
