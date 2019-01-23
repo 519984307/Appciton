@@ -125,6 +125,11 @@ private:
     // 构造。
     RESPDupParam();
 
+    /**
+     * @brief handleBRRRValue  handle br/rr value when update br/rr value
+     */
+    void handleBRRRValue();
+
     RESPTrendWidget *_trendWidget;
 
     short _rrValue;

@@ -142,26 +142,7 @@ void RESPDupParam::updateRR(short rr)
         return;
     }
 
-    if (_isAutoBrSource)
-    {
-        // 当BR为无效值时才使用RR。
-        if (_brValue != InvData() && _rrValue != InvData())
-        {
-            _trendWidget->setRRValue(_rrValue, true, true);
-        }
-        else if (_brValue != InvData())
-        {
-            _trendWidget->setRRValue(_brValue, false, true);
-        }
-    }
-    else if (_manualBrSourceType == BR_SOURCE_ECG)
-    {
-        _trendWidget->setRRValue(_rrValue, true);
-    }
-    else if (_manualBrSourceType == BR_SOURCE_CO2)
-    {
-        _trendWidget->setRRValue(_brValue, false);
-    }
+    handleBRRRValue();
 }
 
 /**************************************************************************************************
@@ -176,25 +157,7 @@ void RESPDupParam::updateBR(short br)
         return;
     }
 
-    if (_isAutoBrSource)
-    {
-        if (_rrValue != InvData() && _brValue == InvData())
-        {
-            _trendWidget->setRRValue(_rrValue, true, true);
-        }
-        else
-        {
-            _trendWidget->setRRValue(_brValue, false, true);
-        }
-    }
-    else if (_manualBrSourceType == BR_SOURCE_CO2)
-    {
-        _trendWidget->setRRValue(_brValue, false);
-    }
-    else if (_manualBrSourceType == BR_SOURCE_ECG)
-    {
-        _trendWidget->setRRValue(_rrValue, true);
-    }
+    handleBRRRValue();
 }
 
 /**************************************************************************************************
@@ -310,6 +273,37 @@ RESPDupParam::RESPDupParam()
       _isAutoBrSource(true),
       _manualBrSourceType(BR_SOURCE_ECG)
 {
+}
+
+void RESPDupParam::handleBRRRValue()
+{
+    if (_trendWidget == NULL)
+    {
+        return;
+    }
+    if (_isAutoBrSource)
+    {
+        if (_brValue != InvData())  // set br value firstly when the br value is valid.
+        {
+            _trendWidget->setRRValue(_brValue, false, true);
+        }
+        else if (_rrValue != InvData())  // set rr value when the rr value is valid.
+        {
+            _trendWidget->setRRValue(_rrValue, true, true);
+        }
+        else  // set br value when the rr value is invalid.
+        {
+            _trendWidget->setRRValue(_brValue, false, true);
+        }
+    }
+    else if (_manualBrSourceType == BR_SOURCE_CO2)
+    {
+        _trendWidget->setRRValue(_brValue, false);
+    }
+    else if (_manualBrSourceType == BR_SOURCE_ECG)
+    {
+        _trendWidget->setRRValue(_rrValue, true);
+    }
 }
 
 /**************************************************************************************************
