@@ -23,6 +23,7 @@
 #include <QTimer>
 #include "PowerManager.h"
 #include "UnitManager.h"
+#include <QNetworkInterface>
 
 class MonitorInfoWindowPrivate
 {
@@ -30,7 +31,6 @@ public:
     enum MenuItem
     {
         ITEM_LAB_CMLV_WORKTIME = 0,
-        ITEM_LAB_TEM_INSIDECASE,
         ITEM_LAB_BAT_CAPACITY,
         ITEM_LAB_MACHINE_TYPE,
         ITEM_LAB_MAC_ADDR,
@@ -67,35 +67,33 @@ MonitorInfoWindow::MonitorInfoWindow()
 void MonitorInfoWindowPrivate::loadOptions()
 {
     QDesktopWidget *w = QApplication::desktop();
-    QString temStr;
+    labs[ITEM_LAB_SCR_RESOLASIZE]->setText(QString("%1*%2").arg(w->width()).arg(w->height()));
 
-    labs[ITEM_LAB_SCR_RESOLASIZE]->setText(trs(QString("%1*%2")
-                                         .arg(w->width())
-                                         .arg(w->height())));
-
-    temStr.clear();
-    systemConfig.getStrValue("MonitorInfo|CumulativeWorkingTime", temStr);
-    labs[ITEM_LAB_CMLV_WORKTIME]->setText(trs(temStr));
-
-    temStr.clear();
-    systemConfig.getStrValue("MonitorInfo|TemperatureInsideCase", temStr);
-    labs[ITEM_LAB_TEM_INSIDECASE]->setText(QString("%1%2").arg(trs(temStr))
-                                           .arg(trs(Unit::getSymbol(UNIT_TC))));
-
-    temStr.clear();
+    QString tmpStr;
     labs[ITEM_LAB_BAT_CAPACITY]->setText(powerManger.getBatteryCapacity());
 
-    temStr.clear();
-    systemConfig.getStrValue("MonitorInfo|MachineType", temStr);
-    labs[ITEM_LAB_MACHINE_TYPE]->setText(trs(temStr));
+    tmpStr.clear();
+    systemConfig.getStrValue("MonitorInfo|MachineType", tmpStr);
+    labs[ITEM_LAB_MACHINE_TYPE]->setText(tmpStr);
 
-    temStr.clear();
-    systemConfig.getStrValue("MonitorInfo|MACAddress", temStr);
-    labs[ITEM_LAB_MAC_ADDR]->setText(trs(temStr));
+    tmpStr.clear();
+    machineConfig.getStrValue("SerialNumber", tmpStr);
+    button->setText(tmpStr);
 
-    temStr.clear();
-    machineConfig.getStrValue("SerialNumber", temStr);
-    button->setText(temStr);
+    tmpStr.clear();
+    foreach(QNetworkInterface workInterface, QNetworkInterface::allInterfaces())
+    {
+        if (workInterface.name().contains("eth"))  // filter the localhost(the ip address is 127.0.0.1) by name
+        {
+            tmpStr = workInterface.hardwareAddress();
+            break;
+        }
+    }
+    if (tmpStr.isEmpty())
+    {
+        tmpStr = "-";  // indicate that the MAC address is invalid.
+    }
+    labs[ITEM_LAB_MAC_ADDR]->setText(tmpStr);
 }
 
 void MonitorInfoWindow::readyShow()
@@ -107,8 +105,7 @@ void MonitorInfoWindow::readyShow()
 void MonitorInfoWindow::onTimeOutExec()
 {
     QString showtime = getRunTime();
-    d_ptr->labs[MonitorInfoWindowPrivate
-            ::ITEM_LAB_CMLV_WORKTIME]->setText(showtime);
+    d_ptr->labs[MonitorInfoWindowPrivate::ITEM_LAB_CMLV_WORKTIME]->setText(showtime);
 }
 
 void MonitorInfoWindow::layoutExec()
@@ -129,14 +126,6 @@ void MonitorInfoWindow::layoutExec()
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(MonitorInfoWindowPrivate
                        ::ITEM_LAB_CMLV_WORKTIME, labelRight);
-
-    labelLeft = new QLabel(trs("TemperatureInsideCase"));
-    layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
-    labelRight = new QLabel("");
-    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
-    layout->addWidget(labelRight, d_ptr->labs.count(), 1);
-    d_ptr->labs.insert(MonitorInfoWindowPrivate
-                       ::ITEM_LAB_TEM_INSIDECASE, labelRight);
 
     labelLeft = new QLabel(trs("BatteryQuantity"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
