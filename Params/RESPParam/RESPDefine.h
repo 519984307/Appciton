@@ -12,6 +12,13 @@
 
 #pragma once
 
+enum RESPSweepMode
+{
+    RESP_SWEEP_MODE_CURVE,
+    RESP_SWEEP_MODE_FILLED,
+    RESP_SWEEP_MODE_NR
+};
+
 /**
  * @brief The RESPModuleType enum  RESP模块类型枚举
  */

@@ -342,6 +342,22 @@ void RESPParam::setOxyCRGRrHrTrend(OxyCRGRRHRWaveWidget *w)
     d_ptr->oxyCRGRrHrTrend = w;
 }
 
+void RESPParam::setSweepMode(RESPSweepMode mode)
+{
+    currentConfig.setNumValue("RESP|RESPSweepMode", static_cast<int>(mode));
+    if (d_ptr->waveWidget)
+    {
+        d_ptr->waveWidget->setWaveformMode(mode);
+    }
+}
+
+RESPSweepMode RESPParam::getSweepMode(void)
+{
+    int mode = RESP_SWEEP_MODE_CURVE;
+    currentConfig.getNumValue("RESP|RESPSweepMode", mode);
+    return static_cast<RESPSweepMode>(mode);
+}
+
 /**************************************************************************************************
  * 设置波形速度。
  *************************************************************************************************/
