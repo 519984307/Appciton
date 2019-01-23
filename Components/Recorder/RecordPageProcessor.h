@@ -47,6 +47,11 @@ public slots:
     void updatePrintSpeed(PrintSpeed speed);
 
     /**
+     * @brief setPrintSpeed immediately set print speed
+     */
+    void setPrintSpeed(PrintSpeed speed);
+
+    /**
      * @brief addPage add page to print
      * @param page
      */

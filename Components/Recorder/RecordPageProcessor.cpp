@@ -65,22 +65,14 @@ bool RecordPageProcessor::isProcessing() const
 
 void RecordPageProcessor::updatePrintSpeed(PrintSpeed speed)
 {
-    if (speed >= PRINT_SPEED_NR || d_ptr->curSpeed == speed)
-    {
-        return;
-    }
-
     d_ptr->curSpeed = speed;
-    if (recorderManager.isPrinting())
-    {
-        d_ptr->updateSpeed = true;
-    }
-    else
-    {
-        // set speed imediately
-        d_ptr->iface->setPrintSpeed(speed);
-        qDebug() << "Set Print Speed " << speed;
-    }
+    d_ptr->updateSpeed = true;
+}
+
+void RecordPageProcessor::setPrintSpeed(PrintSpeed speed)
+{
+    d_ptr->curSpeed = speed;
+    d_ptr->iface->setPrintSpeed(speed);
 }
 
 void RecordPageProcessor::addPage(RecordPage *page)

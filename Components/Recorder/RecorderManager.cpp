@@ -103,7 +103,15 @@ void RecorderManager::setPrintSpeed(PrintSpeed speed)
     d_ptr->curSpeed = speed;
     currentConfig.setNumValue("Print|PrintSpeed", static_cast<int>(speed));
 
-    emit speedChanged(speed);
+    // 是否正在打印
+    if (isPrinting())
+    {
+        QMetaObject::invokeMethod(d_ptr->processor, "updatePrintSpeed", Qt::QueuedConnection, Q_ARG(PrintSpeed, speed));
+    }
+    else
+    {
+        QMetaObject::invokeMethod(d_ptr->processor, "setPrintSpeed", Qt::QueuedConnection, Q_ARG(PrintSpeed, speed));
+    }
 }
 
 int RecorderManager::getPrintWaveNum()
@@ -138,7 +146,6 @@ void RecorderManager::setPrintPrividerIFace(PrintProviderIFace *iface)
     d_ptr->processor = new RecordPageProcessor(iface);
     d_ptr->processor->moveToThread(d_ptr->procThread);
     connect(d_ptr->procThread, SIGNAL(finished()), d_ptr->processor, SLOT(deleteLater()));
-    connect(this, SIGNAL(speedChanged(PrintSpeed)), d_ptr->processor, SLOT(updatePrintSpeed(PrintSpeed)));
 
     PrinterProviderSignalSender *sigSender = iface->signalSender();
     if (sigSender)
@@ -151,7 +158,7 @@ void RecorderManager::setPrintPrividerIFace(PrintProviderIFace *iface)
     }
 
     PrintSpeed speed = getPrintSpeed();
-    QMetaObject::invokeMethod(d_ptr->processor, "updatePrintSpeed", Qt::QueuedConnection, Q_ARG(PrintSpeed, speed));
+    QMetaObject::invokeMethod(d_ptr->processor, "setPrintSpeed", Qt::QueuedConnection, Q_ARG(PrintSpeed, speed));
 }
 
 PrintProviderIFace *RecorderManager::provider() const
