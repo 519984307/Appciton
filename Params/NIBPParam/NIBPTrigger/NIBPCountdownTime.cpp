@@ -76,7 +76,6 @@ void NIBPCountdownTime::_STATMeasureTimeout()
 {
     _STATMeasureTimer->stop();
     _isSTATMeasureTimeout = true;
-    nibpParam.setMeasurMode(NIBP_MODE_STAT);
 }
 
 /**************************************************************************************************
