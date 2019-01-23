@@ -971,7 +971,7 @@ void NIBPParam::setSTATMeasure(bool flag)
         setAdditionalMeasure(false);
     }
     _statModelFlag = flag;
-//    nibpMenu.statBtnShow();
+    emit statBtnState(flag);
 }
 
 /**************************************************************************************************

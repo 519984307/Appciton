@@ -289,6 +289,14 @@ public:
      * @param volume 设置的音量
      */
     void setNIBPCompleteTone(SoundManager::VolumeLevel volume);
+
+signals:
+    /**
+     * @brief statBtnState 设置NIBP菜单中的STAT按键状态
+     * @param false：stop stat  true：start stat
+     */
+    void statBtnState(bool);
+
 private slots:
     void _patientTypeChangeSlot(PatientType type);
     void _btnTimeOut();

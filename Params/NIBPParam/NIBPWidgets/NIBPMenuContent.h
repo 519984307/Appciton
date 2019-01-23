@@ -55,6 +55,12 @@ private slots:
      * @param index
      */
     void onCboItemFocusChanged(int index);
+
+    /**
+     * @brief onStatBtnStateChanged stat button state changed
+     * @param true: start stat  false: stop stat
+     */
+    void onStatBtnStateChanged(bool);
 private:
     NIBPMenuContentPrivate * const d_ptr;
 };
