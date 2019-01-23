@@ -33,9 +33,6 @@
 #include "CalculateWindow.h"
 #include "DischargePatientWindow.h"
 
-#define CO2_STANDY_HINT      (trs("CO2Standby"))
-#define CO2_MEASURE_HINT     (trs("CO2Measure"))
-
 /***************************************************************************************************
  * 所有的快捷按键定义。
  **************************************************************************************************/
@@ -325,23 +322,20 @@ void SoftkeyActionBase::CO2Handle(bool isPressed)
         return;
     }
 
-    QString lastHint = _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].hint;
-    if (lastHint == CO2_STANDY_HINT)
+    if (!co2Param.getCO2Switch())
     {
         if (co2Param.setModuleWorkMode(CO2_WORK_MEASUREMENT) == true)
         {
-            co2Param.setCO2Switch(true);
-            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].iconPath = QString("standby.png");
-            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].hint = trs("CO2Standby");
+            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].iconPath = QString("measure.png");
+            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].hint = trs("CO2Measure");
         }
     }
-    else if (lastHint == CO2_MEASURE_HINT)
+    else
     {
         if (co2Param.setModuleWorkMode(C02_WORK_SLEEP) == true)
         {
-            co2Param.setCO2Switch(false);
-            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].iconPath = QString("measure.png");
-            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].hint = trs("CO2Measure");
+            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].iconPath = QString("standby.png");
+            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].hint = trs("CO2Standby");
         }
     }
     softkeyManager.refreshPage(false);
@@ -438,6 +432,22 @@ KeyActionDesc *SoftkeyActionBase::getBaseActionDesc(SoftBaseKeyType baseType)
         _baseKeys[baseType].hint = hint;
     }
 #endif
+    if (baseType == SOFT_BASE_KEY_CO2_HANDLE)
+    {
+        QString iconPath, hint;
+        if (co2Param.getCO2Switch())
+        {
+            iconPath = QString("measure.png");
+            hint = trs("CO2Measure");
+        }
+        else
+        {
+            iconPath = QString("standby.png");
+            hint = trs("CO2Standby");
+        }
+        _baseKeys[baseType].iconPath = iconPath;
+        _baseKeys[baseType].hint = hint;
+    }
     return &_baseKeys[baseType];
 }
 

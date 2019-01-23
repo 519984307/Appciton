@@ -562,21 +562,18 @@ void CO2Param::setConnected(bool isConnected)
     int needUpdate = 0;
     if (isConnected)
     {
-        if (d_ptr->co2Switch)
-        {
-            this->enable();
+        this->enable();
 
-            // update to show CO2 info
-            needUpdate |= layoutManager.setWidgetLayoutable(co2Trend, true);
-            needUpdate |= layoutManager.setWidgetLayoutable(co2Wave, true);
-            if (needUpdate)
-            {
-                layoutManager.updateLayout();
-                // 显示co2相关的软按键
-                softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_CO2_CALIBRATION, true);
-                softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_CO2_HANDLE, true);
-                softkeyManager.refreshPage();
-            }
+        // update to show CO2 info
+        needUpdate |= layoutManager.setWidgetLayoutable(co2Trend, true);
+        needUpdate |= layoutManager.setWidgetLayoutable(co2Wave, true);
+        if (needUpdate)
+        {
+            layoutManager.updateLayout();
+            // 显示co2相关的软按键
+            softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_CO2_CALIBRATION, true);
+            softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_CO2_HANDLE, true);
+            softkeyManager.refreshPage();
         }
     }
     else
@@ -695,16 +692,14 @@ bool CO2Param::setModuleWorkMode(CO2WorkMode mode)
     }
     if (mode == C02_WORK_SLEEP)
     {
+        setCO2Switch(false);
         d_ptr->provider->setWorkMode(mode);
         return true;
     }
 
     if (mode == CO2_WORK_MEASUREMENT)
     {
-        if (getCO2Switch() == false)  // 主机在关闭状态
-        {
-            return false;
-        }
+        setCO2Switch(true);
         d_ptr->provider->setWorkMode(mode);
         return true;
     }
