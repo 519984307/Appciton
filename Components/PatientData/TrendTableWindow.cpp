@@ -334,7 +334,7 @@ void TrendTableWindow::printWidgetRelease()
     unsigned endLimit = 0;
     if (d_ptr->model->getDataTimeRange(startLimit, endLimit))
     {
-        TrendPrintWindow printWindow;
+        TrendPrintWindow printWindow(d_ptr->model->getTrendDataPack());
         unsigned startTime = 0;
         unsigned endTime = 0;
         d_ptr->model->displayDataTimeRange(startTime, endTime);
