@@ -29,6 +29,7 @@
 #include "TimeDate.h"
 #include "TimeSymbol.h"
 #include <QDate>
+#include "FloatHandle.h"
 
 PatientInfoWindow *PatientInfoWindow::_selfObj = NULL;
 class PatientInfoWindowPrivate
@@ -138,8 +139,8 @@ static bool checkHeightValue(const QString &value)
         return false;
     }
 
-    if (heightValue - range.upLimit > 0.000001 ||
-            heightValue - range.downLimit < 0.000001)
+    if (isUpper(heightValue, range.upLimit) ||
+            isUpper(range.downLimit, heightValue))
     {
         return false;
     }
@@ -177,8 +178,8 @@ static bool checkWeightValue(const QString &value)
         return false;
     }
 
-    if (weightValue - range.downLimit < 0.000001 ||
-            weightValue - range.upLimit > 0.000001)
+    if (isUpper(range.downLimit, weightValue) ||
+            isUpper(weightValue, range.upLimit))
     {
         return false;
     }
