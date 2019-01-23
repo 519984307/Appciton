@@ -81,7 +81,7 @@
     <SelectStarterLogo>2</SelectStarterLogo>
     <MonitorInfo>
         <CumulativeWsorkingTime>0</CumulativeWsorkingTime>
-        <TemperatureInsideCase>39.5 c</TemperatureInsideCase>
+        <TemperatureInsideCase>39.5</TemperatureInsideCase>
         <MachineType>pmos-888888</MachineType>
         <MACAddress>22:22:88:88</MACAddress>
         <ScreenResolationSize>480*1078</ScreenResolationSize>
