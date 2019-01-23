@@ -22,6 +22,7 @@
 #include "TimeManager.h"
 #include <QTimer>
 #include "PowerManager.h"
+#include "UnitManager.h"
 
 class MonitorInfoWindowPrivate
 {
@@ -78,7 +79,8 @@ void MonitorInfoWindowPrivate::loadOptions()
 
     temStr.clear();
     systemConfig.getStrValue("MonitorInfo|TemperatureInsideCase", temStr);
-    labs[ITEM_LAB_TEM_INSIDECASE]->setText(trs(temStr));
+    labs[ITEM_LAB_TEM_INSIDECASE]->setText(QString("%1%2").arg(trs(temStr))
+                                           .arg(trs(Unit::getSymbol(UNIT_TC))));
 
     temStr.clear();
     labs[ITEM_LAB_BAT_CAPACITY]->setText(powerManger.getBatteryCapacity());
