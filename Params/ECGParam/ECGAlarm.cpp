@@ -215,6 +215,12 @@ WaveformID ECGOneShotAlarm::getWaveformID(int id)
     return WAVE_NONE;
 }
 
+SubParamID ECGOneShotAlarm::getSubParamID(int id)
+{
+    Q_UNUSED(id)
+    return SUB_PARAM_HR_PR;
+}
+
 /**************************************************************************************************
  * 生理参数报警级别。
  *************************************************************************************************/

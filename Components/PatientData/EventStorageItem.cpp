@@ -528,15 +528,24 @@ QString EventStorageItem::getEventTitle() const
     case EventPhysiologicalAlarm:
     {
         SubParamID subparamID = (SubParamID) d_ptr->almInfo->subParamID;
-        AlarmLimitIFace *almIface = alertor.getAlarmLimitIFace(subparamID);
+        unsigned char alarmId = d_ptr->almInfo->alarmType;
+        unsigned char alarmInfo = d_ptr->almInfo->alarmInfo;
         AlarmPriority priority;
-        if (almIface)
+        if (alarmInfo & 0x01)   // oneshot 报警事件
         {
-            priority = almIface->getAlarmPriority(d_ptr->almInfo->alarmType);
+            AlarmOneShotIFace *alarmOneShot = alertor.getAlarmOneShotIFace(subparamID);
+            if (alarmOneShot)
+            {
+                priority = alarmOneShot->getAlarmPriority(alarmId);
+            }
         }
         else
         {
-            break;
+            AlarmLimitIFace *almIface = alertor.getAlarmLimitIFace(subparamID);
+            if (almIface)
+            {
+                priority = almIface->getAlarmPriority(alarmId);
+            }
         }
 
         QString titleStr;
@@ -555,6 +564,10 @@ QString EventStorageItem::getEventTitle() const
         }
 
         ParamID paramId = paramInfo.getParamID(subparamID);
+        if ((paramId == PARAM_DUP_ECG) && (alarmInfo & 0x01))
+        {
+            paramId = PARAM_ECG;
+        }
         titleStr += " ";
         titleStr += trs(Alarm::getPhyAlarmMessage(paramId,
                         d_ptr->almInfo->alarmType,
