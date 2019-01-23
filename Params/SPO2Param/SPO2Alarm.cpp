@@ -212,7 +212,11 @@ WaveformID SPO2OneShotAlarm::getWaveformID(int id)
  *************************************************************************************************/
 AlarmPriority SPO2OneShotAlarm::getAlarmPriority(int id)
 {
-    if (id == SPO2_ONESHOT_ALARM_LOW_PERFUSION)
+    if (id == SPO2_ONESHOT_ALARM_COMMUNICATION_STOP)
+    {
+        return ALARM_PRIO_HIGH;
+    }
+    else if (id == SPO2_ONESHOT_ALARM_LOW_PERFUSION)
     {
         return ALARM_PRIO_PROMPT;
     }

@@ -220,7 +220,7 @@ WaveformID ECGOneShotAlarm::getWaveformID(int id)
  *************************************************************************************************/
 AlarmPriority ECGOneShotAlarm::getAlarmPriority(int id)
 {
-    if (id < ECG_ONESHOT_ALARM_LEADOFF)
+    if (id < ECG_ONESHOT_ALARM_LEADOFF || id == ECG_ONESHOT_ALARM_COMMUNICATION_STOP)
     {
         return ALARM_PRIO_HIGH;
     }
