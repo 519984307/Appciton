@@ -17,6 +17,7 @@
 #include "unistd.h"
 #include <QTimerEvent>
 #include <QPointer>
+#include "RecorderManager.h"
 
 #define PAGE_QUEUE_SIZE 32
 
@@ -70,7 +71,7 @@ void RecordPageProcessor::updatePrintSpeed(PrintSpeed speed)
     }
 
     d_ptr->curSpeed = speed;
-    if (d_ptr->processing)
+    if (recorderManager.isPrinting())
     {
         d_ptr->updateSpeed = true;
     }
