@@ -58,6 +58,7 @@ NIBPMenuContent::NIBPMenuContent():
     MenuContent(trs("NIBPMenu"), trs("NIBPMenuDesc")),
     d_ptr(new NIBPMenuContentPrivate)
 {
+    connect(&nibpParam, SIGNAL(statBtnState(bool)), this, SLOT(onStatBtnStateChanged(bool)));
 }
 
 NIBPMenuContent::~NIBPMenuContent()
@@ -314,6 +315,18 @@ void NIBPMenuContent::onCboItemFocusChanged(int index)
         SoundManager::VolumeLevel volume = static_cast<SoundManager::VolumeLevel>(index);
         nibpParam.setNIBPCompleteTone(volume);
         soundManager.nibpCompleteTone();
+    }
+}
+
+void NIBPMenuContent::onStatBtnStateChanged(bool flag)
+{
+    if (flag)
+    {
+        d_ptr->btns[NIBPMenuContentPrivate::ITEM_BTN_START_STAT]->setText(trs("STATSTART"));
+    }
+    else
+    {
+        d_ptr->btns[NIBPMenuContentPrivate::ITEM_BTN_START_STAT]->setText(trs("STATSTOP"));
     }
 }
 
