@@ -848,9 +848,16 @@ void EventWindowPrivate::loadEventData()
                 }
 
                 ParamID paramId = paramInfo.getParamID(subId);
-                if (paramId == PARAM_DUP_ECG && alarmInfo & 0x01)
+                if (alarmInfo & 0x01)
                 {
-                    paramId = PARAM_ECG;
+                    if (paramId == PARAM_DUP_ECG)
+                    {
+                        paramId = PARAM_ECG;
+                    }
+                    else if (paramId == PARAM_DUP_RESP)
+                    {
+                        paramId = PARAM_RESP;
+                    }
                 }
                 infoStr += " ";
                 infoStr += trs(Alarm::getPhyAlarmMessage(paramId, alarmId, alarmInfo & 0x1));
@@ -1006,9 +1013,16 @@ void EventWindowPrivate::eventInfoUpdate(int curRow)
         }
 
         ParamID paramId = paramInfo.getParamID(subId);
-        if (paramId == PARAM_DUP_ECG && alarmInfo & 0x01)
+        if (alarmInfo & 0x01)
         {
-            paramId = PARAM_ECG;
+            if (paramId == PARAM_DUP_ECG)
+            {
+                paramId = PARAM_ECG;
+            }
+            else if (paramId == PARAM_DUP_RESP)
+            {
+                paramId = PARAM_RESP;
+            }
         }
         infoStr += " ";
         infoStr += trs(Alarm::getPhyAlarmMessage(paramId,

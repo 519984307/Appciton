@@ -52,7 +52,7 @@ WaveformID RESPLimitAlarm::getWaveformID(int id)
 SubParamID RESPLimitAlarm::getSubParamID(int id)
 {
     Q_UNUSED(id)
-    return SUB_PARAM_NONE;
+    return SUB_PARAM_RR_BR;
 }
 
 /**************************************************************************************************

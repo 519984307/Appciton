@@ -319,7 +319,6 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
     bool isEnable = false;
     int n = alarmSource->getAlarmSourceNR();
     QString traceID;
-    AlarmInfoSegment infoSegment;
 
     for (int i = 0; i < n; i++)
     {
@@ -456,6 +455,7 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
         if (traceCtrl->type == ALARM_TYPE_LIFE || traceCtrl->type == ALARM_TYPE_PHY)
         {
             // one shot事件储存
+            AlarmInfoSegment infoSegment;
             infoSegment.subParamID = alarmSource->getSubParamID(i);
             infoSegment.alarmInfo = 1;  // one shot 报警
             infoSegment.alarmType = i;

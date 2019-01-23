@@ -91,9 +91,16 @@ public:
             }
 
             ParamID paramId = paramInfo.getParamID(subparamID);
-            if ((paramId == PARAM_DUP_ECG) && (alarmInfo & 0x01))
+            if (alarmInfo & 0x01)
             {
-                paramId = PARAM_ECG;
+                if (paramId == PARAM_DUP_ECG)
+                {
+                    paramId = PARAM_ECG;
+                }
+                else if (paramId == PARAM_DUP_RESP)
+                {
+                    paramId = PARAM_RESP;
+                }
             }
             titleStr += " ";
             titleStr += trs(Alarm::getPhyAlarmMessage(paramId,
