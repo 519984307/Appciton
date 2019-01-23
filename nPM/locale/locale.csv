@@ -590,6 +590,7 @@ ECG12LSnapShot,12导 快照,12 Lead SnapShot
 ECGAcquiring12L,获取12导,Acquiring 12 Lead
 ECGAcquired12L,获取12导结束,Acquire 12 Lead Complete
 RESPCommunicationStop,呼吸通讯停止,RESP Communication Stop
+Apnea,窒息,Apnea
 SPO2Low,血氧低,SPO2 Low
 SPO2High,血氧高,SPO2 High
 SPO2PRLow,脉率低,PR Low
