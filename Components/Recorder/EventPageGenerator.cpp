@@ -91,8 +91,10 @@ public:
             }
 
             ParamID paramId = paramInfo.getParamID(subparamID);
+            // oneshot 报警
             if (alarmInfo & 0x01)
             {
+                // 将参数ID转换为oneshot报警对应的参数ID
                 if (paramId == PARAM_DUP_ECG)
                 {
                     paramId = PARAM_ECG;
