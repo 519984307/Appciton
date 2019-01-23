@@ -31,7 +31,7 @@ void AlarmPhyInfoBarWidget::_drawBackground(void)
 
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
-    painter.setPen(Qt::black);
+    painter.setPen(Qt::transparent);
     AlarmPriority priority = _alarmSource->getAlarmPriority(_alarmID);
     if (priority == ALARM_PRIO_HIGH)
     {
@@ -40,7 +40,6 @@ void AlarmPhyInfoBarWidget::_drawBackground(void)
     else if (priority == ALARM_PRIO_PROMPT)
     {
         painter.setBrush(QColor(30, 30, 30));
-        painter.setPen(QColor(30, 30, 30));
     }
     else
     {
