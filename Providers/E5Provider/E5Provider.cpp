@@ -373,9 +373,11 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         break;
 
     case TE3_RSP_FILTER_PARAMETER:
+        qDebug() << data[1] << Q_FUNC_INFO << __LINE__;
         break;
 
     case TE3_RSP_NOTCH_FILTER:
+        qDebug() << data[1] << Q_FUNC_INFO << __LINE__;
         break;
 
     case TE3_RSP_ECG_SAMPLE_CONFIG:
@@ -669,6 +671,12 @@ void E5Provider::setPatientType(unsigned char type)
     sendCmd(TE3_CMD_SET_PATIENT_TYPE, &cmd, 1);
 }
 
+void E5Provider::setWorkMode(ECGWorkMode workMode)
+{
+    unsigned char data = workMode;
+    sendCmd(TE3_CMD_SET_WORK_MODE_IN_MONITOR, &data, 1);
+}
+
 void E5Provider::setFilterMode(ECGFilterMode mode)
 {
     ECGBandwidth band;
@@ -690,6 +698,17 @@ void E5Provider::setFilterMode(ECGFilterMode mode)
         band = ECG_BANDWIDTH_067_40HZ;
         break;
     }
+
+    ECGWorkMode workMode;
+    if (mode == ECG_FILTERMODE_SURGERY || mode == ECG_FILTERMODE_MONITOR)
+    {
+        workMode = ECG_WORKMODE_MONITOR;
+    }
+    else
+    {
+        workMode = ECG_WORKMODE_DIAGNOSTIC;
+    }
+    setWorkMode(workMode);
     setBandwidth(band);
 }
 
@@ -752,6 +771,11 @@ void E5Provider::enablePacermaker(ECGPaceMode onoff)
 void E5Provider::setNotchFilter(ECGNotchFilter notch)
 {
     unsigned char data = notch;
+    ECGFilterMode filter = ecgParam.getFilterMode();
+    if (filter == ECG_FILTERMODE_SURGERY || filter == ECG_FILTERMODE_MONITOR)
+    {
+        data |= 0x10;
+    }
     sendCmd(TE3_CMD_SET_NOTCH_FILTER, &data, 1);
 }
 
