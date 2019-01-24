@@ -105,6 +105,9 @@ public:
     // 获取报警对应的波形ID，该波形将被存储。
     virtual WaveformID getWaveformID(int id);
 
+    // 获取id对应的参数ID。
+    virtual SubParamID getSubParamID(int id);
+
     // 生理参数报警级别。
     virtual AlarmPriority getAlarmPriority(int id);
 

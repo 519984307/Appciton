@@ -766,12 +766,14 @@ void EventWindowPrivate::loadEventData()
     unsigned char alarmId;
     AlarmPriority priority;
     AlarmPriority curPriority;
-    AlarmLimitIFace *alarmLimit;
+    AlarmLimitIFace *alarmLimit = NULL;
+    AlarmOneShotIFace *alarmOneShot = NULL;
     QList<QString> timeList;
     QList<QString> eventList;
     printList.clear();
     for (int i = eventNum - 1; i >= 0; i --)
     {
+        infoStr.clear();
         priority = ALARM_PRIO_PROMPT;
         if (parseEventData(i))
         {
@@ -797,10 +799,21 @@ void EventWindowPrivate::loadEventData()
                 subId = (SubParamID)(ctx.almSegment->subParamID);
                 alarmId = ctx.almSegment->alarmType;
                 alarmInfo = ctx.almSegment->alarmInfo;
-                alarmLimit = alertor.getAlarmLimitIFace(subId);
-                if (alarmLimit)
+                if (alarmInfo & 0x01)   // oneshot 报警事件
                 {
-                    priority = alarmLimit->getAlarmPriority(alarmId);
+                    alarmOneShot = alertor.getAlarmOneShotIFace(subId);
+                    if (alarmOneShot)
+                    {
+                        priority = alarmOneShot->getAlarmPriority(alarmId);
+                    }
+                }
+                else
+                {
+                    alarmLimit = alertor.getAlarmLimitIFace(subId);
+                    if (alarmLimit)
+                    {
+                        priority = alarmLimit->getAlarmPriority(alarmId);
+                    }
                 }
 
                 if (curEventType != EventAll)
@@ -835,9 +848,23 @@ void EventWindowPrivate::loadEventData()
                 }
 
                 ParamID paramId = paramInfo.getParamID(subId);
+                // oneshot 报警
+                if (alarmInfo & 0x01)
+                {
+                    // 将参数ID转换为oneshot报警对应的参数ID
+                    if (paramId == PARAM_DUP_ECG)
+                    {
+                        paramId = PARAM_ECG;
+                    }
+                    else if (paramId == PARAM_DUP_RESP)
+                    {
+                        paramId = PARAM_RESP;
+                    }
+                }
                 infoStr += " ";
                 infoStr += trs(Alarm::getPhyAlarmMessage(paramId, alarmId, alarmInfo & 0x1));
 
+                // 超限报警
                 if (!(alarmInfo & 0x1))
                 {
                     if (alarmInfo & 0x2)
@@ -950,17 +977,24 @@ void EventWindowPrivate::eventInfoUpdate(int curRow)
     case EventPhysiologicalAlarm:
     {
         SubParamID subId = (SubParamID)(ctx.almSegment->subParamID);
-        AlarmLimitIFace *alarmLimit = alertor.getAlarmLimitIFace(subId);
         unsigned char alarmId = ctx.almSegment->alarmType;
         unsigned char alarmInfo = ctx.almSegment->alarmInfo;
         AlarmPriority priority;
-        if (alarmLimit)
+        if (alarmInfo & 0x01)   // oneshot 报警事件
         {
-            priority = alarmLimit->getAlarmPriority(alarmId);
+            AlarmOneShotIFace *alarmOneShot = alertor.getAlarmOneShotIFace(subId);
+            if (alarmOneShot)
+            {
+                priority = alarmOneShot->getAlarmPriority(alarmId);
+            }
         }
         else
         {
-            return;
+            AlarmLimitIFace *alarmLimit = alertor.getAlarmLimitIFace(subId);
+            if (alarmLimit)
+            {
+                priority = alarmLimit->getAlarmPriority(alarmId);
+            }
         }
 
         if (priority == ALARM_PRIO_LOW)
@@ -981,6 +1015,19 @@ void EventWindowPrivate::eventInfoUpdate(int curRow)
         }
 
         ParamID paramId = paramInfo.getParamID(subId);
+        // oneshot 报警
+        if (alarmInfo & 0x01)
+        {
+            // 将参数ID转换为oneshot报警对应的参数ID
+            if (paramId == PARAM_DUP_ECG)
+            {
+                paramId = PARAM_ECG;
+            }
+            else if (paramId == PARAM_DUP_RESP)
+            {
+                paramId = PARAM_RESP;
+            }
+        }
         infoStr += " ";
         infoStr += trs(Alarm::getPhyAlarmMessage(paramId,
                        alarmId,

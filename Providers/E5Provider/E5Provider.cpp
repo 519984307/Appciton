@@ -439,7 +439,7 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         break;
 
     case TE3_NOTIFY_VF_ALARM:
-        ecgParam.setCheckPatient(data[1]);
+        ecgOneShotAlarm.setOneShotAlarm(ECG_ONESHOT_ARR_VFIBVTAC, data[1]);
         break;
 
     case TE3_NOTIFY_ASYS_ALARM:

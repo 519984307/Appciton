@@ -454,6 +454,13 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
 
         if (traceCtrl->type == ALARM_TYPE_LIFE || traceCtrl->type == ALARM_TYPE_PHY)
         {
+            // one shot事件储存
+            AlarmInfoSegment infoSegment;
+            infoSegment.subParamID = alarmSource->getSubParamID(i);
+            infoSegment.alarmInfo = 1;  // one shot 报警
+            infoSegment.alarmType = i;
+            eventStorageManager.triggerAlarmEvent(infoSegment, alarmSource->getWaveformID(i), _timestamp);
+
             alarmSource->notifyAlarm(i, true);
             alarmStateMachine.handAlarmEvent(ALARM_STATE_EVENT_NEW_PHY_ALARM, 0, 0);
         }
@@ -800,6 +807,24 @@ AlarmLimitIFace *Alarm::getAlarmLimitIFace(SubParamID id)
     if (_limitSources.end() != _limitSources.find(paramId))
     {
         return _limitSources.find(paramId).value();
+    }
+    return NULL;
+}
+
+AlarmOneShotIFace *Alarm::getAlarmOneShotIFace(SubParamID id)
+{
+    ParamID paramId = paramInfo.getParamID(id);
+    if (paramId == PARAM_DUP_ECG)
+    {
+        paramId = PARAM_ECG;
+    }
+    else if (paramId == PARAM_DUP_RESP)
+    {
+        paramId = PARAM_RESP;
+    }
+    if (_oneshotSources.end() != _oneshotSources.find(paramId))
+    {
+        return _oneshotSources.find(paramId).value();
     }
     return NULL;
 }

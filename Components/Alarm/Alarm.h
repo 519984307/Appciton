@@ -74,6 +74,9 @@ public:
     // according to SubParamID get alarmLimitIFace
     AlarmLimitIFace *getAlarmLimitIFace(SubParamID id);
 
+    // according to SubParamID get AlarmOneShotIFace
+    AlarmOneShotIFace *getAlarmOneShotIFace(SubParamID id);
+
     // 析构。
     virtual ~Alarm();
 
