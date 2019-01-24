@@ -61,6 +61,20 @@ void NIBPParam::_patientTypeChangeSlot(PatientType /*type*/)
             currentConfig.getNumValue("NIBP|NeoInitialCuffInflation", initVal);
         }
         _provider->setInitPressure(initVal);
+
+        if (nibpParam.curStatusType() == NIBP_MONITOR_STANDBY_STATE)
+        {
+            if (nibpParam.getMeasurMode() == NIBP_MODE_AUTO)
+            {
+                nibpParam.setAutoMeasure(false);
+                nibpParam.setModelText(trs("NIBPAUTO") + ":" +
+                                       trs(NIBPSymbol::convert((NIBPAutoInterval)nibpParam.getAutoInterval())));
+            }
+            else if (nibpParam.getMeasurMode() == NIBP_MODE_MANUAL)
+            {
+                nibpParam.setModelText(trs("NIBPManual"));
+            }
+        }
     }
 }
 
@@ -553,8 +567,8 @@ void NIBPParam::invResultData(void)
     _mapVaule = InvData();
     _prVaule = InvData();
 
-    transferResults(InvData(), InvData(), InvData(), 0);// 显示“---”
-    setCountdown(-1);// 倒计时为“0”
+    transferResults(InvData(), InvData(), InvData(), 0);  // 显示“---”
+    setCountdown(-1);  // 倒计时为“0”
 
     // 将进行启动测量， 清除界面。
     nibpOneShotAlarm.clear();  // 清除所有报警。
