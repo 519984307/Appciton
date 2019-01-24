@@ -188,8 +188,8 @@
 		    <Scale>1</Scale>
 		</mmHg>
 		<kPa>
-		    <Low Min="53" Max="339">100</Low>
-		    <High Min="54" Max="340">193</High>
+		    <Low Min="53" Max="266">100</Low>
+		    <High Min="54" Max="267">193</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</kPa>
