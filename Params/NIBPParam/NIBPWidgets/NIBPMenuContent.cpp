@@ -320,7 +320,7 @@ void NIBPMenuContent::onCboItemFocusChanged(int index)
 
 void NIBPMenuContent::onStatBtnStateChanged(bool flag)
 {
-    if (flag)
+    if (!flag)
     {
         d_ptr->btns[NIBPMenuContentPrivate::ITEM_BTN_START_STAT]->setText(trs("STATSTART"));
     }
