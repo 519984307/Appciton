@@ -180,7 +180,6 @@ RESPCurve,曲线,Curve
 RESPFilled,填充,Filled
 RRLow,RR低,RR Low
 RRHigh,RR高,RR High
-RESPApnea,呼吸窒息,RESP Apnea
 RESPAutoActivation,呼吸激活,RESP Automatic Activation
 NIBPMeasurement,无创血压测量,NIBP
 NIBPMeasureMode,测量模式,Measure Mode
@@ -590,6 +589,7 @@ ECG12LSnapShot,12导 快照,12 Lead SnapShot
 ECGAcquiring12L,获取12导,Acquiring 12 Lead
 ECGAcquired12L,获取12导结束,Acquire 12 Lead Complete
 RESPCommunicationStop,呼吸通讯停止,RESP Communication Stop
+Apnea,呼吸窒息,Apnea
 SPO2Low,血氧低,SPO2 Low
 SPO2High,血氧高,SPO2 High
 SPO2PRLow,脉率低,PR Low
@@ -610,7 +610,6 @@ CO2FiCO2Low,FiCO2 低,FiCO2 Low
 CO2FiCO2High,FiCO2 高,FiCO2 High
 CO2BRLow,BR 低,BR Low
 CO2BRHigh,BR 高,BR High
-CO2Apnea,呼吸窒息,Apnea
 CO2MotorError,CO2电机转速超限,CO2 Motor Speed Out of bounds
 CO2SoftwareError,CO2软件错误,CO2 Software Error
 CO2HardwareError,CO2硬件错误,CO2 Hardware Error
