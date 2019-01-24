@@ -97,7 +97,7 @@ void PasswordWidget::layoutExec()
     d_ptr->passwordEdit = new QLineEdit();
     d_ptr->passwordEdit->setReadOnly(true);
     d_ptr->passwordEdit->setFocusPolicy(Qt::NoFocus);
-    d_ptr->passwordEdit->setPlaceholderText(trs("PassWord"));
+    d_ptr->passwordEdit->setPlaceholderText(trs("Password"));
     QColor borderColor = themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBorder,
                          ThemeManager::StateInactive);
     d_ptr->passwordEdit->setStyleSheet(QString("border:%1px solid %2;border-radius:%3px;padding:2px 4px;Height:30px")
