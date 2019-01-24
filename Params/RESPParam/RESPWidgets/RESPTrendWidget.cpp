@@ -33,17 +33,28 @@ void RESPTrendWidget::_releaseHandle(IWidget *iWidget)
 
 void RESPTrendWidget::_onBrSourceStatusUpdate()
 {
-    // 只有在来源为co2时才会显示
+    bool isAuto = respDupParam.isAutoBrSourceEnabled();
     RESPDupParam::BrSourceType type = respDupParam.getBrSource();
-    if (type == RESPDupParam::BR_SOURCE_CO2 && respDupParam.getRR() != InvData())
+
+    _rrSource->setVisible(false);
+    _rrSource->setText("");
+    if (respDupParam.getRR() == InvData())
+    {
+        return;
+    }
+    if (isAuto == true)
+    {
+        if (type == RESPDupParam::BR_SOURCE_CO2)
+        {
+            _rrSource->setVisible(true);
+            _rrSource->setText(trs("AutoOfCO2"));
+        }
+        return;
+    }
+    if (type == RESPDupParam::BR_SOURCE_CO2)
     {
         _rrSource->setVisible(true);
         _rrSource->setText(trs("SourceOfCO2"));
-    }
-    else
-    {
-        _rrSource->setVisible(false);
-        _rrSource->setText("");
     }
 }
 
@@ -61,7 +72,7 @@ void RESPTrendWidget::_loadConfig()
 /**************************************************************************************************
  * 设置PR的值。
  *************************************************************************************************/
-void RESPTrendWidget::setRRValue(int16_t rr , bool isRR)
+void RESPTrendWidget::setRRValue(int16_t rr , bool isRR, bool isAutoType)
 {
     if (isRR)
     {
@@ -70,6 +81,13 @@ void RESPTrendWidget::setRRValue(int16_t rr , bool isRR)
     else
     {
         setName(trs(paramInfo.getSubParamName(SUB_DUP_PARAM_BR)));
+    }
+
+    if ((rr == InvData() && _rrString != InvStr())  // invalid value  first
+            || (rr != InvData() && _rrString == InvStr())  // valid value  first
+            || (isAutoType == true))  // if br/rr value is from auto type
+    {
+        _onBrSourceStatusUpdate();
     }
 
     if (rr != InvData())
