@@ -203,7 +203,8 @@ void FactoryVersionInfoPrivate::loadOptions()
 
     if (labs[ITEM_LAB_NIBP_VERSION])
     {
-        Provider *p = paramManager.getProvider("BLM_N5");
+        machineConfig.getStrValue("NIBP", str);
+        Provider *p = paramManager.getProvider(str);
         QString version;
         if (p)
         {
@@ -214,7 +215,8 @@ void FactoryVersionInfoPrivate::loadOptions()
 
     if (labs[ITEM_LAB_SPO2_VERSION])
     {
-        Provider *p = paramManager.getProvider("BLM_S5");
+        machineConfig.getStrValue("SPO2", str);
+        Provider *p = paramManager.getProvider(str);
         QString version;
         if (p)
         {
