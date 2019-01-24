@@ -824,7 +824,7 @@ SupervisorExitSave,退出 & 保存,Exit & Save Config
 SupervisorExitNotSave,退出不保存,Exit & Not Save Config
 SupervisorDeviceIdentifier,设备标识符,Device Identifier
 SupervisorDefaultPatType,默认病人类型,Default Patient Type
-PassWord,密码,Password
+Password,密码,Password
 SupervisorDel,删除,Del
 SupervisorOK,确定,OK
 NoPasscodeEntered,无密码输入,No PassWord Entered
