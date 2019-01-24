@@ -818,6 +818,10 @@ AlarmOneShotIFace *Alarm::getAlarmOneShotIFace(SubParamID id)
     {
         paramId = PARAM_ECG;
     }
+    else if (paramId == PARAM_DUP_RESP)
+    {
+        paramId = PARAM_RESP;
+    }
     if (_oneshotSources.end() != _oneshotSources.find(paramId))
     {
         return _oneshotSources.find(paramId).value();
