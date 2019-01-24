@@ -64,12 +64,28 @@ void RESPMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_APNEA_DELAY]->setCurrentIndex(respParam.getApneaTime());
 
     // rr source
+    combos[ITEM_CBO_RR_SOURCE]->clear();
+    if (co2Param.isConnected())
+    {
+        combos[ITEM_CBO_RR_SOURCE]->addItems(QStringList()
+                                             << trs(RESPSymbol::convert(BR_RR_AUTO))
+                                             << trs(RESPSymbol::convert(BR_RR_SOURCE_ECG))
+                                             << trs(RESPSymbol::convert(BR_RR_SOURCE_CO2))
+                                             );
+    }
+    else
+    {
+        combos[ITEM_CBO_RR_SOURCE]->addItems(QStringList()
+                                             << trs(RESPSymbol::convert(BR_RR_AUTO))
+                                             << trs(RESPSymbol::convert(BR_RR_SOURCE_ECG)));
+    }
+
     int index = 0;
     if (respDupParam.isAutoBrSourceEnabled())
     {
         index = BR_RR_AUTO;
     }
-    else if (respDupParam.getBrSource() == RESPDupParam::BR_SOURCE_CO2)
+    else if (respDupParam.getBrSource() == RESPDupParam::BR_SOURCE_CO2 && co2Param.isConnected())
     {
         index = BR_RR_SOURCE_CO2;
     }
@@ -172,10 +188,6 @@ void RESPMenuContent::layoutExec()
     d_ptr->brRRSouce = label;
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox;
-    comboBox->addItems(QStringList()
-                       << trs(RESPSymbol::convert(BR_RR_AUTO))
-                       << trs(RESPSymbol::convert(BR_RR_SOURCE_CO2))
-                       << trs(RESPSymbol::convert(BR_RR_SOURCE_ECG)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(RESPMenuContentPrivate
                          ::ITEM_CBO_RR_SOURCE, comboBox);

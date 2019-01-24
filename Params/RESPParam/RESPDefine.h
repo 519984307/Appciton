@@ -31,8 +31,8 @@ enum RESPModuleType
 enum BRRRSourceType
 {
     BR_RR_AUTO,
-    BR_RR_SOURCE_CO2,
     BR_RR_SOURCE_ECG,
+    BR_RR_SOURCE_CO2,
     BR_RR_NR,
 };
 /**************************************************************************************************
