@@ -572,12 +572,14 @@ ECGArrVENT,室性节律,VENT
 ECGArrIRR,心律不齐,IRR
 LeadOff,导联脱落,Lead Off
 ECGLeadOff,心电导联脱落,ECG Lead Off
+ECGVLeadOff,心电V导联脱落,ECG V Lead Off
 ECGV1LeadOff,心电V1导联脱落,ECG V1 Lead Off
 ECGV2LeadOff,心电V2导联脱落,ECG V2 Lead Off
 ECGV3LeadOff,心电V3导联脱落,ECG V3 Lead Off
 ECGV4LeadOff,心电V4导联脱落,ECG V4 Lead Off
 ECGV5LeadOff,心电V5导联脱落,ECG V5 Lead Off
 ECGV6LeadOff,心电V6导联脱落,ECG V6 Lead Off
+ECGCLeadOff,心电C导联脱落,ECG C Lead Off
 ECGC1LeadOff,心电C1导联脱落,ECG C1 Lead Off
 ECGC2LeadOff,心电C2导联脱落,ECG C2 Lead Off
 ECGC3LeadOff,心电C3导联脱落,ECG C3 Lead Off

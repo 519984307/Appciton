@@ -298,7 +298,8 @@ AlarmType ECGOneShotAlarm::getAlarmType(int id)
  *************************************************************************************************/
 const char *ECGOneShotAlarm::toString(int id)
 {
-    return ECGSymbol::convert((ECGOneShotType)id, ecgParam.getLeadConvention());
+    bool is12Lead = ecgParam.getLeadMode() < ECG_LEAD_MODE_12 ? 0 : 1;
+    return ECGSymbol::convert((ECGOneShotType)id, ecgParam.getLeadConvention(), is12Lead);
 }
 
 /**************************************************************************************************

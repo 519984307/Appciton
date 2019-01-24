@@ -198,7 +198,7 @@ public:
         return symbol[index];
     }
 
-    static const char *convert(ECGOneShotType index, ECGLeadNameConvention convention)
+    static const char *convert(ECGOneShotType index, ECGLeadNameConvention convention, bool is12Lead = true)
     {
         static const char *symbol[ECG_ONESHOT_NR] =
         {
@@ -219,20 +219,34 @@ public:
         {
             if (convention == ECG_CONVENTION_AAMI)
             {
-                return symbol[index];
+                if (is12Lead)
+                {
+                    return symbol[index];
+                }
+                else
+                {
+                    return "ECGVLeadOff";
+                }
             }
             else
             {
-                static const char *leadOff[6] =
+                if (is12Lead)
                 {
-                    "ECGC1LeadOff",
-                    "ECGC2LeadOff",
-                    "ECGC3LeadOff",
-                    "ECGC4LeadOff",
-                    "ECGC5LeadOff",
-                    "ECGC6LeadOff"
-                };
-                return leadOff[index - ECG_ONESHOT_ALARM_V1_LEADOFF];
+                    static const char *leadOff[6] =
+                    {
+                        "ECGC1LeadOff",
+                        "ECGC2LeadOff",
+                        "ECGC3LeadOff",
+                        "ECGC4LeadOff",
+                        "ECGC5LeadOff",
+                        "ECGC6LeadOff"
+                    };
+                    return leadOff[index - ECG_ONESHOT_ALARM_V1_LEADOFF];
+                }
+                else
+                {
+                    return "ECGCLeadOff";
+                }
             }
         }
         else
