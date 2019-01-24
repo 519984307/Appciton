@@ -69,7 +69,6 @@ void ConfigEditSpO2MenuContentPrivate::loadOptions()
                           << "Sensitivity"
                           << "SmartPluseTone"
                           << "WaveVelocity"
-                          << "Gain"
                           << "ModuleControl";
 
     for (int i = 0; i < strList.count(); i++)
