@@ -1865,13 +1865,13 @@ void ECGParam::setGain(ECGGain gain)
  *************************************************************************************************/
 void ECGParam::setGain(ECGGain gain, int waveID)
 {
-    setGain(gain, waveIDToLeadID((WaveformID)waveID));
+    setGain(gain, waveIDToLeadID((WaveformID)waveID), true);
 }
 
 /**************************************************************************************************
  * 设置增益。
  *************************************************************************************************/
-void ECGParam::setGain(ECGGain gain, ECGLead lead)
+void ECGParam::setGain(ECGGain gain, ECGLead lead, bool isAutoGain)
 {
     if (lead > ECG_LEAD_V6)
     {
@@ -1883,9 +1883,13 @@ void ECGParam::setGain(ECGGain gain, ECGLead lead)
         return;
     }
 
-    QString wavename = _waveWidget[lead]->name();
-    currentConfig.setNumValue("ECG|Gain|" + wavename, static_cast<int>(gain));
-    _waveWidget[lead]->setGain(gain);
+    // 判断是否自动增益设置调用
+    if (!isAutoGain)
+    {
+        QString wavename = _waveWidget[lead]->name();
+        currentConfig.setNumValue("ECG|Gain|" + wavename, static_cast<int>(gain));
+    }
+    _waveWidget[lead]->setGain(gain, isAutoGain);
 }
 
 /**************************************************************************************************
