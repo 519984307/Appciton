@@ -91,8 +91,8 @@ public:
         static const char *symbol[BR_RR_NR] =
         {
             "Auto",
-            "CO2",
-            "ECG"
+            "ECG",
+            "CO2"
         };
         return symbol[index];
     }
