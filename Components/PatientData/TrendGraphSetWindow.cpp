@@ -182,6 +182,22 @@ void TrendGraphSetWindow::upDownRulerChange(int, int)
     {
         int id = spb->property("Ruler").toInt();
         RulerItem *item = d_ptr->itemList.at(id / 2);
+        if (id % 2)     // 标尺上限改变时,修改标尺下限的范围
+        {
+            int min;
+            int max;
+            item->downRuler->getRange(min, max);
+            max = item->upRuler->getValue() - 1;
+            item->downRuler->setRange(min, max);
+        }
+        else            // 标尺下限改变时,修改标尺上限的范围
+        {
+            int min;
+            int max;
+            item->upRuler->getRange(min, max);
+            min = item->downRuler->getValue() + 1;
+            item->upRuler->setRange(min, max);
+        }
         TrendGraphWindow::getInstance()->setSubWidgetRulerLimit(id / 2, item->downRuler->getValue(),
                 item->upRuler->getValue(), item->downRuler->getScale());
     }
