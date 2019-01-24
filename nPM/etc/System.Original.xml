@@ -170,8 +170,8 @@
         <Ruler>
             <HR_PR Enable="1" Prio="2" Auto="1">
                 <bpm>
-                    <Low Min="15" Max="298">50</Low>
-                    <High Min="17" Max="300">120</High>
+                    <Low Min="15" Max="349">50</Low>
+                    <High Min="16" Max="350">120</High>
                     <Step>1</Step>
                     <Scale>1</Scale>
                 </bpm>
@@ -754,7 +754,7 @@
             </FIO2>
             <T1 Enable="0" Prio="2" Auto="1">
             <celsius>
-                <Low Min="1" Max="490">350</Low>
+                <Low Min="0" Max="490">350</Low>
                 <High Min="11" Max="500">378</High>
                 <Step>1</Step>
                 <Scale>10</Scale>
@@ -768,7 +768,7 @@
             </T1>
             <T2 Enable="0" Prio="2" Auto="1">
             <celsius>
-                <Low Min="1" Max="490">350</Low>
+                <Low Min="0" Max="490">350</Low>
                 <High Min="11" Max="500">378</High>
                 <Step>1</Step>
                 <Scale>10</Scale>
@@ -782,7 +782,7 @@
             </T2>
             <TD Enable="0" Prio="2" Auto="1">
             <celsius>
-                <Low Min="1" Max="490">1</Low>
+                <Low Min="0" Max="490">1</Low>
                 <High Min="11" Max="500">5</High>
                 <Step>1</Step>
                 <Scale>10</Scale>
