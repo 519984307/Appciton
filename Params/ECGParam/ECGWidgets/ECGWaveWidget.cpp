@@ -281,6 +281,7 @@ void ECGWaveWidget::_loadConfig(void)
 {
     setSpeed(ecgParam.getSweepSpeed());
 
+    bool is12Lead = ecgParam.getLeadMode() < ECG_LEAD_MODE_12 ? 0 : 1;
     if (layoutManager.getUFaceType() == UFACE_MONITOR_ECG_FULLSCREEN)
     {
         _name->setFocusPolicy(Qt::NoFocus);
@@ -292,7 +293,7 @@ void ECGWaveWidget::_loadConfig(void)
         setGain(_12LGain);
 
         _name->setText(ECGSymbol::convert(ecgParam.waveIDToLeadID((WaveformID)getID()),
-                                          ecgParam.getLeadConvention(), true, ecgParam.get12LDisplayFormat()));
+                                          ecgParam.getLeadConvention(), is12Lead, ecgParam.get12LDisplayFormat()));
 
         _name->setFixedWidth(70);
 //        _notify->setVisible(false);
@@ -300,7 +301,7 @@ void ECGWaveWidget::_loadConfig(void)
     else
     {
         _name->setText(ECGSymbol::convert(ecgParam.waveIDToLeadID((WaveformID)getID()),
-                                          ecgParam.getLeadConvention(), false, false));
+                                          ecgParam.getLeadConvention(), is12Lead, false));
         _name->setFocusPolicy(Qt::StrongFocus);
 
         // 增益。
