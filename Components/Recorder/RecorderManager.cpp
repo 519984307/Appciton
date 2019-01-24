@@ -181,7 +181,7 @@ bool RecorderManager::isPrinting() const
 void RecorderManager::setPrintStatus(bool sta)
 {
     // 打印停止后更新打印速度
-    if (d_ptr->updatePrintSpeed)
+    if (d_ptr->updatePrintSpeed && (sta == false))
     {
         d_ptr->updatePrintSpeed = false;
         QMetaObject::invokeMethod(d_ptr->processor, "setPrintSpeed", Qt::QueuedConnection, Q_ARG(PrintSpeed, d_ptr->curSpeed));
