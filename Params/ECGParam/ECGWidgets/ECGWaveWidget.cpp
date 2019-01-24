@@ -363,47 +363,25 @@ void ECGWaveWidget::addWaveformData(int waveData, int pace)
  * 参数:
  *      gain: 波形增益
  *************************************************************************************************/
-void ECGWaveWidget::setGain(ECGGain gain)
+void ECGWaveWidget::setGain(ECGGain gain, bool isAuto)
 {
     _initValueRange(gain);
-    QString text;
-    if (_isAutoGain)
+    // 自动增益标志
+    if (gain == ECG_GAIN_AUTO)
     {
-        text = trs("Automatically");
-        text += " ";
+        _isAutoGain = true;
+    }
+    // 不是自动增益导致的增益设置
+    else if (!isAuto)
+    {
+        _isAutoGain = false;
     }
 
-    switch (gain)
+    // 不是自动增益导致的增益设置
+    if (!isAuto)
     {
-    case ECG_GAIN_X0125:
-        text += "0.125 cm/mV";
-        break;
-
-    case ECG_GAIN_X025:
-        text += "0.25 cm/mV";
-        break;
-
-    case ECG_GAIN_X05:
-        text += "0.5 cm/mV";
-        break;
-
-    case ECG_GAIN_X10:
-        text += "1.0 cm/mV";
-        break;
-
-    case ECG_GAIN_X20:
-        text += "2.0 cm/mV";
-        break;
-
-    case ECG_GAIN_X40:
-        text += "4.0 cm/mV";
-        break;
-
-    default:
-        break;
+        _gain->setText(trs(ECGSymbol::convert(gain)));
     }
-
-    _gain->setText(trs(ECGSymbol::convert(gain)));
 
     _ruler->setGain(gain);
 }
