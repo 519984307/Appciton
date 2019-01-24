@@ -29,7 +29,7 @@ class RecordPageProcessorPrivate
 public:
     RecordPageProcessorPrivate(RecordPageProcessor *const q_ptr, PrintProviderIFace *iface)
         : q_ptr(q_ptr), iface(iface), processing(false), pause(false),
-          updateSpeed(false), queueIsFull(false), curSpeed(PRINT_SPEED_NR),
+          queueIsFull(false), curSpeed(PRINT_SPEED_NR),
           timerID(-1), curProcessingPage(NULL), curPageXPos(0)
     {}
 
@@ -40,7 +40,6 @@ public:
     QList<RecordPage *> pages;
     bool processing;
     bool pause;
-    bool updateSpeed;
     bool queueIsFull;
     PrintSpeed curSpeed;
     int timerID;
@@ -61,12 +60,6 @@ RecordPageProcessor::~RecordPageProcessor()
 bool RecordPageProcessor::isProcessing() const
 {
     return d_ptr->processing;
-}
-
-void RecordPageProcessor::updatePrintSpeed(PrintSpeed speed)
-{
-    d_ptr->curSpeed = speed;
-    d_ptr->updateSpeed = true;
 }
 
 void RecordPageProcessor::setPrintSpeed(PrintSpeed speed)
@@ -124,13 +117,6 @@ void RecordPageProcessor::stopProcess()
 
     d_ptr->stopProcessing();
     emit processFinished();
-
-    // check whether speed need to update
-    if (d_ptr->updateSpeed)
-    {
-        d_ptr->updateSpeed = false;
-        d_ptr->iface->setPrintSpeed(d_ptr->curSpeed);
-    }
 }
 
 void RecordPageProcessor::pauseProcessing(bool pause)
