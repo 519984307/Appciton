@@ -33,11 +33,10 @@
 #include "CalculateWindow.h"
 #include "DischargePatientWindow.h"
 
-enum Co2Mode
-{
-    CO2_MODE_STANDBY,
-    CO2_MODE_MEASURE
-};
+#define co2StandbyIcon "standby.png"
+#define co2StandbyHint trs("CO2Standby")
+#define co2MeasureIcon "measure.png"
+#define co2MeasureHint trs("CO2Measure")
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -64,7 +63,7 @@ static KeyActionDesc _baseKeys[] =
     KeyActionDesc("", trs("Standby"), "standby.png", SoftkeyActionBase::standby),
 #endif
     KeyActionDesc("", trs("CO2ZeroCalib"), "calib.png", SoftkeyActionBase::CO2Zero),
-    KeyActionDesc("", trs("CO2Standby"), "standby.png", SoftkeyActionBase::CO2Handle),
+    KeyActionDesc("", co2StandbyHint, co2StandbyIcon, SoftkeyActionBase::CO2Handle),
 #ifndef HIDE_IBP_CALIBRATE_ZERO
     KeyActionDesc("", trs("IBPZeroCalib"), "calib.png", SoftkeyActionBase::IBPZero),
 #endif
@@ -328,22 +327,21 @@ void SoftkeyActionBase::CO2Handle(bool isPressed)
         return;
     }
 
-    static Co2Mode co2Mode = CO2_MODE_STANDBY;
-    if (co2Mode == CO2_MODE_STANDBY)
+    if (!co2Param.getCO2Switch())
     {
-        co2Mode = CO2_MODE_MEASURE;
-        _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].iconPath = QString("measure.png");
-        _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].hint = trs("CO2Measure");
-
-        // TODO: CO2待机
+        if (co2Param.setModuleWorkMode(CO2_WORK_MEASUREMENT) == true)
+        {
+            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].iconPath = QString(co2MeasureIcon);
+            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].hint = co2MeasureHint;
+        }
     }
     else
     {
-        co2Mode = CO2_MODE_STANDBY;
-        _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].iconPath = QString("standby.png");
-        _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].hint = trs("CO2Standby");
-
-        // TODO: CO2测量
+        if (co2Param.setModuleWorkMode(C02_WORK_SLEEP) == true)
+        {
+            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].iconPath = QString(co2StandbyIcon);
+            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].hint = co2StandbyHint;
+        }
     }
     softkeyManager.refreshPage(false);
 }
@@ -439,6 +437,23 @@ KeyActionDesc *SoftkeyActionBase::getBaseActionDesc(SoftBaseKeyType baseType)
         _baseKeys[baseType].hint = hint;
     }
 #endif
+    if (baseType == SOFT_BASE_KEY_CO2_HANDLE)
+    {
+        // 初始化co2待机测量的图标和指示信息
+        QString iconPath, hint;
+        if (co2Param.getCO2Switch())
+        {
+            iconPath = QString(co2MeasureIcon);
+            hint = co2MeasureHint;
+        }
+        else
+        {
+            iconPath = QString(co2StandbyIcon);
+            hint = co2StandbyHint;
+        }
+        _baseKeys[baseType].iconPath = iconPath;
+        _baseKeys[baseType].hint = hint;
+    }
     return &_baseKeys[baseType];
 }
 

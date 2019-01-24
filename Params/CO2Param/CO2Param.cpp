@@ -562,21 +562,18 @@ void CO2Param::setConnected(bool isConnected)
     int needUpdate = 0;
     if (isConnected)
     {
-        if (d_ptr->co2Switch)
-        {
-            this->enable();
+        this->enable();
 
-            // update to show CO2 info
-            needUpdate |= layoutManager.setWidgetLayoutable(co2Trend, true);
-            needUpdate |= layoutManager.setWidgetLayoutable(co2Wave, true);
-            if (needUpdate)
-            {
-                layoutManager.updateLayout();
-                // 显示co2相关的软按键
-                softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_CO2_CALIBRATION, true);
-                softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_CO2_HANDLE, true);
-                softkeyManager.refreshPage();
-            }
+        // update to show CO2 info
+        needUpdate |= layoutManager.setWidgetLayoutable(co2Trend, true);
+        needUpdate |= layoutManager.setWidgetLayoutable(co2Wave, true);
+        if (needUpdate)
+        {
+            layoutManager.updateLayout();
+            // 显示co2相关的软按键
+            softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_CO2_CALIBRATION, true);
+            softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_CO2_HANDLE, true);
+            softkeyManager.refreshPage();
         }
     }
     else
@@ -681,6 +678,32 @@ void CO2Param::updateUnit()
     {
         d_ptr->waveWidget->setRuler(getDisplayZoom());
     }
+}
+
+bool CO2Param::setModuleWorkMode(CO2WorkMode mode)
+{
+    if (mode == CO2_WORK_SELFTEST)
+    {
+        return false;
+    }
+    if (d_ptr->provider == NULL)
+    {
+        return false;
+    }
+    if (mode == C02_WORK_SLEEP)
+    {
+        setCO2Switch(false);
+        d_ptr->provider->setWorkMode(mode);
+        return true;
+    }
+
+    if (mode == CO2_WORK_MEASUREMENT)
+    {
+        setCO2Switch(true);
+        d_ptr->provider->setWorkMode(mode);
+        return true;
+    }
+    return false;
 }
 
 /**************************************************************************************************
@@ -862,6 +885,13 @@ UnitType CO2Param::getUnit(void)
     return static_cast<UnitType>(unit);
 }
 
+void CO2Param::setCO2Switch(bool on)
+{
+    int index = on;
+    currentConfig.setNumValue("CO2|CO2ModeDefault", index);
+    d_ptr->co2Switch = on;
+}
+
 /**************************************************************************************************
  * 获取CO2开关。
  *************************************************************************************************/
@@ -936,6 +966,12 @@ CO2Param::CO2Param()
     QString highPath = path + "High";
     currentConfig.getNumAttr(lowPath, "Min", d_ptr->etco2MinVal);
     currentConfig.getNumAttr(highPath, "Max", d_ptr->etco2MaxVal);
+
+    // 开机初始化时与界面上的软按键图标显示保持一致为待机模式
+    if (d_ptr->provider)
+    {
+        d_ptr->provider->setWorkMode(C02_WORK_SLEEP);
+    }
 }
 
 /**************************************************************************************************
