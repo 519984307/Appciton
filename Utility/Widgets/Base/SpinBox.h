@@ -26,7 +26,12 @@ public:
         SPIN_BOX_DISABLE
     };
 
-    explicit SpinBox(QWidget *parent = NULL);
+    /**
+     * @brief SpinBox
+     * @param parent
+     * @param showHint  if show hint inside the SpinBox
+     */
+    explicit SpinBox(QWidget *parent = NULL, bool showHint = false);
     ~SpinBox();
 
     /**
@@ -66,6 +71,13 @@ public:
 
     /* reimplement */
     QSize sizeHint() const;
+
+    /**
+     * @brief setHint  set the hint inside the SpinBox
+     * @param hint  hint of the SpinBox
+     */
+    void setHint(const QString &hint);
+
 signals:
     void valueChange(int value, int scale);
 

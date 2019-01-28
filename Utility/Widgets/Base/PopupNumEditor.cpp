@@ -52,6 +52,9 @@ public:
     bool hasBeenPressed;
 
     QTimer *timer;
+
+    bool showHint;  // if show hint
+    QString hint;  // hint inside the PopupNumEditor
 };
 
 bool PopupNumEditorPrivate::mouseInUpRegion(const QPoint &pos) const
@@ -95,13 +98,25 @@ void PopupNumEditorPrivate::decreaseValue()
 
 QString PopupNumEditorPrivate::value() const
 {
-    return Util::convertToString(editInfo.curValue, editInfo.scale);
+    if (showHint == false)
+    {
+        return Util::convertToString(editInfo.curValue, editInfo.scale);
+    }
+    else
+    {
+        QString s = Util::convertToString(editInfo.curValue, editInfo.scale);
+        s += " ";
+        s += hint;
+        return s;
+    }
+    return QString();
 }
 
-PopupNumEditor::PopupNumEditor()
+PopupNumEditor::PopupNumEditor(bool showHint)
     : QWidget(NULL, Qt::Popup | Qt::FramelessWindowHint),
       d_ptr(new PopupNumEditorPrivate(this))
 {
+    d_ptr->showHint = showHint;
     setAttribute(Qt::WA_DeleteOnClose);
     setAttribute(Qt::WA_TranslucentBackground);
     setAutoFillBackground(false);
@@ -207,6 +222,14 @@ QSize PopupNumEditor::sizeHint() const
     int width = themeManger.getBorderWidth() * 2 + d_ptr->valueRect.width();
     int height = themeManger.getBorderWidth() * 2 + d_ptr->valueRect.height() * 3;
     return QSize(width, height);
+}
+
+void PopupNumEditor::setHint(const QString &hint)
+{
+    if (d_ptr->showHint == true)
+    {
+        d_ptr->hint = hint;
+    }
 }
 
 void PopupNumEditor::keyPressEvent(QKeyEvent *ev)

@@ -30,6 +30,8 @@ public:
           m_borderRadius(themeManger.getBorderRadius()),
           arrow(false),
           status(SpinBox::SPIN_BOX_FOCUS_IN)
+        , showHint(false)
+        , hint(QString())
     {}
 
     // get the value
@@ -41,18 +43,33 @@ public:
     ItemEditInfo info;
     bool arrow;
     SpinBox::CtrlStatus status;
+
+    bool showHint;  // if show hint
+    QString hint;  // hint inside the spinbox
 };
 
 QString SpinBoxPrivate::value() const
 {
-    return Util::convertToString(info.curValue, info.scale);
+    if (showHint == false)
+    {
+        return Util::convertToString(info.curValue, info.scale);
+    }
+    else
+    {
+        QString s = Util::convertToString(info.curValue, info.scale);
+        s += " ";
+        s += hint;
+        return s;
+    }
+    return QString();
 }
 
-SpinBox::SpinBox(QWidget *parent)
+SpinBox::SpinBox(QWidget *parent, bool showHint)
     : QAbstractButton(parent),
       d_ptr(new SpinBoxPrivate)
 
 {
+    d_ptr->showHint = showHint;
     QPalette pal = palette();
     themeManger.setupPalette(ThemeManager::ControlSpinBox, pal);
     setPalette(pal);
@@ -140,6 +157,14 @@ QSize SpinBox::sizeHint() const
     }
 
     return hint;
+}
+
+void SpinBox::setHint(const QString &hint)
+{
+    if (d_ptr->showHint == true)
+    {
+        d_ptr->hint = hint;
+    }
 }
 
 void SpinBox::onPopupDestroy()
@@ -295,7 +320,8 @@ void SpinBox::keyReleaseEvent(QKeyEvent *ev)
         QRect rect(mapToGlobal(vrect.topLeft()),
                    mapToGlobal(vrect.bottomRight()));
         QPalette pal = palette();
-        PopupNumEditor *editor = new PopupNumEditor();
+        PopupNumEditor *editor = new PopupNumEditor(d_ptr->showHint);
+        editor->setHint(d_ptr->hint);
         editor->setEditInfo(d_ptr->info);
         editor->setFont(fontManager.textFont(font().pixelSize()));
         editor->setPalette(pal);
@@ -318,7 +344,8 @@ void SpinBox::mouseReleaseEvent(QMouseEvent *ev)
     QRect rect(mapToGlobal(vrect.topLeft()),
                mapToGlobal(vrect.bottomRight()));
     QPalette pal = palette();
-    PopupNumEditor *editor = new PopupNumEditor();
+    PopupNumEditor *editor = new PopupNumEditor(d_ptr->showHint);
+    editor->setHint(d_ptr->hint);
     editor->setEditInfo(d_ptr->info);
     editor->setFont(fontManager.textFont(font().pixelSize()));
     editor->setPalette(pal);
