@@ -76,7 +76,14 @@ public:
             };
             if (!is12LInt && index >= ECG_LEAD_V1)
             {
-                return "V";
+                if (convention == ECG_CONVENTION_AAMI)
+                {
+                    return "V";
+                }
+                else
+                {
+                    return "C";
+                }
             }
             else
             {
