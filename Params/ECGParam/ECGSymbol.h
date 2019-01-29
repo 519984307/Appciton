@@ -62,37 +62,26 @@ public:
         else
         {
             int is12LInt = is12L ? 1 : 0;
-            static const char *symbol[ECG_CONVENTION_NR][2][ECG_LEAD_NR] =
+            static const char *symbol[ECG_CONVENTION_NR][ECG_LEAD_NR] =
             {
                 {
-                    // ECG_CONVENTION_AAMI
-                    {
-                        // isn't 12Lead
-                        "I",  "II", "III", "aVR", "aVL", "aVF",
-                        "V", "V",  "V", "V",  "V",  "V"
-                    },
-                    {
-                        // is 12Lead
-                        "I",  "II", "III", "aVR", "aVL", "aVF",
-                        "V1", "V2",  "V3", "V4",  "V5",  "V6"
-                    }
+                    "I",  "II", "III", "aVR", "aVL", "aVF",
+                    "V1", "V2",  "V3", "V4",  "V5",  "V6"
                 },
 
                 {
-                    // ECG_CONVENTION_IEC
-                    {
-                        // isn't 12Lead
-                        "I",  "II", "III", "aVR", "aVL", "aVF",
-                        "C", "C",  "C", "C",  "C",  "C"
-                    },
-                    {
-                        // is 12Lead
-                        "I",  "II", "III", "aVR", "aVL", "aVF",
-                        "C1", "C2",  "C3", "C4",  "C5",  "C6"
-                    }
+                    "I",  "II", "III", "aVR", "aVL", "aVF",
+                    "C1", "C2",  "C3", "C4",  "C5",  "C6"
                 }
             };
-            return symbol[convention][is12LInt][index];
+            if (!is12LInt && index >= ECG_LEAD_V1)
+            {
+                return "V";
+            }
+            else
+            {
+                return symbol[convention][index];
+            }
         }
     }
 
