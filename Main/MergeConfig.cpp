@@ -177,6 +177,21 @@ QString MergeConfig::_bkSystemPath() const
 }
 
 /***************************************************************************************************
+ * compare config
+ **************************************************************************************************/
+void MergeConfig::config_compare(QString attr)
+{
+    Config config(_bkSuperPath());
+    QString str, str1;
+    bool bret = config.getStrValue(attr, str);
+    bret &= currentConfig.getStrValue(attr, str1);
+    if (bret && (str1 != str))
+    {
+        currentConfig.setStrValue(attr, str);
+    }
+}
+
+/***************************************************************************************************
  * check config
  **************************************************************************************************/
 void MergeConfig::checkConfig()
@@ -354,6 +369,36 @@ void MergeConfig::_loadSystemConfig()
     {
         systemConfig.setStrValue("ResetServiceAdvisedMesg", strOldValue);
     }
+
+    QString str, str1;
+
+    bool bret = config.getStrValue("PrimaryCfg|NIBP|MeasureMode", str);
+    bret &= systemConfig.getStrValue("PrimaryCfg|NIBP|MeasureMode", str1);
+    if (bret && (str1 != str))
+    {
+        systemConfig.setStrValue("PrimaryCfg|NIBP|MeasureMode", str);
+    }
+
+    bret = config.getStrValue("PrimaryCfg|NIBP|AutoInterval", str);
+    bret &= systemConfig.getStrValue("PrimaryCfg|NIBP|AutoInterval", str1);
+    if (bret && (str1 != str))
+    {
+        systemConfig.setStrValue("PrimaryCfg|NIBP|AutoInterval", str);
+    }
+
+    bret = config.getStrValue("PrimaryCfg|NIBP|StatFunction", str);
+    bret &= systemConfig.getStrValue("PrimaryCfg|NIBP|StatFunction", str1);
+    if (bret && (str1 != str))
+    {
+        systemConfig.setStrValue("PrimaryCfg|NIBP|StatFunction", str);
+    }
+
+    bret = config.getStrValue("PrimaryCfg|NIBP|AutomaticRetry", str);
+    bret &= systemConfig.getStrValue("PrimaryCfg|NIBP|AutomaticRetry", str1);
+    if (bret && (str1 != str))
+    {
+        systemConfig.setStrValue("PrimaryCfg|NIBP|AutomaticRetry", str);
+    }
 }
 
 /***************************************************************************************************
@@ -372,229 +417,69 @@ void MergeConfig::_loadSupervisorConfig()
     {
         return;
     }
-
+    bool bret;
     QString str, str1;
     /*************************General****************************/
-    bool bret = config.getStrValue("General|Password", str);
-    bret &= currentConfig.getStrValue("General|Password", str1);
-    if (bret && (str1 != str))
+    QStringList General_list;
+    General_list<< "General|Password"
+                << "General|DeviceIdentifier"
+                << "General|DefaultPatientType"
+                << "General|DefaultDisplayBrightness"
+                << "General|FullDisclosureRecording"
+                << "General|SuperPassword";
+    for (QStringList::iterator iter = General_list.begin(); iter != General_list.end(); ++iter)
     {
-        currentConfig.setStrValue("General|Password", str);
-    }
-
-    bret = config.getStrValue("General|DeviceIdentifier", str);
-    bret &= currentConfig.getStrValue("General|DeviceIdentifier", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("General|DeviceIdentifier", str);
-    }
-
-    bret = config.getStrValue("General|DefaultPatientType", str);
-    bret &= currentConfig.getStrValue("General|DefaultPatientType", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("General|DefaultPatientType", str);
-    }
-
-    bret = config.getStrValue("General|DefaultDisplayBrightness", str);
-    bret &= currentConfig.getStrValue("General|DefaultDisplayBrightness", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("General|DefaultDisplayBrightness", str);
-    }
-
-    bret = config.getStrValue("General|FullDisclosureRecording", str);
-    bret &= currentConfig.getStrValue("General|FullDisclosureRecording", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("General|FullDisclosureRecording", str);
-    }
-
-    bret = config.getStrValue("General|SuperPassword", str);
-    bret &= currentConfig.getStrValue("General|SuperPassword", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("General|SuperPassword", str);
+        config_compare(*iter);
     }
 
     /*************************Basic Defib****************************/
-    bret = config.getStrValue("BasicDefib|DefaultVoicePromptTone", str);
-    bret &= currentConfig.getStrValue("BasicDefib|DefaultVoicePromptTone", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("BasicDefib|DefaultVoicePromptTone", str);
-    }
 
-    bret = config.getStrValue("BasicDefib|DefaultDefibMode", str);
-    bret &= currentConfig.getStrValue("BasicDefib|DefaultDefibMode", str1);
-    if (bret && (str1 != str))
+    QStringList BasicDefib_list;
+    BasicDefib_list << "BasicDefib|DefaultVoicePromptTone"
+                    << "BasicDefib|DefaultDefibMode"
+                    << "BasicDefib|DefibDefaultToPads"
+                    << "BasicDefib|BasicAutoEnergyEscalation"
+                    << "BasicDefib|RetainSyncAfterShock"
+                    << "BasicDefib|DefibReadyHoldTime"
+                    << "BasicDefib|AdultShock1"
+                    << "BasicDefib|AdultShock2"
+                    << "BasicDefib|AdultShock3"
+                    << "BasicDefib|PediatricShock1"
+                    << "BasicDefib|PediatricShock2"
+                    << "BasicDefib|PediatricShock3";
+    for (QStringList::iterator iter = BasicDefib_list.begin(); iter != BasicDefib_list.end(); ++iter)
     {
-        currentConfig.setStrValue("BasicDefib|DefaultDefibMode", str);
-    }
-
-    bret = config.getStrValue("BasicDefib|DefibDefaultToPads", str);
-    bret &= currentConfig.getStrValue("BasicDefib|DefibDefaultToPads", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("BasicDefib|DefibDefaultToPads", str);
-    }
-
-    bret = config.getStrValue("BasicDefib|BasicAutoEnergyEscalation", str);
-    bret &= currentConfig.getStrValue("BasicDefib|BasicAutoEnergyEscalation", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("BasicDefib|BasicAutoEnergyEscalation", str);
-    }
-
-    bret = config.getStrValue("BasicDefib|RetainSyncAfterShock", str);
-    bret &= currentConfig.getStrValue("BasicDefib|RetainSyncAfterShock", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("BasicDefib|RetainSyncAfterShock", str);
-    }
-
-    bret = config.getStrValue("BasicDefib|DefibReadyHoldTime", str);
-    bret &= currentConfig.getStrValue("BasicDefib|DefibReadyHoldTime", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("BasicDefib|DefibReadyHoldTime", str);
-    }
-
-    bret = config.getStrValue("BasicDefib|AdultShock1", str);
-    bret &= currentConfig.getStrValue("BasicDefib|AdultShock1", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("BasicDefib|AdultShock1", str);
-    }
-
-    bret = config.getStrValue("BasicDefib|AdultShock2", str);
-    bret &= currentConfig.getStrValue("BasicDefib|AdultShock2", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("BasicDefib|AdultShock2", str);
-    }
-
-    bret = config.getStrValue("BasicDefib|AdultShock3", str);
-    bret &= currentConfig.getStrValue("BasicDefib|AdultShock3", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("BasicDefib|AdultShock3", str);
-    }
-
-    bret = config.getStrValue("BasicDefib|PediatricShock1", str);
-    bret &= currentConfig.getStrValue("BasicDefib|PediatricShock1", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("BasicDefib|PediatricShock1", str);
-    }
-
-    bret = config.getStrValue("BasicDefib|PediatricShock2", str);
-    bret &= currentConfig.getStrValue("BasicDefib|PediatricShock2", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("BasicDefib|PediatricShock2", str);
-    }
-
-    bret = config.getStrValue("BasicDefib|PediatricShock3", str);
-    bret &= currentConfig.getStrValue("BasicDefib|PediatricShock3", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("BasicDefib|PediatricShock3", str);
+        config_compare(*iter);
     }
 
     /*************************PACER****************************/
-    bret = config.getStrValue("PACER|DefaultPacerRate", str);
-    bret &= currentConfig.getStrValue("PACER|DefaultPacerRate", str1);
-    if (bret && (str1 != str))
+    QStringList Pacer_list;
+    Pacer_list << "PACER|DefaultPacerRate"
+               << "PACER|FixedRatePacing";
+    for (QStringList::iterator iter = Pacer_list.begin(); iter != Pacer_list.end(); ++iter)
     {
-        currentConfig.setStrValue("PACER|DefaultPacerRate", str);
-    }
-
-    bret = config.getStrValue("PACER|FixedRatePacing", str);
-    bret &= currentConfig.getStrValue("PACER|FixedRatePacing", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("PACER|FixedRatePacing", str);
+        config_compare(*iter);
     }
 
     /*************************ECG****************************/
-    bret = config.getStrValue("ECG|BandWidth", str);
-    bret &= currentConfig.getStrValue("ECG|BandWidth", str1);
-    if (bret && (str1 != str))
+    QStringList ECG_list;
+    ECG_list << "ECG|BandWidth"
+             << "ECG|CalcLead"
+             << "ECG|QRSVolume"
+             << "ECG|ECGLeadConvention"
+             << "RESP|AutoActivation";
+    for (QStringList::iterator iter = ECG_list.begin(); iter != ECG_list.end(); ++iter)
     {
-        currentConfig.setStrValue("ECG|BandWidth", str);
-    }
-
-    bret = config.getStrValue("ECG|CalcLead", str);
-    bret &= currentConfig.getStrValue("ECG|CalcLead", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("ECG|CalcLead", str);
-    }
-
-    bret = config.getStrValue("ECG|QRSVolume", str);
-    bret &= currentConfig.getStrValue("ECG|QRSVolume", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("ECG|QRSVolume", str);
-    }
-
-    bret = config.getStrValue("ECG|ECGLeadConvention", str);
-    bret &= currentConfig.getStrValue("ECG|ECGLeadConvention", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("ECG|ECGLeadConvention", str);
-    }
-
-    bret = config.getStrValue("RESP|AutoActivation", str);
-    bret &= currentConfig.getStrValue("RESP|AutoActivation", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("RESP|AutoActivation", str);
+        config_compare(*iter);
     }
 
     /*************************NIBP****************************/
-
-    bret = config.getStrValue("NIBP|MeasureMode", str);
-    bret &= currentConfig.getStrValue("NIBP|MeasureMode", str1);
-    if (bret && (str1 != str))
+    QStringList NIBP_list;
+    NIBP_list << "NIBP|AdultInitialCuffInflation"
+              << "NIBP|PedInitialCuffInflation";
+    for (QStringList::iterator iter = NIBP_list.begin(); iter != NIBP_list.end(); ++iter)
     {
-        currentConfig.setStrValue("NIBP|MeasureMode", str);
-    }
-
-    bret = config.getStrValue("NIBP|AutoInterval", str);
-    bret &= currentConfig.getStrValue("NIBP|AutoInterval", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("NIBP|AutoInterval", str);
-    }
-
-    bret = config.getStrValue("NIBP|StatFunction", str);
-    bret &= currentConfig.getStrValue("NIBP|StatFunction", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("NIBP|StatFunction", str);
-    }
-
-    bret = config.getStrValue("NIBP|AutomaticRetry", str);
-    bret &= currentConfig.getStrValue("NIBP|AutomaticRetry", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("NIBP|AutomaticRetry", str);
-    }
-
-    bret = config.getStrValue("NIBP|AdultInitialCuffInflation", str);
-    bret &= currentConfig.getStrValue("NIBP|AdultInitialCuffInflation", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("NIBP|AdultInitialCuffInflation", str);
-    }
-
-    bret = config.getStrValue("NIBP|PedInitialCuffInflation", str);
-    bret &= currentConfig.getStrValue("NIBP|PedInitialCuffInflation", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("NIBP|PedInitialCuffInflation", str);
+        config_compare(*iter);
     }
 
 //    bret = config.getStrValue("NIBP|NeoInitialCuffInflation", str);
@@ -605,69 +490,27 @@ void MergeConfig::_loadSupervisorConfig()
 //    }
 
     /**************************RESP & CO2*****************************/
-    bret = config.getStrValue("CO2|CO2ModeDefault", str);
-    bret &= currentConfig.getStrValue("CO2|CO2ModeDefault", str1);
-    if (bret && (str1 != str))
+    QStringList CO2_list;
+    CO2_list << "CO2|CO2ModeDefault"
+             << "CO2|CO2SweepMode";
+    for (QStringList::iterator iter = CO2_list.begin(); iter != CO2_list.end(); ++iter)
     {
-        currentConfig.setStrValue("CO2|CO2ModeDefault", str);
-    }
-
-    bret = config.getStrValue("CO2|CO2SweepMode", str);
-    bret &= currentConfig.getStrValue("CO2|CO2SweepMode", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("CO2|CO2SweepMode", str);
+        config_compare(*iter);
     }
 
     /*************************Alarm****************************/
-    bret = config.getStrValue("Alarm|MinimumAlarmVolume", str);
-    bret &= currentConfig.getStrValue("Alarm|MinimumAlarmVolume", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Alarm|MinimumAlarmVolume", str);
-    }
-
-    bret = config.getStrValue("Alarm|DefaultAlarmVolume", str);
-    bret &= currentConfig.getStrValue("Alarm|DefaultAlarmVolume", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Alarm|DefaultAlarmVolume", str);
-    }
-
-    bret = config.getStrValue("Alarm|AlarmPauseTime", str);
-    bret &= currentConfig.getStrValue("Alarm|AlarmPauseTime", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Alarm|AlarmPauseTime", str);
-    }
-
-    bret = config.getStrValue("Alarm|AlarmOffPrompting", str);
-    bret &= currentConfig.getStrValue("Alarm|AlarmOffPrompting", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Alarm|AlarmOffPrompting", str);
-    }
-
-    bret = config.getStrValue("Alarm|EnableAlarmAudioOff", str);
-    bret &= currentConfig.getStrValue("Alarm|EnableAlarmAudioOff", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Alarm|EnableAlarmAudioOff", str);
-    }
-
-    bret = config.getStrValue("Alarm|EnableAlarmOff", str);
-    bret &= currentConfig.getStrValue("Alarm|EnableAlarmOff", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Alarm|EnableAlarmOff", str);
-    }
-
-    bret = config.getStrValue("Alarm|AlarmOffAtPowerOn", str);
-    bret &= currentConfig.getStrValue("Alarm|AlarmOffAtPowerOn", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Alarm|AlarmOffAtPowerOn", str);
-    }
+    QStringList Alarm_list;
+    Alarm_list << "Alarm|MinimumAlarmVolume"
+               << "Alarm|DefaultAlarmVolume"
+               << "Alarm|AlarmPauseTime"
+               << "Alarm|AlarmOffPrompting"
+               << "Alarm|EnableAlarmAudioOff"
+               << "Alarm|EnableAlarmOff"
+               << "Alarm|AlarmOffAtPowerOn";
+    for (QStringList::iterator iter = Alarm_list.begin(); iter != Alarm_list.end(); ++iter)
+        {
+            config_compare(*iter);
+        }
 
     /**************************报警限*****************************/
     for (int i = 0; i < PATIENT_TYPE_NEO; ++i)
@@ -793,275 +636,88 @@ void MergeConfig::_loadSupervisorConfig()
     {
         currentConfig.setNumAttr("Local|Language", "CurrentOption", oldLanguage);
     }
-
-    bret = config.getStrValue("Local|NIBPUnit", str);
-    bret &= currentConfig.getStrValue("Local|NIBPUnit", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Local|NIBPUnit", str);
-    }
-
-    bret = config.getStrValue("Local|CO2Unit", str);
-    bret &= currentConfig.getStrValue("Local|CO2Unit", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Local|CO2Unit", str);
-    }
-
-    bret = config.getStrValue("Local|TEMPUnit", str);
-    bret &= currentConfig.getStrValue("Local|TEMPUnit", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Local|TEMPUnit", str);
-    }
+    QStringList Local_list;
+    Local_list << "Local|NIBPUnit"
+               << "Local|CO2Unit"
+               << "Local|TEMPUnit";
+    for (QStringList::iterator iter = Local_list.begin(); iter != Local_list.end(); ++iter)
+        {
+            config_compare(*iter);
+        }
 
     /*************************Display****************************/
-    bret = config.getStrValue("Display|ECGColor", str);
-    bret &= currentConfig.getStrValue("Display|ECGColor", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Display|ECGColor", str);
-    }
-
-    bret = config.getStrValue("Display|SPO2Color", str);
-    bret &= currentConfig.getStrValue("Display|SPO2Color", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Display|SPO2Color", str);
-    }
-
-    bret = config.getStrValue("Display|NIBPColor", str);
-    bret &= currentConfig.getStrValue("Display|NIBPColor", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Display|NIBPColor", str);
-    }
-
-    bret = config.getStrValue("Display|CO2Color", str);
-    bret &= currentConfig.getStrValue("Display|CO2Color", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Display|CO2Color", str);
-    }
-
-    bret = config.getStrValue("Display|RESPColor", str);
-    bret &= currentConfig.getStrValue("Display|RESPColor", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Display|RESPColor", str);
-    }
-
-    bret = config.getStrValue("Display|TEMPColor", str);
-    bret &= currentConfig.getStrValue("Display|TEMPColor", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Display|TEMPColor", str);
-    }
+    QStringList Display_list;
+    Display_list << "Display|ECGColor"
+                 << "Display|SPO2Color"
+                 << "Display|NIBPColor"
+                 << "Display|CO2Color"
+                 << "Display|RESPColor"
+                 << "Display|TEMPColor";
+    for (QStringList::iterator iter = Display_list.begin(); iter != Display_list.end(); ++iter)
+        {
+            config_compare(*iter);
+        }
 
     /*************************summary trriger****************************/
-    bret = config.getStrValue("Print|PresentingECG", str);
-    bret &= currentConfig.getStrValue("Print|PresentingECG", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Print|PresentingECG", str);
-    }
-
-    bret = config.getStrValue("Print|ECGAnalysis", str);
-    bret &= currentConfig.getStrValue("Print|ECGAnalysis", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Print|ECGAnalysis", str);
-    }
-
-    bret = config.getStrValue("Print|ShockDelivery", str);
-    bret &= currentConfig.getStrValue("Print|ShockDelivery", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Print|ShockDelivery", str);
-    }
-
-    bret = config.getStrValue("Print|CheckPatient", str);
-    bret &= currentConfig.getStrValue("Print|CheckPatient", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Print|CheckPatient", str);
-    }
-
-    bret = config.getStrValue("Print|PacerStartUp", str);
-    bret &= currentConfig.getStrValue("Print|PacerStartUp", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Print|PacerStartUp", str);
-    }
-
-    bret = config.getStrValue("Print|PhysiologicalAlarm", str);
-    bret &= currentConfig.getStrValue("Print|PhysiologicalAlarm", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Print|PhysiologicalAlarm", str);
-    }
-
-    bret = config.getStrValue("Print|CoderMarker", str);
-    bret &= currentConfig.getStrValue("Print|CoderMarker", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Print|CoderMarker", str);
-    }
-
-    bret = config.getStrValue("Print|NIBPReading", str);
-    bret &= currentConfig.getStrValue("Print|NIBPReading", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Print|NIBPReading", str);
-    }
-
-    bret = config.getStrValue("Print|DiagnosticECG", str);
-    bret &= currentConfig.getStrValue("Print|DiagnosticECG", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Print|DiagnosticECG", str);
-    }
-
-    bret = config.getStrValue("Print|Print30JSelfTestReport", str);
-    bret &= currentConfig.getStrValue("Print|Print30JSelfTestReport", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Print|Print30JSelfTestReport", str);
-    }
+    QStringList Summary_list;
+    Summary_list << "Print|PresentingECG"
+                 << "Print|ECGAnalysis"
+                 << "Print|ShockDelivery"
+                 << "Print|CheckPatient"
+                 << "Print|PacerStartUp"
+                 << "Print|PhysiologicalAlarm"
+                 << "Print|CoderMarker"
+                 << "Print|NIBPReading"
+                 << "Print|DiagnosticECG"
+                 << "Print|Print30JSelfTestReport";
+    for (QStringList::iterator iter = Summary_list.begin(); iter != Summary_list.end(); ++iter)
+        {
+            config_compare(*iter);
+        }
 
     /*************************ECG 12L****************************/
-    bret = config.getStrValue("ECG12L|NotchFilter", str);
-    bret &= currentConfig.getStrValue("ECG12L|NotchFilter", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("ECG12L|NotchFilter", str);
-    }
-
-    bret = config.getStrValue("ECG12L|ECG12LeadBandwidth", str);
-    bret &= currentConfig.getStrValue("ECG12L|ECG12LeadBandwidth", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("ECG12L|ECG12LeadBandwidth", str);
-    }
-
-    bret = config.getStrValue("ECG12L|PrintSnapshotFormat", str);
-    bret &= currentConfig.getStrValue("ECG12L|PrintSnapshotFormat", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("ECG12L|PrintSnapshotFormat", str);
-    }
-
-    bret = config.getStrValue("ECG12L|PDFReportFormat", str);
-    bret &= currentConfig.getStrValue("ECG12L|PDFReportFormat", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("ECG12L|PDFReportFormat", str);
-    }
-
-    bret = config.getStrValue("ECG12L|DisplayFormat", str);
-    bret &= currentConfig.getStrValue("ECG12L|DisplayFormat", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("ECG12L|DisplayFormat", str);
-    }
-
-    bret = config.getStrValue("ECG12L|TimeIntervalFor2x6Report", str);
-    bret &= currentConfig.getStrValue("ECG12L|TimeIntervalFor2x6Report", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("ECG12L|TimeIntervalFor2x6Report", str);
-    }
-
-    bret = config.getStrValue("ECG12L|AutoPrinting12LReport", str);
-    bret &= currentConfig.getStrValue("ECG12L|AutoPrinting12LReport", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("ECG12L|AutoPrinting12LReport", str);
-    }
-
-    bret = config.getStrValue("ECG12L|AutoTransmission", str);
-    bret &= currentConfig.getStrValue("ECG12L|AutoTransmission", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("ECG12L|AutoTransmission", str);
-    }
-
-    bret = config.getStrValue("ECG12L|TransmissionFormat", str);
-    bret &= currentConfig.getStrValue("ECG12L|TransmissionFormat", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("ECG12L|TransmissionFormat", str);
-    }
-
-    bret = config.getStrValue("ECG12L|RealtimePrintTopLead", str);
-    bret &= currentConfig.getStrValue("ECG12L|RealtimePrintTopLead", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("ECG12L|RealtimePrintTopLead", str);
-    }
-
-    bret = config.getStrValue("ECG12L|RealtimePrintMiddleLead", str);
-    bret &= currentConfig.getStrValue("ECG12L|RealtimePrintMiddleLead", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("ECG12L|RealtimePrintMiddleLead", str);
-    }
-
-    bret = config.getStrValue("ECG12L|RealtimePrintBottomLead", str);
-    bret &= currentConfig.getStrValue("ECG12L|RealtimePrintBottomLead", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("ECG12L|RealtimePrintBottomLead", str);
-    }
+    QStringList ECG12L_list;
+    ECG12L_list << "ECG12L|NotchFilter"
+                << "ECG12L|ECG12LeadBandwidth"
+                << "ECG12L|PrintSnapshotFormat"
+                << "ECG12L|PDFReportFormat"
+                << "ECG12L|DisplayFormat"
+                << "ECG12L|TimeIntervalFor2x6Report"
+                << "ECG12L|AutoPrinting12LReport"
+                << "ECG12L|AutoTransmission"
+                << "ECG12L|TransmissionFormat"
+                << "ECG12L|RealtimePrintTopLead"
+                << "ECG12L|RealtimePrintMiddleLead"
+                << "ECG12L|RealtimePrintBottomLead";
+    for (QStringList::iterator iter = ECG12L_list.begin(); iter != ECG12L_list.end(); ++iter)
+        {
+            config_compare(*iter);
+        }
 
     /*************************DateTime****************************/
-    bret = config.getStrValue("DateTime|DateFormat", str);
-    bret &= currentConfig.getStrValue("DateTime|DateFormat", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("DateTime|DateFormat", str);
-    }
-
-    bret = config.getStrValue("DateTime|TimeFormat", str);
-    bret &= currentConfig.getStrValue("DateTime|TimeFormat", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("DateTime|TimeFormat", str);
-    }
-
-    bret = config.getStrValue("DateTime|DisplaySecond", str);
-    bret &= currentConfig.getStrValue("DateTime|DisplaySecond", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("DateTime|DisplaySecond", str);
-    }
+    QStringList DataTime_list;
+    DataTime_list << "DateTime|DateFormat"
+                  << "DateTime|TimeFormat"
+                  << "DateTime|DisplaySecond";
+    for (QStringList::iterator iter = DataTime_list.begin(); iter != DataTime_list.end(); ++iter)
+        {
+            config_compare(*iter);
+        }
 
     /*************************CodeMarker****************************/
     currentConfig.getNumAttr("Local|Language", "OptionCount", languageCount);
     for (int i = 0; i < languageCount; ++i)
     {
-        bret = config.getStrValue("CodeMarker|Marker" + QString::number(i), str);
-        bret &= currentConfig.getStrValue("CodeMarker|Marker" + QString::number(i), str1);
-        if (bret && (str1 != str))
-        {
-            currentConfig.setStrValue("CodeMarker|Marker" + QString::number(i), str);
-        }
+        str = "CodeMarker|Marker" + QString::number(i);
+        config_compare(str);
 
-        bret = config.getStrValue("CodeMarker|SelectMarker|Language" + QString::number(i), str);
-        bret &= currentConfig.getStrValue("CodeMarker|SelectMarker|Language" + QString::number(i), str1);
-        if (bret && (str1 != str))
-        {
-            currentConfig.setStrValue("CodeMarker|SelectMarker|Language" + QString::number(i), str);
-        }
+        str = "CodeMarker|SelectMarker|Language" + QString::number(i);
+        config_compare(str);
     }
 
     /*************************WIFI****************************/
-    bret = config.getStrValue("WiFi|EnableWifi", str);
-    bret &= currentConfig.getStrValue("WiFi|EnableWifi", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("WiFi|EnableWifi", str);
-    }
+    str = "WiFi|EnableWifi";
+    config_compare(str);
 
     int count = 0, current = 0;
     config.getNumAttr("WiFi|Profiles", "Count", count);
@@ -1111,62 +767,26 @@ void MergeConfig::_loadSupervisorConfig()
     }
 
     /*************************Sftp****************************/
-    bret = config.getStrValue("Sftp|ServerIP", str);
-    bret &= currentConfig.getStrValue("Sftp|ServerIP", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Sftp|ServerIP", str);
-    }
-
-    bret = config.getStrValue("Sftp|ServerPort", str);
-    bret &= currentConfig.getStrValue("Sftp|ServerPort", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Sftp|ServerPort", str);
-    }
-
-    bret = config.getStrValue("Sftp|Username", str);
-    bret &= currentConfig.getStrValue("Sftp|Username", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Sftp|Username", str);
-    }
-
-    bret = config.getStrValue("Sftp|Password", str);
-    bret &= currentConfig.getStrValue("Sftp|Password", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Sftp|Password", str);
-    }
+    QStringList SFTP_list;
+    SFTP_list << "Sftp|ServerIP"
+              << "Sftp|ServerPort"
+              << "Sftp|Username"
+              << "Sftp|Password";
+    for (QStringList::iterator iter = SFTP_list.begin(); iter != SFTP_list.end(); ++iter)
+        {
+            config_compare(*iter);
+        }
 
     /*************************Mail****************************/
-    bret = config.getStrValue("Mail|SmtpServerPort", str);
-    bret &= currentConfig.getStrValue("Mail|SmtpServerPort", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Mail|SmtpServerPort", str);
-    }
-
-    bret = config.getStrValue("Mail|SmtpUsername", str);
-    bret &= currentConfig.getStrValue("Mail|SmtpUsername", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Mail|SmtpUsername", str);
-    }
-
-    bret = config.getStrValue("Mail|Password", str);
-    bret &= currentConfig.getStrValue("Mail|Password", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Mail|Password", str);
-    }
-
-    bret = config.getStrValue("Mail|ConnectionSecurity", str);
-    bret &= currentConfig.getStrValue("Mail|ConnectionSecurity", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Mail|ConnectionSecurity", str);
-    }
+    QStringList Mail_list;
+    Mail_list << "Mail|SmtpServerPort"
+              << "Mail|SmtpUsername"
+              << "Mail|Password"
+              << "Mail|ConnectionSecurity";
+    for (QStringList::iterator iter = Mail_list.begin(); iter != Mail_list.end(); ++iter)
+        {
+            config_compare(*iter);
+        }
 
     config.getNumAttr("Mail|Recipients", "Count", count);
     currentConfig.setNumAttr("Mail|Recipients", "Count", count);

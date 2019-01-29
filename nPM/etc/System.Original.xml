@@ -875,6 +875,11 @@
             <NIBPdia>-5000</NIBPdia>
             <NIBPmap>-5000</NIBPmap>
             <MeasureTime>0</MeasureTime>
+            <MeasureMode>0</MeasureMode>
+            <AutoInterval>5</AutoInterval>
+            <StatFunction>1</StatFunction>
+            <AutomaticRetry>0</AutomaticRetry>
+	    <CompleteTone>0</CompleteTone>
         </NIBP>
         <AG>
             <AGModule>0</AGModule>

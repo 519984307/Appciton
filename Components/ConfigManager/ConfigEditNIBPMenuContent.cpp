@@ -21,6 +21,7 @@
 #include "ParamDefine.h"
 #include "ConfigManager.h"
 #include "SpinBox.h"
+#include "IConfig.h"
 
 class ConfigEditNIBPMenuContentPrivate
 {
@@ -45,7 +46,7 @@ public:
 
 ConfigEditNIBPMenuContentPrivate
     ::ConfigEditNIBPMenuContentPrivate(Config *const config)
-    :config(config)
+    :config(config), initCuffSpb(NULL)
 {
     combos.clear();
 }
@@ -66,10 +67,10 @@ void ConfigEditNIBPMenuContentPrivate::loadOptions()
 {
     int index;
     index = 0;
-    config->getNumValue("NIBP|MeasureMode", index);
+    config->getNumValue("PrimaryCfg|NIBP|MeasureMode", index);
     combos[ITEM_CBO_MEASURE_MODE]->setCurrentIndex(index);
     index = 0;
-    config->getNumValue("NIBP|IntervalTime", index);
+    config->getNumValue("PrimaryCfg|NIBP|IntervalTime", index);
     combos[ITEM_CBO_INTERVAL_TIME]->setCurrentIndex(index);
 
     PatientType type = patientManager.getType();
@@ -117,10 +118,10 @@ void ConfigEditNIBPMenuContent::onComboIndexChanged(int index)
     switch (indexType)
     {
     case ConfigEditNIBPMenuContentPrivate::ITEM_CBO_INTERVAL_TIME:
-        d_ptr->config->setNumValue("NIBP|IntervalTime", index);
+        d_ptr->config->setNumValue("PrimaryCfg|NIBP|IntervalTime", index);
         break;
     case ConfigEditNIBPMenuContentPrivate::ITEM_CBO_MEASURE_MODE:
-        d_ptr->config->setNumValue("NIBP|MeasureMode", index);
+        d_ptr->config->setNumValue("PrimaryCfg|NIBP|MeasureMode", index);
         break;
     default:
         break;
@@ -157,8 +158,7 @@ void ConfigEditNIBPMenuContent::layoutExec()
     comboBox = new ComboBox;
     comboBox->addItems(QStringList()
                        << trs(NIBPSymbol::convert(NIBP_MODE_MANUAL))
-                       << trs(NIBPSymbol::convert(NIBP_MODE_AUTO))
-                       );
+                       << trs(NIBPSymbol::convert(NIBP_MODE_AUTO)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditNIBPMenuContentPrivate
                          ::ITEM_CBO_MEASURE_MODE, comboBox);

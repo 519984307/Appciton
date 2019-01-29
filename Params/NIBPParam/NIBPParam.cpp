@@ -61,20 +61,6 @@ void NIBPParam::_patientTypeChangeSlot(PatientType /*type*/)
             currentConfig.getNumValue("NIBP|NeoInitialCuffInflation", initVal);
         }
         _provider->setInitPressure(initVal);
-
-        if (nibpParam.curStatusType() == NIBP_MONITOR_STANDBY_STATE)
-        {
-            if (nibpParam.getMeasurMode() == NIBP_MODE_AUTO)
-            {
-                nibpParam.setAutoMeasure(false);
-                nibpParam.setModelText(trs("NIBPAUTO") + ":" +
-                                       trs(NIBPSymbol::convert((NIBPAutoInterval)nibpParam.getAutoInterval())));
-            }
-            else if (nibpParam.getMeasurMode() == NIBP_MODE_MANUAL)
-            {
-                nibpParam.setModelText(trs("NIBPManual"));
-            }
-        }
     }
 }
 
@@ -418,7 +404,7 @@ void NIBPParam::setResult(int16_t sys, int16_t dia, int16_t map, int16_t pr, NIB
             if (!isAdditionalMeasure())
             {
                 int index = 0;
-                currentConfig.getNumValue("NIBP|AutomaticRetry", index);
+                systemConfig.getNumValue("PrimaryCfg|NIBP|AutomaticRetry", index);
                 if (index)
                 {
                     setAdditionalMeasure(true);
@@ -942,7 +928,7 @@ void NIBPParam::setMeasurMode(NIBPMode mode)
     }
     else
     {
-        currentConfig.setNumValue("NIBP|MeasureMode", static_cast<int>(mode));
+        systemConfig.setNumValue("PrimaryCfg|NIBP|MeasureMode", static_cast<int>(mode));
         cmd = 0x00;
         handleNIBPEvent(NIBP_EVENT_TRIGGER_MODEL, &cmd, 1);
     }
@@ -954,7 +940,7 @@ void NIBPParam::setMeasurMode(NIBPMode mode)
 NIBPMode NIBPParam::getMeasurMode(void)
 {
     int mode = NIBP_MODE_MANUAL;
-    currentConfig.getNumValue("NIBP|MeasureMode", mode);
+    systemConfig.getNumValue("PrimaryCfg|NIBP|MeasureMode", mode);
     if (_statModelFlag)
     {
         mode = NIBP_MODE_STAT;
@@ -968,7 +954,7 @@ NIBPMode NIBPParam::getMeasurMode(void)
 NIBPMode NIBPParam::getSuperMeasurMode(void)
 {
     int mode = NIBP_MODE_MANUAL;
-    currentConfig.getNumValue("NIBP|MeasureMode", mode);
+    systemConfig.getNumValue("PrimaryCfg|NIBP|MeasureMode", mode);
     return (NIBPMode)mode;
 }
 
@@ -1001,7 +987,7 @@ bool NIBPParam::isSTATMeasure()
  *************************************************************************************************/
 void NIBPParam::setAutoInterval(NIBPAutoInterval interv)
 {
-    currentConfig.setNumValue("NIBP|AutoInterval", static_cast<int>(interv));
+    systemConfig.setNumValue("PrimaryCfg|NIBP|AutoInterval", static_cast<int>(interv));
 
     // 测量间隔修改，停止当前的测量，只在自动模式生效。
     if (getSuperMeasurMode() == NIBP_MODE_AUTO)
@@ -1018,7 +1004,7 @@ void NIBPParam::setAutoInterval(NIBPAutoInterval interv)
 NIBPAutoInterval NIBPParam::getAutoInterval(void)
 {
     int interv = NIBP_AUTO_INTERVAL_30;
-    currentConfig.getNumValue("NIBP|AutoInterval", interv);
+    systemConfig.getNumValue("PrimaryCfg|NIBP|AutoInterval", interv);
     return (NIBPAutoInterval)interv;
 }
 
@@ -1152,7 +1138,7 @@ void NIBPParam::keyReleased(void)
 void NIBPParam::keyPressed(void)
 {
     int index = NIBP_PR_DISPLAY_NR;
-    currentConfig.getNumValue("NIBP|StatFunction", index);
+    systemConfig.getNumValue("PrimaryCfg|NIBP|StatFunction", index);
     // STAT功能关闭，按钮为按下触发，无长按功能
     if (index == NIBP_PR_DISPLAY_OFF)
     {
