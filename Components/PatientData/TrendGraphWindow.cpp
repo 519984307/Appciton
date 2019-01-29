@@ -20,6 +20,9 @@
 #include "RecorderManager.h"
 #include "TrendGraphSetWindow.h"
 #include "MoveButton.h"
+#include "ThemeManager.h"
+
+#define STOP_PRINT_TIMEOUT          (100)
 
 class TrendGraphWindowPrivate
 {
@@ -32,7 +35,12 @@ public:
         ACTION_BTN_DOWN_PAGE
     };
     TrendGraphWindowPrivate() : waveWidget(NULL), coordinateMoveBtn(NULL),
-        cursorMoveBtn(NULL), eventMoveBtn(NULL)
+        cursorMoveBtn(NULL), eventMoveBtn(NULL),
+        printTimerId(-1),
+        waitTimerId(-1),
+        isWait(false),
+        timeoutNum(0),
+        generator(NULL)
     {}
 
     void checkPageEnabled();
@@ -43,6 +51,11 @@ public:
     MoveButton *coordinateMoveBtn;
     MoveButton *cursorMoveBtn;
     MoveButton *eventMoveBtn;
+    int printTimerId;
+    int waitTimerId;
+    bool isWait;
+    int timeoutNum;
+    RecordPageGenerator *generator;
 };
 TrendGraphWindow *TrendGraphWindow::getInstance()
 {
@@ -58,9 +71,17 @@ TrendGraphWindow::~TrendGraphWindow()
 {
 }
 
-void TrendGraphWindow::setSubWidgetRulerLimit(SubParamID id, int down, int up, int scale)
+void TrendGraphWindow::setSubWidgetRulerLimit(int index, int down, int up, int scale)
 {
-    d_ptr->waveWidget->setRulerLimit(id, down, up, scale);
+    d_ptr->waveWidget->setRulerLimit(index, down, up, scale);
+}
+
+void TrendGraphWindow::setAllParamAutoRuler()
+{
+    if (d_ptr->waveWidget)
+    {
+        d_ptr->waveWidget->setAllParamAutoRuler();
+    }
 }
 
 void TrendGraphWindow::updateTrendGraph()
@@ -81,6 +102,9 @@ void TrendGraphWindow::waveNumberChange(int num)
     if (num > 0 && num <= 3)
     {
         d_ptr->waveWidget->setWaveNumber(num);
+        d_ptr->buttons[TrendGraphWindowPrivate::ACTION_BTN_DOWN_PAGE]->setEnabled(true);
+        d_ptr->buttons[TrendGraphWindowPrivate::ACTION_BTN_UP_PAGE]->setEnabled(false);
+        trendGraphSetWindow.setCurParam(d_ptr->waveWidget->getCurParamList());
     }
 }
 
@@ -100,6 +124,36 @@ void TrendGraphWindow::setHistoryData(bool flag)
     }
 }
 
+void TrendGraphWindow::timerEvent(QTimerEvent *ev)
+{
+    if (d_ptr->printTimerId == ev->timerId())
+    {
+        if (!recorderManager.isPrinting() || d_ptr->timeoutNum == 10) // 1000ms超时处理
+        {
+            if (!recorderManager.isPrinting())
+            {
+                recorderManager.addPageGenerator(d_ptr->generator);
+            }
+            else
+            {
+                d_ptr->generator->deleteLater();
+                d_ptr->generator = NULL;
+            }
+            killTimer(d_ptr->printTimerId);
+            d_ptr->printTimerId = -1;
+            d_ptr->timeoutNum = 0;
+        }
+        d_ptr->timeoutNum++;
+    }
+    else if (d_ptr->waitTimerId == ev->timerId())
+    {
+        d_ptr->printTimerId = startTimer(STOP_PRINT_TIMEOUT);
+        killTimer(d_ptr->waitTimerId);
+        d_ptr->waitTimerId = -1;
+        d_ptr->isWait = false;
+    }
+}
+
 void TrendGraphWindow::onButtonReleased()
 {
     Button *button = qobject_cast<Button *>(sender());
@@ -112,15 +166,37 @@ void TrendGraphWindow::onButtonReleased()
         case TrendGraphWindowPrivate::ACTION_BTN_PRINT:
         {
             QList<TrendGraphInfo>  trendGraphList = d_ptr->waveWidget->getTrendGraphPrint();
-            QList<unsigned> eventTimeList = d_ptr->waveWidget->getEventList();
-            RecordPageGenerator *pageGenerator = new TrendGraphPageGenerator(trendGraphList, eventTimeList);
+            QList<EventInfoSegment> eventList = d_ptr->waveWidget->getEventList();
+            RecordPageGenerator *pageGenerator = new TrendGraphPageGenerator(trendGraphList, eventList);
 
-            recorderManager.addPageGenerator(pageGenerator);
+            if (recorderManager.isPrinting() && !d_ptr->isWait)
+            {
+                if (pageGenerator->getPriority() <= recorderManager.getCurPrintPriority())
+                {
+                    pageGenerator->deleteLater();
+                }
+                else
+                {
+                    recorderManager.stopPrint();
+                    d_ptr->generator = pageGenerator;
+                    d_ptr->waitTimerId = startTimer(2000); // 等待2000ms
+                    d_ptr->isWait = true;
+                }
+            }
+            else if (!recorderManager.getPrintStatus())
+            {
+                recorderManager.addPageGenerator(pageGenerator);
+            }
+            else
+            {
+                pageGenerator->deleteLater();
+            }
             break;
         }
         case TrendGraphWindowPrivate::ACTION_BTN_SET_WIDGET:
         {
-            windowManager.showWindow(&trendGraphSetWindow, WindowManager::ShowBehaviorModal);
+            windowManager.showWindow(&trendGraphSetWindow, WindowManager::ShowBehaviorHideOthers);
+            trendGraphSetWindow.setCurParam(d_ptr->waveWidget->getCurParamList());
             break;
         }
         case TrendGraphWindowPrivate::ACTION_BTN_UP_PAGE:
@@ -145,31 +221,41 @@ TrendGraphWindow::TrendGraphWindow()
     : Window(), d_ptr(new TrendGraphWindowPrivate())
 {
     setWindowTitle(trs("TrendGraph"));
-    int maxWidth = 800;
-    int maxHeight = 560;
-    resize(maxWidth, maxHeight);
+    int maxWidth = windowManager.getPopWindowWidth();
+    int maxHeight = windowManager.getPopWindowHeight();
+    setFixedSize(maxWidth, maxHeight);
+    int margin = 5;
+    int spacing = 5;
+    int itemHeight = themeManger.getAcceptableControlHeight();
 
     d_ptr->waveWidget = new TrendWaveWidget();
-    d_ptr->waveWidget->setWidgetSize(maxWidth, maxHeight - 90);
+    int margins = contentsMargins().left() * 2 + margin * 2;
+    d_ptr->waveWidget->setWidgetSize(maxWidth - margins,
+                                     maxHeight - spacing - margins - getTitleHeight() - itemHeight);
 
     QHBoxLayout *hLayout = new QHBoxLayout();
+    hLayout->setSpacing(spacing);
+    hLayout->setMargin(0);
     Button *button;
     int buttonID;
 
     d_ptr->coordinateMoveBtn = new MoveButton(trs("Time"));
     d_ptr->coordinateMoveBtn->setButtonStyle(Button::ButtonTextOnly);
+    d_ptr->coordinateMoveBtn->setFixedHeight(itemHeight);
     connect(d_ptr->coordinateMoveBtn, SIGNAL(leftMove()), d_ptr->waveWidget, SLOT(leftMoveCoordinate()));
     connect(d_ptr->coordinateMoveBtn, SIGNAL(rightMove()), d_ptr->waveWidget, SLOT(rightMoveCoordinate()));
     hLayout->addWidget(d_ptr->coordinateMoveBtn, 2);
 
     d_ptr->cursorMoveBtn = new MoveButton(trs("Scroll"));
     d_ptr->cursorMoveBtn->setButtonStyle(Button::ButtonTextOnly);
+    d_ptr->cursorMoveBtn->setFixedHeight(itemHeight);
     connect(d_ptr->cursorMoveBtn, SIGNAL(leftMove()), d_ptr->waveWidget, SLOT(leftMoveCursor()));
     connect(d_ptr->cursorMoveBtn, SIGNAL(rightMove()), d_ptr->waveWidget, SLOT(rightMoveCursor()));
     hLayout->addWidget(d_ptr->cursorMoveBtn, 2);
 
     d_ptr->eventMoveBtn = new MoveButton(trs("Event"));
     d_ptr->eventMoveBtn->setButtonStyle(Button::ButtonTextOnly);
+    d_ptr->eventMoveBtn->setFixedHeight(itemHeight);
     connect(d_ptr->eventMoveBtn, SIGNAL(leftMove()), d_ptr->waveWidget, SLOT(leftMoveEvent()));
     connect(d_ptr->eventMoveBtn, SIGNAL(rightMove()), d_ptr->waveWidget, SLOT(rightMoveEvent()));
     hLayout->addWidget(d_ptr->eventMoveBtn, 2);
@@ -177,6 +263,7 @@ TrendGraphWindow::TrendGraphWindow()
     // 打印
     button = new Button(trs("Print"));
     button->setButtonStyle(Button::ButtonTextOnly);
+    button->setFixedHeight(itemHeight);
     buttonID = TrendGraphWindowPrivate::ACTION_BTN_PRINT;
     button->setProperty("Button", qVariantFromValue(buttonID));
     connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
@@ -186,6 +273,7 @@ TrendGraphWindow::TrendGraphWindow()
     // 设置窗口
     button = new Button(trs("Set"));
     button->setButtonStyle(Button::ButtonTextOnly);
+    button->setFixedHeight(itemHeight);
     buttonID = TrendGraphWindowPrivate::ACTION_BTN_SET_WIDGET;
     button->setProperty("Button", qVariantFromValue(buttonID));
     connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
@@ -194,8 +282,10 @@ TrendGraphWindow::TrendGraphWindow()
 
     // 上翻页坐标
     button = new Button();
+    button->setEnabled(false);
     button->setIcon(QIcon("/usr/local/nPM/icons/up.png"));
     button->setButtonStyle(Button::ButtonIconOnly);
+    button->setFixedHeight(itemHeight);
     buttonID = TrendGraphWindowPrivate::ACTION_BTN_UP_PAGE;
     button->setProperty("Button", qVariantFromValue(buttonID));
     connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
@@ -204,8 +294,10 @@ TrendGraphWindow::TrendGraphWindow()
 
     // 下翻页坐标
     button = new Button();
+    button->setEnabled(true);
     button->setIcon(QIcon("/usr/local/nPM/icons/down.png"));
     button->setButtonStyle(Button::ButtonIconOnly);
+    button->setFixedHeight(itemHeight);
     buttonID = TrendGraphWindowPrivate::ACTION_BTN_DOWN_PAGE;
     button->setProperty("Button", qVariantFromValue(buttonID));
     connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
@@ -213,6 +305,8 @@ TrendGraphWindow::TrendGraphWindow()
     d_ptr->buttons.insert(TrendGraphWindowPrivate::ACTION_BTN_DOWN_PAGE, button);
 
     QVBoxLayout *layout = new QVBoxLayout();
+    layout->setMargin(margin);
+    layout->setSpacing(spacing);
     layout->addWidget(d_ptr->waveWidget);
     layout->addLayout(hLayout);
 

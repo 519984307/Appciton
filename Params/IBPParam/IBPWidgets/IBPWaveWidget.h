@@ -47,6 +47,9 @@ public:
      */
     void updatePalette(const QPalette &pal);
 
+    /* reimplment */
+    void updateWidgetConfig();
+
 protected:
     // 窗体大小调整事件
     virtual void resizeEvent(QResizeEvent *e);

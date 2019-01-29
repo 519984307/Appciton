@@ -11,9 +11,6 @@
 #pragma once
 #include "MenuContent.h"
 
-// #define OUTPUT_TESTPACKET_THROUGH_USB_CONTENT
-#define TEST_REFRESH_RATE_CONTENT
-
 enum FactoryContentTestType
 {
     FACTORY_CONTENT_TEST_LIGHT,
@@ -24,8 +21,12 @@ enum FactoryContentTestType
     FACTORY_CONTENT_TEST_USB_HS,
     FACTORY_CONTENT_TEST_USB_FS,
 #endif
+#ifndef HIDE_WIFI_FUNCTION
     FACTORY_CONTENT_TEST_WIFI,
+#endif
+#ifndef HIDE_WIRED_NETWORK_FUNCTION
     FACTORY_CONTENT_TEST_ENTHERNET,
+#endif
     FACTORY_CONTENT_TEST_BATTERY,
     FACTORY_CONTENT_TEST_NR
 };
@@ -45,11 +46,6 @@ protected:
 
 private slots:
     void onBtnReleased(int);
-
-#ifdef TEST_REFRESH_RATE_CONTENT
-private slots:
-    void onFreshRateChanged(int valStr);
-#endif
 
 private:
     FactoryTestMenuContentPrivate *const d_ptr;

@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/12/5
+ **/
+
 #pragma once
 #include "AlarmParamIFace.h"
 #include "ECGSymbol.h"
@@ -21,7 +31,10 @@ public:
     virtual QString getAlarmSourceName(void);
 
     // 获取对应的参数ID。
-    virtual ParamID getParamID(void) { return PARAM_ECG; }
+    virtual ParamID getParamID(void)
+    {
+        return PARAM_ECG;
+    }
 
     // 报警源的个数。
     virtual int getAlarmSourceNR(void);
@@ -78,7 +91,10 @@ public:
     virtual QString getAlarmSourceName(void);
 
     // 获取对应的参数ID。
-    virtual ParamID getParamID(void) { return PARAM_ECG; }
+    virtual ParamID getParamID(void)
+    {
+        return PARAM_ECG;
+    }
 
     // 是否发生报警
     virtual bool isAlarmed(int id);
@@ -88,6 +104,9 @@ public:
 
     // 获取报警对应的波形ID，该波形将被存储。
     virtual WaveformID getWaveformID(int id);
+
+    // 获取id对应的参数ID。
+    virtual SubParamID getSubParamID(int id);
 
     // 生理参数报警级别。
     virtual AlarmPriority getAlarmPriority(int id);

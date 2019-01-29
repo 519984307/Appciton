@@ -12,6 +12,7 @@
 #include "SPO2Param.h"
 #include "SPO2Alarm.h"
 #include "Debug.h"
+#include "NIBPParam.h"
 
 #define SOM             (0x02)
 #define EOM             (0x03)
@@ -50,6 +51,12 @@ void MasimoSetProvider::dataArrived(void)
             // debug("discard (%s:%d)\n", qPrintable(getName()), ringBuff.at(0));
             ringBuff.pop(1);
             continue;
+        }
+
+        if (ringBuff.dataSize() < 13)
+        {
+            // no enough data
+            break;
         }
 
         if (ringBuff.at(13) != EOM)
@@ -250,11 +257,17 @@ void MasimoSetProvider::setSmartTone(bool enable)
  *************************************************************************************************/
 MasimoSetProvider::MasimoSetProvider() : Provider("MASIMO_SPO2"), SPO2ProviderIFace()
 {
-    disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_S5;
+    disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_SPO2;
     UartAttrDesc portAttr(9600, 8, 'N', 1);
     initPort(portAttr);
 
     _isLowPerfusionFlag = false;
+
+    if (disPatchInfo.dispatcher)
+    {
+        // reset the hardware
+        disPatchInfo.dispatcher->resetPacketPort(disPatchInfo.packetType);
+    }
 }
 
 /**************************************************************************************************
@@ -306,7 +319,7 @@ void MasimoSetProvider::handlePacket(unsigned char *data, int /*len*/)
         temp = ((temp % 10) < 5) ? (temp / 10) : (temp / 10 + 1);
         if (_isLowPerfusionFlag)
         {
-            spo2Param.setSPO2(UnknownData());
+            spo2Param.setSPO2(InvData());
         }
         else
         {
@@ -318,7 +331,7 @@ void MasimoSetProvider::handlePacket(unsigned char *data, int /*len*/)
         temp = data[2];
         if (_isLowPerfusionFlag)
         {
-            spo2Param.setPR(UnknownData());
+            spo2Param.setPR(InvData());
         }
         else
         {
@@ -370,20 +383,23 @@ void MasimoSetProvider::handlePacket(unsigned char *data, int /*len*/)
             spo2Param.setValidStatus(true);
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, false);
             spo2Param.setSearchForPulse(isSearching);  // search pulse标志。
-            if (isSearching)
+            if (!spo2Param.isNibpSameSide() || !nibpParam.isMeasuring())
             {
-                spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, false);
-            }
-            else
-            {
-                spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, _isLowPerfusionFlag);
+                if (isSearching)
+                {
+                    spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, false);
+                }
+                else
+                {
+                    spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, _isLowPerfusionFlag);
+                }
             }
         }
 
         if (_isLowPerfusionFlag)
         {
-            spo2Param.setSPO2(UnknownData());
-            spo2Param.setPR(UnknownData());
+            spo2Param.setSPO2(InvData());
+            spo2Param.setPR(InvData());
         }
     }
     break;

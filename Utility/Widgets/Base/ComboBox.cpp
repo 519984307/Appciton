@@ -60,6 +60,7 @@ void ComboBox::showPopup()
         d_ptr->popupList->setCurrentIndex(currentIndex());
         connect(d_ptr->popupList.data(), SIGNAL(destroyed(QObject *)), this, SLOT(onPopupDestroyed()));
         connect(d_ptr->popupList.data(), SIGNAL(selectItemChanged(int)), this, SLOT(setCurrentIndex(int)));
+        connect(d_ptr->popupList.data(), SIGNAL(itemFocusChanged(int)), this, SIGNAL(itemFocusChanged(int)));
     }
 
     d_ptr->popupList->show();

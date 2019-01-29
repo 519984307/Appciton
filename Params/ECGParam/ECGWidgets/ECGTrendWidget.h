@@ -42,6 +42,9 @@ public:
 public:
     virtual void doRestoreNormalStatus();
 
+    /* reimplment */
+    void updateWidgetConfig();
+
 protected:
     void showEvent(QShowEvent *e);
     virtual void setTextSize(void);
@@ -56,6 +59,13 @@ private:
     QPixmap beatPixmap;
     QString _hrString;
     bool _isAlarm;
+    void _drawBeatIcon(QColor color);
+    QColor lastIconColor;
+
+    /**
+     * @brief _loadConfig  加载配置
+     */
+    void _loadConfig();
 
 private:
     QTimer *_timer;

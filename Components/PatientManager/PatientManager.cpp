@@ -14,7 +14,9 @@
 #include "IConfig.h"
 #include "ECGParam.h"
 #include "DataStorageDirManager.h"
-#include "DischargePatientWindow.h"
+#include "NIBPParam.h"
+#include "NIBPProviderIFace.h"
+#include "TimeDate.h"
 
 PatientManager *PatientManager::_selfObj = NULL;
 
@@ -25,7 +27,8 @@ public:
         : q_ptr(q_ptr),
           patientInfoWidget(NULL),
           patientNew(false),
-          relieveFlag(true)
+          relieveFlag(true),
+          bornDateFormat(QString())
     {}
     PatientManager * const q_ptr;
     PatientInfo patientInfo;
@@ -39,6 +42,7 @@ public:
 
     bool patientNew;                 // 新建病人标志
     bool relieveFlag;                // 解除病人标志
+    QString bornDateFormat;          // 出生日期格式
 };
 
 /**************************************************************************************************
@@ -56,15 +60,13 @@ void PatientManager::setPatientInfoWidget(PatientInfoWidget &widget)
  *************************************************************************************************/
 void PatientManager::setType(PatientType type)
 {
-    PatientType oldType = d_ptr->patientInfo.type;
+    if (type == d_ptr->patientInfo.type)
+    {
+        return;
+    }
 
     d_ptr->patientInfo.type = type;
     systemConfig.setNumValue("General|PatientType", static_cast<int>(type));
-
-    if (d_ptr->patientInfo.type == oldType)
-    {
-//        return;
-    }
 
     // 病人类型被修改了，重新加载配置后，通知需要关注次事件的对象。
     d_ptr->patientInfoWidget->loadPatientInfo();
@@ -76,6 +78,11 @@ void PatientManager::setType(PatientType type)
     emit signalPatientType(d_ptr->patientInfo.type);
 
     ecgParam.setPatientType((unsigned char)(d_ptr->patientInfo.type));
+    if (systemManager.isSupport(PARAM_NIBP))
+    {
+        nibpParam.provider().setPatientType(type);
+    }
+    configManager.loadConfig(type);
 }
 
 /**************************************************************************************************
@@ -130,21 +137,27 @@ PatientSex PatientManager::getSex(void)
     return d_ptr->patientInfo.sex;
 }
 
-/**************************************************************************************************
- * 功能： 设置年龄。
- *************************************************************************************************/
-void PatientManager::setAge(int age)
+void PatientManager::setBornDate(QDate bornDate)
 {
-    d_ptr->patientInfo.age = age;
-    systemConfig.setNumValue("PrimaryCfg|PatientInfo|Age", age);
+    systemConfig.setStrValue("PrimaryCfg|PatientInfo|BornDate", bornDate.toString("yyyy/MM/dd"));
+    d_ptr->patientInfo.bornDate = bornDate;
 }
 
-/**************************************************************************************************
- * 功能： 获取年龄。
- *************************************************************************************************/
-int PatientManager::getAge(void)
+QDate PatientManager::getBornDate()
 {
-    return d_ptr->patientInfo.age;
+    return d_ptr->patientInfo.bornDate;
+}
+
+void PatientManager::getBornDate(unsigned int &year, unsigned int &month, unsigned int &day)
+{
+    QDate bornDate = d_ptr->patientInfo.bornDate;
+    if (!bornDate.isValid())
+    {
+        return;
+    }
+    year = static_cast<unsigned int>(bornDate.year());
+    month = static_cast<unsigned int>(bornDate.month());
+    day = static_cast<unsigned int>(bornDate.day());
 }
 
 void PatientManager::setBlood(PatientBloodType blood)
@@ -258,14 +271,14 @@ const PatientInfo &PatientManager::getPatientInfo(void)
 UnitType PatientManager::getWeightUnit()
 {
     int unit = UNIT_KG;
-    currentConfig.getNumValue("Local|WEIGHTUnit", unit);
+    systemConfig.getNumValue("Unit|WeightUnit", unit);
     return (UnitType)unit;
 }
 
 UnitType PatientManager::getHeightUnit()
 {
     int unit = UNIT_CM;
-    currentConfig.getNumValue("Local|HEIGHTUnit", unit);
+    systemConfig.getNumValue("Unit|HeightUnit", unit);
     return (UnitType)unit;
 }
 
@@ -282,7 +295,7 @@ bool PatientManager::isMonitoring()
 void PatientManager::newPatient()
 {
     d_ptr->patientNew = true;
-    patientManager.setAge(-1);
+    patientManager.setBornDate(QDate());
     patientManager.setBlood(PATIENT_BLOOD_TYPE_NULL);
     patientManager.setHeight(0.0);
     patientManager.setName(QString(""));
@@ -294,20 +307,9 @@ void PatientManager::newPatient()
     dataStorageDirManager.createDir(true);
 }
 
-void PatientManager::dischargePatient(bool isShowStandbyWin)
+void PatientManager::dischargePatient()
 {
-    if (isShowStandbyWin)
-    {
-        DischargePatientWindow dischargeWin;
-        if (dischargeWin.exec() == QDialog::Accepted)
-        {
-            d_ptr->handleDischarge();
-        }
-    }
-    else
-    {
-        d_ptr->handleDischarge();
-    }
+    d_ptr->handleDischarge();
 }
 
 void PatientManager::finishPatientInfo()
@@ -338,9 +340,6 @@ void PatientManagerPrivate::loadPatientInfo(PatientInfo &info)
     systemConfig.getNumValue("PrimaryCfg|PatientInfo|Sex", numValue);
     info.sex = (PatientSex)numValue;
 
-    systemConfig.getNumValue("PrimaryCfg|PatientInfo|Age", numValue);
-    info.age = numValue;
-
     systemConfig.getNumValue("PrimaryCfg|PatientInfo|Blood", numValue);
     info.blood = (PatientBloodType)numValue;
 
@@ -355,6 +354,9 @@ void PatientManagerPrivate::loadPatientInfo(PatientInfo &info)
 
     systemConfig.getStrValue("PrimaryCfg|PatientInfo|ID", strValue);
     ::strncpy(info.id, strValue.toUtf8().constData(), sizeof(info.id));
+
+    systemConfig.getStrValue("PrimaryCfg|PatientInfo|BornDate", strValue);
+    info.bornDate = QDate::fromString(strValue, "yyyy/MM/dd");
 }
 
 void PatientManagerPrivate::handleDischarge()
@@ -366,7 +368,7 @@ void PatientManagerPrivate::handleDischarge()
     }
     else
     {
-        // TODO 清除当前病人历史数据
+        dataStorageDirManager.cleanCurData();
     }
 }
 

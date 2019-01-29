@@ -12,6 +12,7 @@
 #include <QPainter>
 #include "SoftKeyWidget.h"
 #include "FontManager.h"
+#include <QStyle>
 
 /***************************************************************************************************
  * 功能：重绘事件。
@@ -66,27 +67,20 @@ void SoftkeyWidget::paintEvent(QPaintEvent *e)
 
     if (_isPixmapValid)
     {
-        int height = r.height();
-        int width = r.width();
-        QRect PixmapR = r;
-        QRect pngR = _pixmap.rect();
+        QRect pixmapRect = r;
+
         if (!_hint.isEmpty())
         {
-            PixmapR = PixmapR.adjusted(0, 0, 0, -fontManager.textHeightInPixels(_hint));
+            pixmapRect = pixmapRect.adjusted(0, 0, 0, -fontManager.textHeightInPixels(_hint));
         }
-        if (width <= height)    // 宽小于高时
+        QSize pixmapSize = _pixmap.size();
+        if (pixmapSize.height() > pixmapRect.height() || pixmapSize.width() > pixmapRect.width())
         {
-            int h = width * pngR.height() / pngR.width();      // 等比例压缩图像
-            PixmapR.setHeight(h);
-            PixmapR.adjust(0, (height-h)/2, 0, (height-h)/2);  // 居中调整绘画区
+            pixmapSize.scale(pixmapRect.width(), pixmapRect.height(), Qt::KeepAspectRatio);
         }
-        else
-        {
-            int w = PixmapR.height() * pngR.width() / pngR.height();     // 等比例压缩图像
-            PixmapR.setWidth(w);
-            PixmapR.adjust((width-w)/2, 0, (width-w)/2, 0);    // 居中调整绘画区
-        }
-        painter.drawPixmap(PixmapR, _pixmap);
+
+        QRect pr = QStyle::alignedRect(layoutDirection(), Qt::AlignCenter, pixmapSize, pixmapRect);
+        painter.drawPixmap(pr, _pixmap);
     }
 
     IWidget::paintEvent(e);
@@ -154,6 +148,13 @@ void SoftkeyWidget::mousePressEvent(QMouseEvent *e)
 void SoftkeyWidget::mouseReleaseEvent(QMouseEvent *e)
 {
     IWidget::mouseReleaseEvent(e);
+    _pressed = false;
+    update();
+}
+
+void SoftkeyWidget::focusOutEvent(QFocusEvent *e)
+{
+    IWidget::focusOutEvent(e);
     _pressed = false;
     update();
 }

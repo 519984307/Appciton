@@ -77,7 +77,7 @@ public:
     {
         static const char *symbol[CO2_SWEEP_SPEED_NR] =
         {
-            "6.25 mm/s", "12.5 mm/s", "25.0 mm/s"
+            "6.25 mm/s", "12.5 mm/s", "25.0 mm/s", "50.0 mm/s"
         };
         return symbol[index];
     }
@@ -104,7 +104,7 @@ public:
     {
         static const char *symbol[CO2_FICO2_DISPLAY_NR] =
         {
-            "OFF", "ON"
+            "Off", "On"
         };
         return symbol[index];
     }

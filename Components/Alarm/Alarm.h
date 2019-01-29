@@ -54,13 +54,13 @@ public:
     void getAlarmSourceValue(qint32 *data, int len);
 
     // 获取报警源参数的报警状态。
-    char getAlarmSourceStatus(const QString &sourceName, SubParamID id);
+    char getAlarmSourceStatus(const QString &sourceName, SubParamID id, bool ignoreLatched = true);
 
     // 主运行，需1秒调用一次。
     void mainRun(unsigned t);
 
     // 添加报警状态
-    void addAlarmStatus(AlarmAudioStatus status);
+    void addAlarmStatus(AlarmStatus status);
 
     // get the alarm string from alarm source
     const char *getAlarmMessage(ParamID paramId, int alarmType, bool isOneshotAlarm);
@@ -74,6 +74,9 @@ public:
     // according to SubParamID get alarmLimitIFace
     AlarmLimitIFace *getAlarmLimitIFace(SubParamID id);
 
+    // according to SubParamID get AlarmOneShotIFace
+    AlarmOneShotIFace *getAlarmOneShotIFace(SubParamID id);
+
     // 析构。
     virtual ~Alarm();
 
@@ -86,17 +89,16 @@ public:
     void setLatchLockSta(bool status);
 
     /**
-     * @brief updateStandbyMode  更新待机模式
-     * @param isEnable  true--更新为待机模式；false--更新为非待机模式
+     * @brief removeAllPhyAlarm 移除生理报警的跟踪对象
      */
-    void updateStandbyMode(bool isEnable);
+    void removeAllPhyAlarm();
 
 private:
     unsigned _timestamp;
     QMultiMap<ParamID, AlarmLimitIFace *> _limitSources;
     QMultiMap<ParamID, AlarmOneShotIFace *> _oneshotSources;
-    QList<AlarmAudioStatus> _alarmStatusList;
-    AlarmAudioStatus _curAlarmStatus;
+    QList<AlarmStatus> _alarmStatusList;
+    AlarmStatus _curAlarmStatus;
     bool _isLatchLock;       // 栓锁状态
     // 构造。
     Alarm();

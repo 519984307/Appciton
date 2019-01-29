@@ -188,7 +188,10 @@ bool Config::getOptionList(const QString &indexStr, QVector<QString> &options)
 void Config::save(void)
 {
     QMutexLocker lock(&_requestToSaveMutex);
-    _requestToSave = true;
+    if (_allowToSave)
+    {
+        _requestToSave = true;
+    }
 }
 
 /**************************************************************************************************
@@ -245,6 +248,21 @@ bool Config::load(const QString &configPath)
     _configCache.clear();
     _cacheLock.unlock();
     return _xmlParser.reload();
+}
+
+void Config::allowToSave(bool enable)
+{
+    QMutexLocker lock(&_requestToSaveMutex);
+    _allowToSave = enable;
+    if (_allowToSave == false)
+    {
+        _requestToSave = false;
+    }
+}
+
+void Config::setCurrentFilePath(QString &path)
+{
+    _xmlParser.setCurrentFilePath(path);
 }
 
 // save the config to file
@@ -499,6 +517,8 @@ bool Config::setStrAttr(const QString &indexStr, const QString &attr, const QStr
 Config::Config(const QString &configPath)
 {
     _requestToSave = false;
+
+    _allowToSave = true;
 
     _checkBKFile(configPath);
     //如果打开错误则加载出厂配置

@@ -24,7 +24,7 @@
 #include "LayoutManager.h"
 
 #define TABLE_ROW_NUM           9
-#define ROW_HEIGHT   (themeManger.getAcceptableControlHeight())
+#define ROW_HEIGHT   40
 class HemodynamicWindowPrivate
 {
 public:
@@ -400,11 +400,18 @@ void HemodynamicWindow::defaultInput()
 
 void HemodynamicWindow::resizeEvent(QResizeEvent *ev)
 {
-    QRect waveRect = layoutManager.getMenuArea();
-    QPoint waveRectLeft = waveRect.topLeft();
-    waveRect.moveTo(0, 0);
-    QPoint winRectLeft = waveRectLeft + waveRect.center() - rect().center();
-    move(winRectLeft);
+    QRect r = layoutManager.getMenuArea();
+    QPoint globalTopLeft;
+    if (layoutManager.getUFaceType() == UFACE_MONITOR_BIGFONT)
+    {
+        globalTopLeft = r.center() - this->rect().center();
+    }
+    else
+    {
+        r.adjust(r.width() - this->width(), 0, 0, 0);  // 菜单将靠右上显示
+        globalTopLeft = r.topLeft();
+    }
+    move(globalTopLeft);
     Window::resizeEvent(ev);
 }
 
@@ -455,7 +462,7 @@ void HemodynamicWindow::onCheckOutputReleased()
     setWindowTitle(trs("Output"));
     d_ptr->reference->setFocus();
     updateData();
-    setFixedSize(800, 600);
+    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
     emit checkInputSignal(1);
 }
 

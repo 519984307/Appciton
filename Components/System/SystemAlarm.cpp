@@ -11,6 +11,7 @@
 #include "SystemAlarm.h"
 #include "SystemManager.h"
 #include "KeyActionManager.h"
+#include "AlarmConfig.h"
 
 SystemAlarm *SystemAlarm::_selfObj = NULL;
 
@@ -52,6 +53,9 @@ AlarmPriority SystemAlarm::getAlarmPriority(int id)
     case SOME_LIMIT_ALARM_DISABLED:
         return ALARM_PRIO_PROMPT;
 
+    case STORAGE_SPACE_FULL:
+        return ALARM_PRIO_PROMPT;
+
     default:
         return ALARM_PRIO_LOW;
     }
@@ -70,7 +74,8 @@ bool SystemAlarm::isAlarmed(int id)
     case POWERUP_PANEL_RECORD_PRESSED:
         keyPressed = keyActionManager.checkKeyPressed(KEY_F9_PRESSED);
         break;
-
+    case SOME_LIMIT_ALARM_DISABLED:
+        return alarmConfig.hasLimitAlarmDisable();
     default:
         return AlarmOneShotIFace::isAlarmed(id);
     }
@@ -92,7 +97,8 @@ static const char *alarmLimitOneshotStr[] =
 {
     "SomeLimitAlarmDisabled",
     "PowerupRecorderPressed",
-    "PowerupCommunicationStop"
+    "PowerupCommunicationStop",
+    "RescueStorageSpaceFull"
 };
 
 /**************************************************************************************************

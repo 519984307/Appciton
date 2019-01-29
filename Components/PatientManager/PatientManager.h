@@ -76,16 +76,18 @@ public:
     PatientSex getSex(void);
 
     /**
-     * @brief setAge 设置年龄
-     * @param age
+     * @brief setBornDate 设置出生日期
+     * @param bornDate
      */
-    void setAge(int age);
+    void setBornDate(QDate bornDate);
 
     /**
-     * @brief getAge 获取年龄
+     * @brief getBornDate 获取出生日期
      * @return
      */
-    int getAge(void);
+    QDate getBornDate(void);
+
+    void getBornDate(unsigned int &year, unsigned int &month, unsigned int &day);
 
     /**
      * @brief setBlood 设置血型
@@ -204,9 +206,8 @@ public:
 
     /**
      * @brief dischargePatient 解除病人
-     * @param isShowStandbyWin 是否显示待机窗口
      */
-    void dischargePatient(bool isShowStandbyWin = true);
+    void dischargePatient();
 
     /**
      * @brief finishPatientInfo 完成病人信息处理

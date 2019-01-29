@@ -72,7 +72,7 @@ void DoseCalculationWindow::layoutExec()
     setWindowTitle(trs("DoseCalculation"));
 
     QGridLayout *layout = new QGridLayout(this);
-    layout->setMargin(10);
+    layout->setMargin(5);
 
     ComboBox *combo;
     QLabel *label;
@@ -99,9 +99,9 @@ void DoseCalculationWindow::layoutExec()
     layout->addWidget(label, index, 0);
     combo = new ComboBox;
     combo->addItems(QStringList()
-                    << trs(DoseCalculationSymbol::convert(PATIENT_TYPE_ADULT))
-                    << trs(DoseCalculationSymbol::convert(PATIENT_TYPE_PED))
-                    << trs(DoseCalculationSymbol::convert(PATIENT_TYPE_NEO))
+                    << trs(PatientSymbol::convert(PATIENT_TYPE_ADULT))
+                    << trs(PatientSymbol::convert(PATIENT_TYPE_PED))
+                    << trs(PatientSymbol::convert(PATIENT_TYPE_NEO))
                    );
     layout->addWidget(combo, index, 1);
     index++;
@@ -167,10 +167,9 @@ void DoseCalculationWindow::layoutExec()
     button->setEnabled(false);
     d_ptr->titrationTable = button;
 
-    layout->setRowStretch((CALCULATION_PARAM_DOSE2 + 3), 1);
-    layout->setColumnMinimumWidth(3, 50);
-
+    layout->setColumnMinimumWidth(0, 100);
     setWindowLayout(layout);
+    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
 }
 
 /**************************************************************************************************

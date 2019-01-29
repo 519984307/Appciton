@@ -12,7 +12,8 @@
 #include "NIBPState.h"
 #include <QTime>
 
-#define STAT_Time    3000       // STAT连续测量时间
+#define STAT_Time    300       // STAT连续测量时间
+#define AUTO_TIME    300       // 自动测量时间
 
 class QTimer;
 class NIBPCountdownTime : public QObject

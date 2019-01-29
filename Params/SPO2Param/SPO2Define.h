@@ -18,6 +18,7 @@ enum SPO2ModuleType
     MODULE_BLM_S5,
     MODULE_MASIMO_SPO2,
     MODULE_NELLCOR_SPO2,
+    MODULE_RAINBOW_SPO2,
     MODULE_SPO2_NR,
 };
 /**************************************************************************************************
@@ -90,18 +91,6 @@ enum SPO2LimitAlarmType
     SPO2_LIMIT_ALARM_NR
 };
 
-/**************************************************************************************************
- * ECG增益
- *************************************************************************************************/
-enum SPO2Gain
-{
-    SPO2_GAIN_X10,      // x1
-    SPO2_GAIN_X20,      // x2
-    SPO2_GAIN_X40,      // x4
-    SPO2_GAIN_X80,      // x8
-    SPO2_GAIN_NR
-};
-
 enum SensitivityMode
 {
     SPO2_MASIMO_SENS_MAX,
@@ -141,3 +130,8 @@ enum WaveUpdateType
     WAVE_UPDATE_NR  // 无效值
 };
 
+enum RainbowLineFrequency
+{
+    RB_LINE_FREQ_50HZ,
+    RB_LINE_FREQ_60HZ,
+};

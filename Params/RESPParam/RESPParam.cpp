@@ -74,6 +74,10 @@ void RESPParamPrivate::setWaveformSpeed(RESPSweepSpeed speed)
         waveWidget->setWaveSpeed(25.0);
         break;
 
+    case RESP_SWEEP_SPEED_50_0:
+        waveWidget->setWaveSpeed(50.0);
+        break;
+
     default:
         break;
     }
@@ -274,7 +278,10 @@ void RESPParam::addWaveformData(int wave, int flag)
 void RESPParam::setRR(short rrValue)
 {
     respDupParam.updateRR(rrValue);
-     d_ptr->oxyCRGRrHrTrend->addRrTrendData(rrValue);
+    if (d_ptr->oxyCRGRrHrTrend)
+    {
+        d_ptr->oxyCRGRrHrTrend->addRrTrendData(rrValue);
+    }
 }
 
 /**************************************************************************************************
@@ -335,6 +342,22 @@ void RESPParam::setOxyCRGRrHrTrend(OxyCRGRRHRWaveWidget *w)
     d_ptr->oxyCRGRrHrTrend = w;
 }
 
+void RESPParam::setSweepMode(RESPSweepMode mode)
+{
+    currentConfig.setNumValue("RESP|RESPSweepMode", static_cast<int>(mode));
+    if (d_ptr->waveWidget)
+    {
+        d_ptr->waveWidget->setWaveformMode(mode);
+    }
+}
+
+RESPSweepMode RESPParam::getSweepMode(void)
+{
+    int mode = RESP_SWEEP_MODE_CURVE;
+    currentConfig.getNumValue("RESP|RESPSweepMode", mode);
+    return static_cast<RESPSweepMode>(mode);
+}
+
 /**************************************************************************************************
  * 设置波形速度。
  *************************************************************************************************/
@@ -383,7 +406,7 @@ ApneaAlarmTime RESPParam::getApneaTime(void)
  *************************************************************************************************/
 void RESPParam::setZoom(RESPZoom zoom)
 {
-    systemConfig.setNumValue("PrimaryCfg|RESP|Zoom", static_cast<int>(zoom));
+    currentConfig.setNumValue("RESP|Gain", static_cast<int>(zoom));
     if (NULL != d_ptr->provider)
     {
         d_ptr->provider->setWaveformZoom(zoom);
@@ -409,7 +432,7 @@ void RESPParam::setZoom(RESPZoom zoom)
 RESPZoom RESPParam::getZoom(void)
 {
     int zoom = RESP_ZOOM_X100;
-    systemConfig.getNumValue("PrimaryCfg|RESP|Zoom", zoom);
+    currentConfig.getNumValue("RESP|Gain", zoom);
 
     return (RESPZoom)zoom;
 }
@@ -471,11 +494,17 @@ int RESPParam::getRespMonitoring()
  *************************************************************************************************/
 void RESPParam::setCalcLead(RESPLead lead)
 {
-    systemConfig.setNumValue("PrimaryCfg|RESP|RespLead", static_cast<int>(lead));
+    RESPLead respLead = lead;
+    currentConfig.setNumValue("RESP|BreathLead", static_cast<int>(lead));
     if (NULL != d_ptr->provider)
     {
+        if (lead == RESP_LEAD_AUTO)
+        {
+            lead = RESP_LEAD_II;
+        }
         d_ptr->provider->setRESPCalcLead(lead);
     }
+    emit calcLeadChanged(respLead);
 }
 
 /**************************************************************************************************
@@ -484,9 +513,9 @@ void RESPParam::setCalcLead(RESPLead lead)
 RESPLead RESPParam::getCalcLead(void)
 {
     int lead = RESP_LEAD_I;
-    systemConfig.getNumValue("PrimaryCfg|RESP|RespLead", lead);
+    currentConfig.getNumValue("RESP|BreathLead", lead);
 
-    return (RESPLead)lead;
+    return static_cast<RESPLead>(lead);
 }
 
 /**************************************************************************************************
@@ -507,7 +536,7 @@ void RESPParam::enableRespCalc(bool enable)
 
 void RESPParam::onPaletteChanged(ParamID id)
 {
-    if (id != PARAM_RESP)
+    if (id != PARAM_RESP || !systemManager.isSupport(CONFIG_RESP))
     {
         return;
     }

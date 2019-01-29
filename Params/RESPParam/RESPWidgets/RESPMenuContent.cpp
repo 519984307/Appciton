@@ -47,6 +47,12 @@ public:
     QLabel *brRRSouce;
 
     QMap<MenuItem, ComboBox *> combos;
+
+    /**
+     * @brief blockItemSignal 阻塞信号
+     * @param flag
+     */
+    void blockItemSignal(bool flag);
 };
 
 void RESPMenuContentPrivate::loadOptions()
@@ -58,18 +64,34 @@ void RESPMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_APNEA_DELAY]->setCurrentIndex(respParam.getApneaTime());
 
     // rr source
+    combos[ITEM_CBO_RR_SOURCE]->clear();
+    if (co2Param.isConnected())
+    {
+        combos[ITEM_CBO_RR_SOURCE]->addItems(QStringList()
+                                             << trs(RESPSymbol::convert(BR_RR_AUTO))
+                                             << trs(RESPSymbol::convert(BR_RR_SOURCE_ECG))
+                                             << trs(RESPSymbol::convert(BR_RR_SOURCE_CO2))
+                                             );
+    }
+    else
+    {
+        combos[ITEM_CBO_RR_SOURCE]->addItems(QStringList()
+                                             << trs(RESPSymbol::convert(BR_RR_AUTO))
+                                             << trs(RESPSymbol::convert(BR_RR_SOURCE_ECG)));
+    }
+
     int index = 0;
     if (respDupParam.isAutoBrSourceEnabled())
     {
         index = BR_RR_AUTO;
     }
-    else if (respDupParam.getBrSource() == RESPDupParam::BR_SOURCE_CO2)
+    else if (respDupParam.getBrSource() == RESPDupParam::BR_SOURCE_CO2 && co2Param.isConnected())
     {
         index = BR_RR_SOURCE_CO2;
     }
     else
     {
-        index = BR_RR_SOURCE_RESP;
+        index = BR_RR_SOURCE_ECG;
     }
     combos[ITEM_CBO_RR_SOURCE]->setCurrentIndex(index);
     if (respDupParam.getParamSourceType() == RESPDupParam::BR)
@@ -88,6 +110,15 @@ void RESPMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_WAVE_GAIN]->setCurrentIndex(respParam.getZoom());
 }
 
+void RESPMenuContentPrivate::blockItemSignal(bool flag)
+{
+    for (int i = ITEM_CBO_APNEA_DELAY; i <= ITEM_CBO_SWEEP_SPEED; ++i)
+    {
+        MenuItem index = static_cast<MenuItem>(i);
+        combos[index]->blockSignals(flag);
+    }
+}
+
 RESPMenuContent::RESPMenuContent()
     : MenuContent(trs("RESPMenu"), trs("RESPMenuDesc")),
       d_ptr(new RESPMenuContentPrivate())
@@ -101,7 +132,9 @@ RESPMenuContent::~RESPMenuContent()
 
 void RESPMenuContent::readyShow()
 {
+    d_ptr->blockItemSignal(true);
     d_ptr->loadOptions();
+    d_ptr->blockItemSignal(false);
 }
 
 void RESPMenuContent::layoutExec()
@@ -141,7 +174,8 @@ void RESPMenuContent::layoutExec()
     comboBox = new ComboBox;
     comboBox->addItems(QStringList()
                        << trs(RESPSymbol::convert(RESP_LEAD_II))
-                       << trs(RESPSymbol::convert(RESP_LEAD_I)));
+                       << trs(RESPSymbol::convert(RESP_LEAD_I))
+                       << trs(RESPSymbol::convert(RESP_LEAD_AUTO)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(RESPMenuContentPrivate
                          ::ITEM_CBO_BREATH_LEAD, comboBox);
@@ -154,10 +188,6 @@ void RESPMenuContent::layoutExec()
     d_ptr->brRRSouce = label;
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox;
-    comboBox->addItems(QStringList()
-                       << trs(RESPSymbol::convert(BR_RR_AUTO))
-                       << trs(RESPSymbol::convert(BR_RR_SOURCE_CO2))
-                       << trs(RESPSymbol::convert(BR_RR_SOURCE_RESP)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(RESPMenuContentPrivate
                          ::ITEM_CBO_RR_SOURCE, comboBox);
@@ -170,11 +200,13 @@ void RESPMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox;
     comboBox->addItems(QStringList()
-                   << trs(RESPSymbol::convert(RESP_ZOOM_X100))
-                   << trs(RESPSymbol::convert(RESP_ZOOM_X200))
-                   << trs(RESPSymbol::convert(RESP_ZOOM_X300))
-                   << trs(RESPSymbol::convert(RESP_ZOOM_X400))
-                   << trs(RESPSymbol::convert(RESP_ZOOM_X500)));
+                       << trs(RESPSymbol::convert(RESP_ZOOM_X025))
+                       << trs(RESPSymbol::convert(RESP_ZOOM_X050))
+                       << trs(RESPSymbol::convert(RESP_ZOOM_X100))
+                       << trs(RESPSymbol::convert(RESP_ZOOM_X200))
+                       << trs(RESPSymbol::convert(RESP_ZOOM_X300))
+                       << trs(RESPSymbol::convert(RESP_ZOOM_X400))
+                       << trs(RESPSymbol::convert(RESP_ZOOM_X500)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(RESPMenuContentPrivate
                          ::ITEM_CBO_WAVE_GAIN, comboBox);
@@ -189,7 +221,8 @@ void RESPMenuContent::layoutExec()
     comboBox->addItems(QStringList()
                        << trs(RESPSymbol::convert(RESP_SWEEP_SPEED_6_25))
                        << trs(RESPSymbol::convert(RESP_SWEEP_SPEED_12_5))
-                       << trs(RESPSymbol::convert(RESP_SWEEP_SPEED_25_0)));
+                       << trs(RESPSymbol::convert(RESP_SWEEP_SPEED_25_0))
+                       << trs(RESPSymbol::convert(RESP_SWEEP_SPEED_50_0)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(RESPMenuContentPrivate
                          ::ITEM_CBO_SWEEP_SPEED, comboBox);
@@ -242,9 +275,9 @@ void RESPMenuContent::onComboBoxIndexChanged(int index)
             {
                 respDupParam.setBrSource(RESPDupParam::BR_SOURCE_CO2);
             }
-            else if (BR_RR_SOURCE_RESP == index)
+            else if (BR_RR_SOURCE_ECG == index)
             {
-                respDupParam.setBrSource(RESPDupParam::BR_SOURCE_RESP);
+                respDupParam.setBrSource(RESPDupParam::BR_SOURCE_ECG);
             }
         }
             break;

@@ -26,13 +26,10 @@ public:
     SPO2WaveWidget(const QString &waveName, const QString &title);
     ~SPO2WaveWidget();
 
-    // 设置波形增益。
-    void setGain(SPO2Gain gain);
-
-    // 获取不同增益下的极值
-    static void getGainToValue(SPO2Gain gain, int &min, int &max);
-
     bool waveEnable();
+
+    /* reimplment */
+    void updateWidgetConfig();
 
 protected:
     // 窗体大小调整事件
@@ -40,10 +37,7 @@ protected:
     virtual void focusInEvent(QFocusEvent */*e*/);
 
 private:
-    void _initValueRange(SPO2Gain gain);
-
     void _loadConfig(void);
 //    WaveWidgetLabel *_name;
-    WaveWidgetLabel *_gain;         // 增益标签
     WaveWidgetLabel *_notify;
 };

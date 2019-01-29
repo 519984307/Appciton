@@ -22,7 +22,9 @@
 #include <QWSServer>
 #include "SystemManager.h"
 #endif
-
+#include "SoftKeyManager.h"
+#include "MessageBox.h"
+#include <QProcess>
 
 class MachineConfigModuleContentPrivte
 {
@@ -37,11 +39,13 @@ public:
         ITEM_CBO_AG,
         ITEM_CBO_CO,
         ITEM_CBO_IBP,
+        ITEM_CBO_O2,
         ITEM_CBO_TEMP,
         ITEM_CBO_WIFI,
 #ifdef Q_WS_QWS
         ITEM_CBO_TSCREEN,
 #endif
+        ITEM_CBO_MAX
     };
 
     MachineConfigModuleContentPrivte()
@@ -53,7 +57,22 @@ public:
      */
     void loadOptions();
 
+    /**
+     * @brief configUpdateHint 配置更新提示
+     */
+    void configUpdateHint(void);
+
+    /**
+     * @brief setCombosBlockSignalStatus 设置cbo锁住信号状态
+     * @param isBlockSignals
+     */
+    void setCombosBlockSignalStatus(bool isBlockSignals);
+
     QMap <MenuItem, ComboBox *> combos;
+
+    QMap <MenuItem, int> itemChangedMap;
+
+    QMap <MenuItem, int> itemInitMap;
 
     bool isSyncIBPCO;
 };
@@ -63,9 +82,12 @@ void MachineConfigModuleContentPrivte::loadOptions()
     int index;
     QString moduleName;
 
+    setCombosBlockSignalStatus(true);
+
     index = 0;
     machineConfig.getNumValue("ECG12LEADEnable", index);
     combos[ITEM_CBO_ECG12]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_ECG12] = index;
 
     index = 0;
     moduleName.clear();
@@ -83,6 +105,7 @@ void MachineConfigModuleContentPrivte::loadOptions()
             combos[ITEM_CBO_SPO2]->setCurrentIndex(index);
         }
     }
+    itemChangedMap[ITEM_CBO_SPO2] = index;
 
     index = 0;
     moduleName.clear();
@@ -100,26 +123,37 @@ void MachineConfigModuleContentPrivte::loadOptions()
             combos[ITEM_CBO_NIBP]->setCurrentIndex(index);
         }
     }
+    itemChangedMap[ITEM_CBO_NIBP] = index;
 
     index = 0;
     machineConfig.getNumValue("RESPEnable", index);
     combos[ITEM_CBO_RESP]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_RESP] = index;
 
     index = 0;
     machineConfig.getNumValue("CO2Enable", index);
     combos[ITEM_CBO_CO2]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_CO2] = index;
 
     index = 0;
     machineConfig.getNumValue("AGEnable", index);
     combos[ITEM_CBO_AG]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_AG] = index;
 
     index = 0;
     machineConfig.getNumValue("COEnable", index);
     combos[ITEM_CBO_CO]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_CO] = index;
 
     index = 0;
     machineConfig.getNumValue("IBPEnable", index);
     combos[ITEM_CBO_IBP]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_IBP] = index;
+
+    index = 0;
+    machineConfig.getNumValue("O2Enable", index);
+    combos[ITEM_CBO_O2]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_O2] = index;
 
 #ifdef Q_WS_QWS
     index = 0;
@@ -130,10 +164,54 @@ void MachineConfigModuleContentPrivte::loadOptions()
     index = 0;
     machineConfig.getNumValue("TEMPEnable", index);
     combos[ITEM_CBO_TEMP]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_TEMP] = index;
 
     index = 0;
     machineConfig.getNumValue("WIFIEnable", index);
     combos[ITEM_CBO_WIFI]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_WIFI] = index;
+
+    itemInitMap = itemChangedMap;
+
+#ifdef HIDE_MACHINE_CONFIG_ITEMS
+    combos[ITEM_CBO_ECG12]->setCurrentIndex(0);
+    combos[ITEM_CBO_ECG12]->setEnabled(false);
+    combos[ITEM_CBO_AG]->setCurrentIndex(0);
+    combos[ITEM_CBO_AG]->setEnabled(false);
+    combos[ITEM_CBO_CO]->setCurrentIndex(0);
+    combos[ITEM_CBO_CO]->setEnabled(false);
+    combos[ITEM_CBO_IBP]->setCurrentIndex(0);
+    combos[ITEM_CBO_IBP]->setEnabled(false);
+    combos[ITEM_CBO_O2]->setCurrentIndex(0);
+    combos[ITEM_CBO_O2]->setEnabled(false);
+    combos[ITEM_CBO_WIFI]->setCurrentIndex(0);
+    combos[ITEM_CBO_WIFI]->setEnabled(false);
+#endif
+
+    setCombosBlockSignalStatus(false);
+}
+
+void MachineConfigModuleContentPrivte::configUpdateHint()
+{
+    QString hints = trs("MachineConfigIsUpdatedNow");
+    hints += "\n";
+    hints += trs("IsRebootMachine");
+    hints += "?";
+    MessageBox box(trs("UpdateHint"), hints);
+    QDialog::DialogCode statue = static_cast<QDialog::DialogCode>(box.exec());
+    if (statue == QDialog::Accepted)
+    {
+        QProcess::execute("reboot");
+    }
+}
+
+void MachineConfigModuleContentPrivte::setCombosBlockSignalStatus(bool isBlockSignals)
+{
+    for (int i = ITEM_CBO_ECG12; i < ITEM_CBO_MAX; i++)
+    {
+       MenuItem item = static_cast<MenuItem>(i);
+       combos[item]->blockSignals(isBlockSignals);
+    }
 }
 
 MachineConfigModuleContent::MachineConfigModuleContent()
@@ -186,6 +264,7 @@ void MachineConfigModuleContent::layoutExec()
                     << trs(SPO2Symbol::convert(MODULE_BLM_S5))
                     << trs(SPO2Symbol::convert(MODULE_MASIMO_SPO2))
                     << trs(SPO2Symbol::convert(MODULE_NELLCOR_SPO2))
+                    << trs(SPO2Symbol::convert(MODULE_RAINBOW_SPO2))
                    );
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
@@ -285,6 +364,21 @@ void MachineConfigModuleContent::layoutExec()
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
+    // O2 module
+    label = new QLabel(trs("O2Module"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    combo = new ComboBox;
+    combo->addItems(QStringList()
+                    << trs("Off")
+                    << trs("On")
+                   );
+    layout->addWidget(combo, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(MachineConfigModuleContentPrivte
+                         ::ITEM_CBO_O2, combo);
+    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_O2;
+    combo->setProperty("Item", qVariantFromValue(itemId));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+
     // temp module
     label = new QLabel(trs("TEMPModule"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -320,10 +414,12 @@ void MachineConfigModuleContent::layoutExec()
     label = new QLabel(trs("TouchScreenModule"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     combo = new ComboBox;
+    combo->blockSignals(true);
     combo->addItems(QStringList()
                     << trs("Off")
                     << trs("On")
                    );
+    combo->blockSignals(false);
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
                          ::ITEM_CBO_TSCREEN, combo);
@@ -333,6 +429,17 @@ void MachineConfigModuleContent::layoutExec()
 #endif
 
     layout->setRowStretch(d_ptr->combos.count(), 1);
+}
+
+void MachineConfigModuleContent::hideEvent(QHideEvent *e)
+{
+    QWidget::hideEvent(e);
+
+    if (d_ptr->itemChangedMap != d_ptr->itemInitMap)
+    {
+        // 添加机器配置更新提示
+        d_ptr->configUpdateHint();
+    }
 }
 
 void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
@@ -398,6 +505,11 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
             enablePath = "IBPEnable";
             break;
         }
+        case MachineConfigModuleContentPrivte::ITEM_CBO_O2:
+        {
+            enablePath = "O2Enable";
+            break;
+        }
         case MachineConfigModuleContentPrivte::ITEM_CBO_TEMP:
         {
             enablePath = "TEMPEnable";
@@ -413,6 +525,7 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
             machineConfig.setNumValue("TouchEnable", index);
             machineConfig.saveToDisk();
             systemManager.setTouchScreenOnOff(index);
+            softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_SCREEN_BAN, index);
             return;
 #endif
         default:
@@ -466,4 +579,8 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
         machineConfig.setStrValue(modulePath, moduleName);
     }
     machineConfig.saveToDisk();
+
+    MachineConfigModuleContentPrivte::MenuItem item =
+            static_cast<MachineConfigModuleContentPrivte::MenuItem>(indexType);
+    d_ptr->itemChangedMap[item] = index;
 }

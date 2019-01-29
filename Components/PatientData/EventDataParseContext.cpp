@@ -1,18 +1,29 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/11/28
+ **/
+
 #include "EventDataParseContext.h"
 #include "Debug.h"
 
 EventDataPraseContext::EventDataPraseContext()
-    :eventDataBuf(NULL),
+    : eventDataBuf(NULL),
       infoSegment(NULL),
       trendSegment(NULL),
       almSegment(NULL),
-      codeMarkerSegment(NULL)
+      codeMarkerSegment(NULL),
+      measureSegment(NULL)
 {
 }
 
 void EventDataPraseContext::reset()
 {
-    if(eventDataBuf)
+    if (eventDataBuf)
     {
         qFree(eventDataBuf);
         eventDataBuf = NULL;
@@ -22,19 +33,20 @@ void EventDataPraseContext::reset()
     waveSegments.clear();
     almSegment = NULL;
     codeMarkerSegment = NULL;
+    measureSegment = NULL;
 }
 
 bool EventDataPraseContext::parse(IStorageBackend *backend, int index)
 {
-    if(!backend || index >= (int) backend->getBlockNR() || index < 0)
+    if (!backend || index >= static_cast<int>(backend->getBlockNR()) || index < 0)
     {
         return false;
     }
 
     quint32 length  = backend->getBlockDataLen(index);
 
-    char *buf = (char *)qMalloc(length);
-    if(!buf)
+    char *buf = reinterpret_cast<char *>(qMalloc(length));
+    if (!buf)
     {
         return false;
     }
@@ -51,58 +63,63 @@ bool EventDataPraseContext::parse(IStorageBackend *backend, int index)
 
     char *parseBuffer = buf;
     bool parseEnd = false;
-    while(!parseEnd)
+    while (!parseEnd)
     {
-        EventSegmentType *eventType = (EventSegmentType *)parseBuffer;
-        switch (*eventType) {
+        EventSegmentType *eventType = reinterpret_cast<EventSegmentType *>(parseBuffer);
+        switch (*eventType)
+        {
         case EVENT_INFO_SEGMENT:
-            //skip the offset of the segment type field
+            // skip the offset of the segment type field
             parseBuffer += sizeof(EventSegmentType);
-            infoSegment = (EventInfoSegment *) parseBuffer;
-            //find the location of the next event type
+            infoSegment = reinterpret_cast<EventInfoSegment *>(parseBuffer);
+            // find the location of the next event type
             parseBuffer += sizeof(EventInfoSegment);
             break;
         case EVENT_TRENDDATA_SEGMENT:
-            //skip the offset of the segment type field
+            // skip the offset of the segment type field
             parseBuffer += sizeof(EventSegmentType);
-            trendSegment = (TrendDataSegment *)parseBuffer;
-            //find the location of the next event type
+            trendSegment = reinterpret_cast<TrendDataSegment *>(parseBuffer);
+            // find the location of the next event type
             parseBuffer += sizeof(TrendDataSegment) + trendSegment->trendValueNum * sizeof(TrendValueSegment);
             break;
         case EVENT_WAVEFORM_SEGMENT:
-            //skip the offset of the segment type field
+            // skip the offset of the segment type field
             parseBuffer += sizeof(EventSegmentType);
-            waveSegments.append((WaveformDataSegment *) parseBuffer);
-            //find the location of the next event type
+            waveSegments.append(reinterpret_cast<WaveformDataSegment *>(parseBuffer));
+            // find the location of the next event type
             parseBuffer += sizeof(WaveformDataSegment) + waveSegments.last()->waveNum * sizeof(WaveDataType);
             break;
         case EVENT_ALARM_INFO_SEGMENT:
             parseBuffer += sizeof(EventSegmentType);
-            almSegment = (AlarmInfoSegment *) parseBuffer;
+            almSegment = reinterpret_cast<AlarmInfoSegment *>(parseBuffer);
             parseBuffer += sizeof(AlarmInfoSegment);
             break;
         case EVENT_CODEMARKER_SEGMENT:
             parseBuffer += sizeof(EventSegmentType);
-            codeMarkerSegment = (CodeMarkerSegment *) parseBuffer;
+            codeMarkerSegment = reinterpret_cast<CodeMarkerSegment *>(parseBuffer);
             parseBuffer += sizeof(CodeMarkerSegment);
+            break;
+        case EVENT_NIBPMEASURE_SEGMENT:
+            parseBuffer += sizeof(EventSegmentType);
+            measureSegment = reinterpret_cast<NIBPMeasureSegment *>(parseBuffer);
+            parseBuffer += sizeof(NIBPMeasureSegment);
             break;
         default:
             qdebug("unknown segment type %d, stop parsing.",  *eventType);
             parseEnd = true;
             break;
         }
-    }
-
-    if(parseBuffer >= buf + length)
-    {
-        parseEnd = true;
+        if (parseBuffer >= buf + length)
+        {
+            parseEnd = true;
+        }
     }
     return true;
 }
 
 EventDataPraseContext::~EventDataPraseContext()
 {
-    if(eventDataBuf)
+    if (eventDataBuf)
     {
         qFree(eventDataBuf);
     }

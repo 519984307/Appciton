@@ -51,12 +51,68 @@ DEFINES += CONFIG_CTRL_IFACE_UNIX
 DEFINES += CONFIG_CAPTURE_SCREEN
 
 #used by ECG algorithm team, default closed
-DEFINES += CONFIG_ECG_TEST
+#DEFINES += CONFIG_ECG_TEST
 
 #用于隐藏待机功能
 DEFINES += HIDE_STANDBY_FUNCTION
 DEFINES += HIDE_PARAM_SWITCH
 
+#用于隐藏ST功能
+DEFINES += HIDE_ECG_ST_PVCS_SUBPARAM
+
+#隐藏IBP校零软按键
+DEFINES += HIDE_IBP_CALIBRATE_ZERO
+
+#隐藏ECG心率失常功能
+DEFINES += HIDE_ECG_ARRHYTHMIA_FUNCTION
+
+#去使能报警栓锁功能
+DEFINES += DISABLED_ALARM_LATCH
+
+#取消报警音关闭和报警暂停功能
+DEFINES += CLOSE_ALARM_AUDIO_OFF_ALARM_OFF
+
+#关闭报警维护菜单中无用的功能接口
+DEFINES += CLOSE_USELESS_ALARM_FUNCTION
+
+#隐藏计算功能
+DEFINES += HIDE_CALCULATE_FUNCITON
+
+#隐藏呼吸氧和窗口
+DEFINES += HIDE_MONITOR_OXYCRG
+
+#隐藏趋势窗口
+DEFINES += HIDE_MONITOR_TREND
+
+#隐藏呼吸氧合回顾功能
+DEFINES += HIDE_OXYCRG_REVIEW_FUNCTION
+
+#隐藏有线网络功能
+DEFINES += HIDE_WIRED_NETWORK_FUNCTION
+
+#隐藏无线网络功能
+DEFINES += HIDE_WIFI_FUNCTION
+
+#隐藏护士呼叫功能
+DEFINES += HIDE_NURSE_CALL_FUNCTION
+
+#隐藏ECG12导功能
+DEFINES += HIDE_ECG_12_LEAD_FUNCTION
+
+#隐藏机器配置中的部分选项
+DEFINES += HIDE_MACHINE_CONFIG_ITEMS
+
+#失能co2模块维护
+DEFINES += DISABLE_CO2_MODULE_MAINTAIN
+
+#隐藏其它维护菜单中的部分选项
+DEFINES += HIDE_OTHER_MAINTAIN_ITEMS
+
+#失能工厂维护中测试菜单里的item
+DEFINES += DISABLE_FACTORY_MODULE_SELFTEST
+
+#失能ecg模块校准
+DEFINES += DISABLE_ECG_MODULE_CALIBRATION
 
 # Depending libraries
 LIBS += -ldl -lasound -lz
@@ -83,6 +139,7 @@ OTHER_FILES +=                                                                  
     nPM/etc/AdultConfig.Original.xml                                            \
     nPM/etc/PedConfig.Original.xml                                              \
     nPM/etc/NeoConfig.Original.xml                                              \
+    nPM/etc/usercheck.xml                                                       \
 
 SOURCES +=                                                                      \
     SOUP/Json/json_parser.cc                                                    \
@@ -299,13 +356,11 @@ SOURCES +=                                                                      
     Components/PatientManager/PatientManagementMenuContent.cpp                  \
     Components/PatientManager/PatientInfoWindow.cpp                             \
     Components/PatientManager/DischargePatientWindow.cpp                        \
-    Components/PowerManager/BatteryMessage.cpp                                  \
     Components/PowerManager/BatteryAlarm.cpp                                    \
     Components/PowerManager/BatteryIndicatorWindow.cpp                          \
     Components/PowerManager/BatteryBarWidget.cpp                                \
     Components/PowerManager/BatteryIconWidget.cpp                               \
     Components/PowerManager/PowerManager.cpp                                    \
-    Components/PowerManager/PowerManagerBrief.cpp                               \
     Components/WindowManager/IWidget.cpp                                        \
     Components/WindowManager/WindowManager.cpp                                  \
     Components/WindowManager/PromptInfoBarWidget.cpp                            \
@@ -340,6 +395,7 @@ SOURCES +=                                                                      
     Components/Recorder/TrendGraphPageGenerator.cpp                             \
     Components/Recorder/TriggerPageGenerator.cpp                                \
     Components/Recorder/RecordPageProcessor.cpp                                 \
+    Components/Recorder/EventListPageGenerator.cpp                              \
     Components/KeyHandle/SoftKeyManager.cpp                                     \
     Components/KeyHandle/SoftKeyWidget.cpp                                      \
     Components/KeyHandle/SoftkeyActionBase.cpp                                  \
@@ -405,6 +461,7 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/FactoryImportExportMenuContent.cpp      \
     Components/Maintain/FactoryMaintain/UpgradeManager.cpp                      \
     Components/Maintain/FactoryMaintain/UpgradeWindow.cpp                       \
+    Components/Maintain/FactoryMaintain/O2CalibrationMenuContent.cpp            \
     Components/CodeMarker/Widgets/CodeMarkerWindow.cpp                          \
     Components/ConfigManager/ConfigManager.cpp                                  \
     Components/ConfigManager/SelectDefaultConfigMenuContent.cpp                 \
@@ -511,6 +568,10 @@ SOURCES +=                                                                      
     Params/RESPParam/RESPWidgets/RESPWaveWidget.cpp                             \
     Params/RESPParam/RESPWidgets/RESPTrendWidget.cpp                            \
     Params/RESPParam/RESPWidgets/RESPMenuContent.cpp                            \
+    Params/O2Param/O2Widgets/O2TrendWidget.cpp                                  \
+    Params/O2Param/O2Widgets/O2MenuContent.cpp                                  \
+    Params/O2Param/O2Param.cpp                                                  \
+    Params/O2Param/O2Alarm.cpp                                                  \
 #################################################################################
     Providers/Provider.cpp                                                      \
     Providers/BLMProvider.cpp                                                   \
@@ -518,6 +579,7 @@ SOURCES +=                                                                      
     Providers/BLMCO2Provider/BLMCO2Provider.cpp                                 \
     Providers/WitleafProvider/WitleafProvider.cpp                               \
     Providers/MasimoProvider/MasimoProvider.cpp                                 \
+    Providers/RainbowProvider/RainbowProvider.cpp                               \
     Providers/NellcorProvider/NellcorProvider.cpp                               \
     Providers/E5Provider/E5Provider.cpp                                         \
     Providers/T5Provider/T5Provider.cpp                                         \
@@ -526,10 +588,10 @@ SOURCES +=                                                                      
     Providers/PRT48Provider/PRT48Provider.cpp                                   \
     Providers/SuntechProvider/SuntechProvider.cpp                               \
     Providers/SystemBoardProvider/SystemBoardProvider.cpp                       \
-    Providers/RawData/RawDataCollection.cpp                                     \
-    Providers/RawData/RawDataCollectionTxt.cpp                                  \
+    Providers/RawData/RawDataCollector.cpp                                      \
     Providers/S5Provider/S5Provider.cpp                                         \
     Providers/DataDispatcher.cpp                                                \
+    Providers/NeonateProvider/NeonateProvider.cpp                               \
 #################################################################################
     Main/App/AppMain.cpp                                                        \
     Main/App/Init.cpp                                                           \
@@ -789,13 +851,11 @@ HEADERS +=                                                                      
     Components/PatientManager/PatientInfoWindow.h                               \
     Components/PatientManager/DischargePatientWindow.h                          \
     Components/PowerManager/BatteryAlarm.h                                      \
-    Components/PowerManager/BatteryMessage.h                                    \
     Components/PowerManager/BatteryDefine.h                                     \
     Components/PowerManager/BatteryIndicatorWindow.h                            \
     Components/PowerManager/BatteryBarWidget.h                                  \
     Components/PowerManager/BatteryIconWidget.h                                 \
     Components/PowerManager/PowerManager.h                                      \
-    Components/PowerManager/PowerManagerBrief.h                                 \
     Components/PowerManager/PowerManagerProviderIFace.h                         \
     Components/TimeManager/DateTimeWidget.h                                     \
     Components/TimeManager/ElapseTimeWidget.h                                   \
@@ -840,6 +900,7 @@ HEADERS +=                                                                      
     Components/Recorder/TrendGraphPageGenerator.h                               \
     Components/Recorder/TriggerPageGenerator.h                                  \
     Components/Recorder/RecordPageProcessor.h                                   \
+    Components/Recorder/EventListPageGenerator.h                                \
     Components/KeyHandle/SoftKeyManager.h                                       \
     Components/KeyHandle/SoftKeyWidget.h                                        \
     Components/KeyHandle/SoftkeyActionBase.h                                    \
@@ -908,6 +969,7 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/FactoryImportExportMenuContent.h        \
     Components/Maintain/FactoryMaintain/UpgradeManager.h                        \
     Components/Maintain/FactoryMaintain/UpgradeWindow.h                         \
+    Components/Maintain/FactoryMaintain/O2CalibrationMenuContent.h              \
     Components/CodeMarker/Widgets/CodeMarkerList.h                              \
     Components/CodeMarker/Widgets/CodeMarkerWindow.h                            \
     Components/ConfigManager/ConfigManager.h                                    \
@@ -1047,6 +1109,13 @@ HEADERS +=                                                                      
     Params/RESPParam/RESPWidgets/RESPTrendWidget.h                              \
     Params/RESPParam/RESPWidgets/RESPMenuContent.h                              \
     Params/PAParam/PASymbol.h                                                   \
+    Params/O2Param/O2Widgets/O2TrendWidget.h                                    \
+    Params/O2Param/O2Widgets/O2MenuContent.h                                    \
+    Params/O2Param/O2Param.h                                                    \
+    Params/O2Param/O2ProviderIFace.h                                            \
+    Params/O2Param/O2Alarm.h                                                    \
+    Params/O2Param/O2Define.h                                                   \
+    Params/O2Param/O2Symbol.h                                                   \
 #################################################################################
     Providers/Provider.h                                                        \
     Providers/BLMProvider.h                                                     \
@@ -1054,6 +1123,7 @@ HEADERS +=                                                                      
     Providers/BLMCO2Provider/BLMCO2Provider.h                                   \
     Providers/WitleafProvider/WitleafProvider.h                                 \
     Providers/MasimoProvider/MasimoProvider.h                                   \
+    Providers/RainbowProvider/RainbowProvider.h                                 \
     Providers/NellcorProvider/NellcorProvider.h                                 \
     Providers/E5Provider/E5Provider.h                                           \
     Providers/T5Provider/T5Provider.h                                           \
@@ -1063,10 +1133,10 @@ HEADERS +=                                                                      
     Providers/SuntechProvider/SuntechProvider.h                                 \
     Providers/SystemBoardProvider/SystemBoardProvider.h                         \
     Providers/SystemBoardProvider/SystemBoardProviderDefine.h                   \
-    Providers/RawData/RawDataCollection.h                                       \
-    Providers/RawData/RawDataCollectionTxt.h                                    \
+    Providers/RawData/RawDataCollector.h                                        \
     Providers/S5Provider/S5Provider.h                                           \
     Providers/DataDispatcher.h                                                  \
+    Providers/NeonateProvider/NeonateProvider.h                                 \
 #################################################################################
     Main/App/Init.h                                                             \
     Main/IApplication.h                                                         \
@@ -1160,7 +1230,8 @@ DEPENDPATH +=                                                                   
     Providers/BLMCO2Provider                                                    \
     Providers/WitleafProvider                                                   \
     Providers/MasimoProvider                                                    \
-    Providers/NellcorProvider                                                    \
+    Providers/RainbowProvider                                                   \
+    Providers/NellcorProvider                                                   \
     Providers/SuntechProvider                                                   \
     Providers/BLMTEMPProvider                                                   \
     Providers/T5Provider                                                        \
@@ -1172,6 +1243,7 @@ DEPENDPATH +=                                                                   
     Providers/SystemBoardProvider                                               \
     Providers/RawData                                                           \
     Providers/S5Provider                                                        \
+    Providers/NeonateProvider                                                   \
     Params                                                                      \
     Params/AGParam                                                              \
     Params/AGParam/AGWidgets                                                    \
@@ -1195,7 +1267,8 @@ DEPENDPATH +=                                                                   
     Params/TEMPParam/TEMPWidgets                                                \
     Params/RESPParam                                                            \
     Params/RESPParam/RESPWidgets                                                \
-
+    Params/O2Param                                                              \
+    Params/O2Param/O2Widgets                                                    \
 
 
 INCLUDEPATH +=                                                                  \
@@ -1284,6 +1357,7 @@ INCLUDEPATH +=                                                                  
     Providers/BLMCO2Provider                                                    \
     Providers/WitleafProvider                                                   \
     Providers/MasimoProvider                                                    \
+    Providers/RainbowProvider                                                   \
     Providers/NellcorProvider                                                   \
     Providers/SuntechProvider                                                   \
     Providers/BLMTEMPProvider                                                   \
@@ -1296,6 +1370,7 @@ INCLUDEPATH +=                                                                  
     Providers/SystemBoardProvider                                               \
     Providers/RawData                                                           \
     Providers/S5Provider                                                        \
+    Providers/NeonateProvider                                                   \
     Params                                                                      \
     Params/AGParam                                                              \
     Params/AGParam/AGWidgets                                                    \
@@ -1319,6 +1394,8 @@ INCLUDEPATH +=                                                                  
     Params/TEMPParam/TEMPWidgets                                                \
     Params/RESPParam                                                            \
     Params/RESPParam/RESPWidgets                                                \
+    Params/O2Param                                                              \
+    Params/O2Param/O2Widgets                                                    \
 
 linux-arm-g++ {
     SOURCES +=  Utility/Widgets/TSCalibrationWindow.cpp

@@ -10,6 +10,7 @@
 
 #pragma once
 #include <QObject>
+#include "SoundManager.h"
 
 class NightModeManagerPrivate;
 class NightModeManager
@@ -25,22 +26,24 @@ public:
     }
     static NightModeManager *_selfObj;
 
-    NightModeManager(const NightModeManager &handle);
+    // 复制构造函数
     ~NightModeManager();
 
     /**
-     * @brief setNightMode  切换夜间模式后进行相应参数设置
+     * @brief setNightMode 切换夜间模式后进行相应参数设置
+     * @param nightMode    ０：正常模式　　１：夜间模式
      */
-    void setNightMode();
+    void setNightMode(bool nightMode);
 
     /**
      * @brief isNightMode   返回夜间模式状态
      * @return              ０：正常模式　　１：夜间模式
      */
-    bool isNightMode();
+    bool nightMode();
 
 private:
     NightModeManager();
+    NightModeManager(const NightModeManager &handle);  // stop the cppcheck complain
     NightModeManagerPrivate *d_ptr;
 };
 #define nightModeManager (NightModeManager::construction())

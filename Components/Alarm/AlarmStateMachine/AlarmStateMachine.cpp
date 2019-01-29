@@ -32,14 +32,18 @@ AlarmStateMachine::AlarmStateMachine()
 
     AlarmNormalState *normalState = new AlarmNormalState();
     AlarmPauseState *pauseState = new AlarmPauseState();
-    AlarmAudioOffState *audioOffState = new AlarmAudioOffState();
-    AlarmOffState *offState = new AlarmOffState();
     AlarmResetState *resetState = new AlarmResetState();
 
     _alarmStateMap.insert(normalState->type(), normalState);
     _alarmStateMap.insert(pauseState->type(), pauseState);
+
+#ifndef CLOSE_ALARM_AUDIO_OFF_ALARM_OFF
+    AlarmAudioOffState *audioOffState = new AlarmAudioOffState();
+    AlarmOffState *offState = new AlarmOffState();
     _alarmStateMap.insert(audioOffState->type(), audioOffState);
     _alarmStateMap.insert(offState->type(), offState);
+#endif
+
     _alarmStateMap.insert(resetState->type(), resetState);
     _currentState = normalState;
 
@@ -49,8 +53,8 @@ AlarmStateMachine::AlarmStateMachine()
 
     _pressTime = 0;
 
-    currentConfig.getNumValue("Alarm|EnableAlarmAudioOff", _isEnableAlarmAudioOff);
-    currentConfig.getNumValue("Alarm|EnableAlarmOff", _isEnableAlarmOff);
+    systemConfig.getNumValue("Alarms|EnableAlarmAudioOff", _isEnableAlarmAudioOff);
+    systemConfig.getNumValue("Alarms|EnableAlarmOff", _isEnableAlarmOff);
 }
 
 /**************************************************************************************************
@@ -81,14 +85,14 @@ void AlarmStateMachine::start()
     systemConfig.getNumValue("PrimaryCfg|Alarm|AlarmStatus", value);
 
     int alarmOffAtPowerOn = 0;
-    currentConfig.getNumValue("Alarm|AlarmOffAtPowerOn", alarmOffAtPowerOn);
+    systemConfig.getNumValue("Alarms|AlarmOffAtPowerOn", alarmOffAtPowerOn);
 
     int enableAlarmOff = 0;
-    currentConfig.getNumValue("Alarm|EnableAlarmOff", enableAlarmOff);
+    systemConfig.getNumValue("Alarms|EnableAlarmOff", enableAlarmOff);
     if (alarmOffAtPowerOn && enableAlarmOff)
     {
         value = ALARM_OFF_STATE;
-        currentConfig.setNumValue("Alarm|AlarmOffAtPowerOn", 0);
+        systemConfig.setNumValue("Alarms|AlarmOffAtPowerOn", 0);
     }
 
     AlarmStateMap::iterator it = _alarmStateMap.find((ALarmStateType)value);

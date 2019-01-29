@@ -42,6 +42,9 @@ public:
     AGWaveWidget(WaveformID id, const QString &waveName, const AGTypeGas gasType);
     ~AGWaveWidget();
 
+    /* reimplment */
+    void updateWidgetConfig();
+
 protected:
     // 窗体大小调整事件
     virtual void resizeEvent(QResizeEvent *e);

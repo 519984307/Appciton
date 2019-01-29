@@ -23,15 +23,10 @@ void PatientInfoWidget::loadPatientInfo()
 {
     QString nameStr = patientManager.getName();
     QString typeStr = trs(patientManager.getTypeStr());
-    if (nameStr.length() > 12)
+    if (nameStr.length() > 8)
     {
-        nameStr = nameStr.left(10);
+        nameStr = nameStr.left(8);
         nameStr += "...";
-    }
-    if (typeStr.length() > 12)
-    {
-        typeStr = typeStr.left(10);
-        typeStr += "...";
     }
     _patientName->setText(nameStr);
     _patientType->setText(typeStr);
@@ -75,7 +70,7 @@ PatientInfoWidget::PatientInfoWidget(QWidget *parent) : IWidget("PatientInfoWidg
     _patientType->setText(typeStr);
 
     QHBoxLayout *hLayout = new QHBoxLayout();
-    hLayout->setMargin(0);
+    hLayout->setMargin(5);
     hLayout->addStretch();
     hLayout->addWidget(_bed);
     hLayout->addStretch();

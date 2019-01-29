@@ -18,12 +18,13 @@
 #include "ParamInfo.h"
 #include "Utility.h"
 #include "AlarmConfig.h"
-
+#include "TimeDate.h"
 
 #define AXIS_X_SECTION_WIDTH (RECORDER_PIXEL_PER_MM * 16)
 #define AXIS_Y_SECTION_HEIGHT (RECORDER_PIXEL_PER_MM * 8)
 
-#define AXIS_X_SECTION_NUM 4
+#define AXIS_X_SECTION_NUM 5                                            // 坐标轴部分
+#define AXIS_X_DATA_SECTION_NUM (AXIS_X_SECTION_NUM - 1)                // 数据部分
 #define AXIS_Y_SECTION_NUM 2
 
 #define AXIS_X_WIDTH (AXIS_X_SECTION_WIDTH * AXIS_X_SECTION_NUM)
@@ -62,7 +63,7 @@ public:
     unsigned endTime;
     unsigned deltaT;
     QList<TrendGraphInfo> trendGraphInfos;
-    QList<unsigned> eventTimeList;
+    QList<EventInfoSegment> eventList;
     int curDrawnGraph;
     int marginLeft;
 };
@@ -92,6 +93,17 @@ GraphAxisInfo TrendGraphPageGeneratorPrivate::getAxisInfo(const RecordPage *page
     case SUB_PARAM_AUXP2_SYS:
         name = paramInfo.getIBPPressName(subParamID);
         break;
+    case SUB_PARAM_ETN2O:
+    case SUB_PARAM_ETAA1:
+    case SUB_PARAM_ETAA2:
+    case SUB_PARAM_ETO2:
+    case SUB_PARAM_ETCO2:
+        name = paramInfo.getSubParamName(subParamID);
+        name = name.right(name.length() - 2) + "(Et/Fi)";
+        break;
+    case SUB_PARAM_T1:
+        name = "T1/T2";
+        break;
     default:
         name = paramInfo.getSubParamName(subParamID);
         break;
@@ -105,7 +117,7 @@ GraphAxisInfo TrendGraphPageGeneratorPrivate::getAxisInfo(const RecordPage *page
     axisInfo.width = AXIS_X_WIDTH;
     axisInfo.marginLeft = marginLeft;
     axisInfo.xSectionWidth = AXIS_X_SECTION_WIDTH;
-    axisInfo.xSectionNum = AXIS_X_SECTION_NUM;
+    axisInfo.xSectionNum = AXIS_X_DATA_SECTION_NUM;
     axisInfo.validWidth = axisInfo.xSectionWidth * axisInfo.xSectionNum;
     axisInfo.ySectionHeight = AXIS_Y_SECTION_HEIGHT;
     axisInfo.ySectionNum = AXIS_Y_SECTION_NUM;
@@ -125,11 +137,13 @@ GraphAxisInfo TrendGraphPageGeneratorPrivate::getAxisInfo(const RecordPage *page
         unsigned t = startTime;
         QStringList timeList;
         QList<int> dayList;
-        for (int i = 0; i < AXIS_X_SECTION_NUM && t < endTime; i++)
+        for (int i = 0; i < AXIS_X_SECTION_NUM && t <= endTime; i++)
         {
-            QDateTime dt = QDateTime::fromTime_t(t);
-            timeList.append(dt.toString("hh:mm:ss"));
-            dayList.append(dt.date().day());
+            QString timeStr;
+            timeDate.getTime(t, timeStr, true);
+            int day = timeDate.getDateDay(t);
+            timeList.append(timeStr);
+            dayList.append(day);
             t += deltaT;
         }
 
@@ -158,10 +172,9 @@ GraphAxisInfo TrendGraphPageGeneratorPrivate::getAxisInfo(const RecordPage *page
         }
     }
 
-    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subParamID, unit);
-    axisInfo.yLabels = QStringList() << Util::convertToString(graphInfo.scale.min, config.scale)
+    axisInfo.yLabels = QStringList() << Util::convertToString(graphInfo.scale.min, graphInfo.scale.scale)
                        << QString()
-                       << Util::convertToString(graphInfo.scale.max, config.scale);
+                       << Util::convertToString(graphInfo.scale.max, graphInfo.scale.scale);
     return axisInfo;
 }
 
@@ -191,7 +204,7 @@ RecordPage *TrendGraphPageGeneratorPrivate::drawGraphPage()
         RecordPageGenerator::drawTrendGraph(&painter, axisInfo, trendGraphInfos.at(curDrawnGraph));
 
         // draw event symbol
-        RecordPageGenerator::drawTrendGraphEventSymbol(&painter, axisInfo, trendGraphInfos.at(curDrawnGraph), eventTimeList);
+        RecordPageGenerator::drawTrendGraphEventSymbol(&painter, axisInfo, trendGraphInfos.at(curDrawnGraph), eventList);
 
         curDrawnGraph++;
 
@@ -206,7 +219,7 @@ RecordPage *TrendGraphPageGeneratorPrivate::drawGraphPage()
         GraphAxisInfo axisInfo = getAxisInfo(page, trendGraphInfos.at(curDrawnGraph), false);
         RecordPageGenerator::drawGraphAxis(&painter, axisInfo);
         RecordPageGenerator::drawTrendGraph(&painter, axisInfo, trendGraphInfos.at(curDrawnGraph));
-        RecordPageGenerator::drawTrendGraphEventSymbol(&painter, axisInfo, trendGraphInfos.at(curDrawnGraph), eventTimeList);
+        RecordPageGenerator::drawTrendGraphEventSymbol(&painter, axisInfo, trendGraphInfos.at(curDrawnGraph), eventList);
         curDrawnGraph++;
     }
 
@@ -214,7 +227,7 @@ RecordPage *TrendGraphPageGeneratorPrivate::drawGraphPage()
 }
 
 TrendGraphPageGenerator::TrendGraphPageGenerator(const QList<TrendGraphInfo> &trendInfos,
-        const QList<unsigned> &eventList, QObject *parent)
+        const QList<EventInfoSegment> &eventList, QObject *parent)
     : RecordPageGenerator(parent), d_ptr(new TrendGraphPageGeneratorPrivate)
 {
     if (trendInfos.size() > 0)
@@ -223,8 +236,8 @@ TrendGraphPageGenerator::TrendGraphPageGenerator(const QList<TrendGraphInfo> &tr
         d_ptr->endTime = trendInfos.first().endTime;
     }
     d_ptr->trendGraphInfos = trendInfos;
-    d_ptr->eventTimeList = eventList;
-    d_ptr->deltaT = (d_ptr->endTime - d_ptr->startTime) /  AXIS_X_SECTION_NUM;
+    d_ptr->eventList = eventList;
+    d_ptr->deltaT = (d_ptr->endTime - d_ptr->startTime) /  (AXIS_X_DATA_SECTION_NUM);
 }
 
 TrendGraphPageGenerator::~TrendGraphPageGenerator()
@@ -243,7 +256,7 @@ RecordPage *TrendGraphPageGenerator::createPage()
     case TitlePage:
         // BUG: patient info of the event might not be the current session patient
         d_ptr->curPageType = TrendGraphPage;
-        return createTitlePage(QString(trs("GraphTrendRecording")), patientManager.getPatientInfo());
+        return createTitlePage(QString(trs("GraphicTrendsPrint")), patientManager.getPatientInfo());
 
     case TrendGraphPage:
         if (d_ptr->curDrawnGraph < d_ptr->trendGraphInfos.size())

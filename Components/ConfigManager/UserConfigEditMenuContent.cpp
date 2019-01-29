@@ -42,7 +42,6 @@ public:
 
         ITEM_LTW_CONFIG_LIST = 0,
     };
-
     UserConfigEditMenuContentPrivate()
         :  curConfig(NULL), curEditIndex(-1),
            configDataModel(NULL), configListView(NULL),
@@ -86,9 +85,19 @@ void UserConfigEditMenuContentPrivate::updateConfigList()
     QStringList configNameList;
     for (int i = 0; i < configs.count(); i++)
     {
-        configNameList.append(configs.at(i).name);
+        QString nameStr = QString("%1(%2)").arg(configs.at(i).name).arg(trs(configs.at(i).patType));
+        configNameList.append(nameStr);
     }
     configDataModel->setStringList(configNameList);
+
+    if (configNameList.isEmpty())
+    {
+        configListView->setEnabled(false);
+    }
+    else
+    {
+        configListView->setEnabled(true);
+    }
 
     int curSelectedRow = configListView->curCheckedRow();
     bool isEnable;
@@ -170,8 +179,10 @@ void UserConfigEditMenuContent::onBtnClick()
         case UserConfigEditMenuContentPrivate::ITEM_BTN_ADD_CONFIG:
         {
             PatientTypeSelectWindow patientW;
+            windowManager.showWindow(&patientW,
+                                     WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
             // 选择有效item后退出时返回：1
-            if (patientW.exec() != QDialog::Accepted)
+            if (patientW.result() != QDialog::Accepted)
             {
                 break;
             }
@@ -186,7 +197,7 @@ void UserConfigEditMenuContent::onBtnClick()
                 delete d_ptr->curConfig;
             }
 
-            PatientType type;
+            PatientType type = PATIENT_TYPE_NULL;
             QString configPath;
             patientW.getConfigInfo(type, configPath);
 
@@ -287,8 +298,8 @@ void UserConfigEditMenuContent::onBtnClick()
 
 void UserConfigEditMenuContent::onEditFinished()
 {
-    //  can't add, too many
-    //  TODO show some message
+    // can't add, too many
+    // TODO :show some message
     QString configName = d_ptr->editWindow->getCurrentEditConfigName();
     if (configName.isEmpty())
     {
@@ -324,9 +335,6 @@ void UserConfigEditMenuContent::layoutExec()
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setMargin(10);
     layout->setAlignment(Qt::AlignTop);
-
-    QLabel *label = new QLabel(trs("ConfigManagerment"));
-    layout->addWidget(label);
 
     ListView *listView = new ListView(this);
     listView->setItemDelegate(new ListViewItemDelegate(listView));

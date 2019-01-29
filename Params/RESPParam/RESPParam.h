@@ -103,6 +103,18 @@ public:
      */
     void setOxyCRGRrHrTrend(OxyCRGRRHRWaveWidget *w);
 
+    /**
+     * @brief setSweepMode  设置波形模式
+     * @param mode 波形模式
+     */
+    void setSweepMode(RESPSweepMode mode);
+
+    /**
+     * @brief getSweepMode  获取波形模式
+     * @return  返回波形模式
+     */
+    RESPSweepMode getSweepMode(void);
+
 public:
     // 设置/获取波形速度。
     void setSweepSpeed(RESPSweepSpeed speed);
@@ -131,6 +143,9 @@ public:
 
     // 使能呼吸计算
     void enableRespCalc(bool enable);
+
+signals:
+    void calcLeadChanged(RESPLead lead);
 
 private slots:
     void onPaletteChanged(ParamID id);

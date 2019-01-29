@@ -18,6 +18,7 @@
 #include "BaseDefine.h"
 #include "TrendWidgetLabel.h"
 #include <QTimer>
+#include "AlarmConfig.h"
 
 /**************************************************************************************************
  * 重绘。
@@ -62,18 +63,36 @@ void TrendWidget::resizeEvent(QResizeEvent *e)
     setTextSize();
 }
 
+void TrendWidget::showAlarmOff()
+{
+    QList<SubParamID> subParams = getShortTrendSubParams();
+    if (subParams.count() == 0)
+    {
+        return;
+    }
+    bool alarmOffVisabled = false;
+    QList<SubParamID>::ConstIterator iter = subParams.constBegin();
+    for (; iter != subParams.end(); iter++)
+    {
+        if (!alarmConfig.isLimitAlarmEnable(*iter))
+        {
+            alarmOffVisabled = true;
+        }
+    }
+    alarmOffIcon->setVisible(alarmOffVisabled);
+}
+
 /**************************************************************************************************
  * 功能： 趋势数据显示颜色。
  * 参数：
  *      psrc:趋势数据设置颜色。
  *************************************************************************************************/
-QPalette TrendWidget::normalPalette(QPalette psrc)
+void TrendWidget::normalPalette(QPalette &psrc)
 {
     if (psrc.window().color() != Qt::black)     // 趋势数据正常情况下，背景为黑色
     {
         psrc.setColor(QPalette::Window, Qt::black);
     }
-    return psrc;
 }
 
 /**************************************************************************************************
@@ -100,8 +119,7 @@ void TrendWidget::showAlarmStatus(QWidget *value)
 
 void TrendWidget::showAlarmParamLimit(QWidget *valueWidget, const QString &valueStr, QPalette psrc)
 {
-    QPalette p = upLimit->palette();
-    QPalette alaColor = alarmPalette(p);
+    normalPalette(psrc);
     double value = valueStr.toDouble();
     double up = upLimit->text().toDouble();
     double down = downLimit->text().toDouble();
@@ -114,7 +132,6 @@ void TrendWidget::showAlarmParamLimit(QWidget *valueWidget, const QString &value
         upLimit->setPalette(psrc);
     }
 
-    p = downLimit->palette();
     if (value < down)
     {
         downLimit->setPalette(valueWidget->palette());
@@ -125,8 +142,41 @@ void TrendWidget::showAlarmParamLimit(QWidget *valueWidget, const QString &value
     }
 }
 
+// 将控件下的全部控件都刷新颜色
+void setWidgetPalette(QLayout *layout, QPalette psrc)
+{
+    for (int i = 0; i < layout->count(); i++)
+    {
+        if (layout->itemAt(i)->layout())
+        {
+            setWidgetPalette(layout->itemAt(i)->layout(), psrc);
+        }
+        else if (layout->itemAt(i)->widget())
+        {
+            QWidget *item = layout->itemAt(i)->widget();
+            if (item->palette().windowText().color() != psrc.windowText().color())
+            {
+                layout->itemAt(i)->widget()->setPalette(psrc);
+            }
+        }
+    }
+}
+
+void TrendWidget::showNormalStatus(QPalette psrc)
+{
+    normalPalette(psrc);
+    setWidgetPalette(contentLayout, psrc);
+}
+
+void TrendWidget::showNormalStatus(QLayout *layout, QPalette psrc)
+{
+    normalPalette(psrc);
+    setWidgetPalette(layout, psrc);
+}
+
 void TrendWidget::showNormalStatus(QWidget *value, QPalette psrc)
 {
+    normalPalette(psrc);
     setPalette(psrc);
     QPalette p = value->palette();
     if (p.windowText().color() != psrc.windowText().color())
@@ -187,6 +237,15 @@ void TrendWidget::updatePalette(const QPalette &pal)
 void TrendWidget::restoreNormalStatusLater()
 {
     QTimer::singleShot(500, this, SLOT(doRestoreNormalStatus()));
+}
+
+void TrendWidget::doAlarmOff(SubParamID subParamId)
+{
+    QList<SubParamID> subParams = getShortTrendSubParams();
+    if (subParams.contains(subParamId))
+    {
+        showAlarmOff();
+    }
 }
 
 /**************************************************************************************************
@@ -267,6 +326,12 @@ TrendWidget::TrendWidget(const QString &widgetName, bool vertical)
     downLimit = new QLabel("", this);
     downLimit->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
+    alarmOffIcon = new QLabel(this);
+    QPixmap icon("/usr/local/nPM/icons/AlarmOff.png");
+    icon = icon.scaled(20, 20);
+    alarmOffIcon->setPixmap(icon);
+    alarmOffIcon->setVisible(false);
+
     mLayout = new QHBoxLayout();
 
     if (!vertical)
@@ -274,8 +339,16 @@ TrendWidget::TrendWidget(const QString &widgetName, bool vertical)
         QVBoxLayout *vLayout = new QVBoxLayout();
         vLayout->addWidget(nameLabel);
         vLayout->addWidget(unitLabel);
-        vLayout->addWidget(upLimit);
-        vLayout->addWidget(downLimit);
+
+        QVBoxLayout *vLayoutLimit = new QVBoxLayout();
+        vLayoutLimit->addWidget(upLimit);
+        vLayoutLimit->addWidget(downLimit);
+
+        QHBoxLayout *hLayout = new QHBoxLayout();
+        hLayout->addWidget(alarmOffIcon, 1);
+        hLayout->addLayout(vLayoutLimit, 1);
+
+        vLayout->addLayout(hLayout);
         vLayout->addLayout(mLayout, 1);
         vLayout->addStretch();
         vLayout->setSpacing(0);
@@ -289,6 +362,8 @@ TrendWidget::TrendWidget(const QString &widgetName, bool vertical)
 
         setLayout(contentLayout);
     }
+
+    connect(&alarmConfig, SIGNAL(alarmOff(SubParamID)), this, SLOT(doAlarmOff(SubParamID)));
 }
 
 /**************************************************************************************************

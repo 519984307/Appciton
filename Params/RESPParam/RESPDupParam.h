@@ -23,7 +23,7 @@ class RESPDupParam: public Param
 public:
     enum BrSourceType {
         BR_SOURCE_CO2,
-        BR_SOURCE_RESP,
+        BR_SOURCE_ECG,
     };
 
     enum ParamSourceType {
@@ -111,12 +111,24 @@ public:
 
     // 刷新参数上下限
     virtual void updateSubParamLimit(SubParamID id);
+
+signals:
+    /**
+     * @brief brSourceStatusUpdate  br来源状态更新
+     */
+    void brSourceStatusUpdate();
+
 private slots:
     void onPaletteChanged(ParamID id);
 
 private:
     // 构造。
     RESPDupParam();
+
+    /**
+     * @brief handleBRRRValue  handle br/rr value when update br/rr value
+     */
+    void handleBRRRValue();
 
     RESPTrendWidget *_trendWidget;
 

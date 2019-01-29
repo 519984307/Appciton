@@ -15,6 +15,7 @@
 #include "KeyInputPanel.h"
 #include "IConfig.h"
 #include "MessageBox.h"
+#include "WindowManager.h"
 
 class ConfigManagerPassWordEditMenuContentPrivate
 {
@@ -51,6 +52,15 @@ void ConfigManagerPassWordEditMenuContent::layoutExec()
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
 }
 
+static bool checkPasswordValue(const QString &password)
+{
+    if (password.length() != 8)
+    {
+        return false;
+    }
+    return true;
+}
+
 void ConfigManagerPassWordEditMenuContent::onBtnReleased()
 {
     // 调用数字键盘
@@ -71,24 +81,17 @@ void ConfigManagerPassWordEditMenuContent::onBtnReleased()
     systemConfig.getStrValue("General|ConfigManagerPassword", lastPassword);
     lastPassword = QString("%1:%2").arg(trs("LastPassword")).arg(lastPassword);
     numberPad.setInitString(lastPassword, true);
+    numberPad.setCheckValueHook(checkPasswordValue);
+    QString invalidStr = trs("Input8DigitsPassword");
+    numberPad.setInvalidHint(invalidStr);
 
-    if (!numberPad.exec())
+    windowManager.showWindow(&numberPad,
+                             WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
+    if (numberPad.result() == QDialog::Rejected)
     {
-        MessageBox message(trs("EditPassWord"), trs("EditPasswordNotSuccess"), false);
-        message.exec();
         return;
     }
     QString prePassword = numberPad.getStrValue();
-    bool isOk;
-    if ((prePassword.length() != 8)
-        || (prePassword.toInt(&isOk) < 0)
-        || (!isOk))
-    {
-        MessageBox message(trs("EditPassWord"), trs("EditPasswordNotSuccess"), false);
-        message.exec();
-        return;
-    }
-
     if (systemConfig.setStrValue("General|ConfigManagerPassword", prePassword))
     {
         MessageBox message(trs("EditPassWord"), trs("EditPasswordSuccess"), false);

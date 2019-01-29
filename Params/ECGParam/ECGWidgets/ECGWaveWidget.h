@@ -54,8 +54,12 @@ public:
     // 添加波形数据。
     void addWaveformData(int data, int pace = 0);
 
-    // 设置波形增益。
-    void setGain(ECGGain gain);
+    /**
+     * @brief setGain 设置波形增益
+     * @param gain
+     * @param isAuto 是否为自动增益导致的增益设置
+     */
+    void setGain(ECGGain gain, bool isAuto = false);
 
     // 设置12导界面下波形增益
     void set12LGain(ECGGain gain);
@@ -103,6 +107,9 @@ public:
      * @param isVisible
      */
     void setWaveInfoVisible(bool isVisible);
+
+    /* reimplment */
+    void updateWidgetConfig();
 
 protected:
     // 重绘事件。

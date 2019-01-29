@@ -80,6 +80,12 @@ public:
     // check whether limit alarm is enable
     bool isLimitAlarmEnable(SubParamID subParamId);
 
+    /**
+     * @brief hasLimitAlarmDisable 是否有参数报警被关闭
+     * @return
+     */
+    bool hasLimitAlarmDisable();
+
     // set limit alarm enable or not
     void setLimitAlarmEnable(SubParamID subParamId, bool enable);
 
@@ -95,6 +101,9 @@ public:
     // get ruler config
     ParamRulerConfig getParamRulerConfig(SubParamID subParamId, UnitType unit);
 
+    // set ruler config
+    void setParamRulerConfig(SubParamID subParamID, UnitType unit, int low, int high);
+
     // set the alarm config
     void setLimitAlarmConfig(SubParamID subParamId, UnitType unit, const LimitAlarmConfig &config);
 
@@ -103,6 +112,14 @@ public:
 
     // utility function to convert the low limit to string
     static QString getLowLimitStr(const LimitAlarmConfig &config);
+
+    /**
+     * @brief clearLimitAlarmInfo  清除报警限信息
+     */
+    void clearLimitAlarmInfo();
+
+signals:
+    void alarmOff(SubParamID subParamId);
 
 private slots:
     void onPatientTypeChange(PatientType type);

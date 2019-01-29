@@ -64,10 +64,6 @@ public:
     // 模块复位
     void reset();
 
-    // 设置/获取增益。
-    void setGain(SPO2Gain gain);
-    SPO2Gain getGain(void);
-
     // 取值范围
     int getSPO2MaxValue(void);
 
@@ -147,9 +143,17 @@ public:
     void setAverageTime(AverageTime index);
     AverageTime getAverageTime(void);
 
-    // 设置/获取灵敏度。
-    void setSensitivity(SensitivityMode sens);
-    SensitivityMode getSensitivity(void);
+    /**
+     * @brief setSensitivity  设置灵敏度
+     * @param sens  灵敏度值
+     */
+    void setSensitivity(int sens);
+
+    /**
+     * @brief getSensitivity  获取灵敏度
+     * @return sens
+     */
+    int getSensitivity();
 
     // 设置/获取快速血氧
     void setFastSat(bool isFast);
@@ -177,6 +181,26 @@ public:
 
     // 刷新参数上下限
     virtual void updateSubParamLimit(SubParamID id);
+
+    /**
+     * @brief setModuleType  设置模块类型
+     * @param type  模块类型
+     */
+    void setModuleType(SPO2ModuleType type);
+
+    /**
+     * @brief getModuleType  获取模块类型
+     * @return  模块类型
+     */
+    SPO2ModuleType getModuleType() const;
+
+    /**
+     * @brief setNibpSameSide 设置NIBP同侧功能
+     * @param flag
+     */
+    void setNibpSameSide(bool flag);
+    bool isNibpSameSide(void);
+
 private slots:
     void checkSelftest();
     void onPaletteChanged(ParamID id);
@@ -199,11 +223,11 @@ private:
 
     bool _isValid;
     bool _sensorOff;
-    SPO2Gain _gain;
 
     int _recPackageInPowerOn2sec;  // if receve 5 packages, selftest success, or selftest failed
 
     OxyCRGSPO2TrendWidget *_oxyCRGSPO2Trend;
     bool _connectedProvider;
+    SPO2ModuleType _moduleType;
 };
 #define spo2Param (SPO2Param::construction())

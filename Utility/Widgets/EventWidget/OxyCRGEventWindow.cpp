@@ -34,6 +34,8 @@
 #include "DataStorageDefine.h"
 #include "MoveButton.h"
 
+#define STOP_PRINT_TIMEOUT          (100)
+
 struct OxyCRGEventContex
 {
     OxyCRGEventContex()
@@ -83,7 +85,12 @@ public:
           cursorMoveBtn(NULL), eventMoveBtn(NULL), printBtn(NULL),
           setBtn(NULL), tableWidget(NULL), chartWidget(NULL),
           stackLayout(NULL), backend(NULL), eventNum(0),
-          curDisplayEventNum(0), isHistory(false)
+          curDisplayEventNum(0), isHistory(false),
+          printTimerId(-1),
+          waitTimerId(-1),
+          isWait(false),
+          timeoutNum(0),
+          generator(NULL)
     {
         waveInfo.id = WAVE_RESP;
         backend = eventStorageManager.backend();
@@ -206,6 +213,12 @@ public:
 
     bool isHistory;                             // 历史回顾标志
     QString historyDataPath;                    // 历史数据路径
+
+    int printTimerId;
+    int waitTimerId;
+    bool isWait;
+    int timeoutNum;
+    RecordPageGenerator *generator;
 };
 
 OxyCRGEventWindow *OxyCRGEventWindow::getInstance()
@@ -275,6 +288,35 @@ void OxyCRGEventWindow::showEvent(QShowEvent *ev)
     }
 }
 
+void OxyCRGEventWindow::timerEvent(QTimerEvent *ev)
+{
+    if (d_ptr->printTimerId == ev->timerId())
+    {
+        if (!recorderManager.isPrinting() || d_ptr->timeoutNum == 10)
+        {
+            if (!recorderManager.isPrinting())
+            {
+                recorderManager.addPageGenerator(d_ptr->generator);
+            }
+            else
+            {
+                d_ptr->generator->deleteLater();
+                d_ptr->generator = NULL;
+            }
+            killTimer(d_ptr->printTimerId);
+            d_ptr->printTimerId = -1;
+            d_ptr->timeoutNum = 0;
+        }
+        else if (d_ptr->waitTimerId == ev->timerId())
+        {
+            d_ptr->printTimerId = startTimer(STOP_PRINT_TIMEOUT);
+            killTimer(d_ptr->waitTimerId);
+            d_ptr->waitTimerId = -1;
+            d_ptr->isWait = false;
+        }
+    }
+}
+
 void OxyCRGEventWindow::waveInfoReleased(QModelIndex index)
 {
     waveInfoReleased(index.row());
@@ -335,7 +377,28 @@ void OxyCRGEventWindow::printReleased()
     trendInfos.append(d_ptr->trendInfoList.at(0));
     trendInfos.append(d_ptr->trendInfoList.at(1));
     RecordPageGenerator *generator = new OxyCRGPageGenerator(trendInfos, d_ptr->waveInfo, d_ptr->eventTitle);
-    recorderManager.addPageGenerator(generator);
+    if (recorderManager.isPrinting() && !d_ptr->isWait)
+    {
+        if (generator->getPriority() <= recorderManager.getCurPrintPriority())
+        {
+            generator->deleteLater();
+        }
+        else
+        {
+            recorderManager.stopPrint();
+            d_ptr->generator = generator;
+            d_ptr->waitTimerId = startTimer(2000);
+            d_ptr->isWait = true;
+        }
+    }
+    else if (!recorderManager.getPrintStatus())
+    {
+        recorderManager.addPageGenerator(generator);
+    }
+    else
+    {
+        generator->deleteLater();
+    }
 }
 
 void OxyCRGEventWindow::setReleased()
@@ -449,8 +512,8 @@ OxyCRGEventWindow::OxyCRGEventWindow()
 
     setWindowLayout(d_ptr->stackLayout);
 
-    int width = 800;
-    int height = 580;
+    int width = windowManager.getPopWindowWidth();
+    int height = windowManager.getPopWindowHeight();
     setFixedSize(width, height);
 }
 
@@ -535,14 +598,17 @@ void OxyCRGEventWindowPrivate::loadTrendData()
     trendInfoRR.unit = paramManager.getSubParamUnit(paramInfo.getParamID(SUB_PARAM_RR_BR), SUB_PARAM_RR_BR);
 
     ParamRulerConfig config = alarmConfig.getParamRulerConfig(SUB_PARAM_HR_PR, trendInfoHR.unit);
-    trendInfoHR.scale.min = static_cast<double>(config.downRuler / config.scale);
-    trendInfoHR.scale.max = static_cast<double>(config.upRuler / config.scale);
+    trendInfoHR.scale.min = config.downRuler;
+    trendInfoHR.scale.max = config.upRuler;
+    trendInfoHR.scale.scale = config.scale;
     config = alarmConfig.getParamRulerConfig(SUB_PARAM_SPO2, trendInfoSPO2.unit);
-    trendInfoSPO2.scale.min = static_cast<double>(config.downRuler / config.scale);
-    trendInfoSPO2.scale.max = static_cast<double>(config.upRuler / config.scale);
+    trendInfoSPO2.scale.min = config.downRuler;
+    trendInfoSPO2.scale.max = config.upRuler;
+    trendInfoSPO2.scale.scale = config.scale;
     config = alarmConfig.getParamRulerConfig(SUB_PARAM_RR_BR, trendInfoRR.unit);
-    trendInfoRR.scale.min = static_cast<double>(config.downRuler / config.scale);
-    trendInfoRR.scale.max = static_cast<double>(config.upRuler / config.scale);
+    trendInfoRR.scale.min = config.downRuler;
+    trendInfoRR.scale.max = config.upRuler;
+    trendInfoRR.scale.scale = config.scale;
 
     TrendGraphData dataHR;
     TrendGraphData dataSPO2;
@@ -644,6 +710,8 @@ void OxyCRGEventWindowPrivate::eventInfoUpdate(int curRow)
         LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subId, type);
         double limitValue = static_cast<double>(ctx.alamSegment->alarmLimit / config.scale);
         infoStr += QString::number(limitValue);
+        infoStr += " ";
+        infoStr += Unit::localeSymbol(type);
         break;
     }
     default:

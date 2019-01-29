@@ -23,6 +23,7 @@
 #include "SystemManager.h"
 #include "SystemTick.h"
 #include <QDateTime>
+#include "PatientManager.h"
 
 class TimeEditWindowPrivate
 {
@@ -41,32 +42,33 @@ public:
     };
 
     TimeEditWindowPrivate()
-        : isChangeTime(false)
+        : oldTime(0)
     {}
 
     /**
      * @brief loadOptions
      */
     void loadOptions();
-    /**
-     * @brief getMaxDay
-     * @param year
-     * @param month
-     * @return
-     */
-    int getMaxDay(int year, int month);
+
     /**
      * @brief setSysTime
      */
     void setSysTime();
 
+    /**
+     * @brief getSetupTime 获取设置的时间
+     * @return
+     */
+    QDateTime getSetupTime();
+
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, SpinBox *> spinBoxs;
-    bool isChangeTime;
+    unsigned oldTime;
 };
 
 void TimeEditWindowPrivate::loadOptions()
 {
+    oldTime = timeDate.time();
     spinBoxs[ITEM_SPB_YEAR]->setValue(timeDate.getDateYear());
     spinBoxs[ITEM_SPB_MONTH]->setValue(timeDate.getDateMonth());
     spinBoxs[ITEM_SPB_DAY]->setValue(timeDate.getDateDay());
@@ -75,45 +77,22 @@ void TimeEditWindowPrivate::loadOptions()
     spinBoxs[ITEM_SPB_SECOND]->setValue(timeDate.getTimeSenonds());
 
     int value = 0;
-    currentConfig.getNumValue("DateTime|DateFormat", value);
+    systemConfig.getNumValue("DateTime|DateFormat", value);
     combos[ITEM_CBO_DATE_FORMAT]->setCurrentIndex(value);
 
-    currentConfig.getNumValue("DateTime|TimeFormat", value);
+    systemConfig.getNumValue("DateTime|TimeFormat", value);
     combos[ITEM_CBO_TIME_FORMAT]->setCurrentIndex(value);
 
-    currentConfig.getNumValue("DateTime|DisplaySecond", value);
+    systemConfig.getNumValue("DateTime|DisplaySecond", value);
     combos[ITEM_CBO_DISPLAY_SEC]->setCurrentIndex(value);
 }
 
-int TimeEditWindowPrivate::getMaxDay(int year, int month)
+void TimeEditWindowPrivate::setSysTime()
 {
-    int day31[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-
-    bool isleapYear = false;
-    if (0 == year % 100)
-    {
-        if (0 == year % 400)
-        {
-            isleapYear = true;
-        }
-    }
-    else if (0 == year % 4)
-    {
-        isleapYear = true;
-    }
-
-    if (2 == month)
-    {
-        if (isleapYear)
-        {
-            return 29;
-        }
-    }
-
-    return day31[month - 1];
+    timeManager.setSystemTime(getSetupTime());
 }
 
-void TimeEditWindowPrivate::setSysTime()
+QDateTime TimeEditWindowPrivate::getSetupTime()
 {
     int y = spinBoxs[ITEM_SPB_YEAR]->getValue();
     int mon = spinBoxs[ITEM_SPB_MONTH]->getValue();
@@ -123,7 +102,7 @@ void TimeEditWindowPrivate::setSysTime()
     int s = spinBoxs[ITEM_SPB_SECOND]->getValue();
 
     QDateTime dt(QDate(y, mon, d), QTime(h, m, s));
-    timeManager.setSystemTime(dt);
+    return dt;
 }
 
 TimeEditWindow::TimeEditWindow()
@@ -302,10 +281,12 @@ void TimeEditWindow::layoutExec()
 
 void TimeEditWindow::hideEvent(QHideEvent *ev)
 {
-    if (d_ptr->isChangeTime)
+    QDateTime dt = d_ptr->getSetupTime();
+    if (d_ptr->oldTime != dt.toTime_t())
     {
         d_ptr->setSysTime();
         systemTick.resetLastTime();
+        patientManager.newPatient();
     }
     timeManager.roloadConfig();
     Window::hideEvent(ev);
@@ -321,13 +302,16 @@ void TimeEditWindow::onComboBoxIndexChanged(int index)
         switch (item)
         {
         case TimeEditWindowPrivate::ITEM_CBO_DATE_FORMAT:
-            currentConfig.setNumValue("DateTime|DateFormat", index);
+            systemConfig.setNumValue("DateTime|DateFormat", index);
             break;
         case TimeEditWindowPrivate::ITEM_CBO_TIME_FORMAT:
-            currentConfig.setNumValue("DateTime|TimeFormat", index);
+            systemConfig.setNumValue("DateTime|TimeFormat", index);
+            QMetaObject::invokeMethod(&systemManager,
+                                      "systemTimeFormatUpdated",
+                                      Q_ARG(TimeFormat, static_cast<TimeFormat>(index)));
             break;
         case TimeEditWindowPrivate::ITEM_CBO_DISPLAY_SEC:
-            currentConfig.setNumValue("DateTime|DisplaySecond", index);
+            systemConfig.setNumValue("DateTime|DisplaySecond", index);
             break;
         default:
             break;
@@ -352,7 +336,8 @@ void TimeEditWindow::onSpinBoxValueChanged(int value, int scale)
                 int min = 0;
                 int max = 0;
                 d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getRange(min, max);
-                int curMax = d_ptr->getMaxDay(val, 2);
+                QDate date(val, 2, 1);
+                int curMax = date.daysInMonth();
                 int curVal = d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getValue();
                 if (max != curMax)
                 {
@@ -364,7 +349,6 @@ void TimeEditWindow::onSpinBoxValueChanged(int value, int scale)
                     d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->setValue(curMax);
                 }
             }
-            d_ptr->isChangeTime = true;
             break;
         }
         case TimeEditWindowPrivate::ITEM_SPB_MONTH:
@@ -372,7 +356,8 @@ void TimeEditWindow::onSpinBoxValueChanged(int value, int scale)
             int min = 0;
             int max = 0;
             d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getRange(min, max);
-            int curMax = d_ptr->getMaxDay(d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_YEAR]->getValue(), val);
+            QDate date(d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_YEAR]->getValue(), val, 1);
+            int curMax = date.daysInMonth();
             int curVal = d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getValue();
             if (max != curMax)
             {
@@ -383,14 +368,12 @@ void TimeEditWindow::onSpinBoxValueChanged(int value, int scale)
             {
                 d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->setValue(curMax);
             }
-            d_ptr->isChangeTime = true;
             break;
         }
         case TimeEditWindowPrivate::ITEM_SPB_DAY:
         case TimeEditWindowPrivate::ITEM_SPB_HOUR:
         case TimeEditWindowPrivate::ITEM_SPB_MINUTE:
         case TimeEditWindowPrivate::ITEM_SPB_SECOND:
-            d_ptr->isChangeTime = true;
             break;
         default:
             break;

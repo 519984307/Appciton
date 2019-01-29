@@ -45,12 +45,21 @@ public:
         :q_ptr(q_ptr),
           timer(NULL),
           demoWidget(NULL)
+        , curWindow(NULL)
     {}
 
     WindowManager * const q_ptr;
     QList<QPointer<Window> > windowStacks;
     QTimer *timer;              // timer to auto close the windows
     QWidget *demoWidget;
+    Window *curWindow;
+
+    /**
+     * @brief menuProperPos 菜单显示合适的位置
+     * @param w
+     * @return
+     */
+    QPoint menuProperPos(Window *w);
 };
 
 void WindowManager::onLayoutChanged()
@@ -64,17 +73,17 @@ void WindowManager::onLayoutChanged()
 /***************************************************************************************************
  * 功能： 获取弹出菜单宽度
  **************************************************************************************************/
-int WindowManager::getPopMenuWidth()
+int WindowManager::getPopWindowWidth()
 {
-    return 600;
+    return 710;
 }
 
 /***************************************************************************************************
  * 功能： 获取弹出菜单高度
  **************************************************************************************************/
-int WindowManager::getPopMenuHeight()
+int WindowManager::getPopWindowHeight()
 {
-    return 500;
+    return 530;
 }
 
 /***************************************************************************************************
@@ -132,6 +141,40 @@ WindowManager::~WindowManager()
     _winMap.clear();
 }
 
+QPoint WindowManagerPrivate::menuProperPos(Window *w)
+{
+    // move the proper position
+    QRect r = layoutManager.getMenuArea();
+    QPoint globalTopLeft;
+    if (layoutManager.getUFaceType() == UFACE_MONITOR_BIGFONT)
+    {
+        // 菜单居中显示
+        globalTopLeft = r.center() - w->rect().center();
+    }
+    else
+    {
+        // 菜单将靠右上显示
+        r.adjust(r.width() - w->width(), 0, 0, 0);
+        if (r.height() < w->height())
+        {
+            // 显示不全时，遮挡第一道波形
+            r.adjust(0, r.height() - w->height(), 0, 0);
+        }
+        globalTopLeft = r.topLeft();
+        if (windowStacks.count() > 1)
+        {
+            // 二级以上的菜单在一级菜单区域中居中显示
+            Window *win = windowStacks.at(0);
+            QPoint tmp = globalTopLeft - QPoint((win->width() - w->width()) / 2, -(win->height() - w->height()) / 2);
+            if (tmp.rx() + w->width() <= r.topRight().rx())
+            {
+                globalTopLeft = tmp;
+            }
+        }
+    }
+    return globalTopLeft;
+}
+
 void WindowManager::showWindow(Window *w, ShowBehavior behaviors)
 {
     if (w == NULL)
@@ -139,6 +182,8 @@ void WindowManager::showWindow(Window *w, ShowBehavior behaviors)
         qWarning() << "Invalid window";
         return;
     }
+
+    d_ptr->curWindow = w;
 
     Window *top = topWindow();
 
@@ -188,11 +233,6 @@ void WindowManager::showWindow(Window *w, ShowBehavior behaviors)
         }
     }
 
-    if (!(behaviors & ShowBehaviorNoAutoClose))
-    {
-        d_ptr->timer->start();
-    }
-
     QPointer<Window> newP = w;
     // remove the window in the stack if it's already exist.
     QList<QPointer<Window> >::Iterator iter = d_ptr->windowStacks.begin();
@@ -204,33 +244,29 @@ void WindowManager::showWindow(Window *w, ShowBehavior behaviors)
             break;
         }
     }
+
+    // 添加窗口定时器是否启动属性
+    bool timerStart = true;
+    if (behaviors & ShowBehaviorNoAutoClose)
+    {
+        timerStart = false;
+    }
+    newP->setProperty("TimerStart", qVariantFromValue(timerStart));
+
     d_ptr->windowStacks.append(newP);
     connect(w, SIGNAL(windowHide(Window *)), this, SLOT(onWindowHide(Window *)), Qt::DirectConnection);
-
-    // move the proper position
-    QRect r = layoutManager.getMenuArea();
-    QPoint globalTopLeft = r.topLeft();
-    r.moveTo(0, 0);
 
     if (behaviors & ShowBehaviorModal)
     {
         // 在显示模态窗口之前移动合适的位置
-        w->move(globalTopLeft + r.center() - w->rect().center());
-        if (w->x() < 0)
-        {
-            w->move(this->geometry().x() + 10, w->y());
-        }
+        w->move(d_ptr->menuProperPos(w));
         w->exec();
     }
     else
     {
         w->show();
         // 在show之后可以根据自适应的窗口大小移动位置
-        w->move(globalTopLeft + r.center() - w->rect().center());
-        if (w->x() < 0)
-        {
-            w->move(this->geometry().x() + 10, w->y());
-        }
+        w->move(d_ptr->menuProperPos(w));
         w->activateWindow();
     }
 }
@@ -289,6 +325,28 @@ bool WindowManager::eventFilter(QObject *obj, QEvent *ev)
     if (d_ptr->windowStacks.isEmpty())
     {
         return false;
+    }
+
+    if (ev->type() == QEvent::Show)
+    {
+        bool timerStart = true;
+        QList<QPointer<Window> >::Iterator iter = d_ptr->windowStacks.begin();
+        for (; iter != d_ptr->windowStacks.end(); ++iter)
+        {
+            if (iter->data() == d_ptr->curWindow)
+            {
+                timerStart = d_ptr->curWindow->property("TimerStart").toBool();
+                break;
+            }
+        }
+        if (timerStart == true)
+        {
+            d_ptr->timer->start();
+        }
+        else
+        {
+            d_ptr->timer->stop();
+        }
     }
 
     if ((ev->type() == QEvent::KeyPress) || (ev->type() == QEvent::MouseButtonPress))
@@ -353,6 +411,7 @@ void WindowManager::onWindowHide(Window *w)
         {
             top->showMask(false);
             top->show();
+            d_ptr->curWindow = top;
         }
         else
         {

@@ -25,6 +25,7 @@ public:
         SOUND_TYPE_ERROR,
         SOUND_TYPE_PULSE,
         SOUND_TYPE_HEARTBEAT,
+        SOUND_TYPE_NIBP_COMPLETE,
         SOUND_TYPE_ALARM,
         SOUND_TYPE_NR,
     };
@@ -73,6 +74,16 @@ public:
     void heartBeatTone();
 
     /**
+     * @brief alarmTone  play alarm sound
+     */
+    void alarmTone();
+
+    /**
+     * @brief nibpCompleteTone play nibp complete tone
+     */
+    void nibpCompleteTone();
+
+    /**
      * @brief updateAlarm update alarm info
      * @param hasAlarm  the alarm type exist or not
      * @param curHighestPriority if alarm exists, need to provide the current highest priority alarm level
@@ -98,6 +109,18 @@ public:
      */
     void selfTest();
 
+    /**
+     * @brief stopHandlingSound  是否停止处理声音
+     * @param enable  true-不允许播放  false-允许播放
+     */
+    void stopHandlingSound(bool enable);
+
+public slots:
+    /**
+     * @brief volumeInit volume initialize slot, call after selftest
+     */
+    void volumeInit();
+
 private slots:
     /**
      * @brief alarmTimeout handle looping timer timeout event
@@ -105,15 +128,9 @@ private slots:
     void alarmTimeout();
 
     /**
-     * @brief volumeInit volume initialize slot, call after selftest
-     */
-    void volumeInit();
-
-    /**
      * @brief playFinished  callback when finished, no matter play success or not
      */
     void playFinished();
-
 
 private:
     SoundManager();

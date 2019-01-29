@@ -45,6 +45,22 @@ private slots:
      */
     void onAlarmBtnReleased(void);
 
+    /**
+     * @brief onSpinBoxReleased
+     */
+    void onSpinBoxReleased(int value, int scale);
+
+    /**
+     * @brief onCboItemFocusChanged combox item focus changed
+     * @param index
+     */
+    void onCboItemFocusChanged(int index);
+
+    /**
+     * @brief onStatBtnStateChanged stat button state changed
+     * @param true: start stat  false: stop stat
+     */
+    void onStatBtnStateChanged(bool);
 private:
     NIBPMenuContentPrivate * const d_ptr;
 };

@@ -32,6 +32,21 @@ void CO2TrendWidget::_releaseHandle(IWidget *iWidget)
     p->popup(trs("CO2Menu"));
 }
 
+void CO2TrendWidget::_loadConfig()
+{
+    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_CO2));
+    setPalette(palette);
+    _etCO2Label->setPalette(palette);
+    _etco2Value->setPalette(palette);
+    _awRRName->setPalette(palette);
+    _fico2Label->setPalette(palette);
+    _awRRValue->setPalette(palette);
+    _fico2Value->setPalette(palette);
+
+    // 设置上下限
+    updateLimit();
+}
+
 /**************************************************************************************************
  * 转换值。
  *************************************************************************************************/
@@ -115,7 +130,7 @@ void CO2TrendWidget::updateLimit()
  *************************************************************************************************/
 void CO2TrendWidget::setUNit(UnitType unit)
 {
-    setUnit(Unit::getSymbol(unit));
+    setUnit(Unit::localeSymbol(unit));
 }
 
 /**************************************************************************************************
@@ -165,23 +180,22 @@ void CO2TrendWidget::isAlarm(int id, bool flag)
 void CO2TrendWidget::showValue()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_CO2));
-    QPalette fgColor = normalPalette(psrc);
     if (_fico2Alarm || _etco2Alarm)
     {
         if (!_etco2Alarm)
         {
-            showNormalStatus(_etco2Value, fgColor);
+            showNormalStatus(_etco2Value, psrc);
         }
 
         if (!_fico2Alarm)
         {
-            showNormalStatus(_fico2Value, fgColor);
+            showNormalStatus(_fico2Value, psrc);
         }
 
         if (_etco2Alarm)
         {
             showAlarmStatus(_etco2Value);
-            showAlarmParamLimit(_etco2Value, _etco2Str, fgColor);
+            showAlarmParamLimit(_etco2Value, _etco2Str, psrc);
         }
 
         if (_fico2Alarm)
@@ -190,6 +204,10 @@ void CO2TrendWidget::showValue()
         }
 
         restoreNormalStatusLater();
+    }
+    else
+    {
+        showNormalStatus(psrc);
     }
 }
 
@@ -241,35 +259,28 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget")
 
     // 高度设定为与RESP的一致。
 //    setFixedHeight(86);
-
-    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_CO2));
-    setPalette(palette);
     setName("CO2");
     setUnit(Unit::localeSymbol(co2Param.getUnit()));
 
-    // 设置上下限
-    updateLimit();
+    // 设置报警关闭标志
+    showAlarmOff();
 
 //    // 构造资源。
     _etCO2Label = new QLabel("Et", this);
-    _etCO2Label->setPalette(palette);
     _etCO2Label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
     _etco2Value = new QLabel();
     _etco2Value->setAlignment(Qt::AlignHCenter | Qt::AlignTop|Qt::AlignVCenter);
 
-    _etco2Value->setPalette(palette);
     _etco2Value->setText(InvStr());
     QHBoxLayout *layout = new QHBoxLayout();
     layout->addWidget(_etCO2Label, 1);
     layout->addWidget(_etco2Value, 3);
 
     _awRRName = new QLabel("awRR", this);
-    _awRRName->setPalette(palette);
     _awRRName->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
     _fico2Label = new QLabel("Fi", this);
-    _fico2Label->setPalette(palette);
     _fico2Label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     QVBoxLayout *vLayout = new QVBoxLayout();
     vLayout->addWidget(_awRRName);
@@ -278,12 +289,10 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget")
 
     _awRRValue = new QLabel(this);
     _awRRValue->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
-    _awRRValue->setPalette(palette);
     _awRRValue->setText(InvStr());
 
     _fico2Value = new QLabel(this);
     _fico2Value->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
-    _fico2Value->setPalette(palette);
     _fico2Value->setText(InvStr());
     vLayout = new QVBoxLayout();
     vLayout->addWidget(_awRRValue);
@@ -293,6 +302,8 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget")
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
+
+    _loadConfig();
 }
 
 /**************************************************************************************************
@@ -313,8 +324,10 @@ QList<SubParamID> CO2TrendWidget::getShortTrendSubParams() const
 void CO2TrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_CO2));
-    psrc = normalPalette(psrc);
-    showNormalParamLimit(psrc);
-    showNormalStatus(_etco2Value, psrc);
-    showNormalStatus(_fico2Value, psrc);
+    showNormalStatus(psrc);
+}
+
+void CO2TrendWidget::updateWidgetConfig()
+{
+    _loadConfig();
 }

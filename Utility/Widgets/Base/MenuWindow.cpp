@@ -20,6 +20,7 @@
 #include "LanguageManager.h"
 #include <QList>
 #include <QPainter>
+#include "ThemeManager.h"
 
 class MenuWindowPrivate
 {
@@ -46,7 +47,7 @@ MenuWindow::MenuWindow()
     : Window(), d_ptr(new MenuWindowPrivate())
 {
     setWindowTitle("Menu Window");
-    resize(800, 580);
+    resize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
 
     QHBoxLayout *layout = new QHBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
@@ -219,7 +220,6 @@ bool MenuWindow::focusNextPrevChild(bool next)
             MenuSidebarItem *item = d_ptr->sidebar->itemAt(newIndex);
             item->setFocus(next ? Qt::TabFocusReason : Qt::BacktabFocusReason);
         }
-
         return true;
     }
 
@@ -234,7 +234,6 @@ bool MenuWindow::focusNextPrevChild(bool next)
             if (w->isEnabled()
                     && (w->focusPolicy() & Qt::TabFocus)
                     && w->isVisibleTo(this)
-                    && w->isEnabled()
                     && !d_ptr->sidebar->isAncestorOf(w))
             {
                 break;
@@ -262,7 +261,6 @@ bool MenuWindow::focusNextPrevChild(bool next)
             if (w->isEnabled()
                     && (w->focusPolicy() & Qt::TabFocus)
                     && w->isVisibleTo(this)
-                    && w->isEnabled()
                     && !d_ptr->sidebar->isAncestorOf(w))
             {
                 break;
@@ -277,6 +275,7 @@ bool MenuWindow::focusNextPrevChild(bool next)
             {
                 area->ensureWidgetVisible(w);
             }
+
             return true;
         }
     }
@@ -297,9 +296,11 @@ void MenuWindow::showEvent(QShowEvent *ev)
         bottomLayout->setContentsMargins(4, 4, 8, 4);
         bottomLayout->addStretch(1);
 
-        d_ptr->retBtn = new Button("", QIcon("/usr/local/nPM/icons/BackLeft.png"));
+        QSize iconSize(32, 32);
+        QIcon icon = themeManger.getIcon(ThemeManager::IconReturn, iconSize);
+        d_ptr->retBtn = new Button(QString(), icon);
         d_ptr->retBtn->setButtonStyle(Button::ButtonIconOnly);
-        d_ptr->retBtn->setIconSize(QSize(32, 32));
+        d_ptr->retBtn->setIconSize(iconSize);
         d_ptr->retBtn->setMinimumWidth(100);
         bottomLayout->addWidget(d_ptr->retBtn);
         d_ptr->rightLayout->addLayout(bottomLayout);

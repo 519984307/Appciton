@@ -18,6 +18,8 @@
 #include "StorageManager.h"
 #include <QDateTime>
 #include "SystemManager.h"
+#include "SystemAlarm.h"
+#include "Alarm.h"
 
 DataStorageDirManager *DataStorageDirManager::_selfObj = NULL;
 static QString _lastFolder;
@@ -54,6 +56,34 @@ quint64 DataStorageDirManager::dirSize(const QString &dir)
     }
 
     return sizex;
+}
+
+void DataStorageDirManager::cleanCurData()
+{
+    // 删除当前文件夹中的数据，重新生成新的数据文件
+    if (_folderNameList.size() <= 1)
+    {
+        return;
+    }
+
+    QString path = _curFolder;
+    quint32 totalSize = 0;
+
+    quint32 size = _cleanupDir(path);
+    if (_previousDataSize > size)
+    {
+        _previousDataSize -= size;
+    }
+    else
+    {
+        _previousDataSize = 0;
+    }
+
+
+    totalSize = _previousDataSize + _curDataSize;
+
+    systemConfig.setNumValue("DataStorage|DataSize", totalSize);
+    emit newPatient();
 }
 
 
@@ -310,7 +340,7 @@ QString DataStorageDirManager::getRescueDataDir(int index)
     }
 
     int count = _folderNameList.count() - 1;
-    index = count - index;
+    index = count - 1 - index;
     if (index < 0 || index > count)
     {
         return QString("");
@@ -427,6 +457,7 @@ void DataStorageDirManager::createDir(bool createNew)
         Config systemDefCfg(systemConfig.getCurConfigName());
         systemConfig.setNodeValue("PrimaryCfg", systemDefCfg);
         emit newPatient();
+        alertor.removeAllPhyAlarm();
     }
 }
 
@@ -458,9 +489,10 @@ bool DataStorageDirManager::isCurRescueFolderFull()
 {
     if (_curDataSize > (unsigned) SIGNAL_RESCUE_MAX_DATA_SIZE)
     {
+        systemAlarm.setOneShotAlarm(STORAGE_SPACE_FULL, true);
         return true;
     }
-
+    systemAlarm.setOneShotAlarm(STORAGE_SPACE_FULL, false);
     return false;
 }
 
@@ -666,5 +698,25 @@ int DataStorageDirManager::_deleteDir(const QString &path)
 
     dir.rmdir(path);
 
+    return size;
+}
+
+int DataStorageDirManager::_cleanupDir(const QString &path)
+{
+    int size = 0;
+    QDir cleanDir(path);
+    foreach(QFileInfo file, cleanDir.entryInfoList(QDir::NoDotAndDotDot | QDir::Dirs | QDir::Hidden | QDir::NoSymLinks
+                                                    | QDir::Files))
+    {
+        if (file.isDir())
+        {
+            size += _deleteDir(file.filePath());
+        }
+        else
+        {
+            size += file.size();
+            QFile::remove(file.filePath());
+        }
+    }
     return size;
 }

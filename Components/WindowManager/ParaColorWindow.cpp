@@ -18,6 +18,7 @@
 #include "SystemManager.h"
 #include "IConfig.h"
 #include "ColorManager.h"
+#include "WindowManager.h"
 
 class ParaColorWindowPrivate
 {
@@ -64,9 +65,14 @@ void ParaColorWindowPrivate::loadOptions()
     for (int i = 0; i < strList.count(); i++)
     {
         color.clear();
-        MenuItem item = static_cast<MenuItem>(i);
         nodePath = QString("Display|%1").arg(strList.at(i));
         currentConfig.getStrValue(nodePath, color);
+        MenuItem item = static_cast<MenuItem>(i);
+        QMap<MenuItem, ComboBox *>::ConstIterator comboIter = combos.find(item);
+        if (comboIter == combos.constEnd())
+        {
+            continue;
+        }
         combos[item]->setCurrentIndex(colorList.indexOf(color));
         colorSetList.insert(nodePath, color);
     }
@@ -80,7 +86,7 @@ ParaColorWindow::ParaColorWindow()
     currentConfig.getStrValue("Display|AllColors", color);
     d_ptr->colorList = color.split(',', QString::KeepEmptyParts);
     setWindowTitle(trs("ParameterColorDesc"));
-    setFixedSize(480, 580);
+    setFixedSize(480, windowManager.getPopWindowHeight());
     layoutExec();
 }
 
@@ -114,117 +120,130 @@ void ParaColorWindow::layoutExec()
         comboBox->addItem(trs(d_ptr->colorList.at(i)));
     }
     itemID = static_cast<int>(ParaColorWindowPrivate::ITEM_CBO_ECG_COLOR);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
+    comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_ECG_COLOR, comboBox);
 
     // SPO2
-    label = new QLabel(trs("SPO2"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    for (int i = 0; i < d_ptr->colorList.count(); i ++)
+    if (systemManager.isSupport(CONFIG_SPO2))
     {
-        comboBox->addItem(trs(d_ptr->colorList.at(i)));
+        label = new QLabel(trs("SPO2"));
+        comboBox = new ComboBox();
+        for (int i = 0; i < d_ptr->colorList.count(); i ++)
+        {
+            comboBox->addItem(trs(d_ptr->colorList.at(i)));
+        }
+        itemID = static_cast<int>(ParaColorWindowPrivate::ITEM_CBO_SPO2_COLOR);
+        comboBox->setProperty("Item", qVariantFromValue(itemID));
+        connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+        layout->addWidget(label, d_ptr->combos.count(), 0);
+        layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+        d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_SPO2_COLOR, comboBox);
     }
-    itemID = static_cast<int>(ParaColorWindowPrivate::ITEM_CBO_SPO2_COLOR);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_SPO2_COLOR, comboBox);
 
     // NIBP
-    label = new QLabel(trs("NIBP"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    for (int i = 0; i < d_ptr->colorList.count(); i ++)
+    if (systemManager.isSupport(CONFIG_NIBP))
     {
-        comboBox->addItem(trs(d_ptr->colorList.at(i)));
+        label = new QLabel(trs("NIBP"));
+        comboBox = new ComboBox();
+        for (int i = 0; i < d_ptr->colorList.count(); i ++)
+        {
+            comboBox->addItem(trs(d_ptr->colorList.at(i)));
+        }
+        itemID = static_cast<int>(ParaColorWindowPrivate::ITEM_CBO_NIBP_COLOR);
+        comboBox->setProperty("Item", qVariantFromValue(itemID));
+        connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+        layout->addWidget(label, d_ptr->combos.count(), 0);
+        layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+        d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_NIBP_COLOR, comboBox);
     }
-    itemID = static_cast<int>(ParaColorWindowPrivate::ITEM_CBO_NIBP_COLOR);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_NIBP_COLOR, comboBox);
 
     // CO2
-    label = new QLabel(trs("CO2"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    for (int i = 0; i < d_ptr->colorList.count(); i ++)
+    if (systemManager.isSupport(CONFIG_CO2))
     {
-        comboBox->addItem(trs(d_ptr->colorList.at(i)));
+        label = new QLabel(trs("CO2"));
+        comboBox = new ComboBox();
+        for (int i = 0; i < d_ptr->colorList.count(); i ++)
+        {
+            comboBox->addItem(trs(d_ptr->colorList.at(i)));
+        }
+        itemID = static_cast<int>(ParaColorWindowPrivate::ITEM_CBO_CO2_COLOR);
+        comboBox->setProperty("Item", qVariantFromValue(itemID));
+        connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+        layout->addWidget(label, d_ptr->combos.count(), 0);
+        layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+        d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_CO2_COLOR, comboBox);
     }
-    itemID = static_cast<int>(ParaColorWindowPrivate::ITEM_CBO_CO2_COLOR);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_CO2_COLOR, comboBox);
 
     // RESP
-    label = new QLabel(trs("RESP"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    for (int i = 0; i < d_ptr->colorList.count(); i ++)
+    if (systemManager.isSupport(CONFIG_RESP))
     {
-        comboBox->addItem(trs(d_ptr->colorList.at(i)));
+        label = new QLabel(trs("RESP"));
+        comboBox = new ComboBox();
+        for (int i = 0; i < d_ptr->colorList.count(); i ++)
+        {
+            comboBox->addItem(trs(d_ptr->colorList.at(i)));
+        }
+        itemID = static_cast<int>(ParaColorWindowPrivate::ITEM_CBO_RESP_COLOR);
+        comboBox->setProperty("Item", qVariantFromValue(itemID));
+        connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+        layout->addWidget(label, d_ptr->combos.count(), 0);
+        layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+        d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_RESP_COLOR, comboBox);
     }
-    itemID = static_cast<int>(ParaColorWindowPrivate::ITEM_CBO_RESP_COLOR);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_RESP_COLOR, comboBox);
 
     // TEMP
-    label = new QLabel(trs("TEMP"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    for (int i = 0; i < d_ptr->colorList.count(); i ++)
+    if (systemManager.isSupport(CONFIG_TEMP))
     {
-        comboBox->addItem(trs(d_ptr->colorList.at(i)));
+        label = new QLabel(trs("TEMP"));
+        comboBox = new ComboBox();
+        for (int i = 0; i < d_ptr->colorList.count(); i ++)
+        {
+            comboBox->addItem(trs(d_ptr->colorList.at(i)));
+        }
+        itemID = static_cast<int>(ParaColorWindowPrivate::ITEM_CBO_TEMP_COLOR);
+        comboBox->setProperty("Item", qVariantFromValue(itemID));
+        connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+
+        layout->addWidget(label, d_ptr->combos.count(), 0);
+        layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+        d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_TEMP_COLOR, comboBox);
     }
-    itemID = static_cast<int>(ParaColorWindowPrivate::ITEM_CBO_TEMP_COLOR);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_TEMP_COLOR, comboBox);
 
     // AG color
-    label = new QLabel(trs("AG"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox;
-    for (int i = 0; i < d_ptr->colorList.count(); i++)
+    if (systemManager.isSupport(CONFIG_AG))
     {
-        comboBox->addItem(trs(d_ptr->colorList.at(i)));
+        label = new QLabel(trs("AG"));
+        comboBox = new ComboBox;
+        for (int i = 0; i < d_ptr->colorList.count(); i++)
+        {
+            comboBox->addItem(trs(d_ptr->colorList.at(i)));
+        }
+        itemID = ParaColorWindowPrivate::ITEM_CBO_AG_COLOR;
+        comboBox->setProperty("Item", qVariantFromValue(itemID));
+        connect(comboBox , SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+        layout->addWidget(label, d_ptr->combos.count(), 0);
+        layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+        d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_AG_COLOR, comboBox);
     }
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(ParaColorWindowPrivate
-                         ::ITEM_CBO_AG_COLOR, comboBox);
-    itemID = ParaColorWindowPrivate::ITEM_CBO_AG_COLOR;
-    comboBox->setProperty("Item", qVariantFromValue(itemID));
-    connect(comboBox , SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
     // IBP color
-    label = new QLabel(trs("IBP"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox;
-    for (int i = 0; i < d_ptr->colorList.count(); i++)
+    if (systemManager.isSupport(CONFIG_IBP))
     {
-        comboBox->addItem(trs(d_ptr->colorList.at(i)));
+        label = new QLabel(trs("IBP"));
+        comboBox = new ComboBox;
+        for (int i = 0; i < d_ptr->colorList.count(); i++)
+        {
+            comboBox->addItem(trs(d_ptr->colorList.at(i)));
+        }
+        itemID = ParaColorWindowPrivate::ITEM_CBO_IBP_COLOR;
+        comboBox->setProperty("Item", qVariantFromValue(itemID));
+        connect(comboBox , SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+        layout->addWidget(label, d_ptr->combos.count(), 0);
+        layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+        d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_IBP_COLOR, comboBox);
     }
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(ParaColorWindowPrivate
-                         ::ITEM_CBO_IBP_COLOR, comboBox);
-    itemID = ParaColorWindowPrivate
-             ::ITEM_CBO_IBP_COLOR;
-    comboBox->setProperty("Item", qVariantFromValue(itemID));
-    connect(comboBox , SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
     layout->setRowStretch(d_ptr->combos.count(), 1);
 
@@ -253,6 +272,7 @@ void ParaColorWindow::onComboBoxIndexChanged(int index)
     }
     ComboBox *box = qobject_cast<ComboBox *>(sender());
     QString strPath;
+    QString dupPath;
     ParamID id = PARAM_NONE;
     if (box)
     {
@@ -264,6 +284,9 @@ void ParaColorWindow::onComboBoxIndexChanged(int index)
         {
             strPath = "Display|ECGColor";
             id = PARAM_ECG;
+            dupPath = "Display|ECGDUPColor";
+            d_ptr->colorSetList[dupPath] = d_ptr->colorSetList[strPath];
+
             break;
         }
         case ParaColorWindowPrivate::ITEM_CBO_SPO2_COLOR:
@@ -317,6 +340,11 @@ void ParaColorWindow::onComboBoxIndexChanged(int index)
         if (id != PARAM_NONE && !d_ptr->paramIdList.contains(id))
         {
             d_ptr->paramIdList.append(id);
+        }
+        QMap<QString, QString>::Iterator dupIter = d_ptr->colorSetList.find(dupPath);
+        if (dupIter != d_ptr->colorSetList.end())
+        {
+            dupIter.value() = d_ptr->colorList.at(index);
         }
     }
 }

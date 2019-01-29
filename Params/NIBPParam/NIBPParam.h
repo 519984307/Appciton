@@ -18,6 +18,7 @@
 #include "TimeManager.h"
 #include "NIBPCountdownTime.h"
 #include <QMap>
+#include "SoundManager.h"
 
 struct NIBPMeasureResultInfo
 {
@@ -218,7 +219,6 @@ public:
 
 public:
     // 根据病人类型获取对应的初始压力值。
-    int getInitPressure(PatientType type);
     void setInitPressure(int index);
 
     // 设置/获取测量模式。
@@ -237,6 +237,12 @@ public:
 
     // 获取单位。
     UnitType getUnit(void);
+
+    /**
+     * @brief setUnit  设置单位
+     * @param type 单位类型
+     */
+    void setUnit(UnitType type);
 
     // 停止测量。
     void stopMeasure(void);
@@ -262,8 +268,35 @@ public:
     // 状态转为MANUAL
     void switchToManual(void);
 
+    //接收定标数据
+    void setResult(bool result);
+
+    // 获取校准是否回复
+    bool geReply();
+
+    // 获取校准结果
+    bool getResult();
+
+    // 设置/获取压力计模式下压力
+    void setManometerPressure(int16_t value);
+    int16_t getManometerPressure(void);
+
     // 刷新参数上下限
     virtual void updateSubParamLimit(SubParamID id);
+
+    /**
+     * @brief setNIBPCompleteTone 设置NIBP完成音
+     * @param volume 设置的音量
+     */
+    void setNIBPCompleteTone(SoundManager::VolumeLevel volume);
+
+signals:
+    /**
+     * @brief statBtnState 设置NIBP菜单中的STAT按键状态
+     * @param false：stop stat  true：start stat
+     */
+    void statBtnState(bool);
+
 private slots:
     void _patientTypeChangeSlot(PatientType type);
     void _btnTimeOut();
@@ -301,6 +334,10 @@ private:
     bool _connectedProvider;                // 是否连接Provider
     QString _text;
 
+    bool _reply;                 // 校准回复
+    bool _result;                // 校准结果
+    int16_t _manometerPressure;             // 压力计模式下压力
+
 private:
     typedef QMap<NIBPStateMachineType, NIBPStateMachine *> MachineStateMap;
     MachineStateMap _machines;
@@ -308,5 +345,7 @@ private:
     NIBPStateMachine *_activityMachine;       // 当前活跃状态机。
 
     QTimer *_btnTimer;
+
+    int _stateBeforeDemo;       // 保存进入demo模式前的NIBP状态
 };
 #define nibpParam (NIBPParam::construction())

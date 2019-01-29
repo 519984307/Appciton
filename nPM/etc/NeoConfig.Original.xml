@@ -49,21 +49,22 @@
         <QRSVolume>3</QRSVolume>
         <ECGLeadConvention>0</ECGLeadConvention>
         <AlarmSource>0</AlarmSource>
-        <Ecg1Wave>0</Ecg1Wave>
-        <Ecg2Wave>1</Ecg2Wave>
+        <Ecg1Wave>1</Ecg1Wave>
+        <Ecg2Wave>0</Ecg2Wave>
         <Ecg1Gain>0</Ecg1Gain>
-        <SweepSpeed>1</SweepSpeed>
+        <SweepSpeed>2</SweepSpeed>
         <HRSource>0</HRSource>
         <Filter>0</Filter>
         <DisplayMode>0</DisplayMode>
         <LeadMode>1</LeadMode>
         <NotchFilter>0</NotchFilter>
         <SmartLeadOff>0</SmartLeadOff>
-        <FilterMode>0</FilterMode>
+        <FilterMode>1</FilterMode>
         <SelfLearn>0</SelfLearn>
         <ECG12LeadPacerMaker>0</ECG12LeadPacerMaker>	
         <PacerMaker>1</PacerMaker>
         <EverLeadOn>0</EverLeadOn>
+        <FullScreenGain>3</FullScreenGain>
         <Gain>
             <ECGIWaveWidget>3</ECGIWaveWidget>
             <ECGIIWaveWidget>3</ECGIIWaveWidget>
@@ -110,30 +111,27 @@
         <AutoInterval>5</AutoInterval>
         <StatFunction>1</StatFunction>
         <AutomaticRetry>0</AutomaticRetry>
-        <AdultInitialCuffInflation>2</AdultInitialCuffInflation>
-        <PedInitialCuffInflation>4</PedInitialCuffInflation>
-        <NeoInitialCuffInflation>3</NeoInitialCuffInflation>
+        <InitialCuffInflation>90</InitialCuffInflation>
+	<CompleteTone>0</CompleteTone>
     </NIBP>
     <SPO2>
         <AverageTime>2</AverageTime>
         <Sensitivity>1</Sensitivity>
         <FastSat>0</FastSat>
         <SmartPluseTone>1</SmartPluseTone>
-        <SweepSpeed>2</SweepSpeed>
-        <Gain>0</Gain>
+        <SweepSpeed>1</SweepSpeed>
         <BeatVol>1</BeatVol>
         <ModuleControl>1</ModuleControl>
+	<NIBPSameSide>0</NIBPSameSide>
     </SPO2>
     <CO2>
         <CO2ModeDefault>1</CO2ModeDefault>
         <CO2SweepMode>0</CO2SweepMode>
-        <SweepSpeed>1</SweepSpeed>
+        <SweepSpeed>2</SweepSpeed>
         <FICO2Display>0</FICO2Display>
         <DisplayZoom>3</DisplayZoom>
-        <Compensation>
-            <O2>1</O2>
-            <NO2>0</NO2>
-        </Compensation>
+        <O2Compensation>16</O2Compensation>
+        <N2OCompensation>0</N2OCompensation>
         <CeroCalibration>0</CeroCalibration>
     </CO2>
     <CO>
@@ -144,91 +142,82 @@
         <MeasureMode>1</MeasureMode>
     </CO>
     <RESP>
+        <RESPSweepMode>0</RESPSweepMode>
         <AutoActivation>0</AutoActivation>
-        <ApneaDelay>2</ApneaDelay>
-        <BreathLead>0</BreathLead>
-        <Gain>0</Gain>
-        <SweepSpeed>1</SweepSpeed>
+        <ApneaDelay>1</ApneaDelay>
+        <BreathLead>2</BreathLead>
+        <Gain>2</Gain>
+        <SweepSpeed>2</SweepSpeed>
     </RESP>
     <Event>
-        <WaveLengthBefore>16</WaveLengthBefore>
-        <WaveLengthAfter>16</WaveLengthAfter>
+        <WaveLength>16</WaveLength>
     </Event>
     <Alarm>
-        <MinimumAlarmVolume>0</MinimumAlarmVolume>
-        <!--index(0~4)-->
-        <DefaultAlarmVolume>3</DefaultAlarmVolume>
-        <!--actual volume level(1~5)-->
-        <AlarmPauseTime>1</AlarmPauseTime>
-        <AlarmOffPrompting>0</AlarmOffPrompting>
-        <EnableAlarmAudioOff>1</EnableAlarmAudioOff>
-        <EnableAlarmOff>1</EnableAlarmOff>
-        <AlarmOffAtPowerOn>0</AlarmOffAtPowerOn>
-        <ApneaTime>2</ApneaTime>
+        <ApneaTime>1</ApneaTime>
     </Alarm>
     <AlarmSource>
 		<HR_PR Enable="1" Prio="2">
 			<bpm>
-			    <Low Min="15" Max="298">50</Low>
-			    <High Min="17" Max="300">121</High>
+			    <Low Min="15" Max="348">100</Low>
+			    <High Min="17" Max="350">200</High>
 			    <Step>1</Step>
 			    <Scale>1</Scale>
 			</bpm>
 		</HR_PR>
 		<RR_BR Enable="0" Prio="2">
 			<rpm>
-			    <Low Min="0" Max="98">8</Low>
-			    <High Min="2" Max="100">30</High>
+			    <Low Min="2" Max="149">12</Low>
+			    <High Min="3" Max="150">80</High>
 			    <Step>1</Step>
 			    <Scale>1</Scale>
 			</rpm>
 		</RR_BR>
 		<SPO2 Enable="1" Prio="2">
 		<percent>
-		    <Low Min="80" Max="98">90</Low>
-		    <High Min="82" Max="100">100</High>
+		    <Low Min="50" Max="98">85</Low>
+                    <High Min="52" Max="100">95</High>
 		    <Step>1</Step>
 		    <Scale>1</Scale>
 		</percent>
 		</SPO2>
 		<NIBP_SYS Enable="1" Prio="2">
 		<mmHg>
-		    <Low Min="40" Max="265">90</Low>
-		    <High Min="45" Max="270">160</High>
+		    <Low Min="40" Max="134">50</Low>
+		    <High Min="41" Max="135">100</High>
 		    <Step>1</Step>
 		    <Scale>1</Scale>
 		</mmHg>
 		<kPa>
-		    <Low Min="53" Max="352">100</Low>
-		    <High Min="54" Max="353">293</High>
+		    <Low Min="53" Max="179">67</Low>
+		    <High Min="54" Max="180">133</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</kPa>
 		</NIBP_SYS>
 		<NIBP_DIA Enable="1" Prio="2">
 		<mmHg>
-		    <Low Min="10" Max="205">50</Low>
-		    <High Min="15" Max="210">90</High>
+		    <Low Min="10" Max="109">30</Low>
+		    <High Min="11" Max="110">70</High>
 		    <Step>1</Step>
 		    <Scale>1</Scale>
 		</mmHg>
 		<kPa>
-		    <Low Min="13" Max="272">47</Low>
-		    <High Min="14" Max="273">147</High>
+		    <Low Min="13" Max="145">40</Low>
+		    <High Min="14" Max="146">93</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</kPa>
 		</NIBP_DIA>
 		<NIBP_MAP Enable="1" Prio="2">
 		<mmHg>
-		    <Low Min="20" Max="225">60</Low>
-		    <High Min="25" Max="230">110</High>
+		    <Low Min="20" Max="119">35</Low>
+		    <High Min="21" Max="120">80</High>
 		    <Step>1</Step>
 		    <Scale>1</Scale>
 		</mmHg>
 		<kPa>
-		    <Low Min="27" Max="299">67</Low>
-		    <High Min="28" Max="300">160</High>
+		    <Low Min="27" Max="159">47</Low>
+		    <High Min="28" Max="160">107</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</kPa>
@@ -553,8 +542,8 @@
 		</TB>
 		<ETCO2 Enable="1" Prio="2">
 		<percent>
-		    <Low Min="1" Max="128">33</Low>
-		    <High Min="4" Max="130">66</High>
+		    <Low Min="0" Max="249">10</Low>
+		    <High Min="1" Max="250">80</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</percent>
@@ -573,8 +562,8 @@
 		</ETCO2>
 		<FICO2 Enable="0" Prio="2">
 		<percent>
-		    <Low Min="1" Max="128">1</Low>
-		    <High Min="4" Max="130">5</High>
+		    <Low Min="0" Max="249">0</Low>
+		    <High Min="1" Max="250">80</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</percent>
@@ -753,36 +742,36 @@
 		</FIO2>
 		<T1 Enable="0" Prio="2">
 		<celsius>
-		    <Low Min="1" Max="490">350</Low>
-		    <High Min="11" Max="500">380</High>
+		    <Low Min="0" Max="490">350</Low>
+		    <High Min="1" Max="500">378</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</celsius>
 		<fahrenheit>
-		    <Low Min="590" Max="1219">950</Low>
-		    <High Min="591" Max="1220">1000</High>
+		    <Low Min="320" Max="1219">950</Low>
+		    <High Min="321" Max="1220">1000</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</fahrenheit>
 		</T1>
 		<T2 Enable="0" Prio="2">
 		<celsius>
-		    <Low Min="1" Max="490">350</Low>
-		    <High Min="11" Max="500">380</High>
+		    <Low Min="0" Max="490">350</Low>
+		    <High Min="1" Max="500">378</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</celsius>
 		<fahrenheit>
-		    <Low Min="590" Max="1219">950</Low>
-		    <High Min="591" Max="1220">1000</High>
+		    <Low Min="320" Max="1219">950</Low>
+		    <High Min="321" Max="1220">1000</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</fahrenheit>
 		</T2>
 		<TD Enable="0" Prio="2">
 		<celsius>
-		    <Low Min="1" Max="490">1</Low>
-		    <High Min="11" Max="500">20</High>
+		    <Low Min="0" Max="49">0</Low>
+		    <High Min="1" Max="50">5</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</celsius>
@@ -795,14 +784,6 @@
 		</TD>
     </AlarmSource>
     <Local>
-        <Language CurrentOption="1" OptionCount="2">
-            <!-- note："XmlFileName" segment consistent with XML language file name -->
-            <Opt0 XmlFileName="English">English</Opt0>
-            <Opt1 XmlFileName="ChineseSimplified">简体中文</Opt1>
-            <!--<Opt2 XmlFileName="PortugueseBrazil">Português(do Brasil)</Opt2>
-            <Opt3 XmlFileName="Spanish">Español</Opt3>
-            <Opt4 XmlFileName="Russian">Русский</Opt4>-->
-        </Language>
         <NIBPUnit>5</NIBPUnit>
         <CO2Unit>7</CO2Unit>
         <TEMPUnit>1</TEMPUnit>
@@ -867,17 +848,12 @@
         <!--do not modify-->
     </Display>
     <Print>
-        <PresentingECG>0</PresentingECG>
         <ECGAnalysis>0</ECGAnalysis>
         <ShockDelivery>0</ShockDelivery>
-        <CheckPatient>0</CheckPatient>
         <PacerStartUp>0</PacerStartUp>
-        <PhysiologicalAlarm>0</PhysiologicalAlarm>
-        <CoderMarker>0</CoderMarker>
-        <NIBPReading>0</NIBPReading>
         <DiagnosticECG>1</DiagnosticECG>
         <Print30JSelfTestReport>0</Print30JSelfTestReport>
-        <PrintSpeed>0</PrintSpeed>
+        <PrintSpeed>1</PrintSpeed>
     </Print>
     <ECG12L>
         <NotchFilter>0</NotchFilter>
@@ -914,11 +890,6 @@
         <ConnectionSecurity>0</ConnectionSecurity>
         <Recipients Count="0"/>
     </Mail>
-    <DateTime>
-        <DateFormat>0</DateFormat>
-        <TimeFormat>1</TimeFormat>
-        <DisplaySecond>0</DisplaySecond>
-    </DateTime>
     <CodeMarker>
         <Marker0>CodeMarker13,CodeMarker14,CodeMarker1,CodeMarker2,CodeMarker18,CodeMarker7,CodeMarker9,CodeMarker10,CodeMarker11,CodeMarker12,CodeMarker16,CodeMarker3,CodeMarker4,CodeMarker6,CodeMarker8,CodeMarker15,CodeMarker19,CodeMarker20,CodeMarker22,CodeMarker28,CodeMarker25,CodeMarker5,CodeMarker31,CodeMarker27,CodeMarker24,CodeMarker17,CodeMarker36,CodeMarker23,CodeMarker21,CodeMarker26,CodeMarker29,CodeMarker30,CodeMarker32,CodeMarker33,CodeMarker34,CodeMarker35,CodeMarker37,CodeMarker38,CodeMarker39,CodeMarker40</Marker0>
         <Marker1>CodeMarker13,CodeMarker14,CodeMarker1,CodeMarker2,CodeMarker18,CodeMarker7,CodeMarker9,CodeMarker10,CodeMarker11,CodeMarker12,CodeMarker16,CodeMarker3,CodeMarker4,CodeMarker6,CodeMarker8,CodeMarker15,CodeMarker19,CodeMarker20,CodeMarker22,CodeMarker28,CodeMarker25,CodeMarker5,CodeMarker31,CodeMarker27,CodeMarker24,CodeMarker17,CodeMarker36,CodeMarker23,CodeMarker21,CodeMarker26,CodeMarker29,CodeMarker30,CodeMarker32,CodeMarker33,CodeMarker34,CodeMarker35,CodeMarker37,CodeMarker38,CodeMarker39,CodeMarker40</Marker1>

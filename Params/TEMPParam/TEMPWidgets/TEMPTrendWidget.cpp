@@ -44,105 +44,42 @@ void TEMPTrendWidget::onTempNameUpdate(TEMPChannelIndex channel, TEMPChannelType
     update();
 }
 
+void TEMPTrendWidget::_loadConfig()
+{
+    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_TEMP));
+    setPalette(palette);
+    _t1Name->setPalette(palette);
+    _t2Name->setPalette(palette);
+    _t1Value->setPalette(palette);
+    _t2Value->setPalette(palette);
+    _tdName->setPalette(palette);
+    _tdValue->setPalette(palette);
+    // 显示上下限
+    updateLimit();
+}
+
 /**************************************************************************************************
  * 设置TEMP的值。
  *************************************************************************************************/
 void TEMPTrendWidget::setTEMPValue(int16_t t1, int16_t t2, int16_t td)
 {
     UnitType type = tempParam.getUnit();
-    if (type == UNIT_TC)
-    {
-        if (t1 == InvData())
-        {
-            _t1Str = InvStr();
-        }
-        else
-        {
-            if (t1 < 0)
-            {
-                _t1Str = "< 0";
-            }
-            else if (t1 > 500)
-            {
-                _t1Str = "> 50";
-            }
-            else
-            {
-//                _t1Str.sprintf("%.1f", t1 / 10.0);
-                _t1Str = QString("%1").number(t1 / 10.0 , 'f' , 1);
-            }
-        }
-
-        if (t2 == InvData())
-        {
-            _t2Str = InvStr();
-        }
-        else
-        {
-            if (t2 < 0)
-            {
-                _t2Str = "< 0";
-            }
-            else if (t2 > 500)
-            {
-                _t2Str = "> 50";
-            }
-            else
-            {
-//                _t2Str.sprintf("%.1f", t2 / 10.0);
-                _t2Str = QString("%1").number(t2 / 10.0 , 'f' , 1);
-            }
-        }
-
-        if (td == InvData())
-        {
-            _tdStr = InvStr();
-        }
-        else
-        {
-//            _tdStr.sprintf("%.1f", td / 10.0);
-            _tdStr = QString("%1").number(td / 10.0 , 'f' , 1);
-        }
-    }
-
-    if (t1 == InvData())
+    if (t1 == InvData() || t1 < 0 || t1 > 500)
     {
         _t1Str = InvStr();
     }
     else
     {
-        if (t1 < 0)
-        {
-            _t1Str = "< " + Unit::convert(type, UNIT_TC, 0);
-        }
-        else if (t1 > 500)
-        {
-            _t1Str = "> " + Unit::convert(type, UNIT_TC, 50);
-        }
-        else
-        {
-            _t1Str = Unit::convert(type, UNIT_TC, t1 / 10.0);
-        }
+        _t1Str = Unit::convert(type, UNIT_TC, t1 / 10.0);
     }
 
-    if (t2 == InvData())
+    if (t2 == InvData() || t2 < 0 || t2 > 500)
     {
         _t2Str = InvStr();
     }
     else
     {
-        if (t2 < 0)
-        {
-            _t2Str = "< " + Unit::convert(type, UNIT_TC, 0);
-        }
-        else if (t2 > 500)
-        {
-            _t2Str = "< " + Unit::convert(type, UNIT_TC, 50);
-        }
-        else
-        {
-            _t2Str = Unit::convert(type, UNIT_TC, t2 / 10.0);
-        }
+        _t2Str = Unit::convert(type, UNIT_TC, t2 / 10.0);
     }
 
     if (td == InvData())
@@ -151,12 +88,9 @@ void TEMPTrendWidget::setTEMPValue(int16_t t1, int16_t t2, int16_t td)
     }
     else
     {
-//        _tdStr = Unit::convert(type, UNIT_TC, td / 10.0);
-//        _tdStr.sprintf("%.1f", _tdStr.toDouble() - 32);
-//        _tdStr.sprintf("%.1f", fabs(_t1Str.toDouble() - _t2Str.toDouble()));
-        _tdStr = QString("%1").number(fabs(_t1Str.toDouble() - _t2Str.toDouble())
-                                      , 'f'
-                                      , 1);
+        _tdStr = QString("%1")
+                .number(fabs(_t1Str.toDouble()
+                             - _t2Str.toDouble()), 'f', 1);
     }
 
     _t1Value->setText(_t1Str);
@@ -172,11 +106,11 @@ void TEMPTrendWidget::setUNit(UnitType u)
     switch (u)
     {
     case UNIT_TC:
-        setUnit("Td (" + Unit::localeSymbol(UNIT_TC) + ")");
+        setUnit(Unit::localeSymbol(UNIT_TC));
         break;
 
     case UNIT_TF:
-        setUnit("Td (" + Unit::localeSymbol(UNIT_TF) + ")");
+        setUnit(Unit::localeSymbol(UNIT_TF));
         break;
 
     default:
@@ -214,7 +148,6 @@ void TEMPTrendWidget::isAlarm(int id, bool flag)
 void TEMPTrendWidget::showValue(void)
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_TEMP));
-    psrc = normalPalette(psrc);
     if (_t1Alarm || _t2Alarm || _tdAlarm)
     {
         if (!_t1Alarm)
@@ -248,6 +181,10 @@ void TEMPTrendWidget::showValue(void)
             showAlarmStatus(_tdValue);
         }
         restoreNormalStatusLater();
+    }
+    else
+    {
+        showNormalStatus(psrc);
     }
 }
 
@@ -296,14 +233,11 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
     _tdStr = InvStr();
 //    setFocusPolicy(Qt::NoFocus);
 
-    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_TEMP));
-    setPalette(palette);
-
     // 标签设定。
-    setName("Temp");
+    setName(paramInfo.getParamName(PARAM_TEMP));
 
-    // 显示上下限
-    updateLimit();
+    // 设置报警关闭标志
+    showAlarmOff();
 
     // 设置单位。
     UnitType u = tempParam.getUnit();
@@ -324,11 +258,9 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
 
     _t1Name = new QLabel();
     _t1Name->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
-    _t1Name->setPalette(palette);
     _t1Name->setText(trs("T1"));
     _t2Name = new QLabel();
     _t2Name->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
-    _t2Name->setPalette(palette);
     _t2Name->setText(trs("T2"));
     vLayout->addWidget(_t1Name);
     vLayout->addWidget(_t2Name);
@@ -336,11 +268,9 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
 
     _t1Value = new QLabel();
     _t1Value->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
-    _t1Value->setPalette(palette);
     _t1Value->setText(InvStr());
     _t2Value = new QLabel();
     _t2Value->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
-    _t2Value->setPalette(palette);
     _t2Value->setText(InvStr());
     vLayout = new QVBoxLayout();
     vLayout->addWidget(_t1Value);
@@ -351,11 +281,9 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
 
     _tdName = new QLabel();
     _tdName->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
-    _tdName->setPalette(palette);
     _tdName->setText(trs("TD"));
     _tdValue = new QLabel();
     _tdValue->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
-    _tdValue->setPalette(palette);
     _tdValue->setText(InvStr());
     vLayout = new QVBoxLayout();
     vLayout->addStretch();
@@ -371,6 +299,7 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 
+    _loadConfig();
     // 增加更新温度通道名称链接-- 暂时屏蔽温度通道名称更改链接
 //    connect(&tempParam, SIGNAL(updateTempName(TEMPChannelIndex,TEMPChannelType)),
 //            this, SLOT(onTempNameUpdate(TEMPChannelIndex,TEMPChannelType)));
@@ -394,9 +323,10 @@ QList<SubParamID> TEMPTrendWidget::getShortTrendSubParams() const
 void TEMPTrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_TEMP));
-    psrc = normalPalette(psrc);
-    showNormalParamLimit(psrc);
-    showNormalStatus(_t1Value, psrc);
-    showNormalStatus(_t2Value, psrc);
-    showNormalStatus(_tdValue, psrc);
+    showNormalStatus(psrc);
+}
+
+void TEMPTrendWidget::updateWidgetConfig()
+{
+    _loadConfig();
 }

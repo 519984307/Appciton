@@ -13,7 +13,7 @@
 #include "AlarmInfoModel.h"
 #include "ListView.h"
 #include "ListDataModel.h"
-#include "TableItemDelegate.h"
+#include "TableViewItemDelegate.h"
 #include "ListViewItemDelegate.h"
 #include "LanguageManager.h"
 #include "Button.h"
@@ -27,6 +27,7 @@
 
 #define PATH_ICON_UP "/usr/local/nPM/icons/ArrowUp.png"
 #define PATH_ICON_DOWN "/usr/local/nPM/icons/ArrowDown.png"
+#define PATH_ICON_CHECKED "/usr/local/nPM/icons/Checked.png"
 #define LISTVIEW_MAX_VISIABLE_SIZE 6    // 一页最大显示数
 
 class AlarmInfoWindowPrivate
@@ -42,7 +43,8 @@ public:
           curPage(1),
           prevBtn(NULL),
           nextBtn(NULL),
-          title(QString())
+          title(QString()),
+          refreshData(true)
     {}
     ~AlarmInfoWindowPrivate() {}
 
@@ -58,6 +60,7 @@ public:
     Button *nextBtn;
     QString title;
     QList<AlarmInfoNode> nodeList;
+    bool refreshData;  // 用于标志是否刷新报警数据
 
     /**
      * @brief loadOption　加载列表的值
@@ -66,6 +69,11 @@ public:
 
     bool hasPrevPage();
     bool hasNextPage();
+
+    /**
+     * @brief updateAcknowledgeFlag 更新被确认标志
+     */
+    void updateAcknowledgeFlag();
 };
 
 AlarmInfoWindow::AlarmInfoWindow(const QString &title, AlarmType type)
@@ -97,7 +105,7 @@ void AlarmInfoWindow::updateData(bool isShowFirstPage)
 void AlarmInfoWindow::layout()
 {
     setWindowTitle(d_ptr->title);
-    setFixedSize(480, 450);
+    setFixedSize(500, 450);
 
     QVBoxLayout *vLayout = new QVBoxLayout();
     setWindowLayout(vLayout);
@@ -112,7 +120,8 @@ void AlarmInfoWindow::layout()
         tableView->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
         tableView->setSelectionMode(QAbstractItemView::SingleSelection);
         tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
-        tableView->setItemDelegate(new TableItemDelegate);
+        tableView->setIconSize(QSize(24, 24));
+        tableView->setItemDelegate(new TableViewItemDelegate(tableView));
         AlarmInfoModel *model = new AlarmInfoModel(this);
         tableView->setModel(model);
         tableView->setFixedHeight(model->getRowHeightHint() * LISTVIEW_MAX_VISIABLE_SIZE);
@@ -127,12 +136,12 @@ void AlarmInfoWindow::layout()
     else if (d_ptr->alarmType == ALARM_TYPE_TECH)
     {
         ListView *listView = new ListView();
+        listView->setIconSize(QSize(24, 24));
         listView->setItemDelegate(new ListViewItemDelegate);
         listView->setSelectionMode(QAbstractItemView::NoSelection);
         ListDataModel *model = new ListDataModel(this);
         listView->setModel(model);
         listView->setFixedHeight(model->getRowHeightHint() * LISTVIEW_MAX_VISIABLE_SIZE);
-        listView->setDrawIcon(false);
         listView->setSpacing(0);
         listView->setFocusPolicy(Qt::NoFocus);
         d_ptr->listModel = model;
@@ -165,6 +174,7 @@ void AlarmInfoWindow::layout()
 
 void AlarmInfoWindow::showEvent(QShowEvent *ev)
 {
+    d_ptr->refreshData = true;
     updateData(true);
     Window::showEvent(ev);
 }
@@ -213,15 +223,20 @@ void AlarmInfoWindow::_accessEventWindow(int index)
 void AlarmInfoWindowPrivate::loadOption()
 {
     AlarmInfoNode node;
-    nodeList.clear();
-    for (int i = totalList - 1; i >= 0; --i)
+    if (refreshData)
     {
-        alarmIndicator.getAlarmInfo(i, node);
-        if (node.alarmType != alarmType)
+        // 显示窗口后，不再获取新的报警数据。
+        nodeList.clear();
+        for (int i = totalList - 1; i >= 0; --i)
         {
-            continue;
+            alarmIndicator.getAlarmInfo(i, node);
+            if (node.alarmType != alarmType)
+            {
+                continue;
+            }
+            nodeList.append(node);
         }
-        nodeList.append(node);
+        refreshData = false;
     }
 
     int start = 0, end = 0;
@@ -248,18 +263,13 @@ void AlarmInfoWindowPrivate::loadOption()
         return;
     }
     start = (curPage - 1) * LISTVIEW_MAX_VISIABLE_SIZE;
-    if (count > LISTVIEW_MAX_VISIABLE_SIZE)
+    if (curPage < totalPage)
     {
-        end = start + LISTVIEW_MAX_VISIABLE_SIZE;
-        if (end > count)
-        {
-            end = count;
-            start = count - LISTVIEW_MAX_VISIABLE_SIZE;
-        }
+        end = (curPage - 1) * LISTVIEW_MAX_VISIABLE_SIZE + LISTVIEW_MAX_VISIABLE_SIZE;
     }
-    else
+    else if (curPage == totalPage)
     {
-        end = LISTVIEW_MAX_VISIABLE_SIZE;
+        end = count;
     }
 
     if (alarmType == ALARM_TYPE_PHY)
@@ -333,6 +343,7 @@ void AlarmInfoWindowPrivate::loadOption()
     {
         prevBtn->setEnabled(false);
     }
+    updateAcknowledgeFlag();
 }
 
 bool AlarmInfoWindowPrivate::hasPrevPage()
@@ -343,4 +354,33 @@ bool AlarmInfoWindowPrivate::hasPrevPage()
 bool AlarmInfoWindowPrivate::hasNextPage()
 {
     return curPage < totalPage;
+}
+
+void AlarmInfoWindowPrivate::updateAcknowledgeFlag()
+{
+    for (int i = 0; i < nodeList.count(); i++)
+    {
+        if (i >= (curPage - 1) * LISTVIEW_MAX_VISIABLE_SIZE && i < (curPage) * LISTVIEW_MAX_VISIABLE_SIZE
+                && nodeList.at(i).acknowledge)
+        {
+            // 只刷新当前页的确认标志
+            int row = i % LISTVIEW_MAX_VISIABLE_SIZE;
+            if (nodeList.at(i).alarmType == ALARM_TYPE_TECH)
+            {
+                QModelIndex index = listModel->index(row, 0);
+                if (index.isValid())
+                {
+                    listModel->setData(index, QIcon(PATH_ICON_CHECKED), Qt::DecorationRole);
+                }
+            }
+            else if (nodeList.at(i).alarmType == ALARM_TYPE_PHY)
+            {
+                QModelIndex index = dataModel->index(row, 0);
+                if (index.isValid())
+                {
+                    dataModel->setData(index, QIcon(PATH_ICON_CHECKED), Qt::DecorationRole);
+                }
+            }
+        }
+    }
 }

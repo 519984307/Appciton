@@ -1607,7 +1607,7 @@ bool IBPParam::getIBPZeroResult()
 
 void IBPParam::onPaletteChanged(ParamID id)
 {
-    if (id != PARAM_IBP)
+    if (id != PARAM_IBP || !systemManager.isSupport(CONFIG_IBP))
     {
         return;
     }

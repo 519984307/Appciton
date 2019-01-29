@@ -21,8 +21,13 @@ public:
     // 窗口是否使能
     bool enable();
 
-    // 刷新BR和RR的值。
-    void setRRValue(int16_t rr, bool isRR);
+    /**
+     * @brief setRRValue  set BR/RR value
+     * @param rr  rr value
+     * @param isRR  if is rr source
+     * @param isAutoType  if is auto type
+     */
+    void setRRValue(int16_t rr, bool isRR, bool isAutoType = false);
 
     // 刷新趋势参数上下限
     void updateLimit(void);
@@ -40,14 +45,28 @@ public:
 public:
     virtual void doRestoreNormalStatus();
 
+    /* reimplment */
+    void updateWidgetConfig();
+
 protected:
     virtual void setTextSize(void);
 
 private slots:
     void _releaseHandle(IWidget *);
 
+    /**
+     * @brief _onBrSourceStatusUpdate  br来源状态更新槽函数
+     */
+    void _onBrSourceStatusUpdate();
+
 private:
+    /**
+     * @brief _loadConfig  加载配置
+     */
+    void _loadConfig();
+
     QLabel *_rrValue;
     bool _isAlarm;
     QString _rrString;
+    QLabel *_rrSource;
 };

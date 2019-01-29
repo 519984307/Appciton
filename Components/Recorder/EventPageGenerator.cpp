@@ -28,7 +28,7 @@
 #include "IBPParam.h"
 #include "CO2Param.h"
 #include "LayoutManager.h"
-
+#include "NIBPSymbol.h"
 
 class EventPageGeneratorPrivate
 {
@@ -55,15 +55,24 @@ public:
         case EventPhysiologicalAlarm:
         {
             SubParamID subparamID = (SubParamID) ctx.almSegment->subParamID;
-            AlarmLimitIFace *almIface = alertor.getAlarmLimitIFace(subparamID);
             AlarmPriority priority;
-            if (almIface)
+            unsigned char alarmInfo = ctx.almSegment->alarmInfo;
+            unsigned char alarmId = ctx.almSegment->alarmType;
+            if (alarmInfo & 0x01)   // oneshot 报警事件
             {
-                priority = almIface->getAlarmPriority(ctx.almSegment->alarmType);
+                AlarmOneShotIFace *alarmOneShot = alertor.getAlarmOneShotIFace(subparamID);
+                if (alarmOneShot)
+                {
+                    priority = alarmOneShot->getAlarmPriority(alarmId);
+                }
             }
             else
             {
-                return false;
+                AlarmLimitIFace *almIface = alertor.getAlarmLimitIFace(subparamID);
+                if (almIface)
+                {
+                    priority = almIface->getAlarmPriority(alarmId);
+                }
             }
 
             QString titleStr;
@@ -82,6 +91,19 @@ public:
             }
 
             ParamID paramId = paramInfo.getParamID(subparamID);
+            // oneshot 报警
+            if (alarmInfo & 0x01)
+            {
+                // 将参数ID转换为oneshot报警对应的参数ID
+                if (paramId == PARAM_DUP_ECG)
+                {
+                    paramId = PARAM_ECG;
+                }
+                else if (paramId == PARAM_DUP_RESP)
+                {
+                    paramId = PARAM_RESP;
+                }
+            }
             titleStr += " ";
             titleStr += trs(Alarm::getPhyAlarmMessage(paramId,
                             ctx.almSegment->alarmType,
@@ -102,6 +124,8 @@ public:
                 LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subparamID, unit);
 
                 titleStr += Util::convertToString(ctx.almSegment->alarmLimit, config.scale);
+                titleStr += " ";
+                titleStr += Unit::localeSymbol(unit);
             }
 
             eventTitle = titleStr;
@@ -120,6 +144,15 @@ public:
         case EventNIBPMeasurement:
         {
             eventTitle = trs("NibpMeasurement");
+            if (ctx.measureSegment->measureResult == NIBP_ONESHOT_NONE)
+            {
+                extraInfo = trs("NIBPMEASURE") + trs("ServiceSuccess");
+            }
+            else
+            {
+                extraInfo = trs("NIBPMEASURE") + trs("NIBPFAILED") + ",";
+                extraInfo += trs(NIBPSymbol::convert((NIBPOneShotType)(ctx.measureSegment->measureResult)));
+            }
         }
         break;
         case EventWaveFreeze:
@@ -179,8 +212,7 @@ public:
                 info.waveInfo.resp.zoom = respParam.getZoom();
                 break;
             case WAVE_SPO2:
-                info.waveInfo.spo2.gain = spo2Param.getGain();
-                caption = "Pleth";
+                caption = trs(paramInfo.getParamWaveformName(WAVE_SPO2));
                 break;
             case WAVE_CO2:
                 info.waveInfo.co2.zoom = co2Param.getDisplayZoom();
@@ -221,7 +253,7 @@ public:
 
             captionLength = fontManager.textWidthInPixels(caption, q_ptr->font());
             info.drawCtx.captionPixLength = captionLength;
-            Util::strlcpy(info.drawCtx.caption, qPrintable(caption), sizeof(info.drawCtx.caption));
+            info.drawCtx.caption = caption;
             info.drawCtx.curPageFirstXpos = 0.0;
             info.drawCtx.prevSegmentLastYpos = 0.0;
             info.drawCtx.dashOffset = 0.0;
@@ -299,6 +331,7 @@ public:
     EventPageGenerator *const q_ptr;
     RecordPageGenerator::PageType curPageType;
     QString eventTitle;
+    QString extraInfo;
     TrendDataPackage trendData;
     QList<RecordWaveSegmentInfo> waveInfos;
     int curDrawWaveSegment;
@@ -354,7 +387,7 @@ RecordPage *EventPageGenerator::createPage()
         if (d_ptr->ctx.trendSegment)
         {
             d_ptr->trendData = parseTrendSegment(d_ptr->ctx.trendSegment);
-            return createTrendPage(d_ptr->trendData, true);
+            return createTrendPage(d_ptr->trendData, true, QString(), QString(), d_ptr->extraInfo);
         }
     // fall through
     case WaveScalePage:

@@ -31,6 +31,15 @@ public:
     // 窗口是否使能
     virtual bool waveEnable();
 
+    /* reimplment */
+    void updateWidgetConfig();
+
+    /**
+     * @brief setWaveformMode  设置波形模式
+     * @param mode  模式
+     */
+    void setWaveformMode(RESPSweepMode mode);
+
 protected:
     void resizeEvent(QResizeEvent *e);
     void focusInEvent(QFocusEvent */*e*/);
@@ -41,11 +50,23 @@ private slots:
     void _popupDestroyed();
     void _getItemIndex(int);
 
+    /**
+     * @brief _onCalcLeadChanged  计算导联改变槽函数
+     * @param lead  导联
+     */
+    void _onCalcLeadChanged(RESPLead lead);
+
 private:
+    /**
+     * @brief _adjustLabelLayout  调整标签布局
+     */
+    void _adjustLabelLayout(void);
+
     void _loadConfig();
 //    WaveWidgetLabel *_name;
     WaveWidgetLabel *_notify;
     WaveWidgetLabel *_gain;
     PopupList *_gainList;
     int _currentItemIndex;
+    WaveWidgetLabel *_lead;
 };

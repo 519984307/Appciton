@@ -13,6 +13,7 @@
 #include <QBitArray>
 #include "Param.h"
 #include "SystemDefine.h"
+#include "TimeDefine.h"
 
 #ifdef Q_WS_X11
 #include <QTcpSocket>
@@ -35,6 +36,7 @@ enum ConfiguredFuncs
     CONFIG_IBP = 0x200,
     CONFIG_WIFI = 0x400,
     CONFIG_TOUCH = 0x800,
+    CONFIG_O2 = 0x1000,
 };
 
 // 前面板按键状态,与系统板获取按键状态命令回复一致
@@ -71,6 +73,7 @@ enum ModulePoweronTestResult
     TT3_MODULE_SELFTEST_RESULT,
     T5_MODULE_SELFTEST_RESULT,
     CO2_MODULE_SELFTEST_RESULT,
+    O2_MODULE_SELFTEST_RESULT,
     PRINTER72_SELFTEST_RESULT,
     PRINTER48_SELFTEST_RESULT,
     PANEL_KEY_POWERON_TEST_RESULT,
@@ -93,6 +96,7 @@ enum WorkMode
 {
     WORK_MODE_NORMAL = 0,
     WORK_MODE_DEMO,
+    WORK_MODE_STANDBY,
     WORK_MODE_NR,
 };
 
@@ -178,18 +182,6 @@ public:
      */
     void setWorkMode(WorkMode workmode);
 
-    /**
-     * @brief setStandbyStatus set the system standby status
-     * @param standby standby status
-     */
-    void setStandbyStatus(bool standby);
-
-    /**
-     * @brief isStandby get the standby status
-     * @return true is in standby, otherwise, false
-     */
-    bool isStandby() const;
-
 #ifdef Q_WS_X11
 public:
     bool sendCommand(const QByteArray &cmd);
@@ -203,6 +195,18 @@ signals:
 
 signals:
     void workModeChanged(WorkMode mode);
+
+    /**
+     * @brief systemTimeFormatUpdated  系统时间格式更新
+     * @param format  时间格式--12小时制、24小时制
+     */
+    void systemTimeFormatUpdated(TimeFormat format);
+
+    /**
+     * @brief standbySignal 待机信号
+     * @param flag 待机标志
+     */
+    void standbySignal(bool flag);
 
 private slots:
     void publishTestResult();

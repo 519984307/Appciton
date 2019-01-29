@@ -39,13 +39,14 @@ public:
         triggerPrintStopped(false),
         almInfo(NULL),
         codeMarkerInfo(NULL),
-        oxyCRGInfo(NULL)
+        oxyCRGInfo(NULL),
+        measureInfo(NULL)
     {
-        int duration_after_event = 8;
-        int duration_before_event = 8;
+        int duration_after_event;
+        int duration_before_event;
         Config &conf =  configManager.getCurConfig();
-        conf.getNumValue("Event|WaveLengthBefore", duration_before_event);
-        conf.getNumValue("Event|WaveLengthAfter", duration_after_event);
+        conf.getNumValue("Event|WaveLength", duration_before_event);
+        duration_after_event = duration_before_event;
         eventInfo.type = type;
         eventInfo.duration_after = duration_after_event;
         eventInfo.duration_before = duration_before_event;
@@ -79,6 +80,16 @@ public:
         {
             delete codeMarkerInfo;
         }
+
+        if (oxyCRGInfo)
+        {
+            delete oxyCRGInfo;
+        }
+
+        if (measureInfo)
+        {
+            delete measureInfo;
+        }
     }
 
     void saveTrendData(unsigned timestamp, const TrendCacheData &data, const TrendAlarmStatus &almStatus);
@@ -105,6 +116,7 @@ public:
     AlarmInfoSegment *almInfo;
     CodeMarkerSegment *codeMarkerInfo;
     OxyCRGSegment *oxyCRGInfo;
+    NIBPMeasureSegment *measureInfo;
 };
 
 void EventStorageItemPrivate::saveTrendData(unsigned timestamp, const TrendCacheData &data,
@@ -259,6 +271,14 @@ EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &stor
 {
     d_ptr->oxyCRGInfo = new OxyCRGSegment;
     d_ptr->oxyCRGInfo->type = oxyCRGtype;
+    qDebug() << "Create Event Stroage Item:" << this << " type: " << type;
+}
+
+EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms, NIBPOneShotType measureResult)
+    : d_ptr(new EventStorageItemPrivate(this, type, storeWaveforms))
+{
+    d_ptr->measureInfo = new NIBPMeasureSegment;
+    d_ptr->measureInfo->measureResult = measureResult;
     qDebug() << "Create Event Stroage Item:" << this << " type: " << type;
 }
 
@@ -429,6 +449,14 @@ QByteArray EventStorageItem::getStorageData() const
         buffer.write(reinterpret_cast<char *>(d_ptr->oxyCRGInfo), sizeof(OxyCRGSegment));
     }
 
+    if (d_ptr->measureInfo)
+    {
+        // store the nibp measure info
+        type = EVENT_NIBPMEASURE_SEGMENT;
+        buffer.write(reinterpret_cast<char *>(&type), sizeof(type));
+        buffer.write(reinterpret_cast<char *>(d_ptr->measureInfo), sizeof(NIBPMeasureSegment));
+    }
+
     // write trend segments
     if (d_ptr->trendSegments.count())
     {
@@ -500,15 +528,24 @@ QString EventStorageItem::getEventTitle() const
     case EventPhysiologicalAlarm:
     {
         SubParamID subparamID = (SubParamID) d_ptr->almInfo->subParamID;
-        AlarmLimitIFace *almIface = alertor.getAlarmLimitIFace(subparamID);
+        unsigned char alarmId = d_ptr->almInfo->alarmType;
+        unsigned char alarmInfo = d_ptr->almInfo->alarmInfo;
         AlarmPriority priority;
-        if (almIface)
+        if (alarmInfo & 0x01)   // oneshot 报警事件
         {
-            priority = almIface->getAlarmPriority(d_ptr->almInfo->alarmType);
+            AlarmOneShotIFace *alarmOneShot = alertor.getAlarmOneShotIFace(subparamID);
+            if (alarmOneShot)
+            {
+                priority = alarmOneShot->getAlarmPriority(alarmId);
+            }
         }
         else
         {
-            break;
+            AlarmLimitIFace *almIface = alertor.getAlarmLimitIFace(subparamID);
+            if (almIface)
+            {
+                priority = almIface->getAlarmPriority(alarmId);
+            }
         }
 
         QString titleStr;
@@ -527,6 +564,19 @@ QString EventStorageItem::getEventTitle() const
         }
 
         ParamID paramId = paramInfo.getParamID(subparamID);
+        // oneshot 报警
+        if (alarmInfo & 0x01)
+        {
+            // 将参数ID转换为oneshot报警对应的参数ID
+            if (paramId == PARAM_DUP_ECG)
+            {
+                paramId = PARAM_ECG;
+            }
+            else if (paramId == PARAM_DUP_RESP)
+            {
+                paramId = PARAM_RESP;
+            }
+        }
         titleStr += " ";
         titleStr += trs(Alarm::getPhyAlarmMessage(paramId,
                         d_ptr->almInfo->alarmType,

@@ -17,6 +17,10 @@
 #include "IConfig.h"
 #include "ParamManager.h"
 #include "Provider.h"
+#include <QFile>
+#include <QTextStream>
+
+#define HARDWARE_VERSION ("/sys/class/pmos/hardware")
 
 class FactoryVersionInfoPrivate
 {
@@ -24,13 +28,14 @@ public:
     enum MenuItem
     {
         ITEM_LAB_U_BOOT,
+        ITEM_LAB_HARDWARE_VERSION,
         ITEM_LAB_KEYBD_MOD,
         ITEM_LAB_ECG_ALGHTP,
         ITEM_LAB_ECG_VERSION,
         ITEM_LAB_NIBP_VERSION,
         ITEM_LAB_SPO2_VERSION,
         ITEM_LAB_TEMP_VERSION,
-        ITEM_LAB_PRT72_VERSION,
+        ITEM_LAB_PRT48_VERSION,
         ITEM_LAB_MAX,
     };
 
@@ -73,6 +78,13 @@ void FactoryVersionInfo::layoutExec()
     layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
     d_ptr->labs.insert(FactoryVersionInfoPrivate
                        ::ITEM_LAB_U_BOOT, labelRight);
+
+    labelLeft = new QLabel(trs("Hardware"));
+    layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
+    labelRight = new QLabel("");
+    layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
+    d_ptr->labs.insert(FactoryVersionInfoPrivate
+                       ::ITEM_LAB_HARDWARE_VERSION, labelRight);
 
     labelLeft = new QLabel(trs("SystemboardModule"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
@@ -128,14 +140,14 @@ void FactoryVersionInfo::layoutExec()
                            ::ITEM_LAB_TEMP_VERSION, labelRight);
     }
 
-    labelLeft = new QLabel(trs("PRT72Version") + "    ");
+    labelLeft = new QLabel(trs("PRT48Version") + "    ");
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
 
     labelRight = new QLabel;
 
     layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
     d_ptr->labs.insert(FactoryVersionInfoPrivate
-                       ::ITEM_LAB_PRT72_VERSION, labelRight);
+                       ::ITEM_LAB_PRT48_VERSION, labelRight);
 
     layout->setRowStretch(d_ptr->labs.count(), 1);
 }
@@ -148,14 +160,40 @@ void FactoryVersionInfoPrivate::loadOptions()
     labs[ITEM_LAB_U_BOOT]->setText(trs(tmpStr));
 
     tmpStr.clear();
-    systemConfig.getStrValue("SoftWareVersion|KeyboardModule", tmpStr);
-    labs[ITEM_LAB_KEYBD_MOD]->setText(trs(tmpStr));
+    QFile file(HARDWARE_VERSION);
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QTextStream in(&file);
+         while (!in.atEnd())
+         {
+            QString tmp = in.readLine();
+            tmp = tmp.trimmed();
+            int id = tmp.toInt() + 1;
+            tmpStr = "V";
+            tmpStr += QString::number(id);
+            break;
+        }
+    }
+    labs[ITEM_LAB_HARDWARE_VERSION]->setText(tmpStr);
+
+    if (labs[ITEM_LAB_KEYBD_MOD])
+    {
+        Provider *p = paramManager.getProvider("SystemBoard");
+        QString version;
+        if (p)
+        {
+            version = p->getVersionString();
+        }
+        labs[ITEM_LAB_KEYBD_MOD]->setText(version);
+    }
 
     tmpStr.clear();
     systemConfig.getStrValue("SoftWareVersion|ECGAlgorithmType", tmpStr);
     labs[ITEM_LAB_ECG_ALGHTP]->setText(trs(tmpStr));
 
-    Provider *p = paramManager.getProvider("BLM_E5");
+    QString str;
+    machineConfig.getStrValue("ECG", str);
+    Provider *p = paramManager.getProvider(str);
     QString version;
     if (p)
     {
@@ -165,7 +203,8 @@ void FactoryVersionInfoPrivate::loadOptions()
 
     if (labs[ITEM_LAB_NIBP_VERSION])
     {
-        Provider *p = paramManager.getProvider("BLM_TN3");
+        machineConfig.getStrValue("NIBP", str);
+        Provider *p = paramManager.getProvider(str);
         QString version;
         if (p)
         {
@@ -176,7 +215,8 @@ void FactoryVersionInfoPrivate::loadOptions()
 
     if (labs[ITEM_LAB_SPO2_VERSION])
     {
-        Provider *p = paramManager.getProvider("BLM_S5");
+        machineConfig.getStrValue("SPO2", str);
+        Provider *p = paramManager.getProvider(str);
         QString version;
         if (p)
         {
@@ -197,10 +237,10 @@ void FactoryVersionInfoPrivate::loadOptions()
     }
 
     version.clear();
-    p = paramManager.getProvider("PRT72");
+    p = paramManager.getProvider("PRT48");
     if (p)
     {
         version = p->getVersionString();
     }
-    labs[ITEM_LAB_PRT72_VERSION]->setText(version);
+    labs[ITEM_LAB_PRT48_VERSION]->setText(version);
 }

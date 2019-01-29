@@ -30,14 +30,13 @@
 #include "IBPParam.h"
 #include "IConfig.h"
 #include "NightModeManager.h"
-#include "StandbyWindow.h"
 #include "CalculateWindow.h"
+#include "DischargePatientWindow.h"
 
-enum Co2Mode
-{
-    CO2_MODE_STANDBY,
-    CO2_MODE_MEASURE
-};
+#define co2StandbyIcon "standby.png"
+#define co2StandbyHint trs("CO2Standby")
+#define co2MeasureIcon "measure.png"
+#define co2MeasureHint trs("CO2Measure")
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -47,9 +46,10 @@ static KeyActionDesc _baseKeys[] =
     KeyActionDesc("", "", "main.png",  SoftkeyActionBase::mainsetup
                     , SOFT_BASE_KEY_NR, true, QColor(27, 79, 147)),
     KeyActionDesc("", trs("Patient"), "PatientInfo.png", SoftkeyActionBase::patientInfo),
-    KeyActionDesc("", trs("PatientNew"), "PatientNew.png", SoftkeyActionBase::patientNew),
+    KeyActionDesc("", trs("NewPatient"), "PatientNew.png", SoftkeyActionBase::patientNew),
+    KeyActionDesc("", trs("Discharge"), "PatientDischarge.png", SoftkeyActionBase::patientRelieve),
     KeyActionDesc("", trs("ECGCalcLead"), "LeadSelection.png", SoftkeyActionBase::ecgLeadChange),
-    KeyActionDesc("", trs("AlarmSettingMenu"), "limitSet.png", SoftkeyActionBase::limitMenu),
+    KeyActionDesc("", trs("AlarmLimitMenu"), "limitSet.png", SoftkeyActionBase::limitMenu),
     KeyActionDesc("", trs("CodeMarker"), "CodeMarker.png", SoftkeyActionBase::codeMarker),
     KeyActionDesc("", trs("TrendGraph"), "Summary.png", SoftkeyActionBase::summaryReview),
     KeyActionDesc("", trs("eventReview"), "Summary1.png", SoftkeyActionBase::eventReview),
@@ -58,13 +58,15 @@ static KeyActionDesc _baseKeys[] =
 #ifndef HIDE_PARAM_SWITCH
     KeyActionDesc("", trs("ParameterSwitch"), "paraSwitch.png"),
 #endif
-    KeyActionDesc("", trs("DisableTouchScreen"), "touch.png", SoftkeyActionBase::banTouchScreen),
+    KeyActionDesc("", trs("DisableTouchScreen"), "banTouch.png", SoftkeyActionBase::banTouchScreen),
 #ifndef HIDE_STANDBY_FUNCTION
     KeyActionDesc("", trs("Standby"), "standby.png", SoftkeyActionBase::standby),
 #endif
     KeyActionDesc("", trs("CO2ZeroCalib"), "calib.png", SoftkeyActionBase::CO2Zero),
-    KeyActionDesc("", trs("CO2Standby"), "standby.png", SoftkeyActionBase::CO2Handle),
+    KeyActionDesc("", co2StandbyHint, co2StandbyIcon, SoftkeyActionBase::CO2Handle),
+#ifndef HIDE_IBP_CALIBRATE_ZERO
     KeyActionDesc("", trs("IBPZeroCalib"), "calib.png", SoftkeyActionBase::IBPZero),
+#endif
     KeyActionDesc("", trs("Calculation"), "dosecalculation.png", SoftkeyActionBase::calculation),
     KeyActionDesc("", trs("KeyBoardVolumn"), "keyBoard.png", SoftkeyActionBase::keyVolume),
     KeyActionDesc("", trs("SystemBrightness"), "Brightness.png", SoftkeyActionBase::systemBrightness),
@@ -197,12 +199,25 @@ void SoftkeyActionBase::patientNew(bool isPressed)
     // 创建新病人
     // patientMenu.createPatient();
     QStringList slist;
-    slist << trs("No") << trs("EnglishYESChineseSURE");
-    MessageBox messageBox(trs("Warn"), trs("RemoveAndRecePatient"), slist);
+    slist << trs("No") << trs("Yes");
+    MessageBox messageBox(trs("Warn"), trs("RemoveAndRecePatient"), slist, true);
     if (messageBox.exec() == 1)
     {
         patientManager.newPatient();
         windowManager.showWindow(&patientInfoWindow , WindowManager::ShowBehaviorCloseOthers);
+    }
+}
+
+void SoftkeyActionBase::patientRelieve(bool isPressed)
+{
+    if (isPressed)
+    {
+        return;
+    }
+    DischargePatientWindow dischargeWin;
+    if (dischargeWin.exec() == QDialog::Accepted)
+    {
+        patientManager.dischargePatient();
     }
 }
 
@@ -230,6 +245,19 @@ void SoftkeyActionBase::banTouchScreen(bool isPressed)
 
 #ifdef Q_WS_QWS
     bool isOn = systemManager.isTouchScreenOn();
+    QString iconPath, hint;
+    if (isOn)
+    {
+        iconPath = QString("banTouch.png");
+        hint = trs("DisableTouchScreen");
+    }
+    else
+    {
+        iconPath = QString("touch.png");
+        hint = trs("EnabledTouchScreen");
+    }
+    _baseKeys[SOFT_BASE_KEY_SCREEN_BAN].iconPath = iconPath;
+    _baseKeys[SOFT_BASE_KEY_SCREEN_BAN].hint = hint;
     systemManager.setTouchScreenOnOff(!isOn);
     softkeyManager.refreshPage(false);
 #endif
@@ -257,7 +285,9 @@ void SoftkeyActionBase::summaryReview(bool isPressed)
 
     TrendGraphWindow::getInstance()->setHistoryData(false);
     windowManager.showWindow(TrendGraphWindow::getInstance(),
-                             WindowManager::ShowBehaviorCloseIfVisiable | WindowManager::ShowBehaviorCloseOthers);
+                             WindowManager::ShowBehaviorCloseIfVisiable
+                             | WindowManager::ShowBehaviorCloseOthers
+                             | WindowManager::ShowBehaviorNoAutoClose);
 }
 
 void SoftkeyActionBase::eventReview(bool isPressed)
@@ -278,8 +308,7 @@ void SoftkeyActionBase::standby(bool isPressed)
     {
         return;
     }
-    StandbyWindow w;
-    w.exec();
+    systemManager.setWorkMode(WORK_MODE_STANDBY);
 }
 
 void SoftkeyActionBase::CO2Zero(bool isPressed)
@@ -298,22 +327,21 @@ void SoftkeyActionBase::CO2Handle(bool isPressed)
         return;
     }
 
-    static Co2Mode co2Mode = CO2_MODE_STANDBY;
-    if (co2Mode == CO2_MODE_STANDBY)
+    if (!co2Param.getCO2Switch())
     {
-        co2Mode = CO2_MODE_MEASURE;
-        _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].iconPath = QString("measure.png");
-        _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].hint = trs("CO2Measure");
-
-        // TODO: CO2待机
+        if (co2Param.setModuleWorkMode(CO2_WORK_MEASUREMENT) == true)
+        {
+            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].iconPath = QString(co2MeasureIcon);
+            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].hint = co2MeasureHint;
+        }
     }
     else
     {
-        co2Mode = CO2_MODE_STANDBY;
-        _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].iconPath = QString("standby.png");
-        _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].hint = trs("CO2Standby");
-
-        // TODO: CO2测量
+        if (co2Param.setModuleWorkMode(C02_WORK_SLEEP) == true)
+        {
+            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].iconPath = QString(co2StandbyIcon);
+            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].hint = co2StandbyHint;
+        }
     }
     softkeyManager.refreshPage(false);
 }
@@ -354,7 +382,7 @@ void SoftkeyActionBase::nightMode(bool isPressed)
     {
         return;
     }
-    nightModeManager.setNightMode();
+    nightModeManager.setNightMode(!nightModeManager.nightMode());
 }
 
 void SoftkeyActionBase::printSet(bool isPressed)
@@ -385,9 +413,14 @@ KeyActionDesc *SoftkeyActionBase::getActionDesc(int index)
         return NULL;
     }
 
-    if (index == SOFT_BASE_KEY_SCREEN_BAN)
-    {
+    return &_baseKeys[index];
+}
+
+KeyActionDesc *SoftkeyActionBase::getBaseActionDesc(SoftBaseKeyType baseType)
+{
 #ifdef Q_WS_QWS
+    if (baseType == SOFT_BASE_KEY_SCREEN_BAN)
+    {
         bool isOn = systemManager.isTouchScreenOn();
         QString iconPath, hint;
         if (isOn)
@@ -400,16 +433,27 @@ KeyActionDesc *SoftkeyActionBase::getActionDesc(int index)
             iconPath = QString("banTouch.png");
             hint = trs("DisableTouchScreen");
         }
-        _baseKeys[index].iconPath = iconPath;
-        _baseKeys[index].hint = hint;
-        #endif
+        _baseKeys[baseType].iconPath = iconPath;
+        _baseKeys[baseType].hint = hint;
     }
-
-    return &_baseKeys[index];
-}
-
-KeyActionDesc *SoftkeyActionBase::getBaseActionDesc(SoftBaseKeyType baseType)
-{
+#endif
+    if (baseType == SOFT_BASE_KEY_CO2_HANDLE)
+    {
+        // 初始化co2待机测量的图标和指示信息
+        QString iconPath, hint;
+        if (co2Param.getCO2Switch())
+        {
+            iconPath = QString(co2MeasureIcon);
+            hint = co2MeasureHint;
+        }
+        else
+        {
+            iconPath = QString(co2StandbyIcon);
+            hint = co2StandbyHint;
+        }
+        _baseKeys[baseType].iconPath = iconPath;
+        _baseKeys[baseType].hint = hint;
+    }
     return &_baseKeys[baseType];
 }
 

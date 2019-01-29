@@ -27,6 +27,10 @@
 #include "ConfigEditMenuWindow.h"
 #include "WindowManager.h"
 #include "SystemManager.h"
+#include "LayoutManager.h"
+#include "SoundManager.h"
+#include "AlarmConfig.h"
+#include "ColorManager.h"
 
 #define CONFIG_DIR "/usr/local/nPM/etc"
 #define USER_DEFINE_CONFIG_NAME "UserConfig"
@@ -123,7 +127,6 @@ LoadConfigMenuContent::LoadConfigMenuContent():
                 trs("LoadConfigMenuContentDesc")),
     d_ptr(new LoadConfigMenuContentPrivate)
 {
-    connect(this, SIGNAL(configUpdated()), &configManager, SIGNAL(configUpdated()));
 }
 
 LoadConfigMenuContent::~LoadConfigMenuContent()
@@ -144,9 +147,6 @@ void LoadConfigMenuContent::layoutExec()
     layout->setAlignment(Qt::AlignTop);
 
     // load config
-    QLabel *label = new QLabel(trs("LoadConfig"));
-    layout->addWidget(label);
-
     ListView *listView = new ListView();
     listView->setItemDelegate(new ListViewItemDelegate(listView));
     layout->addWidget(listView);
@@ -198,25 +198,22 @@ void LoadConfigMenuContent::onBtnClick()
         // add new config setting
         int index = d_ptr->configListView->curCheckedRow();
         d_ptr->curEditIndex = index;
-        QFile::remove(systemConfig.getCurConfigName());
-        QFile::copy(QString("%1/%2").arg(CONFIG_DIR).arg(d_ptr->configs.at(index).fileName),
-                    systemConfig.getCurConfigName());
 
-        // update patient type
+        // 更新病人类型
         int patitentTypeInt = 255;
         // 如果从原始文件加载，通过文件名称获取病人类型
         QString fileNameStr(d_ptr->configs.at(index).fileName);
         if (fileNameStr.indexOf("Adult") >= 0)
         {
-            patitentTypeInt = 0;
+            patitentTypeInt = PATIENT_TYPE_ADULT;
         }
         else if (fileNameStr.indexOf("Ped") >= 0)
         {
-            patitentTypeInt = 1;
+            patitentTypeInt = PATIENT_TYPE_PED;
         }
         else if (fileNameStr.indexOf("Neo") >= 0)
         {
-            patitentTypeInt = 2;
+            patitentTypeInt = PATIENT_TYPE_NEO;
         }
         else
         {
@@ -240,12 +237,25 @@ void LoadConfigMenuContent::onBtnClick()
                 patitentTypeInt = PATIENT_TYPE_ADULT;
             }
         }
+        // 更新病人类型 、文件名称
         systemConfig.setNumValue("General|PatientType", patitentTypeInt);
+        patientManager.setType(static_cast<PatientType>(patitentTypeInt));
         systemConfig.updateCurConfigName();
-        patientManager.setType((PatientType)patitentTypeInt);
-        currentConfig.reload();
-        // send update signal
-        emit configUpdated();
+
+        // 更新当前选择的文件
+        QString curConfigName = systemConfig.getCurConfigName();
+        currentConfig.allowToSave(false);
+        QFile::remove(curConfigName);
+        QString loadPath = QString("%1/%2").arg(CONFIG_DIR).arg(d_ptr->configs.at(index).fileName);
+        QFile::copy(loadPath, curConfigName);
+        currentConfig.setCurrentFilePath(curConfigName);
+        currentConfig.allowToSave(true);
+        currentConfig.load(loadPath);
+        alarmConfig.clearLimitAlarmInfo();
+        colorManager.clearColorMap();
+
+        soundManager.volumeInit();
+        layoutManager.updateLayoutWidgetsConfig();
 
         QString title(trs("LoadConfig"));
         QString text(trs("SuccessToLoad"));

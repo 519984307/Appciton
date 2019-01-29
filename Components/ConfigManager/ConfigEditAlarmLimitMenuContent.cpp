@@ -26,7 +26,7 @@
 #include "ConfigEditAlarmLimitModel.h"
 #include "SystemManager.h"
 
-#define TABLE_ROW_NUM 7
+#define TABLE_ROW_NUM 6
 
 class ConfigEditAlarmLimitMenuContentPrivate
 {
@@ -118,7 +118,7 @@ void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
             info.limitConfig.step = v;
 
             int alarmLev = 0;
-            config->getNumAttr(QString("AlarmSource|%")
+            config->getNumAttr(QString("AlarmSource|%1")
                                .arg(paramInfo.getSubParamName(subId, true)),
                                "Prio", alarmLev);
             info.alarmLevel = alarmLev;
@@ -127,7 +127,8 @@ void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
         }
     }
     this->infos = infos;
-    model->setupAlarmDataInfos(infos);
+    model->setupAlarmDataInfos(infos, false);
+    model->setEachPageRowCount(TABLE_ROW_NUM);
 }
 
 ConfigEditAlarmLimitMenuContent::ConfigEditAlarmLimitMenuContent(Config *const config)
@@ -215,14 +216,14 @@ void ConfigEditAlarmLimitMenuContent::layoutExec()
 
     QBoxLayout *hlayout = new QHBoxLayout;
     hlayout->addStretch(1);
-    Button *btn = new Button("Prev");
+    Button *btn = new Button(trs("Prev"));
     btn->setButtonStyle(Button::ButtonTextOnly);
     btn->setMinimumWidth(100);
     hlayout->addWidget(btn);
     connect(btn, SIGNAL(clicked(bool)), this, SLOT(onbtnClick()));
     d_ptr->prevBtn = btn;
 
-    btn = new Button("Next");
+    btn = new Button(trs("Next"));
     btn->setButtonStyle(Button::ButtonTextOnly);
     btn->setMinimumWidth(100);
     hlayout->addWidget(btn);

@@ -90,25 +90,24 @@ struct AlarmInfoNode
     int alarmID;
 };
 
-enum AlarmAudioStatus
+enum AlarmStatus
 {
-    ALARM_AUDIO_NORMAL,   // 报警音正常。
-    ALARM_AUDIO_SUSPEND,  // 报警音挂起。
-    ALARM_AUDIO_OFF,      // 报警音关闭。
-    ALARM_OFF,            // 报警关闭
-    ALARM_RESET,          // alarm reset
+    ALARM_STATUS_NORMAL,   // 报警正常。
+    ALARM_STATUS_PAUSE,    // alarm pause。
+    ALARM_STATUS_AUDIO_OFF,// 报警音关闭。
+    ALARM_STATUS_OFF,      // 报警关闭
+    ALARM_STATUS_RESET,    // alarm reset
 };
 
 // 报警暂停时间
 enum AlarmPauseTime
 {
-    ALARM_PAUSE_TIME_60S,
-    ALARM_PAUSE_TIME_90S,
-    ALARM_PAUSE_TIME_120S,
-    ALARM_PAUSE_TIME_150S,
-    ALARM_PAUSE_TIME_180S,
-    ALARM_PAUSE_TIME_210S,
-    ALARM_PAUSE_TIME_240S,
+    ALARM_PAUSE_TIME_1MIN,
+    ALARM_PAUSE_TIME_2MIN,
+    ALARM_PAUSE_TIME_3MIN,
+    ALARM_PAUSE_TIME_5MIN,
+    ALARM_PAUSE_TIME_10MIN,
+    ALARM_PAUSE_TIME_15MIN,
     ALARM_PAUSE_TIME_NR
 };
 

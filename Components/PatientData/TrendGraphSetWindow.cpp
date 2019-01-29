@@ -24,8 +24,10 @@
 #include "TrendGraphWindow.h"
 #include "ThemeManager.h"
 
-#define ITEM_HEIGHT     (themeManger.getAcceptableControlHeight())
-#define ITEM_WIDTH      150
+#define ITEM_HEIGHT                 (themeManger.getAcceptableControlHeight())
+#define ITEM_WIDTH                  150
+#define INIT_ITEM_NUM               3
+#define WINDOW_HEIGHT               400
 
 TrendGraphSetWindow *TrendGraphSetWindow::selfObj = NULL;
 
@@ -34,9 +36,6 @@ class TrendGraphSetWindowPrivate
 public:
     TrendGraphSetWindowPrivate();
 
-    void trendRulerLayout(void);
-    void clearRulerLayout(void);
-    void loadOptions();
 public:
     TrendGroup trendGroup;                 // 当前趋势组
     QList<RulerItem *> itemList;
@@ -44,8 +43,6 @@ public:
     DropList *trendGroupList;
     DropList *timeIntervalList;
     DropList *waveNumList;
-    QVBoxLayout *rulerLayout;
-    ScrollArea *mScrollArea;
 };
 TrendGraphSetWindow::~TrendGraphSetWindow()
 {
@@ -58,56 +55,77 @@ TrendGroup TrendGraphSetWindow::getTrendGroup()
 
 void TrendGraphSetWindow::upDateTrendGroup()
 {
-    d_ptr->clearRulerLayout();
-    d_ptr->trendRulerLayout();
+}
+
+void TrendGraphSetWindow::setCurParam(QList<SubParamID> subList)
+{
+    for (int i = 0; i < d_ptr->itemList.count(); i++)
+    {
+        RulerItem *item = d_ptr->itemList.at(i);
+        if (i < subList.count())
+        {
+            SubParamID sid = subList.at(i);
+            item->sid = sid;
+            ParamID pid = paramInfo.getParamID(sid);
+            UnitType type = paramManager.getSubParamUnit(pid, sid);
+            ParamRulerConfig config = alarmConfig.getParamRulerConfig(sid, type);
+            QString name = paramInfo.getSubParamName(sid);
+            if (sid == SUB_PARAM_ETCO2)
+            {
+                item->label->setText("CO2(Et/Fi)");
+            }
+            else if (sid == SUB_PARAM_T1)
+            {
+                item->label->setText("T1/T2");
+            }
+            else if (sid == SUB_PARAM_NIBP_SYS)
+            {
+                item->label->setText("NIBP");
+            }
+            else
+            {
+                item->label->setText(trs(name));
+            }
+            int autoRuler = 0;
+            QString prefix = "TrendGraph|Ruler|";
+            prefix += paramInfo.getSubParamName(sid, true);
+            systemConfig.getNumAttr(prefix, "Auto", autoRuler);
+            item->combo->setCurrentIndex(autoRuler);
+
+            item->downRuler->setScale(config.scale);
+            item->downRuler->setRange(config.minDownRuler, config.upRuler - 1);
+            item->downRuler->setValue(config.downRuler);
+            item->downRuler->setStep(1);
+
+            item->upRuler->setScale(config.scale);
+            item->upRuler->setRange(config.downRuler + 1, config.maxUpRuler);
+            item->upRuler->setValue(config.upRuler);
+            item->upRuler->setStep(1);
+            item->setVisible(true);
+            continue;
+        }
+        item->setVisible(false);
+    }
 }
 
 void TrendGraphSetWindow::showEvent(QShowEvent *ev)
 {
     Window::showEvent(ev);
-
-    upDateTrendGroup();
-}
-
-bool TrendGraphSetWindow::focusNextPrevChild(bool next)
-{
-    bool status = QDialog::focusNextPrevChild(next);
-    QWidget *cur = focusWidget();
-    if (d_ptr->mScrollArea->isAncestorOf(cur))
-    {
-        d_ptr->mScrollArea->ensureWidgetVisible(cur);
-    }
-   return  status;
 }
 
 void TrendGraphSetWindow::allAutoReleased()
 {
-    RulerItem *item = NULL;
     int count = d_ptr->itemList.count();
     for (int i = 0; i < count; i ++)
     {
-        item = d_ptr->itemList.at(i);
+        RulerItem *item = d_ptr->itemList.at(i);
         item->combo->setCurrentIndex(1);
         item->downRuler->setEnabled(false);
-//        item->downRuler->disable(true);
         item->upRuler->setEnabled(false);
-//        item->upRuler->disable(true);
-        SubParamID subID = item->sid;
-        ParamID id = item->pid;
-        UnitType type = paramManager.getSubParamUnit(id, subID);
-        ParamRulerConfig config = alarmConfig.getParamRulerConfig(subID, type);
         item->downRuler->setEnabled(false);
-//        item->downRuler->disable(true);
         item->upRuler->setEnabled(false);
-//        item->upRuler->disable(true);
-
-        item->downRuler->setScale(config.scale);
-        item->downRuler->setValue(config.downRuler);
-        item->upRuler->setScale(config.scale);
-        item->upRuler->setValue(config.upRuler);
-        TrendGraphWindow::getInstance()->setSubWidgetRulerLimit(subID, item->downRuler->getValue(),
-                                                item->upRuler->getValue(), item->downRuler->getScale());
     }
+    TrendGraphWindow::getInstance()->setAllParamAutoRuler();
 }
 
 void TrendGraphSetWindow::trendGroupReleased(int g)
@@ -148,19 +166,12 @@ void TrendGraphSetWindow::onComboBoxChanged(int index)
         }
         else
         {
-            SubParamID subID = item->sid;
-            ParamID id = item->pid;
-            UnitType type = paramManager.getSubParamUnit(id, subID);
-            ParamRulerConfig config = alarmConfig.getParamRulerConfig(subID, type);
             item->downRuler->setEnabled(false);
             item->upRuler->setEnabled(false);
-            item->downRuler->setScale(config.scale);
-            item->downRuler->setValue(config.downRuler);
-            item->upRuler->setScale(config.scale);
-            item->upRuler->setValue(config.upRuler);
-            TrendGraphWindow::getInstance()->setSubWidgetRulerLimit(subID, item->downRuler->getValue(),
-                                                    item->upRuler->getValue(), item->downRuler->getScale());
         }
+        QString prefix = "TrendGraph|Ruler|";
+        prefix += paramInfo.getSubParamName(item->sid, true);
+        systemConfig.setNumAttr(prefix, "Auto", index);
     }
 }
 
@@ -171,14 +182,31 @@ void TrendGraphSetWindow::upDownRulerChange(int, int)
     {
         int id = spb->property("Ruler").toInt();
         RulerItem *item = d_ptr->itemList.at(id / 2);
-        TrendGraphWindow::getInstance()->setSubWidgetRulerLimit(item->sid, item->downRuler->getValue(),
-                                                item->upRuler->getValue(), item->downRuler->getScale());
+        if (id % 2)     // 标尺上限改变时,修改标尺下限的范围
+        {
+            int min;
+            int max;
+            item->downRuler->getRange(min, max);
+            max = item->upRuler->getValue() - 1;
+            item->downRuler->setRange(min, max);
+        }
+        else            // 标尺下限改变时,修改标尺上限的范围
+        {
+            int min;
+            int max;
+            item->upRuler->getRange(min, max);
+            min = item->downRuler->getValue() + 1;
+            item->upRuler->setRange(min, max);
+        }
+        TrendGraphWindow::getInstance()->setSubWidgetRulerLimit(id / 2, item->downRuler->getValue(),
+                item->upRuler->getValue(), item->downRuler->getScale());
     }
 }
 
 TrendGraphSetWindow::TrendGraphSetWindow()
     : Window(), d_ptr(new TrendGraphSetWindowPrivate())
 {
+    setFixedHeight(WINDOW_HEIGHT);
     setWindowTitle(trs("TrendGraphSet"));
     QHBoxLayout *hTitleLayout = new QHBoxLayout();
 
@@ -202,32 +230,17 @@ TrendGraphSetWindow::TrendGraphSetWindow()
     l->setAlignment(Qt::AlignCenter);
     hTitleLayout->addWidget(l);
 
-    QWidget *rulerWidget = new QWidget();
-    rulerWidget->setFocusPolicy(Qt::NoFocus);
-
-    ScrollArea *mScrollArea = new ScrollArea();
-    mScrollArea->setWidgetResizable(true);
-    mScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    mScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    mScrollArea->setFloatbarPolicy(ScrollArea::FloatBarNotShow);
-    mScrollArea->setFocusPolicy(Qt::NoFocus);
-    mScrollArea->setFrameShape(QFrame::NoFrame);
-    mScrollArea->setFixedHeight(300);
-
-    QString name;
     int count = d_ptr->itemList.count();
-    d_ptr->rulerLayout = new QVBoxLayout();
-    rulerWidget->setLayout(d_ptr->rulerLayout);
+    QVBoxLayout *rulerLayout = new QVBoxLayout();
     for (int i = 0; i < count; i ++)
     {
         RulerItem *item = NULL;
         item = d_ptr->itemList.at(i);
-        name = paramInfo.getSubParamName(item->sid);
-
-        item->label->setText(name);
+        rulerLayout->addWidget(item);
         item->label->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
         item->combo->addItem(trs("Off"));
         item->combo->addItem(trs("On"));
+        item->combo->setCurrentIndex(1);
         item->combo->setProperty("Combo", qVariantFromValue(i));
         item->combo->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
         connect(item->combo, SIGNAL(currentIndexChanged(int)),
@@ -235,17 +248,17 @@ TrendGraphSetWindow::TrendGraphSetWindow()
 
         item->downRuler->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
         item->downRuler->setProperty("Ruler", qVariantFromValue(i * 2));
+        item->downRuler->setEnabled(false);
         connect(item->downRuler, SIGNAL(valueChange(int, int)),
                 this, SLOT(upDownRulerChange(int, int)));
 
         item->upRuler->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
         item->upRuler->setProperty("Ruler", qVariantFromValue(i * 2 + 1));
+        item->upRuler->setEnabled(false);
         connect(item->upRuler, SIGNAL(valueChange(int, int)),
                 this, SLOT(upDownRulerChange(int, int)));
     }
-    d_ptr->loadOptions();
-    mScrollArea->setWidget(rulerWidget);
-    d_ptr->mScrollArea = mScrollArea;
+    rulerLayout->addStretch(0);
 
     d_ptr->allAutoBtn = new Button(trs("AllAuto"));
     d_ptr->allAutoBtn->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
@@ -259,11 +272,15 @@ TrendGraphSetWindow::TrendGraphSetWindow()
     systemConfig.getNumValue(groupPrefix, index);
     d_ptr->trendGroupList = new DropList(trs("TrendGroup"));
     d_ptr->trendGroupList->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
-    d_ptr->trendGroupList->addItems(QStringList()
-                                    << "Resp"
-                                    << "IBP"
-                                    << "AG"
-                                   );
+    d_ptr->trendGroupList->addItem("Resp");
+    if (systemManager.isSupport(CONFIG_IBP))
+    {
+        d_ptr->trendGroupList->addItem("IBP");
+    }
+    if (systemManager.isSupport(CONFIG_AG))
+    {
+        d_ptr->trendGroupList->addItem("AG");
+    }
     d_ptr->trendGroupList->setCurrentIndex(index);
     connect(d_ptr->trendGroupList, SIGNAL(currentIndexChanged(int)), this, SLOT(trendGroupReleased(int)));
 
@@ -274,6 +291,10 @@ TrendGraphSetWindow::TrendGraphSetWindow()
     d_ptr->timeIntervalList->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
     for (int i = 0; i < RESOLUTION_RATIO_NR; i ++)
     {
+        if (i == RESOLUTION_RATIO_NIBP)
+        {
+            continue;
+        }
         d_ptr->timeIntervalList->addItem(TrendDataSymbol::convert((ResolutionRatio)i));
     }
     d_ptr->timeIntervalList->setCurrentIndex(index);
@@ -301,7 +322,7 @@ TrendGraphSetWindow::TrendGraphSetWindow()
     mainLayout->setSpacing(10);
     mainLayout->setMargin(10);
     mainLayout->addLayout(hTitleLayout);
-    mainLayout->addWidget(mScrollArea);
+    mainLayout->addLayout(rulerLayout);
     mainLayout->addLayout(hLayout);
     setWindowLayout(mainLayout);
 
@@ -311,156 +332,16 @@ TrendGraphSetWindow::TrendGraphSetWindow()
 TrendGraphSetWindowPrivate::TrendGraphSetWindowPrivate()
     : trendGroup(TREND_GROUP_RESP), allAutoBtn(NULL),
       trendGroupList(NULL), timeIntervalList(NULL),
-      waveNumList(NULL), rulerLayout(NULL), mScrollArea(NULL)
+      waveNumList(NULL)
 {
     int value = 0;
     QString prefix = "TrendGraph|TrendGroup";
     systemConfig.getNumValue(prefix, value);
     trendGroup = static_cast<TrendGroup>(value);
 
-    RulerItem *item = NULL;
-    QList<ParamID> pids;
-    paramManager.getParams(pids);
-    for (int i = 0; i < SUB_PARAM_NR; ++i)
+    for (int i = 0; i < INIT_ITEM_NUM; ++i)
     {
-        switch (i)
-        {
-        case SUB_PARAM_HR_PR:
-        case SUB_PARAM_SPO2:
-        case SUB_PARAM_RR_BR:
-        case SUB_PARAM_NIBP_SYS:
-        case SUB_PARAM_ART_SYS:
-        case SUB_PARAM_PA_SYS:
-        case SUB_PARAM_CVP_MAP:
-        case SUB_PARAM_LAP_MAP:
-        case SUB_PARAM_RAP_MAP:
-        case SUB_PARAM_ICP_MAP:
-        case SUB_PARAM_AUXP1_SYS:
-        case SUB_PARAM_AUXP2_SYS:
-        case SUB_PARAM_CO_CO:
-        case SUB_PARAM_CO_CI:
-        case SUB_PARAM_CO_TB:
-        case SUB_PARAM_ETCO2:
-        case SUB_PARAM_ETN2O:
-        case SUB_PARAM_ETAA1:
-        case SUB_PARAM_ETAA2:
-        case SUB_PARAM_ETO2:
-        case SUB_PARAM_T1:
-            break;
-        default:
-            continue;
-        }
-
-        ParamID id = paramInfo.getParamID((SubParamID)i);
-        if (-1 != pids.indexOf(id))
-        {
-            item = new RulerItem(id, (SubParamID)i);
-            itemList.append(item);
-        }
-    }
-}
-
-void TrendGraphSetWindowPrivate::trendRulerLayout()
-{
-    int count = itemList.count();
-    for (int i = 0; i < count; i ++)
-    {
-        RulerItem *item = NULL;
-        item = itemList.at(i);
-        if (trendGroup == TREND_GROUP_RESP)
-        {
-            switch (item->sid)
-            {
-            case SUB_PARAM_HR_PR:
-            case SUB_PARAM_SPO2:
-            case SUB_PARAM_RR_BR:
-            case SUB_PARAM_NIBP_SYS:
-            case SUB_PARAM_ETCO2:
-            case SUB_PARAM_T1:
-                break;
-            default:
-                continue;
-            }
-        }
-        else if (trendGroup == TREND_GROUP_IBP)
-        {
-            SubParamID ibp1;
-            SubParamID ibp2;
-            ibpParam.getSubParamID(ibp1, ibp2);
-            if (item->sid != ibp1 && item->sid != ibp2 &&
-                    item->sid != SUB_PARAM_HR_PR && item->sid != SUB_PARAM_SPO2 &&
-                    item->sid != SUB_PARAM_NIBP_SYS && item->sid != SUB_PARAM_T1)
-            {
-                continue;
-            }
-        }
-        else if (trendGroup == TREND_GROUP_AG)
-        {
-            switch (item->sid)
-            {
-            case SUB_PARAM_HR_PR:
-            case SUB_PARAM_SPO2:
-            case SUB_PARAM_NIBP_SYS:
-            case SUB_PARAM_T1:
-            case SUB_PARAM_ETCO2:
-            case SUB_PARAM_ETN2O:
-            case SUB_PARAM_ETAA1:
-            case SUB_PARAM_ETAA2:
-            case SUB_PARAM_ETO2:
-                break;
-            default:
-                continue;
-            }
-        }
-        rulerLayout->addWidget(item);
-        item->setVisible(true);
-        item->setEnabled(true);
-    }
-}
-
-void TrendGraphSetWindowPrivate::clearRulerLayout()
-{
-    int count = rulerLayout->count();
-    for (int i = 0; i < count; i ++)
-    {
-        QLayoutItem *item = rulerLayout->takeAt(0);
-        RulerItem *widget = qobject_cast<RulerItem *>(item->widget());
-        if (widget != NULL)
-        {
-            widget->setVisible(false);
-        }
-    }
-}
-
-void TrendGraphSetWindowPrivate::loadOptions()
-{
-    RulerItem *item;
-    int count = itemList.count();
-    for (int i = 0; i < count; i++)
-    {
-        item = itemList.at(i);
-        if (NULL == item)
-        {
-            continue;
-        }
-
-        SubParamID subID = item->sid;
-        ParamID id = item->pid;
-        UnitType type = paramManager.getSubParamUnit(id, subID);
-        ParamRulerConfig config = alarmConfig.getParamRulerConfig(subID, type);
-
-        item->combo->setCurrentIndex(1);
-        item->downRuler->setEnabled(false);
-        item->upRuler->setEnabled(false);
-
-        item->downRuler->setScale(config.scale);
-        item->downRuler->setRange(config.minDownRuler, config.upRuler - 1);
-        item->downRuler->setValue(config.downRuler);
-        item->downRuler->setStep(1);
-
-        item->upRuler->setScale(config.scale);
-        item->upRuler->setRange(config.downRuler + 1, config.maxUpRuler);
-        item->upRuler->setValue(config.upRuler);
-        item->upRuler->setStep(1);
+        RulerItem *item = new RulerItem();
+        itemList.append(item);
     }
 }

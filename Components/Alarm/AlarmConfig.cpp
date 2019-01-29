@@ -13,6 +13,8 @@
 #include "PatientManager.h"
 #include "ParamInfo.h"
 #include "IConfig.h"
+#include "SystemManager.h"
+#include "ParamInfo.h"
 
 AlarmConfig &AlarmConfig::getInstance()
 {
@@ -45,6 +47,19 @@ bool AlarmConfig::isLimitAlarmEnable(SubParamID subParamId)
     return iter.value().enable;
 }
 
+bool AlarmConfig::hasLimitAlarmDisable()
+{
+    LimitAlarmControlCache::iterator iter = _controlCache.begin();
+    for (; iter != _controlCache.end(); ++iter)
+    {
+        if (iter.value().enable == false && systemManager.isSupport(paramInfo.getParamID(iter.key())))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 void AlarmConfig::setLimitAlarmEnable(SubParamID subParamId, bool enable)
 {
     if (isLimitAlarmEnable(subParamId) == enable)
@@ -62,6 +77,8 @@ void AlarmConfig::setLimitAlarmEnable(SubParamID subParamId, bool enable)
     // save to config file
     int val = enable;
     currentConfig.setNumAttr(prefix, "Enable", val);
+
+    emit alarmOff(subParamId);
 }
 
 AlarmPriority AlarmConfig::getLimitAlarmPriority(SubParamID subParamId)
@@ -201,6 +218,21 @@ ParamRulerConfig AlarmConfig::getParamRulerConfig(SubParamID subParamId, UnitTyp
     return config;
 }
 
+void AlarmConfig::setParamRulerConfig(SubParamID subParamID, UnitType unit, int low, int high)
+{
+    // load data from config file
+    QString prefix = "TrendGraph|Ruler|";
+    prefix += paramInfo.getSubParamName(subParamID, true);
+    prefix += "|";
+    prefix += Unit::getSymbol(unit);
+    prefix += "|";
+    QString highPrefix = prefix + "High";
+    systemConfig.setNumValue(highPrefix, high);
+
+    QString lowPrefix = prefix + "Low";
+    systemConfig.setNumValue(lowPrefix, low);
+}
+
 void AlarmConfig::setLimitAlarmConfig(SubParamID subParamId, UnitType unit, const LimitAlarmConfig &config)
 {
     AlarmConfigKey key(subParamId, unit);
@@ -245,6 +277,12 @@ QString AlarmConfig::getLowLimitStr(const LimitAlarmConfig &config)
         return QString("%1.%2").number(config.lowLimit / config.scale , 'f' , 3)
                .number(config.lowLimit % config.scale , 'f' , 3);
     }
+}
+
+void AlarmConfig::clearLimitAlarmInfo()
+{
+    _configCache.clear();
+    _controlCache.clear();
 }
 
 void AlarmConfig::onPatientTypeChange(PatientType type)

@@ -56,12 +56,12 @@ enum BatteryPowerLevel
 // 每个等级对应的ADC值
 enum BatteryLevelAdc
 {
-    BAT_LEVEL_0 = 3154,
-    BAT_LEVEL_1 = 3351,
-    BAT_LEVEL_2 = 3548,
-    BAT_LEVEL_3 = 3745,
-    BAT_LEVEL_4 = 3942,
-    BAT_LEVEL_5 = 4096
+    BAT_LEVEL_0 = 2749,
+    BAT_LEVEL_1 = 2921,
+    BAT_LEVEL_2 = 3093,
+    BAT_LEVEL_3 = 3265,
+    BAT_LEVEL_4 = 3437,
+    BAT_LEVEL_5 = 3609
 };
 
 struct FixedBatMessage

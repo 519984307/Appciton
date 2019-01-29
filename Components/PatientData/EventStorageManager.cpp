@@ -21,8 +21,11 @@
 #include "TriggerPageGenerator.h"
 #include "LayoutManager.h"
 #include "ConfigManager.h"
+#include <QTimerEvent>
+#include "IConfig.h"
 
 #define MAX_STORE_WAVE_NUM 3
+#define STOP_PRINT_TIMEOUT          (100)
 
 class EventStorageManagerPrivate: public StorageManagerPrivate
 {
@@ -30,7 +33,13 @@ public:
     Q_DECLARE_PUBLIC(EventStorageManager)
 
     explicit EventStorageManagerPrivate(EventStorageManager *q_ptr)
-        : StorageManagerPrivate(q_ptr), _eventTriggerFlag(false)
+        : StorageManagerPrivate(q_ptr), _eventTriggerFlag(false),
+          printTimerId(-1),
+          waitTimerId(-1),
+          isWait(false),
+          timeoutNum(0),
+          generator(NULL),
+          item(NULL)
     {
     }
 
@@ -40,6 +49,13 @@ public:
     QList<EventStorageItem *> eventItemList;
     QMutex mutex;
     bool _eventTriggerFlag;
+
+    int printTimerId;
+    int waitTimerId;
+    bool isWait;
+    int timeoutNum;
+    RecordPageGenerator *generator;
+    EventStorageItem *item;
 };
 
 QList<WaveformID> EventStorageManagerPrivate::getStoreWaveList(WaveformID paramWave)
@@ -134,10 +150,38 @@ void EventStorageManager::triggerAlarmEvent(const AlarmInfoSegment &almInfo, Wav
     item->startCollectTrendAndWaveformData(t);
 
     int index = 0;
-    currentConfig.setNumValue("Print|PhysiologicalAlarm", index);
-    if (index && recorderManager.addPageGenerator(new TriggerPageGenerator(item)))
+    systemConfig.getNumValue("Print|PhysiologicalAlarm", index);
+    if (index && recorderManager.isConnected())   // don't start trigger printing when the printer is not connected
     {
-        item->setWaitForTriggerPrintFlag(true);
+        RecordPageGenerator *generator = new TriggerPageGenerator(item);
+        // 是否处于正在打印且不处于等待状态
+        if (recorderManager.isPrinting() && !d->isWait)
+        {
+            // 打印优先级小于当前打印时不处理
+            if (generator->getPriority() <= recorderManager.getCurPrintPriority())
+            {
+                generator->deleteLater();
+            }
+            // 打印优先级大于当前打印优先级时停止当前打印,等待2000ms打印此刻打印任务
+            else
+            {
+                recorderManager.stopPrint();
+                d->generator = generator;
+                d->waitTimerId = startTimer(2000); // 等待2000ms
+                d->isWait = true;
+                d->item = item;
+            }
+        }
+        // 当前无打印任务
+        else if (!recorderManager.getPrintStatus())
+        {
+            recorderManager.addPageGenerator(generator);
+            item->setWaitForTriggerPrintFlag(true);
+        }
+        else
+        {
+            generator->deleteLater();
+        }
     }
 
     if (item)
@@ -156,6 +200,38 @@ void EventStorageManager::triggerCodeMarkerEvent(const char *codeName, unsigned 
             d->getStoreWaveList(WAVE_NONE),
             codeName);
     item->startCollectTrendAndWaveformData(t);
+
+    int index = 0;
+    systemConfig.getNumValue("Print|CoderMarker", index);
+    if (index && recorderManager.isConnected())  // don't start trigger printing when the printer is not connected
+    {
+        RecordPageGenerator *generator = new TriggerPageGenerator(item);
+        if (recorderManager.isPrinting() && !d->isWait)
+        {
+            if (generator->getPriority() <= recorderManager.getCurPrintPriority())
+            {
+                generator->deleteLater();
+            }
+            else
+            {
+                recorderManager.stopPrint();
+                d->generator = generator;
+                d->waitTimerId = startTimer(2000); // 等待2000ms
+                d->isWait = true;
+                d->item = item;
+            }
+        }
+        else if (!recorderManager.getPrintStatus())
+        {
+            recorderManager.addPageGenerator(generator);
+            item->setWaitForTriggerPrintFlag(true);
+        }
+        else
+        {
+            generator->deleteLater();
+        }
+    }
+
     if (item)
     {
         d->mutex.lock();
@@ -179,13 +255,45 @@ void EventStorageManager::triggerRealtimePrintEvent(unsigned t)
     }
 }
 
-void EventStorageManager::triggerNIBPMeasurementEvent(unsigned t)
+void EventStorageManager::triggerNIBPMeasurementEvent(unsigned t, NIBPOneShotType result)
 {
     Q_D(EventStorageManager);
 
     EventStorageItem *item = new EventStorageItem(EventNIBPMeasurement,
-            d->getStoreWaveList(WAVE_NONE));
+            d->getStoreWaveList(WAVE_NONE), result);
     item->startCollectTrendAndWaveformData(t);
+
+    int index = 0;
+    systemConfig.getNumValue("Print|NIBPReading", index);
+    if (index && recorderManager.isConnected())  // don't start trigger printing when the printer is not connected
+    {
+        RecordPageGenerator *generator = new TriggerPageGenerator(item);
+        if (recorderManager.isPrinting() && !d->isWait)
+        {
+            if (generator->getPriority() <= recorderManager.getCurPrintPriority())
+            {
+                generator->deleteLater();
+            }
+            else
+            {
+                recorderManager.stopPrint();
+                d->generator = generator;
+                d->waitTimerId = startTimer(2000); // 等待2000ms
+                d->isWait = true;
+                d->item = item;
+            }
+        }
+        else if (!recorderManager.getPrintStatus())
+        {
+            recorderManager.addPageGenerator(generator);
+            item->setWaitForTriggerPrintFlag(true);
+        }
+        else
+        {
+            generator->deleteLater();
+        }
+    }
+
     if (item)
     {
         d->mutex.lock();
@@ -201,6 +309,38 @@ void EventStorageManager::triggerWaveFreezeEvent(unsigned t)
     EventStorageItem *item = new EventStorageItem(EventWaveFreeze,
             d->getStoreWaveList(WAVE_NONE));
     item->startCollectTrendAndWaveformData(t);
+
+    int index = 0;
+    systemConfig.getNumValue("Print|WaveFreeze", index);
+    if (index && recorderManager.isConnected())     // don't start trigger printing when the printer is not connected
+    {
+        RecordPageGenerator *generator = new TriggerPageGenerator(item);
+        if (recorderManager.isPrinting() && !d->isWait)
+        {
+            if (generator->getPriority() <= recorderManager.getCurPrintPriority())
+            {
+                generator->deleteLater();
+            }
+            else
+            {
+                recorderManager.stopPrint();
+                d->generator = generator;
+                d->waitTimerId = startTimer(2000);  // 等待2000ms
+                d->isWait = true;
+                d->item = item;
+            }
+        }
+        else if (!recorderManager.getPrintStatus())
+        {
+            recorderManager.addPageGenerator(generator);
+            item->setWaitForTriggerPrintFlag(true);
+        }
+        else
+        {
+            generator->deleteLater();
+        }
+    }
+
     if (item)
     {
         d->mutex.lock();
@@ -291,6 +431,43 @@ void EventStorageManager::newPatientHandle()
 {
     Q_D(EventStorageManager);
     d->backend->reload(dataStorageDirManager.getCurFolder() + EVENT_DATA_FILE_NAME, QIODevice::ReadWrite);
+}
+
+void EventStorageManager::timerEvent(QTimerEvent *ev)
+{
+    Q_D(EventStorageManager);
+    if (d->printTimerId == ev->timerId())
+    {
+        if (!recorderManager.isPrinting() || d->timeoutNum == 10) // 1000ms超时处理
+        {
+            // 没有打印任务时打印当前任务
+            if (!recorderManager.isPrinting())
+            {
+                recorderManager.addPageGenerator(d->generator);
+                if (d->item)
+                {
+                    d->item->setWaitForTriggerPrintFlag(true);
+                }
+            }
+            // 超时时不处理当前打印任务
+            else
+            {
+                d->generator->deleteLater();
+                d->generator = NULL;
+            }
+            killTimer(d->printTimerId);
+            d->printTimerId = -1;
+            d->timeoutNum = 0;
+        }
+        d->timeoutNum++;
+    }
+    else if (d->waitTimerId == ev->timerId())
+    {
+        d->printTimerId = startTimer(STOP_PRINT_TIMEOUT);
+        killTimer(d->waitTimerId);
+        d->waitTimerId = -1;
+        d->isWait = false;
+    }
 }
 
 EventStorageManager::EventStorageManager()

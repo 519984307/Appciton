@@ -41,7 +41,7 @@ public:
     {
         static const char *symbol[RESP_SWEEP_SPEED_NR] =
         {
-            "6.25 mm/s", "12.5 mm/s", "25.0 mm/s"
+            "6.25 mm/s", "12.5 mm/s", "25.0 mm/s", "50.0 mm/s"
         };
         return symbol[index];
     }
@@ -50,7 +50,7 @@ public:
     {
         static const char *symbol[RESP_ZOOM_NR] =
         {
-            "x1.0", "x2.0", "x3.0", "x4.0", "x5.0"
+            "x0.25", "x0.5", "x1.0", "x2.0", "x3.0", "x4.0", "x5.0"
         };
         return symbol[index];
     }
@@ -59,7 +59,7 @@ public:
     {
         static const char *symbol[RESP_LEAD_NR] =
         {
-            "I", "II"
+            "II", "I", "Auto"
         };
         return symbol[index];
     }
@@ -91,8 +91,8 @@ public:
         static const char *symbol[BR_RR_NR] =
         {
             "Auto",
-            "CO2",
-            "RESP"
+            "ECG",
+            "CO2"
         };
         return symbol[index];
     }

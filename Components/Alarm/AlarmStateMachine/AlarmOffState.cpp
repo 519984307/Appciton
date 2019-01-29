@@ -39,15 +39,16 @@ void AlarmOffState::enter()
 {
     // 定时发出报警关闭提示音
     int time = ALARM_CLOSE_PROMPT_OFF;
-    currentConfig.getNumValue("Alarm|AlarmOffPrompting", time);
+    systemConfig.getNumValue("Alarms|AlarmOffPrompting", time);
     if (time > ALARM_CLOSE_PROMPT_OFF && time < ALARM_CLOSE_PROMPT_NR)
     {
         beginTimer(time * 5 * 60 * 1000);
     }
 
-    alarmIndicator.setAudioStatus(ALARM_OFF);
+    alarmIndicator.setAlarmStatus(ALARM_STATUS_OFF);
     alarmIndicator.delAllPhyAlarm();
     lightManager.enableAlarmAudioMute(true);
+    alarmIndicator.updateAlarmPauseTime(INT_MAX);
 }
 
 /**************************************************************************************************
@@ -56,6 +57,7 @@ void AlarmOffState::enter()
 void AlarmOffState::exit()
 {
     endTimer();
+    alarmIndicator.updateAlarmPauseTime(-1);
 }
 
 /**************************************************************************************************
@@ -80,7 +82,7 @@ void AlarmOffState::handAlarmEvent(AlarmStateEvent event, unsigned char */*data*
     case ALARM_STATE_EVENT_RESET_BTN_PRESSED:
     {
         alarmIndicator.delLatchPhyAlarm();
-        alarmIndicator.techAlarmPauseStatusHandle();
+        alarmIndicator.techAlarmResetStatusHandle();
         break;
     }
 

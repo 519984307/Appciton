@@ -276,6 +276,18 @@ public:
     // 加载指定文件的内容。
     bool load(const QString &configPath);
 
+    /**
+     * @brief allowToSave  是否允许存储
+     * @param enable  失能或使能存储
+     */
+    void allowToSave(bool enable);
+
+    /**
+     * @brief setCurrentFilePath  设置当前的配置文件路径
+     * @param path  文件路径
+     */
+    void setCurrentFilePath(QString &path);
+
     // 重新加载文件的内容。
     void reload()
     {
@@ -322,4 +334,5 @@ private:
     QMutex _cacheLock;
     bool _requestToSave;
     QMutex _requestToSaveMutex;
+    bool _allowToSave;
 };

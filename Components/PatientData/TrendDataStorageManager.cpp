@@ -90,9 +90,9 @@ void TrendDataStorageManagerPrivate::updateAdditionInfo()
         changed = true;
     }
 
-    if (dataDesc.patientAge != patientManager.getAge())
+    if (dataDesc.bornDate != patientManager.getBornDate())
     {
-        dataDesc.patientAge = patientManager.getAge();
+        dataDesc.bornDate = patientManager.getBornDate();
         changed = true;
     }
 
@@ -219,7 +219,7 @@ void TrendDataStorageManager::periodRun(unsigned t)
 {
     Q_D(TrendDataStorageManager);
 
-    if (d->lastStoreTimestamp >= t)
+    if (d->lastStoreTimestamp == t)
     {
         return;
     }
@@ -244,7 +244,7 @@ void TrendDataStorageManager::periodRun(unsigned t)
 void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
 {
     Q_D(TrendDataStorageManager);
-    if (dataStorageDirManager.isCurRescueFolderFull() || d->lastStoreTimestamp >= t)
+    if (dataStorageDirManager.isCurRescueFolderFull() || d->lastStoreTimestamp == t)
     {
         return;
     }
@@ -339,7 +339,7 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
         dataSegment->status |= HRSourceIsSpo2;
     }
 
-    if (respDupParam.getBrSource() == RESPDupParam::BR_SOURCE_RESP)
+    if (respDupParam.getBrSource() == RESPDupParam::BR_SOURCE_ECG)
     {
         dataSegment->status |= BRSourceIsResp;
     }

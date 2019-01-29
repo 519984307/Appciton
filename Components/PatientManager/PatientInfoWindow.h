@@ -39,11 +39,6 @@ private slots:
     void nameReleased(void);
 
     /**
-     * @brief ageReleased 年龄按钮释放
-     */
-    void ageReleased(void);
-
-    /**
      * @brief heightReleased 身高按钮释放
      */
     void heightReleased(void);
@@ -59,9 +54,11 @@ private slots:
     void onBtnReleased(void);
 
     /**
-     * @brief pacerMakerReleased 起博打开按钮释放
+     * @brief bedNumReleased 修改病人床号
      */
-    void pacerMakerReleased(int);
+    void bedNumReleased(void);
+
+    void onSpinBoxValueChanged(int, int);
 
 protected:
     /*reimplement*/

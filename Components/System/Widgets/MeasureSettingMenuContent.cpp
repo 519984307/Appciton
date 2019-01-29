@@ -31,6 +31,7 @@ public:
         ITEM_BTN_SPO2,
         ITEM_BTN_NIBP,
         ITEM_BTN_CO2,
+        ITEM_BTN_O2,
     };
 };
 
@@ -71,8 +72,8 @@ void MeasureSettingMenuContent::layoutExec()
     vlayout->addLayout(hl);
     btn->setButtonStyle(Button::ButtonTextOnly);
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
+    item = MeasureSettingMenuContentPrivate::ITEM_BTN_ECG;
     btn->setProperty("Item", qVariantFromValue(item));
-    item++;
 
     // resp
     btn = new Button(QString("%1 >>").arg(trs("RESPSetting")));
@@ -82,8 +83,8 @@ void MeasureSettingMenuContent::layoutExec()
     vlayout->addLayout(hl);
     btn->setButtonStyle(Button::ButtonTextOnly);
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
+    item = MeasureSettingMenuContentPrivate::ITEM_BTN_RESP;
     btn->setProperty("Item", qVariantFromValue(item));
-    item++;
 
     // temp
     btn = new Button(QString("%1 >>").arg(trs("TEMPSetting")));
@@ -93,8 +94,8 @@ void MeasureSettingMenuContent::layoutExec()
     vlayout->addLayout(hl);
     btn->setButtonStyle(Button::ButtonTextOnly);
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
+    item = MeasureSettingMenuContentPrivate::ITEM_BTN_TEMP;
     btn->setProperty("Item", qVariantFromValue(item));
-    item++;
 
     // ag
     if (systemManager.isSupport(CONFIG_AG))
@@ -106,8 +107,8 @@ void MeasureSettingMenuContent::layoutExec()
         vlayout->addLayout(hl);
         btn->setButtonStyle(Button::ButtonTextOnly);
         connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
+        item = MeasureSettingMenuContentPrivate::ITEM_BTN_AG;
         btn->setProperty("Item", qVariantFromValue(item));
-        item++;
     }
 
     // ibp
@@ -120,8 +121,8 @@ void MeasureSettingMenuContent::layoutExec()
         vlayout->addLayout(hl);
         btn->setButtonStyle(Button::ButtonTextOnly);
         connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
+        item = MeasureSettingMenuContentPrivate::ITEM_BTN_IBP;
         btn->setProperty("Item", qVariantFromValue(item));
-        item++;
     }
 
     // co
@@ -134,8 +135,8 @@ void MeasureSettingMenuContent::layoutExec()
         vlayout->addLayout(hl);
         btn->setButtonStyle(Button::ButtonTextOnly);
         connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
+        item = MeasureSettingMenuContentPrivate::ITEM_BTN_CO;
         btn->setProperty("Item", qVariantFromValue(item));
-        item++;
     }
 
     // spo2
@@ -148,8 +149,8 @@ void MeasureSettingMenuContent::layoutExec()
         vlayout->addLayout(hl);
         btn->setButtonStyle(Button::ButtonTextOnly);
         connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
+        item = MeasureSettingMenuContentPrivate::ITEM_BTN_SPO2;
         btn->setProperty("Item", qVariantFromValue(item));
-        item++;
     }
 
     // nibp
@@ -162,8 +163,8 @@ void MeasureSettingMenuContent::layoutExec()
         vlayout->addLayout(hl);
         btn->setButtonStyle(Button::ButtonTextOnly);
         connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
+        item = MeasureSettingMenuContentPrivate::ITEM_BTN_NIBP;
         btn->setProperty("Item", qVariantFromValue(item));
-        item++;
     }
 
     // CO2
@@ -176,6 +177,21 @@ void MeasureSettingMenuContent::layoutExec()
         vlayout->addLayout(hl);
         btn->setButtonStyle(Button::ButtonTextOnly);
         connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
+        item = MeasureSettingMenuContentPrivate::ITEM_BTN_CO2;
+        btn->setProperty("Item", qVariantFromValue(item));
+    }
+
+    // O2
+    if (systemManager.isSupport(CONFIG_O2))
+    {
+        btn = new Button(QString("%1 >>").arg(trs("O2Setting")));
+        hl = new QHBoxLayout;
+        hl->addStretch(1);
+        hl->addWidget(btn, 1);
+        vlayout->addLayout(hl);
+        btn->setButtonStyle(Button::ButtonTextOnly);
+        connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
+        item = MeasureSettingMenuContentPrivate::ITEM_BTN_O2;
         btn->setProperty("Item", qVariantFromValue(item));
     }
     vlayout->addStretch();
@@ -219,7 +235,10 @@ void MeasureSettingMenuContent::onBtnReleasd()
         strName = trs("NIBPMenu");
         break;
     case MeasureSettingMenuContentPrivate::ITEM_BTN_CO2:
-        p->popup(trs("NIBPMenu"));
+        strName = trs("CO2Menu");
+        break;
+    case MeasureSettingMenuContentPrivate::ITEM_BTN_O2:
+        strName = trs("O2Menu");
         break;
     }
 

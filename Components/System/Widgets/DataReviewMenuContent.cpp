@@ -20,6 +20,7 @@
 #include "EventWindow.h"
 #include "OxyCRGEventWindow.h"
 #include "HistoryDataReviewWindow.h"
+#include "SystemManager.h"
 
 class DataReviewMenuContentPrivate
 {
@@ -29,7 +30,9 @@ public:
         ITEM_BTN_TREND_TABLE = 0,
         ITEM_BTN_TREND_GRAPH,
         ITEM_BTN_EVENT_REVIEW,
+#ifndef  HIDE_OXYCRG_REVIEW_FUNCTION
         ITEM_BTN_OXYCRG_REVIEW,
+#endif
         ITEM_BTN_HISTORY_REVIEW,
     };
 
@@ -93,6 +96,7 @@ void DataReviewMenuContent::layoutExec()
     d_ptr->btns.insert(DataReviewMenuContentPrivate::ITEM_BTN_EVENT_REVIEW, btn);
     row++;
 
+#ifndef  HIDE_OXYCRG_REVIEW_FUNCTION
     // oxycrg review
     btn = new Button(trs("OxyCRGEventReview"));
     btn->setButtonStyle(Button::ButtonTextOnly);
@@ -103,6 +107,7 @@ void DataReviewMenuContent::layoutExec()
     d_ptr->btns.insert(DataReviewMenuContentPrivate
                        ::ITEM_BTN_OXYCRG_REVIEW, btn);
     row++;
+#endif
 
     // history  review
     btn = new Button(trs("HistoryTrend"));
@@ -116,6 +121,18 @@ void DataReviewMenuContent::layoutExec()
     row++;
 
     glayout->setRowStretch(row, 1);
+}
+
+void DataReviewMenuContent::readyShow()
+{
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        d_ptr->btns[DataReviewMenuContentPrivate::ITEM_BTN_HISTORY_REVIEW]->setEnabled(false);
+    }
+    else
+    {
+        d_ptr->btns[DataReviewMenuContentPrivate::ITEM_BTN_HISTORY_REVIEW]->setEnabled(true);
+    }
 }
 
 void DataReviewMenuContent::onBtnReleased()
@@ -133,8 +150,8 @@ void DataReviewMenuContent::onBtnReleased()
     {
         TrendTableWindow::getInstance()->setHistoryData(false);
         windowManager.showWindow(TrendTableWindow::getInstance(),
-                                 WindowManager::
-                                 ShowBehaviorHideOthers);
+                                 WindowManager::ShowBehaviorHideOthers |
+                                 WindowManager::ShowBehaviorNoAutoClose);
     }
     break;
 
@@ -142,8 +159,8 @@ void DataReviewMenuContent::onBtnReleased()
     {
         TrendGraphWindow::getInstance()->setHistoryData(false);
         windowManager.showWindow(TrendGraphWindow::getInstance(),
-                                 WindowManager::
-                                 ShowBehaviorHideOthers);
+                                 WindowManager::ShowBehaviorHideOthers |
+                                 WindowManager::ShowBehaviorNoAutoClose);
     }
     break;
 
@@ -156,6 +173,7 @@ void DataReviewMenuContent::onBtnReleased()
     }
     break;
 
+#ifndef  HIDE_OXYCRG_REVIEW_FUNCTION
     case DataReviewMenuContentPrivate::ITEM_BTN_OXYCRG_REVIEW:
     {
         OxyCRGEventWindow::getInstance()->setHistoryData(false);
@@ -164,6 +182,7 @@ void DataReviewMenuContent::onBtnReleased()
                                  ShowBehaviorHideOthers);
     }
     break;
+#endif
 
     case DataReviewMenuContentPrivate::ITEM_BTN_HISTORY_REVIEW:
     {

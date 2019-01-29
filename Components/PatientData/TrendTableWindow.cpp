@@ -46,10 +46,13 @@
 
 #define ITEM_HEIGHT             30
 #define ITEM_WIDTH              100
-#define TABLE_ROW_NR            6
+#define TABLE_ROW_NR            5
 #define TABLE_COL_NR            7
 #define TABLE_ITEM_WIDTH        65
 #define TABLE_ITEM_HEIGHT       35
+
+#define IN_12_HOUR_HEADER_FONT_SIZE  (12)
+#define IN_24_HOUR_HEADER_FONT_SIZE  (16)
 
 class TrendTableWindowPrivate
 {
@@ -58,7 +61,7 @@ public:
         : model(NULL), table(NULL), upBtn(NULL), downBtn(NULL),
            pagingBtn(NULL), eventBtn(NULL),
           printParamBtn(NULL), setBtn(NULL), timeInterval(RESOLUTION_RATIO_5_SECOND),
-          curSecCol(0), q_ptr(parent)
+          curSecCol(0), q_ptr(parent), horizontalHeader(NULL)
     {}
 
     void updateTable(void);
@@ -76,6 +79,7 @@ public:
 
     int curSecCol;                         // 当前选中列
     TrendTableWindow *q_ptr;
+    TableHeaderView *horizontalHeader;
 };
 
 TrendTableWindow *TrendTableWindow::getInstance()
@@ -122,51 +126,25 @@ void TrendTableWindow::printTrendData(unsigned startTime, unsigned endTime)
 
 void TrendTableWindow::updatePages()
 {
-    unsigned startTime = 0;
-    unsigned endTime = 0;
-    unsigned rightTime = 0;
-    unsigned allPagesNum = 1;
-    unsigned curPageNum = 1;
+    unsigned start;
+    unsigned total;
+    unsigned column = d_ptr->model->getColumnCount();
+    d_ptr->model->getCurIndexInfo(start, total);
 
-    d_ptr->model->getDataTimeRange(startTime, endTime);
+    unsigned coef = total / column;
+    unsigned allPagesNum = (total % column == 0)?(coef):(coef + 1);
+    unsigned curPageNum = start / column + 1;
 
-    unsigned timeInterval = TrendDataSymbol::convertValue(d_ptr->timeInterval);
-
-    // 初始状态下起始时间与结束时间相同时显示页数1/1
-    if (endTime == startTime)
-    {
-        allPagesNum = curPageNum = 1;
-        setWindowTitle(QString("%1 ( %2 / %3 %4 )")
-                       .arg(trs("TrendTable"))
-                       .arg(curPageNum)
-                       .arg(allPagesNum)
-                       .arg(trs("Page")));
-        return;
-    }
-
-    if (startTime % timeInterval != 0)
-    {
-        startTime = startTime + (timeInterval - startTime % timeInterval);
-    }
-    endTime = endTime - endTime % timeInterval;
-    rightTime = d_ptr->model->getRightTime();
-
-    if (endTime <= startTime)
+    if (allPagesNum < curPageNum)
     {
         allPagesNum = curPageNum = 1;
     }
-    else
-    {
-        // 获取数据的总页数
-        allPagesNum = 1 + (endTime - startTime) * 1.0 / timeInterval / d_ptr->model->getColumnCount();
-        // 获取数据的当前页数
-        curPageNum = 1 + (rightTime - startTime) * 1.0 / ((endTime - startTime) * 1.0) * (allPagesNum - 1);
-    }
+
     setWindowTitle(QString("%1 ( %2 / %3 %4 )")
                    .arg(trs("TrendTable"))
                    .arg(curPageNum)
                    .arg(allPagesNum)
-                   .arg(trs("Page")));
+                   .arg(trs("PageNum")));
 }
 
 void TrendTableWindow::showEvent(QShowEvent *ev)
@@ -222,11 +200,27 @@ bool TrendTableWindow::eventFilter(QObject *o, QEvent *e)
 TrendTableWindow::TrendTableWindow()
     : Window(), d_ptr(new TrendTableWindowPrivate(this))
 {
-    resize(825, 580);
+    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
 
     d_ptr->table = new TableView();
     TableHeaderView *horizontalHeader = new TableHeaderView(Qt::Horizontal);
+
+    // 初始化水平表头的字体
+    int formatIndex = TIME_FORMAT_12;
+    systemConfig.getNumValue("DateTime|TimeFormat", formatIndex);
+    if (formatIndex == TIME_FORMAT_12)
+    {
+        horizontalHeader->setFont(fontManager.textFont(IN_12_HOUR_HEADER_FONT_SIZE));
+    }
+    else if (formatIndex == TIME_FORMAT_24)
+    {
+        horizontalHeader->setFont(fontManager.textFont(IN_24_HOUR_HEADER_FONT_SIZE));
+    }
+    d_ptr->horizontalHeader = horizontalHeader;
+    connect(&systemManager, SIGNAL(systemTimeFormatUpdated(TimeFormat)), this, SLOT(onSystemTimeFormatUpdated(TimeFormat)));
+
     TableHeaderView *verticalHeader = new TableHeaderView(Qt::Vertical);
+    verticalHeader->setFont(fontManager.textFont(IN_24_HOUR_HEADER_FONT_SIZE));
     d_ptr->table->setHorizontalHeader(horizontalHeader);
     d_ptr->table->setVerticalHeader(verticalHeader);
     horizontalHeader->setResizeMode(QHeaderView::ResizeToContents);
@@ -236,13 +230,13 @@ TrendTableWindow::TrendTableWindow()
     d_ptr->table->setAttribute(Qt::WA_TransparentForMouseEvents, true);
     d_ptr->table->setFocusPolicy(Qt::ClickFocus);
     d_ptr->table->setShowGrid(false);
+    d_ptr->table->setFont(fontManager.textFont(IN_24_HOUR_HEADER_FONT_SIZE));
     d_ptr->table->setCornerButtonEnabled(false);
     d_ptr->model = new TrendTableModel();
     d_ptr->table->installEventFilter(d_ptr->model);
     d_ptr->table->setModel(d_ptr->model);
     d_ptr->table->setFixedHeight(d_ptr->model->getHeaderHeightHint()
                                  + d_ptr->model->getRowHeightHint() * TABLE_ROW_NR);
-    d_ptr->table->setFixedWidth(825);
     d_ptr->table->setItemDelegate(new TableViewItemDelegate(this));
 
     d_ptr->upBtn = new Button("", QIcon("/usr/local/nPM/icons/up.png"));
@@ -340,7 +334,7 @@ void TrendTableWindow::printWidgetRelease()
     unsigned endLimit = 0;
     if (d_ptr->model->getDataTimeRange(startLimit, endLimit))
     {
-        TrendPrintWindow printWindow;
+        TrendPrintWindow printWindow(d_ptr->model->getTrendDataPack());
         unsigned startTime = 0;
         unsigned endTime = 0;
         d_ptr->model->displayDataTimeRange(startTime, endTime);
@@ -354,6 +348,19 @@ void TrendTableWindow::trendDataSetReleased()
 {
     windowManager.showWindow(&trendTableSetWindow, WindowManager::ShowBehaviorModal);
     updatePages();
+}
+
+void TrendTableWindow::onSystemTimeFormatUpdated(TimeFormat format)
+{
+    if (format == TIME_FORMAT_12)
+    {
+        d_ptr->horizontalHeader->setFont(fontManager.textFont(IN_12_HOUR_HEADER_FONT_SIZE));
+    }
+    else if (format == TIME_FORMAT_24)
+    {
+        d_ptr->horizontalHeader->setFont(fontManager.textFont(IN_24_HOUR_HEADER_FONT_SIZE));
+    }
+    d_ptr->updateTable();
 }
 
 void TrendTableWindowPrivate::updateTable()

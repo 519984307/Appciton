@@ -111,6 +111,18 @@ public:
     // 超限报警通知
     void noticeLimitAlarm(int id, bool flag);
 
+    /**
+     * @brief updateUnit 单位变更后刷新对应的窗口控件
+     */
+    void updateUnit(void);
+
+    /**
+     * @brief setModuleWorkMode  设置模块的工作模式
+     * @param mode  工作模式
+     * @return   是否设置成功
+     */
+    bool setModuleWorkMode(CO2WorkMode mode);
+
 public:
     // 校零。
     void zeroCalibration(void);
@@ -127,6 +139,7 @@ public:
     CO2SweepSpeed getSweepSpeed(void);
 
     // 获取波形模式。
+    void setSweepMode(CO2SweepMode mode);
     CO2SweepMode getSweepMode(void);
 
     // 设置/获取气体补偿。
@@ -144,8 +157,15 @@ public:
     // 获取单位。
     UnitType getUnit(void);
 
-    // 设置/获取CO2开关
-    void setCO2Switch(int onoff);
+    /**
+     * @brief setCO2Switch 设置CO2开关
+     * @param on  if is on
+     */
+    void setCO2Switch(bool on);
+    /**
+     * @brief getCO2Switch  获取CO2开关
+     * @return  返回CO2开关状态
+     */
     bool getCO2Switch();
 
     // 获取CO2

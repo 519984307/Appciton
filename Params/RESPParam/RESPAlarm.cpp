@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/11/16
+ **/
+
 #include "RESPAlarm.h"
 #include "IConfig.h"
 #include "RESPSymbol.h"
@@ -30,17 +40,19 @@ int RESPLimitAlarm::getAlarmSourceNR(void)
 /**************************************************************************************************
  * 获取报警对应的波形ID，该波形将被存储。
  *************************************************************************************************/
-WaveformID RESPLimitAlarm::getWaveformID(int /*id*/)
+WaveformID RESPLimitAlarm::getWaveformID(int id)
 {
+    Q_UNUSED(id)
     return WAVE_RESP;
 }
 
 /**************************************************************************************************
  * 获取id对应的参数ID。
  *************************************************************************************************/
-SubParamID RESPLimitAlarm::getSubParamID(int /*id*/)
+SubParamID RESPLimitAlarm::getSubParamID(int id)
 {
-    return SUB_PARAM_NONE;
+    Q_UNUSED(id)
+    return SUB_PARAM_RR_BR;
 }
 
 /**************************************************************************************************
@@ -54,48 +66,55 @@ AlarmPriority RESPLimitAlarm::getAlarmPriority(int id)
 /**************************************************************************************************
  * 获取指定的生理参数测量数据。
  *************************************************************************************************/
-int RESPLimitAlarm::getValue(int /*id*/)
+int RESPLimitAlarm::getValue(int id)
 {
+    Q_UNUSED(id)
     return 0;
 }
 
 /**************************************************************************************************
  * 生理参数报警使能。
  *************************************************************************************************/
-bool RESPLimitAlarm::isAlarmEnable(int /*id*/)
+bool RESPLimitAlarm::isAlarmEnable(int id)
 {
+    Q_UNUSED(id)
     return true;
 }
 
 /**************************************************************************************************
  * 生理参数报警上限。
  *************************************************************************************************/
-int RESPLimitAlarm::getUpper(int /*id*/)
+int RESPLimitAlarm::getUpper(int id)
 {
+    Q_UNUSED(id)
     return 0;
 }
 
 /**************************************************************************************************
  * 生理参数报警下限。
  *************************************************************************************************/
-int RESPLimitAlarm::getLower(int /*id*/)
+int RESPLimitAlarm::getLower(int id)
 {
+    Q_UNUSED(id)
     return 0;
 }
 
 /**************************************************************************************************
  * 生理参数报警比较。
  *************************************************************************************************/
-int RESPLimitAlarm::getCompare(int /*value*/, int /*id*/)
+int RESPLimitAlarm::getCompare(int value, int id)
 {
+    Q_UNUSED(value)
+    Q_UNUSED(id)
     return 0;
 }
 
 /**************************************************************************************************
  * 将报警ID转换成字串。
  *************************************************************************************************/
-const char *RESPLimitAlarm::toString(int /*id*/)
+const char *RESPLimitAlarm::toString(int id)
 {
+    Q_UNUSED(id)
     return NULL;
 }
 
@@ -105,7 +124,6 @@ const char *RESPLimitAlarm::toString(int /*id*/)
  *************************************************************************************************/
 RESPLimitAlarm::RESPLimitAlarm()
 {
-
 }
 
 /**************************************************************************************************
@@ -113,7 +131,6 @@ RESPLimitAlarm::RESPLimitAlarm()
  *************************************************************************************************/
 RESPLimitAlarm::~RESPLimitAlarm()
 {
-
 }
 
 /**************************************************************************************************
@@ -153,8 +170,9 @@ WaveformID RESPOneShotAlarm::getWaveformID(int id)
 /**************************************************************************************************
  * 获取id对应的参数ID。
  *************************************************************************************************/
-SubParamID RESPOneShotAlarm::getSubParamID(int /*id*/)
+SubParamID RESPOneShotAlarm::getSubParamID(int id)
 {
+    Q_UNUSED(id)
     return SUB_PARAM_NONE;
 }
 
@@ -166,6 +184,7 @@ AlarmPriority RESPOneShotAlarm::getAlarmPriority(int id)
     switch (id)
     {
         case RESP_ONESHOT_ALARM_APNEA:
+        case RESP_ONESHOT_ALARM_COMMUNICATION_STOP:
             return ALARM_PRIO_HIGH;
 
         default:
@@ -218,14 +237,15 @@ bool RESPOneShotAlarm::isAlarmEnable(int id)
         v = alarmConfig.isLimitAlarmEnable(SUB_PARAM_RR_BR);
     }
 
-    return ((bool)v && respParam.isEnabled());
+    return (v && respParam.isEnabled());
 }
 
 /**************************************************************************************************
  * remove alarm message after latch。
  *************************************************************************************************/
-bool RESPOneShotAlarm::isRemoveAfterLatch(int /*id*/)
+bool RESPOneShotAlarm::isRemoveAfterLatch(int id)
 {
+    Q_UNUSED(id)
     return false;
 }
 
@@ -236,7 +256,7 @@ bool RESPOneShotAlarm::isAlarmed(int id)
         return false;
     }
 
-    AlarmOneShotIFace::isAlarmed(id);
+    return AlarmOneShotIFace::isAlarmed(id);
 }
 
 /**************************************************************************************************
@@ -244,7 +264,6 @@ bool RESPOneShotAlarm::isAlarmed(int id)
  *************************************************************************************************/
 RESPOneShotAlarm::RESPOneShotAlarm()
 {
-
 }
 
 /**************************************************************************************************
@@ -252,5 +271,4 @@ RESPOneShotAlarm::RESPOneShotAlarm()
  *************************************************************************************************/
 RESPOneShotAlarm::~RESPOneShotAlarm()
 {
-
 }

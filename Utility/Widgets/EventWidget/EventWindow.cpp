@@ -45,20 +45,33 @@
 #include "DataStorageDefine.h"
 #include "TableViewItemDelegate.h"
 #include "MessageBox.h"
+#include "CO2Param.h"
+#include "EventListPageGenerator.h"
+#include "NIBPSymbol.h"
+#include "ThemeManager.h"
+
+#define TABLE_SPACING               (4)
+#define PAGE_ROW_COUNT               7      // 每页多少行
+#define STOP_PRINT_TIMEOUT          (100)
 
 class EventWindowPrivate
 {
 public:
-    EventWindowPrivate()
+    explicit EventWindowPrivate(EventWindow * const q_ptr)
         : eventTable(NULL), model(NULL), upPageBtn(NULL),
-          downPageBtn(NULL), typeCbo(NULL), levelCbo(NULL),
+          downPageBtn(NULL), typeCbo(NULL), levelCbo(NULL), listPrintBtn(NULL),
           infoWidget(NULL), trendListWidget(NULL), waveWidget(NULL),
           eventListBtn(NULL), coordinateMoveBtn(NULL), eventMoveBtn(NULL),
           printBtn(NULL),
           setBtn(NULL), upParamBtn(NULL), downParamBtn(NULL),
           tableWidget(NULL), chartWidget(NULL), stackLayout(NULL),
-          backend(NULL), curParseIndex(0), eventNum(0), curDisplayEventNum(0),
-          curListScroller(0), isHistory(false)
+          backend(NULL), eventNum(0), curDisplayEventNum(0),
+          isHistory(false), q_ptr(q_ptr),
+          printTimerId(-1),
+          waitTimerId(-1),
+          isWait(false),
+          timeoutNum(0),
+          generator(NULL)
     {
         backend = eventStorageManager.backend();
         curEventType = EventAll;
@@ -100,6 +113,8 @@ public:
      * @brief eventWaveUpdate 事件波形数据窗口刷新
      */
     void eventWaveUpdate(void);
+
+    void refreshPageInfo();
 public:
     TableView *eventTable;
     EventReviewModel *model;
@@ -107,6 +122,7 @@ public:
     Button *downPageBtn;
     ComboBox *typeCbo;
     ComboBox *levelCbo;
+    Button *listPrintBtn;
 
     EventInfoWidget *infoWidget;
     QListWidget *trendListWidget;
@@ -125,16 +141,24 @@ public:
 
     EventDataPraseContext ctx;
     IStorageBackend *backend;
-    int curParseIndex;
     int eventNum;                       // 存储总事件数
     int curDisplayEventNum;             // 当前显示事件数
-    int curListScroller;
     EventType curEventType;
     EventLevel curEventLevel;
     QList<int> dataIndex;               // 当前选中事件项对应的数据所在索引
 
     bool isHistory;                     // 历史回顾标志
     QString historyDataPath;            // 历史数据路径
+
+    EventWindow *q_ptr;
+
+    int printTimerId;
+    int waitTimerId;
+    bool isWait;
+    int timeoutNum;
+    RecordPageGenerator *generator;
+
+    QStringList printList;              // 事件列表打印
 };
 
 EventWindow *EventWindow::getInstance()
@@ -226,6 +250,7 @@ void EventWindow::showEvent(QShowEvent *ev)
 
     d_ptr->stackLayout->setCurrentIndex(0);
     d_ptr->loadEventData();
+    d_ptr->refreshPageInfo();
     if (d_ptr->eventTable->model()->rowCount() == 0)
     {
         d_ptr->eventTable->setFocusPolicy(Qt::NoFocus);
@@ -234,13 +259,36 @@ void EventWindow::showEvent(QShowEvent *ev)
     {
         d_ptr->eventTable->setFocusPolicy(Qt::StrongFocus);
     }
+}
 
-    int curScroller = d_ptr->eventTable->verticalScrollBar()->value();
-    int maxValue = d_ptr->eventTable->verticalScrollBar()->maximum();
-    bool hasBtn = curScroller > 0;
-    d_ptr->upPageBtn->setEnabled(hasBtn);
-    hasBtn = curScroller < maxValue;
-    d_ptr->downPageBtn->setEnabled(hasBtn);
+void EventWindow::timerEvent(QTimerEvent *ev)
+{
+    if (d_ptr->printTimerId == ev->timerId())
+    {
+        if (!recorderManager.isPrinting() || d_ptr->timeoutNum == 10)
+        {
+            if (!recorderManager.isPrinting())
+            {
+                recorderManager.addPageGenerator(d_ptr->generator);
+            }
+            else
+            {
+                d_ptr->generator->deleteLater();
+                d_ptr->generator = NULL;
+            }
+            killTimer(d_ptr->printTimerId);
+            d_ptr->printTimerId = -1;
+            d_ptr->timeoutNum = 0;
+        }
+        d_ptr->timeoutNum++;
+    }
+    else if (d_ptr->waitTimerId == ev->timerId())
+    {
+        d_ptr->printTimerId = startTimer(STOP_PRINT_TIMEOUT);
+        killTimer(d_ptr->waitTimerId);
+        d_ptr->waitTimerId = -1;
+        d_ptr->isWait = false;
+    }
 }
 
 void EventWindow::waveInfoReleased(QModelIndex index)
@@ -292,46 +340,43 @@ void EventWindow::eventLevelSelect(int index)
     }
 }
 
+void EventWindow::eventListPrintReleased()
+{
+    RecordPageGenerator *generator = new EventListPageGenerator(d_ptr->printList);
+    if (recorderManager.isPrinting() && !d_ptr->isWait)
+    {
+        if (generator->getPriority() <= recorderManager.getCurPrintPriority())
+        {
+            generator->deleteLater();
+        }
+        else
+        {
+            recorderManager.stopPrint();
+            d_ptr->generator = generator;
+            d_ptr->waitTimerId = startTimer(2000);
+            d_ptr->isWait = true;
+        }
+    }
+    else if (!recorderManager.getPrintStatus())
+    {
+        recorderManager.addPageGenerator(generator);
+    }
+    else
+    {
+        generator->deleteLater();
+    }
+}
+
 void EventWindow::upPageReleased()
 {
-    int maxValue = d_ptr->eventTable->verticalScrollBar()->maximum();
-    d_ptr->curListScroller = d_ptr->eventTable->verticalScrollBar()->value();
-    if (d_ptr->curListScroller > 0)
-    {
-        QScrollBar *scrollBar = d_ptr->eventTable->verticalScrollBar();
-        int positon = d_ptr->curListScroller - (maxValue * 15) / (d_ptr->curDisplayEventNum - 15);
-        scrollBar->setSliderPosition(positon);
-    }
-
-    // 上下翻页事件按钮使能
-    int curScroller = d_ptr->eventTable->verticalScrollBar()->value();
-    bool hasBtn = curScroller > 0;
-    d_ptr->upPageBtn->setEnabled(hasBtn);
-    hasBtn = curScroller < maxValue;
-    d_ptr->downPageBtn->setEnabled(hasBtn);
+    d_ptr->eventTable->scrollToPreviousPage();
+    d_ptr->refreshPageInfo();
 }
 
 void EventWindow::downPageReleased()
 {
-    int maxValue = d_ptr->eventTable->verticalScrollBar()->maximum();
-    d_ptr->curListScroller = d_ptr->eventTable->verticalScrollBar()->value();
-    if (d_ptr->curListScroller < maxValue && d_ptr->curDisplayEventNum != 15)
-    {
-        QScrollBar *scrollBar = d_ptr->eventTable->verticalScrollBar();
-        int positon = d_ptr->curListScroller + (maxValue * 15) / (d_ptr->curDisplayEventNum - 15);
-        scrollBar->setSliderPosition(positon);
-    }
-
-    // 上下翻页事件按钮使能
-    int curScroller = d_ptr->eventTable->verticalScrollBar()->value();
-    bool hasBtn = curScroller > 0;
-    d_ptr->upPageBtn->setEnabled(hasBtn);
-    hasBtn = curScroller < maxValue;
-    d_ptr->downPageBtn->setEnabled(hasBtn);
-    if (!hasBtn)
-    {
-        d_ptr->upPageBtn->setFocus();
-    }
+    d_ptr->eventTable->scrollToNextPage();
+    d_ptr->refreshPageInfo();
 }
 
 void EventWindow::eventListReleased()
@@ -341,39 +386,35 @@ void EventWindow::eventListReleased()
 
 void EventWindow::leftMoveCoordinate()
 {
-    int durationBefore;
-    int durationAfter;
-    Config &conf =  configManager.getCurConfig();
-    conf.getNumValue("Event|WaveLengthBefore", durationBefore);
-    conf.getNumValue("Event|WaveLengthAfter", durationAfter);
+    int waveLength = d_ptr->ctx.infoSegment->duration_after;
     EventWaveWidget::SweepSpeed speed;
     speed = d_ptr->waveWidget->getSweepSpeed();
     int medSecond = d_ptr->waveWidget->getCurrentWaveMedSecond();
     switch (speed)
     {
     case EventWaveWidget::SWEEP_SPEED_62_5:
-        if (medSecond == -durationBefore + 8)
+        if (medSecond == -waveLength + 8)
         {
             return;
         }
         medSecond--;
         break;
     case EventWaveWidget::SWEEP_SPEED_125:
-        if (medSecond == -durationBefore + 4)
+        if (medSecond == -waveLength + 4)
         {
             return;
         }
         medSecond--;
         break;
     case EventWaveWidget::SWEEP_SPEED_250:
-        if (medSecond == -durationBefore + 2)
+        if (medSecond == -waveLength + 2)
         {
             return;
         }
         medSecond--;
         break;
     case EventWaveWidget::SWEEP_SPEED_500:
-        if (medSecond == -durationBefore + 1)
+        if (medSecond == -waveLength + 1)
         {
             return;
         }
@@ -387,39 +428,35 @@ void EventWindow::leftMoveCoordinate()
 
 void EventWindow::rightMoveCoordinate()
 {
-    int durationBefore;
-    int durationAfter;
-    Config &conf =  configManager.getCurConfig();
-    conf.getNumValue("Event|WaveLengthBefore", durationBefore);
-    conf.getNumValue("Event|WaveLengthAfter", durationAfter);
+    int waveLength = d_ptr->ctx.infoSegment->duration_after;
     EventWaveWidget::SweepSpeed speed;
     speed = d_ptr->waveWidget->getSweepSpeed();
     int medSecond = d_ptr->waveWidget->getCurrentWaveMedSecond();
     switch (speed)
     {
     case EventWaveWidget::SWEEP_SPEED_62_5:
-        if (medSecond == durationAfter - 8)
+        if (medSecond == waveLength - 8)
         {
             return;
         }
         medSecond++;
         break;
     case EventWaveWidget::SWEEP_SPEED_125:
-        if (medSecond == durationAfter - 4)
+        if (medSecond == waveLength - 4)
         {
             return;
         }
         medSecond++;
         break;
     case EventWaveWidget::SWEEP_SPEED_250:
-        if (medSecond == durationAfter - 2)
+        if (medSecond == waveLength - 2)
         {
             return;
         }
         medSecond++;
         break;
     case EventWaveWidget::SWEEP_SPEED_500:
-        if (medSecond == durationAfter - 1)
+        if (medSecond == waveLength - 1)
         {
             return;
         }
@@ -480,7 +517,29 @@ void EventWindow::printRelease()
     if (curIndex < d_ptr->dataIndex.size() &&
             curIndex >= 0)
     {
-        recorderManager.addPageGenerator(new EventPageGenerator(d_ptr->backend, d_ptr->dataIndex.at(curIndex)));
+        RecordPageGenerator *gen = new EventPageGenerator(d_ptr->backend, d_ptr->dataIndex.at(curIndex));
+        if (recorderManager.isPrinting() && !d_ptr->isWait)
+        {
+            if (gen->getPriority() <= recorderManager.getCurPrintPriority())
+            {
+                gen->deleteLater();
+            }
+            else
+            {
+                recorderManager.stopPrint();
+                d_ptr->generator = gen;
+                d_ptr->waitTimerId = startTimer(2000);
+                d_ptr->isWait = true;
+            }
+        }
+        else if (!recorderManager.getPrintStatus())
+        {
+            recorderManager.addPageGenerator(gen);
+        }
+        else
+        {
+            gen->deleteLater();
+        }
     }
 }
 
@@ -533,7 +592,7 @@ void EventWindow::downReleased()
 
 EventWindow::EventWindow()
     : Window(),
-      d_ptr(new EventWindowPrivate())
+      d_ptr(new EventWindowPrivate(this))
 {
     setWindowTitle(trs("EventReview"));
 
@@ -551,6 +610,8 @@ EventWindow::EventWindow()
     d_ptr->eventTable->setShowGrid(false);
     d_ptr->model = new EventReviewModel();
     d_ptr->eventTable->setModel(d_ptr->model);
+    d_ptr->eventTable->setFixedHeight((PAGE_ROW_COUNT + 1) * d_ptr->model->getHeightHint());
+    d_ptr->eventTable->setItemDelegate(new TableViewItemDelegate(this));
     connect(d_ptr->eventTable, SIGNAL(clicked(QModelIndex)), this, SLOT(waveInfoReleased(QModelIndex)));
     connect(d_ptr->eventTable, SIGNAL(rowClicked(int)), this, SLOT(waveInfoReleased(int)));
 
@@ -570,27 +631,38 @@ EventWindow::EventWindow()
     }
     connect(d_ptr->levelCbo, SIGNAL(currentIndexChanged(int)), this, SLOT(eventLevelSelect(int)));
 
-    d_ptr->upPageBtn = new Button("", QIcon("/usr/local/nPM/icons/up.png"));
+    d_ptr->listPrintBtn = new Button(trs("PrintList"));
+    d_ptr->listPrintBtn->setButtonStyle(Button::ButtonTextOnly);
+    connect(d_ptr->listPrintBtn, SIGNAL(released()), this, SLOT(eventListPrintReleased()));
+
+    QSize iconsize(24, 24);
+    d_ptr->upPageBtn = new Button("", themeManger.getIcon(ThemeManager::IconUp, iconsize));
+    d_ptr->upPageBtn->setIconSize(iconsize);
     d_ptr->upPageBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->upPageBtn, SIGNAL(released()), this, SLOT(upPageReleased()));
 
-    d_ptr->downPageBtn = new Button("", QIcon("/usr/local/nPM/icons/down.png"));
+    d_ptr->downPageBtn = new Button("", themeManger.getIcon(ThemeManager::IconDown, iconsize));
+    d_ptr->downPageBtn->setIconSize(iconsize);
     d_ptr->downPageBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->downPageBtn, SIGNAL(released()), this, SLOT(downPageReleased()));
 
     QHBoxLayout *hTableLayout = new QHBoxLayout();
     hTableLayout->addStretch(1);
     hTableLayout->addWidget(typeLabel, 1);
-    hTableLayout->addWidget(d_ptr->typeCbo, 3);
+    hTableLayout->addWidget(d_ptr->typeCbo, 6);
     hTableLayout->addStretch(1);
     hTableLayout->addWidget(levelLabel, 1);
-    hTableLayout->addWidget(d_ptr->levelCbo, 3);
+    hTableLayout->addWidget(d_ptr->levelCbo, 4);
     hTableLayout->addStretch(1);
-    hTableLayout->addWidget(d_ptr->upPageBtn, 1);
-    hTableLayout->addWidget(d_ptr->downPageBtn, 1);
+    hTableLayout->addWidget(d_ptr->listPrintBtn, 4);
+    hTableLayout->addStretch(1);
+    hTableLayout->addWidget(d_ptr->upPageBtn, 2);
+    hTableLayout->addWidget(d_ptr->downPageBtn, 2);
 
     QVBoxLayout *vTableLayout = new QVBoxLayout();
+    vTableLayout->addSpacing(TABLE_SPACING);
     vTableLayout->addWidget(d_ptr->eventTable);
+    vTableLayout->addSpacing(TABLE_SPACING);
     vTableLayout->addLayout(hTableLayout);
 
     d_ptr->tableWidget = new QWidget();
@@ -639,11 +711,13 @@ EventWindow::EventWindow()
     d_ptr->setBtn->setButtonStyle(Button::ButtonTextOnly);
     connect(d_ptr->setBtn, SIGNAL(released()), this, SLOT(setReleased()));
 
-    d_ptr->upParamBtn = new Button("", QIcon("/usr/local/nPM/icons/up.png"));
+    d_ptr->upParamBtn = new Button("", themeManger.getIcon(ThemeManager::IconUp, iconsize));
+    d_ptr->upParamBtn->setIconSize(iconsize);
     d_ptr->upParamBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->upParamBtn, SIGNAL(released()), this, SLOT(upReleased()));
 
-    d_ptr->downParamBtn = new Button("", QIcon("/usr/local/nPM/icons/down.png"));
+    d_ptr->downParamBtn = new Button("", themeManger.getIcon(ThemeManager::IconDown, iconsize));
+    d_ptr->downParamBtn->setIconSize(iconsize);
     d_ptr->downParamBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->downParamBtn, SIGNAL(released()), this, SLOT(downReleased()));
 
@@ -659,11 +733,13 @@ EventWindow::EventWindow()
     QVBoxLayout *vWaveLayout = new QVBoxLayout();
     vWaveLayout->addWidget(d_ptr->infoWidget, 1);
     vWaveLayout->addLayout(hLayout, 15);
-    vWaveLayout->addLayout(btnLayout);
     vWaveLayout->setSpacing(0);
+    QVBoxLayout *vLayout = new QVBoxLayout();
+    vLayout->addLayout(vWaveLayout);
+    vLayout->addLayout(btnLayout);
 
     d_ptr->chartWidget = new QWidget();
-    d_ptr->chartWidget->setLayout(vWaveLayout);
+    d_ptr->chartWidget->setLayout(vLayout);
 
     d_ptr->stackLayout = new QStackedLayout();
     d_ptr->stackLayout->addWidget(d_ptr->tableWidget);
@@ -671,8 +747,8 @@ EventWindow::EventWindow()
 
     setWindowLayout(d_ptr->stackLayout);
 
-    int width = 800;
-    int height = 580;
+    int width = windowManager.getPopWindowWidth();
+    int height = windowManager.getPopWindowHeight();
     setFixedSize(width, height);
 }
 
@@ -690,11 +766,14 @@ void EventWindowPrivate::loadEventData()
     unsigned char alarmId;
     AlarmPriority priority;
     AlarmPriority curPriority;
-    AlarmLimitIFace *alarmLimit;
+    AlarmLimitIFace *alarmLimit = NULL;
+    AlarmOneShotIFace *alarmOneShot = NULL;
     QList<QString> timeList;
     QList<QString> eventList;
+    printList.clear();
     for (int i = eventNum - 1; i >= 0; i --)
     {
+        infoStr.clear();
         priority = ALARM_PRIO_PROMPT;
         if (parseEventData(i))
         {
@@ -720,10 +799,21 @@ void EventWindowPrivate::loadEventData()
                 subId = (SubParamID)(ctx.almSegment->subParamID);
                 alarmId = ctx.almSegment->alarmType;
                 alarmInfo = ctx.almSegment->alarmInfo;
-                alarmLimit = alertor.getAlarmLimitIFace(subId);
-                if (alarmLimit)
+                if (alarmInfo & 0x01)   // oneshot 报警事件
                 {
-                    priority = alarmLimit->getAlarmPriority(alarmId);
+                    alarmOneShot = alertor.getAlarmOneShotIFace(subId);
+                    if (alarmOneShot)
+                    {
+                        priority = alarmOneShot->getAlarmPriority(alarmId);
+                    }
+                }
+                else
+                {
+                    alarmLimit = alertor.getAlarmLimitIFace(subId);
+                    if (alarmLimit)
+                    {
+                        priority = alarmLimit->getAlarmPriority(alarmId);
+                    }
                 }
 
                 if (curEventType != EventAll)
@@ -758,9 +848,23 @@ void EventWindowPrivate::loadEventData()
                 }
 
                 ParamID paramId = paramInfo.getParamID(subId);
+                // oneshot 报警
+                if (alarmInfo & 0x01)
+                {
+                    // 将参数ID转换为oneshot报警对应的参数ID
+                    if (paramId == PARAM_DUP_ECG)
+                    {
+                        paramId = PARAM_ECG;
+                    }
+                    else if (paramId == PARAM_DUP_RESP)
+                    {
+                        paramId = PARAM_RESP;
+                    }
+                }
                 infoStr += " ";
                 infoStr += trs(Alarm::getPhyAlarmMessage(paramId, alarmId, alarmInfo & 0x1));
 
+                // 超限报警
                 if (!(alarmInfo & 0x1))
                 {
                     if (alarmInfo & 0x2)
@@ -782,6 +886,10 @@ void EventWindowPrivate::loadEventData()
             }
             case EventCodeMarker:
             {
+                if (levelToPriority(curEventLevel) != ALARM_PRIO_PROMPT)
+                {
+                    continue;
+                }
                 infoStr = (QString)ctx.codeMarkerSegment->codeName;
                 timeList.append(timeItemStr);
                 eventList.append(infoStr);
@@ -789,6 +897,10 @@ void EventWindowPrivate::loadEventData()
             }
             case EventRealtimePrint:
             {
+                if (levelToPriority(curEventLevel) != ALARM_PRIO_PROMPT)
+                {
+                    continue;
+                }
                 infoStr = trs("RealtimePrintSegment");
                 timeList.append(timeItemStr);
                 eventList.append(infoStr);
@@ -796,6 +908,10 @@ void EventWindowPrivate::loadEventData()
             }
             case EventNIBPMeasurement:
             {
+                if (levelToPriority(curEventLevel) != ALARM_PRIO_PROMPT)
+                {
+                    continue;
+                }
                 infoStr = trs("NibpMeasurement");
                 timeList.append(timeItemStr);
                 eventList.append(infoStr);
@@ -803,18 +919,26 @@ void EventWindowPrivate::loadEventData()
             }
             case EventWaveFreeze:
             {
+                if (levelToPriority(curEventLevel) != ALARM_PRIO_PROMPT)
+                {
+                    continue;
+                }
                 infoStr = trs("WaveFreeze");
                 timeList.append(timeItemStr);
                 eventList.append(infoStr);
                 break;
             }
             default:
-                break;
+                continue;
             }
+            QString printStr = timeItemStr + " " + infoStr;
+            printList.append(printStr);
+
             dataIndex.append(i);
         }
     }
     curDisplayEventNum = timeList.count();
+    model->setPageRowCount(PAGE_ROW_COUNT);
     model->updateEvent(timeList, eventList);
 }
 
@@ -853,17 +977,24 @@ void EventWindowPrivate::eventInfoUpdate(int curRow)
     case EventPhysiologicalAlarm:
     {
         SubParamID subId = (SubParamID)(ctx.almSegment->subParamID);
-        AlarmLimitIFace *alarmLimit = alertor.getAlarmLimitIFace(subId);
         unsigned char alarmId = ctx.almSegment->alarmType;
         unsigned char alarmInfo = ctx.almSegment->alarmInfo;
         AlarmPriority priority;
-        if (alarmLimit)
+        if (alarmInfo & 0x01)   // oneshot 报警事件
         {
-            priority = alarmLimit->getAlarmPriority(alarmId);
+            AlarmOneShotIFace *alarmOneShot = alertor.getAlarmOneShotIFace(subId);
+            if (alarmOneShot)
+            {
+                priority = alarmOneShot->getAlarmPriority(alarmId);
+            }
         }
         else
         {
-            return;
+            AlarmLimitIFace *alarmLimit = alertor.getAlarmLimitIFace(subId);
+            if (alarmLimit)
+            {
+                priority = alarmLimit->getAlarmPriority(alarmId);
+            }
         }
 
         if (priority == ALARM_PRIO_LOW)
@@ -884,6 +1015,19 @@ void EventWindowPrivate::eventInfoUpdate(int curRow)
         }
 
         ParamID paramId = paramInfo.getParamID(subId);
+        // oneshot 报警
+        if (alarmInfo & 0x01)
+        {
+            // 将参数ID转换为oneshot报警对应的参数ID
+            if (paramId == PARAM_DUP_ECG)
+            {
+                paramId = PARAM_ECG;
+            }
+            else if (paramId == PARAM_DUP_RESP)
+            {
+                paramId = PARAM_RESP;
+            }
+        }
         infoStr += " ";
         infoStr += trs(Alarm::getPhyAlarmMessage(paramId,
                        alarmId,
@@ -913,14 +1057,26 @@ void EventWindowPrivate::eventInfoUpdate(int curRow)
     }
     case EventRealtimePrint:
     {
+        infoStr = trs("RealtimePrintSegment");
         break;
     }
     case EventNIBPMeasurement:
     {
+        infoStr = trs("NibpMeasurement");
+        if (ctx.measureSegment->measureResult == NIBP_ONESHOT_NONE)
+        {
+            infoStr = trs("NIBPMEASURE") + trs("ServiceSuccess");
+        }
+        else
+        {
+            infoStr = trs("NIBPMEASURE") + trs("NIBPFAILED") + ",";
+            infoStr += trs(NIBPSymbol::convert((NIBPOneShotType)(ctx.measureSegment->measureResult)));
+        }
         break;
     }
     case EventWaveFreeze:
     {
+        infoStr = trs("WaveFreeze");
         break;
     }
     default:
@@ -962,15 +1118,27 @@ void EventWindowPrivate::eventTrendUpdate()
     for (int i = 0; i < paramNum; i ++)
     {
         QString dataStr;
+        subId = (SubParamID)ctx.trendSegment->values[i].subParamId;
+        UnitType type = paramManager.getSubParamUnit(paramInfo.getParamID(subId), subId);
         if (ctx.trendSegment->values[i].value == InvData())
         {
-            dataStr = "-.-";
+            dataStr = InvStr();
         }
         else
         {
-            dataStr = QString::number(ctx.trendSegment->values[i].value);
+            if (paramInfo.getParamID(subId) == PARAM_CO2)
+            {
+                dataStr = Unit::convert(type, UNIT_PERCENT, ctx.trendSegment->values[i].value / 10.0, co2Param.getBaro());
+            }
+            else if (paramInfo.getParamID(subId) == PARAM_TEMP)
+            {
+                dataStr = Unit::convert(type, UNIT_TC, ctx.trendSegment->values[i].value / 10.0);
+            }
+            else
+            {
+                dataStr = QString::number(ctx.trendSegment->values[i].value);
+            }
         }
-        subId = (SubParamID)ctx.trendSegment->values[i].subParamId;
         switch (subId)
         {
         case SUB_PARAM_NIBP_SYS:
@@ -1021,13 +1189,14 @@ void EventWindowPrivate::eventTrendUpdate()
         case SUB_PARAM_FIO2:
             fi = dataStr;
             valueStr = et + "/" + fi;
-            titleStr = paramInfo.getSubParamName(subId);
+            titleStr = trs(paramInfo.getSubParamName(subId));
             titleStr = titleStr.right(titleStr.length() - 2);
+            titleStr += "(Et/Fi)";
             valueFont = fontManager.numFont(31);
             break;
         default:
             valueStr = dataStr;
-            titleStr = paramInfo.getSubParamName(subId);
+            titleStr = trs(paramInfo.getSubParamName(subId));
             valueFont = fontManager.numFont(37);
             break;
         }
@@ -1039,7 +1208,7 @@ void EventWindowPrivate::eventTrendUpdate()
 
         item->setData(EventTrendItemDelegate::ValueTextRole, valueStr);
         item->setData(EventTrendItemDelegate::TitleTextRole, titleStr);
-        item->setData(EventTrendItemDelegate::UnitTextRole, Unit::getSymbol(paramInfo.getUnitOfSubParam(subId)));
+        item->setData(EventTrendItemDelegate::UnitTextRole, Unit::localeSymbol(paramManager.getSubParamUnit(paramInfo.getParamID(subId), subId)));
 
 
         item->setData(EventTrendItemDelegate::TrendAlarmRole, ctx.trendSegment->values[i].alarmFlag);
@@ -1058,5 +1227,23 @@ void EventWindowPrivate::eventTrendUpdate()
 
 void EventWindowPrivate::eventWaveUpdate()
 {
+    waveWidget->setInfoSegments(ctx.infoSegment);
+    waveWidget->setWaveMedSecond(0);
     waveWidget->setWaveSegments(ctx.waveSegments);
+}
+
+void EventWindowPrivate::refreshPageInfo()
+{
+    int curPage = 1;
+    int totalPage = 1;
+    eventTable->getPageInfo(curPage, totalPage);
+    if (totalPage == 0 && curPage == 0)
+    {
+        curPage = 1;
+        totalPage = 1;
+    }
+    QString title = QString("%1( %2/%3 )").arg(trs("EventReview"))
+                                          .arg(QString::number(curPage))
+                                          .arg(totalPage);
+    q_ptr->setWindowTitle(title);
 }

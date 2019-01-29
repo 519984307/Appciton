@@ -45,6 +45,9 @@
 #include <QWSServer>
 #include "RunningStatusBar.h"
 #endif
+#include "PatientManager.h"
+#include "DataStorageDirManager.h"
+#include "StandbyWindow.h"
 
 #define BACKLIGHT_DEV   "/sys/class/backlight/backlight/brightness"       // 背光控制文件接口
 
@@ -92,6 +95,7 @@ public:
         alarmIndicator.delAllPhyAlarm();
         windowManager.showDemoWidget(true);
         paramManager.connectDemoParamProvider();
+        patientManager.newPatient();
     }
 
     /**
@@ -102,7 +106,30 @@ public:
         alarmIndicator.delAllPhyAlarm();
         windowManager.showDemoWidget(false);
         paramManager.connectParamProvider(WORK_MODE_DEMO);
+        QString curFolderPath = dataStorageDirManager.getCurFolder();
+        QFileInfo fileInfo(curFolderPath);
+        QString curFolderName = fileInfo.fileName();
+        patientManager.dischargePatient();
+        dataStorageDirManager.deleteData(curFolderName);
     }
+
+    /**
+     * @brief enterStandbyMode enter standby mode
+     */
+    void enterStandbyMode()
+    {
+        // demo模式不进入待机模式
+        setStandbyStatus(true);
+        StandbyWindow w;
+        w.exec();
+    }
+
+
+    /**
+     * @brief setStandbyStatus set the system standby status
+     * @param standby standby status
+     */
+    void setStandbyStatus(bool standby);
 
     /**
      * @brief handleBMode handle the board mode
@@ -218,6 +245,9 @@ bool SystemManager::isSupport(ConfiguredFuncs funcs) const
     case CONFIG_TOUCH:
         path = "TouchEnable";
         break;
+    case CONFIG_O2:
+        path = "O2Enable";
+        break;
     default:
         break;
     }
@@ -263,6 +293,9 @@ bool SystemManager::isSupport(ParamID paramID) const
     case PARAM_TEMP:
         path = "TEMPEnable";
         break;
+    case PARAM_O2:
+        path = "O2Enable";
+        break;
     default:
         break;
     }
@@ -299,6 +332,9 @@ void SystemManager::setTouchScreenOnOff(bool onOff)
     {
         runningStatus.clearTouchStatus();
     }
+
+    // 将触摸屏使能的状态保存在系统配置文件中
+    systemConfig.setNumValue("General|TouchScreen", static_cast<int>(d_ptr->isTouchScreenOn));
 
     return;
 }
@@ -581,16 +617,25 @@ void SystemManager::setWorkMode(WorkMode workmode)
         return;
     }
 
-    d_ptr->workMode = workmode;
-
     switch (workmode)
     {
     case WORK_MODE_NORMAL:
+        d_ptr->workMode = workmode;
         d_ptr->enterNormalMode();
         break;
     case WORK_MODE_DEMO:
+        d_ptr->workMode = workmode;
         d_ptr->enterDemoMode();
         break;
+    case WORK_MODE_STANDBY:
+    {
+        if (d_ptr->workMode != WORK_MODE_DEMO)
+        {
+            d_ptr->workMode = workmode;
+            d_ptr->enterStandbyMode();
+        }
+        break;
+    }
     default:
         break;
     }
@@ -599,14 +644,17 @@ void SystemManager::setWorkMode(WorkMode workmode)
     emit workModeChanged(workmode);
 }
 
-void SystemManager::setStandbyStatus(bool standby)
+void SystemManagerPrivate::setStandbyStatus(bool standby)
 {
-    d_ptr->isStandby = standby;
-}
-
-bool SystemManager::isStandby() const
-{
-    return d_ptr->isStandby;
+    isStandby = standby;
+    if (standby)
+    {
+        paramManager.disconnectParamProvider(WORK_MODE_STANDBY);
+    }
+    else
+    {
+        paramManager.connectParamProvider(WORK_MODE_STANDBY);
+    }
 }
 
 #ifdef Q_WS_X11

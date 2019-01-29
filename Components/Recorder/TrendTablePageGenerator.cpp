@@ -15,8 +15,11 @@
 #include "ParamManager.h"
 #include "ParamInfo.h"
 #include <QDateTime>
+#include "TimeDate.h"
+#include "TrendDataStorageManager.h"
 
-#define RECORD_PER_PAGE 10
+// 打印纸每页最多打印10行数据（1 head title + 9 data）
+#define RECORD_PER_PAGE 9
 class TrendTablePageGeneratorPrivate
 {
 public:
@@ -32,7 +35,7 @@ public:
     bool loadStringList();
 
     // add sub param value to the string list
-    void addSubParamValueToStringList(const TrendDataPackage &datapack, const QList<SubParamID> &subParamIDs, const bool isEvent);
+    void addSubParamValueToStringList(const TrendDataPackage &datapack, const QList<SubParamID> &subParamIDs, const unsigned eventType);
 
     RecordPageGenerator::PageType curPageType;
     IStorageBackend *backend;
@@ -41,7 +44,7 @@ public:
     int stopIndex;
     int interval;
     QList<SubParamID> subParamList;
-    QList<bool> eventList;
+    QMap<unsigned int, unsigned int> timestampEventMap;
 };
 
 bool  dataPacketLessThan(const TrendDataPackage &d1, const TrendDataPackage &d2)
@@ -83,15 +86,15 @@ bool TrendTablePageGeneratorPrivate::loadStringList()
 
         TrendDataSegment *dataSeg = reinterpret_cast<TrendDataSegment *>(data.data());
 
-        if (dataSeg->timestamp % interval != 0)
+        // 使得趋势表显示内容与打印内容保持一致
+        if (timestampEventMap.contains(dataSeg->timestamp) == false)
         {
             continue;
         }
 
         TrendDataPackage dataPackage = parseTrendSegment(dataSeg);
-
-        bool isEvent = eventList.at(eventList.count() - 1 - count);
-        addSubParamValueToStringList(dataPackage, subParamList, isEvent);
+        unsigned eventType = timestampEventMap[dataSeg->timestamp];
+        addSubParamValueToStringList(dataPackage, subParamList, eventType);
 
         count++;
     }
@@ -306,7 +309,7 @@ static QString constructNormalValueString(SubParamID subParamId, TrendDataType d
 }
 
 void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDataPackage &datapack,
-        const QList<SubParamID> &subParamIDs, const bool isEvent)
+        const QList<SubParamID> &subParamIDs, const unsigned eventType)
 {
     bool needAddCaption = stringLists.isEmpty(); // if the stringLists is empty, we need to add caption;
 
@@ -318,12 +321,20 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
         stringLists.append(QStringList() << trs("Event"));
     }
 
-    QDateTime dt = QDateTime::fromTime_t(datapack.time);
-    stringLists[index++].append(dt.toString("MM-dd hh:mm:ss"));
+    QString timeDateStr;
+    timeDate.getDateTime(datapack.time, timeDateStr, true, true);
+    stringLists[index++].append(timeDateStr);
 
-    if (isEvent)
+    // 优先打印报警事件状态
+    if (eventType & TrendDataStorageManager::CollectStatusAlarm)
     {
         stringLists[index++].append("A");
+    }
+    else if (eventType & TrendDataStorageManager::CollectStatusPrint ||
+            eventType & TrendDataStorageManager::CollectStatusFreeze ||
+            eventType & TrendDataStorageManager::CollectStatusNIBP)
+    {
+        stringLists[index++].append("M");
     }
     else
     {
@@ -369,6 +380,11 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
             TrendDataType datas[3];
             bool alarms[3];
             preparePressSubParamInfos(subParamID, datapack, datas, alarms);
+            // set datas[] as InvData() when it is not NIBP event type
+            if (!(eventType & TrendDataStorageManager::CollectStatusNIBP))
+            {
+                datas[0] = datas[1] = datas[2] = InvData();
+            }
             valueStr = contructPressTrendStringItem(subParamID,
                                                     datas,
                                                     alarms,
@@ -406,10 +422,23 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
         case SUB_PARAM_ETO2:
         {
             // ET and FI display together
-            if (needAddCaption)
+            if (needAddCaption && subParamID != SUB_PARAM_ETCO2)
             {
                 caption = QString("%1/%2").arg(trs(paramInfo.getSubParamName(subParamID)))
                           .arg(trs(paramInfo.getSubParamName((SubParamID)(subParamID + 1))));
+            }
+            // 更新etco2的打印表头显示，与趋势表中显示表头保持一致
+            if (needAddCaption && subParamID == SUB_PARAM_ETCO2)
+            {
+                QString name;
+                name = paramInfo.getSubParamName(SUB_PARAM_ETCO2);
+                caption = name.right(3);
+                caption += '(';
+                caption += trs(name.left(name.length() - 3));
+                caption += '/';
+                name = paramInfo.getSubParamName(SUB_PARAM_FICO2);
+                caption += trs(name.left(name.length() - 3));
+                caption += ')';
             }
 
             QString valueEt = constructNormalValueString(subParamID,
@@ -514,7 +543,7 @@ TrendTablePageGenerator::TrendTablePageGenerator(IStorageBackend *backend, Trend
     d_ptr->backend = backend;
     d_ptr->interval = printInfo.interval;
     d_ptr->subParamList = printInfo.list;
-    d_ptr->eventList = printInfo.eventList;
+    d_ptr->timestampEventMap = printInfo.timestampEventMap;
 }
 
 TrendTablePageGenerator::~TrendTablePageGenerator()
@@ -533,7 +562,7 @@ RecordPage *TrendTablePageGenerator::createPage()
     case TitlePage:
         // BUG: patient info of the event might not be the current session patient
         d_ptr->curPageType = TrendTablePage;
-        return createTitlePage(QString(trs("TabularTrendRecording")), patientManager.getPatientInfo());
+        return createTitlePage(QString(trs("TabularTrendsPrint")), patientManager.getPatientInfo());
     case TrendTablePage:
         if (!d_ptr->stringLists.isEmpty() || d_ptr->loadStringList())
         {

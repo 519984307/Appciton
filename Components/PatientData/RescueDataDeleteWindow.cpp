@@ -208,35 +208,6 @@ void RescueDataDeleteWindow::_downReleased()
     }
 }
 
-void RescueDataDeleteWindow::_updatePageBtnStatus()
-{
-    int dataListCurPage = d_ptr->dataListWidget->getCurPage();
-    int dataListTotalPage = d_ptr->dataListWidget->getTotalPage();
-
-    // previous page button
-    if (dataListCurPage <= 0)
-    {
-        d_ptr->up->setEnabled(false);
-        d_ptr->up->setIcon(QIcon(""));
-    }
-    else
-    {
-        d_ptr->up->setEnabled(true);
-        d_ptr->up->setIcon(QIcon(PATH_ICON_UP));
-    }
-    // next page button
-    if (dataListCurPage >= dataListTotalPage - 1)
-    {
-        d_ptr->down->setEnabled(false);
-        d_ptr->down->setIcon(QIcon(""));
-    }
-    else
-    {
-        d_ptr->down->setEnabled(true);
-        d_ptr->down->setIcon(QIcon(PATH_ICON_DOWN));
-    }
-}
-
 void RescueDataDeleteWindow::_updateEraseBtnStatus()
 {
     QStringList checkList , strList;
@@ -270,16 +241,15 @@ RescueDataDeleteWindow::RescueDataDeleteWindow()
       d_ptr(new RescueDataDeleteWindowPrivate())
 {
     QVBoxLayout *contentLayout = new QVBoxLayout();
-    int maxw = windowManager.getPopMenuWidth();
-    int maxh = windowManager.getPopMenuHeight();
+    int maxw = windowManager.getPopWindowWidth();
+    int maxh = windowManager.getPopWindowHeight();
 
-    d_ptr->dataListWidget = new RescueDataListNewWidget(maxw - 20,
-                                                        maxh - d_ptr->widgetHeight * 2 - 36);
+    int margins = contentsMargins().left() * 2 + 10;
+    d_ptr->dataListWidget = new RescueDataListNewWidget(maxw - margins,
+                                                        maxh - d_ptr->widgetHeight - getTitleHeight() - margins);
     d_ptr->dataListWidget->setShowCurRescue(false);
     connect(d_ptr->dataListWidget , SIGNAL(pageInfoChange()),
             this, SLOT(_updateWindowTitle()));
-    connect(d_ptr->dataListWidget , SIGNAL(pageInfoChange()),
-            this, SLOT(_updatePageBtnStatus()));
     connect(d_ptr->dataListWidget, SIGNAL(btnRelease()),
             this, SLOT(_updateEraseBtnStatus()));
 
@@ -312,7 +282,8 @@ RescueDataDeleteWindow::RescueDataDeleteWindow()
     layout->addWidget(d_ptr->up, 1);
     layout->addWidget(d_ptr->down, 1);
 
-    contentLayout->setSpacing(1);
+    contentLayout->setSpacing(5);
+    contentLayout->setMargin(5);
     contentLayout->addWidget(d_ptr->dataListWidget);
     contentLayout->addLayout(layout);
 

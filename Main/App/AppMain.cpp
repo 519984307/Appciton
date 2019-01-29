@@ -17,6 +17,7 @@
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"
 #include "LayoutManager.h"
+#include <unistd.h>
 
 static IThread *_storageThread = NULL;
 static QThread *_networkThread = NULL;
@@ -38,7 +39,7 @@ static void _taskOneSec2(void)
 {
     // summaryStorageManager.checkCompletedItem();
     eventStorageManager.checkCompletedEvent();
-    powerMangerBrief.run();
+    powerManger.run();
 
     if (!usbManager.isUSBExist())
     {
@@ -158,8 +159,7 @@ static void _storageThreadEntry(void)
 
     if (!systemManager.isGoingToTrunOff())
     {
-        rawDataCollection.run();
-        rawDataCollectionTxt.run();
+        rawDataCollector.run();
     }
 
     if (!systemManager.isGoingToTrunOff())

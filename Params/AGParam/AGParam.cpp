@@ -15,6 +15,7 @@
 #include "WaveformCache.h"
 #include "IConfig.h"
 #include "LayoutManager.h"
+#include "SystemManager.h"
 
 #define DEMO_DATA_NUM       180
 
@@ -847,7 +848,7 @@ void AGParam::updateSubParamLimit(SubParamID id)
 
 void AGParam::onPaletteChanged(ParamID id)
 {
-    if (id != PARAM_AG)
+    if (id != PARAM_AG || !systemManager.isSupport(CONFIG_AG))
     {
         return;
     }

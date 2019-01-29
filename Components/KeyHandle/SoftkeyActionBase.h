@@ -33,6 +33,7 @@ enum SoftBaseKeyType
     SOFT_BASE_KEY_MAIN_SETUP,
     SOFT_BASE_KEY_PAT_INFO,
     SOFT_BASE_KEY_PAT_NEW,
+    SOFT_BASE_KEY_PAT_DISCHARGE,
     SOFT_BASE_KEY_ECG_LEAD_MODE,
     SOFT_BASE_KEY_ALARM_LIMIT,
     SOFT_BASE_KEY_CODE_MARKER,
@@ -49,7 +50,9 @@ enum SoftBaseKeyType
 #endif
     SOFT_BASE_KEY_CO2_CALIBRATION,
     SOFT_BASE_KEY_CO2_HANDLE,
+#ifndef HIDE_IBP_CALIBRATE_ZERO
     SOFT_BASE_KEY_IBP_CALIBRATION,
+#endif
     SOFT_BASE_KEY_CALCULATION,
     SOFT_BASE_KEY_KEYBOARD_VOLUMN,
     SOFT_BASE_KEY_SCREEN_BRIGHTNESS,
@@ -105,6 +108,7 @@ class SoftkeyActionBase
 public:    // 一些共有的功能处理。
     static void patientInfo(bool isPressed);
     static void patientNew(bool isPressed);
+    static void patientRelieve(bool isPressed);
     static void ecgLeadChange(bool isPressed);
     static void codeMarker(bool isPressed);
     static void limitMenu(bool isPressed);

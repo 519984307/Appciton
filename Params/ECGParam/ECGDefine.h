@@ -143,6 +143,7 @@ enum ECGPaceMode
  *************************************************************************************************/
 enum ECGSweepSpeed
 {
+    ECG_SWEEP_SPEED_625,
     ECG_SWEEP_SPEED_125,
     ECG_SWEEP_SPEED_250,
     ECG_SWEEP_SPEED_500,
@@ -170,6 +171,16 @@ enum ECGBandwidth
     ECG_BANDWIDTH_0525_150HZ,
     ECG_BANDWIDTH_NR,
     ECG_BANDWIDTH_MULTIPLE = ECG_BANDWIDTH_NR,   // multiple bandwidth, equal to the bandwidth NR
+};
+
+/**************************************************************************************************
+ * ECG work mode
+ *************************************************************************************************/
+enum ECGWorkMode
+{
+    ECG_WORKMODE_DIAGNOSTIC,
+    ECG_WORKMODE_MONITOR,
+    ECG_WORKMODE_NR,
 };
 
 /**************************************************************************************************

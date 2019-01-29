@@ -56,7 +56,7 @@ Window::Window(QWidget *parent)
     closeBtn->setIcon(QIcon(":/ui/close.svg"));
     closeBtn->setButtonStyle(Button::ButtonIconOnly);
     QHBoxLayout *hlayout = new QHBoxLayout();
-    hlayout->setContentsMargins(0, 0, 0, 0);
+    hlayout->setContentsMargins(TITLE_BAR_HEIGHT, 0, 0, 0);
     hlayout->addWidget(titleLbl, 1);
     hlayout->addWidget(closeBtn);
 
@@ -262,4 +262,9 @@ void Window::paintEvent(QPaintEvent *ev)
 #else
     QDialog::paintEvent(ev);
 #endif
+}
+
+int Window::getTitleHeight() const
+{
+    return TITLE_BAR_HEIGHT;
 }

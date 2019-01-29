@@ -29,9 +29,9 @@
 		<AutoInterval cAttr0="0" cMin="0" cMax="9" cLen="1">5</AutoInterval>
 		<StatFunction cAttr0="0" cMin="0" cMax="1" cLen="1">1</StatFunction>
 		<AutomaticRetry cAttr0="0" cMin="0" cMax="1" cLen="1">0</AutomaticRetry>
-		<AdultInitialCuffInflation cAttr0="0" cMin="0" cMax="7" cLen="1">2</AdultInitialCuffInflation>
-		<PedInitialCuffInflation cAttr0="0" cMin="0" cMax="7" cLen="1">4</PedInitialCuffInflation>
-		<NeoInitialCuffInflation cAttr0="0" cMin="0" cMax="7" cLen="1">4</NeoInitialCuffInflation>
+		<AdultInitialCuffInflation cAttr0="0" cMin="0" cMax="300" cLen="3">90</AdultInitialCuffInflation>
+		<PedInitialCuffInflation cAttr0="0" cMin="0" cMax="300" cLen="3">90</PedInitialCuffInflation>
+		<NeoInitialCuffInflation cAttr0="0" cMin="0" cMax="300" cLen="3">90</NeoInitialCuffInflation>
 	    </NIBP>
 	    <CO2>
 		<CO2SweepSpeed cAttr0="0" cMin="0" cMax="2" cLen="1">1</CO2SweepSpeed>		
@@ -51,7 +51,7 @@
 	    </CO>
 	    <RESP>
 		<ApneaDelay cAttr0="0" cMin="0" cMax="9" cLen="1">2</ApneaDelay>
-		<BreathLead cAttr0="0" cMin="0" cMax="1" cLen="1">0</BreathLead>
+                <BreathLead cAttr0="0" cMin="0" cMax="2" cLen="1">0</BreathLead>
 		<Gain cAttr0="0" cMin="0" cMax="6" cLen="1">0</Gain>
 		<SweepSpeed cAttr0="0" cMin="0" cMax="2" cLen="1">1</SweepSpeed>
 	    </RESP>

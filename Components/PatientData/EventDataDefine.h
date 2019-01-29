@@ -1,9 +1,21 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2019/1/16
+ **/
+
 #pragma once
 #include "BaseDefine.h"
 #include "TrendDataDefine.h"
 #include <QVector>
+#include "NIBPDefine.h"
 
-enum EventType{
+enum EventType
+{
     EventAll,
     EventPhysiologicalAlarm,
     EventCodeMarker,
@@ -26,18 +38,20 @@ enum ECGEventGain
     ECG_EVENT_GAIN_NR
 };
 
-enum EventSegmentType {
+enum EventSegmentType
+{
     EVENT_INFO_SEGMENT = 0x11111111,
     EVENT_TRENDDATA_SEGMENT = 0x22222222,
     EVENT_WAVEFORM_SEGMENT = 0x33333333,
     EVENT_ALARM_INFO_SEGMENT = 0x44444444,
     EVENT_CODEMARKER_SEGMENT = 0x55555555,
     EVENT_OXYCRG_SEGMENT = 0x66666666,
+    EVENT_NIBPMEASURE_SEGMENT = 0x77777777,
 };
 
 enum EventLevel
 {
-    EVENT_LEVEL_ALL,    
+    EVENT_LEVEL_ALL,
     EVENT_LEVEL_HINT,
     EVENT_LEVEL_LOW,
     EVENT_LEVEL_MED,
@@ -46,7 +60,8 @@ enum EventLevel
 };
 
 /* segment record the alarm info */
-struct AlarmInfoSegment {
+struct AlarmInfoSegment
+{
     int subParamID;             /* sub param ID */
     unsigned char alarmInfo;    /* alarm info: 1bit  1:oneshot, 0: limit alarm
                                                2bit  1:upper,   0: lowers*/
@@ -55,11 +70,13 @@ struct AlarmInfoSegment {
 };
 
 /* segment record the code marker info */
-struct CodeMarkerSegment {
+struct CodeMarkerSegment
+{
     char codeName[32];          /* code name */
 };
 
-enum OxyCRGEventType{
+enum OxyCRGEventType
+{
     OxyCRGEventAll,
     OxyCRGEventManual,
     OxyCRGEventApnea,
@@ -70,12 +87,20 @@ enum OxyCRGEventType{
 };
 
 /* segment record the oxyCRG info */
-struct OxyCRGSegment {
+struct OxyCRGSegment
+{
     OxyCRGEventType type;
 };
 
+/* segment record the nibp measure */
+struct NIBPMeasureSegment
+{
+    NIBPOneShotType measureResult;
+};
+
 /* waveform data segment, store the wave data in one second */
-struct WaveformDataSegment {
+struct WaveformDataSegment
+{
     WaveformID waveID;      /* waveform id */
     int sampleRate;         /* sample rate of the waveform */
     int waveNum;            /* the number of wave points */
@@ -83,15 +108,17 @@ struct WaveformDataSegment {
 };
 
 /* Event storage info */
-struct EventInfoSegment {
+struct EventInfoSegment
+{
     EventType type;         /* the event type*/
     unsigned timestamp;     /* timestamp when this event happen */
     unsigned short duration_before;  /* duration before this event happen */
     unsigned short duration_after;   /* duration after this event happen */
 };
 
-struct Event {
+struct Event
+{
     EventInfoSegment storageInfo;
-    QVector<TrendDataSegment*> trendSegments; //trend segments of every seconds
-    QVector<WaveformDataSegment *> waveSegments; //wave segments of every seconds
+    QVector<TrendDataSegment *> trendSegments; // trend segments of every seconds
+    QVector<WaveformDataSegment *> waveSegments; // wave segments of every seconds
 };

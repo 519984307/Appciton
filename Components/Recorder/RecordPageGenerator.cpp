@@ -32,6 +32,11 @@
 #include "LayoutManager.h"
 #include <QDebug>
 #include "RecorderManager.h"
+#include "TimeDate.h"
+#include "AlarmConfig.h"
+#include "UnitManager.h"
+#include "PatientManager.h"
+#include "EventDataDefine.h"
 
 #define DEFAULT_PAGE_WIDTH 200
 #define PEN_WIDTH 2
@@ -138,28 +143,30 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
 {
     QStringList infos;
     infos.append(QString("%1: %2").arg(trs("Name")).arg(patInfo.name));
-    infos.append(QString("%1: %2").arg(trs("Gender")).arg(PatientSymbol::convert(patInfo.sex)));
-    infos.append(QString("%1: %2").arg(trs("PatientType")).arg(PatientSymbol::convert(patInfo.type)));
+    infos.append(QString("%1: %2").arg(trs("Gender")).arg(trs(PatientSymbol::convert(patInfo.sex))));
+    infos.append(QString("%1: %2").arg(trs("PatientType")).arg(trs(PatientSymbol::convert(patInfo.type))));
     infos.append(QString("%1: %2").arg(trs("Blood")).arg(PatientSymbol::convert(patInfo.blood)));
     QString str;
-    str = QString("%1: ").arg(trs("Age"));
-    if (patInfo.age > 0)
-    {
-        str += QString::number(patInfo.age);
-    }
+    QString fotmat;
+    timeDate.getDateFormat(fotmat, true);
+    str = QString("%1: %2").arg(trs("BornDate")).arg(patInfo.bornDate.toString(fotmat));
     infos.append(str);
 
     str = QString("%1: ").arg(trs("Weight"));
     if (patInfo.weight)
     {
-        str += QString("%1 %2").arg(QString::number(patInfo.weight)).arg(PatientSymbol::convert(patInfo.weightUnit));
+        float weight = patientManager.getWeight();
+        QString weightStr = Unit::convert(patientManager.getWeightUnit(), UNIT_KG, weight);
+        str += QString("%1 %2").arg(weightStr).arg(Unit::localeSymbol(patientManager.getWeightUnit()));
     }
     infos.append(str);
 
     str = QString("%1: ").arg(trs("Height"));
     if (patInfo.height)
     {
-        str += QString::number(patInfo.height);
+        float height = patientManager.getHeight();
+        QString heightStr = Unit::convert(patientManager.getHeightUnit(), UNIT_CM, height);
+        str += QString("%1 %2").arg(heightStr).arg(Unit::localeSymbol(patientManager.getHeightUnit()));
     }
     infos.append(str);
 
@@ -185,13 +192,15 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
         textWidth =  w;
     }
 
-    QDateTime dt = QDateTime::currentDateTime();
+    unsigned t = timeDate.time();
     if (timestamp)
     {
-        dt = QDateTime::fromTime_t(timestamp);
+        t = timestamp;
     }
 
-    QString timeStr = QString("%1: %2").arg(trs("RecordTime")).arg(dt.toString("yyyy-MM-dd HH:mm:ss"));
+    QString timeDateStr;
+    timeDate.getDateTime(t, timeDateStr, true, true);
+    QString timeStr = QString("%1: %2").arg(trs("PrintTime")).arg(timeDateStr);
 
     // record time width
     w = fontManager.textWidthInPixels(timeStr, font);
@@ -457,21 +466,26 @@ static void converToStringSegmets(const QStringList &trendStringList, QList<Tren
 }
 
 RecordPage *RecordPageGenerator::createTrendPage(const TrendDataPackage &trendData, bool showEventTime,
-        const QString &timeStringCaption, const QString &trendPageTitle)
+        const QString &timeStringCaption, const QString &trendPageTitle, const QString &extraInfo)
 {
     QStringList trendStringList = getTrendStringList(trendData);
+    if (extraInfo != QString())
+    {
+        trendStringList.append(extraInfo);
+    }
 
     QString timeStr;
     if (showEventTime)
     {
-        QDateTime dt = QDateTime::fromTime_t(trendData.time);
+        QString timeDateStr;
+        timeDate.getDateTime(trendData.time, timeDateStr, true, true);
         if (timeStringCaption.isEmpty())
         {
-            timeStr = QString("%1: %2").arg(trs("EventTime")).arg(dt.toString("yyyy-MM-dd HH:mm:ss"));
+            timeStr = QString("%1: %2").arg(trs("EventTime")).arg(timeDateStr);
         }
         else
         {
-            timeStr = QString("%1: %2").arg(timeStringCaption).arg(dt.toString("yyyy-MM-dd HH:mm:ss"));
+            timeStr = QString("%1: %2").arg(timeStringCaption).arg(timeDateStr);
         }
     }
 
@@ -522,9 +536,9 @@ RecordPage *RecordPageGenerator::createTrendPage(const TrendDataPackage &trendDa
     }
 
     // check time string width, time string is drawn at the bottom
-    if (showEventTime && pageWidth < fontManager.textWidthInPixels(timeStr))
+    if (showEventTime && pageWidth < fontManager.textWidthInPixels(timeStr, font))
     {
-        pageWidth = fontManager.textWidthInPixels(timeStr);
+        pageWidth = fontManager.textWidthInPixels(timeStr, font);
     }
 
     // add the gap between group
@@ -546,6 +560,7 @@ RecordPage *RecordPageGenerator::createTrendPage(const TrendDataPackage &trendDa
         QRect rect(xoffset, startYoffset, page->width(), fontH);
         painter.drawText(rect, trendPageTitle, textOption);
         startYoffset += fontH;
+        avaliableLine--;
     }
 
     for (int i = 0; i < segmentWidths.size(); i += 3)
@@ -638,12 +653,45 @@ QStringList RecordPageGenerator::getTrendStringList(const TrendDataPackage &tren
         paramid = paramInfo.getParamID(subparamID);
         if (!isPressSubParam(subparamID))
         {
-            strList.append(contructNormalTrendStringItem(subparamID,
-                           trendData.subparamValue[subparamID],
-                           trendData.subparamAlarm[subparamID],
-                           paramManager.getSubParamUnit(paramid, subparamID),
-                           paramInfo.getUnitOfSubParam(subparamID),
-                           trendData.co2Baro));
+            if (subparamID == SUB_PARAM_TD)
+            {
+                QString t1Str = Unit::convert(paramManager.getSubParamUnit(paramid, subparamID),
+                                              paramInfo.getUnitOfSubParam(subparamID),
+                                              trendData.subparamValue[SUB_PARAM_T1] / 10.0,
+                                              trendData.co2Baro);
+                QString t2Str = Unit::convert(paramManager.getSubParamUnit(paramid, subparamID),
+                                              paramInfo.getUnitOfSubParam(subparamID),
+                                              trendData.subparamValue[SUB_PARAM_T2] / 10.0,
+                                              trendData.co2Baro);
+
+                TrendDataType td;
+                if (trendData.subparamValue[SUB_PARAM_T1] == InvData()
+                        || trendData.subparamValue[SUB_PARAM_T2] == InvData())
+                {
+                    // 有一个无效数据，计算的温度差则无效
+                    td = InvData();
+                }
+                else
+                {
+                    td = fabs(t1Str.toDouble() * 10 - t2Str.toDouble() * 10);
+                }
+
+                strList.append(contructNormalTrendStringItem(subparamID,
+                               td,
+                               trendData.subparamAlarm[subparamID],
+                               paramManager.getSubParamUnit(paramid, subparamID),
+                               paramManager.getSubParamUnit(paramid, subparamID),
+                               trendData.co2Baro));
+            }
+            else
+            {
+                strList.append(contructNormalTrendStringItem(subparamID,
+                               trendData.subparamValue[subparamID],
+                               trendData.subparamAlarm[subparamID],
+                               paramManager.getSubParamUnit(paramid, subparamID),
+                               paramInfo.getUnitOfSubParam(subparamID),
+                               trendData.co2Baro));
+            }
         }
         else
         {
@@ -871,7 +919,10 @@ static void drawRespZoom(RecordPage *page, QPainter *painter, const RecordWaveSe
 
 RecordPage *RecordPageGenerator::createWaveScalePage(const QList<RecordWaveSegmentInfo> &waveInfos, PrintSpeed speed)
 {
-    Q_ASSERT(waveInfos.size() > 0);
+    if (waveInfos.count() == 0)
+    {
+        return NULL;
+    }
     int pageWidth = 25 * RECORDER_PIXEL_PER_MM;
 
     RecordPage *page = new RecordPage(pageWidth);
@@ -924,7 +975,7 @@ RecordPage *RecordPageGenerator::createWaveScalePage(const QList<RecordWaveSegme
             case CO2_DISPLAY_ZOOM_8:
                 high = 8;
                 break;
-            case CO2_DISPLAY_ZOOM_12:
+            case CO2_DISPLAY_ZOOM_13:
                 high = 12;
                 break;
             case CO2_DISPLAY_ZOOM_20:
@@ -1000,7 +1051,11 @@ static void drawCaption(RecordPage *page, QPainter *painter, const RecordWaveSeg
     painter->save();
     painter->setPen(Qt::white);
     painter->translate(-segIndex * page->width(), 0);
-    painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, waveInfo.drawCtx.caption);
+    QString caption = waveInfo.drawCtx.caption;
+    QString mode = trs(caption.section(" ", 3));
+    caption = caption.section(" ", 0, 2);
+    caption = caption + mode;
+    painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, caption);
     painter->restore();
 }
 
@@ -1120,7 +1175,7 @@ static qreal mapWaveValue(const RecordWaveSegmentInfo &waveInfo, short wave)
         case CO2_DISPLAY_ZOOM_8:
             max  = max * 8 / 20;
             break;
-        case CO2_DISPLAY_ZOOM_12:
+        case CO2_DISPLAY_ZOOM_13:
             max = max * 12 / 20;
             break;
         default:
@@ -1232,7 +1287,7 @@ static qreal mapOxyCRGWaveValue(const OxyCRGWaveInfo &waveInfo, qreal waveHeight
         case CO2_DISPLAY_ZOOM_8:
             max  = max * 8 / 20;
             break;
-        case CO2_DISPLAY_ZOOM_12:
+        case CO2_DISPLAY_ZOOM_13:
             max = max * 12 / 20;
             break;
         default:
@@ -1297,6 +1352,8 @@ static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegme
 
     int wavebuffSize = waveInfo.secondWaveBuff.size();
 
+    float pixelPitch = systemManager.getScreenPixelHPitch();
+    ParamID paramId = paramInfo.getParamID(waveInfo.id);
     for (i = 0; i < waveInfo.sampleRate && i < wavebuffSize; i++)
     {
         unsigned short flag = waveInfo.secondWaveBuff[i] >> 16;
@@ -1394,6 +1451,15 @@ static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegme
             y2 = waveData;
             QLineF line(x1, y1, x2, y2);
             painter->drawLine(line);
+
+            if (flag & ECG_INTERNAL_FLAG_BIT && paramId == PARAM_ECG)
+            {
+                QPen pen = painter->pen();
+                painter->setPen(QPen(Qt::white, 1, Qt::DashLine));
+                painter->drawLine(x2, waveInfo.middleYOffset - 10 / pixelPitch / 2,
+                                  x2, waveInfo.middleYOffset + 10 / pixelPitch / 2);
+                painter->setPen(pen);
+            }
 
             x1 = x2;
             x2 += offsetX;
@@ -1606,7 +1672,8 @@ static inline qreal timestampToX(unsigned t, const GraphAxisInfo &axisInfo, cons
 static inline qreal mapTrendYValue(TrendDataType val, const GraphAxisInfo &axisInfo, const TrendGraphInfo &graphInfo)
 {
     qreal validHeight = axisInfo.validHeight;
-    qreal mapH = (val - graphInfo.scale.min) * 1.0 * validHeight / (graphInfo.scale.max -  graphInfo.scale.min);
+    qreal mapH = (val * graphInfo.scale.scale - graphInfo.scale.min) * 1.0 * validHeight /
+            (graphInfo.scale.max -  graphInfo.scale.min);
     if (mapH > validHeight)
     {
         mapH = validHeight;
@@ -1619,6 +1686,118 @@ static inline qreal mapTrendYValue(TrendDataType val, const GraphAxisInfo &axisI
 }
 
 #define TICK_LENGTH         RECORDER_PIXEL_PER_MM
+QPainterPath getPrintV2Path(const GraphAxisInfo &axisInfo, const TrendGraphInfo &graphInfo, int index)
+{
+    QPainterPath path;
+    bool lastPointInvalid = true;
+    QPointF lastPoint;
+
+    QVector<TrendGraphDataV2>::ConstIterator iter = graphInfo.trendDataV2.constBegin();
+    for (; iter != graphInfo.trendDataV2.constEnd(); iter++)
+    {
+        TrendDataType data = iter->data[index];
+        if (data == InvData())
+        {
+            if (!lastPointInvalid)
+            {
+                path.lineTo(lastPoint);
+                lastPointInvalid = true;
+            }
+            continue;
+        }
+
+        qreal x = timestampToX(iter->timestamp, axisInfo, graphInfo);
+        ParamID paramId = paramInfo.getParamID(graphInfo.subParamID);
+        UnitType type = paramManager.getSubParamUnit(paramId, graphInfo.subParamID);
+        int v = 0;
+        if (paramId == PARAM_CO2)
+        {
+            v = Unit::convert(type, UNIT_PERCENT, data / 10.0, co2Param.getBaro()).toDouble();
+        }
+        else if (paramId == PARAM_TEMP)
+        {
+            QString vStr = Unit::convert(type, UNIT_TC, data / 10.0);
+            v = vStr.toDouble();
+        }
+        else
+        {
+            v = data / 10;
+        }
+        qreal value = mapTrendYValue(v, axisInfo, graphInfo);
+
+        if (lastPointInvalid)
+        {
+            path.moveTo(x, value);
+            lastPointInvalid = false;
+        }
+        else
+        {
+            if (!isEqual(lastPoint.y(), value))
+            {
+                path.lineTo(lastPoint);
+                path.lineTo(x, value);
+            }
+        }
+
+        lastPoint.rx() = x;
+        lastPoint.ry() = value;
+    }
+
+    if (!lastPointInvalid)
+    {
+        path.lineTo(lastPoint);
+    }
+    return path;
+}
+
+QPainterPath getPrintV3Path(const GraphAxisInfo &axisInfo, const TrendGraphInfo &graphInfo, int index)
+{
+    QPainterPath path;
+    bool lastPointInvalid = true;
+    QPointF lastPoint;
+
+    QVector<TrendGraphDataV3>::ConstIterator iter = graphInfo.trendDataV3.constBegin();
+    for (; iter != graphInfo.trendDataV3.constEnd(); iter++)
+    {
+        TrendDataType data = iter->data[index];
+        if (data == InvData())
+        {
+            if (!lastPointInvalid)
+            {
+                path.lineTo(lastPoint);
+                lastPointInvalid = true;
+            }
+            continue;
+        }
+
+        qreal x = timestampToX(iter->timestamp, axisInfo, graphInfo);
+        qreal value = mapTrendYValue(data, axisInfo, graphInfo);
+
+        if (lastPointInvalid)
+        {
+            path.moveTo(x, value);
+            lastPointInvalid = false;
+        }
+        else
+        {
+            if (!isEqual(lastPoint.y(), value))
+            {
+                path.lineTo(lastPoint);
+                path.lineTo(x, value);
+            }
+        }
+
+        lastPoint.rx() = x;
+        lastPoint.ry() = value;
+    }
+
+    if (!lastPointInvalid)
+    {
+        path.lineTo(lastPoint);
+    }
+    return path;
+}
+
 QList<QPainterPath> generatorPainterPath(const GraphAxisInfo &axisInfo, const TrendGraphInfo &graphInfo)
 {
     QList<QPainterPath> paths;
@@ -1665,81 +1844,27 @@ QList<QPainterPath> generatorPainterPath(const GraphAxisInfo &axisInfo, const Tr
     case SUB_PARAM_AUXP1_SYS:
     case SUB_PARAM_AUXP2_SYS:
     {
-        QPainterPath sysPath;
-        QPainterPath diaPath;
-        QPainterPath mapPath;
-
-        bool lastPointInvalid = true;
-        QPointF sysLastPoint;
-        QPointF diaLastPoint;
-        QPointF mapLastPoint;
-
-        QVector<TrendGraphDataV3>::ConstIterator iter = graphInfo.trendDataV3.constBegin();
-        for (; iter != graphInfo.trendDataV3.constEnd(); iter++)
+        int trendNum = 3;       // IBP 动脉压有3个趋势参数
+        for (int i = 0; i < trendNum; i++)
         {
-            if (iter->data[0] == InvData())
-            {
-                if (!lastPointInvalid)
-                {
-                    sysPath.lineTo(sysLastPoint);
-                    diaPath.lineTo(diaLastPoint);
-                    mapPath.lineTo(mapLastPoint);
-                    lastPointInvalid = true;
-                }
-                continue;
-            }
-
-            qreal x = timestampToX(iter->timestamp, axisInfo, graphInfo);
-            qreal sys = mapTrendYValue(iter->data[0], axisInfo, graphInfo);
-            qreal dia = mapTrendYValue(iter->data[1], axisInfo, graphInfo);
-            qreal map = mapTrendYValue(iter->data[2], axisInfo, graphInfo);
-
-            if (lastPointInvalid)
-            {
-                sysPath.moveTo(x, sys);
-                diaPath.moveTo(x, dia);
-                mapPath.moveTo(x, map);
-                lastPointInvalid = false;
-            }
-            else
-            {
-                if (!isEqual(sysLastPoint.y(), sys))
-                {
-                    sysPath.lineTo(sysLastPoint);
-                    sysPath.lineTo(x, sys);
-                }
-
-                if (!isEqual(diaLastPoint.y(), dia))
-                {
-                    diaPath.lineTo(diaLastPoint);
-                    diaPath.lineTo(x, dia);
-                }
-
-                if (!isEqual(mapLastPoint.y(), map))
-                {
-                    mapPath.lineTo(mapLastPoint);
-                    mapPath.lineTo(x, map);
-                }
-            }
-
-            sysLastPoint.rx() = x;
-            sysLastPoint.ry() = sys;
-            diaLastPoint.rx() = x;
-            diaLastPoint.ry() = dia;
-            mapLastPoint.rx() = x;
-            mapLastPoint.ry() = map;
+            QPainterPath path = getPrintV3Path(axisInfo, graphInfo, i);
+            paths.append(path);
         }
-
-        if (!lastPointInvalid)
+    }
+    break;
+    case SUB_PARAM_ETCO2:
+    case SUB_PARAM_ETN2O:
+    case SUB_PARAM_ETAA1:
+    case SUB_PARAM_ETAA2:
+    case SUB_PARAM_ETO2:
+    case SUB_PARAM_T1:
+    {
+        int trendNum = 2;       // 体温和co2有2个趋势参数
+        for (int i = 0; i < trendNum; i++)
         {
-            sysPath.lineTo(sysLastPoint);
-            diaPath.lineTo(diaLastPoint);
-            mapPath.lineTo(mapLastPoint);
+            QPainterPath path = getPrintV2Path(axisInfo, graphInfo, i);
+            paths.append(path);
         }
-
-        paths.append(sysPath);
-        paths.append(diaPath);
-        paths.append(mapPath);
     }
     break;
     default:
@@ -1813,7 +1938,7 @@ void RecordPageGenerator::drawTrendGraph(QPainter *painter, const GraphAxisInfo 
     painter->restore();
 }
 
-void RecordPageGenerator::drawTrendGraphEventSymbol(QPainter *painter, const GraphAxisInfo &axisInfo, const TrendGraphInfo &graphInfo, const QList<unsigned> &eventList)
+void RecordPageGenerator::drawTrendGraphEventSymbol(QPainter *painter, const GraphAxisInfo &axisInfo, const TrendGraphInfo &graphInfo, const QList<EventInfoSegment> &eventList)
 {
     painter->save();
     painter->translate(axisInfo.origin);
@@ -1824,20 +1949,34 @@ void RecordPageGenerator::drawTrendGraphEventSymbol(QPainter *painter, const Gra
     painter->setFont(font);
     qreal fontH = fontManager.textHeightInPixels(font);
 
-    int  symbolHeigth = -140;
+    int aEventFlagHeight = -300;
+    int mEventFlagHeight = aEventFlagHeight - fontH;
     for (int i = 0; i < eventList.count(); ++i)
     {
         QRectF eventRect;
-        qreal timeX = timestampToX(eventList.at(i), axisInfo, graphInfo);
+        unsigned eventTime = eventList.at(i).timestamp;
+        if (eventTime < graphInfo.startTime || eventTime > graphInfo.endTime)
+        {
+            continue;
+        }
+        qreal timeX = timestampToX(eventList.at(i).timestamp, axisInfo, graphInfo);
         if (timeX > axisInfo.width - 10)
         {
             timeX =  axisInfo.width - 10;
         }
         eventRect.setLeft(timeX);
         eventRect.setWidth(axisInfo.xSectionWidth); // should be enough
-        eventRect.setTop(symbolHeigth);
         eventRect.setHeight(fontH);
-        painter->drawText(eventRect, Qt::AlignLeft | Qt::AlignVCenter, "A");
+        if (eventList.at(i).type == EventPhysiologicalAlarm)
+        {
+            eventRect.setTop(aEventFlagHeight);
+            painter->drawText(eventRect, Qt::AlignLeft | Qt::AlignVCenter, "A");
+        }
+        else if (eventList.at(i).type != EventOxyCRG)
+        {
+            eventRect.setTop(mEventFlagHeight);
+            painter->drawText(eventRect, Qt::AlignLeft | Qt::AlignVCenter, "M");
+        }
     }
 
     painter->restore();
@@ -1872,9 +2011,20 @@ QList<RecordWaveSegmentInfo> RecordPageGenerator::getWaveInfos(const QList<Wavef
         case WAVE_ECG_V5:
         case WAVE_ECG_V6:
             info.waveInfo.ecg.gain = ecgParam.getGain(ecgParam.waveIDToLeadID(id));
-            caption = QString("%1   %2").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
-                                             ecgParam.getLeadConvention()))
-                      .arg(ECGSymbol::convert(ecgParam.getFilterMode()));
+            if (ecgParam.getFilterMode() == ECG_FILTERMODE_DIAGNOSTIC)
+            {
+                caption = QString("%1   %2   %3%4").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
+                                                                           ecgParam.getLeadConvention()))
+                        .arg(trs(ECGSymbol::convert(ecgParam.getFilterMode()))).arg(trs("Notch"))
+                        .arg(trs(ECGSymbol::convert(ecgParam.getNotchFilter())));
+            }
+            else
+            {
+                caption = QString("%1   %2").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
+                                                                           ecgParam.getLeadConvention()))
+                        .arg(trs(ECGSymbol::convert(ecgParam.getFilterMode())));
+            }
+
             info.waveInfo.ecg.in12LeadMode = layoutManager.getUFaceType() == UFACE_MONITOR_ECG_FULLSCREEN;
             info.waveInfo.ecg._12LeadDisplayFormat = ecgParam.get12LDisplayFormat();
             captionLength = fontManager.textWidthInPixels(caption, font());
@@ -1883,8 +2033,7 @@ QList<RecordWaveSegmentInfo> RecordPageGenerator::getWaveInfos(const QList<Wavef
             info.waveInfo.resp.zoom = respParam.getZoom();
             break;
         case WAVE_SPO2:
-            info.waveInfo.spo2.gain = spo2Param.getGain();
-            caption = "Pleth";
+            caption = trs(paramInfo.getParamWaveformName(WAVE_SPO2));
             break;
         case WAVE_CO2:
             info.waveInfo.co2.zoom = co2Param.getDisplayZoom();
@@ -1926,7 +2075,7 @@ QList<RecordWaveSegmentInfo> RecordPageGenerator::getWaveInfos(const QList<Wavef
 
         captionLength = fontManager.textWidthInPixels(caption, font());
         info.drawCtx.captionPixLength = captionLength;
-        Util::strlcpy(info.drawCtx.caption, qPrintable(caption), sizeof(info.drawCtx.caption));
+        info.drawCtx.caption = caption;
         info.drawCtx.curPageFirstXpos = 0.0;
         info.drawCtx.prevSegmentLastYpos = 0.0;
         info.drawCtx.dashOffset = 0.0;
@@ -2113,7 +2262,7 @@ RecordPage *RecordPageGenerator::createOxyCRGGraph(const QList<TrendGraphInfo> &
         case CO2_DISPLAY_ZOOM_8:
             high = 8;
             break;
-        case CO2_DISPLAY_ZOOM_12:
+        case CO2_DISPLAY_ZOOM_13:
             high = 12;
             break;
         case CO2_DISPLAY_ZOOM_20:
@@ -2189,6 +2338,16 @@ void RecordPageGenerator::timerEvent(QTimerEvent *ev)
     {
         _timer.stop();
 
+        if (_requestStop)
+        {
+            // we need to check stop condition here because we're unabled to stop if
+            // the _generate flag is set to false.
+            _requestStop = false;
+            emit stopped();
+            onStopGenerate();
+            return;
+        }
+
         if (!_generate)
         {
             return;
@@ -2203,7 +2362,6 @@ void RecordPageGenerator::timerEvent(QTimerEvent *ev)
         }
         else if (_requestStop)
         {
-            emit generatePage(createEndPage());
             _requestStop = false;
             delete page;
             emit stopped();

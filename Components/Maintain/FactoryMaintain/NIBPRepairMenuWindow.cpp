@@ -31,7 +31,7 @@
 #include "NIBPZeroPointContent.h"
 #include "NIBPManometerContent.h"
 #include "NIBPPressureControlContent.h"
-
+#include "IConfig.h"
 
 class NIBPRepairMenuWindowPrivate
 {
@@ -59,6 +59,15 @@ NIBPRepairMenuWindow *NIBPRepairMenuWindow::getInstance()
     if (!instance)
     {
         instance = new NIBPRepairMenuWindow();
+        instance->addMenuContent(NIBPCalibrateContent::getInstance());
+        instance->addMenuContent(NIBPManometerContent::getInstance());
+        QString str;
+        machineConfig.getStrValue("NIBP", str);
+        if (str != "SUNTECH_NIBP")
+        {
+            instance->addMenuContent(NIBPZeroPointContent::getInstance());
+        }
+        instance->addMenuContent(NIBPPressureControlContent::getInstance());
     }
     return instance;
 }
@@ -68,16 +77,25 @@ NIBPRepairMenuWindow *NIBPRepairMenuWindow::getInstance()
  *************************************************************************************************/
 void NIBPRepairMenuWindow::init()
 {
-    NIBPCalibrateContent::getInstance()->init();
-    NIBPManometerContent::getInstance()->init();
-    NIBPPressureControlContent::getInstance()->init();
-    NIBPZeroPointContent::getInstance()->init();
-
     d_ptr->repairError = false;
     d_ptr->replyFlag = false;
 
     // 进入服务模式。
-    nibpParam.changeMode(NIBP_STATE_MACHINE_SERVICE);
+    QString str;
+    machineConfig.getStrValue("NIBP", str);
+    if (str != "SUNTECH_NIBP")
+    {
+        nibpParam.changeMode(NIBP_STATE_MACHINE_SERVICE);
+    }
+
+    // 初始化各个子菜单
+    NIBPCalibrateContent::getInstance()->init();
+    if (str != "SUNTECH_NIBP")
+    {
+        NIBPManometerContent::getInstance()->init();
+        NIBPZeroPointContent::getInstance()->init();
+    }
+    NIBPPressureControlContent::getInstance()->init();
 }
 
 /**************************************************************************************************
@@ -97,10 +115,6 @@ void NIBPRepairMenuWindow::unPacket(bool flag)
  *************************************************************************************************/
 void NIBPRepairMenuWindow::returnMenu()
 {
-    NIBPCalibrateContent::getInstance()->init();
-    NIBPManometerContent::getInstance()->init();
-    NIBPPressureControlContent::getInstance()->init();
-    NIBPZeroPointContent::getInstance()->init();
 }
 
 /**************************************************************************************************
@@ -188,7 +202,7 @@ NIBPRepairMenuWindow::NIBPRepairMenuWindow()
     d_ptr->messageBoxWait = new MessageBox(trs("Warn"), trs("NIBPServiceWaitAgain"),
                                             QStringList(trs("EnglishYESChineseSURE")));
     d_ptr->messageBoxError = new MessageBox(trs("Warn"), trs("NIBPServiceModuleErrorQuitTryAgain"),
-            QStringList(trs("EnglishYESChineseSURE")));
+            QStringList(trs("EnglishYESChineseSURE")), true);
 }
 
 /**************************************************************************************************

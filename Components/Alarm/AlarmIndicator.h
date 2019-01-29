@@ -49,7 +49,6 @@ public:
 
     // 报警暂停状态处理
     bool phyAlarmPauseStatusHandle();
-    bool techAlarmPauseStatusHandle();
 
     // 是否有处于非暂停的生理报警
     bool hasNonPausePhyAlarm();
@@ -74,19 +73,48 @@ public:
     void updateAlarmInfo(const AlarmInfoNode &node);
 
     // 发布报警。
-    void publishAlarm(AlarmAudioStatus status);
+    void publishAlarm(AlarmStatus status);
 
-    // 设置/获取报警音状态。
-    void setAudioStatus(AlarmAudioStatus status);
+    // 设置/获取报警状态。
+    void setAlarmStatus(AlarmStatus status);
 
     // 获取当前报警的个数。
     int getAlarmCount(AlarmType type);
     int getAlarmCount();
+    /**
+     * @brief getAlarmCount 获取当前报警个数
+     * @param priority  筛选出与其等级一致的报警
+     * @return
+     */
+    int getAlarmCount(AlarmPriority priority);
+
     void getAlarmInfo(int index, AlarmInfoNode &node);
     bool getAlarmInfo(AlarmType type, const char *alArmMessage, AlarmInfoNode &node);
 
     // 构造与析构。
     virtual ~AlarmIndicator();
+
+    /**
+     * @brief updateAlarmPauseTime udpate the alarm pause time
+     * @param seconds the left pause time
+     */
+    void updateAlarmPauseTime(int seconds);
+
+    /**
+     * @brief phyAlarmResetStatusHandle 处理复位后的生理报警状态
+     * @return 是否有新被确认的生理报警
+     */
+    bool phyAlarmResetStatusHandle();
+    /**
+     * @brief techAlarmResetStatusHandle 处理复位后的技术报警状态
+     * @return 是否有新被确认的技术报警
+     */
+    bool techAlarmResetStatusHandle();
+
+    /**
+     * @brief updateAlarmStateWidget 刷新报警状态图标
+     */
+    void updateAlarmStateWidget();
 
 private:
     AlarmIndicator();
@@ -96,7 +124,7 @@ private: // 报警信息显示。
     void _displayTechClear(void);    // 清除技术报警界面。
     void _displayPhySet(AlarmInfoNode &node);  // 设置生理报警提示信息。
     void _displayTechSet(AlarmInfoNode &node); // 设置技术报警提示信息。
-    bool _canPlayAudio(AlarmAudioStatus status, bool isTechAlarm); // check whether can play alarm sound
+    bool _canPlayAudio(AlarmStatus status, bool isTechAlarm); // check whether can play alarm sound
 
     AlarmPhyInfoBarWidget *_alarmPhyInfoWidget;
     AlarmTechInfoBarWidget *_alarmTechInfoWidget;
@@ -116,9 +144,11 @@ private:
                           int firstIndex, int lastIndex);
 
 private:
-    AlarmAudioStatus _audioStatus;
+    AlarmStatus _audioStatus;
     int _audioPauseTime;
     static const int _checkPatientAlarmPauseTime = 12;
+
+    bool _isForbidLight;
 };
 #define alarmIndicator (AlarmIndicator::construction())
 #define deleteAlarmIndicator() (delete AlarmIndicator::_selfObj)

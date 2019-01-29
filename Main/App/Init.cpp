@@ -15,6 +15,7 @@
 #include "ShortTrendContainer.h"
 #include "NightModeManager.h"
 #include "RunningStatusBar.h"
+#include "RainbowProvider.h"
 
 /**************************************************************************************************
  * 功能： 初始化系统。
@@ -29,8 +30,6 @@ static void _initSystem(void)
     // superConfig.construction();
 
     // superRunConfig.construction();
-
-    timeManager.checkAndFixSystemTime();
 
     // 新会话，需要恢复主配置文件
     if (timeManager.getPowerOnSession() == POWER_ON_SESSION_NEW)
@@ -115,6 +114,12 @@ static void _initSystem(void)
 
     //消息提示框
     pMessageBox.construction();
+
+    // 初始化夜间模式
+    if (nightModeManager.nightMode())
+    {
+        nightModeManager.setNightMode(true);
+    }
 }
 
 /**************************************************************************************************
@@ -156,7 +161,7 @@ static void _initComponents(void)
 
     // 电源
     BatteryBarWidget *bar = &batteryBarWidget;
-    powerMangerBrief.construction();
+    powerManger.construction();
     alertor.addOneShotSource(batteryOneShotAlarm.construction());
     layoutManager.addLayoutWidget(bar);
 
@@ -180,7 +185,7 @@ static void _initComponents(void)
 
     // running status
     runningStatus.setPacerStatus(patientManager.getPacermaker());
-    runningStatus.setNightModeStatus(nightModeManager.isNightMode());
+    runningStatus.setNightModeStatus(nightModeManager.nightMode());
 #ifdef Q_WS_QWS
     if (systemManager.isSupport(CONFIG_TOUCH))
     {
@@ -200,8 +205,7 @@ static void _initComponents(void)
     // U盘管理
     usbManager.getInstance();
     // U盘数据储存
-    rawDataCollection.construction();
-    rawDataCollectionTxt.construction();
+    rawDataCollector.getInstance();
 }
 /**************************************************************************************************
  * 功能： 初始化参数和提供者对象。
@@ -210,14 +214,16 @@ static void _initProviderParam(void)
 {
     paramInfo.construction();
 
+    paramManager.addProvider(systemBoardProvider);
+
     // 创建Provider.
     DemoProvider *demo = new DemoProvider();
     paramManager.addProvider(*demo);
     // TE3Provider *te3 = new TE3Provider();
     // paramManager.addProvider(*te3);
 
-    E5Provider *e5 = new E5Provider();
-    paramManager.addProvider(*e5);
+    E5Provider *te3 = new E5Provider();
+    paramManager.addProvider(*te3);
 
     DataDispatcher::addDataDispatcher(new DataDispatcher("DataDispatcher"));
 
@@ -230,12 +236,14 @@ static void _initProviderParam(void)
     ECGTrendWidget *ecgTrendWidget = new ECGTrendWidget();
     ecgDupParam.setTrendWidget(ecgTrendWidget);
     layoutManager.addLayoutWidget(ecgTrendWidget, LAYOUT_NODE_PARAM_ECG);
+#ifndef HIDE_ECG_ST_PVCS_SUBPARAM
     ECGPVCSTrendWidget *ecgPVCSTrendWidget = new ECGPVCSTrendWidget();
     ecgParam.setECGPVCSTrendWidget(ecgPVCSTrendWidget);
     layoutManager.addLayoutWidget(ecgPVCSTrendWidget, LAYOUT_NODE_PARAM_PVCS);
     ECGSTTrendWidget *ecgSTTrendWidget = new ECGSTTrendWidget();
     ecgParam.setECGSTTrendWidget(ecgSTTrendWidget);
     layoutManager.addLayoutWidget(ecgSTTrendWidget, LAYOUT_NODE_PARAM_ST);
+#endif
 
     ECGWaveWidget *ecgWaveWidget = new ECGWaveWidget(WAVE_ECG_I, "ECGIWaveWidget",
             ECGSymbol::convert(ECG_LEAD_I, ecgParam.getLeadConvention()));
@@ -339,14 +347,22 @@ static void _initProviderParam(void)
         if (str == "MASIMO_SPO2")
         {
             paramManager.addProvider(*new MasimoSetProvider());
+            spo2Param.setModuleType(MODULE_MASIMO_SPO2);
         }
         else if (str == "BLM_S5")
         {
             paramManager.addProvider(*new S5Provider());
+            spo2Param.setModuleType(MODULE_BLM_S5);
         }
         else if (str == "NELLCOR_SPO2")
         {
             paramManager.addProvider(*new NellcorSetProvider());
+            spo2Param.setModuleType(MODULE_NELLCOR_SPO2);
+        }
+        else if (str == "RAINBOW_SPO2")
+        {
+            paramManager.addProvider(*new RainbowProvider());
+            spo2Param.setModuleType(MODULE_RAINBOW_SPO2);
         }
         paramManager.addParam(spo2Param.construction());
         alertor.addLimtSource(spo2LimitAlarm.construction());
@@ -510,11 +526,20 @@ static void _initProviderParam(void)
         layoutManager.addLayoutWidget(tempTrendWidget, LAYOUT_NODE_PARAM_TEMP);
     }
 
+    if (systemManager.isSupport(CONFIG_O2))
+    {
+         paramManager.addProvider(*new NeonateProvider());
+         paramManager.addParam(o2Param.getInstance());
+         alertor.addLimtSource(o2LimitAlarm.getInstance());
+         alertor.addOneShotSource(o2OneShotAlarm.getInstance());
+         O2TrendWidget *o2TrendWidget  = new O2TrendWidget();
+         o2Param.setTrendWidget(o2TrendWidget);
+         layoutManager.addLayoutWidget(o2TrendWidget, LAYOUT_NODE_PARAM_OXYGEN);
+    }
+
     // short trend container
     ShortTrendContainer *trendContainer = new ShortTrendContainer;
     layoutManager.addLayoutWidget(trendContainer);
-
-    paramManager.getVersion();
 
     // 关联设备和参数对象。
     paramManager.connectParamProvider(WORK_MODE_NORMAL);
@@ -548,6 +573,10 @@ static void _initPrint(void)
     PRT48Provider *prtProvider = new PRT48Provider();
     recorderManager.setPrintPrividerIFace(prtProvider);
     recorderManager.selfTest();
+    recorderManager.printWavesInit();
+    paramManager.addProvider(*prtProvider);
+
+    paramManager.getVersion();
 }
 
 /**************************************************************************************************
@@ -586,7 +615,10 @@ void newObjects(void)
  *************************************************************************************************/
 void deleteObjects(void)
 {
-//    deleteWaveWidgetSelectMenu();
+    // 优先析构打印管理实例
+    deleteRecorderManager();
+
+    //    deleteWaveWidgetSelectMenu();
     deleteSupervisorMenuManager();
     deleteMenuManager();
     // deletePatientMenu();
@@ -600,7 +632,6 @@ void deleteObjects(void)
     // deleteSuperConfig();
     deleteSuperRunConfig();
     deleteSystemTick();
-    deleteSystemBoardProvider();
     deleteKeyActionManager();
 
     deleteDataStorageDirManager();
@@ -618,14 +649,9 @@ void deleteObjects(void)
     deleteRescueDataExportWidget();
     deleteRescueDataDeleteWidget();
 
-    deleteRecorderManager();
-
 //    deleteNetworkManager();
-    deleteRawDataCollection();
-    deleteRawDataCollectionTxt();
     deleteUsbManager();
     deleteActivityLogManager();
-
 
     deleteColorManager();
     deleteFontManager();

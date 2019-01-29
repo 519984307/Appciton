@@ -22,6 +22,7 @@ static KeyActionDesc _monitorKeys[] =
 {
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_INFO),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_NEW),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_DISCHARGE),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_ECG_LEAD_MODE),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_ALARM_LIMIT),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_CODE_MARKER),
@@ -38,7 +39,9 @@ static KeyActionDesc _monitorKeys[] =
 #endif
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_CO2_CALIBRATION),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_CO2_HANDLE),
+#ifndef HIDE_IBP_CALIBRATE_ZERO
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_IBP_CALIBRATION),
+#endif
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_CALCULATION),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_KEYBOARD_VOLUMN),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_SCREEN_BRIGHTNESS),

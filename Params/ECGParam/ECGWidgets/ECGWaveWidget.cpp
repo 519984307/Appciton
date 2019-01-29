@@ -281,6 +281,7 @@ void ECGWaveWidget::_loadConfig(void)
 {
     setSpeed(ecgParam.getSweepSpeed());
 
+    bool is12Lead = ecgParam.getLeadMode() < ECG_LEAD_MODE_12 ? 0 : 1;
     if (layoutManager.getUFaceType() == UFACE_MONITOR_ECG_FULLSCREEN)
     {
         _name->setFocusPolicy(Qt::NoFocus);
@@ -292,15 +293,15 @@ void ECGWaveWidget::_loadConfig(void)
         setGain(_12LGain);
 
         _name->setText(ECGSymbol::convert(ecgParam.waveIDToLeadID((WaveformID)getID()),
-                                          ecgParam.getLeadConvention(), true, ecgParam.get12LDisplayFormat()));
+                                          ecgParam.getLeadConvention(), is12Lead, ecgParam.get12LDisplayFormat()));
 
         _name->setFixedWidth(70);
-        _notify->setVisible(false);
+//        _notify->setVisible(false);
     }
     else
     {
         _name->setText(ECGSymbol::convert(ecgParam.waveIDToLeadID((WaveformID)getID()),
-                                          ecgParam.getLeadConvention(), false, false));
+                                          ecgParam.getLeadConvention(), is12Lead, false));
         _name->setFocusPolicy(Qt::StrongFocus);
 
         // 增益。
@@ -315,7 +316,7 @@ void ECGWaveWidget::_loadConfig(void)
         ecgParam.updateECGNotifyMesg(lead, false);
 
         _name->setFixedWidth(130);
-        _notify->setVisible(true);
+//        _notify->setVisible(true);
     }
 }
 
@@ -363,47 +364,25 @@ void ECGWaveWidget::addWaveformData(int waveData, int pace)
  * 参数:
  *      gain: 波形增益
  *************************************************************************************************/
-void ECGWaveWidget::setGain(ECGGain gain)
+void ECGWaveWidget::setGain(ECGGain gain, bool isAuto)
 {
     _initValueRange(gain);
-    QString text;
-    if (_isAutoGain)
+    // 自动增益标志
+    if (gain == ECG_GAIN_AUTO)
     {
-        text = trs("Automatically");
-        text += " ";
+        _isAutoGain = true;
+    }
+    // 不是自动增益导致的增益设置
+    else if (!isAuto)
+    {
+        _isAutoGain = false;
     }
 
-    switch (gain)
+    // 不是自动增益导致的增益设置
+    if (!isAuto)
     {
-    case ECG_GAIN_X0125:
-        text += "0.125 cm/mV";
-        break;
-
-    case ECG_GAIN_X025:
-        text += "0.25 cm/mV";
-        break;
-
-    case ECG_GAIN_X05:
-        text += "0.5 cm/mV";
-        break;
-
-    case ECG_GAIN_X10:
-        text += "1.0 cm/mV";
-        break;
-
-    case ECG_GAIN_X20:
-        text += "2.0 cm/mV";
-        break;
-
-    case ECG_GAIN_X40:
-        text += "4.0 cm/mV";
-        break;
-
-    default:
-        break;
+        _gain->setText(trs(ECGSymbol::convert(gain)));
     }
-
-    _gain->setText(trs(ECGSymbol::convert(gain)));
 
     _ruler->setGain(gain);
 }
@@ -439,6 +418,10 @@ void ECGWaveWidget::setSpeed(ECGSweepSpeed speed)
     // 波形速度。
     switch (speed)
     {
+    case ECG_SWEEP_SPEED_625:
+        setWaveSpeed(6.25);
+        break;
+
     case ECG_SWEEP_SPEED_125:
         setWaveSpeed(12.5);
         break;
@@ -529,23 +512,6 @@ void ECGWaveWidget::setNotifyMesg(ECGWaveNotify mesg)
 void ECGWaveWidget::paintEvent(QPaintEvent *e)
 {
     WaveWidget::paintEvent(e);
-
-    if (ECG_DISPLAY_NORMAL == ecgParam.getDisplayMode())
-    {
-        if (getID() != ecgParam.getCalcLead())
-        {
-            return;
-        }
-    }
-    else if (ECG_DISPLAY_12_LEAD_FULL == ecgParam.getDisplayMode())
-    {
-        QStringList currentWaveforms = layoutManager.getDisplayedWaveforms();
-        if (!((ECG_PACE_ON == (ECGPaceMode)ecgParam.get12LPacermaker()) && (!currentWaveforms.empty())
-                && (currentWaveforms[0] == name())))
-        {
-            return;
-        }
-    }
 
     if (bufIsEmpty())
     {
@@ -708,10 +674,9 @@ void ECGWaveWidget::resizeEvent(QResizeEvent *e)
     x = _filterMode->x() + _filterMode->width();
     _notchInfo->move(x, 0);
 
-    x = _notchInfo->x() + _notchInfo->width();
-
-    _notify->move(x, 0);
     _notify->setFixedWidth(200);
+    _notify->move((width() - _notify->width()) / 2,
+                  qmargins().top() + (height() - qmargins().top()) / 2 - _notify->height() - 1);
 
     _initValueRange(ecgParam.getGain(ecgParam.waveIDToLeadID((WaveformID)getID())));
     _calcGainRange();
@@ -848,7 +813,7 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
 
     _notchInfo = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
     _notchInfo->setFont(fontManager.textFont(fontSize));
-    _notchInfo->setFixedSize(200, fontH);
+    _notchInfo->setFixedSize(120, fontH);
     _notchInfo->setFocusPolicy(Qt::NoFocus);
     addItem(_notchInfo);
     connect(&ecgParam, SIGNAL(updateNotchFilter()), this, SLOT(_updateNotchInfo()));
@@ -856,7 +821,7 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
     _updateNotchInfo();
     _updateFilterMode();
 
-    _notify = new WaveWidgetLabel(trs("LeadOff"), Qt::AlignCenter, this);
+    _notify = new WaveWidgetLabel(trs("LeadOff"), Qt::AlignLeft | Qt::AlignVCenter, this);
     _notify->setFocusPolicy(Qt::NoFocus);
     _notify->setFont(fontManager.textFont(fontSize));
     _notify->setFixedHeight(fontH);
@@ -1084,5 +1049,38 @@ void ECGWaveWidget::setWaveInfoVisible(bool isVisible)
         _updateNotchInfo();
         _updateFilterMode();
     }
+}
+
+void ECGWaveWidget::updateWidgetConfig()
+{
+    _loadConfig();
+
+    int index = ECG_DISPLAY_NORMAL;
+    currentConfig.getNumValue("ECG|DisplayMode", index);
+    ECGDisplayMode mode = static_cast<ECGDisplayMode>(index);
+    if (ECG_DISPLAY_NORMAL == mode)
+    {
+        setMargin(QMargins(WAVE_X_OFFSET, 2, 2, 2));
+    }
+    else if (ECG_DISPLAY_12_LEAD_FULL == mode)
+    {
+        QStringList currentWaveforms = layoutManager.getDisplayedWaveforms();
+
+        if ((!currentWaveforms.empty()) && (currentWaveforms[0] == name() ||
+                                            currentWaveforms[1] == name()))
+        {
+            setMargin(QMargins(WAVE_X_OFFSET + 4, 2, 2, 2));
+        }
+        else
+        {
+            setMargin(QMargins(WAVE_X_OFFSET + 4, 2, 2, 2));
+        }
+    }
+    // 设置前景色。
+    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
+    setPalette(palette);
+    _ruler->setPalette(palette);
+
+    WaveWidget::updateWidgetConfig();
 }
 

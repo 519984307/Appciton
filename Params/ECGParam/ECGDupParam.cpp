@@ -5,10 +5,8 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/9/29
+ ** Written by TongZhou Fang fangtongzhou@blmed.cn, 2019/1/19
  **/
-
-
 
 #include "ECGDupParam.h"
 #include "BaseDefine.h"
@@ -350,12 +348,23 @@ short ECGDupParam::getHR(bool isGetOriginalHR) const
         return _hrValue;
     }
 
-    if (InvData() != _hrValue)
+    if (_hrSource == HR_SOURCE_AUTO)
+    {
+        if (InvData() != _hrValue)
+        {
+            return _hrValue;
+        }
+
+        if (InvData() != _prValue)
+        {
+            return _prValue;
+        }
+    }
+    else if (_hrSource == HR_SOURCE_ECG)
     {
         return _hrValue;
     }
-
-    if (InvData() != _prValue)
+    else
     {
         return _prValue;
     }
@@ -459,7 +468,9 @@ void ECGDupParam::setHrSource(HRSourceType type)
     {
         _prSource = PR_SOURCE_AUTO;
     }
-    currentConfig.setNumValue("ECG|HRSource", static_cast<int>(type));
+
+    int id = ecgParam.getIdFromHrSourceType(type);
+    currentConfig.setNumValue("ECG|HRSource", id);
 }
 
 bool ECGDupParam::isAutoTypeHrSouce() const
@@ -499,10 +510,28 @@ ECGDupParam::ECGDupParam()
       _prValueFromSPO2(InvData()),
       _prValueFromIBP(InvData()),
       _hrBeatFlag(true),
-      _isAlarm(false),
-      _hrSource(HR_SOURCE_ECG),
-      _prSource(PR_SOURCE_AUTO)
+      _isAlarm(false)
 {
+    // 初始化hr/pr来源
+    int id = PARAM_ECG;
+    currentConfig.getNumValue("ECG|HRSource", id);
+    HRSourceType type = ecgParam.getHrSourceTypeFromId(static_cast<ParamID>(id));
+    _hrSource = type;
+
+    switch (_hrSource)
+    {
+        case HR_SOURCE_ECG:
+        case HR_SOURCE_AUTO:
+        case HR_SOURCE_NR:
+            _prSource = PR_SOURCE_AUTO;
+        break;
+        case HR_SOURCE_SPO2:
+            _prSource = PR_SOURCE_SPO2;
+        break;
+        case HR_SOURCE_IBP:
+            _prSource = PR_SOURCE_IBP;
+        break;
+    }
 }
 
 /**************************************************************************************************

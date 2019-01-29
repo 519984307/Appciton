@@ -21,6 +21,7 @@
 #include "LayoutManager.h"
 #include "WiFiProfileWindow.h"
 #include "IConfig.h"
+#include "SystemManager.h"
 
 SystemStatusBarWidget *SystemStatusBarWidget::_selfObj = NULL;
 #define ICON_WIDTH 32
@@ -113,7 +114,7 @@ void SystemStatusBarWidget::getSubFocusWidget(QList<QWidget *> &subWidgets) cons
  *************************************************************************************************/
 void SystemStatusBarWidget::onIconClicked(int iconLabel)
 {
-    if (iconLabel == SYSTEM_ICON_LABEL_WIFI)
+    if (iconLabel == SYSTEM_ICON_LABEL_WIFI && systemManager.isSupport(CONFIG_WIFI))
     {
         WiFiProfileWindow w;
         windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
@@ -139,22 +140,22 @@ void SystemStatusBarWidget::timerEvent(QTimerEvent *e)
     {
         int index = 0;
         machineConfig.getNumValue("WIFIEnable", index);
-        if (index  && networkManager.isWifiTurnOn())
+        if (index)
         {
-            if (networkManager.isWifiWorking())
+            // 工厂维护中打开wifi模块
+            if (networkManager.isWifiTurnOn())
             {
-                changeIcon(SYSTEM_ICON_LABEL_WIFI, networkManager.isWiFiConnected()
-                           ? SYSTEM_ICON_WIFI_CONNECTED
-                           : SYSTEM_ICON_WIFI_DISCONNECTED, true);
+                // 用户维护中打开wifi
+                changeIcon(SYSTEM_ICON_LABEL_WIFI, SYSTEM_ICON_WIFI_CONNECTED, true);
             }
             else
             {
-                changeIcon(SYSTEM_ICON_LABEL_WIFI, SYSTEM_ICON_WIFI_DISCONNECTED);
+                changeIcon(SYSTEM_ICON_LABEL_WIFI, SYSTEM_ICON_WIFI_DISCONNECTED, true);
             }
         }
         else
         {
-            changeIcon(SYSTEM_ICON_LABEL_WIFI, SYSTEM_ICON_WIFI_DISCONNECTED);
+            changeIcon(SYSTEM_ICON_LABEL_WIFI, SYSTEM_ICON_WIFI_CLOSED, false);
         }
     }
 }
@@ -190,8 +191,9 @@ SystemStatusBarWidget::SystemStatusBarWidget() : IWidget("SystemStatusBarWidget"
     _icons[SYSTEM_ICON_USB_CONNECTED] = QPixmap("/usr/local/nPM/icons/usb.png");
     _icons[SYSTEM_ICON_WIFI_CONNECTED] = QPixmap("/usr/local/nPM/icons/wifi.png");
     _icons[SYSTEM_ICON_WIFI_DISCONNECTED] = QPixmap("/usr/local/nPM/icons/wifi_disconnected.png");
+    _icons[SYSTEM_ICON_WIFI_CLOSED] = QPixmap("/usr/local/nPM/icons/wifi_closed.png");
     _icons[SYSTEM_ICON_PACER_OFF] = QPixmap("/usr/local/nPM/icons/PaceMarkerOff.png");
-    _icons[SYSTEM_ICON_PACER_ON] = QPixmap("");// "/usr/local/nPM/icons/Pacemarkeron.png");打开时不需要图标。
+    _icons[SYSTEM_ICON_PACER_ON] = QPixmap("");  // "/usr/local/nPM/icons/Pacemarkeron.png");打开时不需要图标。
 
     setFocusPolicy(Qt::NoFocus);
 
@@ -202,7 +204,10 @@ SystemStatusBarWidget::SystemStatusBarWidget() : IWidget("SystemStatusBarWidget"
     {
         IWidget *w = new IWidget(QString("icon%1").arg(i + 1));
         w->setAttribute(Qt::WA_NoSystemBackground);
-        w->setFocusPolicy(Qt::NoFocus);
+        if (i == SYSTEM_ICON_LABEL_USB)
+        {
+            w->setFocusPolicy(Qt::NoFocus);
+        }
         w->setFixedWidth(ICON_WIDTH);
         connect(w, SIGNAL(released()), _signalMapper, SLOT(map()));
         _signalMapper->setMapping(w, i);

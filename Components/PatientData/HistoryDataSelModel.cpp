@@ -13,8 +13,10 @@
 #include "ThemeManager.h"
 #include <QDateTime>
 #include "TimeDate.h"
+#include "WindowManager.h"
 
 #define COLUMN_COUNT        2
+#define ROW_COUNT       8  // 每页8行
 #define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
 
 class HistoryDataSelModelPrivate
@@ -55,7 +57,19 @@ int HistoryDataSelModel::columnCount(const QModelIndex &parent) const
 int HistoryDataSelModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return d_ptr->firstDataList.count();
+    // 获取每页行数的倍数的总行数
+    int totalRowCount = 1;
+    if (d_ptr->firstDataList.count() % ROW_COUNT)
+    {
+        // 如果最后一页未满
+        totalRowCount = (d_ptr->firstDataList.count() / ROW_COUNT + 1) * ROW_COUNT;
+    }
+    else
+    {
+        // 如果最后一页已满
+        totalRowCount = (d_ptr->firstDataList.count() / ROW_COUNT) * ROW_COUNT;
+    }
+    return totalRowCount;
 }
 
 QVariant HistoryDataSelModel::data(const QModelIndex &index, int role) const
@@ -84,7 +98,7 @@ QVariant HistoryDataSelModel::data(const QModelIndex &index, int role) const
     }
     case Qt::SizeHintRole:
     {
-        int w = 800 / COLUMN_COUNT;
+        int w = windowManager.getPopWindowWidth() / COLUMN_COUNT;
         return QSize(w, ROW_HEIGHT_HINT);
     }
     case Qt::TextAlignmentRole:
@@ -136,6 +150,7 @@ void HistoryDataSelModel::updateData()
     QStringList list;
     dataStorageDirManager.getRescueEvent(list);
     d_ptr->strList.append(list);
+    d_ptr->strList.removeFirst();   // 不提供当前文件夹的数据回顾
 
     int count = d_ptr->strList.count();
     d_ptr->row = count / 2;
@@ -162,6 +177,11 @@ QString HistoryDataSelModel::getDateTimeStr(int index)
     QString str = d_ptr->strList.at(index);
     str = d_ptr->convertTimeStr(str);
     return str;
+}
+
+int HistoryDataSelModel::getEachPageRowCount()
+{
+    return ROW_COUNT;
 }
 
 QString HistoryDataSelModelPrivate::convertTimeStr(const QString str)

@@ -41,6 +41,32 @@ bool Provider::initPort(const UartAttrDesc &desc, bool needNotify)
               qPrintable(port),
               disPatchInfo.packetType);
         disPatchInfo.dispatcher->connectProvider(disPatchInfo.packetType, this);
+
+        DataDispatcher::PacketPortBaudrate portBaud = DataDispatcher::BAUDRATE_9600;
+        switch (desc.baud) {
+        case 9600:
+            portBaud = DataDispatcher::BAUDRATE_9600;
+            break;
+        case 19200:
+            portBaud = DataDispatcher::BAUDRATE_19200;
+            break;
+        case 28800:
+            portBaud = DataDispatcher::BAUDRATE_28800;
+            break;
+        case 38400:
+            portBaud = DataDispatcher::BAUDRATE_38400;
+            break;
+        case 57600:
+            portBaud = DataDispatcher::BAUDRATE_57600;
+            break;
+        case 115200:
+            portBaud = DataDispatcher::BAUDRATE_115200;
+            break;
+        default:
+            qWarning("Unsupport dispatch port baudrate: %d\n", desc.baud);
+            break;
+        }
+        disPatchInfo.dispatcher->setPacketPortBaudrate(disPatchInfo.packetType, portBaud);
         return true;
     }
 
@@ -126,6 +152,11 @@ void Provider::detachParam(Param &param)
  *************************************************************************************************/
 void Provider::checkConnection(void)
 {
+    if (_stopCheckConnect)
+    {
+        // 如果在待机中，不检查超时是否连接
+        return;
+    }
     _disconnectCount++;
     if (_disconnectCount > _disconnectThreshold)
     {
@@ -156,6 +187,11 @@ void Provider::closePort()
 bool Provider::connected()
 {
     return isConnected;
+}
+
+bool Provider::connectedToParam()
+{
+    return isConnectedToParam;
 }
 
 /**************************************************************************************************
@@ -189,6 +225,7 @@ Provider::Provider(const QString &name) : QObject(), ringBuff(ringBuffLen), _nam
     isConnected = false;
     _firstCheck = true;
     isConnectedToParam = true;
+    _stopCheckConnect = false;
 // #ifdef Q_WS_X11
 //    uart = new UartSocket();
 // #else
@@ -204,4 +241,9 @@ Provider::Provider(const QString &name) : QObject(), ringBuff(ringBuffLen), _nam
 Provider::~Provider()
 {
     disconnect(uart, SIGNAL(activated(int)), this, SLOT(dataArrived()));
+}
+
+void Provider::stopCheckConnect(bool flag)
+{
+    _stopCheckConnect = flag;
 }

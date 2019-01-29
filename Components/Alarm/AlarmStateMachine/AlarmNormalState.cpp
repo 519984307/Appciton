@@ -32,7 +32,8 @@ AlarmNormalState::~AlarmNormalState()
  *************************************************************************************************/
 void AlarmNormalState::enter()
 {
-    alarmIndicator.setAudioStatus(ALARM_AUDIO_NORMAL);
+    alarmIndicator.setAlarmStatus(ALARM_STATUS_NORMAL);
+    alarmIndicator.updateAlarmStateWidget();
     lightManager.enableAlarmAudioMute(false);
 }
 
@@ -48,10 +49,11 @@ void AlarmNormalState::handAlarmEvent(AlarmStateEvent event, unsigned char */*da
     {
         //删除栓锁报警
         alarmIndicator.delLatchPhyAlarm();
-        alarmIndicator.techAlarmPauseStatusHandle();
+        alarmIndicator.phyAlarmResetStatusHandle();
+        alarmIndicator.techAlarmResetStatusHandle();
         if (alarmIndicator.getAlarmCount())
         {
-            // must has alarm before enter the reset state
+            // must has med priority alarm or high priority alarm before enter the reset state
             alarmStateMachine.switchState(ALARM_RESET_STATE);
         }
         break;
@@ -59,10 +61,8 @@ void AlarmNormalState::handAlarmEvent(AlarmStateEvent event, unsigned char */*da
 
     case ALARM_STATE_EVENT_MUTE_BTN_PRESSED:
     {
-        if (alarmIndicator.phyAlarmPauseStatusHandle())
-        {
-            alarmStateMachine.switchState(ALARM_PAUSE_STATE);
-        }
+        alarmIndicator.phyAlarmPauseStatusHandle();
+        alarmStateMachine.switchState(ALARM_PAUSE_STATE);
         break;
     }
 #else

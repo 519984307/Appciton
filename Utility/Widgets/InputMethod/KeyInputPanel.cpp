@@ -489,6 +489,14 @@ void KeyInputPanel::setSpaceEnable(bool enable)
     }
 
     d_ptr->keys[KEY_ORDER_SPACE]->setEnabled(enable);
+
+    if (enable == true)
+    {
+        d_ptr->keys[KEY_ORDER_SPACE]->setIcon(QIcon("/usr/local/nPM/icons/blank.png"));
+        return;
+    }
+
+    d_ptr->keys[KEY_ORDER_SPACE]->setIcon(QIcon("/usr/local/nPM/icons/blankDisable.png"));
 }
 
 /**************************************************************************************************
@@ -568,7 +576,6 @@ KeyInputPanel::KeyInputPanel(KeyType type, bool isShowDecimalPoint)
     QHBoxLayout *helpLayout = new QHBoxLayout();
     helpLayout->setMargin(0);
     helpLayout->setSpacing(0);
-    QPalette pal;
     for (int i = 0; i < 9; ++i)
     {
         Button *subKey = new Button();
@@ -577,10 +584,6 @@ KeyInputPanel::KeyInputPanel(KeyType type, bool isShowDecimalPoint)
         subKey->setFixedSize(d_ptr->itemHeight, d_ptr->itemHeight);
         subKey->setBorderWidth(0);
         subKey->setEnabled(false);
-        pal = subKey->palette();
-        pal.setColor(QPalette::Background, this->palette().window().color());
-        pal.setColor(QPalette::Foreground, Qt::gray);
-        subKey->setPalette(pal);
         connect(subKey, SIGNAL(clicked()), this, SLOT(ClickedHelpBtn()));
         helpLayout->addWidget(subKey);
         d_ptr->helpKeys.append(subKey);

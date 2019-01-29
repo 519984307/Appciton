@@ -117,8 +117,12 @@ QString FactoryTestMenuContentPrivate::btnStr[FACTORY_CONTENT_TEST_NR] =
     "USB High Speed Test packet",
     "USB Full Speed Test Packet",
 #endif
+#ifndef HIDE_WIFI_FUNCTION
     "FactoryWifi",
+#endif
+#ifndef HIDE_WIRED_NETWORK_FUNCTION
     "FactoryEnthernet",
+#endif
     "FactoryBattery"
 };
 
@@ -138,12 +142,12 @@ void FactoryTestMenuContent::layoutExec()
     layout->setMargin(10);
     this->setFocusPolicy(Qt::NoFocus);
 
-    QLabel *label;
-    Button *button;
     int row = 0;
 
     for (int i = 0; i < FACTORY_CONTENT_TEST_NR; i++)
     {
+        QLabel *label;
+        Button *button;
         label = new QLabel(trs(d_ptr->btnStr[i]));
         layout->addWidget(label, i, 0);
         button = new Button(trs("FactoryTest"));
@@ -155,44 +159,6 @@ void FactoryTestMenuContent::layoutExec()
         button->blockSignals(false);
         d_ptr->lbtn[i] = button;
     }
-
-#ifdef TEST_REFRESH_RATE_CONTENT
-    label = new QLabel(trs("RefreshRate"));
-    layout->addWidget(label, FACTORY_CONTENT_TEST_NR, 0);
-    SpinBox *spin = new SpinBox();
-    spin->blockSignals(true);
-    spin->setRange(50, 70);
-    spin->setStep(1);
-    layout->addWidget(spin, FACTORY_CONTENT_TEST_NR, 1);
-    row++;
-    connect(spin, SIGNAL(valueChange(int, int)), this, SLOT(onFreshRateChanged(int)));
-
-    int curRate = 60;
-    QProcess process;
-    process.start("fw_printenv");
-
-    if (process.waitForFinished(2000))
-    {
-        QString output = process.readAll();
-        int index = output.indexOf("800x480M@");
-        if (index >= 0)
-        {
-            index += 9;
-            QString rateStr = output.mid(index, 2);
-            bool ok = false;
-            int rate;
-            rate = rateStr.toInt(&ok);
-            if (ok)
-            {
-                curRate = rate;
-            }
-        }
-    }
-    spin->setValue(curRate);
-    spin->blockSignals(false);
-    d_ptr->freshRateSpinBox = spin;
-
-#endif
 
     layout->setRowStretch(row + FACTORY_CONTENT_TEST_NR, 1);
 }
@@ -216,21 +182,6 @@ void FactoryTestMenuContent::onBtnReleased(int id)
     }
 }
 
-#ifdef TEST_REFRESH_RATE_CONTENT
-void FactoryTestMenuContent::onFreshRateChanged(int valStr)
-{
-    QString cmdStr = QString("fw_setenv vidargs video=mxcfb0:dev=ldb,800x480M@%1,if=RGB666 video=mxcfb1:off fbmem=8M").arg(
-                         valStr);
-    QProcess::execute(cmdStr);
-    QProcess::execute("sync");
-    MessageBox msgBox(trs("Note"), trs("RefreshRateUpdatedRebootNow"), true);
-    if (msgBox.exec() == 1)
-    {
-        QProcess::execute("reboot");
-    }
-}
-#endif
-
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
@@ -241,7 +192,12 @@ FactoryTestMenuContent::~FactoryTestMenuContent()
 
 void FactoryTestMenuContent::readyShow()
 {
+    bool enable = true;
+#ifdef DISABLE_FACTORY_MODULE_SELFTEST
+    enable = false;
+#endif
+    for (int i = 0; i < FACTORY_CONTENT_TEST_NR; i++)
+    {
+        d_ptr->lbtn[i]->setEnabled(enable);
+    }
 }
-
-
-

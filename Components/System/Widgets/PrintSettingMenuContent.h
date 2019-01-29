@@ -29,6 +29,8 @@ protected:
     /* reimplement */
     void layoutExec();
 
+    void timerEvent(QTimerEvent *ev);
+
 private slots:
     /**
      * @brief onComboxIndexChanged
@@ -41,11 +43,6 @@ private slots:
      * @param waveName
      */
     void onSelectWaveChanged(const QString &waveName);
-
-    /**
-     * @brief onClearBtnReleased
-     */
-    void onClearBtnReleased();
 
 private:
     PrintSettingMenuContentPrivate *const d_ptr;

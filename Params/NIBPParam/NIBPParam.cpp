@@ -28,6 +28,7 @@
 #include "NIBPMonitorStopState.h"
 #include "NIBPMonitorStartingState.h"
 #include "EventStorageManager.h"
+#include "TrendDataStorageManager.h"
 
 NIBPParam *NIBPParam::_selfObj = NULL;
 
@@ -45,7 +46,21 @@ void NIBPParam::_patientTypeChangeSlot(PatientType /*type*/)
     if (NULL != _provider)
     {
         _provider->setPatientType((unsigned char)patientManager.getType());
-        _provider->setInitPressure(nibpParam.getInitPressure(patientManager.getType()));
+        int initVal;
+        PatientType type = patientManager.getType();
+        if (type == PATIENT_TYPE_ADULT)
+        {
+            currentConfig.getNumValue("NIBP|AdultInitialCuffInflation", initVal);
+        }
+        else if (type == PATIENT_TYPE_PED)
+        {
+            currentConfig.getNumValue("NIBP|PedInitialCuffInflation", initVal);
+        }
+        else if (type == PATIENT_TYPE_NEO)
+        {
+            currentConfig.getNumValue("NIBP|NeoInitialCuffInflation", initVal);
+        }
+        _provider->setInitPressure(initVal);
     }
 }
 
@@ -66,7 +81,21 @@ void NIBPParam::initParam(void)
 
     //设置病人类型与预充气值
     _provider->setPatientType((unsigned char)patientManager.getType());
-    _provider->setInitPressure(nibpParam.getInitPressure(patientManager.getType()));
+    int initVal;
+    PatientType type = patientManager.getType();
+    if (type == PATIENT_TYPE_ADULT)
+    {
+        currentConfig.getNumValue("NIBP|AdultInitialCuffInflation", initVal);
+    }
+    else if (type == PATIENT_TYPE_PED)
+    {
+        currentConfig.getNumValue("NIBP|PedInitialCuffInflation", initVal);
+    }
+    else if (type == PATIENT_TYPE_NEO)
+    {
+        currentConfig.getNumValue("NIBP|NeoInitialCuffInflation", initVal);
+    }
+    _provider->setInitPressure(initVal);
 
     //智能充气
 //    int mode = NIBP_INTELLIGENT_INFLATE_OFF;
@@ -130,7 +159,13 @@ void NIBPParam::exitDemo()
     _diaValue = InvData();
     _mapVaule = InvData();
     _prVaule = InvData();
-    setResult(InvData(), InvData(), InvData(), InvData(), NIBP_ONESHOT_NONE);
+
+    switchState(_stateBeforeDemo);
+    if (curStatusType() == NIBP_SERVICE_STANDBY_STATE)
+    {
+        // 若返回的时准备模式，则清除显示数据
+        invResultData();
+    }
 }
 
 /**************************************************************************************************
@@ -188,7 +223,7 @@ void NIBPParam::setProvider(NIBPProviderIFace *provider)
     }
     _provider = provider;
     _provider->sendSelfTest();
-
+    _provider->setPatientType(patientManager.getType());
 
     // 监护模式状态机。
     if (!_machines.contains(NIBP_STATE_MACHINE_MONITOR))
@@ -216,6 +251,7 @@ void NIBPParam::setProvider(NIBPProviderIFace *provider)
 
     if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
     {
+        _stateBeforeDemo = curStatusType();
         switchState(NIBP_SERVICE_STANDBY_STATE);
     }
 }
@@ -323,30 +359,7 @@ bool NIBPParam::analysisResult(const unsigned char *packet, int /*len*/, short &
     // 测量有错误，获取错误码。
     if (info.errCode != 0x00)
     {
-        switch (info.errCode)
-        {
-        case 0x02:
-            err = NIBP_ONESHOT_ALARM_CUFF_ERROR;
-            break;
-        case 0x05:
-            err = NIBP_ONESHOT_ALARM_SIGNAL_WEAK;
-            break;
-        case 0x06:
-            err = NIBP_ONESHOT_ALARM_MEASURE_OVER_RANGE;
-            break;
-        case 0x08:
-            err = NIBP_ONESHOT_ALARM_CUFF_OVER_PRESSURE;
-            break;
-        case 0x09:
-            err = NIBP_ONESHOT_ALARM_SIGNAL_SATURATION;
-            break;
-        case 0x0A:
-            err = NIBP_ONESHOT_ALARM_MEASURE_TIMEOUT;
-            break;
-        default:
-            break;
-        }
-
+        err = (NIBPOneShotType)_provider->convertErrcode(info.errCode);
         return true;
     }
     // 测量无错，获取测量结果。
@@ -371,18 +384,28 @@ void NIBPParam::setResult(int16_t sys, int16_t dia, int16_t map, int16_t pr, NIB
 {
     setLastTime();
 
+    _sysValue = sys;
+    _diaValue = dia;
+    _mapVaule = map;
+    _prVaule = pr;
+
+    if (_nibpDataTrendWidget != NULL)
+    {
+        _nibpDataTrendWidget->collectNIBPTrendData(_lastTime);
+    }
+
     // 存在错误需要报错。
     if (err != NIBP_ONESHOT_NONE)
     {
-        nibpParam.setText(trs("NIBPREADING") + "\n" + trs("NIBPFAILED"));
+        setText(trs("NIBPREADING") + "\n" + trs("NIBPFAILED"));
         nibpOneShotAlarm.setOneShotAlarm(err, true);
-        if (nibpParam.getMeasurMode() == NIBP_MODE_MANUAL || nibpParam.getMeasurMode() == NIBP_MODE_AUTO)
+        if (getMeasurMode() == NIBP_MODE_MANUAL || getMeasurMode() == NIBP_MODE_AUTO)
         {
             if (!isAdditionalMeasure())
             {
-                int index = NIBP_PR_DISPLAY_NR;
-                currentConfig.getNumValue("NIBP|AutomaticRetry", index);
-                if (index == NIBP_PR_DISPLAY_ON)
+                int index = 0;
+                systemConfig.getNumValue("PrimaryCfg|NIBP|AutomaticRetry", index);
+                if (index)
                 {
                     setAdditionalMeasure(true);
                 }
@@ -409,22 +432,20 @@ void NIBPParam::setResult(int16_t sys, int16_t dia, int16_t map, int16_t pr, NIB
 
     setAdditionalMeasure(false);
 
-    _sysValue = sys;
-    _diaValue = dia;
-    _mapVaule = map;
-    _prVaule = pr;
-
-    if (_nibpDataTrendWidget != NULL)
-    {
-        _nibpDataTrendWidget->collectNIBPTrendData(_lastTime);
-    }
-
     setShowMeasureCount();
     transferResults(_sysValue, _diaValue, _mapVaule, _lastTime);
 
     // 保存起来。
     setMeasureResult(NIBP_MEASURE_SUCCESS);
     createSnapshot(err);
+
+    soundManager.nibpCompleteTone();
+
+    if (_sysValue != InvData() && _diaValue != InvData() && _mapVaule != InvData())
+    {
+        // 测量出结果后，收集一次趋势数据
+        trendDataStorageManager.storeData(timeDate.time(), TrendDataStorageManager::CollectStatusNIBP);
+    }
 }
 
 
@@ -532,8 +553,8 @@ void NIBPParam::invResultData(void)
     _mapVaule = InvData();
     _prVaule = InvData();
 
-    transferResults(InvData(), InvData(), InvData(), 0);// 显示“---”
-    setCountdown(-1);// 倒计时为“0”
+    transferResults(InvData(), InvData(), InvData(), 0);  // 显示“---”
+    setCountdown(-1);  // 倒计时为“0”
 
     // 将进行启动测量， 清除界面。
     nibpOneShotAlarm.clear();  // 清除所有报警。
@@ -596,6 +617,12 @@ void NIBPParam::transferResults(int16_t sys, int16_t dia, int16_t map, unsigned 
 {
     if (NULL != _trendWidget)
     {
+        if (sys == 0 || dia == 0 || map == 0)
+        {
+            sys = InvData();
+            dia = InvData();
+            map = InvData();
+        }
         _trendWidget->setResults(sys, dia, map, time);
     }
 }
@@ -876,68 +903,13 @@ void NIBPParam::createSnapshot(NIBPOneShotType err)
 }
 
 /**************************************************************************************************
- * 获取预充气值。
- *************************************************************************************************/
-int NIBPParam::getInitPressure(PatientType type)
-{
-    QString path;
-    if (type == PATIENT_TYPE_ADULT)
-    {
-        path = "NIBP|AdultInitialCuffInflation";
-    }
-    else if (type == PATIENT_TYPE_PED)
-    {
-        path = "NIBP|PedInitialCuffInflation";
-    }
-    else if (type == PATIENT_TYPE_NEO)
-    {
-        path = "NIBP|NeoInitialCuffInflation";
-    }
-    int index = 0;
-    currentConfig.getNumValue(path, index);
-
-    QString str;
-    if (type == PATIENT_TYPE_ADULT)
-    {
-        str = NIBPSymbol::convert((NIBPAdultInitialCuff)index);
-    }
-    else if (type == PATIENT_TYPE_PED)
-    {
-        str = NIBPSymbol::convert((NIBPPrediatrictInitialCuff)index);
-    }
-    else if (type == PATIENT_TYPE_NEO)
-    {
-        str = NIBPSymbol::convert((NIBPNeonatalInitialCuff)index);
-    }
-
-    return str.toInt();
-}
-
-/**************************************************************************************************
  * 设置预充气值。
  *************************************************************************************************/
 void NIBPParam::setInitPressure(int index)
 {
-    PatientType type = patientManager.getType();
-    QString path;
-    if (type == PATIENT_TYPE_ADULT)
-    {
-        path = "NIBP|AdultInitialCuffInflation";
-    }
-    else if (type == PATIENT_TYPE_PED)
-    {
-        path = "NIBP|PedInitialCuffInflation";
-    }
-    else if (type == PATIENT_TYPE_NEO)
-    {
-        path = "NIBP|NeoInitialCuffInflation";
-    }
-
-    currentConfig.setNumValue(path, index);
-
     if (_provider != NULL)
     {
-        _provider->setInitPressure(nibpParam.getInitPressure(type));
+        _provider->setInitPressure(index);
     }
 }
 
@@ -956,7 +928,7 @@ void NIBPParam::setMeasurMode(NIBPMode mode)
     }
     else
     {
-        currentConfig.setNumValue("NIBP|MeasureMode", static_cast<int>(mode));
+        systemConfig.setNumValue("PrimaryCfg|NIBP|MeasureMode", static_cast<int>(mode));
         cmd = 0x00;
         handleNIBPEvent(NIBP_EVENT_TRIGGER_MODEL, &cmd, 1);
     }
@@ -968,7 +940,7 @@ void NIBPParam::setMeasurMode(NIBPMode mode)
 NIBPMode NIBPParam::getMeasurMode(void)
 {
     int mode = NIBP_MODE_MANUAL;
-    currentConfig.getNumValue("NIBP|MeasureMode", mode);
+    systemConfig.getNumValue("PrimaryCfg|NIBP|MeasureMode", mode);
     if (_statModelFlag)
     {
         mode = NIBP_MODE_STAT;
@@ -982,7 +954,7 @@ NIBPMode NIBPParam::getMeasurMode(void)
 NIBPMode NIBPParam::getSuperMeasurMode(void)
 {
     int mode = NIBP_MODE_MANUAL;
-    currentConfig.getNumValue("NIBP|MeasureMode", mode);
+    systemConfig.getNumValue("PrimaryCfg|NIBP|MeasureMode", mode);
     return (NIBPMode)mode;
 }
 
@@ -999,7 +971,7 @@ void NIBPParam::setSTATMeasure(bool flag)
         setAdditionalMeasure(false);
     }
     _statModelFlag = flag;
-//    nibpMenu.statBtnShow();
+    emit statBtnState(flag);
 }
 
 /**************************************************************************************************
@@ -1015,7 +987,7 @@ bool NIBPParam::isSTATMeasure()
  *************************************************************************************************/
 void NIBPParam::setAutoInterval(NIBPAutoInterval interv)
 {
-    currentConfig.setNumValue("NIBP|AutoInterval", static_cast<int>(interv));
+    systemConfig.setNumValue("PrimaryCfg|NIBP|AutoInterval", static_cast<int>(interv));
 
     // 测量间隔修改，停止当前的测量，只在自动模式生效。
     if (getSuperMeasurMode() == NIBP_MODE_AUTO)
@@ -1032,7 +1004,7 @@ void NIBPParam::setAutoInterval(NIBPAutoInterval interv)
 NIBPAutoInterval NIBPParam::getAutoInterval(void)
 {
     int interv = NIBP_AUTO_INTERVAL_30;
-    currentConfig.getNumValue("NIBP|AutoInterval", interv);
+    systemConfig.getNumValue("PrimaryCfg|NIBP|AutoInterval", interv);
     return (NIBPAutoInterval)interv;
 }
 
@@ -1128,8 +1100,23 @@ NIBPIntelligentInflate NIBPParam::getIntelligentInflate(void)
 UnitType NIBPParam::getUnit(void)
 {
     int unit = UNIT_MMHG;
-    currentConfig.getNumValue("Local|NIBPUnit", unit);
+    systemConfig.getNumValue("Unit|PressureUnit", unit);
     return (UnitType)unit;
+}
+
+void NIBPParam::setUnit(UnitType type)
+{
+    int unit = UNIT_MMHG;
+    if (type == UNIT_KPA)
+    {
+        unit = UNIT_KPA;
+    }
+    systemConfig.setNumValue("Unit|PressureUnit", unit);
+    if (_trendWidget)
+    {
+        _trendWidget->setUNit(static_cast<UnitType>(unit));
+        _trendWidget->updateLimit();
+    }
 }
 
 /**************************************************************************************************
@@ -1151,7 +1138,7 @@ void NIBPParam::keyReleased(void)
 void NIBPParam::keyPressed(void)
 {
     int index = NIBP_PR_DISPLAY_NR;
-    currentConfig.getNumValue("NIBP|StatFunction", index);
+    systemConfig.getNumValue("PrimaryCfg|NIBP|StatFunction", index);
     // STAT功能关闭，按钮为按下触发，无长按功能
     if (index == NIBP_PR_DISPLAY_OFF)
     {
@@ -1178,7 +1165,7 @@ void NIBPParam::_btnTimeOut()
 
 void NIBPParam::onPaletteChanged(ParamID id)
 {
-    if (id != PARAM_NIBP)
+    if (id != PARAM_NIBP || !systemManager.isSupport(CONFIG_NIBP))
     {
         return;
     }
@@ -1265,12 +1252,48 @@ void NIBPParam::switchToManual(void)
     }
 }
 
+void NIBPParam::setResult(bool result)
+{
+    _reply = true;
+    _result = result;
+}
+
+bool NIBPParam::geReply()
+{
+    bool reply = _reply;
+    if (reply)
+    {
+        _reply = false;
+    }
+    return reply;
+}
+
+bool NIBPParam::getResult()
+{
+    return _result;
+}
+
+void NIBPParam::setManometerPressure(int16_t value)
+{
+    _manometerPressure = value;
+}
+
+int16_t NIBPParam::getManometerPressure()
+{
+    return _manometerPressure;
+}
+
 void NIBPParam::updateSubParamLimit(SubParamID id)
 {
     if (id == SUB_PARAM_NIBP_SYS)
     {
         _trendWidget->updateLimit();
     }
+}
+
+void NIBPParam::setNIBPCompleteTone(SoundManager::VolumeLevel volume)
+{
+    soundManager.setVolume(SoundManager::SOUND_TYPE_NIBP_COMPLETE, volume);
 }
 
 /**************************************************************************************************
@@ -1326,7 +1349,7 @@ int NIBPParam::curStatusType() const
 {
     if (NULL != _activityMachine)
     {
-        debug("%d\n", _activityMachine->curStatusType());
+//        debug("%d\n", _activityMachine->curStatusType());
         return _activityMachine->curStatusType();
     }
 
@@ -1354,7 +1377,9 @@ NIBPParam::NIBPParam()
       _statOpenTemp(false), _isCreateSnapshotFlag(false),
       _isNIBPDisable(false), _isManualMeasure(false),
       _connectedFlag(false), _connectedProvider(false),
-      _text(InvStr()), _activityMachine(NULL)
+      _text(InvStr()),
+      _reply(false), _result(false), _manometerPressure(InvData()),
+      _activityMachine(NULL), _stateBeforeDemo(NIBP_MONITOR_STANDBY_STATE)
 {
     nibpCountdownTime.construction();
 

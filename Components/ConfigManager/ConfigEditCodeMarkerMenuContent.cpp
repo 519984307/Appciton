@@ -16,6 +16,7 @@
 #include <QVBoxLayout>
 #include <QEvent>
 #include "ConfigManager.h"
+#include "IConfig.h"
 
 class ConfigEditCodeMarkerMenuContentPrivate
 {
@@ -29,6 +30,8 @@ public:
     explicit ConfigEditCodeMarkerMenuContentPrivate(Config *const config)
         : languageIndex(-1),
           config(config)
+        , codeMarkerFirst(NULL)
+        , codeMarkerLast(NULL)
     {
     }
     void loadOptions();
@@ -38,6 +41,9 @@ public:
     QStringList allCodeMarkers;  // all codemarker types
     QStringList selectedCodeMarkers;  // current selected codemarker types
     Config *const config;
+
+    QLabel * codeMarkerFirst;  // 仅查看该菜单时,设置该label为可聚焦方式，便于旋转飞梭查看视图
+    QLabel * codeMarkerLast;  // 仅查看该菜单时,设置该label为可聚焦方式，便于旋转飞梭查看视图
 };
 
 ConfigEditCodeMarkerMenuContent::ConfigEditCodeMarkerMenuContent(Config *const config):
@@ -65,7 +71,7 @@ void ConfigEditCodeMarkerMenuContent::hideEvent(QHideEvent *ev)
 void ConfigEditCodeMarkerMenuContentPrivate::loadOptions()
 {
     languageIndex = 0;
-    config->getNumAttr("Local|Language", "CurrentOption", languageIndex);
+    systemConfig.getNumAttr("General|Language", "CurrentOption", languageIndex);
     if (languageIndex != languageManager.getCurLanguage())
     {
         languageManager.reload(languageIndex);
@@ -134,6 +140,17 @@ void ConfigEditCodeMarkerMenuContent::readyShow()
         d_ptr->combos[ConfigEditCodeMarkerMenuContentPrivate
                 ::MenuItem(i)]->setEnabled(!isOnlyToRead);
     }
+
+    if (isOnlyToRead)
+    {
+        d_ptr->codeMarkerFirst->setFocusPolicy(Qt::StrongFocus);
+        d_ptr->codeMarkerLast->setFocusPolicy(Qt::StrongFocus);
+    }
+    else
+    {
+        d_ptr->codeMarkerFirst->setFocusPolicy(Qt::NoFocus);
+        d_ptr->codeMarkerLast->setFocusPolicy(Qt::NoFocus);
+    }
 }
 
 void ConfigEditCodeMarkerMenuContent::layoutExec()
@@ -148,6 +165,10 @@ void ConfigEditCodeMarkerMenuContent::layoutExec()
     for (int i = 0; i < ConfigEditCodeMarkerMenuContentPrivate::ITEM_CBO_MAX / 2; i++)
     {
         label = new QLabel(trs(QString::number(i + 1)));
+        if (i == 0)
+        {
+            d_ptr->codeMarkerFirst = label;
+        }
         layout->addWidget(label, i, 0);
         comboBox = new ComboBox;
         layout->addWidget(comboBox, i, 1);
@@ -160,6 +181,10 @@ void ConfigEditCodeMarkerMenuContent::layoutExec()
     for (int i = itemHalfTemp; i < itemHalfTemp * 2; i++)
     {
         label = new QLabel(trs(QString::number(i + 1)));
+        if (i == itemHalfTemp * 2 - 1)
+        {
+            d_ptr->codeMarkerLast = label;
+        }
         layout->addWidget(label, (i - itemHalfTemp), 2);
         comboBox = new ComboBox;
         layout->addWidget(comboBox, (i - itemHalfTemp), 3);
@@ -184,7 +209,7 @@ void ConfigEditCodeMarkerMenuContent::onComboBoxIndexChanged(int index)
     QStringList tmpList(d_ptr->selectedCodeMarkers);
     QString strValue = tmpList.join(",");
     int num = 0;
-    d_ptr->config->getNumAttr("Local|Language", "CurrentOption", num);
+    systemConfig.getNumAttr("General|Language", "CurrentOption", num);
     QString markerStr = "CodeMarker|SelectMarker|Language";
     markerStr += QString::number(num, 10);
     d_ptr->config->setStrValue(markerStr, strValue);

@@ -44,6 +44,14 @@ public:
 
     void initGroupBox(QGroupBox *groupBox, SubGroupBox *subBox);
     void difftimeInfo(void);
+
+    /**
+     * @brief adjustPrintTime  adjust print time
+     * @param printTime  print time
+     * @param start  if is start print time
+     */
+    void adjustPrintTime(unsigned printTime, bool start);
+
 public:
     QGroupBox *startBox;
     QGroupBox *endBox;
@@ -56,8 +64,10 @@ public:
     unsigned timeEndLimit;
     unsigned printStartTime;
     unsigned printEndTime;
+
+    QList<TrendDataPackage *> trendDataPack;
 };
-TrendPrintWindow::TrendPrintWindow()
+TrendPrintWindow::TrendPrintWindow(const QList<TrendDataPackage *> &trendDataPack)
     : Window(), d_ptr(new TrendPrintWindowPrivate())
 {
     setWindowTitle(trs("PrintSetup"));
@@ -118,6 +128,8 @@ TrendPrintWindow::TrendPrintWindow()
     layout->addStretch();
 
     setWindowLayout(layout);
+
+    d_ptr->trendDataPack = trendDataPack;
 }
 
 TrendPrintWindow::~TrendPrintWindow()
@@ -184,7 +196,7 @@ void TrendPrintWindow::startTimeChangeSlot(int, int)
     }
     else
     {
-        d_ptr->printStartTime = timeStamp;
+        d_ptr->adjustPrintTime(timeStamp, true);
     }
 
     d_ptr->difftimeInfo();
@@ -222,7 +234,7 @@ void TrendPrintWindow::endTimeChangeSlot(int, int)
     }
     else
     {
-        d_ptr->printEndTime = timeStamp;
+        d_ptr->adjustPrintTime(timeStamp, false);
     }
 
     d_ptr->difftimeInfo();
@@ -298,4 +310,82 @@ void TrendPrintWindowPrivate::difftimeInfo()
     infoStr += " ";
     infoStr += trs("Second");
     durationLbl->setText(infoStr);
+}
+
+void TrendPrintWindowPrivate::adjustPrintTime(unsigned printTime, bool start)
+{
+    int count = trendDataPack.count();
+    if (count == 0)
+    {
+        if (start)
+        {
+            printStartTime = printTime;
+        }
+        else
+        {
+            printEndTime = printTime;
+        }
+        return;
+    }
+
+    unsigned adjustTime = printTime;
+    for (int i = 1; i < count; i++)
+    {
+        unsigned curTime = trendDataPack.at(i - 1)->time;
+        unsigned nextTime = trendDataPack.at(i)->time;
+        if (printTime == curTime)
+        {
+            adjustTime = curTime;
+            break;
+        }
+        else if (printTime > curTime && printTime < nextTime)
+        {
+            // 使得打印的时间区间向中间聚拢缩短
+            if (start)
+            {
+                adjustTime = nextTime;
+            }
+            else
+            {
+                adjustTime = curTime;
+            }
+            break;
+        }
+    }
+
+    SubGroupBox *subBox = NULL;
+    if (start)
+    {
+        printStartTime = adjustTime;
+        subBox = startSubBox;
+    }
+    else
+    {
+        printEndTime = adjustTime;
+        subBox = endSubBox;
+    }
+
+    subBox->yearSbx->blockSignals(true);
+    subBox->yearSbx->setValue(static_cast<int>(timeDate.getDateYear(adjustTime)));
+    subBox->yearSbx->blockSignals(false);
+
+    subBox->monthSbx->blockSignals(true);
+    subBox->monthSbx->setValue(static_cast<int>(timeDate.getDateMonth(adjustTime)));
+    subBox->monthSbx->blockSignals(false);
+
+    subBox->daySbx->blockSignals(true);
+    subBox->daySbx->setValue(static_cast<int>(timeDate.getDateDay(adjustTime)));
+    subBox->daySbx->blockSignals(false);
+
+    subBox->hourSbx->blockSignals(true);
+    subBox->hourSbx->setValue(static_cast<int>(timeDate.getTimeHour(adjustTime)));
+    subBox->hourSbx->blockSignals(false);
+
+    subBox->minSbx->blockSignals(true);
+    subBox->minSbx->setValue(static_cast<int>(timeDate.getTimeMinute(adjustTime)));
+    subBox->minSbx->blockSignals(false);
+
+    subBox->secondSbx->blockSignals(true);
+    subBox->secondSbx->setValue(static_cast<int>(timeDate.getTimeSenonds(adjustTime)));
+    subBox->secondSbx->blockSignals(false);
 }

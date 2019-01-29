@@ -76,6 +76,8 @@ enum NIBPPacketType
     N5_RSP_PRESSURE_INFLATE                     = 0x8B,       //
     N5_CMD_PRESSURE_DEFLATE                     = 0x8C,       // 放气控制
     N5_RSP_PRESSURE_DEFLATE                     = 0x8D,       //
+    N5_CMD_PUMP                                 = 0x8E,       // 气泵控制
+    N5_RSP_PUMP                                 = 0x8F,       //
     N5_CMD_VALVE                                = 0x90,       // 气阀控制
     N5_RSP_VALVE                                = 0x91,       //
     N5_CMD_CALIBRATE_ZERO                       = 0x92,       // 进入校零模式
@@ -167,6 +169,9 @@ public: // NIBPProviderIFace的接口。
     virtual void servicePressureZero(void);
     virtual bool isServicePressureZero(unsigned char *packet);
 
+    // 气泵控制
+    virtual void servicePump(bool enter, unsigned char pump);
+
     //气阀控制
     virtual void serviceValve(bool enter);
     virtual bool isServiceValve(unsigned char *packet);
@@ -178,7 +183,8 @@ public: // NIBPProviderIFace的接口。
     // 发送协议命令
     virtual void sendCmdData(unsigned char cmdId, const unsigned char *data, unsigned int len);
 
-
+    // 转换错误码
+    virtual unsigned char convertErrcode(unsigned char code);
 
     N5Provider();
     ~N5Provider();

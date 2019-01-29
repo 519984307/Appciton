@@ -46,7 +46,6 @@ public:
               baro(750),
               connectedProvider(false),
               co2Switch(false),
-              curUnit(UNIT_NONE),
               oxyCRGCO2Wave(NULL)
     {
     }
@@ -85,7 +84,6 @@ public:
     short  baro;
     bool   connectedProvider;
     bool   co2Switch;
-    UnitType curUnit;
 
     OxyCRGCO2WaveWidget *oxyCRGCO2Wave;
 };
@@ -108,6 +106,9 @@ void CO2ParamPrivate::setWaveformSpeed(CO2SweepSpeed speed)
         break;
     case CO2_SWEEP_SPEED_250:
         waveWidget->setWaveSpeed(25);
+        break;
+    case CO2_SWEEP_SPEED_500:
+        waveWidget->setWaveSpeed(50);
         break;
     default:
         break;
@@ -151,8 +152,8 @@ void CO2ParamPrivate::setWaveformZoom(CO2DisplayZoom zoom)
         waveWidget->setRuler(zoom);
         break;
 
-    case CO2_DISPLAY_ZOOM_12:
-        waveWidget->setValueRange(0, (provider->getCO2MaxWaveform() * 12 + 19) / 20);
+    case CO2_DISPLAY_ZOOM_13:
+        waveWidget->setValueRange(0, (provider->getCO2MaxWaveform() * 13 + 19) / 20);
         waveWidget->setRuler(zoom);
         break;
 
@@ -561,17 +562,18 @@ void CO2Param::setConnected(bool isConnected)
     int needUpdate = 0;
     if (isConnected)
     {
-        if (d_ptr->co2Switch)
-        {
-            this->enable();
+        this->enable();
 
-            // update to show CO2 info
-            needUpdate |= layoutManager.setWidgetLayoutable(co2Trend, true);
-            needUpdate |= layoutManager.setWidgetLayoutable(co2Wave, true);
-            if (needUpdate)
-            {
-                layoutManager.updateLayout();
-            }
+        // update to show CO2 info
+        needUpdate |= layoutManager.setWidgetLayoutable(co2Trend, true);
+        needUpdate |= layoutManager.setWidgetLayoutable(co2Wave, true);
+        if (needUpdate)
+        {
+            layoutManager.updateLayout();
+            // 显示co2相关的软按键
+            softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_CO2_CALIBRATION, true);
+            softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_CO2_HANDLE, true);
+            softkeyManager.refreshPage();
         }
     }
     else
@@ -588,6 +590,10 @@ void CO2Param::setConnected(bool isConnected)
         if (needUpdate)
         {
             layoutManager.updateLayout();
+            // 隐藏co2相关的软按键
+            softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_CO2_CALIBRATION, false);
+            softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_CO2_HANDLE, false);
+            softkeyManager.refreshPage();
         }
     }
 }
@@ -660,6 +666,46 @@ void CO2Param::noticeLimitAlarm(int id, bool flag)
     }
 }
 
+void CO2Param::updateUnit()
+{
+    if (d_ptr->trendWidget != NULL)
+    {
+        d_ptr->trendWidget->setUNit(getUnit());
+        d_ptr->trendWidget->updateLimit();
+    }
+
+    if (d_ptr->waveWidget != NULL)
+    {
+        d_ptr->waveWidget->setRuler(getDisplayZoom());
+    }
+}
+
+bool CO2Param::setModuleWorkMode(CO2WorkMode mode)
+{
+    if (mode == CO2_WORK_SELFTEST)
+    {
+        return false;
+    }
+    if (d_ptr->provider == NULL)
+    {
+        return false;
+    }
+    if (mode == C02_WORK_SLEEP)
+    {
+        setCO2Switch(false);
+        d_ptr->provider->setWorkMode(mode);
+        return true;
+    }
+
+    if (mode == CO2_WORK_MEASUREMENT)
+    {
+        setCO2Switch(true);
+        d_ptr->provider->setWorkMode(mode);
+        return true;
+    }
+    return false;
+}
+
 /**************************************************************************************************
  * 校零。
  *************************************************************************************************/
@@ -724,6 +770,15 @@ CO2SweepSpeed CO2Param::getSweepSpeed(void)
     return (CO2SweepSpeed)speed;
 }
 
+void CO2Param::setSweepMode(CO2SweepMode mode)
+{
+    currentConfig.setNumValue("CO2|CO2SweepMode", static_cast<int>(mode));
+    if (d_ptr->waveWidget)
+    {
+        d_ptr->waveWidget->setWaveformMode(mode);
+    }
+}
+
 /**************************************************************************************************
  * 获取波形模式。
  *************************************************************************************************/
@@ -744,7 +799,7 @@ void CO2Param::setCompensation(CO2Compensation which, int v)
         return;
     }
 
-    QString path("PrimaryCfg|CO2|");
+    QString path("CO2|");
     if (which == CO2_COMPEN_O2)
     {
         path += "O2Compensation";
@@ -756,7 +811,7 @@ void CO2Param::setCompensation(CO2Compensation which, int v)
         d_ptr->provider->setN2OCompensation(v);
     }
 
-    systemConfig.setNumValue(path, v);
+    currentConfig.setNumValue(path, v);
 }
 
 /**************************************************************************************************
@@ -764,7 +819,7 @@ void CO2Param::setCompensation(CO2Compensation which, int v)
  *************************************************************************************************/
 int CO2Param::getCompensation(CO2Compensation which)
 {
-    QString path("PrimaryCfg|CO2|");
+    QString path("CO2|");
     if (which == CO2_COMPEN_O2)
     {
         path += "O2Compensation";
@@ -775,7 +830,7 @@ int CO2Param::getCompensation(CO2Compensation which)
     }
 
     int compensation = 0;
-    systemConfig.getNumValue(path, compensation);
+    currentConfig.getNumValue(path, compensation);
     return compensation;
 }
 
@@ -803,7 +858,7 @@ CO2DisplayZoom CO2Param::getDisplayZoom(void)
  *************************************************************************************************/
 void CO2Param::setFiCO2Display(CO2FICO2Display disp)
 {
-    systemConfig.setNumValue("PrimaryCfg|CO2|FiCO2Display", static_cast<int>(disp));
+    currentConfig.setNumValue("CO2|FiCO2Display", static_cast<int>(disp));
     if (NULL != d_ptr->trendWidget)
     {
         d_ptr->trendWidget->setFiCO2Display(disp);
@@ -816,7 +871,7 @@ void CO2Param::setFiCO2Display(CO2FICO2Display disp)
 CO2FICO2Display CO2Param::getFICO2Display(void)
 {
     int onoff = CO2_FICO2_DISPLAY_OFF;
-    systemConfig.getNumValue("PrimaryCfg|CO2|FiCO2Display", onoff);
+    currentConfig.getNumValue("CO2|FiCO2Display", onoff);
     return (CO2FICO2Display)onoff;
 }
 
@@ -825,7 +880,16 @@ CO2FICO2Display CO2Param::getFICO2Display(void)
  *************************************************************************************************/
 UnitType CO2Param::getUnit(void)
 {
-    return d_ptr->curUnit;
+    int unit = UNIT_PERCENT;
+    currentConfig.getNumValue("Local|CO2Unit", unit);
+    return static_cast<UnitType>(unit);
+}
+
+void CO2Param::setCO2Switch(bool on)
+{
+    int index = on;
+    currentConfig.setNumValue("CO2|CO2ModeDefault", index);
+    d_ptr->co2Switch = on;
 }
 
 /**************************************************************************************************
@@ -862,7 +926,7 @@ void CO2Param::updateSubParamLimit(SubParamID id)
 
 void CO2Param::onPaletteChanged(ParamID id)
 {
-    if (id != PARAM_CO2)
+    if (id != PARAM_CO2 || !systemManager.isSupport(CONFIG_CO2))
     {
         return;
     }
@@ -880,7 +944,6 @@ CO2Param::CO2Param()
 {
     int t = UNIT_PERCENT;
     currentConfig.getNumValue("Local|CO2Unit", t);
-    d_ptr->curUnit = (UnitType)t;
 
     QString path = "AlarmSource|";
     path += paramInfo.getSubParamName(SUB_PARAM_ETCO2);
@@ -903,6 +966,12 @@ CO2Param::CO2Param()
     QString highPath = path + "High";
     currentConfig.getNumAttr(lowPath, "Min", d_ptr->etco2MinVal);
     currentConfig.getNumAttr(highPath, "Max", d_ptr->etco2MaxVal);
+
+    // 开机初始化时与界面上的软按键图标显示保持一致为待机模式
+    if (d_ptr->provider)
+    {
+        d_ptr->provider->setWorkMode(C02_WORK_SLEEP);
+    }
 }
 
 /**************************************************************************************************

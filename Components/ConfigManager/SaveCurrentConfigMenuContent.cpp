@@ -39,7 +39,7 @@ void SaveCurrentConfigMenuContent::layoutExec()
     QGridLayout *layout = new QGridLayout(this);
     Button *btn = new Button;
     btn->setButtonStyle(Button::ButtonTextOnly);
-    btn->setText(QString("%1 >>").arg(trs("SaveCurrentSettingAs")));
+    btn->setText(QString("%1 >>").arg(trs("SaveCurrentSetting")));
     layout->addWidget(btn, 0 , 1);
     layout->setRowStretch(1, 1);
     layout->setColumnStretch(0, 1);
@@ -52,12 +52,18 @@ void SaveCurrentConfigMenuContent::onBtnReleased()
     if (configManager.getUserDefineConfigInfos().count()
             >= configManager.getUserDefineConfigMaxLen())
     {
-        MessageBox message(trs("Prompt"), trs("reachedTheMaximunOfConfigurations"), false);
-        windowManager.showWindow(&message, WindowManager::ShowBehaviorModal);
+        MessageBox message(trs("Prompt"),
+                           trs("reachedTheMaximunOfConfigurations"),
+                           false,
+                           true);
+        message.setFixedSize(360, 220);
+        windowManager.showWindow(&message,
+                                 WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
     }
     else
     {
         SaveUserConfigWindow win;
-        windowManager.showWindow(&win, WindowManager::ShowBehaviorModal);
+        windowManager.showWindow(&win,
+                                 WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
     }
 }

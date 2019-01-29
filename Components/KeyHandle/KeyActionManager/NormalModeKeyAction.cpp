@@ -33,7 +33,7 @@
 #include "AlarmStateMachine.h"
 #include "MainMenuWindow.h"
 #include "LayoutManager.h"
-
+#include "TrendDataStorageManager.h"
 
 /**************************************************************************************************
  * 构造。
@@ -102,7 +102,16 @@ void NormalModeKeyAction::keyF3Pressed(bool multiBtnPress)
     }
 
     // print
-    recorderManager.addPageGenerator(new ContinuousPageGenerator());
+    if (recorderManager.isPrinting())
+    {
+        recorderManager.stopPrint();
+    }
+    else if (!recorderManager.getPrintStatus())
+    {
+        unsigned t = timeManager.getCurTime();
+        recorderManager.addPageGenerator(new ContinuousPageGenerator(t));
+        trendDataStorageManager.storeData(t, TrendDataStorageManager::CollectStatusPrint);
+    }
 }
 
 void NormalModeKeyAction::keyF4Pressed(bool multiBtnPress)

@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/10/12
+ **/
+
 #include "NIBPState.h"
 #include "NIBPStateMachine.h"
 #include <QTimerEvent>
@@ -93,6 +103,14 @@ void NIBPState::returnToMachine(void *arg)
 }
 
 /**************************************************************************************************
+ * 获取时间流逝
+ *************************************************************************************************/
+int NIBPState::elspseTime()
+{
+    return _elapseTime.elapsed();
+}
+
+/**************************************************************************************************
  * 超时。
  *************************************************************************************************/
 void NIBPState::_timeout()
@@ -128,9 +146,11 @@ unsigned char NIBPState::getID(void) const
 /**************************************************************************************************
  * 处理事件。
  *************************************************************************************************/
-void NIBPState::handleNIBPEvent(NIBPEvent /*event*/, const unsigned char /*args*/[], int /*argLen*/)
+void NIBPState::handleNIBPEvent(NIBPEvent event, const unsigned char args[], int argLen)
 {
-
+    Q_UNUSED(event);
+    Q_UNUSED(args);
+    Q_UNUSED(argLen);
 }
 
 /**************************************************************************************************
@@ -138,15 +158,14 @@ void NIBPState::handleNIBPEvent(NIBPEvent /*event*/, const unsigned char /*args*
  *************************************************************************************************/
 void NIBPState::enter(void)
 {
-
 }
 
 /**************************************************************************************************
  * 进入。
  *************************************************************************************************/
-void NIBPState::enter(void */*arg*/)
+void NIBPState::enter(void *arg)
 {
-
+    Q_UNUSED(arg);
 }
 
 /**************************************************************************************************
@@ -154,7 +173,6 @@ void NIBPState::enter(void */*arg*/)
  *************************************************************************************************/
 void NIBPState::exit(void)
 {
-
 }
 
 /***************************************************************************************************
@@ -162,7 +180,6 @@ void NIBPState::exit(void)
  **************************************************************************************************/
 void NIBPState::stateMachineExit()
 {
-
 }
 
 /**************************************************************************************************
@@ -182,5 +199,4 @@ NIBPState::NIBPState(unsigned char id)
  *************************************************************************************************/
 NIBPState::~NIBPState()
 {
-
 }

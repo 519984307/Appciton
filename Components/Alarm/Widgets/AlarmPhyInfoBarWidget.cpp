@@ -31,7 +31,7 @@ void AlarmPhyInfoBarWidget::_drawBackground(void)
 
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
-    painter.setPen(Qt::black);
+    painter.setPen(Qt::transparent);
     AlarmPriority priority = _alarmSource->getAlarmPriority(_alarmID);
     if (priority == ALARM_PRIO_HIGH)
     {
@@ -39,7 +39,7 @@ void AlarmPhyInfoBarWidget::_drawBackground(void)
     }
     else if (priority == ALARM_PRIO_PROMPT)
     {
-        painter.setBrush(QColor(0, 175, 219));
+        painter.setBrush(QColor(30, 30, 30));
     }
     else
     {
@@ -104,14 +104,32 @@ void AlarmPhyInfoBarWidget::_drawText(void)
     nameStr += " ";
     nameStr += trs(_text);
     painter.drawText(r, Qt::AlignVCenter | Qt::AlignLeft, nameStr);
+}
 
-    if (_type != _alarmType && 0 != _pauseTime)
+void AlarmPhyInfoBarWidget::_drawAlarmPauseMessage()
+{
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing, true);
+    painter.setBrush(QColor(0, 175, 219));
+    painter.setPen(Qt::black);
+    int border = focusedBorderWidth() - 1;
+    QRect tempRect = rect().adjusted(border, border, -border, -border);
+    painter.drawRoundedRect(tempRect, 4, 4);
+
+    int fontSize = fontManager.getFontSize(4);
+    painter.setFont(fontManager.textFont(fontSize));
+
+    QString s;
+    if (_alarmPauseTime == INT_MAX)
     {
-        r.adjust(0, 0, -6, 0);
-        QImage image("/usr/local/nPM/icons/MutePause.png");
-        painter.drawImage(QRect(width() - 60, (height() - 16) / 2, 16, 16), image);
-//        painter.drawText(r, Qt::AlignVCenter | Qt::AlignRight, QString::number(_pauseTime) + "s");
+        s = QString(trs("AlarmOff"));
     }
+    else
+    {
+        s = QString("%1 %2s").arg(trs("AlarmPause")).arg(_alarmPauseTime);
+    }
+
+    painter.drawText(tempRect, Qt::AlignCenter, s);
 }
 
 /**************************************************************************************************
@@ -120,23 +138,31 @@ void AlarmPhyInfoBarWidget::_drawText(void)
 void AlarmPhyInfoBarWidget::paintEvent(QPaintEvent *e)
 {
     IWidget::paintEvent(e);
-    _drawBackground();
-    _drawText();
-    if (_alarmSource)
+    if (_alarmPauseTime > 0)
     {
-        if (!_alarmSource->isAlarmEnable(_alarmID))
-        {
-            alarmIndicator.delAlarmInfo(ALARM_TYPE_PHY, _message);
-        }
+        // draw the alarm pause message
+        _drawAlarmPauseMessage();
+    }
+    else
+    {
+        _drawBackground();
+        _drawText();
     }
 }
 
 void AlarmPhyInfoBarWidget::_releaseHandle(IWidget *iWidget)
 {
     Q_UNUSED(iWidget)
+
+    if (_alarmPauseTime > 0)
+    {
+        // do not show the alarm window when in alarm pause state
+        return;
+    }
+
     //报警少于一个时，不显示。
     int total = alarmIndicator.getAlarmCount(_alarmType);
-    if (total <= 1)
+    if (total < 1)
     {
         return;
     }
@@ -173,9 +199,7 @@ void AlarmPhyInfoBarWidget::clear(void)
 {
     _alarmPriority = ALARM_PRIO_LOW;
     _text.clear();
-    _type = _alarmType;
     _latch = false;
-    _pauseTime = 0;
     update();
     updateList();
 }
@@ -188,10 +212,8 @@ void AlarmPhyInfoBarWidget::display(AlarmInfoNode &node)
     _alarmPriority = node.alarmPriority;
     _text = node.alarmMessage;
     _message = node.alarmMessage;
-    _type = node.alarmType;
     _latch = node.latch;
     _acknowledge = node.acknowledge;
-    _pauseTime = node.pauseTime;
     _alarmSource = node.alarmSource;
     _alarmID = node.alarmID;
     update();
@@ -211,15 +233,14 @@ AlarmPhyInfoBarWidget &AlarmPhyInfoBarWidget::getSelf()
  *************************************************************************************************/
 AlarmPhyInfoBarWidget::AlarmPhyInfoBarWidget(const QString &name) :
     IWidget(name),
-    _type(ALARM_TYPE_PHY),
     _alarmPriority(ALARM_PRIO_LOW),
-    _pauseTime(0),
     _text(QString()),
     _message(NULL),
     _latch(false),
     _acknowledge(false),
     _alarmSource(NULL),
     _alarmID(0),
+    _alarmPauseTime(-1),
     _alarmWindow(NULL),
     _alarmType(ALARM_TYPE_PHY)
 {
@@ -243,4 +264,16 @@ void AlarmPhyInfoBarWidget::updateList()
     {
         _alarmWindow->updateData();
     }
+}
+
+void AlarmPhyInfoBarWidget::setAlarmPause(int seconds)
+{
+    if (_alarmPauseTime == seconds)
+    {
+        return;
+    }
+
+    _alarmPauseTime = seconds;
+
+    update();
 }

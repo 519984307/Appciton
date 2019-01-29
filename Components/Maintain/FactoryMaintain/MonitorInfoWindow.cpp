@@ -21,6 +21,9 @@
 #include <QVBoxLayout>
 #include "TimeManager.h"
 #include <QTimer>
+#include "PowerManager.h"
+#include "UnitManager.h"
+#include <QNetworkInterface>
 
 class MonitorInfoWindowPrivate
 {
@@ -28,9 +31,7 @@ public:
     enum MenuItem
     {
         ITEM_LAB_CMLV_WORKTIME = 0,
-        ITEM_LAB_TEM_INSIDECASE,
-        ITEM_LAB_BAT_LEV,
-        ITEM_LAB_BAT_VOLT,
+        ITEM_LAB_BAT_CAPACITY,
         ITEM_LAB_MACHINE_TYPE,
         ITEM_LAB_MAC_ADDR,
         ITEM_LAB_SCR_RESOLASIZE,
@@ -66,39 +67,33 @@ MonitorInfoWindow::MonitorInfoWindow()
 void MonitorInfoWindowPrivate::loadOptions()
 {
     QDesktopWidget *w = QApplication::desktop();
-    QString temStr;
+    labs[ITEM_LAB_SCR_RESOLASIZE]->setText(QString("%1*%2").arg(w->width()).arg(w->height()));
 
-    labs[ITEM_LAB_SCR_RESOLASIZE]->setText(trs(QString("%1*%2")
-                                         .arg(w->width())
-                                         .arg(w->height())));
+    QString tmpStr;
+    labs[ITEM_LAB_BAT_CAPACITY]->setText(powerManger.getBatteryCapacity());
 
-    temStr.clear();
-    systemConfig.getStrValue("MonitorInfo|CumulativeWorkingTime", temStr);
-    labs[ITEM_LAB_CMLV_WORKTIME]->setText(trs(temStr));
+    tmpStr.clear();
+    systemConfig.getStrValue("MonitorInfo|MachineType", tmpStr);
+    labs[ITEM_LAB_MACHINE_TYPE]->setText(tmpStr);
 
-    temStr.clear();
-    systemConfig.getStrValue("MonitorInfo|TemperatureInsideCase", temStr);
-    labs[ITEM_LAB_TEM_INSIDECASE]->setText(trs(temStr));
+    tmpStr.clear();
+    machineConfig.getStrValue("SerialNumber", tmpStr);
+    button->setText(tmpStr);
 
-    temStr.clear();
-    systemConfig.getStrValue("MonitorInfo|BatteryLevel", temStr);
-    labs[ITEM_LAB_BAT_LEV]->setText(trs(temStr));
-
-    temStr.clear();
-    systemConfig.getStrValue("MonitorInfo|BatteryVoltage", temStr);
-    labs[ITEM_LAB_BAT_VOLT]->setText(trs(temStr));
-
-    temStr.clear();
-    systemConfig.getStrValue("MonitorInfo|MachineType", temStr);
-    labs[ITEM_LAB_MACHINE_TYPE]->setText(trs(temStr));
-
-    temStr.clear();
-    systemConfig.getStrValue("MonitorInfo|MACAddress", temStr);
-    labs[ITEM_LAB_MAC_ADDR]->setText(trs(temStr));
-
-    temStr.clear();
-    systemConfig.getStrValue("MonitorInfo|ElectronicSerialNumber", temStr);
-    button->setText(trs(temStr));
+    tmpStr.clear();
+    foreach(QNetworkInterface workInterface, QNetworkInterface::allInterfaces())
+    {
+        if (workInterface.name().contains("eth"))  // filter the localhost(the ip address is 127.0.0.1) by name
+        {
+            tmpStr = workInterface.hardwareAddress();
+            break;
+        }
+    }
+    if (tmpStr.isEmpty())
+    {
+        tmpStr = "-";  // indicate that the MAC address is invalid.
+    }
+    labs[ITEM_LAB_MAC_ADDR]->setText(tmpStr);
 }
 
 void MonitorInfoWindow::readyShow()
@@ -107,42 +102,19 @@ void MonitorInfoWindow::readyShow()
     onTimeOutExec();
 }
 
-void MonitorInfoWindow::onBtnReleasedChanged()
-{
-    KeyInputPanel setSerialNumber;
-    setSerialNumber.setMaxInputLength(16);
-    setSerialNumber.setWindowTitle(trs("SetElectronicSerialNumber"));
-    setSerialNumber.setInitString(d_ptr->button->text());
-    QString regKeyStr("[a-zA-Z][0-9]|_");
-    setSerialNumber.setBtnEnable(regKeyStr);
-    if (setSerialNumber.exec())
-    {
-        QString serialNum = setSerialNumber.getStrValue();
-        systemConfig.setStrValue("MonitorInfo|ElectronicSerialNumber", serialNum);
-        d_ptr->button->setText(trs(serialNum));
-    }
-}
-
 void MonitorInfoWindow::onTimeOutExec()
 {
     QString showtime = getRunTime();
-    d_ptr->labs[MonitorInfoWindowPrivate
-            ::ITEM_LAB_CMLV_WORKTIME]->setText(showtime);
+    d_ptr->labs[MonitorInfoWindowPrivate::ITEM_LAB_CMLV_WORKTIME]->setText(showtime);
 }
 
 void MonitorInfoWindow::layoutExec()
 {
     setWindowTitle(trs("MonitorInfoMenu"));
 
-    QVBoxLayout *vlayout = new QVBoxLayout;
-    vlayout->setMargin(10);
-
     QGridLayout *layout = new QGridLayout;
     layout->setVerticalSpacing(20);
-    vlayout->addStretch();
-    vlayout->addLayout(layout);
-    vlayout->addStretch();
-    setFixedSize(580, 480);
+    setFixedSize(480, 450);
 
     QLabel *labelLeft;
     QLabel *labelRight;
@@ -155,29 +127,13 @@ void MonitorInfoWindow::layoutExec()
     d_ptr->labs.insert(MonitorInfoWindowPrivate
                        ::ITEM_LAB_CMLV_WORKTIME, labelRight);
 
-    labelLeft = new QLabel(trs("TemperatureInsideCase"));
+    labelLeft = new QLabel(trs("BatteryQuantity"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
     labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(MonitorInfoWindowPrivate
-                       ::ITEM_LAB_TEM_INSIDECASE, labelRight);
-
-    labelLeft = new QLabel(trs("BatteryLevel"));
-    layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
-    labelRight = new QLabel("");
-    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
-    layout->addWidget(labelRight, d_ptr->labs.count(), 1);
-    d_ptr->labs.insert(MonitorInfoWindowPrivate
-                       ::ITEM_LAB_BAT_LEV, labelRight);
-
-    labelLeft = new QLabel(trs("BatteryVoltage"));
-    layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
-    labelRight = new QLabel("");
-    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
-    layout->addWidget(labelRight, d_ptr->labs.count(), 1);
-    d_ptr->labs.insert(MonitorInfoWindowPrivate
-                       ::ITEM_LAB_BAT_VOLT, labelRight);
+                       ::ITEM_LAB_BAT_CAPACITY, labelRight);
 
     labelLeft = new QLabel(trs("MachineType"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
@@ -208,12 +164,12 @@ void MonitorInfoWindow::layoutExec()
     d_ptr->button = new Button("");
     d_ptr->button->setBorderWidth(0);
     d_ptr->button->setButtonStyle(Button::ButtonTextBesideIcon);
+    d_ptr->button->setFocusPolicy(Qt::NoFocus);
     layout->addWidget(d_ptr->button, d_ptr->labs.count(), 1,
                       Qt::AlignCenter|Qt::AlignRight);
-    connect(d_ptr->button, SIGNAL(released()), this, SLOT(onBtnReleasedChanged()));
 
-    layout->setRowStretch((d_ptr->labs.count() + 1), 1);
-    setWindowLayout(vlayout);
+    layout->setRowStretch((layout->rowCount() + 1), 1);
+    setWindowLayout(layout);
 }
 
 QString MonitorInfoWindow::getRunTime()

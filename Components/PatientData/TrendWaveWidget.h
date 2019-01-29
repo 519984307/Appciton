@@ -13,6 +13,7 @@
 #include "TrendSubWaveWidget.h"
 #include "TrendDataDefine.h"
 #include <QScrollArea>
+#include "EventStorageManager.h"
 
 class QHBoxLayout;
 class QVBoxLayout;
@@ -70,7 +71,7 @@ public:
      * @param down 下标尺限
      * @param up 上标尺限
      */
-    void setRulerLimit(SubParamID, int down, int up, int scale);
+    void setRulerLimit(int index, int down, int up, int scale);
 
     /**
      * @brief loadTrendData 根据子参数ID将一页趋势数据载入容器
@@ -101,7 +102,7 @@ public:
      * @brief 获取趋势图打印的数据及其事件发生时刻列表
      */
     const QList<TrendGraphInfo> getTrendGraphPrint();
-    const QList<unsigned> getEventList();
+    const QList<EventInfoSegment> getEventList();
 
     /**
      * @brief setHistoryDataPath 设置历史回顾数据的文件路径
@@ -114,6 +115,10 @@ public:
      * @param flag 标志
      */
     void setHistoryData(bool flag);
+
+    QList<SubParamID> getCurParamList(void);
+
+    void setAllParamAutoRuler(void);
 
 public slots:
     /**
@@ -190,6 +195,13 @@ private:
      */
     void _updateEventIndex();
 
+    /**
+     * @brief getTrendGraphType 获取id对应的趋势图类型
+     * @param id 子参数ID
+     * @return
+     */
+    TrendGraphType getTrendGraphType(SubParamID id);
+
 private:
     QVBoxLayout *_mainLayout;
     QVBoxLayout *_hLayoutTrend;
@@ -203,7 +215,6 @@ private:
     unsigned _currentCursorTime;
 
     IWidget *_subWidget;
-    QScrollArea *_subWidgetScrollArea;
 
     int _displayGraphNum;                           // 一屏显示的波形数
     int _totalGraphNum;                             // 趋势组显示的总波形数
@@ -212,14 +223,16 @@ private:
     QList<TrendDataPackage *> _trendDataPack;       // 趋势数据包
     int _totalPage;                                 // 总数据页数 *
     int _currentPage;                               // 当前页数 *
-    int _pagingNum;                                 // 窗口上下翻页数;
 
     unsigned _leftTime;                             // 趋势图左边时间 *
     unsigned _rightTime;                            // 趋势图右边时间 *
 
-    QMap<SubParamID, TrendSubWaveWidget *> _subWidgetMap;       // 子波形窗口容器；
+    QList<TrendSubWaveWidget *> _subWidgetList;     // 子波形窗口容器
+    QList<SubParamID> _subParams;                   // 子参数组
+    QList<SubParamID> _curDisplaySubList;           // 当前显示子参数集合
+    int _curIndex;
     TrendGraphInfo _trendGraphInfo;                 // 趋势图数据集合
-    QList<unsigned> _alarmTimeList;                 // 报警发生时间
+    QList<EventInfoSegment> _eventList;            // 报警类型和时间
     QList<TrendGraphInfo> _infosList;                    // 打印趋势图数据链表
 
     bool _isHistory;                                // 历史回顾标志

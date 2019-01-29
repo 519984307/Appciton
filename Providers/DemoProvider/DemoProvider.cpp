@@ -241,6 +241,7 @@ void DemoProvider::detachParam(Param &param)
     else if (id == PARAM_CO2)
     {
         _demoWaveData[WAVE_CO2].param = NULL;
+        co2Param.setConnected(false);
     }
     else if (id == PARAM_IBP)
     {

@@ -22,10 +22,10 @@ TimeDate *TimeDate::_selfObj = NULL;
  *      format：返回日期格式；
  *      year4Bits：年是显示4位还是后两位。
  *************************************************************************************************/
-static void getDateFormat(QString &format, bool year4Bits)
+void TimeDate::getDateFormat(QString &format, bool year4Bits)
 {
     int dateFormat = 0;
-    currentConfig.getNumValue("DateTime|DateFormat", dateFormat);
+    systemConfig.getNumValue("DateTime|DateFormat", dateFormat);
 
     if (year4Bits)
     {
@@ -69,7 +69,7 @@ static void getTimeFormat(QString &format, bool showSecond)
 {
     int timeFormat = 0;
 
-    currentConfig.getNumValue("DateTime|TimeFormat", timeFormat);
+    systemConfig.getNumValue("DateTime|TimeFormat", timeFormat);
     if (showSecond)
     {
         if (TIME_FORMAT_24 == timeFormat)

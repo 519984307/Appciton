@@ -19,7 +19,7 @@ public:
     {
         static const char *symbol[MODULE_SPO2_NR] =
         {
-            "BLM_S5", "MASIMO_SPO2", "NELLCOR_SPO2"
+            "BLM_S5", "MASIMO_SPO2", "NELLCOR_SPO2", "RAINBOW_SPO2"
         };
         return symbol[index];
     }
@@ -104,16 +104,6 @@ public:
             "SPO2SignalSaturation",
             "SPO2LowPerfusion"
         };
-        return symbol[index];
-    }
-
-    static const char *convert(SPO2Gain index)
-    {
-        static const char *symbol[SPO2_GAIN_NR] =
-        {
-            "x1.0", "x2.0", "x4.0", "x8.0"
-        };
-
         return symbol[index];
     }
 };

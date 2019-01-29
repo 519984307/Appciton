@@ -141,16 +141,16 @@ void ConfigEditRespMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox;
     comboBox->addItems(QStringList()
-                       << trs("Off")
-                       << QString::number(RESP_APNEA_TIME_20_SEC * 5 + 15)
-                       << QString::number(RESP_APNEA_TIME_25_SEC * 5 + 15)
-                       << QString::number(RESP_APNEA_TIME_30_SEC * 5 + 15)
-                       << QString::number(RESP_APNEA_TIME_35_SEC * 5 + 15)
-                       << QString::number(RESP_APNEA_TIME_40_SEC * 5 + 15)
-                       << QString::number(RESP_APNEA_TIME_45_SEC * 5 + 15)
-                       << QString::number(RESP_APNEA_TIME_50_SEC * 5 + 15)
-                       << QString::number(RESP_APNEA_TIME_55_SEC * 5 + 15)
-                       << QString::number(RESP_APNEA_TIME_60_SEC * 5 + 15));
+                       << trs(RESPSymbol::convert(RESP_APNEA_TIME_OFF))
+                       << trs(RESPSymbol::convert(RESP_APNEA_TIME_20_SEC))
+                       << trs(RESPSymbol::convert(RESP_APNEA_TIME_25_SEC))
+                       << trs(RESPSymbol::convert(RESP_APNEA_TIME_30_SEC))
+                       << trs(RESPSymbol::convert(RESP_APNEA_TIME_35_SEC))
+                       << trs(RESPSymbol::convert(RESP_APNEA_TIME_40_SEC))
+                       << trs(RESPSymbol::convert(RESP_APNEA_TIME_45_SEC))
+                       << trs(RESPSymbol::convert(RESP_APNEA_TIME_50_SEC))
+                       << trs(RESPSymbol::convert(RESP_APNEA_TIME_55_SEC))
+                       << trs(RESPSymbol::convert(RESP_APNEA_TIME_60_SEC)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditRespMenuContentPrivate
                          ::ITEM_CBO_APNEA_DELAY, comboBox);
@@ -164,7 +164,8 @@ void ConfigEditRespMenuContent::layoutExec()
     comboBox = new ComboBox;
     comboBox->addItems(QStringList()
                        << trs(RESPSymbol::convert(RESP_LEAD_II))
-                       << trs(RESPSymbol::convert(RESP_LEAD_I)));
+                       << trs(RESPSymbol::convert(RESP_LEAD_I))
+                       << trs(RESPSymbol::convert(RESP_LEAD_AUTO)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditRespMenuContentPrivate
                          ::ITEM_CBO_BREATH_LEAD, comboBox);
@@ -177,6 +178,8 @@ void ConfigEditRespMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox;
     comboBox->addItems(QStringList()
+                       << trs(RESPSymbol::convert(RESP_ZOOM_X025))
+                       << trs(RESPSymbol::convert(RESP_ZOOM_X050))
                        << trs(RESPSymbol::convert(RESP_ZOOM_X100))
                        << trs(RESPSymbol::convert(RESP_ZOOM_X200))
                        << trs(RESPSymbol::convert(RESP_ZOOM_X300))
@@ -196,7 +199,8 @@ void ConfigEditRespMenuContent::layoutExec()
     comboBox->addItems(QStringList()
                        << trs(RESPSymbol::convert(RESP_SWEEP_SPEED_6_25))
                        << trs(RESPSymbol::convert(RESP_SWEEP_SPEED_12_5))
-                       << trs(RESPSymbol::convert(RESP_SWEEP_SPEED_25_0)));
+                       << trs(RESPSymbol::convert(RESP_SWEEP_SPEED_25_0))
+                       << trs(RESPSymbol::convert(RESP_SWEEP_SPEED_50_0)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditRespMenuContentPrivate
                          ::ITEM_CBO_SWEEP_SPEED, comboBox);

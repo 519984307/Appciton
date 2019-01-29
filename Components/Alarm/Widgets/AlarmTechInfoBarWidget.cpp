@@ -31,18 +31,22 @@ void AlarmTechInfoBarWidget::_drawBackground(void)
 
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
-    painter.setPen(Qt::black);
+    painter.setPen(Qt::transparent);
     if (_alarmPriority == ALARM_PRIO_HIGH)
     {
         painter.setBrush(QColor(255, 0, 0));
     }
-    else if (_alarmPriority == ALARM_PRIO_PROMPT)
+    else if (_alarmPriority == ALARM_PRIO_MED)
+    {
+        painter.setBrush(QColor(255, 255, 0));
+    }
+    else if (_alarmPriority == ALARM_PRIO_LOW)
     {
         painter.setBrush(QColor(0, 175, 219));
     }
     else
     {
-        painter.setBrush(QColor(255, 255, 0));
+        painter.setBrush(QColor(30, 30, 30));
     }
 
     int border =  focusedBorderWidth() - 1;
@@ -61,7 +65,7 @@ void AlarmTechInfoBarWidget::_drawText(void)
     }
 
     QPainter painter(this);
-    if (_alarmPriority == ALARM_PRIO_HIGH)
+    if (_alarmPriority == ALARM_PRIO_HIGH || _alarmPriority == ALARM_PRIO_PROMPT)
     {
         painter.setPen(Qt::white);
     }

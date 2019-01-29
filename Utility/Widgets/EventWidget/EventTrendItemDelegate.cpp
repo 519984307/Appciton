@@ -57,7 +57,7 @@ void EventTrendItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem
         value  = opt.font;
     }
     painter->setFont(font);
-    painter->drawText(textRect, Qt::AlignVCenter | Qt::AlignRight, text);
+    painter->drawText(textRect, Qt::AlignBottom | Qt::AlignRight, text);
 
     // draw title
     value = index.data(TitleFontRole);
@@ -131,7 +131,7 @@ QSize EventTrendItemDelegate::sizeHint(const QStyleOptionViewItem &option, const
     }
 
 //    height += 2 * MARGIN;
-    height += 16 * MARGIN;
+    height += 11 * MARGIN;
 
     QString valueText = index.data(ValueTextRole).toString();
     QString unitText = index.data(UnitTextRole).toString();

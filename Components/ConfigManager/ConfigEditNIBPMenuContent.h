@@ -34,6 +34,12 @@ private slots:
      */
     void onAlarmBtnReleased(void);
 
+    /**
+     * @brief onSpinBoxReleased  spinbox释放槽函数
+     * @param value  spinbox值
+     */
+    void onSpinBoxReleased(int value);
+
 private:
     ConfigEditNIBPMenuContentPrivate *const d_ptr;
 };

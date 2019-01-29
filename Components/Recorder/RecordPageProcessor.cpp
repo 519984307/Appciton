@@ -16,6 +16,8 @@
 #include "Debug.h"
 #include "unistd.h"
 #include <QTimerEvent>
+#include <QPointer>
+#include "RecorderManager.h"
 
 #define PAGE_QUEUE_SIZE 32
 
@@ -27,7 +29,7 @@ class RecordPageProcessorPrivate
 public:
     RecordPageProcessorPrivate(RecordPageProcessor *const q_ptr, PrintProviderIFace *iface)
         : q_ptr(q_ptr), iface(iface), processing(false), pause(false),
-          updateSpeed(false), queueIsFull(false), curSpeed(PRINT_SPEED_NR),
+          queueIsFull(false), curSpeed(PRINT_SPEED_NR),
           timerID(-1), curProcessingPage(NULL), curPageXPos(0)
     {}
 
@@ -38,7 +40,6 @@ public:
     QList<RecordPage *> pages;
     bool processing;
     bool pause;
-    bool updateSpeed;
     bool queueIsFull;
     PrintSpeed curSpeed;
     int timerID;
@@ -61,24 +62,10 @@ bool RecordPageProcessor::isProcessing() const
     return d_ptr->processing;
 }
 
-void RecordPageProcessor::updatePrintSpeed(PrintSpeed speed)
+void RecordPageProcessor::setPrintSpeed(PrintSpeed speed)
 {
-    if (speed >= PRINT_SPEED_NR || d_ptr->curSpeed == speed)
-    {
-        return;
-    }
-
     d_ptr->curSpeed = speed;
-    if (d_ptr->processing)
-    {
-        d_ptr->updateSpeed = true;
-    }
-    else
-    {
-        // set speed imediately
-        d_ptr->iface->setPrintSpeed(speed);
-        qDebug() << "Set Print Speed " << speed;
-    }
+    d_ptr->iface->setPrintSpeed(speed);
 }
 
 void RecordPageProcessor::addPage(RecordPage *page)
@@ -88,7 +75,7 @@ void RecordPageProcessor::addPage(RecordPage *page)
         return;
     }
 
-#if 0
+#if 1
 #ifdef Q_WS_QWS
     QString path("/mnt/nfs/tmp/");
 #else
@@ -146,13 +133,6 @@ void RecordPageProcessor::timerEvent(QTimerEvent *ev)
 {
     if (d_ptr->timerID == ev->timerId())
     {
-        // check whether speed need to update
-        if (d_ptr->updateSpeed)
-        {
-            d_ptr->updateSpeed = false;
-            d_ptr->iface->setPrintSpeed(d_ptr->curSpeed);
-        }
-
         // update page queue status
         if (d_ptr->queueIsFull && d_ptr->pages.size() < PAGE_QUEUE_SIZE)
         {
@@ -172,7 +152,6 @@ void RecordPageProcessor::timerEvent(QTimerEvent *ev)
         if (d_ptr->curProcessingPage == NULL)
         {
             // no more page to process
-            d_ptr->stopProcessing();
             emit processFinished();
             return;
         }
@@ -190,11 +169,25 @@ void RecordPageProcessor::timerEvent(QTimerEvent *ev)
 
         // send data
         int count = 0;
+        QPointer<RecordPageProcessor> guard(this);
         while (count < BATCH_LINE_NUM)
         {
             d_ptr->curProcessingPage->getColumnData(d_ptr->curPageXPos++, data);
-            d_ptr->iface->sendBitmapData(data, dataLen);
+            bool isComplete = d_ptr->iface->sendBitmapData(data, dataLen);
+            int waitNum = 0;
+            while (!isComplete && waitNum < 10)
+            {
+                Util::waitInEventLoop(100);
+                isComplete = d_ptr->iface->sendBitmapData(data, dataLen);
+                waitNum++;
+            }
             count++;
+
+            if (!guard || !d_ptr->curProcessingPage)
+            {
+                // the processor or the page has been deleted somewhere else.
+                return;
+            }
 
             if (d_ptr->curPageXPos >= pageWidth)
             {

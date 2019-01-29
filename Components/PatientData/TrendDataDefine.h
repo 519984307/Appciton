@@ -15,6 +15,7 @@
 #include "UnitManager.h"
 #include "RESPDefine.h"
 #include "CO2Define.h"
+#include <QDate>
 
 /* data structure to store each sub param value */
 struct TrendValueSegment
@@ -44,7 +45,7 @@ struct TrendDataDescription
 {
     unsigned startTime;                 /* rescue event start time */
     unsigned moduleConfig;              /* module config */
-    char patientAge;                    /* patient age */
+    QDate bornDate;                      /* patient born date */
     char patientGender;                 /* patient gender */
     char patientType;                   /* patient type */
     char patientPacer;                  /* patient wear pacer or not */
@@ -62,14 +63,18 @@ struct TrendDataPackage
     TrendDataPackage()
     {
         time = 0;
-        alarmFlag = false;
         co2Baro  = 0;
+        alarmFlag = false;
+        index = 0;
+        status = 0;
     }
     unsigned time;
     QMap<SubParamID, TrendDataType> subparamValue;
     QMap<SubParamID, bool> subparamAlarm;
     short co2Baro;
-    unsigned char alarmFlag;
+    bool alarmFlag;
+    unsigned index;
+    unsigned status;
 };
 
 /* 分辨率 */
@@ -85,6 +90,7 @@ enum ResolutionRatio
     RESOLUTION_RATIO_1_HOUR,
     RESOLUTION_RATIO_2_HOUR,
     RESOLUTION_RATIO_3_HOUR,
+    RESOLUTION_RATIO_NIBP,
     RESOLUTION_RATIO_NR
 };
 
@@ -103,6 +109,7 @@ enum TrendGraphType
     TREND_GRAPH_TYPE_NIBP,
     TREND_GRAPH_TYPE_ART_IBP,           // IBP动脉类型
     TREND_GRAPH_TYPE_AG_TEMP,
+    TREND_GRAPH_TYPE_NR,
 };
 
 /* short trend store interval */
@@ -147,11 +154,12 @@ struct TrendGraphDataV2     // trend graph draw 2 values
 
 struct TrendGraphDataV3     // trend graph draw 3 values
 {
-    TrendGraphDataV3() : isAlarm(false), timestamp(0)
+    TrendGraphDataV3() : isAlarm(false), timestamp(0), status(0)
     {
     }
     bool isAlarm;
     unsigned timestamp;
+    unsigned status;
     TrendDataType data[3];
 };
 
@@ -174,6 +182,7 @@ struct TrendGraphInfo
     {
         int max;
         int min;
+        int scale;
     } scale;
     QVector<TrendGraphData> trendData;
     QVector<TrendGraphDataV2> trendDataV2;

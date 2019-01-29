@@ -41,6 +41,13 @@ public:
           downPageBtn(NULL), infoLab(NULL), usbCheckTimer(NULL)
     {}
 
+    /**
+     * @brief updatePageBtnStatus  更新翻页按钮状态
+     * @param curPage 当前页
+     * @param totalPage 总页
+     */
+    void updatePageBtnStatus(int curPage, int totalPage);
+
 public:
     TableView *table;
     ErrorLogTableModel *model;
@@ -74,7 +81,8 @@ ErrorLogWindow::ErrorLogWindow()
                                  + d_ptr->model->getRowHeightHint() * TABLE_ROW_NR);
     d_ptr->table->setFixedWidth(800);
     d_ptr->table->setItemDelegate(new TableViewItemDelegate(this));
-    connect(d_ptr->table, SIGNAL(clicked(QModelIndex)), this, SLOT(itemClickSlot(QModelIndex)));
+    connect(d_ptr->table, SIGNAL(rowClicked(int)), this, SLOT(itemClickSlot(int)));
+    connect(d_ptr->model, SIGNAL(pageInfoUpdate(int, int)), this, SLOT(onPageInfoUpdated(int, int)));
 
     d_ptr->summaryBtn = new Button(trs("Summary"));
     d_ptr->summaryBtn->setButtonStyle(Button::ButtonTextOnly);
@@ -118,7 +126,8 @@ ErrorLogWindow::ErrorLogWindow()
 
     setWindowLayout(layout);
 
-    d_ptr->usbCheckTimer = new QTimer();
+    // 绑定this父类指针，父类析构时，强制析构子类，防止内存泄露
+    d_ptr->usbCheckTimer = new QTimer(this);
     d_ptr->usbCheckTimer->setInterval(500);
     connect(d_ptr->usbCheckTimer, SIGNAL(timeout()), this, SLOT(USBCheckTimeout()));
 }
@@ -145,7 +154,14 @@ void ErrorLogWindow::init()
     {
         d_ptr->infoLab->hide();
     }
-
+    if (d_ptr->table->model()->rowCount() == 0)
+    {
+        d_ptr->table->setFocusPolicy(Qt::NoFocus);
+    }
+    else
+    {
+        d_ptr->table->setFocusPolicy(Qt::StrongFocus);
+    }
     d_ptr->usbCheckTimer->start();
 }
 
@@ -155,9 +171,28 @@ void ErrorLogWindow::showEvent(QShowEvent *ev)
     Window::showEvent(ev);
 }
 
-void ErrorLogWindow::itemClickSlot(QModelIndex index)
+void ErrorLogWindowPrivate::updatePageBtnStatus(int curPage, int totalPage)
 {
-    int row = index.row();
+    if (totalPage == 1)
+    {
+        downPageBtn->setEnabled(false);
+        upPageBtn->setEnabled(false);
+    }
+    else if (curPage == totalPage)
+    {
+        downPageBtn->setEnabled(false);
+        upPageBtn->setEnabled(true);
+        upPageBtn->setFocus(Qt::BacktabFocusReason);
+    }
+    else
+    {
+        downPageBtn->setEnabled(true);
+        upPageBtn->setEnabled(true);
+    }
+}
+
+void ErrorLogWindow::itemClickSlot(int row)
+{
     int realIndex = d_ptr->model->getErrorLogIndex(row);
     ErrorLogItemBase *item = errorLog.getLog(realIndex);
     if (item->isLogEmpty())
@@ -194,14 +229,16 @@ void ErrorLogWindow::exportReleased()
     if (usbManager.isUSBExist())
     {
         ExportDataWidget exportDataWidget(EXPORT_ERROR_LOG_BY_USB);
-        connect(&usbManager, SIGNAL(exportProcessChanged(unsigned char)), &exportDataWidget, SLOT(setBarValue(unsigned char)));
+        connect(&usbManager, SIGNAL(exportProcessChanged(unsigned char)),
+                                        &exportDataWidget, SLOT(setBarValue(unsigned char)));
         connect(&usbManager, SIGNAL(exportError()), &exportDataWidget, SLOT(reject()));
         connect(&exportDataWidget, SIGNAL(cancel()), &usbManager, SLOT(cancelExport()));
 
         // start export
         if (usbManager.exportErrorLog())
         {
-            if (0 == exportDataWidget.exec())
+            QDialog::DialogCode statue = static_cast<QDialog::DialogCode>(exportDataWidget.exec());
+            if (QDialog::Rejected == statue)
             {
                 QString msg;
                 DataExporterBase::ExportStatus status = usbManager.getLastExportStatus();
@@ -223,6 +260,10 @@ void ErrorLogWindow::exportReleased()
                 }
                 MessageBox messageBox(trs("Warn"), msg, QStringList(trs("EnglishYESChineseSURE")));
                 messageBox.exec();
+            }
+            else if (QDialog::Accepted == statue)  // 导出成功
+            {
+                eraseReleased();  // 询问是否擦除errorlog
             }
         }
     }
@@ -258,4 +299,30 @@ void ErrorLogWindow::USBCheckTimeout()
     {
         d_ptr->infoLab->hide();
     }
+}
+
+void ErrorLogWindow::onPageInfoUpdated(int curPage, int totalPage)
+{
+    // 传进来的当前页是从索引0开始的计数的
+    // 显示页码时加1显示
+    curPage += 1;
+    if (totalPage < 1)
+    {
+        totalPage = curPage = 1;
+    }
+    else if (curPage > totalPage)
+    {
+        curPage = totalPage;
+    }
+    QString title = trs("ErrorLog");
+    title += " (";
+    title += QString::number(curPage);
+    title += "/";
+    title += QString::number(totalPage);
+    title += " ";
+    title += trs("PageNum");
+    title += ")";
+    setWindowTitle(title);
+
+    d_ptr->updatePageBtnStatus(curPage, totalPage);
 }

@@ -15,6 +15,7 @@
 #include "PatientManager.h"
 #include "AlarmConfig.h"
 #include "SystemManager.h"
+#include "NIBPParam.h"
 
 SPO2LimitAlarm *SPO2LimitAlarm::_selfObj = NULL;
 
@@ -102,6 +103,11 @@ int SPO2LimitAlarm::getLower(int id)
  *************************************************************************************************/
 int SPO2LimitAlarm::getCompare(int value, int id)
 {
+    if (spo2Param.isNibpSameSide() && nibpParam.isMeasuring())
+    {
+        // 如果打开同侧功能，且nibp正在测量，则不设置报警
+        return 0;
+    }
     switch (id)
     {
         case SPO2_LIMIT_ALARM_SPO2_HIGH:
@@ -206,7 +212,11 @@ WaveformID SPO2OneShotAlarm::getWaveformID(int id)
  *************************************************************************************************/
 AlarmPriority SPO2OneShotAlarm::getAlarmPriority(int id)
 {
-    if (id == SPO2_ONESHOT_ALARM_LOW_PERFUSION)
+    if (id == SPO2_ONESHOT_ALARM_COMMUNICATION_STOP)
+    {
+        return ALARM_PRIO_HIGH;
+    }
+    else if (id == SPO2_ONESHOT_ALARM_LOW_PERFUSION)
     {
         return ALARM_PRIO_PROMPT;
     }

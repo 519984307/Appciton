@@ -18,6 +18,8 @@
 #include "MeasureSettingWindow.h"
 #include "AlarmConfig.h"
 #include "ParamManager.h"
+#include "FontManager.h"
+#include "RESPDupParam.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -29,10 +31,48 @@ void RESPTrendWidget::_releaseHandle(IWidget *iWidget)
     p->popup(trs("RESPMenu"));
 }
 
+void RESPTrendWidget::_onBrSourceStatusUpdate()
+{
+    bool isAuto = respDupParam.isAutoBrSourceEnabled();
+    RESPDupParam::BrSourceType type = respDupParam.getBrSource();
+
+    _rrSource->setVisible(false);
+    _rrSource->setText("");
+    if (respDupParam.getRR() == InvData())
+    {
+        return;
+    }
+    if (isAuto == true)
+    {
+        if (type == RESPDupParam::BR_SOURCE_CO2)
+        {
+            _rrSource->setVisible(true);
+            _rrSource->setText(trs("AutoOfCO2"));
+        }
+        return;
+    }
+    if (type == RESPDupParam::BR_SOURCE_CO2)
+    {
+        _rrSource->setVisible(true);
+        _rrSource->setText(trs("SourceOfCO2"));
+    }
+}
+
+void RESPTrendWidget::_loadConfig()
+{
+    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_RESP));
+    setPalette(palette);
+    _rrValue->setPalette(palette);
+
+    setName(trs(paramInfo.getSubParamName(SUB_PARAM_RR_BR)));
+    setUnit(Unit::getSymbol(UNIT_RPM));
+    updateLimit();
+}
+
 /**************************************************************************************************
  * 设置PR的值。
  *************************************************************************************************/
-void RESPTrendWidget::setRRValue(int16_t rr , bool isRR)
+void RESPTrendWidget::setRRValue(int16_t rr , bool isRR, bool isAutoType)
 {
     if (isRR)
     {
@@ -41,6 +81,13 @@ void RESPTrendWidget::setRRValue(int16_t rr , bool isRR)
     else
     {
         setName(trs(paramInfo.getSubParamName(SUB_DUP_PARAM_BR)));
+    }
+
+    if ((rr == InvData() && _rrString != InvStr())  // invalid value  first
+            || (rr != InvData() && _rrString == InvStr())  // valid value  first
+            || (isAutoType == true))  // if br/rr value is from auto type
+    {
+        _onBrSourceStatusUpdate();
     }
 
     if (rr != InvData())
@@ -85,12 +132,15 @@ void RESPTrendWidget::isAlarm(bool flag)
 void RESPTrendWidget::showValue(void)
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_RESP));
-    QPalette fgColor = normalPalette(psrc);
     if (_isAlarm)
     {
         showAlarmStatus(_rrValue);
-        showAlarmParamLimit(_rrValue, _rrString, fgColor);
+        showAlarmParamLimit(_rrValue, _rrString, psrc);
         restoreNormalStatusLater();
+    }
+    else
+    {
+        showNormalStatus(psrc);
     }
 }
 
@@ -119,34 +169,40 @@ RESPTrendWidget::RESPTrendWidget() : TrendWidget("RESPTrendWidget")
 {
     _isAlarm = false;
     _rrString = InvStr();
-    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_RESP));
-    setPalette(palette);
-    setName(trs(paramInfo.getSubParamName(SUB_PARAM_RR_BR)));
-    setUnit(Unit::getSymbol(UNIT_RPM));
 
-    // 设置上下限
-    updateLimit();
+    // 设置报警关闭标志
+    showAlarmOff();
 
     // RR值。
     _rrValue = new QLabel();
     _rrValue->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-    _rrValue->setPalette(palette);
     _rrValue->setText(InvStr());
+
+    // RR来源
+    _rrSource = new QLabel();
+    _rrSource->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
+    _rrSource->setFont(fontManager.textFont(18));
 
     // 布局。
     QHBoxLayout *mainLayout = new QHBoxLayout();
     mainLayout->setMargin(1);
     mainLayout->setSpacing(1);
     mainLayout->addStretch(1);
-    mainLayout->addWidget(_rrValue);
+    mainLayout->addWidget(_rrValue, 2);
+    mainLayout->addStretch(3);
+    mainLayout->addWidget(_rrSource, 1);
     mainLayout->addStretch(1);
 
     contentLayout->addStretch(1);
     contentLayout->addLayout(mainLayout, 3);
-    contentLayout->addStretch(1);
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
+
+    connect(&respDupParam, SIGNAL(brSourceStatusUpdate()), this, SLOT(_onBrSourceStatusUpdate()));
+    _onBrSourceStatusUpdate();
+
+    _loadConfig();
 }
 
 /**************************************************************************************************
@@ -166,7 +222,10 @@ QList<SubParamID> RESPTrendWidget::getShortTrendSubParams() const
 void RESPTrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_RESP));
-    QPalette fgColor = normalPalette(psrc);
-    showNormalParamLimit(fgColor);
-    showNormalStatus(_rrValue, fgColor);
+    showNormalStatus(psrc);
+}
+
+void RESPTrendWidget::updateWidgetConfig()
+{
+    _loadConfig();
 }

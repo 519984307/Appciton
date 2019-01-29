@@ -26,6 +26,7 @@
 #include "IBPDefine.h"
 #include "AGDefine.h"
 #include "SystemDefine.h"
+#include "EventDataDefine.h"
 
 struct RecordWaveSegmentInfo
 {
@@ -45,7 +46,7 @@ struct RecordWaveSegmentInfo
         qreal dashOffset;           // dash offset when draw the dash line
         unsigned short lastWaveFlags; // the wave flags of the last draw wave point
         int captionPixLength;       // store the caption pixel length of the wave caption
-        char caption[64];           // wave caption string
+        QString caption;            // wave caption string
     } drawCtx;                      // wave draw context
 
     union {
@@ -58,10 +59,6 @@ struct RecordWaveSegmentInfo
         struct {
             RESPZoom zoom;
         } resp;
-
-        struct {
-            SPO2Gain gain;
-        } spo2;
 
         struct {
             CO2DisplayZoom zoom;
@@ -119,6 +116,7 @@ public:
         TrendOxyCRGPage,
         WaveScalePage,
         WaveSegmentPage,
+        EventListPage,
         EndPage,
         NullPage,
     };
@@ -206,7 +204,7 @@ public:
     static void drawTrendGraph(QPainter *painter, const GraphAxisInfo &axisInfo, const TrendGraphInfo &graphInfo);
 
     static void drawTrendGraphEventSymbol(QPainter *painter, const GraphAxisInfo &axisInfo,
-                                          const TrendGraphInfo &graphInfo, const QList<unsigned> &eventList);
+                                          const TrendGraphInfo &graphInfo, const QList<EventInfoSegment> &eventList);
 
     /**
      * @brief getWaveInfos get the waveinfo for each wave in @waves base on the current running config
@@ -255,7 +253,8 @@ protected:
      * @return a record page
      */
     static RecordPage *createTrendPage(const TrendDataPackage& trendData, bool showEventTime = false,
-                                       const QString  &timeStringCaption = QString(), const QString &trendPageTitle = QString());
+                                       const QString  &timeStringCaption = QString(), const QString &trendPageTitle = QString(),
+                                       const QString &extraInfo = QString());
 
     /**
      * @brief getTrendStringList get a trend string list from the trend data,

@@ -16,6 +16,7 @@
 #include "TimeDate.h"
 #include <QFile>
 #include <QDateTime>
+#include "LayoutManager.h"
 
 #define CONFIG_DIR "/usr/local/nPM/etc/"
 #define USER_DEFINE_CONFIG_PREFIX "UserDefine"
@@ -251,6 +252,14 @@ bool ConfigManager::hasExistConfig(const QString &name)
     return flag;
 }
 
+void ConfigManager::loadConfig(PatientType type)
+{
+    // 更新配置
+    QString filePath = d_ptr->getDefaultConfigFilepath(type);
+    currentConfig.setCurrentFilePath(filePath);
+    layoutManager.updateLayoutWidgetsConfig();
+}
+
 bool ConfigManager::isReadOnly()const
 {
     return d_ptr->isDisableWidgets;
@@ -264,9 +273,19 @@ void ConfigManager::setWidgetIfOnlyShown(bool status)
 bool ConfigManager::saveUserDefineConfig(const QString &configName, Config *configObj, const PatientType &type)
 {
     QList<ConfigManager::UserDefineConfigInfo> infos = getUserDefineConfigInfos();
-    QString filename = QString("%1-%2.xml").arg(USER_DEFINE_CONFIG_PREFIX).arg(QDateTime::currentDateTimeUtc().toString());
-    filename.replace(' ', '-');
-    filename.replace(':', '-');
+
+    QChar name = 'A';
+    if (type == PATIENT_TYPE_NEO)
+    {
+        name = 'N';
+    }
+    else if (type == PATIENT_TYPE_PED)
+    {
+        name = 'P';
+    }
+    QString filename = QString("%1-%2-%3.xml").arg(name).arg(USER_DEFINE_CONFIG_PREFIX)
+                            .arg(QDateTime::currentDateTime().toString("yyyyMMddhhmmss"));
+
     QString filePath = QString("%1%2").arg(CONFIG_DIR).arg(filename);
     if (!configObj->saveToFile(filePath))
     {

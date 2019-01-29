@@ -37,6 +37,7 @@ protected:
     virtual void keyReleaseEvent(QKeyEvent *e);
     virtual void mousePressEvent(QMouseEvent *e);
     virtual void mouseReleaseEvent(QMouseEvent *e);
+    virtual void focusOutEvent(QFocusEvent *e);
 
 private:
     // 计算合适的字体大小

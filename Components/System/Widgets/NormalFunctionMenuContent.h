@@ -10,6 +10,7 @@
 
 #pragma once
 #include "MenuContent.h"
+#include "SoundManager.h"
 
 class NormalFunctionMenuContentPrivate;
 class NormalFunctionMenuContent : public MenuContent
@@ -39,6 +40,12 @@ private slots:
      * @brief onBtnReleasd
      */
     void onBtnReleasd(void);
+
+    /**
+     * @brief onPopupListItemFocusChanged
+     * @param volume
+     */
+    void onPopupListItemFocusChanged(int volume);
 
 private:
     NormalFunctionMenuContentPrivate * const d_ptr;

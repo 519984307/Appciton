@@ -412,7 +412,6 @@ void NIBPTrendWidget::isAlarm(int id, bool flag)
 void NIBPTrendWidget::showValue(void)
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
-    psrc = normalPalette(psrc);
     if (d_ptr->sysAlarm || d_ptr->diaAlarm || d_ptr->mapAlarm)
     {
         if (!d_ptr->sysAlarm)
@@ -447,7 +446,14 @@ void NIBPTrendWidget::showValue(void)
         }
         restoreNormalStatusLater();
     }
-
+    else
+    {
+        QLayout *lay = d_ptr->stackedwidget->currentWidget()->layout();
+        showNormalStatus(lay, psrc);
+        showNormalStatus(d_ptr->lastMeasureCount, psrc);
+        showNormalStatus(d_ptr->countDown, psrc);
+        showNormalStatus(d_ptr->model, psrc);
+    }
     d_ptr->adjustValueLayout();
 }
 
@@ -509,7 +515,7 @@ void NIBPTrendWidget::showText(QString text)
     }
 
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
-    psrc = normalPalette(psrc);
+    normalPalette(psrc);
     if (!d_ptr->sysAlarm && !d_ptr->diaAlarm && !d_ptr->mapAlarm)
     {
         showNormalStatus(d_ptr->message, psrc);
@@ -525,7 +531,7 @@ void NIBPTrendWidget::showText(QString text)
 void NIBPTrendWidget::showModelText(const QString &text)
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
-    psrc = normalPalette(psrc);
+    normalPalette(psrc);
     if (!d_ptr->sysAlarm && !d_ptr->diaAlarm && !d_ptr->mapAlarm)
     {
         showNormalStatus(d_ptr->model, psrc);
@@ -547,7 +553,7 @@ void NIBPTrendWidget::showModelText(const QString &text)
 void NIBPTrendWidget::setTextSize()
 {
     QRect r;
-    r.setSize(QSize(((width() - nameLabel->width()) / 4), ((height() / 4) * 3)));
+    r.setSize(QSize(((width() - nameLabel->width()) / 4), ((height() / 5) * 3)));
     int fontsize = fontManager.adjustNumFontSize(r, true);
     QFont font = fontManager.numFont(fontsize, true);
     font.setWeight(QFont::Black);
@@ -592,6 +598,9 @@ NIBPTrendWidget::NIBPTrendWidget()
     // 设置上下限
     updateLimit();
 
+    // 设置报警关闭标志
+    showAlarmOff();
+
     // 设置布局
     d_ptr->layoutExec(contentLayout);
 
@@ -616,12 +625,32 @@ QList<SubParamID> NIBPTrendWidget::getShortTrendSubParams() const
 void NIBPTrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
-    psrc = normalPalette(psrc);
-    showNormalParamLimit(psrc);
+    showNormalStatus(d_ptr->nibpValue, psrc);
     showNormalStatus(d_ptr->sysValue, psrc);
     showNormalStatus(d_ptr->diaValue, psrc);
     showNormalStatus(d_ptr->mapValue, psrc);
-    showNormalStatus(d_ptr->nibpValue, psrc);
-    showNormalStatus(d_ptr->pressureValue, psrc);
-    showNormalStatus(d_ptr->lastMeasureCount, psrc);
+    showNormalParamLimit(psrc);
+}
+
+void NIBPTrendWidget::updateWidgetConfig()
+{
+    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
+    setPalette(palette);
+    setName(trs(paramInfo.getParamName(PARAM_NIBP)));
+    setUnit(Unit::getSymbol(nibpParam.getUnit()));
+    // 设置上下限
+    updateLimit();
+
+    // 设置报警关闭标志
+    showAlarmOff();
+
+    d_ptr->nibpValue->setPalette(palette);
+    d_ptr->sysValue->setPalette(palette);
+    d_ptr->diaValue->setPalette(palette);
+    d_ptr->mapValue->setPalette(palette);
+    d_ptr->pressureValue->setPalette(palette);
+    d_ptr->countDown->setPalette(palette);
+    d_ptr->lastMeasureCount->setPalette(palette);
+    d_ptr->model->setPalette(palette);
+    d_ptr->message->setPalette(palette);
 }

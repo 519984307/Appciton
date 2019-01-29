@@ -23,6 +23,9 @@
 #include "FontManager.h"
 #include "EventStorageManager.h"
 #include "TimeManager.h"
+#include "ECGParam.h"
+#include "IBPParam.h"
+#include "PrintSettingMenuContent.h"
 
 class RecorderManagerPrivate
 {
@@ -30,18 +33,22 @@ public:
     RecorderManagerPrivate()
         : connected(false),
           isAborted(false),
+          isPrinting(false),
           status(PRINTER_STAT_NORMAL),
           curSpeed(PRINT_SPEED_250),
           processor(NULL),
           procThread(NULL),
           iface(NULL),
           generator(NULL),
-          timeSec(PRINT_TIME_CONTINOUS)
+          timeSec(PRINT_TIME_CONTINOUS),
+          curPrintPriority(RecordPageGenerator::PriorityNone),
+          updatePrintSpeed(false)
     {
     }
 
     bool connected;
     bool isAborted;
+    bool isPrinting;
     PrinterStatus status;
     PrintSpeed curSpeed;
     RecordPageProcessor *processor;
@@ -49,6 +56,8 @@ public:
     PrintProviderIFace *iface;
     QPointer<RecordPageGenerator> generator;
     PrintTime timeSec;
+    RecordPageGenerator::PrintPriority curPrintPriority; 	// current printing page priority
+    bool updatePrintSpeed;
 };
 
 RecorderManager &RecorderManager::getInstance()
@@ -96,7 +105,15 @@ void RecorderManager::setPrintSpeed(PrintSpeed speed)
     d_ptr->curSpeed = speed;
     currentConfig.setNumValue("Print|PrintSpeed", static_cast<int>(speed));
 
-    emit speedChanged(speed);
+    // 是否正在打印
+    if (isPrinting())
+    {
+        d_ptr->updatePrintSpeed = true;
+    }
+    else
+    {
+        QMetaObject::invokeMethod(d_ptr->processor, "setPrintSpeed", Qt::QueuedConnection, Q_ARG(PrintSpeed, speed));
+    }
 }
 
 int RecorderManager::getPrintWaveNum()
@@ -131,7 +148,6 @@ void RecorderManager::setPrintPrividerIFace(PrintProviderIFace *iface)
     d_ptr->processor = new RecordPageProcessor(iface);
     d_ptr->processor->moveToThread(d_ptr->procThread);
     connect(d_ptr->procThread, SIGNAL(finished()), d_ptr->processor, SLOT(deleteLater()));
-    connect(this, SIGNAL(speedChanged(PrintSpeed)), d_ptr->processor, SLOT(updatePrintSpeed(PrintSpeed)));
 
     PrinterProviderSignalSender *sigSender = iface->signalSender();
     if (sigSender)
@@ -144,7 +160,7 @@ void RecorderManager::setPrintPrividerIFace(PrintProviderIFace *iface)
     }
 
     PrintSpeed speed = getPrintSpeed();
-    QMetaObject::invokeMethod(d_ptr->processor, "updatePrintSpeed", Q_ARG(PrintSpeed, speed));
+    QMetaObject::invokeMethod(d_ptr->processor, "setPrintSpeed", Qt::QueuedConnection, Q_ARG(PrintSpeed, speed));
 }
 
 PrintProviderIFace *RecorderManager::provider() const
@@ -159,7 +175,18 @@ bool RecorderManager::isConnected() const
 
 bool RecorderManager::isPrinting() const
 {
-    return d_ptr->processor->isProcessing();
+    return d_ptr->isPrinting;
+}
+
+void RecorderManager::setPrintStatus(bool sta)
+{
+    // 打印停止后更新打印速度
+    if (d_ptr->updatePrintSpeed && (sta == false))
+    {
+        d_ptr->updatePrintSpeed = false;
+        QMetaObject::invokeMethod(d_ptr->processor, "setPrintSpeed", Qt::QueuedConnection, Q_ARG(PrintSpeed, d_ptr->curSpeed));
+    }
+    d_ptr->isPrinting = sta;
 }
 
 void RecorderManager::abort()
@@ -168,9 +195,9 @@ void RecorderManager::abort()
     {
         if (d_ptr->generator)
         {
-            QMetaObject::invokeMethod(d_ptr->generator, "stop");
+            QMetaObject::invokeMethod(d_ptr->generator, "stop", Qt::QueuedConnection);
         }
-        QMetaObject::invokeMethod(d_ptr->processor, "stopProcess");
+        QMetaObject::invokeMethod(d_ptr->processor, "stopProcess", Qt::QueuedConnection);
         d_ptr->isAborted = true;
     }
 }
@@ -209,7 +236,7 @@ void RecorderManager::selfTest()
     painter.drawLine(QPoint(penWidth, 0), QPoint(penWidth, testPage->height() - 1));
     painter.drawLine(QPoint(x, 0), QPoint(x, testPage->height() - 1));
 
-    QMetaObject::invokeMethod(d_ptr->processor, "addPage", Q_ARG(RecordPage *, testPage));
+    QMetaObject::invokeMethod(d_ptr->processor, "addPage", Qt::QueuedConnection, Q_ARG(RecordPage *, testPage));
 
     QTimer::singleShot(5000, this, SLOT(testSlot()));
 }
@@ -233,9 +260,9 @@ bool RecorderManager::addPageGenerator(RecordPageGenerator *generator)
             generator->deleteLater();
 
             // stop current generator
-            QMetaObject::invokeMethod(d_ptr->generator.data(), "stop");
+            QMetaObject::invokeMethod(d_ptr->generator.data(), "stop", Qt::QueuedConnection);
             // stop page processor
-            QMetaObject::invokeMethod(d_ptr->processor, "stopProcess");
+            QMetaObject::invokeMethod(d_ptr->processor, "stopProcess", Qt::QueuedConnection);
 
             return false;
         }
@@ -249,22 +276,23 @@ bool RecorderManager::addPageGenerator(RecordPageGenerator *generator)
         else
         {
             // stop current generator
-            QMetaObject::invokeMethod(d_ptr->generator.data(), "stop");
+            QMetaObject::invokeMethod(d_ptr->generator.data(), "stop", Qt::QueuedConnection);
             // stop page processor
-            QMetaObject::invokeMethod(d_ptr->processor, "stopProcess");
+            QMetaObject::invokeMethod(d_ptr->processor, "stopProcess", Qt::QueuedConnection);
             d_ptr->generator = generator;
             d_ptr->generator->setPrintTime(d_ptr->timeSec);
             generator->moveToThread(d_ptr->procThread);
         }
     }
 
+    d_ptr->curPrintPriority = generator->getPriority();
     connect(generator, SIGNAL(stopped()), this, SLOT(onGeneratorStopped()), Qt::QueuedConnection);
     connect(generator, SIGNAL(generatePage(RecordPage *)), d_ptr->processor, SLOT(addPage(RecordPage *)),
             Qt::QueuedConnection);
     connect(d_ptr->processor, SIGNAL(pageQueueFull(bool)), generator, SLOT(pageControl(bool)), Qt::QueuedConnection);
     if (startImmediately)
     {
-        QMetaObject::invokeMethod(generator, "start");
+        QMetaObject::invokeMethod(generator, "start", Qt::QueuedConnection);
     }
 
     if (generator->getPriority() == RecordPageGenerator::PriorityContinuous)
@@ -289,6 +317,25 @@ void RecorderManager::setPrintTime(PrintTime timeSec)
 PrintTime RecorderManager::getPrintTime() const
 {
     return d_ptr->timeSec;
+}
+
+void RecorderManager::stopPrint(void)
+{
+    // stop current generator
+    if (d_ptr->generator)
+    {
+        QMetaObject::invokeMethod(d_ptr->generator.data(), "stop", Qt::QueuedConnection);
+    }
+    // stop page processor
+    QMetaObject::invokeMethod(d_ptr->processor, "stopProcess", Qt::QueuedConnection);
+
+    RecordPage *blankPage = new RecordPage(160);
+    QMetaObject::invokeMethod(d_ptr->processor, "addPage", Qt::QueuedConnection, Q_ARG(RecordPage *, blankPage));
+}
+
+RecordPageGenerator::PrintPriority RecorderManager::getCurPrintPriority()
+{
+    return d_ptr->curPrintPriority;
 }
 
 void RecorderManager::testSlot()
@@ -325,7 +372,13 @@ void RecorderManager::providerConnectionChanged(bool isConnected)
         printOneShotAlarm.clear();
         printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_FAULT, true);
 
-        QMetaObject::invokeMethod(d_ptr->processor, "stopProcess");
+        if (d_ptr->generator)
+        {
+            // stop the page generator if we has any page generator
+            QMetaObject::invokeMethod(d_ptr->generator.data(), "stop", Qt::QueuedConnection);
+        }
+
+        QMetaObject::invokeMethod(d_ptr->processor, "stopProcess", Qt::QueuedConnection);
     }
 }
 
@@ -334,24 +387,32 @@ void RecorderManager::providerStatusChanged(PrinterStatus status)
     bool isOutOfPaper = status & 0x01;
     bool isOverHeating = (status >> 1) & 0x01;
     bool isPrinterFault = (status >> 2) & 0x01;
+    bool isPrinting = (status >> 3) & 0x01;
 
     printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_OUT_OF_PAPER, isOutOfPaper);
     printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_OVER_HEATING, isOverHeating);
     printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_FAULT, isPrinterFault);
+    setPrintStatus(isPrinting);
 
-    if (status)
+    if (isOutOfPaper || isOverHeating || isPrinterFault)
     {
         // stop current generator
-        QMetaObject::invokeMethod(d_ptr->generator.data(), "stop");
+        QMetaObject::invokeMethod(d_ptr->generator.data(), "stop", Qt::QueuedConnection);
         // stop page processor
-        QMetaObject::invokeMethod(d_ptr->processor, "stopProcess");
+        QMetaObject::invokeMethod(d_ptr->processor, "stopProcess", Qt::QueuedConnection);
     }
+
+    if (!isPrinting)
+    {
+        d_ptr->curPrintPriority = RecordPageGenerator::PriorityNone;
+    }
+
     d_ptr->status = status;
 }
 
 void RecorderManager::providerBufferStatusChanged(bool full)
 {
-    QMetaObject::invokeMethod(d_ptr->processor, "pauseProcessing", Q_ARG(bool, full));
+    QMetaObject::invokeMethod(d_ptr->processor, "pauseProcessing", Qt::QueuedConnection, Q_ARG(bool, full));
 }
 
 void RecorderManager::providerReportError(unsigned char err)
@@ -364,9 +425,126 @@ void RecorderManager::onGeneratorStopped()
     sender()->deleteLater();
     if (d_ptr->generator && d_ptr->generator.data() != sender())
     {
-        QMetaObject::invokeMethod(d_ptr->generator.data(), "start");
+        QMetaObject::invokeMethod(d_ptr->generator.data(), "start", Qt::QueuedConnection);
     }
     d_ptr->isAborted = false;
+}
+
+void RecorderManager::printWavesInit()
+{
+    QList<int> waveIDs;
+    // ecg
+    int index = 0;
+    currentConfig.getNumValue("ECG|Ecg1Wave", index);
+    ECGLead ecgLead = static_cast<ECGLead>(index);
+    WaveformID waveID = ecgParam.leadToWaveID(ecgLead);
+    waveIDs.append(waveID);
+
+    ECGLeadMode leadMode = ecgParam.getLeadMode();
+    if (leadMode == ECG_LEAD_MODE_5
+            || leadMode == ECG_LEAD_MODE_12)
+    {
+        int index = 0;
+        currentConfig.getNumValue("ECG|Ecg2Wave", index);
+        ECGLead ecgLead = static_cast<ECGLead>(index);
+        WaveformID waveID = ecgParam.leadToWaveID(ecgLead);
+        waveIDs.append(waveID);
+    }
+
+    if (systemManager.isSupport(CONFIG_RESP))
+    {
+        // resp
+        waveIDs.append(WAVE_RESP);
+    }
+
+    if (systemManager.isSupport(CONFIG_SPO2))
+    {
+        // spo2
+        waveIDs.append(WAVE_SPO2);
+    }
+
+    if (systemManager.isSupport(CONFIG_IBP))
+    {
+        // ibp
+        IBPPressureName ibpTitle = ibpParam.getEntitle(IBP_INPUT_1);
+        waveID = ibpParam.getWaveformID(ibpTitle);
+        waveIDs.append(waveID);
+
+        ibpTitle = ibpParam.getEntitle(IBP_INPUT_2);
+        waveID = ibpParam.getWaveformID(ibpTitle);
+        waveIDs.append(waveID);
+    }
+
+    if (systemManager.isSupport(CONFIG_CO2))
+    {
+        // co2
+        waveIDs.append(WAVE_CO2);
+    }
+
+    int offCount = 0;
+    QSet<int> waveCboIds;
+    int savedWaveIds[PRINT_WAVE_NUM] = {0};
+
+    // 搜集所有选择的波形id
+    for (int i = 0; i < PRINT_WAVE_NUM; i++)
+    {
+        QString path;
+        path = QString("Print|SelectWave%1").arg(i + 1);
+        systemConfig.getNumValue(path, savedWaveIds[i]);
+
+        if (savedWaveIds[i] < WAVE_NR)
+        {
+            waveCboIds.insert(savedWaveIds[i]);
+        }
+
+        if (savedWaveIds[i] == WAVE_NONE)
+        {
+            offCount++;
+        }
+    }
+
+    // 如果出现重复选择项，重新按照当前显示波形序列更新打印波形id
+    if (offCount < PRINT_WAVE_NUM - 1)
+    {
+        if ((waveCboIds.size()) < PRINT_WAVE_NUM)
+        {
+            int idCount = waveIDs.count();
+            for (int i = 0; i < PRINT_WAVE_NUM; i++)
+            {
+                QString path;
+                path = QString("Print|SelectWave%1").arg(i + 1);
+                int waveId = WAVE_NONE;
+                if (i < idCount)
+                {
+                    waveId = waveIDs.at(i);
+                }
+                systemConfig.setNumValue(path, waveId);
+                // 更新打印的波形ids
+                savedWaveIds[i] = waveId;
+            }
+        }
+    }
+
+    // 重新更新配置文件的中的波形id
+    for (int i = 0; i < PRINT_WAVE_NUM; i++)
+    {
+        // 选择空波形的索引
+        if (savedWaveIds[i] == WAVE_NONE)
+        {
+            continue;
+        }
+
+        int cboIndex = waveIDs.indexOf(savedWaveIds[i]);
+
+        // 范围之外的波形选择更新为WAVE_NONE
+        if (cboIndex == -1)
+        {
+            QString path;
+            path = QString("Print|SelectWave%1").arg(i + 1);
+            systemConfig.setNumValue(path, static_cast<int>(WAVE_NONE));
+            continue;
+        }
+    }
 }
 
 RecorderManager::RecorderManager()

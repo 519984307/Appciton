@@ -54,6 +54,9 @@ public:
 public:
     virtual void doRestoreNormalStatus();
 
+    /* reimplment */
+    void updateWidgetConfig();
+
 protected:
     virtual void setTextSize(void);
 
@@ -61,6 +64,11 @@ private slots:
     void _releaseHandle(IWidget *);
 
 private:
+    /**
+     * @brief _loadConfig  加载配置
+     */
+    void _loadConfig();
+
     void _setValue(int16_t v, QString &str);
 
     QLabel *_etCO2Label;

@@ -31,7 +31,7 @@
 #include "TrendDataStorageManager.h"
 
 #define ALARM_LIMIT_TIMES (3)   // 超限3次后，发生报警
-static int curSecondAlarmNum = 0; // record the number of alarms happend in the save seconds
+static int curSecondAlarmNum = 0;  // record the number of alarms happend in the save seconds
 
 struct AlarmTraceCtrl
 {
@@ -46,6 +46,7 @@ struct AlarmTraceCtrl
         priority = ALARM_PRIO_LOW;
         alarmMessage = NULL;
         lastAlarmed = false;
+        isLatched = true;
         overHighLimit = false;
         normalTimesCount = 0;
         alarmTimesCount = 0;
@@ -57,6 +58,7 @@ struct AlarmTraceCtrl
     AlarmPriority priority;
     const char *alarmMessage;
     bool lastAlarmed;               //报警、拴锁报警
+    bool isLatched;
     bool overHighLimit;
     char order;
     unsigned normalTimesCount;
@@ -129,17 +131,26 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
         // 获取该参数报警的跟踪ID，再取得跟踪对象。
         _getAlarmID(alarmSource, i, traceID);
         AlarmTraceCtrl *traceCtrl = &_getAlarmTraceCtrl(traceID);
-
+        AlarmPriority priority = alarmSource->getAlarmPriority(i);
+        // 更新报警级别
+        if (priority != traceCtrl->priority && NULL != traceCtrl->alarmMessage)
+        {
+            traceCtrl->priority = priority;
+            alarmIndicator.updataAlarmPriority(traceCtrl->type, traceCtrl->alarmMessage, priority);
+        }
         TrendCacheData data;
         trendCache.getTendData(_timestamp, data);
         curValue = data.values[alarmSource->getSubParamID(i)];
 
         bool isEnable = alarmSource->isAlarmEnable(i);
         int completeResult = alarmSource->getCompare(curValue, i);
-        // 报警关闭不处理超限报警
-        if (_curAlarmStatus == ALARM_OFF)
+
+        // 报警关闭不处理超限报警, don't handle limit alarm when alarm pause
+        if (_curAlarmStatus == ALARM_STATUS_OFF || _curAlarmStatus == ALARM_STATUS_PAUSE)
         {
             traceCtrl->Reset();
+            traceCtrl->alarmTimesCount =
+                ALARM_LIMIT_TIMES;     // 处理目的：报警状态恢复正常后，马上刷新报警状态
             alarmSource->notifyAlarm(i, false);
             continue;
         }
@@ -147,7 +158,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
         // 报警关闭
         if (!isEnable)
         {
-            if (traceCtrl->lastAlarmed)
+            if (traceCtrl->lastAlarmed && _isLatchLock)
             {
                 traceCtrl->normalTimesCount = ALARM_LIMIT_TIMES;
                 if (alarmIndicator.latchAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage))
@@ -157,6 +168,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
                 }
             }
 
+            alarmIndicator.delAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage);      // 关闭了报警则取消该生理报警
             traceCtrl->Reset();
             alarmSource->notifyAlarm(i, false);
             continue;
@@ -174,6 +186,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
                         if (alarmIndicator.latchAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage))
                         {
                             alarmSource->notifyAlarm(i, true);
+                            traceCtrl->isLatched = true;
                             continue;
                         }
                     }
@@ -206,8 +219,10 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
                 continue;
             }
 
+            traceCtrl->isLatched = false;
+
             alarmSource->notifyAlarm(i, true);
-            if (completeResult < 0) // 超低限。
+            if (completeResult < 0)  // 超低限。
             {
                 traceCtrl->lastAlarmed = true;
                 traceCtrl->overHighLimit = false;
@@ -225,7 +240,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
                 infoSegment.alarmLimit = alarmSource->getLower(i);
                 infoSegment.alarmInfo = 0;
             }
-            else if (completeResult > 0) // 超高限。
+            else if (completeResult > 0)  // 超高限。
             {
                 traceCtrl->lastAlarmed = true;
                 traceCtrl->overHighLimit = true;
@@ -262,7 +277,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
                 break;
             }
             alarmStateMachine.handAlarmEvent(ALARM_STATE_EVENT_NEW_PHY_ALARM, 0, 0);
-        }//栓锁的报警重新发生报警
+        }  //栓锁的报警重新发生报警
         else
         {
             if (!alarmIndicator.checkAlarmIsExist(traceCtrl->type, traceCtrl->alarmMessage))
@@ -273,6 +288,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
                 continue;
             }
 
+            traceCtrl->isLatched = false;
             alarmSource->notifyAlarm(i, true);
             if (traceCtrl->normalTimesCount >= ALARM_LIMIT_TIMES)
             {
@@ -315,8 +331,8 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
         AlarmPriority priority = alarmSource->getAlarmPriority(i);
         bool isRemoveAfterLatch = alarmSource->isRemoveAfterLatch(i);
 
-        // 报警关闭不处理生理报警报警
-        if (_curAlarmStatus == ALARM_OFF && type != ALARM_TYPE_TECH)
+        // 报警关闭不处理生理报警报警, don't handle phy alarm when in alarm pause state
+        if ((_curAlarmStatus == ALARM_STATUS_OFF || _curAlarmStatus == ALARM_STATUS_PAUSE) && type != ALARM_TYPE_TECH)
         {
             alarmSource->notifyAlarm(i, false);
             traceCtrl->Reset();
@@ -373,8 +389,9 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
             // 上次报警，现在恢复正常了。
             if (traceCtrl->lastAlarmed)
             {
-                if (traceCtrl->type != ALARM_TYPE_TECH)
+                if (traceCtrl->type != ALARM_TYPE_TECH && _isLatchLock)
                 {
+                    // 栓锁打开时，才栓锁PhyOneShotAlarm
                     if (!alarmIndicator.latchAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage))
                     {
                         alarmSource->notifyAlarm(i, false);
@@ -437,6 +454,13 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
 
         if (traceCtrl->type == ALARM_TYPE_LIFE || traceCtrl->type == ALARM_TYPE_PHY)
         {
+            // one shot事件储存
+            AlarmInfoSegment infoSegment;
+            infoSegment.subParamID = alarmSource->getSubParamID(i);
+            infoSegment.alarmInfo = 1;  // one shot 报警
+            infoSegment.alarmType = i;
+            eventStorageManager.triggerAlarmEvent(infoSegment, alarmSource->getWaveformID(i), _timestamp);
+
             alarmSource->notifyAlarm(i, true);
             alarmStateMachine.handAlarmEvent(ALARM_STATE_EVENT_NEW_PHY_ALARM, 0, 0);
         }
@@ -565,9 +589,10 @@ void Alarm::getAlarmSourceValue(qint32 *data, int len)
  * 参数：
  *      sourceName:报警源名称
  *      id：子参数的ID。
+ * 		ignoreLatched: ignore latch alarm status
  *      return value: 0, No alarm ; 1, low limit alarm; 2, high limit alarm
  *************************************************************************************************/
-char Alarm::getAlarmSourceStatus(const QString &sourceName, SubParamID id)
+char Alarm::getAlarmSourceStatus(const QString &sourceName, SubParamID id, bool ignoreLatched)
 {
     unsigned char flag = 0;
     int i = 0;
@@ -590,15 +615,21 @@ char Alarm::getAlarmSourceStatus(const QString &sourceName, SubParamID id)
         {
             if (id == source->getSubParamID(i))
             {
-                AlarmTraceCtrl *traceCtrl = NULL;
                 QString traceID;
 
                 _getAlarmID(source, i, traceID);
-                traceCtrl = &_getAlarmTraceCtrl(traceID);
+                AlarmTraceCtrl *traceCtrl = &_getAlarmTraceCtrl(traceID);
 
                 if (traceCtrl->lastAlarmed)
                 {
                     flag = traceCtrl->overHighLimit ? HighLimitAlarm : LowLimitAlarm;
+                    if (ignoreLatched)
+                    {
+                        if (traceCtrl->isLatched)
+                        {
+                            flag = NotLimitAlarm;
+                        }
+                    }
                     break;
                 }
             }
@@ -627,7 +658,7 @@ void Alarm::mainRun(unsigned t)
 /**************************************************************************************************
  * 功能： 添加报警状态。
  *************************************************************************************************/
-void Alarm::addAlarmStatus(AlarmAudioStatus status)
+void Alarm::addAlarmStatus(AlarmStatus status)
 {
     while (!_alarmStatusList.isEmpty())
     {
@@ -700,11 +731,10 @@ QList<Alarm::AlarmInfo> Alarm::getCurrentPhyAlarmInfo()
         int  n = source->getAlarmSourceNR();
         for (int i = 0; i < n; i++)
         {
-            AlarmTraceCtrl *traceCtrl = NULL;
             QString traceID;
 
             _getAlarmID(source, i, traceID);
-            traceCtrl = &_getAlarmTraceCtrl(traceID);
+           AlarmTraceCtrl *traceCtrl = &_getAlarmTraceCtrl(traceID);
             if (traceCtrl->lastAlarmed)
             {
                 almInfo.paramid = source->getParamID();
@@ -726,11 +756,10 @@ QList<Alarm::AlarmInfo> Alarm::getCurrentPhyAlarmInfo()
             if (source->getAlarmType(i) == ALARM_TYPE_PHY
                     || source->getAlarmType(i) == ALARM_TYPE_LIFE)
             {
-                AlarmTraceCtrl *traceCtrl = NULL;
                 QString traceID;
 
                 _getAlarmID(source, i, traceID);
-                traceCtrl = &_getAlarmTraceCtrl(traceID);
+                 AlarmTraceCtrl *traceCtrl = &_getAlarmTraceCtrl(traceID);
                 if (traceCtrl->lastAlarmed)
                 {
                     almInfo.paramid = source->getParamID();
@@ -758,10 +787,9 @@ bool Alarm::getOneShotAlarmStatus(AlarmOneShotIFace *iface, int alarmId)
     QList<AlarmOneShotIFace *> oneshotAlarmSouceList = _oneshotSources.values();
     if (oneshotAlarmSouceList.contains(iface))
     {
-        AlarmTraceCtrl *traceCtrl = NULL;
         QString traceID;
         _getAlarmID(iface, alarmId, traceID);
-        traceCtrl = &_getAlarmTraceCtrl(traceID);
+         AlarmTraceCtrl *traceCtrl = &_getAlarmTraceCtrl(traceID);
         return traceCtrl->lastAlarmed;
     }
     else
@@ -783,10 +811,29 @@ AlarmLimitIFace *Alarm::getAlarmLimitIFace(SubParamID id)
     return NULL;
 }
 
+AlarmOneShotIFace *Alarm::getAlarmOneShotIFace(SubParamID id)
+{
+    ParamID paramId = paramInfo.getParamID(id);
+    if (paramId == PARAM_DUP_ECG)
+    {
+        paramId = PARAM_ECG;
+    }
+    else if (paramId == PARAM_DUP_RESP)
+    {
+        paramId = PARAM_RESP;
+    }
+    if (_oneshotSources.end() != _oneshotSources.find(paramId))
+    {
+        return _oneshotSources.find(paramId).value();
+    }
+    return NULL;
+}
+
 /**************************************************************************************************
  * 功能： 构造。
  *************************************************************************************************/
-Alarm::Alarm() : _isLatchLock(true)
+Alarm::Alarm() :
+    _isLatchLock(true)
 {
     // 栓锁状态初始化
     int boltLockIndex = 0;
@@ -800,7 +847,7 @@ Alarm::Alarm() : _isLatchLock(true)
         _isLatchLock = false;
     }
     _alarmStatusList.clear();
-    _curAlarmStatus = ALARM_AUDIO_NORMAL;
+    _curAlarmStatus = ALARM_STATUS_NORMAL;
 }
 
 /**************************************************************************************************
@@ -949,4 +996,20 @@ QString Alarm::getPhyAlarmMessage(ParamID paramId, int alarmType, bool isOneShot
 void Alarm::setLatchLockSta(bool status)
 {
     _isLatchLock = status;
+}
+
+void Alarm::removeAllPhyAlarm()
+{
+    QList<AlarmLimitIFace *> limitAlarmSourceList = _limitSources.values();
+    foreach(AlarmLimitIFace *source, limitAlarmSourceList)
+    {
+        int n = source->getAlarmSourceNR();
+        for (int i = 0; i < n; i++)
+        {
+            QString traceID;
+            _getAlarmID(source, i, traceID);
+            _traceCtrl.remove(traceID);
+            source->notifyAlarm(i, false);
+        }
+    }
 }

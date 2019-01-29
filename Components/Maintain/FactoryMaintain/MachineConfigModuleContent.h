@@ -23,6 +23,9 @@ protected:
     virtual void readyShow();
     virtual void layoutExec();
 
+    /* reimplment */
+    virtual void hideEvent(QHideEvent *e);
+
 private slots:
     /**
      * @brief onComboBoxIndexChanged

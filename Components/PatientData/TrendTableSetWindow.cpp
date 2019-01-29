@@ -19,6 +19,7 @@
 #include "TrendTableWindow.h"
 #include "IConfig.h"
 #include "WindowManager.h"
+#include "SystemManager.h"
 
 TrendTableSetWindow *TrendTableSetWindow::selfObj = NULL;
 
@@ -26,12 +27,11 @@ class TrendTableSetWindowPrivate
 {
 public:
     TrendTableSetWindowPrivate()
-        : resolutionRatioCbo(NULL), trendGroupCbo(NULL), eventTypeCbo(NULL)
+        : resolutionRatioCbo(NULL), trendGroupCbo(NULL)
     {}
 
     ComboBox *resolutionRatioCbo;
     ComboBox *trendGroupCbo;
-    ComboBox *eventTypeCbo;
 };
 
 TrendTableSetWindow::~TrendTableSetWindow()
@@ -47,10 +47,19 @@ void TrendTableSetWindow::showEvent(QShowEvent *ev)
 
     QString ratioPrefix = prefix + "ResolutionRatio";
     systemConfig.getNumValue(ratioPrefix, index);
+    if (index == RESOLUTION_RATIO_NIBP && systemManager.isSupport(CONFIG_NIBP) == false)
+    {
+        index = 0;
+    }
     d_ptr->resolutionRatioCbo->setCurrentIndex(index);
 
     QString groupPrefix = prefix + "TrendGroup";
     systemConfig.getNumValue(groupPrefix, index);
+    int count = d_ptr->trendGroupCbo->count();
+    if (index >= count)
+    {
+        index = count - 1;
+    }
     d_ptr->trendGroupCbo->setCurrentIndex(index);
 }
 
@@ -68,14 +77,11 @@ void TrendTableSetWindow::trendGroupReleased(int g)
     TrendTableWindow::getInstance()->setTrendGroup(g);
 }
 
-void TrendTableSetWindow::incidentReleased(int type)
-{
-    Q_UNUSED(type)
-}
-
 TrendTableSetWindow::TrendTableSetWindow()
     : Window(), d_ptr(new TrendTableSetWindowPrivate())
 {
+    setFixedSize(340, 240);
+
     setWindowTitle(trs("TrendTableSet"));
 
     QGridLayout *gridLayout = new QGridLayout();
@@ -85,6 +91,11 @@ TrendTableSetWindow::TrendTableSetWindow()
     d_ptr->resolutionRatioCbo = new ComboBox();
     for (int i = 0; i < RESOLUTION_RATIO_NR; i ++)
     {
+        if (i == RESOLUTION_RATIO_NIBP && systemManager.isSupport(CONFIG_NIBP) == false)
+        {
+            continue;
+        }
+
         d_ptr->resolutionRatioCbo->addItem(trs(TrendDataSymbol::convert((ResolutionRatio)i)));
     }
     connect(d_ptr->resolutionRatioCbo, SIGNAL(currentIndexChanged(int)), this, SLOT(timeIntervalReleased(int)));
@@ -93,20 +104,18 @@ TrendTableSetWindow::TrendTableSetWindow()
 
     label = new QLabel(trs("TrendGroup"));
     d_ptr->trendGroupCbo = new ComboBox();
-    d_ptr->trendGroupCbo->addItems(QStringList()
-                                   << "Resp"
-                                   << "IBP"
-//                                   << "AG"   // 暂时去掉AG组相关数据的趋势表显示
-                                  );
+    d_ptr->trendGroupCbo->addItem("Resp");
+    if (systemManager.isSupport(CONFIG_IBP))
+    {
+        d_ptr->trendGroupCbo->addItem("IBP");
+    }
+    if (systemManager.isSupport(CONFIG_AG))
+    {
+        d_ptr->trendGroupCbo->addItem("AG");
+    }
     connect(d_ptr->trendGroupCbo, SIGNAL(currentIndexChanged(int)), this, SLOT(trendGroupReleased(int)));
     gridLayout->addWidget(label, 1, 0);
     gridLayout->addWidget(d_ptr->trendGroupCbo, 1, 1);
-
-    label = new QLabel(trs("Incident"));
-    d_ptr->eventTypeCbo = new ComboBox();
-    connect(d_ptr->eventTypeCbo, SIGNAL(currentIndexChanged(int)), this, SLOT(incidentReleased(int)));
-    gridLayout->addWidget(label, 2, 0);
-    gridLayout->addWidget(d_ptr->eventTypeCbo, 2, 1);
 
     setWindowLayout(gridLayout);
 }

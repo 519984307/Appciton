@@ -62,8 +62,9 @@ public:
     /**
      * @brief setupAlarmDataInfos setup the alarm data infos
      * @param dataInfos alarm data info list
+     * @param updateImmediately 是否立即更新报警信息
      */
-    void setupAlarmDataInfos(const QList<AlarmDataInfo> &dataInfos);
+    void setupAlarmDataInfos(const QList<AlarmDataInfo> &dataInfos, bool updateImmediately = true);
 
     /* reimplement */
     bool eventFilter(QObject *obj, QEvent *ev);
@@ -96,6 +97,12 @@ public:
      * @return the current edit row, -1 means not row is under edited
      */
     int curEditRow() const;
+
+    /**
+     * @brief setEachPageRowCount 设置每页显示多少行
+     * @param rows
+     */
+    void setEachPageRowCount(int rows);
 
 protected:
     /**

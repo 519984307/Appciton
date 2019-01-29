@@ -11,28 +11,28 @@
 #pragma once
 #include "IWidget.h"
 #include "TrendDataDefine.h"
+#include "QDebug"
 
-struct TrendConvertDesc
+struct TrendParamDesc
 {
-    TrendConvertDesc()
-    {
-        max = 0;
-        min = 0;
-        start = 0;
-        end = 0;
-    }
+    TrendParamDesc() : max(0), min(0),
+        start(0), end(0), scale(1)
+    {}
     double max;        // 数据范围最大值
     double min;        // 数据范围最小值
     int start;      // 坐标开始像素点
     int end;        // 坐标结束像素点
+    int scale;
 };
 
 class TrendSubWaveWidget : public IWidget
 {
     Q_OBJECT
 public:
-    TrendSubWaveWidget(SubParamID id, TrendGraphType type);
+    explicit TrendSubWaveWidget(SubParamID id = SUB_PARAM_HR_PR, TrendGraphType type = TREND_GRAPH_TYPE_NORMAL);
     ~TrendSubWaveWidget();
+
+    void setWidgetParam(SubParamID id, TrendGraphType type);
 
     /**
      * @brief trendDataInfo 载入趋势图数据
@@ -46,7 +46,13 @@ public:
      */
     void loadTrendSubWidgetInfo(TrendSubWidgetInfo &info);
 
-    void getValueLimit(int &max, int &min);
+    /**
+     * @brief getValueLimit 获取子窗口趋势上下限
+     * @param max
+     * @param min
+     * @param scale
+     */
+    void getValueLimit(int &max, int &min, int &scale);
 
 public:
     /**
@@ -61,6 +67,20 @@ public:
      * @param up 上限
      */
     void setRulerRange(int down, int up, int scale);
+
+    /**
+     * @brief rulerRange 获取标尺上下限
+     * @param down 下限
+     * @param up 上限
+     * @param scale 比例
+     */
+    void rulerRange(int &down, int &up, int &scale);
+
+    /**
+     * @brief getAutoRuler 获取是否为自动标尺
+     * @return
+     */
+    int getAutoRuler(void);
 
     /**
      * @brief setTimeRange 设置两端时间范围
@@ -83,8 +103,18 @@ public:
 
     QList<QPainterPath> generatorPainterPath(const TrendGraphInfo &graphInfo);
 
+    /**
+     * @brief getTrendPainterPath 获取参数趋势数据Path
+     * @param dataVertor 数据容器
+     * @param index 参数在容器中的索引
+     * @return
+     */
+    QPainterPath getTrendPainterPath(const QVector<TrendGraphDataV2> &dataVertor, int index);
+    QPainterPath getTrendPainterPath(const QVector<TrendGraphDataV3> &dataVertor, int index);
+
 protected:
     void paintEvent(QPaintEvent *e);
+    void showEvent(QShowEvent *e);
 
 private:
     /**
@@ -93,15 +123,26 @@ private:
      * @param data 数据
      * @return 像素位置
      */
-    double _mapValue(TrendConvertDesc desc, int data);
+    double _mapValue(TrendParamDesc desc, int data);
+
+    /**
+     * @brief _autoRulerCal 计算自动标尺
+     */
+    void _autoRulerCal(void);
+
+    /**
+     * @brief _updateAutoRuler 更新自动标尺
+     * @param data 数据
+     */
+    void _updateAutoRuler(TrendDataType data);
 
 private:
     TrendSubWidgetInfo _info;
     SubParamID _id;
     TrendGraphType _type;
     TrendGraphInfo _trendInfo;      // 趋势图数据信息
-    TrendConvertDesc _timeX;
-    TrendConvertDesc _valueY;
+    TrendParamDesc _timeX;
+    TrendParamDesc _valueY;
     int _xSize;                     // 趋势x坐标长度
     int _ySize;                     // 趋势y坐标长度
     int _trendDataHead;             // 趋势数据开始位置
@@ -109,4 +150,7 @@ private:
     QString _paramName;             // 参数名称
     QString _paramUnit;             // 参数单位
     int _cursorPosIndex;            // 游标位置
+    int _maxValue;                  // 数据中最大值
+    int _minValue;                  // 数据中最小值
+    bool _fristValue;               // 是否为第一个数据
 };

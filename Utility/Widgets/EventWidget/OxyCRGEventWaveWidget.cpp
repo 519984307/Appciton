@@ -153,7 +153,7 @@ QMap<SubParamID, QPainterPath> OxyCRGEventWaveWidget::generatorPainterPath(const
         QRect valueRect(d_ptr->waveRegWidth + width() / 4 / 3, trendHigh + 35, width() / 3, 50);
         if (trendData == InvData())
         {
-            painter.drawText(valueRect, Qt::AlignVCenter | Qt::AlignTop, "-.-");
+            painter.drawText(valueRect, Qt::AlignVCenter | Qt::AlignTop, "---");
         }
         else
         {
@@ -237,6 +237,7 @@ QMap<SubParamID, QPainterPath> OxyCRGEventWaveWidget::generatorPainterPath(const
         // 标尺
         int fontSize = fontManager.getFontSize(4);
         font = fontManager.textFont(fontSize);
+        painter.setFont(font);
         if (trendInfo.subParamID != SUB_PARAM_RR_BR)
         {
             path.moveTo(d_ptr->timeDesc.start / 4 + 5, waveDesc.start);
@@ -244,8 +245,8 @@ QMap<SubParamID, QPainterPath> OxyCRGEventWaveWidget::generatorPainterPath(const
             path.lineTo(d_ptr->timeDesc.start / 4, waveDesc.end);
             path.lineTo(d_ptr->timeDesc.start / 4 + 5, waveDesc.end);
 
-            path.addText(d_ptr->timeDesc.start / 4 + 7, waveDesc.start, font, QString::number(waveDesc.max));
-            path.addText(d_ptr->timeDesc.start / 4 + 7, waveDesc.end, font, QString::number(waveDesc.min));
+            painter.drawText(d_ptr->timeDesc.start / 4 + 7, waveDesc.start + 10, QString::number(waveDesc.max));
+            painter.drawText(d_ptr->timeDesc.start / 4 + 7, waveDesc.end + 10, QString::number(waveDesc.min));
         }
         else
         {
@@ -254,9 +255,9 @@ QMap<SubParamID, QPainterPath> OxyCRGEventWaveWidget::generatorPainterPath(const
             path.lineTo(d_ptr->waveRegWidth - (d_ptr->timeDesc.start / 4), waveDesc.end);
             path.lineTo(d_ptr->waveRegWidth - (d_ptr->timeDesc.start / 4) - 5, waveDesc.end);
 
-            path.addText(d_ptr->waveRegWidth - (d_ptr->timeDesc.start / 4) - 30, waveDesc.start, font,
+            painter.drawText(d_ptr->waveRegWidth - (d_ptr->timeDesc.start / 4) - 30, waveDesc.start + 10,
                          QString::number(waveDesc.max));
-            path.addText(d_ptr->waveRegWidth - (d_ptr->timeDesc.start / 4) - 30, waveDesc.end, font, QString::number(waveDesc.min));
+            painter.drawText(d_ptr->waveRegWidth - (d_ptr->timeDesc.start / 4) - 30, waveDesc.end + 10, QString::number(waveDesc.min));
         }
         paths.insert(trendInfo.subParamID, path);
     }

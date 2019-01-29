@@ -194,7 +194,6 @@ void IBPTrendWidget::isAlarm(int id, bool flag)
 void IBPTrendWidget::showValue()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_IBP));
-    psrc = normalPalette(psrc);
     if (_sysAlarm || _diaAlarm || _mapAlarm)
     {
         if (!_sysAlarm)
@@ -252,6 +251,10 @@ void IBPTrendWidget::showValue()
         }
         restoreNormalStatusLater();
     }
+    else
+    {
+        showNormalStatus(_stackedwidget->currentWidget()->layout(), psrc);
+    }
 }
 
 /**************************************************************************************************
@@ -273,6 +276,9 @@ IBPTrendWidget::IBPTrendWidget(const QString &trendName, const IBPPressureName &
 
     // 设置上下限
     updateLimit();
+
+    // 设置报警关闭标志
+    showAlarmOff();
 
     // 构造出所有控件。
 
@@ -393,13 +399,7 @@ QList<SubParamID> IBPTrendWidget::getShortTrendSubParams() const
 void IBPTrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_IBP));
-    psrc = normalPalette(psrc);
-    showNormalParamLimit(psrc);
-    showNormalStatus(_sysValue, psrc);
-    showNormalStatus(_diaValue, psrc);
-    showNormalStatus(_mapValue, psrc);
-    showNormalStatus(_veinValue, psrc);
-    showNormalStatus(_ibpValue, psrc);
+    showNormalStatus(_stackedwidget->currentWidget()->layout(), psrc);
 }
 
 /**************************************************************************************************

@@ -14,6 +14,7 @@
 #include "Debug.h"
 #include <QString>
 #include <QTimer>
+#include "ServiceVersion.h"
 
 #define		HOST_START_BYTE           0x3A     // receive packet header :
 #define		MODULE_START_BYTE         0x3E     // send packet header >
@@ -32,8 +33,10 @@
 #define		MODULE_SLEEP              0x53      // "S"
 #define		MODULE_TIMEOUT            0x54      // "T"
 
-#define     SUNTECH_RSP_CUFF_PRESSURE         0x05	    // 当前压力
-#define     SUNTECH_RSP_GET_MEASUREMENT       0x18      // 测量结果
+#define     SUNTECH_RSP_CUFF_PRESSURE           0x05	    // 当前压力
+#define     SUNTECH_RSP_GET_MEASUREMENT         0x18        // 测量结果
+#define     SUNTECH_RSP_GET_RETURN_STRING       0x43        // 版本信息
+#define     SUNTECH_RSP_GET_CALIBRATE_RESULT    0x06        // 校准结果
 
 
 // COMMANDS
@@ -47,7 +50,7 @@
 #define     SUNTECH_CMD_GET_CUFF_PRESSURE       0x05      // 获取当前压力
 #define     SUNTECH_CMD_GET_BP_DATA             0x03      // 获取测量结果
 #define     SUNTECH_CMD_GET_MODULE_DATA         0x00
-#define     SUNTECH_CMD_GET_RETURN_STRING       0x02      // DATA=0x02 0x40
+#define     SUNTECH_CMD_GET_RETURN_STRING       0x79      // DATA=0x02 0x40
 #define     SUNTECH_CMD_SET_SLEEP_MODE          0x81      // DATA=B0 B1 B2 B3
 #define     SUNTECH_CMD_CONTROL_PNEUMATICS      0x0C      // DATA=B0 B1 B2
 #define     SUNTECH_CMD_CALIBRATE_TRANSDUCER    0X04      // DATA=B0
@@ -57,13 +60,30 @@
 #define     SUNTECH_CMD_START_NEONATE_BP        0x28      // 新生儿
 #define     SUNTECH_CMD_VENOUS_STASIS           0x86      // DATA=B0 B1 B2
 
+enum ErrCode
+{
+    SUNTECH_ERRCODE_WEAK_SIGNAL                 = 0x01,         // 弱或者没有信号
+    SUNTECH_ERRCODE_ERRATIC_SIGNAL              = 0x02,         // 人为或者不稳定信号
+    SUNTECH_ERRCODE_OUT_OF_RANGE                = 0x03,         // BP值超出范围
+    SUNTECH_ERRCODE_MEASURE_TIMEOUT             = 0x04,         // 超出测量时间范围
+    SUNTECH_ERRCODE_PNEUMATIC_BLOCK             = 0x55,         // 气动堵塞
+    SUNTECH_ERRCODE_BP_READ_TERMINATE           = 0x56,         // BP读取被用户终止
+    SUNTECH_ERRCODE_LOOSE_CUFF                  = 0x57,         // 充气超时、漏气或袖口松脱
+    SUNTECH_ERRCODE_SAFETY_TIMEOUT              = 0x58,         // 安全超时
+    SUNTECH_ERRCODE_CUFF_OVERPRESSURE           = 0x59,         // 袖带超压
+    SUNTECH_ERRCODE_HARDWORD_PROBLEM            = 0x5A,         // 电源超出范围或其他硬件问题
+    SUNTECH_ERRCODE_PERMISSION_PROBLEM          = 0x5B,         // 许可问题，如安全超控装置安装或自动归零超出范围
+    SUNTECH_ERRCODE_TRANSDUCTER_OUT_OF_RANGE    = 0x61,         // 传感器超出范围
+    SUNTECH_ERRCODE_EEPROM_CALIBR_FAILURE       = 0x63,         // EEPROM校准数据失败
+};
+
 /**************************************************************************************************
  * 发送复位命令。
  *************************************************************************************************/
 void SuntechProvider::_sendReset(void)
 {
     unsigned char cmd[1] = {0};
-    cmd[0] = 0x8A;
+    cmd[0] = SUNTECH_CMD_RESET;
     _sendCmd(cmd, 1);
 }
 
@@ -93,7 +113,8 @@ void SuntechProvider::dataArrived(void)
         return;
     }
 
-    unsigned char buff[64];
+    // the max number of the every data pack is 67. set the buff size as 84.
+    unsigned char buff[84];
     while (ringBuff.dataSize() >= _minPacketLen)
     {
         if (ringBuff.at(0) != MODULE_START_BYTE)
@@ -140,6 +161,13 @@ void SuntechProvider::dataArrived(void)
             ringBuff.pop(1);
         }
     }
+}
+
+void SuntechProvider::sendVersion()
+{
+    unsigned char cmd = SUNTECH_CMD_GET_MODULE_DATA;
+    _sendCmd(&cmd, 1);
+    _isModuleDataRespond = true;
 }
 
 /**************************************************************************************************
@@ -194,7 +222,7 @@ void SuntechProvider::setInitPressure(short pressure)
 {
     unsigned char cmd[3] = {0};
 
-    cmd[0] = 0x17;
+    cmd[0] = SUNTECH_CMD_SET_INITIAL_INFIAL;
     cmd[1] = pressure & 0xFF;
     cmd[2] = (pressure & 0xFF00) >> 8;
 
@@ -219,8 +247,9 @@ bool SuntechProvider::needStopACK(void)
 
 void SuntechProvider::servicePressurepoint(const unsigned char *data, unsigned int len)
 {
+    _isCalibrationRespond = true;
     unsigned char cmd[2] = {0};
-    cmd[0] = 0x04;
+    cmd[0] = SUNTECH_CMD_CALIBRATE_TRANSDUCER;
     int pressure = data[0] | (data[1] << 8);
     if (pressure)
     {
@@ -232,6 +261,15 @@ void SuntechProvider::servicePressurepoint(const unsigned char *data, unsigned i
     }
     len = 2;
     _sendCmd(cmd, len);
+}
+
+void SuntechProvider::getCalibrateResult()
+{
+    unsigned char cmd[3] = {0};
+    cmd[0] = SUNTECH_CMD_GET_RETURN_CODE;
+    cmd[1] = 0x02;
+    cmd[2] = 0x03;
+    _sendCmd(cmd, 3);
 }
 
 /**************************************************************************************************
@@ -325,15 +363,82 @@ bool SuntechProvider::isResult(unsigned char *packet,
 
     return true;
 }
+
+void SuntechProvider::getReturnString()
+{
+    unsigned char cmd[3] = {0};
+    cmd[0] = SUNTECH_CMD_GET_RETURN_STRING;
+    cmd[1] = 0x02;
+    cmd[2] = 0x40;
+    _sendCmd(cmd, 3);
+}
+
+unsigned char SuntechProvider::convertErrcode(unsigned char code)
+{
+    unsigned char err;
+    switch (code)
+    {
+    case SUNTECH_ERRCODE_WEAK_SIGNAL:
+        err = NIBP_ONESHOT_ALARM_SIGNAL_WEAK;
+        break;
+    case SUNTECH_ERRCODE_ERRATIC_SIGNAL:
+        err = NIBP_ONESHOT_ALARM_EXCESSIVE_MOVING;
+        break;
+    case SUNTECH_ERRCODE_OUT_OF_RANGE:
+        err = NIBP_ONESHOT_ALARM_MEASURE_OVER_RANGE;
+        break;
+    case SUNTECH_ERRCODE_MEASURE_TIMEOUT:
+        err = NIBP_ONESHOT_ALARM_MEASURE_TIMEOUT;
+        break;
+    case SUNTECH_ERRCODE_PNEUMATIC_BLOCK:
+        err = NIBP_ONESHOT_ALARM_PNEUMATIC_BLOCKAGE;
+        break;
+    case SUNTECH_ERRCODE_LOOSE_CUFF:
+        err = NIBP_ONESHOT_ALARM_CUFF_ERROR;
+        break;
+    case SUNTECH_ERRCODE_SAFETY_TIMEOUT:
+        err = NIBP_ONESHOT_ALARM_MEASURE_TIMEOUT;
+        break;
+    case SUNTECH_ERRCODE_CUFF_OVERPRESSURE:
+        err = NIBP_ONESHOT_ALARM_CUFF_OVER_PRESSURE;
+        break;
+    case SUNTECH_ERRCODE_HARDWORD_PROBLEM:
+        err = NIBP_ONESHOT_ALARM_HARDWARE_ERROR;
+        break;
+    case SUNTECH_ERRCODE_PERMISSION_PROBLEM:
+        err = NIBP_ONESHOT_ALARM_MEASURE_TIMEOUT;
+        break;
+    case SUNTECH_ERRCODE_TRANSDUCTER_OUT_OF_RANGE:
+        err = NIBP_ONESHOT_ALARM_TRANSDUCER_OVER_RANGE;
+        break;
+    case SUNTECH_ERRCODE_EEPROM_CALIBR_FAILURE:
+        err = NIBP_ONESHOT_ALARM_EEPROM_FAILURE;
+        break;
+    default:
+        err = NIBP_ONESHOT_NONE;
+        break;
+    }
+    return err;
+}
+
+void SuntechProvider::controlPneumatics(unsigned char pump, unsigned char controlValve, unsigned char dumpValve)
+{
+    unsigned char cmd[4] = {0};
+    cmd[0] = SUNTECH_CMD_CONTROL_PNEUMATICS;
+    cmd[1] = pump;
+    cmd[2] = controlValve;
+    cmd[3] = dumpValve;
+    _sendCmd(cmd, 4);
+}
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-SuntechProvider::SuntechProvider() : Provider("SUNTECH_NIBP"), NIBPProviderIFace()
+SuntechProvider::SuntechProvider() :
+    Provider("SUNTECH_NIBP"), NIBPProviderIFace(),
+    _NIBPStart(false), _flagStartCmdSend(-1),
+    _timer(NULL), _isModuleDataRespond(false),
+    _isCalibrationRespond(false)
 {
-    _flagStartCmdSend = -1;
-
-    _NIBPStart = false;
-
     UartAttrDesc portAttr(9600, 8, 'N', 1);
     initPort(portAttr);
     setDisconnectThreshold(1);
@@ -354,6 +459,16 @@ SuntechProvider::~SuntechProvider()
         delete _timer;
         _timer = NULL;
     }
+}
+
+void SuntechProvider::disconnected()
+{
+    nibpParam.setConnected(false);
+}
+
+void SuntechProvider::reconnected()
+{
+    nibpParam.setConnected(true);
 }
 
 /**************************************************************************************************
@@ -397,6 +512,11 @@ void SuntechProvider::_handlePacket(unsigned char *data, int len)
         return;
     }
 
+    if (!isConnected)
+    {
+        nibpParam.setConnected(true);
+    }
+
     switch (data[0])
     {
     case MODULE_ACK:
@@ -430,7 +550,17 @@ void SuntechProvider::_handlePacket(unsigned char *data, int len)
         // "AK"  "OK"
         else if (data[1] == MODULE_EXECUTED)
         {
-            if (_flagStartCmdSend == 2)
+            if (_isModuleDataRespond)
+            {
+                _isModuleDataRespond = false;
+                getReturnString();
+            }
+            else if (_isCalibrationRespond)
+            {
+                _isCalibrationRespond = false;
+                getCalibrateResult();
+            }
+            else if (_flagStartCmdSend == 2)
             {
                 _flagStartCmdSend = 0;
                 // 测量完成
@@ -450,8 +580,16 @@ void SuntechProvider::_handlePacket(unsigned char *data, int len)
 
     // 当前压力
     case SUNTECH_RSP_CUFF_PRESSURE:
+    {
         nibpParam.handleNIBPEvent(NIBP_EVENT_CURRENT_PRESSURE, &data[1], 2);
+        int16_t pressure;
+        pressure = (data[2] << 8) + data[1];
+        if (pressure != -1)
+        {
+            nibpParam.setManometerPressure(pressure);
+        }
         break;
+    }
     // 测量结果
     case SUNTECH_RSP_GET_MEASUREMENT:
     {
@@ -459,7 +597,19 @@ void SuntechProvider::_handlePacket(unsigned char *data, int len)
         nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_GET_RESULT, reinterpret_cast<unsigned char *>(&info), sizeof(info));
         break;
     }
-
+    // 版本信息
+    case SUNTECH_RSP_GET_RETURN_STRING:
+    {
+        const char *p = reinterpret_cast<const char*>(data + 1);
+        versionInfo = QString("%1-%2").arg(QString(p)).arg(QString(p + 0x08));
+        break;
+    }
+    // 校准结果
+    case SUNTECH_RSP_GET_CALIBRATE_RESULT:
+    {
+        bool result = !data[3];
+        nibpParam.setResult(result);
+    }
     default:
         break;
     }

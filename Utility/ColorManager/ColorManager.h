@@ -47,6 +47,11 @@ public:
 
     ~ColorManager();
 
+    /**
+     * @brief clearColorMap  清除临时装载的颜色信息
+     */
+    void clearColorMap();
+
 signals:
     void paletteChanged(ParamID id);
 

@@ -29,6 +29,9 @@
 #include "ParamManager.h"
 #include "IConfig.h"
 #include "TimeDate.h"
+#include <QBitmap>
+
+#define beatIconPath "/usr/local/nPM/icons/beat.png"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -47,6 +50,56 @@ void ECGTrendWidget::_timeOut()
 {
     _timer->stop();
     _hrBeatIcon->setPixmap(QPixmap());
+}
+
+void ECGTrendWidget::_drawBeatIcon(QColor color)
+{
+    if (lastIconColor == color)
+    {
+        return;
+    }
+    QImage destImage(beatIconPath);
+    QImage srcImage(destImage.width(), destImage.width(), QImage::Format_ARGB32);
+    srcImage.fill(color);
+    QPainter painter(&srcImage);
+    QPoint point(0, 0);
+    painter.setCompositionMode(QPainter::CompositionMode_DestinationIn);
+    painter.drawImage(point, destImage);
+    painter.end();
+    beatPixmap =  QPixmap::fromImage(srcImage);
+    lastIconColor = color;
+}
+
+void ECGTrendWidget::_loadConfig()
+{
+    // 设置标题栏的相关信息。
+    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
+    setPalette(palette);
+
+    _drawBeatIcon(palette.windowText().color());
+    _hrValue->setPalette(palette);
+
+    int index = 0;
+    currentConfig.getNumValue("ECG|HRSource", index);
+    HRSourceType type = ecgParam.getHrSourceTypeFromId(static_cast<ParamID>(index));
+    SubDupParamID subId;
+    switch (type)
+    {
+        case HR_SOURCE_NR:
+        case HR_SOURCE_AUTO:
+        case HR_SOURCE_ECG:
+            subId = SUB_DUP_PARAM_HR;
+        break;
+        case HR_SOURCE_SPO2:
+        case HR_SOURCE_IBP:
+            subId = SUB_DUP_PARAM_PR;
+        break;
+    }
+    setName(trs(paramInfo.getSubParamName(subId)));
+    setUnit(Unit::getSymbol(UNIT_BPM));
+
+    // 设置上下限
+    updateLimit();
 }
 
 /**************************************************************************************************
@@ -73,7 +126,7 @@ void ECGTrendWidget::setHRValue(int16_t hr, bool isHR)
     }
     else if (hr == UnknownData())
     {
-        _hrString = UnknownStr();
+        _hrString = InvStr();
     }
     else
     {
@@ -105,12 +158,16 @@ void ECGTrendWidget::isAlarm(bool isAlarm)
 void ECGTrendWidget::showValue(void)
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
-    psrc = normalPalette(psrc);
     if (_isAlarm)
     {
         showAlarmStatus(_hrValue);
         showAlarmParamLimit(_hrValue, _hrString, psrc);
         restoreNormalStatusLater();
+    }
+    else
+    {
+        showNormalStatus(psrc);
+        _drawBeatIcon(psrc.windowText().color());
     }
 }
 
@@ -155,47 +212,15 @@ void ECGTrendWidget::blinkBeatPixmap()
 ECGTrendWidget::ECGTrendWidget() : TrendWidget("ECGTrendWidget"),
     _hrString(InvStr()), _isAlarm(false)
 {
-    // 设置标题栏的相关信息。
-    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
-    setPalette(palette);
-    int index = 0;
-    currentConfig.getNumValue("ECG|HRSource", index);
-    HRSourceType type = static_cast<HRSourceType>(index);
-    SubDupParamID subId;
-    switch (type)
-    {
-        case HR_SOURCE_NR:
-        case HR_SOURCE_AUTO:
-        case HR_SOURCE_ECG:
-            subId = SUB_DUP_PARAM_HR;
-        break;
-        case HR_SOURCE_SPO2:
-        case HR_SOURCE_IBP:
-            subId = SUB_DUP_PARAM_PR;
-        break;
-    }
-    setName(trs(paramInfo.getSubParamName(subId)));
-    setUnit(Unit::getSymbol(UNIT_BPM));
-
-    // 设置上下限
-    updateLimit();
+    // 设置报警关闭标志
+    showAlarmOff();
 
     // 开始布局。
     _hrBeatIcon = new QLabel();
     _hrBeatIcon->setFixedSize(24, 24);
-    QImage destImage("/usr/local/nPM/icons/beat.png");
-    QImage srcImage(destImage.width(), destImage.width(), QImage::Format_ARGB32);
-    srcImage.fill(palette.foreground().color());
-    QPainter painter(&srcImage);
-    QPoint point(0, 0);
-    painter.setCompositionMode(QPainter::CompositionMode_DestinationIn);
-    painter.drawImage(point, destImage);
-    painter.end();
-    beatPixmap =  QPixmap::fromImage(srcImage);
     _hrBeatIcon->setPixmap(QPixmap());
 
     _hrValue = new QLabel();
-    _hrValue->setPalette(palette);
     _hrValue->setAlignment(Qt::AlignCenter);
     _hrValue->setText(InvStr());
 
@@ -213,6 +238,8 @@ ECGTrendWidget::ECGTrendWidget() : TrendWidget("ECGTrendWidget"),
     _timer = new QTimer();
     _timer->setInterval(190);
     connect(_timer, SIGNAL(timeout()), this, SLOT(_timeOut()));
+
+    _loadConfig();
 }
 
 /**************************************************************************************************
@@ -237,7 +264,11 @@ QList<SubParamID> ECGTrendWidget::getShortTrendSubParams() const
 void ECGTrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
-    psrc = normalPalette(psrc);
-    showNormalParamLimit(psrc);
-    showNormalStatus(_hrValue, psrc);
+    showNormalStatus(psrc);
+    _drawBeatIcon(psrc.windowText().color());
+}
+
+void ECGTrendWidget::updateWidgetConfig()
+{
+    _loadConfig();
 }

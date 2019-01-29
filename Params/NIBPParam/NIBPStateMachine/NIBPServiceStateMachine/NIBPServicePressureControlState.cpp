@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/11/20
+ **/
+
 #include "NIBPServicePressureControlState.h"
 #include "NIBPServiceStateDefine.h"
 #include "NIBPParam.h"
@@ -62,14 +72,8 @@ void NIBPServicePressureControlState::handleNIBPEvent(NIBPEvent event, const uns
 
     case NIBP_EVENT_TIMEOUT:
     {
-        nibppressurecontrol.unPacket(false);
-        _isEnterSuccess = false;
-        IMessageBox messbox(trs("Warn"), trs("NIBPDirectiveTimeout"), false);
-        messbox.setWindowFlags(Qt::WindowStaysOnTopHint|Qt::FramelessWindowHint);
-        messbox.setYesBtnTxt(trs("SupervisorOK"));
-        messbox.exec();
     }
-        break;
+    break;
 
     case NIBP_EVENT_SERVICE_REPAIR_RETURN:
         if (_isEnterSuccess && !nibpRepairMenuManager.getRepairError())
@@ -102,20 +106,7 @@ void NIBPServicePressureControlState::handleNIBPEvent(NIBPEvent event, const uns
         }
         else
         {
-            if (args[0] != 0x00)
-            {
-                nibppressurecontrol.unPacket(false);
-                _isEnterSuccess = false;
-                IMessageBox messbox(trs("Warn"), trs("NIBPModuleEnterFail"), false);
-                messbox.setWindowFlags(Qt::WindowStaysOnTopHint|Qt::FramelessWindowHint);
-                messbox.setYesBtnTxt(trs("SupervisorOK"));
-                messbox.exec();
-            }
-            else
-            {
-                nibppressurecontrol.unPacket(true);
-                _isEnterSuccess = true;
-            }
+            nibpParam.setResult(!args[0]);
         }
         break;
 
@@ -128,20 +119,22 @@ void NIBPServicePressureControlState::handleNIBPEvent(NIBPEvent event, const uns
         }
         break;
 
-    case NIBP_EVENT_SERVICE_PRESSURECONTROL_DEFLATE:
-        nibppressurecontrol.btnSwitch(true);
-        break;
-
     case NIBP_EVENT_CURRENT_PRESSURE:
     {
         int pressure;
-        pressure = (args[1]<<8)+args[0];
+        pressure = (args[1] << 8) + args[0];
         if (pressure != -1)
         {
-            nibppressurecontrol.setCuffPressure(pressure);
+            nibpParam.setManometerPressure(pressure);
             return;
         }
     }
+    break;
+    case NIBP_EVENT_SERVICE_PRESSURECONTROL_INFLATE:
+        nibpParam.setResult(!args[0]);
+        break;
+    case NIBP_EVENT_SERVICE_PRESSURECONTROL_DEFLATE:
+        nibpParam.setResult(true);
         break;
     default:
         break;
@@ -152,9 +145,8 @@ void NIBPServicePressureControlState::handleNIBPEvent(NIBPEvent event, const uns
  * 构造。
  *************************************************************************************************/
 NIBPServicePressureControlState::NIBPServicePressureControlState() :
-    NIBPState(NIBP_SERVICE_PRESSURECONTROL_STATE)
+    NIBPState(NIBP_SERVICE_PRESSURECONTROL_STATE), _isReturn(false), _isEnterSuccess(false)
 {
-    _isReturn = false;
 }
 
 /**************************************************************************************************
@@ -162,5 +154,4 @@ NIBPServicePressureControlState::NIBPServicePressureControlState() :
  *************************************************************************************************/
 NIBPServicePressureControlState::~NIBPServicePressureControlState()
 {
-
 }

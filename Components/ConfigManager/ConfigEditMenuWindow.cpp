@@ -21,6 +21,7 @@
 #include "ConfigEditAlarmLimitMenuContent.h"
 #include "UserConfigEditMenuContent.h"
 #include "ConfigEditTEMPMenuContent.h"
+#include "SystemManager.h"
 
 class ConfigEditMenuWindowPrivate
 {
@@ -74,33 +75,54 @@ void ConfigEditMenuWindow::initializeSubMenu()
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditEcgMenu"] = subMenu;
 
-    subMenu = new ConfigEditRespMenuContent(config);
-    addMenuContent(subMenu);
-    d_ptr->subMenuMap["ConfigEditRespMenu"] = subMenu;
+    if (systemManager.isSupport(CONFIG_RESP))
+    {
+        subMenu = new ConfigEditRespMenuContent(config);
+        addMenuContent(subMenu);
+        d_ptr->subMenuMap["ConfigEditRespMenu"] = subMenu;
+    }
 
-    subMenu = new ConfigEditTEMPMenuContent(config);
-    addMenuContent(subMenu);
-    d_ptr->subMenuMap["ConfigEditTEMPMenu"] = subMenu;
+    if (systemManager.isSupport(CONFIG_TEMP))
+    {
+        subMenu = new ConfigEditTEMPMenuContent(config);
+        addMenuContent(subMenu);
+        d_ptr->subMenuMap["ConfigEditTEMPMenu"] = subMenu;
+    }
 
-    subMenu = new ConfigEditSpO2MenuContent(config);
-    addMenuContent(subMenu);
-    d_ptr->subMenuMap["ConfigEditSpO2Menu"] = subMenu;
+    if (systemManager.isSupport(CONFIG_SPO2))
+    {
+        subMenu = new ConfigEditSpO2MenuContent(config);
+        addMenuContent(subMenu);
+        d_ptr->subMenuMap["ConfigEditSpO2Menu"] = subMenu;
+    }
 
-    subMenu = new ConfigEditNIBPMenuContent(config);
-    addMenuContent(subMenu);
-    d_ptr->subMenuMap["ConfigEditNIBPMenu"] = subMenu;
+    if (systemManager.isSupport(CONFIG_NIBP))
+    {
+        subMenu = new ConfigEditNIBPMenuContent(config);
+        addMenuContent(subMenu);
+        d_ptr->subMenuMap["ConfigEditNIBPMenu"] = subMenu;
+    }
 
-    subMenu = new ConfigEditCOMenuContent(config);
-    addMenuContent(subMenu);
-    d_ptr->subMenuMap["ConfigEditCOMenu"] = subMenu;
+    if (systemManager.isSupport(CONFIG_CO))
+    {
+        subMenu = new ConfigEditCOMenuContent(config);
+        addMenuContent(subMenu);
+        d_ptr->subMenuMap["ConfigEditCOMenu"] = subMenu;
+    }
 
-    subMenu = new ConfigEditCO2MenuContent(config);
-    addMenuContent(subMenu);
-    d_ptr->subMenuMap["ConfigEditCO2Menu"] = subMenu;
+    if (systemManager.isSupport(CONFIG_CO2))
+    {
+        subMenu = new ConfigEditCO2MenuContent(config);
+        addMenuContent(subMenu);
+        d_ptr->subMenuMap["ConfigEditCO2Menu"] = subMenu;
+    }
 
-    subMenu = new ConfigEditIBPMenuContent(config);
-    addMenuContent(subMenu);
-    d_ptr->subMenuMap["ConfigEditIBPMenu"] = subMenu;
+    if (systemManager.isSupport(CONFIG_IBP))
+    {
+        subMenu = new ConfigEditIBPMenuContent(config);
+        addMenuContent(subMenu);
+        d_ptr->subMenuMap["ConfigEditIBPMenu"] = subMenu;
+    }
 
     subMenu = new ConfigEditCodeMarkerMenuContent(config);
     addMenuContent(subMenu);

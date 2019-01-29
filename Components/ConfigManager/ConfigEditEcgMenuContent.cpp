@@ -26,7 +26,7 @@ class ConfigEditECGMenuContentPrivate
 public:
     enum MenuItem
     {
-        ITEM_CBO_ALARM_SOURCE = 0,
+        ITEM_CBO_HRPR_SOURCE = 0,
         ITEM_CBO_ECG1_WAVE,
         ITEM_CBO_ECG2_WAVE,
         ITEM_CBO_ECG1_GAIN,
@@ -39,9 +39,10 @@ public:
         ITEM_CBO_MAX,
     };
 
-    explicit ConfigEditECGMenuContentPrivate(Config * const config)
-        :config(config),
-          sTSwitchBtn(NULL)
+    explicit ConfigEditECGMenuContentPrivate(Config *const config)
+        : config(config),
+          sTSwitchBtn(NULL),
+          hrLabel(NULL)
     {}
 
     // load settings
@@ -51,6 +52,7 @@ public:
     QMap<MenuItem, QLabel *> comboLabels;
     Config *const config;
     Button *sTSwitchBtn;
+    QLabel * hrLabel;  // 仅查看该菜单时,设置该label为可聚焦方式，便于旋转飞梭查看视图
 };
 
 void ConfigEditECGMenuContentPrivate::loadOptions()
@@ -61,10 +63,40 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
         combos[item]->blockSignals(true);
     }
 
+    // 加载hr/pr来源
     int index = 0;
+    config->getNumValue("ECG|HRSource", index);
+    int sourceType = ecgParam.getHrSourceTypeFromId(static_cast<ParamID>(index));
+    int cboIndex = 0;
+    int itemCount = 0;
+    combos[ITEM_CBO_HRPR_SOURCE]->clear();
+    for (int i = HR_SOURCE_ECG; i < HR_SOURCE_NR; ++i)
+    {
+        if (i == HR_SOURCE_SPO2 && !systemManager.isSupport(PARAM_SPO2))
+        {
+            continue;
+        }
+        if (i == HR_SOURCE_IBP && !systemManager.isSupport(PARAM_IBP))
+        {
+            continue;
+        }
 
-    config->getNumValue("ECG|AlarmSource", index);
-    combos[ITEM_CBO_ALARM_SOURCE]->setCurrentIndex(index);
+        if (i == sourceType)
+        {
+            cboIndex = itemCount;
+        }
+        itemCount++;
+        combos[ITEM_CBO_HRPR_SOURCE]->addItem(trs(ECGSymbol::convert(static_cast<HRSourceType>(i))));
+    }
+
+    if (cboIndex > combos[ITEM_CBO_HRPR_SOURCE]->count())
+    {
+        cboIndex = 0;
+        index = ecgParam.getIdFromHrSourceType(static_cast<HRSourceType>(cboIndex));
+        currentConfig.setNumValue("ECG|HRSource", index);
+    }
+    combos[ITEM_CBO_HRPR_SOURCE]->setCurrentIndex(cboIndex);
+
 
     int leadmode = 0;
     config->getNumValue("ECG|LeadMode", leadmode);
@@ -138,20 +170,54 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
         combos[ITEM_CBO_ECG1_GAIN]->addItem(trs(ECGSymbol::convert(static_cast<ECGGain>(i))));
     }
 
-    config->getNumValue("ECG|Ecg1Gain", index);
+    QString leadName = "ECG";
+    leadName += ECGSymbol::convert(static_cast<ECGLead>(index), ECG_CONVENTION_AAMI);
+    leadName += "WaveWidget";
+
+    config->getNumValue(QString("ECG|Gain|%1").arg(leadName), index);
     combos[ITEM_CBO_ECG1_GAIN]->setCurrentIndex(index);
 
     config->getNumValue("ECG|SweepSpeed", index);
     combos[ITEM_CBO_SWEEP_SPEED]->setCurrentIndex(index);
 
-    config->getNumValue("ECG|Filter", index);
-    combos[ITEM_CBO_FILTER_MODE]->setCurrentIndex(index);
+    int filterMode =  0;
+    config->getNumValue("ECG|Filter", filterMode);
+    combos[ITEM_CBO_FILTER_MODE]->setCurrentIndex(filterMode);
 
     config->getNumValue("ECG|QRSVolume", index);
     combos[ITEM_CBO_HTBT_VOL]->setCurrentIndex(index);
 
     config->getNumValue("ECG|NotchFilter", index);
-    combos[ITEM_CBO_NOTCH_FILTER]->setCurrentIndex(index);
+    combos[ITEM_CBO_NOTCH_FILTER]->clear();
+    switch (filterMode)
+    {
+    case ECG_FILTERMODE_MONITOR:
+    case ECG_FILTERMODE_SURGERY:
+        combos[ITEM_CBO_NOTCH_FILTER]->
+        addItems(QStringList()
+                 << trs(ECGSymbol::convert(ECG_NOTCH_OFF))
+                 << trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ)));
+        if (index == ECG_NOTCH_50_AND_60HZ)
+        {
+            combos[ITEM_CBO_NOTCH_FILTER]->setCurrentIndex(1);
+        }
+        else
+        {
+            combos[ITEM_CBO_NOTCH_FILTER]->setCurrentIndex(index);
+        }
+        break;
+    case ECG_FILTERMODE_DIAGNOSTIC:
+    case ECG_FILTERMODE_ST:
+        combos[ITEM_CBO_NOTCH_FILTER]->
+        addItems(QStringList()
+                 << trs(ECGSymbol::convert(ECG_NOTCH_OFF))
+                 << trs(ECGSymbol::convert(ECG_NOTCH_50HZ))
+                 << trs(ECGSymbol::convert(ECG_NOTCH_60HZ)));
+        combos[ITEM_CBO_NOTCH_FILTER]->setCurrentIndex(index);
+        break;
+    default:
+        break;
+    }
 
     for (unsigned i = 0; i < ITEM_CBO_MAX; i++)
     {
@@ -160,7 +226,7 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
     }
 }
 
-ConfigEditECGMenuContent::ConfigEditECGMenuContent(Config * const config)
+ConfigEditECGMenuContent::ConfigEditECGMenuContent(Config *const config)
     : MenuContent(trs("ECGMenu"), trs("ECGMenuDesc")),
       d_ptr(new ConfigEditECGMenuContentPrivate(config))
 {
@@ -179,9 +245,19 @@ void ConfigEditECGMenuContent::readyShow()
     for (int i = 0; i < ConfigEditECGMenuContentPrivate::ITEM_CBO_MAX; i++)
     {
         d_ptr->combos[ConfigEditECGMenuContentPrivate
-                ::MenuItem(i)]->setEnabled(!isOnlyToRead);
+                      ::MenuItem(i)]->setEnabled(!isOnlyToRead);
     }
+#ifndef HIDE_ECG_ST_PVCS_SUBPARAM
     d_ptr->sTSwitchBtn->setEnabled(!isOnlyToRead);
+#endif
+    if (isOnlyToRead)
+    {
+        d_ptr->hrLabel->setFocusPolicy(Qt::StrongFocus);
+    }
+    else
+    {
+        d_ptr->hrLabel->setFocusPolicy(Qt::NoFocus);
+    }
 }
 
 void ConfigEditECGMenuContent::layoutExec()
@@ -193,23 +269,20 @@ void ConfigEditECGMenuContent::layoutExec()
     int itemID;
 
     // alarm source
-    label = new QLabel(trs("AlarmSource"));
-    d_ptr->comboLabels.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_ALARM_SOURCE,
+    label = new QLabel(trs("HR_PRSource"));
+    d_ptr->hrLabel = label;
+    d_ptr->comboLabels.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_HRPR_SOURCE,
                               label);
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs(ECGSymbol::convert(ECG_ALARM_SRC_HR))
-                       << trs(ECGSymbol::convert(ECG_ALARM_SRC_PR))
-                       << trs(ECGSymbol::convert(ECG_ALARM_SRC_AUTO)));
-    itemID = static_cast<int>(ConfigEditECGMenuContentPrivate::ITEM_CBO_ALARM_SOURCE);
+    itemID = static_cast<int>(ConfigEditECGMenuContentPrivate::ITEM_CBO_HRPR_SOURCE);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_ALARM_SOURCE, comboBox);
+    d_ptr->combos.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_HRPR_SOURCE, comboBox);
 
     // ecg1 wave
-    label = new QLabel(trs("Ecg1Wave"));
+    label = new QLabel(trs("ECG1"));
     d_ptr->comboLabels.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG1_WAVE,
                               label);
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -221,7 +294,7 @@ void ConfigEditECGMenuContent::layoutExec()
     d_ptr->combos.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG1_WAVE, comboBox);
 
     // ecg2 wave
-    label = new QLabel(trs("Ecg2Wave"));
+    label = new QLabel(trs("ECG2"));
     d_ptr->comboLabels.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG2_WAVE,
                               label);
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -253,8 +326,7 @@ void ConfigEditECGMenuContent::layoutExec()
     comboBox->addItems(QStringList()
                        << trs(ECGSymbol::convert(ECG_SWEEP_SPEED_125))
                        << trs(ECGSymbol::convert(ECG_SWEEP_SPEED_250))
-                       << trs(ECGSymbol::convert(ECG_SWEEP_SPEED_500))
-                      );
+                       << trs(ECGSymbol::convert(ECG_SWEEP_SPEED_500)));
     itemID = static_cast<int>(ConfigEditECGMenuContentPrivate::ITEM_CBO_SWEEP_SPEED);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -269,11 +341,13 @@ void ConfigEditECGMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
+                       << trs(ECGSymbol::convert(ECG_FILTERMODE_SURGERY))
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_MONITOR))
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_DIAGNOSTIC))
-                       << trs(ECGSymbol::convert(ECG_FILTERMODE_SURGERY))
+                   #ifndef  HIDE_ECG_ST_PVCS_SUBPARAM
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_ST))
-                      );
+                   #endif
+                       );
     itemID = static_cast<int>(ConfigEditECGMenuContentPrivate::ITEM_CBO_FILTER_MODE);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -282,7 +356,7 @@ void ConfigEditECGMenuContent::layoutExec()
     d_ptr->combos.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_FILTER_MODE, comboBox);
 
     // heart beat volume
-    label = new QLabel(trs("QRSVolume"));
+    label = new QLabel(trs("ECGQRSToneVolume"));
     d_ptr->comboLabels.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_HTBT_VOL,
                               label);
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -323,8 +397,7 @@ void ConfigEditECGMenuContent::layoutExec()
                        << trs(ECGSymbol::convert(ECG_NOTCH_OFF))
                        << trs(ECGSymbol::convert(ECG_NOTCH_50HZ))
                        << trs(ECGSymbol::convert(ECG_NOTCH_60HZ))
-                       << trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ))
-                      );
+                       << trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ)));
     itemID = static_cast<int>(ConfigEditECGMenuContentPrivate::ITEM_CBO_NOTCH_FILTER);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -332,12 +405,14 @@ void ConfigEditECGMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_NOTCH_FILTER, comboBox);
 
+#ifndef  HIDE_ECG_ST_PVCS_SUBPARAM
     // ST 段开关
     d_ptr->sTSwitchBtn = new Button;
     d_ptr->sTSwitchBtn->setText(QString("%1 >>").arg(trs("STAnalysize")));
     d_ptr->sTSwitchBtn->setButtonStyle(Button::ButtonTextOnly);
     layout->addWidget(d_ptr->sTSwitchBtn, d_ptr->combos.count(), 1);
     connect(d_ptr->sTSwitchBtn, SIGNAL(released()), this, SLOT(onSTSwitchBtnReleased()));
+#endif
 
     // 添加报警设置链接
     Button *btn = new Button(QString("%1%2").
@@ -353,8 +428,6 @@ void ConfigEditECGMenuContent::layoutExec()
 void ConfigEditECGMenuContent::onComboBoxIndexChanged(int index)
 {
     ComboBox *box = qobject_cast<ComboBox *>(sender());
-    static int iiii = 0;
-    iiii++;
     if (box)
     {
         ConfigEditECGMenuContentPrivate::MenuItem item
@@ -366,13 +439,34 @@ void ConfigEditECGMenuContent::onComboBoxIndexChanged(int index)
             d_ptr->loadOptions();
             break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_FILTER_MODE:
+        {
             d_ptr->config->setNumValue("ECG|Filter", index);
-            break;
+            d_ptr->combos[ConfigEditECGMenuContentPrivate::ITEM_CBO_NOTCH_FILTER]->clear();
+            switch (index)
+            {
+            case ECG_FILTERMODE_MONITOR:
+            case ECG_FILTERMODE_SURGERY:
+                d_ptr->combos[ConfigEditECGMenuContentPrivate::ITEM_CBO_NOTCH_FILTER]->
+                addItems(QStringList()
+                         << trs(ECGSymbol::convert(ECG_NOTCH_OFF))
+                         << trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ)));
+                break;
+            case ECG_FILTERMODE_DIAGNOSTIC:
+            case ECG_FILTERMODE_ST:
+                d_ptr->combos[ConfigEditECGMenuContentPrivate::ITEM_CBO_NOTCH_FILTER]->
+                addItems(QStringList()
+                         << trs(ECGSymbol::convert(ECG_NOTCH_OFF))
+                         << trs(ECGSymbol::convert(ECG_NOTCH_50HZ))
+                         << trs(ECGSymbol::convert(ECG_NOTCH_60HZ)));
+                break;
+            }
+        }
+        break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_NOTCH_FILTER:
             d_ptr->config->setNumValue("ECG|NotchFilter", index);
             break;
-        case ConfigEditECGMenuContentPrivate::ITEM_CBO_ALARM_SOURCE:
-            d_ptr->config->setNumValue("ECG|AlarmSource", index);
+        case ConfigEditECGMenuContentPrivate::ITEM_CBO_HRPR_SOURCE:
+            d_ptr->config->setNumValue("ECG|HRSource", index);
             break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG1_WAVE:
         {
@@ -385,13 +479,24 @@ void ConfigEditECGMenuContent::onComboBoxIndexChanged(int index)
                 d_ptr->config->getNumValue("ECG|Ecg1Wave", waveIndex);
                 d_ptr->config->setNumValue("ECG|Ecg2Wave", waveIndex);
                 ConfigEditECGMenuContentPrivate::MenuItem menuItem =
-                        ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG2_WAVE;
+                    ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG2_WAVE;
                 d_ptr->combos[menuItem]->blockSignals(true);
                 d_ptr->combos[menuItem]->setCurrentIndex(waveIndex);
                 d_ptr->combos[menuItem]->blockSignals(false);
             }
 
             d_ptr->config->setNumValue("ECG|Ecg1Wave", index);
+
+            // 加载对应的增益
+            QString leadName = "ECG";
+            leadName += ECGSymbol::convert(static_cast<ECGLead>(index), ECG_CONVENTION_AAMI);
+            leadName += "WaveWidget";
+            d_ptr->config->getNumValue(QString("ECG|Gain|%1").arg(leadName), index);
+            ConfigEditECGMenuContentPrivate::MenuItem menuItem =
+                ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG1_GAIN;
+            d_ptr->combos[menuItem]->blockSignals(true);
+            d_ptr->combos[menuItem]->setCurrentIndex(index);
+            d_ptr->combos[menuItem]->blockSignals(false);
         }
         break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG2_WAVE:
@@ -405,7 +510,7 @@ void ConfigEditECGMenuContent::onComboBoxIndexChanged(int index)
                 d_ptr->config->getNumValue("ECG|Ecg2Wave", waveIndex);
                 d_ptr->config->setNumValue("ECG|Ecg1Wave", waveIndex);
                 ConfigEditECGMenuContentPrivate::MenuItem menuItem =
-                        ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG1_WAVE;
+                    ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG1_WAVE;
                 d_ptr->combos[menuItem]->blockSignals(true);
                 d_ptr->combos[menuItem]->setCurrentIndex(waveIndex);
                 d_ptr->combos[menuItem]->blockSignals(false);
@@ -415,8 +520,15 @@ void ConfigEditECGMenuContent::onComboBoxIndexChanged(int index)
         }
         break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG1_GAIN:
-            d_ptr->config->setNumValue("ECG|Ecg1Gain", index);
-            break;
+        {
+            int lead = 0;
+            d_ptr->config->getNumValue("ECG|Ecg1Wave", lead);
+            QString leadName = "ECG";
+            leadName += ECGSymbol::convert(static_cast<ECGLead>(lead), ECG_CONVENTION_AAMI);
+            leadName += "WaveWidget";
+            d_ptr->config->setNumValue(QString("ECG|Gain|%1").arg(leadName), index);
+        }
+        break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_HTBT_VOL:
             d_ptr->config->setNumValue("ECG|QRSVolume", index);
             break;
