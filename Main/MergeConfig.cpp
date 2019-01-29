@@ -432,35 +432,6 @@ void MergeConfig::_loadSupervisorConfig()
         config_compare(*iter);
     }
 
-    /*************************Basic Defib****************************/
-
-    QStringList BasicDefib_list;
-    BasicDefib_list << "BasicDefib|DefaultVoicePromptTone"
-                    << "BasicDefib|DefaultDefibMode"
-                    << "BasicDefib|DefibDefaultToPads"
-                    << "BasicDefib|BasicAutoEnergyEscalation"
-                    << "BasicDefib|RetainSyncAfterShock"
-                    << "BasicDefib|DefibReadyHoldTime"
-                    << "BasicDefib|AdultShock1"
-                    << "BasicDefib|AdultShock2"
-                    << "BasicDefib|AdultShock3"
-                    << "BasicDefib|PediatricShock1"
-                    << "BasicDefib|PediatricShock2"
-                    << "BasicDefib|PediatricShock3";
-    for (QStringList::iterator iter = BasicDefib_list.begin(); iter != BasicDefib_list.end(); ++iter)
-    {
-        config_compare(*iter);
-    }
-
-    /*************************PACER****************************/
-    QStringList Pacer_list;
-    Pacer_list << "PACER|DefaultPacerRate"
-               << "PACER|FixedRatePacing";
-    for (QStringList::iterator iter = Pacer_list.begin(); iter != Pacer_list.end(); ++iter)
-    {
-        config_compare(*iter);
-    }
-
     /*************************ECG****************************/
     QStringList ECG_list;
     ECG_list << "ECG|BandWidth"
