@@ -74,6 +74,9 @@ protected:
     void returnToMachine(void);
     void returnToMachine(void *arg);
 
+    //获取时间流逝
+    int elspseTime(void);
+
 private slots:
     void _timeout(void);
 
@@ -81,5 +84,5 @@ private:
     QTimer *_actionTime;
     QTime _elapseTime;
     unsigned char _id;
-    NIBPStateMachine *_stateMachine; // 关联的状态机。
+    NIBPStateMachine *_stateMachine;  // 关联的状态机。
 };
