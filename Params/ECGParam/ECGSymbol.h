@@ -61,6 +61,7 @@ public:
         }
         else
         {
+            int is12LInt = is12L ? 1 : 0;
             static const char *symbol[ECG_CONVENTION_NR][ECG_LEAD_NR] =
             {
                 {
@@ -70,10 +71,24 @@ public:
 
                 {
                     "I",  "II", "III", "aVR", "aVL", "aVF",
-                    "C1", "C2",  "C3", "C4",  "C5",  "C6",
+                    "C1", "C2",  "C3", "C4",  "C5",  "C6"
                 }
             };
-            return symbol[convention][index];
+            if (!is12LInt && index >= ECG_LEAD_V1)
+            {
+                if (convention == ECG_CONVENTION_AAMI)
+                {
+                    return "V";
+                }
+                else
+                {
+                    return "C";
+                }
+            }
+            else
+            {
+                return symbol[convention][index];
+            }
         }
     }
 
@@ -179,7 +194,7 @@ public:
         return symbol[index];
     }
 
-    static const char *convert(ECGOneShotType index, ECGLeadNameConvention convention)
+    static const char *convert(ECGOneShotType index, ECGLeadNameConvention convention, bool is12Lead = true)
     {
         static const char *symbol[ECG_ONESHOT_NR] =
         {
@@ -200,20 +215,34 @@ public:
         {
             if (convention == ECG_CONVENTION_AAMI)
             {
-                return symbol[index];
+                if (is12Lead)
+                {
+                    return symbol[index];
+                }
+                else
+                {
+                    return "ECGVLeadOff";
+                }
             }
             else
             {
-                static const char *leadOff[6] =
+                if (is12Lead)
                 {
-                    "ECGC1LeadOff",
-                    "ECGC2LeadOff",
-                    "ECGC3LeadOff",
-                    "ECGC4LeadOff",
-                    "ECGC5LeadOff",
-                    "ECGC6LeadOff"
-                };
-                return leadOff[index - ECG_ONESHOT_ALARM_V1_LEADOFF];
+                    static const char *leadOff[6] =
+                    {
+                        "ECGC1LeadOff",
+                        "ECGC2LeadOff",
+                        "ECGC3LeadOff",
+                        "ECGC4LeadOff",
+                        "ECGC5LeadOff",
+                        "ECGC6LeadOff"
+                    };
+                    return leadOff[index - ECG_ONESHOT_ALARM_V1_LEADOFF];
+                }
+                else
+                {
+                    return "ECGCLeadOff";
+                }
             }
         }
         else
