@@ -23,6 +23,7 @@
 #include "MainMenuWindow.h"
 #include "AlarmLimitWindow.h"
 #include "SpinBox.h"
+#include "IConfig.h"
 
 class NIBPMenuContentPrivate
 {
@@ -75,18 +76,16 @@ void NIBPMenuContent::layoutExec()
 {
     QGridLayout *layout = new QGridLayout(this);
 
-    ComboBox *comboBox = NULL;
     QLabel *label;
     int itemID;
 
     // measure mode
     label = new QLabel(trs("NIBPMeasureMode"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
+    ComboBox *comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs(NIBPSymbol::convert(NIBP_MODE_MANUAL))
-                       << trs(NIBPSymbol::convert(NIBP_MODE_AUTO))
-                      );
+                       << trs(NIBPSymbol::convert(NIBP_MODE_AUTO)));
     itemID = static_cast<int>(NIBPMenuContentPrivate::ITEM_CBO_MEASURE_MODE);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -107,8 +106,7 @@ void NIBPMenuContent::layoutExec()
                        << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_45))
                        << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_60))
                        << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_90))
-                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_120))
-                      );
+                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_120)));
     itemID = static_cast<int>(NIBPMenuContentPrivate::ITEM_CBO_AUTO_INTERVAL);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this,
@@ -126,8 +124,7 @@ void NIBPMenuContent::layoutExec()
                        << QString::number(SoundManager::VOLUME_LEV_2)
                        << QString::number(SoundManager::VOLUME_LEV_3)
                        << QString::number(SoundManager::VOLUME_LEV_4)
-                       << QString::number(SoundManager::VOLUME_LEV_5)
-                      );
+                       << QString::number(SoundManager::VOLUME_LEV_5));
     itemID = static_cast<int>(NIBPMenuContentPrivate::ITEM_CBO_COMPLETE_TONE);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -210,7 +207,7 @@ void NIBPMenuContentPrivate::loadOptions()
     currentConfig.getNumValue("NIBP|InitialCuffInflation", initVal);
     initCuffSpb->setValue(initVal);
 
-    currentConfig.getNumValue("NIBP|AutomaticRetry", index);
+    systemConfig.getNumValue("PrimaryCfg|NIBP|AutomaticRetry", index);
     if (index)
     {
         btns[ITEM_BTN_ADDITION_MEASURE]->setText(trs("On"));
@@ -220,7 +217,7 @@ void NIBPMenuContentPrivate::loadOptions()
         btns[ITEM_BTN_ADDITION_MEASURE]->setText(trs("Off"));
     }
 
-    currentConfig.getNumValue("NIBP|CompleteTone", index);
+    systemConfig.getNumValue("PrimaryCfg|NIBP|CompleteTone", index);
     combos[ITEM_CBO_COMPLETE_TONE]->setCurrentIndex(index);
     statBtnShow();
 }
@@ -285,7 +282,7 @@ void NIBPMenuContent::onBtnReleasedChanged()
                 btns->setText(trs("On"));
             }
             nibpParam.setAdditionalMeasure(!flag);
-            currentConfig.setNumValue("NIBP|AutomaticRetry", static_cast<int>(!flag));
+            systemConfig.setNumValue("PrimaryCfg|NIBP|AutomaticRetry", static_cast<int>(!flag));
             break;
         }
         default:
@@ -322,11 +319,11 @@ void NIBPMenuContent::onStatBtnStateChanged(bool flag)
 {
     if (!flag)
     {
-        d_ptr->btns[NIBPMenuContentPrivate::ITEM_BTN_START_STAT]->setText(trs("STATSTART"));
+        d_ptr->btns[NIBPMenuContentPrivate::ITEM_BTN_START_STAT]->setText(trs("STATSTOP"));
     }
     else
     {
-        d_ptr->btns[NIBPMenuContentPrivate::ITEM_BTN_START_STAT]->setText(trs("STATSTOP"));
+        d_ptr->btns[NIBPMenuContentPrivate::ITEM_BTN_START_STAT]->setText(trs("STATSTART"));
     }
 }
 
@@ -343,7 +340,7 @@ void NIBPMenuContent::onComboBoxIndexChanged(int index)
         nibpParam.setAutoInterval((NIBPAutoInterval)index);
         break;
     case NIBPMenuContentPrivate::ITEM_CBO_COMPLETE_TONE:
-        currentConfig.setNumValue("NIBP|CompleteTone", index);
+        systemConfig.setNumValue("PrimaryCfg|NIBP|CompleteTone", index);
     default:
         break;
     }
