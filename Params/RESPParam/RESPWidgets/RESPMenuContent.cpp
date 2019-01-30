@@ -70,8 +70,7 @@ void RESPMenuContentPrivate::loadOptions()
         combos[ITEM_CBO_RR_SOURCE]->addItems(QStringList()
                                              << trs(RESPSymbol::convert(BR_RR_AUTO))
                                              << trs(RESPSymbol::convert(BR_RR_SOURCE_ECG))
-                                             << trs(RESPSymbol::convert(BR_RR_SOURCE_CO2))
-                                             );
+                                             << trs(RESPSymbol::convert(BR_RR_SOURCE_CO2)));
     }
     else
     {
@@ -81,17 +80,10 @@ void RESPMenuContentPrivate::loadOptions()
     }
 
     int index = 0;
-    if (respDupParam.isAutoBrSourceEnabled())
+    currentConfig.getNumValue("RESP|BrSource", index);
+    if (index == BR_RR_SOURCE_CO2 && co2Param.isConnected() == false)
     {
-        index = BR_RR_AUTO;
-    }
-    else if (respDupParam.getBrSource() == RESPDupParam::BR_SOURCE_CO2 && co2Param.isConnected())
-    {
-        index = BR_RR_SOURCE_CO2;
-    }
-    else
-    {
-        index = BR_RR_SOURCE_ECG;
+        index = 0;
     }
     combos[ITEM_CBO_RR_SOURCE]->setCurrentIndex(index);
     if (respDupParam.getParamSourceType() == RESPDupParam::BR)
@@ -265,6 +257,7 @@ void RESPMenuContent::onComboBoxIndexChanged(int index)
             if (index == 0)
             {
                 respDupParam.setAutoBrSourceStatue(true);
+                currentConfig.setNumValue("RESP|BrSource", index);
                 break;
             }
             else
@@ -279,6 +272,7 @@ void RESPMenuContent::onComboBoxIndexChanged(int index)
             {
                 respDupParam.setBrSource(RESPDupParam::BR_SOURCE_ECG);
             }
+             currentConfig.setNumValue("RESP|BrSource", index);
         }
             break;
         case RESPMenuContentPrivate::ITEM_CBO_WAVE_GAIN:
