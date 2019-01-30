@@ -190,7 +190,7 @@ void NIBPMonitorSafeWaitTimeState::handleNIBPEvent(NIBPEvent event, const unsign
         {
             if (elspseTime() < (5*1000))  // 如果在auto安全间隔期间手动选择进入manual模式，安全间隔变为5s
             {
-            setTimeOut(5*1000 - elspseTime());
+                setTimeOut(5*1000 - elspseTime());
             }
             else if (elspseTime() > (5*1000))
             {
