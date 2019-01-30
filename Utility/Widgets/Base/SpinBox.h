@@ -79,9 +79,10 @@ public:
     /* reimplement */
     QSize sizeHint() const;
 
+
     /**
-     * @brief setSpinBoxStyle  set the hint inside the SpinBox
-     * @param hint  hint of the SpinBox
+     * @brief setSpinBoxStyle 设置spinbox的类型
+     * @param spinBoxStyle
      */
     void setSpinBoxStyle(SpinBoxStyle spinBoxStyle);
 

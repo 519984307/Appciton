@@ -21,8 +21,6 @@
 #include "TrendTableWindow.h"
 #include "IConfig.h"
 
-#define PM_HINT     ("PM")
-#define AM_HINT     ("AM")
 class TrendPrintWindowPrivate
 {
 public:
@@ -82,7 +80,7 @@ TrendPrintWindow::TrendPrintWindow(const QList<TrendDataPackage *> &trendDataPac
     d_ptr->timeFormat = static_cast<TimeFormat>(index);
     if (d_ptr->timeFormat == TIME_FORMAT_12)
     {
-        // add hour List
+        // 设置时间的字符串列表 12AM-11AM 12PM-11PM
         d_ptr->hourList.append("12 AM");
         for (int i = 1; i < 12; i++)
         {
@@ -303,11 +301,13 @@ void TrendPrintWindowPrivate::initGroupBox(QGroupBox *groupBox, TrendPrintWindow
     subBox->hourSbx->setArrow(false);
     if (timeFormat == TIME_FORMAT_12)
     {
+        // 时间格式为12制时，设置spinbox为字符串类型
         subBox->hourSbx->setSpinBoxStyle(SpinBox::SPIN_BOX_STYLE_STRING);
         subBox->hourSbx->setStringList(hourList);
     }
     else
     {
+        // 时间格式为24制时，设置spinbox为数字类型
         subBox->hourSbx->setSpinBoxStyle(SpinBox::SPIN_BOX_STYLE_NUMBER);
     }
 
