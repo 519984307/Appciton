@@ -17,7 +17,7 @@ class TrendPrintWindow : public Window
 {
     Q_OBJECT
 public:
-    TrendPrintWindow(const QList<TrendDataPackage *> &trendDataPack);
+    explicit TrendPrintWindow(const QList<TrendDataPackage *> &trendDataPack);
     ~TrendPrintWindow();
 
     void initPrintTime(unsigned start, unsigned end);

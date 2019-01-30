@@ -27,7 +27,7 @@ public:
      * @brief PopupNumEditor
      * @param showHint  if show hint
      */
-    explicit PopupNumEditor(bool showHint = false);
+    PopupNumEditor();
     ~PopupNumEditor();
 
     /* set the edit value Area global geometry */
@@ -41,12 +41,6 @@ public:
 
     /* reimplement */
     QSize sizeHint() const;
-
-    /**
-     * @brief setHint  set hint inside the PopupNumEditor
-     * @param hint  hint of the PopupNumEditor
-     */
-    void setHint(const QString &hint);
 
 protected:
     /* reimplement */

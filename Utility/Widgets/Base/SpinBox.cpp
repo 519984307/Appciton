@@ -30,8 +30,6 @@ public:
           m_borderRadius(themeManger.getBorderRadius()),
           arrow(false),
           status(SpinBox::SPIN_BOX_FOCUS_IN)
-        , showHint(false)
-        , hint(QString())
     {}
 
     // get the value
@@ -43,33 +41,26 @@ public:
     ItemEditInfo info;
     bool arrow;
     SpinBox::CtrlStatus status;
-
-    bool showHint;  // if show hint
-    QString hint;  // hint inside the spinbox
 };
 
 QString SpinBoxPrivate::value() const
 {
-    if (showHint == false)
+    if (info.type == ItemEditInfo::VALUE)
     {
         return Util::convertToString(info.curValue, info.scale);
     }
     else
     {
-        QString s = Util::convertToString(info.curValue, info.scale);
-        s += " ";
-        s += hint;
-        return s;
+        return info.list.at(info.curValue);
     }
     return QString();
 }
 
-SpinBox::SpinBox(QWidget *parent, bool showHint)
+SpinBox::SpinBox(QWidget *parent)
     : QAbstractButton(parent),
       d_ptr(new SpinBoxPrivate)
 
 {
-    d_ptr->showHint = showHint;
     QPalette pal = palette();
     themeManger.setupPalette(ThemeManager::ControlSpinBox, pal);
     setPalette(pal);
@@ -159,12 +150,25 @@ QSize SpinBox::sizeHint() const
     return hint;
 }
 
-void SpinBox::setHint(const QString &hint)
+void SpinBox::setSpinBoxStyle(SpinBox::SpinBoxStyle spinBoxStyle)
 {
-    if (d_ptr->showHint == true)
+    if (spinBoxStyle == SPIN_BOX_STYLE_NUMBER)
     {
-        d_ptr->hint = hint;
+        d_ptr->info.type = ItemEditInfo::VALUE;
     }
+    else if (spinBoxStyle == SPIN_BOX_STYLE_STRING)
+    {
+        d_ptr->info.type = ItemEditInfo::LIST;
+    }
+}
+
+void SpinBox::setStringList(QStringList strs)
+{
+    if (d_ptr->info.type != ItemEditInfo::LIST)
+    {
+        return;
+    }
+    d_ptr->info.list = strs;
 }
 
 void SpinBox::onPopupDestroy()
@@ -320,8 +324,7 @@ void SpinBox::keyReleaseEvent(QKeyEvent *ev)
         QRect rect(mapToGlobal(vrect.topLeft()),
                    mapToGlobal(vrect.bottomRight()));
         QPalette pal = palette();
-        PopupNumEditor *editor = new PopupNumEditor(d_ptr->showHint);
-        editor->setHint(d_ptr->hint);
+        PopupNumEditor *editor = new PopupNumEditor();
         editor->setEditInfo(d_ptr->info);
         editor->setFont(fontManager.textFont(font().pixelSize()));
         editor->setPalette(pal);
@@ -344,8 +347,7 @@ void SpinBox::mouseReleaseEvent(QMouseEvent *ev)
     QRect rect(mapToGlobal(vrect.topLeft()),
                mapToGlobal(vrect.bottomRight()));
     QPalette pal = palette();
-    PopupNumEditor *editor = new PopupNumEditor(d_ptr->showHint);
-    editor->setHint(d_ptr->hint);
+    PopupNumEditor *editor = new PopupNumEditor();
     editor->setEditInfo(d_ptr->info);
     editor->setFont(fontManager.textFont(font().pixelSize()));
     editor->setPalette(pal);
