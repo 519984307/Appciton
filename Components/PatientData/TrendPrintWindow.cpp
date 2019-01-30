@@ -19,6 +19,7 @@
 #include "TimeDate.h"
 #include <QDateTime>
 #include "TrendTableWindow.h"
+#include "IConfig.h"
 
 class TrendPrintWindowPrivate
 {
@@ -39,7 +40,7 @@ public:
         : startBox(NULL), endBox(NULL), startSubBox(NULL),
           endSubBox(NULL), durationLbl(NULL), printBtn(NULL),
           timeStartLimit(0), timeEndLimit(0), printStartTime(0),
-          printEndTime(0)
+          printEndTime(0), timeFormat(TIME_FORMAT_24)
     {}
 
     void initGroupBox(QGroupBox *groupBox, SubGroupBox *subBox);
@@ -66,11 +67,37 @@ public:
     unsigned printEndTime;
 
     QList<TrendDataPackage *> trendDataPack;
+
+    TimeFormat timeFormat;
+
+    QStringList hourList;
 };
 TrendPrintWindow::TrendPrintWindow(const QList<TrendDataPackage *> &trendDataPack)
     : Window(), d_ptr(new TrendPrintWindowPrivate())
 {
+    int index = 0;
+    systemConfig.getNumValue("DateTime|TimeFormat", index);
+    d_ptr->timeFormat = static_cast<TimeFormat>(index);
+    if (d_ptr->timeFormat == TIME_FORMAT_12)
+    {
+        // 设置时间的字符串列表 12AM-11AM 12PM-11PM
+        d_ptr->hourList.append("12 AM");
+        for (int i = 1; i < 12; i++)
+        {
+            d_ptr->hourList.append(QString("%1 AM").arg(QString::number(i)));
+        }
+        d_ptr->hourList.append("12 PM");
+        for (int i = 1; i < 12; i++)
+        {
+            d_ptr->hourList.append(QString("%1 PM").arg(QString::number(i)));
+        }
+    }
+    else
+    {
+        d_ptr->hourList.clear();
+    }
     setWindowTitle(trs("PrintSetup"));
+    setFixedSize(350, 450);
 
     QPalette pal = palette();
     d_ptr->startBox = new QGroupBox();
@@ -169,8 +196,8 @@ void TrendPrintWindow::startTimeChangeSlot(int, int)
     QDate date(d_ptr->startSubBox->yearSbx->getValue(),
                d_ptr->startSubBox->monthSbx->getValue(),
                d_ptr->startSubBox->daySbx->getValue());
-    QTime time(d_ptr->startSubBox->hourSbx->getValue(),
-               d_ptr->startSubBox->minSbx->getValue(),
+    int h = d_ptr->startSubBox->hourSbx->getValue();
+    QTime time(h, d_ptr->startSubBox->minSbx->getValue(),
                d_ptr->startSubBox->secondSbx->getValue());
     QDateTime dateTime(date, time);
     unsigned timeStamp = dateTime.toTime_t();
@@ -207,8 +234,8 @@ void TrendPrintWindow::endTimeChangeSlot(int, int)
     QDate date(d_ptr->endSubBox->yearSbx->getValue(),
                d_ptr->endSubBox->monthSbx->getValue(),
                d_ptr->endSubBox->daySbx->getValue());
-    QTime time(d_ptr->endSubBox->hourSbx->getValue(),
-               d_ptr->endSubBox->minSbx->getValue(),
+    int h = d_ptr->endSubBox->hourSbx->getValue();
+    QTime time(h, d_ptr->endSubBox->minSbx->getValue(),
                d_ptr->endSubBox->secondSbx->getValue());
     QDateTime dateTime(date, time);
     unsigned timeStamp = dateTime.toTime_t();
@@ -272,6 +299,17 @@ void TrendPrintWindowPrivate::initGroupBox(QGroupBox *groupBox, TrendPrintWindow
     subBox->hourSbx->setRange(0, 23);
     subBox->hourSbx->setStep(1);
     subBox->hourSbx->setArrow(false);
+    if (timeFormat == TIME_FORMAT_12)
+    {
+        // 时间格式为12制时，设置spinbox为字符串类型
+        subBox->hourSbx->setSpinBoxStyle(SpinBox::SPIN_BOX_STYLE_STRING);
+        subBox->hourSbx->setStringList(hourList);
+    }
+    else
+    {
+        // 时间格式为24制时，设置spinbox为数字类型
+        subBox->hourSbx->setSpinBoxStyle(SpinBox::SPIN_BOX_STYLE_NUMBER);
+    }
 
     subBox->minSbx->setRange(0, 59);
     subBox->minSbx->setStep(1);

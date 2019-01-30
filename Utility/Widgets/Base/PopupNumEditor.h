@@ -23,6 +23,10 @@ class PopupNumEditor : public QWidget
 {
     Q_OBJECT
 public:
+    /**
+     * @brief PopupNumEditor
+     * @param showHint  if show hint
+     */
     PopupNumEditor();
     ~PopupNumEditor();
 

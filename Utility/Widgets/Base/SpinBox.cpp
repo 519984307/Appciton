@@ -45,7 +45,15 @@ public:
 
 QString SpinBoxPrivate::value() const
 {
-    return Util::convertToString(info.curValue, info.scale);
+    if (info.type == ItemEditInfo::VALUE)
+    {
+        return Util::convertToString(info.curValue, info.scale);
+    }
+    else
+    {
+        return info.list.at(info.curValue);
+    }
+    return QString();
 }
 
 SpinBox::SpinBox(QWidget *parent)
@@ -140,6 +148,27 @@ QSize SpinBox::sizeHint() const
     }
 
     return hint;
+}
+
+void SpinBox::setSpinBoxStyle(SpinBox::SpinBoxStyle spinBoxStyle)
+{
+    if (spinBoxStyle == SPIN_BOX_STYLE_NUMBER)
+    {
+        d_ptr->info.type = ItemEditInfo::VALUE;
+    }
+    else if (spinBoxStyle == SPIN_BOX_STYLE_STRING)
+    {
+        d_ptr->info.type = ItemEditInfo::LIST;
+    }
+}
+
+void SpinBox::setStringList(QStringList strs)
+{
+    if (d_ptr->info.type != ItemEditInfo::LIST)
+    {
+        return;
+    }
+    d_ptr->info.list = strs;
 }
 
 void SpinBox::onPopupDestroy()
