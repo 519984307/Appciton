@@ -35,25 +35,15 @@ void ListViewItemDelegate::drawFocus(QPainter *painter, const QStyleOptionViewIt
 void ListViewItemDelegate::drawDecoration(QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect, const QPixmap &pixmap) const
 {
     Q_UNUSED(option)
-    painter->save();
     if (!pixmap.isNull())
     {
-        // save word transform
-        QTransform wordTransform = painter->transform();
-        painter->setWorldTransform(QTransform());
-
         // premultiplied alpha channel
         QImage tmp(rect.size(), QImage::Format_ARGB32_Premultiplied);
-        tmp.fill(0);
         QPainter drawImagePainter(&tmp);
         drawImagePainter.setCompositionMode(QPainter::CompositionMode_Source);
         drawImagePainter.drawPixmap(0, 0, rect.width(), rect.height(), pixmap);
         drawImagePainter.end();
 
         painter->drawImage(rect, tmp);
-
-        painter->setTransform(wordTransform);
     }
-
-    painter->restore();
 }

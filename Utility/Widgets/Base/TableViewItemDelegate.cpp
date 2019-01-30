@@ -19,6 +19,7 @@
 #include "PopupNumEditor.h"
 #include "FontManager.h"
 #include <QDebug>
+#include <QImage>
 
 #define MARGIN 2
 
@@ -261,6 +262,20 @@ bool TableViewItemDelegate::editorEvent(QEvent *event, QAbstractItemModel *model
     }
 
     return false;
+}
+
+void TableViewItemDelegate::drawDecoration(QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect, const QPixmap &pixmap) const
+{
+    Q_UNUSED(option)
+    if (!pixmap.isNull())
+    {
+        QImage img(rect.size(), QImage::Format_ARGB32_Premultiplied);
+        QPainter imagePainter(&img);
+        imagePainter.setCompositionMode(QPainter::CompositionMode_Source);
+        imagePainter.drawPixmap(0, 0, rect.width(), rect.height(), pixmap);
+        imagePainter.end();
+        painter->drawImage(rect, img);
+    }
 }
 
 void TableViewItemDelegate::onPopupDestroy()
