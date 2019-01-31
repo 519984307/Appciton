@@ -148,6 +148,7 @@
         <BreathLead>2</BreathLead>
         <Gain>2</Gain>
         <SweepSpeed>2</SweepSpeed>
+	<BrSource>0</BrSource>
     </RESP>
     <Event>
         <WaveLength>16</WaveLength>

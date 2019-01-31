@@ -20,6 +20,8 @@
 #include "ParamManager.h"
 #include "FontManager.h"
 #include "RESPDupParam.h"
+#include "ConfigManager.h"
+#include "CO2Param.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -67,6 +69,27 @@ void RESPTrendWidget::_loadConfig()
     setName(trs(paramInfo.getSubParamName(SUB_PARAM_RR_BR)));
     setUnit(Unit::getSymbol(UNIT_RPM));
     updateLimit();
+
+    int index = 0;
+    currentConfig.getNumValue("RESP|BrSource", index);
+    if (index == BR_RR_SOURCE_CO2 && co2Param.isConnected() == false)
+    {
+        index = BR_RR_AUTO;
+    }
+    switch (index)
+    {
+    case BR_RR_AUTO:
+        respDupParam.setAutoBrSourceStatue(true);
+         break;
+    case BR_RR_SOURCE_ECG:
+        respDupParam.setBrSource(RESPDupParam::BR_SOURCE_ECG);
+        respDupParam.setAutoBrSourceStatue(false);
+        break;
+    case BR_RR_SOURCE_CO2:
+        respDupParam.setBrSource(RESPDupParam::BR_SOURCE_CO2);
+        respDupParam.setAutoBrSourceStatue(false);
+        break;
+    }
 }
 
 /**************************************************************************************************
