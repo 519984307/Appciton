@@ -68,7 +68,7 @@ void ConfigEditSpO2MenuContentPrivate::loadOptions()
     QStringList strList = QStringList()
                           << "Sensitivity"
                           << "SmartPluseTone"
-                          << "WaveVelocity"
+                          << "SweepSpeed"
                           << "ModuleControl";
 
     for (int i = 0; i < strList.count(); i++)
