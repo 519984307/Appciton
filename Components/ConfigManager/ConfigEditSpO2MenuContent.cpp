@@ -203,7 +203,7 @@ void ConfigEditSpO2MenuContent::onComboBoxIndexChanged(int index)
         str = "Sensitivity";
         break;
     case ConfigEditSpO2MenuContentPrivate::ITEM_CBO_WAVE_VEL:
-        str = "WaveVelocity";
+        str = "SweepSpeed";
         break;
     default :
         qdebug("Invalid combo id.");
