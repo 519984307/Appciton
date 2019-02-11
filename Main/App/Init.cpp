@@ -52,15 +52,15 @@ static void _initSystem(void)
         errorLog.append(item);
 
         QString selectIndexString;
-        if (systemConfig.getCurConfigName().indexOf("Adult"))
+        if (systemConfig.getCurConfigName().indexOf("Adult") >= 0)
         {
             selectIndexString = "ConfigManager|Default|Adult";
         }
-        else if (systemConfig.getCurConfigName().indexOf("Ped"))
+        else if (systemConfig.getCurConfigName().indexOf("Ped") >= 0)
         {
             selectIndexString = "ConfigManager|Default|Ped";
         }
-        else if (systemConfig.getCurConfigName().indexOf("Neo"))
+        else if (systemConfig.getCurConfigName().indexOf("Neo") >= 0)
         {
             selectIndexString = "ConfigManager|Default|Neo";
         }
