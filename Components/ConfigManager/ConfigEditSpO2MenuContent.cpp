@@ -194,7 +194,7 @@ void ConfigEditSpO2MenuContent::onComboBoxIndexChanged(int index)
     switch (indexType)
     {
     case ConfigEditSpO2MenuContentPrivate::ITEM_CBO_MODULE_CONTROL:
-        str = "ModuleCntrol";
+        str = "ModuleControl";
         break;
     case ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SMART_PTONE:
         str = "SmartPluseTone";
