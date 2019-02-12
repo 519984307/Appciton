@@ -107,8 +107,6 @@
         <Calibration>84</Calibration>
     </IBP>
     <NIBP>
-        <MeasureMode>0</MeasureMode>
-        <AutoInterval>5</AutoInterval>
         <StatFunction>1</StatFunction>
         <AutomaticRetry>0</AutomaticRetry>
         <InitialCuffInflation>120</InitialCuffInflation>
