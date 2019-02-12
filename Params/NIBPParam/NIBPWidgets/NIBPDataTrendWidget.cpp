@@ -275,6 +275,7 @@ void NIBPDataTrendWidget::showValue(void)
                 textStr = textStr.arg(Unit::convert(unit, defUnitType, providerBuff.sys.value))
                           .arg(Unit::convert(unit, defUnitType, providerBuff.dia.value))
                           .arg(Unit::convert(unit, defUnitType, providerBuff.map.value));
+                prStr = prStr.arg(QString::number(providerBuff.prvalue));
             }
         }
         QLabel *l = qobject_cast<QLabel *>(_table->cellWidget(i, 1));
