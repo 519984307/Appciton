@@ -224,6 +224,7 @@ void NIBPDataTrendWidget::showValue(void)
             QString sysValue, diaValue, mapValue;
             if (unit != defUnitType)
             {
+                // 非预定的压力单位（非mmHg）
                 sysValue = Unit::convert(unit, defUnitType, providerBuff.sys.value);
                 diaValue = Unit::convert(unit, defUnitType, providerBuff.dia.value);
                 mapValue = Unit::convert(unit, defUnitType, providerBuff.map.value);
