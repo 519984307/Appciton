@@ -437,6 +437,19 @@ void TableView::mouseReleaseEvent(QMouseEvent *ev)
 
 void TableView::focusInEvent(QFocusEvent *ev)
 {
+    if (!d_ptr->findFirstLastSelectableItem(model(), true).isValid())
+    {
+        // 如果tableview里没有可以聚焦的item，则聚焦下一个控件
+        if (ev->reason() == Qt::TabFocusReason)
+        {
+            focusNextChild();
+        }
+        else if (ev->reason() == Qt::BacktabFocusReason)
+        {
+            focusPreviousChild();
+        }
+        return;
+    }
     if (ev->reason() == Qt::TabFocusReason)
     {
         if (this->selectionBehavior() == QAbstractItemView::SelectRows)
