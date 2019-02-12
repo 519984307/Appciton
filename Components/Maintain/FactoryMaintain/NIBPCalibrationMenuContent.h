@@ -13,12 +13,13 @@
 #include "MenuContent.h"
 
 class Button;
+class NIBPCalibrationMenuContentPrivate;
 class NIBPCalibrationMenuContent : public MenuContent
 {
     Q_OBJECT
 public:
     NIBPCalibrationMenuContent();
-    ~NIBPCalibrationMenuContent() {}
+    ~NIBPCalibrationMenuContent();
 protected:
     /**
      * @brief readyShow
@@ -47,6 +48,5 @@ private slots:
     void onBtnSlot();
 
 private:
-    Button *_enterBtn;
-    int _timerId;
+    NIBPCalibrationMenuContentPrivate * const d_ptr;
 };
