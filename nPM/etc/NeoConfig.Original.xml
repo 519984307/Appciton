@@ -118,7 +118,7 @@
         <AverageTime>2</AverageTime>
         <Sensitivity>1</Sensitivity>
         <FastSat>0</FastSat>
-        <SmartPluseTone>1</SmartPluseTone>
+        <SmartPluseTone>0</SmartPluseTone>
         <SweepSpeed>1</SweepSpeed>
         <BeatVol>1</BeatVol>
         <ModuleControl>1</ModuleControl>
