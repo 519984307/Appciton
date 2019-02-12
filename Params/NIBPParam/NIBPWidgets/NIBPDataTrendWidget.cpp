@@ -221,62 +221,65 @@ void NIBPDataTrendWidget::showValue(void)
 
             defUnitType = paramInfo.getUnitOfSubParam(SUB_PARAM_NIBP_SYS);
             unit = paramManager.getSubParamUnit(PARAM_NIBP, SUB_PARAM_NIBP_SYS);
-            if (unit == defUnitType)
+            QString sysValue, diaValue, mapValue;
+            if (unit != defUnitType)
             {
-                if (providerBuff.sys.isAlarm)
-                {
-                    valStr = boldwrap.arg(colorwrap
-                                          .arg(getPriotityColor(providerBuff.sys.priority))
-                                          .arg(QString::number(providerBuff.sys.value)));
-                    textStr = textStr.arg(valStr);
-                }
-                else
-                {
-                    textStr = textStr.arg(QString::number(providerBuff.sys.value));
-                }
-
-                if (providerBuff.dia.isAlarm)
-                {
-                    valStr = boldwrap.arg(colorwrap
-                                          .arg(getPriotityColor(providerBuff.dia.priority))
-                                          .arg(QString::number(providerBuff.dia.value)));
-                    textStr = textStr.arg(valStr);
-                }
-                else
-                {
-                    textStr = textStr.arg(QString::number(providerBuff.dia.value));
-                }
-
-                if (providerBuff.map.isAlarm)
-                {
-                    valStr = boldwrap.arg(colorwrap
-                                          .arg(getPriotityColor(providerBuff.map.priority))
-                                          .arg(QString::number(providerBuff.map.value)));
-                    textStr = textStr.arg(valStr);
-                }
-                else
-                {
-                    textStr = textStr.arg(QString::number(providerBuff.map.value));
-                }
-
-                // PR
-                if (!providerBuff.prAlarm)
-                {
-                    valStr = color.arg(textColor.red())
-                            .arg(textColor.green())
-                            .arg(textColor.blue())
-                            .arg(QString::number(providerBuff.prvalue));
-                    prStr = prStr.arg(valStr);
-                }
-                textStr = color.arg(textColor.red()).arg(textColor.green()).arg(textColor.blue()).arg(textStr);
+                sysValue = Unit::convert(unit, defUnitType, providerBuff.sys.value);
+                diaValue = Unit::convert(unit, defUnitType, providerBuff.dia.value);
+                mapValue = Unit::convert(unit, defUnitType, providerBuff.map.value);
             }
             else
             {
-                textStr = textStr.arg(Unit::convert(unit, defUnitType, providerBuff.sys.value))
-                          .arg(Unit::convert(unit, defUnitType, providerBuff.dia.value))
-                          .arg(Unit::convert(unit, defUnitType, providerBuff.map.value));
-                prStr = prStr.arg(QString::number(providerBuff.prvalue));
+                sysValue = QString::number(providerBuff.sys.value);
+                diaValue = QString::number(providerBuff.dia.value);
+                mapValue = QString::number(providerBuff.map.value);
             }
+            if (providerBuff.sys.isAlarm)
+            {
+                valStr = boldwrap.arg(colorwrap
+                                      .arg(getPriotityColor(providerBuff.sys.priority))
+                                      .arg(sysValue));
+                textStr = textStr.arg(valStr);
+            }
+            else
+            {
+                textStr = textStr.arg(sysValue);
+            }
+
+            if (providerBuff.dia.isAlarm)
+            {
+                valStr = boldwrap.arg(colorwrap
+                                      .arg(getPriotityColor(providerBuff.dia.priority))
+                                      .arg(diaValue));
+                textStr = textStr.arg(valStr);
+            }
+            else
+            {
+                textStr = textStr.arg(diaValue);
+            }
+
+            if (providerBuff.map.isAlarm)
+            {
+                valStr = boldwrap.arg(colorwrap
+                                      .arg(getPriotityColor(providerBuff.map.priority))
+                                      .arg(mapValue));
+                textStr = textStr.arg(valStr);
+            }
+            else
+            {
+                textStr = textStr.arg(mapValue);
+            }
+
+            // PR
+            if (!providerBuff.prAlarm)
+            {
+                valStr = color.arg(textColor.red())
+                        .arg(textColor.green())
+                        .arg(textColor.blue())
+                        .arg(QString::number(providerBuff.prvalue));
+                prStr = prStr.arg(valStr);
+            }
+            textStr = color.arg(textColor.red()).arg(textColor.green()).arg(textColor.blue()).arg(textStr);
         }
         QLabel *l = qobject_cast<QLabel *>(_table->cellWidget(i, 1));
         l->setAlignment(Qt::AlignHCenter);
