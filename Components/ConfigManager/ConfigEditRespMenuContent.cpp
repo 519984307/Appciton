@@ -204,7 +204,7 @@ void ConfigEditRespMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditRespMenuContentPrivate
                          ::ITEM_CBO_SWEEP_SPEED, comboBox);
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboIndexChanged()));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboIndexChanged(int)));
     itemID = ConfigEditRespMenuContentPrivate::ITEM_CBO_SWEEP_SPEED;
     comboBox->setProperty("Item", qVariantFromValue(itemID));
 

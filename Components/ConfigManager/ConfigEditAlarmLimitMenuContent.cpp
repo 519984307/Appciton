@@ -123,6 +123,12 @@ void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
                                "Prio", alarmLev);
             info.alarmLevel = alarmLev;
 
+            int alarmStatus = 0;
+            config->getNumAttr(QString("AlarmSource|%1")
+                               .arg(paramInfo.getSubParamName(subId, true)),
+                               "Enable", alarmStatus);
+            info.status = alarmStatus;
+
             infos.append(info);
         }
     }

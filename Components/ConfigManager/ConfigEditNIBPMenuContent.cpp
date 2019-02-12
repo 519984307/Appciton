@@ -67,10 +67,10 @@ void ConfigEditNIBPMenuContentPrivate::loadOptions()
 {
     int index;
     index = 0;
-    config->getNumValue("PrimaryCfg|NIBP|MeasureMode", index);
+    config->getNumValue("NIBP|MeasureMode", index);
     combos[ITEM_CBO_MEASURE_MODE]->setCurrentIndex(index);
     index = 0;
-    config->getNumValue("PrimaryCfg|NIBP|IntervalTime", index);
+    config->getNumValue("NIBP|AutoInterval", index);
     combos[ITEM_CBO_INTERVAL_TIME]->setCurrentIndex(index);
 
     PatientType type = patientManager.getType();
@@ -87,7 +87,7 @@ void ConfigEditNIBPMenuContentPrivate::loadOptions()
     {
         initCuffSpb->setRange(60, 140);
     }
-    currentConfig.getNumValue("NIBP|InitialCuffInflation", initVal);
+    config->getNumValue("NIBP|InitialCuffInflation", initVal);
     initCuffSpb->setValue(initVal);
 
     int unit = UNIT_MMHG;
@@ -118,10 +118,10 @@ void ConfigEditNIBPMenuContent::onComboIndexChanged(int index)
     switch (indexType)
     {
     case ConfigEditNIBPMenuContentPrivate::ITEM_CBO_INTERVAL_TIME:
-        d_ptr->config->setNumValue("PrimaryCfg|NIBP|IntervalTime", index);
+        d_ptr->config->setNumValue("NIBP|AutoInterval", index);
         break;
     case ConfigEditNIBPMenuContentPrivate::ITEM_CBO_MEASURE_MODE:
-        d_ptr->config->setNumValue("PrimaryCfg|NIBP|MeasureMode", index);
+        d_ptr->config->setNumValue("NIBP|MeasureMode", index);
         break;
     default:
         break;
