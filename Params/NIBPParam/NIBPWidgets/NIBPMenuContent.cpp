@@ -319,11 +319,11 @@ void NIBPMenuContent::onStatBtnStateChanged(bool flag)
 {
     if (!flag)
     {
-        d_ptr->btns[NIBPMenuContentPrivate::ITEM_BTN_START_STAT]->setText(trs("STATSTOP"));
+        d_ptr->btns[NIBPMenuContentPrivate::ITEM_BTN_START_STAT]->setText(trs("STATSTART"));
     }
     else
     {
-        d_ptr->btns[NIBPMenuContentPrivate::ITEM_BTN_START_STAT]->setText(trs("STATSTART"));
+        d_ptr->btns[NIBPMenuContentPrivate::ITEM_BTN_START_STAT]->setText(trs("STATSTOP"));
     }
 }
 
