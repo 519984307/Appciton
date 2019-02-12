@@ -55,8 +55,9 @@ void NormalModeKeyAction::keyF1Pressed(bool multiBtnPress)
     {
         return;
     }
-    // nibp
-    if (systemManager.isSupport(CONFIG_NIBP) && systemManager.getCurWorkMode() != WORK_MODE_DEMO)
+    // nibp 维护模式和demo模式不响应nibp测量按钮
+    if (systemManager.isSupport(CONFIG_NIBP) && systemManager.getCurWorkMode() != WORK_MODE_DEMO
+            && !nibpParam.isMaintain())
     {
         nibpParam.keyPressed();
     }
@@ -152,7 +153,9 @@ void NormalModeKeyAction::keyF1Released(bool multiBtnPress)
         return;
     }
 
-    if (systemManager.isSupport(CONFIG_NIBP) && systemManager.getCurWorkMode() != WORK_MODE_DEMO)
+    //  维护模式和demo模式不响应nibp测量按钮
+    if (systemManager.isSupport(CONFIG_NIBP) && systemManager.getCurWorkMode() != WORK_MODE_DEMO
+            && !nibpParam.isMaintain())
     {
         nibpParam.keyReleased();
     }

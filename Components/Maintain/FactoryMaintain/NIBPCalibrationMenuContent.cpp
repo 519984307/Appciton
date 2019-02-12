@@ -20,15 +20,24 @@
 #include "Debug.h"
 #include "WindowManager.h"
 #include "NIBPRepairMenuWindow.h"
+#include "NIBPParam.h"
+
+#define TIME_INTERVAL       100
 
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
 NIBPCalibrationMenuContent::NIBPCalibrationMenuContent()
     : MenuContent(trs("NIBPCalibrationMenu"),
-                  trs("NIBPCalibrationMenuDesc"))
+                  trs("NIBPCalibrationMenuDesc")),
+      _enterBtn(NULL), _timerId(-1)
 
 {
+}
+
+void NIBPCalibrationMenuContent::readyShow()
+{
+    _timerId = startTimer(TIME_INTERVAL);
 }
 
 void NIBPCalibrationMenuContent::layoutExec()
@@ -40,10 +49,33 @@ void NIBPCalibrationMenuContent::layoutExec()
     QLabel *label = new QLabel(trs("NIBPCalibration"));
     layout->addWidget(label);
 
-    Button *button = new Button(trs("Enter"));
-    button->setButtonStyle(Button::ButtonTextOnly);
-    layout->addWidget(button);
-    connect(button, SIGNAL(released()), this, SLOT(onBtnSlot()));
+    _enterBtn = new Button(trs("Enter"));
+    _enterBtn->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(_enterBtn);
+    connect(_enterBtn, SIGNAL(released()), this, SLOT(onBtnSlot()));
+}
+
+void NIBPCalibrationMenuContent::hideEvent(QHideEvent *e)
+{
+    Q_UNUSED(e)
+    killTimer(_timerId);
+    _timerId = -1;
+}
+
+void NIBPCalibrationMenuContent::timerEvent(QTimerEvent *e)
+{
+    // 100ms访问一次NIBP测量状态并使能按钮
+    if (e->timerId() == _timerId)
+    {
+        if (nibpParam.isMeasuring())
+        {
+            _enterBtn->setEnabled(false);
+        }
+        else
+        {
+            _enterBtn->setEnabled(true);
+        }
+    }
 }
 
 void NIBPCalibrationMenuContent::onBtnSlot()
