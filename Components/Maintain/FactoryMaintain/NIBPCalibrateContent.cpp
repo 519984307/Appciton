@@ -34,7 +34,7 @@ class NIBPCalibrateContentPrivate
 public:
     NIBPCalibrateContentPrivate()
         : label(NULL), point2Spb(NULL),
-          pressurevalue(0), calibrateFlag(false),
+          pressurevalue(0), calibrateFlag(false), isCalibrating(false),
           point(NIBP_CALIBRATE_ZERO), calibrateTimerID(-1),
           timeoutNum(0), inModeTimerID(-1), isCalibrateMode(false),
           modeBtn(NULL)
@@ -47,6 +47,7 @@ public:
 
     int  pressurevalue;                     // 校准点的值
     bool calibrateFlag;                     // 进入模式标志
+    bool isCalibrating;                     // 是否处于正在校准
 
     NIBPCalibratePoint point;
     int calibrateTimerID;
@@ -142,6 +143,7 @@ void NIBPCalibrateContent::timerEvent(QTimerEvent *ev)
         bool reply = nibpParam.geReply();
         if (reply || d_ptr->timeoutNum == TIMEOUT_WAIT_NUMBER)
         {
+            d_ptr->isCalibrating = false;
             Button *btn = d_ptr->btnList.at(d_ptr->point);
             if (reply && nibpParam.getResult())
             {
@@ -216,8 +218,9 @@ void NIBPCalibrateContent::timerEvent(QTimerEvent *ev)
 void NIBPCalibrateContent::onBtn1Calibrated()
 {
 //    d_ptr->label->setText("");
-    if (d_ptr->calibrateFlag)
+    if (d_ptr->calibrateFlag && !d_ptr->isCalibrating)
     {
+        d_ptr->isCalibrating = true;
         unsigned char cmd[2];
         cmd[0] = 0x00;
         cmd[1] = 0x00;
@@ -247,8 +250,9 @@ void NIBPCalibrateContent::onBtn1Calibrated()
  *************************************************************************************************/
 void NIBPCalibrateContent::onBtn2Calibrated()
 {
-    if (d_ptr->calibrateFlag)
+    if (d_ptr->calibrateFlag && !d_ptr->isCalibrating)
     {
+        d_ptr->isCalibrating = true;
         Button *btn = d_ptr->btnList.at(1);
         int value = d_ptr->point2Spb->getValue();
         d_ptr->pressurevalue = value;
