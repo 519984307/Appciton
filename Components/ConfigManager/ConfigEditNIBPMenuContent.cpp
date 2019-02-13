@@ -64,6 +64,7 @@ void ConfigEditNIBPMenuContentPrivate::loadOptions()
     {
         UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_NIBP_SYS);
         UnitType unit = nibpParam.getUnit();
+        curInitCuffUnit = unit;
         PatientType type = patientManager.getType();
         int start = 0, end = 0;
         if (type == PATIENT_TYPE_ADULT)
