@@ -40,7 +40,7 @@ public:
         ITEM_BTN_ADDITION_MEASURE = 1
     };
 
-    NIBPMenuContentPrivate() : initCuffSpb(NULL), initCuffUnitLbl(NULL){}
+    NIBPMenuContentPrivate() : initCuffSpb(NULL), initCuffUnitLbl(NULL), curUnitType(UNIT_NONE){}
     /**
      * @brief loadOptions  //load settings
      */
@@ -55,6 +55,7 @@ public:
     SpinBox *initCuffSpb;
     QLabel *initCuffUnitLbl;
     QStringList initCuffStrs;
+    UnitType curUnitType;
 };
 
 
@@ -193,46 +194,51 @@ void NIBPMenuContentPrivate::loadOptions()
     // 时间
     combos[ITEM_CBO_AUTO_INTERVAL]->setCurrentIndex(nibpParam.getAutoInterval());
 
-    PatientType type = patientManager.getType();
-    int start = 0, end = 0;
-    if (type == PATIENT_TYPE_ADULT)
+    if (curUnitType != nibpParam.getUnit())
     {
-        start = 120;
-        end = 280;
-    }
-    else if (type == PATIENT_TYPE_PED)
-    {
-        start = 80;
-        end = 250;
-    }
-    else if (type == PATIENT_TYPE_NEO)
-    {
-        start = 60;
-        end = 140;
-    }
-    UnitType unit = nibpParam.getUnit();
-    UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_NIBP_SYS);
-    initCuffStrs.clear();
-    for (int i = start; i <= end; i += 10)
-    {
+        // 判断是否需要重新加载字符串
+        PatientType type = patientManager.getType();
+        int start = 0, end = 0;
+        if (type == PATIENT_TYPE_ADULT)
+        {
+            start = 120;
+            end = 280;
+        }
+        else if (type == PATIENT_TYPE_PED)
+        {
+            start = 80;
+            end = 250;
+        }
+        else if (type == PATIENT_TYPE_NEO)
+        {
+            start = 60;
+            end = 140;
+        }
+        UnitType unit = nibpParam.getUnit();
+        curUnitType = unit;
+        UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_NIBP_SYS);
+        initCuffStrs.clear();
+        for (int i = start; i <= end; i += 10)
+        {
+            if (unit == defUnit)
+            {
+                // 当前单位为预定的单位时（mmgh）
+                initCuffStrs.append(QString::number(i));
+            }
+            else
+            {
+                initCuffStrs.append(Unit::convert(unit, defUnit, i));
+            }
+        }
+        initCuffSpb->setStringList(initCuffStrs);
         if (unit == defUnit)
         {
-            // 当前单位时预定的单位时（mmgh）
-            initCuffStrs.append(QString::number(i));
+            initCuffUnitLbl->setText(Unit::getSymbol(UNIT_MMHG));
         }
         else
         {
-            initCuffStrs.append(Unit::convert(unit, defUnit, i));
+            initCuffUnitLbl->setText(Unit::getSymbol(UNIT_KPA));
         }
-    }
-    initCuffSpb->setStringList(initCuffStrs);
-    if (unit == defUnit)
-    {
-        initCuffUnitLbl->setText(Unit::getSymbol(UNIT_MMHG));
-    }
-    else
-    {
-        initCuffUnitLbl->setText(Unit::getSymbol(UNIT_KPA));
     }
 
     int initVal = 0;

@@ -37,11 +37,12 @@ public:
     SpinBox *initCuffSpb;
     QStringList initCuffStrs;
     QLabel *initCuffUnitLbl;
+    UnitType curInitCuffUnit;
 };
 
 ConfigEditNIBPMenuContentPrivate
     ::ConfigEditNIBPMenuContentPrivate(Config *const config)
-    :config(config), initCuffSpb(NULL), initCuffUnitLbl(NULL)
+    :config(config), initCuffSpb(NULL), initCuffUnitLbl(NULL), curInitCuffUnit(UNIT_NONE)
 {
 }
 
@@ -59,49 +60,52 @@ ConfigEditNIBPMenuContent::~ConfigEditNIBPMenuContent()
 
 void ConfigEditNIBPMenuContentPrivate::loadOptions()
 {
-    UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_NIBP_SYS);
-    UnitType curUnit = nibpParam.getUnit();
-    PatientType type = patientManager.getType();
-    int initVal;
-    int start = 0, end = 0;
-    if (type == PATIENT_TYPE_ADULT)
+    if (curInitCuffUnit != nibpParam.getUnit())
     {
-        start = 120;
-        end = 280;
-    }
-    else if (type == PATIENT_TYPE_PED)
-    {
-        start = 80;
-        end = 250;
-    }
-    else if (type == PATIENT_TYPE_NEO)
-    {
-        start = 60;
-        end = 140;
-    }
-    initCuffStrs.clear();
-    for (int i = start; i <= end; i += 10)
-    {
-        if (curUnit == defUnit)
+        UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_NIBP_SYS);
+        UnitType unit = nibpParam.getUnit();
+        PatientType type = patientManager.getType();
+        int start = 0, end = 0;
+        if (type == PATIENT_TYPE_ADULT)
         {
-            initCuffStrs.append(QString::number(i));
+            start = 120;
+            end = 280;
+        }
+        else if (type == PATIENT_TYPE_PED)
+        {
+            start = 80;
+            end = 250;
+        }
+        else if (type == PATIENT_TYPE_NEO)
+        {
+            start = 60;
+            end = 140;
+        }
+        initCuffStrs.clear();
+        for (int i = start; i <= end; i += 10)
+        {
+            if (unit == defUnit)
+            {
+                initCuffStrs.append(QString::number(i));
+            }
+            else
+            {
+                initCuffStrs.append(Unit::convert(unit, defUnit, i));
+            }
+        }
+        initCuffSpb->setStringList(initCuffStrs);
+
+        if (unit == defUnit)
+        {
+            initCuffUnitLbl->setText(Unit::getSymbol(UNIT_MMHG));
         }
         else
         {
-            initCuffStrs.append(Unit::convert(curUnit, defUnit, i));
+            initCuffUnitLbl->setText(Unit::getSymbol(UNIT_KPA));
         }
     }
-    initCuffSpb->setStringList(initCuffStrs);
 
-    if (curUnit == defUnit)
-    {
-        initCuffUnitLbl->setText(Unit::getSymbol(UNIT_MMHG));
-    }
-    else
-    {
-        initCuffUnitLbl->setText(Unit::getSymbol(UNIT_KPA));
-    }
-
+    int initVal;
     config->getNumValue("NIBP|InitialCuffInflation", initVal);
     initCuffSpb->setValue(initVal);
 }
