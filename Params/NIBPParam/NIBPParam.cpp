@@ -1296,6 +1296,16 @@ void NIBPParam::setNIBPCompleteTone(SoundManager::VolumeLevel volume)
     soundManager.setVolume(SoundManager::SOUND_TYPE_NIBP_COMPLETE, volume);
 }
 
+void NIBPParam::enterMaintain(bool enter)
+{
+    _isMaintain = enter;
+}
+
+bool NIBPParam::isMaintain()
+{
+    return _isMaintain;
+}
+
 /**************************************************************************************************
  * 停止测量。
  *************************************************************************************************/
@@ -1378,7 +1388,7 @@ NIBPParam::NIBPParam()
       _isNIBPDisable(false), _isManualMeasure(false),
       _connectedFlag(false), _connectedProvider(false),
       _text(InvStr()),
-      _reply(false), _result(false), _manometerPressure(InvData()),
+      _reply(false), _result(false), _manometerPressure(InvData()), _isMaintain(false),
       _activityMachine(NULL), _stateBeforeDemo(NIBP_MONITOR_STANDBY_STATE)
 {
     nibpCountdownTime.construction();
