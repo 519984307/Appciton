@@ -34,6 +34,12 @@ private slots:
      */
     void onAlarmBtnReleased(void);
 
+    /**
+     * @brief onPopupListItemFocusChanged
+     * @param volume
+     */
+    void onPopupListItemFocusChanged(int volume);
+
 private:
     ConfigEditSpO2MenuContentPrivate *const d_ptr;
 };

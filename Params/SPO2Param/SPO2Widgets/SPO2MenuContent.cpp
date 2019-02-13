@@ -39,7 +39,9 @@ public:
         ITEM_CBO_NIBP_SAME_SIDE
     };
 
-    SPO2MenuContentPrivate() {}
+    SPO2MenuContentPrivate()
+        : moduleType(MODULE_BLM_S5)
+    {}
 
     /**
      * @brief setCboBlockSignalsStatus  设置cobomo信号锁住状态
@@ -51,6 +53,8 @@ public:
     void loadOptions();
 
     QMap<MenuItem, ComboBox *> combos;
+
+    SPO2ModuleType moduleType;
 };
 
 void SPO2MenuContentPrivate::setCboBlockSignalsStatus(bool isBlocked)
@@ -58,7 +62,10 @@ void SPO2MenuContentPrivate::setCboBlockSignalsStatus(bool isBlocked)
     for (int i = ITEM_CBO_WAVE_SPEED; i <= ITEM_CBO_NIBP_SAME_SIDE; i++)
     {
         MenuItem item = static_cast<MenuItem>(i);
-        combos[item]->blockSignals(isBlocked);
+        if (combos[item])
+        {
+            combos[item]->blockSignals(isBlocked);
+        }
     }
 }
 
@@ -67,28 +74,28 @@ void SPO2MenuContentPrivate::loadOptions()
     setCboBlockSignalsStatus(true);
 
     combos[ITEM_CBO_SENSITIVITY]->clear();
-    SPO2ModuleType moduleType = spo2Param.getModuleType();
     if (moduleType == MODULE_MASIMO_SPO2 || moduleType == MODULE_RAINBOW_SPO2)
     {
         for (int i = SPO2_MASIMO_SENS_MAX; i < SPO2_MASIMO_SENS_NR; i++)
         {
-            combos[ITEM_CBO_SENSITIVITY]->addItem(trs(SPO2Symbol
-                                                      ::convert(static_cast<SensitivityMode>(i))));
+            combos[ITEM_CBO_SENSITIVITY]->addItem(trs(SPO2Symbol::convert(static_cast<SensitivityMode>(i))));
         }
     }
     else if (moduleType != MODULE_SPO2_NR)
     {
         for (int i = SPO2_SENS_LOW; i < SPO2_SENS_NR; i++)
         {
-            combos[ITEM_CBO_SENSITIVITY]->addItem(trs(SPO2Symbol
-                                                      ::convert(static_cast<SPO2Sensitive>(i))));
+            combos[ITEM_CBO_SENSITIVITY]->addItem(trs(SPO2Symbol::convert(static_cast<SPO2Sensitive>(i))));
         }
     }
 
     combos[ITEM_CBO_WAVE_SPEED]->setCurrentIndex(spo2Param.getSweepSpeed());
-    combos[ITEM_CBO_AVERAGE_TIME]->setCurrentIndex(spo2Param.getAverageTime());
+    if (moduleType == MODULE_MASIMO_SPO2 || moduleType == MODULE_RAINBOW_SPO2)
+    {
+        combos[ITEM_CBO_AVERAGE_TIME]->setCurrentIndex(spo2Param.getAverageTime());
+        combos[ITEM_CBO_FAST_SAT]->setCurrentIndex(spo2Param.getFastSat());
+    }
     combos[ITEM_CBO_SENSITIVITY]->setCurrentIndex(spo2Param.getSensitivity());
-    combos[ITEM_CBO_FAST_SAT]->setCurrentIndex(spo2Param.getFastSat());
     combos[ITEM_CBO_SMART_TONE]->setCurrentIndex(spo2Param.getSmartPulseTone());
 
     int volIndex;
@@ -112,6 +119,8 @@ SPO2MenuContent::SPO2MenuContent()
     : MenuContent(trs("SPO2Menu"), trs("SPO2MenuDesc")),
       d_ptr(new SPO2MenuContentPrivate)
 {
+    // get spo2 module type
+    d_ptr->moduleType = spo2Param.getModuleType();
 }
 
 SPO2MenuContent::~SPO2MenuContent()
@@ -148,19 +157,22 @@ void SPO2MenuContent::layoutExec()
     d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_WAVE_SPEED, comboBox);
 
     // 平均时间
-    label = new QLabel(trs("AverageTime"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    for (int i = 0; i < SPO2_AVER_TIME_NR; i++)
+    if (d_ptr->moduleType == MODULE_MASIMO_SPO2 || d_ptr->moduleType == MODULE_RAINBOW_SPO2)
     {
-        comboBox->addItem(SPO2Symbol::convert((AverageTime)i));
+        label = new QLabel(trs("AverageTime"));
+        layout->addWidget(label, d_ptr->combos.count(), 0);
+        comboBox = new ComboBox();
+        for (int i = 0; i < SPO2_AVER_TIME_NR; i++)
+        {
+            comboBox->addItem(SPO2Symbol::convert((AverageTime)i));
+        }
+        itemID = static_cast<int>(SPO2MenuContentPrivate::ITEM_CBO_AVERAGE_TIME);
+        comboBox->setProperty("Item",
+                              qVariantFromValue(itemID));
+        connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+        layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+        d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_AVERAGE_TIME, comboBox);
     }
-    itemID = static_cast<int>(SPO2MenuContentPrivate::ITEM_CBO_AVERAGE_TIME);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_AVERAGE_TIME, comboBox);
 
     // 灵敏度
     label = new QLabel(trs("Sensitivity"));
@@ -190,19 +202,22 @@ void SPO2MenuContent::layoutExec()
     d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_SENSITIVITY, comboBox);
 
     // 快速血氧
-    label = new QLabel(trs("FastSat"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs("Off")
-                       << trs("On")
-                      );
-    itemID = static_cast<int>(SPO2MenuContentPrivate::ITEM_CBO_FAST_SAT);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_FAST_SAT, comboBox);
+    if (d_ptr->moduleType == MODULE_MASIMO_SPO2 || d_ptr->moduleType == MODULE_RAINBOW_SPO2)
+    {
+        label = new QLabel(trs("FastSat"));
+        layout->addWidget(label, d_ptr->combos.count(), 0);
+        comboBox = new ComboBox();
+        comboBox->addItems(QStringList()
+                           << trs("Off")
+                           << trs("On")
+                          );
+        itemID = static_cast<int>(SPO2MenuContentPrivate::ITEM_CBO_FAST_SAT);
+        comboBox->setProperty("Item",
+                              qVariantFromValue(itemID));
+        connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+        layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+        d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_FAST_SAT, comboBox);
+    }
 
     // 智能脉搏音
     label = new QLabel(trs("SPO2SmartPulseTone"));
