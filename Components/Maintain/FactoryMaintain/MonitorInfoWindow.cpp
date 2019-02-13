@@ -38,8 +38,7 @@ public:
         ITEM_BTN_ELEC_SERIALNUM,
     };
     MonitorInfoWindowPrivate()
-            : button(NULL),
-              timer(NULL)
+            : timer(NULL)
     {
     }
     /**
@@ -47,7 +46,6 @@ public:
      */
     void loadOptions();
     QMap <MenuItem, QLabel *> labs;
-    Button *button;
     QTimer *timer;
 };
 
@@ -78,7 +76,7 @@ void MonitorInfoWindowPrivate::loadOptions()
 
     tmpStr.clear();
     machineConfig.getStrValue("SerialNumber", tmpStr);
-    button->setText(tmpStr);
+    labs[ITEM_BTN_ELEC_SERIALNUM]->setText(tmpStr);
 
     tmpStr.clear();
     foreach(QNetworkInterface workInterface, QNetworkInterface::allInterfaces())
@@ -114,7 +112,7 @@ void MonitorInfoWindow::layoutExec()
 
     QGridLayout *layout = new QGridLayout;
     layout->setVerticalSpacing(20);
-    setFixedSize(480, 450);
+    setFixedSize(480, 420);
 
     QLabel *labelLeft;
     QLabel *labelRight;
@@ -161,12 +159,11 @@ void MonitorInfoWindow::layoutExec()
 
     labelLeft = new QLabel(trs("ElectronicSerialNumber"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
-    d_ptr->button = new Button("");
-    d_ptr->button->setBorderWidth(0);
-    d_ptr->button->setButtonStyle(Button::ButtonTextBesideIcon);
-    d_ptr->button->setFocusPolicy(Qt::NoFocus);
-    layout->addWidget(d_ptr->button, d_ptr->labs.count(), 1,
-                      Qt::AlignCenter|Qt::AlignRight);
+    labelRight = new QLabel("");
+    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
+    layout->addWidget(labelRight, d_ptr->labs.count(), 1);
+    d_ptr->labs.insert(MonitorInfoWindowPrivate
+                       ::ITEM_BTN_ELEC_SERIALNUM, labelRight);
 
     layout->setRowStretch((layout->rowCount() + 1), 1);
     setWindowLayout(layout);
