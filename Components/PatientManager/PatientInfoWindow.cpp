@@ -632,6 +632,15 @@ void PatientInfoWindow::onBtnReleased()
     Button *btn = qobject_cast<Button *>(sender());
     if (btn == d_ptr->savePatientInfo)
     {
+        if (d_ptr->type->currentIndex() != static_cast<int>(patientManager.getType()))
+        {
+            MessageBox msg(trs("Prompt"), trs("ChangePatientType"), true, true);
+            if (msg.exec() == QDialog::Rejected)
+            {
+                this->hide();
+                return;
+            }
+        }
         d_ptr->savePatientInfoToManager();
         patientManager.setPacermaker(static_cast<PatientPacer>(d_ptr->pacer->currentIndex()));
     }
