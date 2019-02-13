@@ -25,11 +25,6 @@ protected:
 
 private slots:
     /**
-     * @brief onComboIndexChanged
-     * @param index
-     */
-    void  onComboIndexChanged(int index);
-    /**
      * @brief onAlarmBtnReleased
      */
     void onAlarmBtnReleased(void);

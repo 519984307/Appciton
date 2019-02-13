@@ -80,7 +80,14 @@ void NIBPRepairMenuWindow::init()
     d_ptr->repairError = false;
     d_ptr->replyFlag = false;
 
+    // STAT模式时停止STAT
+    if (nibpParam.isSTATMeasure())
+    {
+        nibpParam.setSTATMeasure(false);
+    }
+
     // 进入服务模式。
+    nibpParam.enterMaintain(true);
     QString str;
     machineConfig.getStrValue("NIBP", str);
     if (str != "SUNTECH_NIBP")
@@ -184,8 +191,14 @@ bool NIBPRepairMenuWindow::getRepairError(void)
 void NIBPRepairMenuWindow::hideEvent(QHideEvent *event)
 {
     nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_REPAIR_RETURN, NULL, 0);
-    // 进入服务模式。
-    nibpParam.changeMode(NIBP_STATE_MACHINE_MONITOR);
+    // 退出服务模式。
+    nibpParam.enterMaintain(false);
+    QString str;
+    machineConfig.getStrValue("NIBP", str);
+    if (str != "SUNTECH_NIBP")
+    {
+        nibpParam.changeMode(NIBP_STATE_MACHINE_MONITOR);
+    }
     MenuWindow::hideEvent(event);
 }
 
