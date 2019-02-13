@@ -140,8 +140,8 @@ int RESPDupLimitAlarm::getLower(int paramID)
  *************************************************************************************************/
 int RESPDupLimitAlarm::getCompare(int value, int id)
 {
-    if ((respDupParam.getBrSource() == BR_RR_SOURCE_ECG && id > 1)
-            || (respDupParam.getBrSource() == BR_RR_SOURCE_CO2 && id < 2))
+    if ((respDupParam.getBrSource() == RESPDupParam::BR_SOURCE_ECG && id > 1)
+            || (respDupParam.getBrSource() == RESPDupParam::BR_SOURCE_CO2 && id < 2))
     {
         return 0;
     }
