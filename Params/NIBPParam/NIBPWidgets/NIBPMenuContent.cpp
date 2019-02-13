@@ -332,7 +332,17 @@ void NIBPMenuContent::onAlarmBtnReleased()
 void NIBPMenuContent::onSpinBoxReleased(int value)
 {
     currentConfig.setNumValue("NIBP|InitialCuffInflation", value);
-    value = d_ptr->initCuffStrs.at(value).toFloat() * 10;
+    UnitType curUnit = nibpParam.getUnit();
+    UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_NIBP_SYS);
+    if (curUnit != defUnit)
+    {
+        // 若单位不是mmgh时，要换算后才设置。
+        value = Unit::convert(defUnit, curUnit, d_ptr->initCuffStrs.at(value).toFloat()).toInt();
+    }
+    else
+    {
+        value = d_ptr->initCuffStrs.at(value).toInt();
+    }
     nibpParam.setInitPressure(value);
 }
 
