@@ -107,6 +107,14 @@ int SpinBox::getValue()
 
 void SpinBox::setRange(int min, int max)
 {
+    if (d_ptr->info.type == ItemEditInfo::LIST)
+    {
+        // 当格式为字符串时，设置范围的值不可超出范围
+        if (max > d_ptr->info.highLimit || min < d_ptr->info.lowLimit)
+        {
+            return;
+        }
+    }
     d_ptr->info.lowLimit = min;
     d_ptr->info.highLimit = max;
 }
@@ -169,6 +177,9 @@ void SpinBox::setStringList(QStringList strs)
         return;
     }
     d_ptr->info.list = strs;
+    d_ptr->info.highLimit = strs.count() - 1;
+    d_ptr->info.lowLimit = 0;
+    d_ptr->info.scale = 1;
 }
 
 void SpinBox::onPopupDestroy()

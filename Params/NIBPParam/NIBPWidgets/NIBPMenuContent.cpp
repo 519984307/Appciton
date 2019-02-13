@@ -24,6 +24,7 @@
 #include "AlarmLimitWindow.h"
 #include "SpinBox.h"
 #include "IConfig.h"
+#include "UnitManager.h"
 
 class NIBPMenuContentPrivate
 {
@@ -39,7 +40,7 @@ public:
         ITEM_BTN_ADDITION_MEASURE = 1
     };
 
-    NIBPMenuContentPrivate() : initCuffSpb(NULL) {}
+    NIBPMenuContentPrivate() : initCuffSpb(NULL), initCuffUnitLbl(NULL), curUnitType(UNIT_NONE){}
     /**
      * @brief loadOptions  //load settings
      */
@@ -52,6 +53,9 @@ public:
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, Button *> btns;
     SpinBox *initCuffSpb;
+    QLabel *initCuffUnitLbl;
+    QStringList initCuffStrs;
+    UnitType curUnitType;
 };
 
 
@@ -136,12 +140,12 @@ void NIBPMenuContent::layoutExec()
     label = new QLabel(trs("NIBPInitialCuff"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     d_ptr->initCuffSpb = new SpinBox();
-    d_ptr->initCuffSpb->setStep(10);
-    connect(d_ptr->initCuffSpb, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxReleased(int, int)));
+    d_ptr->initCuffSpb->setSpinBoxStyle(SpinBox::SPIN_BOX_STYLE_STRING);
+    connect(d_ptr->initCuffSpb, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxReleased(int)));
     QHBoxLayout *hLayout = new QHBoxLayout();
-    label = new QLabel("mmHg");
+    d_ptr->initCuffUnitLbl = new QLabel("mmHg");
     hLayout->addWidget(d_ptr->initCuffSpb);
-    hLayout->addWidget(label);
+    hLayout->addWidget(d_ptr->initCuffUnitLbl);
     layout->addLayout(hLayout, d_ptr->combos.count(), 1);
 
 
@@ -190,20 +194,54 @@ void NIBPMenuContentPrivate::loadOptions()
     // 时间
     combos[ITEM_CBO_AUTO_INTERVAL]->setCurrentIndex(nibpParam.getAutoInterval());
 
-    PatientType type = patientManager.getType();
-    int initVal;
-    if (type == PATIENT_TYPE_ADULT)
+    if (curUnitType != nibpParam.getUnit())
     {
-        initCuffSpb->setRange(120, 280);
+        // 判断是否需要重新加载字符串
+        PatientType type = patientManager.getType();
+        int start = 0, end = 0;
+        if (type == PATIENT_TYPE_ADULT)
+        {
+            start = 120;
+            end = 280;
+        }
+        else if (type == PATIENT_TYPE_PED)
+        {
+            start = 80;
+            end = 250;
+        }
+        else if (type == PATIENT_TYPE_NEO)
+        {
+            start = 60;
+            end = 140;
+        }
+        UnitType unit = nibpParam.getUnit();
+        curUnitType = unit;
+        UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_NIBP_SYS);
+        initCuffStrs.clear();
+        for (int i = start; i <= end; i += 10)
+        {
+            if (unit == defUnit)
+            {
+                // 当前单位为预定的单位时（mmgh）
+                initCuffStrs.append(QString::number(i));
+            }
+            else
+            {
+                initCuffStrs.append(Unit::convert(unit, defUnit, i));
+            }
+        }
+        initCuffSpb->setStringList(initCuffStrs);
+        if (unit == defUnit)
+        {
+            initCuffUnitLbl->setText(Unit::getSymbol(UNIT_MMHG));
+        }
+        else
+        {
+            initCuffUnitLbl->setText(Unit::getSymbol(UNIT_KPA));
+        }
     }
-    else if (type == PATIENT_TYPE_PED)
-    {
-        initCuffSpb->setRange(80, 250);
-    }
-    else if (type == PATIENT_TYPE_NEO)
-    {
-        initCuffSpb->setRange(60, 140);
-    }
+
+    int initVal = 0;
     currentConfig.getNumValue("NIBP|InitialCuffInflation", initVal);
     initCuffSpb->setValue(initVal);
 
@@ -297,10 +335,21 @@ void NIBPMenuContent::onAlarmBtnReleased()
     windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
 }
 
-void NIBPMenuContent::onSpinBoxReleased(int value, int scale)
+void NIBPMenuContent::onSpinBoxReleased(int value)
 {
-    nibpParam.setInitPressure(value * scale);
     currentConfig.setNumValue("NIBP|InitialCuffInflation", value);
+    UnitType curUnit = nibpParam.getUnit();
+    UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_NIBP_SYS);
+    if (curUnit != defUnit)
+    {
+        // 若单位不是mmgh时，要换算后才设置。
+        value = Unit::convert(defUnit, curUnit, d_ptr->initCuffStrs.at(value).toFloat()).toInt();
+    }
+    else
+    {
+        value = d_ptr->initCuffStrs.at(value).toInt();
+    }
+    nibpParam.setInitPressure(value);
 }
 
 void NIBPMenuContent::onCboItemFocusChanged(int index)

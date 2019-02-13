@@ -22,6 +22,7 @@
 #include "ConfigManager.h"
 #include "SpinBox.h"
 #include "IConfig.h"
+#include "NIBPParam.h"
 
 class ConfigEditNIBPMenuContentPrivate
 {
@@ -34,11 +35,14 @@ public:
 
     Config *const config;
     SpinBox *initCuffSpb;
+    QStringList initCuffStrs;
+    QLabel *initCuffUnitLbl;
+    UnitType curInitCuffUnit;
 };
 
 ConfigEditNIBPMenuContentPrivate
     ::ConfigEditNIBPMenuContentPrivate(Config *const config)
-    :config(config), initCuffSpb(NULL)
+    :config(config), initCuffSpb(NULL), initCuffUnitLbl(NULL), curInitCuffUnit(UNIT_NONE)
 {
 }
 
@@ -56,20 +60,53 @@ ConfigEditNIBPMenuContent::~ConfigEditNIBPMenuContent()
 
 void ConfigEditNIBPMenuContentPrivate::loadOptions()
 {
-    PatientType type = patientManager.getType();
+    if (curInitCuffUnit != nibpParam.getUnit())
+    {
+        UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_NIBP_SYS);
+        UnitType unit = nibpParam.getUnit();
+        curInitCuffUnit = unit;
+        PatientType type = patientManager.getType();
+        int start = 0, end = 0;
+        if (type == PATIENT_TYPE_ADULT)
+        {
+            start = 120;
+            end = 280;
+        }
+        else if (type == PATIENT_TYPE_PED)
+        {
+            start = 80;
+            end = 250;
+        }
+        else if (type == PATIENT_TYPE_NEO)
+        {
+            start = 60;
+            end = 140;
+        }
+        initCuffStrs.clear();
+        for (int i = start; i <= end; i += 10)
+        {
+            if (unit == defUnit)
+            {
+                initCuffStrs.append(QString::number(i));
+            }
+            else
+            {
+                initCuffStrs.append(Unit::convert(unit, defUnit, i));
+            }
+        }
+        initCuffSpb->setStringList(initCuffStrs);
+
+        if (unit == defUnit)
+        {
+            initCuffUnitLbl->setText(Unit::getSymbol(UNIT_MMHG));
+        }
+        else
+        {
+            initCuffUnitLbl->setText(Unit::getSymbol(UNIT_KPA));
+        }
+    }
+
     int initVal;
-    if (type == PATIENT_TYPE_ADULT)
-    {
-        initCuffSpb->setRange(120, 280);
-    }
-    else if (type == PATIENT_TYPE_PED)
-    {
-        initCuffSpb->setRange(80, 250);
-    }
-    else if (type == PATIENT_TYPE_NEO)
-    {
-        initCuffSpb->setRange(60, 140);
-    }
     config->getNumValue("NIBP|InitialCuffInflation", initVal);
     initCuffSpb->setValue(initVal);
 }
@@ -108,12 +145,12 @@ void ConfigEditNIBPMenuContent::layoutExec()
     label = new QLabel(trs("NIBPInitialCuff"));
     layout->addWidget(label, count, 0);
     d_ptr->initCuffSpb = new SpinBox();
-    d_ptr->initCuffSpb->setStep(10);
+    d_ptr->initCuffSpb->setSpinBoxStyle(SpinBox::SPIN_BOX_STYLE_STRING);
     connect(d_ptr->initCuffSpb, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxReleased(int)));
     QHBoxLayout *hLayout = new QHBoxLayout();
-    label = new QLabel("mmHg");
+    d_ptr->initCuffUnitLbl = new QLabel("mmHg");
     hLayout->addWidget(d_ptr->initCuffSpb);
-    hLayout->addWidget(label);
+    hLayout->addWidget(d_ptr->initCuffUnitLbl);
     layout->addLayout(hLayout, count, 1);
 
     // 添加报警设置链接

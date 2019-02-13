@@ -50,7 +50,8 @@ public:
 
     /**
      * @brief setValue set current display value
-     * @param value
+     * @param value 当风格为number时，value代表显示值
+     *              当风格为string时，value代表字符串列表下标值
      */
     void setValue(int value);
     int getValue(void);
