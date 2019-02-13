@@ -48,7 +48,7 @@ private slots:
     /**
      * @brief onSpinBoxReleased
      */
-    void onSpinBoxReleased(int value, int scale);
+    void onSpinBoxReleased(int value);
 
     /**
      * @brief onCboItemFocusChanged combox item focus changed
