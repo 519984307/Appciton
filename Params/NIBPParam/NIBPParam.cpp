@@ -161,7 +161,7 @@ void NIBPParam::exitDemo()
     _prVaule = InvData();
 
     switchState(_stateBeforeDemo);
-    if (curStatusType() == NIBP_SERVICE_STANDBY_STATE)
+    if (curStatusType() == NIBP_MONITOR_STANDBY_STATE)
     {
         // 若返回的时准备模式，则清除显示数据
         invResultData();
@@ -252,7 +252,8 @@ void NIBPParam::setProvider(NIBPProviderIFace *provider)
     if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
     {
         _stateBeforeDemo = curStatusType();
-        switchState(NIBP_SERVICE_STANDBY_STATE);
+        qDebug() << "enter demo :" << _stateBeforeDemo;
+        switchState(NIBP_MONITOR_GET_RESULT_STATE);
     }
 }
 

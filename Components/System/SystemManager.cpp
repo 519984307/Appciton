@@ -48,6 +48,7 @@
 #include "PatientManager.h"
 #include "DataStorageDirManager.h"
 #include "StandbyWindow.h"
+#include "NIBPParam.h"
 
 #define BACKLIGHT_DEV   "/sys/class/backlight/backlight/brightness"       // 背光控制文件接口
 
@@ -92,6 +93,10 @@ public:
      */
     void enterDemoMode()
     {
+        if (nibpParam.isMeasuring())
+        {
+            nibpParam.stopMeasure();
+        }
         alarmIndicator.delAllPhyAlarm();
         windowManager.showDemoWidget(true);
         paramManager.connectDemoParamProvider();
