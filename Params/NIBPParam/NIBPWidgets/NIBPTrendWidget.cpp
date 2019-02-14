@@ -110,7 +110,11 @@ void NIBPTrendWidget::setResults(int16_t sys, int16_t dia, int16_t map, unsigned
         d_ptr->measureTime = timeStr;
     }
 
-    saveResults(sys , dia , map , time);
+    if (systemManager.getCurWorkMode() == WORK_MODE_NORMAL)
+    {
+        // 正常模式下，才保存设置值
+        saveResults(sys , dia , map , time);
+    }
 
     if ((sys == InvData()) || (dia == InvData()) || (map == InvData()))
     {
