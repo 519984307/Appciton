@@ -48,6 +48,13 @@ public:
      */
     void loadOptions();
 
+    /**
+     * @brief adjustWaveformRuler and adjsut the size of the co2 waveform ruler
+     * @param size and the waveform ruler size
+     * @return and the adjusted size
+     */
+    float adjustWaveformRuler(float size);
+
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, Button *> btns;
     SpinBox *o2Spb;
@@ -94,7 +101,7 @@ void CO2MenuContentPrivate::loadOptions()
         }
         else
         {
-            str = QString("0.0~%1").arg(QString::number(zoomArray[i], 'f', 1));
+            str = QString("0.0~%1").arg(QString::number(adjustWaveformRuler(zoomArray[i]), 'f', 1));
         }
         str += " ";
         str += Unit::localeSymbol(unit);
@@ -113,6 +120,18 @@ void CO2MenuContentPrivate::loadOptions()
     ApneaAlarmTime index = co2Param.getApneaTime();
 
     combos[ITEM_CBO_APNEA_TIME]->setCurrentIndex(index);
+}
+
+float CO2MenuContentPrivate::adjustWaveformRuler(float size)
+{
+    if (size == 13.0)
+    {
+        return 12.0;
+    }
+    else
+    {
+        return size;
+    }
 }
 
 void CO2MenuContent::onComboBoxIndexChanged(int index)
