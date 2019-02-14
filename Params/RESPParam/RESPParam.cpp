@@ -245,6 +245,7 @@ void RESPParam::setWaveWidget(RESPWaveWidget *waveWidget)
     d_ptr->waveWidget = waveWidget;
     d_ptr->setWaveformSpeed(getSweepSpeed());
     setZoom(getZoom());
+    d_ptr->waveWidget->setWaveformMode(getSweepMode());
 }
 
 void RESPParam::setOxyCRGWaveRESPWidget(OxyCRGRESPWaveWidget *waveWidget)
