@@ -160,11 +160,11 @@ void NIBPParam::exitDemo()
     _mapVaule = InvData();
     _prVaule = InvData();
 
-    switchState(_stateBeforeDemo);
-    if (curStatusType() == NIBP_SERVICE_STANDBY_STATE)
+    switchState(curStatusType());
+    if (curStatusType() == NIBP_MONITOR_STANDBY_STATE || curStatusType() == NIBP_MONITOR_SAFEWAITTIME_STATE)
     {
         // 若返回的时准备模式，则清除显示数据
-        invResultData();
+        clearResult();
     }
 }
 
@@ -242,17 +242,6 @@ void NIBPParam::setProvider(NIBPProviderIFace *provider)
     if (_activityMachine->isExit())
     {
         _activityMachine->enter();
-    }
-    else
-    {
-        // state machine might reentry while it is existing, don't enter again
-        qdebug("Already in NIBP monitor state machine\n");
-    }
-
-    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
-    {
-        _stateBeforeDemo = curStatusType();
-        switchState(NIBP_SERVICE_STANDBY_STATE);
     }
 }
 
@@ -1389,7 +1378,7 @@ NIBPParam::NIBPParam()
       _connectedFlag(false), _connectedProvider(false),
       _text(InvStr()),
       _reply(false), _result(false), _manometerPressure(InvData()), _isMaintain(false),
-      _activityMachine(NULL), _stateBeforeDemo(NIBP_MONITOR_STANDBY_STATE)
+      _activityMachine(NULL)
 {
     nibpCountdownTime.construction();
 
