@@ -251,6 +251,47 @@ void RESPDupParam::updateSubParamLimit(SubParamID id)
     }
 }
 
+void RESPDupParam::setRRSource(BRRRSourceType source)
+{
+    switch (source)
+    {
+    case BR_RR_AUTO:
+        setAutoBrSourceStatue(true);
+        break;
+    case BR_RR_SOURCE_CO2:
+        setAutoBrSourceStatue(false);
+        setBrSource(BR_SOURCE_CO2);
+    case BR_RR_SOURCE_ECG:
+        setAutoBrSourceStatue(false);
+        setBrSource(BR_SOURCE_ECG);
+    default:
+        break;
+    }
+    int index = static_cast<int>(source);
+    currentConfig.setNumValue("RESP|BrSource", index);
+}
+
+void RESPDupParam::updateRRSource()
+{
+    int index = 0;
+    currentConfig.getNumValue("RESP|BrSource", index);
+    BRRRSourceType rrSource = static_cast<BRRRSourceType>(index);
+    switch (rrSource)
+    {
+    case BR_RR_AUTO:
+        setAutoBrSourceStatue(true);
+        break;
+    case BR_RR_SOURCE_CO2:
+        setAutoBrSourceStatue(false);
+        setBrSource(BR_SOURCE_CO2);
+    case BR_RR_SOURCE_ECG:
+        setAutoBrSourceStatue(false);
+        setBrSource(BR_SOURCE_ECG);
+    default:
+        break;
+    }
+}
+
 void RESPDupParam::onPaletteChanged(ParamID id)
 {
     if (id != PARAM_RESP || !systemManager.isSupport(CONFIG_RESP))

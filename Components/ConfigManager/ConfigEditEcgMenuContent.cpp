@@ -35,7 +35,7 @@ public:
         ITEM_CBO_HTBT_VOL,
         ITEM_CBO_LEAD_MODE,
         ITEM_CBO_NOTCH_FILTER,
-
+        ITEM_CBO_PACER_MARK,
         ITEM_CBO_MAX,
     };
 
@@ -224,6 +224,9 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
         MenuItem item = static_cast<MenuItem>(i);
         combos[item]->blockSignals(false);
     }
+
+    config->getNumValue("ECG|PacerMaker", index);
+    combos[ITEM_CBO_PACER_MARK]->setCurrentIndex(index);
 }
 
 ConfigEditECGMenuContent::ConfigEditECGMenuContent(Config *const config)
@@ -335,7 +338,7 @@ void ConfigEditECGMenuContent::layoutExec()
     d_ptr->combos.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_SWEEP_SPEED, comboBox);
 
     // filter
-    label = new QLabel(trs("Filter"));
+    label = new QLabel(trs("FilterMode"));
     d_ptr->comboLabels.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_FILTER_MODE,
                               label);
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -404,6 +407,22 @@ void ConfigEditECGMenuContent::layoutExec()
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_NOTCH_FILTER, comboBox);
+
+    // paceMark
+    label = new QLabel(trs("ECGPaceMarker"));
+    d_ptr->comboLabels.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_PACER_MARK,
+                              label);
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                       << trs(ECGSymbol::convert(ECG_PACE_OFF))
+                       << trs(ECGSymbol::convert(ECG_PACE_ON)));
+    itemID = ConfigEditECGMenuContentPrivate::ITEM_CBO_PACER_MARK;
+    comboBox->setProperty("Item",
+                          qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_PACER_MARK, comboBox);
 
 #ifndef  HIDE_ECG_ST_PVCS_SUBPARAM
     // ST 段开关
@@ -535,6 +554,8 @@ void ConfigEditECGMenuContent::onComboBoxIndexChanged(int index)
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_SWEEP_SPEED:
             d_ptr->config->setNumValue("ECG|SweepSpeed", index);
             break;
+        case ConfigEditECGMenuContentPrivate::ITEM_CBO_PACER_MARK:
+            d_ptr->config->setNumValue("ECG|PacerMaker", index);
         default:
             break;
         }

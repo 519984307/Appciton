@@ -244,6 +244,7 @@ public: // 用于访问配置相关信息。
     // 设置/获取起搏标记。
     void setPacermaker(ECGPaceMode onoff);
     ECGPaceMode getPacermaker(void);
+    void updatePacermaker(void);
 
     // 设置/获取12L起搏标记。
     void set12LPacermaker(ECGPaceMode onoff);

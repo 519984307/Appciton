@@ -253,27 +253,7 @@ void RESPMenuContent::onComboBoxIndexChanged(int index)
             co2Param.setApneaTime((ApneaAlarmTime)index);
             break;
         case RESPMenuContentPrivate::ITEM_CBO_RR_SOURCE:
-        {
-            if (index == 0)
-            {
-                respDupParam.setAutoBrSourceStatue(true);
-                currentConfig.setNumValue("RESP|BrSource", index);
-                break;
-            }
-            else
-            {
-                respDupParam.setAutoBrSourceStatue(false);
-            }
-            if (BR_RR_SOURCE_CO2 == index)
-            {
-                respDupParam.setBrSource(RESPDupParam::BR_SOURCE_CO2);
-            }
-            else if (BR_RR_SOURCE_ECG == index)
-            {
-                respDupParam.setBrSource(RESPDupParam::BR_SOURCE_ECG);
-            }
-             currentConfig.setNumValue("RESP|BrSource", index);
-        }
+            respDupParam.setRRSource(static_cast<BRRRSourceType>(index));
             break;
         case RESPMenuContentPrivate::ITEM_CBO_WAVE_GAIN:
             respParam.setZoom(static_cast<RESPZoom>(index));

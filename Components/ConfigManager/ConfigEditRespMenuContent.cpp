@@ -19,6 +19,7 @@
 #include "ParamInfo.h"
 #include "ParamDefine.h"
 #include "ConfigManager.h"
+#include "RESPDupParam.h"
 
 class ConfigEditRespMenuContentPrivate
 {
@@ -27,6 +28,7 @@ public:
     {
         ITEM_CBO_APNEA_DELAY = 0,
         ITEM_CBO_BREATH_LEAD,
+        ITEM_CBO_RR_SOURCE,
         ITEM_CBO_RESP_GAIN,
         ITEM_CBO_SWEEP_SPEED,
         ITEM_CBO_MAX,
@@ -40,11 +42,12 @@ public:
 
     QMap <MenuItem, ComboBox *> combos;
     Config *const config;
+    QLabel *brRRSouce;
 };
 
 ConfigEditRespMenuContentPrivate
     ::ConfigEditRespMenuContentPrivate(Config *const config)
-    : config(config)
+    : config(config), brRRSouce(NULL)
 {
     combos.clear();
 }
@@ -69,6 +72,17 @@ void ConfigEditRespMenuContentPrivate::loadOptions()
     index = 0;
     config->getNumValue("RESP|BreathLead", index);
     combos[ITEM_CBO_BREATH_LEAD]->setCurrentIndex(index);
+    index = 0;
+    config->getNumValue("RESP|BrSource", index);
+    combos[ITEM_CBO_RR_SOURCE]->setCurrentIndex(index);
+    if (respDupParam.getParamSourceType() == RESPDupParam::BR)
+    {
+        brRRSouce->setText(trs("BRSource"));
+    }
+    else
+    {
+        brRRSouce->setText(trs("RRSource"));
+    }
     index = 0;
     config->getNumValue("RESP|Gain", index);
     combos[ITEM_CBO_RESP_GAIN]->setCurrentIndex(index);
@@ -104,6 +118,9 @@ void ConfigEditRespMenuContent::onComboIndexChanged(int index)
         break;
     case ConfigEditRespMenuContentPrivate::ITEM_CBO_BREATH_LEAD:
         d_ptr->config->setNumValue("RESP|BreathLead", index);
+        break;
+    case ConfigEditRespMenuContentPrivate::ITEM_CBO_RR_SOURCE:
+        d_ptr->config->setNumValue("RESP|BrSource", index);
         break;
     case ConfigEditRespMenuContentPrivate::ITEM_CBO_RESP_GAIN:
         d_ptr->config->setNumValue("RESP|Gain", index);
@@ -173,8 +190,23 @@ void ConfigEditRespMenuContent::layoutExec()
     itemID = ConfigEditRespMenuContentPrivate::ITEM_CBO_BREATH_LEAD;
     comboBox->setProperty("Item", qVariantFromValue(itemID));
 
+    // rr source
+    label = new QLabel(trs("RRSource"));
+    d_ptr->brRRSouce = label;
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox;
+    comboBox->addItems(QStringList()
+                       << trs(RESPSymbol::convert(BR_RR_AUTO))
+                       << trs(RESPSymbol::convert(BR_RR_SOURCE_ECG))
+                       << trs(RESPSymbol::convert(BR_RR_SOURCE_CO2)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(ConfigEditRespMenuContentPrivate::ITEM_CBO_RR_SOURCE, comboBox);
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboIndexChanged(int)));
+    itemID = ConfigEditRespMenuContentPrivate::ITEM_CBO_RR_SOURCE;
+    comboBox->setProperty("Item", qVariantFromValue(itemID));
+
     // gain
-    label = new QLabel(trs("RespGain"));
+    label = new QLabel(trs("RESPWaveGain"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox;
     comboBox->addItems(QStringList()

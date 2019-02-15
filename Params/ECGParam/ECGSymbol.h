@@ -62,18 +62,6 @@ public:
         else
         {
             int is12LInt = is12L ? 1 : 0;
-            static const char *symbol[ECG_CONVENTION_NR][ECG_LEAD_NR] =
-            {
-                {
-                    "I",  "II", "III", "aVR", "aVL", "aVF",
-                    "V1", "V2",  "V3", "V4",  "V5",  "V6"
-                },
-
-                {
-                    "I",  "II", "III", "aVR", "aVL", "aVF",
-                    "C1", "C2",  "C3", "C4",  "C5",  "C6"
-                }
-            };
             if (!is12LInt && index >= ECG_LEAD_V1)
             {
                 if (convention == ECG_CONVENTION_AAMI)
@@ -87,6 +75,18 @@ public:
             }
             else
             {
+                static const char *symbol[ECG_CONVENTION_NR][ECG_LEAD_NR] =
+                {
+                    {
+                        "I",  "II", "III", "aVR", "aVL", "aVF",
+                        "V1", "V2",  "V3", "V4",  "V5",  "V6"
+                    },
+
+                    {
+                        "I",  "II", "III", "aVR", "aVL", "aVF",
+                        "C1", "C2",  "C3", "C4",  "C5",  "C6"
+                    }
+                };
                 return symbol[convention][index];
             }
         }
