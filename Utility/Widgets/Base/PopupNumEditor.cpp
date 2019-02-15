@@ -95,7 +95,15 @@ void PopupNumEditorPrivate::decreaseValue()
 
 QString PopupNumEditorPrivate::value() const
 {
-    return Util::convertToString(editInfo.curValue, editInfo.scale);
+    if (editInfo.type == ItemEditInfo::VALUE)
+    {
+        return Util::convertToString(editInfo.curValue, editInfo.scale);
+    }
+    else if (editInfo.type == ItemEditInfo::LIST)
+    {
+        return editInfo.list.at(editInfo.curValue);
+    }
+    return QString();
 }
 
 PopupNumEditor::PopupNumEditor()

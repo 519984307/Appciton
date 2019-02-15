@@ -25,6 +25,8 @@
 #include "WaveWidget.h"
 #include "TimeManager.h"
 #include <QDebug>
+#include <TrendCache.h>
+#include "WindowManager.h"
 
 #define STOP_PRINT_TIMEOUT          (100)
 
@@ -133,23 +135,25 @@ void FreezeWindow::showEvent(QShowEvent *ev)
 
     move(rect.x() + (rect.width() - width()) / 2, rect.y() + rect.height() - height());
 
-    freezeManager.startFreeze();
-
     unsigned currentTime = timeManager.getCurTime();
     eventStorageManager.triggerWaveFreezeEvent(currentTime);
+
+    // 将开始冻结打印接口放在触发波形冻结事件后面，这样该接口内部的趋势表数据缓冲容器可以及时获取有效缓冲数据
+    freezeManager.startFreeze();
 }
 
 void FreezeWindow::hideEvent(QHideEvent *ev)
 {
     Window::hideEvent(ev);
     freezeManager.stopFreeze();
+    windowManager.closeAllWidows();
 }
 
 void FreezeWindow::timerEvent(QTimerEvent *ev)
 {
     if (d_ptr->printTimerId == ev->timerId())
     {
-        if (!recorderManager.isPrinting() || d_ptr->timeoutNum == 10) // 1000ms超时处理
+        if (!recorderManager.isPrinting() || d_ptr->timeoutNum == 10)  // 1000ms超时处理
         {
             if (!recorderManager.isPrinting())
             {
@@ -188,7 +192,7 @@ void FreezeWindow::onSelectWaveChanged(const QString &waveName)
     for (int i = 0; i < RECORD_FREEZE_WAVE_NUM; i++)
     {
         ComboBox *curCmbList = d_ptr->combos[i];
-        if (curCmbList->currentIndex() != 0) // not in off state
+        if (curCmbList->currentIndex() != 0)  // not in off state
         {
             wavenames.insert(curCmbList->currentText());
             count++;
@@ -279,7 +283,7 @@ void FreezeWindow::onBtnClick()
             {
                 recorderManager.stopPrint();
                 d_ptr->generator = generator;
-                d_ptr->waitTimerId = startTimer(2000); // 等待2000ms
+                d_ptr->waitTimerId = startTimer(2000);  // 等待2000ms
                 d_ptr->isWait = true;
             }
         }

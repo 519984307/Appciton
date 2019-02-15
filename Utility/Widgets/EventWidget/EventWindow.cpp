@@ -47,6 +47,8 @@
 #include "MessageBox.h"
 #include "CO2Param.h"
 #include "EventListPageGenerator.h"
+#include "NIBPSymbol.h"
+#include "ThemeManager.h"
 
 #define TABLE_SPACING               (4)
 #define PAGE_ROW_COUNT               7      // 每页多少行
@@ -609,6 +611,7 @@ EventWindow::EventWindow()
     d_ptr->model = new EventReviewModel();
     d_ptr->eventTable->setModel(d_ptr->model);
     d_ptr->eventTable->setFixedHeight((PAGE_ROW_COUNT + 1) * d_ptr->model->getHeightHint());
+    d_ptr->eventTable->setItemDelegate(new TableViewItemDelegate(this));
     connect(d_ptr->eventTable, SIGNAL(clicked(QModelIndex)), this, SLOT(waveInfoReleased(QModelIndex)));
     connect(d_ptr->eventTable, SIGNAL(rowClicked(int)), this, SLOT(waveInfoReleased(int)));
 
@@ -632,11 +635,14 @@ EventWindow::EventWindow()
     d_ptr->listPrintBtn->setButtonStyle(Button::ButtonTextOnly);
     connect(d_ptr->listPrintBtn, SIGNAL(released()), this, SLOT(eventListPrintReleased()));
 
-    d_ptr->upPageBtn = new Button("", QIcon("/usr/local/nPM/icons/up.png"));
+    QSize iconsize(24, 24);
+    d_ptr->upPageBtn = new Button("", themeManger.getIcon(ThemeManager::IconUp, iconsize));
+    d_ptr->upPageBtn->setIconSize(iconsize);
     d_ptr->upPageBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->upPageBtn, SIGNAL(released()), this, SLOT(upPageReleased()));
 
-    d_ptr->downPageBtn = new Button("", QIcon("/usr/local/nPM/icons/down.png"));
+    d_ptr->downPageBtn = new Button("", themeManger.getIcon(ThemeManager::IconDown, iconsize));
+    d_ptr->downPageBtn->setIconSize(iconsize);
     d_ptr->downPageBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->downPageBtn, SIGNAL(released()), this, SLOT(downPageReleased()));
 
@@ -648,7 +654,7 @@ EventWindow::EventWindow()
     hTableLayout->addWidget(levelLabel, 1);
     hTableLayout->addWidget(d_ptr->levelCbo, 4);
     hTableLayout->addStretch(1);
-    hTableLayout->addWidget(d_ptr->listPrintBtn, 3);
+    hTableLayout->addWidget(d_ptr->listPrintBtn, 4);
     hTableLayout->addStretch(1);
     hTableLayout->addWidget(d_ptr->upPageBtn, 2);
     hTableLayout->addWidget(d_ptr->downPageBtn, 2);
@@ -705,11 +711,13 @@ EventWindow::EventWindow()
     d_ptr->setBtn->setButtonStyle(Button::ButtonTextOnly);
     connect(d_ptr->setBtn, SIGNAL(released()), this, SLOT(setReleased()));
 
-    d_ptr->upParamBtn = new Button("", QIcon("/usr/local/nPM/icons/up.png"));
+    d_ptr->upParamBtn = new Button("", themeManger.getIcon(ThemeManager::IconUp, iconsize));
+    d_ptr->upParamBtn->setIconSize(iconsize);
     d_ptr->upParamBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->upParamBtn, SIGNAL(released()), this, SLOT(upReleased()));
 
-    d_ptr->downParamBtn = new Button("", QIcon("/usr/local/nPM/icons/down.png"));
+    d_ptr->downParamBtn = new Button("", themeManger.getIcon(ThemeManager::IconDown, iconsize));
+    d_ptr->downParamBtn->setIconSize(iconsize);
     d_ptr->downParamBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->downParamBtn, SIGNAL(released()), this, SLOT(downReleased()));
 
@@ -725,11 +733,13 @@ EventWindow::EventWindow()
     QVBoxLayout *vWaveLayout = new QVBoxLayout();
     vWaveLayout->addWidget(d_ptr->infoWidget, 1);
     vWaveLayout->addLayout(hLayout, 15);
-    vWaveLayout->addLayout(btnLayout);
     vWaveLayout->setSpacing(0);
+    QVBoxLayout *vLayout = new QVBoxLayout();
+    vLayout->addLayout(vWaveLayout);
+    vLayout->addLayout(btnLayout);
 
     d_ptr->chartWidget = new QWidget();
-    d_ptr->chartWidget->setLayout(vWaveLayout);
+    d_ptr->chartWidget->setLayout(vLayout);
 
     d_ptr->stackLayout = new QStackedLayout();
     d_ptr->stackLayout->addWidget(d_ptr->tableWidget);
@@ -756,12 +766,14 @@ void EventWindowPrivate::loadEventData()
     unsigned char alarmId;
     AlarmPriority priority;
     AlarmPriority curPriority;
-    AlarmLimitIFace *alarmLimit;
+    AlarmLimitIFace *alarmLimit = NULL;
+    AlarmOneShotIFace *alarmOneShot = NULL;
     QList<QString> timeList;
     QList<QString> eventList;
     printList.clear();
     for (int i = eventNum - 1; i >= 0; i --)
     {
+        infoStr.clear();
         priority = ALARM_PRIO_PROMPT;
         if (parseEventData(i))
         {
@@ -787,10 +799,21 @@ void EventWindowPrivate::loadEventData()
                 subId = (SubParamID)(ctx.almSegment->subParamID);
                 alarmId = ctx.almSegment->alarmType;
                 alarmInfo = ctx.almSegment->alarmInfo;
-                alarmLimit = alertor.getAlarmLimitIFace(subId);
-                if (alarmLimit)
+                if (alarmInfo & 0x01)   // oneshot 报警事件
                 {
-                    priority = alarmLimit->getAlarmPriority(alarmId);
+                    alarmOneShot = alertor.getAlarmOneShotIFace(subId);
+                    if (alarmOneShot)
+                    {
+                        priority = alarmOneShot->getAlarmPriority(alarmId);
+                    }
+                }
+                else
+                {
+                    alarmLimit = alertor.getAlarmLimitIFace(subId);
+                    if (alarmLimit)
+                    {
+                        priority = alarmLimit->getAlarmPriority(alarmId);
+                    }
                 }
 
                 if (curEventType != EventAll)
@@ -825,9 +848,23 @@ void EventWindowPrivate::loadEventData()
                 }
 
                 ParamID paramId = paramInfo.getParamID(subId);
+                // oneshot 报警
+                if (alarmInfo & 0x01)
+                {
+                    // 将参数ID转换为oneshot报警对应的参数ID
+                    if (paramId == PARAM_DUP_ECG)
+                    {
+                        paramId = PARAM_ECG;
+                    }
+                    else if (paramId == PARAM_DUP_RESP)
+                    {
+                        paramId = PARAM_RESP;
+                    }
+                }
                 infoStr += " ";
                 infoStr += trs(Alarm::getPhyAlarmMessage(paramId, alarmId, alarmInfo & 0x1));
 
+                // 超限报警
                 if (!(alarmInfo & 0x1))
                 {
                     if (alarmInfo & 0x2)
@@ -849,6 +886,10 @@ void EventWindowPrivate::loadEventData()
             }
             case EventCodeMarker:
             {
+                if (levelToPriority(curEventLevel) != ALARM_PRIO_PROMPT)
+                {
+                    continue;
+                }
                 infoStr = (QString)ctx.codeMarkerSegment->codeName;
                 timeList.append(timeItemStr);
                 eventList.append(infoStr);
@@ -856,6 +897,10 @@ void EventWindowPrivate::loadEventData()
             }
             case EventRealtimePrint:
             {
+                if (levelToPriority(curEventLevel) != ALARM_PRIO_PROMPT)
+                {
+                    continue;
+                }
                 infoStr = trs("RealtimePrintSegment");
                 timeList.append(timeItemStr);
                 eventList.append(infoStr);
@@ -863,6 +908,10 @@ void EventWindowPrivate::loadEventData()
             }
             case EventNIBPMeasurement:
             {
+                if (levelToPriority(curEventLevel) != ALARM_PRIO_PROMPT)
+                {
+                    continue;
+                }
                 infoStr = trs("NibpMeasurement");
                 timeList.append(timeItemStr);
                 eventList.append(infoStr);
@@ -870,6 +919,10 @@ void EventWindowPrivate::loadEventData()
             }
             case EventWaveFreeze:
             {
+                if (levelToPriority(curEventLevel) != ALARM_PRIO_PROMPT)
+                {
+                    continue;
+                }
                 infoStr = trs("WaveFreeze");
                 timeList.append(timeItemStr);
                 eventList.append(infoStr);
@@ -924,17 +977,24 @@ void EventWindowPrivate::eventInfoUpdate(int curRow)
     case EventPhysiologicalAlarm:
     {
         SubParamID subId = (SubParamID)(ctx.almSegment->subParamID);
-        AlarmLimitIFace *alarmLimit = alertor.getAlarmLimitIFace(subId);
         unsigned char alarmId = ctx.almSegment->alarmType;
         unsigned char alarmInfo = ctx.almSegment->alarmInfo;
         AlarmPriority priority;
-        if (alarmLimit)
+        if (alarmInfo & 0x01)   // oneshot 报警事件
         {
-            priority = alarmLimit->getAlarmPriority(alarmId);
+            AlarmOneShotIFace *alarmOneShot = alertor.getAlarmOneShotIFace(subId);
+            if (alarmOneShot)
+            {
+                priority = alarmOneShot->getAlarmPriority(alarmId);
+            }
         }
         else
         {
-            return;
+            AlarmLimitIFace *alarmLimit = alertor.getAlarmLimitIFace(subId);
+            if (alarmLimit)
+            {
+                priority = alarmLimit->getAlarmPriority(alarmId);
+            }
         }
 
         if (priority == ALARM_PRIO_LOW)
@@ -955,6 +1015,19 @@ void EventWindowPrivate::eventInfoUpdate(int curRow)
         }
 
         ParamID paramId = paramInfo.getParamID(subId);
+        // oneshot 报警
+        if (alarmInfo & 0x01)
+        {
+            // 将参数ID转换为oneshot报警对应的参数ID
+            if (paramId == PARAM_DUP_ECG)
+            {
+                paramId = PARAM_ECG;
+            }
+            else if (paramId == PARAM_DUP_RESP)
+            {
+                paramId = PARAM_RESP;
+            }
+        }
         infoStr += " ";
         infoStr += trs(Alarm::getPhyAlarmMessage(paramId,
                        alarmId,
@@ -984,14 +1057,26 @@ void EventWindowPrivate::eventInfoUpdate(int curRow)
     }
     case EventRealtimePrint:
     {
+        infoStr = trs("RealtimePrintSegment");
         break;
     }
     case EventNIBPMeasurement:
     {
+        infoStr = trs("NibpMeasurement");
+        if (ctx.measureSegment->measureResult == NIBP_ONESHOT_NONE)
+        {
+            infoStr = trs("NIBPMEASURE") + trs("ServiceSuccess");
+        }
+        else
+        {
+            infoStr = trs("NIBPMEASURE") + trs("NIBPFAILED") + ",";
+            infoStr += trs(NIBPSymbol::convert((NIBPOneShotType)(ctx.measureSegment->measureResult)));
+        }
         break;
     }
     case EventWaveFreeze:
     {
+        infoStr = trs("WaveFreeze");
         break;
     }
     default:

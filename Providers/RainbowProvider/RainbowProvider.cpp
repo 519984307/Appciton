@@ -713,7 +713,9 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     {
         unsigned int temp = (data[0] << 24) + (data[1] << 16) + (data[2] << 8) + data[3];
 
-        bool isCableOff = !!(temp & RB_NOSENSOR_CONNECTED);  // no sensor connected
+        bool isCableOff = !!(temp & RB_NO_CABLE_CONNECTED);  // no cable connected
+
+        isCableOff |= !!(temp & RB_NOSENSOR_CONNECTED);  // no sensor connected
 
         isCableOff |= !!(temp & RB_SENSOR_OFF_PATIENT);  // sensor off patient
 
@@ -784,7 +786,11 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         unsigned short sensorFamilyMember = (data[2] << 8) | data[3];
         if (sensorFamilyMember == 8 || sensorType == 0)
         {
-            qDebug() << "No Sensor Connected!";
+            // remove the debug hint
+//            qDebug() << "No Sensor Connected!";
+
+            // 传感器探头突然脱落时，会一直进来这里,添加报警
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, true);
         }
     }
     break;

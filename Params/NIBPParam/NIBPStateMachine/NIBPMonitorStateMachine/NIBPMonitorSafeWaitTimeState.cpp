@@ -153,10 +153,25 @@ void NIBPMonitorSafeWaitTimeState::handleNIBPEvent(NIBPEvent event, const unsign
             }
             else
             {
-                nibpParam.setSTATOpenTemp(true);
-                nibpParam.setSTATMeasure(true);
-                nibpParam.setText(trs("NIBPWAITING"));
-                nibpParam.setModelText(trs("STATOPEN"));
+                if (elspseTime() > (5 * 1000))  // 如果安全间隔时间超过5秒，直接进入STAT模式进行测量
+                {
+                    nibpCountdownTime.setAutoMeasureTimeout(false);
+                    nibpParam.setSTATClose(false);
+                    nibpParam.setSTATOpenTemp(false);
+                    nibpParam.setSTATMeasure(true);
+                    nibpCountdownTime.STATMeasureStart();  // 只测量5分钟。
+                    switchState(NIBP_MONITOR_STARTING_STATE);
+                    break;
+                }
+                else if (elspseTime() < (5 *
+                                         1000))   // 如果安全间隔未超过5秒，在5秒安全间隔之后直接进入STAT模式进行测量
+                {
+                    setTimeOut(5 * 1000 - elspseTime());
+                    nibpParam.setSTATOpenTemp(true);
+                    nibpParam.setSTATMeasure(true);
+                    nibpParam.setText(trs("NIBPWAITING"));
+                    nibpParam.setModelText(trs("STATOPEN"));
+                }
             }
             break;
         }
@@ -173,6 +188,14 @@ void NIBPMonitorSafeWaitTimeState::handleNIBPEvent(NIBPEvent event, const unsign
         }
         else
         {
+            if (elspseTime() < (5*1000))  // 如果在auto安全间隔期间手动选择进入manual模式，安全间隔变为5s
+            {
+                setTimeOut(5*1000 - elspseTime());
+            }
+            else if (elspseTime() > (5*1000))
+            {
+                setTimeOut(0);
+            }
             nibpParam.switchToManual();
         }
         break;
@@ -194,7 +217,7 @@ void NIBPMonitorSafeWaitTimeState::handleNIBPEvent(NIBPEvent event, const unsign
             // 判断STAT倒计时是否在使用中
             if (nibpCountdownTime.isSTATMeasureTimeout())
             {
-                nibpCountdownTime.STATMeasureStart(); // 只测量5分钟。
+                nibpCountdownTime.STATMeasureStart();  // 只测量5分钟。
             }
             switchState(NIBP_MONITOR_STARTING_STATE);
         }

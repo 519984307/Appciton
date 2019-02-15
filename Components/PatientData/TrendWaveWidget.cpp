@@ -28,6 +28,7 @@
 #include "FontManager.h"
 #include "TimeDefine.h"
 #include "EventDataParseContext.h"
+#include "Debug.h"
 
 #define GRAPH_DISPLAY_DATA_NUMBER           4
 #define GRAPH_POINT_NUMBER                  120                     // 一屏数据量
@@ -418,6 +419,18 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
                 }
                 else if (t > lastTime)
                 {
+                    if (subID == SUB_PARAM_NIBP_SYS)
+                    {
+                        // NIBP测量标志位保存在后一个时间间隔的数据中.
+                        unsigned status = _trendDataPack.at(i)->status;
+                        if (status & TrendDataStorageManager::CollectStatusNIBP)
+                        {
+                            if (_trendGraphInfo.trendDataV3.count())
+                            {
+                                _trendGraphInfo.trendDataV3.last().status = status;
+                            }
+                        }
+                    }
                     continue;
                 }
             }
@@ -426,6 +439,7 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
             dataV3.data[2] = _trendDataPack.at(i)->subparamValue.value(SubParamID(subID + 2), InvData());
             dataV3.isAlarm = _trendDataPack.at(i)->subparamAlarm.value(subID, false);
             dataV3.timestamp = _trendDataPack.at(i)->time;
+            dataV3.status = _trendDataPack.at(i)->status;
             alarm.isAlarmEvent = _trendDataPack.at(i)->alarmFlag;
             alarm.timestamp = _trendDataPack.at(i)->time;
             _trendGraphInfo.alarmInfo.append(alarm);
@@ -680,17 +694,17 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
     for (int i = 0; i < _eventList.count(); i ++)
     {
         EventInfoSegment event = _eventList.at(i);
-        if (event.type == EventPhysiologicalAlarm)
-        {
-            barPainter.setPen(QPen(Qt::yellow, 2, Qt::SolidLine));
-        }
-        else if (event.type != EventOxyCRG)
-        {
-            barPainter.setPen(QPen(Qt::green, 2, Qt::SolidLine));
-        }
         unsigned alarmTime = event.timestamp;
         if (alarmTime <= _rightTime && alarmTime >= _leftTime)
         {
+            if (event.type == EventPhysiologicalAlarm)
+            {
+                barPainter.setPen(QPen(Qt::yellow, 2, Qt::SolidLine));
+            }
+            else if (event.type != EventOxyCRG)
+            {
+                barPainter.setPen(QPen(Qt::green, 2, Qt::SolidLine));
+            }
             double pos = _getCursorPos(alarmTime);
             barPainter.drawLine(pos, 0, pos, 5);
         }
@@ -702,8 +716,8 @@ void TrendWaveWidget::showEvent(QShowEvent *e)
     IWidget::showEvent(e);
     _getTrendData();
     _cursorPosIndex = 0;
-    _updateEventIndex();
     updateTimeRange();
+    _updateEventIndex();
 }
 
 void TrendWaveWidget::mousePressEvent(QMouseEvent *e)
@@ -835,6 +849,7 @@ void TrendWaveWidget::_getTrendData()
             pack->subparamValue[(SubParamID)dataSeg->values[j].subParamId] = dataSeg->values[j].value;
             pack->subparamAlarm[(SubParamID)dataSeg->values[j].subParamId] = dataSeg->values[j].alarmFlag;
             pack->alarmFlag = dataSeg->eventFlag;
+            pack->status = dataSeg->status;
         }
         _trendDataPack.append(pack);
     }
@@ -928,6 +943,7 @@ void TrendWaveWidget::_updateEventIndex()
     int eventNum = backend->getBlockNR();
     EventDataPraseContext ctx;
     _eventList.clear();
+    unsigned preTime = 0;
     for (int i = 0; i < eventNum; i++)
     {
         ctx.reset();
@@ -935,10 +951,19 @@ void TrendWaveWidget::_updateEventIndex()
         {
             unsigned t = ctx.infoSegment->timestamp;
             int interval = TrendDataSymbol::convertValue(_timeInterval);
-            t = t - t % interval + interval;
+            // 最右边时间 - 最右边时间与事件之间的整数个时间间隔
+            t = _rightTime - (_rightTime - t) / interval * interval;
             EventInfoSegment event;
             event.type = ctx.infoSegment->type;
             event.timestamp = t;
+            if (i != 0)
+            {
+                if (preTime == t)
+                {
+                    continue;       // 相同时间不重复添加进事件列表
+                }
+            }
+            preTime = t;
             _eventList.append(event);
         }
     }

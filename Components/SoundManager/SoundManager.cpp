@@ -505,7 +505,7 @@ void SoundManager::volumeInit()
         currentConfig.getNumValue("ECG|QRSVolume", qrsVolume);
     }
 
-    currentConfig.getNumValue("NIBP|CompleteTone", nibpVolume);
+    systemConfig.getNumValue("PrimaryCfg|NIBP|CompleteTone", nibpVolume);
     d_ptr->soundVolumes[SOUND_TYPE_ALARM] = static_cast<VolumeLevel>(alarmVolume);
     d_ptr->soundVolumes[SOUND_TYPE_KEY_PRESS] = static_cast<VolumeLevel>(keyVolume);
     d_ptr->soundVolumes[SOUND_TYPE_HEARTBEAT] = static_cast<VolumeLevel>(qrsVolume);

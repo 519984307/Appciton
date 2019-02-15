@@ -66,6 +66,12 @@ public:
     void printTrendData(unsigned startTime, unsigned endTime);
 
     /**
+     * @brief getTrendDataPack  get trend data pack
+     * @return  trend data pack (read only)
+     */
+    const QList<TrendDataPackage *> &getTrendDataPack();
+
+    /**
      * @brief getColumnCount  每次显示的最大固定列数
      */
     unsigned getColumnCount(void) const;

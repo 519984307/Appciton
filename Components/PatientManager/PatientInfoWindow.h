@@ -54,11 +54,6 @@ private slots:
     void onBtnReleased(void);
 
     /**
-     * @brief pacerMakerReleased 起博打开按钮释放
-     */
-    void pacerMakerReleased(int);
-
-    /**
      * @brief bedNumReleased 修改病人床号
      */
     void bedNumReleased(void);

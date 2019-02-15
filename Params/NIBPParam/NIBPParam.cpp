@@ -159,6 +159,13 @@ void NIBPParam::exitDemo()
     _diaValue = InvData();
     _mapVaule = InvData();
     _prVaule = InvData();
+
+    switchState(curStatusType());
+    if (curStatusType() == NIBP_MONITOR_STANDBY_STATE || curStatusType() == NIBP_MONITOR_SAFEWAITTIME_STATE)
+    {
+        // 若返回的时准备模式，则清除显示数据
+        clearResult();
+    }
 }
 
 /**************************************************************************************************
@@ -235,16 +242,6 @@ void NIBPParam::setProvider(NIBPProviderIFace *provider)
     if (_activityMachine->isExit())
     {
         _activityMachine->enter();
-    }
-    else
-    {
-        // state machine might reentry while it is existing, don't enter again
-        qdebug("Already in NIBP monitor state machine\n");
-    }
-
-    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
-    {
-        switchState(NIBP_SERVICE_STANDBY_STATE);
     }
 }
 
@@ -396,7 +393,7 @@ void NIBPParam::setResult(int16_t sys, int16_t dia, int16_t map, int16_t pr, NIB
             if (!isAdditionalMeasure())
             {
                 int index = 0;
-                currentConfig.getNumValue("NIBP|AutomaticRetry", index);
+                systemConfig.getNumValue("PrimaryCfg|NIBP|AutomaticRetry", index);
                 if (index)
                 {
                     setAdditionalMeasure(true);
@@ -545,8 +542,8 @@ void NIBPParam::invResultData(void)
     _mapVaule = InvData();
     _prVaule = InvData();
 
-    transferResults(InvData(), InvData(), InvData(), 0);// 显示“---”
-    setCountdown(-1);// 倒计时为“0”
+    transferResults(InvData(), InvData(), InvData(), 0);  // 显示“---”
+    setCountdown(-1);  // 倒计时为“0”
 
     // 将进行启动测量， 清除界面。
     nibpOneShotAlarm.clear();  // 清除所有报警。
@@ -920,7 +917,7 @@ void NIBPParam::setMeasurMode(NIBPMode mode)
     }
     else
     {
-        currentConfig.setNumValue("NIBP|MeasureMode", static_cast<int>(mode));
+        systemConfig.setNumValue("PrimaryCfg|NIBP|MeasureMode", static_cast<int>(mode));
         cmd = 0x00;
         handleNIBPEvent(NIBP_EVENT_TRIGGER_MODEL, &cmd, 1);
     }
@@ -932,7 +929,7 @@ void NIBPParam::setMeasurMode(NIBPMode mode)
 NIBPMode NIBPParam::getMeasurMode(void)
 {
     int mode = NIBP_MODE_MANUAL;
-    currentConfig.getNumValue("NIBP|MeasureMode", mode);
+    systemConfig.getNumValue("PrimaryCfg|NIBP|MeasureMode", mode);
     if (_statModelFlag)
     {
         mode = NIBP_MODE_STAT;
@@ -946,7 +943,7 @@ NIBPMode NIBPParam::getMeasurMode(void)
 NIBPMode NIBPParam::getSuperMeasurMode(void)
 {
     int mode = NIBP_MODE_MANUAL;
-    currentConfig.getNumValue("NIBP|MeasureMode", mode);
+    systemConfig.getNumValue("PrimaryCfg|NIBP|MeasureMode", mode);
     return (NIBPMode)mode;
 }
 
@@ -963,7 +960,7 @@ void NIBPParam::setSTATMeasure(bool flag)
         setAdditionalMeasure(false);
     }
     _statModelFlag = flag;
-//    nibpMenu.statBtnShow();
+    emit statBtnState(flag);
 }
 
 /**************************************************************************************************
@@ -979,7 +976,7 @@ bool NIBPParam::isSTATMeasure()
  *************************************************************************************************/
 void NIBPParam::setAutoInterval(NIBPAutoInterval interv)
 {
-    currentConfig.setNumValue("NIBP|AutoInterval", static_cast<int>(interv));
+    systemConfig.setNumValue("PrimaryCfg|NIBP|AutoInterval", static_cast<int>(interv));
 
     // 测量间隔修改，停止当前的测量，只在自动模式生效。
     if (getSuperMeasurMode() == NIBP_MODE_AUTO)
@@ -996,7 +993,7 @@ void NIBPParam::setAutoInterval(NIBPAutoInterval interv)
 NIBPAutoInterval NIBPParam::getAutoInterval(void)
 {
     int interv = NIBP_AUTO_INTERVAL_30;
-    currentConfig.getNumValue("NIBP|AutoInterval", interv);
+    systemConfig.getNumValue("PrimaryCfg|NIBP|AutoInterval", interv);
     return (NIBPAutoInterval)interv;
 }
 
@@ -1130,7 +1127,7 @@ void NIBPParam::keyReleased(void)
 void NIBPParam::keyPressed(void)
 {
     int index = NIBP_PR_DISPLAY_NR;
-    currentConfig.getNumValue("NIBP|StatFunction", index);
+    systemConfig.getNumValue("PrimaryCfg|NIBP|StatFunction", index);
     // STAT功能关闭，按钮为按下触发，无长按功能
     if (index == NIBP_PR_DISPLAY_OFF)
     {
@@ -1288,6 +1285,16 @@ void NIBPParam::setNIBPCompleteTone(SoundManager::VolumeLevel volume)
     soundManager.setVolume(SoundManager::SOUND_TYPE_NIBP_COMPLETE, volume);
 }
 
+void NIBPParam::enterMaintain(bool enter)
+{
+    _isMaintain = enter;
+}
+
+bool NIBPParam::isMaintain()
+{
+    return _isMaintain;
+}
+
 /**************************************************************************************************
  * 停止测量。
  *************************************************************************************************/
@@ -1370,7 +1377,7 @@ NIBPParam::NIBPParam()
       _isNIBPDisable(false), _isManualMeasure(false),
       _connectedFlag(false), _connectedProvider(false),
       _text(InvStr()),
-      _reply(false), _result(false), _manometerPressure(InvData()),
+      _reply(false), _result(false), _manometerPressure(InvData()), _isMaintain(false),
       _activityMachine(NULL)
 {
     nibpCountdownTime.construction();

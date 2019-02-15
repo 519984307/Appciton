@@ -116,6 +116,13 @@ public:
      */
     void updateUnit(void);
 
+    /**
+     * @brief setModuleWorkMode  设置模块的工作模式
+     * @param mode  工作模式
+     * @return   是否设置成功
+     */
+    bool setModuleWorkMode(CO2WorkMode mode);
+
 public:
     // 校零。
     void zeroCalibration(void);
@@ -141,6 +148,7 @@ public:
 
     // 设置/获取波形放大标尺。
     void setDisplayZoom(CO2DisplayZoom zoom);
+    void updateDisplayZoom();
     CO2DisplayZoom getDisplayZoom(void);
 
     // 设置/获取FiCO2显示。
@@ -150,8 +158,15 @@ public:
     // 获取单位。
     UnitType getUnit(void);
 
-    // 设置/获取CO2开关
-    void setCO2Switch(int onoff);
+    /**
+     * @brief setCO2Switch 设置CO2开关
+     * @param on  if is on
+     */
+    void setCO2Switch(bool on);
+    /**
+     * @brief getCO2Switch  获取CO2开关
+     * @return  返回CO2开关状态
+     */
     bool getCO2Switch();
 
     // 获取CO2

@@ -54,7 +54,6 @@
         <Ecg1Gain>0</Ecg1Gain>
         <SweepSpeed>2</SweepSpeed>
         <HRSource>0</HRSource>
-        <Filter>0</Filter>
         <DisplayMode>0</DisplayMode>
         <LeadMode>1</LeadMode>
         <NotchFilter>0</NotchFilter>
@@ -107,20 +106,17 @@
         <Calibration>84</Calibration>
     </IBP>
     <NIBP>
-        <MeasureMode>0</MeasureMode>
-        <AutoInterval>5</AutoInterval>
         <StatFunction>1</StatFunction>
         <AutomaticRetry>0</AutomaticRetry>
-        <InitialCuffInflation>160</InitialCuffInflation>
+        <InitialCuffInflation>4</InitialCuffInflation>
 	<CompleteTone>0</CompleteTone>
     </NIBP>
     <SPO2>
         <AverageTime>2</AverageTime>
         <Sensitivity>1</Sensitivity>
         <FastSat>0</FastSat>
-        <SmartPluseTone>1</SmartPluseTone>
+        <SmartPluseTone>0</SmartPluseTone>
         <SweepSpeed>1</SweepSpeed>
-        <Gain>0</Gain>
         <BeatVol>1</BeatVol>
         <ModuleControl>1</ModuleControl>
 	<NIBPSameSide>0</NIBPSameSide>
@@ -131,8 +127,8 @@
         <SweepSpeed>2</SweepSpeed>
         <FICO2Display>0</FICO2Display>
         <DisplayZoom>3</DisplayZoom>
-        <O2Compensation>12</O2Compensation>
-        <NO2Compensation>12</NO2Compensation>
+        <O2Compensation>16</O2Compensation>
+        <NO2Compensation>0</NO2Compensation>
         <CeroCalibration>0</CeroCalibration>
     </CO2>
     <CO>
@@ -143,11 +139,13 @@
         <MeasureMode>1</MeasureMode>
     </CO>
     <RESP>
+        <RESPSweepMode>0</RESPSweepMode>
         <AutoActivation>1</AutoActivation>
         <ApneaDelay>1</ApneaDelay>
         <BreathLead>2</BreathLead>
         <Gain>2</Gain>
         <SweepSpeed>2</SweepSpeed>
+	<BrSource>0</BrSource>
     </RESP>
     <Event>
         <WaveLength>16</WaveLength>

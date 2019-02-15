@@ -80,11 +80,7 @@
     </Unit>
     <SelectStarterLogo>2</SelectStarterLogo>
     <MonitorInfo>
-        <CumulativeWsorkingTime>0</CumulativeWsorkingTime>
-        <TemperatureInsideCase>39.5 c</TemperatureInsideCase>
-        <MachineType>pmos-888888</MachineType>
-        <MACAddress>22:22:88:88</MACAddress>
-        <ScreenResolationSize>480*1078</ScreenResolationSize>
+        <MachineType>Vitavue-10</MachineType>
         <ElectronicSerialNumber>1234567888</ElectronicSerialNumber>
     </MonitorInfo>
     <SoftWareVersion>
@@ -170,8 +166,8 @@
         <Ruler>
             <HR_PR Enable="1" Prio="2" Auto="1">
                 <bpm>
-                    <Low Min="15" Max="298">50</Low>
-                    <High Min="17" Max="300">120</High>
+                    <Low Min="15" Max="349">50</Low>
+                    <High Min="16" Max="350">120</High>
                     <Step>1</Step>
                     <Scale>1</Scale>
                 </bpm>
@@ -754,7 +750,7 @@
             </FIO2>
             <T1 Enable="0" Prio="2" Auto="1">
             <celsius>
-                <Low Min="1" Max="490">350</Low>
+                <Low Min="0" Max="490">350</Low>
                 <High Min="11" Max="500">378</High>
                 <Step>1</Step>
                 <Scale>10</Scale>
@@ -768,7 +764,7 @@
             </T1>
             <T2 Enable="0" Prio="2" Auto="1">
             <celsius>
-                <Low Min="1" Max="490">350</Low>
+                <Low Min="0" Max="490">350</Low>
                 <High Min="11" Max="500">378</High>
                 <Step>1</Step>
                 <Scale>10</Scale>
@@ -782,7 +778,7 @@
             </T2>
             <TD Enable="0" Prio="2" Auto="1">
             <celsius>
-                <Low Min="1" Max="490">1</Low>
+                <Low Min="0" Max="490">1</Low>
                 <High Min="11" Max="500">5</High>
                 <Step>1</Step>
                 <Scale>10</Scale>
@@ -865,11 +861,6 @@
         <RESP>
             <Zoom>2</Zoom>		
         </RESP>
-        <CO2>
-            <O2Compensation>16</O2Compensation>
-            <N2OCompensation>0</N2OCompensation>
-            <FiCO2Display>0</FiCO2Display>
-        </CO2>
         <ECG12Lead>
             <EmailOffset>0</EmailOffset>
             <ECG12LeadBandwidth>0</ECG12LeadBandwidth>
@@ -880,6 +871,11 @@
             <NIBPdia>-5000</NIBPdia>
             <NIBPmap>-5000</NIBPmap>
             <MeasureTime>0</MeasureTime>
+            <MeasureMode>0</MeasureMode>
+            <AutoInterval>5</AutoInterval>
+            <StatFunction>1</StatFunction>
+            <AutomaticRetry>0</AutomaticRetry>
+	    <CompleteTone>0</CompleteTone>
         </NIBP>
         <AG>
             <AGModule>0</AGModule>

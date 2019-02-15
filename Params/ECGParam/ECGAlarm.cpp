@@ -215,12 +215,18 @@ WaveformID ECGOneShotAlarm::getWaveformID(int id)
     return WAVE_NONE;
 }
 
+SubParamID ECGOneShotAlarm::getSubParamID(int id)
+{
+    Q_UNUSED(id)
+    return SUB_PARAM_HR_PR;
+}
+
 /**************************************************************************************************
  * 生理参数报警级别。
  *************************************************************************************************/
 AlarmPriority ECGOneShotAlarm::getAlarmPriority(int id)
 {
-    if (id < ECG_ONESHOT_ALARM_LEADOFF)
+    if (id < ECG_ONESHOT_ALARM_LEADOFF || id == ECG_ONESHOT_ALARM_COMMUNICATION_STOP)
     {
         return ALARM_PRIO_HIGH;
     }
@@ -298,7 +304,8 @@ AlarmType ECGOneShotAlarm::getAlarmType(int id)
  *************************************************************************************************/
 const char *ECGOneShotAlarm::toString(int id)
 {
-    return ECGSymbol::convert((ECGOneShotType)id, ecgParam.getLeadConvention());
+    bool is12Lead = ecgParam.getLeadMode() < ECG_LEAD_MODE_12 ? 0 : 1;
+    return ECGSymbol::convert((ECGOneShotType)id, ecgParam.getLeadConvention(), is12Lead);
 }
 
 /**************************************************************************************************

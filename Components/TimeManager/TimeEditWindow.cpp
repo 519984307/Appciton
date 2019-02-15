@@ -61,6 +61,11 @@ public:
      */
     QDateTime getSetupTime();
 
+    /**
+     * @brief updateHourItem
+     */
+    void updateHourItem();
+
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, SpinBox *> spinBoxs;
     unsigned oldTime;
@@ -105,6 +110,34 @@ QDateTime TimeEditWindowPrivate::getSetupTime()
     return dt;
 }
 
+void TimeEditWindowPrivate::updateHourItem()
+{
+    QStringList hourList;
+    TimeFormat timeFormat = static_cast<TimeFormat>(combos[ITEM_CBO_TIME_FORMAT]->currentIndex());
+    if (timeFormat == TIME_FORMAT_12)
+    {
+        // 设置时间的字符串列表 12AM-11AM 12PM-11PM
+        hourList.append("12 AM");
+        for (int i = 1; i < 12; i++)
+        {
+            hourList.append(QString("%1 AM").arg(QString::number(i)));
+        }
+        hourList.append("12 PM");
+        for (int i = 1; i < 12; i++)
+        {
+            hourList.append(QString("%1 PM").arg(QString::number(i)));
+        }
+
+        spinBoxs[ITEM_SPB_HOUR]->setSpinBoxStyle(SpinBox::SPIN_BOX_STYLE_STRING);
+        spinBoxs[ITEM_SPB_HOUR]->setStringList(hourList);
+    }
+    else
+    {
+        spinBoxs[ITEM_SPB_HOUR]->setSpinBoxStyle(SpinBox::SPIN_BOX_STYLE_NUMBER);
+    }
+    spinBoxs[ITEM_SPB_HOUR]->update();
+}
+
 TimeEditWindow::TimeEditWindow()
     : Window(),
       d_ptr(new TimeEditWindowPrivate)
@@ -121,7 +154,7 @@ TimeEditWindow::~TimeEditWindow()
 void TimeEditWindow::readyShow()
 {
     d_ptr->loadOptions();
-
+    d_ptr->updateHourItem();
     bool timeEditable = systemManager.getCurWorkMode() != WORK_MODE_DEMO;
     for (int i = TimeEditWindowPrivate::ITEM_SPB_YEAR; i <= TimeEditWindowPrivate::ITEM_SPB_SECOND; i++ )
     {
@@ -309,6 +342,7 @@ void TimeEditWindow::onComboBoxIndexChanged(int index)
             QMetaObject::invokeMethod(&systemManager,
                                       "systemTimeFormatUpdated",
                                       Q_ARG(TimeFormat, static_cast<TimeFormat>(index)));
+            d_ptr->updateHourItem();
             break;
         case TimeEditWindowPrivate::ITEM_CBO_DISPLAY_SEC:
             systemConfig.setNumValue("DateTime|DisplaySecond", index);

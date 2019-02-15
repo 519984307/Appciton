@@ -72,6 +72,13 @@ public:
      */
     QString getParamName(int section);
 
+    /**
+     * @brief addModuleCheck  加入模块支持检查
+     * @param trendGroup 趋势组
+     * @return 调整过的趋势组
+     */
+    int addModuleCheck(int trendGroup);
+
 public:
     struct TrendDataContent
     {
@@ -128,7 +135,7 @@ TrendTableModel::TrendTableModel(QObject *parent)
     index = 0;
     QString groupPrefix = prefix + "TrendGroup";
     systemConfig.getNumValue(groupPrefix, index);
-    loadCurParam(index);
+    loadCurParam(d_ptr->addModuleCheck(index));
     updateData();
 }
 
@@ -555,19 +562,23 @@ bool TrendTableModel::getDataTimeRange(unsigned &start, unsigned &end)
 
 void TrendTableModel::displayDataTimeRange(unsigned &start, unsigned &end)
 {
-    if (d_ptr->trendDataPack.count() == 0)
+    if (d_ptr->indexInfo.end <= d_ptr->indexInfo.start
+            || d_ptr->indexInfo.end < 1
+            || d_ptr->trendDataPack.count() < d_ptr->indexInfo.end)
     {
         start = 0;
         end = 0;
+        qDebug() << Q_FUNC_INFO << "Trend table print time wrong";
         return;
     }
-    start = d_ptr->trendDataPack.first()->time;
-    end = d_ptr->trendDataPack.last()->time;
+    start = d_ptr->trendDataPack.at(d_ptr->indexInfo.start)->time;
+    end = d_ptr->trendDataPack.at(d_ptr->indexInfo.end - 1)->time;
 }
 
 void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
 {
-    if (startTime >= endTime)
+    // 开始时间与结束时间相同时也要打印开始时刻的数据
+    if (startTime > endTime)
     {
         return;
     }
@@ -591,6 +602,7 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
     // 二分查找时间索引
     int lowPos = 0;
     int highPos = d_ptr->trendDataPack.count() - 1;
+    int startPrintId = 0;
     while (lowPos <= highPos)
     {
         int midPos = (lowPos + highPos) / 2;
@@ -608,12 +620,14 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
         if (timeDiff == 0 || lowPos > highPos)
         {
             startIndex = d_ptr->trendDataPack.at(midPos)->index;
+            startPrintId = midPos;  // 获取趋势数据包中开始打印时刻的索引
             break;
         }
     }
 
     lowPos = 0;
     highPos = d_ptr->trendDataPack.count() - 1;
+    int endPrintId = 0;
     while (lowPos <= highPos)
     {
         int midPos = (lowPos + highPos) / 2;
@@ -631,6 +645,7 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
         if (timeDiff == 0 || lowPos > highPos)
         {
             endIndex = d_ptr->trendDataPack.at(midPos)->index;
+            endPrintId = midPos;  // 获取趋势数据包中结束打印时刻的索引
             break;
         }
     }
@@ -640,10 +655,9 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
     printInfo.stopIndex = endIndex;
     printInfo.interval = TrendDataSymbol::convertValue(d_ptr->timeInterval);
     printInfo.list = d_ptr->displayList;
-    for (int i = 0; i < d_ptr->trendDataPack.count(); i++)
+    for (int i = startPrintId; i <= endPrintId; i++)
     {
-        printInfo.eventList.append(d_ptr->trendDataPack.at(i)->status);
-        printInfo.timestampList.append(d_ptr->trendDataPack.at(i)->time);
+        printInfo.timestampEventMap[d_ptr->trendDataPack.at(i)->time] = d_ptr->trendDataPack.at(i)->status;
     }
     RecordPageGenerator *gen = new TrendTablePageGenerator(backend, printInfo);
     if (recorderManager.isPrinting() && !d_ptr->isWait)
@@ -668,6 +682,11 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
     {
         gen->deleteLater();
     }
+}
+
+const QList<TrendDataPackage *> &TrendTableModel::getTrendDataPack()
+{
+    return d_ptr->trendDataPack;
 }
 
 unsigned TrendTableModel::getColumnCount() const
@@ -820,13 +839,18 @@ void TrendTableModelPrivate::getTrendData()
         unsigned status = dataSeg->status;
         if (timeInterval != RESOLUTION_RATIO_NIBP && timeStamp % interval != 0)
         {
-            if (status <= TrendDataStorageManager::CollectStatusPeriod)
+            if (!(status & (TrendDataStorageManager::CollectStatusAlarm
+                       |TrendDataStorageManager::CollectStatusNIBP
+                       |TrendDataStorageManager::CollectStatusFreeze
+                       |TrendDataStorageManager::CollectStatusPrint
+                       |TrendDataStorageManager::CollectStatusCOResult)))
             {
                 continue;
             }
         }
+
         // 选择nibp选项时只筛选触发nibp测量的数据
-        if (timeInterval == RESOLUTION_RATIO_NIBP && (status & TrendDataStorageManager::CollectStatusNIBP))
+        if (timeInterval == RESOLUTION_RATIO_NIBP && !(status & TrendDataStorageManager::CollectStatusNIBP))
         {
             continue;
         }
@@ -837,8 +861,21 @@ void TrendTableModelPrivate::getTrendData()
         pack->co2Baro = dataSeg->co2Baro;
         for (int j = 0; j < dataSeg->trendValueNum; j ++)
         {
-            pack->subparamValue[static_cast<SubParamID>(dataSeg->values[j].subParamId)] = dataSeg->values[j].value;
-            pack->subparamAlarm[static_cast<SubParamID>(dataSeg->values[j].subParamId)] = dataSeg->values[j].alarmFlag;
+            // 非nibp事件的nibp参数强制显示为无效数据
+            SubParamID id = static_cast<SubParamID>(dataSeg->values[j].subParamId);
+            TrendDataType value = dataSeg->values[j].value;
+            if (id == SUB_PARAM_NIBP_SYS
+                    || id == SUB_PARAM_NIBP_DIA
+                    || id == SUB_PARAM_NIBP_MAP)
+            {
+                if (!(status & TrendDataStorageManager::CollectStatusNIBP))
+                {
+                    value = InvData();
+                }
+            }
+
+            pack->subparamValue[id] = value;
+            pack->subparamAlarm[id] = dataSeg->values[j].alarmFlag;
         }
         pack->status = status;
         pack->alarmFlag = dataSeg->eventFlag;
@@ -896,6 +933,14 @@ void TrendTableModelPrivate::loadTrendData()
         timeDate.getTime(pack->time, time, true);
         TrendDataContent colHeadContent(time);
 
+        // 手动触发事件发生时，表头颜色显示优先级低于报警事件显示
+        if ((pack->status & TrendDataStorageManager::CollectStatusPrint)
+                || (pack->status & TrendDataStorageManager::CollectStatusFreeze)
+                || (pack->status & TrendDataStorageManager::CollectStatusNIBP))
+        {
+            colHeadContent.backGroundColor = MANUAL_EVENT_COLOR;
+        }
+
         // 填充TrendDataContent结构体backGroundColor成员
         if (pack->alarmFlag == true)
         {
@@ -921,13 +966,6 @@ void TrendTableModelPrivate::loadTrendData()
             }
         }
 
-        if ((pack->status & TrendDataStorageManager::CollectStatusPrint)
-                || (pack->status & TrendDataStorageManager::CollectStatusFreeze)
-                || (pack->status & TrendDataStorageManager::CollectStatusNIBP))
-        {
-            colHeadContent.backGroundColor = MANUAL_EVENT_COLOR;
-        }
-
         // 填充colHeadList链表
         colHeadList.append(colHeadContent);
     }
@@ -950,12 +988,24 @@ void TrendTableModelPrivate::loadTrendData()
             {
             case SUB_PARAM_NIBP_SYS:
             {
-                qint16 nibpSys = pack->subparamValue.value(static_cast<SubParamID>(id), InvData());
-                qint16 nibpDia = pack->subparamValue.value(static_cast<SubParamID>(id + 1), InvData());
-                qint16 nibpMap = pack->subparamValue.value(static_cast<SubParamID>(id + 2), InvData());
-                QString sysStr = nibpSys == InvData() ? "---" : QString::number(nibpSys);
-                QString diaStr = nibpDia == InvData() ? "---" : QString::number(nibpDia);
-                QString mapStr = nibpMap == InvData() ? "---" : QString::number(nibpMap);
+                ParamID paramId = paramInfo.getParamID(static_cast<SubParamID>(id));
+                UnitType type = paramManager.getSubParamUnit(paramId, static_cast<SubParamID>(id));
+                int sysData = pack->subparamValue.value(static_cast<SubParamID>(id), InvData());;
+                int diaData = pack->subparamValue.value(static_cast<SubParamID>(id + 1), InvData());
+                int mapData = pack->subparamValue.value(static_cast<SubParamID>(id + 2), InvData());
+                QString sysStr = QString::number(sysData);
+                QString diaStr = QString::number(diaData);
+                QString mapStr = QString::number(mapData);
+                if (type != UNIT_MMHG && sysData != InvData() &&
+                        diaData != InvData() && mapData != InvData())
+                {
+                    sysStr = Unit::convert(type, UNIT_MMHG, sysData, co2Param.getBaro());
+                    diaStr = Unit::convert(type, UNIT_MMHG, diaData, co2Param.getBaro());
+                    mapStr = Unit::convert(type, UNIT_MMHG, mapData, co2Param.getBaro());
+                }
+                sysStr = sysData == InvData() ? "---" : sysStr;
+                diaStr = diaData == InvData() ? "---" : diaStr;
+                mapStr = mapData == InvData() ? "---" : mapStr;
                 dContent.dataStr = sysStr + "/" + diaStr + "\n(" + mapStr + ")";
             }
             break;
@@ -1095,6 +1145,48 @@ QString TrendTableModelPrivate::getParamName(int section)
     str += ")";
 
     return str;
+}
+
+int TrendTableModelPrivate::addModuleCheck(int trendGroup)
+{
+    int index = trendGroup;
+    // 加入模块支持条件判断
+    while (index >= 0)
+    {
+        switch (index)
+        {
+            case TREND_GROUP_RESP:
+            {
+                if (!systemManager.isSupport(CONFIG_RESP))
+                {
+                    index = -1;
+                }
+                return index;
+            }
+            break;
+            case TREND_GROUP_IBP:
+            {
+                if (!systemManager.isSupport(CONFIG_IBP))
+                {
+                    index = TREND_GROUP_RESP;
+                    break;
+                }
+                return index;
+            }
+            break;
+            case TREND_GROUP_AG:
+            {
+                if (!systemManager.isSupport(CONFIG_AG))
+                {
+                    index = TREND_GROUP_IBP;
+                    break;
+                }
+                return index;
+            }
+            break;
+        }
+    }
+    return index;
 }
 
 void TrendTableModelPrivate::loadTableTitle()

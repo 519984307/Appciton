@@ -74,6 +74,9 @@ public:
     // according to SubParamID get alarmLimitIFace
     AlarmLimitIFace *getAlarmLimitIFace(SubParamID id);
 
+    // according to SubParamID get AlarmOneShotIFace
+    AlarmOneShotIFace *getAlarmOneShotIFace(SubParamID id);
+
     // 析构。
     virtual ~Alarm();
 
@@ -84,6 +87,18 @@ public:
      * @param status 栓锁打开状态
      */
     void setLatchLockSta(bool status);
+
+    /**
+     * @brief removeAllPhyAlarm 移除生理报警的跟踪对象
+     */
+    void removeAllPhyAlarm();
+
+    /**
+     * @brief setAlarmLightOnAlarmReset 设置报警复位时的报警灯
+     * @param flag
+     */
+    void setAlarmLightOnAlarmReset(bool flag);
+    bool getAlarmLightOnAlarmReset(void);
 
 private:
     unsigned _timestamp;
@@ -103,6 +118,8 @@ private:
     void _handleOneShotAlarm(AlarmOneShotIFace *alarmSource);
 
     void _handleAlarm(void);
+
+    bool _alarmLightOnAlarmReset;       // 报警复位时的报警灯
 };
 #define alertor (Alarm::construction())
 #define deleteAlarm() (delete Alarm::_selfObj)

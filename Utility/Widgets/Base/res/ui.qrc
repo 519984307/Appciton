@@ -7,5 +7,6 @@
         <file>left.svg</file>
         <file>right.svg</file>
         <file>shadow.svg</file>
+        <file>return.svg</file>
     </qresource>
 </RCC>

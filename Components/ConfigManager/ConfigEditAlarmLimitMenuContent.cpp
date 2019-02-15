@@ -123,6 +123,12 @@ void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
                                "Prio", alarmLev);
             info.alarmLevel = alarmLev;
 
+            int alarmStatus = 0;
+            config->getNumAttr(QString("AlarmSource|%1")
+                               .arg(paramInfo.getSubParamName(subId, true)),
+                               "Enable", alarmStatus);
+            info.status = alarmStatus;
+
             infos.append(info);
         }
     }
@@ -216,14 +222,14 @@ void ConfigEditAlarmLimitMenuContent::layoutExec()
 
     QBoxLayout *hlayout = new QHBoxLayout;
     hlayout->addStretch(1);
-    Button *btn = new Button("Prev");
+    Button *btn = new Button(trs("Prev"));
     btn->setButtonStyle(Button::ButtonTextOnly);
     btn->setMinimumWidth(100);
     hlayout->addWidget(btn);
     connect(btn, SIGNAL(clicked(bool)), this, SLOT(onbtnClick()));
     d_ptr->prevBtn = btn;
 
-    btn = new Button("Next");
+    btn = new Button(trs("Next"));
     btn->setButtonStyle(Button::ButtonTextOnly);
     btn->setMinimumWidth(100);
     hlayout->addWidget(btn);

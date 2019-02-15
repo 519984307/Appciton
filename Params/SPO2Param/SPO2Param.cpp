@@ -252,7 +252,8 @@ void SPO2Param::setProvider(SPO2ProviderIFace *provider)
     waveformCache.registerSource(WAVE_SPO2, _provider->getSPO2WaveformSample(), 0, _provider->getSPO2MaxValue(),
                                  tile, _provider->getSPO2BaseLine());
 
-    _waveWidget->setGain(_gain);
+    // update spo2 value range
+    _waveWidget->setValueRange(0, _provider->getSPO2MaxValue());
 }
 
 /**************************************************************************************************
@@ -270,28 +271,6 @@ void SPO2Param::reset()
 
     //查询状态
     _provider->sendStatus();
-}
-
-/**************************************************************************************************
- * 设置波形的放大倍数。
- *************************************************************************************************/
-void SPO2Param::setGain(SPO2Gain gain)
-{
-    _gain = gain;
-    currentConfig.setNumValue("SPO2|Gain", static_cast<int>(gain));
-
-    if (NULL != _waveWidget)
-    {
-        _waveWidget->setGain(gain);
-    }
-}
-
-/**************************************************************************************************
- * 获取波形的放大倍数。
- *************************************************************************************************/
-SPO2Gain SPO2Param::getGain(void)
-{
-    return _gain;
 }
 
 /**************************************************************************************************
@@ -470,7 +449,7 @@ void SPO2Param::addBarData(short data)
 void SPO2Param::setPulseAudio(bool pulse)
 {
     HRSourceType type = ecgDupParam.getCurHRSource();
-    if (pulse && ecgParam.getHR() != InvData() &&
+    if (pulse && ecgDupParam.getHR() != InvData() &&
         (type == HR_SOURCE_SPO2 || type == HR_SOURCE_AUTO))
     {
         soundManager.pulseTone(getSmartPulseTone() == SPO2_SMART_PLUSE_TONE_ON
@@ -786,7 +765,6 @@ bool SPO2Param::isNibpSameSide(void)
  * 构造。
  *************************************************************************************************/
 SPO2Param::SPO2Param() : Param(PARAM_SPO2),
-                         _gain(SPO2_GAIN_X10),
                          _oxyCRGSPO2Trend(NULL),
                          _moduleType(MODULE_SPO2_NR)
 {
@@ -804,10 +782,6 @@ SPO2Param::SPO2Param() : Param(PARAM_SPO2),
 
     systemConfig.getNumValue("PrimaryCfg|SPO2|EverCheckFinger", _isEverCheckFinger);
     systemConfig.getNumValue("PrimaryCfg|SPO2|EverSensorOn", _isEverSensorOn);
-
-    int gain = SPO2_GAIN_X10;
-    currentConfig.getNumValue("SPO2|Gain", gain);
-    _gain = static_cast<SPO2Gain>(gain);
 
     QTimer::singleShot(2000, this, SLOT(checkSelftest()));
 }

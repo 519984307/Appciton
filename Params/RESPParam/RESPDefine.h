@@ -12,6 +12,13 @@
 
 #pragma once
 
+enum RESPSweepMode
+{
+    RESP_SWEEP_MODE_CURVE,
+    RESP_SWEEP_MODE_FILLED,
+    RESP_SWEEP_MODE_NR
+};
+
 /**
  * @brief The RESPModuleType enum  RESP模块类型枚举
  */
@@ -24,8 +31,8 @@ enum RESPModuleType
 enum BRRRSourceType
 {
     BR_RR_AUTO,
-    BR_RR_SOURCE_CO2,
     BR_RR_SOURCE_ECG,
+    BR_RR_SOURCE_CO2,
     BR_RR_NR,
 };
 /**************************************************************************************************

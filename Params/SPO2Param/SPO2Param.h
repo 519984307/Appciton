@@ -64,10 +64,6 @@ public:
     // 模块复位
     void reset();
 
-    // 设置/获取增益。
-    void setGain(SPO2Gain gain);
-    SPO2Gain getGain(void);
-
     // 取值范围
     int getSPO2MaxValue(void);
 
@@ -227,7 +223,6 @@ private:
 
     bool _isValid;
     bool _sensorOff;
-    SPO2Gain _gain;
 
     int _recPackageInPowerOn2sec;  // if receve 5 packages, selftest success, or selftest failed
 

@@ -18,7 +18,8 @@
 #include "TimeDate.h"
 #include "TrendDataStorageManager.h"
 
-#define RECORD_PER_PAGE 10
+// 打印纸每页最多打印10行数据（1 head title + 9 data）
+#define RECORD_PER_PAGE 9
 class TrendTablePageGeneratorPrivate
 {
 public:
@@ -43,8 +44,7 @@ public:
     int stopIndex;
     int interval;
     QList<SubParamID> subParamList;
-    QList<unsigned> eventList;
-    QList<unsigned> timestampList;
+    QMap<unsigned int, unsigned int> timestampEventMap;
 };
 
 bool  dataPacketLessThan(const TrendDataPackage &d1, const TrendDataPackage &d2)
@@ -87,14 +87,13 @@ bool TrendTablePageGeneratorPrivate::loadStringList()
         TrendDataSegment *dataSeg = reinterpret_cast<TrendDataSegment *>(data.data());
 
         // 使得趋势表显示内容与打印内容保持一致
-        if (timestampList.indexOf(dataSeg->timestamp) < 0)
+        if (timestampEventMap.contains(dataSeg->timestamp) == false)
         {
             continue;
         }
 
         TrendDataPackage dataPackage = parseTrendSegment(dataSeg);
-
-        unsigned eventType = eventList.at(eventList.count() - 1 - count);
+        unsigned eventType = timestampEventMap[dataSeg->timestamp];
         addSubParamValueToStringList(dataPackage, subParamList, eventType);
 
         count++;
@@ -326,15 +325,16 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
     timeDate.getDateTime(datapack.time, timeDateStr, true, true);
     stringLists[index++].append(timeDateStr);
 
-    if (eventType & TrendDataStorageManager::CollectStatusPrint ||
+    // 优先打印报警事件状态
+    if (eventType & TrendDataStorageManager::CollectStatusAlarm)
+    {
+        stringLists[index++].append("A");
+    }
+    else if (eventType & TrendDataStorageManager::CollectStatusPrint ||
             eventType & TrendDataStorageManager::CollectStatusFreeze ||
             eventType & TrendDataStorageManager::CollectStatusNIBP)
     {
         stringLists[index++].append("M");
-    }
-    else if (eventType & TrendDataStorageManager::CollectStatusAlarm)
-    {
-        stringLists[index++].append("A");
     }
     else
     {
@@ -380,6 +380,11 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
             TrendDataType datas[3];
             bool alarms[3];
             preparePressSubParamInfos(subParamID, datapack, datas, alarms);
+            // set datas[] as InvData() when it is not NIBP event type
+            if (!(eventType & TrendDataStorageManager::CollectStatusNIBP))
+            {
+                datas[0] = datas[1] = datas[2] = InvData();
+            }
             valueStr = contructPressTrendStringItem(subParamID,
                                                     datas,
                                                     alarms,
@@ -538,8 +543,7 @@ TrendTablePageGenerator::TrendTablePageGenerator(IStorageBackend *backend, Trend
     d_ptr->backend = backend;
     d_ptr->interval = printInfo.interval;
     d_ptr->subParamList = printInfo.list;
-    d_ptr->eventList = printInfo.eventList;
-    d_ptr->timestampList = printInfo.timestampList;
+    d_ptr->timestampEventMap = printInfo.timestampEventMap;
 }
 
 TrendTablePageGenerator::~TrendTablePageGenerator()

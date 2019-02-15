@@ -40,7 +40,7 @@ StopNIBPMeasure,停止NIBP测量,Stop NIBP Measure
 EnterNightMode,进入夜间模式,Enter Night Mode
 ExitNightMode,退出夜间模式,Exit Night Mode
 UserFaceStandard,标准,Standard
-UserFace12Lead,12导,12 Lead
+UserFaceFullScreen,ECG全屏,ECG Full Screen
 UserFaceOxyCRG,呼吸氧合图,OxyCRG
 UserFaceTrend,趋势,Trend
 UserFaceBigFont,大字体,Big Font
@@ -175,9 +175,11 @@ RESPApneaTime,窒息时间,Apnea Time
 RESPZoom,缩放,Zoom
 RESPLead,呼吸导联,RESP Lead
 RESPMenu,RESP,RESP
+RESPWaveMode,RESP波形模式,RESP Wave Mode
+RESPCurve,曲线,Curve
+RESPFilled,填充,Filled
 RRLow,RR低,RR Low
 RRHigh,RR高,RR High
-RESPApnea,呼吸窒息,RESP Apnea
 RESPAutoActivation,呼吸激活,RESP Automatic Activation
 NIBPMeasurement,无创血压测量,NIBP
 NIBPMeasureMode,测量模式,Measure Mode
@@ -349,7 +351,7 @@ SystemInfo,系统信息,System Info
 SystemInfoSetting,系统信息,System Info
 ErrorLog,错误日志,Error Log
 SystemStatus,状态,Status
-SomeLimitAlarmDisabled,有超限报警被关闭,Some Limit Alarm Closed
+SomeLimitAlarmDisabled,有超限报警被关闭,Some limit alarms disabled
 PowerupRecorderPressed,前面板打印键短路,Front Panel Record Btn Stuck
 PowerupCommunicationStop,前面板通讯停止,Front Panel Comm. Stop
 WiFiMenu,无线网络,Wifi
@@ -569,12 +571,14 @@ ECGArrVENT,室性节律,VENT
 ECGArrIRR,心律不齐,IRR
 LeadOff,导联脱落,Lead Off
 ECGLeadOff,心电导联脱落,ECG Lead Off
+ECGVLeadOff,心电V导联脱落,ECG V Lead Off
 ECGV1LeadOff,心电V1导联脱落,ECG V1 Lead Off
 ECGV2LeadOff,心电V2导联脱落,ECG V2 Lead Off
 ECGV3LeadOff,心电V3导联脱落,ECG V3 Lead Off
 ECGV4LeadOff,心电V4导联脱落,ECG V4 Lead Off
 ECGV5LeadOff,心电V5导联脱落,ECG V5 Lead Off
 ECGV6LeadOff,心电V6导联脱落,ECG V6 Lead Off
+ECGCLeadOff,心电C导联脱落,ECG C Lead Off
 ECGC1LeadOff,心电C1导联脱落,ECG C1 Lead Off
 ECGC2LeadOff,心电C2导联脱落,ECG C2 Lead Off
 ECGC3LeadOff,心电C3导联脱落,ECG C3 Lead Off
@@ -587,6 +591,7 @@ ECG12LSnapShot,12导 快照,12 Lead SnapShot
 ECGAcquiring12L,获取12导,Acquiring 12 Lead
 ECGAcquired12L,获取12导结束,Acquire 12 Lead Complete
 RESPCommunicationStop,呼吸通讯停止,RESP Communication Stop
+Apnea,呼吸窒息,Apnea
 SPO2Low,血氧低,SPO2 Low
 SPO2High,血氧高,SPO2 High
 SPO2PRLow,脉率低,PR Low
@@ -607,7 +612,6 @@ CO2FiCO2Low,FiCO2 低,FiCO2 Low
 CO2FiCO2High,FiCO2 高,FiCO2 High
 CO2BRLow,BR 低,BR Low
 CO2BRHigh,BR 高,BR High
-CO2Apnea,呼吸窒息,Apnea
 CO2MotorError,CO2电机转速超限,CO2 Motor Speed Out of bounds
 CO2SoftwareError,CO2软件错误,CO2 Software Error
 CO2HardwareError,CO2硬件错误,CO2 Hardware Error
@@ -808,6 +812,7 @@ TEMPVersion,TEMP,TEMP
 iDMBoardVersion,iDMBoard,iDMBoard
 PRT48Version,PRT48,PRT48
 SourceOfCO2,来源CO2,Source of CO2
+AutoOfCO2,自动(CO2),Auto(CO2)
 PDVersion,PD,PD
 COREVersion,CORE,CORE
 VersionReturn,返回,Return
@@ -820,7 +825,7 @@ SupervisorExitSave,退出 & 保存,Exit & Save Config
 SupervisorExitNotSave,退出不保存,Exit & Not Save Config
 SupervisorDeviceIdentifier,设备标识符,Device Identifier
 SupervisorDefaultPatType,默认病人类型,Default Patient Type
-PassWord,密码,Password
+Password,密码,Password
 SupervisorDel,删除,Del
 SupervisorOK,确定,OK
 NoPasscodeEntered,无密码输入,No PassWord Entered
@@ -989,7 +994,7 @@ Upper,过高,Upper
 Lower,过低,Lower
 EventList,事件列表,Event List
 PrintList,打印列表,Print List
-EventListPrint,事件列表打印,Event List Print
+EventListPrint,事件列表,Event Log
 RealTimePrint,实时打印,RealTime Print
 RealtimeSegmentWavePrint,片段实时波形打印,Realtime Segment Wave Print
 FrozenWavePrint,冻结波形打印,Frozen Wave Print
@@ -1082,7 +1087,7 @@ BatteryCapacityIcons,电池容量图标,Battery Capacity Incons
 SmtpServer,SMTP服务器,SMTP Server
 SmtpServerPort,SMTP 服务端口,SMTP Server Port
 Username,用户名,Username
-Hardware,硬件,Hard Ware
+Hardware,硬件,Hardware
 ConnectionSecurity,连接安全性,Connection Security
 ConfiguredMailRecipients,配置邮件接收者,Configured Mail Recipients
 Mail,邮件,Mail
@@ -1219,7 +1224,6 @@ Channel,通道,Channel
 SmartPluseTone,智能脉搏音,Smart PluseTone
 WaveVelocity,波形速度,Wave Velocity
 RespMenuDesc,呼吸菜单设置,Resp Desc
-RespGain,波形增益,Resp Gain
 ModuleControl,模块控制,Module Control
 HIGH,高,HIGH
 NORMAL,中,NORMAL
@@ -1246,7 +1250,7 @@ NotFoundDeviceNode,未发现U盘节点，请插入U盘,Not Found Device Node
 NotFoundUDisk,未发现U盘，请插入U盘,Not Found U Disk
 PleaseSelectFiles,请选择文件,Please Select Files
 PleaseAddExportFiles,请增加导出文件,Please Add Export Files
-ImportFilefailed,导入文件失败,Import File failed
+ImportFileFailed,导入文件失败,Import File failed
 ImportFileCompleted,导入文件完成,Import File Completed
 PleaseAddImportFiles,请增加导入文件,Please Add Import Files
 FactoryMaintainSystem,工厂维护系统,Factory Maintain
@@ -1436,7 +1440,6 @@ Ecg1Wave,波形1,ECG1 Wave
 Ecg2Wave,波形2,ECG2 Wave
 ECG1,ECG1,ECG1
 Ecg1Gain,增益,ECG Gain
-Filter,滤波器,Filter
 QRSVolume,音量,QRS Volume
 ConfigIBPMenu,有创血压,Config IBP
 NotchFilter,陷波滤波器,Notch Filter
@@ -1541,7 +1544,7 @@ DisableTouchScreen,禁触摸屏,Disable Touch
 EnabledTouchScreen,启触摸屏,Enabled Touch
 Open,开放,Open
 Start,开始,Start
-AlarmLightOnAlarmReset,警示复位灯,Alarm Light On Alarm Reset
+AlarmLightOnAlarmReset,报警复位时报警灯,Alarm Light On Alarm Reset
 OpenAgain,重新报警,OpenAgain
 Prev,上一页,Prev
 Next,下一页,Next
@@ -1622,7 +1625,7 @@ HasExistConfig,该配置名称与监护仪上配置重名。请重新命名！,T
 ECGFullScreen,心电全屏,ECG Full Screen
 isSaveLayout,是否保存布局配置？,Do you want to save the layout config?
 LowBattery,电量过低,Low quantity of electricity
-RESPCheckElectrodes,电极检查,Check Electrodes
+RESPCheckElectrodes,检查电极,Check Electrodes
 SPO2SignalWeak,检测血氧信号弱,SPO2 Signal Weak
 SPO2CableOff,血氧电缆断开,SPO2 Cable Off
 SPO2FingerOff,未检测到手指,SPO2 Finger Off
@@ -1632,3 +1635,4 @@ NIBPSimul,NIBP同侧,NIBP Simul
 Input8DigitsPassword,请输入8位数字密码,Please input 8 digits password
 BornDate,出生日期,Born Date
 RescueStorageSpaceFull,营救数据存储空间满,Rescue storage space full
+ChangePatientType,更改病人类型会导致配置更改，您确认要这么做吗？,Changing patient type will cause the configuration changes，Are you sure?

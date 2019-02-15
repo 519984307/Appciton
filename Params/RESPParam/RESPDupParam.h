@@ -112,6 +112,9 @@ public:
     // 刷新参数上下限
     virtual void updateSubParamLimit(SubParamID id);
 
+    void setRRSource(BRRRSourceType source);
+    void updateRRSource();
+
 signals:
     /**
      * @brief brSourceStatusUpdate  br来源状态更新
@@ -124,6 +127,11 @@ private slots:
 private:
     // 构造。
     RESPDupParam();
+
+    /**
+     * @brief handleBRRRValue  handle br/rr value when update br/rr value
+     */
+    void handleBRRRValue();
 
     RESPTrendWidget *_trendWidget;
 

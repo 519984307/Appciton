@@ -22,6 +22,8 @@
 #include "TimeManager.h"
 #include <QTimer>
 #include "PowerManager.h"
+#include "UnitManager.h"
+#include <QNetworkInterface>
 
 class MonitorInfoWindowPrivate
 {
@@ -29,7 +31,6 @@ public:
     enum MenuItem
     {
         ITEM_LAB_CMLV_WORKTIME = 0,
-        ITEM_LAB_TEM_INSIDECASE,
         ITEM_LAB_BAT_CAPACITY,
         ITEM_LAB_MACHINE_TYPE,
         ITEM_LAB_MAC_ADDR,
@@ -37,8 +38,7 @@ public:
         ITEM_BTN_ELEC_SERIALNUM,
     };
     MonitorInfoWindowPrivate()
-            : button(NULL),
-              timer(NULL)
+            : timer(NULL)
     {
     }
     /**
@@ -46,7 +46,6 @@ public:
      */
     void loadOptions();
     QMap <MenuItem, QLabel *> labs;
-    Button *button;
     QTimer *timer;
 };
 
@@ -66,34 +65,33 @@ MonitorInfoWindow::MonitorInfoWindow()
 void MonitorInfoWindowPrivate::loadOptions()
 {
     QDesktopWidget *w = QApplication::desktop();
-    QString temStr;
+    labs[ITEM_LAB_SCR_RESOLASIZE]->setText(QString("%1*%2").arg(w->width()).arg(w->height()));
 
-    labs[ITEM_LAB_SCR_RESOLASIZE]->setText(trs(QString("%1*%2")
-                                         .arg(w->width())
-                                         .arg(w->height())));
-
-    temStr.clear();
-    systemConfig.getStrValue("MonitorInfo|CumulativeWorkingTime", temStr);
-    labs[ITEM_LAB_CMLV_WORKTIME]->setText(trs(temStr));
-
-    temStr.clear();
-    systemConfig.getStrValue("MonitorInfo|TemperatureInsideCase", temStr);
-    labs[ITEM_LAB_TEM_INSIDECASE]->setText(trs(temStr));
-
-    temStr.clear();
+    QString tmpStr;
     labs[ITEM_LAB_BAT_CAPACITY]->setText(powerManger.getBatteryCapacity());
 
-    temStr.clear();
-    systemConfig.getStrValue("MonitorInfo|MachineType", temStr);
-    labs[ITEM_LAB_MACHINE_TYPE]->setText(trs(temStr));
+    tmpStr.clear();
+    systemConfig.getStrValue("MonitorInfo|MachineType", tmpStr);
+    labs[ITEM_LAB_MACHINE_TYPE]->setText(tmpStr);
 
-    temStr.clear();
-    systemConfig.getStrValue("MonitorInfo|MACAddress", temStr);
-    labs[ITEM_LAB_MAC_ADDR]->setText(trs(temStr));
+    tmpStr.clear();
+    machineConfig.getStrValue("SerialNumber", tmpStr);
+    labs[ITEM_BTN_ELEC_SERIALNUM]->setText(tmpStr);
 
-    temStr.clear();
-    machineConfig.getStrValue("SerialNumber", temStr);
-    button->setText(temStr);
+    tmpStr.clear();
+    foreach(QNetworkInterface workInterface, QNetworkInterface::allInterfaces())
+    {
+        if (workInterface.name().contains("eth"))  // filter the localhost(the ip address is 127.0.0.1) by name
+        {
+            tmpStr = workInterface.hardwareAddress();
+            break;
+        }
+    }
+    if (tmpStr.isEmpty())
+    {
+        tmpStr = "-";  // indicate that the MAC address is invalid.
+    }
+    labs[ITEM_LAB_MAC_ADDR]->setText(tmpStr);
 }
 
 void MonitorInfoWindow::readyShow()
@@ -105,8 +103,7 @@ void MonitorInfoWindow::readyShow()
 void MonitorInfoWindow::onTimeOutExec()
 {
     QString showtime = getRunTime();
-    d_ptr->labs[MonitorInfoWindowPrivate
-            ::ITEM_LAB_CMLV_WORKTIME]->setText(showtime);
+    d_ptr->labs[MonitorInfoWindowPrivate::ITEM_LAB_CMLV_WORKTIME]->setText(showtime);
 }
 
 void MonitorInfoWindow::layoutExec()
@@ -115,7 +112,7 @@ void MonitorInfoWindow::layoutExec()
 
     QGridLayout *layout = new QGridLayout;
     layout->setVerticalSpacing(20);
-    setFixedSize(480, 450);
+    setFixedSize(480, 420);
 
     QLabel *labelLeft;
     QLabel *labelRight;
@@ -127,14 +124,6 @@ void MonitorInfoWindow::layoutExec()
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(MonitorInfoWindowPrivate
                        ::ITEM_LAB_CMLV_WORKTIME, labelRight);
-
-    labelLeft = new QLabel(trs("TemperatureInsideCase"));
-    layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
-    labelRight = new QLabel("");
-    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
-    layout->addWidget(labelRight, d_ptr->labs.count(), 1);
-    d_ptr->labs.insert(MonitorInfoWindowPrivate
-                       ::ITEM_LAB_TEM_INSIDECASE, labelRight);
 
     labelLeft = new QLabel(trs("BatteryQuantity"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
@@ -170,12 +159,11 @@ void MonitorInfoWindow::layoutExec()
 
     labelLeft = new QLabel(trs("ElectronicSerialNumber"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
-    d_ptr->button = new Button("");
-    d_ptr->button->setBorderWidth(0);
-    d_ptr->button->setButtonStyle(Button::ButtonTextBesideIcon);
-    d_ptr->button->setFocusPolicy(Qt::NoFocus);
-    layout->addWidget(d_ptr->button, d_ptr->labs.count(), 1,
-                      Qt::AlignCenter|Qt::AlignRight);
+    labelRight = new QLabel("");
+    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
+    layout->addWidget(labelRight, d_ptr->labs.count(), 1);
+    d_ptr->labs.insert(MonitorInfoWindowPrivate
+                       ::ITEM_BTN_ELEC_SERIALNUM, labelRight);
 
     layout->setRowStretch((layout->rowCount() + 1), 1);
     setWindowLayout(layout);

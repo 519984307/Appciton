@@ -64,18 +64,26 @@ void RESPMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_APNEA_DELAY]->setCurrentIndex(respParam.getApneaTime());
 
     // rr source
-    int index = 0;
-    if (respDupParam.isAutoBrSourceEnabled())
+    combos[ITEM_CBO_RR_SOURCE]->clear();
+    if (co2Param.isConnected())
     {
-        index = BR_RR_AUTO;
-    }
-    else if (respDupParam.getBrSource() == RESPDupParam::BR_SOURCE_CO2)
-    {
-        index = BR_RR_SOURCE_CO2;
+        combos[ITEM_CBO_RR_SOURCE]->addItems(QStringList()
+                                             << trs(RESPSymbol::convert(BR_RR_AUTO))
+                                             << trs(RESPSymbol::convert(BR_RR_SOURCE_ECG))
+                                             << trs(RESPSymbol::convert(BR_RR_SOURCE_CO2)));
     }
     else
     {
-        index = BR_RR_SOURCE_ECG;
+        combos[ITEM_CBO_RR_SOURCE]->addItems(QStringList()
+                                             << trs(RESPSymbol::convert(BR_RR_AUTO))
+                                             << trs(RESPSymbol::convert(BR_RR_SOURCE_ECG)));
+    }
+
+    int index = 0;
+    currentConfig.getNumValue("RESP|BrSource", index);
+    if (index == BR_RR_SOURCE_CO2 && co2Param.isConnected() == false)
+    {
+        index = 0;
     }
     combos[ITEM_CBO_RR_SOURCE]->setCurrentIndex(index);
     if (respDupParam.getParamSourceType() == RESPDupParam::BR)
@@ -172,10 +180,6 @@ void RESPMenuContent::layoutExec()
     d_ptr->brRRSouce = label;
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox;
-    comboBox->addItems(QStringList()
-                       << trs(RESPSymbol::convert(BR_RR_AUTO))
-                       << trs(RESPSymbol::convert(BR_RR_SOURCE_CO2))
-                       << trs(RESPSymbol::convert(BR_RR_SOURCE_ECG)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(RESPMenuContentPrivate
                          ::ITEM_CBO_RR_SOURCE, comboBox);
@@ -249,25 +253,7 @@ void RESPMenuContent::onComboBoxIndexChanged(int index)
             co2Param.setApneaTime((ApneaAlarmTime)index);
             break;
         case RESPMenuContentPrivate::ITEM_CBO_RR_SOURCE:
-        {
-            if (index == 0)
-            {
-                respDupParam.setAutoBrSourceStatue(true);
-                break;
-            }
-            else
-            {
-                respDupParam.setAutoBrSourceStatue(false);
-            }
-            if (BR_RR_SOURCE_CO2 == index)
-            {
-                respDupParam.setBrSource(RESPDupParam::BR_SOURCE_CO2);
-            }
-            else if (BR_RR_SOURCE_ECG == index)
-            {
-                respDupParam.setBrSource(RESPDupParam::BR_SOURCE_ECG);
-            }
-        }
+            respDupParam.setRRSource(static_cast<BRRRSourceType>(index));
             break;
         case RESPMenuContentPrivate::ITEM_CBO_WAVE_GAIN:
             respParam.setZoom(static_cast<RESPZoom>(index));

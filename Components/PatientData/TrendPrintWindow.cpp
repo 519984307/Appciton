@@ -19,6 +19,7 @@
 #include "TimeDate.h"
 #include <QDateTime>
 #include "TrendTableWindow.h"
+#include "IConfig.h"
 
 class TrendPrintWindowPrivate
 {
@@ -39,11 +40,19 @@ public:
         : startBox(NULL), endBox(NULL), startSubBox(NULL),
           endSubBox(NULL), durationLbl(NULL), printBtn(NULL),
           timeStartLimit(0), timeEndLimit(0), printStartTime(0),
-          printEndTime(0)
+          printEndTime(0), timeFormat(TIME_FORMAT_24)
     {}
 
     void initGroupBox(QGroupBox *groupBox, SubGroupBox *subBox);
     void difftimeInfo(void);
+
+    /**
+     * @brief adjustPrintTime  adjust print time
+     * @param printTime  print time
+     * @param start  if is start print time
+     */
+    void adjustPrintTime(unsigned printTime, bool start);
+
 public:
     QGroupBox *startBox;
     QGroupBox *endBox;
@@ -56,11 +65,39 @@ public:
     unsigned timeEndLimit;
     unsigned printStartTime;
     unsigned printEndTime;
+
+    QList<TrendDataPackage *> trendDataPack;
+
+    TimeFormat timeFormat;
+
+    QStringList hourList;
 };
-TrendPrintWindow::TrendPrintWindow()
+TrendPrintWindow::TrendPrintWindow(const QList<TrendDataPackage *> &trendDataPack)
     : Window(), d_ptr(new TrendPrintWindowPrivate())
 {
+    int index = 0;
+    systemConfig.getNumValue("DateTime|TimeFormat", index);
+    d_ptr->timeFormat = static_cast<TimeFormat>(index);
+    if (d_ptr->timeFormat == TIME_FORMAT_12)
+    {
+        // 设置时间的字符串列表 12AM-11AM 12PM-11PM
+        d_ptr->hourList.append("12 AM");
+        for (int i = 1; i < 12; i++)
+        {
+            d_ptr->hourList.append(QString("%1 AM").arg(QString::number(i)));
+        }
+        d_ptr->hourList.append("12 PM");
+        for (int i = 1; i < 12; i++)
+        {
+            d_ptr->hourList.append(QString("%1 PM").arg(QString::number(i)));
+        }
+    }
+    else
+    {
+        d_ptr->hourList.clear();
+    }
     setWindowTitle(trs("PrintSetup"));
+    setFixedSize(350, 450);
 
     QPalette pal = palette();
     d_ptr->startBox = new QGroupBox();
@@ -118,6 +155,8 @@ TrendPrintWindow::TrendPrintWindow()
     layout->addStretch();
 
     setWindowLayout(layout);
+
+    d_ptr->trendDataPack = trendDataPack;
 }
 
 TrendPrintWindow::~TrendPrintWindow()
@@ -157,8 +196,8 @@ void TrendPrintWindow::startTimeChangeSlot(int, int)
     QDate date(d_ptr->startSubBox->yearSbx->getValue(),
                d_ptr->startSubBox->monthSbx->getValue(),
                d_ptr->startSubBox->daySbx->getValue());
-    QTime time(d_ptr->startSubBox->hourSbx->getValue(),
-               d_ptr->startSubBox->minSbx->getValue(),
+    int h = d_ptr->startSubBox->hourSbx->getValue();
+    QTime time(h, d_ptr->startSubBox->minSbx->getValue(),
                d_ptr->startSubBox->secondSbx->getValue());
     QDateTime dateTime(date, time);
     unsigned timeStamp = dateTime.toTime_t();
@@ -184,7 +223,7 @@ void TrendPrintWindow::startTimeChangeSlot(int, int)
     }
     else
     {
-        d_ptr->printStartTime = timeStamp;
+        d_ptr->adjustPrintTime(timeStamp, true);
     }
 
     d_ptr->difftimeInfo();
@@ -195,8 +234,8 @@ void TrendPrintWindow::endTimeChangeSlot(int, int)
     QDate date(d_ptr->endSubBox->yearSbx->getValue(),
                d_ptr->endSubBox->monthSbx->getValue(),
                d_ptr->endSubBox->daySbx->getValue());
-    QTime time(d_ptr->endSubBox->hourSbx->getValue(),
-               d_ptr->endSubBox->minSbx->getValue(),
+    int h = d_ptr->endSubBox->hourSbx->getValue();
+    QTime time(h, d_ptr->endSubBox->minSbx->getValue(),
                d_ptr->endSubBox->secondSbx->getValue());
     QDateTime dateTime(date, time);
     unsigned timeStamp = dateTime.toTime_t();
@@ -222,7 +261,7 @@ void TrendPrintWindow::endTimeChangeSlot(int, int)
     }
     else
     {
-        d_ptr->printEndTime = timeStamp;
+        d_ptr->adjustPrintTime(timeStamp, false);
     }
 
     d_ptr->difftimeInfo();
@@ -260,6 +299,17 @@ void TrendPrintWindowPrivate::initGroupBox(QGroupBox *groupBox, TrendPrintWindow
     subBox->hourSbx->setRange(0, 23);
     subBox->hourSbx->setStep(1);
     subBox->hourSbx->setArrow(false);
+    if (timeFormat == TIME_FORMAT_12)
+    {
+        // 时间格式为12制时，设置spinbox为字符串类型
+        subBox->hourSbx->setSpinBoxStyle(SpinBox::SPIN_BOX_STYLE_STRING);
+        subBox->hourSbx->setStringList(hourList);
+    }
+    else
+    {
+        // 时间格式为24制时，设置spinbox为数字类型
+        subBox->hourSbx->setSpinBoxStyle(SpinBox::SPIN_BOX_STYLE_NUMBER);
+    }
 
     subBox->minSbx->setRange(0, 59);
     subBox->minSbx->setStep(1);
@@ -298,4 +348,82 @@ void TrendPrintWindowPrivate::difftimeInfo()
     infoStr += " ";
     infoStr += trs("Second");
     durationLbl->setText(infoStr);
+}
+
+void TrendPrintWindowPrivate::adjustPrintTime(unsigned printTime, bool start)
+{
+    int count = trendDataPack.count();
+    if (count == 0)
+    {
+        if (start)
+        {
+            printStartTime = printTime;
+        }
+        else
+        {
+            printEndTime = printTime;
+        }
+        return;
+    }
+
+    unsigned adjustTime = printTime;
+    for (int i = 1; i < count; i++)
+    {
+        unsigned curTime = trendDataPack.at(i - 1)->time;
+        unsigned nextTime = trendDataPack.at(i)->time;
+        if (printTime == curTime)
+        {
+            adjustTime = curTime;
+            break;
+        }
+        else if (printTime > curTime && printTime < nextTime)
+        {
+            // 使得打印的时间区间向中间聚拢缩短
+            if (start)
+            {
+                adjustTime = nextTime;
+            }
+            else
+            {
+                adjustTime = curTime;
+            }
+            break;
+        }
+    }
+
+    SubGroupBox *subBox = NULL;
+    if (start)
+    {
+        printStartTime = adjustTime;
+        subBox = startSubBox;
+    }
+    else
+    {
+        printEndTime = adjustTime;
+        subBox = endSubBox;
+    }
+
+    subBox->yearSbx->blockSignals(true);
+    subBox->yearSbx->setValue(static_cast<int>(timeDate.getDateYear(adjustTime)));
+    subBox->yearSbx->blockSignals(false);
+
+    subBox->monthSbx->blockSignals(true);
+    subBox->monthSbx->setValue(static_cast<int>(timeDate.getDateMonth(adjustTime)));
+    subBox->monthSbx->blockSignals(false);
+
+    subBox->daySbx->blockSignals(true);
+    subBox->daySbx->setValue(static_cast<int>(timeDate.getDateDay(adjustTime)));
+    subBox->daySbx->blockSignals(false);
+
+    subBox->hourSbx->blockSignals(true);
+    subBox->hourSbx->setValue(static_cast<int>(timeDate.getTimeHour(adjustTime)));
+    subBox->hourSbx->blockSignals(false);
+
+    subBox->minSbx->blockSignals(true);
+    subBox->minSbx->setValue(static_cast<int>(timeDate.getTimeMinute(adjustTime)));
+    subBox->minSbx->blockSignals(false);
+
+    subBox->secondSbx->blockSignals(true);
+    subBox->secondSbx->setValue(static_cast<int>(timeDate.getTimeSenonds(adjustTime)));
+    subBox->secondSbx->blockSignals(false);
 }

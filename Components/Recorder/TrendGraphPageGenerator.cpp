@@ -23,7 +23,8 @@
 #define AXIS_X_SECTION_WIDTH (RECORDER_PIXEL_PER_MM * 16)
 #define AXIS_Y_SECTION_HEIGHT (RECORDER_PIXEL_PER_MM * 8)
 
-#define AXIS_X_SECTION_NUM 4
+#define AXIS_X_SECTION_NUM 5                                            // 坐标轴部分
+#define AXIS_X_DATA_SECTION_NUM (AXIS_X_SECTION_NUM - 1)                // 数据部分
 #define AXIS_Y_SECTION_NUM 2
 
 #define AXIS_X_WIDTH (AXIS_X_SECTION_WIDTH * AXIS_X_SECTION_NUM)
@@ -116,7 +117,7 @@ GraphAxisInfo TrendGraphPageGeneratorPrivate::getAxisInfo(const RecordPage *page
     axisInfo.width = AXIS_X_WIDTH;
     axisInfo.marginLeft = marginLeft;
     axisInfo.xSectionWidth = AXIS_X_SECTION_WIDTH;
-    axisInfo.xSectionNum = AXIS_X_SECTION_NUM;
+    axisInfo.xSectionNum = AXIS_X_DATA_SECTION_NUM;
     axisInfo.validWidth = axisInfo.xSectionWidth * axisInfo.xSectionNum;
     axisInfo.ySectionHeight = AXIS_Y_SECTION_HEIGHT;
     axisInfo.ySectionNum = AXIS_Y_SECTION_NUM;
@@ -136,7 +137,7 @@ GraphAxisInfo TrendGraphPageGeneratorPrivate::getAxisInfo(const RecordPage *page
         unsigned t = startTime;
         QStringList timeList;
         QList<int> dayList;
-        for (int i = 0; i < AXIS_X_SECTION_NUM && t < endTime; i++)
+        for (int i = 0; i < AXIS_X_SECTION_NUM && t <= endTime; i++)
         {
             QString timeStr;
             timeDate.getTime(t, timeStr, true);
@@ -236,7 +237,7 @@ TrendGraphPageGenerator::TrendGraphPageGenerator(const QList<TrendGraphInfo> &tr
     }
     d_ptr->trendGraphInfos = trendInfos;
     d_ptr->eventList = eventList;
-    d_ptr->deltaT = (d_ptr->endTime - d_ptr->startTime) /  AXIS_X_SECTION_NUM;
+    d_ptr->deltaT = (d_ptr->endTime - d_ptr->startTime) /  (AXIS_X_DATA_SECTION_NUM);
 }
 
 TrendGraphPageGenerator::~TrendGraphPageGenerator()

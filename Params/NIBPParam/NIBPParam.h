@@ -289,6 +289,26 @@ public:
      * @param volume 设置的音量
      */
     void setNIBPCompleteTone(SoundManager::VolumeLevel volume);
+
+    /**
+     * @brief enterMaintain 进入/退出维护
+     * @param enter 进入为true,退出为false
+     */
+    void enterMaintain(bool enter);
+
+    /**
+     * @brief isMaintain 是否处于维护
+     * @return
+     */
+    bool isMaintain();
+
+signals:
+    /**
+     * @brief statBtnState 设置NIBP菜单中的STAT按键状态
+     * @param false：stop stat  true：start stat
+     */
+    void statBtnState(bool);
+
 private slots:
     void _patientTypeChangeSlot(PatientType type);
     void _btnTimeOut();
@@ -329,6 +349,8 @@ private:
     bool _reply;                 // 校准回复
     bool _result;                // 校准结果
     int16_t _manometerPressure;             // 压力计模式下压力
+
+    bool _isMaintain;            // 是否维护模式
 
 private:
     typedef QMap<NIBPStateMachineType, NIBPStateMachine *> MachineStateMap;

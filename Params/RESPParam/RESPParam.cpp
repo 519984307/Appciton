@@ -245,6 +245,7 @@ void RESPParam::setWaveWidget(RESPWaveWidget *waveWidget)
     d_ptr->waveWidget = waveWidget;
     d_ptr->setWaveformSpeed(getSweepSpeed());
     setZoom(getZoom());
+    d_ptr->waveWidget->setWaveformMode(getSweepMode());
 }
 
 void RESPParam::setOxyCRGWaveRESPWidget(OxyCRGRESPWaveWidget *waveWidget)
@@ -278,7 +279,10 @@ void RESPParam::addWaveformData(int wave, int flag)
 void RESPParam::setRR(short rrValue)
 {
     respDupParam.updateRR(rrValue);
-     d_ptr->oxyCRGRrHrTrend->addRrTrendData(rrValue);
+    if (d_ptr->oxyCRGRrHrTrend)
+    {
+        d_ptr->oxyCRGRrHrTrend->addRrTrendData(rrValue);
+    }
 }
 
 /**************************************************************************************************
@@ -337,6 +341,22 @@ void RESPParam::setOxyCRGRrHrTrend(OxyCRGRRHRWaveWidget *w)
         return;
     }
     d_ptr->oxyCRGRrHrTrend = w;
+}
+
+void RESPParam::setSweepMode(RESPSweepMode mode)
+{
+    currentConfig.setNumValue("RESP|RESPSweepMode", static_cast<int>(mode));
+    if (d_ptr->waveWidget)
+    {
+        d_ptr->waveWidget->setWaveformMode(mode);
+    }
+}
+
+RESPSweepMode RESPParam::getSweepMode(void)
+{
+    int mode = RESP_SWEEP_MODE_CURVE;
+    currentConfig.getNumValue("RESP|RESPSweepMode", mode);
+    return static_cast<RESPSweepMode>(mode);
 }
 
 /**************************************************************************************************

@@ -13,6 +13,7 @@
 #include "NIBPMonitorStateDefine.h"
 #include "Debug.h"
 #include <QTimer>
+#include "SystemManager.h"
 
 NIBPCountdownTime *NIBPCountdownTime::_selfObj = NULL;
 
@@ -27,7 +28,10 @@ void NIBPCountdownTime::run()
         if ((nibpParam.curStatusType() == NIBP_MONITOR_STANDBY_STATE) && isAutoMeasureTimeout())
         {
             // 转换到测量状态。
-            nibpParam.switchState(NIBP_MONITOR_STARTING_STATE);
+            if (systemManager.getCurWorkMode() != WORK_MODE_DEMO)
+            {
+                nibpParam.switchState(NIBP_MONITOR_STARTING_STATE);
+            }
             setAutoMeasureTimeout(false);
         }
     }
@@ -76,7 +80,6 @@ void NIBPCountdownTime::_STATMeasureTimeout()
 {
     _STATMeasureTimer->stop();
     _isSTATMeasureTimeout = true;
-    nibpParam.setMeasurMode(NIBP_MODE_STAT);
 }
 
 /**************************************************************************************************

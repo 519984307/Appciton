@@ -113,7 +113,8 @@ void SuntechProvider::dataArrived(void)
         return;
     }
 
-    unsigned char buff[64];
+    // the max number of the every data pack is 67. set the buff size as 84.
+    unsigned char buff[84];
     while (ringBuff.dataSize() >= _minPacketLen)
     {
         if (ringBuff.at(0) != MODULE_START_BYTE)
@@ -460,6 +461,16 @@ SuntechProvider::~SuntechProvider()
     }
 }
 
+void SuntechProvider::disconnected()
+{
+    nibpParam.setConnected(false);
+}
+
+void SuntechProvider::reconnected()
+{
+    nibpParam.setConnected(true);
+}
+
 /**************************************************************************************************
  * get cuff pressure。
  *************************************************************************************************/
@@ -499,6 +510,11 @@ void SuntechProvider::_handlePacket(unsigned char *data, int len)
     if (!isConnectedToParam)
     {
         return;
+    }
+
+    if (!isConnected)
+    {
+        nibpParam.setConnected(true);
     }
 
     switch (data[0])
@@ -584,7 +600,9 @@ void SuntechProvider::_handlePacket(unsigned char *data, int len)
     // 版本信息
     case SUNTECH_RSP_GET_RETURN_STRING:
     {
-        serviceVersion.getNIBPVersion(data, len);
+        const char *p = reinterpret_cast<const char*>(data + 1);
+        versionInfo = QString("%1-%2").arg(QString(p)).arg(QString(p + 0x08));
+        break;
     }
     // 校准结果
     case SUNTECH_RSP_GET_CALIBRATE_RESULT:

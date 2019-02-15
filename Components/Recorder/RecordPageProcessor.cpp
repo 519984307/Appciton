@@ -17,6 +17,7 @@
 #include "unistd.h"
 #include <QTimerEvent>
 #include <QPointer>
+#include "RecorderManager.h"
 
 #define PAGE_QUEUE_SIZE 32
 
@@ -28,7 +29,7 @@ class RecordPageProcessorPrivate
 public:
     RecordPageProcessorPrivate(RecordPageProcessor *const q_ptr, PrintProviderIFace *iface)
         : q_ptr(q_ptr), iface(iface), processing(false), pause(false),
-          updateSpeed(false), queueIsFull(false), curSpeed(PRINT_SPEED_NR),
+          queueIsFull(false), curSpeed(PRINT_SPEED_NR),
           timerID(-1), curProcessingPage(NULL), curPageXPos(0)
     {}
 
@@ -39,7 +40,6 @@ public:
     QList<RecordPage *> pages;
     bool processing;
     bool pause;
-    bool updateSpeed;
     bool queueIsFull;
     PrintSpeed curSpeed;
     int timerID;
@@ -62,24 +62,10 @@ bool RecordPageProcessor::isProcessing() const
     return d_ptr->processing;
 }
 
-void RecordPageProcessor::updatePrintSpeed(PrintSpeed speed)
+void RecordPageProcessor::setPrintSpeed(PrintSpeed speed)
 {
-    if (speed >= PRINT_SPEED_NR || d_ptr->curSpeed == speed)
-    {
-        return;
-    }
-
     d_ptr->curSpeed = speed;
-    if (d_ptr->processing)
-    {
-        d_ptr->updateSpeed = true;
-    }
-    else
-    {
-        // set speed imediately
-        d_ptr->iface->setPrintSpeed(speed);
-        qDebug() << "Set Print Speed " << speed;
-    }
+    d_ptr->iface->setPrintSpeed(speed);
 }
 
 void RecordPageProcessor::addPage(RecordPage *page)
@@ -131,13 +117,6 @@ void RecordPageProcessor::stopProcess()
 
     d_ptr->stopProcessing();
     emit processFinished();
-
-    // check whether speed need to update
-    if (d_ptr->updateSpeed)
-    {
-        d_ptr->updateSpeed = false;
-        d_ptr->iface->setPrintSpeed(d_ptr->curSpeed);
-    }
 }
 
 void RecordPageProcessor::pauseProcessing(bool pause)

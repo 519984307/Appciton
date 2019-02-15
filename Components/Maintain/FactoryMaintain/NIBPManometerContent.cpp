@@ -168,6 +168,8 @@ void NIBPManometerContent::enterManometerReleased()
         }
         else
         {
+            // 压力计模式下关闭气泵气阀.
+            nibpParam.provider().controlPneumatics(0, 1, 1);
             d_ptr->modeBtn->setText(trs("QuitManometerMode"));
             d_ptr->isManometerMode = true;
             d_ptr->pressureTimerID = startTimer(CALIBRATION_INTERVAL_TIME);

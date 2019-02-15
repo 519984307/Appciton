@@ -192,7 +192,12 @@ FactoryTestMenuContent::~FactoryTestMenuContent()
 
 void FactoryTestMenuContent::readyShow()
 {
+    bool enable = true;
+#ifdef DISABLE_FACTORY_MODULE_SELFTEST
+    enable = false;
+#endif
+    for (int i = 0; i < FACTORY_CONTENT_TEST_NR; i++)
+    {
+        d_ptr->lbtn[i]->setEnabled(enable);
+    }
 }
-
-
-

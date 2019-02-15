@@ -244,6 +244,7 @@ public: // 用于访问配置相关信息。
     // 设置/获取起搏标记。
     void setPacermaker(ECGPaceMode onoff);
     ECGPaceMode getPacermaker(void);
+    void updatePacermaker(void);
 
     // 设置/获取12L起搏标记。
     void set12LPacermaker(ECGPaceMode onoff);
@@ -265,8 +266,14 @@ public: // 用于访问配置相关信息。
      */
     void setGain(ECGGain gain);
 
+    /**
+     * @brief setGain 设置增益
+     * @param gain 增益
+     * @param lead 导联
+     * @param isAutoGain 自动增益导致的增益设置
+     */
+    void setGain(ECGGain gain, ECGLead lead, bool isAutoGain = false);
     // 设置/获取增益。
-    void setGain(ECGGain gain, ECGLead lead);
     void setGain(ECGGain gain, int waveID);
     ECGGain getGain(ECGLead lead);
     void setAutoGain(ECGLead lead, int flag);

@@ -50,8 +50,11 @@ void ConfigEditAlarmLimitModel::alarmDataUpdate(const AlarmDataInfo &info, int t
     switch (type)
     {
     case SECTION_STATUS:
-        config->setNumAttr(prefix, "Enable", info.status);
+    {
+        int status = info.status ? 1 : 0;
+        config->setNumAttr(prefix, "Enable", status);
         break;
+    }
     case SECTION_LEVEL:
         config->setNumAttr(prefix, "Prio", info.alarmLevel);
         break;

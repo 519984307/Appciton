@@ -274,7 +274,7 @@ void ECGParam::setProvider(ECGProviderIFace *provider)
     _provider->setPatientType(getPatientType());
 
     // 设置带宽。
-    _provider->setBandwidth((ECGBandwidth)getBandwidth());
+//    _provider->setBandwidth((ECGBandwidth)getBandwidth());
 
     // set fitler mode
     _provider->setFilterMode((ECGFilterMode)getFilterMode());
@@ -529,7 +529,7 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
             _waveWidget[i]->addWaveformData(-waveform[i], norfalg & 0xFFFF);
         }
 
-        waveformCache.addData((WaveformID)i, ((flag & 0xFFFF) << 16) | (waveform[i] & 0xFFFF));
+        waveformCache.addData((WaveformID)i, ((norfalg & 0xFFFF) << 16) | (waveform[i] & 0xFFFF));
 
         flagUnsaved[i] = 0;
     }
@@ -1091,7 +1091,7 @@ void ECGParam::reset(void)
     _provider->setPatientType(getPatientType());
 
     // 设置带宽。
-    _provider->setBandwidth((ECGBandwidth)getBandwidth());
+//    _provider->setBandwidth((ECGBandwidth)getBandwidth());
 
     // 设置起搏检测。
     _provider->enablePacermaker(getPacermaker());
@@ -1378,27 +1378,27 @@ ECGLeadMode ECGParam::getLeadMode(void) const
  *************************************************************************************************/
 void ECGParam::setDisplayMode(ECGDisplayMode mode, bool refresh)
 {
-    int band = 0;
+//    int band = 0;
     int filter = 0;
     ECGPaceMode ecgPaceMaker = getPacermaker();
     ECGPaceMode ecg12LPaceMaker = get12LPacermaker();
 
     if (mode == ECG_DISPLAY_NORMAL)
     {
-        band = _chestFreqBand;
+//        band = _chestFreqBand;
         filter = ECG_NOTCH_50_AND_60HZ;
     }
     else
     {
         // 进入12L模式前，如果是在诊断时间范围內则先关闭诊断功能
-        band = _12LeadFreqBand;
+//        band = _12LeadFreqBand;
 
         currentConfig.getNumValue("ECG|NotchFilter", filter);
     }
 
     if (NULL != _provider)
     {
-        _provider->setBandwidth((ECGBandwidth)band);
+//        _provider->setBandwidth((ECGBandwidth)band);
         _provider->setNotchFilter((ECGNotchFilter)filter);
     }
 
@@ -1660,10 +1660,10 @@ void ECGParam::setBandwidth(int band)
         }
     }
 
-    if (NULL != _provider)
-    {
-        _provider->setBandwidth(static_cast<ECGBandwidth>(band));
-    }
+    //    if (NULL != _provider)
+    //    {
+    //        _provider->setBandwidth(static_cast<ECGBandwidth>(band));
+    //    }
 }
 
 /***************************************************************************************************
@@ -1776,6 +1776,17 @@ ECGPaceMode ECGParam::getPacermaker(void)
     return static_cast<ECGPaceMode>(onoff);
 }
 
+void ECGParam::updatePacermaker()
+{
+    int index = 0;
+    currentConfig.getNumValue("ECG|PacerMaker", index);
+    if (NULL != _provider)
+    {
+        _provider->enablePacermaker(static_cast<ECGPaceMode>(index));
+    }
+    runningStatus.setPacerStatus(index);
+}
+
 /**************************************************************************************************
  * 设置12L起搏标记。
  *************************************************************************************************/
@@ -1865,13 +1876,13 @@ void ECGParam::setGain(ECGGain gain)
  *************************************************************************************************/
 void ECGParam::setGain(ECGGain gain, int waveID)
 {
-    setGain(gain, waveIDToLeadID((WaveformID)waveID));
+    setGain(gain, waveIDToLeadID((WaveformID)waveID), true);
 }
 
 /**************************************************************************************************
  * 设置增益。
  *************************************************************************************************/
-void ECGParam::setGain(ECGGain gain, ECGLead lead)
+void ECGParam::setGain(ECGGain gain, ECGLead lead, bool isAutoGain)
 {
     if (lead > ECG_LEAD_V6)
     {
@@ -1883,9 +1894,13 @@ void ECGParam::setGain(ECGGain gain, ECGLead lead)
         return;
     }
 
-    QString wavename = _waveWidget[lead]->name();
-    currentConfig.setNumValue("ECG|Gain|" + wavename, static_cast<int>(gain));
-    _waveWidget[lead]->setGain(gain);
+    // 判断是否自动增益设置调用
+    if (!isAutoGain)
+    {
+        QString wavename = _waveWidget[lead]->name();
+        currentConfig.setNumValue("ECG|Gain|" + wavename, static_cast<int>(gain));
+    }
+    _waveWidget[lead]->setGain(gain, isAutoGain);
 }
 
 /**************************************************************************************************

@@ -31,7 +31,7 @@ void AlarmTechInfoBarWidget::_drawBackground(void)
 
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
-    painter.setPen(Qt::black);
+    painter.setPen(Qt::transparent);
     if (_alarmPriority == ALARM_PRIO_HIGH)
     {
         painter.setBrush(QColor(255, 0, 0));
@@ -46,7 +46,6 @@ void AlarmTechInfoBarWidget::_drawBackground(void)
     }
     else
     {
-        painter.setPen(QColor(30, 30, 30));
         painter.setBrush(QColor(30, 30, 30));
     }
 

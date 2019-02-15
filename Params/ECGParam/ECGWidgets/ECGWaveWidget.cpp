@@ -281,6 +281,7 @@ void ECGWaveWidget::_loadConfig(void)
 {
     setSpeed(ecgParam.getSweepSpeed());
 
+    bool is12Lead = ecgParam.getLeadMode() < ECG_LEAD_MODE_12 ? 0 : 1;
     if (layoutManager.getUFaceType() == UFACE_MONITOR_ECG_FULLSCREEN)
     {
         _name->setFocusPolicy(Qt::NoFocus);
@@ -292,7 +293,7 @@ void ECGWaveWidget::_loadConfig(void)
         setGain(_12LGain);
 
         _name->setText(ECGSymbol::convert(ecgParam.waveIDToLeadID((WaveformID)getID()),
-                                          ecgParam.getLeadConvention(), true, ecgParam.get12LDisplayFormat()));
+                                          ecgParam.getLeadConvention(), is12Lead, ecgParam.get12LDisplayFormat()));
 
         _name->setFixedWidth(70);
 //        _notify->setVisible(false);
@@ -300,7 +301,7 @@ void ECGWaveWidget::_loadConfig(void)
     else
     {
         _name->setText(ECGSymbol::convert(ecgParam.waveIDToLeadID((WaveformID)getID()),
-                                          ecgParam.getLeadConvention(), false, false));
+                                          ecgParam.getLeadConvention(), is12Lead, false));
         _name->setFocusPolicy(Qt::StrongFocus);
 
         // 增益。
@@ -363,47 +364,25 @@ void ECGWaveWidget::addWaveformData(int waveData, int pace)
  * 参数:
  *      gain: 波形增益
  *************************************************************************************************/
-void ECGWaveWidget::setGain(ECGGain gain)
+void ECGWaveWidget::setGain(ECGGain gain, bool isAuto)
 {
     _initValueRange(gain);
-    QString text;
-    if (_isAutoGain)
+    // 自动增益标志
+    if (gain == ECG_GAIN_AUTO)
     {
-        text = trs("Automatically");
-        text += " ";
+        _isAutoGain = true;
+    }
+    // 不是自动增益导致的增益设置
+    else if (!isAuto)
+    {
+        _isAutoGain = false;
     }
 
-    switch (gain)
+    // 不是自动增益导致的增益设置
+    if (!isAuto)
     {
-    case ECG_GAIN_X0125:
-        text += "0.125 cm/mV";
-        break;
-
-    case ECG_GAIN_X025:
-        text += "0.25 cm/mV";
-        break;
-
-    case ECG_GAIN_X05:
-        text += "0.5 cm/mV";
-        break;
-
-    case ECG_GAIN_X10:
-        text += "1.0 cm/mV";
-        break;
-
-    case ECG_GAIN_X20:
-        text += "2.0 cm/mV";
-        break;
-
-    case ECG_GAIN_X40:
-        text += "4.0 cm/mV";
-        break;
-
-    default:
-        break;
+        _gain->setText(trs(ECGSymbol::convert(gain)));
     }
-
-    _gain->setText(trs(ECGSymbol::convert(gain)));
 
     _ruler->setGain(gain);
 }
@@ -533,23 +512,6 @@ void ECGWaveWidget::setNotifyMesg(ECGWaveNotify mesg)
 void ECGWaveWidget::paintEvent(QPaintEvent *e)
 {
     WaveWidget::paintEvent(e);
-
-    if (ECG_DISPLAY_NORMAL == ecgParam.getDisplayMode())
-    {
-        if (getID() != ecgParam.getCalcLead())
-        {
-            return;
-        }
-    }
-    else if (ECG_DISPLAY_12_LEAD_FULL == ecgParam.getDisplayMode())
-    {
-        QStringList currentWaveforms = layoutManager.getDisplayedWaveforms();
-        if (!((ECG_PACE_ON == (ECGPaceMode)ecgParam.get12LPacermaker()) && (!currentWaveforms.empty())
-                && (currentWaveforms[0] == name())))
-        {
-            return;
-        }
-    }
 
     if (bufIsEmpty())
     {

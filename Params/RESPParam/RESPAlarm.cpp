@@ -52,7 +52,7 @@ WaveformID RESPLimitAlarm::getWaveformID(int id)
 SubParamID RESPLimitAlarm::getSubParamID(int id)
 {
     Q_UNUSED(id)
-    return SUB_PARAM_NONE;
+    return SUB_PARAM_RR_BR;
 }
 
 /**************************************************************************************************
@@ -184,6 +184,7 @@ AlarmPriority RESPOneShotAlarm::getAlarmPriority(int id)
     switch (id)
     {
         case RESP_ONESHOT_ALARM_APNEA:
+        case RESP_ONESHOT_ALARM_COMMUNICATION_STOP:
             return ALARM_PRIO_HIGH;
 
         default:

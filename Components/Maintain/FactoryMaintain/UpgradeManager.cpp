@@ -562,29 +562,17 @@ QByteArray UpgradeManagerPrivate::getImageSegment(int seqNum)
 
     char *content = ptr + 3;
 
-    if (seqNum == 0)
+    int index = seqNum * 128;
+    if (index + 128 < fileContent.length())
     {
-        // module name
-        ::snprintf(content, 32, "%s", qPrintable(q_ptr->getUpgradeModuleName(type)));  // NOLINT
-        // minium hardware version
-        ::snprintf(content + 32, 16, DEFAULT_HW_VER_STR); // NOLINT
-        // software version, use the default value
-        ::snprintf(content + 48, 16, DEFAULT_SW_VER_STR); // NOLINT
+        ::memcpy(content, fileContent.data() + index, 128);
     }
-    else
+    else if (index < fileContent.length())
     {
-        int index = (seqNum - 1) * 128;
-        if (index + 128 < fileContent.length())
-        {
-            ::memcpy(content, fileContent.data() + index, 128);
-        }
-        else if (index < fileContent.length())
-        {
-            ptr[0] = 1;
-            int size = fileContent.length() - index;
-            ::memcpy(content, fileContent.data() + index, size);
-            ::memset(content + size, 0xff, 128 - size);
-        }
+        ptr[0] = 1;
+        int size = fileContent.length() - index;
+        ::memcpy(content, fileContent.data() + index, size);
+        ::memset(content + size, 0xff, 128 - size);
     }
     return segment;
 }

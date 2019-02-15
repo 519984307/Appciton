@@ -20,15 +20,37 @@
 #include "Debug.h"
 #include "WindowManager.h"
 #include "NIBPRepairMenuWindow.h"
+#include "NIBPParam.h"
+
+#define TIME_INTERVAL       100
+
+class NIBPCalibrationMenuContentPrivate
+{
+public:
+    NIBPCalibrationMenuContentPrivate() : enterBtn(NULL), timerId(-1)
+    {}
+    Button *enterBtn;
+    int timerId;
+};
 
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
 NIBPCalibrationMenuContent::NIBPCalibrationMenuContent()
     : MenuContent(trs("NIBPCalibrationMenu"),
-                  trs("NIBPCalibrationMenuDesc"))
-
+                  trs("NIBPCalibrationMenuDesc")),
+      d_ptr(new NIBPCalibrationMenuContentPrivate)
 {
+}
+
+NIBPCalibrationMenuContent::~NIBPCalibrationMenuContent()
+{
+    delete d_ptr;
+}
+
+void NIBPCalibrationMenuContent::readyShow()
+{
+    d_ptr->timerId = startTimer(TIME_INTERVAL);
 }
 
 void NIBPCalibrationMenuContent::layoutExec()
@@ -40,10 +62,33 @@ void NIBPCalibrationMenuContent::layoutExec()
     QLabel *label = new QLabel(trs("NIBPCalibration"));
     layout->addWidget(label);
 
-    Button *button = new Button(trs("Enter"));
-    button->setButtonStyle(Button::ButtonTextOnly);
-    layout->addWidget(button);
-    connect(button, SIGNAL(released()), this, SLOT(onBtnSlot()));
+    d_ptr->enterBtn = new Button(trs("Enter"));
+    d_ptr->enterBtn->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(d_ptr->enterBtn);
+    connect(d_ptr->enterBtn, SIGNAL(released()), this, SLOT(onBtnSlot()));
+}
+
+void NIBPCalibrationMenuContent::hideEvent(QHideEvent *e)
+{
+    Q_UNUSED(e)
+    killTimer(d_ptr->timerId);
+    d_ptr->timerId = -1;
+}
+
+void NIBPCalibrationMenuContent::timerEvent(QTimerEvent *e)
+{
+    // 100ms访问一次NIBP测量状态并使能按钮
+    if (e->timerId() == d_ptr->timerId)
+    {
+        if (nibpParam.isMeasuring())
+        {
+            d_ptr->enterBtn->setEnabled(false);
+        }
+        else
+        {
+            d_ptr->enterBtn->setEnabled(true);
+        }
+    }
 }
 
 void NIBPCalibrationMenuContent::onBtnSlot()

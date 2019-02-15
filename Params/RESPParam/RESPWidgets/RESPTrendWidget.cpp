@@ -20,6 +20,8 @@
 #include "ParamManager.h"
 #include "FontManager.h"
 #include "RESPDupParam.h"
+#include "ConfigManager.h"
+#include "CO2Param.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -33,17 +35,28 @@ void RESPTrendWidget::_releaseHandle(IWidget *iWidget)
 
 void RESPTrendWidget::_onBrSourceStatusUpdate()
 {
-    // 只有在来源为co2时才会显示
+    bool isAuto = respDupParam.isAutoBrSourceEnabled();
     RESPDupParam::BrSourceType type = respDupParam.getBrSource();
-    if (type == RESPDupParam::BR_SOURCE_CO2 && respDupParam.getRR() != InvData())
+
+    _rrSource->setVisible(false);
+    _rrSource->setText("");
+    if (respDupParam.getRR() == InvData())
+    {
+        return;
+    }
+    if (isAuto == true)
+    {
+        if (type == RESPDupParam::BR_SOURCE_CO2)
+        {
+            _rrSource->setVisible(true);
+            _rrSource->setText(trs("AutoOfCO2"));
+        }
+        return;
+    }
+    if (type == RESPDupParam::BR_SOURCE_CO2)
     {
         _rrSource->setVisible(true);
         _rrSource->setText(trs("SourceOfCO2"));
-    }
-    else
-    {
-        _rrSource->setVisible(false);
-        _rrSource->setText("");
     }
 }
 
@@ -56,12 +69,33 @@ void RESPTrendWidget::_loadConfig()
     setName(trs(paramInfo.getSubParamName(SUB_PARAM_RR_BR)));
     setUnit(Unit::getSymbol(UNIT_RPM));
     updateLimit();
+
+    int index = 0;
+    currentConfig.getNumValue("RESP|BrSource", index);
+    if (index == BR_RR_SOURCE_CO2 && co2Param.isConnected() == false)
+    {
+        index = BR_RR_AUTO;
+    }
+    switch (index)
+    {
+    case BR_RR_AUTO:
+        respDupParam.setAutoBrSourceStatue(true);
+         break;
+    case BR_RR_SOURCE_ECG:
+        respDupParam.setBrSource(RESPDupParam::BR_SOURCE_ECG);
+        respDupParam.setAutoBrSourceStatue(false);
+        break;
+    case BR_RR_SOURCE_CO2:
+        respDupParam.setBrSource(RESPDupParam::BR_SOURCE_CO2);
+        respDupParam.setAutoBrSourceStatue(false);
+        break;
+    }
 }
 
 /**************************************************************************************************
  * 设置PR的值。
  *************************************************************************************************/
-void RESPTrendWidget::setRRValue(int16_t rr , bool isRR)
+void RESPTrendWidget::setRRValue(int16_t rr , bool isRR, bool isAutoType)
 {
     if (isRR)
     {
@@ -70,6 +104,13 @@ void RESPTrendWidget::setRRValue(int16_t rr , bool isRR)
     else
     {
         setName(trs(paramInfo.getSubParamName(SUB_DUP_PARAM_BR)));
+    }
+
+    if ((rr == InvData() && _rrString != InvStr())  // invalid value  first
+            || (rr != InvData() && _rrString == InvStr())  // valid value  first
+            || (isAutoType == true))  // if br/rr value is from auto type
+    {
+        _onBrSourceStatusUpdate();
     }
 
     if (rr != InvData())

@@ -20,6 +20,17 @@
 #include "RawDataCollector.h"
 #include "IConfig.h"
 
+enum TempErrorCode
+{
+    ERRORCODE_DATA_RESET_DEFAULT = 1,
+    ERRORCODE_FLASH_WRONG,
+    ERRORCODE_SELF_CHECK_FAILED,
+    ERRORCODE_CHANNEL1_AD_OVERRANGE,
+    ERRORCODE_CHANNEL2_AD_OVERRANGE,
+    ERRORCODE_CHANNEL1_NOT_CALIBRATION,
+    ERRORCODE_CHANNEL2_NOT_CALIBRATION
+};
+
 static const char *tempErrorCode[] =
 {
     "Unknown mistake.\r\n",
@@ -214,18 +225,15 @@ void T5Provider::_selfTest(unsigned char *packet, int len)
         {
             switch (packet[i])
             {
-            case 0x03:
-                systemManager.setPoweronTestResult(T5_MODULE_SELFTEST_RESULT, SELFTEST_FAILED);
-                tempParam.setErrorDisable();
-                tempParam.setOneShotAlarm(TEMP_ONESHOT_ALARM_MODULE_DISABLE, true);
-                errorStr += tempErrorCode[packet[i]];
-                break;
-            case 0x06:
+            case ERRORCODE_CHANNEL1_NOT_CALIBRATION:
                 tempParam.setOneShotAlarm(TEMP_ONESHOT_ALARM_NOT_CALIBRATION_1, true);
                 errorStr += tempErrorCode[packet[i]];
                 break;
-            case 0x07:
+            case ERRORCODE_CHANNEL2_NOT_CALIBRATION:
                 tempParam.setOneShotAlarm(TEMP_ONESHOT_ALARM_NOT_CALIBRATION_2, true);
+                errorStr += tempErrorCode[packet[i]];
+                break;
+            case ERRORCODE_DATA_RESET_DEFAULT:
                 errorStr += tempErrorCode[packet[i]];
                 break;
             default:
@@ -252,9 +260,6 @@ void T5Provider::_selfTest(unsigned char *packet, int len)
 
 void T5Provider::_errorWarm(unsigned char *packet, int len)
 {
-    tempParam.setErrorDisable();
-    tempParam.setOneShotAlarm(TEMP_ONESHOT_ALARM_MODULE_DISABLE, true);
-
     QString errorStr("");
     errorStr = "error code = ";
     for (int i = 1; i < len; i++)
@@ -267,11 +272,11 @@ void T5Provider::_errorWarm(unsigned char *packet, int len)
     {
         switch (packet[i])
         {
-        case 0x01:
-        case 0x08:
-        case 0x09:
-        case 0x0A:
-        case 0x0B:
+        case ERRORCODE_FLASH_WRONG:
+        case ERRORCODE_SELF_CHECK_FAILED:
+            systemManager.setPoweronTestResult(T5_MODULE_SELFTEST_RESULT, SELFTEST_FAILED);
+            tempParam.setErrorDisable();
+            tempParam.setOneShotAlarm(TEMP_ONESHOT_ALARM_MODULE_DISABLE, true);
             errorStr += tempErrorCode[packet[i]];
             break;
         default:

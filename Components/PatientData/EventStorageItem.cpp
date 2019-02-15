@@ -528,15 +528,24 @@ QString EventStorageItem::getEventTitle() const
     case EventPhysiologicalAlarm:
     {
         SubParamID subparamID = (SubParamID) d_ptr->almInfo->subParamID;
-        AlarmLimitIFace *almIface = alertor.getAlarmLimitIFace(subparamID);
+        unsigned char alarmId = d_ptr->almInfo->alarmType;
+        unsigned char alarmInfo = d_ptr->almInfo->alarmInfo;
         AlarmPriority priority;
-        if (almIface)
+        if (alarmInfo & 0x01)   // oneshot 报警事件
         {
-            priority = almIface->getAlarmPriority(d_ptr->almInfo->alarmType);
+            AlarmOneShotIFace *alarmOneShot = alertor.getAlarmOneShotIFace(subparamID);
+            if (alarmOneShot)
+            {
+                priority = alarmOneShot->getAlarmPriority(alarmId);
+            }
         }
         else
         {
-            break;
+            AlarmLimitIFace *almIface = alertor.getAlarmLimitIFace(subparamID);
+            if (almIface)
+            {
+                priority = almIface->getAlarmPriority(alarmId);
+            }
         }
 
         QString titleStr;
@@ -555,6 +564,19 @@ QString EventStorageItem::getEventTitle() const
         }
 
         ParamID paramId = paramInfo.getParamID(subparamID);
+        // oneshot 报警
+        if (alarmInfo & 0x01)
+        {
+            // 将参数ID转换为oneshot报警对应的参数ID
+            if (paramId == PARAM_DUP_ECG)
+            {
+                paramId = PARAM_ECG;
+            }
+            else if (paramId == PARAM_DUP_RESP)
+            {
+                paramId = PARAM_RESP;
+            }
+        }
         titleStr += " ";
         titleStr += trs(Alarm::getPhyAlarmMessage(paramId,
                         d_ptr->almInfo->alarmType,
