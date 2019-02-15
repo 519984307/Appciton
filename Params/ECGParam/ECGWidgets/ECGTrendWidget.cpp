@@ -100,6 +100,11 @@ void ECGTrendWidget::_loadConfig()
 
     // 设置上下限
     updateLimit();
+
+    // 设置滤波模式
+    int mode = ECG_FILTERMODE_MONITOR;
+    currentConfig.getNumValue("ECG|FilterMode", mode);
+    ecgParam.setFilterMode(mode);
 }
 
 /**************************************************************************************************
