@@ -994,7 +994,7 @@ Upper,过高,Upper
 Lower,过低,Lower
 EventList,事件列表,Event List
 PrintList,打印列表,Print List
-EventListPrint,事件列表打印,Event List Print
+EventListPrint,事件列表,Event Log
 RealTimePrint,实时打印,RealTime Print
 RealtimeSegmentWavePrint,片段实时波形打印,Realtime Segment Wave Print
 FrozenWavePrint,冻结波形打印,Frozen Wave Print
