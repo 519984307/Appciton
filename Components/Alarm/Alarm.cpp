@@ -833,7 +833,7 @@ AlarmOneShotIFace *Alarm::getAlarmOneShotIFace(SubParamID id)
  * 功能： 构造。
  *************************************************************************************************/
 Alarm::Alarm() :
-    _isLatchLock(true)
+    _isLatchLock(true), _alarmLightOnAlarmReset(false)
 {
     // 栓锁状态初始化
     int boltLockIndex = 0;
@@ -1012,4 +1012,17 @@ void Alarm::removeAllPhyAlarm()
             source->notifyAlarm(i, false);
         }
     }
+}
+
+void Alarm::setAlarmLightOnAlarmReset(bool flag)
+{
+    int index = flag ? 1 : 0;
+    systemConfig.setNumValue("Alarms|AlarmLightOnAlarmReset", index);
+}
+
+bool Alarm::getAlarmLightOnAlarmReset()
+{
+    int index = 0;
+    systemConfig.getNumValue("Alarms|AlarmLightOnAlarmReset", index);
+    return index;
 }

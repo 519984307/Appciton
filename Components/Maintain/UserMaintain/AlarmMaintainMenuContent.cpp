@@ -97,7 +97,8 @@ void AlarmMaintainMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_REMINDER_TONE_INTERVAL]->setCurrentIndex(index);
 #endif
 
-    systemConfig.getNumValue("Alarms|AlarmLightOnAlarmReset", index);
+    bool flag = alertor.getAlarmLightOnAlarmReset();
+    index = flag ? 1 : 0;
     combos[ITEM_CBO_ALARM_LIGHT_RESET]->setCurrentIndex(index);
 
     systemConfig.getNumValue("Alarms|PhyParAlarmLatchlockOn", index);
@@ -159,7 +160,7 @@ void AlarmMaintainMenuContentPrivate::HandlingComboIndexChanged(AlarmMaintainMen
         systemConfig.setNumValue("Alarms|ReminderToneIntervals", index);
         break;
     case ITEM_CBO_ALARM_LIGHT_RESET:
-        systemConfig.setNumValue("Alarms|AlarmLightOnAlarmReset", index);
+        alertor.setAlarmLightOnAlarmReset(index);
         break;
     case ITEM_CBO_ALARM_LATCH_LOCK:
         systemConfig.setNumValue("Alarms|PhyParAlarmLatchlockOn", index);
