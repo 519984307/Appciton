@@ -181,7 +181,7 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_SWEEP_SPEED]->setCurrentIndex(index);
 
     int filterMode =  0;
-    config->getNumValue("ECG|Filter", filterMode);
+    config->getNumValue("ECG|FilterMode", filterMode);
     combos[ITEM_CBO_FILTER_MODE]->setCurrentIndex(filterMode);
 
     config->getNumValue("ECG|QRSVolume", index);
@@ -335,7 +335,7 @@ void ConfigEditECGMenuContent::layoutExec()
     d_ptr->combos.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_SWEEP_SPEED, comboBox);
 
     // filter
-    label = new QLabel(trs("Filter"));
+    label = new QLabel(trs("FilterMode"));
     d_ptr->comboLabels.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_FILTER_MODE,
                               label);
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -440,7 +440,7 @@ void ConfigEditECGMenuContent::onComboBoxIndexChanged(int index)
             break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_FILTER_MODE:
         {
-            d_ptr->config->setNumValue("ECG|Filter", index);
+            d_ptr->config->setNumValue("ECG|FilterMode", index);
             d_ptr->combos[ConfigEditECGMenuContentPrivate::ITEM_CBO_NOTCH_FILTER]->clear();
             switch (index)
             {
