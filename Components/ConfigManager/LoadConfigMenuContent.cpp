@@ -31,6 +31,9 @@
 #include "SoundManager.h"
 #include "AlarmConfig.h"
 #include "ColorManager.h"
+#include "ECGParam.h"
+#include "RESPDupParam.h"
+#include "CO2Param.h"
 
 #define CONFIG_DIR "/usr/local/nPM/etc"
 #define USER_DEFINE_CONFIG_NAME "UserConfig"
@@ -256,6 +259,10 @@ void LoadConfigMenuContent::onBtnClick()
 
         soundManager.volumeInit();
         layoutManager.updateLayoutWidgetsConfig();
+        ecgParam.updatePacermaker();    // 更新起博标志
+        respDupParam.updateRRSource();  // 更新RR来源
+        co2Param.updateDisplayZoom();   // 更新co2标尺
+
 
         QString title(trs("LoadConfig"));
         QString text(trs("SuccessToLoad"));

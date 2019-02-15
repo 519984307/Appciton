@@ -148,6 +148,7 @@ public:
 
     // 设置/获取波形放大标尺。
     void setDisplayZoom(CO2DisplayZoom zoom);
+    void updateDisplayZoom();
     CO2DisplayZoom getDisplayZoom(void);
 
     // 设置/获取FiCO2显示。

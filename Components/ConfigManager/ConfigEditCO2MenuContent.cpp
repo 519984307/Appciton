@@ -27,6 +27,7 @@ public:
     enum MenuItem
     {
         ITEM_CBO_WAVE_SPEED = 0,
+        ITEM_CBO_WAVE_RULER,
         ITEM_CBO_FICO2_DISPLAY,
         ITEM_CBO_APNEA_TIME,
 
@@ -73,8 +74,25 @@ void ConfigEditCO2MenuContent::readyShow()
             ::ITEM_BTN_O2_COMPEN]->setEnabled(!isOnlyToRead);
     d_ptr->btns[ConfigEditCO2MenuContentPrivate
             ::ITEM_BTN_N2O_COMPEN]->setEnabled(!isOnlyToRead);
+    d_ptr->combos[ConfigEditCO2MenuContentPrivate
+            ::ITEM_CBO_WAVE_RULER]->setEnabled(!isOnlyToRead);
 }
 
+float adjustWaveformRuler(float size)
+{
+    if (size == 13.0)
+    {
+        // 需求CO2-14, 标尺的上下限范围为0%-4%， 0-8%， 0-12%，0-20%
+        // 或0-30mmhg, 0-60mmhg, 0-100 mmhg, 0-150mmhg,
+        // 其中12%与100换算不对等：100mmhg按照软件代码中的算法换算应该为13%,
+        // 这里为了显示与需求保持一致，特地将13显示为12
+        return 12.0;
+    }
+    else
+    {
+        return size;
+    }
+}
 
 void ConfigEditCO2MenuContentPrivate::loadOptions()
 {
@@ -96,6 +114,35 @@ void ConfigEditCO2MenuContentPrivate::loadOptions()
 
     config->getNumValue("Alarm|ApneaTime", index);
     combos[ITEM_CBO_APNEA_TIME]->setCurrentIndex(index);
+
+    // co2标尺
+    combos[ITEM_CBO_WAVE_RULER]->blockSignals(true);
+    combos[ITEM_CBO_WAVE_RULER]->clear();
+    int maxZoom = CO2_DISPLAY_ZOOM_NR;
+    float zoomArray[CO2_DISPLAY_ZOOM_NR] = {4.0, 8.0, 13.0, 20.0};
+    QString str;
+    UnitType unit = co2Param.getUnit();
+    for (int i = 0; i < maxZoom; i++)
+    {
+        str.clear();
+        if (unit == UNIT_MMHG)
+        {
+            str = "0~";
+            int tempVal = Unit::convert(UNIT_MMHG, UNIT_PERCENT, zoomArray[i]).toInt();
+            tempVal = (tempVal + 5) / 10 * 10;
+            str += QString::number(tempVal);
+        }
+        else
+        {
+            str = QString("0.0~%1").arg(QString::number(adjustWaveformRuler(zoomArray[i]), 'f', 1));
+        }
+        str += " ";
+        str += Unit::localeSymbol(unit);
+        combos[ITEM_CBO_WAVE_RULER]->addItem(str);
+    }
+    combos[ITEM_CBO_WAVE_RULER]->blockSignals(false);
+    config->getNumValue("CO2|DisplayZoom", index);
+    combos[ITEM_CBO_WAVE_RULER]->setCurrentIndex(index);
 }
 
 void ConfigEditCO2MenuContent::onComboBoxIndexChanged(int index)
@@ -106,6 +153,9 @@ void ConfigEditCO2MenuContent::onComboBoxIndexChanged(int index)
     {
     case ConfigEditCO2MenuContentPrivate::ITEM_CBO_WAVE_SPEED:
         d_ptr->config->setNumValue("CO2|SweepSpeed", index);
+        break;
+    case ConfigEditCO2MenuContentPrivate::ITEM_CBO_WAVE_RULER:
+        d_ptr->config->setNumValue("CO2|DisplayZoom", index);
         break;
     case ConfigEditCO2MenuContentPrivate::ITEM_CBO_FICO2_DISPLAY:
         d_ptr->config->setNumValue("CO2|FICO2Display", index);
@@ -210,6 +260,16 @@ void ConfigEditCO2MenuContent::layoutExec()
     itemID = ConfigEditCO2MenuContentPrivate::ITEM_CBO_WAVE_SPEED;
     comboBox->setProperty("Item", itemID);
     d_ptr->combos.insert(ConfigEditCO2MenuContentPrivate::ITEM_CBO_WAVE_SPEED, comboBox);
+
+    // co2 ruler
+    label = new QLabel(trs("Ruler"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    itemID = static_cast<int>(ConfigEditCO2MenuContentPrivate::ITEM_CBO_WAVE_RULER);
+    comboBox->setProperty("Item", qVariantFromValue(itemID));
+    d_ptr->combos.insert(ConfigEditCO2MenuContentPrivate::ITEM_CBO_WAVE_RULER, comboBox);
 
     // fico2 display
     label = new QLabel(trs("CO2FiCO2Display"));

@@ -1224,7 +1224,6 @@ Channel,通道,Channel
 SmartPluseTone,智能脉搏音,Smart PluseTone
 WaveVelocity,波形速度,Wave Velocity
 RespMenuDesc,呼吸菜单设置,Resp Desc
-RespGain,波形增益,Resp Gain
 ModuleControl,模块控制,Module Control
 HIGH,高,HIGH
 NORMAL,中,NORMAL
@@ -1441,7 +1440,6 @@ Ecg1Wave,波形1,ECG1 Wave
 Ecg2Wave,波形2,ECG2 Wave
 ECG1,ECG1,ECG1
 Ecg1Gain,增益,ECG Gain
-Filter,滤波器,Filter
 QRSVolume,音量,QRS Volume
 ConfigIBPMenu,有创血压,Config IBP
 NotchFilter,陷波滤波器,Notch Filter

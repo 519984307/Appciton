@@ -843,6 +843,13 @@ void CO2Param::setDisplayZoom(CO2DisplayZoom zoom)
     d_ptr->setWaveformZoom(zoom);
 }
 
+void CO2Param::updateDisplayZoom()
+{
+    int index = 0;
+    currentConfig.getNumValue("CO2|DisplayZoom", index);
+    d_ptr->setWaveformZoom(static_cast<CO2DisplayZoom>(index));
+}
+
 /**************************************************************************************************
  * 获取波形放大标尺。
  *************************************************************************************************/

@@ -1776,6 +1776,17 @@ ECGPaceMode ECGParam::getPacermaker(void)
     return static_cast<ECGPaceMode>(onoff);
 }
 
+void ECGParam::updatePacermaker()
+{
+    int index = 0;
+    currentConfig.getNumValue("ECG|PacerMaker", index);
+    if (NULL != _provider)
+    {
+        _provider->enablePacermaker(static_cast<ECGPaceMode>(index));
+    }
+    runningStatus.setPacerStatus(index);
+}
+
 /**************************************************************************************************
  * 设置12L起搏标记。
  *************************************************************************************************/
