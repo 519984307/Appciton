@@ -84,9 +84,14 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
                 }
             }
 
-            if (lightPriority < node.alarmPriority)
+            if ((!node.acknowledge || alertor.getAlarmLightOnAlarmReset())
+                    && node.alarmPriority != ALARM_PRIO_PROMPT)
             {
-                lightPriority = node.alarmPriority;
+                // 处理确认后且开启了报警复位灯，或者未确认的报警
+                if (lightPriority < node.alarmPriority)
+                {
+                    lightPriority = node.alarmPriority;
+                }
             }
 
             if (!node.latch)

@@ -93,6 +93,13 @@ public:
      */
     void removeAllPhyAlarm();
 
+    /**
+     * @brief setAlarmLightOnAlarmReset 设置报警复位时的报警灯
+     * @param flag
+     */
+    void setAlarmLightOnAlarmReset(bool flag);
+    bool getAlarmLightOnAlarmReset(void);
+
 private:
     unsigned _timestamp;
     QMultiMap<ParamID, AlarmLimitIFace *> _limitSources;
@@ -111,6 +118,8 @@ private:
     void _handleOneShotAlarm(AlarmOneShotIFace *alarmSource);
 
     void _handleAlarm(void);
+
+    bool _alarmLightOnAlarmReset;       // 报警复位时的报警灯
 };
 #define alertor (Alarm::construction())
 #define deleteAlarm() (delete Alarm::_selfObj)
