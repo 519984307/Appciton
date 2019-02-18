@@ -18,8 +18,6 @@
 #include <syslog.h>
 #include <qglobal.h>
 #include <QCoreApplication>
-#include "MessageBox.h"
-#include "LanguageManager.h"
 
 namespace Util
 {
