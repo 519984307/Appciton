@@ -8,10 +8,10 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/7/20
  **/
 
-#include "Window.h"
+#include "Dialog.h"
 
 class MonitorInfoWindowPrivate;
-class MonitorInfoWindow : public Window
+class MonitorInfoWindow : public Dialog
 {
     Q_OBJECT
 public:

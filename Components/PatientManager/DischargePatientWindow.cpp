@@ -128,7 +128,7 @@ void DischargePatientWindow::showEvent(QShowEvent *e)
         setWindowTitle(trs("CleanPatientData"));
         d_ptr->hintLbl->setText(trs("isCleanPatient"));
     }
-    Window::showEvent(e);
+    Dialog::showEvent(e);
 }
 
 void DischargePatientWindow::onBtnRelease()
@@ -165,7 +165,7 @@ void DischargePatientWindow::onBtnRelease()
  * 构造。
  *************************************************************************************************/
 DischargePatientWindow::DischargePatientWindow()
-    : Window(),
+    : Dialog(),
       d_ptr(new DischaregePatientWindowPrivate)
 {
     layoutExec();

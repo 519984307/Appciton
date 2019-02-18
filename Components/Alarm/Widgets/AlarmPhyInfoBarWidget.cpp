@@ -170,7 +170,7 @@ void AlarmPhyInfoBarWidget::_releaseHandle(IWidget *iWidget)
     if (NULL == _alarmWindow)
     {
         _alarmWindow = new AlarmInfoWindow(trs("PhyAlarmList"), _alarmType);
-        connect(_alarmWindow, SIGNAL(windowHide(Window *)), this, SLOT(_alarmListHide()));
+        connect(_alarmWindow, SIGNAL(windowHide(Dialog *)), this, SLOT(_alarmListHide()));
         windowManager.showWindow(_alarmWindow, WindowManager::ShowBehaviorCloseOthers
                                  | WindowManager::ShowBehaviorCloseIfVisiable);
     }

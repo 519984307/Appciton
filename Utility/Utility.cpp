@@ -133,18 +133,4 @@ QString convertToString(int value, int scale)
     }
 }
 
-void popupMsgBox(const QString &title, const QPixmap &icon, const QString &text)
-{
-    if (icon.isNull())
-    {
-        MessageBox msgBox(title, text, false);
-        msgBox.exec();
-    }
-    else
-    {
-        MessageBox msgBox(title, icon, text, false);
-        msgBox.exec();
-    }
-}
-
 }   // namespace Util

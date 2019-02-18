@@ -8,7 +8,7 @@
  ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/7/3
  **/
 
-#include "Window.h"
+#include "Dialog.h"
 #include <QEvent>
 #include <QLabel>
 #include "Button.h"
@@ -23,10 +23,10 @@
 
 #define TITLE_BAR_HEIGHT 48
 
-class WindowPrivate
+class DialogPrivate
 {
 public:
-    WindowPrivate()
+    DialogPrivate()
         : m_widget(NULL),
           m_titleLbl(NULL),
           m_mask(NULL),
@@ -39,9 +39,9 @@ public:
     Button *closeBtn;
 };
 
-Window::Window(QWidget *parent)
+Dialog::Dialog(QWidget *parent)
     : QDialog(parent, Qt::FramelessWindowHint),
-      d_ptr(new WindowPrivate)
+      d_ptr(new DialogPrivate)
 {
     QLabel *titleLbl = new QLabel();
     titleLbl->setFixedHeight(TITLE_BAR_HEIGHT);
@@ -95,21 +95,21 @@ Window::Window(QWidget *parent)
     d_ptr->m_mask->setAutoFillBackground(true);
 }
 
-Window::~Window()
+Dialog::~Dialog()
 {
 }
 
-QLayout *Window::getWindowLayout()
+QLayout *Dialog::getWindowLayout()
 {
     return d_ptr->m_widget->layout();
 }
 
-void Window::setWindowLayout(QLayout *layout)
+void Dialog::setWindowLayout(QLayout *layout)
 {
     d_ptr->m_widget->setLayout(layout);
 }
 
-void Window::showMask(bool flag)
+void Dialog::showMask(bool flag)
 {
     if (flag)
     {
@@ -123,17 +123,17 @@ void Window::showMask(bool flag)
     }
 }
 
-bool Window::isShowingMask() const
+bool Dialog::isShowingMask() const
 {
     return d_ptr->m_mask->isVisible();
 }
 
-Button *Window::getCloseBtn() const
+Button *Dialog::getCloseBtn() const
 {
     return d_ptr->closeBtn;
 }
 
-int Window::exec()
+int Dialog::exec()
 {
     if (windowManager.topWindow() == this)
     {
@@ -147,7 +147,7 @@ int Window::exec()
     }
 }
 
-void Window::changeEvent(QEvent *ev)
+void Dialog::changeEvent(QEvent *ev)
 {
     QDialog::changeEvent(ev);
     if (ev->type() == QEvent::WindowTitleChange)
@@ -156,13 +156,13 @@ void Window::changeEvent(QEvent *ev)
     }
 }
 
-void Window::resizeEvent(QResizeEvent *ev)
+void Dialog::resizeEvent(QResizeEvent *ev)
 {
     QDialog::resizeEvent(ev);
     d_ptr->m_mask->resize(ev->size());
 }
 
-void Window::keyPressEvent(QKeyEvent *ev)
+void Dialog::keyPressEvent(QKeyEvent *ev)
 {
     QDialog::keyPressEvent(ev);
     switch (ev->key())
@@ -178,7 +178,7 @@ void Window::keyPressEvent(QKeyEvent *ev)
     }
 }
 
-void Window::keyReleaseEvent(QKeyEvent *ev)
+void Dialog::keyReleaseEvent(QKeyEvent *ev)
 {
     QDialog::keyReleaseEvent(ev);
     switch (ev->key())
@@ -197,13 +197,13 @@ void Window::keyReleaseEvent(QKeyEvent *ev)
     }
 }
 
-void Window::hideEvent(QHideEvent *ev)
+void Dialog::hideEvent(QHideEvent *ev)
 {
     QDialog::hideEvent(ev);
     emit windowHide(this);
 }
 
-void Window::paintEvent(QPaintEvent *ev)
+void Dialog::paintEvent(QPaintEvent *ev)
 {
 #ifdef Q_WS_QWS
     Q_UNUSED(ev);
@@ -264,7 +264,7 @@ void Window::paintEvent(QPaintEvent *ev)
 #endif
 }
 
-int Window::getTitleHeight() const
+int Dialog::getTitleHeight() const
 {
     return TITLE_BAR_HEIGHT;
 }

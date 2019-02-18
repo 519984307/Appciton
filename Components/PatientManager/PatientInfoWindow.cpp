@@ -282,7 +282,7 @@ void PatientInfoWindowPrivate::loadOptions()
 }
 
 PatientInfoWindow::PatientInfoWindow()
-    : Window()
+    : Dialog()
     , d_ptr(new PatientInfoWindowPrivate)
 {
     setWindowTitle(trs("PatientInformation"));
@@ -718,13 +718,13 @@ void PatientInfoWindow::showEvent(QShowEvent *ev)
     {
         setWindowTitle(trs("PatientInfo"));
     }
-    Window::showEvent(ev);
+    Dialog::showEvent(ev);
 }
 
 void PatientInfoWindow::hideEvent(QHideEvent *ev)
 {
     patientManager.finishPatientInfo();
-    Window::hideEvent(ev);
+    Dialog::hideEvent(ev);
 }
 
 PatientInfoWindow::~PatientInfoWindow()

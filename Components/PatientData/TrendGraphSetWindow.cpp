@@ -110,7 +110,7 @@ void TrendGraphSetWindow::setCurParam(QList<SubParamID> subList)
 
 void TrendGraphSetWindow::showEvent(QShowEvent *ev)
 {
-    Window::showEvent(ev);
+    Dialog::showEvent(ev);
 }
 
 void TrendGraphSetWindow::allAutoReleased()
@@ -204,7 +204,7 @@ void TrendGraphSetWindow::upDownRulerChange(int, int)
 }
 
 TrendGraphSetWindow::TrendGraphSetWindow()
-    : Window(), d_ptr(new TrendGraphSetWindowPrivate())
+    : Dialog(), d_ptr(new TrendGraphSetWindowPrivate())
 {
     setFixedHeight(WINDOW_HEIGHT);
     setWindowTitle(trs("TrendGraphSet"));

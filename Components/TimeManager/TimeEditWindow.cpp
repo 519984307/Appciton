@@ -139,7 +139,7 @@ void TimeEditWindowPrivate::updateHourItem()
 }
 
 TimeEditWindow::TimeEditWindow()
-    : Window(),
+    : Dialog(),
       d_ptr(new TimeEditWindowPrivate)
 {
     layoutExec();
@@ -322,7 +322,7 @@ void TimeEditWindow::hideEvent(QHideEvent *ev)
         patientManager.newPatient();
     }
     timeManager.roloadConfig();
-    Window::hideEvent(ev);
+    Dialog::hideEvent(ev);
 }
 
 void TimeEditWindow::onComboBoxIndexChanged(int index)

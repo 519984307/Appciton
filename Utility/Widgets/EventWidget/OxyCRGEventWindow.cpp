@@ -273,7 +273,7 @@ void OxyCRGEventWindow::setHistoryData(bool flag)
 
 void OxyCRGEventWindow::showEvent(QShowEvent *ev)
 {
-    Window::showEvent(ev);
+    Dialog::showEvent(ev);
 
     d_ptr->stackLayout->setCurrentIndex(0);
     d_ptr->loadOxyCRGEventData();
@@ -407,7 +407,7 @@ void OxyCRGEventWindow::setReleased()
 }
 
 OxyCRGEventWindow::OxyCRGEventWindow()
-    : Window(), d_ptr(new OxyCRGEventWindowPrivate())
+    : Dialog(), d_ptr(new OxyCRGEventWindowPrivate())
 {
     setWindowTitle(trs("OxyCRGEventReview"));
 

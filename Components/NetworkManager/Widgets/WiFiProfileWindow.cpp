@@ -51,7 +51,7 @@ public:
 };
 
 WiFiProfileWindow::WiFiProfileWindow()
-    : Window(),
+    : Dialog(),
       d_ptr(new WiFiProfileWindowPrivate(this))
 {
     Q_D(WiFiProfileWindow);
@@ -353,7 +353,7 @@ void WiFiProfileWindow::showEvent(QShowEvent *e)
     d->timer.start(1000, this);
     connect(d->combos[WiFiProfileWindowPrivate::ITEM_CBO_ACCESSPOINT_PROFILE], SIGNAL(currentIndexChanged(int)), this,
             SLOT(onProfileSelect(int)));
-    Window::showEvent(e);
+    Dialog::showEvent(e);
 }
 
 void WiFiProfileWindow::hideEvent(QHideEvent *e)
@@ -362,7 +362,7 @@ void WiFiProfileWindow::hideEvent(QHideEvent *e)
     d->timer.stop();
     disconnect(d->combos[WiFiProfileWindowPrivate::ITEM_CBO_ACCESSPOINT_PROFILE], SIGNAL(currentIndexChanged(int)),
                this, SLOT(onProfileSelect(int)));
-    Window::hideEvent(e);
+    Dialog::hideEvent(e);
 }
 
 

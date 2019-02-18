@@ -8,10 +8,10 @@
  ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/23
  **/
 
-#include "Window.h"
+#include "Dialog.h"
 
 class BatteryIndicatorWindowPrivate;
-class BatteryIndicatorWindow : public Window
+class BatteryIndicatorWindow : public Dialog
 {
 public:
     BatteryIndicatorWindow();

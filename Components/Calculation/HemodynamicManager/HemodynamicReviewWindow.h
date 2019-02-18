@@ -8,7 +8,7 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/7
  **/
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 
 struct ReviewDataInfo
 {
@@ -18,7 +18,7 @@ struct ReviewDataInfo
 };
 
 class HemodynaimcReviewWindowPrivate;
-class HemodynaimcReviewWindow : public Window
+class HemodynaimcReviewWindow : public Dialog
 {
     Q_OBJECT
 public:

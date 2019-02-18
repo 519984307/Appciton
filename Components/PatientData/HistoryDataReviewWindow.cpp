@@ -72,7 +72,7 @@ void HistoryDataReviewWindow::setHistoryReviewIndex(int index, QString timeStr)
 
 void HistoryDataReviewWindow::showEvent(QShowEvent *ev)
 {
-    Window::showEvent(ev);
+    Dialog::showEvent(ev);
     d_ptr->buttons[HistoryDataReviewWindowPrivate::ITEM_TREND_TABLE]->setEnabled(false);
     d_ptr->buttons[HistoryDataReviewWindowPrivate::ITEM_TREND_GRAPH]->setEnabled(false);
     d_ptr->buttons[HistoryDataReviewWindowPrivate::ITEM_EVENT_REVIEW]->setEnabled(false);
@@ -128,7 +128,7 @@ void HistoryDataReviewWindow::onButtonReleased()
 }
 
 HistoryDataReviewWindow::HistoryDataReviewWindow()
-    : Window(), d_ptr(new HistoryDataReviewWindowPrivate())
+    : Dialog(), d_ptr(new HistoryDataReviewWindowPrivate())
 {
     setWindowTitle(trs("HistoryTrend"));
 

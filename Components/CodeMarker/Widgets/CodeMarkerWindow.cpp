@@ -51,7 +51,7 @@ public:
     int codeMarkerNum;
 };
 
-CodeMarkerWindow::CodeMarkerWindow() : Window()
+CodeMarkerWindow::CodeMarkerWindow() : Dialog()
         , d_ptr(new CodeMarkerWindowPrivate())
 {
     QString codemarkerStr;
@@ -154,7 +154,7 @@ void CodeMarkerWindow::showEvent(QShowEvent *e)
     setPress(false);
     d_ptr->isChosen = false;
     d_ptr->timer->start();
-    Window::showEvent(e);
+    Dialog::showEvent(e);
 }
 
 void CodeMarkerWindow::hideEvent(QHideEvent *e)
@@ -164,7 +164,7 @@ void CodeMarkerWindow::hideEvent(QHideEvent *e)
     setPress(false);
     d_ptr->isChosen = false;
 
-    Window::hideEvent(e);
+    Dialog::hideEvent(e);
 }
 
 void CodeMarkerWindow::exit()

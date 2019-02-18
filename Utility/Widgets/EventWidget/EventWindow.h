@@ -9,13 +9,13 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 #include <QScopedPointer>
 #include <QModelIndex>
 #include "Param.h"
 
 class EventWindowPrivate;
-class EventWindow : public Window
+class EventWindow : public Dialog
 {
     Q_OBJECT
 public:

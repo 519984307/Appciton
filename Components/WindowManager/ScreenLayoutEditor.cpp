@@ -33,7 +33,7 @@ public:
 };
 
 ScreenLayoutEditor::ScreenLayoutEditor(const QString &title)
-    : Window(), d_ptr(new ScreenLayoutEditorPrivate())
+    : Dialog(), d_ptr(new ScreenLayoutEditorPrivate())
 {
     QGridLayout *gridLayout = new QGridLayout();
 
@@ -172,7 +172,7 @@ void ScreenLayoutEditor::onRemoveBtnClicked()
 
 void ScreenLayoutEditor::showEvent(QShowEvent *ev)
 {
-    Window::showEvent(ev);
+    Dialog::showEvent(ev);
     if (!d_ptr->displayPos.isNull())
     {
         QDesktopWidget *desktop = QApplication::desktop();

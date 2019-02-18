@@ -105,7 +105,7 @@ void AlarmLimitWindowPrivate::loadoptions()
 }
 
 AlarmLimitWindow::AlarmLimitWindow(const QString &param)
-    : Window()
+    : Dialog()
     , d_ptr(new AlarmLimitWindowPrivate(param))
 {
     layoutExec();
@@ -113,7 +113,7 @@ AlarmLimitWindow::AlarmLimitWindow(const QString &param)
 }
 
 AlarmLimitWindow::AlarmLimitWindow()
-    : Window()
+    : Dialog()
     , d_ptr(new AlarmLimitWindowPrivate(""))
 {
     layoutExec();
@@ -153,7 +153,7 @@ void AlarmLimitWindow::setItemFocus()
 
 void AlarmLimitWindow::showEvent(QShowEvent *ev)
 {
-    Window::showEvent(ev);
+    Dialog::showEvent(ev);
     QTimer::singleShot(0, this, SLOT(setItemFocus()));
 }
 

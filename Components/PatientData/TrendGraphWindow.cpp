@@ -218,7 +218,7 @@ void TrendGraphWindow::onButtonReleased()
 }
 
 TrendGraphWindow::TrendGraphWindow()
-    : Window(), d_ptr(new TrendGraphWindowPrivate())
+    : Dialog(), d_ptr(new TrendGraphWindowPrivate())
 {
     setWindowTitle(trs("TrendGraph"));
     int maxWidth = windowManager.getPopWindowWidth();

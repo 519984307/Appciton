@@ -9,12 +9,12 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 #include "ErrorLogItem.h"
 #include <QScopedPointer>
 
 class ErrorLogViewerWindowPrivate;
-class ErrorLogViewerWindow : public Window
+class ErrorLogViewerWindow : public Dialog
 {
     Q_OBJECT
 public:

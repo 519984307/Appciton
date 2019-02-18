@@ -9,10 +9,10 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 
 class NightModeWindowPrivate;
-class NightModeWindow : public Window
+class NightModeWindow : public Dialog
 {
     Q_OBJECT
 public:

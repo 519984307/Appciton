@@ -73,7 +73,7 @@ public:
     QStringList hourList;
 };
 TrendPrintWindow::TrendPrintWindow(const QList<TrendDataPackage *> &trendDataPack)
-    : Window(), d_ptr(new TrendPrintWindowPrivate())
+    : Dialog(), d_ptr(new TrendPrintWindowPrivate())
 {
     int index = 0;
     systemConfig.getNumValue("DateTime|TimeFormat", index);

@@ -77,7 +77,7 @@ public:
 };
 
 HemodynaimcReviewWindow::HemodynaimcReviewWindow()
-    : Window(),
+    : Dialog(),
       d_ptr(new HemodynaimcReviewWindowPrivate)
 {
     layoutExec();

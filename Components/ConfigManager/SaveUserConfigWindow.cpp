@@ -37,7 +37,7 @@ public:
 };
 
 SaveUserConfigWindow::SaveUserConfigWindow()
-    : Window(), d_ptr(new SaveUserConfigWindowPrivate)
+    : Dialog(), d_ptr(new SaveUserConfigWindowPrivate)
 {
     setWindowTitle(trs("SaveAsUserConfig"));
     setFixedSize(510, 300);
@@ -87,7 +87,7 @@ SaveUserConfigWindow::~SaveUserConfigWindow()
 void SaveUserConfigWindow::showEvent(QShowEvent *e)
 {
     d_ptr->loadOption();
-    Window::showEvent(e);
+    Dialog::showEvent(e);
 }
 
 void SaveUserConfigWindow::onBtnReleased()

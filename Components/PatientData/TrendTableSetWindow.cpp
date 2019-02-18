@@ -40,7 +40,7 @@ TrendTableSetWindow::~TrendTableSetWindow()
 
 void TrendTableSetWindow::showEvent(QShowEvent *ev)
 {
-    Window::showEvent(ev);
+    Dialog::showEvent(ev);
 
     QString prefix = "TrendTable|";
     int index = 0;
@@ -78,7 +78,7 @@ void TrendTableSetWindow::trendGroupReleased(int g)
 }
 
 TrendTableSetWindow::TrendTableSetWindow()
-    : Window(), d_ptr(new TrendTableSetWindowPrivate())
+    : Dialog(), d_ptr(new TrendTableSetWindowPrivate())
 {
     setFixedSize(340, 240);
 

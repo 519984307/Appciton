@@ -86,7 +86,7 @@ void NightModeWindowPrivate::loadOptions()
 }
 
 NightModeWindow::NightModeWindow()
-                          : Window(),
+                          : Dialog(),
                             d_ptr(new NightModeWindowPrivate)
 {
     layoutExec();
@@ -246,7 +246,7 @@ void NightModeWindow::hideEvent(QHideEvent *ev)
     {
         nightModeManager.setNightMode(nightModeManager.nightMode());
     }
-    Window::hideEvent(ev);
+    Dialog::hideEvent(ev);
 }
 
 void NightModeWindow::onComboBoxIndexChanged(int index)

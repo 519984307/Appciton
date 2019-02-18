@@ -9,12 +9,12 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 #include "AlarmDefine.h"
 #include <QModelIndex>
 
 class AlarmInfoWindowPrivate;
-class AlarmInfoWindow : public Window
+class AlarmInfoWindow : public Dialog
 {
     Q_OBJECT
 public:

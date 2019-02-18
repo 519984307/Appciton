@@ -17,6 +17,7 @@
 #include "Debug.h"
 #include "USBManager.h"
 #include "SoundManager.h"
+#include "MessageBox.h"
 
 #if defined(CONFIG_CAPTURE_SCREEN)
 #include <QDateTime>
@@ -196,13 +197,15 @@ void IApplication::handleScreenCaptureResult(long result)
     if (result)
     {
         QImage *image = reinterpret_cast<QImage *>(result);
-        Util::popupMsgBox("Screen Capture", QPixmap::fromImage(*image).scaled(
-                              150, 90, Qt::IgnoreAspectRatio, Qt::SmoothTransformation), "Capture screen Success.");
+        MessageBox msgBox("Screen Capture", QPixmap::fromImage(*image).scaled(
+                              150, 90, Qt::IgnoreAspectRatio, Qt::SmoothTransformation), "Capture screen Success.", false);
+        msgBox.exec();
         delete image;
     }
     else
     {
-        Util::popupMsgBox("Screen capture", QPixmap(), "Capture screen failed.");
+        MessageBox msgBox("Screen capture", "Capture screen failed.", false);
+        msgBox.exec();
     }
 }
 

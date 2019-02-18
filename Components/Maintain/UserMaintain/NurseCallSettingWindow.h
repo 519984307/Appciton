@@ -7,10 +7,10 @@
  **
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/16
  **/
-#include "Window.h"
+#include "Dialog.h"
 
 class NurseCallSettingWindowPrivate;
-class NurseCallSettingWindow : public Window
+class NurseCallSettingWindow : public Dialog
 {
     Q_OBJECT
 public:

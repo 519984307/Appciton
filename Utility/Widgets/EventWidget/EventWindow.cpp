@@ -246,7 +246,7 @@ void EventWindow::findEventIndex(SubParamID id, unsigned time)
 
 void EventWindow::showEvent(QShowEvent *ev)
 {
-    Window::showEvent(ev);
+    Dialog::showEvent(ev);
 
     d_ptr->stackLayout->setCurrentIndex(0);
     d_ptr->loadEventData();
@@ -591,7 +591,7 @@ void EventWindow::downReleased()
 }
 
 EventWindow::EventWindow()
-    : Window(),
+    : Dialog(),
       d_ptr(new EventWindowPrivate(this))
 {
     setWindowTitle(trs("EventReview"));

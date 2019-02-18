@@ -13,14 +13,14 @@
 #include <QDialog>
 #include <QScopedPointer>
 
-class WindowPrivate;
+class DialogPrivate;
 class Button;
-class Window : public QDialog
+class Dialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit Window(QWidget *parent = NULL);
-    ~Window();
+    explicit Dialog(QWidget *parent = NULL);
+    ~Dialog();
 
     QLayout *getWindowLayout();
     void setWindowLayout(QLayout *layout);
@@ -50,7 +50,7 @@ signals:
     /**
      * @brief windowHide emit when the window going to hide
      */
-    void windowHide(Window *w);
+    void windowHide(Dialog *w);
 
 protected:
     /* reimplement */
@@ -74,5 +74,5 @@ protected:
     int getTitleHeight() const;
 
 private:
-    QScopedPointer<WindowPrivate> d_ptr;
+    QScopedPointer<DialogPrivate> d_ptr;
 };
