@@ -16,8 +16,7 @@
 #include <QDomText>
 #include "XmlParser.h"
 #include "Debug.h"
-#include "ErrorLog.h"
-#include "ErrorLogItem.h"
+#include "ErrorLogInterface.h"
 
 /*******************************************************************************
  * 功能： 更新数据到磁盘文件
@@ -81,6 +80,11 @@ bool XmlParser::saveToFile(const QString &filename)
  ******************************************************************************/
 bool XmlParser::open(const QString &fileName)
 {
+    if (fileName.isEmpty())
+    {
+        return false;
+    }
+
     QMutexLocker locker(&_lock);
     // 将filename包装成一个File格式的文件
     QFile file(fileName);
@@ -95,19 +99,23 @@ bool XmlParser::open(const QString &fileName)
     if (!_xml.setContent(&file))
     {
         // 读取失败则进入...记录错误日志
-        ErrorLogItem *item = new CriticalFaultLogItem();
-        item->setName("Prase config file fail");
-        int lastindex = fileName.indexOf('/', -1);
-        if (-1 != lastindex)
+        ErrorLogInterface *errorLog = ErrorLogInterface::getErrorLog();
+        if (errorLog)
         {
-            QString str = fileName.right(lastindex + 1);
-            str += "is Error!\r\n";
-            item->setLog(str);
-            item->setSubSystem(ErrorLogItem::SUB_SYS_MAIN_PROCESSOR);
-            item->setSystemState(ErrorLogItem::SYS_STAT_RUNTIME);
-            item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
+            ErrorLogItem *item = new CriticalFaultLogItem();
+            item->setName("Prase config file fail");
+            int lastindex = fileName.indexOf('/', -1);
+            if (-1 != lastindex)
+            {
+                QString str = fileName.right(lastindex + 1);
+                str += "is Error!\r\n";
+                item->setLog(str);
+                item->setSubSystem(ErrorLogItem::SUB_SYS_MAIN_PROCESSOR);
+                item->setSystemState(ErrorLogItem::SYS_STAT_RUNTIME);
+                item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
+            }
+            errorLog->append(item);
         }
-        errorLog.append(item);
 
         file.close();
         return false;
@@ -260,7 +268,6 @@ bool XmlParser::getValue(const QString &indexStr, QString &value)
         return true;
     }
 
-    value = "";
     return false;
 }
 
