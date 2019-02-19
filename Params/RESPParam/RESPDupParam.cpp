@@ -261,9 +261,11 @@ void RESPDupParam::setRRSource(BRRRSourceType source)
     case BR_RR_SOURCE_CO2:
         setAutoBrSourceStatue(false);
         setBrSource(BR_SOURCE_CO2);
+        break;
     case BR_RR_SOURCE_ECG:
         setAutoBrSourceStatue(false);
         setBrSource(BR_SOURCE_ECG);
+        break;
     default:
         break;
     }
@@ -284,9 +286,11 @@ void RESPDupParam::updateRRSource()
     case BR_RR_SOURCE_CO2:
         setAutoBrSourceStatue(false);
         setBrSource(BR_SOURCE_CO2);
+        break;
     case BR_RR_SOURCE_ECG:
         setAutoBrSourceStatue(false);
         setBrSource(BR_SOURCE_ECG);
+        break;
     default:
         break;
     }
