@@ -282,7 +282,8 @@ bool UpgradeManagerPrivate::checkUpgradeFile()
                     break;
                 }
             }
-        } while (!line.isEmpty());
+        }
+        while (!line.isEmpty());
 
         return foundUpgradeFile;
     }
@@ -540,7 +541,16 @@ void UpgradeManagerPrivate::handleStateChanged(ModuleState modState)
         if (state == STATE_WAIT_FOR_COMPLETE_MSG || state == STATE_WRITE_IMAGE_SEGMENT)
         {
             emit  q_ptr->upgradeInfoChanged(trs("WriteImageComplete"));
-            upgradeExit(UpgradeManager::UPGRADE_SUCCESS, UPGRADE_ERR_NONE);
+            // 当前面板升级成功后启动重启操作
+            if (type == UpgradeManager::UPGRADE_MOD_nPMBoard)
+            {
+                state = STATE_REBOOT;
+                q_ptr->upgradeProcess();
+            }
+            else
+            {
+                upgradeExit(UpgradeManager::UPGRADE_SUCCESS, UPGRADE_ERR_NONE);
+            }
         }
         break;
     default:
