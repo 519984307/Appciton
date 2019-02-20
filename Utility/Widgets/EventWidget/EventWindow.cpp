@@ -1069,7 +1069,8 @@ void EventWindowPrivate::eventInfoUpdate(int curRow)
         }
         else
         {
-            infoStr = trs(NIBPSymbol::convert((NIBPOneShotType)(ctx.measureSegment->measureResult)));
+            infoStr = trs("NIBPMEASURE") + trs("NIBPFAILED") + ",";
+            infoStr += trs(NIBPSymbol::convert((NIBPOneShotType)(ctx.measureSegment->measureResult)));
         }
         break;
     }
