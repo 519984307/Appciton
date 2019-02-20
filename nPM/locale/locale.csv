@@ -739,7 +739,7 @@ CalibratePoint2,校准点2,CalibratePoint 2
 ServiceCalibrate,校准,Calibrate
 ServiceCalibrating,校准中,Calibrating
 NIBPCalibrateModel,校准模式,NIBP Calibrate Model
-ServiceCalibrateDesc,校准,Calibrate Desc
+ServiceCalibrateDesc,校准,Calibrate
 ServiceSuccess,成功,Success
 ServiceAgain,重新校准,Again
 ServiceManometer,压力计,Manometer
