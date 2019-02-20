@@ -1572,9 +1572,9 @@ StartTime,开始时间,Start Time
 EndTime,结束时间,End Time
 HourSystem,时钟系统,Hour System
 PrintLength,打印长度,Print Length
-Hour,时,Hour
-Minute,分,Minute
-Second,秒,Second
+Hours,时,Hours
+Minutes,分,Minutes
+Seconds,秒,Seconds
 ComfirmClearErrorLog,确认是否清理错误日志,Comfirm Clear Error Log
 Speed,速度,Speed
 Gain,增益,Gain
