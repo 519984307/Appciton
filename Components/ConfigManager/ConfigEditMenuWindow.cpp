@@ -30,7 +30,7 @@ public:
         : isSubmenuInitial(false)
         , curEditConfig(NULL)
         , configName("")
-        , patType(PATIENT_TYPE_ADULT)
+        , patType(PATIENT_TYPE_NULL)
     {
     }
 
@@ -98,7 +98,7 @@ void ConfigEditMenuWindow::initializeSubMenu()
 
     if (systemManager.isSupport(CONFIG_NIBP))
     {
-        subMenu = new ConfigEditNIBPMenuContent(config, getCurrentConfigType());
+        subMenu = new ConfigEditNIBPMenuContent(config);
         addMenuContent(subMenu);
         d_ptr->subMenuMap["ConfigEditNIBPMenu"] = subMenu;
     }
@@ -142,20 +142,14 @@ void ConfigEditMenuWindow::initializeSubMenu()
     d_ptr->isSubmenuInitial = true;
 }
 
-void ConfigEditMenuWindow::setCurrentEditConfigInfo(Config *config, PatientType type)
+void ConfigEditMenuWindow::setCurrentEditConfig(Config *config)
 {
     d_ptr->curEditConfig = config;
-    d_ptr->patType = type;
 }
 
 Config *ConfigEditMenuWindow::getCurrentEditConfig() const
 {
     return d_ptr->curEditConfig;
-}
-
-PatientType ConfigEditMenuWindow::getCurrentConfigType() const
-{
-    return d_ptr->patType;
 }
 
 void ConfigEditMenuWindow::setCurrentEditConfigName(const QString &name)

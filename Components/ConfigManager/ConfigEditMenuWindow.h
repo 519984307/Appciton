@@ -26,22 +26,16 @@ public:
     void initializeSubMenu();
 
     /**
-     * @brief setCurrentEditConfigInfo and set the current edit config object, patient type
+     * @brief setCurrentEditConfig set the current edit config object
      * @param config
      */
-    void setCurrentEditConfigInfo(Config *config, PatientType type = PATIENT_TYPE_ADULT);
+    void setCurrentEditConfig(Config *config);
 
     /**
      * @brief getCurrentEditConfig get the current edit config object
      * @return  the config object
      */
     Config *getCurrentEditConfig() const;
-
-    /**
-     * @brief getCurrentConfigType and get current config type
-     * @return
-     */
-    PatientType getCurrentConfigType() const;
 
     /**
      * @brief setCurrentEditConfigName set the current edit config name
