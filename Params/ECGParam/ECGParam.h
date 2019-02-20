@@ -276,6 +276,7 @@ public: // 用于访问配置相关信息。
     // 设置/获取增益。
     void setGain(ECGGain gain, int waveID);
     ECGGain getGain(ECGLead lead);
+    ECGGain getECGAutoGain(ECGLead lead);
     void setAutoGain(ECGLead lead, int flag);
     bool getAutoGain(ECGLead lead);
 
@@ -405,5 +406,6 @@ private:
     bool _connectedProvider;    // 连接Provider标识
 
     bool _isFristConnect;         // 开机后是否正常连接过导联
+    ECGGain _autoGain[ECG_LEAD_NR];      // 自动增益计算出的实际增益
 };
 #define ecgParam (ECGParam::construction())
