@@ -1,6 +1,17 @@
+/**
+ ** This file is part of the unittest project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2019/2/20
+ **/
+
 #include "TestXmlParser.h"
 #include <QTemporaryFile>
-using namespace ::testing;
+using ::testing::_;
+using ::testing::NotNull;
 
 static void createTestFileOnDisk(QTemporaryFile *tempFile, const QString &resFilename)
 {
@@ -12,8 +23,34 @@ static void createTestFileOnDisk(QTemporaryFile *tempFile, const QString &resFil
     tempFile->close();
 }
 
+static QVariantMap createMap()
+{
+    QVariantMap map;
+    QVariantList list;
+    QVariantMap n1;
+    n1["@text"] = QString("aaa");
+    n1["@attr22"] = QString("attr22");
+    list.append(n1);
+    QVariantMap n2;
+    n2["@text"] = QString("bbb");
+    n2["@attr22"] = QString("attr22");
+    n2["@attr21"] = QString("attr21");
+    list.append(n2);
+    QVariantMap n3;
+    n3["@text"] = QString("ccc");
+    n3["@attr22"] = QString("attr22");
+    n3["@attr23"] = QString("attr23");
+    list.append(n3);
+    QVariantMap n11;
+    n11["Node111"] = list;
+    n11["@attr11"] = QString("attr11");
+    map["Node11"] = n11;
+
+    return map;
+}
+
 TestXMLParser::TestXMLParser()
-    :m_validConfigFile(NULL), m_invalidConfigFile(NULL)
+    : m_validConfigFile(NULL), m_invalidConfigFile(NULL)
 {
 }
 
@@ -57,12 +94,12 @@ void TestXMLParser::testInvalidXmlFile()
 
 void TestXMLParser::testAddNode()
 {
-
+    QSKIP("Todo:: implement this test!", SkipAll);
 }
 
 void TestXMLParser::testRemoveNode()
 {
-
+    QSKIP("Todo:: implement this test!", SkipAll);
 }
 
 void TestXMLParser::testHasNode_data()
@@ -70,16 +107,16 @@ void TestXMLParser::testHasNode_data()
     QTest::addColumn<QString>("path");
     QTest::addColumn<bool>("result");
 
-    QTest::newRow("Parent Node")<<"Node1"<<true;
-    QTest::newRow("Parent Node")<<"Node2"<<true;
-    QTest::newRow("No Exist Node")<<"Node1|NodeNoExist"<<false;
-    QTest::newRow("Child Node1")<<"Node1|Node11|Node111"<<true;
-    QTest::newRow("Child Node2")<<"Node2|Node22"<<true;
-    QTest::newRow("Can't test Root node")<<"Root"<<false;
-    QTest::newRow("Can't start with Root node")<<"Root|Node1"<<false;
-    QTest::newRow("weird path1")<<"|Node1|"<<true;
-    QTest::newRow("weird path2")<<"Node1||"<<true;
-    QTest::newRow("weird path3")<<"Node1||Node2"<<false;
+    QTest::newRow("Parent Node") << "Node1" << true;
+    QTest::newRow("Parent Node") << "Node2" << true;
+    QTest::newRow("No Exist Node") << "Node1|NodeNoExist" << false;
+    QTest::newRow("Child Node1") << "Node1|Node11|Node111" << true;
+    QTest::newRow("Child Node2") << "Node2|Node22" << true;
+    QTest::newRow("Can't test Root node") << "Root" << false;
+    QTest::newRow("Can't start with Root node") << "Root|Node1" << false;
+    QTest::newRow("weird path1") << "|Node1|" << true;
+    QTest::newRow("weird path2") << "Node1||" << true;
+    QTest::newRow("weird path3") << "Node1||Node2" << false;
 }
 
 void TestXMLParser::testHasNode()
@@ -100,7 +137,7 @@ void TestXMLParser::testGetValue()
     // test exist node
     QString str;
     QCOMPARE(parser.getValue("Node1|Node11|Node111", str), true);
-    QVERIFY(str=="aaa");
+    QVERIFY(str == "aaa");
 
     QString noExist;
     QCOMPARE(parser.getValue("Node1|NonExit", noExist), false);
@@ -136,8 +173,8 @@ void TestXMLParser::testSetAttr_data()
     QTest::addColumn<QString>("readValue");
     QTest::addColumn<bool>("result");
 
-    QTest::newRow("exist node")<<"Node1|Node11"<<"attr11"<<"abc"<<"abc"<<true;
-    QTest::newRow("Invalid attr")<<"Node1|Node11"<<"NonExit"<<"abc"<<QString()<<false;
+    QTest::newRow("exist node") << "Node1|Node11" << "attr11" << "abc" << "abc" << true;
+    QTest::newRow("Invalid attr") << "Node1|Node11" << "NonExit" << "abc" << QString() << false;
 }
 
 void TestXMLParser::testSetAttr()
@@ -165,8 +202,8 @@ void TestXMLParser::testGetAttr_data()
     QTest::addColumn<QString>("value");
     QTest::addColumn<bool>("result");
 
-    QTest::newRow("Valid node")<<"Node1|Node11"<<"attr11"<<"attr11"<<true;
-    QTest::newRow("Invalid attr")<<"Node1|Node11"<<"NonExit"<<QString()<<false;
+    QTest::newRow("Valid node") << "Node1|Node11" << "attr11" << "attr11" << true;
+    QTest::newRow("Invalid attr") << "Node1|Node11" << "NonExit" << QString() << false;
 }
 
 void TestXMLParser::testGetAttr()
@@ -188,22 +225,22 @@ void TestXMLParser::testGetAttr()
 
 void TestXMLParser::testGetNode()
 {
-
+    QSKIP("Todo:: implement this test!", SkipAll);
 }
 
 void TestXMLParser::testSetNode()
 {
-
+    QSKIP("Todo:: implement this test!", SkipAll);
 }
 
 void TestXMLParser::testGetFirstValue()
 {
-
+    QSKIP("Todo:: implement this test!", SkipAll);
 }
 
 void TestXMLParser::testGetNextValue()
 {
-
+    QSKIP("Todo:: implement this test!", SkipAll);
 }
 
 void TestXMLParser::testFileName()
@@ -224,19 +261,43 @@ void TestXMLParser::testFileName_data()
     QTest::addColumn<QString>("test");
     QTest::addColumn<QString>("result");
 
-    QTest::newRow("normal")<<":/ValidConfig.xml"<<"configFilename"<<"configFilename";
-    QTest::newRow("empty file name")<<":/ValidConfig.xml"<<""<<":/ValidConfig.xml";
-    QTest::newRow("null file name")<<":/ValidConfig.xml"<<QString()<<":/ValidConfig.xml";
-    QTest::newRow("all empty")<<""<<""<<"";
-    QTest::newRow("new name")<<":/ValidConfig.xml"<<""<<":/ValidConfig.xml";
+    QTest::newRow("normal") << ":/ValidConfig.xml" << "configFilename" << "configFilename";
+    QTest::newRow("empty file name") << ":/ValidConfig.xml" << "" << ":/ValidConfig.xml";
+    QTest::newRow("null file name") << ":/ValidConfig.xml" << QString() << ":/ValidConfig.xml";
+    QTest::newRow("all empty") << "" << "" << "";
+    QTest::newRow("new name") << ":/ValidConfig.xml" << "" << ":/ValidConfig.xml";
 }
 
 void TestXMLParser::testGetConfig()
 {
+    QVariantMap map = createMap();
 
+    XmlParser parser;
+    parser.open(m_validConfigFile->fileName());
+
+    QCOMPARE(parser.getConfig("Node1"), map);
+
+    QVariantMap emptyMap;
+    QCOMPARE(parser.getConfig("Node3"), emptyMap);
+
+    QCOMPARE(parser.getConfig("Node3|NonExistNode"), emptyMap);
 }
 
 void TestXMLParser::testSetConfig()
 {
+    QVariantMap map = createMap();
 
+    XmlParser parser;
+    parser.open(m_validConfigFile->fileName());
+
+    parser.setConfig("Node3", map);
+    QCOMPARE(parser.getConfig("Node3"), map);
+
+    // will create the node is the node is not exist
+    parser.setConfig("Node3|NoExistNode", map);
+    QCOMPARE(parser.getConfig("Node3|NoExistNode"), map);
+
+    // will fail if the parent node is not exist
+    parser.setConfig("Node3|NoExistParentNode|NoExistNode", map);
+    QCOMPARE(parser.getConfig("Node3|NoExistParentNode|NoExistNode"), QVariantMap());
 }

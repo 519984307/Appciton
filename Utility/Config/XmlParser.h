@@ -43,8 +43,6 @@ public:
                  const QString &value);
     bool getNode(const QString &indexStr, QDomElement &element);
     bool setNode(const QString &indexStr, QDomElement &tag);
-    bool getFirstValue(const QString &indexStr, QString &index, QString &value);
-    bool getNextValue(QString &index, QString &value);
 
     QVariantMap getConfig(const QString &indexStr);
     void setConfig(const QString &indexStr, const QVariantMap &map);
