@@ -51,12 +51,6 @@ private slots:
     void onSpinBoxReleased(int value);
 
     /**
-     * @brief onCboItemFocusChanged combox item focus changed
-     * @param index
-     */
-    void onCboItemFocusChanged(int index);
-
-    /**
      * @brief onStatBtnStateChanged stat button state changed
      * @param true: start stat  false: stop stat
      */

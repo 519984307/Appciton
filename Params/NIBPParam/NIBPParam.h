@@ -286,9 +286,9 @@ public:
 
     /**
      * @brief setNIBPCompleteTone 设置NIBP完成音
-     * @param volume 设置的音量
+     * @param status 设置打开或者关闭 true: 开  false：闭
      */
-    void setNIBPCompleteTone(SoundManager::VolumeLevel volume);
+    void setNIBPCompleteTone(bool status);
 
     /**
      * @brief enterMaintain 进入/退出维护

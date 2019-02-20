@@ -450,6 +450,10 @@ void SoundManager::updateAlarm(bool hasAlarm, AlarmPriority curHighestPriority)
 
 void SoundManager::setVolume(SoundManager::SoundType type, SoundManager::VolumeLevel lev)
 {
+    if (type == SOUND_TYPE_KEY_PRESS)
+    {
+        d_ptr->soundVolumes[SOUND_TYPE_NIBP_COMPLETE] = lev;
+    }
     d_ptr->soundVolumes[type] = lev;
 }
 
@@ -490,7 +494,7 @@ void SoundManager::volumeInit()
     int alarmVolume = VOLUME_LEV_3;
     int keyVolume = VOLUME_LEV_3;
     int qrsVolume = VOLUME_LEV_3;
-    int nibpVolume = VOLUME_LEV_0;
+    int nibpVolumeFlag = 0;
 
     if (nightModeManager.nightMode())
     {
@@ -505,11 +509,19 @@ void SoundManager::volumeInit()
         currentConfig.getNumValue("ECG|QRSVolume", qrsVolume);
     }
 
-    systemConfig.getNumValue("PrimaryCfg|NIBP|CompleteTone", nibpVolume);
+    systemConfig.getNumValue("PrimaryCfg|NIBP|CompleteTone", nibpVolumeFlag);
     d_ptr->soundVolumes[SOUND_TYPE_ALARM] = static_cast<VolumeLevel>(alarmVolume);
     d_ptr->soundVolumes[SOUND_TYPE_KEY_PRESS] = static_cast<VolumeLevel>(keyVolume);
     d_ptr->soundVolumes[SOUND_TYPE_HEARTBEAT] = static_cast<VolumeLevel>(qrsVolume);
-    d_ptr->soundVolumes[SOUND_TYPE_NIBP_COMPLETE] = static_cast<VolumeLevel>(nibpVolume);
+    if (nibpVolumeFlag)
+    {
+        // nibp完成音属于提示音，要和按键提示音保持同样音量
+        d_ptr->soundVolumes[SOUND_TYPE_NIBP_COMPLETE] = static_cast<VolumeLevel>(keyVolume);
+    }
+    else
+    {
+        d_ptr->soundVolumes[SOUND_TYPE_NIBP_COMPLETE] = VOLUME_LEV_0;
+    }
 }
 
 void SoundManager::playFinished()
