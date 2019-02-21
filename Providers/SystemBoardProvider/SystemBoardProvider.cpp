@@ -234,7 +234,7 @@ void SystemBoardProvider::_parseBatteryInfo(unsigned char *data, int len)
         return;
     }
 
-    if (modeStatus.powerSuply == POWER_SUPLY_AC_BAT && modeStatus.isCharging)
+    if (modeStatus.powerSuply == POWER_SUPLY_AC_BAT)
     {
         powerManger.setBatteryCapacity(modeStatus.adcValue);
     }
@@ -397,6 +397,11 @@ PowerSuplyType SystemBoardProvider::getPowerSuplyType(void)
 short SystemBoardProvider::getPowerADC()
 {
     return modeStatus.adcValue;
+}
+
+bool SystemBoardProvider::isPowerCharging()
+{
+    return modeStatus.isCharging;
 }
 
 /**************************************************************************************************
