@@ -97,7 +97,8 @@ TrendPrintWindow::TrendPrintWindow(const QList<TrendDataPackage *> &trendDataPac
         d_ptr->hourList.clear();
     }
     setWindowTitle(trs("PrintSetup"));
-    setFixedSize(350, 450);
+    // set the window width as 520 for showing all character string
+    setFixedSize(520, 450);
 
     QPalette pal = palette();
     d_ptr->startBox = new QGroupBox();
@@ -139,7 +140,7 @@ TrendPrintWindow::TrendPrintWindow(const QList<TrendDataPackage *> &trendDataPac
     d_ptr->durationLbl = new QLabel();
 
     d_ptr->printBtn = new Button(trs("Print"));
-    d_ptr->printBtn->setFixedWidth(100);
+    d_ptr->printBtn->setFixedWidth(80);
     d_ptr->printBtn->setButtonStyle(Button::ButtonTextOnly);
     connect(d_ptr->printBtn, SIGNAL(released()), this, SLOT(printReleased()));
 
@@ -338,15 +339,15 @@ void TrendPrintWindowPrivate::difftimeInfo()
     unsigned diffTime = qAbs(printEndTime - printStartTime);
     infoStr += QString::number(diffTime / 3600);
     infoStr += " ";
-    infoStr += trs("Hour");
+    infoStr += trs("Hours");
     infoStr += " ";
     infoStr += QString::number(diffTime % 3600 / 60);
     infoStr += " ";
-    infoStr += trs("Minute");
+    infoStr += trs("Minutes");
     infoStr += " ";
     infoStr += QString::number(diffTime % 60);
     infoStr += " ";
-    infoStr += trs("Second");
+    infoStr += trs("Seconds");
     durationLbl->setText(infoStr);
 }
 
