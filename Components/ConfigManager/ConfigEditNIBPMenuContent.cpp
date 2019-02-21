@@ -27,7 +27,7 @@
 class ConfigEditNIBPMenuContentPrivate
 {
 public:
-    explicit ConfigEditNIBPMenuContentPrivate(Config *const config);
+    explicit ConfigEditNIBPMenuContentPrivate(Config *const config, PatientType type = PATIENT_TYPE_ADULT);
     /**
      * @brief loadOptions
      */
@@ -37,19 +37,22 @@ public:
     SpinBox *initCuffSpb;
     QStringList initCuffStrs;
     QLabel *initCuffUnitLbl;
-    UnitType curInitCuffUnit;
+    PatientType curType;
 };
 
 ConfigEditNIBPMenuContentPrivate
-    ::ConfigEditNIBPMenuContentPrivate(Config *const config)
-    :config(config), initCuffSpb(NULL), initCuffUnitLbl(NULL), curInitCuffUnit(UNIT_NONE)
+    ::ConfigEditNIBPMenuContentPrivate(Config *const config, PatientType type)
+    :config(config)
+    , initCuffSpb(NULL)
+    , initCuffUnitLbl(NULL)
+    , curType(type)
 {
 }
 
-ConfigEditNIBPMenuContent::ConfigEditNIBPMenuContent(Config *const config):
+ConfigEditNIBPMenuContent::ConfigEditNIBPMenuContent(Config *const config, PatientType type):
     MenuContent(trs("NIBPMenu"),
                 trs("NIBPMenuDesc")),
-    d_ptr(new ConfigEditNIBPMenuContentPrivate(config))
+    d_ptr(new ConfigEditNIBPMenuContentPrivate(config, type))
 {
 }
 
@@ -60,50 +63,46 @@ ConfigEditNIBPMenuContent::~ConfigEditNIBPMenuContent()
 
 void ConfigEditNIBPMenuContentPrivate::loadOptions()
 {
-    if (curInitCuffUnit != nibpParam.getUnit())
+    UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_NIBP_SYS);
+    UnitType unit = nibpParam.getUnit();
+    PatientType type = curType;
+    int start = 0, end = 0;
+    if (type == PATIENT_TYPE_ADULT)
     {
-        UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_NIBP_SYS);
-        UnitType unit = nibpParam.getUnit();
-        curInitCuffUnit = unit;
-        PatientType type = patientManager.getType();
-        int start = 0, end = 0;
-        if (type == PATIENT_TYPE_ADULT)
-        {
-            start = 120;
-            end = 280;
-        }
-        else if (type == PATIENT_TYPE_PED)
-        {
-            start = 80;
-            end = 250;
-        }
-        else if (type == PATIENT_TYPE_NEO)
-        {
-            start = 60;
-            end = 140;
-        }
-        initCuffStrs.clear();
-        for (int i = start; i <= end; i += 10)
-        {
-            if (unit == defUnit)
-            {
-                initCuffStrs.append(QString::number(i));
-            }
-            else
-            {
-                initCuffStrs.append(Unit::convert(unit, defUnit, i));
-            }
-        }
-        initCuffSpb->setStringList(initCuffStrs);
-
+        start = 120;
+        end = 280;
+    }
+    else if (type == PATIENT_TYPE_PED)
+    {
+        start = 80;
+        end = 250;
+    }
+    else if (type == PATIENT_TYPE_NEO)
+    {
+        start = 60;
+        end = 140;
+    }
+    initCuffStrs.clear();
+    for (int i = start; i <= end; i += 10)
+    {
         if (unit == defUnit)
         {
-            initCuffUnitLbl->setText(Unit::getSymbol(UNIT_MMHG));
+            initCuffStrs.append(QString::number(i));
         }
         else
         {
-            initCuffUnitLbl->setText(Unit::getSymbol(UNIT_KPA));
+            initCuffStrs.append(Unit::convert(unit, defUnit, i));
         }
+    }
+    initCuffSpb->setStringList(initCuffStrs);
+
+    if (unit == defUnit)
+    {
+        initCuffUnitLbl->setText(Unit::getSymbol(UNIT_MMHG));
+    }
+    else
+    {
+        initCuffUnitLbl->setText(Unit::getSymbol(UNIT_KPA));
     }
 
     int initVal;

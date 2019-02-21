@@ -283,7 +283,18 @@ void LoadConfigMenuContent::onBtnClick()
                                           .arg(fileName));
             ConfigEditMenuWindow *cmWnd = new ConfigEditMenuWindow;
             cmWnd->setCurrentEditConfigName(name);
-            cmWnd->setCurrentEditConfig(d_ptr->curConfig);
+
+            QString strType = d_ptr->configs.at(index).patType;
+            PatientType type = PATIENT_TYPE_ADULT;
+            if (strType == PatientSymbol::convert(PATIENT_TYPE_NEO))
+            {
+                type = PATIENT_TYPE_NEO;
+            }
+            else if (strType == PatientSymbol::convert(PATIENT_TYPE_PED))
+            {
+                type = PATIENT_TYPE_PED;
+            }
+            cmWnd->setCurrentEditConfigInfo(d_ptr->curConfig, type);
             cmWnd->initializeSubMenu();
 
             QString pathName;

@@ -219,7 +219,7 @@ void UserConfigEditMenuContent::onBtnClick()
 
             d_ptr->editWindow = new ConfigEditMenuWindow();
             d_ptr->editWindow->setCurrentEditConfigName(d_ptr->generateDefaultConfigName());
-            d_ptr->editWindow->setCurrentEditConfig(d_ptr->curConfig);
+            d_ptr->editWindow->setCurrentEditConfigInfo(d_ptr->curConfig, type);
             d_ptr->editWindow->initializeSubMenu();
 
             QString name = d_ptr->editWindow->getCurrentEditConfigName();
@@ -250,7 +250,17 @@ void UserConfigEditMenuContent::onBtnClick()
                                           .arg(d_ptr->configs.at(index).fileName));
             d_ptr->editWindow = new ConfigEditMenuWindow();
             d_ptr->editWindow->setCurrentEditConfigName(d_ptr->configs.at(index).name);
-            d_ptr->editWindow->setCurrentEditConfig(d_ptr->curConfig);
+            QString strType = d_ptr->configs.at(index).patType;
+            PatientType type = PATIENT_TYPE_ADULT;
+            if (strType == PatientSymbol::convert(PATIENT_TYPE_NEO))
+            {
+                type = PATIENT_TYPE_NEO;
+            }
+            else if (strType == PatientSymbol::convert(PATIENT_TYPE_PED))
+            {
+                type = PATIENT_TYPE_PED;
+            }
+            d_ptr->editWindow->setCurrentEditConfigInfo(d_ptr->curConfig, type);
             d_ptr->editWindow->initializeSubMenu();
 
             QString fileName = d_ptr->curConfig->getFileName();
@@ -322,7 +332,7 @@ void UserConfigEditMenuContent::onEditFinished()
         d_ptr->patientType = PATIENT_TYPE_NULL;
     }
 
-    d_ptr->editWindow->setCurrentEditConfig(NULL);
+    d_ptr->editWindow->setCurrentEditConfigInfo(NULL);
     d_ptr->editWindow->setCurrentEditConfigName(QString());
 
     d_ptr->loadConfigs();
