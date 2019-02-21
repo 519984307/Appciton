@@ -896,106 +896,6 @@ void ECGParam::getAvailableLeads(QList<ECGLead> &leads)
         leads.append(ECG_LEAD_V5);
         leads.append(ECG_LEAD_V6);
     }
-
-    // 剔除界面上显示心电导联波形。
-    QList<int> waveforms = layoutManager.getDisplayedWaveformIDs();
-    for (int i = 0; i < waveforms.size(); i++)
-    {
-        switch ((WaveformID)waveforms[i])
-        {
-        case WAVE_ECG_I:
-            if (getCalcLead() != ECG_LEAD_I)
-            {
-                leads.removeOne(ECG_LEAD_I);
-            }
-            break;
-
-        case WAVE_ECG_II:
-            if (getCalcLead() != ECG_LEAD_II)
-            {
-                leads.removeOne(ECG_LEAD_II);
-            }
-
-            break;
-        case WAVE_ECG_III:
-            if (getCalcLead() != ECG_LEAD_III)
-            {
-                leads.removeOne(ECG_LEAD_III);
-            }
-            break;
-
-        case WAVE_ECG_aVR:
-            if (getCalcLead() != ECG_LEAD_AVR)
-            {
-                leads.removeOne(ECG_LEAD_AVR);
-            }
-            break;
-
-        case WAVE_ECG_aVL:
-            if (getCalcLead() != ECG_LEAD_AVL)
-            {
-                leads.removeOne(ECG_LEAD_AVL);
-            }
-            break;
-        case WAVE_ECG_aVF:
-            if (getCalcLead() != ECG_LEAD_AVF)
-            {
-                leads.removeOne(ECG_LEAD_AVF);
-            }
-            break;
-
-        case WAVE_ECG_V1:
-            if (getCalcLead() != ECG_LEAD_V1)
-            {
-                leads.removeOne(ECG_LEAD_V1);
-            }
-            break;
-
-        case WAVE_ECG_V2:
-            if (getCalcLead() != ECG_LEAD_V2)
-            {
-                leads.removeOne(ECG_LEAD_V2);
-            }
-            break;
-
-        case WAVE_ECG_V3:
-            if (getCalcLead() != ECG_LEAD_V3)
-            {
-                leads.removeOne(ECG_LEAD_V3);
-            }
-            break;
-
-        case WAVE_ECG_V4:
-            if (getCalcLead() != ECG_LEAD_V4)
-            {
-                leads.removeOne(ECG_LEAD_V4);
-            }
-            break;
-
-        case WAVE_ECG_V5:
-            if (getCalcLead() != ECG_LEAD_V5)
-            {
-                leads.removeOne(ECG_LEAD_V5);
-            }
-            break;
-
-        case WAVE_ECG_V6:
-            if (getCalcLead() != ECG_LEAD_V6)
-            {
-                leads.removeOne(ECG_LEAD_V6);
-            }
-            break;
-
-        default:
-            break;
-        }
-    }
-
-    if (ECG_LEAD_MODE_3 == _curLeadMode)
-    {
-        // 保留一道ecg波形
-        // TODO
-    }
 }
 
 
@@ -1608,6 +1508,19 @@ void ECGParam::autoSetCalcLead(void)
     }
 
     setCalcLead(leads[index]);
+    if (layoutManager.getUFaceType() == UFACE_MONITOR_STANDARD && getLeadMode() > ECG_LEAD_MODE_3)
+    {
+        // 标准界面且ECG模式大于3导时，处理ECG2波形与ECG1波形重复
+        int preECG1Lead = 0, ECG2Lead = 0;
+        currentConfig.getNumValue("ECG|Ecg1Wave", preECG1Lead);
+        currentConfig.getNumValue("ECG|Ecg2Wave", ECG2Lead);
+        if (static_cast<int>(leads[index]) == ECG2Lead)
+        {
+            // 计算导联与ECG2波形重复时，将ECG2波形设置为前ECG1波形
+            currentConfig.setNumValue("ECG|Ecg2Wave", preECG1Lead);
+        }
+    }
+
     currentConfig.setNumValue("ECG|Ecg1Wave", static_cast<int>(leads[index]));
     if (NULL != _waveWidget[calcLead] && NULL != _waveWidget[leads[index]])
     {
