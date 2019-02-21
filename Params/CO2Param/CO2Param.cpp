@@ -596,6 +596,8 @@ void CO2Param::setConnected(bool isConnected)
             softkeyManager.refreshPage();
         }
     }
+
+    emit connectStatusUpdated(isConnected);
 }
 
 /**************************************************************************************************

@@ -26,6 +26,7 @@
 #include "ECGParam.h"
 #include "IBPParam.h"
 #include "PrintSettingMenuContent.h"
+#include "CO2Param.h"
 
 class RecorderManagerPrivate
 {
@@ -475,7 +476,7 @@ void RecorderManager::printWavesInit()
         waveIDs.append(waveID);
     }
 
-    if (systemManager.isSupport(CONFIG_CO2))
+    if (co2Param.isConnected())
     {
         // co2
         waveIDs.append(WAVE_CO2);

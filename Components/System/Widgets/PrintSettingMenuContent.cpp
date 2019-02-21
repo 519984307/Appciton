@@ -25,6 +25,7 @@
 #include "CO2Symbol.h"
 #include "ContinuousPageGenerator.h"
 #include "TimeManager.h"
+#include "CO2Param.h"
 
 #define STOP_PRINT_TIMEOUT          (100)
 
@@ -193,6 +194,7 @@ PrintSettingMenuContent::PrintSettingMenuContent()
                   trs("PrintSettingMenuDesc")),
       d_ptr(new PrintSettingMenuContentPrivate)
 {
+    connect(&co2Param, SIGNAL(connectStatusUpdated(bool)), this, SLOT(onConnectedStatusChanged()));
 }
 
 PrintSettingMenuContent::~PrintSettingMenuContent()
@@ -416,6 +418,11 @@ void PrintSettingMenuContent::onSelectWaveChanged(const QString &waveName)
     }
 }
 
+void PrintSettingMenuContent::onConnectedStatusChanged()
+{
+    d_ptr->loadOptions();
+}
+
 void PrintSettingMenuContentPrivate::wavesUpdate(QList<int> &waveIDs, QStringList &waveNames)
 {
     waveIDs.clear();
@@ -469,7 +476,8 @@ void PrintSettingMenuContentPrivate::wavesUpdate(QList<int> &waveIDs, QStringLis
         waveNames.append(IBPSymbol::convert(ibpTitle));
     }
 
-    if (systemManager.isSupport(CONFIG_CO2))
+    // add CO2 waveform when the module is connected to the host
+    if (co2Param.isConnected())
     {
         // co2
         waveIDs.append(WAVE_CO2);
