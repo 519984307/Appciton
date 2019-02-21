@@ -424,7 +424,7 @@ void LayoutManagerPrivate::performStandardLayout()
         }
     }
 
-    // 设置波形和有参数区第一项的最小高度。
+    // 设置波形和右参数区第一项的最小高度。
     waveLayout->setRowMinimumHeight(0, FIRST_ECG_WAVE_HEIGHT);
     rightParamLayout->setRowMinimumHeight(0, FIRST_ECG_WAVE_HEIGHT);
 
