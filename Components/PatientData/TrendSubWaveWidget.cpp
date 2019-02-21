@@ -63,11 +63,10 @@ void TrendSubWaveWidget::setWidgetParam(SubParamID id, TrendGraphType type)
     }
     else if (_type == TREND_GRAPH_TYPE_ART_IBP || _type == TREND_GRAPH_TYPE_NIBP)
     {
-        ParamRulerConfig configUp = alarmConfig.getParamRulerConfig(SubParamID(_id), unitType);
-        ParamRulerConfig configDown = alarmConfig.getParamRulerConfig(SubParamID(_id + 1), unitType);
-        _valueY.min = configDown.downRuler;
-        _valueY.max = configUp.upRuler;
-        _valueY.scale = configDown.scale;
+        ParamRulerConfig config = alarmConfig.getParamRulerConfig(SubParamID(_id), unitType);
+        _valueY.min = config.downRuler;
+        _valueY.max = config.upRuler;
+        _valueY.scale = config.scale;
         QString str = paramInfo.getSubParamName(_id);
         _paramName = str.left(str.length() - 4);
     }
