@@ -131,6 +131,11 @@ void TrendSubWaveWidget::rulerRange(int &down, int &up, int &scale)
     scale = _valueY.scale;
 }
 
+UnitType TrendSubWaveWidget::getUnitType()
+{
+    return paramManager.getSubParamUnit(paramInfo.getParamID(_id), _id);
+}
+
 int TrendSubWaveWidget::getAutoRuler(void)
 {
     int autoRuler = 0;
