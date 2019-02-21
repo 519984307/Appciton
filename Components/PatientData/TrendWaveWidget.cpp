@@ -590,6 +590,7 @@ const QList<TrendGraphInfo> TrendWaveWidget::getTrendGraphPrint()
         int up;
         int scale;
         _subWidgetList.at(i)->rulerRange(down, up, scale);
+        _infosList[i].unit = _subWidgetList.at(i)->getUnitType();
         _infosList[i].scale.min = down;
         _infosList[i].scale.max = up;
         _infosList[i].scale.scale = scale;
