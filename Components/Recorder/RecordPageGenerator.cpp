@@ -840,9 +840,9 @@ static void drawECGGain(RecordPage *page, QPainter *painter, const RecordWaveSeg
 }
 
 #define RULER_TICK_LEN 8
-// draw a percent style ruler
-static void drawPercentRuler(RecordPage *page, QPainter *painter, const RecordWaveSegmentInfo &waveInfo,
-                             const QString &high, const QString &low)
+// draw a gas style ruler
+static void drawGasRuler(RecordPage *page, QPainter *painter, const RecordWaveSegmentInfo &waveInfo,
+                             const QString &high, const QString &low, const UnitType unit)
 {
     QPainterPath path;
     path.moveTo(RULER_TICK_LEN, waveInfo.startYOffset);
@@ -867,7 +867,7 @@ static void drawPercentRuler(RecordPage *page, QPainter *painter, const RecordWa
 
     rect.setY((waveInfo.endYOffset -  waveInfo.startYOffset - fontH) / 2 + waveInfo.startYOffset);
     rect.setHeight(fontH);
-    painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, "%");
+    painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, Unit::localeSymbol(unit));
 
     painter->restore();
 }
@@ -965,7 +965,7 @@ RecordPage *RecordPageGenerator::createWaveScalePage(const QList<RecordWaveSegme
             break;
         case WAVE_CO2:
         {
-            int high;
+            int high;           // 高限值
             CO2DisplayZoom zoom = iter->waveInfo.co2.zoom;
             switch (zoom)
             {
@@ -983,8 +983,15 @@ RecordPage *RecordPageGenerator::createWaveScalePage(const QList<RecordWaveSegme
                 high = 20;
                 break;
             }
-
-            drawPercentRuler(page, &painter, *iter, QString::number(high, 'g', 2), "0");
+            UnitType unit = co2Param.getUnit();
+            QString highString;
+            if (unit == UNIT_MMHG)
+            {
+                high = Unit::convert(UNIT_MMHG, UNIT_PERCENT, high).toInt();
+                high = (high + 5) / 10 * 10;            // 取整
+            }
+            highString = QString::number(high, 'g', 3);
+            drawGasRuler(page, &painter, *iter, highString, "0", unit);
         }
         break;
         case WAVE_N2O:
@@ -1007,7 +1014,7 @@ RecordPage *RecordPageGenerator::createWaveScalePage(const QList<RecordWaveSegme
                 high = 15;
                 break;
             }
-            drawPercentRuler(page, &painter, *iter, QString::number(high, 'g', 2), "0");
+            drawGasRuler(page, &painter, *iter, QString::number(high, 'g', 2), "0", UNIT_PERCENT);
         }
         break;
 
