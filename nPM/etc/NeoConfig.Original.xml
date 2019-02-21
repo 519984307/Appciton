@@ -125,7 +125,7 @@
         <CO2ModeDefault>1</CO2ModeDefault>
         <CO2SweepMode>0</CO2SweepMode>
         <SweepSpeed>2</SweepSpeed>
-        <FICO2Display>0</FICO2Display>
+        <FiCO2Display>0</FiCO2Display>
         <DisplayZoom>3</DisplayZoom>
         <O2Compensation>16</O2Compensation>
         <N2OCompensation>0</N2OCompensation>
