@@ -162,7 +162,7 @@
 			    <Scale>1</Scale>
 			</bpm>
 		</HR_PR>
-		<RR_BR Enable="0" Prio="2">
+                <RR_BR Enable="1" Prio="2">
 			<rpm>
 			    <Low Min="2" Max="149">12</Low>
 			    <High Min="3" Max="150">80</High>
