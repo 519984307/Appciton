@@ -136,39 +136,17 @@ GraphAxisInfo TrendGraphPageGeneratorPrivate::getAxisInfo(const RecordPage *page
         // calcuelate the x labels
         unsigned t = startTime;
         QStringList timeList;
-        QList<int> dayList;
         for (int i = 0; i < AXIS_X_SECTION_NUM && t <= endTime; i++)
         {
             QString timeStr;
             timeDate.getTime(t, timeStr, true);
-            int day = timeDate.getDateDay(t);
             timeList.append(timeStr);
-            dayList.append(day);
             t += deltaT;
-        }
-
-        bool crossTwoDay = false;
-        for (int i = 0; i < dayList.size() - 1; i++)
-        {
-            if (dayList.at(i) != dayList.at(i + 1))
-            {
-                crossTwoDay = true;
-                break;
-            }
         }
 
         for (int i = 0; i < timeList.size(); i++)
         {
-            if (crossTwoDay)
-            {
-                axisInfo.xLabels.append(QString("%1%2")
-                                        .arg(timeList.at(i))
-                                        .arg(dayList.at(i)));
-            }
-            else
-            {
-                axisInfo.xLabels.append(timeList.at(i));
-            }
+            axisInfo.xLabels.append(timeList.at(i));
         }
     }
 
