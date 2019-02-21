@@ -117,7 +117,7 @@ public:
     {
         switch (soundType)
         {
-        case SoundManager::SOUND_TYPE_KEY_PRESS:
+        case SoundManager::SOUND_TYPE_NOTIFICATION:
             return SOUND_DIR"key.wav";
         case SoundManager::SOUND_TYPE_ERROR:
             return SOUND_DIR"error.wav";
@@ -353,7 +353,7 @@ SoundManager &SoundManager::getInstance()
 
 void SoundManager::keyPressTone()
 {
-    d_ptr->playSound(SOUND_TYPE_KEY_PRESS);
+    d_ptr->playSound(SOUND_TYPE_NOTIFICATION);
 }
 
 void SoundManager::errorTone()
@@ -450,7 +450,9 @@ void SoundManager::updateAlarm(bool hasAlarm, AlarmPriority curHighestPriority)
 
 void SoundManager::setVolume(SoundManager::SoundType type, SoundManager::VolumeLevel lev)
 {
-    if (type == SOUND_TYPE_KEY_PRESS)
+    int nibpCompleteToneStatus = true;
+    systemConfig.getNumValue("PrimaryCfg|NIBP|CompleteTone", nibpCompleteToneStatus);
+    if (type == SOUND_TYPE_NOTIFICATION && nibpCompleteToneStatus)
     {
         d_ptr->soundVolumes[SOUND_TYPE_NIBP_COMPLETE] = lev;
     }
@@ -476,6 +478,18 @@ void SoundManager::stopHandlingSound(bool enable)
     if (enable == true && d_ptr->player->isPlaying())
     {
         QMetaObject::invokeMethod(d_ptr->player, "stop");
+    }
+}
+
+void SoundManager::setNIBPCompleteTone(bool status)
+{
+    if (status)
+    {
+        setVolume(SOUND_TYPE_NIBP_COMPLETE, d_ptr->soundVolumes[SOUND_TYPE_NOTIFICATION]);
+    }
+    else
+    {
+        setVolume(SOUND_TYPE_NIBP_COMPLETE, VOLUME_LEV_0);
     }
 }
 
@@ -511,7 +525,7 @@ void SoundManager::volumeInit()
 
     systemConfig.getNumValue("PrimaryCfg|NIBP|CompleteTone", nibpVolumeFlag);
     d_ptr->soundVolumes[SOUND_TYPE_ALARM] = static_cast<VolumeLevel>(alarmVolume);
-    d_ptr->soundVolumes[SOUND_TYPE_KEY_PRESS] = static_cast<VolumeLevel>(keyVolume);
+    d_ptr->soundVolumes[SOUND_TYPE_NOTIFICATION] = static_cast<VolumeLevel>(keyVolume);
     d_ptr->soundVolumes[SOUND_TYPE_HEARTBEAT] = static_cast<VolumeLevel>(qrsVolume);
     if (nibpVolumeFlag)
     {

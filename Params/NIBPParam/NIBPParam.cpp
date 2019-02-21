@@ -29,6 +29,7 @@
 #include "NIBPMonitorStartingState.h"
 #include "EventStorageManager.h"
 #include "TrendDataStorageManager.h"
+#include "SoundManager.h"
 
 NIBPParam *NIBPParam::_selfObj = NULL;
 
@@ -1278,21 +1279,6 @@ void NIBPParam::updateSubParamLimit(SubParamID id)
     {
         _trendWidget->updateLimit();
     }
-}
-
-void NIBPParam::setNIBPCompleteTone(bool status)
-{
-    SoundManager::VolumeLevel volume;
-    if (status)
-    {
-        // nibp完成音保持和按键音一致
-        volume = soundManager.getVolume(SoundManager::SOUND_TYPE_KEY_PRESS);
-    }
-    else
-    {
-        volume = SoundManager::VOLUME_LEV_0;
-    }
-    soundManager.setVolume(SoundManager::SOUND_TYPE_NIBP_COMPLETE, volume);
 }
 
 void NIBPParam::enterMaintain(bool enter)

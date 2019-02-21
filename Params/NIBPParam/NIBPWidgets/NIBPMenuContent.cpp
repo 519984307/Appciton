@@ -26,6 +26,7 @@
 #include "IConfig.h"
 #include "UnitManager.h"
 #include "SystemManager.h"
+#include "SoundManager.h"
 
 class NIBPMenuContentPrivate
 {
@@ -375,7 +376,7 @@ void NIBPMenuContent::onComboBoxIndexChanged(int index)
         break;
     case NIBPMenuContentPrivate::ITEM_CBO_COMPLETE_TONE:
         systemConfig.setNumValue("PrimaryCfg|NIBP|CompleteTone", index);
-        nibpParam.setNIBPCompleteTone(index);
+        soundManager.setNIBPCompleteTone(index);
     default:
         break;
     }
