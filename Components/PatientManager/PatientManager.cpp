@@ -17,6 +17,7 @@
 #include "NIBPParam.h"
 #include "NIBPProviderIFace.h"
 #include "TimeDate.h"
+#include "AlarmIndicator.h"
 
 PatientManager *PatientManager::_selfObj = NULL;
 
@@ -305,6 +306,7 @@ void PatientManager::newPatient()
     patientManager.setWeight(0.0);
     patientManager.setPacermaker(PATIENT_PACER_ON);
     dataStorageDirManager.createDir(true);
+    alarmIndicator.delAllPhyAlarm();        // 新建病人时，应清空上一个病人的生理报警
 }
 
 void PatientManager::dischargePatient()
