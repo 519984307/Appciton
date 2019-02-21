@@ -1088,7 +1088,12 @@ static qreal mapWaveValue(const RecordWaveSegmentInfo &waveInfo, short wave)
     case WAVE_ECG_V6:
     {
         double scale = 0;
-        switch (waveInfo.waveInfo.ecg.gain)
+        ECGGain gain = waveInfo.waveInfo.ecg.gain;
+        if (gain == ECG_GAIN_AUTO)
+        {
+            gain = ecgParam.getECGAutoGain(ecgParam.waveIDToLeadID(waveInfo.id));
+        }
+        switch (gain)
         {
         case ECG_GAIN_X0125:
             scale = 0.125 * 10 * RECORDER_PIXEL_PER_MM / 2.0;

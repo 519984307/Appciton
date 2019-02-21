@@ -1900,6 +1900,10 @@ void ECGParam::setGain(ECGGain gain, ECGLead lead, bool isAutoGain)
         QString wavename = _waveWidget[lead]->name();
         currentConfig.setNumValue("ECG|Gain|" + wavename, static_cast<int>(gain));
     }
+    else
+    {
+        _autoGain[lead] = gain;
+    }
     _waveWidget[lead]->setGain(gain, isAutoGain);
 }
 
@@ -1966,6 +1970,20 @@ ECGGain ECGParam::getGain(ECGLead lead)
         currentConfig.getNumValue("ECG|Gain|" + waveName, gain);
     }
     return static_cast<ECGGain>(gain);
+}
+
+ECGGain ECGParam::getECGAutoGain(ECGLead lead)
+{
+    if (lead > ECG_LEAD_V6)
+    {
+        return ECG_GAIN_X10;
+    }
+
+    if (_waveWidget[lead] == NULL)
+    {
+        return ECG_GAIN_X10;
+    }
+    return _autoGain[lead];
 }
 
 /**************************************************************************************************
@@ -2302,6 +2320,7 @@ ECGParam::ECGParam() : Param(PARAM_ECG),
     for (int i = ECG_LEAD_I; i < ECG_LEAD_NR; i++)
     {
         _waveWidget[i] = NULL;
+        _autoGain[i] = ECG_GAIN_X10;
     }
 
     int lead = ECG_LEAD_II;
