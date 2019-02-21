@@ -217,6 +217,11 @@ void UserConfigEditMenuContent::onBtnClick()
             }
             d_ptr->patientType = type;
 
+            // free the memory
+            if (d_ptr->editWindow)
+            {
+                delete d_ptr->editWindow;
+            }
             d_ptr->editWindow = new ConfigEditMenuWindow();
             d_ptr->editWindow->setCurrentEditConfigName(d_ptr->generateDefaultConfigName());
             d_ptr->editWindow->setCurrentEditConfigInfo(d_ptr->curConfig, type);
@@ -248,6 +253,11 @@ void UserConfigEditMenuContent::onBtnClick()
             d_ptr->curConfig = new Config(QString("%1/%2")
                                           .arg(CONFIG_DIR)
                                           .arg(d_ptr->configs.at(index).fileName));
+            // free the memory
+            if (d_ptr->editWindow)
+            {
+                delete d_ptr->editWindow;
+            }
             d_ptr->editWindow = new ConfigEditMenuWindow();
             d_ptr->editWindow->setCurrentEditConfigName(d_ptr->configs.at(index).name);
             QString strType = d_ptr->configs.at(index).patType;
