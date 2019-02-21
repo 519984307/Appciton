@@ -783,7 +783,7 @@
     </AlarmSource>
     <Local>
         <NIBPUnit>5</NIBPUnit>
-        <CO2Unit>7</CO2Unit>
+        <CO2Unit>5</CO2Unit>
         <TEMPUnit>1</TEMPUnit>
     </Local>
     <Display>
