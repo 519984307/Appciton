@@ -1511,7 +1511,8 @@ void ECGParam::autoSetCalcLead(void)
     if (layoutManager.getUFaceType() == UFACE_MONITOR_STANDARD && getLeadMode() > ECG_LEAD_MODE_3)
     {
         // 标准界面且ECG模式大于3导时，处理ECG2波形与ECG1波形重复
-        int preECG1Lead = 0, ECG2Lead = 0;
+        int preECG1Lead = 0;
+        int ECG2Lead = 0;
         currentConfig.getNumValue("ECG|Ecg1Wave", preECG1Lead);
         currentConfig.getNumValue("ECG|Ecg2Wave", ECG2Lead);
         if (static_cast<int>(leads[index]) == ECG2Lead)
