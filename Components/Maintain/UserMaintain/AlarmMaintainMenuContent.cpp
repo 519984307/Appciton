@@ -35,6 +35,7 @@ public:
         ITEM_CBO_REMINDER_TONE_INTERVAL,
         ITEM_CBO_ALARM_LIGHT_RESET,
         ITEM_CBO_ALARM_LATCH_LOCK,
+        ITEM_CBO_ALARM_AUDIO_OFF,
         ITEM_CBO_DEFAULT
     };
 
@@ -104,13 +105,17 @@ void AlarmMaintainMenuContentPrivate::loadOptions()
     systemConfig.getNumValue("Alarms|PhyParAlarmLatchlockOn", index);
     combos[ITEM_CBO_ALARM_LATCH_LOCK]->setCurrentIndex(index);
 
+    systemConfig.getNumValue("Alarms|AlarmAudioOff", index);
+    combos[ITEM_CBO_ALARM_AUDIO_OFF]->setCurrentIndex(index);
+
 #ifdef DISABLED_ALARM_LATCH
     combos[ITEM_CBO_ALARM_LATCH_LOCK]->setEnabled(false);
 #endif
     combos[ITEM_CBO_MIN_ALARM_VOLUME]->setEnabled(false);
 }
 
-void AlarmMaintainMenuContentPrivate::HandlingComboIndexChanged(AlarmMaintainMenuContentPrivate::MenuItem item, int index)
+void AlarmMaintainMenuContentPrivate::
+        HandlingComboIndexChanged(AlarmMaintainMenuContentPrivate::MenuItem item, int index)
 {
     switch (item)
     {
@@ -173,6 +178,9 @@ void AlarmMaintainMenuContentPrivate::HandlingComboIndexChanged(AlarmMaintainMen
             alertor.setLatchLockSta(true);
         }
         break;
+    case ITEM_CBO_ALARM_AUDIO_OFF:
+            systemConfig.setNumValue("Alarms|AlarmAudioOff", index);
+            alarmIndicator.updateAlarmStateWidget();
     default:
         break;
     }
@@ -263,8 +271,7 @@ void AlarmMaintainMenuContent::layoutExec()
                        << QString::number(SoundManager::VOLUME_LEV_2)
                        << QString::number(SoundManager::VOLUME_LEV_3)
                        << QString::number(SoundManager::VOLUME_LEV_4)
-                       << QString::number(SoundManager::VOLUME_LEV_5)
-                      );
+                       << QString::number(SoundManager::VOLUME_LEV_5));
     itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_MIN_ALARM_VOLUME);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -283,8 +290,7 @@ void AlarmMaintainMenuContent::layoutExec()
                        << trs(AlarmSymbol::convert(ALARM_PAUSE_TIME_3MIN))
                        << trs(AlarmSymbol::convert(ALARM_PAUSE_TIME_5MIN))
                        << trs(AlarmSymbol::convert(ALARM_PAUSE_TIME_10MIN))
-                       << trs(AlarmSymbol::convert(ALARM_PAUSE_TIME_15MIN))
-                      );
+                       << trs(AlarmSymbol::convert(ALARM_PAUSE_TIME_15MIN)));
     itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARAM_PAUSE_TIME);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -300,8 +306,7 @@ void AlarmMaintainMenuContent::layoutExec()
                        << trs(AlarmSymbol::convert(ALARM_CLOSE_PROMPT_OFF))
                        << trs(AlarmSymbol::convert(ALARM_CLOSE_PROMPT_5MIN))
                        << trs(AlarmSymbol::convert(ALARM_CLOSE_PROMPT_10MIN))
-                       << trs(AlarmSymbol::convert(ALARM_CLOSE_PROMPT_15MIN))
-                      );
+                       << trs(AlarmSymbol::convert(ALARM_CLOSE_PROMPT_15MIN)));
     itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_CLOSE_PROMPT_TIME);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -314,8 +319,7 @@ void AlarmMaintainMenuContent::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("No")
-                       << trs("Yes")
-                      );
+                       << trs("Yes"));
     itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_ENABLE_ALARM_OFF);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -328,8 +332,7 @@ void AlarmMaintainMenuContent::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("No")
-                       << trs("Yes")
-                      );
+                       << trs("Yes"));
     itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_POWERON_ALARM_OFF);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -342,8 +345,7 @@ void AlarmMaintainMenuContent::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("No")
-                       << trs("Yes")
-                      );
+                       << trs("Yes"));
     itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_PAUSE_MAX_ALARM_15MIN);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -357,8 +359,7 @@ void AlarmMaintainMenuContent::layoutExec()
     comboBox->addItems(QStringList()
                        << trs("Close")
                        << trs("Open")
-                       << trs("OpenAgain")
-                      );
+                       << trs("OpenAgain"));
     itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_REMINDER_TONE);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -372,8 +373,7 @@ void AlarmMaintainMenuContent::layoutExec()
     comboBox->addItems(QStringList()
                        << trs("H1min")
                        << trs("H2min")
-                       << trs("H3min")
-                      );
+                       << trs("H3min"));
     itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_REMINDER_TONE_INTERVAL);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -387,8 +387,7 @@ void AlarmMaintainMenuContent::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("Close")
-                       << trs("Open")
-                      );
+                       << trs("Open"));
     itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_LIGHT_RESET);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -401,13 +400,25 @@ void AlarmMaintainMenuContent::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("Off")
-                       << trs("On")
-                      );
+                       << trs("On"));
     itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_LATCH_LOCK);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_LATCH_LOCK, comboBox);
+
+    // Alarm Audio Off
+    label = new QLabel(trs("AlarmAudioOff"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                           << trs("off")
+                           << trs("on"));
+    itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_AUDIO_OFF);
+    comboBox->setProperty("Item", qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_AUDIO_OFF, comboBox);
 
     // default
     label = new QLabel(trs("Defaults"));
