@@ -379,6 +379,10 @@ bool EventStorageItem::startCollectTrendAndWaveformData(unsigned t)
         int sampleRate = waveformCache.getSampleRate(waveid);
         int waveNum = (d_ptr->eventInfo.duration_after + d_ptr->eventInfo.duration_before) * sampleRate;
 
+        QString remark = QString("%1 %2").arg(ECGSymbol::convert(ecgParam.getFilterMode()))
+                                          .arg(ECGSymbol::convert(ecgParam.getNotchFilter()));
+        std::string stdStr = remark.toStdString();
+        const char *remarks = stdStr.c_str();
         WaveformDataSegment *waveSegment = reinterpret_cast<WaveformDataSegment *>(qMalloc(sizeof(WaveformDataSegment) +
                                            sizeof(WaveDataType) * waveNum));
 
@@ -393,6 +397,7 @@ bool EventStorageItem::startCollectTrendAndWaveformData(unsigned t)
         waveSegment->waveID = waveid;
         waveSegment->sampleRate = sampleRate;
         waveSegment->waveNum = waveNum;
+        Util::strlcpy(waveSegment->remarks, remarks, MAX_WAVE_SEG_INFO_REMARK);
 
         d_ptr->waveComplete[waveid] = false;
         d_ptr->waveCacheDuration[waveid] = d_ptr->eventInfo.duration_before;

@@ -200,24 +200,29 @@ public:
             case WAVE_ECG_V4:
             case WAVE_ECG_V5:
             case WAVE_ECG_V6:
+            {
                 info.waveInfo.ecg.gain = ecgParam.getGain(ecgParam.waveIDToLeadID(id));
-                if (ecgParam.getFilterMode() == ECG_FILTERMODE_DIAGNOSTIC)
+                QString remarks = QString(QLatin1String(waveSeg->remarks));
+                QString filterMode = remarks.section(" ", 0, 0);
+                QString notchFilter = remarks.section(" ", 1);
+                if (filterMode == ECGSymbol::convert(ECG_FILTERMODE_DIAGNOSTIC))
                 {
                     caption = QString("%1   %2   %3%4").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
                                                                                ecgParam.getLeadConvention()))
-                            .arg(trs(ECGSymbol::convert(ecgParam.getFilterMode()))).arg(trs("Notch"))
-                            .arg(trs(ECGSymbol::convert(ecgParam.getNotchFilter())));
+                            .arg(trs(filterMode)).arg(trs("Notch"))
+                            .arg(trs(notchFilter));
                 }
                 else
                 {
                     caption = QString("%1   %2").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
                                                      ecgParam.getLeadConvention()))
-                              .arg(ECGSymbol::convert(ecgParam.getFilterMode()));
+                              .arg(trs(filterMode));
                 }
                 info.waveInfo.ecg.in12LeadMode = layoutManager.getUFaceType() == UFACE_MONITOR_ECG_FULLSCREEN;
                 info.waveInfo.ecg._12LeadDisplayFormat = ecgParam.get12LDisplayFormat();
                 captionLength = fontManager.textWidthInPixels(caption, q_ptr->font());
                 break;
+            }
             case WAVE_RESP:
                 info.waveInfo.resp.zoom = respParam.getZoom();
                 break;
