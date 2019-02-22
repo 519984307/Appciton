@@ -224,8 +224,8 @@ void SPO2MenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
-                       << trs(SPO2Symbol::convert(SPO2_SMART_PLUSE_TONE_ON))
                        << trs(SPO2Symbol::convert(SPO2_SMART_PLUSE_TONE_OFF))
+                       << trs(SPO2Symbol::convert(SPO2_SMART_PLUSE_TONE_ON))
                       );
     itemID = static_cast<int>(SPO2MenuContentPrivate::ITEM_CBO_SMART_TONE);
     comboBox->setProperty("Item",
