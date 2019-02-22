@@ -365,7 +365,7 @@ void FactoryTempMenuContent::timeOut()
     if (d_ptr->calibrateChannel == TEMP_CALIBRATE_CHANNEL_1)
     {
         QString tStr;
-        if (t1 == InvData())
+        if (t1 == InvData() || t1 > 500 || t1 < 0)
         {
             tStr = InvStr();
         }
@@ -381,7 +381,7 @@ void FactoryTempMenuContent::timeOut()
     if (d_ptr->calibrateChannel == TEMP_CALIBRATE_CHANNEL_2)
     {
         QString tStr;
-        if (t2 == InvData())
+        if (t2 == InvData() || t2 > 500 || t2 < 0)
         {
             tStr = InvStr();
         }
