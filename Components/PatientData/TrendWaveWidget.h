@@ -38,21 +38,9 @@ public:
     void pageUpParam();
 
     /**
-     * @brief hasUpPage 检查是否可上翻页
-     * @return
-     */
-    bool hasUpPage();
-
-    /**
      * @brief pageDownParam 下翻页
      */
     void pageDownParam();
-
-    /**
-     * @brief hasDownPage 检查是否可下翻页
-     * @return
-     */
-    bool hasDownPage();
 
     /**
      * @brief setTimeInterval 设置时间间隔
