@@ -994,7 +994,7 @@ void ECGParam::getAvailableLeads(QList<ECGLead> &leads)
     if (ECG_LEAD_MODE_3 == _curLeadMode)
     {
         // 保留一道ecg波形
-        // todo
+        // TODO(fang)
     }
 }
 
@@ -1441,7 +1441,7 @@ void ECGParam::setDisplayMode(ECGDisplayMode mode, bool refresh)
         return;
     }
 
-    // todo: check whether need to refresh layout
+    // TODO(fang): check whether need to refresh layout
 }
 
 /**************************************************************************************************
