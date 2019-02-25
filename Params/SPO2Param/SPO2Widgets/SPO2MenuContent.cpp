@@ -148,8 +148,7 @@ void SPO2MenuContent::layoutExec()
     comboBox->addItems(QStringList()
                        << SPO2Symbol::convert(SPO2_WAVE_VELOCITY_62D5)
                        << SPO2Symbol::convert(SPO2_WAVE_VELOCITY_125)
-                       << SPO2Symbol::convert(SPO2_WAVE_VELOCITY_250)
-                      );
+                       << SPO2Symbol::convert(SPO2_WAVE_VELOCITY_250));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     itemID = SPO2MenuContentPrivate::ITEM_CBO_WAVE_SPEED;
@@ -179,7 +178,7 @@ void SPO2MenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     SPO2ModuleType moduleType = spo2Param.getModuleType();
-    if (moduleType == MODULE_MASIMO_SPO2)
+    if (moduleType == MODULE_MASIMO_SPO2 || moduleType == MODULE_RAINBOW_SPO2)
     {
         for (int i = SPO2_MASIMO_SENS_MAX; i < SPO2_MASIMO_SENS_NR; i++)
         {
@@ -209,8 +208,7 @@ void SPO2MenuContent::layoutExec()
         comboBox = new ComboBox();
         comboBox->addItems(QStringList()
                            << trs("Off")
-                           << trs("On")
-                          );
+                           << trs("On"));
         itemID = static_cast<int>(SPO2MenuContentPrivate::ITEM_CBO_FAST_SAT);
         comboBox->setProperty("Item",
                               qVariantFromValue(itemID));
@@ -224,9 +222,8 @@ void SPO2MenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
-                       << trs(SPO2Symbol::convert(SPO2_SMART_PLUSE_TONE_ON))
                        << trs(SPO2Symbol::convert(SPO2_SMART_PLUSE_TONE_OFF))
-                      );
+                       << trs(SPO2Symbol::convert(SPO2_SMART_PLUSE_TONE_ON)));
     itemID = static_cast<int>(SPO2MenuContentPrivate::ITEM_CBO_SMART_TONE);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));

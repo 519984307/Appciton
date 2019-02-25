@@ -26,6 +26,7 @@
 #include "OxyCRGEventWaveWidget.h"
 #include "Alarm.h"
 #include "AlarmConfig.h"
+#include "DataStorageDirManager.h"
 
 class EventStorageItemPrivate
 {
@@ -40,7 +41,8 @@ public:
         almInfo(NULL),
         codeMarkerInfo(NULL),
         oxyCRGInfo(NULL),
-        measureInfo(NULL)
+        measureInfo(NULL),
+        eventFolderName(dataStorageDirManager.getCurFolder())
     {
         int duration_after_event;
         int duration_before_event;
@@ -117,6 +119,8 @@ public:
     CodeMarkerSegment *codeMarkerInfo;
     OxyCRGSegment *oxyCRGInfo;
     NIBPMeasureSegment *measureInfo;
+
+    QString eventFolderName;
 };
 
 void EventStorageItemPrivate::saveTrendData(unsigned timestamp, const TrendCacheData &data,
@@ -626,6 +630,11 @@ QString EventStorageItem::getEventTitle() const
         break;
     }
     return eventTitle;
+}
+
+QString EventStorageItem::getEventFolderName() const
+{
+    return d_ptr->eventFolderName;
 }
 
 void EventStorageItem::onTriggerPrintStopped()

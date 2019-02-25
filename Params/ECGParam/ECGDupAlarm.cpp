@@ -120,8 +120,7 @@ int ECGDupLimitAlarm::getLower(int paramID)
  *************************************************************************************************/
 int ECGDupLimitAlarm::getCompare(int value, int id)
 {
-    int isHR = 0;
-    currentConfig.getNumValue("ECG|HRSource", isHR);
+    HRSourceType isHR = ecgDupParam.getCurHRSource();
     if (isHR == HR_SOURCE_ECG)
     {
         if (id == ECG_DUP_LIMIT_ALARM_HR_HIGH)

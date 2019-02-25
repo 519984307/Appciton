@@ -85,7 +85,7 @@ void CO2WaveWidget::setRuler(CO2DisplayZoom zoom)
         _ruler->setRuler(8.0, 4.0, 0);
         break;
     case CO2_DISPLAY_ZOOM_13:
-        _ruler->setRuler(13.0, 6.0, 0);
+        _ruler->setRuler(12.0, 6.0, 0);
         break;
     case CO2_DISPLAY_ZOOM_20:
         _ruler->setRuler(20.0, 10.0, 0);
