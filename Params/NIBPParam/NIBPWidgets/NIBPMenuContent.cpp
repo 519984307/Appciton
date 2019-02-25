@@ -26,6 +26,7 @@
 #include "IConfig.h"
 #include "UnitManager.h"
 #include "SystemManager.h"
+#include "SoundManager.h"
 #include "NightModeManager.h"
 
 class NIBPMenuContentPrivate
@@ -126,15 +127,10 @@ void NIBPMenuContent::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("Off")
-                       << QString::number(SoundManager::VOLUME_LEV_1)
-                       << QString::number(SoundManager::VOLUME_LEV_2)
-                       << QString::number(SoundManager::VOLUME_LEV_3)
-                       << QString::number(SoundManager::VOLUME_LEV_4)
-                       << QString::number(SoundManager::VOLUME_LEV_5));
+                       << trs("On"));
     itemID = static_cast<int>(NIBPMenuContentPrivate::ITEM_CBO_COMPLETE_TONE);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    connect(comboBox, SIGNAL(itemFocusChanged(int)), this, SLOT(onCboItemFocusChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(NIBPMenuContentPrivate::ITEM_CBO_COMPLETE_TONE, comboBox);
 
@@ -363,18 +359,6 @@ void NIBPMenuContent::onSpinBoxReleased(int value)
     nibpParam.setInitPressure(value);
 }
 
-void NIBPMenuContent::onCboItemFocusChanged(int index)
-{
-    ComboBox *cbo = qobject_cast<ComboBox *>(sender());
-    int indexType = cbo->property("Item").toInt();
-    if (indexType == NIBPMenuContentPrivate::ITEM_CBO_COMPLETE_TONE)
-    {
-        SoundManager::VolumeLevel volume = static_cast<SoundManager::VolumeLevel>(index);
-        nibpParam.setNIBPCompleteTone(volume);
-        soundManager.nibpCompleteTone();
-    }
-}
-
 void NIBPMenuContent::onStatBtnStateChanged(bool flag)
 {
     if (!flag)
@@ -401,6 +385,7 @@ void NIBPMenuContent::onComboBoxIndexChanged(int index)
         break;
     case NIBPMenuContentPrivate::ITEM_CBO_COMPLETE_TONE:
         systemConfig.setNumValue("PrimaryCfg|NIBP|CompleteTone", index);
+        soundManager.setNIBPCompleteTone(index);
     default:
         break;
     }

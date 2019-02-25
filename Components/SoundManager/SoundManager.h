@@ -21,7 +21,7 @@ public:
     enum SoundType
     {
         SOUND_TYPE_NONE,        /* no sound playing */
-        SOUND_TYPE_KEY_PRESS,
+        SOUND_TYPE_NOTIFICATION,
         SOUND_TYPE_ERROR,
         SOUND_TYPE_PULSE,
         SOUND_TYPE_HEARTBEAT,
@@ -114,6 +114,12 @@ public:
      * @param enable  true-不允许播放  false-允许播放
      */
     void stopHandlingSound(bool enable);
+
+    /**
+     * @brief setNIBPCompleteTone   是否开启NIBP完成音
+     * @param status
+     */
+    void setNIBPCompleteTone(bool status);
 
 public slots:
     /**
