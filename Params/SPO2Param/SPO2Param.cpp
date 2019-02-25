@@ -349,6 +349,12 @@ SoundManager::VolumeLevel SPO2Param::getPluseToneVolume(void)
  *************************************************************************************************/
 void SPO2Param::setSPO2(short spo2Value)
 {
+    // 对-8000的数据用InvData()代替
+    if (spo2Value == UnknownData())
+    {
+        spo2Value = InvData();
+    }
+
     if (_spo2Value == spo2Value)
     {
         return;
