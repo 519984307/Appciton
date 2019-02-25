@@ -46,7 +46,7 @@ struct AlarmInfoNode
                   const char *message, AlarmParamIFace *source, int id)
         : alarmType(type), alarmPriority(priority), latch(false), acknowledge(false),
           removeAfterLatch(false), promptAlarmBeep(false), pauseTime(0), displayTime(ALARM_INFO_DISPLAY_TIME),
-          alarmTime(t), alarmMessage(message), alarmSource(source), alarmID(id)
+          alarmTime(t), alarmMessage(message), alarmSource(source), alarmID(id), removeLigthAfterConfirm(false)
     {
         //    alarmType = type;
         //    alarmPriority = priority;
@@ -74,6 +74,7 @@ struct AlarmInfoNode
         alarmMessage = NULL;
         alarmSource = NULL;
         alarmID = 0;
+        removeLigthAfterConfirm = false;
     }
 
     AlarmType alarmType;
@@ -88,6 +89,7 @@ struct AlarmInfoNode
     const char *alarmMessage;
     AlarmParamIFace *alarmSource;
     int alarmID;
+    bool removeLigthAfterConfirm;
 };
 
 enum AlarmStatus

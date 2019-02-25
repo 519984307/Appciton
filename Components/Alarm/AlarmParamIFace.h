@@ -123,6 +123,9 @@ public:
     // latch后是否不在显示报警信息
     virtual bool isRemoveAfterLatch(int /*id*/) {return false;}
 
+    // 报警确认后是否移除灯光
+    virtual bool isRemoveLightAfterConfirm(int) {return false;}
+
     // 是否需要删除报警
     virtual bool isNeedRemove(int /*id*/) {return false;}
 
