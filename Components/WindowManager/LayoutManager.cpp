@@ -24,6 +24,8 @@
 #include "ECGParam.h"
 #include "CO2Param.h"
 
+#define FIRST_ECG_WAVE_HEIGHT 184
+
 typedef QList<LayoutNode> LayoutRow;
 
 class LayoutManagerPrivate
@@ -389,6 +391,7 @@ void LayoutManagerPrivate::performStandardLayout()
                 if (row < LAYOUT_MAX_WAVE_ROW_NUM)
                 {
                     waveLayout->addWidget(qw, insetRow, nodeIter->pos, 1, nodeIter->span);
+                    waveLayout->setRowStretch(row, 1);
                     if (w)
                     {
                         displayWaveforms.append(w->name());
@@ -421,9 +424,13 @@ void LayoutManagerPrivate::performStandardLayout()
         }
     }
 
+    // 设置波形和右参数区第一项的最小高度。
+    waveLayout->setRowMinimumHeight(0, FIRST_ECG_WAVE_HEIGHT);
+    rightParamLayout->setRowMinimumHeight(0, FIRST_ECG_WAVE_HEIGHT);
+
     // the wave container stretch
-    leftLayout->setStretch(0, waveLayout->rowCount());
     waveRowCount = waveLayout->rowCount();
+    leftLayout->setStretch(0, waveRowCount);
     // the let param container stretch
     if (leftParamLayout->count() != 0)
     {
@@ -684,6 +691,10 @@ void LayoutManagerPrivate::perform7LeadLayout()
         }
     }
 
+    // 设置第一道ECG波形的高度
+    waveLayout->setRowMinimumHeight(0, FIRST_ECG_WAVE_HEIGHT);
+
+    // 设置左参数区和波形区的竖向比例
     vLayout->setStretch(0, waveLayout->rowCount());
     waveRowCount = waveLayout->rowCount();
     if (leftParamLayout->count() != 0)

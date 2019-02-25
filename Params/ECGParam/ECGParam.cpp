@@ -38,7 +38,7 @@
 
 #define ECG_TIMER_INTERVAL (100)
 #define GET_DIA_DATA_PERIOD (12000)
-#define DISABLE_DIA_SOFTKEY_PERIOD (900)// 1s,定时有差异，使用900ms
+#define DISABLE_DIA_SOFTKEY_PERIOD (900)  // 1s,定时有差异，使用900ms
 
 unsigned ECGParam::selfTestResult = 0;
 ECGParam *ECGParam::_selfObj = NULL;
@@ -143,7 +143,7 @@ void ECGParam::handDemoTrendData(void)
 
 void ECGParam::exitDemo()
 {
-    ecgDupParam.updateHR(InvData());
+    ecgParam.updateHR(InvData());
     updatePVCS(InvData());
     for (int i = ECG_ST_I; i < ECG_ST_NR; i++)
     {
@@ -994,7 +994,7 @@ void ECGParam::getAvailableLeads(QList<ECGLead> &leads)
     if (ECG_LEAD_MODE_3 == _curLeadMode)
     {
         // 保留一道ecg波形
-        // TODO
+        // TODO(fang)
     }
 }
 
@@ -1292,7 +1292,7 @@ void ECGParam::setLeadMode(ECGLeadMode newMode)
     // 切换到正确的计算导联。
     ECGLead calcLead = getCalcLead();
     ECGLead newCaclLead = calcLead;
-    if (oldMode == ECG_LEAD_MODE_5) // 5导切3导或12导。
+    if (oldMode == ECG_LEAD_MODE_5)  // 5导切3导或12导。
     {
         if (newMode == ECG_LEAD_MODE_3)
         {
@@ -1314,7 +1314,7 @@ void ECGParam::setLeadMode(ECGLeadMode newMode)
                 newCaclLead = ECG_LEAD_II;
             }
         }
-        else if (newMode == ECG_LEAD_MODE_3) // 切换3导。
+        else if (newMode == ECG_LEAD_MODE_3)  // 切换3导。
         {
             if (calcLead > ECG_LEAD_III)
             {
@@ -1441,7 +1441,7 @@ void ECGParam::setDisplayMode(ECGDisplayMode mode, bool refresh)
         return;
     }
 
-    // TODO: check whether need to refresh layout
+    // TODO(fang): check whether need to refresh layout
 }
 
 /**************************************************************************************************
@@ -1900,6 +1900,10 @@ void ECGParam::setGain(ECGGain gain, ECGLead lead, bool isAutoGain)
         QString wavename = _waveWidget[lead]->name();
         currentConfig.setNumValue("ECG|Gain|" + wavename, static_cast<int>(gain));
     }
+    else
+    {
+        _autoGain[lead] = gain;
+    }
     _waveWidget[lead]->setGain(gain, isAutoGain);
 }
 
@@ -1966,6 +1970,20 @@ ECGGain ECGParam::getGain(ECGLead lead)
         currentConfig.getNumValue("ECG|Gain|" + waveName, gain);
     }
     return static_cast<ECGGain>(gain);
+}
+
+ECGGain ECGParam::getECGAutoGain(ECGLead lead)
+{
+    if (lead > ECG_LEAD_V6)
+    {
+        return ECG_GAIN_X10;
+    }
+
+    if (_waveWidget[lead] == NULL)
+    {
+        return ECG_GAIN_X10;
+    }
+    return _autoGain[lead];
 }
 
 /**************************************************************************************************
@@ -2302,6 +2320,7 @@ ECGParam::ECGParam() : Param(PARAM_ECG),
     for (int i = ECG_LEAD_I; i < ECG_LEAD_NR; i++)
     {
         _waveWidget[i] = NULL;
+        _autoGain[i] = ECG_GAIN_X10;
     }
 
     int lead = ECG_LEAD_II;

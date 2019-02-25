@@ -128,6 +128,11 @@ public:
      */
     QString getEventTitle() const;
 
+    /**
+     * @brief getEventFolderName get event storage folder name
+     * @return folder name
+     */
+    QString getEventFolderName() const;
 private slots:
     // callback when the trigger page generator is stopped
     void onTriggerPrintStopped();

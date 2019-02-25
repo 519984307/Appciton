@@ -719,12 +719,12 @@ NIBPMeasurementAbort,测量中止,Measurement Aborted
 NIBPCuffTypeError,血压袖带类型错,NIBP Cuff Type Error 
 NIBPCuffError,血压袖带错误,NIBP Cuff Error
 NIBPCuffAirLeakage,血压袖带漏气,NIBP Cuff Air Leakage
-NIBPPneumaticBlockage,血压气管堵塞,NIBP Pneumatic Blockage
-NIBPCuffOverPressure,血压袖带压力过压,NIBP Cuff Over Pressure
+NIBPPneumaticBlockage,血压气管堵塞,Pneumatic Blockage
+NIBPCuffOverPressure,血压袖带压力过压,Cuff Over Pressure
 NIBPPressureError,血压压力错,NIBP Pressure Error
 NIBPSignalWeak,血压信号微弱,NIBP Signal Weak
 NIBPSignalSaturation,血压信号饱和,NIBP Signal Saturation
-NIBPMeasureOverRange,血压测量超界,NIBP Measure Over Range
+NIBPMeasureOverRange,血压测量超界,Measure Over Range
 NIBPMeasureTimeout,血压测量超时,NIBP Measure Timeout
 NIBPExcessiveMoving,血压过分运动,NIBP Excessive Moving
 NIBPHardwareError,血压硬件错误,NIBP Hardware Error
@@ -739,7 +739,7 @@ CalibratePoint2,校准点2,CalibratePoint 2
 ServiceCalibrate,校准,Calibrate
 ServiceCalibrating,校准中,Calibrating
 NIBPCalibrateModel,校准模式,NIBP Calibrate Model
-ServiceCalibrateDesc,校准,Calibrate Desc
+ServiceCalibrateDesc,校准,Calibrate
 ServiceSuccess,成功,Success
 ServiceAgain,重新校准,Again
 ServiceManometer,压力计,Manometer
@@ -1572,9 +1572,9 @@ StartTime,开始时间,Start Time
 EndTime,结束时间,End Time
 HourSystem,时钟系统,Hour System
 PrintLength,打印长度,Print Length
-Hour,时,Hour
-Minute,分,Minute
-Second,秒,Second
+Hours,时,Hours
+Minutes,分,Minutes
+Seconds,秒,Seconds
 ComfirmClearErrorLog,确认是否清理错误日志,Comfirm Clear Error Log
 Speed,速度,Speed
 Gain,增益,Gain

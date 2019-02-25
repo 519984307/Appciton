@@ -399,52 +399,6 @@ bool XmlParser::setNode(const QString &indexStr, QDomElement &srctag)
     return _copyNode(tag, srctag);
 }
 
-/*******************************************************************************
- * 功能： 遍历XML元素。
- * 参数：
- *      indexStr：指定XML路径；
- *      index：返回XML的元素名；
- *      value：返回元素值。
- * 返回：
- *      读取正常返回true，读取失败返回false。
- ******************************************************************************/
-bool XmlParser::getFirstValue(const QString &indexStr, QString &index,
-                              QString &value)
-{
-    QMutexLocker locker(&_lock);
-    _iterateElement = _findElement(indexStr);
-    if (_iterateElement.isNull())
-    {
-        return false;
-    }
-
-    index = _iterateElement.tagName();
-    value = _iterateElement.text();
-    return true;
-}
-
-/*******************************************************************************
- * 功能： 遍历XML元素。
- * 参数：
- *      index：返回XML的元素名；
- *      value：返回元素值。
- * 返回：
- *      读取正常返回true，读取失败返回false。
- ******************************************************************************/
-bool XmlParser::getNextValue(QString &index, QString &value)
-{
-    QMutexLocker locker(&_lock);
-    _iterateElement = _iterateElement.nextSiblingElement();
-    if (_iterateElement.isNull())
-    {
-        return false;
-    }
-
-    index = _iterateElement.tagName();
-    value = _iterateElement.text();
-    return true;
-}
-
 static QVariantMap parseDomElement(const QDomElement &ele)
 {
     QVariantMap varMap;

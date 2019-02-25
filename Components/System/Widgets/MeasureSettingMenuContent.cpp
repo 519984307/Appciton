@@ -76,6 +76,8 @@ void MeasureSettingMenuContent::layoutExec()
     btn->setProperty("Item", qVariantFromValue(item));
 
     // resp
+    if (systemManager.isSupport(CONFIG_RESP))
+    {
     btn = new Button(QString("%1 >>").arg(trs("RESPSetting")));
     hl = new QHBoxLayout;
     hl->addStretch(1);
@@ -85,8 +87,11 @@ void MeasureSettingMenuContent::layoutExec()
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
     item = MeasureSettingMenuContentPrivate::ITEM_BTN_RESP;
     btn->setProperty("Item", qVariantFromValue(item));
+    }
 
     // temp
+    if (systemManager.isSupport(CONFIG_TEMP))
+    {
     btn = new Button(QString("%1 >>").arg(trs("TEMPSetting")));
     hl = new QHBoxLayout;
     hl->addStretch(1);
@@ -96,6 +101,7 @@ void MeasureSettingMenuContent::layoutExec()
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
     item = MeasureSettingMenuContentPrivate::ITEM_BTN_TEMP;
     btn->setProperty("Item", qVariantFromValue(item));
+    }
 
     // ag
     if (systemManager.isSupport(CONFIG_AG))

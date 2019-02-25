@@ -15,6 +15,7 @@
 #include <QHBoxLayout>
 #include "KeyInputPanel.h"
 #include "IConfig.h"
+#include "WindowManager.h"
 
 class FactorySystemInfoMenuContentPrivate
 {
@@ -94,7 +95,8 @@ void FactorySystemInfoMenuContent::onBtnReleasedChanged()
     panel.setSpaceEnable(false);
     panel.setBtnEnable("[a-zA-Z0-9]");
 
-    if (!panel.exec())
+    windowManager.showWindow(&panel, WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
+    if (panel.result() == QDialog::Rejected)
     {
         return;
     }

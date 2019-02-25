@@ -29,6 +29,7 @@ public:
     SoundManager::VolumeLevel normalAlarmVolume;
     SoundManager::VolumeLevel normalHeartBeatVolume;
     SoundManager::VolumeLevel normalKeyVolume;
+    SoundManager::VolumeLevel normalNibpCompleteVolume;
 
     /**
      * @brief loadOption    保存正常模式下的值
@@ -51,7 +52,14 @@ void NightModeManager::setNightMode(bool nightMode)
     int screenBrightness = 0;
     int alarmVolume = 0;
     int heartBeatVolume = 0;
-    int keyVolume = 0;
+    int notificationVolume = 0;
+    int nibpCompleteTone = 0;
+    bool isRepetSet = false;
+    if (nightMode == d_ptr->isNightMode)
+    {
+        isRepetSet = true;
+    }
+
     systemConfig.setNumValue("NightMode|EnterNightMode", static_cast<int>(nightMode));
     d_ptr->isNightMode = nightMode;
     if (d_ptr->isNightMode)    //　夜间模式
@@ -66,7 +74,19 @@ void NightModeManager::setNightMode(bool nightMode)
         systemConfig.getNumValue("NightMode|HeartBeatVolume", heartBeatVolume);
 
         // 按键音量
-        systemConfig.getNumValue("NightMode|KeyPressVolume", keyVolume);
+        systemConfig.getNumValue("NightMode|KeyPressVolume", notificationVolume);
+
+        // NIBP完成音
+        int index = 0;
+        systemConfig.getNumValue("NightMode|NIBPCompletedTips", index);
+        if (index)
+        {
+            nibpCompleteTone = notificationVolume;
+        }
+        else
+        {
+            nibpCompleteTone = 0;
+        }
 
         d_ptr->loadOption();
 
@@ -75,7 +95,7 @@ void NightModeManager::setNightMode(bool nightMode)
         // NIBP停止测量
         int stopNibpMeasure = 0;
         systemConfig.getNumValue("NightMode|StopNIBPMeasure", stopNibpMeasure);
-        if (stopNibpMeasure)
+        if (stopNibpMeasure && !isRepetSet)
         {
             nibpParam.stopMeasure();
         }
@@ -93,7 +113,17 @@ void NightModeManager::setNightMode(bool nightMode)
         heartBeatVolume = b;
 
         systemConfig.getNumValue("General|KeyPressVolume", b);
-        keyVolume = b;
+        notificationVolume = b;
+
+        systemConfig.getNumValue("PrimaryCfg|NIBP|CompleteTone", b);
+        if (b)
+        {
+            nibpCompleteTone = notificationVolume;
+        }
+        else
+        {
+            nibpCompleteTone = 0;
+        }
 
         runningStatus.setNightModeStatus(false);
     }
@@ -104,7 +134,9 @@ void NightModeManager::setNightMode(bool nightMode)
     soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT,
                            static_cast<SoundManager::VolumeLevel>(heartBeatVolume));
     soundManager.setVolume(SoundManager::SOUND_TYPE_NOTIFICATION,
-                           static_cast<SoundManager::VolumeLevel>(keyVolume));
+                           static_cast<SoundManager::VolumeLevel>(notificationVolume));
+    soundManager.setVolume(SoundManager::SOUND_TYPE_NIBP_COMPLETE,
+                           static_cast<SoundManager::VolumeLevel>(nibpCompleteTone));
 }
 
 bool NightModeManager::nightMode()
@@ -117,8 +149,8 @@ NightModeManagerPrivate::NightModeManagerPrivate()
       normalScreenBrightness(BRT_LEVEL_NR),
       normalAlarmVolume(SoundManager::VOLUME_LEV_NR),
       normalHeartBeatVolume(SoundManager::VOLUME_LEV_NR),
-      normalKeyVolume(SoundManager::VOLUME_LEV_NR)
-
+      normalKeyVolume(SoundManager::VOLUME_LEV_NR),
+      normalNibpCompleteVolume(SoundManager::VOLUME_LEV_NR)
 {
     int index = 0;
     systemConfig.getNumValue("NightMode|EnterNightMode", index);
@@ -132,4 +164,5 @@ void NightModeManagerPrivate::loadOption()
     normalAlarmVolume =  soundManager.getVolume(SoundManager::SOUND_TYPE_ALARM);
     normalHeartBeatVolume = soundManager.getVolume(SoundManager::SOUND_TYPE_HEARTBEAT);
     normalKeyVolume = soundManager.getVolume(SoundManager::SOUND_TYPE_NOTIFICATION);
+    normalNibpCompleteVolume = soundManager.getVolume(SoundManager::SOUND_TYPE_NIBP_COMPLETE);
 }

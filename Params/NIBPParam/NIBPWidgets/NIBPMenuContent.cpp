@@ -27,6 +27,7 @@
 #include "UnitManager.h"
 #include "SystemManager.h"
 #include "SoundManager.h"
+#include "NightModeManager.h"
 
 class NIBPMenuContentPrivate
 {
@@ -252,8 +253,16 @@ void NIBPMenuContentPrivate::loadOptions()
         btns[ITEM_BTN_ADDITION_MEASURE]->setText(trs("Off"));
     }
 
-    systemConfig.getNumValue("PrimaryCfg|NIBP|CompleteTone", index);
-    combos[ITEM_CBO_COMPLETE_TONE]->setCurrentIndex(index);
+    if (nightModeManager.nightMode())
+    {
+        combos[ITEM_CBO_COMPLETE_TONE]->setEnabled(false);
+    }
+    else
+    {
+        systemConfig.getNumValue("PrimaryCfg|NIBP|CompleteTone", index);
+        combos[ITEM_CBO_COMPLETE_TONE]->setCurrentIndex(index);
+        combos[ITEM_CBO_COMPLETE_TONE]->setEnabled(true);
+    }
     statBtnShow();
 }
 

@@ -125,10 +125,10 @@
         <CO2ModeDefault>1</CO2ModeDefault>
         <CO2SweepMode>0</CO2SweepMode>
         <SweepSpeed>2</SweepSpeed>
-        <FICO2Display>0</FICO2Display>
+        <FiCO2Display>0</FiCO2Display>
         <DisplayZoom>3</DisplayZoom>
         <O2Compensation>16</O2Compensation>
-        <NO2Compensation>0</NO2Compensation>
+        <N2OCompensation>0</N2OCompensation>
         <CeroCalibration>0</CeroCalibration>
     </CO2>
     <CO>
@@ -140,7 +140,7 @@
     </CO>
     <RESP>
         <RESPSweepMode>0</RESPSweepMode>
-        <AutoActivation>0</AutoActivation>
+        <AutoActivation>1</AutoActivation>
         <ApneaDelay>1</ApneaDelay>
         <BreathLead>2</BreathLead>
         <Gain>2</Gain>
@@ -783,7 +783,7 @@
     </AlarmSource>
     <Local>
         <NIBPUnit>5</NIBPUnit>
-        <CO2Unit>7</CO2Unit>
+        <CO2Unit>5</CO2Unit>
         <TEMPUnit>1</TEMPUnit>
     </Local>
     <Display>

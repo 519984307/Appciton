@@ -122,10 +122,15 @@ void PowerMangerPrivate::monitorRun()
     }
     else if (powerType == POWER_SUPLY_AC_BAT)
     {
+        if (adcValue == 0)
+        {
+            // 不处理无效值
+            return;
+        }
         BatteryPowerLevel curVolume = getCurrentVolume();
         batteryBarWidget.setStatus(BATTERY_CHARGING);
         batteryBarWidget.setVolume(curVolume);
-        if (curVolume != BAT_VOLUME_5)
+        if (curVolume != BAT_VOLUME_5 && systemBoardProvider.isPowerCharging())
         {
             batteryBarWidget.charging();
         }
@@ -172,9 +177,9 @@ void PowerMangerPrivate::initBatteryData()
 
 BatteryPowerLevel PowerMangerPrivate::getCurrentVolume()
 {
-    int batteryADCVoltage = 0;          // 记录ADC电压
+    short batteryADCVoltage = 0;          // 记录ADC电压
 
-    batteryADCVoltage = systemBoardProvider.getPowerADC();
+    batteryADCVoltage = adcValue;
 
     BatteryPowerLevel powerLevel = BAT_VOLUME_0;
     lowBattery = false;
@@ -203,7 +208,7 @@ BatteryPowerLevel PowerMangerPrivate::getCurrentVolume()
     {
         powerLevel = BAT_VOLUME_4;
     }
-    else if (batteryADCVoltage >= BAT_LEVEL_4 && batteryADCVoltage <= BAT_LEVEL_5)
+    else if (batteryADCVoltage >= BAT_LEVEL_4)
     {
         powerLevel = BAT_VOLUME_5;
     }
