@@ -241,10 +241,18 @@ void ECGMenuContentPrivate::loadOptions()
         combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_OFF)), ECG_NOTCH_OFF);
         combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_50HZ)), ECG_NOTCH_50HZ);
         combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_60HZ)), ECG_NOTCH_60HZ);
-        combos[ITEM_CBO_NOTCH_FITER]->setCurrentIndex(notchFilter);
         break;
     default:
         break;
+    }
+    int notchFilterIndex = combos[ITEM_CBO_NOTCH_FITER]->findText(trs(ECGSymbol::convert(notchFilter)));
+    if (notchFilterIndex > -1)
+    {
+        combos[ITEM_CBO_NOTCH_FITER]->setCurrentIndex(notchFilterIndex);
+    }
+    else
+    {
+        combos[ITEM_CBO_NOTCH_FITER]->setCurrentIndex(0);
     }
 
     combos[ITEM_CBO_PACER_MARK]->setCurrentIndex(ecgParam.getPacermaker());
