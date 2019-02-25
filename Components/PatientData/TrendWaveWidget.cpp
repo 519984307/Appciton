@@ -74,6 +74,7 @@ TrendWaveWidget::TrendWaveWidget() : _hLayoutTrend(NULL),
     {
         TrendSubWaveWidget *subWidget;
         subWidget = new TrendSubWaveWidget();
+        subWidget->setFocusPolicy(Qt::NoFocus);
         _mainLayout->addWidget(subWidget, 1);
         _subWidgetList.append(subWidget);
     }
@@ -249,6 +250,11 @@ void TrendWaveWidget::rightMoveEvent()
 
 void TrendWaveWidget::pageUpParam()
 {
+    // 参数个数少于显示波形数时不进行翻页操作
+    if (_infosList.count() < _displayGraphNum)
+    {
+        return;
+    }
     if ((_curIndex - _displayGraphNum * 2) >= 0)
     {
         _curIndex = _curIndex - _displayGraphNum;
@@ -260,20 +266,14 @@ void TrendWaveWidget::pageUpParam()
     updateTimeRange();
 }
 
-bool TrendWaveWidget::hasUpPage()
-{
-    if (_curIndex == 0)
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
-}
-
 void TrendWaveWidget::pageDownParam()
 {
+    // 参数个数少于显示波形数时不进行翻页操作
+    if (_infosList.count() < _displayGraphNum)
+    {
+        return;
+    }
+
     if ((_curIndex + _displayGraphNum * 2) < _subParams.count())
     {
         _curIndex = _curIndex + _displayGraphNum;
@@ -283,18 +283,6 @@ void TrendWaveWidget::pageDownParam()
         _curIndex = _subParams.count() - _displayGraphNum;
     }
     updateTimeRange();
-}
-
-bool TrendWaveWidget::hasDownPage()
-{
-    if (_curIndex == _subParams.count() - _displayGraphNum)
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
 }
 
 void TrendWaveWidget::setTimeInterval(ResolutionRatio timeInterval)
@@ -584,7 +572,7 @@ void TrendWaveWidget::trendWaveReset()
 
 const QList<TrendGraphInfo> TrendWaveWidget::getTrendGraphPrint()
 {
-    for (int i = 0; i < _displayGraphNum; i++)
+    for (int i = 0; i < _infosList.count(); i++)
     {
         int down;
         int up;
