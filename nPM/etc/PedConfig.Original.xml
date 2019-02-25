@@ -140,7 +140,7 @@
     </CO>
     <RESP>
         <RESPSweepMode>0</RESPSweepMode>
-        <AutoActivation>0</AutoActivation>
+        <AutoActivation>1</AutoActivation>
         <ApneaDelay>1</ApneaDelay>
         <BreathLead>2</BreathLead>
         <Gain>2</Gain>
