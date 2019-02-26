@@ -47,12 +47,15 @@ public:
     QMap <MenuItem, ComboBox *> combos;
     Config *const config;
     SPO2ModuleType moduleType;
+
+    QLabel *focusLable;  // 仅查看该菜单时,设置该label为可聚焦方式，便于旋转飞梭查看视图
 };
 
 ConfigEditSpO2MenuContentPrivate
 ::ConfigEditSpO2MenuContentPrivate(Config *const config)
     : config(config)
     , moduleType(MODULE_BLM_S5)
+    , focusLable(NULL)
 {
     combos.clear();
 }
@@ -132,6 +135,18 @@ void ConfigEditSpO2MenuContent::readyShow()
             d_ptr->combos[item]->setEnabled(!isOnlyToRead);
         }
     }
+
+    if (d_ptr->focusLable)
+    {
+        if (isOnlyToRead)
+        {
+            d_ptr->focusLable->setFocusPolicy(Qt::StrongFocus);
+        }
+        else
+        {
+            d_ptr->focusLable->setFocusPolicy(Qt::NoFocus);
+        }
+    }
 }
 
 void ConfigEditSpO2MenuContent::layoutExec()
@@ -144,6 +159,7 @@ void ConfigEditSpO2MenuContent::layoutExec()
 
     // wave speed
     label = new QLabel(trs("SPO2SweepSpeed"));
+    d_ptr->focusLable = label;
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
