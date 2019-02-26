@@ -1081,6 +1081,16 @@ void ECGWaveWidget::updateWidgetConfig()
     setPalette(palette);
     _ruler->setPalette(palette);
 
+    // update the lead mode
+    int leadMode = ECG_LEAD_MODE_5;
+    currentConfig.getNumValue("ECG|LeadMode", leadMode);
+    ecgParam.setLeadMode(static_cast<ECGLeadMode>(leadMode));
+
+    // update the filter mode
+    int filterMode = ECG_FILTERMODE_MONITOR;
+    currentConfig.getNumValue("ECG|FilterMode", filterMode);
+    ecgParam.setFilterMode(filterMode);
+
     WaveWidget::updateWidgetConfig();
 }
 
