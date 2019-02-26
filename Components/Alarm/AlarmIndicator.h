@@ -37,7 +37,8 @@ public:
     // 增加/删除报警消息。
     bool addAlarmInfo(unsigned alarmTime, AlarmType alarmType,
                       AlarmPriority alarmPriority, const char *alarmMessage,
-                      AlarmParamIFace *alarmSource, int alarmID, bool isRemoveAfterLatch = false);
+                      AlarmParamIFace *alarmSource, int alarmID, bool isRemoveAfterLatch = false,
+                      bool isRemoveLightAfterConfirm = false);
     void delAlarmInfo(AlarmType alarmType, const char *alarmMessage);
 
     // 报警栓锁

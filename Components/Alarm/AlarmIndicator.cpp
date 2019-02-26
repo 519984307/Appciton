@@ -107,7 +107,8 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
         else if (ALARM_TYPE_TECH == node.alarmType && ALARM_STATUS_PAUSE != status)
         {
             // 技术报警只处理没有被acknowledge和不处理报警暂停状态
-            if ((!node.acknowledge || node.latch) && node.alarmPriority != ALARM_PRIO_PROMPT )
+            if ((!node.acknowledge || node.latch || node.removeLigthAfterConfirm)
+                    && node.alarmPriority != ALARM_PRIO_PROMPT)
             {
                 if (techSoundPriority < node.alarmPriority)
                 {
@@ -326,7 +327,7 @@ bool AlarmIndicator::_canPlayAudio(AlarmStatus status, bool isTechAlarm)
     return false;
 }
 
-/**************************************************************************************************
+/***************************************************************chenhuahai@blmed.cn***********************************
  * 报警信息显示。
  *************************************************************************************************/
 void AlarmIndicator::_displayInfoNode(AlarmInfoNode &alarmNode, int &indexint, int newAlarmIndex, int oldAlarmIndex,
@@ -397,7 +398,8 @@ void AlarmIndicator::setAlarmTechWidgets(AlarmTechInfoBarWidget *alarmWidget)
  *************************************************************************************************/
 bool AlarmIndicator::addAlarmInfo(unsigned alarmTime, AlarmType alarmType,
                                   AlarmPriority alarmPriority, const char *alarmMessage,
-                                  AlarmParamIFace *alarmSource, int alarmID, bool isRemoveAfterLatch)
+                                  AlarmParamIFace *alarmSource, int alarmID, bool isRemoveAfterLatch,
+                                  bool isRemoveLightAfterConfirm)
 {
     //报警存在
     AlarmInfoList *list = &_alarmInfoDisplayPool;
@@ -428,6 +430,7 @@ bool AlarmIndicator::addAlarmInfo(unsigned alarmTime, AlarmType alarmType,
 
     AlarmInfoNode node(alarmTime, alarmType, alarmPriority, alarmMessage, alarmSource, alarmID);
     node.removeAfterLatch = isRemoveAfterLatch;
+    node.removeLigthAfterConfirm = isRemoveLightAfterConfirm;
 
     list->append(node);
     return true;
