@@ -46,10 +46,14 @@ void SPO2TrendWidget::_loadConfig()
  *************************************************************************************************/
 void SPO2TrendWidget::setSPO2Value(int16_t spo2)
 {
-//    debug("------------spo2 = %d",spo2);
     if (spo2 >= 0)
     {
         _spo2String = QString::number(spo2);
+        if (spo2Param.isLowPerfusion())
+        {
+            //  add the '?' character when the SPO2 value has low perfusion.
+            _spo2String += "?";
+        }
     }
     else if (spo2 == UnknownData())
     {
