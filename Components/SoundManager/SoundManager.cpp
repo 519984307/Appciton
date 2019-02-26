@@ -527,6 +527,7 @@ void SoundManager::volumeInit()
     d_ptr->soundVolumes[SOUND_TYPE_ALARM] = static_cast<VolumeLevel>(alarmVolume);
     d_ptr->soundVolumes[SOUND_TYPE_NOTIFICATION] = static_cast<VolumeLevel>(keyVolume);
     d_ptr->soundVolumes[SOUND_TYPE_HEARTBEAT] = static_cast<VolumeLevel>(qrsVolume);
+    d_ptr->soundVolumes[SOUND_TYPE_PULSE] = static_cast<VolumeLevel>(qrsVolume);
     if (nibpVolumeFlag)
     {
         // nibp完成音属于提示音，要和按键提示音保持同样音量
