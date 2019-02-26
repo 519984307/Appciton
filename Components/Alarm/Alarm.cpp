@@ -265,13 +265,19 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
             switch (infoSegment.subParamID)
             {
             case SUB_PARAM_HR_PR:
+            #ifndef HIDE_OXYCRG_REVIEW_FUNCTION
                 eventStorageManager.triggerAlarmOxyCRGEvent(infoSegment, OxyCRGEventECG, _timestamp);
+            #endif
                 break;
             case SUB_PARAM_SPO2:
+            #ifndef HIDE_OXYCRG_REVIEW_FUNCTION
                 eventStorageManager.triggerAlarmOxyCRGEvent(infoSegment, OxyCRGEventSpO2, _timestamp);
+            #endif
                 break;
             case SUB_PARAM_RR_BR:
+            #ifndef HIDE_OXYCRG_REVIEW_FUNCTION
                 eventStorageManager.triggerAlarmOxyCRGEvent(infoSegment, OxyCRGEventResp, _timestamp);
+            #endif
                 break;
             default:
                 break;
