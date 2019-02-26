@@ -37,6 +37,7 @@
 #include "UnitManager.h"
 #include "PatientManager.h"
 #include "EventDataDefine.h"
+#include "TrendDataStorageManager.h"
 
 #define DEFAULT_PAGE_WIDTH 200
 #define PEN_WIDTH 2
@@ -1823,7 +1824,7 @@ QList<QPainterPath> generatorPainterPath(const GraphAxisInfo &axisInfo, const Tr
         QVector<TrendGraphDataV3>::ConstIterator iter = graphInfo.trendDataV3.constBegin();
         for (; iter != graphInfo.trendDataV3.constEnd(); iter++)
         {
-            if (iter->data[0] == InvData())
+            if (iter->data[0] == InvData() || !(iter->status & TrendDataStorageManager::CollectStatusNIBP))
             {
                 continue;
             }
