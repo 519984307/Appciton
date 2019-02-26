@@ -761,18 +761,12 @@ bool SPO2Param::isNibpSameSide(void)
     return flag;
 }
 
-void SPO2Param::setLowPerfusionStatus(bool status)
-{
-    _LowPerfusionStatus = status;
-}
-
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
 SPO2Param::SPO2Param() : Param(PARAM_SPO2),
                          _oxyCRGSPO2Trend(NULL),
-                         _moduleType(MODULE_SPO2_NR),
-                         _LowPerfusionStatus(false)
+                         _moduleType(MODULE_SPO2_NR)
 {
     _provider = NULL;
     _trendWidget = NULL;

@@ -746,10 +746,9 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         }
         if (isLowPerfusionIndex)
         {
+            spo2Param.setSPO2(UnknownData());
             spo2Param.setPR(UnknownData());
         }
-        // update the status of the low persion.
-        spo2Param.setLowPerfusionStatus(isLowPerfusionIndex);
     }
     break;
     case RB_PARAM_OF_VERSION_INFO:

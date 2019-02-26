@@ -201,21 +201,6 @@ public:
     void setNibpSameSide(bool flag);
     bool isNibpSameSide(void);
 
-    /**
-     * @brief isLowPerfusion
-     * @return
-     */
-    bool isLowPerfusion() const
-    {
-       return _LowPerfusionStatus;
-    }
-
-    /**
-     * @brief setLowPerfusionStatus and set the status for the low perfusion.
-     * @param status and the true status showes that it has the low perfusion.
-     */
-    void setLowPerfusionStatus(bool status);
-
 private slots:
     void checkSelftest();
     void onPaletteChanged(ParamID id);
@@ -244,7 +229,5 @@ private:
     OxyCRGSPO2TrendWidget *_oxyCRGSPO2Trend;
     bool _connectedProvider;
     SPO2ModuleType _moduleType;
-
-    bool _LowPerfusionStatus;
 };
 #define spo2Param (SPO2Param::construction())
