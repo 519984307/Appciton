@@ -43,7 +43,12 @@ public:
         ITEM_BTN_ADDITION_MEASURE = 1
     };
 
-    NIBPMenuContentPrivate() : initCuffSpb(NULL), initCuffUnitLbl(NULL), curUnitType(UNIT_NONE){}
+    NIBPMenuContentPrivate()
+        : initCuffSpb(NULL)
+        , initCuffUnitLbl(NULL)
+        , curUnitType(UNIT_NONE)
+        , lastType(PATIENT_TYPE_ADULT)
+    {}
     /**
      * @brief loadOptions  //load settings
      */
@@ -59,6 +64,7 @@ public:
     QLabel *initCuffUnitLbl;
     QStringList initCuffStrs;
     UnitType curUnitType;
+    PatientType lastType;
 };
 
 
@@ -66,6 +72,7 @@ NIBPMenuContent::NIBPMenuContent():
     MenuContent(trs("NIBPMenu"), trs("NIBPMenuDesc")),
     d_ptr(new NIBPMenuContentPrivate)
 {
+    d_ptr->lastType = patientManager.getType();
     connect(&nibpParam, SIGNAL(statBtnState(bool)), this, SLOT(onStatBtnStateChanged(bool)));
 }
 
@@ -192,10 +199,10 @@ void NIBPMenuContentPrivate::loadOptions()
     // 时间
     combos[ITEM_CBO_AUTO_INTERVAL]->setCurrentIndex(nibpParam.getAutoInterval());
 
-    if (curUnitType != nibpParam.getUnit())
+    PatientType type = patientManager.getType();
+    if (curUnitType != nibpParam.getUnit() || lastType != type)
     {
         // 判断是否需要重新加载字符串
-        PatientType type = patientManager.getType();
         int start = 0, end = 0;
         if (type == PATIENT_TYPE_ADULT)
         {
@@ -242,6 +249,8 @@ void NIBPMenuContentPrivate::loadOptions()
     int initVal = 0;
     currentConfig.getNumValue("NIBP|InitialCuffInflation", initVal);
     initCuffSpb->setValue(initVal);
+
+    lastType = type;
 
     systemConfig.getNumValue("PrimaryCfg|NIBP|AutomaticRetry", index);
     if (index)
