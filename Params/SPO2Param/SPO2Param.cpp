@@ -449,8 +449,7 @@ void SPO2Param::addBarData(short data)
 void SPO2Param::setPulseAudio(bool pulse)
 {
     HRSourceType type = ecgDupParam.getCurHRSource();
-    if (pulse && ecgDupParam.getHR() != InvData() &&
-        (type == HR_SOURCE_SPO2 || type == HR_SOURCE_AUTO))
+    if (pulse && (type == HR_SOURCE_SPO2  || (type == HR_SOURCE_AUTO && ecgDupParam.getHR(true) == InvData())))
     {
         soundManager.pulseTone(getSmartPulseTone() == SPO2_SMART_PLUSE_TONE_ON
                                ? getSPO2()
@@ -464,6 +463,7 @@ void SPO2Param::setBeatVol(SoundManager::VolumeLevel vol)
     // 将脉搏音与心跳音绑定在一起，形成联动
     currentConfig.setNumValue("SPO2|BeatVol", static_cast<int>(vol));
     currentConfig.setNumValue("ECG|QRSVolume", static_cast<int>(vol));
+    soundManager.setVolume(SoundManager::SOUND_TYPE_PULSE, vol);
     soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT, vol);
 }
 
