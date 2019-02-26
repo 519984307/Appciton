@@ -221,6 +221,7 @@ void UserConfigEditMenuContent::onBtnClick()
             if (d_ptr->editWindow)
             {
                 delete d_ptr->editWindow;
+                d_ptr->editWindow = NULL;
             }
             d_ptr->editWindow = new ConfigEditMenuWindow();
             d_ptr->editWindow->setCurrentEditConfigName(d_ptr->generateDefaultConfigName());
@@ -257,6 +258,7 @@ void UserConfigEditMenuContent::onBtnClick()
             if (d_ptr->editWindow)
             {
                 delete d_ptr->editWindow;
+                d_ptr->editWindow = NULL;
             }
             d_ptr->editWindow = new ConfigEditMenuWindow();
             d_ptr->editWindow->setCurrentEditConfigName(d_ptr->configs.at(index).name);
