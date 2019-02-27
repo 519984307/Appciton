@@ -177,6 +177,10 @@ void PrintSettingMenuContentPrivate::loadOptions()
         if (cboIndex == -1)
         {
             selectWaves[i]->setCurrentIndex(0);
+            // 及时更新在配置文件中
+            QString path;
+            path = QString("Print|SelectWave%1").arg(i + 1);
+            systemConfig.setNumValue(path, static_cast<int>(WAVE_NONE));
             selectWaves[i]->blockSignals(false);
             continue;
         }
@@ -421,6 +425,18 @@ void PrintSettingMenuContent::onSelectWaveChanged(const QString &waveName)
 void PrintSettingMenuContent::onConnectedStatusChanged()
 {
     d_ptr->loadOptions();
+    // 当co2模块在打印过程中移除时，菜单会及时更新为关闭选项，此时调用对应槽函数
+    for (int i = 0; i < PRINT_WAVE_NUM; i++)
+    {
+        QString path;
+        path = QString("Print|SelectWave%1").arg(i + 1);
+        int waveId = WAVE_NONE;
+        systemConfig.getNumValue(path, waveId);
+        if (waveId == WAVE_NONE)
+        {
+            onSelectWaveChanged(trs("Off"));
+        }
+    }
 }
 
 void PrintSettingMenuContentPrivate::wavesUpdate(QList<int> &waveIDs, QStringList &waveNames)
