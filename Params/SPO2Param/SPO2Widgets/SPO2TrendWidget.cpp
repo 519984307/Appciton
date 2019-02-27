@@ -53,7 +53,7 @@ void SPO2TrendWidget::setSPO2Value(int16_t spo2)
     }
     else if (spo2 == UnknownData())
     {
-        _spo2String = InvStr();
+        _spo2String = UnknownStr();
     }
     else
     {

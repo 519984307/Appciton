@@ -174,6 +174,8 @@ public:
         , enableSmartTone(false)
         , curInitializeStep(RB_INIT_BAUDRATE)
         , isReseting(false)
+        , prValue(InvData())
+        , spo2Value(InvData())
     {
     }
 
@@ -288,6 +290,10 @@ public:
     RBInitializeStep curInitializeStep;
 
     bool isReseting;
+
+    short prValue;
+
+    short spo2Value;
 };
 
 RainbowProvider::RainbowProvider()
@@ -670,11 +676,11 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         {
             temp = (data[0] << 8) + data[1];
             temp = ((temp % 10) < 5) ? (temp / 10) : (temp / 10 + 1);
-            spo2Param.setSPO2(temp);
+            spo2Value = temp;
         }
         else
         {
-            spo2Param.setSPO2(InvData());
+            spo2Value = InvData();
         }
     }
     break;
@@ -685,11 +691,11 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         if (valid == true)
         {
             temp = (data[0] << 8) + data[1];
-            spo2Param.setPR(temp);
+            prValue = temp;
         }
         else
         {
-            spo2Param.setPR(InvData());
+            prValue = InvData();
         }
     }
     break;
@@ -744,10 +750,16 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, isLowPerfusionIndex);
             }
         }
+        // 最后更新spo2值和pr值。避免趋势界面的值跳动。
         if (isLowPerfusionIndex)
         {
             spo2Param.setSPO2(UnknownData());
             spo2Param.setPR(UnknownData());
+        }
+        else
+        {
+            spo2Param.setSPO2(spo2Value);
+            spo2Param.setPR(prValue);
         }
     }
     break;

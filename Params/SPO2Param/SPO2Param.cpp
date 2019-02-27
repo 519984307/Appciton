@@ -383,11 +383,6 @@ void SPO2Param::setPR(short prValue)
         return;
     }
 
-    if (prValue < 0)
-    {
-        prValue = InvData();
-    }
-
     _prValue = prValue;
     ecgDupParam.updatePR(prValue);
 }
