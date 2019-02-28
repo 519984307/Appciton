@@ -10,6 +10,7 @@
 
 #include "RecorderManager.h"
 #include "IConfig.h"
+#include "ConfigManager.h"
 #include "Debug.h"
 #include "RecordPageProcessor.h"
 #include "PrintAlarm.h"

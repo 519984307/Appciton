@@ -11,6 +11,7 @@
 #pragma once
 #include <QString>
 #include "ParamInfo.h"
+#include "BaseDefine.h"
 #include "UnitManager.h"
 #include <QMutex>
 #include <QList>

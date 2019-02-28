@@ -15,6 +15,7 @@
 #include <QDir>
 #include <QProcess>
 #include "MergeConfig.h"
+#include "ConfigManager.h"
 #include "IConfig.h"
 #include "LanguageManager.h"
 #include "PatientDefine.h"

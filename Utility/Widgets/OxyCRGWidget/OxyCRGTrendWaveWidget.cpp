@@ -20,6 +20,7 @@
 #include <QTimer>
 #include <QScopedPointer>
 #include <QResizeEvent>
+#include "ConfigManager.h"
 
 OxyCRGTrendWaveWidgetPrivate::OxyCRGTrendWaveWidgetPrivate(OxyCRGTrendWaveWidget * const q_ptr)
     : q_ptr(q_ptr),

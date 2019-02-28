@@ -16,6 +16,7 @@
 #include "NightModeManager.h"
 #include "RunningStatusBar.h"
 #include "RainbowProvider.h"
+#include "ConfigManager.h"
 
 /**************************************************************************************************
  * 功能： 初始化系统。

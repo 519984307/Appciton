@@ -17,6 +17,7 @@
 #include "RecorderManager.h"
 #include "WindowManager.h"
 #include "IConfig.h"
+#include "ConfigManager.h"
 #include "LayoutManager.h"
 #include "ECGParam.h"
 #include "IBPParam.h"

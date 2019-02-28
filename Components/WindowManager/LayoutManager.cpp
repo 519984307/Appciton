@@ -12,6 +12,7 @@
 #include "ScreenLayoutDefine.h"
 #include "ScreenLayoutModel.h"
 #include "IConfig.h"
+#include "ConfigManager.h"
 #include "QHBoxLayout"
 #include <QMap>
 #include <Debug.h>

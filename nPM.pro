@@ -296,6 +296,7 @@ SOURCES +=                                                                      
     Components/Alarm/Alarm.cpp                                                  \
     Components/Alarm/AlarmConfig.cpp                                            \
     Components/Alarm/AlarmIndicator.cpp                                         \
+    Components/Alarm/AlarmIndicatorInterface.cpp                                \
     Components/Alarm/AlarmParamIFace.cpp                                        \
     Components/Alarm/AlarmLimitModel.cpp                                        \
     Components/Alarm/AlarmStateMachine/AlarmStateMachine.cpp                    \
@@ -784,6 +785,7 @@ HEADERS +=                                                                      
     Components/Alarm/AlarmConfig.h                                              \
     Components/Alarm/AlarmDefine.h                                              \
     Components/Alarm/AlarmIndicator.h                                           \
+    Components/Alarm/AlarmIndicatorInterface.h                                  \
     Components/Alarm/AlarmParamIFace.h                                          \
     Components/Alarm/AlarmLimitModel.h                                          \
     Components/Alarm/AlarmSymbol.h                                              \

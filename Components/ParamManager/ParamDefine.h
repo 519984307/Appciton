@@ -11,7 +11,6 @@
 #pragma once
 #include <QMap>
 #include <QVector>
-#include "BaseDefine.h"
 
 enum ParamID
 {

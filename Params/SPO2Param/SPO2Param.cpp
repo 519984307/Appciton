@@ -13,7 +13,7 @@
 #include "SPO2TrendWidget.h"
 #include "SPO2WaveWidget.h"
 #include "SPO2ProviderIFace.h"
-#include "IConfig.h"
+#include "ConfigManager.h"
 #include "WaveformCache.h"
 #include "ECGDupParam.h"
 #include "SystemManager.h"
@@ -23,6 +23,8 @@
 #include <QTimer>
 #include "OxyCRGSPO2TrendWidget.h"
 #include "NIBPParam.h"
+#include "IConfig.h"
+#include "ConfigManager.h"
 
 SPO2Param *SPO2Param::_selfObj = NULL;
 

@@ -14,7 +14,7 @@
 #include "CO2ProviderIFace.h"
 #include "CO2TrendWidget.h"
 #include "CO2WaveWidget.h"
-#include "IConfig.h"
+#include "ConfigManager.h"
 #include "WaveformCache.h"
 #include "RESPParam.h"
 #include "ParamManager.h"

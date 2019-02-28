@@ -11,6 +11,7 @@
 
 #include "LanguageManager.h"
 #include "IConfig.h"
+#include "ConfigManager.h"
 
 
 #define LOCALE_FILE_PATH "/usr/local/nPM/locale/"
