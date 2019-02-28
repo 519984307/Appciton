@@ -113,6 +113,10 @@ void E5Provider::_handleECGRawData(const unsigned char *data, unsigned len)
         {
             leadoff &= 0xFFE0;
         }
+        else if (ecgParam.getLeadMode() == ECG_LEAD_MODE_3)
+        {
+            leadoff &= 0x1C0;
+        }
 
         if (!leadoff && !_isFristConnect)
         {
