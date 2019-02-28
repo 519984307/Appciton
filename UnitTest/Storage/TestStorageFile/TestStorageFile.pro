@@ -42,4 +42,6 @@ INCLUDEPATH += \
 RESOURCES += \
     testresource.qrc
 
+DISTFILES +=
+
 

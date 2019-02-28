@@ -30,85 +30,149 @@ private Q_SLOTS:
     void testReload();
     void testGetBlockNR();
     void testWriteAdditionalData();
+    void testReadAdditionalData();
+    void testGetBlockDataLen();
+    void testGetBlockData();
 
 private:
-    StorageFile *m_File1;
-    StorageFile *m_File2;
+    StorageFile *m_StorageFile1;
+    StorageFile *m_StorageFile2;
+    QTemporaryFile *m_File;
 };
 
+static void createTestFileOnDisk(QTemporaryFile *tempFile, const QString &resFilename)
+{
+    QFile resFile(resFilename);
+    QCOMPARE(resFile.open(QIODevice::ReadOnly), true);
+    tempFile->open();
+    tempFile->write(resFile.readAll());
+    resFile.close();
+    tempFile->close();
+}
+
 TestStorageFile::TestStorageFile()
-    : m_File1(NULL), m_File2(NULL)
+    : m_StorageFile1(NULL), m_StorageFile2(NULL), m_File(NULL)
 {
 }
 
 void TestStorageFile::init()
 {
-    m_File1 = new StorageFile();
-    m_File2 = new StorageFile(":/TrendData", QIODevice::ReadWrite);
+    m_StorageFile1 = new StorageFile();
+    m_File = new QTemporaryFile();
+    createTestFileOnDisk(m_File, ":/TrendData.seq");
+    m_StorageFile2 = new StorageFile(m_File->fileName(), QIODevice::ReadWrite);
 }
 
 void TestStorageFile::cleanup()
 {
-    delete m_File1;
-    delete m_File2;
+    delete m_StorageFile1;
+    delete m_StorageFile2;
 }
 
 
 void TestStorageFile::testFileType()
 {
-    QVERIFY(m_File1->fileType() == StorageFile::Type);
-    QVERIFY(m_File2->fileType() == StorageFile::Type);
+    QVERIFY(m_StorageFile1->fileType() == StorageFile::Type);
+    QVERIFY(m_StorageFile2->fileType() == StorageFile::Type);
 }
 
 void TestStorageFile::testFileSize()
 {
-    QVERIFY(m_File1->fileSize() == 0);
-    QVERIFY(m_File2->fileSize() == 404);
+    QVERIFY(m_StorageFile1->fileSize() == 0);
+    QVERIFY(m_StorageFile2->fileSize() > 0);
 }
 
 void TestStorageFile::testIsValid()
 {
-   QCOMPARE(m_File1->isValid(), false);
-   QCOMPARE(m_File2->isValid(), true);
+    QCOMPARE(m_StorageFile1->isValid(), false);
+    QCOMPARE(m_StorageFile2->isValid(), true);
 }
 
 void TestStorageFile::testSetReservedSize()
 {
-    QCOMPARE(m_File1->setReservedSize(100), true);
-    QCOMPARE(m_File2->setReservedSize(100), false);
+    QCOMPARE(m_StorageFile1->setReservedSize(100), true);
+    QCOMPARE(m_StorageFile2->setReservedSize(100), true);
 }
 
 void TestStorageFile::testGetReservedSize()
 {
-    m_File1->setReservedSize(100);
-    m_File2->setReservedSize(100);
+    m_StorageFile1->setReservedSize(100);
+    m_StorageFile2->setReservedSize(100);
 
-    QVERIFY(m_File1->getReservedSize() == 100);
-    QVERIFY(m_File2->getReservedSize() != 100);
+    QVERIFY(m_StorageFile1->getReservedSize() == 100);
+    QVERIFY(m_StorageFile2->getReservedSize() == 100);
 }
 
 void TestStorageFile::testReload()
 {
-    m_File1->reload(":/TrendData", QIODevice::ReadOnly);
-    m_File2->reload(":/TrendData", QIODevice::ReadOnly);
+    m_StorageFile1->reload(m_File->fileName(), QIODevice::ReadWrite);
+    m_StorageFile2->reload(m_File->fileName(), QIODevice::ReadWrite);
 
-    QCOMPARE(m_File1->isValid(), true);
-    QCOMPARE(m_File2->isValid(), true);
+    QCOMPARE(m_StorageFile1->isValid(), true);
+    QCOMPARE(m_StorageFile2->isValid(), true);
 }
 
 void TestStorageFile::testGetBlockNR()
 {
-    QVERIFY(m_File1->getBlockNR() == 0);
-    QVERIFY(m_File2->getBlockNR() > 0);
+    int data = 0;
+    m_StorageFile1->appendBlockData(m_StorageFile1->fileType() , reinterpret_cast<char *>(&data), 4);
+    m_StorageFile2->appendBlockData(m_StorageFile2->fileType() , reinterpret_cast<char *>(&data), 4);
+
+    QVERIFY(m_StorageFile1->getBlockNR() == 0);
+    QVERIFY(m_StorageFile2->getBlockNR() == 1);
 }
 
 void TestStorageFile::testWriteAdditionalData()
 {
-    int num = 12;
-    QVERIFY(m_File1->writeAdditionalData(reinterpret_cast<char *>(&num), 4) == 0);
-    QVERIFY(m_File2->writeAdditionalData(reinterpret_cast<char *>(&num), 4) > 0);
+    int data = 0;
+    m_StorageFile1->setReservedSize(100);
+    m_StorageFile2->setReservedSize(100);
+
+    QVERIFY(m_StorageFile1->writeAdditionalData(reinterpret_cast<char *>(&data), 4) == 0);
+    QVERIFY(m_StorageFile2->writeAdditionalData(reinterpret_cast<char *>(&data), 4) == 4);
 }
 
-QTEST_APPLESS_MAIN(TestStorageFile)
+void TestStorageFile::testReadAdditionalData()
+{
+    char *data1 = new char[10];
+    char *data2 = new char[10];
+    m_StorageFile1->setReservedSize(100);
+    m_StorageFile2->setReservedSize(100);
+    int bloackData;
+    m_StorageFile1->appendBlockData(m_StorageFile1->fileType() , reinterpret_cast<char *>(&bloackData), 4);
+    m_StorageFile2->appendBlockData(m_StorageFile2->fileType() , reinterpret_cast<char *>(&bloackData), 4);
+
+    QVERIFY(m_StorageFile1->readAdditionalData(data1, 4) == 0);
+    QVERIFY(m_StorageFile2->readAdditionalData(data2, 4) == 4);
+}
+
+void TestStorageFile::testGetBlockDataLen()
+{
+    m_StorageFile1->setReservedSize(100);
+    m_StorageFile2->setReservedSize(100);
+    int bloackData;
+    m_StorageFile1->appendBlockData(m_StorageFile1->fileType() , reinterpret_cast<char *>(&bloackData), 4);
+    m_StorageFile2->appendBlockData(m_StorageFile2->fileType() , reinterpret_cast<char *>(&bloackData), 4);
+
+    QVERIFY(m_StorageFile1->getBlockDataLen(0) == 0);
+    QVERIFY(m_StorageFile2->getBlockDataLen(0) == 4);
+}
+
+void TestStorageFile::testGetBlockData()
+{
+    m_StorageFile1->setReservedSize(100);
+    m_StorageFile2->setReservedSize(100);
+    int bloackData;
+    m_StorageFile1->appendBlockData(m_StorageFile1->fileType() , reinterpret_cast<char *>(&bloackData), 4);
+    m_StorageFile2->appendBlockData(m_StorageFile2->fileType() , reinterpret_cast<char *>(&bloackData), 4);
+
+    QByteArray byteArray1 = m_StorageFile1->getBlockData(0);
+    QByteArray byteArray2 = m_StorageFile2->getBlockData(0);
+
+    QVERIFY(byteArray1.count() == 0);
+    QVERIFY(byteArray2.count() == 4);
+}
+
+QTEST_MAIN(TestStorageFile)
 
 #include "TestStorageFile.moc"
