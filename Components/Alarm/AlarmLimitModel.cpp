@@ -410,7 +410,7 @@ void AlarmLimitModel::setupAlarmDataInfos(const QList<AlarmDataInfo> &dataInfos,
         alarmConfig.setLimitAlarmConfig(info.subParamID,
                                         unit, info.limitConfig);
         Param *param = paramManager.getParam(info.paramID);
-        if (param)
+        if (param && systemManager.isSupport(param->getParamID()))
         {
             param->updateSubParamLimit(info.subParamID);
         }
