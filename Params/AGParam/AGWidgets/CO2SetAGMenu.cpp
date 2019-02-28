@@ -29,7 +29,7 @@ CO2SetAGMenu::~CO2SetAGMenu()
 
 }
 
-CO2SetAGMenu::CO2SetAGMenu():Window(), d_ptr(new CO2SetAGMenuPrivate())
+CO2SetAGMenu::CO2SetAGMenu():Dialog(), d_ptr(new CO2SetAGMenuPrivate())
 {
     setWindowTitle(trs("CO2OfAGSetUp"));
 

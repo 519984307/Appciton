@@ -9,13 +9,13 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 #include <QScopedPointer>
 #include <QModelIndex>
 #include "ParamDefine.h"
 
 class OxyCRGEventWindowPrivate;
-class OxyCRGEventWindow : public Window
+class OxyCRGEventWindow : public Dialog
 {
     Q_OBJECT
 public:

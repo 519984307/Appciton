@@ -9,7 +9,7 @@
  **/
 
 
-#include "Window.h"
+#include "Dialog.h"
 #include "Button.h"
 
 class CodeMarkerWindowPrivate;
@@ -31,7 +31,7 @@ private:
     int _id;
 };
 
-class CodeMarkerWindow : public Window
+class CodeMarkerWindow : public Dialog
 {
     Q_OBJECT
 public:

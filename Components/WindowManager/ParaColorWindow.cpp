@@ -79,7 +79,7 @@ void ParaColorWindowPrivate::loadOptions()
 }
 
 ParaColorWindow::ParaColorWindow()
-    : Window(),
+    : Dialog(),
       d_ptr(new ParaColorWindowPrivate)
 {
     QString color;
@@ -98,7 +98,7 @@ ParaColorWindow::~ParaColorWindow()
 void ParaColorWindow::showEvent(QShowEvent *ev)
 {
     d_ptr->loadOptions();
-    Window::showEvent(ev);
+    Dialog::showEvent(ev);
 }
 
 void ParaColorWindow::layoutExec()
@@ -261,7 +261,7 @@ void ParaColorWindow::hideEvent(QHideEvent *ev)
         iter++;
     }
     colorManager.updateColorPalatte(d_ptr->paramIdList);
-    Window::hideEvent(ev);
+    Dialog::hideEvent(ev);
 }
 
 void ParaColorWindow::onComboBoxIndexChanged(int index)

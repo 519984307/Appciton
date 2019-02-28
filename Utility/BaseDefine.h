@@ -29,8 +29,9 @@ enum WaveFlagBit
 #define UnknownData() (-8000)
 #define UnknownStr()  ("???")
 
-#define MAX_PATIENT_ID_LEN      (30 + 1)
+#define MAX_PATIENT_ID_LEN      (120 + 1)
 #define MAX_PATIENT_NAME_LEN    (120 + 1)
+#define MAX_WAVE_SEG_INFO_REMARK (30 + 1)
 
 #define MAX_TIME_LEN      (32)    // 单位:秒
 #define MAX_SAMPLE_RATE   (250)   // 单位:个

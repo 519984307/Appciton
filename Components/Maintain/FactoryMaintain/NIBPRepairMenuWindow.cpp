@@ -129,7 +129,7 @@ void NIBPRepairMenuWindow::returnMenu()
  *************************************************************************************************/
 void NIBPRepairMenuWindow::messageBox(void)
 {
-    d_ptr->messageBoxWait->exec();
+    windowManager.showWindow(d_ptr->messageBoxWait, WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
 }
 
 /**************************************************************************************************
@@ -152,7 +152,8 @@ void NIBPRepairMenuWindow::warnShow(bool enable)
             {
                 d_ptr->messageBoxWait->close();
             }
-            d_ptr->messageBoxError->exec();
+            windowManager.showWindow(d_ptr->messageBoxError,
+                                     WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
         }
         else
         {

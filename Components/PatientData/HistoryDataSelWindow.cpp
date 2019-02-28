@@ -40,7 +40,7 @@ public:
     HistoryDataSelWindow *const q_ptr;
 };
 HistoryDataSelWindow::HistoryDataSelWindow()
-    : Window(), d_ptr(new HistoryDataSelWindowPrivate(this))
+    : Dialog(), d_ptr(new HistoryDataSelWindowPrivate(this))
 {
     setWindowTitle(trs("HistoryDataList"));
     setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
@@ -89,7 +89,7 @@ HistoryDataSelWindow::~HistoryDataSelWindow()
 
 void HistoryDataSelWindow::showEvent(QShowEvent *ev)
 {
-    Window::showEvent(ev);
+    Dialog::showEvent(ev);
     d_ptr->refreshPage();
 }
 

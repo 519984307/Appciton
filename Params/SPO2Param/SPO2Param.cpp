@@ -349,6 +349,12 @@ SoundManager::VolumeLevel SPO2Param::getPluseToneVolume(void)
  *************************************************************************************************/
 void SPO2Param::setSPO2(short spo2Value)
 {
+    // 对-8000的数据用InvData()代替
+    if (spo2Value == UnknownData())
+    {
+        spo2Value = InvData();
+    }
+
     if (_spo2Value == spo2Value)
     {
         return;
@@ -381,11 +387,6 @@ void SPO2Param::setPR(short prValue)
     if (_prValue == prValue)
     {
         return;
-    }
-
-    if (prValue < 0)
-    {
-        prValue = InvData();
     }
 
     _prValue = prValue;
@@ -449,8 +450,7 @@ void SPO2Param::addBarData(short data)
 void SPO2Param::setPulseAudio(bool pulse)
 {
     HRSourceType type = ecgDupParam.getCurHRSource();
-    if (pulse && ecgDupParam.getHR() != InvData() &&
-        (type == HR_SOURCE_SPO2 || type == HR_SOURCE_AUTO))
+    if (pulse && (type == HR_SOURCE_SPO2  || (type == HR_SOURCE_AUTO && ecgDupParam.getHR(true) == InvData())))
     {
         soundManager.pulseTone(getSmartPulseTone() == SPO2_SMART_PLUSE_TONE_ON
                                ? getSPO2()
@@ -464,6 +464,7 @@ void SPO2Param::setBeatVol(SoundManager::VolumeLevel vol)
     // 将脉搏音与心跳音绑定在一起，形成联动
     currentConfig.setNumValue("SPO2|BeatVol", static_cast<int>(vol));
     currentConfig.setNumValue("ECG|QRSVolume", static_cast<int>(vol));
+    soundManager.setVolume(SoundManager::SOUND_TYPE_PULSE, vol);
     soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT, vol);
 }
 

@@ -9,11 +9,11 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 
 class AlarmLimitWindowPrivate;
 
-class AlarmLimitWindow : public Window
+class AlarmLimitWindow : public Dialog
 {
     Q_OBJECT
 public:

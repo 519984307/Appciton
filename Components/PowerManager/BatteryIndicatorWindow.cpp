@@ -29,7 +29,7 @@ public:
 };
 
 BatteryIndicatorWindow::BatteryIndicatorWindow()
-    : Window(),
+    : Dialog(),
       d_ptr(new BatteryIndicatorWindowPrivate())
 {
     int fontSize = fontManager.getFontSize(4);

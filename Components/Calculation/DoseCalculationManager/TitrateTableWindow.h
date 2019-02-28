@@ -9,12 +9,12 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 
 #define MAX_ROWCOUNT            9
 #define NUM_ABREAST             3
 class TitrateTableWindowPrivate;
-class TitrateTableWindow : public Window
+class TitrateTableWindow : public Dialog
 {
    Q_OBJECT
 public:

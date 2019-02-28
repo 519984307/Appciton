@@ -63,7 +63,7 @@ FreezeWindowPrivate::FreezeWindowPrivate()
 }
 
 FreezeWindow::FreezeWindow()
-    : Window(),
+    : Dialog(),
       d_ptr(new FreezeWindowPrivate)
 {
     setWindowTitle(trs("Freeze"));
@@ -130,7 +130,7 @@ FreezeWindow::~FreezeWindow()
 
 void FreezeWindow::showEvent(QShowEvent *ev)
 {
-    Window::showEvent(ev);
+    Dialog::showEvent(ev);
     QRect rect = layoutManager.getMenuArea();
 
     move(rect.x() + (rect.width() - width()) / 2, rect.y() + rect.height() - height());
@@ -144,7 +144,7 @@ void FreezeWindow::showEvent(QShowEvent *ev)
 
 void FreezeWindow::hideEvent(QHideEvent *ev)
 {
-    Window::hideEvent(ev);
+    Dialog::hideEvent(ev);
     freezeManager.stopFreeze();
     windowManager.closeAllWidows();
 }

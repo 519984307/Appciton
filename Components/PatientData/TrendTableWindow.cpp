@@ -149,7 +149,7 @@ void TrendTableWindow::updatePages()
 
 void TrendTableWindow::showEvent(QShowEvent *ev)
 {
-    Window::showEvent(ev);
+    Dialog::showEvent(ev);
     d_ptr->updateTable();
     QAbstractButton *btn = d_ptr->table->findChild<QAbstractButton *>();
     if (btn)
@@ -198,7 +198,7 @@ bool TrendTableWindow::eventFilter(QObject *o, QEvent *e)
 }
 
 TrendTableWindow::TrendTableWindow()
-    : Window(), d_ptr(new TrendTableWindowPrivate(this))
+    : Dialog(), d_ptr(new TrendTableWindowPrivate(this))
 {
     setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
 

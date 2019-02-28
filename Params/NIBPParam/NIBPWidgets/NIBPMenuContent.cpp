@@ -26,6 +26,8 @@
 #include "IConfig.h"
 #include "UnitManager.h"
 #include "SystemManager.h"
+#include "SoundManager.h"
+#include "NightModeManager.h"
 
 class NIBPMenuContentPrivate
 {
@@ -41,7 +43,12 @@ public:
         ITEM_BTN_ADDITION_MEASURE = 1
     };
 
-    NIBPMenuContentPrivate() : initCuffSpb(NULL), initCuffUnitLbl(NULL), curUnitType(UNIT_NONE){}
+    NIBPMenuContentPrivate()
+        : initCuffSpb(NULL)
+        , initCuffUnitLbl(NULL)
+        , curUnitType(UNIT_NONE)
+        , lastType(PATIENT_TYPE_ADULT)
+    {}
     /**
      * @brief loadOptions  //load settings
      */
@@ -57,6 +64,7 @@ public:
     QLabel *initCuffUnitLbl;
     QStringList initCuffStrs;
     UnitType curUnitType;
+    PatientType lastType;
 };
 
 
@@ -64,6 +72,7 @@ NIBPMenuContent::NIBPMenuContent():
     MenuContent(trs("NIBPMenu"), trs("NIBPMenuDesc")),
     d_ptr(new NIBPMenuContentPrivate)
 {
+    d_ptr->lastType = patientManager.getType();
     connect(&nibpParam, SIGNAL(statBtnState(bool)), this, SLOT(onStatBtnStateChanged(bool)));
 }
 
@@ -125,15 +134,10 @@ void NIBPMenuContent::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("Off")
-                       << QString::number(SoundManager::VOLUME_LEV_1)
-                       << QString::number(SoundManager::VOLUME_LEV_2)
-                       << QString::number(SoundManager::VOLUME_LEV_3)
-                       << QString::number(SoundManager::VOLUME_LEV_4)
-                       << QString::number(SoundManager::VOLUME_LEV_5));
+                       << trs("On"));
     itemID = static_cast<int>(NIBPMenuContentPrivate::ITEM_CBO_COMPLETE_TONE);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    connect(comboBox, SIGNAL(itemFocusChanged(int)), this, SLOT(onCboItemFocusChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(NIBPMenuContentPrivate::ITEM_CBO_COMPLETE_TONE, comboBox);
 
@@ -195,10 +199,10 @@ void NIBPMenuContentPrivate::loadOptions()
     // 时间
     combos[ITEM_CBO_AUTO_INTERVAL]->setCurrentIndex(nibpParam.getAutoInterval());
 
-    if (curUnitType != nibpParam.getUnit())
+    PatientType type = patientManager.getType();
+    if (curUnitType != nibpParam.getUnit() || lastType != type)
     {
         // 判断是否需要重新加载字符串
-        PatientType type = patientManager.getType();
         int start = 0, end = 0;
         if (type == PATIENT_TYPE_ADULT)
         {
@@ -246,6 +250,8 @@ void NIBPMenuContentPrivate::loadOptions()
     currentConfig.getNumValue("NIBP|InitialCuffInflation", initVal);
     initCuffSpb->setValue(initVal);
 
+    lastType = type;
+
     systemConfig.getNumValue("PrimaryCfg|NIBP|AutomaticRetry", index);
     if (index)
     {
@@ -256,8 +262,16 @@ void NIBPMenuContentPrivate::loadOptions()
         btns[ITEM_BTN_ADDITION_MEASURE]->setText(trs("Off"));
     }
 
-    systemConfig.getNumValue("PrimaryCfg|NIBP|CompleteTone", index);
-    combos[ITEM_CBO_COMPLETE_TONE]->setCurrentIndex(index);
+    if (nightModeManager.nightMode())
+    {
+        combos[ITEM_CBO_COMPLETE_TONE]->setEnabled(false);
+    }
+    else
+    {
+        systemConfig.getNumValue("PrimaryCfg|NIBP|CompleteTone", index);
+        combos[ITEM_CBO_COMPLETE_TONE]->setCurrentIndex(index);
+        combos[ITEM_CBO_COMPLETE_TONE]->setEnabled(true);
+    }
     statBtnShow();
 }
 
@@ -354,18 +368,6 @@ void NIBPMenuContent::onSpinBoxReleased(int value)
     nibpParam.setInitPressure(value);
 }
 
-void NIBPMenuContent::onCboItemFocusChanged(int index)
-{
-    ComboBox *cbo = qobject_cast<ComboBox *>(sender());
-    int indexType = cbo->property("Item").toInt();
-    if (indexType == NIBPMenuContentPrivate::ITEM_CBO_COMPLETE_TONE)
-    {
-        SoundManager::VolumeLevel volume = static_cast<SoundManager::VolumeLevel>(index);
-        nibpParam.setNIBPCompleteTone(volume);
-        soundManager.nibpCompleteTone();
-    }
-}
-
 void NIBPMenuContent::onStatBtnStateChanged(bool flag)
 {
     if (!flag)
@@ -392,6 +394,7 @@ void NIBPMenuContent::onComboBoxIndexChanged(int index)
         break;
     case NIBPMenuContentPrivate::ITEM_CBO_COMPLETE_TONE:
         systemConfig.setNumValue("PrimaryCfg|NIBP|CompleteTone", index);
+        soundManager.setNIBPCompleteTone(index);
     default:
         break;
     }

@@ -26,7 +26,7 @@ HalSetAGMenu::~HalSetAGMenu()
 
 }
 
-HalSetAGMenu::HalSetAGMenu():Window(), d_ptr(new HalSetAGMenuPrivate())
+HalSetAGMenu::HalSetAGMenu():Dialog(), d_ptr(new HalSetAGMenuPrivate())
 {
     setWindowTitle(trs("HalOfAGSetUp"));
 

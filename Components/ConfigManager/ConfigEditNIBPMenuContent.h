@@ -16,7 +16,7 @@ class ConfigEditNIBPMenuContent : public MenuContent
 {
     Q_OBJECT
 public:
-    explicit ConfigEditNIBPMenuContent(Config *const config);
+    explicit ConfigEditNIBPMenuContent(Config *const config, PatientType type = PATIENT_TYPE_ADULT);
     ~ConfigEditNIBPMenuContent();
 
 protected:

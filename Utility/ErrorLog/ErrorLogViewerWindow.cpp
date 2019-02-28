@@ -28,7 +28,7 @@ public:
     ErrorLogItemBase *const item;
 };
 ErrorLogViewerWindow::ErrorLogViewerWindow()
-    : Window(), d_ptr(new ErrorLogViewerWindowPrivate())
+    : Dialog(), d_ptr(new ErrorLogViewerWindowPrivate())
 {
     setFocusPolicy(Qt::NoFocus);
     setFixedSize(500, 400);
@@ -48,7 +48,7 @@ ErrorLogViewerWindow::ErrorLogViewerWindow()
 }
 
 ErrorLogViewerWindow::ErrorLogViewerWindow(ErrorLogItemBase *item)
-    : Window(), d_ptr(new ErrorLogViewerWindowPrivate(item))
+    : Dialog(), d_ptr(new ErrorLogViewerWindowPrivate(item))
 {
     setFocusPolicy(Qt::NoFocus);
     setFixedSize(500, 400);

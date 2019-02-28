@@ -43,8 +43,6 @@ public:
         generator(NULL)
     {}
 
-    void checkPageEnabled();
-
     TrendWaveWidget *waveWidget;
 
     QMap<KeyAction, Button *> buttons;
@@ -88,13 +86,11 @@ void TrendGraphWindow::updateTrendGraph()
 {
     d_ptr->waveWidget->trendWaveReset();
     d_ptr->waveWidget->updateTimeRange();
-    d_ptr->checkPageEnabled();
 }
 
 void TrendGraphWindow::timeIntervalChange(int timeInterval)
 {
     d_ptr->waveWidget->setTimeInterval((ResolutionRatio)timeInterval);
-    d_ptr->checkPageEnabled();
 }
 
 void TrendGraphWindow::waveNumberChange(int num)
@@ -102,8 +98,6 @@ void TrendGraphWindow::waveNumberChange(int num)
     if (num > 0 && num <= 3)
     {
         d_ptr->waveWidget->setWaveNumber(num);
-        d_ptr->buttons[TrendGraphWindowPrivate::ACTION_BTN_DOWN_PAGE]->setEnabled(true);
-        d_ptr->buttons[TrendGraphWindowPrivate::ACTION_BTN_UP_PAGE]->setEnabled(false);
         trendGraphSetWindow.setCurParam(d_ptr->waveWidget->getCurParamList());
     }
 }
@@ -202,13 +196,11 @@ void TrendGraphWindow::onButtonReleased()
         case TrendGraphWindowPrivate::ACTION_BTN_UP_PAGE:
         {
             d_ptr->waveWidget->pageUpParam();
-            d_ptr->checkPageEnabled();
             break;
         }
         case TrendGraphWindowPrivate::ACTION_BTN_DOWN_PAGE:
         {
             d_ptr->waveWidget->pageDownParam();
-            d_ptr->checkPageEnabled();
             break;
         }
         default:
@@ -218,7 +210,7 @@ void TrendGraphWindow::onButtonReleased()
 }
 
 TrendGraphWindow::TrendGraphWindow()
-    : Window(), d_ptr(new TrendGraphWindowPrivate())
+    : Dialog(), d_ptr(new TrendGraphWindowPrivate())
 {
     setWindowTitle(trs("TrendGraph"));
     int maxWidth = windowManager.getPopWindowWidth();
@@ -282,7 +274,6 @@ TrendGraphWindow::TrendGraphWindow()
 
     // 上翻页坐标
     button = new Button();
-    button->setEnabled(false);
     button->setIcon(QIcon("/usr/local/nPM/icons/up.png"));
     button->setButtonStyle(Button::ButtonIconOnly);
     button->setFixedHeight(itemHeight);
@@ -294,7 +285,6 @@ TrendGraphWindow::TrendGraphWindow()
 
     // 下翻页坐标
     button = new Button();
-    button->setEnabled(true);
     button->setIcon(QIcon("/usr/local/nPM/icons/down.png"));
     button->setButtonStyle(Button::ButtonIconOnly);
     button->setFixedHeight(itemHeight);
@@ -311,22 +301,4 @@ TrendGraphWindow::TrendGraphWindow()
     layout->addLayout(hLayout);
 
     setWindowLayout(layout);
-}
-
-void TrendGraphWindowPrivate::checkPageEnabled()
-{
-    bool hasUpBtn = waveWidget->hasUpPage();
-    buttons[ACTION_BTN_UP_PAGE]->setEnabled(hasUpBtn);
-
-    bool hasDownBtn = waveWidget->hasDownPage();
-    buttons[ACTION_BTN_DOWN_PAGE]->setEnabled(hasDownBtn);
-
-    if (!hasUpBtn)
-    {
-        buttons[ACTION_BTN_DOWN_PAGE]->setFocus();
-    }
-    if (!hasDownBtn)
-    {
-        buttons[ACTION_BTN_UP_PAGE]->setFocus();
-    }
 }

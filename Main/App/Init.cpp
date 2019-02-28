@@ -657,5 +657,4 @@ void deleteObjects(void)
     deleteFontManager();
     deleteLanguageManager();
     deleteErrorCatch();
-    deleteErrorLog();
 }

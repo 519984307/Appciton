@@ -9,12 +9,12 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 #include <QScopedPointer>
 #include <QModelIndex>
 
 class ErrorLogWindowPrivate;
-class ErrorLogWindow : public Window
+class ErrorLogWindow : public Dialog
 {
     Q_OBJECT
 public:

@@ -9,11 +9,11 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 #include "UpgradeManager.h"
 
 class UpgradeWindowPrivate;
-class UpgradeWindow : public Window
+class UpgradeWindow : public Dialog
 {
     Q_OBJECT
 public:

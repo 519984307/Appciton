@@ -47,12 +47,15 @@ public:
     QMap <MenuItem, ComboBox *> combos;
     Config *const config;
     SPO2ModuleType moduleType;
+
+    QLabel *focusLable;  // 仅查看该菜单时,设置该label为可聚焦方式，便于旋转飞梭查看视图
 };
 
 ConfigEditSpO2MenuContentPrivate
 ::ConfigEditSpO2MenuContentPrivate(Config *const config)
     : config(config)
     , moduleType(MODULE_BLM_S5)
+    , focusLable(NULL)
 {
     combos.clear();
 }
@@ -132,6 +135,18 @@ void ConfigEditSpO2MenuContent::readyShow()
             d_ptr->combos[item]->setEnabled(!isOnlyToRead);
         }
     }
+
+    if (d_ptr->focusLable)
+    {
+        if (isOnlyToRead)
+        {
+            d_ptr->focusLable->setFocusPolicy(Qt::StrongFocus);
+        }
+        else
+        {
+            d_ptr->focusLable->setFocusPolicy(Qt::NoFocus);
+        }
+    }
 }
 
 void ConfigEditSpO2MenuContent::layoutExec()
@@ -144,13 +159,13 @@ void ConfigEditSpO2MenuContent::layoutExec()
 
     // wave speed
     label = new QLabel(trs("SPO2SweepSpeed"));
+    d_ptr->focusLable = label;
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << SPO2Symbol::convert(SPO2_WAVE_VELOCITY_62D5)
                        << SPO2Symbol::convert(SPO2_WAVE_VELOCITY_125)
-                       << SPO2Symbol::convert(SPO2_WAVE_VELOCITY_250)
-                      );
+                       << SPO2Symbol::convert(SPO2_WAVE_VELOCITY_250));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     itemID = ConfigEditSpO2MenuContentPrivate::ITEM_CBO_WAVE_SPEED;
@@ -180,7 +195,7 @@ void ConfigEditSpO2MenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     SPO2ModuleType moduleType = spo2Param.getModuleType();
-    if (moduleType == MODULE_MASIMO_SPO2)
+    if (moduleType == MODULE_MASIMO_SPO2 || moduleType == MODULE_RAINBOW_SPO2)
     {
         for (int i = SPO2_MASIMO_SENS_MAX; i < SPO2_MASIMO_SENS_NR; i++)
         {
@@ -210,8 +225,7 @@ void ConfigEditSpO2MenuContent::layoutExec()
         comboBox = new ComboBox();
         comboBox->addItems(QStringList()
                            << trs("Off")
-                           << trs("On")
-                          );
+                           << trs("On"));
         itemID = static_cast<int>(ConfigEditSpO2MenuContentPrivate::ITEM_CBO_FAST_SAT);
         comboBox->setProperty("Item",
                               qVariantFromValue(itemID));
@@ -225,9 +239,8 @@ void ConfigEditSpO2MenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
-                       << trs(SPO2Symbol::convert(SPO2_SMART_PLUSE_TONE_ON))
                        << trs(SPO2Symbol::convert(SPO2_SMART_PLUSE_TONE_OFF))
-                      );
+                       << trs(SPO2Symbol::convert(SPO2_SMART_PLUSE_TONE_ON)));
     itemID = static_cast<int>(ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SMART_TONE);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));

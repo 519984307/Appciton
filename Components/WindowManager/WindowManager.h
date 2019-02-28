@@ -24,7 +24,7 @@ class SoftKeyManager;
 class QHBoxLayout;
 class QVBoxLayout;
 class QGridLayout;
-class Window;
+class Dialog;
 class WindowManagerPrivate;
 class WindowManager : public QWidget
 {
@@ -52,13 +52,13 @@ public:
      * @param w the window need to show
      * @param behaviors the behavior need to perform when showing the window
      */
-    void showWindow(Window *w, ShowBehavior behaviors = ShowBehaviorNone);
+    void showWindow(Dialog *w, ShowBehavior behaviors = ShowBehaviorNone);
 
     /**
      * @brief topWindow get the top window
      * @return the top window or NULL if the not top window
      */
-    Window *topWindow();
+    Dialog *topWindow();
 
     /**
      * @brief showDemoWidget show or hide the demo widget
@@ -87,7 +87,7 @@ public slots:
      * @brief onWindowHide handle the windows hide signal in the window stack
      * @param w
      */
-    void onWindowHide(Window *w);
+    void onWindowHide(Dialog *w);
 
 public:
     // 获取弹出菜单宽度, TODO: remove

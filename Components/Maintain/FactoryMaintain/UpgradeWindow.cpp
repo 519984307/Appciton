@@ -42,7 +42,7 @@ public:
 };
 
 UpgradeWindow::UpgradeWindow()
-    : Window(), d_ptr(new UpgradeWindowPrivate())
+    : Dialog(), d_ptr(new UpgradeWindowPrivate())
 {
     setWindowTitle(trs("Upgrade"));
 

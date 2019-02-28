@@ -44,7 +44,6 @@ public:
         ITEM_CBO_ALARM_VOLUME,
         ITEM_CBO_SCREEN_BRIGHTNESS,
         ITEM_CBO_KEYPRESS_VOLUME,
-        ITEM_CBO_ALARM_AUDIO_OFF,
 #ifdef Q_WS_QWS
         ITEM_CBO_TOUCH_SCREEN,
 #endif
@@ -88,7 +87,6 @@ void NormalFunctionMenuContentPrivate::loadOptions()
 
     int isAlarmAudioOff = 0;
     systemConfig.getNumValue("Alarms|AlarmAudioOff", isAlarmAudioOff);
-    combos[ITEM_CBO_ALARM_AUDIO_OFF]->setCurrentIndex(isAlarmAudioOff);
 
     if (nightModeManager.nightMode())
     {
@@ -228,20 +226,6 @@ void NormalFunctionMenuContent::layoutExec()
     row++;
     d_ptr->combos.insert(NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME, comboBox);
 
-    // alarm audio off
-    label = new QLabel(trs("AlarmAudioOff"));
-    layout->addWidget(label, row, 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs("No")
-                       << trs("Yes"));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_AUDIO_OFF);
-    comboBox->setProperty("Item", qVariantFromValue(itemID));
-    layout->addWidget(comboBox, row, 1);
-    d_ptr->combos.insert(NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_AUDIO_OFF, comboBox);
-    row++;
-
     // screen brightness
     label = new QLabel(trs("SystemBrightness"));
     layout->addWidget(label, row, 0);
@@ -274,8 +258,7 @@ void NormalFunctionMenuContent::layoutExec()
                        <<QString::number(SoundManager::VOLUME_LEV_2)
                        <<QString::number(SoundManager::VOLUME_LEV_3)
                        <<QString::number(SoundManager::VOLUME_LEV_4)
-                       <<QString::number(SoundManager::VOLUME_LEV_5)
-                       );
+                       <<QString::number(SoundManager::VOLUME_LEV_5));
     layout->addWidget(comboBox , row , 1);
     comboBox->setObjectName("KeyPressVolume");
     row++;
@@ -405,20 +388,6 @@ void NormalFunctionMenuContent::onComboBoxIndexChanged(int index)
             systemConfig.setNumValue("Alarms|DefaultAlarmVolume", volume);
             break;
         }
-        case NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_AUDIO_OFF:
-        {
-            systemConfig.setNumValue("Alarms|AlarmAudioOff", index);
-            alarmIndicator.updateAlarmStateWidget();
-            if (!index)
-            {
-                d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME]->setEnabled(true);
-            }
-            else
-            {
-                d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME]->setEnabled(false);
-            }
-            break;
-        }
         case NormalFunctionMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS:
         {
             systemManager.setBrightness(static_cast<BrightnessLevel>(index));
@@ -427,7 +396,7 @@ void NormalFunctionMenuContent::onComboBoxIndexChanged(int index)
         case NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME:
         {
             int volume = box->itemText(index).toInt();
-            soundManager.setVolume(SoundManager::SOUND_TYPE_KEY_PRESS , static_cast<SoundManager::VolumeLevel>(volume));
+            soundManager.setVolume(SoundManager::SOUND_TYPE_NOTIFICATION , static_cast<SoundManager::VolumeLevel>(volume));
             systemConfig.setNumValue("General|KeyPressVolume", volume);
             break;
         }
@@ -514,7 +483,7 @@ void NormalFunctionMenuContent::onPopupListItemFocusChanged(int volume)
 
     if (w == d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME])
     {
-        soundManager.setVolume(SoundManager::SOUND_TYPE_KEY_PRESS , static_cast<SoundManager::VolumeLevel>(volume));
+        soundManager.setVolume(SoundManager::SOUND_TYPE_NOTIFICATION , static_cast<SoundManager::VolumeLevel>(volume));
         soundManager.keyPressTone();
     }
     else if (w == d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME])

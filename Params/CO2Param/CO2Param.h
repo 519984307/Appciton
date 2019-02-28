@@ -178,6 +178,13 @@ public:
 private slots:
     void onPaletteChanged(ParamID id);
 
+signals:
+    /**
+     * @brief connectStatusUpdated  and the signal function of the provider`s status updated
+     * @param isConnected  and if is connected
+     */
+    void connectStatusUpdated(bool isConnected);
+
 private:
     CO2Param();
 

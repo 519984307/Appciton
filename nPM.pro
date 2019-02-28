@@ -158,6 +158,7 @@ SOURCES +=                                                                      
     Utility/DataStorage/DataStorageDirManager.cpp                               \
     Utility/DataStorage/StorageFile.cpp                                         \
     Utility/DataStorage/StorageManager.cpp                                      \
+    Utility/ErrorLog/ErrorLogInterface.cpp                                      \
     Utility/ErrorLog/ErrorLog.cpp                                               \
     Utility/ErrorLog/ErrorLogItem.cpp                                           \
     Utility/ErrorLog/ErrorLogViewer.cpp                                         \
@@ -173,7 +174,6 @@ SOURCES +=                                                                      
     Utility/Widgets/Base/ShadowEffect.cpp                                       \
     Utility/Widgets/Base/ThemeManager.cpp                                       \
     Utility/Widgets/Base/Button.cpp                                             \
-    Utility/Widgets/Base/Window.cpp                                             \
     Utility/Widgets/Base/Frame.cpp                                              \
     Utility/Widgets/Base/FrameItem.cpp                                          \
     Utility/Widgets/Base/ComboBox.cpp                                           \
@@ -199,6 +199,7 @@ SOURCES +=                                                                      
     Utility/Widgets/Base/DropList.cpp                                           \
     Utility/Widgets/Base/PopupMoveEditor.cpp                                    \
     Utility/Widgets/Base/MoveButton.cpp                                         \
+    Utility/Widgets/Base/Dialog.cpp                                             \
     Utility/Widgets/IComboList/ComboList.cpp                                    \
     Utility/Widgets/IComboList/ComboListPopup.cpp                               \
     Utility/Widgets/IComboList/ComboListItem.cpp                                \
@@ -598,7 +599,7 @@ SOURCES +=                                                                      
     Main/IApplication.cpp                                                       \
     Main/IThread.cpp                                                            \
     Main/MergeConfig.cpp                                                        \
-    Main/Starter.cpp \
+    Main/Starter.cpp
 
 HEADERS +=                                                                      \
     SOUP/Json/FlexLexer.h                                                       \
@@ -630,6 +631,7 @@ HEADERS +=                                                                      
     Utility/DataStorage/StorageFile.h                                           \
     Utility/DataStorage/DataStorageDirManager.h                                 \
     Utility/DataStorage/StorageManager.h                                        \
+    Utility/ErrorLog/ErrorLogInterface.h                                        \
     Utility/ErrorLog/ErrorLog.h                                                 \
     Utility/ErrorLog/ErrorLogItem.h                                             \
     Utility/ErrorLog/ErrorLogViewer.h                                           \
@@ -651,7 +653,6 @@ HEADERS +=                                                                      
     Utility/Widgets/Base/ShadowEffect.h                                         \
     Utility/Widgets/Base/ThemeManager.h                                         \
     Utility/Widgets/Base/Button.h                                               \
-    Utility/Widgets/Base/Window.h                                               \
     Utility/Widgets/Base/Frame.h                                                \
     Utility/Widgets/Base/FrameItem.h                                            \
     Utility/Widgets/Base/ComboBox.h                                             \
@@ -680,6 +681,7 @@ HEADERS +=                                                                      
     Utility/Widgets/Base/DropList.h                                             \
     Utility/Widgets/Base/PopupMoveEditor.h                                      \
     Utility/Widgets/Base/MoveButton.h                                           \
+    Utility/Widgets/Base/Dialog.h                                               \
     Utility/Widgets/IComboList/ComboList.h                                      \
     Utility/Widgets/IComboList/ComboListPopup.h                                 \
     Utility/Widgets/IComboList/ComboListItem.h                                  \
@@ -1144,7 +1146,7 @@ HEADERS +=                                                                      
     Main/MergeConfig.h                                                          \
     Main/Starter.h                                                              \
     Main/Version.h \
-    Utility/Widgets/ImportFileSubWidget.h \
+    Utility/Widgets/ImportFileSubWidget.h
 
 #头文件修改后，重新编译依赖的源文件
 DEPENDPATH +=                                                                   \

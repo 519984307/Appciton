@@ -8,10 +8,10 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/7/30
  **/
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 
 class DoseCalculationWindowPrivate;
-class DoseCalculationWindow : public Window
+class DoseCalculationWindow : public Dialog
 {
     Q_OBJECT
 public:

@@ -9,7 +9,7 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 #include <QScopedPointer>
 #include <QMetaType>
 
@@ -43,7 +43,7 @@ public:
 Q_DECLARE_METATYPE(WiFiProfileWindowInfo);
 
 class WiFiProfileEditorWindowPrivate;
-class WiFiProfileEditorWindow : public Window
+class WiFiProfileEditorWindow : public Dialog
 {
     Q_OBJECT
 public:

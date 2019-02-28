@@ -306,6 +306,7 @@ void TEMPParam::setUnit(UnitType u)
     {
         _trendWidget->setUNit(u);
         _trendWidget->setTEMPValue(_t1Value, _t2Value, _tdValue);
+        _trendWidget->updateLimit();
     }
 }
 

@@ -9,11 +9,11 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 #include "ScreenLayoutDefine.h"
 
 class ScreenLayoutEditorPrivate;
-class ScreenLayoutEditor : public Window
+class ScreenLayoutEditor : public Dialog
 {
     Q_OBJECT
 public:

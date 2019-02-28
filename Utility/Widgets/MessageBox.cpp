@@ -219,7 +219,7 @@ void MessageBox::exit()
 
 void MessageBox::showEvent(QShowEvent *ev)
 {
-    Window::showEvent(ev);
+    Dialog::showEvent(ev);
 
 
     if (d_ptr->yesKey)

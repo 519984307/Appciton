@@ -15,13 +15,17 @@ and verify the issue you're about to submit isn't a duplicate.
 
 |  Module  |  Version |
 | -------- | -------- |
-|   HOST   | V0.0.2e1 |
+|   HOST   | V0.0.2f  |
 |   ECG    |   xxxx   |
 |   SPO2   |   xxxx   |
 | nPMBoard |   xxxx   |
 |   TEMP   |   xxxx   |
 |   CO2    |   xxxx   |
 |   NIBP   |   xxxx   |
+
+### UUT (Unit Under Test)
+
+(Please input the test device id here)
 
 ### Steps to reproduce
 

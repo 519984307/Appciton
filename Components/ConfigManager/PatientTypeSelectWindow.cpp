@@ -41,7 +41,7 @@ public:
 };
 
 PatientTypeSelectWindow::PatientTypeSelectWindow()
-                       : Window(),
+                       : Dialog(),
                          d_ptr(new PatientTypeSelectWindowPrivate)
 {
     setWindowTitle(trs("SelectOriginalConfig"));

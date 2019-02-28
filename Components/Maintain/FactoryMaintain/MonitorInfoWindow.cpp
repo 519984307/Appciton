@@ -55,7 +55,7 @@ MonitorInfoWindow::~MonitorInfoWindow()
 }
 
 MonitorInfoWindow::MonitorInfoWindow()
-    : Window(),
+    : Dialog(),
       d_ptr(new MonitorInfoWindowPrivate)
 {
     layoutExec();
@@ -185,7 +185,7 @@ QString MonitorInfoWindow::getRunTime()
 
 void MonitorInfoWindow::showEvent(QShowEvent *e)
 {
-    Window::showEvent(e);
+    Dialog::showEvent(e);
     if (d_ptr->timer)
     {
         delete d_ptr->timer;
@@ -199,7 +199,7 @@ void MonitorInfoWindow::showEvent(QShowEvent *e)
 
 void MonitorInfoWindow::hideEvent(QHideEvent *e)
 {
-    Window::hideEvent(e);
+    Dialog::hideEvent(e);
     if (d_ptr->timer)
     {
         delete d_ptr->timer;

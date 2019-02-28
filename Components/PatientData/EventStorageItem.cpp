@@ -26,6 +26,7 @@
 #include "OxyCRGEventWaveWidget.h"
 #include "Alarm.h"
 #include "AlarmConfig.h"
+#include "DataStorageDirManager.h"
 
 class EventStorageItemPrivate
 {
@@ -40,7 +41,8 @@ public:
         almInfo(NULL),
         codeMarkerInfo(NULL),
         oxyCRGInfo(NULL),
-        measureInfo(NULL)
+        measureInfo(NULL),
+        eventFolderName(dataStorageDirManager.getCurFolder())
     {
         int duration_after_event;
         int duration_before_event;
@@ -117,6 +119,8 @@ public:
     CodeMarkerSegment *codeMarkerInfo;
     OxyCRGSegment *oxyCRGInfo;
     NIBPMeasureSegment *measureInfo;
+
+    QString eventFolderName;
 };
 
 void EventStorageItemPrivate::saveTrendData(unsigned timestamp, const TrendCacheData &data,
@@ -379,6 +383,10 @@ bool EventStorageItem::startCollectTrendAndWaveformData(unsigned t)
         int sampleRate = waveformCache.getSampleRate(waveid);
         int waveNum = (d_ptr->eventInfo.duration_after + d_ptr->eventInfo.duration_before) * sampleRate;
 
+        QString remark = QString("%1 %2").arg(ECGSymbol::convert(ecgParam.getFilterMode()))
+                                          .arg(ECGSymbol::convert(ecgParam.getNotchFilter()));
+        std::string stdStr = remark.toStdString();
+        const char *remarks = stdStr.c_str();
         WaveformDataSegment *waveSegment = reinterpret_cast<WaveformDataSegment *>(qMalloc(sizeof(WaveformDataSegment) +
                                            sizeof(WaveDataType) * waveNum));
 
@@ -393,6 +401,7 @@ bool EventStorageItem::startCollectTrendAndWaveformData(unsigned t)
         waveSegment->waveID = waveid;
         waveSegment->sampleRate = sampleRate;
         waveSegment->waveNum = waveNum;
+        Util::strlcpy(waveSegment->remarks, remarks, MAX_WAVE_SEG_INFO_REMARK);
 
         d_ptr->waveComplete[waveid] = false;
         d_ptr->waveCacheDuration[waveid] = d_ptr->eventInfo.duration_before;
@@ -626,6 +635,11 @@ QString EventStorageItem::getEventTitle() const
         break;
     }
     return eventTitle;
+}
+
+QString EventStorageItem::getEventFolderName() const
+{
+    return d_ptr->eventFolderName;
 }
 
 void EventStorageItem::onTriggerPrintStopped()

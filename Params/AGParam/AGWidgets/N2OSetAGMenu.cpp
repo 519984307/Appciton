@@ -25,7 +25,7 @@ N2OSetAGMenu::~N2OSetAGMenu()
 
 }
 
-N2OSetAGMenu::N2OSetAGMenu():Window(), d_ptr(new N2OSetAGMenuPrivate())
+N2OSetAGMenu::N2OSetAGMenu():Dialog(), d_ptr(new N2OSetAGMenuPrivate())
 {
     setWindowTitle(trs("N2OOfAGSetUp"));
 

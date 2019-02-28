@@ -11,7 +11,6 @@
 
 
 #include "ErrorLogItem.h"
-#include "SystemManager.h"
 #include <QFile>
 
 void ErrorLogItemBase::setPdCommLogCache(const QVariantList &cachelist)

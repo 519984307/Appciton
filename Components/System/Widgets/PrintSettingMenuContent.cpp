@@ -25,6 +25,7 @@
 #include "CO2Symbol.h"
 #include "ContinuousPageGenerator.h"
 #include "TimeManager.h"
+#include "CO2Param.h"
 
 #define STOP_PRINT_TIMEOUT          (100)
 
@@ -176,6 +177,10 @@ void PrintSettingMenuContentPrivate::loadOptions()
         if (cboIndex == -1)
         {
             selectWaves[i]->setCurrentIndex(0);
+            // 及时更新在配置文件中
+            QString path;
+            path = QString("Print|SelectWave%1").arg(i + 1);
+            systemConfig.setNumValue(path, static_cast<int>(WAVE_NONE));
             selectWaves[i]->blockSignals(false);
             continue;
         }
@@ -193,6 +198,7 @@ PrintSettingMenuContent::PrintSettingMenuContent()
                   trs("PrintSettingMenuDesc")),
       d_ptr(new PrintSettingMenuContentPrivate)
 {
+    connect(&co2Param, SIGNAL(connectStatusUpdated(bool)), this, SLOT(onConnectedStatusChanged()));
 }
 
 PrintSettingMenuContent::~PrintSettingMenuContent()
@@ -295,7 +301,7 @@ void PrintSettingMenuContent::timerEvent(QTimerEvent *ev)
         {
             if (!recorderManager.isPrinting())
             {
-                recorderManager.addPageGenerator(new ContinuousPageGenerator(timeManager.getCurTime()));
+                recorderManager.addPageGenerator(new ContinuousPageGenerator());
             }
             killTimer(d_ptr->printTimerId);
             d_ptr->printTimerId = -1;
@@ -416,6 +422,23 @@ void PrintSettingMenuContent::onSelectWaveChanged(const QString &waveName)
     }
 }
 
+void PrintSettingMenuContent::onConnectedStatusChanged()
+{
+    d_ptr->loadOptions();
+    // 当co2模块在打印过程中移除时，菜单会及时更新为关闭选项，此时调用对应槽函数
+    for (int i = 0; i < PRINT_WAVE_NUM; i++)
+    {
+        QString path;
+        path = QString("Print|SelectWave%1").arg(i + 1);
+        int waveId = WAVE_NONE;
+        systemConfig.getNumValue(path, waveId);
+        if (waveId == WAVE_NONE)
+        {
+            onSelectWaveChanged(trs("Off"));
+        }
+    }
+}
+
 void PrintSettingMenuContentPrivate::wavesUpdate(QList<int> &waveIDs, QStringList &waveNames)
 {
     waveIDs.clear();
@@ -469,7 +492,8 @@ void PrintSettingMenuContentPrivate::wavesUpdate(QList<int> &waveIDs, QStringLis
         waveNames.append(IBPSymbol::convert(ibpTitle));
     }
 
-    if (systemManager.isSupport(CONFIG_CO2))
+    // add CO2 waveform when the module is connected to the host
+    if (co2Param.isConnected())
     {
         // co2
         waveIDs.append(WAVE_CO2);

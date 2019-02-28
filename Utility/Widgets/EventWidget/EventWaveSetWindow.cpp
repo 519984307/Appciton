@@ -44,7 +44,7 @@ void EventWaveSetWindow::waveSpeedReleased(int index)
 }
 
 EventWaveSetWindow::EventWaveSetWindow()
-    : Window(), d_ptr(new EventWaveSetWindowPrivate())
+    : Dialog(), d_ptr(new EventWaveSetWindowPrivate())
 {
     QGridLayout *layout = new QGridLayout();
 

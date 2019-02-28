@@ -9,11 +9,11 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 #include "PatientDefine.h"
 
 class PatientTypeSelectWindowPrivate;
-class PatientTypeSelectWindow : public Window
+class PatientTypeSelectWindow : public Dialog
 {
     Q_OBJECT
 public:

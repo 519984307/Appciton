@@ -393,8 +393,11 @@ void EventStorageManager::checkCompletedEvent()
         {
             d->eventItemList.takeFirst();
 
-            addData(item->getType(), item->getStorageData());
-
+            // 事件发生时刻的文件路径与存储时刻的文件路径是否一致
+            if (item->getEventFolderName() == dataStorageDirManager.getCurFolder())
+            {
+                addData(item->getType(), item->getStorageData());
+            }
             delete item;
         }
         else

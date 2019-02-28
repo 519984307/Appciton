@@ -119,8 +119,6 @@ bool ErrorLogPrivate::checkErrorTimeStamp(unsigned logTitleHashVal, unsigned tim
     return ret;
 }
 
-ErrorLog *ErrorLog::_selfObj = NULL;
-
 /***************************************************************************************************
  * count : get the items number. Although the actual number might be larger than MaximumLogNum,
  *         we return MaximumLogNum at most
@@ -383,6 +381,23 @@ ErrorLog::ErrorLog()
 /***************************************************************************************************
  * Destructor
  **************************************************************************************************/
+ErrorLog &ErrorLog::getInstance()
+{
+    static ErrorLog *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new ErrorLog;
+
+        // register the new interface and delete the old one
+        ErrorLogInterface *old = registerErrorLog(instance);
+        if (old)
+        {
+            delete old;
+        }
+    }
+    return *instance;
+}
+
 ErrorLog::~ErrorLog()
 {
 }

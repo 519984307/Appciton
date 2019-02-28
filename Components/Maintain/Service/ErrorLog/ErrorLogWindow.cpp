@@ -60,7 +60,7 @@ public:
     QTimer *usbCheckTimer;
 };
 ErrorLogWindow::ErrorLogWindow()
-    : Window(), d_ptr(new ErrorLogWindowPrivate())
+    : Dialog(), d_ptr(new ErrorLogWindowPrivate())
 {
     setFixedSize(800, 580);
 
@@ -168,7 +168,7 @@ void ErrorLogWindow::init()
 void ErrorLogWindow::showEvent(QShowEvent *ev)
 {
     init();
-    Window::showEvent(ev);
+    Dialog::showEvent(ev);
 }
 
 void ErrorLogWindowPrivate::updatePageBtnStatus(int curPage, int totalPage)

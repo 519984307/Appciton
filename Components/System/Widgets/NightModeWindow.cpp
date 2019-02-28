@@ -86,7 +86,7 @@ void NightModeWindowPrivate::loadOptions()
 }
 
 NightModeWindow::NightModeWindow()
-                          : Window(),
+                          : Dialog(),
                             d_ptr(new NightModeWindowPrivate)
 {
     layoutExec();
@@ -202,8 +202,8 @@ void NightModeWindow::layoutExec()
     glayout->addWidget(label , d_ptr->combos.count() , 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
-                       << trs("Closed")
-                       << trs("Opened")
+                       << trs("OFF")
+                       << trs("ON")
                        );
     glayout->addWidget(comboBox , d_ptr->combos.count() , 1);
     comboIndex = static_cast<int>(NightModeWindowPrivate::
@@ -246,7 +246,7 @@ void NightModeWindow::hideEvent(QHideEvent *ev)
     {
         nightModeManager.setNightMode(nightModeManager.nightMode());
     }
-    Window::hideEvent(ev);
+    Dialog::hideEvent(ev);
 }
 
 void NightModeWindow::onComboBoxIndexChanged(int index)

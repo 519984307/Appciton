@@ -38,7 +38,7 @@
 
 #define ECG_TIMER_INTERVAL (100)
 #define GET_DIA_DATA_PERIOD (12000)
-#define DISABLE_DIA_SOFTKEY_PERIOD (900)// 1s,定时有差异，使用900ms
+#define DISABLE_DIA_SOFTKEY_PERIOD (900)  // 1s,定时有差异，使用900ms
 
 unsigned ECGParam::selfTestResult = 0;
 ECGParam *ECGParam::_selfObj = NULL;
@@ -143,7 +143,7 @@ void ECGParam::handDemoTrendData(void)
 
 void ECGParam::exitDemo()
 {
-    ecgDupParam.updateHR(InvData());
+    ecgParam.updateHR(InvData());
     updatePVCS(InvData());
     for (int i = ECG_ST_I; i < ECG_ST_NR; i++)
     {
@@ -896,106 +896,6 @@ void ECGParam::getAvailableLeads(QList<ECGLead> &leads)
         leads.append(ECG_LEAD_V5);
         leads.append(ECG_LEAD_V6);
     }
-
-    // 剔除界面上显示心电导联波形。
-    QList<int> waveforms = layoutManager.getDisplayedWaveformIDs();
-    for (int i = 0; i < waveforms.size(); i++)
-    {
-        switch ((WaveformID)waveforms[i])
-        {
-        case WAVE_ECG_I:
-            if (getCalcLead() != ECG_LEAD_I)
-            {
-                leads.removeOne(ECG_LEAD_I);
-            }
-            break;
-
-        case WAVE_ECG_II:
-            if (getCalcLead() != ECG_LEAD_II)
-            {
-                leads.removeOne(ECG_LEAD_II);
-            }
-
-            break;
-        case WAVE_ECG_III:
-            if (getCalcLead() != ECG_LEAD_III)
-            {
-                leads.removeOne(ECG_LEAD_III);
-            }
-            break;
-
-        case WAVE_ECG_aVR:
-            if (getCalcLead() != ECG_LEAD_AVR)
-            {
-                leads.removeOne(ECG_LEAD_AVR);
-            }
-            break;
-
-        case WAVE_ECG_aVL:
-            if (getCalcLead() != ECG_LEAD_AVL)
-            {
-                leads.removeOne(ECG_LEAD_AVL);
-            }
-            break;
-        case WAVE_ECG_aVF:
-            if (getCalcLead() != ECG_LEAD_AVF)
-            {
-                leads.removeOne(ECG_LEAD_AVF);
-            }
-            break;
-
-        case WAVE_ECG_V1:
-            if (getCalcLead() != ECG_LEAD_V1)
-            {
-                leads.removeOne(ECG_LEAD_V1);
-            }
-            break;
-
-        case WAVE_ECG_V2:
-            if (getCalcLead() != ECG_LEAD_V2)
-            {
-                leads.removeOne(ECG_LEAD_V2);
-            }
-            break;
-
-        case WAVE_ECG_V3:
-            if (getCalcLead() != ECG_LEAD_V3)
-            {
-                leads.removeOne(ECG_LEAD_V3);
-            }
-            break;
-
-        case WAVE_ECG_V4:
-            if (getCalcLead() != ECG_LEAD_V4)
-            {
-                leads.removeOne(ECG_LEAD_V4);
-            }
-            break;
-
-        case WAVE_ECG_V5:
-            if (getCalcLead() != ECG_LEAD_V5)
-            {
-                leads.removeOne(ECG_LEAD_V5);
-            }
-            break;
-
-        case WAVE_ECG_V6:
-            if (getCalcLead() != ECG_LEAD_V6)
-            {
-                leads.removeOne(ECG_LEAD_V6);
-            }
-            break;
-
-        default:
-            break;
-        }
-    }
-
-    if (ECG_LEAD_MODE_3 == _curLeadMode)
-    {
-        // 保留一道ecg波形
-        // TODO
-    }
 }
 
 
@@ -1292,7 +1192,7 @@ void ECGParam::setLeadMode(ECGLeadMode newMode)
     // 切换到正确的计算导联。
     ECGLead calcLead = getCalcLead();
     ECGLead newCaclLead = calcLead;
-    if (oldMode == ECG_LEAD_MODE_5) // 5导切3导或12导。
+    if (oldMode == ECG_LEAD_MODE_5)  // 5导切3导或12导。
     {
         if (newMode == ECG_LEAD_MODE_3)
         {
@@ -1314,7 +1214,7 @@ void ECGParam::setLeadMode(ECGLeadMode newMode)
                 newCaclLead = ECG_LEAD_II;
             }
         }
-        else if (newMode == ECG_LEAD_MODE_3) // 切换3导。
+        else if (newMode == ECG_LEAD_MODE_3)  // 切换3导。
         {
             if (calcLead > ECG_LEAD_III)
             {
@@ -1441,7 +1341,7 @@ void ECGParam::setDisplayMode(ECGDisplayMode mode, bool refresh)
         return;
     }
 
-    // TODO: check whether need to refresh layout
+    // TODO(fang): check whether need to refresh layout
 }
 
 /**************************************************************************************************
@@ -1608,6 +1508,20 @@ void ECGParam::autoSetCalcLead(void)
     }
 
     setCalcLead(leads[index]);
+    if (layoutManager.getUFaceType() == UFACE_MONITOR_STANDARD && getLeadMode() > ECG_LEAD_MODE_3)
+    {
+        // 标准界面且ECG模式大于3导时，处理ECG2波形与ECG1波形重复
+        int preECG1Lead = 0;
+        int ECG2Lead = 0;
+        currentConfig.getNumValue("ECG|Ecg1Wave", preECG1Lead);
+        currentConfig.getNumValue("ECG|Ecg2Wave", ECG2Lead);
+        if (static_cast<int>(leads[index]) == ECG2Lead)
+        {
+            // 计算导联与ECG2波形重复时，将ECG2波形设置为前ECG1波形
+            currentConfig.setNumValue("ECG|Ecg2Wave", preECG1Lead);
+        }
+    }
+
     currentConfig.setNumValue("ECG|Ecg1Wave", static_cast<int>(leads[index]));
     if (NULL != _waveWidget[calcLead] && NULL != _waveWidget[leads[index]])
     {
@@ -1900,6 +1814,10 @@ void ECGParam::setGain(ECGGain gain, ECGLead lead, bool isAutoGain)
         QString wavename = _waveWidget[lead]->name();
         currentConfig.setNumValue("ECG|Gain|" + wavename, static_cast<int>(gain));
     }
+    else
+    {
+        _autoGain[lead] = gain;
+    }
     _waveWidget[lead]->setGain(gain, isAutoGain);
 }
 
@@ -1966,6 +1884,20 @@ ECGGain ECGParam::getGain(ECGLead lead)
         currentConfig.getNumValue("ECG|Gain|" + waveName, gain);
     }
     return static_cast<ECGGain>(gain);
+}
+
+ECGGain ECGParam::getECGAutoGain(ECGLead lead)
+{
+    if (lead > ECG_LEAD_V6)
+    {
+        return ECG_GAIN_X10;
+    }
+
+    if (_waveWidget[lead] == NULL)
+    {
+        return ECG_GAIN_X10;
+    }
+    return _autoGain[lead];
 }
 
 /**************************************************************************************************
@@ -2046,6 +1978,7 @@ void ECGParam::setQRSToneVolume(SoundManager::VolumeLevel vol)
     // 将脉搏音与心跳音绑定在一起，形成联动
     currentConfig.setNumValue("SPO2|BeatVol", static_cast<int>(vol));
     currentConfig.setNumValue("ECG|QRSVolume", static_cast<int>(vol));
+    soundManager.setVolume(SoundManager::SOUND_TYPE_PULSE, vol);
     soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT, vol);
 }
 
@@ -2302,6 +2235,7 @@ ECGParam::ECGParam() : Param(PARAM_ECG),
     for (int i = ECG_LEAD_I; i < ECG_LEAD_NR; i++)
     {
         _waveWidget[i] = NULL;
+        _autoGain[i] = ECG_GAIN_X10;
     }
 
     int lead = ECG_LEAD_II;

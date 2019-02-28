@@ -126,6 +126,8 @@ public:
     // remove alarm message after latch
     virtual bool isRemoveAfterLatch(int id);
 
+    virtual bool isRemoveLightAfterConfirm(int id);
+
     // 是否需要删除报警
     virtual bool isNeedRemove(int /*id*/);
 

@@ -10,9 +10,9 @@
 
 #define pragma once
 
-#include "Window.h"
+#include "Dialog.h"
 
-class SoftWareVersionWindow : public Window
+class SoftWareVersionWindow : public Dialog
 {
     Q_OBJECT
 public:

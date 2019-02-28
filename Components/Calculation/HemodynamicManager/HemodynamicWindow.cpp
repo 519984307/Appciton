@@ -412,7 +412,7 @@ void HemodynamicWindow::resizeEvent(QResizeEvent *ev)
         globalTopLeft = r.topLeft();
     }
     move(globalTopLeft);
-    Window::resizeEvent(ev);
+    Dialog::resizeEvent(ev);
 }
 
 
@@ -532,7 +532,7 @@ void HemodynamicWindow::onCalcReviewReleased()
 }
 
 HemodynamicWindow::HemodynamicWindow()
-    : Window(),
+    : Dialog(),
       d_ptr(new HemodynamicWindowPrivate)
 {
     layoutExec();

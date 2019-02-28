@@ -5,7 +5,7 @@
 #include <QScopedPointer>
 
 class HalSetAGMenuPrivate;
-class HalSetAGMenu : public Window
+class HalSetAGMenu : public Dialog
 {
     Q_OBJECT
 public:

@@ -131,7 +131,7 @@ void ECGTrendWidget::setHRValue(int16_t hr, bool isHR)
     }
     else if (hr == UnknownData())
     {
-        _hrString = InvStr();
+        _hrString = UnknownStr();
     }
     else
     {

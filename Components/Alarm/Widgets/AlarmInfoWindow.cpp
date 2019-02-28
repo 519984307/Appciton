@@ -77,7 +77,7 @@ public:
 };
 
 AlarmInfoWindow::AlarmInfoWindow(const QString &title, AlarmType type)
-    : Window(),
+    : Dialog(),
       d_ptr(new AlarmInfoWindowPrivate)
 {
     d_ptr->title = title;
@@ -176,7 +176,7 @@ void AlarmInfoWindow::showEvent(QShowEvent *ev)
 {
     d_ptr->refreshData = true;
     updateData(true);
-    Window::showEvent(ev);
+    Dialog::showEvent(ev);
 }
 
 void AlarmInfoWindow::_onBtnRelease()

@@ -9,11 +9,11 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 #include "TrendDataDefine.h"
 
 class TrendPrintWindowPrivate;
-class TrendPrintWindow : public Window
+class TrendPrintWindow : public Dialog
 {
     Q_OBJECT
 public:

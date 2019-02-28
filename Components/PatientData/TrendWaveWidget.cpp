@@ -74,6 +74,7 @@ TrendWaveWidget::TrendWaveWidget() : _hLayoutTrend(NULL),
     {
         TrendSubWaveWidget *subWidget;
         subWidget = new TrendSubWaveWidget();
+        subWidget->setFocusPolicy(Qt::NoFocus);
         _mainLayout->addWidget(subWidget, 1);
         _subWidgetList.append(subWidget);
     }
@@ -249,6 +250,11 @@ void TrendWaveWidget::rightMoveEvent()
 
 void TrendWaveWidget::pageUpParam()
 {
+    // 参数个数少于显示波形数时不进行翻页操作
+    if (_infosList.count() < _displayGraphNum)
+    {
+        return;
+    }
     if ((_curIndex - _displayGraphNum * 2) >= 0)
     {
         _curIndex = _curIndex - _displayGraphNum;
@@ -260,20 +266,14 @@ void TrendWaveWidget::pageUpParam()
     updateTimeRange();
 }
 
-bool TrendWaveWidget::hasUpPage()
-{
-    if (_curIndex == 0)
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
-}
-
 void TrendWaveWidget::pageDownParam()
 {
+    // 参数个数少于显示波形数时不进行翻页操作
+    if (_infosList.count() < _displayGraphNum)
+    {
+        return;
+    }
+
     if ((_curIndex + _displayGraphNum * 2) < _subParams.count())
     {
         _curIndex = _curIndex + _displayGraphNum;
@@ -283,18 +283,6 @@ void TrendWaveWidget::pageDownParam()
         _curIndex = _subParams.count() - _displayGraphNum;
     }
     updateTimeRange();
-}
-
-bool TrendWaveWidget::hasDownPage()
-{
-    if (_curIndex == _subParams.count() - _displayGraphNum)
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
 }
 
 void TrendWaveWidget::setTimeInterval(ResolutionRatio timeInterval)
@@ -358,6 +346,9 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
                 unsigned t = _trendDataPack.at(i)->time;
                 if (t < lastTime)
                 {
+                    // 处理由于关机引起的数据未记录:向下一个存储数据移动的时间间隔个数
+                    int intervalNum = (lastTime - t) / interval + (((lastTime - t) % interval) ? 1 : 0);
+                    lastTime = lastTime - interval * intervalNum;
                     dataV1.data = InvData();
                     dataV1.isAlarm = false;
                     dataV1.timestamp = lastTime;
@@ -584,12 +575,13 @@ void TrendWaveWidget::trendWaveReset()
 
 const QList<TrendGraphInfo> TrendWaveWidget::getTrendGraphPrint()
 {
-    for (int i = 0; i < _displayGraphNum; i++)
+    for (int i = 0; i < _infosList.count(); i++)
     {
         int down;
         int up;
         int scale;
         _subWidgetList.at(i)->rulerRange(down, up, scale);
+        _infosList[i].unit = _subWidgetList.at(i)->getUnitType();
         _infosList[i].scale.min = down;
         _infosList[i].scale.max = up;
         _infosList[i].scale.scale = scale;

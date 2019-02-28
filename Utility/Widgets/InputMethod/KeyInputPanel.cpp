@@ -410,7 +410,7 @@ void KeyInputPanel::_loadHelpBtn(const QString &key)
  *************************************************************************************************/
 void KeyInputPanel::showEvent(QShowEvent *e)
 {
-    Window::showEvent(e);
+    Dialog::showEvent(e);
     _loadKeyStatus();
 
     if (d_ptr->keys.count() > KEY_ORDER_ENTER)
@@ -542,7 +542,7 @@ void KeyInputPanel::setInvalidHint(const QString &str)
  * 构造。
  *************************************************************************************************/
 KeyInputPanel::KeyInputPanel(KeyType type, bool isShowDecimalPoint)
-    : Window(),
+    : Dialog(),
       d_ptr(new KeyInputPanelPrivate)
 {
     d_ptr->maxLength = 90;

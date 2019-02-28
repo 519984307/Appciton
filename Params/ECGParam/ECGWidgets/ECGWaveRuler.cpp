@@ -16,6 +16,7 @@
 #include <QRect>
 #include "Debug.h"
 #include "ThemeManager.h"
+#include "FontManager.h"
 
 /***************************************************************************************************
  * 绘图函数
@@ -29,7 +30,8 @@ void ECGWaveRuler::paintItem(QPainter &painter)
     painter.setFont(font());
     float rulerPos = RULER_X_OFFSET;
     float middlePos = _waveWidget->height() / 2;
-    QRect rulerRect(rulerPos + 5, middlePos / 2 * 3, 100, middlePos / 2);
+    int fontHeight = fontManager.textHeightInPixels(painter.font());
+    QRect rulerRect(rulerPos + 5, middlePos + 10 , 100, middlePos + 10 + fontHeight);
     switch (_gain)
     {
     case ECG_GAIN_X0125:

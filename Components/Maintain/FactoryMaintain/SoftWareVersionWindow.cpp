@@ -16,7 +16,7 @@
 #include <QVBoxLayout>
 #include <QGridLayout>
 
-SoftWareVersionWindow::SoftWareVersionWindow(): Window()
+SoftWareVersionWindow::SoftWareVersionWindow(): Dialog()
 {
     layoutExec();
 }

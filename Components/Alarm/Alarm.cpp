@@ -265,13 +265,19 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
             switch (infoSegment.subParamID)
             {
             case SUB_PARAM_HR_PR:
+            #ifndef HIDE_OXYCRG_REVIEW_FUNCTION
                 eventStorageManager.triggerAlarmOxyCRGEvent(infoSegment, OxyCRGEventECG, _timestamp);
+            #endif
                 break;
             case SUB_PARAM_SPO2:
+            #ifndef HIDE_OXYCRG_REVIEW_FUNCTION
                 eventStorageManager.triggerAlarmOxyCRGEvent(infoSegment, OxyCRGEventSpO2, _timestamp);
+            #endif
                 break;
             case SUB_PARAM_RR_BR:
+            #ifndef HIDE_OXYCRG_REVIEW_FUNCTION
                 eventStorageManager.triggerAlarmOxyCRGEvent(infoSegment, OxyCRGEventResp, _timestamp);
+            #endif
                 break;
             default:
                 break;
@@ -330,6 +336,7 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
         AlarmType type = alarmSource->getAlarmType(i);
         AlarmPriority priority = alarmSource->getAlarmPriority(i);
         bool isRemoveAfterLatch = alarmSource->isRemoveAfterLatch(i);
+        bool isRemoveLightAfterConfirm = alarmSource->isRemoveLightAfterConfirm(i);
 
         // 报警关闭不处理生理报警报警, don't handle phy alarm when in alarm pause state
         if ((_curAlarmStatus == ALARM_STATUS_OFF || _curAlarmStatus == ALARM_STATUS_PAUSE) && type != ALARM_TYPE_TECH)
@@ -450,7 +457,8 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
 
         // 发布该报警。
         alarmIndicator.addAlarmInfo(_timestamp, traceCtrl->type,
-                                    traceCtrl->priority, traceCtrl->alarmMessage, alarmSource, i, isRemoveAfterLatch);
+                                    traceCtrl->priority, traceCtrl->alarmMessage, alarmSource, i, isRemoveAfterLatch
+                                    , isRemoveLightAfterConfirm);
 
         if (traceCtrl->type == ALARM_TYPE_LIFE || traceCtrl->type == ALARM_TYPE_PHY)
         {

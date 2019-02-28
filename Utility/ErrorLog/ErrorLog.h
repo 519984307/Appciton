@@ -1,11 +1,11 @@
 #pragma once
 #include <QScopedPointer>
-#include "StorageManager.h"
 #include "Utility.h"
+#include "ErrorLogInterface.h"
 
 class ErrorLogItemBase;
 class ErrorLogPrivate;
-class ErrorLog
+class ErrorLog : public ErrorLogInterface
 {
 public:
     enum
@@ -13,26 +13,9 @@ public:
         MaximumLogNum = 1000
     };
 
-    struct Summary {
-        int NumOfErrors;                     //number of errors
-        int numOfCriticalErrors;            //number of critical errors
-        QString mostRecentErrorDate;           //most recent error
-        QString mostRecentCriticalErrorDate;  //most recent cirtical error
-        QString oldestErrorDate;               //oldest error
-        QString lastEraseTimeDate;             //last erase time
-        int totalShockCount;                //total shock count
-    };
 
     //construction
-    static ErrorLog &construction()
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new ErrorLog;
-        }
-        return *_selfObj;
-    }
-    static ErrorLog *_selfObj;
+    static ErrorLog &getInstance();
     ~ErrorLog();
 
     //get current log count;
@@ -71,5 +54,4 @@ private:
     Q_DECLARE_PRIVATE(ErrorLog)
     Q_DISABLE_COPY(ErrorLog)
 };
-#define errorLog (ErrorLog::construction())
-#define deleteErrorLog() (delete ErrorLog::_selfObj)
+#define errorLog (ErrorLog::getInstance())
