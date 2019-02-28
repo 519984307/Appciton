@@ -110,7 +110,7 @@ void NormalModeKeyAction::keyF3Pressed(bool multiBtnPress)
     else if (!recorderManager.getPrintStatus())
     {
         unsigned t = timeManager.getCurTime();
-        recorderManager.addPageGenerator(new ContinuousPageGenerator(t));
+        recorderManager.addPageGenerator(new ContinuousPageGenerator());
         trendDataStorageManager.storeData(t, TrendDataStorageManager::CollectStatusPrint);
     }
 }
