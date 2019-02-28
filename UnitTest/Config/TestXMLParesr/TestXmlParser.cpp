@@ -12,6 +12,7 @@
 #include <QTemporaryFile>
 using ::testing::_;
 using ::testing::NotNull;
+using ::testing::Mock;
 
 static void createTestFileOnDisk(QTemporaryFile *tempFile, const QString &resFilename)
 {
@@ -90,6 +91,7 @@ void TestXMLParser::testInvalidXmlFile()
     XmlParser parser;
 
     QCOMPARE(parser.open(m_invalidConfigFile->fileName()), false);
+    QVERIFY(Mock::VerifyAndClearExpectations(&mockErrorLog));
 }
 
 void TestXMLParser::testAddNode()
