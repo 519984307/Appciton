@@ -346,6 +346,9 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
                 unsigned t = _trendDataPack.at(i)->time;
                 if (t < lastTime)
                 {
+                    // 处理由于关机引起的数据未记录:向下一个存储数据移动的时间间隔个数
+                    int intervalNum = (lastTime - t) / interval + (((lastTime - t) % interval) ? 1 : 0);
+                    lastTime = lastTime - interval * intervalNum;
                     dataV1.data = InvData();
                     dataV1.isAlarm = false;
                     dataV1.timestamp = lastTime;
