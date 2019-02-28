@@ -244,6 +244,8 @@ ContinuousPageGenerator::ContinuousPageGenerator(QObject *parent)
 
 ContinuousPageGenerator::~ContinuousPageGenerator()
 {
+    qDeleteAll(d_ptr->waveSegments);
+    d_ptr->waveSegments.clear();
 }
 
 int ContinuousPageGenerator::type() const
