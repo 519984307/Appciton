@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>TrendData.seq</file>
+        <file>TrendData.seq.bak</file>
+    </qresource>
+</RCC>
