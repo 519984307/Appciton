@@ -296,9 +296,11 @@ SOURCES +=                                                                      
     Components/Alarm/Alarm.cpp                                                  \
     Components/Alarm/AlarmConfig.cpp                                            \
     Components/Alarm/AlarmIndicator.cpp                                         \
+    Components/Alarm/AlarmIndicatorInterface.cpp                                \
     Components/Alarm/AlarmParamIFace.cpp                                        \
     Components/Alarm/AlarmLimitModel.cpp                                        \
     Components/Alarm/AlarmStateMachine/AlarmStateMachine.cpp                    \
+    Components/Alarm/AlarmStateMachine/AlarmStateMachineInterface.cpp           \
     Components/Alarm/AlarmStateMachine/AlarmState.cpp                           \
     Components/Alarm/AlarmStateMachine/AlarmNormalState.cpp                     \
     Components/Alarm/AlarmStateMachine/AlarmPauseState.cpp                      \
@@ -784,10 +786,12 @@ HEADERS +=                                                                      
     Components/Alarm/AlarmConfig.h                                              \
     Components/Alarm/AlarmDefine.h                                              \
     Components/Alarm/AlarmIndicator.h                                           \
+    Components/Alarm/AlarmIndicatorInterface.h                                  \
     Components/Alarm/AlarmParamIFace.h                                          \
     Components/Alarm/AlarmLimitModel.h                                          \
     Components/Alarm/AlarmSymbol.h                                              \
     Components/Alarm/AlarmStateMachine/AlarmStateMachine.h                      \
+    Components/Alarm/AlarmStateMachine/AlarmStateMachineInterface.h             \
     Components/Alarm/AlarmStateMachine/AlarmState.h                             \
     Components/Alarm/AlarmStateMachine/AlarmStateDefine.h                       \
     Components/Alarm/AlarmStateMachine/AlarmNormalState.h                       \

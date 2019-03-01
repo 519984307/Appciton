@@ -12,25 +12,18 @@
 #pragma once
 #include <QMap>
 #include <QObject>
-#include "AlarmStateDefine.h"
+#include "AlarmStateMachineInterface.h"
 
 // 报警状态状态机
 class QTimer;
 class AlarmState;
-class AlarmStateMachine : public QObject
+class AlarmStateMachine : public QObject , public AlarmStateMachineInterface
 {
     Q_OBJECT
 
 public:
-    static AlarmStateMachine &Construction()
-    {
-        if (NULL == _selfObj)
-        {
-            _selfObj = new AlarmStateMachine();
-        }
-
-        return *_selfObj;
-    }
+    static AlarmStateMachine &Construction();
+    static void Destruction();
 
     static AlarmStateMachine *_selfObj;
 
@@ -74,4 +67,4 @@ private:
     QTimer *_timer;
 };
 #define alarmStateMachine (AlarmStateMachine::Construction())
-#define deleteAlarmStateMachine() (delete AlarmStateMachine::_selfObj)
+#define deleteAlarmStateMachine() (AlarmStateMachine::Destruction())
