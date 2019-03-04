@@ -19,6 +19,7 @@
 #include "SystemManager.h"
 #include "SPO2Param.h"
 #include "IConfig.h"
+#include "ConfigManager.h"
 #include "MainMenuWindow.h"
 #include "Button.h"
 #include "AlarmLimitWindow.h"

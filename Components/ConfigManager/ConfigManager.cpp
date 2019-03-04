@@ -90,6 +90,11 @@ ConfigManager &ConfigManager::getInstance()
     if (instance == NULL)
     {
         instance = new ConfigManager();
+        ConfigManagerInterface *old = registerConfigManager(instance);
+        if (old)
+        {
+            delete old;
+        }
     }
 
     return *instance;

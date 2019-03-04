@@ -27,7 +27,7 @@
 #include "LayoutManager.h"
 #include "AlarmConfig.h"
 #include "ParamManager.h"
-#include "IConfig.h"
+#include "ConfigManager.h"
 #include "TimeDate.h"
 #include <QBitmap>
 

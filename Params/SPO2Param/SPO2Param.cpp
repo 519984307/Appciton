@@ -14,6 +14,7 @@
 #include "SPO2WaveWidget.h"
 #include "SPO2ProviderIFace.h"
 #include "IConfig.h"
+#include "ConfigManager.h"
 #include "WaveformCache.h"
 #include "ECGDupParam.h"
 #include "SystemManager.h"

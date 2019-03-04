@@ -13,6 +13,7 @@
 #include "PatientManager.h"
 #include "ParamInfo.h"
 #include "IConfig.h"
+#include "ConfigManager.h"
 #include "SystemManager.h"
 #include "ParamInfo.h"
 

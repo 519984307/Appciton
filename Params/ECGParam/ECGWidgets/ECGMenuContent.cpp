@@ -19,6 +19,7 @@
 #include "SystemManager.h"
 #include "ECGParam.h"
 #include "IConfig.h"
+#include "ConfigManager.h"
 #include "Button.h"
 #include "ArrhythmiaMenuWindow.h"
 #include "WindowManager.h"

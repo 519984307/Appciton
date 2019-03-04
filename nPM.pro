@@ -465,6 +465,7 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/O2CalibrationMenuContent.cpp            \
     Components/CodeMarker/Widgets/CodeMarkerWindow.cpp                          \
     Components/ConfigManager/ConfigManager.cpp                                  \
+    Components/ConfigManager/ConfigManagerInterface.cpp                         \
     Components/ConfigManager/SelectDefaultConfigMenuContent.cpp                 \
     Components/ConfigManager/ConfigManagerPassWordEditMenuContent.cpp           \
     Components/ConfigManager/UserConfigEditMenuContent.cpp                      \
@@ -975,6 +976,7 @@ HEADERS +=                                                                      
     Components/CodeMarker/Widgets/CodeMarkerList.h                              \
     Components/CodeMarker/Widgets/CodeMarkerWindow.h                            \
     Components/ConfigManager/ConfigManager.h                                    \
+    Components/ConfigManager/ConfigManagerInterface.h                           \
     Components/ConfigManager/SelectDefaultConfigMenuContent.h                   \
     Components/ConfigManager/ConfigManagerPassWordEditMenuContent.h             \
     Components/ConfigManager/UserConfigEditMenuContent.h                        \

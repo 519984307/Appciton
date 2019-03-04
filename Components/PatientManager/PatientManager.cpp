@@ -12,6 +12,7 @@
 #include "PatientManager.h"
 #include "PatientInfoWidget.h"
 #include "IConfig.h"
+#include "ConfigManager.h"
 #include "ECGParam.h"
 #include "DataStorageDirManager.h"
 #include "NIBPParam.h"

@@ -10,6 +10,7 @@
 
 #include "NightModeManager.h"
 #include "SystemManager.h"
+#include "ConfigManager.h"
 #include "IConfig.h"
 #include "RunningStatusBar.h"
 #include "NIBPParam.h"
