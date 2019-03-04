@@ -19,9 +19,13 @@ public:
 
 private Q_SLOTS:
     void initTestCase();
+    void testReload_data();
     void testReload();
-    void testTranslate_data();
-    void testTranslate();
+    void testTranslateChinese_data();
+    void testTranslateChinese();
+    void testTranslateEnglish_data();
+    void testTranslateEnglish();
+    void testGetCurVoicePromptFolderName_data();
     void testGetCurVoicePromptFolderName();
     void cleanupTestCase();
 

@@ -11,8 +11,6 @@
 
 #include "LanguageManager.h"
 #include "IConfig.h"
-#include "ConfigManagerInterface.h"
-
 
 #define LOCALE_FILE_PATH "/usr/local/nPM/locale/"
 
@@ -116,17 +114,22 @@ void LanguageManager::reload(int index)
         return;
     }
 
-    ConfigManagerInterface *configManager = ConfigManagerInterface::getConfigManager();
+    if (index >= Language_NR)
+    {
+        // invaild input
+        index = 0;
+    }
 
-    QString language = QString("Local|Language|Opt%1").arg(index);
+    QString language = QString("General|Language|Opt%1").arg(index);
 
-    bool ret = configManager->getCurConfig().getStrAttr(language, "XmlFileName", language);
+    bool ret = systemConfig.getStrAttr(language, "XmlFileName", language);
     if (!ret)
     {
         return;
     }
     QString path =  LOCALE_FILE_PATH + language + ".xml";
 
+    _curLanguage = static_cast<LanguageName>(index);
     _xmlParser.open(path);
     _languageMap.clear();
 }

@@ -11,8 +11,6 @@
 #include "TestLanguageManager.h"
 #include "LanguageManager.h"
 #include <QString>
-#include "MockLanguageManger.h"
-using ::testing::Return;
 
 #define AdultConfigPath "/usr/local/nPM/etc/AdultConfig.xml"
 
@@ -21,36 +19,43 @@ void TestLanguageManager::initTestCase()
     curLanguage = languageManager.getCurLanguage();
 }
 
-void TestLanguageManager::testTranslate_data()
+void TestLanguageManager::testReload_data()
+{
+    QTest::addColumn<int>("index");
+    QTest::addColumn<int>("curLanguage");
+
+    QTest::newRow("chinese") << 1 << 1;
+    QTest::newRow("English") << 0 << 0;
+    QTest::newRow("NR") << 2 << 0;
+    QTest::newRow("Abnormal") << 500 << 0;
+}
+
+void TestLanguageManager::testReload()
+{
+    QFETCH(int, index);
+    QFETCH(int, curLanguage);
+
+    languageManager.reload(index);
+    QCOMPARE(static_cast<int>(languageManager.getCurLanguage()), curLanguage);
+}
+
+void TestLanguageManager::testTranslateChinese_data()
 {
     QTest::addColumn<QString>("id");
     QTest::addColumn<QString>("result");
 
-    if (languageManager.getCurLanguage())
-    {
-        // chinese
-        QTest::newRow("normal case") << QString("LanguageNameLocal") << QString::fromLocal8Bit("简体中文");
-    }
-    else
-    {
-        // english
-        QTest::newRow("normal case") << QString("LanguageNameLocal") << QString::fromLocal8Bit("English");
-    }
+    QTest::newRow("normal case") << QString("LanguageNameLocal") << QString::fromLocal8Bit("简体中文");
     QTest::newRow("null case") << QString() << QString();
     QTest::newRow("no exist case") << QString("noExist") << QString("noExist");
     QTest::newRow("chinese case") << QString::fromLocal8Bit("简体中文") << QString::fromLocal8Bit("简体中文");
     QTest::newRow("special character") << QString::fromLatin1("???") << QString::fromLatin1("???");
 }
 
-void TestLanguageManager::testTranslate()
+void TestLanguageManager::testTranslateChinese()
 {
     QFETCH(QString, id);
     QFETCH(QString, result);
-    MockConfigManager configManager;
-    ConfigManagerInterface::registerConfigManager(&configManager);
 
-    Config adultConfig(QString(AdultConfigPath));
-    EXPECT_CALL(configManager, getCurConfig()).WillOnce(Return(adultConfig));
     // chinese
     languageManager.reload(1);
     QCOMPARE(languageManager.translate("LanguageNameLocal"), QString::fromLocal8Bit("简体中文"));
@@ -58,22 +63,52 @@ void TestLanguageManager::testTranslate()
     QCOMPARE(languageManager.translate("noExist"), QString::fromLocal8Bit("noExist"));
     QCOMPARE(languageManager.translate(NULL), QString("null"));
     QCOMPARE(languageManager.translate(id), result);
-
-    // english
-    languageManager.reload(0);
-    QCOMPARE(languageManager.translate("LanguageNameLocal"), QString::fromLocal8Bit("English"));
-    QCOMPARE(languageManager.translate(""), QString());
-    QCOMPARE(languageManager.translate("noExist"), QString::fromLocal8Bit("noExist"));
-    QCOMPARE(languageManager.translate(NULL), QString("null"));
-    QCOMPARE(languageManager.translate(id), result);
 }
 
-void TestLanguageManager::testReload()
+void TestLanguageManager::testTranslateEnglish_data()
 {
+    QTest::addColumn<QString>("id");
+    QTest::addColumn<QString>("result");
+
+    QTest::newRow("normal case") << QString("LanguageNameLocal")<< QString("English");
+    QTest::newRow("null case") << QString() << QString();
+    QTest::newRow("no exist case") << QString("noExist") << QString("noExist");
+    QTest::newRow("chinese case")<< QString::fromLocal8Bit("简体中文") << QString::fromLocal8Bit("简体中文");
+    QTest::newRow("special character") << QString::fromLatin1("???") << QString::fromLatin1("???");
+}
+
+void TestLanguageManager::testTranslateEnglish()
+{
+    QFETCH(QString, id);
+    QFETCH(QString, result);
+
+    languageManager.reload(0);
+    QCOMPARE(languageManager.translate(id), result);
+
+    QCOMPARE(languageManager.translate("LanguageNameLocal"), QString("English"));
+    QCOMPARE(languageManager.translate(""), QString());
+    QCOMPARE(languageManager.translate("noExist"), QString("noExist"));
+    QCOMPARE(languageManager.translate(NULL), QString("null"));
+}
+
+void TestLanguageManager::testGetCurVoicePromptFolderName_data()
+{
+    QTest::addColumn<int>("language");
+    QTest::addColumn<QString>("result");
+
+    QTest::newRow("english") << 0 << QString("English");
+    QTest::newRow("chinese") << 1 << QString("ChinaMainland");
+    QTest::newRow("NR case") << 2 << QString("English");
+    QTest::newRow("abnormal case") << 500 << QString("English");
 }
 
 void TestLanguageManager::testGetCurVoicePromptFolderName()
 {
+    QFETCH(int, language);
+    QFETCH(QString, result);
+
+    languageManager.reload(language);
+    QCOMPARE(languageManager.getCurVoicePromptFolderName(), result);
 }
 
 void TestLanguageManager::cleanupTestCase()

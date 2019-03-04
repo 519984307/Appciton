@@ -23,7 +23,6 @@ SOURCES += main.cpp \
     ../../../Utility/Config/XmlParser.cpp \
     ../../../Utility/Config/IConfig.cpp \
     ../../../Utility/Debug/Debug.cpp \
-    ../../../Components/ConfigManager/ConfigManagerInterface.cpp \
     ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
     ../../../Utility/Config/Config.cpp \
     ../../../Utility/ErrorLog/ErrorLogItem.cpp
@@ -34,13 +33,11 @@ HEADERS += \
     ../../../Utility/Config/XmlParser.h \
     ../../../Utility/Config/IConfig.h \
     ../../../Utility/Debug/Debug.h \
-    ../../../Components/ConfigManager/ConfigManagerInterface.h \
     ../../../Components/PatientManager/PatientDefine.h \
     ../../../Utility/BaseDefine.h \
     ../../../Utility/ErrorLog/ErrorLogInterface.h \
     ../../../Utility/Config/Config.h \
     ../../../Utility/ErrorLog/ErrorLogItem.h \
-    MockLanguageManger.h
 
 INCLUDEPATH += \
     ../../../Utility \
@@ -48,7 +45,6 @@ INCLUDEPATH += \
     ../../../Utility/Config \
     ../../../Utility/Debug \
     ../../../Utility/ErrorLog \
-    ../../../Components/ConfigManager \
     ../../../Components/PatientManager
 
 DISTFILES += \
