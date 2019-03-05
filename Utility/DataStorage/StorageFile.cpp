@@ -505,7 +505,7 @@ bool StorageFile::isValid()
 bool StorageFile::setReservedSize(quint32 size)
 {
     Q_D(StorageFile);
-    if (d->fileHeader.blockNumber > 0)
+    if (d->fileHeader.blockNumber > 0 || !d->isValid)
     {
         return false;
     }
@@ -811,8 +811,14 @@ void StorageFile::remove(StorageFile *file)
         QString storageFilename = d->storageFile.fileName();
         QString backupFilename = d->backupFile.fileName();
         file->reload(QString(), QIODevice::ReadOnly);
-        QFile::remove(storageFilename);
-        QFile::remove(backupFilename);
+        if (d->storageFile.exists())
+        {
+            QFile::remove(storageFilename);
+        }
+        if (d->backupFile.exists())
+        {
+            QFile::remove(backupFilename);
+        }
     }
 }
 
