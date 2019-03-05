@@ -113,27 +113,38 @@ void RawDataCollectorPrivate::handleECGRawData(const unsigned char *data, int le
     else
     {
         Q_UNUSED(len)
-        Q_ASSERT(len == 524);
+        Q_ASSERT(len == 9);
         QTextStream stream(&content);
-        // skip the first 4 SN bytes
+        // 4 Byte IPACE
+        unsigned int ipace = data[0] | (data[1] << 8) | (data[2] << 16) | (data[3] << 24);
+        // 3 Byte ecg
         data += 4;
+        unsigned int ecgData = data[0] | (data[1] << 8) | (data[2] << 16);
+        stream << ipace << ',';
+        stream << 0 << ',';
+        stream << 256 << ',';
+        stream << ecgData << ',';
+        stream << endl;
 
-        for (int n = 0; n < 20; n++)
-        {
+//        // skip the first 4 SN bytes
+//        data += 4;
 
-            unsigned short marksAndLeadOffs = (data[0] << 8) | data[1];
-            data += 2;
-            stream << marksAndLeadOffs;
+//        for (int n = 0; n < 20; n++)
+//        {
 
-            // 12 lead data
-            for (int i = 0; i < 12; i++)
-            {
-                short v = data[0] | (data[1] << 8);
-                data += 2;
-                stream << ',' << v;
-            }
-            stream << endl;
-        }
+//            unsigned short marksAndLeadOffs = (data[0] << 8) | data[1];
+//            data += 2;
+//            stream << marksAndLeadOffs;
+
+//            // 12 lead data
+//            for (int i = 0; i < 12; i++)
+//            {
+//                short v = data[0] | (data[1] << 8);
+//                data += 2;
+//                stream << ',' << v;
+//            }
+//            stream << endl;
+//        }
         stream.flush();
 
         mutex.lock();
