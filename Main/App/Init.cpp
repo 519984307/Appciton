@@ -100,7 +100,7 @@ static void _initSystem(void)
 //    systemBoardProvider.construction();
 
     // 报警灯。
-    lightManager.construction();
+    lightManager.getInstance();
     lightManager.setProvider(&systemBoardProvider);
     systemManager.enableBrightness(systemManager.getBrightness());
 

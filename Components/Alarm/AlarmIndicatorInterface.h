@@ -34,6 +34,11 @@ public:
     virtual void delLatchPhyAlarm() = 0;
 
     /**
+     * @brief delAllPhyAlarm 删除所有的生理报警
+     */
+    virtual void delAllPhyAlarm() = 0;
+
+    /**
      * @brief setAlarmStatus 设置/获取报警状态。
      * @param status
      */
@@ -69,4 +74,10 @@ public:
      * @return
      */
     virtual bool phyAlarmPauseStatusHandle() = 0;
+
+    /**
+     * @brief updateAlarmPauseTime udpate the alarm pause time
+     * @param seconds the left pause time
+     */
+    virtual void updateAlarmPauseTime(int seconds) = 0;
 };

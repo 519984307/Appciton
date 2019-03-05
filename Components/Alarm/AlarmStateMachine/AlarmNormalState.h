@@ -11,6 +11,7 @@
 #pragma once
 #include "AlarmState.h"
 
+class AlarmNormalStatePrivate;
 class AlarmNormalState : public AlarmState
 {
 public:
@@ -20,5 +21,8 @@ public:
     void enter();
 
     void handAlarmEvent(AlarmStateEvent event, unsigned char *data, unsigned len);
+
+private:
+    AlarmNormalStatePrivate * const d_ptr;
 };
 

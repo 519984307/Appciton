@@ -290,6 +290,7 @@ SOURCES +=                                                                      
     Components/SoundManager/WavFile.cpp                                         \
     Components/SoundManager/WavPlayer.cpp                                       \
     Components/LightManager/LightManager.cpp                                    \
+    Components/LightManager/LightManagerInterface.cpp                           \
     Components/ParamManager/Param.cpp                                           \
     Components/ParamManager/ParamManager.cpp                                    \
     Components/ParamManager/ParamInfo.cpp                                       \
@@ -777,6 +778,7 @@ HEADERS +=                                                                      
     Components/SoundManager/WavFile.h                                           \
     Components/SoundManager/WavPlayer.h                                         \
     Components/LightManager/LightManager.h                                      \
+    Components/LightManager/LightManagerInterface.h                             \
     Components/LightManager/LightProviderIFace.h                                \
     Components/ParamManager/Param.h                                             \
     Components/ParamManager/ParamManager.h                                      \

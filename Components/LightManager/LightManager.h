@@ -11,21 +11,16 @@
 
 #pragma once
 #include "AlarmDefine.h"
+#include "LightManagerInterface.h"
 
 class LightProviderIFace;
-class LightManager
+class LightManager : public LightManagerInterface
 {
 public:
-    static LightManager &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new LightManager();
-        }
-        return *_selfObj;
-    }
-    static LightManager *_selfObj;
     ~LightManager();
+
+    static LightManager &getInstance(void);
+    static void releaseInstance(void);
 
 public:
     void setProvider(LightProviderIFace *iface);
@@ -46,5 +41,5 @@ private:
     LightProviderIFace *_provider;
     bool _stopHandlingLight;
 };
-#define lightManager (LightManager::construction())
-#define deleteLightManager() (delete LightManager::_selfObj)
+#define lightManager (LightManager::getInstance())
+#define deleteLightManager() (LightManager::releaseInstance())
