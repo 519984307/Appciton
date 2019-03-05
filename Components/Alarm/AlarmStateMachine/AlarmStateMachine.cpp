@@ -27,6 +27,7 @@ AlarmStateMachine *AlarmStateMachine::_selfObj = NULL;
  * 构造。
  *************************************************************************************************/
 AlarmStateMachine::AlarmStateMachine()
+    : AlarmStateMachineInterface()
 {
     _alarmStateMap.clear();
 
@@ -75,6 +76,36 @@ AlarmStateMachine::~AlarmStateMachine()
         _timer = NULL;
     }
 }
+
+/**************************************************************************************************
+ * construction。
+ *************************************************************************************************/
+AlarmStateMachine &AlarmStateMachine::Construction()
+{
+    if (_selfObj == NULL)
+    {
+        _selfObj = new AlarmStateMachine();
+        AlarmStateMachineInterface *old = registerAlarmStateMachine(_selfObj);
+        if (old)
+        {
+            delete old;
+        }
+    }
+    return *_selfObj;
+}
+
+/**************************************************************************************************
+ * destruction。
+ *************************************************************************************************/
+void AlarmStateMachine::Destruction()
+{
+    if (_selfObj)
+    {
+        delete _selfObj;
+        _selfObj = NULL;
+    }
+}
+
 
 /**************************************************************************************************
  * 状态开始。

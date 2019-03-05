@@ -302,7 +302,7 @@ void PrintSettingMenuContent::timerEvent(QTimerEvent *ev)
         {
             if (!recorderManager.isPrinting())
             {
-                recorderManager.addPageGenerator(new ContinuousPageGenerator(timeManager.getCurTime()));
+                recorderManager.addPageGenerator(new ContinuousPageGenerator());
             }
             killTimer(d_ptr->printTimerId);
             d_ptr->printTimerId = -1;

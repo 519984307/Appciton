@@ -173,7 +173,7 @@ static void _initComponents(void)
 
     // 初始化报警。
     alertor.construction();
-    alarmIndicator.construction();
+    alarmIndicator.getInstance();
 
     AlarmPhyInfoBarWidget *alarmPhyInfo = new AlarmPhyInfoBarWidget("AlarmPhyInfoBarWidget");
     AlarmTechInfoBarWidget *alarmTechInfo = new AlarmTechInfoBarWidget("AlarmTechInfoBarWidget");
