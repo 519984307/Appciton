@@ -136,6 +136,14 @@ void PopupNumEditor::setEditValueGeometry(const QRect &r)
 void PopupNumEditor::setEditInfo(const ItemEditInfo &info)
 {
     d_ptr->editInfo = info;
+    if (info.type == ItemEditInfo::VALUE)
+    {
+        if (info.curValue < info.lowLimit || info.curValue > info.highLimit)
+        {
+            // 如果当前值无效，则设置当前值为最低值
+            d_ptr->editInfo.curValue = info.lowLimit;
+        }
+    }
     update();
 }
 
