@@ -822,7 +822,6 @@ void StorageFile::remove(StorageFile *file)
 bool StorageFile::rename(StorageFile *file, const QString &newname)
 {
     bool storageName = false;
-    bool backupName = false;
     if (file && file->isValid())
     {
         StorageFilePrivate *d = file->d_func();
@@ -833,8 +832,8 @@ bool StorageFile::rename(StorageFile *file, const QString &newname)
         QString newFilename = newname + STORAGE_FILE_SUFFIX;
         QString newBackupFilename = newFilename + BACKUP_FILE_SUFFIX;
         storageName = QFile::rename(storageFilename, newFilename);
-        backupName = QFile::rename(backupFilename, newBackupFilename);
+        QFile::rename(backupFilename, newBackupFilename);
         file->reload(newname, mode);
     }
-    return storageName && backupName;
+    return storageName;
 }
