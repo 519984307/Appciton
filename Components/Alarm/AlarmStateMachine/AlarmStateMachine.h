@@ -22,10 +22,7 @@ class AlarmStateMachine : public QObject , public AlarmStateMachineInterface
     Q_OBJECT
 
 public:
-    static AlarmStateMachine &Construction();
-    static void Destruction();
-
-    static AlarmStateMachine *_selfObj;
+    static AlarmStateMachine &getInstance();
 
     ~AlarmStateMachine();
 
@@ -66,5 +63,4 @@ private:
 
     QTimer *_timer;
 };
-#define alarmStateMachine (AlarmStateMachine::Construction())
-#define deleteAlarmStateMachine() (AlarmStateMachine::Destruction())
+#define alarmStateMachine (AlarmStateMachine::getInstance())

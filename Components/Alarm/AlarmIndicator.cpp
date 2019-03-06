@@ -21,8 +21,6 @@
 #include "Alarm.h"
 #include "ECGAlarm.h"
 
-static AlarmIndicator *instance = NULL;
-
 /**************************************************************************************************
  * 功能：发布报警。
  *************************************************************************************************/
@@ -383,6 +381,7 @@ void AlarmIndicator::setAlarmPhyWidgets(AlarmPhyInfoBarWidget *alarmWidget, Alar
  **************************************************************************************************/
 AlarmIndicator &AlarmIndicator::getInstance()
 {
+    static AlarmIndicator *instance = NULL;
     if (instance == NULL)
     {
         instance = new AlarmIndicator();
@@ -393,18 +392,6 @@ AlarmIndicator &AlarmIndicator::getInstance()
         }
     }
     return *instance;
-}
-
-/***************************************************************************************************
- * Destructor
- **************************************************************************************************/
-void AlarmIndicator::destruction()
-{
-    if (instance != NULL)
-    {
-        delete instance;
-        instance = NULL;
-    }
 }
 
 /**************************************************************************************************

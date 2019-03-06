@@ -20,7 +20,6 @@ public:
     ~LightManager();
 
     static LightManager &getInstance(void);
-    static void releaseInstance(void);
 
 public:
     void setProvider(LightProviderIFace *iface);
@@ -42,4 +41,3 @@ private:
     bool _stopHandlingLight;
 };
 #define lightManager (LightManager::getInstance())
-#define deleteLightManager() (LightManager::releaseInstance())

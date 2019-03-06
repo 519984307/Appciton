@@ -12,7 +12,6 @@
 #include "LightManager.h"
 #include "LightProviderIFace.h"
 
-static LightManager *instance = NULL;
 /**************************************************************************************************
  * 设置提供者。
  *************************************************************************************************/
@@ -99,6 +98,7 @@ LightManager::~LightManager()
 
 LightManager &LightManager::getInstance()
 {
+    static LightManager *instance = NULL;
     if (instance == NULL)
     {
         instance = new LightManager;
@@ -109,13 +109,4 @@ LightManager &LightManager::getInstance()
         }
     }
     return *instance;
-}
-
-void LightManager::releaseInstance()
-{
-    if (instance)
-    {
-        delete instance;
-        instance = NULL;
-    }
 }

@@ -21,7 +21,6 @@ class AlarmIndicator : public AlarmIndicatorInterface
 {
 public:
     static AlarmIndicator &getInstance(void);
-    static void destruction();
 
     // 注册报警界面对象。
     void setAlarmPhyWidgets(AlarmPhyInfoBarWidget *alarmWidget, AlarmStatusWidget *muteWidget);
@@ -145,4 +144,3 @@ private:
     bool _isForbidLight;
 };
 #define alarmIndicator (AlarmIndicator::getInstance())
-#define deleteAlarmIndicator() (AlarmIndicator::destruction())

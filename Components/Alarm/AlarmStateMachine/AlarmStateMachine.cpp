@@ -21,8 +21,6 @@
 #include "SystemManager.h"
 #include "Debug.h"
 
-AlarmStateMachine *AlarmStateMachine::_selfObj = NULL;
-
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
@@ -80,32 +78,20 @@ AlarmStateMachine::~AlarmStateMachine()
 /**************************************************************************************************
  * construction。
  *************************************************************************************************/
-AlarmStateMachine &AlarmStateMachine::Construction()
+AlarmStateMachine &AlarmStateMachine::getInstance()
 {
-    if (_selfObj == NULL)
+    static AlarmStateMachine *instance = NULL;
+    if (instance == NULL)
     {
-        _selfObj = new AlarmStateMachine();
-        AlarmStateMachineInterface *old = registerAlarmStateMachine(_selfObj);
+        instance = new AlarmStateMachine();
+        AlarmStateMachineInterface *old = registerAlarmStateMachine(instance);
         if (old)
         {
             delete old;
         }
     }
-    return *_selfObj;
+    return *instance;
 }
-
-/**************************************************************************************************
- * destruction。
- *************************************************************************************************/
-void AlarmStateMachine::Destruction()
-{
-    if (_selfObj)
-    {
-        delete _selfObj;
-        _selfObj = NULL;
-    }
-}
-
 
 /**************************************************************************************************
  * 状态开始。

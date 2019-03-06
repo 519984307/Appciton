@@ -196,7 +196,7 @@ static void _initComponents(void)
     layoutManager.addLayoutWidget(&runningStatus);
 
     //报警状态
-    alarmStateMachine.Construction();
+    alarmStateMachine.getInstance();
     alarmStateMachine.start();
 
     // 数据管理。
@@ -638,12 +638,7 @@ void deleteObjects(void)
     deleteDataStorageDirManager();
 
     deletepMessageBox();
-
-    deleteLightManager();
-
     deleteAlarm();
-    deleteAlarmIndicator();
-    deleteAlarmStateMachine();
 
     deleteWaveformCache();
     deleteTrendCache();

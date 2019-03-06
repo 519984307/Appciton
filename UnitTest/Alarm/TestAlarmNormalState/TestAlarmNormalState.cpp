@@ -57,13 +57,9 @@ void TestAlarmNormalState::testHandAlarmEvent_data()
     QTest::newRow("mute btn pressed") << ALARM_STATE_EVENT_MUTE_BTN_PRESSED
                                       << ALARM_PAUSE_STATE
                                       << 0;
-
-    QTest::newRow("mute btn pressed short time") << ALARM_STATE_EVENT_MUTE_BTN_PRESSED_SHORT_TIME
-                                                 << ALARM_AUDIO_OFF_STATE
-                                                 << 0;
-    QTest::newRow("reset btn pressed long time") << ALARM_STATE_EVENT_MUTE_BTN_PRESSED_LONG_TIME
-                                                 << ALARM_OFF_STATE
-                                                 << 0;
+    QTest::newRow("mute btn pressed") << ALARM_STATE_EVENT_MUTE_BTN_PRESSED
+                                      << ALARM_PAUSE_STATE
+                                      << 10;
 }
 
 void TestAlarmNormalState::testHandAlarmEvent()
