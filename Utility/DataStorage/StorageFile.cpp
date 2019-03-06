@@ -822,12 +822,23 @@ void StorageFile::remove(StorageFile *file)
     }
 }
 
+bool StorageFile::storageFileExist()
+{
+    return d_ptr->storageFile.exists();
+}
+
+bool StorageFile::backupFileExist()
+{
+    return d_ptr->backupFile.exists();
+}
+
 /***************************************************************************************************
  * rename : rename the file managed by StorageFile object
  **************************************************************************************************/
 bool StorageFile::rename(StorageFile *file, const QString &newname)
 {
     bool storageName = false;
+    bool backupName = true;
     if (file && file->isValid())
     {
         StorageFilePrivate *d = file->d_func();
@@ -838,8 +849,11 @@ bool StorageFile::rename(StorageFile *file, const QString &newname)
         QString newFilename = newname + STORAGE_FILE_SUFFIX;
         QString newBackupFilename = newFilename + BACKUP_FILE_SUFFIX;
         storageName = QFile::rename(storageFilename, newFilename);
-        QFile::rename(backupFilename, newBackupFilename);
+        if (d->backupFile.exists())
+        {
+            backupName = QFile::rename(backupFilename, newBackupFilename);
+        }
         file->reload(newname, mode);
     }
-    return storageName;
+    return storageName && backupName;
 }

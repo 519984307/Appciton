@@ -8,60 +8,7 @@
  ** Written by luoyuchun <luoyuchun@blmed.cn>, 2019/2/28
  **/
 
-#include <QString>
-#include <QtTest>
-#include <QMetaType>
-#include "StorageFile.h"
-
-class TestStorageFile : public QObject
-{
-    Q_OBJECT
-
-public:
-    TestStorageFile();
-
-private Q_SLOTS:
-    void init();
-    void cleanup();
-    void testFileType_data();
-    void testFileType();
-    void testFileSize_data();
-    void testFileSize();
-    void testIsValid_data();
-    void testIsValid();
-    void testReservedSize_data();
-    void testReservedSize();
-    void testReload_data();
-    void testReload();
-    void testGetBlockNR_data();
-    void testGetBlockNR();
-    void testAdditionalData_data();
-    void testAdditionalData();
-    void testGetBlockDataLen_data();
-    void testGetBlockDataLen();
-    void testGetBlockData_data();
-    void testGetBlockData();
-    void testGetBlockType_data();
-    void testGetBlockType();
-    void testGetBlockInfo_data();
-    void testGetBlockInfo();
-    void testGetBlockEntryList_data();
-    void testGetBlockEntryList();
-    void testReadBlockData_data();
-    void testReadBlockData();
-    void testAppendBlockData_data();
-    void testAppendBlockData();
-    void testModifyBlockData_data();
-    void testModifyBlockData();
-    void testRemove_data();
-    void testRemove();
-    void testRename_data();
-    void testRename();
-
-private:
-    StorageFile *m_StorageFile;
-    QTemporaryFile *m_File;
-};
+#include "TestStorageFile.h"
 
 static void createTestFileOnDisk(QTemporaryFile *tempFile, const QString &resFilename)
 {
@@ -391,25 +338,28 @@ void TestStorageFile::testGetBlockDataLen()
     QCOMPARE(len == data.count(), result);
 }
 
-void TestStorageFile::testGetBlockData_data()
+void TestStorageFile::testBlockData_data()
 {
     QTest::addColumn<int>("init");
-    QTest::addColumn<char>("blockData");
+    QTest::addColumn<QString>("data");
     QTest::addColumn<bool>("result");
 
-    QTest::newRow("test1") << 0 << static_cast<char>(4) << true;
-    QTest::newRow("test2") << 0 << static_cast<char>(200) << true;
-    QTest::newRow("test3") << 1 << static_cast<char>(4) << true;
-    QTest::newRow("test4") << 1 << static_cast<char>(200) << true;
+    QTest::newRow("default constructor") << 0 << "test read" << false;
+    QTest::newRow("default constructor reload") << 1 << "test read write" << true;
+    QTest::newRow("param constructor") << 2 << "test read write data" << true;
 }
 
-void TestStorageFile::testGetBlockData()
+void TestStorageFile::testBlockData()
 {
     QFETCH(int, init);
-    QFETCH(char, blockData);
+    QFETCH(QString, data);
     QFETCH(bool, result);
 
     if (init == 0)
+    {
+        m_StorageFile = new StorageFile();
+    }
+    else if (init == 1)
     {
         m_StorageFile = new StorageFile();
         m_StorageFile->reload(m_File->fileName(), QIODevice::ReadWrite);
@@ -419,32 +369,36 @@ void TestStorageFile::testGetBlockData()
         m_StorageFile = new StorageFile(m_File->fileName(), QIODevice::ReadWrite);
     }
 
-    m_StorageFile->setReservedSize(100);
-    m_StorageFile->appendBlockData(m_StorageFile->fileType() , reinterpret_cast<char *>(&blockData), 1);
+    m_StorageFile->appendBlockData(0x66, data.toLatin1().data(), data.count());
 
-    QByteArray byteArray = m_StorageFile->getBlockData(0);
-    QCOMPARE(byteArray.at(0) == blockData, result);
+    char readData[100] = {0};
+    m_StorageFile->readBlockData(0, readData, data.count());
+    QString readDataStr = QString(QLatin1String(readData));
+    QCOMPARE(readDataStr == data, result);
 }
 
 void TestStorageFile::testGetBlockType_data()
 {
     QTest::addColumn<int>("init");
-    QTest::addColumn<char>("blockData");
+    QTest::addColumn<quint32>("type");
     QTest::addColumn<bool>("result");
 
-    QTest::newRow("test1") << 0 << static_cast<char>(4) << true;
-    QTest::newRow("test2") << 0 << static_cast<char>(200) << true;
-    QTest::newRow("test3") << 1 << static_cast<char>(4) << true;
-    QTest::newRow("test4") << 1 << static_cast<char>(200) << true;
+    QTest::newRow("default constructor") << 0 << static_cast<quint32>(0xff) << false;
+    QTest::newRow("default constructor reload") << 1 << static_cast<quint32>(0) << true;
+    QTest::newRow("param constructor") << 2 << static_cast<quint32>(0x66) << true;
 }
 
 void TestStorageFile::testGetBlockType()
 {
     QFETCH(int, init);
-    QFETCH(char, blockData);
+    QFETCH(quint32, type);
     QFETCH(bool, result);
 
     if (init == 0)
+    {
+        m_StorageFile = new StorageFile();
+    }
+    else if (init == 1)
     {
         m_StorageFile = new StorageFile();
         m_StorageFile->reload(m_File->fileName(), QIODevice::ReadWrite);
@@ -454,28 +408,38 @@ void TestStorageFile::testGetBlockType()
         m_StorageFile = new StorageFile(m_File->fileName(), QIODevice::ReadWrite);
     }
 
-    m_StorageFile->setReservedSize(100);
-    m_StorageFile->appendBlockData(m_StorageFile->fileType() , reinterpret_cast<char *>(&blockData), 1);
+    QString data = "test get block type";
+    m_StorageFile->appendBlockData(type, data.toLatin1().data(), data.count());
 
-    quint32 type = m_StorageFile->fileType();
     QCOMPARE(m_StorageFile->getBlockType(0) == type, result);
 }
 
 void TestStorageFile::testGetBlockInfo_data()
 {
     QTest::addColumn<int>("init");
+    QTest::addColumn<quint32>("type");
+    QTest::addColumn<QString>("data");
+    QTest::addColumn<quint32>("extraData");
     QTest::addColumn<bool>("result");
 
-    QTest::newRow("test1") << 0 << true;
-    QTest::newRow("test2") << 1 << true;
+    QTest::newRow("default constructor") << 0 << static_cast<quint32>(0x32) << "test" << static_cast<quint32>(48) << false;
+    QTest::newRow("default constructor reload") << 1 << static_cast<quint32>(0x42) << "test get block" << static_cast<quint32>(36) << true;
+    QTest::newRow("param constructor") << 2 << static_cast<quint32>(0x52) << "test get block info" << static_cast<quint32>(95) << true;
 }
 
 void TestStorageFile::testGetBlockInfo()
 {
     QFETCH(int, init);
+    QFETCH(quint32, type);
+    QFETCH(QString, data);
+    QFETCH(quint32, extraData);
     QFETCH(bool, result);
 
     if (init == 0)
+    {
+        m_StorageFile = new StorageFile();
+    }
+    else if (init == 1)
     {
         m_StorageFile = new StorageFile();
         m_StorageFile->reload(m_File->fileName(), QIODevice::ReadWrite);
@@ -485,35 +449,45 @@ void TestStorageFile::testGetBlockInfo()
         m_StorageFile = new StorageFile(m_File->fileName(), QIODevice::ReadWrite);
     }
 
-    m_StorageFile->setReservedSize(100);
-    int blockData = 2000;
-    m_StorageFile->appendBlockData(m_StorageFile->fileType() , reinterpret_cast<char *>(&blockData), sizeof(int));
+    m_StorageFile->appendBlockData(type, data.toLatin1().data(), data.count(), extraData);
 
     BlockEntry info;
     m_StorageFile->getBlockInfo(0, info);
-    QCOMPARE(info.type == static_cast<quint32>(m_StorageFile->fileType()), result);
-    QCOMPARE(info.length == sizeof(int), result);
+    QCOMPARE(info.type == type, result);
+    QCOMPARE(info.length == static_cast<quint32>(data.count()), result);
+    QCOMPARE(info.extraData == extraData, result);
 }
 
 void TestStorageFile::testGetBlockEntryList_data()
 {
     QTest::addColumn<int>("init");
+    QTest::addColumn<quint32>("type");
+    QTest::addColumn<QString>("data");
+    QTest::addColumn<quint32>("extraData");
     QTest::addColumn<int>("blockNum");
     QTest::addColumn<bool>("result");
 
-    QTest::newRow("test1") << 0 << 10 << true;
-    QTest::newRow("test2") << 1 << 300 << true;
+    QTest::newRow("default constructor") << 0 << static_cast<quint32>(0x32) << "test" << static_cast<quint32>(48) << 10 << false;
+    QTest::newRow("default constructor reload") << 1 << static_cast<quint32>(0x42) << "test get block" << static_cast<quint32>(36) << 20 << true;
+    QTest::newRow("param constructor") << 2 << static_cast<quint32>(0x52) << "test get block info" << static_cast<quint32>(95) << 5 << true;
 }
 
 void TestStorageFile::testGetBlockEntryList()
 {
     QFETCH(int, init);
+    QFETCH(quint32, type);
+    QFETCH(QString, data);
+    QFETCH(quint32, extraData);
     QFETCH(int, blockNum);
     QFETCH(bool, result);
 
     if (init == 0)
     {
         m_StorageFile = new StorageFile();
+    }
+    else if (init == 1)
+    {
+        m_StorageFile = new StorageFile();
         m_StorageFile->reload(m_File->fileName(), QIODevice::ReadWrite);
     }
     else
@@ -521,119 +495,46 @@ void TestStorageFile::testGetBlockEntryList()
         m_StorageFile = new StorageFile(m_File->fileName(), QIODevice::ReadWrite);
     }
 
-    m_StorageFile->setReservedSize(100);
-    int blockData = 66;
     for (int i = 0; i < blockNum; i++)
     {
-        m_StorageFile->appendBlockData(m_StorageFile->fileType() , reinterpret_cast<char *>(&blockData), sizeof(int));
+        m_StorageFile->appendBlockData(type, data.toLatin1().data(), data.count(), extraData);
     }
 
     QList<BlockEntry> list;
     m_StorageFile->getBlockEntryList(list);
 
     QCOMPARE(list.count() == blockNum, result);
-}
-
-void TestStorageFile::testReadBlockData_data()
-{
-    QTest::addColumn<int>("init");
-    QTest::addColumn<char>("blockData");
-    QTest::addColumn<bool>("result");
-
-    QTest::newRow("test1") << 0 << static_cast<char>(10) << true;
-    QTest::newRow("test2") << 1 << static_cast<char>(200) << true;
-}
-
-void TestStorageFile::testReadBlockData()
-{
-    QFETCH(int, init);
-    QFETCH(char, blockData);
-    QFETCH(bool, result);
-
-    if (init == 0)
+    for (int i = 0; i < list.count(); i++)
     {
-        m_StorageFile = new StorageFile();
-        m_StorageFile->reload(m_File->fileName(), QIODevice::ReadWrite);
+        BlockEntry info = list.at(i);
+        QCOMPARE(info.type == type, result);
+        QCOMPARE(info.length == static_cast<quint32>(data.count()), result);
+        QCOMPARE(info.extraData == extraData, result);
     }
-    else
-    {
-        m_StorageFile = new StorageFile(m_File->fileName(), QIODevice::ReadWrite);
-    }
-
-    m_StorageFile->setReservedSize(100);
-    m_StorageFile->appendBlockData(m_StorageFile->fileType() , &blockData, sizeof(char));
-
-    char readData = 0;
-    m_StorageFile->readBlockData(0, &readData, sizeof(char));
-
-    QCOMPARE(readData == blockData, result);
-}
-
-void TestStorageFile::testAppendBlockData_data()
-{
-    QTest::addColumn<int>("init");
-    QTest::addColumn<int>("blockNum");
-    QTest::addColumn<bool>("result");
-
-    QTest::newRow("test1") << 0 << 10 << true;
-    QTest::newRow("test2") << 0 << 50 << true;
-    QTest::newRow("test3") << 1 << 10 << true;
-    QTest::newRow("test4") << 1 << 50 << true;
-}
-
-void TestStorageFile::testAppendBlockData()
-{
-    QFETCH(int, init);
-    QFETCH(int, blockNum);
-    QFETCH(bool, result);
-
-    if (init == 0)
-    {
-        m_StorageFile = new StorageFile();
-        m_StorageFile->reload(m_File->fileName(), QIODevice::ReadWrite);
-    }
-    else
-    {
-        m_StorageFile = new StorageFile(m_File->fileName(), QIODevice::ReadWrite);
-    }
-
-    int data = 0;
-    for (int i = 0; i < blockNum; i++)
-    {
-        m_StorageFile->appendBlockData(m_StorageFile->fileType() , reinterpret_cast<char *>(&data), 4);
-    }
-
-    int blockNR = m_StorageFile->getBlockNR();
-    QCOMPARE(blockNR == blockNum, result);
 }
 
 void TestStorageFile::testModifyBlockData_data()
 {
     QTest::addColumn<int>("init");
-    QTest::addColumn<int>("modifyData");
+    QTest::addColumn<QString>("modifyData");
     QTest::addColumn<bool>("result");
 
-    QTest::newRow("test1") << 0 << 20 << true;
-    QTest::newRow("test2") << 0 << 300 << true;
-    QTest::newRow("test3") << 1 << 40 << true;
-    QTest::newRow("test4") << 1 << 500 << true;
-}
-
-static int bytesToInt(QByteArray bytes) {
-    int addr = bytes[0] & 0x000000FF;
-    addr |= ((bytes[1] << 8) & 0x0000FF00);
-    addr |= ((bytes[2] << 16) & 0x00FF0000);
-    addr |= ((bytes[3] << 24) & 0xFF000000);
-    return addr;
+    QTest::newRow("default constructor") << 0 << "test" << false;
+    QTest::newRow("default constructor reload") << 1 << "test_ modi" << true;
+    QTest::newRow("param constructor") << 2 << "modigf tes" << true;
 }
 
 void TestStorageFile::testModifyBlockData()
 {
     QFETCH(int, init);
-    QFETCH(int, modifyData);
+    QFETCH(QString, modifyData);
     QFETCH(bool, result);
 
     if (init == 0)
+    {
+        m_StorageFile = new StorageFile();
+    }
+    else if (init == 1)
     {
         m_StorageFile = new StorageFile();
         m_StorageFile->reload(m_File->fileName(), QIODevice::ReadWrite);
@@ -642,16 +543,15 @@ void TestStorageFile::testModifyBlockData()
     {
         m_StorageFile = new StorageFile(m_File->fileName(), QIODevice::ReadWrite);
     }
+    QString blockData = "block data";
+    m_StorageFile->appendBlockData(m_StorageFile->fileType() , blockData.toLatin1().data(), blockData.count());
+    m_StorageFile->modifyBlockData(0, modifyData.toLatin1().data(), blockData.count());
 
-    m_StorageFile->setReservedSize(100);
-    int blockData = 10;
-    m_StorageFile->appendBlockData(m_StorageFile->fileType() , reinterpret_cast<char *>(&blockData), sizeof(int));
+    char readData[100] = {0};
+    m_StorageFile->readBlockData(0, readData, blockData.count());
+    QString readDataStr = QString(QLatin1String(readData));
 
-    m_StorageFile->modifyBlockData(0, reinterpret_cast<char *>(&modifyData), sizeof(int));
-    QByteArray byteArray = m_StorageFile->getBlockData(0);
-    int data = bytesToInt(byteArray);
-
-    QCOMPARE(data == modifyData, result);
+    QCOMPARE(readDataStr == modifyData, result);
 }
 
 void TestStorageFile::testRemove_data()
@@ -659,8 +559,9 @@ void TestStorageFile::testRemove_data()
     QTest::addColumn<int>("init");
     QTest::addColumn<bool>("result");
 
-    QTest::newRow("test1") << 0 << true;
-    QTest::newRow("test2") << 1 << true;
+    QTest::newRow("default constructor") << 0 << true;
+    QTest::newRow("default constructor reload") << 1 << true;
+    QTest::newRow("param constructor") << 2 << true;
 }
 
 void TestStorageFile::testRemove()
@@ -669,6 +570,10 @@ void TestStorageFile::testRemove()
     QFETCH(bool, result);
 
     if (init == 0)
+    {
+        m_StorageFile = new StorageFile();
+    }
+    else if (init == 1)
     {
         m_StorageFile = new StorageFile();
         m_StorageFile->reload(m_File->fileName(), QIODevice::ReadWrite);
@@ -680,7 +585,8 @@ void TestStorageFile::testRemove()
 
     m_StorageFile->remove(m_StorageFile);
 
-    QCOMPARE(m_StorageFile->fileSize() == 0, result);
+    QCOMPARE(!m_StorageFile->storageFileExist(), result);
+    QCOMPARE(!m_StorageFile->backupFileExist(), result);
 }
 
 void TestStorageFile::testRename_data()
@@ -688,8 +594,9 @@ void TestStorageFile::testRename_data()
     QTest::addColumn<int>("init");
     QTest::addColumn<bool>("result");
 
-    QTest::newRow("test1") << 0 << true;
-    QTest::newRow("test2") << 1 << true;
+    QTest::newRow("default constructor") << 0 << false;
+    QTest::newRow("default constructor reload") << 1 << true;
+    QTest::newRow("param constructor") << 2 << true;
 }
 
 void TestStorageFile::testRename()
@@ -698,6 +605,10 @@ void TestStorageFile::testRename()
     QFETCH(bool, result);
 
     if (init == 0)
+    {
+        m_StorageFile = new StorageFile();
+    }
+    else if (init == 1)
     {
         m_StorageFile = new StorageFile();
         m_StorageFile->reload(m_File->fileName(), QIODevice::ReadWrite);
@@ -712,7 +623,3 @@ void TestStorageFile::testRename()
 
     QCOMPARE(m_StorageFile->rename(m_StorageFile, newName), result);
 }
-
-QTEST_MAIN(TestStorageFile)
-
-#include "TestStorageFile.moc"
