@@ -119,7 +119,9 @@ void RawDataCollectorPrivate::handleECGRawData(const unsigned char *data, int le
         unsigned int ipace = data[0] | (data[1] << 8) | (data[2] << 16) | (data[3] << 24);
         // 3 Byte ecg
         data += 4;
-        unsigned int ecgData = data[0] | (data[1] << 8) | (data[2] << 16);
+        unsigned int rawEcgData = (data[0] << 8) | (data[1] << 16) | (data[2] << 24);
+        int ecgData = rawEcgData;
+        ecgData >>= 8;
         stream << ipace << ',';
         stream << 0 << ',';
         stream << 256 << ',';
@@ -452,7 +454,8 @@ RawDataCollector::RawDataCollector()
 {
 }
 
-void RawDataCollector::collectData(RawDataCollector::CollectDataType type, const unsigned char *data, int len, bool stop)
+void RawDataCollector::collectData(RawDataCollector::CollectDataType type, const unsigned char *data, int len,
+                                   bool stop)
 {
     if (!d_ptr->collectionStatus[type])
     {
