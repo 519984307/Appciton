@@ -205,6 +205,23 @@ DataStorageDirManager::DataStorageDirManager()
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
+DataStorageDirManager &DataStorageDirManager::getInstance()
+{
+    static DataStorageDirManager *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new DataStorageDirManager;
+
+        // register the new interface and delete the old one
+        DataStorageDirManagerInterface *old = registerDataStorageDirManager(instance);
+        if (old)
+        {
+            delete old;
+        }
+    }
+    return *instance;
+}
+
 DataStorageDirManager::~DataStorageDirManager()
 {
     _folderNameList.clear();
