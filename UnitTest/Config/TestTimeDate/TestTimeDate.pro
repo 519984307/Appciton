@@ -14,14 +14,14 @@ TEMPLATE = app
 DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
-        testtimedate.cpp \
     ../../../Utility/Config/XmlParser.cpp \
     ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
     ../../../Utility/ErrorLog/ErrorLogItem.cpp \
     ../../../Utility/TimeDate/TimeDate.cpp \
     ../../../Utility/Config/IConfig.cpp \
     ../../../Utility/Config/Config.cpp \
-    main.cpp
+    main.cpp \
+    TestTimeDate.cpp
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
@@ -33,7 +33,6 @@ HEADERS += \
     ../../../Utility/TimeDate/TimeDate.h \
     ../../../Utility/Config/IConfig.h \
     ../../../Utility/Config/Config.h \
-    ConfigManager.h
 
 INCLUDEPATH += \
     ../../../Utility/ErrorLog \
