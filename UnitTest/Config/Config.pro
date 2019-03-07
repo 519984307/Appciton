@@ -1,5 +1,6 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    TestXMLParesr \
-    TestConfig
+#    TestXMLParesr \
+#    TestConfig \
+    TestTimeDate
