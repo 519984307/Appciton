@@ -10,6 +10,10 @@
 
 #include "TestStorageFile.h"
 
+#define DEFAULT_CONSTRUCTOR                 (0)
+#define DEFAULT_CONSTRUCTOR_RELOAD          (1)
+#define PARAM_CONSTRUCTOR                   (2)
+
 static void createTestFileOnDisk(QTemporaryFile *tempFile, const QString &resFilename)
 {
     QFile resFile(resFilename);
@@ -45,9 +49,17 @@ void TestStorageFile::testFileType_data()
     QTest::addColumn<int>("init");
     QTest::addColumn<int>("result");
 
-    QTest::newRow("default constructor") << 0 << static_cast<int>(StorageFile::Type);
-    QTest::newRow("default constructor reload") << 1 << static_cast<int>(StorageFile::Type);
-    QTest::newRow("param constructor") << 2 << static_cast<int>(StorageFile::Type);
+    QTest::newRow("default constructor")
+            << DEFAULT_CONSTRUCTOR
+            << static_cast<int>(StorageFile::Type);
+
+    QTest::newRow("default constructor reload")
+            << DEFAULT_CONSTRUCTOR_RELOAD
+            << static_cast<int>(StorageFile::Type);
+
+    QTest::newRow("param constructor")
+            << PARAM_CONSTRUCTOR
+            << static_cast<int>(StorageFile::Type);
 }
 
 void TestStorageFile::testFileType()
@@ -55,11 +67,11 @@ void TestStorageFile::testFileType()
     QFETCH(int, init);
     QFETCH(int, result);
 
-    if (init == 0)
+    if (init == DEFAULT_CONSTRUCTOR)
     {
         m_StorageFile = new StorageFile();
     }
-    else if (init == 1)
+    else if (init == DEFAULT_CONSTRUCTOR_RELOAD)
     {
         m_StorageFile = new StorageFile();
         m_StorageFile->reload(m_File->fileName(), QIODevice::ReadWrite);
@@ -79,11 +91,35 @@ void TestStorageFile::testFileSize_data()
     QTest::addColumn<QString>("data");
     QTest::addColumn<quint32>("result");
 
-    QTest::newRow("default constructor") << 0 << false << "" << static_cast<quint32>(0);
-    QTest::newRow("default constructor reload") << 1 << false << "test" << static_cast<quint32>(24);
-    QTest::newRow("default constructor reload, add data") << 1 << true << "test this " << static_cast<quint32>(34);
-    QTest::newRow("param constructor, add data") << 2 << true << "" << static_cast<quint32>(24);
-    QTest::newRow("param constructor, add data") << 2 << true << "test this funtion" << static_cast<quint32>(41);
+    QTest::newRow("default constructor")
+            << DEFAULT_CONSTRUCTOR
+            << false
+            << ""
+            << static_cast<quint32>(0);
+
+    QTest::newRow("default constructor reload")
+            << DEFAULT_CONSTRUCTOR_RELOAD
+            << false
+            << "test"
+            << static_cast<quint32>(24);
+
+    QTest::newRow("default constructor reload, add data")
+            << DEFAULT_CONSTRUCTOR_RELOAD
+            << true
+            << "test this "
+            << static_cast<quint32>(34);
+
+    QTest::newRow("param constructor, add data")
+            << PARAM_CONSTRUCTOR
+            << true
+            << ""
+            << static_cast<quint32>(24);
+
+    QTest::newRow("param constructor, add data")
+            << PARAM_CONSTRUCTOR
+            << true
+            << "test this funtion"
+            << static_cast<quint32>(41);
 }
 
 void TestStorageFile::testFileSize()
@@ -93,11 +129,11 @@ void TestStorageFile::testFileSize()
     QFETCH(QString, data);
     QFETCH(quint32, result);
 
-    if (init == 0)
+    if (init == DEFAULT_CONSTRUCTOR)
     {
         m_StorageFile = new StorageFile();
     }
-    else if (init == 1)
+    else if (init == DEFAULT_CONSTRUCTOR_RELOAD)
     {
         m_StorageFile = new StorageFile();
         m_StorageFile->reload(m_File->fileName(), QIODevice::ReadWrite);
@@ -120,9 +156,17 @@ void TestStorageFile::testIsValid_data()
     QTest::addColumn<int>("init");
     QTest::addColumn<bool>("result");
 
-    QTest::newRow("default constructor") << 0 << false;
-    QTest::newRow("default constructor reload") << 1 << true;
-    QTest::newRow("param constructor") << 2 << true;
+    QTest::newRow("default constructor")
+            << DEFAULT_CONSTRUCTOR
+            << false;
+
+    QTest::newRow("default constructor reload")
+            << DEFAULT_CONSTRUCTOR_RELOAD
+            << true;
+
+    QTest::newRow("param constructor")
+            << PARAM_CONSTRUCTOR
+            << true;
 }
 
 void TestStorageFile::testIsValid()
@@ -130,11 +174,11 @@ void TestStorageFile::testIsValid()
     QFETCH(int, init);
     QFETCH(bool, result);
 
-    if (init == 0)
+    if (init == DEFAULT_CONSTRUCTOR)
     {
         m_StorageFile = new StorageFile();
     }
-    else if (init == 1)
+    else if (init == DEFAULT_CONSTRUCTOR_RELOAD)
     {
         m_StorageFile = new StorageFile();
         m_StorageFile->reload(m_File->fileName(), QIODevice::ReadWrite);
@@ -155,31 +199,31 @@ void TestStorageFile::testReservedSize_data()
     QTest::addColumn<quint32>("result");
 
     QTest::newRow("default constructor, 200 size")
-            << 0
+            << DEFAULT_CONSTRUCTOR
             << false
             << static_cast<quint32>(200)
             << static_cast<quint32>(0);
 
     QTest::newRow("param constructor, 200 size")
-            << 2
+            << PARAM_CONSTRUCTOR
             << false
             << static_cast<quint32>(200)
             << static_cast<quint32>(200);
 
     QTest::newRow("param constructor, 100000 size")
-            << 2
+            << PARAM_CONSTRUCTOR
             << false
             << static_cast<quint32>(100000)
             << static_cast<quint32>(100000);
 
     QTest::newRow("default constructor reload, add data, 200 size")
-            << 1
+            << DEFAULT_CONSTRUCTOR_RELOAD
             << true
             << static_cast<quint32>(100)
             << static_cast<quint32>(0);
 
     QTest::newRow("param constructor, add data, 200 size")
-            << 2
+            << PARAM_CONSTRUCTOR
             << true
             << static_cast<quint32>(200)
             << static_cast<quint32>(0);
@@ -191,11 +235,11 @@ void TestStorageFile::testReservedSize()
     QFETCH(bool, addData);
     QFETCH(quint32, reservedSize);
     QFETCH(quint32, result);
-    if (init == 0)
+    if (init == DEFAULT_CONSTRUCTOR)
     {
         m_StorageFile = new StorageFile();
     }
-    else if (init == 1)
+    else if (init == DEFAULT_CONSTRUCTOR_RELOAD)
     {
         m_StorageFile = new StorageFile();
         m_StorageFile->reload(m_File->fileName(), QIODevice::ReadWrite);
@@ -222,17 +266,17 @@ void TestStorageFile::testReload_data()
     QTest::addColumn<bool>("result");
 
     QTest::newRow("default constructor, read only")
-            << 0
+            << DEFAULT_CONSTRUCTOR
             << QIODevice::ReadOnly
             << false;
 
     QTest::newRow("default constructor, read write")
-            << 0
+            << DEFAULT_CONSTRUCTOR
             << QIODevice::ReadWrite
             << true;
 
     QTest::newRow("param constructor, read only")
-            << 2
+            << PARAM_CONSTRUCTOR
             << QIODevice::ReadOnly
             << true;
 }
@@ -243,11 +287,11 @@ void TestStorageFile::testReload()
     QFETCH(QIODevice::OpenModeFlag, openMode);
     QFETCH(bool, result);
 
-    if (init == 0)
+    if (init == DEFAULT_CONSTRUCTOR)
     {
         m_StorageFile = new StorageFile();
     }
-    else if (init == 2)
+    else if (init == PARAM_CONSTRUCTOR)
     {
         m_StorageFile = new StorageFile(m_File->fileName(), QIODevice::ReadWrite);
     }
@@ -264,22 +308,22 @@ void TestStorageFile::testGetBlockNR_data()
     QTest::addColumn<quint32>("result");
 
     QTest::newRow("default constructor, 10 blocknum")
-            << 0
+            << DEFAULT_CONSTRUCTOR
             << 10
             << static_cast<quint32>(0);
 
     QTest::newRow("default constructor reload, 30 blocknum")
-            << 1
+            << DEFAULT_CONSTRUCTOR_RELOAD
             << 30
             << static_cast<quint32>(30);
 
     QTest::newRow("param constructor, 5 blocknum")
-            << 2
+            << PARAM_CONSTRUCTOR
             << 5
             << static_cast<quint32>(5);
 
     QTest::newRow("param constructor, 50 blocknum")
-            << 2
+            << PARAM_CONSTRUCTOR
             << 50
             << static_cast<quint32>(50);
 }
@@ -290,11 +334,11 @@ void TestStorageFile::testGetBlockNR()
     QFETCH(int, blockNum);
     QFETCH(quint32, result);
 
-    if (init == 0)
+    if (init == DEFAULT_CONSTRUCTOR)
     {
         m_StorageFile = new StorageFile();
     }
-    else if (init == 1)
+    else if (init == DEFAULT_CONSTRUCTOR_RELOAD)
     {
         m_StorageFile = new StorageFile();
         m_StorageFile->reload(m_File->fileName(), QIODevice::ReadWrite);
@@ -321,49 +365,49 @@ void TestStorageFile::testAdditionalData_data()
     QTest::addColumn<QByteArray>("result");
 
     char data1[5] = {static_cast<char>(0xff), static_cast<char>(0xff), static_cast<char>(0xff), static_cast<char>(0xff), static_cast<char>(0xff)};
-    char data2[4] = {0x12, 0x34, 0x56, 0x78};
-    char data3[2] = {0x12, 0x34};
+    char data2[4] = {0x12, 0, 0x56, 0x78};
+    char data3[5] = {0, 0, 0, 0, 0};
     QTest::newRow("default constructor, 100 size, string")
-            << 0
+            << DEFAULT_CONSTRUCTOR
             << 100
-            << QByteArray("test")
-            << QByteArray();
+            << QByteArray("test ")
+            << QByteArray(data3, 5);
 
     QTest::newRow("default constructor reload, 100 size, string")
-            << 1
+            << DEFAULT_CONSTRUCTOR_RELOAD
             << 100
             << QByteArray("test additional")
             << QByteArray("test additional");
 
     QTest::newRow("param constructor, 10 size, string")
-            << 2
+            << PARAM_CONSTRUCTOR
             << 10
             << QByteArray("test additional data")
             << QByteArray("test addit");
 
     QTest::newRow("default constructor, 100 size, integer")
-            << 0
+            << DEFAULT_CONSTRUCTOR
             << 100
             << QByteArray(data1, 5)
-            << QByteArray();
+            << QByteArray(data3, 5);
 
     QTest::newRow("default constructor reload, 100 size, integer(0xff)")
-            << 1
+            << DEFAULT_CONSTRUCTOR_RELOAD
             << 100
             << QByteArray(data1, 5)
             << QByteArray(data1, 5);
 
     QTest::newRow("default constructor reload, 100 size, integer")
-            << 1
+            << DEFAULT_CONSTRUCTOR_RELOAD
             << 100
             << QByteArray(data2, 4)
             << QByteArray(data2, 4);
 
-    QTest::newRow("param constructor, 10 size, integer")
-            << 2
+    QTest::newRow("param constructor, 2 size, integer")
+            << PARAM_CONSTRUCTOR
             << 2
             << QByteArray(data2, 4)
-            << QByteArray(data3, 2);
+            << QByteArray(data2, 2);
 }
 
 void TestStorageFile::testAdditionalData()
@@ -373,11 +417,11 @@ void TestStorageFile::testAdditionalData()
     QFETCH(QByteArray, data);
     QFETCH(QByteArray, result);
 
-    if (init == 0)
+    if (init == DEFAULT_CONSTRUCTOR)
     {
         m_StorageFile = new StorageFile();
     }
-    else if (init == 1)
+    else if (init == DEFAULT_CONSTRUCTOR_RELOAD)
     {
         m_StorageFile = new StorageFile();
         m_StorageFile->reload(m_File->fileName(), QIODevice::ReadWrite);
@@ -391,48 +435,49 @@ void TestStorageFile::testAdditionalData()
     m_StorageFile->setReservedSize(reservedSize);
     m_StorageFile->writeAdditionalData(data.data(), data.count());
     m_StorageFile->readAdditionalData(readData, data.count());
-    QByteArray readByteArray(readData);
+    int readLen = (data.count() < reservedSize) ? data.count() : reservedSize;
+    QByteArray readByteArray(readData, readLen);
     QCOMPARE(readByteArray, result);
 }
 
 void TestStorageFile::testGetBlockDataLen_data()
 {
     QTest::addColumn<int>("init");
-    QTest::addColumn<QString>("data");
+    QTest::addColumn<QByteArray>("data");
     QTest::addColumn<quint32>("result");
 
     QTest::newRow("default constructor")
-            << 0
-            << "test"
+            << DEFAULT_CONSTRUCTOR
+            << QByteArray("test")
             << static_cast<quint32>(0);
 
     QTest::newRow("default constructor reload, frist type len")
-            << 1
-            << "test get blockdata"
+            << DEFAULT_CONSTRUCTOR_RELOAD
+            << QByteArray("test get blockdata")
             << static_cast<quint32>(18);
 
     QTest::newRow("param constructor,  second type len")
-            << 2
-            << "test get blockdata len"
+            << PARAM_CONSTRUCTOR
+            << QByteArray("test get blockdata len")
             << static_cast<quint32>(22);
 
     QTest::newRow("param constructor,  0 len")
-            << 2
-            << ""
+            << PARAM_CONSTRUCTOR
+            << QByteArray("")
             << static_cast<quint32>(0);
 }
 
 void TestStorageFile::testGetBlockDataLen()
 {
     QFETCH(int, init);
-    QFETCH(QString, data);
+    QFETCH(QByteArray, data);
     QFETCH(quint32, result);
 
-    if (init == 0)
+    if (init == DEFAULT_CONSTRUCTOR)
     {
         m_StorageFile = new StorageFile();
     }
-    else if (init == 1)
+    else if (init == DEFAULT_CONSTRUCTOR_RELOAD)
     {
         m_StorageFile = new StorageFile();
         m_StorageFile->reload(m_File->fileName(), QIODevice::ReadWrite);
@@ -442,7 +487,7 @@ void TestStorageFile::testGetBlockDataLen()
         m_StorageFile = new StorageFile(m_File->fileName(), QIODevice::ReadWrite);
     }
 
-    m_StorageFile->appendBlockData(m_StorageFile->fileType() , data.toLatin1().data(), data.count());
+    m_StorageFile->appendBlockData(m_StorageFile->fileType() , data.data(), data.count());
 
     QCOMPARE(m_StorageFile->getBlockDataLen(0), result);
 }
@@ -454,39 +499,40 @@ void TestStorageFile::testBlockData_data()
     QTest::addColumn<QByteArray>("result");
 
     char data1[5] = {static_cast<char>(0xff), static_cast<char>(0xff), static_cast<char>(0xff), static_cast<char>(0xff), static_cast<char>(0xff)};
-    char data2[4] = {0x12, 0x34, 0x56, 0x78};
+    char data2[4] = {0x12, 0x0, 0x56, 0x78};
+    char data3[5] = {0, 0, 0, 0, 0};
     QTest::newRow("default constructor, string")
-            << 0
-            << QByteArray("test")
-            << QByteArray();
+            << DEFAULT_CONSTRUCTOR
+            << QByteArray("test ")
+            << QByteArray(data3, 5);
 
     QTest::newRow("default constructor reload, string")
-            << 1
+            << DEFAULT_CONSTRUCTOR_RELOAD
             << QByteArray("test additional")
             << QByteArray("test additional");
 
     QTest::newRow("param constructor,  string")
-            << 2
+            << PARAM_CONSTRUCTOR
             << QByteArray("test additional data")
             << QByteArray("test additional data");
 
     QTest::newRow("default constructor, integer")
-            << 0
+            << DEFAULT_CONSTRUCTOR
             << QByteArray(data1, 5)
-            << QByteArray();
+            << QByteArray(data3, 5);
 
     QTest::newRow("default constructor reload, integer(0xff)")
-            << 1
+            << DEFAULT_CONSTRUCTOR_RELOAD
             << QByteArray(data1, 5)
             << QByteArray(data1, 5);
 
     QTest::newRow("default constructor reload, integer")
-            << 1
+            << DEFAULT_CONSTRUCTOR_RELOAD
             << QByteArray(data2, 4)
             << QByteArray(data2, 4);
 
     QTest::newRow("param constructor, integer")
-            << 2
+            << PARAM_CONSTRUCTOR
             << QByteArray(data2, 4)
             << QByteArray(data2, 4);
 }
@@ -497,11 +543,11 @@ void TestStorageFile::testBlockData()
     QFETCH(QByteArray, data);
     QFETCH(QByteArray, result);
 
-    if (init == 0)
+    if (init == DEFAULT_CONSTRUCTOR)
     {
         m_StorageFile = new StorageFile();
     }
-    else if (init == 1)
+    else if (init == DEFAULT_CONSTRUCTOR_RELOAD)
     {
         m_StorageFile = new StorageFile();
         m_StorageFile->reload(m_File->fileName(), QIODevice::ReadWrite);
@@ -515,7 +561,7 @@ void TestStorageFile::testBlockData()
 
     char readData[100] = {0};
     m_StorageFile->readBlockData(0, readData, data.count());
-    QByteArray readByteArray(readData);
+    QByteArray readByteArray(readData, data.count());
     QCOMPARE(readByteArray, result);
 }
 
@@ -526,22 +572,22 @@ void TestStorageFile::testGetBlockType_data()
     QTest::addColumn<quint32>("result");
 
     QTest::newRow("default constructor")
-            << 0
+            << DEFAULT_CONSTRUCTOR
             << static_cast<quint32>(0xff)
             << static_cast<quint32>(0);
 
     QTest::newRow("default constructor reload")
-            << 1
+            << DEFAULT_CONSTRUCTOR_RELOAD
             << static_cast<quint32>(0)
             << static_cast<quint32>(0);
 
     QTest::newRow("param constructor, 0x66")
-            << 2
+            << PARAM_CONSTRUCTOR
             << static_cast<quint32>(0x66)
             << static_cast<quint32>(0x66);
 
     QTest::newRow("param constructor, 0xffffffff")
-            << 2
+            << PARAM_CONSTRUCTOR
             << static_cast<quint32>(0xffffffff)
             << static_cast<quint32>(0xffffffff);
 }
@@ -552,11 +598,11 @@ void TestStorageFile::testGetBlockType()
     QFETCH(quint32, type);
     QFETCH(quint32, result);
 
-    if (init == 0)
+    if (init == DEFAULT_CONSTRUCTOR)
     {
         m_StorageFile = new StorageFile();
     }
-    else if (init == 1)
+    else if (init == DEFAULT_CONSTRUCTOR_RELOAD)
     {
         m_StorageFile = new StorageFile();
         m_StorageFile->reload(m_File->fileName(), QIODevice::ReadWrite);
@@ -583,7 +629,7 @@ void TestStorageFile::testGetBlockInfo_data()
     QTest::addColumn<quint32>("extraResult");
 
     QTest::newRow("default constructor")
-            << 0
+            << DEFAULT_CONSTRUCTOR
             << static_cast<quint32>(0x32)
             << static_cast<quint32>(0)
             << QByteArray("test")
@@ -592,7 +638,7 @@ void TestStorageFile::testGetBlockInfo_data()
             << static_cast<quint32>(0);
 
     QTest::newRow("default constructor reload")
-            << 1
+            << DEFAULT_CONSTRUCTOR_RELOAD
             << static_cast<quint32>(0x32)
             << static_cast<quint32>(0x32)
             << QByteArray("test get block")
@@ -601,7 +647,7 @@ void TestStorageFile::testGetBlockInfo_data()
             << static_cast<quint32>(0xff3252);
 
     QTest::newRow("param constructor")
-            << 2
+            << PARAM_CONSTRUCTOR
             << static_cast<quint32>(0xfff32194)
             << static_cast<quint32>(0xfff32194)
             << QByteArray("test get block info")
@@ -610,7 +656,7 @@ void TestStorageFile::testGetBlockInfo_data()
             << static_cast<quint32>(0x39585013);
 
     QTest::newRow("param constructor, empty data block")
-            << 2
+            << PARAM_CONSTRUCTOR
             << static_cast<quint32>(0x3f)
             << static_cast<quint32>(0)
             << QByteArray()
@@ -629,11 +675,11 @@ void TestStorageFile::testGetBlockInfo()
     QFETCH(quint32, extraData);
     QFETCH(quint32, extraResult);
 
-    if (init == 0)
+    if (init == DEFAULT_CONSTRUCTOR)
     {
         m_StorageFile = new StorageFile();
     }
-    else if (init == 1)
+    else if (init == DEFAULT_CONSTRUCTOR_RELOAD)
     {
         m_StorageFile = new StorageFile();
         m_StorageFile->reload(m_File->fileName(), QIODevice::ReadWrite);
@@ -665,7 +711,7 @@ void TestStorageFile::testGetBlockEntryList_data()
     QTest::addColumn<int>("result");
 
     QTest::newRow("default constructor")
-            << 0
+            << DEFAULT_CONSTRUCTOR
             << static_cast<quint32>(0x32)
             << static_cast<quint32>(0)
             << QByteArray("test")
@@ -676,7 +722,7 @@ void TestStorageFile::testGetBlockEntryList_data()
             << 0;
 
     QTest::newRow("default constructor reload")
-            << 1
+            << DEFAULT_CONSTRUCTOR_RELOAD
             << static_cast<quint32>(0x42)
             << static_cast<quint32>(0x42)
             << QByteArray("test get block")
@@ -687,7 +733,7 @@ void TestStorageFile::testGetBlockEntryList_data()
             << 20;
 
     QTest::newRow("param constructor")
-            << 2
+            << PARAM_CONSTRUCTOR
             << static_cast<quint32>(0x52)
             << static_cast<quint32>(0x52)
             << QByteArray("test get block info")
@@ -698,7 +744,7 @@ void TestStorageFile::testGetBlockEntryList_data()
             << 5;
 
     QTest::newRow("param constructor, empty data block")
-            << 2
+            << PARAM_CONSTRUCTOR
             << static_cast<quint32>(0x52)
             << static_cast<quint32>(0)
             << QByteArray(0)
@@ -721,11 +767,11 @@ void TestStorageFile::testGetBlockEntryList()
     QFETCH(int, blockNum);
     QFETCH(int, result);
 
-    if (init == 0)
+    if (init == DEFAULT_CONSTRUCTOR)
     {
         m_StorageFile = new StorageFile();
     }
-    else if (init == 1)
+    else if (init == DEFAULT_CONSTRUCTOR_RELOAD)
     {
         m_StorageFile = new StorageFile();
         m_StorageFile->reload(m_File->fileName(), QIODevice::ReadWrite);
@@ -760,27 +806,27 @@ void TestStorageFile::testModifyBlockData_data()
     QTest::addColumn<QByteArray>("result");
 
     QTest::newRow("default constructor")
-            << 0
+            << DEFAULT_CONSTRUCTOR
             << QByteArray("test")
             << QByteArray();
 
     QTest::newRow("default constructor reload")
-            << 1
+            << DEFAULT_CONSTRUCTOR_RELOAD
             << QByteArray("test_ modi")
             << QByteArray("test_ modi");
 
     QTest::newRow("param constructor")
-            << 2
+            << PARAM_CONSTRUCTOR
             << QByteArray("modigf tes")
             << QByteArray("modigf tes");
 
     QTest::newRow("default constructor reload, modify data longer")
-            << 1
+            << DEFAULT_CONSTRUCTOR_RELOAD
             << QByteArray("testmodifydata")
             << QByteArray("testmodify");
 
     QTest::newRow("param constructor, modify data shorter")
-            << 2
+            << PARAM_CONSTRUCTOR
             << QByteArray("test")
             << QByteArray("test");
 }
@@ -791,11 +837,11 @@ void TestStorageFile::testModifyBlockData()
     QFETCH(QByteArray, modifyData);
     QFETCH(QByteArray, result);
 
-    if (init == 0)
+    if (init == DEFAULT_CONSTRUCTOR)
     {
         m_StorageFile = new StorageFile();
     }
-    else if (init == 1)
+    else if (init == DEFAULT_CONSTRUCTOR_RELOAD)
     {
         m_StorageFile = new StorageFile();
         m_StorageFile->reload(m_File->fileName(), QIODevice::ReadWrite);
@@ -821,16 +867,16 @@ void TestStorageFile::testRemove_data()
     QTest::addColumn<bool>("result");
 
     QTest::newRow("default constructor")
-            << 0
-            << true;
+            << DEFAULT_CONSTRUCTOR
+            << false;
 
     QTest::newRow("default constructor reload")
-            << 1
-            << true;
+            << DEFAULT_CONSTRUCTOR_RELOAD
+            << false;
 
     QTest::newRow("param constructor")
-            << 2
-            << true;
+            << PARAM_CONSTRUCTOR
+            << false;
 }
 
 void TestStorageFile::testRemove()
@@ -838,11 +884,11 @@ void TestStorageFile::testRemove()
     QFETCH(int, init);
     QFETCH(bool, result);
 
-    if (init == 0)
+    if (init == DEFAULT_CONSTRUCTOR)
     {
         m_StorageFile = new StorageFile();
     }
-    else if (init == 1)
+    else if (init == DEFAULT_CONSTRUCTOR_RELOAD)
     {
         m_StorageFile = new StorageFile();
         m_StorageFile->reload(m_File->fileName(), QIODevice::ReadWrite);
@@ -852,10 +898,12 @@ void TestStorageFile::testRemove()
         m_StorageFile = new StorageFile(m_File->fileName(), QIODevice::ReadWrite);
     }
 
+    QFile storageFile(m_File->fileName() + ".seq");
+    QFile backupFile(m_File->fileName() + ".seq.bak");
     m_StorageFile->remove(m_StorageFile);
 
-    QCOMPARE(!m_StorageFile->storageFileExist(), result);
-    QCOMPARE(!m_StorageFile->backupFileExist(), result);
+    QCOMPARE(storageFile.exists(), result);
+    QCOMPARE(backupFile.exists(), result);
 }
 
 void TestStorageFile::testRename_data()
@@ -864,15 +912,15 @@ void TestStorageFile::testRename_data()
     QTest::addColumn<bool>("result");
 
     QTest::newRow("default constructor")
-            << 0
+            << DEFAULT_CONSTRUCTOR
             << false;
 
     QTest::newRow("default constructor reload")
-            << 1
+            << DEFAULT_CONSTRUCTOR_RELOAD
             << true;
 
     QTest::newRow("param constructor")
-            << 2
+            << PARAM_CONSTRUCTOR
             << true;
 }
 
@@ -881,11 +929,11 @@ void TestStorageFile::testRename()
     QFETCH(int, init);
     QFETCH(bool, result);
 
-    if (init == 0)
+    if (init == DEFAULT_CONSTRUCTOR)
     {
         m_StorageFile = new StorageFile();
     }
-    else if (init == 1)
+    else if (init == DEFAULT_CONSTRUCTOR_RELOAD)
     {
         m_StorageFile = new StorageFile();
         m_StorageFile->reload(m_File->fileName(), QIODevice::ReadWrite);

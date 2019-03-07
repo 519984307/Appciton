@@ -822,16 +822,6 @@ void StorageFile::remove(StorageFile *file)
     }
 }
 
-bool StorageFile::storageFileExist()
-{
-    return d_ptr->storageFile.exists();
-}
-
-bool StorageFile::backupFileExist()
-{
-    return d_ptr->backupFile.exists();
-}
-
 /***************************************************************************************************
  * rename : rename the file managed by StorageFile object
  **************************************************************************************************/

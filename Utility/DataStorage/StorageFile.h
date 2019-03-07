@@ -122,12 +122,6 @@ public:
     // remove the file managed by StorageFile
     static void remove(StorageFile *file);
 
-    // storage file exist
-    bool storageFileExist();
-
-    // backup file exist
-    bool backupFileExist();
-
     // rename the file managed by StorageFile
     static bool rename(StorageFile *file, const QString &newname);
 
