@@ -394,7 +394,7 @@ static void _initProviderParam(void)
             paramManager.addProvider(*new N5Provider());
         }
 
-        paramManager.addParam(nibpParam.construction());
+        paramManager.addParam(nibpParam.getInstance());
         alertor.addLimtSource(nibpLimitAlarm.construction());
         alertor.addOneShotSource(nibpOneShotAlarm.construction());
         NIBPTrendWidget *nibpTrenWidget = new NIBPTrendWidget();

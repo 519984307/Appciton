@@ -270,6 +270,7 @@ SOURCES +=                                                                      
 #################################################################################
     Components/System/SystemTick.cpp                                            \
     Components/System/SystemManager.cpp                                         \
+    Components/System/SystemManagerInterface.cpp                                \
     Components/System/SystemAlarm.cpp                                           \
     Components/System/TDA19988Ctrl.cpp                                          \
     Components/System/Widgets/SystemModeBarWidget.cpp                           \
@@ -287,6 +288,7 @@ SOURCES +=                                                                      
     Components/System/Widgets/PowerOffWindow.cpp                                \
     Components/System/Widgets/NightModeWindow.cpp                               \
     Components/SoundManager/SoundManager.cpp                                    \
+    Components/SoundManager/SoundManagerInterface.cpp                           \
     Components/SoundManager/WavFile.cpp                                         \
     Components/SoundManager/WavPlayer.cpp                                       \
     Components/LightManager/LightManager.cpp                                    \
@@ -465,6 +467,7 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/O2CalibrationMenuContent.cpp            \
     Components/CodeMarker/Widgets/CodeMarkerWindow.cpp                          \
     Components/ConfigManager/ConfigManager.cpp                                  \
+    Components/ConfigManager/ConfigManagerInterface.cpp                         \
     Components/ConfigManager/SelectDefaultConfigMenuContent.cpp                 \
     Components/ConfigManager/ConfigManagerPassWordEditMenuContent.cpp           \
     Components/ConfigManager/UserConfigEditMenuContent.cpp                      \
@@ -547,6 +550,7 @@ SOURCES +=                                                                      
     Params/NIBPParam/NIBPStateMachine/NIBPServiceStateMachine/NIBPServiceZeroPointState.cpp \
     Params/NIBPParam/NIBPStateMachine/NIBPServiceStateMachine/NIBPServiceErrorState.cpp \
     Params/NIBPParam/NIBPParam.cpp                                              \
+    Params/NIBPParam/NIBPParamInterface.cpp                                     \
     Params/NIBPParam/NIBPAlarm.cpp                                              \
     Params/NIBPParam/NIBPWidgets/NIBPTrendWidget.cpp                            \
     Params/NIBPParam/NIBPWidgets/NIBPDataTrendWidget.cpp                        \
@@ -755,6 +759,7 @@ HEADERS +=                                                                      
 #################################################################################
     Components/System/SystemTick.h                                              \
     Components/System/SystemManager.h                                           \
+    Components/System/SystemManagerInterface.h                                  \
     Components/System/SystemAlarm.h                                             \
     Components/System/TDA19988Ctrl.h                                            \
     Components/System/Widgets/SystemStatusBarWidget.h                           \
@@ -772,6 +777,7 @@ HEADERS +=                                                                      
     Components/System/Widgets/PowerOffWindow.h                                  \
     Components/System/Widgets/NightModeWindow.h                                 \
     Components/SoundManager/SoundManager.h                                      \
+    Components/SoundManager/SoundManagerInterface.h                             \
     Components/SoundManager/WavFile.h                                           \
     Components/SoundManager/WavPlayer.h                                         \
     Components/LightManager/LightManager.h                                      \
@@ -975,6 +981,7 @@ HEADERS +=                                                                      
     Components/CodeMarker/Widgets/CodeMarkerList.h                              \
     Components/CodeMarker/Widgets/CodeMarkerWindow.h                            \
     Components/ConfigManager/ConfigManager.h                                    \
+    Components/ConfigManager/ConfigManagerInterface.h                           \
     Components/ConfigManager/SelectDefaultConfigMenuContent.h                   \
     Components/ConfigManager/ConfigManagerPassWordEditMenuContent.h             \
     Components/ConfigManager/UserConfigEditMenuContent.h                        \
@@ -1075,6 +1082,7 @@ HEADERS +=                                                                      
     Params/NIBPParam/NIBPStateMachine/NIBPServiceStateMachine/NIBPServiceZeroPointState.h \
     Params/NIBPParam/NIBPStateMachine/NIBPServiceStateMachine/NIBPServiceErrorState.h \
     Params/NIBPParam/NIBPParam.h                                                \
+    Params/NIBPParam/NIBPParamInterface.h                                       \
     Params/NIBPParam/NIBPAlarm.h                                                \
     Params/NIBPParam/NIBPDefine.h                                               \
     Params/NIBPParam/NIBPEventDefine.h                                          \

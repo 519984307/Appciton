@@ -13,7 +13,6 @@
 #include <QLabel>
 #include <QMap>
 #include "IConfig.h"
-#include "SystemManager.h"
 
 enum RunningStatusType
 {

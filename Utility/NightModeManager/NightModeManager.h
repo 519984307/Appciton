@@ -10,7 +10,6 @@
 
 #pragma once
 #include <QObject>
-#include "SoundManager.h"
 
 class NightModeManagerPrivate;
 class NightModeManager

@@ -13,6 +13,7 @@
 #include "NIBPAlarm.h"
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"
+#include "NIBPCountdownTime.h"
 
 /**************************************************************************************************
  * 进入该状态。
