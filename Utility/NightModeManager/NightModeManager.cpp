@@ -12,6 +12,7 @@
 #include "SystemManager.h"
 #include "ConfigManager.h"
 #include "IConfig.h"
+#include "ConfigManager.h"
 #include "RunningStatusBar.h"
 #include "NIBPParam.h"
 

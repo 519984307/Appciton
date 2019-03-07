@@ -290,15 +290,18 @@ SOURCES +=                                                                      
     Components/SoundManager/WavFile.cpp                                         \
     Components/SoundManager/WavPlayer.cpp                                       \
     Components/LightManager/LightManager.cpp                                    \
+    Components/LightManager/LightManagerInterface.cpp                           \
     Components/ParamManager/Param.cpp                                           \
     Components/ParamManager/ParamManager.cpp                                    \
     Components/ParamManager/ParamInfo.cpp                                       \
     Components/Alarm/Alarm.cpp                                                  \
     Components/Alarm/AlarmConfig.cpp                                            \
     Components/Alarm/AlarmIndicator.cpp                                         \
+    Components/Alarm/AlarmIndicatorInterface.cpp                                \
     Components/Alarm/AlarmParamIFace.cpp                                        \
     Components/Alarm/AlarmLimitModel.cpp                                        \
     Components/Alarm/AlarmStateMachine/AlarmStateMachine.cpp                    \
+    Components/Alarm/AlarmStateMachine/AlarmStateMachineInterface.cpp           \
     Components/Alarm/AlarmStateMachine/AlarmState.cpp                           \
     Components/Alarm/AlarmStateMachine/AlarmNormalState.cpp                     \
     Components/Alarm/AlarmStateMachine/AlarmPauseState.cpp                      \
@@ -776,6 +779,7 @@ HEADERS +=                                                                      
     Components/SoundManager/WavFile.h                                           \
     Components/SoundManager/WavPlayer.h                                         \
     Components/LightManager/LightManager.h                                      \
+    Components/LightManager/LightManagerInterface.h                             \
     Components/LightManager/LightProviderIFace.h                                \
     Components/ParamManager/Param.h                                             \
     Components/ParamManager/ParamManager.h                                      \
@@ -785,10 +789,12 @@ HEADERS +=                                                                      
     Components/Alarm/AlarmConfig.h                                              \
     Components/Alarm/AlarmDefine.h                                              \
     Components/Alarm/AlarmIndicator.h                                           \
+    Components/Alarm/AlarmIndicatorInterface.h                                  \
     Components/Alarm/AlarmParamIFace.h                                          \
     Components/Alarm/AlarmLimitModel.h                                          \
     Components/Alarm/AlarmSymbol.h                                              \
     Components/Alarm/AlarmStateMachine/AlarmStateMachine.h                      \
+    Components/Alarm/AlarmStateMachine/AlarmStateMachineInterface.h             \
     Components/Alarm/AlarmStateMachine/AlarmState.h                             \
     Components/Alarm/AlarmStateMachine/AlarmStateDefine.h                       \
     Components/Alarm/AlarmStateMachine/AlarmNormalState.h                       \
