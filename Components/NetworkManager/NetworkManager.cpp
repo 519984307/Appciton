@@ -19,6 +19,7 @@
 #include <sys/types.h>
 #include <signal.h>
 #include "IConfig.h"
+#include "ConfigManager.h"
 #include "PatientManager.h"
 #include "SystemManager.h"
 
