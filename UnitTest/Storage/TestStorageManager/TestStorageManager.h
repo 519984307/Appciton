@@ -13,6 +13,7 @@
 #include <QString>
 #include <QtTest>
 #include "StorageManager.h"
+#include "StorageFile.h"
 
 class TestStorageManager : public QObject
 {
@@ -25,6 +26,13 @@ public:
 private slots:
     void init();
     void cleanup();
+    void testOpen_data();
+    void testOpen();
+    void testSaveData_data();
     void testSaveData();
+
+private:
+    QTemporaryFile *m_File;
+    StorageFile *backend;
 };
 #endif // TESTSTORAGEMANAGER_H

@@ -44,3 +44,6 @@ HEADERS += \
 
 INCLUDEPATH += \
     ../../../Utility/DataStorage/
+
+RESOURCES += \
+    teststoragemanager.qrc

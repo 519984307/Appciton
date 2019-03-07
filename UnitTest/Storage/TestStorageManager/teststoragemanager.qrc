@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>EventData.seq.bak</file>
+        <file>EventData.seq</file>
+    </qresource>
+</RCC>
