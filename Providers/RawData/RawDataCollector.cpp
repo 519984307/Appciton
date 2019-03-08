@@ -113,20 +113,24 @@ void RawDataCollectorPrivate::handleECGRawData(const unsigned char *data, int le
     else
     {
         Q_UNUSED(len)
-        Q_ASSERT(len == 9);
+        Q_ASSERT(len == 45);
         QTextStream stream(&content);
-        // 4 Byte IPACE
-        unsigned int ipace = data[0] | (data[1] << 8) | (data[2] << 16) | (data[3] << 24);
-        // 3 Byte ecg
-        data += 4;
-        unsigned int rawEcgData = (data[0] << 8) | (data[1] << 16) | (data[2] << 24);
-        int ecgData = rawEcgData;
-        ecgData >>= 8;
-        stream << ipace << ',';
-        stream << 0 << ',';
-        stream << 256 << ',';
-        stream << ecgData << ',';
-        stream << endl;
+        for (int i = 0; i < 5; i++)
+        {
+            // 4 Byte IPACE
+            unsigned int ipace = data[0] | (data[1] << 8) | (data[2] << 16) | (data[3] << 24);
+            // 3 Byte ecg
+            data += 4;
+            unsigned int rawEcgData = (data[0] << 8) | (data[1] << 16) | (data[2] << 24);
+            int ecgData = rawEcgData;
+            ecgData >>= 8;
+            stream << ipace << ',';
+            stream << 0 << ',';
+            stream << 256 << ',';
+            stream << ecgData << ',';
+            stream << endl;
+            data += 3;
+        }
 
 //        // skip the first 4 SN bytes
 //        data += 4;
