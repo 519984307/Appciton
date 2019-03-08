@@ -12,6 +12,7 @@
 #include <QThread>
 
 typedef void(*threadEntry)(void);
+
 class MyThread : public QThread
 {
 public:

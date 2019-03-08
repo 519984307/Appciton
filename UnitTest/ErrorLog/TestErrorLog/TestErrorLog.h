@@ -20,18 +20,16 @@ public:
     ~TestErrorLogTest();
 
 private:
-    MyThread *_mythread;
+    MyThread *_myThread;
 
 private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
+    void testTypeCount();
     void testCount();
     void testGetLog();
-    void testAppend();
-//    void test_Append();
-    //    void testGetLatestLog();
-    //    void testGetSummary();
-    //    void testRun();
-    void testClear();
-    void testTypeCount();
+    void testAppendList();
+    void testGetLatestLog();
+    void testGetSummary();
+    void testRun();
 };

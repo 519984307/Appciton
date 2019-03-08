@@ -9,9 +9,6 @@
  **/
 #include "TestErrorLog.h"
 
-/*************************************************************************************************
- * Thread Func
- * **********************************************************************************************/
 void errorLogThreadEntry()
 {
     errorLog.run();
@@ -19,15 +16,13 @@ void errorLogThreadEntry()
 
 TestErrorLogTest::TestErrorLogTest()
 {
-    _mythread = new MyThread(errorLogThreadEntry);
-    _mythread->start();
+    errorLog.clear();
+    _myThread = new MyThread(errorLogThreadEntry);
+    _myThread->start();
 }
 
 TestErrorLogTest::~TestErrorLogTest()
 {
-    _mythread->stop();
-
-    delete _errorLogItem;
 }
 
 void TestErrorLogTest::initTestCase()
@@ -36,12 +31,14 @@ void TestErrorLogTest::initTestCase()
 
 void TestErrorLogTest::cleanupTestCase()
 {
+    delete _myThread;
+    _myThread->stop();
 }
 
 void TestErrorLogTest::testCount()
 {
-    QString name("Test ErrorLog GetLog");
-    QString log("Test ErrorLog GetLog");
+    QString name("Test ErrorLog Count");
+    QString log("Test ErrorLog Count");
     errorLog.clear();
     QCOMPARE(errorLog.count(), 0);
 
@@ -83,50 +80,118 @@ void TestErrorLogTest::testGetLog()
     }
 }
 
-void TestErrorLogTest::testAppend()
+void TestErrorLogTest::testAppendList()
 {
-    QString name("Test ErrorLog Append");
-    QString log("Test ErrorLog Append");
     errorLog.clear();
+    QCOMPARE(errorLog.count(), 0);
 
+    QList<ErrorLogItemBase *> items;
+    ErrorLogItem *item = new ErrorLogItem();
+    item->setName("Test Error Log append 1");
+    item->setLog("Test Error Log append 1");
+    item->setSubSystem(ErrorLogItem::SUB_SYS_MAIN_PROCESSOR);
+    item->setSystemState(ErrorLogItem::SYS_STAT_RUNTIME);
+    item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
+    items.append(reinterpret_cast<ErrorLogItemBase *>(item));
+
+    item = new ErrorLogItem();
+    item->setName("Test Error Log append 2");
+    item->setLog("Test Error Log append 2");
+    item->setSubSystem(ErrorLogItem::SUB_SYS_MAIN_PROCESSOR);
+    item->setSystemState(ErrorLogItem::SYS_STAT_RUNTIME);
+    item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
+    items.append(reinterpret_cast<ErrorLogItemBase *>(item));
+
+    errorLog.append(items);
+    Util::waitInEventLoop(2000);
+    QCOMPARE(errorLog.count(), 2);
+}
+
+void TestErrorLogTest::testGetLatestLog()
+{
+    errorLog.clear();
+    QString name("Test ErrorLog GetLatestLog");
+    QString log("Test ErrorLog GetLateestLog");
     ErrorLogItem *item = new ErrorLogItem();
     item->setName(name);
     item->setLog(log);
     item->setSubSystem(ErrorLogItem::SUB_SYS_MAIN_PROCESSOR);
     item->setSystemState(ErrorLogItem::SYS_STAT_RUNTIME);
     item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
+
     errorLog.append(item);
-    QCOMPARE(errorLog.count(), 0);
+    Util::waitInEventLoop(2000);
+
+    QCOMPARE(errorLog.getLatestLog(ErrorLogItem::Type)->name(), name);
 }
 
-void TestErrorLogTest::testClear()
+void TestErrorLogTest::testGetSummary()
 {
-    QSKIP("implement the test", SkipAll);
+    errorLog.clear();
+    QString name("Test ErrorLog GetSummary");
+    QString log("Test ErrorLog GetSummary");
+    ErrorLogItem *item = new ErrorLogItem();
+    item->setName(name);
+    item->setLog(log);
+    item->setSubSystem(ErrorLogItem::SUB_SYS_MAIN_PROCESSOR);
+    item->setSystemState(ErrorLogItem::SYS_STAT_RUNTIME);
+    item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
+
+    errorLog.append(item);
+    Util::waitInEventLoop(2000);
+    ErrorLog::Summary summary = errorLog.getSummary();
+    QVERIFY2(summary.NumOfErrors == 1, "Test getSummary Failure");
+}
+
+void TestErrorLogTest::testRun()
+{
+    errorLog.clear();
+    _myThread->stop();
+    QString name("Test ErrorLog Run");
+    QString log("Test ErrorLog Run");
+    ErrorLogItem *item = new ErrorLogItem();
+    item->setName(name);
+    item->setLog(log);
+    item->setSubSystem(ErrorLogItem::SUB_SYS_MAIN_PROCESSOR);
+    item->setSystemState(ErrorLogItem::SYS_STAT_RUNTIME);
+    item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
+
+    errorLog.append(item);
+    Util::waitInEventLoop(2000);
+
+    QCOMPARE(errorLog.count(), 0);
 }
 
 void TestErrorLogTest::testTypeCount()
 {
     errorLog.clear();
-    Util::waitInEventLoop(500);
-    ErrorLogItem *item = new ErrorLogItem();
-    item->setName("Test Error Log getTypeCount");
-    item->setLog("Test Error Log getTypeCount");
-    item->setSubSystem(ErrorLogItem::SUB_SYS_MAIN_PROCESSOR);
-    item->setSystemState(ErrorLogItem::SYS_STAT_RUNTIME);
-    item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
+    QString name("Test ErrorLog TypeCount");
+    QString log("Test ErrorLog TypeCount");
+    ErrorLogItem *criticalItem = new CriticalFaultLogItem();
+    criticalItem->setName(name);
+    criticalItem->setLog(log);
+    criticalItem->setSubSystem(ErrorLogItem::SUB_SYS_MAIN_PROCESSOR);
+    criticalItem->setSystemState(ErrorLogItem::SYS_STAT_RUNTIME);
+    criticalItem->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
 
-//    errorLog.append(item);
-    Util::waitInEventLoop(500);
+    errorLog.append(criticalItem);
+    Util::waitInEventLoop(2000);
+    QCOMPARE(errorLog.getTypeCount(CriticalFaultLogItem::Type), 1);
 
-    QCOMPARE(errorLog.getTypeCount(ErrorLogItem::Type), 1);
+    ErrorLogItem *CrashItem = new CrashLogItem();
+    CrashItem->setName(name);
+    CrashItem->setLog(log);
+    CrashItem->setSubSystem(ErrorLogItem::SUB_SYS_MAIN_PROCESSOR);
+    CrashItem->setSystemState(ErrorLogItem::SYS_STAT_RUNTIME);
+    CrashItem->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
 
-//    QVERIFY2(2 == errorLog.getTypeCount(ErrorLogItem::Type) &&
-//             0 == errorLog.getTypeCount(CrashLogItem::Type) &&
-//             0 == errorLog.getTypeCount(CriticalFaultLogItem::Type), "Test count append");
+    errorLog.append(CrashItem);
+    Util::waitInEventLoop(2000);
+
+    QCOMPARE(errorLog.getTypeCount(CrashLogItem::Type), 1);
+
+    QCOMPARE(errorLog.count(), 2);
 }
-
-
-
 
 //  QTEST_APPLESS_MAIN(TestErrorLogTest)
 
