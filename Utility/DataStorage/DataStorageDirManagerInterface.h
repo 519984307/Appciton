@@ -29,6 +29,8 @@ public:
      * @return the interface or NULL if no any interface
      */
     static DataStorageDirManagerInterface *getDataStorageDirManager();
+
+signals:
     /**
      * @brief newPatient 新建病人信号
      */

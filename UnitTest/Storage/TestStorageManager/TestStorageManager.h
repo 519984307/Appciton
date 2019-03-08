@@ -11,9 +11,11 @@
 #ifndef TESTSTORAGEMANAGER_H
 #define TESTSTORAGEMANAGER_H
 #include <QString>
-#include <QtTest>
+#include <QTest>
+#include <QTemporaryFile>
 #include "StorageManager.h"
 #include "StorageFile.h"
+#include <QObject>
 
 class TestStorageManager : public QObject
 {
@@ -23,16 +25,26 @@ public:
     TestStorageManager();
     ~TestStorageManager();
 
+    StorageFile *getBackend() const;
+    void setBackend(StorageFile *value);
+
 private slots:
     void init();
     void cleanup();
     void testOpen_data();
     void testOpen();
-    void testSaveData_data();
-    void testSaveData();
+    void testAddSaveData_data();
+    void testAddSaveData();
+    void testDiscardData_data();
+    void testDiscardData();
+    void testBackend();
+    void testSize_data();
+    void testSize();
+    void testExist_data();
+    void testExist();
 
 private:
     QTemporaryFile *m_File;
-    StorageFile *backend;
+    StorageFile *m_Backend;
 };
 #endif // TESTSTORAGEMANAGER_H
