@@ -26,13 +26,13 @@ SOURCES += \
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 HEADERS += \
-    testtimedate.h \
     ../../../Utility/Config/XmlParser.h \
     ../../../Utility/ErrorLog/ErrorLogInterface.h \
     ../../../Utility/ErrorLog/ErrorLogItem.h \
     ../../../Utility/TimeDate/TimeDate.h \
     ../../../Utility/Config/IConfig.h \
     ../../../Utility/Config/Config.h \
+    TestTimeDate.h
 
 INCLUDEPATH += \
     ../../../Utility/ErrorLog \

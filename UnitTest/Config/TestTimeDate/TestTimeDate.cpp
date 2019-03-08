@@ -8,7 +8,7 @@
  ** Written by TongZhou Fang <Fangtongzhou@blmed.cn>, 2019/3/5
  **/
 
-#include "testtimedate.h"
+#include "TestTimeDate.h"
 #include "QThread"
 #include <time.h>
 #include <stdio.h>
@@ -16,19 +16,29 @@
 #include "IConfig.h"
 #include "TimeDefine.h"
 
+
 TestTimeDate::TestTimeDate()
 {
      TimeFormat timeFormat = TimeFormat::TIME_FORMAT_24;
      systemConfig.setNumValue("DateTime|TimeFormat", static_cast<int>(timeFormat));
 }
 
+void TestTimeDate::testTime_data()
+{
+    QTest::addColumn<int>("Time");
+    QTest::newRow("time1") << 1000;
+    QTest::newRow("time2") << 2000;
+    QTest::newRow("time3") << 3000;
+}
+
 void TestTimeDate::testTime()
 {
    uint _time1 = timeDate.time();
    uint _time2 = QDateTime::currentDateTime().toTime_t();
-   QVERIFY(_time1 = _time2);
+   QCOMPARE(_time1, _time2);
 
-   QTest::qSleep(1000);
+   QFETCH(int, Time);
+   QTest::qSleep(Time);
 
    _time2 = QDateTime::currentDateTime().toTime_t();
 

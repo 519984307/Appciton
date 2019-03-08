@@ -20,6 +20,7 @@ class TestTimeDate : public QObject
 public:
     TestTimeDate();
 private Q_SLOTS:
+    void testTime_data();
     void testTime();
     void testDifftime();
     void testGetTime();

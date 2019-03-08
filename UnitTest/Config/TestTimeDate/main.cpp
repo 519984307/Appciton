@@ -9,7 +9,7 @@
  **/
 
 #include "googletest.h"
-#include "testtimedate.h"
+#include "TestTimeDate.h"
 
 int main(int argc, char *argv[])
 {
