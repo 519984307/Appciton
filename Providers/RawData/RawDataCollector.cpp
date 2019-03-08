@@ -129,7 +129,8 @@ void RawDataCollectorPrivate::handleECGRawData(const unsigned char *data, int le
             stream << 256 << ',';
             stream << ecgData << ',';
             stream << endl;
-            data += 3;
+            // 2 byte lead status
+            data += 5;
         }
 
 //        // skip the first 4 SN bytes
