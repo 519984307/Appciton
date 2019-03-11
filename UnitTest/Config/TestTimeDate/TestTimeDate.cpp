@@ -33,27 +33,34 @@ void TestTimeDate::testTime_data()
 
 void TestTimeDate::testTime()
 {
-   uint _time1 = timeDate.time();
-   uint _time2 = QDateTime::currentDateTime().toTime_t();
-   QCOMPARE(_time1, _time2);
+   uint time1 = timeDate.time();
+   uint time2 = QDateTime::currentDateTime().toTime_t();
+   QCOMPARE(time1, time2);
 
    QFETCH(int, Time);
    QTest::qSleep(Time);
 
-   _time2 = QDateTime::currentDateTime().toTime_t();
+   time2 = QDateTime::currentDateTime().toTime_t();
 
-   QVERIFY2(_time1 != _time2, "Test fail!");
+   QVERIFY2(time1 != time2, "Test fail!");
 }
 
+void TestTimeDate::testDifftime_data()
+{
+    QTest::addColumn<int>("Difftime");
+
+    QTest::newRow("difftime1") << 1;
+    QTest::newRow("difftime2") << 2;
+    QTest::newRow("difftime3") << 3;
+}
 void TestTimeDate::testDifftime()
 {
     time_t time1 = time(NULL);
-    qsrand(QTime(0, 0, 0).secsTo(QTime::currentTime()));
-    unsigned int interval = qrand() % 10;
-    QTest::qSleep(interval*1000);
+    QFETCH(int, Difftime);
+    QTest::qSleep(Difftime*1000);
     time_t time2 = time(NULL);
 
-    QCOMPARE(static_cast<int>(timeDate.difftime(time2, time1)), static_cast<int>(time2 - time1));
+    QCOMPARE(static_cast<int>(timeDate.difftime(time2, time1)), Difftime);
 }
 
 void TestTimeDate::testGetTime()
@@ -89,42 +96,58 @@ void TestTimeDate::testGetDate()
     QCOMPARE(str, date);
 }
 
+void TestTimeDate::testGetTimeStr_data()
+{
+    QTest::addColumn<int>("Date");
+    QTest::newRow("row1") << 2;
+    QTest::newRow("row2") << 246;
+    QTest::newRow("row3") << 24682;
+    QTest::newRow("row4") << 2468246;
+    QTest::newRow("row5") << 246824682;
+}
+
 void TestTimeDate::testGetTimeStr()
 {
+    QFETCH(int, Date);
     QString str;
-    QDateTime currenttime = QDateTime::currentDateTime();
-    unsigned long t = currenttime.toTime_t();
-    timeDate.getTime(t, str, true);
-
-    QTime time = QTime::currentTime();
-    QString  timestr = QString("%1:%2:%3").arg(time.hour(), 2, 10, QLatin1Char('0'))
-                    .arg(time.minute(), 2, 10, QLatin1Char('0'))
-                        .arg(time.second(), 2, 10, QLatin1Char('0'));
+    timeDate.getTime(Date, str, true);
+    QDateTime time = QDateTime::fromTime_t(Date);
+    QString  timestr = QString("%1:%2:%3").arg(time.time().hour(), 2, 10, QLatin1Char('0'))
+                    .arg(time.time().minute(), 2, 10, QLatin1Char('0'))
+                        .arg(time.time().second(), 2, 10, QLatin1Char('0'));
     QCOMPARE(timestr, str);
 
-    timeDate.getTime(t, str, false);
-    timestr = QString("%1:%2").arg(time.hour(), 2, 10, QLatin1Char('0'))
-            .arg(time.minute(), 2, 10, QLatin1Char('0'));
+    timeDate.getTime(Date, str, false);
+    timestr = QString("%1:%2").arg(time.time().hour(), 2, 10, QLatin1Char('0'))
+            .arg(time.time().minute(), 2, 10, QLatin1Char('0'));
     QCOMPARE(timestr, str);
+}
+
+void TestTimeDate::testGetDateStr_data()
+{
+    QTest::addColumn<int>("Date");
+    QTest::newRow("data1") << 1;
+    QTest::newRow("data2") << 135;
+    QTest::newRow("data3") << 13579;
+    QTest::newRow("data4") << 1357913;
+    QTest::newRow("data5") << 135791357;
 }
 
 void TestTimeDate::testGetDateStr()
 {
+    QFETCH(int, Date);
     QString str;
-    QDateTime currenttime = QDateTime::currentDateTime();
-    unsigned long t = currenttime.toTime_t();
-    timeDate.getDate(t, str, true);
-
-    QDate date = QDate::currentDate();
-    QString  datestr = QString("%1/%2/%3").arg(date.year(), 2, 10, QLatin1Char('0'))
-                    .arg(date.month(), 2, 10, QLatin1Char('0'))
-                        .arg(date.day(), 2, 10, QLatin1Char('0'));
+    timeDate.getDate(Date, str, true);
+    QDateTime date = QDateTime::fromTime_t(Date);
+    QString  datestr = QString("%1/%2/%3").arg(date.date().year(), 2, 10, QLatin1Char('0'))
+                    .arg(date.date().month(), 2, 10, QLatin1Char('0'))
+                        .arg(date.date().day(), 2, 10, QLatin1Char('0'));
     QCOMPARE(datestr, str);
 
-    timeDate.getDate(t, str, false);
-    datestr = QString("%1/%2/%3").arg(date.year()%100, 2, 10, QLatin1Char('0'))
-            .arg(date.month(), 2, 10, QLatin1Char('0'))
-                 .arg(date.day(), 2, 10, QLatin1Char('0'));
+    timeDate.getDate(Date, str, false);
+    datestr = QString("%1/%2/%3").arg(date.date().year()%100, 2, 10, QLatin1Char('0'))
+            .arg(date.date().month(), 2, 10, QLatin1Char('0'))
+                 .arg(date.date().day(), 2, 10, QLatin1Char('0'));
     QCOMPARE(datestr, str);
 }
 

@@ -22,10 +22,13 @@ public:
 private Q_SLOTS:
     void testTime_data();
     void testTime();
+    void testDifftime_data();
     void testDifftime();
     void testGetTime();
     void testGetDate();
+    void testGetTimeStr_data();
     void testGetTimeStr();
+    void testGetDateStr_data();
     void testGetDateStr();
     void testGetDateYear();
     void testGetDateMonth();

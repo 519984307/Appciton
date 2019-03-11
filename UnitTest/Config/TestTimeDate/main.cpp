@@ -8,12 +8,10 @@
  ** Written by TongZhou Fang <Fangtongzhou@blmed.cn>, 2019/3/5
  **/
 
-#include "googletest.h"
 #include "TestTimeDate.h"
 
 int main(int argc, char *argv[])
 {
-    ::testing::InitGoogleMock(&argc, argv);
     QCoreApplication app(argc, argv);
     TestTimeDate tc;
     return QTest::qExec(&tc, argc, argv);
