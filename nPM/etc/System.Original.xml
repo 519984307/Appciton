@@ -917,7 +917,7 @@
                     <LayoutRow>
                         <LayoutNode pos="0" span="4" editable="0">RESPWave</LayoutNode>
                         <LayoutNode pos="4" span="1" editable="0">RESP</LayoutNode>
-                        <LayoutNode pos="5" span="1" editable="0"></LayoutNode>
+                        <LayoutNode pos="5" span="1" editable="0">O2</LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
                         <LayoutNode pos="0" span="4" editable="0">CO2Wave</LayoutNode>
