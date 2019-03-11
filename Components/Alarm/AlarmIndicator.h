@@ -11,24 +11,16 @@
 
 
 #pragma once
-#include "AlarmDefine.h"
 #include <QList>
+#include "AlarmIndicatorInterface.h"
 
 class AlarmPhyInfoBarWidget;
 class AlarmTechInfoBarWidget;
 class AlarmStatusWidget;
-class AlarmIndicator
+class AlarmIndicator : public AlarmIndicatorInterface
 {
 public:
-    static AlarmIndicator &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new AlarmIndicator();
-        }
-        return *_selfObj;
-    }
-    static AlarmIndicator *_selfObj;
+    static AlarmIndicator &getInstance(void);
 
     // 注册报警界面对象。
     void setAlarmPhyWidgets(AlarmPhyInfoBarWidget *alarmWidget, AlarmStatusWidget *muteWidget);
@@ -151,5 +143,4 @@ private:
 
     bool _isForbidLight;
 };
-#define alarmIndicator (AlarmIndicator::construction())
-#define deleteAlarmIndicator() (delete AlarmIndicator::_selfObj)
+#define alarmIndicator (AlarmIndicator::getInstance())

@@ -9,9 +9,9 @@
  **/
 
 #include "AlarmPauseState.h"
-#include "AlarmIndicator.h"
-#include "AlarmStateMachine.h"
-#include "LightManager.h"
+#include "AlarmIndicatorInterface.h"
+#include "AlarmStateMachineInterface.h"
+#include "LightManagerInterface.h"
 #include <QTimerEvent>
 #include "IConfig.h"
 
@@ -19,7 +19,10 @@ class AlarmPauseStatePrivate
 {
 public:
     AlarmPauseStatePrivate()
-        :leftPauseTime(-1)
+        : leftPauseTime(-1),
+          alarmIndicator(AlarmIndicatorInterface::getAlarmIndicator()),
+          alarmStateMachine(AlarmStateMachineInterface::getAlarmStateMachine()),
+          lightManager(LightManagerInterface::getLightManager())
     {}
 
     /**
@@ -50,6 +53,10 @@ public:
     }
 
     int leftPauseTime;
+
+    AlarmIndicatorInterface *alarmIndicator;
+    AlarmStateMachineInterface *alarmStateMachine;
+    LightManagerInterface *lightManager;
 };
 
 /**************************************************************************************************
@@ -74,21 +81,21 @@ AlarmPauseState::~AlarmPauseState()
  *************************************************************************************************/
 void AlarmPauseState::enter()
 {
-    alarmIndicator.setAlarmStatus(ALARM_STATUS_PAUSE);
-    alarmIndicator.delAllPhyAlarm();
-    lightManager.enableAlarmAudioMute(true);
+    d_ptr->alarmIndicator->setAlarmStatus(ALARM_STATUS_PAUSE);
+    d_ptr->alarmIndicator->delAllPhyAlarm();
+    d_ptr->lightManager->enableAlarmAudioMute(true);
     beginTimer(1000);
     int index = ALARM_PAUSE_TIME_2MIN;
     systemConfig.getNumValue("Alarms|AlarmPauseTime", index);
     d_ptr->leftPauseTime = d_ptr->getAlarmPausetime(static_cast<AlarmPauseTime>(index));
-    alarmIndicator.updateAlarmPauseTime(d_ptr->leftPauseTime);
+    d_ptr->alarmIndicator->updateAlarmPauseTime(d_ptr->leftPauseTime);
 }
 
 void AlarmPauseState::exit()
 {
     endTimer();
     d_ptr->leftPauseTime = -1;
-    alarmIndicator.updateAlarmPauseTime(d_ptr->leftPauseTime);
+    d_ptr->alarmIndicator->updateAlarmPauseTime(d_ptr->leftPauseTime);
 }
 
 /**************************************************************************************************
@@ -107,8 +114,8 @@ void AlarmPauseState::handAlarmEvent(AlarmStateEvent event, unsigned char */*dat
 
     case ALARM_STATE_EVENT_MUTE_BTN_PRESSED:
     {
-        alarmIndicator.phyAlarmPauseStatusHandle();
-        alarmStateMachine.switchState(ALARM_NORMAL_STATE);
+        d_ptr->alarmIndicator->phyAlarmPauseStatusHandle();
+        d_ptr->alarmStateMachine->switchState(ALARM_NORMAL_STATE);
         break;
     }
 #else
@@ -141,9 +148,9 @@ void AlarmPauseState::handAlarmEvent(AlarmStateEvent event, unsigned char */*dat
 #endif
 
     case ALARM_STATE_EVENT_MUTE_BTN_PRESSED_SHORT_TIME:
-        if (alarmStateMachine.isEnableAlarmAudioOff())
+        if (d_ptr->alarmStateMachine->isEnableAlarmAudioOff())
         {
-            alarmStateMachine.switchState(ALARM_AUDIO_OFF_STATE);
+            d_ptr->alarmStateMachine->switchState(ALARM_AUDIO_OFF_STATE);
         }
         break;
 
@@ -155,9 +162,9 @@ void AlarmPauseState::handAlarmEvent(AlarmStateEvent event, unsigned char */*dat
 #endif
 
     case ALARM_STATE_EVENT_MUTE_BTN_PRESSED_LONG_TIME:
-        if (alarmStateMachine.isEnableAlarmOff())
+        if (d_ptr->alarmStateMachine->isEnableAlarmOff())
         {
-            alarmStateMachine.switchState(ALARM_OFF_STATE);
+            d_ptr->alarmStateMachine->switchState(ALARM_OFF_STATE);
         }
         break;
 
@@ -171,10 +178,10 @@ void AlarmPauseState::timerEvent(QTimerEvent *e)
     if (e->timerId() == getTimerID())
     {
         d_ptr->leftPauseTime--;
-        alarmIndicator.updateAlarmPauseTime(d_ptr->leftPauseTime);
+        d_ptr->alarmIndicator->updateAlarmPauseTime(d_ptr->leftPauseTime);
         if (d_ptr->leftPauseTime <= 0)
         {
-            alarmStateMachine.switchState(ALARM_NORMAL_STATE);
+            d_ptr->alarmStateMachine->switchState(ALARM_NORMAL_STATE);
         }
     }
 }

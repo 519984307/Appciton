@@ -9,14 +9,31 @@
  **/
 
 #include "AlarmNormalState.h"
-#include "AlarmIndicator.h"
-#include "AlarmStateMachine.h"
-#include "LightManager.h"
+#include "AlarmIndicatorInterface.h"
+#include "AlarmStateMachineInterface.h"
+#include "LightManagerInterface.h"
+
+class AlarmNormalStatePrivate
+{
+public:
+    AlarmNormalStatePrivate()
+        : alarmIndicator(AlarmIndicatorInterface::getAlarmIndicator()),
+          alarmStateMachine(AlarmStateMachineInterface::getAlarmStateMachine()),
+          lightManager(LightManagerInterface::getLightManager())
+    {}
+    ~AlarmNormalStatePrivate(){}
+
+    AlarmIndicatorInterface *alarmIndicator;
+    AlarmStateMachineInterface *alarmStateMachine;
+    LightManagerInterface *lightManager;
+};
 
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-AlarmNormalState::AlarmNormalState() : AlarmState(ALARM_NORMAL_STATE)
+AlarmNormalState::AlarmNormalState()
+    : AlarmState(ALARM_NORMAL_STATE)
+    , d_ptr(new AlarmNormalStatePrivate())
 {
 }
 
@@ -25,6 +42,7 @@ AlarmNormalState::AlarmNormalState() : AlarmState(ALARM_NORMAL_STATE)
  *************************************************************************************************/
 AlarmNormalState::~AlarmNormalState()
 {
+    delete d_ptr;
 }
 
 /**************************************************************************************************
@@ -32,9 +50,9 @@ AlarmNormalState::~AlarmNormalState()
  *************************************************************************************************/
 void AlarmNormalState::enter()
 {
-    alarmIndicator.setAlarmStatus(ALARM_STATUS_NORMAL);
-    alarmIndicator.updateAlarmStateWidget();
-    lightManager.enableAlarmAudioMute(false);
+    d_ptr->alarmIndicator->setAlarmStatus(ALARM_STATUS_NORMAL);
+    d_ptr->alarmIndicator->updateAlarmStateWidget();
+    d_ptr->lightManager->enableAlarmAudioMute(false);
 }
 
 /**************************************************************************************************
@@ -48,21 +66,21 @@ void AlarmNormalState::handAlarmEvent(AlarmStateEvent event, unsigned char */*da
     case ALARM_STATE_EVENT_RESET_BTN_PRESSED:
     {
         //删除栓锁报警
-        alarmIndicator.delLatchPhyAlarm();
-        alarmIndicator.phyAlarmResetStatusHandle();
-        alarmIndicator.techAlarmResetStatusHandle();
-        if (alarmIndicator.getAlarmCount())
+        d_ptr->alarmIndicator->delLatchPhyAlarm();
+        d_ptr->alarmIndicator->phyAlarmResetStatusHandle();
+        d_ptr->alarmIndicator->techAlarmResetStatusHandle();
+        if (d_ptr->alarmIndicator->getAlarmCount())
         {
             // must has med priority alarm or high priority alarm before enter the reset state
-            alarmStateMachine.switchState(ALARM_RESET_STATE);
+            d_ptr->alarmStateMachine->switchState(ALARM_RESET_STATE);
         }
         break;
     }
 
     case ALARM_STATE_EVENT_MUTE_BTN_PRESSED:
     {
-        alarmIndicator.phyAlarmPauseStatusHandle();
-        alarmStateMachine.switchState(ALARM_PAUSE_STATE);
+        d_ptr->alarmIndicator->phyAlarmPauseStatusHandle();
+        d_ptr->alarmStateMachine->switchState(ALARM_PAUSE_STATE);
         break;
     }
 #else
@@ -81,19 +99,21 @@ void AlarmNormalState::handAlarmEvent(AlarmStateEvent event, unsigned char */*da
 #endif
 
     case ALARM_STATE_EVENT_MUTE_BTN_PRESSED_SHORT_TIME:
-        if (alarmStateMachine.isEnableAlarmAudioOff())
+    {
+        if (d_ptr->alarmStateMachine->isEnableAlarmAudioOff())
         {
-            alarmStateMachine.switchState(ALARM_AUDIO_OFF_STATE);
+            d_ptr->alarmStateMachine->switchState(ALARM_AUDIO_OFF_STATE);
         }
         break;
-
+    }
     case ALARM_STATE_EVENT_MUTE_BTN_PRESSED_LONG_TIME:
-        if (alarmStateMachine.isEnableAlarmOff())
+    {
+        if (d_ptr->alarmStateMachine->isEnableAlarmOff())
         {
-            alarmStateMachine.switchState(ALARM_OFF_STATE);
+            d_ptr->alarmStateMachine->switchState(ALARM_OFF_STATE);
         }
         break;
-
+    }
     default:
         break;
     }

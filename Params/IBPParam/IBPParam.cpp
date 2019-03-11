@@ -14,7 +14,7 @@
 #include "TimeDate.h"
 #include "TrendTableWindow.h"
 #include "WaveformCache.h"
-#include "IConfig.h"
+#include "ConfigManager.h"
 #include "IBPDefine.h"
 #include "LayoutManager.h"
 #include "ECGDupParam.h"

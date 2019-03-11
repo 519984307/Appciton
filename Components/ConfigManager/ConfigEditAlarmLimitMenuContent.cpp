@@ -17,7 +17,7 @@
 #include "ParamManager.h"
 #include "ParamInfo.h"
 #include "AlarmConfig.h"
-#include "IConfig.h"
+#include "ConfigManager.h"
 #include "PatientManager.h"
 #include "IBPParam.h"
 #include "TableViewItemDelegate.h"

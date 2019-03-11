@@ -9,16 +9,36 @@
  **/
 
 #pragma once
+#include "PatientDefine.h"
+#include "Config.h"
 
-class Config;
 class ConfigManagerInterface
 {
 public:
     virtual ~ConfigManagerInterface(){}
 
-    static ConfigManagerInterface *registerConfigManager(ConfigManagerInterface *instance);
+    /**
+     * @brief registerConfigManager register config manger
+     * @return
+     */
+    static ConfigManagerInterface *registerConfigManager(ConfigManagerInterface *);
 
-    static ConfigManagerInterface *getConfigManager(void);
+    /**
+     * @brief getConfigManager get current config manager handle
+     * @return
+     */
+    static ConfigManagerInterface* getConfigManager(void);
 
+    /**
+     * @brief getConfig get a config object of the specific patient type
+     * @param patType the paient type, adult, ped or neo
+     * @return pointer to the specific patient type config object
+     */
+    virtual Config *getConfig(PatientType patType) = 0;
+
+    /**
+     * @brief getCurConfig get the reference of the current running config
+     * @return  reference to the current running config
+     */
     virtual Config &getCurConfig() = 0;
 };

@@ -11,12 +11,13 @@
 #include "NightModeManager.h"
 #include "SystemManagerInterface.h"
 #include "IConfig.h"
-#include "RunningStatusBar.h"
+#include "ConfigManager.h"
+#include "RunningStatusBarInterface.h"
 #include "NIBPParamInterface.h"
 #include "SoundManagerInterface.h"
 #include "ConfigManagerInterface.h"
 
-NightModeManager *NightModeManager::_selfObj = NULL;
+NightModeManager *NightModeManager::instance = NULL;
 
 class NightModeManagerPrivate
 {
@@ -27,25 +28,20 @@ public:
     // 显示夜间模式图标
     void setSystemModeBar();
     bool isNightMode;
-    BrightnessLevel normalScreenBrightness;
-    SoundManagerInterface::VolumeLevel normalAlarmVolume;
-    SoundManagerInterface::VolumeLevel normalHeartBeatVolume;
-    SoundManagerInterface::VolumeLevel normalKeyVolume;
-    SoundManagerInterface::VolumeLevel normalNibpCompleteVolume;
-
-    /**
-     * @brief loadOption    保存正常模式下的值
-     */
-    void loadOption();
-
-    SoundManagerInterface *soundManager;
-    SystemManagerInterface *systemManager;
-    NIBPParamInterface *nibpParam;
 };
 
 NightModeManager::NightModeManager()
     : d_ptr(new NightModeManagerPrivate)
 {
+}
+
+NightModeManager &NightModeManager::getInstance()
+{
+    if (instance == NULL)
+    {
+        instance = new NightModeManager();
+    }
+    return *instance;
 }
 
 NightModeManager::~NightModeManager()
@@ -66,6 +62,7 @@ void NightModeManager::setNightMode(bool nightMode)
         isRepetSet = true;
     }
 
+    RunningStatusBarInterface *runningStatus = RunningStatusBarInterface::getRunningStatusBar();
     systemConfig.setNumValue("NightMode|EnterNightMode", static_cast<int>(nightMode));
     d_ptr->isNightMode = nightMode;
     if (d_ptr->isNightMode)    //　夜间模式
@@ -94,23 +91,26 @@ void NightModeManager::setNightMode(bool nightMode)
             nibpCompleteTone = 0;
         }
 
-        d_ptr->loadOption();
 
-        runningStatus.setNightModeStatus(true);
+        if (runningStatus)
+        {
+            runningStatus->setNightModeStatus(true);
+        }
 
         // NIBP停止测量
         int stopNibpMeasure = 0;
         systemConfig.getNumValue("NightMode|StopNIBPMeasure", stopNibpMeasure);
         if (stopNibpMeasure && !isRepetSet)
         {
-            d_ptr->nibpParam->stopMeasure();
+            NIBPParamInterface *nibpParam = NIBPParamInterface::getNIBPParam();
+            nibpParam->stopMeasure();
         }
     }
     else
     {
         int b = 0;
-
-        screenBrightness = d_ptr->systemManager->getBrightness();
+        SystemManagerInterface *systemManager = SystemManagerInterface::getSystemManager();
+        screenBrightness = systemManager->getBrightness();
 
         systemConfig.getNumValue("Alarms|DefaultAlarmVolume", b);
         alarmVolume = b;
@@ -132,17 +132,23 @@ void NightModeManager::setNightMode(bool nightMode)
             nibpCompleteTone = 0;
         }
 
-        runningStatus.setNightModeStatus(false);
+        if (runningStatus)
+        {
+            runningStatus->setNightModeStatus(false);
+        }
     }
 
-    d_ptr->systemManager->enableBrightness(static_cast<BrightnessLevel>(screenBrightness));
-    d_ptr->soundManager->setVolume(SoundManagerInterface::SOUND_TYPE_ALARM,
+    BrightnessLevel brightness = static_cast<BrightnessLevel>(screenBrightness);
+    SystemManagerInterface *systemManager = SystemManagerInterface::getSystemManager();
+    systemManager->enableBrightness(brightness);
+    SoundManagerInterface *soundManager = SoundManagerInterface::getSoundManager();
+    soundManager->setVolume(SoundManagerInterface::SOUND_TYPE_ALARM,
                            static_cast<SoundManagerInterface::VolumeLevel>(alarmVolume));
-    d_ptr->soundManager->setVolume(SoundManagerInterface::SOUND_TYPE_HEARTBEAT,
+    soundManager->setVolume(SoundManagerInterface::SOUND_TYPE_HEARTBEAT,
                            static_cast<SoundManagerInterface::VolumeLevel>(heartBeatVolume));
-    d_ptr->soundManager->setVolume(SoundManagerInterface::SOUND_TYPE_NOTIFICATION,
+    soundManager->setVolume(SoundManagerInterface::SOUND_TYPE_NOTIFICATION,
                            static_cast<SoundManagerInterface::VolumeLevel>(notificationVolume));
-    d_ptr->soundManager->setVolume(SoundManagerInterface::SOUND_TYPE_NIBP_COMPLETE,
+    soundManager->setVolume(SoundManagerInterface::SOUND_TYPE_NIBP_COMPLETE,
                            static_cast<SoundManagerInterface::VolumeLevel>(nibpCompleteTone));
 }
 
@@ -152,27 +158,9 @@ bool NightModeManager::nightMode()
 }
 
 NightModeManagerPrivate::NightModeManagerPrivate()
-    : isNightMode(0),
-      normalScreenBrightness(BRT_LEVEL_NR),
-      normalAlarmVolume(SoundManagerInterface::VOLUME_LEV_NR),
-      normalHeartBeatVolume(SoundManagerInterface::VOLUME_LEV_NR),
-      normalKeyVolume(SoundManagerInterface::VOLUME_LEV_NR),
-      normalNibpCompleteVolume(SoundManagerInterface::VOLUME_LEV_NR),
-      soundManager(SoundManagerInterface::getSoundManager()),
-      systemManager(SystemManagerInterface::getSystemManager()),
-      nibpParam(NIBPParamInterface::getNIBPParam())
+    : isNightMode(0)
 {
     int index = 0;
     systemConfig.getNumValue("NightMode|EnterNightMode", index);
     isNightMode = index;
-    loadOption();
-}
-
-void NightModeManagerPrivate::loadOption()
-{
-    normalScreenBrightness = systemManager->getBrightness();
-    normalAlarmVolume =  soundManager->getVolume(SoundManagerInterface::SOUND_TYPE_ALARM);
-    normalHeartBeatVolume = soundManager->getVolume(SoundManagerInterface::SOUND_TYPE_HEARTBEAT);
-    normalKeyVolume = soundManager->getVolume(SoundManagerInterface::SOUND_TYPE_NOTIFICATION);
-    normalNibpCompleteVolume = soundManager->getVolume(SoundManagerInterface::SOUND_TYPE_NIBP_COMPLETE);
 }

@@ -16,6 +16,7 @@
 #include "NightModeManager.h"
 #include "RunningStatusBar.h"
 #include "RainbowProvider.h"
+#include "ConfigManager.h"
 
 /**************************************************************************************************
  * 功能： 初始化系统。
@@ -99,7 +100,7 @@ static void _initSystem(void)
 //    systemBoardProvider.construction();
 
     // 报警灯。
-    lightManager.construction();
+    lightManager.getInstance();
     lightManager.setProvider(&systemBoardProvider);
     systemManager.enableBrightness(systemManager.getBrightness());
 
@@ -116,6 +117,7 @@ static void _initSystem(void)
     pMessageBox.construction();
 
     // 初始化夜间模式
+    runningStatus.getInstance();
     if (nightModeManager.nightMode())
     {
         nightModeManager.setNightMode(true);
@@ -172,7 +174,7 @@ static void _initComponents(void)
 
     // 初始化报警。
     alertor.construction();
-    alarmIndicator.construction();
+    alarmIndicator.getInstance();
 
     AlarmPhyInfoBarWidget *alarmPhyInfo = new AlarmPhyInfoBarWidget("AlarmPhyInfoBarWidget");
     AlarmTechInfoBarWidget *alarmTechInfo = new AlarmTechInfoBarWidget("AlarmTechInfoBarWidget");
@@ -195,7 +197,7 @@ static void _initComponents(void)
     layoutManager.addLayoutWidget(&runningStatus);
 
     //报警状态
-    alarmStateMachine.Construction();
+    alarmStateMachine.getInstance();
     alarmStateMachine.start();
 
     // 数据管理。
@@ -637,12 +639,7 @@ void deleteObjects(void)
     deleteDataStorageDirManager();
 
     deletepMessageBox();
-
-    deleteLightManager();
-
     deleteAlarm();
-    deleteAlarmIndicator();
-    deleteAlarmStateMachine();
 
     deleteWaveformCache();
     deleteTrendCache();

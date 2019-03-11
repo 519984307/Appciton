@@ -11,7 +11,7 @@
 #include "RESPParam.h"
 #include "RESPAlarm.h"
 #include "OxyCRGRESPWaveWidget.h"
-#include "IConfig.h"
+#include "ConfigManager.h"
 #include "WaveformCache.h"
 #include "RESPDupParam.h"
 #include "SystemManager.h"

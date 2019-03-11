@@ -12,12 +12,11 @@
 
 #include <QObject>
 #include <QScopedPointer>
-#include "Config.h"
-#include "PatientDefine.h"
 #include <QList>
+#include "ConfigManagerInterface.h"
 
 class ConfigManagerPrivate;
-class ConfigManager : public QObject
+class ConfigManager : public QObject, public ConfigManagerInterface
 {
     Q_OBJECT
 public:

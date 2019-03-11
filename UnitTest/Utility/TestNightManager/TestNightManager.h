@@ -17,8 +17,24 @@ class TestNightManager : public QObject
     Q_OBJECT
 private Q_SLOTS:
     void initTestCase();
+    void init();
+    void cleanup();
     void testSetNightMode_data();
     void testSetNightMode();
+    void testNightMode_data();
     void testNightMode();
     void cleanupTestCase();
+
+private:
+    typedef struct Data
+    {
+        bool nightMode;
+        int screenBrightness;
+        int alarmVolume;
+        int heartBeatVolume;
+        int notificationVolume;
+        int completeTips;
+        int stopNibpMeasure;
+    } nightModeData;
+    void readyNightModeData(nightModeData data);
 };

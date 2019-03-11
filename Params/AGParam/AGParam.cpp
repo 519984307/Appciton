@@ -13,7 +13,7 @@
 #include "AGTrendWidget.h"
 #include "AGAlarm.h"
 #include "WaveformCache.h"
-#include "IConfig.h"
+#include "ConfigManager.h"
 #include "LayoutManager.h"
 #include "SystemManager.h"
 

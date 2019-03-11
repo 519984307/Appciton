@@ -20,8 +20,8 @@
 #include "OxyCRGCO2WaveWidget.h"
 #include "OxyCRGRESPWaveWidget.h"
 
-
 #include "IConfig.h"
+#include "ConfigManager.h"
 #include "SoftKeyManager.h"
 #include "KeyActionManager.h"
 #include "NormalModeKeyAction.h"

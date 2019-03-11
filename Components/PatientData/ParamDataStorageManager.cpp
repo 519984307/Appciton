@@ -16,6 +16,7 @@
 #include "DataStorageDirManager.h"
 #include "TimeManager.h"
 #include "IConfig.h"
+#include "ConfigManager.h"
 #include "TrendCache.h"
 #include "ParamManager.h"
 #include "Alarm.h"

@@ -18,7 +18,7 @@
 #include "SoundManager.h"
 #include "SystemManager.h"
 #include "ECGParam.h"
-#include "IConfig.h"
+#include "ConfigManager.h"
 #include "Button.h"
 
 class ConfigEditECGMenuContentPrivate

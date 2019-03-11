@@ -20,6 +20,7 @@
 #include <unistd.h>
 #include <QTimer>
 #include "IConfig.h"
+#include "ConfigManager.h"
 #include <QThread>
 #include "NightModeManager.h"
 

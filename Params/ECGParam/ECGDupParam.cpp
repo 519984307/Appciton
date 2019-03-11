@@ -10,7 +10,7 @@
 
 #include "ECGDupParam.h"
 #include "BaseDefine.h"
-#include "IConfig.h"
+#include "ConfigManager.h"
 #include "ECGTrendWidget.h"
 #include "Debug.h"
 #include "ECGParam.h"

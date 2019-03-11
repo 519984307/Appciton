@@ -11,9 +11,11 @@
 
 #include <QCoreApplication>
 #include "TestNightManager.h"
+#include "googletest.h"
 
 int main(int argc, char *argv[])
 {
+    ::testing::InitGoogleMock(&argc, argv);
     QCoreApplication a(argc, argv);
     TestNightManager tc;
     return QTest::qExec(&tc, argc, argv);

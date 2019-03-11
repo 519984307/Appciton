@@ -15,13 +15,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 include("../../Common/Common.pri")
+include("../../Common/googletest.pri")
 
 SOURCES += main.cpp \
     TestNightManager.cpp \
     ../../../Utility/NightModeManager/NightModeManager.cpp \
     ../../../Components/SoundManager/SoundManagerInterface.cpp \
     ../../../Components/System/SystemManagerInterface.cpp \
-    ../../../Components/System/Widgets/RunningStatusBar.cpp \
     ../../../Utility/Config/IConfig.cpp \
     ../../../Components/WindowManager/IWidget.cpp \
     ../../../Params/NIBPParam/NIBPParamInterface.cpp \
@@ -29,14 +29,15 @@ SOURCES += main.cpp \
     ../../../Utility/Config/XmlParser.cpp \
     ../../../Utility/Config/Config.cpp \
     ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
-    ../../../Utility/ErrorLog/ErrorLogItem.cpp
+    ../../../Utility/ErrorLog/ErrorLogItem.cpp \
+    ../../../Components/System/Widgets/RunningStatusBarInterface.cpp \
+    ../../../Utility/NightModeManager/NightModeManagerInterface.cpp
 
 HEADERS += \
     TestNightManager.h \
     ../../../Utility/NightModeManager/NightModeManager.h \
     ../../../Components/SoundManager/SoundManagerInterface.h \
     ../../../Components/System/SystemManagerInterface.h \
-    ../../../Components/System/Widgets/RunningStatusBar.h \
     ../../../Utility/Config/IConfig.h \
     ../../../Components/WindowManager/IWidget.h \
     ../../../Params/NIBPParam/NIBPParamInterface.h \
@@ -44,7 +45,15 @@ HEADERS += \
     ../../../Utility/Config/XmlParser.h \
     ../../../Utility/Config/Config.h \
     ../../../Utility/ErrorLog/ErrorLogInterface.h \
-    ../../../Utility/ErrorLog/ErrorLogItem.h
+    ../../../Utility/ErrorLog/ErrorLogItem.h \
+    ../../../Components/PatientManager/PatientDefine.h \
+    ../../../Components/System/Widgets/RunningStatusBarInterface.h \
+    MockSystemManager.h \
+    ../../../Components/System/SystemDefine.h \
+    MockSoundManager.h \
+    MockNIBPParam.h \
+    MockConfigManager.h \
+    ../../../Utility/NightModeManager/NightModeManagerInterface.h
 
 INCLUDEPATH += \
     ../../../Utility/NightModeManager \
@@ -55,4 +64,5 @@ INCLUDEPATH += \
     ../../../Components/WindowManager \
     ../../../Params/NIBPParam \
     ../../../Components/ConfigManager \
-    ../../../Utility/ErrorLog
+    ../../../Utility/ErrorLog \
+    ../../../Components/PatientManager

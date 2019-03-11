@@ -15,11 +15,12 @@
 #include "BaseDefine.h"
 #include "FontManager.h"
 #include "ThemeManager.h"
-#include "IConfig.h"
+#include "ConfigManager.h"
 #include "WaveWidgetLabel.h"
 #include <QTimer>
 #include <QScopedPointer>
 #include <QResizeEvent>
+#include "ConfigManager.h"
 
 OxyCRGTrendWaveWidgetPrivate::OxyCRGTrendWaveWidgetPrivate(OxyCRGTrendWaveWidget * const q_ptr)
     : q_ptr(q_ptr),
