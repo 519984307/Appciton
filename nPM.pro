@@ -158,6 +158,7 @@ SOURCES +=                                                                      
     Utility/DataStorage/DataStorageDirManager.cpp                               \
     Utility/DataStorage/StorageFile.cpp                                         \
     Utility/DataStorage/StorageManager.cpp                                      \
+    Utility/DataStorage/DataStorageDirManagerInterface.cpp                      \
     Utility/ErrorLog/ErrorLogInterface.cpp                                      \
     Utility/ErrorLog/ErrorLog.cpp                                               \
     Utility/ErrorLog/ErrorLogItem.cpp                                           \
@@ -599,8 +600,7 @@ SOURCES +=                                                                      
     Main/IApplication.cpp                                                       \
     Main/IThread.cpp                                                            \
     Main/MergeConfig.cpp                                                        \
-    Main/Starter.cpp \
-    Utility/DataStorage/DataStorageDirManagerInterface.cpp
+    Main/Starter.cpp
 
 HEADERS +=                                                                      \
     SOUP/Json/FlexLexer.h                                                       \
@@ -632,6 +632,7 @@ HEADERS +=                                                                      
     Utility/DataStorage/StorageFile.h                                           \
     Utility/DataStorage/DataStorageDirManager.h                                 \
     Utility/DataStorage/StorageManager.h                                        \
+    Utility/DataStorage/DataStorageDirManagerInterface.h                        \
     Utility/ErrorLog/ErrorLogInterface.h                                        \
     Utility/ErrorLog/ErrorLog.h                                                 \
     Utility/ErrorLog/ErrorLogItem.h                                             \
@@ -1147,8 +1148,7 @@ HEADERS +=                                                                      
     Main/MergeConfig.h                                                          \
     Main/Starter.h                                                              \
     Main/Version.h \
-    Utility/Widgets/ImportFileSubWidget.h \
-    Utility/DataStorage/DataStorageDirManagerInterface.h
+    Utility/Widgets/ImportFileSubWidget.h
 
 #头文件修改后，重新编译依赖的源文件
 DEPENDPATH +=                                                                   \
