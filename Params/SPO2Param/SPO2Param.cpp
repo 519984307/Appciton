@@ -119,7 +119,8 @@ void SPO2Param::handDemoWaveform(WaveformID id, short data)
  *************************************************************************************************/
 void SPO2Param::handDemoTrendData(void)
 {
-    _spo2Value = 98;
+    static short demoSpo2Value = 90;
+    _spo2Value = demoSpo2Value++;
     _piValue = 41;
     if (NULL != _trendWidget)
     {

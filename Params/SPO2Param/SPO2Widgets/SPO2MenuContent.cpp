@@ -25,6 +25,7 @@
 #include "AlarmLimitWindow.h"
 #include "ECGParam.h"
 #include "NightModeManager.h"
+#include "CCHDWindow.h"
 
 class SPO2MenuContentPrivate
 {
@@ -274,6 +275,12 @@ void SPO2MenuContent::layoutExec()
     layout->addWidget(btn, d_ptr->combos.count(), 1);
     connect(btn, SIGNAL(released()), this, SLOT(onAlarmBtnReleased()));
 
+    // CCHD筛查
+    btn = new Button(trs("CCHDCheck"));
+    btn->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(btn, d_ptr->combos.count() + 1, 1);
+    connect(btn, SIGNAL(released()), this, SLOT(onCCHDCheckBtnReleased()));
+
     layout->setRowStretch(d_ptr->combos.count() + 1, 1);
 }
 
@@ -327,4 +334,10 @@ void SPO2MenuContent::onPopupListItemFocusChanged(int volume)
         soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT , static_cast<SoundManager::VolumeLevel>(volume));
         soundManager.heartBeatTone();
     }
+}
+
+void SPO2MenuContent::onCCHDCheckBtnReleased()
+{
+    CCHDWindow *win = new CCHDWindow();
+    win->exec();
 }
