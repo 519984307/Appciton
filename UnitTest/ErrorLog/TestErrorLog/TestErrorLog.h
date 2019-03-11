@@ -21,6 +21,7 @@ public:
 
 private:
     MyThread *_myThread;
+    ErrorLogItem* item;
 
 private Q_SLOTS:
     void initTestCase();
