@@ -11,7 +11,6 @@
 #pragma once
 #include "AlarmDefine.h"
 #include "ParamDefine.h"
-#include "Debug.h"
 #include <stdlib.h>
 #include <QMap>
 #include <QLinkedList>

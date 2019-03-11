@@ -12,6 +12,7 @@
 
 #include "AlarmState.h"
 
+class AlarmResetStatePrivate;
 class AlarmResetState : public AlarmState
 {
     Q_OBJECT
@@ -24,4 +25,7 @@ public:
 
     /* reimplement */
     void handAlarmEvent(AlarmStateEvent event, unsigned char *data, unsigned len);
+
+private:
+    AlarmResetStatePrivate * const d_ptr;
 };

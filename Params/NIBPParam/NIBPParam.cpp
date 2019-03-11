@@ -11,7 +11,7 @@
 
 #include "NIBPParam.h"
 #include "NIBPAlarm.h"
-#include "IConfig.h"
+#include "ConfigManager.h"
 #include "TimeDate.h"
 #include "N5Provider.h"
 #include "NIBPTrendWidget.h"
@@ -30,6 +30,7 @@
 #include "EventStorageManager.h"
 #include "TrendDataStorageManager.h"
 #include "SoundManager.h"
+#include "IConfig.h"
 
 NIBPParam *NIBPParam::_selfObj = NULL;
 

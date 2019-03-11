@@ -31,6 +31,7 @@
 #include <QDate>
 #include "FloatHandle.h"
 
+#define PATIENT_BORN_DATE_RANAGE 1800
 PatientInfoWindow *PatientInfoWindow::_selfObj = NULL;
 class PatientInfoWindowPrivate
 {
@@ -250,10 +251,6 @@ void PatientInfoWindowPrivate::loadOptions()
 
     unsigned int year = 0, month = 0, day = 0;
     patientManager.getBornDate(year, month, day);
-    if (year > timeDate.getDateYear())
-    {
-        year = timeDate.getDateYear();
-    }
     switch (dateFormat)
     {
     case DATE_FORMAT_Y_M_D:
@@ -275,7 +272,7 @@ void PatientInfoWindowPrivate::loadOptions()
         break;
     }
 
-    dateItem[Born_Date_Year]->setRange(1970, timeDate.getDateYear());
+    dateItem[Born_Date_Year]->setRange(PATIENT_BORN_DATE_RANAGE, timeDate.getDateYear());
     dateItem[Born_Date_Year]->setValue(year);
     dateItem[Born_Date_Month]->setValue(month);
     dateItem[Born_Date_Day]->setValue(day);

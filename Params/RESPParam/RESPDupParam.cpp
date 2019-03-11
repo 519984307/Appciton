@@ -12,7 +12,7 @@
 
 #include "RESPDupParam.h"
 #include "BaseDefine.h"
-#include "IConfig.h"
+#include "ConfigManager.h"
 #include "RESPTrendWidget.h"
 #include "CO2TrendWidget.h"
 #include "Debug.h"

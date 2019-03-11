@@ -10,7 +10,7 @@
 
 
 #include "ColorManager.h"
-#include "IConfig.h"
+#include "ConfigManager.h"
 
 ColorManager *ColorManager::_selfObj = NULL;
 

@@ -12,7 +12,6 @@
 #include <QString>
 #include "AlarmParamIFace.h"
 #include "AlarmIndicator.h"
-#include "SoundManager.h"
 #include <QMultiMap>
 
 class Alarm
