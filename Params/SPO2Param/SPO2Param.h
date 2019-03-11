@@ -15,6 +15,18 @@
 #include "SPO2Symbol.h"
 #include "SoundManager.h"
 
+typedef struct CCHDData
+{
+    CCHDData()
+        : handValue(InvData()),
+          footValue(InvData()),
+          result(CCHD_NR)
+    {}
+    short handValue;
+    short footValue;
+    CCHDResult result;
+}cchdData;
+
 class SPO2TrendWidget;
 class SPO2WaveWidget;
 class OxyCRGSPO2TrendWidget;
@@ -201,6 +213,22 @@ public:
     void setNibpSameSide(bool flag);
     bool isNibpSameSide(void);
 
+    /**
+     * @brief getCCHDResult 获取cchd的筛查结果
+     * @param handValue 手部测量数据
+     * @param footValue 足部测量数据
+     * @return
+     */
+    CCHDResult getCCHDResult(short handValue, short footValue);
+
+    /**
+     * @brief getCCHDDataList 获取cchd数据
+     * @return
+     */
+    QList<cchdData> getCCHDDataList();
+
+    void clearCCHDData();
+
 private slots:
     void checkSelftest();
     void onPaletteChanged(ParamID id);
@@ -229,5 +257,7 @@ private:
     OxyCRGSPO2TrendWidget *_oxyCRGSPO2Trend;
     bool _connectedProvider;
     SPO2ModuleType _moduleType;
+
+    QList<cchdData> _cchdDataList;
 };
 #define spo2Param (SPO2Param::construction())

@@ -119,7 +119,8 @@ void SPO2Param::handDemoWaveform(WaveformID id, short data)
  *************************************************************************************************/
 void SPO2Param::handDemoTrendData(void)
 {
-    _spo2Value = 98;
+    static short demoSpo2Value = 90;
+    _spo2Value = demoSpo2Value++;
     _piValue = 41;
     if (NULL != _trendWidget)
     {
@@ -761,6 +762,69 @@ bool SPO2Param::isNibpSameSide(void)
     int flag;
     currentConfig.getNumValue("SPO2|NIBPSameSide", flag);
     return flag;
+}
+
+CCHDResult SPO2Param::getCCHDResult(short handValue, short footValue)
+{
+    static int repeatTimes = 0;
+    if (handValue == InvData() || footValue == InvData())
+    {
+        return CCHD_NR;
+    }
+    CCHDResult result = CCHD_NR;
+    cchdData data;
+    data.footValue = footValue;
+    data.handValue = handValue;
+
+    if ((handValue >= 95 && abs(footValue - handValue) <= 3) ||
+            (footValue >= 95 && abs(footValue - handValue) <= 3))
+    {
+        // 阴性
+        repeatTimes = 0;
+        result = Negative;
+    }
+    else if (((handValue >= 90 && handValue <= 94) && (footValue >= 90 && footValue <= 94))
+             || (abs(handValue - footValue) > 3))
+    {
+        // 重复测试判断是否为阳性
+        repeatTimes++;
+        if (repeatTimes > 2)
+        {
+            // 重复测量3次则返回阳性
+            repeatTimes = 0;
+            result = Positive;
+        }
+        else
+        {
+            result = RepeatCheck;
+        }
+    }
+    else
+    {
+        // 阳性
+        repeatTimes = 0;
+        result = Positive;
+    }
+    data.result = result;
+    _cchdDataList.append(data);
+    return result;
+}
+
+
+QList<cchdData> SPO2Param::getCCHDDataList()
+{
+    return _cchdDataList;
+}
+
+void SPO2Param::clearCCHDData()
+{
+    if (!_cchdDataList.isEmpty())
+    {
+        if (_cchdDataList.count() >= 3 || _cchdDataList.last().result == Positive || _cchdDataList.last().result == Negative)
+        {
+            _cchdDataList.clear();
+        }
+    }
 }
 
 /**************************************************************************************************

@@ -1637,3 +1637,12 @@ Input8DigitsPassword,请输入8位数字密码,Please input 8 digits password
 BornDate,出生日期,Born Date
 RescueStorageSpaceFull,营救数据存储空间满,Rescue storage space full
 ChangePatientType,更改病人类型会导致配置更改，您确认要这么做吗？,Changing patient type will cause the configuration changes，Are you sure?
+handMeasure,手部测量,Hand Measure
+footMeasure,足部测量,Foot Measure
+CCHDCheck,CCHD筛查,CCHD Check
+Negative,阴性,Negative
+Positive,阳性,Positive
+Result,结果,Result
+RepeatCheck,请重复检查,Please Repeat Check
+footValue,足部数据,foot value
+handValue,手部数据,hand value
