@@ -603,7 +603,8 @@ SOURCES +=                                                                      
     Main/IApplication.cpp                                                       \
     Main/IThread.cpp                                                            \
     Main/MergeConfig.cpp                                                        \
-    Main/Starter.cpp
+    Main/Starter.cpp \
+    Components/PatientData/WaveformCacheInterface.cpp
 
 HEADERS +=                                                                      \
     SOUP/Json/FlexLexer.h                                                       \
@@ -1154,7 +1155,8 @@ HEADERS +=                                                                      
     Main/MergeConfig.h                                                          \
     Main/Starter.h                                                              \
     Main/Version.h \
-    Utility/Widgets/ImportFileSubWidget.h
+    Utility/Widgets/ImportFileSubWidget.h \
+    Components/PatientData/WaveformCacheInterface.h
 
 #头文件修改后，重新编译依赖的源文件
 DEPENDPATH +=                                                                   \
