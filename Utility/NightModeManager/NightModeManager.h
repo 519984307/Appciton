@@ -16,7 +16,6 @@ class NightModeManager
 {
 public:
     static NightModeManager &getInstance(void);
-    static NightModeManager *instance;
 
     // 复制构造函数
     ~NightModeManager();
@@ -39,4 +38,3 @@ private:
     NightModeManagerPrivate *d_ptr;
 };
 #define nightModeManager (NightModeManager::getInstance())
-#define deleteNightManager (NightModeManager::instance = NULL)

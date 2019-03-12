@@ -29,15 +29,6 @@ void TestNightManager::initTestCase()
 {
 }
 
-void TestNightManager::init()
-{
-}
-
-void TestNightManager::cleanup()
-{
-    deleteNightManager;
-}
-
 void TestNightManager::cleanupTestCase()
 {
 }

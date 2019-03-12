@@ -17,8 +17,6 @@
 #include "SoundManagerInterface.h"
 #include "ConfigManagerInterface.h"
 
-NightModeManager *NightModeManager::instance = NULL;
-
 class NightModeManagerPrivate
 {
 public:
@@ -37,6 +35,7 @@ NightModeManager::NightModeManager()
 
 NightModeManager &NightModeManager::getInstance()
 {
+    static NightModeManager *instance = NULL;
     if (instance == NULL)
     {
         instance = new NightModeManager();

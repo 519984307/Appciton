@@ -31,7 +31,6 @@ SOURCES += main.cpp \
     ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
     ../../../Utility/ErrorLog/ErrorLogItem.cpp \
     ../../../Components/System/Widgets/RunningStatusBarInterface.cpp \
-    ../../../Utility/NightModeManager/NightModeManagerInterface.cpp
 
 HEADERS += \
     TestNightManager.h \
@@ -53,7 +52,6 @@ HEADERS += \
     MockSoundManager.h \
     MockNIBPParam.h \
     MockConfigManager.h \
-    ../../../Utility/NightModeManager/NightModeManagerInterface.h
 
 INCLUDEPATH += \
     ../../../Utility/NightModeManager \

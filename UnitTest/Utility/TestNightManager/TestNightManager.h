@@ -17,8 +17,6 @@ class TestNightManager : public QObject
     Q_OBJECT
 private Q_SLOTS:
     void initTestCase();
-    void init();
-    void cleanup();
     void testSetNightMode_data();
     void testSetNightMode();
     void testNightMode_data();
