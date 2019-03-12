@@ -16,16 +16,8 @@
 class AlarmNormalStatePrivate
 {
 public:
-    AlarmNormalStatePrivate()
-        : alarmIndicator(AlarmIndicatorInterface::getAlarmIndicator()),
-          alarmStateMachine(AlarmStateMachineInterface::getAlarmStateMachine()),
-          lightManager(LightManagerInterface::getLightManager())
-    {}
+    AlarmNormalStatePrivate(){}
     ~AlarmNormalStatePrivate(){}
-
-    AlarmIndicatorInterface *alarmIndicator;
-    AlarmStateMachineInterface *alarmStateMachine;
-    LightManagerInterface *lightManager;
 };
 
 /**************************************************************************************************
@@ -50,9 +42,11 @@ AlarmNormalState::~AlarmNormalState()
  *************************************************************************************************/
 void AlarmNormalState::enter()
 {
-    d_ptr->alarmIndicator->setAlarmStatus(ALARM_STATUS_NORMAL);
-    d_ptr->alarmIndicator->updateAlarmStateWidget();
-    d_ptr->lightManager->enableAlarmAudioMute(false);
+    AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+    alarmIndicator->setAlarmStatus(ALARM_STATUS_NORMAL);
+    alarmIndicator->updateAlarmStateWidget();
+    LightManagerInterface *lightManager = LightManagerInterface::getLightManager();
+    lightManager->enableAlarmAudioMute(false);
 }
 
 /**************************************************************************************************
@@ -60,27 +54,29 @@ void AlarmNormalState::enter()
  *************************************************************************************************/
 void AlarmNormalState::handAlarmEvent(AlarmStateEvent event, unsigned char */*data*/, unsigned /*len*/)
 {
+    AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+    AlarmStateMachineInterface *alarmStateMachine = AlarmStateMachineInterface::getAlarmStateMachine();
     switch (event)
     {
 #if 1
     case ALARM_STATE_EVENT_RESET_BTN_PRESSED:
     {
         //删除栓锁报警
-        d_ptr->alarmIndicator->delLatchPhyAlarm();
-        d_ptr->alarmIndicator->phyAlarmResetStatusHandle();
-        d_ptr->alarmIndicator->techAlarmResetStatusHandle();
-        if (d_ptr->alarmIndicator->getAlarmCount())
+        alarmIndicator->delLatchPhyAlarm();
+        alarmIndicator->phyAlarmResetStatusHandle();
+        alarmIndicator->techAlarmResetStatusHandle();
+        if (alarmIndicator->getAlarmCount())
         {
             // must has med priority alarm or high priority alarm before enter the reset state
-            d_ptr->alarmStateMachine->switchState(ALARM_RESET_STATE);
+            alarmStateMachine->switchState(ALARM_RESET_STATE);
         }
         break;
     }
 
     case ALARM_STATE_EVENT_MUTE_BTN_PRESSED:
     {
-        d_ptr->alarmIndicator->phyAlarmPauseStatusHandle();
-        d_ptr->alarmStateMachine->switchState(ALARM_PAUSE_STATE);
+        alarmIndicator->phyAlarmPauseStatusHandle();
+        alarmStateMachine->switchState(ALARM_PAUSE_STATE);
         break;
     }
 #else
@@ -100,17 +96,17 @@ void AlarmNormalState::handAlarmEvent(AlarmStateEvent event, unsigned char */*da
 
     case ALARM_STATE_EVENT_MUTE_BTN_PRESSED_SHORT_TIME:
     {
-        if (d_ptr->alarmStateMachine->isEnableAlarmAudioOff())
+        if (alarmStateMachine->isEnableAlarmAudioOff())
         {
-            d_ptr->alarmStateMachine->switchState(ALARM_AUDIO_OFF_STATE);
+            alarmStateMachine->switchState(ALARM_AUDIO_OFF_STATE);
         }
         break;
     }
     case ALARM_STATE_EVENT_MUTE_BTN_PRESSED_LONG_TIME:
     {
-        if (d_ptr->alarmStateMachine->isEnableAlarmOff())
+        if (alarmStateMachine->isEnableAlarmOff())
         {
-            d_ptr->alarmStateMachine->switchState(ALARM_OFF_STATE);
+            alarmStateMachine->switchState(ALARM_OFF_STATE);
         }
         break;
     }
