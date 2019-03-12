@@ -45,7 +45,7 @@ enum  // 位操作。
 enum  // 设置命令。
 {
     CMD_SET_MODE = 0x00,      // 设置工作模式
-    CMD_SET_APNE_TIME = 0x01, // 设置窒息时间
+    CMD_SET_APNE_TIME = 0x01,  // 设置窒息时间
     CMD_SET_O2 = 0x04,        // 设置氧气补偿的浓度
     CMD_SET_N20 = 0x05,       // 设置笑气补偿的浓度
     CMD_ZERO_CAL = 0x06,      // 模块校零命令。
@@ -76,7 +76,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
     if (!isConnected)
     {
         co2Param.setConnected(true);
-        setWorkMode(CO2_WORK_MEASUREMENT); // 上电就开始测量。
+        setWorkMode(CO2_WORK_MEASUREMENT);  // 上电就开始测量。
     }
     feed();
 
@@ -137,7 +137,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
         break;
 
     case GEN_VALS:    //一些其他附加信息值
-        value = (packet[14] == 0xFF) ? InvData() : packet[14];
+        value = (packet[14] == 0xFF) ? 0 : packet[14];  // 当获取不到CO2数据时候将数据置为0
         co2Param.setRR(value);
 
         value = packet[18];
@@ -155,7 +155,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
                 int val = tempStr.toInt();
                 if ((co2Param.getEtCO2MinValue() <= val) && (val <= co2Param.getEtCO2MaxValue()))
                 {
-                    value = (packet[14] == 0xFF) ? InvData() : packet[14];
+                    value = (packet[14] == 0xFF) ? 0 : packet[14];
                     co2Param.setFiCO2(_fico2Value);
                     co2Param.setEtCO2(_etco2Value);
                     co2Param.setBR(value);
@@ -169,7 +169,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
             }
             else
             {
-                value = (packet[14] == 0xFF) ? InvData() : packet[14];
+                value = (packet[14] == 0xFF) ? 0 : packet[14];
                 co2Param.setFiCO2(_fico2Value);
                 co2Param.setEtCO2(_etco2Value);
                 co2Param.setBR(value);
@@ -249,7 +249,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
         co2Param.verifyApneanTime((ApneaAlarmTime)_status.apneaTime);
         break;
 
-    case CONFIG_DATA: // 模块配置信息
+    case CONFIG_DATA:  // 模块配置信息
         val = packet[14];
 
         // 设备是否支持O2参数。
@@ -271,7 +271,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
         val = packet[15];
         bcd_val_hi = (val & 0xf0) >> 4;
         bcd_val_lo = val & 0x0f;
-        _status.hardwaveVersion = bcd_val_hi * 10 + bcd_val_lo; // BCD code
+        _status.hardwaveVersion = bcd_val_hi * 10 + bcd_val_lo;  // BCD code
 
         val = packet[16];
         bcd_val_hi = (val & 0xf0) >> 4;
@@ -280,7 +280,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
         bcd_val_hi2 = (val & 0xf0) >> 4;
         bcd_val_lo2 = val & 0x0f;
         _status.softwaveVersion = bcd_val_hi * 1000 + bcd_val_lo * 100 + bcd_val_hi2 * 10
-                                  + bcd_val_lo2; // BCD code
+                                  + bcd_val_lo2;  // BCD code
 
         val = packet[18];
         _status.axIDConfig = ((val & BIT0) == BIT0) ? true : false;  // if auto ag id avaiable
@@ -332,7 +332,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
 
         if (_status.sidestreamConfig)
         {
-            if (_status.zeroDisable) //如果校零使能和校零进行中同时为真则代表正在校零
+            if (_status.zeroDisable)  //如果校零使能和校零进行中同时为真则代表正在校零
             {
                 if (isZeroInProgress && !_status.zeroInProgress)
                 {
