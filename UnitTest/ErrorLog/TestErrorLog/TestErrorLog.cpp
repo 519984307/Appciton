@@ -191,7 +191,7 @@ void TestErrorLogTest::testTypeCount()
     criticalItem->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
 
     errorLog.append(criticalItem);
-    Util::waitInEventLoop(1000);
+    Util::waitInEventLoop(2000);
     QCOMPARE(errorLog.getTypeCount(CriticalFaultLogItem::Type), 1);
 
     ErrorLogItem *CrashItem = new CrashLogItem();
@@ -202,7 +202,7 @@ void TestErrorLogTest::testTypeCount()
     CrashItem->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
 
     errorLog.append(CrashItem);
-    Util::waitInEventLoop(1000);
+    Util::waitInEventLoop(2000);
 
     QCOMPARE(errorLog.getTypeCount(CrashLogItem::Type), 1);
 

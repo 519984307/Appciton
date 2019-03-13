@@ -11,7 +11,8 @@
 #include <QFile>
 #include "Config.h"
 #include "unistd.h"
-#include "ErrorLog.h"
+#include "ErrorLogInterface.h"
+#include "ErrorLogItem.h"
 
 /**************************************************************************************************
  * 功能： 构建原始文件的备份文件名
@@ -126,7 +127,8 @@ void Config::_restoreOrigFile(const QString &configPath)
         item->setSubSystem(ErrorLogItem::SUB_SYS_MAIN_PROCESSOR);
         item->setSystemState(ErrorLogItem::SYS_STAT_RUNTIME);
         item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
-        errorLog.append(item);
+        ErrorLogInterface *errorLog = ErrorLogInterface::getErrorLog();
+        errorLog->append(item);
     }
 }
 
