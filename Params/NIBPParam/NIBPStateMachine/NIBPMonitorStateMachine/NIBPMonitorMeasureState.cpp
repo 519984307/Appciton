@@ -1,6 +1,18 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/3/7
+ **/
+
+
 #include "NIBPMonitorMeasureState.h"
 #include "NIBPParam.h"
 #include "NIBPAlarm.h"
+#include "NIBPCountdownTime.h"
 
 /**************************************************************************************************
  * 进入该状态。
@@ -64,7 +76,7 @@ void NIBPMonitorMeasureState::handleNIBPEvent(NIBPEvent event, const unsigned ch
     {
         setTimeOut();
         short pressure = 0;
-        pressure = (args[1]<<8)+args[0];
+        pressure = (args[1] << 8)+args[0];
         if (pressure != -1)
         {
             nibpParam.setCuffPressure(pressure);
@@ -89,7 +101,6 @@ void NIBPMonitorMeasureState::handleNIBPEvent(NIBPEvent event, const unsigned ch
  *************************************************************************************************/
 NIBPMonitorMeasureState::NIBPMonitorMeasureState() : NIBPState(NIBP_MONITOR_MEASURE_STATE)
 {
-
 }
 
 /**************************************************************************************************
@@ -97,5 +108,4 @@ NIBPMonitorMeasureState::NIBPMonitorMeasureState() : NIBPState(NIBP_MONITOR_MEAS
  *************************************************************************************************/
 NIBPMonitorMeasureState::~NIBPMonitorMeasureState()
 {
-
 }

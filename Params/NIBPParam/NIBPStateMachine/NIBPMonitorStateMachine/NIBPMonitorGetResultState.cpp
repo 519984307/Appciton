@@ -12,6 +12,8 @@
 #include "NIBPMonitorGetResultState.h"
 #include "NIBPParam.h"
 #include "EventStorageManager.h"
+#include "TimeManager.h"
+#include "NIBPCountdownTime.h"
 
 /**************************************************************************************************
  * 进入该状态。

@@ -368,7 +368,7 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
         {
             if (traceCtrl->lastAlarmed)
             {
-                if (traceCtrl->type != ALARM_TYPE_TECH)
+                if (traceCtrl->type != ALARM_TYPE_TECH && _isLatchLock)
                 {
                     if (alarmIndicator.latchAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage))
                     {

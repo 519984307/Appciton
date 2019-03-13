@@ -27,6 +27,7 @@
 #include "ErrorLogItem.h"
 #include "IConfig.h"
 #include "WindowManager.h"
+#include "RawDataCollector.h"
 
 /**************************************************************************************************
  * 模块与参数对接。
@@ -495,8 +496,7 @@ void E5Provider::handlePacket(unsigned char *data, int len)
 
     case TE3_CYCLE_STORE:
     {
-        int enable = 0;
-        machineConfig.getNumValue("Record|ECG", enable);
+        rawDataCollector.collectData(RawDataCollector::ECG_DATA, data + 1, len -1);
         break;
     }
 

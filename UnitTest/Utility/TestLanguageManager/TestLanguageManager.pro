@@ -38,6 +38,7 @@ HEADERS += \
     ../../../Utility/ErrorLog/ErrorLogInterface.h \
     ../../../Utility/Config/Config.h \
     ../../../Utility/ErrorLog/ErrorLogItem.h \
+    ../../../Components/PatientManager/PatientDefine.h
 
 INCLUDEPATH += \
     ../../../Utility \

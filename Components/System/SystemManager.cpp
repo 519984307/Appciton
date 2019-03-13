@@ -1031,6 +1031,11 @@ SystemManager &SystemManager::getInstance()
     if (instance == NULL)
     {
         instance = new SystemManager();
+        SystemManagerInterface *old = registerSystemManager(instance);
+        if (old)
+        {
+            delete old;
+        }
     }
     return *instance;
 }

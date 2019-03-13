@@ -1,5 +1,17 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/3/7
+ **/
+
+
 #include "NIBPMonitorStopState.h"
 #include "NIBPParam.h"
+#include "NIBPCountdownTime.h"
 
 /**************************************************************************************************
  * 进入该状态。
@@ -20,8 +32,8 @@ void NIBPMonitorStopState::enter(void)
     if (nibpParam.getMeasurMode() == NIBP_MODE_STAT)
     {
         nibpCountdownTime.STATMeasureStop();
-        nibpParam.setSTATMeasure(false);               //退出STAT
-        nibpParam.setSTATClose(true);                  //置STAT关闭标志
+        nibpParam.setSTATMeasure(false);               // 退出STAT
+        nibpParam.setSTATClose(true);                  // 置STAT关闭标志
         nibpParam.setModelText(trs("STATSTOPPED"));
     }
     else
@@ -65,7 +77,6 @@ void NIBPMonitorStopState::handleNIBPEvent(NIBPEvent event, const unsigned char 
  *************************************************************************************************/
 NIBPMonitorStopState::NIBPMonitorStopState() : NIBPState(NIBP_MONITOR_STOPE_STATE)
 {
-
 }
 
 /**************************************************************************************************
@@ -73,5 +84,4 @@ NIBPMonitorStopState::NIBPMonitorStopState() : NIBPState(NIBP_MONITOR_STOPE_STAT
  *************************************************************************************************/
 NIBPMonitorStopState::~NIBPMonitorStopState()
 {
-
 }

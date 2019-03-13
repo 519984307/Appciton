@@ -348,6 +348,11 @@ SoundManager &SoundManager::getInstance()
     if (instance == NULL)
     {
         instance = new SoundManager();
+        SoundManagerInterface *old = registerSoundManager(instance);
+        if (old)
+        {
+            delete old;
+        }
     }
     return *instance;
 }

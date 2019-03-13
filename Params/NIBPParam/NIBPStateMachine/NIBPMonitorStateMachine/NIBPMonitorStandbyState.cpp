@@ -1,5 +1,17 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/3/7
+ **/
+
+
 #include "NIBPMonitorStandbyState.h"
 #include "NIBPParam.h"
+#include "NIBPCountdownTime.h"
 
 /**************************************************************************************************
  * 处理事件。
@@ -47,7 +59,6 @@ void NIBPMonitorStandbyState::handleNIBPEvent(NIBPEvent event, const unsigned ch
     default:
         break;
     }
-
 }
 
 /**************************************************************************************************
@@ -72,7 +83,6 @@ void NIBPMonitorStandbyState::enter()
  *************************************************************************************************/
 NIBPMonitorStandbyState::NIBPMonitorStandbyState() : NIBPState(NIBP_MONITOR_STANDBY_STATE)
 {
-
 }
 
 /**************************************************************************************************
@@ -80,5 +90,4 @@ NIBPMonitorStandbyState::NIBPMonitorStandbyState() : NIBPState(NIBP_MONITOR_STAN
  *************************************************************************************************/
 NIBPMonitorStandbyState::~NIBPMonitorStandbyState()
 {
-
 }
