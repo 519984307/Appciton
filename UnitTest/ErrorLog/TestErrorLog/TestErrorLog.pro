@@ -33,7 +33,6 @@ HEADERS += \
     ../../../SOUP/Json/parser.h \
     ../../../Utility/DataStorage/StorageFile.h \
     ../../../Utility/Config/IConfig.h \
-    ConfigManager.h \
     ../../../Utility/ErrorLog/ErrorLogItem.h \
     ../../../Utility/Config/Config.h \
     ../../../Utility/Config/XmlParser.h \
