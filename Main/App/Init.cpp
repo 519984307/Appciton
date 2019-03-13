@@ -85,7 +85,7 @@ static void _initSystem(void)
     }
 
     // 波形缓存。
-    waveformCache.construction();
+    waveformCache.getInstance();
 
     // tick初始化。
     systemTick.construction();
@@ -640,7 +640,6 @@ void deleteObjects(void)
     deletepMessageBox();
     deleteAlarm();
 
-    deleteWaveformCache();
     deleteTrendCache();
     deleteRescueDataExportWidget();
     deleteRescueDataDeleteWidget();
