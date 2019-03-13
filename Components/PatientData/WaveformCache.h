@@ -98,7 +98,8 @@ public: // 通道相关。
     // unregister a waveform recorder
     void unRegisterWaveformRecorder(WaveformID id, void *recObj);
 
-
+    // clear all source
+    void clear();
 private:
     inline bool _channelExisted(WaveformID id, const QString &name);
 
@@ -162,11 +163,11 @@ private:
         int curCacheLen;
         SyncCacheCallback cb;
     };
-    typedef QMap<WaveformID, QList<WaveSyncCache>> WaveSyncCacheMap;
+    typedef QMap<WaveformID, QList<WaveSyncCache> > WaveSyncCacheMap;
     WaveSyncCacheMap _syncCache;
     QMutex _syncCacheMutex;
 
-    typedef QMap<WaveformID, QList<WaveformRecorder>> WaveformRecorderMap;
+    typedef QMap<WaveformID, QList<WaveformRecorder> > WaveformRecorderMap;
     WaveformRecorderMap _waveRecorders;
     QMutex _recorderMutex;
 };

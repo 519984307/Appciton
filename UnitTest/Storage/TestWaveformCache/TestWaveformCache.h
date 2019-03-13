@@ -26,5 +26,12 @@ private slots:
     void cleanup();
     void testRegisterSource_data();
     void testRegisterSource();
+    void testChannelDuration();
+    void testReadStorageChannel_data();
+    void testReadStorageChannel();
+    void testReadRealtimeChannel_data();
+    void testReadRealtimeChannel();
+    void testRegisterWaveformRecorder_data();
+    void testRegisterWaveformRecorder();
 };
 #endif // TESTWAVEFORMCACHETEST_H

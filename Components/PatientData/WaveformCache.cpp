@@ -503,6 +503,16 @@ void WaveformCache::unRegisterWaveformRecorder(WaveformID id, void *recObj)
     }
 }
 
+void WaveformCache::clear()
+{
+    memset(_storageChannel, 0, sizeof(_storageChannel));
+    memset(_realtimeChannel, 0, sizeof(_realtimeChannel));
+    _enableRealtimeChannel = false;
+    _source.clear();
+    _syncCache.clear();
+    _waveRecorders.clear();
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
