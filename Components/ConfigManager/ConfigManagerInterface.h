@@ -5,12 +5,12 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/3/1
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/3/6
  **/
 
 #pragma once
-#include "Config.h"
 #include "PatientDefine.h"
+#include "Config.h"
 
 class ConfigManagerInterface
 {

@@ -10,21 +10,12 @@
 
 #pragma once
 #include <QObject>
-#include "SoundManager.h"
 
 class NightModeManagerPrivate;
 class NightModeManager
 {
 public:
-    static NightModeManager &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new NightModeManager();
-        }
-        return *_selfObj;
-    }
-    static NightModeManager *_selfObj;
+    static NightModeManager &getInstance(void);
 
     // 复制构造函数
     ~NightModeManager();
@@ -46,4 +37,4 @@ private:
     NightModeManager(const NightModeManager &handle);  // stop the cppcheck complain
     NightModeManagerPrivate *d_ptr;
 };
-#define nightModeManager (NightModeManager::construction())
+#define nightModeManager (NightModeManager::getInstance())
