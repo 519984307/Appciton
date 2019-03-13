@@ -24,7 +24,9 @@ private Q_SLOTS:
     void testTime();
     void testDifftime_data();
     void testDifftime();
+    void testGetTime_data();
     void testGetTime();
+    void testGetDate_data();
     void testGetDate();
     void testGetTimeStr_data();
     void testGetTimeStr();

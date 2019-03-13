@@ -53,6 +53,7 @@ void TestTimeDate::testDifftime_data()
     QTest::newRow("difftime2") << 2;
     QTest::newRow("difftime3") << 3;
 }
+
 void TestTimeDate::testDifftime()
 {
     time_t time1 = time(NULL);
@@ -63,33 +64,50 @@ void TestTimeDate::testDifftime()
     QCOMPARE(static_cast<int>(timeDate.difftime(time2, time1)), Difftime);
 }
 
+void TestTimeDate::testGetTime_data()
+{
+    QTest::addColumn<bool>("ShowSecond");
+    QTest::addColumn<bool>("NotShowSecond");
+    QTest::newRow("Second") << true << false;
+}
+
 void TestTimeDate::testGetTime()
 {
+    QFETCH(bool, ShowSecond);
+    QFETCH(bool, NotShowSecond);
     QString str;
-    timeDate.getTime(str, true);
+    timeDate.getTime(str, ShowSecond);
     QTime currentTime = QTime::currentTime();
     QString time = QString("%1:%2:%3").arg(currentTime.hour(), 2, 10, QLatin1Char('0')).
                 arg(currentTime.minute(), 2, 10, QLatin1Char('0'))
                 .arg(currentTime.second(), 2, 10, QLatin1Char('0'));
     QCOMPARE(str, time);
 
-    timeDate.getTime(str, false);
+    timeDate.getTime(str, NotShowSecond);
     time = QString("%1:%2").arg(currentTime.hour(), 2, 10, QLatin1Char('0')).
             arg(currentTime.minute(), 2, 10, QLatin1Char('0'));
     QCOMPARE(str, time);
 }
 
+void TestTimeDate::testGetDate_data()
+{
+    QTest::addColumn<bool>("showYear4Bits");
+    QTest::addColumn<bool>("NotShowYear4Bits");
+    QTest::newRow("Year4Bits") << true << false;
+}
 void TestTimeDate::testGetDate()
 {
+    QFETCH(bool, showYear4Bits);
+    QFETCH(bool, NotShowYear4Bits);
     QString str;
-    timeDate.getDate(str, true);
+    timeDate.getDate(str, showYear4Bits);
     QDate currentDate = QDate::currentDate();
     QString date = QString("%1/%2/%3").arg(currentDate.year(), 4, 10, QLatin1Char('0'))
                     .arg(currentDate.month(), 2, 10, QLatin1Char('0'))
                         .arg(currentDate.day(), 2, 10, QLatin1Char('0'));
     QCOMPARE(str, date);
 
-    timeDate.getDate(str, false);
+    timeDate.getDate(str, NotShowYear4Bits);
     date = QString("%1/%2/%3").arg(currentDate.year()%100, 2, 10, QLatin1Char('0'))
             .arg(currentDate.month(), 2, 10, QLatin1Char('0'))
                 .arg(currentDate.day(), 2, 10, QLatin1Char('0'));
@@ -99,25 +117,30 @@ void TestTimeDate::testGetDate()
 void TestTimeDate::testGetTimeStr_data()
 {
     QTest::addColumn<int>("Date");
-    QTest::newRow("row1") << 2;
-    QTest::newRow("row2") << 246;
-    QTest::newRow("row3") << 24682;
-    QTest::newRow("row4") << 2468246;
-    QTest::newRow("row5") << 246824682;
+    QTest::addColumn<bool>("showSecond");
+    QTest::addColumn<bool>("notShowSecond");
+
+    QTest::newRow("row1") << 2 << true << false;
+    QTest::newRow("row2") << 246 << true << false;
+    QTest::newRow("row3") << 24682 << true << false;
+    QTest::newRow("row4") << 2468246 << true << false;
+    QTest::newRow("row5") << 246824682 << true << false;
 }
 
 void TestTimeDate::testGetTimeStr()
 {
     QFETCH(int, Date);
+    QFETCH(bool, showSecond);
+    QFETCH(bool, notShowSecond);
     QString str;
-    timeDate.getTime(Date, str, true);
+    timeDate.getTime(Date, str, showSecond);
     QDateTime time = QDateTime::fromTime_t(Date);
     QString  timestr = QString("%1:%2:%3").arg(time.time().hour(), 2, 10, QLatin1Char('0'))
                     .arg(time.time().minute(), 2, 10, QLatin1Char('0'))
                         .arg(time.time().second(), 2, 10, QLatin1Char('0'));
     QCOMPARE(timestr, str);
 
-    timeDate.getTime(Date, str, false);
+    timeDate.getTime(Date, str, notShowSecond);
     timestr = QString("%1:%2").arg(time.time().hour(), 2, 10, QLatin1Char('0'))
             .arg(time.time().minute(), 2, 10, QLatin1Char('0'));
     QCOMPARE(timestr, str);
@@ -126,25 +149,29 @@ void TestTimeDate::testGetTimeStr()
 void TestTimeDate::testGetDateStr_data()
 {
     QTest::addColumn<int>("Date");
-    QTest::newRow("data1") << 1;
-    QTest::newRow("data2") << 135;
-    QTest::newRow("data3") << 13579;
-    QTest::newRow("data4") << 1357913;
-    QTest::newRow("data5") << 135791357;
+    QTest::addColumn<bool>("showYear4Bits");
+    QTest::addColumn<bool>("notShowYear4Bits");
+    QTest::newRow("data1") << 1 << true << false;
+    QTest::newRow("data2") << 135 << true << false;
+    QTest::newRow("data3") << 13579 << true << false;
+    QTest::newRow("data4") << 1357913 << true << false;
+    QTest::newRow("data5") << 135791357 << true << false;
 }
 
 void TestTimeDate::testGetDateStr()
 {
     QFETCH(int, Date);
+    QFETCH(bool, showYear4Bits);
+    QFETCH(bool, notShowYear4Bits);
     QString str;
-    timeDate.getDate(Date, str, true);
+    timeDate.getDate(Date, str, showYear4Bits);
     QDateTime date = QDateTime::fromTime_t(Date);
     QString  datestr = QString("%1/%2/%3").arg(date.date().year(), 2, 10, QLatin1Char('0'))
                     .arg(date.date().month(), 2, 10, QLatin1Char('0'))
                         .arg(date.date().day(), 2, 10, QLatin1Char('0'));
     QCOMPARE(datestr, str);
 
-    timeDate.getDate(Date, str, false);
+    timeDate.getDate(Date, str, notShowYear4Bits);
     datestr = QString("%1/%2/%3").arg(date.date().year()%100, 2, 10, QLatin1Char('0'))
             .arg(date.date().month(), 2, 10, QLatin1Char('0'))
                  .arg(date.date().day(), 2, 10, QLatin1Char('0'));
