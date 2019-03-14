@@ -102,9 +102,8 @@ void TestXMLParser::testAddNode_data()
     QTest::addColumn<QString>("key");
     QTest::addColumn<QString>("keyStr");
     QTest::addColumn<bool>("result");
-    QTest::newRow("row1") << "Node2" << "Node23" << "ddd" << "attr44" << "attr44" << true;
+    QTest::newRow("row1") << "Node3" << "Node33" << "ddd" << "attr44" << "attr44" << true;
     QTest::newRow("flaseRow") << "false" << "Node23" << "ddd" << "attr44" << "attr44" << false;
-    QTest::newRow("row2") << "Node3" << "Node33" << "ddd" << "attr44" << "attr44" << true;
     QTest::newRow("exit Node") << "Node11" <<"Node111" << "aaa" << "attr22" << "attr22" << false;
 }
 void TestXMLParser::testAddNode()
@@ -122,13 +121,16 @@ void TestXMLParser::testAddNode()
     QMap<QString, QString> map;
     map[key] = keyStr;
     QCOMPARE(parser.addNode(path, name, value, map), result);
+    QString str;
+    parser.getValue(path, str);
+    QCOMPARE(str == value, result);
 }
 
 void TestXMLParser::testRemoveNode_data()
 {
     QTest::addColumn<QString>("node");
     QTest::addColumn<bool>("result");
-    QTest::newRow("rightPath") << "Node1|Node11|Node111" << true;
+    QTest::newRow("rightPath") << "Node1|Node11" << true;
     QTest::newRow(("falsePath")) << "Node1|Node22|Node111" << false;
     QTest::newRow("NotExitPath") << "Node4" << false;
     QTest::newRow("errorPath") << "Node1|Node111" << false;
@@ -142,6 +144,7 @@ void TestXMLParser::testRemoveNode()
     QFETCH(QString, node);
     QFETCH(bool, result);
     QCOMPARE(parser.removeNode(node), result);
+    QCOMPARE(parser.hasNode(node), false);
 }
 
 void TestXMLParser::testHasNode_data()
@@ -320,6 +323,10 @@ void TestXMLParser::testSetNode()
     QCOMPARE(parser.open(m_validConfigFile->fileName()), true);
 
     QCOMPARE(parser.setNode(indexstr, value), result);
+
+    QDomElement element;
+    parser.getNode(indexstr, element);
+    QCOMPARE(element == value, result);
 }
 
 void TestXMLParser::testGetFirstValue()
