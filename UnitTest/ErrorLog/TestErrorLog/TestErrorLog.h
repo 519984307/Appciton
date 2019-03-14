@@ -20,15 +20,17 @@ public:
     ~TestErrorLogTest();
 
 private:
-    MyThread *_myThread;
     ErrorLogItem* item;
+    MyThread *_myThread;
 
 private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
     void testTypeCount();
+    void testCount_data();
     void testCount();
     void testGetLog();
+    void testAppendList_data();
     void testAppendList();
     void testGetLatestLog();
     void testGetSummary();
