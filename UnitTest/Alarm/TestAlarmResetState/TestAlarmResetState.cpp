@@ -79,4 +79,6 @@ void TestAlarmResetState::testHandAlarmEvent()
 
     AlarmResetState resetState;
     resetState.handAlarmEvent(event, 0, 0);
+    QVERIFY(Mock::VerifyAndClearExpectations(&mockAlarmIndicator));
+    QVERIFY(Mock::VerifyAndClearExpectations(&mockAlarmStateMachine));
 }
