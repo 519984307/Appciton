@@ -32,12 +32,19 @@ private Q_SLOTS:
     void testGetTimeStr();
     void testGetDateStr_data();
     void testGetDateStr();
+    void testGetDateYear_data();
     void testGetDateYear();
+    void testGetDateMonth_data();
     void testGetDateMonth();
+    void testGetDateDay_data();
     void testGetDateDay();
+    void testGetTimeHour_data();
     void testGetTimeHour();
+    void testGetTimeMinute_data();
     void testGetTimeMinute();
+    void testGetTimeSecond_data();
     void testGetTimeSecond();
+    void testGetTimeMsec_data();
     void testGetTimeMsec();
 private:
 };
