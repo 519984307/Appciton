@@ -119,7 +119,6 @@ void Config::_restoreOrigFile(const QString &configPath)
     {
         QFile::remove(configPath);
         QFile::copy(factoryConfigPath, configPath);
-
         ErrorLogItem *item = new ErrorLogItem();
         item->setName("Load default config");
         QString str = factoryConfigPath;
