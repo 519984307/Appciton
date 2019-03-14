@@ -32,6 +32,7 @@
 #include "NightModeManager.h"
 #include "CalculateWindow.h"
 #include "DischargePatientWindow.h"
+#include "TrendTableWindow.h"
 
 #define co2StandbyIcon "standby.png"
 #define co2StandbyHint trs("CO2Standby")
@@ -53,8 +54,9 @@ static KeyActionDesc _baseKeys[] =
     KeyActionDesc("", trs("CodeMarker"), "CodeMarker.png", SoftkeyActionBase::codeMarker),
     KeyActionDesc("", trs("TrendGraph"), "Summary.png", SoftkeyActionBase::summaryReview),
     KeyActionDesc("", trs("eventReview"), "Summary1.png", SoftkeyActionBase::eventReview),
+    KeyActionDesc("", trs("TrendTable"), "trend.png", SoftkeyActionBase::trendTable),
     KeyActionDesc("", trs("ChooseScreen"), "screenSwitch.png", SoftkeyActionBase::switchSystemMode),
-    KeyActionDesc("", trs("ScreenSetup"), "interface.png",   SoftkeyActionBase::WindowLayout),
+    KeyActionDesc("", trs("ScreenSetup"), "interface.png",   SoftkeyActionBase::windowLayout),
 #ifndef HIDE_PARAM_SWITCH
     KeyActionDesc("", trs("ParameterSwitch"), "paraSwitch.png"),
 #endif
@@ -125,7 +127,7 @@ void SoftkeyActionBase::limitMenu(bool isPressed)
     p->popup(trs("AlarmLimitMenu"));
 }
 
-void SoftkeyActionBase::WindowLayout(bool isPressed)
+void SoftkeyActionBase::windowLayout(bool isPressed)
 {
     if (isPressed)
     {
@@ -261,6 +263,19 @@ void SoftkeyActionBase::banTouchScreen(bool isPressed)
     systemManager.setTouchScreenOnOff(!isOn);
     softkeyManager.refreshPage(false);
 #endif
+}
+
+void SoftkeyActionBase::trendTable(bool isPressed)
+{
+    if (isPressed)
+    {
+        return;
+    }
+
+    TrendTableWindow::getInstance()->setHistoryData(false);
+    windowManager.showWindow(TrendTableWindow::getInstance(),
+                             WindowManager::ShowBehaviorHideOthers |
+                             WindowManager::ShowBehaviorNoAutoClose);
 }
 
 void SoftkeyActionBase::switchSystemMode(bool isPressed)

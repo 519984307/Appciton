@@ -34,6 +34,8 @@
 #include "MainMenuWindow.h"
 #include "LayoutManager.h"
 #include "TrendDataStorageManager.h"
+#include "TimeManager.h"
+#include <QTimer>
 
 /**************************************************************************************************
  * 构造。

@@ -28,6 +28,8 @@
 #include "SystemManager.h"
 #include "SoundManager.h"
 #include "NightModeManager.h"
+#include "PatientManager.h"
+#include "NIBPCountdownTime.h"
 
 class NIBPMenuContentPrivate
 {

@@ -17,6 +17,7 @@ class MockAlarmIndicator : public AlarmIndicatorInterface
 {
 public:
     MOCK_METHOD0(delLatchPhyAlarm, void(void));
+    MOCK_METHOD0(delAllPhyAlarm, void(void));
     MOCK_METHOD1(setAlarmStatus, void(AlarmStatus status));
     MOCK_METHOD0(updateAlarmStateWidget, void(void));
     MOCK_METHOD0(phyAlarmResetStatusHandle, bool(void));
@@ -25,4 +26,5 @@ public:
     MOCK_METHOD0(getAlarmCount, int(void));
     MOCK_METHOD1(getAlarmCount, int(AlarmPriority priority));
     MOCK_METHOD0(phyAlarmPauseStatusHandle, bool(void));
+    MOCK_METHOD1(updateAlarmPauseTime, void(int));
 };

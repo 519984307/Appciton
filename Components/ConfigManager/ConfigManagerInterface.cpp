@@ -11,19 +11,16 @@
 #include "ConfigManagerInterface.h"
 #include <stddef.h>
 
-static ConfigManagerInterface *curConfigManager = NULL;
+static ConfigManagerInterface *configManager = NULL;
 
-ConfigManagerInterface *ConfigManagerInterface::registerConfigManager(ConfigManagerInterface *handle)
+ConfigManagerInterface *ConfigManagerInterface::registerConfigManager(ConfigManagerInterface *instance)
 {
-    ConfigManagerInterface *old = curConfigManager;
-    if (curConfigManager == NULL)
-    {
-        curConfigManager = handle;
-    }
+    ConfigManagerInterface *old = configManager;
+    configManager = instance;
     return old;
 }
 
 ConfigManagerInterface *ConfigManagerInterface::getConfigManager()
 {
-    return curConfigManager;
+    return configManager;
 }

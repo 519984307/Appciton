@@ -12,8 +12,8 @@
 #include <QObject>
 #include <QBitArray>
 #include "Param.h"
-#include "SystemDefine.h"
 #include "TimeDefine.h"
+#include "SystemManagerInterface.h"
 
 #ifdef Q_WS_X11
 #include <QTcpSocket>
@@ -102,7 +102,7 @@ enum WorkMode
 
 class SystemSelftestMenu;
 class SystemManagerPrivate;
-class SystemManager : public QObject
+class SystemManager : public QObject, public SystemManagerInterface
 {
     Q_OBJECT
 public:
