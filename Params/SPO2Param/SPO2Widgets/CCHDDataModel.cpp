@@ -12,17 +12,31 @@
 #include "LanguageManager.h"
 #include "ThemeManager.h"
 #include "WindowManager.h"
+#include "TimeDate.h"
 
 #define ROW_COUNT 3
-#define COLUMN_COUNT 2
+#define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
+
+
+enum ColumnHeader
+{
+    HeaderTime,
+    HeaderHandValue,
+    HeaderFootValue,
+    HeaderResult,
+    HeaderNR
+};
 
 class CCHDDataModelPrivate
 {
 public:
-    CCHDDataModelPrivate(){}
+    CCHDDataModelPrivate()
+        : tableViewWidth(0)
+    {}
     ~CCHDDataModelPrivate(){}
 
     QList<cchdData> cchdDataList;
+    int tableViewWidth;
 };
 
 CCHDDataModel::CCHDDataModel(QObject *parent)
@@ -44,7 +58,7 @@ int CCHDDataModel::rowCount(const QModelIndex &parent) const
 int CCHDDataModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return COLUMN_COUNT;
+    return static_cast<int>(HeaderNR);
 }
 
 QVariant CCHDDataModel::data(const QModelIndex &index, int role) const
@@ -62,7 +76,21 @@ QVariant CCHDDataModel::data(const QModelIndex &index, int role) const
         break;
     case Qt::DisplayRole:
     {
-        if (column == 0)
+        if (column == HeaderTime)
+        {
+            unsigned timeStamp = d_ptr->cchdDataList.at(row).time;
+            if (timeStamp)
+            {
+                QString time;
+                timeDate.getTime(timeStamp, time, true);
+                return time;
+            }
+            else
+            {
+                return QString();
+            }
+        }
+        else if (column == HeaderHandValue)
         {
             short handValue = d_ptr->cchdDataList.at(row).handValue;
             if (handValue != InvData())
@@ -74,7 +102,7 @@ QVariant CCHDDataModel::data(const QModelIndex &index, int role) const
                 return QString();
             }
         }
-        else
+        else if (column == HeaderFootValue)
         {
             short footValue = d_ptr->cchdDataList.at(row).footValue;
             if (footValue != InvData())
@@ -86,7 +114,23 @@ QVariant CCHDDataModel::data(const QModelIndex &index, int role) const
                 return QString();
             }
         }
+        else if (column == HeaderResult)
+        {
+            CCHDResult result = d_ptr->cchdDataList.at(row).result;
+            if (result == CCHD_NR)
+            {
+                return QString();
+            }
+            else
+            {
+                return trs(SPO2Symbol::convert(result));
+            }
+        }
+        break;
     }
+    case Qt::SizeHintRole:
+        return QSize(10, ROW_HEIGHT_HINT);
+        break;
     default:
         break;
     }
@@ -95,18 +139,29 @@ QVariant CCHDDataModel::data(const QModelIndex &index, int role) const
 
 QVariant CCHDDataModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    Q_UNUSED(orientation)
+    if (orientation == Qt::Vertical)
+    {
+        return QVariant();
+    }
 
     switch (role) {
     case Qt::DisplayRole:
     {
-        if (section == 0)
+        if (section == HeaderTime)
+        {
+            return QString(trs("Time"));
+        }
+        else if (section == HeaderHandValue)
         {
             return QString(trs("handValue"));
         }
-        else
+        else if (section == HeaderFootValue)
         {
             return QString(trs("footValue"));
+        }
+        else if (section == HeaderResult)
+        {
+            return QString(trs("Result"));
         }
         break;
     }
@@ -114,6 +169,29 @@ QVariant CCHDDataModel::headerData(int section, Qt::Orientation orientation, int
         return themeManger.getColor(ThemeManager::ControlTypeNR,
                                     ThemeManager::ElementBackgound,
                                     ThemeManager::StateDisabled);
+        break;
+    case Qt::TextAlignmentRole:
+        return QVariant(Qt::AlignCenter);
+        break;
+    case Qt::SizeHintRole:
+    {
+        if (d_ptr->tableViewWidth == 0)
+        {
+            break;
+        }
+        switch (section)
+        {
+        case HeaderTime:
+        case HeaderHandValue:
+        case HeaderFootValue:
+            return QSize(d_ptr->tableViewWidth / 6, ROW_HEIGHT_HINT);
+        case HeaderResult:
+            return QSize(d_ptr->tableViewWidth / 2, ROW_HEIGHT_HINT);
+        default:
+            break;
+        }
+        break;
+    }
     default:
         break;
     }
@@ -122,40 +200,18 @@ QVariant CCHDDataModel::headerData(int section, Qt::Orientation orientation, int
 
 int CCHDDataModel::getHeightEachRow()
 {
-    return themeManger.getAcceptableControlHeight();
+    return ROW_HEIGHT_HINT;
 }
 
-void CCHDDataModel::addData(QList<cchdData> dataList)
+void CCHDDataModel::updateData()
 {
     beginResetModel();
-    d_ptr->cchdDataList = dataList;
+    d_ptr->cchdDataList = spo2Param.getCCHDDataList();
     endResetModel();
 }
 
-void CCHDDataModel::addData(int value, bool isHand)
+void CCHDDataModel::setTableViewWidth(int width)
 {
-    beginResetModel();
-    cchdData data;
-    if (isHand)
-    {
-        if (d_ptr->cchdDataList.count() != 0 && d_ptr->cchdDataList.last().handValue == InvData())
-        {
-            d_ptr->cchdDataList.last().handValue = value;
-            endResetModel();
-            return;
-        }
-        data.handValue = value;
-    }
-    else
-    {
-        if (d_ptr->cchdDataList.count() != 0 && d_ptr->cchdDataList.last().footValue == InvData())
-        {
-            d_ptr->cchdDataList.last().footValue = value;
-            endResetModel();
-            return;
-        }
-        data.footValue = value;
-    }
-    d_ptr->cchdDataList.append(data);
-    endResetModel();
+    d_ptr->tableViewWidth = width;
 }
+

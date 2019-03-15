@@ -12,7 +12,7 @@
 #include "Button.h"
 #include <QLabel>
 #include "LanguageManager.h"
-#include <QGridLayout>
+#include <QLayout>
 #include "BaseDefine.h"
 #include "SPO2Param.h"
 #include "SPO2Symbol.h"
@@ -55,24 +55,18 @@ CCHDWindow::CCHDWindow()
     : Dialog(),
       d_ptr(new CCHDWindowPrivate())
 {
+    int windowWidth = 600;
     setWindowTitle(trs("CCHDCheck"));
-    setFixedSize(400, 300);
-    QGridLayout *layout = new QGridLayout();
-    int row = 0;
-
-    // 结果
-    d_ptr->resultLabel = new QLabel;
-    d_ptr->resultLabel->setText(QString("%1: %2").arg(trs("Result")).arg(InvStr()));
-    d_ptr->resultLabel->setAlignment(Qt::AlignCenter);
-    layout->addWidget(d_ptr->resultLabel, row, 0, 1, 0);
-    row++;
+    setFixedSize(windowWidth, 320);
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->setMargin(10);
 
     // result Data
     d_ptr->tableView = new TableView();
     d_ptr->tableView->setShowGrid(true);
     d_ptr->model = new CCHDDataModel();
     TableHeaderView *hTableHeader = new TableHeaderView(Qt::Horizontal);
-    hTableHeader->setResizeMode(QHeaderView::Stretch);
+    hTableHeader->setResizeMode(QHeaderView::ResizeToContents);
     d_ptr->tableView->setHorizontalHeader(hTableHeader);
     d_ptr->tableView->verticalHeader()->setVisible(false);
     d_ptr->tableView->verticalHeader()->setResizeMode(QHeaderView::Stretch);
@@ -81,29 +75,37 @@ CCHDWindow::CCHDWindow()
     d_ptr->tableView->setShowGrid(true);
     d_ptr->tableView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     d_ptr->tableView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    d_ptr->model->setTableViewWidth(windowWidth - layout->margin() * 2);
     d_ptr->tableView->setModel(d_ptr->model);
     d_ptr->tableView->setItemDelegate(new TableViewItemDelegate(this));
-    int rowCount = d_ptr->model->rowCount(QModelIndex());
+    int rowCount = d_ptr->model->rowCount(QModelIndex()) + 1;
     d_ptr->tableView->setFixedHeight(rowCount * d_ptr->model->getHeightEachRow());
-    layout->addWidget(d_ptr->tableView, row, 0, 1, 0);
-    row++;
+    layout->addWidget(d_ptr->tableView);
 
+    QHBoxLayout *hLayout = new QHBoxLayout();
     // 手部测量
     d_ptr->handButton = new Button;
     d_ptr->handButton->setButtonStyle(Button::ButtonTextOnly);
     d_ptr->handButton->setText(trs("handMeasure"));
     connect(d_ptr->handButton, SIGNAL(released()), this, SLOT(onButtonReleased()));
-    layout->addWidget(d_ptr->handButton, row, 0);
+    hLayout->addWidget(d_ptr->handButton);
 
     // 足部测量
     d_ptr->footButton = new Button;
     d_ptr->footButton->setButtonStyle(Button::ButtonTextOnly);
     d_ptr->footButton->setText(trs("footMeasure"));
     connect(d_ptr->footButton, SIGNAL(released()), this, SLOT(onButtonReleased()));
-    layout->addWidget(d_ptr->footButton, row, 1);
-    row++;
+    hLayout->addWidget(d_ptr->footButton);
 
-    layout->setRowStretch(row, 1);
+    // 清空
+    Button *cleanBtn = new Button;
+    cleanBtn->setButtonStyle(Button::ButtonTextOnly);
+    cleanBtn->setText(trs("Clear"));
+    connect(cleanBtn, SIGNAL(released()), this, SLOT(onButtonReleased()));
+    hLayout->addWidget(cleanBtn);
+
+    layout->addStretch();
+    layout->addLayout(hLayout);
     setWindowLayout(layout);
 }
 
@@ -133,8 +135,9 @@ void CCHDWindow::onButtonReleased()
         if (d_ptr->handValue != InvData())
         {
             btn->setEnabled(false);
-            d_ptr->model->addData(d_ptr->handValue, true);
+            spo2Param.setCCHDData(d_ptr->handValue, true);
         }
+        d_ptr->update();
     }
     else if (btn == d_ptr->footButton)
     {
@@ -142,40 +145,35 @@ void CCHDWindow::onButtonReleased()
         if (d_ptr->footValue != InvData())
         {
             btn->setEnabled(false);
-            d_ptr->model->addData(d_ptr->footValue, false);
+            spo2Param.setCCHDData(d_ptr->footValue, false);
         }
+        d_ptr->update();
     }
-    d_ptr->update();
+    else
+    {
+        d_ptr->handValue = InvData();
+        d_ptr->footValue = InvData();
+        d_ptr->handButton->setEnabled(true);
+        d_ptr->footButton->setEnabled(true);
+        spo2Param.clearCCHDData(true);
+        d_ptr->model->updateData();
+    }
 }
 
 void CCHDWindowPrivate::loadOption()
 {
-    model->addData(spo2Param.getCCHDDataList());
-    handButton->setEnabled(true);
-    footButton->setEnabled(true);
+    model->updateData();
 }
 
 void CCHDWindowPrivate::update()
 {
-    CCHDResult result = spo2Param.getCCHDResult(handValue, footValue);
-    switch (result)
+    CCHDResult result = spo2Param.updateCCHDResult();
+    if (result == RepeatCheck)
     {
-    case Negative:
-        resultLabel->setText(QString("%1: %2").arg(trs("Result")).arg(trs(SPO2Symbol::convert(Negative))));
-        break;
-    case Positive:
-        resultLabel->setText(QString("%1: %2").arg(trs("Result")).arg(trs(SPO2Symbol::convert(Positive))));
-        break;
-    case RepeatCheck:
         handValue = InvData();
         footValue = InvData();
-        loadOption();
-        resultLabel->setText(QString("%1: %2").arg(trs("Result")).arg(trs(SPO2Symbol::convert(RepeatCheck))));
-        break;
-    case CCHD_NR:
-        resultLabel->setText(QString("%1: %2").arg(trs("Result")).arg(InvStr()));
-        break;
-    default:
-        break;
+        handButton->setEnabled(true);
+        footButton->setEnabled(true);
     }
+    model->updateData();
 }

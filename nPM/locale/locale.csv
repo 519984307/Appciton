@@ -1643,6 +1643,6 @@ CCHDCheck,CCHD筛查,CCHD Check
 Negative,阴性,Negative
 Positive,阳性,Positive
 Result,结果,Result
-RepeatCheck,请重复检查,Please Repeat Check
-footValue,足部数据,foot value
-handValue,手部数据,hand value
+RepeatCheck,请在一小时内重复检查,Please Check again in one hour
+footValue,足部数据,foot
+handValue,手部数据,hand

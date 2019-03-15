@@ -24,6 +24,7 @@
 #include <QTimer>
 #include "OxyCRGSPO2TrendWidget.h"
 #include "NIBPParam.h"
+#include "TimeDate.h"
 
 SPO2Param *SPO2Param::_selfObj = NULL;
 
@@ -119,8 +120,17 @@ void SPO2Param::handDemoWaveform(WaveformID id, short data)
  *************************************************************************************************/
 void SPO2Param::handDemoTrendData(void)
 {
-    static short demoSpo2Value = 90;
-    _spo2Value = demoSpo2Value++;
+    static short times = 0;
+    times++;
+    if (times > 10)
+    {
+        _spo2Value = 90;
+    }
+    else
+    {
+        _spo2Value = 94;
+    }
+
     _piValue = 41;
     if (NULL != _trendWidget)
     {
@@ -764,34 +774,61 @@ bool SPO2Param::isNibpSameSide(void)
     return flag;
 }
 
-CCHDResult SPO2Param::getCCHDResult(short handValue, short footValue)
+void SPO2Param::setCCHDData(short value, bool isHand)
 {
-    static int repeatTimes = 0;
-    if (handValue == InvData() || footValue == InvData())
+    cchdData data;
+    if (isHand)
+    {
+        if (_cchdDataList.count() != 0 && _cchdDataList.last().handValue == InvData())
+        {
+            _cchdDataList.last().handValue = value;
+            return;
+        }
+        data.handValue = value;
+    }
+    else
+    {
+        if (_cchdDataList.count() != 0 && _cchdDataList.last().footValue == InvData())
+        {
+            _cchdDataList.last().footValue = value;
+            return;
+        }
+        data.footValue = value;
+    }
+    _cchdDataList.append(data);
+}
+
+CCHDResult SPO2Param::updateCCHDResult()
+{
+    if (_cchdDataList.count() == 0)
     {
         return CCHD_NR;
     }
+    short handValue = _cchdDataList.last().handValue;
+    short footValue = _cchdDataList.last().footValue;
+    if (handValue == InvData() || footValue == InvData())
+    {
+        // 不完全数据返回无效值
+        return CCHD_NR;
+    }
     CCHDResult result = CCHD_NR;
-    cchdData data;
-    data.footValue = footValue;
-    data.handValue = handValue;
 
     if ((handValue >= 95 && abs(footValue - handValue) <= 3) ||
             (footValue >= 95 && abs(footValue - handValue) <= 3))
     {
         // 阴性
-        repeatTimes = 0;
+        _repeatTimes = 0;
         result = Negative;
     }
     else if (((handValue >= 90 && handValue <= 94) && (footValue >= 90 && footValue <= 94))
              || (abs(handValue - footValue) > 3))
     {
         // 重复测试判断是否为阳性
-        repeatTimes++;
-        if (repeatTimes > 2)
+        _repeatTimes++;
+        if (_repeatTimes > 2)
         {
             // 重复测量3次则返回阳性
-            repeatTimes = 0;
+            _repeatTimes = 0;
             result = Positive;
         }
         else
@@ -802,11 +839,11 @@ CCHDResult SPO2Param::getCCHDResult(short handValue, short footValue)
     else
     {
         // 阳性
-        repeatTimes = 0;
+        _repeatTimes = 0;
         result = Positive;
     }
-    data.result = result;
-    _cchdDataList.append(data);
+    _cchdDataList.last().result = result;
+    _cchdDataList.last().time = timeDate.time();
     return result;
 }
 
@@ -816,13 +853,25 @@ QList<cchdData> SPO2Param::getCCHDDataList()
     return _cchdDataList;
 }
 
-void SPO2Param::clearCCHDData()
+void SPO2Param::clearCCHDData(bool isCleanup)
 {
     if (!_cchdDataList.isEmpty())
     {
-        if (_cchdDataList.count() >= 3 || _cchdDataList.last().result == Positive || _cchdDataList.last().result == Negative)
+        if (!isCleanup)
+        {
+            if (_cchdDataList.count() > 3 || _cchdDataList.last().result == Positive || _cchdDataList.last().result == Negative)
+            {
+                _cchdDataList.clear();
+            }
+            else if (_cchdDataList.last().result == CCHD_NR)
+            {
+                _cchdDataList.removeLast();
+            }
+        }
+        else
         {
             _cchdDataList.clear();
+            _repeatTimes = 0;
         }
     }
 }
@@ -832,7 +881,8 @@ void SPO2Param::clearCCHDData()
  *************************************************************************************************/
 SPO2Param::SPO2Param() : Param(PARAM_SPO2),
                          _oxyCRGSPO2Trend(NULL),
-                         _moduleType(MODULE_SPO2_NR)
+                         _moduleType(MODULE_SPO2_NR),
+                         _repeatTimes(0)
 {
     _provider = NULL;
     _trendWidget = NULL;

@@ -38,11 +38,15 @@ public:
 
     /**
      * @brief addData 增加数据
-     * @param value
      */
-    void addData(QList<cchdData> cchdDataList);
+    void updateData();
 
-    void addData(int value, bool isHand);
+    /**
+     * @brief setTableViewWidth
+     * @param width
+     */
+    void setTableViewWidth(int width);
+
 
 private:
     CCHDDataModelPrivate * const d_ptr;
