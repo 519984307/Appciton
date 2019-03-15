@@ -26,23 +26,25 @@ TestTimeDate::TestTimeDate()
 void TestTimeDate::testTime_data()
 {
     QTest::addColumn<int>("Time");
-    QTest::newRow("time1") << 1000;
-    QTest::newRow("time2") << 2000;
-    QTest::newRow("time3") << 3000;
+    QTest::addColumn<bool>("result");
+    QTest::newRow("diffTime1") << 1000 << true;
+    QTest::newRow("diffTime2") << 2000 << true;
+    QTest::newRow("diffTime3") << 3000 << true;
 }
 
 void TestTimeDate::testTime()
 {
+   QFETCH(int, Time);
+   QFETCH(bool, result);
    uint time1 = timeDate.time();
    uint time2 = QDateTime::currentDateTime().toTime_t();
-   QCOMPARE(time1, time2);
+   QCOMPARE(time1 == time2, result);
 
-   QFETCH(int, Time);
    QTest::qSleep(Time);
 
    time2 = QDateTime::currentDateTime().toTime_t();
 
-   QVERIFY2(time1 != time2, "Test fail!");
+   QCOMPARE((static_cast<bool>(time2 - time1 - Time/1000)), !result);
 }
 
 void TestTimeDate::testDifftime_data()
