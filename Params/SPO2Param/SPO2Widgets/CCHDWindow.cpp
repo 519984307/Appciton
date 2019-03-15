@@ -20,6 +20,7 @@
 #include "CCHDDataModel.h"
 #include "TableViewItemDelegate.h"
 #include "TableHeaderView.h"
+#include "MessageBox.h"
 
 class CCHDWindowPrivate
 {
@@ -55,7 +56,7 @@ CCHDWindow::CCHDWindow()
     : Dialog(),
       d_ptr(new CCHDWindowPrivate())
 {
-    int windowWidth = 600;
+    int windowWidth = 650;
     setWindowTitle(trs("CCHDCheck"));
     setFixedSize(windowWidth, 320);
     QVBoxLayout *layout = new QVBoxLayout();
@@ -131,22 +132,28 @@ void CCHDWindow::onButtonReleased()
     Button *btn = qobject_cast<Button *>(sender());
     if (btn == d_ptr->handButton)
     {
-        d_ptr->handValue = spo2Param.getSPO2();
-        if (d_ptr->handValue != InvData())
+        if (spo2Param.getSPO2() == InvData())
         {
-            btn->setEnabled(false);
-            spo2Param.setCCHDData(d_ptr->handValue, true);
+            MessageBox msgBox(trs("Prompt"), trs("SPO2ValueInvaild"), false, true);
+            msgBox.exec();
+            return;
         }
+        d_ptr->handValue = spo2Param.getSPO2();
+        btn->setEnabled(false);
+        spo2Param.setCCHDData(d_ptr->handValue, true);
         d_ptr->update();
     }
     else if (btn == d_ptr->footButton)
     {
-        d_ptr->footValue = spo2Param.getSPO2();
-        if (d_ptr->footValue != InvData())
+        if (spo2Param.getSPO2() == InvData())
         {
-            btn->setEnabled(false);
-            spo2Param.setCCHDData(d_ptr->footValue, false);
+            MessageBox msgBox(trs("Prompt"), trs("SPO2ValueInvaild"), false, true);
+            msgBox.exec();
+            return;
         }
+        d_ptr->footValue = spo2Param.getSPO2();
+        btn->setEnabled(false);
+        spo2Param.setCCHDData(d_ptr->footValue, false);
         d_ptr->update();
     }
     else

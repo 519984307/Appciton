@@ -1643,6 +1643,7 @@ CCHDCheck,CCHD筛查,CCHD Check
 Negative,阴性,Negative
 Positive,阳性,Positive
 Result,结果,Result
-RepeatCheck,请在一小时内重复检查,Please Check again in one hour
+RepeatCheck,一小时内重复测量3次以确认结果,Check again in a hour for result
 footValue,足部数据,foot
 handValue,手部数据,hand
+SPO2ValueInvaild,采集数据无效，请检查血氧模块,The collect data is invaild，Please check SPO2 module
