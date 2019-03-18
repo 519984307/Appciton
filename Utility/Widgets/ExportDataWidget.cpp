@@ -52,14 +52,14 @@ ExportDataWidget::ExportDataWidget(Export_Data_Type type) : QDialog(0, Qt::Frame
     setPalette(p);
 
     // 标题栏。
-    _title = new QLabel(startTitleString[_curType]);
+    _title = new QLabel(trs(startTitleString[_curType]));
     _title->setAlignment(Qt::AlignCenter);
     _title->setFixedHeight(_titleBarHeight);
     _title->setFont(fontManager.textFont(fontSize, true));
     p.setColor(QPalette::Foreground, Qt::white);
     _title->setPalette(p);
 
-    _info = new QLabel(startInfoString[_curType]);
+    _info = new QLabel(trs(startInfoString[_curType]));
     _info->setFont(fontManager.textFont(fontSize));
 
     _bar = new QProgressBar();
@@ -101,8 +101,8 @@ ExportDataWidget::~ExportDataWidget()
  *************************************************************************************************/
 void ExportDataWidget::init()
 {
-    _title->setText(startTitleString[_curType]);
-    _info->setText(startInfoString[_curType]);
+    _title->setText(trs(startTitleString[_curType]));
+    _info->setText(trs(startInfoString[_curType]));
     _cancleOrOK->setText(trs("Cancel"));
     _bar->setValue(0);
     _transferCancel = false;
@@ -129,8 +129,8 @@ void ExportDataWidget::setBarValue(unsigned char value)
 
     if (value == 100)
     {
-        _title->setText(endTitleString[_curType]);
-        _info->setText(endInfoString[_curType]);
+        _title->setText(trs(endTitleString[_curType]));
+        _info->setText(trs(endInfoString[_curType]));
         _cancleOrOK->setText(trs("Yes"));
     }
 }

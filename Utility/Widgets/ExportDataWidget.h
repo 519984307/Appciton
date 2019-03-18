@@ -28,49 +28,49 @@ enum Export_Data_Type
 };
 
 //传输开始标题
-const QString startTitleString[EXPORT_DATA_NR] =
+static const char *startTitleString[EXPORT_DATA_NR] =
 {
-    trs("TransferRescueDataByUSB"),
-    trs("TransferRescueDataBySFTP"),
-    trs("TransferSupervisorByUSB"),
-    trs("TransferSupervisorByWIFI"),
-    trs("TransferECG12LeadByUSB"),
-    trs("TransferECG12LeadByWIFI"),
-    trs("TransferErrorLogToUSB"),
+    "TransferRescueDataByUSB",
+    "TransferRescueDataBySFTP",
+    "TransferSupervisorByUSB",
+    "TransferSupervisorByWIFI",
+    "TransferECG12LeadByUSB",
+    "TransferECG12LeadByWIFI",
+    "TransferErrorLogToUSB",
 };
 
 //传输结束标题
-const QString endTitleString[EXPORT_DATA_NR] =
+static const char *endTitleString[EXPORT_DATA_NR] =
 {
-    trs("TransferRescueDataComplete"),
-    trs("TransferRescueDataComplete"),
-    trs("TransferSupervisorComplete"),
-    trs("TransferSupervisorComplete"),
-    trs("TransferECG12LeadComplete"),
-    trs("TransferECG12LeadComplete"),
-    trs("TransferErrorLogToUSBComplete"),
+    "TransferRescueDataComplete",
+    "TransferRescueDataComplete",
+    "TransferSupervisorComplete",
+    "TransferSupervisorComplete",
+    "TransferECG12LeadComplete",
+    "TransferECG12LeadComplete",
+    "TransferErrorLogToUSBComplete",
 };
 
 //传输开始信息
-const QString startInfoString[EXPORT_DATA_NR] =
+static const char *startInfoString[EXPORT_DATA_NR] =
 {
-    trs("NotDisconnectUSB"),
-    trs("TransferRescueDataBySFTP"),
-    trs("NotDisconnectUSB"),
-    trs("TransferRescueDataByWIFI"),
-    trs("NotDisconnectUSB"),
-    trs("TransferRescueDataByWIFI"),
+    "NotDisconnectUSB",
+    "TransferRescueDataBySFTP",
+    "NotDisconnectUSB",
+    "TransferRescueDataByWIFI",
+    "NotDisconnectUSB",
+    "TransferRescueDataByWIFI",
 };
 
 //传输结束信息
-const QString endInfoString[EXPORT_DATA_NR] =
+static const char *endInfoString[EXPORT_DATA_NR] =
 {
-    trs("RemoveUSB"),
-    trs("SucceedRescueDataBySFTP"),
-    trs("RemoveUSB"),
-    trs("SucceedRescueDataByWIFI"),
-    trs("RemoveUSB"),
-    trs("SucceedRescueDataByWIFI"),
+    "RemoveUSB",
+    "SucceedRescueDataBySFTP",
+    "RemoveUSB",
+    "SucceedRescueDataByWIFI",
+    "RemoveUSB",
+    "SucceedRescueDataByWIFI",
 };
 
 //数据传输基类

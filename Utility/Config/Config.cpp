@@ -128,7 +128,14 @@ void Config::_restoreOrigFile(const QString &configPath)
         item->setSystemState(ErrorLogItem::SYS_STAT_RUNTIME);
         item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
         ErrorLogInterface *errorLog = ErrorLogInterface::getErrorLog();
-        errorLog->append(item);
+        if (errorLog)
+        {
+            errorLog->append(item);
+        }
+        else
+        {
+            qDebug() << "Errorlog init fail!\n";
+        }
     }
 }
 
