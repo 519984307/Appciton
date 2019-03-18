@@ -843,6 +843,7 @@
         <AGColor>Orange</AGColor>
         <IBPColor>Purple</IBPColor>
         <TEMPColor>Brown</TEMPColor>
+	<O2Color>Brown</O2Color>
         <!--do not modify-->
     </Display>
     <Print>
