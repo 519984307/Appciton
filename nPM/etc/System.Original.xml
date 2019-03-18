@@ -903,8 +903,7 @@
                 <Normal>
                     <LayoutRow>
                         <LayoutNode pos="0" span="4" editable="0">ECG1Wave</LayoutNode>
-                        <LayoutNode pos="4" span="1" editable="0">ECG</LayoutNode>
-                        <LayoutNode pos="5" span="1" editable="0"></LayoutNode>
+                        <LayoutNode pos="4" span="2" editable="0">ECG</LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
                         <LayoutNode pos="0" span="4" editable="0">ECG2Wave</LayoutNode>
@@ -930,8 +929,7 @@
                     <LayoutRow>
                         <LayoutNode pos="0" span="2" editable="0">NIBP</LayoutNode>
                         <LayoutNode pos="2" span="2" editable="0">NIBPList</LayoutNode>
-                        <LayoutNode pos="4" span="1" editable="0">TEMP</LayoutNode>
-                        <LayoutNode pos="5" span="1" editable="0"></LayoutNode>
+                        <LayoutNode pos="4" span="2" editable="0">TEMP</LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
                         <LayoutNode pos="0" span="2" editable="0"></LayoutNode>
