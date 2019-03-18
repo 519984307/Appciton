@@ -77,7 +77,7 @@ void TestAlarmPauseState::testEnter()
 
     d_ptr->pauseState.enter();
     QCOMPARE(d_ptr->pauseState.type(), ALARM_PAUSE_STATE);
-    QCOMPARE(d_ptr->pauseState.getTimerID(), 1000);
+    QCOMPARE(d_ptr->pauseState.getTimerID() != 0, true);
 
     QVERIFY(Mock::VerifyAndClearExpectations(&mockAlarmIndicator));
     QVERIFY(Mock::VerifyAndClearExpectations(&mockLightManager));
