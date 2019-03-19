@@ -318,7 +318,14 @@ bool AlarmIndicator::_canPlayAudio(AlarmStatus status, bool isTechAlarm)
 
     if (isTechAlarm && status != ALARM_STATUS_OFF)
     {
-        return true;
+        if (alarmOffStatus)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 
     return false;

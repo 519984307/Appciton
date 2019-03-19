@@ -12,12 +12,12 @@
 #pragma once
 #include "Param.h"
 #include "NIBPSymbol.h"
-#include "NIBPState.h"
-#include "UnitManager.h"
-#include "PatientManager.h"
-#include "TimeManager.h"
-#include "NIBPCountdownTime.h"
+#include "PatientDefine.h"
+#include "NIBPStateMachine.h"
+#include "NIBPEventDefine.h"
 #include <QMap>
+#include <QTimer>
+#include "NIBPParamInterface.h"
 
 struct NIBPMeasureResultInfo
 {
@@ -39,22 +39,14 @@ struct NIBPMeasureResultInfo
 class NIBPProviderIFace;
 class NIBPTrendWidget;
 class NIBPDataTrendWidget;
-class NIBPParam: public Param
+class NIBPParam: public Param , public NIBPParamInterface
 {
     Q_OBJECT
 #ifdef CONFIG_UNIT_TEST
     friend class TestNIBPParam;
 #endif
 public:
-    static NIBPParam &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new NIBPParam();
-        }
-        return *_selfObj;
-    }
-    static NIBPParam *_selfObj;
+    static NIBPParam &getInstance(void);
     ~NIBPParam();
 
 public:
@@ -353,4 +345,4 @@ private:
 
     QTimer *_btnTimer;
 };
-#define nibpParam (NIBPParam::construction())
+#define nibpParam (NIBPParam::getInstance())

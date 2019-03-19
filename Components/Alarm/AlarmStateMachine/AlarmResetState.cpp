@@ -16,14 +16,7 @@
 class AlarmResetStatePrivate
 {
 public:
-    AlarmResetStatePrivate()
-        : alarmIndicator(AlarmIndicatorInterface::getAlarmIndicator()),
-          alarmStateMachine(AlarmStateMachineInterface::getAlarmStateMachine()),
-          lightManager(LightManagerInterface::getLightManager())
-    {}
-    AlarmIndicatorInterface *alarmIndicator;
-    AlarmStateMachineInterface *alarmStateMachine;
-    LightManagerInterface *lightManager;
+    AlarmResetStatePrivate(){}
 };
 
 
@@ -40,15 +33,18 @@ AlarmResetState::~AlarmResetState()
 
 void AlarmResetState::enter()
 {
-    d_ptr->alarmIndicator->setAlarmStatus(ALARM_STATUS_RESET);
-    d_ptr->lightManager->enableAlarmAudioMute(false);
+    AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+    alarmIndicator->setAlarmStatus(ALARM_STATUS_RESET);
+    LightManagerInterface *lightManager = LightManagerInterface::getLightManager();
+    lightManager->enableAlarmAudioMute(false);
 }
 
 void AlarmResetState::handAlarmEvent(AlarmStateEvent event, unsigned char *data, unsigned len)
 {
     Q_UNUSED(data);
     Q_UNUSED(len);
-
+    AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+    AlarmStateMachineInterface *alarmStateMachine = AlarmStateMachineInterface::getAlarmStateMachine();
     switch (event)
     {
     case ALARM_STATE_EVENT_RESET_BTN_PRESSED:
@@ -59,32 +55,32 @@ void AlarmResetState::handAlarmEvent(AlarmStateEvent event, unsigned char *data,
 
     case ALARM_STATE_EVENT_MUTE_BTN_PRESSED:
     {
-        d_ptr->alarmIndicator->phyAlarmPauseStatusHandle();
-        d_ptr->alarmStateMachine->switchState(ALARM_PAUSE_STATE);
+        alarmIndicator->phyAlarmPauseStatusHandle();
+        alarmStateMachine->switchState(ALARM_PAUSE_STATE);
         break;
     }
 
     case ALARM_STATE_EVENT_MUTE_BTN_PRESSED_SHORT_TIME:
-        if (d_ptr->alarmStateMachine->isEnableAlarmAudioOff())
+        if (alarmStateMachine->isEnableAlarmAudioOff())
         {
-            d_ptr->alarmStateMachine->switchState(ALARM_AUDIO_OFF_STATE);
+            alarmStateMachine->switchState(ALARM_AUDIO_OFF_STATE);
         }
         break;
 
     case ALARM_STATE_EVENT_MUTE_BTN_PRESSED_LONG_TIME:
-        if (d_ptr->alarmStateMachine->isEnableAlarmOff())
+        if (alarmStateMachine->isEnableAlarmOff())
         {
-            d_ptr->alarmStateMachine->switchState(ALARM_OFF_STATE);
+            alarmStateMachine->switchState(ALARM_OFF_STATE);
         }
         break;
 
     case ALARM_STATE_EVENT_NEW_PHY_ALARM:
     case ALARM_STATE_EVENT_NEW_TECH_ALARM:
         // new alarm arrived, switch to normal state
-        d_ptr->alarmStateMachine->switchState(ALARM_NORMAL_STATE);
+        alarmStateMachine->switchState(ALARM_NORMAL_STATE);
         break;
     case ALARM_STATE_EVENT_NO_ACKNOWLEDG_ALARM:
-        d_ptr->alarmStateMachine->switchState(ALARM_NORMAL_STATE);
+        alarmStateMachine->switchState(ALARM_NORMAL_STATE);
         break;
     default:
         break;

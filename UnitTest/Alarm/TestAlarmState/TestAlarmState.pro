@@ -57,11 +57,13 @@ HEADERS += \
     ../../../Utility/Config/Config.h \
     ../../../Utility/ErrorLog/ErrorLogInterface.h \
     ../../../Utility/ErrorLog/ErrorLogItem.h \
-    ../../../Utility/Config/XmlParser.h
+    ../../../Utility/Config/XmlParser.h \
+    ../../../Components/PatientManager/PatientDefine.h
 
 INCLUDEPATH += \
     ../../../Components/Alarm/AlarmStateMachine \
     ../../../Components/Alarm \
     ../../../Components/LightManager \
     ../../../Utility/Config \
-    ../../../Utility/ErrorLog
+    ../../../Utility/ErrorLog \
+    ../../../Components/PatientManager

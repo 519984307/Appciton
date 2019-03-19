@@ -85,7 +85,7 @@ static void _initSystem(void)
     }
 
     // 波形缓存。
-    waveformCache.construction();
+    waveformCache.getInstance();
 
     // tick初始化。
     systemTick.construction();
@@ -117,6 +117,7 @@ static void _initSystem(void)
     pMessageBox.construction();
 
     // 初始化夜间模式
+    runningStatus.getInstance();
     if (nightModeManager.nightMode())
     {
         nightModeManager.setNightMode(true);
@@ -395,7 +396,7 @@ static void _initProviderParam(void)
             paramManager.addProvider(*new N5Provider());
         }
 
-        paramManager.addParam(nibpParam.construction());
+        paramManager.addParam(nibpParam.getInstance());
         alertor.addLimtSource(nibpLimitAlarm.construction());
         alertor.addOneShotSource(nibpOneShotAlarm.construction());
         NIBPTrendWidget *nibpTrenWidget = new NIBPTrendWidget();
@@ -640,7 +641,6 @@ void deleteObjects(void)
     deletepMessageBox();
     deleteAlarm();
 
-    deleteWaveformCache();
     deleteTrendCache();
     deleteRescueDataExportWidget();
     deleteRescueDataDeleteWidget();

@@ -21,22 +21,24 @@ SOURCES += main.cpp \
         TestAlarmNormalState.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmNormalState.cpp \
     ../../../Components/Alarm/AlarmIndicatorInterface.cpp \
-    ../../../Components/LightManager/LightManager.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmStateMachineInterface.cpp \
-    ../../../Components/Alarm/AlarmStateMachine/AlarmState.cpp
+    ../../../Components/Alarm/AlarmStateMachine/AlarmState.cpp \
+    ../../../Components/LightManager/LightManagerInterface.cpp
 
 HEADERS += TestAlarmNormalState.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmNormalState.h \
     ../../../Components/Alarm/AlarmIndicatorInterface.h \
     ../../../Components/LightManager/LightProviderIFace.h \
-    ../../../Components/LightManager/LightManager.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmStateMachineInterface.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmState.h \
-    MockAlarmIndicator.h \
-    MockAlarmStateMachine.h
+    ../../../Components/LightManager/LightManagerInterface.h \
+    ../MockAlarmIndicator.h \
+    ../MockAlarmStateMachine.h \
+    ../MockLightManager.h
 
 INCLUDEPATH += \
     ../../../Components/Alarm \
     ../../../Components/LightManager \
-    ../../../Components/Alarm/AlarmStateMachine
+    ../../../Components/Alarm/AlarmStateMachine \
+    ..
 

@@ -13,7 +13,6 @@
 #include <QLabel>
 #include <QMap>
 #include "IConfig.h"
-#include "SystemManager.h"
 
 enum RunningStatusType
 {
@@ -47,6 +46,11 @@ RunningStatusBar &RunningStatusBar::getInstance()
     if (instance == NULL)
     {
         instance = new RunningStatusBar();
+        RunningStatusBarInterface *old = registerRunningStatusBar(instance);
+        if (old)
+        {
+            delete old;
+        }
     }
     return *instance;
 }
