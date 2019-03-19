@@ -32,6 +32,7 @@ HEADERS += \
     ../../../Utility/TimeDate/TimeDate.h \
     ../../../Utility/Config/IConfig.h \
     ../../../Utility/Config/Config.h \
+    ../../../Utility/TimeDate/TimeDefine.h \
     TestTimeDate.h
 
 INCLUDEPATH += \

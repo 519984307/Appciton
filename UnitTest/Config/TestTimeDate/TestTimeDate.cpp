@@ -27,9 +27,9 @@ void TestTimeDate::testTime_data()
 {
     QTest::addColumn<int>("Time");
     QTest::addColumn<bool>("result");
-    QTest::newRow("diffTime1") << 1000 << true;
-    QTest::newRow("diffTime2") << 2000 << true;
-    QTest::newRow("diffTime3") << 3000 << true;
+    QTest::newRow("oneSecond") << 1000 << true;
+    QTest::newRow("twoSecond") << 2000 << true;
+    QTest::newRow("threeSecond") << 3000 << true;
 }
 
 void TestTimeDate::testTime()
@@ -51,9 +51,9 @@ void TestTimeDate::testDifftime_data()
 {
     QTest::addColumn<int>("Difftime");
     QTest::addColumn<bool>("result");
-    QTest::newRow("difftime1") << 1 << true;
-    QTest::newRow("difftime2") << 2 << true;
-    QTest::newRow("difftime3") << 3 << true;
+    QTest::newRow("oneSecond") << 1 << true;
+    QTest::newRow("twoSecond") << 2 << true;
+    QTest::newRow("threeSecond") << 3 << true;
 }
 
 void TestTimeDate::testDifftime()
@@ -135,11 +135,11 @@ void TestTimeDate::testGetTimeStr_data()
     QTest::addColumn<int>("Date");
     QTest::addColumn<bool>("ifShowSecond");
     QTest::addColumn<bool>("result");
-    QTest::newRow("row1") << 2 << true << true;
-    QTest::newRow("row2") << 246 << true << true;
-    QTest::newRow("row3") << 24682 << false << true;
-    QTest::newRow("row4") << 2468246 << true << true;
-    QTest::newRow("row5") << 246824682 << false << true;
+    QTest::newRow("random2") << 2 << true << true;
+    QTest::newRow("random246") << 246 << true << true;
+    QTest::newRow("random24682") << 24682 << false << true;
+    QTest::newRow("random2468246") << 2468246 << true << true;
+    QTest::newRow("random246824682") << 246824682 << false << true;
 }
 
 void TestTimeDate::testGetTimeStr()
@@ -171,11 +171,11 @@ void TestTimeDate::testGetDateStr_data()
     QTest::addColumn<int>("Date");
     QTest::addColumn<bool>("ifShowYear4Bits");
     QTest::addColumn<bool>("result");
-    QTest::newRow("data1") << 1 << true << true;
-    QTest::newRow("data2") << 135 << false << true;
-    QTest::newRow("data3") << 13579 << true << true;
-    QTest::newRow("data4") << 1357913 << false << true;
-    QTest::newRow("data5") << 135791357 << true << true;
+    QTest::newRow("random1") << 1 << true << true;
+    QTest::newRow("random135") << 135 << false << true;
+    QTest::newRow("random13579") << 13579 << true << true;
+    QTest::newRow("random1357913") << 1357913 << false << true;
+    QTest::newRow("random135791357") << 135791357 << true << true;
 }
 
 void TestTimeDate::testGetDateStr()
@@ -207,10 +207,10 @@ void TestTimeDate::testGetDateYear_data()
 {
     QTest::addColumn<int>("testNum");
     QTest::addColumn<bool>("result");
-    QTest::newRow("row1") << 100 << true;
-    QTest::newRow("row2") << 200 << true;
-    QTest::newRow("row3") << 500 << true;
-    QTest::newRow("row4") << 10000 << true;
+    QTest::newRow("testNum100") << 100 << true;
+    QTest::newRow("testNum200") << 200 << true;
+    QTest::newRow("testNum500") << 500 << true;
+    QTest::newRow("testNum1000") << 10000 << true;
 }
 
 void TestTimeDate::testGetDateYear()
@@ -229,10 +229,10 @@ void TestTimeDate::testGetDateMonth_data()
 {
     QTest::addColumn<int>("testNum");
     QTest::addColumn<bool>("result");
-    QTest::newRow("row1") << 100 << true;
-    QTest::newRow("row2") << 200 << true;
-    QTest::newRow("row3") << 500 << true;
-    QTest::newRow("row4") << 10000 << true;
+    QTest::newRow("testNum100") << 100 << true;
+    QTest::newRow("testNum200") << 200 << true;
+    QTest::newRow("testNum500") << 500 << true;
+    QTest::newRow("testNum1000") << 10000 << true;
 }
 
 void TestTimeDate::testGetDateMonth()
@@ -251,10 +251,10 @@ void TestTimeDate::testGetDateDay_data()
 {
     QTest::addColumn<int>("testNum");
     QTest::addColumn<bool>("result");
-    QTest::newRow("row1") << 100 << true;
-    QTest::newRow("row2") << 200 << true;
-    QTest::newRow("row3") << 500 << true;
-    QTest::newRow("row4") << 10000 << true;
+    QTest::newRow("testNum100") << 100 << true;
+    QTest::newRow("testNum200") << 200 << true;
+    QTest::newRow("testNum500") << 500 << true;
+    QTest::newRow("testNum1000") << 10000 << true;
 }
 
 void TestTimeDate::testGetDateDay()
@@ -273,10 +273,10 @@ void TestTimeDate::testGetTimeHour_data()
 {
     QTest::addColumn<int>("testNum");
     QTest::addColumn<bool>("result");
-    QTest::newRow("row1") << 100 << true;
-    QTest::newRow("row2") << 200 << true;
-    QTest::newRow("row3") << 500 << true;
-    QTest::newRow("row4") << 10000 << true;
+    QTest::newRow("testNum100") << 100 << true;
+    QTest::newRow("testNum200") << 200 << true;
+    QTest::newRow("testNum500") << 500 << true;
+    QTest::newRow("testNum1000") << 10000 << true;
 }
 
 void TestTimeDate::testGetTimeHour()
@@ -295,10 +295,10 @@ void TestTimeDate::testGetTimeMinute_data()
 {
     QTest::addColumn<int>("testNum");
     QTest::addColumn<bool>("result");
-    QTest::newRow("row1") << 100 << true;
-    QTest::newRow("row2") << 200 << true;
-    QTest::newRow("row3") << 500 << true;
-    QTest::newRow("row4") << 10000 << true;
+    QTest::newRow("testNum100") << 100 << true;
+    QTest::newRow("testNum200") << 200 << true;
+    QTest::newRow("testNum500") << 500 << true;
+    QTest::newRow("testNum1000") << 10000 << true;
 }
 
 void TestTimeDate::testGetTimeMinute()
@@ -317,10 +317,10 @@ void TestTimeDate::testGetTimeSecond_data()
 {
     QTest::addColumn<int>("testNum");
     QTest::addColumn<bool>("result");
-    QTest::newRow("row1") << 100 << true;
-    QTest::newRow("row2") << 200 << true;
-    QTest::newRow("row3") << 500 << true;
-    QTest::newRow("row4") << 10000 << true;
+    QTest::newRow("testNum100") << 100 << true;
+    QTest::newRow("testNum200") << 200 << true;
+    QTest::newRow("testNum500") << 500 << true;
+    QTest::newRow("testNum1000") << 10000 << true;
 }
 
 void TestTimeDate::testGetTimeSecond()
@@ -339,8 +339,7 @@ void TestTimeDate::testGetTimeMsec_data()
 {
     QTest::addColumn<int>("testNum");
     QTest::addColumn<bool>("result");
-    QTest::newRow("row1") << 100 << true;
-    QTest::newRow("row2") << 200 << true;
+    QTest::newRow("testNum100") << 100 << true;
 }
 
 void TestTimeDate::testGetTimeMsec()
