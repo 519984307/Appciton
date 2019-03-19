@@ -41,9 +41,9 @@ void TestErrorLogTest::testCount_data()
     QTest::addColumn<int>("num");
     QTest::addColumn<int>("time");
     QTest::addColumn<int>("result");
-    QTest::newRow("inRange") << 500 << 50000 << 500;
-    QTest::newRow("MaxRange") << 1000 << 100000 << 1000;
-    QTest::newRow("outOfRange") << 1001 << 100000 << 1000;
+    QTest::newRow("inRange") << 500 << 75000 << 500;
+    QTest::newRow("MaxRange") << 1000 << 150000 << 1000;
+    QTest::newRow("outOfRange") << 1001 << 150000 << 1000;
 }
 
 void TestErrorLogTest::testCount()
@@ -103,9 +103,9 @@ void TestErrorLogTest::testAppendList_data()
     QTest::addColumn<int>("num");
     QTest::addColumn<int>("time");
     QTest::addColumn<int>("result");
-    QTest::newRow("inRange") << 500 << 50000 << 500;
-    QTest::newRow("MaxRange") << 1000 << 100000 << 1000;
-    QTest::newRow("outOfRange") << 1001 << 100000 << 1000;
+    QTest::newRow("inRange") << 500 << 75000 << 500;
+    QTest::newRow("MaxRange") << 1000 << 150000 << 1000;
+    QTest::newRow("outOfRange") << 1001 << 150000 << 1000;
 }
 
 void TestErrorLogTest::testAppendList()
