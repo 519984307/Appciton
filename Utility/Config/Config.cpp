@@ -134,7 +134,7 @@ void Config::_restoreOrigFile(const QString &configPath)
         }
         else
         {
-            qDebug() << "Errorlog init fail!\n";
+            qDebug() << "Failure to store errorlog!\n";
         }
     }
 }

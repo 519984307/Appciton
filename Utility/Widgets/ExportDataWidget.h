@@ -27,52 +27,6 @@ enum Export_Data_Type
     EXPORT_DATA_NR
 };
 
-//传输开始标题
-static const char *startTitleString[EXPORT_DATA_NR] =
-{
-    "TransferRescueDataByUSB",
-    "TransferRescueDataBySFTP",
-    "TransferSupervisorByUSB",
-    "TransferSupervisorByWIFI",
-    "TransferECG12LeadByUSB",
-    "TransferECG12LeadByWIFI",
-    "TransferErrorLogToUSB",
-};
-
-//传输结束标题
-static const char *endTitleString[EXPORT_DATA_NR] =
-{
-    "TransferRescueDataComplete",
-    "TransferRescueDataComplete",
-    "TransferSupervisorComplete",
-    "TransferSupervisorComplete",
-    "TransferECG12LeadComplete",
-    "TransferECG12LeadComplete",
-    "TransferErrorLogToUSBComplete",
-};
-
-//传输开始信息
-static const char *startInfoString[EXPORT_DATA_NR] =
-{
-    "NotDisconnectUSB",
-    "TransferRescueDataBySFTP",
-    "NotDisconnectUSB",
-    "TransferRescueDataByWIFI",
-    "NotDisconnectUSB",
-    "TransferRescueDataByWIFI",
-};
-
-//传输结束信息
-static const char *endInfoString[EXPORT_DATA_NR] =
-{
-    "RemoveUSB",
-    "SucceedRescueDataBySFTP",
-    "RemoveUSB",
-    "SucceedRescueDataByWIFI",
-    "RemoveUSB",
-    "SucceedRescueDataByWIFI",
-};
-
 //数据传输基类
 class QLabel;
 class LButton;
