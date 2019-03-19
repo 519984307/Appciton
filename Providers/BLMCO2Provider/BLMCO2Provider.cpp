@@ -17,6 +17,8 @@
 #include "SystemManager.h"
 #include "PMessageBox.h"
 #include <QTimer>
+#include "O2Param.h"
+#include "RunningStatusBar.h"
 
 enum  // 数据包类型。
 {
@@ -91,6 +93,11 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
     _status.o2Replace    = ((sts & BIT3) == BIT3) ? true : false;
     if ((co2Param.getAwRRSwitch() == 1) && (co2Param.getApneaTime() != APNEA_ALARM_TIME_OFF))
     {
+        if (_status.noBreath && o2Param.getApneaAwakeStatus())
+        {
+            o2Param.sendMotorControl(true);
+            runningStatus.setShakeStatus(SHAKING);
+        }
         co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_APNEA, _status.noBreath);
     }
     else

@@ -28,6 +28,8 @@
 #include "IConfig.h"
 #include "WindowManager.h"
 #include "RawDataCollector.h"
+#include "O2Param.h"
+#include "RunningStatusBar.h"
 
 /**************************************************************************************************
  * 模块与参数对接。
@@ -440,6 +442,11 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         break;
 
     case TE3_NOTIFY_RESP_ALARM:
+        if (data[1] && o2Param.getApneaAwakeStatus())
+        {
+            o2Param.sendMotorControl(true);
+            runningStatus.setShakeStatus(SHAKING);
+        }
         respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_APNEA, data[1]);
         break;
 

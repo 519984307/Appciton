@@ -11,6 +11,8 @@
 #include "O2Param.h"
 #include "O2ProviderIFace.h"
 #include "O2TrendWidget.h"
+#include "IConfig.h"
+#include "RunningStatusBar.h"
 
 class O2ParamPrivate
 {
@@ -154,6 +156,19 @@ void O2Param::updateSubParamLimit(SubParamID id)
     {
         d_ptr->trendWidget->updateLimit();
     }
+}
+
+void O2Param::setApneaAwakeStatus(bool sta)
+{
+    systemConfig.setNumValue("PrimaryCfg|O2|ApneaAwake", sta);
+    runningStatus.setShakeStatus(static_cast<ShakeStatus>(sta));
+}
+
+bool O2Param::getApneaAwakeStatus()
+{
+    bool sta;
+    systemConfig.getNumValue("PrimaryCfg|O2|ApneaAwake", sta);
+    return sta;
 }
 
 void O2Param::sendMotorControl(int control)

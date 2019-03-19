@@ -188,6 +188,7 @@ static void _initComponents(void)
     // running status
     runningStatus.setPacerStatus(patientManager.getPacermaker());
     runningStatus.setNightModeStatus(nightModeManager.nightMode());
+    runningStatus.setShakeStatus(static_cast<ShakeStatus>(o2Param.getApneaAwakeStatus()));
 #ifdef Q_WS_QWS
     if (systemManager.isSupport(CONFIG_TOUCH))
     {

@@ -19,6 +19,9 @@ enum RunningStatusType
     PACER_STATUS,
     NIGHT_MODE_STATUS,
     TOUCH_STATUS,
+    SHAKE_OFF_STATUS,
+    SHAKE_ON_STATUS,
+    SHAKING_STATUS,
     RUNING_STATUS_NR,
 };
 
@@ -26,6 +29,9 @@ static const char *iconPaths[RUNING_STATUS_NR] = {
     "/usr/local/nPM/icons/PaceMarkerOff.png",
     "/usr/local/nPM/icons/moon.png",
     "/usr/local/nPM/icons/untouch.png",
+    "/usr/local/nPM/icons/ShakeOff.png",
+    "/usr/local/nPM/icons/ShakeOn.png",
+    "/usr/local/nPM/icons/Shaking.png",
 };
 
 
@@ -101,6 +107,25 @@ void RunningStatusBar::clearTouchStatus()
     d_ptr->icons[TOUCH_STATUS]->setPixmap(QPixmap());
 }
 
+void RunningStatusBar::setShakeStatus(ShakeStatus sta)
+{
+    QPixmap pix;
+    if (sta == SHAKE_OFF)
+    {
+        pix.load(iconPaths[SHAKE_OFF_STATUS]);
+    }
+    else if (sta == SHAKE_ON)
+    {
+        pix.load(iconPaths[SHAKE_ON_STATUS]);
+    }
+    else if (sta == SHAKING)
+    {
+        pix.load(iconPaths[SHAKING_STATUS]);
+    }
+    pix = pix.scaled(pix.width(), pix.height(), Qt::KeepAspectRatio);
+    d_ptr->icons[SHAKING_STATUS]->setPixmap(pix);
+}
+
 RunningStatusBar::RunningStatusBar()
     : IWidget("RunningStatusBar"), d_ptr(new RunningStatusBarPrivate)
 {
@@ -116,4 +141,6 @@ RunningStatusBar::RunningStatusBar()
     mainLayout->addWidget(d_ptr->icons[NIGHT_MODE_STATUS], 1);
     d_ptr->icons[TOUCH_STATUS] = new QLabel();
     mainLayout->addWidget(d_ptr->icons[TOUCH_STATUS], 1);
+    d_ptr->icons[SHAKING_STATUS] = new QLabel();
+    mainLayout->addWidget(d_ptr->icons[SHAKING_STATUS], 1);
 }

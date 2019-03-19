@@ -22,6 +22,7 @@
 #include "ECGParam.h"
 #include "CO2Param.h"
 #include "RESPParam.h"
+#include "O2Param.h"
 
 class OthersMaintainMenuContentPrivate
 {
@@ -35,6 +36,7 @@ public:
         ITEM_CBO_CONFIG_SET,
         ITEM_CBO_CO2_WAVE_MODE,
         ITEM_CBO_RESP_WAVE_MODE,
+        ITEM_CBO_APNEA_AWAKE,
     };
 
     OthersMaintainMenuContentPrivate()
@@ -116,6 +118,9 @@ void OthersMaintainMenuContentPrivate::loadOptions()
 
     mode = respParam.getSweepMode();
     combos[ITEM_CBO_RESP_WAVE_MODE]->setCurrentIndex(mode);
+
+    mode = o2Param.getApneaAwakeStatus();
+    combos[ITEM_CBO_APNEA_AWAKE]->setCurrentIndex(mode);
 }
 
 OthersMaintainMenuContent::OthersMaintainMenuContent()
@@ -260,6 +265,21 @@ void OthersMaintainMenuContent::layoutExec()
     layout->addWidget(button, d_ptr->combos.count(), 1);
     connect(button, SIGNAL(released()), this, SLOT(onBtnReleased()));
 #endif
+    // 窒息唤醒
+    label = new QLabel(trs("ApneaSimulation"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                       << trs("Off")
+                       << trs("On")
+                      );
+    itemID = static_cast<int>(OthersMaintainMenuContentPrivate::ITEM_CBO_APNEA_AWAKE);
+    comboBox->setProperty("Item",
+                          qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(OthersMaintainMenuContentPrivate::ITEM_CBO_APNEA_AWAKE, comboBox);
+
 
     layout->setRowStretch(d_ptr->combos.count() + 1, 1);
 }
@@ -294,6 +314,9 @@ void OthersMaintainMenuContent::onComboBoxIndexChanged(int index)
             break;
         case OthersMaintainMenuContentPrivate::ITEM_CBO_RESP_WAVE_MODE:
             respParam.setSweepMode(static_cast<RESPSweepMode>(index));
+            break;
+        case OthersMaintainMenuContentPrivate::ITEM_CBO_APNEA_AWAKE:
+            o2Param.setApneaAwakeStatus(index);
             break;
         default:
             break;

@@ -61,6 +61,18 @@ public:
 
     // 刷新参数上下限
     virtual void updateSubParamLimit(SubParamID id);
+
+    /**
+     * @brief setApneaAwakeStatus set apnea awake status
+     * @param flag
+     */
+    void setApneaAwakeStatus(bool sta);
+
+    /**
+     * @brief getApneaAwakeStatus get apnea awake status
+     * @return
+     */
+    bool getApneaAwakeStatus();
 public:
     // 马达控制
     void sendMotorControl(int control);

@@ -35,8 +35,6 @@ private slots:
      */
     void onAlarmBtnReleased(void);
 
-    void motorControlIndexChanged(int index);
-
     void onVibrationValueChanged(int value, int scale);
 
 private:
