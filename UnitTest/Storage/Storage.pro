@@ -2,4 +2,5 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     TestWaveformCache \
-    TestStorageFile 
+    TestStorageManager \
+    TestStorageFile
