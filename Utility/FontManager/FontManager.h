@@ -10,22 +10,13 @@
 
 
 #pragma once
-#include <QFont>
+#include "FontManagerInterface.h"
 
-class FontManager
+class FontManager : public FontMangerInterface
 {
 public:
-    static FontManager &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new FontManager();
-        }
+    static FontManager &getInstance(void);
 
-        return *_selfObj;
-    }
-
-    static FontManager *_selfObj;
     ~FontManager();
 
     // 构造文本字体
@@ -98,5 +89,4 @@ private:
     static const int _defaultFontSize = 10;
 };
 
-#define fontManager (FontManager::construction())
-#define deleteFontManager() (delete FontManager::_selfObj)
+#define fontManager (FontManager::getInstance())

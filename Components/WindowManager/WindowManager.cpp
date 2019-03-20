@@ -121,6 +121,11 @@ WindowManager &WindowManager::getInstance()
     if (instance == NULL)
     {
         instance = new WindowManager();
+        WindowManagerInterface *old = registerWindowManager(instance);
+        if (old)
+        {
+            delete old;
+        }
     }
     return *instance;
 }

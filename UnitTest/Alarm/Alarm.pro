@@ -4,4 +4,5 @@ SUBDIRS += \
     TestAlarmState \
     TestAlarmNormalState \
     TestAlarmResetState \
-    TestAlarmPauseState
+    TestAlarmPauseState \
+    TestAlarmIndicator

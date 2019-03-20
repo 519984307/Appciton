@@ -14,8 +14,7 @@
 #include <QList>
 #include "AlarmIndicatorInterface.h"
 
-class AlarmPhyInfoBarWidget;
-class AlarmTechInfoBarWidget;
+class AlarmInfoBarWidget;
 class AlarmStatusWidget;
 class AlarmIndicator : public AlarmIndicatorInterface
 {
@@ -23,8 +22,8 @@ public:
     static AlarmIndicator &getInstance(void);
 
     // 注册报警界面对象。
-    void setAlarmPhyWidgets(AlarmPhyInfoBarWidget *alarmWidget, AlarmStatusWidget *muteWidget);
-    void setAlarmTechWidgets(AlarmTechInfoBarWidget *alarmWidget);
+    void setAlarmPhyWidgets(AlarmInfoBarWidget *alarmWidget, AlarmStatusWidget *muteWidget);
+    void setAlarmTechWidgets(AlarmInfoBarWidget *alarmWidget);
 
     // 增加/删除报警消息。
     bool addAlarmInfo(unsigned alarmTime, AlarmType alarmType,
@@ -119,8 +118,8 @@ private: // 报警信息显示。
     void _displayTechSet(AlarmInfoNode &node); // 设置技术报警提示信息。
     bool _canPlayAudio(AlarmStatus status, bool isTechAlarm); // check whether can play alarm sound
 
-    AlarmPhyInfoBarWidget *_alarmPhyInfoWidget;
-    AlarmTechInfoBarWidget *_alarmTechInfoWidget;
+    AlarmInfoBarWidget *_alarmPhyInfoWidget;
+    AlarmInfoBarWidget *_alarmTechInfoWidget;
     AlarmStatusWidget *_alarmStatusWidget;
 
 private:
@@ -139,7 +138,6 @@ private:
 private:
     AlarmStatus _audioStatus;
     int _audioPauseTime;
-    static const int _checkPatientAlarmPauseTime = 12;
 
     bool _isForbidLight;
 };

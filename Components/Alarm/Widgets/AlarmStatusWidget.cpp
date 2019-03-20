@@ -10,14 +10,8 @@
 
 
 #include "AlarmStatusWidget.h"
-#include "LanguageManager.h"
-#include "FontManager.h"
-#include "AlarmIndicator.h"
-#include "AlarmInfoPopListView.h"
 #include <QPainter>
 #include <QHBoxLayout>
-#include <QPushButton>
-#include "TopBarWidget.h"
 #include "IConfig.h"
 
 class AlarmStatusWidgetPrivate

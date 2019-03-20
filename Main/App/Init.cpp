@@ -173,7 +173,7 @@ static void _initComponents(void)
     patientManager.setPatientInfoWidget(*patientInfoWidget);
 
     // 初始化报警。
-    alertor.construction();
+    alertor.getInstance();
     alarmIndicator.getInstance();
 
     AlarmPhyInfoBarWidget *alarmPhyInfo = new AlarmPhyInfoBarWidget("AlarmPhyInfoBarWidget");
@@ -233,8 +233,8 @@ static void _initProviderParam(void)
     paramManager.addParam(ecgDupParam.construction());
     alertor.addLimtSource(ecgDupLimitAlarm.construction());
     paramManager.addParam(ecgParam.construction());
-    alertor.addLimtSource(ecgLimitAlarm.construction());
-    alertor.addOneShotSource(ecgOneShotAlarm.construction());
+    alertor.addLimtSource(ecgLimitAlarm.getInstance());
+    alertor.addOneShotSource(ecgOneShotAlarm.getInstance());
     ECGTrendWidget *ecgTrendWidget = new ECGTrendWidget();
     ecgDupParam.setTrendWidget(ecgTrendWidget);
     layoutManager.addLayoutWidget(ecgTrendWidget, LAYOUT_NODE_PARAM_ECG);
@@ -639,7 +639,6 @@ void deleteObjects(void)
     deleteDataStorageDirManager();
 
     deletepMessageBox();
-    deleteAlarm();
 
     deleteTrendCache();
     deleteRescueDataExportWidget();
@@ -650,7 +649,6 @@ void deleteObjects(void)
     deleteActivityLogManager();
 
     deleteColorManager();
-    deleteFontManager();
     deleteLanguageManager();
     deleteErrorCatch();
 }

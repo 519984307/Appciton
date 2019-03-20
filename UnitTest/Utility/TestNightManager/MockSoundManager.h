@@ -17,4 +17,5 @@ class MockSoundManager : public SoundManagerInterface
 public:
     MOCK_METHOD2(setVolume, void(SoundType, VolumeLevel));
     MOCK_METHOD1(getVolume, VolumeLevel(SoundType));
+    MOCK_METHOD2(updateAlarm, void(bool, AlarmPriority));
 };

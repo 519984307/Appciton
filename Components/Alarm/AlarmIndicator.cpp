@@ -8,30 +8,35 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/10/12
  **/
 
-
-
 #include "AlarmIndicator.h"
 #include "AlarmStatusWidget.h"
-#include "AlarmPhyInfoBarWidget.h"
-#include "AlarmTechInfoBarWidget.h"
-#include "SoundManager.h"
-#include "LightManager.h"
+#include "AlarmInfoBarWidget.h"
+#include "SoundManagerInterface.h"
+#include "LightManagerInterface.h"
 #include "IConfig.h"
-#include "AlarmStateMachine.h"
-#include "Alarm.h"
-#include "ECGAlarm.h"
+#include "AlarmStateMachineInterface.h"
+#include "AlarmInterface.h"
 
 /**************************************************************************************************
  * 功能：发布报警。
  *************************************************************************************************/
 void AlarmIndicator::publishAlarm(AlarmStatus status)
 {
+    SoundManagerInterface *soundManager = SoundManagerInterface::getSoundManager();
+    LightManagerInterface *lightManager = LightManagerInterface::getLightManager();
+    AlarmStateMachineInterface *alarmStateMachine = AlarmStateMachineInterface::getAlarmStateMachine();
     if (_alarmInfoDisplayPool.isEmpty())
     {
         _displayPhyClear();
         _displayTechClear();
-        soundManager.updateAlarm(false, ALARM_PRIO_LOW);
-        lightManager.updateAlarm(false, ALARM_PRIO_LOW);
+        if (soundManager)
+        {
+            soundManager->updateAlarm(false, ALARM_PRIO_LOW);
+        }
+        if (lightManager)
+        {
+            lightManager->updateAlarm(false, ALARM_PRIO_LOW);
+        }
         return;
     }
 
@@ -81,7 +86,8 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
                 }
             }
 
-            if ((!node.acknowledge || alertor.getAlarmLightOnAlarmReset())
+            AlarmInterface *alertor = AlarmInterface::getAlarm();
+            if (alertor && (!node.acknowledge || alertor->getAlarmLightOnAlarmReset())
                     && node.alarmPriority != ALARM_PRIO_PROMPT)
             {
                 // 处理确认后且开启了报警复位灯，或者未确认的报警
@@ -186,25 +192,40 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
     // 更新声音
     if (phySoundPriority != ALARM_PRIO_PROMPT && _canPlayAudio(status, false))
     {
-        soundManager.updateAlarm(true, phySoundPriority);
+        if (soundManager)
+        {
+            soundManager->updateAlarm(true, phySoundPriority);
+        }
     }
     else if (techSoundPriority != ALARM_PRIO_PROMPT && _canPlayAudio(status, true))
     {
-        soundManager.updateAlarm(true, techSoundPriority);
+        if (soundManager)
+        {
+            soundManager->updateAlarm(true, techSoundPriority);
+        }
     }
     else
     {
-        soundManager.updateAlarm(false, phySoundPriority);
+        if (soundManager)
+        {
+            soundManager->updateAlarm(false, phySoundPriority);
+        }
     }
 
     // 更新灯光
     if (lightPriority != ALARM_PRIO_PROMPT)
     {
-        lightManager.updateAlarm(true, lightPriority);
+        if (lightManager)
+        {
+            lightManager->updateAlarm(true, lightPriority);
+        }
     }
     else
     {
-        lightManager.updateAlarm(false, lightPriority);
+        if (lightManager)
+        {
+            lightManager->updateAlarm(false, lightPriority);
+        }
     }
 
     //生理报警
@@ -252,19 +273,28 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
     // 生理报警条件全部解除
     if (!hasNonLatchedPhyAlarm)
     {
-        alarmStateMachine.handAlarmEvent(ALARM_STATE_EVENT_ALL_PHY_ALARM_LATCHED, 0, 0);
+        if (alarmStateMachine)
+        {
+            alarmStateMachine->handAlarmEvent(ALARM_STATE_EVENT_ALL_PHY_ALARM_LATCHED, 0, 0);
+        }
     }
 
     // 没有处于倒计时的报警
     if (!hasPausedPhyAlarm)
     {
-        alarmStateMachine.handAlarmEvent(ALARM_STATE_EVENT_NO_PAUSED_PHY_ALARM, 0, 0);
+        if (alarmStateMachine)
+        {
+            alarmStateMachine->handAlarmEvent(ALARM_STATE_EVENT_NO_PAUSED_PHY_ALARM, 0, 0);
+        }
     }
 
     // 没有被确认的报警
     if (!hasAcknowledgAlarm)
     {
-        alarmStateMachine.handAlarmEvent(ALARM_STATE_EVENT_NO_ACKNOWLEDG_ALARM, 0, 0);
+        if (alarmStateMachine)
+        {
+            alarmStateMachine->handAlarmEvent(ALARM_STATE_EVENT_NO_ACKNOWLEDG_ALARM, 0, 0);
+        }
     }
 }
 
@@ -377,7 +407,7 @@ void AlarmIndicator::_displayInfoNode(AlarmInfoNode &alarmNode, int &indexint, i
 /**************************************************************************************************
  * 功能：注册生理报警界面指示器。
  *************************************************************************************************/
-void AlarmIndicator::setAlarmPhyWidgets(AlarmPhyInfoBarWidget *alarmWidget, AlarmStatusWidget *muteWidget)
+void AlarmIndicator::setAlarmPhyWidgets(AlarmInfoBarWidget *alarmWidget, AlarmStatusWidget *muteWidget)
 {
     _alarmPhyInfoWidget = alarmWidget;
     _alarmStatusWidget = muteWidget;
@@ -404,7 +434,7 @@ AlarmIndicator &AlarmIndicator::getInstance()
 /**************************************************************************************************
  * 功能：注册技术报警界面指示器。
  *************************************************************************************************/
-void AlarmIndicator::setAlarmTechWidgets(AlarmTechInfoBarWidget *alarmWidget)
+void AlarmIndicator::setAlarmTechWidgets(AlarmInfoBarWidget *alarmWidget)
 {
     _alarmTechInfoWidget = alarmWidget;
 }
@@ -428,7 +458,7 @@ bool AlarmIndicator::addAlarmInfo(unsigned alarmTime, AlarmType alarmType,
     AlarmInfoList::iterator it = list->begin();
     for (; it != list->end(); ++it)
     {
-        if ((it->alarmType == alarmType) && (it->alarmMessage == alarmMessage))
+        if ((it->alarmType == alarmType) && strcmp(it->alarmMessage, alarmMessage) == 0)
         {
             AlarmInfoNode node = *it;
             if (alarmType != ALARM_TYPE_TECH)
@@ -471,7 +501,7 @@ void AlarmIndicator::delAlarmInfo(AlarmType alarmType, const char *alarmMessage)
     AlarmInfoList::iterator it = list->begin();
     for (; it != list->end(); ++it)
     {
-        if ((it->alarmType == alarmType) && (it->alarmMessage == alarmMessage))
+        if ((it->alarmType == alarmType) && strcmp(it->alarmMessage, alarmMessage) == 0)
         {
             list->erase(it);
             break;
@@ -493,7 +523,7 @@ bool AlarmIndicator::latchAlarmInfo(AlarmType alarmType, const char *alarmMessag
     AlarmInfoList::iterator it = list->begin();
     for (; it != list->end(); ++it)
     {
-        if ((it->alarmType == alarmType) && (it->alarmMessage == alarmMessage))
+        if ((it->alarmType == alarmType) && strcmp(it->alarmMessage, alarmMessage) == 0)
         {
             AlarmInfoNode node = *it;
             if (!node.latch)
@@ -524,7 +554,7 @@ bool AlarmIndicator::updateLatchAlarmInfo(const char *alarmMessage, bool flag)
     AlarmInfoList::iterator it = list->begin();
     for (; it != list->end(); ++it)
     {
-        if (it->alarmMessage == alarmMessage)
+        if (strcmp(it->alarmMessage, alarmMessage) == 0)
         {
             AlarmInfoNode node = *it;
             node.latch = flag;
@@ -617,7 +647,7 @@ bool AlarmIndicator::checkAlarmIsExist(AlarmType alarmType, const char *alarmMes
     AlarmInfoList::iterator it = list->begin();
     for (; it != list->end(); ++it)
     {
-        if (alarmType == it->alarmType && alarmMessage == it->alarmMessage)
+        if (alarmType == it->alarmType && strcmp(alarmMessage, it->alarmMessage) == 0)
         {
             ret = true;
             break;
@@ -647,14 +677,7 @@ bool AlarmIndicator::phyAlarmPauseStatusHandle()
             AlarmInfoNode node = *it;
             if (0 == it->pauseTime)
             {
-                if (node.alarmMessage != ecgOneShotAlarm.toString(ECG_ONESHOT_CHECK_PATIENT_ALARM))
-                {
-                    node.pauseTime = _audioPauseTime;
-                }
-                else
-                {
-                    node.pauseTime = _checkPatientAlarmPauseTime;
-                }
+                node.pauseTime = _audioPauseTime;
             }
             else if (!ret)
             {
@@ -717,7 +740,7 @@ bool AlarmIndicator::hasLatchPhyAlarm()
  *      alarmInfo：报警的字串。
  *      priority:报警级别
  *************************************************************************************************/
-void AlarmIndicator::updataAlarmPriority(AlarmType alarmType, const char *alArmMessage,
+void AlarmIndicator::updataAlarmPriority(AlarmType alarmType, const char *alarmMessage,
         AlarmPriority priority)
 {
     AlarmInfoList *list = &_alarmInfoDisplayPool;
@@ -726,7 +749,7 @@ void AlarmIndicator::updataAlarmPriority(AlarmType alarmType, const char *alArmM
     AlarmInfoList::iterator it = list->begin();
     for (; it != list->end(); ++it)
     {
-        if ((it->alarmType == alarmType) && (it->alarmMessage == alArmMessage))
+        if ((it->alarmType == alarmType) && strcmp(it->alarmMessage, alarmMessage) == 0)
         {
             AlarmInfoNode node = *it;
             if (node.alarmPriority != priority)
@@ -754,7 +777,7 @@ void AlarmIndicator::updateAlarmInfo(const AlarmInfoNode &node)
     AlarmInfoList::iterator it = list->begin();
     for (; it != list->end(); ++it)
     {
-        if ((it->alarmType == node.alarmType) && (it->alarmMessage == node.alarmMessage))
+        if ((it->alarmType == node.alarmType) && strcmp(it->alarmMessage, node.alarmMessage) == 0)
         {
             *it = node;
             break;
@@ -780,7 +803,11 @@ void AlarmIndicator::setAlarmStatus(AlarmStatus status)
     }
 
     _audioStatus = status;
-    alertor.addAlarmStatus(status);
+    AlarmInterface *alertor = AlarmInterface::getAlarm();
+    if (alertor)
+    {
+        alertor->addAlarmStatus(status);
+    }
 }
 
 /**************************************************************************************************
@@ -877,7 +904,7 @@ bool AlarmIndicator::getAlarmInfo(AlarmType type, const char *alArmMessage,
     AlarmInfoList::iterator it = list->begin();
     for (; it != list->end(); ++it)
     {
-        if ((it->alarmType == type) && (it->alarmMessage == alArmMessage))
+        if ((it->alarmType == type) && strcmp(it->alarmMessage, alArmMessage) == 0)
         {
             node = *it;
             return true;
