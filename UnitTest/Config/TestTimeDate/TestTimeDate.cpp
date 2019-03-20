@@ -19,7 +19,7 @@
 
 TestTimeDate::TestTimeDate()
 {
-     TimeFormat timeFormat = TimeFormat::TIME_FORMAT_24;
+     TimeFormat timeFormat = TIME_FORMAT_24;
      systemConfig.setNumValue("DateTime|TimeFormat", static_cast<int>(timeFormat));
 }
 
