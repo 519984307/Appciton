@@ -85,7 +85,7 @@ static void _initSystem(void)
     }
 
     // 波形缓存。
-    waveformCache.construction();
+    waveformCache.getInstance();
 
     // tick初始化。
     systemTick.construction();
@@ -108,7 +108,7 @@ static void _initSystem(void)
     systemBoardProvider.selfTest();
 
     // 存储目录管理。
-    dataStorageDirManager.construction();
+    dataStorageDirManager.getInstance();
     // initialize the storage manager in the main thread
     EventStorageManager::getInstance();
     TrendDataStorageManager::getInstance();
@@ -636,12 +636,9 @@ void deleteObjects(void)
     deleteSystemTick();
     deleteKeyActionManager();
 
-    deleteDataStorageDirManager();
-
     deletepMessageBox();
     deleteAlarm();
 
-    deleteWaveformCache();
     deleteTrendCache();
     deleteRescueDataExportWidget();
     deleteRescueDataDeleteWidget();

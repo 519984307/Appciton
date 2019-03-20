@@ -14,8 +14,6 @@
 
 #define CONTINUOUS_PRINT_WAVE_CHANNEL_TIME 8
 
-WaveformCache *WaveformCache::_selfObj = NULL;
-
 /**************************************************************************************************
  * 申请一个波形缓存,如果缓存对象已经存在且波形数据采样率不同，则修改其容量大小，否则申请新缓存空间。
  * 参数：
@@ -505,6 +503,16 @@ void WaveformCache::unRegisterWaveformRecorder(WaveformID id, void *recObj)
     }
 }
 
+void WaveformCache::clear()
+{
+    memset(_storageChannel, 0, sizeof(_storageChannel));
+    memset(_realtimeChannel, 0, sizeof(_realtimeChannel));
+    _enableRealtimeChannel = false;
+    _source.clear();
+    _syncCache.clear();
+    _waveRecorders.clear();
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
@@ -518,6 +526,23 @@ WaveformCache::WaveformCache()
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
+WaveformCache &WaveformCache::getInstance()
+{
+    static WaveformCache *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new WaveformCache();
+
+        // register the new interface and delete the old one
+        WaveformCacheInterface *old = registerWaveformCache(instance);
+        if (old)
+        {
+            delete old;
+        }
+    }
+    return *instance;
+}
+
 WaveformCache::~WaveformCache()
 {
     for (int i = 0; i < WAVE_NR; i++)
