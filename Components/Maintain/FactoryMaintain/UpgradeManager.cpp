@@ -723,7 +723,7 @@ void UpgradeManager::upgradeProcess()
         d_ptr->fileContent = f.readAll();
 
         // get the md5sum from the file name
-        QString md5 = filename.section('.', 1, 1);
+        QString md5 = filename.section('.', -2, -2);
 
         QString calcMd5 = d_ptr->calcChecksum(d_ptr->fileContent);
 
