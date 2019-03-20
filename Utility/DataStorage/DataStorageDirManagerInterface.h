@@ -15,6 +15,9 @@ class DataStorageDirManagerInterface : public QObject
 {
     Q_OBJECT
 public:
+    DataStorageDirManagerInterface()
+        : QObject()
+    {}
     virtual ~DataStorageDirManagerInterface(){}
 
     /**
