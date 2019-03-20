@@ -250,13 +250,9 @@ bool S5Provider::isResult_BAR(unsigned char *packet)
 
     // PI;
     short piValue = (packet[15] << 8) + packet[16];
-    if (piValue > 15 || piValue < 1)
+    if (piValue > 200 || piValue < 1)
     {
         piValue = InvData();
-    }
-    else
-    {
-        piValue *= 10;
     }
     spo2Param.updatePIValue(piValue);
 

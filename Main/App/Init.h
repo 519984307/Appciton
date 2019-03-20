@@ -79,6 +79,7 @@
 #include "AlarmTechInfoBarWidget.h"
 #include "AlarmStatusWidget.h"
 #include "AlarmStateMachine.h"
+#include "AlarmSourceManager.h"
 
 #include "ParamManager.h"
 #include "DemoProvider.h"

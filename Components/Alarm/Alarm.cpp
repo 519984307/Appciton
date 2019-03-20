@@ -521,9 +521,9 @@ void Alarm::_handleAlarm(void)
  * 参数：
  *      alarmSource：报警源
  *************************************************************************************************/
-void Alarm::addLimtSource(AlarmLimitIFace &alarmSource)
+void Alarm::addLimtSource(AlarmLimitIFace *alarmSource)
 {
-    _limitSources.insert(alarmSource.getParamID(), &alarmSource);
+    _limitSources.insert(alarmSource.getParamID(), alarmSource);
 }
 
 /**************************************************************************************************
@@ -531,9 +531,9 @@ void Alarm::addLimtSource(AlarmLimitIFace &alarmSource)
  * 参数：
  *      alarmSource：报警源
  *************************************************************************************************/
-void Alarm::addOneShotSource(AlarmOneShotIFace &alarmSource)
+void Alarm::addOneShotSource(AlarmOneShotIFace *alarmSource)
 {
-    _oneshotSources.insert(alarmSource.getParamID(), &alarmSource);
+    _oneshotSources.insert(alarmSource.getParamID(), alarmSource);
 }
 
 /**************************************************************************************************

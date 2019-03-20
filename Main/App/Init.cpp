@@ -627,7 +627,6 @@ void deleteObjects(void)
     deleteParamManager();
     deleteParamInfo();
     deletePatientManager();
-    deleteTimeManager();
     deleteTimeDate();
     deleteMachineConfig();
     deleteSystemConfig();

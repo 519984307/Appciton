@@ -23,17 +23,7 @@ enum SystemOneShotAlarm
 class SystemAlarm : public AlarmOneShotIFace
 {
 public:
-    static SystemAlarm &Construction()
-    {
-        if (NULL == _selfObj)
-        {
-            _selfObj = new SystemAlarm();
-        }
-
-        return *_selfObj;
-    }
-
-    static SystemAlarm *_selfObj;
+    SystemAlarm();
 
     ~SystemAlarm();
 
@@ -61,9 +51,5 @@ public:
 
     // 将报警ID转换成字串。
     const char *toString(int id);
-
-private:
-    SystemAlarm();
 };
-#define systemAlarm (SystemAlarm::Construction())
 

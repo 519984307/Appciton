@@ -12,12 +12,12 @@
 #include <QDir>
 #include "DataStorageDirManager.h"
 #include "IConfig.h"
-#include "TimeManager.h"
+#include "TimeManagerInterface.h"
 #include <QMutex>
 #include "WaveformCache.h"
 #include "StorageManager.h"
 #include <QDateTime>
-#include "SystemManager.h"
+#include "SystemManagerInterface.h"
 #include "SystemAlarm.h"
 #include "Alarm.h"
 
@@ -127,11 +127,12 @@ DataStorageDirManager::DataStorageDirManager()
     QDir dir(_curFolder);
     QString timeStr;
     bool newRescue  = false;
+    TimeManagerInterface *timeManager = TimeManagerInterface::getTimeManager();
     if (_curFolder.isEmpty() || !dir.exists() ||
-            (timeManager.getPowerOnSession() == POWER_ON_SESSION_NEW))
+            (timeManager->getPowerOnSession() == POWER_ON_SESSION_NEW))
     {
         _curFolder.clear();
-        unsigned t = timeManager.getStartTime();
+        unsigned t = timeManager->getStartTime();
         QDateTime dt = QDateTime::fromTime_t(t);
         timeStr = dt.toString("yyyyMMddHHmmss");
         _curFolder += DATA_STORE_PATH;
@@ -153,7 +154,7 @@ DataStorageDirManager::DataStorageDirManager()
         newRescue = true;
     }
 
-    _createFDFileName(_fdFileName, timeManager.getStartTime(), newRescue);
+    _createFDFileName(_fdFileName, timeManager->getStartTime(), newRescue);
 
     QString curFolderName = QDir(_curFolder).dirName();
     dir.setPath(QString::fromAscii(DATA_STORE_PATH));
@@ -380,15 +381,17 @@ void DataStorageDirManager::createDir(bool createNew)
 
     QDir dir(_curFolder);
     QString timeStr;
+    TimeManagerInterface *timeManager = TimeManagerInterface::getTimeManager();
+    SystemManagerInterface *systemManager = SystemManagerInterface::getSystemManager();
     if (_curFolder.isEmpty() || !dir.exists() || _createNew)
     {
         _folderNameList.clear();
         _curFolder.clear();
-        QDateTime dt = QDateTime::fromTime_t(timeManager.getCurTime());
+        QDateTime dt = QDateTime::fromTime_t(timeManager->getCurTime());
         timeStr = dt.toString("yyyyMMddHHmmss");
         _curFolder += DATA_STORE_PATH;
         QString demoFlag = "";
-        if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+        if (systemManager->getCurWorkMode() == WORK_MODE_DEMO)
         {
             demoFlag = "D";
         }
@@ -468,7 +471,7 @@ void DataStorageDirManager::createDir(bool createNew)
     {
         // 新病人，删除上次删掉备份文件，设置时间，恢复主配置文件
         cleanUpLastIncidentDir();
-        timeManager.setElapsedTime();
+        timeManager->setElapsedTime();
         Config systemDefCfg(systemConfig.getCurConfigName());
         systemConfig.setNodeValue("PrimaryCfg", systemDefCfg);
         emit newPatient();
@@ -652,7 +655,8 @@ bool DataStorageDirManager::cleanUpIncidentDir(const QString &dir)
 {
 
     QStringList cleanupFilesList;
-    if (timeManager.getPowerOnSession() == POWER_ON_SESSION_CONTINUE)
+    TimeManagerInterface *timeManager = TimeManagerInterface::getTimeManager();
+    if (timeManager->getPowerOnSession() == POWER_ON_SESSION_CONTINUE)
     {
         // If reboot and continue a session, the host will create a new full disclosure file,
         // need to clean up the old one

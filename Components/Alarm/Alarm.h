@@ -37,8 +37,8 @@ public:
     static Alarm *_selfObj;
 
     // 注册报警源。
-    void addLimtSource(AlarmLimitIFace &alarmSource);
-    void addOneShotSource(AlarmOneShotIFace &alarmSource);
+    void addLimtSource(AlarmLimitIFace *alarmSource);
+    void addOneShotSource(AlarmOneShotIFace *alarmSource);
 
     // 设置静音键状态。
     void updateMuteKeyStatus(bool isPressed);
