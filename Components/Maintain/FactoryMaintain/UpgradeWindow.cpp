@@ -78,6 +78,12 @@ UpgradeWindow::UpgradeWindow()
             trs(UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_T5)));
     }
 
+    if (systemManager.isSupport(CONFIG_O2))
+    {
+        d_ptr->upgradeModuleCbo->addItem(
+            trs(UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_NEONATE)));
+    }
+
     d_ptr->upgradeModuleCbo->addItem(
         trs(UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_PRT48)));
 

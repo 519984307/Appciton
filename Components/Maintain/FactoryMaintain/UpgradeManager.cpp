@@ -612,6 +612,8 @@ QString UpgradeManager::getUpgradeModuleName(UpgradeManager::UpgradeModuleType t
         return "N5";
     case UPGRADE_MOD_T5:
         return "T5";
+    case UPGRADE_MOD_NEONATE:
+        return "Neonate";
     case UPGRADE_MOD_PRT48:
         return "PRT48";
     case UPGRADE_MOD_nPMBoard:
