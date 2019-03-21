@@ -18,8 +18,6 @@ class MockNIBPMonitorStateMachine : public NIBPStateMachine
 public:
     MockNIBPMonitorStateMachine() : NIBPStateMachine(NIBP_STATE_MACHINE_MONITOR){}
     MOCK_METHOD0(name, const QString(void));
-
-//    const QString name(){return ("NIBP Monitor State Machine");}
 };
 
 class MockNIBPServiceStateMachine :public NIBPStateMachine
