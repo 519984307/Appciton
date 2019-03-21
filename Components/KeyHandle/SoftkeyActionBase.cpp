@@ -70,7 +70,7 @@ static KeyActionDesc _baseKeys[] =
     KeyActionDesc("", trs("IBPZeroCalib"), "calib.png", SoftkeyActionBase::IBPZero),
 #endif
     KeyActionDesc("", "Calculation", "dosecalculation.png", SoftkeyActionBase::calculation),
-    KeyActionDesc("", "KeyBoardVolumn", "keyBoard.png", SoftkeyActionBase::keyVolume),
+    KeyActionDesc("", "ToneVolume", "keyBoard.png", SoftkeyActionBase::keyVolume),
     KeyActionDesc("", "SystemBrightness", "Brightness.png", SoftkeyActionBase::systemBrightness),
     KeyActionDesc("", "NightMode", "nightMode.png", SoftkeyActionBase::nightMode),
     KeyActionDesc("", "PrintSetup", "printSetup.png", SoftkeyActionBase::printSet),
@@ -388,7 +388,7 @@ void SoftkeyActionBase::keyVolume(bool isPressed)
     }
 
     MainMenuWindow *w = MainMenuWindow::getInstance();
-    w->popup(trs("NormalFunctionMenu"), qVariantFromValue(QString("KeyPressVolume")));
+    w->popup(trs("NormalFunctionMenu"), qVariantFromValue(QString("ToneVolume")));
 }
 
 void SoftkeyActionBase::nightMode(bool isPressed)
