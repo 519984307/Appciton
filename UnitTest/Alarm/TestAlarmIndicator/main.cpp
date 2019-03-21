@@ -11,9 +11,11 @@
 
 #include <QCoreApplication>
 #include "TestAlarmIndicator.h"
+#include "googletest.h"
 
 int main(int argc, char *argv[])
 {
+    ::testing::InitGoogleMock(&argc, argv);
     QCoreApplication a(argc, argv);
     TestAlarmIndicator tc;
     return QTest::qExec(&tc, argc, argv);

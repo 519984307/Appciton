@@ -26,40 +26,36 @@ private Q_SLOTS:
 
     void testAddAlarmInfo_data();
     void testAddAlarmInfo();
+    void testUpdateAlarmInfo_data();
+    void testUpdateAlarmInfo();
     void testDelAlarmInfo_data();
     void testDelAlarmInfo();
     void testAddAlarmInfoAbnormal();
+
     void testLatchAlarmInfo_data();
     void testLatchAlarmInfo();
     void testUpdateLatchAlarmInfo_data();
     void testUpdateLatchAlarmInfo();
-
-    void testPhyAlarmPauseStatusHandle();
-
-    void testHasNonPausePhyAlarm();
-
     void testHasLatchPhyAlarm();
-
-    void testDelAllPhyAlarm();
-
-    void testClearAlarmPause();
-
-    void testUpdataAlarmPriority();
-
-    void testUpdateAlarmInfo();
-
-    void testPublishAlarm();
-
-    void testSetAlarmStatus();
-
-    void testPhyAlarmResetStatusHandle();
-
-    void testTechAlarmResetStatusHandle();
-
-    void testUpdateAlarmStateWidget();
-
     void testDelLatchPhyAlarm();
 
+    void testPhyAlarmPauseStatusHandle();
+    void testHasNonPausePhyAlarm();
+    void testClearAlarmPause();
+
+    void testUpdataAlarmPriority_data();
+    void testUpdataAlarmPriority();
+    void testSetAlarmStatus_data();
+
+    void testPhyAlarmResetStatusHandle();
+    void testTechAlarmResetStatusHandle_data();
+    void testTechAlarmResetStatusHandle();
+
+    void testDelAllPhyAlarm();
+    void testPublishAlarmHasNoAlarm_data();
+    void testPublishAlarmHasNoAlarm();
+    void testPublishAlarmHasPhyAlarm_data();
+    void testPublishAlarmHasPhyAlarm();
 private:
     TestAlarmIndicatorPrivate * const d_ptr;
 };

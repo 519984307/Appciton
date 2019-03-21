@@ -87,7 +87,7 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
             }
 
             AlarmInterface *alertor = AlarmInterface::getAlarm();
-            if (alertor && (!node.acknowledge || alertor->getAlarmLightOnAlarmReset())
+            if ((!node.acknowledge || (alertor && alertor->getAlarmLightOnAlarmReset()))
                     && node.alarmPriority != ALARM_PRIO_PROMPT)
             {
                 // 处理确认后且开启了报警复位灯，或者未确认的报警
@@ -303,7 +303,10 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
  *************************************************************************************************/
 void AlarmIndicator::_displayPhyClear(void)
 {
-    _alarmPhyInfoWidget->clear();
+    if (_alarmPhyInfoWidget)
+    {
+        _alarmPhyInfoWidget->clear();
+    }
 }
 
 /**************************************************************************************************
@@ -311,7 +314,10 @@ void AlarmIndicator::_displayPhyClear(void)
  *************************************************************************************************/
 void AlarmIndicator::_displayTechClear()
 {
-    _alarmTechInfoWidget->clear();
+    if (_alarmTechInfoWidget)
+    {
+        _alarmTechInfoWidget->clear();
+    }
 }
 
 /**************************************************************************************************
@@ -319,7 +325,10 @@ void AlarmIndicator::_displayTechClear()
  *************************************************************************************************/
 void AlarmIndicator::_displayPhySet(AlarmInfoNode &node)
 {
-    _alarmPhyInfoWidget->display(node);
+    if (_alarmPhyInfoWidget)
+    {
+        _alarmPhyInfoWidget->display(node);
+    }
 }
 
 /**************************************************************************************************
@@ -327,7 +336,10 @@ void AlarmIndicator::_displayPhySet(AlarmInfoNode &node)
  *************************************************************************************************/
 void AlarmIndicator::_displayTechSet(AlarmInfoNode &node)
 {
-    _alarmTechInfoWidget->display(node);
+    if (_alarmTechInfoWidget)
+    {
+        _alarmTechInfoWidget->display(node);
+    }
 }
 
 bool AlarmIndicator::_canPlayAudio(AlarmStatus status, bool isTechAlarm)
@@ -740,7 +752,7 @@ bool AlarmIndicator::hasLatchPhyAlarm()
  *      alarmInfo：报警的字串。
  *      priority:报警级别
  *************************************************************************************************/
-void AlarmIndicator::updataAlarmPriority(AlarmType alarmType, const char *alarmMessage,
+bool AlarmIndicator::updataAlarmPriority(AlarmType alarmType, const char *alarmMessage,
         AlarmPriority priority)
 {
     AlarmInfoList *list = &_alarmInfoDisplayPool;
@@ -758,10 +770,12 @@ void AlarmIndicator::updataAlarmPriority(AlarmType alarmType, const char *alarmM
                 node.displayTime = 3;
                 node.acknowledge = false;
                 *it = node;
+                return true;
             }
             break;
         }
     }
+    return false;
 }
 
 /**************************************************************************************************
@@ -771,6 +785,10 @@ void AlarmIndicator::updataAlarmPriority(AlarmType alarmType, const char *alarmM
  *************************************************************************************************/
 void AlarmIndicator::updateAlarmInfo(const AlarmInfoNode &node)
 {
+    if (node.alarmMessage == NULL)
+    {
+        return;
+    }
     AlarmInfoList *list = &_alarmInfoDisplayPool;
 
     // 查找报警信息并更新。
@@ -795,7 +813,10 @@ void AlarmIndicator::setAlarmStatus(AlarmStatus status)
         return;
     }
 
-    _alarmStatusWidget->setAlarmStatus(status);
+    if (_alarmStatusWidget)
+    {
+        _alarmStatusWidget->setAlarmStatus(status);
+    }
 
     if (status != ALARM_STATUS_PAUSE && status != ALARM_STATUS_RESET)
     {
@@ -872,7 +893,9 @@ int AlarmIndicator::getAlarmCount(AlarmPriority priority)
 }
 
 /**************************************************************************************************
- * 功能：获取指定的报警信息
+ * 功能：获取指定的报警信息    alarmIndicator.latchAlarmInfo(ALARM_TYPE_PHY, useCase[ALARM_INFO_POOL_LEN]);
+    alarmIndicator.delLatchPhyAlarm();
+    QCOMPARE(alarmIndicator.hasLatchPhyAlarm(), false);
  * 参数：
  *      index：指定的序号
  *      node：带回报警信息

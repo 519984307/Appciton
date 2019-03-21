@@ -58,7 +58,7 @@ public:
     bool checkAlarmIsExist(AlarmType alarmType, const char *alarmMessage);
 
     // 更新报警级别
-    void updataAlarmPriority(AlarmType alarmType, const char *alArmMessage,
+    bool updataAlarmPriority(AlarmType alarmType, const char *alArmMessage,
                          AlarmPriority priority);
 
     // 更新报警信息

@@ -49,10 +49,10 @@ HEADERS += \
     ../../../Components/System/Widgets/RunningStatusBarInterface.h \
     MockSystemManager.h \
     ../../../Components/System/SystemDefine.h \
-    MockSoundManager.h \
     MockNIBPParam.h \
     MockConfigManager.h \
-    ../../../Components/Alarm/AlarmDefine.h
+    ../../../Components/Alarm/AlarmDefine.h \
+    ../MockSoundManager.h
 
 INCLUDEPATH += \
     ../../../Utility/NightModeManager \
@@ -65,4 +65,5 @@ INCLUDEPATH += \
     ../../../Components/ConfigManager \
     ../../../Utility/ErrorLog \
     ../../../Components/PatientManager \
-    ../../../Components/Alarm
+    ../../../Components/Alarm \
+    ..

@@ -15,6 +15,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 include("../../Common/Common.pri")
+include("../../Common/googletest.pri")
 
 SOURCES += main.cpp \
     TestAlarmIndicator.cpp \
@@ -37,7 +38,7 @@ SOURCES += main.cpp \
     ../../../Components/WindowManager/WindowManagerInterface.cpp \
     ../../../Utility/ErrorLog/ErrorLogItem.cpp \
     ../../../Components/Alarm/AlarmIndicatorInterface.cpp \
-    ../../../Components/Alarm/AlarmParamIFace.cpp
+    ../../../Components/Alarm/AlarmParamIFace.cpp \
 
 HEADERS += \
     TestAlarmIndicator.h \
@@ -63,7 +64,12 @@ HEADERS += \
     ../../../Components/WindowManager/WindowManagerInterface.h \
     ../../../Utility/ErrorLog/ErrorLogItem.h \
     ../../../Components/Alarm/AlarmIndicatorInterface.h \
-    ../../../Components/Alarm/AlarmParamIFace.h
+    ../../../Components/Alarm/AlarmParamIFace.h \
+    ../MockAlarm.h \
+    ../MockAlarmInfoBarWidget.h \
+    ../../Utility/MockSoundManager.h \
+    ../MockLightManager.h \
+    ../MockAlarmStateMachine.h
 
 INCLUDEPATH += \
     ../../../Components/Alarm \
@@ -78,4 +84,6 @@ INCLUDEPATH += \
     ../../../Utility/FontManager \
     ../../../Components/Alarm/Widgets \
     ../../../Utility/ErrorLog \
-    ../../../Utility/Widgets/Base
+    ../../../Utility/Widgets/Base \
+    .. \
+    ../../Utility
