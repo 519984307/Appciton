@@ -1532,7 +1532,7 @@ ConfigEditCodeMarkerMenuDesc,Code Marker,Code Marker
 ConfigEditIBPMenuDesc,有创血压设置,IBP Desc
 ConfigEditSpO2MenuDesc,血氧设置,SpO2 Desc
 DeleteSelectedWifiProfile,确定删除选择的wifi配置？, Do delete selected wifi profile ?
-KeyPressVolume,按键音量,Key Press Volume
+ToneVolume,提示音量,Tone Volume
 SoftKeyPatientInfo,病人信息,Patient Info.
 Interface,界面布局,Interface
 Dose,剂量,Dose
@@ -1583,7 +1583,6 @@ AUTO,自动,AUTO
 CalculateMenu,计算,Calculate
 HemodynamicCalculation,血液动力学计算,Hemodynamic Calculation
 CalculateMenuDesc,计算设置,Calculation Desc
-KeyBoardVolumn,按键音量,Volume
 Standby,待机,Standby
 CO2Standby,CO2待机,CO2 Standby
 CO2Measure,CO2测量,CO2 Measure
