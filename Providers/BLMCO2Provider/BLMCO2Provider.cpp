@@ -102,6 +102,8 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
     }
     else
     {
+        o2Param.sendMotorControl(false);
+        runningStatus.setShakeStatus(SHAKE_ON);
         co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_APNEA, false);
     }
 

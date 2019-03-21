@@ -447,6 +447,11 @@ void E5Provider::handlePacket(unsigned char *data, int len)
             o2Param.sendMotorControl(true);
             runningStatus.setShakeStatus(SHAKING);
         }
+        else
+        {
+            o2Param.sendMotorControl(false);
+            runningStatus.setShakeStatus(SHAKE_OFF);
+        }
         respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_APNEA, data[1]);
         break;
 
