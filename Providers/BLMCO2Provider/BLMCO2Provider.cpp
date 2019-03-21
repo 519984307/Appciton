@@ -93,17 +93,36 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
     _status.o2Replace    = ((sts & BIT3) == BIT3) ? true : false;
     if ((co2Param.getAwRRSwitch() == 1) && (co2Param.getApneaTime() != APNEA_ALARM_TIME_OFF))
     {
-        if (_status.noBreath && o2Param.getApneaAwakeStatus())
+        if (o2Param.getApneaAwakeStatus())
         {
-            o2Param.sendMotorControl(true);
-            runningStatus.setShakeStatus(SHAKING);
+            o2Param.sendMotorControl(_status.noBreath);
+            if (_status.noBreath)
+            {
+               runningStatus.setShakeStatus(SHAKING);
+            }
+            else
+            {
+                runningStatus.setShakeStatus(SHAKE_ON);
+            }
+        }
+        else
+        {
+            o2Param.sendMotorControl(false);
+            runningStatus.setShakeStatus(SHAKE_OFF);
         }
         co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_APNEA, _status.noBreath);
     }
     else
     {
+        if (o2Param.getApneaAwakeStatus())
+        {
+            runningStatus.setShakeStatus(SHAKE_ON);
+        }
+        else
+        {
+            runningStatus.setShakeStatus(SHAKE_OFF);
+        }
         o2Param.sendMotorControl(false);
-        runningStatus.setShakeStatus(SHAKE_ON);
         co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_APNEA, false);
     }
 

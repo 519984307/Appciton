@@ -442,16 +442,24 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         break;
 
     case TE3_NOTIFY_RESP_ALARM:
-        if (data[1] && o2Param.getApneaAwakeStatus())
+        if (o2Param.getApneaAwakeStatus())
         {
-            o2Param.sendMotorControl(true);
-            runningStatus.setShakeStatus(SHAKING);
+            if (data[1])
+            {
+                runningStatus.setShakeStatus(SHAKING);
+            }
+            else
+            {
+                runningStatus.setShakeStatus(SHAKE_ON);
+            }
+            o2Param.sendMotorControl(data[1]);
         }
         else
         {
             o2Param.sendMotorControl(false);
             runningStatus.setShakeStatus(SHAKE_OFF);
         }
+
         respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_APNEA, data[1]);
         break;
 
