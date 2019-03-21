@@ -18,22 +18,18 @@ NIBPStateTest::NIBPStateTest()
 void NIBPStateTest::testGetID_data()
 {
     QTest::addColumn<unsigned char>("ID");
-    QTest::addColumn<bool>("result");
-    unsigned char a = 0x1;
-    unsigned char b = 0x22;
-    unsigned char c = 'a';
-    QTest::newRow("oneDigit") << a << true;
-    QTest::newRow("twoDigit") << b << true;
-    QTest::newRow("oneChar") << c << true;
+    QTest::addColumn<unsigned char>("result");
+    QTest::newRow("oneDigit") << static_cast<unsigned char>(0x1) << static_cast<unsigned char>(0x1);
+    QTest::newRow("twoDigit") << static_cast<unsigned char>(0x22) << static_cast<unsigned char>(0x22);
+    QTest::newRow("oneChar") << static_cast<unsigned char>('a') << static_cast<unsigned char>('a');
 }
 
 void NIBPStateTest::testGetID()
 {
     QFETCH(unsigned char, ID);
-    QFETCH(bool, result);
+    QFETCH(unsigned char, result);
     NIBPState test(ID);
-
-    QCOMPARE(test.getID() == ID, result);
+    QCOMPARE(test.getID(), result);
 }
 
 void NIBPStateTest::testGetStateMachine_data()
@@ -50,17 +46,16 @@ void NIBPStateTest::testGetStateMachine()
     QFETCH(NIBPStateMachineType, result);
     unsigned char testID = 0x1;
     NIBPState test(testID);
+    NIBPStateMachine* nibpStateMachine = NULL;
     if (isMonitor)
     {
-    NIBPStateMachine* mockNIBPMonitorMachine = new MockNIBPMonitorStateMachine();
-    test.setStateMachine(mockNIBPMonitorMachine);
-    QCOMPARE(test.getStateMachine()->type(), result);
+        nibpStateMachine = new MockNIBPMonitorStateMachine();
     }
     else
     {
-    NIBPStateMachine* mockNIBPServiceMachine = new MockNIBPServiceStateMachine();
-    test.setStateMachine(mockNIBPServiceMachine);
-    QCOMPARE(test.getStateMachine()->type(), result);
+        nibpStateMachine = new MockNIBPServiceStateMachine();
     }
+    test.setStateMachine(nibpStateMachine);
+    QCOMPARE(test.getStateMachine()->type(), result);
 }
 
