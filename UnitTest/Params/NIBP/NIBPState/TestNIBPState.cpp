@@ -18,8 +18,6 @@ NIBPStateTest::NIBPStateTest()
 
 void NIBPStateTest::initTestCase()
 {
-    monitor = new virtualNIBPMonitorStateMachine();
-    service = new virtualNIBPServiceStateMachine();
 }
 
 void NIBPStateTest::cleanupTestCase()
@@ -50,9 +48,10 @@ void NIBPStateTest::testGetID()
 
 void NIBPStateTest::testGetStateMachine_data()
 {
+    monitor = new MockNIBPMonitorStateMachine();
+    service = new MockNIBPServiceStateMachine();
     QTest::addColumn<NIBPStateMachine *>("nibpStateMachine");
     QTest::addColumn<NIBPStateMachineType>("result");
-
     QTest::newRow("monitorStateMachine") << static_cast<NIBPStateMachine*>(monitor) << NIBP_STATE_MACHINE_MONITOR;
     QTest::newRow("serviceStateMachine") << static_cast<NIBPStateMachine*>(service) << NIBP_STATE_MACHINE_SERVICE;
 }
@@ -61,15 +60,9 @@ void NIBPStateTest::testGetStateMachine()
 {
     QFETCH(NIBPStateMachine*, nibpStateMachine);
     QFETCH(NIBPStateMachineType, result);
-
     unsigned char a = 0x1;
     NIBPState test(a);
-    test.setStateMachine(nibpStateMachine);
-
+    test.setStateMachine(static_cast<NIBPStateMachine*>(nibpStateMachine));
     QCOMPARE(test.getStateMachine()->type(), result);
 }
 
-
-//  QTEST_APPLESS_MAIN(NIBPStateTest)
-
-//  #include "tst_nibpstatetest.moc"

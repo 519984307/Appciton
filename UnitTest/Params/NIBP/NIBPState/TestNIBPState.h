@@ -14,7 +14,9 @@
 #include <QString>
 #include <QtTest>
 #include "NIBPState.h"
-#include "virtualNIBPStateMachine.h"
+#include "MockNIBPStateMachine.h"
+class MockNIBPMonitorStateMachine;
+class MockNIBPServiceStateMachine;
 class NIBPStateTest : public QObject
 {
     Q_OBJECT
@@ -29,10 +31,9 @@ private Q_SLOTS:
     void testGetStateMachine_data();
     void testGetStateMachine();
     void cleanupTestCase();
-
 private:
-    virtualNIBPMonitorStateMachine* monitor;
-    virtualNIBPServiceStateMachine* service;
+    NIBPStateMachine* monitor;
+    NIBPStateMachine* service;
 };
 
-#endif  // TESTNIBPSTATE_H
+#endif

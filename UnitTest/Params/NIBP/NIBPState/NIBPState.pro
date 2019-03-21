@@ -31,8 +31,7 @@ SOURCES += \
     ../../../../Params/NIBPParam/NIBPStateMachine/NIBPState.cpp \
     main.cpp \
     ../../../../Params/NIBPParam/NIBPStateMachine/NIBPStateMachine.cpp \
-    ../../../../Params/NIBPParam/NIBPParamInterface.cpp \
-    virtualNIBPStateMachine.cpp
+    ../../../../Params/NIBPParam/NIBPParamInterface.cpp
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
@@ -52,7 +51,7 @@ HEADERS += \
     ../../../../Params/NIBPParam/NIBPDefine.h \
     ../../../../Params/NIBPParam/NIBPStateMachine/NIBPStateMachine.h \
     ../../../../Params/NIBPParam/NIBPParamInterface.h \
-    virtualNIBPStateMachine.h
+    MockNIBPStateMachine.h
 
 INCLUDEPATH += \
     ../../../../Params/NIBPParam/NIBPStateMachine   \

@@ -83,6 +83,8 @@ void NIBPStateMachine::reset(void)
 void NIBPStateMachine::handleNIBPEvent(NIBPEvent event, const unsigned char *args, int argLen)
 {
     NIBPParamInterface* nibpParam = NIBPParamInterface::getNIBPParam();
+    if (nibpParam)
+    {
     switch (event)
     {
     case NIBP_EVENT_MODULE_RESET:
@@ -99,7 +101,7 @@ void NIBPStateMachine::handleNIBPEvent(NIBPEvent event, const unsigned char *arg
     default:
         break;
     }
-
+    }
     if (activateState)
     {
         activateState->handleNIBPEvent(event, args, argLen);
