@@ -9,22 +9,12 @@
  **/
 #include "TestNIBPState.h"
 
-Q_DECLARE_METATYPE(NIBPStateMachine*)
 Q_DECLARE_METATYPE(NIBPStateMachineType)
 
 NIBPStateTest::NIBPStateTest()
 {
 }
 
-void NIBPStateTest::initTestCase()
-{
-}
-
-void NIBPStateTest::cleanupTestCase()
-{
-    delete monitor;
-    delete service;
-}
 void NIBPStateTest::testGetID_data()
 {
     QTest::addColumn<unsigned char>("ID");
@@ -48,21 +38,29 @@ void NIBPStateTest::testGetID()
 
 void NIBPStateTest::testGetStateMachine_data()
 {
-    monitor = new MockNIBPMonitorStateMachine();
-    service = new MockNIBPServiceStateMachine();
-    QTest::addColumn<NIBPStateMachine *>("nibpStateMachine");
+    QTest::addColumn<bool>("isMonitor");
     QTest::addColumn<NIBPStateMachineType>("result");
-    QTest::newRow("monitorStateMachine") << static_cast<NIBPStateMachine*>(monitor) << NIBP_STATE_MACHINE_MONITOR;
-    QTest::newRow("serviceStateMachine") << static_cast<NIBPStateMachine*>(service) << NIBP_STATE_MACHINE_SERVICE;
+    QTest::newRow("monitorStateMachine") << true << NIBP_STATE_MACHINE_MONITOR;
+    QTest::newRow("serviceStateMachine") << false << NIBP_STATE_MACHINE_SERVICE;
 }
 
 void NIBPStateTest::testGetStateMachine()
 {
-    QFETCH(NIBPStateMachine*, nibpStateMachine);
+    QFETCH(bool, isMonitor);
     QFETCH(NIBPStateMachineType, result);
-    unsigned char a = 0x1;
-    NIBPState test(a);
-    test.setStateMachine(static_cast<NIBPStateMachine*>(nibpStateMachine));
+    unsigned char testID = 0x1;
+    NIBPState test(testID);
+    if (isMonitor)
+    {
+    NIBPStateMachine* mockNIBPMonitorMachine = new MockNIBPMonitorStateMachine();
+    test.setStateMachine(mockNIBPMonitorMachine);
     QCOMPARE(test.getStateMachine()->type(), result);
+    }
+    else
+    {
+    NIBPStateMachine* mockNIBPServiceMachine = new MockNIBPServiceStateMachine();
+    test.setStateMachine(mockNIBPServiceMachine);
+    QCOMPARE(test.getStateMachine()->type(), result);
+    }
 }
 

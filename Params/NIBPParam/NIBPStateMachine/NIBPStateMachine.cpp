@@ -85,22 +85,22 @@ void NIBPStateMachine::handleNIBPEvent(NIBPEvent event, const unsigned char *arg
     NIBPParamInterface* nibpParam = NIBPParamInterface::getNIBPParam();
     if (nibpParam)
     {
-    switch (event)
-    {
-    case NIBP_EVENT_MODULE_RESET:
-        nibpParam->setText(InvStr());
-        break;
+        switch (event)
+        {
+        case NIBP_EVENT_MODULE_RESET:
+            nibpParam->setText(InvStr());
+            break;
 
-    case NIBP_EVENT_TRIGGER_PATIENT_TYPE:
-        // 每个状态需要setText
-        // 切换病人类型就清除结果
-        nibpParam->clearResult();
-        nibpParam->setText(InvStr());
-        break;
+        case NIBP_EVENT_TRIGGER_PATIENT_TYPE:
+            // 每个状态需要setText
+            // 切换病人类型就清除结果
+            nibpParam->clearResult();
+            nibpParam->setText(InvStr());
+            break;
 
-    default:
-        break;
-    }
+        default:
+            break;
+        }
     }
     if (activateState)
     {
