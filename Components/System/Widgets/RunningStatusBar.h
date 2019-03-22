@@ -57,6 +57,7 @@ public:
      * @param sta
      */
     void setShakeStatus(ShakeStatus sta);
+    ShakeStatus getShakeStatus(void);
 
 private:
     RunningStatusBar();

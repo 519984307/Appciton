@@ -18,6 +18,8 @@
 #include "Debug.h"
 #include "RESPParam.h"
 #include "SystemManager.h"
+#include "O2Param.h"
+#include "RunningStatusBar.h"
 
 RESPDupParam *RESPDupParam::_selfObj = NULL;
 
@@ -326,28 +328,46 @@ void RESPDupParam::handleBRRRValue()
     {
         return;
     }
+    short breathRate = _brValue;
     if (_isAutoBrSource)
     {
         if (_brValue != InvData())  // set br value firstly when the br value is valid.
         {
+            breathRate = _brValue;
             _trendWidget->setRRValue(_brValue, false, true);
         }
         else if (_rrValue != InvData())  // set rr value when the rr value is valid.
         {
+            breathRate = _rrValue;
             _trendWidget->setRRValue(_rrValue, true, true);
         }
         else  // set br value when the rr value is invalid.
         {
+            breathRate = _brValue;
             _trendWidget->setRRValue(_brValue, false, true);
         }
     }
     else if (_manualBrSourceType == BR_SOURCE_CO2)
     {
+        breathRate = _brValue;
         _trendWidget->setRRValue(_brValue, false);
     }
     else if (_manualBrSourceType == BR_SOURCE_ECG)
     {
+        breathRate = _rrValue;
         _trendWidget->setRRValue(_rrValue, true);
+    }
+    if ((breathRate > 7) && (runningStatus.getShakeStatus() == SHAKING))
+    {
+        o2Param.sendMotorControl(false);
+        if (o2Param.getApneaAwakeStatus())
+        {
+            runningStatus.setShakeStatus(SHAKE_ON);
+        }
+        else
+        {
+            runningStatus.setShakeStatus(SHAKE_OFF);
+        }
     }
 }
 

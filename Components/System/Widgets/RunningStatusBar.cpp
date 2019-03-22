@@ -25,7 +25,8 @@ enum RunningStatusType
     RUNING_STATUS_NR,
 };
 
-static const char *iconPaths[RUNING_STATUS_NR] = {
+static const char *iconPaths[RUNING_STATUS_NR] =
+{
     "/usr/local/nPM/icons/PaceMarkerOff.png",
     "/usr/local/nPM/icons/moon.png",
     "/usr/local/nPM/icons/untouch.png",
@@ -39,11 +40,13 @@ class RunningStatusBarPrivate
 {
 public:
     RunningStatusBarPrivate()
-        :icons(RUNING_STATUS_NR, NULL)
+        : icons(RUNING_STATUS_NR, NULL),
+          status(SHAKE_ON)
     {}
-    ~RunningStatusBarPrivate(){}
+    ~RunningStatusBarPrivate() {}
 
-    QVector<QLabel*> icons;
+    QVector<QLabel *> icons;
+    ShakeStatus status;
 };
 
 RunningStatusBar &RunningStatusBar::getInstance()
@@ -68,26 +71,26 @@ RunningStatusBar::~RunningStatusBar()
 
 void RunningStatusBar::setPacerStatus(bool onOff)
 {
-     if (onOff)
-     {
+    if (onOff)
+    {
         d_ptr->icons[PACER_STATUS]->setPixmap(QPixmap());
-     }
-     else
-     {
+    }
+    else
+    {
         d_ptr->icons[PACER_STATUS]->setPixmap(QPixmap(iconPaths[PACER_STATUS]));
-     }
+    }
 }
 
 void RunningStatusBar::setNightModeStatus(bool onOff)
 {
-     if (onOff)
-     {
+    if (onOff)
+    {
         d_ptr->icons[NIGHT_MODE_STATUS]->setPixmap(QPixmap(iconPaths[NIGHT_MODE_STATUS]));
-     }
-     else
-     {
+    }
+    else
+    {
         d_ptr->icons[NIGHT_MODE_STATUS]->setPixmap(QPixmap());
-     }
+    }
 }
 
 void RunningStatusBar::setTouchStatus(bool onOff)
@@ -110,6 +113,7 @@ void RunningStatusBar::clearTouchStatus()
 void RunningStatusBar::setShakeStatus(ShakeStatus sta)
 {
     QPixmap pix;
+    d_ptr->status = sta;
     if (sta == SHAKE_OFF)
     {
         pix.load(iconPaths[SHAKE_OFF_STATUS]);
@@ -124,6 +128,11 @@ void RunningStatusBar::setShakeStatus(ShakeStatus sta)
     }
     pix = pix.scaled(pix.width(), pix.height(), Qt::KeepAspectRatio);
     d_ptr->icons[SHAKING_STATUS]->setPixmap(pix);
+}
+
+ShakeStatus RunningStatusBar::getShakeStatus()
+{
+    return d_ptr->status;
 }
 
 RunningStatusBar::RunningStatusBar()

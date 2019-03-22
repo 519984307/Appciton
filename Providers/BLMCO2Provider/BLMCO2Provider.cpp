@@ -95,14 +95,10 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
     {
         if (o2Param.getApneaAwakeStatus())
         {
-            o2Param.sendMotorControl(_status.noBreath);
             if (_status.noBreath)
             {
                runningStatus.setShakeStatus(SHAKING);
-            }
-            else
-            {
-                runningStatus.setShakeStatus(SHAKE_ON);
+               o2Param.sendMotorControl(true);
             }
         }
         else

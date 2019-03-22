@@ -447,12 +447,8 @@ void E5Provider::handlePacket(unsigned char *data, int len)
             if (data[1])
             {
                 runningStatus.setShakeStatus(SHAKING);
+                o2Param.sendMotorControl(true);
             }
-            else
-            {
-                runningStatus.setShakeStatus(SHAKE_ON);
-            }
-            o2Param.sendMotorControl(data[1]);
         }
         else
         {
