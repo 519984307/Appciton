@@ -7,7 +7,7 @@
  **
  ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/3/6
  **/
-
+#include <QString>
 #pragma once
 
 class NIBPParamInterface
@@ -23,4 +23,8 @@ public:
      * @brief stopMeasure 停止测量
      */
     virtual void stopMeasure(void) = 0;
+
+    virtual void setText(QString text) = 0;
+
+    virtual void clearResult(void) = 0;
 };

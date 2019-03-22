@@ -178,11 +178,11 @@ void NightModeWindow::layoutExec()
                          ITEM_CBO_HEART_BEAT_VOLUME, comboBox);
 
     // key press volume
-    label = new QLabel(trs("KeyPressVolume"));
+    label = new QLabel(trs("ToneVolume"));
     glayout->addWidget(label , d_ptr->combos.count() , 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
-                       <<QString::number(SoundManager::VOLUME_LEV_0)
+                       <<trs("Off")
                        <<QString::number(SoundManager::VOLUME_LEV_1)
                        <<QString::number(SoundManager::VOLUME_LEV_2)
                        <<QString::number(SoundManager::VOLUME_LEV_3)
