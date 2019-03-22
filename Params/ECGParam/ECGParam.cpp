@@ -12,6 +12,7 @@
 #include "ECGDupParam.h"
 #include "BaseDefine.h"
 #include "IConfig.h"
+#include "ConfigManager.h"
 #include "ECGWaveWidget.h"
 #include "ECGPVCSTrendWidget.h"
 #include "ECGSTTrendWidget.h"
@@ -144,6 +145,7 @@ void ECGParam::handDemoTrendData(void)
 void ECGParam::exitDemo()
 {
     ecgParam.updateHR(InvData());
+    ecgDupParam.updateHR(InvData());
     updatePVCS(InvData());
     for (int i = ECG_ST_I; i < ECG_ST_NR; i++)
     {

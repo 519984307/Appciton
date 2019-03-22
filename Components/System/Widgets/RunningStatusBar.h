@@ -10,10 +10,11 @@
 
 #pragma once
 #include "IWidget.h"
+#include "RunningStatusBarInterface.h"
 
 class RunningStatusBarPrivate;
 
-class RunningStatusBar : public IWidget
+class RunningStatusBar : public IWidget, public RunningStatusBarInterface
 {
 public:
     static RunningStatusBar &getInstance();

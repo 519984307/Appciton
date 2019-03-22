@@ -10,15 +10,11 @@
 
 #include "Alarm.h"
 #include "BaseDefine.h"
-#include "TimeDate.h"
 #include "IConfig.h"
 #include <QMap>
 #include "TrendCache.h"
 #include "AlarmStateMachine.h"
-#include "SystemManager.h"
 #include "ECGParam.h"
-#include "ParamManager.h"
-#include "EventDataDefine.h"
 #include "EventStorageManager.h"
 #include "SPO2Symbol.h"
 #include "RESPSymbol.h"
@@ -372,7 +368,7 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
         {
             if (traceCtrl->lastAlarmed)
             {
-                if (traceCtrl->type != ALARM_TYPE_TECH)
+                if (traceCtrl->type != ALARM_TYPE_TECH && _isLatchLock)
                 {
                     if (alarmIndicator.latchAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage))
                     {
@@ -427,7 +423,7 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
             if (traceCtrl->lastAlarmed)
             {
                 // 生命报警从栓锁恢复到继续报警。
-                if (traceCtrl->type != ALARM_TYPE_TECH)
+                if (traceCtrl->type != ALARM_TYPE_TECH && _isLatchLock)
                 {
                     if (alarmIndicator.checkAlarmIsExist(traceCtrl->type, traceCtrl->alarmMessage))
                     {

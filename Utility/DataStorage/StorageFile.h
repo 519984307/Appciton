@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the unittest project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2019/3/1
+ **/
+
 #pragma once
 #include "IStorageBackend.h"
 
@@ -41,76 +51,79 @@
  **************************************************************************************************/
 
 class StorageFilePrivate;
-class StorageFile: public IStorageBackend {
+class StorageFile: public IStorageBackend
+{
 public:
-    enum {
-        Type = 0x514553 //"SEQ"
+    enum
+    {
+        Type = 0x514553 // "SEQ"
     };
     StorageFile();
-    explicit StorageFile(const QString & filename, QIODevice::OpenMode openmode = QIODevice::ReadWrite);
+    explicit StorageFile(const QString &filename, QIODevice::OpenMode openmode = QIODevice::ReadWrite);
     ~StorageFile();
 
-    //override
-    int fileType() ;
+    // override
+    int fileType();
 
-    //override
-    quint32 fileSize() ;
+    // override
+    quint32 fileSize();
 
-    //override
-    bool isValid() ;
+    // override
+    bool isValid();
 
-    //override
+    // override
     bool setReservedSize(quint32 size);
 
-    //override
-    quint32 getReservedSize() ;
+    // override
+    quint32 getReservedSize();
 
-    //override
-    void reload(const QString & filename, QIODevice::OpenMode openmode);
+    // override
+    void reload(const QString &filename, QIODevice::OpenMode openmode);
 
-    //override
-    quint32 getBlockNR() ;
+    // override
+    quint32 getBlockNR();
 
-    //override
+    // override
     quint32 writeAdditionalData(const char *data, quint32 len);
 
-    //override
+    // override
     quint32 readAdditionalData(char *data, quint32 len);
 
-    //override
+    // override
     quint32 getBlockDataLen(quint32 index);
 
-    //override
+    // override
     QByteArray getBlockData(quint32 index);
 
-    //override
+    // override
     quint32 getBlockType(quint32 index);
 
-    //override
+    // override
     void getBlockInfo(quint32 index, BlockEntry &info);
 
-    //override
+    // override
     void getBlockEntryList(QList<BlockEntry> &entryList);
 
-    //override
+    // override
     quint32 readBlockData(quint32 index, char *data, quint32 len);
 
-    //override
+    // override
     quint32 appendBlockData(quint32 type, const char *data, quint32 len, quint32 extraData = 0);
 
-    //override
+    // override
     quint32 modifyBlockData(quint32 index, char *data, quint32 len);
 
-    //override
+    // override
     uchar *mapAdditionalData();
 
-    //override
+    // override
     bool unmapAdditionalData(uchar *address);
 
-    //remove the file managed by StorageFile
+    // remove the file managed by StorageFile
     static void remove(StorageFile *file);
-    //rename the file managed by StorageFile
-    static void rename(StorageFile *file, const QString &newname);
+
+    // rename the file managed by StorageFile
+    static bool rename(StorageFile *file, const QString &newname);
 
 protected:
     const QScopedPointer<StorageFilePrivate> d_ptr;

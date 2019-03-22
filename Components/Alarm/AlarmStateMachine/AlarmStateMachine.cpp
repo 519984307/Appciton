@@ -18,15 +18,13 @@
 #include "AlarmOffState.h"
 #include "AlarmResetState.h"
 #include "IConfig.h"
-#include "SystemManager.h"
 #include "Debug.h"
-
-AlarmStateMachine *AlarmStateMachine::_selfObj = NULL;
 
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
 AlarmStateMachine::AlarmStateMachine()
+    : AlarmStateMachineInterface()
 {
     _alarmStateMap.clear();
 
@@ -77,6 +75,24 @@ AlarmStateMachine::~AlarmStateMachine()
 }
 
 /**************************************************************************************************
+ * construction。
+ *************************************************************************************************/
+AlarmStateMachine &AlarmStateMachine::getInstance()
+{
+    static AlarmStateMachine *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new AlarmStateMachine();
+        AlarmStateMachineInterface *old = registerAlarmStateMachine(instance);
+        if (old)
+        {
+            delete old;
+        }
+    }
+    return *instance;
+}
+
+/**************************************************************************************************
  * 状态开始。
  *************************************************************************************************/
 void AlarmStateMachine::start()
@@ -98,10 +114,10 @@ void AlarmStateMachine::start()
     AlarmStateMap::iterator it = _alarmStateMap.find((ALarmStateType)value);
     if (it != _alarmStateMap.end() && NULL != it.value())
     {
+        // 在链表中找到有相应的状态
         _currentState = it.value();
+        _currentState->enter();
     }
-
-    _currentState->enter();
 }
 
 /**************************************************************************************************

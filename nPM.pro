@@ -158,6 +158,7 @@ SOURCES +=                                                                      
     Utility/DataStorage/DataStorageDirManager.cpp                               \
     Utility/DataStorage/StorageFile.cpp                                         \
     Utility/DataStorage/StorageManager.cpp                                      \
+    Utility/DataStorage/DataStorageDirManagerInterface.cpp                      \
     Utility/ErrorLog/ErrorLogInterface.cpp                                      \
     Utility/ErrorLog/ErrorLog.cpp                                               \
     Utility/ErrorLog/ErrorLogItem.cpp                                           \
@@ -270,12 +271,14 @@ SOURCES +=                                                                      
 #################################################################################
     Components/System/SystemTick.cpp                                            \
     Components/System/SystemManager.cpp                                         \
+    Components/System/SystemManagerInterface.cpp                                \
     Components/System/SystemAlarm.cpp                                           \
     Components/System/TDA19988Ctrl.cpp                                          \
     Components/System/Widgets/SystemModeBarWidget.cpp                           \
     Components/System/Widgets/SystemSelftestMenu.cpp                            \
     Components/System/Widgets/SystemStatusBarWidget.cpp                         \
     Components/System/Widgets/RunningStatusBar.cpp                              \
+    Components/System/Widgets/RunningStatusBarInterface.cpp                     \
     Components/System/Widgets/NormalFunctionMenuContent.cpp                     \
     Components/System/Widgets/PrintSettingMenuContent.cpp                       \
     Components/System/Widgets/MeasureSettingMenuContent.cpp                     \
@@ -287,18 +290,22 @@ SOURCES +=                                                                      
     Components/System/Widgets/PowerOffWindow.cpp                                \
     Components/System/Widgets/NightModeWindow.cpp                               \
     Components/SoundManager/SoundManager.cpp                                    \
+    Components/SoundManager/SoundManagerInterface.cpp                           \
     Components/SoundManager/WavFile.cpp                                         \
     Components/SoundManager/WavPlayer.cpp                                       \
     Components/LightManager/LightManager.cpp                                    \
+    Components/LightManager/LightManagerInterface.cpp                           \
     Components/ParamManager/Param.cpp                                           \
     Components/ParamManager/ParamManager.cpp                                    \
     Components/ParamManager/ParamInfo.cpp                                       \
     Components/Alarm/Alarm.cpp                                                  \
     Components/Alarm/AlarmConfig.cpp                                            \
     Components/Alarm/AlarmIndicator.cpp                                         \
+    Components/Alarm/AlarmIndicatorInterface.cpp                                \
     Components/Alarm/AlarmParamIFace.cpp                                        \
     Components/Alarm/AlarmLimitModel.cpp                                        \
     Components/Alarm/AlarmStateMachine/AlarmStateMachine.cpp                    \
+    Components/Alarm/AlarmStateMachine/AlarmStateMachineInterface.cpp           \
     Components/Alarm/AlarmStateMachine/AlarmState.cpp                           \
     Components/Alarm/AlarmStateMachine/AlarmNormalState.cpp                     \
     Components/Alarm/AlarmStateMachine/AlarmPauseState.cpp                      \
@@ -348,6 +355,7 @@ SOURCES +=                                                                      
     Components/PatientData/HistoryDataReviewWindow.cpp                          \
     Components/PatientData/HistoryDataSelWindow.cpp                             \
     Components/PatientData/HistoryDataSelModel.cpp                              \
+    Components/PatientData/WaveformCacheInterface.cpp                           \
     Components/TimeManager/DateTimeWidget.cpp                                   \
     Components/TimeManager/ElapseTimeWidget.cpp                                 \
     Components/TimeManager/TimeManager.cpp                                      \
@@ -465,6 +473,7 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/O2CalibrationMenuContent.cpp            \
     Components/CodeMarker/Widgets/CodeMarkerWindow.cpp                          \
     Components/ConfigManager/ConfigManager.cpp                                  \
+    Components/ConfigManager/ConfigManagerInterface.cpp                         \
     Components/ConfigManager/SelectDefaultConfigMenuContent.cpp                 \
     Components/ConfigManager/ConfigManagerPassWordEditMenuContent.cpp           \
     Components/ConfigManager/UserConfigEditMenuContent.cpp                      \
@@ -547,6 +556,7 @@ SOURCES +=                                                                      
     Params/NIBPParam/NIBPStateMachine/NIBPServiceStateMachine/NIBPServiceZeroPointState.cpp \
     Params/NIBPParam/NIBPStateMachine/NIBPServiceStateMachine/NIBPServiceErrorState.cpp \
     Params/NIBPParam/NIBPParam.cpp                                              \
+    Params/NIBPParam/NIBPParamInterface.cpp                                     \
     Params/NIBPParam/NIBPAlarm.cpp                                              \
     Params/NIBPParam/NIBPWidgets/NIBPTrendWidget.cpp                            \
     Params/NIBPParam/NIBPWidgets/NIBPDataTrendWidget.cpp                        \
@@ -599,7 +609,7 @@ SOURCES +=                                                                      
     Main/IApplication.cpp                                                       \
     Main/IThread.cpp                                                            \
     Main/MergeConfig.cpp                                                        \
-    Main/Starter.cpp
+    Main/Starter.cpp \
 
 HEADERS +=                                                                      \
     SOUP/Json/FlexLexer.h                                                       \
@@ -631,6 +641,7 @@ HEADERS +=                                                                      
     Utility/DataStorage/StorageFile.h                                           \
     Utility/DataStorage/DataStorageDirManager.h                                 \
     Utility/DataStorage/StorageManager.h                                        \
+    Utility/DataStorage/DataStorageDirManagerInterface.h                        \
     Utility/ErrorLog/ErrorLogInterface.h                                        \
     Utility/ErrorLog/ErrorLog.h                                                 \
     Utility/ErrorLog/ErrorLogItem.h                                             \
@@ -755,10 +766,12 @@ HEADERS +=                                                                      
 #################################################################################
     Components/System/SystemTick.h                                              \
     Components/System/SystemManager.h                                           \
+    Components/System/SystemManagerInterface.h                                  \
     Components/System/SystemAlarm.h                                             \
     Components/System/TDA19988Ctrl.h                                            \
     Components/System/Widgets/SystemStatusBarWidget.h                           \
     Components/System/Widgets/RunningStatusBar.h                                \
+    Components/System/Widgets/RunningStatusBarInterface.h                       \
     Components/System/Widgets/SystemSelftestMenu.h                              \
     Components/System/Widgets/SystemModeBarWidget.h                             \
     Components/System/Widgets/NormalFunctionMenuContent.h                       \
@@ -772,9 +785,11 @@ HEADERS +=                                                                      
     Components/System/Widgets/PowerOffWindow.h                                  \
     Components/System/Widgets/NightModeWindow.h                                 \
     Components/SoundManager/SoundManager.h                                      \
+    Components/SoundManager/SoundManagerInterface.h                             \
     Components/SoundManager/WavFile.h                                           \
     Components/SoundManager/WavPlayer.h                                         \
     Components/LightManager/LightManager.h                                      \
+    Components/LightManager/LightManagerInterface.h                             \
     Components/LightManager/LightProviderIFace.h                                \
     Components/ParamManager/Param.h                                             \
     Components/ParamManager/ParamManager.h                                      \
@@ -784,10 +799,12 @@ HEADERS +=                                                                      
     Components/Alarm/AlarmConfig.h                                              \
     Components/Alarm/AlarmDefine.h                                              \
     Components/Alarm/AlarmIndicator.h                                           \
+    Components/Alarm/AlarmIndicatorInterface.h                                  \
     Components/Alarm/AlarmParamIFace.h                                          \
     Components/Alarm/AlarmLimitModel.h                                          \
     Components/Alarm/AlarmSymbol.h                                              \
     Components/Alarm/AlarmStateMachine/AlarmStateMachine.h                      \
+    Components/Alarm/AlarmStateMachine/AlarmStateMachineInterface.h             \
     Components/Alarm/AlarmStateMachine/AlarmState.h                             \
     Components/Alarm/AlarmStateMachine/AlarmStateDefine.h                       \
     Components/Alarm/AlarmStateMachine/AlarmNormalState.h                       \
@@ -846,6 +863,7 @@ HEADERS +=                                                                      
     Components/PatientData/HistoryDataReviewWindow.h                            \
     Components/PatientData/HistoryDataSelWindow.h                               \
     Components/PatientData/HistoryDataSelModel.h                                \
+    Components/PatientData/WaveformCacheInterface.h                             \
     Components/PatientManager/PatientManager.h                                  \
     Components/PatientManager/PatientDefine.h                                   \
     Components/PatientManager/PatientInfoWidget.h                               \
@@ -975,6 +993,7 @@ HEADERS +=                                                                      
     Components/CodeMarker/Widgets/CodeMarkerList.h                              \
     Components/CodeMarker/Widgets/CodeMarkerWindow.h                            \
     Components/ConfigManager/ConfigManager.h                                    \
+    Components/ConfigManager/ConfigManagerInterface.h                           \
     Components/ConfigManager/SelectDefaultConfigMenuContent.h                   \
     Components/ConfigManager/ConfigManagerPassWordEditMenuContent.h             \
     Components/ConfigManager/UserConfigEditMenuContent.h                        \
@@ -1075,6 +1094,7 @@ HEADERS +=                                                                      
     Params/NIBPParam/NIBPStateMachine/NIBPServiceStateMachine/NIBPServiceZeroPointState.h \
     Params/NIBPParam/NIBPStateMachine/NIBPServiceStateMachine/NIBPServiceErrorState.h \
     Params/NIBPParam/NIBPParam.h                                                \
+    Params/NIBPParam/NIBPParamInterface.h                                       \
     Params/NIBPParam/NIBPAlarm.h                                                \
     Params/NIBPParam/NIBPDefine.h                                               \
     Params/NIBPParam/NIBPEventDefine.h                                          \
@@ -1146,7 +1166,7 @@ HEADERS +=                                                                      
     Main/MergeConfig.h                                                          \
     Main/Starter.h                                                              \
     Main/Version.h \
-    Utility/Widgets/ImportFileSubWidget.h
+    Utility/Widgets/ImportFileSubWidget.h \
 
 #头文件修改后，重新编译依赖的源文件
 DEPENDPATH +=                                                                   \

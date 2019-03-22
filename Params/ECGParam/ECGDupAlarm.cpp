@@ -49,7 +49,7 @@ WaveformID ECGDupLimitAlarm::getWaveformID(int id)
     bool isHR = ecgDupParam.isHRValid();
     if (isHR)
     {
-        return WAVE_ECG_II;
+        return ecgParam.leadToWaveID(ecgParam.getCalcLead());;
     }
     else
     {

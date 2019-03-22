@@ -43,8 +43,6 @@ public:
 public:
     QString translate(const char *id);
     QString translate(const QString &id);
-    QString translatePrint(const char *id);
-    QString translatePrint(const QString &id);
     LanguageName getCurLanguage() const;
     void reload(int index);
     QString getCurVoicePromptFolderName() const;
@@ -56,9 +54,6 @@ private:
     typedef QMap<QString, QString> LanguageMap;
     LanguageMap _languageMap;    // 运行期间存放翻译好字符串的容器。
     LanguageName _curLanguage;
-
-    XmlParser _xmlPrintParser;
-    LanguageMap _printLanguageMap; // 运行期间存放翻译好的打印字符串的容器。
 
 #ifdef CONFIG_UNIT_TEST
     friend class TestLanguageManager;

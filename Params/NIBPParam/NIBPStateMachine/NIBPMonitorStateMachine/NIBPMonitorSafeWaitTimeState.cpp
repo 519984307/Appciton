@@ -11,6 +11,8 @@
 #include "NIBPMonitorSafeWaitTimeState.h"
 #include "NIBPParam.h"
 #include "IConfig.h"
+#include "PatientManager.h"
+#include "NIBPCountdownTime.h"
 
 /**************************************************************************************************
  * 主运行。

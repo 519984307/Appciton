@@ -17,6 +17,7 @@
 #include "SoundManager.h"
 #include "SystemManager.h"
 #include "IConfig.h"
+#include "ConfigManager.h"
 #include "ColorManager.h"
 #include "WindowManager.h"
 

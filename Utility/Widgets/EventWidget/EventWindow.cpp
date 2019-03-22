@@ -299,6 +299,7 @@ void EventWindow::waveInfoReleased(QModelIndex index)
 void EventWindow::waveInfoReleased(int index)
 {
     d_ptr->stackLayout->setCurrentIndex(1);
+    setWindowTitle(trs("EventReview"));
     if (!d_ptr->backend->getBlockNR())
     {
         return;
@@ -382,6 +383,7 @@ void EventWindow::downPageReleased()
 void EventWindow::eventListReleased()
 {
     d_ptr->stackLayout->setCurrentIndex(0);
+    d_ptr->refreshPageInfo();
 }
 
 void EventWindow::leftMoveCoordinate()
@@ -473,8 +475,16 @@ void EventWindow::leftMoveEvent()
     int curIndex = d_ptr->eventTable->currentIndex().row();
     if (curIndex != 0)
     {
+        int prvPage = curIndex / PAGE_ROW_COUNT;
         curIndex--;
+        int curPage = curIndex / PAGE_ROW_COUNT;
         d_ptr->eventTable->selectRow(curIndex);
+        // 事件列表翻页判断
+        if (prvPage != curPage)
+        {
+            d_ptr->eventTable->scrollToPreviousPage();
+            d_ptr->refreshPageInfo();
+        }
     }
     if (!d_ptr->backend->getBlockNR())
     {
@@ -497,8 +507,16 @@ void EventWindow::rightMoveEvent()
     int curIndex = d_ptr->eventTable->currentIndex().row();
     if (curIndex != d_ptr->curDisplayEventNum - 1)
     {
+        int prvPage = curIndex / PAGE_ROW_COUNT;
         curIndex++;
+        int curPage = curIndex / PAGE_ROW_COUNT;
         d_ptr->eventTable->selectRow(curIndex);
+        // 事件列表翻页判断
+        if (prvPage != curPage)
+        {
+            d_ptr->eventTable->scrollToNextPage();
+            d_ptr->refreshPageInfo();
+        }
     }
     if (!d_ptr->backend->getBlockNR())
     {

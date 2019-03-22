@@ -47,7 +47,15 @@ QString SpinBoxPrivate::value() const
 {
     if (info.type == ItemEditInfo::VALUE)
     {
-        return Util::convertToString(info.curValue, info.scale);
+        if (info.curValue >= info.lowLimit && info.curValue <= info.highLimit)
+        {
+            return Util::convertToString(info.curValue, info.scale);
+        }
+        else
+        {
+            // invaild display blank
+            return QString("");
+        }
     }
     else
     {
@@ -85,14 +93,6 @@ void SpinBox::setValue(int value)
     if (value == d_ptr->info.curValue)
     {
         return;
-    }
-
-    int min, max;
-    getRange(min, max);
-    if (value < min || value > max)
-    {
-        // 设置的值不是有效范围内
-        value = min;
     }
 
     d_ptr->info.curValue = value;

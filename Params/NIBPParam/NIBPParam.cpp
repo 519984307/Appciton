@@ -12,6 +12,7 @@
 #include "NIBPParam.h"
 #include "NIBPAlarm.h"
 #include "IConfig.h"
+#include "ConfigManager.h"
 #include "TimeDate.h"
 #include "N5Provider.h"
 #include "NIBPTrendWidget.h"
@@ -30,8 +31,9 @@
 #include "EventStorageManager.h"
 #include "TrendDataStorageManager.h"
 #include "SoundManager.h"
-
-NIBPParam *NIBPParam::_selfObj = NULL;
+#include "PatientManager.h"
+#include "TimeManager.h"
+#include "NIBPCountdownTime.h"
 
 /**************************************************************************************************
  * 病人类型修改。
@@ -1388,6 +1390,21 @@ NIBPParam::NIBPParam()
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
+NIBPParam &NIBPParam::getInstance()
+{
+    static NIBPParam *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new NIBPParam();
+        NIBPParamInterface* old = registerNIBPParam(instance);
+        if (old)
+        {
+            delete old;
+        }
+    }
+    return *instance;
+}
+
 NIBPParam::~NIBPParam()
 {
     if (NULL != _btnTimer)

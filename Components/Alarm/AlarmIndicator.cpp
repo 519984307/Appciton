@@ -16,13 +16,10 @@
 #include "AlarmTechInfoBarWidget.h"
 #include "SoundManager.h"
 #include "LightManager.h"
-#include "SystemManager.h"
 #include "IConfig.h"
 #include "AlarmStateMachine.h"
 #include "Alarm.h"
 #include "ECGAlarm.h"
-
-AlarmIndicator *AlarmIndicator::_selfObj = NULL;
 
 /**************************************************************************************************
  * 功能：发布报警。
@@ -321,7 +318,14 @@ bool AlarmIndicator::_canPlayAudio(AlarmStatus status, bool isTechAlarm)
 
     if (isTechAlarm && status != ALARM_STATUS_OFF)
     {
-        return true;
+        if (alarmOffStatus)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 
     return false;
@@ -377,6 +381,24 @@ void AlarmIndicator::setAlarmPhyWidgets(AlarmPhyInfoBarWidget *alarmWidget, Alar
 {
     _alarmPhyInfoWidget = alarmWidget;
     _alarmStatusWidget = muteWidget;
+}
+
+/***************************************************************************************************
+ * constructor
+ **************************************************************************************************/
+AlarmIndicator &AlarmIndicator::getInstance()
+{
+    static AlarmIndicator *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new AlarmIndicator();
+        AlarmIndicatorInterface *old = registerAlarmIndicator(instance);
+        if (old)
+        {
+            delete old;
+        }
+    }
+    return *instance;
 }
 
 /**************************************************************************************************
@@ -869,7 +891,8 @@ bool AlarmIndicator::getAlarmInfo(AlarmType type, const char *alArmMessage,
  * 功能：构造。
  *************************************************************************************************/
 AlarmIndicator::AlarmIndicator()
-    :_audioStatus(ALARM_STATUS_NORMAL)
+    : AlarmIndicatorInterface(),
+      _audioStatus(ALARM_STATUS_NORMAL)
 {
     _alarmPhyInfoWidget = NULL;
     _alarmTechInfoWidget = NULL;

@@ -14,7 +14,7 @@
 #include "NIBPMonitorStateDefine.h"
 #include "NIBPServiceStateDefine.h"
 #include "NIBPState.h"
-#include "NIBPParam.h"
+#include "NIBPParamInterface.h"
 
 /**************************************************************************************************
  * 启动定时器。
@@ -82,23 +82,26 @@ void NIBPStateMachine::reset(void)
  *************************************************************************************************/
 void NIBPStateMachine::handleNIBPEvent(NIBPEvent event, const unsigned char *args, int argLen)
 {
-    switch (event)
+    NIBPParamInterface* nibpParam = NIBPParamInterface::getNIBPParam();
+    if (nibpParam)
     {
-    case NIBP_EVENT_MODULE_RESET:
-        nibpParam.setText(InvStr());
-        break;
+        switch (event)
+        {
+        case NIBP_EVENT_MODULE_RESET:
+            nibpParam->setText(InvStr());
+            break;
 
-    case NIBP_EVENT_TRIGGER_PATIENT_TYPE:
-        // 每个状态需要setText
-        // 切换病人类型就清除结果
-        nibpParam.clearResult();
-        nibpParam.setText(InvStr());
-        break;
+        case NIBP_EVENT_TRIGGER_PATIENT_TYPE:
+            // 每个状态需要setText
+            // 切换病人类型就清除结果
+            nibpParam->clearResult();
+            nibpParam->setText(InvStr());
+            break;
 
-    default:
-        break;
+        default:
+            break;
+        }
     }
-
     if (activateState)
     {
         activateState->handleNIBPEvent(event, args, argLen);

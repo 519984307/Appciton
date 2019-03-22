@@ -12,6 +12,8 @@
 #include <QTemporaryFile>
 using ::testing::_;
 using ::testing::NotNull;
+using ::testing::Mock;
+Q_DECLARE_METATYPE(QDomElement)
 
 static void createTestFileOnDisk(QTemporaryFile *tempFile, const QString &resFilename)
 {
@@ -90,16 +92,59 @@ void TestXMLParser::testInvalidXmlFile()
     XmlParser parser;
 
     QCOMPARE(parser.open(m_invalidConfigFile->fileName()), false);
+    QVERIFY(Mock::VerifyAndClearExpectations(&mockErrorLog));
 }
-
+void TestXMLParser::testAddNode_data()
+{
+    QTest::addColumn<QString>("path");
+    QTest::addColumn<QString>("name");
+    QTest::addColumn<QString>("value");
+    QTest::addColumn<QString>("key");
+    QTest::addColumn<QString>("keyStr");
+    QTest::addColumn<bool>("result");
+    QTest::newRow("row1") << "Node3" << "Node33" << "ddd" << "attr44" << "attr44" << true;
+    QTest::newRow("flaseRow") << "false" << "Node23" << "ddd" << "attr44" << "attr44" << false;
+    QTest::newRow("exit Node") << "Node11" <<"Node111" << "aaa" << "attr22" << "attr22" << false;
+}
 void TestXMLParser::testAddNode()
 {
-    QSKIP("Todo:: implement this test!", SkipAll);
+    QFETCH(QString, path);
+    QFETCH(QString, name);
+    QFETCH(QString, value);
+    QFETCH(QString, key);
+    QFETCH(QString, keyStr);
+    QFETCH(bool, result);
+
+    XmlParser parser;
+    QCOMPARE(parser.open(m_validConfigFile->fileName()), true);
+
+    QMap<QString, QString> map;
+    map[key] = keyStr;
+    QCOMPARE(parser.addNode(path, name, value, map), result);
+    QString str;
+    parser.getValue(path, str);
+    QCOMPARE(str == value, result);
+}
+
+void TestXMLParser::testRemoveNode_data()
+{
+    QTest::addColumn<QString>("node");
+    QTest::addColumn<bool>("result");
+    QTest::newRow("rightPath") << "Node1|Node11" << true;
+    QTest::newRow(("falsePath")) << "Node1|Node22|Node111" << false;
+    QTest::newRow("NotExitPath") << "Node4" << false;
+    QTest::newRow("errorPath") << "Node1|Node111" << false;
 }
 
 void TestXMLParser::testRemoveNode()
 {
-    QSKIP("Todo:: implement this test!", SkipAll);
+    XmlParser parser;
+    QCOMPARE(parser.open(m_validConfigFile->fileName()), true);
+
+    QFETCH(QString, node);
+    QFETCH(bool, result);
+    QCOMPARE(parser.removeNode(node), result);
+    QCOMPARE(parser.hasNode(node), false);
 }
 
 void TestXMLParser::testHasNode_data()
@@ -222,15 +267,66 @@ void TestXMLParser::testGetAttr()
     QVERIFY(readValue == value);
 }
 
+void TestXMLParser::testGetNode_data()
+{
+     QTest::addColumn<QString>("indexstr");
+     QTest::addColumn<QString>("value");
+     QTest::addColumn<bool>("result");
+
+     QTest::newRow("rightPath1") << "Node1|Node11|Node111" << "aaa" << true;
+     QTest::newRow("rightPath2") << "Node2|Node22" << "bbb" << true;
+     QTest::newRow("errorPaht") << "Node22|Node22" << "bbb" << false;
+     QTest::newRow("emptyValue") << "Node3" << "" << true;
+     QTest::newRow("errorPath2") << "Node111" << "aaa" << false;
+}
 
 void TestXMLParser::testGetNode()
 {
-    QSKIP("Todo:: implement this test!", SkipAll);
+   QFETCH(QString, indexstr);
+   QFETCH(QString, value);
+   QFETCH(bool, result);
+   QDomElement str;
+   XmlParser parser;
+   QCOMPARE(parser.open(m_validConfigFile->fileName()), true);
+
+   parser.getNode(indexstr, str);
+   QCOMPARE(str.text() == value, result);
+}
+void TestXMLParser::testSetNode_data()
+{
+    QDomElement element1;
+    element1.setAttribute("xxx", "aaa");
+
+    QDomElement element2;
+    element2.setNodeValue("ddd");
+
+    QDomElement element3;
+
+    QTest::addColumn<QString>("indexstr");
+    QTest::addColumn<QDomElement>("value");
+    QTest::addColumn<bool>("result");
+
+    QTest::newRow("addAtrributeNode") << "Node1|Node11|Node112" << element1 << true;
+    QTest::newRow("addValueNode") << "Node2|Node23" << element2 << true;
+    QTest::newRow("emptyNode") << "Node4" << element3 << true;
+    QTest::newRow("exitNode") << "Node1|Node11|Node111" << element1 << false;
+    QTest::newRow("StrangeString") << "Node]]]][[[[.." << element1 << true;
 }
 
 void TestXMLParser::testSetNode()
 {
-    QSKIP("Todo:: implement this test!", SkipAll);
+    QFETCH(QString, indexstr);
+    QFETCH(QDomElement, value);
+    QFETCH(bool, result);
+
+    XmlParser parser;
+    QCOMPARE(parser.open(m_validConfigFile->fileName()), true);
+
+    QCOMPARE(parser.setNode(indexstr, value), result);
+
+    QDomElement element;
+    parser.getNode(indexstr, element);
+    QCOMPARE(element == value, result);
 }
 
 void TestXMLParser::testGetFirstValue()

@@ -20,6 +20,7 @@
 #include <unistd.h>
 #include <QTimer>
 #include "IConfig.h"
+#include "ConfigManager.h"
 #include <QThread>
 #include "NightModeManager.h"
 
@@ -347,6 +348,11 @@ SoundManager &SoundManager::getInstance()
     if (instance == NULL)
     {
         instance = new SoundManager();
+        SoundManagerInterface *old = registerSoundManager(instance);
+        if (old)
+        {
+            delete old;
+        }
     }
     return *instance;
 }

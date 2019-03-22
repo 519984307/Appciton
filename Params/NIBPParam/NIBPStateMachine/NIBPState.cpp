@@ -9,7 +9,6 @@
  **/
 
 #include "NIBPState.h"
-#include "NIBPStateMachine.h"
 #include <QTimerEvent>
 #include <QVector>
 

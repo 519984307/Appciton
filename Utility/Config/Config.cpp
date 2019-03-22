@@ -11,7 +11,7 @@
 #include <QFile>
 #include "Config.h"
 #include "unistd.h"
-#include "ErrorLog.h"
+#include "ErrorLogInterface.h"
 #include "ErrorLogItem.h"
 
 /**************************************************************************************************
@@ -119,7 +119,6 @@ void Config::_restoreOrigFile(const QString &configPath)
     {
         QFile::remove(configPath);
         QFile::copy(factoryConfigPath, configPath);
-
         ErrorLogItem *item = new ErrorLogItem();
         item->setName("Load default config");
         QString str = factoryConfigPath;
@@ -128,7 +127,15 @@ void Config::_restoreOrigFile(const QString &configPath)
         item->setSubSystem(ErrorLogItem::SUB_SYS_MAIN_PROCESSOR);
         item->setSystemState(ErrorLogItem::SYS_STAT_RUNTIME);
         item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
-        errorLog.append(item);
+        ErrorLogInterface *errorLog = ErrorLogInterface::getErrorLog();
+        if (errorLog)
+        {
+            errorLog->append(item);
+        }
+        else
+        {
+            qDebug() << "Failure to store errorlog!\n";
+        }
     }
 }
 

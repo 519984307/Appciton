@@ -17,6 +17,7 @@
 #include "SoundManager.h"
 #include "SystemManager.h"
 #include "IConfig.h"
+#include "ConfigManager.h"
 #include "SystemDefine.h"
 #include "PrintDefine.h"
 #include "RecorderManager.h"
@@ -244,7 +245,7 @@ void NormalFunctionMenuContent::layoutExec()
     d_ptr->combos.insert(NormalFunctionMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS, comboBox);
 
     // key press volume
-    label = new QLabel(trs("KeyPressVolume"));
+    label = new QLabel(trs("ToneVolume"));
     layout->addWidget(label , row , 0);
     comboBox = new ComboBox();
 
@@ -253,14 +254,14 @@ void NormalFunctionMenuContent::layoutExec()
             this, SLOT(onPopupListItemFocusChanged(int)));
 
     comboBox->addItems(QStringList()
-                       <<QString::number(SoundManager::VOLUME_LEV_0)
+                       <<trs("Off")
                        <<QString::number(SoundManager::VOLUME_LEV_1)
                        <<QString::number(SoundManager::VOLUME_LEV_2)
                        <<QString::number(SoundManager::VOLUME_LEV_3)
                        <<QString::number(SoundManager::VOLUME_LEV_4)
                        <<QString::number(SoundManager::VOLUME_LEV_5));
     layout->addWidget(comboBox , row , 1);
-    comboBox->setObjectName("KeyPressVolume");
+    comboBox->setObjectName("ToneVolume");
     row++;
     itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME);
     comboBox->setProperty("Item" , qVariantFromValue(itemID));
