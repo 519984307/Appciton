@@ -36,6 +36,7 @@
 #include "ErrorLog.h"
 #include "OxyCRGRRHRWaveWidget.h"
 #include "RunningStatusBar.h"
+#include "AlarmSourceManager.h"
 
 #define ECG_TIMER_INTERVAL (100)
 #define GET_DIA_DATA_PERIOD (12000)
@@ -672,7 +673,11 @@ void ECGParam::setOverLoad(bool flag)
 
     if (overLoadFlag != flag)
     {
-        ecgOneShotAlarm.setOneShotAlarm(ECG_ONESHOT_ALARM_OVERLOAD, flag);
+        AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_ECG);
+        if (alarmSource)
+        {
+            alarmSource->setOneShotAlarm(ECG_ONESHOT_ALARM_OVERLOAD, flag);
+        }
         overLoadFlag = flag;
     }
 }
@@ -769,7 +774,11 @@ void ECGParam::exit12Lead(void)
  *************************************************************************************************/
 void ECGParam::setOneShotAlarm(ECGOneShotType t, bool f)
 {
-    ecgOneShotAlarm.setOneShotAlarm(t, f);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_ECG);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(t, f);
+    }
 }
 
 /**************************************************************************************************

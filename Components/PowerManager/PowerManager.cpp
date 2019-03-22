@@ -14,6 +14,7 @@
 #include "WindowManager.h"
 #include <QTimer>
 #include "PowerOffWindow.h"
+#include "AlarmSourceManager.h"
 
 PowerManger * PowerManger::_selfObj = NULL;
 class PowerMangerPrivate
@@ -217,7 +218,11 @@ BatteryPowerLevel PowerMangerPrivate::getCurrentVolume()
 
 void PowerMangerPrivate::updateBatAlarm(BatOneShotType type, bool isOccure)
 {
-    batteryOneShotAlarm.setOneShotAlarm(type, isOccure);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_BATTERY);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(type, isOccure);
+    }
 }
 
 bool PowerMangerPrivate::hasBattery()

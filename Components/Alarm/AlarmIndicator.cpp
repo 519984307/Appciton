@@ -20,6 +20,7 @@
 #include "AlarmStateMachine.h"
 #include "Alarm.h"
 #include "ECGAlarm.h"
+#include "AlarmSourceManager.h"
 
 /**************************************************************************************************
  * 功能：发布报警。
@@ -647,13 +648,17 @@ bool AlarmIndicator::phyAlarmPauseStatusHandle()
             AlarmInfoNode node = *it;
             if (0 == it->pauseTime)
             {
-                if (node.alarmMessage != ecgOneShotAlarm.toString(ECG_ONESHOT_CHECK_PATIENT_ALARM))
+                AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_ECG);
+                if (!alarmSource)
                 {
-                    node.pauseTime = _audioPauseTime;
-                }
-                else
-                {
-                    node.pauseTime = _checkPatientAlarmPauseTime;
+                    if (node.alarmMessage != alarmSource->toString(ECG_ONESHOT_CHECK_PATIENT_ALARM))
+                    {
+                        node.pauseTime = _audioPauseTime;
+                    }
+                    else
+                    {
+                        node.pauseTime = _checkPatientAlarmPauseTime;
+                    }
                 }
             }
             else if (!ret)

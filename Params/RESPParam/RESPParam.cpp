@@ -23,6 +23,7 @@
 #include "RESPWaveWidget.h"
 #include "RESPProviderIFace.h"
 #include "ColorManager.h"
+#include "AlarmSourceManager.h"
 
 RESPParam *RESPParam::_selfObj = NULL;
 
@@ -301,7 +302,11 @@ void RESPParam::setLeadoff(bool flag)
  *************************************************************************************************/
 void RESPParam::setOneShotAlarm(RESPOneShotType t, bool f)
 {
-    respOneShotAlarm.setOneShotAlarm(t, f);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_RESP);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(t, f);
+    }
 }
 
 /**************************************************************************************************

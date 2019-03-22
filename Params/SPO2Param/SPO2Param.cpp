@@ -24,6 +24,7 @@
 #include <QTimer>
 #include "OxyCRGSPO2TrendWidget.h"
 #include "NIBPParam.h"
+#include "AlarmSourceManager.h"
 
 SPO2Param *SPO2Param::_selfObj = NULL;
 
@@ -510,7 +511,11 @@ void SPO2Param::setSearchForPulse(bool isSearching)
  *************************************************************************************************/
 void SPO2Param::setOneShotAlarm(SPO2OneShotType t, bool f)
 {
-    spo2OneShotAlarm.setOneShotAlarm(t, f);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SPO2);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(t, f);
+    }
 }
 
 /**************************************************************************************************

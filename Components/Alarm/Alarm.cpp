@@ -523,7 +523,7 @@ void Alarm::_handleAlarm(void)
  *************************************************************************************************/
 void Alarm::addLimtSource(AlarmLimitIFace *alarmSource)
 {
-    _limitSources.insert(alarmSource.getParamID(), alarmSource);
+    _limitSources.insert(alarmSource->getParamID(), alarmSource);
 }
 
 /**************************************************************************************************
@@ -533,7 +533,7 @@ void Alarm::addLimtSource(AlarmLimitIFace *alarmSource)
  *************************************************************************************************/
 void Alarm::addOneShotSource(AlarmOneShotIFace *alarmSource)
 {
-    _oneshotSources.insert(alarmSource.getParamID(), alarmSource);
+    _oneshotSources.insert(alarmSource->getParamID(), alarmSource);
 }
 
 /**************************************************************************************************

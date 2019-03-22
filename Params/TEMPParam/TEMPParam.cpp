@@ -15,6 +15,7 @@
 #include "IConfig.h"
 #include "WaveformCache.h"
 #include "SystemManager.h"
+#include "AlarmSourceManager.h"
 
 TEMPParam *TEMPParam::_selfObj = NULL;
 
@@ -212,15 +213,20 @@ void TEMPParam::getTEMP(int16_t &t1, int16_t &t2, int16_t &td)
  *************************************************************************************************/
 void TEMPParam::setOneShotAlarm(TEMPOneShotType t, bool f)
 {
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_TEMP);
+    if (alarmSource == NULL)
+    {
+        return;
+    }
     if (f)
     {
         if (t == TEMP_ONESHOT_ALARM_COMMUNICATION_STOP || t == TEMP_ONESHOT_ALARM_MODULE_DISABLE)
         {
-            tempOneShotAlarm.clear();
+            alarmSource->clear();
         }
     }
-    tempOneShotAlarm.setOneShotAlarm(TEMP_ONESHOT_ALARM_MODULE_DISABLE, _isTEMPDisable);
-    tempOneShotAlarm.setOneShotAlarm(t, f);
+    alarmSource->setOneShotAlarm(TEMP_ONESHOT_ALARM_MODULE_DISABLE, _isTEMPDisable);
+    alarmSource->setOneShotAlarm(t, f);
 }
 
 /**************************************************************************************************

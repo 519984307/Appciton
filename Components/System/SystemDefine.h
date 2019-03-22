@@ -62,6 +62,15 @@ enum ErrorWaringCode
     ERR_CODE_NR
 };
 
+enum SystemOneShotAlarm
+{
+    SOME_LIMIT_ALARM_DISABLED,
+    POWERUP_PANEL_RECORD_PRESSED,
+    SYSTEM_ONE_SHOT_ALARM_COMMUNICATION_STOP,
+    STORAGE_SPACE_FULL,
+    SYSTEM_ONE_SHOT_ALARM_NR
+};
+
 class SystemSymbol
 {
 public:

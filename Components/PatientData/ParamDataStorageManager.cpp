@@ -30,6 +30,7 @@
 #include "TimeDate.h"
 #include <QDateTime>
 #include <SystemManager.h>
+#include "AlarmSourceManager.h"
 
 #define NIBP_MAX_PENDING_TIME 3
 
@@ -255,8 +256,10 @@ void ParamDataStorageManager::mainRun(unsigned t)
     ParamBuf *paramBuf = new ParamBuf();
     paramBuf->item.t = t;
     paramBuf->item.co2Baro = data.co2baro;
-    paramBuf->item.isApneaAlarm = alertor.getOneShotAlarmStatus(&respOneShotAlarm, RESP_ONESHOT_ALARM_APNEA)
-                                  || alertor.getOneShotAlarmStatus(&co2OneShotAlarm, CO2_ONESHOT_ALARM_APNEA);
+    AlarmOneShotIFace *respAlarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_RESP);
+    AlarmOneShotIFace *co2AlarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_CO2);
+    paramBuf->item.isApneaAlarm = alertor.getOneShotAlarmStatus(respAlarmSource, RESP_ONESHOT_ALARM_APNEA)
+                                  || alertor.getOneShotAlarmStatus(co2AlarmSource, CO2_ONESHOT_ALARM_APNEA);
     paramBuf->item.hrSource = ecgDupParam.getCurHRSource();
     paramBuf->item.brSource = respDupParam.getBrSource();
     paramBuf->item.isFico2Display = co2Param.getFICO2Display();
@@ -327,8 +330,10 @@ void ParamDataStorageManager::addNIBPData(unsigned t)
     ParamBuf *paramBuf = new ParamBuf();
     paramBuf->item.t = t;
     paramBuf->item.co2Baro = data.co2baro;
-    paramBuf->item.isApneaAlarm = alertor.getOneShotAlarmStatus(&respOneShotAlarm, RESP_ONESHOT_ALARM_APNEA)
-                                  || alertor.getOneShotAlarmStatus(&co2OneShotAlarm, CO2_ONESHOT_ALARM_APNEA);
+    AlarmOneShotIFace *respAlarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_RESP);
+    AlarmOneShotIFace *co2AlarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_CO2);
+    paramBuf->item.isApneaAlarm = alertor.getOneShotAlarmStatus(respAlarmSource, RESP_ONESHOT_ALARM_APNEA)
+                                  || alertor.getOneShotAlarmStatus(co2AlarmSource, CO2_ONESHOT_ALARM_APNEA);
     paramBuf->item.hrSource = ecgDupParam.getCurHRSource();
     paramBuf->item.brSource = respDupParam.getBrSource();
     paramBuf->item.isFico2Display = co2Param.getFICO2Display();
@@ -447,8 +452,10 @@ void ParamDataStorageManager::addAlarmData(unsigned t, ParamID id)
 
     paramBuf->item.t = t;
     paramBuf->item.co2Baro = data.co2baro;
-    paramBuf->item.isApneaAlarm = alertor.getOneShotAlarmStatus(&respOneShotAlarm, RESP_ONESHOT_ALARM_APNEA)
-                                  || alertor.getOneShotAlarmStatus(&co2OneShotAlarm, CO2_ONESHOT_ALARM_APNEA);
+    AlarmOneShotIFace *respAlarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_RESP);
+    AlarmOneShotIFace *co2AlarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_CO2);
+    paramBuf->item.isApneaAlarm = alertor.getOneShotAlarmStatus(respAlarmSource, RESP_ONESHOT_ALARM_APNEA)
+                                  || alertor.getOneShotAlarmStatus(co2AlarmSource, CO2_ONESHOT_ALARM_APNEA);
     paramBuf->item.hrSource = ecgDupParam.getCurHRSource();
     paramBuf->item.brSource = respDupParam.getBrSource();
     paramBuf->item.isFico2Display = co2Param.getFICO2Display();
