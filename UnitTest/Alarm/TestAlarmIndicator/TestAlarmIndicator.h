@@ -23,40 +23,31 @@ public:
 private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
+    void cleanup();
 
-    void testAddAlarmInfo_data();
-    void testAddAlarmInfo();
+    void testHandleAlarmInfo_data();
+    void testHandleAlarmInfo();
     void testUpdateAlarmInfo_data();
     void testUpdateAlarmInfo();
-    void testDelAlarmInfo_data();
-    void testDelAlarmInfo();
-    void testAddAlarmInfoAbnormal();
 
     void testLatchAlarmInfo_data();
     void testLatchAlarmInfo();
     void testUpdateLatchAlarmInfo_data();
     void testUpdateLatchAlarmInfo();
-    void testHasLatchPhyAlarm();
-    void testDelLatchPhyAlarm();
 
+    void testPhyAlarmPauseStatusHandle_data();
     void testPhyAlarmPauseStatusHandle();
-    void testHasNonPausePhyAlarm();
-    void testClearAlarmPause();
 
     void testUpdataAlarmPriority_data();
     void testUpdataAlarmPriority();
-    void testSetAlarmStatus_data();
 
-    void testPhyAlarmResetStatusHandle();
-    void testTechAlarmResetStatusHandle_data();
-    void testTechAlarmResetStatusHandle();
+    void testResetStatusHandle_data();
+    void testResetStatusHandle();
 
-    void testDelAllPhyAlarm();
     void testPublishAlarmHasNoAlarm_data();
     void testPublishAlarmHasNoAlarm();
     void testPublishAlarmHasPhyAlarm_data();
     void testPublishAlarmHasPhyAlarm();
-    void delAllPhyAlarm();
     void testPublishAlarmHasTechAlarm_data();
     void testPublishAlarmHasTechAlarm();
 

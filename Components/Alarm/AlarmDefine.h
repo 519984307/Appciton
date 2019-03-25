@@ -70,6 +70,11 @@ struct AlarmInfoNode
 
     bool operator == (const AlarmInfoNode &other) const
     {
+        if (this->alarmMessage == NULL || other.alarmMessage == NULL)
+        {
+            return false;
+        }
+
         if (this->alarmType == other.alarmType && this->alarmPriority == other.alarmPriority &&
                 this->latch == other.latch && this->acknowledge == other.acknowledge &&
                 this->removeAfterLatch == other.removeAfterLatch &&

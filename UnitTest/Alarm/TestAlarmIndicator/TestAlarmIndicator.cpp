@@ -50,13 +50,15 @@ class TestAlarmIndicatorPrivate
 public:
     TestAlarmIndicatorPrivate()
         : limitAlarm(NULL),
-          oneShotAlarm(NULL)
+          oneShotAlarm(NULL),
+          isClearAllAlarm(true)
     {}
 
     ~TestAlarmIndicatorPrivate()
     {}
     LimitAlarm *limitAlarm;
     OneShotAlarm *oneShotAlarm;
+    bool isClearAllAlarm;
 };
 
 
@@ -83,419 +85,713 @@ void TestAlarmIndicator::cleanupTestCase()
     }
 }
 
-void TestAlarmIndicator::testAddAlarmInfo_data()
+void TestAlarmIndicator::cleanup()
+{
+    // clean all alarm info
+    if (d_ptr->isClearAllAlarm)
+    {
+        for (int i = 0; i < alarmIndicator.getAlarmCount(); i++)
+        {
+            AlarmInfoNode node;
+            alarmIndicator.getAlarmInfo(i, node);
+            alarmIndicator.delAlarmInfo(node.alarmType, node.alarmMessage);
+            if (alarmIndicator.checkAlarmIsExist(node.alarmType, node.alarmMessage) == false)
+            {
+                // delete info success
+                i--;
+            }
+        }
+
+        QCOMPARE(alarmIndicator.getAlarmCount(), 0);
+    }
+}
+
+void TestAlarmIndicator::testHandleAlarmInfo_data()
 {
     QTest::addColumn<AlarmParamIFace *>("alarmInterface");
     QTest::addColumn<AlarmType>("alarmType");
+    QTest::addColumn<bool>("result");
+    QTest::addColumn<int>("countResult");
+    QTest::addColumn<bool>("delResult");
+    QTest::addColumn<int>("testCase");
 
-    QTest::newRow("limitPhyAlarm") << static_cast<AlarmParamIFace *>(d_ptr->limitAlarm) << ALARM_TYPE_PHY;
-    QTest::newRow("limitTechAlarm") << static_cast<AlarmParamIFace *>(d_ptr->limitAlarm) << ALARM_TYPE_TECH;
+    QTest::newRow("limitPhyAlarm/normalcase") << static_cast<AlarmParamIFace *>(d_ptr->limitAlarm)
+                                              << ALARM_TYPE_PHY
+                                              << true
+                                              << 1
+                                              << false
+                                              << 0;
+    QTest::newRow("oneShotPhyAlarm/normalcase") << static_cast<AlarmParamIFace *>(d_ptr->oneShotAlarm)
+                                                << ALARM_TYPE_PHY
+                                                << true
+                                                << 1
+                                                << false
+                                                << 0;
+    QTest::newRow("oneShotTechAlarm/normalcase") << static_cast<AlarmParamIFace *>(d_ptr->oneShotAlarm)
+                                                 << ALARM_TYPE_TECH
+                                                 << true
+                                                 << 1
+                                                 << false
+                                                 << 0;
 
-    QTest::newRow("oneShotPhyAlarm") << static_cast<AlarmParamIFace *>(d_ptr->oneShotAlarm) << ALARM_TYPE_PHY;
-    QTest::newRow("oneShotTechAlarm") << static_cast<AlarmParamIFace *>(d_ptr->oneShotAlarm) << ALARM_TYPE_TECH;
+    QTest::newRow("limitPhyAlarm/overQueue") << static_cast<AlarmParamIFace *>(d_ptr->limitAlarm)
+                                             << ALARM_TYPE_PHY
+                                             << false
+                                             << ALARM_INFO_POOL_LEN
+                                             << false
+                                             << 1;
+    QTest::newRow("oneShotPhyAlarm/overQueue") << static_cast<AlarmParamIFace *>(d_ptr->oneShotAlarm)
+                                               << ALARM_TYPE_PHY
+                                               << false
+                                               << ALARM_INFO_POOL_LEN
+                                               << false
+                                               << 1;
+    QTest::newRow("oneShotTechAlarm/overQueue") << static_cast<AlarmParamIFace *>(d_ptr->oneShotAlarm)
+                                                << ALARM_TYPE_TECH
+                                                << false
+                                                << ALARM_INFO_POOL_LEN
+                                                << false
+                                                << 1;
+
+    QTest::newRow("limitPhyAlarm/nullMessage") << static_cast<AlarmParamIFace *>(d_ptr->limitAlarm)
+                                               << ALARM_TYPE_PHY
+                                               << false
+                                               << 0
+                                               << false
+                                               << 2;
+    QTest::newRow("oneShotPhyAlarm/nullMessage") << static_cast<AlarmParamIFace *>(d_ptr->oneShotAlarm)
+                                                 << ALARM_TYPE_PHY
+                                                 << false
+                                                 << 0
+                                                 << false
+                                                 << 2;
+    QTest::newRow("oneShotTechAlarm/nullMessage") << static_cast<AlarmParamIFace *>(d_ptr->oneShotAlarm)
+                                                  << ALARM_TYPE_TECH
+                                                  << false
+                                                  << 0
+                                                  << false
+                                                  << 2;
 }
 
-void TestAlarmIndicator::testAddAlarmInfo()
+void TestAlarmIndicator::testHandleAlarmInfo()
 {
     QFETCH(AlarmParamIFace*, alarmInterface);
     QFETCH(AlarmType, alarmType);
+    QFETCH(bool, result);
+    QFETCH(int, countResult);
+    QFETCH(bool, delResult);
+    QFETCH(int, testCase);
 
     QTime t = QTime::currentTime();
-    bool ret = alarmIndicator.addAlarmInfo(t.elapsed(), alarmType,
-                                alarmInterface->getAlarmPriority(0),
-                                alarmInterface->toString(0),
-                                alarmInterface, 1);
-    QCOMPARE(ret, true);
+    bool ret = false;
+    if (testCase == 0) // 测试正常情况
+    {
+        // 正常情况
+        ret = alarmIndicator.addAlarmInfo(t.elapsed(), alarmType,
+                                    alarmInterface->getAlarmPriority(0),
+                                    alarmInterface->toString(0),
+                                    alarmInterface, 1);
+        // test add alarm info
+        QCOMPARE(ret, result);
+
+        // test get alarm info
+        AlarmInfoNode tmpNode;
+        QCOMPARE(alarmIndicator.getAlarmInfo(alarmType, alarmInterface->toString(0), tmpNode),
+                 result);
+
+        // test get alarm info count
+        QCOMPARE(alarmIndicator.getAlarmCount(alarmType), countResult);
+
+        // test check alarm exist
+        QCOMPARE(alarmIndicator.checkAlarmIsExist(alarmType, alarmInterface->toString(0)), result);
+
+        // test delete alarm info
+        alarmIndicator.delAlarmInfo(alarmType, alarmInterface->toString(0));
+        QCOMPARE(alarmIndicator.checkAlarmIsExist(alarmType, alarmInterface->toString(0)), delResult);
+    }
+    else if (testCase == 1)  // 测试添加超出队列数量情况
+    {
+        int i = 0;
+        for (i = 0; i<= ALARM_INFO_POOL_LEN; i++)
+        {
+            ret = alarmIndicator.addAlarmInfo(t.elapsed(), alarmType,
+                                        alarmInterface->getAlarmPriority(0),
+                                        useCase[i],
+                                        alarmInterface, 1);
+        }
+
+        // test add alarm info
+        QCOMPARE(ret, result);
+
+        // test get alarm info
+        AlarmInfoNode tmpNode;
+        QCOMPARE(alarmIndicator.getAlarmInfo(alarmType, useCase[i - 1], tmpNode), result);
+
+        // test get alarm info count
+        QCOMPARE(alarmIndicator.getAlarmCount(alarmType), countResult);
+
+        // test check alarm exist
+        QCOMPARE(alarmIndicator.checkAlarmIsExist(alarmType, useCase[i - 1]), result);
+
+        // test delete alarm info
+        alarmIndicator.delAlarmInfo(alarmType, useCase[i - 1]);
+        QCOMPARE(alarmIndicator.checkAlarmIsExist(alarmType, useCase[i - 1]), delResult);
+    }
+    else    // 测试添加的报警字符常量为空
+    {
+        ret = alarmIndicator.addAlarmInfo(t.elapsed(), alarmType,
+                                    alarmInterface->getAlarmPriority(0),
+                                    NULL,
+                                    alarmInterface, 1);
+
+        QCOMPARE(ret, result);
+
+        AlarmInfoNode tmpNode;
+        QCOMPARE(alarmIndicator.getAlarmInfo(alarmType, NULL, tmpNode), result);
+
+        // test get alarm info count
+        QCOMPARE(alarmIndicator.getAlarmCount(alarmType), countResult);
+
+        // test check alarm exist
+        QCOMPARE(alarmIndicator.checkAlarmIsExist(alarmType, NULL), result);
+
+        // test delete alarm info
+        alarmIndicator.delAlarmInfo(alarmType, NULL);
+        QCOMPARE(alarmIndicator.checkAlarmIsExist(alarmType, NULL), delResult);
+    }
+
+    // test delete all phy alarm
+    if (alarmType == ALARM_TYPE_PHY)
+    {
+        alarmIndicator.delAllPhyAlarm();
+        QCOMPARE(alarmIndicator.getAlarmCount(ALARM_TYPE_PHY), 0);
+    }
 }
 
 void TestAlarmIndicator::testUpdateAlarmInfo_data()
 {
+    QTest::addColumn<AlarmInfoNode>("prepareNode");
     QTest::addColumn<AlarmInfoNode>("node");
     QTest::addColumn<bool>("result");
 
-    AlarmInfoNode existNode;
-    alarmIndicator.getAlarmInfo(0, existNode);
-    QTest::newRow("has exist node") << existNode << true;
-    AlarmInfoNode updateNode = existNode;
-    updateNode.alarmID = 2;
-    updateNode.alarmPriority = ALARM_PRIO_PROMPT;
-    updateNode.latch = true;
-    QTest::newRow("update node") << updateNode << false;
+
+    AlarmInfoNode phyLimitNode;
+    phyLimitNode.alarmID = 0;
+    phyLimitNode.alarmPriority = ALARM_PRIO_PROMPT;
+    phyLimitNode.alarmSource = d_ptr->limitAlarm;
+    phyLimitNode.alarmType = ALARM_TYPE_PHY;
+    phyLimitNode.alarmMessage = d_ptr->limitAlarm->toString(0);
+
+    AlarmInfoNode phyOneshotNode;
+    phyOneshotNode.alarmID = 1;
+    phyOneshotNode.alarmPriority = ALARM_PRIO_LOW;
+    phyOneshotNode.alarmSource = d_ptr->oneShotAlarm;
+    phyOneshotNode.alarmType = ALARM_TYPE_PHY;
+    phyOneshotNode.alarmMessage = d_ptr->oneShotAlarm->toString(0);
+
+    AlarmInfoNode techOneshotNode;
+    techOneshotNode.alarmID = 3;
+    techOneshotNode.alarmPriority = ALARM_PRIO_HIGH;
+    techOneshotNode.alarmSource = d_ptr->oneShotAlarm;
+    techOneshotNode.alarmType = ALARM_TYPE_TECH;
+    techOneshotNode.alarmMessage = d_ptr->oneShotAlarm->toString(0);
+
+    QTest::newRow("has exist phy limit node") << phyLimitNode << phyLimitNode << true;
+    QTest::newRow("has exist phy oneshot node") << phyOneshotNode << phyOneshotNode << true;
+    QTest::newRow("has exist tech oneshot node") << techOneshotNode << techOneshotNode << true;
+
+    AlarmInfoNode updatePNode;
+    updatePNode.alarmID = 4;
+    updatePNode.alarmPriority = ALARM_PRIO_HIGH;
+    updatePNode.alarmSource = d_ptr->limitAlarm;
+    updatePNode.alarmType = ALARM_TYPE_PHY;
+    updatePNode.alarmMessage = d_ptr->limitAlarm->toString(0);
+
+    AlarmInfoNode updateNode;
+    updateNode.alarmID = 5;
+    updateNode.alarmPriority = ALARM_PRIO_LOW;
+    updateNode.alarmSource = d_ptr->limitAlarm;
+    updateNode.alarmType = ALARM_TYPE_PHY;
+    updateNode.alarmMessage = d_ptr->limitAlarm->toString(0);
+
+    QTest::newRow("update node") << updatePNode << updateNode << false;
 
     AlarmInfoNode originalNode;
-    QTest::newRow("original node") << originalNode << true;
+    QTest::newRow("original node") << updatePNode << originalNode << true;
 
-    AlarmInfoNode noExistNode = existNode;
+    AlarmInfoNode noExistNode;
+    noExistNode.alarmID = 6;
+    noExistNode.alarmPriority = ALARM_PRIO_MED;
+    noExistNode.alarmSource = d_ptr->limitAlarm;
     noExistNode.alarmType = ALARM_TYPE_LIFE;
     noExistNode.alarmMessage = "Test";
-    QTest::newRow("no exist node") << noExistNode << true;
+
+    QTest::newRow("no exist node") << updatePNode << noExistNode << true;
 }
 
 void TestAlarmIndicator::testUpdateAlarmInfo()
 {
+    QFETCH(AlarmInfoNode, prepareNode);
     QFETCH(AlarmInfoNode, node);
     QFETCH(bool, result);
 
-    AlarmInfoNode oldInfo;
-    alarmIndicator.getAlarmInfo(0, oldInfo);
+    // test already has exist node case
+    alarmIndicator.addAlarmInfo(QTime::currentTime().elapsed(),
+                                prepareNode.alarmType,
+                                prepareNode.alarmPriority,
+                                prepareNode.alarmMessage,
+                                prepareNode.alarmSource,
+                                prepareNode.alarmID);
     alarmIndicator.updateAlarmInfo(node);
     AlarmInfoNode newInfo;
     alarmIndicator.getAlarmInfo(0, newInfo);
 
-    QCOMPARE(oldInfo == newInfo, result);
-}
-
-void TestAlarmIndicator::testDelAlarmInfo_data()
-{
-    QTest::addColumn<AlarmType>("alarmType");
-    QTest::addColumn<QString>("alarmMessage");
-
-    QTest::newRow("limitPhyAlarm") << ALARM_TYPE_PHY << QString(d_ptr->limitAlarm->toString(0));
-    QTest::newRow("limitTechAlarm") << ALARM_TYPE_TECH << QString(d_ptr->limitAlarm->toString(0));
-    QTest::newRow("oneShotPhyAlarm") << ALARM_TYPE_PHY << QString(d_ptr->oneShotAlarm->toString(0));
-    QTest::newRow("oneShotTechAlarm") << ALARM_TYPE_TECH << QString(d_ptr->oneShotAlarm->toString(0));
-}
-
-void TestAlarmIndicator::testDelAlarmInfo()
-{
-    QFETCH(AlarmType, alarmType);
-    QFETCH(QString, alarmMessage);
-
-    alarmIndicator.delAlarmInfo(alarmType, alarmMessage.toLocal8Bit());
-    QCOMPARE(alarmIndicator.checkAlarmIsExist(alarmType, alarmMessage.toLocal8Bit()), false);
-}
-
-void TestAlarmIndicator::testAddAlarmInfoAbnormal()
-{
-    // 测试加入报警信息满,并加入测试用例
-    QTime t = QTime::currentTime();
-    bool ret = true;
-    AlarmPriority priority = ALARM_PRIO_PROMPT;
-    int j = 0;
-    for (int i = 0; i < ALARM_INFO_POOL_LEN + 1; i++)
-    {
-        // 单数时生理报警，双数是技术报警
-        AlarmType alarmType;
-        if (i % 2 != 0)
-        {
-            alarmType = ALARM_TYPE_PHY;
-        }
-        else
-        {
-            alarmType = ALARM_TYPE_TECH;
-        }
-        // 生理技术报警各轮循各报警等级
-        if (j > 1)
-        {
-            j = 0;
-            int priorityIndex = static_cast<int>(priority) + 1;
-            if (priorityIndex > ALARM_PRIO_HIGH)
-            {
-                priorityIndex = -1;
-            }
-            priority = static_cast<AlarmPriority>(priorityIndex);
-        }
-        else
-        {
-            j++;
-        }
-        ret = alarmIndicator.addAlarmInfo(t.elapsed(), alarmType,
-                                    priority, useCase[i],
-                                    d_ptr->limitAlarm, i);
-    }
-    QCOMPARE(ret, false);
+    QCOMPARE(prepareNode == newInfo, result);
 }
 
 void TestAlarmIndicator::testLatchAlarmInfo_data()
 {
-    QTest::addColumn<AlarmType>("alarmType");
-    QTest::addColumn<int>("index");
+    QTest::addColumn<AlarmInfoNode>("prepareNode");
+    QTest::addColumn<AlarmInfoNode>("latchNode");
     QTest::addColumn<bool>("result");
+    QTest::addColumn<bool>("delResult");
 
-    QTest::newRow("phyNoLatch") << ALARM_TYPE_PHY << ALARM_INFO_POOL_LEN - 1<< true;
-    QTest::newRow("phyLatch") << ALARM_TYPE_PHY << ALARM_INFO_POOL_LEN - 1 << true;
-    QTest::newRow("techNoLatch") << ALARM_TYPE_TECH << ALARM_INFO_POOL_LEN - 2 << true;
-    QTest::newRow("techLatch") << ALARM_TYPE_TECH << ALARM_INFO_POOL_LEN - 2 << true;
-    QTest::newRow("noThePhyAlarm") << ALARM_TYPE_PHY << -1 << false;
-    QTest::newRow("noTheTechAlarm") << ALARM_TYPE_TECH << -1 << false;
+    AlarmInfoNode phyLimitNode;
+    phyLimitNode.alarmID = 0;
+    phyLimitNode.alarmPriority = ALARM_PRIO_PROMPT;
+    phyLimitNode.alarmSource = d_ptr->limitAlarm;
+    phyLimitNode.alarmType = ALARM_TYPE_PHY;
+    phyLimitNode.alarmMessage = d_ptr->limitAlarm->toString(0);
+
+    AlarmInfoNode phyLimitLatchNode = phyLimitNode;
+    phyLimitLatchNode.latch = true;
+
+    AlarmInfoNode phyOneshotNode;
+    phyOneshotNode.alarmID = 1;
+    phyOneshotNode.alarmPriority = ALARM_PRIO_LOW;
+    phyOneshotNode.alarmSource = d_ptr->oneShotAlarm;
+    phyOneshotNode.alarmType = ALARM_TYPE_PHY;
+    phyOneshotNode.alarmMessage = d_ptr->oneShotAlarm->toString(0);
+
+    AlarmInfoNode phyOneshotLatchNode = phyOneshotNode;
+    phyOneshotLatchNode.latch = true;
+
+    AlarmInfoNode techOneshotNode;
+    techOneshotNode.alarmID = 3;
+    techOneshotNode.alarmPriority = ALARM_PRIO_HIGH;
+    techOneshotNode.alarmSource = d_ptr->oneShotAlarm;
+    techOneshotNode.alarmType = ALARM_TYPE_TECH;
+    techOneshotNode.alarmMessage = d_ptr->oneShotAlarm->toString(0);
+
+    AlarmInfoNode techOneshotLatchNode = techOneshotNode;
+    techOneshotLatchNode.latch = true;
+
+    QTest::newRow("latch phy limit which hasn't latch") << phyLimitNode << phyLimitLatchNode<< true << false;
+    QTest::newRow("latch phy limit which has latch") << phyLimitNode << phyLimitNode<< true << false;
+
+    QTest::newRow("latch phy oneshot which hasn't latch") << phyOneshotNode << phyOneshotLatchNode<< true << false;
+    QTest::newRow("latch phy oneshot which has latch") << phyOneshotLatchNode << phyOneshotNode<< true << false;
+
+    QTest::newRow("latch tech oneshot which hasn't latch") << techOneshotNode << techOneshotLatchNode<< true << false;
+    QTest::newRow("latch tech oneshot which has latch") << techOneshotLatchNode << techOneshotNode<< true << false;
+
+
+    AlarmInfoNode phyLimitNonExistNode = phyLimitLatchNode;
+    phyLimitNonExistNode.alarmMessage = "Test";
+
+    AlarmInfoNode phyOneshotNonExistNode = phyOneshotLatchNode;
+    phyOneshotNonExistNode.alarmMessage = "Test";
+
+    AlarmInfoNode techOneshotNonExistNode = techOneshotLatchNode;
+    techOneshotNonExistNode.alarmMessage = "Test";
+
+    QTest::newRow("latch phy limit which hasn't latch") << phyLimitNode << phyLimitNonExistNode<< false << false;
+    QTest::newRow("latch phy limit which has latch") << phyOneshotNode << phyOneshotNonExistNode<< false << false;
+    QTest::newRow("latch phy oneshot which hasn't latch") << techOneshotNode << techOneshotNonExistNode<< false << false;
 }
 
 void TestAlarmIndicator::testLatchAlarmInfo()
 {
-    QFETCH(AlarmType, alarmType);
-    QFETCH(int, index);
+    QFETCH(AlarmInfoNode, prepareNode);
+    QFETCH(AlarmInfoNode, latchNode);
     QFETCH(bool, result);
-    bool ret = false;
-    if (index > -1)
-    {
-        ret = alarmIndicator.latchAlarmInfo(alarmType, useCase[index]);
-    }
-    else
-    {
-        ret = alarmIndicator.latchAlarmInfo(alarmType, "Test");
-    }
+    QFETCH(bool, delResult);
+    alarmIndicator.addAlarmInfo(QTime::currentTime().elapsed(),
+                                prepareNode.alarmType,
+                                prepareNode.alarmPriority,
+                                prepareNode.alarmMessage,
+                                prepareNode.alarmSource,
+                                prepareNode.alarmID);
+
+    // test latch alarm info
+    bool ret = alarmIndicator.latchAlarmInfo(latchNode.alarmType, latchNode.alarmMessage);
     QCOMPARE(ret, result);
+
+    // test has phy latch alarm info and delete phy latch alarm;
+    if (latchNode.alarmType == ALARM_TYPE_PHY)
+    {
+        QCOMPARE(alarmIndicator.hasLatchPhyAlarm(), result);
+        alarmIndicator.delLatchPhyAlarm();
+        QCOMPARE(alarmIndicator.hasLatchPhyAlarm(), delResult);
+    }
 }
 
 void TestAlarmIndicator::testUpdateLatchAlarmInfo_data()
 {
-    QTest::addColumn<int>("index");
-    QTest::addColumn<bool>("flag");
+    QTest::addColumn<AlarmInfoNode>("prepareNode");
+    QTest::addColumn<AlarmInfoNode>("latchNode");
     QTest::addColumn<bool>("result");
 
-    QTest::newRow("set phy. alarm latch") << 1 << true << true;
-    QTest::newRow("set phy. alarm no latch") << 1 << false << true;
-    QTest::newRow("set tech. alarm latch") << 0 << true << true;
-    QTest::newRow("set tech. alarm no latch") << 0 << false << true;
-    QTest::newRow("set latch but no the alarm") << -1 << true << false;
+    AlarmInfoNode phyLimitNode;
+    phyLimitNode.alarmID = 0;
+    phyLimitNode.alarmPriority = ALARM_PRIO_PROMPT;
+    phyLimitNode.alarmSource = d_ptr->limitAlarm;
+    phyLimitNode.alarmType = ALARM_TYPE_PHY;
+    phyLimitNode.alarmMessage = d_ptr->limitAlarm->toString(0);
+
+    AlarmInfoNode phyLimitLatchNode = phyLimitNode;
+    phyLimitLatchNode.latch = true;
+
+    AlarmInfoNode phyOneshotNode;
+    phyOneshotNode.alarmID = 1;
+    phyOneshotNode.alarmPriority = ALARM_PRIO_LOW;
+    phyOneshotNode.alarmSource = d_ptr->oneShotAlarm;
+    phyOneshotNode.alarmType = ALARM_TYPE_PHY;
+    phyOneshotNode.alarmMessage = d_ptr->oneShotAlarm->toString(0);
+
+    AlarmInfoNode phyOneshotLatchNode = phyOneshotNode;
+    phyOneshotLatchNode.latch = true;
+
+    AlarmInfoNode techOneshotNode;
+    techOneshotNode.alarmID = 3;
+    techOneshotNode.alarmPriority = ALARM_PRIO_HIGH;
+    techOneshotNode.alarmSource = d_ptr->oneShotAlarm;
+    techOneshotNode.alarmType = ALARM_TYPE_TECH;
+    techOneshotNode.alarmMessage = d_ptr->oneShotAlarm->toString(0);
+
+    AlarmInfoNode techOneshotLatchNode = techOneshotNode;
+    techOneshotLatchNode.latch = true;
+
+    QTest::newRow("latch phy limit alarm which hasn't latched") << phyLimitNode << phyLimitLatchNode << true;
+    QTest::newRow("latch phy limit alarm which has latched") << phyLimitLatchNode << phyLimitLatchNode << true;
+    QTest::newRow("unlatch phy limit alarm which hasn't latched") << phyLimitNode << phyLimitNode << true;
+    QTest::newRow("unlatch phy limit alarm which has latched") << phyLimitLatchNode << phyLimitNode << true;
+
+    QTest::newRow("latch phy oneshot alarm which hasn't latched") << phyOneshotNode << phyOneshotLatchNode << true;
+    QTest::newRow("latch phy oneshot alarm which has latched") << phyOneshotLatchNode << phyOneshotLatchNode << true;
+    QTest::newRow("unlatch phy oneshot alarm which hasn't latched") << phyOneshotNode << phyOneshotNode << true;
+    QTest::newRow("unlatch phy oneshot alarm which has latched") << phyOneshotLatchNode << phyOneshotNode << true;
+
+    QTest::newRow("latch tech oneshot alarm which hasn't latched") << techOneshotNode << techOneshotLatchNode << true;
+    QTest::newRow("latch tech oneshot alarm which has latched") << techOneshotLatchNode << techOneshotLatchNode << true;
+    QTest::newRow("unlatch tech oneshot alarm which hasn't latched") << techOneshotNode << techOneshotNode << true;
+    QTest::newRow("unlatch tech oneshot alarm which has latched") << techOneshotLatchNode << techOneshotNode << true;
+
+    AlarmInfoNode phyLimitNonExistNode = phyLimitLatchNode;
+    phyLimitNonExistNode.alarmMessage = "Test";
+
+    AlarmInfoNode phyOneshotNonExistNode = phyOneshotLatchNode;
+    phyOneshotNonExistNode.alarmMessage = "Test";
+
+    AlarmInfoNode techOneshotNonExistNode = techOneshotLatchNode;
+    techOneshotNonExistNode.alarmMessage = "Test";
+
+    QTest::newRow("set latch but no the phy limit alarm") << phyLimitNode << phyLimitNonExistNode << false;
+    QTest::newRow("set latch but no the phy oneshot alarm") << phyOneshotNode << phyOneshotNonExistNode << false;
+    QTest::newRow("set latch but no the phy limit alarm") << techOneshotNode << techOneshotNonExistNode << false;
 }
 
 void TestAlarmIndicator::testUpdateLatchAlarmInfo()
 {
-    QFETCH(int, index);
-    QFETCH(bool, flag);
+    QFETCH(AlarmInfoNode, prepareNode);
+    QFETCH(AlarmInfoNode, latchNode);
     QFETCH(bool, result);
-    bool ret = false;
-    if (index >= 0)
-    {
-        ret = alarmIndicator.updateLatchAlarmInfo(useCase[index], flag);
-    }
-    else
-    {
-        ret = alarmIndicator.updateLatchAlarmInfo("Test", flag);
-    }
+    alarmIndicator.addAlarmInfo(QTime::currentTime().elapsed(),
+                                prepareNode.alarmType,
+                                prepareNode.alarmPriority,
+                                prepareNode.alarmMessage,
+                                prepareNode.alarmSource,
+                                prepareNode.alarmID);
 
+    bool ret = alarmIndicator.updateLatchAlarmInfo(latchNode.alarmMessage, latchNode.latch);
     QCOMPARE(ret, result);
 }
 
-void TestAlarmIndicator::testHasLatchPhyAlarm()
+void TestAlarmIndicator::testPhyAlarmPauseStatusHandle_data()
 {
-    alarmIndicator.latchAlarmInfo(ALARM_TYPE_PHY, useCase[ALARM_INFO_POOL_LEN - 1]);
-    QCOMPARE(alarmIndicator.hasLatchPhyAlarm(), true);
-}
+    QTest::addColumn<AlarmInfoNode>("pauseNode");
+    QTest::addColumn<bool>("result");
+    QTest::addColumn<bool>("pauseResult");
+    QTest::addColumn<bool>("pauseRepeatlyResult");
+    QTest::addColumn<bool>("clearResult");
 
-void TestAlarmIndicator::testDelLatchPhyAlarm()
-{
-    alarmIndicator.latchAlarmInfo(ALARM_TYPE_PHY, useCase[ALARM_INFO_POOL_LEN - 1]);
-    alarmIndicator.delLatchPhyAlarm();
-    QCOMPARE(alarmIndicator.hasLatchPhyAlarm(), false);
+    AlarmInfoNode phyLimitNode;
+    phyLimitNode.alarmID = 0;
+    phyLimitNode.alarmPriority = ALARM_PRIO_PROMPT;
+    phyLimitNode.alarmSource = d_ptr->limitAlarm;
+    phyLimitNode.alarmType = ALARM_TYPE_PHY;
+    phyLimitNode.alarmMessage = d_ptr->limitAlarm->toString(0);
+
+    AlarmInfoNode phyLimitPauseNode = phyLimitNode;
+    phyLimitPauseNode.pauseTime = 120;
+
+    AlarmInfoNode phyOneshotNode;
+    phyOneshotNode.alarmID = 1;
+    phyOneshotNode.alarmPriority = ALARM_PRIO_LOW;
+    phyOneshotNode.alarmSource = d_ptr->oneShotAlarm;
+    phyOneshotNode.alarmType = ALARM_TYPE_PHY;
+    phyOneshotNode.alarmMessage = d_ptr->oneShotAlarm->toString(0);
+
+    AlarmInfoNode phyOneshotPauseNode = phyOneshotNode;
+    phyOneshotPauseNode.pauseTime = 120;
+
+    QTest::newRow("pause phy limit alarm which hasn't paused") << phyLimitNode
+                                                               << true
+                                                               << false
+                                                               << true
+                                                               << true;
+
+    QTest::newRow("pause phy limit alarm which has paused")    << phyLimitPauseNode
+                                                               << false
+                                                               << true
+                                                               << false
+                                                               << true;
+
+    QTest::newRow("pause phy oneshot alarm which hasn't paused") << phyOneshotNode
+                                                                 << true
+                                                                 << false
+                                                                 << true
+                                                                 << true;
+
+    QTest::newRow("pause phy oneshot alarm which has paused")  << phyOneshotPauseNode
+                                                               << false
+                                                               << true
+                                                               << false
+                                                               << true;
 }
 
 void TestAlarmIndicator::testPhyAlarmPauseStatusHandle()
 {
-    alarmIndicator.phyAlarmPauseStatusHandle();
-    AlarmInfoNode node;
-    bool ret = alarmIndicator.getAlarmInfo(ALARM_TYPE_PHY, useCase[1], node);
-    QCOMPARE(ret, true);
-    QCOMPARE(node.pauseTime != 0, true);
-    alarmIndicator.phyAlarmPauseStatusHandle();
-    ret = alarmIndicator.getAlarmInfo(ALARM_TYPE_PHY, useCase[1], node);
-    QCOMPARE(ret, true);
-    QCOMPARE(node.pauseTime != 0, false);
-}
+    QFETCH(AlarmInfoNode, pauseNode);
+    QFETCH(bool, result);
+    QFETCH(bool, pauseResult);
+    QFETCH(bool, pauseRepeatlyResult);
+    QFETCH(bool, clearResult);
 
-void TestAlarmIndicator::testHasNonPausePhyAlarm()
-{
-    alarmIndicator.phyAlarmPauseStatusHandle();
-    QCOMPARE(alarmIndicator.hasNonPausePhyAlarm(), false);
-}
+    alarmIndicator.addAlarmInfo(QTime::currentTime().elapsed(),
+                                pauseNode.alarmType,
+                                pauseNode.alarmPriority,
+                                pauseNode.alarmMessage,
+                                pauseNode.alarmSource,
+                                pauseNode.alarmID);
 
-void TestAlarmIndicator::testClearAlarmPause()
-{
+    alarmIndicator.updateAlarmInfo(pauseNode);
+
+    // test has non pause phy alarm
+    QCOMPARE(alarmIndicator.hasNonPausePhyAlarm(), result);
+
+    // test pause phy alarm
+    alarmIndicator.phyAlarmPauseStatusHandle();
+    QCOMPARE(alarmIndicator.hasNonPausePhyAlarm(), pauseResult);
+
+    // test pause phy alarm repeatly
+    alarmIndicator.phyAlarmPauseStatusHandle();
+    QCOMPARE(alarmIndicator.hasNonPausePhyAlarm(), pauseRepeatlyResult);
+
+    // test clear alarm pause
     alarmIndicator.clearAlarmPause();
-    QCOMPARE(alarmIndicator.hasNonPausePhyAlarm(), true);
+    QCOMPARE(alarmIndicator.hasNonPausePhyAlarm(), clearResult);
 }
 
 void TestAlarmIndicator::testUpdataAlarmPriority_data()
 {
-    QTest::addColumn<AlarmType>("alarmType");
-    QTest::addColumn<int>("index");
-    QTest::addColumn<AlarmPriority>("priority");
-    QTest::addColumn<AlarmPriority>("resultPriority");
+    QTest::addColumn<AlarmInfoNode>("prepareNode");
+    QTest::addColumn<AlarmInfoNode>("priorityNode");
     QTest::addColumn<bool>("updateReturn");
 
-    QTest::newRow("set phy alarm") << ALARM_TYPE_PHY
-                                   << 1
-                                   << ALARM_PRIO_HIGH
-                                   << ALARM_PRIO_HIGH
-                                   << true;
-    QTest::newRow("set phy alarm same priority") << ALARM_TYPE_PHY
-                                                 << 1
-                                                 << ALARM_PRIO_HIGH
-                                                 << ALARM_PRIO_HIGH
-                                                 << false;
-    QTest::newRow("set tech alarm") << ALARM_TYPE_TECH
-                                    << 0
-                                    << ALARM_PRIO_MED
-                                    << ALARM_PRIO_MED
-                                    << true;
-    QTest::newRow("set tech alarm same priority") << ALARM_TYPE_TECH
-                                                  << 0
-                                                  << ALARM_PRIO_MED
-                                                  << ALARM_PRIO_MED
-                                                  << false;
-    QTest::newRow("set no exist alarm priority by alarm type") << ALARM_TYPE_LIFE
-                                                               << 2
-                                                               << ALARM_PRIO_HIGH
-                                                               << ALARM_PRIO_LOW
+    AlarmInfoNode phyLimitNode;
+    phyLimitNode.alarmID = 0;
+    phyLimitNode.alarmPriority = ALARM_PRIO_PROMPT;
+    phyLimitNode.alarmSource = d_ptr->limitAlarm;
+    phyLimitNode.alarmType = ALARM_TYPE_PHY;
+    phyLimitNode.alarmMessage = d_ptr->limitAlarm->toString(0);
+
+    AlarmInfoNode phyLimitPriorityNode = phyLimitNode;
+    phyLimitPriorityNode.alarmPriority = ALARM_PRIO_LOW;
+
+    AlarmInfoNode phyOneshotNode;
+    phyOneshotNode.alarmID = 1;
+    phyOneshotNode.alarmPriority = ALARM_PRIO_LOW;
+    phyOneshotNode.alarmSource = d_ptr->oneShotAlarm;
+    phyOneshotNode.alarmType = ALARM_TYPE_PHY;
+    phyOneshotNode.alarmMessage = d_ptr->oneShotAlarm->toString(0);
+
+    AlarmInfoNode phyOneshotPriorityNode = phyOneshotNode;
+    phyOneshotPriorityNode.alarmPriority = ALARM_PRIO_MED;
+
+    AlarmInfoNode techOneshotNode;
+    techOneshotNode.alarmID = 3;
+    techOneshotNode.alarmPriority = ALARM_PRIO_MED;
+    techOneshotNode.alarmSource = d_ptr->oneShotAlarm;
+    techOneshotNode.alarmType = ALARM_TYPE_TECH;
+    techOneshotNode.alarmMessage = d_ptr->oneShotAlarm->toString(0);
+
+    AlarmInfoNode techOneshotPriorityNode = techOneshotNode;
+    techOneshotPriorityNode.alarmPriority = ALARM_PRIO_HIGH;
+
+    QTest::newRow("set phy limit alarm") << phyLimitNode
+                                         << phyLimitPriorityNode
+                                         << true;
+    QTest::newRow("set phy limit alarm same priority") << phyLimitPriorityNode
+                                                       << phyLimitPriorityNode
+                                                       << false;
+
+    QTest::newRow("set phy oneshot alarm") << phyOneshotNode
+                                           << phyOneshotPriorityNode
+                                           << true;
+    QTest::newRow("set phy limit oneshot same priority") << phyOneshotPriorityNode
+                                                         << phyOneshotPriorityNode
+                                                         << false;
+
+    QTest::newRow("set tech limit alarm") << techOneshotNode
+                                          << techOneshotPriorityNode
+                                          << true;
+    QTest::newRow("set tech limit alarm same priority") << techOneshotPriorityNode
+                                                        << techOneshotPriorityNode
+                                                        << false;
+
+    AlarmInfoNode phyLimitNonExistNode = phyLimitPriorityNode;
+    phyLimitNonExistNode.alarmMessage = "Test";
+
+    AlarmInfoNode phyOneshotNonExistNode = phyOneshotPriorityNode;
+    phyOneshotNonExistNode.alarmMessage = "Test";
+
+    AlarmInfoNode techOneshotNonExistNode = techOneshotPriorityNode;
+    techOneshotNonExistNode.alarmMessage = "Test";
+
+    QTest::newRow("set no exist phy limit alarm priority") << phyLimitNode
+                                                           << phyLimitNonExistNode
+                                                           << false;
+    QTest::newRow("set no exist phy oneshot alarm priority")   << phyOneshotNode
+                                                               << phyOneshotNonExistNode
                                                                << false;
-    QTest::newRow("set no exist alarm priority by alarm message") << ALARM_TYPE_PHY
-                                                                  << -1
-                                                                  << ALARM_PRIO_HIGH
-                                                                  << ALARM_PRIO_LOW
-                                                                  << false;
+    QTest::newRow("set no exist tech oneshot alarm priority")  << techOneshotNode
+                                                               << techOneshotNonExistNode
+                                                               << false;
 }
 
 void TestAlarmIndicator::testUpdataAlarmPriority()
 {
-    QFETCH(AlarmType, alarmType);
-    QFETCH(int, index);
-    QFETCH(AlarmPriority, priority);
-    QFETCH(AlarmPriority, resultPriority);
+    QFETCH(AlarmInfoNode, prepareNode);
+    QFETCH(AlarmInfoNode, priorityNode);
     QFETCH(bool, updateReturn);
 
-    if (index >= 0)
-    {
-        bool ret = alarmIndicator.updataAlarmPriority(alarmType, useCase[index], priority);
-        AlarmInfoNode node;
-        alarmIndicator.getAlarmInfo(alarmType, useCase[index], node);
-        QCOMPARE(node.alarmPriority, resultPriority);
-        QCOMPARE(ret, updateReturn);
-    }
-    else
-    {
-        bool ret = alarmIndicator.updataAlarmPriority(alarmType, "Test", priority);
-        QCOMPARE(ret, updateReturn);
-    }
+    alarmIndicator.addAlarmInfo(QTime::currentTime().elapsed(),
+                                prepareNode.alarmType,
+                                prepareNode.alarmPriority,
+                                prepareNode.alarmMessage,
+                                prepareNode.alarmSource,
+                                prepareNode.alarmID);
+
+    bool ret = alarmIndicator.updataAlarmPriority(priorityNode.alarmType,
+                                                  priorityNode.alarmMessage,
+                                                  priorityNode.alarmPriority);
+    QCOMPARE(ret, updateReturn);
 }
 
-void TestAlarmIndicator::testSetAlarmStatus_data()
+void TestAlarmIndicator::testResetStatusHandle_data()
 {
-    QTest::addColumn<AlarmStatus>("status");
+    QTest::addColumn<AlarmInfoNode>("prepareNode");
+    QTest::addColumn<bool>("result");
 
-    QTest::newRow("normal status") << ALARM_STATUS_NORMAL;
-    QTest::newRow("pause status") << ALARM_STATUS_PAUSE;
-    QTest::newRow("reset status") << ALARM_STATUS_RESET;
+    AlarmInfoNode phyLimitNode;
+    phyLimitNode.alarmPriority = ALARM_PRIO_MED;
+    phyLimitNode.alarmSource = d_ptr->limitAlarm;
+    phyLimitNode.alarmType = ALARM_TYPE_PHY;
+    phyLimitNode.alarmMessage = d_ptr->limitAlarm->toString(0);
+
+    AlarmInfoNode phyLimitResetNode = phyLimitNode;
+    phyLimitResetNode.acknowledge = true;
+
+    AlarmInfoNode phyPromptLimitResetNode = phyLimitNode;
+    phyPromptLimitResetNode.alarmPriority = ALARM_PRIO_PROMPT;
+
+    AlarmInfoNode phyOneshotNode;
+    phyOneshotNode.alarmPriority = ALARM_PRIO_HIGH;
+    phyOneshotNode.alarmSource = d_ptr->oneShotAlarm;
+    phyOneshotNode.alarmType = ALARM_TYPE_PHY;
+    phyOneshotNode.alarmMessage = d_ptr->oneShotAlarm->toString(0);
+
+    AlarmInfoNode phyOneshotResetNode = phyOneshotNode;
+    phyOneshotResetNode.acknowledge = true;
+
+    AlarmInfoNode phyLowOneshotResetNode = phyOneshotNode;
+    phyLowOneshotResetNode.alarmPriority = ALARM_PRIO_LOW;
+
+    AlarmInfoNode techOneshotNode;
+    techOneshotNode.alarmID = 3;
+    techOneshotNode.alarmPriority = ALARM_PRIO_HIGH;
+    techOneshotNode.alarmSource = d_ptr->oneShotAlarm;
+    techOneshotNode.alarmType = ALARM_TYPE_TECH;
+    techOneshotNode.alarmMessage = d_ptr->oneShotAlarm->toString(0);
+
+    AlarmInfoNode techOneshotResetNode = techOneshotNode;
+    techOneshotResetNode.acknowledge = true;
+
+    AlarmInfoNode techLowOneshotResetNode = techOneshotNode;
+    techLowOneshotResetNode.alarmPriority = ALARM_PRIO_LOW;
+
+    AlarmInfoNode techPromptOneshotResetNode = techOneshotNode;
+    techPromptOneshotResetNode.alarmPriority = ALARM_PRIO_PROMPT;
+
+    QTest::newRow("reset hasn't acknowledge phy med limit alarm") << phyLimitNode
+                                                                  << true;
+    QTest::newRow("reset has acknowledge phy limit alarm") << phyLimitResetNode
+                                                           << true;
+    QTest::newRow("reset hasn't acknowledge phy  prompt limit alarm") << phyPromptLimitResetNode
+                                                                      << false;
+
+    QTest::newRow("reset hasn't acknowledge phy high oneshot alarm") << phyOneshotNode
+                                                                     << true;
+    QTest::newRow("reset hasn't acknowledge phy low oneshot alarm") << phyLowOneshotResetNode
+                                                                    << false;
+    QTest::newRow("reset has acknowledge phy oneshot alarm") << phyOneshotResetNode
+                                                             << true;
+
+    QTest::newRow("reset hasn't acknowledge tech high limit alarm") << techOneshotNode
+                                                                    << true;
+    QTest::newRow("reset has acknowledge tech limit alarm") << techOneshotResetNode
+                                                            << true;
+    QTest::newRow("reset hasn't acknowledge tech low limit alarm") << techLowOneshotResetNode
+                                                                   << true;
+    QTest::newRow("reset hasn't acknowledge tech prompt limit alarm") << techPromptOneshotResetNode
+                                                                      << false;
 }
 
-void TestAlarmIndicator::testPhyAlarmResetStatusHandle()
+void TestAlarmIndicator::testResetStatusHandle()
 {
-    alarmIndicator.phyAlarmResetStatusHandle();
-    for (int i = 0; i < ALARM_INFO_POOL_LEN; i++)
+    QFETCH(AlarmInfoNode, prepareNode);
+    QFETCH(bool, result);
+
+    alarmIndicator.addAlarmInfo(QTime::currentTime().elapsed(),
+                                prepareNode.alarmType,
+                                prepareNode.alarmPriority,
+                                prepareNode.alarmMessage,
+                                prepareNode.alarmSource,
+                                prepareNode.alarmID);
+
+    bool ret = false;
+    if (prepareNode.alarmType == ALARM_TYPE_PHY)
     {
-        if (i % 2 != 0)
-        {
-            AlarmInfoNode phyNode;
-            if (alarmIndicator.getAlarmInfo(ALARM_TYPE_PHY, useCase[i], phyNode))
-            {
-                if (phyNode.alarmPriority > ALARM_PRIO_LOW)
-                {
-                    // 只确认中级报警和高级报警
-                    QCOMPARE(phyNode.acknowledge, true);
-                }
-                else
-                {
-                    QCOMPARE(phyNode.acknowledge, false);
-                }
-            }
-        }
+        ret = alarmIndicator.phyAlarmResetStatusHandle();
     }
+    else if (prepareNode.alarmType == ALARM_TYPE_TECH)
+    {
+        ret = alarmIndicator.techAlarmResetStatusHandle();
+    }
+    QCOMPARE(ret, result);
 }
 
-void TestAlarmIndicator::testTechAlarmResetStatusHandle_data()
-{
-    QTest::addColumn<AlarmInfoNode>("node");
-    QTest::addColumn<bool>("isRemoveAfterLatch");
-    QTest::addColumn<bool>("isAcknowledge");
-
-    AlarmInfoNode node0;
-    alarmIndicator.getAlarmInfo(ALARM_TYPE_TECH, useCase[0], node0);
-    node0.alarmPriority = ALARM_PRIO_HIGH;
-    QTest::newRow("high priority/not remove/not acknowledge") << node0 << false << false;
-    AlarmInfoNode node2;
-    alarmIndicator.getAlarmInfo(ALARM_TYPE_TECH, useCase[2], node2);
-    node2.alarmPriority = ALARM_PRIO_PROMPT;
-    QTest::newRow("prompt priority/not remove/not acknowledge") << node2 << false << false;
-
-    AlarmInfoNode node4;
-    alarmIndicator.getAlarmInfo(ALARM_TYPE_TECH, useCase[4], node4);
-    node4.alarmPriority = ALARM_PRIO_HIGH;
-    QTest::newRow("high priority/remove/not acknowledge") << node4 << true << false;
-    AlarmInfoNode node6;
-    alarmIndicator.getAlarmInfo(ALARM_TYPE_TECH, useCase[6], node6);
-    node6.alarmPriority = ALARM_PRIO_PROMPT;
-    QTest::newRow("prompt priority/remove/not acknowledge") << node6 << true << false;
-
-    AlarmInfoNode node8;
-    alarmIndicator.getAlarmInfo(ALARM_TYPE_TECH, useCase[8], node8);
-    node8.alarmPriority = ALARM_PRIO_HIGH;
-    QTest::newRow("high priority/remove/acknowledge") << node8 << true << true;
-    AlarmInfoNode node10;
-    alarmIndicator.getAlarmInfo(ALARM_TYPE_TECH, useCase[10], node10);
-    node10.alarmPriority = ALARM_PRIO_PROMPT;
-    QTest::newRow("prompt priority/remove/acknowledge") << node10 << true << true;
-
-    AlarmInfoNode node12;
-    alarmIndicator.getAlarmInfo(ALARM_TYPE_TECH, useCase[12], node12);
-    node12.alarmPriority = ALARM_PRIO_HIGH;
-    QTest::newRow("high priority/not remove/acknowledge") << node12 << false << true;
-    AlarmInfoNode node14;
-    alarmIndicator.getAlarmInfo(ALARM_TYPE_TECH, useCase[14], node14);
-    node14.alarmPriority = ALARM_PRIO_PROMPT;
-    QTest::newRow("prompt priority/not remove/acknowledge") << node14 << false << true;
-}
-
-void TestAlarmIndicator::testTechAlarmResetStatusHandle()
-{
-    QFETCH(AlarmInfoNode, node);
-    QFETCH(bool, isRemoveAfterLatch);
-    QFETCH(bool, isAcknowledge);
-    node.removeAfterLatch = isRemoveAfterLatch;
-    node.acknowledge = isAcknowledge;
-    alarmIndicator.updateAlarmInfo(node);
-    bool handleResult = alarmIndicator.techAlarmResetStatusHandle();
-    AlarmInfoNode tmpNode;
-    bool ret = alarmIndicator.getAlarmInfo(node.alarmType, node.alarmMessage, tmpNode);
-    if (node.alarmPriority > ALARM_PRIO_PROMPT)
-    {
-        // 高于提示等级时，确认未被确认的技术报警
-        if (isRemoveAfterLatch)
-        {
-            QCOMPARE(ret, false);
-        }
-        else
-        {
-            if (!isAcknowledge)
-            {
-                QCOMPARE(handleResult, true);
-            }
-            else
-            {
-                QCOMPARE(handleResult, false);
-            }
-            QCOMPARE(tmpNode.acknowledge, true);
-        }
-    }
-    else
-    {
-        QCOMPARE(tmpNode.acknowledge, isAcknowledge);
-        QCOMPARE(handleResult, false);
-    }
-}
-
-void TestAlarmIndicator::testDelAllPhyAlarm()
-{
-    alarmIndicator.delAllPhyAlarm();
-    QCOMPARE(alarmIndicator.getAlarmCount(ALARM_TYPE_PHY), 0);
-    // 删除全部报警
-    int alarmCount = alarmIndicator.getAlarmCount();
-    for (int i = 0; i < alarmCount; i++)
-    {
-        AlarmInfoNode node;
-        alarmIndicator.getAlarmInfo(0, node);
-        alarmIndicator.delAlarmInfo(node.alarmType, node.alarmMessage);
-    }
-}
 
 void TestAlarmIndicator::testPublishAlarmHasNoAlarm_data()
 {
@@ -544,6 +840,7 @@ void TestAlarmIndicator::testPublishAlarmHasPhyAlarm_data()
     QTest::newRow("pause status/high") << ALARM_STATUS_PAUSE << ALARM_PRIO_HIGH << ALARM_PRIO_LOW;
     QTest::newRow("pause status/prompt") << ALARM_STATUS_PAUSE << ALARM_PRIO_PROMPT << ALARM_PRIO_LOW;
     QTest::newRow("reset status/low") << ALARM_STATUS_RESET << ALARM_PRIO_LOW << ALARM_PRIO_LOW;
+    d_ptr->isClearAllAlarm = false;
 }
 
 void TestAlarmIndicator::testPublishAlarmHasPhyAlarm()
@@ -617,13 +914,6 @@ void TestAlarmIndicator::testPublishAlarmHasPhyAlarm()
     QVERIFY(Mock::VerifyAndClearExpectations(&mockAlarmStateMachine));
 }
 
-void TestAlarmIndicator::delAllPhyAlarm()
-{
-    // 清除全部报警，以准备下一个测试用例
-    alarmIndicator.delAllPhyAlarm();
-    QCOMPARE(alarmIndicator.getAlarmCount(), 0);
-}
-
 void TestAlarmIndicator::testPublishAlarmHasTechAlarm_data()
 {
     QTest::addColumn<AlarmStatus>("status");
@@ -634,7 +924,7 @@ void TestAlarmIndicator::testPublishAlarmHasTechAlarm_data()
     QTest::newRow("normal status/high") << ALARM_STATUS_NORMAL << ALARM_PRIO_HIGH << ALARM_PRIO_HIGH;
     QTest::newRow("pause status/high") << ALARM_STATUS_PAUSE << ALARM_PRIO_HIGH << ALARM_PRIO_PROMPT;
     QTest::newRow("pause status/prompt") << ALARM_STATUS_PAUSE << ALARM_PRIO_PROMPT << ALARM_PRIO_PROMPT;
-//    QTest::newRow("reset status/low") << ALARM_STATUS_RESET << ALARM_PRIO_LOW << ALARM_PRIO_LOW;
+    QTest::newRow("reset status/low") << ALARM_STATUS_RESET << ALARM_PRIO_LOW << ALARM_PRIO_PROMPT;
 }
 
 void TestAlarmIndicator::testPublishAlarmHasTechAlarm()
@@ -642,7 +932,8 @@ void TestAlarmIndicator::testPublishAlarmHasTechAlarm()
     QFETCH(AlarmStatus, status);
     QFETCH(AlarmPriority, priority);
     QFETCH(AlarmPriority, highestPriority);
-
+    alarmIndicator.delAllPhyAlarm();
+    d_ptr->isClearAllAlarm = false;
     static int j = 0;
     // 增加技术报警
     alarmIndicator.addAlarmInfo(QTime::currentTime().elapsed(),
