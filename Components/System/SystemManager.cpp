@@ -330,22 +330,20 @@ void SystemManager::setTouchScreenOnOff(int sta)
     }
 
     QString fileName = "/etc/.using_capacitor_ts";
-    QFile *f = new QFile(fileName);
+    QFile f(fileName);
     if (sta == TOUCHSCREEN_CAPACITIVE)
     {
-        if (!f->open(QIODevice::ReadWrite))
+        if (!f.open(QIODevice::ReadWrite))
         {
             qDebug() << "fail to create capacitive file " << fileName;
-            delete f;
         }
     }
     else
     {
-        if (f->exists())
+        if (f.exists())
         {
-            f->remove();
+            f.remove();
         }
-        delete f;
     }
 
     if (isSupport(CONFIG_TOUCH))
