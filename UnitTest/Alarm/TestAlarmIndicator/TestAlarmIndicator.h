@@ -56,6 +56,10 @@ private Q_SLOTS:
     void testPublishAlarmHasNoAlarm();
     void testPublishAlarmHasPhyAlarm_data();
     void testPublishAlarmHasPhyAlarm();
+    void delAllPhyAlarm();
+    void testPublishAlarmHasTechAlarm_data();
+    void testPublishAlarmHasTechAlarm();
+
 private:
     TestAlarmIndicatorPrivate * const d_ptr;
 };

@@ -617,3 +617,82 @@ void TestAlarmIndicator::testPublishAlarmHasPhyAlarm()
     QVERIFY(Mock::VerifyAndClearExpectations(&mockAlarmStateMachine));
 }
 
+void TestAlarmIndicator::delAllPhyAlarm()
+{
+    // 清除全部报警，以准备下一个测试用例
+    alarmIndicator.delAllPhyAlarm();
+    QCOMPARE(alarmIndicator.getAlarmCount(), 0);
+}
+
+void TestAlarmIndicator::testPublishAlarmHasTechAlarm_data()
+{
+    QTest::addColumn<AlarmStatus>("status");
+    QTest::addColumn<AlarmPriority>("priority");
+    QTest::addColumn<AlarmPriority>("highestPriority");
+
+    QTest::newRow("normal status/prompt") << ALARM_STATUS_NORMAL << ALARM_PRIO_PROMPT << ALARM_PRIO_PROMPT;
+    QTest::newRow("normal status/high") << ALARM_STATUS_NORMAL << ALARM_PRIO_HIGH << ALARM_PRIO_HIGH;
+    QTest::newRow("pause status/high") << ALARM_STATUS_PAUSE << ALARM_PRIO_HIGH << ALARM_PRIO_PROMPT;
+    QTest::newRow("pause status/prompt") << ALARM_STATUS_PAUSE << ALARM_PRIO_PROMPT << ALARM_PRIO_PROMPT;
+//    QTest::newRow("reset status/low") << ALARM_STATUS_RESET << ALARM_PRIO_LOW << ALARM_PRIO_LOW;
+}
+
+void TestAlarmIndicator::testPublishAlarmHasTechAlarm()
+{
+    QFETCH(AlarmStatus, status);
+    QFETCH(AlarmPriority, priority);
+    QFETCH(AlarmPriority, highestPriority);
+
+    static int j = 0;
+    // 增加技术报警
+    alarmIndicator.addAlarmInfo(QTime::currentTime().elapsed(),
+                                ALARM_TYPE_TECH,
+                                priority, useCase[j++], d_ptr->oneShotAlarm, 0);
+
+    MockAlarmInfoBarWidget mockPhyInfoBarWidget;
+    AlarmInfoBarWidget::registerAlarmInfoBar(ALARM_TYPE_PHY, &mockPhyInfoBarWidget);
+    MockAlarmInfoBarWidget mockTechInfoBarWidget;
+    AlarmInfoBarWidget::registerAlarmInfoBar(ALARM_TYPE_TECH, &mockTechInfoBarWidget);
+    MockSoundManager mockSoundManager;
+    SoundManagerInterface::registerSoundManager(&mockSoundManager);
+    MockLightManager mockLightManager;
+    LightManagerInterface::registerLightManager(&mockLightManager);
+    MockAlarmStateMachine mockAlarmStateMachine;
+    AlarmStateMachineInterface::registerAlarmStateMachine(&mockAlarmStateMachine);
+
+    if (priority != ALARM_PRIO_PROMPT && status == ALARM_STATUS_NORMAL)
+    {
+        EXPECT_CALL(mockSoundManager, updateAlarm(true, highestPriority));
+        EXPECT_CALL(mockLightManager, updateAlarm(true, highestPriority));
+    }
+    else
+    {
+        EXPECT_CALL(mockSoundManager, updateAlarm(false, highestPriority));
+        EXPECT_CALL(mockLightManager, updateAlarm(false, highestPriority));
+    }
+
+    EXPECT_CALL(mockPhyInfoBarWidget, clear());
+    EXPECT_CALL(mockTechInfoBarWidget, display(_));
+
+    EXPECT_CALL(mockAlarmStateMachine, handAlarmEvent(ALARM_STATE_EVENT_ALL_PHY_ALARM_LATCHED, _, _));
+    EXPECT_CALL(mockAlarmStateMachine, handAlarmEvent(ALARM_STATE_EVENT_NO_PAUSED_PHY_ALARM, _, _));
+
+    if (status == ALARM_STATUS_RESET)
+    {
+        alarmIndicator.techAlarmResetStatusHandle();
+        alarmIndicator.phyAlarmResetStatusHandle();
+    }
+    else
+    {
+        EXPECT_CALL(mockAlarmStateMachine, handAlarmEvent(ALARM_STATE_EVENT_NO_ACKNOWLEDG_ALARM, _, _));
+    }
+
+    alarmIndicator.publishAlarm(status);
+
+    QVERIFY(Mock::VerifyAndClearExpectations(&mockPhyInfoBarWidget));
+    QVERIFY(Mock::VerifyAndClearExpectations(&mockTechInfoBarWidget));
+    QVERIFY(Mock::VerifyAndClearExpectations(&mockSoundManager));
+    QVERIFY(Mock::VerifyAndClearExpectations(&mockLightManager));
+    QVERIFY(Mock::VerifyAndClearExpectations(&mockAlarmStateMachine));
+}
+
