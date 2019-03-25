@@ -465,6 +465,10 @@ bool AlarmIndicator::addAlarmInfo(unsigned alarmTime, AlarmType alarmType,
                                   AlarmParamIFace *alarmSource, int alarmID, bool isRemoveAfterLatch,
                                   bool isRemoveLightAfterConfirm)
 {
+    if (alarmMessage == NULL)
+    {
+        return false;
+    }
     //报警存在
     AlarmInfoList *list = &_alarmInfoDisplayPool;
     AlarmInfoList::iterator it = list->begin();
@@ -508,6 +512,10 @@ bool AlarmIndicator::addAlarmInfo(unsigned alarmTime, AlarmType alarmType,
  *************************************************************************************************/
 void AlarmIndicator::delAlarmInfo(AlarmType alarmType, const char *alarmMessage)
 {
+    if (alarmMessage == NULL)
+    {
+        return;
+    }
     //删除显示报警信息池
     AlarmInfoList *list = &_alarmInfoDisplayPool;
     AlarmInfoList::iterator it = list->begin();
@@ -530,6 +538,10 @@ void AlarmIndicator::delAlarmInfo(AlarmType alarmType, const char *alarmMessage)
  *************************************************************************************************/
 bool AlarmIndicator::latchAlarmInfo(AlarmType alarmType, const char *alarmMessage)
 {
+    if (alarmMessage == NULL)
+    {
+        return false;
+    }
     //删除显示报警信息池
     AlarmInfoList *list = &_alarmInfoDisplayPool;
     AlarmInfoList::iterator it = list->begin();
@@ -561,6 +573,10 @@ bool AlarmIndicator::latchAlarmInfo(AlarmType alarmType, const char *alarmMessag
  *************************************************************************************************/
 bool AlarmIndicator::updateLatchAlarmInfo(const char *alarmMessage, bool flag)
 {
+    if (alarmMessage == NULL)
+    {
+        return false;
+    }
     //删除显示报警信息池
     AlarmInfoList *list = &_alarmInfoDisplayPool;
     AlarmInfoList::iterator it = list->begin();
@@ -755,6 +771,10 @@ bool AlarmIndicator::hasLatchPhyAlarm()
 bool AlarmIndicator::updataAlarmPriority(AlarmType alarmType, const char *alarmMessage,
         AlarmPriority priority)
 {
+    if (alarmMessage == NULL)
+    {
+        return false;
+    }
     AlarmInfoList *list = &_alarmInfoDisplayPool;
 
     // 查找报警信息并更新。
@@ -921,6 +941,10 @@ void AlarmIndicator::getAlarmInfo(int index, AlarmInfoNode &node)
 bool AlarmIndicator::getAlarmInfo(AlarmType type, const char *alArmMessage,
                                   AlarmInfoNode &node)
 {
+    if (alArmMessage == NULL)
+    {
+        return false;
+    }
     AlarmInfoList *list = &_alarmInfoDisplayPool;
 
     // 查找报警信息并更新。
