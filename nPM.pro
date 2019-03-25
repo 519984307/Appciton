@@ -562,6 +562,7 @@ SOURCES +=                                                                      
     Params/NIBPParam/NIBPWidgets/NIBPDataTrendWidget.cpp                        \
     Params/NIBPParam/NIBPWidgets/NIBPMenuContent.cpp                            \
     Params/NIBPParam/NIBPTrigger/NIBPCountdownTime.cpp                          \
+    Params/NIBPParam/NIBPTrigger/NIBPCountdownTimeInterface.cpp                 \
     Params/SPO2Param/SPO2Param.cpp                                              \
     Params/SPO2Param/SPO2Alarm.cpp                                              \
     Params/SPO2Param/SPO2Widgets/SPO2WaveWidget.cpp                             \
@@ -1104,6 +1105,7 @@ HEADERS +=                                                                      
     Params/NIBPParam/NIBPWidgets/NIBPDataTrendWidget.h                          \
     Params/NIBPParam/NIBPWidgets/NIBPMenuContent.h                              \
     Params/NIBPParam/NIBPTrigger/NIBPCountdownTime.h                            \
+    Params/NIBPParam/NIBPTrigger/NIBPCountdownTimeInterface.h                   \
     Params/SPO2Param/SPO2Param.h                                                \
     Params/SPO2Param/SPO2Alarm.h                                                \
     Params/SPO2Param/SPO2Define.h                                               \
