@@ -108,7 +108,7 @@ static void _initSystem(void)
     systemBoardProvider.selfTest();
 
     // 存储目录管理。
-    dataStorageDirManager.construction();
+    dataStorageDirManager.getInstance();
     // initialize the storage manager in the main thread
     EventStorageManager::getInstance();
     TrendDataStorageManager::getInstance();
@@ -635,8 +635,6 @@ void deleteObjects(void)
     deleteSuperRunConfig();
     deleteSystemTick();
     deleteKeyActionManager();
-
-    deleteDataStorageDirManager();
 
     deletepMessageBox();
 

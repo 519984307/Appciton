@@ -5,4 +5,5 @@ SUBDIRS += \
     TestAlarmNormalState \
     TestAlarmResetState \
     TestAlarmPauseState \
-    TestAlarmIndicator
+    TestAlarmIndicator \
+    TestAlarmStateMachine \

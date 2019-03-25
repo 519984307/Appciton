@@ -158,6 +158,7 @@ SOURCES +=                                                                      
     Utility/DataStorage/DataStorageDirManager.cpp                               \
     Utility/DataStorage/StorageFile.cpp                                         \
     Utility/DataStorage/StorageManager.cpp                                      \
+    Utility/DataStorage/DataStorageDirManagerInterface.cpp                      \
     Utility/ErrorLog/ErrorLogInterface.cpp                                      \
     Utility/ErrorLog/ErrorLog.cpp                                               \
     Utility/ErrorLog/ErrorLogItem.cpp                                           \
@@ -644,6 +645,7 @@ HEADERS +=                                                                      
     Utility/DataStorage/StorageFile.h                                           \
     Utility/DataStorage/DataStorageDirManager.h                                 \
     Utility/DataStorage/StorageManager.h                                        \
+    Utility/DataStorage/DataStorageDirManagerInterface.h                        \
     Utility/ErrorLog/ErrorLogInterface.h                                        \
     Utility/ErrorLog/ErrorLog.h                                                 \
     Utility/ErrorLog/ErrorLogItem.h                                             \
