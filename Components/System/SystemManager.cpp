@@ -316,9 +316,9 @@ bool SystemManager::isTouchScreenOn() const
     return d_ptr->isTouchScreenOn;
 }
 
-void SystemManager::setTouchScreenOnOff(bool onOff)
+void SystemManager::setTouchScreenOnOff(int sta)
 {
-    if (onOff && isSupport(CONFIG_TOUCH))
+    if (sta && isSupport(CONFIG_TOUCH))
     {
         d_ptr->isTouchScreenOn = true;
         QWSServer::instance()->openMouse();
@@ -327,6 +327,25 @@ void SystemManager::setTouchScreenOnOff(bool onOff)
     {
         d_ptr->isTouchScreenOn = false;
         QWSServer::instance()->closeMouse();
+    }
+
+    QString fileName = "/etc/.using_capacitor_ts";
+    QFile *f = new QFile(fileName);
+    if (sta == TOUCHSCREEN_CAPACITIVE)
+    {
+        if (!f->open(QIODevice::ReadWrite))
+        {
+            qDebug() << "fail to create capacitive file " << fileName;
+            delete f;
+        }
+    }
+    else
+    {
+        if (f->exists())
+        {
+            f->remove();
+        }
+        delete f;
     }
 
     if (isSupport(CONFIG_TOUCH))
@@ -1006,7 +1025,7 @@ SystemManager::SystemManager() ://申请一个动态的模块加载结果数组
 
 #ifdef Q_WS_QWS
     int val = 0;
-    systemConfig.getNumValue("General|TouchScreen", val);
+    machineConfig.getNumValue("TouchEnable", val);
     setTouchScreenOnOff(val);
 #endif
 
