@@ -181,10 +181,7 @@ void BLMProvider::handlePacket(unsigned char *data, int len)
         const char *p = reinterpret_cast<char *>(&data[1]);
         versionInfo.append(p); // software version
         versionInfo.append(" ");
-        p += 16;
-        versionInfo.append(p); // svn version
-        versionInfo.append(" ");
-        p += 16;
+        p += 32;
         versionInfo.append(p); // build time
         versionInfo.append(" ");
         p += 32;
