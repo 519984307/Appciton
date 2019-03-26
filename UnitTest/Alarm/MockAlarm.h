@@ -5,16 +5,17 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/3/7
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/3/22
  **/
 
 #pragma once
-#include "SoundManagerInterface.h"
+#include "AlarmInterface.h"
 #include "gmock/gmock.h"
 
-class MockSoundManager : public SoundManagerInterface
+class MockAlarm : public AlarmInterface
 {
 public:
-    MOCK_METHOD2(setVolume, void(SoundType, VolumeLevel));
-    MOCK_METHOD1(getVolume, VolumeLevel(SoundType));
+    MOCK_METHOD1(setAlarmLightOnAlarmReset, void(bool));
+    MOCK_METHOD0(getAlarmLightOnAlarmReset, bool(void));
+    MOCK_METHOD1(addAlarmStatus, void(AlarmStatus));
 };

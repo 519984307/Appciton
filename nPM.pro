@@ -170,6 +170,7 @@ SOURCES +=                                                                      
     Utility/Debug/Debug.cpp                                                     \
     Utility/LanguageManager/LanguageManager.cpp                                 \
     Utility/FontManager/FontManager.cpp                                         \
+    Utility/FontManager/FontManagerInterface.cpp                                \
     Utility/ColorManager/ColorManager.cpp                                       \
     Utility/NightModeManager/NightModeManager.cpp                               \
     Utility/Widgets/Base/ShadowEffect.cpp                                       \
@@ -299,6 +300,7 @@ SOURCES +=                                                                      
     Components/ParamManager/ParamManager.cpp                                    \
     Components/ParamManager/ParamInfo.cpp                                       \
     Components/Alarm/Alarm.cpp                                                  \
+    Components/Alarm/AlarmInterface.cpp                                         \
     Components/Alarm/AlarmConfig.cpp                                            \
     Components/Alarm/AlarmIndicator.cpp                                         \
     Components/Alarm/AlarmIndicatorInterface.cpp                                \
@@ -318,6 +320,7 @@ SOURCES +=                                                                      
     Components/Alarm/Widgets/AlarmStatusWidget.cpp                              \
     Components/Alarm/Widgets/AlarmTechInfoBarWidget.cpp                         \
     Components/Alarm/Widgets/AlarmPhyInfoBarWidget.cpp                          \
+    Components/Alarm/Widgets/AlarmInfoBarWidget.cpp                             \
     Components/Alarm/Widgets/AlarmInfoWindow.cpp                                \
     Components/Alarm/Widgets/AlarmInfoModel.cpp                                 \
     Components/Calculation/DoseCalculationManager/DoseCalculationManager.cpp    \
@@ -372,6 +375,7 @@ SOURCES +=                                                                      
     Components/PowerManager/PowerManager.cpp                                    \
     Components/WindowManager/IWidget.cpp                                        \
     Components/WindowManager/WindowManager.cpp                                  \
+    Components/WindowManager/WindowManagerInterface.cpp                         \
     Components/WindowManager/PromptInfoBarWidget.cpp                            \
     Components/WindowManager/MainMenuWindow.cpp                                 \
     Components/WindowManager/FactoryMaintainMenuWindow.cpp                      \
@@ -659,6 +663,7 @@ HEADERS +=                                                                      
     Utility/RingBuff/RingBuff.h                                                 \
     Utility/LanguageManager/LanguageManager.h                                   \
     Utility/FontManager/FontManager.h                                           \
+    Utility/FontManager/FontManagerInterface.h                                  \
     Utility/ColorManager/ColorManager.h                                         \
     Utility/NightModeManager/NightModeManager.h                                 \
     Utility/Widgets/Base/ShadowEffect.h                                         \
@@ -796,6 +801,7 @@ HEADERS +=                                                                      
     Components/ParamManager/ParamDefine.h                                       \
     Components/ParamManager/ParamInfo.h                                         \
     Components/Alarm/Alarm.h                                                    \
+    Components/Alarm/AlarmInterface.h                                           \
     Components/Alarm/AlarmConfig.h                                              \
     Components/Alarm/AlarmDefine.h                                              \
     Components/Alarm/AlarmIndicator.h                                           \
@@ -818,6 +824,7 @@ HEADERS +=                                                                      
     Components/Alarm/Widgets/AlarmStatusWidget.h                                \
     Components/Alarm/Widgets/AlarmTechInfoBarWidget.h                           \
     Components/Alarm/Widgets/AlarmPhyInfoBarWidget.h                            \
+    Components/Alarm/Widgets/AlarmInfoBarWidget.h                               \
     Components/Alarm/Widgets/AlarmInfoWindow.h                                  \
     Components/Alarm/Widgets/AlarmInfoModel.h                                   \
     Components/Calculation/DoseCalculationManager/DoseCalculationManager.h      \
@@ -887,6 +894,7 @@ HEADERS +=                                                                      
     Components/USBManager/USBManager.h                                          \
     Components/WindowManager/IWidget.h                                          \
     Components/WindowManager/WindowManager.h                                    \
+    Components/WindowManager/WindowManagerInterface.h                           \
     Components/WindowManager/PromptInfoBarWidget.h                              \
     Components/WindowManager/MainMenuWindow.h                                   \
     Components/WindowManager/FactoryMaintainMenuWindow.h                        \

@@ -21,4 +21,5 @@ public:
     MOCK_METHOD1(switchState, void(ALarmStateType type));
     MOCK_CONST_METHOD0(isEnableAlarmAudioOff, bool());
     MOCK_CONST_METHOD0(isEnableAlarmOff, bool());
+    MOCK_METHOD3(handAlarmEvent, void(AlarmStateEvent, unsigned char *, unsigned));
 };

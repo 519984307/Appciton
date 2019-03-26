@@ -75,6 +75,7 @@
 #include "RecorderManager.h"
 
 #include "Alarm.h"
+#include "AlarmIndicator.h"
 #include "AlarmPhyInfoBarWidget.h"
 #include "AlarmTechInfoBarWidget.h"
 #include "AlarmStatusWidget.h"

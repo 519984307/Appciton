@@ -11,10 +11,10 @@
 #pragma once
 #include <QString>
 #include "AlarmParamIFace.h"
-#include "AlarmIndicator.h"
+#include "AlarmInterface.h"
 #include <QMultiMap>
 
-class Alarm
+class Alarm : public AlarmInterface
 {
 public:
     struct AlarmInfo
@@ -26,15 +26,7 @@ public:
         char order;            // record the order of this alarm when many alarms happen in the same timestamp
     };
 
-    static Alarm &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new Alarm();
-        }
-        return *_selfObj;
-    }
-    static Alarm *_selfObj;
+    static Alarm &getInstance(void);
 
     // 注册报警源。
     void addLimtSource(AlarmLimitIFace &alarmSource);
@@ -120,5 +112,4 @@ private:
 
     bool _alarmLightOnAlarmReset;       // 报警复位时的报警灯
 };
-#define alertor (Alarm::construction())
-#define deleteAlarm() (delete Alarm::_selfObj)
+#define alertor (Alarm::getInstance())
