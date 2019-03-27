@@ -85,8 +85,13 @@ public:
       #endif
           selfTestFinish(false),
           isStandby(false),
-          isTurnOff(false)
-    {}
+          isTurnOff(false),
+          screenType(BUSINESS_SCREEN)
+    {
+        int index = BUSINESS_SCREEN;
+        machineConfig.getNumValue("ScreenTypeSelect", index);
+        screenType = static_cast<ScreenType>(index);
+    }
 
     /**
      * @brief enterDemoMode enter the demo mode
@@ -187,6 +192,7 @@ public:
     bool selfTestFinish;
     bool isStandby;
     bool isTurnOff;
+    ScreenType screenType;
 };
 
 /**************************************************************************************************
@@ -511,7 +517,18 @@ void SystemManager::enableBrightness(BrightnessLevel br)
     data.append(static_cast<char>(br));
     sendCommand(data);
 #else
-    char lightValue[BRT_LEVEL_NR] = {64, 52, 47, 41, 36, 31, 26, 21, 15, 1};
+    // add screen type select
+    char *lightValue = NULL;
+    if (d_ptr->screenType == INDUSTRIAL_SCRENN)
+    {
+        char tempLightValue[BRT_LEVEL_NR] = {1, 15, 21, 26, 31, 36, 41, 47, 52, 64};
+        lightValue = reinterpret_cast<char*>(&tempLightValue);
+    }
+    else
+    {
+        char tempLightValue[BRT_LEVEL_NR] = {64, 52, 47, 41, 36, 31, 26, 21, 15, 1};
+        lightValue = reinterpret_cast<char*>(&tempLightValue);
+    }
 
     if (d_ptr->backlightFd < 0)
     {
@@ -524,7 +541,7 @@ void SystemManager::enableBrightness(BrightnessLevel br)
         return;
     }
 
-    int brValue = lightValue[br];
+    int brValue = *(lightValue + br);
 
     QString str = QString::number(brValue);
 

@@ -37,6 +37,15 @@ enum UserFaceType
     UFACE_NR
 };
 
+/**
+ * @brief The ScreenType enum
+ */
+enum ScreenType
+{
+    BUSINESS_SCREEN,
+    INDUSTRIAL_SCRENN
+};
+
 // 背光亮度等级。
 enum BrightnessLevel
 {
