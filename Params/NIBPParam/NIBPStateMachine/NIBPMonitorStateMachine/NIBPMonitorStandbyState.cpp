@@ -12,6 +12,7 @@
 #include "NIBPMonitorStandbyState.h"
 #include "NIBPParam.h"
 #include "NIBPCountdownTime.h"
+#include "LanguageManager.h"
 
 /**************************************************************************************************
  * 处理事件。

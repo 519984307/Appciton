@@ -13,6 +13,7 @@
 #include "SPO2Alarm.h"
 #include "Debug.h"
 #include "NIBPParam.h"
+#include "LanguageManager.h"
 
 #define SOM             (0x02)
 #define EOM             (0x03)

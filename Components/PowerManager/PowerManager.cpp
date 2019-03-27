@@ -14,6 +14,7 @@
 #include "WindowManager.h"
 #include <QTimer>
 #include "PowerOffWindow.h"
+#include "LanguageManager.h"
 
 PowerManger * PowerManger::_selfObj = NULL;
 class PowerMangerPrivate

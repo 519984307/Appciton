@@ -15,6 +15,7 @@
 #include "ComboBox.h"
 #include "SystemManager.h"
 #include "RawDataCollector.h"
+#include "LanguageManager.h"
 
 class FactoryDataRecordContentPrivate
 {

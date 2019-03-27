@@ -49,6 +49,7 @@
 #include "DataStorageDirManager.h"
 #include "StandbyWindow.h"
 #include "NIBPParam.h"
+#include "LanguageManager.h"
 
 #define BACKLIGHT_DEV   "/sys/class/backlight/backlight/brightness"       // 背光控制文件接口
 

@@ -24,9 +24,20 @@ public:
         unsigned timestamp;
         bool isOneshot;
         char order;            // record the order of this alarm when many alarms happen in the same timestamp
+
+        bool operator==(const AlarmInfo &info)
+        {
+            if (info.paramid == paramid && info.alarmType == alarmType && info.timestamp == timestamp
+                    && info.isOneshot == isOneshot)
+            {
+                return true;
+            }
+            return false;
+        }
     };
 
     static Alarm &getInstance(void);
+    static void releaseInstance();
 
     // 注册报警源。
     void addLimtSource(AlarmLimitIFace &alarmSource);
@@ -52,6 +63,7 @@ public:
 
     // 添加报警状态
     void addAlarmStatus(AlarmStatus status);
+    int getAlarmStatusCount();
 
     // get the alarm string from alarm source
     const char *getAlarmMessage(ParamID paramId, int alarmType, bool isOneshotAlarm);
@@ -80,9 +92,9 @@ public:
     void setLatchLockSta(bool status);
 
     /**
-     * @brief removeAllPhyAlarm 移除生理报警的跟踪对象
+     * @brief removeAllLimitAlarm 移除生理报警的跟踪对象
      */
-    void removeAllPhyAlarm();
+    void removeAllLimitAlarm();
 
     /**
      * @brief setAlarmLightOnAlarmReset 设置报警复位时的报警灯

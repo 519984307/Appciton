@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/3/27
+ **/
+
+
 #include "ServiceVersion.h"
 #include <QVBoxLayout>
 #include "SystemBoardProvider.h"
@@ -8,6 +19,7 @@
 #include "ParamManager.h"
 #include "IConfig.h"
 #include "MenuManager.h"
+#include "LanguageManager.h"
 #include "FontManager.h"
 
 ServiceVersion *ServiceVersion::_selfObj = NULL;
@@ -33,12 +45,13 @@ void ServiceVersion::getECGVersion(unsigned char *data, int len)
 {
     _ECGVersion.clear();
 
-    if(len < minLen)
+    if (len < minLen)
     {
         return;
     }
 
-    const char *P = (const char*)(char*)(data + 1);
+    char *p = reinterpret_cast<char *>(data + 1);
+    const char *P = const_cast<const char *>(p);
 
 //    _ECGVersion += QString(P);
 //    _ECGVersion += "-";
@@ -64,11 +77,12 @@ void ServiceVersion::getNIBPVersion(unsigned char *data, int len)
 {
     _NIBPVersion.clear();
 
-    if(len < (minLen + minLen - 1))
+    if (len < (minLen + minLen - 1))
     {
         return;
     }
-    const char *P = (const char*)(char*)(data + 1);
+    char *p = reinterpret_cast<char *>(data + 1);
+    const char *P = const_cast<const char *>(p);
 
     _NIBPVersion = QString("SW(%1.%2,    %3  %4), HW(%5)")
             .arg(QString(P))
@@ -87,11 +101,13 @@ void ServiceVersion::getSPO2Version(unsigned char *data, int len)
 {
     _SPO2Version.clear();
 
-    if(len < minLen)
+    if (len < minLen)
     {
         return;
     }
-    const char *P = (const char*)(char*)(data + 1);
+
+    char *p = reinterpret_cast<char *>(data + 1);
+    const char *P = const_cast<const char *>(p);
 
     _SPO2Version = QString("SW(%1.%2,    %3  %4)")
             .arg(QString(P))
@@ -109,11 +125,13 @@ void ServiceVersion::getTEMPVersion(unsigned char *data, int len)
 {
     _TEMPVersion.clear();
 
-    if(len < minLen)
+    if (len < minLen)
     {
         return;
     }
-    const char *P = (const char*)(char*)(data + 1);
+
+    char *p = reinterpret_cast<char *>(data + 1);
+    const char *P = const_cast<const char *>(p);
 
 //    _TEMPVersion += QString(P);
 //    _TEMPVersion += "-";
@@ -140,11 +158,12 @@ void ServiceVersion::getnPMBoardVersion(unsigned char *data, int len)
 {
     _nPMBoardVersion.clear();
 
-    if(len < minLen)
+    if (len < minLen)
     {
         return;
     }
-    const char *P = (const char*)(char*)(data + 1);
+    char *p = reinterpret_cast<char *>(data + 1);
+    const char *P = const_cast<const char *>(p);
 
     _nPMBoardVersion = QString("SW(%1.%2,    %3  %4)")
             .arg(QString(P))
@@ -162,11 +181,12 @@ void ServiceVersion::getPRT72Version(unsigned char *data, int len)
 {
     _PRT72Version.clear();
 
-    if(len < minLen)
+    if (len < minLen)
     {
         return;
     }
-    const char *P = (const char*)(char*)(data + 1);
+    char *p = reinterpret_cast<char *>(data + 1);
+    const char *P = const_cast<const char *>(p);
 
     _PRT72Version = QString("SW(%1.%2,    %3  %4), HW(%5)")
             .arg(QString(P))
@@ -190,31 +210,31 @@ void ServiceVersion::_coreVersion(void)
     }
 
     QString fileStr = file.readAll();
-    debug("%s",qPrintable(fileStr));
+    debug("%s", qPrintable(fileStr));
     file.close();
 
     QString Str;
     int x = fileStr.indexOf("Linux version");
     int y = fileStr.indexOf(" (");
     Str = "Linux :";
-    Str += fileStr.mid(x+13,y-x-13);
+    Str += fileStr.mid(x+13, y-x-13);
     Str += ",\r\r\r";
 
     x = fileStr.indexOf("gcc version");
     y = fileStr.indexOf("(GCC)");
     Str += "gcc :";
-    Str += fileStr.mid(x+11,y-x-12);
+    Str += fileStr.mid(x+11, y-x-12);
     Str += ",\r\r\r";
 
     x = fileStr.indexOf("SMP ");
     y = fileStr.indexOf(" CST");
-    Str += fileStr.mid(x+8,y-x-8);
+    Str += fileStr.mid(x+8, y-x-8);
     Str += "\r\r";
 
     x = fileStr.indexOf("CST ");
-    Str += fileStr.mid(x+4,4);
+    Str += fileStr.mid(x+4, 4);
 
-    if(QFile::exists("/etc/rcS.d/S40networking"))
+    if (QFile::exists("/etc/rcS.d/S40networking"))
     {
         Str += ", Ethernet";
     }
@@ -306,7 +326,6 @@ ServiceVersion::ServiceVersion() : MenuWidget(trs("ServiceVersion"))
  *************************************************************************************************/
 ServiceVersion::~ServiceVersion()
 {
-
 }
 
 

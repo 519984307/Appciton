@@ -23,6 +23,7 @@
 #include <QImage>
 #include <QApplication>
 #include <QDesktopWidget>
+#include "LanguageManager.h"
 
 #define UPGRADE_FILES_DIR "/upgrade/"
 #define DEFAULT_HW_VER_STR "1.0A"

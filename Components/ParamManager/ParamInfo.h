@@ -1,20 +1,23 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/3/27
+ **/
+
+
 #pragma once
 #include <stddef.h>
-#include "ParamDefine.h"
 #include "UnitManager.h"
+#include "ParamInfoInterface.h"
 
-class ParamInfo
+class ParamInfo : public ParamInfoInterface
 {
 public:
-    static ParamInfo &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new ParamInfo();
-        }
-        return *_selfObj;
-    }
-    static ParamInfo *_selfObj;
+    static ParamInfo &getInstance(void);
     ~ParamInfo();
 
 public:
@@ -49,5 +52,4 @@ public:
 private:
     ParamInfo();
 };
-#define paramInfo (ParamInfo::construction())
-#define deleteParamInfo() (delete ParamInfo::_selfObj)
+#define paramInfo (ParamInfo::getInstance())

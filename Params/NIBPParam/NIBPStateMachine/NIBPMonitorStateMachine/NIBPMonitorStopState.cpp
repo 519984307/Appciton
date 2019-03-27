@@ -12,6 +12,7 @@
 #include "NIBPMonitorStopState.h"
 #include "NIBPParam.h"
 #include "NIBPCountdownTime.h"
+#include "LanguageManager.h"
 
 /**************************************************************************************************
  * 进入该状态。

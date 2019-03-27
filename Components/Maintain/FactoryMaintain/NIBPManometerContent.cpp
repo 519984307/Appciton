@@ -17,6 +17,7 @@
 #include "Button.h"
 #include "MessageBox.h"
 #include "IConfig.h"
+#include "LanguageManager.h"
 
 class NIBPManometerContentPrivate
 {

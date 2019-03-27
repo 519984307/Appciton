@@ -214,7 +214,7 @@ static void _initComponents(void)
  *************************************************************************************************/
 static void _initProviderParam(void)
 {
-    paramInfo.construction();
+    paramInfo.getInstance();
 
     paramManager.addProvider(systemBoardProvider);
 
@@ -232,7 +232,7 @@ static void _initProviderParam(void)
     // ECG部分。
     paramManager.addParam(ecgDupParam.construction());
     alertor.addLimtSource(ecgDupLimitAlarm.construction());
-    paramManager.addParam(ecgParam.construction());
+    paramManager.addParam(ecgParam.getInstance());
     alertor.addLimtSource(ecgLimitAlarm.getInstance());
     alertor.addOneShotSource(ecgOneShotAlarm.getInstance());
     ECGTrendWidget *ecgTrendWidget = new ECGTrendWidget();
@@ -625,7 +625,6 @@ void deleteObjects(void)
     deleteMenuManager();
     // deletePatientMenu();
     deleteParamManager();
-    deleteParamInfo();
     deletePatientManager();
     deleteTimeManager();
     deleteTimeDate();
@@ -638,7 +637,6 @@ void deleteObjects(void)
 
     deletepMessageBox();
 
-    deleteTrendCache();
     deleteRescueDataExportWidget();
     deleteRescueDataDeleteWidget();
 
