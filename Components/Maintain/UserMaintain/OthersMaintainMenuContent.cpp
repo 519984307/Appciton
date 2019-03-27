@@ -119,7 +119,7 @@ void OthersMaintainMenuContentPrivate::loadOptions()
     mode = respParam.getSweepMode();
     combos[ITEM_CBO_RESP_WAVE_MODE]->setCurrentIndex(mode);
 
-    mode = o2Param.getApneaAwakeStatus();
+    systemConfig.getNumValue("PrimaryCfg|O2|ApneaAwake", mode);
     combos[ITEM_CBO_APNEA_AWAKE]->setCurrentIndex(mode);
 }
 
@@ -266,7 +266,7 @@ void OthersMaintainMenuContent::layoutExec()
     connect(button, SIGNAL(released()), this, SLOT(onBtnReleased()));
 #endif
     // 窒息唤醒
-    label = new QLabel(trs("ApneaSimulation"));
+    label = new QLabel(trs("ApneaStimulation"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()

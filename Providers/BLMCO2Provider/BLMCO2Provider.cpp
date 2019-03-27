@@ -19,6 +19,7 @@
 #include <QTimer>
 #include "O2Param.h"
 #include "RunningStatusBar.h"
+#include "ConfigManager.h"
 
 enum  // 数据包类型。
 {
@@ -91,34 +92,33 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
     _status.unspecAcc    = ((sts & BIT5) == BIT5) ? true : false;
     _status.sensorErr    = ((sts & BIT6) == BIT6) ? true : false;
     _status.o2Replace    = ((sts & BIT3) == BIT3) ? true : false;
+    bool co2ApneaStimulation;
+    currentConfig.getNumValue("ApneaStimulation|CO2", co2ApneaStimulation);
+
     if ((co2Param.getAwRRSwitch() == 1) && (co2Param.getApneaTime() != APNEA_ALARM_TIME_OFF))
     {
-        if (o2Param.getApneaAwakeStatus())
+        if (co2ApneaStimulation)
         {
-            if (_status.noBreath)
+            if (o2Param.getApneaAwakeStatus())
             {
-               runningStatus.setShakeStatus(SHAKING);
-               o2Param.sendMotorControl(true);
+                if (_status.noBreath && runningStatus.getShakeStatus() != SHAKING)
+                {
+                    runningStatus.setShakeStatus(SHAKING);
+                    o2Param.sendMotorControl(true);
+                }
             }
-        }
-        else
-        {
-            o2Param.sendMotorControl(false);
-            runningStatus.setShakeStatus(SHAKE_OFF);
         }
         co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_APNEA, _status.noBreath);
     }
     else
     {
-        if (o2Param.getApneaAwakeStatus())
+        if (co2ApneaStimulation)
         {
-            runningStatus.setShakeStatus(SHAKE_ON);
+            if (o2Param.getApneaAwakeStatus())
+            {
+                runningStatus.setShakeStatus(SHAKE_ON);
+            }
         }
-        else
-        {
-            runningStatus.setShakeStatus(SHAKE_OFF);
-        }
-        o2Param.sendMotorControl(false);
         co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_APNEA, false);
     }
 

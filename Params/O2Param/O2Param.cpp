@@ -13,13 +13,19 @@
 #include "O2TrendWidget.h"
 #include "IConfig.h"
 #include "RunningStatusBar.h"
+#include "PatientManager.h"
+#include <QTimerEvent>
+#include "RESPDupParam.h"
+#include "ECGDupParam.h"
+#include "SPO2Param.h"
+#include "ConfigManager.h"
 
 class O2ParamPrivate
 {
 public:
     O2ParamPrivate() : provider(NULL), trendWidget(NULL),
         o2Value(InvData()), calibConcentration(InvData()),
-        calibResult(false), calibReply(false)
+        calibResult(false), calibReply(false), motorTimerID(-1)
     {}
     O2ProviderIFace *provider;
     O2TrendWidget *trendWidget;
@@ -27,6 +33,7 @@ public:
     int calibConcentration;
     int calibResult;
     int calibReply;
+    int motorTimerID;
 };
 
 O2Param &O2Param::getInstance()
@@ -161,19 +168,46 @@ void O2Param::updateSubParamLimit(SubParamID id)
 void O2Param::setApneaAwakeStatus(bool sta)
 {
     systemConfig.setNumValue("PrimaryCfg|O2|ApneaAwake", sta);
-    runningStatus.setShakeStatus(static_cast<ShakeStatus>(sta));
+    PatientType type = patientManager.getType();
+    if (type == PATIENT_TYPE_NEO && sta)
+    {
+        runningStatus.setShakeStatus(SHAKE_ON);
+    }
+    else
+    {
+        o2Param.sendMotorControl(false);
+        runningStatus.setShakeStatus(SHAKE_OFF);
+    }
 }
 
 bool O2Param::getApneaAwakeStatus()
 {
-    bool sta;
+    bool sta = false;
     systemConfig.getNumValue("PrimaryCfg|O2|ApneaAwake", sta);
-    return sta;
+    PatientType type = patientManager.getType();
+    return sta && (type == PATIENT_TYPE_NEO);
 }
 
-void O2Param::sendMotorControl(int control)
+void O2Param::sendMotorControl(int control, bool selfTest)
 {
-    d_ptr->provider->sendMotorControl(control);
+    if (selfTest)
+    {
+        d_ptr->provider->sendMotorControl(control);
+    }
+    else
+    {
+        if (control && d_ptr->motorTimerID == -1)
+        {
+            d_ptr->motorTimerID = startTimer(100);
+            d_ptr->provider->sendMotorControl(control);
+        }
+        else if (!control && d_ptr->motorTimerID != -1)
+        {
+            d_ptr->provider->sendMotorControl(control);
+            killTimer(d_ptr->motorTimerID);
+            d_ptr->motorTimerID = -1;
+        }
+    }
 }
 
 void O2Param::vibrationIntensityControl(int intensity)
@@ -209,6 +243,29 @@ bool O2Param::getCalibrationReply()
 bool O2Param::getCalibrationResult()
 {
     return d_ptr->calibResult;
+}
+
+void O2Param::timerEvent(QTimerEvent *ev)
+{
+    if (ev->timerId() == d_ptr->motorTimerID)
+    {
+        int resp = respDupParam.getRR();
+        int hr = ecgDupParam.getHR();
+        int spo2 = spo2Param.getSPO2();
+        int hrApneaStimulation = 100;
+        int spo2ApneaStimulation = 85;
+        currentConfig.getNumValue("ApneaStimulation|HR", hrApneaStimulation);
+        currentConfig.getNumValue("ApneaStimulation|SPO2", spo2ApneaStimulation);
+        if ((resp == InvData() || resp > 7)
+                && (hr == InvData() || hr > hrApneaStimulation)
+                && (spo2 == InvData() || spo2 > spo2ApneaStimulation))
+        {
+            sendMotorControl(false);
+            runningStatus.setShakeStatus(SHAKE_ON);
+            killTimer(d_ptr->motorTimerID);
+            d_ptr->motorTimerID = -1;
+        }
+    }
 }
 
 O2Param::O2Param() : Param(PARAM_O2), d_ptr(new O2ParamPrivate())

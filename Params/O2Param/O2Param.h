@@ -75,7 +75,7 @@ public:
     bool getApneaAwakeStatus();
 public:
     // 马达控制
-    void sendMotorControl(int control);
+    void sendMotorControl(int control, bool selfTest = false);
 
     // 震动强度设置
     void vibrationIntensityControl(int intensity);
@@ -91,6 +91,9 @@ public:
 
     // 获取校准结果
     bool getCalibrationResult();
+
+protected:
+    void timerEvent(QTimerEvent *ev);
 
 private:
     O2Param();

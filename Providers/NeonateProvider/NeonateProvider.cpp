@@ -98,8 +98,8 @@ void NeonateProvider::handlePacket(unsigned char *data, int len)
         _selfTest(data, len);
         break;
     case NEONATE_RSP_PROBE_MOTOR:
-        o2OneShotAlarm.setOneShotAlarm(O2_ONESHOT_ALARM_MOTOR_NOT_IN_POSITION, data[1]);
-        o2OneShotAlarm.setOneShotAlarm(O2_ONESHOT_ALARM_SENSOR_OFF, data[2]);
+        o2OneShotAlarm.setOneShotAlarm(O2_ONESHOT_ALARM_MOTOR_NOT_IN_POSITION, !data[1]);
+        o2OneShotAlarm.setOneShotAlarm(O2_ONESHOT_ALARM_SENSOR_OFF, !data[2]);
         break;
     case NEONATE_RSP_CALIBRATION:
         o2Param.calibrationResult(data);
@@ -115,8 +115,8 @@ void NeonateProvider::handlePacket(unsigned char *data, int len)
         break;
     }
     case NEONATE_NOTIFY_PROBE_MOTOR:
-        o2OneShotAlarm.setOneShotAlarm(O2_ONESHOT_ALARM_MOTOR_NOT_IN_POSITION, data[1]);
-        o2OneShotAlarm.setOneShotAlarm(O2_ONESHOT_ALARM_SENSOR_OFF, data[2]);
+        o2OneShotAlarm.setOneShotAlarm(O2_ONESHOT_ALARM_MOTOR_NOT_IN_POSITION, !data[1]);
+        o2OneShotAlarm.setOneShotAlarm(O2_ONESHOT_ALARM_SENSOR_OFF, !data[2]);
         break;
     case NEONATE_CYCLE_ALIVE:
         feed();

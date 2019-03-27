@@ -25,6 +25,8 @@
 #include "OxyCRGSPO2TrendWidget.h"
 #include "NIBPParam.h"
 #include "TimeDate.h"
+#include "O2Param.h"
+#include "RunningStatusBar.h"
 
 SPO2Param *SPO2Param::_selfObj = NULL;
 
@@ -362,6 +364,20 @@ void SPO2Param::setSPO2(short spo2Value)
         return;
     }
     _spo2Value = spo2Value;
+
+    // 窒息唤醒
+    if (o2Param.getApneaAwakeStatus())
+    {
+        int apneaStimulationSPO2 = 85;
+        currentConfig.getNumValue("ApneaStimulation|SPO2", apneaStimulationSPO2);
+        if (_spo2Value < apneaStimulationSPO2 && _spo2Value != InvData()
+                && runningStatus.getShakeStatus() != SHAKING)
+        {
+            runningStatus.setShakeStatus(SHAKING);
+            o2Param.sendMotorControl(true);
+        }
+    }
+
     if (NULL != _trendWidget)
     {
         _trendWidget->setSPO2Value(_spo2Value);

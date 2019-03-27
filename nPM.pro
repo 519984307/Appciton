@@ -581,6 +581,7 @@ SOURCES +=                                                                      
     Params/RESPParam/RESPWidgets/RESPMenuContent.cpp                            \
     Params/O2Param/O2Widgets/O2TrendWidget.cpp                                  \
     Params/O2Param/O2Widgets/O2MenuContent.cpp                                  \
+    Params/O2Param/O2Widgets/ApneaStimulationMenuContent.cpp                    \
     Params/O2Param/O2Param.cpp                                                  \
     Params/O2Param/O2Alarm.cpp                                                  \
 #################################################################################
@@ -1133,6 +1134,7 @@ HEADERS +=                                                                      
     Params/PAParam/PASymbol.h                                                   \
     Params/O2Param/O2Widgets/O2TrendWidget.h                                    \
     Params/O2Param/O2Widgets/O2MenuContent.h                                    \
+    Params/O2Param/O2Widgets/ApneaStimulationMenuContent.h                      \
     Params/O2Param/O2Param.h                                                    \
     Params/O2Param/O2ProviderIFace.h                                            \
     Params/O2Param/O2Alarm.h                                                    \

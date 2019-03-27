@@ -30,6 +30,7 @@
 #include "RawDataCollector.h"
 #include "O2Param.h"
 #include "RunningStatusBar.h"
+#include "ConfigManager.h"
 
 /**************************************************************************************************
  * 模块与参数对接。
@@ -442,20 +443,19 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         break;
 
     case TE3_NOTIFY_RESP_ALARM:
-        if (o2Param.getApneaAwakeStatus())
+        bool respApneaStimulation;
+        currentConfig.getNumValue("ApneaStimulation|RESP", respApneaStimulation);
+        if (respApneaStimulation)
         {
-            if (data[1])
+            if (o2Param.getApneaAwakeStatus())
             {
-                runningStatus.setShakeStatus(SHAKING);
-                o2Param.sendMotorControl(true);
+                if (data[1] && runningStatus.getShakeStatus() != SHAKING)
+                {
+                    runningStatus.setShakeStatus(SHAKING);
+                    o2Param.sendMotorControl(true);
+                }
             }
         }
-        else
-        {
-            o2Param.sendMotorControl(false);
-            runningStatus.setShakeStatus(SHAKE_OFF);
-        }
-
         respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_APNEA, data[1]);
         break;
 
@@ -498,6 +498,17 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         if (ecgParam.getCalcLead() != ECG_LEAD_NR)
         {
             ecgParam.updateHR(hrValue);
+            if (o2Param.getApneaAwakeStatus())
+            {
+                int apneaStimulationHR = 100;
+                currentConfig.getNumValue("ApneaStimulation|HR", apneaStimulationHR);
+                if (hrValue < apneaStimulationHR && hrValue != InvData()
+                        && runningStatus.getShakeStatus() != SHAKING)
+                {
+                    runningStatus.setShakeStatus(SHAKING);
+                    o2Param.sendMotorControl(true);
+                }
+            }
         }
         break;
     }

@@ -147,6 +147,13 @@
         <SweepSpeed>2</SweepSpeed>
 	<BrSource>0</BrSource>
     </RESP>
+    <ApneaStimulation>
+        <SelfTest>0</SelfTest>
+        <RESP>1</RESP>
+        <CO2>1</CO2>
+        <HR>100</HR>
+	<SPO2>85</SPO2>
+    </ApneaStimulation>
     <Event>
         <WaveLength>16</WaveLength>
     </Event>
