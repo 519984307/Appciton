@@ -85,12 +85,8 @@ public:
       #endif
           selfTestFinish(false),
           isStandby(false),
-          isTurnOff(false),
-          screenType(BUSINESS_SCREEN)
+          isTurnOff(false)
     {
-        int index = BUSINESS_SCREEN;
-        machineConfig.getNumValue("ScreenTypeSelect", index);
-        screenType = static_cast<ScreenType>(index);
     }
 
     /**
@@ -192,7 +188,6 @@ public:
     bool selfTestFinish;
     bool isStandby;
     bool isTurnOff;
-    ScreenType screenType;
 };
 
 /**************************************************************************************************
@@ -519,7 +514,9 @@ void SystemManager::enableBrightness(BrightnessLevel br)
 #else
     // add screen type select
     char *lightValue = NULL;
-    if (d_ptr->screenType == INDUSTRIAL_SCRENN)
+    int index = BUSINESS_SCREEN;
+    machineConfig.getNumValue("ScreenTypeSelect", index);
+    if (static_cast<ScreenType>(index) == INDUSTRIAL_SCRENN)
     {
         char tempLightValue[BRT_LEVEL_NR] = {1, 15, 21, 26, 31, 36, 41, 47, 52, 64};
         lightValue = reinterpret_cast<char*>(&tempLightValue);

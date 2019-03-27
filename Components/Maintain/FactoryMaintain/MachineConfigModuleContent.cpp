@@ -45,6 +45,7 @@ public:
 #ifdef Q_WS_QWS
         ITEM_CBO_TSCREEN,
 #endif
+        ITEM_CBO_SCREEN_TYPE,
         ITEM_CBO_MAX
     };
 
@@ -171,6 +172,11 @@ void MachineConfigModuleContentPrivte::loadOptions()
     machineConfig.getNumValue("WIFIEnable", index);
     combos[ITEM_CBO_WIFI]->setCurrentIndex(index);
     itemChangedMap[ITEM_CBO_WIFI] = index;
+
+    // load screen type
+    index = 0;
+    machineConfig.getNumValue("ScreenTypeSelect", index);
+    combos[ITEM_CBO_SCREEN_TYPE]->setCurrentIndex(index);
 
     itemInitMap = itemChangedMap;
 
@@ -430,6 +436,23 @@ void MachineConfigModuleContent::layoutExec()
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 #endif
 
+    // screen type select
+    label = new QLabel(trs("ScreenTypeSelect"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    combo = new ComboBox;
+    combo->blockSignals(true);
+    combo->addItems(QStringList()
+                    << trs(SystemSymbol::convert(BUSINESS_SCREEN))
+                    << trs(SystemSymbol::convert(INDUSTRIAL_SCRENN))
+                   );
+    combo->blockSignals(false);
+    layout->addWidget(combo, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(MachineConfigModuleContentPrivte
+                         ::ITEM_CBO_SCREEN_TYPE, combo);
+    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_SCREEN_TYPE;
+    combo->setProperty("Item", qVariantFromValue(itemId));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+
     layout->setRowStretch(d_ptr->combos.count(), 1);
 }
 
@@ -530,6 +553,14 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
             softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_SCREEN_BAN, index);
             break;
 #endif
+        case MachineConfigModuleContentPrivte::ITEM_CBO_SCREEN_TYPE:
+        {
+            machineConfig.setNumValue("ScreenTypeSelect", index);
+            machineConfig.saveToDisk();
+            BrightnessLevel br = systemManager.getBrightness();
+            systemManager.setBrightness(br);
+            return;
+        }
         default:
             return;
     }

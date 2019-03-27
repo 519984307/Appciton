@@ -957,6 +957,9 @@ ParameterSources,参数资源,Parameter Sources
 Replace,替换,Replace
 Insert,插入,Insert
 Remove,移除,Remove
+ScreenTypeSelect,屏幕类型,Screen Type
+IndustrialScreen,工业屏,Industrial
+BusinessScreen,商业屏,Business
 TransferRescueDataByUSB,传输营救数据到USB,Transferring Rescue Data to USB
 TransferRescueDataByWIFI,传输营救数据到WIFI,Transferring Rescue Data to WIFI
 TransferSupervisorByUSB,传输超级配置数据到USB,Transferring Supervisor Config to USB
