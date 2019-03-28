@@ -57,7 +57,7 @@
 	<AlarmOffPrompting>1</AlarmOffPrompting>
 	<AlarmAudioOff>0</AlarmAudioOff>
 	<EnableAlarmOff>1</EnableAlarmOff>
-	<AlarmOffAtPowerOn>1</AlarmOffAtPowerOn>
+	<AlarmOffAtPowerOn>0</AlarmOffAtPowerOn>
     </Alarms>
     <NightMode>
         <ScreenBrightness>1</ScreenBrightness>
@@ -811,6 +811,9 @@
 
     <!--30s后恢复默认选项-->
     <PrimaryCfg>
+	<Alarm>
+	    <AlarmStatus>1</AlarmStatus>
+	</Alarm>
         <PatientInfo>
        	    <Sex>0</Sex>
 	    <BornDate></BornDate>

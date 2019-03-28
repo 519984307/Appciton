@@ -15,8 +15,6 @@
 #include <QStringList>
 #include "IConfig.h"
 
-FontManager *FontManager::_selfObj = NULL;
-
 /**************************************************************************************************
  * 构造函数。
  *************************************************************************************************/
@@ -83,6 +81,21 @@ FontManager::FontManager()
 /**************************************************************************************************
  * 析构函数。
  *************************************************************************************************/
+FontManager &FontManager::getInstance()
+{
+    static FontManager *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new FontManager();
+        FontMangerInterface *old = registerFontManager(instance);
+        if (old)
+        {
+            delete old;
+        }
+    }
+    return *instance;
+}
+
 FontManager::~FontManager()
 {
     QFontDatabase::removeAllApplicationFonts();

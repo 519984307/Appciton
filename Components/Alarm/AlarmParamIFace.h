@@ -38,6 +38,9 @@ public:
 
     // 获取id对应的子参数ID。
     virtual SubParamID getSubParamID(int id) = 0;
+
+    // 将报警ID转换成字串。
+    virtual const char *toString(int id) = 0;
 };
 
 class AlarmLimitIFace: public AlarmParamIFace
@@ -57,9 +60,6 @@ public:
 
     // 报警参数值比较
     virtual int getCompare(int value, int id) = 0;
-
-    // 将报警ID转换成字串。
-    virtual const char *toString(int id) = 0;
 
     //产生报警通知
     virtual void notifyAlarm(int /*id*/, bool /*isAlarm*/) { }
@@ -89,9 +89,6 @@ public:
         Q_UNUSED(id)
         return ALARM_TYPE_TECH;
     }
-
-    // 将报警ID转换成字串。
-    virtual const char *toString(int id) = 0;
 
     // 生理参数报警使能。
     virtual bool isAlarmEnable(int /*id*/) {return true;}

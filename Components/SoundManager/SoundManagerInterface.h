@@ -9,6 +9,7 @@
  **/
 
 #pragma once
+#include <AlarmDefine.h>
 
 class SoundManagerInterface
 {
@@ -56,4 +57,6 @@ public:
      * @return  the volumn level
      */
     virtual VolumeLevel getVolume(SoundType type) = 0;
+
+    virtual void updateAlarm(bool hasAlarm, AlarmPriority curHighestPriority = ALARM_PRIO_PROMPT) = 0;
 };

@@ -1265,6 +1265,8 @@ PrinterModule,打印机模块,Printer Module
 HDMIModule,高清晰度多媒体接口模块,HDMI Module
 WIFIModule,WIFI,WIFI
 TouchScreenModule,触摸屏,Touch Screen
+ResistiveScreen,电阻屏,Resistive Screen
+CapacitiveScreen,电容屏,Capacitive Screen
 NurseCallingModule,护士呼叫设置模块,Nurse Calling Module
 NurseCallingSettingWindow,护士呼叫设置窗口,Nurse Calling Setting Window
 AnalogOutputModule,模拟输出模块,Analog Output Module
@@ -1317,7 +1319,7 @@ MinimumALarmVolume,最小报警音量,Minimum Alarm Volume
 AlarmPauseTime,报警暂停时间,Alarm PauseTime
 RESPWaveGain,增益,Gain
 AlarmOffPromptMechanism,报警关闭提示机制,Alarm Off Prompt Mechanism
-AlarmAudioOff,报警音关闭,Alarm Audio Off
+AlarmAudioOff,报警音,Alarm Audio
 EnableAlarmOff,报警关闭,Enable Alarm Off
 AlarmOffAtPowerOn,接通电源报警,Alarm Off At Power On
 No,否,No
@@ -1533,7 +1535,7 @@ ConfigEditCodeMarkerMenuDesc,Code Marker,Code Marker
 ConfigEditIBPMenuDesc,有创血压设置,IBP Desc
 ConfigEditSpO2MenuDesc,血氧设置,SpO2 Desc
 DeleteSelectedWifiProfile,确定删除选择的wifi配置？, Do delete selected wifi profile ?
-KeyPressVolume,按键音量,Key Press Volume
+ToneVolume,提示音量,Tone Volume
 SoftKeyPatientInfo,病人信息,Patient Info.
 Interface,界面布局,Interface
 Dose,剂量,Dose
@@ -1584,7 +1586,6 @@ AUTO,自动,AUTO
 CalculateMenu,计算,Calculate
 HemodynamicCalculation,血液动力学计算,Hemodynamic Calculation
 CalculateMenuDesc,计算设置,Calculation Desc
-KeyBoardVolumn,按键音量,Volume
 Standby,待机,Standby
 CO2Standby,CO2待机,CO2 Standby
 CO2Measure,CO2测量,CO2 Measure

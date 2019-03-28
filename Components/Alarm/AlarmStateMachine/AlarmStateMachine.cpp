@@ -18,7 +18,6 @@
 #include "AlarmOffState.h"
 #include "AlarmResetState.h"
 #include "IConfig.h"
-#include "SystemManager.h"
 #include "Debug.h"
 
 /**************************************************************************************************
@@ -115,10 +114,10 @@ void AlarmStateMachine::start()
     AlarmStateMap::iterator it = _alarmStateMap.find((ALarmStateType)value);
     if (it != _alarmStateMap.end() && NULL != it.value())
     {
+        // 在链表中找到有相应的状态
         _currentState = it.value();
+        _currentState->enter();
     }
-
-    _currentState->enter();
 }
 
 /**************************************************************************************************

@@ -108,6 +108,8 @@ PowerManger::PowerManger()
     : QObject(),
       d_ptr(new PowerMangerPrivate(this))
 {
+    // 发送指令请求下位机上传电池状态
+    systemBoardProvider.queryBatteryInfo();
 }
 
 void PowerMangerPrivate::monitorRun()

@@ -31,13 +31,14 @@ HEADERS += TestAlarmNormalState.h \
     ../../../Components/LightManager/LightProviderIFace.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmStateMachineInterface.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmState.h \
-    MockAlarmIndicator.h \
-    MockAlarmStateMachine.h \
     ../../../Components/LightManager/LightManagerInterface.h \
-    MockLightManager.h
+    ../MockAlarmIndicator.h \
+    ../MockAlarmStateMachine.h \
+    ../MockLightManager.h
 
 INCLUDEPATH += \
     ../../../Components/Alarm \
     ../../../Components/LightManager \
-    ../../../Components/Alarm/AlarmStateMachine
+    ../../../Components/Alarm/AlarmStateMachine \
+    ..
 

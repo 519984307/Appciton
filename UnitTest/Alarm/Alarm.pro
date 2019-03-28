@@ -2,4 +2,8 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     TestAlarmState \
-    TestAlarmNormalState
+    TestAlarmNormalState \
+    TestAlarmResetState \
+    TestAlarmPauseState \
+    TestAlarmIndicator \
+    TestAlarmStateMachine \

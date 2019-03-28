@@ -18,11 +18,19 @@
 #include "SystemManager.h"
 #include "AlarmConfig.h"
 
-ECGLimitAlarm *ECGLimitAlarm::_selfObj = NULL;
-
 /**************************************************************************************************
  * 报警源的名字。
  *************************************************************************************************/
+ECGLimitAlarm &ECGLimitAlarm::getInstance()
+{
+    static ECGLimitAlarm *limitAlarm = NULL;
+    if (limitAlarm == NULL)
+    {
+        limitAlarm = new ECGLimitAlarm();
+    }
+    return *limitAlarm;
+}
+
 QString ECGLimitAlarm::getAlarmSourceName(void)
 {
     return QString(paramInfo.getParamName(PARAM_ECG));
@@ -135,11 +143,20 @@ ECGLimitAlarm::~ECGLimitAlarm()
 /**************************************************************************************************
  *************************************************************************************************/
 
-ECGOneShotAlarm *ECGOneShotAlarm::_selfObj = NULL;
 
 /**************************************************************************************************
  * 报警源的名字。
  *************************************************************************************************/
+ECGOneShotAlarm &ECGOneShotAlarm::getInstance()
+{
+    static ECGOneShotAlarm *oneShotAlarm = NULL;
+    if (oneShotAlarm == NULL)
+    {
+        oneShotAlarm = new ECGOneShotAlarm();
+    }
+    return *oneShotAlarm;
+}
+
 QString ECGOneShotAlarm::getAlarmSourceName(void)
 {
     QString str(paramInfo.getParamName(PARAM_ECG));
@@ -263,21 +280,9 @@ bool ECGOneShotAlarm::isNeedRemove(int id)
  *************************************************************************************************/
 void ECGOneShotAlarm::notifyAlarm(int id, bool isAlarm)
 {
-    if ((id >= ECG_ONESHOT_ARR_ASYSTOLE) && (id <= ECG_ONESHOT_CHECK_PATIENT_ALARM))
+    if ((id >= ECG_ONESHOT_ARR_ASYSTOLE) && (id <= ECG_ONESHOT_ARR_VFIBVTAC))
     {
         _isPhyAlarm |= isAlarm;
-        if (id == ECG_ONESHOT_CHECK_PATIENT_ALARM)
-        {
-            ecgDupParam.isAlarm(_isPhyAlarm, false);
-
-            for (int i = ECG_LEAD_I; i < ECG_LEAD_NR; i++)
-            {
-                // 只有计算导联才显示check patient
-                ecgParam.updateECGNotifyMesg((ECGLead)i, i == ecgParam.getCalcLead() ? isAlarm : false);
-            }
-
-            _isPhyAlarm = false;
-        }
     }
 }
 
@@ -289,11 +294,6 @@ AlarmType ECGOneShotAlarm::getAlarmType(int id)
     if ((id >= ECG_ONESHOT_ARR_ASYSTOLE) && (id <= ECG_ONESHOT_ARR_VFIBVTAC))
     {
         return ALARM_TYPE_PHY;
-    }
-
-    if (id == ECG_ONESHOT_CHECK_PATIENT_ALARM)
-    {
-        return ALARM_TYPE_LIFE;
     }
 
     return ALARM_TYPE_TECH;
@@ -316,12 +316,6 @@ bool ECGOneShotAlarm::isAlarmEnable(int id)
     if ((id >= ECG_ONESHOT_ARR_ASYSTOLE) && (id <= ECG_ONESHOT_ARR_VFIBVTAC))
     {
         return alarmConfig.isLimitAlarmEnable(SUB_PARAM_HR_PR);
-    }
-
-    if (id == ECG_ONESHOT_CHECK_PATIENT_ALARM)
-    {
-        return (alarmConfig.isLimitAlarmEnable(SUB_PARAM_HR_PR) &&
-                (patientManager.getType() != PATIENT_TYPE_NEO));
     }
 
     return true;

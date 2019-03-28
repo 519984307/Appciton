@@ -12,6 +12,7 @@
 #include <QPainter>
 #include "SoftKeyWidget.h"
 #include "FontManager.h"
+#include "LanguageManager.h"
 #include <QStyle>
 
 /***************************************************************************************************
@@ -315,7 +316,7 @@ void SoftkeyWidget::setContent(const KeyActionDesc *desc)
     _enableBorder = desc->border;
     _pressColor = desc->pressColor;
     _releaseColor = desc->releaseColor;
-    _hint = desc->hint;
+    _hint = trs(desc->hint);
     update();
 }
 

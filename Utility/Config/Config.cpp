@@ -119,7 +119,6 @@ void Config::_restoreOrigFile(const QString &configPath)
     {
         QFile::remove(configPath);
         QFile::copy(factoryConfigPath, configPath);
-
         ErrorLogItem *item = new ErrorLogItem();
         item->setName("Load default config");
         QString str = factoryConfigPath;
@@ -129,7 +128,14 @@ void Config::_restoreOrigFile(const QString &configPath)
         item->setSystemState(ErrorLogItem::SYS_STAT_RUNTIME);
         item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
         ErrorLogInterface *errorLog = ErrorLogInterface::getErrorLog();
-        errorLog->append(item);
+        if (errorLog)
+        {
+            errorLog->append(item);
+        }
+        else
+        {
+            qDebug() << "Failure to store errorlog!\n";
+        }
     }
 }
 

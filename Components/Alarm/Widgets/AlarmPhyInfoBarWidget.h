@@ -13,10 +13,11 @@
 #include "IWidget.h"
 #include "AlarmDefine.h"
 #include "AlarmInfoWindow.h"
+#include "AlarmInfoBarWidget.h"
 
 class AlarmInfoPopListView;
 class AlarmPhyWindow;
-class AlarmPhyInfoBarWidget : public IWidget
+class AlarmPhyInfoBarWidget : public IWidget, public AlarmInfoBarWidget
 {
     Q_OBJECT
 
@@ -26,9 +27,6 @@ public:
 
     // 设置报警提示信息。
     void display(AlarmInfoNode &node);
-
-    //返回对象本身
-    static AlarmPhyInfoBarWidget &getSelf();
 
     // 构造与析构。
     explicit AlarmPhyInfoBarWidget(const QString &name);
@@ -68,4 +66,3 @@ private:
     AlarmInfoWindow *_alarmWindow;
     AlarmType _alarmType;
 };
-#define alarmPhyInfoBarWin (AlarmPhyInfoBarWidget::getSelf())
