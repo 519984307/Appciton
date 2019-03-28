@@ -15,6 +15,8 @@
 #include <QTimer>
 
 #define towMinute 1000 * 120
+#define powerListMaxCount 3
+
 PowerManger * PowerManger::_selfObj = NULL;
 class PowerMangerPrivate
 {
@@ -62,6 +64,8 @@ public:
     bool hasBattery(void);
 
     void shutdownWarn(void);
+
+    QList<BatteryPowerLevel> powerList;
 };
 
 PowerManger::~PowerManger()
@@ -116,6 +120,11 @@ PowerManger::PowerManger()
     d_ptr->shutdownTimer = new QTimer();
     d_ptr->shutdownTimer->setInterval(towMinute);
     connect(d_ptr->shutdownTimer, SIGNAL(timeout()), this, SLOT(powerOff()));
+    d_ptr->powerList.clear();
+    for (int i = 0; i < powerListMaxCount; i++)
+    {
+        d_ptr->powerList.append(BAT_VOLUME_NONE);
+    }
 }
 
 void PowerMangerPrivate::monitorRun()
@@ -151,7 +160,19 @@ void PowerMangerPrivate::monitorRun()
     {
         batteryBarWidget.setStatus(BATTERY_NORMAL);
         BatteryPowerLevel curVolume = getCurrentVolume();
-        batteryBarWidget.setVolume(curVolume);
+
+        // 连续三次都是一样的结果才确定结果
+        powerList.removeFirst();
+        powerList.append(curVolume);
+        for (int i = 0; i < powerList.count(); i++)
+        {
+            if (curVolume != powerList.at(i) && powerList.at(i) != BAT_VOLUME_NONE)
+            {
+                curVolume = powerList.at(i);
+            }
+        }
+
+        batteryBarWidget.setIcon(curVolume);
         if (shutBattery)
         {
             // 是否电量低于开机所需电量，是则自动关机
@@ -230,6 +251,7 @@ BatteryPowerLevel PowerMangerPrivate::getCurrentVolume()
     {
         powerLevel = BAT_VOLUME_5;
     }
+
     return powerLevel;
 }
 

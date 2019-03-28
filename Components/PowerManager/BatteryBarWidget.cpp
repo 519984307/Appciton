@@ -87,12 +87,14 @@ void BatteryBarWidget::setIcon(BatteryPowerLevel level)
         _batteryIconWidget->setVolume(BAT_VOLUME_0);
     }
 
+    _batteryIconWidget->setTimeValue(-2);
     _batteryIconWidget->setFillColor(QColor(0, 128, 0));
 }
 
 void BatteryBarWidget::setIconFull()
 {
     _batteryIconWidget->setVolume(BAT_VOLUME_5);
+    _batteryIconWidget->setTimeValue(-2);
     _batteryIconWidget->setFillColor(QColor(0, 128, 0));
 }
 
