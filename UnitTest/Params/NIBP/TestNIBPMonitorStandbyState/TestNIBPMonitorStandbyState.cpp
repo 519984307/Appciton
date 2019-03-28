@@ -36,6 +36,11 @@ TestNIBPMonitorStandbyState::TestNIBPMonitorStandbyState()
 {
 }
 
+TestNIBPMonitorStandbyState::~TestNIBPMonitorStandbyState()
+{
+    delete d_ptr;
+}
+
 void TestNIBPMonitorStandbyState::testEnter_data()
 {
     QTest::addColumn<NIBPAutoInterval>("interval");
