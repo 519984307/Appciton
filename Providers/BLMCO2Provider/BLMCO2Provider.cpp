@@ -17,7 +17,7 @@
 #include "SystemManager.h"
 #include "PMessageBox.h"
 #include <QTimer>
-#include "O2Param.h"
+#include "O2ParamInterface.h"
 #include "RunningStatusBar.h"
 #include "ConfigManager.h"
 
@@ -96,16 +96,17 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
 #ifndef DISABLE_O2_APNEASTIMULATION
     bool co2ApneaStimulation;
     currentConfig.getNumValue("ApneaStimulation|CO2", co2ApneaStimulation);
+    O2ParamInterface *o2Param = O2ParamInterface::getO2ParamInterface();
     if ((co2Param.getAwRRSwitch() == 1) && (co2Param.getApneaTime() != APNEA_ALARM_TIME_OFF))
     {
-        if (co2ApneaStimulation)
+        if (co2ApneaStimulation && o2Param)
         {
-            if (o2Param.getApneaAwakeStatus())
+            if (o2Param->getApneaAwakeStatus())
             {
                 if (_status.noBreath && runningStatus.getShakeStatus() != SHAKING)
                 {
                     runningStatus.setShakeStatus(SHAKING);
-                    o2Param.sendMotorControl(true);
+                    o2Param->sendMotorControl(true);
                 }
             }
         }
@@ -113,9 +114,9 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
     }
     else
     {
-        if (co2ApneaStimulation)
+        if (co2ApneaStimulation && o2Param)
         {
-            if (o2Param.getApneaAwakeStatus())
+            if (o2Param->getApneaAwakeStatus())
             {
                 runningStatus.setShakeStatus(SHAKE_ON);
             }
