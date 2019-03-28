@@ -11,6 +11,7 @@
 #pragma once
 
 #include "NIBPDefine.h"
+#include "NIBPProviderIFace.h"
 #include <QString>
 class NIBPParamInterface
 {
@@ -45,4 +46,14 @@ public:
     virtual NIBPAutoInterval getAutoInterval(void) = 0;
 
     virtual NIBPMode getMeasurMode(void) = 0;
+
+    virtual void createSnapshot(NIBPOneShotType) = 0;
+
+    virtual NIBPProviderIFace &provider(void) = 0;
+
+    virtual void setAdditionalMeasure(bool flag) = 0;
+
+    virtual void setSTATClose(bool flag) = 0;
+
+    virtual bool isAutoMeasure() = 0;
 };
