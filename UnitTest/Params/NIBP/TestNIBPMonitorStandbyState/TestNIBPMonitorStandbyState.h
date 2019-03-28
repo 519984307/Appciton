@@ -19,7 +19,7 @@ class TestNIBPMonitorStandbyState : public QObject
 
 public:
     TestNIBPMonitorStandbyState();
-    ~TestNIBPMonitorStandbyState(){ delete d_ptr;}
+    ~TestNIBPMonitorStandbyState();
 
 private Q_SLOTS:
     void testEnter_data();
