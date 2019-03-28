@@ -131,7 +131,7 @@ void PowerMangerPrivate::monitorRun()
         }
         BatteryPowerLevel curVolume = getCurrentVolume();
         batteryBarWidget.setStatus(BATTERY_CHARGING);
-        batteryBarWidget.setVolume(curVolume);
+        batteryBarWidget.setIcon(curVolume);
         if (curVolume != BAT_VOLUME_5 && systemBoardProvider.isPowerCharging())
         {
             batteryBarWidget.charging();
