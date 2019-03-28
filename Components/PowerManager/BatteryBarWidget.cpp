@@ -102,7 +102,7 @@ void BatteryBarWidget::setIconLow()
 {
     _batteryIconWidget->setVolume(BAT_VOLUME_1);
     _batteryIconWidget->setTimeValue(-1);
-    _batteryIconWidget->setFillColor(Qt::yellow);
+    _batteryIconWidget->setFillColor(Qt::red);
 }
 
 void BatteryBarWidget::charging()
