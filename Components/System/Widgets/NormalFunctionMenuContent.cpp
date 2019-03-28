@@ -155,6 +155,7 @@ NormalFunctionMenuContent::NormalFunctionMenuContent()
                   trs("NormalFunctionMenuDesc")),
       d_ptr(new NormalFunctionMenuContentPrivate)
 {
+    connect(&nightModeManager, SIGNAL(nightModeHandle(bool)), this, SLOT(nightModeHandle(bool)));
 }
 
 NormalFunctionMenuContent::~NormalFunctionMenuContent()
@@ -491,5 +492,21 @@ void NormalFunctionMenuContent::onPopupListItemFocusChanged(int volume)
     {
         soundManager.setVolume(SoundManager::SOUND_TYPE_ALARM , static_cast<SoundManager::VolumeLevel>(volume));
         soundManager.alarmTone();
+    }
+}
+
+void NormalFunctionMenuContent::nightModeHandle(bool isNightMode)
+{
+    if (isNightMode)
+    {
+        d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS]->setEnabled(false);
+        d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME]->setEnabled(false);
+        d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME]->setEnabled(false);
+    }
+    else
+    {
+        d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS]->setEnabled(true);
+        d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME]->setEnabled(true);
+        d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME]->setEnabled(true);
     }
 }
