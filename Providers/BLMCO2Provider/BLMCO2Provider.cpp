@@ -92,9 +92,10 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
     _status.unspecAcc    = ((sts & BIT5) == BIT5) ? true : false;
     _status.sensorErr    = ((sts & BIT6) == BIT6) ? true : false;
     _status.o2Replace    = ((sts & BIT3) == BIT3) ? true : false;
+
+#ifndef DISABLE_O2_APNEASTIMULATION
     bool co2ApneaStimulation;
     currentConfig.getNumValue("ApneaStimulation|CO2", co2ApneaStimulation);
-
     if ((co2Param.getAwRRSwitch() == 1) && (co2Param.getApneaTime() != APNEA_ALARM_TIME_OFF))
     {
         if (co2ApneaStimulation)
@@ -121,6 +122,16 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
         }
         co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_APNEA, false);
     }
+#else
+    if ((co2Param.getAwRRSwitch() == 1) && (co2Param.getApneaTime() != APNEA_ALARM_TIME_OFF))
+    {
+        co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_APNEA, _status.noBreath);
+    }
+    else
+    {
+        co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_APNEA, false);
+    }
+#endif
 
     // 波形数据，每秒更新20次。
     int waveValue = packet[4];

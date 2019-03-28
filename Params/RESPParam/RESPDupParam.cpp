@@ -329,6 +329,7 @@ void RESPDupParam::handleBRRRValue()
         return;
     }
 
+#ifndef DISABLE_O2_APNEASTIMULATION
     short value = _brValue;
     if (_isAutoBrSource)
     {
@@ -366,6 +367,31 @@ void RESPDupParam::handleBRRRValue()
             o2Param->setMotorRelationParam(APNEASTIMULATION_FACTOR_RESP, false);
         }
     }
+#else
+    if (_isAutoBrSource)
+    {
+        if (_brValue != InvData())  // set br value firstly when the br value is valid.
+        {
+            _trendWidget->setRRValue(_brValue, false, true);
+        }
+        else if (_rrValue != InvData())  // set rr value when the rr value is valid.
+        {
+            _trendWidget->setRRValue(_rrValue, true, true);
+        }
+        else  // set br value when the rr value is invalid.
+        {
+            _trendWidget->setRRValue(_brValue, false, true);
+        }
+    }
+    else if (_manualBrSourceType == BR_SOURCE_CO2)
+    {
+        _trendWidget->setRRValue(_brValue, false);
+    }
+    else if (_manualBrSourceType == BR_SOURCE_ECG)
+    {
+        _trendWidget->setRRValue(_rrValue, true);
+    }
+#endif
 }
 
 /**************************************************************************************************

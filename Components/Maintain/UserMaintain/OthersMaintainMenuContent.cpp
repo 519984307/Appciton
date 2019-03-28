@@ -119,9 +119,11 @@ void OthersMaintainMenuContentPrivate::loadOptions()
     mode = respParam.getSweepMode();
     combos[ITEM_CBO_RESP_WAVE_MODE]->setCurrentIndex(mode);
 
+#ifndef DISABLE_O2_APNEASTIMULATION
     bool sta = false;
     systemConfig.getNumValue("PrimaryCfg|O2|ApneaAwake", sta);
     combos[ITEM_CBO_APNEA_AWAKE]->setCurrentIndex(sta);
+#endif
 }
 
 OthersMaintainMenuContent::OthersMaintainMenuContent()
@@ -266,6 +268,8 @@ void OthersMaintainMenuContent::layoutExec()
     layout->addWidget(button, d_ptr->combos.count(), 1);
     connect(button, SIGNAL(released()), this, SLOT(onBtnReleased()));
 #endif
+
+#ifndef DISABLE_O2_APNEASTIMULATION
     // 窒息唤醒
     label = new QLabel(trs("ApneaStimulation"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -280,7 +284,7 @@ void OthersMaintainMenuContent::layoutExec()
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(OthersMaintainMenuContentPrivate::ITEM_CBO_APNEA_AWAKE, comboBox);
-
+#endif
 
     layout->setRowStretch(d_ptr->combos.count() + 1, 1);
 }

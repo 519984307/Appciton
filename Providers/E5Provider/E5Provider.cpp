@@ -444,6 +444,7 @@ void E5Provider::handlePacket(unsigned char *data, int len)
 
     case TE3_NOTIFY_RESP_ALARM:
     {
+#ifndef DISABLE_O2_APNEASTIMULATION
         bool respApneaStimulation;
         currentConfig.getNumValue("ApneaStimulation|RESP", respApneaStimulation);
         if (respApneaStimulation)
@@ -461,6 +462,7 @@ void E5Provider::handlePacket(unsigned char *data, int len)
                 }
             }
         }
+#endif
         respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_APNEA, data[1]);
         break;
     }
@@ -504,6 +506,7 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         if (ecgParam.getCalcLead() != ECG_LEAD_NR)
         {
             ecgParam.updateHR(hrValue);
+#ifndef DISABLE_O2_APNEASTIMULATION
             O2ParamInterface *o2Param = O2ParamInterface::getO2ParamInterface();
             if (o2Param)
             {
@@ -528,6 +531,7 @@ void E5Provider::handlePacket(unsigned char *data, int len)
                     o2Param->setMotorRelationParam(APNEASTIMULATION_FACTOR_HR, motorSta);
                 }
             }
+#endif
         }
         break;
     }

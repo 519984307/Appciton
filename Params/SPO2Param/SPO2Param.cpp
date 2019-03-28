@@ -365,6 +365,7 @@ void SPO2Param::setSPO2(short spo2Value)
     }
     _spo2Value = spo2Value;
 
+#ifndef DISABLE_O2_APNEASTIMULATION
     // 窒息唤醒
     O2ParamInterface *o2Param = O2ParamInterface::getO2ParamInterface();
     if (o2Param)
@@ -390,6 +391,7 @@ void SPO2Param::setSPO2(short spo2Value)
             o2Param->setMotorRelationParam(APNEASTIMULATION_FACTOR_SPO2, motorSta);
         }
     }
+#endif
 
     if (NULL != _trendWidget)
     {

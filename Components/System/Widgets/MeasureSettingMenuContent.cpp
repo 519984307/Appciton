@@ -196,6 +196,7 @@ void MeasureSettingMenuContent::layoutExec()
         btn->setProperty("Item", qVariantFromValue(item));
     }
 
+#ifndef DISABLE_O2_APNEASTIMULATION
     // O2
     if (systemManager.isSupport(CONFIG_O2))
     {
@@ -220,6 +221,7 @@ void MeasureSettingMenuContent::layoutExec()
         btn->setProperty("Item", qVariantFromValue(item));
         d_ptr->apneaStimulationBtn = btn;
     }
+#endif
     vlayout->addStretch();
 }
 
@@ -282,6 +284,7 @@ void MeasureSettingMenuContent::onBtnReleasd()
 
 void MeasureSettingMenuContentPrivate::loadOptions()
 {
+#ifndef DISABLE_O2_APNEASTIMULATION
     if (patientManager.getType() == PATIENT_TYPE_NEO)
     {
         apneaStimulationBtn->setEnabled(true);
@@ -290,4 +293,5 @@ void MeasureSettingMenuContentPrivate::loadOptions()
     {
         apneaStimulationBtn->setEnabled(false);
     }
+#endif
 }
