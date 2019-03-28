@@ -85,7 +85,7 @@ static void _initSystem(void)
     }
 
     // 波形缓存。
-    waveformCache.construction();
+    waveformCache.getInstance();
 
     // tick初始化。
     systemTick.construction();
@@ -108,7 +108,7 @@ static void _initSystem(void)
     systemBoardProvider.selfTest();
 
     // 存储目录管理。
-    dataStorageDirManager.construction();
+    dataStorageDirManager.getInstance();
     // initialize the storage manager in the main thread
     EventStorageManager::getInstance();
     TrendDataStorageManager::getInstance();
@@ -173,7 +173,7 @@ static void _initComponents(void)
     patientManager.setPatientInfoWidget(*patientInfoWidget);
 
     // 初始化报警。
-    alertor.construction();
+    alertor.getInstance();
     alarmIndicator.getInstance();
 
     AlarmPhyInfoBarWidget *alarmPhyInfo = new AlarmPhyInfoBarWidget("AlarmPhyInfoBarWidget");
@@ -234,8 +234,8 @@ static void _initProviderParam(void)
     paramManager.addParam(ecgDupParam.construction());
     alertor.addLimtSource(ecgDupLimitAlarm.construction());
     paramManager.addParam(ecgParam.construction());
-    alertor.addLimtSource(ecgLimitAlarm.construction());
-    alertor.addOneShotSource(ecgOneShotAlarm.construction());
+    alertor.addLimtSource(ecgLimitAlarm.getInstance());
+    alertor.addOneShotSource(ecgOneShotAlarm.getInstance());
     ECGTrendWidget *ecgTrendWidget = new ECGTrendWidget();
     ecgDupParam.setTrendWidget(ecgTrendWidget);
     layoutManager.addLayoutWidget(ecgTrendWidget, LAYOUT_NODE_PARAM_ECG);
@@ -637,12 +637,8 @@ void deleteObjects(void)
     deleteSystemTick();
     deleteKeyActionManager();
 
-    deleteDataStorageDirManager();
-
     deletepMessageBox();
-    deleteAlarm();
 
-    deleteWaveformCache();
     deleteTrendCache();
     deleteRescueDataExportWidget();
     deleteRescueDataDeleteWidget();
@@ -652,7 +648,6 @@ void deleteObjects(void)
     deleteActivityLogManager();
 
     deleteColorManager();
-    deleteFontManager();
     deleteLanguageManager();
     deleteErrorCatch();
 }

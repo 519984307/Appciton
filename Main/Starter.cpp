@@ -50,6 +50,9 @@ bool qt_sendSpontaneousEvent(QObject *receiver, QEvent *event)
 // 启动加载功能，它读取系统板的实际模式，并将其转换成真正系统需要的工作模式，并根据模式的类型调用不同的启动如果。
 int main(int argc, char *argv[])
 {
+    // errorlog 初始化
+    errorLog.getInstance();
+
     IApplication app(argc, argv);
 
     // 检查并固定系统时间

@@ -11,6 +11,7 @@
 #pragma once
 
 #include "AlarmStateDefine.h"
+
 class AlarmStateMachineInterface
 {
 public:
@@ -46,4 +47,12 @@ public:
      * @return
      */
     virtual bool isEnableAlarmOff() const = 0;
+
+    /**
+     * @brief handAlarmEvent 处理报警事件
+     * @param event
+     * @param data
+     * @param len
+     */
+    virtual void handAlarmEvent(AlarmStateEvent event, unsigned char *data, unsigned len) = 0;
 };

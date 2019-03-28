@@ -159,6 +159,7 @@ void MachineConfigModuleContentPrivte::loadOptions()
     index = 0;
     machineConfig.getNumValue("TouchEnable", index);
     combos[ITEM_CBO_TSCREEN]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_TSCREEN] = index;
 #endif
 
     index = 0;
@@ -417,7 +418,8 @@ void MachineConfigModuleContent::layoutExec()
     combo->blockSignals(true);
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs("On")
+                    << trs("ResistiveScreen")
+                    << trs("CapacitiveScreen")
                    );
     combo->blockSignals(false);
     layout->addWidget(combo, d_ptr->combos.count(), 1);
@@ -522,11 +524,11 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
         }
 #ifdef Q_WS_QWS
         case MachineConfigModuleContentPrivte::ITEM_CBO_TSCREEN:
-            machineConfig.setNumValue("TouchEnable", index);
+            enablePath = "TouchEnable";
             machineConfig.saveToDisk();
             systemManager.setTouchScreenOnOff(index);
             softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_SCREEN_BAN, index);
-            return;
+            break;
 #endif
         default:
             return;
@@ -537,12 +539,12 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
         return;
     }
 
-    int enableIndex;
+    int enableIndex = index;
     if (index == 0)
     {
         enableIndex = 0;
     }
-    else if (index > 0)
+    else if (index > 0 && enablePath != "TouchEnable")
     {
         enableIndex = 1;
     }

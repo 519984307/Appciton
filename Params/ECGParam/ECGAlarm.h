@@ -16,15 +16,7 @@
 class ECGLimitAlarm : public AlarmLimitIFace
 {
 public:
-    static ECGLimitAlarm &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new ECGLimitAlarm();
-        }
-        return *_selfObj;
-    }
-    static ECGLimitAlarm *_selfObj;
+    static ECGLimitAlarm &getInstance(void);
 
 public:
     // 报警源的名字。
@@ -70,21 +62,13 @@ public:
     ECGLimitAlarm();
     virtual ~ECGLimitAlarm();
 };
-#define ecgLimitAlarm (ECGLimitAlarm::construction())
+#define ecgLimitAlarm (ECGLimitAlarm::getInstance())
 
 // OneShor报警实现。
 class ECGOneShotAlarm : public AlarmOneShotIFace
 {
 public:
-    static ECGOneShotAlarm &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new ECGOneShotAlarm();
-        }
-        return *_selfObj;
-    }
-    static ECGOneShotAlarm *_selfObj;
+    static ECGOneShotAlarm &getInstance(void);
 
 public:
     // 报警源的名字。
@@ -138,4 +122,4 @@ private:
     ECGOneShotAlarm();
     bool _isPhyAlarm;
 };
-#define ecgOneShotAlarm (ECGOneShotAlarm::construction())
+#define ecgOneShotAlarm (ECGOneShotAlarm::getInstance())

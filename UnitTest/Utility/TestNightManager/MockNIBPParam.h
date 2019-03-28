@@ -16,4 +16,6 @@ class MockNIBPParam : public NIBPParamInterface
 {
 public:
     MOCK_METHOD0(stopMeasure, void(void));
+    MOCK_METHOD1(setText, void(QString text));
+    MOCK_METHOD0(clearResult, void(void));
 };

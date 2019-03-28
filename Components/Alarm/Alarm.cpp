@@ -25,6 +25,7 @@
 #include "TEMPSymbol.h"
 #include "NIBPSymbol.h"
 #include "TrendDataStorageManager.h"
+#include "AlarmIndicator.h"
 
 #define ALARM_LIMIT_TIMES (3)   // 超限3次后，发生报警
 static int curSecondAlarmNum = 0;  // record the number of alarms happend in the save seconds
@@ -63,8 +64,6 @@ struct AlarmTraceCtrl
 };
 typedef QMap<QString, AlarmTraceCtrl> TraceMap;
 static TraceMap _traceCtrl;
-
-Alarm *Alarm::_selfObj = NULL;
 
 /**************************************************************************************************
  * 功能：获取报警跟踪控制对象。
@@ -423,7 +422,7 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
             if (traceCtrl->lastAlarmed)
             {
                 // 生命报警从栓锁恢复到继续报警。
-                if (traceCtrl->type != ALARM_TYPE_TECH)
+                if (traceCtrl->type != ALARM_TYPE_TECH && _isLatchLock)
                 {
                     if (alarmIndicator.checkAlarmIsExist(traceCtrl->type, traceCtrl->alarmMessage))
                     {
@@ -521,6 +520,21 @@ void Alarm::_handleAlarm(void)
  * 参数：
  *      alarmSource：报警源
  *************************************************************************************************/
+Alarm &Alarm::getInstance()
+{
+    static Alarm *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new Alarm();
+        AlarmInterface *old = registerAlarm(instance);
+        if (old)
+        {
+            delete old;
+        }
+    }
+    return *instance;
+}
+
 void Alarm::addLimtSource(AlarmLimitIFace &alarmSource)
 {
     _limitSources.insert(alarmSource.getParamID(), &alarmSource);
@@ -837,6 +851,7 @@ AlarmOneShotIFace *Alarm::getAlarmOneShotIFace(SubParamID id)
  * 功能： 构造。
  *************************************************************************************************/
 Alarm::Alarm() :
+    AlarmInterface(),
     _isLatchLock(true), _alarmLightOnAlarmReset(false)
 {
     // 栓锁状态初始化

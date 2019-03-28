@@ -17,8 +17,6 @@
 #include "WindowManager.h"
 #include "Alarm.h"
 
-static AlarmPhyInfoBarWidget *_selfObj = NULL;
-
 /**************************************************************************************************
  * 绘制背景。
  *************************************************************************************************/
@@ -221,14 +219,6 @@ void AlarmPhyInfoBarWidget::display(AlarmInfoNode &node)
 }
 
 /**************************************************************************************************
- * 获取对象。
- *************************************************************************************************/
-AlarmPhyInfoBarWidget &AlarmPhyInfoBarWidget::getSelf()
-{
-    return *_selfObj;
-}
-
-/**************************************************************************************************
  * 构造。
  *************************************************************************************************/
 AlarmPhyInfoBarWidget::AlarmPhyInfoBarWidget(const QString &name) :
@@ -244,9 +234,11 @@ AlarmPhyInfoBarWidget::AlarmPhyInfoBarWidget(const QString &name) :
     _alarmWindow(NULL),
     _alarmType(ALARM_TYPE_PHY)
 {
-    _selfObj = this;
-//    setFocusPolicy(Qt::NoFocus);
-
+    AlarmInfoBarWidget *old = registerAlarmInfoBar(ALARM_TYPE_PHY, this);
+    if (old)
+    {
+        delete old;
+    }
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 }
 
