@@ -88,7 +88,7 @@ BatteryIndicatorWindow::BatteryIndicatorWindow()
     batteryImag = new BatteryIconWidget();
     batteryImag->setVolume(BAT_VOLUME_1);
     batteryImag->setTimeValue(-1);
-    batteryImag->setFillColor(Qt::yellow);
+    batteryImag->setFillColor(Qt::red);
     batteryImag->setStatus(BATTERY_NORMAL);
     layoutH->addWidget(batteryImag);
     layoutV->addLayout(layoutH);
