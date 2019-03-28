@@ -38,10 +38,6 @@ void BatteryBarWidget::setStatus(BatteryIconStatus status)
  *************************************************************************************************/
 void BatteryBarWidget::setVolume(BatteryPowerLevel volume)
 {
-    if (volume == BAT_VOLUME_0)
-    {
-        return;
-    }
     _batteryIconWidget->setVolume(volume);
 }
 
@@ -87,7 +83,6 @@ void BatteryBarWidget::setIcon(int time)
         _batteryIconWidget->setVolume(BAT_VOLUME_0);
     }
 
-    _batteryIconWidget->setTimeValue(time);
     _batteryIconWidget->setFillColor(QColor(0, 128, 0));
 }
 

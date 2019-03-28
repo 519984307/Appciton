@@ -13,15 +13,15 @@
 #include "MessageBox.h"
 #include "WindowManager.h"
 #include <QTimer>
-#include "PowerOffWindow.h"
 
+#define towMinute 1000 * 120
 PowerManger * PowerManger::_selfObj = NULL;
 class PowerMangerPrivate
 {
 public:
     explicit PowerMangerPrivate(PowerManger * const q_ptr)
         : q_ptr(q_ptr), lowBattery(false), shutBattery(false),
-          lastVolume(BAT_VOLUME_NONE), adcValue(0)
+          lastVolume(BAT_VOLUME_NONE), adcValue(0), hasHintShutMessage(false)
     {}
     ~PowerMangerPrivate(){}
 
@@ -31,6 +31,7 @@ public:
     bool shutBattery;               // 关机电量
     BatteryPowerLevel lastVolume;   // 上一次的电量等级
     short adcValue;                 // 电池电量
+    bool hasHintShutMessage;        // 是否弹出过关机提示
 
     void monitorRun();
 
@@ -190,7 +191,6 @@ BatteryPowerLevel PowerMangerPrivate::getCurrentVolume()
     {
         // over low
         powerLevel = BAT_VOLUME_0;
-        lowBattery = true;
         shutBattery = true;
     }
     else if (batteryADCVoltage >= BAT_LEVEL_0 && batteryADCVoltage < BAT_LEVEL_1)
@@ -235,17 +235,18 @@ bool PowerMangerPrivate::hasBattery()
 
 void PowerMangerPrivate::shutdownWarn()
 {
-    // 清除界面弹出框
-    if (!powerOffWindow.isActiveWindow())
+    if (hasHintShutMessage)
     {
-        windowManager.closeAllWidows();
-        powerOffWindow.show();
+        return;
     }
-
 
     if (systemBoardProvider.getPowerSuplyType() != POWER_SUPLY_AC
             && systemBoardProvider.getPowerSuplyType() != POWER_SUPLY_AC_BAT)
     {
-        QTimer::singleShot(10000, q_ptr, SLOT(powerOff()));     // 弹出关机提示后10秒关机
+        QTimer::singleShot(towMinute, q_ptr, SLOT(powerOff()));     // 弹出关机提示后10秒关机
+        hasHintShutMessage = true;
+        // 清除界面弹出框
+        MessageBox lowMessage(trs("Prompt"), trs("ShutDown"), false);
+        windowManager.showWindow(&lowMessage, WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
     }
 }
