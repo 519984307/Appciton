@@ -10,11 +10,12 @@
 
 #pragma once
 #include "Param.h"
+#include "O2ParamInterface.h"
 
 class O2ProviderIFace;
 class O2TrendWidget;
 class O2ParamPrivate;
-class O2Param : public Param
+class O2Param : public Param, public O2ParamInterface
 {
     Q_OBJECT
 public:
@@ -91,6 +92,10 @@ public:
 
     // 获取校准结果
     bool getCalibrationResult();
+
+    // 设置/获取唤醒器关联参数状态
+    void setMotorRelationParam(ApneaStimulationFactor factor, bool sta);
+    int getMotorRelationParam();
 
 protected:
     void timerEvent(QTimerEvent *ev);

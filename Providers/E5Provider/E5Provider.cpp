@@ -28,7 +28,7 @@
 #include "IConfig.h"
 #include "WindowManager.h"
 #include "RawDataCollector.h"
-#include "O2Param.h"
+#include "O2ParamInterface.h"
 #include "RunningStatusBar.h"
 #include "ConfigManager.h"
 
@@ -443,21 +443,27 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         break;
 
     case TE3_NOTIFY_RESP_ALARM:
+    {
         bool respApneaStimulation;
         currentConfig.getNumValue("ApneaStimulation|RESP", respApneaStimulation);
         if (respApneaStimulation)
         {
-            if (o2Param.getApneaAwakeStatus())
+            O2ParamInterface *o2Param = O2ParamInterface::getO2ParamInterface();
+            if (o2Param)
             {
-                if (data[1] && runningStatus.getShakeStatus() != SHAKING)
+                if (o2Param->getApneaAwakeStatus())
                 {
-                    runningStatus.setShakeStatus(SHAKING);
-                    o2Param.sendMotorControl(true);
+                    if (data[1] && runningStatus.getShakeStatus() != SHAKING)
+                    {
+                        runningStatus.setShakeStatus(SHAKING);
+                        o2Param->sendMotorControl(true);
+                    }
                 }
             }
         }
         respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_APNEA, data[1]);
         break;
+    }
 
     case TE3_NOTIFY_VF_ALARM:
         ecgOneShotAlarm.setOneShotAlarm(ECG_ONESHOT_ARR_VFIBVTAC, data[1]);
@@ -498,15 +504,28 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         if (ecgParam.getCalcLead() != ECG_LEAD_NR)
         {
             ecgParam.updateHR(hrValue);
-            if (o2Param.getApneaAwakeStatus())
+            O2ParamInterface *o2Param = O2ParamInterface::getO2ParamInterface();
+            if (o2Param)
             {
-                int apneaStimulationHR = 100;
-                currentConfig.getNumValue("ApneaStimulation|HR", apneaStimulationHR);
-                if (hrValue < apneaStimulationHR && hrValue != InvData()
-                        && runningStatus.getShakeStatus() != SHAKING)
+                if (o2Param->getApneaAwakeStatus())
                 {
-                    runningStatus.setShakeStatus(SHAKING);
-                    o2Param.sendMotorControl(true);
+                    int apneaStimulationHR = 100;
+                    int motorSta = false;
+                    currentConfig.getNumValue("ApneaStimulation|HR", apneaStimulationHR);
+                    if (hrValue < apneaStimulationHR && hrValue != InvData())
+                    {
+                        motorSta = true;
+                        if (runningStatus.getShakeStatus() != SHAKING)
+                        {
+                            runningStatus.setShakeStatus(SHAKING);
+                            o2Param->sendMotorControl(true);
+                        }
+                    }
+                    else
+                    {
+                        motorSta = false;
+                    }
+                    o2Param->setMotorRelationParam(APNEASTIMULATION_FACTOR_HR, motorSta);
                 }
             }
         }

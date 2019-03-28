@@ -25,7 +25,8 @@ class O2ParamPrivate
 public:
     O2ParamPrivate() : provider(NULL), trendWidget(NULL),
         o2Value(InvData()), calibConcentration(InvData()),
-        calibResult(false), calibReply(false), motorTimerID(-1)
+        calibResult(false), calibReply(false), motorTimerID(-1),
+        motorSta(0)
     {}
     O2ProviderIFace *provider;
     O2TrendWidget *trendWidget;
@@ -34,6 +35,7 @@ public:
     int calibResult;
     int calibReply;
     int motorTimerID;
+    int motorSta;
 };
 
 O2Param &O2Param::getInstance()
@@ -42,6 +44,11 @@ O2Param &O2Param::getInstance()
     if (instance == NULL)
     {
         instance = new O2Param();
+        O2ParamInterface *old = registerO2ParamInterface(instance);
+        if (old)
+        {
+            delete old;
+        }
     }
     return *instance;
 }
@@ -245,20 +252,28 @@ bool O2Param::getCalibrationResult()
     return d_ptr->calibResult;
 }
 
+void O2Param::setMotorRelationParam(ApneaStimulationFactor factor, bool sta)
+{
+    if (sta)
+    {
+        d_ptr->motorSta |= 1 << factor;
+    }
+    else
+    {
+        d_ptr->motorSta &= ~(1 << factor);
+    }
+}
+
+int O2Param::getMotorRelationParam()
+{
+    return d_ptr->motorSta;
+}
+
 void O2Param::timerEvent(QTimerEvent *ev)
 {
     if (ev->timerId() == d_ptr->motorTimerID)
     {
-        int resp = respDupParam.getRR();
-        int hr = ecgDupParam.getHR();
-        int spo2 = spo2Param.getSPO2();
-        int hrApneaStimulation = 100;
-        int spo2ApneaStimulation = 85;
-        currentConfig.getNumValue("ApneaStimulation|HR", hrApneaStimulation);
-        currentConfig.getNumValue("ApneaStimulation|SPO2", spo2ApneaStimulation);
-        if ((resp == InvData() || resp > 7)
-                && (hr == InvData() || hr > hrApneaStimulation)
-                && (spo2 == InvData() || spo2 > spo2ApneaStimulation))
+        if (!getMotorRelationParam())
         {
             sendMotorControl(false);
             runningStatus.setShakeStatus(SHAKE_ON);

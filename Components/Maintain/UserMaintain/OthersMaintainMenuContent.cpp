@@ -119,8 +119,9 @@ void OthersMaintainMenuContentPrivate::loadOptions()
     mode = respParam.getSweepMode();
     combos[ITEM_CBO_RESP_WAVE_MODE]->setCurrentIndex(mode);
 
-    systemConfig.getNumValue("PrimaryCfg|O2|ApneaAwake", mode);
-    combos[ITEM_CBO_APNEA_AWAKE]->setCurrentIndex(mode);
+    bool sta = false;
+    systemConfig.getNumValue("PrimaryCfg|O2|ApneaAwake", sta);
+    combos[ITEM_CBO_APNEA_AWAKE]->setCurrentIndex(sta);
 }
 
 OthersMaintainMenuContent::OthersMaintainMenuContent()

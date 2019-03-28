@@ -584,6 +584,7 @@ SOURCES +=                                                                      
     Params/O2Param/O2Widgets/ApneaStimulationMenuContent.cpp                    \
     Params/O2Param/O2Param.cpp                                                  \
     Params/O2Param/O2Alarm.cpp                                                  \
+    Params/O2Param/O2ParamInterface.cpp                                         \
 #################################################################################
     Providers/Provider.cpp                                                      \
     Providers/BLMProvider.cpp                                                   \
@@ -1140,6 +1141,7 @@ HEADERS +=                                                                      
     Params/O2Param/O2Alarm.h                                                    \
     Params/O2Param/O2Define.h                                                   \
     Params/O2Param/O2Symbol.h                                                   \
+    Params/O2Param/O2ParamInterface.h                                           \
 #################################################################################
     Providers/Provider.h                                                        \
     Providers/BLMProvider.h                                                     \

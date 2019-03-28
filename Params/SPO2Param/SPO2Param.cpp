@@ -25,7 +25,7 @@
 #include "OxyCRGSPO2TrendWidget.h"
 #include "NIBPParam.h"
 #include "TimeDate.h"
-#include "O2Param.h"
+#include "O2ParamInterface.h"
 #include "RunningStatusBar.h"
 
 SPO2Param *SPO2Param::_selfObj = NULL;
@@ -366,15 +366,28 @@ void SPO2Param::setSPO2(short spo2Value)
     _spo2Value = spo2Value;
 
     // 窒息唤醒
-    if (o2Param.getApneaAwakeStatus())
+    O2ParamInterface *o2Param = O2ParamInterface::getO2ParamInterface();
+    if (o2Param)
     {
-        int apneaStimulationSPO2 = 85;
-        currentConfig.getNumValue("ApneaStimulation|SPO2", apneaStimulationSPO2);
-        if (_spo2Value < apneaStimulationSPO2 && _spo2Value != InvData()
-                && runningStatus.getShakeStatus() != SHAKING)
+        if (o2Param->getApneaAwakeStatus())
         {
-            runningStatus.setShakeStatus(SHAKING);
-            o2Param.sendMotorControl(true);
+            int apneaStimulationSPO2 = 85;
+            int motorSta = false;
+            currentConfig.getNumValue("ApneaStimulation|SPO2", apneaStimulationSPO2);
+            if (_spo2Value < apneaStimulationSPO2 && _spo2Value != InvData())
+            {
+                motorSta = true;
+                if (runningStatus.getShakeStatus() != SHAKING)
+                {
+                    runningStatus.setShakeStatus(SHAKING);
+                    o2Param->sendMotorControl(true);
+                }
+            }
+            else
+            {
+                motorSta = false;
+            }
+            o2Param->setMotorRelationParam(APNEASTIMULATION_FACTOR_SPO2, motorSta);
         }
     }
 
