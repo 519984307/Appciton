@@ -171,6 +171,17 @@ void PowerMangerPrivate::monitorRun()
                 curVolume = powerList.at(i);
             }
         }
+        shutBattery = false;
+        lowBattery = false;
+        if (curVolume == BAT_VOLUME_0)
+        {
+            shutBattery = true;
+            lowBattery = true;
+        }
+        else if (curVolume == BAT_VOLUME_1)
+        {
+            lowBattery = true;
+        }
 
         batteryBarWidget.setIcon(curVolume);
         if (shutBattery)
@@ -218,22 +229,21 @@ BatteryPowerLevel PowerMangerPrivate::getCurrentVolume()
 {
     short batteryADCVoltage = 0;          // 记录ADC电压
 
+    if (adcValue < 500)
+    {
+        return BAT_VOLUME_NONE;
+    }
     batteryADCVoltage = adcValue;
 
     BatteryPowerLevel powerLevel = BAT_VOLUME_0;
-    lowBattery = false;
-    shutBattery = false;
     if (batteryADCVoltage < BAT_LEVEL_0)
     {
         // over low
         powerLevel = BAT_VOLUME_0;
-        lowBattery = true;
-        shutBattery = true;
     }
     else if (batteryADCVoltage >= BAT_LEVEL_0 && batteryADCVoltage < BAT_LEVEL_1)
     {
         powerLevel = BAT_VOLUME_1;
-        lowBattery = true;
     }
     else if (batteryADCVoltage >= BAT_LEVEL_1 && batteryADCVoltage < BAT_LEVEL_2)
     {
