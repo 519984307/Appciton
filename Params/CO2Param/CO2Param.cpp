@@ -25,6 +25,7 @@
 #include "ComboListPopup.h"
 #include "LayoutManager.h"
 #include "OxyCRGCO2WaveWidget.h"
+#include "O2ParamInterface.h"
 
 CO2Param *CO2Param::_selfObj = NULL;
 
@@ -930,6 +931,21 @@ void CO2Param::updateSubParamLimit(SubParamID id)
     if (id == SUB_PARAM_ETCO2)
     {
         d_ptr->trendWidget->updateLimit();
+    }
+}
+
+void CO2Param::setRespApneaStimulation(bool sta)
+{
+    bool co2ApneaStimulation;
+    currentConfig.getNumValue("ApneaStimulation|CO2", co2ApneaStimulation);
+    O2ParamInterface *o2Param = O2ParamInterface::getO2ParamInterface();
+    if (co2ApneaStimulation && o2Param)
+    {
+        o2Param->setVibrationReason(APNEASTIMULATION_REASON_RESP, sta);
+    }
+    else
+    {
+        o2Param->setVibrationReason(APNEASTIMULATION_REASON_RESP, false);
     }
 }
 

@@ -188,7 +188,9 @@ static void _initComponents(void)
     // running status
     runningStatus.setPacerStatus(patientManager.getPacermaker());
     runningStatus.setNightModeStatus(nightModeManager.nightMode());
+#ifdef ENABLE_O2_APNEASTIMULATION
     runningStatus.setShakeStatus(static_cast<ShakeStatus>(o2Param.getApneaAwakeStatus()));
+#endif
 #ifdef Q_WS_QWS
     if (systemManager.isSupport(CONFIG_TOUCH))
     {
@@ -529,6 +531,7 @@ static void _initProviderParam(void)
         layoutManager.addLayoutWidget(tempTrendWidget, LAYOUT_NODE_PARAM_TEMP);
     }
 
+#ifdef ENABLE_O2_APNEASTIMULATION
     if (systemManager.isSupport(CONFIG_O2))
     {
          paramManager.addProvider(*new NeonateProvider());
@@ -539,6 +542,7 @@ static void _initProviderParam(void)
          o2Param.setTrendWidget(o2TrendWidget);
          layoutManager.addLayoutWidget(o2TrendWidget, LAYOUT_NODE_PARAM_OXYGEN);
     }
+#endif
 
     // short trend container
     ShortTrendContainer *trendContainer = new ShortTrendContainer;

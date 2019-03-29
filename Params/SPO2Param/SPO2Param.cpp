@@ -25,6 +25,8 @@
 #include "OxyCRGSPO2TrendWidget.h"
 #include "NIBPParam.h"
 #include "TimeDate.h"
+#include "O2ParamInterface.h"
+#include "RunningStatusBar.h"
 
 SPO2Param *SPO2Param::_selfObj = NULL;
 
@@ -362,6 +364,27 @@ void SPO2Param::setSPO2(short spo2Value)
         return;
     }
     _spo2Value = spo2Value;
+
+#ifdef ENABLE_O2_APNEASTIMULATION
+    // 窒息唤醒
+    O2ParamInterface *o2Param = O2ParamInterface::getO2ParamInterface();
+    if (o2Param)
+    {
+        int apneaStimulationSPO2 = 85;
+        int motorSta = false;
+        currentConfig.getNumValue("ApneaStimulation|SPO2", apneaStimulationSPO2);
+        if (_spo2Value < apneaStimulationSPO2 && _spo2Value != InvData())
+        {
+            motorSta = true;
+        }
+        else
+        {
+            motorSta = false;
+        }
+        o2Param->setVibrationReason(APNEASTIMULATION_REASON_SPO2, motorSta);
+    }
+#endif
+
     if (NULL != _trendWidget)
     {
         _trendWidget->setSPO2Value(_spo2Value);
