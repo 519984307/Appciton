@@ -518,7 +518,7 @@ void SystemManager::enableBrightness(BrightnessLevel br)
     machineConfig.getNumValue("ScreenTypeSelect", index);
     if (static_cast<ScreenType>(index) == INDUSTRIAL_SCRENN)
     {
-        char tempLightValue[BRT_LEVEL_NR] = {1, 15, 21, 26, 31, 36, 41, 47, 52, 64};
+        char tempLightValue[BRT_LEVEL_NR] = {1, 15, 25, 38, 46, 54, 62, 72, 85, 100};
         lightValue = reinterpret_cast<char*>(&tempLightValue);
     }
     else
