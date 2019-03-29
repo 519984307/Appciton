@@ -52,7 +52,7 @@ void BatteryBarWidget::setFillColor(const QColor &color)
 /**************************************************************************************************
  * 设置剩余时间参数
  *************************************************************************************************/
-void BatteryBarWidget::setTimeValue(int time)
+void BatteryBarWidget::setTimeValue(BatteryRemainTime time)
 {
     _batteryIconWidget->setTimeValue(time);
 }
@@ -87,21 +87,21 @@ void BatteryBarWidget::setIcon(BatteryPowerLevel level)
         _batteryIconWidget->setVolume(BAT_VOLUME_0);
     }
 
-    _batteryIconWidget->setTimeValue(-2);
+    _batteryIconWidget->setTimeValue(BAT_REMAIN_TIME_NULL);
     _batteryIconWidget->setFillColor(QColor(0, 128, 0));
 }
 
 void BatteryBarWidget::setIconFull()
 {
     _batteryIconWidget->setVolume(BAT_VOLUME_5);
-    _batteryIconWidget->setTimeValue(-2);
+    _batteryIconWidget->setTimeValue(BAT_REMAIN_TIME_NULL);
     _batteryIconWidget->setFillColor(QColor(0, 128, 0));
 }
 
 void BatteryBarWidget::setIconLow()
 {
     _batteryIconWidget->setVolume(BAT_VOLUME_1);
-    _batteryIconWidget->setTimeValue(-1);
+    _batteryIconWidget->setTimeValue(BAT_REMAIN_TIME_LOW);
     _batteryIconWidget->setFillColor(Qt::red);
 }
 

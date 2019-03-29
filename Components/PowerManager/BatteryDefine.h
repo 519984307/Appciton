@@ -64,6 +64,20 @@ enum BatteryLevelAdc
     BAT_LEVEL_5 = 3609
 };
 
+// 电池剩余时间
+enum BatteryRemainTime
+{
+    BAT_REMAIN_TIME_NULL = -2,
+    BAT_REMAIN_TIME_LOW,
+    BAT_REMAIN_TIME_LESS_THAN_30MIN,
+    BAT_REMAIN_TIME_30MIN,
+    BAT_REMAIN_TIME_60MIN,
+    BAT_REMAIN_TIME_90MIN,
+    BAT_REMAIN_TIME_120MIN,
+    BAT_REMAIN_TIME_150MIN,
+    BAT_REMAIN_TIME_180MIN
+};
+
 struct FixedBatMessage
 {
     unsigned char remainingCapacityAlarm[2];
