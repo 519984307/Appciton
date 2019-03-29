@@ -478,6 +478,13 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         {
             rr = InvData();
         }
+
+        // set invalid rr when it does not support RESP
+        if (!_isSupportRESP)
+        {
+            rr = InvData();
+        }
+
         respParam.setRR(rr);
         break;
     }
@@ -909,7 +916,7 @@ void E5Provider::disconnected(void)
         }
     }
 
-    if (systemManager.isSupport(CONFIG_RESP))
+    if (_isSupportRESP)
     {
         respOneShotAlarm.clear();
         respParam.setLeadoff(false);
@@ -944,7 +951,7 @@ void E5Provider::reconnected(void)
         }
     }
 
-    if (systemManager.isSupport(CONFIG_RESP))
+    if (_isSupportRESP)
     {
         respOneShotAlarm.clear();
         respParam.setLeadoff(false);
@@ -964,7 +971,7 @@ void E5Provider::reconnected(void)
  * 构造。
  *************************************************************************************************/
 E5Provider::E5Provider() : BLMProvider("BLM_E5"), ECGProviderIFace(), _waveSampleRate(WAVE_SAMPLE_RATE_250),
-    _isFristConnect(false)
+    _isFristConnect(false), _isSupportRESP(systemManager.isSupport(CONFIG_RESP))
 {
     UartAttrDesc portAttr(230400, 8, 'N', 1);
     initPort(portAttr);
