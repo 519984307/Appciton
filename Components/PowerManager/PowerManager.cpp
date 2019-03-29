@@ -14,7 +14,7 @@
 #include "WindowManager.h"
 #include <QTimer>
 
-#define TOW_MINUTE 1000 * 120
+#define TWO_MINUTE 1000 * 120
 #define POWER_LIST_MAX_COUNT 3
 
 PowerManger * PowerManger::_selfObj = NULL;
@@ -118,7 +118,7 @@ PowerManger::PowerManger()
     // 发送指令请求下位机上传电池状态
     systemBoardProvider.queryBatteryInfo();
     d_ptr->shutdownTimer = new QTimer();
-    d_ptr->shutdownTimer->setInterval(TOW_MINUTE);
+    d_ptr->shutdownTimer->setInterval(TWO_MINUTE);
     connect(d_ptr->shutdownTimer, SIGNAL(timeout()), this, SLOT(powerOff()));
     d_ptr->powerList.clear();
     for (int i = 0; i < POWER_LIST_MAX_COUNT; i++)
