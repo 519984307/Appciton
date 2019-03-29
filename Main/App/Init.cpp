@@ -188,7 +188,7 @@ static void _initComponents(void)
     // running status
     runningStatus.setPacerStatus(patientManager.getPacermaker());
     runningStatus.setNightModeStatus(nightModeManager.nightMode());
-#ifndef DISABLE_O2_APNEASTIMULATION
+#ifdef ENABLE_O2_APNEASTIMULATION
     runningStatus.setShakeStatus(static_cast<ShakeStatus>(o2Param.getApneaAwakeStatus()));
 #endif
 #ifdef Q_WS_QWS
@@ -531,7 +531,7 @@ static void _initProviderParam(void)
         layoutManager.addLayoutWidget(tempTrendWidget, LAYOUT_NODE_PARAM_TEMP);
     }
 
-#ifndef DISABLE_O2_APNEASTIMULATION
+#ifdef ENABLE_O2_APNEASTIMULATION
     if (systemManager.isSupport(CONFIG_O2))
     {
          paramManager.addProvider(*new NeonateProvider());

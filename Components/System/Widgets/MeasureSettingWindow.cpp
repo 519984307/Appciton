@@ -62,7 +62,7 @@ MeasureSettingWindow *MeasureSettingWindow::getInstance()
         {
             instance->addMenuContent(new CO2MenuContent);
         }
-#ifndef DISABLE_O2_APNEASTIMULATION
+#ifdef ENABLE_O2_APNEASTIMULATION
         if (systemManager.isSupport(CONFIG_O2))
         {
             instance->addMenuContent(new O2MenuContent);

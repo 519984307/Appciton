@@ -298,6 +298,20 @@ void RESPDupParam::updateRRSource()
     }
 }
 
+void RESPDupParam::setRespApneaStimulation(bool sta)
+{
+    bool respApneaStimulation = false;
+    currentConfig.getNumValue("ApneaStimulation|RESP", respApneaStimulation);
+    if (respApneaStimulation)
+    {
+        O2ParamInterface *o2Param = O2ParamInterface::getO2ParamInterface();
+        if (o2Param)
+        {
+            o2Param->setVibrationReason(APNEASTIMULATION_REASON_RESP, sta);
+        }
+    }
+}
+
 void RESPDupParam::onPaletteChanged(ParamID id)
 {
     if (id != PARAM_RESP || !systemManager.isSupport(CONFIG_RESP))
@@ -329,67 +343,39 @@ void RESPDupParam::handleBRRRValue()
         return;
     }
 
-#ifndef DISABLE_O2_APNEASTIMULATION
-    short value = _brValue;
     if (_isAutoBrSource)
     {
         if (_brValue != InvData())  // set br value firstly when the br value is valid.
         {
-            value = _brValue;
             _trendWidget->setRRValue(_brValue, false, true);
         }
         else if (_rrValue != InvData())  // set rr value when the rr value is valid.
         {
-            value = _rrValue;
             _trendWidget->setRRValue(_rrValue, true, true);
         }
         else  // set br value when the rr value is invalid.
         {
-            value = _brValue;
             _trendWidget->setRRValue(_brValue, false, true);
         }
     }
     else if (_manualBrSourceType == BR_SOURCE_CO2)
     {
-        value = _brValue;
         _trendWidget->setRRValue(_brValue, false);
     }
     else if (_manualBrSourceType == BR_SOURCE_ECG)
     {
-        value = _rrValue;
         _trendWidget->setRRValue(_rrValue, true);
     }
+
+#ifdef ENABLE_O2_APNEASTIMULATION
     O2ParamInterface *o2Param = O2ParamInterface::getO2ParamInterface();
     if (o2Param)
     {
-        if (value > 7)
+        if ((_rrValue > 7 || _rrValue == InvData())
+                && (_brValue > 7 || _brValue == InvData()))
         {
-            o2Param->setMotorRelationParam(APNEASTIMULATION_FACTOR_RESP, false);
+            o2Param->setVibrationReason(APNEASTIMULATION_REASON_RESP, false);
         }
-    }
-#else
-    if (_isAutoBrSource)
-    {
-        if (_brValue != InvData())  // set br value firstly when the br value is valid.
-        {
-            _trendWidget->setRRValue(_brValue, false, true);
-        }
-        else if (_rrValue != InvData())  // set rr value when the rr value is valid.
-        {
-            _trendWidget->setRRValue(_rrValue, true, true);
-        }
-        else  // set br value when the rr value is invalid.
-        {
-            _trendWidget->setRRValue(_brValue, false, true);
-        }
-    }
-    else if (_manualBrSourceType == BR_SOURCE_CO2)
-    {
-        _trendWidget->setRRValue(_brValue, false);
-    }
-    else if (_manualBrSourceType == BR_SOURCE_ECG)
-    {
-        _trendWidget->setRRValue(_rrValue, true);
     }
 #endif
 }

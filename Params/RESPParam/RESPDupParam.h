@@ -115,6 +115,8 @@ public:
     void setRRSource(BRRRSourceType source);
     void updateRRSource();
 
+    // resp窒息报警状态
+    void setRespApneaStimulation(bool sta);
 signals:
     /**
      * @brief brSourceStatusUpdate  br来源状态更新

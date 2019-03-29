@@ -365,31 +365,23 @@ void SPO2Param::setSPO2(short spo2Value)
     }
     _spo2Value = spo2Value;
 
-#ifndef DISABLE_O2_APNEASTIMULATION
+#ifdef ENABLE_O2_APNEASTIMULATION
     // 窒息唤醒
     O2ParamInterface *o2Param = O2ParamInterface::getO2ParamInterface();
     if (o2Param)
     {
-        if (o2Param->getApneaAwakeStatus())
+        int apneaStimulationSPO2 = 85;
+        int motorSta = false;
+        currentConfig.getNumValue("ApneaStimulation|SPO2", apneaStimulationSPO2);
+        if (_spo2Value < apneaStimulationSPO2 && _spo2Value != InvData())
         {
-            int apneaStimulationSPO2 = 85;
-            int motorSta = false;
-            currentConfig.getNumValue("ApneaStimulation|SPO2", apneaStimulationSPO2);
-            if (_spo2Value < apneaStimulationSPO2 && _spo2Value != InvData())
-            {
-                motorSta = true;
-                if (runningStatus.getShakeStatus() != SHAKING)
-                {
-                    runningStatus.setShakeStatus(SHAKING);
-                    o2Param->sendMotorControl(true);
-                }
-            }
-            else
-            {
-                motorSta = false;
-            }
-            o2Param->setMotorRelationParam(APNEASTIMULATION_FACTOR_SPO2, motorSta);
+            motorSta = true;
         }
+        else
+        {
+            motorSta = false;
+        }
+        o2Param->setVibrationReason(APNEASTIMULATION_REASON_SPO2, motorSta);
     }
 #endif
 

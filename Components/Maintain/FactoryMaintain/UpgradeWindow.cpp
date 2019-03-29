@@ -78,11 +78,13 @@ UpgradeWindow::UpgradeWindow()
             trs(UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_T5)));
     }
 
+#ifdef ENABLE_O2_APNEASTIMULATION
     if (systemManager.isSupport(CONFIG_O2))
     {
         d_ptr->upgradeModuleCbo->addItem(
             UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_NEONATE));
     }
+#endif
 
     d_ptr->upgradeModuleCbo->addItem(
         trs(UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_PRT48)));

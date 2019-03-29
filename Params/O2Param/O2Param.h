@@ -74,9 +74,14 @@ public:
      * @return
      */
     bool getApneaAwakeStatus();
+
+    /**
+     * @brief newCreatPatient
+     */
+    void updateApneaStimulationStatus();
 public:
     // 马达控制
-    void sendMotorControl(int control, bool selfTest = false);
+    void setVibration(bool vibrate);
 
     // 震动强度设置
     void vibrationIntensityControl(int intensity);
@@ -93,12 +98,8 @@ public:
     // 获取校准结果
     bool getCalibrationResult();
 
-    // 设置/获取唤醒器关联参数状态
-    void setMotorRelationParam(ApneaStimulationFactor factor, bool sta);
-    int getMotorRelationParam();
-
-protected:
-    void timerEvent(QTimerEvent *ev);
+    // 设置唤醒器关联参数状态
+    void setVibrationReason(ApneaStimulationReason reason, bool sta);
 
 private:
     O2Param();

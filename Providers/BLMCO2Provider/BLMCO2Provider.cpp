@@ -17,8 +17,6 @@
 #include "SystemManager.h"
 #include "PMessageBox.h"
 #include <QTimer>
-#include "O2ParamInterface.h"
-#include "RunningStatusBar.h"
 #include "ConfigManager.h"
 
 enum  // 数据包类型。
@@ -93,46 +91,20 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
     _status.sensorErr    = ((sts & BIT6) == BIT6) ? true : false;
     _status.o2Replace    = ((sts & BIT3) == BIT3) ? true : false;
 
-#ifndef DISABLE_O2_APNEASTIMULATION
-    bool co2ApneaStimulation;
-    currentConfig.getNumValue("ApneaStimulation|CO2", co2ApneaStimulation);
-    O2ParamInterface *o2Param = O2ParamInterface::getO2ParamInterface();
     if ((co2Param.getAwRRSwitch() == 1) && (co2Param.getApneaTime() != APNEA_ALARM_TIME_OFF))
     {
-        if (co2ApneaStimulation && o2Param)
-        {
-            if (o2Param->getApneaAwakeStatus())
-            {
-                if (_status.noBreath && runningStatus.getShakeStatus() != SHAKING)
-                {
-                    runningStatus.setShakeStatus(SHAKING);
-                    o2Param->sendMotorControl(true);
-                }
-            }
-        }
-        co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_APNEA, _status.noBreath);
-    }
-    else
-    {
-        if (co2ApneaStimulation && o2Param)
-        {
-            if (o2Param->getApneaAwakeStatus())
-            {
-                runningStatus.setShakeStatus(SHAKE_ON);
-            }
-        }
-        co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_APNEA, false);
-    }
-#else
-    if ((co2Param.getAwRRSwitch() == 1) && (co2Param.getApneaTime() != APNEA_ALARM_TIME_OFF))
-    {
-        co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_APNEA, _status.noBreath);
-    }
-    else
-    {
-        co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_APNEA, false);
-    }
+#ifdef ENABLE_O2_APNEASTIMULATION
+        co2Param.setRespApneaStimulation(_status.noBreath);
 #endif
+        co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_APNEA, _status.noBreath);
+    }
+    else
+    {
+#ifdef ENABLE_O2_APNEASTIMULATION
+        co2Param.setRespApneaStimulation(false);
+#endif
+        co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_APNEA, false);
+    }
 
     // 波形数据，每秒更新20次。
     int waveValue = packet[4];

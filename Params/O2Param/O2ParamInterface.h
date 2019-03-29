@@ -10,11 +10,12 @@
 
 #pragma once
 
-enum ApneaStimulationFactor
+enum ApneaStimulationReason
 {
-    APNEASTIMULATION_FACTOR_RESP,
-    APNEASTIMULATION_FACTOR_HR,
-    APNEASTIMULATION_FACTOR_SPO2,
+    APNEASTIMULATION_REASON_RESP,
+    APNEASTIMULATION_REASON_HR,
+    APNEASTIMULATION_REASON_SPO2,
+    APNEASTIMULATION_REASON_SELFTEST
 };
 
 class O2ParamInterface
@@ -32,13 +33,7 @@ public:
      * @param factor
      * @param sta
      */
-    virtual void setMotorRelationParam(ApneaStimulationFactor factor, bool sta) = 0;
-
-    /**
-     * @brief getMotorRelationParam
-     * @return
-     */
-    virtual int getMotorRelationParam() = 0;
+    virtual void setVibrationReason(ApneaStimulationReason reason, bool sta) = 0;
 
     /**
      * @brief setApneaAwakeStatus set apnea awake status
@@ -47,15 +42,14 @@ public:
     virtual void setApneaAwakeStatus(bool sta) = 0;
 
     /**
-     * @brief getApneaAwakeStatus get apnea awake status
-     * @return
-     */
-    virtual bool getApneaAwakeStatus() = 0;
-
-    /**
      * @brief sendMotorControl
      * @param control
      * @param selfTest
      */
-     virtual void sendMotorControl(int control, bool selfTest = false) = 0;
+    virtual void setVibration(bool control) = 0;
+
+    /**
+     * @brief updateApneaStimulationStatus
+     */
+    virtual void updateApneaStimulationStatus() = 0;
 };

@@ -25,6 +25,7 @@ public:
     enum MenuItem
     {
         ITEM_CBO_SELFTEST,
+        ITEM_SPB_VIBRATEINTENSITY,
         ITEM_CBO_RESP,
         ITEM_CBO_CO2,
         ITEM_SPB_HR,
@@ -80,6 +81,19 @@ void ApneaStimulationMenuContent::layoutExec()
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     glayout->addWidget(combo, row++, 1);
     d_ptr->combos.insert(ApneaStimulationMenuContentPrivate::ITEM_CBO_SELFTEST, combo);
+
+    // 震动强度
+    label = new QLabel(trs("VibrationIntensity"));
+    glayout->addWidget(label, row, 0);
+    spin = new SpinBox();
+    spin->setRange(50, 100);
+    spin->setStep(1);
+    spin->setValue(50);
+    itemID = static_cast<int>(ApneaStimulationMenuContentPrivate::ITEM_SPB_VIBRATEINTENSITY);
+    spin->setProperty("Item", qVariantFromValue(itemID));
+    connect(spin, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxValueChanged(int, int)));
+    glayout->addWidget(spin, row++, 1);
+    d_ptr->spinbos.insert(ApneaStimulationMenuContentPrivate::ITEM_SPB_VIBRATEINTENSITY, spin);
 
     // resp
     label = new QLabel("RESP");
@@ -152,22 +166,7 @@ void ApneaStimulationMenuContent::onComboBoxIndexChanged(int index)
         {
         case ApneaStimulationMenuContentPrivate::ITEM_CBO_SELFTEST:
             currentConfig.setNumValue("ApneaStimulation|SelfTest", index);
-            if (index)
-            {
-                runningStatus.setShakeStatus(SHAKING);
-            }
-            else
-            {
-                if (o2Param.getApneaAwakeStatus())
-                {
-                    runningStatus.setShakeStatus(SHAKE_ON);
-                }
-                else
-                {
-                    runningStatus.setShakeStatus(SHAKE_OFF);
-                }
-            }
-            o2Param.sendMotorControl(index, true);
+            o2Param.setVibrationReason(APNEASTIMULATION_REASON_SELFTEST, index);
             break;
         case ApneaStimulationMenuContentPrivate::ITEM_CBO_RESP:
             currentConfig.setNumValue("ApneaStimulation|RESP", index);
@@ -196,6 +195,9 @@ void ApneaStimulationMenuContent::onSpinBoxValueChanged(int value, int scale)
             break;
         case ApneaStimulationMenuContentPrivate::ITEM_SPB_SPO2:
             currentConfig.setNumValue("ApneaStimulation|SPO2", value);
+            break;
+        case ApneaStimulationMenuContentPrivate::ITEM_SPB_VIBRATEINTENSITY:
+            o2Param.vibrationIntensityControl(value);
             break;
         default:
             break;
