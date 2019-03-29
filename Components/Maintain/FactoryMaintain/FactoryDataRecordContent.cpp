@@ -24,6 +24,7 @@ public:
         ITEM_CBO_ECG = 0,
         ITEM_CBO_SPO2,
         ITEM_CBO_NIBP,
+        ITEM_CBO_CO2,
     };
 
     FactoryDataRecordContentPrivate();
@@ -71,6 +72,20 @@ void FactoryDataRecordContentPrivate::loadOptions()
     {
         combos[ITEM_CBO_NIBP]->hide();
         labs[ITEM_CBO_NIBP]->hide();
+    }
+
+    machineConfig.getStrValue("CO2", str);
+    if (systemManager.isSupport(CONFIG_CO2) && str == "BLM_CO2")
+    {
+        machineConfig.getNumValue("Record|CO2", value);
+        combos[ITEM_CBO_CO2]->setCurrentIndex(value);
+        combos[ITEM_CBO_CO2]->show();
+        labs[ITEM_CBO_CO2]->show();
+    }
+    else
+    {
+        combos[ITEM_CBO_CO2]->hide();
+        labs[ITEM_CBO_CO2]->hide();
     }
 }
 
@@ -149,6 +164,22 @@ void FactoryDataRecordContent::layoutExec()
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
+    label = new QLabel("CO2");
+    d_ptr->labs.insert(FactoryDataRecordContentPrivate
+                       ::ITEM_CBO_CO2, label);
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    combo = new ComboBox;
+    combo->addItems(QStringList()
+                    << trs("Off")
+                    << trs("On")
+                   );
+    layout->addWidget(combo, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(FactoryDataRecordContentPrivate
+                         ::ITEM_CBO_CO2, combo);
+    itemId = FactoryDataRecordContentPrivate::ITEM_CBO_CO2;
+    combo->setProperty("Item", qVariantFromValue(itemId));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+
     layout->setRowStretch(d_ptr->combos.count(), 1);
 }
 
@@ -171,6 +202,10 @@ void FactoryDataRecordContent::onComboBoxIndexChanged(int index)
     case FactoryDataRecordContentPrivate::ITEM_CBO_NIBP:
         str = "NIBP";
         rawDataCollector.setCollectStatus(RawDataCollector::NIBP_DATA, index);
+        break;
+    case FactoryDataRecordContentPrivate::ITEM_CBO_CO2:
+        str = "CO2";
+        rawDataCollector.setCollectStatus(RawDataCollector::CO2_DATA, index);
         break;
     }
     machineConfig.setNumValue(QString("Record|%1").arg(str), index);
