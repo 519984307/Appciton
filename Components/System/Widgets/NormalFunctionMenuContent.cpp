@@ -155,7 +155,7 @@ NormalFunctionMenuContent::NormalFunctionMenuContent()
                   trs("NormalFunctionMenuDesc")),
       d_ptr(new NormalFunctionMenuContentPrivate)
 {
-    connect(&nightModeManager, SIGNAL(nightModeHandle(bool)), this, SLOT(nightModeHandle(bool)));
+    connect(&nightModeManager, SIGNAL(nightModeChanged(bool)), this, SLOT(nightModeHandle(bool)));
 }
 
 NormalFunctionMenuContent::~NormalFunctionMenuContent()

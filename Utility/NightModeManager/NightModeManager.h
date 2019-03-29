@@ -34,7 +34,7 @@ public:
     bool nightMode();
 
 signals:
-    void nightModeHandle(bool);
+    void nightModeChanged(bool);
 
 private:
     NightModeManager();

@@ -150,7 +150,7 @@ void NightModeManager::setNightMode(bool nightMode)
     soundManager->setVolume(SoundManagerInterface::SOUND_TYPE_NIBP_COMPLETE,
                            static_cast<SoundManagerInterface::VolumeLevel>(nibpCompleteTone));
 
-    emit nightModeHandle(d_ptr->isNightMode);
+    emit nightModeChanged(d_ptr->isNightMode);
 }
 
 bool NightModeManager::nightMode()
