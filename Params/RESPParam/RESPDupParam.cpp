@@ -18,6 +18,8 @@
 #include "Debug.h"
 #include "RESPParam.h"
 #include "SystemManager.h"
+#include "O2ParamInterface.h"
+#include "RunningStatusBar.h"
 
 RESPDupParam *RESPDupParam::_selfObj = NULL;
 
@@ -296,6 +298,20 @@ void RESPDupParam::updateRRSource()
     }
 }
 
+void RESPDupParam::setRespApneaStimulation(bool sta)
+{
+    bool respApneaStimulation = false;
+    currentConfig.getNumValue("ApneaStimulation|RESP", respApneaStimulation);
+    if (respApneaStimulation)
+    {
+        O2ParamInterface *o2Param = O2ParamInterface::getO2ParamInterface();
+        if (o2Param)
+        {
+            o2Param->setVibrationReason(APNEASTIMULATION_REASON_RESP, sta);
+        }
+    }
+}
+
 void RESPDupParam::onPaletteChanged(ParamID id)
 {
     if (id != PARAM_RESP || !systemManager.isSupport(CONFIG_RESP))
@@ -326,6 +342,7 @@ void RESPDupParam::handleBRRRValue()
     {
         return;
     }
+
     if (_isAutoBrSource)
     {
         if (_brValue != InvData())  // set br value firstly when the br value is valid.
@@ -349,6 +366,18 @@ void RESPDupParam::handleBRRRValue()
     {
         _trendWidget->setRRValue(_rrValue, true);
     }
+
+#ifdef ENABLE_O2_APNEASTIMULATION
+    O2ParamInterface *o2Param = O2ParamInterface::getO2ParamInterface();
+    if (o2Param)
+    {
+        if ((_rrValue > 7 || _rrValue == InvData())
+                && (_brValue > 7 || _brValue == InvData()))
+        {
+            o2Param->setVibrationReason(APNEASTIMULATION_REASON_RESP, false);
+        }
+    }
+#endif
 }
 
 /**************************************************************************************************

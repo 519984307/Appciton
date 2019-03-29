@@ -884,6 +884,9 @@
             <AGModule>0</AGModule>
             <SweepSpeed>1</SweepSpeed>
         </AG>
+	<O2>
+            <ApneaAwake>1</ApneaAwake>
+        </O2>
         <UILayout>
             <!-- 控件的顺序与上面的布局节点对应 -->
             <MainLayout direction="vertical" margin="0" spacing="0">
