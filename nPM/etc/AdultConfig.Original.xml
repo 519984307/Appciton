@@ -108,7 +108,7 @@
     <NIBP>
         <StatFunction>1</StatFunction>
         <AutomaticRetry>0</AutomaticRetry>
-        <InitialCuffInflation>4</InitialCuffInflation>
+        <InitialCuffInflation>8</InitialCuffInflation>
 	<CompleteTone>0</CompleteTone>
     </NIBP>
     <SPO2>
