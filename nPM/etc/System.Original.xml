@@ -892,7 +892,7 @@
             <MainLayout direction="vertical" margin="0" spacing="0">
                 <LayoutItem height="45" direction="horizontal" spacing="0" bgcolor="#1e1e1e">
                     <LayoutItem stretch="1">PatientInfoWidget</LayoutItem>
-                    <LayoutItem width="128">RunningStatusBar</LayoutItem>
+                    <LayoutItem width="96">RunningStatusBar</LayoutItem>
                     <LayoutItem width="210">DateTimeWidget</LayoutItem>
                     <LayoutItem width="50">AlarmStatusWidget</LayoutItem>
                     <LayoutItem width="300">AlarmPhyInfoBarWidget</LayoutItem>
@@ -909,7 +909,8 @@
                 <Normal>
                     <LayoutRow>
                         <LayoutNode pos="0" span="4" editable="0">ECG1Wave</LayoutNode>
-                        <LayoutNode pos="4" span="2" editable="0">ECG</LayoutNode>
+                        <LayoutNode pos="4" span="1" editable="0">ECG</LayoutNode>
+                        <LayoutNode pos="5" span="1" editable="0"></LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
                         <LayoutNode pos="0" span="4" editable="0">ECG2Wave</LayoutNode>
@@ -922,7 +923,7 @@
                     <LayoutRow>
                         <LayoutNode pos="0" span="4" editable="0">RESPWave</LayoutNode>
                         <LayoutNode pos="4" span="1" editable="0">RESP</LayoutNode>
-                        <LayoutNode pos="5" span="1" editable="0">O2</LayoutNode>
+                        <LayoutNode pos="5" span="1" editable="0"></LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
                         <LayoutNode pos="0" span="4" editable="0">CO2Wave</LayoutNode>
@@ -935,7 +936,8 @@
                     <LayoutRow>
                         <LayoutNode pos="0" span="2" editable="0">NIBP</LayoutNode>
                         <LayoutNode pos="2" span="2" editable="0">NIBPList</LayoutNode>
-                        <LayoutNode pos="4" span="2" editable="0">TEMP</LayoutNode>
+                        <LayoutNode pos="4" span="1" editable="0">TEMP</LayoutNode>
+                        <LayoutNode pos="5" span="1" editable="0"></LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
                         <LayoutNode pos="0" span="2" editable="0"></LayoutNode>

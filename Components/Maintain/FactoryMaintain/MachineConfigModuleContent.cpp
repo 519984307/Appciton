@@ -39,7 +39,9 @@ public:
         ITEM_CBO_AG,
         ITEM_CBO_CO,
         ITEM_CBO_IBP,
+#ifdef ENABLE_O2_APNEASTIMULATION
         ITEM_CBO_O2,
+#endif
         ITEM_CBO_TEMP,
         ITEM_CBO_WIFI,
 #ifdef Q_WS_QWS
@@ -150,10 +152,12 @@ void MachineConfigModuleContentPrivte::loadOptions()
     combos[ITEM_CBO_IBP]->setCurrentIndex(index);
     itemChangedMap[ITEM_CBO_IBP] = index;
 
+#ifdef ENABLE_O2_APNEASTIMULATION
     index = 0;
     machineConfig.getNumValue("O2Enable", index);
     combos[ITEM_CBO_O2]->setCurrentIndex(index);
     itemChangedMap[ITEM_CBO_O2] = index;
+#endif
 
 #ifdef Q_WS_QWS
     index = 0;
@@ -365,6 +369,7 @@ void MachineConfigModuleContent::layoutExec()
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
+#ifdef ENABLE_O2_APNEASTIMULATION
     // O2 module
     label = new QLabel(trs("O2Module"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -379,6 +384,7 @@ void MachineConfigModuleContent::layoutExec()
     itemId = MachineConfigModuleContentPrivte::ITEM_CBO_O2;
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+#endif
 
     // temp module
     label = new QLabel(trs("TEMPModule"));
@@ -507,11 +513,13 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
             enablePath = "IBPEnable";
             break;
         }
+#ifdef ENABLE_O2_APNEASTIMULATION
         case MachineConfigModuleContentPrivte::ITEM_CBO_O2:
         {
             enablePath = "O2Enable";
             break;
         }
+#endif
         case MachineConfigModuleContentPrivte::ITEM_CBO_TEMP:
         {
             enablePath = "TEMPEnable";
