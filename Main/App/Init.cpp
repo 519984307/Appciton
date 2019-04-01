@@ -36,9 +36,8 @@ static void _initSystem(void)
     if (timeManager.getPowerOnSession() == POWER_ON_SESSION_NEW)
     {
         // currentConfig.load(curConfigName);
-
-        Config systemDefCfg(systemConfig.getCurConfigName());
-        systemConfig.setNodeValue("PrimaryCfg", systemDefCfg);
+        Config systemDefCfg(systemConfig.getDefaultFileName(systemConfig.getFileName()));
+        systemConfig.setNodeValue("PrimaryCfg|PatientInfo", systemDefCfg);
 
         ErrorLogItem *item = new ErrorLogItem();
         item->setName("Load default config");
