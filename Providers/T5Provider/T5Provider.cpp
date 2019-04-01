@@ -226,10 +226,12 @@ void T5Provider::_selfTest(unsigned char *packet, int len)
             switch (packet[i])
             {
             case ERRORCODE_CHANNEL1_NOT_CALIBRATION:
+                tempParam.setErrorDisable();
                 tempParam.setOneShotAlarm(TEMP_ONESHOT_ALARM_NOT_CALIBRATION_1, true);
                 errorStr += tempErrorCode[packet[i]];
                 break;
             case ERRORCODE_CHANNEL2_NOT_CALIBRATION:
+                tempParam.setErrorDisable();
                 tempParam.setOneShotAlarm(TEMP_ONESHOT_ALARM_NOT_CALIBRATION_2, true);
                 errorStr += tempErrorCode[packet[i]];
                 break;
