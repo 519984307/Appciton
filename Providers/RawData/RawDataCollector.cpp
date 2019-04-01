@@ -113,9 +113,9 @@ void RawDataCollectorPrivate::handleECGRawData(const unsigned char *data, int le
     else
     {
         Q_UNUSED(len)
-        Q_ASSERT(len == 45);
+        Q_ASSERT(len == 90);
         QTextStream stream(&content);
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 10; i++)
         {
             // 4 Byte IPACE
             unsigned int ipace = data[0] | (data[1] << 8) | (data[2] << 16) | (data[3] << 24);

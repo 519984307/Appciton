@@ -342,6 +342,12 @@ public: // 用于访问配置相关信息。
     void setFristConnect(void);
     bool getFristConnect(void);
 
+    /**
+     * @brief setRawDataOnOff set raw data
+     */
+    void setRawDataOnOff(bool sta);
+    bool getRawDataOnOff(void);
+
 signals:
     void calcLeadChanged();
 
