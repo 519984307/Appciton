@@ -219,7 +219,11 @@ void NIBPMonitorSafeWaitTimeState::handleNIBPEvent(NIBPEvent event, const unsign
             // 判断STAT倒计时是否在使用中
             if (nibpCountdownTime.isSTATMeasureTimeout())
             {
-                nibpCountdownTime.STATMeasureStart();  // 只测量5分钟。
+                NIBPMode mode = nibpParam.getSuperMeasurMode();
+                nibpParam.setSTATMeasure(false);
+                nibpParam.setMeasurMode(mode);
+                switchState(NIBP_MONITOR_STANDBY_STATE);
+                break;
             }
             switchState(NIBP_MONITOR_STARTING_STATE);
         }
