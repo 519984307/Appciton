@@ -25,6 +25,8 @@
 #include "AlarmLimitWindow.h"
 #include "ECGParam.h"
 #include "NightModeManager.h"
+#include "CCHDWindow.h"
+#include "PatientManager.h"
 
 class SPO2MenuContentPrivate
 {
@@ -41,7 +43,8 @@ public:
     };
 
     SPO2MenuContentPrivate()
-        : moduleType(MODULE_BLM_S5)
+        : cchdBtn(NULL),
+          moduleType(MODULE_BLM_S5)
     {}
 
     /**
@@ -54,6 +57,7 @@ public:
     void loadOptions();
 
     QMap<MenuItem, ComboBox *> combos;
+    Button *cchdBtn;
 
     SPO2ModuleType moduleType;
 };
@@ -112,6 +116,15 @@ void SPO2MenuContentPrivate::loadOptions()
     }
 
     combos[ITEM_CBO_NIBP_SAME_SIDE]->setCurrentIndex(spo2Param.isNibpSameSide());
+
+    if (patientManager.getType() != PATIENT_TYPE_NEO)
+    {
+        cchdBtn->setVisible(false);
+    }
+    else
+    {
+        cchdBtn->setVisible(true);
+    }
 
     setCboBlockSignalsStatus(false);
 }
@@ -274,6 +287,12 @@ void SPO2MenuContent::layoutExec()
     layout->addWidget(btn, d_ptr->combos.count(), 1);
     connect(btn, SIGNAL(released()), this, SLOT(onAlarmBtnReleased()));
 
+    // CCHD筛查
+    d_ptr->cchdBtn = new Button(trs("CCHDCheck"));
+    d_ptr->cchdBtn->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(d_ptr->cchdBtn, d_ptr->combos.count() + 1, 1);
+    connect(d_ptr->cchdBtn, SIGNAL(released()), this, SLOT(onCCHDCheckBtnReleased()));
+
     layout->setRowStretch(d_ptr->combos.count() + 1, 1);
 }
 
@@ -327,4 +346,10 @@ void SPO2MenuContent::onPopupListItemFocusChanged(int volume)
         soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT , static_cast<SoundManager::VolumeLevel>(volume));
         soundManager.heartBeatTone();
     }
+}
+
+void SPO2MenuContent::onCCHDCheckBtnReleased()
+{
+    CCHDWindow *win = new CCHDWindow();
+    win->exec();
 }

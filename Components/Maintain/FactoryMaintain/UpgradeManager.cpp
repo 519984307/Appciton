@@ -355,6 +355,8 @@ QString UpgradeManagerPrivate::getProviderName(UpgradeManager::UpgradeModuleType
         return "BLM_T5";
     case UpgradeManager::UPGRADE_MOD_PRT48:
         return "PRT48";
+    case UpgradeManager::UPGRADE_MOD_NEONATE:
+        return "NEONATE_O2";
     case UpgradeManager::UPGRADE_MOD_nPMBoard:
         return "SystemBoard";
     default:
@@ -612,6 +614,8 @@ QString UpgradeManager::getUpgradeModuleName(UpgradeManager::UpgradeModuleType t
         return "N5";
     case UPGRADE_MOD_T5:
         return "T5";
+    case UPGRADE_MOD_NEONATE:
+        return "Neonate";
     case UPGRADE_MOD_PRT48:
         return "PRT48";
     case UPGRADE_MOD_nPMBoard:

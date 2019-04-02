@@ -1378,7 +1378,7 @@ NIBPParam::NIBPParam()
       _reply(false), _result(false), _manometerPressure(InvData()), _isMaintain(false),
       _activityMachine(NULL)
 {
-    nibpCountdownTime.construction();
+    nibpCountdownTime.getInstance();
 
     connect(&patientManager, SIGNAL(signalPatientType(PatientType)),
             this, SLOT(_patientTypeChangeSlot(PatientType)));
@@ -1412,6 +1412,4 @@ NIBPParam::~NIBPParam()
         delete _btnTimer;
         _btnTimer = NULL;
     }
-
-    deleteNIBPCountdownTime();
 }

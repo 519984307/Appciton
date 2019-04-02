@@ -5,36 +5,28 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/11/14
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2019/3/26
  **/
 
 #pragma once
 #include "MenuContent.h"
 
-class O2MenuContentPrivate;
-class O2MenuContent : public MenuContent
+class ApneaStimulationMenuContentPrivate;
+class ApneaStimulationMenuContent : public MenuContent
 {
     Q_OBJECT
 public:
-    O2MenuContent();
-    ~O2MenuContent();
+    ApneaStimulationMenuContent();
+    ~ApneaStimulationMenuContent();
 
-    /**
-     * @brief layoutExec
-     */
     virtual void layoutExec();
 
-    /**
-     * @brief readyShow
-     */
     virtual void readyShow();
-
 private slots:
-    /**
-     * @brief onAlarmBtnReleased
-     */
-    void onAlarmBtnReleased(void);
+    void onComboBoxIndexChanged(int index);
+
+    void onSpinBoxValueChanged(int value, int scale);
 
 private:
-    O2MenuContentPrivate *const d_ptr;
+    ApneaStimulationMenuContentPrivate *const d_ptr;
 };
