@@ -29,7 +29,7 @@ public:
     bool addAlarmInfo(unsigned alarmTime, AlarmType alarmType,
                       AlarmPriority alarmPriority, const char *alarmMessage,
                       AlarmParamIFace *alarmSource, int alarmID, bool isRemoveAfterLatch = false,
-                      bool isRemoveLightAfterConfirm = false);
+                      bool isRemoveLightAfterConfirm = true);
     void delAlarmInfo(AlarmType alarmType, const char *alarmMessage);
 
     // 报警栓锁
