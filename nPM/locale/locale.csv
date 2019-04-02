@@ -1275,6 +1275,13 @@ ResistiveScreen,电阻屏,Resistive Screen
 CapacitiveScreen,电容屏,Capacitive Screen
 NurseCallingModule,护士呼叫设置模块,Nurse Calling Module
 NurseCallingSettingWindow,护士呼叫设置窗口,Nurse Calling Setting Window
+Continuous,连续,Continuous
+Pulse,脉冲,Pulse
+ContactType,触发方式,Contact Type
+NormallyClosed,常闭,Normally Closed
+NormallyOpen,常开,Normally Open
+AlarmLev,报警级别,Alarm Lev
+AlarmType,报警类型,Alarm Type
 AnalogOutputModule,模拟输出模块,Analog Output Module
 COModule,C.O.,C.O.
 PHASEIN,PHASEIN,PHASEIN
@@ -1397,7 +1404,7 @@ Protected,保护,Protected
 Unprotected,非保护,Unprotected
 ConfImpactItemSettings,受配置影响项设置,Configuration-influenced Settings
 ParaSwitch,参数开关,Parameters Switch
-NurseCallSetting,护士呼叫设置,Nurse Call Setting
+NurseCallSetup,护士呼叫设置,Nurse Call Setup
 Setting,设置,Setting
 RealtimePrintSegment,实时打印,Real Time Print
 NibpMeasurement,NIBP测量,NIBP Measurement

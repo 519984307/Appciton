@@ -452,7 +452,6 @@ SOURCES +=                                                                      
     Components/Maintain/Factory/Menu/FactoryTestMenuContent.cpp                 \
     Components/Maintain/UserMaintain/UserMaintainManager.cpp                    \
     Components/Maintain/UserMaintain/WifiMaintainMenu.cpp                       \
-    Components/Maintain/UserMaintain/NurseCallSettingWindow.cpp                 \
     Components/Maintain/UserMaintain/UserMaintainGeneralMenuContent.cpp         \
     Components/Maintain/UserMaintain/ModuleMaintainMenuContent.cpp              \
     Components/Maintain/UserMaintain/AlarmMaintainMenuContent.cpp               \
@@ -461,6 +460,7 @@ SOURCES +=                                                                      
     Components/Maintain/UserMaintain/WiredNetworkMaintainMenuContent.cpp        \
     Components/Maintain/UserMaintain/ErrorLogEntranceContent.cpp                \
     Components/Maintain/UserMaintain/DemoMenuContent.cpp                        \
+    Components/Maintain/UserMaintain/NurseCallSetWindow.cpp                     \
     Components/Maintain/FactoryMaintain/FactorySystemInfoMenuContent.cpp        \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.cpp              \
     Components/Maintain/FactoryMaintain/SoftWareVersionWindow.cpp               \
@@ -981,7 +981,6 @@ HEADERS +=                                                                      
     Components/Maintain/UserMaintain/AlarmMaintainSymbol.h                      \
     Components/Maintain/UserMaintain/AlarmMaintainDefine.h                      \
     Components/Maintain/UserMaintain/WifiMaintainMenu.h                         \
-    Components/Maintain/UserMaintain/NurseCallSettingWindow.h                   \
     Components/Maintain/UserMaintain/UserMaintainGeneralMenuContent.h           \
     Components/Maintain/UserMaintain/ModuleMaintainMenuContent.h                \
     Components/Maintain/UserMaintain/AlarmMaintainMenuContent.h                 \
@@ -990,6 +989,7 @@ HEADERS +=                                                                      
     Components/Maintain/UserMaintain/WiredNetworkMaintainMenuContent.h          \
     Components/Maintain/UserMaintain/ErrorLogEntranceContent.h                  \
     Components/Maintain/UserMaintain/DemoMenuContent.h                          \
+    Components/Maintain/UserMaintain/NurseCallSetWindow.h                       \
     Components/Maintain/FactoryMaintain/FactorySystemInfoMenuContent.h          \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.h                \
     Components/Maintain/FactoryMaintain/SoftWareVersionWindow.h                 \

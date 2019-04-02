@@ -105,13 +105,13 @@
         <SignalType>1</SignalType>
         <TriggerMode>1</TriggerMode>
         <AlarmLevel>
-            <High>false</High>
-            <Med>false</Med>
-            <Low>false</Low>
+            <High>0</High>
+            <Med>0</Med>
+            <Low>0</Low>
         </AlarmLevel>
         <AlarmType>
-            <Physiology>false</Physiology>
-            <Technology>false</Technology>
+            <Physiology>0</Physiology>
+            <Technology>0</Technology>
         </AlarmType>
     </Others>
     <WiredWork>

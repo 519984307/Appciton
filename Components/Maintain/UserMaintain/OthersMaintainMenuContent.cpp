@@ -18,7 +18,7 @@
 #include "IBPParam.h"
 #include "IMessageBox.h"
 #include "Button.h"
-#include "NurseCallSettingWindow.h"
+#include "NurseCallSetWindow.h"
 #include "ECGParam.h"
 #include "CO2Param.h"
 #include "RESPParam.h"
@@ -37,10 +37,11 @@ public:
         ITEM_CBO_CO2_WAVE_MODE,
         ITEM_CBO_RESP_WAVE_MODE,
         ITEM_CBO_APNEA_AWAKE,
+        ITEM_BTN_NURSE_CALL,
     };
 
     OthersMaintainMenuContentPrivate()
-        : NurseCallingBtn(NULL)
+        : nurseCallBtn(NULL)
     {
         combos.clear();
     }
@@ -49,7 +50,7 @@ public:
 
     QMap<MenuItem, ComboBox *> combos;
 
-    Button *NurseCallingBtn;
+    Button *nurseCallBtn;
 };
 
 void OthersMaintainMenuContentPrivate::loadOptions()
@@ -285,8 +286,15 @@ void OthersMaintainMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(OthersMaintainMenuContentPrivate::ITEM_CBO_APNEA_AWAKE, comboBox);
 #endif
+     d_ptr->nurseCallBtn = new Button(QString("%1%2").
+                                      arg(trs("NurseCallSetup")).
+                                      arg(" >>"));
+     d_ptr->nurseCallBtn->setButtonStyle(Button::ButtonTextOnly);
+     layout->addWidget(d_ptr->nurseCallBtn, d_ptr->combos.count() + 1, 1);
+     connect(d_ptr->nurseCallBtn, SIGNAL(released()), this, SLOT(onBtnReleased()));
 
-    layout->setRowStretch(d_ptr->combos.count() + 1, 1);
+
+    layout->setRowStretch(d_ptr->combos.count() + 2, 1);
 }
 
 void OthersMaintainMenuContent::onComboBoxIndexChanged(int index)
@@ -337,7 +345,8 @@ void OthersMaintainMenuContent::onComboBoxIndexChanged(int index)
 
 void OthersMaintainMenuContent::onBtnReleased()
 {
-    NurseCallSettingWindow w;
+    NurseCallSetWindow w;
     windowManager.showWindow(&w,
-                             WindowManager::ShowBehaviorModal);
+                             WindowManager::ShowBehaviorNoAutoClose
+                             | WindowManager::ShowBehaviorModal);
 }
