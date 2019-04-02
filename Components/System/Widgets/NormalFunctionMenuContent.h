@@ -47,6 +47,8 @@ private slots:
      */
     void onPopupListItemFocusChanged(int volume);
 
+    void nightModeHandle(bool isNightMode);
+
 private:
     NormalFunctionMenuContentPrivate * const d_ptr;
 };
