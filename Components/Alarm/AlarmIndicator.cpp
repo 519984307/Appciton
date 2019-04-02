@@ -16,6 +16,7 @@
 #include "IConfig.h"
 #include "AlarmStateMachineInterface.h"
 #include "AlarmInterface.h"
+#include "NurseCallManagerInterface.h"
 
 /**************************************************************************************************
  * 功能：发布报警。
@@ -295,6 +296,49 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
         {
             alarmStateMachine->handAlarmEvent(ALARM_STATE_EVENT_NO_ACKNOWLEDG_ALARM, 0, 0);
         }
+    }
+
+    // 护士呼叫
+    NurseCallManagerInterface *nurseCallManager = NurseCallManagerInterface::getNurseCallManagerInterface();
+    if (nurseCallManager)
+    {
+        bool techAlarm = nurseCallManager->getAlarmTypeTech();
+        bool phyAlarm = nurseCallManager->getAlarmTypePhy();
+        bool highAlarm = nurseCallManager->getAlarmLevelHigh();
+        bool medAlarm = nurseCallManager->getAlarmLevelMed();
+        bool lowAlarm = nurseCallManager->getAlarmLevelLow();
+        int signalSta = 0;
+        QMap<AlarmType, bool> alarmTypeMap;
+        QMap<AlarmPriority, bool> alarmPrioMap;
+        alarmTypeMap.insert(ALARM_TYPE_TECH, techAlarm);
+        alarmTypeMap.insert(ALARM_TYPE_PHY, phyAlarm);
+        alarmPrioMap.insert(ALARM_PRIO_HIGH, highAlarm);
+        alarmPrioMap.insert(ALARM_PRIO_MED, medAlarm);
+        alarmPrioMap.insert(ALARM_PRIO_LOW, lowAlarm);
+        QMap<AlarmType, bool>::ConstIterator typeIter = alarmTypeMap.constBegin();
+        int position = 0; // 移位
+        for (; typeIter != alarmTypeMap.constEnd(); typeIter++)
+        {
+            QMap<AlarmPriority, bool>::ConstIterator prioIter = alarmPrioMap.constBegin();
+            for (; prioIter != alarmPrioMap.constEnd(); prioIter++)
+            {
+                if (typeIter.value() && prioIter.value())
+                {
+                    int count = getAlarmCount(typeIter.key(), prioIter.key());
+                    if (count)
+                    {
+                        signalSta |= 1 << position;
+                    }
+                    else
+                    {
+                        signalSta &= ~(1 << position);
+                    }
+                }
+                position++;
+            }
+        }
+
+        nurseCallManager->callNurse(signalSta);
     }
 }
 
@@ -903,6 +947,31 @@ int AlarmIndicator::getAlarmCount(AlarmPriority priority)
     for (; it != list->end(); ++it)
     {
         if (it->alarmPriority == priority)
+        {
+            ++count;
+            continue;
+        }
+    }
+
+    return count;
+}
+
+int AlarmIndicator::getAlarmCount(AlarmType type, AlarmPriority priority)
+{
+    int count = 0;
+    AlarmInfoList *list = &_alarmInfoDisplayPool;
+
+    // 无数据。
+    if (list->empty())
+    {
+        return count;
+    }
+
+    // 查找报警信息并更新。
+    AlarmInfoList::iterator it = list->begin();
+    for (; it != list->end(); ++it)
+    {
+        if (it->alarmType == type || it->alarmPriority == priority)
         {
             ++count;
             continue;

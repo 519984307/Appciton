@@ -326,6 +326,8 @@ SOURCES +=                                                                      
     Components/Alarm/Widgets/AlarmInfoBarWidget.cpp                             \
     Components/Alarm/Widgets/AlarmInfoWindow.cpp                                \
     Components/Alarm/Widgets/AlarmInfoModel.cpp                                 \
+    Components/Alarm/NurseCallManager.cpp                                       \
+    Components/Alarm/NurseCallManagerInterface.cpp                              \
     Components/Calculation/DoseCalculationManager/DoseCalculationManager.cpp    \
     Components/Calculation/DoseCalculationManager/DoseCalculationWindow.cpp     \
     Components/Calculation/DoseCalculationManager/TitrateTableModel.cpp         \
@@ -835,6 +837,8 @@ HEADERS +=                                                                      
     Components/Alarm/Widgets/AlarmInfoBarWidget.h                               \
     Components/Alarm/Widgets/AlarmInfoWindow.h                                  \
     Components/Alarm/Widgets/AlarmInfoModel.h                                   \
+    Components/Alarm/NurseCallManager.h                                         \
+    Components/Alarm/NurseCallManagerInterface.h                                \
     Components/Calculation/DoseCalculationManager/DoseCalculationManager.h      \
     Components/Calculation/DoseCalculationManager/DoseCalculationDefine.h       \
     Components/Calculation/DoseCalculationManager/DoseCalculationWindow.h       \

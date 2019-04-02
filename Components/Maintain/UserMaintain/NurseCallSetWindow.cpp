@@ -87,72 +87,71 @@ NurseCallSetWindow::NurseCallSetWindow()
     int itemID = 0;
     QHBoxLayout *hLayout;
     Button *btn;
-    int btnWidth = SELECT_BUTTON_WIDTH;
     QSize iconSize(SELECT_BUTTON_WIDTH / 10 * 9, SELECT_BUTTON_WIDTH);
 
     hLayout = new QHBoxLayout();
     btn = new Button();
-    btn->setFixedSize(btnWidth, btnWidth);
     btn->setIconSize(iconSize);
     itemID = NurseCallSetWindowPrivate::ALARM_LEVEL_HIGH;
     btn->setProperty("Item", qVariantFromValue(itemID));
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
     d_ptr->btns.insert(NurseCallSetWindowPrivate::ALARM_LEVEL_HIGH, btn);
     label = new QLabel(trs("High"));
-    hLayout->addWidget(btn);
-    hLayout->addWidget(label);
+    hLayout->addWidget(btn, 1);
+    hLayout->addWidget(label, 1);
+    hLayout->addStretch(2);
     layout->addLayout(hLayout, row, 0);
 
     hLayout = new QHBoxLayout();
     btn = new Button();
-    btn->setFixedSize(btnWidth, btnWidth);
     btn->setIconSize(iconSize);
     itemID = NurseCallSetWindowPrivate::ALARM_TYPE_TECH;
     btn->setProperty("Item", qVariantFromValue(itemID));
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
     d_ptr->btns.insert(NurseCallSetWindowPrivate::ALARM_TYPE_TECH, btn);
     label = new QLabel(trs("Technology"));
-    hLayout->addWidget(btn);
-    hLayout->addWidget(label);
+    hLayout->addWidget(btn, 1);
+    hLayout->addWidget(label, 1);
+    hLayout->addStretch(2);
     layout->addLayout(hLayout, row++, 1);
 
     hLayout = new QHBoxLayout();
     btn = new Button();
-    btn->setFixedSize(btnWidth, btnWidth);
     btn->setIconSize(iconSize);
     itemID = NurseCallSetWindowPrivate::ALARM_LEVEL_MED;
     btn->setProperty("Item", qVariantFromValue(itemID));
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
     d_ptr->btns.insert(NurseCallSetWindowPrivate::ALARM_LEVEL_MED, btn);
     label = new QLabel(trs("Med"));
-    hLayout->addWidget(btn);
-    hLayout->addWidget(label);
+    hLayout->addWidget(btn, 1);
+    hLayout->addWidget(label, 1);
+    hLayout->addStretch(2);
     layout->addLayout(hLayout, row, 0);
 
     hLayout = new QHBoxLayout();
     btn = new Button();
-    btn->setFixedSize(btnWidth, btnWidth);
     btn->setIconSize(iconSize);
     itemID = NurseCallSetWindowPrivate::ALARM_TYPE_PHY;
     btn->setProperty("Item", qVariantFromValue(itemID));
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
     d_ptr->btns.insert(NurseCallSetWindowPrivate::ALARM_TYPE_PHY, btn);
     label = new QLabel(trs("Physiology"));
-    hLayout->addWidget(btn);
-    hLayout->addWidget(label);
+    hLayout->addWidget(btn, 1);
+    hLayout->addWidget(label, 1);
+    hLayout->addStretch(2);
     layout->addLayout(hLayout, row++, 1);
 
     hLayout = new QHBoxLayout();
     btn = new Button();
-    btn->setFixedSize(btnWidth, btnWidth);
     btn->setIconSize(iconSize);
     itemID = NurseCallSetWindowPrivate::ALARM_LEVEL_LOW;
     btn->setProperty("Item", qVariantFromValue(itemID));
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
     d_ptr->btns.insert(NurseCallSetWindowPrivate::ALARM_LEVEL_LOW, btn);
     label = new QLabel(trs("Low"));
-    hLayout->addWidget(btn);
-    hLayout->addWidget(label);
+    hLayout->addWidget(btn, 1);
+    hLayout->addWidget(label, 1);
+    hLayout->addStretch(2);
     layout->addLayout(hLayout, row++, 0);
 
     layout->setRowStretch(row, 1);
@@ -226,7 +225,7 @@ void NurseCallSetWindowPrivate::loadOptions()
     signalCbo->setCurrentIndex(index);
 
     index = 0;
-    systemConfig.getNumValue("Others|SignalType", index);
+    systemConfig.getNumValue("Others|TriggerMode", index);
     contactCbo->setCurrentIndex(index);
 
     QIcon icon("/usr/local/nPM/icons/Checked.png");

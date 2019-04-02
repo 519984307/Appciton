@@ -17,6 +17,7 @@
 #include "RunningStatusBar.h"
 #include "RainbowProvider.h"
 #include "ConfigManager.h"
+#include "NurseCallManager.h"
 
 /**************************************************************************************************
  * 功能： 初始化系统。
@@ -121,6 +122,9 @@ static void _initSystem(void)
     {
         nightModeManager.setNightMode(true);
     }
+
+    // 初始化护士呼叫
+    NurseCallManager::getInstance();
 }
 
 /**************************************************************************************************
