@@ -401,6 +401,9 @@ void E5Provider::handlePacket(unsigned char *data, int len)
     case TE3_RSP_RESP_APNEA_INTERVAL:
         break;
 
+    case TE3_RSP_ECG_ENABLE_RAW_DATA:
+        break;
+
     case TE3_RSP_SELFTEST_RESULT:
     {
         unsigned result = 0;
@@ -816,6 +819,12 @@ void E5Provider::setSTPoints(int iso, int st)
     Q_UNUSED(st)
 }
 
+void E5Provider::enableRawData(bool onoff)
+{
+    unsigned char data = onoff;
+    sendCmd(TE3_CMD_ECG_ENABLE_RAW_DATA, &data, 1);
+}
+
 /**************************************************************************************************
  * 获取版本号。
  *************************************************************************************************/
@@ -966,7 +975,7 @@ void E5Provider::reconnected(void)
 E5Provider::E5Provider() : BLMProvider("BLM_E5"), ECGProviderIFace(), _waveSampleRate(WAVE_SAMPLE_RATE_250),
     _isFristConnect(false)
 {
-    UartAttrDesc portAttr(230400, 8, 'N', 1);
+    UartAttrDesc portAttr(460800, 8, 'N', 1);
     initPort(portAttr);
 }
 
