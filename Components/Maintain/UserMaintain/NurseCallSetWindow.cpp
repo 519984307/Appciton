@@ -16,6 +16,7 @@
 #include "LanguageManager.h"
 #include <QMap>
 #include "IConfig.h"
+#include "NurseCallManagerInterface.h"
 
 #define SELECT_BUTTON_WIDTH     (48)
 
@@ -171,6 +172,11 @@ void NurseCallSetWindow::showEvent(QShowEvent *ev)
 void NurseCallSetWindow::signalTypeComboBoxChange(int index)
 {
     systemConfig.setNumValue("Others|SignalType", index);
+    NurseCallManagerInterface *nurseCallManager = NurseCallManagerInterface::getNurseCallManagerInterface();
+    if (nurseCallManager)
+    {
+        nurseCallManager->upDateCallSta();
+    }
 }
 
 void NurseCallSetWindow::contactTypeComboBoxChange(int index)
@@ -216,6 +222,11 @@ void NurseCallSetWindow::onBtnReleased()
     }
     btn->setProperty("Index", qVariantFromValue(index));
     systemConfig.setNumValue(itemPath, index);
+    NurseCallManagerInterface *nurseCallManager = NurseCallManagerInterface::getNurseCallManagerInterface();
+    if (nurseCallManager)
+    {
+        nurseCallManager->upDateCallSta();
+    }
 }
 
 void NurseCallSetWindowPrivate::loadOptions()

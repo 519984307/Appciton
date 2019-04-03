@@ -24,10 +24,15 @@ public:
     /**
      * @brief nurseCall 呼叫护士连续信号
      */
-    virtual void callNurse(AlarmType type, AlarmPriority prio, bool alarmSta) = 0;
+    virtual void callNurse(AlarmType type, AlarmPriority prio, int alarmSta) = 0;
 
     /**
      * @brief callNurse 呼叫护士脉冲信号
      */
     virtual void callNurse(AlarmType type, AlarmPriority prio) = 0;
+
+    /**
+     * @brief upDateCallSta 刷新当前呼叫状态
+     */
+    virtual void upDateCallSta() = 0;
 };

@@ -31,7 +31,7 @@ public:
     };
     NurseCallManagerPrivate()
         : callSta(false), callFile("/sys/class/pmos/nurse_call"),
-          pulseTimerID(-1), signalType(SIGNAL_TYPE_CONTINUOUS)
+          pulseTimerID(-1)
     {
         if (!callFile.open(QIODevice::ReadWrite))
         {
@@ -65,10 +65,9 @@ public:
      */
     void writeNurseCallSta(bool sta);
 
-    bool callSta;                   // 当前信号状态
+    int callSta;                   // 当前信号状态
     QFile callFile;
     int pulseTimerID;
-    SignalType signalType;          // 信号类型
 };
 
 NurseCallManager &NurseCallManager::getInstance()
@@ -86,14 +85,28 @@ NurseCallManager &NurseCallManager::getInstance()
     return *instance;
 }
 
-void NurseCallManager::callNurse(AlarmType type, AlarmPriority prio, bool alarmSta)
+void NurseCallManager::callNurse(AlarmType type, AlarmPriority prio, int alarmSta)
 {
     if (d_ptr->getSignalType() == NurseCallManagerPrivate::SIGNAL_TYPE_CONTINUOUS
             && d_ptr->getAlarmLevelType(type, prio))
     {
-        if (alarmSta != d_ptr->callSta)
+        int pos = type * 3 + prio;
+        if ((d_ptr->callSta & (1 << pos)) != alarmSta)
         {
-            d_ptr->writeNurseCallSta(alarmSta);
+            bool prvSta = d_ptr->callSta;
+            if (alarmSta)
+            {
+                d_ptr->callSta |= 1 << pos;
+            }
+            else
+            {
+                d_ptr->callSta &= ~(1 << pos);
+            }
+            bool curSta = d_ptr->callSta;
+            if (prvSta != curSta)
+            {
+                d_ptr->writeNurseCallSta(curSta);
+            }
         }
     }
 }
@@ -105,16 +118,23 @@ void NurseCallManager::callNurse(AlarmType type, AlarmPriority prio)
     {
         if (!d_ptr->callSta)
         {
+            d_ptr->callSta = 1;
             d_ptr->writeNurseCallSta(true);
             d_ptr->pulseTimerID = startTimer(1000);
         }
     }
 }
 
+void NurseCallManager::upDateCallSta()
+{
+    d_ptr->callSta = 0;
+}
+
 void NurseCallManager::timerEvent(QTimerEvent *ev)
 {
     if (ev->timerId() == d_ptr->pulseTimerID)
     {
+        d_ptr->callSta = 0;
         d_ptr->writeNurseCallSta(0);
         killTimer(d_ptr->pulseTimerID);
         d_ptr->pulseTimerID = -1;
@@ -137,11 +157,6 @@ NurseCallManagerPrivate::SignalType NurseCallManagerPrivate::getSignalType()
 {
     int value = 0;
     systemConfig.getNumValue("Others|SignalType", value);
-    if (value != signalType)
-    {
-        signalType = static_cast<SignalType>(value);
-        callSta = false;
-    }
     return static_cast<SignalType>(value);
 }
 
@@ -183,7 +198,6 @@ bool NurseCallManagerPrivate::getAlarmLevelType(AlarmType type, AlarmPriority pr
 
 void NurseCallManagerPrivate::writeNurseCallSta(bool sta)
 {
-    callSta = sta;
     if (!callFile.exists())
     {
         return;

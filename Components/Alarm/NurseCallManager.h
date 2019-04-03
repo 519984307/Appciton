@@ -20,8 +20,9 @@ public:
     static NurseCallManager &getInstance();
 
 public:
-    virtual void callNurse(AlarmType type, AlarmPriority prio, bool alarmSta);
+    virtual void callNurse(AlarmType type, AlarmPriority prio, int alarmSta);
     virtual void callNurse(AlarmType type, AlarmPriority prio);
+    virtual void upDateCallSta();
 
 protected:
     void timerEvent(QTimerEvent *ev);

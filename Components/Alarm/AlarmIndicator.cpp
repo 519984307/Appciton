@@ -307,7 +307,12 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
             for (int j = ALARM_PRIO_LOW; j <= ALARM_PRIO_HIGH; j++)
             {
                 int count = getAlarmCount(static_cast<AlarmType>(i), static_cast<AlarmPriority>(j));
-                nurseCallManager->callNurse(static_cast<AlarmType>(i), static_cast<AlarmPriority>(j), count);
+                int isAlarm = 0;
+                if (count)
+                {
+                    isAlarm = 1 << (i * 3 + j);
+                }
+                nurseCallManager->callNurse(static_cast<AlarmType>(i), static_cast<AlarmPriority>(j), isAlarm);
             }
         }
     }
@@ -948,7 +953,7 @@ int AlarmIndicator::getAlarmCount(AlarmType type, AlarmPriority priority)
     AlarmInfoList::iterator it = list->begin();
     for (; it != list->end(); ++it)
     {
-        if (it->alarmType == type || it->alarmPriority == priority)
+        if (it->alarmType == type && it->alarmPriority == priority)
         {
             ++count;
             continue;
