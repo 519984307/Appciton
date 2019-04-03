@@ -24,6 +24,9 @@
 #include <QTimer>
 #include "OxyCRGSPO2TrendWidget.h"
 #include "NIBPParam.h"
+#include "TimeDate.h"
+#include "O2ParamInterface.h"
+#include "RunningStatusBar.h"
 
 SPO2Param *SPO2Param::_selfObj = NULL;
 
@@ -361,6 +364,27 @@ void SPO2Param::setSPO2(short spo2Value)
         return;
     }
     _spo2Value = spo2Value;
+
+#ifdef ENABLE_O2_APNEASTIMULATION
+    // 窒息唤醒
+    O2ParamInterface *o2Param = O2ParamInterface::getO2ParamInterface();
+    if (o2Param)
+    {
+        int apneaStimulationSPO2 = 85;
+        int motorSta = false;
+        currentConfig.getNumValue("ApneaStimulation|SPO2", apneaStimulationSPO2);
+        if (_spo2Value < apneaStimulationSPO2 && _spo2Value != InvData())
+        {
+            motorSta = true;
+        }
+        else
+        {
+            motorSta = false;
+        }
+        o2Param->setVibrationReason(APNEASTIMULATION_REASON_SPO2, motorSta);
+    }
+#endif
+
     if (NULL != _trendWidget)
     {
         _trendWidget->setSPO2Value(_spo2Value);
@@ -763,12 +787,115 @@ bool SPO2Param::isNibpSameSide(void)
     return flag;
 }
 
+void SPO2Param::setCCHDData(short value, bool isHand)
+{
+    cchdData data;
+    if (isHand)
+    {
+        if (_cchdDataList.count() != 0 && _cchdDataList.last().handValue == InvData())
+        {
+            _cchdDataList.last().handValue = value;
+            return;
+        }
+        data.handValue = value;
+    }
+    else
+    {
+        if (_cchdDataList.count() != 0 && _cchdDataList.last().footValue == InvData())
+        {
+            _cchdDataList.last().footValue = value;
+            return;
+        }
+        data.footValue = value;
+    }
+    _cchdDataList.append(data);
+}
+
+CCHDResult SPO2Param::updateCCHDResult()
+{
+    if (_cchdDataList.count() == 0)
+    {
+        return CCHD_NR;
+    }
+    short handValue = _cchdDataList.last().handValue;
+    short footValue = _cchdDataList.last().footValue;
+    if (handValue == InvData() || footValue == InvData())
+    {
+        // 不完全数据返回无效值
+        return CCHD_NR;
+    }
+    CCHDResult result = CCHD_NR;
+
+    if ((handValue >= 95 && abs(footValue - handValue) <= 3) ||
+            (footValue >= 95 && abs(footValue - handValue) <= 3))
+    {
+        // 阴性
+        _repeatTimes = 0;
+        result = Negative;
+    }
+    else if (((handValue >= 90 && handValue <= 94) && (footValue >= 90 && footValue <= 94))
+             || (abs(handValue - footValue) > 3))
+    {
+        // 重复测试判断是否为阳性
+        _repeatTimes++;
+        if (_repeatTimes > 2)
+        {
+            // 重复测量3次则返回阳性
+            _repeatTimes = 0;
+            result = Positive;
+        }
+        else
+        {
+            result = RepeatCheck;
+        }
+    }
+    else
+    {
+        // 阳性
+        _repeatTimes = 0;
+        result = Positive;
+    }
+    _cchdDataList.last().result = result;
+    _cchdDataList.last().time = timeDate.time();
+    return result;
+}
+
+
+QList<cchdData> SPO2Param::getCCHDDataList()
+{
+    return _cchdDataList;
+}
+
+void SPO2Param::clearCCHDData(bool isCleanup)
+{
+    if (!_cchdDataList.isEmpty())
+    {
+        if (!isCleanup)
+        {
+            if (_cchdDataList.count() > 3 || _cchdDataList.last().result == Positive || _cchdDataList.last().result == Negative)
+            {
+                _cchdDataList.clear();
+            }
+            else if (_cchdDataList.last().result == CCHD_NR)
+            {
+                _cchdDataList.removeLast();
+            }
+        }
+        else
+        {
+            _cchdDataList.clear();
+            _repeatTimes = 0;
+        }
+    }
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
 SPO2Param::SPO2Param() : Param(PARAM_SPO2),
                          _oxyCRGSPO2Trend(NULL),
-                         _moduleType(MODULE_SPO2_NR)
+                         _moduleType(MODULE_SPO2_NR),
+                         _repeatTimes(0)
 {
     _provider = NULL;
     _trendWidget = NULL;

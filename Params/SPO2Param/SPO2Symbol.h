@@ -105,4 +105,13 @@ public:
         };
         return symbol[index];
     }
+
+    static const char *convert(CCHDResult index)
+    {
+        static const char *symbol[CCHD_NR] =
+        {
+            "Negative", "Positive", "RepeatCheck"
+        };
+        return symbol[index];
+    }
 };

@@ -317,7 +317,7 @@ void SystemBoardProvider::handlePacket(unsigned char *data, int len)
         break;
 
     case MSG_RSP_BATTERY_INFO:
-        _parseBatteryInfo(data, len);
+        _parsePowerStat(data, len);
         break;
 
     case MSG_RSP_SET_ALARM_MUTE_LED:

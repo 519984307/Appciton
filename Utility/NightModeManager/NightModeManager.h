@@ -12,8 +12,9 @@
 #include <QObject>
 
 class NightModeManagerPrivate;
-class NightModeManager
+class NightModeManager : public QObject
 {
+    Q_OBJECT
 public:
     static NightModeManager &getInstance(void);
 
@@ -31,6 +32,9 @@ public:
      * @return              ０：正常模式　　１：夜间模式
      */
     bool nightMode();
+
+signals:
+    void nightModeChanged(bool);
 
 private:
     NightModeManager();

@@ -217,14 +217,21 @@ CO2ZeroCalib,CO2校零,CO2 Zero
 CO2ZeroStart,开始,Start
 CO2Menu,CO2,CO2
 CO2Switch,二氧化碳开关,CO2 Switch
+O2Module,O2,O2
 O2Menu,O2,O2
 O2MenuDesc,O2,O2
 O2Setting,O2设置,O2 Setting
 O2CalibrateReset,氧浓度校准数据被复位,O2 Calibrate Is Reset
 O2NotCalibrate,氧浓度传感器未校准,O2 Sensor Not Calibrate
+O2MotorNotInPositon,唤醒器脱落,Motor Sensor Off
+O2SensorOff,氧浓度探头脱落,O2 Sensor Off
 O2Low,氧浓度低,O2 Low
 O2High,氧浓度高,O2 High
-ApneaSimulation,窒息唤醒,Apnea Simulation
+ApneaStimulation,窒息唤醒,Apnea Stimulation
+ApneaStimulationSetup,窒息唤醒设置,Apnea Stimulation Setup
+ApneaStimulationMenu,窒息唤醒,Apnea Stimulation
+ApneaStimulationMenuDesc,窒息唤醒,Apnea Stimulation
+SelfTest,自测,Self Test
 VibrationIntensity,震动强度,Vibration Intensity
 Stop,停止,Stop
 AGMenu,AG,AG
@@ -957,6 +964,9 @@ ParameterSources,参数资源,Parameter Sources
 Replace,替换,Replace
 Insert,插入,Insert
 Remove,移除,Remove
+ScreenTypeSelect,屏幕类型,Screen Type
+IndustrialScreen,工业屏,Industrial
+BusinessScreen,商业屏,Business
 TransferRescueDataByUSB,传输营救数据到USB,Transferring Rescue Data to USB
 TransferRescueDataByWIFI,传输营救数据到WIFI,Transferring Rescue Data to WIFI
 TransferSupervisorByUSB,传输超级配置数据到USB,Transferring Supervisor Config to USB
@@ -1637,3 +1647,13 @@ Input8DigitsPassword,请输入8位数字密码,Please input 8 digits password
 BornDate,出生日期,Born Date
 RescueStorageSpaceFull,营救数据存储空间满,Rescue storage space full
 ChangePatientType,更改病人类型会导致配置更改，您确认要这么做吗？,Changing patient type will cause the configuration changes，Are you sure?
+handMeasure,手部测量,Hand Measure
+footMeasure,足部测量,Foot Measure
+CCHDCheck,CCHD筛查,CCHD Check
+Negative,阴性,Negative
+Positive,阳性,Positive
+Result,结果,Result
+RepeatCheck,一小时内重复测量3次以确认结果,Check again in a hour for result
+footValue,足部数据,foot
+handValue,手部数据,hand
+SPO2ValueInvaild,采集数据无效，请检查血氧模块,The collect data is invaild，Please check SPO2 module

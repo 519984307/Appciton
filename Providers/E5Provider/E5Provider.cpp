@@ -14,6 +14,7 @@
 #include "ECGAlarm.h"
 #include "ECGDupParam.h"
 #include "RESPParam.h"
+#include "RESPDupParam.h"
 #include "RESPAlarm.h"
 #include "ECGAlarm.h"
 #include "Debug.h"
@@ -28,6 +29,7 @@
 #include "IConfig.h"
 #include "WindowManager.h"
 #include "RawDataCollector.h"
+#include "ConfigManager.h"
 
 /**************************************************************************************************
  * 模块与参数对接。
@@ -440,8 +442,13 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         break;
 
     case TE3_NOTIFY_RESP_ALARM:
+    {
+#ifdef ENABLE_O2_APNEASTIMULATION
+        respDupParam.setRespApneaStimulation(data[1]);
+#endif
         respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_APNEA, data[1]);
         break;
+    }
 
     case TE3_NOTIFY_VF_ALARM:
         ecgOneShotAlarm.setOneShotAlarm(ECG_ONESHOT_ARR_VFIBVTAC, data[1]);

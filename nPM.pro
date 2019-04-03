@@ -105,6 +105,9 @@ DEFINES += HIDE_MACHINE_CONFIG_ITEMS
 #失能co2模块维护
 DEFINES += DISABLE_CO2_MODULE_MAINTAIN
 
+#使能氧浓度,窒息唤醒模块功能
+#DEFINES += ENABLE_O2_APNEASTIMULATION
+
 #隐藏其它维护菜单中的部分选项
 DEFINES += HIDE_OTHER_MAINTAIN_ITEMS
 
@@ -571,12 +574,15 @@ SOURCES +=                                                                      
     Params/NIBPParam/NIBPWidgets/NIBPDataTrendWidget.cpp                        \
     Params/NIBPParam/NIBPWidgets/NIBPMenuContent.cpp                            \
     Params/NIBPParam/NIBPTrigger/NIBPCountdownTime.cpp                          \
+    Params/NIBPParam/NIBPTrigger/NIBPCountdownTimeInterface.cpp                 \
     Params/SPO2Param/SPO2Param.cpp                                              \
     Params/SPO2Param/SPO2Alarm.cpp                                              \
     Params/SPO2Param/SPO2Widgets/SPO2WaveWidget.cpp                             \
     Params/SPO2Param/SPO2Widgets/SPO2TrendWidget.cpp                            \
     Params/SPO2Param/SPO2Widgets/SPO2BarWidget.cpp                              \
     Params/SPO2Param/SPO2Widgets/SPO2MenuContent.cpp                            \
+    Params/SPO2Param/SPO2Widgets/CCHDWindow.cpp                                 \
+    Params/SPO2Param/SPO2Widgets/CCHDDataModel.cpp                              \
     Params/TEMPParam/TEMPParam.cpp                                              \
     Params/TEMPParam/TEMPAlarm.cpp                                              \
     Params/TEMPParam/TEMPWidgets/TEMPTrendWidget.cpp                            \
@@ -590,8 +596,10 @@ SOURCES +=                                                                      
     Params/RESPParam/RESPWidgets/RESPMenuContent.cpp                            \
     Params/O2Param/O2Widgets/O2TrendWidget.cpp                                  \
     Params/O2Param/O2Widgets/O2MenuContent.cpp                                  \
+    Params/O2Param/O2Widgets/ApneaStimulationMenuContent.cpp                    \
     Params/O2Param/O2Param.cpp                                                  \
     Params/O2Param/O2Alarm.cpp                                                  \
+    Params/O2Param/O2ParamInterface.cpp                                         \
 #################################################################################
     Providers/Provider.cpp                                                      \
     Providers/BLMProvider.cpp                                                   \
@@ -1122,6 +1130,7 @@ HEADERS +=                                                                      
     Params/NIBPParam/NIBPWidgets/NIBPDataTrendWidget.h                          \
     Params/NIBPParam/NIBPWidgets/NIBPMenuContent.h                              \
     Params/NIBPParam/NIBPTrigger/NIBPCountdownTime.h                            \
+    Params/NIBPParam/NIBPTrigger/NIBPCountdownTimeInterface.h                   \
     Params/SPO2Param/SPO2Param.h                                                \
     Params/SPO2Param/SPO2Alarm.h                                                \
     Params/SPO2Param/SPO2Define.h                                               \
@@ -1131,6 +1140,8 @@ HEADERS +=                                                                      
     Params/SPO2Param/SPO2Widgets/SPO2TrendWidget.h                              \
     Params/SPO2Param/SPO2Widgets/SPO2BarWidget.h                                \
     Params/SPO2Param/SPO2Widgets/SPO2MenuContent.h                              \
+    Params/SPO2Param/SPO2Widgets/CCHDWindow.h                                   \
+    Params/SPO2Param/SPO2Widgets/CCHDDataModel.h                                \
     Params/TEMPParam/TEMPDefine.h                                               \
     Params/TEMPParam/TEMPSymbol.h                                               \
     Params/TEMPParam/TEMPParam.h                                                \
@@ -1151,11 +1162,13 @@ HEADERS +=                                                                      
     Params/PAParam/PASymbol.h                                                   \
     Params/O2Param/O2Widgets/O2TrendWidget.h                                    \
     Params/O2Param/O2Widgets/O2MenuContent.h                                    \
+    Params/O2Param/O2Widgets/ApneaStimulationMenuContent.h                      \
     Params/O2Param/O2Param.h                                                    \
     Params/O2Param/O2ProviderIFace.h                                            \
     Params/O2Param/O2Alarm.h                                                    \
     Params/O2Param/O2Define.h                                                   \
     Params/O2Param/O2Symbol.h                                                   \
+    Params/O2Param/O2ParamInterface.h                                           \
 #################################################################################
     Providers/Provider.h                                                        \
     Providers/BLMProvider.h                                                     \

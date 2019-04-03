@@ -10,15 +10,21 @@
 
 
 #include "NIBPMonitorStandbyState.h"
-#include "NIBPParam.h"
-#include "NIBPCountdownTime.h"
+#include "NIBPParamInterface.h"
 #include "LanguageManager.h"
+#include "NIBPSymbol.h"
+#include "NIBPCountdownTimeInterface.h"
 
 /**************************************************************************************************
  * 处理事件。
  *************************************************************************************************/
 void NIBPMonitorStandbyState::handleNIBPEvent(NIBPEvent event, const unsigned char *args, int /*argLen*/)
 {
+    NIBPParamInterface* nibpParam = NIBPParamInterface::getNIBPParam();
+    if (!nibpParam)
+    {
+        return;
+    }
     switch (event)
     {
     case NIBP_EVENT_MODULE_ERROR:
@@ -30,10 +36,10 @@ void NIBPMonitorStandbyState::handleNIBPEvent(NIBPEvent event, const unsigned ch
         break;
 
     case NIBP_EVENT_TRIGGER_BUTTON:
-        if (nibpParam.getMeasurMode() == NIBP_MODE_AUTO)
+        if (nibpParam->getMeasurMode() == NIBP_MODE_AUTO)
         {
             //自动测量模式的手动触发标志
-            nibpParam.setAutoMeasure(true);
+            nibpParam->setAutoMeasure(true);
         }
         // 转换到测量状态。
         switchState(NIBP_MONITOR_STARTING_STATE);
@@ -42,18 +48,22 @@ void NIBPMonitorStandbyState::handleNIBPEvent(NIBPEvent event, const unsigned ch
     case NIBP_EVENT_TRIGGER_MODEL:
         if (args[0] == 0x01)
         {
-            nibpParam.setSTATMeasure(true);
-            nibpCountdownTime.STATMeasureStart();// 只测量5分钟。
+            nibpParam->setSTATMeasure(true);
+            NIBPCountdownTimeInterface* nibpCountdownTime = NIBPCountdownTimeInterface::getNIBPCountdownTime();
+            if (nibpCountdownTime)
+            {
+                nibpCountdownTime->STATMeasureStart();  // 只测量5分钟。
+            }
             switchState(NIBP_MONITOR_STARTING_STATE);
             break;
         }
-        if (nibpParam.getSuperMeasurMode() == NIBP_MODE_AUTO)
+        if (nibpParam->getSuperMeasurMode() == NIBP_MODE_AUTO)
         {
-            nibpParam.switchToAuto();
+            nibpParam->switchToAuto();
         }
         else
         {
-            nibpParam.switchToManual();
+            nibpParam->switchToManual();
         }
         break;
 
@@ -67,15 +77,19 @@ void NIBPMonitorStandbyState::handleNIBPEvent(NIBPEvent event, const unsigned ch
  *************************************************************************************************/
 void NIBPMonitorStandbyState::enter()
 {
-    if (nibpParam.getMeasurMode() == NIBP_MODE_AUTO)
+    NIBPParamInterface* nibpParam = NIBPParamInterface::getNIBPParam();
+    if (nibpParam)
     {
-        nibpParam.setAutoMeasure(false);
-        nibpParam.setModelText(trs("NIBPAUTO") + ":" +
-                               trs(NIBPSymbol::convert((NIBPAutoInterval)nibpParam.getAutoInterval())));
-    }
-    else if (nibpParam.getMeasurMode() == NIBP_MODE_MANUAL)
-    {
-        nibpParam.setModelText(trs("NIBPManual"));
+        if (nibpParam->getMeasurMode() == NIBP_MODE_AUTO)
+        {
+            nibpParam->setAutoMeasure(false);
+            nibpParam->setModelText(trs("NIBPAUTO") + ":" +
+                                    trs(NIBPSymbol::convert((NIBPAutoInterval)nibpParam->getAutoInterval())));
+        }
+        else if (nibpParam->getMeasurMode() == NIBP_MODE_MANUAL)
+        {
+            nibpParam->setModelText(trs("NIBPManual"));
+        }
     }
 }
 

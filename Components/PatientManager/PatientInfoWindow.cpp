@@ -31,7 +31,7 @@
 #include <QDate>
 #include "FloatHandle.h"
 
-#define PATIENT_BORN_DATE_RANAGE 1800
+#define PATIENT_BORN_DATE_RANAGE 1900
 PatientInfoWindow *PatientInfoWindow::_selfObj = NULL;
 class PatientInfoWindowPrivate
 {

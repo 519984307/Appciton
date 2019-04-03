@@ -16,7 +16,6 @@
 #include "SystemManager.h"
 #include "LanguageManager.h"
 
-NIBPCountdownTime *NIBPCountdownTime::_selfObj = NULL;
 
 void NIBPCountdownTime::run()
 {
@@ -215,5 +214,19 @@ NIBPCountdownTime::~NIBPCountdownTime()
     }
 }
 
+NIBPCountdownTime &NIBPCountdownTime::getInstance()
+{
+    static NIBPCountdownTime* instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new NIBPCountdownTime();
+        NIBPCountdownTimeInterface* old = registerNIBPCountTime(instance);
+        if (old)
+        {
+            delete old;
+        }
+    }
+    return *instance;
+}
 
 

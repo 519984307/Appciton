@@ -110,7 +110,7 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
         else if (ALARM_TYPE_TECH == node.alarmType && ALARM_STATUS_PAUSE != status)
         {
             // 技术报警只处理没有被acknowledge和不处理报警暂停状态
-            if ((!node.acknowledge || node.latch || node.removeLigthAfterConfirm)
+            if ((!node.acknowledge || node.latch)
                     && node.alarmPriority != ALARM_PRIO_PROMPT)
             {
                 if (techSoundPriority < node.alarmPriority)
@@ -129,6 +129,14 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
                 {
                     node.promptAlarmBeep = true;
                     *it = node;
+                }
+            }
+            else if (node.acknowledge && !node.removeLigthAfterConfirm && node.alarmPriority != ALARM_PRIO_PROMPT)
+            {
+                // 处理确认后不移除灯光
+                if (lightPriority < node.alarmPriority)
+                {
+                    lightPriority = node.alarmPriority;
                 }
             }
         }
