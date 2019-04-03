@@ -49,20 +49,8 @@ void NIBPParam::_patientTypeChangeSlot(PatientType /*type*/)
     if (NULL != _provider)
     {
         _provider->setPatientType((unsigned char)patientManager.getType());
-        int initVal;
-        PatientType type = patientManager.getType();
-        if (type == PATIENT_TYPE_ADULT)
-        {
-            currentConfig.getNumValue("NIBP|AdultInitialCuffInflation", initVal);
-        }
-        else if (type == PATIENT_TYPE_PED)
-        {
-            currentConfig.getNumValue("NIBP|PedInitialCuffInflation", initVal);
-        }
-        else if (type == PATIENT_TYPE_NEO)
-        {
-            currentConfig.getNumValue("NIBP|NeoInitialCuffInflation", initVal);
-        }
+        int initVal = getInitPressure();   // 获取初始压力值
+
         _provider->setInitPressure(initVal);
     }
 }
@@ -84,20 +72,7 @@ void NIBPParam::initParam(void)
 
     //设置病人类型与预充气值
     _provider->setPatientType((unsigned char)patientManager.getType());
-    int initVal;
-    PatientType type = patientManager.getType();
-    if (type == PATIENT_TYPE_ADULT)
-    {
-        currentConfig.getNumValue("NIBP|AdultInitialCuffInflation", initVal);
-    }
-    else if (type == PATIENT_TYPE_PED)
-    {
-        currentConfig.getNumValue("NIBP|PedInitialCuffInflation", initVal);
-    }
-    else if (type == PATIENT_TYPE_NEO)
-    {
-        currentConfig.getNumValue("NIBP|NeoInitialCuffInflation", initVal);
-    }
+    int initVal = getInitPressure();
     _provider->setInitPressure(initVal);
 
     //智能充气
@@ -903,6 +878,29 @@ void NIBPParam::setInitPressure(int index)
     {
         _provider->setInitPressure(index);
     }
+}
+
+/**************************************************************************************************
+ * 获取不同病人类型的初始压力值
+ *************************************************************************************************/
+int NIBPParam::getInitPressure()
+{
+    int initVal;
+    currentConfig.getNumValue("NIBP|InitialCuffInflation", initVal);
+    PatientType patienType = patientManager.getType();
+    if (patienType == PATIENT_TYPE_ADULT)
+    {
+        initVal = 120 + initVal * 10;
+    }
+    else if (patienType == PATIENT_TYPE_PED)
+    {
+        initVal = 80 + initVal * 10;
+    }
+    else if (patienType == PATIENT_TYPE_NEO)
+    {
+        initVal = 60 + initVal * 10;
+    }
+    return initVal;
 }
 
 /**************************************************************************************************
