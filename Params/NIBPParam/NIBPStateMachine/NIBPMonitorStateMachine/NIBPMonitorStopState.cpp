@@ -71,7 +71,7 @@ void NIBPMonitorStopState::enter(void)
 void NIBPMonitorStopState::handleNIBPEvent(NIBPEvent event, const unsigned char */*args*/, int /*argLen*/)
 {
     NIBPParamInterface* nibpParam = NIBPParamInterface::getNIBPParam();
-    if (nibpParam)
+    if (!nibpParam)
     {
         return;
     }
