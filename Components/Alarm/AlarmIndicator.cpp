@@ -302,43 +302,14 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
     NurseCallManagerInterface *nurseCallManager = NurseCallManagerInterface::getNurseCallManagerInterface();
     if (nurseCallManager)
     {
-        bool techAlarm = nurseCallManager->getAlarmTypeTech();
-        bool phyAlarm = nurseCallManager->getAlarmTypePhy();
-        bool highAlarm = nurseCallManager->getAlarmLevelHigh();
-        bool medAlarm = nurseCallManager->getAlarmLevelMed();
-        bool lowAlarm = nurseCallManager->getAlarmLevelLow();
-        int signalSta = 0;
-        QMap<AlarmType, bool> alarmTypeMap;
-        QMap<AlarmPriority, bool> alarmPrioMap;
-        alarmTypeMap.insert(ALARM_TYPE_TECH, techAlarm);
-        alarmTypeMap.insert(ALARM_TYPE_PHY, phyAlarm);
-        alarmPrioMap.insert(ALARM_PRIO_HIGH, highAlarm);
-        alarmPrioMap.insert(ALARM_PRIO_MED, medAlarm);
-        alarmPrioMap.insert(ALARM_PRIO_LOW, lowAlarm);
-        QMap<AlarmType, bool>::ConstIterator typeIter = alarmTypeMap.constBegin();
-        int position = 0; // 移位
-        for (; typeIter != alarmTypeMap.constEnd(); typeIter++)
+        for (int i = ALARM_TYPE_PHY; i <= ALARM_TYPE_TECH; i++)
         {
-            QMap<AlarmPriority, bool>::ConstIterator prioIter = alarmPrioMap.constBegin();
-            for (; prioIter != alarmPrioMap.constEnd(); prioIter++)
+            for (int j = ALARM_PRIO_LOW; j <= ALARM_PRIO_HIGH; j++)
             {
-                if (typeIter.value() && prioIter.value())
-                {
-                    int count = getAlarmCount(typeIter.key(), prioIter.key());
-                    if (count)
-                    {
-                        signalSta |= 1 << position;
-                    }
-                    else
-                    {
-                        signalSta &= ~(1 << position);
-                    }
-                }
-                position++;
+                int count = getAlarmCount(static_cast<AlarmType>(i), static_cast<AlarmPriority>(j));
+                nurseCallManager->callNurse(static_cast<AlarmType>(i), static_cast<AlarmPriority>(j), count);
             }
         }
-
-        nurseCallManager->callNurse(signalSta);
     }
 }
 
@@ -545,6 +516,12 @@ bool AlarmIndicator::addAlarmInfo(unsigned alarmTime, AlarmType alarmType,
     node.removeLigthAfterConfirm = isRemoveLightAfterConfirm;
 
     list->append(node);
+
+    NurseCallManagerInterface *nurseCallManager = NurseCallManagerInterface::getNurseCallManagerInterface();
+    if (nurseCallManager)
+    {
+        nurseCallManager->callNurse(alarmType, alarmPriority);
+    }
     return true;
 }
 

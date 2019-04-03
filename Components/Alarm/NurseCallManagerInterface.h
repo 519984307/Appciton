@@ -9,6 +9,7 @@
  **/
 
 #pragma once
+#include "AlarmDefine.h"
 
 class NurseCallManagerInterface
 {
@@ -21,37 +22,12 @@ public:
     static NurseCallManagerInterface *getNurseCallManagerInterface();
 
     /**
-     * @brief getAlarmLevelHigh 高级报警触发呼叫状态
-     * @return
+     * @brief nurseCall 呼叫护士连续信号
      */
-    virtual bool getAlarmLevelHigh() = 0;
+    virtual void callNurse(AlarmType type, AlarmPriority prio, bool alarmSta) = 0;
 
     /**
-     * @brief getAlarmLevelMed 中级报警触发呼叫状态
-     * @return
+     * @brief callNurse 呼叫护士脉冲信号
      */
-    virtual bool getAlarmLevelMed() = 0;
-
-    /**
-     * @brief getAlarmLevelLow 低级报警触发呼叫状态
-     * @return
-     */
-    virtual bool getAlarmLevelLow() = 0;
-
-    /**
-     * @brief getAlarmTypeTech 技术报警触发呼叫状态
-     * @return
-     */
-    virtual bool getAlarmTypeTech() = 0;
-
-    /**
-     * @brief getAlarmTypePhy 生理报警触发呼叫状态
-     * @return
-     */
-    virtual bool getAlarmTypePhy() = 0;
-
-    /**
-     * @brief nurseCall 呼叫护士
-     */
-    virtual void callNurse(bool signalSta) = 0;
+    virtual void callNurse(AlarmType type, AlarmPriority prio) = 0;
 };

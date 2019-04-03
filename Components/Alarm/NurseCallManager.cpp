@@ -31,7 +31,7 @@ public:
     };
     NurseCallManagerPrivate()
         : callSta(false), callFile("/sys/class/pmos/nurse_call"),
-          pulseTimerID(-1)
+          pulseTimerID(-1), signalType(SIGNAL_TYPE_CONTINUOUS)
     {
         if (!callFile.open(QIODevice::ReadWrite))
         {
@@ -52,14 +52,23 @@ public:
     ContactType getContactType();
 
     /**
+     * @brief getAlarmLevelType 获取指定报警类型和报警等级是否呼叫护士
+     * @param type
+     * @param prio
+     * @return
+     */
+    bool getAlarmLevelType(AlarmType type, AlarmPriority prio);
+
+    /**
      * @brief writeNurseCallSta 护士呼叫文件写入电平值
      * @param sta
      */
     void writeNurseCallSta(bool sta);
 
-    bool callSta;
+    bool callSta;                   // 当前信号状态
     QFile callFile;
     int pulseTimerID;
+    SignalType signalType;          // 信号类型
 };
 
 NurseCallManager &NurseCallManager::getInstance()
@@ -77,56 +86,26 @@ NurseCallManager &NurseCallManager::getInstance()
     return *instance;
 }
 
-bool NurseCallManager::getAlarmLevelHigh()
+void NurseCallManager::callNurse(AlarmType type, AlarmPriority prio, bool alarmSta)
 {
-    int value = 0;
-    systemConfig.getNumValue("Others|AlarmLevel|High", value);
-    return value;
-}
-
-bool NurseCallManager::getAlarmLevelMed()
-{
-    int value = 0;
-    systemConfig.getNumValue("Others|AlarmLevel|Med", value);
-    return value;
-}
-
-bool NurseCallManager::getAlarmLevelLow()
-{
-    int value = 0;
-    systemConfig.getNumValue("Others|AlarmLevel|Low", value);
-    return value;
-}
-
-bool NurseCallManager::getAlarmTypeTech()
-{
-    int value = 0;
-    systemConfig.getNumValue("Others|AlarmType|Technology", value);
-    return value;
-}
-
-bool NurseCallManager::getAlarmTypePhy()
-{
-    int value = 0;
-    systemConfig.getNumValue("Others|AlarmType|Physiology", value);
-    return value;
-}
-
-void NurseCallManager::callNurse(bool signalSta)
-{
-    NurseCallManagerPrivate::SignalType signalType = d_ptr->getSignalType();
-    if (signalType == NurseCallManagerPrivate::SIGNAL_TYPE_CONTINUOUS)
+    if (d_ptr->getSignalType() == NurseCallManagerPrivate::SIGNAL_TYPE_CONTINUOUS
+            && d_ptr->getAlarmLevelType(type, prio))
     {
-        if (signalSta != d_ptr->callSta)
+        if (alarmSta != d_ptr->callSta)
         {
-            d_ptr->writeNurseCallSta(signalSta);
+            d_ptr->writeNurseCallSta(alarmSta);
         }
     }
-    else
+}
+
+void NurseCallManager::callNurse(AlarmType type, AlarmPriority prio)
+{
+    if (d_ptr->getSignalType() == NurseCallManagerPrivate::SIGNAL_TYPE_PULSE
+            && d_ptr->getAlarmLevelType(type, prio))
     {
-        if (!d_ptr->callSta && signalSta)
+        if (!d_ptr->callSta)
         {
-            d_ptr->writeNurseCallSta(signalSta);
+            d_ptr->writeNurseCallSta(true);
             d_ptr->pulseTimerID = startTimer(1000);
         }
     }
@@ -158,6 +137,11 @@ NurseCallManagerPrivate::SignalType NurseCallManagerPrivate::getSignalType()
 {
     int value = 0;
     systemConfig.getNumValue("Others|SignalType", value);
+    if (value != signalType)
+    {
+        signalType = static_cast<SignalType>(value);
+        callSta = false;
+    }
     return static_cast<SignalType>(value);
 }
 
@@ -166,6 +150,35 @@ NurseCallManagerPrivate::ContactType NurseCallManagerPrivate::getContactType()
     int value = 0;
     systemConfig.getNumValue("Others|TriggerMode", value);
     return static_cast<ContactType>(value);
+}
+
+bool NurseCallManagerPrivate::getAlarmLevelType(AlarmType type, AlarmPriority prio)
+{
+    int typeValue = 0;
+    int prioValue = 0;
+    if (type == ALARM_TYPE_TECH)
+    {
+        systemConfig.getNumValue("Others|AlarmType|Technology", typeValue);
+    }
+    else
+    {
+        systemConfig.getNumValue("Others|AlarmType|Physiology", typeValue);
+    }
+
+    if (prio == ALARM_PRIO_HIGH)
+    {
+        systemConfig.getNumValue("Others|AlarmLevel|High", prioValue);
+    }
+    else if (prio == ALARM_PRIO_MED)
+    {
+        systemConfig.getNumValue("Others|AlarmLevel|Med", prioValue);
+    }
+    else if (prio == ALARM_PRIO_LOW)
+    {
+        systemConfig.getNumValue("Others|AlarmLevel|Low", prioValue);
+    }
+
+    return prioValue && typeValue;
 }
 
 void NurseCallManagerPrivate::writeNurseCallSta(bool sta)
@@ -187,13 +200,4 @@ void NurseCallManagerPrivate::writeNurseCallSta(bool sta)
         data[0] = !sta;
     }
     callFile.write(data);
-
-    if (callFile.size() > 10 * 1024 * 1024)
-    {
-        // 超过10m清空文件并重新打开
-        callFile.close();
-        callFile.open(QIODevice::Truncate);
-        callFile.close();
-        callFile.open(QIODevice::WriteOnly);
-    }
 }
