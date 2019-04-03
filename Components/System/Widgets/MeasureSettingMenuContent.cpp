@@ -285,13 +285,16 @@ void MeasureSettingMenuContent::onBtnReleasd()
 void MeasureSettingMenuContentPrivate::loadOptions()
 {
 #ifdef ENABLE_O2_APNEASTIMULATION
-    if (patientManager.getType() == PATIENT_TYPE_NEO)
+    if (systemManager.isSupport(CONFIG_O2))
     {
-        apneaStimulationBtn->setEnabled(true);
-    }
-    else
-    {
-        apneaStimulationBtn->setEnabled(false);
+        if (patientManager.getType() == PATIENT_TYPE_NEO)
+        {
+            apneaStimulationBtn->setEnabled(true);
+        }
+        else
+        {
+            apneaStimulationBtn->setEnabled(false);
+        }
     }
 #endif
 }
