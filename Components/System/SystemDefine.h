@@ -37,6 +37,16 @@ enum UserFaceType
     UFACE_NR
 };
 
+/**
+ * @brief The ScreenType enum
+ */
+enum ScreenType
+{
+    BUSINESS_SCREEN,
+    INDUSTRIAL_SCRENN,
+    SCREEN_TYPE_NR
+};
+
 // 背光亮度等级。
 enum BrightnessLevel
 {
@@ -71,6 +81,15 @@ public:
         {
             "UserFaceStandard", "UserFaceFullScreen", "UserFaceOxyCRG",
             "UserFaceTrend", "UserFaceBigFont", "UserFaceCustom", "UserFaceUnknow"
+        };
+        return symbol[index];
+    }
+
+    static const char *convert(ScreenType index)
+    {
+        static const char *symbol[SCREEN_TYPE_NR] =
+        {
+            "BusinessScreen", "IndustrialScreen"
         };
         return symbol[index];
     }

@@ -2,4 +2,5 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     NIBPState \
-    TestNIBPMonitorStandbyState
+    TestNIBPMonitorStandbyState \
+    TestNIBPMonitorStopState

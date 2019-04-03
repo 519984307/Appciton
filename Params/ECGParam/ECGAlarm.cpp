@@ -334,10 +334,10 @@ bool ECGOneShotAlarm::isRemoveLightAfterConfirm(int id)
 {
     if (id >= ECG_ONESHOT_ALARM_LEADOFF && id <= ECG_ONESHOT_ALARM_OVERLOAD)
     {
-        return true;
+        return false;
     }
 
-    return false;
+    return true;
 }
 
 /**************************************************************************************************
