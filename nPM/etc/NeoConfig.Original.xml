@@ -787,6 +787,14 @@
 		    <Scale>10</Scale>
 		</fahrenheit>
 		</TD>
+		<O2 Enable="0" Prio="2">
+		<percent>
+		    <Low Min="0" Max="99">200</Low>
+		    <High Min="1" Max="100">600</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</percent>
+		</O2>
     </AlarmSource>
     <Local>
         <NIBPUnit>5</NIBPUnit>
