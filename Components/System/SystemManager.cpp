@@ -515,17 +515,17 @@ void SystemManager::enableBrightness(BrightnessLevel br)
 #else
     // add screen type select
     char *lightValue = NULL;
+    char industrialLight[BRT_LEVEL_NR] = {1, 15, 25, 38, 46, 54, 62, 72, 85, 100};
+    char businessLight[BRT_LEVEL_NR] = {64, 52, 47, 41, 36, 31, 26, 21, 15, 1};
     int index = BUSINESS_SCREEN;
     machineConfig.getNumValue("ScreenTypeSelect", index);
     if (static_cast<ScreenType>(index) == INDUSTRIAL_SCRENN)
     {
-        char tempLightValue[BRT_LEVEL_NR] = {1, 15, 25, 38, 46, 54, 62, 72, 85, 100};
-        lightValue = reinterpret_cast<char*>(&tempLightValue);
+        lightValue = reinterpret_cast<char*>(&industrialLight);
     }
     else
     {
-        char tempLightValue[BRT_LEVEL_NR] = {64, 52, 47, 41, 36, 31, 26, 21, 15, 1};
-        lightValue = reinterpret_cast<char*>(&tempLightValue);
+        lightValue = reinterpret_cast<char*>(&businessLight);
     }
 
     if (d_ptr->backlightFd < 0)
@@ -543,6 +543,7 @@ void SystemManager::enableBrightness(BrightnessLevel br)
 
     QString str = QString::number(brValue);
 
+    qDebug() << Q_FUNC_INFO << str;
     int ret = write(d_ptr->backlightFd, qPrintable(str), str.length() + 1);
 
     if (ret < 0)

@@ -274,6 +274,9 @@ void ECGParam::setProvider(ECGProviderIFace *provider)
     // 设置病人类型
     _provider->setPatientType(getPatientType());
 
+    // raw data
+    _provider->enableRawData(getRawDataOnOff());
+
     // 设置带宽。
 //    _provider->setBandwidth((ECGBandwidth)getBandwidth());
 
@@ -2198,6 +2201,21 @@ void ECGParam::setFristConnect()
 bool ECGParam::getFristConnect()
 {
     return _isFristConnect;
+}
+
+void ECGParam::setRawDataOnOff(bool sta)
+{
+    if (_provider)
+    {
+        _provider->enableRawData(sta);
+    }
+}
+
+bool ECGParam::getRawDataOnOff()
+{
+    int value = false;
+    machineConfig.getNumValue("Record|ECG", value);
+    return value;
 }
 
 /**************************************************************************************************

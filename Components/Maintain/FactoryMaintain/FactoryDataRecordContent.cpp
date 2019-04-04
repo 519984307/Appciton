@@ -16,6 +16,7 @@
 #include "SystemManager.h"
 #include "RawDataCollector.h"
 #include "LanguageManager.h"
+#include "ECGParam.h"
 
 class FactoryDataRecordContentPrivate
 {
@@ -163,6 +164,7 @@ void FactoryDataRecordContent::onComboBoxIndexChanged(int index)
     {
     case FactoryDataRecordContentPrivate::ITEM_CBO_ECG:
         str = "ECG";
+        ecgParam.setRawDataOnOff(index);
         rawDataCollector.setCollectStatus(RawDataCollector::ECG_DATA, index);
         break;
     case FactoryDataRecordContentPrivate::ITEM_CBO_SPO2:
