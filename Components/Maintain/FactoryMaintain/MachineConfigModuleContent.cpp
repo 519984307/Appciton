@@ -565,8 +565,10 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
         {
             machineConfig.setNumValue("ScreenTypeSelect", index);
             machineConfig.saveToDisk();
+#ifdef Q_WS_QWS
             BrightnessLevel br = systemManager.getBrightness();
             systemManager.setBrightness(br);
+#endif
             return;
         }
         default:
