@@ -117,6 +117,9 @@ DEFINES += DISABLE_FACTORY_MODULE_SELFTEST
 #失能ecg模块校准
 DEFINES += DISABLE_ECG_MODULE_CALIBRATION
 
+#大字体界面，co2模块替换resp模块
+DEFINES += BIG_FONT_LAYOUT_CO2_REPLACE_RESP
+
 # Depending libraries
 LIBS += -ldl -lasound -lz
 
