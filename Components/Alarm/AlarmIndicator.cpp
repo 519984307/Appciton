@@ -307,12 +307,7 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
             for (int j = ALARM_PRIO_LOW; j <= ALARM_PRIO_HIGH; j++)
             {
                 int count = getAlarmCount(static_cast<AlarmType>(i), static_cast<AlarmPriority>(j));
-                int isAlarm = 0;
-                if (count)
-                {
-                    isAlarm = 1 << (i * 3 + j);
-                }
-                nurseCallManager->callNurse(static_cast<AlarmType>(i), static_cast<AlarmPriority>(j), isAlarm);
+                nurseCallManager->callNurse(static_cast<AlarmType>(i), static_cast<AlarmPriority>(j), count);
             }
         }
     }

@@ -85,13 +85,14 @@ NurseCallManager &NurseCallManager::getInstance()
     return *instance;
 }
 
-void NurseCallManager::callNurse(AlarmType type, AlarmPriority prio, int alarmSta)
+void NurseCallManager::callNurse(AlarmType type, AlarmPriority prio, bool alarmSta)
 {
     if (d_ptr->getSignalType() == NurseCallManagerPrivate::SIGNAL_TYPE_CONTINUOUS
             && d_ptr->getAlarmLevelType(type, prio))
     {
+        // 每种报警类型和报警优先级是否报警对应一个位
         int pos = type * 3 + prio;
-        if ((d_ptr->callSta & (1 << pos)) != alarmSta)
+        if ((d_ptr->callSta & (1 << pos)) != alarmSta) // 护士呼叫状态与当前位对应不相等进行更新护士呼叫状态
         {
             bool prvSta = d_ptr->callSta;
             if (alarmSta)
@@ -103,7 +104,7 @@ void NurseCallManager::callNurse(AlarmType type, AlarmPriority prio, int alarmSt
                 d_ptr->callSta &= ~(1 << pos);
             }
             bool curSta = d_ptr->callSta;
-            if (prvSta != curSta)
+            if (prvSta != curSta)                       // 护士呼叫状态发生0和1的变化时才进行写入操作
             {
                 d_ptr->writeNurseCallSta(curSta);
             }

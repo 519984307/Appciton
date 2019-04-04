@@ -24,7 +24,7 @@ public:
     /**
      * @brief nurseCall 呼叫护士连续信号
      */
-    virtual void callNurse(AlarmType type, AlarmPriority prio, int alarmSta) = 0;
+    virtual void callNurse(AlarmType type, AlarmPriority prio, bool alarmSta) = 0;
 
     /**
      * @brief callNurse 呼叫护士脉冲信号
