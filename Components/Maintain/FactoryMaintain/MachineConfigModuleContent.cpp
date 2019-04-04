@@ -20,11 +20,11 @@
 #include "SPO2Symbol.h"
 #ifdef Q_WS_QWS
 #include <QWSServer>
-#include "SystemManager.h"
 #endif
 #include "SoftKeyManager.h"
 #include "MessageBox.h"
 #include <QProcess>
+#include "SystemManager.h"
 
 class MachineConfigModuleContentPrivte
 {
