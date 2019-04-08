@@ -121,6 +121,8 @@ MenuSidebar::MenuSidebar(QWidget *parent)
     d->scroller->setHorizontalOvershootPolicy(QKineticScroller::OvershootAlwaysOff);
     setScrollDirection(ScrollArea::ScrollVertical);
 
+    // 在参数测量菜单中打开报警设置菜单，然后等待超时关闭，最后再次打开该参数测量菜单，出现的meusideitem一直是首项。
+    // 因此此处加入处理：当菜单超时关闭后，再次打开时强制刷新当前menusideitem
     connect(&windowManager, SIGNAL(allDialogsStatusChanged()), this, SLOT(onDialogsStatusChanged()));
 }
 
