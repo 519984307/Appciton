@@ -16,6 +16,7 @@
 #include "IConfig.h"
 #include "AlarmStateMachineInterface.h"
 #include "AlarmInterface.h"
+#include "NurseCallManagerInterface.h"
 
 /**************************************************************************************************
  * 功能：发布报警。
@@ -304,6 +305,20 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
             alarmStateMachine->handAlarmEvent(ALARM_STATE_EVENT_NO_ACKNOWLEDG_ALARM, 0, 0);
         }
     }
+
+    // 护士呼叫
+    NurseCallManagerInterface *nurseCallManager = NurseCallManagerInterface::getNurseCallManagerInterface();
+    if (nurseCallManager)
+    {
+        for (int i = ALARM_TYPE_PHY; i <= ALARM_TYPE_TECH; i++)
+        {
+            for (int j = ALARM_PRIO_LOW; j <= ALARM_PRIO_HIGH; j++)
+            {
+                int count = getAlarmCount(static_cast<AlarmType>(i), static_cast<AlarmPriority>(j));
+                nurseCallManager->callNurse(static_cast<AlarmType>(i), static_cast<AlarmPriority>(j), count);
+            }
+        }
+    }
 }
 
 /**************************************************************************************************
@@ -509,6 +524,12 @@ bool AlarmIndicator::addAlarmInfo(unsigned alarmTime, AlarmType alarmType,
     node.removeLigthAfterConfirm = isRemoveLightAfterConfirm;
 
     list->append(node);
+
+    NurseCallManagerInterface *nurseCallManager = NurseCallManagerInterface::getNurseCallManagerInterface();
+    if (nurseCallManager)
+    {
+        nurseCallManager->callNurse(alarmType, alarmPriority);
+    }
     return true;
 }
 
@@ -911,6 +932,31 @@ int AlarmIndicator::getAlarmCount(AlarmPriority priority)
     for (; it != list->end(); ++it)
     {
         if (it->alarmPriority == priority)
+        {
+            ++count;
+            continue;
+        }
+    }
+
+    return count;
+}
+
+int AlarmIndicator::getAlarmCount(AlarmType type, AlarmPriority priority)
+{
+    int count = 0;
+    AlarmInfoList *list = &_alarmInfoDisplayPool;
+
+    // 无数据。
+    if (list->empty())
+    {
+        return count;
+    }
+
+    // 查找报警信息并更新。
+    AlarmInfoList::iterator it = list->begin();
+    for (; it != list->end(); ++it)
+    {
+        if (it->alarmType == type && it->alarmPriority == priority)
         {
             ++count;
             continue;
