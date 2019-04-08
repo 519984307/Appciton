@@ -17,6 +17,7 @@
 #include <QResizeEvent>
 #include <ThemeManager.h>
 #include <QDebug>
+#include "WindowManager.h"
 
 #define PREFER_ITEM_HEIGHT (68)
 #define DEFAULT_ITEM_NUM 8
@@ -29,7 +30,8 @@ public:
         : ScrollAreaPrivate(q_ptr),
           widget(NULL),
           itemLayout(NULL),
-          curSelectIndex(-1)
+          curSelectIndex(-1),
+          isUpdatingSelectedIndex(false)
     {
     }
 
@@ -41,6 +43,7 @@ public:
     QList<MenuSidebarItem *> itemList;
     QVBoxLayout *itemLayout;
     int curSelectIndex;
+    bool isUpdatingSelectedIndex;
 };
 
 void MenuSidebarPrivate::onItemClicked()
@@ -117,6 +120,8 @@ MenuSidebar::MenuSidebar(QWidget *parent)
 
     d->scroller->setHorizontalOvershootPolicy(QKineticScroller::OvershootAlwaysOff);
     setScrollDirection(ScrollArea::ScrollVertical);
+
+    connect(&windowManager, SIGNAL(allDialogsStatusChanged()), this, SLOT(onDialogsStatusChanged()));
 }
 
 MenuSidebar::~MenuSidebar()
@@ -168,8 +173,13 @@ bool MenuSidebar::setChecked(const QString &text)
         return false;
     }
 
-    if (index != d->curSelectIndex)
+    if (index != d->curSelectIndex || d->isUpdatingSelectedIndex)
     {
+        if (d->isUpdatingSelectedIndex)
+        {
+            d->isUpdatingSelectedIndex = false;
+        }
+
         if (d->curSelectIndex >= 0)
         {
             // uncheck the previous item
@@ -210,6 +220,12 @@ MenuSidebarItem *MenuSidebar::itemAt(int index) const
     }
 
     return d->itemList.at(index);
+}
+
+void MenuSidebar::onDialogsStatusChanged()
+{
+    Q_D(MenuSidebar);
+    d->isUpdatingSelectedIndex = true;
 }
 
 QSize MenuSidebar::sizeHint() const
