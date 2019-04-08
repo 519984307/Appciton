@@ -25,6 +25,7 @@
     <!--系统信息-->
     <SerialNumber>20180725222</SerialNumber>
     <SoftwareVersion>0.0.0.1</SoftwareVersion>
+    <ScreenInch>10.1</ScreenInch>
     <!--参数信息-->
     <AllParams>ECG,SPO2,RESP,NIBP,CO2,IBP,AG,CO,TEMP,O2</AllParams>
     <!--数据记录使能选择-->

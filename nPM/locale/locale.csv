@@ -967,6 +967,8 @@ Remove,移除,Remove
 ScreenTypeSelect,屏幕类型,Screen Type
 IndustrialScreen,工业屏,Industrial
 BusinessScreen,商业屏,Business
+ScreenInch,屏幕尺寸,Screen Inch
+ScreenResolution,屏幕分辨率,Screen Resolution
 TransferRescueDataByUSB,传输营救数据到USB,Transferring Rescue Data to USB
 TransferRescueDataByWIFI,传输营救数据到WIFI,Transferring Rescue Data to WIFI
 TransferSupervisorByUSB,传输超级配置数据到USB,Transferring Supervisor Config to USB
