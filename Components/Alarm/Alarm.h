@@ -37,7 +37,7 @@ public:
     };
 
     static Alarm &getInstance(void);
-    static void releaseInstance();
+    void clear();
 
     // 注册报警源。
     void addLimtSource(AlarmLimitIFace &alarmSource);

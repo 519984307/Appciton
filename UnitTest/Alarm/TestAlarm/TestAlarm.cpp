@@ -61,7 +61,7 @@ void TestAlarm::cleanup()
 {
     if (d_ptr->isCleanup)
     {
-        alertor.releaseInstance();
+        alertor.clear();
     }
 }
 

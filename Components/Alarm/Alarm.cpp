@@ -30,7 +30,6 @@
 
 #define ALARM_LIMIT_TIMES (3)   // 超限3次后，发生报警
 static int curSecondAlarmNum = 0;  // record the number of alarms happend in the save seconds
-static Alarm *instance = NULL;
 
 struct AlarmTraceCtrl
 {
@@ -611,6 +610,8 @@ void Alarm::_handleAlarm(void)
  *************************************************************************************************/
 Alarm &Alarm::getInstance()
 {
+    static Alarm *instance = NULL;
+
     if (instance == NULL)
     {
         instance = new Alarm();
@@ -623,12 +624,24 @@ Alarm &Alarm::getInstance()
     return *instance;
 }
 
-void Alarm::releaseInstance()
+void Alarm::clear()
 {
-    if (instance)
+    // 删除报警源。
+    QList<AlarmLimitIFace *> limitAlarmSourceList = _limitSources.values();
+    foreach(AlarmLimitIFace *source, limitAlarmSourceList)
     {
-        instance = NULL;
+        delete source;
     }
+
+    _limitSources.clear();
+
+    QList<AlarmOneShotIFace *> oneshotSourceList = _oneshotSources.values();
+    foreach(AlarmOneShotIFace *source, oneshotSourceList)
+    {
+        delete source;
+    }
+    _oneshotSources.clear();
+    _alarmStatusList.clear();
 }
 
 void Alarm::addLimtSource(AlarmLimitIFace &alarmSource)

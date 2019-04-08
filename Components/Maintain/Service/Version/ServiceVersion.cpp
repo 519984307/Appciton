@@ -51,7 +51,7 @@ void ServiceVersion::getECGVersion(unsigned char *data, int len)
     }
 
     char *p = reinterpret_cast<char *>(data + 1);
-    const char *P = const_cast<const char *>(p);
+    const char *ptr = const_cast<const char *>(p);
 
 //    _ECGVersion += QString(P);
 //    _ECGVersion += "-";
@@ -62,11 +62,11 @@ void ServiceVersion::getECGVersion(unsigned char *data, int len)
 //    _ECGVersion += QString(P + 48);
 
     _ECGVersion = QString("SW(%1.%2,    %3  %4), HW(%5)")
-            .arg(QString(P))
-            .arg(QString(P + 16))
-            .arg(QString(P + 32))
-            .arg(QString(P + 48))
-            .arg(QString(P + 64));
+            .arg(QString(ptr))
+            .arg(QString(ptr + 16))
+            .arg(QString(ptr + 32))
+            .arg(QString(ptr + 48))
+            .arg(QString(ptr + 64));
     _ECG->setText(_ECGVersion);
 }
 
@@ -82,14 +82,14 @@ void ServiceVersion::getNIBPVersion(unsigned char *data, int len)
         return;
     }
     char *p = reinterpret_cast<char *>(data + 1);
-    const char *P = const_cast<const char *>(p);
+    const char *ptr = const_cast<const char *>(p);
 
     _NIBPVersion = QString("SW(%1.%2,    %3  %4), HW(%5)")
-            .arg(QString(P))
-            .arg(QString(P + 16))
-            .arg(QString(P + 32))
-            .arg(QString(P + 48))
-            .arg(QString(P + 64));
+            .arg(QString(ptr))
+            .arg(QString(ptr + 16))
+            .arg(QString(ptr + 32))
+            .arg(QString(ptr + 48))
+            .arg(QString(ptr + 64));
 
     _NIBP->setText(_NIBPVersion);
 }
@@ -107,13 +107,13 @@ void ServiceVersion::getSPO2Version(unsigned char *data, int len)
     }
 
     char *p = reinterpret_cast<char *>(data + 1);
-    const char *P = const_cast<const char *>(p);
+    const char *ptr = const_cast<const char *>(p);
 
     _SPO2Version = QString("SW(%1.%2,    %3  %4)")
-            .arg(QString(P))
-            .arg(QString(P + 16))
-            .arg(QString(P + 32))
-            .arg(QString(P + 48));
+            .arg(QString(ptr))
+            .arg(QString(ptr + 16))
+            .arg(QString(ptr + 32))
+            .arg(QString(ptr + 48));
 
     _SPO2->setText(_SPO2Version);
 }
@@ -131,7 +131,7 @@ void ServiceVersion::getTEMPVersion(unsigned char *data, int len)
     }
 
     char *p = reinterpret_cast<char *>(data + 1);
-    const char *P = const_cast<const char *>(p);
+    const char *ptr = const_cast<const char *>(p);
 
 //    _TEMPVersion += QString(P);
 //    _TEMPVersion += "-";
@@ -141,11 +141,11 @@ void ServiceVersion::getTEMPVersion(unsigned char *data, int len)
 //    _TEMPVersion += "\r\r";
 //    _TEMPVersion += QString(P + 48);
     _TEMPVersion = QString("SW(%1.%2,    %3  %4), HW(%5)")
-            .arg(QString(P))
-            .arg(QString(P + 16))
-            .arg(QString(P + 32))
-            .arg(QString(P + 48))
-            .arg(QString(P + 64));
+            .arg(QString(ptr))
+            .arg(QString(ptr + 16))
+            .arg(QString(ptr + 32))
+            .arg(QString(ptr + 48))
+            .arg(QString(ptr + 64));
 
     _TEMP->setText(_TEMPVersion);
 }
@@ -163,13 +163,13 @@ void ServiceVersion::getnPMBoardVersion(unsigned char *data, int len)
         return;
     }
     char *p = reinterpret_cast<char *>(data + 1);
-    const char *P = const_cast<const char *>(p);
+    const char *ptr = const_cast<const char *>(p);
 
     _nPMBoardVersion = QString("SW(%1.%2,    %3  %4)")
-            .arg(QString(P))
-            .arg(QString(P + 16))
-            .arg(QString(P + 32))
-            .arg(QString(P + 48));
+            .arg(QString(ptr))
+            .arg(QString(ptr + 16))
+            .arg(QString(ptr + 32))
+            .arg(QString(ptr + 48));
 
     _nPMBoard->setText(_nPMBoardVersion);
 }
@@ -186,14 +186,14 @@ void ServiceVersion::getPRT72Version(unsigned char *data, int len)
         return;
     }
     char *p = reinterpret_cast<char *>(data + 1);
-    const char *P = const_cast<const char *>(p);
+    const char *ptr = const_cast<const char *>(p);
 
     _PRT72Version = QString("SW(%1.%2,    %3  %4), HW(%5)")
-            .arg(QString(P))
-            .arg(QString(P + 16))
-            .arg(QString(P + 32))
-            .arg(QString(P + 48))
-            .arg(QString(P + 64));
+            .arg(QString(ptr))
+            .arg(QString(ptr + 16))
+            .arg(QString(ptr + 32))
+            .arg(QString(ptr + 48))
+            .arg(QString(ptr + 64));
     _PRT72->setText(_PRT72Version);
 }
 
@@ -213,33 +213,33 @@ void ServiceVersion::_coreVersion(void)
     debug("%s", qPrintable(fileStr));
     file.close();
 
-    QString Str;
+    QString str;
     int x = fileStr.indexOf("Linux version");
     int y = fileStr.indexOf(" (");
-    Str = "Linux :";
-    Str += fileStr.mid(x+13, y-x-13);
-    Str += ",\r\r\r";
+    str = "Linux :";
+    str += fileStr.mid(x+13, y-x-13);
+    str += ",\r\r\r";
 
     x = fileStr.indexOf("gcc version");
     y = fileStr.indexOf("(GCC)");
-    Str += "gcc :";
-    Str += fileStr.mid(x+11, y-x-12);
-    Str += ",\r\r\r";
+    str += "gcc :";
+    str += fileStr.mid(x+11, y-x-12);
+    str += ",\r\r\r";
 
     x = fileStr.indexOf("SMP ");
     y = fileStr.indexOf(" CST");
-    Str += fileStr.mid(x+8, y-x-8);
-    Str += "\r\r";
+    str += fileStr.mid(x+8, y-x-8);
+    str += "\r\r";
 
     x = fileStr.indexOf("CST ");
-    Str += fileStr.mid(x+4, 4);
+    str += fileStr.mid(x+4, 4);
 
     if (QFile::exists("/etc/rcS.d/S40networking"))
     {
-        Str += ", Ethernet";
+        str += ", Ethernet";
     }
 
-    _CORE->setText(Str);
+    _CORE->setText(str);
 }
 
 /**************************************************************************************************
