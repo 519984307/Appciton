@@ -151,8 +151,8 @@ void FactoryVersionInfo::layoutExec()
     d_ptr->labs.insert(FactoryVersionInfoPrivate
                        ::ITEM_LAB_PRT48_VERSION, labelRight);
 
-    // screen inch
-    labelLeft = new QLabel(trs("ScreenInch") + "    ");
+    // screen size
+    labelLeft = new QLabel(trs("ScreenSize") + "    ");
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
 
     labelRight = new QLabel;
@@ -266,9 +266,11 @@ void FactoryVersionInfoPrivate::loadOptions()
     }
     labs[ITEM_LAB_PRT48_VERSION]->setText(version);
 
-    // screen inch
+    // screen size
     str.clear();
-    machineConfig.getStrValue("ScreenInch", str);
+    machineConfig.getStrValue("ScreenSize", str);
+    str += " ";
+    str += trs("Inch");
     labs[ITEM_LAB_SCREEN_INCH]->setText(str);
 
     // screen resolution
