@@ -50,8 +50,7 @@ void ServiceVersion::getECGVersion(unsigned char *data, int len)
         return;
     }
 
-    char *p = reinterpret_cast<char *>(data + 1);
-    const char *ptr = const_cast<const char *>(p);
+    const char *ptr = reinterpret_cast<const char *>(data + 1);
 
 //    _ECGVersion += QString(P);
 //    _ECGVersion += "-";
@@ -81,8 +80,8 @@ void ServiceVersion::getNIBPVersion(unsigned char *data, int len)
     {
         return;
     }
-    char *p = reinterpret_cast<char *>(data + 1);
-    const char *ptr = const_cast<const char *>(p);
+
+    const char *ptr = reinterpret_cast<const char *>(data + 1);
 
     _NIBPVersion = QString("SW(%1.%2,    %3  %4), HW(%5)")
             .arg(QString(ptr))
@@ -106,8 +105,7 @@ void ServiceVersion::getSPO2Version(unsigned char *data, int len)
         return;
     }
 
-    char *p = reinterpret_cast<char *>(data + 1);
-    const char *ptr = const_cast<const char *>(p);
+    const char *ptr = reinterpret_cast<const char *>(data + 1);
 
     _SPO2Version = QString("SW(%1.%2,    %3  %4)")
             .arg(QString(ptr))
@@ -130,8 +128,7 @@ void ServiceVersion::getTEMPVersion(unsigned char *data, int len)
         return;
     }
 
-    char *p = reinterpret_cast<char *>(data + 1);
-    const char *ptr = const_cast<const char *>(p);
+    const char *ptr = reinterpret_cast<const char *>(data + 1);
 
 //    _TEMPVersion += QString(P);
 //    _TEMPVersion += "-";
@@ -162,8 +159,8 @@ void ServiceVersion::getnPMBoardVersion(unsigned char *data, int len)
     {
         return;
     }
-    char *p = reinterpret_cast<char *>(data + 1);
-    const char *ptr = const_cast<const char *>(p);
+
+    const char *ptr = reinterpret_cast<const char *>(data + 1);
 
     _nPMBoardVersion = QString("SW(%1.%2,    %3  %4)")
             .arg(QString(ptr))
@@ -185,8 +182,8 @@ void ServiceVersion::getPRT72Version(unsigned char *data, int len)
     {
         return;
     }
-    char *p = reinterpret_cast<char *>(data + 1);
-    const char *ptr = const_cast<const char *>(p);
+
+    const char *ptr = reinterpret_cast<const char *>(data + 1);
 
     _PRT72Version = QString("SW(%1.%2,    %3  %4), HW(%5)")
             .arg(QString(ptr))
