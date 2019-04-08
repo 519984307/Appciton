@@ -14,6 +14,7 @@
 #include "Debug.h"
 #include <QTimer>
 #include "SystemManager.h"
+#include "LanguageManager.h"
 
 
 void NIBPCountdownTime::run()

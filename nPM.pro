@@ -305,6 +305,7 @@ SOURCES +=                                                                      
     Components/ParamManager/Param.cpp                                           \
     Components/ParamManager/ParamManager.cpp                                    \
     Components/ParamManager/ParamInfo.cpp                                       \
+    Components/ParamManager/ParamInfoInterface.cpp                              \
     Components/Alarm/Alarm.cpp                                                  \
     Components/Alarm/AlarmInterface.cpp                                         \
     Components/Alarm/AlarmConfig.cpp                                            \
@@ -347,13 +348,16 @@ SOURCES +=                                                                      
     Components/PatientData/RescueDataListNewWidget.cpp                          \
     Components/PatientData/RescueDataExportWidget.cpp                           \
     Components/PatientData/TrendCache.cpp                                       \
+    Components/PatientData/TrendCacheInterface.cpp                              \
     Components/PatientData/TrendDataUtil.cpp                                    \
     Components/PatientData/RescueDataDeleteWidget.cpp                           \
     Components/PatientData/RescueDataDeleteWindow.cpp                           \
     Components/PatientData/TrendDataStorageManager.cpp                          \
+    Components/PatientData/TrendDataStorageManagerInterface.cpp                 \
     Components/PatientData/EventDataParseContext.cpp                            \
     Components/PatientData/EventStorageItem.cpp                                 \
     Components/PatientData/EventStorageManager.cpp                              \
+    Components/PatientData/EventStorageManagerInterface.cpp                     \
     Components/PatientData/TrendWaveWidget.cpp                                  \
     Components/PatientData/TrendSubWaveWidget.cpp                               \
     Components/PatientData/IMoveButton.cpp                                      \
@@ -526,6 +530,7 @@ SOURCES +=                                                                      
     Params/ECGParam/ECGDupAlarm.cpp                                             \
     Params/ECGParam/ECGDupParam.cpp                                             \
     Params/ECGParam/ECGParam.cpp                                                \
+    Params/ECGParam/ECGParamInterface.cpp                                       \
     Params/ECGParam/ECGWidgets/ECGWaveWidget.cpp                                \
     Params/ECGParam/ECGWidgets/ECGWaveRuler.cpp                                 \
     Params/ECGParam/ECGWidgets/ECGTrendWidget.cpp                               \
@@ -813,6 +818,7 @@ HEADERS +=                                                                      
     Components/ParamManager/ParamManager.h                                      \
     Components/ParamManager/ParamDefine.h                                       \
     Components/ParamManager/ParamInfo.h                                         \
+    Components/ParamManager/ParamInfoInterface.h                                \
     Components/Alarm/Alarm.h                                                    \
     Components/Alarm/AlarmInterface.h                                           \
     Components/Alarm/AlarmConfig.h                                              \
@@ -863,15 +869,18 @@ HEADERS +=                                                                      
     Components/PatientData/RescueDataDefine.h                                   \
     Components/PatientData/RescueDataExportWidget.h                             \
     Components/PatientData/TrendCache.h                                         \
+    Components/PatientData/TrendCacheInterface.h                                \
     Components/PatientData/TrendDataSymbol.h                                    \
     Components/PatientData/TrendDataDefine.h                                    \
     Components/PatientData/RescueDataDeleteWidget.h                             \
     Components/PatientData/RescueDataDeleteWindow.h                             \
     Components/PatientData/TrendDataStorageManager.h                            \
+    Components/PatientData/TrendDataStorageManagerInterface.h                   \
     Components/PatientData/EventDataDefine.h                                    \
     Components/PatientData/EventDataParseContext.h                              \
     Components/PatientData/EventStorageItem.h                                   \
     Components/PatientData/EventStorageManager.h                                \
+    Components/PatientData/EventStorageManagerInterface.h                       \
     Components/PatientData/TrendWaveWidget.h                                    \
     Components/PatientData/TrendSubWaveWidget.h                                 \
     Components/PatientData/IMoveButton.h                                        \
@@ -1061,6 +1070,7 @@ HEADERS +=                                                                      
     Params/ECGParam/ECGDupAlarm.h                                               \
     Params/ECGParam/ECGDupParam.h                                               \
     Params/ECGParam/ECGParam.h                                                  \
+    Params/ECGParam/ECGParamInterface.h                                         \
     Params/ECGParam/ECGProviderIFace.h                                          \
     Params/ECGParam/ECGSymbol.h                                                 \
     Params/ECGParam/ECGWidgets/ECGWaveWidget.h                                  \

@@ -102,6 +102,11 @@ EventStorageManager &EventStorageManager::getInstance()
     if (instance == NULL)
     {
         instance = new EventStorageManager();
+        EventStorageManagerInterface *old = registerEventStorageManager(instance);
+        if (old)
+        {
+            delete old;
+        }
     }
     return *instance;
 }

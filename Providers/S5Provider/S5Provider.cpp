@@ -22,6 +22,7 @@
 #include "ErrorLogItem.h"
 #include "ErrorLog.h"
 #include "IConfig.h"
+#include "LanguageManager.h"
 
 #define PROBE_IN_OUT            0x0001
 #define FINGER_IN_OUT           0x0002

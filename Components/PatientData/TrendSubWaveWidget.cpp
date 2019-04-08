@@ -20,6 +20,7 @@
 #include "CO2Param.h"
 #include "IConfig.h"
 #include "TrendDataStorageManager.h"
+#include "LanguageManager.h"
 
 #define GRAPH_POINT_NUMBER          120
 #define DATA_INTERVAL_PIXEL         5
@@ -70,7 +71,7 @@ void TrendSubWaveWidget::setWidgetParam(SubParamID id, TrendGraphType type)
         QString str = paramInfo.getSubParamName(_id);
         _paramName = str.left(str.length() - 4);
     }
-    _paramUnit = Unit::localeSymbol(paramManager.getSubParamUnit(paramInfo.getParamID(_id), _id));
+    _paramUnit = trs(Unit::getSymbol(paramManager.getSubParamUnit(paramInfo.getParamID(_id), _id)));
 }
 
 void TrendSubWaveWidget::trendDataInfo(TrendGraphInfo &info)

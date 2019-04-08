@@ -11,30 +11,15 @@
 #pragma once
 #include "StorageManager.h"
 #include "TrendDataDefine.h"
+#include "TrendDataStorageManagerInterface.h"
 
 #define SHORT_TREND_DATA_NUM  512   // the short trend data number for each time interval
 
 class TrendDataStorageManagerPrivate;
-class TrendDataStorageManager : public StorageManager
+class TrendDataStorageManager : public StorageManager, public TrendDataStorageManagerInterface
 {
     Q_OBJECT
 public:
-    enum TrendDataFlag {
-        CollectStatusNone = 0,
-        CollectStatusPeriod = (1<<1),       /* Collect in time period*/
-        CollectStatusAlarm = (1<<2),        /* Collect when alarm happen */
-        CollectStatusPrint = (1<<3),        /* Collect when perform realtime print */
-        CollectStatusFreeze = (1<<4),       /* Colloect when freeze */
-        CollectStatusCOResult = (1<<5),     /* Collect when get CO result */
-        CollectStatusNIBP = (1<<6),         /* Collect when get NIBP result */
-
-        HasAlarm = (1<<7),              /* has param alarm */
-        HRSourceIsSpo2 = (1<<8),              /* SPO2 if set, otherwise, ECG */
-        BRSourceIsResp = (1<<9),              /* resp if set, otherwise, CO2 */
-    };
-
-    Q_DECLARE_FLAGS(TrendDataFlags, TrendDataFlag)
-
     static TrendDataStorageManager &getInstance();
     ~TrendDataStorageManager();
 

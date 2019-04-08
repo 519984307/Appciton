@@ -13,6 +13,7 @@
 #include "IConfig.h"
 #include "PatientManager.h"
 #include "NIBPCountdownTime.h"
+#include "LanguageManager.h"
 
 /**************************************************************************************************
  * 主运行。
