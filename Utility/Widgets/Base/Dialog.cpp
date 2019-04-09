@@ -15,9 +15,9 @@
 #include <QBoxLayout>
 #include <QFrame>
 #include <QResizeEvent>
-#include "FontManager.h"
+#include "FontManagerInterface.h"
 #include "ThemeManager.h"
-#include "WindowManager.h"
+#include "WindowManagerInterface.h"
 #include <QPaintEvent>
 #include <QPainter>
 
@@ -81,7 +81,11 @@ Dialog::Dialog(QWidget *parent)
     vLayout->addWidget(d_ptr->m_widget, 1);
     connect(closeBtn, SIGNAL(clicked(bool)), this, SLOT(close()));
 
-    setFont(fontManager.textFont(themeManger.defaultFontPixSize()));
+    FontMangerInterface *fontManager = FontMangerInterface::getFontManager();
+    if (fontManager)
+    {
+        setFont(fontManager->textFont(themeManger.defaultFontPixSize()));
+    }
 
     QPalette pal = palette();
     themeManger.setupPalette(ThemeManager::ControlWindow, pal);
@@ -135,14 +139,19 @@ Button *Dialog::getCloseBtn() const
 
 int Dialog::exec()
 {
-    if (windowManager.topWindow() == this)
+    WindowManagerInterface *windowManager = WindowManagerInterface::getWindowManager();
+    if (!windowManager)
+    {
+        return QDialog::exec();
+    }
+    else if (windowManager->topWindow() == this)
     {
         return QDialog::exec();
     }
     else
     {
         // add this window to the window stack
-        windowManager.showWindow(this, WindowManager::ShowBehaviorModal);
+        windowManager->showWindow(this, WindowManagerInterface::ShowBehaviorModal);
         return this->result();
     }
 }

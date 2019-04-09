@@ -19,6 +19,7 @@
 #include "SoundManager.h"
 #include "AlarmSymbol.h"
 #include "Alarm.h"
+#include "AlarmIndicator.h"
 
 class AlarmMaintainMenuContentPrivate
 {

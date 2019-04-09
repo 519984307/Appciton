@@ -33,7 +33,16 @@ SOURCES += \
     ../../../Utility/DataStorage/DataStorageDirManager.cpp \
     ../../../Utility/Config/IConfig.cpp \
     ../../../Components/TimeManager/TimeManagerInterface.cpp \
-    ../../../Components/System/SystemManagerInterface.cpp
+    ../../../Components/System/SystemManagerInterface.cpp \
+    ../../../Components/Alarm/AlarmSourceManager.cpp \
+    ../../../Utility/Config/Config.cpp \
+    ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
+    ../../../Utility/DataStorage/DataStorageDirManagerInterface.cpp \
+    ../../../Utility/Config/XmlParser.cpp \
+    ../../../Utility/ErrorLog/ErrorLogItem.cpp \
+    ../../../Utility/DataStorage/StorageManager.cpp \
+    ../../../Utility/DataStorage/StorageFile.cpp \
+    ../../../Components/Alarm/AlarmInterface.cpp
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
@@ -45,7 +54,17 @@ HEADERS += \
     ../../../Components/TimeManager/TimeManagerInterface.h \
     ../../../Utility/RingBuff/RingBuff.h \
     ../../../Components/ParamManager/ParamDefine.h \
-    ../../../Components/System/SystemManagerInterface.h
+    ../../../Components/System/SystemManagerInterface.h \
+    ../../../Components/Alarm/AlarmSourceManager.h \
+    ../../../Utility/Config/Config.h \
+    ../../../Utility/ErrorLog/ErrorLogInterface.h \
+    ../../../Utility/DataStorage/DataStorageDirManagerInterface.h \
+    ../../../Utility/Config/XmlParser.h \
+    ../../../Utility/ErrorLog/ErrorLogItem.h \
+    ../../../Utility/DataStorage/StorageManager.h \
+    ../../../Utility/DataStorage/StorageManager_p.h \
+    ../../../Utility/DataStorage/StorageFile.h \
+    ../../../Components/Alarm/AlarmInterface.h
 
 INCLUDEPATH += \
     ../../../Utility/DataStorage \
@@ -54,4 +73,6 @@ INCLUDEPATH += \
     ../../../Components/TimeManager \
     ../../../Utility/RingBuff \
     ../../../Components/ParamManager \
-    ../../../Components/System
+    ../../../Components/System \
+    ../../../Components/Alarm \
+    ../../../Utility/ErrorLog

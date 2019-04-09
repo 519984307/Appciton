@@ -19,6 +19,8 @@
 #include "NIBPProviderIFace.h"
 #include "TimeDate.h"
 #include "AlarmIndicator.h"
+#include "RunningStatusBar.h"
+#include "O2ParamInterface.h"
 
 PatientManager *PatientManager::_selfObj = NULL;
 
@@ -66,6 +68,25 @@ void PatientManager::setType(PatientType type)
     {
         return;
     }
+
+#ifdef ENABLE_O2_APNEASTIMULATION
+    // 窒息唤醒功能状态
+    O2ParamInterface *o2Param = O2ParamInterface::getO2ParamInterface();
+    if (o2Param)
+    {
+        bool sta = false;
+        systemConfig.getNumValue("PrimaryCfg|O2|ApneaAwake", sta);
+        if (type == PATIENT_TYPE_NEO && sta)
+        {
+            o2Param->updateApneaStimulationStatus();
+        }
+        else
+        {
+            o2Param->setVibration(false);
+            runningStatus.setShakeStatus(SHAKE_OFF);
+        }
+    }
+#endif
 
     d_ptr->patientInfo.type = type;
     systemConfig.setNumValue("General|PatientType", static_cast<int>(type));

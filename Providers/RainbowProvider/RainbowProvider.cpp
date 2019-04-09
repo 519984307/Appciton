@@ -14,6 +14,7 @@
 #include "SPO2Alarm.h"
 #include <QTimer>
 #include "AlarmSourceManager.h"
+#include "LanguageManager.h"
 
 #define SOM  (0xA1)
 #define EOM  (0xAF)

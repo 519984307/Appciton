@@ -147,6 +147,13 @@
         <SweepSpeed>2</SweepSpeed>
 	<BrSource>0</BrSource>
     </RESP>
+    <ApneaStimulation>
+        <SelfTest>0</SelfTest>
+        <RESP>1</RESP>
+        <CO2>1</CO2>
+        <HR>100</HR>
+	<SPO2>85</SPO2>
+    </ApneaStimulation>
     <Event>
         <WaveLength>16</WaveLength>
     </Event>
@@ -780,6 +787,14 @@
 		    <Scale>10</Scale>
 		</fahrenheit>
 		</TD>
+		<O2 Enable="0" Prio="2">
+		<percent>
+		    <Low Min="0" Max="999">200</Low>
+		    <High Min="1" Max="1000">600</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</percent>
+		</O2>
     </AlarmSource>
     <Local>
         <NIBPUnit>5</NIBPUnit>
@@ -843,6 +858,7 @@
         <AGColor>Orange</AGColor>
         <IBPColor>Purple</IBPColor>
         <TEMPColor>Brown</TEMPColor>
+	<O2Color>Brown</O2Color>
         <!--do not modify-->
     </Display>
     <Print>

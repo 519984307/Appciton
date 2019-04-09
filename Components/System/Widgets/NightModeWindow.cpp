@@ -19,6 +19,7 @@
 #include "NightModeManager.h"
 #include "SystemManager.h"
 #include "SystemDefine.h"
+#include "LanguageManager.h"
 
 class NightModeWindowPrivate
 {

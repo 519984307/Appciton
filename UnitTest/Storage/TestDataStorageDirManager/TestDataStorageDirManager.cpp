@@ -26,4 +26,5 @@ void TestDataStorageDirManager::cleanup()
 
 void TestDataStorageDirManager::testCreateDir()
 {
+    dataStorageDirManager.createDir();
 }

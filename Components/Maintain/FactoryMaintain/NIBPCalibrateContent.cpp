@@ -20,6 +20,7 @@
 #include "NIBPServiceStateDefine.h"
 #include "MessageBox.h"
 #include "IConfig.h"
+#include "LanguageManager.h"
 
 #define CALIBRATION_INTERVAL_TIME              (100)
 #define TIMEOUT_WAIT_NUMBER                    (5000 / CALIBRATION_INTERVAL_TIME)

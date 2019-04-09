@@ -14,6 +14,7 @@
 #include "Debug.h"
 #include "NIBPParam.h"
 #include "AlarmSourceManager.h"
+#include "LanguageManager.h"
 
 #define SOM             (0x02)
 #define EOM             (0x03)

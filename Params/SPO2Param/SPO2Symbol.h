@@ -10,7 +10,6 @@
 
 #pragma once
 #include "SPO2Define.h"
-#include "LanguageManager.h"
 
 class SPO2Symbol
 {
@@ -103,6 +102,15 @@ public:
             "SPO2SignalWeak",
             "SPO2SignalSaturation",
             "SPO2LowPerfusion"
+        };
+        return symbol[index];
+    }
+
+    static const char *convert(CCHDResult index)
+    {
+        static const char *symbol[CCHD_NR] =
+        {
+            "Negative", "Positive", "RepeatCheck"
         };
         return symbol[index];
     }

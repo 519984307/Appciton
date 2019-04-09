@@ -209,8 +209,11 @@ public:
     void createSnapshot(NIBPOneShotType err);
 
 public:
-    // 根据病人类型获取对应的初始压力值。
+    // 设置预充气值。。
     void setInitPressure(int index);
+
+    //获取不同病人类型的初始压力值
+    int getInitPressure();
 
     // 设置/获取测量模式。
     void setMeasurMode(NIBPMode mode);

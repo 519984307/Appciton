@@ -10,6 +10,9 @@
 #include <QString>
 #pragma once
 
+#include "NIBPDefine.h"
+#include "NIBPProviderIFace.h"
+#include <QString>
 class NIBPParamInterface
 {
 public:
@@ -27,4 +30,30 @@ public:
     virtual void setText(QString text) = 0;
 
     virtual void clearResult(void) = 0;
+
+    virtual void setAutoMeasure(bool flag) = 0;
+
+    virtual void setSTATMeasure(bool flag) = 0;
+
+    virtual void switchToAuto(void) = 0;
+
+    virtual void switchToManual(void) = 0;
+
+    virtual void setModelText(QString text) = 0;
+
+    virtual NIBPMode getSuperMeasurMode(void) = 0;
+
+    virtual NIBPAutoInterval getAutoInterval(void) = 0;
+
+    virtual NIBPMode getMeasurMode(void) = 0;
+
+    virtual void createSnapshot(NIBPOneShotType) = 0;
+
+    virtual NIBPProviderIFace &provider(void) = 0;
+
+    virtual void setAdditionalMeasure(bool flag) = 0;
+
+    virtual void setSTATClose(bool flag) = 0;
+
+    virtual bool isAutoMeasure() = 0;
 };

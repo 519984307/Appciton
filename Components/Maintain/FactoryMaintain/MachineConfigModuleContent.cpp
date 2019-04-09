@@ -39,12 +39,15 @@ public:
         ITEM_CBO_AG,
         ITEM_CBO_CO,
         ITEM_CBO_IBP,
+#ifdef ENABLE_O2_APNEASTIMULATION
         ITEM_CBO_O2,
+#endif
         ITEM_CBO_TEMP,
         ITEM_CBO_WIFI,
 #ifdef Q_WS_QWS
         ITEM_CBO_TSCREEN,
 #endif
+        ITEM_CBO_SCREEN_TYPE,
         ITEM_CBO_MAX
     };
 
@@ -150,15 +153,18 @@ void MachineConfigModuleContentPrivte::loadOptions()
     combos[ITEM_CBO_IBP]->setCurrentIndex(index);
     itemChangedMap[ITEM_CBO_IBP] = index;
 
+#ifdef ENABLE_O2_APNEASTIMULATION
     index = 0;
     machineConfig.getNumValue("O2Enable", index);
     combos[ITEM_CBO_O2]->setCurrentIndex(index);
     itemChangedMap[ITEM_CBO_O2] = index;
+#endif
 
 #ifdef Q_WS_QWS
     index = 0;
     machineConfig.getNumValue("TouchEnable", index);
     combos[ITEM_CBO_TSCREEN]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_TSCREEN] = index;
 #endif
 
     index = 0;
@@ -171,6 +177,11 @@ void MachineConfigModuleContentPrivte::loadOptions()
     combos[ITEM_CBO_WIFI]->setCurrentIndex(index);
     itemChangedMap[ITEM_CBO_WIFI] = index;
 
+    // load screen type
+    index = 0;
+    machineConfig.getNumValue("ScreenTypeSelect", index);
+    combos[ITEM_CBO_SCREEN_TYPE]->setCurrentIndex(index);
+
     itemInitMap = itemChangedMap;
 
 #ifdef HIDE_MACHINE_CONFIG_ITEMS
@@ -182,8 +193,8 @@ void MachineConfigModuleContentPrivte::loadOptions()
     combos[ITEM_CBO_CO]->setEnabled(false);
     combos[ITEM_CBO_IBP]->setCurrentIndex(0);
     combos[ITEM_CBO_IBP]->setEnabled(false);
-    combos[ITEM_CBO_O2]->setCurrentIndex(0);
-    combos[ITEM_CBO_O2]->setEnabled(false);
+//    combos[ITEM_CBO_O2]->setCurrentIndex(0);
+//    combos[ITEM_CBO_O2]->setEnabled(false);
     combos[ITEM_CBO_WIFI]->setCurrentIndex(0);
     combos[ITEM_CBO_WIFI]->setEnabled(false);
 #endif
@@ -364,6 +375,7 @@ void MachineConfigModuleContent::layoutExec()
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
+#ifdef ENABLE_O2_APNEASTIMULATION
     // O2 module
     label = new QLabel(trs("O2Module"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -378,6 +390,7 @@ void MachineConfigModuleContent::layoutExec()
     itemId = MachineConfigModuleContentPrivte::ITEM_CBO_O2;
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+#endif
 
     // temp module
     label = new QLabel(trs("TEMPModule"));
@@ -417,7 +430,8 @@ void MachineConfigModuleContent::layoutExec()
     combo->blockSignals(true);
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs("On")
+                    << trs("ResistiveScreen")
+                    << trs("CapacitiveScreen")
                    );
     combo->blockSignals(false);
     layout->addWidget(combo, d_ptr->combos.count(), 1);
@@ -427,6 +441,23 @@ void MachineConfigModuleContent::layoutExec()
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 #endif
+
+    // screen type select
+    label = new QLabel(trs("ScreenTypeSelect"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    combo = new ComboBox;
+    combo->blockSignals(true);
+    combo->addItems(QStringList()
+                    << trs(SystemSymbol::convert(BUSINESS_SCREEN))
+                    << trs(SystemSymbol::convert(INDUSTRIAL_SCRENN))
+                   );
+    combo->blockSignals(false);
+    layout->addWidget(combo, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(MachineConfigModuleContentPrivte
+                         ::ITEM_CBO_SCREEN_TYPE, combo);
+    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_SCREEN_TYPE;
+    combo->setProperty("Item", qVariantFromValue(itemId));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
     layout->setRowStretch(d_ptr->combos.count(), 1);
 }
@@ -505,11 +536,13 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
             enablePath = "IBPEnable";
             break;
         }
+#ifdef ENABLE_O2_APNEASTIMULATION
         case MachineConfigModuleContentPrivte::ITEM_CBO_O2:
         {
             enablePath = "O2Enable";
             break;
         }
+#endif
         case MachineConfigModuleContentPrivte::ITEM_CBO_TEMP:
         {
             enablePath = "TEMPEnable";
@@ -522,12 +555,22 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
         }
 #ifdef Q_WS_QWS
         case MachineConfigModuleContentPrivte::ITEM_CBO_TSCREEN:
-            machineConfig.setNumValue("TouchEnable", index);
+            enablePath = "TouchEnable";
             machineConfig.saveToDisk();
             systemManager.setTouchScreenOnOff(index);
             softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_SCREEN_BAN, index);
-            return;
+            break;
 #endif
+        case MachineConfigModuleContentPrivte::ITEM_CBO_SCREEN_TYPE:
+        {
+            machineConfig.setNumValue("ScreenTypeSelect", index);
+            machineConfig.saveToDisk();
+#ifdef Q_WS_QWS
+            BrightnessLevel br = systemManager.getBrightness();
+            systemManager.setBrightness(br);
+#endif
+            return;
+        }
         default:
             return;
     }
@@ -537,12 +580,12 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
         return;
     }
 
-    int enableIndex;
+    int enableIndex = index;
     if (index == 0)
     {
         enableIndex = 0;
     }
-    else if (index > 0)
+    else if (index > 0 && enablePath != "TouchEnable")
     {
         enableIndex = 1;
     }

@@ -103,8 +103,8 @@ void NeonateProvider::handlePacket(unsigned char *data, int len)
         AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_O2);
         if (alarmSource)
         {
-            alarmSource->setOneShotAlarm(O2_ONESHOT_ALARM_MOTOR_NOT_IN_POSITION, data[1]);
-            alarmSource->setOneShotAlarm(O2_ONESHOT_ALARM_SENSOR_OFF, data[2]);
+            alarmSource->setOneShotAlarm(O2_ONESHOT_ALARM_MOTOR_NOT_IN_POSITION, !data[1]);
+            alarmSource->setOneShotAlarm(O2_ONESHOT_ALARM_SENSOR_OFF, !data[2]);
         }
         break;
     }
@@ -126,8 +126,8 @@ void NeonateProvider::handlePacket(unsigned char *data, int len)
         AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_O2);
         if (alarmSource)
         {
-            alarmSource->setOneShotAlarm(O2_ONESHOT_ALARM_MOTOR_NOT_IN_POSITION, data[1]);
-            alarmSource->setOneShotAlarm(O2_ONESHOT_ALARM_SENSOR_OFF, data[2]);
+            alarmSource->setOneShotAlarm(O2_ONESHOT_ALARM_MOTOR_NOT_IN_POSITION, !data[1]);
+            alarmSource->setOneShotAlarm(O2_ONESHOT_ALARM_SENSOR_OFF, !data[2]);
         }
         break;
     }

@@ -92,6 +92,14 @@ enum ModulePoweronTestStatus
     SELFTEST_STATUS_NR
 };
 
+// 触摸屏状态
+enum TouchscreenStatus
+{
+    TOUCHSCREEN_DISENABLE = 0,              // 关闭
+    TOUCHSCREEN_RESISTIVE = 1,              // 电阻
+    TOUCHSCREEN_CAPACITIVE = 2,             // 电容
+};
+
 class SystemSelftestMenu;
 class SystemManagerPrivate;
 class SystemManager : public QObject, public SystemManagerInterface
@@ -121,9 +129,9 @@ public:
 
     /**
      * @brief setTouchScreenOnOff set the touch screen on and off status
-     * @param onOff
+     * @param sta
      */
-    void setTouchScreenOnOff(bool onOff);
+    void setTouchScreenOnOff(int sta);
 #endif
 
     // get the module config status

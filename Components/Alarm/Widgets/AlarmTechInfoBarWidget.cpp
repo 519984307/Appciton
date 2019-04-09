@@ -17,8 +17,6 @@
 #include <QPainter>
 #include "WindowManager.h"
 
-static AlarmTechInfoBarWidget *_selfObj = NULL;
-
 /**************************************************************************************************
  * 绘制背景。
  *************************************************************************************************/
@@ -174,24 +172,18 @@ void AlarmTechInfoBarWidget::display(AlarmInfoNode &node)
 }
 
 /**************************************************************************************************
- * 获取对象。
- *************************************************************************************************/
-AlarmTechInfoBarWidget &AlarmTechInfoBarWidget::getSelf()
-{
-    return *_selfObj;
-}
-
-/**************************************************************************************************
  * 构造。
  *************************************************************************************************/
 AlarmTechInfoBarWidget::AlarmTechInfoBarWidget(const QString &name) :
     IWidget(name),
+    _alarmWindow(NULL),
     _alarmType(ALARM_TYPE_TECH)
 {
-    _selfObj = this;
-//    setFocusPolicy(Qt::NoFocus);
-
-    _alarmWindow = NULL;
+    AlarmInfoBarWidget *old = registerAlarmInfoBar(ALARM_TYPE_TECH, this);
+    if (old)
+    {
+        delete old;
+    }
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 }
 

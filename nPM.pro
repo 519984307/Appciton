@@ -105,6 +105,9 @@ DEFINES += HIDE_MACHINE_CONFIG_ITEMS
 #失能co2模块维护
 DEFINES += DISABLE_CO2_MODULE_MAINTAIN
 
+#使能氧浓度,窒息唤醒模块功能
+#DEFINES += ENABLE_O2_APNEASTIMULATION
+
 #隐藏其它维护菜单中的部分选项
 DEFINES += HIDE_OTHER_MAINTAIN_ITEMS
 
@@ -113,6 +116,9 @@ DEFINES += DISABLE_FACTORY_MODULE_SELFTEST
 
 #失能ecg模块校准
 DEFINES += DISABLE_ECG_MODULE_CALIBRATION
+
+#大字体界面，co2模块替换resp模块
+DEFINES += BIG_FONT_LAYOUT_CO2_REPLACE_RESP
 
 # Depending libraries
 LIBS += -ldl -lasound -lz
@@ -170,6 +176,7 @@ SOURCES +=                                                                      
     Utility/Debug/Debug.cpp                                                     \
     Utility/LanguageManager/LanguageManager.cpp                                 \
     Utility/FontManager/FontManager.cpp                                         \
+    Utility/FontManager/FontManagerInterface.cpp                                \
     Utility/ColorManager/ColorManager.cpp                                       \
     Utility/NightModeManager/NightModeManager.cpp                               \
     Utility/Widgets/Base/ShadowEffect.cpp                                       \
@@ -298,7 +305,9 @@ SOURCES +=                                                                      
     Components/ParamManager/Param.cpp                                           \
     Components/ParamManager/ParamManager.cpp                                    \
     Components/ParamManager/ParamInfo.cpp                                       \
+    Components/ParamManager/ParamInfoInterface.cpp                              \
     Components/Alarm/Alarm.cpp                                                  \
+    Components/Alarm/AlarmInterface.cpp                                         \
     Components/Alarm/AlarmConfig.cpp                                            \
     Components/Alarm/AlarmIndicator.cpp                                         \
     Components/Alarm/AlarmIndicatorInterface.cpp                                \
@@ -318,8 +327,11 @@ SOURCES +=                                                                      
     Components/Alarm/Widgets/AlarmStatusWidget.cpp                              \
     Components/Alarm/Widgets/AlarmTechInfoBarWidget.cpp                         \
     Components/Alarm/Widgets/AlarmPhyInfoBarWidget.cpp                          \
+    Components/Alarm/Widgets/AlarmInfoBarWidget.cpp                             \
     Components/Alarm/Widgets/AlarmInfoWindow.cpp                                \
     Components/Alarm/Widgets/AlarmInfoModel.cpp                                 \
+    Components/Alarm/NurseCallManager.cpp                                       \
+    Components/Alarm/NurseCallManagerInterface.cpp                              \
     Components/Calculation/DoseCalculationManager/DoseCalculationManager.cpp    \
     Components/Calculation/DoseCalculationManager/DoseCalculationWindow.cpp     \
     Components/Calculation/DoseCalculationManager/TitrateTableModel.cpp         \
@@ -336,13 +348,16 @@ SOURCES +=                                                                      
     Components/PatientData/RescueDataListNewWidget.cpp                          \
     Components/PatientData/RescueDataExportWidget.cpp                           \
     Components/PatientData/TrendCache.cpp                                       \
+    Components/PatientData/TrendCacheInterface.cpp                              \
     Components/PatientData/TrendDataUtil.cpp                                    \
     Components/PatientData/RescueDataDeleteWidget.cpp                           \
     Components/PatientData/RescueDataDeleteWindow.cpp                           \
     Components/PatientData/TrendDataStorageManager.cpp                          \
+    Components/PatientData/TrendDataStorageManagerInterface.cpp                 \
     Components/PatientData/EventDataParseContext.cpp                            \
     Components/PatientData/EventStorageItem.cpp                                 \
     Components/PatientData/EventStorageManager.cpp                              \
+    Components/PatientData/EventStorageManagerInterface.cpp                     \
     Components/PatientData/TrendWaveWidget.cpp                                  \
     Components/PatientData/TrendSubWaveWidget.cpp                               \
     Components/PatientData/IMoveButton.cpp                                      \
@@ -372,6 +387,7 @@ SOURCES +=                                                                      
     Components/PowerManager/PowerManager.cpp                                    \
     Components/WindowManager/IWidget.cpp                                        \
     Components/WindowManager/WindowManager.cpp                                  \
+    Components/WindowManager/WindowManagerInterface.cpp                         \
     Components/WindowManager/PromptInfoBarWidget.cpp                            \
     Components/WindowManager/MainMenuWindow.cpp                                 \
     Components/WindowManager/FactoryMaintainMenuWindow.cpp                      \
@@ -445,7 +461,6 @@ SOURCES +=                                                                      
     Components/Maintain/Factory/Menu/FactoryTestMenuContent.cpp                 \
     Components/Maintain/UserMaintain/UserMaintainManager.cpp                    \
     Components/Maintain/UserMaintain/WifiMaintainMenu.cpp                       \
-    Components/Maintain/UserMaintain/NurseCallSettingWindow.cpp                 \
     Components/Maintain/UserMaintain/UserMaintainGeneralMenuContent.cpp         \
     Components/Maintain/UserMaintain/ModuleMaintainMenuContent.cpp              \
     Components/Maintain/UserMaintain/AlarmMaintainMenuContent.cpp               \
@@ -454,6 +469,7 @@ SOURCES +=                                                                      
     Components/Maintain/UserMaintain/WiredNetworkMaintainMenuContent.cpp        \
     Components/Maintain/UserMaintain/ErrorLogEntranceContent.cpp                \
     Components/Maintain/UserMaintain/DemoMenuContent.cpp                        \
+    Components/Maintain/UserMaintain/NurseCallSetWindow.cpp                     \
     Components/Maintain/FactoryMaintain/FactorySystemInfoMenuContent.cpp        \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.cpp              \
     Components/Maintain/FactoryMaintain/SoftWareVersionWindow.cpp               \
@@ -514,6 +530,7 @@ SOURCES +=                                                                      
     Params/ECGParam/ECGDupAlarm.cpp                                             \
     Params/ECGParam/ECGDupParam.cpp                                             \
     Params/ECGParam/ECGParam.cpp                                                \
+    Params/ECGParam/ECGParamInterface.cpp                                       \
     Params/ECGParam/ECGWidgets/ECGWaveWidget.cpp                                \
     Params/ECGParam/ECGWidgets/ECGWaveRuler.cpp                                 \
     Params/ECGParam/ECGWidgets/ECGTrendWidget.cpp                               \
@@ -562,12 +579,15 @@ SOURCES +=                                                                      
     Params/NIBPParam/NIBPWidgets/NIBPDataTrendWidget.cpp                        \
     Params/NIBPParam/NIBPWidgets/NIBPMenuContent.cpp                            \
     Params/NIBPParam/NIBPTrigger/NIBPCountdownTime.cpp                          \
+    Params/NIBPParam/NIBPTrigger/NIBPCountdownTimeInterface.cpp                 \
     Params/SPO2Param/SPO2Param.cpp                                              \
     Params/SPO2Param/SPO2Alarm.cpp                                              \
     Params/SPO2Param/SPO2Widgets/SPO2WaveWidget.cpp                             \
     Params/SPO2Param/SPO2Widgets/SPO2TrendWidget.cpp                            \
     Params/SPO2Param/SPO2Widgets/SPO2BarWidget.cpp                              \
     Params/SPO2Param/SPO2Widgets/SPO2MenuContent.cpp                            \
+    Params/SPO2Param/SPO2Widgets/CCHDWindow.cpp                                 \
+    Params/SPO2Param/SPO2Widgets/CCHDDataModel.cpp                              \
     Params/TEMPParam/TEMPParam.cpp                                              \
     Params/TEMPParam/TEMPAlarm.cpp                                              \
     Params/TEMPParam/TEMPWidgets/TEMPTrendWidget.cpp                            \
@@ -581,8 +601,10 @@ SOURCES +=                                                                      
     Params/RESPParam/RESPWidgets/RESPMenuContent.cpp                            \
     Params/O2Param/O2Widgets/O2TrendWidget.cpp                                  \
     Params/O2Param/O2Widgets/O2MenuContent.cpp                                  \
+    Params/O2Param/O2Widgets/ApneaStimulationMenuContent.cpp                    \
     Params/O2Param/O2Param.cpp                                                  \
     Params/O2Param/O2Alarm.cpp                                                  \
+    Params/O2Param/O2ParamInterface.cpp                                         \
 #################################################################################
     Providers/Provider.cpp                                                      \
     Providers/BLMProvider.cpp                                                   \
@@ -661,6 +683,7 @@ HEADERS +=                                                                      
     Utility/RingBuff/RingBuff.h                                                 \
     Utility/LanguageManager/LanguageManager.h                                   \
     Utility/FontManager/FontManager.h                                           \
+    Utility/FontManager/FontManagerInterface.h                                  \
     Utility/ColorManager/ColorManager.h                                         \
     Utility/NightModeManager/NightModeManager.h                                 \
     Utility/Widgets/Base/ShadowEffect.h                                         \
@@ -797,7 +820,9 @@ HEADERS +=                                                                      
     Components/ParamManager/ParamManager.h                                      \
     Components/ParamManager/ParamDefine.h                                       \
     Components/ParamManager/ParamInfo.h                                         \
+    Components/ParamManager/ParamInfoInterface.h                                \
     Components/Alarm/Alarm.h                                                    \
+    Components/Alarm/AlarmInterface.h                                           \
     Components/Alarm/AlarmConfig.h                                              \
     Components/Alarm/AlarmDefine.h                                              \
     Components/Alarm/AlarmIndicator.h                                           \
@@ -820,8 +845,11 @@ HEADERS +=                                                                      
     Components/Alarm/Widgets/AlarmStatusWidget.h                                \
     Components/Alarm/Widgets/AlarmTechInfoBarWidget.h                           \
     Components/Alarm/Widgets/AlarmPhyInfoBarWidget.h                            \
+    Components/Alarm/Widgets/AlarmInfoBarWidget.h                               \
     Components/Alarm/Widgets/AlarmInfoWindow.h                                  \
     Components/Alarm/Widgets/AlarmInfoModel.h                                   \
+    Components/Alarm/NurseCallManager.h                                         \
+    Components/Alarm/NurseCallManagerInterface.h                                \
     Components/Calculation/DoseCalculationManager/DoseCalculationManager.h      \
     Components/Calculation/DoseCalculationManager/DoseCalculationDefine.h       \
     Components/Calculation/DoseCalculationManager/DoseCalculationWindow.h       \
@@ -843,15 +871,18 @@ HEADERS +=                                                                      
     Components/PatientData/RescueDataDefine.h                                   \
     Components/PatientData/RescueDataExportWidget.h                             \
     Components/PatientData/TrendCache.h                                         \
+    Components/PatientData/TrendCacheInterface.h                                \
     Components/PatientData/TrendDataSymbol.h                                    \
     Components/PatientData/TrendDataDefine.h                                    \
     Components/PatientData/RescueDataDeleteWidget.h                             \
     Components/PatientData/RescueDataDeleteWindow.h                             \
     Components/PatientData/TrendDataStorageManager.h                            \
+    Components/PatientData/TrendDataStorageManagerInterface.h                   \
     Components/PatientData/EventDataDefine.h                                    \
     Components/PatientData/EventDataParseContext.h                              \
     Components/PatientData/EventStorageItem.h                                   \
     Components/PatientData/EventStorageManager.h                                \
+    Components/PatientData/EventStorageManagerInterface.h                       \
     Components/PatientData/TrendWaveWidget.h                                    \
     Components/PatientData/TrendSubWaveWidget.h                                 \
     Components/PatientData/IMoveButton.h                                        \
@@ -889,6 +920,7 @@ HEADERS +=                                                                      
     Components/USBManager/USBManager.h                                          \
     Components/WindowManager/IWidget.h                                          \
     Components/WindowManager/WindowManager.h                                    \
+    Components/WindowManager/WindowManagerInterface.h                           \
     Components/WindowManager/PromptInfoBarWidget.h                              \
     Components/WindowManager/MainMenuWindow.h                                   \
     Components/WindowManager/FactoryMaintainMenuWindow.h                        \
@@ -967,7 +999,6 @@ HEADERS +=                                                                      
     Components/Maintain/UserMaintain/AlarmMaintainSymbol.h                      \
     Components/Maintain/UserMaintain/AlarmMaintainDefine.h                      \
     Components/Maintain/UserMaintain/WifiMaintainMenu.h                         \
-    Components/Maintain/UserMaintain/NurseCallSettingWindow.h                   \
     Components/Maintain/UserMaintain/UserMaintainGeneralMenuContent.h           \
     Components/Maintain/UserMaintain/ModuleMaintainMenuContent.h                \
     Components/Maintain/UserMaintain/AlarmMaintainMenuContent.h                 \
@@ -976,6 +1007,7 @@ HEADERS +=                                                                      
     Components/Maintain/UserMaintain/WiredNetworkMaintainMenuContent.h          \
     Components/Maintain/UserMaintain/ErrorLogEntranceContent.h                  \
     Components/Maintain/UserMaintain/DemoMenuContent.h                          \
+    Components/Maintain/UserMaintain/NurseCallSetWindow.h                       \
     Components/Maintain/FactoryMaintain/FactorySystemInfoMenuContent.h          \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.h                \
     Components/Maintain/FactoryMaintain/SoftWareVersionWindow.h                 \
@@ -1040,6 +1072,7 @@ HEADERS +=                                                                      
     Params/ECGParam/ECGDupAlarm.h                                               \
     Params/ECGParam/ECGDupParam.h                                               \
     Params/ECGParam/ECGParam.h                                                  \
+    Params/ECGParam/ECGParamInterface.h                                         \
     Params/ECGParam/ECGProviderIFace.h                                          \
     Params/ECGParam/ECGSymbol.h                                                 \
     Params/ECGParam/ECGWidgets/ECGWaveWidget.h                                  \
@@ -1106,6 +1139,7 @@ HEADERS +=                                                                      
     Params/NIBPParam/NIBPWidgets/NIBPDataTrendWidget.h                          \
     Params/NIBPParam/NIBPWidgets/NIBPMenuContent.h                              \
     Params/NIBPParam/NIBPTrigger/NIBPCountdownTime.h                            \
+    Params/NIBPParam/NIBPTrigger/NIBPCountdownTimeInterface.h                   \
     Params/SPO2Param/SPO2Param.h                                                \
     Params/SPO2Param/SPO2Alarm.h                                                \
     Params/SPO2Param/SPO2Define.h                                               \
@@ -1115,6 +1149,8 @@ HEADERS +=                                                                      
     Params/SPO2Param/SPO2Widgets/SPO2TrendWidget.h                              \
     Params/SPO2Param/SPO2Widgets/SPO2BarWidget.h                                \
     Params/SPO2Param/SPO2Widgets/SPO2MenuContent.h                              \
+    Params/SPO2Param/SPO2Widgets/CCHDWindow.h                                   \
+    Params/SPO2Param/SPO2Widgets/CCHDDataModel.h                                \
     Params/TEMPParam/TEMPDefine.h                                               \
     Params/TEMPParam/TEMPSymbol.h                                               \
     Params/TEMPParam/TEMPParam.h                                                \
@@ -1135,11 +1171,13 @@ HEADERS +=                                                                      
     Params/PAParam/PASymbol.h                                                   \
     Params/O2Param/O2Widgets/O2TrendWidget.h                                    \
     Params/O2Param/O2Widgets/O2MenuContent.h                                    \
+    Params/O2Param/O2Widgets/ApneaStimulationMenuContent.h                      \
     Params/O2Param/O2Param.h                                                    \
     Params/O2Param/O2ProviderIFace.h                                            \
     Params/O2Param/O2Alarm.h                                                    \
     Params/O2Param/O2Define.h                                                   \
     Params/O2Param/O2Symbol.h                                                   \
+    Params/O2Param/O2ParamInterface.h                                           \
 #################################################################################
     Providers/Provider.h                                                        \
     Providers/BLMProvider.h                                                     \

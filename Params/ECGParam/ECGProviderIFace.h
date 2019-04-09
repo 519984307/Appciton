@@ -78,6 +78,9 @@ public:
     // enable vf calc control
     virtual void enableVFCalcCtrl(bool /*enable*/) {}
 
+    // enable raw data
+    virtual void enableRawData(bool /*enable*/){}
+
     //发送协议命令
     virtual void sendCmdData(unsigned char /*cmdId*/, const unsigned char */*data*/,
                              unsigned int /*len*/) { }

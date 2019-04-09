@@ -20,7 +20,7 @@
 #include "SystemManagerInterface.h"
 #include "AlarmSourceManager.h"
 #include "SystemDefine.h"
-#include "Alarm.h"
+#include "AlarmInterface.h"
 
 static QString _lastFolder;
 static QString _lastFDFileName;
@@ -476,7 +476,11 @@ void DataStorageDirManager::createDir(bool createNew)
         Config systemDefCfg(systemConfig.getCurConfigName());
         systemConfig.setNodeValue("PrimaryCfg", systemDefCfg);
         emit newPatient();
-        alertor.removeAllPhyAlarm();
+        AlarmInterface *alertor = AlarmInterface::getAlarm();
+        if (alertor)
+        {
+            alertor->removeAllLimitAlarm();
+        }
     }
 }
 

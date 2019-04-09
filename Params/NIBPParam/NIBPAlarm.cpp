@@ -13,7 +13,6 @@
 #include "NIBPParam.h"
 #include "IConfig.h"
 #include "NIBPSymbol.h"
-#include "PatientManager.h"
 #include "ParamManager.h"
 #include "FloatHandle.h"
 #include "AlarmConfig.h"

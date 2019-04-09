@@ -25,6 +25,7 @@
 #include "AlarmConfig.h"
 #include "CO2Param.h"
 #include <QTimerEvent>
+#include "LanguageManager.h"
 
 #define COLUMN_COUNT        7
 #define MAX_ROW_COUNT       9
@@ -1141,7 +1142,7 @@ QString TrendTableModelPrivate::getParamName(int section)
 
     str += '\n';
     str += "(";
-    str += Unit::localeSymbol(paramManager.getSubParamUnit(paramInfo.getParamID(id), id));
+    str += trs(Unit::getSymbol(paramManager.getSubParamUnit(paramInfo.getParamID(id), id)));
     str += ")";
 
     return str;

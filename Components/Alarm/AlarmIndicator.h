@@ -14,8 +14,7 @@
 #include <QList>
 #include "AlarmIndicatorInterface.h"
 
-class AlarmPhyInfoBarWidget;
-class AlarmTechInfoBarWidget;
+class AlarmInfoBarWidget;
 class AlarmStatusWidget;
 class AlarmIndicator : public AlarmIndicatorInterface
 {
@@ -23,14 +22,14 @@ public:
     static AlarmIndicator &getInstance(void);
 
     // 注册报警界面对象。
-    void setAlarmPhyWidgets(AlarmPhyInfoBarWidget *alarmWidget, AlarmStatusWidget *muteWidget);
-    void setAlarmTechWidgets(AlarmTechInfoBarWidget *alarmWidget);
+    void setAlarmPhyWidgets(AlarmInfoBarWidget *alarmWidget, AlarmStatusWidget *muteWidget);
+    void setAlarmTechWidgets(AlarmInfoBarWidget *alarmWidget);
 
     // 增加/删除报警消息。
     bool addAlarmInfo(unsigned alarmTime, AlarmType alarmType,
                       AlarmPriority alarmPriority, const char *alarmMessage,
                       AlarmParamIFace *alarmSource, int alarmID, bool isRemoveAfterLatch = false,
-                      bool isRemoveLightAfterConfirm = false);
+                      bool isRemoveLightAfterConfirm = true);
     void delAlarmInfo(AlarmType alarmType, const char *alarmMessage);
 
     // 报警栓锁
@@ -59,7 +58,7 @@ public:
     bool checkAlarmIsExist(AlarmType alarmType, const char *alarmMessage);
 
     // 更新报警级别
-    void updataAlarmPriority(AlarmType alarmType, const char *alArmMessage,
+    bool updataAlarmPriority(AlarmType alarmType, const char *alArmMessage,
                          AlarmPriority priority);
 
     // 更新报警信息
@@ -80,6 +79,14 @@ public:
      * @return
      */
     int getAlarmCount(AlarmPriority priority);
+
+    /**
+     * @brief getAlarmCount 获取当前报警个数
+     * @param type 筛选出报警类型一致的报警
+     * @param priority 筛选出报警等级一致的报警
+     * @return
+     */
+    int getAlarmCount(AlarmType type, AlarmPriority priority);
 
     void getAlarmInfo(int index, AlarmInfoNode &node);
     bool getAlarmInfo(AlarmType type, const char *alArmMessage, AlarmInfoNode &node);
@@ -119,8 +126,8 @@ private: // 报警信息显示。
     void _displayTechSet(AlarmInfoNode &node); // 设置技术报警提示信息。
     bool _canPlayAudio(AlarmStatus status, bool isTechAlarm); // check whether can play alarm sound
 
-    AlarmPhyInfoBarWidget *_alarmPhyInfoWidget;
-    AlarmTechInfoBarWidget *_alarmTechInfoWidget;
+    AlarmInfoBarWidget *_alarmPhyInfoWidget;
+    AlarmInfoBarWidget *_alarmTechInfoWidget;
     AlarmStatusWidget *_alarmStatusWidget;
 
 private:
@@ -139,7 +146,6 @@ private:
 private:
     AlarmStatus _audioStatus;
     int _audioPauseTime;
-    static const int _checkPatientAlarmPauseTime = 12;
 
     bool _isForbidLight;
 };
