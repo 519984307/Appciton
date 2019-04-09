@@ -40,13 +40,13 @@ void AlarmStatusWidget::paintEvent(QPaintEvent *e)
 {
     IWidget::paintEvent(e);
     QPainter painter(this);
-    int alarmAudioOff = false;
-    systemConfig.getNumValue("Alarms|AlarmAudioOff", alarmAudioOff);
+    int alarmAudio = false;
+    systemConfig.getNumValue("Alarms|AlarmAudio", alarmAudio);
 
     // 显示正常报警。
     if (d_ptr->alarmStatus == ALARM_STATUS_NORMAL)
     {
-        if (!alarmAudioOff)
+        if (alarmAudio)
         {
             return;
         }
@@ -65,7 +65,7 @@ void AlarmStatusWidget::paintEvent(QPaintEvent *e)
     QRect r = rect().adjusted(offx, 5, -offx, -5);
     if (d_ptr->alarmStatus == ALARM_STATUS_NORMAL)
     {
-        if (alarmAudioOff)
+        if (!alarmAudio)
         {
             painter.drawPixmap(r, d_ptr->audioOffPixmap, d_ptr->alarmPausePixmap.rect());
         }
