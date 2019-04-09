@@ -67,6 +67,12 @@ signals:
     void selectItemChanged(int index);
     void visiableItemChanged(int index);
 
+private slots:
+    /**
+     * @brief onDialogsStatusChanged
+     */
+    void onDialogsStatusChanged();
+
 protected:
     void showEvent(QShowEvent *ev);
 

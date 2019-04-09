@@ -77,6 +77,9 @@ public slots:
      */
     void onWindowHide(Dialog *w);
 
+signals:
+    void allDialogsStatusChanged();
+
 public:
     // 获取弹出菜单宽度, TODO: remove
     int getPopWindowWidth();
