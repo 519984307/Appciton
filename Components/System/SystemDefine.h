@@ -38,13 +38,13 @@ enum UserFaceType
 };
 
 /**
- * @brief The ScreenType enum
+ * @brief The Backlight Regulation enum
  */
-enum ScreenType
+enum BacklightRegulation
 {
-    BUSINESS_SCREEN,
-    INDUSTRIAL_SCRENN,
-    SCREEN_TYPE_NR
+    MODE_ONE,
+    MODE_TWO,
+    MODE_NR
 };
 
 // 背光亮度等级。
@@ -85,11 +85,11 @@ public:
         return symbol[index];
     }
 
-    static const char *convert(ScreenType index)
+    static const char *convert(BacklightRegulation index)
     {
-        static const char *symbol[SCREEN_TYPE_NR] =
+        static const char *symbol[MODE_NR] =
         {
-            "BusinessScreen", "IndustrialScreen"
+            "ModeOne", "ModeTwo"
         };
         return symbol[index];
     }

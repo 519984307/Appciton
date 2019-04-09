@@ -964,9 +964,9 @@ ParameterSources,参数资源,Parameter Sources
 Replace,替换,Replace
 Insert,插入,Insert
 Remove,移除,Remove
-ScreenTypeSelect,屏幕类型,Screen Type
-IndustrialScreen,工业屏,Industrial
-BusinessScreen,商业屏,Business
+BacklightRegulation,背光调节方式,Backlight Regulation
+ModeOne,模式一,Mode One
+ModeTwo,模式二,Mode Two
 ScreenSize,屏幕尺寸,Screen Size
 ScreenResolution,屏幕分辨率,Screen Resolution
 Inch,英寸,Inch
