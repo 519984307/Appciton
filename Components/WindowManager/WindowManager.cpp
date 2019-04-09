@@ -37,6 +37,7 @@
 #include "TopBarWidget.h"
 #include "LayoutManager.h"
 
+#define WINDOW_MARGINS 3
 
 class WindowManagerPrivate
 {
@@ -158,8 +159,16 @@ QPoint WindowManagerPrivate::menuProperPos(Dialog *w)
     }
     else
     {
-        // 菜单将靠右上显示
-        r.adjust(r.width() - w->width(), 0, 0, 0);
+        if (r.width() >= w->width())
+        {
+            // 菜单将靠右上显示
+            r.adjust(r.width() - w->width(), 0, 0, 0);
+        }
+        else
+        {
+            // 显示不全时，遮挡参数区
+            r.adjust(WINDOW_MARGINS, 0, 0, 0);
+        }
         if (r.height() < w->height())
         {
             // 显示不全时，遮挡第一道波形
