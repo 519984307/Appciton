@@ -29,6 +29,7 @@
 #include "CO2Param.h"
 #include "LayoutManager.h"
 #include "NIBPSymbol.h"
+#include "LanguageManager.h"
 
 class EventPageGeneratorPrivate
 {
@@ -125,7 +126,7 @@ public:
 
                 titleStr += Util::convertToString(ctx.almSegment->alarmLimit, config.scale);
                 titleStr += " ";
-                titleStr += Unit::localeSymbol(unit);
+                titleStr += trs(Unit::getSymbol(unit));
             }
 
             eventTitle = titleStr;

@@ -7,3 +7,4 @@ SUBDIRS += \
     TestAlarmPauseState \
     TestAlarmIndicator \
     TestAlarmStateMachine \
+    TestAlarm

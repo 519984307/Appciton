@@ -20,6 +20,7 @@
 #include "SystemManager.h"
 #include "WindowManager.h"
 #include "MessageBox.h"
+#include "LanguageManager.h"
 
 class UpgradeWindowPrivate
 {
@@ -218,7 +219,7 @@ void UpgradeWindow::onStartBtnClick()
     for (int i = UpgradeManager::UPGRADE_MOD_HOST; i < UpgradeManager::UPGRADE_MOD_TYPE_NR; i++)
     {
         module = static_cast<UpgradeManager::UpgradeModuleType>(i);
-        if (moduleName == trs(UpgradeManager::getUpgradeModuleName(module)))
+        if (moduleName == UpgradeManager::getUpgradeModuleName(module))
         {
             if (module == UpgradeManager::UPGRADE_MOD_HOST)
             {

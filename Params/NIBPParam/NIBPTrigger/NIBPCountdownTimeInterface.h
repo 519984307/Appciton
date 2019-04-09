@@ -18,5 +18,6 @@ public:
     static NIBPCountdownTimeInterface* getNIBPCountdownTime();
 
     virtual void STATMeasureStart(void) = 0;
+    virtual void STATMeasureStop(void) = 0;
 };
 

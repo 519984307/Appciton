@@ -29,7 +29,7 @@ public:
     bool addAlarmInfo(unsigned alarmTime, AlarmType alarmType,
                       AlarmPriority alarmPriority, const char *alarmMessage,
                       AlarmParamIFace *alarmSource, int alarmID, bool isRemoveAfterLatch = false,
-                      bool isRemoveLightAfterConfirm = false);
+                      bool isRemoveLightAfterConfirm = true);
     void delAlarmInfo(AlarmType alarmType, const char *alarmMessage);
 
     // 报警栓锁
@@ -79,6 +79,14 @@ public:
      * @return
      */
     int getAlarmCount(AlarmPriority priority);
+
+    /**
+     * @brief getAlarmCount 获取当前报警个数
+     * @param type 筛选出报警类型一致的报警
+     * @param priority 筛选出报警等级一致的报警
+     * @return
+     */
+    int getAlarmCount(AlarmType type, AlarmPriority priority);
 
     void getAlarmInfo(int index, AlarmInfoNode &node);
     bool getAlarmInfo(AlarmType type, const char *alArmMessage, AlarmInfoNode &node);

@@ -13,9 +13,10 @@
 #include "MessageBox.h"
 #include "WindowManager.h"
 #include <QTimer>
-
+#include "LanguageManager.h"
 #define TWO_MINUTE 1000 * 120
 #define POWER_LIST_MAX_COUNT 3
+
 
 PowerManger * PowerManger::_selfObj = NULL;
 class PowerMangerPrivate

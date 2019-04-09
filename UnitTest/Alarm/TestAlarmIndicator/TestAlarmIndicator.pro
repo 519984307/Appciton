@@ -39,6 +39,7 @@ SOURCES += main.cpp \
     ../../../Utility/ErrorLog/ErrorLogItem.cpp \
     ../../../Components/Alarm/AlarmIndicatorInterface.cpp \
     ../../../Components/Alarm/AlarmParamIFace.cpp \
+    ../../../Components/Alarm/NurseCallManagerInterface.cpp
 
 HEADERS += \
     TestAlarmIndicator.h \
@@ -69,7 +70,8 @@ HEADERS += \
     ../MockAlarmInfoBarWidget.h \
     ../../Utility/MockSoundManager.h \
     ../MockLightManager.h \
-    ../MockAlarmStateMachine.h
+    ../MockAlarmStateMachine.h \
+    ../../../Components/Alarm/NurseCallManagerInterface.h
 
 INCLUDEPATH += \
     ../../../Components/Alarm \

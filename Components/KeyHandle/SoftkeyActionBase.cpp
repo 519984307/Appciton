@@ -33,6 +33,7 @@
 #include "CalculateWindow.h"
 #include "DischargePatientWindow.h"
 #include "TrendTableWindow.h"
+#include "LanguageManager.h"
 
 #define co2StandbyIcon "standby.png"
 #define co2StandbyHint "CO2Standby"

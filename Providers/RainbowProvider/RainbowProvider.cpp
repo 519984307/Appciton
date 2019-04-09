@@ -13,6 +13,7 @@
 #include "Debug.h"
 #include "SPO2Alarm.h"
 #include <QTimer>
+#include "LanguageManager.h"
 
 #define SOM  (0xA1)
 #define EOM  (0xAF)

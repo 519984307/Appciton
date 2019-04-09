@@ -32,7 +32,7 @@ EditPasswordSuccess,修改密码成功,Edit Password Success
 RESPModule,RESP,RESP
 NIBPModule,NIBP,NIBP
 TEMPModule,TEMP,TEMP
-SPO2Module,SPO2,SPO2
+SPO2Module,SpO2,SpO2
 NightModeMenu,夜间模式,Night Mode
 NightModeMenuDesc,夜间模式设置,Night Mode Desc
 NIBPCompletedTips,NIBP完成音,NIBP Completed Tips
@@ -105,7 +105,7 @@ AUXP2_PR,AUXP2脉率,AUXP2-PR
 CO_CO,心排量,C.O.
 CO_CI,心指数,C.I.
 TB,血温,TB
-SPO2,SPO2,SPO2
+SPO2,SpO2,SpO2
 PR,PR,PR
 PLETH,血氧波,Pleth
 NIBP,NIBP,NIBP
@@ -163,13 +163,13 @@ Normal,正常,Normal
 MaxSensitivity,高灵敏,High
 SPO2Sensitivity,灵敏度,Sensitivity
 FastSat,快速血氧,Fast SAT
-ConfigEditSpO2Menu,血氧,SPO2
+ConfigEditSpO2Menu,血氧,SpO2
 SPO2SmartPulseTone,智能脉搏音,Smart Pulse Tone
 ConfigEditIBPMenu,有创血压,IBP
 SPO2SweepSpeed,波形速度,Sweep Speed
 SPO2PRDisplay,脉率显示,PR Display
 SPO2SmartPluseTone,智能脉搏音,Smart Pulse Tone
-SPO2Menu,SPO2,SPO2
+SPO2Menu,SpO2,SpO2
 RESPSweepSpeed,波形速度,Sweep Speed
 RESPApneaTime,窒息时间,Apnea Time
 RESPZoom,缩放,Zoom
@@ -272,13 +272,13 @@ TEMPSetting,TEMP设置,TEMP Setting
 AGSetting,AG设置,AG Setting
 IBPSetting,IBP设置,IBP Setting
 COSetting,CO设置,CO Setting
-SPO2Setting,SPO2设置,SPO2 Setting
+SPO2Setting,SpO2设置,SpO2 Setting
 RRSource,RR来源,RR Source
 BRSource,BR来源,BR Source
 NIBPSetting,NIBP设置,NIBP Setting
 HRSourceAuto,自动,Auto
 HRSourceECG,ECG,ECG
-HRSourceSPO2,SPO2,SPO2
+HRSourceSPO2,SpO2,SpO2
 HRSourceIBP,IBP,IBP
 HR_PRSource,HR/PR来源,HR/PR Source
 CO2Setting,CO2设置,CO2 Setting
@@ -340,7 +340,7 @@ SystemMenu,系统,System
 PatientMenuDesc,病人设置,Patient Setting
 ECGMenuDesc,ECG,ECG
 STMenuDesc,ST,ST
-SPO2MenuDesc,SPO2,SPO2
+SPO2MenuDesc,SpO2,SpO2
 RESPMenuDesc,RESP,RESP
 CO2MenuDesc,CO2,CO2
 IBPMenuDesc,IBP,IBP
@@ -599,20 +599,20 @@ ECGAcquiring12L,获取12导,Acquiring 12 Lead
 ECGAcquired12L,获取12导结束,Acquire 12 Lead Complete
 RESPCommunicationStop,呼吸通讯停止,RESP Communication Stop
 Apnea,呼吸窒息,Apnea
-SPO2Low,血氧低,SPO2 Low
-SPO2High,血氧高,SPO2 High
+SPO2Low,血氧低,SpO2 Low
+SPO2High,血氧高,SpO2 High
 SPO2PRLow,脉率低,PR Low
 SPO2PRHigh,脉率高,PR High
-SPO2Initializing,SPO2初始化,SPO2 initializing
-SPO2PulseSearch,SPO2搜索脉搏,SPO2 Pulse Search
-SPO2PulseSearchTooLong,SPO2脉搏搜索时间过长,SPO2 Pulse Search Too Long
-SPO2SensorOff,血氧传感器脱落,SPO2 Sensor Off
-SPO2CheckSensor,SPO2检查探头,SPO2 Check Sensor
-SPO2SearchPulseTooLong,血氧脉搏搜索时间过长,SPO2 Search Pulse Too Long
-SPO2SearchingPulse,血氧脉搏搜索,SPO2 Searching Pulse
-SPO2CommunicationStop,SPO2通信中断,SPO2 Communication Stop
-SPO2ProbeFault,血氧探头故障,SPO2 Probe Fault
-SPO2SignalSaturation,SPO2信号饱和,SPO2 Signal Saturation
+SPO2Initializing,SpO2初始化,SpO2 initializing
+SPO2PulseSearch,SpO2搜索脉搏,SpO2 Pulse Search
+SPO2PulseSearchTooLong,SpO2脉搏搜索时间过长,SpO2 Pulse Search Too Long
+SPO2SensorOff,血氧传感器脱落,SpO2 Sensor Off
+SPO2CheckSensor,SpO2检查探头,SpO2 Check Sensor
+SPO2SearchPulseTooLong,血氧脉搏搜索时间过长,SpO2 Search Pulse Too Long
+SPO2SearchingPulse,血氧脉搏搜索,SpO2 Searching Pulse
+SPO2CommunicationStop,SpO2通信中断,SpO2 Communication Stop
+SPO2ProbeFault,血氧探头故障,SpO2 Probe Fault
+SPO2SignalSaturation,SpO2信号饱和,SpO2 Signal Saturation
 CO2EtCO2Low,EtCO2 低,EtCO2 Low
 CO2EtCO2High,EtCO2 高,EtCO2 High
 CO2FiCO2Low,FiCO2 低,FiCO2 Low
@@ -814,7 +814,7 @@ ServiceCPUTemp,CPU温度,CPU Temp
 iDMVersion,iDM,iDM
 ECGVersion,ECG,ECG
 NIBPVersion,NIBP,NIBP
-SPO2Version,SPO2,SPO2
+SPO2Version,SpO2,SpO2
 TEMPVersion,TEMP,TEMP
 iDMBoardVersion,iDMBoard,iDMBoard
 PRT48Version,PRT48,PRT48
@@ -964,6 +964,9 @@ ParameterSources,参数资源,Parameter Sources
 Replace,替换,Replace
 Insert,插入,Insert
 Remove,移除,Remove
+ScreenTypeSelect,屏幕类型,Screen Type
+IndustrialScreen,工业屏,Industrial
+BusinessScreen,商业屏,Business
 TransferRescueDataByUSB,传输营救数据到USB,Transferring Rescue Data to USB
 TransferRescueDataByWIFI,传输营救数据到WIFI,Transferring Rescue Data to WIFI
 TransferSupervisorByUSB,传输超级配置数据到USB,Transferring Supervisor Config to USB
@@ -1275,6 +1278,13 @@ ResistiveScreen,电阻屏,Resistive Screen
 CapacitiveScreen,电容屏,Capacitive Screen
 NurseCallingModule,护士呼叫设置模块,Nurse Calling Module
 NurseCallingSettingWindow,护士呼叫设置窗口,Nurse Calling Setting Window
+Continuous,连续,Continuous
+Pulse,脉冲,Pulse
+ContactType,触发方式,Contact Type
+NormallyClosed,常闭,Normally Closed
+NormallyOpen,常开,Normally Open
+AlarmLev,报警级别,Alarm Lev
+AlarmType,报警类型,Alarm Type
 AnalogOutputModule,模拟输出模块,Analog Output Module
 COModule,C.O.,C.O.
 PHASEIN,PHASEIN,PHASEIN
@@ -1325,7 +1335,7 @@ MinimumALarmVolume,最小报警音量,Minimum Alarm Volume
 AlarmPauseTime,报警暂停时间,Alarm PauseTime
 RESPWaveGain,增益,Gain
 AlarmOffPromptMechanism,报警关闭提示机制,Alarm Off Prompt Mechanism
-AlarmAudioOff,报警音,Alarm Audio
+AlarmAudio,报警音,Alarm Audio
 EnableAlarmOff,报警关闭,Enable Alarm Off
 AlarmOffAtPowerOn,接通电源报警,Alarm Off At Power On
 No,否,No
@@ -1397,7 +1407,7 @@ Protected,保护,Protected
 Unprotected,非保护,Unprotected
 ConfImpactItemSettings,受配置影响项设置,Configuration-influenced Settings
 ParaSwitch,参数开关,Parameters Switch
-NurseCallSetting,护士呼叫设置,Nurse Call Setting
+NurseCallSetup,护士呼叫设置,Nurse Call Setup
 Setting,设置,Setting
 RealtimePrintSegment,实时打印,Real Time Print
 NibpMeasurement,NIBP测量,NIBP Measurement
@@ -1634,11 +1644,11 @@ ECGFullScreen,心电全屏,ECG Full Screen
 isSaveLayout,是否保存布局配置？,Do you want to save the layout config?
 LowBattery,电量过低,Low quantity of electricity
 RESPCheckElectrodes,检查电极,Check Electrodes
-SPO2SignalWeak,检测血氧信号弱,SPO2 Signal Weak
-SPO2CableOff,血氧电缆断开,SPO2 Cable Off
-SPO2FingerOff,未检测到手指,SPO2 Finger Off
-SPO2LEDFault,血氧LED错误,SPO2 LED Fault
-SPO2LowPerfusion,血氧弱灌注,SPO2 Low Perfusion
+SPO2SignalWeak,检测血氧信号弱,SpO2 Signal Weak
+SPO2CableOff,血氧电缆断开,SpO2 Cable Off
+SPO2FingerOff,未检测到手指,SpO2 Finger Off
+SPO2LEDFault,血氧LED错误,SpO2 LED Fault
+SPO2LowPerfusion,血氧弱灌注,SpO2 Low Perfusion
 NIBPSimul,NIBP同侧,NIBP Simul
 Input8DigitsPassword,请输入8位数字密码,Please input 8 digits password
 BornDate,出生日期,Born Date
@@ -1654,4 +1664,4 @@ Result,结果,Result
 RepeatCheck,一小时内重复测量3次以确认结果,Check again in a hour for result
 footValue,足部数据,foot
 handValue,手部数据,hand
-SPO2ValueInvaild,采集数据无效，请检查血氧模块,The collect data is invaild，Please check SPO2 module
+SPO2ValueInvaild,采集数据无效，请检查血氧模块,The collect data is invaild，Please check SpO2 module

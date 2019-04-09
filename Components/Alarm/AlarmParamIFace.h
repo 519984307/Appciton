@@ -120,7 +120,7 @@ public:
     virtual bool isRemoveAfterLatch(int /*id*/) {return false;}
 
     // 报警确认后是否移除灯光
-    virtual bool isRemoveLightAfterConfirm(int) {return false;}
+    virtual bool isRemoveLightAfterConfirm(int) {return true;}
 
     // 是否需要删除报警
     virtual bool isNeedRemove(int /*id*/) {return false;}

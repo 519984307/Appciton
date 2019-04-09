@@ -11,7 +11,7 @@
 #pragma once
 #include "NIBPParamInterface.h"
 #include "gmock/gmock.h"
-
+#include "NIBPDefine.h"
 class MockNIBPParam : public NIBPParamInterface
 {
 public:
@@ -26,4 +26,9 @@ public:
     MOCK_METHOD1(setModelText, void(QString));
     MOCK_METHOD0(getSuperMeasurMode, NIBPMode(void));
     MOCK_METHOD0(getAutoInterval, NIBPAutoInterval(void));
+    MOCK_METHOD1(createSnapshot, void(NIBPOneShotType));
+    MOCK_METHOD0(provider, NIBPProviderIFace&(void));
+    MOCK_METHOD1(setAdditionalMeasure, void(bool));
+    MOCK_METHOD1(setSTATClose, void(bool));
+    MOCK_METHOD0(isAutoMeasure, bool(void));
 };

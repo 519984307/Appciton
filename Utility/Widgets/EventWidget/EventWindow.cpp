@@ -49,6 +49,7 @@
 #include "EventListPageGenerator.h"
 #include "NIBPSymbol.h"
 #include "ThemeManager.h"
+#include "LanguageManager.h"
 
 #define TABLE_SPACING               (4)
 #define PAGE_ROW_COUNT               7      // 每页多少行
@@ -1225,7 +1226,8 @@ void EventWindowPrivate::eventTrendUpdate()
 
         item->setData(EventTrendItemDelegate::ValueTextRole, valueStr);
         item->setData(EventTrendItemDelegate::TitleTextRole, titleStr);
-        item->setData(EventTrendItemDelegate::UnitTextRole, Unit::localeSymbol(paramManager.getSubParamUnit(paramInfo.getParamID(subId), subId)));
+        item->setData(EventTrendItemDelegate::UnitTextRole,
+                      trs(Unit::getSymbol(paramManager.getSubParamUnit(paramInfo.getParamID(subId), subId))));
 
 
         item->setData(EventTrendItemDelegate::TrendAlarmRole, ctx.trendSegment->values[i].alarmFlag);

@@ -42,7 +42,6 @@
 #define DISABLE_DIA_SOFTKEY_PERIOD (900)  // 1s,定时有差异，使用900ms
 
 unsigned ECGParam::selfTestResult = 0;
-ECGParam *ECGParam::_selfObj = NULL;
 
 /**************************************************************************************************
  * 获取禁用的波形控件。
@@ -274,6 +273,9 @@ void ECGParam::setProvider(ECGProviderIFace *provider)
 
     // 设置病人类型
     _provider->setPatientType(getPatientType());
+
+    // raw data
+    _provider->enableRawData(getRawDataOnOff());
 
     // 设置带宽。
 //    _provider->setBandwidth((ECGBandwidth)getBandwidth());
@@ -2201,6 +2203,21 @@ bool ECGParam::getFristConnect()
     return _isFristConnect;
 }
 
+void ECGParam::setRawDataOnOff(bool sta)
+{
+    if (_provider)
+    {
+        _provider->enableRawData(sta);
+    }
+}
+
+bool ECGParam::getRawDataOnOff()
+{
+    int value = false;
+    machineConfig.getNumValue("Record|ECG", value);
+    return value;
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
@@ -2293,6 +2310,21 @@ ECGParam::ECGParam() : Param(PARAM_ECG),
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
+ECGParam &ECGParam::getInstance()
+{
+    static ECGParam *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new ECGParam();
+        ECGParamInterface *old = registerECGParam(instance);
+        if (old)
+        {
+            delete old;
+        }
+    }
+    return *instance;
+}
+
 ECGParam::~ECGParam()
 {
     _timer.stop();

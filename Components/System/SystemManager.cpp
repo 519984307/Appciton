@@ -49,6 +49,7 @@
 #include "DataStorageDirManager.h"
 #include "StandbyWindow.h"
 #include "NIBPParam.h"
+#include "LanguageManager.h"
 
 #define BACKLIGHT_DEV   "/sys/class/backlight/backlight/brightness"       // 背光控制文件接口
 
@@ -86,7 +87,8 @@ public:
           selfTestFinish(false),
           isStandby(false),
           isTurnOff(false)
-    {}
+    {
+    }
 
     /**
      * @brief enterDemoMode enter the demo mode
@@ -511,7 +513,20 @@ void SystemManager::enableBrightness(BrightnessLevel br)
     data.append(static_cast<char>(br));
     sendCommand(data);
 #else
-    char lightValue[BRT_LEVEL_NR] = {64, 52, 47, 41, 36, 31, 26, 21, 15, 1};
+    // add screen type select
+    char *lightValue = NULL;
+    char industrialLight[BRT_LEVEL_NR] = {1, 15, 25, 38, 46, 54, 62, 72, 85, 100};
+    char businessLight[BRT_LEVEL_NR] = {64, 52, 47, 41, 36, 31, 26, 21, 15, 1};
+    int index = BUSINESS_SCREEN;
+    machineConfig.getNumValue("ScreenTypeSelect", index);
+    if (static_cast<ScreenType>(index) == INDUSTRIAL_SCRENN)
+    {
+        lightValue = reinterpret_cast<char*>(&industrialLight);
+    }
+    else
+    {
+        lightValue = reinterpret_cast<char*>(&businessLight);
+    }
 
     if (d_ptr->backlightFd < 0)
     {
@@ -524,10 +539,11 @@ void SystemManager::enableBrightness(BrightnessLevel br)
         return;
     }
 
-    int brValue = lightValue[br];
+    int brValue = *(lightValue + br);
 
     QString str = QString::number(brValue);
 
+    qDebug() << Q_FUNC_INFO << str;
     int ret = write(d_ptr->backlightFd, qPrintable(str), str.length() + 1);
 
     if (ret < 0)
