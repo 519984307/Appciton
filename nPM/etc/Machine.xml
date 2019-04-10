@@ -19,7 +19,7 @@
     <TEMPEnable>1</TEMPEnable>
     <WIFIEnable>0</WIFIEnable>
     <TouchEnable>0</TouchEnable>
-    <O2Enable>0</O2Enable>
+    <O2Enable>1</O2Enable>
     <!--屏幕类型选择  0:商业屏,1:工业屏-->
     <ScreenTypeSelect>0</ScreenTypeSelect>
     <!--系统信息-->
