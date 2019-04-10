@@ -964,9 +964,9 @@ ParameterSources,参数资源,Parameter Sources
 Replace,替换,Replace
 Insert,插入,Insert
 Remove,移除,Remove
-BacklightRegulation,背光调节方式,Backlight Regulation
-ModeOne,模式一,Mode One
-ModeTwo,模式二,Mode Two
+BacklightAdjustment,背光调节方式,Backlight Adjustment
+Mode1,模式1,Mode 1
+Mode2,模式2,Mode 2
 ScreenSize,屏幕尺寸,Screen Size
 ScreenResolution,屏幕分辨率,Screen Resolution
 Inch,英寸,Inch

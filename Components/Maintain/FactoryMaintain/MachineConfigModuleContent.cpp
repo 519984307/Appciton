@@ -179,7 +179,7 @@ void MachineConfigModuleContentPrivte::loadOptions()
 
     // load screen type
     index = 0;
-    machineConfig.getNumValue("BacklightRegulation", index);
+    machineConfig.getNumValue("BacklightAdjustment", index);
     combos[ITEM_CBO_BACKLIGHT]->setCurrentIndex(index);
 
     itemInitMap = itemChangedMap;
@@ -443,13 +443,13 @@ void MachineConfigModuleContent::layoutExec()
 #endif
 
     // Backlight Regulation
-    label = new QLabel(trs("BacklightRegulation"));
+    label = new QLabel(trs("BacklightAdjustment"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     combo = new ComboBox;
     combo->blockSignals(true);
     combo->addItems(QStringList()
-                    << trs(SystemSymbol::convert(MODE_ONE))
-                    << trs(SystemSymbol::convert(MODE_TWO))
+                    << trs(SystemSymbol::convert(BACKLIGHT_MODE_1))
+                    << trs(SystemSymbol::convert(BACKLIGHT_MODE_2))
                    );
     combo->blockSignals(false);
     layout->addWidget(combo, d_ptr->combos.count(), 1);
@@ -563,7 +563,7 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
 #endif
         case MachineConfigModuleContentPrivte::ITEM_CBO_BACKLIGHT:
         {
-            machineConfig.setNumValue("BacklightRegulation", index);
+            machineConfig.setNumValue("BacklightAdjustment", index);
             machineConfig.saveToDisk();
 #ifdef Q_WS_QWS
             BrightnessLevel br = systemManager.getBrightness();

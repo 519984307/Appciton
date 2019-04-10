@@ -40,11 +40,11 @@ enum UserFaceType
 /**
  * @brief The Backlight Regulation enum
  */
-enum BacklightRegulation
+enum BacklightAdjustMent
 {
-    MODE_ONE,
-    MODE_TWO,
-    MODE_NR
+    BACKLIGHT_MODE_1,
+    BACKLIGHT_MODE_2,
+    BACKLIGHT_MODE_NR
 };
 
 // 背光亮度等级。
@@ -85,11 +85,11 @@ public:
         return symbol[index];
     }
 
-    static const char *convert(BacklightRegulation index)
+    static const char *convert(BacklightAdjustMent index)
     {
-        static const char *symbol[MODE_NR] =
+        static const char *symbol[BACKLIGHT_MODE_NR] =
         {
-            "ModeOne", "ModeTwo"
+            "Mode1", "Mode2"
         };
         return symbol[index];
     }
