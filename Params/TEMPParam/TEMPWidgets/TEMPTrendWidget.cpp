@@ -106,11 +106,11 @@ void TEMPTrendWidget::setUNit(UnitType u)
     switch (u)
     {
     case UNIT_TC:
-        setUnit(Unit::localeSymbol(UNIT_TC));
+        setUnit(trs(Unit::getSymbol(UNIT_TC)));
         break;
 
     case UNIT_TF:
-        setUnit(Unit::localeSymbol(UNIT_TF));
+        setUnit(trs(Unit::getSymbol(UNIT_TF)));
         break;
 
     default:
@@ -243,11 +243,11 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
     UnitType u = tempParam.getUnit();
     if (UNIT_TC == u)
     {
-        setUnit(Unit::localeSymbol(UNIT_TC));
+        setUnit(trs(Unit::getSymbol(UNIT_TC)));
     }
     else
     {
-        setUnit(Unit::localeSymbol(UNIT_TF));
+        setUnit(trs(Unit::getSymbol(UNIT_TF)));
     }
 
     QHBoxLayout *hLayout = new QHBoxLayout;

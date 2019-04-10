@@ -13,6 +13,7 @@
 #include "FontManager.h"
 #include <QPainter>
 #include <QDebug>
+#include "LanguageManager.h"
 
 class EventListPageGeneratorPrivate
 {

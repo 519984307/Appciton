@@ -10,7 +10,6 @@
 
 #pragma once
 #include "SPO2Define.h"
-#include "LanguageManager.h"
 
 class SPO2Symbol
 {

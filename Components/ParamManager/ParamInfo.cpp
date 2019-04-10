@@ -15,9 +15,6 @@
 #include "ECGSymbol.h"
 #include "ECGParam.h"
 
-
-ParamInfo *ParamInfo::_selfObj = NULL;
-
 /**************************************************************************************************
  * 功能： 参数ID与名字的映射表。
  *************************************************************************************************/
@@ -815,6 +812,21 @@ ParamInfo::ParamInfo()
 /**************************************************************************************************
  * 功能： 析构。
  *************************************************************************************************/
+ParamInfo &ParamInfo::getInstance()
+{
+    static ParamInfo *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new ParamInfo;
+        ParamInfoInterface *old = registerParamInfo(instance);
+        if (old)
+        {
+            delete old;
+        }
+    }
+    return *instance;
+}
+
 ParamInfo::~ParamInfo()
 {
 }

@@ -246,7 +246,7 @@ void ParamDataStorageManager::mainRun(unsigned t)
     }
 
     TrendCacheData data;
-    if (!trendCache.getTendData(t, data))
+    if (!trendCache.getTrendData(t, data))
     {
         // no trend data, return
         return;
@@ -306,7 +306,7 @@ void ParamDataStorageManager::addNIBPData(unsigned t)
     }
 
     TrendCacheData data;
-    if (!trendCache.getTendData(t, data))
+    if (!trendCache.getTrendData(t, data))
     {
         // no trend data, return
         return;
@@ -380,7 +380,7 @@ void ParamDataStorageManager::addAlarmData(unsigned t, ParamID id)
     d->lastAlarmTimestamp = t;
 
     TrendCacheData data;
-    if (!trendCache.getTendData(t, data))
+    if (!trendCache.getTrendData(t, data))
     {
         // no trend data, return
         return;

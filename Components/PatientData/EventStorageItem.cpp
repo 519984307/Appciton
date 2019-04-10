@@ -27,6 +27,7 @@
 #include "Alarm.h"
 #include "AlarmConfig.h"
 #include "DataStorageDirManager.h"
+#include "LanguageManager.h"
 
 class EventStorageItemPrivate
 {
@@ -359,7 +360,7 @@ bool EventStorageItem::startCollectTrendAndWaveformData(unsigned t)
         {
             TrendCacheData trendData;
             TrendAlarmStatus trendAlarmStatus;
-            if (trendCache.getTendData(time, trendData) && trendCache.getTrendAlarmStatus(time, trendAlarmStatus))
+            if (trendCache.getTrendData(time, trendData) && trendCache.getTrendAlarmStatus(time, trendAlarmStatus))
             {
                 d_ptr->saveTrendData(time, trendData, trendAlarmStatus);
             }
@@ -373,7 +374,7 @@ bool EventStorageItem::startCollectTrendAndWaveformData(unsigned t)
     }
     else
     {
-        trendCache.getTendData(t, trendData);
+        trendCache.getTrendData(t, trendData);
         trendCache.getTrendAlarmStatus(t, trendAlarmStatus);
         d_ptr->saveTrendData(t, trendData, trendAlarmStatus);
     }

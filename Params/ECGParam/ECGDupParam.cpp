@@ -416,11 +416,9 @@ bool ECGDupParam::isHRValid(void)
  *************************************************************************************************/
 void ECGDupParam::isAlarm(bool isAlarm, bool isLimit)
 {
+    Q_UNUSED(isLimit)
+
     _isAlarm |= isAlarm;
-    if (isLimit)
-    {
-        return;
-    }
 
     if (NULL != _trendWidget)
     {

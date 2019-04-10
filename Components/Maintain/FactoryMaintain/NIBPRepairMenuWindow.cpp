@@ -32,6 +32,7 @@
 #include "NIBPManometerContent.h"
 #include "NIBPPressureControlContent.h"
 #include "IConfig.h"
+#include "LanguageManager.h"
 
 class NIBPRepairMenuWindowPrivate
 {

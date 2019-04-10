@@ -82,8 +82,6 @@ void AlarmPhyInfoBarWidget::_drawText(void)
         r.adjust(focusedBorderWidth() + 6, 0, 0, 0);
     }
 
-    int fontSize = fontManager.getFontSize(4);
-    painter.setFont(fontManager.textFont(fontSize));
     QString nameStr;
     switch (_alarmSource->getAlarmPriority(_alarmID))
     {
@@ -101,6 +99,8 @@ void AlarmPhyInfoBarWidget::_drawText(void)
     }
     nameStr += " ";
     nameStr += trs(_text);
+    int fontSize = fontManager.textFontSize(r, nameStr, false, fontManager.getFontSize(4));
+    painter.setFont(fontManager.textFont(fontSize));
     painter.drawText(r, Qt::AlignVCenter | Qt::AlignLeft, nameStr);
 }
 
@@ -114,9 +114,6 @@ void AlarmPhyInfoBarWidget::_drawAlarmPauseMessage()
     QRect tempRect = rect().adjusted(border, border, -border, -border);
     painter.drawRoundedRect(tempRect, 4, 4);
 
-    int fontSize = fontManager.getFontSize(4);
-    painter.setFont(fontManager.textFont(fontSize));
-
     QString s;
     if (_alarmPauseTime == INT_MAX)
     {
@@ -127,6 +124,8 @@ void AlarmPhyInfoBarWidget::_drawAlarmPauseMessage()
         s = QString("%1 %2s").arg(trs("AlarmPause")).arg(_alarmPauseTime);
     }
 
+    int fontSize = fontManager.textFontSize(tempRect, s, false, fontManager.getFontSize(4));
+    painter.setFont(fontManager.textFont(fontSize));
     painter.drawText(tempRect, Qt::AlignCenter, s);
 }
 

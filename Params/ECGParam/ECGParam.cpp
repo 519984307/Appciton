@@ -42,7 +42,6 @@
 #define DISABLE_DIA_SOFTKEY_PERIOD (900)  // 1s,定时有差异，使用900ms
 
 unsigned ECGParam::selfTestResult = 0;
-ECGParam *ECGParam::_selfObj = NULL;
 
 /**************************************************************************************************
  * 获取禁用的波形控件。
@@ -2311,6 +2310,21 @@ ECGParam::ECGParam() : Param(PARAM_ECG),
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
+ECGParam &ECGParam::getInstance()
+{
+    static ECGParam *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new ECGParam();
+        ECGParamInterface *old = registerECGParam(instance);
+        if (old)
+        {
+            delete old;
+        }
+    }
+    return *instance;
+}
+
 ECGParam::~ECGParam()
 {
     _timer.stop();

@@ -848,7 +848,7 @@ void TestAlarmIndicator::testPublishAlarmHasPhyAlarm()
     QFETCH(AlarmStatus, status);
     QFETCH(AlarmPriority, priority);
     QFETCH(AlarmPriority, highestPriority);
-    systemConfig.setNumValue("Alarms|AlarmAudioOff", 0);
+    systemConfig.setNumValue("Alarms|AlarmAudio", 1);
     static int i = 0;
     alarmIndicator.addAlarmInfo(QTime::currentTime().elapsed(),
                                 ALARM_TYPE_PHY,

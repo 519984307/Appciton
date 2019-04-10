@@ -10,37 +10,11 @@
 
 #pragma once
 #include <QString>
-#include "ParamInfo.h"
-#include "BaseDefine.h"
-#include "UnitManager.h"
+#include "TrendCacheInterface.h"
 #include <QMutex>
 #include <QList>
 
 #define MAX_TREND_CACHE_NUM (240)//缓存的趋势数据条数
-
-// 趋势缓存数据
-struct TrendCacheData
-{
-    TrendCacheData()
-    {
-        lastNibpMeasureTime = 0;
-        lastNibpMeasureSuccessTime = 0;
-        co2baro = 0;
-    }
-
-    TrendCacheData &operator=(const TrendCacheData &data)
-    {
-        lastNibpMeasureTime = data.lastNibpMeasureTime;
-        lastNibpMeasureSuccessTime = data.lastNibpMeasureSuccessTime;
-        co2baro = data.co2baro;
-        values = data.values;
-        return *this;
-    }
-    unsigned lastNibpMeasureTime;
-    unsigned lastNibpMeasureSuccessTime;
-    TrendDataType co2baro;
-    QMap<SubParamID, TrendDataType> values;
-};
 
 struct TrendAlarmStatus
 {
@@ -63,19 +37,10 @@ typedef QMap<unsigned, TrendAlarmStatus> TrendAlarmStatusCacheMap;
 /**************************************************************************************************
  * Trend数据缓存
  *************************************************************************************************/
-class TrendCache
+class TrendCache : public TrendCacheInterface
 {
 public:
-    static TrendCache &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new TrendCache();
-        }
-
-        return *_selfObj;
-    }
-    static TrendCache *_selfObj;
+    static TrendCache &getInstance(void);
     ~TrendCache();
 
 public:
@@ -101,7 +66,7 @@ public:
     QList<TrendAlarmStatus> getTrendAlarmStatus(unsigned start, unsigned stop);
 
     // 获取趋势数据
-    bool getTendData(unsigned t, TrendCacheData &data);
+    bool getTrendData(unsigned t, TrendCacheData &data);
     bool getTrendAlarmStatus(unsigned t, TrendAlarmStatus &alarmStatus);
 
     unsigned getLastNibpMeasureTime() const
@@ -131,5 +96,4 @@ private:
     QMutex _mutex;
 };
 
-#define trendCache (TrendCache::construction())
-#define deleteTrendCache() (delete TrendCache::_selfObj)
+#define trendCache (TrendCache::getInstance())

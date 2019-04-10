@@ -13,7 +13,7 @@
 #include "SPO2Alarm.h"
 #include "Debug.h"
 #include "NIBPParam.h"
-
+#include "LanguageManager.h"
 
 enum OxismartReport
 {

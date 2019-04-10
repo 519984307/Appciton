@@ -20,7 +20,7 @@
 #include "ParamInfo.h"
 #include "IBPParam.h"
 #include "OrderedMap.h"
-
+#include "LanguageManager.h"
 
 const char *layoutNodeName(LayoutNodeType nodeType)
 {

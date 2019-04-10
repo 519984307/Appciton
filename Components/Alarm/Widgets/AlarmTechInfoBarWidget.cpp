@@ -84,9 +84,8 @@ void AlarmTechInfoBarWidget::_drawText(void)
         r.adjust(focusedBorderWidth() + 6, 0, 0, 0);
     }
 
-    int fontSize = fontManager.getFontSize(4);
+    int fontSize = fontManager.textFontSize(r, trs(_text), false, fontManager.getFontSize(4));
     painter.setFont(fontManager.textFont(fontSize));
-//    painter.setFont(fontManager.textFont(fontManager.getFontSize(1)));
     painter.drawText(r, Qt::AlignVCenter | Qt::AlignLeft, trs(_text));
 
     if (_type != _alarmType && 0 != _pauseTime)
@@ -94,7 +93,6 @@ void AlarmTechInfoBarWidget::_drawText(void)
         r.adjust(0, 0, -6, 0);
         QImage image("/usr/local/nPM/icons/MutePause.png");
         painter.drawImage(QRect(width() - 60, (height() - 16) / 2, 16, 16), image);
-//        painter.drawText(r, Qt::AlignVCenter | Qt::AlignRight, QString::number(_pauseTime) + "s");
     }
 }
 
