@@ -112,7 +112,7 @@ void O2TrendWidget::setTextSize()
 {
     QRect r = this->rect();
     r.adjust(nameLabel->width(), 0, 0, 0);
-    int fontSize = fontManager.adjustNumFontSize(r, true);
+    int fontSize = fontManager.adjustNumFontSize(r, true, "9999");
     QFont font = fontManager.numFont(fontSize, true);
     font.setWeight(QFont::Black);
     _o2Value->setFont(font);
