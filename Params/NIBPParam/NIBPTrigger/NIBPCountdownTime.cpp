@@ -25,7 +25,8 @@ void NIBPCountdownTime::run()
         // 更新倒计时。
         nibpParam.setCountdown((_autoTime - autoMeasureElapseTime()) / 1000);
         // 倒计时是否完成(在STANDBY状态才能启动)
-        if ((nibpParam.curStatusType() == NIBP_MONITOR_STANDBY_STATE) && isAutoMeasureTimeout())
+        if ((nibpParam.curStatusType() == NIBP_MONITOR_STANDBY_STATE) &&
+                isAutoMeasureTimeout() && !nibpParam.isMaintain())
         {
             // 转换到测量状态。
             if (systemManager.getCurWorkMode() != WORK_MODE_DEMO)
