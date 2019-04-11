@@ -13,6 +13,7 @@
 #include "Debug.h"
 #include "SPO2Alarm.h"
 #include <QTimer>
+#include "AlarmSourceManager.h"
 #include "LanguageManager.h"
 
 #define SOM  (0xA1)
@@ -559,14 +560,22 @@ void RainbowProvider::setSmartTone(bool enable)
 
 void RainbowProvider::disconnected()
 {
-    spo2OneShotAlarm.clear();
-    spo2OneShotAlarm.setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SPO2);
+    if (alarmSource)
+    {
+        alarmSource->clear();
+        alarmSource->setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+    }
     spo2Param.setConnected(false);
 }
 
 void RainbowProvider::reconnected()
 {
-    spo2OneShotAlarm.setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SPO2);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+    }
     spo2Param.setConnected(true);
 }
 

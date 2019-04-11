@@ -22,6 +22,7 @@
 #include "ErrorLogItem.h"
 #include "ErrorLog.h"
 #include "IConfig.h"
+#include "AlarmSourceManager.h"
 #include "LanguageManager.h"
 
 #define PROBE_IN_OUT            0x0001
@@ -156,8 +157,12 @@ void S5Provider::handlePacket(unsigned char *data, int len)
  *************************************************************************************************/
 void S5Provider::disconnected(void)
 {
-    spo2OneShotAlarm.clear();
-    spo2OneShotAlarm.setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SPO2);
+    if (alarmSource)
+    {
+        alarmSource->clear();
+        alarmSource->setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+    }
     spo2Param.setConnected(false);
 }
 
@@ -166,7 +171,11 @@ void S5Provider::disconnected(void)
  *************************************************************************************************/
 void S5Provider::reconnected(void)
 {
-    spo2OneShotAlarm.setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SPO2);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+    }
     spo2Param.setConnected(true);
 }
 
@@ -251,13 +260,9 @@ bool S5Provider::isResult_BAR(unsigned char *packet)
 
     // PI;
     short piValue = (packet[15] << 8) + packet[16];
-    if (piValue > 15 || piValue < 1)
+    if (piValue > 200 || piValue < 1)
     {
         piValue = InvData();
-    }
-    else
-    {
-        piValue *= 10;
     }
     spo2Param.updatePIValue(piValue);
 

@@ -597,8 +597,8 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
         return;
     }
 
-    int startIndex;
-    int endIndex;
+    int startIndex = 0;
+    int endIndex = 0;
 
     // 二分查找时间索引
     int lowPos = 0;

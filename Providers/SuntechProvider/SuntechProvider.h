@@ -14,10 +14,11 @@
 
 struct SuntechCMD
 {
-    SuntechCMD()
+    SuntechCMD() : cmdLength(0)
     {
+        memset(cmd, 0, 10);
     }
-    unsigned char cmd [10];
+    unsigned char cmd[10];
     unsigned int cmdLength;
 };
 

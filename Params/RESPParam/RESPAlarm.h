@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2019/3/22
+ **/
+
 #pragma once
 #include "AlarmParamIFace.h"
 #include "RESPSymbol.h"
@@ -6,15 +16,7 @@
 class RESPLimitAlarm : public AlarmLimitIFace
 {
 public:
-    static RESPLimitAlarm &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new RESPLimitAlarm();
-        }
-        return *_selfObj;
-    }
-    static RESPLimitAlarm *_selfObj;
+    RESPLimitAlarm();
 
 public:
     // 报警源的名字。
@@ -54,24 +56,14 @@ public:
     virtual const char *toString(int id);
 
     // 构造与析构。
-    RESPLimitAlarm();
     virtual ~RESPLimitAlarm();
 };
-#define respLimitAlarm (RESPLimitAlarm::construction())
 
 // OneShor报警实现。
 class RESPOneShotAlarm : public AlarmOneShotIFace
 {
 public:
-    static RESPOneShotAlarm &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new RESPOneShotAlarm();
-        }
-        return *_selfObj;
-    }
-    static RESPOneShotAlarm *_selfObj;
+    RESPOneShotAlarm();
 
 public:
     // 报警源的名字。
@@ -112,8 +104,4 @@ public:
 
     // 构造与析构。
     virtual ~RESPOneShotAlarm();
-
-private:
-    RESPOneShotAlarm();
 };
-#define respOneShotAlarm (RESPOneShotAlarm::construction())

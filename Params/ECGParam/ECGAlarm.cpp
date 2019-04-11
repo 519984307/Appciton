@@ -21,16 +21,6 @@
 /**************************************************************************************************
  * 报警源的名字。
  *************************************************************************************************/
-ECGLimitAlarm &ECGLimitAlarm::getInstance()
-{
-    static ECGLimitAlarm *limitAlarm = NULL;
-    if (limitAlarm == NULL)
-    {
-        limitAlarm = new ECGLimitAlarm();
-    }
-    return *limitAlarm;
-}
-
 QString ECGLimitAlarm::getAlarmSourceName(void)
 {
     return QString(paramInfo.getParamName(PARAM_ECG));
@@ -143,20 +133,9 @@ ECGLimitAlarm::~ECGLimitAlarm()
 /**************************************************************************************************
  *************************************************************************************************/
 
-
 /**************************************************************************************************
  * 报警源的名字。
  *************************************************************************************************/
-ECGOneShotAlarm &ECGOneShotAlarm::getInstance()
-{
-    static ECGOneShotAlarm *oneShotAlarm = NULL;
-    if (oneShotAlarm == NULL)
-    {
-        oneShotAlarm = new ECGOneShotAlarm();
-    }
-    return *oneShotAlarm;
-}
-
 QString ECGOneShotAlarm::getAlarmSourceName(void)
 {
     QString str(paramInfo.getParamName(PARAM_ECG));

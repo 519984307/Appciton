@@ -17,7 +17,6 @@
 #include <QProcess>
 #include <QDateTime>
 
-TimeManager *TimeManager::_selfObj = NULL;
 #define MAXDATETIMEVALUE  2145916800  // 2037-12-31 23:59:59秒对应的时间戳
 #define SHUT_DOWN_HINT_TIME  (120)
 /**************************************************************************************************
@@ -70,6 +69,21 @@ void TimeManager::_refreshWidgets()
     {
         _elapsedWidget->setText(t);
     }
+}
+
+TimeManager &TimeManager::getInstance()
+{
+    static TimeManager *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new TimeManager();
+        TimeManagerInterface *old = registerTimeManager(instance);
+        if (old)
+        {
+            delete old;
+        }
+    }
+    return *instance;
 }
 
 /**************************************************************************************************

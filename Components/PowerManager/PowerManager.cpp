@@ -13,6 +13,8 @@
 #include "MessageBox.h"
 #include "WindowManager.h"
 #include <QTimer>
+#include "PowerOffWindow.h"
+#include "AlarmSourceManager.h"
 #include "LanguageManager.h"
 #define TWO_MINUTE 1000 * 120
 #define POWER_LIST_MAX_COUNT 3
@@ -268,7 +270,11 @@ BatteryPowerLevel PowerMangerPrivate::getCurrentVolume()
 
 void PowerMangerPrivate::updateBatAlarm(BatOneShotType type, bool isOccure)
 {
-    batteryOneShotAlarm.setOneShotAlarm(type, isOccure);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_BATTERY);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(type, isOccure);
+    }
 }
 
 bool PowerMangerPrivate::hasBattery()

@@ -12,14 +12,15 @@
 #include <QDir>
 #include "DataStorageDirManager.h"
 #include "IConfig.h"
-#include "TimeManager.h"
+#include "TimeManagerInterface.h"
 #include <QMutex>
 #include "WaveformCache.h"
 #include "StorageManager.h"
 #include <QDateTime>
-#include "SystemManager.h"
-#include "SystemAlarm.h"
-#include "Alarm.h"
+#include "SystemManagerInterface.h"
+#include "AlarmSourceManager.h"
+#include "SystemDefine.h"
+#include "AlarmInterface.h"
 
 static QString _lastFolder;
 static QString _lastFDFileName;
@@ -127,11 +128,16 @@ DataStorageDirManager::DataStorageDirManager()
     QDir dir(_curFolder);
     QString timeStr;
     bool newRescue  = false;
-    if (_curFolder.isEmpty() || !dir.exists() ||
-            (timeManager.getPowerOnSession() == POWER_ON_SESSION_NEW))
+    TimeManagerInterface *timeManager = TimeManagerInterface::getTimeManager();
+    bool powerOnSta = false;
+    if (timeManager)
+    {
+        powerOnSta = timeManager->getPowerOnSession() == POWER_ON_SESSION_NEW ? true : false;
+    }
+    if (_curFolder.isEmpty() || !dir.exists() || powerOnSta)
     {
         _curFolder.clear();
-        unsigned t = timeManager.getStartTime();
+        unsigned t = timeManager->getStartTime();
         QDateTime dt = QDateTime::fromTime_t(t);
         timeStr = dt.toString("yyyyMMddHHmmss");
         _curFolder += DATA_STORE_PATH;
@@ -153,7 +159,7 @@ DataStorageDirManager::DataStorageDirManager()
         newRescue = true;
     }
 
-    _createFDFileName(_fdFileName, timeManager.getStartTime(), newRescue);
+    _createFDFileName(_fdFileName, timeManager->getStartTime(), newRescue);
 
     QString curFolderName = QDir(_curFolder).dirName();
     dir.setPath(QString::fromAscii(DATA_STORE_PATH));
@@ -380,17 +386,22 @@ void DataStorageDirManager::createDir(bool createNew)
 
     QDir dir(_curFolder);
     QString timeStr;
+    TimeManagerInterface *timeManager = TimeManagerInterface::getTimeManager();
     if (_curFolder.isEmpty() || !dir.exists() || _createNew)
     {
         _folderNameList.clear();
         _curFolder.clear();
-        QDateTime dt = QDateTime::fromTime_t(timeManager.getCurTime());
+        QDateTime dt = QDateTime::fromTime_t(timeManager->getCurTime());
         timeStr = dt.toString("yyyyMMddHHmmss");
         _curFolder += DATA_STORE_PATH;
         QString demoFlag = "";
-        if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+        SystemManagerInterface *systemManager = SystemManagerInterface::getSystemManager();
+        if (systemManager)
         {
-            demoFlag = "D";
+            if (systemManager->getCurWorkMode() == WORK_MODE_DEMO)
+            {
+                demoFlag = "D";
+            }
         }
         _curFolder += QString::number(folderSequenceNum) + "nPM" + demoFlag + timeStr;
         dir.setPath(_curFolder);
@@ -468,11 +479,15 @@ void DataStorageDirManager::createDir(bool createNew)
     {
         // 新病人，删除上次删掉备份文件，设置时间，恢复主配置文件
         cleanUpLastIncidentDir();
-        timeManager.setElapsedTime();
+        timeManager->setElapsedTime();
         Config systemDefCfg(systemConfig.getCurConfigName());
         systemConfig.setNodeValue("PrimaryCfg", systemDefCfg);
         emit newPatient();
-        alertor.removeAllLimitAlarm();
+        AlarmInterface *alertor = AlarmInterface::getAlarm();
+        if (alertor)
+        {
+            alertor->removeAllLimitAlarm();
+        }
     }
 }
 
@@ -502,12 +517,18 @@ int DataStorageDirManager::getDirNum() const
  *************************************************************************************************/
 bool DataStorageDirManager::isCurRescueFolderFull()
 {
+    AlarmOneShotIFace *systemAlarm = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SYSTEM);
+    if (systemAlarm == NULL)
+    {
+        return false;
+    }
+
     if (_curDataSize > (unsigned) SIGNAL_RESCUE_MAX_DATA_SIZE)
     {
-        systemAlarm.setOneShotAlarm(STORAGE_SPACE_FULL, true);
+        systemAlarm->setOneShotAlarm(STORAGE_SPACE_FULL, true);
         return true;
     }
-    systemAlarm.setOneShotAlarm(STORAGE_SPACE_FULL, false);
+    systemAlarm->setOneShotAlarm(STORAGE_SPACE_FULL, false);
     return false;
 }
 
@@ -652,7 +673,8 @@ bool DataStorageDirManager::cleanUpIncidentDir(const QString &dir)
 {
 
     QStringList cleanupFilesList;
-    if (timeManager.getPowerOnSession() == POWER_ON_SESSION_CONTINUE)
+    TimeManagerInterface *timeManager = TimeManagerInterface::getTimeManager();
+    if (timeManager->getPowerOnSession() == POWER_ON_SESSION_CONTINUE)
     {
         // If reboot and continue a session, the host will create a new full disclosure file,
         // need to clean up the old one
