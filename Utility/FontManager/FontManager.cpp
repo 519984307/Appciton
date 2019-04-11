@@ -253,6 +253,32 @@ int FontManager::adjustTextFontSize(const QRect r, bool bold, int fontSize)
     return fontSize;
 }
 
+int FontManager::textFontSize(const QRect r, QString text, bool bold, int fontSize)
+{
+    if (fontSize == -1)
+    {
+        fontSize = adjustTextFontSize(r, bold);
+    }
+    QFont font = textFont(fontSize, bold);
+    int fontW = textWidthInPixels(text, font);
+    int fontH = textHeightInPixels(font);
+    int width = r.width();
+    int height = r.height();
+
+    while (fontW > width)
+    {
+        fontSize--;
+        fontW = textWidthInPixels(text, textFont(fontSize, bold));
+    }
+    fontH = textHeightInPixels(textFont(fontSize, bold));
+    while (fontH > height)
+    {
+        fontSize--;
+        fontH = textHeightInPixels(textFont(fontSize, bold));
+    }
+    return fontSize - 1;
+}
+
 /**************************************************************************************************
  * 功能： 设置单位区的数字大小。
  * 参数：

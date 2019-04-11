@@ -48,7 +48,7 @@ public:
     void setFillColor(const QColor &color);
 
     // 设置剩余时间参数
-    void setTimeValue(int time);
+    void setTimeValue(BatteryRemainTime time);
 
     /**
      * @brief charging 充电中，动画显示

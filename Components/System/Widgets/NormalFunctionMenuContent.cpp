@@ -86,8 +86,8 @@ void NormalFunctionMenuContentPrivate::loadOptions()
         combos[ITEM_CBO_WAVE_LEN]->setCurrentIndex(2);
     }
 
-    int isAlarmAudioOff = 0;
-    systemConfig.getNumValue("Alarms|AlarmAudioOff", isAlarmAudioOff);
+    int isAlarmAudio = 0;
+    systemConfig.getNumValue("Alarms|AlarmAudio", isAlarmAudio);
 
     if (nightModeManager.nightMode())
     {
@@ -99,7 +99,7 @@ void NormalFunctionMenuContentPrivate::loadOptions()
     {
         combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setEnabled(true);
         combos[ITEM_CBO_KEYPRESS_VOLUME]->setEnabled(true);
-        if (!isAlarmAudioOff)
+        if (isAlarmAudio)
         {
             // 报警音没有关闭才可以设置报警音
             combos[ITEM_CBO_ALARM_VOLUME]->setEnabled(true);
