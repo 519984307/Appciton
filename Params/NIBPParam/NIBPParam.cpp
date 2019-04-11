@@ -1106,6 +1106,7 @@ void NIBPParam::setUnit(UnitType type)
     {
         _trendWidget->setUNit(static_cast<UnitType>(unit));
         _trendWidget->updateLimit();
+         _trendWidget->setResults(_sysValue, _diaValue, _mapVaule, _lastTime);
     }
 }
 
