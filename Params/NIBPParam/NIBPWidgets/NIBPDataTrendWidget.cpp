@@ -347,6 +347,7 @@ void NIBPDataTrendWidget::setTextSize()
     _table->setFont(font);
 
     _tableItemHeight = fontManager.textHeightInPixels(font);
+    _table->setFixedWidth(width() - nameLabel->width());
 }
 
 void NIBPDataTrendWidget::updatePalette(const QPalette &pal)
@@ -412,9 +413,9 @@ NIBPDataTrendWidget::NIBPDataTrendWidget()
 
     // 布局。
     QHBoxLayout *mainLayout = new QHBoxLayout();
-    mainLayout->setContentsMargins(10, 0, 10, 0);
     mainLayout->addWidget(_table);
     contentLayout->addLayout(mainLayout);
+    contentLayout->addStretch(1);
 
     // 释放事件。
 //    connect(this, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
