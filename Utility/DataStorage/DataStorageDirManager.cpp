@@ -129,8 +129,12 @@ DataStorageDirManager::DataStorageDirManager()
     QString timeStr;
     bool newRescue  = false;
     TimeManagerInterface *timeManager = TimeManagerInterface::getTimeManager();
-    if (_curFolder.isEmpty() || !dir.exists() ||
-            (timeManager->getPowerOnSession() == POWER_ON_SESSION_NEW))
+    bool powerOnSta = false;
+    if (timeManager)
+    {
+        powerOnSta = timeManager->getPowerOnSession() == POWER_ON_SESSION_NEW ? true : false;
+    }
+    if (_curFolder.isEmpty() || !dir.exists() || powerOnSta)
     {
         _curFolder.clear();
         unsigned t = timeManager->getStartTime();
@@ -383,7 +387,6 @@ void DataStorageDirManager::createDir(bool createNew)
     QDir dir(_curFolder);
     QString timeStr;
     TimeManagerInterface *timeManager = TimeManagerInterface::getTimeManager();
-    SystemManagerInterface *systemManager = SystemManagerInterface::getSystemManager();
     if (_curFolder.isEmpty() || !dir.exists() || _createNew)
     {
         _folderNameList.clear();
@@ -392,9 +395,13 @@ void DataStorageDirManager::createDir(bool createNew)
         timeStr = dt.toString("yyyyMMddHHmmss");
         _curFolder += DATA_STORE_PATH;
         QString demoFlag = "";
-        if (systemManager->getCurWorkMode() == WORK_MODE_DEMO)
+        SystemManagerInterface *systemManager = SystemManagerInterface::getSystemManager();
+        if (systemManager)
         {
-            demoFlag = "D";
+            if (systemManager->getCurWorkMode() == WORK_MODE_DEMO)
+            {
+                demoFlag = "D";
+            }
         }
         _curFolder += QString::number(folderSequenceNum) + "nPM" + demoFlag + timeStr;
         dir.setPath(_curFolder);

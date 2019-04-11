@@ -26,6 +26,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 include("../../Common/Common.pri")
+include("../../Common/googletest.pri")
 
 SOURCES += \
         TestDataStorageDirManager.cpp \ 
@@ -42,7 +43,8 @@ SOURCES += \
     ../../../Utility/ErrorLog/ErrorLogItem.cpp \
     ../../../Utility/DataStorage/StorageManager.cpp \
     ../../../Utility/DataStorage/StorageFile.cpp \
-    ../../../Components/Alarm/AlarmInterface.cpp
+    ../../../Components/Alarm/AlarmInterface.cpp \
+    ../../../Components/Alarm/AlarmParamIFace.cpp
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
@@ -64,7 +66,9 @@ HEADERS += \
     ../../../Utility/DataStorage/StorageManager.h \
     ../../../Utility/DataStorage/StorageManager_p.h \
     ../../../Utility/DataStorage/StorageFile.h \
-    ../../../Components/Alarm/AlarmInterface.h
+    ../../../Components/Alarm/AlarmInterface.h \
+    MockTimeManager.h \
+    ../../../Components/Alarm/AlarmParamIFace.h
 
 INCLUDEPATH += \
     ../../../Utility/DataStorage \

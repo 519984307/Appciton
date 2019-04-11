@@ -9,9 +9,11 @@
  **/
 
 #include "TestDataStorageDirManager.h"
+#include "googletest.h"
 
 int main(int argc, char *argv[])
 {
+    ::testing::InitGoogleMock(&argc, argv);
     QCoreApplication app(argc, argv);
     TestDataStorageDirManager tc;
     return QTest::qExec(&tc, argc, argv);
