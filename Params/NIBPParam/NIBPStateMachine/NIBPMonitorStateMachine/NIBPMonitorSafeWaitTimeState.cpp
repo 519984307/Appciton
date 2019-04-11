@@ -178,13 +178,7 @@ void NIBPMonitorSafeWaitTimeState::handleNIBPEvent(NIBPEvent event, const unsign
             }
             break;
         }
-        // 停止额外测量
-        if (nibpParam.isAdditionalMeasure())
-        {
-            nibpParam.setAdditionalMeasure(false);
-            nibpParam.setText(trs("NIBPMEASURE") + "\n" + trs("NIBPSTOPPED"));
-            nibpParam.clearResult();
-        }
+
         if (nibpParam.getSuperMeasurMode() == NIBP_MODE_AUTO)
         {
             nibpParam.switchToAuto();
@@ -282,7 +276,7 @@ void NIBPMonitorSafeWaitTimeState::handleNIBPEvent(NIBPEvent event, const unsign
 int NIBPMonitorSafeWaitTimeState::_safeWaitTime()
 {
     // 额外一次测量
-    if (nibpParam.isAdditionalMeasure())
+    if (nibpParam.isAdditionalMeasure() && !nibpParam.isSTATMeasure())
     {
         nibpParam.setText(trs("NIBPADDITIONAL") + "\n" + trs("NIBPMEASURE"));
         if (nibpParam.getMeasurMode() == NIBP_MODE_MANUAL)
@@ -337,7 +331,6 @@ int NIBPMonitorSafeWaitTimeState::_safeWaitTime()
         if (nibpCountdownTime.isSTATMeasureTimeout() && !nibpParam.isSTATOpenTemp())
         {
             nibpParam.setModelText(trs("STATDONE"));
-            nibpParam.setSTATMeasure(false);
             nibpParam.setSTATClose(false);
 //            _safeWaitTiming = 30;
             _safeWaitTiming = 5;
