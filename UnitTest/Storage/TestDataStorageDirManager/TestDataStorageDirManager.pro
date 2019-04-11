@@ -68,7 +68,8 @@ HEADERS += \
     ../../../Utility/DataStorage/StorageFile.h \
     ../../../Components/Alarm/AlarmInterface.h \
     MockTimeManager.h \
-    ../../../Components/Alarm/AlarmParamIFace.h
+    ../../../Components/Alarm/AlarmParamIFace.h \
+    MockSystemAlarm.h
 
 INCLUDEPATH += \
     ../../../Utility/DataStorage \

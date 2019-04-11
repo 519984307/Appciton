@@ -517,18 +517,18 @@ int DataStorageDirManager::getDirNum() const
  *************************************************************************************************/
 bool DataStorageDirManager::isCurRescueFolderFull()
 {
-    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SYSTEM);
-    if (alarmSource == NULL)
+    AlarmOneShotIFace *systemAlarm = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SYSTEM);
+    if (systemAlarm == NULL)
     {
         return false;
     }
 
     if (_curDataSize > (unsigned) SIGNAL_RESCUE_MAX_DATA_SIZE)
     {
-        alarmSource->setOneShotAlarm(STORAGE_SPACE_FULL, true);
+        systemAlarm->setOneShotAlarm(STORAGE_SPACE_FULL, true);
         return true;
     }
-    alarmSource->setOneShotAlarm(STORAGE_SPACE_FULL, false);
+    systemAlarm->setOneShotAlarm(STORAGE_SPACE_FULL, false);
     return false;
 }
 

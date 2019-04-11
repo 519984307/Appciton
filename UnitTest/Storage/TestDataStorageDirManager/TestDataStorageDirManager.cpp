@@ -11,6 +11,7 @@
 #include "TestDataStorageDirManager.h"
 #include "DataStorageDirManager.h"
 #include "MockTimeManager.h"
+#include "MockSystemAlarm.h"
 #include "AlarmSourceManager.h"
 #include "SystemAlarm.h"
 
@@ -92,10 +93,12 @@ void TestDataStorageDirManager::testIsCurRescueFolderFull()
     EXPECT_CALL(mockTimeManager, getPowerOnSession).Times(1).WillOnce(testing::Return(POWER_ON_SESSION_NEW));
     EXPECT_CALL(mockTimeManager, getStartTime).WillRepeatedly(testing::Return(0));
     dataStorageDirManager.createDir();
-    AlarmOneShotIFace *oneShotAlarmSource = new OneShotAlarm();
-    alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_SYSTEM);
+    MockSystemAlarm systemAlarm;
+    alarmSourceManager.registerOneShotAlarmSource(&systemAlarm, ONESHOT_ALARMSOURCE_SYSTEM);
     dataStorageDirManager.addDataSize(folderSize);
     QCOMPARE(dataStorageDirManager.isCurRescueFolderFull(), result);
+    QCOMPARE(systemAlarm.isAlarmed(STORAGE_SPACE_FULL), false);
+    QCOMPARE(systemAlarm.isAlarmed(STORAGE_SPACE_FULL), result);
 }
 
 void TestDataStorageDirManager::testDeleteData_data()
