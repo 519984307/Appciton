@@ -49,6 +49,7 @@
 #include "EventListPageGenerator.h"
 #include "NIBPSymbol.h"
 #include "ThemeManager.h"
+#include "PatientManager.h"
 #include "LanguageManager.h"
 
 #define TABLE_SPACING               (4)
@@ -75,6 +76,7 @@ public:
           generator(NULL)
     {
         backend = eventStorageManager.backend();
+        patientInfo = patientManager.getPatientInfo();
         curEventType = EventAll;
         curEventLevel = EVENT_LEVEL_ALL;
     }
@@ -160,6 +162,7 @@ public:
     RecordPageGenerator *generator;
 
     QStringList printList;              // 事件列表打印
+    PatientInfo patientInfo;            // 病人信息
 };
 
 EventWindow *EventWindow::getInstance()
@@ -203,10 +206,12 @@ void EventWindow::setHistoryData(bool flag)
     if ((d_ptr->historyDataPath != "") && d_ptr->isHistory)
     {
         d_ptr->backend =  StorageManager::open(d_ptr->historyDataPath + EVENT_DATA_FILE_NAME, QIODevice::ReadOnly);
+        d_ptr->patientInfo = patientManager.getHistoryPatientInfo(d_ptr->historyDataPath + PATIENT_INFO_FILE_NAME);
     }
     else
     {
         d_ptr->backend = eventStorageManager.backend();
+        d_ptr->patientInfo = patientManager.getPatientInfo();
     }
 }
 
@@ -344,7 +349,7 @@ void EventWindow::eventLevelSelect(int index)
 
 void EventWindow::eventListPrintReleased()
 {
-    RecordPageGenerator *generator = new EventListPageGenerator(d_ptr->printList);
+    RecordPageGenerator *generator = new EventListPageGenerator(d_ptr->printList, d_ptr->patientInfo);
     if (recorderManager.isPrinting() && !d_ptr->isWait)
     {
         if (generator->getPriority() <= recorderManager.getCurPrintPriority())
@@ -536,7 +541,7 @@ void EventWindow::printRelease()
     if (curIndex < d_ptr->dataIndex.size() &&
             curIndex >= 0)
     {
-        RecordPageGenerator *gen = new EventPageGenerator(d_ptr->backend, d_ptr->dataIndex.at(curIndex));
+        RecordPageGenerator *gen = new EventPageGenerator(d_ptr->backend, d_ptr->dataIndex.at(curIndex), d_ptr->patientInfo);
         if (recorderManager.isPrinting() && !d_ptr->isWait)
         {
             if (gen->getPriority() <= recorderManager.getCurPrintPriority())

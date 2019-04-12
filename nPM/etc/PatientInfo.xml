@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 跟随病人的病人信息文件 -->
+<PatientInfo>
+    <PatientType>0</PatientType><!--0:adult  1:ped  2:neo-->
+    <PacerMaker>0</PacerMaker>
+    <Sex>0</Sex>
+    <BornDate></BornDate>
+    <Blood>0</Blood>
+    <Name></Name>
+    <ID></ID>
+    <Weight></Weight>
+    <Height></Height>
+</PatientInfo>
+
+

@@ -76,7 +76,7 @@ public:
     void addStorage(StorageManager * storage);
 
     // 获取当前文件夹
-    QString getCurFolder() const;
+    virtual QString getCurFolder() const;
 
     // 获取FD文件名
     QString getFDFileName() const {return _fdFileName;}

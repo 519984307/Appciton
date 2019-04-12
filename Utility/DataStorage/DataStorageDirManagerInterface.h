@@ -33,6 +33,14 @@ public:
      */
     static DataStorageDirManagerInterface *getDataStorageDirManager();
 
+    // 获取当前文件夹
+    virtual QString getCurFolder() const = 0;
+
+    // 创建文件夹
+    virtual void createDir(bool createNew = false) = 0;
+
+    // 删除当前文件夹
+    virtual void cleanCurData() = 0;
 signals:
     /**
      * @brief newPatient 新建病人信号

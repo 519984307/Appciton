@@ -26,6 +26,7 @@
 #include "CO2Param.h"
 #include <QTimerEvent>
 #include "LanguageManager.h"
+#include "PatientManager.h"
 
 #define COLUMN_COUNT        7
 #define MAX_ROW_COUNT       9
@@ -584,13 +585,16 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
         return;
     }
     IStorageBackend *backend;
+    PatientInfo patientInfo;
     if (d_ptr->isHistory)
     {
         backend = StorageManager::open(d_ptr->historyDataPath + TREND_DATA_FILE_NAME, QIODevice::ReadOnly);
+        patientInfo = patientManager.getHistoryPatientInfo(d_ptr->historyDataPath + PATIENT_INFO_FILE_NAME);
     }
     else
     {
         backend = trendDataStorageManager.backend();
+        patientInfo = patientManager.getPatientInfo();
     }
     if (backend->getBlockNR() <= 0)
     {
@@ -660,7 +664,7 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
     {
         printInfo.timestampEventMap[d_ptr->trendDataPack.at(i)->time] = d_ptr->trendDataPack.at(i)->status;
     }
-    RecordPageGenerator *gen = new TrendTablePageGenerator(backend, printInfo);
+    RecordPageGenerator *gen = new TrendTablePageGenerator(backend, printInfo, patientInfo);
     if (recorderManager.isPrinting() && !d_ptr->isWait)
     {
         if (gen->getPriority() <= recorderManager.getCurPrintPriority())
