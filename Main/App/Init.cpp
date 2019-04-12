@@ -112,6 +112,7 @@ static void _initSystem(void)
     // initialize the storage manager in the main thread
     EventStorageManager::getInstance();
     TrendDataStorageManager::getInstance();
+    patientManager.construction();
 
     //消息提示框
     pMessageBox.construction();

@@ -14,6 +14,7 @@
 #include "TrendDataDefine.h"
 #include <QScrollArea>
 #include "EventStorageManager.h"
+#include "PatientDefine.h"
 
 class QHBoxLayout;
 class QVBoxLayout;
@@ -91,6 +92,12 @@ public:
      */
     const QList<TrendGraphInfo> getTrendGraphPrint();
     const QList<EventInfoSegment> getEventList();
+
+    /**
+     * @brief getPatientInfo 获取病人信息
+     * @return
+     */
+    const PatientInfo &getPatientInfo();
 
     /**
      * @brief setHistoryDataPath 设置历史回顾数据的文件路径
@@ -222,6 +229,7 @@ private:
     TrendGraphInfo _trendGraphInfo;                 // 趋势图数据集合
     QList<EventInfoSegment> _eventList;            // 报警类型和时间
     QList<TrendGraphInfo> _infosList;                    // 打印趋势图数据链表
+    PatientInfo _patientInfo;                        // 病人信息
 
     bool _isHistory;                                // 历史回顾标志
     QString _historyDataPath;                       // 历史数据路径

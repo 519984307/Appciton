@@ -14,13 +14,19 @@
 #include "IConfig.h"
 #include "ConfigManager.h"
 #include "ECGParam.h"
-#include "DataStorageDirManager.h"
+#include "DataStorageDirManagerInterface.h"
 #include "NIBPParam.h"
 #include "NIBPProviderIFace.h"
 #include "TimeDate.h"
 #include "AlarmIndicator.h"
 #include "RunningStatusBar.h"
 #include "O2ParamInterface.h"
+#include "XmlParser.h"
+#include <QFile>
+
+#define XML_FILE_SUFFIX QString::fromLatin1(".xml")
+#define PATIENT_INFO_PATH QString("/usr/local/nPM/etc")
+#define PATIENT_INFO_FILENAME QString("/PatientInfo.xml")
 
 PatientManager *PatientManager::_selfObj = NULL;
 
@@ -291,6 +297,67 @@ const PatientInfo &PatientManager::getPatientInfo(void)
     return d_ptr->patientInfo;
 }
 
+const PatientInfo &PatientManager::getHistoryPatientInfo(const QString &path)
+{
+    static PatientInfo *patientInfo = NULL;
+    if (patientInfo == NULL)
+    {
+        patientInfo = new PatientInfo;
+    }
+    XmlParser xmlFile;
+    QString str;
+    if (!xmlFile.open(path + XML_FILE_SUFFIX))
+    {
+        qDebug() << "history patient info file open fail!";
+        return *patientInfo;
+    }
+    // patient type
+    xmlFile.getValue("PatientType", str);
+    patientInfo->type = static_cast<PatientType>(str.toInt());
+    str.clear();
+
+    // pacermaker
+    xmlFile.getValue("PacerMaker", str);
+    patientInfo->pacer = static_cast<PatientPacer>(str.toInt());
+    str.clear();
+
+    // sex
+    xmlFile.getValue("Sex", str);
+    patientInfo->sex = static_cast<PatientSex>(str.toInt());
+    str.clear();
+
+    // bornDate
+    xmlFile.getValue("BornDate", str);
+    patientInfo->bornDate = QDate::fromString(str, "yyyy/MM/dd");
+    str.clear();
+
+    // blood
+    xmlFile.getValue("Blood", str);
+    patientInfo->blood = static_cast<PatientBloodType>(str.toInt());
+    str.clear();
+
+    // weight
+    xmlFile.getValue("Weight", str);
+    patientInfo->weight = str.toFloat();
+    str.clear();
+
+    // height
+    xmlFile.getValue("Height", str);
+    patientInfo->height = str.toFloat();
+    str.clear();
+
+    // id
+    xmlFile.getValue("ID", str);
+    ::strncpy(patientInfo->id, str.toUtf8().constData(), sizeof(patientInfo->id));
+    str.clear();
+
+    // name
+    xmlFile.getValue("Name", str);
+    ::strncpy(patientInfo->name, str.toUtf8().constData(), sizeof(patientInfo->name));
+    str.clear();
+    return *patientInfo;
+}
+
 UnitType PatientManager::getWeightUnit()
 {
     int unit = UNIT_KG;
@@ -327,7 +394,15 @@ void PatientManager::newPatient()
     patientManager.setType(getType());
     patientManager.setWeight(0.0);
     patientManager.setPacermaker(PATIENT_PACER_ON);
-    dataStorageDirManager.createDir(true);
+    DataStorageDirManagerInterface *dataStorageDirManager = DataStorageDirManagerInterface::getDataStorageDirManager();
+    if (dataStorageDirManager)
+    {
+        dataStorageDirManager->createDir(true);
+    }
+    else
+    {
+        qDebug() << "create dir fail!";
+    }
     alarmIndicator.delAllPhyAlarm();        // 新建病人时，应清空上一个病人的生理报警
 }
 
@@ -345,6 +420,81 @@ void PatientManager::finishPatientInfo()
 bool PatientManager::isNewPatient()
 {
     return d_ptr->patientNew;
+}
+
+void PatientManager::updatePatientInfo()
+{
+    XmlParser xmlFile;
+    PatientInfo patientInfo = getPatientInfo();
+    QString str;
+    DataStorageDirManagerInterface *dataStorageDirManager = DataStorageDirManagerInterface::getDataStorageDirManager();
+    if (!xmlFile.open(dataStorageDirManager->getCurFolder() + PATIENT_INFO_FILENAME))
+    {
+        qDebug() << "patient info file open fail!";
+        return;
+    }
+
+    // patient type
+    str = QString::number(patientInfo.type);
+    xmlFile.setValue("PatientType", str);
+    str.clear();
+
+    // pacermaker
+    str = QString::number(patientInfo.pacer);
+    xmlFile.setValue("PacerMaker", str);
+    str.clear();
+
+    // sex
+    str = QString::number(patientInfo.sex);
+    xmlFile.setValue("Sex", str);
+    str.clear();
+
+    // bornDate
+    str = patientInfo.bornDate.toString("yyyy/MM/dd");
+    xmlFile.setValue("BornDate", str);
+    str.clear();
+
+    // blood
+    str = QString::number(patientInfo.blood);
+    xmlFile.setValue("Blood", str);
+    str.clear();
+
+    // weight
+    str = QString::number(patientInfo.weight, 'f', 1);
+    xmlFile.setValue("Weight", str);
+    str.clear();
+
+    // height
+    str = QString::number(patientInfo.height, 'f', 1);
+    xmlFile.setValue("Height", str);
+    str.clear();
+
+    // id
+    str = QString("%1").arg(patientInfo.id);
+    xmlFile.setValue("ID", str);
+    str.clear();
+
+    // name
+    str = QString("%1").arg(patientInfo.name);
+    xmlFile.setValue("Name", str);
+    str.clear();
+
+    xmlFile.saveToFile();
+}
+
+void PatientManager::onNewPatientHandle()
+{
+    DataStorageDirManagerInterface *dataStorageDirManager = DataStorageDirManagerInterface::getDataStorageDirManager();
+    QString fileName = QString(PATIENT_INFO_PATH + PATIENT_INFO_FILENAME);
+    QString newFileName = QString(dataStorageDirManager->getCurFolder() + PATIENT_INFO_FILENAME);
+    if (QFile::exists(newFileName))
+    {
+        QFile::remove(newFileName);
+    }
+    if (!QFile::copy(fileName, newFileName))
+    {
+        qDebug() << "creat patient info file fail!";
+    }
 }
 
 /**************************************************************************************************
@@ -392,7 +542,11 @@ void PatientManagerPrivate::handleDischarge()
     }
     else
     {
-        dataStorageDirManager.cleanCurData();
+        DataStorageDirManagerInterface *dataStorageDirManager = DataStorageDirManagerInterface::getDataStorageDirManager();
+        if (dataStorageDirManager)
+        {
+            dataStorageDirManager->cleanCurData();
+        }
     }
 }
 
@@ -402,7 +556,10 @@ void PatientManagerPrivate::handleDischarge()
 PatientManager::PatientManager()
     : d_ptr(new PatientManagerPrivate(this))
 {
+    onNewPatientHandle();
     d_ptr->loadPatientInfo(d_ptr->patientInfo);
+    DataStorageDirManagerInterface *dataStorageDirManager = DataStorageDirManagerInterface::getDataStorageDirManager();
+    connect(dataStorageDirManager, SIGNAL(newPatient()), this, SLOT(onNewPatientHandle()));
 }
 
 /**************************************************************************************************
