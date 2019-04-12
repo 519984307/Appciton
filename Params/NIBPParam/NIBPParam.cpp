@@ -207,25 +207,6 @@ void NIBPParam::setProvider(NIBPProviderIFace *provider)
     _provider = provider;
     _provider->sendSelfTest();
     _provider->setPatientType(patientManager.getType());
-
-    // 监护模式状态机。
-    if (!_machines.contains(NIBP_STATE_MACHINE_MONITOR))
-    {
-        NIBPStateMachine *machine = new NIBPMonitorStateMachine();
-        _activityMachine = machine;
-        _machines.insert(machine->type(), machine);
-    }
-
-    if (!_machines.contains(NIBP_STATE_MACHINE_SERVICE))
-    {
-        NIBPStateMachine *machine = new NIBPServiceStateMachine();
-        _machines.insert(machine->type(), machine);
-    }
-
-    if (_activityMachine->isExit())
-    {
-        _activityMachine->enter();
-    }
 }
 
 /**************************************************************************************************
@@ -302,7 +283,24 @@ void NIBPParam::setNIBPTrendWidget(NIBPTrendWidget *trendWidget)
     _diaValue = dia;
     _mapVaule = map;
     _lastTime = time;
+    // 监护模式状态机。
+    if (!_machines.contains(NIBP_STATE_MACHINE_MONITOR))
+    {
+        NIBPStateMachine *machine = new NIBPMonitorStateMachine();
+        _activityMachine = machine;
+        _machines.insert(machine->type(), machine);
+    }
 
+    if (!_machines.contains(NIBP_STATE_MACHINE_SERVICE))
+    {
+        NIBPStateMachine *machine = new NIBPServiceStateMachine();
+        _machines.insert(machine->type(), machine);
+    }
+
+    if (_activityMachine->isExit())
+    {
+        _activityMachine->enter();
+    }
     unsigned char cmd = 0x00;
     handleNIBPEvent(NIBP_EVENT_TRIGGER_MODEL, &cmd, 1);
 }
@@ -536,7 +534,7 @@ void NIBPParam::invResultData(void)
     AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
     if (alarmSource)
     {
-        alarmSource->clear(); // 清除所有报警。
+        alarmSource->clear();  // 清除所有报警。
     }
 }
 
