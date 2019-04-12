@@ -437,47 +437,38 @@ void PatientManager::updatePatientInfo()
     // patient type
     str = QString::number(patientInfo.type);
     xmlFile.setValue("PatientType", str);
-    str.clear();
 
     // pacermaker
     str = QString::number(patientInfo.pacer);
     xmlFile.setValue("PacerMaker", str);
-    str.clear();
 
     // sex
     str = QString::number(patientInfo.sex);
     xmlFile.setValue("Sex", str);
-    str.clear();
 
     // bornDate
     str = patientInfo.bornDate.toString("yyyy/MM/dd");
     xmlFile.setValue("BornDate", str);
-    str.clear();
 
     // blood
     str = QString::number(patientInfo.blood);
     xmlFile.setValue("Blood", str);
-    str.clear();
 
     // weight
     str = QString::number(patientInfo.weight, 'f', 1);
     xmlFile.setValue("Weight", str);
-    str.clear();
 
     // height
     str = QString::number(patientInfo.height, 'f', 1);
     xmlFile.setValue("Height", str);
-    str.clear();
 
     // id
     str = QString("%1").arg(patientInfo.id);
     xmlFile.setValue("ID", str);
-    str.clear();
 
     // name
     str = QString("%1").arg(patientInfo.name);
     xmlFile.setValue("Name", str);
-    str.clear();
 
     xmlFile.saveToFile();
 }
@@ -487,13 +478,13 @@ void PatientManager::onNewPatientHandle()
     DataStorageDirManagerInterface *dataStorageDirManager = DataStorageDirManagerInterface::getDataStorageDirManager();
     QString fileName = QString(PATIENT_INFO_PATH + PATIENT_INFO_FILENAME);
     QString newFileName = QString(dataStorageDirManager->getCurFolder() + PATIENT_INFO_FILENAME);
-    if (QFile::exists(newFileName))
+    // 如果文件已经创建不再拷贝新的模版
+    if (!QFile::exists(newFileName))
     {
-        QFile::remove(newFileName);
-    }
-    if (!QFile::copy(fileName, newFileName))
-    {
-        qDebug() << "creat patient info file fail!";
+        if (!QFile::copy(fileName, newFileName))
+        {
+            qDebug() << "creat patient info file fail!";
+        }
     }
 }
 

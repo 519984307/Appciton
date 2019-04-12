@@ -33,6 +33,9 @@ static void _initSystem(void)
 
     // superRunConfig.construction();
 
+    // 存储目录管理。
+    dataStorageDirManager.getInstance();
+
     // 新会话，需要恢复主配置文件
     if (timeManager.getPowerOnSession() == POWER_ON_SESSION_NEW)
     {
@@ -107,12 +110,9 @@ static void _initSystem(void)
     // 自检
     systemBoardProvider.selfTest();
 
-    // 存储目录管理。
-    dataStorageDirManager.getInstance();
     // initialize the storage manager in the main thread
     EventStorageManager::getInstance();
     TrendDataStorageManager::getInstance();
-    patientManager.construction();
 
     //消息提示框
     pMessageBox.construction();
