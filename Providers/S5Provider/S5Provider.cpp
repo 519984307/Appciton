@@ -45,6 +45,23 @@ enum S5StatusType
     S5_STATUS_NR,
 };
 
+/**
+ * @brief The S5InsertStatus enum  探头或手指插入状态
+ */
+enum S5InsertStatus
+{
+    S5_NO_INSERT,                   // 探头或手指未插入
+    S5_INSERT,                      // 探头或手指已插入
+};
+
+/**
+ * @brief The S5LEDStatus enum  and the status of the LED fault
+ */
+enum S5LEDStatus
+{
+    S5_LED_NOERROR,                 // LED 没有错误
+    S5_LED_ERROR,                   // LED 有错误
+};
 
 /**************************************************************************************************
  * 模块与参数对接。
