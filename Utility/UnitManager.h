@@ -9,7 +9,7 @@
  **/
 
 #pragma once
-#include "LanguageManager.h"
+#include <QString>
 
 enum UnitType
 {
@@ -59,11 +59,6 @@ public:
             "lpm", "lpmpsqm", "cmH2O"
         };
         return symbol[t];
-    }
-
-    static QString localeSymbol(UnitType t)
-    {
-        return trs(getSymbol(t));
     }
 
     // mmHg和%之间的换算公式如下：

@@ -37,6 +37,7 @@
 #include "TopBarWidget.h"
 #include "LayoutManager.h"
 
+#define WINDOW_MARGINS 3
 
 class WindowManagerPrivate
 {
@@ -121,6 +122,11 @@ WindowManager &WindowManager::getInstance()
     if (instance == NULL)
     {
         instance = new WindowManager();
+        WindowManagerInterface *old = registerWindowManager(instance);
+        if (old)
+        {
+            delete old;
+        }
     }
     return *instance;
 }
@@ -153,8 +159,16 @@ QPoint WindowManagerPrivate::menuProperPos(Dialog *w)
     }
     else
     {
-        // 菜单将靠右上显示
-        r.adjust(r.width() - w->width(), 0, 0, 0);
+        if (r.width() >= w->width())
+        {
+            // 菜单将靠右上显示
+            r.adjust(r.width() - w->width(), 0, 0, 0);
+        }
+        else
+        {
+            // 显示不全时，遮挡参数区
+            r.adjust(WINDOW_MARGINS, 0, 0, 0);
+        }
         if (r.height() < w->height())
         {
             // 显示不全时，遮挡第一道波形
@@ -371,6 +385,7 @@ void WindowManager::closeAllWidows()
         popup->close();
     }
 
+    bool dialogStatus = false;
     // close the window in the window stack
     while (!d_ptr->windowStacks.isEmpty())
     {
@@ -378,6 +393,7 @@ void WindowManager::closeAllWidows()
         if (p)
         {
             p->close();
+            dialogStatus = true;
         }
     }
 
@@ -392,6 +408,11 @@ void WindowManager::closeAllWidows()
         activeWindow->close();
     }
     d_ptr->timer->stop();
+
+    if (dialogStatus == true)
+    {  // send the signal when the dialgs's status changes
+        emit allDialogsStatusChanged();
+    }
 }
 
 void WindowManager::onWindowHide(Dialog *w)

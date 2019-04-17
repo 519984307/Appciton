@@ -10,10 +10,10 @@
 
 #pragma once
 #include "StorageManager.h"
-#include "EventDataDefine.h"
+#include "EventStorageManagerInterface.h"
 
 class EventStorageManagerPrivate;
-class EventStorageManager : public StorageManager
+class EventStorageManager : public StorageManager, public EventStorageManagerInterface
 {
     Q_OBJECT
 public:

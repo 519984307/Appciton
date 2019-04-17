@@ -19,6 +19,7 @@
 #include "Utility.h"
 #include "AlarmConfig.h"
 #include "TimeDate.h"
+#include "LanguageManager.h"
 
 #define AXIS_X_SECTION_WIDTH (RECORDER_PIXEL_PER_MM * 16)
 #define AXIS_Y_SECTION_HEIGHT (RECORDER_PIXEL_PER_MM * 8)
@@ -66,6 +67,7 @@ public:
     QList<EventInfoSegment> eventList;
     int curDrawnGraph;
     int marginLeft;
+    PatientInfo patientInfo;
 };
 
 
@@ -205,7 +207,7 @@ RecordPage *TrendGraphPageGeneratorPrivate::drawGraphPage()
 }
 
 TrendGraphPageGenerator::TrendGraphPageGenerator(const QList<TrendGraphInfo> &trendInfos,
-        const QList<EventInfoSegment> &eventList, QObject *parent)
+        const QList<EventInfoSegment> &eventList, const PatientInfo &patientInfo, QObject *parent)
     : RecordPageGenerator(parent), d_ptr(new TrendGraphPageGeneratorPrivate)
 {
     if (trendInfos.size() > 0)
@@ -215,6 +217,7 @@ TrendGraphPageGenerator::TrendGraphPageGenerator(const QList<TrendGraphInfo> &tr
     }
     d_ptr->trendGraphInfos = trendInfos;
     d_ptr->eventList = eventList;
+    d_ptr->patientInfo = patientInfo;
     d_ptr->deltaT = (d_ptr->endTime - d_ptr->startTime) /  (AXIS_X_DATA_SECTION_NUM);
 }
 
@@ -234,7 +237,7 @@ RecordPage *TrendGraphPageGenerator::createPage()
     case TitlePage:
         // BUG: patient info of the event might not be the current session patient
         d_ptr->curPageType = TrendGraphPage;
-        return createTitlePage(QString(trs("GraphicTrendsPrint")), patientManager.getPatientInfo());
+        return createTitlePage(QString(trs("GraphicTrendsPrint")), d_ptr->patientInfo);
 
     case TrendGraphPage:
         if (d_ptr->curDrawnGraph < d_ptr->trendGraphInfos.size())

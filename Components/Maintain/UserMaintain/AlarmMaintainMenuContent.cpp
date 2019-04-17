@@ -19,6 +19,7 @@
 #include "SoundManager.h"
 #include "AlarmSymbol.h"
 #include "Alarm.h"
+#include "AlarmIndicator.h"
 
 class AlarmMaintainMenuContentPrivate
 {
@@ -105,7 +106,7 @@ void AlarmMaintainMenuContentPrivate::loadOptions()
     systemConfig.getNumValue("Alarms|PhyParAlarmLatchlockOn", index);
     combos[ITEM_CBO_ALARM_LATCH_LOCK]->setCurrentIndex(index);
 
-    systemConfig.getNumValue("Alarms|AlarmAudioOff", index);
+    systemConfig.getNumValue("Alarms|AlarmAudio", index);
     combos[ITEM_CBO_ALARM_AUDIO_OFF]->setCurrentIndex(index);
 
 #ifdef DISABLED_ALARM_LATCH
@@ -179,7 +180,7 @@ void AlarmMaintainMenuContentPrivate::
         }
         break;
     case ITEM_CBO_ALARM_AUDIO_OFF:
-            systemConfig.setNumValue("Alarms|AlarmAudioOff", index);
+            systemConfig.setNumValue("Alarms|AlarmAudio", index);
             alarmIndicator.updateAlarmStateWidget();
     default:
         break;
@@ -408,7 +409,7 @@ void AlarmMaintainMenuContent::layoutExec()
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_LATCH_LOCK, comboBox);
 
     // Alarm Audio Off
-    label = new QLabel(trs("AlarmAudioOff"));
+    label = new QLabel(trs("AlarmAudio"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()

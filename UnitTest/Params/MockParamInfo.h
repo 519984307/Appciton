@@ -5,16 +5,16 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/3/7
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/4/1
  **/
 
 #pragma once
-#include "SoundManagerInterface.h"
-#include "gmock/gmock.h"
 
-class MockSoundManager : public SoundManagerInterface
+#include "gmock/gmock.h"
+#include "ParamInfoInterface.h"
+
+class MockParamInfo : public ParamInfoInterface
 {
 public:
-    MOCK_METHOD2(setVolume, void(SoundType, VolumeLevel));
-    MOCK_METHOD1(getVolume, VolumeLevel(SoundType));
+    MOCK_METHOD1(getParamID, ParamID(SubParamID));
 };

@@ -77,11 +77,11 @@ void LoadConfigMenuContentPrivate::loadConfigs()
     ConfigManager::UserDefineConfigInfo defaultConfig[] =
     {
         {QString("%1(%2)").arg(defaultStr).arg(trs(PatientSymbol::convert(PATIENT_TYPE_ADULT))),
-            "AdultConfig.Original.xml", ""},
+            "AdultConfig.Original.xml", PatientSymbol::convert(PATIENT_TYPE_ADULT)},
         {QString("%1(%2)").arg(defaultStr).arg(trs(PatientSymbol::convert(PATIENT_TYPE_PED))),
-            "PedConfig.Original.xml", ""},
+            "PedConfig.Original.xml", PatientSymbol::convert(PATIENT_TYPE_PED)},
         {QString("%1(%2)").arg(defaultStr).arg(trs(PatientSymbol::convert(PATIENT_TYPE_NEO))),
-            "NeoConfig.Original.xml", ""}
+            "NeoConfig.Original.xml", PatientSymbol::convert(PATIENT_TYPE_NEO)}
     };
     for (int i = 0; i < CONFIG_MAX_NUM; i++)
     {
@@ -316,6 +316,11 @@ void LoadConfigMenuContent::onBtnClick()
             {
                 delete cmWnd;
                 cmWnd = NULL;
+            }
+            if (d_ptr->curConfig)
+            {
+                delete d_ptr->curConfig;
+                d_ptr->curConfig = NULL;
             }
         }
     }

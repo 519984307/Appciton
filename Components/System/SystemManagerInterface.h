@@ -11,6 +11,14 @@
 #pragma once
 #include "SystemDefine.h"
 
+enum WorkMode
+{
+    WORK_MODE_NORMAL = 0,
+    WORK_MODE_DEMO,
+    WORK_MODE_STANDBY,
+    WORK_MODE_NR,
+};
+
 class SystemManagerInterface
 {
 public:
@@ -33,4 +41,10 @@ public:
     virtual void setBrightness(BrightnessLevel br) = 0;
     virtual void enableBrightness(BrightnessLevel br) = 0;
     virtual BrightnessLevel getBrightness(void) = 0;
+
+    /**
+     * @brief getCurWorkMode get the current work mode
+     * @return the current work mode
+     */
+    virtual WorkMode getCurWorkMode() const = 0;
 };

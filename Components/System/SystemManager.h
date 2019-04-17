@@ -92,14 +92,6 @@ enum ModulePoweronTestStatus
     SELFTEST_STATUS_NR
 };
 
-enum WorkMode
-{
-    WORK_MODE_NORMAL = 0,
-    WORK_MODE_DEMO,
-    WORK_MODE_STANDBY,
-    WORK_MODE_NR,
-};
-
 // 触摸屏状态
 enum TouchscreenStatus
 {
@@ -182,7 +174,7 @@ public:
      * @brief getCurWorkMode get the current work mode
      * @return the current work mode
      */
-    WorkMode getCurWorkMode() const;
+    virtual WorkMode getCurWorkMode() const;
 
     /**
      * @brief setWorkMode set the work mode

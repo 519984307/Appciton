@@ -10,22 +10,13 @@
 
 
 #pragma once
-#include <QFont>
+#include "FontManagerInterface.h"
 
-class FontManager
+class FontManager : public FontMangerInterface
 {
 public:
-    static FontManager &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new FontManager();
-        }
+    static FontManager &getInstance(void);
 
-        return *_selfObj;
-    }
-
-    static FontManager *_selfObj;
     ~FontManager();
 
     // 构造文本字体
@@ -48,6 +39,16 @@ public:
 
     // 根据布局大小确定字体大小
     int adjustTextFontSize(const QRect r, bool bold = false, int fontSize = -1);
+
+    /**
+     * @brief textFontSize 根据空间和字符串计算字体大小
+     * @param r 字体要显示的空间
+     * @param text 要显示的字符串
+     * @param bold 字体是否加粗
+     * @param fontSize 默认字体大小（非超出显示区域时显示的字体大小），-1：默认字体大小为填满整个空间的最大字体大小
+     * @return
+     */
+    int textFontSize(const QRect r, QString text, bool bold = false, int fontSize = -1);
 
     // 根据布局大小确定数字对应XML配置文件中的字号
     int adjustNumFontSizeXML(const QRect r, QString num = "999");
@@ -98,5 +99,4 @@ private:
     static const int _defaultFontSize = 10;
 };
 
-#define fontManager (FontManager::construction())
-#define deleteFontManager() (delete FontManager::_selfObj)
+#define fontManager (FontManager::getInstance())

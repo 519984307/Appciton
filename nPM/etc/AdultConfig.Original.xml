@@ -108,7 +108,7 @@
     <NIBP>
         <StatFunction>1</StatFunction>
         <AutomaticRetry>0</AutomaticRetry>
-        <InitialCuffInflation>4</InitialCuffInflation>
+        <InitialCuffInflation>8</InitialCuffInflation>
 	<CompleteTone>0</CompleteTone>
     </NIBP>
     <SPO2>
@@ -782,10 +782,10 @@
 		</TD>
 		<O2 Enable="0" Prio="2">
 		<percent>
-		    <Low Min="0" Max="99">20</Low>
-		    <High Min="1" Max="100">60</High>
+		    <Low Min="0" Max="999">200</Low>
+		    <High Min="1" Max="1000">600</High>
 		    <Step>1</Step>
-		    <Scale>1</Scale>
+		    <Scale>10</Scale>
 		</percent>
 		</O2>
     </AlarmSource>

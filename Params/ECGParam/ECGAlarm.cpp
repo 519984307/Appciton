@@ -18,8 +18,6 @@
 #include "SystemManager.h"
 #include "AlarmConfig.h"
 
-ECGLimitAlarm *ECGLimitAlarm::_selfObj = NULL;
-
 /**************************************************************************************************
  * 报警源的名字。
  *************************************************************************************************/
@@ -134,8 +132,6 @@ ECGLimitAlarm::~ECGLimitAlarm()
 
 /**************************************************************************************************
  *************************************************************************************************/
-
-ECGOneShotAlarm *ECGOneShotAlarm::_selfObj = NULL;
 
 /**************************************************************************************************
  * 报警源的名字。
@@ -263,21 +259,9 @@ bool ECGOneShotAlarm::isNeedRemove(int id)
  *************************************************************************************************/
 void ECGOneShotAlarm::notifyAlarm(int id, bool isAlarm)
 {
-    if ((id >= ECG_ONESHOT_ARR_ASYSTOLE) && (id <= ECG_ONESHOT_CHECK_PATIENT_ALARM))
+    if ((id >= ECG_ONESHOT_ARR_ASYSTOLE) && (id <= ECG_ONESHOT_ARR_VFIBVTAC))
     {
         _isPhyAlarm |= isAlarm;
-        if (id == ECG_ONESHOT_CHECK_PATIENT_ALARM)
-        {
-            ecgDupParam.isAlarm(_isPhyAlarm, false);
-
-            for (int i = ECG_LEAD_I; i < ECG_LEAD_NR; i++)
-            {
-                // 只有计算导联才显示check patient
-                ecgParam.updateECGNotifyMesg((ECGLead)i, i == ecgParam.getCalcLead() ? isAlarm : false);
-            }
-
-            _isPhyAlarm = false;
-        }
     }
 }
 
@@ -289,11 +273,6 @@ AlarmType ECGOneShotAlarm::getAlarmType(int id)
     if ((id >= ECG_ONESHOT_ARR_ASYSTOLE) && (id <= ECG_ONESHOT_ARR_VFIBVTAC))
     {
         return ALARM_TYPE_PHY;
-    }
-
-    if (id == ECG_ONESHOT_CHECK_PATIENT_ALARM)
-    {
-        return ALARM_TYPE_LIFE;
     }
 
     return ALARM_TYPE_TECH;
@@ -318,12 +297,6 @@ bool ECGOneShotAlarm::isAlarmEnable(int id)
         return alarmConfig.isLimitAlarmEnable(SUB_PARAM_HR_PR);
     }
 
-    if (id == ECG_ONESHOT_CHECK_PATIENT_ALARM)
-    {
-        return (alarmConfig.isLimitAlarmEnable(SUB_PARAM_HR_PR) &&
-                (patientManager.getType() != PATIENT_TYPE_NEO));
-    }
-
     return true;
 }
 
@@ -340,10 +313,10 @@ bool ECGOneShotAlarm::isRemoveLightAfterConfirm(int id)
 {
     if (id >= ECG_ONESHOT_ALARM_LEADOFF && id <= ECG_ONESHOT_ALARM_OVERLOAD)
     {
-        return true;
+        return false;
     }
 
-    return false;
+    return true;
 }
 
 /**************************************************************************************************

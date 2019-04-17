@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2019/3/22
+ **/
+
 #pragma once
 #include "AlarmParamIFace.h"
 #include "CO2Symbol.h"
@@ -6,15 +16,7 @@
 class CO2LimitAlarm : public AlarmLimitIFace
 {
 public:
-    static CO2LimitAlarm &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new CO2LimitAlarm();
-        }
-        return *_selfObj;
-    }
-    static CO2LimitAlarm *_selfObj;
+    CO2LimitAlarm();
 
 public:
     // 报警源的名字。
@@ -57,28 +59,18 @@ public:
     virtual void notifyAlarm(int id, bool flag);
 
     // 构造与析构。
-    CO2LimitAlarm();
     virtual ~CO2LimitAlarm();
 
 private:
     bool _isEtco2Alarm;
     bool _isFico2Alarm;
 };
-#define co2LimitAlarm (CO2LimitAlarm::construction())
 
 // OneShor报警实现。
 class CO2OneShotAlarm : public AlarmOneShotIFace
 {
 public:
-    static CO2OneShotAlarm &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new CO2OneShotAlarm();
-        }
-        return *_selfObj;
-    }
-    static CO2OneShotAlarm *_selfObj;
+    CO2OneShotAlarm();
 
 public:
     // 报警源的名字。
@@ -119,8 +111,4 @@ public:
 
     // 构造与析构。
     virtual ~CO2OneShotAlarm();
-
-private:
-    CO2OneShotAlarm();
 };
-#define co2OneShotAlarm (CO2OneShotAlarm::construction())

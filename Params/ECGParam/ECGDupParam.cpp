@@ -17,6 +17,8 @@
 #include "SoundManager.h"
 #include "SPO2Param.h"
 #include "IBPParam.h"
+#include "O2ParamInterface.h"
+#include "RESPAlarm.h"
 
 ECGDupParam *ECGDupParam::_selfObj = NULL;
 
@@ -287,6 +289,25 @@ void ECGDupParam::updateHR(short hr)
 {
     _hrValue = hr;
 
+#ifdef ENABLE_O2_APNEASTIMULATION
+    O2ParamInterface *o2Param = O2ParamInterface::getO2ParamInterface();
+    if (o2Param)
+    {
+        int apneaStimulationHR = 100;
+        int motorSta = false;
+        currentConfig.getNumValue("ApneaStimulation|HR", apneaStimulationHR);
+        if (hr < apneaStimulationHR && hr != InvData())
+        {
+            motorSta = true;
+        }
+        else
+        {
+            motorSta = false;
+        }
+        o2Param->setVibrationReason(APNEASTIMULATION_REASON_HR, motorSta);
+    }
+#endif
+
     if (_trendWidget == NULL)
     {
         return;
@@ -395,11 +416,9 @@ bool ECGDupParam::isHRValid(void)
  *************************************************************************************************/
 void ECGDupParam::isAlarm(bool isAlarm, bool isLimit)
 {
+    Q_UNUSED(isLimit)
+
     _isAlarm |= isAlarm;
-    if (isLimit)
-    {
-        return;
-    }
 
     if (NULL != _trendWidget)
     {

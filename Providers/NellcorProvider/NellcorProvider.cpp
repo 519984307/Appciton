@@ -13,7 +13,8 @@
 #include "SPO2Alarm.h"
 #include "Debug.h"
 #include "NIBPParam.h"
-
+#include "AlarmSourceManager.h"
+#include "LanguageManager.h"
 
 enum OxismartReport
 {
@@ -308,8 +309,12 @@ NellcorSetProvider::~NellcorSetProvider()
  *************************************************************************************************/
 void NellcorSetProvider::disconnected()
 {
-    spo2OneShotAlarm.clear();
-    spo2OneShotAlarm.setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SPO2);
+    if (alarmSource)
+    {
+        alarmSource->clear();
+        alarmSource->setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+    }
 }
 
 /**************************************************************************************************
@@ -317,7 +322,11 @@ void NellcorSetProvider::disconnected()
  *************************************************************************************************/
 void NellcorSetProvider::reconnected()
 {
-    spo2OneShotAlarm.setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SPO2);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+    }
 }
 
 bool NellcorSetProvider::isResultSPO2PR(unsigned char *packet)

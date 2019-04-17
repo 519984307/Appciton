@@ -36,6 +36,8 @@ public:
         ITEM_LAB_SPO2_VERSION,
         ITEM_LAB_TEMP_VERSION,
         ITEM_LAB_PRT48_VERSION,
+        ITEM_LAB_SCREEN_INCH,
+        ITEM_LAB_SCREEN_RESOLUTION,
         ITEM_LAB_MAX,
     };
 
@@ -149,6 +151,26 @@ void FactoryVersionInfo::layoutExec()
     d_ptr->labs.insert(FactoryVersionInfoPrivate
                        ::ITEM_LAB_PRT48_VERSION, labelRight);
 
+    // screen size
+    labelLeft = new QLabel(trs("ScreenSize") + "    ");
+    layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
+
+    labelRight = new QLabel;
+
+    layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
+    d_ptr->labs.insert(FactoryVersionInfoPrivate
+                       ::ITEM_LAB_SCREEN_INCH, labelRight);
+
+    // screen resolution
+    labelLeft = new QLabel(trs("ScreenResolution") + "    ");
+    layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
+
+    labelRight = new QLabel;
+
+    layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
+    d_ptr->labs.insert(FactoryVersionInfoPrivate
+                       ::ITEM_LAB_SCREEN_RESOLUTION, labelRight);
+
     layout->setRowStretch(d_ptr->labs.count(), 1);
 }
 
@@ -243,4 +265,22 @@ void FactoryVersionInfoPrivate::loadOptions()
         version = p->getVersionString();
     }
     labs[ITEM_LAB_PRT48_VERSION]->setText(version);
+
+    // screen size
+    str.clear();
+    machineConfig.getStrValue("ScreenSize", str);
+    str += " ";
+    str += trs("Inch");
+    labs[ITEM_LAB_SCREEN_INCH]->setText(str);
+
+    // screen resolution
+    str.clear();
+    QString width;
+    machineConfig.getStrValue("ScreenWidth", width);
+    str += width;
+    str += "x";
+    QString height;
+    machineConfig.getStrValue("ScreenHeight", height);
+    str += height;
+    labs[ITEM_LAB_SCREEN_RESOLUTION]->setText(str);
 }

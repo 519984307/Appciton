@@ -29,6 +29,7 @@
 #include "CO2Param.h"
 #include "LayoutManager.h"
 #include "NIBPSymbol.h"
+#include "LanguageManager.h"
 
 class EventPageGeneratorPrivate
 {
@@ -125,7 +126,7 @@ public:
 
                 titleStr += Util::convertToString(ctx.almSegment->alarmLimit, config.scale);
                 titleStr += " ";
-                titleStr += Unit::localeSymbol(unit);
+                titleStr += trs(Unit::getSymbol(unit));
             }
 
             eventTitle = titleStr;
@@ -354,14 +355,16 @@ public:
     IStorageBackend *backend;
     int eventIndex;
     bool hasParseData;
+    PatientInfo patientInfo;
 };
 
-EventPageGenerator::EventPageGenerator(IStorageBackend *backend, int eventIndex, QObject *parent)
+EventPageGenerator::EventPageGenerator(IStorageBackend *backend, int eventIndex, const PatientInfo &patientInfo, QObject *parent)
     : RecordPageGenerator(parent), d_ptr(new EventPageGeneratorPrivate(this))
 {
 
     d_ptr->backend = backend;
     d_ptr->eventIndex = eventIndex;
+    d_ptr->patientInfo = patientInfo;
 }
 
 EventPageGenerator::~EventPageGenerator()
@@ -395,7 +398,7 @@ RecordPage *EventPageGenerator::createPage()
     case TitlePage:
         d_ptr->curPageType = TrendPage;
         // BUG: patient info of the event might not be the current session patient
-        return createTitlePage(d_ptr->eventTitle, patientManager.getPatientInfo());
+        return createTitlePage(d_ptr->eventTitle, d_ptr->patientInfo);
 
     case TrendPage:
         d_ptr->curPageType = WaveScalePage;

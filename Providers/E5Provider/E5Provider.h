@@ -35,6 +35,7 @@ enum RevPacketType
     TE3_RSP_ENABLE_PD_BLANK_SIGANL         = 0x31,       // 使能pd blank回复
     TE3_RSP_ENABLE_VF_CALC                 = 0x33,       // enable vf calc response
     TE3_RSP_RESP_APNEA_INTERVAL            = 0x4F,       // 呼吸的窒息结果。
+    TE3_RSP_ECG_ENABLE_RAW_DATA            = 0x63,       // 原始数据开关
     TE3_RSP_ECG_LEAD_CABLE_TYPE            = 0x7D,       // 心电导联类型。
     TE3_RSP_SELFTEST_RESULT                = 0x7F,       // 发送自测结果。
 
@@ -80,6 +81,7 @@ enum SendPacketType
     TE3_CMD_SET_RESP_APNEA_INTERVAL        = 0x4E,       // 设置呼吸的窒息时间。
     TE3_CMD_SET_RESP_CALC_LEAD             = 0x50,       // 设置呼吸计算导联
     TE3_CMD_SET_RESP_CALS_SWITCH           = 0x60,       // 设置呼吸计算开关
+    TE3_CMD_ECG_ENABLE_RAW_DATA            = 0x62,       // 原始数据开关
     TE3_CMD_GET_LEAD_CABLE_TYPE            = 0x7C,       // 获取导联线类型
     TE3_CMD_GET_SELFTEST_RESULT            = 0x7E,       // 获取自测结果。
     TE3_UPGRADE_ALIVE                      = 0xFE,       // 升级保活帧
@@ -158,6 +160,9 @@ public: // ECGProviderIFace 的接口。
     // ST点设置。
     virtual void setSTPoints(int iso, int st);
 
+    // raw data
+    virtual void enableRawData(bool onoff);
+
     //获取版本号
     virtual void sendVersion(void);
 
@@ -200,6 +205,7 @@ protected:
 private:
     int _waveSampleRate;
     int _isFristConnect;
+    bool _isSupportRESP;
 
 private:
     void _handleECGRawData(const unsigned char *data, unsigned len);

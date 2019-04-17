@@ -22,7 +22,7 @@ public:
         TrendCacheData data;
         TrendAlarmStatus almStatus;
         unsigned t = timeDate.time();
-        trendCache.getTendData(t, data);
+        trendCache.getTrendData(t, data);
         trendCache.getTrendAlarmStatus(t, almStatus);
         bool alarm = false;
         foreach(bool st, almStatus.alarms)

@@ -17,6 +17,7 @@
 #include <QDateTime>
 #include "TimeDate.h"
 #include "TrendDataStorageManager.h"
+#include "LanguageManager.h"
 
 // 打印纸每页最多打印10行数据（1 head title + 9 data）
 #define RECORD_PER_PAGE 9
@@ -45,6 +46,7 @@ public:
     int interval;
     QList<SubParamID> subParamList;
     QMap<unsigned int, unsigned int> timestampEventMap;
+    PatientInfo patientInfo;        // 病人信息
 };
 
 bool  dataPacketLessThan(const TrendDataPackage &d1, const TrendDataPackage &d2)
@@ -521,7 +523,7 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
 }
 
 TrendTablePageGenerator::TrendTablePageGenerator(IStorageBackend *backend, TrendTablePrintInfo &printInfo,
-        QObject *parent)
+                                                 const PatientInfo &patientInfo, QObject *parent)
     : RecordPageGenerator(parent), d_ptr(new TrendTablePageGeneratorPrivate)
 {
     if (printInfo.startIndex < printInfo.stopIndex)
@@ -544,6 +546,7 @@ TrendTablePageGenerator::TrendTablePageGenerator(IStorageBackend *backend, Trend
     d_ptr->interval = printInfo.interval;
     d_ptr->subParamList = printInfo.list;
     d_ptr->timestampEventMap = printInfo.timestampEventMap;
+    d_ptr->patientInfo = patientInfo;
 }
 
 TrendTablePageGenerator::~TrendTablePageGenerator()
@@ -562,7 +565,7 @@ RecordPage *TrendTablePageGenerator::createPage()
     case TitlePage:
         // BUG: patient info of the event might not be the current session patient
         d_ptr->curPageType = TrendTablePage;
-        return createTitlePage(QString(trs("TabularTrendsPrint")), patientManager.getPatientInfo());
+        return createTitlePage(QString(trs("TabularTrendsPrint")), d_ptr->patientInfo);
     case TrendTablePage:
         if (!d_ptr->stringLists.isEmpty() || d_ptr->loadStringList())
         {

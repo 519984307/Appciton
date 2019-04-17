@@ -141,11 +141,9 @@ void BatteryIconWidget::setFillColor(const QColor &color)
 /**************************************************************************************************
  * 设置剩余时间参数
  *************************************************************************************************/
-void BatteryIconWidget::setTimeValue(int time)
+void BatteryIconWidget::setTimeValue(BatteryRemainTime time)
 {
-    time = (time >= 6) ? 6 : time;
-
-    d_ptr->timeRelative = time;
+    d_ptr->timeRelative = static_cast<int>(time);
 
     // 将剩余可运行时间转变为字符串
     if (d_ptr->timeRelative == 0)

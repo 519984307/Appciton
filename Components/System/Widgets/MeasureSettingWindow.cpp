@@ -20,6 +20,7 @@
 #include "TEMPMenuContent.h"
 #include "O2MenuContent.h"
 #include "SystemManager.h"
+#include "ApneaStimulationMenuContent.h"
 
 MeasureSettingWindow *MeasureSettingWindow::getInstance()
 {
@@ -61,10 +62,13 @@ MeasureSettingWindow *MeasureSettingWindow::getInstance()
         {
             instance->addMenuContent(new CO2MenuContent);
         }
+#ifdef ENABLE_O2_APNEASTIMULATION
         if (systemManager.isSupport(CONFIG_O2))
         {
             instance->addMenuContent(new O2MenuContent);
+            instance->addMenuContent(new ApneaStimulationMenuContent());
         }
+#endif
     }
     return instance;
 }

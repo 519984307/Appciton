@@ -12,12 +12,12 @@
 #include <QPalette>
 #include "Param.h"
 #include "ECGSymbol.h"
-#include "ECGDefine.h"
 #include "SoundManager.h"
 #include <QBasicTimer>
 #include "SystemDefine.h"
 #include "ECGAlg2SoftInterface.h"
 #include "SystemManager.h"
+#include "ECGParamInterface.h"
 
 enum
 {
@@ -34,19 +34,11 @@ class ECGWaveWidget;
 class ECGProviderIFace;
 class PDProviderIFace;
 class OxyCRGRRHRWaveWidget;
-class ECGParam: public Param
+class ECGParam: public Param, public ECGParamInterface
 {
     Q_OBJECT
 public:
-    static ECGParam &construction()
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new ECGParam();
-        }
-        return *_selfObj;
-    }
-    static ECGParam *_selfObj;
+    static ECGParam &getInstance();
 
     // 析构。
     virtual ~ECGParam();
@@ -342,6 +334,12 @@ public: // 用于访问配置相关信息。
     void setFristConnect(void);
     bool getFristConnect(void);
 
+    /**
+     * @brief setRawDataOnOff set raw data
+     */
+    void setRawDataOnOff(bool sta);
+    bool getRawDataOnOff(void);
+
 signals:
     void calcLeadChanged();
 
@@ -408,4 +406,4 @@ private:
     bool _isFristConnect;         // 开机后是否正常连接过导联
     ECGGain _autoGain[ECG_LEAD_NR];      // 自动增益计算出的实际增益
 };
-#define ecgParam (ECGParam::construction())
+#define ecgParam (ECGParam::getInstance())

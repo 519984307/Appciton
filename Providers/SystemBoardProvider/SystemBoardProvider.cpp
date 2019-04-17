@@ -22,6 +22,7 @@
 #include "IConfig.h"
 #include "PowerOffWindow.h"
 #include "PowerManager.h"
+#include "AlarmSourceManager.h"
 
 enum SystemBoardMessageType
 {
@@ -317,7 +318,7 @@ void SystemBoardProvider::handlePacket(unsigned char *data, int len)
         break;
 
     case MSG_RSP_BATTERY_INFO:
-        _parseBatteryInfo(data, len);
+        _parsePowerStat(data, len);
         break;
 
     case MSG_RSP_SET_ALARM_MUTE_LED:
@@ -374,7 +375,11 @@ void SystemBoardProvider::handlePacket(unsigned char *data, int len)
  *************************************************************************************************/
 void SystemBoardProvider::disconnected(void)
 {
-    systemAlarm.setOneShotAlarm(SYSTEM_ONE_SHOT_ALARM_COMMUNICATION_STOP, true);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SYSTEM);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(SYSTEM_ONE_SHOT_ALARM_COMMUNICATION_STOP, true);
+    }
 }
 
 /**************************************************************************************************
@@ -382,7 +387,11 @@ void SystemBoardProvider::disconnected(void)
  *************************************************************************************************/
 void SystemBoardProvider::reconnected(void)
 {
-    systemAlarm.setOneShotAlarm(SYSTEM_ONE_SHOT_ALARM_COMMUNICATION_STOP, false);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SYSTEM);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(SYSTEM_ONE_SHOT_ALARM_COMMUNICATION_STOP, false);
+    }
 }
 
 

@@ -42,7 +42,7 @@ public:
 
 ConfigEditNIBPMenuContentPrivate
     ::ConfigEditNIBPMenuContentPrivate(Config *const config, PatientType type)
-    :config(config)
+    : config(config)
     , initCuffSpb(NULL)
     , initCuffUnitLbl(NULL)
     , curType(type)
@@ -69,13 +69,13 @@ void ConfigEditNIBPMenuContentPrivate::loadOptions()
     int start = 0, end = 0;
     if (type == PATIENT_TYPE_ADULT)
     {
-        start = 120;
-        end = 280;
+        start = 80;
+        end = 240;
     }
     else if (type == PATIENT_TYPE_PED)
     {
         start = 80;
-        end = 250;
+        end = 210;
     }
     else if (type == PATIENT_TYPE_NEO)
     {
@@ -105,7 +105,8 @@ void ConfigEditNIBPMenuContentPrivate::loadOptions()
         initCuffUnitLbl->setText(Unit::getSymbol(UNIT_KPA));
     }
 
-    int initVal;
+    // init the 'initVal'
+    int initVal = 0;
     config->getNumValue("NIBP|InitialCuffInflation", initVal);
     initCuffSpb->setValue(initVal);
 }

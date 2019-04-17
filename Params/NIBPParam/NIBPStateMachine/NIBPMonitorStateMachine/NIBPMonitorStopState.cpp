@@ -10,8 +10,10 @@
 
 
 #include "NIBPMonitorStopState.h"
-#include "NIBPParam.h"
-#include "NIBPCountdownTime.h"
+#include "NIBPParamInterface.h"
+#include "NIBPCountdownTimeInterface.h"
+#include "NIBPState.h"
+#include "LanguageManager.h"
 
 /**************************************************************************************************
  * 进入该状态。
@@ -20,35 +22,44 @@ void NIBPMonitorStopState::enter(void)
 {
     //通信中断在超时中处理
     //停止的触发时间
-    nibpParam.createSnapshot(NIBP_ONESHOT_ABORT);
+    NIBPParamInterface* nibpParam = NIBPParamInterface::getNIBPParam();
+    if (!nibpParam)
+    {
+        return;
+    }
+    nibpParam->createSnapshot(NIBP_ONESHOT_ABORT);
 
     // 启动定时器，不能无限期地等待下去。
     setTimeOut();
 
-    nibpParam.provider().stopMeasure();
+    nibpParam->provider().stopMeasure();
 
-    nibpParam.setAdditionalMeasure(false);
+    nibpParam->setAdditionalMeasure(false);
 
-    if (nibpParam.getMeasurMode() == NIBP_MODE_STAT)
+    if (nibpParam->getMeasurMode() == NIBP_MODE_STAT)
     {
-        nibpCountdownTime.STATMeasureStop();
-        nibpParam.setSTATMeasure(false);               // 退出STAT
-        nibpParam.setSTATClose(true);                  // 置STAT关闭标志
-        nibpParam.setModelText(trs("STATSTOPPED"));
+        NIBPCountdownTimeInterface* nibpCountdownTime = NIBPCountdownTimeInterface::getNIBPCountdownTime();
+        if (nibpCountdownTime)
+        {
+            nibpCountdownTime->STATMeasureStop();
+        }
+        nibpParam->setSTATMeasure(false);               // 退出STAT
+        nibpParam->setSTATClose(true);                  // 置STAT关闭标志
+        nibpParam->setModelText(trs("STATSTOPPED"));
     }
     else
     {
-        if (nibpParam.isAutoMeasure())
+        if (nibpParam->isAutoMeasure())
         {
-            nibpParam.setModelText(trs("NIBPManual"));
+            nibpParam->setModelText(trs("NIBPManual"));
         }
     }
 
     // 如果不需要启动应答则立即切换到测量状态。
-    if (!nibpParam.provider().needStopACK())
+    if (!nibpParam->provider().needStopACK())
     {
-        nibpParam.setText(trs("NIBPREADING") + "\n" + trs("NIBPSTOPPED"));
-        nibpParam.clearResult();
+        nibpParam->setText(trs("NIBPREADING") + "\n" + trs("NIBPSTOPPED"));
+        nibpParam->clearResult();
         switchState(NIBP_MONITOR_SAFEWAITTIME_STATE);
         return;
     }
@@ -59,11 +70,16 @@ void NIBPMonitorStopState::enter(void)
  *************************************************************************************************/
 void NIBPMonitorStopState::handleNIBPEvent(NIBPEvent event, const unsigned char */*args*/, int /*argLen*/)
 {
+    NIBPParamInterface* nibpParam = NIBPParamInterface::getNIBPParam();
+    if (!nibpParam)
+    {
+        return;
+    }
     switch (event)
     {
     case NIBP_EVENT_MONITOR_STOP:
-        nibpParam.setText(trs("NIBPREADING") + "\n" + trs("NIBPSTOPPED"));
-        nibpParam.clearResult();
+            nibpParam->setText(trs("NIBPREADING") + "\n" + trs("NIBPSTOPPED"));
+            nibpParam->clearResult();
         switchState(NIBP_MONITOR_SAFEWAITTIME_STATE);
         break;
 

@@ -195,7 +195,8 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
     case ECG_FILTERMODE_SURGERY:
         combos[ITEM_CBO_NOTCH_FILTER]->
         addItems(QStringList()
-                 << trs(ECGSymbol::convert(ECG_NOTCH_OFF))
+                 << trs(ECGSymbol::convert(ECG_NOTCH_50HZ))
+                 << trs(ECGSymbol::convert(ECG_NOTCH_60HZ))
                  << trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ)));
         if (index == ECG_NOTCH_50_AND_60HZ)
         {
@@ -468,7 +469,8 @@ void ConfigEditECGMenuContent::onComboBoxIndexChanged(int index)
             case ECG_FILTERMODE_SURGERY:
                 d_ptr->combos[ConfigEditECGMenuContentPrivate::ITEM_CBO_NOTCH_FILTER]->
                 addItems(QStringList()
-                         << trs(ECGSymbol::convert(ECG_NOTCH_OFF))
+                         << trs(ECGSymbol::convert(ECG_NOTCH_50HZ))
+                         << trs(ECGSymbol::convert(ECG_NOTCH_60HZ))
                          << trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ)));
                 break;
             case ECG_FILTERMODE_DIAGNOSTIC:

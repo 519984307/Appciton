@@ -31,7 +31,7 @@
 #include <QDate>
 #include "FloatHandle.h"
 
-#define PATIENT_BORN_DATE_RANAGE 1800
+#define PATIENT_BORN_DATE_RANAGE 1900
 PatientInfoWindow *PatientInfoWindow::_selfObj = NULL;
 class PatientInfoWindowPrivate
 {
@@ -534,6 +534,7 @@ void PatientInfoWindowPrivate::savePatientInfoToManager()
     QString weightStr = Unit::convert(UNIT_KG, weightType, weight->text().toFloat()); // 病人信息保存的体重默认是kg单位
     patientManager.setWeight(weightStr.toFloat());
     patientManager.setPacermaker(static_cast<PatientPacer>(pacer->currentIndex()));
+    patientManager.updatePatientInfo();
 }
 
 void PatientInfoWindow::idReleased()

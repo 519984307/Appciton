@@ -20,6 +20,7 @@
 #include "SystemManager.h"
 #include "WindowManager.h"
 #include "MessageBox.h"
+#include "LanguageManager.h"
 
 class UpgradeWindowPrivate
 {
@@ -77,6 +78,14 @@ UpgradeWindow::UpgradeWindow()
         d_ptr->upgradeModuleCbo->addItem(
             trs(UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_T5)));
     }
+
+#ifdef ENABLE_O2_APNEASTIMULATION
+    if (systemManager.isSupport(CONFIG_O2))
+    {
+        d_ptr->upgradeModuleCbo->addItem(
+            UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_NEONATE));
+    }
+#endif
 
     d_ptr->upgradeModuleCbo->addItem(
         trs(UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_PRT48)));
@@ -210,7 +219,7 @@ void UpgradeWindow::onStartBtnClick()
     for (int i = UpgradeManager::UPGRADE_MOD_HOST; i < UpgradeManager::UPGRADE_MOD_TYPE_NR; i++)
     {
         module = static_cast<UpgradeManager::UpgradeModuleType>(i);
-        if (moduleName == trs(UpgradeManager::getUpgradeModuleName(module)))
+        if (moduleName == UpgradeManager::getUpgradeModuleName(module))
         {
             if (module == UpgradeManager::UPGRADE_MOD_HOST)
             {

@@ -80,4 +80,68 @@ public:
      * @param seconds the left pause time
      */
     virtual void updateAlarmPauseTime(int seconds) = 0;
+
+    /**
+     * @brief updataAlarmPriority 更新报警等级
+     * @param alarmType
+     * @param alArmMessage
+     * @param priority
+     * @return
+     */
+    virtual bool updataAlarmPriority(AlarmType alarmType, const char *alArmMessage,
+                         AlarmPriority priority) = 0;
+
+    /**
+     * @brief latchAlarmInfo
+     * @param alarmType
+     * @param alarmMessage
+     * @return
+     */
+    virtual bool latchAlarmInfo(AlarmType alarmType, const char *alarmMessage) = 0;
+
+    /**
+     * @brief updateLatchAlarmInfo 报警栓锁
+     * @param alarmMessage
+     * @param flag
+     * @return
+     */
+    virtual bool updateLatchAlarmInfo(const char *alarmMessage, bool flag) = 0;
+
+    /**
+     * @brief delAlarmInfo
+     * @param alarmType
+     * @param alarmMessage
+     */
+    virtual void delAlarmInfo(AlarmType alarmType, const char *alarmMessage) = 0;
+
+    /**
+     * @brief addAlarmInfo  增加/删除报警消息。
+     * @param alarmTime
+     * @param alarmType
+     * @param alarmPriority
+     * @param alarmMessage
+     * @param alarmSource
+     * @param alarmID
+     * @param isRemoveAfterLatch
+     * @param isRemoveLightAfterConfirm
+     * @return
+     */
+    virtual bool addAlarmInfo(unsigned alarmTime, AlarmType alarmType,
+                      AlarmPriority alarmPriority, const char *alarmMessage,
+                      AlarmParamIFace *alarmSource, int alarmID, bool isRemoveAfterLatch = false,
+                      bool isRemoveLightAfterConfirm = false) = 0;
+
+    /**
+     * @brief checkAlarmIsExist 检查报警是否存在
+     * @param alarmType
+     * @param alarmMessage
+     * @return
+     */
+    virtual bool checkAlarmIsExist(AlarmType alarmType, const char *alarmMessage) = 0;
+
+    /**
+     * @brief publishAlarm  发布报警。
+     * @param status
+     */
+    virtual void publishAlarm(AlarmStatus status) = 0;
 };

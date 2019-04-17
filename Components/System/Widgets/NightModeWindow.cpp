@@ -19,6 +19,7 @@
 #include "NightModeManager.h"
 #include "SystemManager.h"
 #include "SystemDefine.h"
+#include "LanguageManager.h"
 
 class NightModeWindowPrivate
 {
@@ -49,7 +50,7 @@ void NightModeWindowPrivate::loadOptions()
 {
     int index = 0;
     systemConfig.getNumValue("NightMode|ScreenBrightness", index);
-    combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setCurrentIndex(index - 1);
+    combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setCurrentIndex(index);
 
     index = 0;
     systemConfig.getNumValue("NightMode|AlarmVolume", index);
@@ -280,10 +281,9 @@ void NightModeWindow::onComboBoxIndexChanged(int index)
         break;
     }
     int tmp = 0;
-    if (indexType == NightModeWindowPrivate::ITEM_CBO_SCREEN_BRIGHTNESS
-            || indexType == NightModeWindowPrivate::ITEM_CBO_ALARM_VOLUME)
+    if (indexType == NightModeWindowPrivate::ITEM_CBO_ALARM_VOLUME)
     {
-        // 报警音和屏幕亮度存储值应直接存储实际值
+        // 报警音存储值应直接存储实际值
         bool ok;
         tmp = combo->itemText(index).toInt(&ok);
         if (!ok)

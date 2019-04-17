@@ -156,18 +156,18 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
     str = QString("%1: ").arg(trs("Weight"));
     if (patInfo.weight)
     {
-        float weight = patientManager.getWeight();
+        float weight = patInfo.weight;
         QString weightStr = Unit::convert(patientManager.getWeightUnit(), UNIT_KG, weight);
-        str += QString("%1 %2").arg(weightStr).arg(Unit::localeSymbol(patientManager.getWeightUnit()));
+        str += QString("%1 %2").arg(weightStr).arg(trs(Unit::getSymbol(patientManager.getWeightUnit())));
     }
     infos.append(str);
 
     str = QString("%1: ").arg(trs("Height"));
     if (patInfo.height)
     {
-        float height = patientManager.getHeight();
+        float height = patInfo.height;
         QString heightStr = Unit::convert(patientManager.getHeightUnit(), UNIT_CM, height);
-        str += QString("%1 %2").arg(heightStr).arg(Unit::localeSymbol(patientManager.getHeightUnit()));
+        str += QString("%1 %2").arg(heightStr).arg(trs(Unit::getSymbol(patientManager.getHeightUnit())));
     }
     infos.append(str);
 
@@ -280,7 +280,7 @@ static QString contructNormalTrendStringItem(SubParamID subParamId, TrendDataTyp
     trendString += "\t";
 
     // unit
-    trendString += Unit::localeSymbol(unit);
+    trendString += trs(Unit::getSymbol(unit));
 
     return trendString;
 }
@@ -424,7 +424,7 @@ static QString contructPressTrendStringItem(SubParamID subParamId, TrendDataType
     trendString += "\t";
 
     // unit
-    trendString += Unit::localeSymbol(unit);
+    trendString += trs(Unit::getSymbol(unit));
 
     return trendString;
 }
@@ -868,7 +868,7 @@ static void drawGasRuler(RecordPage *page, QPainter *painter, const RecordWaveSe
 
     rect.setY((waveInfo.endYOffset -  waveInfo.startYOffset - fontH) / 2 + waveInfo.startYOffset);
     rect.setHeight(fontH);
-    painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, Unit::localeSymbol(unit));
+    painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, trs(Unit::getSymbol(unit)));
 
     painter->restore();
 }
@@ -899,7 +899,7 @@ static void drawIBPRuler(RecordPage *page, QPainter *painter, const RecordWaveSe
 
     rect.setY((waveInfo.endYOffset -  waveInfo.startYOffset - fontH) / 2 + waveInfo.startYOffset);
     rect.setHeight(fontH);
-    painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, Unit::localeSymbol(waveInfo.waveInfo.ibp.unit));
+    painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, trs(Unit::getSymbol(waveInfo.waveInfo.ibp.unit)));
 
     painter->restore();
 }

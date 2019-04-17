@@ -8,30 +8,37 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/10/12
  **/
 
-
-
 #include "AlarmIndicator.h"
 #include "AlarmStatusWidget.h"
-#include "AlarmPhyInfoBarWidget.h"
-#include "AlarmTechInfoBarWidget.h"
-#include "SoundManager.h"
-#include "LightManager.h"
+#include "AlarmInfoBarWidget.h"
+#include "SoundManagerInterface.h"
+#include "LightManagerInterface.h"
 #include "IConfig.h"
-#include "AlarmStateMachine.h"
-#include "Alarm.h"
-#include "ECGAlarm.h"
+#include "AlarmSourceManager.h"
+#include "AlarmStateMachineInterface.h"
+#include "AlarmInterface.h"
+#include "NurseCallManagerInterface.h"
 
 /**************************************************************************************************
  * 功能：发布报警。
  *************************************************************************************************/
 void AlarmIndicator::publishAlarm(AlarmStatus status)
 {
+    SoundManagerInterface *soundManager = SoundManagerInterface::getSoundManager();
+    LightManagerInterface *lightManager = LightManagerInterface::getLightManager();
+    AlarmStateMachineInterface *alarmStateMachine = AlarmStateMachineInterface::getAlarmStateMachine();
     if (_alarmInfoDisplayPool.isEmpty())
     {
         _displayPhyClear();
         _displayTechClear();
-        soundManager.updateAlarm(false, ALARM_PRIO_LOW);
-        lightManager.updateAlarm(false, ALARM_PRIO_LOW);
+        if (soundManager)
+        {
+            soundManager->updateAlarm(false, ALARM_PRIO_LOW);
+        }
+        if (lightManager)
+        {
+            lightManager->updateAlarm(false, ALARM_PRIO_LOW);
+        }
         return;
     }
 
@@ -81,7 +88,8 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
                 }
             }
 
-            if ((!node.acknowledge || alertor.getAlarmLightOnAlarmReset())
+            AlarmInterface *alertor = AlarmInterface::getAlarm();
+            if ((!node.acknowledge || (alertor && alertor->getAlarmLightOnAlarmReset()))
                     && node.alarmPriority != ALARM_PRIO_PROMPT)
             {
                 // 处理确认后且开启了报警复位灯，或者未确认的报警
@@ -104,7 +112,7 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
         else if (ALARM_TYPE_TECH == node.alarmType && ALARM_STATUS_PAUSE != status)
         {
             // 技术报警只处理没有被acknowledge和不处理报警暂停状态
-            if ((!node.acknowledge || node.latch || node.removeLigthAfterConfirm)
+            if ((!node.acknowledge || node.latch)
                     && node.alarmPriority != ALARM_PRIO_PROMPT)
             {
                 if (techSoundPriority < node.alarmPriority)
@@ -123,6 +131,14 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
                 {
                     node.promptAlarmBeep = true;
                     *it = node;
+                }
+            }
+            else if (node.acknowledge && !node.removeLigthAfterConfirm && node.alarmPriority != ALARM_PRIO_PROMPT)
+            {
+                // 处理确认后不移除灯光
+                if (lightPriority < node.alarmPriority)
+                {
+                    lightPriority = node.alarmPriority;
                 }
             }
         }
@@ -186,25 +202,40 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
     // 更新声音
     if (phySoundPriority != ALARM_PRIO_PROMPT && _canPlayAudio(status, false))
     {
-        soundManager.updateAlarm(true, phySoundPriority);
+        if (soundManager)
+        {
+            soundManager->updateAlarm(true, phySoundPriority);
+        }
     }
     else if (techSoundPriority != ALARM_PRIO_PROMPT && _canPlayAudio(status, true))
     {
-        soundManager.updateAlarm(true, techSoundPriority);
+        if (soundManager)
+        {
+            soundManager->updateAlarm(true, techSoundPriority);
+        }
     }
     else
     {
-        soundManager.updateAlarm(false, phySoundPriority);
+        if (soundManager)
+        {
+            soundManager->updateAlarm(false, phySoundPriority);
+        }
     }
 
     // 更新灯光
     if (lightPriority != ALARM_PRIO_PROMPT)
     {
-        lightManager.updateAlarm(true, lightPriority);
+        if (lightManager)
+        {
+            lightManager->updateAlarm(true, lightPriority);
+        }
     }
     else
     {
-        lightManager.updateAlarm(false, lightPriority);
+        if (lightManager)
+        {
+            lightManager->updateAlarm(false, lightPriority);
+        }
     }
 
     //生理报警
@@ -252,19 +283,42 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
     // 生理报警条件全部解除
     if (!hasNonLatchedPhyAlarm)
     {
-        alarmStateMachine.handAlarmEvent(ALARM_STATE_EVENT_ALL_PHY_ALARM_LATCHED, 0, 0);
+        if (alarmStateMachine)
+        {
+            alarmStateMachine->handAlarmEvent(ALARM_STATE_EVENT_ALL_PHY_ALARM_LATCHED, 0, 0);
+        }
     }
 
     // 没有处于倒计时的报警
     if (!hasPausedPhyAlarm)
     {
-        alarmStateMachine.handAlarmEvent(ALARM_STATE_EVENT_NO_PAUSED_PHY_ALARM, 0, 0);
+        if (alarmStateMachine)
+        {
+            alarmStateMachine->handAlarmEvent(ALARM_STATE_EVENT_NO_PAUSED_PHY_ALARM, 0, 0);
+        }
     }
 
     // 没有被确认的报警
     if (!hasAcknowledgAlarm)
     {
-        alarmStateMachine.handAlarmEvent(ALARM_STATE_EVENT_NO_ACKNOWLEDG_ALARM, 0, 0);
+        if (alarmStateMachine)
+        {
+            alarmStateMachine->handAlarmEvent(ALARM_STATE_EVENT_NO_ACKNOWLEDG_ALARM, 0, 0);
+        }
+    }
+
+    // 护士呼叫
+    NurseCallManagerInterface *nurseCallManager = NurseCallManagerInterface::getNurseCallManagerInterface();
+    if (nurseCallManager)
+    {
+        for (int i = ALARM_TYPE_PHY; i <= ALARM_TYPE_TECH; i++)
+        {
+            for (int j = ALARM_PRIO_LOW; j <= ALARM_PRIO_HIGH; j++)
+            {
+                int count = getAlarmCount(static_cast<AlarmType>(i), static_cast<AlarmPriority>(j));
+                nurseCallManager->callNurse(static_cast<AlarmType>(i), static_cast<AlarmPriority>(j), count);
+            }
+        }
     }
 }
 
@@ -273,7 +327,10 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
  *************************************************************************************************/
 void AlarmIndicator::_displayPhyClear(void)
 {
-    _alarmPhyInfoWidget->clear();
+    if (_alarmPhyInfoWidget)
+    {
+        _alarmPhyInfoWidget->clear();
+    }
 }
 
 /**************************************************************************************************
@@ -281,7 +338,10 @@ void AlarmIndicator::_displayPhyClear(void)
  *************************************************************************************************/
 void AlarmIndicator::_displayTechClear()
 {
-    _alarmTechInfoWidget->clear();
+    if (_alarmTechInfoWidget)
+    {
+        _alarmTechInfoWidget->clear();
+    }
 }
 
 /**************************************************************************************************
@@ -289,7 +349,10 @@ void AlarmIndicator::_displayTechClear()
  *************************************************************************************************/
 void AlarmIndicator::_displayPhySet(AlarmInfoNode &node)
 {
-    _alarmPhyInfoWidget->display(node);
+    if (_alarmPhyInfoWidget)
+    {
+        _alarmPhyInfoWidget->display(node);
+    }
 }
 
 /**************************************************************************************************
@@ -297,22 +360,25 @@ void AlarmIndicator::_displayPhySet(AlarmInfoNode &node)
  *************************************************************************************************/
 void AlarmIndicator::_displayTechSet(AlarmInfoNode &node)
 {
-    _alarmTechInfoWidget->display(node);
+    if (_alarmTechInfoWidget)
+    {
+        _alarmTechInfoWidget->display(node);
+    }
 }
 
 bool AlarmIndicator::_canPlayAudio(AlarmStatus status, bool isTechAlarm)
 {
     int alarmOffStatus = 0;
-    systemConfig.getNumValue("Alarms|AlarmAudioOff", alarmOffStatus);
+    systemConfig.getNumValue("Alarms|AlarmAudio", alarmOffStatus);
     if (status == ALARM_STATUS_NORMAL)
     {
         if (alarmOffStatus)
         {
-            return false;
+            return true;
         }
         else
         {
-            return true;
+            return false;
         }
     }
 
@@ -377,7 +443,7 @@ void AlarmIndicator::_displayInfoNode(AlarmInfoNode &alarmNode, int &indexint, i
 /**************************************************************************************************
  * 功能：注册生理报警界面指示器。
  *************************************************************************************************/
-void AlarmIndicator::setAlarmPhyWidgets(AlarmPhyInfoBarWidget *alarmWidget, AlarmStatusWidget *muteWidget)
+void AlarmIndicator::setAlarmPhyWidgets(AlarmInfoBarWidget *alarmWidget, AlarmStatusWidget *muteWidget)
 {
     _alarmPhyInfoWidget = alarmWidget;
     _alarmStatusWidget = muteWidget;
@@ -404,7 +470,7 @@ AlarmIndicator &AlarmIndicator::getInstance()
 /**************************************************************************************************
  * 功能：注册技术报警界面指示器。
  *************************************************************************************************/
-void AlarmIndicator::setAlarmTechWidgets(AlarmTechInfoBarWidget *alarmWidget)
+void AlarmIndicator::setAlarmTechWidgets(AlarmInfoBarWidget *alarmWidget)
 {
     _alarmTechInfoWidget = alarmWidget;
 }
@@ -423,12 +489,16 @@ bool AlarmIndicator::addAlarmInfo(unsigned alarmTime, AlarmType alarmType,
                                   AlarmParamIFace *alarmSource, int alarmID, bool isRemoveAfterLatch,
                                   bool isRemoveLightAfterConfirm)
 {
+    if (alarmMessage == NULL)
+    {
+        return false;
+    }
     //报警存在
     AlarmInfoList *list = &_alarmInfoDisplayPool;
     AlarmInfoList::iterator it = list->begin();
     for (; it != list->end(); ++it)
     {
-        if ((it->alarmType == alarmType) && (it->alarmMessage == alarmMessage))
+        if ((it->alarmType == alarmType) && strcmp(it->alarmMessage, alarmMessage) == 0)
         {
             AlarmInfoNode node = *it;
             if (alarmType != ALARM_TYPE_TECH)
@@ -455,6 +525,12 @@ bool AlarmIndicator::addAlarmInfo(unsigned alarmTime, AlarmType alarmType,
     node.removeLigthAfterConfirm = isRemoveLightAfterConfirm;
 
     list->append(node);
+
+    NurseCallManagerInterface *nurseCallManager = NurseCallManagerInterface::getNurseCallManagerInterface();
+    if (nurseCallManager)
+    {
+        nurseCallManager->callNurse(alarmType, alarmPriority);
+    }
     return true;
 }
 
@@ -466,12 +542,16 @@ bool AlarmIndicator::addAlarmInfo(unsigned alarmTime, AlarmType alarmType,
  *************************************************************************************************/
 void AlarmIndicator::delAlarmInfo(AlarmType alarmType, const char *alarmMessage)
 {
+    if (alarmMessage == NULL)
+    {
+        return;
+    }
     //删除显示报警信息池
     AlarmInfoList *list = &_alarmInfoDisplayPool;
     AlarmInfoList::iterator it = list->begin();
     for (; it != list->end(); ++it)
     {
-        if ((it->alarmType == alarmType) && (it->alarmMessage == alarmMessage))
+        if ((it->alarmType == alarmType) && strcmp(it->alarmMessage, alarmMessage) == 0)
         {
             list->erase(it);
             break;
@@ -488,12 +568,16 @@ void AlarmIndicator::delAlarmInfo(AlarmType alarmType, const char *alarmMessage)
  *************************************************************************************************/
 bool AlarmIndicator::latchAlarmInfo(AlarmType alarmType, const char *alarmMessage)
 {
+    if (alarmMessage == NULL)
+    {
+        return false;
+    }
     //删除显示报警信息池
     AlarmInfoList *list = &_alarmInfoDisplayPool;
     AlarmInfoList::iterator it = list->begin();
     for (; it != list->end(); ++it)
     {
-        if ((it->alarmType == alarmType) && (it->alarmMessage == alarmMessage))
+        if ((it->alarmType == alarmType) && strcmp(it->alarmMessage, alarmMessage) == 0)
         {
             AlarmInfoNode node = *it;
             if (!node.latch)
@@ -519,12 +603,16 @@ bool AlarmIndicator::latchAlarmInfo(AlarmType alarmType, const char *alarmMessag
  *************************************************************************************************/
 bool AlarmIndicator::updateLatchAlarmInfo(const char *alarmMessage, bool flag)
 {
+    if (alarmMessage == NULL)
+    {
+        return false;
+    }
     //删除显示报警信息池
     AlarmInfoList *list = &_alarmInfoDisplayPool;
     AlarmInfoList::iterator it = list->begin();
     for (; it != list->end(); ++it)
     {
-        if (it->alarmMessage == alarmMessage)
+        if (strcmp(it->alarmMessage, alarmMessage) == 0)
         {
             AlarmInfoNode node = *it;
             node.latch = flag;
@@ -617,7 +705,7 @@ bool AlarmIndicator::checkAlarmIsExist(AlarmType alarmType, const char *alarmMes
     AlarmInfoList::iterator it = list->begin();
     for (; it != list->end(); ++it)
     {
-        if (alarmType == it->alarmType && alarmMessage == it->alarmMessage)
+        if (alarmType == it->alarmType && strcmp(alarmMessage, it->alarmMessage) == 0)
         {
             ret = true;
             break;
@@ -647,14 +735,7 @@ bool AlarmIndicator::phyAlarmPauseStatusHandle()
             AlarmInfoNode node = *it;
             if (0 == it->pauseTime)
             {
-                if (node.alarmMessage != ecgOneShotAlarm.toString(ECG_ONESHOT_CHECK_PATIENT_ALARM))
-                {
-                    node.pauseTime = _audioPauseTime;
-                }
-                else
-                {
-                    node.pauseTime = _checkPatientAlarmPauseTime;
-                }
+                node.pauseTime = _audioPauseTime;
             }
             else if (!ret)
             {
@@ -717,16 +798,20 @@ bool AlarmIndicator::hasLatchPhyAlarm()
  *      alarmInfo：报警的字串。
  *      priority:报警级别
  *************************************************************************************************/
-void AlarmIndicator::updataAlarmPriority(AlarmType alarmType, const char *alArmMessage,
+bool AlarmIndicator::updataAlarmPriority(AlarmType alarmType, const char *alarmMessage,
         AlarmPriority priority)
 {
+    if (alarmMessage == NULL)
+    {
+        return false;
+    }
     AlarmInfoList *list = &_alarmInfoDisplayPool;
 
     // 查找报警信息并更新。
     AlarmInfoList::iterator it = list->begin();
     for (; it != list->end(); ++it)
     {
-        if ((it->alarmType == alarmType) && (it->alarmMessage == alArmMessage))
+        if ((it->alarmType == alarmType) && strcmp(it->alarmMessage, alarmMessage) == 0)
         {
             AlarmInfoNode node = *it;
             if (node.alarmPriority != priority)
@@ -735,10 +820,12 @@ void AlarmIndicator::updataAlarmPriority(AlarmType alarmType, const char *alArmM
                 node.displayTime = 3;
                 node.acknowledge = false;
                 *it = node;
+                return true;
             }
             break;
         }
     }
+    return false;
 }
 
 /**************************************************************************************************
@@ -748,13 +835,17 @@ void AlarmIndicator::updataAlarmPriority(AlarmType alarmType, const char *alArmM
  *************************************************************************************************/
 void AlarmIndicator::updateAlarmInfo(const AlarmInfoNode &node)
 {
+    if (node.alarmMessage == NULL)
+    {
+        return;
+    }
     AlarmInfoList *list = &_alarmInfoDisplayPool;
 
     // 查找报警信息并更新。
     AlarmInfoList::iterator it = list->begin();
     for (; it != list->end(); ++it)
     {
-        if ((it->alarmType == node.alarmType) && (it->alarmMessage == node.alarmMessage))
+        if ((it->alarmType == node.alarmType) && strcmp(it->alarmMessage, node.alarmMessage) == 0)
         {
             *it = node;
             break;
@@ -772,7 +863,10 @@ void AlarmIndicator::setAlarmStatus(AlarmStatus status)
         return;
     }
 
-    _alarmStatusWidget->setAlarmStatus(status);
+    if (_alarmStatusWidget)
+    {
+        _alarmStatusWidget->setAlarmStatus(status);
+    }
 
     if (status != ALARM_STATUS_PAUSE && status != ALARM_STATUS_RESET)
     {
@@ -780,7 +874,11 @@ void AlarmIndicator::setAlarmStatus(AlarmStatus status)
     }
 
     _audioStatus = status;
-    alertor.addAlarmStatus(status);
+    AlarmInterface *alertor = AlarmInterface::getAlarm();
+    if (alertor)
+    {
+        alertor->addAlarmStatus(status);
+    }
 }
 
 /**************************************************************************************************
@@ -844,8 +942,35 @@ int AlarmIndicator::getAlarmCount(AlarmPriority priority)
     return count;
 }
 
+int AlarmIndicator::getAlarmCount(AlarmType type, AlarmPriority priority)
+{
+    int count = 0;
+    AlarmInfoList *list = &_alarmInfoDisplayPool;
+
+    // 无数据。
+    if (list->empty())
+    {
+        return count;
+    }
+
+    // 查找报警信息并更新。
+    AlarmInfoList::iterator it = list->begin();
+    for (; it != list->end(); ++it)
+    {
+        if (it->alarmType == type && it->alarmPriority == priority)
+        {
+            ++count;
+            continue;
+        }
+    }
+
+    return count;
+}
+
 /**************************************************************************************************
- * 功能：获取指定的报警信息
+ * 功能：获取指定的报警信息    alarmIndicator.latchAlarmInfo(ALARM_TYPE_PHY, useCase[ALARM_INFO_POOL_LEN]);
+    alarmIndicator.delLatchPhyAlarm();
+    QCOMPARE(alarmIndicator.hasLatchPhyAlarm(), false);
  * 参数：
  *      index：指定的序号
  *      node：带回报警信息
@@ -871,13 +996,17 @@ void AlarmIndicator::getAlarmInfo(int index, AlarmInfoNode &node)
 bool AlarmIndicator::getAlarmInfo(AlarmType type, const char *alArmMessage,
                                   AlarmInfoNode &node)
 {
+    if (alArmMessage == NULL)
+    {
+        return false;
+    }
     AlarmInfoList *list = &_alarmInfoDisplayPool;
 
     // 查找报警信息并更新。
     AlarmInfoList::iterator it = list->begin();
     for (; it != list->end(); ++it)
     {
-        if ((it->alarmType == type) && (it->alarmMessage == alArmMessage))
+        if ((it->alarmType == type) && strcmp(it->alarmMessage, alArmMessage) == 0)
         {
             node = *it;
             return true;

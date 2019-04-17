@@ -130,7 +130,7 @@ void CO2TrendWidget::updateLimit()
  *************************************************************************************************/
 void CO2TrendWidget::setUNit(UnitType unit)
 {
-    setUnit(Unit::localeSymbol(unit));
+    setUnit(trs(Unit::getSymbol(unit)));
 }
 
 /**************************************************************************************************
@@ -260,7 +260,7 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget")
     // 高度设定为与RESP的一致。
 //    setFixedHeight(86);
     setName("CO2");
-    setUnit(Unit::localeSymbol(co2Param.getUnit()));
+    setUnit(trs(Unit::getSymbol(co2Param.getUnit())));
 
     // 设置报警关闭标志
     showAlarmOff();

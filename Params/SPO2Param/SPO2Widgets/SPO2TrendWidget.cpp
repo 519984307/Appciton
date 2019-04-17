@@ -178,7 +178,7 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
     _spo2String = InvStr();
     _piString = InvStr();
     setName(trs(paramInfo.getParamName(PARAM_SPO2)));
-    setUnit(Unit::localeSymbol(UNIT_PERCENT));
+    setUnit(trs(Unit::getSymbol(UNIT_PERCENT)));
 
     // 设置报警关闭标志
     showAlarmOff();

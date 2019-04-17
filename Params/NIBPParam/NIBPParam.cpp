@@ -34,6 +34,7 @@
 #include "PatientManager.h"
 #include "TimeManager.h"
 #include "NIBPCountdownTime.h"
+#include "AlarmSourceManager.h"
 
 /**************************************************************************************************
  * 病人类型修改。
@@ -49,20 +50,8 @@ void NIBPParam::_patientTypeChangeSlot(PatientType /*type*/)
     if (NULL != _provider)
     {
         _provider->setPatientType((unsigned char)patientManager.getType());
-        int initVal;
-        PatientType type = patientManager.getType();
-        if (type == PATIENT_TYPE_ADULT)
-        {
-            currentConfig.getNumValue("NIBP|AdultInitialCuffInflation", initVal);
-        }
-        else if (type == PATIENT_TYPE_PED)
-        {
-            currentConfig.getNumValue("NIBP|PedInitialCuffInflation", initVal);
-        }
-        else if (type == PATIENT_TYPE_NEO)
-        {
-            currentConfig.getNumValue("NIBP|NeoInitialCuffInflation", initVal);
-        }
+        int initVal = getInitPressure();   // 获取初始压力值
+
         _provider->setInitPressure(initVal);
     }
 }
@@ -84,20 +73,7 @@ void NIBPParam::initParam(void)
 
     //设置病人类型与预充气值
     _provider->setPatientType((unsigned char)patientManager.getType());
-    int initVal;
-    PatientType type = patientManager.getType();
-    if (type == PATIENT_TYPE_ADULT)
-    {
-        currentConfig.getNumValue("NIBP|AdultInitialCuffInflation", initVal);
-    }
-    else if (type == PATIENT_TYPE_PED)
-    {
-        currentConfig.getNumValue("NIBP|PedInitialCuffInflation", initVal);
-    }
-    else if (type == PATIENT_TYPE_NEO)
-    {
-        currentConfig.getNumValue("NIBP|NeoInitialCuffInflation", initVal);
-    }
+    int initVal = getInitPressure();
     _provider->setInitPressure(initVal);
 
     //智能充气
@@ -120,8 +96,12 @@ void NIBPParam::errorDisable(void)
 {
     _isNIBPDisable = true;
     handleNIBPEvent(NIBP_EVENT_MODULE_ERROR, NULL, 0);
-    nibpOneShotAlarm.clear();
-    nibpOneShotAlarm.setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_DISABLE, true);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
+    if (alarmSource)
+    {
+        alarmSource->clear();
+        alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_DISABLE, true);
+    }
 }
 
 void NIBPParam::setConnected(bool isConnected)
@@ -246,6 +226,8 @@ void NIBPParam::setProvider(NIBPProviderIFace *provider)
     {
         _activityMachine->enter();
     }
+    unsigned char cmd = 0x00;
+    handleNIBPEvent(NIBP_EVENT_TRIGGER_MODEL, &cmd, 1);
 }
 
 /**************************************************************************************************
@@ -322,9 +304,6 @@ void NIBPParam::setNIBPTrendWidget(NIBPTrendWidget *trendWidget)
     _diaValue = dia;
     _mapVaule = map;
     _lastTime = time;
-
-    unsigned char cmd = 0x00;
-    handleNIBPEvent(NIBP_EVENT_TRIGGER_MODEL, &cmd, 1);
 }
 
 /**************************************************************************************************
@@ -390,7 +369,11 @@ void NIBPParam::setResult(int16_t sys, int16_t dia, int16_t map, int16_t pr, NIB
     if (err != NIBP_ONESHOT_NONE)
     {
         setText(trs("NIBPREADING") + "\n" + trs("NIBPFAILED"));
-        nibpOneShotAlarm.setOneShotAlarm(err, true);
+        AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
+        if (alarmSource)
+        {
+            alarmSource->setOneShotAlarm(err, true);
+        }
         if (getMeasurMode() == NIBP_MODE_MANUAL || getMeasurMode() == NIBP_MODE_AUTO)
         {
             if (!isAdditionalMeasure())
@@ -549,7 +532,11 @@ void NIBPParam::invResultData(void)
     setCountdown(-1);  // 倒计时为“0”
 
     // 将进行启动测量， 清除界面。
-    nibpOneShotAlarm.clear();  // 清除所有报警。
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
+    if (alarmSource)
+    {
+        alarmSource->clear();  // 清除所有报警。
+    }
 }
 
 /**************************************************************************************************
@@ -562,10 +549,14 @@ bool NIBPParam::isConnected(void)
 
 void NIBPParam::connectedFlag(bool flag)
 {
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
     if (flag)
     {
         handleNIBPEvent(NIBP_EVENT_CONNECTION_NORMAL, NULL, 0);
-        nibpOneShotAlarm.setOneShotAlarm(NIBP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+        if (alarmSource)
+        {
+            alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+        }
         _connectedFlag = true;
     }
     else
@@ -575,9 +566,12 @@ void NIBPParam::connectedFlag(bool flag)
             handleNIBPEvent(NIBP_EVENT_MODULE_ERROR, NULL, 0);
         }
         //通信中断，清除所有报警，只产生通信中断报警
-        nibpOneShotAlarm.clear();
-        nibpOneShotAlarm.setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_DISABLE, _isNIBPDisable);
-        nibpOneShotAlarm.setOneShotAlarm(NIBP_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+        if (alarmSource)
+        {
+            alarmSource->clear();
+            alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_DISABLE, _isNIBPDisable);
+            alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+        }
         _connectedFlag = false;
     }
 }
@@ -906,6 +900,29 @@ void NIBPParam::setInitPressure(int index)
 }
 
 /**************************************************************************************************
+ * 获取不同病人类型的初始压力值
+ *************************************************************************************************/
+int NIBPParam::getInitPressure()
+{
+    int initVal;
+    currentConfig.getNumValue("NIBP|InitialCuffInflation", initVal);
+    PatientType patienType = patientManager.getType();
+    if (patienType == PATIENT_TYPE_ADULT)
+    {
+        initVal = 120 + initVal * 10;
+    }
+    else if (patienType == PATIENT_TYPE_PED)
+    {
+        initVal = 80 + initVal * 10;
+    }
+    else if (patienType == PATIENT_TYPE_NEO)
+    {
+        initVal = 60 + initVal * 10;
+    }
+    return initVal;
+}
+
+/**************************************************************************************************
  * 设置测量模式。
  * STAT模式不存配置列表
  *************************************************************************************************/
@@ -1108,6 +1125,7 @@ void NIBPParam::setUnit(UnitType type)
     {
         _trendWidget->setUNit(static_cast<UnitType>(unit));
         _trendWidget->updateLimit();
+         _trendWidget->setResults(_sysValue, _diaValue, _mapVaule, _lastTime);
     }
 }
 
@@ -1378,7 +1396,7 @@ NIBPParam::NIBPParam()
       _reply(false), _result(false), _manometerPressure(InvData()), _isMaintain(false),
       _activityMachine(NULL)
 {
-    nibpCountdownTime.construction();
+    nibpCountdownTime.getInstance();
 
     connect(&patientManager, SIGNAL(signalPatientType(PatientType)),
             this, SLOT(_patientTypeChangeSlot(PatientType)));
@@ -1412,6 +1430,4 @@ NIBPParam::~NIBPParam()
         delete _btnTimer;
         _btnTimer = NULL;
     }
-
-    deleteNIBPCountdownTime();
 }

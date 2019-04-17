@@ -17,6 +17,7 @@
 #include "SystemManager.h"
 #include "PMessageBox.h"
 #include <QTimer>
+#include "ConfigManager.h"
 
 enum  // 数据包类型。
 {
@@ -89,12 +90,19 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
     _status.unspecAcc    = ((sts & BIT5) == BIT5) ? true : false;
     _status.sensorErr    = ((sts & BIT6) == BIT6) ? true : false;
     _status.o2Replace    = ((sts & BIT3) == BIT3) ? true : false;
+
     if ((co2Param.getAwRRSwitch() == 1) && (co2Param.getApneaTime() != APNEA_ALARM_TIME_OFF))
     {
+#ifdef ENABLE_O2_APNEASTIMULATION
+        co2Param.setRespApneaStimulation(_status.noBreath);
+#endif
         co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_APNEA, _status.noBreath);
     }
     else
     {
+#ifdef ENABLE_O2_APNEASTIMULATION
+        co2Param.setRespApneaStimulation(false);
+#endif
         co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_APNEA, false);
     }
 

@@ -207,6 +207,11 @@ TrendDataStorageManager &TrendDataStorageManager::getInstance()
     if (instance == NULL)
     {
         instance = new TrendDataStorageManager();
+        TrendDataStorageManagerInterface *old = registerTrendDataStorageManager(instance);
+        if (old)
+        {
+            delete old;
+        }
     }
     return *instance;
 }
@@ -250,7 +255,7 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
     }
 
     TrendCacheData data;
-    if (!trendCache.getTendData(t, data))
+    if (!trendCache.getTrendData(t, data))
     {
         // no trend data
         return;

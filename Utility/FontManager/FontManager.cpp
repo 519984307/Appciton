@@ -15,8 +15,6 @@
 #include <QStringList>
 #include "IConfig.h"
 
-FontManager *FontManager::_selfObj = NULL;
-
 /**************************************************************************************************
  * 构造函数。
  *************************************************************************************************/
@@ -83,6 +81,21 @@ FontManager::FontManager()
 /**************************************************************************************************
  * 析构函数。
  *************************************************************************************************/
+FontManager &FontManager::getInstance()
+{
+    static FontManager *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new FontManager();
+        FontMangerInterface *old = registerFontManager(instance);
+        if (old)
+        {
+            delete old;
+        }
+    }
+    return *instance;
+}
+
 FontManager::~FontManager()
 {
     QFontDatabase::removeAllApplicationFonts();
@@ -238,6 +251,32 @@ int FontManager::adjustTextFontSize(const QRect r, bool bold, int fontSize)
     }
 
     return fontSize;
+}
+
+int FontManager::textFontSize(const QRect r, QString text, bool bold, int fontSize)
+{
+    if (fontSize == -1)
+    {
+        fontSize = adjustTextFontSize(r, bold);
+    }
+    QFont font = textFont(fontSize, bold);
+    int fontW = textWidthInPixels(text, font);
+    int fontH = textHeightInPixels(font);
+    int width = r.width();
+    int height = r.height();
+
+    while (fontW > width)
+    {
+        fontSize--;
+        fontW = textWidthInPixels(text, textFont(fontSize, bold));
+    }
+    fontH = textHeightInPixels(textFont(fontSize, bold));
+    while (fontH > height)
+    {
+        fontSize--;
+        fontH = textHeightInPixels(textFont(fontSize, bold));
+    }
+    return fontSize - 1;
 }
 
 /**************************************************************************************************

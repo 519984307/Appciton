@@ -137,7 +137,7 @@ void ConfigEditCO2MenuContentPrivate::loadOptions()
             str = QString("0.0~%1").arg(QString::number(adjustWaveformRuler(zoomArray[i]), 'f', 1));
         }
         str += " ";
-        str += Unit::localeSymbol(unit);
+        str += trs(Unit::getSymbol(unit));
         combos[ITEM_CBO_WAVE_RULER]->addItem(str);
     }
     combos[ITEM_CBO_WAVE_RULER]->blockSignals(false);

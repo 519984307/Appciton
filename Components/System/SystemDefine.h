@@ -37,6 +37,16 @@ enum UserFaceType
     UFACE_NR
 };
 
+/**
+ * @brief The Backlight Regulation enum
+ */
+enum BacklightAdjustMent
+{
+    BACKLIGHT_MODE_1,
+    BACKLIGHT_MODE_2,
+    BACKLIGHT_MODE_NR
+};
+
 // 背光亮度等级。
 enum BrightnessLevel
 {
@@ -62,6 +72,15 @@ enum ErrorWaringCode
     ERR_CODE_NR
 };
 
+enum SystemOneShotAlarm
+{
+    SOME_LIMIT_ALARM_DISABLED,
+    POWERUP_PANEL_RECORD_PRESSED,
+    SYSTEM_ONE_SHOT_ALARM_COMMUNICATION_STOP,
+    STORAGE_SPACE_FULL,
+    SYSTEM_ONE_SHOT_ALARM_NR
+};
+
 class SystemSymbol
 {
 public:
@@ -71,6 +90,15 @@ public:
         {
             "UserFaceStandard", "UserFaceFullScreen", "UserFaceOxyCRG",
             "UserFaceTrend", "UserFaceBigFont", "UserFaceCustom", "UserFaceUnknow"
+        };
+        return symbol[index];
+    }
+
+    static const char *convert(BacklightAdjustMent index)
+    {
+        static const char *symbol[BACKLIGHT_MODE_NR] =
+        {
+            "Mode1", "Mode2"
         };
         return symbol[index];
     }

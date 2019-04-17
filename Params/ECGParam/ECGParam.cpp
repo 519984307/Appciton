@@ -36,13 +36,13 @@
 #include "ErrorLog.h"
 #include "OxyCRGRRHRWaveWidget.h"
 #include "RunningStatusBar.h"
+#include "AlarmSourceManager.h"
 
 #define ECG_TIMER_INTERVAL (100)
 #define GET_DIA_DATA_PERIOD (12000)
 #define DISABLE_DIA_SOFTKEY_PERIOD (900)  // 1s,定时有差异，使用900ms
 
 unsigned ECGParam::selfTestResult = 0;
-ECGParam *ECGParam::_selfObj = NULL;
 
 /**************************************************************************************************
  * 获取禁用的波形控件。
@@ -274,6 +274,9 @@ void ECGParam::setProvider(ECGProviderIFace *provider)
 
     // 设置病人类型
     _provider->setPatientType(getPatientType());
+
+    // raw data
+    _provider->enableRawData(getRawDataOnOff());
 
     // 设置带宽。
 //    _provider->setBandwidth((ECGBandwidth)getBandwidth());
@@ -672,7 +675,11 @@ void ECGParam::setOverLoad(bool flag)
 
     if (overLoadFlag != flag)
     {
-        ecgOneShotAlarm.setOneShotAlarm(ECG_ONESHOT_ALARM_OVERLOAD, flag);
+        AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_ECG);
+        if (alarmSource)
+        {
+            alarmSource->setOneShotAlarm(ECG_ONESHOT_ALARM_OVERLOAD, flag);
+        }
         overLoadFlag = flag;
     }
 }
@@ -769,7 +776,11 @@ void ECGParam::exit12Lead(void)
  *************************************************************************************************/
 void ECGParam::setOneShotAlarm(ECGOneShotType t, bool f)
 {
-    ecgOneShotAlarm.setOneShotAlarm(t, f);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_ECG);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(t, f);
+    }
 }
 
 /**************************************************************************************************
@@ -2201,6 +2212,21 @@ bool ECGParam::getFristConnect()
     return _isFristConnect;
 }
 
+void ECGParam::setRawDataOnOff(bool sta)
+{
+    if (_provider)
+    {
+        _provider->enableRawData(sta);
+    }
+}
+
+bool ECGParam::getRawDataOnOff()
+{
+    int value = false;
+    machineConfig.getNumValue("Record|ECG", value);
+    return value;
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
@@ -2293,6 +2319,21 @@ ECGParam::ECGParam() : Param(PARAM_ECG),
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
+ECGParam &ECGParam::getInstance()
+{
+    static ECGParam *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new ECGParam();
+        ECGParamInterface *old = registerECGParam(instance);
+        if (old)
+        {
+            delete old;
+        }
+    }
+    return *instance;
+}
+
 ECGParam::~ECGParam()
 {
     _timer.stop();

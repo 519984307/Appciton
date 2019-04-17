@@ -135,3 +135,12 @@ enum RainbowLineFrequency
     RB_LINE_FREQ_50HZ,
     RB_LINE_FREQ_60HZ,
 };
+
+// CCHD筛查结果
+enum CCHDResult
+{
+    Negative,    // 阴性
+    Positive,    // 阳性
+    RepeatCheck, // 重复筛查
+    CCHD_NR
+};

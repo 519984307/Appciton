@@ -27,4 +27,11 @@ public:
     MOCK_METHOD1(getAlarmCount, int(AlarmPriority priority));
     MOCK_METHOD0(phyAlarmPauseStatusHandle, bool(void));
     MOCK_METHOD1(updateAlarmPauseTime, void(int));
+    MOCK_METHOD3(updataAlarmPriority, bool(AlarmType, const char *, AlarmPriority));
+    MOCK_METHOD2(latchAlarmInfo, bool(AlarmType, const char *));
+    MOCK_METHOD2(updateLatchAlarmInfo, bool(const char *, bool));
+    MOCK_METHOD2(delAlarmInfo, void(AlarmType, const char *));
+    MOCK_METHOD8(addAlarmInfo, bool(unsigned , AlarmType, AlarmPriority, const char *, AlarmParamIFace *, int, bool , bool));
+    MOCK_METHOD2(checkAlarmIsExist, bool(AlarmType, const char *));
+    MOCK_METHOD1(publishAlarm, void(AlarmStatus));
 };

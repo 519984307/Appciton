@@ -14,6 +14,7 @@
 #include "ECGAlarm.h"
 #include "ECGDupParam.h"
 #include "RESPParam.h"
+#include "RESPDupParam.h"
 #include "RESPAlarm.h"
 #include "ECGAlarm.h"
 #include "Debug.h"
@@ -28,6 +29,8 @@
 #include "IConfig.h"
 #include "WindowManager.h"
 #include "RawDataCollector.h"
+#include "AlarmSourceManager.h"
+#include "ConfigManager.h"
 
 /**************************************************************************************************
  * 模块与参数对接。
@@ -399,6 +402,9 @@ void E5Provider::handlePacket(unsigned char *data, int len)
     case TE3_RSP_RESP_APNEA_INTERVAL:
         break;
 
+    case TE3_RSP_ECG_ENABLE_RAW_DATA:
+        break;
+
     case TE3_RSP_SELFTEST_RESULT:
     {
         unsigned result = 0;
@@ -440,17 +446,37 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         break;
 
     case TE3_NOTIFY_RESP_ALARM:
-        respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_APNEA, data[1]);
+    {
+#ifdef ENABLE_O2_APNEASTIMULATION
+        respDupParam.setRespApneaStimulation(data[1]);
+#endif
+        AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_RESP);
+        if (alarmSource)
+        {
+            alarmSource->setOneShotAlarm(RESP_ONESHOT_ALARM_APNEA, data[1]);
+        }
         break;
+    }
 
     case TE3_NOTIFY_VF_ALARM:
-        ecgOneShotAlarm.setOneShotAlarm(ECG_ONESHOT_ARR_VFIBVTAC, data[1]);
+    {
+        AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_ECG);
+        if (alarmSource)
+        {
+            alarmSource->setOneShotAlarm(ECG_ONESHOT_ARR_VFIBVTAC, data[1]);
+        }
         break;
+    }
 
     case TE3_NOTIFY_ASYS_ALARM:
-        ecgOneShotAlarm.setOneShotAlarm(ECG_ONESHOT_ARR_ASYSTOLE, data[1]);
+    {
+        AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_ECG);
+        if (alarmSource)
+        {
+            alarmSource->setOneShotAlarm(ECG_ONESHOT_ARR_ASYSTOLE, data[1]);
+        }
         break;
-
+    }
     case TE3_CYCLE_ACTIVE:
         feed();
         break;
@@ -471,6 +497,13 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         {
             rr = InvData();
         }
+
+        // set invalid rr when it does not support RESP
+        if (!_isSupportRESP)
+        {
+            rr = InvData();
+        }
+
         respParam.setRR(rr);
         break;
     }
@@ -809,6 +842,12 @@ void E5Provider::setSTPoints(int iso, int st)
     Q_UNUSED(st)
 }
 
+void E5Provider::enableRawData(bool onoff)
+{
+    unsigned char data = onoff;
+    sendCmd(TE3_CMD_ECG_ENABLE_RAW_DATA, &data, 1);
+}
+
 /**************************************************************************************************
  * 获取版本号。
  *************************************************************************************************/
@@ -887,8 +926,12 @@ void E5Provider::enableRESPCalc(bool enable)
  *************************************************************************************************/
 void E5Provider::disconnected(void)
 {
-    ecgOneShotAlarm.clear();
-    ecgOneShotAlarm.setOneShotAlarm(ECG_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_ECG);
+    if (alarmSource)
+    {
+        alarmSource->clear();
+        alarmSource->setOneShotAlarm(ECG_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+    }
     ecgParam.updateHR(InvData());
 
     QList<int> waveID;
@@ -902,12 +945,16 @@ void E5Provider::disconnected(void)
         }
     }
 
-    if (systemManager.isSupport(CONFIG_RESP))
+    if (_isSupportRESP)
     {
-        respOneShotAlarm.clear();
+        alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_RESP);
+        if (alarmSource)
+        {
+            alarmSource->clear();
+            alarmSource->setOneShotAlarm(RESP_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+        }
         respParam.setLeadoff(false);
         respParam.setRR(InvData());
-        respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_COMMUNICATION_STOP, true);
         if (-1 != waveID.indexOf(WAVE_RESP))
         {
             needFreshWave = true;
@@ -923,8 +970,16 @@ void E5Provider::disconnected(void)
  *************************************************************************************************/
 void E5Provider::reconnected(void)
 {
-    ecgOneShotAlarm.setOneShotAlarm(ECG_ONESHOT_ALARM_COMMUNICATION_STOP, false);
-    respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+    AlarmOneShotIFace *ecgOneShotAlarm = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_ECG);
+    if (ecgOneShotAlarm)
+    {
+        ecgOneShotAlarm->setOneShotAlarm(ECG_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+    }
+    AlarmOneShotIFace *respOneShotAlarm = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_RESP);
+    if (respOneShotAlarm)
+    {
+        respOneShotAlarm->setOneShotAlarm(RESP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+    }
 
     QList<int> waveID;
     bool needFreshWave = false;
@@ -937,12 +992,15 @@ void E5Provider::reconnected(void)
         }
     }
 
-    if (systemManager.isSupport(CONFIG_RESP))
+    if (_isSupportRESP)
     {
-        respOneShotAlarm.clear();
+        if (respOneShotAlarm)
+        {
+            respOneShotAlarm->clear();
+            respOneShotAlarm->setOneShotAlarm(RESP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+        }
         respParam.setLeadoff(false);
         respParam.setRR(InvData());
-        respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
         if (-1 != waveID.indexOf(WAVE_RESP))
         {
             needFreshWave = true;
@@ -957,9 +1015,9 @@ void E5Provider::reconnected(void)
  * 构造。
  *************************************************************************************************/
 E5Provider::E5Provider() : BLMProvider("BLM_E5"), ECGProviderIFace(), _waveSampleRate(WAVE_SAMPLE_RATE_250),
-    _isFristConnect(false)
+    _isFristConnect(false), _isSupportRESP(systemManager.isSupport(CONFIG_RESP))
 {
-    UartAttrDesc portAttr(230400, 8, 'N', 1);
+    UartAttrDesc portAttr(460800, 8, 'N', 1);
     initPort(portAttr);
 }
 
