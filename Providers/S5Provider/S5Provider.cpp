@@ -238,7 +238,8 @@ bool S5Provider::isResultSPO2PR(unsigned char *packet)
     //        {
     //        spo2Param.setSPO2(InvData());
     //    }
-    if (packet[1] == 255)
+
+    if (_isInvalidWaveData || packet[1] == 0xff)
     {
         spo2Param.setSPO2(InvData());
     }
@@ -249,7 +250,10 @@ bool S5Provider::isResultSPO2PR(unsigned char *packet)
 
     // 脉率值。
     short pr = (packet[2] << 8) + packet[3];
-    pr = (pr == -100) ? InvData() : pr;
+    if (_isInvalidWaveData || pr == -1)
+    {
+        pr = InvData();
+    }
     spo2Param.setPR(pr);
 
     return true;
@@ -266,12 +270,30 @@ bool S5Provider::isResult_BAR(unsigned char *packet)
         return false;
     }
 
+    int count = 0;
     for (int i = 0; i < 10; i++)
     {
         // 波形。
         spo2Param.addWaveformData(packet[i + 5]);
         _isValuePR = (packet[i + 5] == 0x80) ? false : true;
+
+        if (packet[i + 5] == 128)  // set 128 as one invalid wave data
+        {
+            count ++;
+        }
     }
+
+    if (count == 10)
+    {
+        _isInvalidWaveData = true;
+        spo2Param.setSPO2(InvData());
+        spo2Param.setPR(InvData());
+    }
+    else
+    {
+        _isInvalidWaveData = false;
+    }
+
     // 棒图。
     // spo2Param.addBarData((packet[15] == 127) ? 50 : packet[15]);
 
@@ -414,19 +436,22 @@ void S5Provider::sendCmdData(unsigned char cmdId, const unsigned char *data, uns
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-S5Provider::S5Provider() : BLMProvider("BLM_S5"), SPO2ProviderIFace()
+S5Provider::S5Provider()
+          : BLMProvider("BLM_S5")
+          , SPO2ProviderIFace()
+          , _isValuePR(false)
+          , _isCableOff(false)
+          , _isFingerOff(false)
+          , _gainError(S5_GAIN_NC)
+          , _ledFault(false)
+          , _logicStatus(S5_LOGIC_NC)
+          , _lastTime(timeval())
+          , _isInvalidWaveData(false)
 {
     disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_SPO2;
 
     UartAttrDesc portAttr(115200, 8, 'N', 1);
     initPort(portAttr);
-
-    _isCableOff = false;
-    _isFingerOff = false;
-    _gainError = S5_GAIN_NC;
-    _ledFault = false;
-    _logicStatus = S5_LOGIC_NC;
-    _isValuePR = false;
 
     if (disPatchInfo.dispatcher)
     {
