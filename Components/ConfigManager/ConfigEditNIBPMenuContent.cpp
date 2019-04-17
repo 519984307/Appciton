@@ -105,7 +105,8 @@ void ConfigEditNIBPMenuContentPrivate::loadOptions()
         initCuffUnitLbl->setText(Unit::getSymbol(UNIT_KPA));
     }
 
-    int initVal;
+    // init the 'initVal'
+    int initVal = 0;
     config->getNumValue("NIBP|InitialCuffInflation", initVal);
     initCuffSpb->setValue(initVal);
 }
