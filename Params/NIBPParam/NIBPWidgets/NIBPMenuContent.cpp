@@ -104,6 +104,8 @@ void NIBPMenuContent::layoutExec()
                        << trs(NIBPSymbol::convert(NIBP_MODE_AUTO)));
     itemID = static_cast<int>(NIBPMenuContentPrivate::ITEM_CBO_MEASURE_MODE);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
+    NIBPMode mode = nibpParam.getSuperMeasurMode();
+    comboBox->setCurrentIndex(static_cast<int>(mode));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(NIBPMenuContentPrivate::ITEM_CBO_MEASURE_MODE, comboBox);

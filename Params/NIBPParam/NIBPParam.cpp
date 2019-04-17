@@ -226,6 +226,8 @@ void NIBPParam::setProvider(NIBPProviderIFace *provider)
     {
         _activityMachine->enter();
     }
+    unsigned char cmd = 0x00;
+    handleNIBPEvent(NIBP_EVENT_TRIGGER_MODEL, &cmd, 1);
 }
 
 /**************************************************************************************************
@@ -302,9 +304,6 @@ void NIBPParam::setNIBPTrendWidget(NIBPTrendWidget *trendWidget)
     _diaValue = dia;
     _mapVaule = map;
     _lastTime = time;
-
-    unsigned char cmd = 0x00;
-    handleNIBPEvent(NIBP_EVENT_TRIGGER_MODEL, &cmd, 1);
 }
 
 /**************************************************************************************************
@@ -536,7 +535,7 @@ void NIBPParam::invResultData(void)
     AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
     if (alarmSource)
     {
-        alarmSource->clear(); // 清除所有报警。
+        alarmSource->clear();  // 清除所有报警。
     }
 }
 
