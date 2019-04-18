@@ -676,7 +676,8 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     {
         return;
     }
-    if (len < 6)
+    // the minimum size of the field is 4
+    if (len < 4)
     {
         return;
     }
