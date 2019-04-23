@@ -373,6 +373,11 @@ void NIBPDataTrendWidget::updateWidgetConfig()
     updatePalette(palette);
 }
 
+void NIBPDataTrendWidget::clearListData()
+{
+    _nibpNrendCacheMap.clear();
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/

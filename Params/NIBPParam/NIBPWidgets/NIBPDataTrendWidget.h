@@ -77,6 +77,11 @@ public:
      */
     void updateWidgetConfig();
 
+    /**
+     * @brief clearListData 清除列表数据
+     */
+    void clearListData();
+
     NIBPDataTrendWidget();
     ~NIBPDataTrendWidget();
 
