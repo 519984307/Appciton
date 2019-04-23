@@ -518,8 +518,8 @@ void SystemManager::enableBrightness(BrightnessLevel br)
     char industrialLight[BRT_LEVEL_NR] = {1, 15, 25, 38, 46, 54, 62, 72, 85, 100};
     char businessLight[BRT_LEVEL_NR] = {64, 52, 47, 41, 36, 31, 26, 21, 15, 1};
     int index = BACKLIGHT_MODE_1;
-    machineConfig.getNumValue("BacklightAdjustMent", index);
-    if (static_cast<BacklightAdjustMent>(index) == BACKLIGHT_MODE_2)
+    machineConfig.getNumValue("BacklightAdjustment", index);
+    if (static_cast<BacklightAdjustment>(index) == BACKLIGHT_MODE_2)
     {
         lightValue = reinterpret_cast<char*>(&industrialLight);
     }
