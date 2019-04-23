@@ -468,11 +468,13 @@ SuntechProvider::~SuntechProvider()
 
 void SuntechProvider::disconnected()
 {
+    nibpParam.connectedFlag(false);
     nibpParam.setConnected(false);
 }
 
 void SuntechProvider::reconnected()
 {
+    nibpParam.connectedFlag(true);
     nibpParam.setConnected(true);
 }
 
