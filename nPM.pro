@@ -120,9 +120,6 @@ DEFINES += DISABLE_ECG_MODULE_CALIBRATION
 #大字体界面，co2模块替换resp模块
 DEFINES += BIG_FONT_LAYOUT_CO2_REPLACE_RESP
 
-#隐藏维护菜单中的监护仪信息
-DEFINES += MONITOR_INFOMATION
-
 # Depending libraries
 LIBS += -ldl -lasound -lz
 
