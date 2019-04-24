@@ -110,6 +110,7 @@ void SystemMaintenanceMenuContent::layoutExec()
                        ::ITEM_BTN_SYSTEM_TIME, btn);
     row++;
 
+#ifndef MONITOR_INFOMATION
    // monitor info
     btn = new Button(trs("MonitorInfoMenu"));
     btn->setButtonStyle(Button::ButtonTextOnly);
@@ -120,7 +121,7 @@ void SystemMaintenanceMenuContent::layoutExec()
     d_ptr->btns.insert(SystemMaintenanceMenuContentPrivate
                        ::ITEM_BTN_MONITOR_INFO, btn);
     row++;
-
+#endif
     glayout->setRowStretch(row, 1);
 }
 
