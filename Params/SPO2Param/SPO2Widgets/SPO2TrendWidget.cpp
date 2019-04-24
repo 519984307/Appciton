@@ -160,7 +160,7 @@ void SPO2TrendWidget::setTextSize()
 
     _spo2Value->setFont(font);
 
-    font = fontManager.numFont(fontsize/1.5, true);
+    font = fontManager.numFont(fontsize / 2, true);
     font.setWeight(QFont::Black);
     _piValue->setFont(font);
 
@@ -193,7 +193,6 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
     _spo2Bar->setFixedWidth(20);
     QVBoxLayout *vLayout = new QVBoxLayout();
     vLayout->addWidget(_spo2Bar);
-    vLayout->setMargin(8);
 
     _piName = new QLabel();
     _piName->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
@@ -204,10 +203,10 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
     _piValue->setText(InvStr());
 
     QHBoxLayout *layout = new QHBoxLayout();
-    layout->addWidget(_spo2Value, 4);
+    layout->addWidget(_spo2Value, 5);
     layout->addLayout(vLayout, 1);
     layout->addWidget(_piName, 1);
-    layout->addWidget(_piValue, 2);
+    layout->addWidget(_piValue, 3);
 
     contentLayout->addLayout(layout, 7);
 
