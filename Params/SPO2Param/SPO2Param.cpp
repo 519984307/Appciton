@@ -888,26 +888,39 @@ void SPO2Param::clearCCHDData(bool isCleanup)
     }
 }
 
+void SPO2Param::setPerfusionStatus(bool isLow)
+{
+    _isLowPerfusion = isLow;
+}
+
+bool SPO2Param::getPerfusionStatus() const
+{
+    return _isLowPerfusion;
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-SPO2Param::SPO2Param() : Param(PARAM_SPO2),
-                         _oxyCRGSPO2Trend(NULL),
-                         _moduleType(MODULE_SPO2_NR),
-                         _repeatTimes(0)
+SPO2Param::SPO2Param()
+         : Param(PARAM_SPO2)
+         , _provider(NULL)
+         , _trendWidget(NULL)
+         , _waveWidget(NULL)
+         , _isEverCheckFinger(false)
+         , _isEverSensorOn(false)
+         , _spo2Value(InvData())
+         , _prValue(InvData())
+         , _barValue(InvData())
+         , _piValue(InvData())
+         , _isValid(false)
+         , _sensorOff(true)
+         , _recPackageInPowerOn2sec(0)
+         , _oxyCRGSPO2Trend(NULL)
+         , _connectedProvider(false)
+         , _moduleType(MODULE_SPO2_NR)
+         , _repeatTimes(0)
+         , _isLowPerfusion(false)
 {
-    _provider = NULL;
-    _trendWidget = NULL;
-    _waveWidget = NULL;
-
-    _spo2Value = InvData();
-    _piValue = InvData();
-    _prValue = InvData();
-    _barValue = InvData();
-    _isValid = false;
-    _sensorOff = true;
-    _recPackageInPowerOn2sec = 0;
-
     systemConfig.getNumValue("PrimaryCfg|SPO2|EverCheckFinger", _isEverCheckFinger);
     systemConfig.getNumValue("PrimaryCfg|SPO2|EverSensorOn", _isEverSensorOn);
 

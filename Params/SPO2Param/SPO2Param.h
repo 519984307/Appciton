@@ -237,6 +237,18 @@ public:
      */
     void clearCCHDData(bool isCleanup = false);
 
+    /**
+     * @brief setPerfusionStatus  and the function of setting the SPO2 perfusion status
+     * @param isLow  and true if low perfusion
+     */
+    void setPerfusionStatus(bool isLow);
+
+    /**
+     * @brief getPerfusionStatus  and the function of getting the SPO2 perfusion status
+     * @return  and return true if low perfusion
+     */
+    bool getPerfusionStatus() const;
+
 private slots:
     void checkSelftest();
     void onPaletteChanged(ParamID id);
@@ -268,5 +280,7 @@ private:
 
     QList<cchdData> _cchdDataList;
     int _repeatTimes;
+
+    bool _isLowPerfusion;
 };
 #define spo2Param (SPO2Param::construction())

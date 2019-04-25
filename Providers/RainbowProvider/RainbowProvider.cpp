@@ -761,16 +761,9 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
             }
         }
         // 最后更新spo2值和pr值。避免趋势界面的值跳动。
-        if (isLowPerfusionIndex)
-        {
-            spo2Param.setSPO2(UnknownData());
-            spo2Param.setPR(UnknownData());
-        }
-        else
-        {
-            spo2Param.setSPO2(spo2Value);
-            spo2Param.setPR(prValue);
-        }
+        spo2Param.setPerfusionStatus(isLowPerfusionIndex);
+        spo2Param.setSPO2(spo2Value);
+        spo2Param.setPR(prValue);
     }
     break;
     case RB_PARAM_OF_VERSION_INFO:

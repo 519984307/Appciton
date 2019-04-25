@@ -30,6 +30,7 @@
 #include "ConfigManager.h"
 #include "TimeDate.h"
 #include <QBitmap>
+#include "SPO2Param.h"
 
 #define beatIconPath "/usr/local/nPM/icons/beat.png"
 
@@ -110,9 +111,9 @@ void ECGTrendWidget::_loadConfig()
 /**************************************************************************************************
  * 设置HR的值。
  *************************************************************************************************/
-void ECGTrendWidget::setHRValue(int16_t hr, bool isHR)
+void ECGTrendWidget::setHRValue(int16_t hr, HRSourceType type)
 {
-    if (isHR)
+    if (type == HR_SOURCE_ECG || type == HR_SOURCE_AUTO)
     {
         setName(trs(paramInfo.getSubParamName(SUB_DUP_PARAM_HR)));
     }
@@ -125,13 +126,13 @@ void ECGTrendWidget::setHRValue(int16_t hr, bool isHR)
         setName(trs(paramInfo.getSubParamName(SUB_DUP_PARAM_PR)));
     }
 
-    if (hr >= 0)
+    if (hr >= 0 && type == HR_SOURCE_SPO2 && spo2Param.getPerfusionStatus())
+    {
+        _hrString = QString("%1+?").arg(QString::number(hr));
+    }
+    else if (hr >= 0)
     {
         _hrString = QString::number(hr);
-    }
-    else if (hr == UnknownData())
-    {
-        _hrString = UnknownStr();
     }
     else
     {
