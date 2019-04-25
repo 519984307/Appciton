@@ -16,8 +16,10 @@
 #include "PowerOffWindow.h"
 #include "AlarmSourceManager.h"
 #include "LanguageManager.h"
+#include <QPair>
 #define TWO_MINUTE 1000 * 120
 #define POWER_LIST_MAX_COUNT 3
+#define FLOAT_AREA 10       // AD值允许的浮动区间
 
 
 PowerManger * PowerManger::_selfObj = NULL;
@@ -28,7 +30,10 @@ public:
         : q_ptr(q_ptr), lowBattery(false), shutBattery(false),
           lastVolume(BAT_VOLUME_NONE), adcValue(0), hasHintShutMessage(false),
           shutdownTimer(NULL)
-    {}
+    {
+        lastAdInfo.first = BAT_VOLUME_NONE;
+        lastAdInfo.second = 0;
+    }
     ~PowerMangerPrivate(){}
 
     PowerManger * const q_ptr;
@@ -69,6 +74,7 @@ public:
     void shutdownWarn(void);
 
     QList<BatteryPowerLevel> powerList;
+    QPair<BatteryPowerLevel, short> lastAdInfo;
 };
 
 PowerManger::~PowerManger()
@@ -263,6 +269,17 @@ BatteryPowerLevel PowerMangerPrivate::getCurrentVolume()
     else if (batteryADCVoltage >= BAT_LEVEL_4)
     {
         powerLevel = BAT_VOLUME_5;
+    }
+
+    // 判断是否在正常浮动区间内。
+    if (powerLevel != lastAdInfo.first && abs(batteryADCVoltage - lastAdInfo.second) < FLOAT_AREA)
+    {
+        powerLevel = lastAdInfo.first;
+    }
+    else
+    {
+        lastAdInfo.first = powerLevel;
+        lastAdInfo.second = batteryADCVoltage;
     }
 
     return powerLevel;
