@@ -29,6 +29,7 @@
 #include "IConfig.h"
 #include "WindowManager.h"
 #include "RawDataCollector.h"
+#include "AlarmSourceManager.h"
 #include "ConfigManager.h"
 
 /**************************************************************************************************
@@ -449,18 +450,33 @@ void E5Provider::handlePacket(unsigned char *data, int len)
 #ifdef ENABLE_O2_APNEASTIMULATION
         respDupParam.setRespApneaStimulation(data[1]);
 #endif
-        respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_APNEA, data[1]);
+        AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_RESP);
+        if (alarmSource)
+        {
+            alarmSource->setOneShotAlarm(RESP_ONESHOT_ALARM_APNEA, data[1]);
+        }
         break;
     }
 
     case TE3_NOTIFY_VF_ALARM:
-        ecgOneShotAlarm.setOneShotAlarm(ECG_ONESHOT_ARR_VFIBVTAC, data[1]);
+    {
+        AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_ECG);
+        if (alarmSource)
+        {
+            alarmSource->setOneShotAlarm(ECG_ONESHOT_ARR_VFIBVTAC, data[1]);
+        }
         break;
+    }
 
     case TE3_NOTIFY_ASYS_ALARM:
-        ecgOneShotAlarm.setOneShotAlarm(ECG_ONESHOT_ARR_ASYSTOLE, data[1]);
+    {
+        AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_ECG);
+        if (alarmSource)
+        {
+            alarmSource->setOneShotAlarm(ECG_ONESHOT_ARR_ASYSTOLE, data[1]);
+        }
         break;
-
+    }
     case TE3_CYCLE_ACTIVE:
         feed();
         break;
@@ -910,8 +926,12 @@ void E5Provider::enableRESPCalc(bool enable)
  *************************************************************************************************/
 void E5Provider::disconnected(void)
 {
-    ecgOneShotAlarm.clear();
-    ecgOneShotAlarm.setOneShotAlarm(ECG_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_ECG);
+    if (alarmSource)
+    {
+        alarmSource->clear();
+        alarmSource->setOneShotAlarm(ECG_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+    }
     ecgParam.updateHR(InvData());
 
     QList<int> waveID;
@@ -927,10 +947,14 @@ void E5Provider::disconnected(void)
 
     if (_isSupportRESP)
     {
-        respOneShotAlarm.clear();
+        alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_RESP);
+        if (alarmSource)
+        {
+            alarmSource->clear();
+            alarmSource->setOneShotAlarm(RESP_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+        }
         respParam.setLeadoff(false);
         respParam.setRR(InvData());
-        respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_COMMUNICATION_STOP, true);
         if (-1 != waveID.indexOf(WAVE_RESP))
         {
             needFreshWave = true;
@@ -946,8 +970,16 @@ void E5Provider::disconnected(void)
  *************************************************************************************************/
 void E5Provider::reconnected(void)
 {
-    ecgOneShotAlarm.setOneShotAlarm(ECG_ONESHOT_ALARM_COMMUNICATION_STOP, false);
-    respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+    AlarmOneShotIFace *ecgOneShotAlarm = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_ECG);
+    if (ecgOneShotAlarm)
+    {
+        ecgOneShotAlarm->setOneShotAlarm(ECG_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+    }
+    AlarmOneShotIFace *respOneShotAlarm = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_RESP);
+    if (respOneShotAlarm)
+    {
+        respOneShotAlarm->setOneShotAlarm(RESP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+    }
 
     QList<int> waveID;
     bool needFreshWave = false;
@@ -962,10 +994,13 @@ void E5Provider::reconnected(void)
 
     if (_isSupportRESP)
     {
-        respOneShotAlarm.clear();
+        if (respOneShotAlarm)
+        {
+            respOneShotAlarm->clear();
+            respOneShotAlarm->setOneShotAlarm(RESP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+        }
         respParam.setLeadoff(false);
         respParam.setRR(InvData());
-        respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
         if (-1 != waveID.indexOf(WAVE_RESP))
         {
             needFreshWave = true;

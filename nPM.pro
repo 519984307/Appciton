@@ -632,6 +632,8 @@ SOURCES +=                                                                      
     Main/IThread.cpp                                                            \
     Main/MergeConfig.cpp                                                        \
     Main/Starter.cpp \
+    Components/TimeManager/TimeManagerInterface.cpp \
+    Components/Alarm/AlarmSourceManager.cpp
 
 HEADERS +=                                                                      \
     SOUP/Json/FlexLexer.h                                                       \
@@ -1205,6 +1207,8 @@ HEADERS +=                                                                      
     Main/Starter.h                                                              \
     Main/Version.h \
     Utility/Widgets/ImportFileSubWidget.h \
+    Components/TimeManager/TimeManagerInterface.h \
+    Components/Alarm/AlarmSourceManager.h
 
 #头文件修改后，重新编译依赖的源文件
 DEPENDPATH +=                                                                   \

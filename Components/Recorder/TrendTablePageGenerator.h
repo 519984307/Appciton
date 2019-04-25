@@ -33,7 +33,7 @@ public:
         Type = 4
     };
 
-    TrendTablePageGenerator(IStorageBackend *backend, TrendTablePrintInfo &printInfo, QObject *parent = 0);
+    TrendTablePageGenerator(IStorageBackend *backend, TrendTablePrintInfo &printInfo, const PatientInfo &patientInfo, QObject *parent = 0);
 
     ~TrendTablePageGenerator();
 

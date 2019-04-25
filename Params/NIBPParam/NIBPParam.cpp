@@ -34,6 +34,7 @@
 #include "PatientManager.h"
 #include "TimeManager.h"
 #include "NIBPCountdownTime.h"
+#include "AlarmSourceManager.h"
 
 /**************************************************************************************************
  * 病人类型修改。
@@ -95,8 +96,12 @@ void NIBPParam::errorDisable(void)
 {
     _isNIBPDisable = true;
     handleNIBPEvent(NIBP_EVENT_MODULE_ERROR, NULL, 0);
-    nibpOneShotAlarm.clear();
-    nibpOneShotAlarm.setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_DISABLE, true);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
+    if (alarmSource)
+    {
+        alarmSource->clear();
+        alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_DISABLE, true);
+    }
 }
 
 void NIBPParam::setConnected(bool isConnected)
@@ -221,6 +226,8 @@ void NIBPParam::setProvider(NIBPProviderIFace *provider)
     {
         _activityMachine->enter();
     }
+    unsigned char cmd = 0x00;
+    handleNIBPEvent(NIBP_EVENT_TRIGGER_MODEL, &cmd, 1);
 }
 
 /**************************************************************************************************
@@ -297,9 +304,6 @@ void NIBPParam::setNIBPTrendWidget(NIBPTrendWidget *trendWidget)
     _diaValue = dia;
     _mapVaule = map;
     _lastTime = time;
-
-    unsigned char cmd = 0x00;
-    handleNIBPEvent(NIBP_EVENT_TRIGGER_MODEL, &cmd, 1);
 }
 
 /**************************************************************************************************
@@ -365,7 +369,11 @@ void NIBPParam::setResult(int16_t sys, int16_t dia, int16_t map, int16_t pr, NIB
     if (err != NIBP_ONESHOT_NONE)
     {
         setText(trs("NIBPREADING") + "\n" + trs("NIBPFAILED"));
-        nibpOneShotAlarm.setOneShotAlarm(err, true);
+        AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
+        if (alarmSource)
+        {
+            alarmSource->setOneShotAlarm(err, true);
+        }
         if (getMeasurMode() == NIBP_MODE_MANUAL || getMeasurMode() == NIBP_MODE_AUTO)
         {
             if (!isAdditionalMeasure())
@@ -524,7 +532,11 @@ void NIBPParam::invResultData(void)
     setCountdown(-1);  // 倒计时为“0”
 
     // 将进行启动测量， 清除界面。
-    nibpOneShotAlarm.clear();  // 清除所有报警。
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
+    if (alarmSource)
+    {
+        alarmSource->clear();  // 清除所有报警。
+    }
 }
 
 /**************************************************************************************************
@@ -537,10 +549,14 @@ bool NIBPParam::isConnected(void)
 
 void NIBPParam::connectedFlag(bool flag)
 {
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
     if (flag)
     {
         handleNIBPEvent(NIBP_EVENT_CONNECTION_NORMAL, NULL, 0);
-        nibpOneShotAlarm.setOneShotAlarm(NIBP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+        if (alarmSource)
+        {
+            alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+        }
         _connectedFlag = true;
     }
     else
@@ -550,9 +566,12 @@ void NIBPParam::connectedFlag(bool flag)
             handleNIBPEvent(NIBP_EVENT_MODULE_ERROR, NULL, 0);
         }
         //通信中断，清除所有报警，只产生通信中断报警
-        nibpOneShotAlarm.clear();
-        nibpOneShotAlarm.setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_DISABLE, _isNIBPDisable);
-        nibpOneShotAlarm.setOneShotAlarm(NIBP_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+        if (alarmSource)
+        {
+            alarmSource->clear();
+            alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_DISABLE, _isNIBPDisable);
+            alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+        }
         _connectedFlag = false;
     }
 }
@@ -1106,6 +1125,7 @@ void NIBPParam::setUnit(UnitType type)
     {
         _trendWidget->setUNit(static_cast<UnitType>(unit));
         _trendWidget->updateLimit();
+         _trendWidget->setResults(_sysValue, _diaValue, _mapVaule, _lastTime);
     }
 }
 

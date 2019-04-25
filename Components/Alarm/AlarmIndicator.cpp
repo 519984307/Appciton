@@ -14,6 +14,7 @@
 #include "SoundManagerInterface.h"
 #include "LightManagerInterface.h"
 #include "IConfig.h"
+#include "AlarmSourceManager.h"
 #include "AlarmStateMachineInterface.h"
 #include "AlarmInterface.h"
 #include "NurseCallManagerInterface.h"

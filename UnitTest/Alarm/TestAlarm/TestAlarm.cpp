@@ -167,7 +167,7 @@ void TestAlarm::testGetAlarmLimitIFace()
     QFETCH(bool, isAddSource);
     if (isAddSource)
     {
-        alertor.addLimtSource(*source);
+        alertor.addLimtSource(source);
     }
 
     MockParamInfo mockParamInfo;
@@ -212,7 +212,7 @@ void TestAlarm::testGetAlarmOneShotIFace()
 
     if (isAddSource)
     {
-        alertor.addOneShotSource(*source);
+        alertor.addOneShotSource(source);
     }
 
     MockParamInfo mockParamInfo;
@@ -314,11 +314,11 @@ void TestAlarm::testGetAlarmMessage()
 
     if (isOneshotAlarm)
     {
-        alertor.addOneShotSource(*oneshotSource);
+        alertor.addOneShotSource(oneshotSource);
     }
     else
     {
-        alertor.addLimtSource(*limitSource);
+        alertor.addLimtSource(limitSource);
     }
 
     QString result = QString(alertor.getAlarmMessage(paramId, alarmType, isOneshotAlarm));
@@ -422,7 +422,7 @@ void TestAlarm::testMainRunLimitSource()
 
     static bool lastAlarmStatus[ALARM_COUNT] = {false, false, false, false};
 
-    alertor.addLimtSource(*source);
+    alertor.addLimtSource(source);
     alertor.addAlarmStatus(alarmStatus);
     unsigned t = QTime::currentTime().elapsed();
     alertor.setLatchLockSta(isLock);
@@ -692,7 +692,7 @@ void TestAlarm::testMainRunOneshotSource()
     {
         firstIdEnable = !firstIdEnable;
     }
-    alertor.addOneShotSource(*source);
+    alertor.addOneShotSource(source);
     alertor.addAlarmStatus(alarmStatus);
     unsigned t = QTime::currentTime().elapsed();
     alertor.setLatchLockSta(isLock);

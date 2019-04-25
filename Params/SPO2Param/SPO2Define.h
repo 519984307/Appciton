@@ -60,8 +60,8 @@ enum SPO2ModuleControl
  *************************************************************************************************/
 enum SPO2SMARTPLUSETONE
 {
-    SPO2_SMART_PLUSE_TONE_ON,
     SPO2_SMART_PLUSE_TONE_OFF,
+    SPO2_SMART_PLUSE_TONE_ON,
     SPO2_SMART_PLUSE_TONE_NR
 };
 

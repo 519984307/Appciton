@@ -32,4 +32,9 @@ public:
      * @param status
      */
     virtual void addAlarmStatus(AlarmStatus status) = 0;
+
+    /**
+     * @brief removeAllLimitAlarm 移除生理报警的跟踪对象
+     */
+    virtual void removeAllLimitAlarm() = 0;
 };

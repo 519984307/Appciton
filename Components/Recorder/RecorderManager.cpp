@@ -28,6 +28,7 @@
 #include "IBPParam.h"
 #include "PrintSettingMenuContent.h"
 #include "CO2Param.h"
+#include "AlarmSourceManager.h"
 
 class RecorderManagerPrivate
 {
@@ -363,16 +364,22 @@ void RecorderManager::providerConnectionChanged(bool isConnected)
     }
 
     d_ptr->connected = isConnected;
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_PRINT);
+    if (alarmSource == NULL)
+    {
+        return;
+    }
+
     if (d_ptr->connected)
     {
         // connected
-        printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_FAULT, false);
+        alarmSource->setOneShotAlarm(PRINT_ONESHOT_ALARM_FAULT, false);
     }
     else
     {
         // disconected
-        printOneShotAlarm.clear();
-        printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_FAULT, true);
+        alarmSource->clear();
+        alarmSource->setOneShotAlarm(PRINT_ONESHOT_ALARM_FAULT, true);
 
         if (d_ptr->generator)
         {
@@ -391,9 +398,14 @@ void RecorderManager::providerStatusChanged(PrinterStatus status)
     bool isPrinterFault = (status >> 2) & 0x01;
     bool isPrinting = (status >> 3) & 0x01;
 
-    printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_OUT_OF_PAPER, isOutOfPaper);
-    printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_OVER_HEATING, isOverHeating);
-    printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_FAULT, isPrinterFault);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_PRINT);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(PRINT_ONESHOT_ALARM_OUT_OF_PAPER, isOutOfPaper);
+        alarmSource->setOneShotAlarm(PRINT_ONESHOT_ALARM_OVER_HEATING, isOverHeating);
+        alarmSource->setOneShotAlarm(PRINT_ONESHOT_ALARM_FAULT, isPrinterFault);
+    }
+
     setPrintStatus(isPrinting);
 
     if (isOutOfPaper || isOverHeating || isPrinterFault)

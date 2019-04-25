@@ -161,7 +161,8 @@ void TrendGraphWindow::onButtonReleased()
         {
             QList<TrendGraphInfo>  trendGraphList = d_ptr->waveWidget->getTrendGraphPrint();
             QList<EventInfoSegment> eventList = d_ptr->waveWidget->getEventList();
-            RecordPageGenerator *pageGenerator = new TrendGraphPageGenerator(trendGraphList, eventList);
+            PatientInfo patientInfo = d_ptr->waveWidget->getPatientInfo();
+            RecordPageGenerator *pageGenerator = new TrendGraphPageGenerator(trendGraphList, eventList, patientInfo);
 
             if (recorderManager.isPrinting() && !d_ptr->isWait)
             {

@@ -16,7 +16,7 @@
 class ECGLimitAlarm : public AlarmLimitIFace
 {
 public:
-    static ECGLimitAlarm &getInstance(void);
+    ECGLimitAlarm();
 
 public:
     // 报警源的名字。
@@ -59,16 +59,14 @@ public:
     virtual const char *toString(int id);
 
     // 构造与析构。
-    ECGLimitAlarm();
     virtual ~ECGLimitAlarm();
 };
-#define ecgLimitAlarm (ECGLimitAlarm::getInstance())
 
 // OneShor报警实现。
 class ECGOneShotAlarm : public AlarmOneShotIFace
 {
 public:
-    static ECGOneShotAlarm &getInstance(void);
+    ECGOneShotAlarm();
 
 public:
     // 报警源的名字。
@@ -119,7 +117,5 @@ public:
     virtual ~ECGOneShotAlarm();
 
 private:
-    ECGOneShotAlarm();
     bool _isPhyAlarm;
 };
-#define ecgOneShotAlarm (ECGOneShotAlarm::getInstance())
