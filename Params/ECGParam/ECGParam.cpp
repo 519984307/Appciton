@@ -628,7 +628,7 @@ void ECGParam::setLeadOff(ECGLead lead, bool status)
     if (_leadOff[lead] != status)
     {
         _leadOff[lead] = status;
-//        updateECGNotifyMesg(lead);
+        updateECGNotifyMesg(lead, false);
     }
 
     if (!_isEverLeadOn[lead] && !status)
