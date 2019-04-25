@@ -106,6 +106,15 @@ public:
      * @brief savePatientInfoToManager 保存病人信息到病人配置
      */
     void savePatientInfoToManager(void);
+
+    /**
+     * @brief refreshDayRange 刷新日期范围
+     */
+    void refreshDayRange();
+    /**
+     * @brief refreshDayRange 刷新月份范围
+     */
+    void refreshMonthRange();
 };
 
 
@@ -273,9 +282,19 @@ void PatientInfoWindowPrivate::loadOptions()
     }
 
     dateItem[Born_Date_Year]->setRange(PATIENT_BORN_DATE_RANAGE, timeDate.getDateYear());
+    for (int i = Born_Date_Year; i <= Born_Date_Day; i++)
+    {
+        dateItem[static_cast<BornDate>(i)]->blockSignals(true);
+    }
     dateItem[Born_Date_Year]->setValue(year);
+    refreshMonthRange();
     dateItem[Born_Date_Month]->setValue(month);
+    refreshDayRange();
     dateItem[Born_Date_Day]->setValue(day);
+    for (int i = Born_Date_Year; i <= Born_Date_Day; i++)
+    {
+        dateItem[static_cast<BornDate>(i)]->blockSignals(false);
+    }
 }
 
 PatientInfoWindow::PatientInfoWindow()
@@ -547,6 +566,46 @@ void PatientInfoWindowPrivate::savePatientInfoToManager()
     patientManager.updatePatientInfo();
 }
 
+void PatientInfoWindowPrivate::refreshDayRange()
+{
+    unsigned int year = dateItem[PatientInfoWindowPrivate::Born_Date_Year]->getValue();
+    unsigned int month = dateItem[PatientInfoWindowPrivate::Born_Date_Month]->getValue();
+    unsigned int day = dateItem[PatientInfoWindowPrivate::Born_Date_Day]->getValue();
+    unsigned int upRange = 1;
+    if (year == timeDate.getDateYear() && month == timeDate.getDateMonth())
+    {
+        upRange = timeDate.getDateDay();
+    }
+    else
+    {
+        QDate date(year, month, 1);
+        upRange = date.daysInMonth();
+    }
+
+    dateItem[PatientInfoWindowPrivate::Born_Date_Day]->setRange(1, upRange);
+    if (day > upRange)
+    {
+        // 如果超出日份范围，则设置为最大值。
+        dateItem[PatientInfoWindowPrivate::Born_Date_Day]->setValue(upRange);
+    }
+}
+
+void PatientInfoWindowPrivate::refreshMonthRange()
+{
+    unsigned int year = dateItem[PatientInfoWindowPrivate::Born_Date_Year]->getValue();
+    unsigned int month = dateItem[PatientInfoWindowPrivate::Born_Date_Month]->getValue();
+    unsigned int upRange = 12;
+    if (year == timeDate.getDateYear())
+    {
+        upRange = timeDate.getDateMonth();
+    }
+    dateItem[PatientInfoWindowPrivate::Born_Date_Month]->setRange(1, upRange);
+    if (month > upRange)
+    {
+        dateItem[PatientInfoWindowPrivate::Born_Date_Month]->setValue(upRange);
+    }
+}
+
 void PatientInfoWindow::idReleased()
 {
     EnglishInputPanel englishPanel;
@@ -680,39 +739,8 @@ void PatientInfoWindow::bedNumReleased()
 
 void PatientInfoWindow::onSpinBoxValueChanged(int, int)
 {
-    SpinBox *spinBox = qobject_cast<SpinBox *>(sender());
-    if (spinBox == d_ptr->dateItem.value(PatientInfoWindowPrivate::Born_Date_Year))
-    {
-        // 设置月份范围和月份的值
-        unsigned int year = spinBox->getValue();
-        unsigned int month = d_ptr->dateItem[PatientInfoWindowPrivate::Born_Date_Month]->getValue();
-        if (year == timeDate.getDateYear())
-        {
-            d_ptr->dateItem[PatientInfoWindowPrivate::Born_Date_Month]->setRange(1, timeDate.getDateMonth());
-        }
-        else
-        {
-            d_ptr->dateItem[PatientInfoWindowPrivate::Born_Date_Month]->setRange(1, 12);
-        }
-        d_ptr->dateItem[PatientInfoWindowPrivate::Born_Date_Month]->setValue(month);
-    }
-    else if (spinBox == d_ptr->dateItem.value(PatientInfoWindowPrivate::Born_Date_Month))
-    {
-        // 设置日份范围和值
-        unsigned int year = d_ptr->dateItem[PatientInfoWindowPrivate::Born_Date_Year]->getValue();
-        unsigned int month = spinBox->getValue();
-        unsigned int day = d_ptr->dateItem[PatientInfoWindowPrivate::Born_Date_Day]->getValue();
-        if (year == timeDate.getDateYear() && month == timeDate.getDateMonth())
-        {
-            d_ptr->dateItem[PatientInfoWindowPrivate::Born_Date_Day]->setRange(1, timeDate.getDateDay());
-        }
-        else
-        {
-            QDate date(year, month, day);
-            d_ptr->dateItem[PatientInfoWindowPrivate::Born_Date_Day]->setRange(1, date.daysInMonth());
-        }
-        d_ptr->dateItem[PatientInfoWindowPrivate::Born_Date_Day]->setValue(day);
-    }
+    d_ptr->refreshMonthRange();
+    d_ptr->refreshDayRange();
 }
 
 void PatientInfoWindow::showEvent(QShowEvent *ev)
