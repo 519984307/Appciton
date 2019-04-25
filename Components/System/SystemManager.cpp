@@ -103,6 +103,7 @@ public:
         windowManager.showDemoWidget(true);
         paramManager.connectDemoParamProvider();
         patientManager.newPatient();
+        nibpParam.clearTrendListData();
     }
 
     /**
