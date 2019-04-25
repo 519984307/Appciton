@@ -525,14 +525,24 @@ void PatientInfoWindowPrivate::savePatientInfoToManager()
                dateItem[Born_Date_Day]->getValue());
     patientManager.setBornDate(date);
     patientManager.setBlood(static_cast<PatientBloodType>(blood->currentIndex()));
-    QString heightStr = Unit::convert(UNIT_CM, heightType, height->text().toFloat()); // 病人信息保存的身高默认是cm单位
-    patientManager.setHeight(heightStr.toFloat());
+    float heightFloat = height->text().toFloat();
+    if (heightType == UNIT_INCH)
+    {
+        // 病人信息保存的身高默认是cm单位
+        heightFloat = height->text().toFloat() * 2.54;
+    }
+    patientManager.setHeight(heightFloat);
     patientManager.setName(name->text());
     patientManager.setPatID(id->text());
     patientManager.setSex(static_cast<PatientSex>(sex->currentIndex()));
     patientManager.setType(static_cast<PatientType>(type->currentIndex()));
-    QString weightStr = Unit::convert(UNIT_KG, weightType, weight->text().toFloat()); // 病人信息保存的体重默认是kg单位
-    patientManager.setWeight(weightStr.toFloat());
+    float weightFloat = weight->text().toFloat();
+    if (weightType == UNIT_LB)
+    {
+        // 病人信息保存的体重默认是kg单位
+        weightFloat = weight->text().toFloat() / 2.20462;
+    }
+    patientManager.setWeight(weightFloat);
     patientManager.setPacermaker(static_cast<PatientPacer>(pacer->currentIndex()));
     patientManager.updatePatientInfo();
 }
