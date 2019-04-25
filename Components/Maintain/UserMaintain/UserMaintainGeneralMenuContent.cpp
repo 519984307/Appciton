@@ -220,7 +220,8 @@ void UserMaintainGeneralMenuContent::onButtonReleased()
             QString regKeyStr("[a-zA-Z]|[0-9]|_");
             idPanel.setBtnEnable(regKeyStr);
 
-            if (1 == idPanel.exec())
+            windowManager.showWindow(&idPanel, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
+            if (QDialog::Accepted == idPanel.result())
             {
                 QString oldStr = button->text();
                 QString text = idPanel.getStrValue();
@@ -241,8 +242,8 @@ void UserMaintainGeneralMenuContent::onButtonReleased()
             idPanel.setMaxInputLength(11);
             QString regKeyStr("[a-zA-Z]|[0-9]|_");
             idPanel.setBtnEnable(regKeyStr);
-
-            if (1 == idPanel.exec())
+            windowManager.showWindow(&idPanel, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
+            if (QDialog::Accepted == idPanel.result())
             {
                 QString oldStr = button->text();
                 QString text = idPanel.getStrValue();
@@ -264,7 +265,8 @@ void UserMaintainGeneralMenuContent::onButtonReleased()
             QString regKeyStr("[a-zA-Z]|[0-9]|_");
             idPanel.setBtnEnable(regKeyStr);
 
-            if (1 == idPanel.exec())
+            windowManager.showWindow(&idPanel, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
+            if (QDialog::Accepted == idPanel.result())
             {
                 QString oldStr = button->text();
                 QString text = idPanel.getStrValue();
@@ -299,7 +301,8 @@ void UserMaintainGeneralMenuContent::onButtonReleased()
             QString invaildHint = QString(trs("Input8DigitsPassword"));
             idPanel.setInvalidHint(invaildHint);
 
-            if (1 == idPanel.exec())
+            windowManager.showWindow(&idPanel, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
+            if (QDialog::Accepted == idPanel.result())
             {
                 QString oldStr = button->text();
                 QString text = idPanel.getStrValue();

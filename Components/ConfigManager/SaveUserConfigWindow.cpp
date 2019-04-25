@@ -17,6 +17,7 @@
 #include "ConfigManager.h"
 #include "MessageBox.h"
 #include "PatientManager.h"
+#include "WindowManager.h"
 
 #define MaxInputLength 12
 
@@ -98,7 +99,7 @@ void SaveUserConfigWindow::onBtnReleased()
         if (configManager.hasExistConfig(d_ptr->cofNameBtn->text()))
         {
             MessageBox message(trs("Prompt"), trs("HasExistConfig"), false);
-            message.exec();
+            windowManager.showWindow(&message, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
         }
         else
         {
@@ -118,7 +119,8 @@ void SaveUserConfigWindow::onConfigNameBtnReleased()
     EnglishInputPanel inputPanel;
     inputPanel.setInitString(btn->text());
     inputPanel.setMaxInputLength(MaxInputLength);
-    if (inputPanel.exec())
+    windowManager.showWindow(&inputPanel, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
+    if (inputPanel.result() == QDialog::Accepted)
     {
         btn->setText(inputPanel.getStrValue());
         if (btn->text().isEmpty())
