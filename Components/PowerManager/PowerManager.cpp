@@ -16,10 +16,9 @@
 #include "PowerOffWindow.h"
 #include "AlarmSourceManager.h"
 #include "LanguageManager.h"
-#include <QPair>
 #define TWO_MINUTE 1000 * 120
 #define POWER_LIST_MAX_COUNT 3
-#define FLOAT_AREA 10       // AD值允许的浮动区间
+#define AD_VALUE_FLOAT_RANGE 10       // AD值允许的浮动区间
 
 
 PowerManger * PowerManger::_selfObj = NULL;
@@ -28,11 +27,9 @@ class PowerMangerPrivate
 public:
     explicit PowerMangerPrivate(PowerManger * const q_ptr)
         : q_ptr(q_ptr), lowBattery(false), shutBattery(false),
-          lastVolume(BAT_VOLUME_NONE), adcValue(0), hasHintShutMessage(false),
+          lastVolume(BAT_VOLUME_NONE), adcValue(BAT_LEVEL_0 - AD_VALUE_FLOAT_RANGE), lastVolumeAdcValue(0), hasHintShutMessage(false),
           shutdownTimer(NULL)
     {
-        lastAdInfo.first = BAT_VOLUME_NONE;
-        lastAdInfo.second = 0;
     }
     ~PowerMangerPrivate(){}
 
@@ -42,6 +39,7 @@ public:
     bool shutBattery;               // 关机电量
     BatteryPowerLevel lastVolume;   // 上一次的电量等级
     short adcValue;                 // 电池电量
+    short lastVolumeAdcValue;             // last check volume adc value
     bool hasHintShutMessage;        // 是否弹出过关机提示
     QTimer *shutdownTimer;
 
@@ -74,7 +72,6 @@ public:
     void shutdownWarn(void);
 
     QList<BatteryPowerLevel> powerList;
-    QPair<BatteryPowerLevel, short> lastAdInfo;
 };
 
 PowerManger::~PowerManger()
@@ -244,6 +241,13 @@ BatteryPowerLevel PowerMangerPrivate::getCurrentVolume()
     }
     batteryADCVoltage = adcValue;
 
+    if (abs(batteryADCVoltage - lastVolumeAdcValue) < AD_VALUE_FLOAT_RANGE)
+    {
+        return lastVolume;
+    }
+
+    lastVolumeAdcValue = adcValue;
+
     BatteryPowerLevel powerLevel = BAT_VOLUME_0;
     if (batteryADCVoltage < BAT_LEVEL_0)
     {
@@ -269,17 +273,6 @@ BatteryPowerLevel PowerMangerPrivate::getCurrentVolume()
     else if (batteryADCVoltage >= BAT_LEVEL_4)
     {
         powerLevel = BAT_VOLUME_5;
-    }
-
-    // 判断是否在正常浮动区间内。
-    if (powerLevel != lastAdInfo.first && abs(batteryADCVoltage - lastAdInfo.second) < FLOAT_AREA)
-    {
-        powerLevel = lastAdInfo.first;
-    }
-    else
-    {
-        lastAdInfo.first = powerLevel;
-        lastAdInfo.second = batteryADCVoltage;
     }
 
     return powerLevel;
