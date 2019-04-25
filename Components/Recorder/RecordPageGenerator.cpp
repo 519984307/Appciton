@@ -33,6 +33,7 @@
 #include <QDebug>
 #include "RecorderManager.h"
 #include "TimeDate.h"
+#include "TimeManager.h"
 #include "AlarmConfig.h"
 #include "UnitManager.h"
 #include "PatientManager.h"
@@ -200,7 +201,8 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
     }
 
     QString timeDateStr;
-    timeDate.getDateTime(t, timeDateStr, true, true);
+    bool showSecond = timeManager.isShowSecond();
+    timeDate.getDateTime(t, timeDateStr, true, showSecond);
     QString timeStr = QString("%1: %2").arg(trs("PrintTime")).arg(timeDateStr);
 
     // record time width
