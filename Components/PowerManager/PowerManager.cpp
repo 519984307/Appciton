@@ -27,7 +27,7 @@ class PowerMangerPrivate
 public:
     explicit PowerMangerPrivate(PowerManger * const q_ptr)
         : q_ptr(q_ptr), lowBattery(false), shutBattery(false),
-          lastVolume(BAT_VOLUME_NONE), adcValue(BAT_LEVEL_0 - AD_VALUE_FLOAT_RANGE), lastVolumeAdcValue(0), hasHintShutMessage(false),
+          lastVolume(BAT_VOLUME_NONE), adcValue(AD_VALUE_FLOAT_RANGE), lastVolumeAdcValue(0), hasHintShutMessage(false),
           shutdownTimer(NULL)
     {
     }
