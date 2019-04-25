@@ -1559,7 +1559,7 @@ void ECGParam::setPatientType(unsigned char type)
 unsigned char ECGParam::getPatientType(void)
 {
     int type = 3;
-    systemConfig.getNumValue("General|DefaultPatientType", type);
+    systemConfig.getNumValue("General|PatientType", type);
     return (unsigned char)type;
 }
 /**************************************************************************************************
