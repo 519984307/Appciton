@@ -290,6 +290,11 @@ public:
      */
     bool isMaintain();
 
+    /**
+     * @brief clearTrendListData 清除趋势列表数据
+     */
+    void clearTrendListData();
+
 signals:
     /**
      * @brief statBtnState 设置NIBP菜单中的STAT按键状态

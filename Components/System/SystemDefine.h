@@ -40,7 +40,7 @@ enum UserFaceType
 /**
  * @brief The Backlight Regulation enum
  */
-enum BacklightAdjustMent
+enum BacklightAdjustment
 {
     BACKLIGHT_MODE_1,
     BACKLIGHT_MODE_2,
@@ -94,7 +94,7 @@ public:
         return symbol[index];
     }
 
-    static const char *convert(BacklightAdjustMent index)
+    static const char *convert(BacklightAdjustment index)
     {
         static const char *symbol[BACKLIGHT_MODE_NR] =
         {

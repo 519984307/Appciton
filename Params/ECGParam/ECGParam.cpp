@@ -628,7 +628,7 @@ void ECGParam::setLeadOff(ECGLead lead, bool status)
     if (_leadOff[lead] != status)
     {
         _leadOff[lead] = status;
-//        updateECGNotifyMesg(lead);
+        updateECGNotifyMesg(lead, false);
     }
 
     if (!_isEverLeadOn[lead] && !status)
@@ -1559,7 +1559,7 @@ void ECGParam::setPatientType(unsigned char type)
 unsigned char ECGParam::getPatientType(void)
 {
     int type = 3;
-    currentConfig.getNumValue("General|DefaultPatientType", type);
+    systemConfig.getNumValue("General|PatientType", type);
     return (unsigned char)type;
 }
 /**************************************************************************************************

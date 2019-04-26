@@ -208,3 +208,8 @@ void TimeManager::checkAndFixSystemTime()
         setSystemTime(QDateTime(QDate(2037, 12, 27), QTime(20, 0)));
     }
 }
+
+bool TimeManager::isShowSecond()
+{
+    return _showSecond;
+}

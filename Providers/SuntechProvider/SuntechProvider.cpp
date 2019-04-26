@@ -441,7 +441,7 @@ SuntechProvider::SuntechProvider() :
 {
     UartAttrDesc portAttr(9600, 8, 'N', 1);
     initPort(portAttr);
-    setDisconnectThreshold(1);
+    setDisconnectThreshold(5);
 
     _timer = new QTimer();
     _timer->setInterval(200);
@@ -468,11 +468,13 @@ SuntechProvider::~SuntechProvider()
 
 void SuntechProvider::disconnected()
 {
+    nibpParam.connectedFlag(false);
     nibpParam.setConnected(false);
 }
 
 void SuntechProvider::reconnected()
 {
+    nibpParam.connectedFlag(true);
     nibpParam.setConnected(true);
 }
 
@@ -608,6 +610,7 @@ void SuntechProvider::_handlePacket(unsigned char *data, int len)
     // 当前压力
     case SUNTECH_RSP_CUFF_PRESSURE:
     {
+        feed();
         nibpParam.handleNIBPEvent(NIBP_EVENT_CURRENT_PRESSURE, &data[1], 2);
         int16_t pressure;
         pressure = (data[2] << 8) + data[1];
