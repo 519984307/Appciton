@@ -1649,25 +1649,25 @@ isSaveLayout,是否保存布局配置？,Do you want to save the layout config?
 LowBattery,电量过低,Low quantity of electricity
 RESPCheckElectrodes,检查电极,Check Electrodes
 SPO2SignalWeak,检测血氧信号弱,SpO2 Signal Weak
-SPO2CableOff,血氧探头断开,SpO2 Cable Off
+SPO2CableOff,血氧线缆断开,SpO2 Cable Off
 SPO2FingerOff,未检测到手指,SpO2 Finger Off
 SPO2LEDFault,血氧LED错误,SpO2 LED Fault
 SPO2LowPerfusion,血氧弱灌注,SpO2 Low Perfusion
-SPO2DefectiveCable,SPO2探头故障,Defective cable
-SPO2CableExpired,SPO2探头过期,Cable expired
-SPO2IncompatibleCable,SPO2不兼容探头,Incompatible cable
-SPO2UnrecongnizedCable,SPO2未识别探头,Unrecongnized cable
-SPO2CableNearExpiration,SPO2探头即将到期,Cable near expiration
+SPO2DefectiveCable,SPO2线缆故障,Defective cable
+SPO2CableExpired,SPO2线缆过期,Cable expired
+SPO2IncompatibleCable,SPO2不兼容线缆,Incompatible cable
+SPO2UnrecongnizedCable,SPO2未识别线缆,Unrecongnized cable
+SPO2CableNearExpiration,SPO2线缆即将到期,Cable near expiration
 SPO2SensorExpired,SPO2传感器已过期,Sensor expired
 SPO2IncompatibleSensor,SPO2传感器不兼容,Incompatible sensor
 SPO2UnrecongnizedSensor,SPO2未识别传感器,Unrecongnized sensor
 SPO2DefectiveSensor,SPO2传感器故障,Defective sensor
-SPO2CheckCableAndSensorFault,SPO2检查探头和传感器故障,Check cable and sensor fault
+SPO2CheckCableAndSensorFault,SPO2检查线缆和传感器故障,Check cable and sensor fault
 SPO2SensorNearExpiration,SPO2传感器即将到期,Sensor near expiration
 SPO2NoAdhesiveSensor,SPO2无粘性传感器,No adhesive sensor
 SPO2AdhesiveSensorExpiraton,SPO2粘性传感器截止,Adhesive sensor expiraton
 SPO2IncompatibleAdhesiveSensor,SPO2不兼容的粘性传感器,Incompatible adhesive sensor
-SPO2UnrecongnizedAdhesiveSensor,SPO2未识别的粘性剂传感器,Unrecongnized adhesive sensor
+SPO2UnrecongnizedAdhesiveSensor,SPO2未识别的粘性传感器,Unrecongnized adhesive sensor
 SPO2DefectiveAdhesiveSensor,SPO2有缺陷的粘性传感器,Defective adhesive sensor
 SPO2SensorIniting,SPO2传感器初始化,Sensor initing
 SPO2InterferenceDetected,SPO2检测到干扰,Interference detected
@@ -1676,7 +1676,6 @@ SPO2AdhesiveSensorNearExpiration,SPO2粘性传感器即将到期,Adhesive sensor
 SPO2CheckSensorConnection,SPO2检查传感器连接,Check sensor connection
 SPO2OnlyMode,仅限SPO2模式,SpO2 only mode
 SPO2BoardFailure,SPO2板卡错误,SPO2 Board Failure
-
 NIBPSimul,NIBP同侧,NIBP Simul
 Input8DigitsPassword,请输入8位数字密码,Please input 8 digits password
 BornDate,出生日期,Born Date
