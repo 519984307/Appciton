@@ -29,7 +29,7 @@ public:
     ~PowerManger();
 
     /**
-     * @brief setBatteryCapacity 设置电池电量
+     * @brief setBatteryCapacity 设置电池AD值
      * @param adc
      */
     void setBatteryCapacity(short adc);
