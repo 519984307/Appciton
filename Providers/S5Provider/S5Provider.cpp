@@ -402,10 +402,6 @@ bool S5Provider::isStatus(unsigned char *packet)
         {
             spo2Param.setNotify(false);
         }
-<<<<<<< HEAD
-=======
-
->>>>>>> develop
     }
 
     return true;
