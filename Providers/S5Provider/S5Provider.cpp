@@ -279,7 +279,7 @@ bool S5Provider::isResult_BAR(unsigned char *packet)
 
         if (packet[i + 5] == 128)  // set 128 as one invalid wave data
         {
-            count ++;
+            count++;
         }
     }
 
@@ -402,7 +402,6 @@ bool S5Provider::isStatus(unsigned char *packet)
         {
             spo2Param.setNotify(false);
         }
-
     }
 
     return true;
