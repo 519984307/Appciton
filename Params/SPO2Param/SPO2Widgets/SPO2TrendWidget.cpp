@@ -47,9 +47,9 @@ void SPO2TrendWidget::_loadConfig()
 void SPO2TrendWidget::setSPO2Value(int16_t spo2)
 {
 //    debug("------------spo2 = %d",spo2);
-    if (spo2Param.getPerfusionStatus())
+    if (spo2 >= 0 && spo2Param.getPerfusionStatus())
     {
-        _spo2String = QString("%1+?").arg(QString::number(spo2));
+        _spo2String = QString("%1?").arg(QString::number(spo2));
     }
     else if (spo2 >= 0)
     {

@@ -128,7 +128,7 @@ void ECGTrendWidget::setHRValue(int16_t hr, HRSourceType type)
 
     if (hr >= 0 && type == HR_SOURCE_SPO2 && spo2Param.getPerfusionStatus())
     {
-        _hrString = QString("%1+?").arg(QString::number(hr));
+        _hrString = QString("%1?").arg(QString::number(hr));
     }
     else if (hr >= 0)
     {

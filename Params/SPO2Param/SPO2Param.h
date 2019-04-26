@@ -249,6 +249,12 @@ public:
      */
     bool getPerfusionStatus() const;
 
+    /**
+     * @brief getForceUpdatingStatus  and the function of getting force update status
+     * @return
+     */
+    bool getForceUpdatingStatus() const;
+
 private slots:
     void checkSelftest();
     void onPaletteChanged(ParamID id);
@@ -282,5 +288,6 @@ private:
     int _repeatTimes;
 
     bool _isLowPerfusion;
+    bool _isForceUpdating;  // 当spo2的弱灌注状态发生变化时，该状态位为true
 };
 #define spo2Param (SPO2Param::construction())
