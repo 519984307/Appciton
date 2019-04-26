@@ -82,6 +82,8 @@ public:
      */
     void checkAndFixSystemTime();
 
+    bool isShowSecond(void);
+
 private:
     TimeManager();
     void _refreshWidgets(void);

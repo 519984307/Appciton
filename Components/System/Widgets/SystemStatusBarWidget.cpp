@@ -155,7 +155,7 @@ void SystemStatusBarWidget::timerEvent(QTimerEvent *e)
         }
         else
         {
-            changeIcon(SYSTEM_ICON_LABEL_WIFI, SYSTEM_ICON_WIFI_CLOSED, false);
+            changeIcon(SYSTEM_ICON_LABEL_WIFI, SYSTEM_ICON_NONE, false);
         }
     }
 }

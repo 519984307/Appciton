@@ -194,7 +194,7 @@ public:
             v = 70;
             break;
         case SoundManager::VOLUME_LEV_2:
-            v = 75;
+            v = 77;
             break;
         case SoundManager::VOLUME_LEV_3:
             v = 80;

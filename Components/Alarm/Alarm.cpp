@@ -23,6 +23,7 @@
 #include "AGSymbol.h"
 #include "TEMPSymbol.h"
 #include "NIBPSymbol.h"
+#include "O2Symbol.h"
 #include "TrendDataStorageManagerInterface.h"
 #include "AlarmIndicatorInterface.h"
 #include "TrendCacheInterface.h"
@@ -646,6 +647,10 @@ void Alarm::clear()
 
 void Alarm::addLimtSource(AlarmLimitIFace *alarmSource)
 {
+    if (_limitSources.contains(alarmSource->getParamID()))
+    {
+        return;
+    }
     _limitSources.insert(alarmSource->getParamID(), alarmSource);
 }
 
@@ -656,6 +661,10 @@ void Alarm::addLimtSource(AlarmLimitIFace *alarmSource)
  *************************************************************************************************/
 void Alarm::addOneShotSource(AlarmOneShotIFace *alarmSource)
 {
+    if (_oneshotSources.contains(alarmSource->getParamID()))
+    {
+        return;
+    }
     _oneshotSources.insert(alarmSource->getParamID(), alarmSource);
 }
 
@@ -1207,6 +1216,22 @@ QString Alarm::getPhyAlarmMessage(ParamID paramId, int alarmType, bool isOneShot
             if (alarmType < static_cast<int>(AG_LIMIT_ALARM_NR))
             {
                 return AGSymbol::convert((AGLimitAlarmType)alarmType);
+            }
+        }
+        break;
+    case PARAM_O2:
+        if (isOneShot)
+        {
+            if (alarmType < static_cast<int>(O2_ONESHOT_ALARM_NR))
+            {
+                return O2Symbol::convert((O2OneShotAlarmType)alarmType);
+            }
+        }
+        else
+        {
+            if (alarmType < static_cast<int>(O2_LIMIT_ALARM_NR))
+            {
+                return O2Symbol::convert((O2LimitAlarmType)alarmType);
             }
         }
         break;

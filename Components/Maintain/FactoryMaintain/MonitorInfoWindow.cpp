@@ -125,7 +125,7 @@ void MonitorInfoWindow::layoutExec()
     d_ptr->labs.insert(MonitorInfoWindowPrivate
                        ::ITEM_LAB_CMLV_WORKTIME, labelRight);
 
-    labelLeft = new QLabel(trs("BatteryQuantity"));
+    labelLeft = new QLabel(trs("BatteryCapacity"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
     labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
@@ -133,7 +133,7 @@ void MonitorInfoWindow::layoutExec()
     d_ptr->labs.insert(MonitorInfoWindowPrivate
                        ::ITEM_LAB_BAT_CAPACITY, labelRight);
 
-    labelLeft = new QLabel(trs("MachineType"));
+    labelLeft = new QLabel(trs("ProductModel"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
     labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);

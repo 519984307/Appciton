@@ -27,6 +27,7 @@
 #include "MessageBox.h"
 #include "ExportDataWidget.h"
 #include "IConfig.h"
+#include "WindowManager.h"
 
 #define TABLE_ROW_NR        7
 
@@ -221,7 +222,7 @@ void ErrorLogWindow::summaryReleased()
     ErrorLogViewerWindow viewer;
     viewer.setWindowTitle(trs("Summary"));
     viewer.setText(str);
-    viewer.exec();
+    windowManager.showWindow(&viewer, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
 }
 
 void ErrorLogWindow::exportReleased()
@@ -259,7 +260,7 @@ void ErrorLogWindow::exportReleased()
                     msg = trs("TransferFailed");
                 }
                 MessageBox messageBox(trs("Warn"), msg, QStringList(trs("EnglishYESChineseSURE")));
-                messageBox.exec();
+                windowManager.showWindow(&messageBox, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
             }
             else if (QDialog::Accepted == statue)  // 导出成功
             {
@@ -270,14 +271,15 @@ void ErrorLogWindow::exportReleased()
     else
     {
         MessageBox messageBox(trs("Warn"), trs("WarningNoUSB"), QStringList(trs("EnglishYESChineseSURE")));
-        messageBox.exec();
+        windowManager.showWindow(&messageBox, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
     }
 }
 
 void ErrorLogWindow::eraseReleased()
 {
     MessageBox messageBox(trs("ErrorLogErase"), trs("ComfirmClearErrorLog"));
-    if (1 == messageBox.exec())
+    windowManager.showWindow(&messageBox, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
+    if (QDialog::Accepted == messageBox.result())
     {
         errorLog.clear();
         init();

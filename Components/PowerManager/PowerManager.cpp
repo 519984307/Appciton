@@ -18,6 +18,7 @@
 #include "LanguageManager.h"
 #define TWO_MINUTE 1000 * 120
 #define POWER_LIST_MAX_COUNT 3
+#define AD_VALUE_FLOAT_RANGE 10       // AD值允许的浮动区间
 
 
 PowerManger * PowerManger::_selfObj = NULL;
@@ -26,9 +27,10 @@ class PowerMangerPrivate
 public:
     explicit PowerMangerPrivate(PowerManger * const q_ptr)
         : q_ptr(q_ptr), lowBattery(false), shutBattery(false),
-          lastVolume(BAT_VOLUME_NONE), adcValue(0), hasHintShutMessage(false),
+          lastVolume(BAT_VOLUME_NONE), adcValue(AD_VALUE_FLOAT_RANGE), lastVolumeAdcValue(0), hasHintShutMessage(false),
           shutdownTimer(NULL)
-    {}
+    {
+    }
     ~PowerMangerPrivate(){}
 
     PowerManger * const q_ptr;
@@ -37,6 +39,7 @@ public:
     bool shutBattery;               // 关机电量
     BatteryPowerLevel lastVolume;   // 上一次的电量等级
     short adcValue;                 // 电池电量
+    short lastVolumeAdcValue;             // last check volume adc value
     bool hasHintShutMessage;        // 是否弹出过关机提示
     QTimer *shutdownTimer;
 
@@ -237,6 +240,13 @@ BatteryPowerLevel PowerMangerPrivate::getCurrentVolume()
         return BAT_VOLUME_NONE;
     }
     batteryADCVoltage = adcValue;
+
+    if (abs(batteryADCVoltage - lastVolumeAdcValue) < AD_VALUE_FLOAT_RANGE)
+    {
+        return lastVolume;
+    }
+
+    lastVolumeAdcValue = adcValue;
 
     BatteryPowerLevel powerLevel = BAT_VOLUME_0;
     if (batteryADCVoltage < BAT_LEVEL_0)

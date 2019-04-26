@@ -203,7 +203,7 @@ int PatientManager::getBlood()
 void PatientManager::setWeight(float weight)
 {
     d_ptr->patientInfo.weight = weight;
-    systemConfig.setStrValue("PrimaryCfg|PatientInfo|Weight", QString::number(weight, 'f', 1));
+    systemConfig.setStrValue("PrimaryCfg|PatientInfo|Weight", QString::number(weight, 'f', 2));
 }
 
 float PatientManager::getWeight()
@@ -214,7 +214,7 @@ float PatientManager::getWeight()
 void PatientManager::setHeight(float height)
 {
     d_ptr->patientInfo.height = height;
-    systemConfig.setStrValue("PrimaryCfg|PatientInfo|Height", QString::number(height, 'f', 1));
+    systemConfig.setStrValue("PrimaryCfg|PatientInfo|Height", QString::number(height, 'f', 2));
 }
 
 float PatientManager::getHeight()
