@@ -279,7 +279,7 @@ public:
      * @brief addAlarm  and the function of adding alarms
      * @param flag
      */
-    static void addAlarms(unsigned int flag);
+    void addAlarms(unsigned int flag);
 
     static const unsigned char minPacketLen = MIN_PACKET_LEN;
 
@@ -676,7 +676,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     {
         return;
     }
-    // the minimum size of the field is 4
+    // the minimum size of the data field is 4
     if (len < 4)
     {
         return;
