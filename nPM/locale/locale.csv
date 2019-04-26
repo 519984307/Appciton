@@ -1674,7 +1674,7 @@ SPO2DemoMode,SPO2演示模式,Demo mode
 SPO2AdhesiveSensorNearExpiration,SPO2粘性传感器即将到期,Adhesive sensor near expiration
 SPO2CheckSensorConnection,SPO2检查传感器连接,Check sensor connection
 SPO2OnlyMode,仅限SPO2模式,SpO2 only mode
-SPO2BoardFailure,SPO底板错误,SPO2 Board Failure
+SPO2BoardFailure,SPO2板卡错误,SPO2 Board Failure
 
 NIBPSimul,NIBP同侧,NIBP Simul
 Input8DigitsPassword,请输入8位数字密码,Please input 8 digits password
