@@ -50,6 +50,7 @@ public:
     bool inflateSwitch;                 //  充气、放气标志
     bool pressureControlFlag;          //  进入模式标志
     bool overPressureProtect;          // 过压保护标志
+    bool holdPressureFlag;             // 控制压力标志
 
     Button *modeBtn;                // 进入/退出模式
     bool isPressureControlMode;     // 是否处于压力操控模式
