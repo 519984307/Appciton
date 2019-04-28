@@ -2346,6 +2346,7 @@ void ECGParam::onWorkModeChanged(WorkMode mode)
         return;
     }
     setFilterMode(ECG_FILTERMODE_DIAGNOSTIC);
+    setNotchFilter(ECG_NOTCH_OFF);
 }
 
 void ECGParam::onPaletteChanged(ParamID id)
