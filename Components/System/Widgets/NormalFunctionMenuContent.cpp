@@ -26,7 +26,7 @@
 #include "CalculateWindow.h"
 #include "WindowManager.h"
 #include "WiFiProfileWindow.h"
-#include "SoftWareVersionWindow.h"
+#include "SoftwareVersionWindow.h"
 #include "NightModeWindow.h"
 #include "PasswordWindow.h"
 #include "AlarmIndicator.h"
@@ -50,7 +50,7 @@ public:
 #endif
 
         ITEM_BTN_WIFI_PROFILE,
-        ITEM_BTN_MACHINE_VERSION,
+        ITEM_BTN_SOFTWARE_VERSION,
         ITEM_BTN_ENTER_STANDY,
         ITEM_BTN_NIGHT_MODE,
         ITEM_BTN_DEMO_MODE
@@ -297,11 +297,11 @@ void NormalFunctionMenuContent::layoutExec()
         row++;
     }
 
-    // machine version
-    btn = new Button(trs("MachineVersion"));
+    // Software Version
+    btn = new Button(trs("SoftwareVersion"));
     btn->setButtonStyle(Button::ButtonTextOnly);
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
-    itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_BTN_MACHINE_VERSION);
+    itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_BTN_SOFTWARE_VERSION);
     btn->setProperty("Item", qVariantFromValue(itemID));
     layout->addWidget(btn, row, 1);
     row++;
@@ -434,9 +434,9 @@ void NormalFunctionMenuContent::onBtnReleasd()
             windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
         }
         break;
-        case NormalFunctionMenuContentPrivate::ITEM_BTN_MACHINE_VERSION:
+        case NormalFunctionMenuContentPrivate::ITEM_BTN_SOFTWARE_VERSION:
         {
-            SoftWareVersionWindow w;
+            SoftwareVersionWindow w;
             windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
         }
         break;
