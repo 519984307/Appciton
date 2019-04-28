@@ -237,6 +237,24 @@ public:
      */
     void clearCCHDData(bool isCleanup = false);
 
+    /**
+     * @brief setPerfusionStatus  and the function of setting the SPO2 perfusion status
+     * @param isLow  and true if low perfusion
+     */
+    void setPerfusionStatus(bool isLow);
+
+    /**
+     * @brief getPerfusionStatus  and the function of getting the SPO2 perfusion status
+     * @return  and return true if low perfusion
+     */
+    bool getPerfusionStatus() const;
+
+    /**
+     * @brief getForceUpdatingStatus  and the function of getting force update status
+     * @return
+     */
+    bool getForceUpdatingStatus() const;
+
 private slots:
     void checkSelftest();
     void onPaletteChanged(ParamID id);
@@ -268,5 +286,8 @@ private:
 
     QList<cchdData> _cchdDataList;
     int _repeatTimes;
+
+    bool _isLowPerfusion;
+    bool _isForceUpdating;  // 当spo2的弱灌注状态发生变化时，该状态位为true
 };
 #define spo2Param (SPO2Param::construction())
