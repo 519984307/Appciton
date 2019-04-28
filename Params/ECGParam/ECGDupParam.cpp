@@ -162,13 +162,13 @@ void ECGDupParam::updatePR(short pr, PRSourceType type, bool isUpdatePr)
             if (isSPO2Valid && _prValueFromSPO2 != InvData())
             {
                 _prValue = _prValueFromSPO2;
-                _currentSource = HR_SOURCE_SPO2;
+                _currentHRSource = HR_SOURCE_SPO2;
             }
             else if ((!isIBP1LeadOff || !isIBP2LeadOff)
                  && (_prValueFromIBP != InvData()))
             {
                 _prValue = _prValueFromIBP;
-                _currentSource = HR_SOURCE_IBP;
+                _currentHRSource = HR_SOURCE_IBP;
             }
             else
             {
@@ -181,7 +181,7 @@ void ECGDupParam::updatePR(short pr, PRSourceType type, bool isUpdatePr)
             if (isSPO2Valid)
             {
                 _prValue = _prValueFromSPO2;
-                _currentSource = HR_SOURCE_SPO2;
+                _currentHRSource = HR_SOURCE_SPO2;
             }
             else
             {
@@ -194,7 +194,7 @@ void ECGDupParam::updatePR(short pr, PRSourceType type, bool isUpdatePr)
             if (!isIBP1LeadOff || !isIBP2LeadOff)
             {
                 _prValue = _prValueFromIBP;
-                _currentSource = HR_SOURCE_IBP;
+                _currentHRSource = HR_SOURCE_IBP;
             }
             else
             {
@@ -220,7 +220,7 @@ void ECGDupParam::updatePR(short pr, PRSourceType type, bool isUpdatePr)
             }
             if (_prValue != InvData())
             {
-                _trendWidget->setHRValue(_prValue, _currentSource);
+                _trendWidget->setHRValue(_prValue, _currentHRSource);
             }
             else
             {
@@ -330,7 +330,7 @@ void ECGDupParam::updateHR(short hr)
             else if (_prValue != InvData())
             {
                 _hrBeatFlag = false;
-                _trendWidget->setHRValue(_prValue, _currentSource);
+                _trendWidget->setHRValue(_prValue, _currentHRSource);
             }
             else  // HR和PR都为无效时。
             {
@@ -534,7 +534,7 @@ ECGDupParam::ECGDupParam()
       _prValueFromIBP(InvData()),
       _hrBeatFlag(true),
       _isAlarm(false),
-      _currentSource(HR_SOURCE_AUTO)
+      _currentHRSource(HR_SOURCE_AUTO)
 {
     // 初始化hr/pr来源
     int id = PARAM_ECG;
