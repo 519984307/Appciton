@@ -178,6 +178,7 @@ void PowerMangerPrivate::monitorRun()
         shutdownTimer->stop();
         shutBattery = false;
         lowBattery = false;
+        lastVolume = curVolume;
     }
     else if (powerType == POWER_SUPLY_BAT)
     {
