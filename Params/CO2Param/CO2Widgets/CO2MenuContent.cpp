@@ -48,13 +48,6 @@ public:
      */
     void loadOptions();
 
-    /**
-     * @brief adjustWaveformRuler and adjsut the size of the co2 waveform ruler
-     * @param size and the waveform ruler size
-     * @return and the adjusted size
-     */
-    float adjustWaveformRuler(float size);
-
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, Button *> btns;
     SpinBox *o2Spb;
@@ -95,7 +88,7 @@ void CO2MenuContentPrivate::loadOptions()
         if (unit == UNIT_MMHG)
         {
             str = "0~";
-            int tempVal = Unit::convert(UNIT_MMHG, UNIT_PERCENT, adjustWaveformRuler(zoomArray[i])).toInt();
+            int tempVal = Unit::convert(UNIT_MMHG, UNIT_PERCENT, zoomArray[i]).toInt();
             tempVal = (tempVal + 5) / 10 * 10;
             str += QString::number(tempVal);
         }
@@ -120,22 +113,6 @@ void CO2MenuContentPrivate::loadOptions()
     ApneaAlarmTime index = co2Param.getApneaTime();
 
     combos[ITEM_CBO_APNEA_TIME]->setCurrentIndex(index);
-}
-
-float CO2MenuContentPrivate::adjustWaveformRuler(float size)
-{
-    if (size == 12.0)
-    {
-        // 需求CO2-14, 标尺的上下限范围为0%-4%， 0-8%， 0-12%，0-20%
-        // 或0-30mmhg, 0-60mmhg, 0-100 mmhg, 0-150mmhg,
-        // 其中12%与100换算不对等：100mmhg按照软件代码中的算法换算应该为13%,
-        // 这里为了显示与需求保持一致，特地将12显示为13
-        return 13.0;
-    }
-    else
-    {
-        return size;
-    }
 }
 
 void CO2MenuContent::onComboBoxIndexChanged(int index)

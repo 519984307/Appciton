@@ -990,14 +990,6 @@ RecordPage *RecordPageGenerator::createWaveScalePage(const QList<RecordWaveSegme
             QString highString;
             if (unit == UNIT_MMHG)
             {
-                // 需求CO2-14, 标尺的上下限范围为0%-4%， 0-8%， 0-12%，0-20%
-                // 或0-30mmhg, 0-60mmhg, 0-100 mmhg, 0-150mmhg,
-                // 其中12%与100换算不对等：100mmhg按照软件代码中的算法换算应该为13%,
-                // 这里为了显示与需求保持一致，特地将12显示为13
-                if (CO2_DISPLAY_ZOOM_12)
-                {
-                    high = 13;
-                }
                 high = Unit::convert(UNIT_MMHG, UNIT_PERCENT, high).toInt();
                 high = (high + 5) / 10 * 10;            // 取整
             }

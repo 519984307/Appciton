@@ -155,7 +155,7 @@ void CO2ParamPrivate::setWaveformZoom(CO2DisplayZoom zoom)
         break;
 
     case CO2_DISPLAY_ZOOM_12:
-        waveWidget->setValueRange(0, (provider->getCO2MaxWaveform() * 13 + 19) / 20);
+        waveWidget->setValueRange(0, (provider->getCO2MaxWaveform() * 12 + 19) / 20);
         waveWidget->setRuler(zoom);
         break;
 
