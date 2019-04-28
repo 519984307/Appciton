@@ -84,8 +84,19 @@ void CO2WaveWidget::setRuler(CO2DisplayZoom zoom)
     case CO2_DISPLAY_ZOOM_8:
         _ruler->setRuler(8.0, 4.0, 0);
         break;
-    case CO2_DISPLAY_ZOOM_13:
-        _ruler->setRuler(12.0, 6.0, 0);
+    case CO2_DISPLAY_ZOOM_12:
+        if (co2Param.getUnit() == UNIT_MMHG)
+        {
+            // 需求CO2-14, 标尺的上下限范围为0%-4%， 0-8%， 0-12%，0-20%
+            // 或0-30mmhg, 0-60mmhg, 0-100 mmhg, 0-150mmhg,
+            // 其中12%与100换算不对等：100mmhg按照软件代码中的算法换算应该为13%,
+            // 这里为了显示与需求保持一致，特地将90mmhg显示为100mmhg
+            _ruler->setRuler(13.0, 6.0, 0);
+        }
+        else
+        {
+            _ruler->setRuler(12.0, 6.0, 0);
+        }
         break;
     case CO2_DISPLAY_ZOOM_20:
         _ruler->setRuler(20.0, 10.0, 0);
