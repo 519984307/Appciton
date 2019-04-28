@@ -120,6 +120,11 @@ private slots:
      * @brief onKeyClicked
      */
     void onKeyClicked();
+
+    /**
+     * @brief onBlankClicked blank clicked
+     */
+    void onBlankClicked();
     /**
      * @brief ClickedKey
      * @param key
