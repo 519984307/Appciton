@@ -286,7 +286,7 @@ void NIBPCalibrateContent::inCalibrateMode()
 {
     if (d_ptr->moduleStr != "SUNTECH_NIBP")
     {
-        d_ptr->inModeTimerID = startTimer(CALIBTransducer out of rangeRATION_INTERVAL_TIME);
+        d_ptr->inModeTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
         d_ptr->modeBtn->setEnabled(false);
         if (d_ptr->isCalibrateMode)
         {
