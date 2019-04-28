@@ -804,7 +804,8 @@ void UpgradeManager::upgradeProcess()
         d_ptr->noResponseTimer->start(1000);
 
         int count = (d_ptr->fileContent.size() + 127) / 128;
-        emit upgradeProgressChanged(d_ptr->segmentSeq * 100 / count);
+        // d_ptr->segmentSeq是从０开始的序列．
+        emit upgradeProgressChanged(d_ptr->segmentSeq * 100 / (count - 1));
 
         qdebug("write segment %d", d_ptr->segmentSeq);
     }
