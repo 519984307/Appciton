@@ -10,6 +10,7 @@
 
 #pragma once
 #include <QString>
+#include <typeinfo>
 
 enum UnitType
 {
@@ -72,7 +73,11 @@ public:
                                   const T2 &srcVal, const float &baro = 1013)
     {
         QString destVal = QString::number(srcVal);
-
+        if (strcmp(typeid(srcVal).name(), "f") == 0)
+        {
+            // float类型时,默认显示一位小数
+            destVal = QString::number(srcVal, 'f', 1);
+        }
         // % <---> mmHg
         if ((destUnit == UNIT_PERCENT) && (srcUnit == UNIT_MMHG))
         {
