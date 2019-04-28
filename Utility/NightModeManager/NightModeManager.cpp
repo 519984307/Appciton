@@ -103,6 +103,10 @@ void NightModeManager::setNightMode(bool nightMode)
         {
             NIBPParamInterface *nibpParam = NIBPParamInterface::getNIBPParam();
             nibpParam->stopMeasure();
+            if (nibpParam->isSTATMeasure())
+            {
+                nibpParam->setSTATMeasure(false);
+            }
         }
     }
     else
