@@ -1096,7 +1096,7 @@ BatteryDisconnected,电池未连接,Battery Disconnected
 BatteryError,电池错误,Battery Error
 BatteryCommFault,电池通信故障,Battery Comm Fault
 BatteryInfo,电池信息,Battery Info
-BatteryCapacityIcons,电池容量图标,Battery Capacity Incons
+BatteryCapacityIcons,电池容量图标,Battery Capacity Icons
 SmtpServer,SMTP服务器,SMTP Server
 SmtpServerPort,SMTP 服务端口,SMTP Server Port
 Username,用户名,Username
