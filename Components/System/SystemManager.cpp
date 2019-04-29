@@ -119,6 +119,7 @@ public:
         QString curFolderName = fileInfo.fileName();
         patientManager.dischargePatient();
         dataStorageDirManager.deleteData(curFolderName);
+        nibpParam.clearTrendListData();
     }
 
     /**
@@ -640,7 +641,7 @@ void SystemManager::turnOff(bool flag)
     if (flag)
     {
         qDebug() << "System is going to turn off.";
-        Util::waitInEventLoop(1000); // wait long enough to let the world get the message
+        Util::waitInEventLoop(1000);  // wait long enough to let the world get the message
     }
 }
 
@@ -736,7 +737,6 @@ void SystemManager::onCtrlSocketReadReady()
 //        char infoData = d_ptr->socketInfoData.takeFirst();
         switch ((ControlInfo)infoType)
         {
-
         case CTRL_INFO_METRONOME:
         {
             emit metronomeReceived();
@@ -944,7 +944,8 @@ void SystemManager::publishTestResult(void)
                 if (NULL != systemSelftestMessage[d_ptr->modulePostResult[i]][i])
                 {
                     showDialog = true;
-                    d_ptr->selfTestResult->appendInfo((ModulePoweronTestResult) i, (ModulePoweronTestStatus)d_ptr->modulePostResult[i],
+                    d_ptr->selfTestResult->appendInfo((ModulePoweronTestResult) i,
+                                                      (ModulePoweronTestStatus)d_ptr->modulePostResult[i],
                                                 trs(systemSelftestMessage[d_ptr->modulePostResult[i]][i]));
                 }
             }
@@ -993,7 +994,7 @@ void SystemManager::publishTestResult(void)
 /***************************************************************************************************
  * 析构。
  **************************************************************************************************/
-SystemManager::SystemManager() ://申请一个动态的模块加载结果数组
+SystemManager::SystemManager() :  //申请一个动态的模块加载结果数组
     d_ptr(new SystemManagerPrivate())
 {
     // 打开背光灯文件描述符
