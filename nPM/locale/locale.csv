@@ -1297,7 +1297,7 @@ TemperatureInsideCase,箱内温度,Temperature Inside Case
 BatteryCapacity,电池电量,Battery Capacity
 MachineType,机器型号,Machine Type
 MACAddress,硬件地址,MAC Address
-ScreenResolationSize,屏幕分辨率尺寸,Screen Resolation Size
+ScreenResolutionSize,屏幕分辨率尺寸,Screen Resolution Size
 ElectronicSerialNumber,电子序列号,Electronic Serial Number
 SetElectronicSerialNumber,设置电子序列号,Set Electronic Serial Number
 MonitorInfoMenuDesc,监护仪信息菜单设置,Monitor Info Desc
