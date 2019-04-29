@@ -312,12 +312,12 @@ void TrendWaveWidget::setRulerLimit(int index, int down, int up, int scale)
 
 void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, const int endIndex)
 {
+    _trendGraphInfo.reset();
     if (startIndex == InvData() || endIndex == InvData())
     {
         return;
     }
 
-    _trendGraphInfo.reset();
     _trendGraphInfo.startTime = _leftTime;
     _trendGraphInfo.endTime = _rightTime;
     _trendGraphInfo.subParamID = subID;
