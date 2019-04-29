@@ -106,7 +106,7 @@ void ConfigEditSpO2MenuContentPrivate::loadOptions()
 
     // Beat Volume
     index = 0;
-    config->getNumValue("SPO2|BeatVol", index);
+    config->getNumValue("ECG|QRSVolume", index);
     combos[ITEM_CBO_BEAT_VOL]->setCurrentIndex(index);
 
     // NIBP Same Side
@@ -312,9 +312,9 @@ void ConfigEditSpO2MenuContent::onComboBoxIndexChanged(int index)
     case ConfigEditSpO2MenuContentPrivate::ITEM_CBO_BEAT_VOL:
     {
         int vol = 0;
-        currentConfig.getNumValue("SPO2|BeatVol", vol);
+        currentConfig.getNumValue("ECG|QRSVolume", vol);
         soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT , static_cast<SoundManager::VolumeLevel>(vol));
-        str = "BeatVol";
+        d_ptr->config->setNumValue("ECG|QRSVolume", index);
     }
         break;
     case ConfigEditSpO2MenuContentPrivate::ITEM_CBO_NIBP_SAME_SIDE:
@@ -324,7 +324,10 @@ void ConfigEditSpO2MenuContent::onComboBoxIndexChanged(int index)
         qdebug("Invalid combo id.");
         break;
     }
-    d_ptr->config->setNumValue(QString("SPO2|%1").arg(str), index);
+    if (!str.isEmpty())
+    {
+        d_ptr->config->setNumValue(QString("SPO2|%1").arg(str), index);
+    }
 }
 
 void ConfigEditSpO2MenuContent::onAlarmBtnReleased()
