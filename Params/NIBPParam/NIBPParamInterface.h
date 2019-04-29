@@ -56,4 +56,6 @@ public:
     virtual void setSTATClose(bool flag) = 0;
 
     virtual bool isAutoMeasure() = 0;
+
+    virtual bool isSTATMeasure(void) = 0;
 };
