@@ -290,7 +290,6 @@ NormalFunctionMenu,常规功能,Normal Function
 NormalFunctionMenuDesc,常规功能,Normal Function
 Calculate,计算,Calculate
 WiFiProfile,WiFi配置,WiFi Profile
-MachineVersion,机器版本,Machine Version
 Standy,待机,Standy
 CalculateWindow,计算,Calculate Window
 PressAnyKeysToExit,请按压任何按键退出待机模式,Press Any Keys To Exit
@@ -1320,8 +1319,8 @@ ErrorLogExport,导出,Export
 ErrorLogInfo,信息,Info
 ServiceUpdateEntrance,更新,Service Update
 ServiceUpdateEntranceDesc,更新,Service Update
-SoftWareVersionMenu,机器版本,SoftWare Version
-SoftWareVersionMenuDesc,机器版本,SoftWare Version Desc
+SoftwareVersion,软件版本,Software Version
+SoftwareVersionMenu,软件版本,Software Version
 SystemSoftwareVersion,版本,Version
 PowerManagerSoftwareVersion,电源管理软件版本,Power Manager Software Version
 Uboot,系统引导文件,Uboot

@@ -13,7 +13,6 @@
 #include "LanguageManager.h"
 #include <QGridLayout>
 #include <QVariant>
-#include "SoftWareVersionWindow.h"
 #include "TimeEditWindow.h"
 #include "MonitorInfoWindow.h"
 #include "SystemManager.h"
