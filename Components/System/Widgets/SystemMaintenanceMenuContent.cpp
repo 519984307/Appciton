@@ -76,7 +76,7 @@ void SystemMaintenanceMenuContent::layoutExec()
     row++;
 
     // user maintain
-    btn = new Button(trs("UserMaintainSystem"));
+    btn = new Button(trs("UserMaintain"));
     btn->setButtonStyle(Button::ButtonTextOnly);
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
     btn->setProperty("Item", qVariantFromValue(itemBtn));
@@ -87,7 +87,7 @@ void SystemMaintenanceMenuContent::layoutExec()
     row++;
 
     // factory maintain
-    btn = new Button(trs("FactoryMaintainSystem"));
+    btn = new Button(trs("FactoryMaintain"));
     btn->setButtonStyle(Button::ButtonTextOnly);
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
     btn->setProperty("Item", qVariantFromValue(itemBtn));
