@@ -1649,7 +1649,7 @@ SPO2SignalWeak,检测血氧信号弱,SpO2 Signal Weak
 SPO2CableOff,血氧线缆断开,SpO2 Cable Off
 SPO2FingerOff,未检测到手指,SpO2 Finger Off
 SPO2LEDFault,血氧LED错误,SpO2 LED Fault
-SPO2LowPerfusion,血氧弱灌注,SpO2 Low Perfusion
+SPO2LowPerfusion,SpO2弱灌注,SpO2 Low Perfusion
 SPO2DefectiveCable,SPO2线缆故障,Defective cable
 SPO2CableExpired,SPO2线缆过期,Cable expired
 SPO2IncompatibleCable,SPO2不兼容线缆,Incompatible cable
