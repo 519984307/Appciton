@@ -34,7 +34,6 @@ public:
         ITEM_CBO_SMART_TONE,
         ITEM_CBO_BEAT_VOL,
         ITEM_CBO_NIBP_SAME_SIDE,
-        ITEM_CBO_MODULE_CONTROL,
         ITEM_CBO_MAX,
     };
 
@@ -114,11 +113,6 @@ void ConfigEditSpO2MenuContentPrivate::loadOptions()
     index = 0;
     config->getNumValue("SPO2|NIBPSameSide", index);
     combos[ITEM_CBO_NIBP_SAME_SIDE]->setCurrentIndex(index);
-
-    // Module Control
-    index = 0;
-    config->getNumValue("SPO2|ModuleControl", index);
-    combos[ITEM_CBO_MODULE_CONTROL]->setCurrentIndex(index);
 }
 
 void ConfigEditSpO2MenuContent::readyShow()
@@ -282,20 +276,6 @@ void ConfigEditSpO2MenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditSpO2MenuContentPrivate::ITEM_CBO_NIBP_SAME_SIDE, comboBox);
 
-    // module control
-    label = new QLabel(trs("ModuleControl"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox;
-    comboBox->addItems(QStringList()
-                       << trs(SPO2Symbol::convert(SPO2_MODULE_DISABLE))
-                       << trs(SPO2Symbol::convert(SPO2_MODULE_ENABLE)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(ConfigEditSpO2MenuContentPrivate
-                         ::ITEM_CBO_MODULE_CONTROL, comboBox);
-    itemID = ConfigEditSpO2MenuContentPrivate::ITEM_CBO_MODULE_CONTROL;
-    comboBox->setProperty("Item", qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-
     // 添加报警设置链接
     Button *btn = new Button(QString("%1%2").
                              arg(trs("AlarmSettingUp")).
@@ -314,9 +294,6 @@ void ConfigEditSpO2MenuContent::onComboBoxIndexChanged(int index)
     QString str;
     switch (indexType)
     {
-    case ConfigEditSpO2MenuContentPrivate::ITEM_CBO_MODULE_CONTROL:
-        str = "ModuleControl";
-        break;
     case ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SMART_TONE:
         str = "SmartPluseTone";
         break;
