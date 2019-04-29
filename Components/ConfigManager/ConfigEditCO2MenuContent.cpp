@@ -103,12 +103,15 @@ void ConfigEditCO2MenuContentPrivate::loadOptions()
     combos[ITEM_CBO_WAVE_SPEED]->setCurrentIndex(index);
 
     // 气体补偿。
+    index = 0;  // init the 'index'
     config->getNumValue("CO2|O2Compensation", index);
     btns[ITEM_BTN_O2_COMPEN]->setText(QString::number(index));
+    index = 0;  // init the 'index'
     config->getNumValue("CO2|N2OCompensation", index);
     btns[ITEM_BTN_N2O_COMPEN]->setText(QString::number(index));
 
     // 显示控制。
+    index = 0;  // init the 'index'
     config->getNumValue("CO2|FICO2Display", index);
     combos[ITEM_CBO_FICO2_DISPLAY]->setCurrentIndex(index);
 
@@ -141,6 +144,7 @@ void ConfigEditCO2MenuContentPrivate::loadOptions()
         combos[ITEM_CBO_WAVE_RULER]->addItem(str);
     }
     combos[ITEM_CBO_WAVE_RULER]->blockSignals(false);
+    index = 0;  // init the 'index'
     config->getNumValue("CO2|DisplayZoom", index);
     combos[ITEM_CBO_WAVE_RULER]->setCurrentIndex(index);
 }
