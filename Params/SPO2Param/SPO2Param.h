@@ -249,12 +249,6 @@ public:
      */
     bool getPerfusionStatus() const;
 
-    /**
-     * @brief getForceUpdatingStatus  and the function of getting force update status
-     * @return
-     */
-    bool getForceUpdatingStatus() const;
-
 private slots:
     void checkSelftest();
     void onPaletteChanged(ParamID id);

@@ -906,11 +906,6 @@ bool SPO2Param::getPerfusionStatus() const
     return _isLowPerfusion;
 }
 
-bool SPO2Param::getForceUpdatingStatus() const
-{
-    return _isForceUpdating;
-}
-
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
