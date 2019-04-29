@@ -404,6 +404,10 @@ void PatientManager::newPatient()
         qDebug() << "create dir fail!";
     }
     alarmIndicator.delAllPhyAlarm();        // 新建病人时，应清空上一个病人的生理报警
+    if (systemManager.isSupport(PARAM_NIBP))
+    {
+        nibpParam.clearResult();
+    }
 }
 
 void PatientManager::dischargePatient()
