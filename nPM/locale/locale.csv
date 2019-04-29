@@ -1266,7 +1266,7 @@ PleaseAddExportFiles,请增加导出文件,Please Add Export Files
 ImportFileFailed,导入文件失败,Import File failed
 ImportFileCompleted,导入文件完成,Import File Completed
 PleaseAddImportFiles,请增加导入文件,Please Add Import Files
-FactoryMaintainSystem,工厂维护系统,Factory Maintain
+FactoryMaintain,工厂维护,Factory Maintain
 FactoryMaintainPassword,工厂维护密码,Factory Maintain Password
 FactoryMaintainModifyConfig,工厂维护修改配置,Factory Maintain Modify Config
 MachineConfigModuleMenu,机器配置,Machine Config
@@ -1424,7 +1424,7 @@ AlarmType,报警类型,Alarm Type
 Technology,技术,Technology
 Physiology,生理,Physiology
 UserMaintainPassword,用户维护密码,User Maintain Password
-UserMaintainSystem,用户维护系统,User Maintain
+UserMaintain,用户维护,User Maintain
 Department,部门,Department
 BedNumber,床号,Bed No.
 ModifyPassword,密码,Password
