@@ -647,10 +647,6 @@ void Alarm::clear()
 
 void Alarm::addLimtSource(AlarmLimitIFace *alarmSource)
 {
-    if (_limitSources.contains(alarmSource->getParamID()))
-    {
-        return;
-    }
     _limitSources.insert(alarmSource->getParamID(), alarmSource);
 }
 
@@ -661,10 +657,6 @@ void Alarm::addLimtSource(AlarmLimitIFace *alarmSource)
  *************************************************************************************************/
 void Alarm::addOneShotSource(AlarmOneShotIFace *alarmSource)
 {
-    if (_oneshotSources.contains(alarmSource->getParamID()))
-    {
-        return;
-    }
     _oneshotSources.insert(alarmSource->getParamID(), alarmSource);
 }
 
