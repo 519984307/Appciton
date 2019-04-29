@@ -72,11 +72,15 @@ public:
     static inline QString convert(UnitType destUnit, UnitType srcUnit,
                                   const T2 &srcVal, const float &baro = 1013)
     {
-        QString destVal = QString::number(srcVal);
-        if (strcmp(typeid(srcVal).name(), "f") == 0)
+        QString destVal;
+        if (strcmp(typeid(srcVal).name(), "f") == 0 || strcmp(typeid(srcVal).name(), "d") == 0)
         {
-            // float类型时,默认显示一位小数
+            // float或者double类型时,默认显示一位小数
             destVal = QString::number(srcVal, 'f', 1);
+        }
+        else
+        {
+            destVal = QString::number(srcVal);
         }
         // % <---> mmHg
         if ((destUnit == UNIT_PERCENT) && (srcUnit == UNIT_MMHG))
