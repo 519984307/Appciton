@@ -482,7 +482,6 @@ void SPO2Param::setPulseAudio(bool pulse)
 void SPO2Param::setBeatVol(SoundManager::VolumeLevel vol)
 {
     // 将脉搏音与心跳音绑定在一起，形成联动
-    currentConfig.setNumValue("SPO2|BeatVol", static_cast<int>(vol));
     currentConfig.setNumValue("ECG|QRSVolume", static_cast<int>(vol));
     soundManager.setVolume(SoundManager::SOUND_TYPE_PULSE, vol);
     soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT, vol);
@@ -491,7 +490,7 @@ void SPO2Param::setBeatVol(SoundManager::VolumeLevel vol)
 SoundManager::VolumeLevel SPO2Param::getBeatVol() const
 {
     int vol = SoundManager::VOLUME_LEV_2;
-    currentConfig.getNumValue("SPO2|BeatVol", vol);
+    currentConfig.getNumValue("ECG|QRSVolume", vol);
     return static_cast<SoundManager::VolumeLevel>(vol);
 }
 
