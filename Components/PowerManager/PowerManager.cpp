@@ -258,7 +258,7 @@ BatteryPowerLevel PowerMangerPrivate::getCurrentVolume()
     batteryADCVoltage = adcValue;
 
     // 判读电量区间，需要超过浮动区间才认为该值有效
-    if (abs(batteryADCVoltage - lastVolumeAdcValue) < AD_VALUE_FLOAT_RANGE)
+    if (abs(batteryADCVoltage - lastVolumeAdcValue) < AD_VALUE_FLOAT_RANGE && powerType == POWER_SUPLY_BAT)
     {
         return powerList.last();
     }
