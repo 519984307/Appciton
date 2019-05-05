@@ -589,7 +589,7 @@ void BLMCO2Provider::setWorkMode(CO2WorkMode mode)
  *************************************************************************************************/
 BLMCO2Provider::BLMCO2Provider() : Provider("BLM_CO2"), CO2ProviderIFace(), _status(CO2ProviderStatus())
 {
-    UartAttrDesc portAttr(115200, 8, 'N', 1, _packetLen);
+    UartAttrDesc portAttr(9600, 8, 'N', 1, _packetLen);
     if (!initPort(portAttr))
     {
         systemManager.setPoweronTestResult(CO2_MODULE_SELFTEST_RESULT, SELFTEST_FAILED);
