@@ -104,6 +104,7 @@ void MonitorInfoWindow::onTimeOutExec()
 {
     QString showtime = getRunTime();
     d_ptr->labs[MonitorInfoWindowPrivate::ITEM_LAB_CMLV_WORKTIME]->setText(showtime);
+    d_ptr->labs[MonitorInfoWindowPrivate::ITEM_LAB_BAT_CAPACITY]->setText(powerManger.getBatteryCapacity());
 }
 
 void MonitorInfoWindow::layoutExec()

@@ -20,6 +20,7 @@ public:
         SPO2_DATA,
         NIBP_DATA,
         TEMP_DATA,
+        CO2_DATA,
         DATA_TYPE_NR,
     };
 

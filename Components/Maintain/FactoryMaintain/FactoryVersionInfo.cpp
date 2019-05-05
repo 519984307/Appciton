@@ -19,6 +19,7 @@
 #include "Provider.h"
 #include <QFile>
 #include <QTextStream>
+#include "FontManager.h"
 
 #define HARDWARE_VERSION ("/sys/class/pmos/hardware")
 
@@ -70,6 +71,9 @@ void FactoryVersionInfo::layoutExec()
 {
     QGridLayout *layout = new QGridLayout(this);
     layout->setMargin(10);
+
+    // set the font size for showing all version info
+    setFont(fontManager.textFont(fontManager.getFontSize(3)));
 
     QLabel *labelLeft;
     QLabel *labelRight;

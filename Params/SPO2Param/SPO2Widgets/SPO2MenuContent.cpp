@@ -104,7 +104,7 @@ void SPO2MenuContentPrivate::loadOptions()
     combos[ITEM_CBO_SMART_TONE]->setCurrentIndex(spo2Param.getSmartPulseTone());
 
     int volIndex;
-    currentConfig.getNumValue("SPO2|BeatVol", volIndex);
+    currentConfig.getNumValue("ECG|QRSVolume", volIndex);
     combos[ITEM_CBO_BEAT_VOL]->setCurrentIndex(volIndex);
     if (nightModeManager.nightMode())
     {

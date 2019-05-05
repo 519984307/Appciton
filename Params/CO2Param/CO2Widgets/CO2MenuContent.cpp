@@ -48,13 +48,6 @@ public:
      */
     void loadOptions();
 
-    /**
-     * @brief adjustWaveformRuler and adjsut the size of the co2 waveform ruler
-     * @param size and the waveform ruler size
-     * @return and the adjusted size
-     */
-    float adjustWaveformRuler(float size);
-
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, Button *> btns;
     SpinBox *o2Spb;
@@ -86,7 +79,7 @@ void CO2MenuContentPrivate::loadOptions()
     combos[ITEM_CBO_WAVE_RULER]->blockSignals(true);
     combos[ITEM_CBO_WAVE_RULER]->clear();
     int maxZoom = CO2_DISPLAY_ZOOM_NR;
-    float zoomArray[CO2_DISPLAY_ZOOM_NR] = {4.0, 8.0, 13.0, 20.0};
+    float zoomArray[CO2_DISPLAY_ZOOM_NR] = {4.0, 8.0, 12.0, 20.0};
     QString str;
     UnitType unit = co2Param.getUnit();
     for (int i = 0; i < maxZoom; i++)
@@ -101,7 +94,7 @@ void CO2MenuContentPrivate::loadOptions()
         }
         else
         {
-            str = QString("0.0~%1").arg(QString::number(adjustWaveformRuler(zoomArray[i]), 'f', 1));
+            str = QString("0.0~%1").arg(QString::number(zoomArray[i], 'f', 1));
         }
         str += " ";
         str += trs(Unit::getSymbol(unit));
@@ -120,22 +113,6 @@ void CO2MenuContentPrivate::loadOptions()
     ApneaAlarmTime index = co2Param.getApneaTime();
 
     combos[ITEM_CBO_APNEA_TIME]->setCurrentIndex(index);
-}
-
-float CO2MenuContentPrivate::adjustWaveformRuler(float size)
-{
-    if (size == 13.0)
-    {
-        // 需求CO2-14, 标尺的上下限范围为0%-4%， 0-8%， 0-12%，0-20%
-        // 或0-30mmhg, 0-60mmhg, 0-100 mmhg, 0-150mmhg,
-        // 其中12%与100换算不对等：100mmhg按照软件代码中的算法换算应该为13%,
-        // 这里为了显示与需求保持一致，特地将13显示为12
-        return 12.0;
-    }
-    else
-    {
-        return size;
-    }
 }
 
 void CO2MenuContent::onComboBoxIndexChanged(int index)

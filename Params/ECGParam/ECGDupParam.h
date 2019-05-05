@@ -145,5 +145,6 @@ private:
     bool _isAutoHrSource;
     HRSourceType _hrSource;
     PRSourceType _prSource;
+    HRSourceType _currentHRSource;
 };
 #define ecgDupParam (ECGDupParam::construction())

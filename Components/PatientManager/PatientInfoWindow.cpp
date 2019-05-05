@@ -563,6 +563,7 @@ void PatientInfoWindowPrivate::savePatientInfoToManager()
     }
     patientManager.setWeight(weightFloat);
     patientManager.setPacermaker(static_cast<PatientPacer>(pacer->currentIndex()));
+    patientManager.setBedNum(bedNum->text());
     patientManager.updatePatientInfo();
 }
 
@@ -732,7 +733,6 @@ void PatientInfoWindow::bedNumReleased()
         if (oldStr != text)
         {
             btn->setText(text);
-            patientManager.setBedNum(text);
         }
     }
 }

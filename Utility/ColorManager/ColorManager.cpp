@@ -81,16 +81,10 @@ QColor ColorManager::getColor(const QString &param)
     return _loadColor(param);
 }
 
-void ColorManager::updateColorPalatte(const QList<ParamID> &idList)
+void ColorManager::updateColorPalatte(const ParamID &paramId)
 {
-    if (idList.isEmpty())
+    switch (paramId)
     {
-        return;
-    }
-    QList<ParamID>::ConstIterator iter = idList.constBegin();
-    for (; iter != idList.constEnd(); iter++)
-    {
-        switch (*iter) {
         case PARAM_ECG:
             emit paletteChanged(PARAM_ECG);
             break;
@@ -117,7 +111,6 @@ void ColorManager::updateColorPalatte(const QList<ParamID> &idList)
             break;
         default:
             break;
-        }
     }
 }
 

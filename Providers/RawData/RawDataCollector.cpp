@@ -75,6 +75,13 @@ public:
     void handleNIBPRawData(const unsigned char *data, int len, bool stop);
 
     /**
+     * @brief handleCO2RawData handle the CO2 raw data
+     * @param data pointer to the data
+     * @param len the data length
+     */
+    void handleCO2RawData(const unsigned char *data, int len, bool stop);
+
+    /**
      * @brief saveEcgRawData and the ecg raw data to file
      * @param data the data struct contain data need to store
      */
@@ -91,6 +98,12 @@ public:
      * @param data the data struct contain data need to store
      */
     void saveNIBPRawData(const StoreDataType *data);
+
+    /**
+     * @brief saveCO2RawData and the CO2 raw data to file
+     * @param data the data struct contain data need to store
+     */
+    void saveCO2RawData(const StoreDataType *data);
 
     bool collectionStatus[RawDataCollector::DATA_TYPE_NR];
 
@@ -230,6 +243,36 @@ void RawDataCollectorPrivate::handleNIBPRawData(const unsigned char *data, int l
 
         mutex.lock();
         dataBuffer.append(new StoreDataType(RawDataCollector::NIBP_DATA, content, stop));
+        mutex.unlock();
+    }
+}
+
+void RawDataCollectorPrivate::handleCO2RawData(const unsigned char *data, int len, bool stop)
+{
+    QByteArray content;
+
+    if (stop)
+    {
+        mutex.lock();
+        dataBuffer.append(new StoreDataType(RawDataCollector::CO2_DATA, content, stop));
+        mutex.unlock();
+    }
+    else
+    {
+        Q_UNUSED(len)
+        QTextStream stream(&content);
+        // 25组数据
+        for (int n = 0; n < 1; n ++)
+        {
+            unsigned int tar = (data[n * 6]) | (data[n * 6 + 1] << 8) | (data[n * 6 + 2] << 16);
+            unsigned int ref = (data[n * 6 + 3]) | (data[n * 6 + 4] << 8) | (data[n * 6 + 5] << 16);
+            stream << tar << "," << ref << endl;
+        }
+
+        stream.flush();
+
+        mutex.lock();
+        dataBuffer.append(new StoreDataType(RawDataCollector::CO2_DATA, content, stop));
         mutex.unlock();
     }
 }
@@ -395,6 +438,59 @@ void RawDataCollectorPrivate::saveNIBPRawData(const StoreDataType *data)
     }
 }
 
+void RawDataCollectorPrivate::saveCO2RawData(const StoreDataType *data)
+{
+    QFile *f = files[RawDataCollector::CO2_DATA];
+    if (f == NULL && data->stop)
+    {
+        // do nothing
+        return;
+    }
+    else if (f && data->stop)
+    {
+        // close the file and delete the file descriptor
+        fsync(f->handle());
+        f->close();
+        delete f;
+        files[RawDataCollector::CO2_DATA] = NULL;
+        return;
+    }
+    else if (f == NULL)
+    {
+        QString dirname = usbManager.getUdiskMountPoint() + "/BLM_CO2/";
+        if (!QDir(dirname).exists())
+        {
+            if (!QDir().mkpath(dirname))
+            {
+                qDebug() << "Fail to create directory " << dirname;
+                return;
+            }
+        }
+        QString name = dirname + QString("CO2_%1.txt").arg(QDateTime::currentDateTime().toString("yyyyMMddHHmmss"));
+
+        // not open the file yet, open now
+        f = new QFile(name);
+        if (!f->open(QIODevice::WriteOnly))
+        {
+            qDebug() << "Fail to create file " << name;
+            delete f;
+            return;
+        }
+        files[RawDataCollector::CO2_DATA] = f;
+    }
+
+    f->write(data->data);
+
+    if (f->size() > 10 * 1024 * 1024)
+    {
+        // store 10 M data in each file
+        fsync(f->handle());
+        f->close();
+        delete f;
+        files[RawDataCollector::CO2_DATA] = NULL;
+    }
+}
+
 RawDataCollector &RawDataCollector::getInstance()
 {
     static RawDataCollector *instance = NULL;
@@ -443,7 +539,9 @@ void RawDataCollector::run()
         case NIBP_DATA:
             d_ptr->saveNIBPRawData(data);
             break;
-
+        case CO2_DATA:
+            d_ptr->saveCO2RawData(data);
+            break;
         default:
             break;
         }
@@ -478,6 +576,9 @@ void RawDataCollector::collectData(RawDataCollector::CollectDataType type, const
         break;
     case RawDataCollector::NIBP_DATA:
         d_ptr->handleNIBPRawData(data, len, stop);
+        break;
+    case RawDataCollector::CO2_DATA:
+        d_ptr->handleCO2RawData(data, len, stop);
         break;
 
     default:
