@@ -84,8 +84,8 @@ public:
     {
         static const char *symbol[SPO2_SMART_PLUSE_TONE_NR] =
         {
-            "On",
             "Off",
+            "On",
         };
         return symbol[index];
     }

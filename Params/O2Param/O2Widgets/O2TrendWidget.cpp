@@ -21,7 +21,7 @@ void O2TrendWidget::setO2Value(int16_t o2)
 {
     if (((o2 & 0xffff) != 0xffff) && o2 != InvData())
     {
-        _o2String = QString("%1").number(o2 / 10.0 , 'f' , 1);
+        _o2String = QString("%1").number(o2);
     }
     else
     {
@@ -112,7 +112,7 @@ void O2TrendWidget::setTextSize()
 {
     QRect r = this->rect();
     r.adjust(nameLabel->width(), 0, 0, 0);
-    int fontSize = fontManager.adjustNumFontSize(r, true);
+    int fontSize = fontManager.adjustNumFontSize(r, true, "9999");
     QFont font = fontManager.numFont(fontSize, true);
     font.setWeight(QFont::Black);
     _o2Value->setFont(font);

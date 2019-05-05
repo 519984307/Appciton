@@ -22,6 +22,7 @@
 #include "ErrorLogItem.h"
 #include "ErrorLog.h"
 #include "IConfig.h"
+#include "AlarmSourceManager.h"
 #include "LanguageManager.h"
 
 #define PROBE_IN_OUT            0x0001
@@ -44,6 +45,23 @@ enum S5StatusType
     S5_STATUS_NR,
 };
 
+/**
+ * @brief The S5InsertStatus enum  探头或手指插入状态
+ */
+enum S5InsertStatus
+{
+    S5_NO_INSERT,                   // 探头或手指未插入
+    S5_INSERT,                      // 探头或手指已插入
+};
+
+/**
+ * @brief The S5LEDStatus enum  and the status of the LED fault
+ */
+enum S5LEDStatus
+{
+    S5_LED_NOERROR,                 // LED 没有错误
+    S5_LED_ERROR,                   // LED 有错误
+};
 
 /**************************************************************************************************
  * 模块与参数对接。
@@ -156,8 +174,12 @@ void S5Provider::handlePacket(unsigned char *data, int len)
  *************************************************************************************************/
 void S5Provider::disconnected(void)
 {
-    spo2OneShotAlarm.clear();
-    spo2OneShotAlarm.setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SPO2);
+    if (alarmSource)
+    {
+        alarmSource->clear();
+        alarmSource->setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+    }
     spo2Param.setConnected(false);
 }
 
@@ -166,7 +188,11 @@ void S5Provider::disconnected(void)
  *************************************************************************************************/
 void S5Provider::reconnected(void)
 {
-    spo2OneShotAlarm.setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SPO2);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+    }
     spo2Param.setConnected(true);
 }
 
@@ -212,7 +238,8 @@ bool S5Provider::isResultSPO2PR(unsigned char *packet)
     //        {
     //        spo2Param.setSPO2(InvData());
     //    }
-    if (packet[1] == 255)
+
+    if (_isInvalidWaveData || packet[1] == 0xff)
     {
         spo2Param.setSPO2(InvData());
     }
@@ -223,7 +250,10 @@ bool S5Provider::isResultSPO2PR(unsigned char *packet)
 
     // 脉率值。
     short pr = (packet[2] << 8) + packet[3];
-    pr = (pr == -100) ? InvData() : pr;
+    if (_isInvalidWaveData || pr == -1)
+    {
+        pr = InvData();
+    }
     spo2Param.setPR(pr);
 
     return true;
@@ -240,18 +270,36 @@ bool S5Provider::isResult_BAR(unsigned char *packet)
         return false;
     }
 
+    int count = 0;
     for (int i = 0; i < 10; i++)
     {
         // 波形。
         spo2Param.addWaveformData(packet[i + 5]);
         _isValuePR = (packet[i + 5] == 0x80) ? false : true;
+
+        if (packet[i + 5] == 128)  // set 128 as one invalid wave data
+        {
+            count++;
+        }
     }
+
+    if (count == 10)
+    {
+        _isInvalidWaveData = true;
+        spo2Param.setSPO2(InvData());
+        spo2Param.setPR(InvData());
+    }
+    else
+    {
+        _isInvalidWaveData = false;
+    }
+
     // 棒图。
     // spo2Param.addBarData((packet[15] == 127) ? 50 : packet[15]);
 
     // PI;
-    short piValue = (packet[15] << 8) + packet[16];
-    if (piValue > 15 || piValue < 1)
+    short piValue = packet[15];
+    if (piValue > 200 || piValue < 1)
     {
         piValue = InvData();
     }
@@ -262,7 +310,7 @@ bool S5Provider::isResult_BAR(unsigned char *packet)
     spo2Param.updatePIValue(piValue);
 
     // 脉搏音。
-    spo2Param.setPulseAudio(packet[17]);
+    spo2Param.setPulseAudio(packet[16]);
 
     return true;
 }
@@ -273,73 +321,89 @@ bool S5Provider::isResult_BAR(unsigned char *packet)
 bool S5Provider::isStatus(unsigned char *packet)
 {
     // 探头插入
-    if (packet[1] & PROBE_IN_OUT)
+    if (packet[1] == S5_STATUS_PROBE)
     {
-        spo2Param.setSensorOff(false);
-        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_OFF, false);
-    }
-    else
-    {
-        spo2Param.setSensorOff(true);
-        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_OFF, true);
+        if (packet[2] == S5_NO_INSERT)
+        {
+            spo2Param.setSensorOff(false);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_OFF, false);
+        }
+        else
+        {
+            spo2Param.setSensorOff(true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_OFF, true);
+        }
     }
 
     // 手指插入
-    if (packet[1] & FINGER_IN_OUT)
+    if (packet[1] == S5_STATUS_FINGER)
     {
-        spo2Param.setNotify(false, trs("SPO2CheckSensor"));
-        spo2Param.setValidStatus(true);
-        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, false);
-    }
-    else
-    {
-        spo2Param.setNotify(true, trs("SPO2CheckSensor"));
-        spo2Param.setValidStatus(false);
-        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, true);
+        if (packet[2] == S5_INSERT)
+        {
+            spo2Param.setNotify(false, trs("SPO2CheckSensor"));
+            spo2Param.setValidStatus(true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, false);
+            _isFingerOff = false;
+        }
+        else
+        {
+            spo2Param.setNotify(true, trs("SPO2CheckSensor"));
+            spo2Param.setValidStatus(false);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, true);
+            _isFingerOff = true;
+        }
     }
 
     // 调光调增益
-
-    if (packet[1] & SIGNAL_SATURATION)
+    if (packet[1] == S5_STATUS_FLASH_GAIN)
     {
-        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_SATURATION, true);
-        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_WEAK, false);
-    }
-    else if (packet[1] & SIGNAL_WEAK)
-    {
-        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_WEAK, true);
-        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_SATURATION, false);
-    }
-    else
-    {
-        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_SATURATION, false);
-        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_WEAK, false);
+        if (packet[2] == S5_GAIN_SATURATION)
+        {
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_SATURATION, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_WEAK, false);
+        }
+        else if (packet[2] == S5_GAIN_WEAK)
+        {
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_SATURATION, false);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_WEAK, true);
+        }
+        else
+        {
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_SATURATION, false);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_WEAK, false);
+        }
     }
 
     // LED
-    if (packet[1] & LED_FAULT)
+    if (packet[1] == S5_STATUS_LED)
     {
-        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LED_FAULT, true);
-    }
-    else
-    {
-        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LED_FAULT, false);
+        if (packet[2] == S5_LED_ERROR)
+        {
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LED_FAULT, true);
+        }
+        else if (packet[2] == S5_LED_NOERROR)
+        {
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LED_FAULT, false);
+        }
     }
 
     // 算法状态
-    int algorithmSta = (packet[1] & ALGORITHM_MASK) >> 5;
-    if (algorithmSta == PULSE_SEARCHING)
+    if (packet[1] == S5_STATUS_ALGORITHM)
     {
-        spo2Param.setSearchForPulse(true);
+        if (packet[2] == S5_LOGIC_SEARCHING)
+        {
+            spo2Param.setSearchForPulse(true);
+        }
+        else if (packet[2] == S5_LOGIC_SEARCH_TOO_LONG)
+        {
+            spo2Param.setNotify(true, trs("SPO2PulseSearchTooLong"));
+        }
+        else if (packet[2] == S5_LOGIC_NORMAL && _isFingerOff == false)
+        {
+            spo2Param.setNotify(false);
+        }
     }
-    else if (algorithmSta == PULSE_SEARCH_TOO_LONG)
-    {
-        spo2Param.setNotify(true, trs("SPO2PulseSearchTooLong"));
-    }
-    else if ((algorithmSta == ALG_NORMAL) && !(packet[1] & FINGER_IN_OUT))
-    {
-        spo2Param.setNotify(false);
-    }
+
     return true;
 }
 
@@ -371,19 +435,22 @@ void S5Provider::sendCmdData(unsigned char cmdId, const unsigned char *data, uns
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-S5Provider::S5Provider() : BLMProvider("BLM_S5"), SPO2ProviderIFace()
+S5Provider::S5Provider()
+          : BLMProvider("BLM_S5")
+          , SPO2ProviderIFace()
+          , _isValuePR(false)
+          , _isCableOff(false)
+          , _isFingerOff(false)
+          , _gainError(S5_GAIN_NC)
+          , _ledFault(false)
+          , _logicStatus(S5_LOGIC_NC)
+          , _lastTime(timeval())
+          , _isInvalidWaveData(false)
 {
     disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_SPO2;
 
     UartAttrDesc portAttr(115200, 8, 'N', 1);
     initPort(portAttr);
-
-    _isCableOff = false;
-    _isFingerOff = false;
-    _gainError = S5_GAIN_NC;
-    _ledFault = false;
-    _logicStatus = S5_LOGIC_NC;
-    _isValuePR = false;
 
     if (disPatchInfo.dispatcher)
     {

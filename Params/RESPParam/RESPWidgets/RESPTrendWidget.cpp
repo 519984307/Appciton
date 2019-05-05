@@ -207,16 +207,12 @@ RESPTrendWidget::RESPTrendWidget() : TrendWidget("RESPTrendWidget")
     _rrSource->setFont(fontManager.textFont(18));
 
     // 布局。
-    QHBoxLayout *mainLayout = new QHBoxLayout();
+    QVBoxLayout *mainLayout = new QVBoxLayout();
     mainLayout->setMargin(1);
     mainLayout->setSpacing(1);
-    mainLayout->addStretch(1);
-    mainLayout->addWidget(_rrValue, 2);
-    mainLayout->addStretch(3);
-    mainLayout->addWidget(_rrSource, 1);
-    mainLayout->addStretch(1);
+    mainLayout->addWidget(_rrValue);
+    mainLayout->addWidget(_rrSource);
 
-    contentLayout->addStretch(1);
     contentLayout->addLayout(mainLayout, 3);
 
     // 释放事件。

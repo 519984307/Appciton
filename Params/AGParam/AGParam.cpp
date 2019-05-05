@@ -16,6 +16,7 @@
 #include "ConfigManager.h"
 #include "LayoutManager.h"
 #include "SystemManager.h"
+#include "AlarmSourceManager.h"
 
 #define DEMO_DATA_NUM       180
 
@@ -390,7 +391,11 @@ void AGParam::setWaveWidget(AGWaveWidget *waveWidget, AGTypeGas gasType)
  *************************************************************************************************/
 void AGParam::setOneShotAlarm(AGOneShotType t, bool status)
 {
-    agOneShotAlarm.setOneShotAlarm(t, status);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_AG);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(t, status);
+    }
 }
 
 

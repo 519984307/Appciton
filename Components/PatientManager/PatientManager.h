@@ -176,6 +176,13 @@ public:
     const PatientInfo &getPatientInfo(void);
 
     /**
+     * @brief getHistoryPatientInfo 获取指定路径的历史病人信息
+     * @param path
+     * @return
+     */
+    const PatientInfo &getHistoryPatientInfo(const QString &path);
+
+    /**
      * @brief getWeightUnit 获取体重单位
      * @return
      */
@@ -220,8 +227,19 @@ public:
      */
     bool isNewPatient();
 
+    /**
+     * @brief updatePatientInfo 更新病人信息
+     */
+    void updatePatientInfo();
+
 signals:
     void signalPatientType(PatientType type);
+
+private slots:
+    /**
+     * @brief onNewPatientHandle 新建病人后响应函数
+     */
+    void onNewPatientHandle();
 
 private:
     PatientManager();

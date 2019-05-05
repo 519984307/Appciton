@@ -29,6 +29,7 @@
 #include "TimeDefine.h"
 #include "EventDataParseContext.h"
 #include "Debug.h"
+#include "PatientManager.h"
 
 #define GRAPH_DISPLAY_DATA_NUMBER           4
 #define GRAPH_POINT_NUMBER                  120                     // 一屏数据量
@@ -594,6 +595,11 @@ const QList<EventInfoSegment> TrendWaveWidget::getEventList()
     return _eventList;
 }
 
+const PatientInfo &TrendWaveWidget::getPatientInfo()
+{
+    return _patientInfo;
+}
+
 void TrendWaveWidget::setHistoryDataPath(QString path)
 {
     _historyDataPath = path;
@@ -817,10 +823,12 @@ void TrendWaveWidget::_getTrendData()
     if (_isHistory)
     {
         backend = StorageManager::open(_historyDataPath + TREND_DATA_FILE_NAME, QIODevice::ReadWrite);
+        _patientInfo = patientManager.getHistoryPatientInfo(_historyDataPath + PATIENT_INFO_FILE_NAME);
     }
     else
     {
         backend = trendDataStorageManager.backend();
+        _patientInfo = patientManager.getPatientInfo();
     }
     int blockNum = backend->getBlockNR();
     QByteArray data;

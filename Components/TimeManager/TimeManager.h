@@ -10,29 +10,15 @@
 
 #pragma once
 #include <stddef.h>
-
-enum PowerOnSession
-{
-    POWER_ON_SESSION_CONTINUE,
-    POWER_ON_SESSION_NEW,
-    POWER_ON_SESSION_NR
-};
+#include "TimeManagerInterface.h"
 
 class DateTimeWidget;
 class ElapseTimeWidget;
 class QDateTime;
-class TimeManager
+class TimeManager : public TimeManagerInterface
 {
 public:
-    static TimeManager &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new TimeManager();
-        }
-        return *_selfObj;
-    }
-    static TimeManager *_selfObj;
+    static TimeManager &getInstance(void);
 
     // 注册窗体界面。
     void registerWidgets(DateTimeWidget *widget, ElapseTimeWidget *elapseWidget);
@@ -51,19 +37,19 @@ public:
     unsigned getRunTime(void) const;
 
     // 获取开机时的状态。
-    PowerOnSession getPowerOnSession(void) const
+    virtual PowerOnSession getPowerOnSession(void) const
     {
         return _powerOnSession;
     }
 
     // 获取开始时间。
-    unsigned getStartTime(void) const
+    virtual unsigned getStartTime(void) const
     {
         return _elapseStartTime;
     }
 
     // 获取系统当前时间
-    unsigned getCurTime() const
+    virtual unsigned getCurTime() const
     {
         return _curTime;
     }
@@ -75,7 +61,7 @@ public:
     }
 
     // set elapsed time
-    void setElapsedTime(void);
+    virtual void setElapsedTime(void);
 
     /**
      * @brief roloadConfig 重新加载配置文件
@@ -96,6 +82,8 @@ public:
      */
     void checkAndFixSystemTime();
 
+    bool isShowSecond(void);
+
 private:
     TimeManager();
     void _refreshWidgets(void);
@@ -109,5 +97,4 @@ private:
     bool _showSecond;                 //是否显示秒
     unsigned _runTime;
 };
-#define timeManager (TimeManager::construction())
-#define deleteTimeManager() (delete TimeManager::_selfObj)
+#define timeManager (TimeManager::getInstance())

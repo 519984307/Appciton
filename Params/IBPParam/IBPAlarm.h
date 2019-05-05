@@ -16,15 +16,7 @@
 class IBPLimitAlarm : public AlarmLimitIFace
 {
 public:
-    static IBPLimitAlarm &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new IBPLimitAlarm();
-        }
-        return *_selfObj;
-    }
-    static IBPLimitAlarm *_selfObj;
+    IBPLimitAlarm();
 
 public:
     virtual QString getAlarmSourceName(void);
@@ -63,7 +55,6 @@ public:
     virtual void notifyAlarm(int id, bool flag);
 
     // constructor and destructor.
-    IBPLimitAlarm();
     virtual ~IBPLimitAlarm();
 private:
     bool _isARTSYSAlarm;
@@ -83,21 +74,12 @@ private:
     bool _isAUXP2DIAAlarm;
     bool _isAUXP2MAPAlarm;
 };
-#define ibpLimitAlarm (IBPLimitAlarm::construction())
 
 // one shot alarm
 class IBPOneShotAlarm : public AlarmOneShotIFace
 {
 public:
-    static IBPOneShotAlarm &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new IBPOneShotAlarm();
-        }
-        return *_selfObj;
-    }
-    static IBPOneShotAlarm *_selfObj;
+    IBPOneShotAlarm();
 
 public:
     virtual QString getAlarmSourceName(void);
@@ -126,8 +108,4 @@ public:
 
     // constructor and destructor.
     virtual ~IBPOneShotAlarm();
-
-private:
-    IBPOneShotAlarm();
 };
-#define ibpOneShotAlarm (IBPOneShotAlarm::construction())

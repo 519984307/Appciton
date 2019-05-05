@@ -38,13 +38,13 @@ enum UserFaceType
 };
 
 /**
- * @brief The ScreenType enum
+ * @brief The Backlight Regulation enum
  */
-enum ScreenType
+enum BacklightAdjustment
 {
-    BUSINESS_SCREEN,
-    INDUSTRIAL_SCRENN,
-    SCREEN_TYPE_NR
+    BACKLIGHT_MODE_1,
+    BACKLIGHT_MODE_2,
+    BACKLIGHT_MODE_NR
 };
 
 // 背光亮度等级。
@@ -72,6 +72,15 @@ enum ErrorWaringCode
     ERR_CODE_NR
 };
 
+enum SystemOneShotAlarm
+{
+    SOME_LIMIT_ALARM_DISABLED,
+    POWERUP_PANEL_RECORD_PRESSED,
+    SYSTEM_ONE_SHOT_ALARM_COMMUNICATION_STOP,
+    STORAGE_SPACE_FULL,
+    SYSTEM_ONE_SHOT_ALARM_NR
+};
+
 class SystemSymbol
 {
 public:
@@ -85,11 +94,11 @@ public:
         return symbol[index];
     }
 
-    static const char *convert(ScreenType index)
+    static const char *convert(BacklightAdjustment index)
     {
-        static const char *symbol[SCREEN_TYPE_NR] =
+        static const char *symbol[BACKLIGHT_MODE_NR] =
         {
-            "BusinessScreen", "IndustrialScreen"
+            "Mode1", "Mode2"
         };
         return symbol[index];
     }

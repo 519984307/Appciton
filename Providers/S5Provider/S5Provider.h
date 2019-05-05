@@ -119,4 +119,6 @@ private:
 
     static const int _packetLen = 9;      // 数据包长度。
     struct timeval _lastTime;
+
+    bool _isInvalidWaveData;
 };

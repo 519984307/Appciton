@@ -36,7 +36,6 @@ MainMenuWindow *MainMenuWindow::getInstance()
         instance->addMenuContent(new MeasureSettingMenuContent);
         instance->addMenuContent(new SystemMaintenanceMenuContent);
         instance->addMenuContent(new LoadConfigMenuContent);
-
         instance->addMenuContent(new NormalFunctionMenuContent);
     }
 

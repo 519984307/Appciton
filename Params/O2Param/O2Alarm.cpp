@@ -15,16 +15,6 @@
 #include "O2Param.h"
 #include "O2Symbol.h"
 
-O2LimitAlarm &O2LimitAlarm::getInstance()
-{
-    static O2LimitAlarm *limitInstance = NULL;
-    if (limitInstance == NULL)
-    {
-        limitInstance = new O2LimitAlarm();
-    }
-    return *limitInstance;
-}
-
 QString O2LimitAlarm::getAlarmSourceName()
 {
     return paramInfo.getParamName(PARAM_O2);
@@ -133,16 +123,6 @@ O2LimitAlarm::O2LimitAlarm() : _isO2Alarm(false)
 
 O2LimitAlarm::~O2LimitAlarm()
 {
-}
-
-O2OneShotAlarm &O2OneShotAlarm::getInstance()
-{
-    static O2OneShotAlarm *oneShotInstance = NULL;
-    if (oneShotInstance == NULL)
-    {
-        oneShotInstance = new O2OneShotAlarm();
-    }
-    return *oneShotInstance;
 }
 
 QString O2OneShotAlarm::getAlarmSourceName()

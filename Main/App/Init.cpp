@@ -33,6 +33,9 @@ static void _initSystem(void)
 
     // superRunConfig.construction();
 
+    // 存储目录管理。
+    dataStorageDirManager.getInstance();
+
     // 新会话，需要恢复主配置文件
     if (timeManager.getPowerOnSession() == POWER_ON_SESSION_NEW)
     {
@@ -107,8 +110,6 @@ static void _initSystem(void)
     // 自检
     systemBoardProvider.selfTest();
 
-    // 存储目录管理。
-    dataStorageDirManager.getInstance();
     // initialize the storage manager in the main thread
     EventStorageManager::getInstance();
     TrendDataStorageManager::getInstance();
@@ -167,7 +168,9 @@ static void _initComponents(void)
     // 电源
     BatteryBarWidget *bar = &batteryBarWidget;
     powerManger.construction();
-    alertor.addOneShotSource(batteryOneShotAlarm.construction());
+    AlarmOneShotIFace *oneShotAlarmSource = new BatteryOneShotAlarm();
+    alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_BATTERY);
+    alertor.addOneShotSource(oneShotAlarmSource);
     layoutManager.addLayoutWidget(bar);
 
     // 病人管理初始化。
@@ -237,10 +240,20 @@ static void _initProviderParam(void)
 
     // ECG部分。
     paramManager.addParam(ecgDupParam.construction());
-    alertor.addLimtSource(ecgDupLimitAlarm.construction());
+
+    AlarmLimitIFace *limitAlarmSource = new ECGDupLimitAlarm();
+    alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_ECGDUP);
+    alertor.addLimtSource(limitAlarmSource);
+
     paramManager.addParam(ecgParam.getInstance());
-    alertor.addLimtSource(ecgLimitAlarm.getInstance());
-    alertor.addOneShotSource(ecgOneShotAlarm.getInstance());
+
+    limitAlarmSource = new ECGLimitAlarm();
+    alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_ECG);
+    alertor.addLimtSource(limitAlarmSource);
+    AlarmOneShotIFace *oneShotAlarmSource = new ECGOneShotAlarm();
+    alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_ECG);
+    alertor.addOneShotSource(oneShotAlarmSource);
+
     ECGTrendWidget *ecgTrendWidget = new ECGTrendWidget();
     ecgDupParam.setTrendWidget(ecgTrendWidget);
     layoutManager.addLayoutWidget(ecgTrendWidget, LAYOUT_NODE_PARAM_ECG);
@@ -325,12 +338,20 @@ static void _initProviderParam(void)
     if (systemManager.isSupport(CONFIG_RESP) || systemManager.isSupport(CONFIG_CO2))
     {
         paramManager.addParam(respDupParam.construction());
-        alertor.addLimtSource(respDupLimitAlarm.construction());
+        limitAlarmSource = new RESPDupLimitAlarm();
+        alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_RESPDUP);
+        alertor.addLimtSource(limitAlarmSource);
         if (systemManager.isSupport(CONFIG_RESP))
         {
             paramManager.addParam(respParam.construction());
-            alertor.addLimtSource(respLimitAlarm.construction());
-            alertor.addOneShotSource(respOneShotAlarm.construction());
+
+            limitAlarmSource = new RESPLimitAlarm();
+            alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_RESP);
+            alertor.addLimtSource(limitAlarmSource);
+            oneShotAlarmSource = new RESPOneShotAlarm();
+            alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_RESP);
+            alertor.addOneShotSource(oneShotAlarmSource);
+
             RESPWaveWidget *respWaveWidget = new RESPWaveWidget("RESPWaveWidget",
                     paramInfo.getParamName(PARAM_RESP));
             RESPTrendWidget *respTrendWidget = new RESPTrendWidget();
@@ -373,8 +394,14 @@ static void _initProviderParam(void)
             spo2Param.setModuleType(MODULE_RAINBOW_SPO2);
         }
         paramManager.addParam(spo2Param.construction());
-        alertor.addLimtSource(spo2LimitAlarm.construction());
-        alertor.addOneShotSource(spo2OneShotAlarm.construction());
+
+        limitAlarmSource = new SPO2LimitAlarm();
+        alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_SPO2);
+        alertor.addLimtSource(limitAlarmSource);
+        oneShotAlarmSource = new SPO2OneShotAlarm();
+        alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_SPO2);
+        alertor.addOneShotSource(oneShotAlarmSource);
+
         SPO2WaveWidget *spo2WaveWidget = new SPO2WaveWidget("SPO2WaveWidget", trs("PLETH"));
         SPO2TrendWidget *spo2TrendWidget = new SPO2TrendWidget();
         spo2Param.setTrendWidget(spo2TrendWidget);
@@ -403,8 +430,14 @@ static void _initProviderParam(void)
         }
 
         paramManager.addParam(nibpParam.getInstance());
-        alertor.addLimtSource(nibpLimitAlarm.construction());
-        alertor.addOneShotSource(nibpOneShotAlarm.construction());
+
+        limitAlarmSource = new NIBPLimitAlarm();
+        alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_NIBP);
+        alertor.addLimtSource(limitAlarmSource);
+        oneShotAlarmSource = new NIBPOneShotAlarm();
+        alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_NIBP);
+        alertor.addOneShotSource(oneShotAlarmSource);
+
         NIBPTrendWidget *nibpTrenWidget = new NIBPTrendWidget();
         nibpParam.setNIBPTrendWidget(nibpTrenWidget);
         layoutManager.addLayoutWidget(nibpTrenWidget, LAYOUT_NODE_PARAM_NIBP);
@@ -419,8 +452,14 @@ static void _initProviderParam(void)
         paramManager.addProvider(*new BLMCO2Provider());
 
         paramManager.addParam(co2Param.construction());
-        alertor.addLimtSource(co2LimitAlarm.construction());
-        alertor.addOneShotSource(co2OneShotAlarm.construction());
+
+        limitAlarmSource = new CO2LimitAlarm();
+        alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_CO2);
+        alertor.addLimtSource(limitAlarmSource);
+        oneShotAlarmSource = new CO2OneShotAlarm();
+        alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_CO2);
+        alertor.addOneShotSource(oneShotAlarmSource);
+
         CO2WaveWidget *co2WaveWidget = new CO2WaveWidget("CO2WaveWidget",
                 paramInfo.getParamName(PARAM_CO2));
         CO2TrendWidget *co2TrendWidget = new CO2TrendWidget();
@@ -440,8 +479,13 @@ static void _initProviderParam(void)
     {
         paramManager.addProvider(*new WitleafProvider());
         paramManager.addParam(ibpParam.construction());
-        alertor.addLimtSource(ibpLimitAlarm.construction());
-        alertor.addOneShotSource(ibpOneShotAlarm.construction());
+
+        limitAlarmSource = new IBPLimitAlarm();
+        alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_IBP);
+        alertor.addLimtSource(limitAlarmSource);
+        oneShotAlarmSource = new IBPOneShotAlarm();
+        alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_IBP);
+        alertor.addOneShotSource(oneShotAlarmSource);
 
         IBPTrendWidget *ibp1TrendWidget = new IBPTrendWidget("IBP1TrendWidget",
                 IBP_PRESSURE_ART);
@@ -468,8 +512,14 @@ static void _initProviderParam(void)
     if (systemManager.isSupport(CONFIG_CO))
     {
         paramManager.addParam(coParam.construction());
-        alertor.addLimtSource(coLimitAlarm.construction());
-        alertor.addOneShotSource(coOneShotAlarm.construction());
+
+        limitAlarmSource = new COLimitAlarm();
+        alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_CO);
+        alertor.addLimtSource(limitAlarmSource);
+        oneShotAlarmSource = new COOneShotAlarm();
+        alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_CO);
+        alertor.addOneShotSource(oneShotAlarmSource);
+
         COTrendWidget *coTrendWidget = new COTrendWidget("COTrendWidget");
         coParam.setCOTrendWidget(coTrendWidget);
         layoutManager.addLayoutWidget(coTrendWidget, LAYOUT_NODE_PARAM_CO);
@@ -480,8 +530,13 @@ static void _initProviderParam(void)
     {
         paramManager.addProvider(*new PhaseinProvider());
         paramManager.addParam(agParam.construction());
-        alertor.addLimtSource(agLimitAlarm.construction());
-        alertor.addOneShotSource(agOneShotAlarm.construction());
+
+        limitAlarmSource = new AGLimitAlarm();
+        alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_AG);
+        alertor.addLimtSource(limitAlarmSource);
+        oneShotAlarmSource = new AGOneShotAlarm();
+        alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_AG);
+        alertor.addOneShotSource(oneShotAlarmSource);
     }
 
     AGTrendWidget *trendWidgetN2O = new AGTrendWidget("N2OTrendWidget", AG_TYPE_N2O);
@@ -527,8 +582,14 @@ static void _initProviderParam(void)
         }
 
         paramManager.addParam(tempParam.construction());
-        alertor.addLimtSource(tempLimitAlarm.construction());
-        alertor.addOneShotSource(tempOneShotAlarm.construction());
+
+        limitAlarmSource = new TEMPLimitAlarm();
+        alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_TEMP);
+        alertor.addLimtSource(limitAlarmSource);
+        oneShotAlarmSource = new TEMPOneShotAlarm();
+        alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_TEMP);
+        alertor.addOneShotSource(oneShotAlarmSource);
+
         TEMPTrendWidget *tempTrendWidget = new TEMPTrendWidget();
         tempParam.setTrendWidget(tempTrendWidget);
         layoutManager.addLayoutWidget(tempTrendWidget, LAYOUT_NODE_PARAM_TEMP);
@@ -539,8 +600,13 @@ static void _initProviderParam(void)
     {
          paramManager.addProvider(*new NeonateProvider());
          paramManager.addParam(o2Param.getInstance());
-         alertor.addLimtSource(o2LimitAlarm.getInstance());
-         alertor.addOneShotSource(o2OneShotAlarm.getInstance());
+
+         limitAlarmSource = new O2LimitAlarm();
+         alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_O2);
+         alertor.addLimtSource(limitAlarmSource);
+         oneShotAlarmSource = new O2OneShotAlarm();
+         alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_O2);
+         alertor.addOneShotSource(oneShotAlarmSource);
          O2TrendWidget *o2TrendWidget  = new O2TrendWidget();
          o2Param.setTrendWidget(o2TrendWidget);
          layoutManager.addLayoutWidget(o2TrendWidget, LAYOUT_NODE_PARAM_OXYGEN);
@@ -554,9 +620,15 @@ static void _initProviderParam(void)
     // 关联设备和参数对象。
     paramManager.connectParamProvider(WORK_MODE_NORMAL);
 
+    // system alarm
+    oneShotAlarmSource = new SystemAlarm();
+    alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_SYSTEM);
+    alertor.addOneShotSource(oneShotAlarmSource);
 
-    alertor.addOneShotSource(systemAlarm.Construction());
-    alertor.addOneShotSource(printOneShotAlarm.construction());
+    // print alarm
+    oneShotAlarmSource = new PrintOneShotAlarm();
+    alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_PRINT);
+    alertor.addOneShotSource(oneShotAlarmSource);
 }
 
 /**************************************************************************************************
@@ -634,7 +706,6 @@ void deleteObjects(void)
     // deletePatientMenu();
     deleteParamManager();
     deletePatientManager();
-    deleteTimeManager();
     deleteTimeDate();
     deleteMachineConfig();
     deleteSystemConfig();

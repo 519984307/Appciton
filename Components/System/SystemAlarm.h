@@ -10,30 +10,12 @@
 
 #pragma once
 #include "AlarmParamIFace.h"
-
-enum SystemOneShotAlarm
-{
-    SOME_LIMIT_ALARM_DISABLED,
-    POWERUP_PANEL_RECORD_PRESSED,
-    SYSTEM_ONE_SHOT_ALARM_COMMUNICATION_STOP,
-    STORAGE_SPACE_FULL,
-    SYSTEM_ONE_SHOT_ALARM_NR
-};
+#include "SystemDefine.h"
 
 class SystemAlarm : public AlarmOneShotIFace
 {
 public:
-    static SystemAlarm &Construction()
-    {
-        if (NULL == _selfObj)
-        {
-            _selfObj = new SystemAlarm();
-        }
-
-        return *_selfObj;
-    }
-
-    static SystemAlarm *_selfObj;
+    SystemAlarm();
 
     ~SystemAlarm();
 
@@ -61,9 +43,5 @@ public:
 
     // 将报警ID转换成字串。
     const char *toString(int id);
-
-private:
-    SystemAlarm();
 };
-#define systemAlarm (SystemAlarm::Construction())
 

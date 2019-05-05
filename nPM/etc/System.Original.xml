@@ -55,7 +55,7 @@
         <ReminderTone>1</ReminderTone>
         <PhyParAlarmLatchlockOn>0</PhyParAlarmLatchlockOn>
 	<AlarmOffPrompting>1</AlarmOffPrompting>
-	<AlarmAudioOff>0</AlarmAudioOff>
+	<AlarmAudio>0</AlarmAudio>
 	<EnableAlarmOff>1</EnableAlarmOff>
 	<AlarmOffAtPowerOn>0</AlarmOffAtPowerOn>
     </Alarms>
@@ -895,8 +895,8 @@
                     <LayoutItem width="128">RunningStatusBar</LayoutItem>
                     <LayoutItem width="210">DateTimeWidget</LayoutItem>
                     <LayoutItem width="50">AlarmStatusWidget</LayoutItem>
-                    <LayoutItem width="300">AlarmPhyInfoBarWidget</LayoutItem>
-                    <LayoutItem width="300">AlarmTechInfoBarWidget</LayoutItem>
+                    <LayoutItem stretch="1">AlarmPhyInfoBarWidget</LayoutItem>
+                    <LayoutItem stretch="1">AlarmTechInfoBarWidget</LayoutItem>
                 </LayoutItem>
                 <LayoutItem stretch="1">ContentView</LayoutItem>
                 <LayoutItem height="80" direction="horizontal" spacing="0">

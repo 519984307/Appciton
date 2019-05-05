@@ -317,6 +317,11 @@ void LoadConfigMenuContent::onBtnClick()
                 delete cmWnd;
                 cmWnd = NULL;
             }
+            if (d_ptr->curConfig)
+            {
+                delete d_ptr->curConfig;
+                d_ptr->curConfig = NULL;
+            }
         }
     }
     else

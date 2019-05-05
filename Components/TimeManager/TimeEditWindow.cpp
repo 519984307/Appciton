@@ -321,7 +321,6 @@ void TimeEditWindow::hideEvent(QHideEvent *ev)
         systemTick.resetLastTime();
         patientManager.newPatient();
     }
-    timeManager.roloadConfig();
     Dialog::hideEvent(ev);
 }
 
@@ -346,6 +345,7 @@ void TimeEditWindow::onComboBoxIndexChanged(int index)
             break;
         case TimeEditWindowPrivate::ITEM_CBO_DISPLAY_SEC:
             systemConfig.setNumValue("DateTime|DisplaySecond", index);
+            timeManager.roloadConfig();
             break;
         default:
             break;

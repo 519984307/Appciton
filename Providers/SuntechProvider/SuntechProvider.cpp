@@ -15,25 +15,27 @@
 #include <QString>
 #include <QTimer>
 #include "ServiceVersion.h"
+#include "NIBPMonitorStateDefine.h"
+#include "PatientManager.h"
 
-#define		HOST_START_BYTE           0x3A     // receive packet header :
-#define		MODULE_START_BYTE         0x3E     // send packet header >
+#define     HOST_START_BYTE           0x3A     // receive packet header :
+#define     MODULE_START_BYTE         0x3E     // send packet header >
 
 // RESPONSES
 
-#define		MODULE_ACK     		      0x04      // 模块应答
+#define     MODULE_ACK                0x04      // 模块应答
 
-#define		MODULE_RECEIVED		      0x4F      // “O”
-#define		MODULE_EXECUTED		      0x4B      // "K"
-#define		MODULE_ABORT		      0x41      // "A"
-#define		MODULE_BUSY		          0x42      // "B"
-#define		MODULE_ERROR		      0x45      // "E"
-#define		MODULE_UNDIFINE	          0x4E      // "N"
-#define		MODULE_UNRECOGNIZABLE     0x44      // "D"
-#define		MODULE_SLEEP              0x53      // "S"
-#define		MODULE_TIMEOUT            0x54      // "T"
+#define     MODULE_RECEIVED           0x4F      // “O”
+#define     MODULE_EXECUTED           0x4B      // "K"
+#define     MODULE_ABORT              0x41      // "A"
+#define     MODULE_BUSY               0x42      // "B"
+#define     MODULE_ERROR              0x45      // "E"
+#define     MODULE_UNDIFINE           0x4E      // "N"
+#define     MODULE_UNRECOGNIZABLE     0x44      // "D"
+#define     MODULE_SLEEP              0x53      // "S"
+#define     MODULE_TIMEOUT            0x54      // "T"
 
-#define     SUNTECH_RSP_CUFF_PRESSURE           0x05	    // 当前压力
+#define     SUNTECH_RSP_CUFF_PRESSURE           0x05        // 当前压力
 #define     SUNTECH_RSP_GET_MEASUREMENT         0x18        // 测量结果
 #define     SUNTECH_RSP_GET_RETURN_STRING       0x43        // 版本信息
 #define     SUNTECH_RSP_GET_CALIBRATE_RESULT    0x06        // 校准结果
@@ -131,7 +133,7 @@ void SuntechProvider::dataArrived(void)
             break;
         }
 
-        if (len > ringBuff.dataSize()) // 数据还不够，继续等待。
+        if (len > ringBuff.dataSize())  // 数据还不够，继续等待。
         {
             break;
         }
@@ -176,23 +178,21 @@ void SuntechProvider::sendVersion()
 void SuntechProvider::startMeasure(PatientType type)
 {
     unsigned char cmd = 0;
-    if (type == PATIENT_TYPE_ADULT)	 //如果是成人模式
+    if (type == PATIENT_TYPE_ADULT)  // 如果是成人模式
     {
         cmd = SUNTECH_CMD_START_ADU_BP;
     }
-    else if (type == PATIENT_TYPE_PED) //如果是少儿模式
+    else if (type == PATIENT_TYPE_PED)  //  如果是少儿模式
     {
         cmd = SUNTECH_CMD_START_PED_BP;
     }
-    else if (type == PATIENT_TYPE_NEO) //如果是新生儿模式
+    else if (type == PATIENT_TYPE_NEO)  //  如果是新生儿模式
     {
         cmd = SUNTECH_CMD_START_NEO_BP;
     }
 
     _sendCmd(&cmd, 1);
 
-//    _timer->start();
-    _getCuffPressure();
     _NIBPStart = true;
     _flagStartCmdSend = 1;
 }
@@ -436,17 +436,22 @@ void SuntechProvider::controlPneumatics(unsigned char pump, unsigned char contro
 SuntechProvider::SuntechProvider() :
     Provider("SUNTECH_NIBP"), NIBPProviderIFace(),
     _NIBPStart(false), _flagStartCmdSend(-1),
-    _timer(NULL), _isModuleDataRespond(false),
+    _timer(NULL), _cmdTimer(NULL), _isModuleDataRespond(false),
     _isCalibrationRespond(false)
 {
     UartAttrDesc portAttr(9600, 8, 'N', 1);
     initPort(portAttr);
-    setDisconnectThreshold(1);
+    setDisconnectThreshold(5);
 
     _timer = new QTimer();
     _timer->setInterval(200);
     _timer->start();
+
+    _cmdTimer = new QTimer();
+    _cmdTimer->setInterval(100);
+    _cmdTimer->start();
     connect(_timer, SIGNAL(timeout()), this, SLOT(_getCuffPressure()));
+    connect(_cmdTimer, SIGNAL(timeout()), this, SLOT(_sendCMD()));
 }
 
 /**************************************************************************************************
@@ -463,11 +468,13 @@ SuntechProvider::~SuntechProvider()
 
 void SuntechProvider::disconnected()
 {
+    nibpParam.connectedFlag(false);
     nibpParam.setConnected(false);
 }
 
 void SuntechProvider::reconnected()
 {
+    nibpParam.connectedFlag(true);
     nibpParam.setConnected(true);
 }
 
@@ -483,6 +490,15 @@ void SuntechProvider::_getCuffPressure()
     cmd[2] = 0x00;
 
     _sendCmd(cmd, 3);
+}
+
+void SuntechProvider::_sendCMD()
+{
+    if (!list.empty())
+    {
+        SuntechCMD cmd = list.takeFirst();
+        writeData(cmd.cmd, cmd.cmdLength);
+    }
 }
 
 static NIBPMeasureResultInfo getMeasureResultInfo(unsigned char *data)
@@ -576,11 +592,25 @@ void SuntechProvider::_handlePacket(unsigned char *data, int len)
                 }
             }
         }
+        else if (data[1] == MODULE_BUSY)
+        {
+            NIBPMonitorStateID state = (NIBPMonitorStateID)nibpParam.curStatusType();
+            if (state == NIBP_MONITOR_STARTING_STATE)
+            {
+                nibpParam.provider().startMeasure(patientManager.getType());
+            }
+            else if (state == NIBP_MONITOR_SAFEWAITTIME_STATE || state == NIBP_MONITOR_STOPE_STATE
+                                                           || state == NIBP_MONITOR_ERROR_STATE )
+            {
+                nibpParam.provider().stopMeasure();
+            }
+        }
         break;
 
     // 当前压力
     case SUNTECH_RSP_CUFF_PRESSURE:
     {
+        feed();
         nibpParam.handleNIBPEvent(NIBP_EVENT_CURRENT_PRESSURE, &data[1], 2);
         int16_t pressure;
         pressure = (data[2] << 8) + data[1];
@@ -594,7 +624,8 @@ void SuntechProvider::_handlePacket(unsigned char *data, int len)
     case SUNTECH_RSP_GET_MEASUREMENT:
     {
         NIBPMeasureResultInfo info = getMeasureResultInfo(&data[1]);
-        nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_GET_RESULT, reinterpret_cast<unsigned char *>(&info), sizeof(info));
+        nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_GET_RESULT,
+                                  reinterpret_cast<unsigned char *>(&info), sizeof(info));
         break;
     }
     // 版本信息
@@ -628,7 +659,13 @@ void SuntechProvider::_sendCmd(const unsigned char *data, unsigned int len)
 
     sendBuf[index++] = _calcCheckSum(sendBuf, len + 1);
 
-    writeData(sendBuf, len + 2);
+    SuntechCMD cmd;
+    for (unsigned int i = 0; i < len + 2; i++)
+    {
+        cmd.cmd[i] = sendBuf[i];
+    }
+    cmd.cmdLength = len + 2;
+    list.append(cmd);
 }
 
 /**************************************************************************************************

@@ -30,13 +30,9 @@ public:
         NORMALLY_OPEN
     };
     NurseCallManagerPrivate()
-        : callSta(false), callFile("/sys/class/pmos/nurse_call"),
+        : callSta(false),
           pulseTimerID(-1)
     {
-        if (!callFile.open(QIODevice::ReadWrite))
-        {
-            qDebug() << "fail to open nurse_call file";
-        }
     }
 
     /**
@@ -66,7 +62,6 @@ public:
     void writeNurseCallSta(bool sta);
 
     int callSta;                   // 当前信号状态
-    QFile callFile;
     int pulseTimerID;
 };
 
@@ -200,20 +195,23 @@ bool NurseCallManagerPrivate::getAlarmLevelType(AlarmType type, AlarmPriority pr
 
 void NurseCallManagerPrivate::writeNurseCallSta(bool sta)
 {
-    if (!callFile.exists())
-    {
-        return;
-    }
-
-    QByteArray data;
-    data.resize(1);
+    QString data;
     if (getContactType() == NORMALLY_CLOSED)
     {
-        data[0] = sta;
+        int intSta = sta;
+        data = QString::number(intSta);
     }
     else
     {
-        data[0] = !sta;
+        int intSta = !sta;
+        data = QString::number(intSta);
     }
-    callFile.write(data);
+    QFile callFile("/sys/class/pmos/nurse_call");
+    if (!callFile.open(QIODevice::ReadWrite))
+    {
+        qDebug() << "fail to open nurse_call file";
+        return;
+    }
+    callFile.write(data.toAscii());
+    callFile.close();
 }
