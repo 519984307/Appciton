@@ -379,7 +379,7 @@ unsigned char SuntechProvider::convertErrcode(unsigned char code)
     switch (code)
     {
     case SUNTECH_ERRCODE_WEAK_SIGNAL:
-        err = NIBP_ONESHOT_ALARM_SIGNAL_WEAK;
+        err = NIBP_ONESHOT_ALARM_CUFF_ERROR;
         break;
     case SUNTECH_ERRCODE_ERRATIC_SIGNAL:
         err = NIBP_ONESHOT_ALARM_EXCESSIVE_MOVING;
