@@ -200,7 +200,8 @@ void NIBPCalibrateContent::timerEvent(QTimerEvent *ev)
             {
                 MessageBox messbox(trs("Warn"), trs("NIBPModuleEnterFail"), false);
                 messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
-                windowManager.showWindow(&messbox, WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
+                windowManager.showWindow(&messbox,
+                                         WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
             }
             killTimer(d_ptr->inModeTimerID);
             d_ptr->inModeTimerID = -1;
@@ -320,6 +321,10 @@ void NIBPCalibrateContent::inCalibrateMode()
             btn = d_ptr->btnList.at(1);
             btn->setEnabled(true);
             d_ptr->calibrateFlag = true;
+            if (d_ptr->moduleStr == "SUNTECH_NIBP")
+            {
+                nibpParam.provider().controlPneumatics(0, 1, 1);
+            }
         }
     }
 }
