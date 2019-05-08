@@ -22,7 +22,6 @@
 #include <TDA19988Ctrl.h>
 
 #include "Debug.h"
-#include "Version.h"
 #include "IConfig.h"
 #include "WindowManager.h"
 #include "ECGParam.h"
@@ -569,29 +568,6 @@ BrightnessLevel SystemManager::getBrightness(void)
 void SystemManager::loadInitBMode()
 {
     d_ptr->handleBMode();
-}
-
-/***************************************************************************************************
- * 获取软件版本。
- **************************************************************************************************/
-void SystemManager::getSoftwareVersion(QString &revision)
-{
-    revision.clear();
-    revision += getSoftwareVersionNum();
-    revision += ",\r\r\r";
-    revision += BUILD_TIME;
-}
-
-/***************************************************************************************************
- * 获取软件版本。
- **************************************************************************************************/
-QString SystemManager::getSoftwareVersionNum()
-{
-    QString version(IDM_SOFTWARE_VERSION);
-    version += ".";
-    version += SVN_VERSION;
-
-    return version;
 }
 
 /***************************************************************************************************

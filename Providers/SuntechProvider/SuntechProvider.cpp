@@ -14,7 +14,6 @@
 #include "Debug.h"
 #include <QString>
 #include <QTimer>
-#include "ServiceVersion.h"
 #include "NIBPMonitorStateDefine.h"
 #include "PatientManager.h"
 
