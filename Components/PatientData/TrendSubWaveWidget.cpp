@@ -516,9 +516,24 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
             return;
         }
 
+        unsigned status = _trendInfo.trendDataV3.at(_cursorPosIndex).status;
         if (_trendInfo.trendDataV3.at(_cursorPosIndex).isAlarm)
         {
-            barPainter.fillRect(dataRect, Qt::white);
+            if (_type == TREND_GRAPH_TYPE_NIBP)
+            {
+                if (status & TrendDataStorageManager::CollectStatusNIBP)
+                {
+                    barPainter.fillRect(dataRect, Qt::white);
+                }
+                else
+                {
+                    barPainter.fillRect(dataRect, Qt::black);
+                }
+            }
+            else
+            {
+                barPainter.fillRect(dataRect, Qt::white);
+            }
         }
         else
         {
@@ -527,7 +542,6 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
         TrendDataType sys =  _trendInfo.trendDataV3.at(_cursorPosIndex).data[0];
         TrendDataType dia = _trendInfo.trendDataV3.at(_cursorPosIndex).data[1];
         TrendDataType map = _trendInfo.trendDataV3.at(_cursorPosIndex).data[2];
-        unsigned status = _trendInfo.trendDataV3.at(_cursorPosIndex).status;
         QString sysStr;
         QString diaStr;
         QString mapStr;
@@ -558,6 +572,13 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
                 barPainter.drawText(upDataRect, trendStr, nibpOption);
                 nibpOption.setAlignment(Qt::AlignTop | Qt::AlignHCenter);
                 barPainter.drawText(downDataRect, mapStr, nibpOption);
+            }
+            else
+            {
+                nibpOption.setAlignment(Qt::AlignBottom | Qt::AlignHCenter);
+                barPainter.drawText(upDataRect, "---/---", nibpOption);
+                nibpOption.setAlignment(Qt::AlignTop | Qt::AlignHCenter);
+                barPainter.drawText(downDataRect, "(---)", nibpOption);
             }
         }
         else
