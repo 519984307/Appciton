@@ -99,6 +99,16 @@ void RESPMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_BREATH_LEAD]->setCurrentIndex(respParam.getCalcLead());
 
     // wave gain
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        // demo模式不允许设置增益
+        combos[ITEM_CBO_WAVE_GAIN]->setEnabled(false);
+    }
+    else
+    {
+        combos[ITEM_CBO_WAVE_GAIN]->setEnabled(true);
+    }
+
     combos[ITEM_CBO_WAVE_GAIN]->setCurrentIndex(respParam.getZoom());
 }
 

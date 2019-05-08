@@ -7,7 +7,7 @@
  **
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/7/20
  **/
-#include "SoftWareVersionWindow.h"
+#include "SoftwareVersionWindow.h"
 #include <QLabel>
 #include <QMap>
 #include <QProcess>
@@ -17,14 +17,14 @@
 #include <QGridLayout>
 #include "LanguageManager.h"
 
-SoftWareVersionWindow::SoftWareVersionWindow(): Dialog()
+SoftwareVersionWindow::SoftwareVersionWindow(): Dialog()
 {
     layoutExec();
 }
 
-void SoftWareVersionWindow::layoutExec()
+void SoftwareVersionWindow::layoutExec()
 {
-    setWindowTitle(trs("SoftWareVersionMenu"));
+    setWindowTitle(trs("SoftwareVersionMenu"));
 
     QGridLayout *glayout = new QGridLayout;
 

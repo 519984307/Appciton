@@ -85,6 +85,11 @@ void KeyInputPanel::onKeyClicked()
     ClickedKey(key);
 }
 
+void KeyInputPanel::onBlankClicked()
+{
+    ClickedKey(" ");
+}
+
 /**************************************************************************************************
  * 一般按键点击。
  *************************************************************************************************/
@@ -651,7 +656,7 @@ KeyInputPanel::KeyInputPanel(KeyType type, bool isShowDecimalPoint)
                     key->setButtonStyle(Button::ButtonIconOnly);
                     key->setIconSize(QSize(100, 100));
                     key->setIcon(QIcon("/usr/local/nPM/icons/blank.png"));
-                    connect(key, SIGNAL(clicked()), this, SLOT(onKeyClicked()));
+                    connect(key, SIGNAL(clicked()), this, SLOT(onBlankClicked()));
                     break;
 
                 case 1:

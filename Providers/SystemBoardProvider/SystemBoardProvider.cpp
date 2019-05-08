@@ -14,7 +14,6 @@
 #include "SystemManager.h"
 #include "SystemBoardProvider.h"
 #include "WindowManager.h"
-#include "ServiceVersion.h"
 #include "SystemAlarm.h"
 #include "KeyActionManager.h"
 #include "ErrorLog.h"
@@ -228,7 +227,6 @@ void SystemBoardProvider::_parseBatteryInfo(unsigned char *data, int len)
 
     modeStatus.isCharging = data[1];        // 是否正在充电
     modeStatus.adcValue = (data[3] << 8) | data[2];     // ADC值
-
     if (modeStatus.adcValue < 500)
     {
         // 不合理的ADC值，过滤

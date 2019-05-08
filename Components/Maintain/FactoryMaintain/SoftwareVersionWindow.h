@@ -12,11 +12,11 @@
 
 #include "Dialog.h"
 
-class SoftWareVersionWindow : public Dialog
+class SoftwareVersionWindow : public Dialog
 {
     Q_OBJECT
 public:
-    SoftWareVersionWindow();
+    SoftwareVersionWindow();
     /**
      * @brief layoutExec
      */

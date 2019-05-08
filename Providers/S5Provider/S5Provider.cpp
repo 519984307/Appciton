@@ -15,7 +15,6 @@
 #include "Debug.h"
 #include <QString>
 #include "SystemManager.h"
-#include "ServiceVersion.h"
 #include <sys/time.h>
 #include "RawDataCollector.h"
 #include "SystemManager.h"
@@ -325,13 +324,13 @@ bool S5Provider::isStatus(unsigned char *packet)
     {
         if (packet[2] == S5_NO_INSERT)
         {
-            spo2Param.setSensorOff(false);
-            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_OFF, false);
+            spo2Param.setSensorOff(true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_OFF, true);
         }
         else
         {
-            spo2Param.setSensorOff(true);
-            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_OFF, true);
+            spo2Param.setSensorOff(false);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_OFF, false);
         }
     }
 

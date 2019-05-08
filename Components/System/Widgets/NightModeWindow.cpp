@@ -199,7 +199,7 @@ void NightModeWindow::layoutExec()
                          ITEM_CBO_KEYPRESS_VOLUME_NUM , comboBox);
 
     // nibp completed tips
-    label = new QLabel(trs("NIBPCompletedTips"));
+    label = new QLabel(trs("NIBPCompleteTone"));
     glayout->addWidget(label , d_ptr->combos.count() , 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()

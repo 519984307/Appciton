@@ -18,6 +18,7 @@
 #include "PMessageBox.h"
 #include <QTimer>
 #include "ConfigManager.h"
+#include "RawDataCollector.h"
 
 enum  // 数据包类型。
 {
@@ -28,6 +29,7 @@ enum  // 数据包类型。
     SENSOR_REGS = 0x04,
     CONFIG_DATA = 0x05,
     SERVICE_DATA = 0x06,
+    RAW_DATA = 0x0A,
 };
 
 enum  // 位操作。
@@ -107,18 +109,21 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
     }
 
     // 波形数据，每秒更新20次。
-    int waveValue = packet[4];
-    waveValue <<= 8;
-    waveValue |= packet[5];
-    bool invalid = false;
-    if (waveValue == 0xFFFF)
+    if (packet[2] != RAW_DATA)
     {
-        invalid = true;
-        waveValue = 0;
-    }
+        int waveValue = packet[4];
+        waveValue <<= 8;
+        waveValue |= packet[5];
+        bool invalid = false;
+        if (waveValue == 0xFFFF)
+        {
+            invalid = true;
+            waveValue = 0;
+        }
 
-    waveValue = (waveValue > 2500) ? 2500 : waveValue;
-    co2Param.addWaveformData(waveValue, invalid);
+        waveValue = (waveValue > 2500) ? 2500 : waveValue;
+        co2Param.addWaveformData(waveValue, invalid);
+    }
 
     // 数据，每秒更新2次。
     short value;
@@ -378,6 +383,10 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
 
         val = packet[19];
         _status.cuvetteAdjuestPress = (val == 0xff) ? InvData() : val;
+        break;
+
+    case RAW_DATA:
+        rawDataCollector.collectData(RawDataCollector::CO2_DATA, packet + 3, 154 - 4);
         break;
 
     default:

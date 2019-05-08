@@ -354,7 +354,7 @@ SoundManager::VolumeLevel SPO2Param::getPluseToneVolume(void)
  *************************************************************************************************/
 void SPO2Param::setSPO2(short spo2Value)
 {
-    if (_spo2Value == spo2Value)
+    if (_spo2Value == spo2Value && !_isForceUpdating)
     {
         return;
     }
@@ -404,7 +404,7 @@ short SPO2Param::getSPO2(void)
  *************************************************************************************************/
 void SPO2Param::setPR(short prValue)
 {
-    if (_prValue == prValue)
+    if (_prValue == prValue && !_isForceUpdating)
     {
         return;
     }
@@ -482,7 +482,6 @@ void SPO2Param::setPulseAudio(bool pulse)
 void SPO2Param::setBeatVol(SoundManager::VolumeLevel vol)
 {
     // 将脉搏音与心跳音绑定在一起，形成联动
-    currentConfig.setNumValue("SPO2|BeatVol", static_cast<int>(vol));
     currentConfig.setNumValue("ECG|QRSVolume", static_cast<int>(vol));
     soundManager.setVolume(SoundManager::SOUND_TYPE_PULSE, vol);
     soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT, vol);
@@ -491,7 +490,7 @@ void SPO2Param::setBeatVol(SoundManager::VolumeLevel vol)
 SoundManager::VolumeLevel SPO2Param::getBeatVol() const
 {
     int vol = SoundManager::VOLUME_LEV_2;
-    currentConfig.getNumValue("SPO2|BeatVol", vol);
+    currentConfig.getNumValue("ECG|QRSVolume", vol);
     return static_cast<SoundManager::VolumeLevel>(vol);
 }
 
@@ -888,26 +887,48 @@ void SPO2Param::clearCCHDData(bool isCleanup)
     }
 }
 
+void SPO2Param::setPerfusionStatus(bool isLow)
+{
+    if (isLow != _isLowPerfusion)
+    {
+        _isForceUpdating = true;
+        _isLowPerfusion = isLow;
+    }
+    else
+    {
+        _isForceUpdating = false;
+    }
+}
+
+bool SPO2Param::getPerfusionStatus() const
+{
+    return _isLowPerfusion;
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-SPO2Param::SPO2Param() : Param(PARAM_SPO2),
-                         _oxyCRGSPO2Trend(NULL),
-                         _moduleType(MODULE_SPO2_NR),
-                         _repeatTimes(0)
+SPO2Param::SPO2Param()
+         : Param(PARAM_SPO2)
+         , _provider(NULL)
+         , _trendWidget(NULL)
+         , _waveWidget(NULL)
+         , _isEverCheckFinger(false)
+         , _isEverSensorOn(false)
+         , _spo2Value(InvData())
+         , _prValue(InvData())
+         , _barValue(InvData())
+         , _piValue(InvData())
+         , _isValid(false)
+         , _sensorOff(true)
+         , _recPackageInPowerOn2sec(0)
+         , _oxyCRGSPO2Trend(NULL)
+         , _connectedProvider(false)
+         , _moduleType(MODULE_SPO2_NR)
+         , _repeatTimes(0)
+         , _isLowPerfusion(false)
+         , _isForceUpdating(false)
 {
-    _provider = NULL;
-    _trendWidget = NULL;
-    _waveWidget = NULL;
-
-    _spo2Value = InvData();
-    _piValue = InvData();
-    _prValue = InvData();
-    _barValue = InvData();
-    _isValid = false;
-    _sensorOff = true;
-    _recPackageInPowerOn2sec = 0;
-
     systemConfig.getNumValue("PrimaryCfg|SPO2|EverCheckFinger", _isEverCheckFinger);
     systemConfig.getNumValue("PrimaryCfg|SPO2|EverSensorOn", _isEverSensorOn);
 

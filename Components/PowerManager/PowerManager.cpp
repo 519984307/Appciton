@@ -16,8 +16,10 @@
 #include "PowerOffWindow.h"
 #include "AlarmSourceManager.h"
 #include "LanguageManager.h"
+#include "math.h"
 #define TWO_MINUTE 1000 * 120
 #define POWER_LIST_MAX_COUNT 3
+#define AD_VALUE_LIST_COUNT 30
 #define AD_VALUE_FLOAT_RANGE 10       // AD值允许的浮动区间
 
 
@@ -27,8 +29,8 @@ class PowerMangerPrivate
 public:
     explicit PowerMangerPrivate(PowerManger * const q_ptr)
         : q_ptr(q_ptr), lowBattery(false), shutBattery(false),
-          lastVolume(BAT_VOLUME_NONE), adcValue(AD_VALUE_FLOAT_RANGE), lastVolumeAdcValue(0), hasHintShutMessage(false),
-          shutdownTimer(NULL)
+          adcValue(AD_VALUE_FLOAT_RANGE), lastVolumeAdcValue(0),
+          hasHintShutMessage(false), shutdownTimer(NULL)
     {
     }
     ~PowerMangerPrivate(){}
@@ -37,7 +39,6 @@ public:
     PowerSuplyType powerType;       // 电源类型
     bool lowBattery;                // 低电量
     bool shutBattery;               // 关机电量
-    BatteryPowerLevel lastVolume;   // 上一次的电量等级
     short adcValue;                 // 电池电量
     short lastVolumeAdcValue;             // last check volume adc value
     bool hasHintShutMessage;        // 是否弹出过关机提示
@@ -72,6 +73,12 @@ public:
     void shutdownWarn(void);
 
     QList<BatteryPowerLevel> powerList;
+    QList<short> adValueList;
+
+    /**
+     * @brief LeastSquare 最小二乘法
+     */
+    void LeastSquare(float &midValue);
 };
 
 PowerManger::~PowerManger()
@@ -82,14 +89,22 @@ PowerManger::~PowerManger()
 void PowerManger::setBatteryCapacity(short adc)
 {
     d_ptr->adcValue = adc;
+    d_ptr->adValueList.append(adc);
+    if (d_ptr->adValueList.count() > AD_VALUE_LIST_COUNT)
+    {
+        d_ptr->adValueList.removeFirst();
+    }
 }
 
 QString PowerManger::getBatteryCapacity()
 {
     QString batQuantityStr;
+    float matchADValue = 0;
+    d_ptr->LeastSquare(matchADValue);
+
     if (d_ptr->powerType == POWER_SUPLY_AC_BAT || d_ptr->powerType == POWER_SUPLY_BAT)
     {
-        float batQuantity = ((d_ptr->adcValue - BAT_LEVEL_0) * 1.0 ) / (BAT_LEVEL_5 - BAT_LEVEL_0) * 100;
+        float batQuantity = ((matchADValue - BAT_LEVEL_0) * 1.0 ) / (BAT_LEVEL_5 - BAT_LEVEL_0) * 100;
         if (batQuantity < 0)
         {
             batQuantity = 0;
@@ -98,7 +113,8 @@ QString PowerManger::getBatteryCapacity()
         {
             batQuantity = 100;
         }
-        batQuantityStr = QString("%1%2").arg(QString::number(batQuantity, 'f', 1), "%");
+
+        batQuantityStr = QString("%1%2").arg(QString::number(floor(batQuantity + 0.5)), "%");
     }
     else
     {
@@ -126,6 +142,7 @@ PowerManger::PowerManger()
     d_ptr->shutdownTimer = new QTimer();
     d_ptr->shutdownTimer->setInterval(TWO_MINUTE);
     connect(d_ptr->shutdownTimer, SIGNAL(timeout()), this, SLOT(powerOff()));
+    d_ptr->adValueList.clear();
     d_ptr->powerList.clear();
     for (int i = 0; i < POWER_LIST_MAX_COUNT; i++)
     {
@@ -199,7 +216,7 @@ void PowerMangerPrivate::monitorRun()
         {
             // 电量到达低电量，提示电量过低
             batteryBarWidget.setIconLow();  // 黄灯显示低电量
-            if (lastVolume != curVolume)
+            if (powerList.at(POWER_LIST_MAX_COUNT - 2) != curVolume)
             {
                 MessageBox lowMessage(trs("Prompt"), trs("LowBattery"), false);
                 windowManager.showWindow(&lowMessage, WindowManager::ShowBehaviorCloseIfVisiable
@@ -211,7 +228,6 @@ void PowerMangerPrivate::monitorRun()
         {
             shutdownTimer->stop();
         }
-        lastVolume = curVolume;
     }
     else
     {
@@ -233,7 +249,7 @@ void PowerMangerPrivate::initBatteryData()
 
 BatteryPowerLevel PowerMangerPrivate::getCurrentVolume()
 {
-    short batteryADCVoltage = 0;          // 记录ADC电压
+    short batteryADCVoltage = 0;          // 记录AD电压
 
     if (adcValue < 500)
     {
@@ -241,9 +257,10 @@ BatteryPowerLevel PowerMangerPrivate::getCurrentVolume()
     }
     batteryADCVoltage = adcValue;
 
-    if (abs(batteryADCVoltage - lastVolumeAdcValue) < AD_VALUE_FLOAT_RANGE)
+    // 判读电量区间，需要超过浮动区间才认为该值有效
+    if (abs(batteryADCVoltage - lastVolumeAdcValue) < AD_VALUE_FLOAT_RANGE && powerType == POWER_SUPLY_BAT)
     {
-        return lastVolume;
+        return powerList.last();
     }
 
     lastVolumeAdcValue = adcValue;
@@ -316,4 +333,22 @@ void PowerMangerPrivate::shutdownWarn()
         windowManager.showWindow(&lowMessage, WindowManager::ShowBehaviorNoAutoClose |
                                  WindowManager::ShowBehaviorModal);
     }
+}
+
+void PowerMangerPrivate::LeastSquare(float &midValue)
+{
+    double t1 = 0;
+    double t2 = 0;
+    double t3 = 0;
+    double t4 = 0;
+    for (int i = 0; i < adValueList.count(); i++)
+    {
+        t1 += i * i;
+        t2 += i;
+        t3 += i * adValueList.at(i);
+        t4 += adValueList.at(i);
+    }
+    double a = (t3 * adValueList.count() - t2 * t4) / (t1 * adValueList.count() - t2 * t2);
+    double b = (t1 * t4 - t2 * t3) / (t1 * adValueList.count() - t2 * t2);
+    midValue = a * adValueList.count() / 2 + b;
 }

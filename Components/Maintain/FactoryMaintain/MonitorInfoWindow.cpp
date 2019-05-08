@@ -104,6 +104,7 @@ void MonitorInfoWindow::onTimeOutExec()
 {
     QString showtime = getRunTime();
     d_ptr->labs[MonitorInfoWindowPrivate::ITEM_LAB_CMLV_WORKTIME]->setText(showtime);
+    d_ptr->labs[MonitorInfoWindowPrivate::ITEM_LAB_BAT_CAPACITY]->setText(powerManger.getBatteryCapacity());
 }
 
 void MonitorInfoWindow::layoutExec()
@@ -149,7 +150,7 @@ void MonitorInfoWindow::layoutExec()
     d_ptr->labs.insert(MonitorInfoWindowPrivate
                        ::ITEM_LAB_MAC_ADDR, labelRight);
 
-    labelLeft = new QLabel(trs("ScreenResolationSize"));
+    labelLeft = new QLabel(trs("ScreenResolutionSize"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
     labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);

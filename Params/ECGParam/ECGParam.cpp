@@ -1988,8 +1988,6 @@ int ECGParam::getMaxGain(void)
  *************************************************************************************************/
 void ECGParam::setQRSToneVolume(SoundManager::VolumeLevel vol)
 {
-    // 将脉搏音与心跳音绑定在一起，形成联动
-    currentConfig.setNumValue("SPO2|BeatVol", static_cast<int>(vol));
     currentConfig.setNumValue("ECG|QRSVolume", static_cast<int>(vol));
     soundManager.setVolume(SoundManager::SOUND_TYPE_PULSE, vol);
     soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT, vol);
@@ -2346,6 +2344,7 @@ void ECGParam::onWorkModeChanged(WorkMode mode)
         return;
     }
     setFilterMode(ECG_FILTERMODE_DIAGNOSTIC);
+    setNotchFilter(ECG_NOTCH_OFF);
 }
 
 void ECGParam::onPaletteChanged(ParamID id)

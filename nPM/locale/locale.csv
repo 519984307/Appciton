@@ -35,7 +35,6 @@ TEMPModule,TEMP,TEMP
 SPO2Module,SpO2,SpO2
 NightModeMenu,夜间模式,Night Mode
 NightModeMenuDesc,夜间模式设置,Night Mode Desc
-NIBPCompletedTips,NIBP完成音,NIBP Completed Tips
 StopNIBPMeasure,停止NIBP测量,Stop NIBP Measure
 EnterNightMode,进入夜间模式,Enter Night Mode
 ExitNightMode,退出夜间模式,Exit Night Mode
@@ -290,7 +289,6 @@ NormalFunctionMenu,常规功能,Normal Function
 NormalFunctionMenuDesc,常规功能,Normal Function
 Calculate,计算,Calculate
 WiFiProfile,WiFi配置,WiFi Profile
-MachineVersion,机器版本,Machine Version
 Standy,待机,Standy
 CalculateWindow,计算,Calculate Window
 PressAnyKeysToExit,请按压任何按键退出待机模式,Press Any Keys To Exit
@@ -1096,7 +1094,7 @@ BatteryDisconnected,电池未连接,Battery Disconnected
 BatteryError,电池错误,Battery Error
 BatteryCommFault,电池通信故障,Battery Comm Fault
 BatteryInfo,电池信息,Battery Info
-BatteryCapacityIcons,电池容量图标,Battery Capacity Incons
+BatteryCapacityIcons,电池容量图标,Battery Capacity Icons
 SmtpServer,SMTP服务器,SMTP Server
 SmtpServerPort,SMTP 服务端口,SMTP Server Port
 Username,用户名,Username
@@ -1266,7 +1264,7 @@ PleaseAddExportFiles,请增加导出文件,Please Add Export Files
 ImportFileFailed,导入文件失败,Import File failed
 ImportFileCompleted,导入文件完成,Import File Completed
 PleaseAddImportFiles,请增加导入文件,Please Add Import Files
-FactoryMaintainSystem,工厂维护系统,Factory Maintain
+FactoryMaintain,工厂维护,Factory Maintain
 FactoryMaintainPassword,工厂维护密码,Factory Maintain Password
 FactoryMaintainModifyConfig,工厂维护修改配置,Factory Maintain Modify Config
 MachineConfigModuleMenu,机器配置,Machine Config
@@ -1299,7 +1297,7 @@ TemperatureInsideCase,箱内温度,Temperature Inside Case
 BatteryCapacity,电池电量,Battery Capacity
 MachineType,机器型号,Machine Type
 MACAddress,硬件地址,MAC Address
-ScreenResolationSize,屏幕分辨率尺寸,Screen Resolation Size
+ScreenResolutionSize,屏幕分辨率尺寸,Screen Resolution Size
 ElectronicSerialNumber,电子序列号,Electronic Serial Number
 SetElectronicSerialNumber,设置电子序列号,Set Electronic Serial Number
 MonitorInfoMenuDesc,监护仪信息菜单设置,Monitor Info Desc
@@ -1320,8 +1318,8 @@ ErrorLogExport,导出,Export
 ErrorLogInfo,信息,Info
 ServiceUpdateEntrance,更新,Service Update
 ServiceUpdateEntranceDesc,更新,Service Update
-SoftWareVersionMenu,机器版本,SoftWare Version
-SoftWareVersionMenuDesc,机器版本,SoftWare Version Desc
+SoftwareVersion,软件版本,Software Version
+SoftwareVersionMenu,软件版本,Software Version
 SystemSoftwareVersion,版本,Version
 PowerManagerSoftwareVersion,电源管理软件版本,Power Manager Software Version
 Uboot,系统引导文件,Uboot
@@ -1424,7 +1422,7 @@ AlarmType,报警类型,Alarm Type
 Technology,技术,Technology
 Physiology,生理,Physiology
 UserMaintainPassword,用户维护密码,User Maintain Password
-UserMaintainSystem,用户维护系统,User Maintain
+UserMaintain,用户维护,User Maintain
 Department,部门,Department
 BedNumber,床号,Bed No.
 ModifyPassword,密码,Password
@@ -1651,7 +1649,7 @@ SPO2SignalWeak,检测血氧信号弱,SpO2 Signal Weak
 SPO2CableOff,血氧线缆断开,SpO2 Cable Off
 SPO2FingerOff,未检测到手指,SpO2 Finger Off
 SPO2LEDFault,血氧LED错误,SpO2 LED Fault
-SPO2LowPerfusion,血氧弱灌注,SpO2 Low Perfusion
+SPO2LowPerfusion,SpO2弱灌注,SpO2 Low Perfusion
 SPO2DefectiveCable,SPO2线缆故障,Defective cable
 SPO2CableExpired,SPO2线缆过期,Cable expired
 SPO2IncompatibleCable,SPO2不兼容线缆,Incompatible cable

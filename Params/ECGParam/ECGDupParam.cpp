@@ -162,11 +162,13 @@ void ECGDupParam::updatePR(short pr, PRSourceType type, bool isUpdatePr)
             if (isSPO2Valid && _prValueFromSPO2 != InvData())
             {
                 _prValue = _prValueFromSPO2;
+                _currentHRSource = HR_SOURCE_SPO2;
             }
             else if ((!isIBP1LeadOff || !isIBP2LeadOff)
                  && (_prValueFromIBP != InvData()))
             {
                 _prValue = _prValueFromIBP;
+                _currentHRSource = HR_SOURCE_IBP;
             }
             else
             {
@@ -179,6 +181,7 @@ void ECGDupParam::updatePR(short pr, PRSourceType type, bool isUpdatePr)
             if (isSPO2Valid)
             {
                 _prValue = _prValueFromSPO2;
+                _currentHRSource = HR_SOURCE_SPO2;
             }
             else
             {
@@ -191,6 +194,7 @@ void ECGDupParam::updatePR(short pr, PRSourceType type, bool isUpdatePr)
             if (!isIBP1LeadOff || !isIBP2LeadOff)
             {
                 _prValue = _prValueFromIBP;
+                _currentHRSource = HR_SOURCE_IBP;
             }
             else
             {
@@ -216,11 +220,11 @@ void ECGDupParam::updatePR(short pr, PRSourceType type, bool isUpdatePr)
             }
             if (_prValue != InvData())
             {
-                _trendWidget->setHRValue(_prValue, false);
+                _trendWidget->setHRValue(_prValue, _currentHRSource);
             }
             else
             {
-                _trendWidget->setHRValue(_prValue, true);
+                _trendWidget->setHRValue(_prValue, HR_SOURCE_AUTO);
             }
             _hrBeatFlag = false;
         }
@@ -229,7 +233,7 @@ void ECGDupParam::updatePR(short pr, PRSourceType type, bool isUpdatePr)
         case HR_SOURCE_SPO2:
         {
             _hrBeatFlag = false;
-            _trendWidget->setHRValue(_prValue, false);
+            _trendWidget->setHRValue(_prValue, _hrSource);
         }
         break;
         case HR_SOURCE_ECG:
@@ -321,17 +325,17 @@ void ECGDupParam::updateHR(short hr)
             if (_hrValue != InvData())
             {
                 _hrBeatFlag = true;
-                _trendWidget->setHRValue(_hrValue, true);
+                _trendWidget->setHRValue(_hrValue, HR_SOURCE_ECG);
             }
             else if (_prValue != InvData())
             {
                 _hrBeatFlag = false;
-                _trendWidget->setHRValue(_prValue, false);
+                _trendWidget->setHRValue(_prValue, _currentHRSource);
             }
             else  // HR和PR都为无效时。
             {
                 _hrBeatFlag = true;
-                _trendWidget->setHRValue(_hrValue, true);
+                _trendWidget->setHRValue(_hrValue, HR_SOURCE_ECG);
             }
         }
         break;
@@ -339,7 +343,7 @@ void ECGDupParam::updateHR(short hr)
         case HR_SOURCE_SPO2:
         {
             _hrBeatFlag = false;
-            _trendWidget->setHRValue(_prValue, false);
+            _trendWidget->setHRValue(_hrValue, _hrSource);
         }
         break;
         case HR_SOURCE_ECG:
@@ -352,7 +356,7 @@ void ECGDupParam::updateHR(short hr)
             {
                 _hrBeatFlag = false;
             }
-            _trendWidget->setHRValue(_hrValue, true);
+            _trendWidget->setHRValue(_hrValue, _hrSource);
         }
         case HR_SOURCE_NR:
         break;
@@ -529,7 +533,8 @@ ECGDupParam::ECGDupParam()
       _prValueFromSPO2(InvData()),
       _prValueFromIBP(InvData()),
       _hrBeatFlag(true),
-      _isAlarm(false)
+      _isAlarm(false),
+      _currentHRSource(HR_SOURCE_AUTO)
 {
     // 初始化hr/pr来源
     int id = PARAM_ECG;
