@@ -22,7 +22,6 @@
 
 #include "TimeManager.h"
 #include "TimeDate.h"
-#include "ServiceVersion.h"
 #include <sys/time.h>
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"
@@ -349,7 +348,6 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         break;
 
     case TE3_RSP_VERSION:
-        serviceVersion.getECGVersion(data, len);
         return;
 
     case TE3_NOTIFY_SYSTEM_STARTED:
