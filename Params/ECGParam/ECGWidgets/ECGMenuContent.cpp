@@ -207,10 +207,12 @@ void ECGMenuContentPrivate::loadOptions()
             ecgParam.setFilterMode(filterMode);
         }
         combos[ITEM_CBO_FILTER_MODE]->setEnabled(false);
+        combos[ITEM_CBO_NOTCH_FITER]->setEnabled(false);
     }
     else
     {
         combos[ITEM_CBO_FILTER_MODE]->setEnabled(true);
+        combos[ITEM_CBO_NOTCH_FITER]->setEnabled(true);
     }
 
     // demo模式,12导界面下心电增益改为不可调
