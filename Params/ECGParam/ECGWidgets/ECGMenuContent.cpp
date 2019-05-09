@@ -201,11 +201,6 @@ void ECGMenuContentPrivate::loadOptions()
     WorkMode workMode = systemManager.getCurWorkMode();
     if (workMode == WORK_MODE_DEMO)
     {
-        if (filterMode != ECG_FILTERMODE_DIAGNOSTIC)
-        {
-            filterMode = ECG_FILTERMODE_DIAGNOSTIC;
-            ecgParam.setFilterMode(filterMode);
-        }
         combos[ITEM_CBO_FILTER_MODE]->setEnabled(false);
         combos[ITEM_CBO_NOTCH_FITER]->setEnabled(false);
     }
