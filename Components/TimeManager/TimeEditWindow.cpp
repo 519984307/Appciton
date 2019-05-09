@@ -148,14 +148,6 @@ TimeEditWindow::TimeEditWindow()
 
 TimeEditWindow::~TimeEditWindow()
 {
-    QDateTime dt = d_ptr->getSetupTime();
-    if (d_ptr->oldTime != dt.toTime_t())
-    {
-        d_ptr->setSysTime();
-        systemTick.resetLastTime();
-        patientManager.newPatient();
-    }
-
     delete d_ptr;
 }
 
@@ -318,6 +310,18 @@ void TimeEditWindow::layoutExec()
     setWindowLayout(vlayout);
 
     setFixedSize(580, 350);
+}
+
+void TimeEditWindow::hideEvent(QHideEvent *ev)
+{
+    QDateTime dt = d_ptr->getSetupTime();
+    if (d_ptr->oldTime != dt.toTime_t())
+    {
+        d_ptr->setSysTime();
+        systemTick.resetLastTime();
+        patientManager.newPatient();
+    }
+    Dialog::hideEvent(ev);
 }
 
 void TimeEditWindow::onComboBoxIndexChanged(int index)

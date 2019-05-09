@@ -28,6 +28,9 @@ public:
      */
     void layoutExec();
 
+protected:
+    void hideEvent(QHideEvent *ev);
+
 private slots:
     /**
      * @brief onComboBoxIndexChanged
