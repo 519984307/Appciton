@@ -65,9 +65,6 @@ public:
     /* reimplment */
     void reconnected();
 
-    /* reimplment */
-    void initModule();
-
 private slots:
     /**
      * @brief requestBoardInfo send get board info command
