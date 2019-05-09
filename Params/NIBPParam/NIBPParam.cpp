@@ -208,6 +208,10 @@ void NIBPParam::setProvider(NIBPProviderIFace *provider)
     _provider->sendSelfTest();
     _provider->setPatientType(patientManager.getType());
 
+    NIBPMode mode = NIBP_MODE_MANUAL;
+    systemConfig.setNumValue("PrimaryCfg|NIBP|MeasureMode",
+                                    static_cast<int>(mode));  // 每次开机自动测量模式都要手动启动
+
     // 监护模式状态机。
     if (!_machines.contains(NIBP_STATE_MACHINE_MONITOR))
     {
@@ -226,8 +230,6 @@ void NIBPParam::setProvider(NIBPProviderIFace *provider)
     {
         _activityMachine->enter();
     }
-    unsigned char cmd = 0x00;
-    handleNIBPEvent(NIBP_EVENT_TRIGGER_MODEL, &cmd, 1);
 }
 
 /**************************************************************************************************
