@@ -82,6 +82,8 @@ public:
      */
     void clearListData();
 
+    void updateUnit(UnitType unit);
+
     NIBPDataTrendWidget();
     ~NIBPDataTrendWidget();
 

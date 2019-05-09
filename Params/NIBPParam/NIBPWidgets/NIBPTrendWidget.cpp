@@ -382,7 +382,7 @@ void NIBPTrendWidgetPrivate::adjustValueLayout()
 /**************************************************************************************************
  * 单位更改。
  *************************************************************************************************/
-void NIBPTrendWidget::setUNit(UnitType unit)
+void NIBPTrendWidget::updateUnit(UnitType unit)
 {
     setUnit(Unit::getSymbol(unit));
 }
