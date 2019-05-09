@@ -794,13 +794,6 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         unsigned short tmp = (data[0] << 8) | data[1];
         if (tmp > 0)
         {
-            qWarning("Rainbow Board failure, reseting...");
-            if (q_ptr->disPatchInfo.dispatcher)
-            {
-                q_ptr->disPatchInfo.dispatcher->resetPacketPort(q_ptr->disPatchInfo.packetType);
-                isReseting = true;
-                curInitializeStep = RB_INIT_BAUDRATE;
-            }
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_BOARD_FAILURE, true);
         }
         else
