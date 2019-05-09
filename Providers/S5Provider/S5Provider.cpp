@@ -446,6 +446,18 @@ S5Provider::S5Provider()
           , _lastTime(timeval())
           , _isInvalidWaveData(false)
 {
+    initModule();
+}
+
+/**************************************************************************************************
+ * 析构。
+ *************************************************************************************************/
+S5Provider::~S5Provider()
+{
+}
+
+void S5Provider::initModule()
+{
     disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_SPO2;
 
     UartAttrDesc portAttr(115200, 8, 'N', 1);
@@ -456,12 +468,5 @@ S5Provider::S5Provider()
         // reset the hardware
         disPatchInfo.dispatcher->resetPacketPort(disPatchInfo.packetType);
     }
-}
-
-/**************************************************************************************************
- * 析构。
- *************************************************************************************************/
-S5Provider::~S5Provider()
-{
 }
 

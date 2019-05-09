@@ -126,6 +126,8 @@ void TEMPParam::reset()
 
     _provider->sendTEMPSelfTest();
     _provider->sendProbeState();
+
+    emit tempReset();
 }
 
 /**************************************************************************************************

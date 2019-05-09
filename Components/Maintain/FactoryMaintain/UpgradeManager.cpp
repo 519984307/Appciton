@@ -805,7 +805,13 @@ void UpgradeManager::upgradeProcess()
 
         int count = (d_ptr->fileContent.size() + 127) / 128;
         // d_ptr->segmentSeq是从０开始的序列．
-        emit upgradeProgressChanged(d_ptr->segmentSeq * 100 / (count - 1));
+        int value = d_ptr->segmentSeq * 100 / (count - 1);
+        emit upgradeProgressChanged(value);
+
+        if (d_ptr->type == UPGRADE_MOD_T5 && value == 100)
+        {
+            emit upgradeT5ModuleCompleted();
+        }
 
         qdebug("write segment %d", d_ptr->segmentSeq);
     }

@@ -309,20 +309,7 @@ RainbowProvider::RainbowProvider()
     , SPO2ProviderIFace()
     , d_ptr(new RainbowProviderPrivate(this))
 {
-    disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_SPO2;
-    UartAttrDesc attr(DEFALUT_BAUD_RATE, 8, 'N', 1);
-    initPort(attr);
-
-    if (disPatchInfo.dispatcher)
-    {
-        // reset the hardware
-        disPatchInfo.dispatcher->resetPacketPort(disPatchInfo.packetType);
-        d_ptr->isReseting = true;
-    }
-    else
-    {
-        QTimer::singleShot(200, this, SLOT(changeBaudrate()));
-    }
+    initModule();
 }
 
 RainbowProvider::~RainbowProvider()
@@ -583,6 +570,24 @@ void RainbowProvider::reconnected()
         alarmSource->setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, false);
     }
     spo2Param.setConnected(true);
+}
+
+void RainbowProvider::initModule()
+{
+    disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_SPO2;
+    UartAttrDesc attr(DEFALUT_BAUD_RATE, 8, 'N', 1);
+    initPort(attr);
+
+    if (disPatchInfo.dispatcher)
+    {
+        // reset the hardware
+        disPatchInfo.dispatcher->resetPacketPort(disPatchInfo.packetType);
+        d_ptr->isReseting = true;
+    }
+    else
+    {
+        QTimer::singleShot(200, this, SLOT(changeBaudrate()));
+    }
 }
 
 void RainbowProvider::requestBoardInfo()
