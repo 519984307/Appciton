@@ -45,7 +45,7 @@ public:
     void setCountdown(int t);
 
     // 单位更改。
-    void setUNit(UnitType unit);
+    void updateUnit(UnitType unit);
 
     // 是否报警
     void isAlarm(int id, bool flag);

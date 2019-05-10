@@ -81,7 +81,8 @@ public:
         static const char *symbol[RESP_ONESHOT_NR] =
         {
             "Apnea",
-            "RESPCommunicationStop"
+            "RESPCommunicationStop",
+            "RESPCheckElecrodes"
         };
         return symbol[index];
     }

@@ -203,6 +203,7 @@ PumpControl,气泵控制,Pump Control
 ValveControl,气阀控制,Valve Control
 InflationPressure,充气压力,Inflation Pressure
 OverpressureProtect,过压保护,Overpressure Protect
+NIBPPressureControlModelEnterFail,进入压力控制模式失败,Pressure Control Enter Fail
 CO2ApneaTime,窒息时间,Apnea Time
 CO2SweepSpeed,波形速度,Sweep Speed
 CO2WaveMode,CO2波形模式,CO2 Wave Mode
@@ -596,6 +597,7 @@ ECG12LSnapShot,12导 快照,12 Lead SnapShot
 ECGAcquiring12L,获取12导,Acquiring 12 Lead
 ECGAcquired12L,获取12导结束,Acquire 12 Lead Complete
 RESPCommunicationStop,呼吸通讯停止,RESP Communication Stop
+RESPCheckElecrodes,呼吸检查电极,RESP Check Elecrodes
 Apnea,呼吸窒息,Apnea
 SPO2Low,血氧低,SpO2 Low
 SPO2High,血氧高,SpO2 High

@@ -149,6 +149,7 @@ void NIBPParam::exitDemo()
         // 若返回的时准备模式，则清除显示数据
         clearResult();
     }
+    clearTrendListData();
 }
 
 /**************************************************************************************************
@@ -1123,9 +1124,10 @@ void NIBPParam::setUnit(UnitType type)
     systemConfig.setNumValue("Unit|PressureUnit", unit);
     if (_trendWidget)
     {
-        _trendWidget->setUNit(static_cast<UnitType>(unit));
+        _trendWidget->updateUnit(static_cast<UnitType>(unit));
         _trendWidget->updateLimit();
-         _trendWidget->setResults(_sysValue, _diaValue, _mapVaule, _lastTime);
+        _trendWidget->setResults(_sysValue, _diaValue, _mapVaule, _lastTime);
+        _nibpDataTrendWidget->updateUnit(static_cast<UnitType>(unit));
     }
 }
 

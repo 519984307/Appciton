@@ -294,6 +294,7 @@ void RESPParam::setLeadoff(bool flag)
     if (NULL != d_ptr->waveWidget)
     {
         d_ptr->waveWidget->leadoff(flag);
+        setOneShotAlarm(RESP_ONESHOT_ALARM_CHECK_ELECTRODES, flag);
     }
 }
 

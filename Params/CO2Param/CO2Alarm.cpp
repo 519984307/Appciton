@@ -272,7 +272,7 @@ WaveformID CO2OneShotAlarm::getWaveformID(int id)
 SubParamID CO2OneShotAlarm::getSubParamID(int id)
 {
     Q_UNUSED(id)
-    return SUB_PARAM_NONE;
+    return SUB_PARAM_ETCO2;
 }
 
 /**************************************************************************************************

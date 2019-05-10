@@ -378,6 +378,11 @@ void NIBPDataTrendWidget::clearListData()
     _nibpNrendCacheMap.clear();
 }
 
+void NIBPDataTrendWidget::updateUnit(UnitType unit)
+{
+    setUnit(Unit::getSymbol(unit));
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/

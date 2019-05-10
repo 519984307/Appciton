@@ -38,6 +38,10 @@ public:
     // 析构。
     virtual ~SPO2ProviderIFace() { }
 
+    /**
+     * @brief initModule  and the function of initting the module
+     */
+    virtual void initModule() { }
 
 public:
     //Masimo
