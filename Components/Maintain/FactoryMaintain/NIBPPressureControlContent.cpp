@@ -29,6 +29,7 @@
 #define CALIBRATION_INTERVAL_TIME              (100)
 #define TIMEOUT_WAIT_NUMBER                    (5000 / CALIBRATION_INTERVAL_TIME)
 #define INFLATE_WAIT_NUMBER                    (100000 / CALIBRATION_INTERVAL_TIME)
+#define INFLATE_SWITCH_SIGN                    (5)
 
 class NIBPPressureControlContentPrivate
 {
@@ -113,6 +114,7 @@ void NIBPPressureControlContent::LayoutExec()
     d_ptr->overpressureCbo->setEnabled(false);
     d_ptr->overpressureCbo->addItem(trs("ON"));
     d_ptr->overpressureCbo->addItem(trs("Off"));
+    d_ptr->overpressureCbo->setCurrentIndex(1);
     layout->addWidget(d_ptr->overpressureCbo, 1, 2);
     connect(d_ptr->overpressureCbo, SIGNAL(currentIndexChanged(int)), this, SLOT(onOverpressureReleased(int)));
 
@@ -233,21 +235,17 @@ void NIBPPressureControlContent::timerEvent(QTimerEvent *ev)
             d_ptr->pressure = nibpParam.getManometerPressure();
             d_ptr->value->setNum(nibpParam.getManometerPressure());
         }
-        if (d_ptr->pressure >= 5 && d_ptr->isInflate)
+        if (d_ptr->pressure >= INFLATE_SWITCH_SIGN && d_ptr->isInflate)
         {
             d_ptr->inflateBtn->setText(trs("ServiceDeflate"));
             d_ptr->isInflate = false;
-        }
-        if (d_ptr->overPressureProtect && d_ptr->pressure >= d_ptr->safePressure)
-        {
-            nibpParam.provider().controlPneumatics(0, 0, 0);  // 开启软件过压保护超过压力就释放掉
         }
         else if (d_ptr->pressure >= d_ptr->chargePressure->getValue() && d_ptr->holdPressureFlag)
         {
             nibpParam.provider().controlPneumatics(0, 1, 1);  //达到压力值范围时候停止冲压,保持压力
             d_ptr->holdPressureFlag = false;
         }
-        else if (d_ptr->pressure < 5)
+        else if (d_ptr->pressure < INFLATE_SWITCH_SIGN)
         {
             d_ptr->inflateBtn->setText(trs("ServiceInflate"));
             d_ptr->isInflate = true;
@@ -380,10 +378,26 @@ void NIBPPressureControlContent::onOverpressureReleased(int index)
         if (!index)
         {
             d_ptr->overPressureProtect = true;
+            PatientType type = patientManager.getType();
+            if (type == PATIENT_TYPE_ADULT)
+            {
+                d_ptr->safePressure = 290;
+            }
+            else if (type == PATIENT_TYPE_NEO)
+            {
+                d_ptr->safePressure = 250;
+            }
+            else if (type == PATIENT_TYPE_PED)
+            {
+                d_ptr->safePressure = 150;
+            }
+            d_ptr->chargePressure->setRange(50, d_ptr->safePressure);
+            d_ptr->chargePressure->setValue(100);
         }
         else
         {
             d_ptr->overPressureProtect = false;
+            d_ptr->chargePressure->setRange(50, 300);
         }
     }
 }
@@ -425,22 +439,6 @@ void NIBPPressureControlContent::init()
         d_ptr->modeBtn->setText(trs("EnterPressureContrlMode"));
         d_ptr->overpressureCbo->setEnabled(false);
         d_ptr->inflateBtn->setEnabled(false);
-    }
-    else if (d_ptr->moduleStr == "SUNTECH_NIBP")
-    {
-        PatientType type = patientManager.getType();
-        if (type == PATIENT_TYPE_ADULT)
-        {
-            d_ptr->safePressure = 290;
-        }
-        else if (type == PATIENT_TYPE_NEO)
-        {
-            d_ptr->safePressure = 247;
-        }
-        else if (type == PATIENT_TYPE_PED)
-        {
-            d_ptr->safePressure = 147;
-        }
     }
 }
 
