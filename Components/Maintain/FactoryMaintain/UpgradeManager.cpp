@@ -551,6 +551,10 @@ void UpgradeManagerPrivate::handleStateChanged(ModuleState modState)
             }
             else
             {
+                if (type == UpgradeManager::UPGRADE_MOD_T5)
+                {
+                    emit q_ptr->upgradeT5ModuleCompleted();
+                }
                 upgradeExit(UpgradeManager::UPGRADE_SUCCESS, UPGRADE_ERR_NONE);
             }
         }
@@ -805,13 +809,7 @@ void UpgradeManager::upgradeProcess()
 
         int count = (d_ptr->fileContent.size() + 127) / 128;
         // d_ptr->segmentSeq是从０开始的序列．
-        int value = d_ptr->segmentSeq * 100 / (count - 1);
-        emit upgradeProgressChanged(value);
-
-        if (d_ptr->type == UPGRADE_MOD_T5 && value == 100)
-        {
-            emit upgradeT5ModuleCompleted();
-        }
+        emit upgradeProgressChanged(d_ptr->segmentSeq * 100 / (count - 1));
 
         qdebug("write segment %d", d_ptr->segmentSeq);
     }
