@@ -226,7 +226,7 @@ void NIBPCalibrateContent::onBtn1Calibrated()
         unsigned char cmd[2];
         cmd[0] = 0x00;
         cmd[1] = 0x00;
-        if (d_ptr->moduleStr != "SUNTECH_NIBP")
+        if (d_ptr->moduleStr == "BLM_N5")
         {
             nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_CMD_PRESSURE_POINT, cmd, 2);
         }
@@ -262,7 +262,7 @@ void NIBPCalibrateContent::onBtn2Calibrated()
         unsigned char cmd[2];
         cmd[0] = d_ptr->pressurevalue & 0xFF;
         cmd[1] = (d_ptr->pressurevalue & 0xFF00) >> 8;
-        if (d_ptr->moduleStr != "SUNTECH_NIBP")
+        if (d_ptr->moduleStr == "BLM_N5")
         {
             nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_CMD_PRESSURE_POINT, cmd, 2);
         }
@@ -284,7 +284,7 @@ void NIBPCalibrateContent::onBtn2Calibrated()
 
 void NIBPCalibrateContent::inCalibrateMode()
 {
-    if (d_ptr->moduleStr != "SUNTECH_NIBP")
+    if (d_ptr->moduleStr == "BLM_N5")
     {
         d_ptr->inModeTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
         d_ptr->modeBtn->setEnabled(false);
@@ -300,6 +300,14 @@ void NIBPCalibrateContent::inCalibrateMode()
     }
     else
     {
+        if (!nibpParam.getConnectedState())
+        {
+            MessageBox messbox(trs("Warn"), trs("NIBPModuleEnterFail"), false);
+            messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
+            windowManager.showWindow(&messbox,
+                                     WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
+            return;
+        }
         if (d_ptr->isCalibrateMode)
         {
             d_ptr->modeBtn->setText(trs("EnterCalibrateMode"));
