@@ -249,9 +249,24 @@ public:
      */
     bool getPerfusionStatus() const;
 
+    /**
+     * @brief initModule  and the function of initting the module
+     */
+    void initModule();
+
 private slots:
     void checkSelftest();
     void onPaletteChanged(ParamID id);
+
+    /**
+     * @brief onUpgradeT5ModuleCompleted  and the function of upgrading the T5 module when completed
+     */
+    void onUpgradeT5ModuleCompleted();
+
+    /**
+     * @brief onTempReset  and the function of temp reset
+     */
+    void onTempReset();
 
 private:
     SPO2Param();
@@ -283,5 +298,7 @@ private:
 
     bool _isLowPerfusion;
     bool _isForceUpdating;  // 当spo2的弱灌注状态发生变化时，该状态位为true
+
+    bool _isT5ModuleUpgradeCompleted;
 };
 #define spo2Param (SPO2Param::construction())

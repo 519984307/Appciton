@@ -102,6 +102,9 @@ public: // SPO2ProviderIFace 的接口。
     S5Provider();
     ~S5Provider();
 
+    /* reimplment */
+    void initModule();
+
 protected:
     virtual void handlePacket(unsigned char *data, int len);
     virtual void disconnected(void);
