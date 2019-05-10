@@ -329,7 +329,7 @@ void NIBPCalibrateContent::inCalibrateMode()
             btn = d_ptr->btnList.at(1);
             btn->setEnabled(true);
             d_ptr->calibrateFlag = true;
-            if (d_ptr->moduleStr == "SUNTECH_NIBP")
+            if (d_ptr->moduleStr != "BLM_N5")
             {
                 nibpParam.provider().controlPneumatics(0, 1, 1);
             }

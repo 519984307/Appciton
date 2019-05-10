@@ -270,7 +270,7 @@ void NIBPPressureControlContent::showEvent(QShowEvent *e)
 void NIBPPressureControlContent::hideEvent(QHideEvent *e)
 {
     Q_UNUSED(e)
-    if (d_ptr->moduleStr == "SUNTECH_NIBP")
+    if (d_ptr->moduleStr != "BLM_N5")
     {
         killTimer(d_ptr->pressureTimerID);
         d_ptr->pressureTimerID = -1;
@@ -297,7 +297,7 @@ void NIBPPressureControlContent::inflateBtnReleased()
             nibpParam.provider().servicePressuredeflate();
         }
     }
-    else if (d_ptr->moduleStr == "SUNTECH_NIBP")
+    else
     {
         if (d_ptr->isInflate)
         {
@@ -334,7 +334,7 @@ void NIBPPressureControlContent::enterPressureContrlReleased()
         nibpParam.switchState(NIBP_SERVICE_PRESSURECONTROL_STATE);
     }
     }
-    else if (d_ptr->moduleStr == "SUNTECH_NIBP")
+    else
     {
        if (!d_ptr->pressureControlFlag)
        {
@@ -373,7 +373,7 @@ void NIBPPressureControlContent::onOverpressureReleased(int index)
     {
         nibpParam.provider().servicePressureProtect(!index);
     }
-    else if (d_ptr->moduleStr == "SUNTECH_NIBP")
+    else
     {
         if (!index)
         {
