@@ -147,6 +147,17 @@ void ECGParam::exitDemo()
     ecgParam.updateHR(InvData());
     ecgDupParam.updateHR(InvData());
     updatePVCS(InvData());
+
+    int filter;
+    currentConfig.getNumValue("ECG|FilterMode", filter);
+    _filterMode = static_cast<ECGFilterMode>(filter);
+    emit updateFilterMode();
+
+    int notchFilter;
+    currentConfig.getNumValue("ECG|NotchFilter", notchFilter);
+    _notchFilter = static_cast<ECGNotchFilter>(notchFilter);
+    emit updateNotchFilter();
+
     for (int i = ECG_ST_I; i < ECG_ST_NR; i++)
     {
         updateST((ECGST)i, InvData());
@@ -2008,9 +2019,14 @@ int ECGParam::getQRSToneVolume(void)
 void ECGParam::setNotchFilter(ECGNotchFilter filter)
 {
     currentConfig.setNumValue("ECG|NotchFilter", static_cast<int>(filter));
+    if (filter == _notchFilter)
+    {
+        return;
+    }
+    _notchFilter = static_cast<ECGNotchFilter>(filter);
     if (NULL != _provider)
     {
-        _provider->setNotchFilter(filter);
+        _provider->setNotchFilter(_notchFilter);
     }
     emit updateNotchFilter();
 }
@@ -2020,10 +2036,7 @@ void ECGParam::setNotchFilter(ECGNotchFilter filter)
  *************************************************************************************************/
 ECGNotchFilter ECGParam::getNotchFilter()
 {
-    int filter;
-    currentConfig.getNumValue("ECG|NotchFilter", filter);
-
-    return static_cast<ECGNotchFilter>(filter);
+    return _notchFilter;
 }
 
 /***************************************************************************************************
@@ -2288,6 +2301,10 @@ ECGParam::ECGParam() : Param(PARAM_ECG),
     currentConfig.getNumValue("ECG|FilterMode", mode);
     _filterMode = (ECGFilterMode) mode;
 
+    mode = ECG_NOTCH_OFF;
+    currentConfig.getNumValue("ECG|NotchFilter", mode);
+    _notchFilter = (ECGNotchFilter) mode;
+
     mode = 0;
     currentConfig.getNumValue("ECG12L|ECG12LeadBandwidth", mode);
     mode += ECG_BANDWIDTH_0525_40HZ;
@@ -2343,8 +2360,11 @@ void ECGParam::onWorkModeChanged(WorkMode mode)
     {
         return;
     }
-    setFilterMode(ECG_FILTERMODE_DIAGNOSTIC);
-    setNotchFilter(ECG_NOTCH_OFF);
+
+    _filterMode = ECG_FILTERMODE_DIAGNOSTIC;
+    emit updateFilterMode();
+    _notchFilter = ECG_NOTCH_OFF;
+    emit updateNotchFilter();
 }
 
 void ECGParam::onPaletteChanged(ParamID id)
