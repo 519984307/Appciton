@@ -233,7 +233,7 @@ void NIBPPressureControlContent::timerEvent(QTimerEvent *ev)
         if (d_ptr->pressure != nibpParam.getManometerPressure())
         {
             d_ptr->pressure = nibpParam.getManometerPressure();
-            d_ptr->value->setNum(nibpParam.getManometerPressure());
+            d_ptr->value->setNum(d_ptr->pressure);
         }
         if (d_ptr->pressure >= INFLATE_SWITCH_SIGN && d_ptr->isInflate)
         {
