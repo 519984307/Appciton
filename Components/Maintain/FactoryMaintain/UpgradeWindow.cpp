@@ -21,6 +21,7 @@
 #include "WindowManager.h"
 #include "MessageBox.h"
 #include "LanguageManager.h"
+#include <QProcess>
 
 class UpgradeWindowPrivate
 {
@@ -31,7 +32,8 @@ public:
           textEdit(NULL),
           progressBar(NULL),
           info(NULL),
-          upgradeModule(UpgradeManager::UPGRADE_MOD_NONE)
+          upgradeModule(UpgradeManager::UPGRADE_MOD_NONE),
+          isUpdate(false)
     {}
 
     ComboBox *upgradeModuleCbo;
@@ -40,6 +42,7 @@ public:
     QProgressBar *progressBar;
     QLabel *info;
     UpgradeManager::UpgradeModuleType upgradeModule;
+    bool isUpdate;
 };
 
 UpgradeWindow::UpgradeWindow()
@@ -168,6 +171,24 @@ void UpgradeWindow::timerEvent(QTimerEvent *ev)
     }
 }
 
+void UpgradeWindow::hideEvent(QHideEvent *ev)
+{
+    if (d_ptr->isUpdate)
+    {
+        d_ptr->isUpdate = false;
+        QString hints = trs("MachineConfigIsUpdatedNow");
+        hints += "\n";
+        hints += trs("IsRebootMachine");
+        hints += "?";
+        MessageBox box(trs("UpdateHint"), hints);
+        QDialog::DialogCode statue = static_cast<QDialog::DialogCode>(box.exec());
+        if (statue == QDialog::Accepted)
+        {
+            QProcess::execute("reboot");
+        }
+    }
+}
+
 void UpgradeWindow::upgradeMessageUpdate(const QString &msg)
 {
     d_ptr->textEdit->appendPlainText(msg);
@@ -187,6 +208,7 @@ void UpgradeWindow::onUpgradeFinished(UpgradeManager::UpgradeResult result)
 {
     if (result == UpgradeManager::UPGRADE_SUCCESS)
     {
+        d_ptr->isUpdate = true;
         d_ptr->textEdit->appendPlainText(trs("UpgradeSuccess"));
         getCloseBtn()->setEnabled(true);
     }

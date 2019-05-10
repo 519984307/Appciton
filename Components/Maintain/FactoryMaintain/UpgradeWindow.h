@@ -25,6 +25,7 @@ public:
 
 protected:
     void timerEvent(QTimerEvent *ev);
+    void hideEvent(QHideEvent *ev);
 
 public slots:
     void upgradeMessageUpdate(const QString &msg);
