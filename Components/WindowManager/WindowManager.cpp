@@ -413,6 +413,8 @@ void WindowManager::closeAllWidows()
     {  // send the signal when the dialgs's status changes
         emit allDialogsStatusChanged();
     }
+
+    QApplication::processEvents(QEventLoop::AllEvents);
 }
 
 void WindowManager::onWindowHide(Dialog *w)

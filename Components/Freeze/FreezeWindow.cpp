@@ -71,7 +71,7 @@ FreezeWindow::FreezeWindow()
     QStringList waveNames;
     d_ptr->waveIDs = layoutManager.getDisplayedWaveformIDs();
     waveNames = layoutManager.getDisplayedWaveformLabels();
-    QGridLayout *layout = new QGridLayout(this);
+    QGridLayout *layout = new QGridLayout();
     layout->setMargin(10);
 
     QHBoxLayout *hl;
