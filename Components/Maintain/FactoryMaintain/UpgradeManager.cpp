@@ -24,6 +24,7 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include "LanguageManager.h"
+#include "NIBPParam.h"
 
 #define UPGRADE_FILES_DIR "/upgrade/"
 #define DEFAULT_HW_VER_STR "1.0A"
@@ -44,6 +45,7 @@ enum UpgradeState
     STATE_WAIT_FOR_COMPLETE_MSG,
     STATE_REBOOT,
     STATE_UPGRADE_LOGO,
+    STATE_UPGRADE_PASSTHROUGH_MODE
 };
 
 enum UpgradePacketType
@@ -91,6 +93,7 @@ enum UpgradeErrorType
     UPGRADE_ERR_WRITE_SEGMENT_FAIL,
     UPGRADE_ERR_COMMUNICATION_FAIL,
     UPGRADE_ERR_WRITE_FAIL,
+    UPGRADE_ERR_PASSTHROUGH_MODE_FAIL,
     UPGRADE_ERR_NR,
 };
 
@@ -113,6 +116,7 @@ static const char *errorString(UpgradeErrorType errorType)
         "WriteSegmentFail",
         "CommunicationFail",
         "WriteFail",
+        "SwitchPassthroughModeFail"
     };
     return errors[errorType];
 }
@@ -131,6 +135,8 @@ enum ModuleState
     MODULE_STAT_IMAGE_SEQ_ERROR,            // image sequence number error
     MODULE_STAT_WRITE_IMAGE_SEGMENT_FAIL,   // write image segment failed
     MODULE_STAT_WRITE_UPGRADE_COMPLETE,     // upgrade complete
+    MODULE_STAT_ENTER_PASSTHROUGH_MODE,     // nibp enter passthrough mode
+    MODULE_STAT_EXIT_PASSTHROUGH_MODE,      // nibp exit passthrough mode
 };
 
 class UpgradeManagerPrivate
@@ -144,7 +150,8 @@ public:
           provider(NULL),
           noResponseTimer(NULL),
           noResponeCount(0),
-          segmentSeq(0)
+          segmentSeq(0),
+          isPassthroughMode(false)
     {}
 
     /**
@@ -241,6 +248,7 @@ public:
     QTimer *noResponseTimer;
     int noResponeCount;
     int segmentSeq;     // the file segment sequence number
+    bool isPassthroughMode; // NIBP透传模式
 };
 
 bool UpgradeManagerPrivate::checkUpgradeFile()
@@ -377,6 +385,11 @@ void UpgradeManagerPrivate::upgradeExit(UpgradeManager::UpgradeResult result, Up
     {
         emit q_ptr->upgradeInfoChanged(trs(errorString(error)));
     }
+    else if (error == UPGRADE_ERR_PASSTHROUGH_MODE_FAIL)
+    {
+        emit q_ptr->upgradeInfoChanged(trs(errorString(error)));
+        return;
+    }
 
     emit q_ptr->upgradeResult(result);
 
@@ -389,6 +402,10 @@ void UpgradeManagerPrivate::upgradeExit(UpgradeManager::UpgradeResult result, Up
     resetTimer();
 
     segmentSeq = 0;
+    if (type == UpgradeManager::UPGRADE_MOD_N5DAEMON)
+    {
+        handleStateChanged(MODULE_STAT_EXIT_PASSTHROUGH_MODE);
+    }
 }
 
 void UpgradeManagerPrivate::handleAck(unsigned char *data, int len)
@@ -555,6 +572,16 @@ void UpgradeManagerPrivate::handleStateChanged(ModuleState modState)
             }
         }
         break;
+    case MODULE_STAT_ENTER_PASSTHROUGH_MODE:
+        emit upgradeInfoChanged(trs("EnterPassthroughMode"));
+        nibpParam.setPassthroughMode(NIBP_PASSTHROUGH_ON);
+        noResponseTimer(2000);
+        break;
+    case MODULE_STAT_EXIT_PASSTHROUGH_MODE:
+        emit upgradeInfoChanged(trs("ExitPassthroughMode"));
+        nibpParam.setPassthroughMode(NIBP_PASSTHROUGH_OFF);
+        noResponseTimer(2000);
+        break;
     default:
         break;
     }
@@ -613,6 +640,8 @@ QString UpgradeManager::getUpgradeModuleName(UpgradeManager::UpgradeModuleType t
         return "S5";
     case UPGRADE_MOD_N5:
         return "N5";
+    case UPGRADE_MOD_N5DAEMON:
+        return "N5Daemon";
     case UPGRADE_MOD_T5:
         return "T5";
     case UPGRADE_MOD_NEONATE:
@@ -665,6 +694,18 @@ void UpgradeManager::handlePacket(unsigned char *data, int len)
     default:
         break;
     }
+}
+
+void UpgradeManager::enterPassthroughMode()
+{
+    d_ptr->state = STATE_REQUEST_ENTER_UPGRADE_MODE;
+    d_ptr->resetTimer();
+    upgradeProcess();
+}
+
+void UpgradeManager::exitPassthroughMode()
+{
+    d_ptr->resetTimer();
 }
 
 void UpgradeManager::upgradeProcess()
@@ -739,7 +780,16 @@ void UpgradeManager::upgradeProcess()
             break;
         }
 
-        d_ptr->state = STATE_REQUEST_ENTER_UPGRADE_MODE;
+        if (d_ptr->type == UPGRADE_MOD_N5DAEMON)
+        {
+            d_ptr->handleStateChanged(MODULE_STAT_ENTER_PASSTHROUGH_MODE);
+            d_ptr->state = STATE_UPGRADE_PASSTHROUGH_MODE;
+            break;
+        }
+        else
+        {
+            d_ptr->state = STATE_REQUEST_ENTER_UPGRADE_MODE;
+        }
         QTimer::singleShot(0, this, SLOT(upgradeProcess()));
     }
     break;
@@ -968,6 +1018,9 @@ void UpgradeManager::noResponseTimeout()
     case STATE_REBOOT:
         emit reboot();
         system("reboot");
+        break;
+    case STATE_UPGRADE_PASSTHROUGH_MODE:
+        d_ptr->upgradeExit(UPGRADE_FAIL, UPGRADE_ERR_PASSTHROUGH_MODE_FAIL);
         break;
     default:
         break;

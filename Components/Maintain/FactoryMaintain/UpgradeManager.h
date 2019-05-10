@@ -24,6 +24,7 @@ public:
         UPGRADE_MOD_E5,
         UPGRADE_MOD_S5,
         UPGRADE_MOD_N5,
+        UPGRADE_MOD_N5DAEMON,
         UPGRADE_MOD_T5,
         UPGRADE_MOD_NEONATE,
         UPGRADE_MOD_PRT48,
@@ -59,6 +60,16 @@ public:
 
     /* reimplement */
     void handlePacket(unsigned char *data, int len);
+
+    /**
+     * @brief enterPassthroughMode 进入透传模式
+     */
+    void enterPassthroughMode();
+
+    /**
+     * @brief exitPassthroughMode 退出透传模式
+     */
+    void exitPassthroughMode();
 
 signals:
     void upgradeResult(UpgradeManager::UpgradeResult result);
