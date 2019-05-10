@@ -95,7 +95,7 @@ void NIBPRepairMenuWindow::init()
     {
         nibpParam.changeMode(NIBP_STATE_MACHINE_SERVICE);
     }
-    else if (str == "SUNTECH_NIBP")
+    else
     {
         if (nibpParam.getConnectedState())
         {
