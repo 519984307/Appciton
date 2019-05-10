@@ -352,7 +352,6 @@ void TrendPrintWindowPrivate::initGroupBox(QGroupBox *groupBox, TrendPrintWindow
             monthColumn = 2;
             dayColumn = 1;
         break;
-        case DATE_FORMAT_Y_M_D:
     default:
         break;
     }
