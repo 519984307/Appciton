@@ -119,7 +119,6 @@ public:
         QString curFolderName = fileInfo.fileName();
         patientManager.dischargePatient();
         dataStorageDirManager.deleteData(curFolderName);
-        nibpParam.clearTrendListData();
     }
 
     /**
