@@ -187,6 +187,7 @@ void UpgradeWindow::hideEvent(QHideEvent *ev)
             QProcess::execute("reboot");
         }
     }
+    Dialog::hideEvent(ev);
 }
 
 void UpgradeWindow::upgradeMessageUpdate(const QString &msg)

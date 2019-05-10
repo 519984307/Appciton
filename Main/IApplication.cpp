@@ -351,6 +351,13 @@ bool IApplication::qwsEventFilter(QWSEvent *e)
         }
         else if (keyEvent->simpleData.is_press)   // press事件。
         {
+            if ((keyEvent->simpleData.keycode >= Qt::Key_F1 && keyEvent->simpleData.keycode <= Qt::Key_F9)
+                    || keyEvent->simpleData.keycode == Qt::Key_Return
+                    || keyEvent->simpleData.keycode == Qt::Key_Enter)
+            {
+                // 面板9个按键和飞梭按键播放按键音
+                soundManager.keyPressTone();
+            }
             switch (keyEvent->simpleData.keycode)
             {
             case Qt::Key_F1:
@@ -388,13 +395,6 @@ bool IApplication::qwsEventFilter(QWSEvent *e)
             case Qt::Key_F9:
                 keyActionManager.handleKeyAction(KEY_F9_PRESSED);
                 break;
-
-            // 更新：左右按键不需要有按键音，确认键要有按键音
-            case Qt::Key_Return:
-            case Qt::Key_Enter:
-                soundManager.keyPressTone();
-                break;
-
             default:
                 break;
             }
