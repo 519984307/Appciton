@@ -20,6 +20,7 @@
 #include <QDateTime>
 #include "TrendTableWindow.h"
 #include "IConfig.h"
+#include "TimeSymbol.h"
 
 class TrendPrintWindowPrivate
 {
@@ -276,7 +277,7 @@ void TrendPrintWindow::printReleased()
 
 void TrendPrintWindowPrivate::initGroupBox(QGroupBox *groupBox, TrendPrintWindowPrivate::SubGroupBox *subBox)
 {
-    subBox->dateLbl = new QLabel(trs("YearMonthDay"));
+    subBox->dateLbl = new QLabel();
     subBox->timeLbl = new QLabel(trs("HourSystem"));
     subBox->yearSbx = new SpinBox();
     subBox->monthSbx = new SpinBox();
@@ -322,14 +323,42 @@ void TrendPrintWindowPrivate::initGroupBox(QGroupBox *groupBox, TrendPrintWindow
 
     QGridLayout *mainLayout = new QGridLayout();
     mainLayout->addWidget(subBox->dateLbl, 0, 0);
-    mainLayout->addWidget(subBox->yearSbx, 0, 1);
-    mainLayout->addWidget(subBox->monthSbx, 0, 2);
-    mainLayout->addWidget(subBox->daySbx, 0, 3);
     mainLayout->addWidget(subBox->timeLbl, 1, 0);
     mainLayout->addWidget(subBox->hourSbx, 1, 1);
     mainLayout->addWidget(subBox->minSbx, 1, 2);
     mainLayout->addWidget(subBox->secondSbx, 1, 3);
     groupBox->setLayout(mainLayout);
+
+    // adjust the name of the date format
+    int index = 0;
+    systemConfig.getNumValue("DateTime|DateFormat", index);
+    DateFormat dateFormat = static_cast<DateFormat>(index);
+    QString dateFormatName = trs(TimeSymbol::convert(dateFormat));
+    subBox->dateLbl->setText(dateFormatName);
+
+    // adjust the position of the date
+    int yearColumn = 1;
+    int monthColumn = 2;
+    int dayColumn = 3;
+    switch (dateFormat)
+    {
+        case DATE_FORMAT_M_D_Y:
+            yearColumn = 3;
+            monthColumn = 1;
+            dayColumn = 2;
+        break;
+        case DATE_FORMAT_D_M_Y:
+            yearColumn = 3;
+            monthColumn = 2;
+            dayColumn = 1;
+        break;
+        case DATE_FORMAT_Y_M_D:
+    default:
+        break;
+    }
+    mainLayout->addWidget(subBox->yearSbx, 0, yearColumn);
+    mainLayout->addWidget(subBox->monthSbx, 0, monthColumn);
+    mainLayout->addWidget(subBox->daySbx, 0, dayColumn);
 }
 
 void TrendPrintWindowPrivate::difftimeInfo()
