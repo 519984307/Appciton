@@ -183,6 +183,7 @@ RESPAutoActivation,呼吸激活,RESP Automatic Activation
 NIBPMeasurement,无创血压测量,NIBP
 NIBPMeasureMode,测量模式,Measure Mode
 NIBPIntervalTime,间隔时间,NIBP Interval Time
+StartFirstAuto,开启首次自动测量，Start First Auto
 NIBPAutoInterval,自动间隔,Auto Interval
 NIBPCompleteTone,NIBP完成音,NIBP Complete Tone
 NIBPMenu,NIBP,NIBP
