@@ -295,6 +295,10 @@ public:
      */
     void clearTrendListData();
 
+    void setFirstAuto(bool flag);
+
+    bool isFirstAuto();
+
 signals:
     /**
      * @brief statBtnState 设置NIBP菜单中的STAT按键状态
@@ -344,6 +348,7 @@ private:
     int16_t _manometerPressure;             // 压力计模式下压力
 
     bool _isMaintain;            // 是否维护模式
+    bool _firstAutoFlag;         // 第一次启动AUTO测量标志
 
 private:
     typedef QMap<NIBPStateMachineType, NIBPStateMachine *> MachineStateMap;

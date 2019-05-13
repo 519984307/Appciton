@@ -208,10 +208,6 @@ void NIBPParam::setProvider(NIBPProviderIFace *provider)
     _provider->sendSelfTest();
     _provider->setPatientType(patientManager.getType());
 
-    NIBPMode mode = NIBP_MODE_MANUAL;
-    systemConfig.setNumValue("PrimaryCfg|NIBP|MeasureMode",
-                                    static_cast<int>(mode));  // 每次开机自动测量模式都要手动启动
-
     // 监护模式状态机。
     if (!_machines.contains(NIBP_STATE_MACHINE_MONITOR))
     {
@@ -230,6 +226,8 @@ void NIBPParam::setProvider(NIBPProviderIFace *provider)
     {
         _activityMachine->enter();
     }
+    unsigned char cmd = 0x00;
+    handleNIBPEvent(NIBP_EVENT_TRIGGER_MODEL, &cmd, 1);
 }
 
 /**************************************************************************************************
@@ -1318,6 +1316,16 @@ void NIBPParam::clearTrendListData()
     _nibpDataTrendWidget->clearListData();
 }
 
+void NIBPParam::setFirstAuto(bool flag)
+{
+    _firstAutoFlag = flag;
+}
+
+bool NIBPParam::isFirstAuto()
+{
+    return _firstAutoFlag;
+}
+
 /**************************************************************************************************
  * 停止测量。
  *************************************************************************************************/
@@ -1400,7 +1408,7 @@ NIBPParam::NIBPParam()
       _isNIBPDisable(false), _isManualMeasure(false),
       _connectedFlag(false), _connectedProvider(false),
       _text(InvStr()),
-      _reply(false), _result(false), _manometerPressure(InvData()), _isMaintain(false),
+      _reply(false), _result(false), _manometerPressure(InvData()), _isMaintain(false), _firstAutoFlag(false),
       _activityMachine(NULL)
 {
     nibpCountdownTime.getInstance();

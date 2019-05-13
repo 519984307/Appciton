@@ -42,7 +42,8 @@ public:
         ITEM_CBO_COMPLETE_TONE = 3,
 
         ITEM_BTN_START_STAT = 0,
-        ITEM_BTN_ADDITION_MEASURE = 1
+        ITEM_BTN_ADDITION_MEASURE = 1,
+        ITEM_BTN_START_FIRST_AUTO = 2
     };
 
     NIBPMenuContentPrivate()
@@ -94,6 +95,7 @@ void NIBPMenuContent::layoutExec()
 
     QLabel *label;
     int itemID;
+    Button *button;
 
     // measure mode
     label = new QLabel(trs("NIBPMeasureMode"));
@@ -130,9 +132,20 @@ void NIBPMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(NIBPMenuContentPrivate::ITEM_CBO_AUTO_INTERVAL, comboBox);
 
+    label = new QLabel(trs("StartFirstAuto"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    button = new Button();
+    button->setButtonStyle(Button::ButtonTextOnly);
+    button->setText(trs("Start"));
+    itemID = static_cast<int>(NIBPMenuContentPrivate::ITEM_BTN_START_FIRST_AUTO);
+    button->setProperty("Btn", qVariantFromValue(itemID));
+    connect(button, SIGNAL(released()), this, SLOT(onBtnReleasedChanged()));
+    layout->addWidget(button, d_ptr->combos.count(), 1);
+    d_ptr->btns.insert(NIBPMenuContentPrivate::ITEM_BTN_START_FIRST_AUTO, button);
+
     // complete tone
     label = new QLabel(trs("NIBPCompleteTone"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
+    layout->addWidget(label, d_ptr->combos.count() + 1, 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("Off")
@@ -140,12 +153,12 @@ void NIBPMenuContent::layoutExec()
     itemID = static_cast<int>(NIBPMenuContentPrivate::ITEM_CBO_COMPLETE_TONE);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    layout->addWidget(comboBox, d_ptr->combos.count() + 1, 1);
     d_ptr->combos.insert(NIBPMenuContentPrivate::ITEM_CBO_COMPLETE_TONE, comboBox);
 
     // initial cuff
     label = new QLabel(trs("NIBPInitialCuff"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
+    layout->addWidget(label, d_ptr->combos.count() + 1, 0);
     d_ptr->initCuffSpb = new SpinBox();
     d_ptr->initCuffSpb->setSpinBoxStyle(SpinBox::SPIN_BOX_STYLE_STRING);
     connect(d_ptr->initCuffSpb, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxReleased(int)));
@@ -153,10 +166,8 @@ void NIBPMenuContent::layoutExec()
     d_ptr->initCuffUnitLbl = new QLabel("mmHg");
     hLayout->addWidget(d_ptr->initCuffSpb);
     hLayout->addWidget(d_ptr->initCuffUnitLbl);
-    layout->addLayout(hLayout, d_ptr->combos.count(), 1);
+    layout->addLayout(hLayout, d_ptr->combos.count() + 1, 1);
 
-
-    Button *button;
     int row = d_ptr->combos.count() + 1;
 
     // start stat
@@ -274,6 +285,10 @@ void NIBPMenuContentPrivate::loadOptions()
         combos[ITEM_CBO_COMPLETE_TONE]->setCurrentIndex(index);
         combos[ITEM_CBO_COMPLETE_TONE]->setEnabled(true);
     }
+    if (nibpParam.getMeasurMode() == NIBP_MODE_MANUAL || nibpParam.isFirstAuto())
+    {
+        btns[ITEM_BTN_START_FIRST_AUTO]->setEnabled(false);
+    }
     statBtnShow();
 }
 
@@ -341,6 +356,11 @@ void NIBPMenuContent::onBtnReleasedChanged()
             systemConfig.setNumValue("PrimaryCfg|NIBP|AutomaticRetry", static_cast<int>(!flag));
             break;
         }
+    case NIBPMenuContentPrivate::ITEM_BTN_START_FIRST_AUTO:
+    {
+        nibpParam.setFirstAuto(true);
+        btns->setEnabled(false);
+    }
         default:
             break;
     }
@@ -390,6 +410,14 @@ void NIBPMenuContent::onComboBoxIndexChanged(int index)
     {
     case NIBPMenuContentPrivate::ITEM_CBO_MEASURE_MODE:
         nibpParam.setMeasurMode((NIBPMode)index);
+        if ((NIBPMode)index == NIBP_MODE_AUTO && !nibpParam.isFirstAuto())
+        {
+            d_ptr->btns[NIBPMenuContentPrivate::ITEM_BTN_START_FIRST_AUTO]->setEnabled(true);
+        }
+        else
+        {
+            d_ptr->btns[NIBPMenuContentPrivate::ITEM_BTN_START_FIRST_AUTO]->setEnabled(false);
+        }
         break;
     case NIBPMenuContentPrivate::ITEM_CBO_AUTO_INTERVAL:
         nibpParam.setAutoInterval((NIBPAutoInterval)index);
