@@ -259,11 +259,11 @@ void NIBPMenuContentPrivate::loadOptions()
     systemConfig.getNumValue("PrimaryCfg|NIBP|AutomaticRetry", index);
     if (index)
     {
-        btns[ITEM_BTN_ADDITION_MEASURE]->setText(trs("On"));
+        btns[ITEM_BTN_ADDITION_MEASURE]->setText(trs("Off"));
     }
     else
     {
-        btns[ITEM_BTN_ADDITION_MEASURE]->setText(trs("Off"));
+        btns[ITEM_BTN_ADDITION_MEASURE]->setText(trs("On"));
     }
 
     if (nightModeManager.nightMode())
@@ -330,16 +330,16 @@ void NIBPMenuContent::onBtnReleasedChanged()
         }
         case NIBPMenuContentPrivate::ITEM_BTN_ADDITION_MEASURE:
         {
-            bool flag = nibpParam.isAdditionalMeasure();
+            int flag;
+            systemConfig.getNumValue("PrimaryCfg|NIBP|AutomaticRetry", flag);
             if (flag)
-            {
-                btns->setText(trs("Off"));
-            }
-            else
             {
                 btns->setText(trs("On"));
             }
-            nibpParam.setAdditionalMeasure(!flag);
+            else
+            {
+                btns->setText(trs("Off"));
+            }
             systemConfig.setNumValue("PrimaryCfg|NIBP|AutomaticRetry", static_cast<int>(!flag));
             break;
         }
