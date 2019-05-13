@@ -355,7 +355,7 @@ TransferResult ConfigExportImportMenuContentPrivate::insertFileFromUSB()
                 break;
             }
             // 超出命名范围
-            if (addIndex > CONFIG_MAX_NUM)
+            if (addIndex + num > CONFIG_MAX_NUM)
             {
                 MessageBox message(trs("Import"),
                                    trs(QString("%1\r\n%2").arg(name).arg(trs("ImportFailed"))),
@@ -399,7 +399,7 @@ TransferResult ConfigExportImportMenuContentPrivate::insertFileFromUSB()
         }
 
         // 导入文件不超过规定最大值
-        if (configs.count() > CONFIG_MAX_NUM)
+        if (configs.count() >= CONFIG_MAX_NUM)
         {
             break;
         }
