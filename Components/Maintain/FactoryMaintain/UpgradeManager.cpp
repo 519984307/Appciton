@@ -359,6 +359,7 @@ QString UpgradeManagerPrivate::getProviderName(UpgradeManager::UpgradeModuleType
     case UpgradeManager::UPGRADE_MOD_S5:
         return "BLM_S5";
     case UpgradeManager::UPGRADE_MOD_N5:
+    case UpgradeManager::UPGRADE_MOD_N5DAEMON:
         return "BLM_N5";
     case UpgradeManager::UPGRADE_MOD_T5:
         return "BLM_T5";
@@ -378,6 +379,12 @@ QString UpgradeManagerPrivate::getProviderName(UpgradeManager::UpgradeModuleType
 void UpgradeManagerPrivate::upgradeExit(UpgradeManager::UpgradeResult result, UpgradeErrorType error)
 {
     qdebug("Upgrade exit, result:%d, error:%d", result, error);
+
+    if (type == UpgradeManager::UPGRADE_MOD_N5DAEMON)
+    {
+        handleStateChanged(MODULE_STAT_EXIT_PASSTHROUGH_MODE);
+    }
+
     type = UpgradeManager::UPGRADE_MOD_NONE;
     state = STATE_IDLE;
 
@@ -402,10 +409,6 @@ void UpgradeManagerPrivate::upgradeExit(UpgradeManager::UpgradeResult result, Up
     resetTimer();
 
     segmentSeq = 0;
-    if (type == UpgradeManager::UPGRADE_MOD_N5DAEMON)
-    {
-        handleStateChanged(MODULE_STAT_EXIT_PASSTHROUGH_MODE);
-    }
 }
 
 void UpgradeManagerPrivate::handleAck(unsigned char *data, int len)
@@ -573,14 +576,14 @@ void UpgradeManagerPrivate::handleStateChanged(ModuleState modState)
         }
         break;
     case MODULE_STAT_ENTER_PASSTHROUGH_MODE:
-        emit upgradeInfoChanged(trs("EnterPassthroughMode"));
+        emit q_ptr->upgradeInfoChanged(trs("EnterPassthroughMode"));
         nibpParam.setPassthroughMode(NIBP_PASSTHROUGH_ON);
-        noResponseTimer(2000);
+        noResponseTimer->start(2000);
         break;
     case MODULE_STAT_EXIT_PASSTHROUGH_MODE:
-        emit upgradeInfoChanged(trs("ExitPassthroughMode"));
+        emit q_ptr->upgradeInfoChanged(trs("ExitPassthroughMode"));
         nibpParam.setPassthroughMode(NIBP_PASSTHROUGH_OFF);
-        noResponseTimer(2000);
+        noResponseTimer->start(2000);
         break;
     default:
         break;
