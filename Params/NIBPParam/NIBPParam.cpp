@@ -1255,6 +1255,7 @@ void NIBPParam::switchToManual(void)
     nibpParam.setCountdown(-1);
 
     nibpParam.setAutoMeasure(false);
+    nibpParam.setFirstAuto(false);
     if (nibpParam.curStatusType() != NIBP_MONITOR_ERROR_STATE)
     {
         if (nibpParam.getMeasurMode() != NIBP_MODE_STAT)
@@ -1316,6 +1317,16 @@ bool NIBPParam::isMaintain()
 void NIBPParam::clearTrendListData()
 {
     _nibpDataTrendWidget->clearListData();
+}
+
+void NIBPParam::setFirstAuto(bool flag)
+{
+    _firstAutoFlag = flag;
+}
+
+bool NIBPParam::isFirstAuto()
+{
+    return _firstAutoFlag;
 }
 
 /**************************************************************************************************
@@ -1400,7 +1411,7 @@ NIBPParam::NIBPParam()
       _isNIBPDisable(false), _isManualMeasure(false),
       _connectedFlag(false), _connectedProvider(false),
       _text(InvStr()),
-      _reply(false), _result(false), _manometerPressure(InvData()), _isMaintain(false),
+      _reply(false), _result(false), _manometerPressure(InvData()), _isMaintain(false), _firstAutoFlag(false),
       _activityMachine(NULL)
 {
     nibpCountdownTime.getInstance();
