@@ -10,25 +10,21 @@
 
 
 #include "PatientManager.h"
-#include "PatientInfoWidget.h"
+#include "PatientInfoWidgetInterface.h"
 #include "IConfig.h"
-#include "ConfigManager.h"
-#include "ECGParam.h"
+#include "ConfigManagerInterface.h"
+#include "ECGParamInterface.h"
 #include "DataStorageDirManagerInterface.h"
-#include "NIBPParam.h"
+#include "NIBPParamInterface.h"
 #include "NIBPProviderIFace.h"
-#include "TimeDate.h"
-#include "AlarmIndicator.h"
-#include "RunningStatusBar.h"
+#include "AlarmIndicatorInterface.h"
 #include "O2ParamInterface.h"
-#include "XmlParser.h"
+#include "SystemManagerInterface.h"
 #include <QFile>
 
 #define XML_FILE_SUFFIX QString::fromLatin1(".xml")
 #define PATIENT_INFO_PATH QString("/usr/local/nPM/etc")
 #define PATIENT_INFO_FILENAME QString("/PatientInfo.xml")
-
-PatientManager *PatientManager::_selfObj = NULL;
 
 class PatientManagerPrivate
 {
@@ -42,7 +38,7 @@ public:
     {}
     PatientManager * const q_ptr;
     PatientInfo patientInfo;
-    PatientInfoWidget *patientInfoWidget;
+    PatientInfoWidgetInterface *patientInfoWidget;
 
     void loadPatientInfo(PatientInfo &info);
     /**
@@ -60,7 +56,7 @@ public:
  * 参数：
  *      widget: 窗体控件。
  *************************************************************************************************/
-void PatientManager::setPatientInfoWidget(PatientInfoWidget &widget)
+void PatientManager::setPatientInfoWidget(PatientInfoWidgetInterface &widget)
 {
     d_ptr->patientInfoWidget = &widget;
 }
@@ -98,20 +94,41 @@ void PatientManager::setType(PatientType type)
     systemConfig.setNumValue("General|PatientType", static_cast<int>(type));
 
     // 病人类型被修改了，重新加载配置后，通知需要关注次事件的对象。
-    d_ptr->patientInfoWidget->loadPatientInfo();
+    if (d_ptr->patientInfoWidget)
+    {
+        d_ptr->patientInfoWidget->loadPatientInfo();
+    }
 
     // 报警限修改
-    QString str = "AlarmSource";
-    currentConfig.setNodeValue(str, currentConfig);
+    ConfigManagerInterface *config = ConfigManagerInterface::getConfigManager();
+    if (config)
+    {
+        QString str = "AlarmSource";
+        Config &currentConfig = config->getCurConfig();
+        currentConfig.setNodeValue(str, currentConfig);
+    }
 
     emit signalPatientType(d_ptr->patientInfo.type);
 
-    ecgParam.setPatientType((unsigned char)(d_ptr->patientInfo.type));
-    if (systemManager.isSupport(PARAM_NIBP))
+    ECGParamInterface *ecgParam = ECGParamInterface::getECGParam();
+    if (ecgParam)
     {
-        nibpParam.provider().setPatientType(type);
+        ecgParam->setPatientType((unsigned char)(d_ptr->patientInfo.type));
     }
-    configManager.loadConfig(type);
+    SystemManagerInterface *systemManager = SystemManagerInterface::getSystemManager();
+    if (systemManager && systemManager->isSupport(PARAM_NIBP))
+    {
+        NIBPParamInterface *nibpParam = NIBPParamInterface::getNIBPParam();
+        if (nibpParam)
+        {
+            nibpParam->provider().setPatientType(type);
+        }
+    }
+
+    if (config)
+    {
+        config->loadConfig(type);
+    }
 }
 
 /**************************************************************************************************
@@ -137,7 +154,11 @@ void PatientManager::setPacermaker(PatientPacer type)
 {
     d_ptr->patientInfo.pacer = type;
 //    currentConfig.setNumValue("General|PatientPacer", static_cast<int>(type));
-    ecgParam.setPacermaker(static_cast<ECGPaceMode>(type));
+    ECGParamInterface *ecgParam = ECGParamInterface::getECGParam();
+    if (ecgParam)
+    {
+        ecgParam->setPacermaker(static_cast<ECGPaceMode>(type));
+    }
 }
 
 /**************************************************************************************************
@@ -145,7 +166,11 @@ void PatientManager::setPacermaker(PatientPacer type)
  *************************************************************************************************/
 PatientPacer PatientManager::getPacermaker()
 {
-    d_ptr->patientInfo.pacer = static_cast<PatientPacer>(ecgParam.getPacermaker());
+    ECGParamInterface *ecgParam = ECGParamInterface::getECGParam();
+    if (ecgParam)
+    {
+        d_ptr->patientInfo.pacer = static_cast<PatientPacer>(ecgParam->getPacermaker());
+    }
     return d_ptr->patientInfo.pacer;
 }
 
@@ -231,7 +256,10 @@ void PatientManager::setName(const QString &name)
     ::strncpy(d_ptr->patientInfo.name, name.toUtf8().constData(),
               sizeof(d_ptr->patientInfo.name));
 
-    d_ptr->patientInfoWidget->loadPatientInfo();
+    if (d_ptr->patientInfoWidget)
+    {
+        d_ptr->patientInfoWidget->loadPatientInfo();
+    }
 }
 
 /**************************************************************************************************
@@ -263,7 +291,10 @@ const char *PatientManager::getPatID()
 void PatientManager::setBedNum(const QString &bedNum)
 {
     systemConfig.setStrValue("General|BedNumber", bedNum);
-    d_ptr->patientInfoWidget->loadPatientInfo();
+    if (d_ptr->patientInfoWidget)
+    {
+        d_ptr->patientInfoWidget->loadPatientInfo();
+    }
 }
 
 const QString PatientManager::getBedNum()
@@ -362,6 +393,10 @@ UnitType PatientManager::getWeightUnit()
 {
     int unit = UNIT_KG;
     systemConfig.getNumValue("Unit|WeightUnit", unit);
+    if (unit != UNIT_KG && unit != UNIT_LB)
+    {
+        unit = UNIT_KG;
+    }
     return (UnitType)unit;
 }
 
@@ -369,6 +404,10 @@ UnitType PatientManager::getHeightUnit()
 {
     int unit = UNIT_CM;
     systemConfig.getNumValue("Unit|HeightUnit", unit);
+    if (unit != UNIT_CM && unit != UNIT_INCH)
+    {
+        unit = UNIT_CM;
+    }
     return (UnitType)unit;
 }
 
@@ -399,14 +438,19 @@ void PatientManager::newPatient()
     {
         dataStorageDirManager->createDir(true);
     }
-    else
+    AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+    if (alarmIndicator)
     {
-        qDebug() << "create dir fail!";
+        alarmIndicator->delAllPhyAlarm();        // 新建病人时，应清空上一个病人的生理报警
     }
-    alarmIndicator.delAllPhyAlarm();        // 新建病人时，应清空上一个病人的生理报警
-    if (systemManager.isSupport(PARAM_NIBP))
+    SystemManagerInterface *systemManager = SystemManagerInterface::getSystemManager();
+    if (systemManager && systemManager->isSupport(PARAM_NIBP))
     {
-        nibpParam.clearResult();
+        NIBPParamInterface *nibpParam = NIBPParamInterface::getNIBPParam();
+        if (nibpParam)
+        {
+            nibpParam->clearResult();
+        }
     }
 }
 
@@ -481,6 +525,10 @@ void PatientManager::onNewPatientHandle()
 {
     DataStorageDirManagerInterface *dataStorageDirManager = DataStorageDirManagerInterface::getDataStorageDirManager();
     QString fileName = QString(PATIENT_INFO_PATH + PATIENT_INFO_FILENAME);
+    if (!dataStorageDirManager)
+    {
+        return;
+    }
     QString newFileName = QString(dataStorageDirManager->getCurFolder() + PATIENT_INFO_FILENAME);
     // 如果文件已经创建不再拷贝新的模版
     if (!QFile::exists(newFileName))
@@ -554,12 +602,27 @@ PatientManager::PatientManager()
     onNewPatientHandle();
     d_ptr->loadPatientInfo(d_ptr->patientInfo);
     DataStorageDirManagerInterface *dataStorageDirManager = DataStorageDirManagerInterface::getDataStorageDirManager();
-    connect(dataStorageDirManager, SIGNAL(newPatient()), this, SLOT(onNewPatientHandle()));
+    if (dataStorageDirManager)
+    {
+        connect(dataStorageDirManager, SIGNAL(newPatient()), this, SLOT(onNewPatientHandle()));
+    }
 }
 
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
+
+PatientManager &PatientManager::getInstance()
+{
+    static PatientManager *instance = NULL;
+
+    if (!instance)
+    {
+        instance = new PatientManager;
+    }
+    return *instance;
+}
+
 PatientManager::~PatientManager()
 {
     delete d_ptr;

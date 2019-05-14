@@ -676,7 +676,7 @@ static void _initMenu(void)
     supervisorMenuManager.construction();
 
     //其它弹出菜单初始化
-    patientManager.construction();
+    patientManager.getInstance();
 }
 
 /**************************************************************************************************
@@ -705,7 +705,6 @@ void deleteObjects(void)
     deleteMenuManager();
     // deletePatientMenu();
     deleteParamManager();
-    deletePatientManager();
     deleteTimeDate();
     deleteMachineConfig();
     deleteSystemConfig();

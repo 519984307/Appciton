@@ -18,4 +18,5 @@ class MockConfigManager : public ConfigManagerInterface
 public:
     MOCK_METHOD1(getConfig, Config *(PatientType));
     MOCK_METHOD0(getCurConfig, Config&(void));
+    MOCK_METHOD1(loadConfig, void(PatientType));
 };

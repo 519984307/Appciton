@@ -47,12 +47,13 @@ HEADERS += \
     ../../../Utility/ErrorLog/ErrorLogItem.h \
     ../../../Components/PatientManager/PatientDefine.h \
     ../../../Components/System/Widgets/RunningStatusBarInterface.h \
-    MockSystemManager.h \
     ../../../Components/System/SystemDefine.h \
-    MockNIBPParam.h \
-    MockConfigManager.h \
+    ../MockConfigManager.h \
     ../../../Components/Alarm/AlarmDefine.h \
-    ../MockSoundManager.h
+    ../MockSoundManager.h \
+    ../../../Components/ParamManager/ParamDefine.h \
+    ../MockSystemManager.h \
+    ../../Params/NIBP/MockNIBPParam.h
 
 INCLUDEPATH += \
     ../../../Utility/NightModeManager \
@@ -66,4 +67,6 @@ INCLUDEPATH += \
     ../../../Utility/ErrorLog \
     ../../../Components/PatientManager \
     ../../../Components/Alarm \
-    ..
+    ../../../Components/ParamManager \
+    ../../Params/NIBP \
+    .. \

@@ -21,4 +21,13 @@ public:
     static ECGParamInterface *getECGParam(void);
 
     virtual ECGLeadNameConvention getLeadConvention(void) const = 0;
+
+    // 设置病人类型
+    virtual void setPatientType(unsigned char type) = 0;
+    virtual unsigned char getPatientType(void) = 0;
+
+    // 设置/获取起搏标记。
+    virtual void setPacermaker(ECGPaceMode onoff) = 0;
+    virtual ECGPaceMode getPacermaker(void) = 0;
+    virtual void updatePacermaker(void) = 0;
 };

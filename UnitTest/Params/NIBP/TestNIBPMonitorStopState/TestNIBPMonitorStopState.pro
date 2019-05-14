@@ -63,8 +63,8 @@ HEADERS += \
     ../../../../Params/NIBPParam/NIBPStateMachine/NIBPServiceStateMachine/NIBPServiceStateDefine.h \
     ../../../../Params/NIBPParam/NIBPSymbol.h \
     ../../../../Utility/ErrorLog/ErrorLogItem.h \
-    ../../../Utility/TestNightManager/MockNIBPParam.h \
-    ../TestNIBPMonitorStandbyState/MockNIBPCountdownTime.h
+    ../TestNIBPMonitorStandbyState/MockNIBPCountdownTime.h \
+    ../MockNIBPParam.h
 
 
 INCLUDEPATH += \
@@ -80,8 +80,8 @@ INCLUDEPATH += \
     ../../../../Utility/Config \
     ../../../../Utility/ErrorLog \
     ../../../../Params/NIBPParam/NIBPStateMachine  \
-    ../../../Utility/TestNightManager \
     ../TestNIBPMonitorStandbyState \
+    ..
 
 
 
