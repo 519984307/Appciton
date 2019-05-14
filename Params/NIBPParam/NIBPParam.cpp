@@ -1253,6 +1253,7 @@ void NIBPParam::switchToManual(void)
     nibpParam.setCountdown(-1);
 
     nibpParam.setAutoMeasure(false);
+    nibpParam.setFirstAuto(false);
     if (nibpParam.curStatusType() != NIBP_MONITOR_ERROR_STATE)
     {
         if (nibpParam.getMeasurMode() != NIBP_MODE_STAT)
