@@ -407,6 +407,7 @@ void PatientManager::newPatient()
     if (systemManager.isSupport(PARAM_NIBP))
     {
         nibpParam.clearResult();
+        nibpParam.clearTrendListData();
     }
 }
 
@@ -537,7 +538,8 @@ void PatientManagerPrivate::handleDischarge()
     }
     else
     {
-        DataStorageDirManagerInterface *dataStorageDirManager = DataStorageDirManagerInterface::getDataStorageDirManager();
+        DataStorageDirManagerInterface *dataStorageDirManager
+                = DataStorageDirManagerInterface::getDataStorageDirManager();
         if (dataStorageDirManager)
         {
             dataStorageDirManager->cleanCurData();
