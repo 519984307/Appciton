@@ -32,7 +32,6 @@
 #include "FloatHandle.h"
 
 #define PATIENT_BORN_DATE_RANAGE 1900
-PatientInfoWindow *PatientInfoWindow::_selfObj = NULL;
 class PatientInfoWindowPrivate
 {
 public:
@@ -298,7 +297,7 @@ void PatientInfoWindowPrivate::loadOptions()
 }
 
 PatientInfoWindow::PatientInfoWindow()
-    : Dialog()
+    : PatientInfoWindowInterface()
     , d_ptr(new PatientInfoWindowPrivate)
 {
     setWindowTitle(trs("PatientInformation"));
@@ -761,6 +760,21 @@ void PatientInfoWindow::hideEvent(QHideEvent *ev)
 {
     patientManager.finishPatientInfo();
     Dialog::hideEvent(ev);
+}
+
+PatientInfoWindow &PatientInfoWindow::getInstance()
+{
+    static PatientInfoWindow *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new PatientInfoWindow;
+        PatientInfoWindowInterface *old = PatientInfoWindow::registerPatientInfoWindow(instance);
+        if (old)
+        {
+            delete old;
+        }
+    }
+    return *instance;
 }
 
 PatientInfoWindow::~PatientInfoWindow()

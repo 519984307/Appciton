@@ -11,6 +11,7 @@
 #pragma once
 #include "IWidget.h"
 
+class PatientInfo;
 class PatientInfoWidgetInterface : public IWidget
 {
 public:
@@ -19,5 +20,5 @@ public:
     {}
     virtual ~PatientInfoWidgetInterface(){}
 
-    virtual void loadPatientInfo(void) = 0;
+    virtual void loadPatientInfo(const PatientInfo &info, const QString &bed) = 0;
 };

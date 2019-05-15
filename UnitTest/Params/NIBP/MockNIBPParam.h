@@ -32,4 +32,6 @@ public:
     MOCK_METHOD1(setSTATClose, void(bool));
     MOCK_METHOD0(isAutoMeasure, bool(void));
     MOCK_METHOD0(isSTATMeasure, bool(void));
+    MOCK_METHOD1(setFirstAuto, void(bool));
+    MOCK_METHOD0(isFirstAuto, bool(void));
 };
