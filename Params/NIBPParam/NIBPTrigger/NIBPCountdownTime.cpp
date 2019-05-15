@@ -38,7 +38,12 @@ void NIBPCountdownTime::run()
     }
     else if (nibpParam.getMeasurMode() == NIBP_MODE_STAT)
     {
-        if (!nibpParam.isSTATOpenTemp())
+        if (nibpParam.isAutoStat())
+        {
+            nibpParam.setText(trs("NIBPWAITING"));
+            nibpParam.setModelText(trs("STATOPEN"));
+        }
+        else if (!nibpParam.isSTATOpenTemp())
         {
             int t = STATMeasureElapseTime();
             if (t == 0)
@@ -149,6 +154,11 @@ void NIBPCountdownTime::STATMeasureStop(void)
 bool NIBPCountdownTime::isSTATMeasureTimeout(void)
 {
     return _isSTATMeasureTimeout;
+}
+
+void NIBPCountdownTime::setSTATMeasureTimeout(bool flag)
+{
+    _isSTATMeasureTimeout = flag;
 }
 
 /**************************************************************************************************

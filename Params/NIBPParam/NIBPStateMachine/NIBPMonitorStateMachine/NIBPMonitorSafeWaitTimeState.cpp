@@ -148,6 +148,7 @@ void NIBPMonitorSafeWaitTimeState::handleNIBPEvent(NIBPEvent event, const unsign
 
     case NIBP_EVENT_TRIGGER_MODEL:
         nibpParam.setAutoMeasure(false);
+        nibpParam.setAutoStat(false);
         if (args[0] == 0x01)
         {
             if (nibpParam.getMeasurMode() == NIBP_MODE_STAT)
@@ -220,6 +221,11 @@ void NIBPMonitorSafeWaitTimeState::handleNIBPEvent(NIBPEvent event, const unsign
                 switchState(NIBP_MONITOR_STANDBY_STATE);
                 break;
             }
+            if (nibpParam.isAutoStat())
+            {
+                nibpCountdownTime.STATMeasureStart();  // 只测量5分钟。
+                nibpParam.setAutoStat(false);
+            }
             switchState(NIBP_MONITOR_STARTING_STATE);
         }
         else
@@ -234,7 +240,6 @@ void NIBPMonitorSafeWaitTimeState::handleNIBPEvent(NIBPEvent event, const unsign
                 switchState(NIBP_MONITOR_STANDBY_STATE);
             }
         }
-//            nibpParam.setShowMeasureCount();
         break;
     case NIBP_EVENT_CURRENT_PRESSURE:
     {
@@ -263,7 +268,7 @@ void NIBPMonitorSafeWaitTimeState::handleNIBPEvent(NIBPEvent event, const unsign
             }
         }
     }
-    break;
+        break;
     default:
         break;
     }
@@ -303,9 +308,7 @@ int NIBPMonitorSafeWaitTimeState::_safeWaitTime()
         // STAT手动退出后进入AUTO模式的安全间隔时间
         if (nibpParam.isSTATClose())
         {
-//            _safeWaitTiming = 30;
             _safeWaitTiming = 5;
-//            nibpParam.setSTATClose(false);
             return _safeWaitTiming;
         }
         // AUTO模式中手动测量的安全间隔时间
@@ -332,7 +335,6 @@ int NIBPMonitorSafeWaitTimeState::_safeWaitTime()
         {
             nibpParam.setModelText(trs("STATDONE"));
             nibpParam.setSTATClose(false);
-//            _safeWaitTiming = 30;
             _safeWaitTiming = 5;
             return _safeWaitTiming;
         }
@@ -347,9 +349,7 @@ int NIBPMonitorSafeWaitTimeState::_safeWaitTime()
         // STAT手动退出后进入手动模式的安全间隔时间
         if (nibpParam.isSTATClose())
         {
-//            _safeWaitTiming = 30;
             _safeWaitTiming = 5;
-//            nibpParam.setSTATClose(false);
             return _safeWaitTiming;
         }
 

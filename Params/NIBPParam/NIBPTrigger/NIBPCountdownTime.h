@@ -38,6 +38,7 @@ public:
     void STATMeasureStart(void);
     void STATMeasureStop(void);
     bool isSTATMeasureTimeout(void);
+    void setSTATMeasureTimeout(bool flag);
     int STATMeasureElapseTime(void);
 
 private slots:
