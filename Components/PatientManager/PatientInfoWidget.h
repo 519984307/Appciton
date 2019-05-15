@@ -10,10 +10,10 @@
 
 
 #pragma once
-#include "IWidget.h"
+#include "PatientInfoWidgetInterface.h"
 
 class QLabel;
-class PatientInfoWidget : public IWidget
+class PatientInfoWidget : public PatientInfoWidgetInterface
 {
     Q_OBJECT
 

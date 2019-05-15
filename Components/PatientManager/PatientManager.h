@@ -15,27 +15,19 @@
 #include "UnitManager.h"
 
 // 病人管理对象。
-class PatientInfoWidget;
+class PatientInfoWidgetInterface;
 class PatientManagerPrivate;
 class PatientManager : public QObject
 {
     Q_OBJECT
 
 public:
-    static PatientManager &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new PatientManager();
-        }
-        return *_selfObj;
-    }
-    static PatientManager *_selfObj;
+    static PatientManager &getInstance(void);
     ~PatientManager();
 
 public:
     // 设置Widget。
-    void setPatientInfoWidget(PatientInfoWidget &widget);
+    void setPatientInfoWidget(PatientInfoWidgetInterface &widget);
 
 public:
     /**
@@ -245,5 +237,4 @@ private:
     PatientManager();
     PatientManagerPrivate *const d_ptr;
 };
-#define patientManager (PatientManager::construction())
-#define deletePatientManager() (delete PatientManager::_selfObj)
+#define patientManager (PatientManager::getInstance())

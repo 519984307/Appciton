@@ -47,7 +47,7 @@ void PatientInfoWidget::_releaseHandle(IWidget *iWidget)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-PatientInfoWidget::PatientInfoWidget(QWidget *parent) : IWidget("PatientInfoWidget", parent)
+PatientInfoWidget::PatientInfoWidget(QWidget *parent) : PatientInfoWidgetInterface(parent)
 {
     int fontSize = fontManager.getFontSize(4);
 
