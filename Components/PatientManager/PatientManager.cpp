@@ -393,7 +393,7 @@ void PatientManager::newPatient()
     patientManager.setSex(PATIENT_SEX_NULL);
     patientManager.setType(getType());
     patientManager.setWeight(0.0);
-    patientManager.setPacermaker(PATIENT_PACER_ON);
+    patientManager.setPacermaker(PATIENT_PACER_OFF);
     DataStorageDirManagerInterface *dataStorageDirManager = DataStorageDirManagerInterface::getDataStorageDirManager();
     if (dataStorageDirManager)
     {
