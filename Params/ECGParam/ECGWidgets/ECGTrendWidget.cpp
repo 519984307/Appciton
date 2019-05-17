@@ -71,7 +71,7 @@ void ECGTrendWidget::_drawBeatIcon(QColor color)
     lastIconColor = color;
 }
 
-void ECGTrendWidget::_loadConfig()
+void ECGTrendWidget::loadConfig()
 {
     // 设置标题栏的相关信息。
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
@@ -99,16 +99,12 @@ void ECGTrendWidget::_loadConfig()
     setName(trs(paramInfo.getSubParamName(subId)));
     setUnit(Unit::getSymbol(UNIT_BPM));
 
-    // 设置上下限
-    updateLimit();
-
     // 设置滤波模式
     int mode = ECG_FILTERMODE_MONITOR;
     currentConfig.getNumValue("ECG|FilterMode", mode);
     ecgParam.setFilterMode(mode);
 
-    // 设置报警关闭标志
-    showAlarmOff();
+    TrendWidget::loadConfig();
 }
 
 /**************************************************************************************************
@@ -245,7 +241,7 @@ ECGTrendWidget::ECGTrendWidget() : TrendWidget("ECGTrendWidget"),
     _timer->setInterval(190);
     connect(_timer, SIGNAL(timeout()), this, SLOT(_timeOut()));
 
-    _loadConfig();
+    loadConfig();
 }
 
 /**************************************************************************************************
@@ -272,9 +268,4 @@ void ECGTrendWidget::doRestoreNormalStatus()
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
     showNormalStatus(psrc);
     _drawBeatIcon(psrc.windowText().color());
-}
-
-void ECGTrendWidget::updateWidgetConfig()
-{
-    _loadConfig();
 }

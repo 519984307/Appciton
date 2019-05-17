@@ -60,7 +60,7 @@ void RESPTrendWidget::_onBrSourceStatusUpdate()
     }
 }
 
-void RESPTrendWidget::_loadConfig()
+void RESPTrendWidget::loadConfig()
 {
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_RESP));
     setPalette(palette);
@@ -68,7 +68,6 @@ void RESPTrendWidget::_loadConfig()
 
     setName(trs(paramInfo.getSubParamName(SUB_PARAM_RR_BR)));
     setUnit(Unit::getSymbol(UNIT_RPM));
-    updateLimit();
 
     int index = 0;
     currentConfig.getNumValue("RESP|BrSource", index);
@@ -90,9 +89,7 @@ void RESPTrendWidget::_loadConfig()
         respDupParam.setAutoBrSourceStatue(false);
         break;
     }
-
-    // 设置报警关闭标志
-    showAlarmOff();
+    TrendWidget::loadConfig();
 }
 
 /**************************************************************************************************
@@ -221,7 +218,7 @@ RESPTrendWidget::RESPTrendWidget() : TrendWidget("RESPTrendWidget")
     connect(&respDupParam, SIGNAL(brSourceStatusUpdate()), this, SLOT(_onBrSourceStatusUpdate()));
     _onBrSourceStatusUpdate();
 
-    _loadConfig();
+    loadConfig();
 }
 
 /**************************************************************************************************
@@ -242,9 +239,4 @@ void RESPTrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_RESP));
     showNormalStatus(psrc);
-}
-
-void RESPTrendWidget::updateWidgetConfig()
-{
-    _loadConfig();
 }

@@ -31,12 +31,6 @@ bool SPO2WaveWidget::waveEnable()
     return spo2Param.isEnabled();
 }
 
-void SPO2WaveWidget::updateWidgetConfig()
-{
-    _loadConfig();
-    WaveWidget::updateWidgetConfig();
-}
-
 /**************************************************************************************************
  * 响应窗体大小调整事件。
  * 参数:
@@ -72,7 +66,7 @@ void SPO2WaveWidget::focusInEvent(QFocusEvent *e)
 /**************************************************************************************************
  * 载入配置。
  *************************************************************************************************/
-void SPO2WaveWidget::_loadConfig(void)
+void SPO2WaveWidget::loadConfig(void)
 {
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
     setPalette(palette);
@@ -139,7 +133,7 @@ SPO2WaveWidget::SPO2WaveWidget(const QString &waveName, const QString &title)
     _notify->setVisible(false);
     addItem(_notify);
     // 加载配置
-    _loadConfig();
+    loadConfig();
 
     setMargin(QMargins(WAVE_X_OFFSET, fontH, 2, 2));
 }
