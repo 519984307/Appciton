@@ -24,7 +24,6 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include "LanguageManager.h"
-#include "NIBPParam.h"
 
 #define UPGRADE_FILES_DIR "/upgrade/"
 #define DEFAULT_HW_VER_STR "1.0A"
@@ -52,6 +51,9 @@ enum UpgradePacketType
 {
     UPGRADE_RSP_NACK    = 0x00,         // nack response
     UPGRADE_RSP_ACK     = 0x01,         // ack response
+
+    UPGRADE_N5_CMD_PASSTHROUGH_MODE = 0x25, // 透传模式。
+    UPGRADE_N5_RSP_PASSTHROUGH_MODE = 0x26,
 
     UPGRADE_NOTIFY_ALIVE = 0x5B,        // module alive packet
     UPGRADE_E5_NOTIFY_ALIVE = 0xB0,     // E5 module alive packet
@@ -380,14 +382,6 @@ void UpgradeManagerPrivate::upgradeExit(UpgradeManager::UpgradeResult result, Up
 {
     qdebug("Upgrade exit, result:%d, error:%d", result, error);
 
-    if (type == UpgradeManager::UPGRADE_MOD_N5DAEMON)
-    {
-        handleStateChanged(MODULE_STAT_EXIT_PASSTHROUGH_MODE);
-    }
-
-    type = UpgradeManager::UPGRADE_MOD_NONE;
-    state = STATE_IDLE;
-
     if (error != UPGRADE_ERR_NONE)
     {
         emit q_ptr->upgradeInfoChanged(trs(errorString(error)));
@@ -409,6 +403,14 @@ void UpgradeManagerPrivate::upgradeExit(UpgradeManager::UpgradeResult result, Up
     resetTimer();
 
     segmentSeq = 0;
+
+    if (type == UpgradeManager::UPGRADE_MOD_N5DAEMON)
+    {
+        handleStateChanged(MODULE_STAT_EXIT_PASSTHROUGH_MODE);
+    }
+
+    type = UpgradeManager::UPGRADE_MOD_NONE;
+    state = STATE_IDLE;
 }
 
 void UpgradeManagerPrivate::handleAck(unsigned char *data, int len)
@@ -576,15 +578,21 @@ void UpgradeManagerPrivate::handleStateChanged(ModuleState modState)
         }
         break;
     case MODULE_STAT_ENTER_PASSTHROUGH_MODE:
+    {
         emit q_ptr->upgradeInfoChanged(trs("EnterPassthroughMode"));
-        nibpParam.setPassthroughMode(NIBP_PASSTHROUGH_ON);
+        unsigned char cmd = 0x01;
+        provider->sendCmd(UPGRADE_N5_CMD_PASSTHROUGH_MODE, &cmd, 1);
         noResponseTimer->start(2000);
         break;
+    }
     case MODULE_STAT_EXIT_PASSTHROUGH_MODE:
+    {
         emit q_ptr->upgradeInfoChanged(trs("ExitPassthroughMode"));
-        nibpParam.setPassthroughMode(NIBP_PASSTHROUGH_OFF);
+        unsigned char cmd = 0x00;
+        provider->sendCmd(UPGRADE_N5_CMD_PASSTHROUGH_MODE, &cmd, 1);
         noResponseTimer->start(2000);
         break;
+    }
     default:
         break;
     }
@@ -672,6 +680,8 @@ void UpgradeManager::startModuleUpgrade(UpgradeManager::UpgradeModuleType type)
 
     d_ptr->type = type;
     d_ptr->state = STATE_CHECK_UDISK;
+    d_ptr->provider = BLMProvider::findProvider(d_ptr->getProviderName(d_ptr->type));
+    d_ptr->provider->setUpgradeIface(this);
 
     QTimer::singleShot(0, this, SLOT(upgradeProcess()));
 }
@@ -693,6 +703,16 @@ void UpgradeManager::handlePacket(unsigned char *data, int len)
         d_ptr->handleStateChanged(static_cast<ModuleState>(data[1]));
         break;
     case UPGRADE_NOTIFY_UPGRADE_ALIVE:
+        break;
+    case UPGRADE_N5_RSP_PASSTHROUGH_MODE:
+        if (data[1] == 0x0)
+        {
+            exitPassthroughMode();
+        }
+        else if (data[1] == 0x01)
+        {
+            enterPassthroughMode();
+        }
         break;
     default:
         break;
@@ -800,14 +820,12 @@ void UpgradeManager::upgradeProcess()
     case STATE_REQUEST_ENTER_UPGRADE_MODE:
     {
         emit upgradeInfoChanged(trs("RequestEnterUpgradeMode"));
-        d_ptr->provider = BLMProvider::findProvider(d_ptr->getProviderName(d_ptr->type));
         if (!d_ptr->provider)
         {
             d_ptr->upgradeExit(UPGRADE_FAIL, UPGRADE_ERR_MODULE_NOT_FOUND);
             break;
         }
 
-        d_ptr->provider->setUpgradeIface(this);
         d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_ENTER, NULL, 0);
         d_ptr->noResponseTimer->start(2000);
     }

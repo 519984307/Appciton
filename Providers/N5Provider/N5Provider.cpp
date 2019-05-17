@@ -323,14 +323,6 @@ void N5Provider::handlePacket(unsigned char *data, int len)
         break;
 
     case N5_RSP_PASSTHROUGH_MODE:
-        if (data[1] == 0x0)
-        {
-            UpgradeManager::getInstance()->exitPassthroughMode();
-        }
-        else if (data[1] == 0x01)
-        {
-            UpgradeManager::getInstance()->enterPassthroughMode();
-        }
         break;
 
     // 压力计模式控制
