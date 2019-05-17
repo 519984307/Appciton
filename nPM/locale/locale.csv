@@ -872,7 +872,7 @@ SupervisorWeightUnit,体重单位,Weight Unit
 SupervisorHeightUnit,身高单位,Height Unit
 Weight,体重,Weight
 Height,身高,Height
-ID,病历号,ID
+ID,病人ID,ID
 PrintTime,打印时间,Print Time
 Green,绿色,Green
 Yellow,黄色,Yellow
