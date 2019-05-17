@@ -57,7 +57,7 @@
         <ReminderTone>1</ReminderTone>
         <PhyParAlarmLatchlockOn>0</PhyParAlarmLatchlockOn>
 	<AlarmOffPrompting>1</AlarmOffPrompting>
-	<AlarmAudio>0</AlarmAudio>
+	<AlarmAudio>1</AlarmAudio>
 	<EnableAlarmOff>1</EnableAlarmOff>
 	<AlarmOffAtPowerOn>0</AlarmOffAtPowerOn>
     </Alarms>
