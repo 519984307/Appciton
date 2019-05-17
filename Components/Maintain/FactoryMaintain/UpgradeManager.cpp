@@ -44,7 +44,8 @@ enum UpgradeState
     STATE_WAIT_FOR_COMPLETE_MSG,
     STATE_REBOOT,
     STATE_UPGRADE_LOGO,
-    STATE_UPGRADE_PASSTHROUGH_MODE
+    STATE_UPGRADE_ENTER_PASSTHROUGH_MODE,
+    STATE_UPGRADE_EXIT_PASSTHROUGH_MODE
 };
 
 enum UpgradePacketType
@@ -386,19 +387,8 @@ void UpgradeManagerPrivate::upgradeExit(UpgradeManager::UpgradeResult result, Up
     {
         emit q_ptr->upgradeInfoChanged(trs(errorString(error)));
     }
-    else if (error == UPGRADE_ERR_PASSTHROUGH_MODE_FAIL)
-    {
-        emit q_ptr->upgradeInfoChanged(trs(errorString(error)));
-        return;
-    }
 
     emit q_ptr->upgradeResult(result);
-
-    if (provider)
-    {
-        provider->setUpgradeIface(NULL);
-        provider = NULL;
-    }
 
     resetTimer();
 
@@ -407,10 +397,19 @@ void UpgradeManagerPrivate::upgradeExit(UpgradeManager::UpgradeResult result, Up
     if (type == UpgradeManager::UPGRADE_MOD_N5DAEMON)
     {
         handleStateChanged(MODULE_STAT_EXIT_PASSTHROUGH_MODE);
+        state = STATE_UPGRADE_EXIT_PASSTHROUGH_MODE;
+    }
+    else
+    {
+        if (provider)
+        {
+            provider->setUpgradeIface(NULL);
+            provider = NULL;
+        }
+        state = STATE_IDLE;
     }
 
     type = UpgradeManager::UPGRADE_MOD_NONE;
-    state = STATE_IDLE;
 }
 
 void UpgradeManagerPrivate::handleAck(unsigned char *data, int len)
@@ -729,6 +728,11 @@ void UpgradeManager::enterPassthroughMode()
 void UpgradeManager::exitPassthroughMode()
 {
     d_ptr->resetTimer();
+    if (d_ptr->provider)
+    {
+        d_ptr->provider->setUpgradeIface(NULL);
+        d_ptr->provider = NULL;
+    }
 }
 
 void UpgradeManager::upgradeProcess()
@@ -806,7 +810,7 @@ void UpgradeManager::upgradeProcess()
         if (d_ptr->type == UPGRADE_MOD_N5DAEMON)
         {
             d_ptr->handleStateChanged(MODULE_STAT_ENTER_PASSTHROUGH_MODE);
-            d_ptr->state = STATE_UPGRADE_PASSTHROUGH_MODE;
+            d_ptr->state = STATE_UPGRADE_ENTER_PASSTHROUGH_MODE;
             break;
         }
         else
@@ -1040,8 +1044,12 @@ void UpgradeManager::noResponseTimeout()
         emit reboot();
         system("reboot");
         break;
-    case STATE_UPGRADE_PASSTHROUGH_MODE:
+    case STATE_UPGRADE_ENTER_PASSTHROUGH_MODE:
         d_ptr->upgradeExit(UPGRADE_FAIL, UPGRADE_ERR_PASSTHROUGH_MODE_FAIL);
+        break;
+    case STATE_UPGRADE_EXIT_PASSTHROUGH_MODE:
+        emit upgradeInfoChanged(trs(errorString(UPGRADE_ERR_PASSTHROUGH_MODE_FAIL)));
+        exitPassthroughMode();
         break;
     default:
         break;
