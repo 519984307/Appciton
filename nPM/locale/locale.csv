@@ -1297,7 +1297,7 @@ MonitorInfoMenu,监护仪信息,Monitor Info
 CumulativeWorkingTime,累计工作时间,Cumulative Working Time
 TemperatureInsideCase,箱内温度,Temperature Inside Case
 BatteryCapacity,电池电量,Battery Capacity
-MachineType,机器型号,Machine Type
+ProductModel,产品型号,Product Model
 MACAddress,硬件地址,MAC Address
 ScreenResolutionSize,屏幕分辨率尺寸,Screen Resolution Size
 ElectronicSerialNumber,电子序列号,Electronic Serial Number
