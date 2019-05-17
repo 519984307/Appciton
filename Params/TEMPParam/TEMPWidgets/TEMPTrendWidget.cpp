@@ -56,6 +56,9 @@ void TEMPTrendWidget::_loadConfig()
     _tdValue->setPalette(palette);
     // 显示上下限
     updateLimit();
+
+    // 设置报警关闭标志
+    showAlarmOff();
 }
 
 /**************************************************************************************************
@@ -235,9 +238,6 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
 
     // 标签设定。
     setName(paramInfo.getParamName(PARAM_TEMP));
-
-    // 设置报警关闭标志
-    showAlarmOff();
 
     // 设置单位。
     UnitType u = tempParam.getUnit();

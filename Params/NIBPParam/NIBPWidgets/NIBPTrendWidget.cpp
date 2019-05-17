@@ -602,9 +602,6 @@ NIBPTrendWidget::NIBPTrendWidget()
     // 设置上下限
     updateLimit();
 
-    // 设置报警关闭标志
-    showAlarmOff();
-
     // 设置布局
     d_ptr->layoutExec(contentLayout);
 

@@ -90,6 +90,9 @@ void RESPTrendWidget::_loadConfig()
         respDupParam.setAutoBrSourceStatue(false);
         break;
     }
+
+    // 设置报警关闭标志
+    showAlarmOff();
 }
 
 /**************************************************************************************************
@@ -192,9 +195,6 @@ RESPTrendWidget::RESPTrendWidget() : TrendWidget("RESPTrendWidget")
 {
     _isAlarm = false;
     _rrString = InvStr();
-
-    // 设置报警关闭标志
-    showAlarmOff();
 
     // RR值。
     _rrValue = new QLabel();

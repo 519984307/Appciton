@@ -106,6 +106,9 @@ void ECGTrendWidget::_loadConfig()
     int mode = ECG_FILTERMODE_MONITOR;
     currentConfig.getNumValue("ECG|FilterMode", mode);
     ecgParam.setFilterMode(mode);
+
+    // 设置报警关闭标志
+    showAlarmOff();
 }
 
 /**************************************************************************************************
@@ -218,9 +221,6 @@ void ECGTrendWidget::blinkBeatPixmap()
 ECGTrendWidget::ECGTrendWidget() : TrendWidget("ECGTrendWidget"),
     _hrString(InvStr()), _isAlarm(false)
 {
-    // 设置报警关闭标志
-    showAlarmOff();
-
     // 开始布局。
     _hrBeatIcon = new QLabel();
     _hrBeatIcon->setFixedSize(24, 24);
