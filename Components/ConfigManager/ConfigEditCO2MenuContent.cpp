@@ -112,7 +112,7 @@ void ConfigEditCO2MenuContentPrivate::loadOptions()
 
     // 显示控制。
     index = 0;  // init the 'index'
-    config->getNumValue("CO2|FICO2Display", index);
+    config->getNumValue("CO2|FiCO2Display", index);
     combos[ITEM_CBO_FICO2_DISPLAY]->setCurrentIndex(index);
 
     config->getNumValue("Alarm|ApneaTime", index);
