@@ -1317,6 +1317,7 @@ bool NIBPParam::isMaintain()
 void NIBPParam::clearTrendListData()
 {
     _nibpDataTrendWidget->clearListData();
+    _nibpDataTrendWidget->adjustSize();
 }
 
 void NIBPParam::setFirstAuto(bool flag)
