@@ -162,7 +162,7 @@ void ConfigEditCO2MenuContent::onComboBoxIndexChanged(int index)
         d_ptr->config->setNumValue("CO2|DisplayZoom", index);
         break;
     case ConfigEditCO2MenuContentPrivate::ITEM_CBO_FICO2_DISPLAY:
-        d_ptr->config->setNumValue("CO2|FICO2Display", index);
+        d_ptr->config->setNumValue("CO2|FiCO2Display", index);
         break;
     case ConfigEditCO2MenuContentPrivate::ITEM_CBO_APNEA_TIME:
         d_ptr->config->setNumValue("Alarm|ApneaTime", index);
