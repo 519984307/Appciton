@@ -159,9 +159,6 @@ IBPWaveWidget::IBPWaveWidget(WaveformID id, const QString &waveName, const IBPPr
     addItem(_leadSta);
 
     setMargin(QMargins(WAVE_X_OFFSET, 2, 2, 2));
-
-    // 加载配置
-//    _loadConfig();
 }
 
 /**************************************************************************************************
@@ -176,11 +173,6 @@ void IBPWaveWidget::updatePalette(const QPalette &pal)
     _ruler->setPalette(pal);
     setPalette(pal);
     updateBackground();
-}
-
-void IBPWaveWidget::updateWidgetConfig()
-{
-    WaveWidget::updateWidgetConfig();
 }
 
 /**************************************************************************************************

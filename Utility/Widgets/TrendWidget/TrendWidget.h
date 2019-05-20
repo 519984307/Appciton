@@ -59,6 +59,9 @@ public:
      */
     void restoreNormalStatusLater();
 
+    // 刷新趋势参数上下限
+    virtual void updateLimit(void) {}
+
 public slots:
     /**
      * @brief doRestoreNormalStatus do the restore normal status stuff
@@ -76,6 +79,11 @@ protected:
 
     QHBoxLayout *contentLayout;
     QHBoxLayout *mLayout;
+
+    /**
+     * @brief loadConfig  加载配置
+     */
+    virtual void loadConfig();
 
 protected:
     void paintEvent(QPaintEvent *e);

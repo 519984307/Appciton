@@ -395,6 +395,10 @@ void KeyInputPanel::_loadHelpBtn(const QString &key)
             while (-1 != (pos = regExp.indexIn(str, pos)))
             {
                 d_ptr->helpKeys[pos]->setEnabled(false);
+                QPalette pal;
+                pal = d_ptr->helpKeys[pos]->palette();
+                pal.setColor(QPalette::Foreground, Qt::gray);
+                d_ptr->helpKeys[pos]->setPalette(pal);
                 pos += regExp.matchedLength();
             }
         }

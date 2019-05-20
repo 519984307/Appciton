@@ -61,7 +61,7 @@
         <FilterMode>1</FilterMode>
         <SelfLearn>0</SelfLearn>
         <ECG12LeadPacerMaker>0</ECG12LeadPacerMaker>	
-        <PacerMaker>1</PacerMaker>
+        <PacerMaker>0</PacerMaker>
         <EverLeadOn>0</EverLeadOn>
         <FullScreenGain>3</FullScreenGain>
         <Gain>

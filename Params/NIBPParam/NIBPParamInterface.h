@@ -58,4 +58,8 @@ public:
     virtual bool isAutoMeasure() = 0;
 
     virtual bool isSTATMeasure(void) = 0;
+
+    virtual void setFirstAuto(bool flag) = 0;
+
+    virtual bool isFirstAuto() = 0;
 };

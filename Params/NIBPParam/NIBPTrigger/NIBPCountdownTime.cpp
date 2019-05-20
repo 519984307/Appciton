@@ -20,7 +20,7 @@
 void NIBPCountdownTime::run()
 {
 // debug("%d\n",(_countdownTime - countdownElapseTime()) / 1000);
-    if (nibpParam.getMeasurMode() == NIBP_MODE_AUTO && !nibpParam.isAdditionalMeasure())
+    if (nibpParam.getMeasurMode() == NIBP_MODE_AUTO && !nibpParam.isAdditionalMeasure() && nibpParam.isFirstAuto())
     {
         // 更新倒计时。
         nibpParam.setCountdown((_autoTime - autoMeasureElapseTime()) / 1000);
