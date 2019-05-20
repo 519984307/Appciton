@@ -62,14 +62,14 @@ public:
     void handlePacket(unsigned char *data, int len);
 
     /**
-     * @brief enterPassthroughMode 进入透传模式
+     * @brief enterPassthroughMode 切换透传模式成功后进入升级
      */
-    void enterPassthroughMode();
+    void n5DaemonEnterUpgradeMode();
 
     /**
-     * @brief exitPassthroughMode 退出透传模式
+     * @brief exitPassthroughMode N5Daemon退出升级
      */
-    void exitPassthroughMode();
+    void n5DaemonExitUpgradeMode();
 
 signals:
     void upgradeResult(UpgradeManager::UpgradeResult result);

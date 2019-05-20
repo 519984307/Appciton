@@ -233,12 +233,6 @@ public:
     UnitType getUnit(void);
 
     /**
-     * @brief setPassthroughMode 设置穿透模式
-     * @param mode
-     */
-    void setPassthroughMode(NIBPPassthrough mode);
-
-    /**
      * @brief setUnit  设置单位
      * @param type 单位类型
      */

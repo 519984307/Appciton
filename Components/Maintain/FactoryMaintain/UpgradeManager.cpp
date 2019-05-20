@@ -142,6 +142,13 @@ enum ModuleState
     MODULE_STAT_EXIT_PASSTHROUGH_MODE,      // nibp exit passthrough mode
 };
 
+// 透传模式
+enum NIBPPassthrough
+{
+    NIBP_PASSTHROUGH_OFF,
+    NIBP_PASSTHROUGH_ON,
+};
+
 class UpgradeManagerPrivate
 {
     Q_DECLARE_PUBLIC(UpgradeManager)
@@ -579,7 +586,7 @@ void UpgradeManagerPrivate::handleStateChanged(ModuleState modState)
     case MODULE_STAT_ENTER_PASSTHROUGH_MODE:
     {
         emit q_ptr->upgradeInfoChanged(trs("EnterPassthroughMode"));
-        unsigned char cmd = 0x01;
+        unsigned char cmd = NIBP_PASSTHROUGH_ON;
         provider->sendCmd(UPGRADE_N5_CMD_PASSTHROUGH_MODE, &cmd, 1);
         noResponseTimer->start(2000);
         break;
@@ -587,7 +594,7 @@ void UpgradeManagerPrivate::handleStateChanged(ModuleState modState)
     case MODULE_STAT_EXIT_PASSTHROUGH_MODE:
     {
         emit q_ptr->upgradeInfoChanged(trs("ExitPassthroughMode"));
-        unsigned char cmd = 0x00;
+        unsigned char cmd = NIBP_PASSTHROUGH_OFF;
         provider->sendCmd(UPGRADE_N5_CMD_PASSTHROUGH_MODE, &cmd, 1);
         noResponseTimer->start(2000);
         break;
@@ -704,13 +711,13 @@ void UpgradeManager::handlePacket(unsigned char *data, int len)
     case UPGRADE_NOTIFY_UPGRADE_ALIVE:
         break;
     case UPGRADE_N5_RSP_PASSTHROUGH_MODE:
-        if (data[1] == 0x0)
+        if (data[1] == NIBP_PASSTHROUGH_OFF)
         {
-            exitPassthroughMode();
+            n5DaemonExitUpgradeMode();
         }
-        else if (data[1] == 0x01)
+        else if (data[1] == NIBP_PASSTHROUGH_ON)
         {
-            enterPassthroughMode();
+            n5DaemonEnterUpgradeMode();
         }
         break;
     default:
@@ -718,14 +725,14 @@ void UpgradeManager::handlePacket(unsigned char *data, int len)
     }
 }
 
-void UpgradeManager::enterPassthroughMode()
+void UpgradeManager::n5DaemonEnterUpgradeMode()
 {
     d_ptr->state = STATE_REQUEST_ENTER_UPGRADE_MODE;
     d_ptr->resetTimer();
     upgradeProcess();
 }
 
-void UpgradeManager::exitPassthroughMode()
+void UpgradeManager::n5DaemonExitUpgradeMode()
 {
     d_ptr->resetTimer();
     if (d_ptr->provider)
@@ -1049,7 +1056,7 @@ void UpgradeManager::noResponseTimeout()
         break;
     case STATE_UPGRADE_EXIT_PASSTHROUGH_MODE:
         emit upgradeInfoChanged(trs(errorString(UPGRADE_ERR_PASSTHROUGH_MODE_FAIL)));
-        exitPassthroughMode();
+        n5DaemonExitUpgradeMode();
         break;
     default:
         break;

@@ -1113,21 +1113,6 @@ UnitType NIBPParam::getUnit(void)
     return (UnitType)unit;
 }
 
-void NIBPParam::setPassthroughMode(NIBPPassthrough mode)
-{
-    if (_provider)
-    {
-        if (mode == NIBP_PASSTHROUGH_OFF)
-        {
-            _provider->setPassthroughMode(false);
-        }
-        else
-        {
-            _provider->setPassthroughMode(true);
-        }
-    }
-}
-
 void NIBPParam::setUnit(UnitType type)
 {
     int unit = UNIT_MMHG;
