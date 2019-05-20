@@ -872,7 +872,7 @@ SupervisorWeightUnit,体重单位,Weight Unit
 SupervisorHeightUnit,身高单位,Height Unit
 Weight,体重,Weight
 Height,身高,Height
-ID,病历号,ID
+ID,病人ID,ID
 PrintTime,打印时间,Print Time
 Green,绿色,Green
 Yellow,黄色,Yellow
@@ -1297,7 +1297,7 @@ MonitorInfoMenu,监护仪信息,Monitor Info
 CumulativeWorkingTime,累计工作时间,Cumulative Working Time
 TemperatureInsideCase,箱内温度,Temperature Inside Case
 BatteryCapacity,电池电量,Battery Capacity
-MachineType,机器型号,Machine Type
+ProductModel,产品型号,Product Model
 MACAddress,硬件地址,MAC Address
 ScreenResolutionSize,屏幕分辨率尺寸,Screen Resolution Size
 ElectronicSerialNumber,电子序列号,Electronic Serial Number

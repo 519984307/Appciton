@@ -129,7 +129,7 @@ RESPWaveWidget::RESPWaveWidget(const QString &waveName, const QString &title)
     _onCalcLeadChanged(lead);
 
     // 加载配置
-    _loadConfig();
+    loadConfig();
 
     setMargin(QMargins(WAVE_X_OFFSET, fontH, 2, 2));
 }
@@ -213,12 +213,6 @@ bool RESPWaveWidget::waveEnable()
     return respParam.isEnabled();
 }
 
-void RESPWaveWidget::updateWidgetConfig()
-{
-   _loadConfig();
-   WaveWidget::updateWidgetConfig();
-}
-
 void RESPWaveWidget::setWaveformMode(RESPSweepMode mode)
 {
     if (mode == RESP_SWEEP_MODE_FILLED)
@@ -234,7 +228,7 @@ void RESPWaveWidget::setWaveformMode(RESPSweepMode mode)
 /**************************************************************************************************
  * 加载配置。
  *************************************************************************************************/
-void RESPWaveWidget::_loadConfig()
+void RESPWaveWidget::loadConfig()
 {
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_RESP));
     setPalette(palette);

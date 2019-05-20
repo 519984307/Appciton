@@ -482,7 +482,7 @@ void TestPatientManager::testMonitor()
         QCOMPARE(info.sex, PATIENT_SEX_NULL);
         QCOMPARE(info.type, patientManager.getType());
         QCOMPARE(info.weight, static_cast<float>(0.0));
-        QCOMPARE(info.pacer, PATIENT_PACER_ON);
+        QCOMPARE(info.pacer, PATIENT_PACER_OFF);
     }
 
     QVERIFY(Mock::VerifyAndClearExpectations(&mockDataStorageDirManager));
@@ -519,6 +519,7 @@ void TestPatientManager::testNewPatient()
     MockNIBPParam mockNIBPParam;
     MockNIBPParam::registerNIBPParam(&mockNIBPParam);
     EXPECT_CALL(mockNIBPParam, clearResult()).Times(1);
+    EXPECT_CALL(mockNIBPParam, clearTrendListData()).Times(1);
 
     patientManager.newPatient();
     PatientInfo info = patientManager.getPatientInfo();
@@ -530,7 +531,7 @@ void TestPatientManager::testNewPatient()
     QCOMPARE(info.sex, PATIENT_SEX_NULL);
     QCOMPARE(info.type, type);
     QCOMPARE(info.weight, static_cast<float>(0.0));
-    QCOMPARE(info.pacer, PATIENT_PACER_ON);
+    QCOMPARE(info.pacer, PATIENT_PACER_OFF);
     QVERIFY(Mock::VerifyAndClearExpectations(&mockDataStorageDirManager));
     QVERIFY(Mock::VerifyAndClearExpectations(&mockAlarmIndicator));
     QVERIFY(Mock::VerifyAndClearExpectations(&mockSystemManager));
