@@ -134,7 +134,7 @@ CO2WaveWidget::CO2WaveWidget(const QString &waveName, const QString &title)
 
     setMargin(QMargins(WAVE_X_OFFSET, 2, 2, 2));
 
-    _loadConfig();
+    loadConfig();
 }
 
 void CO2WaveWidget::_getItemIndex(int index)
@@ -142,7 +142,7 @@ void CO2WaveWidget::_getItemIndex(int index)
     _currentItemIndex = index;
 }
 
-void CO2WaveWidget::_loadConfig()
+void CO2WaveWidget::loadConfig()
 {
     QPalette palette = colorManager.getPalette(paramInfo.getParamName(PARAM_CO2));
     setPalette(palette);
@@ -162,11 +162,4 @@ void CO2WaveWidget::_loadConfig()
  *************************************************************************************************/
 CO2WaveWidget::~CO2WaveWidget()
 {
-}
-
-void CO2WaveWidget::updateWidgetConfig()
-{
-    _loadConfig();
-    // 待加入波形配置代码
-    WaveWidget::updateWidgetConfig();
 }
