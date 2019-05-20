@@ -120,7 +120,7 @@ static int counter = 300;
 static int autoCounter = 300;
 void NIBPParam::handDemoTrendData(void)
 {
-    if (counter >= autoCounter)
+    if (autoCounter >= counter)
     {
     _sysValue = qrand() % 30 + 90;
     _diaValue = qrand() % 20 + 60;
@@ -128,24 +128,25 @@ void NIBPParam::handDemoTrendData(void)
     _prVaule = qrand() % 10 + 60;
     setResult(_sysValue, _diaValue, _mapVaule, _prVaule, NIBP_ONESHOT_NONE);
     setMeasureResult(NIBP_MEASURE_SUCCESS);
-    counter = 0;
+    autoCounter = 0;
     }
 
     NIBPMode mode = getSuperMeasurMode();
     if (mode == NIBP_MODE_AUTO)
     {
-        counter++;
-        autoCounter = getAutoIntervalTime();
+        autoCounter++;
+        counter = getAutoIntervalTime();
     }
     else
     {
-        counter = 0;
+        autoCounter = 0;
     }
 }
 
 void NIBPParam::exitDemo()
 {
     counter = 300;
+    autoCounter = 300;
     _sysValue = InvData();
     _diaValue = InvData();
     _mapVaule = InvData();
