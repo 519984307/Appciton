@@ -73,7 +73,7 @@ void FactoryVersionInfo::layoutExec()
     layout->setMargin(10);
 
     // set the font size for showing all version info
-    setFont(fontManager.textFont(fontManager.getFontSize(3)));
+    setFont(fontManager.textFont(fontManager.getFontSize(0)));
 
     QLabel *labelLeft;
     QLabel *labelRight;

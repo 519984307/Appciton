@@ -176,7 +176,7 @@ void BLMProvider::dataArrived()
  **************************************************************************************************/
 void BLMProvider::handlePacket(unsigned char *data, int len)
 {
-    if (data[0] == 0x11 && len > 1) // version data, all BLMProvidor share the same version respond code
+    if (data[0] == 0x11 && len == 72 + 1)  // version data, all BLMProvidor share the same version respond code
     {
         const char *p = reinterpret_cast<char *>(&data[1]);
         versionInfo.append(p); // software version
@@ -186,6 +186,27 @@ void BLMProvider::handlePacket(unsigned char *data, int len)
         versionInfo.append(" ");
         p += 32;
         versionInfo.append(p); // hardware version
+    }
+    else if(data[0] == 0x11 && len == 80 + 1)  // 兼容新的板卡信息协议
+    {
+        const char *p = reinterpret_cast<char *>(&data[1]);
+        versionInfo.append(p); // software git version
+        versionInfo.append(" ");
+        p += (30 + 1);  // software git version offset + data packet head offset
+
+        versionInfo.append(p); // build date
+        versionInfo.append(" ");
+        p += (15 + 1);  // build date offset + data packet head offset
+
+//        versionInfo.append(p); // build time
+//        versionInfo.append(" ");
+        p += (15 + 1);  // build time offset + data packet head offset
+
+        versionInfo.append(p); // hardware version
+        versionInfo.append(" ");
+        p += (1 + 1);  // hardware version offset + data packet head offset
+
+        versionInfo.append(p); // bootloader git version
     }
 }
 
