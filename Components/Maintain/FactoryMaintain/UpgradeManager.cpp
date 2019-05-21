@@ -497,7 +497,7 @@ void UpgradeManagerPrivate::handleSegmentRsp(unsigned char *data, int len)
                 // all segment is sent, not wait for state change
                 state = STATE_WAIT_FOR_COMPLETE_MSG;
             }
-            else
+            else if (seq == segmentSeq)
             {
                 segmentSeq++;
             }
