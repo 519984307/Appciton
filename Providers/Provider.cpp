@@ -224,7 +224,7 @@ Provider::Provider(const QString &name) : QObject(), ringBuff(ringBuffLen), _nam
     _disconnectThreshold = 5;
     isConnected = false;
     _firstCheck = true;
-    isConnectedToParam = true;
+    isConnectedToParam = false;
     _stopCheckConnect = false;
 // #ifdef Q_WS_X11
 //    uart = new UartSocket();
