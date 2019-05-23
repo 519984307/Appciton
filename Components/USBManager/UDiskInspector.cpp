@@ -119,6 +119,7 @@ bool UDiskInspector::checkUsbConnectStatus()
             {
                 qdebug("mount /dev/%s success!", qPrintable(devName));
                 result = true;
+                emit mountUDisk();
                 break;
             }
         }
@@ -129,11 +130,34 @@ bool UDiskInspector::checkUsbConnectStatus()
 #endif
 }
 
+bool UDiskInspector::checkUDiskInsert()
+{
+    static int usbNum = 0;
+    // find a exist usb device and mount it
+    QDir devDir("/dev");
+    devDir.setFilter(QDir::System);
+    devDir.setNameFilters(QStringList() << "sd??");
+    QStringList usbNameList = devDir.entryList();
+    if (usbNameList.count() != usbNum)
+    {
+        usbNum = usbNameList.count();
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+    return true;
+}
+
 void UDiskInspector::timerEvent(QTimerEvent *ev)
 {
     if (ev->timerId() == _timerId)
     {
-        bool status = checkUsbConnectStatus();
-        emit  statusUpdate(status);
+        if (checkUDiskInsert())
+        {
+            bool status = checkUsbConnectStatus();
+            emit  statusUpdate(status);
+        }
     }
 }

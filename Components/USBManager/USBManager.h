@@ -56,6 +56,9 @@ public:
     // USB export finish
     bool isUSBExportFinish();
 
+    // 卸载U盘
+    bool umountUDisk();
+
 signals:
     // report the process, 0~100
     void exportProcessChanged(unsigned char process);
@@ -77,6 +80,9 @@ private slots:
     // handle export process
     void onExportProcessUpdate(unsigned char progress);
 
+    // 挂载U盘成功
+    void mountUDiskSuccess(void);
+
 private:
     USBManager();
     bool _addDataExporter(DataExporterBase *dataExporter);
@@ -86,6 +92,7 @@ private:
     DataExporterBase *_curExporter;
     QMutex _pendingMutex;
     bool _usbExist;
+    bool _isMount;
 };
 
 #define usbManager (USBManager::getInstance())

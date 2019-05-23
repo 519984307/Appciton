@@ -22,6 +22,9 @@
 #include "WiFiProfileWindow.h"
 #include "IConfig.h"
 #include "SystemManager.h"
+#include "MessageBox.h"
+#include "USBManager.h"
+#include "LanguageManager.h"
 
 SystemStatusBarWidget *SystemStatusBarWidget::_selfObj = NULL;
 #define ICON_WIDTH 32
@@ -118,6 +121,23 @@ void SystemStatusBarWidget::onIconClicked(int iconLabel)
     {
         WiFiProfileWindow w;
         windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
+    }
+
+    if (iconLabel == SYSTEM_ICON_LABEL_USB)
+    {
+        MessageBox msg(trs("Prompt"), trs("SureSafePopUpUDisk"), true, true);
+        if (msg.exec())
+        {
+            if (!usbManager.umountUDisk())
+            {
+                MessageBox warnMsg(trs("Warn"), trs("OperationFailedPleaseAgain"), false);
+                warnMsg.exec();
+            }
+            else
+            {
+                this->focusNextChild();
+            }
+        }
     }
 }
 
