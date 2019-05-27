@@ -1768,11 +1768,6 @@ void ECGParam::setSweepSpeed(ECGSweepSpeed speed)
         _waveWidget[i]->setSpeed(speed);
     }
 
-    if (systemManager.isSupport(CONFIG_SPO2))
-    {
-        spo2Param.setSweepSpeed(speed);
-    }
-
     layoutManager.resetWave();
 }
 
