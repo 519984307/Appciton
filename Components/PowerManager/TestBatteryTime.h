@@ -21,6 +21,7 @@ public:
 
     void Record(BatteryPowerLevel const &level, unsigned int const &ad, const QTime &time);
 
+    void open();
 private:
     TestBatteryTime();
     TestBatteryTime(const TestBatteryTime &handle);

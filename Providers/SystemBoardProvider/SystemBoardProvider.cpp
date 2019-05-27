@@ -227,6 +227,7 @@ void SystemBoardProvider::_parseBatteryInfo(unsigned char *data, int len)
 
     modeStatus.isCharging = data[1];        // 是否正在充电
     modeStatus.adcValue = (data[3] << 8) | data[2];     // ADC值
+    modeStatus.adcValue = 2800;
     if (modeStatus.adcValue < 500)
     {
         // 不合理的ADC值，过滤
