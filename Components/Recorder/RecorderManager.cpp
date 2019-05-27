@@ -37,7 +37,7 @@ public:
         : connected(false),
           isAborted(false),
           isPrinting(false),
-          status(PRINTER_STAT_NORMAL),
+          status(PRINTER_STAT_COMMUNICATION_STOP),
           curSpeed(PRINT_SPEED_250),
           processor(NULL),
           procThread(NULL),
@@ -558,6 +558,18 @@ void RecorderManager::printWavesInit()
             systemConfig.setNumValue(path, static_cast<int>(WAVE_NONE));
             continue;
         }
+    }
+}
+
+void RecorderManager::setConnected(bool isConnected)
+{
+    if (isConnected)
+    {
+        d_ptr->status = PRINTER_STAT_NORMAL;
+    }
+    else
+    {
+        d_ptr->status = PRINTER_STAT_COMMUNICATION_STOP;
     }
 }
 

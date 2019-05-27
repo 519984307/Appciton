@@ -1087,6 +1087,7 @@ NIBPReading,NIBP快照,NIBP Snapshot
 PhyAlarm,生理报警,Phy. Alarm
 AlarmMute,报警静音,Mute
 RecorderAction,记录仪,Recorder Action
+PrinterCommunicationStop,打印机通信中断,Printer Communication Stop
 PrinterDoorOpened,打印机仓门未关,Printer Door Opened
 PrinterOutOfPaper,打印机缺纸,Printer Out Of Paper
 PrinterOverHeating,打印头过热,Printer Over Heating

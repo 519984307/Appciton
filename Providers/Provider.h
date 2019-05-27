@@ -51,6 +51,11 @@ public:
      */
     bool connectedToParam();
 
+    /**
+     * @brief setNonparametric 设置非参数标志
+     */
+    void setNonparametric();
+
     // 构造与析构。
     explicit Provider(const QString &name);
     virtual ~Provider();
@@ -104,12 +109,12 @@ protected:
     bool isConnected;
     QString versionInfo;
     bool isConnectedToParam;
+    bool isNonparametric;               // 非参数
 
 private:
     QString _name;
     bool _firstCheck;
 
-    int _timerID;
     int _disconnectCount;
     int _disconnectThreshold;
     bool _stopCheckConnect;     // 待机标志
