@@ -910,7 +910,7 @@ int NIBPParam::getInitPressure()
     PatientType patienType = patientManager.getType();
     if (patienType == PATIENT_TYPE_ADULT)
     {
-        initVal = 120 + initVal * 10;
+        initVal = 80 + initVal * 10;
     }
     else if (patienType == PATIENT_TYPE_PED)
     {
