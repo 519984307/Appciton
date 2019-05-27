@@ -1396,8 +1396,8 @@ StopECGModuleCalibration,停止心电模块校准,Stop ECG Module Calibration
 StopCO2ModuleMaintenance,停止二氧化碳模块,Stop CO2 Module Maintenance
 StopTouchScreenCalibration,停止触摸屏校准,Stop Touch Screen Calibration
 Cancel,取消覆盖,Cancel
-OthersMaintainMenu,其他维护菜单,Others Menu
-OthersMaintainMenuDesc,其他维护菜单,Others Menu
+OthersMaintainMenu,其他,Others
+OthersMaintainMenuDesc,其他,Others
 WaveLine,波线,WaveLine
 Fat,粗,Fat
 Med,中,Med
