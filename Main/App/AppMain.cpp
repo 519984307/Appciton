@@ -160,7 +160,7 @@ static void _storageThreadEntry(void)
 
     if (!systemManager.isGoingToTrunOff())
     {
-        rawDataCollector.run();
+//        rawDataCollector.run();
     }
 
     if (!systemManager.isGoingToTrunOff())

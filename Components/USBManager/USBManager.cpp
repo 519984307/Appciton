@@ -17,6 +17,7 @@
 #include <QProcess>
 #include "IMessageBox.h"
 #include <typeinfo>
+#include "RawDataCollector.h"
 
 #define USB_MOUNT_PATH "/media/usbdisk"
 
@@ -127,6 +128,7 @@ bool USBManager::isUSBExportFinish()
 
 bool USBManager::umountUDisk()
 {
+    emit stopCollectData();
     QString cmd = QString("umount -f %1").arg(USB_MOUNT_PATH);
     if (QProcess::execute(cmd) != 0)
     {
@@ -197,6 +199,7 @@ void USBManager::onExportProcessUpdate(unsigned char progress)
 void USBManager::mountUDiskSuccess()
 {
     _isMount = true;
+    emit startCollectData();
 }
 
 USBManager::USBManager()
@@ -204,7 +207,8 @@ USBManager::USBManager()
       _udiskInspector(new UDiskInspector()),
       _lastExportStatus(DataExporterBase::Success),
       _curExporter(NULL),
-      _isMount(false)
+      _isMount(false),
+      _procThread(NULL)
 {
 
     qRegisterMetaType<DataExporterBase::ExportStatus>();
@@ -216,6 +220,10 @@ USBManager::USBManager()
     _workerThread->start();
     qdebug("worker thread start.");
     _workerThread->setPriority(QThread::IdlePriority);
+
+    _procThread = new QThread(this);
+    _procThread->setObjectName("RawDataCollect");
+    rawDataCollector.moveToThread(_procThread);
 }
 
 bool USBManager::_addDataExporter(DataExporterBase *dataExporter)

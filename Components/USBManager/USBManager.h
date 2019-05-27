@@ -66,6 +66,9 @@ signals:
     void exportError();
     void usbExportFileFinish(int status);
 
+    void startCollectData(void);
+    void stopCollectData(void);
+
 public slots:
     // cancel export
     void cancelExport();
@@ -93,6 +96,7 @@ private:
     QMutex _pendingMutex;
     bool _usbExist;
     bool _isMount;
+    QThread *_procThread;
 };
 
 #define usbManager (USBManager::getInstance())

@@ -134,13 +134,11 @@ bool UDiskInspector::checkUDiskInsert()
 {
     static int usbNum = 0;
     // find a exist usb device and mount it
-    QDir devDir("/dev");
-    devDir.setFilter(QDir::System);
-    devDir.setNameFilters(QStringList() << "sd??");
-    QStringList usbNameList = devDir.entryList();
-    if (usbNameList.count() != usbNum)
+    QDir devDir("/sys/class/scsi_disk");
+    int usbFileNum = devDir.count();
+    if (usbFileNum != usbNum)
     {
-        usbNum = usbNameList.count();
+        usbNum = usbFileNum;
         return true;
     }
     else
