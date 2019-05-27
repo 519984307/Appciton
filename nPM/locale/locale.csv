@@ -1499,7 +1499,7 @@ FactoryBattery,电池 ,Factory Battery
 RefreshRate,更新速率,Refresh Rate
 Note,注释,Note
 RefreshRateUpdatedRebootNow,刷新率已更新，是否现在重启,Refresh Rate Updated Reboot Now
-FactoryDataRecord,数据记录,Factory Data
+FactoryDataRecord,数据记录,Data Record
 FactoryDataRecordDesc,数据记录,Data Record
 PDCommData,PD 通信数据,PD Comm Data
 TEMPCalibrateMenuDesc,温度校准,TEMP Calibrate
