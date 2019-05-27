@@ -49,7 +49,7 @@ public:
     // 循环运行
     void run();
 
-private slots:
+public slots:
     void startCollectData();
 
     void stopCollectData();

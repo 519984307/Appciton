@@ -128,7 +128,8 @@ bool USBManager::isUSBExportFinish()
 
 bool USBManager::umountUDisk()
 {
-    emit stopCollectData();
+    // 卸载U盘之前停止数据收集定时器
+    QMetaObject::invokeMethod(&rawDataCollector, "stopCollectData", Qt::QueuedConnection);
     QString cmd = QString("umount -f %1").arg(USB_MOUNT_PATH);
     if (QProcess::execute(cmd) != 0)
     {
@@ -199,7 +200,8 @@ void USBManager::onExportProcessUpdate(unsigned char progress)
 void USBManager::mountUDiskSuccess()
 {
     _isMount = true;
-    emit startCollectData();
+    // 启动数据收集定时器
+    QMetaObject::invokeMethod(&rawDataCollector, "startCollectData", Qt::QueuedConnection);
 }
 
 USBManager::USBManager()
@@ -224,6 +226,7 @@ USBManager::USBManager()
     _procThread = new QThread(this);
     _procThread->setObjectName("RawDataCollect");
     rawDataCollector.moveToThread(_procThread);
+    _procThread->start();
 }
 
 bool USBManager::_addDataExporter(DataExporterBase *dataExporter)

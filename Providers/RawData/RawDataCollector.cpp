@@ -523,6 +523,7 @@ void RawDataCollector::run()
         qDeleteAll(d_ptr->dataBuffer);
         d_ptr->dataBuffer.clear();
         d_ptr->mutex.unlock();
+        stopCollectData();          // U盘被强制拔出停止定时器
         return;
     }
 
@@ -584,8 +585,6 @@ void RawDataCollector::timerEvent(QTimerEvent *e)
 RawDataCollector::RawDataCollector()
     : d_ptr(new RawDataCollectorPrivate())
 {
-    connect(&usbManager, SIGNAL(startCollectData()), this, SLOT(startCollectData()));
-//    connect(&usbManager, SIGNAL(stopCollectData()), this, SLOT(stopCollectData()));
 }
 
 void RawDataCollector::collectData(RawDataCollector::CollectDataType type, const unsigned char *data, int len,
