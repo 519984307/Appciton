@@ -189,8 +189,14 @@ QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
         switch (column)
         {
         case SECTION_PARAM_NAME:
-            return trs(paramInfo.getSubParamName(d_ptr->alarmDataInfos.at(row).subParamID));
-            break;
+        {
+            SubParamID subId = d_ptr->alarmDataInfos.at(row).subParamID;
+            UnitType unit = paramInfo.getUnitOfSubParam(subId);
+            QString name = QString("%1(%2)")
+                    .arg(trs(paramInfo.getSubParamName(subId)))
+                    .arg(trs(Unit::getSymbol(unit)));
+            return name;
+        }
         case SECTION_STATUS:
             return d_ptr->alarmDataInfos.at(row).status ? trs("On") : trs("Off");
             break;
