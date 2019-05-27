@@ -309,6 +309,9 @@ void LoadConfigMenuContent::onBtnClick()
             }
             cmWnd->setWindowTitlePrefix(pathName);
 
+            // force updating the first window title
+            QMetaObject::invokeMethod(cmWnd, "onVisiableItemChanged", Q_ARG(int, 0));
+
             configManager.setWidgetIfOnlyShown(true);
             windowManager.showWindow(cmWnd, WindowManager::ShowBehaviorModal);
             configManager.setWidgetIfOnlyShown(false);
