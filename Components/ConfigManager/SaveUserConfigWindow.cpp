@@ -57,7 +57,7 @@ SaveUserConfigWindow::SaveUserConfigWindow()
     hLayout->addWidget(cofNameLbl);
     d_ptr->cofNameBtn = new Button;
     d_ptr->cofNameBtn->setButtonStyle(Button::ButtonTextOnly);
-    d_ptr->cofNameBtn->setFixedWidth(280);
+    d_ptr->cofNameBtn->setFixedWidth(260);
     hLayout->addWidget(d_ptr->cofNameBtn);
     connect(d_ptr->cofNameBtn, SIGNAL(released()), this, SLOT(onConfigNameBtnReleased()));
     vLayout->addLayout(hLayout);
