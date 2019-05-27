@@ -1126,6 +1126,7 @@ IncidentIdentificationNumber,营救事件标识号,Incident Identification Numbe
 ECG12LeadAcquired,12导获取时间,12 Lead Acquired
 ECG12LeadRescueStarttime,营救开始时间,Rescue Start Time
 SucceedRescueDataByWIFI,成功传送12导联邮件,Succeed to Transfer Email by WIFI
+SucceedErrorLogByUSB,成功通过U盘发送错误日志,Succeed to Transfer Errorlog by USB
 PleaseseletSnapShot,请选择快照,Select SnapShots
 PleaseseletPrint,请选择打印,Select Snapshots to Print 
 ECG12LeadAcquisitionHalted,12导获取取消,12 Lead Acquisition Halted

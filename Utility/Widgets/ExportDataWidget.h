@@ -13,6 +13,7 @@
 #include <QDialog>
 #include "LanguageManager.h"
 #include "qprogressbar.h"
+#include "Button.h"
 
 //数据类型及传输方式
 enum Export_Data_Type
@@ -70,12 +71,12 @@ signals:
     void cancel();
 
 protected:
-    static const int _titleBarHeight = 30;
+    static const int _titleBarHeight = 40;
 
     QLabel *_title;
     QLabel *_info;
     QProgressBar *_bar;
-    LButton *_cancleOrOK;
+    Button *_cancleOrOK;
 
     bool _transferCancel;
     Export_Data_Type _curType;

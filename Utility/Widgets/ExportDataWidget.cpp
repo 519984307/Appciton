@@ -58,6 +58,7 @@ static const char *startInfoString[EXPORT_DATA_NR] =
     "TransferRescueDataByWIFI",
     "NotDisconnectUSB",
     "TransferRescueDataByWIFI",
+    "TransferErrorLogToUSB"
 };
 
 //传输结束信息
@@ -69,6 +70,7 @@ static const char *endInfoString[EXPORT_DATA_NR] =
     "SucceedRescueDataByWIFI",
     "RemoveUSB",
     "SucceedRescueDataByWIFI",
+    "SucceedErrorLogByUSB"
 };
 
 /**************************************************************************************************
@@ -84,10 +86,10 @@ ExportDataWidget::ExportDataWidget(Export_Data_Type type) : QDialog(0, Qt::Frame
     {
         _curType = EXPORT_RESCUE_DATA_BY_USB;
     }
-    setAttribute(Qt::WA_NoSystemBackground); // draw background in paintEvent
+    setAttribute(Qt::WA_NoSystemBackground);  // draw background in paintEvent
     setModal(true);
 
-    int fontSize = fontManager.getFontSize(1);
+    int fontSize = fontManager.getFontSize(2);
     int width;
     width = windowManager.getPopWindowWidth() * 8 / 10;
 
@@ -101,22 +103,22 @@ ExportDataWidget::ExportDataWidget(Export_Data_Type type) : QDialog(0, Qt::Frame
     _title->setAlignment(Qt::AlignCenter);
     _title->setFixedHeight(_titleBarHeight);
     _title->setFont(fontManager.textFont(fontSize, true));
-    p.setColor(QPalette::Foreground, Qt::white);
-    _title->setPalette(p);
 
     _info = new QLabel(trs(startInfoString[_curType]));
     _info->setFont(fontManager.textFont(fontSize));
 
     _bar = new QProgressBar();
-    _bar->setStyleSheet("QProgressBar{background:black;border-radius:5px;}QProgressBar::chunk{background:green;border-radius:5px;}");
+    _bar->setStyleSheet("QProgressBar{background:black;border-radius:5px;}"
+                        "QProgressBar::chunk{background:green;border-radius:5px;}");
     _bar->setTextVisible(false);
     _bar->setFixedWidth(width * 8 / 10);
 
-    _cancleOrOK = new LButton();
+    _cancleOrOK = new Button();
     _cancleOrOK->setText(trs("Cancel"));
+    _cancleOrOK->setButtonStyle(Button::ButtonTextOnly);
     _cancleOrOK->setFont(fontManager.textFont(fontSize));
     _cancleOrOK->setFixedWidth(width / 5);
-    connect(_cancleOrOK, SIGNAL(realReleased()), this, SLOT(_cancleOrOKPressed()));
+    connect(_cancleOrOK, SIGNAL(released()), this, SLOT(_cancleOrOKPressed()));
 
     QVBoxLayout *contentLayout = new QVBoxLayout();
     contentLayout->setMargin(5);
@@ -192,13 +194,13 @@ void ExportDataWidget::paintEvent(QPaintEvent *e)
 
     // 绘制标题栏。
     QPainter barPainter(this);
-    barPainter.setRenderHint(QPainter::Antialiasing);
+    barPainter.setRenderHint(QPainter::TextAntialiasing);
     barPainter.setClipPath(clipPath);
 
     // 绘制边框。
     QPen pen;
-    pen.setColor(colorManager.getBarBkColor());
-    pen.setWidth(8);
+    pen.setColor(Qt::black);
+    pen.setWidth(2);
     barPainter.setPen(pen);
     barPainter.setBrush(palette().window());
     barPainter.drawRect(rect());
