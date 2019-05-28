@@ -324,9 +324,6 @@ void TrendPrintWindowPrivate::initGroupBox(QGroupBox *groupBox, TrendPrintWindow
     QGridLayout *mainLayout = new QGridLayout();
     mainLayout->addWidget(subBox->dateLbl, 0, 0);
     mainLayout->addWidget(subBox->timeLbl, 1, 0);
-    mainLayout->addWidget(subBox->hourSbx, 1, 1);
-    mainLayout->addWidget(subBox->minSbx, 1, 2);
-    mainLayout->addWidget(subBox->secondSbx, 1, 3);
     groupBox->setLayout(mainLayout);
 
     // adjust the name of the date format
@@ -337,27 +334,29 @@ void TrendPrintWindowPrivate::initGroupBox(QGroupBox *groupBox, TrendPrintWindow
     subBox->dateLbl->setText(dateFormatName);
 
     // adjust the position of the date
-    int yearColumn = 1;
-    int monthColumn = 2;
-    int dayColumn = 3;
+    SpinBox *dateSpinBoxArr[3] = {subBox->yearSbx, subBox->monthSbx, subBox->daySbx};
     switch (dateFormat)
     {
         case DATE_FORMAT_M_D_Y:
-            yearColumn = 3;
-            monthColumn = 1;
-            dayColumn = 2;
+            dateSpinBoxArr[0] = subBox->monthSbx;
+            dateSpinBoxArr[1] = subBox->daySbx;
+            dateSpinBoxArr[2] = subBox->yearSbx;
         break;
         case DATE_FORMAT_D_M_Y:
-            yearColumn = 3;
-            monthColumn = 2;
-            dayColumn = 1;
+            dateSpinBoxArr[0] = subBox->daySbx;
+            dateSpinBoxArr[1] = subBox->monthSbx;
+            dateSpinBoxArr[2] = subBox->yearSbx;
         break;
     default:
         break;
     }
-    mainLayout->addWidget(subBox->yearSbx, 0, yearColumn);
-    mainLayout->addWidget(subBox->monthSbx, 0, monthColumn);
-    mainLayout->addWidget(subBox->daySbx, 0, dayColumn);
+    mainLayout->addWidget(dateSpinBoxArr[0], 0, 1);
+    mainLayout->addWidget(dateSpinBoxArr[1], 0, 2);
+    mainLayout->addWidget(dateSpinBoxArr[2], 0, 3);
+
+    mainLayout->addWidget(subBox->hourSbx, 1, 1);
+    mainLayout->addWidget(subBox->minSbx, 1, 2);
+    mainLayout->addWidget(subBox->secondSbx, 1, 3);
 }
 
 void TrendPrintWindowPrivate::difftimeInfo()
