@@ -1443,8 +1443,8 @@ IpAddress,IP地址,IP Address
 high,高,High
 normal,中,Normal
 low,低,Low
-ConfigManagerDesc,配置管理,Config Manager
-ConfigManager,配置管理,Config Manager
+ConfigManagerDesc,配置管理,Config Manage
+ConfigManager,配置管理,Config Manage
 DefaultConfig,默认配置,Default Config
 DefaultConfigDesc,默认配置,Default Config
 AdultDefaultConfig,成人默认配置,Adult Default Config
@@ -1452,8 +1452,8 @@ PedDefaultConfig,小儿默认配置,Ped Default Config
 NeoDefaultConfig,新生儿默认配置,Neo Default Config
 FactoryConfig,工厂配置,Factory Config
 CurrentConfig,当前配置,Current Config
-ConfigManagerment,配置管理,Config Manager
-ConfigManagermentDesc,配置管理,Config Managerment
+ConfigManagerment,配置管理,Config Manage
+ConfigManagermentDesc,配置管理,Config Manage
 General,通用,General
 SetConfigName,设置配置项名称,Set Config Name
 GeneralDesc,通用设置,General Desc
