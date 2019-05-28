@@ -143,7 +143,8 @@ void NIBPParam::exitDemo()
     _mapVaule = InvData();
     _prVaule = InvData();
 
-    switchState(curStatusType());
+    // 恢复状态机为进入演示模式前的状态
+    switchState(_oldState);
     if (curStatusType() == NIBP_MONITOR_STANDBY_STATE || curStatusType() == NIBP_MONITOR_SAFEWAITTIME_STATE)
     {
         // 若返回的时准备模式，则清除显示数据
@@ -229,6 +230,13 @@ void NIBPParam::setProvider(NIBPProviderIFace *provider)
     }
     unsigned char cmd = 0x00;
     handleNIBPEvent(NIBP_EVENT_TRIGGER_MODEL, &cmd, 1);
+
+    // 进入演示模式时，切换状态机为正常监护
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        _oldState = _activityMachine->curStatusType();
+        switchState(NIBP_MONITOR_STANDBY_STATE);
+    }
 }
 
 /**************************************************************************************************
@@ -1416,7 +1424,7 @@ NIBPParam::NIBPParam()
       _connectedFlag(false), _connectedProvider(false),
       _text(InvStr()),
       _reply(false), _result(false), _manometerPressure(InvData()), _isMaintain(false), _firstAutoFlag(false),
-      _activityMachine(NULL)
+      _activityMachine(NULL), _oldState(0)
 {
     nibpCountdownTime.getInstance();
 
