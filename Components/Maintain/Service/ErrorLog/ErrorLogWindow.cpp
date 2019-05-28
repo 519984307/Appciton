@@ -63,7 +63,7 @@ public:
 ErrorLogWindow::ErrorLogWindow()
     : Dialog(), d_ptr(new ErrorLogWindowPrivate())
 {
-    setFixedSize(800, 580);
+    setFixedSize(680, 520);
 
     d_ptr->table = new TableView();
     TableHeaderView *horizontalHeader = new TableHeaderView(Qt::Horizontal);
@@ -80,7 +80,7 @@ ErrorLogWindow::ErrorLogWindow()
     d_ptr->table->setModel(d_ptr->model);
     d_ptr->table->setFixedHeight(d_ptr->model->getHeaderHeightHint()
                                  + d_ptr->model->getRowHeightHint() * TABLE_ROW_NR);
-    d_ptr->table->setFixedWidth(800);
+    d_ptr->table->setFixedWidth(680);
     d_ptr->table->setItemDelegate(new TableViewItemDelegate(this));
     connect(d_ptr->table, SIGNAL(rowClicked(int)), this, SLOT(itemClickSlot(int)));
     connect(d_ptr->model, SIGNAL(pageInfoUpdate(int, int)), this, SLOT(onPageInfoUpdated(int, int)));
@@ -260,7 +260,8 @@ void ErrorLogWindow::exportReleased()
                     msg = trs("TransferFailed");
                 }
                 MessageBox messageBox(trs("Warn"), msg, QStringList(trs("EnglishYESChineseSURE")));
-                windowManager.showWindow(&messageBox, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
+                windowManager.showWindow(&messageBox, WindowManager::ShowBehaviorModal
+                                         | WindowManager::ShowBehaviorNoAutoClose);
             }
             else if (QDialog::Accepted == statue)  // 导出成功
             {
@@ -271,7 +272,8 @@ void ErrorLogWindow::exportReleased()
     else
     {
         MessageBox messageBox(trs("Warn"), trs("WarningNoUSB"), QStringList(trs("EnglishYESChineseSURE")));
-        windowManager.showWindow(&messageBox, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
+        windowManager.showWindow(&messageBox, WindowManager::ShowBehaviorModal
+                                 | WindowManager::ShowBehaviorNoAutoClose);
     }
 }
 
