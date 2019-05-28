@@ -72,6 +72,8 @@ public:
 public:
     virtual void doRestoreNormalStatus();
 
+    virtual void updatePalette(const QPalette &pal);
+
     /* reimplment */
     void updateWidgetConfig();
 
