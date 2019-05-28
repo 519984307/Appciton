@@ -145,7 +145,7 @@ void AlarmLimitWindow::setItemFocus()
     }
 
     QModelIndex index = d_ptr->table->model()->index(focusIndex, 0);
-    d_ptr->table->scrollTo(index, QAbstractItemView::PositionAtCenter);
+    d_ptr->table->scrollToAssignedPage(index.row());
 
     d_ptr->table->setCurrentIndex(index);
     d_ptr->table->setFocus(Qt::ActiveWindowFocusReason);
