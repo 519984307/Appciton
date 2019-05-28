@@ -362,6 +362,7 @@ void AlarmLimitWindow::restoreDefaults()
             info.limitConfig.lowLimit = low;
             alarmConfig.setLimitAlarmConfig(subId, unit, info.limitConfig);
             infos.append(info);
+            alarmConfig.clearLimitAlarmInfo();
         }
     }
     d_ptr->infos = infos;
