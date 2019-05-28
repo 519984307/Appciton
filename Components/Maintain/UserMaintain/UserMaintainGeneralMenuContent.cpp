@@ -14,10 +14,11 @@
 #include "ComboBox.h"
 #include <QGridLayout>
 #include "IConfig.h"
-#include "IMessageBox.h"
 #include "Button.h"
 #include "KeyInputPanel.h"
 #include "PatientManager.h"
+#include "WindowManager.h"
+#include "MessageBox.h"
 
 class UserMaintainGeneralMenuContentPrivate
 {
@@ -59,8 +60,10 @@ void UserMaintainGeneralMenuContentPrivate::loadOptions()
     systemConfig.getNumValue("General|ChangeBedNumberRight", index);
     combos[ITEM_CBO_CHANGE_BEDNUMBER_RIGHT]->setCurrentIndex(index);
 
+    combos[ITEM_CBO_LANGUAGE]->blockSignals(true);
     systemConfig.getNumAttr("General|Language" , "CurrentOption", index);
     combos[ITEM_CBO_LANGUAGE]->setCurrentIndex(index);
+    combos[ITEM_CBO_LANGUAGE]->blockSignals(false);
 }
 
 UserMaintainGeneralMenuContent::UserMaintainGeneralMenuContent()
@@ -178,6 +181,9 @@ void UserMaintainGeneralMenuContent::onComboBoxIndexChanged(int index)
         case UserMaintainGeneralMenuContentPrivate::ITEM_CBO_LANGUAGE:
         {
             systemConfig.setNumAttr("General|Language" , "CurrentOption" , index);
+            MessageBox msg(trs("Prompt"), trs("ChangeLanguageTip"), false, true);
+            windowManager.showWindow(&msg, WindowManager::ShowBehaviorNoAutoClose
+                                     | WindowManager::ShowBehaviorModal);
             break;
         }
         default:
