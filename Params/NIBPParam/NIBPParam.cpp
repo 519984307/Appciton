@@ -131,6 +131,7 @@ void NIBPParam::handDemoTrendData(void)
     _prVaule = qrand() % 10 + 60;
 
     setResult(_sysValue, _diaValue, _mapVaule, _prVaule, NIBP_ONESHOT_NONE);
+    eventStorageManager.triggerNIBPMeasurementEvent(timeManager.getCurTime(), NIBP_ONESHOT_NONE);
 
     setMeasureResult(NIBP_MEASURE_SUCCESS);
 }
