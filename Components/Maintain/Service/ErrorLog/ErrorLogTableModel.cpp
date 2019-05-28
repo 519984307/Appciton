@@ -17,7 +17,7 @@
 
 #define COLUMN_COUNT        3
 #define MAX_ROW_COUNT       7
-#define DEFAULT_WIDTH       (800)
+#define DEFAULT_WIDTH       (680)
 #define DEFAULT_ICON_WIDTH          (80)
 
 #define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
