@@ -34,6 +34,8 @@
 #include "DischargePatientWindow.h"
 #include "TrendTableWindow.h"
 #include "LanguageManager.h"
+#include "LayoutManager.h"
+#include "BigFontLayoutWindow.h"
 
 #define co2StandbyIcon "standby.png"
 #define co2StandbyHint "CO2Standby"
@@ -135,9 +137,16 @@ void SoftkeyActionBase::windowLayout(bool isPressed)
         return;
     }
 
-    windowManager.showWindow(ScreenLayoutWindow::getInstance(),
-                             WindowManager::ShowBehaviorNoAutoClose |
-                             WindowManager::ShowBehaviorCloseOthers);
+    if (layoutManager.getUFaceType() == UFACE_MONITOR_BIGFONT)
+    {
+        windowManager.showWindow(BigFontLayoutWindow::getInstance(),
+                                 WindowManager::ShowBehaviorCloseOthers);
+    }
+    else
+    {
+        windowManager.showWindow(ScreenLayoutWindow::getInstance(),
+                                 WindowManager::ShowBehaviorCloseOthers);
+    }
 }
 
 /***************************************************************************************************
