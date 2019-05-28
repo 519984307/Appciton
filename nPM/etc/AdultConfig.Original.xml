@@ -859,7 +859,6 @@
         <PacerStartUp>0</PacerStartUp>
         <DiagnosticECG>1</DiagnosticECG>
         <Print30JSelfTestReport>0</Print30JSelfTestReport>
-        <PrintSpeed>1</PrintSpeed>
     </Print>
     <ECG12L>
         <NotchFilter>0</NotchFilter>
