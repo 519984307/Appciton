@@ -284,7 +284,7 @@ void AlarmLimitWindow::onSelectRowChanged(int row)
 void AlarmLimitWindow::onDefaultsClick()
 {
     QStringList slist;
-    slist << trs("No") << trs("Ok");
+    slist << trs("No") << trs("Yes");
     MessageBox messageBox(trs("Warn"), trs("SureAllAlarmDefaults"), slist, true);
     if (messageBox.exec() == 1)
     {
