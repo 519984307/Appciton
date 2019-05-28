@@ -2036,6 +2036,9 @@ void ECGParam::setNotchFilter(ECGNotchFilter filter)
  *************************************************************************************************/
 ECGNotchFilter ECGParam::getNotchFilter()
 {
+    int notchFilter = 0;
+    currentConfig.getNumValue("ECG|NotchFilter", notchFilter);
+    _notchFilter = static_cast<ECGNotchFilter>(notchFilter);
     return _notchFilter;
 }
 
