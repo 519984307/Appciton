@@ -107,7 +107,6 @@ bool ErrorLogExporter::exportLog(const QString &filename)
         stream<<"Most Recent Critical Fault: "<<summary.mostRecentCriticalErrorDate<<TEXT_ENDL;
         stream<<"Oldest Error: "<<summary.oldestErrorDate<<TEXT_ENDL;
         stream<<"Last Erase Time: "<<summary.lastEraseTimeDate<<TEXT_ENDL;
-        stream<<"Number of shocks > 120J: "<<summary.totalShockCount<<TEXT_ENDL;
         stream<<TEXT_ENDL;
 
         while(index < total)

@@ -217,7 +217,6 @@ void ErrorLogWindow::summaryReleased()
     stream << "Most Recent Critical Fault: " << summary.mostRecentCriticalErrorDate << endl;
     stream << "Oldest Error: " << summary.oldestErrorDate << endl;
     stream << "Last Erase Time: " << summary.lastEraseTimeDate << endl;
-    stream << "Number of shocks > 120J: " << summary.totalShockCount << endl;
 
     ErrorLogViewerWindow viewer;
     viewer.setWindowTitle(trs("Summary"));
