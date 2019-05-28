@@ -155,6 +155,23 @@ void AlarmLimitWindow::showEvent(QShowEvent *ev)
 {
     Dialog::showEvent(ev);
     QTimer::singleShot(0, this, SLOT(setItemFocus()));
+    // refresh page button
+    if (d_ptr->table->hasPreivousPage())
+    {
+        d_ptr->prevBtn->setEnabled(true);
+    }
+    else
+    {
+        d_ptr->prevBtn->setEnabled(false);
+    }
+    if (d_ptr->table->hasNextPage())
+    {
+        d_ptr->nextBtn->setEnabled(true);
+    }
+    else
+    {
+        d_ptr->nextBtn->setEnabled(false);
+    }
 }
 
 
