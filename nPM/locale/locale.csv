@@ -12,7 +12,7 @@ STAnalysize,ST段分析,ST Analysize
 SystemMaintenance,维护,Maintenance
 SystemMaintenanceDesc,维护,Maintenance
 iDMBoard,iDMBoard,iDMBoard
-BuildTime,编译时间,Build Time
+CompileTime,编译时间,Compile Time
 ChannelPressureEntitle1,压力标名1,Pressure Entitle1
 ChannelPressureEntitle2,压力标名2,Pressure Entitle2
 Adult,成人,Adu
