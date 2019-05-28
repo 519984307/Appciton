@@ -158,6 +158,7 @@ void ErrorLogWindow::init()
     if (d_ptr->table->model()->rowCount() == 0)
     {
         d_ptr->table->setFocusPolicy(Qt::NoFocus);
+        d_ptr->exportBtn->setEnabled(false);
     }
     else
     {
