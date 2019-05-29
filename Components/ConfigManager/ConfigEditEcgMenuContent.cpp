@@ -373,6 +373,8 @@ void ConfigEditECGMenuContent::layoutExec()
                        << QString::number(SoundManager::VOLUME_LEV_3)
                        << QString::number(SoundManager::VOLUME_LEV_4)
                        << QString::number(SoundManager::VOLUME_LEV_5));
+    connect(comboBox, SIGNAL(itemFocusChanged(int)),
+            this, SLOT(onPopupListItemFocusChanged(int)));
     itemID = static_cast<int>(ConfigEditECGMenuContentPrivate::ITEM_CBO_HTBT_VOL);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -577,6 +579,12 @@ void ConfigEditECGMenuContent::onAlarmBtnReleased()
     {
         w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
     }
+}
+
+void ConfigEditECGMenuContent::onPopupListItemFocusChanged(int volume)
+{
+        soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT , static_cast<SoundManager::VolumeLevel>(volume));
+        soundManager.heartBeatTone();
 }
 
 
