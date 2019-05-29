@@ -944,8 +944,8 @@ RealTimePrintMidLead,实时打印中部导联,Real-Time Print Middle Lead
 RealTimePrintBottomLead,实时打印底部导联,Real-Time Print Bottom Lead
 ErrorPassWordERROR,密码错误!,Password Error!
 Warn,警告,Warning
-WarningNoUSB,没有找到USB，请检查！,"Not find USB, please check!"
-WarnLessUSBFreeSpace,USB空间不足，请检查！,"USB free space not enough, please check!"
+WarningNoUSB,没有找到U盘，请检查！,"Not find U disk, please check!"
+WarnLessUSBFreeSpace,U盘空间不足，请检查！,"U disk free space not enough, please check!"
 WarningNoImportFile,导入文件不存在，请检查！,"Import file does not exist, please check!"
 WarningImportFileError,导入文件内容错误:,Import file error:
 WarningLoadDefaultCfgFail,加载默认配置失败，请检查！,"Load default Config fail, please check!"
@@ -971,14 +971,14 @@ Mode2,模式2,Mode 2
 ScreenSize,屏幕尺寸,Screen Size
 ScreenResolution,屏幕分辨率,Screen Resolution
 Inch,英寸,Inch
-TransferRescueDataByUSB,传输营救数据到USB,Transferring Rescue Data to USB
+TransferRescueDataByUSB,传输营救数据到U盘,Transferring Rescue Data to U disk
 TransferRescueDataByWIFI,传输营救数据到WIFI,Transferring Rescue Data to WIFI
-TransferSupervisorByUSB,传输超级配置数据到USB,Transferring Supervisor Config to USB
+TransferSupervisorByUSB,传输超级配置数据到U盘,Transferring Supervisor Config to U disk
 TransferSupervisorByWIFI,传输超级配置数据到WIFI,Transferring Supervisor Config to WIFI
 TransferRescueDataComplete,营救数据传输完成,Rescue Data Transfer Complete
 TransferSupervisorComplete,超级配置传输完成,Supervisor Config Transfer Complete
-TransferErrorLogToUSBComplete,U盘传输错误日志完成,Transfer error log to USB complete
-TransferErrorLogToUSB,U盘传输错误日志,Transfer error log to USB
+TransferErrorLogToUSBComplete,U盘传输错误日志完成,Transfer error log to U disk complete
+TransferErrorLogToUSB,U盘传输错误日志,Transfer error log to U disk
 TransferFailed,传输失败,Transfer Failed
 TransferCancel,传输取消,Transfer Cancel
 ECG12LTransfersuccess,12导传送成功,ECG 12 Lead Transfer Success
@@ -1111,13 +1111,12 @@ Name,姓名,Name
 EmailAddress,邮件地址,E-mail Address
 InvalidEmailAddress,无效邮件地址,Invalid E-mail Address
 Confirm,确认,Confirm
-USB,优盘,USB
 EMAIL,邮件,E-mail
 Transfer,传输,Transfer
 MailCurrentRescue,邮件传送当前营救,Mail Current Rescue
 MailSelectReport,邮件传送选择快照,Mail Select Rescue
-UsbCurrentRescue,优盘传送当前营救,USB Current Rescue
-UsbCurrentReport,优盘传送选择快照,USB Select Report
+UsbCurrentRescue,U盘传送当前营救,USB Current Rescue
+UsbCurrentReport,U盘传送选择快照,USB Select Report
 TransferECG12LeadByUSB,USB传输12导,Transfer 12 Lead ECG by USB
 TransferECG12LeadByWIFI,wifi传输12导,Transfer 12 Lead ECG by WIFI
 TransferECG12LeadComplete,12导传输完成,Transfer 12 Lead ECG Complete
