@@ -842,7 +842,7 @@
         </Purple>
         <ECGDUPColor>Green</ECGDUPColor>
         <ECGColor>Green</ECGColor>
-        <SPO2Color>Yellow</SPO2Color>
+        <SPO2Color>Cyan</SPO2Color>
         <NIBPColor>Blue</NIBPColor>
         <CO2Color>Red</CO2Color>
         <RESPColor>Red</RESPColor>
