@@ -21,6 +21,7 @@
 #include "WindowManager.h"
 #include "NIBPRepairMenuWindow.h"
 #include "NIBPParam.h"
+#include "SystemManager.h"
 
 #define TIME_INTERVAL       100
 
@@ -50,6 +51,10 @@ NIBPCalibrationMenuContent::~NIBPCalibrationMenuContent()
 
 void NIBPCalibrationMenuContent::readyShow()
 {
+    if (systemManager.isSupport(PARAM_NIBP))
+    {
+        d_ptr->enterBtn->setEnabled(false);
+    }
     d_ptr->timerId = startTimer(TIME_INTERVAL);
 }
 
