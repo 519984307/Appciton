@@ -211,12 +211,12 @@ void ErrorLogWindow::summaryReleased()
     QString str;
     QTextStream stream(&str);
     ErrorLog::Summary summary = errorLog.getSummary();
-    stream << "Number of Errors: " << summary.NumOfErrors << endl;
-    stream << "Number of Critical Faults: " << summary.numOfCriticalErrors << endl;
-    stream << "Most Recent Error: " << summary.mostRecentErrorDate << endl;
-    stream << "Most Recent Critical Fault: " << summary.mostRecentCriticalErrorDate << endl;
-    stream << "Oldest Error: " << summary.oldestErrorDate << endl;
-    stream << "Last Erase Time: " << summary.lastEraseTimeDate << endl;
+    stream << trs("NumberOfErrors") << summary.NumOfErrors << endl;
+    stream << trs("NumberOfCriticalFaults") << summary.numOfCriticalErrors << endl;
+    stream << trs("MostRecentError") << summary.mostRecentErrorDate << endl;
+    stream << trs("MostRecentCriticalFault") << summary.mostRecentCriticalErrorDate << endl;
+    stream << trs("OldestError") << summary.oldestErrorDate << endl;
+    stream << trs("LastEraseTime") << summary.lastEraseTimeDate << endl;
     stream << "Number of shocks > 120J: " << summary.totalShockCount << endl;
 
     ErrorLogViewerWindow viewer;
