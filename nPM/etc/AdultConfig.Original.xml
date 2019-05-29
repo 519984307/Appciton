@@ -153,7 +153,7 @@
         <ApneaTime>1</ApneaTime>
     </Alarm>
     <AlarmSource>
-		<HR_PR Enable="1" Prio="2">
+		<HR_PR Enable="1" Prio="1">
 			<bpm>
 			    <Low Min="15" Max="348">50</Low>
 			    <High Min="17" Max="350">120</High>
@@ -161,7 +161,7 @@
 			    <Scale>1</Scale>
 			</bpm>
 		</HR_PR>
-                <RR_BR Enable="1" Prio="2">
+                <RR_BR Enable="1" Prio="1">
 			<rpm>
 				<Low Min="2" Max="149">5</Low>
 				<High Min="3" Max="150">50</High>
@@ -169,7 +169,7 @@
 				<Scale>1</Scale>
 			</rpm>
 		</RR_BR>
-		<SPO2 Enable="1" Prio="2">
+		<SPO2 Enable="1" Prio="1">
 		<percent>
 		    <Low Min="50" Max="98">85</Low>
 		    <High Min="52" Max="100">100</High>
@@ -177,7 +177,7 @@
 		    <Scale>1</Scale>
 		</percent>
 		</SPO2>
-		<NIBP_SYS Enable="1" Prio="2">
+		<NIBP_SYS Enable="1" Prio="1">
 		<mmHg>
 		    <Low Min="40" Max="254">75</Low>
 		    <High Min="41" Max="255">220</High>
@@ -191,7 +191,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</NIBP_SYS>
-		<NIBP_DIA Enable="1" Prio="2">
+		<NIBP_DIA Enable="1" Prio="1">
 		<mmHg>
 		    <Low Min="10" Max="194">35</Low>
 		    <High Min="11" Max="195">110</High>
@@ -205,7 +205,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</NIBP_DIA>
-		<NIBP_MAP Enable="1" Prio="2">
+		<NIBP_MAP Enable="1" Prio="1">
 		<mmHg>
 		    <Low Min="20" Max="214">50</Low>
 		    <High Min="21" Max="215">120</High>
@@ -219,7 +219,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</NIBP_MAP>
-		<ART_SYS Enable="1" Prio="2">
+		<ART_SYS Enable="1" Prio="1">
 		<mmHg>
 		    <Low Min="-50" Max="298">90</Low>
 		    <High Min="-48" Max="300">160</High>
@@ -233,7 +233,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</ART_SYS>
-		<ART_DIA Enable="1" Prio="2">
+		<ART_DIA Enable="1" Prio="1">
 		<mmHg>
 		    <Low Min="-50" Max="298">50</Low>
 		    <High Min="-48" Max="300">90</High>
@@ -247,7 +247,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</ART_DIA>
-		<ART_MAP Enable="1" Prio="2">
+		<ART_MAP Enable="1" Prio="1">
 		<mmHg>
 		    <Low Min="-50" Max="298">70</Low>
 		    <High Min="-48" Max="300">110</High>
@@ -261,7 +261,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</ART_MAP>
-		<ART_PR Enable="1" Prio="2">
+		<ART_PR Enable="1" Prio="1">
 		<bpm>
 		    <Low Min="15" Max="298">50</Low>
 		    <High Min="17" Max="300">121</High>
@@ -269,7 +269,7 @@
 		    <Scale>1</Scale>
 		</bpm>
 		</ART_PR>
-		<PA_SYS Enable="1" Prio="2">
+		<PA_SYS Enable="1" Prio="1">
 		<mmHg>
 		    <Low Min="-50" Max="298">10</Low>
 		    <High Min="-48" Max="300">35</High>
@@ -283,7 +283,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</PA_SYS>
-		<PA_DIA Enable="1" Prio="2">
+		<PA_DIA Enable="1" Prio="1">
 		<mmHg>
 		    <Low Min="10" Max="204">0</Low>
 		    <High Min="11" Max="205">16</High>
@@ -297,7 +297,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</PA_DIA>
-		<PA_MAP Enable="1" Prio="2">
+		<PA_MAP Enable="1" Prio="1">
 		<mmHg>
 		    <Low Min="-50" Max="298">0</Low>
 		    <High Min="-48" Max="300">20</High>
@@ -311,7 +311,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</PA_MAP>
-		<PA_PR Enable="1" Prio="2">
+		<PA_PR Enable="1" Prio="1">
 		<bpm>
 		    <Low Min="15" Max="298">50</Low>
 		    <High Min="17" Max="300">121</High>
@@ -319,7 +319,7 @@
 		    <Scale>1</Scale>
 		</bpm>
 		</PA_PR>
-		<CVP_MAP Enable="1" Prio="2">
+		<CVP_MAP Enable="1" Prio="1">
 		<mmHg>
 		    <Low Min="-50" Max="298">0</Low>
 		    <High Min="-48" Max="300">10</High>
@@ -333,7 +333,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</CVP_MAP>
-		<CVP_PR Enable="1" Prio="2">
+		<CVP_PR Enable="1" Prio="1">
 		<bpm>
 		    <Low Min="15" Max="298">50</Low>
 		    <High Min="17" Max="300">121</High>
@@ -341,7 +341,7 @@
 		    <Scale>1</Scale>
 		</bpm>
 		</CVP_PR>
-		<LAP_MAP Enable="1" Prio="2">
+		<LAP_MAP Enable="1" Prio="1">
 		<mmHg>
 		    <Low Min="-50" Max="298">0</Low>
 		    <High Min="-48" Max="300">10</High>
@@ -355,7 +355,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</LAP_MAP>
-		<LAP_PR Enable="1" Prio="2">
+		<LAP_PR Enable="1" Prio="1">
 		<bpm>
 		    <Low Min="15" Max="298">50</Low>
 		    <High Min="17" Max="300">121</High>
@@ -363,7 +363,7 @@
 		    <Scale>1</Scale>
 		</bpm>
 		</LAP_PR>
-		<RAP_MAP Enable="1" Prio="2">
+		<RAP_MAP Enable="1" Prio="1">
 		<mmHg>
 		    <Low Min="-50" Max="298">0</Low>
 		    <High Min="-48" Max="300">10</High>
@@ -377,7 +377,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</RAP_MAP>
-		<RAP_PR Enable="1" Prio="2">
+		<RAP_PR Enable="1" Prio="1">
 		<bpm>
 		    <Low Min="-50" Max="298">0</Low>
 		    <High Min="-48" Max="300">10</High>
@@ -385,7 +385,7 @@
 		    <Scale>1</Scale>
 		</bpm>
 		</RAP_PR>
-		<ICP_MAP Enable="1" Prio="2">
+		<ICP_MAP Enable="1" Prio="1">
 		<mmHg>
 		    <Low Min="-50" Max="298">0</Low>
 		    <High Min="-48" Max="300">10</High>
@@ -399,7 +399,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</ICP_MAP>
-		<ICP_PR Enable="1" Prio="2">
+		<ICP_PR Enable="1" Prio="1">
 		<bpm>
 		    <Low Min="15" Max="298">50</Low>
 		    <High Min="17" Max="300">121</High>
@@ -407,7 +407,7 @@
 		    <Scale>1</Scale>
 		</bpm>
 		</ICP_PR>
-		<AUXP1_SYS Enable="1" Prio="2">
+		<AUXP1_SYS Enable="1" Prio="1">
 		<mmHg>
 		    <Low Min="-50" Max="298">90</Low>
 		    <High Min="-48" Max="300">160</High>+
@@ -421,7 +421,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</AUXP1_SYS>
-		<AUXP1_DIA Enable="1" Prio="2">
+		<AUXP1_DIA Enable="1" Prio="1">
 		<mmHg>
 		    <Low Min="-50" Max="298">50</Low>
 		    <High Min="-48" Max="300">90</High>
@@ -435,7 +435,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</AUXP1_DIA>
-		<AUXP1_MAP Enable="1" Prio="2">
+		<AUXP1_MAP Enable="1" Prio="1">
 		<mmHg>
 		    <Low Min="-50" Max="298">70</Low>
 		    <High Min="-48" Max="300">110</High>
@@ -449,7 +449,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</AUXP1_MAP>
-		<AUXP1_PR Enable="1" Prio="2">
+		<AUXP1_PR Enable="1" Prio="1">
 		<bpm>
 		    <Low Min="15" Max="298">50</Low>
 		    <High Min="17" Max="300">121</High>
@@ -457,7 +457,7 @@
 		    <Scale>1</Scale>
 		</bpm>
 		</AUXP1_PR>
-		<AUXP2_SYS Enable="1" Prio="2">
+		<AUXP2_SYS Enable="1" Prio="1">
 		<mmHg>
 		    <Low Min="-50" Max="298">90</Low>
 		    <High Min="-48" Max="300">160</High>
@@ -471,7 +471,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</AUXP2_SYS>
-		<AUXP2_DIA Enable="1" Prio="2">
+		<AUXP2_DIA Enable="1" Prio="1">
 		<mmHg>
 		    <Low Min="-50" Max="298">50</Low>
 		    <High Min="-48" Max="300">90</High>
@@ -485,7 +485,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</AUXP2_DIA>
-		<AUXP2_MAP Enable="1" Prio="2">
+		<AUXP2_MAP Enable="1" Prio="1">
 		<mmHg>
 		    <Low Min="-50" Max="298">70</Low>
 		    <High Min="-48" Max="300">110</High>
@@ -499,7 +499,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</AUXP2_MAP>
-		<AUXP2_PR Enable="1" Prio="2">
+		<AUXP2_PR Enable="1" Prio="1">
 		<bpm>
 		    <Low Min="15" Max="298">50</Low>
 		    <High Min="17" Max="300">121</High>
@@ -507,7 +507,7 @@
 		    <Scale>1</Scale>
 		</bpm>
 		</AUXP2_PR>
-		<CO_CO Enable="1" Prio="2">
+		<CO_CO Enable="1" Prio="1">
 		<lpm>
 		    <Low Min="20" Max="1999">400</Low>
 		    <High Min="21" Max="2000">700</High>
@@ -515,7 +515,7 @@
 		    <Scale>100</Scale>
 		</lpm>
 		</CO_CO>
-		<CO_CI Enable="1" Prio="2">
+		<CO_CI Enable="1" Prio="1">
 		<lpmpsqm>
 		    <Low Min="22" Max="39">30</Low>
 		    <High Min="23" Max="40">35</High>
@@ -523,7 +523,7 @@
 		    <Scale>10</Scale>
 		</lpmpsqm>
 		</CO_CI>
-		<TB Enable="0" Prio="2">
+		<TB Enable="0" Prio="1">
 		<celsius>
 		    <Low Min="230" Max="449">360</Low>
 		    <High Min="231" Max="450">380</High>
@@ -537,7 +537,7 @@
 		    <Scale>10</Scale>
 		</fahrenheit>
 		</TB>
-		<ETCO2 Enable="1" Prio="2">
+		<ETCO2 Enable="1" Prio="1">
 		<percent>
 		    <Low Min="0" Max="249">10</Low>
 		    <High Min="1" Max="250">80</High>
@@ -557,7 +557,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</ETCO2>
-		<FICO2 Enable="0" Prio="2">
+		<FICO2 Enable="0" Prio="1">
 		<percent>
 		    <Low Min="0" Max="249">0</Low>
 		    <High Min="1" Max="250">80</High>
@@ -577,7 +577,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</FICO2>
-		<ETN2O Enable="0" Prio="2">
+		<ETN2O Enable="0" Prio="1">
 		<percent>
 		    <Low Min="0" Max="114">1</Low>
 		    <High Min="1" Max="115">8</High>
@@ -597,7 +597,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</ETN2O>
-		<FIN2O Enable="0" Prio="2">
+		<FIN2O Enable="0" Prio="1">
 		<percent>
 		    <Low Min="0" Max="114">0</Low>
 		    <High Min="1" Max="115">8</High>
@@ -617,7 +617,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</FIN2O>
-		<ETAA1 Enable="0" Prio="2">
+		<ETAA1 Enable="0" Prio="1">
 		<percent>
 		    <Low Min="0" Max="249">10</Low>
 		    <High Min="1" Max="250">80</High>
@@ -637,7 +637,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</ETAA1>
-		<FIAA1 Enable="0" Prio="2">
+		<FIAA1 Enable="0" Prio="1">
 		<percent>
 		    <Low Min="0" Max="249">0</Low>
 		    <High Min="1" Max="250">80</High>
@@ -657,7 +657,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</FIAA1>
-		<ETAA2 Enable="0" Prio="2">
+		<ETAA2 Enable="0" Prio="1">
 		<percent>
 		    <Low Min="0" Max="249">10</Low>
 		    <High Min="1" Max="250">80</High>
@@ -677,7 +677,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</ETAA2>
-		<FIAA2 Enable="0" Prio="2">
+		<FIAA2 Enable="0" Prio="1">
 		<percent>
 		    <Low Min="0" Max="249">0</Low>
 		    <High Min="1" Max="250">80</High>
@@ -697,7 +697,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</FIAA2>
-		<ETO2 Enable="0" Prio="2">
+		<ETO2 Enable="0" Prio="1">
 		<percent>
 		    <Low Min="0" Max="114">1</Low>
 		    <High Min="1" Max="115">8</High>
@@ -717,7 +717,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</ETO2>
-		<FIO2 Enable="0" Prio="2">
+		<FIO2 Enable="0" Prio="1">
 		<percent>
 		    <Low Min="0" Max="114">0</Low>
 		    <High Min="1" Max="115">8</High>
@@ -737,7 +737,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</FIO2>
-		<T1 Enable="0" Prio="2">
+		<T1 Enable="0" Prio="1">
 		<celsius>
 		    <Low Min="0" Max="499">350</Low>
 		    <High Min="1" Max="500">378</High>
@@ -751,7 +751,7 @@
 		    <Scale>10</Scale>
 		</fahrenheit>
 		</T1>
-		<T2 Enable="0" Prio="2">
+		<T2 Enable="0" Prio="1">
 		<celsius>
 		    <Low Min="0" Max="499">350</Low>
 		    <High Min="1" Max="500">378</High>
@@ -765,7 +765,7 @@
 		    <Scale>10</Scale>
 		</fahrenheit>
 		</T2>
-		<TD Enable="0" Prio="2">
+		<TD Enable="0" Prio="1">
 		<celsius>
 		    <Low Min="0" Max="49">0</Low>
 		    <High Min="1" Max="50">5</High>
@@ -779,7 +779,7 @@
 		    <Scale>10</Scale>
 		</fahrenheit>
 		</TD>
-		<O2 Enable="0" Prio="2">
+		<O2 Enable="0" Prio="1">
 		<percent>
 		    <Low Min="0" Max="99">20</Low>
 		    <High Min="1" Max="100">60</High>
