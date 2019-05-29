@@ -368,11 +368,11 @@ void AlarmIndicator::_displayTechSet(AlarmInfoNode &node)
 
 bool AlarmIndicator::_canPlayAudio(AlarmStatus status, bool isTechAlarm)
 {
-    int alarmOffStatus = 0;
-    systemConfig.getNumValue("Alarms|AlarmAudio", alarmOffStatus);
+    int alarmAudio = 0;
+    systemConfig.getNumValue("Alarms|AlarmAudio", alarmAudio);
     if (status == ALARM_STATUS_NORMAL)
     {
-        if (alarmOffStatus)
+        if (alarmAudio)
         {
             return true;
         }
@@ -384,13 +384,13 @@ bool AlarmIndicator::_canPlayAudio(AlarmStatus status, bool isTechAlarm)
 
     if (isTechAlarm && status != ALARM_STATUS_OFF)
     {
-        if (alarmOffStatus)
+        if (alarmAudio)
         {
-            return false;
+            return true;
         }
         else
         {
-            return true;
+            return false;
         }
     }
 
