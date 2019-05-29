@@ -18,7 +18,8 @@ class AlarmStatusWidgetPrivate
 {
 public:
     AlarmStatusWidgetPrivate()
-        :alarmStatus(ALARM_STATUS_NORMAL)
+        : alarmStatus(ALARM_STATUS_NORMAL),
+          isShowAudioOff(false)
     {
         alarmPausePixmap.load("/usr/local/nPM/icons/AlarmPause.png");
         audioOffPixmap.load("/usr/local/nPM/icons/AlarmAudioOff.png");
@@ -31,6 +32,7 @@ public:
     QPixmap alarmOffPixmap;              // 报警关闭图标。
     QPixmap alarmResetPixmap;          // alarm reset icon
     AlarmStatus alarmStatus;
+    bool isShowAudioOff;
 };
 
 /**************************************************************************************************
@@ -40,13 +42,11 @@ void AlarmStatusWidget::paintEvent(QPaintEvent *e)
 {
     IWidget::paintEvent(e);
     QPainter painter(this);
-    int alarmAudio = false;
-    systemConfig.getNumValue("Alarms|AlarmAudio", alarmAudio);
 
     // 显示正常报警。
     if (d_ptr->alarmStatus == ALARM_STATUS_NORMAL)
     {
-        if (alarmAudio)
+        if (d_ptr->isShowAudioOff)
         {
             return;
         }
@@ -65,7 +65,7 @@ void AlarmStatusWidget::paintEvent(QPaintEvent *e)
     QRect r = rect().adjusted(offx, 5, -offx, -5);
     if (d_ptr->alarmStatus == ALARM_STATUS_NORMAL)
     {
-        if (!alarmAudio)
+        if (!d_ptr->isShowAudioOff)
         {
             painter.drawPixmap(r, d_ptr->audioOffPixmap, d_ptr->alarmPausePixmap.rect());
         }
@@ -102,6 +102,7 @@ AlarmStatusWidget::AlarmStatusWidget()
     d_ptr(new AlarmStatusWidgetPrivate())
 {
     setFocusPolicy(Qt::NoFocus);
+    updateAlarmAudioStatus();
 }
 
 /**************************************************************************************************
@@ -110,4 +111,12 @@ AlarmStatusWidget::AlarmStatusWidget()
 AlarmStatusWidget::~AlarmStatusWidget()
 {
     delete d_ptr;
+}
+
+void AlarmStatusWidget::updateAlarmAudioStatus()
+{
+    int index = 0;
+    systemConfig.getNumValue("Alarms|AlarmAudio", index);
+    d_ptr->isShowAudioOff = index ? true : false;
+    update();
 }
