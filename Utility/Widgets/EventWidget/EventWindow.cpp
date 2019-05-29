@@ -73,7 +73,7 @@ public:
           waitTimerId(-1),
           isWait(false),
           timeoutNum(0),
-          generator(NULL)
+          generator(NULL), ecgGain(3)
     {
         backend = eventStorageManager.backend();
         patientInfo = patientManager.getPatientInfo();
@@ -163,6 +163,7 @@ public:
 
     QStringList printList;              // 事件列表打印
     PatientInfo patientInfo;            // 病人信息
+    int ecgGain;
 };
 
 EventWindow *EventWindow::getInstance()
@@ -187,6 +188,7 @@ void EventWindow::setWaveSpeed(int speed)
 void EventWindow::setWaveGain(int gain)
 {
     d_ptr->waveWidget->setGain((ECGEventGain)gain);
+    d_ptr->ecgGain = gain;
 }
 
 void EventWindow::setHistoryDataPath(QString path)
@@ -541,7 +543,8 @@ void EventWindow::printRelease()
     if (curIndex < d_ptr->dataIndex.size() &&
             curIndex >= 0)
     {
-        RecordPageGenerator *gen = new EventPageGenerator(d_ptr->backend, d_ptr->dataIndex.at(curIndex), d_ptr->patientInfo);
+        RecordPageGenerator *gen = new EventPageGenerator(d_ptr->backend, d_ptr->dataIndex.at(curIndex),
+                                                          d_ptr->patientInfo, d_ptr->ecgGain);
         if (recorderManager.isPrinting() && !d_ptr->isWait)
         {
             if (gen->getPriority() <= recorderManager.getCurPrintPriority())
