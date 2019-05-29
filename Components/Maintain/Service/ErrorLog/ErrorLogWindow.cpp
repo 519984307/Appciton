@@ -260,7 +260,8 @@ void ErrorLogWindow::exportReleased()
                     msg = trs("TransferFailed");
                 }
                 MessageBox messageBox(trs("Warn"), msg, QStringList(trs("EnglishYESChineseSURE")));
-                windowManager.showWindow(&messageBox, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
+                windowManager.showWindow(&messageBox,
+                                         WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
             }
             else if (QDialog::Accepted == statue)  // 导出成功
             {
@@ -271,7 +272,8 @@ void ErrorLogWindow::exportReleased()
     else
     {
         MessageBox messageBox(trs("Warn"), trs("WarningNoUSB"), QStringList(trs("EnglishYESChineseSURE")));
-        windowManager.showWindow(&messageBox, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
+        windowManager.showWindow(&messageBox,
+                                 WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
     }
 }
 
@@ -296,10 +298,15 @@ void ErrorLogWindow::USBCheckTimeout()
     if (!usbManager.isUSBExist())
     {
         d_ptr->infoLab->show();
+        d_ptr->exportBtn->setEnabled(false);
     }
     else
     {
         d_ptr->infoLab->hide();
+        if (d_ptr->table->model()->rowCount() != 0)
+        {
+            d_ptr->exportBtn->setEnabled(true);
+        }
     }
 }
 
