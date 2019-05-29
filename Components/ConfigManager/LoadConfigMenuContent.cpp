@@ -264,6 +264,7 @@ void LoadConfigMenuContent::onBtnClick()
         respDupParam.updateRRSource();  // 更新RR来源
         respParam.setCalcLead(respParam.getCalcLead()); // 更新呼吸导联
         co2Param.updateDisplayZoom();   // 更新co2标尺
+        layoutManager.updateLayout();   // 更新界面波形
 
 
         QString title(trs("LoadConfig"));
