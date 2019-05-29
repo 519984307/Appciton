@@ -325,6 +325,7 @@ void EventWindow::eventTypeSelect(int index)
 {
     d_ptr->curEventType = (EventType)index;
     d_ptr->loadEventData();
+    d_ptr->refreshPageInfo();
     if (d_ptr->dataIndex.count())
     {
         d_ptr->eventTable->setFocusPolicy(Qt::StrongFocus);
@@ -339,6 +340,7 @@ void EventWindow::eventLevelSelect(int index)
 {
     d_ptr->curEventLevel = (EventLevel)index;
     d_ptr->loadEventData();
+    d_ptr->refreshPageInfo();
     if (d_ptr->dataIndex.count())
     {
         d_ptr->eventTable->setFocusPolicy(Qt::StrongFocus);
