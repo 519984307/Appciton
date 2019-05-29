@@ -355,7 +355,7 @@ void RESPDupParam::handleBRRRValue()
         }
         else  // set br value when the rr value is invalid.
         {
-            _trendWidget->setRRValue(_brValue, false, true);
+            _trendWidget->setRRValue(_rrValue, true, true);
         }
     }
     else if (_manualBrSourceType == BR_SOURCE_CO2)
