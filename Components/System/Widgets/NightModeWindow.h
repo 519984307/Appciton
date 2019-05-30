@@ -41,6 +41,7 @@ private slots:
     /**
      * @brief OnBtnReleased  按钮释放槽函数
      */
+    void onComboBoxItemFocusIndexChanged(int index);
     void OnBtnReleased(void);
 
     /**
