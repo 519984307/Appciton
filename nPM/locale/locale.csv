@@ -358,7 +358,7 @@ SystemInfo,系统信息,System Info
 SystemInfoSetting,系统信息,System Info
 ErrorLog,错误日志,Error Log
 SystemStatus,状态,Status
-SomeLimitAlarmDisabled,有超限报警被关闭,Some limit alarms disabled
+SomeLimitAlarmDisabled,有超限报警被关闭,Some Limit Alarms Disabled
 PowerupRecorderPressed,前面板打印键短路,Front Panel Record Btn Stuck
 PowerupCommunicationStop,前面板通讯停止,Front Panel Comm. Stop
 WiFiMenu,无线网络,Wifi
@@ -1575,8 +1575,8 @@ Opened,已开,Opened
 Closed,已关,Closed
 AlarmType,报警类型,Alarm Type
 EraseData,擦除数据,EraseData
-ScreenConfig,界面设置,Screen
-ScreenConfigDesc,界面设置,Screen Configuration
+ScreenSetting,界面设置,Screen
+ScreenSettingDesc,界面设置,Screen Setting
 CurrentScreen,当前界面,Current Screen
 ScreenLayout,界面布局,Screen Layout
 Standard,标准,Standard
@@ -1692,4 +1692,10 @@ RepeatCheck,一小时内重复测量3次以确认结果,Check again in a hour fo
 footValue,足部数据,foot
 handValue,手部数据,hand
 SPO2ValueInvaild,采集数据无效，请检查血氧模块,The collect data is invaild，Please check SpO2 module
-Ohm,Ω,Ω
+ErrorLogExportAt,错误日志导出时间: ,Error Log export at  
+NumberOfErrors,错误数量: ,Number of Errors: 
+NumberOfCriticalFaults,严重故障数量: ,Number of Critical Faults: 
+MostRecentError,最近发生错误: ,Most Recent Error: 
+MostRecentCriticalFault,最近发生严重错误: ,Most Recent Critical Fault: 
+OldestError,最早的错误: ,Oldest Error: 
+LastEraseTime,上次擦除时间: ,Last Erase Time: 
