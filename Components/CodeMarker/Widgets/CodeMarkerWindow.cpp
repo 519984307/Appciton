@@ -22,6 +22,8 @@
 #include "TimeManager.h"
 #include "IConfig.h"
 
+#define ClOSE_WINDOW_TIME 60*1000
+
 class CodeMarkerWindowPrivate
 {
 public:
@@ -101,7 +103,7 @@ CodeMarkerWindow::CodeMarkerWindow() : Dialog()
     setWindowLayout(layoutG);
 
     d_ptr->timer = new QTimer();
-    d_ptr->timer->setInterval(5000);
+    d_ptr->timer->setInterval(ClOSE_WINDOW_TIME);
     connect(d_ptr->timer, SIGNAL(timeout()), this, SLOT(_closeWidgetTimerFun()));
 
     d_ptr->closeTimer = new QTimer();
