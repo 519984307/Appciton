@@ -1575,8 +1575,8 @@ Opened,已开,Opened
 Closed,已关,Closed
 AlarmType,报警类型,Alarm Type
 EraseData,擦除数据,EraseData
-ScreenConfig,界面设置,Screen
-ScreenConfigDesc,界面设置,Screen Configuration
+ScreenSetting,界面设置,Screen
+ScreenSettingDesc,界面设置,Screen Setting
 CurrentScreen,当前界面,Current Screen
 ScreenLayout,界面布局,Screen Layout
 Standard,标准,Standard
