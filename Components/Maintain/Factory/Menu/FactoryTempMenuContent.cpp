@@ -46,6 +46,15 @@ enum TempCalibrateChannel
 {
     TEMP_CALIBRATE_CHANNEL_1,
     TEMP_CALIBRATE_CHANNEL_2,
+    TEMP_CALIBRATE_CHANNEL_NR
+};
+
+enum TempCalibrateState
+{
+    TEMP_CALIBRATE_STATE_WAITING,
+    TEMP_CALIBRATE_STATE_CALIBRATING,
+    TEMP_CALIBRATE_STATE_SUCCESS,
+    TEMP_CALIBRATE_STATE_FAIL
 };
 
 class FactoryTempMenuContentPrivate
@@ -60,7 +69,7 @@ public:
 
     Button *lbtn[TEMP_CALIBRATE_NR];
     QLabel *label[TEMP_CALIBRATE_NR];
-    QLabel *calibrateResult[TEMP_CALIBRATE_NR];
+    QLabel *calibrateResultLbl[TEMP_CALIBRATE_NR];
 
     int calibrationTimerId;
     int timeoutNum;
@@ -70,6 +79,10 @@ public:
 
     QTimer *tempValueTimer;
     UnitType curUnitType;
+
+    TempCalibrateState calibrateResult[TEMP_CALIBRATE_CHANNEL_NR][TEMP_CALIBRATE_NR];
+
+    void updateResultLabel(int value);
 };
 
 FactoryTempMenuContentPrivate::FactoryTempMenuContentPrivate()
@@ -86,8 +99,36 @@ FactoryTempMenuContentPrivate::FactoryTempMenuContentPrivate()
     {
         label[i] = NULL;
         lbtn[i] = NULL;
-        calibrateResult[i] = NULL;
+        calibrateResultLbl[i] = NULL;
+        for (int j = 0; j < TEMP_CALIBRATE_CHANNEL_NR; j++)
+        {
+            calibrateResult[j][i] = TEMP_CALIBRATE_STATE_WAITING;
+        }
     }
+}
+
+void FactoryTempMenuContentPrivate::updateResultLabel(int value)
+{
+    TempCalibrateState state = calibrateResult[calibrateChannel][value];
+    QString text;
+    switch (state)
+    {
+    case TEMP_CALIBRATE_STATE_WAITING:
+        text = trs("WaitingCalibration");
+        break;
+    case TEMP_CALIBRATE_STATE_CALIBRATING:
+        text = trs("Calibrating");
+        break;
+    case TEMP_CALIBRATE_STATE_SUCCESS:
+        text = trs("CalibrationSuccess");
+        break;
+    case TEMP_CALIBRATE_STATE_FAIL:
+        text = trs("CalibrationFail");
+        break;
+    default:
+        break;
+    }
+    calibrateResultLbl[value]->setText(text);
 }
 
 QString FactoryTempMenuContentPrivate::labelStr[11] =
@@ -179,7 +220,7 @@ void FactoryTempMenuContent::layoutExec()
         d_ptr->lbtn[i] = button;
 
         label = new QLabel;
-        d_ptr->calibrateResult[i] = label;
+        d_ptr->calibrateResultLbl[i] = label;
         layout->addWidget(label, 2 + i, 2, Qt::AlignCenter);
     }
 
@@ -196,15 +237,16 @@ void FactoryTempMenuContent::timerEvent(QTimerEvent *ev)
         {
             if (reply && tempParam.getCalibrationResult())
             {
-                d_ptr->calibrateResult[d_ptr->calibrateValue]->setText(trs("CalibrationSuccess"));
+                d_ptr->calibrateResult[d_ptr->calibrateChannel][d_ptr->calibrateValue] = TEMP_CALIBRATE_STATE_SUCCESS;
             }
             else
             {
-                d_ptr->calibrateResult[d_ptr->calibrateValue]->setText(trs("CalibrationFail"));
+                d_ptr->calibrateResult[d_ptr->calibrateChannel][d_ptr->calibrateValue] = TEMP_CALIBRATE_STATE_FAIL;
             }
             killTimer(d_ptr->calibrationTimerId);
             d_ptr->calibrationTimerId = -1;
             d_ptr->timeoutNum = 0;
+            d_ptr->updateResultLabel(d_ptr->calibrateValue);
         }
         else
         {
@@ -258,7 +300,8 @@ void FactoryTempMenuContent::readyShow()
 
     for (int i = 0; i < TEMP_CALIBRATE_NR; ++i)
     {
-        d_ptr->calibrateResult[i]->setText(trs("WaitingCalibration"));
+        d_ptr->calibrateResult[0][i] = TEMP_CALIBRATE_STATE_WAITING;
+        d_ptr->updateResultLabel(i);
     }
 
     if (tempParam.getErrorDisable())
@@ -300,7 +343,7 @@ void FactoryTempMenuContent::onChannelReleased(int channel)
 
     for (int i = 0; i < TEMP_CALIBRATE_NR; ++i)
     {
-        d_ptr->calibrateResult[i]->setPixmap(QPixmap::fromImage(QImage()));
+        d_ptr->updateResultLabel(i);
     }
 }
 
@@ -312,7 +355,8 @@ void FactoryTempMenuContent::onBtnReleased()
     Button *button = qobject_cast<Button *>(sender());
     int value = button->property("Item").toInt();
     d_ptr->calibrateValue = value;
-    d_ptr->calibrateResult[d_ptr->calibrateValue]->setText(trs("Calibrating"));
+    d_ptr->calibrateResult[d_ptr->calibrateChannel][d_ptr->calibrateValue] = TEMP_CALIBRATE_STATE_CALIBRATING;
+    d_ptr->updateResultLabel(d_ptr->calibrateValue);
     if (!tempParam.isServiceProviderOk())
     {
         return;
@@ -343,7 +387,7 @@ void FactoryTempMenuContent::timeOut()
             // 校准时可以显示实时温度
             tStr = Unit::convert(type, UNIT_TC, t1 / 10.0);
         }
-        d_ptr->tempTitle->setText(QString("%1: %2").arg(trs("TEMP1")).arg(tStr));
+        d_ptr->tempTitle->setText(QString("%1: %2%3").arg(trs("TEMP1")).arg(tStr).arg(trs(Unit::getSymbol(type))));
         return;
     }
     // 体温通道2
@@ -359,7 +403,7 @@ void FactoryTempMenuContent::timeOut()
             // 校准时可以显示实时温度
             tStr = Unit::convert(type, UNIT_TC, t2 / 10.0);
         }
-        d_ptr->tempTitle->setText(QString("%1: %2").arg(trs("TEMP2")).arg(tStr));
+        d_ptr->tempTitle->setText(QString("%1: %2").arg(trs("TEMP2")).arg(tStr).arg(trs(Unit::getSymbol(type))));
     }
 }
 
