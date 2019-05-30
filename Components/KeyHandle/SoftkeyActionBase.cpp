@@ -397,8 +397,11 @@ void SoftkeyActionBase::keyVolume(bool isPressed)
         return;
     }
 
-    MainMenuWindow *w = MainMenuWindow::getInstance();
-    w->popup(trs("NormalFunctionMenu"), qVariantFromValue(QString("ToneVolume")));
+    if (!nightModeManager.nightMode())
+    {
+        MainMenuWindow *w = MainMenuWindow::getInstance();
+        w->popup(trs("NormalFunctionMenu"), qVariantFromValue(QString("ToneVolume")));
+    }
 }
 
 void SoftkeyActionBase::nightMode(bool isPressed)
