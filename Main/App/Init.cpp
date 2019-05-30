@@ -703,6 +703,7 @@ void deleteObjects(void)
     deletePatientManager();
     deleteTimeDate();
     deleteMachineConfig();
+    deleteDataStorageDirManager();
     deleteSystemConfig();
     // deleteSuperConfig();
     deleteSuperRunConfig();
