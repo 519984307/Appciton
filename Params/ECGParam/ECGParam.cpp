@@ -1768,11 +1768,6 @@ void ECGParam::setSweepSpeed(ECGSweepSpeed speed)
         _waveWidget[i]->setSpeed(speed);
     }
 
-    if (systemManager.isSupport(CONFIG_SPO2))
-    {
-        spo2Param.setSweepSpeed(speed);
-    }
-
     layoutManager.resetWave();
 }
 
@@ -2036,6 +2031,9 @@ void ECGParam::setNotchFilter(ECGNotchFilter filter)
  *************************************************************************************************/
 ECGNotchFilter ECGParam::getNotchFilter()
 {
+    int notchFilter = 0;
+    currentConfig.getNumValue("ECG|NotchFilter", notchFilter);
+    _notchFilter = static_cast<ECGNotchFilter>(notchFilter);
     return _notchFilter;
 }
 
@@ -2079,10 +2077,10 @@ void ECGParam::handleECGLeadCabelType(unsigned char cabelType)
 
     if ((ECG_LEAD_MODE_NR <= leadMode) || (ECG_LEAD_MODE_3 > leadMode))
     {
-        // 如果是新规划，并且是开机第一次判断，则如果导联现不能识别就设置为3导，否则保持上一次不变
+        // 如果是新规划，并且是开机第一次判断，则如果导联现不能识别就设置为5导，否则保持上一次不变
         if (_isPowerOnNewSession && (POWER_ON_SESSION_NEW == timeManager.getPowerOnSession()))
         {
-            leadMode = ECG_LEAD_MODE_3;
+            leadMode = ECG_LEAD_MODE_5;
         }
         else
         {

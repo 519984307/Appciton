@@ -55,11 +55,7 @@ public:
 
     FactoryTempMenuContentPrivate();
 
-    QLabel *tempChannel;
-    QLabel *tempValue;
-
-    QLabel *tempError;
-    QStackedWidget *stackedwidget;
+    QLabel *tempTitle;
     ComboBox *channel;
 
     Button *lbtn[TEMP_CALIBRATE_NR];
@@ -77,10 +73,7 @@ public:
 };
 
 FactoryTempMenuContentPrivate::FactoryTempMenuContentPrivate()
-    : tempChannel(NULL),
-      tempValue(NULL),
-      tempError(NULL),
-      stackedwidget(NULL),
+    : tempTitle(NULL),
       channel(NULL),
       calibrationTimerId(-1),
       timeoutNum(0),
@@ -129,7 +122,7 @@ void FactoryTempMenuContent::layoutExec()
 {
     QVBoxLayout *vLayout = new QVBoxLayout(this);
     QGridLayout *layout = new QGridLayout();
-    layout->setMargin(10);
+    layout->setMargin(2);
     layout->setSpacing(10);
     this->setFocusPolicy(Qt::NoFocus);
     QHBoxLayout *hl;
@@ -141,25 +134,9 @@ void FactoryTempMenuContent::layoutExec()
     label = new QLabel;
     label->setFont(fontManager.textFont(20));
     hl->addWidget(label);
-    d_ptr->tempChannel = label;
+    d_ptr->tempTitle = label;
 
-    label = new QLabel(trs("---"));
-    label->setFont(fontManager.textFont(20));
-    hl->addWidget(label);
-    d_ptr->tempValue = label;
-
-    QStackedWidget *stackWidget = new QStackedWidget;
-    QGroupBox *groupBox = new QGroupBox;
-    groupBox->setStyleSheet("border:none");
-    groupBox->setLayout(hl);
-    stackWidget->addWidget(groupBox);
-
-    label = new QLabel();
-    stackWidget->addWidget(label);
-    d_ptr->stackedwidget = stackWidget;
-    d_ptr->tempError = label;
-
-    vLayout->addWidget(stackWidget, 0, Qt::AlignCenter);
+    vLayout->addWidget(label, 0, Qt::AlignCenter);
 
     label = new QLabel(trs("TEMPChannel"));
     layout->addWidget(label, 1, 0);
@@ -184,16 +161,16 @@ void FactoryTempMenuContent::layoutExec()
         {
             btnStr = QString::number(i * 9 + 32);
         }
-        label = new QLabel(QString("%1%2%3%4")
-                           .arg(trs("TEMPCalibrate"))
-                           .arg(btnStr)
-                           .arg(trs("is"))
-                           .arg(d_ptr->labelStr[i]));
+        label = new QLabel(QString("%1: %2%3")
+                           .arg(trs("TEMPCalibrateOhm"))
+                           .arg(d_ptr->labelStr[i])
+                           .arg(trs("Ohm")));
         layout->addWidget(label, 2 + i, 0);
         d_ptr->label[i] = label;
-        button = new Button(QString("%1%2")
+        button = new Button(QString("%1%2%3")
                                 .arg(trs("TEMPCalibrate"))
-                                .arg(btnStr));
+                                .arg(btnStr)
+                                .arg(trs(Unit::getSymbol(type))));
         button->setButtonStyle(Button::ButtonTextOnly);
         button->setFixedWidth(150);
         button->setProperty("Item", qVariantFromValue(i));
@@ -265,20 +242,19 @@ void FactoryTempMenuContent::readyShow()
             {
                 btnStr = QString::number(i * 9 + 32);
             }
-            d_ptr->label[i]->setText(QString("%1%2%3%4")
-                               .arg(trs("TEMPCalibrate"))
-                               .arg(btnStr)
-                               .arg(trs("is"))
-                               .arg(d_ptr->labelStr[i]));
-            d_ptr->lbtn[i]->setText(QString("%1%2")
+            d_ptr->label[i]->setText(QString("%1: %2%3")
+                               .arg(trs("TEMPCalibrateOhm"))
+                               .arg(d_ptr->labelStr[i])
+                               .arg(trs("Ohm")));
+            d_ptr->lbtn[i]->setText(QString("%1%2%3")
                                     .arg(trs("TEMPCalibrate"))
-                                    .arg(btnStr));
+                                    .arg(btnStr)
+                                    .arg(trs(Unit::getSymbol(type))));
         }
     }
 
     d_ptr->channel->setCurrentIndex(0);
     d_ptr->calibrateChannel = TEMP_CALIBRATE_CHANNEL_1;
-    d_ptr->tempChannel->setText(trs("TEMP1"));
 
     for (int i = 0; i < TEMP_CALIBRATE_NR; ++i)
     {
@@ -288,6 +264,7 @@ void FactoryTempMenuContent::readyShow()
     if (tempParam.getErrorDisable())
     {
         showError(trs("TEMPModuleDisable"));
+        return;
     }
 
     if (!tempParam.isServiceProviderOk())
@@ -299,6 +276,7 @@ void FactoryTempMenuContent::readyShow()
     if (tempParam.getDisconnected())
     {
         showError(trs("TEMPCommunicationStop"));
+        return;
     }
 
     // 开启温度更新定时器
@@ -310,8 +288,7 @@ void FactoryTempMenuContent::readyShow()
  *************************************************************************************************/
 void FactoryTempMenuContent::showError(QString str)
 {
-    d_ptr->tempError->setText(str);
-    d_ptr->stackedwidget->setCurrentIndex(1);
+    d_ptr->tempTitle->setText(str);
 }
 
 /**************************************************************************************************
@@ -321,14 +298,6 @@ void FactoryTempMenuContent::onChannelReleased(int channel)
 {
     d_ptr->calibrateChannel = static_cast<TempCalibrateChannel>(channel);
 
-    if (channel == TEMP_CALIBRATE_CHANNEL_1)
-    {
-        d_ptr->tempChannel->setText(trs("TEMP1"));
-    }
-    else
-    {
-        d_ptr->tempChannel->setText(trs("TEMP2"));
-    }
     for (int i = 0; i < TEMP_CALIBRATE_NR; ++i)
     {
         d_ptr->calibrateResult[i]->setPixmap(QPixmap::fromImage(QImage()));
@@ -374,7 +343,7 @@ void FactoryTempMenuContent::timeOut()
             // 校准时可以显示实时温度
             tStr = Unit::convert(type, UNIT_TC, t1 / 10.0);
         }
-        d_ptr->tempValue->setText(tStr);
+        d_ptr->tempTitle->setText(QString("%1: %2").arg(trs("TEMP1")).arg(tStr));
         return;
     }
     // 体温通道2
@@ -390,7 +359,7 @@ void FactoryTempMenuContent::timeOut()
             // 校准时可以显示实时温度
             tStr = Unit::convert(type, UNIT_TC, t2 / 10.0);
         }
-        d_ptr->tempValue->setText(tStr);
+        d_ptr->tempTitle->setText(QString("%1: %2").arg(trs("TEMP2")).arg(tStr));
     }
 }
 

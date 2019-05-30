@@ -397,7 +397,7 @@ bool AlarmIndicator::_canPlayAudio(AlarmStatus status, bool isTechAlarm)
     return false;
 }
 
-/***************************************************************chenhuahai@blmed.cn***********************************
+/**************************************************************************************************
  * 报警信息显示。
  *************************************************************************************************/
 void AlarmIndicator::_displayInfoNode(AlarmInfoNode &alarmNode, int &indexint, int newAlarmIndex, int oldAlarmIndex,
@@ -818,7 +818,7 @@ bool AlarmIndicator::updataAlarmPriority(AlarmType alarmType, const char *alarmM
             {
                 node.alarmPriority = priority;
                 node.displayTime = 3;
-                node.acknowledge = false;
+                node.acknowledge = it->acknowledge;
                 *it = node;
                 return true;
             }
@@ -1068,7 +1068,7 @@ bool AlarmIndicator::phyAlarmResetStatusHandle()
     it = list->begin();
     for (; it != list->end(); ++it)
     {
-        if (it->alarmType == ALARM_TYPE_PHY && it->alarmPriority > ALARM_PRIO_LOW)
+        if (it->alarmType == ALARM_TYPE_PHY && it->alarmPriority > ALARM_PRIO_PROMPT)
         {
             // 只确认中级和高级的报警
             AlarmInfoNode node = *it;

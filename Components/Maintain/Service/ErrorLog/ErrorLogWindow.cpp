@@ -204,6 +204,7 @@ void ErrorLogWindow::itemClickSlot(int row)
 
     ErrorLogViewerWindow(item).exec();
     delete item;
+    d_ptr->table->selectRow(row);
 }
 
 void ErrorLogWindow::summaryReleased()
