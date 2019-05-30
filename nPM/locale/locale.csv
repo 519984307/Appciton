@@ -311,7 +311,7 @@ TEMPOverRangeAll,体温全部超界,All TEMP Out of Range
 TEMP1ProbeTypeError,体温1探头类型错误,TEMP1 Probe Type Error
 TEMP2ProbeTypeError,体温2探头类型错误,TEMP2 Probe Type Error
 TEMPProbeTypeErrorAll,体温探头类型全部错误,All TEMP Probe Type Error
-TEMPCommunicationStop,体温通讯停止,Communication Stop
+TEMPCommunicationStop,体温通讯停止,TEMP Communication Stop
 celsius,℃,℃
 fahrenheit,℉,℉
 percent,%,%
