@@ -295,7 +295,7 @@ void SoftkeyActionBase::switchSystemMode(bool isPressed)
         return;
     }
     MainMenuWindow *w = MainMenuWindow::getInstance();
-    w->popup(trs("ScreenConfig"));
+    w->popup(trs("ScreenSetting"));
 }
 
 /***************************************************************************************************
