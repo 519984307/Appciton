@@ -169,8 +169,8 @@
         <Ruler>
             <HR_PR Enable="1" Prio="2" Auto="1">
                 <bpm>
-                    <Low Min="15" Max="349">50</Low>
-                    <High Min="16" Max="350">120</High>
+                    <Low Min="-10" Max="349">50</Low>
+                    <High Min="-9" Max="350">120</High>
                     <Step>1</Step>
                     <Scale>1</Scale>
                 </bpm>
