@@ -62,7 +62,7 @@
 	<AlarmOffAtPowerOn>0</AlarmOffAtPowerOn>
     </Alarms>
     <NightMode>
-        <ScreenBrightness>1</ScreenBrightness>
+        <ScreenBrightness>0</ScreenBrightness>
         <AlarmVolume>1</AlarmVolume>
         <HeartBeatVolume>0</HeartBeatVolume>
         <KeyPressVolume>0</KeyPressVolume>
