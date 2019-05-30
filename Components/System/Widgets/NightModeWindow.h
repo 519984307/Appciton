@@ -43,6 +43,12 @@ private slots:
      */
     void OnBtnReleased(void);
 
+    /**
+     * @brief onPopupListItemFocusChanged - the slot function when the focus of the popuplist item changed
+     * @param volume: the volume
+     */
+    void onPopupListItemFocusChanged(int volume);
+
 private:
     NightModeWindowPrivate *const d_ptr;
 };
