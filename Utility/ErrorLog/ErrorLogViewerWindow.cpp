@@ -16,6 +16,7 @@
 #include "ScrollArea.h"
 #include <QScrollBar>
 #include <QLabel>
+#include <qdebug.h>
 
 class ErrorLogViewerWindowPrivate
 {
@@ -94,6 +95,7 @@ bool ErrorLogViewerWindow::eventFilter(QObject *obj, QEvent *ev)
 {
     if (obj == d_ptr->area)
     {
+        qDebug() << ev->type();
         if (ev->type() == QEvent::KeyRelease)
         {
             bool ret = false;
@@ -112,7 +114,7 @@ bool ErrorLogViewerWindow::eventFilter(QObject *obj, QEvent *ev)
             else if (keyEvent->key() == Qt::Key_Left)
             {
                 // scroll up
-                if (d_ptr->area->verticalScrollBar()->value() != 0)
+                if (d_ptr->area->verticalScrollBar()->value() != d_ptr->area->verticalScrollBar()->minimum())
                 {
                     // 当滑动未到顶部时，则拦截该事件
                     ret = true;
@@ -121,6 +123,14 @@ bool ErrorLogViewerWindow::eventFilter(QObject *obj, QEvent *ev)
             }
             d_ptr->area->verticalScrollBar()->setValue(viewPortPos);
             return ret;
+        }
+        else if (ev->type() == QEvent::FocusIn)
+        {
+            // 如果无需滑动显示下一页，则直接聚焦下一个焦点
+            if (d_ptr->area->verticalScrollBar()->maximum() == d_ptr->area->verticalScrollBar()->minimum())
+            {
+                focusNextChild();
+            }
         }
         return false;
     }
