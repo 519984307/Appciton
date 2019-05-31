@@ -49,6 +49,7 @@ ErrorLogViewerWindow::ErrorLogViewerWindow()
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(d_ptr->area);
+    layout->addStretch();
     setWindowLayout(layout);
 }
 
