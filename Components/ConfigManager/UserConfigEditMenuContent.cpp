@@ -25,6 +25,7 @@
 #include "ListViewItemDelegate.h"
 #include "ConfigManagerMenuWindow.h"
 #include "PatientTypeSelectWindow.h"
+#include <QMetaObject>
 
 #define CONFIG_DIR "/usr/local/nPM/etc"
 #define USER_DEFINE_CONFIG_NAME "UserConfig"
@@ -234,6 +235,9 @@ void UserConfigEditMenuContent::onBtnClick()
             pathName += name;
             d_ptr->editWindow->setWindowTitlePrefix(pathName);
 
+            // force updating the first window title
+            QMetaObject::invokeMethod(d_ptr->editWindow, "onVisiableItemChanged", Q_ARG(int, 0));
+
             windowManager.showWindow(d_ptr->editWindow, WindowManager::ShowBehaviorHideOthers |
                                                         WindowManager::ShowBehaviorNoAutoClose);
             connect(d_ptr->editWindow , SIGNAL(finished(int)) , this , SLOT(onEditFinished()));
@@ -288,6 +292,9 @@ void UserConfigEditMenuContent::onBtnClick()
                 pathName = "Edit-DefaultSetting";
             }
             d_ptr->editWindow->setWindowTitlePrefix(pathName);
+
+            // force updating the first window title
+            QMetaObject::invokeMethod(d_ptr->editWindow, "onVisiableItemChanged", Q_ARG(int, 0));
 
             windowManager.showWindow(d_ptr->editWindow, WindowManager::ShowBehaviorHideOthers |
                                                         WindowManager::ShowBehaviorNoAutoClose);

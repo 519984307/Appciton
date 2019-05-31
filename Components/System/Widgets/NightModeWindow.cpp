@@ -20,6 +20,7 @@
 #include "SystemManager.h"
 #include "SystemDefine.h"
 #include "LanguageManager.h"
+#include "SoundManager.h"
 
 class NightModeWindowPrivate
 {
@@ -144,8 +145,7 @@ void NightModeWindow::layoutExec()
                        << QString::number(SoundManager::VOLUME_LEV_2)
                        << QString::number(SoundManager::VOLUME_LEV_3)
                        << QString::number(SoundManager::VOLUME_LEV_4)
-                       << QString::number(SoundManager::VOLUME_LEV_5)
-                      );
+                       << QString::number(SoundManager::VOLUME_LEV_5));
     comboIndex = static_cast<int>(NightModeWindowPrivate::
                                   ITEM_CBO_ALARM_VOLUME);
     comboBox->setProperty("Item",
@@ -166,8 +166,7 @@ void NightModeWindow::layoutExec()
                        << QString::number(SoundManager::VOLUME_LEV_2)
                        << QString::number(SoundManager::VOLUME_LEV_3)
                        << QString::number(SoundManager::VOLUME_LEV_4)
-                       << QString::number(SoundManager::VOLUME_LEV_MAX)
-                      );
+                       << QString::number(SoundManager::VOLUME_LEV_MAX));
     comboIndex = static_cast<int>(NightModeWindowPrivate::
                                   ITEM_CBO_HEART_BEAT_VOLUME);
     comboBox->setProperty("Item",
@@ -188,8 +187,7 @@ void NightModeWindow::layoutExec()
                        <<QString::number(SoundManager::VOLUME_LEV_2)
                        <<QString::number(SoundManager::VOLUME_LEV_3)
                        <<QString::number(SoundManager::VOLUME_LEV_4)
-                       <<QString::number(SoundManager::VOLUME_LEV_5)
-                       );
+                       <<QString::number(SoundManager::VOLUME_LEV_5));
     glayout->addWidget(comboBox , d_ptr->combos.count() , 1);
     comboIndex = static_cast<int>(NightModeWindowPrivate::
                                   ITEM_CBO_KEYPRESS_VOLUME_NUM);
@@ -204,13 +202,13 @@ void NightModeWindow::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("OFF")
-                       << trs("ON")
-                       );
+                       << trs("ON"));
     glayout->addWidget(comboBox , d_ptr->combos.count() , 1);
     comboIndex = static_cast<int>(NightModeWindowPrivate::
                                   ITEM_CBO_NIBP_COMPLETED_TIPS);
     comboBox->setProperty("Item" , qVariantFromValue(comboIndex));
     connect(comboBox , SIGNAL(currentIndexChanged(int)) , this , SLOT(onComboBoxIndexChanged(int)));
+    connect(comboBox, SIGNAL(itemFoucsIndexChanged(int)), this , SLOT(onComboBoxItemFocusIndexChanged(int)));
     d_ptr->combos.insert(NightModeWindowPrivate::
                          ITEM_CBO_NIBP_COMPLETED_TIPS , comboBox);
 
@@ -220,8 +218,7 @@ void NightModeWindow::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("No")
-                       << trs("Yes")
-                       );
+                       << trs("Yes"));
     glayout->addWidget(comboBox , d_ptr->combos.count() , 1);
     comboIndex = static_cast<int>(NightModeWindowPrivate::
                                   ITEM_CBO_STOP_NIBP_MEASURE);
@@ -297,6 +294,15 @@ void NightModeWindow::onComboBoxIndexChanged(int index)
         tmp = index;
     }
     systemConfig.setNumValue(QString("NightMode|%1").arg(node), tmp);
+}
+
+void NightModeWindow::onComboBoxItemFocusIndexChanged(int index)
+{
+    if (index == 1)
+    {
+        soundManager.setNIBPCompleteTone(true);
+        soundManager.nibpCompleteTone();
+    }
 }
 
 void NightModeWindow::OnBtnReleased()

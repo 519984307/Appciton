@@ -131,7 +131,7 @@ void ScreenMenuContentPrivate::reloadScreenType()
 }
 
 ScreenMenuContent::ScreenMenuContent()
-    : MenuContent(trs("ScreenConfig"), trs("ScreenConfigDesc")),
+    : MenuContent(trs("ScreenSetting"), trs("ScreenSettingDesc")),
       d_ptr(new ScreenMenuContentPrivate)
 {
 }

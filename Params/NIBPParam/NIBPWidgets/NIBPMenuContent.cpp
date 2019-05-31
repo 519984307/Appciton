@@ -140,6 +140,7 @@ void NIBPMenuContent::layoutExec()
                        << trs("On"));
     itemID = static_cast<int>(NIBPMenuContentPrivate::ITEM_CBO_COMPLETE_TONE);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(itemFoucsIndexChanged(int)), this, SLOT(onPopupListItemFocusChanged(int)));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(NIBPMenuContentPrivate::ITEM_CBO_COMPLETE_TONE, comboBox);
@@ -378,6 +379,15 @@ void NIBPMenuContent::onStatBtnStateChanged(bool flag)
     else
     {
         d_ptr->btns[NIBPMenuContentPrivate::ITEM_BTN_START_STAT]->setText(trs("STATSTOP"));
+    }
+}
+
+void NIBPMenuContent::onPopupListItemFocusChanged(int volume)
+{
+    if (volume)
+    {
+        soundManager.setNIBPCompleteTone(volume);
+        soundManager.nibpCompleteTone();
     }
 }
 
