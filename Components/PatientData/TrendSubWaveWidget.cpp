@@ -120,7 +120,8 @@ void TrendSubWaveWidget::setRulerRange(int down, int up, int scale)
     _valueY.max = static_cast<double>(up) / scale;
     _valueY.min = static_cast<double>(down) / scale;
     _valueY.scale = scale;
-    UnitType unit = paramInfo.getUnitOfSubParam(_id);
+    ParamID paramId = paramInfo.getParamID(_id);
+    UnitType unit = paramManager.getSubParamUnit(paramId, _id);
     alarmConfig.setParamRulerConfig(_id, unit, down, up);
     update();
 }
