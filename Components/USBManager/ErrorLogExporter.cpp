@@ -115,8 +115,7 @@ bool ErrorLogExporter::exportLog(const QString &filename)
         stream << trs("MostRecentError") << summary.mostRecentErrorDate << TEXT_ENDL;
         stream << trs("MostRecentCriticalFault") << summary.mostRecentCriticalErrorDate << TEXT_ENDL;
         stream << trs("OldestError") << summary.oldestErrorDate << TEXT_ENDL;
-        stream << trs("LastEraseTime") << summary.lastEraseTimeDate << TEXT_ENDL;
-        stream<<"Number of shocks > 120J: " << summary.totalShockCount<<TEXT_ENDL;
+        stream << trs("LastEraseTime") << summary.lastEraseTimeDate << TEXT_ENDL;       
         stream <<TEXT_ENDL;
 
         while (index < total)
