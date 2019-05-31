@@ -814,11 +814,16 @@ ServiceVersion,版本,Version
 ServiceCPUTemp,CPU温度,CPU Temp
 iDMVersion,iDM,iDM
 ECGVersion,ECG,ECG
+ECGBootloader,ECG Bootloader,ECG Bootloader
 NIBPVersion,NIBP,NIBP
+NIBPBootloader,NIBP Bootloader,NIBP Bootloader
 SPO2Version,SpO2,SpO2
+SPO2Bootloader,SPO2 Bootloader,SPO2 Bootloader
 TEMPVersion,TEMP,TEMP
+TEMPBootloader,TEMP Bootloader,TEMP Bootloader
 iDMBoardVersion,iDMBoard,iDMBoard
 PRT48Version,PRT48,PRT48
+PRT48Bootloader,PRT48 Bootloader,PRT48 Bootloader
 SourceOfCO2,来源CO2,Source of CO2
 AutoOfCO2,自动(CO2),Auto(CO2)
 PDVersion,PD,PD
@@ -1326,6 +1331,7 @@ PowerManagerSoftwareVersion,电源管理软件版本,Power Manager Software Vers
 Uboot,系统引导文件,Uboot
 Kernel,内核,Kernel
 SystemboardModule,系统板,System Board Module
+SystemboardBootloader,系统板Bootloader,System Board Bootloader
 RecorderModule,记录模块,Recorder Module
 ECGAlgorithmType,心电算法类型,ECG Algorithm Type
 UserMaintainGeneralMenuDesc,通用,General
