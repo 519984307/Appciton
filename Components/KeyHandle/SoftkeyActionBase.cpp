@@ -35,6 +35,7 @@
 #include "LanguageManager.h"
 #include "LayoutManager.h"
 #include "BigFontLayoutWindow.h"
+#include "SoftKeyManager.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。

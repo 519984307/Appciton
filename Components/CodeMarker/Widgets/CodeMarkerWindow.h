@@ -51,10 +51,6 @@ public:
     // 获取code marker Type个数。
     int getCodeMarkerTypeSize();
 
-    // 启动定时器。
-    void startTimer(void);
-
-
 protected:
     void showEvent(QShowEvent *e);
     void hideEvent(QHideEvent *e);

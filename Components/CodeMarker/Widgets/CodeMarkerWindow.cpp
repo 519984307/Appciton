@@ -29,7 +29,6 @@ class CodeMarkerWindowPrivate
 public:
     CodeMarkerWindowPrivate()
         : scrollArea(NULL)
-        , timer(NULL)
         , closeTimer(NULL)
         , isPress(false)
         , isChosen(false)
@@ -46,7 +45,6 @@ public:
     Button *codeMarkerButton[30];
     QStringList origCodeMarker;      // 未经过翻译的code emarker。
     QStringList localeCodeMarker;    // 翻译后的code emarker。
-    QTimer *timer;
     QTimer *closeTimer;
     bool isPress;                    // codemark按钮被按下
     bool isChosen;                   // codemark按钮已按下选中
@@ -102,10 +100,6 @@ CodeMarkerWindow::CodeMarkerWindow() : Dialog()
 
     setWindowLayout(layoutG);
 
-    d_ptr->timer = new QTimer();
-    d_ptr->timer->setInterval(ClOSE_WINDOW_TIME);
-    connect(d_ptr->timer, SIGNAL(timeout()), this, SLOT(_closeWidgetTimerFun()));
-
     d_ptr->closeTimer = new QTimer();
     d_ptr->closeTimer->setInterval(500);
     connect(d_ptr->closeTimer, SIGNAL(timeout()), this, SLOT(_timerOut()));
@@ -146,22 +140,16 @@ int CodeMarkerWindow::getCodeMarkerTypeSize()
     return d_ptr->localeCodeMarker.size();
 }
 
-void CodeMarkerWindow::startTimer()
-{
-    d_ptr->timer->start();
-}
 
 void CodeMarkerWindow::showEvent(QShowEvent *e)
 {
     setPress(false);
     d_ptr->isChosen = false;
-    d_ptr->timer->start();
     Dialog::showEvent(e);
 }
 
 void CodeMarkerWindow::hideEvent(QHideEvent *e)
 {
-    d_ptr->timer->stop();
 
     setPress(false);
     d_ptr->isChosen = false;
@@ -240,7 +228,6 @@ void CodeMarkerWindowButton::keyPressEvent(QKeyEvent *e)
     case Qt::Key_Right:
     case Qt::Key_Up:
     case Qt::Key_Down:
-        codeMarkerWindow.startTimer();
         update();
         break;
     default:
