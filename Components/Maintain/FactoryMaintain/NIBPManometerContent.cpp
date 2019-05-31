@@ -135,7 +135,7 @@ void NIBPManometerContent::timerEvent(QTimerEvent *ev)
     }
     else if (d_ptr->pressureTimerID == ev->timerId())
     {
-        if (d_ptr->pressure != nibpParam.getManometerPressure())
+        if (d_ptr->pressure != nibpParam.getManometerPressure() && d_ptr->isManometerMode)
         {
             d_ptr->pressure = nibpParam.getManometerPressure();
             d_ptr->value->setNum(nibpParam.getManometerPressure());
