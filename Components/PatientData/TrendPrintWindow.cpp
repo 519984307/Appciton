@@ -278,7 +278,7 @@ void TrendPrintWindow::printReleased()
 void TrendPrintWindowPrivate::initGroupBox(QGroupBox *groupBox, TrendPrintWindowPrivate::SubGroupBox *subBox)
 {
     subBox->dateLbl = new QLabel();
-    subBox->timeLbl = new QLabel(trs("HourSystem"));
+    subBox->timeLbl = new QLabel(trs("Time"));
     subBox->yearSbx = new SpinBox();
     subBox->monthSbx = new SpinBox();
     subBox->daySbx = new SpinBox();
@@ -330,7 +330,8 @@ void TrendPrintWindowPrivate::initGroupBox(QGroupBox *groupBox, TrendPrintWindow
     int index = 0;
     systemConfig.getNumValue("DateTime|DateFormat", index);
     DateFormat dateFormat = static_cast<DateFormat>(index);
-    QString dateFormatName = trs(TimeSymbol::convert(dateFormat));
+    QString dateFormatName =  QString("%1(%2)").arg(trs("Date"))
+            .arg(trs(TimeSymbol::convert(dateFormat)));
     subBox->dateLbl->setText(dateFormatName);
 
     // adjust the position of the date

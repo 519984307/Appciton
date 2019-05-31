@@ -38,7 +38,7 @@ public:
         : q_ptr(q_ptr),
           curPageType(RecordPageGenerator::TitlePage),
           curDrawWaveSegment(0), backend(NULL), eventIndex(0),
-          hasParseData(false)
+          hasParseData(false), ecgGain(3)
     {
     }
 
@@ -202,7 +202,7 @@ public:
             case WAVE_ECG_V5:
             case WAVE_ECG_V6:
             {
-                info.waveInfo.ecg.gain = ecgParam.getGain(ecgParam.waveIDToLeadID(id));
+                info.waveInfo.ecg.gain = static_cast<ECGGain>(ecgGain);
                 QString remarks = QString(QLatin1String(waveSeg->remarks));
                 QString filterMode = remarks.section(" ", 0, 0);
                 QString notchFilter = remarks.section(" ", 1);
@@ -356,15 +356,17 @@ public:
     int eventIndex;
     bool hasParseData;
     PatientInfo patientInfo;
+    int ecgGain;
 };
 
-EventPageGenerator::EventPageGenerator(IStorageBackend *backend, int eventIndex, const PatientInfo &patientInfo, QObject *parent)
+EventPageGenerator::EventPageGenerator(IStorageBackend *backend, int eventIndex, const PatientInfo &patientInfo, int gain, QObject *parent)
     : RecordPageGenerator(parent), d_ptr(new EventPageGeneratorPrivate(this))
 {
 
     d_ptr->backend = backend;
     d_ptr->eventIndex = eventIndex;
     d_ptr->patientInfo = patientInfo;
+    d_ptr->ecgGain = gain;
 }
 
 EventPageGenerator::~EventPageGenerator()

@@ -81,32 +81,27 @@ void PrintSettingMenuContentPrivate::loadOptions()
     printSpeedCbo->setCurrentIndex(speed);
 
     // update wave
-    QList<int> updatedWaveIDs;
-    wavesUpdate(updatedWaveIDs, waveNames);
+    wavesUpdate(waveIDs, waveNames);
 
-    if (waveIDs != updatedWaveIDs)
+    for (int i = 0; i < PRINT_WAVE_NUM; i++)
     {
-        waveIDs = updatedWaveIDs;
-        for (int i = 0; i < PRINT_WAVE_NUM; i++)
+        ComboBox *combo = selectWaves.at(i);
+        combo->blockSignals(true);
+        combo->clear();
+        combo->addItem(trs("Off"));
+        foreach(QString name, waveNames)
         {
-            ComboBox *combo = selectWaves.at(i);
-            combo->blockSignals(true);
-            combo->clear();
-            combo->addItem(trs("Off"));
-            foreach(QString name, waveNames)
-            {
-                combo->addItem(name);
-            }
-            combo->blockSignals(false);
-            // 如果波形数量小于选择打印波形combo时，失能多余的选择打印波形combo
-            if (waveNames.size() <= i)
-            {
-                combo->setEnabled(false);
-            }
-            else
-            {
-                combo->setEnabled(true);
-            }
+            combo->addItem(name);
+        }
+        combo->blockSignals(false);
+        // 如果波形数量小于选择打印波形combo时，失能多余的选择打印波形combo
+        if (waveNames.size() <= i)
+        {
+            combo->setEnabled(false);
+        }
+        else
+        {
+            combo->setEnabled(true);
         }
     }
 

@@ -720,6 +720,7 @@ bool CO2Param::setModuleWorkMode(CO2WorkMode mode)
     {
         setCO2Switch(false);
         d_ptr->provider->setWorkMode(mode);
+        softkeyManager.refreshCO2Key(false);
         return true;
     }
 
@@ -727,6 +728,7 @@ bool CO2Param::setModuleWorkMode(CO2WorkMode mode)
     {
         setCO2Switch(true);
         d_ptr->provider->setWorkMode(mode);
+        softkeyManager.refreshCO2Key(true);
         return true;
     }
     return false;

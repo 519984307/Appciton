@@ -157,7 +157,8 @@ void ErrorLogWindow::init()
     }
     if (d_ptr->table->model()->rowCount() == 0)
     {
-        d_ptr->table->setFocusPolicy(Qt::NoFocus);
+        d_ptr->exportBtn->setEnabled(false);
+        d_ptr->eraseBtn->setEnabled(false);
     }
     else
     {
@@ -204,6 +205,7 @@ void ErrorLogWindow::itemClickSlot(int row)
 
     ErrorLogViewerWindow(item).exec();
     delete item;
+    d_ptr->table->selectRow(row);
 }
 
 void ErrorLogWindow::summaryReleased()
@@ -211,12 +213,12 @@ void ErrorLogWindow::summaryReleased()
     QString str;
     QTextStream stream(&str);
     ErrorLog::Summary summary = errorLog.getSummary();
-    stream << "Number of Errors: " << summary.NumOfErrors << endl;
-    stream << "Number of Critical Faults: " << summary.numOfCriticalErrors << endl;
-    stream << "Most Recent Error: " << summary.mostRecentErrorDate << endl;
-    stream << "Most Recent Critical Fault: " << summary.mostRecentCriticalErrorDate << endl;
-    stream << "Oldest Error: " << summary.oldestErrorDate << endl;
-    stream << "Last Erase Time: " << summary.lastEraseTimeDate << endl;
+    stream << trs("NumberOfErrors") << summary.NumOfErrors << endl;
+    stream << trs("NumberOfCriticalFaults") << summary.numOfCriticalErrors << endl;
+    stream << trs("MostRecentError") << summary.mostRecentErrorDate << endl;
+    stream << trs("MostRecentCriticalFault") << summary.mostRecentCriticalErrorDate << endl;
+    stream << trs("OldestError") << summary.oldestErrorDate << endl;
+    stream << trs("LastEraseTime") << summary.lastEraseTimeDate << endl;
     stream << "Number of shocks > 120J: " << summary.totalShockCount << endl;
 
     ErrorLogViewerWindow viewer;
@@ -260,8 +262,8 @@ void ErrorLogWindow::exportReleased()
                     msg = trs("TransferFailed");
                 }
                 MessageBox messageBox(trs("Warn"), msg, QStringList(trs("EnglishYESChineseSURE")));
-                windowManager.showWindow(&messageBox, WindowManager::ShowBehaviorModal
-                                         | WindowManager::ShowBehaviorNoAutoClose);
+                windowManager.showWindow(&messageBox,
+                                         WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
             }
             else if (QDialog::Accepted == statue)  // 导出成功
             {
@@ -272,8 +274,8 @@ void ErrorLogWindow::exportReleased()
     else
     {
         MessageBox messageBox(trs("Warn"), trs("WarningNoUSB"), QStringList(trs("EnglishYESChineseSURE")));
-        windowManager.showWindow(&messageBox, WindowManager::ShowBehaviorModal
-                                 | WindowManager::ShowBehaviorNoAutoClose);
+        windowManager.showWindow(&messageBox,
+                                 WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
     }
 }
 
@@ -298,10 +300,15 @@ void ErrorLogWindow::USBCheckTimeout()
     if (!usbManager.isUSBExist())
     {
         d_ptr->infoLab->show();
+        d_ptr->exportBtn->setEnabled(false);
     }
     else
     {
         d_ptr->infoLab->hide();
+        if (d_ptr->table->model()->rowCount() != 0)
+        {
+            d_ptr->exportBtn->setEnabled(true);
+        }
     }
 }
 

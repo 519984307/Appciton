@@ -346,7 +346,7 @@ bool CO2OneShotAlarm::isAlarmEnable(int id)
         v = co2Param.getAwRRSwitch();
     }
 
-    return (static_cast<bool>(v) && co2Param.isEnabled());
+    return (static_cast<bool>(v) && co2Param.isEnabled() && co2Param.getCO2Switch());
 }
 
 /**************************************************************************************************
