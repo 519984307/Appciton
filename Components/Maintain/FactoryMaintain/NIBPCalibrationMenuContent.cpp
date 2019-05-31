@@ -51,11 +51,11 @@ NIBPCalibrationMenuContent::~NIBPCalibrationMenuContent()
 
 void NIBPCalibrationMenuContent::readyShow()
 {
-    if (systemManager.isSupport(PARAM_NIBP))
+    if (!systemManager.isSupport(PARAM_NIBP))
     {
         d_ptr->enterBtn->setEnabled(false);
+        d_ptr->timerId = startTimer(TIME_INTERVAL);
     }
-    d_ptr->timerId = startTimer(TIME_INTERVAL);
 }
 
 void NIBPCalibrationMenuContent::layoutExec()
