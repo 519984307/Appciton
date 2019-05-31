@@ -386,18 +386,18 @@ void NIBPParam::setResult(int16_t sys, int16_t dia, int16_t map, int16_t pr, NIB
         }
         if (getMeasurMode() == NIBP_MODE_MANUAL || getMeasurMode() == NIBP_MODE_AUTO)
         {
-            if (!isAdditionalMeasure())
+            int index = 0;
+            systemConfig.getNumValue("PrimaryCfg|NIBP|AutomaticRetry", index);
+            if (index)
             {
-                int index = 0;
-                systemConfig.getNumValue("PrimaryCfg|NIBP|AutomaticRetry", index);
-                if (index)
+                if (isAdditionalMeasure())
+                {
+                    setAdditionalMeasure(false);
+                }
+                else
                 {
                     setAdditionalMeasure(true);
                 }
-            }
-            else
-            {
-                setAdditionalMeasure(false);
             }
         }
 
