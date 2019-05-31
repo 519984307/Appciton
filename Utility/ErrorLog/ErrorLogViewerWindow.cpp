@@ -35,7 +35,6 @@ ErrorLogViewerWindow::ErrorLogViewerWindow()
     setFixedSize(500, 400);
     d_ptr->text = new QLabel();
     d_ptr->text->setWordWrap(true);
-    d_ptr->text->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     d_ptr->area = new ScrollArea();
     d_ptr->area->setWidget(d_ptr->text);
@@ -59,7 +58,6 @@ ErrorLogViewerWindow::ErrorLogViewerWindow(ErrorLogItemBase *item)
     setWindowTitle(item->name());
     d_ptr->text = new QLabel();
     d_ptr->text->setWordWrap(true);
-    d_ptr->text->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     QString str;
     QTextStream stream(&str);
     item->outputInfo(stream);
