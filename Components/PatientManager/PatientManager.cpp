@@ -136,8 +136,7 @@ QString PatientManager::getTypeStr(void)
 void PatientManager::setPacermaker(PatientPacer type)
 {
     d_ptr->patientInfo.pacer = type;
-//    currentConfig.setNumValue("General|PatientPacer", static_cast<int>(type));
-    ecgParam.setPacermaker(static_cast<ECGPaceMode>(type));
+    runningStatus.setPacerStatus(static_cast<bool>(type));
 }
 
 /**************************************************************************************************
@@ -145,7 +144,6 @@ void PatientManager::setPacermaker(PatientPacer type)
  *************************************************************************************************/
 PatientPacer PatientManager::getPacermaker()
 {
-    d_ptr->patientInfo.pacer = static_cast<PatientPacer>(ecgParam.getPacermaker());
     return d_ptr->patientInfo.pacer;
 }
 
