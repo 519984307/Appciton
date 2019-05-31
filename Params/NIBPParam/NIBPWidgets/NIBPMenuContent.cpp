@@ -209,13 +209,13 @@ void NIBPMenuContentPrivate::loadOptions()
         int start = 0, end = 0;
         if (type == PATIENT_TYPE_ADULT)
         {
-            start = 120;
-            end = 280;
+            start = 80;
+            end = 240;
         }
         else if (type == PATIENT_TYPE_PED)
         {
             start = 80;
-            end = 250;
+            end = 210;
         }
         else if (type == PATIENT_TYPE_NEO)
         {
