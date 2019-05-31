@@ -296,10 +296,12 @@ void NIBPCalibrateContent::inCalibrateMode()
         {
             nibpParam.provider().serviceCalibrate(false);
             nibpParam.switchState(NIBP_SERVICE_STANDBY_STATE);
+            emit retBtnEnable(true);  //使能返回按键
         }
         else
         {
             nibpParam.switchState(NIBP_SERVICE_CALIBRATE_STATE);
+            emit retBtnEnable(false);  // 取消返回按键
         }
     }
     else
@@ -314,6 +316,7 @@ void NIBPCalibrateContent::inCalibrateMode()
         }
         if (d_ptr->isCalibrateMode)
         {
+            emit retBtnEnable(true);
             d_ptr->modeBtn->setText(trs("EnterCalibrateMode"));
             d_ptr->isCalibrateMode = false;
             Button *btn = d_ptr->btnList.at(0);
@@ -326,6 +329,7 @@ void NIBPCalibrateContent::inCalibrateMode()
         }
         else
         {
+            emit retBtnEnable(false);
             d_ptr->modeBtn->setText(trs("QuitCalibrateMode"));
             d_ptr->isCalibrateMode = true;
             Button *btn = d_ptr->btnList.at(0);
@@ -333,10 +337,7 @@ void NIBPCalibrateContent::inCalibrateMode()
             btn = d_ptr->btnList.at(1);
             btn->setEnabled(true);
             d_ptr->calibrateFlag = true;
-            if (d_ptr->moduleStr != "BLM_N5")
-            {
-                nibpParam.provider().controlPneumatics(0, 1, 1);
-            }
+            nibpParam.provider().controlPneumatics(0, 1, 1);
         }
     }
 }
@@ -349,12 +350,17 @@ NIBPCalibrateContent::~NIBPCalibrateContent()
 void NIBPCalibrateContent::init()
 {
     d_ptr->isCalibrateMode = false;
+    loadOptions();
+}
+
+void NIBPCalibrateContent::loadOptions()
+{
     d_ptr->modeBtn->setEnabled(true);
     d_ptr->modeBtn->setText(trs("EnterCalibrateMode"));
     d_ptr->calibrateBtn1->setText(trs("ServiceCalibrate"));
     d_ptr->calibrateBtn2->setText(trs("ServiceCalibrate"));
+    d_ptr->calibrateBtn1->setEnabled(false);
+    d_ptr->calibrateBtn2->setEnabled(false);
     d_ptr->point2Spb->setEnabled(false);
-    d_ptr->btnList.at(0)->setEnabled(false);
-    d_ptr->btnList.at(1)->setEnabled(false);
 }
 

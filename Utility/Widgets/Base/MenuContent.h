@@ -68,6 +68,8 @@ protected:
      */
     virtual void layoutExec() {}
 
+signals:
+    void retBtnEnable(bool);
 private:
     MenuContentPrivate *const d_ptr;
 };

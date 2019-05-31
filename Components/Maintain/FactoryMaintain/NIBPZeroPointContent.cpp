@@ -164,7 +164,8 @@ void NIBPZeroPointContent::timerEvent(QTimerEvent *ev)
             {
                 MessageBox messbox(trs("Warn"), trs("NIBPModuleEnterFail"), false);
                 messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
-                windowManager.showWindow(&messbox, WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
+                windowManager.showWindow(&messbox,
+                                         WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
             }
             killTimer(d_ptr->inModeTimerID);
             d_ptr->inModeTimerID = -1;
@@ -193,7 +194,8 @@ void NIBPZeroPointContent::timerEvent(QTimerEvent *ev)
             {
                 MessageBox messbox(trs("Warn"), trs("OperationFailedPleaseAgain"), false);
                 messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
-                windowManager.showWindow(&messbox, WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
+                windowManager.showWindow(&messbox,
+                                         WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
             }
             killTimer(d_ptr->pumpTimerID);
             d_ptr->pumpTimerID = -1;
@@ -226,7 +228,8 @@ void NIBPZeroPointContent::timerEvent(QTimerEvent *ev)
             {
                 MessageBox messbox(trs("Warn"), trs("OperationFailedPleaseAgain"), false);
                 messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
-                windowManager.showWindow(&messbox, WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
+                windowManager.showWindow(&messbox,
+                                         WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
             }
             killTimer(d_ptr->valveTimerID);
             d_ptr->valveTimerID = -1;
@@ -281,11 +284,13 @@ void NIBPZeroPointContent::enterZeroReleased()
     d_ptr->modeBtn->setEnabled(false);
     if (d_ptr->isZeroMode)
     {
+        emit retBtnEnable(true);
         nibpParam.provider().serviceCalibrateZero(false);
         nibpParam.switchState(NIBP_SERVICE_STANDBY_STATE);
     }
     else
     {
+        emit retBtnEnable(false);
         nibpParam.switchState(NIBP_SERVICE_CALIBRATE_ZERO_STATE);
     }
 }

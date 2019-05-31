@@ -60,11 +60,14 @@ protected:
     bool focusNextPrevChild(bool next);
     void showEvent(QShowEvent *ev);
 
+signals:
+    void retBtnEnable(bool);
+
 private slots:
     void onSelectItemChanged(int index);
     void onVisiableItemChanged(int index);
     void onReturnBtnClick();
-
+    void onRetBtnEnable(bool flag);
 private:
     QScopedPointer<MenuWindowPrivate> d_ptr;
 };

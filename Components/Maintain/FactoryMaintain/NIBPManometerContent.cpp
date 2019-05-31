@@ -151,11 +151,13 @@ void NIBPManometerContent::enterManometerReleased()
         d_ptr->modeBtn->setEnabled(false);
         if (d_ptr->isManometerMode)
         {
+            emit retBtnEnable(true);
             nibpParam.provider().serviceManometer(false);
             nibpParam.switchState(NIBP_SERVICE_STANDBY_STATE);
         }
         else
         {
+            emit retBtnEnable(false);
             nibpParam.switchState(NIBP_SERVICE_MANOMETER_STATE);
         }
     }
@@ -163,6 +165,7 @@ void NIBPManometerContent::enterManometerReleased()
     {
         if (d_ptr->isManometerMode)
         {
+            emit retBtnEnable(true);
             d_ptr->modeBtn->setText(trs("EnterManometerMode"));
             d_ptr->isManometerMode = false;
             killTimer(d_ptr->pressureTimerID);
@@ -170,6 +173,7 @@ void NIBPManometerContent::enterManometerReleased()
         }
         else
         {
+            emit retBtnEnable(false);
             // 压力计模式下关闭气泵气阀.
             nibpParam.provider().controlPneumatics(0, 1, 1);
             d_ptr->modeBtn->setText(trs("QuitManometerMode"));

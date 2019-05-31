@@ -67,6 +67,8 @@ public:
      */
     void init(void);
 
+    void loadOptions(void);
+
 protected:
     /**
      * @brief layoutExec

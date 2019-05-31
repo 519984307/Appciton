@@ -25,6 +25,7 @@ public:
     ~NIBPPressureControlContent();
 
     void init(void);
+    void loadOptions(void);
 
 protected:
     virtual void layoutExec(void);
