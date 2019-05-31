@@ -201,6 +201,10 @@ void CO2Param::handDemoWaveform(WaveformID id, short data)
     {
         return;
     }
+    if (!getCO2Switch())
+    {
+        data = InvData();
+    }
     if (NULL != d_ptr->waveWidget)
     {
         d_ptr->waveWidget->addData(data);
@@ -220,10 +224,20 @@ void CO2Param::handDemoTrendData(void)
 {
 //    d_ptr->etco2Value = qrand() % 80 + 1;
 //    d_ptr->fico2Value = qrand() % 80;
-    d_ptr->etco2Value = 50;
-    d_ptr->fico2Value = 3;
-    d_ptr->awRRValue = 20;
-    d_ptr->brVaule = 20;
+    if (getCO2Switch())
+    {
+        d_ptr->etco2Value = 50;
+        d_ptr->fico2Value = 3;
+        d_ptr->awRRValue = 20;
+        d_ptr->brVaule = 20;
+    }
+    else
+    {
+        d_ptr->etco2Value = InvData();
+        d_ptr->fico2Value = InvData();
+        d_ptr->awRRValue = InvData();
+        d_ptr->brVaule = InvData();
+    }
 
     if (NULL != d_ptr->trendWidget)
     {
@@ -706,6 +720,7 @@ bool CO2Param::setModuleWorkMode(CO2WorkMode mode)
     {
         setCO2Switch(false);
         d_ptr->provider->setWorkMode(mode);
+        softkeyManager.refreshCO2Key(false);
         return true;
     }
 
@@ -713,6 +728,7 @@ bool CO2Param::setModuleWorkMode(CO2WorkMode mode)
     {
         setCO2Switch(true);
         d_ptr->provider->setWorkMode(mode);
+        softkeyManager.refreshCO2Key(true);
         return true;
     }
     return false;

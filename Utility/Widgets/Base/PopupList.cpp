@@ -414,6 +414,7 @@ bool PopupList::focusNextPrevChild(bool next)
 
     int value = d_ptr->items.at(index)->text().toInt();
     emit itemFocusChanged(value);
+    emit itemFoucsIndexChanged(index);
 
     return true;
 }

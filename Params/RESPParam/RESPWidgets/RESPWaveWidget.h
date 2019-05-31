@@ -31,9 +31,6 @@ public:
     // 窗口是否使能
     virtual bool waveEnable();
 
-    /* reimplment */
-    void updateWidgetConfig();
-
     /**
      * @brief setWaveformMode  设置波形模式
      * @param mode  模式
@@ -44,6 +41,8 @@ protected:
     void resizeEvent(QResizeEvent *e);
     void focusInEvent(QFocusEvent */*e*/);
     void hideEvent(QHideEvent *e);
+    /* reimplment */
+    void loadConfig();
 
 private slots:
     void _respZoom(IWidget *widget);
@@ -62,7 +61,6 @@ private:
      */
     void _adjustLabelLayout(void);
 
-    void _loadConfig();
 //    WaveWidgetLabel *_name;
     WaveWidgetLabel *_notify;
     WaveWidgetLabel *_gain;

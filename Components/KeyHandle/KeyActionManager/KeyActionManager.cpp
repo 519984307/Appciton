@@ -20,10 +20,11 @@ KeyActionManager *KeyActionManager::_selfObj = 0;
  * 构造。
  *************************************************************************************************/
 KeyActionManager::KeyActionManager()
-    : _curPressKey(KEY_TYPE_NR),
-      _f1Tof9KeyStatus(KEY_F9_PRESSED + 1)
+    : _keyAction(NULL),
+      _curPressKey(KEY_TYPE_NR),
+      _f1Tof9KeyStatus(KEY_F9_PRESSED + 1),
+      _keyEnable(true)
 {
-    _keyAction = 0;
 }
 
 /**************************************************************************************************
@@ -31,10 +32,10 @@ KeyActionManager::KeyActionManager()
  *************************************************************************************************/
 KeyActionManager::~KeyActionManager()
 {
-    if (0 != _keyAction)
+    if (NULL != _keyAction)
     {
         delete _keyAction;
-        _keyAction = 0;
+        _keyAction = NULL;
     }
 }
 
@@ -90,12 +91,17 @@ void KeyActionManager::reset()
     _curPressKey =  KEY_TYPE_NR;
 }
 
+void KeyActionManager::setKeyEnable(bool enable)
+{
+    _keyEnable = enable;
+}
+
 /**************************************************************************************************
  * 处理按键。
  *************************************************************************************************/
 void KeyActionManager::handleKeyAction(int keyType)
 {
-    if (0 == _keyAction)
+    if (NULL == _keyAction || _keyEnable == false)
     {
         return;
     }

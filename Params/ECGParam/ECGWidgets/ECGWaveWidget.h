@@ -127,6 +127,9 @@ protected:
     // 焦点进入
     virtual void focusInEvent(QFocusEvent */*e*/);
 
+    /* reimplment */
+    void loadConfig(void);
+
 private slots:
     // 鼠标释放事件
     void _popupDestroyed();
@@ -143,9 +146,6 @@ private slots:
 private:
     double _calcRulerHeight(ECGGain gain);
     void _initValueRange(ECGGain gain);
-
-    // 载入配置。
-    void _loadConfig(void);
 
 private:
     WaveWidgetLabel *_notify;       // 提示标签

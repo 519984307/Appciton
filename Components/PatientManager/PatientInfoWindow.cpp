@@ -199,15 +199,7 @@ static bool checkWeightValue(const QString &value)
 void PatientInfoWindowPrivate::loadOptions()
 {
     combos[ITEM_CBO_PATIENT_TYPE]->setCurrentIndex(patientManager.getType());
-    bool patientNew = patientManager.isNewPatient();
-    if (patientNew)         // 新建病人时默认打开起博
-    {
-        combos[ITEM_CBO_PACER_MARKER]->setCurrentIndex(PATIENT_PACER_ON);
-    }
-    else
-    {
-        combos[ITEM_CBO_PACER_MARKER]->setCurrentIndex(patientManager.getPacermaker());
-    }
+    combos[ITEM_CBO_PACER_MARKER]->setCurrentIndex(patientManager.getPacermaker());
     combos[ITEM_CBO_PATIENT_SEX]->setCurrentIndex(patientManager.getSex());
     combos[ITEM_CBO_BLOOD_TYPE]->setCurrentIndex(patientManager.getBlood());
     buttons[ITEM_BTN_PATIENT_NAME]->setText(patientManager.getName());

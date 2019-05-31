@@ -87,7 +87,7 @@ RecorderManager::~RecorderManager()
 PrintSpeed RecorderManager::getPrintSpeed() const
 {
     int speed = 0;
-    currentConfig.getNumValue("Print|PrintSpeed", speed);
+    systemConfig.getNumValue("Print|PrintSpeed", speed);
     if (speed >= PRINT_SPEED_NR)
     {
         speed = PRINT_SPEED_250;
@@ -106,7 +106,7 @@ void RecorderManager::setPrintSpeed(PrintSpeed speed)
     }
 
     d_ptr->curSpeed = speed;
-    currentConfig.setNumValue("Print|PrintSpeed", static_cast<int>(speed));
+    systemConfig.setNumValue("Print|PrintSpeed", static_cast<int>(speed));
 
     // 是否正在打印
     if (isPrinting())

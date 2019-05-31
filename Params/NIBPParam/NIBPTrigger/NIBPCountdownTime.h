@@ -40,6 +40,7 @@ public:
     bool isSTATMeasureTimeout(void);
     void setSTATMeasureTimeout(bool flag);
     int STATMeasureElapseTime(void);
+    void timeChange(bool flag);
 
 private slots:
     void _autoMeasureTimeout(void);
@@ -60,5 +61,6 @@ private:
 
     int _STATTime;                // STAT倒计时时间
     int _STATElapseTime;          // STAT计时器时间
+    bool _timeChangeFlag;         // 系统时钟改变标志
 };
 #define nibpCountdownTime (NIBPCountdownTime::getInstance())

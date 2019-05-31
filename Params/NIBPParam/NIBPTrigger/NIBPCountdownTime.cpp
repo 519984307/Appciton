@@ -137,6 +137,7 @@ void NIBPCountdownTime::autoMeasureStop(void)
  *************************************************************************************************/
 void NIBPCountdownTime::STATMeasureStart(void)
 {
+    _STATTime = STAT_Time * 1000;
     _STATMeasureTimer->start(_STATTime);
     _STATMeasureElapseTimer.restart();
     _isSTATMeasureTimeout = false;
@@ -166,6 +167,12 @@ void NIBPCountdownTime::setSTATMeasureTimeout(bool flag)
  *************************************************************************************************/
 int NIBPCountdownTime::STATMeasureElapseTime(void)
 {
+    if (_timeChangeFlag)
+    {
+        _STATTime = _STATElapseTime;
+        _STATMeasureElapseTimer.restart();
+        _timeChangeFlag = false;
+    }
     _STATElapseTime = _STATTime - _STATMeasureElapseTimer.elapsed();
     if (_STATElapseTime > 0)
     {
@@ -175,6 +182,11 @@ int NIBPCountdownTime::STATMeasureElapseTime(void)
     {
         return 0;
     }
+}
+
+void NIBPCountdownTime::timeChange(bool flag)
+{
+    _timeChangeFlag = flag;
 }
 
 /**************************************************************************************************
@@ -198,7 +210,7 @@ NIBPCountdownTime::NIBPCountdownTime()
       _STATMeasureTimer(NULL), _isAutoMeasureTimeout(false),
       _isSTATMeasureTimeout(true), _autoTime(AUTO_TIME * 1000),
       _autoElapseTime(0), _STATTime(STAT_Time * 1000),
-      _STATElapseTime(0)
+      _STATElapseTime(0), _timeChangeFlag(false)
 {
     _autoMeasureTimer = new QTimer();
     connect(_autoMeasureTimer, SIGNAL(timeout()), this, SLOT(_autoMeasureTimeout()));

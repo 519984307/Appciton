@@ -362,5 +362,7 @@ private:
     NIBPStateMachine *_activityMachine;       // 当前活跃状态机。
 
     QTimer *_btnTimer;
+
+    unsigned char _oldState;
 };
 #define nibpParam (NIBPParam::getInstance())
