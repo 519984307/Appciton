@@ -165,7 +165,7 @@ void Provider::checkConnection(void)
         {
             _firstCheck = false;
             isConnected = false;
-            if (isConnectedToParam || isNonparametric)
+            if (isConnectedToParam || !needConnectedToParam)
             {
                 disconnected();
             }
@@ -192,11 +192,6 @@ bool Provider::connected()
 bool Provider::connectedToParam()
 {
     return isConnectedToParam;
-}
-
-void Provider::providerNonparametric()
-{
-    isNonparametric = true;
 }
 
 /**************************************************************************************************
@@ -226,7 +221,7 @@ void Provider::feed(void)
 Provider::Provider(const QString &name)
     : QObject(), ringBuff(ringBuffLen),
       uart(NULL), isConnected(false),
-      isConnectedToParam(false), isNonparametric(false),
+      isConnectedToParam(false), needConnectedToParam(true),
       _name(name),
       _firstCheck(true), _disconnectCount(0), _disconnectThreshold(5),
       _stopCheckConnect(false)

@@ -51,11 +51,6 @@ public:
      */
     bool connectedToParam();
 
-    /**
-     * @brief providerNonparametric 非参数provider
-     */
-    void providerNonparametric();
-
     // 构造与析构。
     explicit Provider(const QString &name);
     virtual ~Provider();
@@ -109,7 +104,7 @@ protected:
     bool isConnected;
     QString versionInfo;
     bool isConnectedToParam;
-    bool isNonparametric;               // 非参数
+    bool needConnectedToParam;               // 需要连接参数
 
 private:
     QString _name;

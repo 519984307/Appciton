@@ -37,7 +37,7 @@ public:
         : connected(false),
           isAborted(false),
           isPrinting(false),
-          status(PRINTER_STAT_COMMUNICATION_STOP),
+          status(PRINTER_STAT_NORMAL),
           curSpeed(PRINT_SPEED_250),
           processor(NULL),
           procThread(NULL),
