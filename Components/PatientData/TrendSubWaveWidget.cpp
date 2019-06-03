@@ -769,15 +769,16 @@ void TrendSubWaveWidget::_autoRulerCal()
     // 自动标尺如果超出手动标尺设定范围则按照设置范围最大最小设定.
     UnitType unit = paramInfo.getUnitOfSubParam(_id);
     ParamRulerConfig config = alarmConfig.getParamRulerConfig(_id, unit);
+    int range = _valueY.max - _valueY.min;
     if (_valueY.min < config.minDownRuler)
     {
         _valueY.min = config.minDownRuler;
-        _valueY.max = _valueY.min + 20;
+        _valueY.max = _valueY.min + range;
     }
     if (_valueY.max > config.maxUpRuler)
     {
         _valueY.max = config.maxUpRuler;
-        _valueY.min = _valueY.max - 20;
+        _valueY.min = _valueY.max - range;
     }
     alarmConfig.setParamRulerConfig(_id, unit,
                                     _valueY.min,
