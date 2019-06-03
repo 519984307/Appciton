@@ -32,6 +32,8 @@
 #define TABLE_ROW_NR        7
 
 #define HEIGHT_HINT (themeManger.getAcceptableControlHeight())
+#define DEFAULT_WIDTH (windowManager.getPopWindowWidth())
+#define DEFAULT_HEIGHT (windowManager.getPopWindowHeight())
 
 class ErrorLogWindowPrivate
 {
@@ -63,7 +65,7 @@ public:
 ErrorLogWindow::ErrorLogWindow()
     : Dialog(), d_ptr(new ErrorLogWindowPrivate())
 {
-    setFixedSize(680, 520);
+    setFixedSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
     d_ptr->table = new TableView();
     TableHeaderView *horizontalHeader = new TableHeaderView(Qt::Horizontal);
@@ -80,7 +82,7 @@ ErrorLogWindow::ErrorLogWindow()
     d_ptr->table->setModel(d_ptr->model);
     d_ptr->table->setFixedHeight(d_ptr->model->getHeaderHeightHint()
                                  + d_ptr->model->getRowHeightHint() * TABLE_ROW_NR);
-    d_ptr->table->setFixedWidth(680);
+    d_ptr->table->setFixedWidth(DEFAULT_WIDTH);
     d_ptr->table->setItemDelegate(new TableViewItemDelegate(this));
     connect(d_ptr->table, SIGNAL(rowClicked(int)), this, SLOT(itemClickSlot(int)));
     connect(d_ptr->model, SIGNAL(pageInfoUpdate(int, int)), this, SLOT(onPageInfoUpdated(int, int)));
