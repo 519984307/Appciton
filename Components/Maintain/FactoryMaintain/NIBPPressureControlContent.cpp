@@ -274,6 +274,7 @@ void NIBPPressureControlContent::hideEvent(QHideEvent *e)
     {
         killTimer(d_ptr->pressureTimerID);
         d_ptr->pressureTimerID = -1;
+        nibpParam.provider().controlPneumatics(0, 0, 0);  //放气
     }
 }
 
@@ -346,10 +347,11 @@ void NIBPPressureControlContent::enterPressureContrlReleased()
        else
        {
            d_ptr->modeBtn->setText((trs("EnterPressureContrlMode")));
+           d_ptr->value->setText(InvStr());
+           nibpParam.provider().controlPneumatics(0, 0, 0);  //放气
            d_ptr->overpressureCbo->setEnabled(false);
            d_ptr->inflateBtn->setEnabled(false);
            d_ptr->pressureControlFlag = false;
-           nibpParam.provider().controlPneumatics(0, 0, 0);  //放气
        }
     }
 }
