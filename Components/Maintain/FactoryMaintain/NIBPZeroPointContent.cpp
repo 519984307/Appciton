@@ -149,6 +149,8 @@ void NIBPZeroPointContent::timerEvent(QTimerEvent *ev)
                     d_ptr->isZeroMode = false;
                     d_ptr->modeBtn->setText(trs("EnterZeroMode"));
                     d_ptr->zeroBtn->setEnabled(false);
+                    d_ptr->pumpBtn->setEnabled(false);
+                    d_ptr->valveBtn->setEnabled(false);
                     killTimer(d_ptr->pressureTimerID);
                     d_ptr->pressureTimerID = -1;
                 }
@@ -157,6 +159,8 @@ void NIBPZeroPointContent::timerEvent(QTimerEvent *ev)
                     d_ptr->isZeroMode = true;
                     d_ptr->modeBtn->setText(trs("QuitZeroMode"));
                     d_ptr->zeroBtn->setEnabled(true);
+                    d_ptr->pumpBtn->setEnabled(true);
+                    d_ptr->valveBtn->setEnabled(true);
                     d_ptr->pressureTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
                 }
             }
@@ -334,7 +338,15 @@ NIBPZeroPointContent::~NIBPZeroPointContent()
 void NIBPZeroPointContent::init()
 {
     d_ptr->isZeroMode = false;
+    loadOptions();
+}
+
+void NIBPZeroPointContent::loadOptions()
+{
     d_ptr->modeBtn->setEnabled(true);
     d_ptr->modeBtn->setText(trs("EnterZeroMode"));
-    d_ptr->zeroBtn->setEnabled(true);
+    d_ptr->pumpBtn->setEnabled(false);
+    d_ptr->valveBtn->setEnabled(false);
+    d_ptr->zeroBtn->setEnabled(false);
+    d_ptr->zeroBtn->setText(trs("ServiceCalibrateZero"));
 }
