@@ -143,8 +143,6 @@ public:
      */
     void printWavesInit(void);
 
-    void setConnected(bool isConnected);
-
 private slots:
 
     void testSlot();

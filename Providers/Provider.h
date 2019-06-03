@@ -52,9 +52,9 @@ public:
     bool connectedToParam();
 
     /**
-     * @brief setNonparametric 设置非参数标志
+     * @brief providerNonparametric 非参数provider
      */
-    void setNonparametric();
+    void providerNonparametric();
 
     // 构造与析构。
     explicit Provider(const QString &name);

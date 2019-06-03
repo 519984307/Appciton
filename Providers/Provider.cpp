@@ -194,7 +194,7 @@ bool Provider::connectedToParam()
     return isConnectedToParam;
 }
 
-void Provider::setNonparametric()
+void Provider::providerNonparametric()
 {
     isNonparametric = true;
 }

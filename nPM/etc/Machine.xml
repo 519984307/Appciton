@@ -17,6 +17,7 @@
     <COEnable>0</COEnable>
     <IBPEnable>0</IBPEnable>
     <TEMPEnable>1</TEMPEnable>
+    <PrinterEnable>1</PrinterEnable>
     <WIFIEnable>0</WIFIEnable>
     <TouchEnable>0</TouchEnable>
     <O2Enable>0</O2Enable>

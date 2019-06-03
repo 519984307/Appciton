@@ -42,6 +42,7 @@ public:
 #ifdef ENABLE_O2_APNEASTIMULATION
         ITEM_CBO_O2,
 #endif
+        ITEM_CBO_PRINTER,
         ITEM_CBO_TEMP,
         ITEM_CBO_WIFI,
 #ifdef Q_WS_QWS
@@ -171,6 +172,11 @@ void MachineConfigModuleContentPrivte::loadOptions()
     machineConfig.getNumValue("TEMPEnable", index);
     combos[ITEM_CBO_TEMP]->setCurrentIndex(index);
     itemChangedMap[ITEM_CBO_TEMP] = index;
+
+    index = 0;
+    machineConfig.getNumValue("PrinterEnable", index);
+    combos[ITEM_CBO_PRINTER]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_PRINTER] = index;
 
     index = 0;
     machineConfig.getNumValue("WIFIEnable", index);
@@ -407,6 +413,21 @@ void MachineConfigModuleContent::layoutExec()
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
+    // printer module
+    label = new QLabel(trs("PrinterModule"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    combo = new ComboBox;
+    combo->addItems(QStringList()
+                    << trs("Off")
+                    << trs("On")
+                   );
+    layout->addWidget(combo, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(MachineConfigModuleContentPrivte
+                         ::ITEM_CBO_PRINTER, combo);
+    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_PRINTER;
+    combo->setProperty("Item", qVariantFromValue(itemId));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+
     // wifi module
     label = new QLabel(trs("WIFIModule"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -546,6 +567,11 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
         case MachineConfigModuleContentPrivte::ITEM_CBO_TEMP:
         {
             enablePath = "TEMPEnable";
+            break;
+        }
+        case MachineConfigModuleContentPrivte::ITEM_CBO_PRINTER:
+        {
+            enablePath = "PrinterEnable";
             break;
         }
         case MachineConfigModuleContentPrivte::ITEM_CBO_WIFI:
