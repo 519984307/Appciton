@@ -128,15 +128,8 @@ void SystemStatusBarWidget::onIconClicked(int iconLabel)
         MessageBox msg(trs("Prompt"), trs("SureSafePopUpUDisk"), true, true);
         if (msg.exec())
         {
-            if (!usbManager.umountUDisk())
-            {
-                MessageBox warnMsg(trs("Warn"), trs("OperationFailedPleaseAgain"), false);
-                warnMsg.exec();
-            }
-            else
-            {
-                this->focusNextChild();
-            }
+            usbManager.stopRawCollectData();
+            this->focusNextChild();
         }
     }
 }

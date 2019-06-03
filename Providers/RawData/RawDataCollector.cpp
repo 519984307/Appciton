@@ -572,6 +572,7 @@ void RawDataCollector::stopCollectData()
         killTimer(d_ptr->timerId);
         d_ptr->timerId = -1;
     }
+    usbManager.umountUDisk();
 }
 
 void RawDataCollector::timerEvent(QTimerEvent *e)

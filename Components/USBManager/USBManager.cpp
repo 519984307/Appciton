@@ -18,6 +18,7 @@
 #include "IMessageBox.h"
 #include <typeinfo>
 #include "RawDataCollector.h"
+#include "MessageBox.h"
 
 #define USB_MOUNT_PATH "/media/usbdisk"
 
@@ -126,21 +127,25 @@ bool USBManager::isUSBExportFinish()
     }
 }
 
-bool USBManager::umountUDisk()
+void USBManager::stopRawCollectData()
 {
     // 卸载U盘之前停止数据收集定时器
     QMetaObject::invokeMethod(&rawDataCollector, "stopCollectData", Qt::QueuedConnection);
+}
+
+void USBManager::umountUDisk()
+{
     QString cmd = QString("umount -f %1").arg(USB_MOUNT_PATH);
     if (QProcess::execute(cmd) != 0)
     {
         qdebug("Fail to umount %s", USB_MOUNT_PATH);
         _isMount = true;
-        return false;
+        MessageBox warnMsg(trs("Warn"), trs("OperationFailedPleaseAgain"), false);
+        warnMsg.exec();
     }
     else
     {
         _isMount = false;
-        return true;
     }
 }
 

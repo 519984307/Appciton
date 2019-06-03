@@ -56,8 +56,11 @@ public:
     // USB export finish
     bool isUSBExportFinish();
 
+    // 停止数据收集
+    void stopRawCollectData();
+
     // 卸载U盘
-    bool umountUDisk();
+    void umountUDisk();
 
 signals:
     // report the process, 0~100
