@@ -402,13 +402,13 @@ void NIBPDataTrendWidget::getTrendNIBPlist()
     unsigned t = 0;
     TrendDataType value;
     SubParamID subId;
-    NIBPTrendCacheData _nibpTrendCacheData;
+    NIBPTrendCacheData nibpTrendCacheData;
     for (int i = eventNum - 1; i >= 0; i--)
     {
         if (parseEventData(i) && ctx.infoSegment->type == EventNIBPMeasurement)
         {
             t = ctx.infoSegment->timestamp;
-            _nibpTrendCacheData.lastNibpMeasureTime = t;
+            nibpTrendCacheData.lastNibpMeasureTime = t;
             int paramNum = ctx.trendSegment->trendValueNum;
             for (int i = 0; i < paramNum; i++)
             {
@@ -417,13 +417,13 @@ void NIBPDataTrendWidget::getTrendNIBPlist()
                 switch (subId)
                 {
                 case SUB_PARAM_NIBP_SYS:
-                    _nibpTrendCacheData.sys.value = value;
+                    nibpTrendCacheData.sys.value = value;
                     continue;
                 case SUB_PARAM_NIBP_DIA:
-                    _nibpTrendCacheData.dia.value = value;
+                    nibpTrendCacheData.dia.value = value;
                     continue;
                 case SUB_PARAM_NIBP_MAP:
-                    _nibpTrendCacheData.map.value = value;
+                    nibpTrendCacheData.map.value = value;
                     break;
                 default:
                     break;
@@ -432,45 +432,45 @@ void NIBPDataTrendWidget::getTrendNIBPlist()
             AlarmLimitIFace *alarmSource = alarmSourceManager.getLimitAlarmSource(LIMIT_ALARMSOURCE_NIBP);
             if (alarmSource)
             {
-                int completeResult = alarmSource->getCompare(_nibpTrendCacheData.sys.value, NIBP_LIMIT_ALARM_SYS_LOW);
+                int completeResult = alarmSource->getCompare(nibpTrendCacheData.sys.value, NIBP_LIMIT_ALARM_SYS_LOW);
                 if (completeResult != 0)
                 {
-                    _nibpTrendCacheData.sys.isAlarm = true;
+                    nibpTrendCacheData.sys.isAlarm = true;
                 }
-                completeResult = alarmSource->getCompare(_nibpTrendCacheData.sys.value, NIBP_LIMIT_ALARM_SYS_HIGH);
+                completeResult = alarmSource->getCompare(nibpTrendCacheData.sys.value, NIBP_LIMIT_ALARM_SYS_HIGH);
                 if (completeResult != 0)
                 {
-                    _nibpTrendCacheData.sys.isAlarm = true;
-                }
-
-                completeResult = alarmSource->getCompare(_nibpTrendCacheData.dia.value, NIBP_LIMIT_ALARM_DIA_LOW);
-                if (completeResult != 0)
-                {
-                    _nibpTrendCacheData.dia.isAlarm = true;
-                }
-                completeResult = alarmSource->getCompare(_nibpTrendCacheData.dia.value, NIBP_LIMIT_ALARM_DIA_HIGH);
-                if (completeResult != 0)
-                {
-                    _nibpTrendCacheData.dia.isAlarm = true;
+                    nibpTrendCacheData.sys.isAlarm = true;
                 }
 
-                completeResult = alarmSource->getCompare(_nibpTrendCacheData.map.value, NIBP_LIMIT_ALARM_MAP_LOW);
+                completeResult = alarmSource->getCompare(nibpTrendCacheData.dia.value, NIBP_LIMIT_ALARM_DIA_LOW);
                 if (completeResult != 0)
                 {
-                    _nibpTrendCacheData.map.isAlarm = true;
+                    nibpTrendCacheData.dia.isAlarm = true;
                 }
-                completeResult = alarmSource->getCompare(_nibpTrendCacheData.map.value, NIBP_LIMIT_ALARM_MAP_HIGH);
+                completeResult = alarmSource->getCompare(nibpTrendCacheData.dia.value, NIBP_LIMIT_ALARM_DIA_HIGH);
                 if (completeResult != 0)
                 {
-                    _nibpTrendCacheData.map.isAlarm = true;
+                    nibpTrendCacheData.dia.isAlarm = true;
+                }
+
+                completeResult = alarmSource->getCompare(nibpTrendCacheData.map.value, NIBP_LIMIT_ALARM_MAP_LOW);
+                if (completeResult != 0)
+                {
+                    nibpTrendCacheData.map.isAlarm = true;
+                }
+                completeResult = alarmSource->getCompare(nibpTrendCacheData.map.value, NIBP_LIMIT_ALARM_MAP_HIGH);
+                if (completeResult != 0)
+                {
+                    nibpTrendCacheData.map.isAlarm = true;
                 }
 
                 // 优先级
-                _nibpTrendCacheData.sys.priority = alarmSource->getAlarmPriority(NIBP_LIMIT_ALARM_SYS_HIGH);
-                _nibpTrendCacheData.dia.priority = alarmSource->getAlarmPriority(NIBP_LIMIT_ALARM_DIA_HIGH);
-                _nibpTrendCacheData.map.priority = alarmSource->getAlarmPriority(NIBP_LIMIT_ALARM_MAP_HIGH);
+                nibpTrendCacheData.sys.priority = alarmSource->getAlarmPriority(NIBP_LIMIT_ALARM_SYS_HIGH);
+                nibpTrendCacheData.dia.priority = alarmSource->getAlarmPriority(NIBP_LIMIT_ALARM_DIA_HIGH);
+                nibpTrendCacheData.map.priority = alarmSource->getAlarmPriority(NIBP_LIMIT_ALARM_MAP_HIGH);
 
-                _nibpNrendCacheMap.insert(t, _nibpTrendCacheData);
+                _nibpNrendCacheMap.insert(t, nibpTrendCacheData);
             }
         }
     }
