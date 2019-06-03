@@ -22,8 +22,6 @@
 #include "TimeManager.h"
 #include "IConfig.h"
 
-#define ClOSE_WINDOW_TIME 60*1000
-
 class CodeMarkerWindowPrivate
 {
 public:
@@ -172,11 +170,6 @@ void CodeMarkerWindow::_btnReleased()
         d_ptr->codeMarkerNum = index;
         d_ptr->isChosen = true;
     }
-}
-
-void CodeMarkerWindow::_closeWidgetTimerFun()
-{
-    hide();
 }
 
 void CodeMarkerWindow::_timerOut()

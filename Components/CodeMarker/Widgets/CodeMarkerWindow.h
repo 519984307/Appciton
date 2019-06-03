@@ -58,8 +58,6 @@ protected:
 
 private slots :
     void _btnReleased();
-    // 5秒后关闭code Marker窗口(当5s内未点击)
-    void _closeWidgetTimerFun(void);
 
     void _timerOut(void);
 
