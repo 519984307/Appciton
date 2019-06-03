@@ -619,11 +619,6 @@ static void _initProviderParam(void)
     oneShotAlarmSource = new SystemAlarm();
     alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_SYSTEM);
     alertor.addOneShotSource(oneShotAlarmSource);
-
-    // print alarm
-    oneShotAlarmSource = new PrintOneShotAlarm();
-    alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_PRINT);
-    alertor.addOneShotSource(oneShotAlarmSource);
 }
 
 /**************************************************************************************************
@@ -647,11 +642,20 @@ static void _initPrint(void)
     // printManager.selftest();
     // paramManager.addProvider(*prtProvider);
 
-    PRT48Provider *prtProvider = new PRT48Provider();
-    recorderManager.setPrintPrividerIFace(prtProvider);
-    recorderManager.selfTest();
-    recorderManager.printWavesInit();
-    paramManager.addProvider(*prtProvider);
+    // print alarm
+    int index = 0;
+    machineConfig.getNumValue("PrinterEnable", index);
+    if (index)
+    {
+        AlarmOneShotIFace *oneShotAlarmSource = new PrintOneShotAlarm();
+        alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_PRINT);
+        alertor.addOneShotSource(oneShotAlarmSource);
+        PRT48Provider *prtProvider = new PRT48Provider();
+        recorderManager.setPrintPrividerIFace(prtProvider);
+        recorderManager.selfTest();
+        recorderManager.printWavesInit();
+        paramManager.addProvider(*prtProvider);
+    }
 
     paramManager.getVersion();
 }
