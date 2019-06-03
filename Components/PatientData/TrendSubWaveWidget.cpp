@@ -766,6 +766,24 @@ void TrendSubWaveWidget::_autoRulerCal()
     default:
         break;
     }
+
+    // 自动标尺如果超出手动标尺设定范围则按照设置范围最大最小设定.
+    UnitType unit = paramInfo.getUnitOfSubParam(_id);
+    ParamRulerConfig config = alarmConfig.getParamRulerConfig(_id, unit);
+    int range = _valueY.max - _valueY.min;
+    if (_valueY.min < config.minDownRuler)
+    {
+        _valueY.min = config.minDownRuler;
+        _valueY.max = _valueY.min + range;
+    }
+    if (_valueY.max > config.maxUpRuler)
+    {
+        _valueY.max = config.maxUpRuler;
+        _valueY.min = _valueY.max - range;
+    }
+    alarmConfig.setParamRulerConfig(_id, unit,
+                                    _valueY.min,
+                                    _valueY.max);
 }
 
 void TrendSubWaveWidget::_updateAutoRuler(TrendDataType data)
@@ -780,20 +798,12 @@ void TrendSubWaveWidget::_updateAutoRuler(TrendDataType data)
         if (maxDiff <= 0 || maxDiff > 10 || (static_cast<int>(_valueY.max / _valueY.scale) % 10))
         {
             _valueY.max = (_maxValue + (10 - _maxValue % 10)) * _valueY.scale;
-            UnitType unit = paramInfo.getUnitOfSubParam(_id);
-            alarmConfig.setParamRulerConfig(_id, unit,
-                                            _valueY.min,
-                                            _valueY.max);
         }
         int minDiff = _minValue - _valueY.min * _valueY.scale;
         if (minDiff <= 0 || minDiff > 10 || (static_cast<int>(_valueY.min / _valueY.scale) % 10))
         {
             int value = (_minValue % 10) ? (_minValue % 10) : 10;
             _valueY.min = (_minValue - value) * _valueY.scale;
-            UnitType unit = paramInfo.getUnitOfSubParam(_id);
-            alarmConfig.setParamRulerConfig(_id, unit,
-                                            _valueY.min,
-                                            _valueY.max);
         }
     }
 
@@ -805,10 +815,6 @@ void TrendSubWaveWidget::_updateAutoRuler(TrendDataType data)
         if (maxDiff <= 0 || maxDiff > 10 || (static_cast<int>(_valueY.max / _valueY.scale) % 10))
         {
             _valueY.max = (_maxValue + (10 - _maxValue % 10)) * _valueY.scale;
-            UnitType unit = paramInfo.getUnitOfSubParam(_id);
-            alarmConfig.setParamRulerConfig(_id, unit,
-                                            _valueY.min,
-                                            _valueY.max);
         }
     }
 
@@ -821,10 +827,6 @@ void TrendSubWaveWidget::_updateAutoRuler(TrendDataType data)
         {
             int value = (_minValue % 10) ? (_minValue % 10) : 10;
             _valueY.min = (_minValue - value) * _valueY.scale;
-            UnitType unit = paramInfo.getUnitOfSubParam(_id);
-            alarmConfig.setParamRulerConfig(_id, unit,
-                                            _valueY.min,
-                                            _valueY.max);
         }
     }
 }
