@@ -57,12 +57,12 @@
         <ReminderTone>1</ReminderTone>
         <PhyParAlarmLatchlockOn>0</PhyParAlarmLatchlockOn>
 	<AlarmOffPrompting>1</AlarmOffPrompting>
-	<AlarmAudio>0</AlarmAudio>
+	<AlarmAudio>1</AlarmAudio>
 	<EnableAlarmOff>1</EnableAlarmOff>
 	<AlarmOffAtPowerOn>0</AlarmOffAtPowerOn>
     </Alarms>
     <NightMode>
-        <ScreenBrightness>1</ScreenBrightness>
+        <ScreenBrightness>0</ScreenBrightness>
         <AlarmVolume>1</AlarmVolume>
         <HeartBeatVolume>0</HeartBeatVolume>
         <KeyPressVolume>0</KeyPressVolume>
@@ -82,7 +82,7 @@
     </Unit>
     <SelectStarterLogo>2</SelectStarterLogo>
     <MonitorInfo>
-        <MachineType>Vitavue-10</MachineType>
+        <MachineType>Vitavue 10</MachineType>
         <ElectronicSerialNumber>1234567888</ElectronicSerialNumber>
     </MonitorInfo>
     <SoftWareVersion>
@@ -144,6 +144,7 @@
         <SelectWave2>2</SelectWave2>
         <SelectWave3>3</SelectWave3>
         <PrintTime>1</PrintTime> <!--0:continous 1:8s-->
+	<PrintSpeed>1</PrintSpeed>
         <PhysiologicalAlarm>1</PhysiologicalAlarm>
         <CoderMarker>0</CoderMarker>
         <NIBPReading>0</NIBPReading>

@@ -38,7 +38,7 @@ public:
           pressurevalue(0), calibrateFlag(false), isCalibrating(false),
           point(NIBP_CALIBRATE_ZERO), calibrateTimerID(-1),
           timeoutNum(0), inModeTimerID(-1), isCalibrateMode(false),
-          modeBtn(NULL)
+          modeBtn(NULL), calibrateBtn1(NULL), calibrateBtn2(NULL)
     {
     }
     QList<Button *> btnList;
@@ -57,6 +57,8 @@ public:
     int inModeTimerID;                      // 进入校准模式定时器ID
     bool isCalibrateMode;                   // 是否处于校准模式
     Button *modeBtn;                        // 进入/退出模式按钮
+    Button *calibrateBtn1;
+    Button *calibrateBtn2;
 
     QString moduleStr;                      // 运行模块字符串
 };
@@ -116,6 +118,7 @@ void NIBPCalibrateContent::layoutExec()
     connect(button, SIGNAL(released()), this, SLOT(onBtn1Calibrated()));
     layout->addWidget(button, 1, 2);
     d_ptr->btnList.append(button);
+    d_ptr->calibrateBtn1 = button;
 
     label = new QLabel(trs("CalibratePoint2"));
     layout->addWidget(label, 2, 0);
@@ -132,6 +135,7 @@ void NIBPCalibrateContent::layoutExec()
     button->setEnabled(false);
     connect(button, SIGNAL(released()), this, SLOT(onBtn2Calibrated()));
     layout->addWidget(button, 2, 2);
+    d_ptr->calibrateBtn2 = button;
     d_ptr->btnList.append(button);
 
     layout->setRowStretch(3, 1);
@@ -200,7 +204,8 @@ void NIBPCalibrateContent::timerEvent(QTimerEvent *ev)
             {
                 MessageBox messbox(trs("Warn"), trs("NIBPModuleEnterFail"), false);
                 messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
-                windowManager.showWindow(&messbox, WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
+                windowManager.showWindow(&messbox,
+                                         WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
             }
             killTimer(d_ptr->inModeTimerID);
             d_ptr->inModeTimerID = -1;
@@ -225,7 +230,7 @@ void NIBPCalibrateContent::onBtn1Calibrated()
         unsigned char cmd[2];
         cmd[0] = 0x00;
         cmd[1] = 0x00;
-        if (d_ptr->moduleStr != "SUNTECH_NIBP")
+        if (d_ptr->moduleStr == "BLM_N5")
         {
             nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_CMD_PRESSURE_POINT, cmd, 2);
         }
@@ -261,7 +266,7 @@ void NIBPCalibrateContent::onBtn2Calibrated()
         unsigned char cmd[2];
         cmd[0] = d_ptr->pressurevalue & 0xFF;
         cmd[1] = (d_ptr->pressurevalue & 0xFF00) >> 8;
-        if (d_ptr->moduleStr != "SUNTECH_NIBP")
+        if (d_ptr->moduleStr == "BLM_N5")
         {
             nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_CMD_PRESSURE_POINT, cmd, 2);
         }
@@ -283,7 +288,7 @@ void NIBPCalibrateContent::onBtn2Calibrated()
 
 void NIBPCalibrateContent::inCalibrateMode()
 {
-    if (d_ptr->moduleStr != "SUNTECH_NIBP")
+    if (d_ptr->moduleStr == "BLM_N5")
     {
         d_ptr->inModeTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
         d_ptr->modeBtn->setEnabled(false);
@@ -299,6 +304,14 @@ void NIBPCalibrateContent::inCalibrateMode()
     }
     else
     {
+        if (!nibpParam.getConnectedState())
+        {
+            MessageBox messbox(trs("Warn"), trs("NIBPModuleEnterFail"), false);
+            messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
+            windowManager.showWindow(&messbox,
+                                     WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
+            return;
+        }
         if (d_ptr->isCalibrateMode)
         {
             d_ptr->modeBtn->setText(trs("EnterCalibrateMode"));
@@ -320,6 +333,10 @@ void NIBPCalibrateContent::inCalibrateMode()
             btn = d_ptr->btnList.at(1);
             btn->setEnabled(true);
             d_ptr->calibrateFlag = true;
+            if (d_ptr->moduleStr != "BLM_N5")
+            {
+                nibpParam.provider().controlPneumatics(0, 1, 1);
+            }
         }
     }
 }
@@ -334,6 +351,8 @@ void NIBPCalibrateContent::init()
     d_ptr->isCalibrateMode = false;
     d_ptr->modeBtn->setEnabled(true);
     d_ptr->modeBtn->setText(trs("EnterCalibrateMode"));
+    d_ptr->calibrateBtn1->setText(trs("ServiceCalibrate"));
+    d_ptr->calibrateBtn2->setText(trs("ServiceCalibrate"));
     d_ptr->point2Spb->setEnabled(false);
     d_ptr->btnList.at(0)->setEnabled(false);
     d_ptr->btnList.at(1)->setEnabled(false);

@@ -194,7 +194,7 @@ public:
             v = 70;
             break;
         case SoundManager::VOLUME_LEV_2:
-            v = 77;
+            v = 78;
             break;
         case SoundManager::VOLUME_LEV_3:
             v = 80;
@@ -447,9 +447,6 @@ void SoundManager::updateAlarm(bool hasAlarm, AlarmPriority curHighestPriority)
             {
                 QMetaObject::invokeMethod(d_ptr->player, "stop");
             }
-
-            // paly the new alarm level
-            d_ptr->playSound(SOUND_TYPE_ALARM, curHighestPriority);
         }
     }
 }

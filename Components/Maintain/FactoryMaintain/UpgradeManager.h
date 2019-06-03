@@ -65,6 +65,10 @@ signals:
     void upgradeInfoChanged(const QString &info);
     void upgradeProgressChanged(int value);
     void reboot();
+    /**
+     * @brief upgradeT5ModuleCompleted  and the signal of upgrading the T5 module when completed
+     */
+    void upgradeT5ModuleCompleted();
 
 private slots:
     /**

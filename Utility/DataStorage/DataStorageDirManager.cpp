@@ -228,6 +228,22 @@ DataStorageDirManager &DataStorageDirManager::getInstance()
 
 DataStorageDirManager::~DataStorageDirManager()
 {
+    if (_curFolder.contains("nPMD"))
+    {
+        // delete demo data
+        quint32 size = _deleteDir(_curFolder);
+        if (_previousDataSize > size)
+        {
+            _previousDataSize -= size;
+        }
+        else
+        {
+            _previousDataSize = 0;
+        }
+
+        quint32 totalSize = _previousDataSize + _curDataSize;
+        systemConfig.setNumValue("DataStorage|DataSize", totalSize);
+    }
     _folderNameList.clear();
 }
 

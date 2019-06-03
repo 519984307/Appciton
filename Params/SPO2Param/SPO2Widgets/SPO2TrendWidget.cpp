@@ -30,15 +30,14 @@ void SPO2TrendWidget::_releaseHandle(IWidget *iWidget)
     p->popup(trs("SPO2Menu"));
 }
 
-void SPO2TrendWidget::_loadConfig()
+void SPO2TrendWidget::loadConfig()
 {
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
     setPalette(palette);
     _spo2Value->setPalette(palette);
     _piName->setPalette(palette);
     _piValue->setPalette(palette);
-    // 设置上下限
-    updateLimit();
+    TrendWidget::loadConfig();
 }
 
 /**************************************************************************************************
@@ -180,9 +179,6 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
     setName(trs(paramInfo.getParamName(PARAM_SPO2)));
     setUnit(trs(Unit::getSymbol(UNIT_PERCENT)));
 
-    // 设置报警关闭标志
-    showAlarmOff();
-
     // 血氧值。
     _spo2Value = new QLabel();
     _spo2Value->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
@@ -213,7 +209,7 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 
-    _loadConfig();
+    loadConfig();
 }
 
 /**************************************************************************************************
@@ -234,9 +230,4 @@ void SPO2TrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
     showNormalStatus(psrc);
-}
-
-void SPO2TrendWidget::updateWidgetConfig()
-{
-    _loadConfig();
 }

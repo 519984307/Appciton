@@ -21,6 +21,7 @@
 #include "IConfig.h"
 #include "TrendDataStorageManager.h"
 #include "LanguageManager.h"
+#include "Utility.h"
 
 #define GRAPH_POINT_NUMBER          120
 #define DATA_INTERVAL_PIXEL         5
@@ -422,18 +423,8 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
         QRect downRulerRect(_info.xHead / 3 + 7, _info.yBottom - 10, _info.xHead, 30);
         QFont textfont = fontManager.textFont(fontManager.getFontSize(3));
         barPainter.setFont(textfont);
-        if (_type == TREND_GRAPH_TYPE_AG_TEMP)
-        {
-            barPainter.drawText(upRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number((_valueY.max * 1.0) / _valueY.scale, 'f',
-                                1));
-            barPainter.drawText(downRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number((_valueY.min * 1.0) / _valueY.scale,
-                                'f', 1));
-        }
-        else
-        {
-            barPainter.drawText(upRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_valueY.max / _valueY.scale));
-            barPainter.drawText(downRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_valueY.min / _valueY.scale));
-        }
+        barPainter.drawText(upRulerRect, Qt::AlignLeft | Qt::AlignTop, Util::convertToString(_valueY.max, _valueY.scale));
+        barPainter.drawText(downRulerRect, Qt::AlignLeft | Qt::AlignTop, Util::convertToString(_valueY.min, _valueY.scale));
 
         QFont font;
         font.setPixelSize(15);
@@ -472,18 +463,8 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     QRect downRulerRect(_info.xHead / 3 + 7, _info.yBottom - 10, _info.xHead, 30);
     QFont textfont = fontManager.textFont(fontManager.getFontSize(3));
     barPainter.setFont(textfont);
-    if (_type == TREND_GRAPH_TYPE_AG_TEMP)
-    {
-        barPainter.drawText(upRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number((_valueY.max * 1.0) / _valueY.scale, 'f',
-                            1));
-        barPainter.drawText(downRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number((_valueY.min * 1.0) / _valueY.scale,
-                            'f', 1));
-    }
-    else
-    {
-        barPainter.drawText(upRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_valueY.max / _valueY.scale));
-        barPainter.drawText(downRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_valueY.min / _valueY.scale));
-    }
+    barPainter.drawText(upRulerRect, Qt::AlignLeft | Qt::AlignTop, Util::convertToString(_valueY.max, _valueY.scale));
+    barPainter.drawText(downRulerRect, Qt::AlignLeft | Qt::AlignTop, Util::convertToString(_valueY.min, _valueY.scale));
 
     QFont font;
     font.setPixelSize(15);
@@ -535,9 +516,24 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
             return;
         }
 
+        unsigned status = _trendInfo.trendDataV3.at(_cursorPosIndex).status;
         if (_trendInfo.trendDataV3.at(_cursorPosIndex).isAlarm)
         {
-            barPainter.fillRect(dataRect, Qt::white);
+            if (_type == TREND_GRAPH_TYPE_NIBP)
+            {
+                if (status & TrendDataStorageManager::CollectStatusNIBP)
+                {
+                    barPainter.fillRect(dataRect, Qt::white);
+                }
+                else
+                {
+                    barPainter.fillRect(dataRect, Qt::black);
+                }
+            }
+            else
+            {
+                barPainter.fillRect(dataRect, Qt::white);
+            }
         }
         else
         {
@@ -546,7 +542,6 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
         TrendDataType sys =  _trendInfo.trendDataV3.at(_cursorPosIndex).data[0];
         TrendDataType dia = _trendInfo.trendDataV3.at(_cursorPosIndex).data[1];
         TrendDataType map = _trendInfo.trendDataV3.at(_cursorPosIndex).data[2];
-        unsigned status = _trendInfo.trendDataV3.at(_cursorPosIndex).status;
         QString sysStr;
         QString diaStr;
         QString mapStr;
@@ -577,6 +572,13 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
                 barPainter.drawText(upDataRect, trendStr, nibpOption);
                 nibpOption.setAlignment(Qt::AlignTop | Qt::AlignHCenter);
                 barPainter.drawText(downDataRect, mapStr, nibpOption);
+            }
+            else
+            {
+                nibpOption.setAlignment(Qt::AlignBottom | Qt::AlignHCenter);
+                barPainter.drawText(upDataRect, "---/---", nibpOption);
+                nibpOption.setAlignment(Qt::AlignTop | Qt::AlignHCenter);
+                barPainter.drawText(downDataRect, "(---)", nibpOption);
             }
         }
         else

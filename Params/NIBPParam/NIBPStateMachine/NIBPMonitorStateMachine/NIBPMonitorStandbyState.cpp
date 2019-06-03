@@ -40,6 +40,7 @@ void NIBPMonitorStandbyState::handleNIBPEvent(NIBPEvent event, const unsigned ch
         {
             //自动测量模式的手动触发标志
             nibpParam->setAutoMeasure(true);
+            nibpParam->setFirstAuto(true);
         }
         // 转换到测量状态。
         switchState(NIBP_MONITOR_STARTING_STATE);
@@ -63,6 +64,10 @@ void NIBPMonitorStandbyState::handleNIBPEvent(NIBPEvent event, const unsigned ch
         }
         else
         {
+            if (nibpParam->isFirstAuto())
+            {
+                switchState(NIBP_MONITOR_SAFEWAITTIME_STATE);
+            }
             nibpParam->switchToManual();
         }
         break;

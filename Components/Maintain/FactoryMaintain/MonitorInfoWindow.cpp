@@ -150,7 +150,7 @@ void MonitorInfoWindow::layoutExec()
     d_ptr->labs.insert(MonitorInfoWindowPrivate
                        ::ITEM_LAB_MAC_ADDR, labelRight);
 
-    labelLeft = new QLabel(trs("ScreenResolationSize"));
+    labelLeft = new QLabel(trs("ScreenResolution"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
     labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);

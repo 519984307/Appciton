@@ -319,46 +319,40 @@ void ECGDupParam::updateHR(short hr)
 
     switch (_hrSource)
     {
-        case HR_SOURCE_AUTO:
+    case HR_SOURCE_AUTO:
+    {
+        // HR不为无效时即显示。
+        if (_hrValue != InvData())
         {
-            // HR不为无效时即显示。
-            if (_hrValue != InvData())
-            {
-                _hrBeatFlag = true;
-                _trendWidget->setHRValue(_hrValue, HR_SOURCE_ECG);
-            }
-            else if (_prValue != InvData())
-            {
-                _hrBeatFlag = false;
-                _trendWidget->setHRValue(_prValue, _currentHRSource);
-            }
-            else  // HR和PR都为无效时。
-            {
-                _hrBeatFlag = true;
-                _trendWidget->setHRValue(_hrValue, HR_SOURCE_ECG);
-            }
+            _hrBeatFlag = true;
+            _trendWidget->setHRValue(_hrValue, HR_SOURCE_ECG);
         }
-        break;
-        case HR_SOURCE_IBP:
-        case HR_SOURCE_SPO2:
+        else if (_prValue != InvData())
         {
             _hrBeatFlag = false;
-            _trendWidget->setHRValue(_hrValue, _hrSource);
+            _trendWidget->setHRValue(_prValue, _currentHRSource);
         }
-        break;
-        case HR_SOURCE_ECG:
+        else  // HR和PR都为无效时。
         {
-            if (_hrValue != InvData())
-            {
-                _hrBeatFlag = true;
-            }
-            else
-            {
-                _hrBeatFlag = false;
-            }
-            _trendWidget->setHRValue(_hrValue, _hrSource);
+            _hrBeatFlag = true;
+            _trendWidget->setHRValue(_hrValue, HR_SOURCE_ECG);
         }
-        case HR_SOURCE_NR:
+    }
+        break;
+    case HR_SOURCE_ECG:
+    {
+        if (_hrValue != InvData())
+        {
+            _hrBeatFlag = true;
+        }
+        else
+        {
+            _hrBeatFlag = false;
+        }
+        _trendWidget->setHRValue(_hrValue, _hrSource);
+    }
+        break;
+    default:
         break;
     }
 }

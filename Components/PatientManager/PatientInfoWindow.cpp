@@ -30,6 +30,7 @@
 #include "TimeSymbol.h"
 #include <QDate>
 #include "FloatHandle.h"
+#include "RunningStatusBar.h"
 
 #define PATIENT_BORN_DATE_RANAGE 1900
 PatientInfoWindow *PatientInfoWindow::_selfObj = NULL;
@@ -199,15 +200,7 @@ static bool checkWeightValue(const QString &value)
 void PatientInfoWindowPrivate::loadOptions()
 {
     combos[ITEM_CBO_PATIENT_TYPE]->setCurrentIndex(patientManager.getType());
-    bool patientNew = patientManager.isNewPatient();
-    if (patientNew)         // 新建病人时默认打开起博
-    {
-        combos[ITEM_CBO_PACER_MARKER]->setCurrentIndex(PATIENT_PACER_ON);
-    }
-    else
-    {
-        combos[ITEM_CBO_PACER_MARKER]->setCurrentIndex(patientManager.getPacermaker());
-    }
+    combos[ITEM_CBO_PACER_MARKER]->setCurrentIndex(patientManager.getPacermaker());
     combos[ITEM_CBO_PATIENT_SEX]->setCurrentIndex(patientManager.getSex());
     combos[ITEM_CBO_BLOOD_TYPE]->setCurrentIndex(patientManager.getBlood());
     buttons[ITEM_BTN_PATIENT_NAME]->setText(patientManager.getName());
@@ -563,6 +556,7 @@ void PatientInfoWindowPrivate::savePatientInfoToManager()
     }
     patientManager.setWeight(weightFloat);
     patientManager.setPacermaker(static_cast<PatientPacer>(pacer->currentIndex()));
+    patientManager.setBedNum(bedNum->text());
     patientManager.updatePatientInfo();
 }
 
@@ -709,7 +703,6 @@ void PatientInfoWindow::onBtnReleased()
             }
         }
         d_ptr->savePatientInfoToManager();
-        patientManager.setPacermaker(static_cast<PatientPacer>(d_ptr->pacer->currentIndex()));
     }
     this->hide();
 }
@@ -732,7 +725,6 @@ void PatientInfoWindow::bedNumReleased()
         if (oldStr != text)
         {
             btn->setText(text);
-            patientManager.setBedNum(text);
         }
     }
 }

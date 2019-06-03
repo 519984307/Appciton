@@ -121,7 +121,8 @@ void NIBPManometerContent::timerEvent(QTimerEvent *ev)
             {
                 MessageBox messbox(trs("Warn"), trs("OperationFailedPleaseAgain"), false);
                 messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
-                windowManager.showWindow(&messbox, WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
+                windowManager.showWindow(&messbox,
+                                         WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
             }
             killTimer(d_ptr->inModeTimerID);
             d_ptr->inModeTimerID = -1;
@@ -134,7 +135,7 @@ void NIBPManometerContent::timerEvent(QTimerEvent *ev)
     }
     else if (d_ptr->pressureTimerID == ev->timerId())
     {
-        if (d_ptr->pressure != nibpParam.getManometerPressure())
+        if (d_ptr->pressure != nibpParam.getManometerPressure() && d_ptr->isManometerMode)
         {
             d_ptr->pressure = nibpParam.getManometerPressure();
             d_ptr->value->setNum(nibpParam.getManometerPressure());
@@ -144,7 +145,7 @@ void NIBPManometerContent::timerEvent(QTimerEvent *ev)
 
 void NIBPManometerContent::enterManometerReleased()
 {
-    if (d_ptr->moduleStr != "SUNTECH_NIBP")
+    if (d_ptr->moduleStr == "BLM_N5")
     {
         d_ptr->inModeTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
         d_ptr->modeBtn->setEnabled(false);

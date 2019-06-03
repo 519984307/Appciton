@@ -26,7 +26,11 @@
 #include "MeasureSettingWindow.h"
 #include "AlarmSourceManager.h"
 
+#ifdef HIDE_NIBP_PR
+#define COLUMN_COUNT    2
+#else
 #define COLUMN_COUNT    3
+#endif
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -196,8 +200,10 @@ void NIBPDataTrendWidget::showValue(void)
         _table->item(i, 0)->setTextColor(textColor);
         QLabel *l = qobject_cast<QLabel *>(_table->cellWidget(i, 1));
         l->setText("");
+#ifndef HIDE_NIBP_PR
         l = qobject_cast<QLabel *>(_table->cellWidget(i, 2));
         l->setText("");
+#endif
     }
 
     for (int i = 0; i < _rowNR; i++)
@@ -277,6 +283,7 @@ void NIBPDataTrendWidget::showValue(void)
             }
 
             // PR
+#ifndef HIDE_NIBP_PR
             if (!providerBuff.prAlarm)
             {
                 valStr = color.arg(textColor.red())
@@ -285,18 +292,19 @@ void NIBPDataTrendWidget::showValue(void)
                         .arg(QString::number(providerBuff.prvalue));
                 prStr = prStr.arg(valStr);
             }
+#endif
             textStr = color.arg(textColor.red()).arg(textColor.green()).arg(textColor.blue()).arg(textStr);
         }
         QLabel *l = qobject_cast<QLabel *>(_table->cellWidget(i, 1));
         l->setAlignment(Qt::AlignHCenter);
         l->setText(textStr);
         l->setTextInteractionFlags(Qt::NoTextInteraction);
-
+#ifndef HIDE_NIBP_PR
         QLabel *prLbl = qobject_cast<QLabel *>(_table->cellWidget(i, 2));
         prLbl->setAlignment(Qt::AlignHCenter);
         prLbl->setText(prStr);
         prLbl->setTextInteractionFlags(Qt::NoTextInteraction);
-
+#endif
         if (t != _nibpNrendCacheMap.begin())
         {
             t = t - 1;
@@ -318,8 +326,10 @@ void NIBPDataTrendWidget::resizeEvent(QResizeEvent *e)
     _table->setRowCount(_rowNR);
     int eachColumnWidth = _table->width() / COLUMN_COUNT;
     _table->setColumnWidth(0, eachColumnWidth);
-    _table->setColumnWidth(1, eachColumnWidth * 4/3);
+    _table->setColumnWidth(1, eachColumnWidth);
+#ifndef HIDE_NIBP_PR
     _table->setColumnWidth(2, eachColumnWidth * 2/3);
+#endif
 
     for (int i = 0; i < _rowNR; i++)
     {
@@ -334,9 +344,11 @@ void NIBPDataTrendWidget::resizeEvent(QResizeEvent *e)
         _table->setCellWidget(i, 1, l);
         l->setText("");
 
+#ifndef HIDE_NIBP_PR
         QLabel *prLbl = new QLabel();
         _table->setCellWidget(i, 2, prLbl);
         prLbl->setText("");
+#endif
     }
 }
 
@@ -376,6 +388,11 @@ void NIBPDataTrendWidget::updateWidgetConfig()
 void NIBPDataTrendWidget::clearListData()
 {
     _nibpNrendCacheMap.clear();
+}
+
+void NIBPDataTrendWidget::updateUnit(UnitType unit)
+{
+    setUnit(Unit::getSymbol(unit));
 }
 
 /**************************************************************************************************

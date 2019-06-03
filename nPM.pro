@@ -120,6 +120,9 @@ DEFINES += DISABLE_ECG_MODULE_CALIBRATION
 #大字体界面，co2模块替换resp模块
 DEFINES += BIG_FONT_LAYOUT_CO2_REPLACE_RESP
 
+#隐藏NIBP的PR值
+DEFINES += HIDE_NIBP_PR
+
 # Depending libraries
 LIBS += -ldl -lasound -lz
 
@@ -454,7 +457,6 @@ SOURCES +=                                                                      
     Components/Maintain/Service/NIBP/NIBPRepairMenuManager.cpp                  \
     Components/Maintain/Service/NIBP/NIBPZeroPoint.cpp                          \
     Components/Maintain/Service/Temp/ServiceCPUTemp.cpp                         \
-    Components/Maintain/Service/Version/ServiceVersion.cpp                      \
     Components/Maintain/Factory/FactoryConfigManager.cpp                        \
     Components/Maintain/FactoryMaintain/FactoryDataRecordContent.cpp            \
     Components/Maintain/Factory/Menu/FactoryTempMenuContent.cpp                 \
@@ -989,7 +991,6 @@ HEADERS +=                                                                      
     Components/Maintain/Service/NIBP/NIBPRepairMenuManager.h                    \
     Components/Maintain/Service/NIBP/NIBPZeroPoint.h                            \
     Components/Maintain/Service/Temp/ServiceCPUTemp.h                           \
-    Components/Maintain/Service/Version/ServiceVersion.h                        \
     Components/Maintain/Factory/FactoryConfigManager.h                          \
     Components/Maintain/Factory/Menu/FactoryTempMenuContent.h                   \
     Components/Maintain/Factory/Menu/FactoryTestMenuContent.h                   \
@@ -1205,7 +1206,6 @@ HEADERS +=                                                                      
     Main/IThread.h                                                              \
     Main/MergeConfig.h                                                          \
     Main/Starter.h                                                              \
-    Main/Version.h \
     Utility/Widgets/ImportFileSubWidget.h \
     Components/TimeManager/TimeManagerInterface.h \
     Components/Alarm/AlarmSourceManager.h

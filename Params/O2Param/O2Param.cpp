@@ -198,18 +198,27 @@ void O2Param::updateApneaStimulationStatus()
 
 void O2Param::setVibration(bool vibrate)
 {
-    d_ptr->provider->sendMotorControl(vibrate);
+    if (d_ptr->provider)
+    {
+        d_ptr->provider->sendMotorControl(vibrate);
+    }
 }
 
 void O2Param::vibrationIntensityControl(int intensity)
 {
-    d_ptr->provider->sendVibrationIntensity(intensity);
+    if (d_ptr->provider)
+    {
+        d_ptr->provider->sendVibrationIntensity(intensity);
+    }
 }
 
 void O2Param::sendCalibration(int concentration)
 {
-    d_ptr->calibConcentration = concentration;
-    d_ptr->provider->sendCalibration(concentration);
+    if (d_ptr->provider)
+    {
+        d_ptr->calibConcentration = concentration;
+        d_ptr->provider->sendCalibration(concentration);
+    }
 }
 
 void O2Param::calibrationResult(unsigned char *packet)

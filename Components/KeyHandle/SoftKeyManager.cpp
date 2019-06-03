@@ -206,6 +206,21 @@ void SoftKeyManager::setKeyTypeAvailable(SoftBaseKeyType keyType, bool isAvailab
     refreshPage();
 }
 
+void SoftKeyManager::refreshCO2Key(bool on)
+{
+    if (!on)
+    {
+        d_ptr->currentAction->getBaseActionDesc(SOFT_BASE_KEY_CO2_HANDLE)->hint = co2StandbyHint;
+        d_ptr->currentAction->getBaseActionDesc(SOFT_BASE_KEY_CO2_HANDLE)->iconPath = co2StandbyIcon;
+    }
+    else
+    {
+        d_ptr->currentAction->getBaseActionDesc(SOFT_BASE_KEY_CO2_HANDLE)->hint = co2MeasureHint;
+        d_ptr->currentAction->getBaseActionDesc(SOFT_BASE_KEY_CO2_HANDLE)->iconPath = co2MeasureIcon;
+    }
+    refreshPage(false);
+}
+
 void SoftKeyManager::_dynamicKeyClicked(int index)
 {
     d_ptr->handleSoftKeyClick(false, index);
