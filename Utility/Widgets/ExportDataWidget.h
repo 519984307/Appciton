@@ -10,7 +10,7 @@
 
 
 #pragma once
-#include <QDialog>
+#include "Dialog.h"
 #include "LanguageManager.h"
 #include "qprogressbar.h"
 #include "Button.h"
@@ -33,7 +33,7 @@ class QLabel;
 class LButton;
 class QProgressBar;
 class QTimer;
-class ExportDataWidget : public QDialog
+class ExportDataWidget : public Dialog
 {
     Q_OBJECT
 
