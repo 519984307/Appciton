@@ -312,7 +312,7 @@ void NightModeWindow::onComboBoxItemFocusIndexChanged(int index)
     }
     else if (type == NightModeWindowPrivate::ITEM_CBO_KEYPRESS_VOLUME_NUM)
     {
-        soundManager.setVolume(SoundManager::SOUND_TYPE_NOTIFICATION , static_cast<SoundManager::VolumeLevel>(volume));
+        soundManager.setVolume(SoundManager::SOUND_TYPE_NOTIFICATION , static_cast<SoundManager::VolumeLevel>(index));
         soundManager.keyPressTone();
     }
 
