@@ -62,7 +62,7 @@
 	<AlarmOffAtPowerOn>0</AlarmOffAtPowerOn>
     </Alarms>
     <NightMode>
-        <ScreenBrightness>1</ScreenBrightness>
+        <ScreenBrightness>0</ScreenBrightness>
         <AlarmVolume>1</AlarmVolume>
         <HeartBeatVolume>0</HeartBeatVolume>
         <KeyPressVolume>0</KeyPressVolume>
@@ -144,6 +144,7 @@
         <SelectWave2>2</SelectWave2>
         <SelectWave3>3</SelectWave3>
         <PrintTime>1</PrintTime> <!--0:continous 1:8s-->
+	<PrintSpeed>1</PrintSpeed>
         <PhysiologicalAlarm>1</PhysiologicalAlarm>
         <CoderMarker>0</CoderMarker>
         <NIBPReading>0</NIBPReading>
@@ -880,7 +881,7 @@
             <AutoInterval>5</AutoInterval>
             <StatFunction>1</StatFunction>
             <AutomaticRetry>0</AutomaticRetry>
-	    <CompleteTone>1</CompleteTone>
+	    <CompleteTone>0</CompleteTone>
         </NIBP>
         <AG>
             <AGModule>0</AGModule>

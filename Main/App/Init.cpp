@@ -383,11 +383,6 @@ static void _initProviderParam(void)
             paramManager.addProvider(*new S5Provider());
             spo2Param.setModuleType(MODULE_BLM_S5);
         }
-        else if (str == "NELLCOR_SPO2")
-        {
-            paramManager.addProvider(*new NellcorSetProvider());
-            spo2Param.setModuleType(MODULE_NELLCOR_SPO2);
-        }
         else if (str == "RAINBOW_SPO2")
         {
             paramManager.addProvider(*new RainbowProvider());
@@ -708,6 +703,7 @@ void deleteObjects(void)
     deletePatientManager();
     deleteTimeDate();
     deleteMachineConfig();
+    deleteDataStorageDirManager();
     deleteSystemConfig();
     // deleteSuperConfig();
     deleteSuperRunConfig();

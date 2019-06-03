@@ -12,7 +12,7 @@ STAnalysize,ST段分析,ST Analysize
 SystemMaintenance,维护,Maintenance
 SystemMaintenanceDesc,维护,Maintenance
 iDMBoard,iDMBoard,iDMBoard
-BuildTime,编译时间,Build Time
+CompileTime,编译时间,Compile Time
 ChannelPressureEntitle1,压力标名1,Pressure Entitle1
 ChannelPressureEntitle2,压力标名2,Pressure Entitle2
 Adult,成人,Adu
@@ -142,7 +142,7 @@ ArrhythmiaAnalysisMenuDesc,心律失常分析 ,Arrh.Analysis
 ArrhythmiaThresholdMenu,心律失常阈值,Arrh.Threshold
 ArrhythmiaThresholdMenuDesc,心律失常阈值,"Arrh,Threshold"
 Arrhythmia,心律失常 >>,Arrhythmia >>
-ECGPaceMarker,起搏标记,Pace maker
+ECGPaceSignal,起搏信号,Pace Signal
 ECG12LPaceMarker,12导起搏标记,12L Pace maker
 SelfLearn,自学习,Self Learn
 Asystole,停搏时间,Asystole
@@ -311,7 +311,7 @@ TEMPOverRangeAll,体温全部超界,All TEMP Out of Range
 TEMP1ProbeTypeError,体温1探头类型错误,TEMP1 Probe Type Error
 TEMP2ProbeTypeError,体温2探头类型错误,TEMP2 Probe Type Error
 TEMPProbeTypeErrorAll,体温探头类型全部错误,All TEMP Probe Type Error
-TEMPCommunicationStop,体温通讯停止,Communication Stop
+TEMPCommunicationStop,体温通讯停止,TEMP Communication Stop
 celsius,℃,℃
 fahrenheit,℉,℉
 percent,%,%
@@ -358,7 +358,7 @@ SystemInfo,系统信息,System Info
 SystemInfoSetting,系统信息,System Info
 ErrorLog,错误日志,Error Log
 SystemStatus,状态,Status
-SomeLimitAlarmDisabled,有超限报警被关闭,Some limit alarms disabled
+SomeLimitAlarmDisabled,有超限报警被关闭,Some Limit Alarms Disabled
 PowerupRecorderPressed,前面板打印键短路,Front Panel Record Btn Stuck
 PowerupCommunicationStop,前面板通讯停止,Front Panel Comm. Stop
 WiFiMenu,无线网络,Wifi
@@ -742,8 +742,8 @@ NIBPServiceError,血压服务模式错误,NIBP Service Error
 NIBPServiceErrorReturn,血压服务模式错误，请退出！,"NIBP Service Error, Please Return!"
 NIBPServiceWait,血压服务模式等待中,NIBP Service Wait
 NIBPServiceWaitAgain,"血压服务模式等待中, 请重试!","NIBP Service Wait, Please Again!"
-CalibratePoint1,校准点1,CalibratePoint 1
-CalibratePoint2,校准点2,CalibratePoint 2
+CalibratePoint1,校准点1,Calibration point1
+CalibratePoint2,校准点2,Calibration point2
 ServiceCalibrate,校准,Calibrate
 ServiceCalibrating,校准中,Calibrating
 NIBPCalibrateModel,校准模式,NIBP Calibrate Model
@@ -814,11 +814,16 @@ ServiceVersion,版本,Version
 ServiceCPUTemp,CPU温度,CPU Temp
 iDMVersion,iDM,iDM
 ECGVersion,ECG,ECG
+ECGBootloader,ECG Bootloader,ECG Bootloader
 NIBPVersion,NIBP,NIBP
+NIBPBootloader,NIBP Bootloader,NIBP Bootloader
 SPO2Version,SpO2,SpO2
+SPO2Bootloader,SPO2 Bootloader,SPO2 Bootloader
 TEMPVersion,TEMP,TEMP
+TEMPBootloader,TEMP Bootloader,TEMP Bootloader
 iDMBoardVersion,iDMBoard,iDMBoard
 PRT48Version,PRT48,PRT48
+PRT48Bootloader,PRT48 Bootloader,PRT48 Bootloader
 SourceOfCO2,来源CO2,Source of CO2
 AutoOfCO2,自动(CO2),Auto(CO2)
 PDVersion,PD,PD
@@ -945,8 +950,8 @@ RealTimePrintBottomLead,实时打印底部导联,Real-Time Print Bottom Lead
 ErrorPassWordERROR,密码错误!,Password Error!
 Warn,警告,Warning
 SureSafePopUpUDisk,是否安全弹出U盘?,Whether to safely pop up the U disk?
-WarningNoUSB,没有找到USB，请检查！,"Not find USB, please check!"
-WarnLessUSBFreeSpace,USB空间不足，请检查！,"USB free space not enough, please check!"
+WarningNoUSB,没有找到U盘，请检查！,"Not find U disk, please check!"
+WarnLessUSBFreeSpace,U盘空间不足，请检查！,"U disk free space not enough, please check!"
 WarningNoImportFile,导入文件不存在，请检查！,"Import file does not exist, please check!"
 WarningImportFileError,导入文件内容错误:,Import file error:
 WarningLoadDefaultCfgFail,加载默认配置失败，请检查！,"Load default Config fail, please check!"
@@ -972,14 +977,14 @@ Mode2,模式2,Mode 2
 ScreenSize,屏幕尺寸,Screen Size
 ScreenResolution,屏幕分辨率,Screen Resolution
 Inch,英寸,Inch
-TransferRescueDataByUSB,传输营救数据到USB,Transferring Rescue Data to USB
+TransferRescueDataByUSB,传输营救数据到U盘,Transferring Rescue Data to U disk
 TransferRescueDataByWIFI,传输营救数据到WIFI,Transferring Rescue Data to WIFI
-TransferSupervisorByUSB,传输超级配置数据到USB,Transferring Supervisor Config to USB
+TransferSupervisorByUSB,传输超级配置数据到U盘,Transferring Supervisor Config to U disk
 TransferSupervisorByWIFI,传输超级配置数据到WIFI,Transferring Supervisor Config to WIFI
 TransferRescueDataComplete,营救数据传输完成,Rescue Data Transfer Complete
 TransferSupervisorComplete,超级配置传输完成,Supervisor Config Transfer Complete
-TransferErrorLogToUSBComplete,U盘传输错误日志完成,Transfer error log to USB complete
-TransferErrorLogToUSB,U盘传输错误日志,Transfer error log to USB
+TransferErrorLogToUSBComplete,U盘传输错误日志完成,Transfer error log to U disk complete
+TransferErrorLogToUSB,U盘传输错误日志,Transfer error log to U disk
 TransferFailed,传输失败,Transfer Failed
 TransferCancel,传输取消,Transfer Cancel
 ECG12LTransfersuccess,12导传送成功,ECG 12 Lead Transfer Success
@@ -1112,13 +1117,12 @@ Name,姓名,Name
 EmailAddress,邮件地址,E-mail Address
 InvalidEmailAddress,无效邮件地址,Invalid E-mail Address
 Confirm,确认,Confirm
-USB,优盘,USB
 EMAIL,邮件,E-mail
 Transfer,传输,Transfer
 MailCurrentRescue,邮件传送当前营救,Mail Current Rescue
 MailSelectReport,邮件传送选择快照,Mail Select Rescue
-UsbCurrentRescue,优盘传送当前营救,USB Current Rescue
-UsbCurrentReport,优盘传送选择快照,USB Select Report
+UsbCurrentRescue,U盘传送当前营救,USB Current Rescue
+UsbCurrentReport,U盘传送选择快照,USB Select Report
 TransferECG12LeadByUSB,USB传输12导,Transfer 12 Lead ECG by USB
 TransferECG12LeadByWIFI,wifi传输12导,Transfer 12 Lead ECG by WIFI
 TransferECG12LeadComplete,12导传输完成,Transfer 12 Lead ECG Complete
@@ -1301,7 +1305,6 @@ TemperatureInsideCase,箱内温度,Temperature Inside Case
 BatteryCapacity,电池电量,Battery Capacity
 ProductModel,产品型号,Product Model
 MACAddress,硬件地址,MAC Address
-ScreenResolutionSize,屏幕分辨率尺寸,Screen Resolution Size
 ElectronicSerialNumber,电子序列号,Electronic Serial Number
 SetElectronicSerialNumber,设置电子序列号,Set Electronic Serial Number
 MonitorInfoMenuDesc,监护仪信息菜单设置,Monitor Info Desc
@@ -1329,6 +1332,7 @@ PowerManagerSoftwareVersion,电源管理软件版本,Power Manager Software Vers
 Uboot,系统引导文件,Uboot
 Kernel,内核,Kernel
 SystemboardModule,系统板,System Board Module
+SystemboardBootloader,系统板Bootloader,System Board Bootloader
 RecorderModule,记录模块,Recorder Module
 ECGAlgorithmType,心电算法类型,ECG Algorithm Type
 UserMaintainGeneralMenuDesc,通用,General
@@ -1397,8 +1401,8 @@ StopECGModuleCalibration,停止心电模块校准,Stop ECG Module Calibration
 StopCO2ModuleMaintenance,停止二氧化碳模块,Stop CO2 Module Maintenance
 StopTouchScreenCalibration,停止触摸屏校准,Stop Touch Screen Calibration
 Cancel,取消覆盖,Cancel
-OthersMaintainMenu,其他维护菜单,Others Menu
-OthersMaintainMenuDesc,其他维护菜单,Others Menu
+OthersMaintainMenu,其他,Others
+OthersMaintainMenuDesc,其他,Others
 WaveLine,波线,WaveLine
 Fat,粗,Fat
 Med,中,Med
@@ -1432,6 +1436,7 @@ BedNumber,床号,Bed No.
 ModifyPassword,密码,Password
 ChangeBedNumberRight,更改床号权限,Changing Bed Number
 Language,语言,Language
+ChangeLanguageTip,切换语言将在重启后生效,Switching languages will go into effect after restart.
 EditMonitorName,监护仪名称,Monitor Name
 UserMaintainModifyConfig,用户维护修改配置,User Maintain Modify Config
 ProfileConflict,配置冲突,Profile Conflict
@@ -1444,8 +1449,8 @@ IpAddress,IP地址,IP Address
 high,高,High
 normal,中,Normal
 low,低,Low
-ConfigManagerDesc,配置管理,Config Manager
-ConfigManager,配置管理,Config Manager
+ConfigManagerDesc,配置管理,Config Manage
+ConfigManager,配置管理,Config Manage
 DefaultConfig,默认配置,Default Config
 DefaultConfigDesc,默认配置,Default Config
 AdultDefaultConfig,成人默认配置,Adult Default Config
@@ -1453,8 +1458,8 @@ PedDefaultConfig,小儿默认配置,Ped Default Config
 NeoDefaultConfig,新生儿默认配置,Neo Default Config
 FactoryConfig,工厂配置,Factory Config
 CurrentConfig,当前配置,Current Config
-ConfigManagerment,配置管理,Config Manager
-ConfigManagermentDesc,配置管理,Config Managerment
+ConfigManagerment,配置管理,Config Manage
+ConfigManagermentDesc,配置管理,Config Manage
 General,通用,General
 SetConfigName,设置配置项名称,Set Config Name
 GeneralDesc,通用设置,General Desc
@@ -1500,7 +1505,7 @@ FactoryBattery,电池 ,Factory Battery
 RefreshRate,更新速率,Refresh Rate
 Note,注释,Note
 RefreshRateUpdatedRebootNow,刷新率已更新，是否现在重启,Refresh Rate Updated Reboot Now
-FactoryDataRecord,数据记录,Factory Data
+FactoryDataRecord,数据记录,Data Record
 FactoryDataRecordDesc,数据记录,Data Record
 PDCommData,PD 通信数据,PD Comm Data
 TEMPCalibrateMenuDesc,温度校准,TEMP Calibrate
@@ -1515,6 +1520,7 @@ TEMPCalibrate,校准,Calibrate
 is,是,is
 TEMP1,温度1,TEMP1
 TEMP2,温度2,TEMP2
+TEMPCalibrateOhm,校准电阻值,Resistance
 TEMPModuleNotCalibration1,温度模块通道1未定标,TEMP Channel 1 Not Calibration
 TEMPModuleNotCalibration2,温度模块通道2未定标,TEMP Channel 2 Not Calibration
 TEMPModuleDisable,温度模块禁用,TEMP Module Disable
@@ -1576,8 +1582,8 @@ Opened,已开,Opened
 Closed,已关,Closed
 AlarmType,报警类型,Alarm Type
 EraseData,擦除数据,EraseData
-ScreenConfig,界面设置,Screen
-ScreenConfigDesc,界面设置,Screen Configuration
+ScreenSetting,界面设置,Screen
+ScreenSettingDesc,界面设置,Screen Setting
 CurrentScreen,当前界面,Current Screen
 ScreenLayout,界面布局,Screen Layout
 Standard,标准,Standard
@@ -1693,3 +1699,10 @@ RepeatCheck,一小时内重复测量3次以确认结果,Check again in a hour fo
 footValue,足部数据,foot
 handValue,手部数据,hand
 SPO2ValueInvaild,采集数据无效，请检查血氧模块,The collect data is invaild，Please check SpO2 module
+ErrorLogExportAt,错误日志导出时间: ,Error Log export at  
+NumberOfErrors,错误数量: ,Number of Errors: 
+NumberOfCriticalFaults,严重故障数量: ,Number of Critical Faults: 
+MostRecentError,最近发生错误: ,Most Recent Error: 
+MostRecentCriticalFault,最近发生严重错误: ,Most Recent Critical Fault: 
+OldestError,最早的错误: ,Oldest Error: 
+LastEraseTime,上次擦除时间: ,Last Erase Time: 

@@ -145,7 +145,7 @@ void AlarmLimitWindow::setItemFocus()
     }
 
     QModelIndex index = d_ptr->table->model()->index(focusIndex, 0);
-    d_ptr->table->scrollTo(index, QAbstractItemView::PositionAtCenter);
+    d_ptr->table->scrollToAssignedPage(index.row());
 
     d_ptr->table->setCurrentIndex(index);
     d_ptr->table->setFocus(Qt::ActiveWindowFocusReason);
@@ -284,7 +284,7 @@ void AlarmLimitWindow::onSelectRowChanged(int row)
 void AlarmLimitWindow::onDefaultsClick()
 {
     QStringList slist;
-    slist << trs("No") << trs("Ok");
+    slist << trs("No") << trs("Yes");
     MessageBox messageBox(trs("Warn"), trs("SureAllAlarmDefaults"), slist, true);
     if (messageBox.exec() == 1)
     {
@@ -362,6 +362,7 @@ void AlarmLimitWindow::restoreDefaults()
             info.limitConfig.lowLimit = low;
             alarmConfig.setLimitAlarmConfig(subId, unit, info.limitConfig);
             infos.append(info);
+            alarmConfig.clearLimitAlarmInfo();
         }
     }
     d_ptr->infos = infos;

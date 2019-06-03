@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2019/5/27
+ **/
+
 #pragma once
 #include <QBitArray>
 
@@ -66,6 +76,12 @@ public:
     // reset
     void reset();
 
+    /**
+     * @brief setKeyEnable 设置按键使能
+     * @param enable
+     */
+    void setKeyEnable(bool enable);
+
 private:
     KeyActionManager();
 
@@ -73,6 +89,7 @@ private:
     KeyActionIFace *_keyAction;
     int _curPressKey;
     QBitArray _f1Tof9KeyStatus;
+    bool _keyEnable;
 };
 #define keyActionManager (KeyActionManager::Construction())
 #define deleteKeyActionManager() (delete KeyActionManager::_selfObj)

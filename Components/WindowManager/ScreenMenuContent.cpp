@@ -131,7 +131,7 @@ void ScreenMenuContentPrivate::reloadScreenType()
 }
 
 ScreenMenuContent::ScreenMenuContent()
-    : MenuContent(trs("ScreenConfig"), trs("ScreenConfigDesc")),
+    : MenuContent(trs("ScreenSetting"), trs("ScreenSettingDesc")),
       d_ptr(new ScreenMenuContentPrivate)
 {
 }
@@ -204,6 +204,16 @@ void ScreenMenuContent::onComboxIndexChanged(int index)
             return;
         }
         layoutManager.setUFaceType(type);
+        d_ptr->layoutCbo->blockSignals(true);
+        if (type == UFACE_MONITOR_BIGFONT)
+        {
+            d_ptr->layoutCbo->setCurrentIndex(ScreenMenuContentPrivate::SCREEN_LAYOUT_BIGFONT);
+        }
+        else
+        {
+            d_ptr->layoutCbo->setCurrentIndex(ScreenMenuContentPrivate::SCREEN_LAYOUT_STANDARD);
+        }
+        d_ptr->layoutCbo->blockSignals(false);
     }
     else if (cbo == d_ptr->layoutCbo)
     {

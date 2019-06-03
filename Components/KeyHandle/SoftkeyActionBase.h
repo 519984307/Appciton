@@ -17,6 +17,11 @@
 #define ICON_FILE_RIGHT             "right.png"
 #define ICON_PATH "/usr/local/nPM/icons/"
 
+#define co2StandbyIcon "standby.png"
+#define co2StandbyHint "CO2Standby"
+#define co2MeasureIcon "measure.png"
+#define co2MeasureHint "CO2Measure"
+
 enum SoftKeyActionType
 {
     SOFTKEY_ACTION_NONE = -1,

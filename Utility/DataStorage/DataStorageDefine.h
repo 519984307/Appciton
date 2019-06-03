@@ -27,4 +27,4 @@
 #define FILE_ENTRY_SUFFIX (".entry")
 
 #define MAX_DATA_SIZE (1 << 31)  // 最大存储空间2G
-#define SIGNAL_RESCUE_MAX_DATA_SIZE (500 << 20) // 单个营救的最大存储空间500M
+#define SIGNAL_RESCUE_MAX_DATA_SIZE (1 << 29) // 单个营救的最大存储空间512M
