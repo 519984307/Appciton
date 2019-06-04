@@ -18,6 +18,7 @@
 #include "RainbowProvider.h"
 #include "ConfigManager.h"
 #include "NurseCallManager.h"
+#include "TestBatteryTime.h"
 
 /**************************************************************************************************
  * 功能： 初始化系统。
@@ -172,6 +173,7 @@ static void _initComponents(void)
     alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_BATTERY);
     alertor.addOneShotSource(oneShotAlarmSource);
     layoutManager.addLayoutWidget(bar);
+    testBatteryTime.getInstance();
 
     // 病人管理初始化。
     PatientInfoWidget *patientInfoWidget = new PatientInfoWidget();
