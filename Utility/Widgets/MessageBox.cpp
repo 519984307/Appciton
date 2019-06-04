@@ -16,8 +16,8 @@
 #include "LanguageManager.h"
 
 #define BUTTON_WIDTH 120
-#define WINDOW_WIDTH 450
-#define WINDOW_HEIGHT 200
+#define WINDOW_WIDTH 480
+#define WINDOW_HEIGHT 230
 
 class MessageBoxPrivate
 {

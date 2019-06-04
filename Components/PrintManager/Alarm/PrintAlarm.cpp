@@ -31,8 +31,13 @@ int PrintOneShotAlarm::getAlarmSourceNR(void)
  *************************************************************************************************/
 AlarmPriority PrintOneShotAlarm::getAlarmPriority(int id)
 {
-    Q_UNUSED(id)
-    return ALARM_PRIO_MED;
+    switch (id)
+    {
+    case PRINT_ONESHOT_ALARM_FAULT:
+        return ALARM_PRIO_HIGH;
+    default:
+        return ALARM_PRIO_MED;
+    }
 }
 
 /**************************************************************************************************

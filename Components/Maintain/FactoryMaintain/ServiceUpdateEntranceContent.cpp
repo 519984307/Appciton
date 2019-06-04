@@ -16,6 +16,7 @@
 #include "WindowManager.h"
 #include "UpgradeWindow.h"
 #include "WindowManager.h"
+#include "KeyActionManager.h"
 
 /**************************************************************************************************
  * 构造。
@@ -48,5 +49,7 @@ void ServiceUpdateEntranceContent ::layoutExec()
 void ServiceUpdateEntranceContent ::onBtnReleased()
 {
     UpgradeWindow w;
+    keyActionManager.setKeyEnable(false);
     w.exec();
+    keyActionManager.setKeyEnable(true);
 }

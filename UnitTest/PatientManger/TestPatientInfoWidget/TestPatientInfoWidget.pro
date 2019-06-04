@@ -32,7 +32,7 @@ SOURCES += main.cpp \
     ../../../Utility/Config/IConfig.cpp \
     ../../../Utility/ErrorLog/ErrorLogItem.cpp \
     ../../../Utility/Widgets/Base/Button.cpp \
-    ../../../Utility/Widgets/Base/ThemeManager.cpp
+    ../../../Utility/Widgets/Base/ThemeManager.cpp \
 
 HEADERS += \
     TestPatientInfoWidget.h \
@@ -52,7 +52,7 @@ HEADERS += \
     ../../../Utility/Widgets/Base/Button.h \
     ../../../Utility/Widgets/Base/ThemeManager.h \
     ../../Utility/MockFontManager.h \
-    ../../Utility/MockWindowManager.h
+    ../../Utility/MockWindowManager.h \
 
 INCLUDEPATH += \
     ../../../Components/PatientManager \
@@ -62,7 +62,7 @@ INCLUDEPATH += \
     ../../../Utility/FontManager \
     ../../../Utility/Widgets/Base \
     ../../../Utility/ErrorLog \
-    ../../Utility
+    ../../Utility \
 
 RESOURCES += \
     ../../../Utility/Widgets/Base/res/ui.qrc

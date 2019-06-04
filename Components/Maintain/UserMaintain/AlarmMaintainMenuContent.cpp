@@ -20,6 +20,7 @@
 #include "AlarmSymbol.h"
 #include "Alarm.h"
 #include "AlarmIndicator.h"
+#include "AlarmSourceManager.h"
 
 class AlarmMaintainMenuContentPrivate
 {
@@ -180,8 +181,16 @@ void AlarmMaintainMenuContentPrivate::
         }
         break;
     case ITEM_CBO_ALARM_AUDIO_OFF:
+    {
             systemConfig.setNumValue("Alarms|AlarmAudio", index);
-            alarmIndicator.updateAlarmStateWidget();
+            alarmIndicator.updateAlarmAudioState();
+            AlarmOneShotIFace *systemAlarm = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SYSTEM);
+            if (systemAlarm)
+            {
+                systemAlarm->setOneShotAlarm(SYSTEM_ONE_SHOT_ALARM_AUDIO_OFF, !index);
+            }
+        break;
+    }
     default:
         break;
     }
@@ -229,6 +238,10 @@ void AlarmMaintainMenuContentPrivate::defaultIndexInit()
     index = 0;
     defalutConfig.getNumValue("Alarms|AlarmLightOnAlarmReset", index);
     defaultIndexMap[ITEM_CBO_ALARM_LIGHT_RESET] = index;
+
+    index = 0;
+    defalutConfig.getNumValue("Alarms|AlarmAudio", index);
+    defaultIndexMap[ITEM_CBO_ALARM_AUDIO_OFF] = index;
 
 #ifndef DISABLED_ALARM_LATCH
     index = 0;

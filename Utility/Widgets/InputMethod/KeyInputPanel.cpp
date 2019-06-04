@@ -374,17 +374,18 @@ void KeyInputPanel::_loadHelpBtn(const QString &key)
         {
             while (!str.isEmpty())
             {
+                Qt::GlobalColor color = Qt::black;
+
                 if (-1 == regExp.indexIn(str))
                 {
                     d_ptr->helpKeys[pos]->setEnabled(false);
+                    color = Qt::gray;
                 }
-                else
-                {
-                    QPalette pal;
-                    pal = d_ptr->helpKeys[pos]->palette();
-                    pal.setColor(QPalette::Foreground, Qt::black);
-                    d_ptr->helpKeys[pos]->setPalette(pal);
-                }
+
+                QPalette pal;
+                pal = d_ptr->helpKeys[pos]->palette();
+                pal.setColor(QPalette::Foreground, color);
+                d_ptr->helpKeys[pos]->setPalette(pal);
 
                 pos++;
                 str.remove(0, 1);
@@ -395,6 +396,10 @@ void KeyInputPanel::_loadHelpBtn(const QString &key)
             while (-1 != (pos = regExp.indexIn(str, pos)))
             {
                 d_ptr->helpKeys[pos]->setEnabled(false);
+                QPalette pal;
+                pal = d_ptr->helpKeys[pos]->palette();
+                pal.setColor(QPalette::Foreground, Qt::gray);
+                d_ptr->helpKeys[pos]->setPalette(pal);
                 pos += regExp.matchedLength();
             }
         }

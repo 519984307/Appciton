@@ -44,7 +44,7 @@ void AlarmNormalState::enter()
 {
     AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
     alarmIndicator->setAlarmStatus(ALARM_STATUS_NORMAL);
-    alarmIndicator->updateAlarmStateWidget();
+    alarmIndicator->updateAlarmAudioState();
     LightManagerInterface *lightManager = LightManagerInterface::getLightManager();
     lightManager->enableAlarmAudioMute(false);
 }

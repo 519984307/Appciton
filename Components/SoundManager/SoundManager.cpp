@@ -447,9 +447,6 @@ void SoundManager::updateAlarm(bool hasAlarm, AlarmPriority curHighestPriority)
             {
                 QMetaObject::invokeMethod(d_ptr->player, "stop");
             }
-
-            // paly the new alarm level
-            d_ptr->playSound(SOUND_TYPE_ALARM, curHighestPriority);
         }
     }
 }

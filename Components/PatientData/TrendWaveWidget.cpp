@@ -567,6 +567,7 @@ void TrendWaveWidget::updateTimeRange()
     _rightTime = t;
     _leftTime = t - onePixelTime * GRAPH_POINT_NUMBER;
     _trendLayout();
+    update();
 }
 
 void TrendWaveWidget::trendWaveReset()

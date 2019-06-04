@@ -319,16 +319,19 @@ bool S5Provider::isResult_BAR(unsigned char *packet)
  *************************************************************************************************/
 bool S5Provider::isStatus(unsigned char *packet)
 {
+    bool isCableOff = false;
     // 探头插入
     if (packet[1] == S5_STATUS_PROBE)
     {
         if (packet[2] == S5_NO_INSERT)
         {
+            isCableOff = true;
             spo2Param.setSensorOff(true);
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_OFF, true);
         }
         else
         {
+            isCableOff = false;
             spo2Param.setSensorOff(false);
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_OFF, false);
         }
@@ -340,17 +343,24 @@ bool S5Provider::isStatus(unsigned char *packet)
         if (packet[2] == S5_INSERT)
         {
             spo2Param.setNotify(false, trs("SPO2CheckSensor"));
-            spo2Param.setValidStatus(true);
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, false);
             _isFingerOff = false;
         }
         else
         {
             spo2Param.setNotify(true, trs("SPO2CheckSensor"));
-            spo2Param.setValidStatus(false);
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, true);
             _isFingerOff = true;
         }
+    }
+
+    if (isCableOff || _isFingerOff)
+    {
+        spo2Param.setValidStatus(false);
+    }
+    else
+    {
+        spo2Param.setValidStatus(true);
     }
 
     // 调光调增益
@@ -439,7 +449,7 @@ S5Provider::S5Provider()
           , SPO2ProviderIFace()
           , _isValuePR(false)
           , _isCableOff(false)
-          , _isFingerOff(false)
+          , _isFingerOff(true)
           , _gainError(S5_GAIN_NC)
           , _ledFault(false)
           , _logicStatus(S5_LOGIC_NC)

@@ -18,6 +18,7 @@
 #include "NIBPSymbol.h"
 #include "TEMPSymbol.h"
 #include "SPO2Symbol.h"
+#include "CO2Symbol.h"
 #ifdef Q_WS_QWS
 #include <QWSServer>
 #include "SystemManager.h"
@@ -42,6 +43,7 @@ public:
 #ifdef ENABLE_O2_APNEASTIMULATION
         ITEM_CBO_O2,
 #endif
+        ITEM_CBO_PRINTER,
         ITEM_CBO_TEMP,
         ITEM_CBO_WIFI,
 #ifdef Q_WS_QWS
@@ -135,7 +137,19 @@ void MachineConfigModuleContentPrivte::loadOptions()
 
     index = 0;
     machineConfig.getNumValue("CO2Enable", index);
-    combos[ITEM_CBO_CO2]->setCurrentIndex(index);
+    if (index == 0)
+    {
+        combos[ITEM_CBO_CO2]->setCurrentIndex(0);
+    }
+    else
+    {
+        machineConfig.getStrValue("CO2", moduleName);
+        index = combos[ITEM_CBO_CO2]->findText(moduleName);
+        if (index)
+        {
+            combos[ITEM_CBO_CO2]->setCurrentIndex(index);
+        }
+    }
     itemChangedMap[ITEM_CBO_CO2] = index;
 
     index = 0;
@@ -171,6 +185,11 @@ void MachineConfigModuleContentPrivte::loadOptions()
     machineConfig.getNumValue("TEMPEnable", index);
     combos[ITEM_CBO_TEMP]->setCurrentIndex(index);
     itemChangedMap[ITEM_CBO_TEMP] = index;
+
+    index = 0;
+    machineConfig.getNumValue("PrinterEnable", index);
+    combos[ITEM_CBO_PRINTER]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_PRINTER] = index;
 
     index = 0;
     machineConfig.getNumValue("WIFIEnable", index);
@@ -274,7 +293,6 @@ void MachineConfigModuleContent::layoutExec()
                     << trs("Off")
                     << trs(SPO2Symbol::convert(MODULE_BLM_S5))
                     << trs(SPO2Symbol::convert(MODULE_MASIMO_SPO2))
-                    << trs(SPO2Symbol::convert(MODULE_NELLCOR_SPO2))
                     << trs(SPO2Symbol::convert(MODULE_RAINBOW_SPO2))
                    );
     layout->addWidget(combo, d_ptr->combos.count(), 1);
@@ -321,7 +339,8 @@ void MachineConfigModuleContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs("On")
+                    << trs(CO2Symbol::convert(MODULE_BLM_CO2))
+                    << trs(CO2Symbol::convert(MODULE_MASIMO_CO2))
                    );
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
@@ -404,6 +423,21 @@ void MachineConfigModuleContent::layoutExec()
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
                          ::ITEM_CBO_TEMP, combo);
     itemId = MachineConfigModuleContentPrivte::ITEM_CBO_TEMP;
+    combo->setProperty("Item", qVariantFromValue(itemId));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+
+    // printer module
+    label = new QLabel(trs("PrinterModule"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    combo = new ComboBox;
+    combo->addItems(QStringList()
+                    << trs("Off")
+                    << trs("On")
+                   );
+    layout->addWidget(combo, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(MachineConfigModuleContentPrivte
+                         ::ITEM_CBO_PRINTER, combo);
+    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_PRINTER;
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
@@ -519,6 +553,11 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
         case MachineConfigModuleContentPrivte::ITEM_CBO_CO2:
         {
             enablePath = "CO2Enable";
+            modulePath = "CO2";
+            if (index > 0)
+            {
+                moduleName = CO2Symbol::convert(static_cast<CO2ModuleType>(index - 1));
+            }
             break;
         }
         case MachineConfigModuleContentPrivte::ITEM_CBO_AG:
@@ -546,6 +585,11 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
         case MachineConfigModuleContentPrivte::ITEM_CBO_TEMP:
         {
             enablePath = "TEMPEnable";
+            break;
+        }
+        case MachineConfigModuleContentPrivte::ITEM_CBO_PRINTER:
+        {
+            enablePath = "PrinterEnable";
             break;
         }
         case MachineConfigModuleContentPrivte::ITEM_CBO_WIFI:

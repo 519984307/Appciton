@@ -32,7 +32,8 @@ SOURCES += main.cpp \
     ../../../Utility/Config/XmlParser.cpp \
     ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
     ../../../Utility/Config/Config.cpp \
-    ../../../Utility/ErrorLog/ErrorLogItem.cpp
+    ../../../Utility/ErrorLog/ErrorLogItem.cpp \
+    ../../../Components/System/Widgets/RunningStatusBarInterface.cpp
 
 HEADERS += \
     TestPatientManager.h \
@@ -57,7 +58,8 @@ HEADERS += \
     ../../Utility/MockSystemManager.h \
     ../../Params/NIBP/MockNIBPParam.h \
     ../../Storage/TestDataStorageDirManager/MockDataStorageDirManager.h \
-    ../../Alarm/MockAlarmIndicator.h
+    ../../Alarm/MockAlarmIndicator.h \
+    ../../../Components/System/Widgets/RunningStatusBarInterface.h
 
 INCLUDEPATH += \
     ../../../Components/PatientManager \
@@ -78,5 +80,6 @@ INCLUDEPATH += \
     ../../Params \
     ../../Params/NIBP \
     ../../Storage/TestDataStorageDirManager \
-    ../../Alarm
+    ../../Alarm \
+    ../../../Components/System/Widgets
 

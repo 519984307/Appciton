@@ -64,6 +64,10 @@ void NIBPMonitorStandbyState::handleNIBPEvent(NIBPEvent event, const unsigned ch
         }
         else
         {
+            if (nibpParam->isFirstAuto())
+            {
+                switchState(NIBP_MONITOR_SAFEWAITTIME_STATE);
+            }
             nibpParam->switchToManual();
         }
         break;

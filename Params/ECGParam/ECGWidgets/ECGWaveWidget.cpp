@@ -277,7 +277,7 @@ void ECGWaveWidget::_updateNotchInfo()
 /**************************************************************************************************
  * 载入配置。
  *************************************************************************************************/
-void ECGWaveWidget::_loadConfig(void)
+void ECGWaveWidget::loadConfig(void)
 {
     setSpeed(ecgParam.getSweepSpeed());
 
@@ -465,7 +465,7 @@ void ECGWaveWidget::updateLeadDisplayName(const QString &name)
 
 void ECGWaveWidget::updateWaveConfig()
 {
-    _loadConfig();
+    loadConfig();
 }
 
 /**************************************************************************************************
@@ -709,7 +709,7 @@ void ECGWaveWidget::showEvent(QShowEvent *e)
     rMarkList.clear();
     WaveWidget::showEvent(e);
 
-    _loadConfig();
+    loadConfig();
 
     if (ECG_DISPLAY_NORMAL == ecgParam.getDisplayMode())
     {
@@ -1053,8 +1053,6 @@ void ECGWaveWidget::setWaveInfoVisible(bool isVisible)
 
 void ECGWaveWidget::updateWidgetConfig()
 {
-    _loadConfig();
-
     int index = ECG_DISPLAY_NORMAL;
     currentConfig.getNumValue("ECG|DisplayMode", index);
     ECGDisplayMode mode = static_cast<ECGDisplayMode>(index);

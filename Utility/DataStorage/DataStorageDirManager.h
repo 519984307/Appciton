@@ -137,3 +137,4 @@ private:
     bool _createNew;
 };
 #define dataStorageDirManager (DataStorageDirManager::getInstance())
+#define deleteDataStorageDirManager() (delete &(DataStorageDirManager::getInstance()))

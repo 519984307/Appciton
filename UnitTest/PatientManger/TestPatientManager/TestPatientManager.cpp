@@ -113,14 +113,8 @@ void TestPatientManager::testPacermaker()
 {
     QFETCH(PatientPacer, pacer);
     QFETCH(PatientPacer, result);
-    MockECGParam mockECGParam;
-    MockECGParam::registerECGParam(&mockECGParam);
-    ECGPaceMode ecgPacer = static_cast<ECGPaceMode>(pacer);
-    EXPECT_CALL(mockECGParam, setPacermaker(ecgPacer)).Times(1);
-    EXPECT_CALL(mockECGParam, getPacermaker()).WillOnce(Return(ecgPacer));
     patientManager.setPacermaker(pacer);
     QCOMPARE(result, patientManager.getPacermaker());
-    QVERIFY(Mock::VerifyAndClearExpectations(&mockECGParam));
 }
 
 void TestPatientManager::testSex_data()
@@ -482,7 +476,7 @@ void TestPatientManager::testMonitor()
         QCOMPARE(info.sex, PATIENT_SEX_NULL);
         QCOMPARE(info.type, patientManager.getType());
         QCOMPARE(info.weight, static_cast<float>(0.0));
-        QCOMPARE(info.pacer, PATIENT_PACER_ON);
+        QCOMPARE(info.pacer, PATIENT_PACER_OFF);
     }
 
     QVERIFY(Mock::VerifyAndClearExpectations(&mockDataStorageDirManager));
@@ -519,6 +513,7 @@ void TestPatientManager::testNewPatient()
     MockNIBPParam mockNIBPParam;
     MockNIBPParam::registerNIBPParam(&mockNIBPParam);
     EXPECT_CALL(mockNIBPParam, clearResult()).Times(1);
+    EXPECT_CALL(mockNIBPParam, clearTrendListData());
 
     patientManager.newPatient();
     PatientInfo info = patientManager.getPatientInfo();
@@ -530,7 +525,7 @@ void TestPatientManager::testNewPatient()
     QCOMPARE(info.sex, PATIENT_SEX_NULL);
     QCOMPARE(info.type, type);
     QCOMPARE(info.weight, static_cast<float>(0.0));
-    QCOMPARE(info.pacer, PATIENT_PACER_ON);
+    QCOMPARE(info.pacer, PATIENT_PACER_OFF);
     QVERIFY(Mock::VerifyAndClearExpectations(&mockDataStorageDirManager));
     QVERIFY(Mock::VerifyAndClearExpectations(&mockAlarmIndicator));
     QVERIFY(Mock::VerifyAndClearExpectations(&mockSystemManager));

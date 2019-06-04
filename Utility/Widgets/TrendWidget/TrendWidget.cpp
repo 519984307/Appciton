@@ -305,6 +305,12 @@ void TrendWidget::setUnitFont(int size, bool isBold)
     unitLabel->setFont(fontManager.textFont(size, isBold));
 }
 
+void TrendWidget::loadConfig()
+{
+    updateLimit();
+    showAlarmOff();
+}
+
 
 /**************************************************************************************************
  * 构造。
