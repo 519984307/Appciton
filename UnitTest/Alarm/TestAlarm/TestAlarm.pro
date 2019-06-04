@@ -70,7 +70,8 @@ HEADERS += \
     ../../Storage/MockTrendDataStorageManager.h \
     ../MockAlarmIndicator.h \
     ../../Trend/MockTrendCache.h \
-    ../../Event/MockEventStorageManager.h
+    ../../Event/MockEventStorageManager.h \
+    ../../../Params/O2Param/O2Symbol.h
 
 INCLUDEPATH += \
     ../../../Components/Alarm \
@@ -89,6 +90,7 @@ INCLUDEPATH += \
     ../../../Params/COParam \
     ../../../Params/TEMPParam \
     ../../../Params/NIBPParam \
+    ../../../Params/O2Param \
     ../../../Utility/ErrorLog \
     .. \
     ../../Storage \

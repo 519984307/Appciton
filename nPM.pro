@@ -903,6 +903,7 @@ HEADERS +=                                                                      
     Components/PatientManager/PatientManager.h                                  \
     Components/PatientManager/PatientDefine.h                                   \
     Components/PatientManager/PatientInfoWidget.h                               \
+    Components/PatientManager/PatientInfoWidgetInterface.h                      \
     Components/PatientManager/PatientManagementMenuContent.h                    \
     Components/PatientManager/PatientInfoWindow.h                               \
     Components/PatientManager/DischargePatientWindow.h                          \

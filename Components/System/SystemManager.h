@@ -22,23 +22,6 @@
 
 #define IDM_SOFTWARE_VERSION ("1.0.3")
 
-enum ConfiguredFuncs
-{
-    CONFIG_ST = 0x01,
-    CONFIG_RESP = 0x02,
-    CONFIG_ECG12LEADS = 0x04,
-    CONFIG_SPO2 = 0x08,
-    CONFIG_NIBP = 0x10,
-    CONFIG_CO2 = 0x20,
-    CONFIG_TEMP = 0x40,
-    CONFIG_AG = 0x80,
-    CONFIG_CO = 0x100,
-    CONFIG_IBP = 0x200,
-    CONFIG_WIFI = 0x400,
-    CONFIG_TOUCH = 0x800,
-    CONFIG_O2 = 0x1000,
-};
-
 // 前面板按键状态,与系统板获取按键状态命令回复一致
 enum PanelKeyStatus
 {
