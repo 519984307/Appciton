@@ -1272,6 +1272,8 @@ NotFoundUDisk,未发现U盘，请插入U盘,Not Found U Disk
 PleaseSelectFiles,请选择文件,Please Select Files
 PleaseAddExportFiles,请增加导出文件,Please Add Export Files
 ImportFileFailed,导入文件失败,Import File failed
+ImportFileMaximum,导入文件数量已达到最大,Import The Number Of Files  Maximum
+OutOfNamingRange,超出命名范围,Out Of Naming Range
 ImportFileCompleted,导入文件完成,Import File Completed
 PleaseAddImportFiles,请增加导入文件,Please Add Import Files
 FactoryMaintain,工厂维护,Factory Maintain

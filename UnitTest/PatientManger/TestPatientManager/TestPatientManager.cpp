@@ -513,7 +513,7 @@ void TestPatientManager::testNewPatient()
     MockNIBPParam mockNIBPParam;
     MockNIBPParam::registerNIBPParam(&mockNIBPParam);
     EXPECT_CALL(mockNIBPParam, clearResult()).Times(1);
-    EXPECT_CALL(mockNIBPParam, clearTrendListData());
+    EXPECT_CALL(mockNIBPParam, clearTrendListData()).Times(1);
 
     patientManager.newPatient();
     PatientInfo info = patientManager.getPatientInfo();
