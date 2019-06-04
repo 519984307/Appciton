@@ -173,6 +173,7 @@ void NIBPMonitorSafeWaitTimeState::handleNIBPEvent(NIBPEvent event, const unsign
                     setTimeOut(5 * 1000 - elspseTime());
                     nibpParam.setSTATOpenTemp(true);
                     nibpParam.setSTATMeasure(true);
+                    nibpCountdownTime.setSTATMeasureTimeout(false);
                     nibpParam.setText(trs("NIBPWAITING"));
                     nibpParam.setModelText(trs("STATOPEN"));
                 }
@@ -223,9 +224,9 @@ void NIBPMonitorSafeWaitTimeState::handleNIBPEvent(NIBPEvent event, const unsign
             }
             if (nibpParam.isAutoStat())
             {
-                nibpCountdownTime.STATMeasureStart();  // 只测量5分钟。
                 nibpParam.setAutoStat(false);
             }
+            nibpCountdownTime.STATMeasureStart();  // 只测量5分钟。
             switchState(NIBP_MONITOR_STARTING_STATE);
         }
         else
