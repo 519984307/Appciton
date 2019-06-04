@@ -65,6 +65,21 @@ public:
     /* reimplment */
     void reconnected();
 
+public:
+    /**
+     * @brief setSpHbPrecisionMode 设置SpHb精确度
+     * @param mode
+     */
+    void setSpHbPrecisionMode(SpHbPrecisionMode mode);
+
+    /**
+     * @brief setPVIAveragingMode 设置PVI的平均速度
+     * @param mode
+     */
+    void setPVIAveragingMode(AveragingMode mode);
+
+    void setSpHbBloodVesselMode(SpHbBloodVesselMode mode);
+
 private slots:
     /**
      * @brief requestBoardInfo send get board info command

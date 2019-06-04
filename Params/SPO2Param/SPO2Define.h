@@ -167,3 +167,25 @@ enum CCHDResult
     RepeatCheck, // 重复筛查
     CCHD_NR
 };
+
+enum SpHbPrecisionMode
+{
+    PRECISION_NEAREST_0_1,  // nearest 0.1
+    PRECISION_NEAREST_0_5,  // nearest 0.5
+    PRECISION_WHOLE_NUMBER, // whole number
+    PRECISION_NR
+};
+
+enum AveragingMode
+{
+    AVERAGING_MODE_NORMAL,
+    AVERAGING_MODE_FAST,
+    AVERAGING_MODE_NR
+};
+
+enum SpHbBloodVesselMode
+{
+    BLOOD_VESSEL_ARTERIAL,
+    BLOOD_VESSEL_VENOUS,
+    BLOOD_VESSEL_NR
+};
