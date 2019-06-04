@@ -14,10 +14,11 @@
 #include "ErrorLogItem.h"
 #include "ErrorLog.h"
 #include <QIcon>
+#include "WindowManager.h"
 
 #define COLUMN_COUNT        3
-#define MAX_ROW_COUNT       7
-#define DEFAULT_WIDTH       (800)
+#define MAX_ROW_COUNT       6
+#define DEFAULT_WIDTH       (windowManager.getPopWindowWidth())
 #define DEFAULT_ICON_WIDTH          (80)
 
 #define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
