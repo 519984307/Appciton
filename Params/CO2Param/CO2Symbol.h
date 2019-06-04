@@ -16,6 +16,16 @@
 class CO2Symbol
 {
 public:
+    static const char *convert(CO2ModuleType index)
+    {
+        static const char *symbol[MODULE_CO2_NR] =
+        {
+            "BLM_CO2",
+            "MASIMO_CO2"
+        };
+        return symbol[index];
+    }
+
     static const char *convert(CO2ApneaTime index)
     {
         static const char *symbol[CO2_APNEA_TIME_NR] =

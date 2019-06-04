@@ -55,6 +55,9 @@ private slots:
      * @param true: start stat  false: stop stat
      */
     void onStatBtnStateChanged(bool);
+
+    void onPopupListItemFocusChanged(int volume);
+
 private:
     NIBPMenuContentPrivate * const d_ptr;
 };

@@ -368,11 +368,11 @@ void AlarmIndicator::_displayTechSet(AlarmInfoNode &node)
 
 bool AlarmIndicator::_canPlayAudio(AlarmStatus status, bool isTechAlarm)
 {
-    int alarmOffStatus = 0;
-    systemConfig.getNumValue("Alarms|AlarmAudio", alarmOffStatus);
+    int alarmAudio = 0;
+    systemConfig.getNumValue("Alarms|AlarmAudio", alarmAudio);
     if (status == ALARM_STATUS_NORMAL)
     {
-        if (alarmOffStatus)
+        if (alarmAudio)
         {
             return true;
         }
@@ -384,20 +384,20 @@ bool AlarmIndicator::_canPlayAudio(AlarmStatus status, bool isTechAlarm)
 
     if (isTechAlarm && status != ALARM_STATUS_OFF)
     {
-        if (alarmOffStatus)
+        if (alarmAudio)
         {
-            return false;
+            return true;
         }
         else
         {
-            return true;
+            return false;
         }
     }
 
     return false;
 }
 
-/***************************************************************chenhuahai@blmed.cn***********************************
+/**************************************************************************************************
  * 报警信息显示。
  *************************************************************************************************/
 void AlarmIndicator::_displayInfoNode(AlarmInfoNode &alarmNode, int &indexint, int newAlarmIndex, int oldAlarmIndex,
@@ -818,7 +818,7 @@ bool AlarmIndicator::updataAlarmPriority(AlarmType alarmType, const char *alarmM
             {
                 node.alarmPriority = priority;
                 node.displayTime = 3;
-                node.acknowledge = false;
+                node.acknowledge = it->acknowledge;
                 *it = node;
                 return true;
             }
@@ -1068,7 +1068,7 @@ bool AlarmIndicator::phyAlarmResetStatusHandle()
     it = list->begin();
     for (; it != list->end(); ++it)
     {
-        if (it->alarmType == ALARM_TYPE_PHY && it->alarmPriority > ALARM_PRIO_LOW)
+        if (it->alarmType == ALARM_TYPE_PHY && it->alarmPriority > ALARM_PRIO_PROMPT)
         {
             // 只确认中级和高级的报警
             AlarmInfoNode node = *it;

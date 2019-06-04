@@ -142,7 +142,7 @@ ArrhythmiaAnalysisMenuDesc,心律失常分析 ,Arrh.Analysis
 ArrhythmiaThresholdMenu,心律失常阈值,Arrh.Threshold
 ArrhythmiaThresholdMenuDesc,心律失常阈值,"Arrh,Threshold"
 Arrhythmia,心律失常 >>,Arrhythmia >>
-ECGPaceMarker,起搏标记,Pace maker
+ECGPaceSignal,起搏信号,Pace Signal
 ECG12LPaceMarker,12导起搏标记,12L Pace maker
 SelfLearn,自学习,Self Learn
 Asystole,停搏时间,Asystole
@@ -311,7 +311,7 @@ TEMPOverRangeAll,体温全部超界,All TEMP Out of Range
 TEMP1ProbeTypeError,体温1探头类型错误,TEMP1 Probe Type Error
 TEMP2ProbeTypeError,体温2探头类型错误,TEMP2 Probe Type Error
 TEMPProbeTypeErrorAll,体温探头类型全部错误,All TEMP Probe Type Error
-TEMPCommunicationStop,体温通讯停止,Communication Stop
+TEMPCommunicationStop,体温通讯停止,TEMP Communication Stop
 celsius,℃,℃
 fahrenheit,℉,℉
 percent,%,%
@@ -358,7 +358,7 @@ SystemInfo,系统信息,System Info
 SystemInfoSetting,系统信息,System Info
 ErrorLog,错误日志,Error Log
 SystemStatus,状态,Status
-SomeLimitAlarmDisabled,有超限报警被关闭,Some limit alarms disabled
+SomeLimitAlarmDisabled,有超限报警被关闭,Some Limit Alarms Disabled
 PowerupRecorderPressed,前面板打印键短路,Front Panel Record Btn Stuck
 PowerupCommunicationStop,前面板通讯停止,Front Panel Comm. Stop
 WiFiMenu,无线网络,Wifi
@@ -814,11 +814,16 @@ ServiceVersion,版本,Version
 ServiceCPUTemp,CPU温度,CPU Temp
 iDMVersion,iDM,iDM
 ECGVersion,ECG,ECG
+ECGBootloader,ECG Bootloader,ECG Bootloader
 NIBPVersion,NIBP,NIBP
+NIBPBootloader,NIBP Bootloader,NIBP Bootloader
 SPO2Version,SpO2,SpO2
+SPO2Bootloader,SPO2 Bootloader,SPO2 Bootloader
 TEMPVersion,TEMP,TEMP
+TEMPBootloader,TEMP Bootloader,TEMP Bootloader
 iDMBoardVersion,iDMBoard,iDMBoard
 PRT48Version,PRT48,PRT48
+PRT48Bootloader,PRT48 Bootloader,PRT48 Bootloader
 SourceOfCO2,来源CO2,Source of CO2
 AutoOfCO2,自动(CO2),Auto(CO2)
 PDVersion,PD,PD
@@ -945,6 +950,7 @@ RealTimePrintMidLead,实时打印中部导联,Real-Time Print Middle Lead
 RealTimePrintBottomLead,实时打印底部导联,Real-Time Print Bottom Lead
 ErrorPassWordERROR,密码错误!,Password Error!
 Warn,警告,Warning
+SureSafePopUpUDisk,是否安全弹出U盘?,Whether to safely pop up the U disk?
 WarningNoUSB,没有找到U盘，请检查！,"Not find U disk, please check!"
 WarnLessUSBFreeSpace,U盘空间不足，请检查！,"U disk free space not enough, please check!"
 WarningNoImportFile,导入文件不存在，请检查！,"Import file does not exist, please check!"
@@ -1088,6 +1094,7 @@ NIBPReading,NIBP快照,NIBP Snapshot
 PhyAlarm,生理报警,Phy. Alarm
 AlarmMute,报警静音,Mute
 RecorderAction,记录仪,Recorder Action
+PrinterCommunicationStop,打印机通信中断,Printer Communication Stop
 PrinterDoorOpened,打印机仓门未关,Printer Door Opened
 PrinterOutOfPaper,打印机缺纸,Printer Out Of Paper
 PrinterOverHeating,打印头过热,Printer Over Heating
@@ -1327,6 +1334,7 @@ PowerManagerSoftwareVersion,电源管理软件版本,Power Manager Software Vers
 Uboot,系统引导文件,Uboot
 Kernel,内核,Kernel
 SystemboardModule,系统板,System Board Module
+SystemboardBootloader,系统板Bootloader,System Board Bootloader
 RecorderModule,记录模块,Recorder Module
 ECGAlgorithmType,心电算法类型,ECG Algorithm Type
 UserMaintainGeneralMenuDesc,通用,General
@@ -1443,8 +1451,8 @@ IpAddress,IP地址,IP Address
 high,高,High
 normal,中,Normal
 low,低,Low
-ConfigManagerDesc,配置管理,Config Manager
-ConfigManager,配置管理,Config Manager
+ConfigManagerDesc,配置管理,Config Manage
+ConfigManager,配置管理,Config Manage
 DefaultConfig,默认配置,Default Config
 DefaultConfigDesc,默认配置,Default Config
 AdultDefaultConfig,成人默认配置,Adult Default Config
@@ -1452,8 +1460,8 @@ PedDefaultConfig,小儿默认配置,Ped Default Config
 NeoDefaultConfig,新生儿默认配置,Neo Default Config
 FactoryConfig,工厂配置,Factory Config
 CurrentConfig,当前配置,Current Config
-ConfigManagerment,配置管理,Config Manager
-ConfigManagermentDesc,配置管理,Config Managerment
+ConfigManagerment,配置管理,Config Manage
+ConfigManagermentDesc,配置管理,Config Manage
 General,通用,General
 SetConfigName,设置配置项名称,Set Config Name
 GeneralDesc,通用设置,General Desc
@@ -1576,8 +1584,8 @@ Opened,已开,Opened
 Closed,已关,Closed
 AlarmType,报警类型,Alarm Type
 EraseData,擦除数据,EraseData
-ScreenConfig,界面设置,Screen
-ScreenConfigDesc,界面设置,Screen Configuration
+ScreenSetting,界面设置,Screen
+ScreenSettingDesc,界面设置,Screen Setting
 CurrentScreen,当前界面,Current Screen
 ScreenLayout,界面布局,Screen Layout
 Standard,标准,Standard
@@ -1693,4 +1701,10 @@ RepeatCheck,一小时内重复测量3次以确认结果,Check again in a hour fo
 footValue,足部数据,foot
 handValue,手部数据,hand
 SPO2ValueInvaild,采集数据无效，请检查血氧模块,The collect data is invaild，Please check SpO2 module
-Ohm,Ω,Ω
+ErrorLogExportAt,错误日志导出时间: ,Error Log export at  
+NumberOfErrors,错误数量: ,Number of Errors: 
+NumberOfCriticalFaults,严重故障数量: ,Number of Critical Faults: 
+MostRecentError,最近发生错误: ,Most Recent Error: 
+MostRecentCriticalFault,最近发生严重错误: ,Most Recent Critical Fault: 
+OldestError,最早的错误: ,Oldest Error: 
+LastEraseTime,上次擦除时间: ,Last Erase Time: 

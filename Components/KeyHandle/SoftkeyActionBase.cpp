@@ -10,7 +10,6 @@
 
 
 #include "SoftkeyActionBase.h"
-#include "SoftKeyManager.h"
 #include "SoftkeyActionBase.h"
 #include <QApplication>
 #include "ECGParam.h"
@@ -36,11 +35,7 @@
 #include "LanguageManager.h"
 #include "LayoutManager.h"
 #include "BigFontLayoutWindow.h"
-
-#define co2StandbyIcon "standby.png"
-#define co2StandbyHint "CO2Standby"
-#define co2MeasureIcon "measure.png"
-#define co2MeasureHint "CO2Measure"
+#include "SoftKeyManager.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -295,7 +290,7 @@ void SoftkeyActionBase::switchSystemMode(bool isPressed)
         return;
     }
     MainMenuWindow *w = MainMenuWindow::getInstance();
-    w->popup(trs("ScreenConfig"));
+    w->popup(trs("ScreenSetting"));
 }
 
 /***************************************************************************************************
@@ -354,21 +349,12 @@ void SoftkeyActionBase::CO2Handle(bool isPressed)
 
     if (!co2Param.getCO2Switch())
     {
-        if (co2Param.setModuleWorkMode(CO2_WORK_MEASUREMENT) == true)
-        {
-            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].iconPath = QString(co2MeasureIcon);
-            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].hint = co2MeasureHint;
-        }
+        co2Param.setModuleWorkMode(CO2_WORK_MEASUREMENT);
     }
     else
     {
-        if (co2Param.setModuleWorkMode(C02_WORK_SLEEP) == true)
-        {
-            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].iconPath = QString(co2StandbyIcon);
-            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].hint = co2StandbyHint;
-        }
+        co2Param.setModuleWorkMode(C02_WORK_SLEEP);
     }
-    softkeyManager.refreshPage(false);
 }
 
 void SoftkeyActionBase::IBPZero(bool isPressed)
@@ -397,8 +383,11 @@ void SoftkeyActionBase::keyVolume(bool isPressed)
         return;
     }
 
-    MainMenuWindow *w = MainMenuWindow::getInstance();
-    w->popup(trs("NormalFunctionMenu"), qVariantFromValue(QString("ToneVolume")));
+    if (!nightModeManager.nightMode())
+    {
+        MainMenuWindow *w = MainMenuWindow::getInstance();
+        w->popup(trs("NormalFunctionMenu"), qVariantFromValue(QString("ToneVolume")));
+    }
 }
 
 void SoftkeyActionBase::nightMode(bool isPressed)

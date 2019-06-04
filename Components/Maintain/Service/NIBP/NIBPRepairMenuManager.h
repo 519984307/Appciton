@@ -21,11 +21,8 @@
 #define InvStr() ("---")
 
 class QLabel;
-class IListWidget;
 class QStackedWidget;
 class SubMenu;
-class QScrollArea;
-class IButton;
 class NIBPRepairMenuManager : public MenuGroup
 {
     Q_OBJECT

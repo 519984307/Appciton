@@ -388,6 +388,7 @@ SOURCES +=                                                                      
     Components/PowerManager/BatteryBarWidget.cpp                                \
     Components/PowerManager/BatteryIconWidget.cpp                               \
     Components/PowerManager/PowerManager.cpp                                    \
+    Components/PowerManager/TestBatteryTime.cpp                                 \
     Components/WindowManager/IWidget.cpp                                        \
     Components/WindowManager/WindowManager.cpp                                  \
     Components/WindowManager/WindowManagerInterface.cpp                         \
@@ -912,6 +913,7 @@ HEADERS +=                                                                      
     Components/PowerManager/BatteryIconWidget.h                                 \
     Components/PowerManager/PowerManager.h                                      \
     Components/PowerManager/PowerManagerProviderIFace.h                         \
+    Components/PowerManager/TestBatteryTime.h                                   \
     Components/TimeManager/DateTimeWidget.h                                     \
     Components/TimeManager/ElapseTimeWidget.h                                   \
     Components/TimeManager/TimeManager.h                                        \

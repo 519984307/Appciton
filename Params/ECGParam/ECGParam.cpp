@@ -1699,8 +1699,6 @@ void ECGParam::setPacermaker(ECGPaceMode onoff)
     {
         _provider->enablePacermaker(onoff);
     }
-//    sysStatusBar.changeIcon(SYSTEM_ICON_LABEL_PACER, static_cast<int>(onoff));
-    runningStatus.setPacerStatus(static_cast<int>(onoff));
     return;
 }
 
@@ -1722,7 +1720,6 @@ void ECGParam::updatePacermaker()
     {
         _provider->enablePacermaker(static_cast<ECGPaceMode>(index));
     }
-    runningStatus.setPacerStatus(index);
 }
 
 /**************************************************************************************************
@@ -1739,7 +1736,6 @@ void ECGParam::set12LPacermaker(ECGPaceMode onoff)
         {
             _provider->enablePacermaker(onoff);
         }
-        runningStatus.setPacerStatus(static_cast<int>(onoff));
     }
 
     return;

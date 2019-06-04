@@ -56,12 +56,21 @@ public:
     // USB export finish
     bool isUSBExportFinish();
 
+    // 停止数据收集
+    void stopRawCollectData();
+
+    // 卸载U盘
+    void umountUDisk();
+
 signals:
     // report the process, 0~100
     void exportProcessChanged(unsigned char process);
     // report the export error
     void exportError();
     void usbExportFileFinish(int status);
+
+    void startCollectData(void);
+    void stopCollectData(void);
 
 public slots:
     // cancel export
@@ -77,6 +86,9 @@ private slots:
     // handle export process
     void onExportProcessUpdate(unsigned char progress);
 
+    // 挂载U盘成功
+    void mountUDiskSuccess(void);
+
 private:
     USBManager();
     bool _addDataExporter(DataExporterBase *dataExporter);
@@ -86,6 +98,8 @@ private:
     DataExporterBase *_curExporter;
     QMutex _pendingMutex;
     bool _usbExist;
+    bool _isMount;
+    QThread *_procThread;
 };
 
 #define usbManager (USBManager::getInstance())

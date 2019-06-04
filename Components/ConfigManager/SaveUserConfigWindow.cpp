@@ -54,11 +54,10 @@ SaveUserConfigWindow::SaveUserConfigWindow()
 
     QLabel *cofNameLbl = new QLabel;
     cofNameLbl->setText(trs("ConfigurationName"));
-    hLayout->addWidget(cofNameLbl);
+    hLayout->addWidget(cofNameLbl, 1);
     d_ptr->cofNameBtn = new Button;
     d_ptr->cofNameBtn->setButtonStyle(Button::ButtonTextOnly);
-    d_ptr->cofNameBtn->setFixedWidth(280);
-    hLayout->addWidget(d_ptr->cofNameBtn);
+    hLayout->addWidget(d_ptr->cofNameBtn, 1);
     connect(d_ptr->cofNameBtn, SIGNAL(released()), this, SLOT(onConfigNameBtnReleased()));
     vLayout->addLayout(hLayout);
     vLayout->addStretch();

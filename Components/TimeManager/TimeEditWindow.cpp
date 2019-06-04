@@ -24,6 +24,8 @@
 #include "SystemTick.h"
 #include <QDateTime>
 #include "PatientManager.h"
+#include "NIBPCountdownTime.h"
+#include "NIBPParam.h"
 
 class TimeEditWindowPrivate
 {
@@ -320,6 +322,10 @@ void TimeEditWindow::hideEvent(QHideEvent *ev)
         d_ptr->setSysTime();
         systemTick.resetLastTime();
         patientManager.newPatient();
+        if (nibpParam.getMeasurMode() == NIBP_MODE_STAT)
+        {
+            nibpCountdownTime.timeChange(true);
+        }
     }
     Dialog::hideEvent(ev);
 }
