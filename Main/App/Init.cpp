@@ -624,11 +624,6 @@ static void _initProviderParam(void)
     int status = 0;
     systemConfig.getNumValue("Alarms|AlarmAudio", status);
     oneShotAlarmSource->setOneShotAlarm(SYSTEM_ONE_SHOT_ALARM_AUDIO_OFF, !status);
-
-    // print alarm
-    oneShotAlarmSource = new PrintOneShotAlarm();
-    alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_PRINT);
-    alertor.addOneShotSource(oneShotAlarmSource);
 }
 
 /**************************************************************************************************
