@@ -40,8 +40,7 @@ int ECGLimitAlarm::getAlarmSourceNR(void)
 WaveformID ECGLimitAlarm::getWaveformID(int id)
 {
     Q_UNUSED(id)
-    // todo:返回计算导联的ID
-    return WAVE_ECG_II;
+    return static_cast<WaveformID>(ecgParam.getCalcLead());
 }
 
 /**************************************************************************************************

@@ -30,13 +30,19 @@ public:
     {
         ITEM_LAB_U_BOOT,
         ITEM_LAB_HARDWARE_VERSION,
-        ITEM_LAB_KEYBD_MOD,
+        ITEM_LAB_SYSBD_MOD,
+        ITEM_LAB_SYSBD_BOOTLOADER,
         ITEM_LAB_ECG_ALGHTP,
         ITEM_LAB_ECG_VERSION,
+        ITEM_LAB_ECG_BOOTLOADER,
         ITEM_LAB_NIBP_VERSION,
+        ITEM_LAB_NIBP_BOOTLOADER,
         ITEM_LAB_SPO2_VERSION,
+        ITEM_LAB_SPO2_BOOTLOADER,
         ITEM_LAB_TEMP_VERSION,
+        ITEM_LAB_TEMP_BOOTLOADER,
         ITEM_LAB_PRT48_VERSION,
+        ITEM_LAB_PRT48_BOOTLOADER,
         ITEM_LAB_SCREEN_INCH,
         ITEM_LAB_SCREEN_RESOLUTION,
         ITEM_LAB_MAX,
@@ -73,7 +79,7 @@ void FactoryVersionInfo::layoutExec()
     layout->setMargin(10);
 
     // set the font size for showing all version info
-    setFont(fontManager.textFont(fontManager.getFontSize(3)));
+    setFont(fontManager.textFont(fontManager.getFontSize(2)));
 
     QLabel *labelLeft;
     QLabel *labelRight;
@@ -84,6 +90,7 @@ void FactoryVersionInfo::layoutExec()
     layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
     d_ptr->labs.insert(FactoryVersionInfoPrivate
                        ::ITEM_LAB_U_BOOT, labelRight);
+    labelLeft->setFocusPolicy(Qt::StrongFocus);
 
     labelLeft = new QLabel(trs("Hardware"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
@@ -97,7 +104,14 @@ void FactoryVersionInfo::layoutExec()
     labelRight = new QLabel("");
     layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
     d_ptr->labs.insert(FactoryVersionInfoPrivate
-                       ::ITEM_LAB_KEYBD_MOD, labelRight);
+                       ::ITEM_LAB_SYSBD_MOD, labelRight);
+
+    labelLeft = new QLabel(trs("SystemboardBootloader"));
+    layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
+    labelRight = new QLabel("");
+    layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
+    d_ptr->labs.insert(FactoryVersionInfoPrivate
+                       ::ITEM_LAB_SYSBD_BOOTLOADER, labelRight);
 
     labelLeft = new QLabel(trs("ECGAlgorithmType"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
@@ -113,6 +127,13 @@ void FactoryVersionInfo::layoutExec()
     d_ptr->labs.insert(FactoryVersionInfoPrivate
                        ::ITEM_LAB_ECG_VERSION, labelRight);
 
+    labelLeft = new QLabel(trs("ECGBootloader") + "    ");
+    layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
+    labelRight = new QLabel;
+    layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
+    d_ptr->labs.insert(FactoryVersionInfoPrivate
+                       ::ITEM_LAB_ECG_BOOTLOADER, labelRight);
+
     if (systemManager.isSupport(CONFIG_NIBP))
     {
         labelLeft = new QLabel(trs("NIBPVersion") + "    ");
@@ -122,6 +143,14 @@ void FactoryVersionInfo::layoutExec()
         layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
         d_ptr->labs.insert(FactoryVersionInfoPrivate
                            ::ITEM_LAB_NIBP_VERSION, labelRight);
+
+        labelLeft = new QLabel(trs("NIBPBootloader") + "    ");
+        layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
+
+        labelRight = new QLabel;
+        layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
+        d_ptr->labs.insert(FactoryVersionInfoPrivate
+                           ::ITEM_LAB_NIBP_BOOTLOADER, labelRight);
     }
 
     if (systemManager.isSupport(CONFIG_SPO2))
@@ -133,6 +162,14 @@ void FactoryVersionInfo::layoutExec()
         layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
         d_ptr->labs.insert(FactoryVersionInfoPrivate
                            ::ITEM_LAB_SPO2_VERSION, labelRight);
+
+        labelLeft = new QLabel(trs("SPO2Bootloader") + "    ");
+        layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
+
+        labelRight = new QLabel;
+        layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
+        d_ptr->labs.insert(FactoryVersionInfoPrivate
+                           ::ITEM_LAB_SPO2_BOOTLOADER, labelRight);
     }
 
     if (systemManager.isSupport(CONFIG_TEMP))
@@ -144,16 +181,29 @@ void FactoryVersionInfo::layoutExec()
         layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
         d_ptr->labs.insert(FactoryVersionInfoPrivate
                            ::ITEM_LAB_TEMP_VERSION, labelRight);
+
+        labelLeft = new QLabel(trs("TEMPBootloader") + "    ");
+        layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
+
+        labelRight = new QLabel;
+        layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
+        d_ptr->labs.insert(FactoryVersionInfoPrivate
+                           ::ITEM_LAB_TEMP_BOOTLOADER, labelRight);
     }
 
     labelLeft = new QLabel(trs("PRT48Version") + "    ");
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
-
     labelRight = new QLabel;
-
     layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
     d_ptr->labs.insert(FactoryVersionInfoPrivate
                        ::ITEM_LAB_PRT48_VERSION, labelRight);
+
+    labelLeft = new QLabel(trs("PRT48Bootloader") + "    ");
+    layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
+    labelRight = new QLabel;
+    layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
+    d_ptr->labs.insert(FactoryVersionInfoPrivate
+                       ::ITEM_LAB_PRT48_BOOTLOADER, labelRight);
 
     // screen size
     labelLeft = new QLabel(trs("ScreenSize") + "    ");
@@ -168,6 +218,7 @@ void FactoryVersionInfo::layoutExec()
     // screen resolution
     labelLeft = new QLabel(trs("ScreenResolution") + "    ");
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
+    labelLeft->setFocusPolicy(Qt::StrongFocus);
 
     labelRight = new QLabel;
 
@@ -202,73 +253,113 @@ void FactoryVersionInfoPrivate::loadOptions()
     }
     labs[ITEM_LAB_HARDWARE_VERSION]->setText(tmpStr);
 
-    if (labs[ITEM_LAB_KEYBD_MOD])
+    // system board version
+    Provider *p = paramManager.getProvider("SystemBoard");
+    QString version;
+    QString versionSuffix;
+    if (p)
     {
-        Provider *p = paramManager.getProvider("SystemBoard");
-        QString version;
-        if (p)
-        {
-            version = p->getVersionString();
-        }
-        labs[ITEM_LAB_KEYBD_MOD]->setText(version);
+        version = p->getVersionString();
+        versionSuffix = version.section(' ', -1);
+        version.remove(versionSuffix);
+    }
+    if (labs[ITEM_LAB_SYSBD_MOD])
+    {
+        labs[ITEM_LAB_SYSBD_MOD]->setText(version);
+    }
+    if (labs[ITEM_LAB_SYSBD_BOOTLOADER])
+    {
+        labs[ITEM_LAB_SYSBD_BOOTLOADER]->setText(versionSuffix);
     }
 
+    // ecg algorithm
     tmpStr.clear();
     systemConfig.getStrValue("SoftWareVersion|ECGAlgorithmType", tmpStr);
     labs[ITEM_LAB_ECG_ALGHTP]->setText(trs(tmpStr));
 
+    // ecg version
     QString str;
+    version.clear();
     machineConfig.getStrValue("ECG", str);
-    Provider *p = paramManager.getProvider(str);
-    QString version;
+    p = paramManager.getProvider(str);
     if (p)
     {
         version = p->getVersionString();
+        versionSuffix = version.section(' ', -1);
+        version.remove(versionSuffix);
     }
     labs[ITEM_LAB_ECG_VERSION]->setText(version);
+    labs[ITEM_LAB_ECG_BOOTLOADER]->setText(versionSuffix);
 
-    if (labs[ITEM_LAB_NIBP_VERSION])
-    {
-        machineConfig.getStrValue("NIBP", str);
-        Provider *p = paramManager.getProvider(str);
-        QString version;
-        if (p)
-        {
-            version = p->getVersionString();
-        }
-        labs[ITEM_LAB_NIBP_VERSION]->setText(version);
-    }
-
-    if (labs[ITEM_LAB_SPO2_VERSION])
-    {
-        machineConfig.getStrValue("SPO2", str);
-        Provider *p = paramManager.getProvider(str);
-        QString version;
-        if (p)
-        {
-            version = p->getVersionString();
-        }
-        labs[ITEM_LAB_SPO2_VERSION]->setText(version);
-    }
-
-    if (labs[ITEM_LAB_TEMP_VERSION])
-    {
-        Provider *p = paramManager.getProvider("BLM_T5");
-        QString version;
-        if (p)
-        {
-            version = p->getVersionString();
-        }
-        labs[ITEM_LAB_TEMP_VERSION]->setText(version);
-    }
-
+    // nibp version
+    str.clear();
     version.clear();
-    p = paramManager.getProvider("PRT48");
+    machineConfig.getStrValue("NIBP", str);
+    p = paramManager.getProvider(str);
     if (p)
     {
         version = p->getVersionString();
+        versionSuffix = version.section(' ', -1);
+        version.remove(versionSuffix);
+    }
+    if (labs[ITEM_LAB_NIBP_VERSION])
+    {
+        labs[ITEM_LAB_NIBP_VERSION]->setText(version);
+    }
+    if (labs[ITEM_LAB_NIBP_BOOTLOADER])
+    {
+        labs[ITEM_LAB_NIBP_BOOTLOADER]->setText(versionSuffix);
+    }
+
+    // spo2 version
+    str.clear();
+    version.clear();
+    machineConfig.getStrValue("SPO2", str);
+    p = paramManager.getProvider(str);
+    if (p)
+    {
+        version = p->getVersionString();
+        versionSuffix = version.section(' ', -1);
+        version.remove(versionSuffix);
+    }
+    if (labs[ITEM_LAB_SPO2_VERSION])
+    {
+        labs[ITEM_LAB_SPO2_VERSION]->setText(version);
+    }
+    if (labs[ITEM_LAB_SPO2_BOOTLOADER])
+    {
+        labs[ITEM_LAB_SPO2_BOOTLOADER]->setText(versionSuffix);
+    }
+
+    // t5 version
+    p = paramManager.getProvider("BLM_T5");
+    version.clear();
+    if (p)
+    {
+        version = p->getVersionString();
+        versionSuffix = version.section(' ', -1);
+        version.remove(versionSuffix);
+    }
+    if (labs[ITEM_LAB_TEMP_VERSION])
+    {
+        labs[ITEM_LAB_TEMP_VERSION]->setText(version);
+    }
+    if (labs[ITEM_LAB_TEMP_BOOTLOADER])
+    {
+        labs[ITEM_LAB_TEMP_BOOTLOADER]->setText(versionSuffix);
+    }
+
+    // prt48 version
+    p = paramManager.getProvider("PRT48");
+    version.clear();
+    if (p)
+    {
+        version = p->getVersionString();
+        versionSuffix = version.section(' ', -1);
+        version.remove(versionSuffix);
     }
     labs[ITEM_LAB_PRT48_VERSION]->setText(version);
+    labs[ITEM_LAB_PRT48_BOOTLOADER]->setText(versionSuffix);
 
     // screen size
     str.clear();

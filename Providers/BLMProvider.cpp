@@ -17,7 +17,7 @@
 
 #define SOH             (0x01)  // packet header
 
-QMap<QString, BLMProvider*> BLMProvider::providers;
+QMap<QString, BLMProvider *> BLMProvider::providers;
 
 /***************************************************************************************************
  * 构造函数
@@ -176,16 +176,27 @@ void BLMProvider::dataArrived()
  **************************************************************************************************/
 void BLMProvider::handlePacket(unsigned char *data, int len)
 {
-    if (data[0] == 0x11 && len > 1) // version data, all BLMProvidor share the same version respond code
+    // version data, all BLMProvidor share the same version respond code
+    if (data[0] == 0x11 && len == 80 + 1) // version info length + data packet head offset
     {
         const char *p = reinterpret_cast<char *>(&data[1]);
-        versionInfo.append(p); // software version
+        versionInfo.append(p); // software git version
         versionInfo.append(" ");
-        p += 32;
-        versionInfo.append(p); // build time
+        p += (30 + 1);  // software git version offset + data packet head offset
+
+        versionInfo.append(p); // build date
         versionInfo.append(" ");
-        p += 32;
+        p += (15 + 1);  // build date offset + data packet head offset
+
+//        versionInfo.append(p); // build time
+//        versionInfo.append(" ");
+        p += (15 + 1);  // build time offset + data packet head offset
+
         versionInfo.append(p); // hardware version
+        versionInfo.append(" ");
+        p += (1 + 1);  // hardware version offset + data packet head offset
+
+        versionInfo.append(p); // bootloader git version
     }
 }
 

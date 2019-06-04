@@ -490,6 +490,15 @@ void ECGDupParam::setHrSource(HRSourceType type)
     currentConfig.setNumValue("ECG|HRSource", id);
 }
 
+void ECGDupParam::updateHRSource()
+{
+    int id = PARAM_ECG;
+    currentConfig.getNumValue("ECG|HRSource", id);
+    HRSourceType type = ecgParam.getHrSourceTypeFromId(static_cast<ParamID>(id));
+    _hrSource = type;
+    updateHR(getHR());
+}
+
 bool ECGDupParam::isAutoTypeHrSouce() const
 {
     if (_hrSource == HR_SOURCE_AUTO)
