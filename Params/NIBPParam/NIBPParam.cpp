@@ -117,28 +117,38 @@ void NIBPParam::setConnected(bool isConnected)
  * 处理DEMO数据。
  *************************************************************************************************/
 static int counter = 300;
+static int autoCounter = 300;
 void NIBPParam::handDemoTrendData(void)
 {
-    if (counter++ < 300)
+    if (autoCounter >= counter)
     {
-        return;
-    }
-    counter = 0;
-
     _sysValue = qrand() % 30 + 90;
     _diaValue = qrand() % 20 + 60;
     _mapVaule = qrand() % 25 + 75;
     _prVaule = qrand() % 10 + 60;
-
     setResult(_sysValue, _diaValue, _mapVaule, _prVaule, NIBP_ONESHOT_NONE);
     eventStorageManager.triggerNIBPMeasurementEvent(timeManager.getCurTime(), NIBP_ONESHOT_NONE);
 
     setMeasureResult(NIBP_MEASURE_SUCCESS);
+    autoCounter = 0;
+    }
+
+    NIBPMode mode = getSuperMeasurMode();
+    if (mode == NIBP_MODE_AUTO)
+    {
+        autoCounter++;
+        counter = getAutoIntervalTime();
+    }
+    else
+    {
+        autoCounter = 0;
+    }
 }
 
 void NIBPParam::exitDemo()
 {
     counter = 300;
+    autoCounter = 300;
     _sysValue = InvData();
     _diaValue = InvData();
     _mapVaule = InvData();
