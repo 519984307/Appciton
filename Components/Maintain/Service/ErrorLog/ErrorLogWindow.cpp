@@ -47,7 +47,6 @@ public:
      * @param curPage 当前页
      * @param totalPage 总页
      */
-    void updatePageBtnStatus(int curPage, int totalPage);
 
 public:
     TableView *table;
@@ -171,26 +170,6 @@ void ErrorLogWindow::showEvent(QShowEvent *ev)
 {
     init();
     Dialog::showEvent(ev);
-}
-
-void ErrorLogWindowPrivate::updatePageBtnStatus(int curPage, int totalPage)
-{
-    if (totalPage == 1)
-    {
-        downPageBtn->setEnabled(false);
-        upPageBtn->setEnabled(false);
-    }
-    else if (curPage == totalPage)
-    {
-        downPageBtn->setEnabled(false);
-        upPageBtn->setEnabled(true);
-        upPageBtn->setFocus(Qt::BacktabFocusReason);
-    }
-    else
-    {
-        downPageBtn->setEnabled(true);
-        upPageBtn->setEnabled(true);
-    }
 }
 
 void ErrorLogWindow::itemClickSlot(int row)
@@ -335,5 +314,4 @@ void ErrorLogWindow::onPageInfoUpdated(int curPage, int totalPage)
     title += ")";
     setWindowTitle(title);
 
-    d_ptr->updatePageBtnStatus(curPage, totalPage);
 }
