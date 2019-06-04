@@ -182,6 +182,12 @@ void ScreenMenuContent::layoutExec()
     layout->setRowStretch(count, 1);
 }
 
+void ScreenMenuContent::hideEvent(QHideEvent *ev)
+{
+    d_ptr->layoutCbo->blockSignals(true);
+    MenuContent::hideEvent(ev);
+}
+
 void ScreenMenuContent::onComboxIndexChanged(int index)
 {
     ComboBox *cbo = qobject_cast<ComboBox *>(sender());
