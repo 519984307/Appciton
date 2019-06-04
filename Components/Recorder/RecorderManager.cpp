@@ -87,7 +87,7 @@ RecorderManager::~RecorderManager()
 PrintSpeed RecorderManager::getPrintSpeed() const
 {
     int speed = 0;
-    currentConfig.getNumValue("Print|PrintSpeed", speed);
+    systemConfig.getNumValue("Print|PrintSpeed", speed);
     if (speed >= PRINT_SPEED_NR)
     {
         speed = PRINT_SPEED_250;
@@ -106,7 +106,7 @@ void RecorderManager::setPrintSpeed(PrintSpeed speed)
     }
 
     d_ptr->curSpeed = speed;
-    currentConfig.setNumValue("Print|PrintSpeed", static_cast<int>(speed));
+    systemConfig.setNumValue("Print|PrintSpeed", static_cast<int>(speed));
 
     // 是否正在打印
     if (isPrinting())
@@ -373,14 +373,13 @@ void RecorderManager::providerConnectionChanged(bool isConnected)
     if (d_ptr->connected)
     {
         // connected
-        alarmSource->setOneShotAlarm(PRINT_ONESHOT_ALARM_FAULT, false);
+        d_ptr->status = PRINTER_STAT_NORMAL;
     }
     else
     {
         // disconected
         alarmSource->clear();
-        alarmSource->setOneShotAlarm(PRINT_ONESHOT_ALARM_FAULT, true);
-
+        d_ptr->status = PRINTER_STAT_COMMUNICATION_STOP;
         if (d_ptr->generator)
         {
             // stop the page generator if we has any page generator

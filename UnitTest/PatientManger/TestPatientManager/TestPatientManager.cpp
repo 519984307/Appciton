@@ -113,14 +113,8 @@ void TestPatientManager::testPacermaker()
 {
     QFETCH(PatientPacer, pacer);
     QFETCH(PatientPacer, result);
-    MockECGParam mockECGParam;
-    MockECGParam::registerECGParam(&mockECGParam);
-    ECGPaceMode ecgPacer = static_cast<ECGPaceMode>(pacer);
-    EXPECT_CALL(mockECGParam, setPacermaker(ecgPacer)).Times(1);
-    EXPECT_CALL(mockECGParam, getPacermaker()).WillOnce(Return(ecgPacer));
     patientManager.setPacermaker(pacer);
     QCOMPARE(result, patientManager.getPacermaker());
-    QVERIFY(Mock::VerifyAndClearExpectations(&mockECGParam));
 }
 
 void TestPatientManager::testSex_data()

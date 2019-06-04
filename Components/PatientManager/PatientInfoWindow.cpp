@@ -30,6 +30,7 @@
 #include "TimeSymbol.h"
 #include <QDate>
 #include "FloatHandle.h"
+#include "RunningStatusBar.h"
 
 #define PATIENT_BORN_DATE_RANAGE 1900
 PatientInfoWindow *PatientInfoWindow::_selfObj = NULL;
@@ -702,7 +703,6 @@ void PatientInfoWindow::onBtnReleased()
             }
         }
         d_ptr->savePatientInfoToManager();
-        patientManager.setPacermaker(static_cast<PatientPacer>(d_ptr->pacer->currentIndex()));
     }
     this->hide();
 }

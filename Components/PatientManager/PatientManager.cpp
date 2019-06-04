@@ -21,6 +21,7 @@
 #include "O2ParamInterface.h"
 #include "SystemManagerInterface.h"
 #include <QFile>
+#include "RunningStatusBarInterface.h"
 
 #define XML_FILE_SUFFIX QString::fromLatin1(".xml")
 #define PATIENT_INFO_PATH QString("/usr/local/nPM/etc")
@@ -153,11 +154,10 @@ QString PatientManager::getTypeStr(void)
 void PatientManager::setPacermaker(PatientPacer type)
 {
     d_ptr->patientInfo.pacer = type;
-//    currentConfig.setNumValue("General|PatientPacer", static_cast<int>(type));
-    ECGParamInterface *ecgParam = ECGParamInterface::getECGParam();
-    if (ecgParam)
+    RunningStatusBarInterface *runningStatus = RunningStatusBarInterface::getRunningStatusBar();
+    if (runningStatus)
     {
-        ecgParam->setPacermaker(static_cast<ECGPaceMode>(type));
+        runningStatus->setPacerStatus(static_cast<bool>(type));
     }
 }
 
@@ -166,11 +166,6 @@ void PatientManager::setPacermaker(PatientPacer type)
  *************************************************************************************************/
 PatientPacer PatientManager::getPacermaker()
 {
-    ECGParamInterface *ecgParam = ECGParamInterface::getECGParam();
-    if (ecgParam)
-    {
-        d_ptr->patientInfo.pacer = static_cast<PatientPacer>(ecgParam->getPacermaker());
-    }
     return d_ptr->patientInfo.pacer;
 }
 

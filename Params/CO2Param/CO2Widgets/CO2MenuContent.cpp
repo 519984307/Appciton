@@ -35,6 +35,7 @@ public:
         ITEM_CBO_WAVE_RULER,
         ITEM_CBO_FICO2_DISPLAY,
         ITEM_CBO_APNEA_TIME,
+        ITEM_CBO_WORK_MODE,
 
         ITEM_BTN_O2_COMPEN = 0,
         ITEM_BTN_N2O_COMPEN,
@@ -113,6 +114,8 @@ void CO2MenuContentPrivate::loadOptions()
     ApneaAlarmTime index = co2Param.getApneaTime();
 
     combos[ITEM_CBO_APNEA_TIME]->setCurrentIndex(index);
+
+    combos[ITEM_CBO_WORK_MODE]->setCurrentIndex(static_cast<int>(co2Param.getCO2Switch()));
 }
 
 void CO2MenuContent::onComboBoxIndexChanged(int index)
@@ -135,6 +138,11 @@ void CO2MenuContent::onComboBoxIndexChanged(int index)
         currentConfig.setNumValue("Alarm|ApneaTime", index);
         respParam.setApneaTime((ApneaAlarmTime)index);
         co2Param.setApneaTime((ApneaAlarmTime)index);
+        break;
+    case CO2MenuContentPrivate::ITEM_CBO_WORK_MODE:
+        co2Param.setModuleWorkMode(static_cast<CO2WorkMode>(index + 1));
+        break;
+    default:
         break;
     };
 }
@@ -242,6 +250,21 @@ void CO2MenuContent::layoutExec()
     itemID = CO2MenuContentPrivate::ITEM_CBO_APNEA_TIME;
     comboBox->setProperty("Item", itemID);
     d_ptr->combos.insert(CO2MenuContentPrivate::ITEM_CBO_APNEA_TIME, comboBox);
+
+
+
+    // CO2 work mode
+    label = new QLabel(trs("CO2WorkMode"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                       << trs("CO2Standby")
+                       << trs("CO2Measure"));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    itemID = CO2MenuContentPrivate::ITEM_CBO_WORK_MODE;
+    comboBox->setProperty("Item", itemID);
+    d_ptr->combos.insert(CO2MenuContentPrivate::ITEM_CBO_WORK_MODE, comboBox);
 
     int row = d_ptr->combos.count();
 

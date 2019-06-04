@@ -20,6 +20,8 @@
 #include "SystemManager.h"
 #include "SystemDefine.h"
 #include "LanguageManager.h"
+#include "ConfigManagerInterface.h"
+#include "SoundManager.h"
 
 class NightModeWindowPrivate
 {
@@ -52,9 +54,29 @@ void NightModeWindowPrivate::loadOptions()
     systemConfig.getNumValue("NightMode|ScreenBrightness", index);
     combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setCurrentIndex(index);
 
+    int isAlarmAudio = 0;
+    systemConfig.getNumValue("Alarms|AlarmAudio", isAlarmAudio);
+    if (isAlarmAudio)
+    {
+        combos[ITEM_CBO_ALARM_VOLUME]->setEnabled(true);
+    }
+    else
+    {
+        combos[ITEM_CBO_ALARM_VOLUME]->setEnabled(false);
+    }
+
     index = 0;
-    systemConfig.getNumValue("NightMode|AlarmVolume", index);
-    combos[ITEM_CBO_ALARM_VOLUME]->setCurrentIndex(index - 1);
+    systemConfig.getNumValue("Alarms|MinimumAlarmVolume", index);
+    int volume = 0;
+    systemConfig.getNumValue("NightMode|AlarmVolume", volume);
+    for (int i = index; i <= SoundManager::VOLUME_LEV_5; i++)
+    {
+        combos[ITEM_CBO_ALARM_VOLUME]->addItem(QString::number(i));
+        if (volume == i)
+        {
+            combos[ITEM_CBO_ALARM_VOLUME]->setCurrentIndex(combos[ITEM_CBO_ALARM_VOLUME]->count() - 1);
+        }
+    }
 
     index = 0;
     systemConfig.getNumValue("NightMode|HeartBeatVolume", index);
@@ -139,13 +161,6 @@ void NightModeWindow::layoutExec()
     label = new QLabel(trs("SystemAlarmVolume"));
     glayout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << QString::number(SoundManager::VOLUME_LEV_1)
-                       << QString::number(SoundManager::VOLUME_LEV_2)
-                       << QString::number(SoundManager::VOLUME_LEV_3)
-                       << QString::number(SoundManager::VOLUME_LEV_4)
-                       << QString::number(SoundManager::VOLUME_LEV_5)
-                      );
     comboIndex = static_cast<int>(NightModeWindowPrivate::
                                   ITEM_CBO_ALARM_VOLUME);
     comboBox->setProperty("Item",
@@ -155,6 +170,9 @@ void NightModeWindow::layoutExec()
     glayout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(NightModeWindowPrivate::
                          ITEM_CBO_ALARM_VOLUME, comboBox);
+    // establish the connection between @itemFocusChanged and @onPopupListItemFocusChanged
+    connect(comboBox, SIGNAL(itemFocusChanged(int)),
+            this, SLOT(onPopupListItemFocusChanged(int)));
 
     // heart beat volume
     label = new QLabel(trs("ECGQRSToneVolume"));
@@ -166,8 +184,7 @@ void NightModeWindow::layoutExec()
                        << QString::number(SoundManager::VOLUME_LEV_2)
                        << QString::number(SoundManager::VOLUME_LEV_3)
                        << QString::number(SoundManager::VOLUME_LEV_4)
-                       << QString::number(SoundManager::VOLUME_LEV_MAX)
-                      );
+                       << QString::number(SoundManager::VOLUME_LEV_MAX));
     comboIndex = static_cast<int>(NightModeWindowPrivate::
                                   ITEM_CBO_HEART_BEAT_VOLUME);
     comboBox->setProperty("Item",
@@ -177,6 +194,9 @@ void NightModeWindow::layoutExec()
     glayout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(NightModeWindowPrivate::
                          ITEM_CBO_HEART_BEAT_VOLUME, comboBox);
+    // establish the connection between @itemFocusChanged and @onPopupListItemFocusChanged
+    connect(comboBox, SIGNAL(itemFocusChanged(int)),
+            this, SLOT(onPopupListItemFocusChanged(int)));
 
     // key press volume
     label = new QLabel(trs("ToneVolume"));
@@ -188,13 +208,13 @@ void NightModeWindow::layoutExec()
                        <<QString::number(SoundManager::VOLUME_LEV_2)
                        <<QString::number(SoundManager::VOLUME_LEV_3)
                        <<QString::number(SoundManager::VOLUME_LEV_4)
-                       <<QString::number(SoundManager::VOLUME_LEV_5)
-                       );
+                       <<QString::number(SoundManager::VOLUME_LEV_5));
     glayout->addWidget(comboBox , d_ptr->combos.count() , 1);
     comboIndex = static_cast<int>(NightModeWindowPrivate::
                                   ITEM_CBO_KEYPRESS_VOLUME_NUM);
     comboBox->setProperty("Item" , qVariantFromValue(comboIndex));
     connect(comboBox , SIGNAL(currentIndexChanged(int)) , this , SLOT(onComboBoxIndexChanged(int)));
+    connect(comboBox, SIGNAL(itemFoucsIndexChanged(int)), this, SLOT(onComboBoxItemFocusIndexChanged(int)));
     d_ptr->combos.insert(NightModeWindowPrivate::
                          ITEM_CBO_KEYPRESS_VOLUME_NUM , comboBox);
 
@@ -204,13 +224,13 @@ void NightModeWindow::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("OFF")
-                       << trs("ON")
-                       );
+                       << trs("ON"));
     glayout->addWidget(comboBox , d_ptr->combos.count() , 1);
     comboIndex = static_cast<int>(NightModeWindowPrivate::
                                   ITEM_CBO_NIBP_COMPLETED_TIPS);
     comboBox->setProperty("Item" , qVariantFromValue(comboIndex));
     connect(comboBox , SIGNAL(currentIndexChanged(int)) , this , SLOT(onComboBoxIndexChanged(int)));
+    connect(comboBox, SIGNAL(itemFoucsIndexChanged(int)), this , SLOT(onComboBoxItemFocusIndexChanged(int)));
     d_ptr->combos.insert(NightModeWindowPrivate::
                          ITEM_CBO_NIBP_COMPLETED_TIPS , comboBox);
 
@@ -220,8 +240,7 @@ void NightModeWindow::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("No")
-                       << trs("Yes")
-                       );
+                       << trs("Yes"));
     glayout->addWidget(comboBox , d_ptr->combos.count() , 1);
     comboIndex = static_cast<int>(NightModeWindowPrivate::
                                   ITEM_CBO_STOP_NIBP_MEASURE);
@@ -268,7 +287,13 @@ void NightModeWindow::onComboBoxIndexChanged(int index)
         node = "AlarmVolume";
         break;
         case NightModeWindowPrivate::ITEM_CBO_HEART_BEAT_VOLUME:
-        node = "HeartBeatVolume";
+        {
+            node = "HeartBeatVolume";
+            // resotre to the original volume
+            int volume = 1;
+            systemConfig.getNumValue("Alarms|DefaultAlarmVolume", volume);
+            soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT, static_cast<SoundManager::VolumeLevel>(volume));
+        }
         break;
         case NightModeWindowPrivate::ITEM_CBO_KEYPRESS_VOLUME_NUM:
         node = "KeyPressVolume";
@@ -290,6 +315,14 @@ void NightModeWindow::onComboBoxIndexChanged(int index)
         {
             tmp = 1;
         }
+        // resotre to the original volume
+        int volume = 1;
+        ConfigManagerInterface *configInterface = ConfigManagerInterface::getConfigManager();
+        if (configInterface)
+        {
+            configInterface->getCurConfig().getNumValue("ECG|QRSVolume", volume);
+        }
+        soundManager.setVolume(SoundManager::SOUND_TYPE_ALARM, static_cast<SoundManager::VolumeLevel>(volume));
     }
     else
     {
@@ -297,6 +330,26 @@ void NightModeWindow::onComboBoxIndexChanged(int index)
         tmp = index;
     }
     systemConfig.setNumValue(QString("NightMode|%1").arg(node), tmp);
+}
+
+void NightModeWindow::onComboBoxItemFocusIndexChanged(int index)
+{
+    ComboBox* w = qobject_cast<ComboBox*>(sender());
+    int type = w->property("Item").toInt();
+
+    if (type == NightModeWindowPrivate::ITEM_CBO_NIBP_COMPLETED_TIPS)
+    {
+        if (index == 1)
+        {
+            soundManager.setNIBPCompleteTone(true);
+            soundManager.nibpCompleteTone();
+        }
+    }
+    else if (type == NightModeWindowPrivate::ITEM_CBO_KEYPRESS_VOLUME_NUM)
+    {
+        soundManager.setVolume(SoundManager::SOUND_TYPE_NOTIFICATION , static_cast<SoundManager::VolumeLevel>(index));
+        soundManager.keyPressTone();
+    }
 }
 
 void NightModeWindow::OnBtnReleased()
@@ -314,4 +367,20 @@ void NightModeWindow::OnBtnReleased()
     }
     d_ptr->enterNightMode->setText(name);
     nightModeManager.setNightMode(!nightModeManager.nightMode());
+}
+
+void NightModeWindow::onPopupListItemFocusChanged(int volume)
+{
+    ComboBox *w = qobject_cast<ComboBox*>(sender());
+
+    if (w == d_ptr->combos[NightModeWindowPrivate::ITEM_CBO_HEART_BEAT_VOLUME])
+    {
+        soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT, static_cast<SoundManager::VolumeLevel>(volume));
+        soundManager.heartBeatTone();
+    }
+    else if (w == d_ptr->combos[NightModeWindowPrivate::ITEM_CBO_ALARM_VOLUME])
+    {
+        soundManager.setVolume(SoundManager::SOUND_TYPE_ALARM, static_cast<SoundManager::VolumeLevel>(volume));
+        soundManager.alarmTone();
+    }
 }

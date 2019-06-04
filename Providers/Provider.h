@@ -104,12 +104,12 @@ protected:
     bool isConnected;
     QString versionInfo;
     bool isConnectedToParam;
+    bool needConnectedToParam;               // 需要连接参数
 
 private:
     QString _name;
     bool _firstCheck;
 
-    int _timerID;
     int _disconnectCount;
     int _disconnectThreshold;
     bool _stopCheckConnect;     // 待机标志

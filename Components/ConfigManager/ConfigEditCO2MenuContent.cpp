@@ -87,13 +87,16 @@ void ConfigEditCO2MenuContentPrivate::loadOptions()
     combos[ITEM_CBO_WAVE_SPEED]->setCurrentIndex(index);
 
     // 气体补偿。
+    index = 0;  // init the 'index'
     config->getNumValue("CO2|O2Compensation", index);
     btns[ITEM_BTN_O2_COMPEN]->setText(QString::number(index));
+    index = 0;  // init the 'index'
     config->getNumValue("CO2|N2OCompensation", index);
     btns[ITEM_BTN_N2O_COMPEN]->setText(QString::number(index));
 
     // 显示控制。
-    config->getNumValue("CO2|FICO2Display", index);
+    index = 0;  // init the 'index'
+    config->getNumValue("CO2|FiCO2Display", index);
     combos[ITEM_CBO_FICO2_DISPLAY]->setCurrentIndex(index);
 
     config->getNumValue("Alarm|ApneaTime", index);
@@ -125,6 +128,7 @@ void ConfigEditCO2MenuContentPrivate::loadOptions()
         combos[ITEM_CBO_WAVE_RULER]->addItem(str);
     }
     combos[ITEM_CBO_WAVE_RULER]->blockSignals(false);
+    index = 0;  // init the 'index'
     config->getNumValue("CO2|DisplayZoom", index);
     combos[ITEM_CBO_WAVE_RULER]->setCurrentIndex(index);
 }
@@ -142,7 +146,7 @@ void ConfigEditCO2MenuContent::onComboBoxIndexChanged(int index)
         d_ptr->config->setNumValue("CO2|DisplayZoom", index);
         break;
     case ConfigEditCO2MenuContentPrivate::ITEM_CBO_FICO2_DISPLAY:
-        d_ptr->config->setNumValue("CO2|FICO2Display", index);
+        d_ptr->config->setNumValue("CO2|FiCO2Display", index);
         break;
     case ConfigEditCO2MenuContentPrivate::ITEM_CBO_APNEA_TIME:
         d_ptr->config->setNumValue("Alarm|ApneaTime", index);

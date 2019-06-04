@@ -165,7 +165,7 @@ void Provider::checkConnection(void)
         {
             _firstCheck = false;
             isConnected = false;
-            if (isConnectedToParam)
+            if (isConnectedToParam || !needConnectedToParam)
             {
                 disconnected();
             }
@@ -218,14 +218,14 @@ void Provider::feed(void)
 /**************************************************************************************************
  * 功能： 构造。
  *************************************************************************************************/
-Provider::Provider(const QString &name) : QObject(), ringBuff(ringBuffLen), _name(name)
+Provider::Provider(const QString &name)
+    : QObject(), ringBuff(ringBuffLen),
+      uart(NULL), isConnected(false),
+      isConnectedToParam(false), needConnectedToParam(true),
+      _name(name),
+      _firstCheck(true), _disconnectCount(0), _disconnectThreshold(5),
+      _stopCheckConnect(false)
 {
-    _disconnectCount = 0;
-    _disconnectThreshold = 5;
-    isConnected = false;
-    _firstCheck = true;
-    isConnectedToParam = true;
-    _stopCheckConnect = false;
 // #ifdef Q_WS_X11
 //    uart = new UartSocket();
 // #else
