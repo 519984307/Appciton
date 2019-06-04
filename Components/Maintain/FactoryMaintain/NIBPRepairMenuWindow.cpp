@@ -64,7 +64,7 @@ NIBPRepairMenuWindow *NIBPRepairMenuWindow::getInstance()
         instance->addMenuContent(NIBPManometerContent::getInstance());
         QString str;
         machineConfig.getStrValue("NIBP", str);
-        if (str != "SUNTECH_NIBP")
+        if (str == "BLM_N5")
         {
             instance->addMenuContent(NIBPZeroPointContent::getInstance());
         }
@@ -91,16 +91,26 @@ void NIBPRepairMenuWindow::init()
     nibpParam.enterMaintain(true);
     QString str;
     machineConfig.getStrValue("NIBP", str);
-    if (str != "SUNTECH_NIBP")
+    if (str == "BLM_N5")
     {
         nibpParam.changeMode(NIBP_STATE_MACHINE_SERVICE);
     }
-
+    else
+    {
+        if (nibpParam.getConnectedState())
+        {
+            warnShow(false);
+        }
+        else
+        {
+            warnShow(true);
+        }
+    }
     // 初始化各个子菜单
     NIBPCalibrateContent::getInstance()->init();
-    if (str != "SUNTECH_NIBP")
+    NIBPManometerContent::getInstance()->init();
+    if (str == "BLM_N5")
     {
-        NIBPManometerContent::getInstance()->init();
         NIBPZeroPointContent::getInstance()->init();
     }
     NIBPPressureControlContent::getInstance()->init();
@@ -130,7 +140,8 @@ void NIBPRepairMenuWindow::returnMenu()
  *************************************************************************************************/
 void NIBPRepairMenuWindow::messageBox(void)
 {
-    windowManager.showWindow(d_ptr->messageBoxWait, WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
+    windowManager.showWindow(d_ptr->messageBoxWait,
+                             WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
 }
 
 /**************************************************************************************************
@@ -197,7 +208,7 @@ void NIBPRepairMenuWindow::hideEvent(QHideEvent *event)
     nibpParam.enterMaintain(false);
     QString str;
     machineConfig.getStrValue("NIBP", str);
-    if (str != "SUNTECH_NIBP")
+    if (str == "BLM_N5")
     {
         nibpParam.changeMode(NIBP_STATE_MACHINE_MONITOR);
     }

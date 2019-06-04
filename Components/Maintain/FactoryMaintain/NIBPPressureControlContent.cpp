@@ -29,6 +29,7 @@
 #define CALIBRATION_INTERVAL_TIME              (100)
 #define TIMEOUT_WAIT_NUMBER                    (5000 / CALIBRATION_INTERVAL_TIME)
 #define INFLATE_WAIT_NUMBER                    (100000 / CALIBRATION_INTERVAL_TIME)
+#define INFLATE_SWITCH_SIGN                    (5)
 
 class NIBPPressureControlContentPrivate
 {
@@ -49,6 +50,8 @@ public:
     int patientVaulue;                  //  病人类型
     bool inflateSwitch;                 //  充气、放气标志
     bool pressureControlFlag;          //  进入模式标志
+    bool overPressureProtect;          // 过压保护标志
+    bool holdPressureFlag;             // 控制压力标志
 
     Button *modeBtn;                // 进入/退出模式
     bool isPressureControlMode;     // 是否处于压力操控模式
@@ -59,7 +62,7 @@ public:
     int pressureTimerID;            // 获取压力定时器ID
     int pressure;
     int inflateTimeoutNum;          // 充气超时
-
+    int safePressure;
     QString moduleStr;              // 运行模块字符串
     QMap<MenuItem, ComboBox *> combos;
 };
@@ -73,9 +76,11 @@ NIBPPressureControlContentPrivate::NIBPPressureControlContentPrivate()
       patientVaulue(0),
       inflateSwitch(0),
       pressureControlFlag(false),
+      overPressureProtect(true),
+      holdPressureFlag(false),
       modeBtn(NULL), isPressureControlMode(false), inModeTimerID(-1),
       timeoutNum(0), isInflate(true), inflateTimerID(-1), pressureTimerID(-1),
-      pressure(InvData()), inflateTimeoutNum(0)
+      pressure(InvData()), inflateTimeoutNum(0), safePressure(0)
 {
     machineConfig.getStrValue("NIBP", moduleStr);
 }
@@ -86,17 +91,10 @@ NIBPPressureControlContentPrivate::NIBPPressureControlContentPrivate()
  *************************************************************************************************/
 void NIBPPressureControlContent::layoutExec()
 {
-    if (d_ptr->moduleStr != "SUNTECH_NIBP")
-    {
-        n5LayoutExec();
-    }
-    else
-    {
-        suntechLayoutExec();
-    }
+    LayoutExec();
 }
 
-void NIBPPressureControlContent::n5LayoutExec()
+void NIBPPressureControlContent::LayoutExec()
 {
     QGridLayout *layout = new QGridLayout(this);
     layout->setMargin(10);
@@ -116,6 +114,7 @@ void NIBPPressureControlContent::n5LayoutExec()
     d_ptr->overpressureCbo->setEnabled(false);
     d_ptr->overpressureCbo->addItem(trs("ON"));
     d_ptr->overpressureCbo->addItem(trs("Off"));
+    d_ptr->overpressureCbo->setCurrentIndex(1);
     layout->addWidget(d_ptr->overpressureCbo, 1, 2);
     connect(d_ptr->overpressureCbo, SIGNAL(currentIndexChanged(int)), this, SLOT(onOverpressureReleased(int)));
 
@@ -149,75 +148,6 @@ void NIBPPressureControlContent::n5LayoutExec()
     layout->setRowStretch(4, 1);
 }
 
-void NIBPPressureControlContent::suntechLayoutExec()
-{
-    QGridLayout *layout = new QGridLayout(this);
-    layout->setMargin(10);
-
-    ComboBox *combo;
-    QLabel *label;
-    int itemID;
-
-    // Pump
-    label = new QLabel(trs("Pump"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    combo = new ComboBox();
-    combo->addItems(QStringList()
-                    << trs("Off")
-                    << trs("On")
-                    );
-    itemID = NIBPPressureControlContentPrivate::ITEM_CBO_PUMP;
-    combo->setProperty("Item",
-                       qVariantFromValue(itemID));
-    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(combo, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(NIBPPressureControlContentPrivate::ITEM_CBO_PUMP, combo);
-
-    // control valve
-    label = new QLabel(trs("ControlValve"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    combo = new ComboBox();
-    combo->addItems(QStringList()
-                    << trs("On")
-                    << trs("Off")
-                    );
-    itemID = NIBPPressureControlContentPrivate::ITEM_CBO_CONTROL_VALVE;
-    combo->setProperty("Item",
-                       qVariantFromValue(itemID));
-    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(combo, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(NIBPPressureControlContentPrivate::ITEM_CBO_CONTROL_VALVE, combo);
-
-    // dump valve
-    label = new QLabel(trs("DumpValve"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    combo = new ComboBox();
-    combo->addItems(QStringList()
-                    << trs("On")
-                    << trs("Off")
-                    );
-    itemID = NIBPPressureControlContentPrivate::ITEM_CBO_DUMP_VALVE;
-    combo->setProperty("Item",
-                       qVariantFromValue(itemID));
-    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(combo, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(NIBPPressureControlContentPrivate::ITEM_CBO_DUMP_VALVE, combo);
-
-    // 压力值
-    label = new QLabel(trs("ServicePressure"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-
-    QHBoxLayout *hLayout = new QHBoxLayout();
-    label = new QLabel(InvStr());
-    hLayout->addWidget(label);
-    d_ptr->value = label;
-    label = new QLabel();
-    label->setText(Unit::getSymbol(nibpParam.getUnit()));
-    hLayout->addWidget(label);
-    layout->addLayout(hLayout, d_ptr->combos.count(), 1);
-
-    layout->setRowStretch(d_ptr->combos.count() + 1, 1);
-}
 
 void NIBPPressureControlContent::timerEvent(QTimerEvent *ev)
 {
@@ -251,7 +181,8 @@ void NIBPPressureControlContent::timerEvent(QTimerEvent *ev)
             {
                 MessageBox messbox(trs("Warn"), trs("OperationFailedPleaseAgain"), false);
                 messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
-                windowManager.showWindow(&messbox, WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
+                windowManager.showWindow(&messbox,
+                                         WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
             }
             killTimer(d_ptr->inModeTimerID);
             d_ptr->inModeTimerID = -1;
@@ -284,7 +215,8 @@ void NIBPPressureControlContent::timerEvent(QTimerEvent *ev)
             {
                 MessageBox messbox(trs("Warn"), trs("OperationFailedPleaseAgain"), false);
                 messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
-                windowManager.showWindow(&messbox, WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
+                windowManager.showWindow(&messbox,
+                                         WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
             }
             killTimer(d_ptr->inflateTimerID);
             d_ptr->inflateTimerID = -1;
@@ -301,7 +233,22 @@ void NIBPPressureControlContent::timerEvent(QTimerEvent *ev)
         if (d_ptr->pressure != nibpParam.getManometerPressure())
         {
             d_ptr->pressure = nibpParam.getManometerPressure();
-            d_ptr->value->setNum(nibpParam.getManometerPressure());
+            d_ptr->value->setNum(d_ptr->pressure);
+        }
+        if (d_ptr->pressure >= INFLATE_SWITCH_SIGN && d_ptr->isInflate)
+        {
+            d_ptr->inflateBtn->setText(trs("ServiceDeflate"));
+            d_ptr->isInflate = false;
+        }
+        else if (d_ptr->pressure >= d_ptr->chargePressure->getValue() && d_ptr->holdPressureFlag)
+        {
+            nibpParam.provider().controlPneumatics(0, 1, 1);  //达到压力值范围时候停止冲压,保持压力
+            d_ptr->holdPressureFlag = false;
+        }
+        else if (d_ptr->pressure < INFLATE_SWITCH_SIGN)
+        {
+            d_ptr->inflateBtn->setText(trs("ServiceInflate"));
+            d_ptr->isInflate = true;
         }
     }
 }
@@ -310,7 +257,7 @@ void NIBPPressureControlContent::showEvent(QShowEvent *e)
 {
     Q_UNUSED(e)
     // 默认设置为过压保护开启
-    if (d_ptr->moduleStr != "SUNTECH_NIBP")
+    if (d_ptr->moduleStr == "BLM_N5")
     {
         d_ptr->overpressureCbo->setCurrentIndex(0);
     }
@@ -323,10 +270,11 @@ void NIBPPressureControlContent::showEvent(QShowEvent *e)
 void NIBPPressureControlContent::hideEvent(QHideEvent *e)
 {
     Q_UNUSED(e)
-    if (d_ptr->moduleStr == "SUNTECH_NIBP")
+    if (d_ptr->moduleStr != "BLM_N5")
     {
         killTimer(d_ptr->pressureTimerID);
         d_ptr->pressureTimerID = -1;
+        nibpParam.provider().controlPneumatics(0, 0, 0);  //放气
     }
 }
 
@@ -335,32 +283,76 @@ void NIBPPressureControlContent::hideEvent(QHideEvent *e)
  *************************************************************************************************/
 void NIBPPressureControlContent::inflateBtnReleased()
 {
-    d_ptr->inflateTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
-    if (d_ptr->isInflate)
+    if (d_ptr->moduleStr == "BLM_N5")
     {
-        int value = d_ptr->chargePressure->getValue();
-        nibpParam.provider().servicePressureinflate(value);
-        d_ptr->inflateBtn->setText(trs("Inflating"));
-        d_ptr->modeBtn->setEnabled(false);
+        d_ptr->inflateTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
+        if (d_ptr->isInflate)
+        {
+            int value = d_ptr->chargePressure->getValue();
+            nibpParam.provider().servicePressureinflate(value);
+            d_ptr->inflateBtn->setText(trs("Inflating"));
+            d_ptr->modeBtn->setEnabled(false);
+        }
+        else
+        {
+            nibpParam.provider().servicePressuredeflate();
+        }
     }
     else
     {
-        nibpParam.provider().servicePressuredeflate();
+        if (d_ptr->isInflate)
+        {
+           nibpParam.provider().controlPneumatics(1, 1, 1);  //充气
+           d_ptr->holdPressureFlag = true;
+        }
+        else
+        {
+            nibpParam.provider().controlPneumatics(0, 0, 0);  //放气
+        }
     }
 }
 
 void NIBPPressureControlContent::enterPressureContrlReleased()
 {
-    d_ptr->inModeTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
-    d_ptr->modeBtn->setEnabled(false);
-    if (d_ptr->isPressureControlMode)
+    if (!nibpParam.getConnectedState())
     {
-        nibpParam.provider().servicePressurecontrol(false);
-        nibpParam.switchState(NIBP_SERVICE_STANDBY_STATE);
+        MessageBox messbox(trs("Warn"), trs("NIBPPressureControlModelEnterFail"), false);
+        messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
+        windowManager.showWindow(&messbox, WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
+        return;
+    }
+    if (d_ptr->moduleStr == "BLM_N5")
+    {
+        d_ptr->inModeTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
+        d_ptr->modeBtn->setEnabled(false);
+        if (d_ptr->isPressureControlMode)
+        {
+            nibpParam.provider().servicePressurecontrol(false);
+            nibpParam.switchState(NIBP_SERVICE_STANDBY_STATE);
+        }
+        else
+        {
+            nibpParam.switchState(NIBP_SERVICE_PRESSURECONTROL_STATE);
+        }
     }
     else
     {
-        nibpParam.switchState(NIBP_SERVICE_PRESSURECONTROL_STATE);
+       if (!d_ptr->pressureControlFlag)
+       {
+            d_ptr->modeBtn->setText(trs("QuitPressureContrlMode"));
+            d_ptr->overpressureCbo->setEnabled(true);
+            d_ptr->inflateBtn->setEnabled(true);
+            d_ptr->pressureControlFlag = true;
+       }
+       else
+       {
+           d_ptr->modeBtn->setText((trs("EnterPressureContrlMode")));
+           d_ptr->value->setText(InvStr());
+           nibpParam.provider().controlPneumatics(0, 0, 0);  //放气
+           d_ptr->overpressureCbo->setEnabled(false);
+           d_ptr->inflateBtn->setEnabled(false);
+           d_ptr->pressureControlFlag = false;
+       }
     }
 }
 
@@ -372,14 +364,45 @@ void NIBPPressureControlContent::onComboBoxIndexChanged(int index)
     }
 
     unsigned char pump = d_ptr->combos[NIBPPressureControlContentPrivate::ITEM_CBO_PUMP]->currentIndex();
-    unsigned char controlValve = d_ptr->combos[NIBPPressureControlContentPrivate::ITEM_CBO_CONTROL_VALVE]->currentIndex();
+    unsigned char controlValve =
+            d_ptr->combos[NIBPPressureControlContentPrivate::ITEM_CBO_CONTROL_VALVE]->currentIndex();
     unsigned char dumpValve = d_ptr->combos[NIBPPressureControlContentPrivate::ITEM_CBO_DUMP_VALVE]->currentIndex();
     nibpParam.provider().controlPneumatics(pump, controlValve, dumpValve);
 }
 
 void NIBPPressureControlContent::onOverpressureReleased(int index)
 {
-    nibpParam.provider().servicePressureProtect(!index);
+    if (d_ptr->moduleStr == "BLM_N5")
+    {
+        nibpParam.provider().servicePressureProtect(!index);
+    }
+    else
+    {
+        if (!index)
+        {
+            d_ptr->overPressureProtect = true;
+            PatientType type = patientManager.getType();
+            if (type == PATIENT_TYPE_ADULT)
+            {
+                d_ptr->safePressure = 290;
+            }
+            else if (type == PATIENT_TYPE_NEO)
+            {
+                d_ptr->safePressure = 250;
+            }
+            else if (type == PATIENT_TYPE_PED)
+            {
+                d_ptr->safePressure = 150;
+            }
+            d_ptr->chargePressure->setRange(50, d_ptr->safePressure);
+            d_ptr->chargePressure->setValue(100);
+        }
+        else
+        {
+            d_ptr->overPressureProtect = false;
+            d_ptr->chargePressure->setRange(50, 300);
+        }
+    }
 }
 
 NIBPPressureControlContent *NIBPPressureControlContent::getInstance()
@@ -412,12 +435,14 @@ NIBPPressureControlContent::~NIBPPressureControlContent()
 
 void NIBPPressureControlContent::init()
 {
-    if (d_ptr->moduleStr != "SUNTECH_NIBP")
+    if (d_ptr->moduleStr == "BLM_N5")
     {
         d_ptr->isPressureControlMode = false;
         d_ptr->modeBtn->setEnabled(true);
         d_ptr->modeBtn->setText(trs("EnterPressureContrlMode"));
         d_ptr->overpressureCbo->setEnabled(false);
+        d_ptr->overpressureCbo->setCurrentIndex(1);
+        d_ptr->inflateBtn->setText(trs("ServiceInflate"));
         d_ptr->inflateBtn->setEnabled(false);
     }
 }

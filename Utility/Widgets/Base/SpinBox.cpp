@@ -376,6 +376,6 @@ void SpinBox::focusInEvent(QFocusEvent *ev)
 
 void SpinBox::focusOutEvent(QFocusEvent *ev)
 {
-    QAbstractButton::focusInEvent(ev);
+    QAbstractButton::focusOutEvent(ev);
     d_ptr->status = SPIN_BOX_FOCUS_OUT;
 }

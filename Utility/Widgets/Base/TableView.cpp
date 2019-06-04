@@ -184,6 +184,21 @@ void TableView::scrollToPreviousPage()
     }
 }
 
+void TableView::scrollToAssignedPage(int row)
+{
+    int eachPageRowCount = rowAt(viewport()->height() - 1) - rowAt(1) + 1;
+    int assignedPage = row / eachPageRowCount;
+    int curPage = rowAt(0) / eachPageRowCount;
+    if (curPage == assignedPage)
+    {
+        // 若指定页面在当前页，则直接返回
+        return;
+    }
+
+    QModelIndex index = model()->index(assignedPage * eachPageRowCount - 1, 0);
+    scrollTo(index, QAbstractItemView::PositionAtTop);
+}
+
 bool TableView::hasPreivousPage()
 {
     int row  = rowAt(-1);

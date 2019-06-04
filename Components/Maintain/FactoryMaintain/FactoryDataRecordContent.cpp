@@ -51,6 +51,7 @@ void FactoryDataRecordContentPrivate::loadOptions()
     machineConfig.getStrValue("SPO2", str);
     if (systemManager.isSupport(CONFIG_SPO2) && str == "BLM_S5")
     {
+        value = 0;
         machineConfig.getNumValue("Record|SPO2", value);
         combos[ITEM_CBO_SPO2]->setCurrentIndex(value);
         combos[ITEM_CBO_SPO2]->show();
@@ -65,6 +66,7 @@ void FactoryDataRecordContentPrivate::loadOptions()
     machineConfig.getStrValue("NIBP", str);
     if (systemManager.isSupport(CONFIG_NIBP) && str == "BLM_N5")
     {
+        value = 0;
         machineConfig.getNumValue("Record|NIBP", value);
         combos[ITEM_CBO_NIBP]->setCurrentIndex(value);
         combos[ITEM_CBO_NIBP]->show();
@@ -79,6 +81,7 @@ void FactoryDataRecordContentPrivate::loadOptions()
     machineConfig.getStrValue("CO2", str);
     if (systemManager.isSupport(CONFIG_CO2) && str == "BLM_CO2")
     {
+        value = 0;
         machineConfig.getNumValue("Record|CO2", value);
         combos[ITEM_CBO_CO2]->setCurrentIndex(value);
         combos[ITEM_CBO_CO2]->show();

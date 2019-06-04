@@ -28,16 +28,15 @@ public:
 
     bool waveEnable();
 
-    /* reimplment */
-    void updateWidgetConfig();
-
 protected:
     // 窗体大小调整事件
     virtual void resizeEvent(QResizeEvent *e);
     virtual void focusInEvent(QFocusEvent */*e*/);
 
+    /* reimplment */
+    void loadConfig(void);
+
 private:
-    void _loadConfig(void);
 //    WaveWidgetLabel *_name;
     WaveWidgetLabel *_notify;
 };

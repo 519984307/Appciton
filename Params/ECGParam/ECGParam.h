@@ -385,6 +385,7 @@ private:
     ECGBandwidth _chestFreqBand;
     ECGBandwidth _12LeadFreqBand;
     ECGFilterMode _filterMode;
+    ECGNotchFilter _notchFilter;
     Display12LeadFormat _12LeadDispFormat;
     ECGLeadNameConvention _ecgStandard;
 

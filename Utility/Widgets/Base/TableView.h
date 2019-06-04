@@ -32,6 +32,11 @@ public:
     void scrollToPreviousPage();
 
     /**
+     * @brief scrollToAssignedPage 显示指定行所在的页面
+     */
+    void scrollToAssignedPage(int row);
+
+    /**
      * @brief hasPreivousPage check whether has next page
      * @return
      */

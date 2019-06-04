@@ -152,10 +152,6 @@ public:
     // 加载初始底层模式。
     void loadInitBMode(void);
 
-    // 获取IDM上位机软件版本
-    void getSoftwareVersion(QString &revision);
-    QString getSoftwareVersionNum();
-
     // 是否确认了自检结果
     bool isAcknownledgeSystemTestResult();
 

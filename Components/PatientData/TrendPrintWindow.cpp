@@ -20,6 +20,7 @@
 #include <QDateTime>
 #include "TrendTableWindow.h"
 #include "IConfig.h"
+#include "TimeSymbol.h"
 
 class TrendPrintWindowPrivate
 {
@@ -276,8 +277,8 @@ void TrendPrintWindow::printReleased()
 
 void TrendPrintWindowPrivate::initGroupBox(QGroupBox *groupBox, TrendPrintWindowPrivate::SubGroupBox *subBox)
 {
-    subBox->dateLbl = new QLabel(trs("YearMonthDay"));
-    subBox->timeLbl = new QLabel(trs("HourSystem"));
+    subBox->dateLbl = new QLabel();
+    subBox->timeLbl = new QLabel(trs("Time"));
     subBox->yearSbx = new SpinBox();
     subBox->monthSbx = new SpinBox();
     subBox->daySbx = new SpinBox();
@@ -322,14 +323,41 @@ void TrendPrintWindowPrivate::initGroupBox(QGroupBox *groupBox, TrendPrintWindow
 
     QGridLayout *mainLayout = new QGridLayout();
     mainLayout->addWidget(subBox->dateLbl, 0, 0);
-    mainLayout->addWidget(subBox->yearSbx, 0, 1);
-    mainLayout->addWidget(subBox->monthSbx, 0, 2);
-    mainLayout->addWidget(subBox->daySbx, 0, 3);
     mainLayout->addWidget(subBox->timeLbl, 1, 0);
+    groupBox->setLayout(mainLayout);
+
+    // adjust the name of the date format
+    int index = 0;
+    systemConfig.getNumValue("DateTime|DateFormat", index);
+    DateFormat dateFormat = static_cast<DateFormat>(index);
+    QString dateFormatName =  QString("%1(%2)").arg(trs("Date"))
+            .arg(trs(TimeSymbol::convert(dateFormat)));
+    subBox->dateLbl->setText(dateFormatName);
+
+    // adjust the position of the date
+    SpinBox *dateSpinBoxArr[3] = {subBox->yearSbx, subBox->monthSbx, subBox->daySbx};
+    switch (dateFormat)
+    {
+        case DATE_FORMAT_M_D_Y:
+            dateSpinBoxArr[0] = subBox->monthSbx;
+            dateSpinBoxArr[1] = subBox->daySbx;
+            dateSpinBoxArr[2] = subBox->yearSbx;
+        break;
+        case DATE_FORMAT_D_M_Y:
+            dateSpinBoxArr[0] = subBox->daySbx;
+            dateSpinBoxArr[1] = subBox->monthSbx;
+            dateSpinBoxArr[2] = subBox->yearSbx;
+        break;
+    default:
+        break;
+    }
+    mainLayout->addWidget(dateSpinBoxArr[0], 0, 1);
+    mainLayout->addWidget(dateSpinBoxArr[1], 0, 2);
+    mainLayout->addWidget(dateSpinBoxArr[2], 0, 3);
+
     mainLayout->addWidget(subBox->hourSbx, 1, 1);
     mainLayout->addWidget(subBox->minSbx, 1, 2);
     mainLayout->addWidget(subBox->secondSbx, 1, 3);
-    groupBox->setLayout(mainLayout);
 }
 
 void TrendPrintWindowPrivate::difftimeInfo()

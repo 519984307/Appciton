@@ -14,7 +14,6 @@
 #include "SystemManager.h"
 #include "SystemBoardProvider.h"
 #include "WindowManager.h"
-#include "ServiceVersion.h"
 #include "SystemAlarm.h"
 #include "KeyActionManager.h"
 #include "ErrorLog.h"

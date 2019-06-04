@@ -12,10 +12,11 @@
 #include "Debug.h"
 #include "PRT48Provider.h"
 #include "SystemManager.h"
-#include "ServiceVersion.h"
 #include "Utility.h"
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"
+#include "AlarmSourceManager.h"
+#include "RecorderManager.h"
 
 // 命令类型
 enum PrinterCommand
@@ -375,6 +376,12 @@ void PRT48Provider::disconnected()
 {
     QMetaObject::invokeMethod(_sigSender, "connectionChanged", Q_ARG(bool, false));
     systemManager.setPoweronTestResult(PRINTER72_SELFTEST_RESULT, SELFTEST_FAILED);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_PRINT);
+    if (alarmSource)
+    {
+        alarmSource->clear();
+        alarmSource->setOneShotAlarm(PRINT_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+    }
 }
 
 /***************************************************************************************************
@@ -383,6 +390,12 @@ void PRT48Provider::disconnected()
 void PRT48Provider::reconnected()
 {
     QMetaObject::invokeMethod(_sigSender, "connectionChanged", Q_ARG(bool, true));
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_PRINT);
+    if (alarmSource)
+    {
+        alarmSource->clear();
+        alarmSource->setOneShotAlarm(PRINT_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+    }
 }
 
 /***************************************************************************************************
@@ -626,6 +639,7 @@ PRT48Provider::PRT48Provider()
     // UartAttrDesc portAttr(460800, 8, 'N', 1, 0, FlOW_CTRL_HARD, false);  //new mainboard support flow control, use block io
     UartAttrDesc portAttr(115200, 8, 'N', 1, 0);
     initPort(portAttr);
+    needConnectedToParam = false;
 }
 
 /***************************************************************************************************

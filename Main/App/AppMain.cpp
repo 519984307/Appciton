@@ -48,7 +48,7 @@ static void _taskOneSec2(void)
     }
     else
     {
-        sysStatusBar.changeIcon(SYSTEM_ICON_LABEL_USB, SYSTEM_ICON_USB_CONNECTED);
+        sysStatusBar.changeIcon(SYSTEM_ICON_LABEL_USB, SYSTEM_ICON_USB_CONNECTED, true);
     }
 }
 
@@ -160,7 +160,7 @@ static void _storageThreadEntry(void)
 
     if (!systemManager.isGoingToTrunOff())
     {
-        rawDataCollector.run();
+//        rawDataCollector.run();
     }
 
     if (!systemManager.isGoingToTrunOff())

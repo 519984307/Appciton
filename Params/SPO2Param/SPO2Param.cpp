@@ -28,6 +28,8 @@
 #include "TimeDate.h"
 #include "O2ParamInterface.h"
 #include "RunningStatusBar.h"
+#include "UpgradeManager.h"
+#include "TEMPParam.h"
 
 SPO2Param *SPO2Param::_selfObj = NULL;
 
@@ -667,6 +669,25 @@ void SPO2Param::onPaletteChanged(ParamID id)
     _trendWidget->updatePalette(pal);
 }
 
+void SPO2Param::onUpgradeT5ModuleCompleted()
+{
+    _isT5ModuleUpgradeCompleted = true;
+}
+
+void SPO2Param::onTempReset()
+{
+    if (_isT5ModuleUpgradeCompleted)
+    {
+        _isT5ModuleUpgradeCompleted = false;
+        // 手动刷新血氧模块，更新板卡数据包转发端口波特率。
+        // 目前血氧模块与体温模块共用一个串口转发板，当体温模块升级后，
+        // 共用的串口转发板的串口波特率恢复成9600，与部分血氧模块不匹配，
+        // 需要在体温模块升级成功后，重新初始化血氧模块，
+        // 更新血氧模块的数据端口转发波特率。
+        initModule();
+    }
+}
+
 void SPO2Param::setSensitivity(int sens)
 {
     currentConfig.setNumValue("SPO2|Sensitivity", static_cast<int>(sens));
@@ -905,6 +926,15 @@ bool SPO2Param::getPerfusionStatus() const
     return _isLowPerfusion;
 }
 
+void SPO2Param::initModule()
+{
+    if (!_provider)
+    {
+        return;
+    }
+    _provider->initModule();
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
@@ -928,11 +958,15 @@ SPO2Param::SPO2Param()
          , _repeatTimes(0)
          , _isLowPerfusion(false)
          , _isForceUpdating(false)
+         , _isT5ModuleUpgradeCompleted(false)
 {
     systemConfig.getNumValue("PrimaryCfg|SPO2|EverCheckFinger", _isEverCheckFinger);
     systemConfig.getNumValue("PrimaryCfg|SPO2|EverSensorOn", _isEverSensorOn);
 
     QTimer::singleShot(2000, this, SLOT(checkSelftest()));
+
+    connect(UpgradeManager::getInstance(), SIGNAL(upgradeT5ModuleCompleted()), this, SLOT(onUpgradeT5ModuleCompleted()));
+    connect(&tempParam, SIGNAL(tempReset()), this, SLOT(onTempReset()));
 }
 
 /**************************************************************************************************

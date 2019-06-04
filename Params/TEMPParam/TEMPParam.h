@@ -118,6 +118,11 @@ signals:
      */
     void updateTempName(TEMPChannelIndex channel, TEMPChannelType type);
 
+    /**
+     * @brief tempReset  and the signal of temp reset
+     */
+    void tempReset();
+
 private slots:
     void onPaletteChanged(ParamID id);
 

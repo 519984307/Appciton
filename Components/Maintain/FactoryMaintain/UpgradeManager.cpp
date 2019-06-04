@@ -551,6 +551,10 @@ void UpgradeManagerPrivate::handleStateChanged(ModuleState modState)
             }
             else
             {
+                if (type == UpgradeManager::UPGRADE_MOD_T5)
+                {
+                    emit q_ptr->upgradeT5ModuleCompleted();
+                }
                 upgradeExit(UpgradeManager::UPGRADE_SUCCESS, UPGRADE_ERR_NONE);
             }
         }

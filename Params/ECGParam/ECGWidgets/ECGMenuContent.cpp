@@ -201,16 +201,13 @@ void ECGMenuContentPrivate::loadOptions()
     WorkMode workMode = systemManager.getCurWorkMode();
     if (workMode == WORK_MODE_DEMO)
     {
-        if (filterMode != ECG_FILTERMODE_DIAGNOSTIC)
-        {
-            filterMode = ECG_FILTERMODE_DIAGNOSTIC;
-            ecgParam.setFilterMode(filterMode);
-        }
         combos[ITEM_CBO_FILTER_MODE]->setEnabled(false);
+        combos[ITEM_CBO_NOTCH_FITER]->setEnabled(false);
     }
     else
     {
         combos[ITEM_CBO_FILTER_MODE]->setEnabled(true);
+        combos[ITEM_CBO_NOTCH_FITER]->setEnabled(true);
     }
 
     // demo模式,12导界面下心电增益改为不可调
@@ -488,7 +485,7 @@ void ECGMenuContent::layoutExec()
     d_ptr->combos.insert(ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER, comboBox);
 
     // paceMark
-    label = new QLabel(trs("ECGPaceMarker"));
+    label = new QLabel(trs("ECGPaceSignal"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()

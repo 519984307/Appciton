@@ -44,7 +44,7 @@ void TEMPTrendWidget::onTempNameUpdate(TEMPChannelIndex channel, TEMPChannelType
     update();
 }
 
-void TEMPTrendWidget::_loadConfig()
+void TEMPTrendWidget::loadConfig()
 {
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_TEMP));
     setPalette(palette);
@@ -54,8 +54,7 @@ void TEMPTrendWidget::_loadConfig()
     _t2Value->setPalette(palette);
     _tdName->setPalette(palette);
     _tdValue->setPalette(palette);
-    // 显示上下限
-    updateLimit();
+    TrendWidget::loadConfig();
 }
 
 /**************************************************************************************************
@@ -236,9 +235,6 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
     // 标签设定。
     setName(paramInfo.getParamName(PARAM_TEMP));
 
-    // 设置报警关闭标志
-    showAlarmOff();
-
     // 设置单位。
     UnitType u = tempParam.getUnit();
     if (UNIT_TC == u)
@@ -299,7 +295,7 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 
-    _loadConfig();
+    loadConfig();
     // 增加更新温度通道名称链接-- 暂时屏蔽温度通道名称更改链接
 //    connect(&tempParam, SIGNAL(updateTempName(TEMPChannelIndex,TEMPChannelType)),
 //            this, SLOT(onTempNameUpdate(TEMPChannelIndex,TEMPChannelType)));
@@ -317,6 +313,7 @@ QList<SubParamID> TEMPTrendWidget::getShortTrendSubParams() const
     QList<SubParamID> list;
     list.append(SUB_PARAM_T1);
     list.append(SUB_PARAM_T2);
+    list.append(SUB_PARAM_TD);
     return list;
 }
 
@@ -326,7 +323,3 @@ void TEMPTrendWidget::doRestoreNormalStatus()
     showNormalStatus(psrc);
 }
 
-void TEMPTrendWidget::updateWidgetConfig()
-{
-    _loadConfig();
-}

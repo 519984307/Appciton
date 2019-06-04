@@ -272,7 +272,7 @@ WaveformID CO2OneShotAlarm::getWaveformID(int id)
 SubParamID CO2OneShotAlarm::getSubParamID(int id)
 {
     Q_UNUSED(id)
-    return SUB_PARAM_NONE;
+    return SUB_PARAM_ETCO2;
 }
 
 /**************************************************************************************************
@@ -346,7 +346,7 @@ bool CO2OneShotAlarm::isAlarmEnable(int id)
         v = co2Param.getAwRRSwitch();
     }
 
-    return (static_cast<bool>(v) && co2Param.isEnabled());
+    return (static_cast<bool>(v) && co2Param.isEnabled() && co2Param.getCO2Switch());
 }
 
 /**************************************************************************************************

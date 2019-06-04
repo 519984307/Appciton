@@ -39,7 +39,7 @@ void SoftwareVersionWindow::layoutExec()
     label->setText(GIT_VERSION);
     glayout->addWidget(label, 0, 2, Qt::AlignLeft | Qt::AlignHCenter);
 
-    label = new QLabel(QString("%1:").arg(trs("BuildTime")));
+    label = new QLabel(QString("%1:").arg(trs("CompileTime")));
     glayout->addWidget(label, 1, 1, Qt::AlignLeft | Qt::AlignHCenter);
     label = new QLabel;
     label->setText(QString("%1 %2").arg(__TIME__).arg(__DATE__));

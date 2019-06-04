@@ -28,8 +28,7 @@ public:
 
 protected:
     virtual void layoutExec(void);
-    void n5LayoutExec(void);
-    void suntechLayoutExec(void);
+    void LayoutExec(void);
 
     void timerEvent(QTimerEvent *ev);
     void showEvent(QShowEvent *e);

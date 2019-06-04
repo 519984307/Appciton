@@ -25,8 +25,13 @@
 #include "TrendWidgetLabel.h"
 #include "MeasureSettingWindow.h"
 #include "AlarmSourceManager.h"
+#include "EventStorageManager.h"
 
+#ifdef HIDE_NIBP_PR
+#define COLUMN_COUNT    2
+#else
 #define COLUMN_COUNT    3
+#endif
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -196,8 +201,10 @@ void NIBPDataTrendWidget::showValue(void)
         _table->item(i, 0)->setTextColor(textColor);
         QLabel *l = qobject_cast<QLabel *>(_table->cellWidget(i, 1));
         l->setText("");
+#ifndef HIDE_NIBP_PR
         l = qobject_cast<QLabel *>(_table->cellWidget(i, 2));
         l->setText("");
+#endif
     }
 
     for (int i = 0; i < _rowNR; i++)
@@ -277,6 +284,7 @@ void NIBPDataTrendWidget::showValue(void)
             }
 
             // PR
+#ifndef HIDE_NIBP_PR
             if (!providerBuff.prAlarm)
             {
                 valStr = color.arg(textColor.red())
@@ -285,18 +293,19 @@ void NIBPDataTrendWidget::showValue(void)
                         .arg(QString::number(providerBuff.prvalue));
                 prStr = prStr.arg(valStr);
             }
+#endif
             textStr = color.arg(textColor.red()).arg(textColor.green()).arg(textColor.blue()).arg(textStr);
         }
         QLabel *l = qobject_cast<QLabel *>(_table->cellWidget(i, 1));
         l->setAlignment(Qt::AlignHCenter);
         l->setText(textStr);
         l->setTextInteractionFlags(Qt::NoTextInteraction);
-
+#ifndef HIDE_NIBP_PR
         QLabel *prLbl = qobject_cast<QLabel *>(_table->cellWidget(i, 2));
         prLbl->setAlignment(Qt::AlignHCenter);
         prLbl->setText(prStr);
         prLbl->setTextInteractionFlags(Qt::NoTextInteraction);
-
+#endif
         if (t != _nibpNrendCacheMap.begin())
         {
             t = t - 1;
@@ -318,8 +327,10 @@ void NIBPDataTrendWidget::resizeEvent(QResizeEvent *e)
     _table->setRowCount(_rowNR);
     int eachColumnWidth = _table->width() / COLUMN_COUNT;
     _table->setColumnWidth(0, eachColumnWidth);
-    _table->setColumnWidth(1, eachColumnWidth * 4/3);
+    _table->setColumnWidth(1, eachColumnWidth);
+#ifndef HIDE_NIBP_PR
     _table->setColumnWidth(2, eachColumnWidth * 2/3);
+#endif
 
     for (int i = 0; i < _rowNR; i++)
     {
@@ -334,9 +345,11 @@ void NIBPDataTrendWidget::resizeEvent(QResizeEvent *e)
         _table->setCellWidget(i, 1, l);
         l->setText("");
 
+#ifndef HIDE_NIBP_PR
         QLabel *prLbl = new QLabel();
         _table->setCellWidget(i, 2, prLbl);
         prLbl->setText("");
+#endif
     }
 }
 
@@ -378,6 +391,96 @@ void NIBPDataTrendWidget::clearListData()
     _nibpNrendCacheMap.clear();
 }
 
+void NIBPDataTrendWidget::updateUnit(UnitType unit)
+{
+    setUnit(Unit::getSymbol(unit));
+}
+
+void NIBPDataTrendWidget::getTrendNIBPlist()
+{
+    int eventNum = backend->getBlockNR();
+    unsigned t = 0;
+    TrendDataType value;
+    SubParamID subId;
+    NIBPTrendCacheData nibpTrendCacheData;
+    for (int i = eventNum - 1; i >= 0; i--)
+    {
+        if (parseEventData(i) && ctx.infoSegment->type == EventNIBPMeasurement)
+        {
+            t = ctx.infoSegment->timestamp;
+            nibpTrendCacheData.lastNibpMeasureTime = t;
+            int paramNum = ctx.trendSegment->trendValueNum;
+            for (int i = 0; i < paramNum; i++)
+            {
+                subId = (SubParamID)ctx.trendSegment->values[i].subParamId;
+                value = ctx.trendSegment->values[i].value;
+                switch (subId)
+                {
+                case SUB_PARAM_NIBP_SYS:
+                    nibpTrendCacheData.sys.value = value;
+                    continue;
+                case SUB_PARAM_NIBP_DIA:
+                    nibpTrendCacheData.dia.value = value;
+                    continue;
+                case SUB_PARAM_NIBP_MAP:
+                    nibpTrendCacheData.map.value = value;
+                    break;
+                default:
+                    break;
+                }
+            }
+            AlarmLimitIFace *alarmSource = alarmSourceManager.getLimitAlarmSource(LIMIT_ALARMSOURCE_NIBP);
+            if (alarmSource)
+            {
+                int completeResult = alarmSource->getCompare(nibpTrendCacheData.sys.value, NIBP_LIMIT_ALARM_SYS_LOW);
+                if (completeResult != 0)
+                {
+                    nibpTrendCacheData.sys.isAlarm = true;
+                }
+                completeResult = alarmSource->getCompare(nibpTrendCacheData.sys.value, NIBP_LIMIT_ALARM_SYS_HIGH);
+                if (completeResult != 0)
+                {
+                    nibpTrendCacheData.sys.isAlarm = true;
+                }
+
+                completeResult = alarmSource->getCompare(nibpTrendCacheData.dia.value, NIBP_LIMIT_ALARM_DIA_LOW);
+                if (completeResult != 0)
+                {
+                    nibpTrendCacheData.dia.isAlarm = true;
+                }
+                completeResult = alarmSource->getCompare(nibpTrendCacheData.dia.value, NIBP_LIMIT_ALARM_DIA_HIGH);
+                if (completeResult != 0)
+                {
+                    nibpTrendCacheData.dia.isAlarm = true;
+                }
+
+                completeResult = alarmSource->getCompare(nibpTrendCacheData.map.value, NIBP_LIMIT_ALARM_MAP_LOW);
+                if (completeResult != 0)
+                {
+                    nibpTrendCacheData.map.isAlarm = true;
+                }
+                completeResult = alarmSource->getCompare(nibpTrendCacheData.map.value, NIBP_LIMIT_ALARM_MAP_HIGH);
+                if (completeResult != 0)
+                {
+                    nibpTrendCacheData.map.isAlarm = true;
+                }
+
+                // 优先级
+                nibpTrendCacheData.sys.priority = alarmSource->getAlarmPriority(NIBP_LIMIT_ALARM_SYS_HIGH);
+                nibpTrendCacheData.dia.priority = alarmSource->getAlarmPriority(NIBP_LIMIT_ALARM_DIA_HIGH);
+                nibpTrendCacheData.map.priority = alarmSource->getAlarmPriority(NIBP_LIMIT_ALARM_MAP_HIGH);
+
+                _nibpNrendCacheMap.insert(t, nibpTrendCacheData);
+            }
+        }
+    }
+}
+bool NIBPDataTrendWidget::parseEventData(int dataIndex)
+{
+    ctx.reset();
+    return ctx.parse(backend, dataIndex);
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
@@ -386,7 +489,8 @@ NIBPDataTrendWidget::NIBPDataTrendWidget()
       _hrString(InvStr()),
       _isAlarm(false),
       _rowNR(0),
-      _tableItemHeight(20)
+      _tableItemHeight(20),
+      backend(NULL)
 {
     _nibpNrendCacheMap.clear();
     // 设置标题栏的相关信息。
@@ -398,11 +502,11 @@ NIBPDataTrendWidget::NIBPDataTrendWidget()
     QColor color = colorManager.getColor(paramInfo.getParamName(PARAM_NIBP));
     QString Style = QString("background-color:transparent;"
                             "color:rgb(%1,%2,%3);")
-                    .arg(color.red()).arg(color.green()).arg(color.blue());
+            .arg(color.red()).arg(color.green()).arg(color.blue());
     QString headStyle = QString("QHeaderView::section{color:rgb(%1,%2,%3);"
                                 "border:0px solid black;"
                                 "background-color:black;}")
-                    .arg(color.red()).arg(color.green()).arg(color.blue());
+            .arg(color.red()).arg(color.green()).arg(color.blue());
     // 开始布局。
     _table = new ITableWidget();
     _table->setFocusPolicy(Qt::NoFocus);                                  // 不聚焦。
@@ -413,8 +517,8 @@ NIBPDataTrendWidget::NIBPDataTrendWidget()
     _table->setStyleSheet(Style);
     _table->horizontalHeader()->setStyleSheet(headStyle);
     QStringList titleList = QStringList() << trs("Time")
-                                        << trs("NIBPList")
-                                       << trs("PR");
+                                          << trs("NIBPList")
+                                          << trs("PR");
     _table->setHorizontalHeaderLabels(titleList);
 
     connect(_table, SIGNAL(released(QMouseEvent *)), this, SLOT(mouseReleaseEvent(QMouseEvent *)));
@@ -428,9 +532,13 @@ NIBPDataTrendWidget::NIBPDataTrendWidget()
     contentLayout->addStretch(1);
 
     // 释放事件。
-//    connect(this, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
+    //    connect(this, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
 
     setFocusPolicy(Qt::NoFocus);
+
+    backend = eventStorageManager.backend();
+
+    getTrendNIBPlist();
 }
 
 /**************************************************************************************************

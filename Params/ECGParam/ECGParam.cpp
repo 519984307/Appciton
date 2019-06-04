@@ -147,6 +147,17 @@ void ECGParam::exitDemo()
     ecgParam.updateHR(InvData());
     ecgDupParam.updateHR(InvData());
     updatePVCS(InvData());
+
+    int filter;
+    currentConfig.getNumValue("ECG|FilterMode", filter);
+    _filterMode = static_cast<ECGFilterMode>(filter);
+    emit updateFilterMode();
+
+    int notchFilter;
+    currentConfig.getNumValue("ECG|NotchFilter", notchFilter);
+    _notchFilter = static_cast<ECGNotchFilter>(notchFilter);
+    emit updateNotchFilter();
+
     for (int i = ECG_ST_I; i < ECG_ST_NR; i++)
     {
         updateST((ECGST)i, InvData());
@@ -1688,8 +1699,6 @@ void ECGParam::setPacermaker(ECGPaceMode onoff)
     {
         _provider->enablePacermaker(onoff);
     }
-//    sysStatusBar.changeIcon(SYSTEM_ICON_LABEL_PACER, static_cast<int>(onoff));
-    runningStatus.setPacerStatus(static_cast<int>(onoff));
     return;
 }
 
@@ -1711,7 +1720,6 @@ void ECGParam::updatePacermaker()
     {
         _provider->enablePacermaker(static_cast<ECGPaceMode>(index));
     }
-    runningStatus.setPacerStatus(index);
 }
 
 /**************************************************************************************************
@@ -1728,7 +1736,6 @@ void ECGParam::set12LPacermaker(ECGPaceMode onoff)
         {
             _provider->enablePacermaker(onoff);
         }
-        runningStatus.setPacerStatus(static_cast<int>(onoff));
     }
 
     return;
@@ -1755,11 +1762,6 @@ void ECGParam::setSweepSpeed(ECGSweepSpeed speed)
             continue;
         }
         _waveWidget[i]->setSpeed(speed);
-    }
-
-    if (systemManager.isSupport(CONFIG_SPO2))
-    {
-        spo2Param.setSweepSpeed(speed);
     }
 
     layoutManager.resetWave();
@@ -2008,9 +2010,14 @@ int ECGParam::getQRSToneVolume(void)
 void ECGParam::setNotchFilter(ECGNotchFilter filter)
 {
     currentConfig.setNumValue("ECG|NotchFilter", static_cast<int>(filter));
+    if (filter == _notchFilter)
+    {
+        return;
+    }
+    _notchFilter = static_cast<ECGNotchFilter>(filter);
     if (NULL != _provider)
     {
-        _provider->setNotchFilter(filter);
+        _provider->setNotchFilter(_notchFilter);
     }
     emit updateNotchFilter();
 }
@@ -2020,10 +2027,10 @@ void ECGParam::setNotchFilter(ECGNotchFilter filter)
  *************************************************************************************************/
 ECGNotchFilter ECGParam::getNotchFilter()
 {
-    int filter;
-    currentConfig.getNumValue("ECG|NotchFilter", filter);
-
-    return static_cast<ECGNotchFilter>(filter);
+    int notchFilter = 0;
+    currentConfig.getNumValue("ECG|NotchFilter", notchFilter);
+    _notchFilter = static_cast<ECGNotchFilter>(notchFilter);
+    return _notchFilter;
 }
 
 /***************************************************************************************************
@@ -2066,10 +2073,10 @@ void ECGParam::handleECGLeadCabelType(unsigned char cabelType)
 
     if ((ECG_LEAD_MODE_NR <= leadMode) || (ECG_LEAD_MODE_3 > leadMode))
     {
-        // 如果是新规划，并且是开机第一次判断，则如果导联现不能识别就设置为3导，否则保持上一次不变
+        // 如果是新规划，并且是开机第一次判断，则如果导联现不能识别就设置为5导，否则保持上一次不变
         if (_isPowerOnNewSession && (POWER_ON_SESSION_NEW == timeManager.getPowerOnSession()))
         {
-            leadMode = ECG_LEAD_MODE_3;
+            leadMode = ECG_LEAD_MODE_5;
         }
         else
         {
@@ -2288,6 +2295,10 @@ ECGParam::ECGParam() : Param(PARAM_ECG),
     currentConfig.getNumValue("ECG|FilterMode", mode);
     _filterMode = (ECGFilterMode) mode;
 
+    mode = ECG_NOTCH_OFF;
+    currentConfig.getNumValue("ECG|NotchFilter", mode);
+    _notchFilter = (ECGNotchFilter) mode;
+
     mode = 0;
     currentConfig.getNumValue("ECG12L|ECG12LeadBandwidth", mode);
     mode += ECG_BANDWIDTH_0525_40HZ;
@@ -2343,7 +2354,11 @@ void ECGParam::onWorkModeChanged(WorkMode mode)
     {
         return;
     }
-    setFilterMode(ECG_FILTERMODE_DIAGNOSTIC);
+
+    _filterMode = ECG_FILTERMODE_DIAGNOSTIC;
+    emit updateFilterMode();
+    _notchFilter = ECG_NOTCH_OFF;
+    emit updateNotchFilter();
 }
 
 void ECGParam::onPaletteChanged(ParamID id)

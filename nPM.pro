@@ -120,6 +120,9 @@ DEFINES += DISABLE_ECG_MODULE_CALIBRATION
 #大字体界面，co2模块替换resp模块
 DEFINES += BIG_FONT_LAYOUT_CO2_REPLACE_RESP
 
+#隐藏NIBP的PR值
+DEFINES += HIDE_NIBP_PR
+
 # Depending libraries
 LIBS += -ldl -lasound -lz
 
@@ -385,6 +388,7 @@ SOURCES +=                                                                      
     Components/PowerManager/BatteryBarWidget.cpp                                \
     Components/PowerManager/BatteryIconWidget.cpp                               \
     Components/PowerManager/PowerManager.cpp                                    \
+    Components/PowerManager/TestBatteryTime.cpp                                 \
     Components/WindowManager/IWidget.cpp                                        \
     Components/WindowManager/WindowManager.cpp                                  \
     Components/WindowManager/WindowManagerInterface.cpp                         \
@@ -454,7 +458,6 @@ SOURCES +=                                                                      
     Components/Maintain/Service/NIBP/NIBPRepairMenuManager.cpp                  \
     Components/Maintain/Service/NIBP/NIBPZeroPoint.cpp                          \
     Components/Maintain/Service/Temp/ServiceCPUTemp.cpp                         \
-    Components/Maintain/Service/Version/ServiceVersion.cpp                      \
     Components/Maintain/Factory/FactoryConfigManager.cpp                        \
     Components/Maintain/FactoryMaintain/FactoryDataRecordContent.cpp            \
     Components/Maintain/Factory/Menu/FactoryTempMenuContent.cpp                 \
@@ -910,6 +913,7 @@ HEADERS +=                                                                      
     Components/PowerManager/BatteryIconWidget.h                                 \
     Components/PowerManager/PowerManager.h                                      \
     Components/PowerManager/PowerManagerProviderIFace.h                         \
+    Components/PowerManager/TestBatteryTime.h                                   \
     Components/TimeManager/DateTimeWidget.h                                     \
     Components/TimeManager/ElapseTimeWidget.h                                   \
     Components/TimeManager/TimeManager.h                                        \
@@ -989,7 +993,6 @@ HEADERS +=                                                                      
     Components/Maintain/Service/NIBP/NIBPRepairMenuManager.h                    \
     Components/Maintain/Service/NIBP/NIBPZeroPoint.h                            \
     Components/Maintain/Service/Temp/ServiceCPUTemp.h                           \
-    Components/Maintain/Service/Version/ServiceVersion.h                        \
     Components/Maintain/Factory/FactoryConfigManager.h                          \
     Components/Maintain/Factory/Menu/FactoryTempMenuContent.h                   \
     Components/Maintain/Factory/Menu/FactoryTestMenuContent.h                   \
@@ -1205,7 +1208,6 @@ HEADERS +=                                                                      
     Main/IThread.h                                                              \
     Main/MergeConfig.h                                                          \
     Main/Starter.h                                                              \
-    Main/Version.h \
     Utility/Widgets/ImportFileSubWidget.h \
     Components/TimeManager/TimeManagerInterface.h \
     Components/Alarm/AlarmSourceManager.h
