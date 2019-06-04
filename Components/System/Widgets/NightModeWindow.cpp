@@ -54,9 +54,29 @@ void NightModeWindowPrivate::loadOptions()
     systemConfig.getNumValue("NightMode|ScreenBrightness", index);
     combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setCurrentIndex(index);
 
+    int isAlarmAudio = 0;
+    systemConfig.getNumValue("Alarms|AlarmAudio", isAlarmAudio);
+    if (isAlarmAudio)
+    {
+        combos[ITEM_CBO_ALARM_VOLUME]->setEnabled(true);
+    }
+    else
+    {
+        combos[ITEM_CBO_ALARM_VOLUME]->setEnabled(false);
+    }
+
     index = 0;
-    systemConfig.getNumValue("NightMode|AlarmVolume", index);
-    combos[ITEM_CBO_ALARM_VOLUME]->setCurrentIndex(index - 1);
+    systemConfig.getNumValue("Alarms|MinimumAlarmVolume", index);
+    int volume = 0;
+    systemConfig.getNumValue("NightMode|AlarmVolume", volume);
+    for (int i = index; i <= SoundManager::VOLUME_LEV_5; i++)
+    {
+        combos[ITEM_CBO_ALARM_VOLUME]->addItem(QString::number(i));
+        if (volume == i)
+        {
+            combos[ITEM_CBO_ALARM_VOLUME]->setCurrentIndex(combos[ITEM_CBO_ALARM_VOLUME]->count() - 1);
+        }
+    }
 
     index = 0;
     systemConfig.getNumValue("NightMode|HeartBeatVolume", index);
@@ -141,12 +161,6 @@ void NightModeWindow::layoutExec()
     label = new QLabel(trs("SystemAlarmVolume"));
     glayout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << QString::number(SoundManager::VOLUME_LEV_1)
-                       << QString::number(SoundManager::VOLUME_LEV_2)
-                       << QString::number(SoundManager::VOLUME_LEV_3)
-                       << QString::number(SoundManager::VOLUME_LEV_4)
-                       << QString::number(SoundManager::VOLUME_LEV_5));
     comboIndex = static_cast<int>(NightModeWindowPrivate::
                                   ITEM_CBO_ALARM_VOLUME);
     comboBox->setProperty("Item",
