@@ -60,6 +60,7 @@ public:
 void PatientManager::setPatientInfoWidget(PatientInfoWidgetInterface &widget)
 {
     d_ptr->patientInfoWidget = &widget;
+    d_ptr->patientInfoWidget->loadPatientInfo(d_ptr->patientInfo, getBedNum());
 }
 
 /**************************************************************************************************
@@ -97,7 +98,7 @@ void PatientManager::setType(PatientType type)
     // 病人类型被修改了，重新加载配置后，通知需要关注次事件的对象。
     if (d_ptr->patientInfoWidget)
     {
-        d_ptr->patientInfoWidget->loadPatientInfo();
+        d_ptr->patientInfoWidget->loadPatientInfo(d_ptr->patientInfo, getBedNum());
     }
 
     // 报警限修改
@@ -253,7 +254,7 @@ void PatientManager::setName(const QString &name)
 
     if (d_ptr->patientInfoWidget)
     {
-        d_ptr->patientInfoWidget->loadPatientInfo();
+        d_ptr->patientInfoWidget->loadPatientInfo(d_ptr->patientInfo, getBedNum());
     }
 }
 
@@ -288,7 +289,7 @@ void PatientManager::setBedNum(const QString &bedNum)
     systemConfig.setStrValue("General|BedNumber", bedNum);
     if (d_ptr->patientInfoWidget)
     {
-        d_ptr->patientInfoWidget->loadPatientInfo();
+        d_ptr->patientInfoWidget->loadPatientInfo(d_ptr->patientInfo, bedNum);
     }
 }
 
