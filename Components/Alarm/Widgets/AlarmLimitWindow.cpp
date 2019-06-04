@@ -155,23 +155,6 @@ void AlarmLimitWindow::showEvent(QShowEvent *ev)
 {
     Dialog::showEvent(ev);
     QTimer::singleShot(0, this, SLOT(setItemFocus()));
-    // refresh page button
-    if (d_ptr->table->hasPreivousPage())
-    {
-        d_ptr->prevBtn->setEnabled(true);
-    }
-    else
-    {
-        d_ptr->prevBtn->setEnabled(false);
-    }
-    if (d_ptr->table->hasNextPage())
-    {
-        d_ptr->nextBtn->setEnabled(true);
-    }
-    else
-    {
-        d_ptr->nextBtn->setEnabled(false);
-    }
 }
 
 
@@ -252,35 +235,14 @@ void AlarmLimitWindow::layoutExec()
 
 void AlarmLimitWindow::onbtnClick()
 {
-    bool focusPrevBtn = false;
-    bool focusNextBtn = false;
     Button *btn = qobject_cast<Button *>(sender());
     if (btn == d_ptr->prevBtn)
     {
         d_ptr->table->scrollToPreviousPage();
-        if (!d_ptr->table->hasPreivousPage())
-        {
-            focusNextBtn = true;
-        }
     }
     else if (btn == d_ptr->nextBtn)
     {
         d_ptr->table->scrollToNextPage();
-        if (!d_ptr->table->hasNextPage())
-        {
-            focusPrevBtn = true;
-        }
-    }
-
-    d_ptr->prevBtn->setEnabled(d_ptr->table->hasPreivousPage());
-    d_ptr->nextBtn->setEnabled(d_ptr->table->hasNextPage());
-    if (focusPrevBtn)
-    {
-        d_ptr->prevBtn->setFocus();
-    }
-    if (focusNextBtn)
-    {
-        d_ptr->nextBtn->setFocus();
     }
 }
 
