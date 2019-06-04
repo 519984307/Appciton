@@ -336,7 +336,6 @@ void NightModeWindow::onComboBoxItemFocusIndexChanged(int index)
         soundManager.setVolume(SoundManager::SOUND_TYPE_NOTIFICATION , static_cast<SoundManager::VolumeLevel>(index));
         soundManager.keyPressTone();
     }
-
 }
 
 void NightModeWindow::OnBtnReleased()

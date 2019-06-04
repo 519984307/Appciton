@@ -47,7 +47,7 @@ public:
     /**
      * @brief updateAlarmStateWidget 刷新报警状态图标
      */
-    virtual void updateAlarmStateWidget() = 0;
+    virtual void updateAlarmAudioState() = 0;
 
     /**
      * @brief phyAlarmResetStatusHandle 处理复位后的生理报警状态

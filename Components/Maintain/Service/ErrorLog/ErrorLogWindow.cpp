@@ -315,5 +315,4 @@ void ErrorLogWindow::onPageInfoUpdated(int curPage, int totalPage)
     title += trs("PageNum");
     title += ")";
     setWindowTitle(title);
-
 }
