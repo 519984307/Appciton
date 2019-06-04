@@ -200,6 +200,7 @@ void NightModeWindow::layoutExec()
                                   ITEM_CBO_KEYPRESS_VOLUME_NUM);
     comboBox->setProperty("Item" , qVariantFromValue(comboIndex));
     connect(comboBox , SIGNAL(currentIndexChanged(int)) , this , SLOT(onComboBoxIndexChanged(int)));
+    connect(comboBox, SIGNAL(itemFoucsIndexChanged(int)), this, SLOT(onComboBoxItemFocusIndexChanged(int)));
     d_ptr->combos.insert(NightModeWindowPrivate::
                          ITEM_CBO_KEYPRESS_VOLUME_NUM , comboBox);
 
@@ -319,11 +320,23 @@ void NightModeWindow::onComboBoxIndexChanged(int index)
 
 void NightModeWindow::onComboBoxItemFocusIndexChanged(int index)
 {
-    if (index == 1)
+    ComboBox* w = qobject_cast<ComboBox*>(sender());
+    int type = w->property("Item").toInt();
+
+    if (type == NightModeWindowPrivate::ITEM_CBO_NIBP_COMPLETED_TIPS)
     {
-        soundManager.setNIBPCompleteTone(true);
-        soundManager.nibpCompleteTone();
+        if (index == 1)
+        {
+            soundManager.setNIBPCompleteTone(true);
+            soundManager.nibpCompleteTone();
+        }
     }
+    else if (type == NightModeWindowPrivate::ITEM_CBO_KEYPRESS_VOLUME_NUM)
+    {
+        soundManager.setVolume(SoundManager::SOUND_TYPE_NOTIFICATION , static_cast<SoundManager::VolumeLevel>(index));
+        soundManager.keyPressTone();
+    }
+
 }
 
 void NightModeWindow::OnBtnReleased()
