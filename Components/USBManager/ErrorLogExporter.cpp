@@ -19,7 +19,7 @@
 #include "LanguageManager.h"
 
 ErrorLogExporter::ErrorLogExporter()
-    :DataExporterBase(), _currentProgress(0)
+    : DataExporterBase(), _currentProgress(0)
 {
 }
 
@@ -34,14 +34,15 @@ void ErrorLogExporter::startExport()
     exportNamePrefix += serialNum;
     quint32 identifier = 10;
     QString filename;
-    do {
+    do
+    {
         filename = exportNamePrefix + QString::number(identifier, 36).toUpper() + ".log";
         identifier++;
         if (identifier % 36 == 0)
         {
             identifier = (identifier - 1) * 36 + 10;
         }
-    }while(QFile::exists(filename));
+    }while (QFile::exists(filename));
 
     if (exportLog(filename))
     {
@@ -108,21 +109,21 @@ bool ErrorLogExporter::exportLog(const QString &filename)
         int index = 0;
         int total = errorLog.count();
         ErrorLog::Summary summary = errorLog.getSummary();
-        ErrorLogItemBase *item = NULL;
         stream << trs("ErrorLogExportAt") << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") << TEXT_ENDL;
         stream << trs("NumberOfErrors") << summary.NumOfErrors << TEXT_ENDL;
         stream << trs("NumberOfCriticalFaults") << summary.numOfCriticalErrors << TEXT_ENDL;
         stream << trs("MostRecentError") << summary.mostRecentErrorDate << TEXT_ENDL;
         stream << trs("MostRecentCriticalFault") << summary.mostRecentCriticalErrorDate << TEXT_ENDL;
         stream << trs("OldestError") << summary.oldestErrorDate << TEXT_ENDL;
-        stream << trs("LastEraseTime") << summary.lastEraseTimeDate << TEXT_ENDL;       
-        stream <<TEXT_ENDL;
+        stream << trs("LastEraseTime") << summary.lastEraseTimeDate << TEXT_ENDL;
+        stream << TEXT_ENDL;
 
         while (index < total)
         {
+            ErrorLogItemBase *item = NULL;
             updateProgress(100 * (index + 1) / total);
 
-            stream << "Log(" << index+1 << "/" << total << ")" << TEXT_ENDL;
+            stream << "Log(" << index + 1 << "/" << total << ")" << TEXT_ENDL;
             item = errorLog.getLog(index);
             if (item)
             {
