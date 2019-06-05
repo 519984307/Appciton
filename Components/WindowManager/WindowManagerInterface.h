@@ -10,6 +10,7 @@
 
 #pragma once
 #include "qglobal.h"
+#include <QFlags>
 
 class Dialog;
 class WindowManagerInterface
@@ -48,3 +49,4 @@ public:
      */
     virtual Dialog *topWindow() = 0;
 };
+Q_DECLARE_OPERATORS_FOR_FLAGS(WindowManagerInterface::ShowBehavior)

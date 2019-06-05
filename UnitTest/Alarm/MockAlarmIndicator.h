@@ -19,7 +19,7 @@ public:
     MOCK_METHOD0(delLatchPhyAlarm, void(void));
     MOCK_METHOD0(delAllPhyAlarm, void(void));
     MOCK_METHOD1(setAlarmStatus, void(AlarmStatus status));
-    MOCK_METHOD0(updateAlarmStateWidget, void(void));
+    MOCK_METHOD0(updateAlarmAudioState, void(void));
     MOCK_METHOD0(phyAlarmResetStatusHandle, bool(void));
     MOCK_METHOD0(techAlarmResetStatusHandle, bool(void));
     MOCK_METHOD1(getAlarmCount, int(AlarmType type));

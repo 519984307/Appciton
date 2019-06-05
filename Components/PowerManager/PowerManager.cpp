@@ -17,6 +17,7 @@
 #include "AlarmSourceManager.h"
 #include "LanguageManager.h"
 #include "math.h"
+#include "TestBatteryTime.h"
 #define TWO_MINUTE 1000 * 120
 #define POWER_LIST_MAX_COUNT 3
 #define AD_VALUE_LIST_COUNT 30
@@ -178,6 +179,8 @@ void PowerMangerPrivate::monitorRun()
         shutdownTimer->stop();
         shutBattery = false;
         lowBattery = false;
+
+        testBatteryTime.Record(BAT_VOLUME_NONE, 0, QTime());
     }
     else if (powerType == POWER_SUPLY_BAT)
     {
@@ -228,6 +231,7 @@ void PowerMangerPrivate::monitorRun()
         {
             shutdownTimer->stop();
         }
+        testBatteryTime.Record(curVolume, adcValue, QTime::currentTime());
     }
     else
     {

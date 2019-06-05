@@ -114,7 +114,7 @@ public:
     /**
      * @brief updateAlarmStateWidget 刷新报警状态图标
      */
-    void updateAlarmStateWidget();
+    void updateAlarmAudioState();
 
 private:
     AlarmIndicator();

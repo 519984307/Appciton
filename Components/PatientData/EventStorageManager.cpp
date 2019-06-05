@@ -14,6 +14,7 @@
 #include "DataStorageDirManager.h"
 #include "EventStorageItem.h"
 #include "ECGParam.h"
+#include "ECGDupParam.h"
 #include <QList>
 #include <QMutex>
 #include "Debug.h"
@@ -44,7 +45,7 @@ public:
     }
 
 
-    QList<WaveformID> getStoreWaveList(WaveformID paramWave);
+    QList<WaveformID> getStoreWaveList(WaveformID paramWave,  int subID = -1);
 
     QList<EventStorageItem *> eventItemList;
     QMutex mutex;
@@ -58,7 +59,7 @@ public:
     EventStorageItem *item;
 };
 
-QList<WaveformID> EventStorageManagerPrivate::getStoreWaveList(WaveformID paramWave)
+QList<WaveformID> EventStorageManagerPrivate::getStoreWaveList(WaveformID paramWave, int subID)
 {
     QList<int> displaywaves = layoutManager.getDisplayedWaveformIDs();
 
@@ -76,6 +77,15 @@ QList<WaveformID> EventStorageManagerPrivate::getStoreWaveList(WaveformID paramW
     if (paramWave != calcLeadWave)
     {
         storeWaves.append(calcLeadWave);
+    }
+
+    // HR报警且来源为ECG,体温报警,只打印计算导联
+    if ((subID == SUB_PARAM_HR_PR && (ecgDupParam.getCurHRSource() == HR_SOURCE_ECG)) ||
+            subID == SUB_PARAM_T1 ||
+            subID == SUB_PARAM_T2 ||
+            subID == SUB_PARAM_TD)
+    {
+        return storeWaves;
     }
 
     foreach(int id, displaywaves)
@@ -150,7 +160,7 @@ void EventStorageManager::triggerAlarmEvent(const AlarmInfoSegment &almInfo, Wav
     d->_eventTriggerFlag = true;
 
     EventStorageItem *item = new EventStorageItem(EventPhysiologicalAlarm,
-            d->getStoreWaveList(paramWave),
+            d->getStoreWaveList(paramWave, almInfo.subParamID),
             almInfo);
     item->startCollectTrendAndWaveformData(t);
 

@@ -814,11 +814,16 @@ ServiceVersion,版本,Version
 ServiceCPUTemp,CPU温度,CPU Temp
 iDMVersion,iDM,iDM
 ECGVersion,ECG,ECG
+ECGBootloader,ECG Bootloader,ECG Bootloader
 NIBPVersion,NIBP,NIBP
+NIBPBootloader,NIBP Bootloader,NIBP Bootloader
 SPO2Version,SpO2,SpO2
+SPO2Bootloader,SPO2 Bootloader,SPO2 Bootloader
 TEMPVersion,TEMP,TEMP
+TEMPBootloader,TEMP Bootloader,TEMP Bootloader
 iDMBoardVersion,iDMBoard,iDMBoard
 PRT48Version,PRT48,PRT48
+PRT48Bootloader,PRT48 Bootloader,PRT48 Bootloader
 SourceOfCO2,来源CO2,Source of CO2
 AutoOfCO2,自动(CO2),Auto(CO2)
 PDVersion,PD,PD
@@ -890,6 +895,7 @@ SupervisorAudioMenuDesc,声音设置,Audio Setting
 SupervisorVoiceVolume,语音提示音量,Default Voice Prompt Tone
 AlarmPause,报警暂停,Alarm Pause
 AlarmOff,报警关闭,Alarm Off
+AlarmAudioOff,报警音关闭,Alarm Audio Off
 AlarmPauseTime,报警暂停时间,Alarm Pause Time
 AlarmOffPromptMechanism,报警关闭提示机制,Alarm Off Prompt Mechanism
 EnableAlarmAudioOff,使能报警声音关闭,Enable Alarm Audio Off
@@ -944,6 +950,7 @@ RealTimePrintMidLead,实时打印中部导联,Real-Time Print Middle Lead
 RealTimePrintBottomLead,实时打印底部导联,Real-Time Print Bottom Lead
 ErrorPassWordERROR,密码错误!,Password Error!
 Warn,警告,Warning
+SureSafePopUpUDisk,是否安全弹出U盘?,Whether to safely pop up the U disk?
 WarningNoUSB,没有找到U盘，请检查！,"Not find U disk, please check!"
 WarnLessUSBFreeSpace,U盘空间不足，请检查！,"U disk free space not enough, please check!"
 WarningNoImportFile,导入文件不存在，请检查！,"Import file does not exist, please check!"
@@ -1087,6 +1094,7 @@ NIBPReading,NIBP快照,NIBP Snapshot
 PhyAlarm,生理报警,Phy. Alarm
 AlarmMute,报警静音,Mute
 RecorderAction,记录仪,Recorder Action
+PrinterCommunicationStop,打印机通信中断,Printer Communication Stop
 PrinterDoorOpened,打印机仓门未关,Printer Door Opened
 PrinterOutOfPaper,打印机缺纸,Printer Out Of Paper
 PrinterOverHeating,打印头过热,Printer Over Heating
@@ -1264,6 +1272,8 @@ NotFoundUDisk,未发现U盘，请插入U盘,Not Found U Disk
 PleaseSelectFiles,请选择文件,Please Select Files
 PleaseAddExportFiles,请增加导出文件,Please Add Export Files
 ImportFileFailed,导入文件失败,Import File failed
+ImportFileMaximum,导入文件数量已达到最大,Import The Number Of Files  Maximum
+OutOfNamingRange,超出命名范围,Out Of Naming Range
 ImportFileCompleted,导入文件完成,Import File Completed
 PleaseAddImportFiles,请增加导入文件,Please Add Import Files
 FactoryMaintain,工厂维护,Factory Maintain
@@ -1326,6 +1336,7 @@ PowerManagerSoftwareVersion,电源管理软件版本,Power Manager Software Vers
 Uboot,系统引导文件,Uboot
 Kernel,内核,Kernel
 SystemboardModule,系统板,System Board Module
+SystemboardBootloader,系统板Bootloader,System Board Bootloader
 RecorderModule,记录模块,Recorder Module
 ECGAlgorithmType,心电算法类型,ECG Algorithm Type
 UserMaintainGeneralMenuDesc,通用,General

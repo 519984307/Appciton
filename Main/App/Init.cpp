@@ -18,6 +18,7 @@
 #include "RainbowProvider.h"
 #include "ConfigManager.h"
 #include "NurseCallManager.h"
+#include "TestBatteryTime.h"
 
 /**************************************************************************************************
  * 功能： 初始化系统。
@@ -172,6 +173,7 @@ static void _initComponents(void)
     alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_BATTERY);
     alertor.addOneShotSource(oneShotAlarmSource);
     layoutManager.addLayoutWidget(bar);
+    testBatteryTime.getInstance();
 
     // 病人管理初始化。
     PatientInfoWidget *patientInfoWidget = new PatientInfoWidget();
@@ -619,11 +621,9 @@ static void _initProviderParam(void)
     oneShotAlarmSource = new SystemAlarm();
     alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_SYSTEM);
     alertor.addOneShotSource(oneShotAlarmSource);
-
-    // print alarm
-    oneShotAlarmSource = new PrintOneShotAlarm();
-    alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_PRINT);
-    alertor.addOneShotSource(oneShotAlarmSource);
+    int status = 0;
+    systemConfig.getNumValue("Alarms|AlarmAudio", status);
+    oneShotAlarmSource->setOneShotAlarm(SYSTEM_ONE_SHOT_ALARM_AUDIO_OFF, !status);
 }
 
 /**************************************************************************************************
@@ -647,11 +647,20 @@ static void _initPrint(void)
     // printManager.selftest();
     // paramManager.addProvider(*prtProvider);
 
-    PRT48Provider *prtProvider = new PRT48Provider();
-    recorderManager.setPrintPrividerIFace(prtProvider);
-    recorderManager.selfTest();
-    recorderManager.printWavesInit();
-    paramManager.addProvider(*prtProvider);
+    // print alarm
+    int index = 0;
+    machineConfig.getNumValue("PrinterEnable", index);
+    if (index)
+    {
+        AlarmOneShotIFace *oneShotAlarmSource = new PrintOneShotAlarm();
+        alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_PRINT);
+        alertor.addOneShotSource(oneShotAlarmSource);
+        PRT48Provider *prtProvider = new PRT48Provider();
+        recorderManager.setPrintPrividerIFace(prtProvider);
+        recorderManager.selfTest();
+        recorderManager.printWavesInit();
+        paramManager.addProvider(*prtProvider);
+    }
 
     paramManager.getVersion();
 }
@@ -671,7 +680,7 @@ static void _initMenu(void)
     supervisorMenuManager.construction();
 
     //其它弹出菜单初始化
-    patientManager.construction();
+    patientManager.getInstance();
 }
 
 /**************************************************************************************************
@@ -700,7 +709,6 @@ void deleteObjects(void)
     deleteMenuManager();
     // deletePatientMenu();
     deleteParamManager();
-    deletePatientManager();
     deleteTimeDate();
     deleteMachineConfig();
     deleteDataStorageDirManager();

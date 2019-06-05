@@ -382,12 +382,14 @@ SOURCES +=                                                                      
     Components/PatientManager/PatientInfoWidget.cpp                             \
     Components/PatientManager/PatientManagementMenuContent.cpp                  \
     Components/PatientManager/PatientInfoWindow.cpp                             \
+    Components/PatientManager/PatientInfoWindowInterface.cpp                    \
     Components/PatientManager/DischargePatientWindow.cpp                        \
     Components/PowerManager/BatteryAlarm.cpp                                    \
     Components/PowerManager/BatteryIndicatorWindow.cpp                          \
     Components/PowerManager/BatteryBarWidget.cpp                                \
     Components/PowerManager/BatteryIconWidget.cpp                               \
     Components/PowerManager/PowerManager.cpp                                    \
+    Components/PowerManager/TestBatteryTime.cpp                                 \
     Components/WindowManager/IWidget.cpp                                        \
     Components/WindowManager/WindowManager.cpp                                  \
     Components/WindowManager/WindowManagerInterface.cpp                         \
@@ -902,8 +904,10 @@ HEADERS +=                                                                      
     Components/PatientManager/PatientManager.h                                  \
     Components/PatientManager/PatientDefine.h                                   \
     Components/PatientManager/PatientInfoWidget.h                               \
+    Components/PatientManager/PatientInfoWidgetInterface.h                      \
     Components/PatientManager/PatientManagementMenuContent.h                    \
     Components/PatientManager/PatientInfoWindow.h                               \
+    Components/PatientManager/PatientInfoWindowInterface.h                      \
     Components/PatientManager/DischargePatientWindow.h                          \
     Components/PowerManager/BatteryAlarm.h                                      \
     Components/PowerManager/BatteryDefine.h                                     \
@@ -912,6 +916,7 @@ HEADERS +=                                                                      
     Components/PowerManager/BatteryIconWidget.h                                 \
     Components/PowerManager/PowerManager.h                                      \
     Components/PowerManager/PowerManagerProviderIFace.h                         \
+    Components/PowerManager/TestBatteryTime.h                                   \
     Components/TimeManager/DateTimeWidget.h                                     \
     Components/TimeManager/ElapseTimeWidget.h                                   \
     Components/TimeManager/TimeManager.h                                        \
