@@ -35,7 +35,7 @@ class NIBPCalibrateContentPrivate
 public:
     NIBPCalibrateContentPrivate()
         : label(NULL), point2Spb(NULL),
-          pressurevalue(0), calibrateFlag(false), isCalibrating(false),
+          pressurevalue(0), isCalibrating(false),
           point(NIBP_CALIBRATE_ZERO), calibrateTimerID(-1),
           timeoutNum(0), inModeTimerID(-1), isCalibrateMode(false),
           modeBtn(NULL), calibrateBtn1(NULL), calibrateBtn2(NULL)
@@ -47,7 +47,6 @@ public:
     SpinBox *point2Spb;
 
     int  pressurevalue;                     // 校准点的值
-    bool calibrateFlag;                     // 进入模式标志
     bool isCalibrating;                     // 是否处于正在校准
 
     NIBPCalibratePoint point;
@@ -186,7 +185,6 @@ void NIBPCalibrateContent::timerEvent(QTimerEvent *ev)
                     btn->setEnabled(false);
                     btn->setText(trs("ServiceCalibrate"));
                     d_ptr->point2Spb->setEnabled(false);
-                    d_ptr->calibrateFlag = false;
                 }
                 else
                 {
@@ -197,7 +195,6 @@ void NIBPCalibrateContent::timerEvent(QTimerEvent *ev)
                     btn = d_ptr->btnList.at(1);
                     btn->setEnabled(true);
                     d_ptr->point2Spb->setEnabled(true);
-                    d_ptr->calibrateFlag = true;
                 }
             }
             else
@@ -218,13 +215,23 @@ void NIBPCalibrateContent::timerEvent(QTimerEvent *ev)
     }
 }
 
+void NIBPCalibrateContent::hideEvent(QHideEvent *e)
+{
+    Q_UNUSED(e);
+    loadOptions();
+    if (d_ptr->moduleStr == "BLM_N5")
+    {
+        nibpParam.provider().serviceCalibrate(false);
+    }
+}
+
 /**************************************************************************************************
  * 校准按钮1信号槽
  *************************************************************************************************/
 void NIBPCalibrateContent::onBtn1Calibrated()
 {
 //    d_ptr->label->setText("");
-    if (d_ptr->calibrateFlag && !d_ptr->isCalibrating)
+    if (d_ptr->isCalibrateMode && !d_ptr->isCalibrating)
     {
         d_ptr->isCalibrating = true;
         unsigned char cmd[2];
@@ -256,7 +263,7 @@ void NIBPCalibrateContent::onBtn1Calibrated()
  *************************************************************************************************/
 void NIBPCalibrateContent::onBtn2Calibrated()
 {
-    if (d_ptr->calibrateFlag && !d_ptr->isCalibrating)
+    if (d_ptr->isCalibrateMode && !d_ptr->isCalibrating)
     {
         d_ptr->isCalibrating = true;
         Button *btn = d_ptr->btnList.at(1);
@@ -296,12 +303,10 @@ void NIBPCalibrateContent::inCalibrateMode()
         {
             nibpParam.provider().serviceCalibrate(false);
             nibpParam.switchState(NIBP_SERVICE_STANDBY_STATE);
-            emit retBtnEnable(true);  //使能返回按键
         }
         else
         {
             nibpParam.switchState(NIBP_SERVICE_CALIBRATE_STATE);
-            emit retBtnEnable(false);  // 取消返回按键
         }
     }
     else
@@ -316,27 +321,23 @@ void NIBPCalibrateContent::inCalibrateMode()
         }
         if (d_ptr->isCalibrateMode)
         {
-            emit retBtnEnable(true);
             d_ptr->modeBtn->setText(trs("EnterCalibrateMode"));
-            d_ptr->isCalibrateMode = false;
             Button *btn = d_ptr->btnList.at(0);
             btn->setEnabled(false);
             btn->setText(trs("ServiceCalibrate"));
             btn = d_ptr->btnList.at(1);
             btn->setEnabled(false);
             btn->setText(trs("ServiceCalibrate"));
-            d_ptr->calibrateFlag = false;
+            d_ptr->isCalibrateMode = false;
         }
         else
         {
-            emit retBtnEnable(false);
             d_ptr->modeBtn->setText(trs("QuitCalibrateMode"));
             d_ptr->isCalibrateMode = true;
             Button *btn = d_ptr->btnList.at(0);
             btn->setEnabled(true);
             btn = d_ptr->btnList.at(1);
             btn->setEnabled(true);
-            d_ptr->calibrateFlag = true;
             nibpParam.provider().controlPneumatics(0, 1, 1);
         }
     }
@@ -349,12 +350,12 @@ NIBPCalibrateContent::~NIBPCalibrateContent()
 
 void NIBPCalibrateContent::init()
 {
-    d_ptr->isCalibrateMode = false;
     loadOptions();
 }
 
 void NIBPCalibrateContent::loadOptions()
 {
+    d_ptr->isCalibrateMode = false;
     d_ptr->modeBtn->setEnabled(true);
     d_ptr->modeBtn->setText(trs("EnterCalibrateMode"));
     d_ptr->calibrateBtn1->setText(trs("ServiceCalibrate"));

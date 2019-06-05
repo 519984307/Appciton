@@ -305,7 +305,6 @@ void MenuWindow::showEvent(QShowEvent *ev)
         bottomLayout->addWidget(d_ptr->retBtn);
         d_ptr->rightLayout->addLayout(bottomLayout);
         connect(d_ptr->retBtn, SIGNAL(clicked()), this, SLOT(onReturnBtnClick()));
-        connect(this, SIGNAL(retBtnEnable(bool)), this, SLOT(onRetBtnEnable(bool)));
     }
 
     Dialog::showEvent(ev);
@@ -394,9 +393,4 @@ void MenuWindow::onReturnBtnClick()
     {
         f->setFocus();
     }
-}
-
-void MenuWindow::onRetBtnEnable(bool flag)
-{
-    d_ptr->retBtn->setEnabled(flag);
 }

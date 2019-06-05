@@ -76,6 +76,8 @@ protected:
     virtual void layoutExec(void);
     void timerEvent(QTimerEvent *ev);
 
+    void hideEvent(QHideEvent *e);
+
 private slots:
     /**
      * @brief onBtn1Calibrated  校准点1按钮

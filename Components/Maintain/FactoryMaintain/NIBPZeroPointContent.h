@@ -21,11 +21,13 @@ public:
     ~NIBPZeroPointContent();
 
     void init(void);
+    void loadOptions(void);
 
 protected:
     virtual void layoutExec(void);
     void timerEvent(QTimerEvent *ev);
     bool focusNextPrevChild(bool next);
+    void hideEvent(QHideEvent *e);
 
 private slots:
     /**

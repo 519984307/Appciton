@@ -278,19 +278,24 @@ bool NIBPZeroPointContent::focusNextPrevChild(bool next)
     return MenuContent::focusNextPrevChild(next);
 }
 
+void NIBPZeroPointContent::hideEvent(QHideEvent *e)
+{
+    Q_UNUSED(e);
+    loadOptions();
+    nibpParam.provider().serviceCalibrateZero(false);
+}
+
 void NIBPZeroPointContent::enterZeroReleased()
 {
     d_ptr->inModeTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
     d_ptr->modeBtn->setEnabled(false);
     if (d_ptr->isZeroMode)
     {
-        emit retBtnEnable(true);
         nibpParam.provider().serviceCalibrateZero(false);
         nibpParam.switchState(NIBP_SERVICE_STANDBY_STATE);
     }
     else
     {
-        emit retBtnEnable(false);
         nibpParam.switchState(NIBP_SERVICE_CALIBRATE_ZERO_STATE);
     }
 }
@@ -337,6 +342,11 @@ NIBPZeroPointContent::~NIBPZeroPointContent()
 }
 
 void NIBPZeroPointContent::init()
+{
+    loadOptions();
+}
+
+void NIBPZeroPointContent::loadOptions()
 {
     d_ptr->isZeroMode = false;
     d_ptr->modeBtn->setEnabled(true);
