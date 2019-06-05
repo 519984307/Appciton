@@ -377,7 +377,7 @@ void ConfigEditECGMenuContent::layoutExec()
             this, SLOT(onPopupListItemFocusChanged(int)));
     itemID = static_cast<int>(ConfigEditECGMenuContentPrivate::ITEM_CBO_HTBT_VOL);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    connect(comboBox, SIGNAL(activated(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_HTBT_VOL, comboBox);
 
