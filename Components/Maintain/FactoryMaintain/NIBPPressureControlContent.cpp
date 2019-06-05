@@ -277,7 +277,7 @@ void NIBPPressureControlContent::hideEvent(QHideEvent *e)
     }
     else
     {
-        nibpParam.provider().serviceCuffPressure(false);
+        nibpParam.provider().servicePressurecontrol(false);
     }
 }
 

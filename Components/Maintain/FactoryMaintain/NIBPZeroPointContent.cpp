@@ -353,11 +353,6 @@ void NIBPZeroPointContent::init()
 void NIBPZeroPointContent::loadOptions()
 {
     d_ptr->isZeroMode = false;
-    loadOptions();
-}
-
-void NIBPZeroPointContent::loadOptions()
-{
     d_ptr->modeBtn->setEnabled(true);
     d_ptr->modeBtn->setText(trs("EnterZeroMode"));
     d_ptr->pumpBtn->setEnabled(false);
