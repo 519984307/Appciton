@@ -29,7 +29,7 @@
 #include "IConfig.h"
 #include "WindowManager.h"
 
-#define TABLE_ROW_NR        7
+#define TABLE_ROW_NR        6
 
 #define HEIGHT_HINT (themeManger.getAcceptableControlHeight())
 #define DEFAULT_WIDTH (windowManager.getPopWindowWidth())
