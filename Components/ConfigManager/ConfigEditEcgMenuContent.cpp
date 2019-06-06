@@ -555,6 +555,8 @@ void ConfigEditECGMenuContent::onComboBoxIndexChanged(int index)
         break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_HTBT_VOL:
             d_ptr->config->setNumValue("ECG|QRSVolume", index);
+            currentConfig.getNumValue("ECG|QRSVolume", index);
+            soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT, static_cast<SoundManager::VolumeLevel>(index));
             break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_SWEEP_SPEED:
             d_ptr->config->setNumValue("ECG|SweepSpeed", index);
