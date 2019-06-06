@@ -16,7 +16,6 @@
 #include "crc8.h"
 #include "SystemManager.h"
 #include "TimeDate.h"
-#include "ServiceVersion.h"
 #include "NIBPAlarm.h"
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"
@@ -164,6 +163,9 @@ void N5Provider::_errorWarm(unsigned char *packet, int len)
 
 static NIBPMeasureResultInfo getMeasureResultInfo(unsigned char *data)
 {
+    int type;
+    systemConfig.getNumValue("General|PatientType", type);
+
     NIBPMeasureResultInfo info;
     short t = static_cast<short>(data[0]);
     info.errCode = t;
@@ -175,6 +177,31 @@ static NIBPMeasureResultInfo getMeasureResultInfo(unsigned char *data)
     info.map = t;
     t = static_cast<short>(data[7] + (data[8] << 8));
     info.pr = t;
+    if (info.errCode != 0x00)
+    {
+        return info;
+    }
+    if (type == PATIENT_TYPE_ADULT)
+    {
+        if (info.sys > 255 || info.sys < 40 || info.dia > 215 || info.dia < 20 || info.map > 235 || info.map < 20)
+        {
+            info.errCode = 0x06;
+        }
+    }
+    else if (type == PATIENT_TYPE_PED)
+    {
+        if (info.sys > 200 || info.sys < 40 || info.dia > 150 || info.dia < 20 || info.map > 165 || info.map < 20)
+        {
+            info.errCode = 0x06;
+        }
+    }
+    else if (type == PATIENT_TYPE_NEO)
+    {
+        if (info.sys > 135 || info.sys < 40 || info.dia > 100 || info.dia < 10 || info.map > 110 || info.map < 20)
+        {
+            info.errCode = 0x06;
+        }
+    }
     return info;
 }
 
