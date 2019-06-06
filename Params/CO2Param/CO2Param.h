@@ -178,6 +178,13 @@ public:
 
     // resp窒息报警状态
     void setRespApneaStimulation(bool sta);
+
+    /**
+     * @brief getProviderName - get current provider name
+     * @return: the provider name
+     */
+    QString getProviderName(void);
+
 private slots:
     void onPaletteChanged(ParamID id);
 

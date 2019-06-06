@@ -27,6 +27,7 @@
 #include "OxyCRGCO2WaveWidget.h"
 #include "AlarmSourceManager.h"
 #include "O2ParamInterface.h"
+#include "IConfig.h"
 
 CO2Param *CO2Param::_selfObj = NULL;
 
@@ -972,6 +973,13 @@ void CO2Param::setRespApneaStimulation(bool sta)
     {
         o2Param->setVibrationReason(APNEASTIMULATION_REASON_RESP, false);
     }
+}
+
+QString CO2Param::getProviderName()
+{
+    QString str;
+    machineConfig.getStrValue("CO2", str);
+    return str;
 }
 
 void CO2Param::onPaletteChanged(ParamID id)

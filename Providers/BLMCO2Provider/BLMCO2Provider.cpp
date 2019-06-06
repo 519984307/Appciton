@@ -588,7 +588,7 @@ void BLMCO2Provider::setWorkMode(CO2WorkMode mode)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-BLMCO2Provider::BLMCO2Provider() : Provider("BLM_CO2"), CO2ProviderIFace(), _status(CO2ProviderStatus())
+BLMCO2Provider::BLMCO2Provider() : Provider(co2Param.getProviderName()), CO2ProviderIFace(), _status(CO2ProviderStatus())
 {
     QString str;
     machineConfig.getStrValue("CO2", str);
