@@ -67,6 +67,8 @@ void ScreenMenuContentPrivate::reloadScreenType()
 #endif
         screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_BIGFONT)));
 
+        screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_SPO2)));
+
         screenTypeList << UFACE_MONITOR_STANDARD
                   #ifndef HIDE_MONITOR_OXYCRG
                        << UFACE_MONITOR_OXYCRG
@@ -74,7 +76,8 @@ void ScreenMenuContentPrivate::reloadScreenType()
                   #ifndef HIDE_MONITOR_TREND
                        << UFACE_MONITOR_TREND
                   #endif
-                       << UFACE_MONITOR_BIGFONT;
+                       << UFACE_MONITOR_BIGFONT
+                       << UFACE_MONITOR_SPO2;
     }
     else
     {
@@ -88,6 +91,8 @@ void ScreenMenuContentPrivate::reloadScreenType()
 #endif
         screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_BIGFONT)));
 
+        screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_SPO2)));
+
         screenTypeList << UFACE_MONITOR_STANDARD
                        << UFACE_MONITOR_ECG_FULLSCREEN
                   #ifndef HIDE_MONITOR_OXYCRG
@@ -96,7 +101,8 @@ void ScreenMenuContentPrivate::reloadScreenType()
                   #ifndef HIDE_MONITOR_TREND
                        << UFACE_MONITOR_TREND
                   #endif
-                       << UFACE_MONITOR_BIGFONT;
+                       << UFACE_MONITOR_BIGFONT
+                       << UFACE_MONITOR_SPO2;
     }
 
     interfaceCbo->blockSignals(true);

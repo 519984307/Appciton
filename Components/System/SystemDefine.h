@@ -34,6 +34,7 @@ enum UserFaceType
     UFACE_MONITOR_BIGFONT,
     UFACE_MONITOR_CUSTOM,
     UFACE_MONITOR_UNKNOW,
+    UFACE_MONITOR_SPO2,
     UFACE_NR
 };
 
@@ -89,7 +90,8 @@ public:
         static const char *symbol[UFACE_NR] =
         {
             "UserFaceStandard", "UserFaceFullScreen", "UserFaceOxyCRG",
-            "UserFaceTrend", "UserFaceBigFont", "UserFaceCustom", "UserFaceUnknow"
+            "UserFaceTrend", "UserFaceBigFont", "UserFaceCustom", "UserFaceUnknow",
+            "UserFaceSpO2"
         };
         return symbol[index];
     }
