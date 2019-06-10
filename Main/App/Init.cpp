@@ -405,6 +405,8 @@ static void _initProviderParam(void)
         spo2Param.setWaveWidget(spo2WaveWidget);
         layoutManager.addLayoutWidget(spo2WaveWidget, LAYOUT_NODE_WAVE_SPO2);
         layoutManager.addLayoutWidget(spo2TrendWidget, LAYOUT_NODE_PARAM_SPO2);
+        PVITrendWidget *pviTrendWidget = new PVITrendWidget();
+        layoutManager.addLayoutWidget(pviTrendWidget, LAYOUT_NODE_PARAM_PVI);
 
         OxyCRGSPO2TrendWidget *spo2OxyCRGWidget = new OxyCRGSPO2TrendWidget("OxyCRGSPO2Widget");
         spo2Param.setOxyCRGSPO2Trend(spo2OxyCRGWidget);
