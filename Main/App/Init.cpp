@@ -409,6 +409,8 @@ static void _initProviderParam(void)
         layoutManager.addLayoutWidget(pviTrendWidget, LAYOUT_NODE_PARAM_PVI);
         SPHBTrendWidget *sphbTrendWidget = new SPHBTrendWidget();
         layoutManager.addLayoutWidget(sphbTrendWidget, LAYOUT_NODE_PARAM_SPHB);
+        SPOCTrendWidget *spocTrendWidget = new SPOCTrendWidget();
+        layoutManager.addLayoutWidget(spocTrendWidget, LAYOUT_NODE_PARAM_SPOC);
 
         OxyCRGSPO2TrendWidget *spo2OxyCRGWidget = new OxyCRGSPO2TrendWidget("OxyCRGSPO2Widget");
         spo2Param.setOxyCRGSPO2Trend(spo2OxyCRGWidget);
