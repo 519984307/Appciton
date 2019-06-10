@@ -31,6 +31,7 @@ const char *layoutNodeName(LayoutNodeType nodeType)
         "RESP",
         "SPO2",
         "PVI",
+        "SPHB",
         "CO2",
         "IBP1",
         "IBP2",
