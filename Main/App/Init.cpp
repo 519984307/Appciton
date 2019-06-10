@@ -405,6 +405,8 @@ static void _initProviderParam(void)
         spo2Param.setWaveWidget(spo2WaveWidget);
         layoutManager.addLayoutWidget(spo2WaveWidget, LAYOUT_NODE_WAVE_SPO2);
         layoutManager.addLayoutWidget(spo2TrendWidget, LAYOUT_NODE_PARAM_SPO2);
+        PITrendWidget *piTrendWidget = new PITrendWidget();
+        layoutManager.addLayoutWidget(piTrendWidget, LAYOUT_NODE_PARAM_PI);
         PVITrendWidget *pviTrendWidget = new PVITrendWidget();
         layoutManager.addLayoutWidget(pviTrendWidget, LAYOUT_NODE_PARAM_PVI);
         SPHBTrendWidget *sphbTrendWidget = new SPHBTrendWidget();

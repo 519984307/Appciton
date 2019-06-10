@@ -30,7 +30,7 @@ void SPMETTrendWidget::setSpMetValue(int16_t spmet)
 {
     if (spmet >= 0)
     {
-        d_ptr->spmetValue->setText(QString::number(spmet));
+        d_ptr->spmetValue->setText(QString::number(spmet, 'f', 1));
     }
     else
     {
