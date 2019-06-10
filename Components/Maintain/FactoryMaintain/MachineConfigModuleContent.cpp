@@ -48,8 +48,8 @@ public:
         ITEM_CBO_TSCREEN,
 #endif
         ITEM_CBO_BACKLIGHT,
-        ITEM_CBO_MAX,
-        ITEM_CBO_NIBP_NEO_MEASURE
+        ITEM_CBO_NIBP_NEO_MEASURE,
+        ITEM_CBO_MAX
     };
 
     MachineConfigModuleContentPrivte()
@@ -465,7 +465,7 @@ void MachineConfigModuleContent::layoutExec()
 
     layout->setRowStretch(d_ptr->combos.count(), 1);
 
-    label = new QLabel(trs("StopNeoNIBPMeasuer"));
+    label = new QLabel(trs("StopNeoNIBPMeasure"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     combo = new ComboBox;
     combo->blockSignals(true);

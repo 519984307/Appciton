@@ -1306,6 +1306,7 @@ MonitorInfoMenuDesc,监护仪信息菜单设置,Monitor Info Desc
 NIBPCalibrationMenu,NIBP校准,NIBP Calibration
 NIBPCalibration,NIBP校准,NIBP Calibration
 NIBPCalibrationMenuDesc,NIBP校准,NIBP Calibration
+StopNeoNIBPMeasure,禁止NIBP新生儿测量,Close NEO NIBP Measurement
 O2Calibrate,氧浓度校准,O2 Calibrate
 O2CalibrateDesc,氧浓度校准,O2 Calibrate
 Percent21Calibration,21% 校准,21% Calibrate
