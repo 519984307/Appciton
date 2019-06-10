@@ -130,6 +130,7 @@
 #include "PVITrendWidget.h"
 #include "SPHBTrendWidget.h"
 #include "SPOCTrendWidget.h"
+#include "SPMETTrendWidget.h"
 
 #include "TEMPParam.h"
 #include "TEMPAlarm.h"

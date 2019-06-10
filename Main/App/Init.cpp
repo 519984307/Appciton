@@ -411,6 +411,8 @@ static void _initProviderParam(void)
         layoutManager.addLayoutWidget(sphbTrendWidget, LAYOUT_NODE_PARAM_SPHB);
         SPOCTrendWidget *spocTrendWidget = new SPOCTrendWidget();
         layoutManager.addLayoutWidget(spocTrendWidget, LAYOUT_NODE_PARAM_SPOC);
+        SPMETTrendWidget *spmetTrendWidget = new SPMETTrendWidget();
+        layoutManager.addLayoutWidget(spmetTrendWidget, LAYOUT_NODE_PARAM_SPMET);
 
         OxyCRGSPO2TrendWidget *spo2OxyCRGWidget = new OxyCRGSPO2TrendWidget("OxyCRGSPO2Widget");
         spo2Param.setOxyCRGSPO2Trend(spo2OxyCRGWidget);

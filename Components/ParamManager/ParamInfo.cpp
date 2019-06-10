@@ -54,6 +54,8 @@ static const char *_subParamNames(SubParamID paramID, bool ignoreModuleConfig)
         return "SPHB";
     case SUB_PARAM_SPOC:
         return "SPOC";
+    case SUB_PARAM_SPMET:
+        return "SPMET";
 
     case SUB_PARAM_RR_BR:
         if (ignoreModuleConfig || (systemManager.isSupport(CONFIG_CO2) &&
