@@ -387,8 +387,14 @@ static void _initProviderParam(void)
         }
         else if (str == "RAINBOW_SPO2")
         {
-            paramManager.addProvider(*new RainbowProvider());
+            paramManager.addProvider(*new RainbowProvider("RAINBOW_SPO2"));
             spo2Param.setModuleType(MODULE_RAINBOW_SPO2);
+        }
+        else if (str == "RAINBOW_SPO2,RAINBOW_SPO2_2")
+        {
+            paramManager.addProvider(*new RainbowProvider("RAINBOW_SPO2"));
+            paramManager.addProvider(*new RainbowProvider("RAINBOW_SPO2_2"));
+            spo2Param.setModuleType(MODULE_RAINBOW_DOUBLE_SPO2);
         }
         paramManager.addParam(spo2Param.construction());
 

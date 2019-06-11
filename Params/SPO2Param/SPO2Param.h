@@ -272,7 +272,8 @@ private:
     SPO2Param();
     void _setWaveformSpeed(SPO2WaveVelocity speed);
 
-    SPO2ProviderIFace *_provider;
+    SPO2ProviderIFace *_provider1;
+    SPO2ProviderIFace *_provider2;
     SPO2TrendWidget *_trendWidget;
     SPO2WaveWidget *_waveWidget;
 

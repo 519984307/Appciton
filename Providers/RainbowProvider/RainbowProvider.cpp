@@ -40,18 +40,21 @@ enum RBRecvPacketType
 
 enum RBSendPacketType
 {
-    RB_CMD_REQUEST_BOARD_INFO        = 0x70,     // request board info
-    RB_CMD_UNLOCK_BOARD              = 0x71,     // unlock board
-    RB_CMD_CONF_AVERAGE_TIME         = 0x01,     // configure average time
-    RB_CMD_CONF_SENSITIVITY_MODE     = 0x02,     // configure sensitivity mode
-    RB_CMD_CONF_FASTSAT_MODE         = 0x03,     // configure fastsat mode
-    RB_CMD_CONF_LINE_FREQ            = 0x04,     // configure line frequency
-    RB_CMD_CONF_SMART_TONE_MODE      = 0x08,     // configure smart tone mode
-    RB_CMD_CONF_WAVEFORM_MODE        = 0x09,     // configure waveform mode
-    RB_CMD_REQ_PARAM_INFO            = 0x10,     // request parameter info by force
-    RB_CMD_CONF_PERIOD_PARAM_OUTPUT  = 0x20,     // configure periodic parameter output
-    RB_CMD_CONF_PERIOD_WAVE_OUTPUT   = 0x21,     // configure periodic waveform output
-    RB_CMD_CONF_UPDATE_BAUDRATE      = 0x23,     // upgrade the baudrate
+    RB_CMD_REQUEST_BOARD_INFO          = 0x70,     // request board info
+    RB_CMD_UNLOCK_BOARD                = 0x71,     // unlock board
+    RB_CMD_CONF_AVERAGE_TIME           = 0x01,     // configure average time
+    RB_CMD_CONF_SENSITIVITY_MODE       = 0x02,     // configure sensitivity mode
+    RB_CMD_CONF_FASTSAT_MODE           = 0x03,     // configure fastsat mode
+    RB_CMD_CONF_LINE_FREQ              = 0x04,     // configure line frequency
+    RB_CMD_CONF_SMART_TONE_MODE        = 0x08,     // configure smart tone mode
+    RB_CMD_CONF_WAVEFORM_MODE          = 0x09,     // configure waveform mode
+    RB_CMD_CONF_SPHB_PRECISION_MODE    = 0X0B,     // configure SpHb precision mode
+    RB_CMD_CONF_PVI_AVERAGING_MODE     = 0X0C,     // configure PVI averaging mode
+    RB_CMD_CONF_SPHB_BLOOD_VESSEL_MODE = 0X0D,     // configure SpHb arterial or venous mode
+    RB_CMD_REQ_PARAM_INFO              = 0x10,     // request parameter info by force
+    RB_CMD_CONF_PERIOD_PARAM_OUTPUT    = 0x20,     // configure periodic parameter output
+    RB_CMD_CONF_PERIOD_WAVE_OUTPUT     = 0x21,     // configure periodic waveform output
+    RB_CMD_CONF_UPDATE_BAUDRATE        = 0x23,     // upgrade the baudrate
 };
 
 enum RBParamIDType
@@ -59,11 +62,16 @@ enum RBParamIDType
     RB_PARAM_OF_SPO2                 = 0X01,     // spo2 value and exceptions
     RB_PARAM_OF_PR                   = 0X02,     // pluse rate value and exceptions
     RB_PARAM_OF_PI                   = 0X03,     // pi value and exceptions
+    RB_PARAM_OF_SPCO                 = 0X04,     // SpCO value and exceptions
+    RB_PARAM_OF_SPMET                = 0X05,     // SpMet
+    RB_PARAM_OF_SPHB                 = 0X07,     // SpHb
     RB_PARAM_OF_OXI_SYSTEM_EXCEPTION = 0X0C,     // plus Oximeter System Exceptions
     RB_PARAM_OF_BOARD_FAILURE        = 0X0D,     // board failure
     RB_PARAM_OF_SENSOR_PARAM_CHECK   = 0X0E,     // sensor param check
     RB_PARAM_OF_VERSION_INFO         = 0X0F,     // dsp version,base board params,mcu version and so on
     RB_PARAM_OF_BASELINE             = 0X2B,     // baseline
+    RB_PARAM_OF_SPOC                 = 0X32,     // SpOC
+    RB_PARAM_OF_PVI                  = 0X33,     // Pleth Variability Index(PVI)
     RB_PARAM_MAX_ITEM,
 };
 
@@ -93,6 +101,14 @@ enum RBInitializeStep
     RB_INIT_SET_SPO2,
     RB_INIT_SET_BASELINE,
     RB_INIT_SET_WAVEFORM,
+    RB_INIT_SET_SPCO,
+    RB_INIT_SET_PVI_AVERAGING_MODE,
+    RB_INIT_SET_PVI,
+    RB_INIT_SET_SPHB_PRECISION_MODE,
+    RB_INIT_SET_SPHB_ARTERIAL_VENOUS_MODE,
+    RB_INIT_SET_SPHB,
+    RB_INIT_SET_SPMET,
+    RB_INIT_SET_SPOC,
     RB_INIT_COMPLETED,
 };
 
@@ -164,6 +180,31 @@ enum Spo2Exceptions
     INVAILD_SPO2 = 0X0004,  // invaild functional spo2
 };
 
+enum SpCOExceptions
+{
+    INVAILD_SPCO = 0X0004, // invaild spco
+};
+
+enum PVIExceptions
+{
+    INVAILD_PVI = 0X0004,
+};
+
+enum SpHbExceptions
+{
+    INVAILD_SPHB = 0X0004,
+};
+
+enum SpMetExceptions
+{
+    INVAILD_SPMET = 0X0004,
+};
+
+enum SpOCExceptions
+{
+    INVAILD_SPOC = 0X0004,
+};
+
 class RainbowProviderPrivate
 {
 public:
@@ -178,6 +219,9 @@ public:
         , isReseting(false)
         , prValue(InvData())
         , spo2Value(InvData())
+        , spHbPrecision(PRECISION_NEAREST_0_1)
+        , pviAveragingMode(AVERAGING_MODE_NORMAL)
+        , spHbBloodVessel(BLOOD_VESSEL_ARTERIAL)
     {
     }
 
@@ -302,10 +346,16 @@ public:
     short prValue;
 
     short spo2Value;
+
+    SpHbPrecisionMode spHbPrecision;
+
+    AveragingMode pviAveragingMode;
+
+    SpHbBloodVesselMode spHbBloodVessel;
 };
 
-RainbowProvider::RainbowProvider()
-    : Provider("RAINBOW_SPO2")
+RainbowProvider::RainbowProvider(const QString &name)
+    : Provider(name)
     , SPO2ProviderIFace()
     , d_ptr(new RainbowProviderPrivate(this))
 {
@@ -585,6 +635,42 @@ void RainbowProvider::reconnected()
     spo2Param.setConnected(true);
 }
 
+void RainbowProvider::setSpHbPrecisionMode(SpHbPrecisionMode mode)
+{
+    if (d_ptr->isReseting)
+    {
+        d_ptr->spHbPrecision = mode;
+        return;
+    }
+
+    unsigned char data[2] = {RB_CMD_CONF_SPHB_PRECISION_MODE, mode};
+    d_ptr->sendCmd(data, sizeof(data));
+}
+
+void RainbowProvider::setPVIAveragingMode(AveragingMode mode)
+{
+    if (d_ptr->isReseting)
+    {
+        d_ptr->pviAveragingMode = mode;
+        return;
+    }
+
+    unsigned char data[2] = {RB_CMD_CONF_PVI_AVERAGING_MODE, mode};
+    d_ptr->sendCmd(data, sizeof(data));
+}
+
+void RainbowProvider::setSpHbBloodVesselMode(SpHbBloodVesselMode mode)
+{
+    if (d_ptr->isReseting)
+    {
+        d_ptr->spHbBloodVessel = mode;
+        return;
+    }
+
+    unsigned char data[2] = {RB_CMD_CONF_SPHB_BLOOD_VESSEL_MODE, mode};
+    d_ptr->sendCmd(data, sizeof(data));
+}
+
 void RainbowProvider::requestBoardInfo()
 {
     d_ptr->requestBoardInfo();
@@ -729,6 +815,65 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         else
         {
             spo2Param.updatePIValue(InvData());
+        }
+    }
+    break;
+    case RB_PARAM_OF_SPCO:
+    {
+        temp = (data[4] << 8) + data[5];
+        bool valid = !(temp & INVAILD_SPCO);
+        if (valid)
+        {
+            temp = (data[0] << 8) + data[1];
+            float value = (temp % 10) > 5 ? (temp / 10 + 1) : (temp /10);
+            qDebug() << "SPCO value: " << static_cast<short>(value);
+        }
+    }
+    break;
+    case RB_PARAM_OF_PVI:
+    {
+        temp = (data[4] << 8) + data[5];
+        bool valid = !(temp & INVAILD_PVI);
+        if (valid)
+        {
+            temp = (data[0] << 8) + data[1];
+            qDebug() << "PVI value: " << temp;
+        }
+    }
+    break;
+    case RB_PARAM_OF_SPHB:
+    {
+        temp = (data[4] << 8) + data[5];
+        bool valid = !(temp & INVAILD_SPHB);
+        if (valid)
+        {
+            temp = (data[0] << 8) + data[1];
+            float value = temp * 1.0 / 100 + 0.5;
+            qDebug() << "SpHb value" << static_cast<short>(value * 100);
+        }
+    }
+    break;
+    case RB_PARAM_OF_SPMET:
+    {
+        temp = (data[4] << 8) + data[5];
+        bool valid = !(temp & INVAILD_SPMET);
+        if (valid)
+        {
+            temp = (data[0] << 8) + data[1];
+            float value = temp * 1.0 / 10 + 0.5;
+            qDebug() << "SpMet value" << static_cast<short>(value * 10);
+        }
+    }
+    break;
+    case RB_PARAM_OF_SPOC:
+    {
+        temp = (data[4] << 8) + data[5];
+        bool valid = !(temp & INVAILD_SPOC);
+        if (valid)
+        {
+            temp = (data[0] << 8) + data[1];
+            float value = temp * 1.0 / 10 + 0.5;
+            qDebug() << "SpOC value" << static_cast<short>(value * 10);
         }
     }
     break;
@@ -1044,8 +1189,39 @@ void RainbowProviderPrivate::handleACK()
         case RB_INIT_SET_WAVEFORM:
             // get here after the baseline
             configPeriodWaveformOut(CLIPPED_AUTOSCALE_DATA | SIGNAL_IQ_AUDIO_VISUAL_DATA, 16);  // 每16ms输出一次波形
-            curInitializeStep = RB_INIT_COMPLETED;
+            curInitializeStep = RB_INIT_SET_SPCO;
             break;
+        case RB_INIT_SET_SPCO:
+            configPeriodParamOut(RB_PARAM_OF_SPCO, 170);        // 每170ms输出一次SPCO
+            curInitializeStep = RB_INIT_SET_PVI_AVERAGING_MODE;
+            break;
+        case RB_INIT_SET_PVI_AVERAGING_MODE:
+            q_ptr->setPVIAveragingMode(pviAveragingMode);
+            curInitializeStep = RB_INIT_SET_PVI;
+            break;
+        case RB_INIT_SET_PVI:
+            configPeriodParamOut(RB_PARAM_OF_PVI, 150);         // 每150ms输出一次PVi
+            curInitializeStep = RB_INIT_SET_SPHB_PRECISION_MODE;
+            break;
+        case RB_INIT_SET_SPHB_PRECISION_MODE:
+            q_ptr->setSpHbPrecisionMode(spHbPrecision);
+            curInitializeStep = RB_INIT_SET_SPHB_ARTERIAL_VENOUS_MODE;
+            break;
+        case RB_INIT_SET_SPHB_ARTERIAL_VENOUS_MODE:
+            q_ptr->setSpHbBloodVesselMode(spHbBloodVessel);
+            curInitializeStep = RB_INIT_SET_SPHB;
+            break;
+        case RB_INIT_SET_SPHB:
+            configPeriodParamOut(RB_PARAM_OF_SPHB, 130);         // 每130ms输出一次SpHb
+            curInitializeStep = RB_INIT_SET_SPMET;
+            break;
+        case RB_INIT_SET_SPMET:
+            configPeriodParamOut(RB_PARAM_OF_SPMET, 140);       // 每140ms输出一次SpMet
+            curInitializeStep = RB_INIT_SET_SPOC;
+            break;
+        case RB_INIT_SET_SPOC:
+            configPeriodParamOut(RB_PARAM_OF_SPOC, 160);       // 每160ms输出一次SpOC
+            curInitializeStep = RB_INIT_COMPLETED;
         default:
             break;
         }
