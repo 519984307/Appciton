@@ -354,8 +354,8 @@ public:
     SpHbBloodVesselMode spHbBloodVessel;
 };
 
-RainbowProvider::RainbowProvider()
-    : Provider("RAINBOW_SPO2")
+RainbowProvider::RainbowProvider(const QString &name)
+    : Provider(name)
     , SPO2ProviderIFace()
     , d_ptr(new RainbowProviderPrivate(this))
 {
@@ -828,11 +828,6 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
             float value = (temp % 10) > 5 ? (temp / 10 + 1) : (temp /10);
             qDebug() << "SPCO value: " << static_cast<short>(value);
         }
-        else
-        {
-            // invaild
-            qDebug() << "SPCO invaild!";
-        }
     }
     break;
     case RB_PARAM_OF_PVI:
@@ -843,10 +838,6 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         {
             temp = (data[0] << 8) + data[1];
             qDebug() << "PVI value: " << temp;
-        }
-        else
-        {
-            qDebug() << "PVI invaild!";
         }
     }
     break;
@@ -860,10 +851,6 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
             float value = temp * 1.0 / 100 + 0.5;
             qDebug() << "SpHb value" << static_cast<short>(value * 100);
         }
-        else
-        {
-            qDebug() << "SpHb invaild! ";
-        }
     }
     break;
     case RB_PARAM_OF_SPMET:
@@ -876,10 +863,6 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
             float value = temp * 1.0 / 10 + 0.5;
             qDebug() << "SpMet value" << static_cast<short>(value * 10);
         }
-        else
-        {
-            qDebug() << "SpMet invaild! ";
-        }
     }
     break;
     case RB_PARAM_OF_SPOC:
@@ -891,10 +874,6 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
             temp = (data[0] << 8) + data[1];
             float value = temp * 1.0 / 10 + 0.5;
             qDebug() << "SpOC value" << static_cast<short>(value * 10);
-        }
-        else
-        {
-            qDebug() << "SpOC invaild! ";
         }
     }
     break;

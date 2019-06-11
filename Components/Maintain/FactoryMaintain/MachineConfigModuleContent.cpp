@@ -294,6 +294,7 @@ void MachineConfigModuleContent::layoutExec()
                     << trs(SPO2Symbol::convert(MODULE_BLM_S5))
                     << trs(SPO2Symbol::convert(MODULE_MASIMO_SPO2))
                     << trs(SPO2Symbol::convert(MODULE_RAINBOW_SPO2))
+                    << trs(SPO2Symbol::convert(MODULE_RAINBOW_DOUBLE_SPO2))
                    );
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
