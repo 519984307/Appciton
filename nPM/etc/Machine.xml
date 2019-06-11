@@ -66,5 +66,6 @@
     <BLM_CO2Port>/dev/ttyPM2</BLM_CO2Port>
     <DataDispatcherPort>/dev/ttyPM3</DataDispatcherPort>
     <NEONATE_O2Port>/dev/ttyS5</NEONATE_O2Port>
+    <PlugInPort>/dev/ttyS6</PlugInPort>
     <!--    <PHASEIN_AGPort>/dev/ttyWK3</PHASEIN_AGPort>-->
 </Machine>
