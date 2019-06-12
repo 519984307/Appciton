@@ -105,6 +105,8 @@ CO_CO,心排量,C.O.
 CO_CI,心指数,C.I.
 TB,血温,TB
 SPO2,SpO2,SpO2
+SPO2_2,SpO2 2,SpO2 2
+SPO2_Delta,ΔSpO2,ΔSpO2
 PR,PR,PR
 PLETH,血氧波,Pleth
 NIBP,NIBP,NIBP

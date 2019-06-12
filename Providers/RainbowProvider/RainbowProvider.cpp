@@ -23,6 +23,7 @@
 #define MIN_PACKET_LEN  (5)
 #define TEMP_BUFF_SIZE  (64)
 #define MANU_ID    (0x23ae5d53)
+#define SENIOR_MENU_ID (0x55d9b582)
 
 enum RBRecvPacketType
 {
@@ -222,6 +223,7 @@ public:
         , spHbPrecision(PRECISION_NEAREST_0_1)
         , pviAveragingMode(AVERAGING_MODE_NORMAL)
         , spHbBloodVessel(BLOOD_VESSEL_ARTERIAL)
+        , provider(PROVIDER_1)
     {
     }
 
@@ -352,6 +354,8 @@ public:
     AveragingMode pviAveragingMode;
 
     SpHbBloodVesselMode spHbBloodVessel;
+
+    ProviderFlag provider;
 };
 
 RainbowProvider::RainbowProvider(const QString &name)
@@ -373,6 +377,10 @@ RainbowProvider::RainbowProvider(const QString &name)
     {
         QTimer::singleShot(200, this, SLOT(changeBaudrate()));
     }
+    if (name == "RAINBOW_SPO2_2")
+    {
+        d_ptr->provider = PROVIDER_2;
+    }
 }
 
 RainbowProvider::~RainbowProvider()
@@ -383,7 +391,7 @@ bool RainbowProvider::attachParam(Param &param)
 {
     if (param.getParamID() == PARAM_SPO2)
     {
-        spo2Param.setProvider(this);
+        spo2Param.setProvider(this, d_ptr->provider);
         Provider::attachParam(param);
         return true;
     }
@@ -622,7 +630,7 @@ void RainbowProvider::disconnected()
         alarmSource->clear();
         alarmSource->setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, true);
     }
-    spo2Param.setConnected(false);
+    spo2Param.setConnected(false, d_ptr->provider);
 }
 
 void RainbowProvider::reconnected()
@@ -632,7 +640,7 @@ void RainbowProvider::reconnected()
     {
         alarmSource->setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, false);
     }
-    spo2Param.setConnected(true);
+    spo2Param.setConnected(true, d_ptr->provider);
 }
 
 void RainbowProvider::setSpHbPrecisionMode(SpHbPrecisionMode mode)
@@ -703,7 +711,7 @@ void RainbowProviderPrivate::handlePacket(unsigned char *data, int len)
     // 如果主机与该模块未连接成功，直接退出
     if (q_ptr->isConnected == false)
     {
-        spo2Param.setConnected(true);
+        spo2Param.setConnected(true, provider);
     }
 
     // 发送保活帧
@@ -896,13 +904,13 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         if (isCableOff == true)
         {
             spo2Param.setNotify(true, trs("SPO2CheckSensor"));
-            spo2Param.setValidStatus(false);
+            spo2Param.setValidStatus(false, provider);
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, true);
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, false);
         }
         else
         {
-            spo2Param.setValidStatus(true);
+            spo2Param.setValidStatus(true, provider);
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, false);
             spo2Param.setSearchForPulse(isSearching);  // search pulse标志。
             if (isSearching)
@@ -915,9 +923,16 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
             }
         }
         // 最后更新spo2值和pr值。避免趋势界面的值跳动。
-        spo2Param.setPerfusionStatus(isLowPerfusionIndex);
-        spo2Param.setSPO2(spo2Value);
-        spo2Param.setPR(prValue);
+        spo2Param.setPerfusionStatus(isLowPerfusionIndex, provider);
+        if (provider == PROVIDER_1)
+        {
+            spo2Param.setSPO2(spo2Value);
+            spo2Param.setPR(prValue);
+        }
+        else
+        {
+            spo2Param.setPlugInSPO2(spo2Value);
+        }
     }
     break;
     case RB_PARAM_OF_VERSION_INFO:
@@ -1051,7 +1066,15 @@ unsigned char RainbowProviderPrivate::calcChecksum(const unsigned char *data, in
 void RainbowProviderPrivate::unlockBoard(unsigned int sn, unsigned int flag)
 {
     unsigned char data[9] = {0};
-    unsigned int unlockKey = MANU_ID ^ sn;
+    unsigned int unlockKey = 0;
+    if (provider == PROVIDER_1)
+    {
+        unlockKey = SENIOR_MENU_ID ^ sn;
+    }
+    else
+    {
+        unlockKey = MANU_ID ^sn;
+    }
     data[0] = RB_CMD_UNLOCK_BOARD;
     data[1] = (unlockKey >> 24) & 0xff;
     data[2] = (unlockKey >> 16) & 0xff;

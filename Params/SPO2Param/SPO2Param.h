@@ -73,16 +73,10 @@ public:
     virtual UnitType getCurrentUnit(SubParamID id);
 
     // 设置数据提供对象。
-    void setProvider(SPO2ProviderIFace *provider);
+    void setProvider(SPO2ProviderIFace *provider, ProviderFlag flag = PROVIDER_1);
 
     // 模块复位
     void reset();
-
-    // 取值范围
-    int getSPO2MaxValue(void);
-
-    // 设置服务模式升级数据提供对象。
-    void setServiceProvider(SPO2ProviderIFace *provider);
 
     // 设置界面对象。
     void setTrendWidget(SPO2TrendWidget *trendWidget);
@@ -94,7 +88,8 @@ public:
 
     // 设置/获取SPO2的值。
     void setSPO2(short spo2Value);
-    short getSPO2(void);
+    void setPlugInSPO2(short spo2Value);
+    short getSPO2(ProviderFlag flag = PROVIDER_1);
 
     // 设置/获取PR的值。
     void setPR(short prValue);
@@ -136,23 +131,17 @@ public:
     void noticeLimitAlarm(bool isAlarm);
 
     // 有效状态
-    void setValidStatus(bool isValid);
-    bool isValid();
+    void setValidStatus(bool isValid, ProviderFlag flag = PROVIDER_1);
+    bool isValid(ProviderFlag flag = PROVIDER_1);
     bool isConnected();
 
     // 设置连接，供给对象调用。
-    void setConnected(bool isConnected);
-
-    // set Sensor off
-    int setSensorOff(bool flag);
+    void setConnected(bool isConnected, ProviderFlag flag = PROVIDER_1);
 
     // received package
     void receivePackage();
 
 public:
-    // 发送协议命令
-    void sendCmdData(unsigned char cmdId, const unsigned char *data, unsigned int len);
-
     // 设置/获取平均时间
     void setAverageTime(AverageTime index);
     AverageTime getAverageTime(void);
@@ -185,12 +174,6 @@ public:
     bool getEverCheckFinger()
     {
         return _isEverCheckFinger;
-    }
-
-    // get is ever sensor on
-    bool getEverSensorOn()
-    {
-        return _isEverSensorOn;
     }
 
     // 刷新参数上下限
@@ -241,13 +224,13 @@ public:
      * @brief setPerfusionStatus  and the function of setting the SPO2 perfusion status
      * @param isLow  and true if low perfusion
      */
-    void setPerfusionStatus(bool isLow);
+    void setPerfusionStatus(bool isLow, ProviderFlag flag = PROVIDER_1);
 
     /**
      * @brief getPerfusionStatus  and the function of getting the SPO2 perfusion status
      * @return  and return true if low perfusion
      */
-    bool getPerfusionStatus() const;
+    bool getPerfusionStatus(ProviderFlag flag = PROVIDER_1) const;
 
     /**
      * @brief initModule  and the function of initting the module
@@ -272,26 +255,30 @@ private:
     SPO2Param();
     void _setWaveformSpeed(SPO2WaveVelocity speed);
 
-    SPO2ProviderIFace *_provider1;
-    SPO2ProviderIFace *_provider2;
+    SPO2ProviderIFace *_provider;
+    SPO2ProviderIFace *_plugInProvider;
     SPO2TrendWidget *_trendWidget;
     SPO2WaveWidget *_waveWidget;
+    SPO2WaveWidget *_plugInWaveWidget;
+
 
     bool _isEverCheckFinger;  // use to decide prompt sensor off
-    bool _isEverSensorOn;   // use to decide display waveform at power on
+    bool _plugInIsEverCheckFinger;  // use to decide prompt sensor off
 
     short _spo2Value;
+    short _plugInSpo2Value;
     short _prValue;
     short _barValue;
     short _piValue;
 
     bool _isValid;
-    bool _sensorOff;
+    bool _plugInIsValid;
 
     int _recPackageInPowerOn2sec;  // if receve 5 packages, selftest success, or selftest failed
 
     OxyCRGSPO2TrendWidget *_oxyCRGSPO2Trend;
     bool _connectedProvider;
+    bool _connectedPlugInProvider;
     SPO2ModuleType _moduleType;
 
     QList<cchdData> _cchdDataList;
@@ -299,6 +286,8 @@ private:
 
     bool _isLowPerfusion;
     bool _isForceUpdating;  // 当spo2的弱灌注状态发生变化时，该状态位为true
+    bool _plugInIsLowPerfusion;
+    bool _plugInIsForceUpdating;  // 当spo2的弱灌注状态发生变化时，该状态位为true
 
     bool _isT5ModuleUpgradeCompleted;
 };

@@ -34,9 +34,7 @@ void SPO2TrendWidget::loadConfig()
 {
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
     setPalette(palette);
-    _spo2Value->setPalette(palette);
-    _piName->setPalette(palette);
-    _piValue->setPalette(palette);
+    _spo2Value1->setPalette(palette);
     TrendWidget::loadConfig();
 }
 
@@ -45,20 +43,48 @@ void SPO2TrendWidget::loadConfig()
  *************************************************************************************************/
 void SPO2TrendWidget::setSPO2Value(int16_t spo2)
 {
-//    debug("------------spo2 = %d",spo2);
     if (spo2 >= 0 && spo2Param.getPerfusionStatus())
     {
-        _spo2String = QString("%1?").arg(QString::number(spo2));
+        _spo2String1 = QString("%1?").arg(QString::number(spo2));
     }
     else if (spo2 >= 0)
     {
-        _spo2String = QString::number(spo2);
+        _spo2String1 = QString::number(spo2);
     }
     else
     {
-        _spo2String = InvStr();
+        _spo2String1 = InvStr();
     }
-    _spo2Value->setText(_spo2String);
+    _spo2Value1->setText(_spo2String1);
+}
+
+void SPO2TrendWidget::setPlugInSPO2Value(int16_t spo2)
+{
+    if (spo2 >= 0 && spo2Param.getPerfusionStatus(PROVIDER_2))
+    {
+        _spo2String2 = QString("%1?").arg(QString::number(spo2));
+    }
+    else if (spo2 >= 0)
+    {
+        _spo2String2 = QString::number(spo2);
+    }
+    else
+    {
+        _spo2String2 = InvStr();
+    }
+    _spo2Value2->setText(_spo2String2);
+}
+
+void SPO2TrendWidget::setSPO2DeltaValue(int16_t spo2)
+{
+    if (spo2 >= 0)
+    {
+        _spo2DeltaValue->setText(QString::number(spo2));
+    }
+    else
+    {
+        _spo2DeltaValue->setText(InvStr());
+    }
 }
 
 void SPO2TrendWidget::updateLimit()
@@ -66,51 +92,6 @@ void SPO2TrendWidget::updateLimit()
     UnitType unitType = paramManager.getSubParamUnit(PARAM_SPO2, SUB_PARAM_SPO2);
     LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(SUB_PARAM_SPO2, unitType);
     setLimit(config.highLimit, config.lowLimit, config.scale);
-}
-
-/**************************************************************************************************
- * 设置bar图的值。
- *************************************************************************************************/
-void SPO2TrendWidget::setBarValue(int16_t bar)
-{
-    if (_piString == InvStr())
-    {
-        _spo2Bar->setValue(bar, false);
-    }
-    else
-    {
-        _spo2Bar->setValue(bar, true);
-    }
-}
-
-void SPO2TrendWidget::setPIValue(int16_t pi)
-{
-    if (pi == InvData())
-    {
-        _piString = InvStr();
-    }
-    else
-    {
-        int16_t piInt = pi / 10;
-        int16_t piDes = pi % 10;
-        _piString = QString::number(piInt) + "." + QString::number(piDes);
-    }
-    _piValue->setText(_piString);
-}
-
-/**************************************************************************************************
- * 显示搜索脉搏的提示信息。
- *************************************************************************************************/
-void SPO2TrendWidget::setSearchForPulse(bool isSearching)
-{
-    if (isSearching)
-    {
-//        setInfo(trs("SPO2SearchPulse"));
-    }
-    else
-    {
-//        setInfo(" ");
-    }
 }
 
 /**************************************************************************************************
@@ -129,10 +110,10 @@ void SPO2TrendWidget::isAlarm(bool flag)
 void SPO2TrendWidget::showValue(void)
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
-    if (_isAlarm && _spo2String != InvStr())
+    if (_isAlarm && _spo2String1 != InvStr())
     {
-        showAlarmStatus(_spo2Value);
-        showAlarmParamLimit(_spo2Value, _spo2String, psrc);
+        showAlarmStatus(_spo2Value1);
+        showAlarmParamLimit(_spo2Value1, _spo2String1, psrc);
         restoreNormalStatusLater();
     }
     else
@@ -148,24 +129,24 @@ void SPO2TrendWidget::setTextSize()
 {
     QRect r = this->rect();
     r.adjust(nameLabel->width(), 0, 0, 0);
+    r.setWidth(r.width() / 2);
     // 字体。
-//    int fontsize = fontManager.adjustNumFontSizeXML(r);
-//    fontsize = fontManager.getFontSize(fontsize);
     int fontsize = fontManager.adjustNumFontSize(r, true);
     QFont font = fontManager.numFont(fontsize, true);
-
-//    font.setStretch(105); // 横向放大。
     font.setWeight(QFont::Black);
+    _spo2Value1->setFont(font);
 
-    _spo2Value->setFont(font);
-
-    font = fontManager.numFont(fontsize / 2, true);
+    r.setHeight(r.height() / 2);
+    fontsize = fontManager.adjustNumFontSize(r, true);
+    font = fontManager.numFont(fontsize, true);
     font.setWeight(QFont::Black);
-    _piValue->setFont(font);
+    _spo2Value2->setFont(font);
+    _spo2DeltaValue->setFont(font);
 
     int fontSize = fontManager.getFontSize(3);
     font = fontManager.textFont(fontSize);
-    _piName->setFont(font);
+    _spo2Name2->setFont(font);
+    _spo2DeltaName->setFont(font);
 }
 
 /**************************************************************************************************
@@ -174,35 +155,50 @@ void SPO2TrendWidget::setTextSize()
 SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
 {
     _isAlarm = false;
-    _spo2String = InvStr();
-    _piString = InvStr();
+    _spo2String1 = InvStr();
+    _spo2String2 = InvStr();
     setName(trs(paramInfo.getParamName(PARAM_SPO2)));
     setUnit(trs(Unit::getSymbol(UNIT_PERCENT)));
 
     // 血氧值。
-    _spo2Value = new QLabel();
-    _spo2Value->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-    _spo2Value->setText(InvStr());
+    _spo2Value1 = new QLabel();
+    _spo2Value1->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    _spo2Value1->setText(InvStr());
 
     // 棒图。
     _spo2Bar = new SPO2BarWidget(0, 15);
     _spo2Bar->setFixedWidth(20);
+
     QVBoxLayout *vLayout = new QVBoxLayout();
-    vLayout->addWidget(_spo2Bar);
+    QHBoxLayout *hLayout = new QHBoxLayout();
+    _spo2Name2 = new QLabel();
+    _spo2Name2->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    _spo2Name2->setText(trs("SPO2_2"));
 
-    _piName = new QLabel();
-    _piName->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    _piName->setText("PI");
+    _spo2Value2 = new QLabel();
+    _spo2Value2->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
+    _spo2Value2->setText(InvStr());
+    hLayout->addWidget(_spo2Name2);
+    hLayout->addWidget(_spo2Value2);
+    vLayout->addLayout(hLayout);
 
-    _piValue = new QLabel();
-    _piValue->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
-    _piValue->setText(InvStr());
+    _spo2DeltaName = new QLabel();
+    _spo2DeltaName->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    _spo2DeltaName->setText(trs("SPO2_Delta"));
+
+    _spo2DeltaValue = new QLabel();
+    _spo2DeltaValue->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
+    _spo2DeltaValue->setText(InvStr());
+
+    hLayout = new QHBoxLayout();
+    hLayout->addWidget(_spo2DeltaName);
+    hLayout->addWidget(_spo2DeltaValue);
+    vLayout->addLayout(hLayout);
 
     QHBoxLayout *layout = new QHBoxLayout();
-    layout->addWidget(_spo2Value, 5);
-    layout->addLayout(vLayout, 1);
-    layout->addWidget(_piName, 1);
-    layout->addWidget(_piValue, 3);
+    layout->addWidget(_spo2Value1, 5);
+    layout->addWidget(_spo2Bar, 1);
+    layout->addLayout(vLayout, 5);
 
     contentLayout->addLayout(layout, 7);
 

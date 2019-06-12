@@ -190,3 +190,10 @@ enum SpHbBloodVesselMode
     BLOOD_VESSEL_VENOUS,
     BLOOD_VESSEL_NR
 };
+
+
+enum ProviderFlag
+{
+    PROVIDER_1,
+    PROVIDER_2
+};

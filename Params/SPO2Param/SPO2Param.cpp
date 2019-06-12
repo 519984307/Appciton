@@ -33,23 +33,16 @@
 
 SPO2Param *SPO2Param::_selfObj = NULL;
 
-/**************************************************************************************************
- * 发送协议命令。
- *************************************************************************************************/
-void SPO2Param::sendCmdData(unsigned char cmdId, const unsigned char *data, unsigned int len)
-{
-    if (NULL != _provider1)
-    {
-        _provider1->sendCmdData(cmdId, data, len);
-    }
-}
-
 void SPO2Param::setAverageTime(AverageTime index)
 {
     currentConfig.setNumValue("SPO2|AverageTime", static_cast<int>(index));
-    if (NULL != _provider1)
+    if (NULL != _provider)
     {
-        _provider1->setAverageTime(index);
+        _provider->setAverageTime(index);
+    }
+    if (NULL != _plugInProvider)
+    {
+        _plugInProvider->setAverageTime(index);
     }
 }
 
@@ -115,7 +108,8 @@ void SPO2Param::handDemoWaveform(WaveformID id, short data)
     }
     if (NULL != _trendWidget)
     {
-        _trendWidget->setBarValue(data * 15 / 255);
+        // TODO: 处理PI
+//        _trendWidget->setBarValue(data * 15 / 255);
     }
     waveformCache.addData((WaveformID)id, data);
 }
@@ -126,11 +120,15 @@ void SPO2Param::handDemoWaveform(WaveformID id, short data)
 void SPO2Param::handDemoTrendData(void)
 {
     _spo2Value = 98;
+    _plugInSpo2Value = 96;
     _piValue = 41;
     if (NULL != _trendWidget)
     {
         _trendWidget->setSPO2Value(_spo2Value);
-        _trendWidget->setPIValue(_piValue);
+        _trendWidget->setPlugInSPO2Value(_plugInSpo2Value);
+        _trendWidget->setSPO2DeltaValue(_spo2Value - _plugInSpo2Value);
+        // TODO: 处理PI
+//        _trendWidget->setPIValue(_piValue);
     }
 
     if (NULL != _oxyCRGSPO2Trend)
@@ -148,8 +146,11 @@ void SPO2Param::exitDemo()
     if (NULL != _trendWidget)
     {
         _trendWidget->setSPO2Value(InvData());
-        _trendWidget->setPIValue(InvData());
-        _trendWidget->setBarValue(InvData());
+        _trendWidget->setPlugInSPO2Value(InvData());
+        _trendWidget->setSPO2DeltaValue(InvData());
+        // TODO: 处理PI
+//        _trendWidget->setPIValue(InvData());
+//        _trendWidget->setBarValue(InvData());
     }
 
     setPR(InvData());
@@ -208,7 +209,7 @@ UnitType SPO2Param::getCurrentUnit(SubParamID /*id*/)
 /**************************************************************************************************
  * 设置数据提供对象。
  *************************************************************************************************/
-void SPO2Param::setProvider(SPO2ProviderIFace *provider)
+void SPO2Param::setProvider(SPO2ProviderIFace *provider, ProviderFlag flag)
 {
     if (provider == NULL)
     {
@@ -219,30 +220,40 @@ void SPO2Param::setProvider(SPO2ProviderIFace *provider)
         return;
     }
 
-    _provider1 = provider;
+    SPO2ProviderIFace *p = NULL;
+    if (flag == PROVIDER_2)
+    {
+        _plugInProvider = provider;
+        p = _plugInProvider;
+    }
+    else
+    {
+        _provider = provider;
+        p = _provider;
+    }
 
-    _waveWidget->setDataRate(_provider1->getSPO2WaveformSample());
+    _waveWidget->setDataRate(_provider->getSPO2WaveformSample());
 
     QString str;
     machineConfig.getStrValue("SPO2", str);
     if (str == "BLM_TS3")
     {
         //设置灵敏度
-        _provider1->setSensitivityFastSat(static_cast<SensitivityMode>(getSensitivity()), getFastSat());
+        p->setSensitivityFastSat(static_cast<SensitivityMode>(getSensitivity()), getFastSat());
     }
-    else if (str == "MASIMO_SPO2" || str == "RAINBOW_SPO2")
+    else if (str == "MASIMO_SPO2" || str == "RAINBOW_SPO2" || str == "RAINBOW_SPO2,RAINBOW_SPO2_2")
     {
-        _provider1->setSensitivityFastSat(SPO2_MASIMO_SENS_NORMAL, false);
-        _provider1->setAverageTime(SPO2_AVER_TIME_8SEC);
+        p->setSensitivityFastSat(SPO2_MASIMO_SENS_NORMAL, false);
+        p->setAverageTime(SPO2_AVER_TIME_8SEC);
 
         SPO2SMARTPLUSETONE pulseTone = getSmartPulseTone();
         if (pulseTone == SPO2_SMART_PLUSE_TONE_ON)
         {
-            _provider1->setSmartTone(true);
+            p->setSmartTone(true);
         }
         else if (pulseTone == SPO2_SMART_PLUSE_TONE_OFF)
         {
-            _provider1->setSmartTone(false);
+            p->setSmartTone(false);
         }
     }
 
@@ -252,15 +263,15 @@ void SPO2Param::setProvider(SPO2ProviderIFace *provider)
     }
 
     //查询状态
-    _provider1->sendStatus();
+    p->sendStatus();
 
     QString tile = _waveWidget->getTitle();
     // 请求波形缓冲区。
-    waveformCache.registerSource(WAVE_SPO2, _provider1->getSPO2WaveformSample(), 0, _provider1->getSPO2MaxValue(),
-                                 tile, _provider1->getSPO2BaseLine());
+    waveformCache.registerSource(WAVE_SPO2, _provider->getSPO2WaveformSample(), 0, _provider->getSPO2MaxValue(),
+                                 tile, _provider->getSPO2BaseLine());
 
     // update spo2 value range
-    _waveWidget->setValueRange(0, _provider1->getSPO2MaxValue());
+    _waveWidget->setValueRange(0, _provider->getSPO2MaxValue());
 }
 
 /**************************************************************************************************
@@ -268,43 +279,27 @@ void SPO2Param::setProvider(SPO2ProviderIFace *provider)
  *************************************************************************************************/
 void SPO2Param::reset()
 {
-    if (NULL == _provider1)
+    if (NULL == _provider && NULL == _plugInProvider)
     {
         return;
     }
 
-    //设置灵敏度
-    _provider1->setSensitivityFastSat(static_cast<SensitivityMode>(getSensitivity()), getFastSat());
-
-    //查询状态
-    _provider1->sendStatus();
-}
-
-/**************************************************************************************************
- * 取值范围。
- *************************************************************************************************/
-int SPO2Param::getSPO2MaxValue()
-{
-    if (NULL != _provider1)
+    if (_provider)
     {
-        return _provider1->getSPO2MaxValue();
-    }
-    else
-    {
-        return 0;
-    }
-}
+        //设置灵敏度
+        _provider->setSensitivityFastSat(static_cast<SensitivityMode>(getSensitivity()), getFastSat());
 
-/**************************************************************************************************
- * 设置服务模式升级数据提供对象。
- *************************************************************************************************/
-void SPO2Param::setServiceProvider(SPO2ProviderIFace *provider)
-{
-    if (provider == NULL)
-    {
-        return;
+        //查询状态
+        _provider->sendStatus();
     }
-    _provider1 = provider;
+    if (_plugInProvider)
+    {
+        //设置灵敏度
+        _plugInProvider->setSensitivityFastSat(static_cast<SensitivityMode>(getSensitivity()), getFastSat());
+
+        //查询状态
+        _plugInProvider->sendStatus();
+    }
 }
 
 /**************************************************************************************************
@@ -385,6 +380,7 @@ void SPO2Param::setSPO2(short spo2Value)
     if (NULL != _trendWidget)
     {
         _trendWidget->setSPO2Value(_spo2Value);
+        _trendWidget->setSPO2DeltaValue(_spo2Value - _plugInSpo2Value);
     }
 
     if (NULL != _oxyCRGSPO2Trend)
@@ -393,12 +389,34 @@ void SPO2Param::setSPO2(short spo2Value)
     }
 }
 
+void SPO2Param::setPlugInSPO2(short spo2Value)
+{
+    if (_plugInSpo2Value == spo2Value && !_plugInIsForceUpdating)
+    {
+        return;
+    }
+    _plugInSpo2Value = spo2Value;
+
+    if (NULL != _trendWidget)
+    {
+        _trendWidget->setPlugInSPO2Value(_spo2Value);
+        _trendWidget->setSPO2DeltaValue(_spo2Value - _plugInSpo2Value);
+    }
+}
+
 /**************************************************************************************************
  * 获取SPO2的值。
  *************************************************************************************************/
-short SPO2Param::getSPO2(void)
+short SPO2Param::getSPO2(ProviderFlag flag)
 {
-    return _spo2Value;
+    if (flag == PROVIDER_1)
+    {
+        return _spo2Value;
+    }
+    else
+    {
+        return _plugInSpo2Value;
+    }
 }
 
 /**************************************************************************************************
@@ -424,7 +442,8 @@ void SPO2Param::updatePIValue(short piValue)
     _piValue = piValue;
     if (NULL != _trendWidget)
     {
-        _trendWidget->setPIValue(_piValue);
+        // TODO: 处理PI
+//        _trendWidget->setPIValue(_piValue);
     }
 }
 
@@ -445,7 +464,8 @@ void SPO2Param::addWaveformData(short wave)
     }
     if (NULL != _trendWidget)
     {
-        _trendWidget->setBarValue(wave * 15 / 255);
+        // TODO: 处理PI
+//        _trendWidget->setBarValue(wave * 15 / 255);
     }
     waveformCache.addData(WAVE_SPO2, (flag << 16) | wave);
 }
@@ -462,7 +482,8 @@ void SPO2Param::addBarData(short data)
     _barValue = data;
     if (NULL != _trendWidget)
     {
-        _trendWidget->setBarValue(data);
+        // TODO: 处理PI
+//        _trendWidget->setBarValue(data);
     }
 }
 
@@ -556,17 +577,31 @@ void SPO2Param::noticeLimitAlarm(bool isAlarm)
 /**************************************************************************************************
  * 状态0x42。
  *************************************************************************************************/
-void SPO2Param::setValidStatus(bool isValid)
+void SPO2Param::setValidStatus(bool isValid, ProviderFlag flag)
 {
-    _isValid = isValid;
+    if (flag == PROVIDER_1)
+    {
+        _isValid = isValid;
+    }
+    else
+    {
+        _plugInIsValid = isValid;
+    }
 }
 
 /**************************************************************************************************
  * 状态是否有效。
  *************************************************************************************************/
-bool SPO2Param::isValid()
+bool SPO2Param::isValid(ProviderFlag flag)
 {
-    return _isValid;
+    if (flag == PROVIDER_1)
+    {
+        return _isValid;
+    }
+    else
+    {
+        return _plugInIsValid;
+    }
 }
 
 /**************************************************************************************************
@@ -574,35 +609,29 @@ bool SPO2Param::isValid()
  *************************************************************************************************/
 bool SPO2Param::isConnected()
 {
+    if (_moduleType == MODULE_RAINBOW_DOUBLE_SPO2)
+    {
+        return _connectedProvider && _connectedPlugInProvider;
+    }
     return _connectedProvider;
 }
 
-void SPO2Param::setConnected(bool isConnected)
+void SPO2Param::setConnected(bool isConnected, ProviderFlag flag)
 {
-    if (_connectedProvider == isConnected)
+    if (flag == PROVIDER_1)
     {
-        return;
+        if (_connectedProvider != isConnected)
+        {
+            _connectedProvider = isConnected;
+        }
     }
-    _connectedProvider = isConnected;
-}
-
-/**************************************************************************************************
- * set sensor on/off
- *************************************************************************************************/
-int SPO2Param::setSensorOff(bool flag)
-{
-    if (_sensorOff == flag)
+    else
     {
-        return -1;
+        if (_connectedPlugInProvider != isConnected)
+        {
+            _connectedPlugInProvider = isConnected;
+        }
     }
-
-    _sensorOff = flag;
-    if (!_isEverSensorOn && !_sensorOff)
-    {
-        _isEverSensorOn = true;
-        systemConfig.setNumValue("PrimaryCfg|SPO2|EverSensorOn", _isEverSensorOn);
-    }
-    return 0;
 }
 
 /**************************************************************************************************
@@ -691,17 +720,30 @@ void SPO2Param::onTempReset()
 void SPO2Param::setSensitivity(int sens)
 {
     currentConfig.setNumValue("SPO2|Sensitivity", static_cast<int>(sens));
-    if (NULL != _provider1)
+    if (NULL != _provider)
     {
         if (_moduleType == MODULE_MASIMO_SPO2
                 || _moduleType == MODULE_RAINBOW_SPO2
                 || _moduleType == MODULE_RAINBOW_DOUBLE_SPO2)
         {
-            _provider1->setSensitivityFastSat(static_cast<SensitivityMode>(sens), getFastSat());
+            _provider->setSensitivityFastSat(static_cast<SensitivityMode>(sens), getFastSat());
         }
         else if (_moduleType != MODULE_SPO2_NR)
         {
-            _provider1->setSensitive(static_cast<SPO2Sensitive>(sens));
+            _provider->setSensitive(static_cast<SPO2Sensitive>(sens));
+        }
+    }
+    if (NULL != _plugInProvider)
+    {
+        if (_moduleType == MODULE_MASIMO_SPO2
+                || _moduleType == MODULE_RAINBOW_SPO2
+                || _moduleType == MODULE_RAINBOW_DOUBLE_SPO2)
+        {
+            _plugInProvider->setSensitivityFastSat(static_cast<SensitivityMode>(sens), getFastSat());
+        }
+        else if (_moduleType != MODULE_SPO2_NR)
+        {
+            _plugInProvider->setSensitive(static_cast<SPO2Sensitive>(sens));
         }
     }
 }
@@ -716,9 +758,13 @@ int SPO2Param::getSensitivity(void)
 void SPO2Param::setFastSat(bool isFast)
 {
     currentConfig.setNumValue("SPO2|FastSat", static_cast<int>(isFast));
-    if (NULL != _provider1)
+    if (NULL != _provider)
     {
-        _provider1->setSensitivityFastSat(static_cast<SensitivityMode>(getSensitivity()), isFast);
+        _provider->setSensitivityFastSat(static_cast<SensitivityMode>(getSensitivity()), isFast);
+    }
+    if (NULL != _plugInProvider)
+    {
+        _plugInProvider->setSensitivityFastSat(static_cast<SensitivityMode>(getSensitivity()), isFast);
     }
 }
 
@@ -734,15 +780,26 @@ bool SPO2Param::getFastSat()
  *************************************************************************************************/
 void SPO2Param::setSmartPulseTone(SPO2SMARTPLUSETONE sens)
 {
-    if (_provider1)
+    if (_provider)
     {
         if (sens == SPO2_SMART_PLUSE_TONE_ON)
         {
-            _provider1->setSmartTone(true);
+            _provider->setSmartTone(true);
         }
         else if (sens == SPO2_SMART_PLUSE_TONE_OFF)
         {
-            _provider1->setSmartTone(false);
+            _provider->setSmartTone(false);
+        }
+    }
+    if (_plugInProvider)
+    {
+        if (sens == SPO2_SMART_PLUSE_TONE_ON)
+        {
+            _plugInProvider->setSmartTone(true);
+        }
+        else if (sens == SPO2_SMART_PLUSE_TONE_OFF)
+        {
+            _plugInProvider->setSmartTone(false);
         }
     }
     currentConfig.setNumValue("SPO2|SmartPluseTone", static_cast<int>(sens));
@@ -910,31 +967,53 @@ void SPO2Param::clearCCHDData(bool isCleanup)
     }
 }
 
-void SPO2Param::setPerfusionStatus(bool isLow)
+void SPO2Param::setPerfusionStatus(bool isLow, ProviderFlag flag)
 {
-    if (isLow != _isLowPerfusion)
+    if (flag == PROVIDER_1)
     {
-        _isForceUpdating = true;
-        _isLowPerfusion = isLow;
+        if (isLow != _isLowPerfusion)
+        {
+            _isForceUpdating = true;
+            _isLowPerfusion = isLow;
+        }
+        else
+        {
+            _isForceUpdating = false;
+        }
     }
     else
     {
-        _isForceUpdating = false;
+        if (isLow != _plugInIsLowPerfusion)
+        {
+            _plugInIsForceUpdating = true;
+            _plugInIsLowPerfusion = isLow;
+        }
+        else
+        {
+            _plugInIsForceUpdating = false;
+        }
     }
 }
 
-bool SPO2Param::getPerfusionStatus() const
+bool SPO2Param::getPerfusionStatus(ProviderFlag flag) const
 {
+    if (flag == PROVIDER_2)
+    {
+        return _plugInIsLowPerfusion;
+    }
     return _isLowPerfusion;
 }
 
 void SPO2Param::initModule()
 {
-    if (!_provider1)
+    if (_provider)
     {
-        return;
+        _provider->initModule();
     }
-    _provider1->initModule();
+    if (_plugInProvider)
+    {
+        _plugInProvider->initModule();
+    }
 }
 
 /**************************************************************************************************
@@ -942,17 +1021,16 @@ void SPO2Param::initModule()
  *************************************************************************************************/
 SPO2Param::SPO2Param()
          : Param(PARAM_SPO2)
-         , _provider1(NULL)
+         , _provider(NULL)
+         , _plugInProvider(NULL)
          , _trendWidget(NULL)
          , _waveWidget(NULL)
          , _isEverCheckFinger(false)
-         , _isEverSensorOn(false)
          , _spo2Value(InvData())
          , _prValue(InvData())
          , _barValue(InvData())
          , _piValue(InvData())
          , _isValid(false)
-         , _sensorOff(true)
          , _recPackageInPowerOn2sec(0)
          , _oxyCRGSPO2Trend(NULL)
          , _connectedProvider(false)
@@ -963,7 +1041,6 @@ SPO2Param::SPO2Param()
          , _isT5ModuleUpgradeCompleted(false)
 {
     systemConfig.getNumValue("PrimaryCfg|SPO2|EverCheckFinger", _isEverCheckFinger);
-    systemConfig.getNumValue("PrimaryCfg|SPO2|EverSensorOn", _isEverSensorOn);
 
     QTimer::singleShot(2000, this, SLOT(checkSelftest()));
 
