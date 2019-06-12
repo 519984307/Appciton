@@ -73,14 +73,14 @@ public:
     virtual UnitType getCurrentUnit(SubParamID id);
 
     // 设置数据提供对象。
-    void setProvider(SPO2ProviderIFace *provider, ProviderFlag flag = PROVIDER_1);
+    void setProvider(SPO2ProviderIFace *provider, SPO2Module flag = SPO2_MODULE_INSIDE);
 
     // 模块复位
     void reset();
 
     // 设置界面对象。
     void setTrendWidget(SPO2TrendWidget *trendWidget);
-    void setWaveWidget(SPO2WaveWidget *waveWidget);
+    void setWaveWidget(SPO2WaveWidget *waveWidget, SPO2Module flag = SPO2_MODULE_INSIDE);
     void setOxyCRGSPO2Trend(OxyCRGSPO2TrendWidget *trendWidget);
 
     // PR音量
@@ -89,7 +89,7 @@ public:
     // 设置/获取SPO2的值。
     void setSPO2(short spo2Value);
     void setPlugInSPO2(short spo2Value);
-    short getSPO2(ProviderFlag flag = PROVIDER_1);
+    short getSPO2(SPO2Module flag = SPO2_MODULE_INSIDE);
 
     // 设置/获取PR的值。
     void setPR(short prValue);
@@ -131,12 +131,12 @@ public:
     void noticeLimitAlarm(bool isAlarm);
 
     // 有效状态
-    void setValidStatus(bool isValid, ProviderFlag flag = PROVIDER_1);
-    bool isValid(ProviderFlag flag = PROVIDER_1);
+    void setValidStatus(bool isValid, SPO2Module flag = SPO2_MODULE_INSIDE);
+    bool isValid(SPO2Module flag = SPO2_MODULE_INSIDE);
     bool isConnected();
 
     // 设置连接，供给对象调用。
-    void setConnected(bool isConnected, ProviderFlag flag = PROVIDER_1);
+    void setConnected(bool isConnected, SPO2Module flag = SPO2_MODULE_INSIDE);
 
     // received package
     void receivePackage();
@@ -224,13 +224,13 @@ public:
      * @brief setPerfusionStatus  and the function of setting the SPO2 perfusion status
      * @param isLow  and true if low perfusion
      */
-    void setPerfusionStatus(bool isLow, ProviderFlag flag = PROVIDER_1);
+    void setPerfusionStatus(bool isLow, SPO2Module flag = SPO2_MODULE_INSIDE);
 
     /**
      * @brief getPerfusionStatus  and the function of getting the SPO2 perfusion status
      * @return  and return true if low perfusion
      */
-    bool getPerfusionStatus(ProviderFlag flag = PROVIDER_1) const;
+    bool getPerfusionStatus(SPO2Module flag = SPO2_MODULE_INSIDE) const;
 
     /**
      * @brief initModule  and the function of initting the module
@@ -253,7 +253,7 @@ private slots:
 
 private:
     SPO2Param();
-    void _setWaveformSpeed(SPO2WaveVelocity speed);
+    void _setWaveformSpeed(SPO2WaveVelocity speed, SPO2Module flag = SPO2_MODULE_INSIDE);
 
     SPO2ProviderIFace *_provider;
     SPO2ProviderIFace *_plugInProvider;

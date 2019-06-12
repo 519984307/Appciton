@@ -223,7 +223,7 @@ public:
         , spHbPrecision(PRECISION_NEAREST_0_1)
         , pviAveragingMode(AVERAGING_MODE_NORMAL)
         , spHbBloodVessel(BLOOD_VESSEL_ARTERIAL)
-        , provider(PROVIDER_1)
+        , provider(SPO2_MODULE_INSIDE)
     {
     }
 
@@ -355,7 +355,7 @@ public:
 
     SpHbBloodVesselMode spHbBloodVessel;
 
-    ProviderFlag provider;
+    SPO2Module provider;
 };
 
 RainbowProvider::RainbowProvider(const QString &name)
@@ -379,7 +379,7 @@ RainbowProvider::RainbowProvider(const QString &name)
     }
     if (name == "RAINBOW_SPO2_2")
     {
-        d_ptr->provider = PROVIDER_2;
+        d_ptr->provider = SPO2_MODULE_OUTSIDE;
     }
 }
 
@@ -924,7 +924,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         }
         // 最后更新spo2值和pr值。避免趋势界面的值跳动。
         spo2Param.setPerfusionStatus(isLowPerfusionIndex, provider);
-        if (provider == PROVIDER_1)
+        if (provider == SPO2_MODULE_INSIDE)
         {
             spo2Param.setSPO2(spo2Value);
             spo2Param.setPR(prValue);
@@ -1067,7 +1067,7 @@ void RainbowProviderPrivate::unlockBoard(unsigned int sn, unsigned int flag)
 {
     unsigned char data[9] = {0};
     unsigned int unlockKey = 0;
-    if (provider == PROVIDER_1)
+    if (provider == SPO2_MODULE_INSIDE)
     {
         unlockKey = SENIOR_MENU_ID ^ sn;
     }

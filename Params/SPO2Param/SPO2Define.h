@@ -192,8 +192,8 @@ enum SpHbBloodVesselMode
 };
 
 
-enum ProviderFlag
+enum SPO2Module
 {
-    PROVIDER_1,
-    PROVIDER_2
+    SPO2_MODULE_INSIDE,
+    SPO2_MODULE_OUTSIDE
 };

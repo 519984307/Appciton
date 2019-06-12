@@ -60,7 +60,7 @@ void SPO2TrendWidget::setSPO2Value(int16_t spo2)
 
 void SPO2TrendWidget::setPlugInSPO2Value(int16_t spo2)
 {
-    if (spo2 >= 0 && spo2Param.getPerfusionStatus(PROVIDER_2))
+    if (spo2 >= 0 && spo2Param.getPerfusionStatus(SPO2_MODULE_OUTSIDE))
     {
         _spo2String2 = QString("%1?").arg(QString::number(spo2));
     }

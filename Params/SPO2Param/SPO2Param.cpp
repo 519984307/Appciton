@@ -56,29 +56,40 @@ AverageTime SPO2Param::getAverageTime()
 /**************************************************************************************************
  * 设置波形速度。
  *************************************************************************************************/
-void SPO2Param::_setWaveformSpeed(SPO2WaveVelocity speed)
+void SPO2Param::_setWaveformSpeed(SPO2WaveVelocity speed, SPO2Module flag)
 {
-    if (_waveWidget == NULL)
+    if (_waveWidget == NULL && _plugInWaveWidget == NULL)
     {
         return;
+    }
+
+    SPO2WaveWidget *waveWidget = NULL;
+
+    if (flag == SPO2_MODULE_INSIDE)
+    {
+        waveWidget = _waveWidget;
+    }
+    else
+    {
+        waveWidget = _plugInWaveWidget;
     }
 
     switch (speed)
     {
     case SPO2_WAVE_VELOCITY_62D5:
-        _waveWidget->setWaveSpeed(6.25);
+        waveWidget->setWaveSpeed(6.25);
         break;
 
     case SPO2_WAVE_VELOCITY_125:
-        _waveWidget->setWaveSpeed(12.5);
+        waveWidget->setWaveSpeed(12.5);
         break;
 
     case SPO2_WAVE_VELOCITY_250:
-        _waveWidget->setWaveSpeed(25.0);
+        waveWidget->setWaveSpeed(25.0);
         break;
 
     case SPO2_WAVE_VELOCITY_500:
-        _waveWidget->setWaveSpeed(50.0);
+        waveWidget->setWaveSpeed(50.0);
         break;
 
     default:
@@ -209,7 +220,7 @@ UnitType SPO2Param::getCurrentUnit(SubParamID /*id*/)
 /**************************************************************************************************
  * 设置数据提供对象。
  *************************************************************************************************/
-void SPO2Param::setProvider(SPO2ProviderIFace *provider, ProviderFlag flag)
+void SPO2Param::setProvider(SPO2ProviderIFace *provider, SPO2Module flag)
 {
     if (provider == NULL)
     {
@@ -221,7 +232,7 @@ void SPO2Param::setProvider(SPO2ProviderIFace *provider, ProviderFlag flag)
     }
 
     SPO2ProviderIFace *p = NULL;
-    if (flag == PROVIDER_2)
+    if (flag == SPO2_MODULE_OUTSIDE)
     {
         _plugInProvider = provider;
         p = _plugInProvider;
@@ -317,14 +328,22 @@ void SPO2Param::setTrendWidget(SPO2TrendWidget *trendWidget)
 /**************************************************************************************************
  * 设置界面对象。
  *************************************************************************************************/
-void SPO2Param::setWaveWidget(SPO2WaveWidget *waveWidget)
+void SPO2Param::setWaveWidget(SPO2WaveWidget *waveWidget, SPO2Module flag)
 {
     if (waveWidget == NULL)
     {
         return;
     }
-    _waveWidget = waveWidget;
-    _setWaveformSpeed((SPO2WaveVelocity)getSweepSpeed());
+    if (flag == SPO2_MODULE_INSIDE)
+    {
+        _waveWidget = waveWidget;
+        _setWaveformSpeed((SPO2WaveVelocity)getSweepSpeed());
+    }
+    else
+    {
+        _plugInWaveWidget = waveWidget;
+        _setWaveformSpeed((SPO2WaveVelocity)getSweepSpeed(), SPO2_MODULE_OUTSIDE);
+    }
 }
 
 void SPO2Param::setOxyCRGSPO2Trend(OxyCRGSPO2TrendWidget *trendWidget)
@@ -407,9 +426,9 @@ void SPO2Param::setPlugInSPO2(short spo2Value)
 /**************************************************************************************************
  * 获取SPO2的值。
  *************************************************************************************************/
-short SPO2Param::getSPO2(ProviderFlag flag)
+short SPO2Param::getSPO2(SPO2Module flag)
 {
-    if (flag == PROVIDER_1)
+    if (flag == SPO2_MODULE_INSIDE)
     {
         return _spo2Value;
     }
@@ -577,9 +596,9 @@ void SPO2Param::noticeLimitAlarm(bool isAlarm)
 /**************************************************************************************************
  * 状态0x42。
  *************************************************************************************************/
-void SPO2Param::setValidStatus(bool isValid, ProviderFlag flag)
+void SPO2Param::setValidStatus(bool isValid, SPO2Module flag)
 {
-    if (flag == PROVIDER_1)
+    if (flag == SPO2_MODULE_INSIDE)
     {
         _isValid = isValid;
     }
@@ -592,9 +611,9 @@ void SPO2Param::setValidStatus(bool isValid, ProviderFlag flag)
 /**************************************************************************************************
  * 状态是否有效。
  *************************************************************************************************/
-bool SPO2Param::isValid(ProviderFlag flag)
+bool SPO2Param::isValid(SPO2Module flag)
 {
-    if (flag == PROVIDER_1)
+    if (flag == SPO2_MODULE_INSIDE)
     {
         return _isValid;
     }
@@ -616,9 +635,9 @@ bool SPO2Param::isConnected()
     return _connectedProvider;
 }
 
-void SPO2Param::setConnected(bool isConnected, ProviderFlag flag)
+void SPO2Param::setConnected(bool isConnected, SPO2Module flag)
 {
-    if (flag == PROVIDER_1)
+    if (flag == SPO2_MODULE_INSIDE)
     {
         if (_connectedProvider != isConnected)
         {
@@ -822,6 +841,7 @@ void SPO2Param::setSweepSpeed(int speed)
 {
     currentConfig.setNumValue("SPO2|SweepSpeed", speed);
     _setWaveformSpeed((SPO2WaveVelocity)speed);
+    _setWaveformSpeed((SPO2WaveVelocity)speed, SPO2_MODULE_OUTSIDE);
 }
 
 /**************************************************************************************************
@@ -967,9 +987,9 @@ void SPO2Param::clearCCHDData(bool isCleanup)
     }
 }
 
-void SPO2Param::setPerfusionStatus(bool isLow, ProviderFlag flag)
+void SPO2Param::setPerfusionStatus(bool isLow, SPO2Module flag)
 {
-    if (flag == PROVIDER_1)
+    if (flag == SPO2_MODULE_INSIDE)
     {
         if (isLow != _isLowPerfusion)
         {
@@ -995,9 +1015,9 @@ void SPO2Param::setPerfusionStatus(bool isLow, ProviderFlag flag)
     }
 }
 
-bool SPO2Param::getPerfusionStatus(ProviderFlag flag) const
+bool SPO2Param::getPerfusionStatus(SPO2Module flag) const
 {
-    if (flag == PROVIDER_2)
+    if (flag == SPO2_MODULE_OUTSIDE)
     {
         return _plugInIsLowPerfusion;
     }
