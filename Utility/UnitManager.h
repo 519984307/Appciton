@@ -38,6 +38,8 @@ enum UnitType
     UNIT_LPM,
     UNIT_LPMPSQM,
     UNIT_CMH2O,
+    UNIT_GDL,
+    UNIT_MLDL,
     UNIT_NR
 };
 
@@ -57,7 +59,7 @@ public:
         {
             " ", "celsius", "fahrenheit", "celsius", "fahrenheit", "mmHg", "kPa", "percent",
             "rpm", "bpm", "μv", "mv", "kg", "lb", "cm", "mm", "inch", "ms", "PPM", "CPM", "mA",
-            "lpm", "lpmpsqm", "cmH2O"
+            "lpm", "lpmpsqm", "cmH2O", "gdL", "mLdL"
         };
         return symbol[t];
     }
