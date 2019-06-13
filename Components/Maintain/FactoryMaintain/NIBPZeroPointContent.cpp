@@ -102,7 +102,7 @@ void NIBPZeroPointContent::layoutExec()
     d_ptr->pumpSpx->setStep(1);
     layout->addWidget(d_ptr->pumpSpx, 1, 1);
 
-    button = new Button(trs("On"));
+    button = new Button(trs("Off"));
     button->setButtonStyle(Button::ButtonTextOnly);
     layout->addWidget(button, 1, 2);
     connect(button, SIGNAL(released()), this, SLOT(pumpControlReleased()));
@@ -111,7 +111,7 @@ void NIBPZeroPointContent::layoutExec()
     label = new QLabel(trs("ValveControl"));
     layout->addWidget(label, 2, 0, Qt::AlignCenter);
 
-    button = new Button(trs("On"));
+    button = new Button(trs("Off"));
     button->setButtonStyle(Button::ButtonTextOnly);
     layout->addWidget(button, 2, 2);
     connect(button, SIGNAL(released()), this, SLOT(valveControlReleased()));
@@ -313,11 +313,11 @@ void NIBPZeroPointContent::valveControlReleased()
     d_ptr->valveTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
     if (d_ptr->isOnValve)
     {
-        nibpParam.provider().serviceValve(false);
+        nibpParam.provider().serviceValve(true);
     }
     else
     {
-        nibpParam.provider().serviceValve(true);
+        nibpParam.provider().serviceValve(false);
     }
 }
 

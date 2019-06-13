@@ -199,7 +199,7 @@ EnterPressureContrlMode,进入压力操控模式,Enter Pressure Control
 EnterZeroMode,进入校零模式,Enter Zero
 QuitZeroMode,退出校零模式,Quit Zero
 OperationFailedPleaseAgain,"操作失败,请重试!","Operation Failed , Please Again!"
-PumpControl,气泵控制,Pump Control
+PumpControl,气泵充气速度,Pump Charging Rate
 ValveControl,气阀控制,Valve Control
 InflationPressure,充气压力,Inflation Pressure
 OverpressureProtect,过压保护,Overpressure Protect
@@ -1312,9 +1312,9 @@ MACAddress,硬件地址,MAC Address
 ElectronicSerialNumber,电子序列号,Electronic Serial Number
 SetElectronicSerialNumber,设置电子序列号,Set Electronic Serial Number
 MonitorInfoMenuDesc,监护仪信息菜单设置,Monitor Info Desc
-NIBPCalibrationMenu,NIBP校准,NIBP Calibration
-NIBPCalibration,NIBP校准,NIBP Calibration
-NIBPCalibrationMenuDesc,NIBP校准,NIBP Calibration
+NIBPMaintainMenu,NIBP维护,NIBP Maintain
+NIBPMaintain,NIBP维护,NIBP Maintain
+NIBPMaintainMenuDesc,NIBP维护,NIBP Maintain
 O2Calibrate,氧浓度校准,O2 Calibrate
 O2CalibrateDesc,氧浓度校准,O2 Calibrate
 Percent21Calibration,21% 校准,21% Calibrate
