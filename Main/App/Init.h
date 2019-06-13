@@ -127,6 +127,11 @@
 #include "SPO2Alarm.h"
 #include "SPO2WaveWidget.h"
 #include "SPO2TrendWidget.h"
+#include "PVITrendWidget.h"
+#include "SPHBTrendWidget.h"
+#include "SPOCTrendWidget.h"
+#include "SPMETTrendWidget.h"
+#include "PITrendWidget.h"
 
 #include "TEMPParam.h"
 #include "TEMPAlarm.h"
