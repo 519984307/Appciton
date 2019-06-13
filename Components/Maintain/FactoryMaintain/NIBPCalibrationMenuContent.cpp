@@ -37,8 +37,8 @@ public:
  * 构造。
  *************************************************************************************************/
 NIBPCalibrationMenuContent::NIBPCalibrationMenuContent()
-    : MenuContent(trs("NIBPCalibrationMenu"),
-                  trs("NIBPCalibrationMenuDesc")),
+    : MenuContent(trs("NIBPMaintainMenu"),
+                  trs("NIBPMaintainMenuDesc")),
       d_ptr(new NIBPCalibrationMenuContentPrivate)
 {
 }
@@ -59,7 +59,7 @@ void NIBPCalibrationMenuContent::layoutExec()
     layout->setMargin(10);
     layout->setAlignment(Qt::AlignTop);
 
-    QLabel *label = new QLabel(trs("NIBPCalibration"));
+    QLabel *label = new QLabel(trs("NIBPMaintain"));
     layout->addWidget(label);
 
     d_ptr->enterBtn = new Button(trs("Enter"));
