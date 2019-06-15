@@ -22,7 +22,8 @@
 #define RUN_BAUD_RATE  (57600)
 #define MIN_PACKET_LEN  (5)
 #define TEMP_BUFF_SIZE  (64)
-#define MANU_ID    (0x23ae5d53)
+#define MANU_ID_BLM     (0x23ae5d53)
+#define MANU_ID_DAVID   (0x55d9b582)
 
 enum RBRecvPacketType
 {
@@ -359,8 +360,15 @@ RainbowProvider::RainbowProvider(const QString &name)
     , SPO2ProviderIFace()
     , d_ptr(new RainbowProviderPrivate(this))
 {
-    disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_SPO2;
-    UartAttrDesc attr(DEFALUT_BAUD_RATE, 8, 'N', 1);
+    if (name == "RAINBOW_SPO2")
+    {
+        disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_SPO2;
+    }
+    else if (name == "RAINBOW_SPO2_2")
+    {
+        plugInInfo.plugInType = PlugInProvider::PLUGIN_TYPE_SPO2;
+    }
+    UartAttrDesc attr(RUN_BAUD_RATE, 8, 'N', 1);
     initPort(attr);
 
     if (disPatchInfo.dispatcher)
@@ -368,6 +376,10 @@ RainbowProvider::RainbowProvider(const QString &name)
         // reset the hardware
         disPatchInfo.dispatcher->resetPacketPort(disPatchInfo.packetType);
         d_ptr->isReseting = true;
+    }
+    else if (plugInInfo.plugIn)
+    {
+        QTimer::singleShot(200, this, SLOT(changeBaudrate()));
     }
     else
     {
@@ -1051,7 +1063,15 @@ unsigned char RainbowProviderPrivate::calcChecksum(const unsigned char *data, in
 void RainbowProviderPrivate::unlockBoard(unsigned int sn, unsigned int flag)
 {
     unsigned char data[9] = {0};
-    unsigned int unlockKey = MANU_ID ^ sn;
+    unsigned int unlockKey = MANU_ID_BLM ^ sn;
+    if (q_ptr->disPatchInfo.dispatcher)
+    {
+        unlockKey = MANU_ID_DAVID ^ sn;
+    }
+    else if (q_ptr->plugInInfo.plugIn)
+    {
+        unlockKey = MANU_ID_BLM ^ sn;
+    }
     data[0] = RB_CMD_UNLOCK_BOARD;
     data[1] = (unlockKey >> 24) & 0xff;
     data[2] = (unlockKey >> 16) & 0xff;
@@ -1116,6 +1136,12 @@ void RainbowProviderPrivate::handleACK()
                         DataDispatcher::BAUDRATE_57600);
                 QTimer::singleShot(50, q_ptr, SLOT(requestBoardInfo()));
                 qDebug() << "Rainbow baudrate has changed, update packet port baudrate.";
+            }
+            else if (q_ptr->plugInInfo.plugIn)
+            {
+                // data is transmited directly through the uart port
+                q_ptr->plugInInfo.plugIn->updateUartBaud(RUN_BAUD_RATE);
+                QTimer::singleShot(50, q_ptr, SLOT(requestBoardInfo()));
             }
             else
             {

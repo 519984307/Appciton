@@ -70,6 +70,46 @@ bool Provider::initPort(const UartAttrDesc &desc, bool needNotify)
         return true;
     }
 
+    plugInInfo.plugIn = PlugInProvider::getPlugInProvider(port);
+    if (plugInInfo.plugIn)
+    {
+        debug("%s connect to data dispatcher(%s), datatype %d",
+              qPrintable(_name),
+              qPrintable(port),
+              plugInInfo.plugInType);
+        plugInInfo.plugIn->connectProvider(plugInInfo.plugInType, this);
+
+        PlugInProvider::PacketPortBaudrate portBaud = PlugInProvider::BAUDRATE_9600;
+        switch (desc.baud) {
+        case 9600:
+            portBaud = PlugInProvider::BAUDRATE_9600;
+            break;
+        case 19200:
+            portBaud = PlugInProvider::BAUDRATE_19200;
+            break;
+        case 28800:
+            portBaud = PlugInProvider::BAUDRATE_28800;
+            break;
+        case 38400:
+            portBaud = PlugInProvider::BAUDRATE_38400;
+            break;
+        case 57600:
+            portBaud = PlugInProvider::BAUDRATE_57600;
+            break;
+        case 115200:
+            portBaud = PlugInProvider::BAUDRATE_115200;
+            break;
+        case 230400:
+            portBaud = PlugInProvider::BAUDRATE_230400;
+            break;
+        default:
+            qWarning("Unsupport dispatch port baudrate: %d\n", desc.baud);
+            break;
+        }
+        plugInInfo.plugIn->setPacketPortBaudrate(plugInInfo.plugInType, portBaud);
+        return true;
+    }
+
     debug("%s", qPrintable(_name));
     debug("%s", qPrintable(port));
     return uart->initPort(port, desc, needNotify);
@@ -84,6 +124,11 @@ int Provider::writeData(const unsigned char buff[], int len)
     if (disPatchInfo.dispatcher)
     {
         return disPatchInfo.dispatcher->sendData(disPatchInfo.packetType, buff, len);
+    }
+
+    if (plugInInfo.plugIn)
+    {
+        return plugInInfo.plugIn->sendData(plugInInfo.plugInType, buff, len);
     }
 
     return uart->write(buff, len);

@@ -16,6 +16,7 @@
 #include "Uart.h"
 #include "RingBuff.h"
 #include "DataDispatcher.h"
+#include "PlugInProvider.h"
 
 class Provider: public QObject
 {
@@ -91,6 +92,7 @@ protected:
     static const int ringBuffLen = 4096;
     Uart *uart;
     DataDispatcher::DispatchInfo disPatchInfo;
+    PlugInProvider::PlugInInfo plugInInfo;
 
 protected slots:
     // 当端口有数据时调用此方法，派生类实现。

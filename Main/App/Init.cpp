@@ -19,6 +19,7 @@
 #include "ConfigManager.h"
 #include "NurseCallManager.h"
 #include "TestBatteryTime.h"
+#include "PlugInProvider.h"
 
 /**************************************************************************************************
  * 功能： 初始化系统。
@@ -239,6 +240,9 @@ static void _initProviderParam(void)
     paramManager.addProvider(*te3);
 
     DataDispatcher::addDataDispatcher(new DataDispatcher("DataDispatcher"));
+
+    // 插件式转发
+    PlugInProvider::addPlugInProvider(new PlugInProvider("PlugIn"));
 
     // ECG部分。
     paramManager.addParam(ecgDupParam.construction());
