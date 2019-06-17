@@ -35,7 +35,7 @@ public:
           pumpBtn(NULL), valveBtn(NULL), zeroBtn(NULL),
           value(NULL), timeoutNum(0)
     {}
-
+    void loadOptions(void);
     int inModeTimerID;          // 进入校零模式定时器ID
     int pumpTimerID;            // 气泵控制定时器ID
     int valveTimerID;           // 气阀控制定时器ID
@@ -53,7 +53,16 @@ public:
     QLabel *value;              // 当前压力值
     int timeoutNum;            // 回复超时
 };
-
+void NIBPZeroPointContentPrivate::loadOptions(void)
+{
+    isZeroMode = false;
+    modeBtn->setEnabled(true);
+    modeBtn->setText(trs("EnterZeroMode"));
+    pumpBtn->setEnabled(false);
+    valveBtn->setEnabled(false);
+    zeroBtn->setEnabled(false);
+    zeroBtn->setText(trs("ServiceCalibrateZero"));
+}
 NIBPZeroPointContent *NIBPZeroPointContent::getInstance()
 {
     static NIBPZeroPointContent *instance = NULL;
@@ -168,7 +177,8 @@ void NIBPZeroPointContent::timerEvent(QTimerEvent *ev)
             {
                 MessageBox messbox(trs("Warn"), trs("NIBPModuleEnterFail"), false);
                 messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
-                windowManager.showWindow(&messbox, WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
+                windowManager.showWindow(&messbox,
+                                         WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
             }
             killTimer(d_ptr->inModeTimerID);
             d_ptr->inModeTimerID = -1;
@@ -197,7 +207,8 @@ void NIBPZeroPointContent::timerEvent(QTimerEvent *ev)
             {
                 MessageBox messbox(trs("Warn"), trs("OperationFailedPleaseAgain"), false);
                 messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
-                windowManager.showWindow(&messbox, WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
+                windowManager.showWindow(&messbox,
+                                         WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
             }
             killTimer(d_ptr->pumpTimerID);
             d_ptr->pumpTimerID = -1;
@@ -230,7 +241,8 @@ void NIBPZeroPointContent::timerEvent(QTimerEvent *ev)
             {
                 MessageBox messbox(trs("Warn"), trs("OperationFailedPleaseAgain"), false);
                 messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
-                windowManager.showWindow(&messbox, WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
+                windowManager.showWindow(&messbox,
+                                         WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
             }
             killTimer(d_ptr->valveTimerID);
             d_ptr->valveTimerID = -1;
@@ -277,6 +289,13 @@ bool NIBPZeroPointContent::focusNextPrevChild(bool next)
 {
     d_ptr->zeroBtn->setText(trs("ServiceCalibrateZero"));
     return MenuContent::focusNextPrevChild(next);
+}
+
+void NIBPZeroPointContent::hideEvent(QHideEvent *e)
+{
+    Q_UNUSED(e);
+    d_ptr->loadOptions();
+    nibpParam.provider().serviceCalibrateZero(false);
 }
 
 void NIBPZeroPointContent::enterZeroReleased()
@@ -337,16 +356,5 @@ NIBPZeroPointContent::~NIBPZeroPointContent()
 
 void NIBPZeroPointContent::init()
 {
-    d_ptr->isZeroMode = false;
-    loadOptions();
-}
-
-void NIBPZeroPointContent::loadOptions()
-{
-    d_ptr->modeBtn->setEnabled(true);
-    d_ptr->modeBtn->setText(trs("EnterZeroMode"));
-    d_ptr->pumpBtn->setEnabled(false);
-    d_ptr->valveBtn->setEnabled(false);
-    d_ptr->zeroBtn->setEnabled(false);
-    d_ptr->zeroBtn->setText(trs("ServiceCalibrateZero"));
+    d_ptr->loadOptions();
 }
