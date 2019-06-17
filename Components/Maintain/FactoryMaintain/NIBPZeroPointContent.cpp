@@ -35,7 +35,7 @@ public:
           pumpBtn(NULL), valveBtn(NULL), zeroBtn(NULL),
           value(NULL), timeoutNum(0)
     {}
-
+    void loadOptions(void);
     int inModeTimerID;          // 进入校零模式定时器ID
     int pumpTimerID;            // 气泵控制定时器ID
     int valveTimerID;           // 气阀控制定时器ID
@@ -53,7 +53,16 @@ public:
     QLabel *value;              // 当前压力值
     int timeoutNum;            // 回复超时
 };
-
+void NIBPZeroPointContentPrivate::loadOptions(void)
+{
+    isZeroMode = false;
+    modeBtn->setEnabled(true);
+    modeBtn->setText(trs("EnterZeroMode"));
+    pumpBtn->setEnabled(false);
+    valveBtn->setEnabled(false);
+    zeroBtn->setEnabled(false);
+    zeroBtn->setText(trs("ServiceCalibrateZero"));
+}
 NIBPZeroPointContent *NIBPZeroPointContent::getInstance()
 {
     static NIBPZeroPointContent *instance = NULL;
@@ -285,7 +294,7 @@ bool NIBPZeroPointContent::focusNextPrevChild(bool next)
 void NIBPZeroPointContent::hideEvent(QHideEvent *e)
 {
     Q_UNUSED(e);
-    loadOptions();
+    d_ptr->loadOptions();
     nibpParam.provider().serviceCalibrateZero(false);
 }
 
@@ -347,16 +356,5 @@ NIBPZeroPointContent::~NIBPZeroPointContent()
 
 void NIBPZeroPointContent::init()
 {
-    loadOptions();
-}
-
-void NIBPZeroPointContent::loadOptions()
-{
-    d_ptr->isZeroMode = false;
-    d_ptr->modeBtn->setEnabled(true);
-    d_ptr->modeBtn->setText(trs("EnterZeroMode"));
-    d_ptr->pumpBtn->setEnabled(false);
-    d_ptr->valveBtn->setEnabled(false);
-    d_ptr->zeroBtn->setEnabled(false);
-    d_ptr->zeroBtn->setText(trs("ServiceCalibrateZero"));
+    d_ptr->loadOptions();
 }

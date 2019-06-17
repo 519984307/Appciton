@@ -41,6 +41,7 @@ public:
           modeBtn(NULL), calibrateBtn1(NULL), calibrateBtn2(NULL)
     {
     }
+    void loadOptions(void);
     QList<Button *> btnList;
 //    CalibrateSetItem *item;
     QLabel *label;
@@ -61,6 +62,18 @@ public:
 
     QString moduleStr;                      // 运行模块字符串
 };
+
+void NIBPCalibrateContentPrivate::loadOptions(void)
+{
+    isCalibrateMode = false;
+    modeBtn->setEnabled(true);
+    modeBtn->setText(trs("EnterCalibrateMode"));
+    calibrateBtn1->setText(trs("ServiceCalibrate"));
+    calibrateBtn2->setText(trs("ServiceCalibrate"));
+    calibrateBtn1->setEnabled(false);
+    calibrateBtn2->setEnabled(false);
+    point2Spb->setEnabled(false);
+}
 
 NIBPCalibrateContent *NIBPCalibrateContent::getInstance()
 {
@@ -218,7 +231,7 @@ void NIBPCalibrateContent::timerEvent(QTimerEvent *ev)
 void NIBPCalibrateContent::hideEvent(QHideEvent *e)
 {
     Q_UNUSED(e);
-    loadOptions();
+    d_ptr->loadOptions();
     if (d_ptr->moduleStr == "BLM_N5")
     {
         nibpParam.provider().serviceCalibrate(false);
@@ -350,18 +363,5 @@ NIBPCalibrateContent::~NIBPCalibrateContent()
 
 void NIBPCalibrateContent::init()
 {
-    loadOptions();
+    d_ptr->loadOptions();
 }
-
-void NIBPCalibrateContent::loadOptions()
-{
-    d_ptr->isCalibrateMode = false;
-    d_ptr->modeBtn->setEnabled(true);
-    d_ptr->modeBtn->setText(trs("EnterCalibrateMode"));
-    d_ptr->calibrateBtn1->setText(trs("ServiceCalibrate"));
-    d_ptr->calibrateBtn2->setText(trs("ServiceCalibrate"));
-    d_ptr->calibrateBtn1->setEnabled(false);
-    d_ptr->calibrateBtn2->setEnabled(false);
-    d_ptr->point2Spb->setEnabled(false);
-}
-

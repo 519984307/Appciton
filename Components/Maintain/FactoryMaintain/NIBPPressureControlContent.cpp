@@ -40,7 +40,7 @@ public:
         ITEM_CBO_CONTROL_VALVE,
         ITEM_CBO_DUMP_VALVE,
     };
-
+    void loadOptions(void);
     NIBPPressureControlContentPrivate();
     SpinBox *chargePressure;          // 设定充气压力值
     ComboBox *overpressureCbo;          // 过压保护开关
@@ -83,6 +83,16 @@ NIBPPressureControlContentPrivate::NIBPPressureControlContentPrivate()
     machineConfig.getStrValue("NIBP", moduleStr);
 }
 
+void NIBPPressureControlContentPrivate::loadOptions(void)
+{
+    isPressureControlMode = false;
+    overpressureCbo->setCurrentIndex(1);
+    modeBtn->setText(trs("EnterPressureContrlMode"));
+    inflateBtn->setText(trs("ServiceInflate"));
+    overpressureCbo->setEnabled(false);
+    inflateBtn->setEnabled(false);
+    modeBtn->setEnabled(true);
+}
 // 压力控制模式
 /**************************************************************************************************
  * 布局。
@@ -263,7 +273,7 @@ void NIBPPressureControlContent::showEvent(QShowEvent *e)
     {
         d_ptr->pressureTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
     }
-    loadOptions();
+    d_ptr->loadOptions();
 }
 
 void NIBPPressureControlContent::hideEvent(QHideEvent *e)
@@ -439,17 +449,6 @@ NIBPPressureControlContent::~NIBPPressureControlContent()
 
 void NIBPPressureControlContent::init()
 {
-    loadOptions();
-}
-
-void NIBPPressureControlContent::loadOptions()
-{
-    d_ptr->isPressureControlMode = false;
-    d_ptr->overpressureCbo->setCurrentIndex(1);
-    d_ptr->modeBtn->setText(trs("EnterPressureContrlMode"));
-    d_ptr->inflateBtn->setText(trs("ServiceInflate"));
-    d_ptr->overpressureCbo->setEnabled(false);
-    d_ptr->inflateBtn->setEnabled(false);
-    d_ptr->modeBtn->setEnabled(true);
+    d_ptr->loadOptions();
 }
 
