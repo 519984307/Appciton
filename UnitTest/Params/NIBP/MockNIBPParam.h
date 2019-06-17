@@ -29,6 +29,7 @@ public:
     MOCK_METHOD1(createSnapshot, void(NIBPOneShotType));
     MOCK_METHOD0(provider, NIBPProviderIFace&(void));
     MOCK_METHOD1(setAdditionalMeasure, void(bool));
+    MOCK_METHOD1(setAutoStat, void(bool));
     MOCK_METHOD1(setSTATClose, void(bool));
     MOCK_METHOD0(isAutoMeasure, bool(void));
     MOCK_METHOD0(isSTATMeasure, bool(void));

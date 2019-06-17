@@ -63,8 +63,7 @@ public:
 
     virtual bool isFirstAuto() = 0;
 
-    /**
-     * @brief clearTrendListData 清除趋势列表数据
-     */
+    virtual void setAutoStat(bool flag) = 0;
+
     virtual void clearTrendListData() = 0;
 };

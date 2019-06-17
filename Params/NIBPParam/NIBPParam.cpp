@@ -1232,6 +1232,7 @@ void NIBPParam::safeWaitTimeSTATStop()
         nibpParam.setSTATClose(true);
     }
     nibpParam.setSTATMeasure(false);
+    nibpParam.setAutoStat(false);
     nibpParam.setText(trs("STATSTOPPED"));
     nibpParam.setModelText(trs("STATSTOPPED"));
 }
@@ -1352,6 +1353,16 @@ bool NIBPParam::isFirstAuto()
     return _firstAutoFlag;
 }
 
+void NIBPParam::setAutoStat(bool flag)
+{
+    _autoStatFlag = flag;
+}
+
+bool NIBPParam::isAutoStat()
+{
+    return _autoStatFlag;
+}
+
 /**************************************************************************************************
  * 停止测量。
  *************************************************************************************************/
@@ -1435,6 +1446,7 @@ NIBPParam::NIBPParam()
       _connectedFlag(false), _connectedProvider(false),
       _text(InvStr()),
       _reply(false), _result(false), _manometerPressure(InvData()), _isMaintain(false), _firstAutoFlag(false),
+      _autoStatFlag(false),
       _activityMachine(NULL), _oldState(0)
 {
     nibpCountdownTime.getInstance();

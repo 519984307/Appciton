@@ -17,4 +17,5 @@ class  MockNIBPCountdownTime : public NIBPCountdownTimeInterface
 public:
     MOCK_METHOD0(STATMeasureStart, void(void));
     MOCK_METHOD0(STATMeasureStop, void(void));
+    MOCK_METHOD1(setSTATMeasureTimeout, void(bool));
 };
