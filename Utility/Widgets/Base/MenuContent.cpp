@@ -213,7 +213,6 @@ void MenuContent::focusInEvent(QFocusEvent *ev)
         if (mw)
         {
             mw->ensureWidgetVisiable(w);
-            connect(this, SIGNAL(retBtnEnable(bool)), mw, SIGNAL(retBtnEnable(bool)));
         }
     }
 }
