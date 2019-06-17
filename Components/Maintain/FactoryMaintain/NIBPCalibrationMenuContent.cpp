@@ -49,12 +49,16 @@ NIBPCalibrationMenuContent::~NIBPCalibrationMenuContent()
     delete d_ptr;
 }
 
-void NIBPCalibrationMenuContent::readyShow()
+void NIBPCalibrationMenuContent::showEvent(QShowEvent* e)
 {
-    if (!systemManager.isSupport(PARAM_NIBP))
+    Q_UNUSED(e);
+    if (nibpParam.isConnected())
+    {
+        d_ptr->timerId = startTimer(TIME_INTERVAL);
+    }
+    else
     {
         d_ptr->enterBtn->setEnabled(false);
-        d_ptr->timerId = startTimer(TIME_INTERVAL);
     }
 }
 
