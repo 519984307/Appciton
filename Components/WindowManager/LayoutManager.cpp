@@ -120,6 +120,11 @@ public:
     void performTrendLayout();
 
     /**
+     * @brief performSPO2Layout perform spo2 layout
+     */
+    void performSPO2Layout();
+
+    /**
      * @brief clearLayout clear the layout item and the layout container
      * @param layout the top layout
      */
@@ -334,6 +339,9 @@ void LayoutManagerPrivate::doContentLayout()
         break;
     case UFACE_MONITOR_BIGFONT:
         performBigFontLayout();
+        break;
+    case UFACE_MONITOR_SPO2:
+        performSPO2Layout();
         break;
     default:
         qdebug("Unsupport screen layout!");
@@ -1080,6 +1088,104 @@ void LayoutManagerPrivate::performTrendLayout()
         trendContainer->addSubParamToTrendItem(i, list.at(i));
     }
     trendContainer->updateDefautlTrendList();
+}
+
+void LayoutManagerPrivate::performSPO2Layout()
+{
+    QVBoxLayout *layout = new QVBoxLayout();
+    QWidget *spo2WaveContainter = createContainter();
+    layout->addWidget(spo2WaveContainter);
+    QHBoxLayout *hLayout = new QHBoxLayout();
+    layout->addLayout(hLayout);
+    QWidget *trendWaveContainter = createContainter();
+    QWidget *paramContainter = createContainter();
+    hLayout->addWidget(trendWaveContainter);
+    hLayout->addWidget(paramContainter);
+    contentLayout->addLayout(layout);
+
+    QVBoxLayout *spo2WaveLayout = new QVBoxLayout(spo2WaveContainter);
+    QGridLayout *trendWaveLayout = new QGridLayout(trendWaveContainter);
+    QGridLayout *paramLayout = new QGridLayout(paramContainter);
+
+    QVariantMap spo2LayoutInfos = systemConfig.getConfig("PrimaryCfg|UILayout|ContentLayout|SPO2");
+    QVariantList layoutRows = spo2LayoutInfos["LayoutRow"].toList();
+
+    if (layoutRows.isEmpty())
+    {
+        // maybe has only one
+        QVariant row = spo2LayoutInfos["LayoutRow"];
+        if (row.isValid())
+        {
+            layoutRows.append(row);
+        }
+    }
+
+    int insetRow = 0;
+    QVariantList::ConstIterator rowIter = layoutRows.constBegin();
+    for (; rowIter != layoutRows.constEnd(); ++rowIter)
+    {
+        QVariantMap rowMap = rowIter->toMap();
+        QVariantList nodes = rowMap["LayoutNode"].toList();
+        if (nodes.isEmpty())
+        {
+            // maybe has only one
+            QVariant node = rowMap["LayoutNode"];
+            if (node.isValid())
+            {
+                nodes.append(node);
+            }
+        }
+        bool flag = false;
+        QVariantList::ConstIterator nodeIter = nodes.constBegin();
+        for (; nodeIter != nodes.constEnd(); ++nodeIter)
+        {
+            QVariantMap node = nodeIter->toMap();
+            QString nodeName = node["@text"].toString();
+            int nodeSpan = node["@span"].toInt();
+            int nodePos = node["@pos"].toInt();
+            IWidget *w = layoutWidgets.value(layoutNodeMap[nodeName], NULL);
+            QWidget *qw = w;
+            if (!qw)
+            {
+                qw = createContainter();
+            }
+            if (w)
+            {
+                contentWidgets.append(w);
+            }
+
+            qw->setVisible(true);
+            qw->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+            if (nodePos == 0 && nodeSpan == LAYOUT_COLUMN_COUNT)
+            {
+                // add spo2 wave
+                spo2WaveLayout->addWidget(qw);
+            }
+            else if (nodePos == 0 && nodeSpan == LAYOUT_WAVE_END_COLUMN)
+            {
+                // add trend wave
+                trendWaveLayout->addWidget(qw, insetRow, nodePos, 1, nodeSpan);
+                flag = true;
+            }
+            else if (nodePos == LAYOUT_WAVE_END_COLUMN)
+            {
+                // add param
+                paramLayout->addWidget(qw, insetRow, nodePos - LAYOUT_WAVE_END_COLUMN, 1, nodeSpan);
+                flag = true;
+            }
+        }
+        if (flag)
+        {
+            insetRow++;
+        }
+    }
+
+    layout->setStretch(0, spo2WaveLayout->count());
+    layout->setStretch(1, insetRow);
+    hLayout->setStretch(0, LAYOUT_WAVE_END_COLUMN);
+    hLayout->setStretch(1, LAYOUT_COLUMN_COUNT - LAYOUT_WAVE_END_COLUMN);
+    waveRowCount = insetRow + spo2WaveLayout->count();
+    leftParamRowCount = 0;
 }
 
 void LayoutManagerPrivate::clearLayout(QLayout *layout)

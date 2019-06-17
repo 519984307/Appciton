@@ -45,6 +45,7 @@ UserFaceTrend,趋势,Trend
 UserFaceBigFont,大字体,Big Font
 UserFaceCustom,自定义,Custom
 UserFaceUnknow,未知,Unknow
+UserFaceSpO2,血氧,SpO2 Screen
 ECG,ECG,ECG
 HR,HR,HR
 HR_PR,HR/PR,HR/PR
@@ -105,6 +106,9 @@ CO_CO,心排量,C.O.
 CO_CI,心指数,C.I.
 TB,血温,TB
 SPO2,SpO2,SpO2
+SPHB,SpHb,SpHb
+SPOC,SpOC,SpOC
+SPMET,SpMet,SpMet
 PR,PR,PR
 PLETH,血氧波,Pleth
 NIBP,NIBP,NIBP
@@ -315,6 +319,8 @@ TEMPCommunicationStop,体温通讯停止,TEMP Communication Stop
 celsius,℃,℃
 fahrenheit,℉,℉
 percent,%,%
+gdL,g/dL,g/dL
+mLdL,mL/dL,mL/dL
 Defaults,恢复默认值,Defaults
 SureAllAlarmDefaults,"所有报警设置将恢复默认值,您确定进行吗?",All alarm settings will reset to the defaults. Are you sure to continue?
 SureAllDataErase,"所有历史数据会被擦除,您确定进行吗?","All historical data will be erased,Are you sure to continue?"
