@@ -179,6 +179,7 @@ static void _initComponents(void)
     PatientInfoWidget *patientInfoWidget = new PatientInfoWidget();
     layoutManager.addLayoutWidget(patientInfoWidget);
     patientManager.setPatientInfoWidget(*patientInfoWidget);
+    patientInfoWindow.getInstance();
 
     // 初始化报警。
     alertor.getInstance();
