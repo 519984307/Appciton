@@ -446,7 +446,10 @@ static void _initProviderParam(void)
     // CO2部分。
     if (systemManager.isSupport(CONFIG_CO2))
     {
-        paramManager.addProvider(*new BLMCO2Provider());
+
+        QString str;
+        machineConfig.getStrValue("CO2", str);
+        paramManager.addProvider(*new BLMCO2Provider(str));
 
         paramManager.addParam(co2Param.construction());
 
