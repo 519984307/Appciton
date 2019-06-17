@@ -200,7 +200,8 @@ QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
         case SECTION_PARAM_NAME:
         {
             SubParamID subId = d_ptr->alarmDataInfos.at(row).subParamID;
-            UnitType unit = paramInfo.getUnitOfSubParam(subId);
+            ParamID paramId = d_ptr->alarmDataInfos.at(row).paramID;
+            UnitType unit = paramManager.getSubParamUnit(paramId, subId);
             QString name = QString("%1(%2)")
                     .arg(trs(paramInfo.getSubParamName(subId)))
                     .arg(trs(Unit::getSymbol(unit)));
