@@ -17,7 +17,6 @@
 #include "ExportDataWidget.h"
 #include "WindowManager.h"
 #include "FontManager.h"
-#include "LabelButton.h"
 #include "SystemManager.h"
 #include "Debug.h"
 #include <QDesktopWidget>
@@ -171,18 +170,6 @@ void ExportDataWidget::setBarValue(unsigned char value)
         _info->setText(trs(endInfoString[_curType]));
         _cancleOrOK->setText(trs("Yes"));
     }
-}
-
-/**************************************************************************************************
- * 绘画事件。
- *************************************************************************************************/
-void ExportDataWidget::paintEvent(QPaintEvent *e)
-{
-    Q_UNUSED(e)
-    QPainter p(this);
-    p.setPen(Qt::NoPen);
-    p.setBrush(Qt::white);
-    p.drawRect(rect());
 }
 
 /**************************************************************************************************

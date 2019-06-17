@@ -30,7 +30,6 @@ enum Export_Data_Type
 
 //数据传输基类
 class QLabel;
-class LButton;
 class QProgressBar;
 class QTimer;
 class ExportDataWidget : public Dialog
@@ -61,7 +60,6 @@ public slots:
     void setBarValue(unsigned char value);
 
 protected:
-    void paintEvent(QPaintEvent *e);
     void showEvent(QShowEvent *e);
 
 private slots:
@@ -71,8 +69,6 @@ signals:
     void cancel();
 
 protected:
-    static const int _titleBarHeight = 40;
-
     QLabel *_title;
     QLabel *_info;
     QProgressBar *_bar;
