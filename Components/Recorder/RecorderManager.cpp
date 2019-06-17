@@ -34,7 +34,7 @@ class RecorderManagerPrivate
 {
 public:
     RecorderManagerPrivate()
-        : connected(false),
+        : connected(true),
           isAborted(false),
           isPrinting(false),
           status(PRINTER_STAT_NORMAL),
