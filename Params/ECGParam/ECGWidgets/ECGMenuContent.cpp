@@ -485,7 +485,7 @@ void ECGMenuContent::layoutExec()
     d_ptr->combos.insert(ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER, comboBox);
 
     // paceMark
-    label = new QLabel(trs("ECGPaceMarker"));
+    label = new QLabel(trs("ECGPaceSignal"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
@@ -531,7 +531,7 @@ void ECGMenuContent::layoutExec()
     itemID = ECGMenuContentPrivate::ITEM_CBO_QRS_TONE;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    connect(comboBox, SIGNAL(activated(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ECGMenuContentPrivate::ITEM_CBO_QRS_TONE, comboBox);
 

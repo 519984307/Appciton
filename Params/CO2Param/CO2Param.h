@@ -178,6 +178,7 @@ public:
 
     // resp窒息报警状态
     void setRespApneaStimulation(bool sta);
+
 private slots:
     void onPaletteChanged(ParamID id);
 

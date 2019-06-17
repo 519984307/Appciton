@@ -30,7 +30,7 @@ public:
     {
         machineConfig.getStrValue("NIBP", moduleStr);
     }
-
+    void loadOptions(void);
     QLabel *value;
     int inModeTimerID;          // 进入压力计模式定时器ID
     int timeoutNum;
@@ -41,6 +41,13 @@ public:
 
     QString moduleStr;         // 运行模块字符串
 };
+
+void NIBPManometerContentPrivate::loadOptions(void)
+{
+    isManometerMode = false;
+    modeBtn->setEnabled(true);
+    modeBtn->setText(trs("EnterManometerMode"));
+}
 
 NIBPManometerContent *NIBPManometerContent::getInstance()
 {
@@ -135,11 +142,22 @@ void NIBPManometerContent::timerEvent(QTimerEvent *ev)
     }
     else if (d_ptr->pressureTimerID == ev->timerId())
     {
-        if (d_ptr->pressure != nibpParam.getManometerPressure())
+        if (d_ptr->pressure != nibpParam.getManometerPressure() && d_ptr->isManometerMode)
         {
             d_ptr->pressure = nibpParam.getManometerPressure();
             d_ptr->value->setNum(nibpParam.getManometerPressure());
         }
+    }
+}
+
+void NIBPManometerContent::hideEvent(QHideEvent *e)
+{
+    Q_UNUSED(e);
+    d_ptr->loadOptions();
+    if (d_ptr->moduleStr == "BLM_N5")
+    {
+        nibpParam.provider().serviceManometer(false);
+        nibpParam.switchState(NIBP_SERVICE_STANDBY_STATE);
     }
 }
 
@@ -189,8 +207,5 @@ NIBPManometerContent::~NIBPManometerContent()
 
 void NIBPManometerContent::init()
 {
-    d_ptr->isManometerMode = false;
-    d_ptr->modeBtn->setEnabled(true);
-    d_ptr->modeBtn->setText(trs("EnterManometerMode"));
+    d_ptr->loadOptions();
 }
-

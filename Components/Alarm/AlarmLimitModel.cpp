@@ -122,6 +122,15 @@ bool AlarmLimitModel::setData(const QModelIndex &index, const QVariant &value, i
                 alarmDataUpdate(d_ptr->alarmDataInfos[row], index.column());
                 break;
             case SECTION_LEVEL:
+                if (d_ptr->alarmDataInfos[row].paramID == PARAM_DUP_ECG
+                        || d_ptr->alarmDataInfos[row].paramID == PARAM_SPO2
+                        || d_ptr->alarmDataInfos[row].paramID == PARAM_NIBP
+                        || d_ptr->alarmDataInfos[row].paramID == PARAM_CO2)
+                {
+                    // ECG、SPO2、NIBP的报警优先级只有中级和高级
+                    // 所以将设置值加一，保证中级存储为1,高级存储为2
+                    newValue++;
+                }
                 d_ptr->alarmDataInfos[row].alarmLevel = newValue;
                 alarmDataUpdate(d_ptr->alarmDataInfos[row], index.column());
                 break;
@@ -191,7 +200,8 @@ QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
         case SECTION_PARAM_NAME:
         {
             SubParamID subId = d_ptr->alarmDataInfos.at(row).subParamID;
-            UnitType unit = paramInfo.getUnitOfSubParam(subId);
+            ParamID paramId = d_ptr->alarmDataInfos.at(row).paramID;
+            UnitType unit = paramManager.getSubParamUnit(paramId, subId);
             QString name = QString("%1(%2)")
                     .arg(trs(paramInfo.getSubParamName(subId)))
                     .arg(trs(Unit::getSymbol(unit)));
@@ -246,8 +256,20 @@ QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
                 break;
             case SECTION_LEVEL:
                 editInfo.type = ItemEditInfo::LIST;
-                editInfo.list << trs("Low") << trs("Medium") << trs("High");
-                editInfo.curValue = d_ptr->alarmDataInfos.at(row).alarmLevel;
+                if (d_ptr->alarmDataInfos.at(row).paramID == PARAM_DUP_ECG
+                        || d_ptr->alarmDataInfos.at(row).paramID == PARAM_SPO2
+                        || d_ptr->alarmDataInfos.at(row).paramID == PARAM_NIBP
+                        || d_ptr->alarmDataInfos.at(row).paramID == PARAM_CO2)
+                {
+                    // ECG、SPO2、NIBP的报警优先级只有中级和高级
+                    editInfo.list << trs("Medium") << trs("High");
+                    editInfo.curValue = d_ptr->alarmDataInfos.at(row).alarmLevel - 1;
+                }
+                else
+                {
+                    editInfo.list << trs("Low") << trs("Medium") << trs("High");
+                    editInfo.curValue = d_ptr->alarmDataInfos.at(row).alarmLevel;
+                }
                 break;
             case SECTION_LOW_LIMIT:
                 editInfo.type = ItemEditInfo::VALUE;

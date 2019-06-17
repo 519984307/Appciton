@@ -22,7 +22,7 @@ public:
         Type = 3
     };
 
-    EventPageGenerator(IStorageBackend *backend, int eventIndex, const PatientInfo &patientInfo, QObject *parent = 0);
+    EventPageGenerator(IStorageBackend *backend, int eventIndex, const PatientInfo &patientInfo, int gain, QObject *parent = 0);
 
     ~EventPageGenerator();
 

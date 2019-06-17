@@ -24,7 +24,7 @@ protected:
     /**
      * @brief readyShow
      */
-    void readyShow();
+    void showEvent(QShowEvent* e);
     /**
      * @brief layoutExec  布局方法
      */

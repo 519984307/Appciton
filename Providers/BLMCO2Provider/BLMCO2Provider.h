@@ -163,7 +163,7 @@ public: // CO2ProviderIFace 的接口。
     virtual void setWorkMode(CO2WorkMode mode);
 
     // 构造与析构。
-    BLMCO2Provider();
+    explicit BLMCO2Provider(const QString &name);
     ~BLMCO2Provider();
 
 protected:

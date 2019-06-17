@@ -52,19 +52,19 @@ BatteryIndicatorWindow::BatteryIndicatorWindow()
     layoutH->setSpacing(10);
     BatteryIconWidget *batteryImag = new BatteryIconWidget();
     batteryImag->setVolume(BAT_VOLUME_5);
-    batteryImag->setTimeValue(BAT_REMAIN_TIME_NULL);
+    batteryImag->setTimeValue(BAT_REMAIN_TIME_8_HOUR);
     batteryImag->setStatus(BATTERY_NORMAL);
     layoutH->addWidget(batteryImag);
 
     batteryImag = new BatteryIconWidget();
     batteryImag->setVolume(BAT_VOLUME_4);
-    batteryImag->setTimeValue(BAT_REMAIN_TIME_180MIN);
+    batteryImag->setTimeValue(BAT_REMAIN_TIME_7_HOUR);
     batteryImag->setStatus(BATTERY_NORMAL);
     layoutH->addWidget(batteryImag);
 
     batteryImag = new BatteryIconWidget();
     batteryImag->setVolume(BAT_VOLUME_3);
-    batteryImag->setTimeValue(BAT_REMAIN_TIME_120MIN);
+    batteryImag->setTimeValue(BAT_REMAIN_TIME_5_HOUR);
     batteryImag->setStatus(BATTERY_NORMAL);
     layoutH->addWidget(batteryImag);
 
@@ -75,13 +75,14 @@ BatteryIndicatorWindow::BatteryIndicatorWindow()
     layoutH->setSpacing(10);
     batteryImag = new BatteryIconWidget();
     batteryImag->setVolume(BAT_VOLUME_2);
-    batteryImag->setTimeValue(BAT_REMAIN_TIME_60MIN);
+    batteryImag->setTimeValue(BAT_REMAIN_TIME_2_HOUR);
     batteryImag->setStatus(BATTERY_NORMAL);
     layoutH->addWidget(batteryImag);
 
     batteryImag = new BatteryIconWidget();
     batteryImag->setVolume(BAT_VOLUME_1);
-    batteryImag->setTimeValue(BAT_REMAIN_TIME_30MIN);
+    batteryImag->setTimeValue(BAT_REMAIN_TIME_1_HOUR);
+    batteryImag->setFillColor(Qt::red);
     batteryImag->setStatus(BATTERY_NORMAL);
     layoutH->addWidget(batteryImag);
 

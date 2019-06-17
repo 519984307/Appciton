@@ -116,6 +116,11 @@ public:
     void setHrSource(HRSourceType type);
 
     /**
+     * @brief updateHRSource 更新HR来源
+     */
+    void updateHRSource();
+
+    /**
      * @brief isAutoTypeHrSouce
      * @return
      */

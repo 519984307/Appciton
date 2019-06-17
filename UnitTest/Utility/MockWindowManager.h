@@ -5,17 +5,16 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/3/8
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/5/15
  **/
 
 #pragma once
-
-#include "ConfigManagerInterface.h"
+#include "WindowManagerInterface.h"
 #include "gmock/gmock.h"
 
-class MockConfigManager : public ConfigManagerInterface
+class MockWindowManager : public WindowManagerInterface
 {
 public:
-    MOCK_METHOD1(getConfig, Config *(PatientType));
-    MOCK_METHOD0(getCurConfig, Config&(void));
+    MOCK_METHOD2(showWindow, void(Dialog *, ShowBehavior));
+    MOCK_METHOD0(topWindow, Dialog *(void));
 };
