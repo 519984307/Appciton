@@ -194,6 +194,6 @@ enum SpHbBloodVesselMode
 
 enum SPO2Module
 {
-    SPO2_MODULE_INSIDE,
-    SPO2_MODULE_OUTSIDE
+    SPO2_MODULE_DAVID,
+    SPO2_MODULE_BLM
 };

@@ -43,6 +43,7 @@ enum SubParamID
     SUB_PARAM_ECG_PVCS,
     // spo2
     SUB_PARAM_SPO2,
+    SUB_PARAM_SPO2_2,
     SUB_PARAM_PI,
     SUB_PARAM_PVI,
     SUB_PARAM_SPHB,
@@ -152,6 +153,7 @@ enum WaveformID
 
     WAVE_RESP,
     WAVE_SPO2,
+    WAVE_SPO2_2,
 
     WAVE_CO2,
     WAVE_N2O,

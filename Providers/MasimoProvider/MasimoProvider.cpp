@@ -361,7 +361,7 @@ void MasimoSetProvider::handlePacket(unsigned char *data, int /*len*/)
             piValue = static_cast<short>(v * 10);
         }
 
-        spo2Param.updatePIValue(piValue);     // 更新PI值。
+        spo2Param.setPI(piValue);     // 更新PI值。
         break;
     }
 

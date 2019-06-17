@@ -306,7 +306,7 @@ bool S5Provider::isResult_BAR(unsigned char *packet)
     {
         piValue *= 10;
     }
-    spo2Param.updatePIValue(piValue);
+    spo2Param.setPI(piValue);
 
     // 脉搏音。
     spo2Param.setPulseAudio(packet[16]);

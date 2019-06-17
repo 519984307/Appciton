@@ -14,6 +14,7 @@
 #include <QLabel>
 #include <QLayout>
 #include "TrendWidgetLabel.h"
+#include "AlarmConfig.h"
 
 class SPHBTrendWidgetPrivate
 {
@@ -40,7 +41,8 @@ void SPHBTrendWidget::setSPHBValue(int16_t sphb)
 
 void SPHBTrendWidget::updateLimit()
 {
-    setLimit(20, 7, 1);
+    LimitAlarmConfig limit = alarmConfig.getLimitAlarmConfig(SUB_PARAM_SPHB, UNIT_GDL);
+    setLimit(limit.highLimit, limit.lowLimit, limit.scale);
 }
 
 void SPHBTrendWidget::isAlarm(bool flag)

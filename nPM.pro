@@ -233,6 +233,7 @@ SOURCES +=                                                                      
     Utility/Widgets/Trendform/ShortTrendItem.cpp                                \
     Utility/Widgets/Trendform/ShortTrendContainer.cpp                           \
     Utility/Widgets/Trendform/ShortTrendWindow.cpp                              \
+    Utility/Widgets/Trendform/TrendWave.cpp                                     \
     Utility/Widgets/TrendWidget/TrendWidget.cpp                                 \
     Utility/Widgets/TrendWidget/TrendWidgetLabel.cpp                            \
     Utility/Widgets/Waveform/FreezeWaveReviewMode.cpp                           \
@@ -335,6 +336,7 @@ SOURCES +=                                                                      
     Components/Alarm/Widgets/AlarmInfoModel.cpp                                 \
     Components/Alarm/NurseCallManager.cpp                                       \
     Components/Alarm/NurseCallManagerInterface.cpp                              \
+    Components/Alarm/AlarmSourceManager.cpp                                     \
     Components/Calculation/DoseCalculationManager/DoseCalculationManager.cpp    \
     Components/Calculation/DoseCalculationManager/DoseCalculationWindow.cpp     \
     Components/Calculation/DoseCalculationManager/TitrateTableModel.cpp         \
@@ -378,6 +380,7 @@ SOURCES +=                                                                      
     Components/TimeManager/ElapseTimeWidget.cpp                                 \
     Components/TimeManager/TimeManager.cpp                                      \
     Components/TimeManager/TimeEditWindow.cpp                                   \
+    Components/TimeManager/TimeManagerInterface.cpp                             \
     Components/PatientManager/PatientManager.cpp                                \
     Components/PatientManager/PatientInfoWidget.cpp                             \
     Components/PatientManager/PatientManagementMenuContent.cpp                  \
@@ -633,6 +636,7 @@ SOURCES +=                                                                      
     Providers/S5Provider/S5Provider.cpp                                         \
     Providers/DataDispatcher.cpp                                                \
     Providers/NeonateProvider/NeonateProvider.cpp                               \
+    Providers/PlugInProvider.cpp                                                \
 #################################################################################
     Main/App/AppMain.cpp                                                        \
     Main/App/Init.cpp                                                           \
@@ -640,8 +644,6 @@ SOURCES +=                                                                      
     Main/IThread.cpp                                                            \
     Main/MergeConfig.cpp                                                        \
     Main/Starter.cpp \
-    Components/TimeManager/TimeManagerInterface.cpp \
-    Components/Alarm/AlarmSourceManager.cpp
 
 HEADERS +=                                                                      \
     SOUP/Json/FlexLexer.h                                                       \
@@ -751,6 +753,7 @@ HEADERS +=                                                                      
     Utility/Widgets/Trendform/ShortTrendItem.h                                  \
     Utility/Widgets/Trendform/ShortTrendContainer.h                             \
     Utility/Widgets/Trendform/ShortTrendWindow.h                                \
+    Utility/Widgets/Trendform/TrendWave.h                                       \
     Utility/Widgets/TrendWidget/TrendWidget.h                                   \
     Utility/Widgets/TrendWidget/TrendWidgetLabel.h                              \
     Utility/Widgets/Waveform/FreezeWaveReviewMode.h                             \
@@ -796,6 +799,7 @@ HEADERS +=                                                                      
     Utility/Widgets/EventWidget/EventWaveSetWindow.h                            \
     Utility/Widgets/EventWidget/OxyCRGEventWindow.h                             \
     Utility/Widgets/EventWidget/OxyCRGEventSetWindow.h                          \
+    Utility/Widgets/ImportFileSubWidget.h                                       \
 #################################################################################
     Components/System/SystemTick.h                                              \
     Components/System/SystemManager.h                                           \
@@ -858,6 +862,7 @@ HEADERS +=                                                                      
     Components/Alarm/Widgets/AlarmInfoModel.h                                   \
     Components/Alarm/NurseCallManager.h                                         \
     Components/Alarm/NurseCallManagerInterface.h                                \
+    Components/Alarm/AlarmSourceManager.h                                       \
     Components/Calculation/DoseCalculationManager/DoseCalculationManager.h      \
     Components/Calculation/DoseCalculationManager/DoseCalculationDefine.h       \
     Components/Calculation/DoseCalculationManager/DoseCalculationWindow.h       \
@@ -923,6 +928,7 @@ HEADERS +=                                                                      
     Components/TimeManager/ElapseTimeWidget.h                                   \
     Components/TimeManager/TimeManager.h                                        \
     Components/TimeManager/TimeEditWindow.h                                     \
+    Components/TimeManager/TimeManagerInterface.h                               \
     Components/USBManager/DataExporterBase.h                                    \
     Components/USBManager/ErrorLogExporter.h                                    \
     Components/USBManager/UDiskInspector.h                                      \
@@ -1212,15 +1218,13 @@ HEADERS +=                                                                      
     Providers/S5Provider/S5Provider.h                                           \
     Providers/DataDispatcher.h                                                  \
     Providers/NeonateProvider/NeonateProvider.h                                 \
+    Providers/PlugInProvider.h                                                  \
 #################################################################################
     Main/App/Init.h                                                             \
     Main/IApplication.h                                                         \
     Main/IThread.h                                                              \
     Main/MergeConfig.h                                                          \
     Main/Starter.h                                                              \
-    Utility/Widgets/ImportFileSubWidget.h \
-    Components/TimeManager/TimeManagerInterface.h \
-    Components/Alarm/AlarmSourceManager.h
 
 #头文件修改后，重新编译依赖的源文件
 DEPENDPATH +=                                                                   \

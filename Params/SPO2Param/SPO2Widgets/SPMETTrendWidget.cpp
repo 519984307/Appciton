@@ -14,23 +14,26 @@
 #include <QLabel>
 #include "ParamInfo.h"
 #include "BaseDefine.h"
+#include "AlarmConfig.h"
 
 class SPMETTrendWidgetPrivate
 {
 public:
     SPMETTrendWidgetPrivate()
-        : spmetValue(NULL)
+        : spmetValue(NULL),
+          scale(1)
     {}
     ~SPMETTrendWidgetPrivate(){}
 
     QLabel *spmetValue;
+    short scale;
 };
 
 void SPMETTrendWidget::setSpMetValue(int16_t spmet)
 {
     if (spmet >= 0)
     {
-        d_ptr->spmetValue->setText(QString::number(spmet, 'f', 1));
+        d_ptr->spmetValue->setText(QString::number(spmet / (d_ptr->scale * 1.0), 'f', 1));
     }
     else
     {
@@ -40,7 +43,9 @@ void SPMETTrendWidget::setSpMetValue(int16_t spmet)
 
 void SPMETTrendWidget::updateLimit()
 {
-    setLimit(30, 0, 10);
+    LimitAlarmConfig limit = alarmConfig.getLimitAlarmConfig(SUB_PARAM_SPMET, UNIT_PERCENT);
+    setLimit(limit.highLimit, limit.lowLimit, limit.scale);
+    d_ptr->scale = limit.scale;
 }
 
 void SPMETTrendWidget::isAlarm(bool flag)
