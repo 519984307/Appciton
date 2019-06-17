@@ -29,9 +29,11 @@
 #include "IConfig.h"
 #include "WindowManager.h"
 
-#define TABLE_ROW_NR        7
+#define TABLE_ROW_NR        6
 
 #define HEIGHT_HINT (themeManger.getAcceptableControlHeight())
+#define DEFAULT_WIDTH (windowManager.getPopWindowWidth())
+#define DEFAULT_HEIGHT (windowManager.getPopWindowHeight())
 
 class ErrorLogWindowPrivate
 {
@@ -47,7 +49,6 @@ public:
      * @param curPage 当前页
      * @param totalPage 总页
      */
-    void updatePageBtnStatus(int curPage, int totalPage);
 
 public:
     TableView *table;
@@ -63,7 +64,7 @@ public:
 ErrorLogWindow::ErrorLogWindow()
     : Dialog(), d_ptr(new ErrorLogWindowPrivate())
 {
-    setFixedSize(800, 580);
+    setFixedSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
     d_ptr->table = new TableView();
     TableHeaderView *horizontalHeader = new TableHeaderView(Qt::Horizontal);
@@ -80,7 +81,7 @@ ErrorLogWindow::ErrorLogWindow()
     d_ptr->table->setModel(d_ptr->model);
     d_ptr->table->setFixedHeight(d_ptr->model->getHeaderHeightHint()
                                  + d_ptr->model->getRowHeightHint() * TABLE_ROW_NR);
-    d_ptr->table->setFixedWidth(800);
+    d_ptr->table->setFixedWidth(DEFAULT_WIDTH);
     d_ptr->table->setItemDelegate(new TableViewItemDelegate(this));
     connect(d_ptr->table, SIGNAL(rowClicked(int)), this, SLOT(itemClickSlot(int)));
     connect(d_ptr->model, SIGNAL(pageInfoUpdate(int, int)), this, SLOT(onPageInfoUpdated(int, int)));
@@ -173,26 +174,6 @@ void ErrorLogWindow::showEvent(QShowEvent *ev)
     Dialog::showEvent(ev);
 }
 
-void ErrorLogWindowPrivate::updatePageBtnStatus(int curPage, int totalPage)
-{
-    if (totalPage == 1)
-    {
-        downPageBtn->setEnabled(false);
-        upPageBtn->setEnabled(false);
-    }
-    else if (curPage == totalPage)
-    {
-        downPageBtn->setEnabled(false);
-        upPageBtn->setEnabled(true);
-        upPageBtn->setFocus(Qt::BacktabFocusReason);
-    }
-    else
-    {
-        downPageBtn->setEnabled(true);
-        upPageBtn->setEnabled(true);
-    }
-}
-
 void ErrorLogWindow::itemClickSlot(int row)
 {
     int realIndex = d_ptr->model->getErrorLogIndex(row);
@@ -219,7 +200,6 @@ void ErrorLogWindow::summaryReleased()
     stream << trs("MostRecentCriticalFault") << summary.mostRecentCriticalErrorDate << endl;
     stream << trs("OldestError") << summary.oldestErrorDate << endl;
     stream << trs("LastEraseTime") << summary.lastEraseTimeDate << endl;
-    stream << "Number of shocks > 120J: " << summary.totalShockCount << endl;
 
     ErrorLogViewerWindow viewer;
     viewer.setWindowTitle(trs("Summary"));
@@ -334,6 +314,4 @@ void ErrorLogWindow::onPageInfoUpdated(int curPage, int totalPage)
     title += trs("PageNum");
     title += ")";
     setWindowTitle(title);
-
-    d_ptr->updatePageBtnStatus(curPage, totalPage);
 }

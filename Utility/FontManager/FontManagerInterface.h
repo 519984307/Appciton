@@ -21,4 +21,6 @@ public:
     static FontMangerInterface *getFontManager(void);
 
     virtual QFont textFont(int fontSize = -1, bool isBold = false) = 0;
+
+    virtual int getFontSize(int index) = 0;
 };

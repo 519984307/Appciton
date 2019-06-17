@@ -210,7 +210,6 @@ void ServiceErrorLogMenu::summaryBtnClick()
     stream << trs("MostRecentCriticalFault") << summary.mostRecentCriticalErrorDate << endl;
     stream << trs("OldestError") << summary.oldestErrorDate << endl;
     stream << trs("LastEraseTime") << summary.lastEraseTimeDate << endl;
-    stream << "Number of shocks > 120J: "<<summary.totalShockCount << endl;
 
     ErrorLogViewer viewer;
     viewer.setTitleBarText(trs("Summary"));
@@ -268,12 +267,12 @@ void ServiceErrorLogMenu::titleInit()
  **************************************************************************************************/
 void ServiceErrorLogMenu::loadData()
 {
-    QTableWidgetItem *timeItem;
-    QTableWidgetItem *infoItem;
-    ErrorLogItemBase *errlogItem;
     int index = currentPage * ROW_NUM;
     for (int i = 0; i < ROW_NUM; i++)
     {
+        QTableWidgetItem *timeItem = NULL;
+        QTableWidgetItem *infoItem = NULL;
+        ErrorLogItemBase *errlogItem = NULL;
         timeItem = _table->item(i, 0);
         if (!timeItem)
         {
@@ -458,7 +457,7 @@ void ServiceErrorLogMenu::eraseBtnClick()
 
 void ServiceErrorLogMenu::upBtnClick()
 {
-    if (currentPage > 0 )
+    if (currentPage > 0)
     {
         currentPage--;
         loadData();

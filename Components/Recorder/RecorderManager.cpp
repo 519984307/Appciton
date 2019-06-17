@@ -34,7 +34,7 @@ class RecorderManagerPrivate
 {
 public:
     RecorderManagerPrivate()
-        : connected(false),
+        : connected(true),
           isAborted(false),
           isPrinting(false),
           status(PRINTER_STAT_NORMAL),
@@ -373,14 +373,13 @@ void RecorderManager::providerConnectionChanged(bool isConnected)
     if (d_ptr->connected)
     {
         // connected
-        alarmSource->setOneShotAlarm(PRINT_ONESHOT_ALARM_FAULT, false);
+        d_ptr->status = PRINTER_STAT_NORMAL;
     }
     else
     {
         // disconected
         alarmSource->clear();
-        alarmSource->setOneShotAlarm(PRINT_ONESHOT_ALARM_FAULT, true);
-
+        d_ptr->status = PRINTER_STAT_COMMUNICATION_STOP;
         if (d_ptr->generator)
         {
             // stop the page generator if we has any page generator

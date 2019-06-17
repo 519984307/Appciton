@@ -12,6 +12,9 @@
 #pragma once
 #include <QString>
 
+#define LOG_FILE_PATH "/usr/local/nPM/log/"
+#define LOG_FILE "/usr/local/nPM/log/log.xml"
+
 /**************************************************************************************************
  * OneShot事件定义，
  *************************************************************************************************/
@@ -69,13 +72,11 @@ enum BatteryRemainTime
 {
     BAT_REMAIN_TIME_NULL = -2,
     BAT_REMAIN_TIME_LOW,
-    BAT_REMAIN_TIME_LESS_THAN_30MIN,
-    BAT_REMAIN_TIME_30MIN,
-    BAT_REMAIN_TIME_60MIN,
-    BAT_REMAIN_TIME_90MIN,
-    BAT_REMAIN_TIME_120MIN,
-    BAT_REMAIN_TIME_150MIN,
-    BAT_REMAIN_TIME_180MIN
+    BAT_REMAIN_TIME_1_HOUR,
+    BAT_REMAIN_TIME_2_HOUR,
+    BAT_REMAIN_TIME_5_HOUR,
+    BAT_REMAIN_TIME_7_HOUR,
+    BAT_REMAIN_TIME_8_HOUR
 };
 
 struct FixedBatMessage

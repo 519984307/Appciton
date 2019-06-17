@@ -64,4 +64,6 @@ public:
     virtual bool isFirstAuto() = 0;
 
     virtual void setAutoStat(bool flag) = 0;
+
+    virtual void clearTrendListData() = 0;
 };

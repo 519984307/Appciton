@@ -32,6 +32,7 @@
 #include "AlarmConfig.h"
 #include "ColorManager.h"
 #include "ECGParam.h"
+#include "ECGDupParam.h"
 #include "RESPParam.h"
 #include "RESPDupParam.h"
 #include "CO2Param.h"
@@ -261,6 +262,7 @@ void LoadConfigMenuContent::onBtnClick()
         soundManager.volumeInit();
         layoutManager.updateLayoutWidgetsConfig();
         ecgParam.updatePacermaker();    // 更新起博标志
+        ecgDupParam.updateHRSource();   // 更新HR来源
         respDupParam.updateRRSource();  // 更新RR来源
         respParam.setCalcLead(respParam.getCalcLead()); // 更新呼吸导联
         co2Param.updateDisplayZoom();   // 更新co2标尺

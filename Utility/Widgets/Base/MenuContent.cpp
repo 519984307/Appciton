@@ -199,9 +199,10 @@ void MenuContent::focusInEvent(QFocusEvent *ev)
                 break;
             }
         }
-        if (objects.isEmpty())
+        // add a judgment on whether the widget is focused or not
+        if (objects.isEmpty() && !w->hasFocus())
         {
-            focusNextChild(); // 当菜单中无控件可以聚焦时,焦点聚焦到下个窗口.
+            focusNextChild();  // 当菜单中无控件可以聚焦时,焦点聚焦到下个窗口.
         }
     }
 

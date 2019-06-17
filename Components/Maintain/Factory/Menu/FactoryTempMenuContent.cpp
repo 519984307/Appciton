@@ -403,7 +403,7 @@ void FactoryTempMenuContent::timeOut()
             // 校准时可以显示实时温度
             tStr = Unit::convert(type, UNIT_TC, t2 / 10.0);
         }
-        d_ptr->tempTitle->setText(QString("%1: %2").arg(trs("TEMP2")).arg(tStr).arg(trs(Unit::getSymbol(type))));
+        d_ptr->tempTitle->setText(QString("%1: %2%3").arg(trs("TEMP2")).arg(tStr).arg(trs(Unit::getSymbol(type))));
     }
 }
 

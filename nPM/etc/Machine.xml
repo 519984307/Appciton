@@ -17,6 +17,7 @@
     <COEnable>0</COEnable>
     <IBPEnable>0</IBPEnable>
     <TEMPEnable>1</TEMPEnable>
+    <PrinterEnable>1</PrinterEnable>
     <WIFIEnable>0</WIFIEnable>
     <TouchEnable>0</TouchEnable>
     <O2Enable>0</O2Enable>
@@ -35,6 +36,7 @@
         <SPO2>0</SPO2>
         <Battery>0</Battery>
         <NIBP>0</NIBP>
+	<CO2>0</CO2>
         <TEMP>0</TEMP>
     </Record>
     <!--参数与Provider的关系-->
@@ -42,7 +44,7 @@
     <RESP SptProvider="DemoProvider,BLM_E5">BLM_E5</RESP>
     <SPO2 SptProvider="DemoProvider,BLM_S5,MASIMO_SPO2,RAINBOW_SPO2">BLM_S5</SPO2>
     <NIBP SptProvider="DemoProvider,BLM_N5,SUNTECH_NIBP">BLM_N5</NIBP>
-    <CO2 SptProvider="DemoProvider,BLM_CO2">BLM_CO2</CO2>
+    <CO2 SptProvider="DemoProvider,BLM_CO2,MASIMO_CO2">BLM_CO2</CO2>
     <IBP SptProvider="DemoProvider,WITLEAF_IBP">WITLEAF_IBP</IBP>
     <AG SptProvider="DemoProvider,PHASEIN_AG">PHASEIN_AG</AG>
     <CO SptProvider="DemoProvider,WITLEAF_IBP">WITLEAF_IBP</CO>
@@ -60,6 +62,7 @@
     <BLM_T5Port>DataDispatcher</BLM_T5Port>
     <WITLEAF_IBPPort>/dev/ttyS4</WITLEAF_IBPPort>
     <BLM_CO2Port>/dev/ttyPM2</BLM_CO2Port>
+    <MASIMO_CO2Port>/dev/ttyPM2</MASIMO_CO2Port>
     <DataDispatcherPort>/dev/ttyPM3</DataDispatcherPort>
     <NEONATE_O2Port>/dev/ttyS5</NEONATE_O2Port>
     <!--    <PHASEIN_AGPort>/dev/ttyWK3</PHASEIN_AGPort>-->

@@ -124,7 +124,8 @@ bool AlarmLimitModel::setData(const QModelIndex &index, const QVariant &value, i
             case SECTION_LEVEL:
                 if (d_ptr->alarmDataInfos[row].paramID == PARAM_DUP_ECG
                         || d_ptr->alarmDataInfos[row].paramID == PARAM_SPO2
-                        || d_ptr->alarmDataInfos[row].paramID == PARAM_NIBP)
+                        || d_ptr->alarmDataInfos[row].paramID == PARAM_NIBP
+                        || d_ptr->alarmDataInfos[row].paramID == PARAM_CO2)
                 {
                     // ECG、SPO2、NIBP的报警优先级只有中级和高级
                     // 所以将设置值加一，保证中级存储为1,高级存储为2
@@ -199,7 +200,8 @@ QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
         case SECTION_PARAM_NAME:
         {
             SubParamID subId = d_ptr->alarmDataInfos.at(row).subParamID;
-            UnitType unit = paramInfo.getUnitOfSubParam(subId);
+            ParamID paramId = d_ptr->alarmDataInfos.at(row).paramID;
+            UnitType unit = paramManager.getSubParamUnit(paramId, subId);
             QString name = QString("%1(%2)")
                     .arg(trs(paramInfo.getSubParamName(subId)))
                     .arg(trs(Unit::getSymbol(unit)));
@@ -256,7 +258,8 @@ QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
                 editInfo.type = ItemEditInfo::LIST;
                 if (d_ptr->alarmDataInfos.at(row).paramID == PARAM_DUP_ECG
                         || d_ptr->alarmDataInfos.at(row).paramID == PARAM_SPO2
-                        || d_ptr->alarmDataInfos.at(row).paramID == PARAM_NIBP)
+                        || d_ptr->alarmDataInfos.at(row).paramID == PARAM_NIBP
+                        || d_ptr->alarmDataInfos.at(row).paramID == PARAM_CO2)
                 {
                     // ECG、SPO2、NIBP的报警优先级只有中级和高级
                     editInfo.list << trs("Medium") << trs("High");

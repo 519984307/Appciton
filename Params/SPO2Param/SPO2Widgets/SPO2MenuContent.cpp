@@ -38,7 +38,7 @@ public:
         ITEM_CBO_SENSITIVITY,
         ITEM_CBO_FAST_SAT,
         ITEM_CBO_SMART_TONE,
-        ITEM_CBO_BEAT_VOL,
+        ITEM_CBO_PULSE_VOL,
         ITEM_CBO_NIBP_SAME_SIDE
     };
 
@@ -105,14 +105,14 @@ void SPO2MenuContentPrivate::loadOptions()
 
     int volIndex;
     currentConfig.getNumValue("ECG|QRSVolume", volIndex);
-    combos[ITEM_CBO_BEAT_VOL]->setCurrentIndex(volIndex);
+    combos[ITEM_CBO_PULSE_VOL]->setCurrentIndex(volIndex);
     if (nightModeManager.nightMode())
     {
-        combos[ITEM_CBO_BEAT_VOL]->setEnabled(false);
+        combos[ITEM_CBO_PULSE_VOL]->setEnabled(false);
     }
     else
     {
-        combos[ITEM_CBO_BEAT_VOL]->setEnabled(true);
+        combos[ITEM_CBO_PULSE_VOL]->setEnabled(true);
     }
 
     combos[ITEM_CBO_NIBP_SAME_SIDE]->setCurrentIndex(spo2Param.isNibpSameSide());
@@ -259,12 +259,12 @@ void SPO2MenuContent::layoutExec()
     {
         comboBox->addItem(QString::number(i));
     }
-    itemID = static_cast<int>(SPO2MenuContentPrivate::ITEM_CBO_BEAT_VOL);
+    itemID = static_cast<int>(SPO2MenuContentPrivate::ITEM_CBO_PULSE_VOL);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), SLOT(onComboBoxIndexChanged(int)));
+    connect(comboBox, SIGNAL(activated(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_BEAT_VOL, comboBox);
+    d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_PULSE_VOL, comboBox);
 
     // NIBP同侧功能
     label = new QLabel(trs("NIBPSimul"));
@@ -320,7 +320,7 @@ void SPO2MenuContent::onComboBoxIndexChanged(int index)
         case SPO2MenuContentPrivate::ITEM_CBO_SMART_TONE:
             spo2Param.setSmartPulseTone((SPO2SMARTPLUSETONE)index);
             break;
-        case SPO2MenuContentPrivate::ITEM_CBO_BEAT_VOL:
+        case SPO2MenuContentPrivate::ITEM_CBO_PULSE_VOL:
             spo2Param.setBeatVol(static_cast<SoundManager::VolumeLevel>(index));
             break;
         case SPO2MenuContentPrivate::ITEM_CBO_NIBP_SAME_SIDE:
@@ -341,10 +341,10 @@ void SPO2MenuContent::onAlarmBtnReleased()
 void SPO2MenuContent::onPopupListItemFocusChanged(int volume)
 {
     ComboBox *w = qobject_cast<ComboBox*>(sender());
-    if (w == d_ptr->combos[SPO2MenuContentPrivate::ITEM_CBO_BEAT_VOL])
+    if (w == d_ptr->combos[SPO2MenuContentPrivate::ITEM_CBO_PULSE_VOL])
     {
-        soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT , static_cast<SoundManager::VolumeLevel>(volume));
-        soundManager.heartBeatTone();
+        soundManager.setVolume(SoundManager::SOUND_TYPE_PULSE , static_cast<SoundManager::VolumeLevel>(volume));
+        soundManager.pulseTone();
     }
 }
 

@@ -1115,7 +1115,7 @@ bool AlarmIndicator::techAlarmResetStatusHandle()
     return ret;
 }
 
-void AlarmIndicator::updateAlarmStateWidget()
+void AlarmIndicator::updateAlarmAudioState()
 {
-    _alarmStatusWidget->update();
+    _alarmStatusWidget->updateAlarmAudioStatus();
 }

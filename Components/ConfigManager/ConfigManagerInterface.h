@@ -41,4 +41,10 @@ public:
      * @return  reference to the current running config
      */
     virtual Config &getCurConfig() = 0;
+
+    /**
+     * @brief loadConfig 加载相应的配置（只能加载预设的配置）
+     * @param type　病人类型
+     */
+    virtual void loadConfig(PatientType type) = 0;
 };

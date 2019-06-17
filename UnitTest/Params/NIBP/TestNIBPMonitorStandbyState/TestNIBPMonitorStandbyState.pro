@@ -60,10 +60,10 @@ HEADERS += \
     ../../../../Utility/ErrorLog/ErrorLogItem.h \
     ../../../../Utility/Config/Config.h \
     ../../../../Params/NIBPParam/NIBPParamInterface.h \
-    ../../../Utility/TestNightManager/MockNIBPParam.h \
     ../../../../Params/NIBPParam/NIBPEventDefine.h \
     ../../../../Params/NIBPParam/NIBPStateMachine/NIBPStateMachineDefine.h \
     MockNIBPCountdownTime.h \
+    ../MockNIBPParam.h
 
 INCLUDEPATH += \
     ../../../../Params/NIBPParam/NIBPStateMachine/NIBPMonitorStateMachine \
@@ -77,6 +77,6 @@ INCLUDEPATH += \
     ../../../../Params/NIBPParam/NIBPTrigger \
     ../../../../Components/PatientManager \
     ../../../../Utility \
-    ../../../Utility/TestNightManager
+    ..
 
 
