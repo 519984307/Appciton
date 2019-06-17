@@ -25,7 +25,7 @@ void NIBPMonitorStartingState::enter(void)
 
     //清除显示的数据。
     nibpParam.invResultData();
-    nibpParam.setText(InvStr());
+    nibpParam.setCuffPressure(0);
 
     //清除标志位
     nibpParam.setSwitchFlagTime(false);
@@ -78,7 +78,7 @@ void NIBPMonitorStartingState::handleNIBPEvent(NIBPEvent event, const unsigned c
             else
             {
                 nibpParam.setSTATMeasure(true);
-                nibpCountdownTime.STATMeasureStart(); // 只测量5分钟。
+                nibpCountdownTime.STATMeasureStart();  // 只测量5分钟。
             }
             break;
         }
