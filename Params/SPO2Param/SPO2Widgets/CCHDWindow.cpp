@@ -87,14 +87,14 @@ CCHDWindow::CCHDWindow()
     // 手部测量
     d_ptr->handButton = new Button;
     d_ptr->handButton->setButtonStyle(Button::ButtonTextOnly);
-    d_ptr->handButton->setText(trs("handMeasure"));
+    d_ptr->handButton->setText(trs("SpO2Value"));
     connect(d_ptr->handButton, SIGNAL(released()), this, SLOT(onButtonReleased()));
     hLayout->addWidget(d_ptr->handButton);
 
     // 足部测量
     d_ptr->footButton = new Button;
     d_ptr->footButton->setButtonStyle(Button::ButtonTextOnly);
-    d_ptr->footButton->setText(trs("footMeasure"));
+    d_ptr->footButton->setText(trs("SpO2_2Value"));
     connect(d_ptr->footButton, SIGNAL(released()), this, SLOT(onButtonReleased()));
     hLayout->addWidget(d_ptr->footButton);
 
@@ -132,26 +132,26 @@ void CCHDWindow::onButtonReleased()
     Button *btn = qobject_cast<Button *>(sender());
     if (btn == d_ptr->handButton)
     {
-        if (spo2Param.getSPO2() == InvData())
+        if (spo2Param.getSPO2(SPO2_MODULE_DAVID) == InvData())
         {
             MessageBox msgBox(trs("Prompt"), trs("SPO2ValueInvaild"), false, true);
             msgBox.exec();
             return;
         }
-        d_ptr->handValue = spo2Param.getSPO2();
+        d_ptr->handValue = spo2Param.getSPO2(SPO2_MODULE_DAVID);
         btn->setEnabled(false);
         spo2Param.setCCHDData(d_ptr->handValue, true);
         d_ptr->update();
     }
     else if (btn == d_ptr->footButton)
     {
-        if (spo2Param.getSPO2() == InvData())
+        if (spo2Param.getSPO2(SPO2_MODULE_BLM) == InvData())
         {
             MessageBox msgBox(trs("Prompt"), trs("SPO2ValueInvaild"), false, true);
             msgBox.exec();
             return;
         }
-        d_ptr->footValue = spo2Param.getSPO2();
+        d_ptr->footValue = spo2Param.getSPO2(SPO2_MODULE_BLM);
         btn->setEnabled(false);
         spo2Param.setCCHDData(d_ptr->footValue, false);
         d_ptr->update();

@@ -153,11 +153,11 @@ QVariant CCHDDataModel::headerData(int section, Qt::Orientation orientation, int
         }
         else if (section == HeaderHandValue)
         {
-            return QString(trs("handValue"));
+            return QString(trs("SpO2Value"));
         }
         else if (section == HeaderFootValue)
         {
-            return QString(trs("footValue"));
+            return QString(trs("SpO2_2Value"));
         }
         else if (section == HeaderResult)
         {
