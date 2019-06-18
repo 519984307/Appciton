@@ -1015,7 +1015,7 @@ void E5Provider::reconnected(void)
 E5Provider::E5Provider() : BLMProvider("BLM_E5"), ECGProviderIFace(), _waveSampleRate(WAVE_SAMPLE_RATE_250),
     _isFristConnect(false), _isSupportRESP(systemManager.isSupport(CONFIG_RESP))
 {
-    UartAttrDesc portAttr(460800, 8, 'N', 1);
+    UartAttrDesc portAttr(230400, 8, 'N', 1);
     initPort(portAttr);
 }
 

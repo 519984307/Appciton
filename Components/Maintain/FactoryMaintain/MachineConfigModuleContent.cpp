@@ -50,6 +50,7 @@ public:
         ITEM_CBO_TSCREEN,
 #endif
         ITEM_CBO_BACKLIGHT,
+        ITEM_CBO_NIBP_NEO_MEASURE,
         ITEM_CBO_MAX
     };
 
@@ -201,6 +202,9 @@ void MachineConfigModuleContentPrivte::loadOptions()
     machineConfig.getNumValue("BacklightAdjustment", index);
     combos[ITEM_CBO_BACKLIGHT]->setCurrentIndex(index);
 
+    index = 0;
+    machineConfig.getNumValue("NIBPNEOMeasureEnable", index);
+    combos[ITEM_CBO_NIBP_NEO_MEASURE]->setCurrentIndex(index);
     itemInitMap = itemChangedMap;
 
 #ifdef HIDE_MACHINE_CONFIG_ITEMS
@@ -494,6 +498,23 @@ void MachineConfigModuleContent::layoutExec()
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
     layout->setRowStretch(d_ptr->combos.count(), 1);
+
+    label = new QLabel(trs("StopNeoNIBPMeasure"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    combo = new ComboBox;
+    combo->blockSignals(true);
+    combo->addItems(QStringList()
+                    << trs("Off")
+                    << trs("On"));
+    combo->blockSignals(false);
+    layout->addWidget(combo, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(MachineConfigModuleContentPrivte
+                         ::ITEM_CBO_NIBP_NEO_MEASURE, combo);
+    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_NIBP_NEO_MEASURE;
+    combo->setProperty("Item", qVariantFromValue(itemId));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+
+    layout->setRowStretch(d_ptr->combos.count(), 1);
 }
 
 void MachineConfigModuleContent::hideEvent(QHideEvent *e)
@@ -614,6 +635,11 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
             systemManager.setBrightness(br);
 #endif
             return;
+        }
+        case MachineConfigModuleContentPrivte::ITEM_CBO_NIBP_NEO_MEASURE:
+        {
+             enablePath = "NIBPNEOMeasureEnable";
+             break;
         }
         default:
             return;

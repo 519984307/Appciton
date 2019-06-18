@@ -39,13 +39,22 @@
 /**************************************************************************************************
  * 病人类型修改。
  *************************************************************************************************/
-void NIBPParam::_patientTypeChangeSlot(PatientType /*type*/)
+void NIBPParam::_patientTypeChangeSlot(PatientType type)
 {
+    int enable = 0;
     setSwitchFlagType(true);
 
     // 模式修改则停止当前的测量。
     handleNIBPEvent(NIBP_EVENT_TRIGGER_PATIENT_TYPE, NULL, 0);
 
+    machineConfig.getNumValue("NIBPNEOMeasureEnable", enable);
+
+    if (type == PATIENT_TYPE_NEO && enable)
+    {
+        errorDisable();
+        return;
+    }
+    reset();
     //设置病人类型与预充气值
     if (NULL != _provider)
     {
@@ -65,7 +74,12 @@ void NIBPParam::initParam(void)
     {
         return;
     }
-
+    int enable = 0;
+    machineConfig.getNumValue("NIBPNEOMeasureEnable", enable);
+    if (patientManager.getType() == PATIENT_TYPE_NEO && enable)
+    {
+        errorDisable();
+    }
     _provider->serviceEnter(false);
 
     //智能充气
@@ -264,7 +278,7 @@ NIBPProviderIFace &NIBPParam::provider(void)
  *************************************************************************************************/
 void NIBPParam::reset(void)
 {
-    if (_provider == NULL)
+    if (_provider == NULL || !isConnected())
     {
         return;
     }
