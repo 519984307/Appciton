@@ -21,6 +21,7 @@
 #include "ErrorLogItem.h"
 #include "RawDataCollector.h"
 #include "IConfig.h"
+#include "UpgradeManager.h"
 
 static const char *nibpSelfErrorCode[] =
 {
@@ -319,6 +320,9 @@ void N5Provider::handlePacket(unsigned char *data, int len)
     // 校准点压力值反馈
     case N5_RSP_PRESSURE_POINT:
         nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_RSP_PRESSURE_POINT, &data[1], 1);
+        break;
+
+    case N5_RSP_PASSTHROUGH_MODE:
         break;
 
     // 压力计模式控制
