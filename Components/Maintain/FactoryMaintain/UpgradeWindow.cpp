@@ -217,6 +217,7 @@ void UpgradeWindow::onUpgradeFinished(UpgradeManager::UpgradeResult result)
     }
     else if (result == UpgradeManager::UPGRADE_REBOOT)
     {
+        d_ptr->isUpdate = false;        // 不需要用户进行判断进行重启
         d_ptr->textEdit->appendPlainText(trs("SystemWillRestartPleaseDoNotPowerOff"));
     }
     else
