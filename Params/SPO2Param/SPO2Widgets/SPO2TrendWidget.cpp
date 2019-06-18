@@ -35,6 +35,12 @@ void SPO2TrendWidget::loadConfig()
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
     setPalette(palette);
     _spo2Value1->setPalette(palette);
+
+    palette.setColor(QPalette::WindowText, Qt::white);
+    _spo2Value2->setPalette(palette);
+    _spo2Name2->setPalette(palette);
+    _spo2DeltaValue->setPalette(palette);
+    _spo2DeltaName->setPalette(palette);
     TrendWidget::loadConfig();
 }
 
@@ -118,7 +124,7 @@ void SPO2TrendWidget::showValue(void)
     }
     else
     {
-        showNormalStatus(psrc);
+        showNormalStatus(_spo2Value1, psrc);
     }
 }
 
@@ -228,5 +234,5 @@ QList<SubParamID> SPO2TrendWidget::getShortTrendSubParams() const
 void SPO2TrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
-    showNormalStatus(psrc);
+    showNormalStatus(_spo2Value1, psrc);
 }

@@ -23,8 +23,6 @@ public:
 
     void addSubParam(SubParamID id);
 
-    void setColor(QColor color);
-
     void updateRange();
 
 protected:
@@ -36,6 +34,8 @@ protected:
 
 protected slots:
     void onNewTrendDataArrived(unsigned timeStamp);
+
+    void onPaletteChanged(ParamID param);
 
 private:
     TrendWavePrivate * const d_ptr;

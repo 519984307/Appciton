@@ -1010,6 +1010,7 @@ void SPO2Param::onPaletteChanged(ParamID id)
     }
     QPalette pal = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
     d_ptr->waveWidget->updatePalette(pal);
+    d_ptr->plugInWaveWidget->updatePalette(pal);
     d_ptr->trendWidget->updatePalette(pal);
 }
 
