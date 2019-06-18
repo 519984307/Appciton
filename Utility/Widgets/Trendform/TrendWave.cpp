@@ -17,9 +17,9 @@
 #include "RingBuff.h"
 #include "TrendCache.h"
 #include "FontManager.h"
-#include <QDebug>
 #include "AlarmConfig.h"
 #include "ParamInfo.h"
+#include "LanguageManager.h"
 
 #define DELTA_X 5   // 两值间的x轴像素值
 typedef QList<float> YAxisValueBufType;
@@ -27,15 +27,16 @@ typedef QList<float> YAxisValueBufType;
 class TrendWavePrivate
 {
 public:
-    explicit TrendWavePrivate(TrendWave *const q_ptr)
+    explicit TrendWavePrivate(TrendWave *const q_ptr, QString name)
         : q_ptr(q_ptr),
-          waveMargin(10, 2, 2, 2),
+          waveMargin(50, 2, 2, 2),
           waveColor(Qt::white),
           resetPointBufFlag(true),
           updateBGFlag(true),
           maxValue(-1),
           minValue(-1),
-          scale(1)
+          scale(1),
+          name(name)
     {}
     ~TrendWavePrivate(){}
     TrendWave * const q_ptr;
@@ -50,6 +51,7 @@ public:
     int minValue;
     short scale;
     QPixmap background;
+    QString name;
 
     /**
      * @brief drawWave 绘画波形
@@ -74,7 +76,7 @@ public:
 
 TrendWave::TrendWave(const QString &name, QWidget *parent)
     : IWidget(name, parent),
-      d_ptr(new TrendWavePrivate(this))
+      d_ptr(new TrendWavePrivate(this, name))
 {
     setFocusPolicy(Qt::NoFocus);
     QPalette pal = this->palette();
@@ -315,13 +317,19 @@ void TrendWavePrivate::updateBackground()
         minStr = QString::number(minValue);
     }
     int fontHeight = fontManager.textHeightInPixels(font);
-    int fontWidget = fontManager.textWidthInPixels(maxStr, font);
+    int fontWidth = fontManager.textWidthInPixels(maxStr, font);
     int drawTextX = waveRegion.left();
     int drawTextY = waveRegion.top();
-    painter.drawText(QRect(drawTextX, drawTextY, fontWidget, fontHeight), maxStr);
+    painter.drawText(QRect(drawTextX, drawTextY, fontWidth, fontHeight), maxStr);
     drawTextY = waveRegion.bottom() - fontHeight;
-    fontWidget = fontManager.textWidthInPixels(minStr, font);
-    painter.drawText(QRect(drawTextX, drawTextY, fontWidget, fontHeight), minStr);
+    fontWidth = fontManager.textWidthInPixels(minStr, font);
+    painter.drawText(QRect(drawTextX, drawTextY, fontWidth, fontHeight), minStr);
+
+    // draw name
+    drawTextX = q_ptr->rect().left();
+    drawTextY = q_ptr->rect().top();
+    fontWidth = fontManager.textWidthInPixels(trs(name), font);
+    painter.drawText(QRect(drawTextX, drawTextY, fontWidth, fontHeight), trs(name));
 }
 
 int TrendWavePrivate::getPointNum()

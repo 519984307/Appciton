@@ -62,6 +62,10 @@ void TrendSubWaveWidget::setWidgetParam(SubParamID id, TrendGraphType type)
         {
             _paramName = "T1/T2";
         }
+        if (_id == SUB_PARAM_SPO2)
+        {
+            _paramName = "SpO2/SpO2 2";
+        }
     }
     else if (_type == TREND_GRAPH_TYPE_ART_IBP || _type == TREND_GRAPH_TYPE_NIBP)
     {
@@ -639,6 +643,17 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
                 str2 = Unit::convert(type, UNIT_PERCENT, value2 / 10.0, co2Param.getBaro());
             }
         }
+        else if (paramId == PARAM_SPO2)
+        {
+            if (value1 != InvData())
+            {
+                str1 = Unit::convert(type, UNIT_PERCENT, static_cast<int>(value1));
+            }
+            if (value2 != InvData())
+            {
+                str2 = Unit::convert(type, UNIT_PERCENT, static_cast<int>(value2));
+            }
+        }
         else
         {
             if (value1 != InvData())
@@ -739,6 +754,11 @@ void TrendSubWaveWidget::_autoRulerCal()
                 {
                     QString vStr = Unit::convert(type, UNIT_TC, data / 10.0);
                     v = vStr.toDouble();
+                }
+                else if (paramId == PARAM_SPO2)
+                {
+                    QString vStr = Unit::convert(type, UNIT_PERCENT, data);
+                    v = vStr.toInt();
                 }
                 else
                 {
