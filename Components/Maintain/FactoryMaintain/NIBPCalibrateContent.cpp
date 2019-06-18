@@ -34,19 +34,19 @@ class NIBPCalibrateContentPrivate
 {
 public:
     NIBPCalibrateContentPrivate()
-        : label(NULL), point2Spb(NULL),
+        : label(NULL), pointLabel(NULL),
           pressurevalue(0), isCalibrating(false),
           point(NIBP_CALIBRATE_ZERO), calibrateTimerID(-1),
           timeoutNum(0), inModeTimerID(-1), isCalibrateMode(false),
           modeBtn(NULL), calibrateBtn1(NULL), calibrateBtn2(NULL),
-	  unitLableOne(NULL), unitLableTwo(NULL)
+          unitLableOne(NULL), unitLableTwo(NULL)
     {
     }
     void loadOptions(void);
     QList<Button *> btnList;
 //    CalibrateSetItem *item;
     QLabel *label;
-    QLabel *point2Spb;
+    QLabel *pointLabel;
 
     int  pressurevalue;                     // 校准点的值
     bool isCalibrating;                     // 是否处于正在校准
@@ -76,17 +76,16 @@ void NIBPCalibrateContentPrivate::loadOptions(void)
     calibrateBtn2->setEnabled(false);
     UnitType unit = nibpParam.getUnit();
     UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_NIBP_SYS);
-    d_ptr->unitLableOne->setText(Unit::getSymbol(nibpParam.getUnit()));
-    d_ptr->unitLableTwo->setText(Unit::getSymbol(nibpParam.getUnit()));
+    unitLableOne->setText(Unit::getSymbol(nibpParam.getUnit()));
+    unitLableTwo->setText(Unit::getSymbol(nibpParam.getUnit()));
     if (unit != defUnit)
     {
-        d_ptr->point2Spb->setText(Unit::convert(unit, defUnit, 250));  // 250mmHg对应的kPa单位换算
+        pointLabel->setText(Unit::convert(unit, defUnit, 250));  // 250mmHg对应的kPa单位换算
     }
     else
     {
-        d_ptr->point2Spb->setText("250");
+        pointLabel->setText("250");
     }
-    point2Spb->setEnabled(false);
 }
 
 NIBPCalibrateContent *NIBPCalibrateContent::getInstance()
@@ -155,7 +154,7 @@ void NIBPCalibrateContent::layoutExec()
 
     pressureLabel = new QLabel();
     layout->addWidget(pressureLabel, 2, 1);
-    d_ptr->point2Spb = pressureLabel;
+    d_ptr->pointLabel = pressureLabel;
 
     label = new QLabel();
     label->setText("mmHg");
@@ -217,7 +216,6 @@ void NIBPCalibrateContent::timerEvent(QTimerEvent *ev)
                     btn = d_ptr->btnList.at(1);
                     btn->setEnabled(false);
                     btn->setText(trs("ServiceCalibrate"));
-                    d_ptr->point2Spb->setEnabled(false);
                 }
                 else
                 {
@@ -227,8 +225,6 @@ void NIBPCalibrateContent::timerEvent(QTimerEvent *ev)
                     btn->setEnabled(true);
                     btn = d_ptr->btnList.at(1);
                     btn->setEnabled(true);
-                    d_ptr->point2Spb->setEnabled(true);
-                    d_ptr->calibrateFlag = true;
                 }
             }
             else
