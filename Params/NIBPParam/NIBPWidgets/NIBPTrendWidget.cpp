@@ -633,6 +633,20 @@ void NIBPTrendWidget::doRestoreNormalStatus()
     showNormalParamLimit(psrc);
 }
 
+void NIBPTrendWidget::updatePalette(const QPalette &pal)
+{
+    setPalette(pal);
+    d_ptr->nibpValue->setPalette(pal);
+    d_ptr->sysValue->setPalette(pal);
+    d_ptr->diaValue->setPalette(pal);
+    d_ptr->mapValue->setPalette(pal);
+    d_ptr->pressureValue->setPalette(pal);
+    d_ptr->countDown->setPalette(pal);
+    d_ptr->lastMeasureCount->setPalette(pal);
+    d_ptr->model->setPalette(pal);
+    d_ptr->message->setPalette(pal);
+}
+
 void NIBPTrendWidget::updateWidgetConfig()
 {
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));

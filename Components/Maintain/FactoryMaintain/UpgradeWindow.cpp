@@ -74,6 +74,8 @@ UpgradeWindow::UpgradeWindow()
     {
         d_ptr->upgradeModuleCbo->addItem(
             trs(UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_N5)));
+        d_ptr->upgradeModuleCbo->addItem(
+            trs(UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_N5DAEMON)));
     }
 
     if (systemManager.isSupport(CONFIG_TEMP))

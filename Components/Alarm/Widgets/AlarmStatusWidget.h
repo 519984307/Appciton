@@ -28,6 +28,12 @@ public:
     AlarmStatusWidget();
     virtual ~AlarmStatusWidget();
 
+    /**
+     * @brief setAlarmAudioStatus 设置是否显示报警音关闭
+     * @param status
+     */
+    void updateAlarmAudioStatus();
+
 protected:
     void paintEvent(QPaintEvent *e);
 

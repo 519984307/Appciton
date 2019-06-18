@@ -35,7 +35,7 @@
 	    </NIBP>
 	    <CO2>
 		<CO2SweepSpeed cAttr0="0" cMin="0" cMax="2" cLen="1">1</CO2SweepSpeed>		
-		<FICO2Display cAttr0="0" cMin="0" cMax="1" cLen="1">0</FICO2Display>
+                <FiCO2Display cAttr0="0" cMin="0" cMax="1" cLen="1">0</FiCO2Display>
 		<Compensation>
 			<O2 cAttr0="0" cMin="0" cMax="1" cLen="1">1</O2>
 			<NO2 cAttr0="0" cMin="0" cMax="1" cLen="1">1</NO2>

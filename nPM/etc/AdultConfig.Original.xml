@@ -108,7 +108,7 @@
     <NIBP>
         <StatFunction>1</StatFunction>
         <AutomaticRetry>0</AutomaticRetry>
-        <InitialCuffInflation>4</InitialCuffInflation>
+        <InitialCuffInflation>8</InitialCuffInflation>
 	<CompleteTone>0</CompleteTone>
     </NIBP>
     <SPO2>
@@ -125,7 +125,7 @@
         <CO2SweepMode>0</CO2SweepMode>
         <SweepSpeed>2</SweepSpeed>
         <FiCO2Display>0</FiCO2Display>
-        <DisplayZoom>3</DisplayZoom>
+        <DisplayZoom>0</DisplayZoom>
         <O2Compensation>16</O2Compensation>
         <N2OCompensation>0</N2OCompensation>
         <CeroCalibration>0</CeroCalibration>
@@ -842,7 +842,7 @@
         </Purple>
         <ECGDUPColor>Green</ECGDUPColor>
         <ECGColor>Green</ECGColor>
-        <SPO2Color>Yellow</SPO2Color>
+        <SPO2Color>Cyan</SPO2Color>
         <NIBPColor>Blue</NIBPColor>
         <CO2Color>Red</CO2Color>
         <RESPColor>Red</RESPColor>
@@ -859,7 +859,6 @@
         <PacerStartUp>0</PacerStartUp>
         <DiagnosticECG>1</DiagnosticECG>
         <Print30JSelfTestReport>0</Print30JSelfTestReport>
-        <PrintSpeed>1</PrintSpeed>
     </Print>
     <ECG12L>
         <NotchFilter>0</NotchFilter>

@@ -38,6 +38,8 @@ private slots:
      */
     void onAlarmBtnReleased(void);
 
+    void onPopupListItemFocusChanged(int volume);
+
 private:
     ConfigEditECGMenuContentPrivate *const d_ptr;
 };

@@ -18,6 +18,7 @@
 #include <QMutex>
 #include <QDebug>
 #include <unistd.h>
+#include <QTimerEvent>
 
 struct StoreDataType
 {
@@ -32,6 +33,7 @@ class RawDataCollectorPrivate
 {
 public:
     RawDataCollectorPrivate()
+        : timerId(-1)
     {
         int v = 0;
         machineConfig.getNumValue("Record|ECG", v);
@@ -112,6 +114,8 @@ public:
     QFile *files[RawDataCollector::DATA_TYPE_NR];
 
     QMutex mutex;
+
+    int timerId;
 };
 
 void RawDataCollectorPrivate::handleECGRawData(const unsigned char *data, int len, bool stop)
@@ -519,6 +523,7 @@ void RawDataCollector::run()
         qDeleteAll(d_ptr->dataBuffer);
         d_ptr->dataBuffer.clear();
         d_ptr->mutex.unlock();
+        stopCollectData();          // U盘被强制拔出停止定时器
         return;
     }
 
@@ -550,6 +555,32 @@ void RawDataCollector::run()
         d_ptr->mutex.lock();
     }
     d_ptr->mutex.unlock();
+}
+
+void RawDataCollector::startCollectData()
+{
+    if (d_ptr->timerId == -1)
+    {
+        d_ptr->timerId = startTimer(300);
+    }
+}
+
+void RawDataCollector::stopCollectData()
+{
+    if (d_ptr->timerId != -1)
+    {
+        killTimer(d_ptr->timerId);
+        d_ptr->timerId = -1;
+    }
+    usbManager.umountUDisk();
+}
+
+void RawDataCollector::timerEvent(QTimerEvent *e)
+{
+    if (e->timerId() == d_ptr->timerId)
+    {
+        run();
+    }
 }
 
 RawDataCollector::RawDataCollector()

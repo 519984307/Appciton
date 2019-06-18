@@ -35,7 +35,7 @@ public:
           pumpBtn(NULL), valveBtn(NULL), zeroBtn(NULL),
           value(NULL), timeoutNum(0)
     {}
-
+    void loadOptions(void);
     int inModeTimerID;          // 进入校零模式定时器ID
     int pumpTimerID;            // 气泵控制定时器ID
     int valveTimerID;           // 气阀控制定时器ID
@@ -53,7 +53,16 @@ public:
     QLabel *value;              // 当前压力值
     int timeoutNum;            // 回复超时
 };
-
+void NIBPZeroPointContentPrivate::loadOptions(void)
+{
+    isZeroMode = false;
+    modeBtn->setEnabled(true);
+    modeBtn->setText(trs("EnterZeroMode"));
+    pumpBtn->setEnabled(false);
+    valveBtn->setEnabled(false);
+    zeroBtn->setEnabled(false);
+    zeroBtn->setText(trs("ServiceCalibrateZero"));
+}
 NIBPZeroPointContent *NIBPZeroPointContent::getInstance()
 {
     static NIBPZeroPointContent *instance = NULL;
@@ -102,7 +111,7 @@ void NIBPZeroPointContent::layoutExec()
     d_ptr->pumpSpx->setStep(1);
     layout->addWidget(d_ptr->pumpSpx, 1, 1);
 
-    button = new Button(trs("On"));
+    button = new Button(trs("Off"));
     button->setButtonStyle(Button::ButtonTextOnly);
     layout->addWidget(button, 1, 2);
     connect(button, SIGNAL(released()), this, SLOT(pumpControlReleased()));
@@ -111,7 +120,7 @@ void NIBPZeroPointContent::layoutExec()
     label = new QLabel(trs("ValveControl"));
     layout->addWidget(label, 2, 0, Qt::AlignCenter);
 
-    button = new Button(trs("On"));
+    button = new Button(trs("Off"));
     button->setButtonStyle(Button::ButtonTextOnly);
     layout->addWidget(button, 2, 2);
     connect(button, SIGNAL(released()), this, SLOT(valveControlReleased()));
@@ -149,6 +158,8 @@ void NIBPZeroPointContent::timerEvent(QTimerEvent *ev)
                     d_ptr->isZeroMode = false;
                     d_ptr->modeBtn->setText(trs("EnterZeroMode"));
                     d_ptr->zeroBtn->setEnabled(false);
+                    d_ptr->pumpBtn->setEnabled(false);
+                    d_ptr->valveBtn->setEnabled(false);
                     killTimer(d_ptr->pressureTimerID);
                     d_ptr->pressureTimerID = -1;
                 }
@@ -157,6 +168,8 @@ void NIBPZeroPointContent::timerEvent(QTimerEvent *ev)
                     d_ptr->isZeroMode = true;
                     d_ptr->modeBtn->setText(trs("QuitZeroMode"));
                     d_ptr->zeroBtn->setEnabled(true);
+                    d_ptr->pumpBtn->setEnabled(true);
+                    d_ptr->valveBtn->setEnabled(true);
                     d_ptr->pressureTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
                 }
             }
@@ -164,7 +177,8 @@ void NIBPZeroPointContent::timerEvent(QTimerEvent *ev)
             {
                 MessageBox messbox(trs("Warn"), trs("NIBPModuleEnterFail"), false);
                 messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
-                windowManager.showWindow(&messbox, WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
+                windowManager.showWindow(&messbox,
+                                         WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
             }
             killTimer(d_ptr->inModeTimerID);
             d_ptr->inModeTimerID = -1;
@@ -193,7 +207,8 @@ void NIBPZeroPointContent::timerEvent(QTimerEvent *ev)
             {
                 MessageBox messbox(trs("Warn"), trs("OperationFailedPleaseAgain"), false);
                 messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
-                windowManager.showWindow(&messbox, WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
+                windowManager.showWindow(&messbox,
+                                         WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
             }
             killTimer(d_ptr->pumpTimerID);
             d_ptr->pumpTimerID = -1;
@@ -226,7 +241,8 @@ void NIBPZeroPointContent::timerEvent(QTimerEvent *ev)
             {
                 MessageBox messbox(trs("Warn"), trs("OperationFailedPleaseAgain"), false);
                 messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
-                windowManager.showWindow(&messbox, WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
+                windowManager.showWindow(&messbox,
+                                         WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
             }
             killTimer(d_ptr->valveTimerID);
             d_ptr->valveTimerID = -1;
@@ -275,6 +291,13 @@ bool NIBPZeroPointContent::focusNextPrevChild(bool next)
     return MenuContent::focusNextPrevChild(next);
 }
 
+void NIBPZeroPointContent::hideEvent(QHideEvent *e)
+{
+    Q_UNUSED(e);
+    d_ptr->loadOptions();
+    nibpParam.provider().serviceCalibrateZero(false);
+}
+
 void NIBPZeroPointContent::enterZeroReleased()
 {
     d_ptr->inModeTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
@@ -309,11 +332,11 @@ void NIBPZeroPointContent::valveControlReleased()
     d_ptr->valveTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
     if (d_ptr->isOnValve)
     {
-        nibpParam.provider().serviceValve(false);
+        nibpParam.provider().serviceValve(true);
     }
     else
     {
-        nibpParam.provider().serviceValve(true);
+        nibpParam.provider().serviceValve(false);
     }
 }
 
@@ -333,8 +356,5 @@ NIBPZeroPointContent::~NIBPZeroPointContent()
 
 void NIBPZeroPointContent::init()
 {
-    d_ptr->isZeroMode = false;
-    d_ptr->modeBtn->setEnabled(true);
-    d_ptr->modeBtn->setText(trs("EnterZeroMode"));
-    d_ptr->zeroBtn->setEnabled(true);
+    d_ptr->loadOptions();
 }

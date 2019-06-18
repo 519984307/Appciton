@@ -39,13 +39,22 @@
 /**************************************************************************************************
  * 病人类型修改。
  *************************************************************************************************/
-void NIBPParam::_patientTypeChangeSlot(PatientType /*type*/)
+void NIBPParam::_patientTypeChangeSlot(PatientType type)
 {
+    int enable = 0;
     setSwitchFlagType(true);
 
     // 模式修改则停止当前的测量。
     handleNIBPEvent(NIBP_EVENT_TRIGGER_PATIENT_TYPE, NULL, 0);
 
+    machineConfig.getNumValue("NIBPNEOMeasureEnable", enable);
+
+    if (type == PATIENT_TYPE_NEO && enable)
+    {
+        errorDisable();
+        return;
+    }
+    reset();
     //设置病人类型与预充气值
     if (NULL != _provider)
     {
@@ -65,7 +74,12 @@ void NIBPParam::initParam(void)
     {
         return;
     }
-
+    int enable = 0;
+    machineConfig.getNumValue("NIBPNEOMeasureEnable", enable);
+    if (patientManager.getType() == PATIENT_TYPE_NEO && enable)
+    {
+        errorDisable();
+    }
     _provider->serviceEnter(false);
 
     //智能充气
@@ -117,33 +131,45 @@ void NIBPParam::setConnected(bool isConnected)
  * 处理DEMO数据。
  *************************************************************************************************/
 static int counter = 300;
+static int autoCounter = 300;
 void NIBPParam::handDemoTrendData(void)
 {
-    if (counter++ < 300)
+    if (autoCounter >= counter)
     {
-        return;
-    }
-    counter = 0;
-
     _sysValue = qrand() % 30 + 90;
     _diaValue = qrand() % 20 + 60;
     _mapVaule = qrand() % 25 + 75;
     _prVaule = qrand() % 10 + 60;
-
     setResult(_sysValue, _diaValue, _mapVaule, _prVaule, NIBP_ONESHOT_NONE);
+    eventStorageManager.triggerNIBPMeasurementEvent(timeManager.getCurTime(), NIBP_ONESHOT_NONE);
 
     setMeasureResult(NIBP_MEASURE_SUCCESS);
+    autoCounter = 0;
+    }
+
+    NIBPMode mode = getSuperMeasurMode();
+    if (mode == NIBP_MODE_AUTO)
+    {
+        autoCounter++;
+        counter = getAutoIntervalTime();
+    }
+    else
+    {
+        autoCounter = 0;
+    }
 }
 
 void NIBPParam::exitDemo()
 {
     counter = 300;
+    autoCounter = 300;
     _sysValue = InvData();
     _diaValue = InvData();
     _mapVaule = InvData();
     _prVaule = InvData();
 
-    switchState(curStatusType());
+    // 恢复状态机为进入演示模式前的状态
+    switchState(_oldState);
     if (curStatusType() == NIBP_MONITOR_STANDBY_STATE || curStatusType() == NIBP_MONITOR_SAFEWAITTIME_STATE)
     {
         // 若返回的时准备模式，则清除显示数据
@@ -229,6 +255,13 @@ void NIBPParam::setProvider(NIBPProviderIFace *provider)
     }
     unsigned char cmd = 0x00;
     handleNIBPEvent(NIBP_EVENT_TRIGGER_MODEL, &cmd, 1);
+
+    // 进入演示模式时，切换状态机为正常监护
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        _oldState = _activityMachine->curStatusType();
+        switchState(NIBP_MONITOR_STANDBY_STATE);
+    }
 }
 
 /**************************************************************************************************
@@ -245,7 +278,7 @@ NIBPProviderIFace &NIBPParam::provider(void)
  *************************************************************************************************/
 void NIBPParam::reset(void)
 {
-    if (_provider == NULL)
+    if (_provider == NULL || !isConnected())
     {
         return;
     }
@@ -377,18 +410,18 @@ void NIBPParam::setResult(int16_t sys, int16_t dia, int16_t map, int16_t pr, NIB
         }
         if (getMeasurMode() == NIBP_MODE_MANUAL || getMeasurMode() == NIBP_MODE_AUTO)
         {
-            if (!isAdditionalMeasure())
+            int index = 0;
+            systemConfig.getNumValue("PrimaryCfg|NIBP|AutomaticRetry", index);
+            if (index)
             {
-                int index = 0;
-                systemConfig.getNumValue("PrimaryCfg|NIBP|AutomaticRetry", index);
-                if (index)
+                if (isAdditionalMeasure())
+                {
+                    setAdditionalMeasure(false);
+                }
+                else
                 {
                     setAdditionalMeasure(true);
                 }
-            }
-            else
-            {
-                setAdditionalMeasure(false);
             }
         }
 
@@ -910,7 +943,7 @@ int NIBPParam::getInitPressure()
     PatientType patienType = patientManager.getType();
     if (patienType == PATIENT_TYPE_ADULT)
     {
-        initVal = 120 + initVal * 10;
+        initVal = 80 + initVal * 10;
     }
     else if (patienType == PATIENT_TYPE_PED)
     {
@@ -1213,6 +1246,7 @@ void NIBPParam::safeWaitTimeSTATStop()
         nibpParam.setSTATClose(true);
     }
     nibpParam.setSTATMeasure(false);
+    nibpParam.setAutoStat(false);
     nibpParam.setText(trs("STATSTOPPED"));
     nibpParam.setModelText(trs("STATSTOPPED"));
 }
@@ -1316,8 +1350,11 @@ bool NIBPParam::isMaintain()
 
 void NIBPParam::clearTrendListData()
 {
-    _nibpDataTrendWidget->clearListData();
-    _nibpDataTrendWidget->adjustSize();
+    if (systemManager.isSupport(PARAM_NIBP))
+    {
+        _nibpDataTrendWidget->clearListData();
+        _nibpDataTrendWidget->adjustSize();
+    }
 }
 
 void NIBPParam::setFirstAuto(bool flag)
@@ -1328,6 +1365,16 @@ void NIBPParam::setFirstAuto(bool flag)
 bool NIBPParam::isFirstAuto()
 {
     return _firstAutoFlag;
+}
+
+void NIBPParam::setAutoStat(bool flag)
+{
+    _autoStatFlag = flag;
+}
+
+bool NIBPParam::isAutoStat()
+{
+    return _autoStatFlag;
 }
 
 /**************************************************************************************************
@@ -1413,7 +1460,8 @@ NIBPParam::NIBPParam()
       _connectedFlag(false), _connectedProvider(false),
       _text(InvStr()),
       _reply(false), _result(false), _manometerPressure(InvData()), _isMaintain(false), _firstAutoFlag(false),
-      _activityMachine(NULL)
+      _autoStatFlag(false),
+      _activityMachine(NULL), _oldState(0)
 {
     nibpCountdownTime.getInstance();
 

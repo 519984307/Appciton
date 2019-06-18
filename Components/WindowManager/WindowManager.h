@@ -99,4 +99,3 @@ private:
     WindowManagerPrivate * const d_ptr;
 };
 #define windowManager (WindowManager::getInstance())
-Q_DECLARE_OPERATORS_FOR_FLAGS(WindowManager::ShowBehavior)

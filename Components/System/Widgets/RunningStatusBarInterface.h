@@ -24,4 +24,10 @@ public:
      * @param onOff
      */
     virtual void setNightModeStatus(bool onOff) = 0;
+
+    /**
+     * @brief setPacerStatus
+     * @param onOff
+     */
+    virtual void setPacerStatus(bool onOff) = 0;
 };

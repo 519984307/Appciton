@@ -31,8 +31,13 @@ int PrintOneShotAlarm::getAlarmSourceNR(void)
  *************************************************************************************************/
 AlarmPriority PrintOneShotAlarm::getAlarmPriority(int id)
 {
-    Q_UNUSED(id)
-    return ALARM_PRIO_MED;
+    switch (id)
+    {
+    case PRINT_ONESHOT_ALARM_FAULT:
+        return ALARM_PRIO_HIGH;
+    default:
+        return ALARM_PRIO_MED;
+    }
 }
 
 /**************************************************************************************************
@@ -60,6 +65,7 @@ bool PrintOneShotAlarm::isRemoveAfterLatch(int id)
     switch (id)
     {
     case PRINT_ONESHOT_ALARM_OUT_OF_PAPER:
+    case PRINT_ONESHOT_ALARM_COMMUNICATION_STOP:
         return false;
 
     default:

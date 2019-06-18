@@ -132,7 +132,6 @@ void ConfigEditCodeMarkerMenuContentPrivate::loadOptions()
 
 void ConfigEditCodeMarkerMenuContent::readyShow()
 {
-    d_ptr->loadOptions();
     bool isOnlyToRead = configManager.isReadOnly();
     for (int i = 0; i < ConfigEditCodeMarkerMenuContentPrivate::
          ITEM_CBO_MAX; i++)
@@ -195,6 +194,8 @@ void ConfigEditCodeMarkerMenuContent::layoutExec()
     }
     int itemMax = ConfigEditCodeMarkerMenuContentPrivate::ITEM_CBO_MAX;
     layout->setRowStretch(itemMax, 1);
+
+    d_ptr->loadOptions(); // 初始化的时候加载一遍CodeMarker
 }
 void ConfigEditCodeMarkerMenuContent::onComboBoxIndexChanged(int index)
 {

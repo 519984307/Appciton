@@ -421,8 +421,12 @@ void TestAlarm::testMainRunLimitSource()
     d_ptr->isCleanup = isCleanup;
 
     static bool lastAlarmStatus[ALARM_COUNT] = {false, false, false, false};
-
-    alertor.addLimtSource(source);
+    static QList<AlarmLimitIFace *> sourceList;
+    if (!sourceList.contains(source))
+    {
+        alertor.addLimtSource(source);
+        sourceList.append(source);
+    }
     alertor.addAlarmStatus(alarmStatus);
     unsigned t = QTime::currentTime().elapsed();
     alertor.setLatchLockSta(isLock);
@@ -692,7 +696,12 @@ void TestAlarm::testMainRunOneshotSource()
     {
         firstIdEnable = !firstIdEnable;
     }
-    alertor.addOneShotSource(source);
+    static QList<AlarmOneShotIFace *> sourceList;
+    if (!sourceList.contains(source))
+    {
+        alertor.addOneShotSource(source);
+        sourceList.append(source);
+    }
     alertor.addAlarmStatus(alarmStatus);
     unsigned t = QTime::currentTime().elapsed();
     alertor.setLatchLockSta(isLock);

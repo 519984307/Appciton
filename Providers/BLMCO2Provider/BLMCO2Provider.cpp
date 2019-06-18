@@ -19,6 +19,7 @@
 #include <QTimer>
 #include "ConfigManager.h"
 #include "RawDataCollector.h"
+#include "IConfig.h"
 
 enum  // 数据包类型。
 {
@@ -587,9 +588,21 @@ void BLMCO2Provider::setWorkMode(CO2WorkMode mode)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-BLMCO2Provider::BLMCO2Provider() : Provider("BLM_CO2"), CO2ProviderIFace(), _status(CO2ProviderStatus())
+BLMCO2Provider::BLMCO2Provider(const QString &name)
+    : Provider(name), CO2ProviderIFace(), _status(CO2ProviderStatus())
 {
     UartAttrDesc portAttr(9600, 8, 'N', 1, _packetLen);
+    if (name == "MASIMO_CO2")
+    {
+        UartAttrDesc desc(9600, 8, 'N', 1, _packetLen);
+        portAttr = desc;
+    }
+    else if (name == "BLM_CO2")
+    {
+        UartAttrDesc desc(115200, 8, 'N', 1, _packetLen);
+        portAttr = desc;
+    }
+
     if (!initPort(portAttr))
     {
         systemManager.setPoweronTestResult(CO2_MODULE_SELFTEST_RESULT, SELFTEST_FAILED);

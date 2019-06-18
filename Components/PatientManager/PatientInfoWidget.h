@@ -10,10 +10,11 @@
 
 
 #pragma once
-#include "IWidget.h"
+#include "PatientInfoWidgetInterface.h"
+#include "PatientDefine.h"
 
 class QLabel;
-class PatientInfoWidget : public IWidget
+class PatientInfoWidget : public PatientInfoWidgetInterface
 {
     Q_OBJECT
 
@@ -21,7 +22,9 @@ public:
     explicit PatientInfoWidget(QWidget *parent = 0);
     ~PatientInfoWidget();
 
-    void loadPatientInfo(void);
+    void loadPatientInfo(const PatientInfo &info, const QString &bed);
+
+    void getText(QString &bed, QString &name, QString &type);
 
 private slots:
     void _releaseHandle(IWidget *);

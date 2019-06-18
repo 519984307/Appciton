@@ -299,6 +299,10 @@ public:
 
     bool isFirstAuto();
 
+    void setAutoStat(bool flag);
+
+    bool isAutoStat();
+
 signals:
     /**
      * @brief statBtnState 设置NIBP菜单中的STAT按键状态
@@ -349,6 +353,7 @@ private:
 
     bool _isMaintain;            // 是否维护模式
     bool _firstAutoFlag;         // 第一次启动AUTO测量标志
+    bool _autoStatFlag;         // auto倒计时开启Stat标志
 
 private:
     typedef QMap<NIBPStateMachineType, NIBPStateMachine *> MachineStateMap;
@@ -357,5 +362,7 @@ private:
     NIBPStateMachine *_activityMachine;       // 当前活跃状态机。
 
     QTimer *_btnTimer;
+
+    unsigned char _oldState;
 };
 #define nibpParam (NIBPParam::getInstance())

@@ -53,6 +53,8 @@ public:
       */
      void setKeyTypeAvailable(SoftBaseKeyType keyType, bool isAvailable);
 
+     void refreshCO2Key(bool on);
+
 protected:
     void paintEvent(QPaintEvent *e);
     void resizeEvent(QResizeEvent *e);

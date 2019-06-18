@@ -21,6 +21,7 @@
 #include "ErrorLogItem.h"
 #include "RawDataCollector.h"
 #include "IConfig.h"
+#include "UpgradeManager.h"
 
 static const char *nibpSelfErrorCode[] =
 {
@@ -183,14 +184,14 @@ static NIBPMeasureResultInfo getMeasureResultInfo(unsigned char *data)
     }
     if (type == PATIENT_TYPE_ADULT)
     {
-        if (info.sys > 255 || info.sys < 40 || info.dia > 215 || info.dia < 10 || info.map > 235 || info.map < 20)
+        if (info.sys > 255 || info.sys < 40 || info.dia > 215 || info.dia < 20 || info.map > 235 || info.map < 20)
         {
             info.errCode = 0x06;
         }
     }
     else if (type == PATIENT_TYPE_PED)
     {
-        if (info.sys > 200 || info.sys < 40 || info.dia > 150 || info.dia < 10 || info.map > 165 || info.map < 20)
+        if (info.sys > 200 || info.sys < 40 || info.dia > 150 || info.dia < 20 || info.map > 165 || info.map < 20)
         {
             info.errCode = 0x06;
         }
@@ -319,6 +320,9 @@ void N5Provider::handlePacket(unsigned char *data, int len)
     // 校准点压力值反馈
     case N5_RSP_PRESSURE_POINT:
         nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_RSP_PRESSURE_POINT, &data[1], 1);
+        break;
+
+    case N5_RSP_PASSTHROUGH_MODE:
         break;
 
     // 压力计模式控制
