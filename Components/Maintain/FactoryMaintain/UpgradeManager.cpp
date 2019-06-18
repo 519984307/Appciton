@@ -691,7 +691,10 @@ void UpgradeManager::startModuleUpgrade(UpgradeManager::UpgradeModuleType type)
     d_ptr->type = type;
     d_ptr->state = STATE_CHECK_UDISK;
     d_ptr->provider = BLMProvider::findProvider(d_ptr->getProviderName(d_ptr->type));
-    d_ptr->provider->setUpgradeIface(this);
+    if (d_ptr->provider)
+    {
+        d_ptr->provider->setUpgradeIface(this);
+    }
 
     QTimer::singleShot(0, this, SLOT(upgradeProcess()));
 }
