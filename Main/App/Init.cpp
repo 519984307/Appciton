@@ -621,7 +621,7 @@ static void _initProviderParam(void)
         machineConfig.getStrValue("TEMP", str);
         if (str == "BLM_T5")
         {
-//            paramManager.addProvider(*new T5Provider());
+            paramManager.addProvider(*new T5Provider());
         }
 
         paramManager.addParam(tempParam.construction());
