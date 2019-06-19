@@ -24,6 +24,7 @@
 #include "TrendWidget.h"
 #include "ECGParam.h"
 #include "CO2Param.h"
+#include "ECGDupParam.h"
 
 #define FIRST_ECG_WAVE_HEIGHT 184
 
@@ -342,6 +343,7 @@ void LayoutManagerPrivate::doContentLayout()
         break;
     case UFACE_MONITOR_SPO2:
         performSPO2Layout();
+        ecgDupParam.setHrSource(HR_SOURCE_SPO2);
         break;
     default:
         qdebug("Unsupport screen layout!");
@@ -1167,7 +1169,7 @@ void LayoutManagerPrivate::performSPO2Layout()
                 trendWaveLayout->addWidget(qw, insetRow, nodePos, 1, nodeSpan);
                 flag = true;
             }
-            else if (nodePos == LAYOUT_WAVE_END_COLUMN)
+            else if (nodePos >= LAYOUT_WAVE_END_COLUMN)
             {
                 // add param
                 paramLayout->addWidget(qw, insetRow, nodePos - LAYOUT_WAVE_END_COLUMN, 1, nodeSpan);

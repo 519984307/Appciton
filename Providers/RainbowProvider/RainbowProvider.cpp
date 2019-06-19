@@ -223,6 +223,7 @@ public:
         , spHbPrecision(PRECISION_NEAREST_0_1)
         , pviAveragingMode(AVERAGING_MODE_NORMAL)
         , spHbBloodVessel(BLOOD_VESSEL_ARTERIAL)
+        , provider(SPO2_MODULE_DAVID)
     {
     }
 
@@ -353,6 +354,8 @@ public:
     AveragingMode pviAveragingMode;
 
     SpHbBloodVesselMode spHbBloodVessel;
+
+    SPO2Module provider;
 };
 
 RainbowProvider::RainbowProvider(const QString &name)
@@ -360,15 +363,18 @@ RainbowProvider::RainbowProvider(const QString &name)
     , SPO2ProviderIFace()
     , d_ptr(new RainbowProviderPrivate(this))
 {
+    UartAttrDesc attr(DEFALUT_BAUD_RATE, 8, 'N', 1);
     if (name == "RAINBOW_SPO2")
     {
         disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_SPO2;
     }
     else if (name == "RAINBOW_SPO2_2")
     {
+        attr.baud = RUN_BAUD_RATE;
         plugInInfo.plugInType = PlugInProvider::PLUGIN_TYPE_SPO2;
+        d_ptr->provider = SPO2_MODULE_BLM;
     }
-    UartAttrDesc attr(RUN_BAUD_RATE, 8, 'N', 1);
+
     initPort(attr);
 
     if (disPatchInfo.dispatcher)
@@ -376,10 +382,6 @@ RainbowProvider::RainbowProvider(const QString &name)
         // reset the hardware
         disPatchInfo.dispatcher->resetPacketPort(disPatchInfo.packetType);
         d_ptr->isReseting = true;
-    }
-    else if (plugInInfo.plugIn)
-    {
-        QTimer::singleShot(200, this, SLOT(changeBaudrate()));
     }
     else
     {
@@ -395,7 +397,7 @@ bool RainbowProvider::attachParam(Param &param)
 {
     if (param.getParamID() == PARAM_SPO2)
     {
-        spo2Param.setProvider(this);
+        spo2Param.setProvider(this, d_ptr->provider);
         Provider::attachParam(param);
         return true;
     }
@@ -634,7 +636,7 @@ void RainbowProvider::disconnected()
         alarmSource->clear();
         alarmSource->setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, true);
     }
-    spo2Param.setConnected(false);
+    spo2Param.setConnected(false, d_ptr->provider);
 }
 
 void RainbowProvider::reconnected()
@@ -644,7 +646,12 @@ void RainbowProvider::reconnected()
     {
         alarmSource->setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, false);
     }
-    spo2Param.setConnected(true);
+    spo2Param.setConnected(true, d_ptr->provider);
+}
+
+void RainbowProvider::initModule()
+{
+    d_ptr->curInitializeStep = RB_INIT_BAUDRATE;
 }
 
 void RainbowProvider::setSpHbPrecisionMode(SpHbPrecisionMode mode)
@@ -715,7 +722,7 @@ void RainbowProviderPrivate::handlePacket(unsigned char *data, int len)
     // 如果主机与该模块未连接成功，直接退出
     if (q_ptr->isConnected == false)
     {
-        spo2Param.setConnected(true);
+        spo2Param.setConnected(true, provider);
     }
 
     // 发送保活帧
@@ -779,6 +786,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     {
         return;
     }
+
     unsigned short temp = 0;
     switch (id)
     {
@@ -801,91 +809,112 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     break;
     case RB_PARAM_OF_PR:
     {
-        temp = (data[4] << 8) + data[5];
-        bool valid = !(temp & INVAILD_PR);
-        if (valid == true)
+        if (provider == SPO2_MODULE_DAVID)
         {
-            temp = (data[0] << 8) + data[1];
-            prValue = temp;
-        }
-        else
-        {
-            prValue = InvData();
+            temp = (data[4] << 8) + data[5];
+            bool valid = !(temp & INVAILD_PR);
+            if (valid == true)
+            {
+                temp = (data[0] << 8) + data[1];
+                prValue = temp;
+            }
+            else
+            {
+                prValue = InvData();
+            }
         }
     }
     break;
     case RB_PARAM_OF_PI:
     {
-        temp = (data[4] << 8) + data[5];
-        bool valid = !(temp & INVAILD_PI);
-        if (valid == true)
+        if (provider == SPO2_MODULE_DAVID)
         {
-            temp = (data[0] << 8) + data[1];
-            float value = temp * 1.0 / 1000 + 0.05;
-            spo2Param.updatePIValue(static_cast<short>(value * 10));
-        }
-        else
-        {
-            spo2Param.updatePIValue(InvData());
+            temp = (data[4] << 8) + data[5];
+            bool valid = !(temp & INVAILD_PI);
+            if (valid == true)
+            {
+                temp = (data[0] << 8) + data[1];
+                float value = temp * 1.0 / 1000 + 0.05;
+                spo2Param.setPI(static_cast<short>(value * 10));
+            }
+            else
+            {
+                spo2Param.setPI(InvData());
+            }
         }
     }
     break;
     case RB_PARAM_OF_SPCO:
     {
-        temp = (data[4] << 8) + data[5];
-        bool valid = !(temp & INVAILD_SPCO);
-        if (valid)
+        if (provider == SPO2_MODULE_DAVID)
         {
-            temp = (data[0] << 8) + data[1];
-            float value = (temp % 10) > 5 ? (temp / 10 + 1) : (temp /10);
-            qDebug() << "SPCO value: " << static_cast<short>(value);
+            temp = (data[4] << 8) + data[5];
+            bool valid = !(temp & INVAILD_SPCO);
+            if (valid)
+            {
+                temp = (data[0] << 8) + data[1];
+                float value = (temp % 10) > 5 ? (temp / 10 + 1) : (temp /10);
+                qDebug() << "SPCO value: " << static_cast<short>(value);
+            }
         }
     }
     break;
     case RB_PARAM_OF_PVI:
     {
-        temp = (data[4] << 8) + data[5];
-        bool valid = !(temp & INVAILD_PVI);
-        if (valid)
+        if (provider == SPO2_MODULE_DAVID)
         {
-            temp = (data[0] << 8) + data[1];
-            qDebug() << "PVI value: " << temp;
+            temp = (data[4] << 8) + data[5];
+            bool valid = !(temp & INVAILD_PVI);
+            if (valid)
+            {
+                temp = (data[0] << 8) + data[1];
+                qDebug() << "PVI value: " << temp;
+            }
         }
     }
     break;
     case RB_PARAM_OF_SPHB:
     {
-        temp = (data[4] << 8) + data[5];
-        bool valid = !(temp & INVAILD_SPHB);
-        if (valid)
+        if (provider == SPO2_MODULE_DAVID)
         {
-            temp = (data[0] << 8) + data[1];
-            float value = temp * 1.0 / 100 + 0.5;
-            qDebug() << "SpHb value" << static_cast<short>(value * 100);
+            temp = (data[4] << 8) + data[5];
+            bool valid = !(temp & INVAILD_SPHB);
+            if (valid)
+            {
+                temp = (data[0] << 8) + data[1];
+                float value = temp * 1.0 / 100 + 0.5;
+                qDebug() << "SpHb value" << static_cast<short>(value * 100);
+            }
         }
     }
     break;
     case RB_PARAM_OF_SPMET:
     {
-        temp = (data[4] << 8) + data[5];
-        bool valid = !(temp & INVAILD_SPMET);
-        if (valid)
+        if (provider == SPO2_MODULE_DAVID)
         {
-            temp = (data[0] << 8) + data[1];
-            float value = temp * 1.0 / 10 + 0.5;
-            qDebug() << "SpMet value" << static_cast<short>(value * 10);
+            temp = (data[4] << 8) + data[5];
+            bool valid = !(temp & INVAILD_SPMET);
+            if (valid)
+            {
+                temp = (data[0] << 8) + data[1];
+                float value = temp * 1.0 / 10 + 0.5;
+                qDebug() << "SpMet value" << static_cast<short>(value * 10);
+            }
         }
     }
     break;
     case RB_PARAM_OF_SPOC:
     {
-        temp = (data[4] << 8) + data[5];
-        bool valid = !(temp & INVAILD_SPOC);
-        if (valid)
+        if (provider == SPO2_MODULE_DAVID)
         {
-            temp = (data[0] << 8) + data[1];
-            float value = temp * 1.0 / 10 + 0.5;
-            qDebug() << "SpOC value" << static_cast<short>(value * 10);
+            temp = (data[4] << 8) + data[5];
+            bool valid = !(temp & INVAILD_SPOC);
+            if (valid)
+            {
+                temp = (data[0] << 8) + data[1];
+                float value = temp * 1.0 / 10 + 0.5;
+                qDebug() << "SpOC value" << static_cast<short>(value * 10);
+            }
         }
     }
     break;
@@ -907,16 +936,16 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
 
         if (isCableOff == true)
         {
-            spo2Param.setNotify(true, trs("SPO2CheckSensor"));
-            spo2Param.setValidStatus(false);
+            spo2Param.setNotify(true, trs("SPO2CheckSensor"), provider);
+            spo2Param.setValidStatus(false, provider);
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, true);
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, false);
         }
         else
         {
-            spo2Param.setValidStatus(true);
+            spo2Param.setValidStatus(true, provider);
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, false);
-            spo2Param.setSearchForPulse(isSearching);  // search pulse标志。
+            spo2Param.setSearchForPulse(isSearching, provider);  // search pulse标志。
             if (isSearching)
             {
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, false);
@@ -927,9 +956,16 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
             }
         }
         // 最后更新spo2值和pr值。避免趋势界面的值跳动。
-        spo2Param.setPerfusionStatus(isLowPerfusionIndex);
-        spo2Param.setSPO2(spo2Value);
-        spo2Param.setPR(prValue);
+        spo2Param.setPerfusionStatus(isLowPerfusionIndex, provider);
+        if (provider == SPO2_MODULE_DAVID)
+        {
+            spo2Param.setSPO2(spo2Value);
+            spo2Param.setPR(prValue);
+        }
+        else
+        {
+            spo2Param.setPlugInSPO2(spo2Value);
+        }
     }
     break;
     case RB_PARAM_OF_VERSION_INFO:
@@ -993,8 +1029,8 @@ void RainbowProviderPrivate::handleWaveformInfo(unsigned char *data, int len)
     short waveData = (data[0] << 8) | data[1];
     waveData = (waveData + 32768) / 256;    // change to a positive value, in range of [0, 255)
     waveData = 256 - waveData;      // upside down
-    spo2Param.addWaveformData(waveData);
-    spo2Param.addWaveformData(waveData);  // add wavedata twice for rounding SPO2 Waveform Sample  62.5 * 2 = 125
+    spo2Param.addWaveformData(waveData, provider);
+    spo2Param.addWaveformData(waveData, provider);  // add wavedata twice for rounding SPO2 Waveform Sample  62.5 * 2 = 125
 
     if (data[2] & 0x80)  // get beep pulse audio status
     {

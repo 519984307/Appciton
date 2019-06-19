@@ -14,23 +14,26 @@
 #include "BaseDefine.h"
 #include "ParamInfo.h"
 #include "TrendWidgetLabel.h"
+#include "AlarmConfig.h"
 
 class PITrendWidgetPrivate
 {
 public:
     PITrendWidgetPrivate()
-        : piValue(NULL)
+        : piValue(NULL),
+          scale(1)
     {}
     ~PITrendWidgetPrivate(){}
 
     QLabel *piValue;
+    short scale;
 };
 
 void PITrendWidget::setPIValue(int16_t pi)
 {
     if (pi >= 0)
     {
-        d_ptr->piValue->setText(QString::number(pi, 'f', 1));
+        d_ptr->piValue->setText(QString::number(pi / (d_ptr->scale * 1.0), 'f', 1));
     }
     else
     {
@@ -40,7 +43,9 @@ void PITrendWidget::setPIValue(int16_t pi)
 
 void PITrendWidget::updateLimit()
 {
-    setLimit(50, 10, 10);
+    LimitAlarmConfig limit = alarmConfig.getLimitAlarmConfig(SUB_PARAM_PI, UNIT_PERCENT);
+    setLimit(limit.highLimit, limit.lowLimit, limit.scale);
+    d_ptr->scale = limit.scale;
 }
 
 void PITrendWidget::isAlarm(bool flag)

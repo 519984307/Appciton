@@ -462,6 +462,12 @@ void BLMCO2Provider::dataArrived(void)
     }
 }
 
+void BLMCO2Provider::dataArrived(unsigned char *data, unsigned int length)
+{
+    Q_UNUSED(length);
+    _unpacket(data);
+}
+
 /**************************************************************************************************
  * 校零。
  *************************************************************************************************/
@@ -603,6 +609,7 @@ BLMCO2Provider::BLMCO2Provider() : Provider("BLM_CO2"), CO2ProviderIFace(), _sta
         UartAttrDesc desc(115200, 8, 'N', 1, _packetLen);
         portAttr = desc;
     }
+    plugInInfo.plugInType = PlugInProvider::PLUGIN_TYPE_CO2;
 
     if (!initPort(portAttr))
     {

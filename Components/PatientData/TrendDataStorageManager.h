@@ -69,6 +69,7 @@ protected:
 
 signals:
     void newTrendDataArrived(ShortTrendInterval interval);
+    void newTrendDataArrived(unsigned t);
     void newNibpDataReceived();
 
 private:

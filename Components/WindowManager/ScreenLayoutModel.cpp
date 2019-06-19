@@ -32,9 +32,9 @@ const char *layoutNodeName(LayoutNodeType nodeType)
         "SPO2",
         "PI",
         "PVI",
-        "SPHB",
-        "SPOC",
-        "SPMET",
+        "SpHb",
+        "SpOC",
+        "SpMet",
         "CO2",
         "IBP1",
         "IBP2",
@@ -55,6 +55,7 @@ const char *layoutNodeName(LayoutNodeType nodeType)
         "ECG2Wave",
         "RESPWave",
         "SPO2Wave",
+        "OutsideSPO2Wave",
         "CO2Wave",
         "IBP1Wave",
         "IBP2Wave",
@@ -62,6 +63,11 @@ const char *layoutNodeName(LayoutNodeType nodeType)
         "AA1Wave",
         "AA2Wave",
         "O2Wave",
+
+        "SpO2Trend",
+        "PITrend",
+        "SpHbTrend",
+        "SpMetTrend",
     };
 
     return nodeName[nodeType];

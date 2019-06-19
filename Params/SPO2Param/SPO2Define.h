@@ -190,3 +190,10 @@ enum SpHbBloodVesselMode
     BLOOD_VESSEL_VENOUS,
     BLOOD_VESSEL_NR
 };
+
+
+enum SPO2Module
+{
+    SPO2_MODULE_DAVID,
+    SPO2_MODULE_BLM
+};

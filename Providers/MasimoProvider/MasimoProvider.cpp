@@ -361,7 +361,7 @@ void MasimoSetProvider::handlePacket(unsigned char *data, int /*len*/)
             piValue = static_cast<short>(v * 10);
         }
 
-        spo2Param.updatePIValue(piValue);     // 更新PI值。
+        spo2Param.setPI(piValue);     // 更新PI值。
         break;
     }
 
@@ -370,7 +370,6 @@ void MasimoSetProvider::handlePacket(unsigned char *data, int /*len*/)
         temp = (data[1] << 8) + data[2];
         // 总的探头脱落
         bool isCableOff = (temp & 0xF3F3) ? true : false;
-        spo2Param.setSensorOff(isCableOff);
 
         // 搜索脉搏
         bool isSearching = (temp & 0x08) ? true : false;

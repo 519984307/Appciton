@@ -13,6 +13,7 @@
 #include "TrendWidget.h"
 #include "SPO2BarWidget.h"
 #include <QLabel>
+#include "SPO2Define.h"
 
 class SPO2TrendWidget: public TrendWidget
 {
@@ -22,17 +23,12 @@ public:
     // 设置SPO2的值。
     void setSPO2Value(int16_t spo2);
 
+    void setPlugInSPO2Value(int16_t spo2);
+
+    void setSPO2DeltaValue(int16_t spo2);
+
     // 刷新趋势参数上下限
     void updateLimit(void);
-
-    // 设置棒图的值。
-    void setBarValue(int16_t bar);
-
-    // 设置PI值
-    void setPIValue(int16_t pi);
-
-    // 显示搜索脉搏的提示信息。
-    void setSearchForPulse(bool isSearching);
 
     // 是否报警
     void isAlarm(bool flag);
@@ -58,11 +54,13 @@ private slots:
     void _releaseHandle(IWidget *);
 
 private:
-    QLabel *_spo2Value;
-    QLabel *_piName;
-    QLabel *_piValue;
+    QLabel *_spo2Value1;
+    QLabel *_spo2Name2;
+    QLabel *_spo2Value2;
+    QLabel *_spo2DeltaName;
+    QLabel *_spo2DeltaValue;
     SPO2BarWidget *_spo2Bar;
-    QString _spo2String;
-    QString _piString;
+    QString _spo2String1;
+    QString _spo2String2;
     bool _isAlarm;
 };

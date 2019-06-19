@@ -82,16 +82,33 @@ public:
     virtual void disconnected(void) {}          // 模块连接恢复时回调，之类实现。
     virtual void reconnected(void) {}        // 模块连接恢复时回调，之类实现。
 
+    /**
+     * @brief setPacketPortBaudrate 设置模块波特率
+     * @param type 插件类型
+     * @param baud 波特率
+     * @return
+     */
     bool setPacketPortBaudrate(PlugInType type, PlugInProvider::PacketPortBaudrate baud);
 
+    /**
+     * @brief updateUartBaud 更新串口波特率
+     * @param baud 波特率
+     */
     void updateUartBaud(unsigned int baud);
 
 protected:
     void timerEvent(QTimerEvent *ev);
 
 private slots:
-    // 接收数据
+    /**
+     * @brief dataArrived 数据接收
+     */
     void dataArrived();
+
+    /**
+     * @brief changeBaudrate 改变波特率
+     */
+    void changeBaudrate();
 
 private:
     PlugInProviderPrivate *const d_ptr;

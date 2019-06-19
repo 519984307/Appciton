@@ -410,21 +410,47 @@ static void _initProviderParam(void)
         alertor.addOneShotSource(oneShotAlarmSource);
 
         SPO2WaveWidget *spo2WaveWidget = new SPO2WaveWidget("SPO2WaveWidget", trs("PLETH"));
+        SPO2WaveWidget *outsideSpo2WaveWidget = new SPO2WaveWidget("OutsideSpo2WaveWidget", trs("PLETH"));
         SPO2TrendWidget *spo2TrendWidget = new SPO2TrendWidget();
         spo2Param.setTrendWidget(spo2TrendWidget);
         spo2Param.setWaveWidget(spo2WaveWidget);
+        spo2Param.setWaveWidget(outsideSpo2WaveWidget, SPO2_MODULE_BLM);
         layoutManager.addLayoutWidget(spo2WaveWidget, LAYOUT_NODE_WAVE_SPO2);
+        layoutManager.addLayoutWidget(outsideSpo2WaveWidget, LAYOUT_NODE_WAVE_SPO2_2);
         layoutManager.addLayoutWidget(spo2TrendWidget, LAYOUT_NODE_PARAM_SPO2);
+        TrendWave *spo2TrendWave = new TrendWave("SpO2TrendWave");
+        spo2TrendWave->addSubParam(SUB_PARAM_SPO2);
+        spo2TrendWave->addSubParam(SUB_PARAM_SPO2_2);
+        layoutManager.addLayoutWidget(spo2TrendWave, LAYOUT_NODE_TREND_WAVE_SPO2);
+        // pi
         PITrendWidget *piTrendWidget = new PITrendWidget();
+        TrendWave *piTrendWave = new TrendWave("PITrendWave");
+        piTrendWave->addSubParam(SUB_PARAM_PI);
         layoutManager.addLayoutWidget(piTrendWidget, LAYOUT_NODE_PARAM_PI);
+        layoutManager.addLayoutWidget(piTrendWave, LAYOUT_NODE_TREND_WAVE_PI);
+        spo2Param.setTrendWidget(piTrendWidget);
+        // pvi
         PVITrendWidget *pviTrendWidget = new PVITrendWidget();
         layoutManager.addLayoutWidget(pviTrendWidget, LAYOUT_NODE_PARAM_PVI);
+        spo2Param.setTrendWidget(pviTrendWidget);
+        // sphb
         SPHBTrendWidget *sphbTrendWidget = new SPHBTrendWidget();
+        TrendWave *sphbTrendWave = new TrendWave("SpHbTrendWave");
+        sphbTrendWave->addSubParam(SUB_PARAM_SPHB);
         layoutManager.addLayoutWidget(sphbTrendWidget, LAYOUT_NODE_PARAM_SPHB);
+        layoutManager.addLayoutWidget(sphbTrendWave, LAYOUT_NODE_TREND_WAVE_SPHB);
+        spo2Param.setTrendWidget(sphbTrendWidget);
+        // spoc
         SPOCTrendWidget *spocTrendWidget = new SPOCTrendWidget();
         layoutManager.addLayoutWidget(spocTrendWidget, LAYOUT_NODE_PARAM_SPOC);
+        spo2Param.setTrendWidget(spocTrendWidget);
+        // spmet
         SPMETTrendWidget *spmetTrendWidget = new SPMETTrendWidget();
+        TrendWave *spmetTrendWave = new TrendWave("SpMetTrendWave");
+        spmetTrendWave->addSubParam(SUB_PARAM_SPMET);
         layoutManager.addLayoutWidget(spmetTrendWidget, LAYOUT_NODE_PARAM_SPMET);
+        layoutManager.addLayoutWidget(spmetTrendWave, LAYOUT_NODE_TREND_WAVE_SPMET);
+        spo2Param.setTrendWidget(spmetTrendWidget);
 
         OxyCRGSPO2TrendWidget *spo2OxyCRGWidget = new OxyCRGSPO2TrendWidget("OxyCRGSPO2Widget");
         spo2Param.setOxyCRGSPO2Trend(spo2OxyCRGWidget);
@@ -595,7 +621,7 @@ static void _initProviderParam(void)
         machineConfig.getStrValue("TEMP", str);
         if (str == "BLM_T5")
         {
-            paramManager.addProvider(*new T5Provider());
+//            paramManager.addProvider(*new T5Provider());
         }
 
         paramManager.addParam(tempParam.construction());
