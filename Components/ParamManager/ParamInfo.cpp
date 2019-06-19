@@ -47,7 +47,8 @@ static const char *_subParamNames(SubParamID paramID, bool ignoreModuleConfig)
 
     case SUB_PARAM_SPO2:
         return "SPO2";
-
+    case SUB_PARAM_SPO2_2:
+        return "SPO2_2";
     case SUB_PARAM_PVI:
         return "PVI";
     case SUB_PARAM_SPHB:
@@ -282,6 +283,12 @@ ParamID ParamInfo::getParamID(SubParamID id)
         paramID = PARAM_DUP_RESP;
         break;
     case SUB_PARAM_SPO2:
+    case SUB_PARAM_SPO2_2:
+    case SUB_PARAM_PI:
+    case SUB_PARAM_PVI:
+    case SUB_PARAM_SPHB:
+    case SUB_PARAM_SPOC:
+    case SUB_PARAM_SPMET:
         paramID = PARAM_SPO2;
         break;
     case SUB_PARAM_T1:
@@ -502,6 +509,7 @@ const char *ParamInfo::getParamWaveformName(WaveformID id)
     case WAVE_ECG_V6:
         return ECGSymbol::convert(static_cast<ECGLead>(id), ecgParam.getLeadConvention());
     case WAVE_SPO2:
+    case WAVE_SPO2_2:
         return "PLETH";
     case WAVE_RESP:
     case WAVE_CO2:
@@ -667,7 +675,15 @@ UnitType ParamInfo::getUnitOfSubParam(SubParamID id)
         return UNIT_RPM;
 
     case SUB_PARAM_SPO2:
+    case SUB_PARAM_SPO2_2:
+    case SUB_PARAM_PI:
+    case SUB_PARAM_PVI:
+    case SUB_PARAM_SPMET:
         return UNIT_PERCENT;
+    case SUB_PARAM_SPHB:
+        return UNIT_GDL;
+    case SUB_PARAM_SPOC:
+        return UNIT_MLDL;
 
     case SUB_PARAM_NIBP_SYS:
     case SUB_PARAM_NIBP_DIA:

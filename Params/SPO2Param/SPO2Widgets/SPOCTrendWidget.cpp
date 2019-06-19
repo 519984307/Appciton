@@ -14,6 +14,7 @@
 #include <QLabel>
 #include "TrendWidgetLabel.h"
 #include <QLayout>
+#include "AlarmConfig.h"
 
 class SPOCTrendWidgetPrivate
 {
@@ -40,7 +41,8 @@ void SPOCTrendWidget::setSPOCValue(int16_t spoc)
 
 void SPOCTrendWidget::updateLimit()
 {
-    setLimit(25, 10, 1);
+    LimitAlarmConfig limit = alarmConfig.getLimitAlarmConfig(SUB_PARAM_SPOC, UNIT_MLDL);
+    setLimit(limit.highLimit, limit.lowLimit, limit.scale);
 }
 
 void SPOCTrendWidget::isAlarm(bool flag)

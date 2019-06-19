@@ -420,7 +420,6 @@ bool NellcorSetProvider::isStatus(unsigned char *packet)
     // 传感器连接状态
     temp = packet[STATUS_AND_ALARM_WORD_TOP_EIGHT];
     bool isCableOff = ((temp >> 6) & 0x03) ? (false) : (true);
-    spo2Param.setSensorOff(isCableOff);
 
     // 传感器搜索状态
     temp = packet[STATUS_AND_ALARM_WORD_TOP_EIGHT];

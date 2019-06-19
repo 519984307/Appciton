@@ -14,6 +14,7 @@
 #include <QLabel>
 #include "ParamInfo.h"
 #include <QLayout>
+#include "AlarmConfig.h"
 
 class PVITrendWidgetPrivate
 {
@@ -44,7 +45,8 @@ void PVITrendWidget::setPVIValue(int16_t pvi)
 
 void PVITrendWidget::updateLimit()
 {
-    setLimit(40, 5, 1);
+    LimitAlarmConfig limit = alarmConfig.getLimitAlarmConfig(SUB_PARAM_PVI, UNIT_PERCENT);
+    setLimit(limit.highLimit, limit.lowLimit, limit.scale);
 }
 
 void PVITrendWidget::isAlarm(bool flag)

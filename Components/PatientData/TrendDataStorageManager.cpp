@@ -199,6 +199,10 @@ void TrendDataStorageManagerPrivate::emitShortTrendSingals(unsigned timestamp)
     {
         emit q->newTrendDataArrived(SHORT_TREND_INTERVAL_60S);
     }
+    if (timestamp % 5 == 0)
+    {
+        emit q->newTrendDataArrived(timestamp);
+    }
 }
 
 TrendDataStorageManager &TrendDataStorageManager::getInstance()

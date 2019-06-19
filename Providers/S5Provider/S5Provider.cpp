@@ -306,7 +306,7 @@ bool S5Provider::isResult_BAR(unsigned char *packet)
     {
         piValue *= 10;
     }
-    spo2Param.updatePIValue(piValue);
+    spo2Param.setPI(piValue);
 
     // 脉搏音。
     spo2Param.setPulseAudio(packet[16]);
@@ -326,13 +326,11 @@ bool S5Provider::isStatus(unsigned char *packet)
         if (packet[2] == S5_NO_INSERT)
         {
             isCableOff = true;
-            spo2Param.setSensorOff(true);
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_OFF, true);
         }
         else
         {
             isCableOff = false;
-            spo2Param.setSensorOff(false);
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_OFF, false);
         }
     }
