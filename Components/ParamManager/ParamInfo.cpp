@@ -509,8 +509,9 @@ const char *ParamInfo::getParamWaveformName(WaveformID id)
     case WAVE_ECG_V6:
         return ECGSymbol::convert(static_cast<ECGLead>(id), ecgParam.getLeadConvention());
     case WAVE_SPO2:
-    case WAVE_SPO2_2:
         return "PLETH";
+    case WAVE_SPO2_2:
+        return "PLETH2";
     case WAVE_RESP:
     case WAVE_CO2:
         return getParamName(getParamID(id));

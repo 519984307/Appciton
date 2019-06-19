@@ -146,7 +146,7 @@ public:
         }
         else
         {
-//            qWarning() << Q_FUNC_INFO << "Invalid dispatch packet type 0x" << hex << data[0];
+            qWarning() << Q_FUNC_INFO << "Invalid dispatch packet type 0x" << hex << data[0];
         }
     }
 

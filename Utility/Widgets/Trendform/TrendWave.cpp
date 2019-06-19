@@ -17,9 +17,10 @@
 #include "RingBuff.h"
 #include "TrendCache.h"
 #include "FontManager.h"
-#include <QDebug>
 #include "AlarmConfig.h"
 #include "ParamInfo.h"
+#include "LanguageManager.h"
+#include "ColorManager.h"
 
 #define DELTA_X 5   // 两值间的x轴像素值
 typedef QList<float> YAxisValueBufType;
@@ -27,21 +28,21 @@ typedef QList<float> YAxisValueBufType;
 class TrendWavePrivate
 {
 public:
-    explicit TrendWavePrivate(TrendWave *const q_ptr)
+    explicit TrendWavePrivate(TrendWave *const q_ptr, QString name)
         : q_ptr(q_ptr),
-          waveMargin(10, 2, 2, 2),
-          waveColor(Qt::white),
+          waveMargin(50, 2, 2, 2),
           resetPointBufFlag(true),
           updateBGFlag(true),
           maxValue(-1),
           minValue(-1),
-          scale(1)
+          scale(1),
+          name(name)
     {}
     ~TrendWavePrivate(){}
     TrendWave * const q_ptr;
     QRect waveRegion;
     QMargins waveMargin;
-    QColor waveColor;
+    QList<QColor> waveColor;
     bool resetPointBufFlag;
     bool updateBGFlag;
     QList<SubParamID> subParamList;
@@ -50,6 +51,7 @@ public:
     int minValue;
     short scale;
     QPixmap background;
+    QString name;
 
     /**
      * @brief drawWave 绘画波形
@@ -74,12 +76,13 @@ public:
 
 TrendWave::TrendWave(const QString &name, QWidget *parent)
     : IWidget(name, parent),
-      d_ptr(new TrendWavePrivate(this))
+      d_ptr(new TrendWavePrivate(this, name))
 {
     setFocusPolicy(Qt::NoFocus);
     QPalette pal = this->palette();
     pal.setColor(QPalette::Background, Qt::black);
     connect(&trendDataStorageManager, SIGNAL(newTrendDataArrived(unsigned)), this, SLOT(onNewTrendDataArrived(unsigned)));
+    connect(&colorManager, SIGNAL(paletteChanged(ParamID)), this, SLOT(onPaletteChanged(ParamID)));
 }
 
 TrendWave::~TrendWave()
@@ -91,13 +94,12 @@ void TrendWave::addSubParam(SubParamID id)
 {
     d_ptr->subParamList.append(id);
     d_ptr->yAxisValueBufs.append(YAxisValueBufType());
+    d_ptr->waveColor.append(colorManager.getColor(paramInfo.getSubParamName(id)));
+    if (d_ptr->waveColor.last() == Qt::black)
+    {
+        d_ptr->waveColor.last() = Qt::white;
+    }
     updateRange();
-}
-
-void TrendWave::setColor(QColor color)
-{
-    d_ptr->waveColor = color;
-    update();
 }
 
 void TrendWave::updateRange()
@@ -151,7 +153,6 @@ void TrendWave::paintEvent(QPaintEvent *e)
     for (int i = 0; i < rects.count(); ++i)
     {
         const QRect &r = rects.at(i);
-        painter.setPen(d_ptr->waveColor);
         painter.drawPixmap(r, d_ptr->background, r);
         d_ptr->drawWave(&painter, r);
     }
@@ -190,9 +191,25 @@ void TrendWave::onNewTrendDataArrived(unsigned timeStamp)
             buf.append(0);
         }
     }
-
-
     update(d_ptr->waveRegion);
+}
+
+void TrendWave::onPaletteChanged(ParamID param)
+{
+    if (paramInfo.getParamID(d_ptr->subParamList.at(0)) != param)
+    {
+        return;
+    }
+    if (d_ptr->subParamList[0] == SUB_PARAM_SPO2)
+    {
+        QColor color = colorManager.getColor(paramInfo.getParamName(param));
+        if (d_ptr->waveColor[0] != color)
+        {
+            d_ptr->waveColor[0] = color;
+            d_ptr->updateBGFlag = true;
+            update();
+        }
+    }
 }
 
 void TrendWavePrivate::drawWave(QPainter *painter, const QRect &r)
@@ -270,6 +287,9 @@ void TrendWavePrivate::drawWave(QPainter *painter, const QRect &r)
             index = (index + 1) % pointNum;
             xPos += DELTA_X;
         }
+        QPen pen(waveColor[i]);
+        pen.setStyle(Qt::SolidLine);
+        painter->setPen(pen);
         painter->drawPath(path);
     }
 }
@@ -289,12 +309,11 @@ void TrendWavePrivate::updateBackground()
     background.fill(pal.color(QPalette::Window));
 
     QPainter painter(&background);
-    QPen pen(Qt::SolidLine);
-    pen.setColor(waveColor);
+
 
     // draw ruler
-    pen.setStyle(Qt::DotLine);
-    pen.setColor(waveColor);
+    QPen pen(Qt::DotLine);
+    pen.setColor(Qt::white);
     painter.setPen(pen);
     painter.drawLine(waveRegion.topLeft(), waveRegion.topRight());
     painter.drawLine(waveRegion.bottomLeft(), waveRegion.bottomRight());
@@ -303,6 +322,9 @@ void TrendWavePrivate::updateBackground()
     painter.setFont(font);
 
     // draw limit
+    pen.setStyle(Qt::SolidLine);
+    pen.setColor(waveColor.at(0));
+    painter.setPen(pen);
     QString maxStr, minStr;
     if (scale != 1)
     {
@@ -315,13 +337,19 @@ void TrendWavePrivate::updateBackground()
         minStr = QString::number(minValue);
     }
     int fontHeight = fontManager.textHeightInPixels(font);
-    int fontWidget = fontManager.textWidthInPixels(maxStr, font);
+    int fontWidth = fontManager.textWidthInPixels(maxStr, font);
     int drawTextX = waveRegion.left();
     int drawTextY = waveRegion.top();
-    painter.drawText(QRect(drawTextX, drawTextY, fontWidget, fontHeight), maxStr);
+    painter.drawText(QRect(drawTextX, drawTextY, fontWidth, fontHeight), maxStr);
     drawTextY = waveRegion.bottom() - fontHeight;
-    fontWidget = fontManager.textWidthInPixels(minStr, font);
-    painter.drawText(QRect(drawTextX, drawTextY, fontWidget, fontHeight), minStr);
+    fontWidth = fontManager.textWidthInPixels(minStr, font);
+    painter.drawText(QRect(drawTextX, drawTextY, fontWidth, fontHeight), minStr);
+
+    // draw name
+    drawTextX = q_ptr->rect().left();
+    drawTextY = q_ptr->rect().top();
+    fontWidth = fontManager.textWidthInPixels(trs(name), font);
+    painter.drawText(QRect(drawTextX, drawTextY, fontWidth, fontHeight), trs(name));
 }
 
 int TrendWavePrivate::getPointNum()

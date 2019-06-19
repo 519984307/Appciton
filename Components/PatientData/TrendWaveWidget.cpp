@@ -325,7 +325,6 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
     switch (subID)
     {
     case SUB_PARAM_HR_PR:
-    case SUB_PARAM_SPO2:
     case SUB_PARAM_RR_BR:
     case SUB_PARAM_CVP_MAP:
     case SUB_PARAM_LAP_MAP:
@@ -440,6 +439,7 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
         }
         break;
     }
+    case SUB_PARAM_SPO2:
     case SUB_PARAM_ETCO2:
     case SUB_PARAM_ETN2O:
     case SUB_PARAM_ETAA1:
@@ -979,7 +979,6 @@ TrendGraphType TrendWaveWidget::getTrendGraphType(SubParamID id)
     switch (id)
     {
     case SUB_PARAM_HR_PR:
-    case SUB_PARAM_SPO2:
     case SUB_PARAM_RR_BR:
     case SUB_PARAM_CVP_MAP:
     case SUB_PARAM_LAP_MAP:
@@ -994,6 +993,7 @@ TrendGraphType TrendWaveWidget::getTrendGraphType(SubParamID id)
     case SUB_PARAM_ETAA2:
     case SUB_PARAM_ETO2:
     case SUB_PARAM_T1:
+    case SUB_PARAM_SPO2:
         return TREND_GRAPH_TYPE_AG_TEMP;
     case SUB_PARAM_ART_SYS:
     case SUB_PARAM_PA_SYS:

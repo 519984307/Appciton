@@ -1029,12 +1029,19 @@ void RainbowProviderPrivate::handleWaveformInfo(unsigned char *data, int len)
     short waveData = (data[0] << 8) | data[1];
     waveData = (waveData + 32768) / 256;    // change to a positive value, in range of [0, 255)
     waveData = 256 - waveData;      // upside down
-    spo2Param.addWaveformData(waveData, provider);
-    spo2Param.addWaveformData(waveData, provider);  // add wavedata twice for rounding SPO2 Waveform Sample  62.5 * 2 = 125
 
-    if (data[2] & 0x80)  // get beep pulse audio status
+
+    if (data[2] & SPO2_IQ_FLAG_BIT)  // get beep pulse audio status
     {
+        unsigned char signalIQ = data[2];
+        spo2Param.addWaveformData(waveData, signalIQ, provider);
+        spo2Param.addWaveformData(waveData, signalIQ, provider);  // add wavedata twice for rounding SPO2 Waveform Sample  62.5 * 2 = 125
         spo2Param.setPulseAudio(true);
+    }
+    else
+    {
+        spo2Param.addWaveformData(waveData, 0, provider);
+        spo2Param.addWaveformData(waveData, 0, provider);  // add wavedata twice for rounding SPO2 Waveform Sample  62.5 * 2 = 125
     }
 }
 

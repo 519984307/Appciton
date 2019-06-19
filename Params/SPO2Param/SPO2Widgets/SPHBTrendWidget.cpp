@@ -61,6 +61,10 @@ SPHBTrendWidget::SPHBTrendWidget()
     d_ptr->sphbValue->setText(InvStr());
     d_ptr->sphbValue->setAlignment(Qt::AlignCenter);
     contentLayout->addWidget(d_ptr->sphbValue, 5);
+
+    QPalette pal = colorManager.getPalette(paramInfo.getSubParamName(SUB_PARAM_SPHB));
+    setPalette(pal);
+
     loadConfig();
 }
 

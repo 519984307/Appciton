@@ -22,6 +22,7 @@
 #include "Debug.h"
 #include "WindowManager.h"
 #include "SystemManager.h"
+#include <QPainter>
 
 /**************************************************************************************************
  * wave is enable。
@@ -61,6 +62,131 @@ void SPO2WaveWidget::focusInEvent(QFocusEvent *e)
 {
     Q_UNUSED(e);
     _name->setFocus();
+}
+
+void SPO2WaveWidget::paintEvent(QPaintEvent *e)
+{
+    WaveWidget::paintEvent(e);
+
+    if (bufIsEmpty())
+    {
+        return;
+    }
+
+    // draw signal IQ
+    QPainter painter(this);
+    QPen oldPen = painter.pen();
+    QPen pen(Qt::white);
+    pen.setStyle(Qt::SolidLine);
+    painter.setPen(pen);
+
+    // 获得需要更新的区域
+    QVector<QRect> rects = e->region().rects();
+    foreach(QRect rect, rects)
+    {
+        int leftIndex = qMax(0, xToIndex(rect.left() - 2) - 1);
+        int rightIndex = qMin(bufSize() - 1, xToIndex(rect.right() + 2) + 1);
+        int beginIndex;
+        int endIndex;
+        if (bufHead() > bufTail())
+        {
+            // 缓冲连续情况
+            beginIndex = qMax(leftIndex, bufTail());
+            endIndex = qMin(rightIndex, bufHead() - 1);
+            bool drawFlag = true;
+            for (int i = beginIndex; i <= endIndex; i++)
+            {
+                int flag = flagBuf(i);
+                unsigned char IQFlag = flag & 0xff;
+                if ((IQFlag) & SPO2_IQ_FLAG_BIT)
+                {
+                    if (drawFlag)   // 一个波峰只画一次IQ
+                    {
+                        // has IQ value,以波形高度为100%来绘画
+                        unsigned char iqValue = flag & (~SPO2_IQ_FLAG_BIT); // IQ值（%）
+                        int pointY = this->rect().height() * iqValue / 100;
+                        QPoint start(xBuf(i), this->rect().height() - pointY);
+                        QPoint end(xBuf(i), this->rect().height() - 5);
+                        painter.drawLine(start, end);
+                        drawFlag = false;
+                    }
+                }
+                else
+                {
+                    drawFlag = true;
+                }
+            }
+            // draw IQ base Line
+            QPoint start(xBuf(beginIndex), this->rect().height() - 5);
+            QPoint end(xBuf(endIndex), this->rect().height() - 5);
+            painter.drawLine(start, end);
+        }
+        else
+        {
+            // 缓冲不连续情况
+            // 绘画ringBuff前一轮的数据
+            beginIndex = qMax(leftIndex, bufTail());
+            endIndex = qMin(rightIndex, bufSize() - 1);
+            bool drawFlag = true;
+            for (int i = beginIndex; i <= endIndex; i++)
+            {
+                int flag = flagBuf(i);
+                unsigned char IQFlag = flag & 0xff;
+                if ((IQFlag) & SPO2_IQ_FLAG_BIT)
+                {
+                    if (drawFlag)
+                    {
+                        // has IQ value,以波形高度为100%来绘画
+                        unsigned char iqValue = flag & (~SPO2_IQ_FLAG_BIT); // IQ值（%）
+                        int pointY = this->rect().height() * iqValue / 100;
+                        QPoint start(xBuf(i), this->rect().height() - pointY);
+                        QPoint end(xBuf(i), this->rect().height() - 5);
+                        painter.drawLine(start, end);
+                        drawFlag = false;
+                    }
+                }
+                else
+                {
+                    drawFlag = true;
+                }
+            }
+
+            // 绘画ringBuff下一轮的数据
+            beginIndex = qMax(leftIndex, 0);
+            endIndex = qMin(rightIndex, bufHead() - 1);
+            drawFlag = true;
+            for (int i = beginIndex; i <= endIndex; i++)
+            {
+                int flag = flagBuf(i);
+                unsigned char IQFlag = flag & 0xff;
+                if ((IQFlag) & SPO2_IQ_FLAG_BIT)
+                {
+                    if (drawFlag)
+                    {
+                        // has IQ value,以波形高度为100%来绘画
+                        unsigned char iqValue = flag & (~SPO2_IQ_FLAG_BIT); // IQ值（%）
+                        int pointY = this->rect().height() * iqValue / 100;
+                        QPoint start(xBuf(i), this->rect().height() - pointY - 10);
+                        QPoint end(xBuf(i), this->rect().height() - 5);
+                        painter.drawLine(start, end);
+                        drawFlag = false;
+                    }
+                    else
+                    {
+                        drawFlag = true;
+                    }
+                }
+            }
+            // draw IQ base Line
+            if (bufHead() != bufTail())
+            {
+                QPoint start(xBuf(beginIndex), this->rect().height() - 5);
+                QPoint end(xBuf(endIndex), this->rect().height() - 5);
+                painter.drawLine(start, end);
+            }
+        }
+    }
+    painter.setPen(oldPen);
 }
 
 /**************************************************************************************************

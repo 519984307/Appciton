@@ -15,6 +15,7 @@
 #include "ParamInfo.h"
 #include "BaseDefine.h"
 #include "AlarmConfig.h"
+#include "ColorManager.h"
 
 class SPMETTrendWidgetPrivate
 {
@@ -65,6 +66,8 @@ SPMETTrendWidget::SPMETTrendWidget()
     d_ptr->spmetValue->setText(InvStr());
 
     contentLayout->addWidget(d_ptr->spmetValue, 5);
+    QPalette pal = colorManager.getPalette(paramInfo.getSubParamName(SUB_PARAM_SPMET));
+    setPalette(pal);
     loadConfig();
 }
 

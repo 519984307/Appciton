@@ -113,6 +113,11 @@ SPOC,SpOC,SpOC
 SPMET,SpMet,SpMet
 PR,PR,PR
 PLETH,血氧波,Pleth
+PLETH2,血氧波 II,Pleth II
+SpO2TrendWave,SpO2,SpO2
+PITrendWave,PI,PI
+SpHbTrendWave,SpHb,SpHb
+SpMetTrendWave,SpMet,SpMet
 NIBP,NIBP,NIBP
 RESP,RESP,RESP
 ParameterColor,参数颜色,Parameter Color
@@ -1705,8 +1710,8 @@ Negative,阴性,Negative
 Positive,阳性,Positive
 Result,结果,Result
 RepeatCheck,一小时内重复测量3次以确认结果,Check again in a hour for result
-footValue,足部数据,foot
-handValue,手部数据,hand
+SpO2Value,血氧I数据,SpO2 I
+SpO2_2Value,血氧II数据,SpO2 II
 SPO2ValueInvaild,采集数据无效，请检查血氧模块,The collect data is invaild，Please check SpO2 module
 ErrorLogExportAt,错误日志导出时间: ,Error Log export at  
 NumberOfErrors,错误数量: ,Number of Errors: 

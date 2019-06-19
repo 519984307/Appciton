@@ -261,11 +261,22 @@ void SPO2Param::handDemoTrendData(void)
 void SPO2Param::exitDemo()
 {
     d_ptr->spo2Value = InvData();
+    d_ptr->plugInSpo2Value = InvData();
+    d_ptr->piValue = InvData();
+    d_ptr->pviValue = InvData();
+    d_ptr->sphbValue = InvData();
+    d_ptr->spocValue = InvData();
+    d_ptr->spmetValue = InvData();
     if (NULL != d_ptr->trendWidget)
     {
         d_ptr->trendWidget->setSPO2Value(InvData());
         d_ptr->trendWidget->setPlugInSPO2Value(InvData());
         d_ptr->trendWidget->setSPO2DeltaValue(InvData());
+        d_ptr->piTrendWidget->setPIValue(InvData());
+        d_ptr->pviTrendWidget->setPVIValue(InvData());
+        d_ptr->sphbTrendWidget->setSPHBValue(InvData());
+        d_ptr->spocTrendWidget->setSPOCValue(InvData());
+        d_ptr->spmetTrendWidget->setSpMetValue(InvData());
         // TODO: 处理PI
 //        _trendWidget->setPIValue(InvData());
 //        _trendWidget->setBarValue(InvData());
@@ -724,14 +735,17 @@ short SPO2Param::getPI()
 /**************************************************************************************************
  * 设置波形值。
  *************************************************************************************************/
-void SPO2Param::addWaveformData(short wave, SPO2Module module)
+void SPO2Param::addWaveformData(short wave, unsigned char waveFlag, SPO2Module module)
 {
     int flag = 0;
+    // record signal IQ flag and value
+    flag = flag | waveFlag;
+
     if (module == SPO2_MODULE_DAVID)
     {
         if (!d_ptr->isValid)
         {
-            flag = 0x4000;
+            flag = flag | 0x4000;
         }
 
         if (d_ptr->waveWidget != NULL)
@@ -744,7 +758,7 @@ void SPO2Param::addWaveformData(short wave, SPO2Module module)
     {
         if (!d_ptr->plugInIsValid)
         {
-            flag = 0x4000;
+            flag = flag | 0x4000;
         }
         if (d_ptr->plugInWaveWidget != NULL)
         {
@@ -1010,6 +1024,7 @@ void SPO2Param::onPaletteChanged(ParamID id)
     }
     QPalette pal = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
     d_ptr->waveWidget->updatePalette(pal);
+    d_ptr->plugInWaveWidget->updatePalette(pal);
     d_ptr->trendWidget->updatePalette(pal);
 }
 

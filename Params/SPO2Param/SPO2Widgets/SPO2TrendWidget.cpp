@@ -35,6 +35,12 @@ void SPO2TrendWidget::loadConfig()
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
     setPalette(palette);
     _spo2Value1->setPalette(palette);
+
+    palette.setColor(QPalette::WindowText, Qt::white);
+    _spo2Value2->setPalette(palette);
+    _spo2Name2->setPalette(palette);
+    _spo2DeltaValue->setPalette(palette);
+    _spo2DeltaName->setPalette(palette);
     TrendWidget::loadConfig();
 }
 
@@ -118,7 +124,7 @@ void SPO2TrendWidget::showValue(void)
     }
     else
     {
-        showNormalStatus(psrc);
+        showNormalStatus(_spo2Value1, psrc);
     }
 }
 
@@ -157,7 +163,8 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
     _isAlarm = false;
     _spo2String1 = InvStr();
     _spo2String2 = InvStr();
-    setName(trs(paramInfo.getParamName(PARAM_SPO2)));
+    QString name = trs(paramInfo.getParamName(PARAM_SPO2));
+    setName(QString("%1<sub>%2</sub>").arg(name.left(3)).arg(name.right(1)));
     setUnit(trs(Unit::getSymbol(UNIT_PERCENT)));
 
     // 血氧值。
@@ -173,7 +180,8 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
     QHBoxLayout *hLayout = new QHBoxLayout();
     _spo2Name2 = new QLabel();
     _spo2Name2->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    _spo2Name2->setText(trs("SPO2_2"));
+    name = trs(paramInfo.getSubParamName(SUB_PARAM_SPO2_2));
+    _spo2Name2->setText(QString("%1<sub>%2</sub>%3").arg(name.left(3)).arg(name.at(3)).arg(name.right(2)));
 
     _spo2Value2 = new QLabel();
     _spo2Value2->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
@@ -184,7 +192,8 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
 
     _spo2DeltaName = new QLabel();
     _spo2DeltaName->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    _spo2DeltaName->setText(trs("SPO2_Delta"));
+    name = trs("SPO2_Delta");
+    _spo2DeltaName->setText(QString("%1<sub>%2</sub>").arg(name.left(4)).arg(name.right(1)));
 
     _spo2DeltaValue = new QLabel();
     _spo2DeltaValue->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
@@ -225,5 +234,5 @@ QList<SubParamID> SPO2TrendWidget::getShortTrendSubParams() const
 void SPO2TrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
-    showNormalStatus(psrc);
+    showNormalStatus(_spo2Value1, psrc);
 }
