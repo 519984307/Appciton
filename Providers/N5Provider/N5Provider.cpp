@@ -361,6 +361,12 @@ void N5Provider::handlePacket(unsigned char *data, int len)
         nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_STATE_CHANGE, &data[1], 1);
         break;
 
+    // 开机获取校零状态
+    case N5_STATE_ZERO_SELFTEST:
+        _sendACK(data[0]);
+        nibpParam.handleNIBPEvent(NIBP_EVENT_ZERO_SELFTEST, &data[1], 1);
+        break;
+
     // 服务模式压力帧
     case N5_SERVICE_PRESSURE:
         nibpParam.handleNIBPEvent(NIBP_EVENT_CURRENT_PRESSURE, &data[1], 2);

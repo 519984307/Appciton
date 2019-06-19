@@ -22,6 +22,7 @@ enum NIBPEvent
     NIBP_EVENT_TRIGGER_BUTTON,                           // NIBP按钮触发
     NIBP_EVENT_TRIGGER_PATIENT_TYPE,                     // NIBP切换病人
     NIBP_EVENT_TRIGGER_MODEL,                            // NIBP模式切换
+    NIBP_EVENT_ZERO_SELFTEST,                            // NIBP较零自测
 
     // monitor组事件。
     NIBP_EVENT_MONITOR_STOP,                             // NIBP停止

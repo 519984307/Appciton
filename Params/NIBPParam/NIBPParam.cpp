@@ -745,6 +745,19 @@ void NIBPParam::setMeasureResult(NIBPMeasureResult flag)
     _measureResult = flag;
 }
 
+void NIBPParam::recoverInitTrendWidgetData()
+{
+    int16_t sys(InvData()), dia(InvData()), map(InvData());
+    unsigned time(0);
+
+    _trendWidget->recoverResults(sys, dia, map, time);
+    if ((sys == InvData()) || (dia == InvData()) || (map == InvData()))
+    {
+        nibpParam.setText(InvStr());
+    }
+    _trendWidget->setResults(sys, dia, map, time);
+}
+
 /**************************************************************************************************
  * 获取自动模式时间变化切换标志。
  *************************************************************************************************/
@@ -1326,6 +1339,45 @@ bool NIBPParam::isMaintain()
     return _isMaintain;
 }
 
+void NIBPParam::clearTrendListData()
+{
+    if (systemManager.isSupport(PARAM_NIBP))
+    {
+        _nibpDataTrendWidget->clearListData();
+        _nibpDataTrendWidget->adjustSize();
+    }
+}
+
+void NIBPParam::setFirstAuto(bool flag)
+{
+    _firstAutoFlag = flag;
+}
+
+bool NIBPParam::isFirstAuto()
+{
+    return _firstAutoFlag;
+}
+
+void NIBPParam::setAutoStat(bool flag)
+{
+    _autoStatFlag = flag;
+}
+
+bool NIBPParam::isAutoStat()
+{
+    return _autoStatFlag;
+}
+
+void NIBPParam::setZeroSelfTestState(bool flag)
+{
+    _zeroSelfTestFlag = flag;
+}
+
+bool NIBPParam::isZeroSelfTestState()
+{
+    return _zeroSelfTestFlag;
+}
+
 /**************************************************************************************************
  * 停止测量。
  *************************************************************************************************/
@@ -1408,8 +1460,9 @@ NIBPParam::NIBPParam()
       _isNIBPDisable(false), _isManualMeasure(false),
       _connectedFlag(false), _connectedProvider(false),
       _text(InvStr()),
-      _reply(false), _result(false), _manometerPressure(InvData()), _isMaintain(false),
-      _activityMachine(NULL)
+      _reply(false), _result(false), _manometerPressure(InvData()), _isMaintain(false), _firstAutoFlag(false),
+      _autoStatFlag(false), _zeroSelfTestFlag(false),
+      _activityMachine(NULL), _oldState(0)
 {
     nibpCountdownTime.getInstance();
 

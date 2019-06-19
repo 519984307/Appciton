@@ -66,7 +66,23 @@ void NIBPMonitorStandbyState::handleNIBPEvent(NIBPEvent event, const unsigned ch
             nibpParam->switchToManual();
         }
         break;
-
+    case NIBP_EVENT_ZERO_SELFTEST:
+        nibpParam->setCuffPressure(args[0]);
+        if (args[0] == 0x01)                               //  开机正在校准
+        {
+            nibpParam->setZeroSelfTestState(true);
+            nibpParam->setText(trs("NIBPZEROING"));       //  显示正在较零
+        }
+        else if (args[0] == 0x02)                         //  开机校准成功
+        {
+            nibpParam->setZeroSelfTestState(false);
+            nibpParam->recoverInitTrendWidgetData();      //  显示上一次信息
+        }
+        else if (args[0] == 0x03)                        //  校零失败，进入禁用状态
+        {
+            nibpParam->setZeroSelfTestState(false);
+            nibpParam->errorDisable();
+        }
     default:
         break;
     }
