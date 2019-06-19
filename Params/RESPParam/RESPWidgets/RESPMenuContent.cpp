@@ -125,6 +125,7 @@ RESPMenuContent::RESPMenuContent()
     : MenuContent(trs("RESPMenu"), trs("RESPMenuDesc")),
       d_ptr(new RESPMenuContentPrivate())
 {
+    connect(&co2Param, SIGNAL(connectStatusUpdated(bool)), this, SLOT(readyShow()));
 }
 
 RESPMenuContent::~RESPMenuContent()
