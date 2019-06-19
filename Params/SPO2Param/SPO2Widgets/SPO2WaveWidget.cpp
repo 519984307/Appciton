@@ -68,6 +68,11 @@ void SPO2WaveWidget::paintEvent(QPaintEvent *e)
 {
     WaveWidget::paintEvent(e);
 
+    if (bufIsEmpty())
+    {
+        return;
+    }
+
     // draw signal IQ
     QPainter painter(this);
     QPen oldPen = painter.pen();

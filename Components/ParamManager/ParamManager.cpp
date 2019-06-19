@@ -185,14 +185,18 @@ void ParamManager::connectDemoParamProvider()
 
             // 使用demo模块数据，暂停接收其他模块数据
             machineConfig.getStrValue(param_list[i], str);
-            Provider *otherProvider = _providers.value(str, NULL);
-            if (otherProvider)
+            QStringList provider_list = str.split(',');
+            for (QStringList::iterator iter = provider_list.begin(); iter != provider_list.end(); ++iter)
             {
-                otherProvider->detachParam(*param);
-            }
+                Provider *otherProvider = _providers.value(*iter, NULL);
+                if (otherProvider)
+                {
+                    otherProvider->detachParam(*param);
+                }
 
-            provider->attachParam(*param);
-            param->initParam();
+                provider->attachParam(*param);
+                param->initParam();
+            }
         }
     }
     else

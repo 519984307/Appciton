@@ -261,11 +261,22 @@ void SPO2Param::handDemoTrendData(void)
 void SPO2Param::exitDemo()
 {
     d_ptr->spo2Value = InvData();
+    d_ptr->plugInSpo2Value = InvData();
+    d_ptr->piValue = InvData();
+    d_ptr->pviValue = InvData();
+    d_ptr->sphbValue = InvData();
+    d_ptr->spocValue = InvData();
+    d_ptr->spmetValue = InvData();
     if (NULL != d_ptr->trendWidget)
     {
         d_ptr->trendWidget->setSPO2Value(InvData());
         d_ptr->trendWidget->setPlugInSPO2Value(InvData());
         d_ptr->trendWidget->setSPO2DeltaValue(InvData());
+        d_ptr->piTrendWidget->setPIValue(InvData());
+        d_ptr->pviTrendWidget->setPVIValue(InvData());
+        d_ptr->sphbTrendWidget->setSPHBValue(InvData());
+        d_ptr->spocTrendWidget->setSPOCValue(InvData());
+        d_ptr->spmetTrendWidget->setSpMetValue(InvData());
         // TODO: 处理PI
 //        _trendWidget->setPIValue(InvData());
 //        _trendWidget->setBarValue(InvData());

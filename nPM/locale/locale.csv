@@ -113,6 +113,7 @@ SPOC,SpOC,SpOC
 SPMET,SpMet,SpMet
 PR,PR,PR
 PLETH,血氧波,Pleth
+PLETH2,血氧波 II,Pleth II
 SpO2TrendWave,SpO2,SpO2
 PITrendWave,PI,PI
 SpHbTrendWave,SpHb,SpHb
