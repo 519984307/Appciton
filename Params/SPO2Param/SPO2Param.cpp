@@ -724,14 +724,17 @@ short SPO2Param::getPI()
 /**************************************************************************************************
  * 设置波形值。
  *************************************************************************************************/
-void SPO2Param::addWaveformData(short wave, SPO2Module module)
+void SPO2Param::addWaveformData(short wave, unsigned char waveFlag, SPO2Module module)
 {
     int flag = 0;
+    // record signal IQ flag and value
+    flag = flag | waveFlag;
+
     if (module == SPO2_MODULE_DAVID)
     {
         if (!d_ptr->isValid)
         {
-            flag = 0x4000;
+            flag = flag | 0x4000;
         }
 
         if (d_ptr->waveWidget != NULL)
@@ -744,7 +747,7 @@ void SPO2Param::addWaveformData(short wave, SPO2Module module)
     {
         if (!d_ptr->plugInIsValid)
         {
-            flag = 0x4000;
+            flag = flag | 0x4000;
         }
         if (d_ptr->plugInWaveWidget != NULL)
         {

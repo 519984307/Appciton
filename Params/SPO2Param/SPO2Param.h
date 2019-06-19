@@ -126,7 +126,7 @@ public:
     short getPI();
 
     // 设置波形值。
-    void addWaveformData(short wave, SPO2Module module = SPO2_MODULE_DAVID);
+    void addWaveformData(short wave, unsigned char waveFlag = 0, SPO2Module module = SPO2_MODULE_DAVID);
 
     // 设置棒图值。
     void addBarData(short data);
