@@ -65,6 +65,9 @@ public:
     /* reimplment */
     void reconnected();
 
+    /* reimplment */
+    void initModule();
+
 public:
     /**
      * @brief setSpHbPrecisionMode 设置SpHb精确度

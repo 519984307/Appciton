@@ -1348,6 +1348,10 @@ void SPO2Param::initModule()
     {
         d_ptr->provider->initModule();
     }
+}
+
+void SPO2Param::initPluginModule()
+{
     if (d_ptr->plugInProvider)
     {
         d_ptr->plugInProvider->initModule();

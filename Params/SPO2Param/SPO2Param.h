@@ -262,6 +262,11 @@ public:
      */
     void initModule();
 
+    /**
+     * @brief initPluginModule init plugin spo2 module
+     */
+    void initPluginModule();
+
 private slots:
     void checkSelftest();
     void onPaletteChanged(ParamID id);

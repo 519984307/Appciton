@@ -383,10 +383,6 @@ RainbowProvider::RainbowProvider(const QString &name)
         disPatchInfo.dispatcher->resetPacketPort(disPatchInfo.packetType);
         d_ptr->isReseting = true;
     }
-    else if (plugInInfo.plugIn)
-    {
-        QTimer::singleShot(200, this, SLOT(changeBaudrate()));
-    }
     else
     {
         QTimer::singleShot(200, this, SLOT(changeBaudrate()));
@@ -651,6 +647,11 @@ void RainbowProvider::reconnected()
         alarmSource->setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, false);
     }
     spo2Param.setConnected(true, d_ptr->provider);
+}
+
+void RainbowProvider::initModule()
+{
+    d_ptr->curInitializeStep = RB_INIT_BAUDRATE;
 }
 
 void RainbowProvider::setSpHbPrecisionMode(SpHbPrecisionMode mode)
@@ -1108,7 +1109,7 @@ void RainbowProviderPrivate::unlockBoard(unsigned int sn, unsigned int flag)
     unsigned int unlockKey = MANU_ID_BLM ^ sn;
     if (q_ptr->disPatchInfo.dispatcher)
     {
-        unlockKey = MANU_ID_BLM ^ sn;
+        unlockKey = MANU_ID_DAVID ^ sn;
     }
     else if (q_ptr->plugInInfo.plugIn)
     {

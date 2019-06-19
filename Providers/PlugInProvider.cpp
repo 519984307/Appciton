@@ -16,6 +16,8 @@
 #include "Provider.h"
 #include <QTimerEvent>
 #include <QFile>
+#include "SPO2Param.h"
+#include <QTimer>
 
 #define SPO2_SOH             (0xA1)  // rainbow spo2 packet header
 #define SPO2_EOM             (0xAF)  // rainbow spo2 packet end
@@ -108,9 +110,9 @@ public:
         return sum;
     }
 
-    void handlePacket(unsigned char *data, int len)
+    void handlePacket(unsigned char *data, int len, PlugInProvider::PlugInType type)
     {
-        dataHandlers[PlugInProvider::PLUGIN_TYPE_SPO2]->dataArrived(data, len);
+        dataHandlers[type]->dataArrived(data, len);
     }
 
     int readPluginPinSta()
@@ -119,7 +121,7 @@ public:
         QFile callFile("/sys/class/pmos/spo2_ibp_identify");
         if (!callFile.open(QIODevice::ReadWrite))
         {
-            qDebug() << "fail to open nurse_call file";
+            qDebug() << "fail to open plugin file";
             return -1;
         }
         data = callFile.read(1);
@@ -145,7 +147,7 @@ PlugInProvider::PlugInProvider(const QString &name, QObject *parent)
 {
     UartAttrDesc portAttr(9600, 8, 'N', 1);
     d_ptr->initPort(portAttr);
-//    d_ptr->pluginTimerID = startTimer(READ_PLUGIN_PIN_INTERVAL);
+    d_ptr->pluginTimerID = startTimer(READ_PLUGIN_PIN_INTERVAL);
     connect(d_ptr->uart, SIGNAL(activated(int)), this, SLOT(dataArrived()));
 }
 
@@ -205,10 +207,6 @@ bool PlugInProvider::setPacketPortBaudrate(PlugInProvider::PlugInType type, Plug
         }
         buff[index++] = d_ptr->calcChecksum(data, sizeof(data));
         buff[index++] = SPO2_EOM;
-//        for (int i = 0; i < 20; i++)
-//        {
-//            d_ptr->uart->write(buff, index);
-//        }
         return d_ptr->uart->write(buff, index);
     }
     return true;
@@ -224,13 +222,16 @@ void PlugInProvider::timerEvent(QTimerEvent *ev)
 {
     if (ev->timerId() == d_ptr->pluginTimerID)
     {
-        if (d_ptr->readPluginPinSta() == PLUGIN_STATUS_SPO2)
+        static int pluginSta = 0;
+        if (pluginSta != d_ptr->readPluginPinSta())
         {
-            updateUartBaud(CO2_RUN_BAUD_RATE);
-        }
-        else if (d_ptr->readPluginPinSta() == PLUGIN_STATUS_CO2)
-        {
-            updateUartBaud(CO2_RUN_BAUD_RATE);
+            if (pluginSta == 1)
+            {
+                updateUartBaud(SPO2_RUN_BAUD_RATE);
+                spo2Param.initPluginModule();                 // 初始化SpO2插件模块
+                QTimer::singleShot(1000, this, SLOT(changeBaudrate())); // 预留rainbow模块重启时间
+            }
+            pluginSta = d_ptr->readPluginPinSta();
         }
     }
 }
@@ -245,49 +246,68 @@ void PlugInProvider::dataArrived()
     while (d_ptr->ringBuff.dataSize() >= MIN_PACKET_LEN)
     {
         // 如果查询不到帧头，移除ringbuff缓冲区最旧的数据，下次继续查询
-        if (d_ptr->ringBuff.at(0) != SPO2_SOH)
+        if (d_ptr->ringBuff.at(0) == SPO2_SOH)
         {
+            // 如果查询不到帧尾，移除ringbuff缓冲区最旧的数据，下次继续查询
+            unsigned char len = d_ptr->ringBuff.at(1);     // data field length
+            unsigned char totalLen = 2 + len + 2;   // 1 frame head + 1 len byte + data length + 1 checksum + 1 frame end
+
+            if (d_ptr->ringBuff.dataSize() < totalLen)
+            {
+                // no enough data
+                break;
+            }
+
+            if (d_ptr->ringBuff.at(totalLen - 1) != SPO2_EOM)
+            {
+                d_ptr->ringBuff.pop(1);
+                continue;
+            }
+
+            // 将ringbuff中数据读取到临时缓冲区buff中,并移除ringbuff的旧数据
+            for (int i = 0; i < totalLen; i++)
+            {
+                buff[i] = d_ptr->ringBuff.at(0);
+                d_ptr->ringBuff.pop(1);
+            }
+
+            // 计算帧的校验码
+            unsigned char csum = d_ptr->calcChecksum(&buff[2], len);
+
+            // 如果求和检验码匹配，则进一步处理数据包，否则丢弃最旧数据
+            if (csum == buff[totalLen - 2])
+            {
+                d_ptr->handlePacket(buff, len + 4, PLUGIN_TYPE_SPO2);
+            }
+            else
+            {
+                outHex(buff, PACKET_BUFF_SIZE);
+                debug("0x%02x", csum);
+                debug("FCS error (%s)\n", qPrintable(getName()));
+                d_ptr->ringBuff.pop(1);
+            }
             d_ptr->ringBuff.pop(1);
             continue;
         }
-
-        // 如果查询不到帧尾，移除ringbuff缓冲区最旧的数据，下次继续查询
-        unsigned char len = d_ptr->ringBuff.at(1);     // data field length
-        unsigned char totalLen = 2 + len + 2;   // 1 frame head + 1 len byte + data length + 1 checksum + 1 frame end
-
-        if (d_ptr->ringBuff.dataSize() < totalLen)
+        else if ((d_ptr->ringBuff.at(0) == 0xAA) && (d_ptr->ringBuff.at(1) == 0x55))
         {
-            // no enough data
-            break;
-        }
-
-        if (d_ptr->ringBuff.at(totalLen - 1) != SPO2_EOM)
-        {
-            d_ptr->ringBuff.pop(1);
-            continue;
-        }
-
-        // 将ringbuff中数据读取到临时缓冲区buff中,并移除ringbuff的旧数据
-        for (int i = 0; i < totalLen; i++)
-        {
-            buff[i] = d_ptr->ringBuff.at(0);
-            d_ptr->ringBuff.pop(1);
-        }
-
-        // 计算帧的校验码
-        unsigned char csum = d_ptr->calcChecksum(&buff[2], len);
-
-        // 如果求和检验码匹配，则进一步处理数据包，否则丢弃最旧数据
-        if (csum == buff[totalLen - 2])
-        {
-            d_ptr->handlePacket(buff, len + 4);
+            int len = 21;
+            int i = 0;
+            for (; i < len; i++)
+            {
+                buff[i] = d_ptr->ringBuff.at(0);
+                d_ptr->ringBuff.pop(1);
+            }
+            d_ptr->handlePacket(buff, i, PLUGIN_TYPE_CO2);
         }
         else
         {
-            outHex(buff, PACKET_BUFF_SIZE);
-            debug("0x%02x", csum);
-            debug("FCS error (%s)\n", qPrintable(getName()));
             d_ptr->ringBuff.pop(1);
         }
     }
+}
+
+void PlugInProvider::changeBaudrate()
+{
+    setPacketPortBaudrate(PLUGIN_TYPE_SPO2, BAUDRATE_57600);
 }
