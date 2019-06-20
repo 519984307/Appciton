@@ -76,7 +76,6 @@ void AlarmPauseState::enter()
 {
     AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
     alarmIndicator->setAlarmStatus(ALARM_STATUS_PAUSE);
-    alarmIndicator->delAllPhyAlarm();
     LightManagerInterface *lightManager = LightManagerInterface::getLightManager();
     lightManager->enableAlarmAudioMute(true);
     beginTimer(1000);

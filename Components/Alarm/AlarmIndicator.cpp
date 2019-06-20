@@ -18,6 +18,7 @@
 #include "AlarmStateMachineInterface.h"
 #include "AlarmInterface.h"
 #include "NurseCallManagerInterface.h"
+#include "PatientInfoWidget.h"
 
 /**************************************************************************************************
  * 功能：发布报警。
@@ -109,7 +110,7 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
                 hasPausedPhyAlarm = true;
             }
         }
-        else if (ALARM_TYPE_TECH == node.alarmType && ALARM_STATUS_PAUSE != status)
+        else if (ALARM_TYPE_TECH == node.alarmType)
         {
             // 技术报警只处理没有被acknowledge和不处理报警暂停状态
             if ((!node.acknowledge || node.latch)
@@ -443,10 +444,11 @@ void AlarmIndicator::_displayInfoNode(AlarmInfoNode &alarmNode, int &indexint, i
 /**************************************************************************************************
  * 功能：注册生理报警界面指示器。
  *************************************************************************************************/
-void AlarmIndicator::setAlarmPhyWidgets(AlarmInfoBarWidget *alarmWidget, AlarmStatusWidget *muteWidget)
+void AlarmIndicator::setAlarmPhyWidgets(AlarmInfoBarWidget *alarmWidget, AlarmStatusWidget *muteWidget, PatientInfoWidget *patInfoWidget)
 {
     _alarmPhyInfoWidget = alarmWidget;
     _alarmStatusWidget = muteWidget;
+    _patInfoWidget = patInfoWidget;
 }
 
 /***************************************************************************************************
@@ -1053,9 +1055,9 @@ AlarmIndicator::~AlarmIndicator()
 
 void AlarmIndicator::updateAlarmPauseTime(int seconds)
 {
-    if (_alarmPhyInfoWidget)
+    if (_patInfoWidget)
     {
-        _alarmPhyInfoWidget->setAlarmPause(seconds);
+        _patInfoWidget->setAlarmPause(seconds);
     }
 }
 
