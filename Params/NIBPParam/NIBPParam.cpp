@@ -747,7 +747,9 @@ void NIBPParam::setMeasureResult(NIBPMeasureResult flag)
 
 void NIBPParam::recoverInitTrendWidgetData()
 {
-    int16_t sys(InvData()), dia(InvData()), map(InvData());
+    int16_t sys(InvData());
+    int16_t dia(InvData());
+    int16_t map(InvData());
     unsigned time(0);
 
     _trendWidget->recoverResults(sys, dia, map, time);
