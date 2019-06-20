@@ -278,6 +278,18 @@ public:
      */
     void clearTrendWaveData();
 
+    /**
+     * @brief showSignalIQ 是否显示Signal IQ值
+     * @param show
+     */
+    void showSignalIQ(bool show);
+
+    /**
+     * @brief isShowSignalIQ
+     * @return
+     */
+    bool isShowSignalIQ();
+
 signals:
     void clearTrendData();
 

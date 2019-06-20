@@ -45,7 +45,7 @@ UserFaceTrend,趋势,Trend
 UserFaceBigFont,大字体,Big Font
 UserFaceCustom,自定义,Custom
 UserFaceUnknow,未知,Unknow
-UserFaceSpO₂,血氧,SpO₂ Screen
+UserFaceSpO2,血氧,SpO₂ Screen
 ECG,ECG,ECG
 HR,HR,HR
 HR_PR,HR/PR,HR/PR
@@ -113,7 +113,7 @@ SPOC,SpOC,SpOC
 SPMET,SpMet,SpMet
 PR,PR,PR
 PLETH,血氧波,Pleth
-PLETH2,血氧波 II,Pleth II
+PLETH2,血氧波 2,Pleth 2
 SpO2TrendWave,SpO₂,SpO₂
 PITrendWave,PI,PI
 SpHbTrendWave,SpHb,SpHb
@@ -181,6 +181,7 @@ SPO2SweepSpeed,波形速度,Sweep Speed
 SPO2PRDisplay,脉率显示,PR Display
 SPO2SmartPluseTone,智能脉搏音,Smart Pulse Tone
 SPO2Menu,SpO₂,SpO₂
+ShowSignalIQ,信号指示,Signal IQ
 RESPSweepSpeed,波形速度,Sweep Speed
 RESPApneaTime,窒息时间,Apnea Time
 RESPZoom,缩放,Zoom

@@ -68,7 +68,7 @@ void SPO2WaveWidget::paintEvent(QPaintEvent *e)
 {
     WaveWidget::paintEvent(e);
 
-    if (bufIsEmpty())
+    if (!spo2Param.isShowSignalIQ() || bufIsEmpty())
     {
         return;
     }

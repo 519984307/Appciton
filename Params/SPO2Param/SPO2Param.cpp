@@ -92,6 +92,7 @@ public:
     bool plugInIsForceUpdating;  // 当spo2的弱灌注状态发生变化时，该状态位为true
 
     bool isT5ModuleUpgradeCompleted;
+    bool isShowSignalIQ;
 };
 
 void SPO2Param::setAverageTime(AverageTime index)
@@ -154,6 +155,7 @@ SPO2ParamPrivate::SPO2ParamPrivate()
     , plugInIsLowPerfusion(false)
     , plugInIsForceUpdating(false)
     , isT5ModuleUpgradeCompleted(false)
+    , isShowSignalIQ(true)
 {
 }
 
@@ -1398,6 +1400,16 @@ void SPO2Param::initPluginModule()
 void SPO2Param::clearTrendWaveData()
 {
     emit clearTrendData();
+}
+
+void SPO2Param::showSignalIQ(bool show)
+{
+    d_ptr->isShowSignalIQ = show;
+}
+
+bool SPO2Param::isShowSignalIQ()
+{
+    return d_ptr->isShowSignalIQ;
 }
 
 /**************************************************************************************************

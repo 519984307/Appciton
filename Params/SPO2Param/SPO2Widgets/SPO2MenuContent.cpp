@@ -39,7 +39,8 @@ public:
         ITEM_CBO_FAST_SAT,
         ITEM_CBO_SMART_TONE,
         ITEM_CBO_PULSE_VOL,
-        ITEM_CBO_NIBP_SAME_SIDE
+        ITEM_CBO_NIBP_SAME_SIDE,
+        ITEM_CBO_SIGNAL_IQ
     };
 
     SPO2MenuContentPrivate()
@@ -64,7 +65,7 @@ public:
 
 void SPO2MenuContentPrivate::setCboBlockSignalsStatus(bool isBlocked)
 {
-    for (int i = ITEM_CBO_WAVE_SPEED; i <= ITEM_CBO_NIBP_SAME_SIDE; i++)
+    for (int i = ITEM_CBO_WAVE_SPEED; i <= ITEM_CBO_SIGNAL_IQ; i++)
     {
         MenuItem item = static_cast<MenuItem>(i);
         if (combos[item])
@@ -129,6 +130,8 @@ void SPO2MenuContentPrivate::loadOptions()
         cchdBtn->setVisible(true);
     }
 
+    int index = spo2Param.isShowSignalIQ() ? 1 : 0;
+    combos[ITEM_CBO_SIGNAL_IQ]->setCurrentIndex(index);
     setCboBlockSignalsStatus(false);
 }
 
@@ -285,6 +288,19 @@ void SPO2MenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_NIBP_SAME_SIDE, comboBox);
 
+    // 是否显示Signal IQ
+    label = new QLabel(trs("ShowSignalIQ"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                       << trs("Off")
+                       << trs("On"));
+    itemID = static_cast<int>(SPO2MenuContentPrivate::ITEM_CBO_SIGNAL_IQ);
+    comboBox->setProperty("Item", qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_SIGNAL_IQ, comboBox);
+
     // 添加报警设置链接
     Button *btn = new Button(QString("%1%2").
                              arg(trs("AlarmSettingUp")).
@@ -331,6 +347,10 @@ void SPO2MenuContent::onComboBoxIndexChanged(int index)
             break;
         case SPO2MenuContentPrivate::ITEM_CBO_NIBP_SAME_SIDE:
             spo2Param.setNibpSameSide(box->currentIndex());
+            break;
+        case SPO2MenuContentPrivate::ITEM_CBO_SIGNAL_IQ:
+            spo2Param.showSignalIQ(static_cast<bool>(index));
+            break;
         default:
             break;
         }
