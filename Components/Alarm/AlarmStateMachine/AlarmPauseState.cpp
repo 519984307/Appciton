@@ -11,7 +11,6 @@
 #include "AlarmPauseState.h"
 #include "AlarmIndicatorInterface.h"
 #include "AlarmStateMachineInterface.h"
-#include "LightManagerInterface.h"
 #include <QTimerEvent>
 #include "IConfig.h"
 
@@ -77,8 +76,6 @@ void AlarmPauseState::enter()
     AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
     alarmIndicator->setAlarmStatus(ALARM_STATUS_PAUSE);
     alarmIndicator->delAllPhyAlarm();
-    LightManagerInterface *lightManager = LightManagerInterface::getLightManager();
-    lightManager->enableAlarmAudioMute(true);
     beginTimer(1000);
     int index = ALARM_PAUSE_TIME_2MIN;
     systemConfig.getNumValue("Alarms|AlarmPauseTime", index);
