@@ -37,6 +37,8 @@ protected slots:
 
     void onPaletteChanged(ParamID param);
 
+    void onClearTrendData();
+
 private:
     TrendWavePrivate * const d_ptr;
 };

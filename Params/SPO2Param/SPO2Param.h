@@ -273,6 +273,14 @@ public:
      */
     void initPluginModule();
 
+    /**
+     * @brief clearTrendWaveData 清除趋势波形的数据
+     */
+    void clearTrendWaveData();
+
+signals:
+    void clearTrendData();
+
 private slots:
     void checkSelftest();
     void onPaletteChanged(ParamID id);

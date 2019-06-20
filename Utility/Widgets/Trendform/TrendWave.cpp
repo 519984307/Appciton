@@ -21,9 +21,11 @@
 #include "ParamInfo.h"
 #include "LanguageManager.h"
 #include "ColorManager.h"
+#include "SPO2Param.h"
+#include <QVector>
 
 #define DELTA_X 5   // 两值间的x轴像素值
-typedef QList<float> YAxisValueBufType;
+typedef QVector<float> YAxisValueBufType;
 
 class TrendWavePrivate
 {
@@ -83,6 +85,7 @@ TrendWave::TrendWave(const QString &name, QWidget *parent)
     pal.setColor(QPalette::Background, Qt::black);
     connect(&trendDataStorageManager, SIGNAL(newTrendDataArrived(unsigned)), this, SLOT(onNewTrendDataArrived(unsigned)));
     connect(&colorManager, SIGNAL(paletteChanged(ParamID)), this, SLOT(onPaletteChanged(ParamID)));
+    connect(&spo2Param, SIGNAL(clearTrendData()), this, SLOT(onClearTrendData()));
 }
 
 TrendWave::~TrendWave()
@@ -172,7 +175,7 @@ void TrendWave::onNewTrendDataArrived(unsigned timeStamp)
         YAxisValueBufType &buf = d_ptr->yAxisValueBufs[i];
         if (buf.count() == d_ptr->getPointNum())
         {
-            buf.removeLast();
+            buf.pop_back();
         }
 
         if (data != InvData() && data > d_ptr->minValue)
@@ -184,11 +187,11 @@ void TrendWave::onNewTrendDataArrived(unsigned timeStamp)
                                    - (data - d_ptr->minValue) * d_ptr->waveRegion.height()
                                    / (d_ptr->maxValue - d_ptr->minValue);
             }
-            buf.append(yValue);
+            buf.push_front(yValue);
         }
         else
         {
-            buf.append(0);
+            buf.push_front(0);
         }
     }
     update(d_ptr->waveRegion);
@@ -210,6 +213,13 @@ void TrendWave::onPaletteChanged(ParamID param)
             update();
         }
     }
+}
+
+void TrendWave::onClearTrendData()
+{
+    d_ptr->resetPointBufFlag = true;
+    d_ptr->updateBGFlag = true;
+    update();
 }
 
 void TrendWavePrivate::drawWave(QPainter *painter, const QRect &r)
@@ -298,7 +308,8 @@ void TrendWavePrivate::resetPointBuffer()
 {
     for (int i = 0; i < yAxisValueBufs.count(); i++)
     {
-        yAxisValueBufs[i].append(0);
+        yAxisValueBufs[i].resize(getPointNum());
+        yAxisValueBufs[i].fill(0);
     }
 }
 

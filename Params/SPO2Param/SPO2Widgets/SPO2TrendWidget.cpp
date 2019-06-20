@@ -211,6 +211,21 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
 
     contentLayout->addLayout(layout, 7);
 
+    if (spo2Param.getModuleType() == MODULE_RAINBOW_DOUBLE_SPO2)
+    {
+        _spo2Name2->setVisible(true);
+        _spo2Value2->setVisible(true);
+        _spo2DeltaName->setVisible(true);
+        _spo2DeltaValue->setVisible(true);
+    }
+    else
+    {
+        _spo2Name2->setVisible(false);
+        _spo2Value2->setVisible(false);
+        _spo2DeltaName->setVisible(false);
+        _spo2DeltaValue->setVisible(false);
+    }
+
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 
