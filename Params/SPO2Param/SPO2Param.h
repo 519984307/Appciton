@@ -36,6 +36,7 @@ class PITrendWidget;
 class SPHBTrendWidget;
 class SPOCTrendWidget;
 class SPMETTrendWidget;
+class SPCOTrendWidget;
 class OxyCRGSPO2TrendWidget;
 class SPO2ProviderIFace;
 class SPO2ParamPrivate;
@@ -91,6 +92,7 @@ public:
     void setTrendWidget(SPMETTrendWidget *trendWidget);
     void setTrendWidget(PVITrendWidget *trendWidget);
     void setTrendWidget(PITrendWidget *trendWidget);
+    void setTrendWidget(SPCOTrendWidget *trendWidget);
     void setWaveWidget(SPO2WaveWidget *waveWidget, SPO2Module flag = SPO2_MODULE_DAVID);
     void setOxyCRGSPO2Trend(OxyCRGSPO2TrendWidget *trendWidget);
 
@@ -124,6 +126,10 @@ public:
     // 设置PI值
     void setPI(short piValue);
     short getPI();
+
+    // 设置SpCO值
+    void setSpCO(short spcoValue);
+    short getSpCO();
 
     // 设置波形值。
     void addWaveformData(short wave, unsigned char waveFlag = 0, SPO2Module module = SPO2_MODULE_DAVID);

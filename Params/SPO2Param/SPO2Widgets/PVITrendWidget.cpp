@@ -15,6 +15,7 @@
 #include "ParamInfo.h"
 #include <QLayout>
 #include "AlarmConfig.h"
+#include "MeasureSettingWindow.h"
 
 class PVITrendWidgetPrivate
 {
@@ -74,6 +75,7 @@ PVITrendWidget::PVITrendWidget()
     d_ptr->pviValue->setAlignment(Qt::AlignCenter);
 
     contentLayout->addWidget(d_ptr->pviValue, 5);
+    connect(this, SIGNAL(released()), this, SLOT(onRelease()));
     loadConfig();
 }
 
@@ -94,4 +96,10 @@ void PVITrendWidget::setTextSize()
 void PVITrendWidget::loadConfig()
 {
     TrendWidget::loadConfig();
+}
+
+void PVITrendWidget::onRelease()
+{
+    MeasureSettingWindow *p = MeasureSettingWindow::getInstance();
+    p->popup(trs("SPO2Menu"));
 }

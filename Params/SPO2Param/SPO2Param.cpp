@@ -35,6 +35,7 @@
 #include "SPHBTrendWidget.h"
 #include "SPOCTrendWidget.h"
 #include "SPMETTrendWidget.h"
+#include "SPCOTrendWidget.h"
 
 SPO2Param *SPO2Param::_selfObj = NULL;
 
@@ -56,6 +57,7 @@ public:
     SPHBTrendWidget *sphbTrendWidget;
     SPOCTrendWidget *spocTrendWidget;
     SPMETTrendWidget *spmetTrendWidget;
+    SPCOTrendWidget *spcoTrendWidget;
 
     bool isEverCheckFinger;  // use to decide prompt sensor off
     bool plugInIsEverCheckFinger;  // use to decide prompt sensor off
@@ -69,6 +71,7 @@ public:
     short sphbValue;
     short spocValue;
     short spmetValue;
+    short spcoValue;
 
     bool isValid;
     bool plugInIsValid;
@@ -125,6 +128,7 @@ SPO2ParamPrivate::SPO2ParamPrivate()
     , sphbTrendWidget(NULL)
     , spocTrendWidget(NULL)
     , spmetTrendWidget(NULL)
+    , spcoTrendWidget(NULL)
     , isEverCheckFinger(false)
     , plugInIsEverCheckFinger(false)
     , spo2Value(InvData())
@@ -136,6 +140,7 @@ SPO2ParamPrivate::SPO2ParamPrivate()
     , sphbValue(InvData())
     , spocValue(InvData())
     , spmetValue(InvData())
+    , spcoValue(InvData())
     , isValid(false)
     , plugInIsValid(false)
     , recPackageInPowerOn2sec(0)
@@ -237,6 +242,7 @@ void SPO2Param::handDemoTrendData(void)
     d_ptr->sphbValue = 18;
     d_ptr->spocValue = 20;
     d_ptr->spmetValue = 3;
+    d_ptr->spcoValue = 20;
     if (NULL != d_ptr->trendWidget)
     {
         d_ptr->trendWidget->setSPO2Value(d_ptr->spo2Value);
@@ -247,6 +253,7 @@ void SPO2Param::handDemoTrendData(void)
         d_ptr->sphbTrendWidget->setSPHBValue(d_ptr->sphbValue);
         d_ptr->spocTrendWidget->setSPOCValue(d_ptr->spocValue);
         d_ptr->spmetTrendWidget->setSpMetValue(d_ptr->spmetValue);
+        d_ptr->spcoTrendWidget->setSPCOValue(d_ptr->spcoValue);
     }
 
     if (NULL != d_ptr->oxyCRGSPO2Trend)
@@ -267,6 +274,7 @@ void SPO2Param::exitDemo()
     d_ptr->sphbValue = InvData();
     d_ptr->spocValue = InvData();
     d_ptr->spmetValue = InvData();
+    d_ptr->spcoValue = InvData();
     if (NULL != d_ptr->trendWidget)
     {
         d_ptr->trendWidget->setSPO2Value(InvData());
@@ -277,6 +285,7 @@ void SPO2Param::exitDemo()
         d_ptr->sphbTrendWidget->setSPHBValue(InvData());
         d_ptr->spocTrendWidget->setSPOCValue(InvData());
         d_ptr->spmetTrendWidget->setSpMetValue(InvData());
+        d_ptr->spcoTrendWidget->setSPCOValue(InvData());
         // TODO: 处理PI
 //        _trendWidget->setPIValue(InvData());
 //        _trendWidget->setBarValue(InvData());
@@ -322,6 +331,8 @@ short SPO2Param::getSubParamValue(SubParamID id)
         return getPVI();
     case SUB_PARAM_PI:
         return getPI();
+    case SUB_PARAM_SPCO:
+        return getSpCO();
     default:
         return InvData();
     }
@@ -500,6 +511,15 @@ void SPO2Param::setTrendWidget(PITrendWidget *trendWidget)
         return;
     }
     d_ptr->piTrendWidget = trendWidget;
+}
+
+void SPO2Param::setTrendWidget(SPCOTrendWidget *trendWidget)
+{
+    if (trendWidget == NULL)
+    {
+        return;
+    }
+    d_ptr->spcoTrendWidget = trendWidget;
 }
 
 /**************************************************************************************************
@@ -721,7 +741,7 @@ void SPO2Param::setPI(short piValue)
         return;
     }
     d_ptr->piValue = piValue;
-    if (NULL != d_ptr->trendWidget)
+    if (NULL != d_ptr->piTrendWidget)
     {
         d_ptr->piTrendWidget->setPIValue(d_ptr->piValue);
     }
@@ -730,6 +750,24 @@ void SPO2Param::setPI(short piValue)
 short SPO2Param::getPI()
 {
     return d_ptr->piValue;
+}
+
+void SPO2Param::setSpCO(short spcoValue)
+{
+    if (d_ptr->spcoValue == spcoValue)
+    {
+        return;
+    }
+    d_ptr->spcoValue = spcoValue;
+    if (NULL != d_ptr->spcoTrendWidget)
+    {
+        d_ptr->spcoTrendWidget->setSPCOValue(d_ptr->spcoValue);
+    }
+}
+
+short SPO2Param::getSpCO()
+{
+    return d_ptr->spcoValue;
 }
 
 /**************************************************************************************************

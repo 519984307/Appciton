@@ -30,6 +30,9 @@ protected:
     /*reimplment*/
     void setTextSize();
 
+private slots:
+    void onRelease();
+
 private:
     SPOCTrendWidgetPrivate *const d_ptr;
 };

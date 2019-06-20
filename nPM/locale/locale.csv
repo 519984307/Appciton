@@ -118,6 +118,7 @@ SpO2TrendWave,SpO2,SpO2
 PITrendWave,PI,PI
 SpHbTrendWave,SpHb,SpHb
 SpMetTrendWave,SpMet,SpMet
+PRTrendWave,PR,PR
 NIBP,NIBP,NIBP
 RESP,RESP,RESP
 ParameterColor,参数颜色,Parameter Color

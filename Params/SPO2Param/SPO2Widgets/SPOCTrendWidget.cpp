@@ -15,6 +15,7 @@
 #include "TrendWidgetLabel.h"
 #include <QLayout>
 #include "AlarmConfig.h"
+#include "MeasureSettingWindow.h"
 
 class SPOCTrendWidgetPrivate
 {
@@ -62,6 +63,7 @@ SPOCTrendWidget::SPOCTrendWidget()
     d_ptr->spocValue->setText(InvStr());
 
     contentLayout->addWidget(d_ptr->spocValue, 5);
+    connect(this, SIGNAL(released()), this, SLOT(onRelease()));
     loadConfig();
 }
 
@@ -77,4 +79,10 @@ void SPOCTrendWidget::setTextSize()
     int fontsize = fontManager.adjustNumFontSize(r, true);
     QFont font = fontManager.numFont(fontsize, true);
     d_ptr->spocValue->setFont(font);
+}
+
+void SPOCTrendWidget::onRelease()
+{
+    MeasureSettingWindow *p = MeasureSettingWindow::getInstance();
+    p->popup(trs("SPO2Menu"));
 }

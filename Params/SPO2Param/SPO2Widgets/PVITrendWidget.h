@@ -38,6 +38,9 @@ protected:
     /*reimplment*/
     void loadConfig();
 
+private slots:
+    void onRelease();
+
 private:
     PVITrendWidgetPrivate *const d_ptr;
 };

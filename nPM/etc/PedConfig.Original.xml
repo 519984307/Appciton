@@ -225,6 +225,14 @@
 		    <Scale>10</Scale>
 		</percent>
 		</SPMET>
+		<SPCO Enable="0" Prio="1">
+		<percent>
+		    <Low Min="0" Max="29">0</Low>
+		    <High Min="1" Max="30">30</High>
+		    <Step>1</Step>
+		    <Scale>11</Scale>
+		</percent>
+		</SPCO>
 		<NIBP_SYS Enable="1" Prio="1">
 		<mmHg>
 		    <Low Min="40" Max="199">75</Low>

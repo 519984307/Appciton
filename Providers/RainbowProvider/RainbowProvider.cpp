@@ -854,7 +854,11 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
             {
                 temp = (data[0] << 8) + data[1];
                 float value = (temp % 10) > 5 ? (temp / 10 + 1) : (temp /10);
-                qDebug() << "SPCO value: " << static_cast<short>(value);
+                spo2Param.setSpCO(value);
+            }
+            else
+            {
+                spo2Param.setSpCO(InvData());
             }
         }
     }
@@ -868,7 +872,11 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
             if (valid)
             {
                 temp = (data[0] << 8) + data[1];
-                qDebug() << "PVI value: " << temp;
+                spo2Param.setPVI(temp);
+            }
+            else
+            {
+                spo2Param.setPVI(InvData());
             }
         }
     }
@@ -883,7 +891,11 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
             {
                 temp = (data[0] << 8) + data[1];
                 float value = temp * 1.0 / 100 + 0.5;
-                qDebug() << "SpHb value" << static_cast<short>(value * 100);
+                spo2Param.setSpHb(value * 100);
+            }
+            else
+            {
+                spo2Param.setSpHb(InvData());
             }
         }
     }
@@ -898,7 +910,11 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
             {
                 temp = (data[0] << 8) + data[1];
                 float value = temp * 1.0 / 10 + 0.5;
-                qDebug() << "SpMet value" << static_cast<short>(value * 10);
+                spo2Param.setSpMet(value * 10);
+            }
+            else
+            {
+                spo2Param.setSpMet(InvData());
             }
         }
     }
@@ -913,7 +929,11 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
             {
                 temp = (data[0] << 8) + data[1];
                 float value = temp * 1.0 / 10 + 0.5;
-                qDebug() << "SpOC value" << static_cast<short>(value * 10);
+                spo2Param.setSpOC(value * 10);
+            }
+            else
+            {
+                spo2Param.setSpOC(InvData());
             }
         }
     }

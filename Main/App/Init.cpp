@@ -451,6 +451,14 @@ static void _initProviderParam(void)
         layoutManager.addLayoutWidget(spmetTrendWidget, LAYOUT_NODE_PARAM_SPMET);
         layoutManager.addLayoutWidget(spmetTrendWave, LAYOUT_NODE_TREND_WAVE_SPMET);
         spo2Param.setTrendWidget(spmetTrendWidget);
+        // spco
+        SPCOTrendWidget *spcoTrendWidget = new SPCOTrendWidget();
+        layoutManager.addLayoutWidget(spcoTrendWidget, LAYOUT_NODE_PARAM_SPCO);
+        spo2Param.setTrendWidget(spcoTrendWidget);
+        // pr
+        TrendWave *prTrendWave = new TrendWave("PRTrendWave");
+        prTrendWave->addSubParam(SUB_PARAM_HR_PR);
+        layoutManager.addLayoutWidget(prTrendWave, LAYOUT_NODE_TREND_WAVE_PR);
 
         OxyCRGSPO2TrendWidget *spo2OxyCRGWidget = new OxyCRGSPO2TrendWidget("OxyCRGSPO2Widget");
         spo2Param.setOxyCRGSPO2Trend(spo2OxyCRGWidget);
