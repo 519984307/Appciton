@@ -70,6 +70,7 @@ protected:
     void setName(const QString &name);
     void setUnit(const QString &unit);
     void setLimit(int up, int down, int scale);
+    void setLimit2(int up, int down, int scale);
 
     void setNameFont(int size, bool isBold = false);
     void setUnitFont(int size, bool isBold = false);
@@ -95,6 +96,9 @@ protected:
     QLabel *upLimit;
     QLabel *downLimit;
 
+    QLabel *upLimit2;
+    QLabel *downLimit2;
+
     QLabel *alarmOffIcon;
 
     QString _title;                           // 趋势控制标名
@@ -114,7 +118,7 @@ protected:
      * @param psrc                  参数对应的调色板
      * @param valueStr              当前参数值字符串
      */
-    void showAlarmParamLimit(QWidget *value, const QString &valueStr, QPalette psrc);
+    void showAlarmParamLimit(QWidget *value, const QString &valueStr, QPalette psrc, int limitId = 0);
 
     /**
      * @brief showNormalStatus  设置正常时状态：黑底＋对应颜色字体(刷新全部控件颜色)

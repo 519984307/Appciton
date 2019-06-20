@@ -174,6 +174,7 @@ void TEMPTrendWidget::showValue(void)
         if (_t2Alarm)
         {
             showAlarmStatus(_t2Value);
+            showAlarmParamLimit(_t2Value, _t2Str, psrc, 1);
         }
 
         if (_tdAlarm)
@@ -193,6 +194,9 @@ void TEMPTrendWidget::updateLimit()
     UnitType unitType = paramManager.getSubParamUnit(PARAM_TEMP, SUB_PARAM_T1);
     LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(SUB_PARAM_T1, unitType);
     setLimit(config.highLimit, config.lowLimit, config.scale);
+    unitType = paramManager.getSubParamUnit(PARAM_TEMP, SUB_PARAM_T2);
+    config = alarmConfig.getLimitAlarmConfig(SUB_PARAM_T2, unitType);
+    setLimit2(config.highLimit, config.lowLimit, config.scale);
 }
 
 /**************************************************************************************************

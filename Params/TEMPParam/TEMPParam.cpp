@@ -280,7 +280,7 @@ void TEMPParam::getCalibrateData(unsigned char *packet)
 
 void TEMPParam::updateSubParamLimit(SubParamID id)
 {
-    if (id == SUB_PARAM_T1)
+    if (id == SUB_PARAM_T1 || id == SUB_PARAM_T2)
     {
         _trendWidget->updateLimit();
     }
