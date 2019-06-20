@@ -407,14 +407,7 @@ static void _initProviderParam(void)
         {
             for (int i = 0; i < strs.count(); i++)
             {
-                if (strs.at(i) == "RAINBOW_SPO2_BLM")
-                {
-                    paramManager.addProvider(*new RainbowProvider("RAINBOW_SPO2_BLM", i));
-                }
-                else
-                {
-                    paramManager.addProvider(*new RainbowProvider("RAINBOW_SPO2_DAVID", i));
-                }
+                paramManager.addProvider(*new RainbowProvider(strs.at(i), i));
             }
             spo2Param.setModuleType(MODULE_RAINBOW_DOUBLE_SPO2);
         }
