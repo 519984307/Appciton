@@ -17,4 +17,9 @@ public:
 
     NIBPMonitorStandbyState();
     ~NIBPMonitorStandbyState();
+protected:
+    void timerEvent(QTimerEvent *ev);
+
+private:
+    int _timerID;
 };
