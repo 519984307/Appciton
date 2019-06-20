@@ -103,10 +103,9 @@ private:
 
     QTimer *_timer;
 
-    QTimer *_cmdTimer;
-
     bool _isModuleDataRespond;              // 是否为版本信息回复
     bool _isCalibrationRespond;             // 是否为校准回复
+    QTimer *_cmdTimer;
 
     QList<SuntechCMD> list;
 };

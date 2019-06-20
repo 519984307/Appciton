@@ -291,11 +291,6 @@ public:
      */
     bool isMaintain();
 
-    /**
-     * @brief clearTrendListData 清除趋势列表数据
-     */
-    void clearTrendListData();
-
     void setFirstAuto(bool flag);
 
     bool isFirstAuto();

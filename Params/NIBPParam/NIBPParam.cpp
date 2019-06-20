@@ -1341,15 +1341,6 @@ bool NIBPParam::isMaintain()
     return _isMaintain;
 }
 
-void NIBPParam::clearTrendListData()
-{
-    if (systemManager.isSupport(PARAM_NIBP))
-    {
-        _nibpDataTrendWidget->clearListData();
-        _nibpDataTrendWidget->adjustSize();
-    }
-}
-
 void NIBPParam::setFirstAuto(bool flag)
 {
     _firstAutoFlag = flag;
@@ -1464,7 +1455,7 @@ NIBPParam::NIBPParam()
       _text(InvStr()),
       _reply(false), _result(false), _manometerPressure(InvData()), _isMaintain(false), _firstAutoFlag(false),
       _autoStatFlag(false), _zeroSelfTestFlag(false),
-      _activityMachine(NULL), _oldState(0)
+      _activityMachine(NULL)
 {
     nibpCountdownTime.getInstance();
 
