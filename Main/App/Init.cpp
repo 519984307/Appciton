@@ -379,25 +379,43 @@ static void _initProviderParam(void)
     {
         QString str;
         machineConfig.getStrValue("SPO2", str);
-        if (str == "MASIMO_SPO2")
+        QStringList strs = str.split(",");
+        if (strs.count() == 1)
         {
-            paramManager.addProvider(*new MasimoSetProvider());
-            spo2Param.setModuleType(MODULE_MASIMO_SPO2);
+            if (str == "MASIMO_SPO2")
+            {
+                paramManager.addProvider(*new MasimoSetProvider());
+                spo2Param.setModuleType(MODULE_MASIMO_SPO2);
+            }
+            else if (str == "BLM_S5")
+            {
+                paramManager.addProvider(*new S5Provider());
+                spo2Param.setModuleType(MODULE_BLM_S5);
+            }
+            else if (str == "RAINBOW_SPO2_BLM")
+            {
+                spo2Param.setModuleType(MODULE_RAINBOW_SPO2);
+                paramManager.addProvider(*new RainbowProvider("RAINBOW_SPO2_BLM"));
+            }
+            else if (str == "RAINBOW_SPO2_DAVID")
+            {
+                spo2Param.setModuleType(MODULE_RAINBOW_SPO2);
+                paramManager.addProvider(*new RainbowProvider("RAINBOW_SPO2_DAVID"));
+            }
         }
-        else if (str == "BLM_S5")
+        else
         {
-            paramManager.addProvider(*new S5Provider());
-            spo2Param.setModuleType(MODULE_BLM_S5);
-        }
-        else if (str == "RAINBOW_SPO2")
-        {
-            paramManager.addProvider(*new RainbowProvider("RAINBOW_SPO2"));
-            spo2Param.setModuleType(MODULE_RAINBOW_SPO2);
-        }
-        else if (str == "RAINBOW_SPO2,RAINBOW_SPO2_2")
-        {
-            paramManager.addProvider(*new RainbowProvider("RAINBOW_SPO2"));
-            paramManager.addProvider(*new RainbowProvider("RAINBOW_SPO2_2"));
+            for (int i = 0; i < strs.count(); i++)
+            {
+                if (strs.at(i) == "RAINBOW_SPO2_BLM")
+                {
+                    paramManager.addProvider(*new RainbowProvider("RAINBOW_SPO2_BLM", i));
+                }
+                else
+                {
+                    paramManager.addProvider(*new RainbowProvider("RAINBOW_SPO2_DAVID", i));
+                }
+            }
             spo2Param.setModuleType(MODULE_RAINBOW_DOUBLE_SPO2);
         }
         paramManager.addParam(spo2Param.construction());

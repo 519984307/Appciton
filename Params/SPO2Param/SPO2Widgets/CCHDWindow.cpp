@@ -132,26 +132,26 @@ void CCHDWindow::onButtonReleased()
     Button *btn = qobject_cast<Button *>(sender());
     if (btn == d_ptr->handButton)
     {
-        if (spo2Param.getSPO2(SPO2_MODULE_DAVID) == InvData())
+        if (spo2Param.getSPO2() == InvData())
         {
             MessageBox msgBox(trs("Prompt"), trs("SPO2ValueInvaild"), false, true);
             msgBox.exec();
             return;
         }
-        d_ptr->handValue = spo2Param.getSPO2(SPO2_MODULE_DAVID);
+        d_ptr->handValue = spo2Param.getSPO2();
         btn->setEnabled(false);
         spo2Param.setCCHDData(d_ptr->handValue, true);
         d_ptr->update();
     }
     else if (btn == d_ptr->footButton)
     {
-        if (spo2Param.getSPO2(SPO2_MODULE_BLM) == InvData())
+        if (spo2Param.getSPO2(true) == InvData())
         {
             MessageBox msgBox(trs("Prompt"), trs("SPO2ValueInvaild"), false, true);
             msgBox.exec();
             return;
         }
-        d_ptr->footValue = spo2Param.getSPO2(SPO2_MODULE_BLM);
+        d_ptr->footValue = spo2Param.getSPO2(true);
         btn->setEnabled(false);
         spo2Param.setCCHDData(d_ptr->footValue, false);
         d_ptr->update();

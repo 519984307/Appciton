@@ -224,6 +224,7 @@ public:
         , pviAveragingMode(AVERAGING_MODE_NORMAL)
         , spHbBloodVessel(BLOOD_VESSEL_ARTERIAL)
         , provider(SPO2_MODULE_DAVID)
+        , isPlugIn(false)
     {
     }
 
@@ -356,22 +357,33 @@ public:
     SpHbBloodVesselMode spHbBloodVessel;
 
     SPO2Module provider;
+
+    bool isPlugIn;
 };
 
-RainbowProvider::RainbowProvider(const QString &name)
+RainbowProvider::RainbowProvider(const QString &name, bool isPlugIn)
     : Provider(name)
     , SPO2ProviderIFace()
     , d_ptr(new RainbowProviderPrivate(this))
 {
     UartAttrDesc attr(DEFALUT_BAUD_RATE, 8, 'N', 1);
-    if (name == "RAINBOW_SPO2")
-    {
-        disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_SPO2;
-    }
-    else if (name == "RAINBOW_SPO2_2")
+    d_ptr->isPlugIn = isPlugIn;
+    if (isPlugIn)
     {
         attr.baud = RUN_BAUD_RATE;
         plugInInfo.plugInType = PlugInProvider::PLUGIN_TYPE_SPO2;
+    }
+    else
+    {
+        disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_SPO2;
+    }
+
+    if (name == "RAINBOW_SPO2_DAVID")
+    {
+        d_ptr->provider = SPO2_MODULE_DAVID;
+    }
+    else if (name == "RAINBOW_SPO2_BLM")
+    {
         d_ptr->provider = SPO2_MODULE_BLM;
     }
 
@@ -397,7 +409,7 @@ bool RainbowProvider::attachParam(Param &param)
 {
     if (param.getParamID() == PARAM_SPO2)
     {
-        spo2Param.setProvider(this, d_ptr->provider);
+        spo2Param.setProvider(this, d_ptr->isPlugIn);
         Provider::attachParam(param);
         return true;
     }
@@ -636,7 +648,7 @@ void RainbowProvider::disconnected()
         alarmSource->clear();
         alarmSource->setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, true);
     }
-    spo2Param.setConnected(false, d_ptr->provider);
+    spo2Param.setConnected(false, d_ptr->isPlugIn);
 }
 
 void RainbowProvider::reconnected()
@@ -646,7 +658,7 @@ void RainbowProvider::reconnected()
     {
         alarmSource->setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, false);
     }
-    spo2Param.setConnected(true, d_ptr->provider);
+    spo2Param.setConnected(true, d_ptr->isPlugIn);
 }
 
 void RainbowProvider::initModule()
@@ -722,7 +734,7 @@ void RainbowProviderPrivate::handlePacket(unsigned char *data, int len)
     // 如果主机与该模块未连接成功，直接退出
     if (q_ptr->isConnected == false)
     {
-        spo2Param.setConnected(true, provider);
+        spo2Param.setConnected(true, isPlugIn);
     }
 
     // 发送保活帧
@@ -956,16 +968,16 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
 
         if (isCableOff == true)
         {
-            spo2Param.setNotify(true, trs("SPO2CheckSensor"), provider);
-            spo2Param.setValidStatus(false, provider);
+            spo2Param.setNotify(true, trs("SPO2CheckSensor"), isPlugIn);
+            spo2Param.setValidStatus(false, isPlugIn);
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, true);
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, false);
         }
         else
         {
-            spo2Param.setValidStatus(true, provider);
+            spo2Param.setValidStatus(true, isPlugIn);
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, false);
-            spo2Param.setSearchForPulse(isSearching, provider);  // search pulse标志。
+            spo2Param.setSearchForPulse(isSearching, isPlugIn);  // search pulse标志。
             if (isSearching)
             {
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, false);
@@ -976,8 +988,8 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
             }
         }
         // 最后更新spo2值和pr值。避免趋势界面的值跳动。
-        spo2Param.setPerfusionStatus(isLowPerfusionIndex, provider);
-        if (provider == SPO2_MODULE_DAVID)
+        spo2Param.setPerfusionStatus(isLowPerfusionIndex, isPlugIn);
+        if (!isPlugIn)
         {
             spo2Param.setSPO2(spo2Value);
             spo2Param.setPR(prValue);
@@ -1054,14 +1066,14 @@ void RainbowProviderPrivate::handleWaveformInfo(unsigned char *data, int len)
     if (data[2] & SPO2_IQ_FLAG_BIT)  // get beep pulse audio status
     {
         unsigned char signalIQ = data[2];
-        spo2Param.addWaveformData(waveData, signalIQ, provider);
-        spo2Param.addWaveformData(waveData, signalIQ, provider);  // add wavedata twice for rounding SPO2 Waveform Sample  62.5 * 2 = 125
+        spo2Param.addWaveformData(waveData, signalIQ, isPlugIn);
+        spo2Param.addWaveformData(waveData, signalIQ, isPlugIn);  // add wavedata twice for rounding SPO2 Waveform Sample  62.5 * 2 = 125
         spo2Param.setPulseAudio(true);
     }
     else
     {
-        spo2Param.addWaveformData(waveData, 0, provider);
-        spo2Param.addWaveformData(waveData, 0, provider);  // add wavedata twice for rounding SPO2 Waveform Sample  62.5 * 2 = 125
+        spo2Param.addWaveformData(waveData, 0, isPlugIn);
+        spo2Param.addWaveformData(waveData, 0, isPlugIn);  // add wavedata twice for rounding SPO2 Waveform Sample  62.5 * 2 = 125
     }
 }
 
@@ -1127,11 +1139,11 @@ void RainbowProviderPrivate::unlockBoard(unsigned int sn, unsigned int flag)
 {
     unsigned char data[9] = {0};
     unsigned int unlockKey = MANU_ID_BLM ^ sn;
-    if (q_ptr->disPatchInfo.dispatcher)
+    if (provider == SPO2_MODULE_DAVID)
     {
         unlockKey = MANU_ID_DAVID ^ sn;
     }
-    else if (q_ptr->plugInInfo.plugIn)
+    else if (provider == SPO2_MODULE_BLM)
     {
         unlockKey = MANU_ID_BLM ^ sn;
     }
@@ -1278,7 +1290,14 @@ void RainbowProviderPrivate::handleACK()
         case RB_INIT_SET_WAVEFORM:
             // get here after the baseline
             configPeriodWaveformOut(CLIPPED_AUTOSCALE_DATA | SIGNAL_IQ_AUDIO_VISUAL_DATA, 16);  // 每16ms输出一次波形
-            curInitializeStep = RB_INIT_SET_SPCO;
+            if (provider == SPO2_MODULE_BLM)
+            {
+                curInitializeStep = RB_INIT_COMPLETED;
+            }
+            else
+            {
+                curInitializeStep = RB_INIT_SET_SPCO;
+            }
             break;
         case RB_INIT_SET_SPCO:
             configPeriodParamOut(RB_PARAM_OF_SPCO, 170);        // 每170ms输出一次SPCO

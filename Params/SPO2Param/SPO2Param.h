@@ -80,7 +80,7 @@ public:
     virtual UnitType getCurrentUnit(SubParamID id);
 
     // 设置数据提供对象。
-    void setProvider(SPO2ProviderIFace *provider, SPO2Module flag = SPO2_MODULE_DAVID);
+    void setProvider(SPO2ProviderIFace *provider, bool isPlugIn = false);
 
     // 模块复位
     void reset();
@@ -93,7 +93,7 @@ public:
     void setTrendWidget(PVITrendWidget *trendWidget);
     void setTrendWidget(PITrendWidget *trendWidget);
     void setTrendWidget(SPCOTrendWidget *trendWidget);
-    void setWaveWidget(SPO2WaveWidget *waveWidget, SPO2Module flag = SPO2_MODULE_DAVID);
+    void setWaveWidget(SPO2WaveWidget *waveWidget, bool isPlugIn = false);
     void setOxyCRGSPO2Trend(OxyCRGSPO2TrendWidget *trendWidget);
 
     // PR音量
@@ -102,7 +102,7 @@ public:
     // 设置/获取SPO2的值。
     void setSPO2(short spo2Value);
     void setPlugInSPO2(short spo2Value);
-    short getSPO2(SPO2Module flag = SPO2_MODULE_DAVID);
+    short getSPO2(bool isPlugIn = false);
 
     // 设置/获取SpHb的值。
     void setSpHb(short value);
@@ -132,7 +132,7 @@ public:
     short getSpCO();
 
     // 设置波形值。
-    void addWaveformData(short wave, unsigned char waveFlag = 0, SPO2Module module = SPO2_MODULE_DAVID);
+    void addWaveformData(short wave, unsigned char waveFlag = 0, bool isPlugIn = false);
 
     // 设置棒图值。
     void addBarData(short data);
@@ -153,10 +153,10 @@ public:
     SoundManager::VolumeLevel getBeatVol(void) const;
 
     // 设置波形上的提示信息。
-    void setNotify(bool enable, QString str = " ", SPO2Module module = SPO2_MODULE_DAVID);
+    void setNotify(bool enable, QString str = " ", bool isPlugIn = false);
 
     // 设置搜索脉搏标志。
-    void setSearchForPulse(bool pulse, SPO2Module module = SPO2_MODULE_DAVID);
+    void setSearchForPulse(bool pulse, bool isPlugIn = false);
 
     // 设置OneShot报警。
     void setOneShotAlarm(SPO2OneShotType t, bool f);
@@ -165,12 +165,12 @@ public:
     void noticeLimitAlarm(bool isAlarm);
 
     // 有效状态
-    void setValidStatus(bool isValid, SPO2Module flag = SPO2_MODULE_DAVID);
-    bool isValid(SPO2Module flag = SPO2_MODULE_DAVID);
+    void setValidStatus(bool isValid, bool isPlugIn = false);
+    bool isValid(bool isPlugIn = false);
     bool isConnected();
 
     // 设置连接，供给对象调用。
-    void setConnected(bool isConnected, SPO2Module flag = SPO2_MODULE_DAVID);
+    void setConnected(bool isConnected, bool isPlugIn = false);
 
     // received package
     void receivePackage();
@@ -255,13 +255,13 @@ public:
      * @brief setPerfusionStatus  and the function of setting the SPO2 perfusion status
      * @param isLow  and true if low perfusion
      */
-    void setPerfusionStatus(bool isLow, SPO2Module flag = SPO2_MODULE_DAVID);
+    void setPerfusionStatus(bool isLow, bool isPlugIn = false);
 
     /**
      * @brief getPerfusionStatus  and the function of getting the SPO2 perfusion status
      * @return  and return true if low perfusion
      */
-    bool getPerfusionStatus(SPO2Module flag = SPO2_MODULE_DAVID) const;
+    bool getPerfusionStatus(bool isPlugIn = false) const;
 
     /**
      * @brief initModule  and the function of initting the module

@@ -45,7 +45,7 @@ public:
     SPO2ParamPrivate();
     ~SPO2ParamPrivate(){}
 
-    void setWaveformSpeed(SPO2WaveVelocity speed, SPO2Module flag = SPO2_MODULE_DAVID);
+    void setWaveformSpeed(SPO2WaveVelocity speed, bool isPlugIn = false);
 
     SPO2ProviderIFace *provider;
     SPO2ProviderIFace *plugInProvider;
@@ -157,7 +157,7 @@ SPO2ParamPrivate::SPO2ParamPrivate()
 {
 }
 
-void SPO2ParamPrivate::setWaveformSpeed(SPO2WaveVelocity speed, SPO2Module flag)
+void SPO2ParamPrivate::setWaveformSpeed(SPO2WaveVelocity speed, bool isPlugIn)
 {
     if (waveWidget == NULL && plugInWaveWidget == NULL)
     {
@@ -166,7 +166,7 @@ void SPO2ParamPrivate::setWaveformSpeed(SPO2WaveVelocity speed, SPO2Module flag)
 
     SPO2WaveWidget *w = NULL;
 
-    if (flag == SPO2_MODULE_DAVID)
+    if (!isPlugIn)
     {
         w = waveWidget;
     }
@@ -320,7 +320,7 @@ short SPO2Param::getSubParamValue(SubParamID id)
     case SUB_PARAM_SPO2:
         return getSPO2();
     case SUB_PARAM_SPO2_2:
-        return getSPO2(SPO2_MODULE_BLM);
+        return getSPO2(true);
     case SUB_PARAM_SPHB:
         return getSpHb();
     case SUB_PARAM_SPMET:
@@ -360,7 +360,7 @@ UnitType SPO2Param::getCurrentUnit(SubParamID /*id*/)
 /**************************************************************************************************
  * 设置数据提供对象。
  *************************************************************************************************/
-void SPO2Param::setProvider(SPO2ProviderIFace *provider, SPO2Module flag)
+void SPO2Param::setProvider(SPO2ProviderIFace *provider, bool isPlugIn)
 {
     if (provider == NULL)
     {
@@ -373,7 +373,7 @@ void SPO2Param::setProvider(SPO2ProviderIFace *provider, SPO2Module flag)
 
     SPO2ProviderIFace *p = NULL;
     SPO2WaveWidget *w = NULL;
-    if (flag == SPO2_MODULE_BLM)
+    if (isPlugIn)
     {
         d_ptr->plugInProvider = provider;
         p = d_ptr->plugInProvider;
@@ -395,7 +395,7 @@ void SPO2Param::setProvider(SPO2ProviderIFace *provider, SPO2Module flag)
         //设置灵敏度
         p->setSensitivityFastSat(static_cast<SensitivityMode>(getSensitivity()), getFastSat());
     }
-    else if (str == "MASIMO_SPO2" || str == "RAINBOW_SPO2" || str == "RAINBOW_SPO2,RAINBOW_SPO2_2")
+    else if (str == "MASIMO_SPO2" || str.contains("RAINBOW"))
     {
         p->setSensitivityFastSat(SPO2_MASIMO_SENS_NORMAL, false);
         p->setAverageTime(SPO2_AVER_TIME_8SEC);
@@ -525,22 +525,21 @@ void SPO2Param::setTrendWidget(SPCOTrendWidget *trendWidget)
 /**************************************************************************************************
  * 设置界面对象。
  *************************************************************************************************/
-void SPO2Param::setWaveWidget(SPO2WaveWidget *waveWidget, SPO2Module flag)
+void SPO2Param::setWaveWidget(SPO2WaveWidget *waveWidget, bool isPlugIn)
 {
     if (waveWidget == NULL)
     {
         return;
     }
-    if (flag == SPO2_MODULE_DAVID)
+    if (!isPlugIn)
     {
         d_ptr->waveWidget = waveWidget;
-        d_ptr->setWaveformSpeed((SPO2WaveVelocity)getSweepSpeed());
     }
     else
     {
         d_ptr->plugInWaveWidget = waveWidget;
-        d_ptr->setWaveformSpeed((SPO2WaveVelocity)getSweepSpeed(), SPO2_MODULE_BLM);
     }
+    d_ptr->setWaveformSpeed((SPO2WaveVelocity)getSweepSpeed(), isPlugIn);
 }
 
 void SPO2Param::setOxyCRGSPO2Trend(OxyCRGSPO2TrendWidget *trendWidget)
@@ -636,9 +635,9 @@ void SPO2Param::setPlugInSPO2(short spo2Value)
 /**************************************************************************************************
  * 获取SPO2的值。
  *************************************************************************************************/
-short SPO2Param::getSPO2(SPO2Module flag)
+short SPO2Param::getSPO2(bool isPlugIn)
 {
-    if (flag == SPO2_MODULE_DAVID)
+    if (!isPlugIn)
     {
         return d_ptr->spo2Value;
     }
@@ -773,13 +772,12 @@ short SPO2Param::getSpCO()
 /**************************************************************************************************
  * 设置波形值。
  *************************************************************************************************/
-void SPO2Param::addWaveformData(short wave, unsigned char waveFlag, SPO2Module module)
+void SPO2Param::addWaveformData(short wave, unsigned char waveFlag, bool isPlugIn)
 {
     int flag = 0;
     // record signal IQ flag and value
     flag = flag | waveFlag;
-
-    if (module == SPO2_MODULE_DAVID)
+    if (!isPlugIn)
     {
         if (!d_ptr->isValid)
         {
@@ -804,6 +802,7 @@ void SPO2Param::addWaveformData(short wave, unsigned char waveFlag, SPO2Module m
         }
         waveformCache.addData(WAVE_SPO2_2, (flag << 16) | wave);
     }
+
     if (NULL != d_ptr->trendWidget)
     {
         // TODO: 处理PI
@@ -858,9 +857,9 @@ SoundManager::VolumeLevel SPO2Param::getBeatVol() const
     return static_cast<SoundManager::VolumeLevel>(vol);
 }
 
-void SPO2Param::setNotify(bool enable, QString str, SPO2Module module)
+void SPO2Param::setNotify(bool enable, QString str, bool isPlugIn)
 {
-    if (module == SPO2_MODULE_DAVID)
+    if (!isPlugIn)
     {
         if (NULL != d_ptr->waveWidget)
         {
@@ -885,9 +884,9 @@ void SPO2Param::setNotify(bool enable, QString str, SPO2Module module)
 /**************************************************************************************************
  * 设置搜索脉搏标志。
  *************************************************************************************************/
-void SPO2Param::setSearchForPulse(bool isSearching, SPO2Module module)
+void SPO2Param::setSearchForPulse(bool isSearching, bool isPlugIn)
 {
-    if (module == SPO2_MODULE_DAVID)
+    if (!isPlugIn)
     {
         if (NULL != d_ptr->waveWidget)
         {
@@ -944,9 +943,9 @@ void SPO2Param::noticeLimitAlarm(bool isAlarm)
 /**************************************************************************************************
  * 状态0x42。
  *************************************************************************************************/
-void SPO2Param::setValidStatus(bool isValid, SPO2Module flag)
+void SPO2Param::setValidStatus(bool isValid, bool isPlugIn)
 {
-    if (flag == SPO2_MODULE_DAVID)
+    if (!isPlugIn)
     {
         d_ptr->isValid = isValid;
     }
@@ -959,9 +958,9 @@ void SPO2Param::setValidStatus(bool isValid, SPO2Module flag)
 /**************************************************************************************************
  * 状态是否有效。
  *************************************************************************************************/
-bool SPO2Param::isValid(SPO2Module flag)
+bool SPO2Param::isValid(bool isPlugIn)
 {
-    if (flag == SPO2_MODULE_DAVID)
+    if (!isPlugIn)
     {
         return d_ptr->isValid;
     }
@@ -983,9 +982,9 @@ bool SPO2Param::isConnected()
     return d_ptr->connectedProvider;
 }
 
-void SPO2Param::setConnected(bool isConnected, SPO2Module flag)
+void SPO2Param::setConnected(bool isConnected, bool isPlugIn)
 {
-    if (flag == SPO2_MODULE_DAVID)
+    if (!isPlugIn)
     {
         if (d_ptr->connectedProvider != isConnected)
         {
@@ -1343,9 +1342,9 @@ void SPO2Param::clearCCHDData(bool isCleanup)
     }
 }
 
-void SPO2Param::setPerfusionStatus(bool isLow, SPO2Module flag)
+void SPO2Param::setPerfusionStatus(bool isLow, bool isPlugIn)
 {
-    if (flag == SPO2_MODULE_DAVID)
+    if (!isPlugIn)
     {
         if (isLow != d_ptr->isLowPerfusion)
         {
@@ -1371,9 +1370,9 @@ void SPO2Param::setPerfusionStatus(bool isLow, SPO2Module flag)
     }
 }
 
-bool SPO2Param::getPerfusionStatus(SPO2Module flag) const
+bool SPO2Param::getPerfusionStatus(bool isPlugIn) const
 {
-    if (flag == SPO2_MODULE_BLM)
+    if (!isPlugIn)
     {
         return d_ptr->plugInIsLowPerfusion;
     }
