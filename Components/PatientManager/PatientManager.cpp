@@ -22,6 +22,7 @@
 #include "SystemManagerInterface.h"
 #include <QFile>
 #include "RunningStatusBarInterface.h"
+#include "ECGDupParam.h"
 
 #define XML_FILE_SUFFIX QString::fromLatin1(".xml")
 #define PATIENT_INFO_PATH QString("/usr/local/nPM/etc")
@@ -448,6 +449,10 @@ void PatientManager::newPatient()
             nibpParam->clearResult();
             nibpParam->clearTrendListData();
         }
+    }
+    if (systemManager && systemManager->isSupport(PARAM_ECG))
+    {
+        ecgDupParam.updateHRSource();
     }
 }
 
