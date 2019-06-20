@@ -66,4 +66,13 @@ public:
     virtual void setAutoStat(bool flag) = 0;
 
     virtual void clearTrendListData() = 0;
+
+    virtual void errorDisable(void) = 0;
+
+    virtual void recoverInitTrendWidgetData() = 0;
+
+    virtual void setZeroSelfTestState(bool) = 0;
+
+    virtual bool isZeroSelfTestState() = 0;
+    virtual void setCuffPressure(int pressure) = 0;
 };

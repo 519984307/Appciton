@@ -167,6 +167,7 @@ public:
     int16_t getPR(void);
     NIBPMeasureResult getMeasureResult(void);
     void setMeasureResult(NIBPMeasureResult flag);
+    void recoverInitTrendWidgetData();
 
     // 测量时间切换标志
     bool isSwitchTime(void);
@@ -303,6 +304,10 @@ public:
 
     bool isAutoStat();
 
+    void setZeroSelfTestState(bool);
+
+    bool isZeroSelfTestState();
+
 signals:
     /**
      * @brief statBtnState 设置NIBP菜单中的STAT按键状态
@@ -354,6 +359,7 @@ private:
     bool _isMaintain;            // 是否维护模式
     bool _firstAutoFlag;         // 第一次启动AUTO测量标志
     bool _autoStatFlag;         // auto倒计时开启Stat标志
+    bool _zeroSelfTestFlag;     //开机较零状态标志
 
 private:
     typedef QMap<NIBPStateMachineType, NIBPStateMachine *> MachineStateMap;

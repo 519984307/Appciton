@@ -89,6 +89,7 @@ enum NIBPPacketType
     N5_RSP_PRESSURE_PROTECT                     = 0x97,       //
 
     N5_STATE_CHANGE                             = 0xA0,       // 状态改变
+    N5_STATE_ZERO_SELFTEST                      = 0xA1,       // 自校零状态
     N5_SERVICE_PRESSURE                         = 0xDB,       // 压力帧。
 
     N5_UPGRADE_ALIVE                            = 0xFE,       //升级保活帧

@@ -302,7 +302,7 @@ void NIBPMenuContent::onBtnReleasedChanged()
         case NIBPMenuContentPrivate::ITEM_BTN_START_STAT:
         {
             if (nibpParam.curStatusType() == NIBP_MONITOR_ERROR_STATE ||
-                    systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+                    systemManager.getCurWorkMode() == WORK_MODE_DEMO || nibpParam.isZeroSelfTestState())
             {
                 return;
             }
