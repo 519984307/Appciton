@@ -30,6 +30,9 @@ protected:
     /*reimplment*/
     void setTextSize();
 
+private slots:
+    void onRelease();
+
 private:
     SPHBTrendWidgetPrivate * const d_ptr;
 };

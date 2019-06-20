@@ -16,6 +16,7 @@
 #include "BaseDefine.h"
 #include "AlarmConfig.h"
 #include "ColorManager.h"
+#include "MeasureSettingWindow.h"
 
 class SPMETTrendWidgetPrivate
 {
@@ -68,6 +69,8 @@ SPMETTrendWidget::SPMETTrendWidget()
     contentLayout->addWidget(d_ptr->spmetValue, 5);
     QPalette pal = colorManager.getPalette(paramInfo.getSubParamName(SUB_PARAM_SPMET));
     setPalette(pal);
+
+    connect(this, SIGNAL(released()), this, SLOT(onRelease()));
     loadConfig();
 }
 
@@ -83,5 +86,11 @@ void SPMETTrendWidget::setTextSize()
     int fontsize = fontManager.adjustNumFontSize(r, true);
     QFont font = fontManager.numFont(fontsize, true);
     d_ptr->spmetValue->setFont(font);
+}
+
+void SPMETTrendWidget::onRelease()
+{
+    MeasureSettingWindow *p = MeasureSettingWindow::getInstance();
+    p->popup(trs("SPO2Menu"));
 }
 

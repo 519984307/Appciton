@@ -35,6 +35,7 @@ const char *layoutNodeName(LayoutNodeType nodeType)
         "SpHb",
         "SpOC",
         "SpMet",
+        "SpCO",
         "CO2",
         "IBP1",
         "IBP2",
@@ -68,6 +69,7 @@ const char *layoutNodeName(LayoutNodeType nodeType)
         "PITrend",
         "SpHbTrend",
         "SpMetTrend",
+        "PRTrend",
     };
 
     return nodeName[nodeType];

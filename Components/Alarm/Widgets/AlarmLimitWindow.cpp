@@ -88,7 +88,7 @@ void AlarmLimitWindowPrivate::loadoptions()
             info.paramID = pid;
             info.subParamID = subId;
             info.status = alarmConfig.isLimitAlarmEnable(subId);
-            UnitType unit  = paramManager.getSubParamUnit(pid, subId);
+            UnitType unit  = paramInfo.getUnitOfSubParam(subId);
             info.limitConfig = alarmConfig.getLimitAlarmConfig(subId, unit);
             int alarmLev = 0;
             currentConfig.getNumAttr(QString("AlarmSource|%1")

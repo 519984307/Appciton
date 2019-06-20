@@ -23,6 +23,7 @@
 #include "O2ParamInterface.h"
 #include "XmlParser.h"
 #include <QFile>
+#include "SPO2Param.h"
 
 #define XML_FILE_SUFFIX QString::fromLatin1(".xml")
 #define PATIENT_INFO_PATH QString("/usr/local/nPM/etc")
@@ -407,6 +408,10 @@ void PatientManager::newPatient()
         nibpParam.clearResult();
         nibpParam.clearTrendListData();
     }
+    if (systemManager.isSupport(PARAM_SPO2))
+    {
+        spo2Param.clearTrendWaveData();
+    }
 }
 
 void PatientManager::dischargePatient()
@@ -541,6 +546,10 @@ void PatientManagerPrivate::handleDischarge()
         if (dataStorageDirManager)
         {
             dataStorageDirManager->cleanCurData();
+        }
+        if (systemManager.isSupport(PARAM_SPO2))
+        {
+            spo2Param.clearTrendWaveData();
         }
     }
 }

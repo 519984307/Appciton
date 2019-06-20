@@ -14,6 +14,7 @@
 class SPMETTrendWidgetPrivate;
 class SPMETTrendWidget : public TrendWidget
 {
+    Q_OBJECT
 public:
     void setSpMetValue(int16_t spmet);
 
@@ -28,6 +29,9 @@ public:
 protected:
     /*reimplment*/
     void setTextSize();
+
+private slots:
+    void onRelease();
 
 private:
     SPMETTrendWidgetPrivate * const d_ptr;

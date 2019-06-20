@@ -595,6 +595,7 @@ SOURCES +=                                                                      
     Params/SPO2Param/SPO2Widgets/SPOCTrendWidget.cpp                            \
     Params/SPO2Param/SPO2Widgets/SPMETTrendWidget.cpp                           \
     Params/SPO2Param/SPO2Widgets/PITrendWidget.cpp                              \
+    Params/SPO2Param/SPO2Widgets/SPCOTrendWidget.cpp                            \
     Params/SPO2Param/SPO2Widgets/SPO2BarWidget.cpp                              \
     Params/SPO2Param/SPO2Widgets/SPO2MenuContent.cpp                            \
     Params/SPO2Param/SPO2Widgets/CCHDWindow.cpp                                 \
@@ -1166,6 +1167,7 @@ HEADERS +=                                                                      
     Params/SPO2Param/SPO2Widgets/SPOCTrendWidget.h                              \
     Params/SPO2Param/SPO2Widgets/SPMETTrendWidget.h                             \
     Params/SPO2Param/SPO2Widgets/PITrendWidget.h                                \
+    Params/SPO2Param/SPO2Widgets/SPCOTrendWidget.h                              \
     Params/SPO2Param/SPO2Widgets/SPO2BarWidget.h                                \
     Params/SPO2Param/SPO2Widgets/SPO2MenuContent.h                              \
     Params/SPO2Param/SPO2Widgets/CCHDWindow.h                                   \

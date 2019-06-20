@@ -25,6 +25,7 @@
 #include "ECGParam.h"
 #include "CO2Param.h"
 #include "ECGDupParam.h"
+#include "SPO2Param.h"
 
 #define FIRST_ECG_WAVE_HEIGHT 184
 
@@ -1109,7 +1110,17 @@ void LayoutManagerPrivate::performSPO2Layout()
     QGridLayout *trendWaveLayout = new QGridLayout(trendWaveContainter);
     QGridLayout *paramLayout = new QGridLayout(paramContainter);
 
-    QVariantMap spo2LayoutInfos = systemConfig.getConfig("PrimaryCfg|UILayout|ContentLayout|SPO2");
+    QVariantMap spo2LayoutInfos;
+    if (spo2Param.getModuleType() != MODULE_RAINBOW_DOUBLE_SPO2)
+    {
+        // 单血氧界面
+        spo2LayoutInfos = systemConfig.getConfig("PrimaryCfg|UILayout|ContentLayout|SPO2Single");
+    }
+    else
+    {
+        // 双血氧界面
+        spo2LayoutInfos = systemConfig.getConfig("PrimaryCfg|UILayout|ContentLayout|SPO2Double");
+    }
     QVariantList layoutRows = spo2LayoutInfos["LayoutRow"].toList();
 
     if (layoutRows.isEmpty())

@@ -15,6 +15,7 @@
 #include "ParamInfo.h"
 #include "TrendWidgetLabel.h"
 #include "AlarmConfig.h"
+#include "MeasureSettingWindow.h"
 
 class PITrendWidgetPrivate
 {
@@ -65,6 +66,7 @@ PITrendWidget::PITrendWidget()
     d_ptr->piValue->setText(InvStr());
 
     contentLayout->addWidget(d_ptr->piValue, 5);
+    connect(this, SIGNAL(released()), this, SLOT(onRelease()));
 
     loadConfig();
 }
@@ -81,5 +83,11 @@ void PITrendWidget::setTextSize()
     int fontsize = fontManager.adjustNumFontSize(r, true);
     QFont font = fontManager.numFont(fontsize, true);
     d_ptr->piValue->setFont(font);
+}
+
+void PITrendWidget::onRelease()
+{
+    MeasureSettingWindow *p = MeasureSettingWindow::getInstance();
+    p->popup(trs("SPO2Menu"));
 }
 

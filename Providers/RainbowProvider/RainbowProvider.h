@@ -19,7 +19,7 @@ class RainbowProvider : public Provider, public SPO2ProviderIFace
 
     friend class RainbowProviderPrivate;
 public:
-    explicit RainbowProvider(const QString &name);
+    explicit RainbowProvider(const QString &name, bool isPlugIn = false);
     ~RainbowProvider();
 
     /* reimplment */

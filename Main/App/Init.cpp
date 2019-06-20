@@ -379,25 +379,36 @@ static void _initProviderParam(void)
     {
         QString str;
         machineConfig.getStrValue("SPO2", str);
-        if (str == "MASIMO_SPO2")
+        QStringList strs = str.split(",");
+        if (strs.count() == 1)
         {
-            paramManager.addProvider(*new MasimoSetProvider());
-            spo2Param.setModuleType(MODULE_MASIMO_SPO2);
+            if (str == "MASIMO_SPO2")
+            {
+                paramManager.addProvider(*new MasimoSetProvider());
+                spo2Param.setModuleType(MODULE_MASIMO_SPO2);
+            }
+            else if (str == "BLM_S5")
+            {
+                paramManager.addProvider(*new S5Provider());
+                spo2Param.setModuleType(MODULE_BLM_S5);
+            }
+            else if (str == "RAINBOW_SPO2_BLM")
+            {
+                spo2Param.setModuleType(MODULE_RAINBOW_SPO2);
+                paramManager.addProvider(*new RainbowProvider("RAINBOW_SPO2_BLM"));
+            }
+            else if (str == "RAINBOW_SPO2_DAVID")
+            {
+                spo2Param.setModuleType(MODULE_RAINBOW_SPO2);
+                paramManager.addProvider(*new RainbowProvider("RAINBOW_SPO2_DAVID"));
+            }
         }
-        else if (str == "BLM_S5")
+        else
         {
-            paramManager.addProvider(*new S5Provider());
-            spo2Param.setModuleType(MODULE_BLM_S5);
-        }
-        else if (str == "RAINBOW_SPO2")
-        {
-            paramManager.addProvider(*new RainbowProvider("RAINBOW_SPO2"));
-            spo2Param.setModuleType(MODULE_RAINBOW_SPO2);
-        }
-        else if (str == "RAINBOW_SPO2,RAINBOW_SPO2_2")
-        {
-            paramManager.addProvider(*new RainbowProvider("RAINBOW_SPO2"));
-            paramManager.addProvider(*new RainbowProvider("RAINBOW_SPO2_2"));
+            for (int i = 0; i < strs.count(); i++)
+            {
+                paramManager.addProvider(*new RainbowProvider(strs.at(i), i));
+            }
             spo2Param.setModuleType(MODULE_RAINBOW_DOUBLE_SPO2);
         }
         paramManager.addParam(spo2Param.construction());
@@ -451,6 +462,14 @@ static void _initProviderParam(void)
         layoutManager.addLayoutWidget(spmetTrendWidget, LAYOUT_NODE_PARAM_SPMET);
         layoutManager.addLayoutWidget(spmetTrendWave, LAYOUT_NODE_TREND_WAVE_SPMET);
         spo2Param.setTrendWidget(spmetTrendWidget);
+        // spco
+        SPCOTrendWidget *spcoTrendWidget = new SPCOTrendWidget();
+        layoutManager.addLayoutWidget(spcoTrendWidget, LAYOUT_NODE_PARAM_SPCO);
+        spo2Param.setTrendWidget(spcoTrendWidget);
+        // pr
+        TrendWave *prTrendWave = new TrendWave("PRTrendWave");
+        prTrendWave->addSubParam(SUB_PARAM_HR_PR);
+        layoutManager.addLayoutWidget(prTrendWave, LAYOUT_NODE_TREND_WAVE_PR);
 
         OxyCRGSPO2TrendWidget *spo2OxyCRGWidget = new OxyCRGSPO2TrendWidget("OxyCRGSPO2Widget");
         spo2Param.setOxyCRGSPO2Trend(spo2OxyCRGWidget);

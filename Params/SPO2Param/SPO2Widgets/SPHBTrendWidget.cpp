@@ -15,6 +15,7 @@
 #include <QLayout>
 #include "TrendWidgetLabel.h"
 #include "AlarmConfig.h"
+#include "MeasureSettingWindow.h"
 
 class SPHBTrendWidgetPrivate
 {
@@ -65,6 +66,7 @@ SPHBTrendWidget::SPHBTrendWidget()
     QPalette pal = colorManager.getPalette(paramInfo.getSubParamName(SUB_PARAM_SPHB));
     setPalette(pal);
 
+    connect(this, SIGNAL(released()), this, SLOT(onRelease()));
     loadConfig();
 }
 
@@ -80,4 +82,10 @@ void SPHBTrendWidget::setTextSize()
     int fontsize = fontManager.adjustNumFontSize(r, true);
     QFont font = fontManager.numFont(fontsize, true);
     d_ptr->sphbValue->setFont(font);
+}
+
+void SPHBTrendWidget::onRelease()
+{
+    MeasureSettingWindow *p = MeasureSettingWindow::getInstance();
+    p->popup(trs("SPO2Menu"));
 }

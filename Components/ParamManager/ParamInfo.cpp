@@ -59,6 +59,8 @@ static const char *_subParamNames(SubParamID paramID, bool ignoreModuleConfig)
         return "SPMET";
     case SUB_PARAM_PI:
         return "PI";
+    case SUB_PARAM_SPCO:
+        return "SPCO";
 
     case SUB_PARAM_RR_BR:
         if (ignoreModuleConfig || (systemManager.isSupport(CONFIG_CO2) &&
@@ -289,6 +291,7 @@ ParamID ParamInfo::getParamID(SubParamID id)
     case SUB_PARAM_SPHB:
     case SUB_PARAM_SPOC:
     case SUB_PARAM_SPMET:
+    case SUB_PARAM_SPCO:
         paramID = PARAM_SPO2;
         break;
     case SUB_PARAM_T1:
@@ -680,6 +683,7 @@ UnitType ParamInfo::getUnitOfSubParam(SubParamID id)
     case SUB_PARAM_PI:
     case SUB_PARAM_PVI:
     case SUB_PARAM_SPMET:
+    case SUB_PARAM_SPCO:
         return UNIT_PERCENT;
     case SUB_PARAM_SPHB:
         return UNIT_GDL;

@@ -160,9 +160,12 @@ bool DemoProvider::attachParam(Param &param)
         _demoWaveData[WAVE_SPO2].param = &param;
         _demoWaveData[WAVE_SPO2_2].param = &param;
         spo2Param.setProvider(this);
-        spo2Param.setProvider(this, SPO2_MODULE_BLM);
         spo2Param.setConnected(true);
-        spo2Param.setConnected(true, SPO2_MODULE_BLM);
+        if (spo2Param.getModuleType() == MODULE_RAINBOW_DOUBLE_SPO2)
+        {
+            spo2Param.setProvider(this, true);
+            spo2Param.setConnected(true, true);
+        }
     }
     else if (name == paramInfo.getParamName(PARAM_RESP))
     {

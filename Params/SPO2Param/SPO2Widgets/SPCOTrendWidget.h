@@ -5,26 +5,24 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/6/10
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/6/19
  **/
 
 #pragma once
 #include "TrendWidget.h"
 
-class PITrendWidgetPrivate;
-class PITrendWidget : public TrendWidget
+class SPCOTrendWidgetPrivate;
+class SPCOTrendWidget : public TrendWidget
 {
     Q_OBJECT
 public:
-    void setPIValue(int16_t pi);
+    SPCOTrendWidget();
+    ~SPCOTrendWidget();
+
+    void setSPCOValue(int16_t spco);
 
     /*reimplment*/
     void updateLimit();
-
-    void isAlarm(bool flag);
-
-    PITrendWidget();
-    ~PITrendWidget();
 
 protected:
     /*reimplment*/
@@ -34,5 +32,5 @@ private slots:
     void onRelease();
 
 private:
-    PITrendWidgetPrivate * const d_ptr;
+    SPCOTrendWidgetPrivate * const d_ptr;
 };
