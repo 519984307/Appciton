@@ -80,17 +80,17 @@ void NIBPMonitorStandbyState::handleNIBPEvent(NIBPEvent event, const unsigned ch
         break;
     case NIBP_EVENT_ZERO_SELFTEST:
         nibpParam->setCuffPressure(args[0]);
-        if (args[0] == 0x01)                               //  开机正在校准
+        if (args[0] == NIBP_ZERO_ONGOING_STATE)           //  开机正在校准
         {
             nibpParam->setZeroSelfTestState(true);
             nibpParam->setText(trs("NIBPZEROING"));       //  显示正在较零
         }
-        else if (args[0] == 0x02)                         //  开机校准成功
+        else if (args[0] == NIBP_ZERO_SUCCESS_STATE)      //  开机校准成功
         {
             nibpParam->setZeroSelfTestState(false);
             nibpParam->recoverInitTrendWidgetData();      //  显示上一次信息
         }
-        else if (args[0] == 0x03)                        //  校零失败，进入禁用状态
+        else if (args[0] == NIBP_ZERO_FAIL_STATE)         //  校零失败，进入禁用状态
         {
             nibpParam->setZeroSelfTestState(false);
             nibpParam->errorDisable();

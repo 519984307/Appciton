@@ -2,6 +2,13 @@
 #include "NIBPState.h"
 #include "NIBPMonitorStateDefine.h"
 
+enum NIBPZeroTestState
+{
+    NIBP_ZERO_ONGOING_STATE = 0x01,
+    NIBP_ZERO_SUCCESS_STATE = 0x02,
+    NIBP_ZERO_FAIL_STATE = 0x03
+};
+
 class NIBPMonitorStandbyState : public NIBPState
 {
 public:
