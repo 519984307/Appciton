@@ -47,6 +47,8 @@ public:
 protected:
     virtual void setTextSize(void);
 
+    void showAlarmParamLimit(QWidget *value, const QString &valueStr, QPalette psrc);
+
 private slots:
     void _releaseHandle(IWidget *);
 
@@ -85,4 +87,9 @@ private:
     bool _t1Alarm;
     bool _t2Alarm;
     bool _tdAlarm;
+
+    QLabel *_t1UpLimit;
+    QLabel *_t1DownLimit;
+    QLabel *_t2UpLimit;
+    QLabel *_t2DownLimit;
 };

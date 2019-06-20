@@ -59,8 +59,6 @@ void TrendWidget::resizeEvent(QResizeEvent *e)
     unitLabel->setFont(font);
     upLimit->setFont(font);
     downLimit->setFont(font);
-    upLimit2->setFont(font);
-    downLimit2->setFont(font);
     setTextSize();
 }
 
@@ -118,53 +116,28 @@ void TrendWidget::showAlarmStatus(QWidget *value)
     value->setPalette(alaColor);
 }
 
-void TrendWidget::showAlarmParamLimit(QWidget *valueWidget, const QString &valueStr, QPalette psrc, int limitId)
+void TrendWidget::showAlarmParamLimit(QWidget *valueWidget, const QString &valueStr, QPalette psrc)
 {
     normalPalette(psrc);
     double value = valueStr.toDouble();
-    if (limitId == 0)
+    double up = upLimit->text().toDouble();
+    double down = downLimit->text().toDouble();
+    if (value > up)
     {
-        double up = upLimit->text().toDouble();
-        double down = downLimit->text().toDouble();
-        if (value > up)
-        {
-            upLimit->setPalette(valueWidget->palette());
-        }
-        else
-        {
-            upLimit->setPalette(psrc);
-        }
-
-        if (value < down)
-        {
-            downLimit->setPalette(valueWidget->palette());
-        }
-        else
-        {
-            downLimit->setPalette(psrc);
-        }
+        upLimit->setPalette(valueWidget->palette());
     }
-    if (limitId == 1)
+    else
     {
-        double up = upLimit2->text().toDouble();
-        double down = downLimit2->text().toDouble();
-        if (value > up)
-        {
-            upLimit2->setPalette(valueWidget->palette());
-        }
-        else
-        {
-            upLimit2->setPalette(psrc);
-        }
+        upLimit->setPalette(psrc);
+    }
 
-        if (value < down)
-        {
-            downLimit2->setPalette(valueWidget->palette());
-        }
-        else
-        {
-            downLimit2->setPalette(psrc);
-        }
+    if (value < down)
+    {
+        downLimit->setPalette(valueWidget->palette());
+    }
+    else
+    {
+        downLimit->setPalette(psrc);
     }
 }
 
@@ -309,22 +282,6 @@ void TrendWidget::setLimit(int up, int down, int scale)
     }
 }
 
-void TrendWidget::setLimit2(int up, int down, int scale)
-{
-    if (scale == 1)
-    {
-        upLimit2->setText(QString::number(up));
-        downLimit2->setText(QString::number(down));
-    }
-    else
-    {
-        upLimit2->setText(QString::number(up / scale) + "." + QString::number(up % scale));
-        downLimit2->setText(QString::number(down / scale) + "." + QString::number(down % scale));
-    }
-    upLimit2->setVisible(true);
-    downLimit2->setVisible(true);
-}
-
 /**************************************************************************************************
  * 功能： 设置名称的字体。
  * 参数：
@@ -353,7 +310,7 @@ void TrendWidget::setUnitFont(int size, bool isBold)
  *************************************************************************************************/
 TrendWidget::TrendWidget(const QString &widgetName, bool vertical)
     : IWidget(widgetName), nameLabel(NULL),
-      unitLabel(NULL), upLimit(NULL), downLimit(NULL), upLimit2(NULL), downLimit2(NULL)
+      unitLabel(NULL), upLimit(NULL), downLimit(NULL)
 {
     _title = "";
     nameLabel = new TrendWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
@@ -367,14 +324,6 @@ TrendWidget::TrendWidget(const QString &widgetName, bool vertical)
 
     downLimit = new QLabel("", this);
     downLimit->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-
-    upLimit2 = new QLabel("", this);
-    upLimit2->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    upLimit2->setVisible(false);
-
-    downLimit2 = new QLabel("", this);
-    downLimit2->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    downLimit2->setVisible(false);
 
     alarmOffIcon = new QLabel(this);
     QPixmap icon("/usr/local/nPM/icons/AlarmOff.png");
@@ -394,14 +343,9 @@ TrendWidget::TrendWidget(const QString &widgetName, bool vertical)
         vLayoutLimit->addWidget(upLimit);
         vLayoutLimit->addWidget(downLimit);
 
-        QVBoxLayout *vLayoutLimit2 = new QVBoxLayout();
-        vLayoutLimit2->addWidget(upLimit2);
-        vLayoutLimit2->addWidget(downLimit2);
-
         QHBoxLayout *hLayout = new QHBoxLayout();
         hLayout->addWidget(alarmOffIcon, 1);
         hLayout->addLayout(vLayoutLimit, 1);
-        hLayout->addLayout(vLayoutLimit2, 1);
 
         vLayout->addLayout(hLayout);
         vLayout->addLayout(mLayout, 1);

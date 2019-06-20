@@ -174,7 +174,7 @@ void TEMPTrendWidget::showValue(void)
         if (_t2Alarm)
         {
             showAlarmStatus(_t2Value);
-            showAlarmParamLimit(_t2Value, _t2Str, psrc, 1);
+            showAlarmParamLimit(_t2Value, _t2Str, psrc);
         }
 
         if (_tdAlarm)
@@ -193,10 +193,39 @@ void TEMPTrendWidget::updateLimit()
 {
     UnitType unitType = paramManager.getSubParamUnit(PARAM_TEMP, SUB_PARAM_T1);
     LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(SUB_PARAM_T1, unitType);
-    setLimit(config.highLimit, config.lowLimit, config.scale);
+    if (config.scale == 1)
+    {
+        _t1UpLimit->setText(QString::number(config.highLimit));
+        _t1DownLimit->setText(QString::number(config.lowLimit));
+    }
+    else
+    {
+        _t1UpLimit->setText(QString::number(config.highLimit / config.scale)
+                            + "."
+                            + QString::number(config.highLimit % config.scale));
+
+        _t1DownLimit->setText(QString::number(config.lowLimit / config.scale)
+                              + "."
+                              + QString::number(config.lowLimit % config.scale));
+    }
+
     unitType = paramManager.getSubParamUnit(PARAM_TEMP, SUB_PARAM_T2);
     config = alarmConfig.getLimitAlarmConfig(SUB_PARAM_T2, unitType);
-    setLimit2(config.highLimit, config.lowLimit, config.scale);
+    if (config.scale == 1)
+    {
+        _t2UpLimit->setText(QString::number(config.highLimit));
+        _t2DownLimit->setText(QString::number(config.lowLimit));
+    }
+    else
+    {
+        _t2UpLimit->setText(QString::number(config.highLimit / config.scale)
+                            + "."
+                            + QString::number(config.highLimit % config.scale));
+
+        _t2DownLimit->setText(QString::number(config.lowLimit / config.scale)
+                              + "."
+                              + QString::number(config.lowLimit % config.scale));
+    }
 }
 
 /**************************************************************************************************
@@ -207,21 +236,77 @@ void TEMPTrendWidget::setTextSize()
     QRect r;
     int widgetWidth = width();
     int nameLabelWidth = nameLabel->width();
-    r.setSize(QSize((widgetWidth- nameLabelWidth)/2, height()/2));
+    r.setSize(QSize((widgetWidth - nameLabelWidth * 3)/3, height()));
     // 字体。
     int fontsize = fontManager.adjustNumFontSize(r, true, "3888");
-    int nameFontSize = fontsize / 2;
     QFont font = fontManager.numFont(fontsize, true);
-    QFont nameFont = fontManager.numFont(nameFontSize);
     font.setWeight(QFont::Black);
-
     _t1Value->setFont(font);
     _t2Value->setFont(font);
     _tdValue->setFont(font);
 
+    // name
+    QFont nameFont = fontManager.textFont(fontManager.getFontSize(3));
     _t1Name->setFont(nameFont);
     _t2Name->setFont(nameFont);
     _tdName->setFont(nameFont);
+
+    // limit font
+    QFont limitFont = fontManager.textFont(fontManager.getFontSize(1));
+    _t1UpLimit->setFont(limitFont);
+    _t1DownLimit->setFont(limitFont);
+    _t2UpLimit->setFont(limitFont);
+    _t2DownLimit->setFont(limitFont);
+}
+
+void TEMPTrendWidget::showAlarmParamLimit(QWidget *valueWidget, const QString &valueStr, QPalette psrc)
+{
+    normalPalette(psrc);
+    double value = valueStr.toDouble();
+    if (valueWidget == _t1Value)
+    {
+        double up = _t1UpLimit->text().toDouble();
+        double down = _t1DownLimit->text().toDouble();
+        if (value > up)
+        {
+            _t1UpLimit->setPalette(valueWidget->palette());
+        }
+        else
+        {
+            _t1UpLimit->setPalette(psrc);
+        }
+
+        if (value < down)
+        {
+            _t1DownLimit->setPalette(valueWidget->palette());
+        }
+        else
+        {
+            _t1DownLimit->setPalette(psrc);
+        }
+    }
+    if (valueWidget == _t2Value)
+    {
+        double up = _t2UpLimit->text().toDouble();
+        double down = _t2DownLimit->text().toDouble();
+        if (value > up)
+        {
+            _t2UpLimit->setPalette(valueWidget->palette());
+        }
+        else
+        {
+            _t2UpLimit->setPalette(psrc);
+        }
+
+        if (value < down)
+        {
+            _t2DownLimit->setPalette(valueWidget->palette());
+        }
+        else
+        {
+            _t2DownLimit->setPalette(psrc);
+        }
+    }
 }
 
 /**************************************************************************************************
@@ -256,49 +341,61 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
 
     QHBoxLayout *hLayout = new QHBoxLayout;
     QVBoxLayout *vLayout = new QVBoxLayout();
-    QHBoxLayout *mainLayout = new QHBoxLayout();
-    mainLayout->setMargin(1);
-    mainLayout->setSpacing(1);
 
+    // T1
     _t1Name = new QLabel();
-    _t1Name->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
+    _t1Name->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
     _t1Name->setText(trs("T1"));
-    _t2Name = new QLabel();
-    _t2Name->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
-    _t2Name->setText(trs("T2"));
+    _t1UpLimit = new QLabel();
+    _t1UpLimit->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
+    _t1UpLimit->setText("");
+    _t1DownLimit = new QLabel();
+    _t1DownLimit->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
+    _t1DownLimit->setText("");
     vLayout->addWidget(_t1Name);
-    vLayout->addWidget(_t2Name);
-    hLayout->addLayout(vLayout);
-
+    vLayout->addStretch();
+    vLayout->addWidget(_t1UpLimit);
+    vLayout->addWidget(_t1DownLimit);
+    vLayout->addStretch();
     _t1Value = new QLabel();
-    _t1Value->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
+    _t1Value->setAlignment(Qt::AlignCenter);
     _t1Value->setText(InvStr());
-    _t2Value = new QLabel();
-    _t2Value->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
-    _t2Value->setText(InvStr());
-    vLayout = new QVBoxLayout();
-    vLayout->addWidget(_t1Value);
-    vLayout->addWidget(_t2Value);
     hLayout->addLayout(vLayout);
-    mainLayout->addStretch(1);
-    mainLayout->addLayout(hLayout);
+    hLayout->addWidget(_t1Value);
 
+    // T2
+    _t2Name = new QLabel();
+    _t2Name->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
+    _t2Name->setText(trs("T2"));
+    _t2UpLimit = new QLabel();
+    _t2UpLimit->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
+    _t2UpLimit->setText("");
+    _t2DownLimit = new QLabel();
+    _t2DownLimit->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
+    _t2DownLimit->setText("");
+    vLayout = new QVBoxLayout();
+    vLayout->addWidget(_t2Name);
+    vLayout->addStretch();
+    vLayout->addWidget(_t2UpLimit);
+    vLayout->addWidget(_t2DownLimit);
+    vLayout->addStretch();
+    _t2Value = new QLabel();
+    _t2Value->setAlignment(Qt::AlignCenter);
+    _t2Value->setText(InvStr());
+    hLayout->addLayout(vLayout);
+    hLayout->addWidget(_t2Value);
+
+    // TD
     _tdName = new QLabel();
-    _tdName->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
+    _tdName->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
     _tdName->setText(trs("TD"));
     _tdValue = new QLabel();
-    _tdValue->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
+    _tdValue->setAlignment(Qt::AlignCenter);
     _tdValue->setText(InvStr());
-    vLayout = new QVBoxLayout();
-    vLayout->addStretch();
-    vLayout->addWidget(_tdName);
-    vLayout->addWidget(_tdValue);
-    vLayout->addStretch();
-    mainLayout->addStretch(1);
-    mainLayout->addLayout(vLayout);
-    mainLayout->addStretch(1);
+    hLayout->addWidget(_tdName);
+    hLayout->addWidget(_tdValue);
 
-    contentLayout->addLayout(mainLayout, 3);
+    contentLayout->addLayout(hLayout, 7);
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
