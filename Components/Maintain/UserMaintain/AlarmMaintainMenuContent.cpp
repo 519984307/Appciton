@@ -383,8 +383,8 @@ void AlarmMaintainMenuContent::layoutExec()
 #endif
 
     // alarmLight On Alarm Reset
-    label = new QLabel(trs("AlarmLightOnAlarmReset"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
+//    label = new QLabel(trs("AlarmLightOnAlarmReset"));
+//    layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("Close")
@@ -392,12 +392,12 @@ void AlarmMaintainMenuContent::layoutExec()
     itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_LIGHT_RESET);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+//    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_LIGHT_RESET, comboBox);
 
     // latch lock
-    label = new QLabel(trs("LatchLockSwitch"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
+//    label = new QLabel(trs("LatchLockSwitch"));
+//    layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("Off")
@@ -405,7 +405,7 @@ void AlarmMaintainMenuContent::layoutExec()
     itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_LATCH_LOCK);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+//    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_LATCH_LOCK, comboBox);
 
     // Alarm Audio Off
