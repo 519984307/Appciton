@@ -1191,7 +1191,7 @@ void SPO2Param::setSweepSpeed(int speed)
 {
     currentConfig.setNumValue("SPO2|SweepSpeed", speed);
     d_ptr->setWaveformSpeed((SPO2WaveVelocity)speed);
-    d_ptr->setWaveformSpeed((SPO2WaveVelocity)speed, SPO2_MODULE_BLM);
+    d_ptr->setWaveformSpeed((SPO2WaveVelocity)speed, SPO2_RAINBOW_TYPE_BLM);
 }
 
 /**************************************************************************************************
