@@ -1425,15 +1425,15 @@ AlarmLevel,报警级别,Alarm Level
 AlarmType,报警类型,Alarm Type 
 Technology,技术,Technology
 Physiology,生理,Physiology
-UserMaintainPassword,用户维护密码,User Maintain Password
-UserMaintainSystem,用户维护系统,User Maintain
+UserMaintainPassword,监护仪维护密码,Monitor Maintain Password
+UserMaintainSystem,监护仪维护,Monitor Maintain
 Department,部门,Department
 BedNumber,床号,Bed No.
 ModifyPassword,密码,Password
 ChangeBedNumberRight,更改床号权限,Changing Bed Number
 Language,语言,Language
 EditMonitorName,监护仪名称,Monitor Name
-UserMaintainModifyConfig,用户维护修改配置,User Maintain Modify Config
+UserMaintainModifyConfig,监护仪维护修改配置,Monitor Maintain Modify Config
 ProfileConflict,配置冲突,Profile Conflict
 WiredWorkMaintainMenu,有线网络,Wired Network
 WiredWorkMaintainMenuDesc,有线网络,Wired Network
