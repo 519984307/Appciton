@@ -60,7 +60,7 @@ public:
     void stopRawCollectData();
 
     // 卸载U盘
-    void umountUDisk();
+    bool umountUDisk();
 
 signals:
     // report the process, 0~100

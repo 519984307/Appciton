@@ -49,6 +49,8 @@ public:
     // 循环运行
     void run();
 
+    void forceStopCollectData();
+
 public slots:
     void startCollectData();
 

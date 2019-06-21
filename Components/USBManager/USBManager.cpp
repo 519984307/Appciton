@@ -133,7 +133,7 @@ void USBManager::stopRawCollectData()
     QMetaObject::invokeMethod(&rawDataCollector, "stopCollectData", Qt::QueuedConnection);
 }
 
-void USBManager::umountUDisk()
+bool USBManager::umountUDisk()
 {
     QString cmd = QString("umount -f %1").arg(USB_MOUNT_PATH);
     if (QProcess::execute(cmd) != 0)
@@ -147,6 +147,8 @@ void USBManager::umountUDisk()
     {
         _isMount = false;
     }
+
+    return _isMount;
 }
 
 void USBManager::cancelExport()
