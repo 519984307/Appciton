@@ -908,7 +908,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
             {
                 temp = (data[0] << 8) + data[1];
                 float value = temp * 1.0 / 100 + 0.5;
-                spo2Param.setSpHb(value * 100);
+                spo2Param.setSpHb(value);
             }
             else
             {
@@ -946,7 +946,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
             {
                 temp = (data[0] << 8) + data[1];
                 float value = temp * 1.0 / 10 + 0.5;
-                spo2Param.setSpOC(value * 10);
+                spo2Param.setSpOC(value);
             }
             else
             {
