@@ -93,6 +93,7 @@ public:
 
     bool isT5ModuleUpgradeCompleted;
     bool isShowSignalIQ;
+    QMap<bool, SPO2RainbowType> providerInfo;
 };
 
 void SPO2Param::setAverageTime(AverageTime index)
@@ -1410,6 +1411,16 @@ void SPO2Param::showSignalIQ(bool show)
 bool SPO2Param::isShowSignalIQ()
 {
     return d_ptr->isShowSignalIQ;
+}
+
+void SPO2Param::setProviderInfo(bool isPlugIn, SPO2RainbowType type)
+{
+    d_ptr->providerInfo.insert(isPlugIn, type);
+}
+
+SPO2RainbowType SPO2Param::getProviderInfo(bool isPlugIn)
+{
+    return d_ptr->providerInfo.value(isPlugIn);
 }
 
 /**************************************************************************************************
