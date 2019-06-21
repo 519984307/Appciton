@@ -1406,6 +1406,8 @@ void SPO2Param::clearTrendWaveData()
 void SPO2Param::showSignalIQ(bool show)
 {
     d_ptr->isShowSignalIQ = show;
+    int index = show ? 1 : 0;
+    currentConfig.setNumValue("SPO2|SignalIQ", index);
 }
 
 bool SPO2Param::isShowSignalIQ()
@@ -1431,6 +1433,9 @@ SPO2Param::SPO2Param()
          , d_ptr(new SPO2ParamPrivate())
 {
     systemConfig.getNumValue("PrimaryCfg|SPO2|EverCheckFinger", d_ptr->isEverCheckFinger);
+    int index = 0;
+    currentConfig.getNumValue("SPO2|SignalIQ", index);
+    d_ptr->isShowSignalIQ = static_cast<bool>(index);
 
     QTimer::singleShot(2000, this, SLOT(checkSelftest()));
 
