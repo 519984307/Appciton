@@ -1109,6 +1109,7 @@ bool AlarmIndicator::techAlarmResetStatusHandle()
             else if (!it->acknowledge)
             {
                 it->acknowledge = true;
+                it->removeLigthAfterConfirm = false;
                 ret = true;
             }
         }

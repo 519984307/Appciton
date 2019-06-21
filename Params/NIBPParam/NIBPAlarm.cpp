@@ -353,16 +353,8 @@ const char *NIBPOneShotAlarm::toString(int id)
  *************************************************************************************************/
 bool NIBPOneShotAlarm::isRemoveAfterLatch(int id)
 {
-    switch (id)
-    {
-        case NIBP_ONESHOT_ALARM_CUFF_OVER_PRESSURE:
-        case NIBP_ONESHOT_ALARM_MEASURE_OVER_RANGE:
-        case NIBP_ONESHOT_ALARM_COMMUNICATION_STOP:
-        case NIBP_ONESHOT_ALARM_MODULE_DISABLE:
-            return false;
-        default:
-            return true;
-    }
+    Q_UNUSED(id)
+    return false;
 }
 
 bool NIBPOneShotAlarm::isAlarmed(int id)
