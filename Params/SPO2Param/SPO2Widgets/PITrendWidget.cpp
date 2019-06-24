@@ -22,24 +22,27 @@ class PITrendWidgetPrivate
 public:
     PITrendWidgetPrivate()
         : piValue(NULL),
-          scale(1)
+          scale(1), isAlarm(false)
     {}
     ~PITrendWidgetPrivate(){}
 
     QLabel *piValue;
     short scale;
+    bool isAlarm;
+    QString piString;
 };
 
 void PITrendWidget::setPIValue(int16_t pi)
 {
     if (pi >= 0)
     {
-        d_ptr->piValue->setText(QString::number(pi / (d_ptr->scale * 1.0), 'f', 1));
+        d_ptr->piString = QString::number(pi / (d_ptr->scale * 1.0), 'f', 1);
     }
     else
     {
-        d_ptr->piValue->setText(InvStr());
+        d_ptr->piString = InvStr();
     }
+    d_ptr->piValue->setText(d_ptr->piString);
 }
 
 void PITrendWidget::updateLimit()
@@ -51,7 +54,23 @@ void PITrendWidget::updateLimit()
 
 void PITrendWidget::isAlarm(bool flag)
 {
-    Q_UNUSED(flag)
+    d_ptr->isAlarm = flag;
+}
+
+void PITrendWidget::showValue()
+{
+    QPalette psrc;
+    psrc.setColor(QPalette::WindowText, Qt::white);
+    if (d_ptr->isAlarm && d_ptr->piString != InvStr())
+    {
+        showAlarmStatus(d_ptr->piValue);
+        showAlarmParamLimit(d_ptr->piValue, d_ptr->piString, psrc);
+        restoreNormalStatusLater();
+    }
+    else
+    {
+        showNormalStatus(psrc);
+    }
 }
 
 PITrendWidget::PITrendWidget()
@@ -74,6 +93,13 @@ PITrendWidget::PITrendWidget()
 PITrendWidget::~PITrendWidget()
 {
     delete d_ptr;
+}
+
+void PITrendWidget::doRestoreNormalStatus()
+{
+    QPalette psrc;
+    psrc.setColor(QPalette::WindowText, Qt::white);
+    showNormalStatus(psrc);
 }
 
 void PITrendWidget::setTextSize()
