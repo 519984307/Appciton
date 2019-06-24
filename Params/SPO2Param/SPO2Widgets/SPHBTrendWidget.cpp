@@ -22,20 +22,22 @@ class SPHBTrendWidgetPrivate
 public:
     SPHBTrendWidgetPrivate()
         : sphbValue(NULL),
-          isAlarm(false)
+          isAlarm(false),
+          scale(1)
     {}
     ~SPHBTrendWidgetPrivate(){}
 
     QLabel *sphbValue;
     bool isAlarm;
     QString sphbString;
+    short scale;
 };
 
 void SPHBTrendWidget::setSPHBValue(int16_t sphb)
 {
     if (sphb >= 0)
     {
-        d_ptr->sphbString = QString::number(sphb);
+        d_ptr->sphbString = QString::number(sphb / (d_ptr->scale * 1.0), 'f', 1);
     }
     else
     {
@@ -48,6 +50,7 @@ void SPHBTrendWidget::updateLimit()
 {
     LimitAlarmConfig limit = alarmConfig.getLimitAlarmConfig(SUB_PARAM_SPHB, UNIT_GDL);
     setLimit(limit.highLimit, limit.lowLimit, limit.scale);
+    d_ptr->scale = limit.scale;
 }
 
 void SPHBTrendWidget::isAlarm(bool flag)
@@ -104,7 +107,7 @@ void SPHBTrendWidget::setTextSize()
 {
     QRect r = this->rect();
     r.adjust(nameLabel->width(), 0, 0, 0);
-    int fontsize = fontManager.adjustNumFontSize(r, true);
+    int fontsize = fontManager.adjustNumFontSize(r, true, "9999");
     QFont font = fontManager.numFont(fontsize, true);
     d_ptr->sphbValue->setFont(font);
 }

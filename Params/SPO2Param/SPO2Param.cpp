@@ -240,9 +240,9 @@ void SPO2Param::handDemoTrendData(void)
 {
     d_ptr->spo2Value = 98;
     d_ptr->plugInSpo2Value = 96;
-    d_ptr->piValue = 21;
+    d_ptr->piValue = 210;
     d_ptr->pviValue = 23;
-    d_ptr->sphbValue = 18;
+    d_ptr->sphbValue = 180;
     d_ptr->spocValue = 20;
     d_ptr->spmetValue = 3;
     d_ptr->spcoValue = 20;
