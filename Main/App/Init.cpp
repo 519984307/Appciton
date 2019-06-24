@@ -416,7 +416,7 @@ static void _initProviderParam(void)
         SPO2TrendWidget *spo2TrendWidget = new SPO2TrendWidget();
         spo2Param.setTrendWidget(spo2TrendWidget);
         spo2Param.setWaveWidget(spo2WaveWidget);
-        spo2Param.setWaveWidget(outsideSpo2WaveWidget, SPO2_RAINBOW_TYPE_BLM);
+        spo2Param.setWaveWidget(outsideSpo2WaveWidget, true);
         layoutManager.addLayoutWidget(spo2WaveWidget, LAYOUT_NODE_WAVE_SPO2);
         layoutManager.addLayoutWidget(outsideSpo2WaveWidget, LAYOUT_NODE_WAVE_SPO2_2);
         layoutManager.addLayoutWidget(spo2TrendWidget, LAYOUT_NODE_PARAM_SPO2);
@@ -514,7 +514,7 @@ static void _initProviderParam(void)
         alertor.addOneShotSource(oneShotAlarmSource);
 
         CO2WaveWidget *co2WaveWidget = new CO2WaveWidget("CO2WaveWidget",
-                paramInfo.getParamName(PARAM_CO2));
+                trs(paramInfo.getParamName(PARAM_CO2)));
         CO2TrendWidget *co2TrendWidget = new CO2TrendWidget();
         co2Param.setTrendWidget(co2TrendWidget);
         co2Param.setWaveWidget(co2WaveWidget);

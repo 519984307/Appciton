@@ -170,10 +170,6 @@ void ParamManager::connectDemoParamProvider()
         // 从配置文件获取机器支持的参数。
         QString str;
         machineConfig.getStrValue("AllParams", str);
-        if (str == "RAINBOW_DOUBLE_SPO2")
-        {
-            str = "RAINBOW_SPO2,RAINBOW_SPO2PlugIn";
-        }
         QStringList param_list = str.split(',');
         // trim text
         for (QStringList::iterator iter = param_list.begin(); iter != param_list.end(); ++iter)
@@ -192,6 +188,10 @@ void ParamManager::connectDemoParamProvider()
 
             // 使用demo模块数据，暂停接收其他模块数据
             machineConfig.getStrValue(param_list[i], str);
+            if (str == "RAINBOW_DOUBLE_SPO2")
+            {
+                str = "RAINBOW_SPO2,RAINBOW_SPO2PlugIn";
+            }
             QStringList provider_list = str.split(',');
             for (QStringList::iterator iter = provider_list.begin(); iter != provider_list.end(); ++iter)
             {

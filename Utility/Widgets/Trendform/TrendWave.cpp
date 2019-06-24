@@ -269,6 +269,7 @@ void TrendWavePrivate::drawWave(QPainter *painter, const QRect &r)
 
                 index = (index + 1) % pointNum;
                 xPos += DELTA_X;
+                moveTo = true;
                 continue;
             }
 
