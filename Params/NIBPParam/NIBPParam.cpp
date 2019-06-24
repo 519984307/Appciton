@@ -586,10 +586,13 @@ void NIBPParam::connectedFlag(bool flag)
     AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
     if (flag)
     {
-        handleNIBPEvent(NIBP_EVENT_CONNECTION_NORMAL, NULL, 0);
-        if (alarmSource)
+        if (!_isNIBPDisable)
         {
-            alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+            handleNIBPEvent(NIBP_EVENT_CONNECTION_NORMAL, NULL, 0);
+            if (alarmSource)
+            {
+                alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+            }
         }
         _connectedFlag = true;
     }
