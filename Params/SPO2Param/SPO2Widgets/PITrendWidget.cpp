@@ -84,7 +84,7 @@ PITrendWidget::PITrendWidget()
     d_ptr->piValue->setAlignment(Qt::AlignCenter);
     d_ptr->piValue->setText(InvStr());
 
-    contentLayout->addWidget(d_ptr->piValue, 5);
+    contentLayout->addWidget(d_ptr->piValue, 3);
     connect(this, SIGNAL(released()), this, SLOT(onRelease()));
 
     loadConfig();
@@ -93,6 +93,13 @@ PITrendWidget::PITrendWidget()
 PITrendWidget::~PITrendWidget()
 {
     delete d_ptr;
+}
+
+QList<SubParamID> PITrendWidget::getShortTrendSubParams() const
+{
+    QList<SubParamID> list;
+    list.append(SUB_PARAM_PI);
+    return list;
 }
 
 void PITrendWidget::doRestoreNormalStatus()

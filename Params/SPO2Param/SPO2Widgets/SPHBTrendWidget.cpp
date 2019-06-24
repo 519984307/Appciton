@@ -80,7 +80,7 @@ SPHBTrendWidget::SPHBTrendWidget()
     d_ptr->sphbValue = new QLabel();
     d_ptr->sphbValue->setText(InvStr());
     d_ptr->sphbValue->setAlignment(Qt::AlignCenter);
-    contentLayout->addWidget(d_ptr->sphbValue, 5);
+    contentLayout->addWidget(d_ptr->sphbValue, 3);
 
     QPalette pal = colorManager.getPalette(paramInfo.getSubParamName(SUB_PARAM_SPHB));
     setPalette(pal);
@@ -92,6 +92,13 @@ SPHBTrendWidget::SPHBTrendWidget()
 SPHBTrendWidget::~SPHBTrendWidget()
 {
     delete d_ptr;
+}
+
+QList<SubParamID> SPHBTrendWidget::getShortTrendSubParams() const
+{
+    QList<SubParamID> list;
+    list.append(SUB_PARAM_SPHB);
+    return list;
 }
 
 void SPHBTrendWidget::doRestoreNormalStatus()

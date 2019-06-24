@@ -31,6 +31,8 @@ public:
     PVITrendWidget();
     ~PVITrendWidget();
 
+    QList<SubParamID> getShortTrendSubParams() const;
+
 protected:
     /*reimplment*/
     void setTextSize();

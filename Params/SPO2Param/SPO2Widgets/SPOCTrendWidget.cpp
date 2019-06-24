@@ -82,7 +82,7 @@ SPOCTrendWidget::SPOCTrendWidget()
     d_ptr->spocValue->setAlignment(Qt::AlignCenter);
     d_ptr->spocValue->setText(InvStr());
 
-    contentLayout->addWidget(d_ptr->spocValue, 5);
+    contentLayout->addWidget(d_ptr->spocValue, 3);
     connect(this, SIGNAL(released()), this, SLOT(onRelease()));
     loadConfig();
 }
@@ -90,6 +90,13 @@ SPOCTrendWidget::SPOCTrendWidget()
 SPOCTrendWidget::~SPOCTrendWidget()
 {
     delete d_ptr;
+}
+
+QList<SubParamID> SPOCTrendWidget::getShortTrendSubParams() const
+{
+    QList<SubParamID> list;
+    list.append(SUB_PARAM_SPOC);
+    return list;
 }
 
 void SPOCTrendWidget::doRestoreNormalStatus()

@@ -41,7 +41,7 @@ SPCOTrendWidget::SPCOTrendWidget()
     d_ptr->spcoValue = new QLabel();
     d_ptr->spcoValue->setText(InvStr());
     d_ptr->spcoValue->setAlignment(Qt::AlignCenter);
-    contentLayout->addWidget(d_ptr->spcoValue, 5);
+    contentLayout->addWidget(d_ptr->spcoValue, 3);
 
     connect(this, SIGNAL(released()), this, SLOT(onRelease()));
     loadConfig();
@@ -97,6 +97,13 @@ void SPCOTrendWidget::updateLimit()
 {
     LimitAlarmConfig limit = alarmConfig.getLimitAlarmConfig(SUB_PARAM_SPCO, UNIT_PERCENT);
     setLimit(limit.highLimit, limit.lowLimit, limit.scale);
+}
+
+QList<SubParamID> SPCOTrendWidget::getShortTrendSubParams() const
+{
+    QList<SubParamID> list;
+    list.append(SUB_PARAM_SPCO);
+    return list;
 }
 
 void SPCOTrendWidget::setTextSize()

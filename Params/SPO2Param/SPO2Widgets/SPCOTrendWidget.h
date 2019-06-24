@@ -27,6 +27,9 @@ public:
 
     /*reimplment*/
     void updateLimit();
+
+    QList<SubParamID> getShortTrendSubParams() const;
+
 public:
     virtual void doRestoreNormalStatus();
 

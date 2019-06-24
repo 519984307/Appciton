@@ -30,6 +30,8 @@ public:
     PITrendWidget();
     ~PITrendWidget();
 
+    QList<SubParamID> getShortTrendSubParams() const;
+
 public:
     virtual void doRestoreNormalStatus();
 

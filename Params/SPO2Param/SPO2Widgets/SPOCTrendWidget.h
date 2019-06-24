@@ -27,6 +27,9 @@ public:
 
     SPOCTrendWidget();
     ~SPOCTrendWidget();
+
+    QList<SubParamID> getShortTrendSubParams() const;
+
 public:
     virtual void doRestoreNormalStatus();
 

@@ -89,7 +89,7 @@ PVITrendWidget::PVITrendWidget()
     d_ptr->pviValue->setText(InvStr());
     d_ptr->pviValue->setAlignment(Qt::AlignCenter);
 
-    contentLayout->addWidget(d_ptr->pviValue, 5);
+    contentLayout->addWidget(d_ptr->pviValue, 3);
     connect(this, SIGNAL(released()), this, SLOT(onRelease()));
     loadConfig();
 }
@@ -97,6 +97,13 @@ PVITrendWidget::PVITrendWidget()
 PVITrendWidget::~PVITrendWidget()
 {
     delete d_ptr;
+}
+
+QList<SubParamID> PVITrendWidget::getShortTrendSubParams() const
+{
+    QList<SubParamID> list;
+    list.append(SUB_PARAM_PVI);
+    return list;
 }
 
 void PVITrendWidget::setTextSize()

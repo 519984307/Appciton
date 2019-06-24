@@ -27,6 +27,9 @@ public:
 
     SPMETTrendWidget();
     ~SPMETTrendWidget();
+
+    QList<SubParamID> getShortTrendSubParams() const;
+
 public:
     virtual void doRestoreNormalStatus();
 

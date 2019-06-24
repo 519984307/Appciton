@@ -85,7 +85,7 @@ SPMETTrendWidget::SPMETTrendWidget()
     d_ptr->spmetValue->setAlignment(Qt::AlignCenter);
     d_ptr->spmetValue->setText(InvStr());
 
-    contentLayout->addWidget(d_ptr->spmetValue, 5);
+    contentLayout->addWidget(d_ptr->spmetValue, 3);
     QPalette pal = colorManager.getPalette(paramInfo.getSubParamName(SUB_PARAM_SPMET));
     setPalette(pal);
 
@@ -96,6 +96,13 @@ SPMETTrendWidget::SPMETTrendWidget()
 SPMETTrendWidget::~SPMETTrendWidget()
 {
     delete d_ptr;
+}
+
+QList<SubParamID> SPMETTrendWidget::getShortTrendSubParams() const
+{
+    QList<SubParamID> list;
+    list.append(SUB_PARAM_SPMET);
+    return list;
 }
 
 void SPMETTrendWidget::doRestoreNormalStatus()
