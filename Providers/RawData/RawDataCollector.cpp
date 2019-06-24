@@ -523,7 +523,7 @@ void RawDataCollector::run()
         qDeleteAll(d_ptr->dataBuffer);
         d_ptr->dataBuffer.clear();
         d_ptr->mutex.unlock();
-        forceStopCollectData();          // U盘被强制拔出停止定时器
+        stopCollectData();          // U盘被强制拔出停止定时器
         return;
     }
 
@@ -567,21 +567,20 @@ void RawDataCollector::startCollectData()
 
 void RawDataCollector::stopCollectData()
 { 
-    bool _isMountStatus = usbManager.umountUDisk();  // 卸载U盘，获取U盘挂载情况
-    if (d_ptr->timerId != -1 && !_isMountStatus)    // 判断是否仍然挂载中
+    if (d_ptr->timerId != -1)    // 判断是否仍然挂载中
     {
         killTimer(d_ptr->timerId);
         d_ptr->timerId = -1;
     }
-}
+    if (usbManager.isUSBExist())
+    {
+        usbManager.umountUDisk();     // 正常卸载U盘
+    }
+    else
+    {
+        usbManager.forceUmountDisk();  // 强制卸载U盘
+    }
 
-void RawDataCollector::forceStopCollectData()
-{
-    if (d_ptr->timerId != -1)
-    {
-        killTimer(d_ptr->timerId);
-        d_ptr->timerId = -1;
-    }
 }
 
 void RawDataCollector::timerEvent(QTimerEvent *e)
