@@ -82,7 +82,7 @@ public:
 
     TempCalibrateState calibrateResult[TEMP_CALIBRATE_CHANNEL_NR][TEMP_CALIBRATE_NR];
 
-    bool changeChangelFlag;
+    bool changeChannelFlag;
 
     void updateResultLabel(int value);
 
@@ -98,7 +98,7 @@ FactoryTempMenuContentPrivate::FactoryTempMenuContentPrivate()
       calibrateValue(0),
       tempValueTimer(NULL),
       curUnitType(tempParam.getUnit()),
-      changeChangelFlag(false)
+      changeChannelFlag(false)
 {
     for (int i = 0; i < TEMP_CALIBRATE_NR; i++)
     {
@@ -252,7 +252,7 @@ void FactoryTempMenuContent::timerEvent(QTimerEvent *ev)
         bool reply = tempParam.getCalibrationReply();
         if (reply || d_ptr->timeoutNum == TIMEOUT_WAIT_NUMBER)
         {
-            if (!d_ptr->changeChangelFlag)
+            if (!d_ptr->changeChannelFlag)
             {
                 if (reply && tempParam.getCalibrationResult())
                 {
@@ -264,7 +264,7 @@ void FactoryTempMenuContent::timerEvent(QTimerEvent *ev)
                 }
             }
             killTimer(d_ptr->calibrationTimerId);
-            d_ptr->changeChangelFlag = false;
+            d_ptr->changeChannelFlag = false;
             d_ptr->calibrationTimerId = -1;
             d_ptr->timeoutNum = 0;
             d_ptr->updateResultLabel(d_ptr->calibrateValue);
@@ -363,7 +363,7 @@ void FactoryTempMenuContent::showError(QString str)
 void FactoryTempMenuContent::onChannelReleased(int channel)
 {
     d_ptr->calibrateChannel = static_cast<TempCalibrateChannel>(channel);
-    d_ptr->changeChangelFlag = true;
+    d_ptr->changeChannelFlag = true;
     d_ptr->updateWaitingLabel();
     for (int i = 0; i < TEMP_CALIBRATE_NR; ++i)
     {
@@ -377,7 +377,7 @@ void FactoryTempMenuContent::onChannelReleased(int channel)
 void FactoryTempMenuContent::onBtnReleased()
 {
     Button *button = qobject_cast<Button *>(sender());
-    d_ptr->changeChangelFlag = false;
+    d_ptr->changeChannelFlag = false;
     d_ptr->updateWaitingLabel();
     int value = button->property("Item").toInt();
     d_ptr->calibrateValue = value;
