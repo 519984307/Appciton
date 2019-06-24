@@ -1388,7 +1388,7 @@ void RainbowProviderPrivate::requestParamStatus()
 
 void RainbowProviderPrivate::addAlarms(unsigned int flag)
 {
-    if (q_ptr->getName() == "Plugin")
+    if (isPlugIn)
     {
         if (flag & RB_DEFECTIVE_CABLE)
         {
