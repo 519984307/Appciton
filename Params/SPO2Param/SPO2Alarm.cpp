@@ -95,10 +95,10 @@ int SPO2LimitAlarm::getValue(int id)
     {
     case SPO2_LIMIT_ALARM_SPO2_LOW:
     case SPO2_LIMIT_ALARM_SPO2_HIGH:
-        return spo2Param.getSPO2(SPO2_MODULE_DAVID);
+        return spo2Param.getSPO2();
     case SPO2_LIMIT_ALARM_SPO2_2_LOW:
     case SPO2_LIMIT_ALARM_SPO2_2_HIGH:
-        return spo2Param.getSPO2(SPO2_MODULE_BLM);
+        return spo2Param.getSPO2(true);
     case SPO2_LIMIT_ALARM_PI_LOW:
     case SPO2_LIMIT_ALARM_PI_HIGH:
         return spo2Param.getPI();

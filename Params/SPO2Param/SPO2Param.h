@@ -14,6 +14,7 @@
 #include "Param.h"
 #include "SPO2Symbol.h"
 #include "SoundManager.h"
+#include "SPO2Define.h"
 
 typedef struct CCHDData
 {
@@ -277,6 +278,26 @@ public:
      * @brief clearTrendWaveData 清除趋势波形的数据
      */
     void clearTrendWaveData();
+
+    /**
+     * @brief showSignalIQ 是否显示Signal IQ值
+     * @param show
+     */
+    void showSignalIQ(bool show);
+
+    /**
+     * @brief isShowSignalIQ
+     * @return
+     */
+    bool isShowSignalIQ();
+
+    /**
+     * @brief setProviderInfo
+     * @param isPlugIn
+     * @param type
+     */
+    void setProviderInfo(bool isPlugIn, SPO2RainbowType type);
+    SPO2RainbowType getProviderInfo(bool isPlugIn);
 
 signals:
     void clearTrendData();

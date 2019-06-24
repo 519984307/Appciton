@@ -92,6 +92,8 @@ public:
     bool plugInIsForceUpdating;  // 当spo2的弱灌注状态发生变化时，该状态位为true
 
     bool isT5ModuleUpgradeCompleted;
+    bool isShowSignalIQ;
+    QMap<bool, SPO2RainbowType> providerInfo;
 };
 
 void SPO2Param::setAverageTime(AverageTime index)
@@ -154,6 +156,7 @@ SPO2ParamPrivate::SPO2ParamPrivate()
     , plugInIsLowPerfusion(false)
     , plugInIsForceUpdating(false)
     , isT5ModuleUpgradeCompleted(false)
+    , isShowSignalIQ(true)
 {
 }
 
@@ -1265,7 +1268,7 @@ void SPO2Param::setSweepSpeed(int speed)
 {
     currentConfig.setNumValue("SPO2|SweepSpeed", speed);
     d_ptr->setWaveformSpeed((SPO2WaveVelocity)speed);
-    d_ptr->setWaveformSpeed((SPO2WaveVelocity)speed, SPO2_MODULE_BLM);
+    d_ptr->setWaveformSpeed((SPO2WaveVelocity)speed, SPO2_RAINBOW_TYPE_BLM);
 }
 
 /**************************************************************************************************
@@ -1520,6 +1523,28 @@ void SPO2Param::clearTrendWaveData()
     emit clearTrendData();
 }
 
+void SPO2Param::showSignalIQ(bool show)
+{
+    d_ptr->isShowSignalIQ = show;
+    int index = show ? 1 : 0;
+    currentConfig.setNumValue("SPO2|SignalIQ", index);
+}
+
+bool SPO2Param::isShowSignalIQ()
+{
+    return d_ptr->isShowSignalIQ;
+}
+
+void SPO2Param::setProviderInfo(bool isPlugIn, SPO2RainbowType type)
+{
+    d_ptr->providerInfo.insert(isPlugIn, type);
+}
+
+SPO2RainbowType SPO2Param::getProviderInfo(bool isPlugIn)
+{
+    return d_ptr->providerInfo.value(isPlugIn);
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
@@ -1528,6 +1553,9 @@ SPO2Param::SPO2Param()
          , d_ptr(new SPO2ParamPrivate())
 {
     systemConfig.getNumValue("PrimaryCfg|SPO2|EverCheckFinger", d_ptr->isEverCheckFinger);
+    int index = 0;
+    currentConfig.getNumValue("SPO2|SignalIQ", index);
+    d_ptr->isShowSignalIQ = static_cast<bool>(index);
 
     QTimer::singleShot(2000, this, SLOT(checkSelftest()));
 

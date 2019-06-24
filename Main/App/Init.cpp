@@ -379,39 +379,28 @@ static void _initProviderParam(void)
     {
         QString str;
         machineConfig.getStrValue("SPO2", str);
-        QStringList strs = str.split(",");
-        if (strs.count() == 1)
+        if (str == "MASIMO_SPO2")
         {
-            if (str == "MASIMO_SPO2")
-            {
-                paramManager.addProvider(*new MasimoSetProvider());
-                spo2Param.setModuleType(MODULE_MASIMO_SPO2);
-            }
-            else if (str == "BLM_S5")
-            {
-                paramManager.addProvider(*new S5Provider());
-                spo2Param.setModuleType(MODULE_BLM_S5);
-            }
-            else if (str == "RAINBOW_SPO2_BLM")
-            {
-                spo2Param.setModuleType(MODULE_RAINBOW_SPO2);
-                paramManager.addProvider(*new RainbowProvider("RAINBOW_SPO2_BLM"));
-            }
-            else if (str == "RAINBOW_SPO2_DAVID")
-            {
-                spo2Param.setModuleType(MODULE_RAINBOW_SPO2);
-                paramManager.addProvider(*new RainbowProvider("RAINBOW_SPO2_DAVID"));
-                oneShotAlarmSource = new SPO2OneShotAlarm();
-                alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_SPO2_2);
-            }
+            paramManager.addProvider(*new MasimoSetProvider());
+            spo2Param.setModuleType(MODULE_MASIMO_SPO2);
         }
-        else
+        else if (str == "BLM_S5")
         {
-            for (int i = 0; i < strs.count(); i++)
-            {
-                paramManager.addProvider(*new RainbowProvider(strs.at(i), i));
-            }
+            paramManager.addProvider(*new S5Provider());
+            spo2Param.setModuleType(MODULE_BLM_S5);
+        }
+        else if (str == "RAINBOW_SPO2")
+        {
+            spo2Param.setModuleType(MODULE_RAINBOW_SPO2);
+            paramManager.addProvider(*new RainbowProvider("RAINBOW_SPO2"));
+        }
+        else if (str == "RAINBOW_DOUBLE_SPO2")
+        {
+            paramManager.addProvider(*new RainbowProvider("RAINBOW_SPO2"));
+            paramManager.addProvider(*new RainbowProvider("RAINBOW_SPO2PlugIn", true));
             spo2Param.setModuleType(MODULE_RAINBOW_DOUBLE_SPO2);
+            oneShotAlarmSource = new SPO2OneShotAlarm();
+            alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_SPO2_2);
         }
         paramManager.addParam(spo2Param.construction());
 
@@ -427,7 +416,7 @@ static void _initProviderParam(void)
         SPO2TrendWidget *spo2TrendWidget = new SPO2TrendWidget();
         spo2Param.setTrendWidget(spo2TrendWidget);
         spo2Param.setWaveWidget(spo2WaveWidget);
-        spo2Param.setWaveWidget(outsideSpo2WaveWidget, SPO2_MODULE_BLM);
+        spo2Param.setWaveWidget(outsideSpo2WaveWidget, SPO2_RAINBOW_TYPE_BLM);
         layoutManager.addLayoutWidget(spo2WaveWidget, LAYOUT_NODE_WAVE_SPO2);
         layoutManager.addLayoutWidget(outsideSpo2WaveWidget, LAYOUT_NODE_WAVE_SPO2_2);
         layoutManager.addLayoutWidget(spo2TrendWidget, LAYOUT_NODE_PARAM_SPO2);

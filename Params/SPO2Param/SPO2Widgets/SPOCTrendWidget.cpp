@@ -40,7 +40,7 @@ void SPOCTrendWidget::setSPOCValue(int16_t spoc)
     else
     {
         d_ptr->spocString = InvStr();
-    }    
+    }
     d_ptr->spocValue->setText(d_ptr->spocString);
 }
 

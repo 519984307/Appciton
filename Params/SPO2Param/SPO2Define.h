@@ -238,8 +238,9 @@ enum SpHbBloodVesselMode
 };
 
 
-enum SPO2Module
+enum SPO2RainbowType
 {
-    SPO2_MODULE_DAVID,
-    SPO2_MODULE_BLM
+    SPO2_RAINBOW_TYPE_DAVID,
+    SPO2_RAINBOW_TYPE_BLM,
+    SPO2_RAINBOW_TYPE_NR
 };

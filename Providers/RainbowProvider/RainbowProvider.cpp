@@ -223,7 +223,7 @@ public:
         , spHbPrecision(PRECISION_NEAREST_0_1)
         , pviAveragingMode(AVERAGING_MODE_NORMAL)
         , spHbBloodVessel(BLOOD_VESSEL_ARTERIAL)
-        , provider(SPO2_MODULE_DAVID)
+        , provider(SPO2_RAINBOW_TYPE_DAVID)
         , isPlugIn(false)
     {
     }
@@ -356,7 +356,7 @@ public:
 
     SpHbBloodVesselMode spHbBloodVessel;
 
-    SPO2Module provider;
+    SPO2RainbowType provider;
 
     bool isPlugIn;
 };
@@ -376,15 +376,6 @@ RainbowProvider::RainbowProvider(const QString &name, bool isPlugIn)
     else
     {
         disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_SPO2;
-    }
-
-    if (name == "RAINBOW_SPO2_DAVID")
-    {
-        d_ptr->provider = SPO2_MODULE_DAVID;
-    }
-    else if (name == "RAINBOW_SPO2_BLM")
-    {
-        d_ptr->provider = SPO2_MODULE_BLM;
     }
 
     initPort(attr);
@@ -768,6 +759,20 @@ void RainbowProviderPrivate::handlePacket(unsigned char *data, int len)
     break;
     case  RB_NCK:
     {
+        if (curInitializeStep == RB_INIT_GET_BOARD_INFO && provider == SPO2_RAINBOW_TYPE_DAVID)
+        {
+            if (provider == SPO2_RAINBOW_TYPE_DAVID)
+            {
+                // 解锁david板子失败后再次解锁
+                provider = SPO2_RAINBOW_TYPE_BLM;
+                QTimer::singleShot(50, q_ptr, SLOT(requestBoardInfo()));
+            }
+            else if (provider == SPO2_RAINBOW_TYPE_BLM)
+            {
+                provider = SPO2_RAINBOW_TYPE_NR;
+                qdebug("rainbow板子解锁失败");
+            }
+        }
     }
     break;
     case  RB_PARAM:
@@ -838,7 +843,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     break;
     case RB_PARAM_OF_PR:
     {
-        if (provider == SPO2_MODULE_DAVID)
+        if (!isPlugIn)
         {
             temp = (data[4] << 8) + data[5];
             bool valid = !(temp & INVAILD_PR);
@@ -856,7 +861,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     break;
     case RB_PARAM_OF_PI:
     {
-        if (provider == SPO2_MODULE_DAVID)
+        if (!isPlugIn)
         {
             temp = (data[4] << 8) + data[5];
             bool valid = !(temp & INVAILD_PI);
@@ -875,95 +880,80 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     break;
     case RB_PARAM_OF_SPCO:
     {
-        if (provider == SPO2_MODULE_DAVID)
+        temp = (data[4] << 8) + data[5];
+        bool valid = !(temp & INVAILD_SPCO);
+        if (valid)
         {
-            temp = (data[4] << 8) + data[5];
-            bool valid = !(temp & INVAILD_SPCO);
-            if (valid)
-            {
-                temp = (data[0] << 8) + data[1];
-                float value = (temp % 10) > 5 ? (temp / 10 + 1) : (temp /10);
-                spo2Param.setSpCO(value);
-            }
-            else
-            {
-                spo2Param.setSpCO(InvData());
-            }
+            temp = (data[0] << 8) + data[1];
+            float value = (temp % 10) > 5 ? (temp / 10 + 1) : (temp /10);
+            spo2Param.setSpCO(value);
+        }
+        else
+        {
+            spo2Param.setSpCO(InvData());
         }
     }
     break;
     case RB_PARAM_OF_PVI:
     {
-        if (provider == SPO2_MODULE_DAVID)
+        temp = (data[4] << 8) + data[5];
+        bool valid = !(temp & INVAILD_PVI);
+        if (valid)
         {
-            temp = (data[4] << 8) + data[5];
-            bool valid = !(temp & INVAILD_PVI);
-            if (valid)
-            {
-                temp = (data[0] << 8) + data[1];
-                spo2Param.setPVI(temp);
-            }
-            else
-            {
-                spo2Param.setPVI(InvData());
-            }
+            temp = (data[0] << 8) + data[1];
+            spo2Param.setPVI(temp);
+        }
+        else
+        {
+            spo2Param.setPVI(InvData());
         }
     }
     break;
     case RB_PARAM_OF_SPHB:
     {
-        if (provider == SPO2_MODULE_DAVID)
+        temp = (data[4] << 8) + data[5];
+        bool valid = !(temp & INVAILD_SPHB);
+        if (valid)
         {
-            temp = (data[4] << 8) + data[5];
-            bool valid = !(temp & INVAILD_SPHB);
-            if (valid)
-            {
-                temp = (data[0] << 8) + data[1];
-                float value = temp * 1.0 / 100 + 0.5;
-                spo2Param.setSpHb(value * 100);
-            }
-            else
-            {
-                spo2Param.setSpHb(InvData());
-            }
+            temp = (data[0] << 8) + data[1];
+            float value = temp * 1.0 / 100 + 0.5;
+            spo2Param.setSpHb(value);
+        }
+        else
+        {
+            spo2Param.setSpHb(InvData());
         }
     }
     break;
     case RB_PARAM_OF_SPMET:
     {
-        if (provider == SPO2_MODULE_DAVID)
+        temp = (data[4] << 8) + data[5];
+        bool valid = !(temp & INVAILD_SPMET);
+        if (valid)
         {
-            temp = (data[4] << 8) + data[5];
-            bool valid = !(temp & INVAILD_SPMET);
-            if (valid)
-            {
-                temp = (data[0] << 8) + data[1];
-                float value = temp * 1.0 / 10 + 0.5;
-                spo2Param.setSpMet(value * 10);
-            }
-            else
-            {
-                spo2Param.setSpMet(InvData());
-            }
+            temp = (data[0] << 8) + data[1];
+            float value = temp * 1.0 / 10 + 0.5;
+            spo2Param.setSpMet(value * 10);
+        }
+        else
+        {
+            spo2Param.setSpMet(InvData());
         }
     }
     break;
     case RB_PARAM_OF_SPOC:
     {
-        if (provider == SPO2_MODULE_DAVID)
+        temp = (data[4] << 8) + data[5];
+        bool valid = !(temp & INVAILD_SPOC);
+        if (valid)
         {
-            temp = (data[4] << 8) + data[5];
-            bool valid = !(temp & INVAILD_SPOC);
-            if (valid)
-            {
-                temp = (data[0] << 8) + data[1];
-                float value = temp * 1.0 / 10 + 0.5;
-                spo2Param.setSpOC(value * 10);
-            }
-            else
-            {
-                spo2Param.setSpOC(InvData());
-            }
+            temp = (data[0] << 8) + data[1];
+            float value = temp * 1.0 / 10 + 0.5;
+            spo2Param.setSpOC(value);
+        }
+        else
+        {
+            spo2Param.setSpOC(InvData());
         }
     }
     break;
@@ -1140,8 +1130,8 @@ void RainbowProviderPrivate::handleBoardInfo(unsigned char *data, int len)
     falg |= data[6] << 8;
     falg |= data[7];
 
+    curInitializeStep = RB_INIT_GET_BOARD_INFO;
     unlockBoard(sn, falg);
-    curInitializeStep = RB_INIT_UNLOCK_BOARD;
 }
 
 void RainbowProviderPrivate::sendCmd(const unsigned char *data, unsigned int len)
@@ -1183,11 +1173,11 @@ void RainbowProviderPrivate::unlockBoard(unsigned int sn, unsigned int flag)
 {
     unsigned char data[9] = {0};
     unsigned int unlockKey = MANU_ID_BLM ^ sn;
-    if (provider == SPO2_MODULE_DAVID)
+    if (provider == SPO2_RAINBOW_TYPE_DAVID)
     {
         unlockKey = MANU_ID_DAVID ^ sn;
     }
-    else if (provider == SPO2_MODULE_BLM)
+    else if (provider == SPO2_RAINBOW_TYPE_BLM)
     {
         unlockKey = MANU_ID_BLM ^ sn;
     }
@@ -1201,6 +1191,7 @@ void RainbowProviderPrivate::unlockBoard(unsigned int sn, unsigned int flag)
     data[7] = (flag >>  8) & 0xff;
     data[8] = flag & 0xff;
 
+    curInitializeStep = RB_INIT_GET_BOARD_INFO;
     sendCmd(data, sizeof(data));
 }
 
@@ -1274,8 +1265,8 @@ void RainbowProviderPrivate::handleACK()
         }
         break;
         case RB_INIT_GET_BOARD_INFO:
-            // board info response is not a ack message, should no get here
-            break;
+            // 解锁成功后，执行下一步
+            curInitializeStep = RB_INIT_UNLOCK_BOARD;
         case RB_INIT_UNLOCK_BOARD:
             // get here after board unlock
             configPeriodParamOut(RB_PARAM_OF_SENSOR_PARAM_CHECK, 500);  // 每500ms检查一次传感器参数
@@ -1334,8 +1325,10 @@ void RainbowProviderPrivate::handleACK()
         case RB_INIT_SET_WAVEFORM:
             // get here after the baseline
             configPeriodWaveformOut(CLIPPED_AUTOSCALE_DATA | SIGNAL_IQ_AUDIO_VISUAL_DATA, 16);  // 每16ms输出一次波形
-            if (provider == SPO2_MODULE_BLM)
+            if (provider == SPO2_RAINBOW_TYPE_BLM || (isPlugIn && spo2Param.getProviderInfo(false) == SPO2_RAINBOW_TYPE_DAVID))
             {
+                // BLM的板子不配置高级参数
+                // 如果内置的是David板时，不配置插件的高级参数
                 curInitializeStep = RB_INIT_COMPLETED;
             }
             else
@@ -1374,6 +1367,9 @@ void RainbowProviderPrivate::handleACK()
         case RB_INIT_SET_SPOC:
             configPeriodParamOut(RB_PARAM_OF_SPOC, 160);       // 每160ms输出一次SpOC
             curInitializeStep = RB_INIT_COMPLETED;
+        case RB_INIT_COMPLETED:
+            spo2Param.setProviderInfo(isPlugIn, provider);
+            break;
         default:
             break;
         }
