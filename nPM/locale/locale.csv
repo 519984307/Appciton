@@ -623,12 +623,14 @@ PILow,PI 低,PI Low
 PIHigh,PI 高,PI High
 PVILow,PVI 低,PVI Low
 PVIHigh,PVI 高,PVI High
-SpHbLow,SpHb 低,SpHb Low
-SpHbHigh,SpHb 高,SpHb High
-SpOCLow,SpOC 低,SpOC Low
-SpOCHigh,SpOC 高,SpOC High
-SpMetLow,SpMet 低,SpMet Low
-SpMetHigh,SpMet 高,SpMet High
+SPHBLow,SpHb 低,SpHb Low
+SPHBHigh,SpHb 高,SpHb High
+SPOCLow,SpOC 低,SpOC Low
+SPOCHigh,SpOC 高,SpOC High
+SPMETLow,SpMet 低,SpMet Low
+SPMETHigh,SpMet 高,SpMet High
+SPCOLow,SpCO 低,SpCO Low
+SPCOHigh,SpCO 高,SpCO High
 SPO2PRLow,脉率低,PR Low
 SPO2PRHigh,脉率高,PR High
 SPO2Initializing,SpO₂初始化,SpO₂ initializing
