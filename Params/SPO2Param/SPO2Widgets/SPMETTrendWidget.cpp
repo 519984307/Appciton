@@ -23,24 +23,28 @@ class SPMETTrendWidgetPrivate
 public:
     SPMETTrendWidgetPrivate()
         : spmetValue(NULL),
-          scale(1)
+          scale(1),
+          isAlarm(false)
     {}
     ~SPMETTrendWidgetPrivate(){}
 
     QLabel *spmetValue;
     short scale;
+    bool isAlarm;
+    QString spmetString;
 };
 
 void SPMETTrendWidget::setSpMetValue(int16_t spmet)
 {
     if (spmet >= 0)
     {
-        d_ptr->spmetValue->setText(QString::number(spmet / (d_ptr->scale * 1.0), 'f', 1));
+        d_ptr->spmetString = QString::number(spmet / (d_ptr->scale * 1.0), 'f', 1);
     }
     else
     {
-        d_ptr->spmetValue->setText(InvStr());
+        d_ptr->spmetString = InvStr();
     }
+    d_ptr->spmetValue->setText(d_ptr->spmetString);
 }
 
 void SPMETTrendWidget::updateLimit()
@@ -52,7 +56,22 @@ void SPMETTrendWidget::updateLimit()
 
 void SPMETTrendWidget::isAlarm(bool flag)
 {
-    Q_UNUSED(flag)
+    d_ptr->isAlarm = flag;
+}
+
+void SPMETTrendWidget::showValue()
+{
+    QPalette psrc = colorManager.getPalette(paramInfo.getSubParamName(SUB_PARAM_SPMET));
+    if (d_ptr->isAlarm && d_ptr->spmetString != InvStr())
+    {
+        showAlarmStatus(d_ptr->spmetValue);
+        showAlarmParamLimit(d_ptr->spmetValue, d_ptr->spmetString, psrc);
+        restoreNormalStatusLater();
+    }
+    else
+    {
+        showNormalStatus(psrc);
+    }
 }
 
 SPMETTrendWidget::SPMETTrendWidget()
@@ -77,6 +96,12 @@ SPMETTrendWidget::SPMETTrendWidget()
 SPMETTrendWidget::~SPMETTrendWidget()
 {
     delete d_ptr;
+}
+
+void SPMETTrendWidget::doRestoreNormalStatus()
+{
+    QPalette psrc = colorManager.getPalette(paramInfo.getSubParamName(SUB_PARAM_SPMET));
+    showNormalStatus(psrc);
 }
 
 void SPMETTrendWidget::setTextSize()

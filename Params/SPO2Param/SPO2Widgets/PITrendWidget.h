@@ -21,10 +21,17 @@ public:
     /*reimplment*/
     void updateLimit();
 
+    // 是否报警
     void isAlarm(bool flag);
+
+    // 显示参数值
+    void showValue();
 
     PITrendWidget();
     ~PITrendWidget();
+
+public:
+    virtual void doRestoreNormalStatus();
 
 protected:
     /*reimplment*/

@@ -75,7 +75,14 @@ public:
     {
         static const char *symbol[SPO2_LIMIT_ALARM_NR] =
         {
-            "SPO2Low", "SPO2High"
+            "SPO2Low", "SPO2High",
+            "SPO22Low", "SPO22High",
+            "PILow", "PIHigh",
+            "PVILow", "PVIHigh",
+            "SPHBLow", "SPHBHigh",
+            "SPOCLow", "SPOCHigh",
+            "SPMETLow", "SPMETHigh",
+            "SPCOLow", "SPCOHigh"
         };
         return symbol[index];
     }
@@ -124,7 +131,40 @@ public:
             "SPO2AdhesiveSensorNearExpiration",
             "SPO2CheckSensorConnection",
             "SPO2OnlyMode",
-            "SPO2BoardFailure"
+            "SPO2BoardFailure",
+
+            // 插件血氧
+            "SPO22CheckSensor",
+            "SPO22CableOff",
+            "SPO22FingerOff",
+            "SPO22LEDFault",
+            "SPO22CommunicationStop",
+            "SPO22SignalWeak",
+            "SPO22SignalSaturation",
+            "SPO22LowPerfusion",
+            "SPO22DefectiveCable",
+            "SPO22CableExpired",
+            "SPO22IncompatibleCable",
+            "SPO22UnrecongnizedCable",
+            "SPO22CableNearExpiration",
+            "SPO22SensorExpired",
+            "SPO22IncompatibleSensor",
+            "SPO22UnrecongnizedSensor",
+            "SPO22DefectiveSensor",
+            "SPO22CheckCableAndSensorFault",
+            "SPO22SensorNearExpiration",
+            "SPO22NoAdhesiveSensor",
+            "SPO22AdhesiveSensorExpiraton",
+            "SPO22IncompatibleAdhesiveSensor",
+            "SPO22UnrecongnizedAdhesiveSensor",
+            "SPO22DefectiveAdhesiveSensor",
+            "SPO22SensorIniting",
+            "SPO22InterferenceDetected",
+            "SPO22DemoMode",
+            "SPO22AdhesiveSensorNearExpiration",
+            "SPO22CheckSensorConnection",
+            "SPO22OnlyMode",
+            "SPO22BoardFailure"
         };
         return symbol[index];
     }

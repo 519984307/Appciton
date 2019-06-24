@@ -159,10 +159,10 @@ public:
     void setSearchForPulse(bool pulse, bool isPlugIn = false);
 
     // 设置OneShot报警。
-    void setOneShotAlarm(SPO2OneShotType t, bool f);
+    void setOneShotAlarm(SPO2OneShotType t, bool f, bool isPlugin = false);
 
     // 是否超限报警
-    void noticeLimitAlarm(bool isAlarm);
+    void noticeLimitAlarm(SubParamID id, bool isAlarm);
 
     // 有效状态
     void setValidStatus(bool isValid, bool isPlugIn = false);

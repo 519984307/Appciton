@@ -21,11 +21,14 @@ class SPCOTrendWidgetPrivate
 {
 public:
     SPCOTrendWidgetPrivate()
-        : spcoValue(NULL)
+        : spcoValue(NULL),
+          isAlarm(false)
     {}
     ~SPCOTrendWidgetPrivate(){}
 
     QLabel *spcoValue;
+    bool isAlarm;
+    QString spcoString;
 };
 
 SPCOTrendWidget::SPCOTrendWidget()
@@ -53,12 +56,41 @@ void SPCOTrendWidget::setSPCOValue(int16_t spco)
 {
     if (spco >= 0)
     {
-        d_ptr->spcoValue->setText(QString::number(spco));
+        d_ptr->spcoString = QString::number(spco);
     }
     else
     {
-        d_ptr->spcoValue->setText(InvStr());
+        d_ptr->spcoString = InvStr();
     }
+    d_ptr->spcoValue->setText(d_ptr->spcoString);
+}
+
+void SPCOTrendWidget::isAlarm(bool flag)
+{
+    d_ptr->isAlarm = flag;
+}
+
+void SPCOTrendWidget::showValue()
+{
+    QPalette psrc;
+    psrc.setColor(QPalette::WindowText, Qt::white);
+    if (d_ptr->isAlarm && d_ptr->spcoString != InvStr())
+    {
+        showAlarmStatus(d_ptr->spcoValue);
+        showAlarmParamLimit(d_ptr->spcoValue, d_ptr->spcoString, psrc);
+        restoreNormalStatusLater();
+    }
+    else
+    {
+        showNormalStatus(psrc);
+    }
+}
+
+void SPCOTrendWidget::doRestoreNormalStatus()
+{
+    QPalette psrc;
+    psrc.setColor(QPalette::WindowText, Qt::white);
+    showNormalStatus(psrc);
 }
 
 void SPCOTrendWidget::updateLimit()
