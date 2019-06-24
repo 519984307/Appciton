@@ -514,7 +514,7 @@ static void _initProviderParam(void)
         alertor.addOneShotSource(oneShotAlarmSource);
 
         CO2WaveWidget *co2WaveWidget = new CO2WaveWidget("CO2WaveWidget",
-                paramInfo.getParamName(PARAM_CO2));
+                trs(paramInfo.getParamName(PARAM_CO2)));
         CO2TrendWidget *co2TrendWidget = new CO2TrendWidget();
         co2Param.setTrendWidget(co2TrendWidget);
         co2Param.setWaveWidget(co2WaveWidget);

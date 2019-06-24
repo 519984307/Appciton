@@ -257,7 +257,7 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget")
 
     // 高度设定为与RESP的一致。
 //    setFixedHeight(86);
-    setName("CO2");
+    setName(trs("CO2"));
     setUnit(trs(Unit::getSymbol(co2Param.getUnit())));
 
 //    // 构造资源。
