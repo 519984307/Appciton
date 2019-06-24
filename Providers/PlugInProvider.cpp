@@ -28,8 +28,9 @@
 #define RING_BUFFER_LENGTH 4096
 #define MAXIMUM_PACKET_SIZE 256 // largest packet size, should be larger enough
 #define READ_PLUGIN_PIN_INTERVAL        (500)   // 100ms读一次插件管脚
-#define CO2_RUN_BAUD_RATE       (9600)
-#define SPO2_RUN_BAUD_RATE      (9600)
+#define RUN_BAUD_RATE_9600          (9600)
+#define RUN_BAUD_RATE_57600         (57600)
+#define RUN_BAUD_RATE_115200        (115200)
 
 enum PluginStatus
 {
@@ -49,11 +50,14 @@ class PlugInProviderPrivate
 {
 public:
     PlugInProviderPrivate(const QString &name, PlugInProvider *const q_ptr)
-        : isLastSOHPaired(false),
+        : q_ptr(q_ptr),
+          isLastSOHPaired(false),
           name(name),
           uart(new Uart(q_ptr)),
           ringBuff(RING_BUFFER_LENGTH),
-          pluginTimerID(-1)
+          pluginTimerID(-1),
+          baudrateTimerID(-1),
+          baudrate(RUN_BAUD_RATE_9600)
     {
     }
 
@@ -112,6 +116,16 @@ public:
 
     void handlePacket(unsigned char *data, int len, PlugInProvider::PlugInType type)
     {
+        if (baudrateTimerID != -1)
+        {
+            q_ptr->killTimer(baudrateTimerID);
+            baudrateTimerID = -1;
+            baudrate = RUN_BAUD_RATE_9600;
+        }
+        if (NULL == dataHandlers[type])
+        {
+            return;
+        }
         dataHandlers[type]->dataArrived(data, len);
     }
 
@@ -128,6 +142,7 @@ public:
         return data.toInt();
     }
 
+    PlugInProvider *const q_ptr;
     bool isLastSOHPaired; // 遗留在ringBuff最后一个数据（该数据为SOH）是否已经剃掉了多余的SOH
     QString name;
     Uart *uart;
@@ -135,6 +150,8 @@ public:
     RingBuff<unsigned char> ringBuff;
     static QMap<QString, PlugInProvider *> plugInProviders;
     int pluginTimerID;
+    int baudrateTimerID;
+    unsigned int baudrate;
 
 private:
     PlugInProviderPrivate(const PlugInProviderPrivate &);  // use to pass the cpplint check only, no implementation
@@ -227,12 +244,34 @@ void PlugInProvider::timerEvent(QTimerEvent *ev)
         {
             if (pluginSta == 1)
             {
-                updateUartBaud(SPO2_RUN_BAUD_RATE);
+                updateUartBaud(d_ptr->baudrate);
                 spo2Param.initPluginModule();                 // 初始化SpO2插件模块
                 QTimer::singleShot(1000, this, SLOT(changeBaudrate())); // 预留rainbow模块重启时间
+                d_ptr->baudrateTimerID = startTimer(2000);
             }
             pluginSta = d_ptr->readPluginPinSta();
         }
+    }
+    else if (ev->timerId() == d_ptr->baudrateTimerID)
+    {
+        if (d_ptr->baudrate == RUN_BAUD_RATE_9600)
+        {
+            d_ptr->baudrate = RUN_BAUD_RATE_57600;
+        }
+        else if (d_ptr->baudrate == RUN_BAUD_RATE_57600)
+        {
+            d_ptr->baudrate = RUN_BAUD_RATE_115200;
+        }
+        else if (d_ptr->baudrate == RUN_BAUD_RATE_115200)
+        {
+            d_ptr->baudrate = RUN_BAUD_RATE_9600;
+            killTimer(d_ptr->baudrateTimerID);
+            d_ptr->baudrateTimerID = -1;
+            return;
+        }
+        updateUartBaud(d_ptr->baudrate);
+        spo2Param.initPluginModule();                 // 初始化SpO2插件模块
+        QTimer::singleShot(1000, this, SLOT(changeBaudrate())); // 预留rainbow模块重启时间
     }
 }
 
