@@ -61,7 +61,14 @@ public:
     virtual ~SPO2LimitAlarm();
 
 private:
-    bool _isAlarmLimit;
+    bool _isSPO2Alarm;
+    bool _isSPO22Alarm;
+    bool _isPIAlarm;
+    bool _isPVIAlarm;
+    bool _isSPHBAlarm;
+    bool _isSPOCAlarm;
+    bool _isSPMETAlarm;
+    bool _isSPCOAlarm;
 };
 
 // OneShor报警实现。

@@ -21,8 +21,14 @@ public:
 
     void setSPCOValue(int16_t spco);
 
+    void isAlarm(bool flag);
+
+    void showValue();
+
     /*reimplment*/
     void updateLimit();
+public:
+    virtual void doRestoreNormalStatus();
 
 protected:
     /*reimplment*/

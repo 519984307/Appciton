@@ -21,23 +21,27 @@ class SPOCTrendWidgetPrivate
 {
 public:
     SPOCTrendWidgetPrivate()
-        : spocValue(NULL)
+        : spocValue(NULL),
+          isAlarm(false)
     {}
     ~SPOCTrendWidgetPrivate(){}
 
     QLabel *spocValue;
+    bool isAlarm;
+    QString spocString;
 };
 
 void SPOCTrendWidget::setSPOCValue(int16_t spoc)
 {
     if (spoc >= 0)
     {
-        d_ptr->spocValue->setText(QString::number(spoc));
+        d_ptr->spocString = QString::number(spoc);
     }
     else
     {
-        d_ptr->spocValue->setText(InvStr());
-    }
+        d_ptr->spocString = InvStr();
+    }    
+    d_ptr->spocValue->setText(d_ptr->spocString);
 }
 
 void SPOCTrendWidget::updateLimit()
@@ -48,7 +52,23 @@ void SPOCTrendWidget::updateLimit()
 
 void SPOCTrendWidget::isAlarm(bool flag)
 {
-    Q_UNUSED(flag)
+    d_ptr->isAlarm = flag;
+}
+
+void SPOCTrendWidget::showValue()
+{
+    QPalette psrc;
+    psrc.setColor(QPalette::WindowText, Qt::white);
+    if (d_ptr->isAlarm && d_ptr->spocString != InvStr())
+    {
+        showAlarmStatus(d_ptr->spocValue);
+        showAlarmParamLimit(d_ptr->spocValue, d_ptr->spocString, psrc);
+        restoreNormalStatusLater();
+    }
+    else
+    {
+        showNormalStatus(psrc);
+    }
 }
 
 SPOCTrendWidget::SPOCTrendWidget()
@@ -70,6 +90,13 @@ SPOCTrendWidget::SPOCTrendWidget()
 SPOCTrendWidget::~SPOCTrendWidget()
 {
     delete d_ptr;
+}
+
+void SPOCTrendWidget::doRestoreNormalStatus()
+{
+    QPalette psrc;
+    psrc.setColor(QPalette::WindowText, Qt::white);
+    showNormalStatus(psrc);
 }
 
 void SPOCTrendWidget::setTextSize()

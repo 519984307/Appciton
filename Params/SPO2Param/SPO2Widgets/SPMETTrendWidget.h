@@ -23,8 +23,12 @@ public:
 
     void isAlarm(bool flag);
 
+    void showValue();
+
     SPMETTrendWidget();
     ~SPMETTrendWidget();
+public:
+    virtual void doRestoreNormalStatus();
 
 protected:
     /*reimplment*/

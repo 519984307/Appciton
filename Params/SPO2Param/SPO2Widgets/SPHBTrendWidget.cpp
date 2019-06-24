@@ -21,23 +21,27 @@ class SPHBTrendWidgetPrivate
 {
 public:
     SPHBTrendWidgetPrivate()
-        : sphbValue(NULL)
+        : sphbValue(NULL),
+          isAlarm(false)
     {}
     ~SPHBTrendWidgetPrivate(){}
 
     QLabel *sphbValue;
+    bool isAlarm;
+    QString sphbString;
 };
 
 void SPHBTrendWidget::setSPHBValue(int16_t sphb)
 {
     if (sphb >= 0)
     {
-        d_ptr->sphbValue->setText(QString::number(sphb));
+        d_ptr->sphbString = QString::number(sphb);
     }
     else
     {
-        d_ptr->sphbValue->setText(InvStr());
+        d_ptr->sphbString = InvStr();
     }
+    d_ptr->sphbValue->setText(d_ptr->sphbString);
 }
 
 void SPHBTrendWidget::updateLimit()
@@ -48,7 +52,22 @@ void SPHBTrendWidget::updateLimit()
 
 void SPHBTrendWidget::isAlarm(bool flag)
 {
-    Q_UNUSED(flag)
+    d_ptr->isAlarm = flag;
+}
+
+void SPHBTrendWidget::showValue()
+{
+    QPalette psrc = colorManager.getPalette(paramInfo.getSubParamName(SUB_PARAM_SPHB));
+    if (d_ptr->isAlarm && d_ptr->sphbString != InvStr())
+    {
+        showAlarmStatus(d_ptr->sphbValue);
+        showAlarmParamLimit(d_ptr->sphbValue, d_ptr->sphbString, psrc);
+        restoreNormalStatusLater();
+    }
+    else
+    {
+        showNormalStatus(psrc);
+    }
 }
 
 SPHBTrendWidget::SPHBTrendWidget()
@@ -73,6 +92,12 @@ SPHBTrendWidget::SPHBTrendWidget()
 SPHBTrendWidget::~SPHBTrendWidget()
 {
     delete d_ptr;
+}
+
+void SPHBTrendWidget::doRestoreNormalStatus()
+{
+    QPalette psrc = colorManager.getPalette(paramInfo.getSubParamName(SUB_PARAM_SPHB));
+    showNormalStatus(psrc);
 }
 
 void SPHBTrendWidget::setTextSize()

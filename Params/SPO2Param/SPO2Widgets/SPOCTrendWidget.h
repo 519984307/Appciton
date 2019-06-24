@@ -23,8 +23,12 @@ public:
 
     void isAlarm(bool flag);
 
+    void showValue();
+
     SPOCTrendWidget();
     ~SPOCTrendWidget();
+public:
+    virtual void doRestoreNormalStatus();
 
 protected:
     /*reimplment*/

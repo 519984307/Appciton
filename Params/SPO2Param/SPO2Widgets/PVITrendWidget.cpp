@@ -28,20 +28,20 @@ public:
 
     QLabel *pviValue;
     bool isAlarm;
+    QString pviString;
 };
 
 void PVITrendWidget::setPVIValue(int16_t pvi)
 {
-    QString pviString;
     if (pvi >= 0)
     {
-        pviString = QString::number(pvi);
+        d_ptr->pviString = QString::number(pvi);
     }
     else
     {
-        pviString = InvStr();
+        d_ptr->pviString = InvStr();
     }
-    d_ptr->pviValue->setText(pviString);
+    d_ptr->pviValue->setText(d_ptr->pviString);
 }
 
 void PVITrendWidget::updateLimit()
@@ -52,15 +52,30 @@ void PVITrendWidget::updateLimit()
 
 void PVITrendWidget::isAlarm(bool flag)
 {
-    Q_UNUSED(flag);
+    d_ptr->isAlarm = flag;
 }
 
 void PVITrendWidget::showValue()
 {
+    QPalette psrc;
+    psrc.setColor(QPalette::WindowText, Qt::white);
+    if (d_ptr->isAlarm && d_ptr->pviString != InvStr())
+    {
+        showAlarmStatus(d_ptr->pviValue);
+        showAlarmParamLimit(d_ptr->pviValue, d_ptr->pviString, psrc);
+        restoreNormalStatusLater();
+    }
+    else
+    {
+        showNormalStatus(psrc);
+    }
 }
 
 void PVITrendWidget::doRestoreNormalStatus()
 {
+    QPalette psrc;
+    psrc.setColor(QPalette::WindowText, Qt::white);
+    showNormalStatus(psrc);
 }
 
 PVITrendWidget::PVITrendWidget()

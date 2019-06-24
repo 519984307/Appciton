@@ -401,6 +401,8 @@ static void _initProviderParam(void)
             {
                 spo2Param.setModuleType(MODULE_RAINBOW_SPO2);
                 paramManager.addProvider(*new RainbowProvider("RAINBOW_SPO2_DAVID"));
+                oneShotAlarmSource = new SPO2OneShotAlarm();
+                alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_SPO2_2);
             }
         }
         else

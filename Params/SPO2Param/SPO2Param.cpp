@@ -347,6 +347,30 @@ void SPO2Param::showSubParamValue()
     {
         d_ptr->trendWidget->showValue();
     }
+    if (d_ptr->piTrendWidget)
+    {
+        d_ptr->piTrendWidget->showValue();
+    }
+    if (d_ptr->pviTrendWidget)
+    {
+        d_ptr->pviTrendWidget->showValue();
+    }
+    if (d_ptr->sphbTrendWidget)
+    {
+        d_ptr->sphbTrendWidget->showValue();
+    }
+    if (d_ptr->spocTrendWidget)
+    {
+        d_ptr->spocTrendWidget->showValue();
+    }
+    if (d_ptr->spmetTrendWidget)
+    {
+        d_ptr->spmetTrendWidget->showValue();
+    }
+    if (d_ptr->spcoTrendWidget)
+    {
+        d_ptr->spcoTrendWidget->showValue();
+    }
 }
 
 /**************************************************************************************************
@@ -915,9 +939,17 @@ void SPO2Param::setSearchForPulse(bool isSearching, bool isPlugIn)
 /**************************************************************************************************
  * 设置报警。
  *************************************************************************************************/
-void SPO2Param::setOneShotAlarm(SPO2OneShotType t, bool f)
+void SPO2Param::setOneShotAlarm(SPO2OneShotType t, bool f, bool isPlugin)
 {
-    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SPO2);
+    AlarmOneShotIFace *alarmSource = NULL;
+    if (isPlugin)
+    {
+        alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SPO2_2);
+    }
+    else
+    {
+        alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SPO2);
+    }
     if (alarmSource)
     {
         alarmSource->setOneShotAlarm(t, f);
@@ -927,16 +959,60 @@ void SPO2Param::setOneShotAlarm(SPO2OneShotType t, bool f)
 /**************************************************************************************************
  * 设置报警。
  *************************************************************************************************/
-void SPO2Param::noticeLimitAlarm(bool isAlarm)
+void SPO2Param::noticeLimitAlarm(SubParamID id, bool isAlarm)
 {
     if (isNibpSameSide() && nibpParam.isMeasuring())
     {
         // 如果打开同侧功能，且nibp正在测量，则不设置报警
         return;
     }
-    if (NULL != d_ptr->trendWidget)
+    switch (id)
     {
-        d_ptr->trendWidget->isAlarm(isAlarm);
+    case SUB_PARAM_SPO2:
+//    case SUB_PARAM_SPO2_2:
+        if (NULL != d_ptr->trendWidget)
+        {
+            d_ptr->trendWidget->isAlarm(isAlarm);
+        }
+        break;
+    case SUB_PARAM_PI:
+        if (NULL != d_ptr->piTrendWidget)
+        {
+            d_ptr->piTrendWidget->isAlarm(isAlarm);
+        }
+        break;
+    case SUB_PARAM_PVI:
+        if (NULL != d_ptr->pviTrendWidget)
+        {
+            d_ptr->pviTrendWidget->isAlarm(isAlarm);
+        }
+        break;
+    case SUB_PARAM_SPHB:
+        if (NULL != d_ptr->sphbTrendWidget)
+        {
+            d_ptr->sphbTrendWidget->isAlarm(isAlarm);
+        }
+        break;
+    case SUB_PARAM_SPOC:
+        if (NULL != d_ptr->spocTrendWidget)
+        {
+            d_ptr->spocTrendWidget->isAlarm(isAlarm);
+        }
+        break;
+    case SUB_PARAM_SPMET:
+        if (NULL != d_ptr->spmetTrendWidget)
+        {
+            d_ptr->spmetTrendWidget->isAlarm(isAlarm);
+        }
+        break;
+    case SUB_PARAM_SPCO:
+        if (NULL != d_ptr->spcoTrendWidget)
+        {
+            d_ptr->spcoTrendWidget->isAlarm(isAlarm);
+        }
+        break;
+    default:
+        break;
     }
 }
 
@@ -1209,9 +1285,53 @@ bool SPO2Param::getEverCheckFinger()
 
 void SPO2Param::updateSubParamLimit(SubParamID id)
 {
-    if (id == SUB_PARAM_SPO2)
+    switch (id)
     {
-        d_ptr->trendWidget->updateLimit();
+    case SUB_PARAM_SPO2:
+    case SUB_PARAM_SPO2_2:
+        if (d_ptr->trendWidget)
+        {
+            d_ptr->trendWidget->updateLimit();
+        }
+        break;
+    case SUB_PARAM_PI:
+        if (d_ptr->piTrendWidget)
+        {
+            d_ptr->piTrendWidget->updateLimit();
+        }
+        break;
+    case SUB_PARAM_PVI:
+        if (d_ptr->pviTrendWidget)
+        {
+            d_ptr->pviTrendWidget->updateLimit();
+        }
+        break;
+    case SUB_PARAM_SPHB:
+        if (d_ptr->sphbTrendWidget)
+        {
+            d_ptr->sphbTrendWidget->updateLimit();
+        }
+        break;
+    case SUB_PARAM_SPOC:
+        if (d_ptr->spocTrendWidget)
+        {
+            d_ptr->spocTrendWidget->updateLimit();
+        }
+        break;
+    case SUB_PARAM_SPMET:
+        if (d_ptr->spmetTrendWidget)
+        {
+            d_ptr->spmetTrendWidget->updateLimit();
+        }
+        break;
+    case SUB_PARAM_SPCO:
+        if (d_ptr->spcoTrendWidget)
+        {
+            d_ptr->spcoTrendWidget->updateLimit();
+        }
+        break;
+    default:
+        break;
     }
 }
 
