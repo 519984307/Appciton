@@ -124,7 +124,7 @@ void SPO2TrendWidget::showValue(void)
     }
     else
     {
-        showNormalStatus(psrc);
+        showNormalStatus(_spo2Value1, psrc);
     }
 }
 
@@ -246,5 +246,5 @@ QList<SubParamID> SPO2TrendWidget::getShortTrendSubParams() const
 void SPO2TrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
-    showNormalStatus(psrc);
+    showNormalStatus(_spo2Value1, psrc);
 }
