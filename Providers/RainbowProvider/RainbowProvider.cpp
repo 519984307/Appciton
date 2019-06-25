@@ -869,7 +869,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
             {
                 temp = (data[0] << 8) + data[1];
                 float value = temp * 1.0 / 1000 + 0.05;
-                spo2Param.setPI(static_cast<short>(value * 10));
+                spo2Param.setPI(static_cast<short>(value * 100));
             }
             else
             {
@@ -885,7 +885,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         if (valid)
         {
             temp = (data[0] << 8) + data[1];
-            float value = (temp % 10) > 5 ? (temp / 10 + 1) : (temp /10);
+            float value = (temp % 10) > 5 ? (temp / 10 + 1) : (temp / 10);
             spo2Param.setSpCO(value);
         }
         else
@@ -917,7 +917,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         {
             temp = (data[0] << 8) + data[1];
             float value = temp * 1.0 / 100 + 0.5;
-            spo2Param.setSpHb(value);
+            spo2Param.setSpHb(value * 10);
         }
         else
         {
