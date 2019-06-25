@@ -36,7 +36,7 @@ void PITrendWidget::setPIValue(int16_t pi)
 {
     if (pi >= 0)
     {
-        d_ptr->piString = QString::number(pi / (d_ptr->scale * 1.0), 'f', 1);
+        d_ptr->piString = QString::number(pi / (d_ptr->scale * 1.0), 'f', 2);
     }
     else
     {
@@ -84,7 +84,7 @@ PITrendWidget::PITrendWidget()
     d_ptr->piValue->setAlignment(Qt::AlignCenter);
     d_ptr->piValue->setText(InvStr());
 
-    contentLayout->addWidget(d_ptr->piValue, 3);
+    contentLayout->addWidget(d_ptr->piValue, 2);
     connect(this, SIGNAL(released()), this, SLOT(onRelease()));
 
     loadConfig();
@@ -113,7 +113,7 @@ void PITrendWidget::setTextSize()
 {
     QRect r = this->rect();
     r.adjust(nameLabel->width(), 0, 0, 0);
-    int fontsize = fontManager.adjustNumFontSize(r, true);
+    int fontsize = fontManager.adjustNumFontSize(r, true, "9999");
     QFont font = fontManager.numFont(fontsize, true);
     d_ptr->piValue->setFont(font);
 }
