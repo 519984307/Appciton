@@ -334,7 +334,7 @@ void AlarmLimitWindow::restoreDefaults()
                                      .arg(paramInfo.getSubParamName(subId, true)),
                                      "Prio", lev);
 
-            UnitType unit = paramManager.getSubParamUnit(pid, subId);
+            UnitType unit = paramInfo.getUnitOfSubParam(subId);
             int high = 0;
             defaultConfig.getNumValue(QString("AlarmSource|%1|%2|%3")
                                       .arg(paramInfo.getSubParamName(subId, true)).arg(Unit::getSymbol(unit))
