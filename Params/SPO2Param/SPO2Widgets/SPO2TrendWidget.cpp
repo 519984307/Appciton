@@ -208,20 +208,7 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
 
     contentLayout->addLayout(layout, 7);
 
-    if (spo2Param.isConnected(true))
-    {
-        _spo2Name2->setVisible(true);
-        _spo2Value2->setVisible(true);
-        _spo2DeltaName->setVisible(true);
-        _spo2DeltaValue->setVisible(true);
-    }
-    else
-    {
-        _spo2Name2->setVisible(false);
-        _spo2Value2->setVisible(false);
-        _spo2DeltaName->setVisible(false);
-        _spo2DeltaValue->setVisible(false);
-    }
+    updateSpO2PlugIn();
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
@@ -241,6 +228,24 @@ QList<SubParamID> SPO2TrendWidget::getShortTrendSubParams() const
    QList<SubParamID> list;
    list.append(SUB_PARAM_SPO2);
    return list;
+}
+
+void SPO2TrendWidget::updateSpO2PlugIn()
+{
+    if (spo2Param.isConnected(true))
+    {
+        _spo2Name2->setVisible(true);
+        _spo2Value2->setVisible(true);
+        _spo2DeltaName->setVisible(true);
+        _spo2DeltaValue->setVisible(true);
+    }
+    else
+    {
+        _spo2Name2->setVisible(false);
+        _spo2Value2->setVisible(false);
+        _spo2DeltaName->setVisible(false);
+        _spo2DeltaValue->setVisible(false);
+    }
 }
 
 void SPO2TrendWidget::doRestoreNormalStatus()
