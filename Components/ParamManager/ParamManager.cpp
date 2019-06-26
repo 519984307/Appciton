@@ -127,10 +127,6 @@ void ParamManager::connectParamProvider(WorkMode mode)
 
         // 获取参数当前的Provider。
         machineConfig.getStrValue(param_list[i], str);
-        if (str == "RAINBOW_DOUBLE_SPO2")
-        {
-            str = "RAINBOW_SPO2,RAINBOW_SPO2PlugIn";
-        }
         QStringList provider_list = str.split(',');
         bool providerHasSet = false;
         for (QStringList::iterator iter = provider_list.begin(); iter != provider_list.end(); ++iter)
@@ -158,6 +154,11 @@ void ParamManager::connectParamProvider(WorkMode mode)
         {
             param->initParam();
         }
+    }
+    Provider *pluginProvider = _providers.value("RAINBOW_SPO2PlugIn", NULL);
+    if (pluginProvider)
+    {
+        pluginProvider->attachParam(*getParam(PARAM_SPO2));
     }
 }
 
@@ -188,10 +189,6 @@ void ParamManager::connectDemoParamProvider()
 
             // 使用demo模块数据，暂停接收其他模块数据
             machineConfig.getStrValue(param_list[i], str);
-            if (str == "RAINBOW_DOUBLE_SPO2")
-            {
-                str = "RAINBOW_SPO2,RAINBOW_SPO2PlugIn";
-            }
             QStringList provider_list = str.split(',');
             for (QStringList::iterator iter = provider_list.begin(); iter != provider_list.end(); ++iter)
             {
@@ -204,6 +201,11 @@ void ParamManager::connectDemoParamProvider()
                 provider->attachParam(*param);
                 param->initParam();
             }
+        }
+        Provider *pluginProvider = _providers.value("RAINBOW_SPO2PlugIn", NULL);
+        if (pluginProvider)
+        {
+            pluginProvider->detachParam(*getParam(PARAM_SPO2));
         }
     }
     else

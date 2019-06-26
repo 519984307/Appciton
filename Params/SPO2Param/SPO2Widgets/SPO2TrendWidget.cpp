@@ -208,7 +208,7 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
 
     contentLayout->addLayout(layout, 7);
 
-    if (spo2Param.getModuleType() == MODULE_RAINBOW_DOUBLE_SPO2)
+    if (spo2Param.isConnected(true))
     {
         _spo2Name2->setVisible(true);
         _spo2Value2->setVisible(true);

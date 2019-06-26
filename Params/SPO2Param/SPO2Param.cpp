@@ -1058,15 +1058,6 @@ bool SPO2Param::isValid(bool isPlugIn)
 /**************************************************************************************************
  * 是否连接。
  *************************************************************************************************/
-bool SPO2Param::isConnected()
-{
-    if (d_ptr->moduleType == MODULE_RAINBOW_DOUBLE_SPO2)
-    {
-        return d_ptr->connectedProvider && d_ptr->connectedPlugInProvider;
-    }
-    return d_ptr->connectedProvider;
-}
-
 bool SPO2Param::isConnected(bool isPlugin)
 {
     if (isPlugin)
@@ -1209,8 +1200,7 @@ void SPO2Param::setSensitivity(int sens)
     if (NULL != d_ptr->provider)
     {
         if (d_ptr->moduleType == MODULE_MASIMO_SPO2
-                || d_ptr->moduleType == MODULE_RAINBOW_SPO2
-                || d_ptr->moduleType == MODULE_RAINBOW_DOUBLE_SPO2)
+                || d_ptr->moduleType == MODULE_RAINBOW_SPO2)
         {
             d_ptr->provider->setSensitivityFastSat(static_cast<SensitivityMode>(sens), getFastSat());
         }
@@ -1222,8 +1212,7 @@ void SPO2Param::setSensitivity(int sens)
     if (NULL != d_ptr->plugInProvider)
     {
         if (d_ptr->moduleType == MODULE_MASIMO_SPO2
-                || d_ptr->moduleType == MODULE_RAINBOW_SPO2
-                || d_ptr->moduleType == MODULE_RAINBOW_DOUBLE_SPO2)
+                || d_ptr->moduleType == MODULE_RAINBOW_SPO2)
         {
             d_ptr->plugInProvider->setSensitivityFastSat(static_cast<SensitivityMode>(sens), getFastSat());
         }
