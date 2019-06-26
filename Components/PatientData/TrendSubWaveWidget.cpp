@@ -44,8 +44,7 @@ void TrendSubWaveWidget::setWidgetParam(SubParamID id, TrendGraphType type)
 {
     _id = id;
     _type = type;
-    ParamID paramId = paramInfo.getParamID(_id);
-    UnitType unitType = paramManager.getSubParamUnit(paramId, _id);
+    UnitType unitType = paramInfo.getUnitOfSubParam(id);
 
     if (_type == TREND_GRAPH_TYPE_NORMAL || _type == TREND_GRAPH_TYPE_AG_TEMP)
     {
@@ -76,7 +75,7 @@ void TrendSubWaveWidget::setWidgetParam(SubParamID id, TrendGraphType type)
         QString str = paramInfo.getSubParamName(_id);
         _paramName = str.left(str.length() - 4);
     }
-    _paramUnit = trs(Unit::getSymbol(paramManager.getSubParamUnit(paramInfo.getParamID(_id), _id)));
+    _paramUnit = trs(Unit::getSymbol(paramInfo.getUnitOfSubParam(id)));
 }
 
 void TrendSubWaveWidget::trendDataInfo(TrendGraphInfo &info)
@@ -359,7 +358,8 @@ QList<QPainterPath> TrendSubWaveWidget::generatorPainterPath(const TrendGraphInf
         QVector<TrendGraphData>::ConstIterator iter = graphInfo.trendData.constBegin();
         for (; iter != graphInfo.trendData.constEnd(); iter ++)
         {
-            if (iter->data == InvData())
+            int v = iter->data;
+            if (v == InvData())
             {
                 if (!lastPointInvalid)
                 {
@@ -369,8 +369,17 @@ QList<QPainterPath> TrendSubWaveWidget::generatorPainterPath(const TrendGraphInf
                 continue;
             }
 
+            if (_id == SUB_PARAM_PI)
+            {
+                v = v / 100;
+            }
+            else if (_id == SUB_PARAM_SPHB || _id == SUB_PARAM_SPMET)
+            {
+                v = v / 10;
+            }
+
             qreal x = _mapValue(_timeX, iter->timestamp);
-            qreal y = _mapValue(_valueY, iter->data);
+            qreal y = _mapValue(_valueY, v);
 
             if (lastPointInvalid)
             {
@@ -505,7 +514,20 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
         TrendDataType value = _trendInfo.trendData.at(_cursorPosIndex).data;
         if (value != InvData())
         {
-            barPainter.drawText(dataRect, QString::number(value), option);
+            QString valueStr;
+            if (_id == SUB_PARAM_PI)
+            {
+                valueStr = QString::number(((value * 1.0) / 100), 'f', 2);
+            }
+            else if (_id == SUB_PARAM_SPHB || _id == SUB_PARAM_SPMET)
+            {
+                valueStr = QString::number(((value * 1.0) / 10), 'f', 1);
+            }
+            else
+            {
+                valueStr = QString::number(value);
+            }
+            barPainter.drawText(dataRect, valueStr, option);
         }
         else
         {
@@ -778,6 +800,14 @@ void TrendSubWaveWidget::_autoRulerCal()
             if (data == InvData())
             {
                 continue;
+            }
+            if (_id == SUB_PARAM_PI)
+            {
+                data = data / 100;
+            }
+            else if (_id == SUB_PARAM_SPHB || _id == SUB_PARAM_SPMET)
+            {
+                data = data / 10;
             }
             _updateAutoRuler(data);
         }
