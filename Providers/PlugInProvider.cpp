@@ -155,7 +155,7 @@ public:
     int readPluginPinSta()
     {
         QByteArray data;
-        QFile callFile("/sys/class/pmos/spo2_ibp_identify");
+        QFile callFile("/sys/class/pmos/plugin_insert_recognition");
         if (!callFile.open(QIODevice::ReadWrite))
         {
             qDebug() << "fail to open plugin file";

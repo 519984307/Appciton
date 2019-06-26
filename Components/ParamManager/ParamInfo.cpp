@@ -609,9 +609,14 @@ ParamID ParamInfo::getParamID(WaveformID id)
  *************************************************************************************************/
 int ParamInfo::getMultiOfSubParam(SubParamID id)
 {
-    if (id >= SUB_PARAM_ETCO2 && id <= SUB_PARAM_ST_V6)
+    if ((id >= SUB_PARAM_ETCO2 && id <= SUB_PARAM_ST_V6) ||
+            id == SUB_PARAM_SPHB || id == SUB_PARAM_SPMET)
     {
         return 10;
+    }
+    else if (id == SUB_PARAM_PI)
+    {
+        return 100;
     }
 
     return 1;

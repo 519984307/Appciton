@@ -44,7 +44,7 @@ void TrendSubWaveWidget::setWidgetParam(SubParamID id, TrendGraphType type)
 {
     _id = id;
     _type = type;
-    UnitType unitType = paramInfo.getUnitOfSubParam(id);
+    UnitType unitType = getUnitType();
 
     if (_type == TREND_GRAPH_TYPE_NORMAL || _type == TREND_GRAPH_TYPE_AG_TEMP)
     {
@@ -75,7 +75,7 @@ void TrendSubWaveWidget::setWidgetParam(SubParamID id, TrendGraphType type)
         QString str = paramInfo.getSubParamName(_id);
         _paramName = str.left(str.length() - 4);
     }
-    _paramUnit = trs(Unit::getSymbol(paramInfo.getUnitOfSubParam(id)));
+    _paramUnit = trs(Unit::getSymbol(paramManager.getSubParamUnit(paramInfo.getParamID(_id), _id)));
 }
 
 void TrendSubWaveWidget::trendDataInfo(TrendGraphInfo &info)
@@ -804,7 +804,7 @@ void TrendSubWaveWidget::_autoRulerCal()
     }
 
     // 自动标尺如果超出手动标尺设定范围则按照设置范围最大最小设定.
-    UnitType unit = paramInfo.getUnitOfSubParam(_id);
+    UnitType unit = getUnitType();
     ParamRulerConfig config = alarmConfig.getParamRulerConfig(_id, unit);
     int range = _valueY.max - _valueY.min;
     if (_valueY.min < config.minDownRuler)

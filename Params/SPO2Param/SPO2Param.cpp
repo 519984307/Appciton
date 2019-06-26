@@ -385,9 +385,17 @@ void SPO2Param::showSubParamValue()
 /**************************************************************************************************
  * 获取当前的单位。
  *************************************************************************************************/
-UnitType SPO2Param::getCurrentUnit(SubParamID /*id*/)
+UnitType SPO2Param::getCurrentUnit(SubParamID id)
 {
-    return UNIT_PERCENT;
+    switch (id)
+    {
+    case SUB_PARAM_SPHB:
+        return UNIT_GDL;
+    case SUB_PARAM_SPOC:
+        return UNIT_MLDL;
+    default:
+        return UNIT_PERCENT;
+    }
 }
 
 /**************************************************************************************************
