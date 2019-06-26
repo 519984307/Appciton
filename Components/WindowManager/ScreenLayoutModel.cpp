@@ -69,6 +69,7 @@ const char *layoutNodeName(LayoutNodeType nodeType)
         "PITrend",
         "SpHbTrend",
         "SpMetTrend",
+        "SpCOTrend",
         "PRTrend",
     };
 

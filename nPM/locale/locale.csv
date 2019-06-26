@@ -118,6 +118,7 @@ SpO2TrendWave,SpO₂,SpO₂
 PITrendWave,PI,PI
 SpHbTrendWave,SpHb,SpHb
 SpMetTrendWave,SpMet,SpMet
+SpCOTrendWave,SpCO,SpCO
 PRTrendWave,PR,PR
 NIBP,NIBP,NIBP
 RESP,RESP,RESP

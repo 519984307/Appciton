@@ -449,7 +449,10 @@ static void _initProviderParam(void)
         spo2Param.setTrendWidget(spmetTrendWidget);
         // spco
         SPCOTrendWidget *spcoTrendWidget = new SPCOTrendWidget();
+        TrendWave *spcoTrendWave = new TrendWave("SpCOTrendWave");
+        spcoTrendWave->addSubParam(SUB_PARAM_SPCO);
         layoutManager.addLayoutWidget(spcoTrendWidget, LAYOUT_NODE_PARAM_SPCO);
+        layoutManager.addLayoutWidget(spcoTrendWave, LAYOUT_NODE_TREND_WAVE_SPCO);
         spo2Param.setTrendWidget(spcoTrendWidget);
         // pr
         TrendWave *prTrendWave = new TrendWave("PRTrendWave");

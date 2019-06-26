@@ -1083,7 +1083,6 @@
 		    <LayoutRow>
 			<LayoutNode pos="0" span="4" editable="0">SpMetTrend</LayoutNode>
 			<LayoutNode pos="4" span="1" editable="0">SpMet</LayoutNode>
-			<LayoutNode pos="5" span="1" editable="0">SpCO</LayoutNode>
 		    </LayoutRow>
 		</SPO2Single>
             </ContentLayout>

@@ -120,6 +120,7 @@
         <ModuleControl>1</ModuleControl>
 	<NIBPSameSide>0</NIBPSameSide>
 	<SignalIQ>0</SignalIQ>
+	<Sensor>0</Sensor>
     </SPO2>
     <CO2>
         <CO2ModeDefault>1</CO2ModeDefault>

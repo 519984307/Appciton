@@ -1572,6 +1572,12 @@ SPO2RainbowType SPO2Param::getProviderInfo(bool isPlugIn)
     return d_ptr->providerInfo.value(isPlugIn);
 }
 
+void SPO2Param::setSensor(SPO2RainbowSensor sensor)
+{
+    currentConfig.setNumValue("SPO2|Sensor", static_cast<int>(sensor));
+    layoutManager.updateLayout();
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
