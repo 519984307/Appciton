@@ -369,14 +369,7 @@ QList<QPainterPath> TrendSubWaveWidget::generatorPainterPath(const TrendGraphInf
                 continue;
             }
 
-            if (_id == SUB_PARAM_PI)
-            {
-                v = v / 100;
-            }
-            else if (_id == SUB_PARAM_SPHB || _id == SUB_PARAM_SPMET)
-            {
-                v = v / 10;
-            }
+            v = v / _valueY.scale;
 
             qreal x = _mapValue(_timeX, iter->timestamp);
             qreal y = _mapValue(_valueY, v);
@@ -801,14 +794,7 @@ void TrendSubWaveWidget::_autoRulerCal()
             {
                 continue;
             }
-            if (_id == SUB_PARAM_PI)
-            {
-                data = data / 100;
-            }
-            else if (_id == SUB_PARAM_SPHB || _id == SUB_PARAM_SPMET)
-            {
-                data = data / 10;
-            }
+            data = data / _valueY.scale;
             _updateAutoRuler(data);
         }
         break;
