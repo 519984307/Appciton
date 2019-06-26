@@ -202,13 +202,14 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
     vLayout->addLayout(hLayout);
 
     QHBoxLayout *layout = new QHBoxLayout();
-    layout->addWidget(_spo2Value1, 5);
-    layout->addWidget(_spo2Bar, 1);
-    layout->addLayout(vLayout, 5);
+    layout->setMargin(10);
+    layout->addWidget(_spo2Value1);
+    layout->addWidget(_spo2Bar);
+    layout->addLayout(vLayout);
 
     contentLayout->addLayout(layout, 7);
 
-    updateSpO2PlugIn();
+    updateTrendWidget();
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
@@ -230,7 +231,7 @@ QList<SubParamID> SPO2TrendWidget::getShortTrendSubParams() const
    return list;
 }
 
-void SPO2TrendWidget::updateSpO2PlugIn()
+void SPO2TrendWidget::updateTrendWidget()
 {
     if (spo2Param.isConnected(true))
     {
@@ -245,6 +246,18 @@ void SPO2TrendWidget::updateSpO2PlugIn()
         _spo2Value2->setVisible(false);
         _spo2DeltaName->setVisible(false);
         _spo2DeltaValue->setVisible(false);
+    }
+}
+
+void SPO2TrendWidget::setBarValue(int16_t value)
+{
+    if (value == InvData())
+    {
+        _spo2Bar->setValue(value, false);
+    }
+    else
+    {
+        _spo2Bar->setValue(value, true);
     }
 }
 

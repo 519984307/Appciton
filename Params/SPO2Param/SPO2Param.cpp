@@ -228,8 +228,7 @@ void SPO2Param::handDemoWaveform(WaveformID id, short data)
     }
     if (NULL != d_ptr->trendWidget)
     {
-        // TODO: 处理PI
-//        _trendWidget->setBarValue(data * 15 / 255);
+        d_ptr->trendWidget->setBarValue(data * 15 / 255);
     }
     waveformCache.addData(static_cast<WaveformID>(id), data);
 }
@@ -290,9 +289,7 @@ void SPO2Param::exitDemo()
         d_ptr->spocTrendWidget->setSPOCValue(InvData());
         d_ptr->spmetTrendWidget->setSpMetValue(InvData());
         d_ptr->spcoTrendWidget->setSPCOValue(InvData());
-        // TODO: 处理PI
-//        _trendWidget->setPIValue(InvData());
-//        _trendWidget->setBarValue(InvData());
+        d_ptr->trendWidget->setBarValue(InvData());
     }
 
     setPR(InvData());
@@ -838,8 +835,7 @@ void SPO2Param::addWaveformData(short wave, unsigned char waveFlag, bool isPlugI
 
     if (NULL != d_ptr->trendWidget)
     {
-        // TODO: 处理PI
-//        _trendWidget->setBarValue(wave * 15 / 255);
+        d_ptr->trendWidget->setBarValue(wave * 15 / 255);
     }
 }
 
@@ -855,8 +851,7 @@ void SPO2Param::addBarData(short data)
     d_ptr->barValue = data;
     if (NULL != d_ptr->trendWidget)
     {
-        // TODO: 处理PI
-//        _trendWidget->setBarValue(data);
+        d_ptr->trendWidget->setBarValue(data);
     }
 }
 
@@ -1092,7 +1087,7 @@ void SPO2Param::setConnected(bool isConnected, bool isPlugIn)
             {
                 layoutManager.updateLayout();
             }
-            d_ptr->trendWidget->updateSpO2PlugIn();
+            d_ptr->trendWidget->updateTrendWidget();
         }
         else
         {
@@ -1107,7 +1102,7 @@ void SPO2Param::setConnected(bool isConnected, bool isPlugIn)
             {
                 layoutManager.updateLayout();
             }
-            d_ptr->trendWidget->updateSpO2PlugIn();
+            d_ptr->trendWidget->updateTrendWidget();
         }
     }
 }
