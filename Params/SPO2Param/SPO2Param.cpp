@@ -1092,6 +1092,7 @@ void SPO2Param::setConnected(bool isConnected, bool isPlugIn)
             {
                 layoutManager.updateLayout();
             }
+            d_ptr->trendWidget->updateSpO2PlugIn();
         }
         else
         {
@@ -1106,6 +1107,7 @@ void SPO2Param::setConnected(bool isConnected, bool isPlugIn)
             {
                 layoutManager.updateLayout();
             }
+            d_ptr->trendWidget->updateSpO2PlugIn();
         }
     }
 }

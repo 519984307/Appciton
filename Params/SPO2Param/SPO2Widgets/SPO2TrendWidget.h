@@ -41,6 +41,8 @@ public:
 
     QList<SubParamID> getShortTrendSubParams() const;
 
+    void updateSpO2PlugIn();
+
 public:
     virtual void doRestoreNormalStatus();
 
