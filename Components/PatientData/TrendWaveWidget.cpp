@@ -330,6 +330,12 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
     case SUB_PARAM_LAP_MAP:
     case SUB_PARAM_RAP_MAP:
     case SUB_PARAM_ICP_MAP:
+    case SUB_PARAM_PI:
+    case SUB_PARAM_PVI:
+    case SUB_PARAM_SPHB:
+    case SUB_PARAM_SPOC:
+    case SUB_PARAM_SPMET:
+    case SUB_PARAM_SPCO:
     {
         TrendGraphData dataV1;
         AlarmEventInfo alarm;
@@ -984,6 +990,12 @@ TrendGraphType TrendWaveWidget::getTrendGraphType(SubParamID id)
     case SUB_PARAM_LAP_MAP:
     case SUB_PARAM_RAP_MAP:
     case SUB_PARAM_ICP_MAP:
+    case SUB_PARAM_PI:
+    case SUB_PARAM_PVI:
+    case SUB_PARAM_SPHB:
+    case SUB_PARAM_SPOC:
+    case SUB_PARAM_SPMET:
+    case SUB_PARAM_SPCO:
         return TREND_GRAPH_TYPE_NORMAL;
     case SUB_PARAM_NIBP_SYS:
         return TREND_GRAPH_TYPE_NIBP;
