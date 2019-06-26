@@ -614,7 +614,7 @@ QString EventStorageItem::getEventTitle() const
     break;
     case EventCodeMarker:
     {
-        eventTitle = trs(QString(d_ptr->codeMarkerInfo->codeName));
+        eventTitle = QString(d_ptr->codeMarkerInfo->codeName);
     }
     break;
     case EventRealtimePrint:
