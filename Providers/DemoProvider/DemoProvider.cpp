@@ -161,7 +161,7 @@ bool DemoProvider::attachParam(Param &param)
         _demoWaveData[WAVE_SPO2_2].param = &param;
         spo2Param.setProvider(this);
         spo2Param.setConnected(true);
-        if (spo2Param.getModuleType() == MODULE_RAINBOW_DOUBLE_SPO2)
+        if (spo2Param.isConnected(true))
         {
             spo2Param.setProvider(this, true);
             spo2Param.setConnected(true, true);
