@@ -113,7 +113,7 @@ void PITrendWidget::setTextSize()
 {
     QRect r = this->rect();
     r.adjust(nameLabel->width(), 0, 0, 0);
-    int fontsize = fontManager.adjustNumFontSize(r, true, "9999");
+    int fontsize = fontManager.adjustNumFontSize(r, true, "99999");
     QFont font = fontManager.numFont(fontsize, true);
     d_ptr->piValue->setFont(font);
 }
