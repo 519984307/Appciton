@@ -36,6 +36,7 @@
 #include "SPOCTrendWidget.h"
 #include "SPMETTrendWidget.h"
 #include "SPCOTrendWidget.h"
+#include "LayoutManager.h"
 
 SPO2Param *SPO2Param::_selfObj = NULL;
 
@@ -311,6 +312,11 @@ void SPO2Param::getAvailableWaveforms(QStringList &waveforms,
         waveforms.append(d_ptr->waveWidget->name());
     }
     waveformShowName.append(trs("PLETH"));
+}
+
+void SPO2Param::getWaveWindow(QString &waveWin)
+{
+    waveWin = d_ptr->plugInWaveWidget->name();
 }
 
 /**************************************************************************************************
@@ -1061,20 +1067,54 @@ bool SPO2Param::isConnected()
     return d_ptr->connectedProvider;
 }
 
+bool SPO2Param::isConnected(bool isPlugin)
+{
+    if (isPlugin)
+    {
+        return d_ptr->connectedPlugInProvider;
+    }
+    else
+    {
+        return d_ptr->connectedProvider;
+    }
+}
+
 void SPO2Param::setConnected(bool isConnected, bool isPlugIn)
 {
     if (!isPlugIn)
     {
-        if (d_ptr->connectedProvider != isConnected)
-        {
-            d_ptr->connectedProvider = isConnected;
-        }
+        d_ptr->connectedProvider = isConnected;
     }
     else
     {
-        if (d_ptr->connectedPlugInProvider != isConnected)
+        d_ptr->connectedPlugInProvider = isConnected;
+
+        QString spo2PluginWave;
+        getWaveWindow(spo2PluginWave);
+
+        int needUpdate = 0;
+        if (isConnected)
         {
-            d_ptr->connectedPlugInProvider = isConnected;
+            // update to show SpO2 info
+            needUpdate |= layoutManager.setWidgetLayoutable(spo2PluginWave, true);
+            if (needUpdate)
+            {
+                layoutManager.updateLayout();
+            }
+        }
+        else
+        {
+            AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_CO2);
+            if (alarmSource)
+            {
+                alarmSource->clear();
+            }
+            // update to show SpO2 info
+            needUpdate |= layoutManager.setWidgetLayoutable(spo2PluginWave, false);
+            if (needUpdate)
+            {
+                layoutManager.updateLayout();
+            }
         }
     }
 }
