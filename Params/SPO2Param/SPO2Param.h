@@ -70,6 +70,7 @@ public:
     // 获取可得的波形控件集。
     virtual void getAvailableWaveforms(QStringList &waveforms,
                                        QStringList &waveformShowName, int flag);
+    virtual void getWaveWindow(QString &waveWin);
 
     // 获取子参数值
     virtual short getSubParamValue(SubParamID id);
@@ -169,6 +170,7 @@ public:
     void setValidStatus(bool isValid, bool isPlugIn = false);
     bool isValid(bool isPlugIn = false);
     bool isConnected();
+    bool isConnected(bool isPlugin);
 
     // 设置连接，供给对象调用。
     void setConnected(bool isConnected, bool isPlugIn = false);

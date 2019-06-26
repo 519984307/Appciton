@@ -64,7 +64,8 @@
     <SystemBoardPort>/dev/ttyPM0</SystemBoardPort>
     <BLM_T5Port>DataDispatcher</BLM_T5Port>
     <WITLEAF_IBPPort>/dev/ttyS4</WITLEAF_IBPPort>
-    <BLM_CO2Port>/dev/ttyPM2</BLM_CO2Port>
+    <BLM_CO2Port>PlugIn</BLM_CO2Port>
+<!--    <BLM_CO2Port>/dev/ttyPM2</BLM_CO2Port>-->
     <DataDispatcherPort>/dev/ttyPM3</DataDispatcherPort>
     <NEONATE_O2Port>/dev/ttyS5</NEONATE_O2Port>
     <PlugInPort>/dev/ttyS2</PlugInPort>

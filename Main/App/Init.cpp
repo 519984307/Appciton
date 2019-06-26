@@ -397,7 +397,6 @@ static void _initProviderParam(void)
         else if (str == "RAINBOW_DOUBLE_SPO2")
         {
             paramManager.addProvider(*new RainbowProvider("RAINBOW_SPO2"));
-            paramManager.addProvider(*new RainbowProvider("RAINBOW_SPO2PlugIn", true));
             spo2Param.setModuleType(MODULE_RAINBOW_DOUBLE_SPO2);
             oneShotAlarmSource = new SPO2OneShotAlarm();
             alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_SPO2_2);
@@ -502,8 +501,6 @@ static void _initProviderParam(void)
     // CO2部分。
     if (systemManager.isSupport(CONFIG_CO2))
     {
-        paramManager.addProvider(*new BLMCO2Provider());
-
         paramManager.addParam(co2Param.construction());
 
         limitAlarmSource = new CO2LimitAlarm();

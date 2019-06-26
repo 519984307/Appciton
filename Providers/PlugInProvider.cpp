@@ -18,6 +18,11 @@
 #include <QFile>
 #include "SPO2Param.h"
 #include <QTimer>
+#include "ParamManager.h"
+#include "RainbowProvider.h"
+#include "SPO2Alarm.h"
+#include "BLMCO2Provider.h"
+#include "CO2Param.h"
 
 #define SPO2_SOH             (0xA1)  // rainbow spo2 packet header
 #define SPO2_EOM             (0xAF)  // rainbow spo2 packet end
@@ -27,9 +32,9 @@
 #define PACKET_BUFF_SIZE 64
 #define RING_BUFFER_LENGTH 4096
 #define MAXIMUM_PACKET_SIZE 256 // largest packet size, should be larger enough
-#define READ_PLUGIN_PIN_INTERVAL        (500)   // 100ms读一次插件管脚
-#define CO2_RUN_BAUD_RATE       (9600)
-#define SPO2_RUN_BAUD_RATE      (9600)
+#define READ_PLUGIN_PIN_INTERVAL        (500)   // 500ms读一次插件管脚
+#define RUN_BAUD_RATE_9600          (9600)
+#define RUN_BAUD_RATE_115200        (115200)
 
 enum PluginStatus
 {
@@ -49,11 +54,14 @@ class PlugInProviderPrivate
 {
 public:
     PlugInProviderPrivate(const QString &name, PlugInProvider *const q_ptr)
-        : isLastSOHPaired(false),
+        : q_ptr(q_ptr),
+          isLastSOHPaired(false),
           name(name),
           uart(new Uart(q_ptr)),
           ringBuff(RING_BUFFER_LENGTH),
-          pluginTimerID(-1)
+          pluginTimerID(-1),
+          baudrateTimerID(-1),
+          baudrate(RUN_BAUD_RATE_9600)
     {
     }
 
@@ -112,7 +120,36 @@ public:
 
     void handlePacket(unsigned char *data, int len, PlugInProvider::PlugInType type)
     {
+        if (baudrateTimerID != -1)
+        {
+            q_ptr->killTimer(baudrateTimerID);
+            baudrateTimerID = -1;
+            baudrate = RUN_BAUD_RATE_9600;
+        }
+        if (NULL == dataHandlers[type])
+        {
+            // 初始化provider;
+            initPluginModule(type);
+            return;
+        }
         dataHandlers[type]->dataArrived(data, len);
+    }
+
+    void initPluginModule(PlugInProvider::PlugInType type)
+    {
+        Provider *provider = NULL;
+        if (type == PlugInProvider::PLUGIN_TYPE_SPO2)
+        {
+            provider = new RainbowProvider("RAINBOW_SPO2PlugIn", true);
+            paramManager.addProvider(*provider);
+            provider->attachParam(*paramManager.getParam(PARAM_SPO2));
+        }
+        else if (type == PlugInProvider::PLUGIN_TYPE_CO2)
+        {
+            provider = new BLMCO2Provider();
+            paramManager.addProvider(*provider);
+            provider->attachParam(*paramManager.getParam(PARAM_CO2));
+        }
     }
 
     int readPluginPinSta()
@@ -128,6 +165,7 @@ public:
         return data.toInt();
     }
 
+    PlugInProvider *const q_ptr;
     bool isLastSOHPaired; // 遗留在ringBuff最后一个数据（该数据为SOH）是否已经剃掉了多余的SOH
     QString name;
     Uart *uart;
@@ -135,6 +173,8 @@ public:
     RingBuff<unsigned char> ringBuff;
     static QMap<QString, PlugInProvider *> plugInProviders;
     int pluginTimerID;
+    int baudrateTimerID;
+    unsigned int baudrate;
 
 private:
     PlugInProviderPrivate(const PlugInProviderPrivate &);  // use to pass the cpplint check only, no implementation
@@ -222,17 +262,33 @@ void PlugInProvider::timerEvent(QTimerEvent *ev)
 {
     if (ev->timerId() == d_ptr->pluginTimerID)
     {
-        static int pluginSta = 0;
+        static int pluginSta = 1;
         if (pluginSta != d_ptr->readPluginPinSta())
         {
             if (pluginSta == 1)
             {
-                updateUartBaud(SPO2_RUN_BAUD_RATE);
+                updateUartBaud(d_ptr->baudrate);
                 spo2Param.initPluginModule();                 // 初始化SpO2插件模块
                 QTimer::singleShot(1000, this, SLOT(changeBaudrate())); // 预留rainbow模块重启时间
+                d_ptr->baudrateTimerID = startTimer(1500);
             }
             pluginSta = d_ptr->readPluginPinSta();
         }
+    }
+    else if (ev->timerId() == d_ptr->baudrateTimerID)
+    {
+        if (d_ptr->baudrate == RUN_BAUD_RATE_9600)
+        {
+            d_ptr->baudrate = RUN_BAUD_RATE_115200;
+        }
+        else if (d_ptr->baudrate == RUN_BAUD_RATE_115200)
+        {
+            d_ptr->baudrate = RUN_BAUD_RATE_9600;
+            killTimer(d_ptr->baudrateTimerID);
+            d_ptr->baudrateTimerID = -1;
+            return;
+        }
+        updateUartBaud(d_ptr->baudrate);
     }
 }
 

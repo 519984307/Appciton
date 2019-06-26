@@ -1111,7 +1111,7 @@ void LayoutManagerPrivate::performSPO2Layout()
     QGridLayout *paramLayout = new QGridLayout(paramContainter);
 
     QVariantMap spo2LayoutInfos;
-    if (spo2Param.getModuleType() != MODULE_RAINBOW_DOUBLE_SPO2)
+    if (!spo2Param.isConnected(true))
     {
         // 单血氧界面
         spo2LayoutInfos = systemConfig.getConfig("PrimaryCfg|UILayout|ContentLayout|SPO2Single");
@@ -1173,6 +1173,7 @@ void LayoutManagerPrivate::performSPO2Layout()
             {
                 // add spo2 wave
                 spo2WaveLayout->addWidget(qw);
+                displayWaveforms.append(w->name());
             }
             else if (nodePos == 0 && nodeSpan == LAYOUT_WAVE_END_COLUMN)
             {
@@ -1184,6 +1185,7 @@ void LayoutManagerPrivate::performSPO2Layout()
             {
                 // add param
                 paramLayout->addWidget(qw, insetRow, nodePos - LAYOUT_WAVE_END_COLUMN, 1, nodeSpan);
+                displayParams.append(w->name());
                 flag = true;
             }
         }
