@@ -813,6 +813,17 @@ void SPO2Param::addWaveformData(short wave, unsigned char waveFlag, bool isPlugI
         if (!d_ptr->isValid)
         {
             flag = flag | 0x4000;
+            if (NULL != d_ptr->trendWidget)
+            {
+                d_ptr->trendWidget->setBarValue(InvData());
+            }
+        }
+        else
+        {
+            if (NULL != d_ptr->trendWidget)
+            {
+                d_ptr->trendWidget->setBarValue(wave * 15 / 255);
+            }
         }
 
         if (d_ptr->waveWidget != NULL)
@@ -832,11 +843,6 @@ void SPO2Param::addWaveformData(short wave, unsigned char waveFlag, bool isPlugI
             d_ptr->plugInWaveWidget->addData(wave, flag);
         }
         waveformCache.addData(WAVE_SPO2_2, (flag << 16) | wave);
-    }
-
-    if (NULL != d_ptr->trendWidget)
-    {
-        d_ptr->trendWidget->setBarValue(wave * 15 / 255);
     }
 }
 
