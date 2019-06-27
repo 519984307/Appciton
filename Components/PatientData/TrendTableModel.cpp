@@ -1069,6 +1069,19 @@ void TrendTableModelPrivate::loadTrendData()
                 dContent.dataStr = dataStr1 + "/" + dataStr2;
             }
             break;
+            case SUB_PARAM_PI:
+            {
+                qint16 data = pack->subparamValue.value(id, InvData());
+                dContent.dataStr = data == InvData() ? "---" : QString::number(data / 100.0, 'f', 2);
+                break;
+            }
+            case SUB_PARAM_SPHB:
+            case SUB_PARAM_SPMET:
+            {
+                qint16 data = pack->subparamValue.value(id, InvData());
+                dContent.dataStr = data == InvData() ? "---" : QString::number(data / 10.0, 'f', 1);
+                break;
+            }
             default:
             {
                 qint16 data = pack->subparamValue.value(id, InvData());
