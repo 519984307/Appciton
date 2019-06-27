@@ -194,14 +194,6 @@
 		    <Scale>1</Scale>
 		</percent>
 		</SPO2_2>
-		<PI Enable="0" Prio="1">
-		<percent>
-		    <Low Min="2" Max="1999">100</Low>
-		    <High Min="3" Max="2000">500</High>
-		    <Step>1</Step>
-		    <Scale>100</Scale>
-		</percent>
-		</PI>
 		<PVI Enable="0" Prio="1">
 		<percent>
 		    <Low Min="0" Max="99">5</Low>
