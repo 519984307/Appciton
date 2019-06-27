@@ -239,7 +239,14 @@ void SPO2Param::handDemoWaveform(WaveformID id, short data)
 void SPO2Param::handDemoTrendData(void)
 {
     d_ptr->spo2Value = 98;
-    d_ptr->plugInSpo2Value = 96;
+    if (isConnected(true))
+    {
+        d_ptr->plugInSpo2Value = 96;
+    }
+    else
+    {
+        d_ptr->plugInSpo2Value = InvData();
+    }
     d_ptr->piValue = 210;
     d_ptr->pviValue = 23;
     d_ptr->sphbValue = 180;
