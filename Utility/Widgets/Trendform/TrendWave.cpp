@@ -107,13 +107,6 @@ void TrendWave::addSubParam(SubParamID id)
 
 void TrendWave::updateRange()
 {
-    if (d_ptr->subParamList.at(0) == SUB_PARAM_PI)
-    {
-        d_ptr->maxValue = 2000;
-        d_ptr->minValue = 0;
-        d_ptr->scale = 100;
-        return;
-    }
     for (int i = 0; i < d_ptr->subParamList.count(); i++)
     {
         LimitAlarmConfig limit = alarmConfig.getLimitAlarmConfig(d_ptr->subParamList.at(i)

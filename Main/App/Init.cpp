@@ -420,14 +420,14 @@ static void _initProviderParam(void)
         layoutManager.addLayoutWidget(spo2TrendWave, LAYOUT_NODE_TREND_WAVE_SPO2);
         // pi
         PITrendWidget *piTrendWidget = new PITrendWidget();
-        TrendWave *piTrendWave = new TrendWave("PITrendWave");
-        piTrendWave->addSubParam(SUB_PARAM_PI);
         layoutManager.addLayoutWidget(piTrendWidget, LAYOUT_NODE_PARAM_PI);
-        layoutManager.addLayoutWidget(piTrendWave, LAYOUT_NODE_TREND_WAVE_PI);
         spo2Param.setTrendWidget(piTrendWidget);
         // pvi
         PVITrendWidget *pviTrendWidget = new PVITrendWidget();
+        TrendWave *pviTrendWave = new TrendWave("PVITrendWave");
+        pviTrendWave->addSubParam(SUB_PARAM_PVI);
         layoutManager.addLayoutWidget(pviTrendWidget, LAYOUT_NODE_PARAM_PVI);
+        layoutManager.addLayoutWidget(pviTrendWave, LAYOUT_NODE_TREND_WAVE_PVI);
         spo2Param.setTrendWidget(pviTrendWidget);
         // sphb
         SPHBTrendWidget *sphbTrendWidget = new SPHBTrendWidget();

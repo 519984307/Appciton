@@ -1043,7 +1043,7 @@
 			<LayoutNode pos="4" span="2" editable="0">SPO2</LayoutNode>
 		    </LayoutRow>
 		    <LayoutRow>
-			<LayoutNode pos="0" span="4" editable="0">PITrend</LayoutNode>
+			<LayoutNode pos="0" span="4" editable="0">PVITrend</LayoutNode>
 			<LayoutNode pos="4" span="1" editable="0">PI</LayoutNode>
 			<LayoutNode pos="5" span="1" editable="0">PVI</LayoutNode>
 		    </LayoutRow>
@@ -1071,7 +1071,7 @@
 			<LayoutNode pos="4" span="2" editable="0">ECG</LayoutNode>
 		    </LayoutRow>
 		    <LayoutRow>
-			<LayoutNode pos="0" span="4" editable="0">PITrend</LayoutNode>
+			<LayoutNode pos="0" span="4" editable="0">PVITrend</LayoutNode>
 			<LayoutNode pos="4" span="1" editable="0">PI</LayoutNode>
 			<LayoutNode pos="5" span="1" editable="0">PVI</LayoutNode>
 		    </LayoutRow>

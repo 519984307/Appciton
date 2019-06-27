@@ -66,7 +66,7 @@ const char *layoutNodeName(LayoutNodeType nodeType)
         "O2Wave",
 
         "SpO2Trend",
-        "PITrend",
+        "PVITrend",
         "SpHbTrend",
         "SpMetTrend",
         "SpCOTrend",

@@ -115,7 +115,7 @@ PR,PR,PR
 PLETH,血氧波,Pleth
 PLETH2,血氧波 2,Pleth 2
 SpO2TrendWave,SpO₂,SpO₂
-PITrendWave,PI,PI
+PVITrendWave,PVI,PVI
 SpHbTrendWave,SpHb,SpHb
 SpMetTrendWave,SpMet,SpMet
 SpCOTrendWave,SpCO,SpCO
