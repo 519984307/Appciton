@@ -1367,8 +1367,8 @@ void RainbowProviderPrivate::handleACK()
         case RB_INIT_SET_SPOC:
             configPeriodParamOut(RB_PARAM_OF_SPOC, 160);       // 每160ms输出一次SpOC
             curInitializeStep = RB_INIT_COMPLETED;
+            break;
         case RB_INIT_COMPLETED:
-            spo2Param.setProviderInfo(isPlugIn, provider);
             break;
         default:
             break;
@@ -1376,6 +1376,7 @@ void RainbowProviderPrivate::handleACK()
     }
     else  // 当初始化完成时，请求参数状态（里面含有版本信息）
     {
+        spo2Param.setProviderInfo(isPlugIn, provider);
         requestParamStatus();
     }
 }

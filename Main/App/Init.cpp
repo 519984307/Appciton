@@ -393,8 +393,6 @@ static void _initProviderParam(void)
         {
             spo2Param.setModuleType(MODULE_RAINBOW_SPO2);
             paramManager.addProvider(*new RainbowProvider("RAINBOW_SPO2"));
-            oneShotAlarmSource = new SPO2OneShotAlarm();
-            alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_SPO2_2);
         }
         paramManager.addParam(spo2Param.construction());
 
@@ -404,6 +402,8 @@ static void _initProviderParam(void)
         oneShotAlarmSource = new SPO2OneShotAlarm();
         alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_SPO2);
         alertor.addOneShotSource(oneShotAlarmSource);
+        oneShotAlarmSource = new SPO2OneShotAlarm();
+        alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_SPO2_2);
 
         SPO2WaveWidget *spo2WaveWidget = new SPO2WaveWidget("SPO2WaveWidget", trs("PLETH"));
         SPO2WaveWidget *outsideSpo2WaveWidget = new SPO2WaveWidget("OutsideSpo2WaveWidget", trs("PLETH2"));
