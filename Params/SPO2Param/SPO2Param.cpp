@@ -1582,7 +1582,7 @@ void SPO2Param::setProviderInfo(bool isPlugIn, SPO2RainbowType type)
 
 SPO2RainbowType SPO2Param::getProviderInfo(bool isPlugIn)
 {
-    return d_ptr->providerInfo.value(isPlugIn);
+    return d_ptr->providerInfo.value(isPlugIn, SPO2_RAINBOW_TYPE_NR);
 }
 
 void SPO2Param::setSensor(SPO2RainbowSensor sensor)
