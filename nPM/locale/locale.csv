@@ -1671,27 +1671,27 @@ SPO2CableOff,血氧线缆断开,SpO2 Cable Off
 SPO2FingerOff,未检测到手指,SpO2 Finger Off
 SPO2LEDFault,血氧LED错误,SpO2 LED Fault
 SPO2LowPerfusion,SpO2弱灌注,SpO2 Low Perfusion
-SPO2DefectiveCable,SpO2线缆故障,Defective cable
-SPO2CableExpired,SpO2线缆过期,Cable expired
-SPO2IncompatibleCable,SpO2不兼容线缆,Incompatible cable
-SPO2UnrecongnizedCable,SpO2未识别线缆,Unrecongnized cable
-SPO2CableNearExpiration,SpO2线缆即将到期,Cable near expiration
-SPO2SensorExpired,SpO2传感器已过期,Sensor expired
-SPO2IncompatibleSensor,SpO2传感器不兼容,Incompatible sensor
-SPO2UnrecongnizedSensor,SpO2未识别传感器,Unrecongnized sensor
-SPO2DefectiveSensor,SpO2传感器故障,Defective sensor
-SPO2CheckCableAndSensorFault,SpO2检查线缆和传感器故障,Check cable and sensor fault
-SPO2SensorNearExpiration,SpO2传感器即将到期,Sensor near expiration
-SPO2NoAdhesiveSensor,SpO2无粘性传感器,No adhesive sensor
-SPO2AdhesiveSensorExpiraton,SpO2粘性传感器截止,Adhesive sensor expiraton
-SPO2IncompatibleAdhesiveSensor,SpO2不兼容的粘性传感器,Incompatible adhesive sensor
-SPO2UnrecongnizedAdhesiveSensor,SpO2未识别的粘性传感器,Unrecongnized adhesive sensor
-SPO2DefectiveAdhesiveSensor,SpO2有缺陷的粘性传感器,Defective adhesive sensor
-SPO2SensorIniting,SpO2传感器初始化,Sensor initing
-SPO2InterferenceDetected,SpO2检测到干扰,Interference detected
-SPO2DemoMode,SpO2演示模式,Demo mode
-SPO2AdhesiveSensorNearExpiration,SpO2粘性传感器即将到期,Adhesive sensor near expiration
-SPO2CheckSensorConnection,SpO2检查传感器连接,Check sensor connection
+SPO2DefectiveCable,SpO2线缆故障,SpO2 Defective cable
+SPO2CableExpired,SpO2线缆过期,SpO2 Cable expired
+SPO2IncompatibleCable,SpO2不兼容线缆,SpO2 Incompatible cable
+SPO2UnrecongnizedCable,SpO2未识别线缆,SpO2 Unrecongnized cable
+SPO2CableNearExpiration,SpO2线缆即将到期,SpO2 Cable near expiration
+SPO2SensorExpired,SpO2传感器已过期,SpO2 Sensor expired
+SPO2IncompatibleSensor,SpO2传感器不兼容,SpO2 Incompatible sensor
+SPO2UnrecongnizedSensor,SpO2未识别传感器,SpO2 Unrecongnized sensor
+SPO2DefectiveSensor,SpO2传感器故障,SpO2 Defective sensor
+SPO2CheckCableAndSensorFault,SpO2检查线缆和传感器故障,SpO2 Check cable and sensor fault
+SPO2SensorNearExpiration,SpO2传感器即将到期,SpO2 Sensor near expiration
+SPO2NoAdhesiveSensor,SpO2无粘性传感器,SpO2 No adhesive sensor
+SPO2AdhesiveSensorExpiraton,SpO2粘性传感器截止,SpO2 Adhesive sensor expiraton
+SPO2IncompatibleAdhesiveSensor,SpO2不兼容的粘性传感器,SpO2 Incompatible adhesive sensor
+SPO2UnrecongnizedAdhesiveSensor,SpO2未识别的粘性传感器,SpO2 Unrecongnized adhesive sensor
+SPO2DefectiveAdhesiveSensor,SpO2有缺陷的粘性传感器,SpO2 Defective adhesive sensor
+SPO2SensorIniting,SpO2传感器初始化,SpO2 Sensor initing
+SPO2InterferenceDetected,SpO2检测到干扰,SpO2 Interference detected
+SPO2DemoMode,SpO2演示模式,SpO2 Demo mode
+SPO2AdhesiveSensorNearExpiration,SpO2粘性传感器即将到期,SpO2 Adhesive sensor near expiration
+SPO2CheckSensorConnection,SpO2检查传感器连接,SpO2 Check sensor connection
 SPO2OnlyMode,仅限SpO2模式,SpO2 only mode
 SPO2BoardFailure,SpO2板卡错误,SpO2 Board Failure
 NIBPSimul,NIBP同侧,NIBP Simul
