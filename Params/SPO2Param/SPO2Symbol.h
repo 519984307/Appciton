@@ -77,7 +77,6 @@ public:
         {
             "SPO2Low", "SPO2High",
             "SPO22Low", "SPO22High",
-            "PILow", "PIHigh",
             "PVILow", "PVIHigh",
             "SPHBLow", "SPHBHigh",
             "SPOCLow", "SPOCHigh",

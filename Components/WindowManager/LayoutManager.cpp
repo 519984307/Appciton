@@ -1122,6 +1122,9 @@ void LayoutManagerPrivate::performSPO2Layout()
         spo2LayoutInfos = systemConfig.getConfig("PrimaryCfg|UILayout|ContentLayout|SPO2Double");
     }
     QVariantList layoutRows = spo2LayoutInfos["LayoutRow"].toList();
+    int index = 0;
+    currentConfig.getNumValue("SPO2|Sensor", index);
+    SPO2RainbowSensor sensor = static_cast<SPO2RainbowSensor>(index);
 
     if (layoutRows.isEmpty())
     {
@@ -1156,6 +1159,24 @@ void LayoutManagerPrivate::performSPO2Layout()
             QString nodeName = node["@text"].toString();
             int nodeSpan = node["@span"].toInt();
             int nodePos = node["@pos"].toInt();
+
+            // change layout accord current sensor
+            if (sensor == SPO2_RAINBOW_SENSOR_R25)
+            {
+                if (nodeName == QString(layoutNodeName(LAYOUT_NODE_PARAM_SPHB)))
+                {
+                    nodeName = QString(layoutNodeName(LAYOUT_NODE_PARAM_SPCO));
+                }
+                else if (nodeName == QString(layoutNodeName(LAYOUT_NODE_PARAM_SPOC)))
+                {
+                    continue;
+                }
+                else if (nodeName == QString(layoutNodeName(LAYOUT_NODE_TREND_WAVE_SPHB)))
+                {
+                    nodeName = QString(layoutNodeName(LAYOUT_NODE_TREND_WAVE_SPCO));
+                }
+            }
+
             IWidget *w = layoutWidgets.value(layoutNodeMap[nodeName], NULL);
             QWidget *qw = w;
             if (!qw)

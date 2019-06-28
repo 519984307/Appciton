@@ -80,7 +80,6 @@ public:
         int ret = uart->read(buf, sizeof(buf));
         if (ret < 0)
         {
-    //        debug("Data read error!\n");
             return;
         }
 
@@ -298,7 +297,6 @@ void PlugInProvider::dataArrived()
 {
     d_ptr->readData(); // 读取数据到RingBuff中
 
-    unsigned char buff[PACKET_BUFF_SIZE];
     while (d_ptr->ringBuff.dataSize() >= MIN_PACKET_LEN)
     {
         // 如果查询不到帧头，移除ringbuff缓冲区最旧的数据，下次继续查询
@@ -321,6 +319,7 @@ void PlugInProvider::dataArrived()
             }
 
             // 将ringbuff中数据读取到临时缓冲区buff中,并移除ringbuff的旧数据
+            unsigned char buff[PACKET_BUFF_SIZE] = {0};
             for (int i = 0; i < totalLen; i++)
             {
                 buff[i] = d_ptr->ringBuff.at(0);
@@ -342,13 +341,13 @@ void PlugInProvider::dataArrived()
                 debug("FCS error (%s)\n", qPrintable(getName()));
                 d_ptr->ringBuff.pop(1);
             }
-            d_ptr->ringBuff.pop(1);
             continue;
         }
         else if ((d_ptr->ringBuff.at(0) == 0xAA) && (d_ptr->ringBuff.at(1) == 0x55))
         {
             int len = 21;
             int i = 0;
+            unsigned char buff[PACKET_BUFF_SIZE] = {0};
             for (; i < len; i++)
             {
                 buff[i] = d_ptr->ringBuff.at(0);

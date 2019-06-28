@@ -64,6 +64,10 @@ void AlarmLimitWindowPrivate::loadoptions()
     for (int i = 0; i < SUB_PARAM_NR; ++i)
     {
         SubParamID subId = static_cast<SubParamID>(i);
+        if (subId == SUB_PARAM_PI)
+        {
+            continue;
+        }
         ParamID pid = paramInfo.getParamID(subId);
 
         if (!systemManager.isSupport(pid))

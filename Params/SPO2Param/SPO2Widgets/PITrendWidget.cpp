@@ -47,9 +47,7 @@ void PITrendWidget::setPIValue(int16_t pi)
 
 void PITrendWidget::updateLimit()
 {
-    LimitAlarmConfig limit = alarmConfig.getLimitAlarmConfig(SUB_PARAM_PI, UNIT_PERCENT);
-    setLimit(limit.highLimit, limit.lowLimit, limit.scale);
-    d_ptr->scale = limit.scale;
+    d_ptr->scale = 100;
 }
 
 void PITrendWidget::isAlarm(bool flag)
@@ -84,10 +82,10 @@ PITrendWidget::PITrendWidget()
     d_ptr->piValue->setAlignment(Qt::AlignCenter);
     d_ptr->piValue->setText(InvStr());
 
-    contentLayout->addWidget(d_ptr->piValue, 2);
+    contentLayout->addWidget(d_ptr->piValue, 5);
     connect(this, SIGNAL(released()), this, SLOT(onRelease()));
 
-    loadConfig();
+    updateLimit();
 }
 
 PITrendWidget::~PITrendWidget()
@@ -113,7 +111,7 @@ void PITrendWidget::setTextSize()
 {
     QRect r = this->rect();
     r.adjust(nameLabel->width(), 0, 0, 0);
-    int fontsize = fontManager.adjustNumFontSize(r, true, "9999");
+    int fontsize = fontManager.adjustNumFontSize(r, true, "99999");
     QFont font = fontManager.numFont(fontsize, true);
     d_ptr->piValue->setFont(font);
 }

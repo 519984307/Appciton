@@ -41,7 +41,16 @@ public:
 
     QList<SubParamID> getShortTrendSubParams() const;
 
-    void updateSpO2PlugIn();
+    /**
+     * @brief updateTrendWidget 更新控件
+     */
+    void updateTrendWidget();
+
+    /**
+     * @brief setBarValue 设置棒图值
+     * @param value
+     */
+    void setBarValue(int16_t value);
 
 public:
     virtual void doRestoreNormalStatus();
