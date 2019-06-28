@@ -113,13 +113,13 @@ void PatientManager::setType(PatientType type)
 
     emit signalPatientType(d_ptr->patientInfo.type);
 
-    ECGParamInterface *ecgParam = ECGParamInterface::getECGParam();
-    if (ecgParam)
+    ECGParamInterface *ecgParamInterface = ECGParamInterface::getECGParam();
+    if (ecgParamInterface)
     {
-        ecgParam->setPatientType((unsigned char)(d_ptr->patientInfo.type));
+        ecgParamInterface->setPatientType((unsigned char)(d_ptr->patientInfo.type));
     }
-    SystemManagerInterface *systemManager = SystemManagerInterface::getSystemManager();
-    if (systemManager && systemManager->isSupport(PARAM_NIBP))
+    SystemManagerInterface *systemManagerInterface = SystemManagerInterface::getSystemManager();
+    if (systemManagerInterface && systemManagerInterface->isSupport(PARAM_NIBP))
     {
         NIBPParamInterface *nibpParam = NIBPParamInterface::getNIBPParam();
         if (nibpParam)
@@ -127,7 +127,10 @@ void PatientManager::setType(PatientType type)
             nibpParam->provider().setPatientType(type);
         }
     }
-
+    if (systemManagerInterface && systemManagerInterface->isSupport(PARAM_ECG))
+    {
+        ecgDupParam.updateHRSource();
+    }
     if (config)
     {
         config->loadConfig(type);
@@ -440,8 +443,8 @@ void PatientManager::newPatient()
     {
         alarmIndicator->delAllPhyAlarm();        // 新建病人时，应清空上一个病人的生理报警
     }
-    SystemManagerInterface *systemManager = SystemManagerInterface::getSystemManager();
-    if (systemManager && systemManager->isSupport(PARAM_NIBP))
+    SystemManagerInterface *systemManagerInterface = SystemManagerInterface::getSystemManager();
+    if (systemManagerInterface && systemManagerInterface->isSupport(PARAM_NIBP))
     {
         NIBPParamInterface *nibpParam = NIBPParamInterface::getNIBPParam();
         if (nibpParam)
@@ -449,10 +452,6 @@ void PatientManager::newPatient()
             nibpParam->clearResult();
             nibpParam->clearTrendListData();
         }
-    }
-    if (systemManager && systemManager->isSupport(PARAM_ECG))
-    {
-        ecgDupParam.updateHRSource();
     }
 }
 
