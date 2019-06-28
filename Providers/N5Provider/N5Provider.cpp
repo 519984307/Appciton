@@ -38,10 +38,14 @@ static const char *nibpSelfErrorCode[] =
     "The Big gas valve is unusual.\r\n",                      // 10
     "The small gas valve is unusual.\r\n",                    // 11
     "The air pump is unusual.\r\n",                           // 12
+    "The sofaware of overpressure protect is unusual.\r\n",    // 13
+    "Comparisons of pressure between master and Daemon fail to pass self-test"  // 14
+
 };
 
 static const char *nibpErrorCode[] =
 {
+    "Master-slave communication is unusual.\r\n",             // 127
     "Flash wrong.\r\n",                                       // 128
     "Data sample exception.\r\n",                             // 129
     "The Big gas valve is unusual for running.\r\n",          // 130
@@ -49,7 +53,7 @@ static const char *nibpErrorCode[] =
     "The air pump is unusual for running.\r\n",               // 132
     "Calibration is unsuccessful.\r\n",                       // 133
     "The Daemon error.\r\n",                                  // 134
-    "The air pump start-up timeout.\r\n"                      // 135
+    "Zero fail on start-up.\r\n"                              // 135
 };
 
 /**************************************************************************************************
@@ -101,6 +105,8 @@ void N5Provider::_selfTest(unsigned char *packet, int len)
             case 0x0A:
             case 0x0B:
             case 0x0C:
+            case 0x0d:
+            case 0x0e:
                 errorStr += nibpSelfErrorCode[packet[i]];
                 break;
             default:
@@ -138,6 +144,7 @@ void N5Provider::_errorWarm(unsigned char *packet, int len)
 
     switch (packet[1])
     {
+    case 0x7f:
     case 0x80:
     case 0x81:
     case 0x82:
@@ -146,7 +153,7 @@ void N5Provider::_errorWarm(unsigned char *packet, int len)
     case 0x85:
     case 0x86:
     case 0x87:
-        errorStr += nibpErrorCode[packet[1] - 128];
+        errorStr += nibpErrorCode[packet[1] - 127];
         break;
     default:
         errorStr += "Unknown mistake.\r\n";
