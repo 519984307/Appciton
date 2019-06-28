@@ -368,7 +368,7 @@ void SoftKeyManager::setContent(SoftKeyActionType type)
 #endif
 
     int index = 0;
-    machineConfig.getNumValue("TouchEnable", index);
+    machineConfig.getModuleInitialStatus("TouchEnable", reinterpret_cast<bool*>(&index));
     setKeyTypeAvailable(SOFT_BASE_KEY_SCREEN_BAN, index);
 
     d_ptr->resetPageInfo();

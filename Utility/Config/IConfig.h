@@ -46,6 +46,7 @@ private:
 
 
 ///////////////////////////////////
+class MachineConfigPrivate;
 class MachineConfig : public Config
 {
 public:
@@ -63,10 +64,16 @@ public:
     {
     }
 
+    /**
+     * @brief getModuleInitialStatus - get the module initial status
+     * @param moduleStr: the module index string
+     * @param enable: whether it is enable
+     */
+    void getModuleInitialStatus(const QString &moduleStr, bool *enable);
+
 private:
-    MachineConfig() : Config(MACHINE_CFG_FILE)
-    {
-    }
+    MachineConfig();
+    MachineConfigPrivate *const d_ptr;
 };
 #define machineConfig (MachineConfig::construction())
 #define deleteMachineConfig() (delete MachineConfig::_selfObj)

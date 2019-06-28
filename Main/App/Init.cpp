@@ -653,7 +653,7 @@ static void _initPrint(void)
 
     // print alarm
     int index = 0;
-    machineConfig.getNumValue("PrinterEnable", index);
+    machineConfig.getModuleInitialStatus("PrinterEnable", reinterpret_cast<bool*>(&index));
     if (index)
     {
         AlarmOneShotIFace *oneShotAlarmSource = new PrintOneShotAlarm();

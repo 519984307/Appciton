@@ -47,7 +47,7 @@ void NIBPParam::_patientTypeChangeSlot(PatientType type)
     // 模式修改则停止当前的测量。
     handleNIBPEvent(NIBP_EVENT_TRIGGER_PATIENT_TYPE, NULL, 0);
 
-    machineConfig.getNumValue("NIBPNEOMeasureEnable", enable);
+    machineConfig.getModuleInitialStatus("NIBPNEOMeasureEnable", reinterpret_cast<bool*>(&enable));
 
     if (type == PATIENT_TYPE_NEO && enable)
     {
@@ -75,7 +75,7 @@ void NIBPParam::initParam(void)
         return;
     }
     int enable = 0;
-    machineConfig.getNumValue("NIBPNEOMeasureEnable", enable);
+    machineConfig.getModuleInitialStatus("NIBPNEOMeasureEnable", reinterpret_cast<bool*>(&enable));
     if (patientManager.getType() == PATIENT_TYPE_NEO && enable)
     {
         errorDisable();
