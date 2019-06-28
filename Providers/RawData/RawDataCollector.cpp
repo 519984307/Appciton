@@ -265,13 +265,9 @@ void RawDataCollectorPrivate::handleCO2RawData(const unsigned char *data, int le
     {
         Q_UNUSED(len)
         QTextStream stream(&content);
-        // 25组数据
-        for (int n = 0; n < 1; n ++)
-        {
-            unsigned int tar = (data[n * 6]) | (data[n * 6 + 1] << 8) | (data[n * 6 + 2] << 16);
-            unsigned int ref = (data[n * 6 + 3]) | (data[n * 6 + 4] << 8) | (data[n * 6 + 5] << 16);
-            stream << tar << "," << ref << endl;
-        }
+        unsigned int tar = (data[0]) | (data[1] << 8) | (data[2] << 16);
+        unsigned int ref = (data[3]) | (data[4] << 8) | (data[5] << 16);
+        stream << tar << "," << ref << endl;
 
         stream.flush();
 
