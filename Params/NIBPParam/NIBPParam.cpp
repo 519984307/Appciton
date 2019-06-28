@@ -1368,7 +1368,7 @@ bool NIBPParam::isMaintain()
 
 void NIBPParam::clearTrendListData()
 {
-    if (systemManager.isSupport(PARAM_NIBP))
+    if (systemManager.isSupport(PARAM_NIBP) && _nibpDataTrendWidget)
     {
         _nibpDataTrendWidget->clearListData();
         _nibpDataTrendWidget->adjustSize();
