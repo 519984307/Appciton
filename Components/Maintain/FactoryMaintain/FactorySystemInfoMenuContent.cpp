@@ -93,6 +93,7 @@ void FactorySystemInfoMenuContent::onBtnReleasedChanged()
     panel.setInitString(button->text());
     panel.setWindowTitle(trs("SerialNum"));
     panel.setSpaceEnable(false);
+    panel.setSymbolEnable(false);
     panel.setBtnEnable("[a-zA-Z0-9]");
 
     windowManager.showWindow(&panel, WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
