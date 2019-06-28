@@ -156,32 +156,32 @@ int SPO2LimitAlarm::getCompare(int value, int id)
     }
     switch (id)
     {
-        case SPO2_LIMIT_ALARM_SPO2_HIGH:
-        case SPO2_LIMIT_ALARM_SPO2_2_HIGH:
-        case SPO2_LIMIT_ALARM_PVI_HIGH:
-        case SPO2_LIMIT_ALARM_SPHB_HIGH:
-        case SPO2_LIMIT_ALARM_SPOC_HIGH:
-        case SPO2_LIMIT_ALARM_SPMET_HIGH:
-        case SPO2_LIMIT_ALARM_SPCO_HIGH:
-            if (value > getUpper(id))
-            {
-                return 1;
-            }
-            else
-            {
-                return 0;
-            }
-            break;
-        default:
-            if (value < getLower(id))
-            {
-                return -1;
-            }
-            else
-            {
-                return 0;
-            }
-            break;
+    case SPO2_LIMIT_ALARM_SPO2_HIGH:
+    case SPO2_LIMIT_ALARM_SPO2_2_HIGH:
+    case SPO2_LIMIT_ALARM_PVI_HIGH:
+    case SPO2_LIMIT_ALARM_SPHB_HIGH:
+    case SPO2_LIMIT_ALARM_SPOC_HIGH:
+    case SPO2_LIMIT_ALARM_SPMET_HIGH:
+    case SPO2_LIMIT_ALARM_SPCO_HIGH:
+        if (value > getUpper(id))
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+        break;
+    default:
+        if (value < getLower(id))
+        {
+            return -1;
+        }
+        else
+        {
+            return 0;
+        }
+        break;
     }
 }
 
@@ -288,8 +288,16 @@ SPO2LimitAlarm::~SPO2LimitAlarm()
  *************************************************************************************************/
 QString SPO2OneShotAlarm::getAlarmSourceName(void)
 {
-    QString str(paramInfo.getParamName(PARAM_SPO2));
-    return (str + "OneShotAlarm");
+    if (_isPlugin)
+    {
+        QString str(paramInfo.getParamName(PARAM_SPO2));
+        return (str + "2" + "OneShotAlarm");
+    }
+    else
+    {
+        QString str(paramInfo.getParamName(PARAM_SPO2));
+        return (str + "OneShotAlarm");
+    }
 }
 
 /**************************************************************************************************
@@ -349,7 +357,7 @@ bool SPO2OneShotAlarm::isAlarmed(int id)
 
     if (id == SPO2_ONESHOT_ALARM_CHECK_SENSOR)
     {
-        return AlarmOneShotIFace::isAlarmed(id) && spo2Param.getEverCheckFinger();
+        return AlarmOneShotIFace::isAlarmed(id) && spo2Param.getEverCheckFinger(_isPlugin);
     }
 
     return AlarmOneShotIFace::isAlarmed(id);
@@ -360,7 +368,7 @@ bool SPO2OneShotAlarm::isAlarmed(int id)
  *************************************************************************************************/
 const char *SPO2OneShotAlarm::toString(int id)
 {
-    return SPO2Symbol::convert((SPO2OneShotType)id);
+    return SPO2Symbol::convert((SPO2OneShotType)id, _isPlugin);
 }
 
 /**************************************************************************************************
@@ -379,7 +387,8 @@ bool SPO2OneShotAlarm::isRemoveAfterLatch(int id)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-SPO2OneShotAlarm::SPO2OneShotAlarm()
+SPO2OneShotAlarm::SPO2OneShotAlarm(bool isPlugin)
+    : _isPlugin(isPlugin)
 {
 }
 

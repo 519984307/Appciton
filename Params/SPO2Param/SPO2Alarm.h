@@ -75,7 +75,7 @@ private:
 class SPO2OneShotAlarm : public AlarmOneShotIFace
 {
 public:
-    SPO2OneShotAlarm();
+    explicit SPO2OneShotAlarm(bool isPlugin = false);
 
 public:
     // 报警源的名字。
@@ -107,4 +107,7 @@ public:
 
     // 构造与析构。
     virtual ~SPO2OneShotAlarm();
+
+private:
+    bool _isPlugin;
 };

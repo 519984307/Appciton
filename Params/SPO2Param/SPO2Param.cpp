@@ -1329,9 +1329,16 @@ int SPO2Param::getSweepSpeed(void)
     return speed;
 }
 
-bool SPO2Param::getEverCheckFinger()
+bool SPO2Param::getEverCheckFinger(bool isPlugin)
 {
-    return d_ptr->isEverCheckFinger;
+    if (isPlugin)
+    {
+        return d_ptr->plugInIsEverCheckFinger;
+    }
+    else
+    {
+        return d_ptr->isEverCheckFinger;
+    }
 }
 
 void SPO2Param::updateSubParamLimit(SubParamID id)
