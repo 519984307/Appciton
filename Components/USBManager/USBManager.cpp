@@ -149,6 +149,11 @@ void USBManager::umountUDisk()
     }
 }
 
+void USBManager::forceUmountDisk()
+{
+    _isMount = false;
+}
+
 void USBManager::cancelExport()
 {
     _pendingMutex.lock();

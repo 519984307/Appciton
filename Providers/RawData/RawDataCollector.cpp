@@ -562,13 +562,21 @@ void RawDataCollector::startCollectData()
 }
 
 void RawDataCollector::stopCollectData()
-{
+{ 
     if (d_ptr->timerId != -1)
     {
         killTimer(d_ptr->timerId);
         d_ptr->timerId = -1;
     }
-    usbManager.umountUDisk();
+    if (usbManager.isUSBExist())
+    {
+        usbManager.umountUDisk();     // 正常卸载U盘
+    }
+    else
+    {
+        usbManager.forceUmountDisk();  // 强制卸载U盘
+    }
+
 }
 
 void RawDataCollector::timerEvent(QTimerEvent *e)
