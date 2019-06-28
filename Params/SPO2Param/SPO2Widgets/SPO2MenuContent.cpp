@@ -40,7 +40,8 @@ public:
         ITEM_CBO_SMART_TONE,
         ITEM_CBO_PULSE_VOL,
         ITEM_CBO_NIBP_SAME_SIDE,
-        ITEM_CBO_SIGNAL_IQ
+        ITEM_CBO_SIGNAL_IQ,
+        ITEM_CBO_SPO2_SENSOR
     };
 
     SPO2MenuContentPrivate()
@@ -65,7 +66,7 @@ public:
 
 void SPO2MenuContentPrivate::setCboBlockSignalsStatus(bool isBlocked)
 {
-    for (int i = ITEM_CBO_WAVE_SPEED; i <= ITEM_CBO_SIGNAL_IQ; i++)
+    for (int i = ITEM_CBO_WAVE_SPEED; i <= ITEM_CBO_SPO2_SENSOR; i++)
     {
         MenuItem item = static_cast<MenuItem>(i);
         if (combos[item])
@@ -130,6 +131,10 @@ void SPO2MenuContentPrivate::loadOptions()
 
     int index = spo2Param.isShowSignalIQ() ? 1 : 0;
     combos[ITEM_CBO_SIGNAL_IQ]->setCurrentIndex(index);
+
+    currentConfig.getNumValue("SPO2|Sensor", index);
+    combos[ITEM_CBO_SPO2_SENSOR]->setCurrentIndex(index);
+
     setCboBlockSignalsStatus(false);
 }
 
@@ -296,6 +301,20 @@ void SPO2MenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_SIGNAL_IQ, comboBox);
 
+    // 血氧探头
+    label = new QLabel(trs("SpO2Sensor"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                       << trs("M-LNCS")
+                       << trs("R25")
+                       << trs("R1 20L"));
+    itemID = static_cast<int>(SPO2MenuContentPrivate::ITEM_CBO_SPO2_SENSOR);
+    comboBox->setProperty("Item", qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_SPO2_SENSOR, comboBox);
+
     // 添加报警设置链接
     Button *btn = new Button(QString("%1%2").
                              arg(trs("AlarmSettingUp")).
@@ -345,6 +364,9 @@ void SPO2MenuContent::onComboBoxIndexChanged(int index)
             break;
         case SPO2MenuContentPrivate::ITEM_CBO_SIGNAL_IQ:
             spo2Param.showSignalIQ(static_cast<bool>(index));
+            break;
+        case SPO2MenuContentPrivate::ITEM_CBO_SPO2_SENSOR:
+            spo2Param.setSensor(static_cast<SPO2RainbowSensor>(index));
             break;
         default:
             break;

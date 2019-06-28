@@ -393,8 +393,6 @@ static void _initProviderParam(void)
         {
             spo2Param.setModuleType(MODULE_RAINBOW_SPO2);
             paramManager.addProvider(*new RainbowProvider("RAINBOW_SPO2"));
-            oneShotAlarmSource = new SPO2OneShotAlarm();
-            alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_SPO2_2);
         }
         paramManager.addParam(spo2Param.construction());
 
@@ -404,6 +402,8 @@ static void _initProviderParam(void)
         oneShotAlarmSource = new SPO2OneShotAlarm();
         alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_SPO2);
         alertor.addOneShotSource(oneShotAlarmSource);
+        oneShotAlarmSource = new SPO2OneShotAlarm();
+        alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_SPO2_2);
 
         SPO2WaveWidget *spo2WaveWidget = new SPO2WaveWidget("SPO2WaveWidget", trs("PLETH"));
         SPO2WaveWidget *outsideSpo2WaveWidget = new SPO2WaveWidget("OutsideSpo2WaveWidget", trs("PLETH2"));
@@ -420,14 +420,14 @@ static void _initProviderParam(void)
         layoutManager.addLayoutWidget(spo2TrendWave, LAYOUT_NODE_TREND_WAVE_SPO2);
         // pi
         PITrendWidget *piTrendWidget = new PITrendWidget();
-        TrendWave *piTrendWave = new TrendWave("PITrendWave");
-        piTrendWave->addSubParam(SUB_PARAM_PI);
         layoutManager.addLayoutWidget(piTrendWidget, LAYOUT_NODE_PARAM_PI);
-        layoutManager.addLayoutWidget(piTrendWave, LAYOUT_NODE_TREND_WAVE_PI);
         spo2Param.setTrendWidget(piTrendWidget);
         // pvi
         PVITrendWidget *pviTrendWidget = new PVITrendWidget();
+        TrendWave *pviTrendWave = new TrendWave("PVITrendWave");
+        pviTrendWave->addSubParam(SUB_PARAM_PVI);
         layoutManager.addLayoutWidget(pviTrendWidget, LAYOUT_NODE_PARAM_PVI);
+        layoutManager.addLayoutWidget(pviTrendWave, LAYOUT_NODE_TREND_WAVE_PVI);
         spo2Param.setTrendWidget(pviTrendWidget);
         // sphb
         SPHBTrendWidget *sphbTrendWidget = new SPHBTrendWidget();
@@ -449,7 +449,10 @@ static void _initProviderParam(void)
         spo2Param.setTrendWidget(spmetTrendWidget);
         // spco
         SPCOTrendWidget *spcoTrendWidget = new SPCOTrendWidget();
+        TrendWave *spcoTrendWave = new TrendWave("SpCOTrendWave");
+        spcoTrendWave->addSubParam(SUB_PARAM_SPCO);
         layoutManager.addLayoutWidget(spcoTrendWidget, LAYOUT_NODE_PARAM_SPCO);
+        layoutManager.addLayoutWidget(spcoTrendWave, LAYOUT_NODE_TREND_WAVE_SPCO);
         spo2Param.setTrendWidget(spcoTrendWidget);
         // pr
         TrendWave *prTrendWave = new TrendWave("PRTrendWave");

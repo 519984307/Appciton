@@ -55,9 +55,6 @@ SubParamID SPO2LimitAlarm::getSubParamID(int id)
     case SPO2_LIMIT_ALARM_SPO2_2_LOW:
     case SPO2_LIMIT_ALARM_SPO2_2_HIGH:
         return SUB_PARAM_SPO2_2;
-    case SPO2_LIMIT_ALARM_PI_LOW:
-    case SPO2_LIMIT_ALARM_PI_HIGH:
-        return SUB_PARAM_PI;
     case SPO2_LIMIT_ALARM_PVI_LOW:
     case SPO2_LIMIT_ALARM_PVI_HIGH:
         return SUB_PARAM_PVI;
@@ -99,9 +96,6 @@ int SPO2LimitAlarm::getValue(int id)
     case SPO2_LIMIT_ALARM_SPO2_2_LOW:
     case SPO2_LIMIT_ALARM_SPO2_2_HIGH:
         return spo2Param.getSPO2(true);
-    case SPO2_LIMIT_ALARM_PI_LOW:
-    case SPO2_LIMIT_ALARM_PI_HIGH:
-        return spo2Param.getPI();
     case SPO2_LIMIT_ALARM_PVI_LOW:
     case SPO2_LIMIT_ALARM_PVI_HIGH:
         return spo2Param.getPVI();
@@ -164,7 +158,6 @@ int SPO2LimitAlarm::getCompare(int value, int id)
     {
         case SPO2_LIMIT_ALARM_SPO2_HIGH:
         case SPO2_LIMIT_ALARM_SPO2_2_HIGH:
-        case SPO2_LIMIT_ALARM_PI_HIGH:
         case SPO2_LIMIT_ALARM_PVI_HIGH:
         case SPO2_LIMIT_ALARM_SPHB_HIGH:
         case SPO2_LIMIT_ALARM_SPOC_HIGH:
@@ -224,14 +217,6 @@ void SPO2LimitAlarm::notifyAlarm(int id, bool isAlarm)
 //        spo2Param.noticeLimitAlarm(subID, _isSPO22Alarm);
 //        _isSPO22Alarm = false;
 //        break;
-    case SPO2_LIMIT_ALARM_PI_LOW:
-        _isPIAlarm |= isAlarm;
-        break;
-    case SPO2_LIMIT_ALARM_PI_HIGH:
-        _isPIAlarm |= isAlarm;
-        spo2Param.noticeLimitAlarm(subID, _isPIAlarm);
-        _isPIAlarm = false;
-        break;
     case SPO2_LIMIT_ALARM_PVI_LOW:
         _isPVIAlarm |= isAlarm;
         break;

@@ -228,8 +228,7 @@ void SPO2Param::handDemoWaveform(WaveformID id, short data)
     }
     if (NULL != d_ptr->trendWidget)
     {
-        // TODO: 处理PI
-//        _trendWidget->setBarValue(data * 15 / 255);
+        d_ptr->trendWidget->setBarValue(data * 15 / 255);
     }
     waveformCache.addData(static_cast<WaveformID>(id), data);
 }
@@ -240,7 +239,14 @@ void SPO2Param::handDemoWaveform(WaveformID id, short data)
 void SPO2Param::handDemoTrendData(void)
 {
     d_ptr->spo2Value = 98;
-    d_ptr->plugInSpo2Value = 96;
+    if (isConnected(true))
+    {
+        d_ptr->plugInSpo2Value = 96;
+    }
+    else
+    {
+        d_ptr->plugInSpo2Value = InvData();
+    }
     d_ptr->piValue = 210;
     d_ptr->pviValue = 23;
     d_ptr->sphbValue = 180;
@@ -251,7 +257,7 @@ void SPO2Param::handDemoTrendData(void)
     {
         d_ptr->trendWidget->setSPO2Value(d_ptr->spo2Value);
         d_ptr->trendWidget->setPlugInSPO2Value(d_ptr->plugInSpo2Value);
-        d_ptr->trendWidget->setSPO2DeltaValue(d_ptr->spo2Value - d_ptr->plugInSpo2Value);
+        d_ptr->trendWidget->setSPO2DeltaValue(abs(d_ptr->spo2Value - d_ptr->plugInSpo2Value));
         d_ptr->piTrendWidget->setPIValue(d_ptr->piValue);
         d_ptr->pviTrendWidget->setPVIValue(d_ptr->pviValue);
         d_ptr->sphbTrendWidget->setSPHBValue(d_ptr->sphbValue);
@@ -290,9 +296,7 @@ void SPO2Param::exitDemo()
         d_ptr->spocTrendWidget->setSPOCValue(InvData());
         d_ptr->spmetTrendWidget->setSpMetValue(InvData());
         d_ptr->spcoTrendWidget->setSPCOValue(InvData());
-        // TODO: 处理PI
-//        _trendWidget->setPIValue(InvData());
-//        _trendWidget->setBarValue(InvData());
+        d_ptr->trendWidget->setBarValue(InvData());
     }
 
     setPR(InvData());
@@ -638,12 +642,13 @@ void SPO2Param::setSPO2(short spo2Value)
         d_ptr->trendWidget->setSPO2Value(d_ptr->spo2Value);
         if (d_ptr->spo2Value != InvData() && d_ptr->plugInSpo2Value != InvData())
         {
-            d_ptr->trendWidget->setSPO2DeltaValue(d_ptr->spo2Value - d_ptr->plugInSpo2Value);
+            d_ptr->trendWidget->setSPO2DeltaValue(abs(d_ptr->spo2Value - d_ptr->plugInSpo2Value));
         }
         else
         {
             d_ptr->trendWidget->setSPO2DeltaValue(InvData());
-        }    }
+        }
+    }
 
     if (NULL != d_ptr->oxyCRGSPO2Trend)
     {
@@ -664,7 +669,7 @@ void SPO2Param::setPlugInSPO2(short spo2Value)
         d_ptr->trendWidget->setPlugInSPO2Value(d_ptr->plugInSpo2Value);
         if (d_ptr->spo2Value != InvData() && d_ptr->plugInSpo2Value != InvData())
         {
-            d_ptr->trendWidget->setSPO2DeltaValue(d_ptr->spo2Value - d_ptr->plugInSpo2Value);
+            d_ptr->trendWidget->setSPO2DeltaValue(abs(d_ptr->spo2Value - d_ptr->plugInSpo2Value));
         }
         else
         {
@@ -823,6 +828,17 @@ void SPO2Param::addWaveformData(short wave, unsigned char waveFlag, bool isPlugI
         if (!d_ptr->isValid)
         {
             flag = flag | 0x4000;
+            if (NULL != d_ptr->trendWidget)
+            {
+                d_ptr->trendWidget->setBarValue(InvData());
+            }
+        }
+        else
+        {
+            if (NULL != d_ptr->trendWidget)
+            {
+                d_ptr->trendWidget->setBarValue(wave * 15 / 255);
+            }
         }
 
         if (d_ptr->waveWidget != NULL)
@@ -843,12 +859,6 @@ void SPO2Param::addWaveformData(short wave, unsigned char waveFlag, bool isPlugI
         }
         waveformCache.addData(WAVE_SPO2_2, (flag << 16) | wave);
     }
-
-    if (NULL != d_ptr->trendWidget)
-    {
-        // TODO: 处理PI
-//        _trendWidget->setBarValue(wave * 15 / 255);
-    }
 }
 
 /**************************************************************************************************
@@ -863,8 +873,7 @@ void SPO2Param::addBarData(short data)
     d_ptr->barValue = data;
     if (NULL != d_ptr->trendWidget)
     {
-        // TODO: 处理PI
-//        _trendWidget->setBarValue(data);
+        d_ptr->trendWidget->setBarValue(data);
     }
 }
 
@@ -1100,7 +1109,7 @@ void SPO2Param::setConnected(bool isConnected, bool isPlugIn)
             {
                 layoutManager.updateLayout();
             }
-            d_ptr->trendWidget->updateSpO2PlugIn();
+            d_ptr->trendWidget->updateTrendWidget();
         }
         else
         {
@@ -1115,7 +1124,7 @@ void SPO2Param::setConnected(bool isConnected, bool isPlugIn)
             {
                 layoutManager.updateLayout();
             }
-            d_ptr->trendWidget->updateSpO2PlugIn();
+            d_ptr->trendWidget->updateTrendWidget();
         }
     }
 }
@@ -1581,7 +1590,13 @@ void SPO2Param::setProviderInfo(bool isPlugIn, SPO2RainbowType type)
 
 SPO2RainbowType SPO2Param::getProviderInfo(bool isPlugIn)
 {
-    return d_ptr->providerInfo.value(isPlugIn);
+    return d_ptr->providerInfo.value(isPlugIn, SPO2_RAINBOW_TYPE_NR);
+}
+
+void SPO2Param::setSensor(SPO2RainbowSensor sensor)
+{
+    currentConfig.setNumValue("SPO2|Sensor", static_cast<int>(sensor));
+    layoutManager.updateLayout();
 }
 
 /**************************************************************************************************

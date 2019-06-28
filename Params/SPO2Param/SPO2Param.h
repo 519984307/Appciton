@@ -300,6 +300,12 @@ public:
     void setProviderInfo(bool isPlugIn, SPO2RainbowType type);
     SPO2RainbowType getProviderInfo(bool isPlugIn);
 
+    /**
+     * @brief setSensor 设置当前使用的探头
+     * @param sensor
+     */
+    void setSensor(SPO2RainbowSensor sensor);
+
 signals:
     void clearTrendData();
 
