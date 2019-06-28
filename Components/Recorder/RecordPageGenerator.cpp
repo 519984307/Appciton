@@ -145,7 +145,7 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
 {
     QStringList infos;
     infos.append(QString("%1: %2").arg(trs("Name")).arg(patInfo.name));
-    infos.append(QString("%1: %2").arg(trs("Gender")).arg(trs(PatientSymbol::convert(patInfo.sex))));
+    infos.append(QString("%1: %2").arg(trs("PatientSex")).arg(trs(PatientSymbol::convert(patInfo.sex))));
     infos.append(QString("%1: %2").arg(trs("PatientType")).arg(trs(PatientSymbol::convert(patInfo.type))));
     infos.append(QString("%1: %2").arg(trs("Blood")).arg(PatientSymbol::convert(patInfo.blood)));
     QString str;
