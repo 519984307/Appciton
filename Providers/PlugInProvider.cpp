@@ -130,7 +130,6 @@ public:
         {
             // 初始化provider;
             initPluginModule(type);
-            return;
         }
         dataHandlers[type]->dataArrived(data, len);
     }
