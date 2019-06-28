@@ -567,7 +567,7 @@ void RawDataCollector::startCollectData()
 
 void RawDataCollector::stopCollectData()
 { 
-    if (d_ptr->timerId != -1)    // 判断是否仍然挂载中
+    if (d_ptr->timerId != -1)
     {
         killTimer(d_ptr->timerId);
         d_ptr->timerId = -1;
