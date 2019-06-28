@@ -21,7 +21,9 @@
 #include <QTextStream>
 #include "FontManager.h"
 
-#define HARDWARE_VERSION ("/sys/class/pmos/hardware")
+#define HARDWARE_VERSION ("/sys/bus/iio/devices/iio:device0/in_voltage7_raw")
+#define HW_VER_TOTAL_NUMBERS (10)
+#define HW_VER_SAMP_REF_VAL (4096)
 
 class FactoryVersionInfoPrivate
 {
@@ -245,9 +247,12 @@ void FactoryVersionInfoPrivate::loadOptions()
          {
             QString tmp = in.readLine();
             tmp = tmp.trimmed();
-            int id = tmp.toInt() + 1;
+            int ad = tmp.toInt();
+
+            int quotient = ad * HW_VER_TOTAL_NUMBERS / HW_VER_SAMP_REF_VAL;
+            int version = quotient + 1;
             tmpStr = "V";
-            tmpStr += QString::number(id);
+            tmpStr += QString::number(version);
             break;
         }
     }
