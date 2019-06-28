@@ -125,7 +125,7 @@ RESPMenuContent::RESPMenuContent()
     : MenuContent(trs("RESPMenu"), trs("RESPMenuDesc")),
       d_ptr(new RESPMenuContentPrivate())
 {
-    connect(&co2Param, SIGNAL(connectStatusUpdated(bool)), this, SLOT(readyShow()));
+    connect(&co2Param, SIGNAL(connectStatusUpdated(bool)), this, SLOT(updateBRSource()));
 }
 
 RESPMenuContent::~RESPMenuContent()
@@ -283,4 +283,11 @@ void RESPMenuContent::onAlarmBtnReleased()
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_RR_BR, true);
     AlarmLimitWindow w(subParamName);
     windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
+}
+
+void RESPMenuContent::updateBRSource()
+{
+    d_ptr->blockItemSignal(true);
+    d_ptr->loadOptions();
+    d_ptr->blockItemSignal(false);
 }
