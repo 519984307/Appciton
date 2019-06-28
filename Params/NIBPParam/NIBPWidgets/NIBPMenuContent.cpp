@@ -215,7 +215,7 @@ void NIBPMenuContentPrivate::loadOptions()
         else if (type == PATIENT_TYPE_PED)
         {
             start = 80;
-            end = 210;
+            end = 200;
         }
         else if (type == PATIENT_TYPE_NEO)
         {
