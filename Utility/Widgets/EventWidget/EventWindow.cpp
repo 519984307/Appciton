@@ -1162,6 +1162,10 @@ void EventWindowPrivate::eventTrendUpdate()
             {
                 dataStr = Unit::convert(type, UNIT_TC, ctx.trendSegment->values[i].value / 10.0);
             }
+            else if (paramInfo.getParamID(subId) == PARAM_NIBP)
+            {
+                dataStr = Unit::convert(type, UNIT_MMHG, ctx.trendSegment->values[i].value);
+            }
             else
             {
                 dataStr = QString::number(ctx.trendSegment->values[i].value);
