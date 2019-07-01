@@ -233,7 +233,7 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
 //    setFocusPolicy(Qt::NoFocus);
 
     // 标签设定。
-    setName(paramInfo.getParamName(PARAM_TEMP));
+    setName(trs(paramInfo.getParamName(PARAM_TEMP)));
 
     // 设置单位。
     UnitType u = tempParam.getUnit();
