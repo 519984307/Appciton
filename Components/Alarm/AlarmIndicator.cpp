@@ -200,6 +200,11 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
     }
 
     // 更新声音
+    if (techSoundPriority > phySoundPriority)
+    {
+        // 如果技术报警的优先级大于生理报警优先级，则应以高优先级报警
+        phySoundPriority = ALARM_PRIO_PROMPT;
+    }
     if (phySoundPriority != ALARM_PRIO_PROMPT && _canPlayAudio(status, false))
     {
         if (soundManager)
