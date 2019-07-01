@@ -111,8 +111,8 @@ NIBP,NIBP,NIBP
 RESP,RESP,RESP
 ParameterColor,参数颜色,Parameter Color
 ParameterColorDesc,参数颜色设置,Parameter Color Desc
-RR,呼吸率,RR
-BR,呼吸率,BR
+RR,RR,RR
+BR,BR,BR
 RR_BR,RR/BR,RR/BR
 Close,关闭,Close
 Back,后退,Back
