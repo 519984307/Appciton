@@ -310,7 +310,7 @@ void ConfigEditECGMenuContent::layoutExec()
     d_ptr->combos.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG2_WAVE, comboBox);
 
     // ecg1 gain
-    label = new QLabel(trs("Ecg1Gain"));
+    label = new QLabel(trs("ECGGain"));
     d_ptr->comboLabels.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG1_GAIN,
                               label);
     layout->addWidget(label, d_ptr->combos.count(), 0);
