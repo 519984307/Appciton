@@ -979,21 +979,21 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
             {
                 spo2Param.setNotify(true, trs("SPO2CheckSensor"), isPlugIn);
                 spo2Param.setValidStatus(false, isPlugIn);
-                spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_CHECK_SENSOR, true, true);
-                spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_LOW_PERFUSION, false, true);
+                spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, true, true);
+                spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, false, true);
             }
             else
             {
                 spo2Param.setValidStatus(true, isPlugIn);
-                spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_CHECK_SENSOR, false, true);
+                spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, false, true);
                 spo2Param.setSearchForPulse(isSearching, isPlugIn);  // search pulse标志。
                 if (isSearching)
                 {
-                    spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_LOW_PERFUSION, false, true);
+                    spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, false, true);
                 }
                 else
                 {
-                    spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_LOW_PERFUSION, isLowPerfusionIndex, true);
+                    spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, isLowPerfusionIndex, true);
                 }
             }
         }
@@ -1393,200 +1393,200 @@ void RainbowProviderPrivate::addAlarms(unsigned int flag)
     {
         if (flag & RB_DEFECTIVE_CABLE)
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_DEFECTIVE_CABLE, true, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_DEFECTIVE_CABLE, true, true);
         }
         else
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_DEFECTIVE_CABLE, false, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_DEFECTIVE_CABLE, false, true);
         }
 
         if (flag & RB_CABLE_EXPIRED)
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_CABLE_EXPIRED, true, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_EXPIRED, true, true);
         }
         else
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_CABLE_EXPIRED, false, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_EXPIRED, false, true);
         }
 
         if (flag & RB_INCOMPATIBLE_CABLE)
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_INCOMPATIBLE_CABLE, true, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_INCOMPATIBLE_CABLE, true, true);
         }
         else
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_INCOMPATIBLE_CABLE, false, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_INCOMPATIBLE_CABLE, false, true);
         }
 
         if (flag & RB_UNRECONGNIZED_CABLE)
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_UNRECONGNIZED_CABLE, true, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_UNRECONGNIZED_CABLE, true, true);
         }
         else
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_UNRECONGNIZED_CABLE, false, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_UNRECONGNIZED_CABLE, false, true);
         }
 
         if (flag & RB_CABLE_NEAR_EXPIRATION)
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_CABLE_NEAR_EXPIRATION, true, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_NEAR_EXPIRATION, true, true);
         }
         else
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_CABLE_NEAR_EXPIRATION, false, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_NEAR_EXPIRATION, false, true);
         }
 
         if (flag & RB_SENSOR_EXPIRED)
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_SENSOR_EXPIRED, true, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SENSOR_EXPIRED, true, true);
         }
         else
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_SENSOR_EXPIRED, false, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SENSOR_EXPIRED, false, true);
         }
 
         if (flag & RB_INCOMPATIBLE_SENSOR)
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_INCOMPATIBLE_SENSOR, true, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_INCOMPATIBLE_SENSOR, true, true);
         }
         else
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_INCOMPATIBLE_SENSOR, false, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_INCOMPATIBLE_SENSOR, false, true);
         }
 
         if (flag & RB_UNRECONGNIZED_SENSOR)
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_UNRECONGNIZED_SENSOR, true, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_UNRECONGNIZED_SENSOR, true, true);
         }
         else
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_UNRECONGNIZED_SENSOR, false, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_UNRECONGNIZED_SENSOR, false, true);
         }
 
         if (flag & RB_DEFECTIVE_SENSOR)
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_DEFECTIVE_SENSOR, true, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_DEFECTIVE_SENSOR, true, true);
         }
         else
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_DEFECTIVE_SENSOR, false, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_DEFECTIVE_SENSOR, false, true);
         }
 
         if (flag & RB_CHECK_CABLE_AND_SENSOR_FAULT)
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_CHECK_CABLE_AND_SENSOR_FAULT, true, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_CABLE_AND_SENSOR_FAULT, true, true);
         }
         else
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_CHECK_CABLE_AND_SENSOR_FAULT, false, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_CABLE_AND_SENSOR_FAULT, false, true);
         }
 
         if (flag & RB_SENSOR_NEAR_EXPIRATION)
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_SENSOR_NEAR_EXPIRATION, true, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SENSOR_NEAR_EXPIRATION, true, true);
         }
         else
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_SENSOR_NEAR_EXPIRATION, false, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SENSOR_NEAR_EXPIRATION, false, true);
         }
 
         if (flag & RB_NO_ADHESIVE_SENSOR)
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_NO_ADHESIVE_SENSOR, true, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_NO_ADHESIVE_SENSOR, true, true);
         }
         else
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_NO_ADHESIVE_SENSOR, false, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_NO_ADHESIVE_SENSOR, false, true);
         }
 
         if (flag & RB_ADHESIVE_SENSOR_EXPIRATION)
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_ADHESIVE_SENSOR_EXPIRATION, true, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_ADHESIVE_SENSOR_EXPIRATION, true, true);
         }
         else
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_ADHESIVE_SENSOR_EXPIRATION, false, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_ADHESIVE_SENSOR_EXPIRATION, false, true);
         }
 
         if (flag & RB_INCOMPATIBLE_ADHESIVE_SENSOR)
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_INCOMPATIBLE_ADHESIVE_SENSOR, true, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_INCOMPATIBLE_ADHESIVE_SENSOR, true, true);
         }
         else
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_INCOMPATIBLE_ADHESIVE_SENSOR, false, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_INCOMPATIBLE_ADHESIVE_SENSOR, false, true);
         }
 
         if (flag & RB_UNRECONGNIZED_ADHESIVE_SENSOR)
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_UNRECONGNIZED_ADHESIVE_SENSOR, true, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_UNRECONGNIZED_ADHESIVE_SENSOR, true, true);
         }
         else
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_UNRECONGNIZED_ADHESIVE_SENSOR, false, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_UNRECONGNIZED_ADHESIVE_SENSOR, false, true);
         }
 
         if (flag & RB_DEFECTIVE_ADHESIVE_SENSOR)
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_DEFECTIVE_ADHESIVE_SENSOR, true, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_DEFECTIVE_ADHESIVE_SENSOR, true, true);
         }
         else
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_DEFECTIVE_ADHESIVE_SENSOR, false, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_DEFECTIVE_ADHESIVE_SENSOR, false, true);
         }
 
         if (flag & RB_SENSOR_INITING)
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_SENSOR_INITING, true, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SENSOR_INITING, true, true);
         }
         else
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_SENSOR_INITING, false, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SENSOR_INITING, false, true);
         }
 
         if (flag & RB_INTERFERENCE_DETECTED)
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_INTERFERENCE_DETECTED, true, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_INTERFERENCE_DETECTED, true, true);
         }
         else
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_INTERFERENCE_DETECTED, false, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_INTERFERENCE_DETECTED, false, true);
         }
 
         if (flag & RB_DEMO_MODE)
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_DEMO_MODE, true, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_DEMO_MODE, true, true);
         }
         else
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_DEMO_MODE, false, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_DEMO_MODE, false, true);
         }
 
         if (flag & RB_ADHESIVE_SENSOR_NEAR_EXPIRATION)
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_ADHESIVE_SENSOR_NEAR_EXPIRATION, true, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_ADHESIVE_SENSOR_NEAR_EXPIRATION, true, true);
         }
         else
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_ADHESIVE_SENSOR_NEAR_EXPIRATION, false, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_ADHESIVE_SENSOR_NEAR_EXPIRATION, false, true);
         }
 
         if (flag & RB_CHECK_SENSOR_CONNECTION)
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_CHECK_SENSOR_CONNECTION, true, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR_CONNECTION, true, true);
         }
         else
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_CHECK_SENSOR_CONNECTION, false, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR_CONNECTION, false, true);
         }
 
         if (flag & RB_SPO2_ONLY_MODE)
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_SPO2_ONLY_MODE, true, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SPO2_ONLY_MODE, true, true);
         }
         else
         {
-            spo2Param.setOneShotAlarm(SPO2_2_ONESHOT_ALARM_SPO2_ONLY_MODE, false, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SPO2_ONLY_MODE, false, true);
         }
     }
     else

@@ -96,76 +96,85 @@ public:
         return symbol[index];
     }
 
-    static const char *convert(SPO2OneShotType index)
+    static const char *convert(SPO2OneShotType index, bool isPlugin)
     {
-        static const char *symbol[SPO2_ONESHOT_NR] =
+        if (isPlugin)
         {
-            "SPO2CheckSensor",
-            "SPO2CableOff",
-            "SPO2FingerOff",
-            "SPO2LEDFault",
-            "SPO2CommunicationStop",
-            "SPO2SignalWeak",
-            "SPO2SignalSaturation",
-            "SPO2LowPerfusion",
-            "SPO2DefectiveCable",
-            "SPO2CableExpired",
-            "SPO2IncompatibleCable",
-            "SPO2UnrecongnizedCable",
-            "SPO2CableNearExpiration",
-            "SPO2SensorExpired",
-            "SPO2IncompatibleSensor",
-            "SPO2UnrecongnizedSensor",
-            "SPO2DefectiveSensor",
-            "SPO2CheckCableAndSensorFault",
-            "SPO2SensorNearExpiration",
-            "SPO2NoAdhesiveSensor",
-            "SPO2AdhesiveSensorExpiraton",
-            "SPO2IncompatibleAdhesiveSensor",
-            "SPO2UnrecongnizedAdhesiveSensor",
-            "SPO2DefectiveAdhesiveSensor",
-            "SPO2SensorIniting",
-            "SPO2InterferenceDetected",
-            "SPO2DemoMode",
-            "SPO2AdhesiveSensorNearExpiration",
-            "SPO2CheckSensorConnection",
-            "SPO2OnlyMode",
-            "SPO2BoardFailure",
-
-            // 插件血氧
-            "SPO22CheckSensor",
-            "SPO22CableOff",
-            "SPO22FingerOff",
-            "SPO22LEDFault",
-            "SPO22CommunicationStop",
-            "SPO22SignalWeak",
-            "SPO22SignalSaturation",
-            "SPO22LowPerfusion",
-            "SPO22DefectiveCable",
-            "SPO22CableExpired",
-            "SPO22IncompatibleCable",
-            "SPO22UnrecongnizedCable",
-            "SPO22CableNearExpiration",
-            "SPO22SensorExpired",
-            "SPO22IncompatibleSensor",
-            "SPO22UnrecongnizedSensor",
-            "SPO22DefectiveSensor",
-            "SPO22CheckCableAndSensorFault",
-            "SPO22SensorNearExpiration",
-            "SPO22NoAdhesiveSensor",
-            "SPO22AdhesiveSensorExpiraton",
-            "SPO22IncompatibleAdhesiveSensor",
-            "SPO22UnrecongnizedAdhesiveSensor",
-            "SPO22DefectiveAdhesiveSensor",
-            "SPO22SensorIniting",
-            "SPO22InterferenceDetected",
-            "SPO22DemoMode",
-            "SPO22AdhesiveSensorNearExpiration",
-            "SPO22CheckSensorConnection",
-            "SPO22OnlyMode",
-            "SPO22BoardFailure"
-        };
-        return symbol[index];
+            static const char *symbol[SPO2_ONESHOT_NR] =
+            {
+                // 插件血氧
+                "SPO22CheckSensor",
+                "SPO22CableOff",
+                "SPO22FingerOff",
+                "SPO22LEDFault",
+                "SPO22CommunicationStop",
+                "SPO22SignalWeak",
+                "SPO22SignalSaturation",
+                "SPO22LowPerfusion",
+                "SPO22DefectiveCable",
+                "SPO22CableExpired",
+                "SPO22IncompatibleCable",
+                "SPO22UnrecongnizedCable",
+                "SPO22CableNearExpiration",
+                "SPO22SensorExpired",
+                "SPO22IncompatibleSensor",
+                "SPO22UnrecongnizedSensor",
+                "SPO22DefectiveSensor",
+                "SPO22CheckCableAndSensorFault",
+                "SPO22SensorNearExpiration",
+                "SPO22NoAdhesiveSensor",
+                "SPO22AdhesiveSensorExpiraton",
+                "SPO22IncompatibleAdhesiveSensor",
+                "SPO22UnrecongnizedAdhesiveSensor",
+                "SPO22DefectiveAdhesiveSensor",
+                "SPO22SensorIniting",
+                "SPO22InterferenceDetected",
+                "SPO22DemoMode",
+                "SPO22AdhesiveSensorNearExpiration",
+                "SPO22CheckSensorConnection",
+                "SPO22OnlyMode",
+                "SPO22BoardFailure"
+            };
+            return symbol[index];
+        }
+        else
+        {
+            static const char *symbol[SPO2_ONESHOT_NR] =
+            {
+                "SPO2CheckSensor",
+                "SPO2CableOff",
+                "SPO2FingerOff",
+                "SPO2LEDFault",
+                "SPO2CommunicationStop",
+                "SPO2SignalWeak",
+                "SPO2SignalSaturation",
+                "SPO2LowPerfusion",
+                "SPO2DefectiveCable",
+                "SPO2CableExpired",
+                "SPO2IncompatibleCable",
+                "SPO2UnrecongnizedCable",
+                "SPO2CableNearExpiration",
+                "SPO2SensorExpired",
+                "SPO2IncompatibleSensor",
+                "SPO2UnrecongnizedSensor",
+                "SPO2DefectiveSensor",
+                "SPO2CheckCableAndSensorFault",
+                "SPO2SensorNearExpiration",
+                "SPO2NoAdhesiveSensor",
+                "SPO2AdhesiveSensorExpiraton",
+                "SPO2IncompatibleAdhesiveSensor",
+                "SPO2UnrecongnizedAdhesiveSensor",
+                "SPO2DefectiveAdhesiveSensor",
+                "SPO2SensorIniting",
+                "SPO2InterferenceDetected",
+                "SPO2DemoMode",
+                "SPO2AdhesiveSensorNearExpiration",
+                "SPO2CheckSensorConnection",
+                "SPO2OnlyMode",
+                "SPO2BoardFailure",
+            };
+            return symbol[index];
+        }
     }
 
     static const char *convert(CCHDResult index)

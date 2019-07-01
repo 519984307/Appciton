@@ -402,8 +402,9 @@ static void _initProviderParam(void)
         oneShotAlarmSource = new SPO2OneShotAlarm();
         alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_SPO2);
         alertor.addOneShotSource(oneShotAlarmSource);
-        oneShotAlarmSource = new SPO2OneShotAlarm();
+        oneShotAlarmSource = new SPO2OneShotAlarm(true);
         alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_SPO2_2);
+        alertor.addOneShotSource(oneShotAlarmSource);
 
         SPO2WaveWidget *spo2WaveWidget = new SPO2WaveWidget("SPO2WaveWidget", trs("PLETH"));
         SPO2WaveWidget *outsideSpo2WaveWidget = new SPO2WaveWidget("OutsideSpo2WaveWidget", trs("PLETH2"));

@@ -1035,8 +1035,14 @@ Alarm::~Alarm()
     _alarmStatusList.clear();
 }
 
-QString Alarm::getPhyAlarmMessage(ParamID paramId, int alarmType, bool isOneShot)
+QString Alarm::getPhyAlarmMessage(SubParamID subId, int alarmType, bool isOneShot)
 {
+    ParamInfoInterface *paramInfo = ParamInfoInterface::getParamInfo();
+    ParamID paramId;
+    if (paramInfo)
+    {
+        paramId = paramInfo->getParamID(subId);
+    }
     switch (paramId)
     {
     case PARAM_ECG:
@@ -1078,7 +1084,14 @@ QString Alarm::getPhyAlarmMessage(ParamID paramId, int alarmType, bool isOneShot
         {
             if (alarmType < static_cast<int>(SPO2_ONESHOT_NR))
             {
-                return SPO2Symbol::convert((SPO2OneShotType)alarmType);
+                if (subId == SUB_PARAM_SPO2_2)
+                {
+                    return SPO2Symbol::convert((SPO2OneShotType)alarmType, true);
+                }
+                else
+                {
+                    return SPO2Symbol::convert((SPO2OneShotType)alarmType, false);
+                }
             }
         }
         else
