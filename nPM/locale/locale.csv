@@ -1761,6 +1761,7 @@ RepeatCheck,一小时内重复测量3次以确认结果,Check again in a hour fo
 SpO2Value,血氧I数据,SpO₂ I
 SpO2_2Value,血氧II数据,SpO₂ II
 SPO2ValueInvaild,采集数据无效，请检查血氧模块,The collect data is invaild，Please check SpO₂ module
+SpO2Sensor,SpO₂探头,SpO₂ Sensor
 ErrorLogExportAt,错误日志导出时间: ,Error Log export at  
 NumberOfErrors,错误数量: ,Number of Errors: 
 NumberOfCriticalFaults,严重故障数量: ,Number of Critical Faults: 

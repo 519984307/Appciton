@@ -183,6 +183,8 @@ void TrendWidget::showNormalStatus(QWidget *value, QPalette psrc)
     {
         value->setPalette(psrc);
     }
+    upLimit->setPalette(psrc);
+    downLimit->setPalette(psrc);
 }
 
 void TrendWidget::showNormalParamLimit(QPalette psrc)
