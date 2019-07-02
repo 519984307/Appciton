@@ -155,7 +155,7 @@ void FreezeWindow::timerEvent(QTimerEvent *ev)
     {
         if (!recorderManager.isPrinting() || d_ptr->timeoutNum == 10)  // 1000ms超时处理
         {
-            if (!recorderManager.isPrinting())
+            if (!recorderManager.isPrinting() && !recorderManager.getPrintStatus())
             {
                 recorderManager.addPageGenerator(d_ptr->generator);
             }
