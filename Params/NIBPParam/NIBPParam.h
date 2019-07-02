@@ -296,11 +296,11 @@ public:
      */
     void clearTrendListData();
 
-    void setFirstAuto(bool flag);
+    void setFirstAuto(bool flag);   // 设置首次AUTO测量
 
     bool isFirstAuto();
 
-    void setAutoStat(bool flag);
+    void setAutoStat(bool flag);   // AUTO倒计时时候进行STAT测量
 
     bool isAutoStat();
 
