@@ -200,22 +200,28 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
     }
 
     // 更新声音
-    if (phySoundPriority != ALARM_PRIO_PROMPT && _canPlayAudio(status, false))
+    if (phySoundPriority != ALARM_PRIO_PROMPT || techSoundPriority != ALARM_PRIO_PROMPT)
     {
-        if (soundManager)
+        if (phySoundPriority >= techSoundPriority && _canPlayAudio(status, false))
         {
-            soundManager->updateAlarm(true, phySoundPriority);
+            // 生理报警等级更高时，播放生理报警等级的报警音
+            if (soundManager)
+            {
+                soundManager->updateAlarm(true, phySoundPriority);
+            }
         }
-    }
-    else if (techSoundPriority != ALARM_PRIO_PROMPT && _canPlayAudio(status, true))
-    {
-        if (soundManager)
+        else if (techSoundPriority > phySoundPriority && _canPlayAudio(status, true))
         {
-            soundManager->updateAlarm(true, techSoundPriority);
+            // 技术报警等级更高时，播放技术报警等级的报警音
+            if (soundManager)
+            {
+                soundManager->updateAlarm(true, techSoundPriority);
+            }
         }
     }
     else
     {
+        // 生理和技术报警都是提示等级时，关闭报警音
         if (soundManager)
         {
             soundManager->updateAlarm(false, phySoundPriority);
