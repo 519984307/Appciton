@@ -130,15 +130,15 @@ void ErrorLogItem::outputInfo(QTextStream &stream) const
     ErrorLogItemBase::outputInfo(stream);
     if (content.contains("subSys"))
     {
-        stream << "Subsystem: " << content["subSys"].toString() << "\r\n";
+        stream << trs("Subsystem") << content["subSys"].toString() << "\r\n";
     }
     if (content.contains("sysState"))
     {
-        stream << "System State: " << content["sysState"].toString() << "\r\n";
+        stream << trs("System State") << content["sysState"].toString() << "\r\n";
     }
     if (content.contains("sysRsp"))
     {
-        stream << "System Response: " << content["sysRsp"].toString() << "\r\n";
+        stream << trs("SystemResponse") << content["sysRsp"].toString() << "\r\n";
     }
 
     stream << content["log"].toString();
@@ -205,15 +205,15 @@ void CrashLogItem::outputInfo(QTextStream &stream) const
     ErrorLogItemBase::outputInfo(stream);
     if (content.contains("subSys"))
     {
-        stream << "Subsystem: " << content["subSys"].toString() << "\r\n";
+        stream << trs("Subsystem") << content["subSys"].toString() << "\r\n";
     }
     if (content.contains("sysState"))
     {
-        stream << "System State: " << content["sysState"].toString() << "\r\n";
+        stream << trs("System State") << content["sysState"].toString() << "\r\n";
     }
     if (content.contains("sysRsp"))
     {
-        stream << "System Response: " << content["sysRsp"].toString() << "\r\n";
+        stream << trs("SystemResponse") << content["sysRsp"].toString() << "\r\n";
     }
 
     stream << content["log"].toByteArray();
