@@ -1145,6 +1145,9 @@ ECG12LeadAcquisitionHalted,12导获取取消,12 Lead Acquisition Halted
 USBTransferHasCanceled,12导优盘传送取消,USB Transfer Has Canceled
 ThisSnapShotNoData,此快照没有数据,There is no data in this SnapShot
 ECG12LeadSnapshot,十二导联快照,ECG 12 Lead Snapshot List
+ScreenCapture,截屏,Screen Capture
+CaptureSuccess,截屏成功,Capture screen success.
+CaptureFail,截屏失败,Capture screen fail.
 E-Mail,发送邮件,E-Mail
 NumID,序号,Num
 MailAddress,邮箱地址,Mail Address
