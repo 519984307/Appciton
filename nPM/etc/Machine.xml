@@ -7,7 +7,7 @@
     <ScreenPixelWPitch>0.1695</ScreenPixelWPitch>
     <ScreenPixelHPitch>0.1695</ScreenPixelHPitch>
     <!--功能机型的使能配置-->
-    <ConfiguredFunctions>ECG12LEADS,SPO2,NIBP,CO2,IBP,AG,CO,TEMP,WIFI</ConfiguredFunctions>
+    <ConfiguredFunctions>ECG12LEAD,SPO2,NIBP,RESP,CO2,AG,CO,IBP,TEMP,Printer,WIFI,Touch,O2,NIBPNEOMeasure</ConfiguredFunctions>
     <ECG12LEADEnable>1</ECG12LEADEnable>
     <SPO2Enable>1</SPO2Enable>
     <NIBPEnable>1</NIBPEnable>

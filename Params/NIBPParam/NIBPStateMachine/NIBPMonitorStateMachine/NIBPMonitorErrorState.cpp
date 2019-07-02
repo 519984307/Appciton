@@ -58,7 +58,7 @@ void NIBPMonitorErrorState::handleNIBPEvent(NIBPEvent event, const unsigned char
     case NIBP_EVENT_CONNECTION_NORMAL:
     {
         int enable = 0;
-        machineConfig.getNumValue("NIBPNEOMeasureEnable", enable);
+        machineConfig.getModuleInitialStatus("NIBPNEOMeasureEnable", reinterpret_cast<bool*>(&enable));
         if (patientManager.getType() == PATIENT_TYPE_NEO && enable)
         {
             break;
