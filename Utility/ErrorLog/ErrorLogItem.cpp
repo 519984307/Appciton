@@ -12,6 +12,7 @@
 
 #include "ErrorLogItem.h"
 #include <QFile>
+#include "LanguageManager.h"
 
 void ErrorLogItemBase::setPdCommLogCache(const QVariantList &cachelist)
 {
@@ -134,7 +135,7 @@ void ErrorLogItem::outputInfo(QTextStream &stream) const
     }
     if (content.contains("sysState"))
     {
-        stream << trs("System State") << content["sysState"].toString() << "\r\n";
+        stream << trs("SystemState") << content["sysState"].toString() << "\r\n";
     }
     if (content.contains("sysRsp"))
     {
@@ -209,7 +210,7 @@ void CrashLogItem::outputInfo(QTextStream &stream) const
     }
     if (content.contains("sysState"))
     {
-        stream << trs("System State") << content["sysState"].toString() << "\r\n";
+        stream << trs("SystemState") << content["sysState"].toString() << "\r\n";
     }
     if (content.contains("sysRsp"))
     {

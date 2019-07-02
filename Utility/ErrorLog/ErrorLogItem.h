@@ -18,7 +18,6 @@
 #include <QMap>
 #include <QDebug>
 #include <QFile>
-#include "LanguageManager.h"
 
 class ErrorLogItemBase;
 typedef ErrorLogItemBase *(*ErrorLogItemCreateFunc)();
