@@ -32,26 +32,16 @@ MachineConfig::MachineConfig()
              : Config(MACHINE_CFG_FILE)
              , d_ptr(new MachineConfigPrivate)
 {
-    QStringList pathList = QStringList()
-            << "RESPEnable"
-            << "ECG12LEADEnable"
-            << "SPO2Enable"
-            << "NIBPEnable"
-            << "CO2Enable"
-            << "COEnable"
-            << "IBPEnable"
-            << "TEMPEnable"
-            << "WIFIEnable"
-            << "TouchEnable"
-            << "PrinterEnable"
-            << "NIBPNEOMeasureEnable"
-            << "O2Enable";
-
+    QString modulesFuncStr;
+    getStrValue("ConfiguredFunctions", modulesFuncStr);
+    QStringList pathList = modulesFuncStr.split(',');
     bool enable;
     QString path;
+
     foreach(path, pathList)
     {
         enable = false;
+        path += QString("Enable");
         getNumValue(path, enable);
         d_ptr->modulesStatusMap[path] = enable;
     }
