@@ -435,20 +435,6 @@ void SoundManager::updateAlarm(bool hasAlarm, AlarmPriority curHighestPriority)
         d_ptr->almTimer->start(d_ptr->alarmInterval[curHighestPriority]);
         d_ptr->playSound(SOUND_TYPE_ALARM, curHighestPriority);
     }
-    else
-    {
-        if (d_ptr->almTimer->interval() != d_ptr->alarmInterval[curHighestPriority])
-        {
-            // play different alarm level sound
-            d_ptr->almTimer->stop();
-
-            // stop the current playing sound
-            if (d_ptr->player->isPlaying())
-            {
-                QMetaObject::invokeMethod(d_ptr->player, "stop");
-            }
-        }
-    }
 }
 
 void SoundManager::setVolume(SoundManager::SoundType type, SoundManager::VolumeLevel lev)
