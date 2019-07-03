@@ -181,7 +181,9 @@ DataStorageDirManager::DataStorageDirManager()
 
                 // time string is same as the old folder's time string
                 // remove the older one
-                if (!timeStr.isEmpty() && folderName.getDatetimeStr() == timeStr && folderName.name != curFolderName)
+                // 移除同名文件夹和移除演示数据文件夹
+                if ((!timeStr.isEmpty() && folderName.getDatetimeStr() == timeStr && folderName.name != curFolderName)
+                        || folderName.name.contains("nPMD"))
                 {
                     _deleteDir(DATA_STORE_PATH + folderName.name);
                     continue;
