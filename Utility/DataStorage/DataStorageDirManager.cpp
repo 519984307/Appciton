@@ -99,6 +99,12 @@ DataStorageDirManager::DataStorageDirManager()
 
     systemConfig.getStrValue("DataStorage|FDFileName", _fdFileName);
 
+    if (_curFolder.contains("nPMD"))
+    {
+        // delete demo data
+        _deleteDir(_curFolder);
+    }
+
     if (_curFolder.isEmpty() && _fdFileName.isEmpty() && folderSequenceNum == 1)
     {
         // check whether exist rescue data,
@@ -228,22 +234,6 @@ DataStorageDirManager &DataStorageDirManager::getInstance()
 
 DataStorageDirManager::~DataStorageDirManager()
 {
-    if (_curFolder.contains("nPMD"))
-    {
-        // delete demo data
-        quint32 size = _deleteDir(_curFolder);
-        if (_previousDataSize > size)
-        {
-            _previousDataSize -= size;
-        }
-        else
-        {
-            _previousDataSize = 0;
-        }
-
-        quint32 totalSize = _previousDataSize + _curDataSize;
-        systemConfig.setNumValue("DataStorage|DataSize", totalSize);
-    }
     _folderNameList.clear();
 }
 
