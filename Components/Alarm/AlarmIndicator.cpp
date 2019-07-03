@@ -80,7 +80,7 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
             }
 
             // pause/audio off状态没有生理报警声音
-            if (0 == node.pauseTime && status != ALARM_STATUS_AUDIO_OFF)
+            if (0 == node.pauseTime && status != ALARM_STATUS_AUDIO_OFF && status != ALARM_STATUS_RESET)
             {
                 if (phySoundPriority < node.alarmPriority)
                 {
