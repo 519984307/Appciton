@@ -211,6 +211,7 @@ void SuntechProvider::stopMeasure(void)
 
     _sendCmd(cmd, 3);
 
+    _NIBPStart = false;
     _flagStartCmdSend = 1;
 }
 
@@ -554,10 +555,7 @@ void SuntechProvider::_handlePacket(unsigned char *data, int len)
         {
             if (_flagStartCmdSend == 1)
             {
-                if (_NIBPStart)
-                {
-                    _NIBPStart = false;
-                }
+                _NIBPStart = false;
                 _flagStartCmdSend = 2;
             }
         }
@@ -623,6 +621,10 @@ void SuntechProvider::_handlePacket(unsigned char *data, int len)
     case SUNTECH_RSP_GET_MEASUREMENT:
     {
         NIBPMeasureResultInfo info = getMeasureResultInfo(&data[1]);
+        if (nibpParam.curStatusType() == NIBP_MONITOR_STOPE_STATE)
+        {
+            nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_STOP, NULL, 0);
+        }
         nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_GET_RESULT,
                                   reinterpret_cast<unsigned char *>(&info), sizeof(info));
         break;
