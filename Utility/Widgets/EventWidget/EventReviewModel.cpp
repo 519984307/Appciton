@@ -74,7 +74,7 @@ QVariant EventReviewModel::data(const QModelIndex &index, int role) const
         {
             return d_ptr->timeList.at(row);
         }
-        else if (column == 1 && row < d_ptr->timeList.count())
+        else if (column == 1 && row < d_ptr->eventList.count())
         {
             return d_ptr->eventList.at(row);
         }
@@ -162,11 +162,6 @@ void EventReviewModel::updateEvent(QList<QString> &timeList, QList<QString> &eve
 void EventReviewModel::setPageRowCount(int count)
 {
     d_ptr->eachPageRowCount = count;
-}
-
-int EventReviewModel::totalPage()
-{
-    return d_ptr->calTotalPage();
 }
 
 int EventReviewModel::getHeightHint() const

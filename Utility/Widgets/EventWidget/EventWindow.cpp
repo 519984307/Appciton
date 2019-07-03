@@ -969,6 +969,7 @@ void EventWindowPrivate::loadEventData()
     curDisplayEventNum = timeList.count();
     model->setPageRowCount(PAGE_ROW_COUNT);
     model->updateEvent(timeList, eventList);
+    eventTable->scrollToTop();
 }
 
 AlarmPriority EventWindowPrivate::levelToPriority(EventLevel level)
@@ -1277,6 +1278,6 @@ void EventWindowPrivate::refreshPageInfo()
     }
     QString title = QString("%1( %2/%3 )").arg(trs("EventReview"))
                                           .arg(QString::number(curPage))
-                                          .arg(totalPage);
+                                          .arg(QString::number(totalPage));
     q_ptr->setWindowTitle(title);
 }

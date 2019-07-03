@@ -242,14 +242,8 @@ void TableView::getPageInfo(int &curPage, int &totalPage)
     {
         totalPage = model()->rowCount() / eachPageRowCount;
     }
-    curPage = rowAt(0) / eachPageRowCount + 1;
+    curPage = rowAt(1) / eachPageRowCount + 1;
 }
-
-// void TableView::mouseMoveEvent(QMouseEvent *ev)
-// {
-//     Q_UNUSED(ev)
-//     // do nothing, disable the drag behavior
-// }
 
 void TableView::keyPressEvent(QKeyEvent *ev)
 {
