@@ -18,6 +18,7 @@
 #include "WaveformCache.h"
 #include "ConfigManager.h"
 #include <QPainter>
+#include "LanguageManager.h"
 
 #define INVALID_AXIS_VALUE ((1<<30) - 1)
 
@@ -666,7 +667,7 @@ void EventWaveWidget::_drawWaveLabel(QPainter &painter, const WaveformDesc &wave
         return;
     }
 
-    QString title = paramInfo.getParamWaveformName(waveDesc.waveID);
+    QString title = trs(paramInfo.getParamWaveformName(waveDesc.waveID));
     QRect rectLabel(0, waveDesc.startY, 100, 100);
     painter.drawText(rectLabel, Qt::AlignCenter, title);
 }
