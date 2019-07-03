@@ -61,7 +61,7 @@ void UserMaintainGeneralMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_CHANGE_BEDNUMBER_RIGHT]->setCurrentIndex(index);
 
     combos[ITEM_CBO_LANGUAGE]->blockSignals(true);
-    systemConfig.getNumAttr("General|Language" , "CurrentOption", index);
+    systemConfig.getNumAttr("General|Language" , "NextOption", index);
     combos[ITEM_CBO_LANGUAGE]->setCurrentIndex(index);
     combos[ITEM_CBO_LANGUAGE]->blockSignals(false);
 }
@@ -180,7 +180,7 @@ void UserMaintainGeneralMenuContent::onComboBoxIndexChanged(int index)
             break;
         case UserMaintainGeneralMenuContentPrivate::ITEM_CBO_LANGUAGE:
         {
-            systemConfig.setNumAttr("General|Language" , "CurrentOption" , index);
+            systemConfig.setNumAttr("General|Language" , "NextOption" , index);
             MessageBox msg(trs("Prompt"), trs("ChangeLanguageTip"), false, true);
             windowManager.showWindow(&msg, WindowManager::ShowBehaviorNoAutoClose
                                      | WindowManager::ShowBehaviorModal);
