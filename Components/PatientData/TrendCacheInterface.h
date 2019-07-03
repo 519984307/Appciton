@@ -47,6 +47,10 @@ public:
 
     static TrendCacheInterface *getTrendCache(void);
 
+    // 收集趋势数据
+    virtual void collectTrendData(unsigned t, bool overwrite = false) = 0;
+    virtual void collectTrendAlarmStatus(unsigned t) = 0;
+
     /**
      * @brief getTrendData 获取趋势数据
      * @param t

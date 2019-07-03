@@ -36,6 +36,7 @@
 #include "TrendDataStorageManager.h"
 #include "TimeManager.h"
 #include <QTimer>
+#include "TrendCache.h"
 
 /**************************************************************************************************
  * 构造。
@@ -113,6 +114,8 @@ void NormalModeKeyAction::keyF3Pressed(bool multiBtnPress)
     {
         unsigned t = timeManager.getCurTime();
         recorderManager.addPageGenerator(new ContinuousPageGenerator());
+        trendCache.collectTrendData(t);
+        trendCache.collectTrendAlarmStatus(t);
         trendDataStorageManager.storeData(t, TrendDataStorageManager::CollectStatusPrint);
     }
 }
