@@ -78,11 +78,15 @@ void NIBPMonitorStopState::handleNIBPEvent(NIBPEvent event, const unsigned char 
     switch (event)
     {
     case NIBP_EVENT_MONITOR_STOP:
-            nibpParam->setText(trs("NIBPREADING") + "\n" + trs("NIBPSTOPPED"));
-            nibpParam->clearResult();
+        nibpParam->setText(trs("NIBPREADING") + "\n" + trs("NIBPSTOPPED"));
+        nibpParam->clearResult();
         switchState(NIBP_MONITOR_SAFEWAITTIME_STATE);
         break;
-
+    case NIBP_EVENT_TIMEOUT:
+        nibpParam->setText(trs("NIBPREADING") + "\n" + trs("NIBPSTOPPED"));
+        nibpParam->clearResult();
+        switchState(NIBP_MONITOR_SAFEWAITTIME_STATE);
+        break;
     default:
         break;
     }
