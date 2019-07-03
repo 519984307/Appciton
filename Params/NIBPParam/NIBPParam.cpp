@@ -35,6 +35,7 @@
 #include "TimeManager.h"
 #include "NIBPCountdownTime.h"
 #include "AlarmSourceManager.h"
+#include "TrendCache.h"
 
 /**************************************************************************************************
  * 病人类型修改。
@@ -131,10 +132,13 @@ void NIBPParam::setConnected(bool isConnected)
  * 处理DEMO数据。
  *************************************************************************************************/
 static int counter = 300;
-static int autoCounter = 300;
+static int autoCounter = 0;
+static bool firstDemo = true;       // 进入demo的第一次NIBP测量数据标志
+static int firstCounter = 1;        // demo模式下第一次NIBP数据
+static int manualCounter = 0;       // 手动测量计数器
 void NIBPParam::handDemoTrendData(void)
 {
-    if (autoCounter >= counter)
+    if (autoCounter > counter || manualCounter >= firstCounter)
     {
     _sysValue = qrand() % 30 + 90;
     _diaValue = qrand() % 20 + 60;
@@ -145,6 +149,13 @@ void NIBPParam::handDemoTrendData(void)
 
     setMeasureResult(NIBP_MEASURE_SUCCESS);
     autoCounter = 0;
+    firstDemo = false;
+    manualCounter = 0;
+    }
+
+    if (firstDemo)
+    {
+        manualCounter++;
     }
 
     NIBPMode mode = getSuperMeasurMode();
@@ -162,7 +173,9 @@ void NIBPParam::handDemoTrendData(void)
 void NIBPParam::exitDemo()
 {
     counter = 300;
-    autoCounter = 300;
+    autoCounter = 0;
+    firstDemo = true;
+    manualCounter = 0;
     _sysValue = InvData();
     _diaValue = InvData();
     _mapVaule = InvData();
@@ -452,8 +465,11 @@ void NIBPParam::setResult(int16_t sys, int16_t dia, int16_t map, int16_t pr, NIB
 
     if (_sysValue != InvData() && _diaValue != InvData() && _mapVaule != InvData())
     {
+        unsigned t = timeDate.time();
+        trendCache.collectTrendData(t);
+        trendCache.collectTrendAlarmStatus(t);
         // 测量出结果后，收集一次趋势数据
-        trendDataStorageManager.storeData(timeDate.time(), TrendDataStorageManager::CollectStatusNIBP);
+        trendDataStorageManager.storeData(t, TrendDataStorageManager::CollectStatusNIBP);
     }
 }
 
