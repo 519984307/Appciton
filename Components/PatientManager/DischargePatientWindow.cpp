@@ -107,8 +107,8 @@ void DischargePatientWindow::layoutExec()
 
     hlayout = new QHBoxLayout();
     hlayout->addStretch();
-    hlayout->addWidget(d_ptr->yesBtn);
     hlayout->addWidget(d_ptr->noBtn);
+    hlayout->addWidget(d_ptr->yesBtn);
     hlayout->addStretch();
 
     layout->addLayout(hlayout);
