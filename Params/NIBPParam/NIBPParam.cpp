@@ -55,7 +55,6 @@ void NIBPParam::_patientTypeChangeSlot(PatientType type)
         errorDisable();
         return;
     }
-    reset();
     //设置病人类型与预充气值
     if (NULL != _provider)
     {
