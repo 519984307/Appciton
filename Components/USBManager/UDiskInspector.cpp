@@ -88,6 +88,7 @@ bool UDiskInspector::checkUsbConnectStatus()
         if (QFile::exists(usbdev))
         {
             result = true;
+            emit mountUDisk();
             break;
         }
     }
