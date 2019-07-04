@@ -124,6 +124,7 @@ void N5Provider::_selfTest(unsigned char *packet, int len)
 
         errorLog.append(item);
 
+        nibpParam.setDisableState(true);
         nibpParam.errorDisable();
         systemManager.setPoweronTestResult(N5_MODULE_SELFTEST_RESULT, SELFTEST_FAILED);
     }
@@ -136,6 +137,7 @@ void N5Provider::_selfTest(unsigned char *packet, int len)
 void N5Provider::_errorWarm(unsigned char *packet, int len)
 {
     outHex(packet, len);
+    nibpParam.setDisableState(true);
     nibpParam.errorDisable();
     QString errorStr("");
     errorStr = "error code = ";
