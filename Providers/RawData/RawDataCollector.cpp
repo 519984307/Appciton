@@ -47,6 +47,9 @@ public:
         v = 0;
         machineConfig.getNumValue("Record|TEMP", v);
         collectionStatus[RawDataCollector::TEMP_DATA] = v;
+        v = 0;
+        machineConfig.getNumValue("Record|CO2", v);
+        collectionStatus[RawDataCollector::CO2_DATA] = v;
 
         for (int i = RawDataCollector::ECG_DATA; i < RawDataCollector::DATA_TYPE_NR; ++i)
         {
@@ -562,7 +565,7 @@ void RawDataCollector::startCollectData()
 }
 
 void RawDataCollector::stopCollectData()
-{ 
+{
     if (d_ptr->timerId != -1)
     {
         killTimer(d_ptr->timerId);
@@ -576,7 +579,6 @@ void RawDataCollector::stopCollectData()
     {
         usbManager.forceUmountDisk();  // 强制卸载U盘
     }
-
 }
 
 void RawDataCollector::timerEvent(QTimerEvent *e)
