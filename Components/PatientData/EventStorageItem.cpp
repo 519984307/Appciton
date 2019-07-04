@@ -352,6 +352,8 @@ bool EventStorageItem::startCollectTrendAndWaveformData(unsigned t)
     TrendCacheData trendData;
     TrendAlarmStatus trendAlarmStatus;
 
+    trendCache.collectTrendData(t);
+    trendCache.collectTrendAlarmStatus(t);
     if (d_ptr->eventInfo.type == EventOxyCRG)
     {
         for (unsigned time = t - d_ptr->eventInfo.duration_before; time <= t; time ++)
