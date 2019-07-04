@@ -85,6 +85,7 @@ protected:
 private slots:
     void _getCuffPressure(void);
     void _sendCMD(void);
+    void setinitval(void);
 private:
     void _handlePacket(unsigned char *data, int len);
 
@@ -100,10 +101,13 @@ private:
     static const int _minPacketLen = 3;      // 最小数据包长度。
 
     int _flagStartCmdSend;
+    int _pressure;
 
     QTimer *_timer;
 
     QTimer *_cmdTimer;
+
+    QTimer *_setInitValTimer;
 
     bool _isModuleDataRespond;              // 是否为版本信息回复
     bool _isCalibrationRespond;             // 是否为校准回复

@@ -211,7 +211,6 @@ void SuntechProvider::stopMeasure(void)
 
     _sendCmd(cmd, 3);
 
-    _NIBPStart = false;
     _flagStartCmdSend = 1;
 }
 
@@ -220,6 +219,12 @@ void SuntechProvider::stopMeasure(void)
  *************************************************************************************************/
 void SuntechProvider::setInitPressure(short pressure)
 {
+    if (_NIBPStart)
+    {
+        _pressure = pressure;
+        _setInitValTimer->start();
+        return;
+    }
     unsigned char cmd[3] = {0};
 
     cmd[0] = SUNTECH_CMD_SET_INITIAL_INFIAL;
@@ -435,8 +440,8 @@ void SuntechProvider::controlPneumatics(unsigned char pump, unsigned char contro
  *************************************************************************************************/
 SuntechProvider::SuntechProvider() :
     Provider("SUNTECH_NIBP"), NIBPProviderIFace(),
-    _NIBPStart(false), _flagStartCmdSend(-1),
-    _timer(NULL), _cmdTimer(NULL), _isModuleDataRespond(false),
+    _NIBPStart(false), _flagStartCmdSend(-1), _pressure(-1),
+    _timer(NULL), _cmdTimer(NULL), _setInitValTimer(NULL), _isModuleDataRespond(false),
     _isCalibrationRespond(false)
 {
     UartAttrDesc portAttr(9600, 8, 'N', 1);
@@ -447,11 +452,15 @@ SuntechProvider::SuntechProvider() :
     _timer->setInterval(200);
     _timer->start();
 
+    _setInitValTimer = new QTimer();
+    _setInitValTimer->setInterval(500);   //  更换病人类型时候，停止测量与设置初始压力值两条指令间隔设置为500ms
+
     _cmdTimer = new QTimer();
     _cmdTimer->setInterval(100);
     _cmdTimer->start();
     connect(_timer, SIGNAL(timeout()), this, SLOT(_getCuffPressure()));
     connect(_cmdTimer, SIGNAL(timeout()), this, SLOT(_sendCMD()));
+    connect(_setInitValTimer, SIGNAL(timeout()), this, SLOT(setinitval()));
 }
 
 /**************************************************************************************************
@@ -499,6 +508,16 @@ void SuntechProvider::_sendCMD()
         SuntechCMD cmd = list.takeFirst();
         writeData(cmd.cmd, cmd.cmdLength);
     }
+}
+
+void SuntechProvider::setinitval()
+{
+    unsigned char cmd[3] = {0};
+    cmd[0] = SUNTECH_CMD_SET_INITIAL_INFIAL;
+    cmd[1] = _pressure & 0xFF;
+    cmd[2] = (_pressure & 0xFF00) >> 8;
+    _sendCmd(cmd, 3);
+    _setInitValTimer->stop();
 }
 
 static NIBPMeasureResultInfo getMeasureResultInfo(unsigned char *data)
