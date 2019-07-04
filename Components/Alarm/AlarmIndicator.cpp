@@ -71,7 +71,7 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
             hasAcknowledgAlarm = true;
         }
 
-        if (ALARM_STATUS_OFF != status && ALARM_TYPE_TECH != node.alarmType)
+        if (ALARM_STATUS_OFF != status && ALARM_TYPE_TECH != node.alarmType && ALARM_STATUS_PAUSE != status)
         {
             if (0 < it->pauseTime)
             {
