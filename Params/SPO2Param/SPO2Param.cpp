@@ -637,7 +637,7 @@ void SPO2Param::checkSelftest()
         {
             systemManager.setPoweronTestResult(TS3_MODULE_SELFTEST_RESULT, SELFTEST_FAILED);
             ErrorLogItem *item = new CriticalFaultLogItem();
-            item->setName("SPO2 Module SelfTest Failed");
+            item->setName("SpO2 Module SelfTest Failed");
             errorLog.append(item);
         }
     }
@@ -651,7 +651,7 @@ void SPO2Param::checkSelftest()
         {
             systemManager.setPoweronTestResult(S5_MODULE_SELFTEST_RESULT, SELFTEST_FAILED);
             ErrorLogItem *item = new CriticalFaultLogItem();
-            item->setName("SPO2 Module SelfTest Failed");
+            item->setName("SpO2 Module SelfTest Failed");
             errorLog.append(item);
         }
     }
