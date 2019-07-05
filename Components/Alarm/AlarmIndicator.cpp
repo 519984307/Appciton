@@ -222,6 +222,14 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
                 soundManager->updateAlarm(true, techSoundPriority);
             }
         }
+        else
+        {
+            // 关闭报警音
+            if (soundManager)
+            {
+                soundManager->updateAlarm(false, phySoundPriority);
+            }
+        }
     }
     else
     {
