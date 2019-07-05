@@ -74,5 +74,10 @@ public:
     virtual void setZeroSelfTestState(bool) = 0;
 
     virtual bool isZeroSelfTestState() = 0;
+
     virtual void setCuffPressure(int pressure) = 0;
+
+    virtual void setDisableState(bool flag) = 0;
+
+    virtual bool getNeoDisState() = 0;
 };

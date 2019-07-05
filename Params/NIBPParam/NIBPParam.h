@@ -308,6 +308,10 @@ public:
 
     bool isZeroSelfTestState();
 
+    void setDisableState(bool flag);
+
+    bool getNeoDisState();
+
 signals:
     /**
      * @brief statBtnState 设置NIBP菜单中的STAT按键状态
@@ -360,6 +364,7 @@ private:
     bool _firstAutoFlag;         // 第一次启动AUTO测量标志
     bool _autoStatFlag;         // auto倒计时开启Stat标志
     bool _zeroSelfTestFlag;     //开机较零状态标志
+    bool _isNeoDisable;         // 是否新生儿禁用
 
 private:
     typedef QMap<NIBPStateMachineType, NIBPStateMachine *> MachineStateMap;

@@ -87,6 +87,9 @@ void NIBPMonitorStopState::handleNIBPEvent(NIBPEvent event, const unsigned char 
         nibpParam->clearResult();
         switchState(NIBP_MONITOR_SAFEWAITTIME_STATE);
         break;
+    case NIBP_EVENT_MODULE_ERROR:
+        switchState(NIBP_MONITOR_ERROR_STATE);
+        break;
     default:
         break;
     }

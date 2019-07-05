@@ -50,12 +50,26 @@ void NIBPParam::_patientTypeChangeSlot(PatientType type)
 
     machineConfig.getModuleInitialStatus("NIBPNEOMeasureEnable", reinterpret_cast<bool*>(&enable));
 
-    if (type == PATIENT_TYPE_NEO && enable)
+    if (!_connectedFlag)
     {
-        errorDisable();
         return;
     }
-    reset();
+    if (type == PATIENT_TYPE_NEO && enable)
+    {
+        _isNeoDisable = true;
+        errorDisable();
+    }
+    else if (_isNeoDisable && !_isNIBPDisable)  // 如果只是新生儿禁用则恢复正常状态。
+    {
+        AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
+        if (alarmSource)
+        {
+            alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_DISABLE, false);
+        }
+        _isNeoDisable = false;
+        switchState(NIBP_MONITOR_STANDBY_STATE);
+        handleNIBPEvent(NIBP_EVENT_MODULE_RESET, NULL, 0);                        // 恢复禁用状态
+    }
     //设置病人类型与预充气值
     if (NULL != _provider)
     {
@@ -79,6 +93,7 @@ void NIBPParam::initParam(void)
     machineConfig.getModuleInitialStatus("NIBPNEOMeasureEnable", reinterpret_cast<bool*>(&enable));
     if (patientManager.getType() == PATIENT_TYPE_NEO && enable)
     {
+        _isNeoDisable = true;
         errorDisable();
     }
     _provider->serviceEnter(false);
@@ -109,7 +124,6 @@ void NIBPParam::initParam(void)
  *************************************************************************************************/
 void NIBPParam::errorDisable(void)
 {
-    _isNIBPDisable = true;
     handleNIBPEvent(NIBP_EVENT_MODULE_ERROR, NULL, 0);
     AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
     if (alarmSource)
@@ -1421,6 +1435,16 @@ bool NIBPParam::isZeroSelfTestState()
     return _zeroSelfTestFlag;
 }
 
+void NIBPParam::setDisableState(bool flag)
+{
+    _isNIBPDisable = flag;
+}
+
+bool NIBPParam::getNeoDisState()
+{
+    return _isNeoDisable;
+}
+
 /**************************************************************************************************
  * 停止测量。
  *************************************************************************************************/
@@ -1504,7 +1528,7 @@ NIBPParam::NIBPParam()
       _connectedFlag(false), _connectedProvider(false),
       _text(InvStr()),
       _reply(false), _result(false), _manometerPressure(InvData()), _isMaintain(false), _firstAutoFlag(false),
-      _autoStatFlag(false), _zeroSelfTestFlag(false),
+      _autoStatFlag(false), _zeroSelfTestFlag(false), _isNeoDisable(false),
       _activityMachine(NULL), _oldState(0)
 {
     nibpCountdownTime.getInstance();

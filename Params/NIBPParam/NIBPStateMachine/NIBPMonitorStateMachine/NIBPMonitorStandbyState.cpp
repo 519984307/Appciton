@@ -93,6 +93,7 @@ void NIBPMonitorStandbyState::handleNIBPEvent(NIBPEvent event, const unsigned ch
         else if (args[0] == NIBP_ZERO_FAIL_STATE)         //  校零失败，进入禁用状态
         {
             nibpParam->setZeroSelfTestState(false);
+            nibpParam->setDisableState(true);
             nibpParam->errorDisable();
         }
     default:
