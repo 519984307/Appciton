@@ -46,6 +46,7 @@ void NIBPManometerContentPrivate::loadOptions(void)
 {
     isManometerMode = false;
     modeBtn->setEnabled(true);
+    value->setText(InvStr());
     modeBtn->setText(trs("EnterManometerMode"));
 }
 

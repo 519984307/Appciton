@@ -62,6 +62,8 @@ public:
     // 卸载U盘
     void umountUDisk();
 
+    void forceUmountDisk();
+
 signals:
     // report the process, 0~100
     void exportProcessChanged(unsigned char process);

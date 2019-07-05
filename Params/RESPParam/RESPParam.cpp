@@ -96,6 +96,7 @@ void RESPParamPrivate::setWaveformSpeed(RESPSweepSpeed speed)
 void RESPParam::initParam(void)
 {
     setZoom(getZoom());
+    setLeadoff(false);
 }
 
 /**************************************************************************************************

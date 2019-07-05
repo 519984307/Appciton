@@ -47,6 +47,9 @@ public:
         v = 0;
         machineConfig.getNumValue("Record|TEMP", v);
         collectionStatus[RawDataCollector::TEMP_DATA] = v;
+        v = 0;
+        machineConfig.getNumValue("Record|CO2", v);
+        collectionStatus[RawDataCollector::CO2_DATA] = v;
 
         for (int i = RawDataCollector::ECG_DATA; i < RawDataCollector::DATA_TYPE_NR; ++i)
         {
@@ -265,13 +268,9 @@ void RawDataCollectorPrivate::handleCO2RawData(const unsigned char *data, int le
     {
         Q_UNUSED(len)
         QTextStream stream(&content);
-        // 25组数据
-        for (int n = 0; n < 1; n ++)
-        {
-            unsigned int tar = (data[n * 6]) | (data[n * 6 + 1] << 8) | (data[n * 6 + 2] << 16);
-            unsigned int ref = (data[n * 6 + 3]) | (data[n * 6 + 4] << 8) | (data[n * 6 + 5] << 16);
-            stream << tar << "," << ref << endl;
-        }
+        unsigned int tar = (data[0]) | (data[1] << 8) | (data[2] << 16);
+        unsigned int ref = (data[3]) | (data[4] << 8) | (data[5] << 16);
+        stream << tar << "," << ref << endl;
 
         stream.flush();
 
@@ -572,7 +571,14 @@ void RawDataCollector::stopCollectData()
         killTimer(d_ptr->timerId);
         d_ptr->timerId = -1;
     }
-    usbManager.umountUDisk();
+    if (usbManager.isUSBExist())
+    {
+        usbManager.umountUDisk();     // 正常卸载U盘
+    }
+    else
+    {
+        usbManager.forceUmountDisk();  // 强制卸载U盘
+    }
 }
 
 void RawDataCollector::timerEvent(QTimerEvent *e)

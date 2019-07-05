@@ -837,7 +837,7 @@ void ECGParam::noticeLimitAlarm(int id, bool isAlarm)
 ECGLeadMode ECGParam::getAvailableMode(void)
 {
     int value = 0;
-    machineConfig.getNumValue("ECG12LEADEnable", value);
+    machineConfig.getModuleInitialStatus("ECG12LEADEnable", reinterpret_cast<bool*>(&value));
     if (0 == value)
     {
         return ECG_LEAD_MODE_5;
@@ -2027,9 +2027,6 @@ void ECGParam::setNotchFilter(ECGNotchFilter filter)
  *************************************************************************************************/
 ECGNotchFilter ECGParam::getNotchFilter()
 {
-    int notchFilter = 0;
-    currentConfig.getNumValue("ECG|NotchFilter", notchFilter);
-    _notchFilter = static_cast<ECGNotchFilter>(notchFilter);
     return _notchFilter;
 }
 
@@ -2087,7 +2084,7 @@ void ECGParam::handleECGLeadCabelType(unsigned char cabelType)
     if (ECG_LEAD_MODE_12 == leadMode)
     {
         int ecg12LEnable = 0;
-        machineConfig.getNumValue("ECG12LEADEnable", ecg12LEnable);
+        machineConfig.getModuleInitialStatus("ECG12LEADEnable", reinterpret_cast<bool*>(&ecg12LEnable));
         if (0 == ecg12LEnable)
         {
             leadMode = ECG_LEAD_MODE_5;

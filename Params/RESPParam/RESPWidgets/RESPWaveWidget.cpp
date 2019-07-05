@@ -146,6 +146,10 @@ RESPWaveWidget::~RESPWaveWidget()
  *************************************************************************************************/
 void RESPWaveWidget::setZoom(int zoom)
 {
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        return;
+    }
     switch (zoom)
     {
     case RESP_ZOOM_X025:

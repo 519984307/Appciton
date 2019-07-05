@@ -260,7 +260,7 @@ bool SystemManager::isSupport(ConfiguredFuncs funcs) const
     }
 
     bool enable = false;
-    machineConfig.getNumValue(path, enable);
+    machineConfig.getModuleInitialStatus(path, &enable);
     return enable;
 }
 
@@ -308,7 +308,7 @@ bool SystemManager::isSupport(ParamID paramID) const
     }
 
     bool enable = false;
-    machineConfig.getNumValue(path, enable);
+    machineConfig.getModuleInitialStatus(path, &enable);
     return enable;
 }
 
@@ -1016,7 +1016,7 @@ SystemManager::SystemManager() :  //申请一个动态的模块加载结果数�
 
 #ifdef Q_WS_QWS
     int val = 0;
-    machineConfig.getNumValue("TouchEnable", val);
+    machineConfig.getModuleInitialStatus("TouchEnable", reinterpret_cast<bool*>(&val));
     setTouchScreenOnOff(val);
 #endif
 

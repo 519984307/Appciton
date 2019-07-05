@@ -152,7 +152,7 @@ void SystemStatusBarWidget::timerEvent(QTimerEvent *e)
     if (e->timerId() == _timer.timerId())
     {
         int index = 0;
-        machineConfig.getNumValue("WIFIEnable", index);
+        machineConfig.getModuleInitialStatus("WIFIEnable", reinterpret_cast<bool*>(&index));
         if (index)
         {
             // 工厂维护中打开wifi模块

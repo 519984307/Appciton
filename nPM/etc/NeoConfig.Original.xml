@@ -108,7 +108,7 @@
     <NIBP>
         <StatFunction>1</StatFunction>
         <AutomaticRetry>0</AutomaticRetry>
-        <InitialCuffInflation>3</InitialCuffInflation>
+        <InitialCuffInflation>4</InitialCuffInflation>
 	<CompleteTone>0</CompleteTone>
     </NIBP>
     <SPO2>
@@ -909,8 +909,8 @@
         <Marker3>CodeMarker1,CodeMarker2,CodeMarker3,CodeMarker4,CodeMarker5,CodeMarker6,CodeMarker7,CodeMarker8,CodeMarker9,CodeMarker10,CodeMarker11,CodeMarker12,CodeMarker13,CodeMarker14,CodeMarker15,CodeMarker16,CodeMarker17,CodeMarker18,CodeMarker19,CodeMarker20,CodeMarker21,CodeMarker22,CodeMarker23,CodeMarker24,CodeMarker25,CodeMarker26,CodeMarker27,CodeMarker28</Marker3>
         <Marker4>CodeMarker1,CodeMarker2,CodeMarker3,CodeMarker4,CodeMarker5,CodeMarker6,CodeMarker7,CodeMarker8,CodeMarker9,CodeMarker10,CodeMarker11,CodeMarker12,CodeMarker13,CodeMarker14,CodeMarker15,CodeMarker16,CodeMarker17,CodeMarker18,CodeMarker19,CodeMarker20,CodeMarker21,CodeMarker22,CodeMarker23,CodeMarker24,CodeMarker25,CodeMarker26,CodeMarker27,CodeMarker28,CodeMarker29,CodeMarker30</Marker4>
         <SelectMarker>
-            <Language0>CodeMarker13,CodeMarker14,CodeMarker1,CodeMarker2,CodeMarker18,CodeMarker7,CodeMarker9,CodeMarker10,CodeMarker11,CodeMarker12,CodeMarker16,CodeMarker3,CodeMarker4,CodeMarker6,CodeMarker8,CodeMarker15,CodeMarker19,CodeMarker20,CodeMarker22,CodeMarker28,CodeMarker25,CodeMarker5,CodeMarker31,CodeMarker27,CodeMarker24,CodeMarker17,CodeMarker36,CodeMarker23</Language0>
-            <Language1>CodeMarker13,CodeMarker14,CodeMarker1,CodeMarker2,CodeMarker18,CodeMarker7,CodeMarker9,CodeMarker10,CodeMarker11,CodeMarker12,CodeMarker16,CodeMarker3,CodeMarker4,CodeMarker6,CodeMarker8,CodeMarker15,CodeMarker19,CodeMarker20,CodeMarker22,CodeMarker28,CodeMarker25,CodeMarker5,CodeMarker31,CodeMarker27,CodeMarker24,CodeMarker17,CodeMarker36,CodeMarker23</Language1>
+            <Language0>CodeMarker13,CodeMarker14,CodeMarker1,CodeMarker2,CodeMarker18,CodeMarker7,CodeMarker9,CodeMarker10,CodeMarker11,CodeMarker12,CodeMarker16,CodeMarker3,CodeMarker4,CodeMarker6,CodeMarker8,CodeMarker15,CodeMarker19,CodeMarker20,CodeMarker22,CodeMarker28,CodeMarker25,CodeMarker5,CodeMarker31,CodeMarker27,CodeMarker24,CodeMarker17,CodeMarker23</Language0>
+            <Language1>CodeMarker13,CodeMarker14,CodeMarker1,CodeMarker2,CodeMarker18,CodeMarker7,CodeMarker9,CodeMarker10,CodeMarker11,CodeMarker12,CodeMarker16,CodeMarker3,CodeMarker4,CodeMarker6,CodeMarker8,CodeMarker15,CodeMarker19,CodeMarker20,CodeMarker22,CodeMarker28,CodeMarker25,CodeMarker5,CodeMarker31,CodeMarker27,CodeMarker24,CodeMarker17,CodeMarker23</Language1>
         </SelectMarker>
     </CodeMarker>
 </Supervision>

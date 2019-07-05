@@ -29,9 +29,9 @@ EditPassWord,修改密码,Edit Password
 LastPassword,上次密码,Last Password
 EditPasswordNotSuccess,修改密码失败,Edit Password Not Success
 EditPasswordSuccess,修改密码成功,Edit Password Success
-RESPModule,RESP,RESP
+RESPModule,Resp,Resp
 NIBPModule,NIBP,NIBP
-TEMPModule,TEMP,TEMP
+TEMPModule,Temp,Temp
 SPO2Module,SpO2,SpO2
 NightModeMenu,夜间模式,Night Mode
 NightModeMenuDesc,夜间模式设置,Night Mode Desc
@@ -106,13 +106,13 @@ CO_CI,心指数,C.I.
 TB,血温,TB
 SPO2,SpO2,SpO2
 PR,PR,PR
-PLETH,血氧波,Pleth
+PLETH,Pleth,Pleth
 NIBP,NIBP,NIBP
-RESP,RESP,RESP
+RESP,Resp,Resp
 ParameterColor,参数颜色,Parameter Color
 ParameterColorDesc,参数颜色设置,Parameter Color Desc
-RR,呼吸率,RR
-BR,呼吸率,BR
+RR,RR,RR
+BR,BR,BR
 RR_BR,RR/BR,RR/BR
 Close,关闭,Close
 Back,后退,Back
@@ -161,8 +161,8 @@ AverageTime,平均时间,Average Time
 Normal,正常,Normal
 MaxSensitivity,高灵敏,High
 SPO2Sensitivity,灵敏度,Sensitivity
-FastSat,快速血氧,Fast SAT
-ConfigEditSpO2Menu,血氧,SpO2
+FastSat,快速SpO2,Fast SAT
+ConfigEditSpO2Menu,SpO2,SpO2
 SPO2SmartPulseTone,智能脉搏音,Smart Pulse Tone
 ConfigEditIBPMenu,有创血压,IBP
 SPO2SweepSpeed,波形速度,Sweep Speed
@@ -172,14 +172,14 @@ SPO2Menu,SpO2,SpO2
 RESPSweepSpeed,波形速度,Sweep Speed
 RESPApneaTime,窒息时间,Apnea Time
 RESPZoom,缩放,Zoom
-RESPLead,呼吸导联,RESP Lead
-RESPMenu,RESP,RESP
-RESPWaveMode,RESP波形模式,RESP Wave Mode
+RESPLead,Resp导联,Resp Lead
+RESPMenu,Resp,Resp
+RESPWaveMode,Resp波形模式,Resp Wave Mode
 RESPCurve,曲线,Curve
 RESPFilled,填充,Filled
 RRLow,RR低,RR Low
 RRHigh,RR高,RR High
-RESPAutoActivation,呼吸激活,RESP Automatic Activation
+RESPAutoActivation,Resp激活,Resp Automatic Activation
 EnterPassthroughMode,进入透传模式,Enter Passthrough Mode
 ExitPassthroughMode,退出透传模式,Exit Passthrough Mode
 SwitchPassthroughModeFail,切换透传模式失败,Switch Passthrough Mode Fail
@@ -188,6 +188,7 @@ NIBPMeasureMode,测量模式,Measure Mode
 NIBPIntervalTime,间隔时间,NIBP Interval Time
 NIBPAutoInterval,自动间隔,Auto Interval
 NIBPCompleteTone,NIBP完成音,NIBP Complete Tone
+NIBPZEROING,校零中,ZEROING
 NIBPMenu,NIBP,NIBP
 NIBPMenuDesc,NIBP,NIBP
 NIBPDirectiveTimeout,指令超时,Directive Timeout
@@ -207,6 +208,7 @@ ValveControl,气阀控制,Valve Control
 InflationPressure,充气压力,Inflation Pressure
 OverpressureProtect,过压保护,Overpressure Protect
 NIBPPressureControlModelEnterFail,进入压力控制模式失败,Pressure Control Enter Fail
+NIBPModuleDisable,NIBP模块禁用,NIBP Module Disable
 CO2ApneaTime,窒息时间,Apnea Time
 CO2SweepSpeed,波形速度,Sweep Speed
 CO2WaveMode,CO2波形模式,CO2 Wave Mode
@@ -257,22 +259,22 @@ InjectionTempSource,注射液温度来源,Injection Temp Source
 InjectionTemp,注射液温度,Injection Temp
 InjectionVolumn,注射液体积,Injection Volumn
 MeasureMode,测量模式,Measure Mode
-TEMP,TEMP,TEMP
+TEMP,Temp,Temp
 T1,T1,T1
 T2,T2,T2
 TD,ΔT,ΔT
-ConfigEditTEMPMenu,TEMP,TEMP
-ConfigEditTEMPMenuDesc,TEMP,TEMP
-TEMPMenuContent,TEMP,TEMP
-TEMPMenuContentDesc,TEMP,TEMP
+ConfigEditTEMPMenu,Temp,Temp
+ConfigEditTEMPMenuDesc,Temp,Temp
+TEMPMenuContent,Temp,Temp
+TEMPMenuContentDesc,Temp,Temp
 TEMPUnit,单位,Unit
-TEMP1Low,体温1低,TEMP1 Low
-TEMP1High,体温1高,TEMP1 High
+TEMP1Low,Temp1低,Temp1 Low
+TEMP1High,Temp1高,Temp1 High
 MeasureSettingMenu,测量设置,Measure Setting
 MeasureSettingMenuDesc,测量设置,Measure Setting
 ECGSetting,ECG设置,ECG Setting
-RESPSetting,RESP设置,RESP Setting
-TEMPSetting,TEMP设置,TEMP Setting
+RESPSetting,Resp设置,Resp Setting
+TEMPSetting,Temp设置,Temp Setting
 AGSetting,AG设置,AG Setting
 IBPSetting,IBP设置,IBP Setting
 COSetting,CO设置,CO Setting
@@ -297,24 +299,24 @@ WiFiProfile,WiFi配置,WiFi Profile
 Standy,待机,Standy
 CalculateWindow,计算,Calculate Window
 PressAnyKeysToExit,请按压任何按键退出待机模式,Press Any Keys To Exit
-TEMP2Low,体温2低,TEMP2 Low
-TEMP2High,体温2高,TEMP2 High
-TEMPTDLow,体温差低,ΔT Low
-TEMPTDHigh,体温差高,ΔT High
-TEMP1SensorOff,体温1探头脱落,TEMP1 Sensor Off
+TEMP2Low,Temp2低,Temp2 Low
+TEMP2High,Temp2高,Temp2 High
+TEMPTDLow,Temp差低,ΔT Low
+TEMPTDHigh,Temp差高,ΔT High
+TEMP1SensorOff,Temp1探头脱落,Temp1 Sensor Off
 PrintSettingMenu,打印设置,Print Setting
 PrintSettingMenuDesc,打印设置,Print Setting
 ClearPrintTask,清除打印任务,ClearPrintTask
 Continous,连续,Continous
-TEMP2SensorOff,体温2探头脱落,TEMP2 Sensor Off
-TEMPSensorOffAll,体温探头全部脱落,All TEMP Sensor Off
-TEMP1OverRange,体温1超界,TEMP1 Out of Range
-TEMP2OverRange,体温2超界,TEMP2 Out of Range
-TEMPOverRangeAll,体温全部超界,All TEMP Out of Range
-TEMP1ProbeTypeError,体温1探头类型错误,TEMP1 Probe Type Error
-TEMP2ProbeTypeError,体温2探头类型错误,TEMP2 Probe Type Error
-TEMPProbeTypeErrorAll,体温探头类型全部错误,All TEMP Probe Type Error
-TEMPCommunicationStop,体温通讯停止,TEMP Communication Stop
+TEMP2SensorOff,Temp2探头脱落,Temp2 Sensor Off
+TEMPSensorOffAll,Temp探头全部脱落,All Temp Sensor Off
+TEMP1OverRange,Temp1超界,Temp1 Out of Range
+TEMP2OverRange,Temp2超界,Temp2 Out of Range
+TEMPOverRangeAll,Temp全部超界,All Temp Out of Range
+TEMP1ProbeTypeError,Temp1探头类型错误,Temp1 Probe Type Error
+TEMP2ProbeTypeError,Temp2探头类型错误,Temp2 Probe Type Error
+TEMPProbeTypeErrorAll,Temp探头类型全部错误,All Temp Probe Type Error
+TEMPCommunicationStop,Temp通讯停止,Temp Communication Stop
 celsius,℃,℃
 fahrenheit,℉,℉
 percent,%,%
@@ -344,14 +346,14 @@ PatientMenuDesc,病人设置,Patient Setting
 ECGMenuDesc,ECG,ECG
 STMenuDesc,ST,ST
 SPO2MenuDesc,SpO2,SpO2
-RESPMenuDesc,RESP,RESP
+RESPMenuDesc,Resp,Resp
 CO2MenuDesc,CO2,CO2
 IBPMenuDesc,IBP,IBP
 COMenuDesc,C.O.,C.O.
-RESPAndCO2Menu,RESP和CO2,RESP & CO2
-RESPAndCO2MenuDesc,RESP和CO2,RESP & CO2
-TEMPMenu,TEMP,TEMP
-TEMPMenuDesc,TEMP,TEMP
+RESPAndCO2Menu,Resp和CO2,Resp & CO2
+RESPAndCO2MenuDesc,Resp和CO2,Resp & CO2
+TEMPMenu,Temp,Temp
+TEMPMenuDesc,Temp,Temp
 AGMenuDesc,AG,AG
 AlarmSettingMenuDesc,报警,Alarm
 PrintSetupDesc,打印,Print
@@ -533,10 +535,10 @@ AlarmInfo,信息,Message
 High,高,High
 Medium,中,Medium
 Low,低,Low
-HRHigh,心率高,HR High
-HRLow,心率低,HR Low
-HRRRLow,心率/呼吸率低,HR/RR Low
-HRRRHigh,心率/呼吸率高,HR/RR High
+HRHigh,HR高,HR High
+HRLow,HR低,HR Low
+HRRRLow,HR/RR低,HR/RR Low
+HRRRHigh,HR/RR高,HR/RR High
 PVCSLow,PVCS 低,PVCS Low
 PVCSHigh,PVCS 高,PVCS High
 ST-Low,ST-I 低,ST-I Low
@@ -580,42 +582,42 @@ ECGArrSINUS,窦性心律不齐,SINUS
 ECGArrVENT,室性节律,VENT
 ECGArrIRR,心律不齐,IRR
 LeadOff,导联脱落,Lead Off
-ECGLeadOff,心电导联脱落,ECG Lead Off
-ECGVLeadOff,心电V导联脱落,ECG V Lead Off
-ECGV1LeadOff,心电V1导联脱落,ECG V1 Lead Off
-ECGV2LeadOff,心电V2导联脱落,ECG V2 Lead Off
-ECGV3LeadOff,心电V3导联脱落,ECG V3 Lead Off
-ECGV4LeadOff,心电V4导联脱落,ECG V4 Lead Off
-ECGV5LeadOff,心电V5导联脱落,ECG V5 Lead Off
-ECGV6LeadOff,心电V6导联脱落,ECG V6 Lead Off
-ECGCLeadOff,心电C导联脱落,ECG C Lead Off
-ECGC1LeadOff,心电C1导联脱落,ECG C1 Lead Off
-ECGC2LeadOff,心电C2导联脱落,ECG C2 Lead Off
-ECGC3LeadOff,心电C3导联脱落,ECG C3 Lead Off
-ECGC4LeadOff,心电C4导联脱落,ECG C4 Lead Off
-ECGC5LeadOff,心电C5导联脱落,ECG C5 Lead Off
-ECGC6LeadOff,心电C6导联脱落,ECG C6 Lead Off
-ECGOverLoad,心电过载,ECG Over Load
-ECGCommunicationStop,心电通讯停止,ECG Communication Stop
+ECGLeadOff,ECG导联脱落,ECG Lead Off
+ECGVLeadOff,ECGV导联脱落,ECG V Lead Off
+ECGV1LeadOff,ECGV1导联脱落,ECG V1 Lead Off
+ECGV2LeadOff,ECGV2导联脱落,ECG V2 Lead Off
+ECGV3LeadOff,ECGV3导联脱落,ECG V3 Lead Off
+ECGV4LeadOff,ECGV4导联脱落,ECG V4 Lead Off
+ECGV5LeadOff,ECGV5导联脱落,ECG V5 Lead Off
+ECGV6LeadOff,ECGV6导联脱落,ECG V6 Lead Off
+ECGCLeadOff,ECGC导联脱落,ECG C Lead Off
+ECGC1LeadOff,ECGC1导联脱落,ECG C1 Lead Off
+ECGC2LeadOff,ECGC2导联脱落,ECG C2 Lead Off
+ECGC3LeadOff,ECGC3导联脱落,ECG C3 Lead Off
+ECGC4LeadOff,ECGC4导联脱落,ECG C4 Lead Off
+ECGC5LeadOff,ECGC5导联脱落,ECG C5 Lead Off
+ECGC6LeadOff,ECGC6导联脱落,ECG C6 Lead Off
+ECGOverLoad,ECG过载,ECG Over Load
+ECGCommunicationStop,ECG通讯停止,ECG Communication Stop
 ECG12LSnapShot,12导 快照,12 Lead SnapShot
 ECGAcquiring12L,获取12导,Acquiring 12 Lead
 ECGAcquired12L,获取12导结束,Acquire 12 Lead Complete
-RESPCommunicationStop,呼吸通讯停止,RESP Communication Stop
-RESPCheckElecrodes,呼吸检查电极,RESP Check Elecrodes
-Apnea,呼吸窒息,Apnea
-SPO2Low,血氧低,SpO2 Low
-SPO2High,血氧高,SpO2 High
+RESPCommunicationStop,Resp通讯停止,Resp Communication Stop
+RESPCheckElecrodes,Resp检查电极,Resp Check Electrodes
+Apnea,Resp窒息,Apnea
+SPO2Low,SpO2低,SpO2 Low
+SPO2High,SpO2高,SpO2 High
 SPO2PRLow,脉率低,PR Low
 SPO2PRHigh,脉率高,PR High
 SPO2Initializing,SpO2初始化,SpO2 initializing
 SPO2PulseSearch,SpO2搜索脉搏,SpO2 Pulse Search
 SPO2PulseSearchTooLong,SpO2脉搏搜索时间过长,SpO2 Pulse Search Too Long
-SPO2SensorOff,血氧传感器脱落,SpO2 Sensor Off
+SPO2SensorOff,SpO2传感器脱落,SpO2 Sensor Off
 SPO2CheckSensor,SpO2检查探头,SpO2 Check Sensor
-SPO2SearchPulseTooLong,血氧脉搏搜索时间过长,SpO2 Search Pulse Too Long
-SPO2SearchingPulse,血氧脉搏搜索,SpO2 Searching Pulse
+SPO2SearchPulseTooLong,SpO2脉搏搜索时间过长,SpO2 Search Pulse Too Long
+SPO2SearchingPulse,SpO2脉搏搜索,SpO2 Searching Pulse
 SPO2CommunicationStop,SpO2通信中断,SpO2 Communication Stop
-SPO2ProbeFault,血氧探头故障,SpO2 Probe Fault
+SPO2ProbeFault,SpO2探头故障,SpO2 Probe Fault
 SPO2SignalSaturation,SpO2信号饱和,SpO2 Signal Saturation
 CO2EtCO2Low,EtCO2 低,EtCO2 Low
 CO2EtCO2High,EtCO2 高,EtCO2 High
@@ -765,10 +767,10 @@ ControlValve,控制阀,Control Valve
 DumpValve,安全阀,Dump Valve
 ServicePatientType,病人类型,Patient Type
 ServiceChargePressure,预充气压力,Charge Pressure
-TEMPModuleDisConnect,温度模块未连接,TEMP Module DisConnected
-TEMPChannelOne,体温通道1,TEMP Channel One
-TEMPChannelTwo,体温通道2,TEMP Channel Two 
-TEMPChannelDisable,体温通道禁用,TEMP Channel Disable 
+TEMPModuleDisConnect,Temp模块未连接,Temp Module DisConnected
+TEMPChannelOne,Temp通道1,Temp Channel One
+TEMPChannelTwo,Temp通道2,Temp Channel Two
+TEMPChannelDisable,Temp通道禁用,Temp Channel Disable
 ServiceInflate,充气,Inflate
 ServiceDeflate,放气,Deflate
 Inflating,充气中,Inflating
@@ -821,9 +823,9 @@ ECGBootloader,ECG Bootloader,ECG Bootloader
 NIBPVersion,NIBP,NIBP
 NIBPBootloader,NIBP Bootloader,NIBP Bootloader
 SPO2Version,SpO2,SpO2
-SPO2Bootloader,SPO2 Bootloader,SPO2 Bootloader
-TEMPVersion,TEMP,TEMP
-TEMPBootloader,TEMP Bootloader,TEMP Bootloader
+SPO2Bootloader,SpO2 Bootloader,SpO2 Bootloader
+TEMPVersion,Temp,Temp
+TEMPBootloader,Temp Bootloader,Temp Bootloader
 iDMBoardVersion,iDMBoard,iDMBoard
 PRT48Version,PRT48,PRT48
 PRT48Bootloader,PRT48 Bootloader,PRT48 Bootloader
@@ -876,7 +878,7 @@ SupervisorLanguage,语言,Default Language
 SupervisorOtherMenu,其他,Other
 SupervisorNIBPUnit,血压单位,NIBP Unit
 SupervisorCO2Unit,CO2单位,CO2 Unit
-SupervisorTEMPUnit,体温单位,TEMP Unit
+SupervisorTempUnit,Temp单位,Temp Unit
 SupervisorWeightUnit,体重单位,Weight Unit
 SupervisorHeightUnit,身高单位,Height Unit
 Weight,体重,Weight
@@ -1143,6 +1145,9 @@ ECG12LeadAcquisitionHalted,12导获取取消,12 Lead Acquisition Halted
 USBTransferHasCanceled,12导优盘传送取消,USB Transfer Has Canceled
 ThisSnapShotNoData,此快照没有数据,There is no data in this SnapShot
 ECG12LeadSnapshot,十二导联快照,ECG 12 Lead Snapshot List
+ScreenCapture,截屏,Screen Capture
+CaptureSuccess,截屏成功,Capture screen success.
+CaptureFail,截屏失败,Capture screen fail.
 E-Mail,发送邮件,E-Mail
 NumID,序号,Num
 MailAddress,邮箱地址,Mail Address
@@ -1248,7 +1253,7 @@ ZeroRequired,需要校零,Zero Required
 Channel,通道,Channel
 SmartPluseTone,智能脉搏音,Smart PluseTone
 WaveVelocity,波形速度,Wave Velocity
-RespMenuDesc,呼吸菜单设置,Resp Desc
+RespMenuDesc,Resp菜单设置,Resp Desc
 ModuleControl,模块控制,Module Control
 HIGH,高,HIGH
 NORMAL,中,NORMAL
@@ -1343,7 +1348,7 @@ Kernel,内核,Kernel
 SystemboardModule,系统板,System Board Module
 SystemboardBootloader,系统板Bootloader,System Board Bootloader
 RecorderModule,记录模块,Recorder Module
-ECGAlgorithmType,心电算法类型,ECG Algorithm Type
+ECGAlgorithmType,ECG算法类型,ECG Algorithm Type
 UserMaintainGeneralMenuDesc,通用,General
 BootAndStandbyLogoVersion,开机标准logo版本,Boot And Standby LogoVersion
 UserMaintainGeneralMenu,通用,General
@@ -1398,7 +1403,7 @@ CO2ModuleMaintenance,二氧化碳模块维护,CO2 Module Maintenance
 NIBPPressureTest,NIBP压力测试,NIBP Pressure Test
 NIBPLeakageDetection,NIBP泄露检测,NIBP Leakage Detection
 NIBPServiceModuleErrorQuitTryAgain,NIBP服务模块错误，请退出重试,NIBP Service Module Error，Please quit and retry!
-ECGModuleCalibration,心电模块校准,ECG Module Calibration
+ECGModuleCalibration,ECG模块校准,ECG Module Calibration
 TouchScreenCalibration,触摸屏校准,Touch Screen Calibration
 TouchScreen,触摸屏,Touch Screen
 StopAnaesthesia,停止麻醉模块,Stop Anaesthesia
@@ -1406,7 +1411,7 @@ Anaesthesia,麻醉模块,Anaesthesia
 StopNIBPPressureTest,停止无创血压测试,Stop NIBP Pressure Test
 StopIBPPressureCalibration,停止有创血压校准,Stop IBP Pressure Calibration
 StopNIBPLeakageDetection,停止无创血压泄露检测,Stop NIBP Leakage Detection
-StopECGModuleCalibration,停止心电模块校准,Stop ECG Module Calibration
+StopECGModuleCalibration,停止ECG模块校准,Stop ECG Module Calibration
 StopCO2ModuleMaintenance,停止二氧化碳模块,Stop CO2 Module Maintenance
 StopTouchScreenCalibration,停止触摸屏校准,Stop Touch Screen Calibration
 Cancel,取消覆盖,Cancel
@@ -1416,7 +1421,7 @@ WaveLine,波线,WaveLine
 Fat,粗,Fat
 Med,中,Med
 Thin,细,Thin
-ECGStandard,心电标准,ECG Standard
+ECGStandard,ECG标准,ECG Standard
 AHA,AHA,AHA
 IEC,IEC,IEC
 FrequencyNotch,频率刻度,Frequency Notch
@@ -1500,7 +1505,7 @@ CO2Unit,CO2单位,CO2 Unit
 ApneaDelay,窒息延迟,Apnea Delay
 BreathLead,呼吸导联,Breath Lead
 SweepSpeed,波形速度,Sweep Speed
-RespMenu,呼吸,Resp Menu
+RespMenu,Resp,Resp Menu
 manaul,手动,manaul
 FactoryTest,测试,Test
 FactoryTestDesc,测试,Test
@@ -1517,8 +1522,8 @@ RefreshRateUpdatedRebootNow,刷新率已更新，是否现在重启,Refresh Rate
 FactoryDataRecord,数据记录,Data Record
 FactoryDataRecordDesc,数据记录,Data Record
 PDCommData,PD 通信数据,PD Comm Data
-TEMPCalibrateMenuDesc,温度校准,TEMP Calibrate
-TEMPCalibrateMenu,温度校准,TEMP Calibrate
+TEMPCalibrateMenuDesc,Temp校准,Temp Calibrate
+TEMPCalibrateMenu,Temp校准,Temp Calibrate
 SystemInfoSettingDesc,系统信息,System Info
 FactoryVersionInfo,版本信息,Version Info
 FactoryVersionInfoDesc,版本信息,Version Info
@@ -1527,15 +1532,15 @@ WaitingCalibration,等待校准,Waiting
 Calibrating,正在校准,
 TEMPCalibrate,校准,Calibrate
 is,是,is
-TEMP1,温度1,TEMP1
-TEMP2,温度2,TEMP2
+TEMP1,Temp1,Temp1
+TEMP2,Temp2,Temp2
 TEMPCalibrateOhm,校准电阻值,Resistance
-TEMPModuleNotCalibration1,温度模块通道1未定标,TEMP Channel 1 Not Calibration
-TEMPModuleNotCalibration2,温度模块通道2未定标,TEMP Channel 2 Not Calibration
-TEMPModuleDisable,温度模块禁用,TEMP Module Disable
-TEMPCommunicationStop,温度通信停止,TEMP Communication Stop
-TEMPChannel,温度通道,TEMP Channel
-TEMPCalibrate,温度校准 ,TEMP Calibrate 
+TEMPModuleNotCalibration1,Temp模块通道1未定标,Temp Channel 1 Not Calibration
+TEMPModuleNotCalibration2,Temp模块通道2未定标,Temp Channel 2 Not Calibration
+TEMPModuleDisable,Temp模块禁用,Temp Module Disable
+TEMPCommunicationStop,Temp通信停止,Temp Communication Stop
+TEMPChannel,Temp通道,Temp Channel
+TEMPCalibrate,Temp校准 ,Temp Calibrate
 N2O,N2O,N2O
 AA1,自动识别麻醉气体1,AA1
 AA2,自动识别麻醉气体2,AA2
@@ -1558,8 +1563,8 @@ DefaultSetting,缺省设置,Default Setting
 CO2Low,二氧化碳低,CO2 Low
 CO2High,二氧化碳高,CO2 High
 AutoRuler,自动标尺,Auto Ruler
-RESPLow,呼吸低,RESP Low
-RESPHigh,呼吸高,RESP High
+RESPLow,Resp低,Resp Low
+RESPHigh,Resp高,Resp High
 Static,静态,Static
 PageNum,页,Page
 ImportFiles,导入文件,ImportFiles
@@ -1569,7 +1574,7 @@ ConfigManagerPassword,配置管理密码,Config Manager Password
 ConfigEditCodeMarkerMenu,Code Marker,Code Marker
 ConfigEditCodeMarkerMenuDesc,Code Marker,Code Marker
 ConfigEditIBPMenuDesc,有创血压设置,IBP Desc
-ConfigEditSpO2MenuDesc,血氧设置,SpO2 Desc
+ConfigEditSpO2MenuDesc,SpO2设置,SpO2 Desc
 DeleteSelectedWifiProfile,确定删除选择的wifi配置？, Do delete selected wifi profile ?
 ToneVolume,提示音量,Tone Volume
 SoftKeyPatientInfo,病人信息,Patient Info.
@@ -1660,38 +1665,38 @@ SaveAsUserConfig,用户配置保存,Save As User Config
 SaveCurrentSettingAndConfigurationName,保存当前监护仪的设置为用户配置，您的配置命名为,Save the current settings as user configuration.Please name the configuration.
 ConfigurationName,配置名称,Configuraiton Name
 HasExistConfig,该配置名称与监护仪上配置重名。请重新命名！,The configuration name is repeated with the configuration.Please rename!
-ECGFullScreen,心电全屏,ECG Full Screen
+ECGFullScreen,ECG全屏,ECG Full Screen
 isSaveLayout,是否保存布局配置？,Do you want to save the layout config?
 LowBattery,电量过低,Low quantity of electricity
 RESPCheckElectrodes,检查电极,Check Electrodes
-SPO2SignalWeak,检测血氧信号弱,SpO2 Signal Weak
-SPO2CableOff,血氧线缆断开,SpO2 Cable Off
+SPO2SignalWeak,检测SpO2信号弱,SpO2 Signal Weak
+SPO2CableOff,SpO2线缆断开,SpO2 Cable Off
 SPO2FingerOff,未检测到手指,SpO2 Finger Off
-SPO2LEDFault,血氧LED错误,SpO2 LED Fault
+SPO2LEDFault,SpO2LED错误,SpO2 LED Fault
 SPO2LowPerfusion,SpO2弱灌注,SpO2 Low Perfusion
-SPO2DefectiveCable,SPO2线缆故障,Defective cable
-SPO2CableExpired,SPO2线缆过期,Cable expired
-SPO2IncompatibleCable,SPO2不兼容线缆,Incompatible cable
-SPO2UnrecongnizedCable,SPO2未识别线缆,Unrecongnized cable
-SPO2CableNearExpiration,SPO2线缆即将到期,Cable near expiration
-SPO2SensorExpired,SPO2传感器已过期,Sensor expired
-SPO2IncompatibleSensor,SPO2传感器不兼容,Incompatible sensor
-SPO2UnrecongnizedSensor,SPO2未识别传感器,Unrecongnized sensor
-SPO2DefectiveSensor,SPO2传感器故障,Defective sensor
-SPO2CheckCableAndSensorFault,SPO2检查线缆和传感器故障,Check cable and sensor fault
-SPO2SensorNearExpiration,SPO2传感器即将到期,Sensor near expiration
-SPO2NoAdhesiveSensor,SPO2无粘性传感器,No adhesive sensor
-SPO2AdhesiveSensorExpiraton,SPO2粘性传感器截止,Adhesive sensor expiraton
-SPO2IncompatibleAdhesiveSensor,SPO2不兼容的粘性传感器,Incompatible adhesive sensor
-SPO2UnrecongnizedAdhesiveSensor,SPO2未识别的粘性传感器,Unrecongnized adhesive sensor
-SPO2DefectiveAdhesiveSensor,SPO2有缺陷的粘性传感器,Defective adhesive sensor
-SPO2SensorIniting,SPO2传感器初始化,Sensor initing
-SPO2InterferenceDetected,SPO2检测到干扰,Interference detected
-SPO2DemoMode,SPO2演示模式,Demo mode
-SPO2AdhesiveSensorNearExpiration,SPO2粘性传感器即将到期,Adhesive sensor near expiration
-SPO2CheckSensorConnection,SPO2检查传感器连接,Check sensor connection
-SPO2OnlyMode,仅限SPO2模式,SpO2 only mode
-SPO2BoardFailure,SPO2板卡错误,SPO2 Board Failure
+SPO2DefectiveCable,SpO2线缆故障,SpO2 Defective cable
+SPO2CableExpired,SpO2线缆过期,SpO2 Cable expired
+SPO2IncompatibleCable,SpO2不兼容线缆,SpO2 Incompatible cable
+SPO2UnrecongnizedCable,SpO2未识别线缆,SpO2 Unrecongnized cable
+SPO2CableNearExpiration,SpO2线缆即将到期,SpO2 Cable near expiration
+SPO2SensorExpired,SpO2传感器已过期,SpO2 Sensor expired
+SPO2IncompatibleSensor,SpO2传感器不兼容,SpO2 Incompatible sensor
+SPO2UnrecongnizedSensor,SpO2未识别传感器,SpO2 Unrecongnized sensor
+SPO2DefectiveSensor,SpO2传感器故障,SpO2 Defective sensor
+SPO2CheckCableAndSensorFault,SpO2检查线缆和传感器故障,SpO2 Check cable and sensor fault
+SPO2SensorNearExpiration,SpO2传感器即将到期,SpO2 Sensor near expiration
+SPO2NoAdhesiveSensor,SpO2无粘性传感器,SpO2 No adhesive sensor
+SPO2AdhesiveSensorExpiraton,SpO2粘性传感器截止,SpO2 Adhesive sensor expiraton
+SPO2IncompatibleAdhesiveSensor,SpO2不兼容的粘性传感器,SpO2 Incompatible adhesive sensor
+SPO2UnrecongnizedAdhesiveSensor,SpO2未识别的粘性传感器,SpO2 Unrecongnized adhesive sensor
+SPO2DefectiveAdhesiveSensor,SpO2有缺陷的粘性传感器,SpO2 Defective adhesive sensor
+SPO2SensorIniting,SpO2传感器初始化,SpO2 Sensor initing
+SPO2InterferenceDetected,SpO2检测到干扰,SpO2 Interference detected
+SPO2DemoMode,SpO2演示模式,SpO2 Demo mode
+SPO2AdhesiveSensorNearExpiration,SpO2粘性传感器即将到期,SpO2 Adhesive sensor near expiration
+SPO2CheckSensorConnection,SpO2检查传感器连接,SpO2 Check sensor connection
+SPO2OnlyMode,仅限SpO2模式,SpO2 only mode
+SPO2BoardFailure,SpO2板卡错误,SpO2 Board Failure
 NIBPSimul,NIBP同侧,NIBP Simul
 Input8DigitsPassword,请输入8位数字密码,Please input 8 digits password
 BornDate,出生日期,Born Date
@@ -1707,11 +1712,14 @@ Result,结果,Result
 RepeatCheck,一小时内重复测量3次以确认结果,Check again in a hour for result
 footValue,足部数据,foot
 handValue,手部数据,hand
-SPO2ValueInvaild,采集数据无效，请检查血氧模块,The collect data is invaild，Please check SpO2 module
+SPO2ValueInvaild,采集数据无效，请检查SpO2模块,The collect data is invaild，Please check SpO2 module
 ErrorLogExportAt,错误日志导出时间: ,Error Log export at  
 NumberOfErrors,错误数量: ,Number of Errors: 
 NumberOfCriticalFaults,严重故障数量: ,Number of Critical Faults: 
 MostRecentError,最近发生错误: ,Most Recent Error: 
 MostRecentCriticalFault,最近发生严重错误: ,Most Recent Critical Fault: 
 OldestError,最早的错误: ,Oldest Error: 
-LastEraseTime,上次擦除时间: ,Last Erase Time: 
+LastEraseTime,上次擦除时间: ,Last Erase Time:
+Subsystem,子系统: ,Subsystem: 
+SystemState,系统状态: ,System State: 
+SystemResponse,系统回应: ,System Response: 

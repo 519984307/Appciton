@@ -225,8 +225,9 @@ void CO2TrendWidget::setTextSize()
 
     _etco2Value->setFont(font);
 
+    r.setSize(QSize(w, h / 2));
     fontsize = fontManager.adjustNumFontSize(r, true, "2222");
-    font = fontManager.numFont(fontsize / 3, true);
+    font = fontManager.numFont(fontsize, true);
     font.setWeight(QFont::Black);
     _fico2Value->setFont(font);
     _awRRValue->setFont(font);

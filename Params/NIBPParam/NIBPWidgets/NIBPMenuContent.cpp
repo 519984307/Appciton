@@ -215,7 +215,7 @@ void NIBPMenuContentPrivate::loadOptions()
         else if (type == PATIENT_TYPE_PED)
         {
             start = 80;
-            end = 210;
+            end = 200;
         }
         else if (type == PATIENT_TYPE_NEO)
         {
@@ -273,7 +273,9 @@ void NIBPMenuContentPrivate::loadOptions()
 
 void NIBPMenuContentPrivate::statBtnShow(void)
 {
-    if (nibpParam.isConnected())
+    // demo 模式下失能STAT
+    WorkMode workMode = systemManager.getCurWorkMode();
+    if (nibpParam.isConnected() && workMode != WORK_MODE_DEMO)
     {
         btns[ITEM_BTN_START_STAT]->setEnabled(true);
     }
@@ -302,7 +304,7 @@ void NIBPMenuContent::onBtnReleasedChanged()
         case NIBPMenuContentPrivate::ITEM_BTN_START_STAT:
         {
             if (nibpParam.curStatusType() == NIBP_MONITOR_ERROR_STATE ||
-                    systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+                    systemManager.getCurWorkMode() == WORK_MODE_DEMO || nibpParam.isZeroSelfTestState())
             {
                 return;
             }

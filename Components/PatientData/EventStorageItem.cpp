@@ -351,9 +351,9 @@ bool EventStorageItem::startCollectTrendAndWaveformData(unsigned t)
     // store the trend data before current timestamp
     TrendCacheData trendData;
     TrendAlarmStatus trendAlarmStatus;
+
     trendCache.collectTrendData(t);
     trendCache.collectTrendAlarmStatus(t);
-
     if (d_ptr->eventInfo.type == EventOxyCRG)
     {
         for (unsigned time = t - d_ptr->eventInfo.duration_before; time <= t; time ++)
@@ -614,7 +614,7 @@ QString EventStorageItem::getEventTitle() const
     break;
     case EventCodeMarker:
     {
-        eventTitle = trs(QString(d_ptr->codeMarkerInfo->codeName));
+        eventTitle = QString(d_ptr->codeMarkerInfo->codeName);
     }
     break;
     case EventRealtimePrint:

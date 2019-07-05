@@ -275,7 +275,7 @@ void EventWindow::timerEvent(QTimerEvent *ev)
     {
         if (!recorderManager.isPrinting() || d_ptr->timeoutNum == 10)
         {
-            if (!recorderManager.isPrinting())
+            if (!recorderManager.isPrinting() && !recorderManager.getPrintStatus())
             {
                 recorderManager.addPageGenerator(d_ptr->generator);
             }
@@ -969,6 +969,7 @@ void EventWindowPrivate::loadEventData()
     curDisplayEventNum = timeList.count();
     model->setPageRowCount(PAGE_ROW_COUNT);
     model->updateEvent(timeList, eventList);
+    eventTable->scrollToTop();
 }
 
 AlarmPriority EventWindowPrivate::levelToPriority(EventLevel level)
@@ -1162,6 +1163,10 @@ void EventWindowPrivate::eventTrendUpdate()
             {
                 dataStr = Unit::convert(type, UNIT_TC, ctx.trendSegment->values[i].value / 10.0);
             }
+            else if (paramInfo.getParamID(subId) == PARAM_NIBP)
+            {
+                dataStr = Unit::convert(type, UNIT_MMHG, ctx.trendSegment->values[i].value);
+            }
             else
             {
                 dataStr = QString::number(ctx.trendSegment->values[i].value);
@@ -1273,6 +1278,6 @@ void EventWindowPrivate::refreshPageInfo()
     }
     QString title = QString("%1( %2/%3 )").arg(trs("EventReview"))
                                           .arg(QString::number(curPage))
-                                          .arg(totalPage);
+                                          .arg(QString::number(totalPage));
     q_ptr->setWindowTitle(title);
 }

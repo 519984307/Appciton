@@ -310,7 +310,7 @@ void ConfigEditECGMenuContent::layoutExec()
     d_ptr->combos.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG2_WAVE, comboBox);
 
     // ecg1 gain
-    label = new QLabel(trs("Ecg1Gain"));
+    label = new QLabel(trs("ECGGain"));
     d_ptr->comboLabels.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG1_GAIN,
                               label);
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -413,7 +413,7 @@ void ConfigEditECGMenuContent::layoutExec()
     d_ptr->combos.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_NOTCH_FILTER, comboBox);
 
     // paceMark
-    label = new QLabel(trs("ECGPaceMarker"));
+    label = new QLabel(trs("ECGPaceSignal"));
     d_ptr->comboLabels.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_PACER_MARK,
                               label);
     layout->addWidget(label, d_ptr->combos.count(), 0);

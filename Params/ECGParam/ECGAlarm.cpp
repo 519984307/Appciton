@@ -146,7 +146,7 @@ QString ECGOneShotAlarm::getAlarmSourceName(void)
  *************************************************************************************************/
 bool ECGOneShotAlarm::isAlarmed(int id)
 {
-    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO && getAlarmType(id) == ALARM_TYPE_TECH)
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
     {
         return false;
     }
@@ -185,7 +185,6 @@ bool ECGOneShotAlarm::isAlarmed(int id)
         }
         }
     }
-
     return AlarmOneShotIFace::isAlarmed(id);
 }
 

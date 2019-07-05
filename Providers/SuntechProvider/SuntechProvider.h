@@ -85,6 +85,7 @@ protected:
 private slots:
     void _getCuffPressure(void);
     void _sendCMD(void);
+    void _sendInitval(void);
 private:
     void _handlePacket(unsigned char *data, int len);
 
@@ -100,6 +101,7 @@ private:
     static const int _minPacketLen = 3;      // 最小数据包长度。
 
     int _flagStartCmdSend;
+    int _pressure;
 
     QTimer *_timer;
 

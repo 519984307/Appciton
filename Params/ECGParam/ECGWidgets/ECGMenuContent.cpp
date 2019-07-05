@@ -212,8 +212,7 @@ void ECGMenuContentPrivate::loadOptions()
 
     // demo模式,12导界面下心电增益改为不可调
     UserFaceType faceType =  layoutManager.getUFaceType();
-    if (workMode == WORK_MODE_DEMO
-            && faceType == UFACE_MONITOR_ECG_FULLSCREEN)
+    if (workMode == WORK_MODE_DEMO)
     {
         combos[ITEM_CBO_ECG_GAIN]->setEnabled(false);
     }

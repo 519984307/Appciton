@@ -24,8 +24,15 @@ LanguageManager::LanguageManager()
     // 获得当前使用的语言。
     int langNo = 0;
     systemConfig.getNumAttr("General|Language", "CurrentOption", langNo);
+    int langNext = 0 ;
+    systemConfig.getNumAttr("General|Language", "NextOption", langNext);
+    if (langNo != langNext)
+    {
+        systemConfig.setNumAttr("General|Language", "CurrentOption", langNext);
+        langNo = langNext;
+    }
 
-    _curLanguage = (LanguageName) langNo;
+    _curLanguage = (LanguageName)langNo;
 
     // 获取语言文件的名称。
     QString language = QString("General|Language|Opt%1").arg(langNo);
