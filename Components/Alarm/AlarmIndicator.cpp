@@ -569,6 +569,8 @@ void AlarmIndicator::delAlarmInfo(AlarmType alarmType, const char *alarmMessage)
     //删除显示报警信息池
     AlarmInfoList *list = &_alarmInfoDisplayPool;
     AlarmInfoList::iterator it = list->begin();
+    bool isNeedUpdatePhyIndex = false;
+    bool isNeedUpdateTechIndex = false;
     for (; it != list->end(); ++it)
     {
         if ((it->alarmType == alarmType) && strcmp(it->alarmMessage, alarmMessage) == 0)
@@ -578,18 +580,46 @@ void AlarmIndicator::delAlarmInfo(AlarmType alarmType, const char *alarmMessage)
                 // 如果删除当前正在显示的报警,
                 if (_alarmPhyDisplayIndex == _alarmInfoDisplayPool.indexOf(*it))
                 {
-                    _alarmPhyDisplayIndex = -1;
+                    isNeedUpdatePhyIndex = true;
                 }
             }
             else if (alarmType == ALARM_TYPE_TECH)
             {
                 if (_alarmTechDisplayIndex == _alarmInfoDisplayPool.indexOf(*it))
                 {
-                    _alarmTechDisplayIndex = -1;
+                    isNeedUpdateTechIndex = true;
                 }
             }
             list->erase(it);
             break;
+        }
+    }
+
+    // 将索引更新为下一条同类报警的索引
+    if (isNeedUpdatePhyIndex)
+    {
+        int index = _alarmPhyDisplayIndex;
+        _alarmPhyDisplayIndex = -1;
+        for (int i = index ; i < _alarmInfoDisplayPool.count(); i++)
+        {
+            if (_alarmInfoDisplayPool.at(i).alarmType == ALARM_TYPE_PHY)
+            {
+                _alarmPhyDisplayIndex = i;
+                break;
+            }
+        }
+    }
+    else if (isNeedUpdateTechIndex)
+    {
+        int index = _alarmTechDisplayIndex;
+        _alarmTechDisplayIndex = -1;
+        for (int i = index ; i < _alarmInfoDisplayPool.count(); i++)
+        {
+            if (_alarmInfoDisplayPool.at(i).alarmType == ALARM_TYPE_TECH)
+            {
+                _alarmTechDisplayIndex = i;
+                break;
+            }
         }
     }
 }
