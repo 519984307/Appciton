@@ -85,7 +85,7 @@ protected:
 private slots:
     void _getCuffPressure(void);
     void _sendCMD(void);
-    void setinitval(void);
+    void sendinitval(void);
 private:
     void _handlePacket(unsigned char *data, int len);
 
@@ -106,8 +106,6 @@ private:
     QTimer *_timer;
 
     QTimer *_cmdTimer;
-
-    QTimer *_setInitValTimer;
 
     bool _isModuleDataRespond;              // 是否为版本信息回复
     bool _isCalibrationRespond;             // 是否为校准回复
