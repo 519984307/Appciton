@@ -222,7 +222,7 @@ void SuntechProvider::setInitPressure(short pressure)
     if (_NIBPStart)                // 模块同时发送停止测量跟设置初始压力会导致收不到停止命令回复
     {
         _pressure = pressure;
-        QTimer::singleShot(500, this, SLOT(sendinitval()));
+        QTimer::singleShot(500, this, SLOT(_sendInitval()));
         return;
     }
     unsigned char cmd[3] = {0};
@@ -506,7 +506,7 @@ void SuntechProvider::_sendCMD()
     }
 }
 
-void SuntechProvider::sendinitval()
+void SuntechProvider::_sendInitval()
 {
     unsigned char cmd[3] = {0};
     cmd[0] = SUNTECH_CMD_SET_INITIAL_INFIAL;

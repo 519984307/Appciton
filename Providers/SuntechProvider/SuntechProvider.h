@@ -85,7 +85,7 @@ protected:
 private slots:
     void _getCuffPressure(void);
     void _sendCMD(void);
-    void sendinitval(void);
+    void _sendInitval(void);
 private:
     void _handlePacket(unsigned char *data, int len);
 
