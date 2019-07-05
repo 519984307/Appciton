@@ -79,8 +79,11 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
                 *it = node;
             }
 
-            // pause/audio off状态没有生理报警声音
-            if (0 == node.pauseTime && status != ALARM_STATUS_AUDIO_OFF && status != ALARM_STATUS_RESET)
+            // pause/audio off/reset状态没有生理报警声音
+            if (0 == node.pauseTime
+                    && status != ALARM_STATUS_AUDIO_OFF
+                    && status != ALARM_STATUS_RESET
+                    && status != ALARM_STATUS_PAUSE)
             {
                 if (phySoundPriority < node.alarmPriority)
                 {
@@ -90,7 +93,8 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
 
             AlarmInterface *alertor = AlarmInterface::getAlarm();
             if ((!node.acknowledge || (alertor && alertor->getAlarmLightOnAlarmReset()))
-                    && node.alarmPriority != ALARM_PRIO_PROMPT)
+                    && node.alarmPriority != ALARM_PRIO_PROMPT
+                    && status != ALARM_STATUS_PAUSE)
             {
                 // 处理确认后且开启了报警复位灯，或者未确认的报警
                 if (lightPriority < node.alarmPriority)
