@@ -477,7 +477,6 @@ void SPO2Param::setPulseAudio(bool pulse)
         soundManager.pulseTone(getSmartPulseTone() == SPO2_SMART_PLUSE_TONE_ON
                                ? getSPO2()
                                : -1);
-        ecgDupParam.updatePRBeatIcon();
     }
 }
 
