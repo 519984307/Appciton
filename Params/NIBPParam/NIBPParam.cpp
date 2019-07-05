@@ -1295,7 +1295,7 @@ void NIBPParam::safeWaitTimeSTATStop()
     }
     nibpParam.setSTATMeasure(false);
     nibpParam.setAutoStat(false);
-    nibpParam.setText(trs("STATSTOPPED"));
+    nibpParam.setText(trs("NIBPMEASURE") + "\n" + trs("NIBPSTOPPED"));
     nibpParam.setModelText(trs("STATSTOPPED"));
 }
 
