@@ -341,9 +341,9 @@ void AlarmLimitWindow::restoreDefaults()
             info.limitConfig.lowLimit = low;
             alarmConfig.setLimitAlarmConfig(subId, unit, info.limitConfig);
             infos.append(info);
-            alarmConfig.clearLimitAlarmInfo();
         }
     }
+    alarmConfig.clearLimitAlarmInfo();
     d_ptr->infos = infos;
     d_ptr->model->setupAlarmDataInfos(infos);
     d_ptr->model->setEachPageRowCount(TABLE_ROW_NUM);
