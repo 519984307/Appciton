@@ -116,7 +116,7 @@ void NIBPMonitorSafeWaitTimeState::handleNIBPEvent(NIBPEvent event, const unsign
             if (nibpParam.isSTATOpenTemp())
             {
                 nibpParam.setSTATMeasure(false);
-                nibpParam.setText(trs("STATSTOPPED"));
+                nibpParam.setText(trs("NIBPMEASURE") + "\n" + trs("NIBPSTOPPED"));
                 nibpParam.setModelText(trs("STATSTOPPED"));
             }
         }
