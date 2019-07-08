@@ -15,13 +15,13 @@ and verify the issue you're about to submit isn't a duplicate.
 
 |  Module  |  Version |
 | -------- | -------- |
-|   HOST   | V0.0.2f  |
-|   ECG    |   xxxx   |
-|   SPO2   |   xxxx   |
-| nPMBoard |   xxxx   |
-|   TEMP   |   xxxx   |
-|   CO2    |   xxxx   |
-|   NIBP   |   xxxx   |
+|   HOST   | V1.0.2.4146 |
+|   ECG    | V1.0.0.485  |
+|   SPO2   | V1.0.0.289  |
+| nPMBoard | V1.0.0.102  |
+|   TEMP   | V1.0.0.70   |
+|   CO2    | xxxxxxxxx   |
+|   NIBP   | V1.0.0.367  |
 
 ### UUT (Unit Under Test)
 
