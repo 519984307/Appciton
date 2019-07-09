@@ -230,6 +230,10 @@ void AlarmMaintainMenuContentPrivate::defaultIndexInit()
     defalutConfig.getNumValue("Alarms|AlarmLightOnAlarmReset", index);
     defaultIndexMap[ITEM_CBO_ALARM_LIGHT_RESET] = index;
 
+    index = 0;
+    defalutConfig.getNumValue("Alarms|AlarmAudio", index);
+    defaultIndexMap[ITEM_CBO_ALARM_AUDIO_OFF] = index;
+
 #ifndef DISABLED_ALARM_LATCH
     index = 0;
     defalutConfig.getNumValue("Alarms|PhyParAlarmLatchlockOn", index);
