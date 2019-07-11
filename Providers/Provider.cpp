@@ -70,6 +70,14 @@ bool Provider::initPort(const UartAttrDesc &desc, bool needNotify)
         return true;
     }
 
+    // CO2兼容插件和外接模块
+    bool initResult = true;
+    if (_name == "MASIMO_CO2")
+    {
+        initResult = uart->initPort(port, desc, needNotify);
+        port = "PlugIn";
+    }
+
     plugInInfo.plugIn = PlugInProvider::getPlugInProvider(port);
     if (plugInInfo.plugIn)
     {
@@ -107,7 +115,7 @@ bool Provider::initPort(const UartAttrDesc &desc, bool needNotify)
             break;
         }
         plugInInfo.plugIn->setPacketPortBaudrate(plugInInfo.plugInType, portBaud);
-        return true;
+        return initResult;
     }
 
     debug("%s", qPrintable(_name));

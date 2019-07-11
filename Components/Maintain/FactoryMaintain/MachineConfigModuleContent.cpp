@@ -137,19 +137,7 @@ void MachineConfigModuleContentPrivte::loadOptions()
 
     index = 0;
     machineConfig.getNumValue("CO2Enable", index);
-    if (index == 0)
-    {
-        combos[ITEM_CBO_CO2]->setCurrentIndex(0);
-    }
-    else
-    {
-        machineConfig.getStrValue("CO2", moduleName);
-        index = combos[ITEM_CBO_CO2]->findText(moduleName);
-        if (index)
-        {
-            combos[ITEM_CBO_CO2]->setCurrentIndex(index);
-        }
-    }
+    combos[ITEM_CBO_CO2]->setCurrentIndex(index);
     itemChangedMap[ITEM_CBO_CO2] = index;
 
     index = 0;
@@ -338,8 +326,7 @@ void MachineConfigModuleContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs(CO2Symbol::convert(MODULE_BLM_CO2))
-                    << trs(CO2Symbol::convert(MODULE_MASIMO_CO2))
+                    << trs("On")
                    );
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
@@ -552,11 +539,6 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
         case MachineConfigModuleContentPrivte::ITEM_CBO_CO2:
         {
             enablePath = "CO2Enable";
-            modulePath = "CO2";
-            if (index > 0)
-            {
-                moduleName = CO2Symbol::convert(static_cast<CO2ModuleType>(index - 1));
-            }
             break;
         }
         case MachineConfigModuleContentPrivte::ITEM_CBO_AG:
