@@ -51,6 +51,7 @@
 #include "LanguageManager.h"
 
 #define BACKLIGHT_DEV   "/sys/class/backlight/backlight/brightness"       // 背光控制文件接口
+#define BRIGHTNESS_NR       20
 
 static const char *systemSelftestMessage[SELFTEST_STATUS_NR][MODULE_POWERON_TEST_RESULT_NR] =
 {
@@ -85,7 +86,8 @@ public:
       #endif
           selfTestFinish(false),
           isStandby(false),
-          isTurnOff(false)
+          isTurnOff(false),
+          isAutoBrightness(false)
     {
     }
 
@@ -189,6 +191,7 @@ public:
     bool selfTestFinish;
     bool isStandby;
     bool isTurnOff;
+    bool isAutoBrightness;
 };
 
 /**************************************************************************************************
@@ -497,15 +500,32 @@ void SystemManager::parseKeyValue(const unsigned char *data, unsigned int len)
  **************************************************************************************************/
 void SystemManager::setBrightness(BrightnessLevel br)
 {
-    enableBrightness(br);
+    if (br != BRT_LEVEL_AUTO)
+    {
+        int brValue = br * 2;
+        enableBrightness(brValue);
+        d_ptr->isAutoBrightness = false;
 
-    systemConfig.setNumValue("General|DefaultDisplayBrightness", static_cast<int>(br));
+        systemConfig.setNumValue("General|DefaultDisplayBrightness", static_cast<int>(br));
+    }
+    else
+    {
+        d_ptr->isAutoBrightness = true;
+    }
+}
+
+void SystemManager::setAutoBrightness(int br)
+{
+    if (d_ptr->isAutoBrightness)
+    {
+        enableBrightness(br);
+    }
 }
 
 /***************************************************************************************************
  * 背光亮度设置。
  **************************************************************************************************/
-void SystemManager::enableBrightness(BrightnessLevel br)
+void SystemManager::enableBrightness(int br)
 {
 #ifdef Q_WS_X11
     QByteArray data;
@@ -515,8 +535,10 @@ void SystemManager::enableBrightness(BrightnessLevel br)
 #else
     // add screen type select
     char *lightValue = NULL;
-    char industrialLight[BRT_LEVEL_NR] = {1, 15, 25, 38, 46, 54, 62, 72, 85, 100};
-    char businessLight[BRT_LEVEL_NR] = {64, 52, 47, 41, 36, 31, 26, 21, 15, 1};
+    char industrialLight[BRIGHTNESS_NR] = {1, 7, 15, 20, 25, 32, 38, 42, 46, 50,
+                                           54, 58, 62, 67, 72, 79, 85, 92, 96, 100};
+    char businessLight[BRIGHTNESS_NR] = {70, 64, 58, 52, 50, 47, 44, 41, 38, 36,
+                                         33, 31, 28, 26, 24, 21, 18, 15, 7, 1};
     int index = BACKLIGHT_MODE_1;
     machineConfig.getNumValue("BacklightAdjustment", index);
     if (static_cast<BacklightAdjustment>(index) == BACKLIGHT_MODE_2)

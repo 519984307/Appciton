@@ -39,7 +39,7 @@ public:
 
     // 背光亮度设置/获取。
     virtual void setBrightness(BrightnessLevel br) = 0;
-    virtual void enableBrightness(BrightnessLevel br) = 0;
+    virtual void enableBrightness(int br) = 0;
     virtual BrightnessLevel getBrightness(void) = 0;
 
     /**

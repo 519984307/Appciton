@@ -61,6 +61,7 @@ enum BrightnessLevel
     BRT_LEVEL_7,
     BRT_LEVEL_8,
     BRT_LEVEL_9,
+    BRT_LEVEL_AUTO,
     BRT_LEVEL_NR
 };
 
