@@ -232,10 +232,11 @@ void NormalFunctionMenuContent::layoutExec()
     label = new QLabel(trs("SystemBrightness"));
     layout->addWidget(label, row, 0);
     comboBox = new ComboBox();
-    for (int i = BRT_LEVEL_0; i < BRT_LEVEL_NR; i++)
+    for (int i = BRT_LEVEL_0; i < BRT_LEVEL_AUTO; i++)
     {
         comboBox->addItem(QString::number(i + 1));
     }
+    comboBox->addItem(trs("Auto"));
     itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));

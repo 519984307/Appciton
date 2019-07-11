@@ -57,6 +57,7 @@ enum SystemBoardMessageType
     MSG_NOTIFY_AC_BAT_CHANGE       = 0x44,    // 电池状态更改
     MSG_PERIODIC_KEEP_ALIVE        = 0x5B,    // 保活
     MSG_PERIODIC_BAT_INFO          = 0x5C,    // 电池信息
+    MSG_BACKLIGHT_BRIGHTNESS       = 0x5D,    // 背光亮度
     MSG_ERROR_INFO                 = 0x76,    // 错误帧
 
     MSG_UPGRADE_ALIVE              = 0xFE,    //升级保活帧
@@ -361,7 +362,9 @@ void SystemBoardProvider::handlePacket(unsigned char *data, int len)
         _notifyAck(&data[0], len);
         _parseErrorWaringCode(data, len);
         break;
-
+    case MSG_BACKLIGHT_BRIGHTNESS:
+        systemManager.setAutoBrightness(static_cast<int>(data[1]));
+        break;
     default:
         debug("Unknown message type = 0x%x!", type);
         break;
