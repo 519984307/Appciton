@@ -124,7 +124,6 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
 
         waveValue = (waveValue > 2500) ? 2500 : waveValue;
         co2Param.addWaveformData(waveValue, invalid);
-        qDebug() << waveValue;
     }
 
     // 数据，每秒更新2次。
