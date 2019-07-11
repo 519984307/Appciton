@@ -128,26 +128,25 @@ public:
         if (NULL == dataHandlers[type])
         {
             // 初始化provider;
-            initPluginModule(type);
+            if (!initPluginModule(type))
+            {
+                return;
+            }
         }
         dataHandlers[type]->dataArrived(data, len);
     }
 
-    void initPluginModule(PlugInProvider::PlugInType type)
+    bool initPluginModule(PlugInProvider::PlugInType type)
     {
-        Provider *provider = NULL;
-        if (type == PlugInProvider::PLUGIN_TYPE_SPO2)
+        if (type == PlugInProvider::PLUGIN_TYPE_SPO2 && systemManager.isSupport(CONFIG_SPO2))
         {
+            Provider *provider = NULL;
             provider = new RainbowProvider("RAINBOW_SPO2PlugIn", true);
             paramManager.addProvider(*provider);
             provider->attachParam(*paramManager.getParam(PARAM_SPO2));
+            return true;
         }
-        else if (type == PlugInProvider::PLUGIN_TYPE_CO2)
-        {
-            provider = new BLMCO2Provider();
-            paramManager.addProvider(*provider);
-            provider->attachParam(*paramManager.getParam(PARAM_CO2));
-        }
+        return false;
     }
 
     int readPluginPinSta()

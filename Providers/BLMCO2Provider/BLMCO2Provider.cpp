@@ -594,21 +594,10 @@ void BLMCO2Provider::setWorkMode(CO2WorkMode mode)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-BLMCO2Provider::BLMCO2Provider() : Provider("BLM_CO2"), CO2ProviderIFace(), _status(CO2ProviderStatus())
+BLMCO2Provider::BLMCO2Provider(const QString &name)
+    : Provider(name), CO2ProviderIFace(), _status(CO2ProviderStatus())
 {
-    QString str;
-    machineConfig.getStrValue("CO2", str);
     UartAttrDesc portAttr(9600, 8, 'N', 1, _packetLen);
-    if (str == "MASIMO_CO2")
-    {
-        UartAttrDesc desc(9600, 8, 'N', 1, _packetLen);
-        portAttr = desc;
-    }
-    else if (str == "BLM_CO2")
-    {
-        UartAttrDesc desc(115200, 8, 'N', 1, _packetLen);
-        portAttr = desc;
-    }
     plugInInfo.plugInType = PlugInProvider::PLUGIN_TYPE_CO2;
 
     if (!initPort(portAttr))
