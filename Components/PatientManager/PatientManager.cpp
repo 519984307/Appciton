@@ -89,7 +89,11 @@ void PatientManager::setType(PatientType type)
         else
         {
             o2Param->setVibration(false);
-            runningStatus.setShakeStatus(SHAKE_OFF);
+            RunningStatusBarInterface *runningStatus = RunningStatusBarInterface::getRunningStatusBar();
+            if (runningStatus)
+            {
+                runningStatus->setShakeStatus(SHAKE_OFF);
+            }
         }
     }
 #endif

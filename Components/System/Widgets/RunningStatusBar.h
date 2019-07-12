@@ -12,13 +12,6 @@
 #include "IWidget.h"
 #include "RunningStatusBarInterface.h"
 
-enum ShakeStatus
-{
-    SHAKE_OFF,
-    SHAKE_ON,
-    SHAKING
-};
-
 class RunningStatusBarPrivate;
 
 class RunningStatusBar : public IWidget, public RunningStatusBarInterface

@@ -10,6 +10,13 @@
 
 #pragma once
 
+enum ShakeStatus
+{
+    SHAKE_OFF,
+    SHAKE_ON,
+    SHAKING
+};
+
 class RunningStatusBarInterface
 {
 public:
@@ -30,4 +37,6 @@ public:
      * @param onOff
      */
     virtual void setPacerStatus(bool onOff) = 0;
+
+    virtual void setShakeStatus(ShakeStatus sta) = 0;
 };
