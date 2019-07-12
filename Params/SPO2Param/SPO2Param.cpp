@@ -701,11 +701,6 @@ short SPO2Param::getSPO2(bool isPlugIn)
     }
 }
 
-void SPO2Param::setSPO2D(short value)
-{
-    d_ptr->spo2DValue = value;
-}
-
 short SPO2Param::getSPO2D()
 {
     return d_ptr->spo2DValue;

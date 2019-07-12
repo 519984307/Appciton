@@ -106,8 +106,7 @@ public:
     void setPlugInSPO2(short spo2Value);
     short getSPO2(bool isPlugIn = false);
 
-    // 设置/获取血氧差值
-    void setSPO2D(short value);
+    // 获取血氧差值
     short getSPO2D();
 
     // 设置/获取SpHb的值。
