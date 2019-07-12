@@ -239,35 +239,14 @@ void AlarmLimitWindow::layoutExec()
 
 void AlarmLimitWindow::onbtnClick()
 {
-    bool focusPrevBtn = false;
-    bool focusNextBtn = false;
     Button *btn = qobject_cast<Button *>(sender());
     if (btn == d_ptr->prevBtn)
     {
         d_ptr->table->scrollToPreviousPage();
-        if (!d_ptr->table->hasPreivousPage())
-        {
-            focusNextBtn = true;
-        }
     }
     else if (btn == d_ptr->nextBtn)
     {
         d_ptr->table->scrollToNextPage();
-        if (!d_ptr->table->hasNextPage())
-        {
-            focusPrevBtn = true;
-        }
-    }
-
-    d_ptr->prevBtn->setEnabled(d_ptr->table->hasPreivousPage());
-    d_ptr->nextBtn->setEnabled(d_ptr->table->hasNextPage());
-    if (focusPrevBtn)
-    {
-        d_ptr->prevBtn->setFocus();
-    }
-    if (focusNextBtn)
-    {
-        d_ptr->nextBtn->setFocus();
     }
 }
 
@@ -366,9 +345,9 @@ void AlarmLimitWindow::restoreDefaults()
             info.limitConfig.lowLimit = low;
             alarmConfig.setLimitAlarmConfig(subId, unit, info.limitConfig);
             infos.append(info);
-            alarmConfig.clearLimitAlarmInfo();
         }
     }
+    alarmConfig.clearLimitAlarmInfo();
     d_ptr->infos = infos;
     d_ptr->model->setupAlarmDataInfos(infos);
     d_ptr->model->setEachPageRowCount(TABLE_ROW_NUM);

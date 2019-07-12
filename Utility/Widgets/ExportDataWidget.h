@@ -10,9 +10,10 @@
 
 
 #pragma once
-#include <QDialog>
+#include "Dialog.h"
 #include "LanguageManager.h"
 #include "qprogressbar.h"
+#include "Button.h"
 
 //数据类型及传输方式
 enum Export_Data_Type
@@ -29,10 +30,9 @@ enum Export_Data_Type
 
 //数据传输基类
 class QLabel;
-class LButton;
 class QProgressBar;
 class QTimer;
-class ExportDataWidget : public QDialog
+class ExportDataWidget : public Dialog
 {
     Q_OBJECT
 
@@ -60,7 +60,6 @@ public slots:
     void setBarValue(unsigned char value);
 
 protected:
-    void paintEvent(QPaintEvent *e);
     void showEvent(QShowEvent *e);
 
 private slots:
@@ -70,12 +69,10 @@ signals:
     void cancel();
 
 protected:
-    static const int _titleBarHeight = 30;
-
     QLabel *_title;
     QLabel *_info;
     QProgressBar *_bar;
-    LButton *_cancleOrOK;
+    Button *_cancleOrOK;
 
     bool _transferCancel;
     Export_Data_Type _curType;

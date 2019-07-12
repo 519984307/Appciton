@@ -143,7 +143,7 @@ void NIBPServiceZeroPointState::handleNIBPEvent(NIBPEvent event, const unsigned 
         pressure = (args[1] << 8) + args[0];
         if (pressure != -1)
         {
-            nibpzeropoint.setCuffPressure(pressure);
+            nibpParam.setManometerPressure(pressure);
             return;
         }
     }

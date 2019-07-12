@@ -212,8 +212,7 @@ void ECGMenuContentPrivate::loadOptions()
 
     // demo模式,12导界面下心电增益改为不可调
     UserFaceType faceType =  layoutManager.getUFaceType();
-    if (workMode == WORK_MODE_DEMO
-            && faceType == UFACE_MONITOR_ECG_FULLSCREEN)
+    if (workMode == WORK_MODE_DEMO)
     {
         combos[ITEM_CBO_ECG_GAIN]->setEnabled(false);
     }
@@ -531,7 +530,7 @@ void ECGMenuContent::layoutExec()
     itemID = ECGMenuContentPrivate::ITEM_CBO_QRS_TONE;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    connect(comboBox, SIGNAL(activated(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ECGMenuContentPrivate::ITEM_CBO_QRS_TONE, comboBox);
 

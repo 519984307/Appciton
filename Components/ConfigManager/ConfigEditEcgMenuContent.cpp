@@ -310,7 +310,7 @@ void ConfigEditECGMenuContent::layoutExec()
     d_ptr->combos.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG2_WAVE, comboBox);
 
     // ecg1 gain
-    label = new QLabel(trs("Ecg1Gain"));
+    label = new QLabel(trs("ECGGain"));
     d_ptr->comboLabels.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG1_GAIN,
                               label);
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -377,7 +377,7 @@ void ConfigEditECGMenuContent::layoutExec()
             this, SLOT(onPopupListItemFocusChanged(int)));
     itemID = static_cast<int>(ConfigEditECGMenuContentPrivate::ITEM_CBO_HTBT_VOL);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    connect(comboBox, SIGNAL(activated(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_HTBT_VOL, comboBox);
 
@@ -413,7 +413,7 @@ void ConfigEditECGMenuContent::layoutExec()
     d_ptr->combos.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_NOTCH_FILTER, comboBox);
 
     // paceMark
-    label = new QLabel(trs("ECGPaceMarker"));
+    label = new QLabel(trs("ECGPaceSignal"));
     d_ptr->comboLabels.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_PACER_MARK,
                               label);
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -555,6 +555,8 @@ void ConfigEditECGMenuContent::onComboBoxIndexChanged(int index)
         break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_HTBT_VOL:
             d_ptr->config->setNumValue("ECG|QRSVolume", index);
+            currentConfig.getNumValue("ECG|QRSVolume", index);
+            soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT, static_cast<SoundManager::VolumeLevel>(index));
             break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_SWEEP_SPEED:
             d_ptr->config->setNumValue("ECG|SweepSpeed", index);

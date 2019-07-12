@@ -179,7 +179,7 @@ public:
                 int pos = nodeMap["@pos"].toInt();
                 bool editable = nodeMap["@editable"].toBool();
                 LayoutNode *node = new LayoutNode();
-                node->name = nodeMap["@text"].toString();
+                node->name = trs(nodeMap["@text"].toString());
                 node->editable = editable;
                 node->pos = pos;
                 node->span = span;
@@ -666,7 +666,7 @@ QVariant ScreenLayoutModel::data(const QModelIndex &index, int role) const
             info.name = node->name;
             if (info.waveid != WAVE_NONE)
             {
-                info.displayName = paramInfo.getParamWaveformName(info.waveid);
+                info.displayName = trs(paramInfo.getParamWaveformName(info.waveid));
             }
             else
             {

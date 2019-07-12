@@ -74,6 +74,8 @@ UpgradeWindow::UpgradeWindow()
     {
         d_ptr->upgradeModuleCbo->addItem(
             trs(UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_N5)));
+        d_ptr->upgradeModuleCbo->addItem(
+            trs(UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_N5DAEMON)));
     }
 
     if (systemManager.isSupport(CONFIG_TEMP))
@@ -215,6 +217,7 @@ void UpgradeWindow::onUpgradeFinished(UpgradeManager::UpgradeResult result)
     }
     else if (result == UpgradeManager::UPGRADE_REBOOT)
     {
+        d_ptr->isUpdate = false;        // 不需要用户进行判断进行重启
         d_ptr->textEdit->appendPlainText(trs("SystemWillRestartPleaseDoNotPowerOff"));
     }
     else

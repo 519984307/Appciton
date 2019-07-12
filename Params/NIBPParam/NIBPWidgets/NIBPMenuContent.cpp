@@ -140,7 +140,7 @@ void NIBPMenuContent::layoutExec()
     itemID = static_cast<int>(NIBPMenuContentPrivate::ITEM_CBO_COMPLETE_TONE);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(itemFoucsIndexChanged(int)), this, SLOT(onPopupListItemFocusChanged(int)));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    connect(comboBox, SIGNAL(activated(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(NIBPMenuContentPrivate::ITEM_CBO_COMPLETE_TONE, comboBox);
 
@@ -215,7 +215,7 @@ void NIBPMenuContentPrivate::loadOptions()
         else if (type == PATIENT_TYPE_PED)
         {
             start = 80;
-            end = 210;
+            end = 200;
         }
         else if (type == PATIENT_TYPE_NEO)
         {
@@ -273,7 +273,9 @@ void NIBPMenuContentPrivate::loadOptions()
 
 void NIBPMenuContentPrivate::statBtnShow(void)
 {
-    if (nibpParam.isConnected())
+    // demo 模式下失能STAT
+    WorkMode workMode = systemManager.getCurWorkMode();
+    if (nibpParam.isConnected() && workMode != WORK_MODE_DEMO)
     {
         btns[ITEM_BTN_START_STAT]->setEnabled(true);
     }
@@ -302,7 +304,7 @@ void NIBPMenuContent::onBtnReleasedChanged()
         case NIBPMenuContentPrivate::ITEM_BTN_START_STAT:
         {
             if (nibpParam.curStatusType() == NIBP_MONITOR_ERROR_STATE ||
-                    systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+                    systemManager.getCurWorkMode() == WORK_MODE_DEMO || nibpParam.isZeroSelfTestState())
             {
                 return;
             }

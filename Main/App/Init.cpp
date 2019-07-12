@@ -180,6 +180,7 @@ static void _initComponents(void)
     PatientInfoWidget *patientInfoWidget = new PatientInfoWidget();
     layoutManager.addLayoutWidget(patientInfoWidget);
     patientManager.setPatientInfoWidget(*patientInfoWidget);
+    patientInfoWindow.getInstance();
 
     // 初始化报警。
     alertor.getInstance();
@@ -676,6 +677,9 @@ static void _initProviderParam(void)
     oneShotAlarmSource = new SystemAlarm();
     alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_SYSTEM);
     alertor.addOneShotSource(oneShotAlarmSource);
+    int status = 0;
+    systemConfig.getNumValue("Alarms|AlarmAudio", status);
+    oneShotAlarmSource->setOneShotAlarm(SYSTEM_ONE_SHOT_ALARM_AUDIO_OFF, !status);
 }
 
 /**************************************************************************************************
@@ -701,7 +705,7 @@ static void _initPrint(void)
 
     // print alarm
     int index = 0;
-    machineConfig.getNumValue("PrinterEnable", index);
+    machineConfig.getModuleInitialStatus("PrinterEnable", reinterpret_cast<bool*>(&index));
     if (index)
     {
         AlarmOneShotIFace *oneShotAlarmSource = new PrintOneShotAlarm();
@@ -732,7 +736,7 @@ static void _initMenu(void)
     supervisorMenuManager.construction();
 
     //其它弹出菜单初始化
-    patientManager.construction();
+    patientManager.getInstance();
 }
 
 /**************************************************************************************************
@@ -761,7 +765,6 @@ void deleteObjects(void)
     deleteMenuManager();
     // deletePatientMenu();
     deleteParamManager();
-    deletePatientManager();
     deleteTimeDate();
     deleteMachineConfig();
     deleteDataStorageDirManager();

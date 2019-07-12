@@ -21,7 +21,7 @@
         <Department>d12</Department>
         <BedNumber>b44</BedNumber>
         <ChangeBedNumberRight>0</ChangeBedNumberRight>
-        <Language CurrentOption="1" OptionCount="2">
+        <Language CurrentOption="1" NextOption="1" OptionCount="2">
             <!-- note："XmlFileName" segment consistent with XML language file name -->
             <Opt0 XmlFileName="English">English</Opt0>
             <Opt1 XmlFileName="ChineseSimplified">简体中文</Opt1>
@@ -945,7 +945,7 @@
             <AutoInterval>5</AutoInterval>
             <StatFunction>1</StatFunction>
             <AutomaticRetry>0</AutomaticRetry>
-	    <CompleteTone>0</CompleteTone>
+	    <CompleteTone>1</CompleteTone>
         </NIBP>
         <AG>
             <AGModule>0</AGModule>

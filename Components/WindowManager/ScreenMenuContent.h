@@ -25,6 +25,8 @@ protected:
     /* reimplement */
     void layoutExec();
 
+    void hideEvent(QHideEvent *ev);
+
 private slots:
     void onComboxIndexChanged(int index);
     void onBtnClick();

@@ -254,7 +254,7 @@ SPO2WaveWidget::SPO2WaveWidget(const QString &waveName, const QString &title)
     _notify = new WaveWidgetLabel(" ", Qt::AlignCenter, this);
     _notify->setFont(fontManager.textFont(fontSize));
     _notify->setFocusPolicy(Qt::NoFocus);
-    _notify->setFixedSize(200, fontH);
+    _notify->setFixedSize(300, fontH);
     _notify->setText("");
     _notify->setVisible(false);
     addItem(_notify);

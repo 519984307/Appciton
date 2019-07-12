@@ -387,7 +387,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
         break;
 
     case RAW_DATA:
-        rawDataCollector.collectData(RawDataCollector::CO2_DATA, packet + 3, 154 - 4);
+        rawDataCollector.collectData(RawDataCollector::CO2_DATA, packet + 3, _packetLen - 4);
         break;
 
     default:

@@ -580,8 +580,11 @@ void Alarm::_handleAlarm(void)
     {
         // nibp alarm add after check sys, dia, map
         TrendDataStorageManagerInterface *trendDataStorageManager = TrendDataStorageManagerInterface::getTrendDataStorageManager();
-        if (trendDataStorageManager)
+        TrendCacheInterface *trendCache = TrendCacheInterface::getTrendCache();
+        if (trendDataStorageManager && trendCache)
         {
+            trendCache->collectTrendData(_timestamp);
+            trendCache->collectTrendAlarmStatus(_timestamp);
             trendDataStorageManager->storeData(_timestamp, TrendDataStorageManagerInterface::CollectStatusAlarm);
         }
         paramID.removeAll(PARAM_NIBP);
@@ -590,8 +593,11 @@ void Alarm::_handleAlarm(void)
     if (!paramID.isEmpty())
     {
         TrendDataStorageManagerInterface *trendDataStorageManager = TrendDataStorageManagerInterface::getTrendDataStorageManager();
-        if (trendDataStorageManager)
+        TrendCacheInterface *trendCache = TrendCacheInterface::getTrendCache();
+        if (trendDataStorageManager && trendCache)
         {
+            trendCache->collectTrendData(_timestamp);
+            trendCache->collectTrendAlarmStatus(_timestamp);
             trendDataStorageManager->storeData(_timestamp, TrendDataStorageManagerInterface::CollectStatusAlarm);
         }
     }

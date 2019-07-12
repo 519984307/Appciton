@@ -82,7 +82,11 @@ public:
 
     TempCalibrateState calibrateResult[TEMP_CALIBRATE_CHANNEL_NR][TEMP_CALIBRATE_NR];
 
+    bool changeChannelFlag;
+
     void updateResultLabel(int value);
+
+    void updateWaitingLabel();
 };
 
 FactoryTempMenuContentPrivate::FactoryTempMenuContentPrivate()
@@ -93,7 +97,8 @@ FactoryTempMenuContentPrivate::FactoryTempMenuContentPrivate()
       calibrateChannel(TEMP_CALIBRATE_CHANNEL_1),
       calibrateValue(0),
       tempValueTimer(NULL),
-      curUnitType(tempParam.getUnit())
+      curUnitType(tempParam.getUnit()),
+      changeChannelFlag(false)
 {
     for (int i = 0; i < TEMP_CALIBRATE_NR; i++)
     {
@@ -129,6 +134,18 @@ void FactoryTempMenuContentPrivate::updateResultLabel(int value)
         break;
     }
     calibrateResultLbl[value]->setText(text);
+}
+
+void FactoryTempMenuContentPrivate::updateWaitingLabel()
+{
+        for (int j = 0; j < TEMP_CALIBRATE_NR; j++)
+        {
+             if (calibrateResult[calibrateChannel][j] == TEMP_CALIBRATE_STATE_CALIBRATING)
+             {
+                 calibrateResult[calibrateChannel][j] = TEMP_CALIBRATE_STATE_WAITING;
+                 updateResultLabel(j);
+             }
+    }
 }
 
 QString FactoryTempMenuContentPrivate::labelStr[11] =
@@ -235,15 +252,19 @@ void FactoryTempMenuContent::timerEvent(QTimerEvent *ev)
         bool reply = tempParam.getCalibrationReply();
         if (reply || d_ptr->timeoutNum == TIMEOUT_WAIT_NUMBER)
         {
-            if (reply && tempParam.getCalibrationResult())
+            if (!d_ptr->changeChannelFlag)
             {
-                d_ptr->calibrateResult[d_ptr->calibrateChannel][d_ptr->calibrateValue] = TEMP_CALIBRATE_STATE_SUCCESS;
-            }
-            else
-            {
-                d_ptr->calibrateResult[d_ptr->calibrateChannel][d_ptr->calibrateValue] = TEMP_CALIBRATE_STATE_FAIL;
+                if (reply && tempParam.getCalibrationResult())
+                {
+                    d_ptr->calibrateResult[d_ptr->calibrateChannel][d_ptr->calibrateValue] = TEMP_CALIBRATE_STATE_SUCCESS;
+                }
+                else
+                {
+                    d_ptr->calibrateResult[d_ptr->calibrateChannel][d_ptr->calibrateValue] = TEMP_CALIBRATE_STATE_FAIL;
+                }
             }
             killTimer(d_ptr->calibrationTimerId);
+            d_ptr->changeChannelFlag = false;
             d_ptr->calibrationTimerId = -1;
             d_ptr->timeoutNum = 0;
             d_ptr->updateResultLabel(d_ptr->calibrateValue);
@@ -298,12 +319,14 @@ void FactoryTempMenuContent::readyShow()
     d_ptr->channel->setCurrentIndex(0);
     d_ptr->calibrateChannel = TEMP_CALIBRATE_CHANNEL_1;
 
-    for (int i = 0; i < TEMP_CALIBRATE_NR; ++i)
+    for (int j = 0; j < TEMP_CALIBRATE_CHANNEL_NR; j++)
     {
-        d_ptr->calibrateResult[0][i] = TEMP_CALIBRATE_STATE_WAITING;
-        d_ptr->updateResultLabel(i);
+        for (int i = 0; i < TEMP_CALIBRATE_NR; ++i)
+        {
+            d_ptr->calibrateResult[j][i] = TEMP_CALIBRATE_STATE_WAITING;
+            d_ptr->updateResultLabel(i);
+        }
     }
-
     if (tempParam.getErrorDisable())
     {
         showError(trs("TEMPModuleDisable"));
@@ -340,7 +363,8 @@ void FactoryTempMenuContent::showError(QString str)
 void FactoryTempMenuContent::onChannelReleased(int channel)
 {
     d_ptr->calibrateChannel = static_cast<TempCalibrateChannel>(channel);
-
+    d_ptr->changeChannelFlag = true;
+    d_ptr->updateWaitingLabel();
     for (int i = 0; i < TEMP_CALIBRATE_NR; ++i)
     {
         d_ptr->updateResultLabel(i);
@@ -353,6 +377,8 @@ void FactoryTempMenuContent::onChannelReleased(int channel)
 void FactoryTempMenuContent::onBtnReleased()
 {
     Button *button = qobject_cast<Button *>(sender());
+    d_ptr->changeChannelFlag = false;
+    d_ptr->updateWaitingLabel();
     int value = button->property("Item").toInt();
     d_ptr->calibrateValue = value;
     d_ptr->calibrateResult[d_ptr->calibrateChannel][d_ptr->calibrateValue] = TEMP_CALIBRATE_STATE_CALIBRATING;
@@ -403,7 +429,7 @@ void FactoryTempMenuContent::timeOut()
             // 校准时可以显示实时温度
             tStr = Unit::convert(type, UNIT_TC, t2 / 10.0);
         }
-        d_ptr->tempTitle->setText(QString("%1: %2").arg(trs("TEMP2")).arg(tStr).arg(trs(Unit::getSymbol(type))));
+        d_ptr->tempTitle->setText(QString("%1: %2%3").arg(trs("TEMP2")).arg(tStr).arg(trs(Unit::getSymbol(type))));
     }
 }
 

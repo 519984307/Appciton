@@ -21,6 +21,7 @@
 #include "ErrorLogItem.h"
 #include "RawDataCollector.h"
 #include "IConfig.h"
+#include "UpgradeManager.h"
 
 static const char *nibpSelfErrorCode[] =
 {
@@ -37,10 +38,13 @@ static const char *nibpSelfErrorCode[] =
     "The Big gas valve is unusual.\r\n",                      // 10
     "The small gas valve is unusual.\r\n",                    // 11
     "The air pump is unusual.\r\n",                           // 12
+    "The sofaware of overpressure protect is unusual.\r\n",    // 13
+    "Comparisons of pressure between master and Daemon fail to pass self-test"  // 14
 };
 
 static const char *nibpErrorCode[] =
 {
+    "Master-slave communication is unusual.\r\n",             // 127
     "Flash wrong.\r\n",                                       // 128
     "Data sample exception.\r\n",                             // 129
     "The Big gas valve is unusual for running.\r\n",          // 130
@@ -48,7 +52,7 @@ static const char *nibpErrorCode[] =
     "The air pump is unusual for running.\r\n",               // 132
     "Calibration is unsuccessful.\r\n",                       // 133
     "The Daemon error.\r\n",                                  // 134
-    "The air pump start-up timeout.\r\n"                      // 135
+    "Zero fail on start-up.\r\n"                              // 135
 };
 
 /**************************************************************************************************
@@ -100,6 +104,8 @@ void N5Provider::_selfTest(unsigned char *packet, int len)
             case 0x0A:
             case 0x0B:
             case 0x0C:
+            case 0x0d:
+            case 0x0e:
                 errorStr += nibpSelfErrorCode[packet[i]];
                 break;
             default:
@@ -117,6 +123,7 @@ void N5Provider::_selfTest(unsigned char *packet, int len)
 
         errorLog.append(item);
 
+        nibpParam.setDisableState(true);
         nibpParam.errorDisable();
         systemManager.setPoweronTestResult(N5_MODULE_SELFTEST_RESULT, SELFTEST_FAILED);
     }
@@ -129,6 +136,7 @@ void N5Provider::_selfTest(unsigned char *packet, int len)
 void N5Provider::_errorWarm(unsigned char *packet, int len)
 {
     outHex(packet, len);
+    nibpParam.setDisableState(true);
     nibpParam.errorDisable();
     QString errorStr("");
     errorStr = "error code = ";
@@ -137,6 +145,7 @@ void N5Provider::_errorWarm(unsigned char *packet, int len)
 
     switch (packet[1])
     {
+    case 0x7f:
     case 0x80:
     case 0x81:
     case 0x82:
@@ -145,7 +154,7 @@ void N5Provider::_errorWarm(unsigned char *packet, int len)
     case 0x85:
     case 0x86:
     case 0x87:
-        errorStr += nibpErrorCode[packet[1] - 128];
+        errorStr += nibpErrorCode[packet[1] - 127];
         break;
     default:
         errorStr += "Unknown mistake.\r\n";
@@ -183,14 +192,14 @@ static NIBPMeasureResultInfo getMeasureResultInfo(unsigned char *data)
     }
     if (type == PATIENT_TYPE_ADULT)
     {
-        if (info.sys > 255 || info.sys < 40 || info.dia > 215 || info.dia < 10 || info.map > 235 || info.map < 20)
+        if (info.sys > 255 || info.sys < 40 || info.dia > 215 || info.dia < 20 || info.map > 235 || info.map < 20)
         {
             info.errCode = 0x06;
         }
     }
     else if (type == PATIENT_TYPE_PED)
     {
-        if (info.sys > 200 || info.sys < 40 || info.dia > 150 || info.dia < 10 || info.map > 165 || info.map < 20)
+        if (info.sys > 200 || info.sys < 40 || info.dia > 150 || info.dia < 20 || info.map > 165 || info.map < 20)
         {
             info.errCode = 0x06;
         }
@@ -321,6 +330,9 @@ void N5Provider::handlePacket(unsigned char *data, int len)
         nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_RSP_PRESSURE_POINT, &data[1], 1);
         break;
 
+    case N5_RSP_PASSTHROUGH_MODE:
+        break;
+
     // 压力计模式控制
     case N5_RSP_MANOMETER:
         nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_MANOMETER_ENTER, &data[1], 1);
@@ -359,6 +371,12 @@ void N5Provider::handlePacket(unsigned char *data, int len)
     // 状态改变
     case N5_STATE_CHANGE:
         nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_STATE_CHANGE, &data[1], 1);
+        break;
+
+    // 开机获取校零状态
+    case N5_STATE_ZERO_SELFTEST:
+        _sendACK(data[0]);
+        nibpParam.handleNIBPEvent(NIBP_EVENT_ZERO_SELFTEST, &data[1], 1);
         break;
 
     // 服务模式压力帧

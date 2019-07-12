@@ -52,6 +52,7 @@
 
 #include "PatientManager.h"
 #include "PatientInfoWidget.h"
+#include "PatientInfoWindow.h"
 
 #include "TimeDate.h"
 #include "TimeManager.h"

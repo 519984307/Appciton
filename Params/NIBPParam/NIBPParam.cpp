@@ -35,17 +35,41 @@
 #include "TimeManager.h"
 #include "NIBPCountdownTime.h"
 #include "AlarmSourceManager.h"
+#include "TrendCache.h"
 
 /**************************************************************************************************
  * 病人类型修改。
  *************************************************************************************************/
-void NIBPParam::_patientTypeChangeSlot(PatientType /*type*/)
+void NIBPParam::_patientTypeChangeSlot(PatientType type)
 {
+    int enable = 0;
     setSwitchFlagType(true);
 
     // 模式修改则停止当前的测量。
     handleNIBPEvent(NIBP_EVENT_TRIGGER_PATIENT_TYPE, NULL, 0);
 
+    machineConfig.getModuleInitialStatus("NIBPNEOMeasureEnable", reinterpret_cast<bool*>(&enable));
+
+    if (!_connectedFlag)
+    {
+        return;
+    }
+    if (type == PATIENT_TYPE_NEO && enable)
+    {
+        _isNeoDisable = true;
+        errorDisable();
+    }
+    else if (_isNeoDisable && !_isNIBPDisable)  // 如果只是新生儿禁用则恢复正常状态。
+    {
+        AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
+        if (alarmSource)
+        {
+            alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_DISABLE, false);
+        }
+        _isNeoDisable = false;
+        switchState(NIBP_MONITOR_STANDBY_STATE);
+        handleNIBPEvent(NIBP_EVENT_MODULE_RESET, NULL, 0);                        // 恢复禁用状态
+    }
     //设置病人类型与预充气值
     if (NULL != _provider)
     {
@@ -65,7 +89,13 @@ void NIBPParam::initParam(void)
     {
         return;
     }
-
+    int enable = 0;
+    machineConfig.getModuleInitialStatus("NIBPNEOMeasureEnable", reinterpret_cast<bool*>(&enable));
+    if (patientManager.getType() == PATIENT_TYPE_NEO && enable)
+    {
+        _isNeoDisable = true;
+        errorDisable();
+    }
     _provider->serviceEnter(false);
 
     //智能充气
@@ -94,7 +124,6 @@ void NIBPParam::initParam(void)
  *************************************************************************************************/
 void NIBPParam::errorDisable(void)
 {
-    _isNIBPDisable = true;
     handleNIBPEvent(NIBP_EVENT_MODULE_ERROR, NULL, 0);
     AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
     if (alarmSource)
@@ -117,28 +146,50 @@ void NIBPParam::setConnected(bool isConnected)
  * 处理DEMO数据。
  *************************************************************************************************/
 static int counter = 300;
+static int autoCounter = 0;
+static bool firstDemo = true;       // 进入demo的第一次NIBP测量数据标志
+static int firstCounter = 1;        // demo模式下第一次NIBP数据
+static int manualCounter = 0;       // 手动测量计数器
 void NIBPParam::handDemoTrendData(void)
 {
-    if (counter++ < 300)
+    if (autoCounter > counter || manualCounter >= firstCounter)
     {
-        return;
-    }
-    counter = 0;
-
     _sysValue = qrand() % 30 + 90;
     _diaValue = qrand() % 20 + 60;
     _mapVaule = qrand() % 25 + 75;
     _prVaule = qrand() % 10 + 60;
-
     setResult(_sysValue, _diaValue, _mapVaule, _prVaule, NIBP_ONESHOT_NONE);
     eventStorageManager.triggerNIBPMeasurementEvent(timeManager.getCurTime(), NIBP_ONESHOT_NONE);
 
     setMeasureResult(NIBP_MEASURE_SUCCESS);
+    autoCounter = 0;
+    firstDemo = false;
+    manualCounter = 0;
+    }
+
+    if (firstDemo)
+    {
+        manualCounter++;
+    }
+
+    NIBPMode mode = getSuperMeasurMode();
+    if (mode == NIBP_MODE_AUTO)
+    {
+        autoCounter++;
+        counter = getAutoIntervalTime();
+    }
+    else
+    {
+        autoCounter = 0;
+    }
 }
 
 void NIBPParam::exitDemo()
 {
     counter = 300;
+    autoCounter = 0;
+    firstDemo = true;
+    manualCounter = 0;
     _sysValue = InvData();
     _diaValue = InvData();
     _mapVaule = InvData();
@@ -254,7 +305,7 @@ NIBPProviderIFace &NIBPParam::provider(void)
  *************************************************************************************************/
 void NIBPParam::reset(void)
 {
-    if (_provider == NULL)
+    if (_provider == NULL || !isConnected())
     {
         return;
     }
@@ -428,8 +479,11 @@ void NIBPParam::setResult(int16_t sys, int16_t dia, int16_t map, int16_t pr, NIB
 
     if (_sysValue != InvData() && _diaValue != InvData() && _mapVaule != InvData())
     {
+        unsigned t = timeDate.time();
+        trendCache.collectTrendData(t);
+        trendCache.collectTrendAlarmStatus(t);
         // 测量出结果后，收集一次趋势数据
-        trendDataStorageManager.storeData(timeDate.time(), TrendDataStorageManager::CollectStatusNIBP);
+        trendDataStorageManager.storeData(t, TrendDataStorageManager::CollectStatusNIBP);
     }
 }
 
@@ -562,10 +616,13 @@ void NIBPParam::connectedFlag(bool flag)
     AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
     if (flag)
     {
-        handleNIBPEvent(NIBP_EVENT_CONNECTION_NORMAL, NULL, 0);
-        if (alarmSource)
+        if (!_isNIBPDisable)
         {
-            alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+            handleNIBPEvent(NIBP_EVENT_CONNECTION_NORMAL, NULL, 0);
+            if (alarmSource)
+            {
+                alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+            }
         }
         _connectedFlag = true;
     }
@@ -738,6 +795,21 @@ NIBPMeasureResult NIBPParam::getMeasureResult(void)
 void NIBPParam::setMeasureResult(NIBPMeasureResult flag)
 {
     _measureResult = flag;
+}
+
+void NIBPParam::recoverInitTrendWidgetData()
+{
+    int16_t sys(InvData());
+    int16_t dia(InvData());
+    int16_t map(InvData());
+    unsigned time(0);
+
+    _trendWidget->recoverResults(sys, dia, map, time);
+    if ((sys == InvData()) || (dia == InvData()) || (map == InvData()))
+    {
+        nibpParam.setText(InvStr());
+    }
+    _trendWidget->setResults(sys, dia, map, time);
 }
 
 /**************************************************************************************************
@@ -1222,7 +1294,8 @@ void NIBPParam::safeWaitTimeSTATStop()
         nibpParam.setSTATClose(true);
     }
     nibpParam.setSTATMeasure(false);
-    nibpParam.setText(trs("STATSTOPPED"));
+    nibpParam.setAutoStat(false);
+    nibpParam.setText(trs("NIBPMEASURE") + "\n" + trs("NIBPSTOPPED"));
     nibpParam.setModelText(trs("STATSTOPPED"));
 }
 
@@ -1325,7 +1398,7 @@ bool NIBPParam::isMaintain()
 
 void NIBPParam::clearTrendListData()
 {
-    if (systemManager.isSupport(PARAM_NIBP))
+    if (systemManager.isSupport(PARAM_NIBP) && _nibpDataTrendWidget)
     {
         _nibpDataTrendWidget->clearListData();
         _nibpDataTrendWidget->adjustSize();
@@ -1340,6 +1413,36 @@ void NIBPParam::setFirstAuto(bool flag)
 bool NIBPParam::isFirstAuto()
 {
     return _firstAutoFlag;
+}
+
+void NIBPParam::setAutoStat(bool flag)
+{
+    _autoStatFlag = flag;
+}
+
+bool NIBPParam::isAutoStat()
+{
+    return _autoStatFlag;
+}
+
+void NIBPParam::setZeroSelfTestState(bool flag)
+{
+    _zeroSelfTestFlag = flag;
+}
+
+bool NIBPParam::isZeroSelfTestState()
+{
+    return _zeroSelfTestFlag;
+}
+
+void NIBPParam::setDisableState(bool flag)
+{
+    _isNIBPDisable = flag;
+}
+
+bool NIBPParam::getNeoDisState()
+{
+    return _isNeoDisable;
 }
 
 /**************************************************************************************************
@@ -1425,6 +1528,7 @@ NIBPParam::NIBPParam()
       _connectedFlag(false), _connectedProvider(false),
       _text(InvStr()),
       _reply(false), _result(false), _manometerPressure(InvData()), _isMaintain(false), _firstAutoFlag(false),
+      _autoStatFlag(false), _zeroSelfTestFlag(false), _isNeoDisable(false),
       _activityMachine(NULL), _oldState(0)
 {
     nibpCountdownTime.getInstance();

@@ -49,11 +49,18 @@ void NIBPMonitorStandbyState::handleNIBPEvent(NIBPEvent event, const unsigned ch
     case NIBP_EVENT_TRIGGER_MODEL:
         if (args[0] == 0x01)
         {
-            nibpParam->setSTATMeasure(true);
             NIBPCountdownTimeInterface* nibpCountdownTime = NIBPCountdownTimeInterface::getNIBPCountdownTime();
+            nibpParam->setSTATMeasure(true);
+            if (nibpParam->isFirstAuto())
+            {
+                nibpCountdownTime->setSTATMeasureTimeout(false);
+                nibpParam->setAutoStat(true);
+                switchState(NIBP_MONITOR_SAFEWAITTIME_STATE);
+                break;
+            }
             if (nibpCountdownTime)
             {
-                nibpCountdownTime->STATMeasureStart();  // 只测量5分钟。
+                nibpCountdownTime->STATMeasureStart();
             }
             switchState(NIBP_MONITOR_STARTING_STATE);
             break;
@@ -71,7 +78,24 @@ void NIBPMonitorStandbyState::handleNIBPEvent(NIBPEvent event, const unsigned ch
             nibpParam->switchToManual();
         }
         break;
-
+    case NIBP_EVENT_ZERO_SELFTEST:
+        nibpParam->setCuffPressure(args[0]);
+        if (args[0] == NIBP_ZERO_ONGOING_STATE)           //  开机正在校准
+        {
+            nibpParam->setZeroSelfTestState(true);
+            nibpParam->setText(trs("NIBPZEROING"));       //  显示正在较零
+        }
+        else if (args[0] == NIBP_ZERO_SUCCESS_STATE)      //  开机校准成功
+        {
+            nibpParam->setZeroSelfTestState(false);
+            nibpParam->recoverInitTrendWidgetData();      //  显示上一次信息
+        }
+        else if (args[0] == NIBP_ZERO_FAIL_STATE)         //  校零失败，进入禁用状态
+        {
+            nibpParam->setZeroSelfTestState(false);
+            nibpParam->setDisableState(true);
+            nibpParam->errorDisable();
+        }
     default:
         break;
     }

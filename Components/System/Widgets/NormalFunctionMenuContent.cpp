@@ -223,7 +223,7 @@ void NormalFunctionMenuContent::layoutExec()
     itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    connect(comboBox, SIGNAL(activated(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, row, 1);
     row++;
     d_ptr->combos.insert(NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME, comboBox);
@@ -252,7 +252,7 @@ void NormalFunctionMenuContent::layoutExec()
     comboBox = new ComboBox();
 
     // 设置声音触发方式
-    connect(comboBox, SIGNAL(itemFocusChanged(int)),
+    connect(comboBox, SIGNAL(itemFoucsIndexChanged(int)),
             this, SLOT(onPopupListItemFocusChanged(int)));
 
     comboBox->addItems(QStringList()
@@ -267,7 +267,7 @@ void NormalFunctionMenuContent::layoutExec()
     row++;
     itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME);
     comboBox->setProperty("Item" , qVariantFromValue(itemID));
-    connect(comboBox , SIGNAL(currentIndexChanged(int)) , this , SLOT(onComboBoxIndexChanged(int)));
+    connect(comboBox , SIGNAL(activated(int)) , this , SLOT(onComboBoxIndexChanged(int)));
     d_ptr->combos.insert(NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME , comboBox);
 
 #ifdef Q_WS_QWS
@@ -399,7 +399,8 @@ void NormalFunctionMenuContent::onComboBoxIndexChanged(int index)
         case NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME:
         {
             int volume = box->itemText(index).toInt();
-            soundManager.setVolume(SoundManager::SOUND_TYPE_NOTIFICATION , static_cast<SoundManager::VolumeLevel>(volume));
+            soundManager.setVolume(SoundManager::SOUND_TYPE_NOTIFICATION ,
+                                   static_cast<SoundManager::VolumeLevel>(volume));
             systemConfig.setNumValue("General|KeyPressVolume", volume);
             break;
         }

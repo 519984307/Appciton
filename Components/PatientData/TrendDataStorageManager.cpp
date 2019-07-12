@@ -237,15 +237,6 @@ void TrendDataStorageManager::periodRun(unsigned t)
     if (0 == t % 5)
     {
         status |= CollectStatusPeriod;
-    }
-
-    if ( trendCache.getLastNibpSuccessMeasureTime() == t)
-    {
-        status |= CollectStatusNIBP;
-    }
-
-    if (status != CollectStatusNone)
-    {
         storeData(t, status);
     }
 }

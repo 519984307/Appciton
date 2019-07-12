@@ -38,8 +38,8 @@ public:
  * 构造。
  *************************************************************************************************/
 NIBPCalibrationMenuContent::NIBPCalibrationMenuContent()
-    : MenuContent(trs("NIBPCalibrationMenu"),
-                  trs("NIBPCalibrationMenuDesc")),
+    : MenuContent(trs("NIBPMaintainMenu"),
+                  trs("NIBPMaintainMenuDesc")),
       d_ptr(new NIBPCalibrationMenuContentPrivate)
 {
 }
@@ -49,12 +49,16 @@ NIBPCalibrationMenuContent::~NIBPCalibrationMenuContent()
     delete d_ptr;
 }
 
-void NIBPCalibrationMenuContent::readyShow()
+void NIBPCalibrationMenuContent::showEvent(QShowEvent* e)
 {
-    if (!systemManager.isSupport(PARAM_NIBP))
+    Q_UNUSED(e);
+    if (nibpParam.isConnected())
+    {
+        d_ptr->timerId = startTimer(TIME_INTERVAL);
+    }
+    else
     {
         d_ptr->enterBtn->setEnabled(false);
-        d_ptr->timerId = startTimer(TIME_INTERVAL);
     }
 }
 
@@ -64,7 +68,7 @@ void NIBPCalibrationMenuContent::layoutExec()
     layout->setMargin(10);
     layout->setAlignment(Qt::AlignTop);
 
-    QLabel *label = new QLabel(trs("NIBPCalibration"));
+    QLabel *label = new QLabel(trs("NIBPMaintain"));
     layout->addWidget(label);
 
     d_ptr->enterBtn = new Button(trs("Enter"));

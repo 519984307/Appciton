@@ -20,6 +20,7 @@
 #include "AlarmSymbol.h"
 #include "Alarm.h"
 #include "AlarmIndicator.h"
+#include "AlarmSourceManager.h"
 
 class AlarmMaintainMenuContentPrivate
 {
@@ -180,8 +181,16 @@ void AlarmMaintainMenuContentPrivate::
         }
         break;
     case ITEM_CBO_ALARM_AUDIO_OFF:
+    {
             systemConfig.setNumValue("Alarms|AlarmAudio", index);
-            alarmIndicator.updateAlarmStateWidget();
+            alarmIndicator.updateAlarmAudioState();
+            AlarmOneShotIFace *systemAlarm = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SYSTEM);
+            if (systemAlarm)
+            {
+                systemAlarm->setOneShotAlarm(SYSTEM_ONE_SHOT_ALARM_AUDIO_OFF, !index);
+            }
+        break;
+    }
     default:
         break;
     }
@@ -279,7 +288,7 @@ void AlarmMaintainMenuContent::layoutExec()
                        << QString::number(SoundManager::VOLUME_LEV_5));
     itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_MIN_ALARM_VOLUME);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    connect(comboBox, SIGNAL(activated(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_MIN_ALARM_VOLUME, comboBox);
     // 设置声音触发方式

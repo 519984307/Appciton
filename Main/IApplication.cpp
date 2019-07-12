@@ -22,6 +22,7 @@
 #if defined(CONFIG_CAPTURE_SCREEN)
 #include <QDateTime>
 #include "Utility.h"
+#include "LanguageManager.h"
 #endif
 
 /**************************************************************************************************
@@ -197,14 +198,14 @@ void IApplication::handleScreenCaptureResult(long result)
     if (result)
     {
         QImage *image = reinterpret_cast<QImage *>(result);
-        MessageBox msgBox("Screen Capture", QPixmap::fromImage(*image).scaled(
-                              150, 90, Qt::IgnoreAspectRatio, Qt::SmoothTransformation), "Capture screen Success.", false);
+        MessageBox msgBox(trs("ScreenCapture"), QPixmap::fromImage(*image).scaled(
+                              150, 90, Qt::IgnoreAspectRatio, Qt::SmoothTransformation), trs("CaptureSuccess"), false);
         msgBox.exec();
         delete image;
     }
     else
     {
-        MessageBox msgBox("Screen capture", "Capture screen failed.", false);
+        MessageBox msgBox(trs("ScreenCapture"), trs("CaptureFail"), false);
         msgBox.exec();
     }
 }

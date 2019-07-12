@@ -29,7 +29,7 @@
 #include "IConfig.h"
 #include "WindowManager.h"
 
-#define TABLE_ROW_NR        7
+#define TABLE_ROW_NR        6
 
 #define HEIGHT_HINT (themeManger.getAcceptableControlHeight())
 #define DEFAULT_WIDTH (windowManager.getPopWindowWidth())
@@ -200,7 +200,6 @@ void ErrorLogWindow::summaryReleased()
     stream << trs("MostRecentCriticalFault") << summary.mostRecentCriticalErrorDate << endl;
     stream << trs("OldestError") << summary.oldestErrorDate << endl;
     stream << trs("LastEraseTime") << summary.lastEraseTimeDate << endl;
-    stream << "Number of shocks > 120J: " << summary.totalShockCount << endl;
 
     ErrorLogViewerWindow viewer;
     viewer.setWindowTitle(trs("Summary"));
@@ -315,5 +314,4 @@ void ErrorLogWindow::onPageInfoUpdated(int curPage, int totalPage)
     title += trs("PageNum");
     title += ")";
     setWindowTitle(title);
-
 }

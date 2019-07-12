@@ -47,12 +47,6 @@ public:
     void setPageRowCount(int count);
 
     /**
-     * @brief totalPage 总页数
-     * @return
-     */
-    int totalPage();
-
-    /**
      * @brief getHeightHint 获取每一行高度
      * @return
      */

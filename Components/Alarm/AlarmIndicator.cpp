@@ -79,8 +79,11 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
                 *it = node;
             }
 
-            // pause/audio off状态没有生理报警声音
-            if (0 == node.pauseTime && status != ALARM_STATUS_AUDIO_OFF)
+            // pause/audio off/reset状态没有生理报警声音
+            if (0 == node.pauseTime
+                    && status != ALARM_STATUS_AUDIO_OFF
+                    && status != ALARM_STATUS_RESET
+                    && status != ALARM_STATUS_PAUSE)
             {
                 if (phySoundPriority < node.alarmPriority)
                 {
@@ -90,7 +93,8 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
 
             AlarmInterface *alertor = AlarmInterface::getAlarm();
             if ((!node.acknowledge || (alertor && alertor->getAlarmLightOnAlarmReset()))
-                    && node.alarmPriority != ALARM_PRIO_PROMPT)
+                    && node.alarmPriority != ALARM_PRIO_PROMPT
+                    && status != ALARM_STATUS_PAUSE)
             {
                 // 处理确认后且开启了报警复位灯，或者未确认的报警
                 if (lightPriority < node.alarmPriority)
@@ -200,22 +204,36 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
     }
 
     // 更新声音
-    if (phySoundPriority != ALARM_PRIO_PROMPT && _canPlayAudio(status, false))
+    if (phySoundPriority != ALARM_PRIO_PROMPT || techSoundPriority != ALARM_PRIO_PROMPT)
     {
-        if (soundManager)
+        if (phySoundPriority >= techSoundPriority && _canPlayAudio(status, false))
         {
-            soundManager->updateAlarm(true, phySoundPriority);
+            // 生理报警等级更高时，播放生理报警等级的报警音
+            if (soundManager)
+            {
+                soundManager->updateAlarm(true, phySoundPriority);
+            }
         }
-    }
-    else if (techSoundPriority != ALARM_PRIO_PROMPT && _canPlayAudio(status, true))
-    {
-        if (soundManager)
+        else if (techSoundPriority > phySoundPriority && _canPlayAudio(status, true))
         {
-            soundManager->updateAlarm(true, techSoundPriority);
+            // 技术报警等级更高时，播放技术报警等级的报警音
+            if (soundManager)
+            {
+                soundManager->updateAlarm(true, techSoundPriority);
+            }
+        }
+        else
+        {
+            // 关闭报警音
+            if (soundManager)
+            {
+                soundManager->updateAlarm(false, phySoundPriority);
+            }
         }
     }
     else
     {
+        // 生理和技术报警都是提示等级时，关闭报警音
         if (soundManager)
         {
             soundManager->updateAlarm(false, phySoundPriority);
@@ -241,7 +259,7 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
     //生理报警
     if (phyAlarmNum > 0)
     {
-        if (_alarmPhyDisplayIndex >= _alarmInfoDisplayPool.count())
+        if (_alarmPhyDisplayIndex >= _alarmInfoDisplayPool.count() || _alarmPhyDisplayIndex == -1)
         {
             _alarmPhyDisplayIndex = firstPhyIndex;
         }
@@ -256,13 +274,14 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
     }
     else
     {
+        _alarmPhyDisplayIndex = firstPhyIndex;
         _displayPhyClear();
     }
 
     //技术报警
     if (techAlarmNum > 0)
     {
-        if (_alarmTechDisplayIndex >= _alarmInfoDisplayPool.count())
+        if (_alarmTechDisplayIndex >= _alarmInfoDisplayPool.count() || _alarmTechDisplayIndex == -1)
         {
             _alarmTechDisplayIndex = firstTechIndex;
         }
@@ -277,6 +296,7 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
     }
     else
     {
+        _alarmTechDisplayIndex = firstTechIndex;
         _displayTechClear();
     }
 
@@ -549,12 +569,57 @@ void AlarmIndicator::delAlarmInfo(AlarmType alarmType, const char *alarmMessage)
     //删除显示报警信息池
     AlarmInfoList *list = &_alarmInfoDisplayPool;
     AlarmInfoList::iterator it = list->begin();
+    bool isNeedUpdatePhyIndex = false;
+    bool isNeedUpdateTechIndex = false;
     for (; it != list->end(); ++it)
     {
         if ((it->alarmType == alarmType) && strcmp(it->alarmMessage, alarmMessage) == 0)
         {
+            if (alarmType == ALARM_TYPE_PHY)
+            {
+                // 如果删除当前正在显示的报警,
+                if (_alarmPhyDisplayIndex == _alarmInfoDisplayPool.indexOf(*it))
+                {
+                    isNeedUpdatePhyIndex = true;
+                }
+            }
+            else if (alarmType == ALARM_TYPE_TECH)
+            {
+                if (_alarmTechDisplayIndex == _alarmInfoDisplayPool.indexOf(*it))
+                {
+                    isNeedUpdateTechIndex = true;
+                }
+            }
             list->erase(it);
             break;
+        }
+    }
+
+    // 将索引更新为下一条同类报警的索引
+    if (isNeedUpdatePhyIndex)
+    {
+        int index = _alarmPhyDisplayIndex;
+        _alarmPhyDisplayIndex = -1;
+        for (int i = index ; i < _alarmInfoDisplayPool.count(); i++)
+        {
+            if (_alarmInfoDisplayPool.at(i).alarmType == ALARM_TYPE_PHY)
+            {
+                _alarmPhyDisplayIndex = i;
+                break;
+            }
+        }
+    }
+    else if (isNeedUpdateTechIndex)
+    {
+        int index = _alarmTechDisplayIndex;
+        _alarmTechDisplayIndex = -1;
+        for (int i = index ; i < _alarmInfoDisplayPool.count(); i++)
+        {
+            if (_alarmInfoDisplayPool.at(i).alarmType == ALARM_TYPE_TECH)
+            {
+                _alarmTechDisplayIndex = i;
+                break;
+            }
         }
     }
 }
@@ -1115,7 +1180,7 @@ bool AlarmIndicator::techAlarmResetStatusHandle()
     return ret;
 }
 
-void AlarmIndicator::updateAlarmStateWidget()
+void AlarmIndicator::updateAlarmAudioState()
 {
-    _alarmStatusWidget->update();
+    _alarmStatusWidget->updateAlarmAudioStatus();
 }

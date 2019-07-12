@@ -271,7 +271,7 @@ void SPO2MenuContent::layoutExec()
     itemID = static_cast<int>(SPO2MenuContentPrivate::ITEM_CBO_PULSE_VOL);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), SLOT(onComboBoxIndexChanged(int)));
+    connect(comboBox, SIGNAL(activated(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_PULSE_VOL, comboBox);
 

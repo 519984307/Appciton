@@ -219,6 +219,12 @@ void SuntechProvider::stopMeasure(void)
  *************************************************************************************************/
 void SuntechProvider::setInitPressure(short pressure)
 {
+    if (_NIBPStart)                // 模块同时发送停止测量跟设置初始压力会导致收不到停止命令回复
+    {
+        _pressure = pressure;
+        QTimer::singleShot(500, this, SLOT(_sendInitval()));
+        return;
+    }
     unsigned char cmd[3] = {0};
 
     cmd[0] = SUNTECH_CMD_SET_INITIAL_INFIAL;
@@ -434,7 +440,7 @@ void SuntechProvider::controlPneumatics(unsigned char pump, unsigned char contro
  *************************************************************************************************/
 SuntechProvider::SuntechProvider() :
     Provider("SUNTECH_NIBP"), NIBPProviderIFace(),
-    _NIBPStart(false), _flagStartCmdSend(-1),
+    _NIBPStart(false), _flagStartCmdSend(-1), _pressure(-1),
     _timer(NULL), _cmdTimer(NULL), _isModuleDataRespond(false),
     _isCalibrationRespond(false)
 {
@@ -500,6 +506,15 @@ void SuntechProvider::_sendCMD()
     }
 }
 
+void SuntechProvider::_sendInitval()
+{
+    unsigned char cmd[3] = {0};
+    cmd[0] = SUNTECH_CMD_SET_INITIAL_INFIAL;
+    cmd[1] = _pressure & 0xFF;
+    cmd[2] = (_pressure & 0xFF00) >> 8;
+    _sendCmd(cmd, 3);
+}
+
 static NIBPMeasureResultInfo getMeasureResultInfo(unsigned char *data)
 {
     NIBPMeasureResultInfo info;
@@ -554,10 +569,7 @@ void SuntechProvider::_handlePacket(unsigned char *data, int len)
         {
             if (_flagStartCmdSend == 1)
             {
-                if (_NIBPStart)
-                {
-                    _NIBPStart = false;
-                }
+                _NIBPStart = false;
                 _flagStartCmdSend = 2;
             }
         }
@@ -623,6 +635,10 @@ void SuntechProvider::_handlePacket(unsigned char *data, int len)
     case SUNTECH_RSP_GET_MEASUREMENT:
     {
         NIBPMeasureResultInfo info = getMeasureResultInfo(&data[1]);
+        if (nibpParam.curStatusType() == NIBP_MONITOR_STOPE_STATE)
+        {
+            nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_STOP, NULL, 0);
+        }
         nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_GET_RESULT,
                                   reinterpret_cast<unsigned char *>(&info), sizeof(info));
         break;
