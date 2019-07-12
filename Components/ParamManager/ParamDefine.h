@@ -44,6 +44,7 @@ enum SubParamID
     // spo2
     SUB_PARAM_SPO2,
     SUB_PARAM_SPO2_2,
+    SUB_PARAM_SPO2_D,
     SUB_PARAM_PI,
     SUB_PARAM_PVI,
     SUB_PARAM_SPHB,

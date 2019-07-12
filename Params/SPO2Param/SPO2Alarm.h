@@ -63,6 +63,7 @@ public:
 private:
     bool _isSPO2Alarm;
     bool _isSPO22Alarm;
+    bool _isSPO2DAlarm;
     bool _isPIAlarm;
     bool _isPVIAlarm;
     bool _isSPHBAlarm;

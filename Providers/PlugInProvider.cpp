@@ -138,7 +138,8 @@ public:
 
     bool initPluginModule(PlugInProvider::PlugInType type)
     {
-        if (type == PlugInProvider::PLUGIN_TYPE_SPO2 && systemManager.isSupport(CONFIG_SPO2))
+        if (type == PlugInProvider::PLUGIN_TYPE_SPO2 && systemManager.isSupport(CONFIG_SPO2)
+                && systemManager.getCurWorkMode() != WORK_MODE_DEMO)
         {
             Provider *provider = NULL;
             provider = new RainbowProvider("RAINBOW_SPO2PlugIn", true);
