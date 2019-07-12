@@ -1013,10 +1013,21 @@ void SPO2Param::noticeLimitAlarm(SubParamID id, bool isAlarm)
     switch (id)
     {
     case SUB_PARAM_SPO2:
-//    case SUB_PARAM_SPO2_2:
         if (NULL != d_ptr->trendWidget)
         {
-            d_ptr->trendWidget->isAlarm(isAlarm);
+            d_ptr->trendWidget->isAlarmSPO2(isAlarm);
+        }
+        break;
+    case SUB_PARAM_SPO2_2:
+        if (NULL != d_ptr->trendWidget)
+        {
+            d_ptr->trendWidget->isAlarmSPO22(isAlarm);
+        }
+        break;
+    case SUB_PARAM_SPO2_D:
+        if (NULL != d_ptr->trendWidget)
+        {
+            d_ptr->trendWidget->isAlarmSPO2D(isAlarm);
         }
         break;
     case SUB_PARAM_PI:

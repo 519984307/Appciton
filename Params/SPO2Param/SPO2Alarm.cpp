@@ -216,6 +216,14 @@ void SPO2LimitAlarm::notifyAlarm(int id, bool isAlarm)
         spo2Param.noticeLimitAlarm(subID, _isSPO2Alarm);
         _isSPO2Alarm = false;
         break;
+    case SPO2_LIMIT_ALARM_SPO2_2_LOW:
+        _isSPO22Alarm |= isAlarm;
+        break;
+    case SPO2_LIMIT_ALARM_SPO2_2_HIGH:
+        _isSPO22Alarm |= isAlarm;
+        spo2Param.noticeLimitAlarm(subID, _isSPO22Alarm);
+        _isSPO22Alarm = false;
+        break;
     case SPO2_LIMIT_ALARM_SPO2_D_LOW:
         _isSPO2DAlarm |= isAlarm;
         break;

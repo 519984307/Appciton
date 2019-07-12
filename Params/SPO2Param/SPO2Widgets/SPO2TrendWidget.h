@@ -31,7 +31,9 @@ public:
     void updateLimit(void);
 
     // 是否报警
-    void isAlarm(bool flag);
+    void isAlarmSPO2(bool flag);
+    void isAlarmSPO22(bool flag);
+    void isAlarmSPO2D(bool flag);
 
     // 显示参数值
     void showValue(void);
@@ -73,5 +75,8 @@ private:
     SPO2BarWidget *_spo2Bar;
     QString _spo2String1;
     QString _spo2String2;
-    bool _isAlarm;
+    QString _spo2StringD;
+    bool _isAlarmSPO2;
+    bool _isAlarmSPO2_2;
+    bool _isAlarmSPO2_D;
 };

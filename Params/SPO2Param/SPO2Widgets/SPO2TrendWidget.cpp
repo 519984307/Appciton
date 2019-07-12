@@ -85,12 +85,13 @@ void SPO2TrendWidget::setSPO2DeltaValue(int16_t spo2)
 {
     if (spo2 >= 0)
     {
-        _spo2DeltaValue->setText(QString::number(spo2));
+        _spo2StringD = QString::number(spo2);
     }
     else
     {
-        _spo2DeltaValue->setText(InvStr());
+        _spo2StringD = InvStr();
     }
+    _spo2DeltaValue->setText(_spo2StringD);
 }
 
 void SPO2TrendWidget::updateLimit()
@@ -100,12 +101,26 @@ void SPO2TrendWidget::updateLimit()
     setLimit(config.highLimit, config.lowLimit, config.scale);
 }
 
+void SPO2TrendWidget::isAlarmSPO22(bool flag)
+{
+    _isAlarmSPO2_2 = flag;
+
+    updateAlarm(flag);
+}
+
+void SPO2TrendWidget::isAlarmSPO2D(bool flag)
+{
+    _isAlarmSPO2_D = flag;
+
+    updateAlarm(flag);
+}
+
 /**************************************************************************************************
  * 是否报警。
  *************************************************************************************************/
-void SPO2TrendWidget::isAlarm(bool flag)
+void SPO2TrendWidget::isAlarmSPO2(bool flag)
 {
-    _isAlarm = flag;
+    _isAlarmSPO2 = flag;
 
     updateAlarm(flag);
 }
@@ -116,7 +131,8 @@ void SPO2TrendWidget::isAlarm(bool flag)
 void SPO2TrendWidget::showValue(void)
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
-    if (_isAlarm && _spo2String1 != InvStr())
+    // SPO2
+    if (_isAlarmSPO2 && _spo2String1 != InvStr())
     {
         showAlarmStatus(_spo2Value1);
         showAlarmParamLimit(_spo2Value1, _spo2String1, psrc);
@@ -125,6 +141,30 @@ void SPO2TrendWidget::showValue(void)
     else
     {
         showNormalStatus(_spo2Value1, psrc);
+    }
+
+    // SPO2_2
+    if (_isAlarmSPO2_2 && _spo2String2 != InvStr())
+    {
+        showAlarmStatus(_spo2Value2);
+        showAlarmParamLimit(_spo2Value2, _spo2String2, psrc);
+        restoreNormalStatusLater();
+    }
+    else
+    {
+        showNormalStatus(_spo2Value2, psrc);
+    }
+
+    // SPO2_D
+    if (_isAlarmSPO2_D && _spo2StringD != InvStr())
+    {
+        showAlarmStatus(_spo2DeltaValue);
+        showAlarmParamLimit(_spo2DeltaValue, _spo2StringD, psrc);
+        restoreNormalStatusLater();
+    }
+    else
+    {
+        showNormalStatus(_spo2DeltaValue, psrc);
     }
 }
 
@@ -160,7 +200,9 @@ void SPO2TrendWidget::setTextSize()
  *************************************************************************************************/
 SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
 {
-    _isAlarm = false;
+    _isAlarmSPO2 = false;
+    _isAlarmSPO2_2 = false;
+    _isAlarmSPO2_D = false;
     _spo2String1 = InvStr();
     _spo2String2 = InvStr();
     setName(trs(paramInfo.getParamName(PARAM_SPO2)));
@@ -265,4 +307,6 @@ void SPO2TrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
     showNormalStatus(_spo2Value1, psrc);
+    showNormalStatus(_spo2Value2, psrc);
+    showNormalStatus(_spo2DeltaValue, psrc);
 }

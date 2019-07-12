@@ -616,8 +616,8 @@ ECGAcquired12L,获取12导结束,Acquire 12 Lead Complete
 RESPCommunicationStop,呼吸通讯停止,RESP Communication Stop
 RESPCheckElecrodes,呼吸检查电极,RESP Check Elecrodes
 Apnea,呼吸窒息,Apnea
-SPO2Low,血氧低,SpO₂ Low
-SPO2High,血氧高,SpO₂ High
+SPO2Low,SpO₂ 低,SpO₂ Low
+SPO2High,SpO₂ 高,SpO₂ High
 SPO22Low,SpO₂ 2 低,SpO₂ 2 Low
 SPO22High,SpO₂ 2 高,SpO₂ 2 High
 SPO2DLow,ΔSpO₂ 低,ΔSpO₂ Low
