@@ -107,7 +107,7 @@ CO_CI,心指数,C.I.
 TB,血温,TB
 SPO2,SpO₂,SpO₂
 SPO2_2,SpO₂ 2,SpO₂ 2
-SPO2_Delta,ΔSpO₂,ΔSpO₂
+SPO2_D,ΔSpO₂,ΔSpO₂
 SPHB,SpHb,SpHb
 SPOC,SpOC,SpOC
 SPMET,SpMet,SpMet
@@ -620,6 +620,8 @@ SPO2Low,血氧低,SpO₂ Low
 SPO2High,血氧高,SpO₂ High
 SPO22Low,SpO₂ 2 低,SpO₂ 2 Low
 SPO22High,SpO₂ 2 高,SpO₂ 2 High
+SPO2DLow,ΔSpO₂ 低,ΔSpO₂ Low
+SPO2DHigh,ΔSpO₂ 高,ΔSpO₂ High
 PILow,PI 低,PI Low
 PIHigh,PI 高,PI High
 PVILow,PVI 低,PVI Low

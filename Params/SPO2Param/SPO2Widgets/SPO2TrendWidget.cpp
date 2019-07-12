@@ -190,7 +190,7 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
 
     _spo2DeltaName = new QLabel();
     _spo2DeltaName->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    _spo2DeltaName->setText(trs("SPO2_Delta"));
+    _spo2DeltaName->setText(trs("SPO2_D"));
 
     _spo2DeltaValue = new QLabel();
     _spo2DeltaValue->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);

@@ -49,6 +49,8 @@ static const char *_subParamNames(SubParamID paramID, bool ignoreModuleConfig)
         return "SPO2";
     case SUB_PARAM_SPO2_2:
         return "SPO2_2";
+    case SUB_PARAM_SPO2_D:
+        return "SPO2_D";
     case SUB_PARAM_PVI:
         return "PVI";
     case SUB_PARAM_SPHB:
@@ -286,6 +288,7 @@ ParamID ParamInfo::getParamID(SubParamID id)
         break;
     case SUB_PARAM_SPO2:
     case SUB_PARAM_SPO2_2:
+    case SUB_PARAM_SPO2_D:
     case SUB_PARAM_PI:
     case SUB_PARAM_PVI:
     case SUB_PARAM_SPHB:
@@ -685,6 +688,7 @@ UnitType ParamInfo::getUnitOfSubParam(SubParamID id)
 
     case SUB_PARAM_SPO2:
     case SUB_PARAM_SPO2_2:
+    case SUB_PARAM_SPO2_D:
     case SUB_PARAM_PI:
     case SUB_PARAM_PVI:
     case SUB_PARAM_SPMET:

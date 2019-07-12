@@ -65,6 +65,7 @@ public:
 
     short spo2Value;
     short plugInSpo2Value;
+    short spo2DValue;
     short prValue;
     short barValue;
     short piValue;
@@ -136,6 +137,7 @@ SPO2ParamPrivate::SPO2ParamPrivate()
     , plugInIsEverCheckFinger(false)
     , spo2Value(InvData())
     , plugInSpo2Value(InvData())
+    , spo2DValue(InvData())
     , prValue(InvData())
     , barValue(InvData())
     , piValue(InvData())
@@ -247,6 +249,7 @@ void SPO2Param::handDemoTrendData(void)
     {
         d_ptr->plugInSpo2Value = InvData();
     }
+    d_ptr->spo2DValue = abs(d_ptr->spo2Value - d_ptr->plugInSpo2Value);
     d_ptr->piValue = 210;
     d_ptr->pviValue = 23;
     d_ptr->sphbValue = 180;
@@ -257,7 +260,7 @@ void SPO2Param::handDemoTrendData(void)
     {
         d_ptr->trendWidget->setSPO2Value(d_ptr->spo2Value);
         d_ptr->trendWidget->setPlugInSPO2Value(d_ptr->plugInSpo2Value);
-        d_ptr->trendWidget->setSPO2DeltaValue(abs(d_ptr->spo2Value - d_ptr->plugInSpo2Value));
+        d_ptr->trendWidget->setSPO2DeltaValue(d_ptr->spo2DValue);
         d_ptr->piTrendWidget->setPIValue(d_ptr->piValue);
         d_ptr->pviTrendWidget->setPVIValue(d_ptr->pviValue);
         d_ptr->sphbTrendWidget->setSPHBValue(d_ptr->sphbValue);
@@ -279,6 +282,7 @@ void SPO2Param::exitDemo()
 {
     d_ptr->spo2Value = InvData();
     d_ptr->plugInSpo2Value = InvData();
+    d_ptr->spo2DValue = InvData();
     d_ptr->piValue = InvData();
     d_ptr->pviValue = InvData();
     d_ptr->sphbValue = InvData();
@@ -334,6 +338,8 @@ short SPO2Param::getSubParamValue(SubParamID id)
         return getSPO2();
     case SUB_PARAM_SPO2_2:
         return getSPO2(true);
+    case SUB_PARAM_SPO2_D:
+        return getSPO2D();
     case SUB_PARAM_SPHB:
         return getSpHb();
     case SUB_PARAM_SPMET:
@@ -642,12 +648,13 @@ void SPO2Param::setSPO2(short spo2Value)
         d_ptr->trendWidget->setSPO2Value(d_ptr->spo2Value);
         if (d_ptr->spo2Value != InvData() && d_ptr->plugInSpo2Value != InvData())
         {
-            d_ptr->trendWidget->setSPO2DeltaValue(abs(d_ptr->spo2Value - d_ptr->plugInSpo2Value));
+            d_ptr->spo2DValue = abs(d_ptr->spo2Value - d_ptr->plugInSpo2Value);
         }
         else
         {
-            d_ptr->trendWidget->setSPO2DeltaValue(InvData());
+            d_ptr->spo2DValue = InvData();
         }
+        d_ptr->trendWidget->setSPO2DeltaValue(d_ptr->spo2DValue);
     }
 
     if (NULL != d_ptr->oxyCRGSPO2Trend)
@@ -669,12 +676,13 @@ void SPO2Param::setPlugInSPO2(short spo2Value)
         d_ptr->trendWidget->setPlugInSPO2Value(d_ptr->plugInSpo2Value);
         if (d_ptr->spo2Value != InvData() && d_ptr->plugInSpo2Value != InvData())
         {
-            d_ptr->trendWidget->setSPO2DeltaValue(abs(d_ptr->spo2Value - d_ptr->plugInSpo2Value));
+            d_ptr->spo2DValue = abs(d_ptr->spo2Value - d_ptr->plugInSpo2Value);
         }
         else
         {
-            d_ptr->trendWidget->setSPO2DeltaValue(InvData());
+            d_ptr->spo2DValue = InvData();
         }
+        d_ptr->trendWidget->setSPO2DeltaValue(d_ptr->spo2DValue);
     }
 }
 
@@ -691,6 +699,16 @@ short SPO2Param::getSPO2(bool isPlugIn)
     {
         return d_ptr->plugInSpo2Value;
     }
+}
+
+void SPO2Param::setSPO2D(short value)
+{
+    d_ptr->spo2DValue = value;
+}
+
+short SPO2Param::getSPO2D()
+{
+    return d_ptr->spo2DValue;
 }
 
 void SPO2Param::setSpHb(short value)
@@ -1347,6 +1365,7 @@ void SPO2Param::updateSubParamLimit(SubParamID id)
     {
     case SUB_PARAM_SPO2:
     case SUB_PARAM_SPO2_2:
+    case SUB_PARAM_SPO2_D:
         if (d_ptr->trendWidget)
         {
             d_ptr->trendWidget->updateLimit();
