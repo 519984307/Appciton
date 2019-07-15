@@ -355,15 +355,19 @@ void T5Provider::_result(unsigned char *packet)
 
     if (!(0xFF == packet[2] && 0xFF == packet[1]))
     {
-        _temp1 = static_cast<int>((packet[2] << 8) + packet[1]);
-
+        if (!_overRang1)
+        {
+            _temp1 = static_cast<int>((packet[2] << 8) + packet[1]);
+        }
         sensorOff1 = false;
     }
 
     if (!(0xFF == packet[4] && 0xFF == packet[3]))
     {
-        _temp2 = static_cast<int>((packet[4] << 8) + packet[3]);
-
+        if (!_overRang2)
+        {
+            _temp2 = static_cast<int>((packet[4] << 8) + packet[3]);
+        }
         sensorOff2 = false;
     }
 
@@ -546,8 +550,9 @@ void T5Provider::_shotAlarm()
                 // 判断探头1是否超界
                 if (_overRang1)
                 {
+                    _temp1 = InvData();
                     // 探头1超界报警
-                    tempParam.setOneShotAlarm(TEMP_OVER_RANGR_1, true);
+                    tempParam.setOneShotAlarm(TEMP_OVER_RANGR_1, true);                    
                 }
                 else
                 {
@@ -573,6 +578,7 @@ void T5Provider::_shotAlarm()
                 // 判断探头2是否超界
                 if (_overRang2)
                 {
+                    _temp2 = InvData();
                     // 探头2超界报警
                     tempParam.setOneShotAlarm(TEMP_OVER_RANGR_2, true);
                 }
