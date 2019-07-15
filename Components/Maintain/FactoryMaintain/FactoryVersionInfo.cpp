@@ -39,6 +39,8 @@ public:
         ITEM_LAB_ECG_BOOTLOADER,
         ITEM_LAB_NIBP_VERSION,
         ITEM_LAB_NIBP_BOOTLOADER,
+        ITEM_LAB_NIBP_SLAVE_VERSION,
+        ITEM_LAB_NIBP_SLAVE_BOOTLOADER,
         ITEM_LAB_SPO2_VERSION,
         ITEM_LAB_SPO2_BOOTLOADER,
         ITEM_LAB_TEMP_VERSION,
@@ -153,6 +155,23 @@ void FactoryVersionInfo::layoutExec()
         layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
         d_ptr->labs.insert(FactoryVersionInfoPrivate
                            ::ITEM_LAB_NIBP_BOOTLOADER, labelRight);
+
+        // nibp 从片
+        labelLeft = new QLabel(trs("NIBPSlaveVersion") + "    ");
+        layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
+
+        labelRight = new QLabel;
+        layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
+        d_ptr->labs.insert(FactoryVersionInfoPrivate
+                           ::ITEM_LAB_NIBP_SLAVE_VERSION, labelRight);
+
+        labelLeft = new QLabel(trs("NIBPSlaveBootloader") + "    ");
+        layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
+
+        labelRight = new QLabel;
+        layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
+        d_ptr->labs.insert(FactoryVersionInfoPrivate
+                           ::ITEM_LAB_NIBP_SLAVE_BOOTLOADER, labelRight);
     }
 
     if (systemManager.isSupport(CONFIG_SPO2))
@@ -314,6 +333,38 @@ void FactoryVersionInfoPrivate::loadOptions()
     if (labs[ITEM_LAB_NIBP_BOOTLOADER])
     {
         labs[ITEM_LAB_NIBP_BOOTLOADER]->setText(versionSuffix);
+    }
+
+    // N5 从片
+    if (p)
+    {
+        version = p->getExtraVersionString();
+        versionSuffix = version.section(' ', -1);
+        version.remove(versionSuffix);
+    }
+    if (labs[ITEM_LAB_NIBP_SLAVE_VERSION])
+    {
+        if (version.isEmpty())
+        {
+            labs[ITEM_LAB_NIBP_SLAVE_VERSION]->hide();
+        }
+        else
+        {
+            labs[ITEM_LAB_NIBP_SLAVE_VERSION]->show();
+            labs[ITEM_LAB_NIBP_SLAVE_VERSION]->setText(version);
+        }
+    }
+    if (labs[ITEM_LAB_NIBP_SLAVE_BOOTLOADER])
+    {
+        if (version.isEmpty())  // 如果版本号不存在，不再显示其bootloader
+        {
+            labs[ITEM_LAB_NIBP_SLAVE_BOOTLOADER]->hide();
+        }
+        else
+        {
+            labs[ITEM_LAB_NIBP_SLAVE_BOOTLOADER]->show();
+            labs[ITEM_LAB_NIBP_SLAVE_BOOTLOADER]->setText(versionSuffix);
+        }
     }
 
     // spo2 version
