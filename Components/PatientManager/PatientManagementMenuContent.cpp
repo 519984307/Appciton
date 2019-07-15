@@ -123,7 +123,8 @@ void PatientManagementMenuContent::onBtnReleased()
             {
                 patientManager.newPatient();
             }
-            windowManager.showWindow(&patientInfoWindow , WindowManager::ShowBehaviorCloseIfVisiable);
+            windowManager.showWindow(&patientInfoWindow , WindowManager::ShowBehaviorCloseIfVisiable
+                                                        | WindowManager::ShowBehaviorCloseOthers);
         }
         break;
         case PatientManagementMenuContentPrivate::ITEM_BTN_NEW_PATIENT:
