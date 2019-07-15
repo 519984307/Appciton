@@ -1021,7 +1021,7 @@ Lower,过低,Lower
 EventList,事件列表,Event List
 PrintList,打印列表,Print List
 EventListPrint,事件列表,Event Log
-RealTimePrint,实时打印,RealTime Print
+RealTimePrint,实时打印,Realtime Print
 RealtimeSegmentWavePrint,片段实时波形打印,Realtime Segment Wave Print
 FrozenWavePrint,冻结波形打印,Frozen Wave Print
 FreezeTime,冻结时间,Freeze Time
