@@ -42,6 +42,10 @@
  *************************************************************************************************/
 void NIBPParam::_patientTypeChangeSlot(PatientType type)
 {
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        return;
+    }
     int enable = 0;
     setSwitchFlagType(true);
 
