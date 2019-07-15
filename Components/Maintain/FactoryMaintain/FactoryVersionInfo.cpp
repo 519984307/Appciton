@@ -58,6 +58,9 @@ public:
     void loadOptions();
 
     QMap <MenuItem, QLabel *> labs;
+
+    QLabel *n5SlaveLab;
+    QLabel *n5SlaveBootloaderLab;
 };
 
 FactoryVersionInfo::FactoryVersionInfo()
@@ -159,6 +162,7 @@ void FactoryVersionInfo::layoutExec()
         // nibp 从片
         labelLeft = new QLabel(trs("NIBPSlaveVersion") + "    ");
         layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
+        d_ptr->n5SlaveLab = labelLeft;
 
         labelRight = new QLabel;
         layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
@@ -167,6 +171,7 @@ void FactoryVersionInfo::layoutExec()
 
         labelLeft = new QLabel(trs("NIBPSlaveBootloader") + "    ");
         layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
+        d_ptr->n5SlaveBootloaderLab = labelLeft;
 
         labelRight = new QLabel;
         layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
@@ -347,9 +352,11 @@ void FactoryVersionInfoPrivate::loadOptions()
         if (version.isEmpty())
         {
             labs[ITEM_LAB_NIBP_SLAVE_VERSION]->hide();
+            n5SlaveLab->hide();
         }
         else
         {
+            n5SlaveLab->show();
             labs[ITEM_LAB_NIBP_SLAVE_VERSION]->show();
             labs[ITEM_LAB_NIBP_SLAVE_VERSION]->setText(version);
         }
@@ -358,10 +365,12 @@ void FactoryVersionInfoPrivate::loadOptions()
     {
         if (version.isEmpty())  // 如果版本号不存在，不再显示其bootloader
         {
+            n5SlaveBootloaderLab->hide();
             labs[ITEM_LAB_NIBP_SLAVE_BOOTLOADER]->hide();
         }
         else
         {
+            n5SlaveBootloaderLab->show();
             labs[ITEM_LAB_NIBP_SLAVE_BOOTLOADER]->show();
             labs[ITEM_LAB_NIBP_SLAVE_BOOTLOADER]->setText(versionSuffix);
         }
