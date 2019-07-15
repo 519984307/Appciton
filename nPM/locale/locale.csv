@@ -316,7 +316,7 @@ TEMPOverRangeAll,Temp全部超界,All Temp Out of Range
 TEMP1ProbeTypeError,Temp1探头类型错误,Temp1 Probe Type Error
 TEMP2ProbeTypeError,Temp2探头类型错误,Temp2 Probe Type Error
 TEMPProbeTypeErrorAll,Temp探头类型全部错误,All Temp Probe Type Error
-TEMPCommunicationStop,Temp通讯停止,Temp Communication Stop
+TEMPCommunicationStop,Temp通信中断,Temp Communication Stop
 celsius,℃,℃
 fahrenheit,℉,℉
 percent,%,%
@@ -365,7 +365,7 @@ ErrorLog,错误日志,Error Log
 SystemStatus,状态,Status
 SomeLimitAlarmDisabled,有超限报警被关闭,Some Limit Alarms Disabled
 PowerupRecorderPressed,前面板打印键短路,Front Panel Record Btn Stuck
-PowerupCommunicationStop,前面板通讯停止,Front Panel Comm. Stop
+PowerupCommunicationStop,前面板通信中断,Front Panel Comm. Stop
 WiFiMenu,无线网络,Wifi
 WiFiMenuDesc,无线网络,Wifi
 Switch,开关,Switch
@@ -598,11 +598,11 @@ ECGC4LeadOff,ECGC4导联脱落,ECG C4 Lead Off
 ECGC5LeadOff,ECGC5导联脱落,ECG C5 Lead Off
 ECGC6LeadOff,ECGC6导联脱落,ECG C6 Lead Off
 ECGOverLoad,ECG过载,ECG Over Load
-ECGCommunicationStop,ECG通讯停止,ECG Communication Stop
+ECGCommunicationStop,ECG通信中断,ECG Communication Stop
 ECG12LSnapShot,12导 快照,12 Lead SnapShot
 ECGAcquiring12L,获取12导,Acquiring 12 Lead
 ECGAcquired12L,获取12导结束,Acquire 12 Lead Complete
-RESPCommunicationStop,Resp通讯停止,Resp Communication Stop
+RESPCommunicationStop,Resp通信中断,Resp Communication Stop
 RESPCheckElecrodes,Resp检查电极,Resp Check Electrodes
 Apnea,Resp窒息,Apnea
 SPO2Low,SpO2低,SpO2 Low
@@ -1538,7 +1538,7 @@ TEMPCalibrateOhm,校准电阻值,Resistance
 TEMPModuleNotCalibration1,Temp模块通道1未定标,Temp Channel 1 Not Calibration
 TEMPModuleNotCalibration2,Temp模块通道2未定标,Temp Channel 2 Not Calibration
 TEMPModuleDisable,Temp模块禁用,Temp Module Disable
-TEMPCommunicationStop,Temp通信停止,Temp Communication Stop
+TEMPCommunicationStop,Temp通信中断,Temp Communication Stop
 TEMPChannel,Temp通道,Temp Channel
 TEMPCalibrate,Temp校准 ,Temp Calibrate
 N2O,N2O,N2O
