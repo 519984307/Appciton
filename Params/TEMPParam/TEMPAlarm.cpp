@@ -318,17 +318,8 @@ const char *TEMPOneShotAlarm::toString(int id)
  *************************************************************************************************/
 bool TEMPOneShotAlarm::isRemoveAfterLatch(int id)
 {
-    switch (id)
-    {
-    case TEMP_OVER_RANGR_1:
-    case TEMP_OVER_RANGR_2:
-    case TEMP_OVER_RANGR_ALL:
-    case TEMP_ONESHOT_ALARM_COMMUNICATION_STOP:
-    case TEMP_ONESHOT_ALARM_MODULE_DISABLE:
-        return false;
-    default:
-        return true;
-    }
+    Q_UNUSED(id)
+    return false;
 }
 
 bool TEMPOneShotAlarm::isAlarmed(int id)

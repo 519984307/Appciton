@@ -12,6 +12,8 @@
 #pragma once
 #include "PatientInfoWidgetInterface.h"
 #include "PatientDefine.h"
+#include <QStackedWidget>
+#include <QPainter>
 
 class QLabel;
 class PatientInfoWidget : public PatientInfoWidgetInterface
@@ -26,6 +28,11 @@ public:
 
     void getText(QString &bed, QString &name, QString &type);
 
+    void setAlarmPause(int seconds);
+
+protected:
+    void paintEvent(QPaintEvent *e);
+
 private slots:
     void _releaseHandle(IWidget *);
 
@@ -33,4 +40,6 @@ private:
     QLabel *_bed;
     QLabel *_patientName;
     QLabel *_patientType;
+    QLabel *_alarmPauseMessage;
+    QStackedWidget *_stack;
 };

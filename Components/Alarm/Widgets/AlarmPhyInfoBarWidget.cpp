@@ -151,12 +151,6 @@ void AlarmPhyInfoBarWidget::_releaseHandle(IWidget *iWidget)
 {
     Q_UNUSED(iWidget)
 
-    if (_alarmPauseTime > 0)
-    {
-        // do not show the alarm window when in alarm pause state
-        return;
-    }
-
     //报警少于一个时，不显示。
     int total = alarmIndicator.getAlarmCount(_alarmType);
     if (total < 1)
