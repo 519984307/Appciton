@@ -356,7 +356,7 @@ static void _initProviderParam(void)
             alertor.addOneShotSource(oneShotAlarmSource);
 
             RESPWaveWidget *respWaveWidget = new RESPWaveWidget("RESPWaveWidget",
-                    paramInfo.getParamName(PARAM_RESP));
+                    trs(paramInfo.getParamName(PARAM_RESP)));
             RESPTrendWidget *respTrendWidget = new RESPTrendWidget();
             respDupParam.setTrendWidget(respTrendWidget);
             respParam.setWaveWidget(respWaveWidget);
