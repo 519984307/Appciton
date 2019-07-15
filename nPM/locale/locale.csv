@@ -1570,7 +1570,7 @@ PageNum,页,Page
 ImportFiles,导入文件,ImportFiles
 LoadConfigMenuContent,加载配置,Load Config
 LoadConfigMenuContentDesc,加载配置,Load Config
-ConfigManagerPassword,配置管理密码,Config Manager Password
+ConfigManagerPassword,配置管理密码,Config Manage Password
 ConfigEditCodeMarkerMenu,Code Marker,Code Marker
 ConfigEditCodeMarkerMenuDesc,Code Marker,Code Marker
 ConfigEditIBPMenuDesc,有创血压设置,IBP Desc
