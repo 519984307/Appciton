@@ -132,7 +132,7 @@ ECGGain,增益,Gain
 ECGPacemaker,起搏器,Pacemaker
 ECGSweepSpeed,波形速度,Sweep Speed
 ECGQRSToneVolume,QRS 音量,QRS Volume
-BeatVol,脉搏音量,Beat Vol
+BeatVol,脉搏音量,Beat Volume
 ECGMenu,ECG,ECG
 ECGSTSWitch,ST开关,ST SWitch
 ECGSTPoint,ST点,ST Point
