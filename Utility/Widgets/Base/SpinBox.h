@@ -93,6 +93,12 @@ public:
      */
     void setStringList(QStringList strs);
 
+    /**
+     * @brief setStartValue 设置起始值
+     * @param value
+     */
+    void setStartValue(int value);
+
 signals:
     void valueChange(int value, int scale);
 
