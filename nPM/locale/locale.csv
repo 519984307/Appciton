@@ -431,7 +431,7 @@ ReceivingPatients,接收病人,Receiving Patients
 RelievePatient,解除病人,Discharge Patient
 Discharge,解除病人,Discharge
 isRelievePatient,是否解除病人,Whether to discharge patient?
-isCleanPatient,是否清除当前病人数据,Whether to clean current patient data?
+isCleanPatient,是否清除当前病人数据,Whether to clean the current patient data?
 CleanPatientData,清除当前病人数据,Clean current Patient Data
 WhetherStandby,是否进入待机？,Whether to enter the standby machine？
 RemoveAndRecePatient,"解除当前病人,接收新病人?",Relieving the current patient and receiving new patients?
