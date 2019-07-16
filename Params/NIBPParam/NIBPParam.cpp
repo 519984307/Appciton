@@ -1445,6 +1445,16 @@ bool NIBPParam::getNeoDisState()
     return _isNeoDisable;
 }
 
+void NIBPParam::setCalibrateState(bool flag)
+{
+    _CalibrateState = flag;
+}
+
+bool NIBPParam::isCalibrateState()
+{
+    return _CalibrateState;
+}
+
 /**************************************************************************************************
  * 停止测量。
  *************************************************************************************************/
@@ -1528,7 +1538,7 @@ NIBPParam::NIBPParam()
       _connectedFlag(false), _connectedProvider(false),
       _text(InvStr()),
       _reply(false), _result(false), _manometerPressure(InvData()), _isMaintain(false), _firstAutoFlag(false),
-      _autoStatFlag(false), _zeroSelfTestFlag(false), _isNeoDisable(false),
+      _autoStatFlag(false), _zeroSelfTestFlag(false), _isNeoDisable(false), _CalibrateState(true),
       _activityMachine(NULL), _oldState(0)
 {
     nibpCountdownTime.getInstance();
