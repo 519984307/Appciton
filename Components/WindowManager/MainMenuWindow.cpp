@@ -19,6 +19,7 @@
 #include "PrintSettingMenuContent.h"
 #include "MeasureSettingMenuContent.h"
 #include "PatientManagementMenuContent.h"
+#include "IConfig.h"
 
 MainMenuWindow *MainMenuWindow::getInstance()
 {
@@ -32,7 +33,13 @@ MainMenuWindow *MainMenuWindow::getInstance()
         instance->addMenuContent(new AlarmLimitMenuContent);
         instance->addMenuContent(new DataReviewMenuContent);
         instance->addMenuContent(new ScreenMenuContent);
-        instance->addMenuContent(new PrintSettingMenuContent);
+        int index = 0;
+        machineConfig.getNumValue("PrinterEnable", index);
+        if (index)
+        {
+            instance->addMenuContent(new PrintSettingMenuContent);
+        }
+
         instance->addMenuContent(new MeasureSettingMenuContent);
         instance->addMenuContent(new SystemMaintenanceMenuContent);
         instance->addMenuContent(new LoadConfigMenuContent);
