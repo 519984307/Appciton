@@ -20,6 +20,9 @@
 #include "ConfigManager.h"
 #include "RawDataCollector.h"
 #include "IConfig.h"
+#include "crc8.h"
+
+#define SOH             (0x01)  // upgrage packet header
 
 enum  // 数据包类型。
 {
@@ -50,6 +53,7 @@ enum  // 设置命令。
 {
     CMD_SET_MODE = 0x00,      // 设置工作模式
     CMD_SET_APNE_TIME = 0x01,  // 设置窒息时间
+    CMD_ENTER_UPGRADE_MODE = 0x03, // 进入升级模式
     CMD_SET_O2 = 0x04,        // 设置氧气补偿的浓度
     CMD_SET_N20 = 0x05,       // 设置笑气补偿的浓度
     CMD_ZERO_CAL = 0x06,      // 模块校零命令。
@@ -395,6 +399,107 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
     }
 }
 
+bool BLMCO2Provider::_checkUpgradePacketValid(const unsigned char *data, unsigned int len)
+{
+    unsigned int minPacketLen = 5;
+    if ((NULL == data) || (len < minPacketLen))
+    {
+        debug("Invalid packet!\n");
+        debug("%s: FCS not match!\n", qPrintable(getName()));
+        return false;
+    }
+
+    unsigned char crc = calcCRC(data, (len - 1));
+    if (data[len - 1] != crc)
+    {
+//        outHex(data, (int)len);
+//        debug("%s: FCS not match : %x!\n", qPrintable(getName()), crc);
+        return false;
+    }
+
+    return true;
+}
+
+void BLMCO2Provider::_readUpgradeData()
+{
+    unsigned char buff[ringBuffLen];
+    int len = uart->read(buff, ringBuffLen);
+    if (len <= 0)
+    {
+        return;
+    }
+
+    int startIndex = 0;
+    bool isok;
+    unsigned char v = ringBuff.head(isok);
+
+    if (isok && len > 0)
+    {
+        if ((!_isLastSOHPaired) && (v == SOH) && (buff[0] == SOH))  // SOH为数据包起始数据。
+        {
+            _isLastSOHPaired = true;
+            startIndex = 1;                  // 说明有连续两个SOH出现，需要丢弃一个。
+        }
+    }
+
+    for (int i = startIndex; i < len; i++)
+    {
+        ringBuff.push(buff[i]);
+        if (buff[i] != SOH)
+        {
+            _isLastSOHPaired = false;
+            continue;
+        }
+
+        _isLastSOHPaired = false;
+        i++;
+        if (i >= len)
+        {
+            break;
+        }
+
+        if (buff[i] == SOH)                    // 剔除。
+        {
+            _isLastSOHPaired = true;
+            continue;
+        }
+
+        ringBuff.push(buff[i]);
+    }
+}
+
+bool BLMCO2Provider::_sendUpgradeData(const unsigned char *data, unsigned int len)
+{
+    if ((NULL == data) || (0 == len))
+    {
+        return false;
+    }
+
+    if (SOH != data[0])
+    {
+        // 协议数据以SOH字节开始
+        debug("Invalid command!");
+        return false;
+    }
+
+    int index = 0;
+    unsigned char sendBuf[2 * len];
+
+    sendBuf[index++] = data[0];
+    for (unsigned int i = 1; i < len; i++)
+    {
+        if (SOH == data[i])
+        {
+            // 对SOH字节进行转义
+            sendBuf[index++] = SOH;
+        }
+
+        sendBuf[index++] = data[i];
+    }
+//    outHex(sendBuf, index);
+    return writeData(sendBuf, index) == index;
+}
+
 /**************************************************************************************************
  * 计算校验和。
  *************************************************************************************************/
@@ -436,28 +541,85 @@ bool BLMCO2Provider::attachParam(Param &param)
  *************************************************************************************************/
 void BLMCO2Provider::dataArrived(void)
 {
-    readData();
-    if (ringBuff.dataSize() < _packetLen)
+    if (upgradeIface == NULL)
     {
-        return;
-    }
-
-    unsigned char buff[64];
-    while (ringBuff.dataSize() >= _packetLen)
-    {
-        if ((ringBuff.at(0) == 0xAA) && (ringBuff.at(1) == 0x55))
+        readData();
+        if (ringBuff.dataSize() < _packetLen)
         {
-            for (int i = 0; i < _packetLen; i++)
+            return;
+        }
+
+        unsigned char buff[64];
+        while (ringBuff.dataSize() >= _packetLen)
+        {
+            if ((ringBuff.at(0) == 0xAA) && (ringBuff.at(1) == 0x55))
             {
-                buff[i] = ringBuff.at(0);
+                for (int i = 0; i < _packetLen; i++)
+                {
+                    buff[i] = ringBuff.at(0);
+                    ringBuff.pop(1);
+                }
+                _unpacket(buff);
+            }
+            else
+            {
+    //            debug("BLMCO2Provider discard data = 0x%x", ringBuff.at(0));
                 ringBuff.pop(1);
             }
-            _unpacket(buff);
         }
-        else
+    }
+    else
+    {
+        _readUpgradeData();
+        unsigned char packet[570];
+        int minPacketLen = 5;
+        while (ringBuff.dataSize() >= minPacketLen)
         {
-//            debug("BLMCO2Provider discard data = 0x%x", ringBuff.at(0));
-            ringBuff.pop(1);
+            if (ringBuff.at(0) != SOH)
+            {
+                // debug("discard (%s:%x)\n", qPrintable(getName()), ringBuff.at(0));
+                ringBuff.pop(1);
+                continue;
+            }
+
+            int len = (ringBuff.at(1) + (ringBuff.at(2) << 8));
+            if ((len <= 0) || (len > 570))
+            {
+                ringBuff.pop(1);
+                break;
+            }
+            if (len > ringBuff.dataSize()) // 数据还不够，继续等待。
+            {
+                break;
+            }
+
+            // 数据包不会超过packet长度，当出现这种情况说明发生了不可预料的错误，直接丢弃该段数据。
+            if (len > static_cast<int>(sizeof(packet)))
+            {
+                ringBuff.pop(1);
+                continue;
+            }
+
+            // 将数据包读到buff中。
+            for (int i = 0; i < len; i++)
+            {
+                packet[i] = ringBuff.at(0);
+                ringBuff.pop(1);
+            }
+
+            if (_checkUpgradePacketValid(packet, len))
+            {
+                if (upgradeIface)
+                {
+                    upgradeIface->handlePacket(&packet[3], len - 4);
+                }
+            }
+            else
+            {
+                outHex(packet, len);
+                debug("FCS error (%s)\n", qPrintable(getName()));
+                ringBuff.pop(1);
+            }
         }
     }
 }
@@ -585,11 +747,56 @@ void BLMCO2Provider::setWorkMode(CO2WorkMode mode)
     writeData(cmd, sizeof(cmd));
 }
 
+void BLMCO2Provider::enterUpgradeMode()
+{
+    unsigned char cmd[5] = {0};
+    cmd[0] = 0xAA;
+    cmd[1] = 0x55;
+    cmd[2] = CMD_ENTER_UPGRADE_MODE;
+    cmd[3] = 0x0;
+
+    _calcCheckSum(cmd);
+    writeData(cmd, sizeof(cmd));
+}
+
+void BLMCO2Provider::setUpgradeIface(BLMProviderUpgradeIface *iface)
+{
+    upgradeIface = iface;
+}
+
+bool BLMCO2Provider::sendUpgradeCmd(unsigned char cmdId, const unsigned char *data, unsigned int len)
+{
+    // 数据包长度包括包头、包长、帧类型、数据和校验和，即：数据长度＋4。
+    unsigned int minPacketLen = 5;
+    unsigned int maxPacketLen = (1 << 9);
+    unsigned int cmdLen = len + minPacketLen;
+    unsigned char cmdBuf[maxPacketLen] = {0};
+    if (cmdLen > maxPacketLen)
+    {
+        debug("Comand too long!");
+        return false;
+    }
+
+    cmdBuf[0] = SOH;
+    cmdBuf[1] = (cmdLen & 0xFF);
+    cmdBuf[2] = ((cmdLen >> 8) & 0xFF);
+    cmdBuf[3] = cmdId;
+    if ((NULL != data) && (0 != len))
+    {
+        qMemCopy(cmdBuf + 4, data, len);
+    }
+
+    cmdBuf[cmdLen - 1] = calcCRC(cmdBuf, (cmdLen - 1));
+    return _sendUpgradeData(cmdBuf, cmdLen);
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
 BLMCO2Provider::BLMCO2Provider(const QString &name)
-    : Provider(name), CO2ProviderIFace(), _status(CO2ProviderStatus())
+    : Provider(name), CO2ProviderIFace(), _status(CO2ProviderStatus()),
+      upgradeIface(NULL),
+      _isLastSOHPaired(false)
 {
     UartAttrDesc portAttr(9600, 8, 'N', 1, _packetLen);
     if (name == "MASIMO_CO2")

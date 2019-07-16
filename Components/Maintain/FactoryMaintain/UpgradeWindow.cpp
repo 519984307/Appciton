@@ -84,6 +84,12 @@ UpgradeWindow::UpgradeWindow()
             trs(UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_T5)));
     }
 
+    if (systemManager.isSupport(CONFIG_CO2))
+    {
+        d_ptr->upgradeModuleCbo->addItem(
+            trs(UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_CO2)));
+    }
+
 #ifdef ENABLE_O2_APNEASTIMULATION
     if (systemManager.isSupport(CONFIG_O2))
     {
