@@ -45,7 +45,7 @@ static KeyActionDesc _baseKeys[] =
     KeyActionDesc("", "", "main.png",  SoftkeyActionBase::mainsetup
                     , SOFT_BASE_KEY_NR, true, QColor(27, 79, 147)),
     KeyActionDesc("", "Patient", "PatientInfo.png", SoftkeyActionBase::patientInfo),
-    KeyActionDesc("", "NewPatient", "PatientNew.png", SoftkeyActionBase::patientNew),
+    KeyActionDesc("", "Admit", "PatientNew.png", SoftkeyActionBase::patientNew),
     KeyActionDesc("", "Discharge", "PatientDischarge.png", SoftkeyActionBase::patientRelieve),
     KeyActionDesc("", "ECGCalcLead", "LeadSelection.png", SoftkeyActionBase::ecgLeadChange),
     KeyActionDesc("", "AlarmLimitMenu", "limitSet.png", SoftkeyActionBase::limitMenu),
