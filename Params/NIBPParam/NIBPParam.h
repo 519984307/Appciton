@@ -310,8 +310,6 @@ public:
 
     void setDisableState(bool flag);
 
-    bool getNeoDisState();
-
 signals:
     /**
      * @brief statBtnState 设置NIBP菜单中的STAT按键状态

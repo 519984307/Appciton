@@ -120,7 +120,7 @@ void NIBPParam::initParam(void)
 }
 
 /**************************************************************************************************
- * NIBP错误,模块禁用。
+ * NIBP错误,模块禁用。  // 禁用前如果不是新生儿禁用需要setDisableState（）
  *************************************************************************************************/
 void NIBPParam::errorDisable(void)
 {
@@ -1438,11 +1438,6 @@ bool NIBPParam::isZeroSelfTestState()
 void NIBPParam::setDisableState(bool flag)
 {
     _isNIBPDisable = flag;
-}
-
-bool NIBPParam::getNeoDisState()
-{
-    return _isNeoDisable;
 }
 
 /**************************************************************************************************
