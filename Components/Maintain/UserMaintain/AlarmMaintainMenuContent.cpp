@@ -66,13 +66,13 @@ void AlarmMaintainMenuContentPrivate::loadOptions()
 {
     int index;
 
-    systemConfig.getNumValue("Alarms|MinimumAlarmVolume", index);
-    combos[ITEM_CBO_MIN_ALARM_VOLUME]->setCurrentIndex(index);
-
     systemConfig.getNumValue("Alarms|AlarmPauseTime", index);
     combos[ITEM_CBO_ALARAM_PAUSE_TIME]->setCurrentIndex(index);
 
 #ifndef CLOSE_USELESS_ALARM_FUNCTION
+    systemConfig.getNumValue("Alarms|MinimumAlarmVolume", index);
+    combos[ITEM_CBO_MIN_ALARM_VOLUME]->setCurrentIndex(index);
+
     systemConfig.getNumValue("Alarms|AlarmOffPrompting", index);
     combos[ITEM_CBO_ALARM_CLOSE_PROMPT_TIME]->setCurrentIndex(index);
 
@@ -113,7 +113,6 @@ void AlarmMaintainMenuContentPrivate::loadOptions()
 #ifdef DISABLED_ALARM_LATCH
     combos[ITEM_CBO_ALARM_LATCH_LOCK]->setEnabled(false);
 #endif
-    combos[ITEM_CBO_MIN_ALARM_VOLUME]->setEnabled(false);
 }
 
 void AlarmMaintainMenuContentPrivate::
@@ -123,6 +122,7 @@ void AlarmMaintainMenuContentPrivate::
     {
     case ITEM_CBO_MIN_ALARM_VOLUME:
     {
+#ifndef CLOSE_USELESS_ALARM_FUNCTION
         systemConfig.setNumValue("Alarms|MinimumAlarmVolume", index);
 
         int volume = 0;
@@ -133,6 +133,7 @@ void AlarmMaintainMenuContentPrivate::
             systemConfig.setNumValue("Alarms|DefaultAlarmVolume", volume);
         }
         soundManager.setVolume(SoundManager::SOUND_TYPE_ALARM, static_cast<SoundManager::VolumeLevel>(volume));
+#endif
     }
     break;
     case ITEM_CBO_ALARAM_PAUSE_TIME:
@@ -202,14 +203,14 @@ void AlarmMaintainMenuContentPrivate::defaultIndexInit()
     Config defalutConfig(ORGINAL_SYSTEM_CFG_FILE);
 
     index = 0;
-    defalutConfig.getNumValue("Alarms|MinimumAlarmVolume", index);
-    defaultIndexMap[ITEM_CBO_MIN_ALARM_VOLUME] = index;
-
-    index = 0;
     defalutConfig.getNumValue("Alarms|AlarmPauseTime", index);
     defaultIndexMap[ITEM_CBO_ALARAM_PAUSE_TIME] = index;
 
 #ifndef CLOSE_USELESS_ALARM_FUNCTION
+    index = 0;
+    defalutConfig.getNumValue("Alarms|MinimumAlarmVolume", index);
+    defaultIndexMap[ITEM_CBO_MIN_ALARM_VOLUME] = index;
+
     index = 0;
     defalutConfig.getNumValue("Alarms|AlarmOffPrompting", index);
     defaultIndexMap[ITEM_CBO_ALARM_CLOSE_PROMPT_TIME] = index;
@@ -275,6 +276,7 @@ void AlarmMaintainMenuContent::layoutExec()
     QLabel *label;
     int itemID;
 
+#ifndef CLOSE_USELESS_ALARM_FUNCTION
     // 最小报警音量
     label = new QLabel(trs("MinimumALarmVolume"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -293,7 +295,7 @@ void AlarmMaintainMenuContent::layoutExec()
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_MIN_ALARM_VOLUME, comboBox);
     // 设置声音触发方式
     connect(comboBox, SIGNAL(itemFocusChanged(int)), this, SLOT(onPopupListItemFocusChanged(int)));
-
+#endif
     // 报警暂停时间
     label = new QLabel(trs("AlarmPauseTime"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
