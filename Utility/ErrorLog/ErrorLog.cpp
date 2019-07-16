@@ -330,15 +330,12 @@ ErrorLog::Summary ErrorLog::getSummary()
         summary.oldestErrorDate = item->getTime();
     }
 
-    unsigned num = 0;
+    unsigned int num = 0;
     systemConfig.getNumValue("ErrorLogEraseTime", num);
     if(num > 0)
     {
         summary.lastEraseTimeDate = QDateTime::fromTime_t(num).toString("yyyy-MM-dd HH:mm:ss");
     }
-
-    systemConfig.getNumValue("TotalShockCount", num);
-    summary.totalShockCount = num;
 
     return summary;
 }
