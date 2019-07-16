@@ -189,15 +189,6 @@ void TEMPParam::setTEMP(int16_t t1, int16_t t2, int16_t td)
     }
     else
     {
-        if (t1 > 500)
-        {
-            // 体温超界则认为是无效值
-            t1 = InvData();
-        }
-        if (t2 > 500)
-        {
-            t2 = InvData();
-        }
         _t1Value = t1;
         _t2Value = t2;
         _tdValue = td;
