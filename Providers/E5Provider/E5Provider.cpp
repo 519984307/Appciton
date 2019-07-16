@@ -297,11 +297,15 @@ void E5Provider::_handleRESPRawData(const unsigned char *data, unsigned /*len*/)
     {
         flag |= INVALID_WAVE_FALG_BIT;
         resp = getRESPBaseLine();
-        respParam.setLeadoff(true);
+        respParam.setLeadoff(true, _isFirstLeadOff);
     }
     else
     {
         respParam.setLeadoff(false);
+        if (_isFirstLeadOff)
+        {
+            _isFirstLeadOff = false;
+        }
     }
 
     resp &= 0x7FFF;
@@ -951,7 +955,6 @@ void E5Provider::disconnected(void)
             alarmSource->clear();
             alarmSource->setOneShotAlarm(RESP_ONESHOT_ALARM_COMMUNICATION_STOP, true);
         }
-        respParam.setLeadoff(false);
         respParam.setRR(InvData());
         if (-1 != waveID.indexOf(WAVE_RESP))
         {
@@ -997,7 +1000,6 @@ void E5Provider::reconnected(void)
             respOneShotAlarm->clear();
             respOneShotAlarm->setOneShotAlarm(RESP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
         }
-        respParam.setLeadoff(false);
         respParam.setRR(InvData());
         if (-1 != waveID.indexOf(WAVE_RESP))
         {
@@ -1013,7 +1015,7 @@ void E5Provider::reconnected(void)
  * 构造。
  *************************************************************************************************/
 E5Provider::E5Provider() : BLMProvider("BLM_E5"), ECGProviderIFace(), _waveSampleRate(WAVE_SAMPLE_RATE_250),
-    _isFristConnect(false), _isSupportRESP(systemManager.isSupport(CONFIG_RESP))
+    _isFristConnect(false), _isFirstLeadOff(true), _isSupportRESP(systemManager.isSupport(CONFIG_RESP))
 {
     UartAttrDesc portAttr(460800, 8, 'N', 1);
     initPort(portAttr);
