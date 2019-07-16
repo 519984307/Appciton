@@ -527,8 +527,8 @@ Print,打印,Print
 SummaryDesc,摘要描述,Summary Description
 SummaryData,摘要数据,Summary Data
 AlarmList,报警列表,Alarm List
-PhyAlarmList,生理报警,PHY Alarm
-TechAlarmList,技术报警,TECH Alarm
+PhyAlarmList,生理报警,Physiological Alarm
+TechAlarmList,技术报警,Technical Alarm
 AlarmTime,时间,Time
 AlarmPriority,优先级,Priority
 AlarmInfo,信息,Message
@@ -1444,7 +1444,7 @@ AlarmType,报警类型,Alarm Type
 Technology,技术,Technology
 Physiology,生理,Physiology
 UserMaintainPassword,监护仪维护密码,Monitor Maintain Password
-UserMaintainSystem,监护仪维护,Monitor Maintain
+UserMaintain,监护仪维护,Monitor Maintain
 Department,部门,Department
 BedNumber,床号,Bed No.
 ModifyPassword,密码,Password
