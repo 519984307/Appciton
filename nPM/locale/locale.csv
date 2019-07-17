@@ -1254,7 +1254,7 @@ NORMAL,中,NORMAL
 LOW,低,LOW
 OFF,关闭,OFF
 ON,打开,ON
-NIBPInitialCuff,初始袖口气压,NIBP Initial Cuff
+NIBPInitialCuff,初始袖口气压,NIBP Initial Pressure
 IntervalTime,自动间隔时间,Interval Time
 ExportFileCompleted,导出文件完成,Export File Completed
 ExportFileFailed,导出文件失败,Export File Failed
