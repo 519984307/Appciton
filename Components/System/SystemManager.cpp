@@ -246,6 +246,9 @@ bool SystemManager::isSupport(ConfiguredFuncs funcs) const
     case CONFIG_TEMP:
         path = "TEMPEnable";
         break;
+    case CONFIG_PRINTER:
+        path = "PrinterEnable";
+        break;
     case CONFIG_WIFI:
         path = "WIFIEnable";
         break;
