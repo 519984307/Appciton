@@ -433,8 +433,8 @@ void WindowManager::onWindowHide(Dialog *w)
         if (top)
         {
             top->showMask(false);
-            top->show();
             d_ptr->curWindow = top;
+            top->show();
         }
         else
         {
