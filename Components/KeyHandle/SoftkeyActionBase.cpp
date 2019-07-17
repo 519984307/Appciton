@@ -372,8 +372,11 @@ void SoftkeyActionBase::systemBrightness(bool isPressed)
     {
         return;
     }
-    MainMenuWindow *w = MainMenuWindow::getInstance();
-    w->popup(trs("NormalFunctionMenu"), qVariantFromValue(QString("SystemBrightness")));
+    if (!nightModeManager.nightMode())
+    {
+        MainMenuWindow *w = MainMenuWindow::getInstance();
+        w->popup(trs("NormalFunctionMenu"), qVariantFromValue(QString("SystemBrightness")));
+    }
 }
 
 void SoftkeyActionBase::keyVolume(bool isPressed)
