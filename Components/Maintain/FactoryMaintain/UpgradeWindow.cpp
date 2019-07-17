@@ -22,7 +22,6 @@
 #include "MessageBox.h"
 #include "LanguageManager.h"
 #include <QProcess>
-#include "IConfig.h"
 
 class UpgradeWindowPrivate
 {
@@ -93,9 +92,7 @@ UpgradeWindow::UpgradeWindow()
     }
 #endif
 
-    int index = 0;
-    machineConfig.getNumValue("PrinterEnable", index);
-    if (index)
+    if (systemManager.isSupport(CONFIG_PRINTER))
     {
         d_ptr->upgradeModuleCbo->addItem(
                     trs(UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_PRT48)));
