@@ -309,13 +309,31 @@ QList<QPainterPath> TrendSubWaveWidget::generatorPainterPath(const TrendGraphInf
             qreal dia = _mapValue(_valueY, diaData);
             qreal map = _mapValue(_valueY, mapData);
 
-            path.moveTo(x - 3, sys - 3);
-            path.lineTo(x, sys);
-            path.lineTo(x + 3, sys - 3);
+            if (sys == _valueY.start )
+            {
+                path.moveTo(x - 3, sys + 3);
+                path.lineTo(x, sys);
+                path.lineTo(x + 3, sys + 3);
+            }
+            else
+            {
+                path.moveTo(x - 3, sys - 3);
+                path.lineTo(x, sys);
+                path.lineTo(x + 3, sys - 3);
+            }
 
-            path.moveTo(x - 3, dia + 3);
-            path.lineTo(x, dia);
-            path.lineTo(x + 3, dia + 3);
+            if (dia == _valueY.end)
+            {
+                path.moveTo(x - 3, dia - 3);
+                path.lineTo(x, dia);
+                path.lineTo(x + 3, dia - 3);
+            }
+            else
+            {
+                path.moveTo(x - 3, dia + 3);
+                path.lineTo(x, dia);
+                path.lineTo(x + 3, dia + 3);
+            }
 
             path.moveTo(x, sys);
             path.lineTo(x, dia);
