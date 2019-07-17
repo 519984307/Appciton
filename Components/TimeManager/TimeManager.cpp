@@ -191,9 +191,11 @@ TimeManager::~TimeManager()
 void TimeManager::setSystemTime(const QDateTime &datetime)
 {
     QString cmd = QString("date -s \"%1\"").arg(datetime.toString("yyyy-MM-dd hh:mm:ss"));
-    QProcess::execute(cmd);
-    QProcess::execute("hwclock --systohc");
-    QProcess::execute("sync");
+    QProcess process;
+    process.execute(cmd);
+    process.execute("hwclock --systohc");
+    process.execute("sync");
+    process.waitForFinished();
     _curTime = datetime.toTime_t();
 }
 
