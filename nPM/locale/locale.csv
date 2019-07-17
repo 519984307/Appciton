@@ -21,8 +21,8 @@ Neonate,新生儿,Neo
 AlarmLimit,报警限,Alarm Limit
 Other,其它,Other
 Notch,陷波,Notch
-MachineConfigIsUpdatedNow,机器配置现在已经更新。,Machine Config Is Updated Now.
-IsRebootMachine,是否重启机器,Is Reboot Machine
+MachineConfigIsUpdatedNow,机器配置现在已经更新。,Machine config is updated now.
+IsRebootMachine,是否重启机器,Is reboot machine
 UpdateHint,更新提示,Update Hint
 EditPassWordDesc,修改密码,Edit Password
 EditPassWord,修改密码,Edit Password
@@ -192,7 +192,7 @@ NIBPZEROING,校零中,ZEROING
 NIBPMenu,NIBP,NIBP
 NIBPMenuDesc,NIBP,NIBP
 NIBPDirectiveTimeout,指令超时,Directive Timeout
-NIBPModuleEnterFail,进入校准模式失败,Calibrate Mode Enter Fail
+NIBPModuleEnterFail,进入校准模式失败,Calibrate mode enter fail
 NIBPCalibrateModelEnterFail,进入校准模式失败,Calibrate Mode Enter Fail
 EnterCalibrateMode,进入校准模式,Enter Calibrate
 QuitCalibrateMode,退出校准模式,Quit Calibrate
@@ -202,12 +202,12 @@ QuitPressureContrlMode,退出压力操控模式,Quit Pressure Control
 EnterPressureContrlMode,进入压力操控模式,Enter Pressure Control
 EnterZeroMode,进入校零模式,Enter Zero
 QuitZeroMode,退出校零模式,Quit Zero
-OperationFailedPleaseAgain,"操作失败,请重试!","Operation Failed , Please Again!"
+OperationFailedPleaseAgain,"操作失败,请重试!","Operation failed , Please retry!"
 PumpControl,气泵充气速度,Pump Charging Rate
 ValveControl,气阀控制,Valve Control
 InflationPressure,充气压力,Inflation Pressure
 OverpressureProtect,过压保护,Overpressure Protect
-NIBPPressureControlModelEnterFail,进入压力控制模式失败,Pressure Control Enter Fail
+NIBPPressureControlModelEnterFail,进入压力控制模式失败,Pressure control enter fail
 NIBPModuleDisable,NIBP模块禁用,NIBP Module Disable
 CO2ApneaTime,窒息时间,Apnea Time
 CO2SweepSpeed,波形速度,Sweep Speed
@@ -741,9 +741,9 @@ NIBPHardwareError,血压硬件错误,NIBP Hardware Error
 NIBPTransducerOverRange,血压传感器超界,NIBP Transducer Over Range
 NIBPEEPROMFailure,血压内存出错,NIBP EEPROM Failure
 NIBPServiceError,血压服务模式错误,NIBP Service Error
-NIBPServiceErrorReturn,血压服务模式错误，请退出！,"NIBP Service Error, Please Return!"
+NIBPServiceErrorReturn,血压服务模式错误，请退出！,"NIBP service error, Please return!"
 NIBPServiceWait,血压服务模式等待中,NIBP Service Wait
-NIBPServiceWaitAgain,"血压服务模式等待中, 请重试!","NIBP Service Wait, Please Again!"
+NIBPServiceWaitAgain,"血压服务模式等待中, 请重试!","NIBP service wait, Please retry!"
 CalibratePoint1,校准点1,Calibration point1
 CalibratePoint2,校准点2,Calibration point2
 ServiceCalibrate,校准,Calibrate
@@ -1001,8 +1001,7 @@ TransferSelectedRescue,传输选择的营救事件,Select Rescue Incident to Tra
 TransferType,传输类型,Transfer Type
 TransferSelect,传输选择项,Transfer Selection
 TransferAll,传输所有,Transfer All
-EraseSelectedRescue,删除选择的营救,Erase Selected Rescue
-EraseSelectedRescueData,删除选择的营救数据？,Erase Selected Rescue Data?
+EraseSelectedRescueData,是否删除选择的营救数据？,Whether to erase selected rescue data?
 EraseSelect,擦除选择项,Erase Select
 EraseAll,擦除全部,Erase All
 UpDownPage,上下翻页,Up Down Page
@@ -1084,7 +1083,7 @@ Summary,概要,Summary
 SummaryReportComplete,概要报告完成！,Summary Report Complete!
 ExportToUSB,导出到U盘,Export to U-Disk
 Clear,清除,Clear
-ClearAllRescueData,清除所有营救数据？,Clear All Rescue Data?
+ClearAllRescueData,是否清除所有营救数据？,Whether to clear all the rescue data?
 ECGRhythm,ECG节率,ECG Rhythm
 ECGForeAnalysis,ECG前台分析,Foreground ECG Analysis
 ShockDelivery,释放电击,Shock Delivery
@@ -1397,7 +1396,7 @@ IBP2PressureCalibration,IBP通道2校准,IBP2 Pressure Calibration
 CO2ModuleMaintenance,二氧化碳模块维护,CO2 Module Maintenance
 NIBPPressureTest,NIBP压力测试,NIBP Pressure Test
 NIBPLeakageDetection,NIBP泄露检测,NIBP Leakage Detection
-NIBPServiceModuleErrorQuitTryAgain,NIBP服务模块错误，请退出重试,NIBP Service Module Error，Please quit and retry!
+NIBPServiceModuleErrorQuitTryAgain,NIBP服务模块错误，请退出重试,NIBP service module error，Please quit and retry!
 ECGModuleCalibration,ECG模块校准,ECG Module Calibration
 TouchScreenCalibration,触摸屏校准,Touch Screen Calibration
 TouchScreen,触摸屏,Touch Screen
