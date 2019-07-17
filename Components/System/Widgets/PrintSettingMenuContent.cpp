@@ -464,7 +464,7 @@ void PrintSettingMenuContentPrivate::wavesUpdate(QList<int> &waveIDs, QStringLis
     {
         // resp
         waveIDs.append(WAVE_RESP);
-        waveNames.append(paramInfo.getParamWaveformName(WAVE_RESP));
+        waveNames.append(trs(paramInfo.getParamWaveformName(WAVE_RESP)));
     }
 
     if (systemManager.isSupport(CONFIG_SPO2))

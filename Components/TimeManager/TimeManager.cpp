@@ -110,6 +110,8 @@ void TimeManager::mainRun(unsigned t)
     {
         _curTime = t - 100 * 3600;
         _elapseStartTime = _elapseStartTime - 100 * 3600;
+        QDateTime dt = QDateTime::fromTime_t(_curTime);
+        setSystemTime(dt);
         systemTick.resetLastTime();
     }
     else

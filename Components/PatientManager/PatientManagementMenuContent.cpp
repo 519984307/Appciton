@@ -78,7 +78,7 @@ void PatientManagementMenuContent::layoutExec()
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
 
     // newPatient
-    btn = new Button(trs("NewPatient"));
+    btn = new Button(trs("AdmitPatient"));
     btn->setButtonStyle(Button::ButtonTextOnly);
     btn->setProperty("Item", qVariantFromValue(index));
     glayout->addWidget(btn, index, 1);
