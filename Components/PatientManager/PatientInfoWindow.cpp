@@ -739,7 +739,7 @@ void PatientInfoWindow::showEvent(QShowEvent *ev)
     d_ptr->loadOptions();
     if (patientManager.isNewPatient())
     {
-        setWindowTitle(trs("NewPatient"));
+        setWindowTitle(trs("AdmitPatient"));
     }
     else
     {

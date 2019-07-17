@@ -163,6 +163,7 @@ void ErrorLogWindow::init()
     }
     else
     {
+        d_ptr->eraseBtn->setEnabled(true);
         d_ptr->table->setFocusPolicy(Qt::StrongFocus);
     }
     d_ptr->usbCheckTimer->start();
@@ -267,7 +268,7 @@ void ErrorLogWindow::eraseReleased()
     {
         errorLog.clear();
         init();
-        unsigned timestamp = QDateTime::currentDateTime().toTime_t();
+        unsigned int timestamp = QDateTime::currentDateTime().toTime_t();
         systemConfig.setNumValue("ErrorLogEraseTime", timestamp);
         systemConfig.save();
         systemConfig.saveToDisk();
