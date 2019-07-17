@@ -33,6 +33,7 @@
 #include "NIBPPressureControlContent.h"
 #include "IConfig.h"
 #include "LanguageManager.h"
+#include "NIBPMonitorStateDefine.h"
 
 class NIBPRepairMenuWindowPrivate
 {
@@ -44,13 +45,15 @@ public:
 
     bool replyFlag;                     // 进入维护模式标志
     bool repairError;                   // 维护模式错误
+    NIBPMonitorStateID _oldMonitorState;
 };
 
 NIBPRepairMenuWindowPrivate::NIBPRepairMenuWindowPrivate()
     : messageBoxWait(NULL),
       messageBoxError(NULL),
       replyFlag(false),
-      repairError(false)
+      repairError(false),
+      _oldMonitorState(NIBP_MONITOR_STANDBY_STATE)
 {
 }
 
@@ -93,6 +96,7 @@ void NIBPRepairMenuWindow::init()
     machineConfig.getStrValue("NIBP", str);
     if (str == "BLM_N5")
     {
+        d_ptr->_oldMonitorState = (NIBPMonitorStateID)nibpParam.curStatusType();
         nibpParam.changeMode(NIBP_STATE_MACHINE_SERVICE);
     }
     else
@@ -211,6 +215,7 @@ void NIBPRepairMenuWindow::hideEvent(QHideEvent *event)
     if (str == "BLM_N5")
     {
         nibpParam.changeMode(NIBP_STATE_MACHINE_MONITOR);
+        nibpParam.switchState(d_ptr->_oldMonitorState);
     }
     MenuWindow::hideEvent(event);
 }
