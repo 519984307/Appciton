@@ -448,7 +448,7 @@ void ServiceErrorLogMenu::eraseBtnClick()
         errorLog.clear();
         loadData();
         init();
-        unsigned timestamp = QDateTime::currentDateTime().toTime_t();
+        unsigned int timestamp = QDateTime::currentDateTime().toTime_t();
         systemConfig.setNumValue("ErrorLogEraseTime", timestamp);
         systemConfig.save();
         systemConfig.saveToDisk();
