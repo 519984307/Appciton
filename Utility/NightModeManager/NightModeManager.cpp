@@ -14,7 +14,6 @@
 #include "ConfigManager.h"
 #include "RunningStatusBarInterface.h"
 #include "NIBPParamInterface.h"
-#include "SoundManagerInterface.h"
 #include "ConfigManagerInterface.h"
 
 class NightModeManagerPrivate
@@ -160,6 +159,40 @@ void NightModeManager::setNightMode(bool nightMode)
 bool NightModeManager::nightMode()
 {
     return d_ptr->isNightMode;
+}
+
+void NightModeManager::setBrightness(BrightnessLevel level)
+{
+    if (d_ptr->isNightMode)
+    {
+        SystemManagerInterface *systemManager = SystemManagerInterface::getSystemManager();
+        systemManager->enableBrightness(level);
+    }
+}
+
+void NightModeManager::setSoundVolume(SoundManagerInterface::SoundType soundType, SoundManagerInterface::VolumeLevel volumeLevel)
+{
+    if (d_ptr->isNightMode)
+    {
+        SoundManagerInterface *soundManager = SoundManagerInterface::getSoundManager();
+        soundManager->setVolume(soundType, static_cast<SoundManagerInterface::VolumeLevel>(volumeLevel));
+    }
+}
+
+void NightModeManager::setNibpStopMeasure(bool stopNibpMeasure)
+{
+    if (d_ptr->isNightMode)
+    {
+        if (stopNibpMeasure)
+        {
+            NIBPParamInterface *nibpParam = NIBPParamInterface::getNIBPParam();
+            nibpParam->stopMeasure();
+            if (nibpParam->isSTATMeasure())
+            {
+                nibpParam->setSTATMeasure(false);
+            }
+        }
+    }
 }
 
 NightModeManagerPrivate::NightModeManagerPrivate()
