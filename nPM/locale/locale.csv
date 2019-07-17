@@ -428,8 +428,8 @@ GetPatientInfo,病人信息获取,Get Patient Info
 RelievePatient,解除病人,Discharge Patient
 Discharge,解除病人,Discharge
 isRelievePatient,是否解除病人,Whether to discharge patient?
+CleanPatientData,清除当前病人数据,Clean Current Patient Data
 isCleanPatient,是否清除当前病人数据,Whether to clean the current patient data?
-CleanPatientData,清除当前病人数据,Clean current Patient Data
 WhetherStandby,是否进入待机？,Whether to enter the standby machine？
 RemoveAndRecePatient,"解除当前病人,接收新病人?",Relieving the current patient and receiving new patients?
 ApplicationDataToReceivingPatients,将监护仪中已有数据应用于将被接收的病人？,Application data to receiving patients?
