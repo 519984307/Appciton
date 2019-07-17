@@ -52,27 +52,9 @@ void PatientInfoWidget::setAlarmPause(int seconds)
         }
         else
         {
-            QString minute;
-            QString sec;
-            if ((seconds / 60) < 10)
-            {
-                minute = QString("0%1").arg(seconds / 60);
-            }
-            else
-            {
-                minute = QString::number(seconds / 60);
-            }
-            if ((seconds % 60) < 10)
-            {
-                sec = QString("0%1").arg(seconds % 60);
-            }
-            else
-            {
-                sec = QString::number(seconds % 60);
-            }
-            s = QString("%1 %2: %3").arg(trs("AlarmPause"))
-                                    .arg(minute)
-                                    .arg(sec);
+            s = QString("%1 %2 : %3").arg(trs("AlarmPause"))
+                                    .arg(seconds / 60, 2, 10, QLatin1Char('0'))
+                                    .arg(seconds % 60, 2, 10, QLatin1Char('0'));
         }
 
         FontMangerInterface *fontManager = FontMangerInterface::getFontManager();
