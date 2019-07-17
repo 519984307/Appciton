@@ -446,4 +446,6 @@ void WindowManager::onWindowHide(Dialog *w)
         disconnect(w, SIGNAL(windowHide(Dialog *)), this, SLOT(onWindowHide(Dialog *)));
         d_ptr->timer->stop();
     }
+
+    QApplication::processEvents(QEventLoop::AllEvents);
 }
