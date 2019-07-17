@@ -193,9 +193,7 @@ void FactoryVersionInfo::layoutExec()
                            ::ITEM_LAB_TEMP_BOOTLOADER, labelRight);
     }
 
-    int index = 0;
-    machineConfig.getNumValue("PrinterEnable", index);
-    if (index)
+    if (systemManager.isSupport(CONFIG_PRINTER))
     {
         labelLeft = new QLabel(trs("PRT48Version") + "    ");
         layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
