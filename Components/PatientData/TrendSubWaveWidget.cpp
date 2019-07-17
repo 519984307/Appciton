@@ -572,6 +572,7 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
                 nibpOption.setAlignment(Qt::AlignBottom | Qt::AlignHCenter);
                 barPainter.drawText(upDataRect, trendStr, nibpOption);
                 nibpOption.setAlignment(Qt::AlignTop | Qt::AlignHCenter);
+                mapStr = "(" + mapStr + ")";
                 barPainter.drawText(downDataRect, mapStr, nibpOption);
             }
             else
