@@ -225,7 +225,7 @@ void RescueDataListNewWidget::_btnPressed()
 
     if (0 == *(iter + index))
     {
-        QIcon pixmap("/usr/local/nPM/icons/select.png");
+        QIcon pixmap = themeManger.getIcon(ThemeManager::IconChecked);
         btn->setIcon(pixmap);
         *(iter + index) = 1;
     }
