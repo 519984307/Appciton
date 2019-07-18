@@ -1438,8 +1438,8 @@ AlarmType,报警类型,Alarm Type
 Technology,技术,Technology
 Physiology,生理,Physiology
 UserMaintainPassword,监护仪维护密码,Monitor Maintain Password
+Department,科室,Department
 UserMaintain,监护仪维护,Monitor Maintain
-Department,部门,Department
 BedNumber,床号,Bed No.
 ModifyPassword,密码,Password
 ChangeBedNumberRight,更改床号权限,Changing Bed Number
