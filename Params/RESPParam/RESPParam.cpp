@@ -295,9 +295,9 @@ void RESPParam::setRR(short rrValue)
 /**************************************************************************************************
  * 电极脱落。
  *************************************************************************************************/
-void RESPParam::setLeadoff(bool flag, bool isFirstLeadOff)
+void RESPParam::setLeadoff(bool flag, bool isFirstConnect)
 {
-    if (isFirstLeadOff)
+    if (!isFirstConnect)
     {
         d_ptr->leadOff = flag;
         return;

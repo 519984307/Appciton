@@ -205,7 +205,7 @@ protected:
 private:
     int _waveSampleRate;
     int _isFristConnect;
-    bool _isFirstLeadOff;
+    bool _isRespFirstConnect;
     bool _isSupportRESP;
 
 private:

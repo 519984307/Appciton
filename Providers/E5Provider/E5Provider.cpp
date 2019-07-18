@@ -297,14 +297,14 @@ void E5Provider::_handleRESPRawData(const unsigned char *data, unsigned /*len*/)
     {
         flag |= INVALID_WAVE_FALG_BIT;
         resp = getRESPBaseLine();
-        respParam.setLeadoff(true, _isFirstLeadOff);
+        respParam.setLeadoff(true, _isRespFirstConnect);
     }
     else
     {
         respParam.setLeadoff(false);
-        if (_isFirstLeadOff)
+        if (!_isRespFirstConnect)
         {
-            _isFirstLeadOff = false;
+            _isRespFirstConnect = true;
         }
     }
 
@@ -1015,7 +1015,7 @@ void E5Provider::reconnected(void)
  * 构造。
  *************************************************************************************************/
 E5Provider::E5Provider() : BLMProvider("BLM_E5"), ECGProviderIFace(), _waveSampleRate(WAVE_SAMPLE_RATE_250),
-    _isFristConnect(false), _isFirstLeadOff(true), _isSupportRESP(systemManager.isSupport(CONFIG_RESP))
+    _isFristConnect(false), _isRespFirstConnect(false), _isSupportRESP(systemManager.isSupport(CONFIG_RESP))
 {
     UartAttrDesc portAttr(460800, 8, 'N', 1);
     initPort(portAttr);
