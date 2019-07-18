@@ -70,11 +70,13 @@ public:
     bool effective;           //有效测量数据
     int messageFontSize;      // 非虚线显示时字体大小
     int messageInvFontSize;   // 虚线显示时字体大小
+    unsigned _time;
 
     static const int margin = 1;
     void setCountDown(const QString &time);
     void layoutExec(QHBoxLayout *layout);  // 布局
     void adjustValueLayout();
+    void updateMeasureTime();
     QVBoxLayout *valueLayout;
 };
 
@@ -95,20 +97,7 @@ void NIBPTrendWidget::setResults(int16_t sys, int16_t dia, int16_t map, unsigned
 {
     //当测量结束，实时压力值显示“---”
     d_ptr->pressureString = InvStr();
-
-    if (0 == time)
-    {
-        d_ptr->measureTime = "";
-    }
-    else
-    {
-        QString timeStr("@ ");
-        QString tmpStr;
-        timeDate.getTime(time , tmpStr , false);
-//        tmpStr.sprintf("%02d:%02d", timeDate.getTimeHour(time), timeDate.getTimeMinute(time));
-        timeStr += tmpStr;
-        d_ptr->measureTime = timeStr;
-    }
+    d_ptr->_time = time;
 
     if (systemManager.getCurWorkMode() == WORK_MODE_NORMAL)
     {
@@ -379,6 +368,23 @@ void NIBPTrendWidgetPrivate::adjustValueLayout()
     }
 }
 
+void NIBPTrendWidgetPrivate::updateMeasureTime()
+{
+    if (_time == 0)
+    {
+        measureTime = "";
+    }
+    else
+    {
+        QString timeStr("@ ");
+        QString tmpStr;
+        timeDate.getTime(_time, tmpStr, false);
+        timeStr += tmpStr;
+        measureTime = timeStr;
+    }
+    lastMeasureCount->setText(measureTime);
+}
+
 /**************************************************************************************************
  * 单位更改。
  *************************************************************************************************/
@@ -458,6 +464,8 @@ void NIBPTrendWidget::showValue(void)
         showNormalStatus(d_ptr->countDown, psrc);
         showNormalStatus(d_ptr->model, psrc);
     }
+
+    d_ptr->updateMeasureTime();
     d_ptr->adjustValueLayout();
 }
 
