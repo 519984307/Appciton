@@ -262,12 +262,8 @@ const char *SPO2OneShotAlarm::toString(int id)
  *************************************************************************************************/
 bool SPO2OneShotAlarm::isRemoveAfterLatch(int id)
 {
-    if (id == SPO2_ONESHOT_ALARM_COMMUNICATION_STOP)
-    {
-        return false;
-    }
-
-    return true;
+    Q_UNUSED(id)
+    return false;
 }
 
 /**************************************************************************************************

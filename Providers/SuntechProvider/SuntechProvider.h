@@ -104,7 +104,6 @@ private:
     int _pressure;
 
     QTimer *_timer;
-
     QTimer *_cmdTimer;
 
     bool _isModuleDataRespond;              // 是否为版本信息回复

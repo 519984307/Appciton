@@ -19,6 +19,8 @@
 #include <QDebug>
 #include <unistd.h>
 #include <QTimerEvent>
+#include "TimeDate.h"
+#include "USBManager.h"
 
 struct StoreDataType
 {
@@ -270,7 +272,9 @@ void RawDataCollectorPrivate::handleCO2RawData(const unsigned char *data, int le
         QTextStream stream(&content);
         unsigned int tar = (data[0]) | (data[1] << 8) | (data[2] << 16);
         unsigned int ref = (data[3]) | (data[4] << 8) | (data[5] << 16);
-        stream << tar << "," << ref << endl;
+        QString time;
+        timeDate.getTime(time, true);
+        stream << tar << "," << ref << "," << time << endl;
 
         stream.flush();
 
@@ -597,7 +601,7 @@ RawDataCollector::RawDataCollector()
 void RawDataCollector::collectData(RawDataCollector::CollectDataType type, const unsigned char *data, int len,
                                    bool stop)
 {
-    if (!d_ptr->collectionStatus[type])
+    if (!d_ptr->collectionStatus[type] || !usbManager.isUSBExist())
     {
         // not enable yet
         return;

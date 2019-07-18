@@ -193,19 +193,22 @@ void FactoryVersionInfo::layoutExec()
                            ::ITEM_LAB_TEMP_BOOTLOADER, labelRight);
     }
 
-    labelLeft = new QLabel(trs("PRT48Version") + "    ");
-    layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
-    labelRight = new QLabel;
-    layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
-    d_ptr->labs.insert(FactoryVersionInfoPrivate
-                       ::ITEM_LAB_PRT48_VERSION, labelRight);
+    if (systemManager.isSupport(CONFIG_PRINTER))
+    {
+        labelLeft = new QLabel(trs("PRT48Version") + "    ");
+        layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
+        labelRight = new QLabel;
+        layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
+        d_ptr->labs.insert(FactoryVersionInfoPrivate
+                           ::ITEM_LAB_PRT48_VERSION, labelRight);
 
-    labelLeft = new QLabel(trs("PRT48Bootloader") + "    ");
-    layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
-    labelRight = new QLabel;
-    layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
-    d_ptr->labs.insert(FactoryVersionInfoPrivate
-                       ::ITEM_LAB_PRT48_BOOTLOADER, labelRight);
+        labelLeft = new QLabel(trs("PRT48Bootloader") + "    ");
+        layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
+        labelRight = new QLabel;
+        layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
+        d_ptr->labs.insert(FactoryVersionInfoPrivate
+                           ::ITEM_LAB_PRT48_BOOTLOADER, labelRight);
+    }
 
     // screen size
     labelLeft = new QLabel(trs("ScreenSize") + "    ");
@@ -363,8 +366,14 @@ void FactoryVersionInfoPrivate::loadOptions()
         versionSuffix = version.section(' ', -1);
         version.remove(versionSuffix);
     }
-    labs[ITEM_LAB_PRT48_VERSION]->setText(version);
-    labs[ITEM_LAB_PRT48_BOOTLOADER]->setText(versionSuffix);
+    if (labs[ITEM_LAB_PRT48_VERSION])
+    {
+        labs[ITEM_LAB_PRT48_VERSION]->setText(version);
+    }
+    if (labs[ITEM_LAB_PRT48_BOOTLOADER])
+    {
+        labs[ITEM_LAB_PRT48_BOOTLOADER]->setText(versionSuffix);
+    }
 
     // screen size
     str.clear();

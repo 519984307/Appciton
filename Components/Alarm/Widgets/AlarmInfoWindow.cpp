@@ -319,7 +319,24 @@ void AlarmInfoWindowPrivate::loadOption()
             if (i < count)
             {
                 node = nodeList.at(i);
-                alarmList.append(trs(node.alarmMessage));
+                QString nameStr;
+                switch (node.alarmSource->getAlarmPriority(node.alarmID))
+                {
+                case ALARM_PRIO_LOW:
+                    nameStr = "*";
+                    break;
+                case ALARM_PRIO_MED:
+                    nameStr = "**";
+                    break;
+                case ALARM_PRIO_HIGH:
+                    nameStr = "***";
+                    break;
+                default:
+                    break;
+                }
+                nameStr += " ";
+                nameStr += trs(node.alarmMessage);
+                alarmList.append(nameStr);
             }
         }
 
