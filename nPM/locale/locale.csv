@@ -952,7 +952,7 @@ RealTimePrintMidLead,实时打印中部导联,Real-Time Print Middle Lead
 RealTimePrintBottomLead,实时打印底部导联,Real-Time Print Bottom Lead
 ErrorPassWordERROR,密码错误!,Password Error!
 Warn,警告,Warning
-SureSafePopUpUDisk,是否安全弹出U盘?,Whether to safely pop up the U disk?
+SureSafePopUpUDisk,是否安全弹出U盘?,Whether to eject the USB flash disk safely?
 WarningNoUSB,没有找到U盘，请检查！,"Not find U disk, please check!"
 WarnLessUSBFreeSpace,U盘空间不足，请检查！,"U disk free space not enough, please check!"
 WarningNoImportFile,导入文件不存在，请检查！,"Import file does not exist, please check!"
