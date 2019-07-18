@@ -42,6 +42,10 @@
  *************************************************************************************************/
 void NIBPParam::_patientTypeChangeSlot(PatientType type)
 {
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        return;
+    }
     int enable = 0;
     setSwitchFlagType(true);
 
@@ -1401,7 +1405,7 @@ void NIBPParam::clearTrendListData()
     if (systemManager.isSupport(PARAM_NIBP) && _nibpDataTrendWidget)
     {
         _nibpDataTrendWidget->clearListData();
-        _nibpDataTrendWidget->adjustSize();
+        _nibpDataTrendWidget->update();
     }
 }
 

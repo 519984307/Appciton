@@ -389,6 +389,7 @@ void NIBPDataTrendWidget::updateWidgetConfig()
 void NIBPDataTrendWidget::clearListData()
 {
     _nibpNrendCacheMap.clear();
+    _table->clearContents();
 }
 
 void NIBPDataTrendWidget::updateUnit(UnitType unit)
