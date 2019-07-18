@@ -190,7 +190,7 @@ void TrendGraphWindow::onButtonReleased()
         }
         case TrendGraphWindowPrivate::ACTION_BTN_SET_WIDGET:
         {
-            windowManager.showWindow(&trendGraphSetWindow, WindowManager::ShowBehaviorHideOthers);
+            windowManager.showWindow(&trendGraphSetWindow, WindowManager::ShowBehaviorHideOthers | WindowManager::ShowBehaviorNoAutoClose);
             trendGraphSetWindow.setCurParam(d_ptr->waveWidget->getCurParamList());
             break;
         }
