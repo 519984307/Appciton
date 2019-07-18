@@ -1197,7 +1197,7 @@ void EventWindowPrivate::eventTrendUpdate()
             valueStr = sys + "/" + dia + "(" + map + ")";
             titleStr = paramInfo.getSubParamName(subId);
             titleStr = titleStr.left(titleStr.length() - 4);
-            valueFont = fontManager.numFont(25);
+            valueFont = fontManager.numFont(23);
             break;
         case SUB_PARAM_ART_PR:
         case SUB_PARAM_PA_PR:
