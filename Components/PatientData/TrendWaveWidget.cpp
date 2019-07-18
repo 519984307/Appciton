@@ -297,7 +297,6 @@ void TrendWaveWidget::setTimeInterval(ResolutionRatio timeInterval)
 
 void TrendWaveWidget::setWaveNumber(int num)
 {
-    trendWaveReset();
     _displayGraphNum = num;
     updateTimeRange();
 }
