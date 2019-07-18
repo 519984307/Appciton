@@ -445,9 +445,11 @@ void NIBPPressureControlContent::onOverpressureReleased(int index)
     }
     else
     {
+        d_ptr->pressureList.clear();
         if (!index)
         {
             d_ptr->overPressureProtect = true;
+            UnitType unit = nibpParam.getUnit();
             PatientType type = patientManager.getType();
             if (type == PATIENT_TYPE_ADULT)
             {
@@ -461,13 +463,37 @@ void NIBPPressureControlContent::onOverpressureReleased(int index)
             {
                 d_ptr->safePressure = 150;
             }
-            d_ptr->chargePressure->setRange(50, d_ptr->safePressure);
-            d_ptr->chargePressure->setValue(100);
+            for (int i = 50; i <= d_ptr->safePressure; i += 5)
+            {
+                if (unit != UNIT_MMHG)
+                {
+                    d_ptr->pressureList.append(Unit::convert(UNIT_KPA, UNIT_MMHG, i));
+                }
+                else
+                {
+                    d_ptr->pressureList.append(QString::number(i));
+                }
+            }
+            d_ptr->chargePressure->setStringList(d_ptr->pressureList);
+            d_ptr->chargePressure->setValue(10);
         }
         else
         {
+            UnitType unit = nibpParam.getUnit();
             d_ptr->overPressureProtect = false;
-            d_ptr->chargePressure->setRange(50, 300);
+            d_ptr->pressureList.clear();
+            for (int i = 50; i <= 300; i += 5)
+            {
+                if (unit != UNIT_MMHG)
+                {
+                    d_ptr->pressureList.append(Unit::convert(UNIT_KPA, UNIT_MMHG, i));
+                }
+                else
+                {
+                    d_ptr->pressureList.append(QString::number(i));
+                }
+            }
+            d_ptr->chargePressure->setStringList(d_ptr->pressureList);
         }
     }
 }
