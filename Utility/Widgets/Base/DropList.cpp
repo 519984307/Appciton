@@ -184,7 +184,7 @@ void DropList::paintEvent(QPaintEvent *ev)
 
 void DropList::setCurrentIndex(int index)
 {
-    if (index >= d_ptr->strList.count())
+    if (index >= d_ptr->strList.count() || d_ptr->curIndex == index)
     {
         return;
     }
