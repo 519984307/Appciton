@@ -32,7 +32,11 @@ MainMenuWindow *MainMenuWindow::getInstance()
         instance->addMenuContent(new AlarmLimitMenuContent);
         instance->addMenuContent(new DataReviewMenuContent);
         instance->addMenuContent(new ScreenMenuContent);
-        instance->addMenuContent(new PrintSettingMenuContent);
+        if (systemManager.isSupport(CONFIG_PRINTER))
+        {
+            instance->addMenuContent(new PrintSettingMenuContent);
+        }
+
         instance->addMenuContent(new MeasureSettingMenuContent);
         instance->addMenuContent(new SystemMaintenanceMenuContent);
         instance->addMenuContent(new LoadConfigMenuContent);
