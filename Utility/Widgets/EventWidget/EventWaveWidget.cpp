@@ -566,6 +566,37 @@ void EventWaveWidget::_drawWave(int index, QPainter &painter)
 
     bool start = true;
     int startIndex = (d_ptr->currentWaveStartSecond + d_ptr->durationBefore) * waveData->sampleRate;
+    QPainterPath path;
+    QRect rulerRect(d_ptr->startX + 25, waveDesc.mediumY, 100, 50);
+    switch (d_ptr->gain)
+    {
+    case ECG_EVENT_GAIN_X0125:
+        path.moveTo(d_ptr->startX +20, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 16);
+        painter.drawText(rulerRect, "1mV");
+        break;
+    case ECG_EVENT_GAIN_X025:
+        path.moveTo(d_ptr->startX + 20, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 8);
+        painter.drawText(rulerRect, "1mV");
+        break;
+    case ECG_EVENT_GAIN_X05:
+        path.moveTo(d_ptr->startX + 20, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 4);
+        painter.drawText(rulerRect, "1mV");
+        break;
+    case ECG_EVENT_GAIN_X10:
+        path.moveTo(d_ptr->startX + 20, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 2);
+        painter.drawText(rulerRect, "1mV");
+        break;
+    case ECG_EVENT_GAIN_X20:
+        path.moveTo(d_ptr->startX + 20, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 2);
+        painter.drawText(rulerRect, "0.5mV");
+        break;
+    case ECG_EVENT_GAIN_X40:
+        path.moveTo(d_ptr->startX + 20, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 2);
+        painter.drawText(rulerRect, "0.25mV");
+        break;
+    default:
+        break;
+    }
     for (int i = 0 + startIndex; (x2 - d_ptr->startX) < d_ptr->waveRagWidth; i++)
     {
         qint16 wave = waveData->waveData[i];
@@ -607,38 +638,22 @@ void EventWaveWidget::_drawWave(int index, QPainter &painter)
                 QPen pen = painter.pen();
                 pen.setStyle(Qt::SolidLine);
                 painter.setPen(pen);
-                QRect rulerRect(d_ptr->startX + 25, waveDesc.mediumY, 100, 50);
+
                 switch (d_ptr->gain)
                 {
                 case ECG_EVENT_GAIN_X0125:
-                    painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 16, d_ptr->startX + 20,
-                                     waveDesc.mediumY + 10 / d_ptr->pixelHPitch / 16);
-                    painter.drawText(rulerRect, "1mV");
+                    path.lineTo(d_ptr->startX + 20, waveDesc.mediumY + 10 / d_ptr->pixelHPitch / 16);
                     break;
                 case ECG_EVENT_GAIN_X025:
-                    painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 8, d_ptr->startX + 20,
-                                     waveDesc.mediumY + 10 / d_ptr->pixelHPitch / 8);
-                    painter.drawText(rulerRect, "1mV");
+                    path.lineTo(d_ptr->startX + 20, waveDesc.mediumY + 10 / d_ptr->pixelHPitch / 8);
                     break;
                 case ECG_EVENT_GAIN_X05:
-                    painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 4, d_ptr->startX + 20,
-                                     waveDesc.mediumY + 10 / d_ptr->pixelHPitch / 4);
-                    painter.drawText(rulerRect, "1mV");
+                    path.lineTo(d_ptr->startX + 20, waveDesc.mediumY + 10 / d_ptr->pixelHPitch / 4);
                     break;
                 case ECG_EVENT_GAIN_X10:
-                    painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 2, d_ptr->startX + 20,
-                                     waveDesc.mediumY + 10 / d_ptr->pixelHPitch / 2);
-                    painter.drawText(rulerRect, "1mV");
-                    break;
                 case ECG_EVENT_GAIN_X20:
-                    painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 2, d_ptr->startX + 20,
-                                     waveDesc.mediumY + 10 / d_ptr->pixelHPitch / 2);
-                    painter.drawText(rulerRect, "0.5mV");
-                    break;
                 case ECG_EVENT_GAIN_X40:
-                    painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 2, d_ptr->startX + 20,
-                                     waveDesc.mediumY + 10 / d_ptr->pixelHPitch / 2);
-                    painter.drawText(rulerRect, "0.25mV");
+                    path.lineTo(d_ptr->startX + 20, waveDesc.mediumY + 10 / d_ptr->pixelHPitch / 2);
                     break;
                 default:
                     break;
@@ -657,6 +672,10 @@ void EventWaveWidget::_drawWave(int index, QPainter &painter)
                               x2, waveDesc.mediumY + 10 / d_ptr->pixelHPitch / 2);
             painter.setPen(pen);
         }
+    }
+    if (!path.isEmpty())
+    {
+        painter.drawPath(path);
     }
 }
 
