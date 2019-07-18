@@ -1845,13 +1845,31 @@ QList<QPainterPath> generatorPainterPath(const GraphAxisInfo &axisInfo, const Tr
             qreal map = mapTrendYValue(iter->data[2], axisInfo, graphInfo);
 
             // draw nibp symbol
-            path.moveTo(x - TICK_LENGTH / 2, sys - 0.866 * TICK_LENGTH);
-            path.lineTo(x, sys);
-            path.lineTo(x + TICK_LENGTH / 2, sys - 0.866 * TICK_LENGTH);
+            if (sys == -axisInfo.validHeight)
+            {
+                path.moveTo(x - TICK_LENGTH / 2, sys + 0.866 * TICK_LENGTH);
+                path.lineTo(x, sys);
+                path.lineTo(x + TICK_LENGTH / 2, sys + 0.866 * TICK_LENGTH);
+            }
+            else
+            {
+                path.moveTo(x - TICK_LENGTH / 2, sys - 0.866 * TICK_LENGTH);
+                path.lineTo(x, sys);
+                path.lineTo(x + TICK_LENGTH / 2, sys - 0.866 * TICK_LENGTH);
+            }
 
-            path.moveTo(x - TICK_LENGTH / 2, dia + 0.866 * TICK_LENGTH);
-            path.lineTo(x, dia);
-            path.lineTo(x + TICK_LENGTH / 2, dia + 0.866 * TICK_LENGTH);
+            if (dia == 0)
+            {
+                path.moveTo(x - TICK_LENGTH / 2, dia - 0.866 * TICK_LENGTH);
+                path.lineTo(x, dia);
+                path.lineTo(x + TICK_LENGTH / 2, dia - 0.866 * TICK_LENGTH);
+            }
+            else
+            {
+                path.moveTo(x - TICK_LENGTH / 2, dia + 0.866 * TICK_LENGTH);
+                path.lineTo(x, dia);
+                path.lineTo(x + TICK_LENGTH / 2, dia + 0.866 * TICK_LENGTH);
+            }
 
             path.moveTo(x, sys);
             path.lineTo(x, dia);

@@ -49,6 +49,7 @@
 #include "StandbyWindow.h"
 #include "NIBPParam.h"
 #include "LanguageManager.h"
+#include "EventStorageManagerInterface.h"
 
 #define BACKLIGHT_DEV   "/sys/class/backlight/backlight/brightness"       // 背光控制文件接口
 
@@ -245,6 +246,9 @@ bool SystemManager::isSupport(ConfiguredFuncs funcs) const
         break;
     case CONFIG_TEMP:
         path = "TEMPEnable";
+        break;
+    case CONFIG_PRINTER:
+        path = "PrinterEnable";
         break;
     case CONFIG_WIFI:
         path = "WIFIEnable";
@@ -653,6 +657,13 @@ void SystemManager::setWorkMode(WorkMode workmode)
     }
     default:
         break;
+    }
+
+    // 切换模式时,清空当前正在储存的事件
+    EventStorageManagerInterface *eventStorageManager = EventStorageManagerInterface::getEventStorageManager();
+    if (eventStorageManager)
+    {
+        eventStorageManager->clearEventItemList();
     }
 
     // 添加当前工作模式改变信号，用作切换模式下的其他参数的及时更新信号

@@ -117,6 +117,11 @@ void SpinBox::setRange(int min, int max)
     }
     d_ptr->info.lowLimit = min;
     d_ptr->info.highLimit = max;
+    if (d_ptr->info.startValue > d_ptr->info.highLimit || d_ptr->info.startValue < d_ptr->info.lowLimit)
+    {
+        // 如果起始值不在范围内，设置起始值为最小值
+        d_ptr->info.startValue = min;
+    }
 }
 
 void SpinBox::getRange(int &min, int &max)
@@ -180,6 +185,11 @@ void SpinBox::setStringList(QStringList strs)
     d_ptr->info.highLimit = strs.count() - 1;
     d_ptr->info.lowLimit = 0;
     d_ptr->info.scale = 1;
+}
+
+void SpinBox::setStartValue(int value)
+{
+    d_ptr->info.startValue = value;
 }
 
 void SpinBox::onPopupDestroy()
