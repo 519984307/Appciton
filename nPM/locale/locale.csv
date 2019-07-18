@@ -1523,7 +1523,7 @@ FactoryVersionInfo,版本信息,Version Info
 FactoryVersionInfoDesc,版本信息,Version Info
 SelectStarterLogo,选择开始菜单,Select Starter Logo
 WaitingCalibration,等待校准,Waiting
-Calibrating,正在校准,
+Calibrating,正在校准,Calibrating
 TEMPCalibrate,校准,Calibrate
 is,是,is
 TEMP1,Temp1,Temp1
