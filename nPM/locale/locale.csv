@@ -530,7 +530,7 @@ AlarmTime,时间,Time
 AlarmPriority,优先级,Priority
 AlarmInfo,信息,Message
 High,高,High
-Medium,中,Medium
+Medium,中,Med
 Low,低,Low
 HRHigh,HR高,HR High
 HRLow,HR低,HR Low
