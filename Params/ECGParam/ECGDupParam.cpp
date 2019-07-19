@@ -221,10 +221,12 @@ void ECGDupParam::updatePR(short pr, PRSourceType type, bool isUpdatePr)
             if (_prValue != InvData())
             {
                 _trendWidget->setHRValue(_prValue, _currentHRSource);
+                paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
             }
             else
             {
                 _trendWidget->setHRValue(_prValue, HR_SOURCE_AUTO);
+                paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
             }
             _hrBeatFlag = false;
         }
@@ -234,6 +236,7 @@ void ECGDupParam::updatePR(short pr, PRSourceType type, bool isUpdatePr)
         {
             _hrBeatFlag = false;
             _trendWidget->setHRValue(_prValue, _hrSource);
+            paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
         }
         break;
         case HR_SOURCE_ECG:
@@ -326,16 +329,19 @@ void ECGDupParam::updateHR(short hr)
         {
             _hrBeatFlag = true;
             _trendWidget->setHRValue(_hrValue, HR_SOURCE_ECG);
+            paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
         }
         else if (_prValue != InvData())
         {
             _hrBeatFlag = false;
             _trendWidget->setHRValue(_prValue, _currentHRSource);
+            paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
         }
         else  // HR和PR都为无效时。
         {
             _hrBeatFlag = true;
             _trendWidget->setHRValue(_hrValue, HR_SOURCE_ECG);
+            paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
         }
     }
         break;
@@ -350,6 +356,7 @@ void ECGDupParam::updateHR(short hr)
             _hrBeatFlag = false;
         }
         _trendWidget->setHRValue(_hrValue, _hrSource);
+        paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
     }
         break;
     default:
@@ -521,6 +528,29 @@ void ECGDupParam::updateSubParamLimit(SubParamID id)
     if (id == SUB_PARAM_HR_PR)
     {
         _trendWidget->updateLimit();
+    }
+}
+
+void ECGDupParam::paramUpdateTimeout()
+{
+    HRSourceType source = getCurHRSource();
+    switch (source) {
+    case HR_SOURCE_ECG:
+        _hrValue = InvData();
+        if (_trendWidget != NULL)
+        {
+            _trendWidget->setHRValue(_hrValue, source);
+        }
+        break;
+    case HR_SOURCE_SPO2:
+        _prValue = InvData();
+        if (_trendWidget != NULL)
+        {
+            _trendWidget->setHRValue(_prValue, source);
+        }
+        break;
+    default:
+        break;
     }
 }
 
