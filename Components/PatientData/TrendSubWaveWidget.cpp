@@ -301,9 +301,9 @@ QList<QPainterPath> TrendSubWaveWidget::generatorPainterPath(const TrendGraphInf
             int mapData = iter->data[2];
             if (type != UNIT_MMHG)
             {
-                sysData = Unit::convert(type, UNIT_MMHG, iter->data[0], co2Param.getBaro()).toDouble();
-                diaData = Unit::convert(type, UNIT_MMHG, iter->data[1], co2Param.getBaro()).toDouble();
-                mapData = Unit::convert(type, UNIT_MMHG, iter->data[2], co2Param.getBaro()).toDouble();
+                sysData = Unit::convert(type, UNIT_MMHG, iter->data[0]).toDouble();
+                diaData = Unit::convert(type, UNIT_MMHG, iter->data[1]).toDouble();
+                mapData = Unit::convert(type, UNIT_MMHG, iter->data[2]).toDouble();
             }
             qreal sys = _mapValue(_valueY, sysData);
             qreal dia = _mapValue(_valueY, diaData);
