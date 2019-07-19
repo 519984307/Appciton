@@ -108,7 +108,7 @@ void T5Provider::handlePacket(unsigned char *data, int len)
     // 测量超界帧
     case T5_NOTIFY_OVERRANGE:
         _sendACK(data[0]);
-        _overRange(data);    // 超界改为上位机处理
+//        _overRange(data);    // 超界改为上位机处理
         break;
 
     // 探头脱落帧
