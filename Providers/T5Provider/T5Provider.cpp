@@ -101,13 +101,14 @@ void T5Provider::handlePacket(unsigned char *data, int len)
     // 测量数据
     case T5_NOTIFY_DATA:
         _sendACK(data[0]);
+        _limitHandle(data);     // 处理超界
         _result(data);
         break;
 
     // 测量超界帧
     case T5_NOTIFY_OVERRANGE:
         _sendACK(data[0]);
-        _overRange(data);
+        _overRange(data);    // 超界改为上位机处理
         break;
 
     // 探头脱落帧
@@ -595,6 +596,43 @@ void T5Provider::_shotAlarm()
         _tempd = InvData();
     }
     tempParam.setTEMP(_temp1, _temp2, _tempd);
+}
+
+void T5Provider::_limitHandle(unsigned char* packet)
+{
+    bool isAlarm = false;
+    if (!(0xFF == packet[2] && 0xFF == packet[1]))
+    {
+        int temp1 = static_cast<int>((packet[2] << 8) + packet[1]);
+        if ((temp1 < 150 || temp1 > 500) && _overRang1 == false)
+        {
+            _overRang1 = true;
+            isAlarm = true;
+        }
+        else if (temp1 > 150 && temp1 < 500 && _overRang1 == true)
+        {
+            _overRang1 = false;
+            isAlarm = true;
+        }
+    }
+    if (!(0xFF == packet[4] && 0xFF == packet[3]))
+    {
+        int temp2 = static_cast<int>((packet[4] << 8) + packet[3]);
+        if ((temp2 < 150 || temp2 > 500) && _overRang2 == false)
+        {
+            _overRang2 = true;
+            isAlarm = true;
+        }
+        else if(temp2 > 150 && temp2 < 500 && _overRang2 == true)
+        {
+            _overRang2 = false;
+            isAlarm = true;
+        }
+    }
+    if (isAlarm == true)
+    {
+        _shotAlarm();
+    }
 }
 
 /**************************************************************************************************

@@ -104,6 +104,8 @@ private:
     //报警显示
     void _shotAlarm();
 
+    void _limitHandle(unsigned char *packer);
+
     bool _disconnected;
     bool _overRang1;
     bool _overRang2;
