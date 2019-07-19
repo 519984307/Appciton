@@ -797,7 +797,12 @@ static void drawECGGain(RecordPage *page, QPainter *painter, const RecordWaveSeg
 {
     int rulerHeight = 10 * RECORDER_PIXEL_PER_MM; // height for 1.0 ECG gain
     QString str = "1 mV";
-    switch (waveInfo.waveInfo.ecg.gain)
+    ECGGain gain = waveInfo.waveInfo.ecg.gain;
+    if (gain == ECG_GAIN_AUTO)
+    {
+        gain = ecgParam.getECGAutoGain(ecgParam.waveIDToLeadID(waveInfo.id));
+    }
+    switch (gain)
     {
     case ECG_GAIN_X0125:
         rulerHeight /= 8;
