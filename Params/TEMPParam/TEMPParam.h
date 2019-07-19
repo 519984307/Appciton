@@ -123,6 +123,9 @@ signals:
      */
     void tempReset();
 
+protected slots:
+    virtual void paramUpdateTimeout();
+
 private slots:
     void onPaletteChanged(ParamID id);
 

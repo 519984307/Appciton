@@ -385,6 +385,7 @@ void SPO2Param::setSPO2(short spo2Value)
     if (NULL != _trendWidget)
     {
         _trendWidget->setSPO2Value(_spo2Value);
+        paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
     }
 
     if (NULL != _oxyCRGSPO2Trend)
@@ -932,6 +933,17 @@ void SPO2Param::initModule()
         return;
     }
     _provider->initModule();
+}
+
+void SPO2Param::paramUpdateTimeout()
+{
+    _spo2Value = InvData();
+    _piValue = InvData();
+    if (_trendWidget != NULL)
+    {
+        _trendWidget->setSPO2Value(_spo2Value);
+        _trendWidget->setPIValue(_piValue);
+    }
 }
 
 /**************************************************************************************************

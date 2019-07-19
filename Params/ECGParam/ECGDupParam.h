@@ -131,6 +131,10 @@ public:
 
     // 刷新参数上下限
     virtual void updateSubParamLimit(SubParamID id);
+
+protected slots:
+    virtual void paramUpdateTimeout();
+
 private slots:
     void onPaletteChanged(ParamID id);
 

@@ -134,6 +134,7 @@ void O2Param::setO2Concentration(int16_t o2)
     if (NULL != d_ptr->trendWidget)
     {
         d_ptr->trendWidget->setO2Value(d_ptr->o2Value);
+        paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
     }
 }
 
@@ -280,6 +281,15 @@ void O2Param::setVibrationReason(ApneaStimulationReason reason, bool sta)
                 d_ptr->updateApneaStimulationSta = false;
             }
         }
+    }
+}
+
+void O2Param::paramUpdateTimeout()
+{
+    d_ptr->o2Value = InvData();
+    if (d_ptr->trendWidget != NULL)
+    {
+        d_ptr->trendWidget->setO2Value(d_ptr->o2Value);
     }
 }
 

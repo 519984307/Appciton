@@ -442,6 +442,7 @@ void CO2Param::setEtCO2(short etco2)
     if (NULL != d_ptr->trendWidget)
     {
         d_ptr->trendWidget->setEtCO2Value(etco2);
+        paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
     }
 }
 
@@ -971,6 +972,18 @@ void CO2Param::setRespApneaStimulation(bool sta)
     else
     {
         o2Param->setVibrationReason(APNEASTIMULATION_REASON_RESP, false);
+    }
+}
+
+void CO2Param::paramUpdateTimeout()
+{
+    d_ptr->etco2Value = InvData();
+    d_ptr->fico2Value = InvData();
+
+    if (d_ptr->trendWidget != NULL)
+    {
+        d_ptr->trendWidget->setEtCO2Value(d_ptr->etco2Value);
+        d_ptr->trendWidget->setFiCO2Value(d_ptr->fico2Value);
     }
 }
 
