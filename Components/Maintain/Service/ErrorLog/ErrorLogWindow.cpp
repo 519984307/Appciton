@@ -261,7 +261,7 @@ void ErrorLogWindow::exportReleased()
 
 void ErrorLogWindow::eraseReleased()
 {
-    MessageBox messageBox(trs("ErrorLogErase"), trs("ComfirmClearErrorLog"));
+    MessageBox messageBox(trs("ErrorLogErase"), trs("ConfirmClearErrorLog"));
     windowManager.showWindow(&messageBox, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
     if (QDialog::Accepted == messageBox.result())
     {
