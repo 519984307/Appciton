@@ -468,6 +468,7 @@ NIBPWAITING,NIBP等待,NIBP Waiting
 NIBPNoResponse,无响应,No Response
 NIBPTemporarily,临时,Temporarily
 NIBPDisable,禁用,Disable
+NIBPNotCalibrate,未校准,Not Calibrate
 _1min,1 分钟,1 min
 _1.5min,1.5 分钟,1.5 min
 _2min,2 分钟,2 min
