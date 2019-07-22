@@ -46,7 +46,7 @@ public:
               etco2MaxVal(0),
               etco2MinVal(0),
               brVaule(InvData()),
-              baro(750),
+              baro(1013),
               connectedProvider(false),
               co2Switch(false),
               oxyCRGCO2Wave(NULL)
