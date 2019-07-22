@@ -95,14 +95,13 @@ private:
     //体温值
     void _result(unsigned char *packet);
 
-    //超界
-    void _overRange(unsigned char *packet);
-
     //探头脱离
     void _sensorOff(unsigned char *packet);
 
     //报警显示
     void _shotAlarm();
+
+    void _limitHandle(unsigned char *packer);
 
     bool _disconnected;
     bool _overRang1;
