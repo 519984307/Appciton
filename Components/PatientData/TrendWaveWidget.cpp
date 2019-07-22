@@ -172,7 +172,6 @@ void TrendWaveWidget::leftMoveEvent()
         EventInfoSegment event = _eventList.at(i);
         unsigned alarmTime = event.timestamp;
         unsigned curTime = _trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp;
-        int timeInterval = TrendDataSymbol::convertValue(_timeInterval);
         if (alarmTime < curTime)
         {
             // 事件时间小于当前页最左侧时间时,进行翻页操作
@@ -193,8 +192,7 @@ void TrendWaveWidget::leftMoveEvent()
             else
             {
                 // 将游标移到事件发生时刻
-                int index = (curTime - alarmTime) / timeInterval;
-                _cursorPosIndex = _cursorPosIndex + index;
+                _cursorPosIndex = _getTimeIndex(alarmTime);
 
                 int count = _displayGraphNum;
                 for (int i = 0; i < count; i++)
@@ -215,7 +213,6 @@ void TrendWaveWidget::rightMoveEvent()
         EventInfoSegment event = _eventList.at(i);
         unsigned alarmTime = event.timestamp;
         unsigned curTime = _trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp;
-        int timeInterval = TrendDataSymbol::convertValue(_timeInterval);
         if (alarmTime > curTime)
         {
             if (alarmTime > _rightTime)
@@ -234,8 +231,8 @@ void TrendWaveWidget::rightMoveEvent()
             }
             else
             {
-                int index = (alarmTime - curTime) / timeInterval;
-                _cursorPosIndex = _cursorPosIndex - index;
+                // 将游标移到事件发生时刻
+                _cursorPosIndex = _getTimeIndex(alarmTime);
 
                 int count = _displayGraphNum;
                 for (int i = 0; i < count; i++)
@@ -397,6 +394,9 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
                 unsigned t = _trendDataPack.at(i)->time;
                 if (t < lastTime)
                 {
+                    // 处理由于关机引起的数据未记录:向下一个存储数据移动的时间间隔个数
+                    int intervalNum = (lastTime - t) / interval + (((lastTime - t) % interval) ? 1 : 0);
+                    lastTime = lastTime - interval * intervalNum;
                     dataV3.data[0] = InvData();
                     dataV3.data[1] = InvData();
                     dataV3.data[2] = InvData();
@@ -462,6 +462,9 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
                 unsigned t = _trendDataPack.at(i)->time;
                 if (t < lastTime)
                 {
+                    // 处理由于关机引起的数据未记录:向下一个存储数据移动的时间间隔个数
+                    int intervalNum = (lastTime - t) / interval + (((lastTime - t) % interval) ? 1 : 0);
+                    lastTime = lastTime - interval * intervalNum;
                     dataV2.data[0] = InvData();
                     dataV2.data[1] = InvData();
                     dataV2.isAlarm = false;
@@ -904,6 +907,18 @@ double TrendWaveWidget::_getCursorPos(unsigned t)
     dpos = (t - _leftTime) * GRAPH_DATA_WIDTH / (_rightTime - _leftTime) + (_waveRegionWidth - GRAPH_DATA_WIDTH) / 2;
 
     return dpos;
+}
+
+unsigned TrendWaveWidget::_getTimeIndex(unsigned t)
+{
+    for (int i = 0; i < _trendGraphInfo.alarmInfo.count(); i++)
+    {
+        if (t == _trendGraphInfo.alarmInfo.at(i).timestamp)
+        {
+            return i;
+        }
+    }
+    return 0;
 }
 
 unsigned TrendWaveWidget::_getCursorTime(double pos)
