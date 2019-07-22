@@ -95,9 +95,6 @@ private:
     //体温值
     void _result(unsigned char *packet);
 
-    //超界
-    void _overRange(unsigned char *packet);
-
     //探头脱离
     void _sensorOff(unsigned char *packet);
 

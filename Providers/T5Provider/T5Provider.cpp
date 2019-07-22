@@ -108,7 +108,6 @@ void T5Provider::handlePacket(unsigned char *data, int len)
     // 测量超界帧
     case T5_NOTIFY_OVERRANGE:
         _sendACK(data[0]);
-//        _overRange(data);    // 超界改为上位机处理
         break;
 
     // 探头脱落帧
@@ -396,34 +395,6 @@ void T5Provider::_result(unsigned char *packet)
 }
 
 /**************************************************************************************************
- * 超界。
- *************************************************************************************************/
-void T5Provider::_overRange(unsigned char *packet)
-{
-    if (packet[1] == 0x00)
-    {
-        _overRang1 = false;
-        _overRang2 = false;
-    }
-    else if (packet[1] == 0x01)
-    {
-        _overRang1 = true;
-        _overRang2 = false;
-    }
-    else if (packet[1] == 0x02)
-    {
-        _overRang1 = false;
-        _overRang2 = true;
-    }
-    else if (packet[1] == 0x03)
-    {
-        _overRang1 = true;
-        _overRang2 = true;
-    }
-    _shotAlarm();
-}
-
-/**************************************************************************************************
  * 探头脱落。
  *************************************************************************************************/
 void T5Provider::_sensorOff(unsigned char *packet)
@@ -601,7 +572,7 @@ void T5Provider::_shotAlarm()
 void T5Provider::_limitHandle(unsigned char* packet)
 {
     bool isAlarm = false;
-    if (!(0xFF == packet[2] && 0xFF == packet[1]))
+    if (0xFF != packet[2])
     {
         int temp1 = static_cast<int>((packet[2] << 8) + packet[1]);
         if ((temp1 < 150 || temp1 > 500) && _overRang1 == false)
@@ -615,7 +586,7 @@ void T5Provider::_limitHandle(unsigned char* packet)
             isAlarm = true;
         }
     }
-    if (!(0xFF == packet[4] && 0xFF == packet[3]))
+    if (0xFF != packet[4])
     {
         int temp2 = static_cast<int>((packet[4] << 8) + packet[3]);
         if ((temp2 < 150 || temp2 > 500) && _overRang2 == false)
