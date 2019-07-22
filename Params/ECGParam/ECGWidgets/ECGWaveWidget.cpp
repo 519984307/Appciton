@@ -269,7 +269,7 @@ void ECGWaveWidget::_updateNotchInfo()
         return;
     }
     ECGNotchFilter notchFilter = ecgParam.getNotchFilter();
-    _notchInfo->setText(QString("%1%2")
+    _notchInfo->setText(QString("%1 %2")
                                .arg(trs("Notch"))
                                .arg(trs(ECGSymbol::convert(notchFilter))));
 }

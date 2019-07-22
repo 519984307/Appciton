@@ -41,7 +41,6 @@ static const char *nibpSelfErrorCode[] =
     "The air pump is unusual.\r\n",                           // 12
     "The sofaware of overpressure protect is unusual.\r\n",    // 13
     "Comparisons of pressure between master and Daemon fail to pass self-test"  // 14
-
 };
 
 static const char *nibpErrorCode[] =
@@ -109,6 +108,20 @@ void N5Provider::_selfTest(unsigned char *packet, int len)
             case 0x0d:
             case 0x0e:
                 errorStr += nibpSelfErrorCode[packet[i]];
+                break;
+            case 0x7f:
+            case 0x80:
+            case 0x81:
+            case 0x82:
+            case 0x83:
+            case 0x84:
+                errorStr += nibpErrorCode[packet[i] - 127];
+                break;
+            case 0x85:
+                nibpParam.setCalibrateState(false);
+            case 0x86:
+            case 0x87:
+                errorStr += nibpErrorCode[packet[i] - 127];
                 break;
             default:
                 errorStr += "Unknown mistake.\r\n";

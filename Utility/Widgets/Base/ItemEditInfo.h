@@ -16,7 +16,7 @@ struct ItemEditInfo
 {
     ItemEditInfo()
         : type(VALUE), highLimit(100), lowLimit(0),
-          curValue(50), scale(1), step(1)
+          curValue(50), scale(1), step(1), startValue(0)
     {
     }
 
@@ -32,6 +32,7 @@ struct ItemEditInfo
     int curValue;
     int scale;
     int step;
+    int startValue;
     QStringList list;
 };
 

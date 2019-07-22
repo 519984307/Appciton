@@ -310,6 +310,11 @@ public:
 
     void setDisableState(bool flag);
 
+    bool getNeoDisState();
+
+    void setCalibrateState(bool flag);  // 设置未校准导致禁用状态
+    bool isCalibrateState(void);
+
 signals:
     /**
      * @brief statBtnState 设置NIBP菜单中的STAT按键状态
@@ -363,6 +368,7 @@ private:
     bool _autoStatFlag;         // auto倒计时开启Stat标志
     bool _zeroSelfTestFlag;     //开机较零状态标志
     bool _isNeoDisable;         // 是否新生儿禁用
+    bool _CalibrateState;
 
 private:
     typedef QMap<NIBPStateMachineType, NIBPStateMachine *> MachineStateMap;

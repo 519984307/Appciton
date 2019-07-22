@@ -445,6 +445,15 @@ void EventStorageManager::clearEventTriggerFlag()
     d->_eventTriggerFlag = false;
 }
 
+void EventStorageManager::clearEventItemList()
+{
+    Q_D(EventStorageManager);
+    if (!d->eventItemList.isEmpty())
+    {
+        d->eventItemList.clear();
+    }
+}
+
 void EventStorageManager::newPatientHandle()
 {
     Q_D(EventStorageManager);

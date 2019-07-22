@@ -45,7 +45,7 @@ static KeyActionDesc _baseKeys[] =
     KeyActionDesc("", "", "main.png",  SoftkeyActionBase::mainsetup
                     , SOFT_BASE_KEY_NR, true, QColor(27, 79, 147)),
     KeyActionDesc("", "Patient", "PatientInfo.png", SoftkeyActionBase::patientInfo),
-    KeyActionDesc("", "NewPatient", "PatientNew.png", SoftkeyActionBase::patientNew),
+    KeyActionDesc("", "Admit", "PatientNew.png", SoftkeyActionBase::patientNew),
     KeyActionDesc("", "Discharge", "PatientDischarge.png", SoftkeyActionBase::patientRelieve),
     KeyActionDesc("", "ECGCalcLead", "LeadSelection.png", SoftkeyActionBase::ecgLeadChange),
     KeyActionDesc("", "AlarmLimitMenu", "limitSet.png", SoftkeyActionBase::limitMenu),
@@ -372,8 +372,11 @@ void SoftkeyActionBase::systemBrightness(bool isPressed)
     {
         return;
     }
-    MainMenuWindow *w = MainMenuWindow::getInstance();
-    w->popup(trs("NormalFunctionMenu"), qVariantFromValue(QString("SystemBrightness")));
+    if (!nightModeManager.nightMode())
+    {
+        MainMenuWindow *w = MainMenuWindow::getInstance();
+        w->popup(trs("NormalFunctionMenu"), qVariantFromValue(QString("SystemBrightness")));
+    }
 }
 
 void SoftkeyActionBase::keyVolume(bool isPressed)

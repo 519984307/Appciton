@@ -72,6 +72,11 @@ public:
      */
     QString getPhyAlarmMessage(ParamID paramId, int alarmType, bool isOneShot);
 
+    /**
+     * @brief clearEventItemList 清空当前存储事件列表
+     */
+    virtual void clearEventItemList();
+
 protected:
     /*reimplement*/
     void newPatientHandle();
