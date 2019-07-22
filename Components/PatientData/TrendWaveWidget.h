@@ -175,6 +175,12 @@ private:
     double _getCursorPos(unsigned t);               // 获取坐标位置
 
     /**
+     * @brief _getTimeIndex 获取时间对应的数据索引
+     * @param t
+     */
+    unsigned _getTimeIndex(unsigned t);
+
+    /**
      * @brief _getCursorTime 获取游标位置时间
      * @param pos   游标位置
      */
