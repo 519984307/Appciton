@@ -715,8 +715,8 @@ void TrendWaveWidget::showEvent(QShowEvent *e)
     IWidget::showEvent(e);
     _getTrendData();
     _cursorPosIndex = 0;
-    updateTimeRange();
     _updateEventIndex();
+    updateTimeRange();
 }
 
 void TrendWaveWidget::mousePressEvent(QMouseEvent *e)
@@ -966,12 +966,48 @@ void TrendWaveWidget::_updateEventIndex()
             }
             preTime = t;
             _eventList.append(event);
+
+            // 将事件归为前一个时刻后，同时将前一刻的状态也更新
+            int curIndex = _findIndex(event.timestamp);
+            int lastIndex = _findIndex(ctx.infoSegment->timestamp);
+            _trendDataPack.at(curIndex)->status = _trendDataPack.at(lastIndex)->status;
+            _trendDataPack.at(curIndex)->subparamValue = _trendDataPack.at(lastIndex)->subparamValue;
+            _trendDataPack.at(curIndex)->subparamAlarm = _trendDataPack.at(lastIndex)->subparamAlarm;
+            _trendDataPack.at(curIndex)->alarmFlag = _trendDataPack.at(lastIndex)->alarmFlag;
         }
     }
     if ((_historyDataPath != "") && _isHistory)
     {
         delete backend;
     }
+}
+
+int TrendWaveWidget::_findIndex(unsigned timeStamp)
+{
+    int lowPos = 0;
+    int highPos = _trendDataPack.count() - 1;
+    int index = 0;
+    while (lowPos <= highPos)
+    {
+        int midPos = (lowPos + highPos) / 2;
+        int timeDiff = qAbs(timeStamp - _trendDataPack.at(midPos)->time);
+
+        if (timeStamp < _trendDataPack.at(midPos)->time)
+        {
+            highPos = midPos - 1;
+        }
+        else if (timeStamp > _trendDataPack.at(midPos)->time)
+        {
+            lowPos = midPos + 1;
+        }
+
+        if (timeDiff == 0 || lowPos > highPos)
+        {
+            index = midPos;
+            break;
+        }
+    }
+    return index;
 }
 
 TrendGraphType TrendWaveWidget::getTrendGraphType(SubParamID id)

@@ -190,6 +190,8 @@ private:
      */
     void _updateEventIndex();
 
+    int _findIndex(unsigned timeStamp);
+
     /**
      * @brief getTrendGraphType 获取id对应的趋势图类型
      * @param id 子参数ID
