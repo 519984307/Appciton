@@ -32,7 +32,7 @@ EditPasswordSuccess,修改密码成功,Edit Password Success
 RESPModule,Resp,Resp
 NIBPModule,NIBP,NIBP
 TEMPModule,Temp,Temp
-SPO2Module,SpO2,SpO2
+SPO2Module,SpO₂,SpO₂
 NightModeMenu,夜间模式,Night Mode
 NightModeMenuDesc,夜间模式设置,Night Mode
 StopNIBPMeasure,停止NIBP测量,Stop NIBP Measure
@@ -66,17 +66,17 @@ ST,ST,ST
 Input,输入,Input
 Output,输出,Output
 ReviewWindow,回顾窗口,Review Window
-CO2,CO2,CO2
-ETCO2,EtCO2,EtCO2
-FICO2,FiCO2,FiCO2
-ETN2O,EtN2O,EtN2O
-FIN2O,FiN2O,FiN2O
+CO2,CO₂,CO₂
+ETCO2,EtCO₂,EtCO₂
+FICO2,FiCO₂,FiCO₂
+ETN2O,EtN₂O,EtN₂O
+FIN2O,FiN₂O,FiN₂O
 ETAA1,EtAA1,EtAA1
 FIAA1,FiAA1,FiAA1
 ETAA2,EtAA2,EtAA2
 FIAA2,FiAA2,FiAA2
-ETO2,EtO2,EtO2
-FIO2,FiO2,FiO2
+ETO2,EtO₂,EtO₂
+FIO2,FiO₂,FiO₂
 ART_SYS,ART收缩压,ART-SYS
 ART_DIA,ART舒张压,ART-DIA
 ART_MAP,ART平均压,ART-MAP
@@ -104,7 +104,7 @@ AUXP2_PR,AUXP2脉率,AUXP2-PR
 CO_CO,心排量,C.O.
 CO_CI,心指数,C.I.
 TB,血温,TB
-SPO2,SpO2,SpO2
+SPO2,SpO₂,SpO₂
 PR,PR,PR
 PLETH,Pleth,Pleth
 NIBP,NIBP,NIBP
@@ -161,14 +161,14 @@ AverageTime,平均时间,Average Time
 Normal,正常,Normal
 MaxSensitivity,高灵敏,High
 SPO2Sensitivity,灵敏度,Sensitivity
-FastSat,快速SpO2,Fast SAT
-ConfigEditSpO2Menu,SpO2,SpO2
+FastSat,快速SpO₂,Fast SAT
+ConfigEditSpO2Menu,SpO₂,SpO₂
 SPO2SmartPulseTone,智能脉搏音,Smart Pulse Tone
 ConfigEditIBPMenu,有创血压,IBP
 SPO2SweepSpeed,波形速度,Sweep Speed
 SPO2PRDisplay,脉率显示,PR Display
 SPO2SmartPluseTone,智能脉搏音,Smart Pulse Tone
-SPO2Menu,SpO2,SpO2
+SPO2Menu,SpO₂,SpO₂
 RESPSweepSpeed,波形速度,Sweep Speed
 RESPApneaTime,窒息时间,Apnea Time
 RESPZoom,缩放,Zoom
@@ -211,28 +211,28 @@ NIBPPressureControlModelEnterFail,进入压力控制模式失败,Pressure contro
 NIBPModuleDisable,NIBP模块禁用,NIBP Module Disable
 CO2ApneaTime,窒息时间,Apnea Time
 CO2SweepSpeed,波形速度,Sweep Speed
-CO2WaveMode,CO2波形模式,CO2 Wave Mode
+CO2WaveMode,CO₂波形模式,CO₂ Wave Mode
 CO2Curve,曲线,Curve
 CO2Filled,填充,Filled
 CO2Zoom,缩放,Zoom
-CO2FiCO2Display,FiCO2显示,FiCO2 Display
-O2Compensation,O2补偿,O2 Compensation
-N2OCompensation,N2O补偿,N2O Compensation
-CO2ZeroCalib,CO2校零,CO2 Zero
+CO2FiCO2Display,FiCO₂显示,FiCO₂ Display
+O2Compensation,O₂补偿,O₂ Compensation
+N2OCompensation,N₂O补偿,N₂O Compensation
+CO2ZeroCalib,CO₂校零,CO₂ Zero
 CO2ZeroStart,开始,Start
-CO2Menu,CO2,CO2
-CO2Switch,二氧化碳开关,CO2 Switch
-CO2WorkMode,CO2工作模式,CO2 Work Mode
-O2Module,O2,O2
-O2Menu,O2,O2
-O2MenuDesc,O2,O2
-O2Setting,O2设置,O2 Setting
-O2CalibrateReset,氧浓度校准数据被复位,O2 Calibrate Is Reset
-O2NotCalibrate,氧浓度传感器未校准,O2 Sensor Not Calibrate
+CO2Menu,CO₂,CO₂
+CO2Switch,二氧化碳开关,CO₂ Switch
+CO2WorkMode,CO₂工作模式,CO₂ Work Mode
+O2Module,O₂,O₂
+O2Menu,O₂,O₂
+O2MenuDesc,O₂,O₂
+O2Setting,O₂设置,O₂ Setting
+O2CalibrateReset,氧浓度校准数据被复位,O₂ Calibrate Is Reset
+O2NotCalibrate,氧浓度传感器未校准,O₂ Sensor Not Calibrate
 O2MotorNotInPositon,唤醒器脱落,Motor Sensor Off
-O2SensorOff,氧浓度探头脱落,O2 Sensor Off
-O2Low,氧浓度低,O2 Low
-O2High,氧浓度高,O2 High
+O2SensorOff,氧浓度探头脱落,O₂ Sensor Off
+O2Low,氧浓度低,O₂ Low
+O2High,氧浓度高,O₂ High
 ApneaStimulation,窒息唤醒,Apnea Stimulation
 ApneaStimulationSetup,窒息唤醒设置,Apnea Stimulation Setup
 ApneaStimulationMenu,窒息唤醒,Apnea Stimulation
@@ -278,16 +278,16 @@ TEMPSetting,Temp设置,Temp Setting
 AGSetting,AG设置,AG Setting
 IBPSetting,IBP设置,IBP Setting
 COSetting,CO设置,CO Setting
-SPO2Setting,SpO2设置,SpO2 Setting
+SPO2Setting,SpO₂设置,SpO₂ Setting
 RRSource,RR来源,RR Source
 BRSource,BR来源,BR Source
 NIBPSetting,NIBP设置,NIBP Setting
 HRSourceAuto,自动,Auto
 HRSourceECG,ECG,ECG
-HRSourceSPO2,SpO2,SpO2
+HRSourceSPO2,SpO₂,SpO₂
 HRSourceIBP,IBP,IBP
 HR_PRSource,HR/PR来源,HR/PR Source
-CO2Setting,CO2设置,CO2 Setting
+CO2Setting,CO₂设置,CO₂ Setting
 PatientManager,病人管理,Patient Setup
 PatientManagerDesc,病人管理,Patient Setup
 PatientInfo,病人信息,Patient Info
@@ -346,13 +346,13 @@ SystemMenu,系统,System
 PatientMenuDesc,病人设置,Patient Setting
 ECGMenuDesc,ECG,ECG
 STMenuDesc,ST,ST
-SPO2MenuDesc,SpO2,SpO2
+SPO2MenuDesc,SpO₂,SpO₂
 RESPMenuDesc,Resp,Resp
-CO2MenuDesc,CO2,CO2
+CO2MenuDesc,CO₂,CO₂
 IBPMenuDesc,IBP,IBP
 COMenuDesc,C.O.,C.O.
-RESPAndCO2Menu,Resp和CO2,Resp & CO2
-RESPAndCO2MenuDesc,Resp和CO2,Resp & CO2
+RESPAndCO2Menu,Resp和CO₂,Resp & CO₂
+RESPAndCO2MenuDesc,Resp和CO₂,Resp & CO₂
 TEMPMenu,Temp,Temp
 TEMPMenuDesc,Temp,Temp
 AGMenuDesc,AG,AG
@@ -603,43 +603,43 @@ ECGAcquired12L,获取12导结束,Acquire 12 Lead Complete
 RESPCommunicationStop,Resp通信中断,Resp Communication Stop
 RESPCheckElecrodes,Resp检查电极,Resp Check Electrodes
 Apnea,Resp窒息,Apnea
-SPO2Low,SpO2低,SpO2 Low
-SPO2High,SpO2高,SpO2 High
+SPO2Low,SpO₂低,SpO₂ Low
+SPO2High,SpO₂高,SpO₂ High
 SPO2PRLow,PR低,PR Low
 SPO2PRHigh,PR高,PR High
-SPO2Initializing,SpO2初始化,SpO2 initializing
-SPO2PulseSearch,SpO2搜索脉搏,SpO2 Pulse Search
-SPO2PulseSearchTooLong,SpO2脉搏搜索时间过长,SpO2 Pulse Search Too Long
-SPO2SensorOff,SpO2传感器脱落,SpO2 Sensor Off
-SPO2CheckSensor,SpO2检查探头,SpO2 Check Sensor
-SPO2SearchPulseTooLong,SpO2脉搏搜索时间过长,SpO2 Search Pulse Too Long
-SPO2SearchingPulse,SpO2脉搏搜索,SpO2 Searching Pulse
-SPO2CommunicationStop,SpO2通信中断,SpO2 Communication Stop
-SPO2ProbeFault,SpO2探头故障,SpO2 Probe Fault
-SPO2SignalSaturation,SpO2信号饱和,SpO2 Signal Saturation
-CO2EtCO2Low,EtCO2 低,EtCO2 Low
-CO2EtCO2High,EtCO2 高,EtCO2 High
-CO2FiCO2Low,FiCO2 低,FiCO2 Low
-CO2FiCO2High,FiCO2 高,FiCO2 High
+SPO2Initializing,SpO₂初始化,SpO₂ initializing
+SPO2PulseSearch,SpO₂搜索脉搏,SpO₂ Pulse Search
+SPO2PulseSearchTooLong,SpO₂脉搏搜索时间过长,SpO₂ Pulse Search Too Long
+SPO2SensorOff,SpO₂传感器脱落,SpO₂ Sensor Off
+SPO2CheckSensor,SpO₂检查探头,SpO₂ Check Sensor
+SPO2SearchPulseTooLong,SpO₂脉搏搜索时间过长,SpO₂ Search Pulse Too Long
+SPO2SearchingPulse,SpO₂脉搏搜索,SpO₂ Searching Pulse
+SPO2CommunicationStop,SpO₂通信中断,SpO₂ Communication Stop
+SPO2ProbeFault,SpO₂探头故障,SpO₂ Probe Fault
+SPO2SignalSaturation,SpO₂信号饱和,SpO₂ Signal Saturation
+CO2EtCO2Low,EtCO₂ 低,EtCO₂ Low
+CO2EtCO2High,EtCO₂ 高,EtCO₂ High
+CO2FiCO2Low,FiCO₂ 低,FiCO₂ Low
+CO2FiCO2High,FiCO₂ 高,FiCO₂ High
 CO2BRLow,BR 低,BR Low
 CO2BRHigh,BR 高,BR High
-CO2MotorError,CO2电机转速超限,CO2 Motor Speed Out of bounds
-CO2SoftwareError,CO2软件错误,CO2 Software Error
-CO2HardwareError,CO2硬件错误,CO2 Hardware Error
-CO2MissFactoryCali,CO2未校准,CO2 Miss Factory Calib
-CO2ReplaceAdapter,CO2更换适配器,CO2 Replace Adapter
-CO2NoAdapter,CO2无适配器,CO2 No Adapter
-CO2OutRange,CO2超出精度范围,CO2 Out of Accuracy Range
-CO2TempOutRange,CO2内部温度超界,CO2 Temp Out of Range
-CO2BaroPressOutRange,CO2大气压力超限,CO2 Baro Pressure Out of Range
-CO2ZeroRequired,CO2需要校零,CO2 Zero Required
-CO2ZeroDisable,CO2禁止校零,CO2 Zero Disable
-CO2ZeroInprogress,CO2校零中,CO2 Zero In Progress
-CO2SpanCalibFailed,CO2校准失败,CO2 Span Calib Failed
-CO2SpanCalibInprogress,CO2正在校准,CO2 Span Calib In Progress
-CO2ZeroandSpanDisable,CO2禁止校零和校准,CO2 Zero and Span Disable
-CO2SampleLineClogged,CO2采样管堵塞,CO2 Sample Line Clogged
-CO2NoSampleLine,CO2没有采样线,CO2 No Sample Line
+CO2MotorError,CO₂电机转速超限,CO₂ Motor Speed Out of bounds
+CO2SoftwareError,CO₂软件错误,CO₂ Software Error
+CO2HardwareError,CO₂硬件错误,CO₂ Hardware Error
+CO2MissFactoryCali,CO₂未校准,CO₂ Miss Factory Calib
+CO2ReplaceAdapter,CO₂更换适配器,CO₂ Replace Adapter
+CO2NoAdapter,CO₂无适配器,CO₂ No Adapter
+CO2OutRange,CO₂超出精度范围,CO₂ Out of Accuracy Range
+CO2TempOutRange,CO₂内部温度超界,CO₂ Temp Out of Range
+CO2BaroPressOutRange,CO₂大气压力超限,CO₂ Baro Pressure Out of Range
+CO2ZeroRequired,CO₂需要校零,CO₂ Zero Required
+CO2ZeroDisable,CO₂禁止校零,CO₂ Zero Disable
+CO2ZeroInprogress,CO₂校零中,CO₂ Zero In Progress
+CO2SpanCalibFailed,CO₂校准失败,CO₂ Span Calib Failed
+CO2SpanCalibInprogress,CO₂正在校准,CO₂ Span Calib In Progress
+CO2ZeroandSpanDisable,CO₂禁止校零和校准,CO₂ Zero and Span Disable
+CO2SampleLineClogged,CO₂采样管堵塞,CO₂ Sample Line Clogged
+CO2NoSampleLine,CO₂没有采样线,CO₂ No Sample Line
 IBP1LeadOff,IBP通道1导联脱落,IBP1 lead off
 IBP2LeadOff,IBP通道2导联脱落,IBP2 lead off
 IBP1ZeroCalibSuccess,IBP通道1校零成功,IBP1 zero success
@@ -820,15 +820,15 @@ ECGVersion,ECG,ECG
 ECGBootloader,ECG Bootloader,ECG Bootloader
 NIBPVersion,NIBP,NIBP
 NIBPBootloader,NIBP Bootloader,NIBP Bootloader
-SPO2Version,SpO2,SpO2
-SPO2Bootloader,SpO2 Bootloader,SpO2 Bootloader
+SPO2Version,SpO₂,SpO₂
+SPO2Bootloader,SpO₂ Bootloader,SpO₂ Bootloader
 TEMPVersion,Temp,Temp
 TEMPBootloader,Temp Bootloader,Temp Bootloader
 iDMBoardVersion,iDMBoard,iDMBoard
 PRT48Version,PRT48,PRT48
 PRT48Bootloader,PRT48 Bootloader,PRT48 Bootloader
-SourceOfCO2,来源CO2,Source of CO2
-AutoOfCO2,自动(CO2),Auto(CO2)
+SourceOfCO2,来源CO₂,Source of CO₂
+AutoOfCO2,自动(CO₂),Auto(CO₂)
 PDVersion,PD,PD
 COREVersion,CORE,CORE
 VersionReturn,返回,Return
@@ -875,7 +875,7 @@ SupervisorDisplayMenuDesc,显示设置,Display Setting
 SupervisorLanguage,语言,Default Language
 SupervisorOtherMenu,其他,Other
 SupervisorNIBPUnit,血压单位,NIBP Unit
-SupervisorCO2Unit,CO2单位,CO2 Unit
+SupervisorCO2Unit,CO₂单位,CO₂ Unit
 SupervisorTempUnit,Temp单位,Temp Unit
 SupervisorWeightUnit,体重单位,Weight Unit
 SupervisorHeightUnit,身高单位,Height Unit
@@ -1285,7 +1285,7 @@ FactoryMaintainPassword,工厂维护密码,Factory Maintain Password
 FactoryMaintainModifyConfig,工厂维护修改配置,Factory Maintain Modify Config
 MachineConfigModuleMenu,机器配置,Machine Config
 IBPModule,IBP,IBP
-CO2Module,CO2,CO2
+CO2Module,CO₂,CO₂
 ECG12LeadsModule,ECG 12导,ECG 12 Leads
 PrinterModule,打印机模块,Printer Module
 HDMIModule,高清晰度多媒体接口模块,HDMI Module
@@ -1320,8 +1320,8 @@ StopNeoNIBPMeasure,禁止NIBP新生儿测量,Close NEO NIBP Measurement
 NIBPMaintainMenu,NIBP维护,NIBP Maintain
 NIBPMaintain,NIBP维护,NIBP Maintain
 NIBPMaintainMenuDesc,NIBP维护,NIBP Maintain
-O2Calibrate,氧浓度校准,O2 Calibrate
-O2CalibrateDesc,氧浓度校准,O2 Calibrate
+O2Calibrate,氧浓度校准,O₂ Calibrate
+O2CalibrateDesc,氧浓度校准,O₂ Calibrate
 Percent21Calibration,21% 校准,21% Calibrate
 Percent100Calibration,100% 校准,100% Calibrate
 SelectStarterLogo,开机图片,Start Logo
@@ -1394,7 +1394,7 @@ ModuleMaintainMenuDesc,模块维护,Module Maintain
 AnaesthesiaModuleCalibration,麻醉模块化校准,Anaesthesia Module Calibration
 IBP1PressureCalibration,IBP通道1校准,IBP1 Pressure Calibration
 IBP2PressureCalibration,IBP通道2校准,IBP2 Pressure Calibration
-CO2ModuleMaintenance,二氧化碳模块维护,CO2 Module Maintenance
+CO2ModuleMaintenance,二氧化碳模块维护,CO₂ Module Maintenance
 NIBPPressureTest,NIBP压力测试,NIBP Pressure Test
 NIBPLeakageDetection,NIBP泄露检测,NIBP Leakage Detection
 NIBPServiceModuleErrorQuitTryAgain,NIBP服务模块错误，请退出重试,NIBP service module error，Please quit and retry!
@@ -1407,7 +1407,7 @@ StopNIBPPressureTest,停止无创血压测试,Stop NIBP Pressure Test
 StopIBPPressureCalibration,停止有创血压校准,Stop IBP Pressure Calibration
 StopNIBPLeakageDetection,停止无创血压泄露检测,Stop NIBP Leakage Detection
 StopECGModuleCalibration,停止ECG模块校准,Stop ECG Module Calibration
-StopCO2ModuleMaintenance,停止二氧化碳模块,Stop CO2 Module Maintenance
+StopCO2ModuleMaintenance,停止二氧化碳模块,Stop CO₂ Module Maintenance
 StopTouchScreenCalibration,停止触摸屏校准,Stop Touch Screen Calibration
 Cancel,取消覆盖,Cancel
 OthersMaintainMenu,其他,Others
@@ -1496,7 +1496,7 @@ PressureUnit,压力单位,Pressure Unit
 TemperatureUnit,温度单位,Temperature Unit
 CVPUnit,中心静脉压单位,CVP Unit
 ICPUnit,颅内压单位,ICP Unit
-CO2Unit,CO2单位,CO2 Unit
+CO2Unit,CO₂单位,CO₂ Unit
 ApneaDelay,窒息延迟,Apnea Delay
 BreathLead,呼吸导联,Breath Lead
 SweepSpeed,波形速度,Sweep Speed
@@ -1537,10 +1537,10 @@ TEMPModuleDisable,Temp模块禁用,Temp Module Disable
 TEMPCommunicationStop,Temp通信中断,Temp Communication Stop
 TEMPChannel,Temp通道,Temp Channel
 TEMPCalibrate,Temp校准 ,Temp Calibrate
-N2O,N2O,N2O
+N2O,N₂O,N₂O
 AA1,自动识别麻醉气体1,AA1
 AA2,自动识别麻醉气体2,AA2
-O2,O2,O2
+O2,O₂,O₂
 SetUp,设置,SetUp
 AGModule,AG,AG
 AG,AG,AG
@@ -1556,8 +1556,8 @@ TrendWaveSelect,趋势波形设置,Trend Wave Select
 OxyCRGWidgetSetup,呼吸氧和设置,OxyCRGWidget Setup
 Wave,波形,Wave
 DefaultSetting,缺省设置,Default Setting
-CO2Low,二氧化碳低,CO2 Low
-CO2High,二氧化碳高,CO2 High
+CO2Low,二氧化碳低,CO₂ Low
+CO2High,二氧化碳高,CO₂ High
 AutoRuler,自动标尺,Auto Ruler
 RESPLow,Resp低,Resp Low
 RESPHigh,Resp高,Resp High
@@ -1570,7 +1570,7 @@ ConfigManagerPassword,配置管理密码,Config Manage Password
 ConfigEditCodeMarkerMenu,Code Marker,Code Marker
 ConfigEditCodeMarkerMenuDesc,Code Marker,Code Marker
 ConfigEditIBPMenuDesc,有创血压设置,IBP
-ConfigEditSpO2MenuDesc,SpO2设置,SpO2
+ConfigEditSpO2MenuDesc,SpO₂设置,SpO₂
 DeleteSelectedWifiProfile,确定删除选择的wifi配置？, Do delete selected wifi profile ?
 ToneVolume,提示音量,Tone Volume
 SoftKeyPatientInfo,病人信息,Patient Info.
@@ -1623,8 +1623,8 @@ CalculateMenu,计算,Calculate
 HemodynamicCalculation,血液动力学计算,Hemodynamic Calculation
 CalculateMenuDesc,计算设置,Calculation
 Standby,待机,Standby
-CO2Standby,CO2待机,CO2 Standby
-CO2Measure,CO2测量,CO2 Measure
+CO2Standby,CO₂待机,CO₂ Standby
+CO2Measure,CO₂测量,CO₂ Measure
 ChooseScreen,界面选择,Screen
 ManualTirgger,手动触发,Manual Tirgger
 ParameterSwitch,参数开关,Para Switch
@@ -1664,34 +1664,34 @@ ECGFullScreen,ECG全屏,ECG Full Screen
 isSaveLayout,是否保存布局配置？,Do you want to save the layout config?
 LowBattery,电量过低,Low quantity of electricity
 RESPCheckElectrodes,检查电极,Check Electrodes
-SPO2SignalWeak,SpO2信号弱,SpO2 Signal Weak
-SPO2CableOff,SpO2线缆断开,SpO2 Cable Off
-SPO2FingerOff,未检测到手指,SpO2 Finger Off
-SPO2LEDFault,SpO2调光错误,SpO2 LED Fault
-SPO2LowPerfusion,SpO2弱灌注,SpO2 Low Perfusion
-SPO2DefectiveCable,SpO2线缆故障,SpO2 Defective cable
-SPO2CableExpired,SpO2线缆过期,SpO2 Cable expired
-SPO2IncompatibleCable,SpO2不兼容线缆,SpO2 Incompatible cable
-SPO2UnrecongnizedCable,SpO2未识别线缆,SpO2 Unrecongnized cable
-SPO2CableNearExpiration,SpO2线缆即将到期,SpO2 Cable near expiration
-SPO2SensorExpired,SpO2传感器已过期,SpO2 Sensor expired
-SPO2IncompatibleSensor,SpO2传感器不兼容,SpO2 Incompatible sensor
-SPO2UnrecongnizedSensor,SpO2未识别传感器,SpO2 Unrecongnized sensor
-SPO2DefectiveSensor,SpO2传感器故障,SpO2 Defective sensor
-SPO2CheckCableAndSensorFault,SpO2检查线缆和传感器故障,SpO2 Check cable and sensor fault
-SPO2SensorNearExpiration,SpO2传感器即将到期,SpO2 Sensor near expiration
-SPO2NoAdhesiveSensor,SpO2无粘性传感器,SpO2 No adhesive sensor
-SPO2AdhesiveSensorExpiraton,SpO2粘性传感器截止,SpO2 Adhesive sensor expiraton
-SPO2IncompatibleAdhesiveSensor,SpO2不兼容的粘性传感器,SpO2 Incompatible adhesive sensor
-SPO2UnrecongnizedAdhesiveSensor,SpO2未识别的粘性传感器,SpO2 Unrecongnized adhesive sensor
-SPO2DefectiveAdhesiveSensor,SpO2有缺陷的粘性传感器,SpO2 Defective adhesive sensor
-SPO2SensorIniting,SpO2传感器初始化,SpO2 Sensor initing
-SPO2InterferenceDetected,SpO2检测到干扰,SpO2 Interference detected
-SPO2DemoMode,SpO2演示模式,SpO2 Demo mode
-SPO2AdhesiveSensorNearExpiration,SpO2粘性传感器即将到期,SpO2 Adhesive sensor near expiration
-SPO2CheckSensorConnection,SpO2检查传感器连接,SpO2 Check sensor connection
-SPO2OnlyMode,仅限SpO2模式,SpO2 only mode
-SPO2BoardFailure,SpO2板卡错误,SpO2 Board Failure
+SPO2SignalWeak,SpO₂信号弱,SpO₂ Signal Weak
+SPO2CableOff,SpO₂线缆断开,SpO₂ Cable Off
+SPO2FingerOff,未检测到手指,SpO₂ Finger Off
+SPO2LEDFault,SpO₂调光错误,SpO₂ LED Fault
+SPO2LowPerfusion,SpO₂弱灌注,SpO₂ Low Perfusion
+SPO2DefectiveCable,SpO₂线缆故障,SpO₂ Defective cable
+SPO2CableExpired,SpO₂线缆过期,SpO₂ Cable expired
+SPO2IncompatibleCable,SpO₂不兼容线缆,SpO₂ Incompatible cable
+SPO2UnrecongnizedCable,SpO₂未识别线缆,SpO₂ Unrecongnized cable
+SPO2CableNearExpiration,SpO₂线缆即将到期,SpO₂ Cable near expiration
+SPO2SensorExpired,SpO₂传感器已过期,SpO₂ Sensor expired
+SPO2IncompatibleSensor,SpO₂传感器不兼容,SpO₂ Incompatible sensor
+SPO2UnrecongnizedSensor,SpO₂未识别传感器,SpO₂ Unrecongnized sensor
+SPO2DefectiveSensor,SpO₂传感器故障,SpO₂ Defective sensor
+SPO2CheckCableAndSensorFault,SpO₂检查线缆和传感器故障,SpO₂ Check cable and sensor fault
+SPO2SensorNearExpiration,SpO₂传感器即将到期,SpO₂ Sensor near expiration
+SPO2NoAdhesiveSensor,SpO₂无粘性传感器,SpO₂ No adhesive sensor
+SPO2AdhesiveSensorExpiraton,SpO₂粘性传感器截止,SpO₂ Adhesive sensor expiraton
+SPO2IncompatibleAdhesiveSensor,SpO₂不兼容的粘性传感器,SpO₂ Incompatible adhesive sensor
+SPO2UnrecongnizedAdhesiveSensor,SpO₂未识别的粘性传感器,SpO₂ Unrecongnized adhesive sensor
+SPO2DefectiveAdhesiveSensor,SpO₂有缺陷的粘性传感器,SpO₂ Defective adhesive sensor
+SPO2SensorIniting,SpO₂传感器初始化,SpO₂ Sensor initing
+SPO2InterferenceDetected,SpO₂检测到干扰,SpO₂ Interference detected
+SPO2DemoMode,SpO₂演示模式,SpO₂ Demo mode
+SPO2AdhesiveSensorNearExpiration,SpO₂粘性传感器即将到期,SpO₂ Adhesive sensor near expiration
+SPO2CheckSensorConnection,SpO₂检查传感器连接,SpO₂ Check sensor connection
+SPO2OnlyMode,仅限SpO₂模式,SpO₂ only mode
+SPO2BoardFailure,SpO₂板卡错误,SpO₂ Board Failure
 NIBPSimul,NIBP同侧,NIBP Simul
 Input8DigitsPassword,请输入8位数字密码,Please input 8 digits password
 BornDate,出生日期,Born Date
@@ -1707,7 +1707,7 @@ Result,结果,Result
 RepeatCheck,一小时内重复测量3次以确认结果,Check again in a hour for result
 footValue,足部数据,foot
 handValue,手部数据,hand
-SPO2ValueInvaild,采集数据无效，请检查SpO2模块,The collect data is invaild，Please check SpO2 module
+SPO2ValueInvaild,采集数据无效，请检查SpO₂模块,The collect data is invaild，Please check SpO₂ module
 ErrorLogExportAt,错误日志导出时间: ,Error Log export at  
 NumberOfErrors,错误数量: ,Number of Errors: 
 NumberOfCriticalFaults,严重故障数量: ,Number of Critical Faults: 
