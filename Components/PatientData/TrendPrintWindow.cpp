@@ -128,7 +128,7 @@ TrendPrintWindow::TrendPrintWindow(const QList<TrendDataPackage *> &trendDataPac
     connect(d_ptr->endSubBox->yearSbx, SIGNAL(valueChange(int, int)),
             this, SLOT(endTimeChangeSlot(int, int)));
     connect(d_ptr->endSubBox->monthSbx, SIGNAL(valueChange(int, int)),
-            this, SLOT(endTimeChangeSlot(QString, int)));
+            this, SLOT(endTimeChangeSlot(int, int)));
     connect(d_ptr->endSubBox->daySbx, SIGNAL(valueChange(int, int)),
             this, SLOT(endTimeChangeSlot(int, int)));
     connect(d_ptr->endSubBox->hourSbx, SIGNAL(valueChange(int, int)),
