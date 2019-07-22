@@ -300,7 +300,7 @@ public:
 
     bool isFirstAuto();
 
-    void setAutoStat(bool flag);   // AUTO倒计时时候进行STAT测量
+    void setAutoStat(bool flag);   // AUTO倒计时时候进行STAT测量，要有五秒放气期
 
     bool isAutoStat();
 

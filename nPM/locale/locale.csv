@@ -450,6 +450,7 @@ SPO2SensMed,中,Medium
 SPO2SensHigh,高,High
 NIBPManual,手动,Manual
 NIBPAUTO,自动,Auto
+NIBPManualStart,自动测量手动启动,Auto Measure Manual Start
 NIBPCONT,连续,Continuous
 STATCLOSE,STAT模式关闭,STAT Close
 STATSTOPPED,STAT停止,STAT Stopped

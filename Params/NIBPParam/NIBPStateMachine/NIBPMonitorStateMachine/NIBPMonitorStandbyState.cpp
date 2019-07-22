@@ -41,7 +41,7 @@ void NIBPMonitorStandbyState::handleNIBPEvent(NIBPEvent event, const unsigned ch
         {
             //自动测量模式的手动触发标志
             nibpParam->setAutoMeasure(true);
-            nibpParam->setFirstAuto(true);
+            nibpParam->setFirstAuto(true);      // todo：改为开机设置
         }
         // 转换到测量状态。
         switchState(NIBP_MONITOR_STARTING_STATE);
@@ -52,7 +52,7 @@ void NIBPMonitorStandbyState::handleNIBPEvent(NIBPEvent event, const unsigned ch
         {
             NIBPCountdownTimeInterface* nibpCountdownTime = NIBPCountdownTimeInterface::getNIBPCountdownTime();
             nibpParam->setSTATMeasure(true);
-            if (nibpParam->isFirstAuto())
+            if (nibpParam->isFirstAuto())   // 判断是否在AUTO倒计时时候开启stat测量
             {
                 nibpCountdownTime->setSTATMeasureTimeout(false);
                 nibpParam->setAutoStat(true);
@@ -72,7 +72,7 @@ void NIBPMonitorStandbyState::handleNIBPEvent(NIBPEvent event, const unsigned ch
         }
         else
         {
-            if (nibpParam->isFirstAuto())
+            if (nibpParam->isFirstAuto())   // AUTO倒计时时候进入手动模式要有5秒放气期
             {
                 switchState(NIBP_MONITOR_SAFEWAITTIME_STATE);
             }
