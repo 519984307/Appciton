@@ -122,15 +122,6 @@ bool AlarmLimitModel::setData(const QModelIndex &index, const QVariant &value, i
                 alarmDataUpdate(d_ptr->alarmDataInfos[row], index.column());
                 break;
             case SECTION_LEVEL:
-                if (d_ptr->alarmDataInfos[row].paramID == PARAM_DUP_ECG
-                        || d_ptr->alarmDataInfos[row].paramID == PARAM_SPO2
-                        || d_ptr->alarmDataInfos[row].paramID == PARAM_NIBP
-                        || d_ptr->alarmDataInfos[row].paramID == PARAM_CO2)
-                {
-                    // ECG、SPO2、NIBP的报警优先级只有中级和高级
-                    // 所以将设置值加一，保证中级存储为1,高级存储为2
-                    newValue++;
-                }
                 d_ptr->alarmDataInfos[row].alarmLevel = newValue;
                 alarmDataUpdate(d_ptr->alarmDataInfos[row], index.column());
                 break;
@@ -256,20 +247,8 @@ QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
                 break;
             case SECTION_LEVEL:
                 editInfo.type = ItemEditInfo::LIST;
-                if (d_ptr->alarmDataInfos.at(row).paramID == PARAM_DUP_ECG
-                        || d_ptr->alarmDataInfos.at(row).paramID == PARAM_SPO2
-                        || d_ptr->alarmDataInfos.at(row).paramID == PARAM_NIBP
-                        || d_ptr->alarmDataInfos.at(row).paramID == PARAM_CO2)
-                {
-                    // ECG、SPO2、NIBP的报警优先级只有中级和高级
-                    editInfo.list << trs("Medium") << trs("High");
-                    editInfo.curValue = d_ptr->alarmDataInfos.at(row).alarmLevel - 1;
-                }
-                else
-                {
-                    editInfo.list << trs("Low") << trs("Medium") << trs("High");
-                    editInfo.curValue = d_ptr->alarmDataInfos.at(row).alarmLevel;
-                }
+                editInfo.list << trs("Medium") << trs("High");
+                editInfo.curValue = d_ptr->alarmDataInfos.at(row).alarmLevel - 1;
                 break;
             case SECTION_LOW_LIMIT:
                 editInfo.type = ItemEditInfo::VALUE;
