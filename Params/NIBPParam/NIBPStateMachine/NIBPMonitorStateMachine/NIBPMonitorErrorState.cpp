@@ -34,7 +34,14 @@ void NIBPMonitorErrorState::enter(void)
 
     nibpParam.setAdditionalMeasure(false);
 
-    nibpParam.setText(trs("NIBPModule") + "\n" + trs("NIBPDisable"));
+    if (nibpParam.isCalibrateState())
+    {
+        nibpParam.setText(trs("NIBPModule") + "\n" + trs("NIBPDisable"));
+    }
+    else
+    {
+        nibpParam.setText(trs("NIBPModule") + "\n" + trs("NIBPNotCalibrate"));
+    }
     nibpParam.setModelText("");
     nibpParam.clearResult();
 

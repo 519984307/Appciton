@@ -442,7 +442,7 @@ void ServiceErrorLogMenu::exportBtnClick()
 
 void ServiceErrorLogMenu::eraseBtnClick()
 {
-    IMessageBox messageBox(trs("ClearErrorLog"), trs("ComfirmClearErrorLog"));
+    IMessageBox messageBox(trs("ClearErrorLog"), trs("ConfirmClearErrorLog"));
     if (1 == messageBox.exec())
     {
         errorLog.clear();

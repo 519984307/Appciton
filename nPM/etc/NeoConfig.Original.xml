@@ -795,11 +795,6 @@
 		</percent>
 		</O2>
     </AlarmSource>
-    <Local>
-        <NIBPUnit>5</NIBPUnit>
-        <CO2Unit>5</CO2Unit>
-        <TEMPUnit>1</TEMPUnit>
-    </Local>
     <Display>
         <AllColors>Green,Yellow,Blue,Red,Brown,Magenta,Orange,Cyan,Purple</AllColors>
         <Green>

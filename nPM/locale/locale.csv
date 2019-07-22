@@ -183,7 +183,7 @@ RESPAutoActivation,Resp激活,Resp Automatic Activation
 EnterPassthroughMode,进入透传模式,Enter Passthrough Mode
 ExitPassthroughMode,退出透传模式,Exit Passthrough Mode
 SwitchPassthroughModeFail,切换透传模式失败,Switch Passthrough Mode Fail
-NIBPMeasurement,无创血压测量,NIBP
+NIBPMeasurement,无创血压测量,NIBP Measure
 NIBPMeasureMode,测量模式,Measure Mode
 NIBPIntervalTime,间隔时间,NIBP Interval Time
 NIBPAutoInterval,自动间隔,Auto Interval
@@ -317,7 +317,7 @@ TEMPOverRangeAll,Temp全部超界,All Temp Out of Range
 TEMP1ProbeTypeError,Temp1探头类型错误,Temp1 Probe Type Error
 TEMP2ProbeTypeError,Temp2探头类型错误,Temp2 Probe Type Error
 TEMPProbeTypeErrorAll,Temp探头类型全部错误,All Temp Probe Type Error
-TEMPCommunicationStop,Temp通讯停止,Temp Communication Stop
+TEMPCommunicationStop,Temp通信中断,Temp Communication Stop
 celsius,℃,℃
 fahrenheit,℉,℉
 percent,%,%
@@ -366,7 +366,7 @@ ErrorLog,错误日志,Error Log
 SystemStatus,状态,Status
 SomeLimitAlarmDisabled,有超限报警被关闭,Some Limit Alarms Disabled
 PowerupRecorderPressed,前面板打印键短路,Front Panel Record Btn Stuck
-PowerupCommunicationStop,前面板通讯停止,Front Panel Comm. Stop
+PowerupCommunicationStop,前面板通信中断,Front Panel Comm. Stop
 WiFiMenu,无线网络,Wifi
 WiFiMenuDesc,无线网络,Wifi
 Switch,开关,Switch
@@ -468,6 +468,7 @@ NIBPWAITING,NIBP等待,NIBP Waiting
 NIBPNoResponse,无响应,No Response
 NIBPTemporarily,临时,Temporarily
 NIBPDisable,禁用,Disable
+NIBPNotCalibrate,未校准,Not Calibrate
 _1min,1 分钟,1 min
 _1.5min,1.5 分钟,1.5 min
 _2min,2 分钟,2 min
@@ -530,7 +531,7 @@ AlarmTime,时间,Time
 AlarmPriority,优先级,Priority
 AlarmInfo,信息,Message
 High,高,High
-Medium,中,Medium
+Medium,中,Med
 Low,低,Low
 HRHigh,HR高,HR High
 HRLow,HR低,HR Low
@@ -562,7 +563,7 @@ ST-V5Low,ST-V5 低,ST-V5 Low
 ST-V5High,ST-V5 高,ST-V5 High
 ST-V6Low,ST-V6 低,ST-V6 Low
 ST-V6High,ST-V6 高,ST-V6 High
-ECGArrASYSTOLE,停搏,ASYSTOLE
+ECGArrASYSTOLE,停搏,Asystole
 ECGArrVFIBVTAC,室颤/室速,VFIB/VTAC
 ECGArrRONT,R ON T,R ON T
 ECGArrVTL2,多发室早,VT>2
@@ -595,17 +596,17 @@ ECGC4LeadOff,ECGC4导联脱落,ECG C4 Lead Off
 ECGC5LeadOff,ECGC5导联脱落,ECG C5 Lead Off
 ECGC6LeadOff,ECGC6导联脱落,ECG C6 Lead Off
 ECGOverLoad,ECG过载,ECG Over Load
-ECGCommunicationStop,ECG通讯停止,ECG Communication Stop
+ECGCommunicationStop,ECG通信中断,ECG Communication Stop
 ECG12LSnapShot,12导 快照,12 Lead SnapShot
 ECGAcquiring12L,获取12导,Acquiring 12 Lead
 ECGAcquired12L,获取12导结束,Acquire 12 Lead Complete
-RESPCommunicationStop,Resp通讯停止,Resp Communication Stop
+RESPCommunicationStop,Resp通信中断,Resp Communication Stop
 RESPCheckElecrodes,Resp检查电极,Resp Check Electrodes
 Apnea,Resp窒息,Apnea
 SPO2Low,SpO2低,SpO2 Low
 SPO2High,SpO2高,SpO2 High
-SPO2PRLow,脉率低,PR Low
-SPO2PRHigh,脉率高,PR High
+SPO2PRLow,PR低,PR Low
+SPO2PRHigh,PR高,PR High
 SPO2Initializing,SpO2初始化,SpO2 initializing
 SPO2PulseSearch,SpO2搜索脉搏,SpO2 Pulse Search
 SPO2PulseSearchTooLong,SpO2脉搏搜索时间过长,SpO2 Pulse Search Too Long
@@ -952,7 +953,7 @@ RealTimePrintMidLead,实时打印中部导联,Real-Time Print Middle Lead
 RealTimePrintBottomLead,实时打印底部导联,Real-Time Print Bottom Lead
 ErrorPassWordERROR,密码错误!,Password Error!
 Warn,警告,Warning
-SureSafePopUpUDisk,是否安全弹出U盘?,Whether to safely pop up the U disk?
+SureSafePopUpUDisk,是否安全弹出U盘?,Whether to eject the USB flash disk safely?
 WarningNoUSB,没有找到U盘，请检查！,"Not find U disk, please check!"
 WarnLessUSBFreeSpace,U盘空间不足，请检查！,"U disk free space not enough, please check!"
 WarningNoImportFile,导入文件不存在，请检查！,"Import file does not exist, please check!"
@@ -1254,7 +1255,7 @@ NORMAL,中,NORMAL
 LOW,低,LOW
 OFF,关闭,OFF
 ON,打开,ON
-NIBPInitialCuff,初始袖口气压,NIBP Initial Cuff
+NIBPInitialPressure,初始袖口气压,NIBP Initial Pressure
 IntervalTime,自动间隔时间,Interval Time
 ExportFileCompleted,导出文件完成,Export File Completed
 ExportFileFailed,导出文件失败,Export File Failed
@@ -1438,8 +1439,8 @@ AlarmType,报警类型,Alarm Type
 Technology,技术,Technology
 Physiology,生理,Physiology
 UserMaintainPassword,监护仪维护密码,Monitor Maintain Password
+Department,科室,Department
 UserMaintain,监护仪维护,Monitor Maintain
-Department,部门,Department
 BedNumber,床号,Bed No.
 ModifyPassword,密码,Password
 ChangeBedNumberRight,更改床号权限,Changing Bed Number
@@ -1523,7 +1524,7 @@ FactoryVersionInfo,版本信息,Version Info
 FactoryVersionInfoDesc,版本信息,Version Info
 SelectStarterLogo,选择开始菜单,Select Starter Logo
 WaitingCalibration,等待校准,Waiting
-Calibrating,正在校准,
+Calibrating,正在校准,Calibrating
 TEMPCalibrate,校准,Calibrate
 is,是,is
 TEMP1,Temp1,Temp1
@@ -1533,7 +1534,7 @@ Ohm,Ω,Ω
 TEMPModuleNotCalibration1,Temp模块通道1未定标,Temp Channel 1 Not Calibration
 TEMPModuleNotCalibration2,Temp模块通道2未定标,Temp Channel 2 Not Calibration
 TEMPModuleDisable,Temp模块禁用,Temp Module Disable
-TEMPCommunicationStop,Temp通信停止,Temp Communication Stop
+TEMPCommunicationStop,Temp通信中断,Temp Communication Stop
 TEMPChannel,Temp通道,Temp Channel
 TEMPCalibrate,Temp校准 ,Temp Calibrate
 N2O,N2O,N2O
@@ -1614,11 +1615,10 @@ PrintLength,打印长度,Print Length
 Hours,时,Hours
 Minutes,分,Minutes
 Seconds,秒,Seconds
-ComfirmClearErrorLog,确认是否清理错误日志,Comfirm Clear Error Log
+ConfirmClearErrorLog,确认是否清理错误日志,Confirm that clear the error log
 Speed,速度,Speed
 Gain,增益,Gain
 NIBPList,NIBP列表,NIBP List
-AUTO,自动,AUTO
 CalculateMenu,计算,Calculate
 HemodynamicCalculation,血液动力学计算,Hemodynamic Calculation
 CalculateMenuDesc,计算设置,Calculation

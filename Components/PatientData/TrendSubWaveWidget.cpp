@@ -727,6 +727,7 @@ void TrendSubWaveWidget::_autoRulerCal()
                 if (type != UNIT_MMHG)
                 {
                     v = Unit::convert(type, UNIT_MMHG, data, co2Param.getBaro()).toDouble();
+                    v = v * _valueY.scale;
                 }
                 _updateAutoRuler(v);
             }
@@ -749,19 +750,19 @@ void TrendSubWaveWidget::_autoRulerCal()
                 }
                 ParamID paramId = paramInfo.getParamID(_id);
                 UnitType type = paramManager.getSubParamUnit(paramId, _id);
-                int v = 0;
+                int v = data;
                 if (paramId == PARAM_CO2)
                 {
-                    v = Unit::convert(type, UNIT_PERCENT, data / 10.0, co2Param.getBaro()).toDouble();
+                    // 单位转换
+                    v = Unit::convert(type, UNIT_PERCENT, static_cast<float>(data / 10.0), co2Param.getBaro()).toDouble();
+                    // 计算出的数据乘上 scale
+                    v = v * _valueY.scale;
                 }
                 else if (paramId == PARAM_TEMP)
                 {
-                    QString vStr = Unit::convert(type, UNIT_TC, data / 10.0);
-                    v = vStr.toDouble();
-                }
-                else
-                {
-                    v = data / 10;
+                    v = Unit::convert(type, UNIT_TC, static_cast<float>(data / 10.0) ).toDouble();
+                    // 计算出的数据乘上 scale
+                    v = v * _valueY.scale;
                 }
                 _updateAutoRuler(v);
             }
@@ -787,7 +788,8 @@ void TrendSubWaveWidget::_autoRulerCal()
     }
 
     // 自动标尺如果超出手动标尺设定范围则按照设置范围最大最小设定.
-    UnitType unit = paramInfo.getUnitOfSubParam(_id);
+    ParamID paramId = paramInfo.getParamID(_id);
+    UnitType unit = paramManager.getSubParamUnit(paramId, _id);
     ParamRulerConfig config = alarmConfig.getParamRulerConfig(_id, unit);
     int range = _valueY.max - _valueY.min;
     if (_valueY.min < config.minDownRuler)
@@ -813,16 +815,16 @@ void TrendSubWaveWidget::_updateAutoRuler(TrendDataType data)
         _maxValue = data;
         _minValue = data;
         _fristValue = false;
-        int maxDiff = _valueY.max - _maxValue * _valueY.scale;
-        if (maxDiff <= 0 || maxDiff > 10 || (static_cast<int>(_valueY.max / _valueY.scale) % 10))
+        int maxDiff = _valueY.max - _maxValue;
+        if (maxDiff <= 0 || maxDiff > 10 || (static_cast<int>(_valueY.max) % 10))
         {
-            _valueY.max = (_maxValue + (10 - _maxValue % 10)) * _valueY.scale;
+            _valueY.max = (_maxValue + (10 - _maxValue % 10));
         }
-        int minDiff = _minValue - _valueY.min * _valueY.scale;
-        if (minDiff <= 0 || minDiff > 10 || (static_cast<int>(_valueY.min / _valueY.scale) % 10))
+        int minDiff = _minValue - _valueY.min;
+        if (minDiff <= 0 || minDiff > 10 || (static_cast<int>(_valueY.min) % 10))
         {
             int value = (_minValue % 10) ? (_minValue % 10) : 10;
-            _valueY.min = (_minValue - value) * _valueY.scale;
+            _valueY.min = (_minValue - value);
         }
     }
 
@@ -830,10 +832,10 @@ void TrendSubWaveWidget::_updateAutoRuler(TrendDataType data)
     if (data > _maxValue)
     {
         _maxValue = data;
-        int maxDiff = _valueY.max - _maxValue * _valueY.scale;
-        if (maxDiff <= 0 || maxDiff > 10 || (static_cast<int>(_valueY.max / _valueY.scale) % 10))
+        int maxDiff = _valueY.max - _maxValue;
+        if (maxDiff <= 0 || maxDiff > 10 || (static_cast<int>(_valueY.max) % 10))
         {
-            _valueY.max = (_maxValue + (10 - _maxValue % 10)) * _valueY.scale;
+            _valueY.max = (_maxValue + (10 - _maxValue % 10));
         }
     }
 
@@ -841,11 +843,11 @@ void TrendSubWaveWidget::_updateAutoRuler(TrendDataType data)
     if (data < _minValue)
     {
         _minValue = data;
-        int minDiff = _minValue - _valueY.min * _valueY.scale;
-        if (minDiff <= 0 || minDiff > 10 || (static_cast<int>(_valueY.min / _valueY.scale) % 10))
+        int minDiff = _minValue - _valueY.min;
+        if (minDiff <= 0 || minDiff > 10 || (static_cast<int>(_valueY.min) % 10))
         {
             int value = (_minValue % 10) ? (_minValue % 10) : 10;
-            _valueY.min = (_minValue - value) * _valueY.scale;
+            _valueY.min = (_minValue - value);
         }
     }
 }

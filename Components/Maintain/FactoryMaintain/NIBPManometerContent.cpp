@@ -23,7 +23,7 @@ class NIBPManometerContentPrivate
 {
 public:
     NIBPManometerContentPrivate()
-        : value(NULL), inModeTimerID(-1),
+        : value(NULL), unitLabel(NULL), inModeTimerID(-1),
           timeoutNum(0), pressureTimerID(-1),
           pressure(InvData()), isManometerMode(false),
           modeBtn(NULL)
@@ -32,6 +32,7 @@ public:
     }
     void loadOptions(void);
     QLabel *value;
+    QLabel *unitLabel;
     int inModeTimerID;          // 进入压力计模式定时器ID
     int timeoutNum;
     int pressureTimerID;        // 获取压力定时器ID
@@ -47,6 +48,7 @@ void NIBPManometerContentPrivate::loadOptions(void)
     isManometerMode = false;
     modeBtn->setEnabled(true);
     value->setText(InvStr());
+    unitLabel->setText(Unit::getSymbol(nibpParam.getUnit()));
     modeBtn->setText(trs("EnterManometerMode"));
 }
 
@@ -99,6 +101,7 @@ void NIBPManometerContent::layoutExec()
     label = new QLabel();
     label->setText(Unit::getSymbol(nibpParam.getUnit()));
     layout->addWidget(label, 1, 2);
+    d_ptr->unitLabel = label;
 }
 
 void NIBPManometerContent::timerEvent(QTimerEvent *ev)
@@ -146,7 +149,16 @@ void NIBPManometerContent::timerEvent(QTimerEvent *ev)
         if (d_ptr->pressure != nibpParam.getManometerPressure() && d_ptr->isManometerMode)
         {
             d_ptr->pressure = nibpParam.getManometerPressure();
-            d_ptr->value->setNum(nibpParam.getManometerPressure());
+            UnitType unit = nibpParam.getUnit();
+            UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_NIBP_SYS);
+            if (unit != defUnit)
+            {
+                d_ptr->value->setNum(Unit::convert(unit, defUnit, d_ptr->pressure).toInt());
+            }
+            else
+            {
+                d_ptr->value->setNum(d_ptr->pressure);
+            }
         }
     }
 }

@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/7/18
+ **/
+
+
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"
 #include "serializer.h"
@@ -19,11 +30,17 @@
 class ErrorLogPrivate
 {
 public:
-    ErrorLogPrivate(ErrorLog * const q_ptr) : q_ptr(q_ptr), partNew(new StorageFile()),
-          partOld(new StorageFile())
+    explicit ErrorLogPrivate(ErrorLog *const q_ptr) : q_ptr(q_ptr), partNew(new StorageFile()),
+        partOld(new StorageFile())
     {
     }
 
+    ErrorLogPrivate(const ErrorLogPrivate &c)
+    {
+        q_ptr = c.q_ptr;
+        partNew = new StorageFile();
+        partOld = new StorageFile();
+    }
     ~ErrorLogPrivate()
     {
         delete partNew;
@@ -54,7 +71,7 @@ void ErrorLogPrivate::loadfile()
 {
     bool broken = false;
     partNew->reload(ERRORLOGNEW, QIODevice::ReadWrite);
-    if(!partNew->isValid())
+    if (!partNew->isValid())
     {
         broken = true;
         StorageFile::remove(partNew);
@@ -62,14 +79,14 @@ void ErrorLogPrivate::loadfile()
     }
 
     partOld->reload(ERRORLOGOLD, QIODevice::ReadWrite);
-    if(!partOld->isValid())
+    if (!partOld->isValid())
     {
         broken = true;
         StorageFile::remove(partOld);
         partOld->reload(ERRORLOGOLD, QIODevice::ReadWrite);
     }
 
-    if(broken)
+    if (broken)
     {
         qdebug("Error log is broken.");
     }
@@ -106,9 +123,9 @@ bool ErrorLogPrivate::checkErrorTimeStamp(unsigned logTitleHashVal, unsigned tim
     bool ret = false;
 
     QMap<unsigned, unsigned>::iterator iter = errorItemTimeStamp.find(logTitleHashVal);
-    if(iter != errorItemTimeStamp.end())
+    if (iter != errorItemTimeStamp.end())
     {
-        if(timestamp - iter.value() <= 1)
+        if (timestamp - iter.value() <= 1)
         {
             ret = true;
         }
@@ -131,9 +148,9 @@ int ErrorLog::count()
     count = d->partNew->getBlockNR() + d->partOld->getBlockNR();
     d->filemutex.unlock();
 
-    if(count > (int)MaximumLogNum)
+    if (count > static_cast<int>(MaximumLogNum))
     {
-       return  MaximumLogNum;
+        return  MaximumLogNum;
     }
     else
     {
@@ -151,12 +168,12 @@ ErrorLogItemBase *ErrorLog::getLog(int index)
     quint32 type = 0;
     int realindex;
     ErrorLogItemBase *item = NULL;
-    if(index >= this->count())
+    if (index >= this->count())
     {
         return item;
     }
     d->filemutex.lock();
-    if(d->partNew->getBlockNR() > (unsigned int)index)
+    if (d->partNew->getBlockNR() > (unsigned int)index)
     {
         realindex = d->partNew->getBlockNR() - index - 1;
         data = d->partNew->getBlockData(realindex);
@@ -167,12 +184,11 @@ ErrorLogItemBase *ErrorLog::getLog(int index)
         realindex = d->partOld->getBlockNR() - 1 - (index - d->partNew->getBlockNR());
         data = d->partOld->getBlockData(realindex);
         type = d->partOld->getBlockType(realindex);
-
     }
     d->filemutex.unlock();
 
     QMap<int, ErrorLogItemCreateFunc> &creatormap = ErrorLogItemBase::getItemCreatorMap();
-    if(creatormap.contains(type))
+    if (creatormap.contains(type))
     {
         item = creatormap[type]();
         item->content = d->parser.parse(data).toMap();
@@ -189,12 +205,12 @@ void ErrorLog::append(ErrorLogItemBase *item)
     Q_D(ErrorLog);
     QMutexLocker locker(&d->listMutex);
 
-    QDateTime dt = QDateTime::fromString(item->getTime(),"yyyy-MM-dd HH:mm:ss.zzz");
+    QDateTime dt = QDateTime::fromString(item->getTime(), "yyyy-MM-dd HH:mm:ss.zzz");
 
-    if(d->checkErrorTimeStamp(qHash(item->name()), dt.toTime_t()))
+    if (d->checkErrorTimeStamp(qHash(item->name()), dt.toTime_t()))
     {
-        //this log is recorded too fast, not add to errorlog
-        qDebug()<<"Discard errorlog: "<<item->name();
+        // this log is recorded too fast, not add to errorlog
+        qDebug() << "Discard errorlog: " << item->name();
         delete item;
         return;
     }
@@ -209,13 +225,13 @@ void ErrorLog::append(const QList<ErrorLogItemBase *> &items)
     Q_D(ErrorLog);
     QDateTime dt;
     QMutexLocker locker(&d->listMutex);
-    foreach(ErrorLogItemBase * item, items)
+    foreach(ErrorLogItemBase *item, items)
     {
-        dt = QDateTime::fromString(item->getTime(),"yyyy-MM-dd HH:mm:ss.zzz");
-        if(d->checkErrorTimeStamp(qHash(item->name()), dt.toTime_t()))
+        dt = QDateTime::fromString(item->getTime(), "yyyy-MM-dd HH:mm:ss.zzz");
+        if (d->checkErrorTimeStamp(qHash(item->name()), dt.toTime_t()))
         {
-            //this log is recorded too fast, not add to errorlog
-            qDebug()<<"Discard errorlog: "<<item->name();
+            // this log is recorded too fast, not add to errorlog
+            qDebug() << "Discard errorlog: " << item->name();
             delete item;
             continue;
         }
@@ -244,18 +260,18 @@ int ErrorLog::getTypeCount(unsigned int type)
     int num = 0;
     d->filemutex.lock();
     int newblockNr = d->partNew->getBlockNR();
-    for(int i = 0; i < newblockNr; i++)
+    for (int i = 0; i < newblockNr; i++)
     {
-        if(d->partNew->getBlockType(i) == type)
+        if (d->partNew->getBlockType(i) == type)
         {
             num += 1;
         }
     }
     int oldblockNr = d->partOld->getBlockNR();
     int left = total - newblockNr;
-    for(int i = oldblockNr - left; i < oldblockNr; i++)
+    for (int i = oldblockNr - left; i < oldblockNr; i++)
     {
-        if(d->partOld->getBlockType(i) == type)
+        if (d->partOld->getBlockType(i) == type)
         {
             num += 1;
         }
@@ -276,22 +292,22 @@ ErrorLogItemBase *ErrorLog::getLatestLog(unsigned int type)
     bool found = false;
     QMutexLocker locker(&d->filemutex);
     int newblockNr = d->partNew->getBlockNR();
-    for(int i = newblockNr - 1; i >= 0; i--)
+    for (int i = newblockNr - 1; i >= 0; i--)
     {
-        if(d->partNew->getBlockType(i) == type)
+        if (d->partNew->getBlockType(i) == type)
         {
             data = d->partNew->getBlockData(i);
             found = true;
             break;
         }
     }
-    if(!found)
+    if (!found)
     {
         int oldBlockNr = d->partOld->getBlockNR();
         int left = total - newblockNr;
-        for(int i = oldBlockNr - 1; i >= oldBlockNr - left; i--)
+        for (int i = oldBlockNr - 1; i >= oldBlockNr - left; i--)
         {
-            if(d->partOld->getBlockType(i) == type)
+            if (d->partOld->getBlockType(i) == type)
             {
                 data = d->partOld->getBlockData(i);
                 found = true;
@@ -299,7 +315,7 @@ ErrorLogItemBase *ErrorLog::getLatestLog(unsigned int type)
             break;
         }
     }
-    if(found)
+    if (found)
     {
         item = ErrorLogItemBase::getItemCreatorMap()[type]();
         item->content = d->parser.parse(data).toMap();
@@ -313,26 +329,26 @@ ErrorLog::Summary ErrorLog::getSummary()
     ErrorLogItemBase *item;
     summary.NumOfErrors = count();
     summary.numOfCriticalErrors = getTypeCount(CriticalFaultLogItem::Type);
-    if((item = getLog(0)))
+    if ((item = getLog(0)))
     {
         summary.mostRecentErrorDate = item->getTime();
         delete item;
     }
 
-    if((item = getLatestLog(CriticalFaultLogItem::Type)))
+    if ((item = getLatestLog(CriticalFaultLogItem::Type)))
     {
         summary.mostRecentCriticalErrorDate = item->getTime();
         delete item;
     }
 
-    if((item = getLog(count() - 1)))
+    if ((item = getLog(count() - 1)))
     {
         summary.oldestErrorDate = item->getTime();
     }
 
     unsigned int num = 0;
     systemConfig.getNumValue("ErrorLogEraseTime", num);
-    if(num > 0)
+    if (num > 0)
     {
         summary.lastEraseTimeDate = QDateTime::fromTime_t(num).toString("yyyy-MM-dd HH:mm:ss");
     }
@@ -345,7 +361,7 @@ void ErrorLog::run()
     Q_D(ErrorLog);
 
     d->listMutex.lock();
-    while(!d->storeItem.isEmpty())
+    while (!d->storeItem.isEmpty())
     {
         ErrorLogItemBase *item = d->storeItem.takeFirst();
         d->listMutex.unlock();
@@ -353,7 +369,7 @@ void ErrorLog::run()
         QByteArray data = d->serializer.serialize(item->content);
         d->filemutex.lock();
         d->partNew->appendBlockData(item->type(), data.constData(), data.length());
-        if(d->partNew->getBlockNR() >= ErrorLog::MaximumLogNum)
+        if (d->partNew->getBlockNR() >= ErrorLog::MaximumLogNum)
         {
             d->switchFile();
         }
@@ -368,7 +384,7 @@ void ErrorLog::run()
  * constructor
  **************************************************************************************************/
 ErrorLog::ErrorLog()
-    :d_ptr(new ErrorLogPrivate(this))
+    : d_ptr(new ErrorLogPrivate(this))
 {
     Q_D(ErrorLog);
     d->loadfile();
