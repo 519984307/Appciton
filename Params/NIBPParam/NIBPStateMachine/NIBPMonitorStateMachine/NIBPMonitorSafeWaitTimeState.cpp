@@ -203,7 +203,7 @@ void NIBPMonitorSafeWaitTimeState::handleNIBPEvent(NIBPEvent event, const unsign
                 switchState(NIBP_MONITOR_STANDBY_STATE);
                 break;
             }
-            if (nibpParam.isAutoStat())
+            if (nibpParam.isAutoStat() || nibpParam.isSTATFirst())
             {
                 nibpParam.setAutoStat(false);
                 nibpCountdownTime.STATMeasureStart();  // 只测量5分钟。
