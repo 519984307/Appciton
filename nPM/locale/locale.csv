@@ -1615,7 +1615,7 @@ PrintLength,打印长度,Print Length
 Hours,时,Hours
 Minutes,分,Minutes
 Seconds,秒,Seconds
-ComfirmClearErrorLog,确认是否清理错误日志,Comfirm Clear Error Log
+ConfirmClearErrorLog,确认是否清理错误日志,Confirm that clear the error log
 Speed,速度,Speed
 Gain,增益,Gain
 NIBPList,NIBP列表,NIBP List
