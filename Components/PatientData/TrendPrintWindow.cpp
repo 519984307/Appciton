@@ -286,7 +286,7 @@ void TrendPrintWindowPrivate::initGroupBox(QGroupBox *groupBox, TrendPrintWindow
     subBox->minSbx = new SpinBox();
     subBox->secondSbx = new SpinBox();
 
-    subBox->yearSbx->setRange(2000, 2099);
+    subBox->yearSbx->setRange(1970, 2037);
     subBox->yearSbx->setStep(1);
     subBox->yearSbx->setArrow(false);
 
