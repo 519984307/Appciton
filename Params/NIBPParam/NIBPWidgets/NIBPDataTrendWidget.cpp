@@ -389,7 +389,12 @@ void NIBPDataTrendWidget::updateWidgetConfig()
 void NIBPDataTrendWidget::clearListData()
 {
     _nibpNrendCacheMap.clear();
-    _table->clearContents();
+    for (int i = 0; i < _rowNR; i++)
+    {
+        _table->item(i, 0)->setText("");
+        QLabel *l = qobject_cast<QLabel *>(_table->cellWidget(i, 1));
+        l->setText("");
+    }
 }
 
 void NIBPDataTrendWidget::updateUnit(UnitType unit)
