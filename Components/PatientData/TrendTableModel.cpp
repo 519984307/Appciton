@@ -445,6 +445,7 @@ void TrendTableModel::leftPage(int &curSecCol)
     {
         d_ptr->indexInfo.end = d_ptr->indexInfo.total;
     }
+    d_ptr->indexInfo.event = -1;
 
     beginResetModel();
     d_ptr->loadTrendData();
@@ -467,6 +468,7 @@ void TrendTableModel::rightPage(int &curSecCol)
     }
     d_ptr->indexInfo.start = start;
     d_ptr->indexInfo.end = end;
+    d_ptr->indexInfo.event = -1;
 
     beginResetModel();
     d_ptr->loadTrendData();
