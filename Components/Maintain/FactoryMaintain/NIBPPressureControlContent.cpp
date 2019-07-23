@@ -42,6 +42,8 @@ public:
     };
     void loadOptions(void);
     NIBPPressureControlContentPrivate();
+    int getPatientPressure(void);
+    void insertPressureList(int pressure);
     SpinBox *chargePressure;          // 设定充气压力值
     QStringList pressureList;
     ComboBox *overpressureCbo;          // 过压保护开关
@@ -96,25 +98,53 @@ void NIBPPressureControlContentPrivate::loadOptions(void)
     inflateBtn->setEnabled(false);
     modeBtn->setEnabled(true);
     UnitType currentUnit = nibpParam.getUnit();
-    pressureList.clear();
     if (currentUnit != UNIT_MMHG)
     {
         unitLabel->setText(Unit::getSymbol(UNIT_KPA));
-        for (int i = 50; i <= 300; i += 5)
-        {
-            pressureList.append(Unit::convert(UNIT_KPA, UNIT_MMHG, i));
-        }
     }
     else
     {
         unitLabel->setText(Unit::getSymbol(UNIT_MMHG));
-        for (int i = 50; i <= 300; i += 5)
+    }
+    insertPressureList(300);
+    chargePressure->setValue(40);
+}
+
+int NIBPPressureControlContentPrivate::getPatientPressure(void)
+{
+    PatientType type = patientManager.getType();
+    int _pressure;
+    if (type == PATIENT_TYPE_ADULT)
+    {
+        _pressure = 290;
+    }
+    else if (type == PATIENT_TYPE_NEO)
+    {
+        _pressure = 250;
+    }
+    else if (type == PATIENT_TYPE_PED)
+    {
+        _pressure = 150;
+    }
+    return _pressure;
+}
+
+void NIBPPressureControlContentPrivate::insertPressureList(int pressure)
+{
+    pressureList.clear();
+    UnitType unit = nibpParam.getUnit();
+    for (int i = 50; i <= pressure; i += 5)
+    {
+        if (unit != UNIT_MMHG)
+        {
+            pressureList.append(Unit::convert(UNIT_KPA, UNIT_MMHG, i));
+        }
+        else
         {
             pressureList.append(QString::number(i));
         }
     }
     chargePressure->setStringList(pressureList);
-    chargePressure->setValue(40);
 }
 // 压力控制模式
 /**************************************************************************************************
@@ -444,56 +474,21 @@ void NIBPPressureControlContent::onOverpressureReleased(int index)
         nibpParam.provider().servicePressureProtect(!index);
     }
     else
-    {
-        d_ptr->pressureList.clear();
+    {       
         if (!index)
         {
             d_ptr->overPressureProtect = true;
-            UnitType unit = nibpParam.getUnit();
-            PatientType type = patientManager.getType();
-            if (type == PATIENT_TYPE_ADULT)
-            {
-                d_ptr->safePressure = 290;
-            }
-            else if (type == PATIENT_TYPE_NEO)
-            {
-                d_ptr->safePressure = 250;
-            }
-            else if (type == PATIENT_TYPE_PED)
-            {
-                d_ptr->safePressure = 150;
-            }
-            for (int i = 50; i <= d_ptr->safePressure; i += 5)
-            {
-                if (unit != UNIT_MMHG)
-                {
-                    d_ptr->pressureList.append(Unit::convert(UNIT_KPA, UNIT_MMHG, i));
-                }
-                else
-                {
-                    d_ptr->pressureList.append(QString::number(i));
-                }
-            }
+            d_ptr->safePressure = d_ptr->getPatientPressure();
+            d_ptr->insertPressureList(d_ptr->safePressure);
             d_ptr->chargePressure->setStringList(d_ptr->pressureList);
             d_ptr->chargePressure->setValue(10);
         }
         else
         {
-            UnitType unit = nibpParam.getUnit();
             d_ptr->overPressureProtect = false;
-            d_ptr->pressureList.clear();
-            for (int i = 50; i <= 300; i += 5)
-            {
-                if (unit != UNIT_MMHG)
-                {
-                    d_ptr->pressureList.append(Unit::convert(UNIT_KPA, UNIT_MMHG, i));
-                }
-                else
-                {
-                    d_ptr->pressureList.append(QString::number(i));
-                }
-            }
+            d_ptr->insertPressureList(300);
             d_ptr->chargePressure->setStringList(d_ptr->pressureList);
+            d_ptr->chargePressure->setValue(40);
         }
     }
 }
