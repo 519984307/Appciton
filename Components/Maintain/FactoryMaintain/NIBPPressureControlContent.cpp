@@ -115,20 +115,20 @@ void NIBPPressureControlContentPrivate::loadOptions(void)
 int NIBPPressureControlContentPrivate::getPatientPressure(void)
 {
     PatientType type = patientManager.getType();
-    int _pressure;
+    int pressure;
     if (type == PATIENT_TYPE_ADULT)
     {
-        _pressure = 290;
+        pressure = 290;
     }
     else if (type == PATIENT_TYPE_NEO)
     {
-        _pressure = 250;
+        pressure = 250;
     }
     else if (type == PATIENT_TYPE_PED)
     {
-        _pressure = 150;
+        pressure = 150;
     }
-    return _pressure;
+    return pressure;
 }
 
 QStringList NIBPPressureControlContentPrivate::getPressureList(int pressure)
