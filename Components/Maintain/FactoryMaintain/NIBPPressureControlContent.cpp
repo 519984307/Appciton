@@ -118,11 +118,11 @@ int NIBPPressureControlContentPrivate::getPatientPressure(void)
     int pressure;
     if (type == PATIENT_TYPE_ADULT)
     {
-        pressure = 290;
+        pressure = 300;
     }
     else if (type == PATIENT_TYPE_NEO)
     {
-        pressure = 250;
+        pressure = 300;
     }
     else if (type == PATIENT_TYPE_PED)
     {
@@ -304,8 +304,16 @@ void NIBPPressureControlContent::timerEvent(QTimerEvent *ev)
                 d_ptr->value->setNum(d_ptr->pressure);
             }
         }
+
         if (d_ptr->moduleStr != "BLM_N5")   // suntech压力控制实现
         {
+            if (d_ptr->overPressureProtect)    // suntech软件过压保护实现
+            {
+               if (d_ptr->pressure >= d_ptr->safePressure)
+               {
+                   nibpParam.provider().controlPneumatics(0, 0, 0);  //放气
+               }
+            }
             if (d_ptr->pressure >= INFLATE_SWITCH_SIGN && d_ptr->isInflate)
             {
                 d_ptr->inflateBtn->setText(trs("ServiceDeflate"));
@@ -482,18 +490,10 @@ void NIBPPressureControlContent::onOverpressureReleased(int index)
         {
             d_ptr->overPressureProtect = true;
             d_ptr->safePressure = d_ptr->getPatientPressure();
-            d_ptr->pressureList.clear();
-            d_ptr->pressureList = d_ptr->getPressureList(d_ptr->safePressure);
-            d_ptr->chargePressure->setStringList(d_ptr->pressureList);
-            d_ptr->chargePressure->setValue(10);
         }
         else
         {
             d_ptr->overPressureProtect = false;
-            d_ptr->pressureList.clear();
-            d_ptr->pressureList = d_ptr->getPressureList(300);
-            d_ptr->chargePressure->setStringList(d_ptr->pressureList);
-            d_ptr->chargePressure->setValue(40);
         }
     }
 }
