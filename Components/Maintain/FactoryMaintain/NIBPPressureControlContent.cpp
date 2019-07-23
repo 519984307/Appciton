@@ -133,21 +133,21 @@ int NIBPPressureControlContentPrivate::getPatientPressure(void)
 
 QStringList NIBPPressureControlContentPrivate::getPressureList(int pressure)
 {
-    QStringList _pressureList;
-    _pressureList.clear();
+    QStringList pressuresList;
+    pressuresList.clear();
     UnitType unit = nibpParam.getUnit();
     for (int i = 50; i <= pressure; i += 5)
     {
         if (unit != UNIT_MMHG)
         {
-            _pressureList.append(Unit::convert(UNIT_KPA, UNIT_MMHG, i));
+            pressuresList.append(Unit::convert(UNIT_KPA, UNIT_MMHG, i));
         }
         else
         {
-            _pressureList.append(QString::number(i));
+            pressuresList.append(QString::number(i));
         }
     }
-    return _pressureList;
+    return pressuresList;
 }
 // 压力控制模式
 /**************************************************************************************************
