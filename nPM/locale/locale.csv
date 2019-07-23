@@ -1664,10 +1664,10 @@ ECGFullScreen,ECG全屏,ECG Full Screen
 isSaveLayout,是否保存布局配置？,Do you want to save the layout config?
 LowBattery,电量过低,Low quantity of electricity
 RESPCheckElectrodes,检查电极,Check Electrodes
-SPO2SignalWeak,检测SpO₂信号弱,SpO₂ Signal Weak
+SPO2SignalWeak,SpO₂信号弱,SpO₂ Signal Weak
 SPO2CableOff,SpO₂线缆断开,SpO₂ Cable Off
 SPO2FingerOff,未检测到手指,SpO₂ Finger Off
-SPO2LEDFault,SpO₂LED错误,SpO₂ LED Fault
+SPO2LEDFault,SpO₂调光错误,SpO₂ LED Fault
 SPO2LowPerfusion,SpO₂弱灌注,SpO₂ Low Perfusion
 SPO2DefectiveCable,SpO₂线缆故障,SpO₂ Defective cable
 SPO2CableExpired,SpO₂线缆过期,SpO₂ Cable expired
