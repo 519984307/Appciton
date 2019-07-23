@@ -718,8 +718,8 @@ void TrendWaveWidget::showEvent(QShowEvent *e)
     IWidget::showEvent(e);
     _getTrendData();
     _cursorPosIndex = 0;
-    _updateEventIndex();
     updateTimeRange();
+    _updateEventIndex();
 }
 
 void TrendWaveWidget::mousePressEvent(QMouseEvent *e)
@@ -985,16 +985,20 @@ void TrendWaveWidget::_updateEventIndex()
             // 将事件归为前一个时刻后，同时将前一刻的状态也更新
             int curIndex = _findIndex(event.timestamp);
             int lastIndex = _findIndex(ctx.infoSegment->timestamp);
-            _trendDataPack.at(curIndex)->status = _trendDataPack.at(lastIndex)->status;
-            _trendDataPack.at(curIndex)->subparamValue = _trendDataPack.at(lastIndex)->subparamValue;
-            _trendDataPack.at(curIndex)->subparamAlarm = _trendDataPack.at(lastIndex)->subparamAlarm;
-            _trendDataPack.at(curIndex)->alarmFlag = _trendDataPack.at(lastIndex)->alarmFlag;
+            if (curIndex != lastIndex)
+            {
+                _trendDataPack.at(curIndex)->status = _trendDataPack.at(lastIndex)->status;
+                _trendDataPack.at(curIndex)->subparamValue = _trendDataPack.at(lastIndex)->subparamValue;
+                _trendDataPack.at(curIndex)->subparamAlarm = _trendDataPack.at(lastIndex)->subparamAlarm;
+            	_trendDataPack.at(curIndex)->alarmFlag = _trendDataPack.at(lastIndex)->alarmFlag;
+            }
         }
     }
     if ((_historyDataPath != "") && _isHistory)
     {
         delete backend;
     }
+    update();
 }
 
 int TrendWaveWidget::_findIndex(unsigned timeStamp)
