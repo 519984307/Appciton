@@ -43,7 +43,7 @@ public:
     void loadOptions(void);
     NIBPPressureControlContentPrivate();
     int getPatientPressure(void);
-    void insertPressureList(int pressure);
+    QStringList getPressureList(int pressure);
     SpinBox *chargePressure;          // 设定充气压力值
     QStringList pressureList;
     ComboBox *overpressureCbo;          // 过压保护开关
@@ -106,7 +106,9 @@ void NIBPPressureControlContentPrivate::loadOptions(void)
     {
         unitLabel->setText(Unit::getSymbol(UNIT_MMHG));
     }
-    insertPressureList(300);
+    pressureList.clear();
+    pressureList = getPressureList(300);
+    chargePressure->setStringList(pressureList);
     chargePressure->setValue(40);
 }
 
@@ -129,22 +131,23 @@ int NIBPPressureControlContentPrivate::getPatientPressure(void)
     return _pressure;
 }
 
-void NIBPPressureControlContentPrivate::insertPressureList(int pressure)
+QStringList NIBPPressureControlContentPrivate::getPressureList(int pressure)
 {
-    pressureList.clear();
+    QStringList _pressureList;
+    _pressureList.clear();
     UnitType unit = nibpParam.getUnit();
     for (int i = 50; i <= pressure; i += 5)
     {
         if (unit != UNIT_MMHG)
         {
-            pressureList.append(Unit::convert(UNIT_KPA, UNIT_MMHG, i));
+            _pressureList.append(Unit::convert(UNIT_KPA, UNIT_MMHG, i));
         }
         else
         {
-            pressureList.append(QString::number(i));
+            _pressureList.append(QString::number(i));
         }
     }
-    chargePressure->setStringList(pressureList);
+    return _pressureList;
 }
 // 压力控制模式
 /**************************************************************************************************
@@ -479,14 +482,16 @@ void NIBPPressureControlContent::onOverpressureReleased(int index)
         {
             d_ptr->overPressureProtect = true;
             d_ptr->safePressure = d_ptr->getPatientPressure();
-            d_ptr->insertPressureList(d_ptr->safePressure);
+            d_ptr->pressureList.clear();
+            d_ptr->pressureList = d_ptr->getPressureList(d_ptr->safePressure);
             d_ptr->chargePressure->setStringList(d_ptr->pressureList);
             d_ptr->chargePressure->setValue(10);
         }
         else
         {
             d_ptr->overPressureProtect = false;
-            d_ptr->insertPressureList(300);
+            d_ptr->pressureList.clear();
+            d_ptr->pressureList = d_ptr->getPressureList(300);
             d_ptr->chargePressure->setStringList(d_ptr->pressureList);
             d_ptr->chargePressure->setValue(40);
         }
