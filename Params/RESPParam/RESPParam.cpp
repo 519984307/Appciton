@@ -214,7 +214,7 @@ void RESPParam::setProvider(RESPProviderIFace *provider)
     d_ptr->provider->setApneaTime(getApneaTime());
 
     // 设置呼吸导联
-//    d_ptr->provider->setRESPCalcLead(getCalcLead());
+    d_ptr->provider->setRESPCalcLead(getCalcLead());
 
     // 是否开启RESP功能
     d_ptr->provider->enableRESPCalc(getRespMonitoring());
