@@ -424,7 +424,7 @@ void BLMCO2Provider::_readUpgradeData()
 {
     unsigned char buff[ringBuffLen] = {0};
     int len = uart->read(buff, ringBuffLen);
-    if (len <= 0)
+    if (len <= 0 || (buff[0] == 0xaa && buff[1] == 0x55))
     {
         return;
     }
@@ -762,7 +762,6 @@ void BLMCO2Provider::enterUpgradeMode()
 void BLMCO2Provider::setUpgradeIface(BLMProviderUpgradeIface *iface)
 {
     upgradeIface = iface;
-    ringBuff.clear();
 }
 
 bool BLMCO2Provider::sendUpgradeCmd(unsigned char cmdId, const unsigned char *data, unsigned int len)
