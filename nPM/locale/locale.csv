@@ -1718,3 +1718,10 @@ LastEraseTime,上次擦除时间: ,Last Erase Time:
 Subsystem,子系统: ,Subsystem: 
 SystemState,系统状态: ,System State: 
 SystemResponse,系统回应: ,System Response: 
+BLM_S5,BLM S5,BLM S5
+MASIMO_SPO2,Masimo SpO₂,Masimo SpO₂
+RAINBOW_SPO2,Rainbow SpO₂,Rainbow SpO₂
+BLM_N5,BLM N5,BLM N5
+SUNTECH_NIBP,Suntech Nibp,Suntech Nibp
+BLM_CO2,BLM CO₂,BLM CO₂
+MASIMO_CO2,Masimo CO₂,Masimo CO₂
