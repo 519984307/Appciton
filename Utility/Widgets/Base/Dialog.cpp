@@ -208,8 +208,8 @@ void Dialog::keyReleaseEvent(QKeyEvent *ev)
 
 void Dialog::hideEvent(QHideEvent *ev)
 {
-    QDialog::hideEvent(ev);
     emit windowHide(this);
+    QDialog::hideEvent(ev);
 }
 
 void Dialog::paintEvent(QPaintEvent *ev)

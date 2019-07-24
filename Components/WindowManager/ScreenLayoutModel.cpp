@@ -165,7 +165,7 @@ public:
                 int pos = nodeMap["@pos"].toInt();
                 bool editable = nodeMap["@editable"].toBool();
                 LayoutNode *node = new LayoutNode();
-                node->name = trs(nodeMap["@text"].toString());
+                node->name = nodeMap["@text"].toString();
                 node->editable = editable;
                 node->pos = pos;
                 node->span = span;

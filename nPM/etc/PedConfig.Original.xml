@@ -155,8 +155,8 @@
     <AlarmSource>
 		<HR_PR Enable="1" Prio="1">
 			<bpm>
-			    <Low Min="15" Max="348">50</Low>
-			    <High Min="17" Max="350">150</High>
+			    <Low Min="20" Max="348">50</Low>
+			    <High Min="21" Max="350">150</High>
 			    <Step>1</Step>
 			    <Scale>1</Scale>
 			</bpm>
@@ -739,28 +739,28 @@
 		</FIO2>
 		<T1 Enable="0" Prio="1">
 		<celsius>
-		    <Low Min="0" Max="499">350</Low>
-		    <High Min="1" Max="500">378</High>
+		    <Low Min="150" Max="499">350</Low>
+		    <High Min="151" Max="500">378</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</celsius>
 		<fahrenheit>
-		    <Low Min="320" Max="1219">950</Low>
-		    <High Min="321" Max="1220">1000</High>
+		    <Low Min="590" Max="1219">950</Low>
+		    <High Min="591" Max="1220">1000</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</fahrenheit>
 		</T1>
 		<T2 Enable="0" Prio="1">
 		<celsius>
-		    <Low Min="0" Max="499">350</Low>
-		    <High Min="1" Max="500">378</High>
+		    <Low Min="150" Max="499">350</Low>
+		    <High Min="151" Max="500">378</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</celsius>
 		<fahrenheit>
-		    <Low Min="320" Max="1219">950</Low>
-		    <High Min="321" Max="1220">1000</High>
+		    <Low Min="590" Max="1219">950</Low>
+		    <High Min="591" Max="1220">1000</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</fahrenheit>
@@ -788,11 +788,6 @@
 		</percent>
 		</O2>
     </AlarmSource>
-    <Local>
-        <NIBPUnit>5</NIBPUnit>
-        <CO2Unit>5</CO2Unit>
-        <TEMPUnit>1</TEMPUnit>
-    </Local>
     <Display>
         <AllColors>Green,Yellow,Blue,Red,Brown,Magenta,Orange,Cyan,Purple</AllColors>
         <Green>

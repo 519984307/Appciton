@@ -91,26 +91,7 @@ void NIBPMonitorSafeWaitTimeState::handleNIBPEvent(NIBPEvent event, const unsign
         break;
 
     case NIBP_EVENT_TRIGGER_BUTTON:
-        if (!nibpParam.isAdditionalMeasure())
-        {
-            nibpParam.setText(trs("NIBPWAITING"));
-        }
-        // 停止额外测量
-        else
-        {
-            nibpParam.setAdditionalMeasure(false);
-            nibpParam.setText(trs("NIBPMEASURE") + "\n" + trs("NIBPSTOPPED"));
-            nibpParam.clearResult();
-
-            if (nibpParam.getSuperMeasurMode() == NIBP_MODE_AUTO)
-            {
-                if (nibpParam.isAutoMeasure())
-                {
-                    nibpParam.setModelText(trs("NIBPManual"));
-                    nibpParam.setAutoMeasure(false);
-                }
-            }
-        }
+        nibpParam.setText(trs("NIBPWAITING"));
         if (nibpParam.getMeasurMode() == NIBP_MODE_STAT)
         {
             if (nibpParam.isSTATOpenTemp())
