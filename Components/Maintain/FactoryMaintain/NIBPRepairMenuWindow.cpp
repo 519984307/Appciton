@@ -96,7 +96,7 @@ void NIBPRepairMenuWindow::init()
     machineConfig.getStrValue("NIBP", str);
     if (str == "BLM_N5")
     {
-        d_ptr->_oldMonitorState = (NIBPMonitorStateID)nibpParam.curStatusType();
+        d_ptr->_oldMonitorState = static_cast<NIBPMonitorStateID>(nibpParam.curStatusType());
         nibpParam.changeMode(NIBP_STATE_MACHINE_SERVICE);
     }
     else
