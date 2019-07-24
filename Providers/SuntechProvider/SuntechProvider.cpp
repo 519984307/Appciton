@@ -194,6 +194,14 @@ void SuntechProvider::startMeasure(PatientType type)
 
     _NIBPStart = true;
     _flagStartCmdSend = 1;
+
+    if (nibpParam.getMeasurMode() == NIBP_MODE_STAT)
+    {
+        if (nibpParam.isSTATFirst())
+        {
+            nibpParam.setSTATFirst(false);
+        }
+    }
 }
 
 /**************************************************************************************************
