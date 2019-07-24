@@ -1545,7 +1545,7 @@ SetUp,设置,SetUp
 AGModule,AG,AG
 AG,AG,AG
 LoadConfig,加载配置,Load Config
-SuccessToLoad,加载成功,Load success
+ChangeConfig,所有设置将使用所选择的配置的内容，您确定进行吗？,All settings will be changed according to the selected configuration.Are you sure to continue?
 Load,加载,Load
 View,查看,View
 LoadConfigDesc,加载配置,Load Config
