@@ -117,6 +117,7 @@ private:
 
     bool _isCableOff;
     bool _isFingerOff;
+    bool _isSeaching;
     S5GainError _gainError;
     bool _ledFault;
     S5LogicStatus _logicStatus;
