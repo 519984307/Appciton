@@ -153,6 +153,7 @@ public:
 
     // 设置/获取FiCO2显示。
     void setFiCO2Display(CO2FICO2Display disp);
+    void updateFiCO2Display();
     CO2FICO2Display getFICO2Display(void);
 
     // 获取单位。

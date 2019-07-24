@@ -901,6 +901,14 @@ void CO2Param::setFiCO2Display(CO2FICO2Display disp)
     }
 }
 
+void CO2Param::updateFiCO2Display()
+{
+    if (NULL != d_ptr->trendWidget)
+    {
+        d_ptr->trendWidget->setFiCO2Display(getFICO2Display());
+    }
+}
+
 /**************************************************************************************************
  * 获取FiCO2显示标志。
  *************************************************************************************************/
