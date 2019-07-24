@@ -79,5 +79,4 @@ public:
 
     virtual void setDisableState(bool flag) = 0;
 
-    virtual bool getNeoDisState() = 0;
 };

@@ -22,6 +22,7 @@
 #include "RawDataCollector.h"
 #include "IConfig.h"
 #include "UpgradeManager.h"
+#include "AlarmSourceManager.h"
 
 static const char *nibpSelfErrorCode[] =
 {
@@ -400,6 +401,23 @@ void N5Provider::handlePacket(unsigned char *data, int len)
 
     case N5_RSP_PRESSURE_ZERO:
         nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_ZERO, NULL, 0);
+        break;
+    case N5_STATE_PRESSURE_PROTECT:
+        if (data[1] == 0x01)
+        {
+            nibpParam.setDisableState(true);
+            nibpParam.errorDisable();
+        }
+        else if (data[1] == 0x00)
+        {
+            nibpParam.setDisableState(false);
+            AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
+            if (alarmSource)
+            {
+                alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_DISABLE, false);
+            }
+            nibpParam.handleNIBPEvent(NIBP_EVENT_CONNECTION_NORMAL, NULL, 0);                       // 恢复禁用状态
+        }
         break;
 
     default:

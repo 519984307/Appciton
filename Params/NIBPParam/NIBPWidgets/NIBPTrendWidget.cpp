@@ -137,7 +137,7 @@ void NIBPTrendWidget::setResults(int16_t sys, int16_t dia, int16_t map, unsigned
         {
             d_ptr->sysString = Unit::convert(unit, UNIT_MMHG, sys);
             d_ptr->diaString = Unit::convert(unit, UNIT_MMHG, dia);
-            d_ptr->mapString = Unit::convert(unit, UNIT_MMHG, map);
+            d_ptr->mapString = "(" + Unit::convert(unit, UNIT_MMHG, map) + ")";
         }
         showValue();
         d_ptr->effective = true;
