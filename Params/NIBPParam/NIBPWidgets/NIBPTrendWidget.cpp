@@ -40,7 +40,7 @@ public:
         sysAlarm(false), diaAlarm(false),
         mapAlarm(false), effective(false),
         messageFontSize(100), messageInvFontSize(100),
-        _time(0), valueLayout(NULL)
+        lastTime(0),valueLayout(NULL)
     {}
     ~NIBPTrendWidgetPrivate(){}
 
@@ -70,7 +70,7 @@ public:
     bool effective;           //有效测量数据
     int messageFontSize;      // 非虚线显示时字体大小
     int messageInvFontSize;   // 虚线显示时字体大小
-    unsigned _time;
+    unsigned lastTime;
 
     static const int margin = 1;
     void setCountDown(const QString &time);
@@ -97,7 +97,7 @@ void NIBPTrendWidget::setResults(int16_t sys, int16_t dia, int16_t map, unsigned
 {
     //当测量结束，实时压力值显示“---”
     d_ptr->pressureString = InvStr();
-    d_ptr->_time = time;
+    d_ptr->lastTime = time;
 
     if (systemManager.getCurWorkMode() == WORK_MODE_NORMAL)
     {
@@ -370,7 +370,7 @@ void NIBPTrendWidgetPrivate::adjustValueLayout()
 
 void NIBPTrendWidgetPrivate::updateMeasureTime()
 {
-    if (_time == 0)
+    if (lastTime == 0)
     {
         measureTime = "";
     }
@@ -378,7 +378,7 @@ void NIBPTrendWidgetPrivate::updateMeasureTime()
     {
         QString timeStr("@ ");
         QString tmpStr;
-        timeDate.getTime(_time, tmpStr, false);
+        timeDate.getTime(lastTime, tmpStr, false);
         timeStr += tmpStr;
         measureTime = timeStr;
     }
