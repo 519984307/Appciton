@@ -908,6 +908,8 @@ void EventWindowPrivate::loadEventData()
                     LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subId, unit);
 
                     infoStr += Util::convertToString(ctx.almSegment->alarmLimit, config.scale);
+                    infoStr += " ";
+                    infoStr += trs(Unit::getSymbol(unit));
                 }
                 timeList.append(timeItemStr);
                 eventList.append(infoStr);
