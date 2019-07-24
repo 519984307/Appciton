@@ -40,7 +40,7 @@ public:
         sysAlarm(false), diaAlarm(false),
         mapAlarm(false), effective(false),
         messageFontSize(100), messageInvFontSize(100),
-        valueLayout(NULL)
+        _time(0), valueLayout(NULL)
     {}
     ~NIBPTrendWidgetPrivate(){}
 
