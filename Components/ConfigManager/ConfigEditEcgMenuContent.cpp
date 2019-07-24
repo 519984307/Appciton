@@ -117,8 +117,8 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
             break;
         }
 
-        combos[ITEM_CBO_ECG1_WAVE]->addItem(trs(ECGSymbol::convert((ECGLead)i, ECG_CONVENTION_AAMI)));
-        combos[ITEM_CBO_ECG2_WAVE]->addItem(trs(ECGSymbol::convert((ECGLead)i, ECG_CONVENTION_AAMI)));
+        combos[ITEM_CBO_ECG1_WAVE]->addItem(trs(ECGSymbol::convert((ECGLead)i, ecgParam.getLeadNameConvention())));
+        combos[ITEM_CBO_ECG2_WAVE]->addItem(trs(ECGSymbol::convert((ECGLead)i, ecgParam.getLeadNameConvention())));
     }
 
     config->getNumValue("ECG|Ecg1Wave", index);
