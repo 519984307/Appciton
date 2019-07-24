@@ -242,13 +242,13 @@ int ConfigManager::getUserDefineConfigMaxLen()
     return MAX_CONFIG_COUNT;
 }
 
-bool ConfigManager::hasExistConfig(const QString &name)
+bool ConfigManager::hasExistConfig(const QString &name, PatientType type)
 {
     bool flag = false;
     QList<ConfigManager::UserDefineConfigInfo> infos = getUserDefineConfigInfos();
     for (int i = 0; i < infos.count(); i++)
     {
-        if (name == infos.at(i).name)
+        if (name == infos.at(i).name && PatientSymbol::convert(type) == infos.at(i).patType)
         {
             flag = true;
             break;
