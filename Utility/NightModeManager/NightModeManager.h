@@ -10,6 +10,8 @@
 
 #pragma once
 #include <QObject>
+#include "SystemDefine.h"
+#include "SoundManagerInterface.h"
 
 class NightModeManagerPrivate;
 class NightModeManager : public QObject
@@ -33,6 +35,24 @@ public:
      */
     bool nightMode();
 
+    /**
+     * @brief setBrightness 设置夜间模式的背光亮度
+     * @param level
+     */
+    void setBrightness(BrightnessLevel level);
+
+    /**
+     * @brief setSoundVolume　设置夜间模式的音量
+     * @param soundType
+     * @param volumeLevel
+     */
+    void setSoundVolume(SoundManagerInterface::SoundType soundType, SoundManagerInterface::VolumeLevel volumeLevel);
+
+    /**
+     * @brief setNibpStopMeasure 设置夜间模式的NIBP停止测量状态
+     * @param stopNibpMeasure
+     */
+    void setNibpStopMeasure(bool stopNibpMeasure);
 signals:
     void nightModeChanged(bool);
 

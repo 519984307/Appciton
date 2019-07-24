@@ -1033,7 +1033,6 @@ void TrendTableModelPrivate::loadTrendData()
             case SUB_PARAM_ETAA1:
             case SUB_PARAM_ETAA2:
             case SUB_PARAM_ETO2:
-            case SUB_PARAM_T1:
             {
                 qint16 data1 = pack->subparamValue.value(id, InvData());
                 qint16 data2 = pack->subparamValue.value(static_cast<SubParamID>(id + 1), InvData());
@@ -1041,23 +1040,13 @@ void TrendTableModelPrivate::loadTrendData()
                 QString dataStr1;
                 QString dataStr2;
 
-                if (id == SUB_PARAM_T1 || id == SUB_PARAM_ETCO2)
+                if (id == SUB_PARAM_ETCO2)
                 {
                     double dubData1 = data1 * 1.0 / 10;
                     double dubData2 = data2 * 1.0 / 10;
-                    QString v1Str;
-                    QString v2Str;
                     UnitType type = paramManager.getSubParamUnit(paramInfo.getParamID(id), id);
-                    if (id == SUB_PARAM_T1)
-                    {
-                        v1Str = Unit::convert(type, UNIT_TC, dubData1);
-                        v2Str = Unit::convert(type, UNIT_TC, dubData2);
-                    }
-                    else
-                    {
-                        v1Str = Unit::convert(type, UNIT_PERCENT, dubData1, co2Param.getBaro());
-                        v2Str = Unit::convert(type, UNIT_PERCENT, dubData2, co2Param.getBaro());
-                    }
+                    QString v1Str = Unit::convert(type, UNIT_PERCENT, dubData1, co2Param.getBaro());
+                    QString v2Str = Unit::convert(type, UNIT_PERCENT, dubData2, co2Param.getBaro());
                     dataStr1 = data1 == InvData() ? "---" : v1Str;
                     dataStr2 = data2 == InvData() ? "---" : v2Str;
                 }
@@ -1067,6 +1056,21 @@ void TrendTableModelPrivate::loadTrendData()
                     dataStr2 = data2 == InvData() ? "---" : QString::number(data2);
                 }
                 dContent.dataStr = dataStr1 + "/" + dataStr2;
+            }
+            break;
+            case SUB_PARAM_T1:
+            {
+                qint16 T1 = pack->subparamValue.value(id, InvData());
+                qint16 T2 = pack->subparamValue.value(static_cast<SubParamID>(id + 1), InvData());
+                qint16 TD = pack->subparamValue.value(static_cast<SubParamID>(id + 2), InvData());
+                UnitType type = paramManager.getSubParamUnit(paramInfo.getParamID(id), id);
+                QString t1Str = Unit::convert(type, UNIT_TC, T1 * 1.0 / 10);
+                QString t2Str = Unit::convert(type, UNIT_TC, T2 * 1.0 / 10);
+                QString tdStr = Unit::convert(type, UNIT_TC, TD * 1.0 / 10);
+                t1Str = T1 == InvData() ? "---" : t1Str;
+                t2Str = T2 == InvData() ? "---" : t2Str;
+                tdStr = TD == InvData() ? "---" : tdStr;
+                dContent.dataStr = t1Str + "/" + t2Str + "\n" + tdStr;
             }
             break;
             default:
@@ -1125,6 +1129,9 @@ QString TrendTableModelPrivate::getParamName(int section)
         str = paramInfo.getSubParamName(id);
         str += '/';
         str += paramInfo.getSubParamName(SUB_PARAM_T2);
+        str += '\n';
+        str += "  ";
+        str += paramInfo.getSubParamName(SUB_PARAM_TD);
         break;
     case SUB_PARAM_ETCO2:
     {

@@ -16,13 +16,14 @@
 
 class AlarmInfoBarWidget;
 class AlarmStatusWidget;
+class PatientInfoWidget;
 class AlarmIndicator : public AlarmIndicatorInterface
 {
 public:
     static AlarmIndicator &getInstance(void);
 
     // 注册报警界面对象。
-    void setAlarmPhyWidgets(AlarmInfoBarWidget *alarmWidget, AlarmStatusWidget *muteWidget);
+    void setAlarmPhyWidgets(AlarmInfoBarWidget *alarmWidget, AlarmStatusWidget *muteWidget, PatientInfoWidget *patInfoWidget);
     void setAlarmTechWidgets(AlarmInfoBarWidget *alarmWidget);
 
     // 增加/删除报警消息。
@@ -129,6 +130,7 @@ private: // 报警信息显示。
     AlarmInfoBarWidget *_alarmPhyInfoWidget;
     AlarmInfoBarWidget *_alarmTechInfoWidget;
     AlarmStatusWidget *_alarmStatusWidget;
+    PatientInfoWidget *_patInfoWidget;
 
 private:
     // 最大报警信息数量。

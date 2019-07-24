@@ -26,4 +26,9 @@ public:
      * @param paramWave param relate wave
      */
     virtual void triggerAlarmEvent(const AlarmInfoSegment &almInfo, WaveformID paramWave, unsigned t) = 0;
+
+    /**
+     * @brief clearEventItemList 清空事件列表
+     */
+    virtual void clearEventItemList() {}
 };

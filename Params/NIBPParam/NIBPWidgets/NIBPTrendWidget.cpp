@@ -333,6 +333,7 @@ void NIBPTrendWidgetPrivate::layoutExec(QHBoxLayout *layout)
     hLayout->setContentsMargins(5, 0, 5, 0);
     hLayout->addStretch();
     hLayout->addWidget(lastMeasureCount);
+    hLayout->addSpacing(10);
     hLayout->addWidget(model);
     hLayout->addStretch();
 

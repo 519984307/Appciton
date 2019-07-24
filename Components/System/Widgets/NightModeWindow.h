@@ -29,19 +29,13 @@ public:
      */
     void layoutExec();
 
-protected:
-    void hideEvent(QHideEvent *ev);
-
 private slots:
     /**
      * @brief onComboBoxIndexChanged  下拉框选项改变槽函数
      * @param index
      */
     void onComboBoxIndexChanged(int index);
-    /**
-     * @brief OnBtnReleased  按钮释放槽函数
-     */
-    void onComboBoxItemFocusIndexChanged(int index);
+
     void OnBtnReleased(void);
 
     /**

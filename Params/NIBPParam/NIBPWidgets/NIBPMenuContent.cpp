@@ -145,7 +145,7 @@ void NIBPMenuContent::layoutExec()
     d_ptr->combos.insert(NIBPMenuContentPrivate::ITEM_CBO_COMPLETE_TONE, comboBox);
 
     // initial cuff
-    label = new QLabel(trs("NIBPInitialCuff"));
+    label = new QLabel(trs("NIBPInitialPressure"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     d_ptr->initCuffSpb = new SpinBox();
     d_ptr->initCuffSpb->setSpinBoxStyle(SpinBox::SPIN_BOX_STYLE_STRING);
