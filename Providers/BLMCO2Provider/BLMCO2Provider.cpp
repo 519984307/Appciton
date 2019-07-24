@@ -422,7 +422,7 @@ bool BLMCO2Provider::_checkUpgradePacketValid(const unsigned char *data, unsigne
 
 void BLMCO2Provider::_readUpgradeData()
 {
-    unsigned char buff[ringBuffLen];
+    unsigned char buff[ringBuffLen] = {0};
     int len = uart->read(buff, ringBuffLen);
     if (len <= 0)
     {
@@ -583,7 +583,7 @@ void BLMCO2Provider::dataArrived(void)
             }
 
             int len = (ringBuff.at(1) + (ringBuff.at(2) << 8));
-            if ((len <= 0) || (len > 570))
+            if ((len <= 0) || (len > 15))
             {
                 ringBuff.pop(1);
                 break;
@@ -762,6 +762,7 @@ void BLMCO2Provider::enterUpgradeMode()
 void BLMCO2Provider::setUpgradeIface(BLMProviderUpgradeIface *iface)
 {
     upgradeIface = iface;
+    ringBuff.clear();
 }
 
 bool BLMCO2Provider::sendUpgradeCmd(unsigned char cmdId, const unsigned char *data, unsigned int len)
@@ -806,7 +807,7 @@ BLMCO2Provider::BLMCO2Provider(const QString &name)
     }
     else if (name == "BLM_CO2")
     {
-        UartAttrDesc desc(115200, 8, 'N', 1, _packetLen);
+        UartAttrDesc desc(115200, 8, 'N', 1);
         portAttr = desc;
     }
 
