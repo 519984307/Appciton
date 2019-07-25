@@ -177,9 +177,10 @@ void BLMProvider::dataArrived()
 void BLMProvider::handlePacket(unsigned char *data, int len)
 {
     // version data, all BLMProvidor share the same version respond code
-    if (data[0] == 0x11 && len == 80 + 1) // version info length + data packet head offset
+    if (data[0] == 0x11 && len >= 80 + 1) // version info length + data packet head offset
     {
         const char *p = reinterpret_cast<char *>(&data[1]);
+        versionInfo.clear();
         versionInfo.append(p); // software git version
         versionInfo.append(" ");
         p += (30 + 1);  // software git version offset + data packet head offset
@@ -197,6 +198,29 @@ void BLMProvider::handlePacket(unsigned char *data, int len)
         p += (1 + 1);  // hardware version offset + data packet head offset
 
         versionInfo.append(p); // bootloader git version
+
+        if (len == 160 + 1)  // 适用于N5从片版本信息
+        {
+            const char *p = reinterpret_cast<char *>(&data[1 + 80]);
+            versionInfoEx.clear();
+            versionInfoEx.append(p); // software git version
+            versionInfoEx.append(" ");
+            p += (30 + 1);  // software git version offset + data packet head offset
+
+            versionInfoEx.append(p); // build date
+            versionInfoEx.append(" ");
+            p += (15 + 1);  // build date offset + data packet head offset
+
+    //        versionInfo.append(p); // build time
+    //        versionInfo.append(" ");
+            p += (15 + 1);  // build time offset + data packet head offset
+
+            versionInfoEx.append(p); // hardware version
+            versionInfoEx.append(" ");
+            p += (1 + 1);  // hardware version offset + data packet head offset
+
+            versionInfoEx.append(p); // bootloader git version
+        }
     }
 }
 

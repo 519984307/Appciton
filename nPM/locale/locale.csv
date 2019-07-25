@@ -820,6 +820,8 @@ ECGVersion,ECG,ECG
 ECGBootloader,ECG Bootloader,ECG Bootloader
 NIBPVersion,NIBP,NIBP
 NIBPBootloader,NIBP Bootloader,NIBP Bootloader
+NIBPSlaveVersion,NIBP从片,NIBP Slave
+NIBPSlaveBootloader,NIBP从片Bootloader,NIBP Slave Bootloader
 SPO2Version,SpO₂,SpO₂
 SPO2Bootloader,SpO₂ Bootloader,SpO₂ Bootloader
 TEMPVersion,Temp,Temp
