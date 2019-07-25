@@ -216,8 +216,8 @@ CO2Curve,曲线,Curve
 CO2Filled,填充,Filled
 CO2Zoom,缩放,Zoom
 CO2FiCO2Display,FiCO₂显示,FiCO₂ Display
-O2Compensation,O₂补偿,O₂ Compensation
-N2OCompensation,N₂O补偿,N₂O Compensation
+O2Compensation,O₂补偿(%),O₂ Compensation(%)
+N2OCompensation,N₂O补偿(%),N₂O Compensation(%)
 CO2ZeroCalib,CO₂校零,CO₂ Zero
 CO2ZeroStart,开始,Start
 CO2Menu,CO₂,CO₂
