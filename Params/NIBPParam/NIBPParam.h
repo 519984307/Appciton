@@ -296,11 +296,17 @@ public:
      */
     void clearTrendListData();
 
-    void setFirstAuto(bool flag);   // 设置首次AUTO测量
+    /**
+     * @brief setFirstAuto 设置首次AUTO测量
+     */
+    void setFirstAuto(bool flag);   //
 
     bool isFirstAuto();
 
-    void setAutoStat(bool flag);   // AUTO倒计时时候进行STAT测量，要有五秒放气期
+    /**
+     * @brief setFirstAuto AUTO倒计时时候进行STAT测量，要有五秒放气期
+     */
+    void setAutoStat(bool flag);
 
     bool isAutoStat();
 
