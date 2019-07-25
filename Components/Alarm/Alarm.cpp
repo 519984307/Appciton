@@ -563,6 +563,7 @@ void Alarm::_handleAlarm(void)
         }
     }
 
+    // 统一触发之前产生的事件，目的为了触发的事件是当前时刻全部事件
     EventStorageManagerInterface *eventStorageManager = EventStorageManagerInterface::getEventStorageManager();
     if (eventStorageManager)
     {
