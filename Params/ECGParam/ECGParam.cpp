@@ -2305,7 +2305,9 @@ ECGParam::ECGParam() : Param(PARAM_ECG),
     currentConfig.getNumValue("ECG12L|DisplayFormat", mode);
     _12LeadDispFormat = (Display12LeadFormat)mode;
 
-    _ecgStandard = ECG_CONVENTION_AAMI;
+    int standard = 0;
+    systemConfig.getNumValue("Others|ECGStandard", standard);
+    _ecgStandard = static_cast<ECGLeadNameConvention>(standard);
 
     for (int i = 0; i < ECG_LEAD_NR; ++i)
     {
