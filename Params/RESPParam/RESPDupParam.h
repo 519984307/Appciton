@@ -123,6 +123,9 @@ signals:
      */
     void brSourceStatusUpdate();
 
+protected slots:
+    virtual void paramUpdateTimeout();
+
 private slots:
     void onPaletteChanged(ParamID id);
 

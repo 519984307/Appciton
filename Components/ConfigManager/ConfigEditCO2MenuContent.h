@@ -36,14 +36,25 @@ private slots:
      * @param index
      */
     void onComboBoxIndexChanged(int index);
-    /**
-     * @brief onBtnReleasedChanged
-     */
-    void onBtnReleasedChanged();
+
     /**
      * @brief onAlarmBtnReleased
      */
     void onAlarmBtnReleased(void);
+
+    /**
+     * @brief o2CompenSpinboxReleased
+     * @param value
+     * @param scale
+     */
+    void o2CompenSpinboxReleased(int value, int scale);
+
+    /**
+     * @brief n2oCompenSpinboxReleased
+     * @param value
+     * @param scale
+     */
+    void n2oCompenSpinboxReleased(int value, int scale);
 
 private:
     ConfigEditCO2MenuContentPrivate *const d_ptr;

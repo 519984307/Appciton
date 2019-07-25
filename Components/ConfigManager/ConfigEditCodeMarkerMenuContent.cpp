@@ -24,7 +24,7 @@ public:
     enum MenuItem
     {
         ITEM_CBO_CODE_MARKER1 = 0,
-        ITEM_CBO_MAX = 28,
+        ITEM_CBO_MAX = 27,
     };
 
     explicit ConfigEditCodeMarkerMenuContentPrivate(Config *const config)
@@ -161,14 +161,14 @@ void ConfigEditCodeMarkerMenuContent::layoutExec()
     ComboBox *comboBox;
     ConfigEditCodeMarkerMenuContentPrivate::MenuItem itemId;
 
-    for (int i = 0; i < ConfigEditCodeMarkerMenuContentPrivate::ITEM_CBO_MAX / 2; i++)
+    for (int i = 0; i < ConfigEditCodeMarkerMenuContentPrivate::ITEM_CBO_MAX / 2 + 1; i++)
     {
         label = new QLabel(trs(QString::number(i + 1)));
         if (i == 0)
         {
             d_ptr->codeMarkerFirst = label;
         }
-        layout->addWidget(label, i, 0);
+        layout->addWidget(label, i, 0, Qt::AlignRight);
         comboBox = new ComboBox;
         layout->addWidget(comboBox, i, 1);
         itemId = static_cast<ConfigEditCodeMarkerMenuContentPrivate::MenuItem>(i);
@@ -176,15 +176,15 @@ void ConfigEditCodeMarkerMenuContent::layoutExec()
         comboBox->setProperty("Item", qVariantFromValue(i));
         connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     }
-    int itemHalfTemp = ConfigEditCodeMarkerMenuContentPrivate::ITEM_CBO_MAX / 2;
-    for (int i = itemHalfTemp; i < itemHalfTemp * 2; i++)
+    int itemHalfTemp = ConfigEditCodeMarkerMenuContentPrivate::ITEM_CBO_MAX / 2 + 1;
+    for (int i = itemHalfTemp; i < itemHalfTemp * 2 - 1; i++)
     {
         label = new QLabel(trs(QString::number(i + 1)));
-        if (i == itemHalfTemp * 2 - 1)
+        if (i == itemHalfTemp * 2 - 2)
         {
             d_ptr->codeMarkerLast = label;
         }
-        layout->addWidget(label, (i - itemHalfTemp), 2);
+        layout->addWidget(label, (i - itemHalfTemp), 2, Qt::AlignRight);
         comboBox = new ComboBox;
         layout->addWidget(comboBox, (i - itemHalfTemp), 3);
         itemId = static_cast<ConfigEditCodeMarkerMenuContentPrivate::MenuItem>(i);

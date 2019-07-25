@@ -145,6 +145,7 @@ void RESPDupParam::updateRR(short rr)
     }
 
     handleBRRRValue();
+    paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
 }
 
 /**************************************************************************************************
@@ -310,6 +311,12 @@ void RESPDupParam::setRespApneaStimulation(bool sta)
             o2Param->setVibrationReason(APNEASTIMULATION_REASON_RESP, sta);
         }
     }
+}
+
+void RESPDupParam::paramUpdateTimeout()
+{
+    _rrValue = InvData();
+    handleBRRRValue();
 }
 
 void RESPDupParam::onPaletteChanged(ParamID id)

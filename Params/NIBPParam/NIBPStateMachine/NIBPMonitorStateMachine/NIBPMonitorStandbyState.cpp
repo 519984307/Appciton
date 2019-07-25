@@ -14,6 +14,7 @@
 #include "LanguageManager.h"
 #include "NIBPSymbol.h"
 #include "NIBPCountdownTimeInterface.h"
+#include <QTimerEvent>
 
 /**************************************************************************************************
  * 处理事件。
@@ -89,6 +90,8 @@ void NIBPMonitorStandbyState::handleNIBPEvent(NIBPEvent event, const unsigned ch
         {
             nibpParam->setZeroSelfTestState(false);
             nibpParam->recoverInitTrendWidgetData();      //  显示上一次信息
+            _timerID = startTimer(1000);
+            nibpParam->setCuffPressure(0);
         }
         else if (args[0] == NIBP_ZERO_FAIL_STATE)         //  校零失败，进入禁用状态
         {
@@ -125,7 +128,7 @@ void NIBPMonitorStandbyState::enter()
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-NIBPMonitorStandbyState::NIBPMonitorStandbyState() : NIBPState(NIBP_MONITOR_STANDBY_STATE)
+NIBPMonitorStandbyState::NIBPMonitorStandbyState() : NIBPState(NIBP_MONITOR_STANDBY_STATE), _timerID(-1)
 {
 }
 
@@ -134,4 +137,19 @@ NIBPMonitorStandbyState::NIBPMonitorStandbyState() : NIBPState(NIBP_MONITOR_STAN
  *************************************************************************************************/
 NIBPMonitorStandbyState::~NIBPMonitorStandbyState()
 {
+}
+
+void NIBPMonitorStandbyState::timerEvent(QTimerEvent *ev)
+{
+    if (ev->timerId() == _timerID)
+    {
+        NIBPParamInterface* nibpParam = NIBPParamInterface::getNIBPParam();
+        if (nibpParam)
+        {
+            nibpParam->setZeroSelfTestState(false);
+            nibpParam->recoverInitTrendWidgetData();      //  显示上一次信息
+        }
+        killTimer(_timerID);
+        _timerID = -1;
+    }
 }

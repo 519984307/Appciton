@@ -175,6 +175,12 @@ private:
     double _getCursorPos(unsigned t);               // 获取坐标位置
 
     /**
+     * @brief _getTimeIndex 获取时间对应的数据索引
+     * @param t
+     */
+    unsigned _getTimeIndex(unsigned t);
+
+    /**
      * @brief _getCursorTime 获取游标位置时间
      * @param pos   游标位置
      */
@@ -189,6 +195,8 @@ private:
      * @brief _updateEventIndex 刷新存储事件发生时间
      */
     void _updateEventIndex();
+
+    int _findIndex(unsigned timeStamp);
 
     /**
      * @brief getTrendGraphType 获取id对应的趋势图类型

@@ -101,6 +101,9 @@ public:
     // 设置唤醒器关联参数状态
     void setVibrationReason(ApneaStimulationReason reason, bool sta);
 
+protected slots:
+    virtual void paramUpdateTimeout();
+
 private:
     O2Param();
     ~O2Param();

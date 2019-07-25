@@ -153,6 +153,7 @@ public:
 
     // 设置/获取FiCO2显示。
     void setFiCO2Display(CO2FICO2Display disp);
+    void updateFiCO2Display();
     CO2FICO2Display getFICO2Display(void);
 
     // 获取单位。
@@ -178,6 +179,9 @@ public:
 
     // resp窒息报警状态
     void setRespApneaStimulation(bool sta);
+
+protected slots:
+    virtual void paramUpdateTimeout();
 
 private slots:
     void onPaletteChanged(ParamID id);

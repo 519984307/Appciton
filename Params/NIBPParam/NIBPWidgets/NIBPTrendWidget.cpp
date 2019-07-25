@@ -40,9 +40,9 @@ public:
         sysAlarm(false), diaAlarm(false),
         mapAlarm(false), effective(false),
         messageFontSize(100), messageInvFontSize(100),
-        valueLayout(NULL)
+        lastTime(0), valueLayout(NULL)
     {}
-    ~NIBPTrendWidgetPrivate(){}
+    ~NIBPTrendWidgetPrivate() {}
 
     QLabel *nibpValue;
     QLabel *sysValue;
@@ -70,11 +70,13 @@ public:
     bool effective;           //有效测量数据
     int messageFontSize;      // 非虚线显示时字体大小
     int messageInvFontSize;   // 虚线显示时字体大小
+    unsigned lastTime;
 
     static const int margin = 1;
     void setCountDown(const QString &time);
     void layoutExec(QHBoxLayout *layout);  // 布局
     void adjustValueLayout();
+    void updateMeasureTime();
     QVBoxLayout *valueLayout;
 };
 
@@ -95,20 +97,7 @@ void NIBPTrendWidget::setResults(int16_t sys, int16_t dia, int16_t map, unsigned
 {
     //当测量结束，实时压力值显示“---”
     d_ptr->pressureString = InvStr();
-
-    if (0 == time)
-    {
-        d_ptr->measureTime = "";
-    }
-    else
-    {
-        QString timeStr("@ ");
-        QString tmpStr;
-        timeDate.getTime(time , tmpStr , false);
-//        tmpStr.sprintf("%02d:%02d", timeDate.getTimeHour(time), timeDate.getTimeMinute(time));
-        timeStr += tmpStr;
-        d_ptr->measureTime = timeStr;
-    }
+    d_ptr->lastTime = time;
 
     if (systemManager.getCurWorkMode() == WORK_MODE_NORMAL)
     {
@@ -127,18 +116,9 @@ void NIBPTrendWidget::setResults(int16_t sys, int16_t dia, int16_t map, unsigned
     else
     {
         UnitType unit = nibpParam.getUnit();
-        if (unit == UNIT_MMHG)
-        {
-            d_ptr->sysString = QString::number(sys);
-            d_ptr->diaString = QString::number(dia);
-            d_ptr->mapString = "(" + QString::number(map) + ")";
-        }
-        else
-        {
-            d_ptr->sysString = Unit::convert(unit, UNIT_MMHG, sys);
-            d_ptr->diaString = Unit::convert(unit, UNIT_MMHG, dia);
-            d_ptr->mapString = Unit::convert(unit, UNIT_MMHG, map);
-        }
+        d_ptr->sysString = Unit::convert(unit, UNIT_MMHG, sys);
+        d_ptr->diaString = Unit::convert(unit, UNIT_MMHG, dia);
+        d_ptr->mapString = "(" + Unit::convert(unit, UNIT_MMHG, map) + ")";
         showValue();
         d_ptr->effective = true;
         setShowStacked(0);//显示测量结果
@@ -342,6 +322,7 @@ void NIBPTrendWidgetPrivate::layoutExec(QHBoxLayout *layout)
     hLayout->setContentsMargins(5, 0, 5, 0);
     hLayout->addStretch();
     hLayout->addWidget(lastMeasureCount);
+    hLayout->addSpacing(10);
     hLayout->addWidget(model);
     hLayout->addStretch();
 
@@ -358,7 +339,7 @@ void NIBPTrendWidgetPrivate::layoutExec(QHBoxLayout *layout)
 void NIBPTrendWidgetPrivate::adjustValueLayout()
 {
     UserFaceType type = layoutManager.getUFaceType();
-    QLayout* layout = valueLayout->itemAt(1)->layout();
+    QLayout *layout = valueLayout->itemAt(1)->layout();
     if (layout == NULL)
     {
         return;
@@ -377,6 +358,23 @@ void NIBPTrendWidgetPrivate::adjustValueLayout()
         valueLayout->removeWidget(mapValue);
         hLayout->insertWidget(hLayout->count() - 1, mapValue);
     }
+}
+
+void NIBPTrendWidgetPrivate::updateMeasureTime()
+{
+    if (lastTime == 0)
+    {
+        measureTime = "";
+    }
+    else
+    {
+        QString timeStr("@ ");
+        QString tmpStr;
+        timeDate.getTime(lastTime, tmpStr, false);
+        timeStr += tmpStr;
+        measureTime = timeStr;
+    }
+    lastMeasureCount->setText(measureTime);
 }
 
 /**************************************************************************************************
@@ -458,6 +456,8 @@ void NIBPTrendWidget::showValue(void)
         showNormalStatus(d_ptr->countDown, psrc);
         showNormalStatus(d_ptr->model, psrc);
     }
+
+    d_ptr->updateMeasureTime();
     d_ptr->adjustValueLayout();
 }
 
@@ -574,7 +574,7 @@ void NIBPTrendWidget::setTextSize()
 
     r.setSize(QSize(width() - nameLabel->width(), height()));
     d_ptr->messageInvFontSize = fontManager.adjustNumFontSize(r, true);
-    r.setSize(QSize((width() - nameLabel->width()) *3 / 4, (height() / 3)));
+    r.setSize(QSize((width() - nameLabel->width()) * 3 / 4, (height() / 3)));
     d_ptr->messageFontSize = fontManager.adjustNumFontSize(r, true);
 
     if (d_ptr->message->text() == InvStr())

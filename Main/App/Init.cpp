@@ -188,7 +188,7 @@ static void _initComponents(void)
     AlarmPhyInfoBarWidget *alarmPhyInfo = new AlarmPhyInfoBarWidget("AlarmPhyInfoBarWidget");
     AlarmTechInfoBarWidget *alarmTechInfo = new AlarmTechInfoBarWidget("AlarmTechInfoBarWidget");
     AlarmStatusWidget *alarmPhyMuteBar = new AlarmStatusWidget();
-    alarmIndicator.setAlarmPhyWidgets(alarmPhyInfo, alarmPhyMuteBar);
+    alarmIndicator.setAlarmPhyWidgets(alarmPhyInfo, alarmPhyMuteBar, patientInfoWidget);
     alarmIndicator.setAlarmTechWidgets(alarmTechInfo);
     layoutManager.addLayoutWidget(alarmPhyInfo);
     layoutManager.addLayoutWidget(alarmTechInfo);
@@ -356,7 +356,7 @@ static void _initProviderParam(void)
             alertor.addOneShotSource(oneShotAlarmSource);
 
             RESPWaveWidget *respWaveWidget = new RESPWaveWidget("RESPWaveWidget",
-                    paramInfo.getParamName(PARAM_RESP));
+                    trs(paramInfo.getParamName(PARAM_RESP)));
             RESPTrendWidget *respTrendWidget = new RESPTrendWidget();
             respDupParam.setTrendWidget(respTrendWidget);
             respParam.setWaveWidget(respWaveWidget);
@@ -462,7 +462,7 @@ static void _initProviderParam(void)
         alertor.addOneShotSource(oneShotAlarmSource);
 
         CO2WaveWidget *co2WaveWidget = new CO2WaveWidget("CO2WaveWidget",
-                paramInfo.getParamName(PARAM_CO2));
+                trs(paramInfo.getParamName(PARAM_CO2)));
         CO2TrendWidget *co2TrendWidget = new CO2TrendWidget();
         co2Param.setTrendWidget(co2TrendWidget);
         co2Param.setWaveWidget(co2WaveWidget);

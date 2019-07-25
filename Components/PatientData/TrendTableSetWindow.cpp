@@ -51,7 +51,9 @@ void TrendTableSetWindow::showEvent(QShowEvent *ev)
     {
         index = 0;
     }
+    d_ptr->resolutionRatioCbo->blockSignals(true);
     d_ptr->resolutionRatioCbo->setCurrentIndex(index);
+    d_ptr->resolutionRatioCbo->blockSignals(false);
 
     QString groupPrefix = prefix + "TrendGroup";
     systemConfig.getNumValue(groupPrefix, index);
@@ -60,7 +62,9 @@ void TrendTableSetWindow::showEvent(QShowEvent *ev)
     {
         index = count - 1;
     }
+    d_ptr->trendGroupCbo->blockSignals(true);
     d_ptr->trendGroupCbo->setCurrentIndex(index);
+    d_ptr->trendGroupCbo->blockSignals(false);
 }
 
 void TrendTableSetWindow::timeIntervalReleased(int t)

@@ -91,7 +91,7 @@ void PrintSettingMenuContentPrivate::loadOptions()
         combo->addItem(trs("Off"));
         foreach(QString name, waveNames)
         {
-            combo->addItem(name);
+            combo->addItem(trs(name));
         }
         combo->blockSignals(false);
         // 如果波形数量小于选择打印波形combo时，失能多余的选择打印波形combo
@@ -236,7 +236,7 @@ void PrintSettingMenuContent::layoutExec()
         combo->addItem(trs("Off"));
         foreach(QString name, d_ptr->waveNames)
         {
-            combo->addItem(name);
+            combo->addItem(trs(name));
         }
         if (d_ptr->waveNames.size() <= i)
         {
@@ -464,7 +464,7 @@ void PrintSettingMenuContentPrivate::wavesUpdate(QList<int> &waveIDs, QStringLis
     {
         // resp
         waveIDs.append(WAVE_RESP);
-        waveNames.append(paramInfo.getParamWaveformName(WAVE_RESP));
+        waveNames.append(trs(paramInfo.getParamWaveformName(WAVE_RESP)));
     }
 
     if (systemManager.isSupport(CONFIG_SPO2))

@@ -12,6 +12,7 @@
 #include "BLMProvider.h"
 #include "Provider.h"
 #include "SPO2ProviderIFace.h"
+#include <QTime>
 
 // 收到的数据帧类型。
 enum S5PacketType
@@ -116,6 +117,7 @@ private:
 
     bool _isCableOff;
     bool _isFingerOff;
+    bool _isSeaching;
     S5GainError _gainError;
     bool _ledFault;
     S5LogicStatus _logicStatus;
@@ -124,4 +126,9 @@ private:
     struct timeval _lastTime;
 
     bool _isInvalidWaveData;
+
+    QTime startUpTime;
+    bool _firstStartUp;
+    int _startUpError;
+    bool _errorStatus;
 };

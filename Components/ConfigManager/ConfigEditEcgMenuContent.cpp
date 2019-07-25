@@ -103,6 +103,12 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_LEAD_MODE]->clear();
     for (int i = 0; i < ECG_LEAD_MODE_NR; i++)
     {
+#ifdef HIDE_ECG_12_LEAD_FUNCTION
+        if (i == ECG_LEAD_MODE_12)
+        {
+            continue;
+        }
+#endif
         combos[ITEM_CBO_LEAD_MODE]->addItem(trs(ECGSymbol::convert((ECGLeadMode)i)));
     }
     combos[ITEM_CBO_LEAD_MODE]->setCurrentIndex(leadmode);
@@ -117,8 +123,8 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
             break;
         }
 
-        combos[ITEM_CBO_ECG1_WAVE]->addItem(trs(ECGSymbol::convert((ECGLead)i, ECG_CONVENTION_AAMI)));
-        combos[ITEM_CBO_ECG2_WAVE]->addItem(trs(ECGSymbol::convert((ECGLead)i, ECG_CONVENTION_AAMI)));
+        combos[ITEM_CBO_ECG1_WAVE]->addItem(trs(ECGSymbol::convert((ECGLead)i, ecgParam.getLeadNameConvention())));
+        combos[ITEM_CBO_ECG2_WAVE]->addItem(trs(ECGSymbol::convert((ECGLead)i, ecgParam.getLeadNameConvention())));
     }
 
     config->getNumValue("ECG|Ecg1Wave", index);
