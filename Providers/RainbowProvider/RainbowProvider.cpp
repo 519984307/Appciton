@@ -309,6 +309,11 @@ RainbowProvider::RainbowProvider()
     , SPO2ProviderIFace()
     , d_ptr(new RainbowProviderPrivate(this))
 {
+    d_ptr->averTime = spo2Param.getAverageTime();
+    d_ptr->sensMode = static_cast<SensitivityMode>(spo2Param.getSensitivity());
+    d_ptr->fastSat = spo2Param.getFastSat();
+    d_ptr->enableSmartTone = static_cast<bool>(spo2Param.getSmartPulseTone());
+
     disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_SPO2;
     UartAttrDesc attr(DEFALUT_BAUD_RATE, 8, 'N', 1);
     initPort(attr);
