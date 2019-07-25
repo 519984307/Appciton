@@ -519,7 +519,7 @@ sec,秒,second
 PatientData,病人数据,Patient Data
 DataReviewMenu,数据回顾,Data Review
 DataReviewMenuDesc,数据回顾,Data Review
-NIBPData,血压数据,NIBP Data
+NIBPData,NIBP数据,NIBP Data
 Interval,间隔,Interval
 Print,打印,Print
 SummaryDesc,摘要描述,Summary Description
@@ -725,26 +725,26 @@ NIBPDIAHigh,舒张压高,NIBP DIA High
 NIBPMAPLow,平均压低,NIBP MAP Low
 NIBPMAPHigh,平均压高,NIBP MAP High
 NIBPCommunicationStop,NIBP通信中断,NIBP Communication Stop
-NIBPCommunicationTimeout,血压通信超时,NIBP Communication Timeout
+NIBPCommunicationTimeout,NIBP通信超时,NIBP Communication Timeout
 NIBPMeasurementAbort,测量中止,NIBP Measurement Aborted
-NIBPCuffTypeError,血压袖带类型错,NIBP Cuff Type Error 
-NIBPCuffError,血压袖带错误,NIBP Cuff Error
-NIBPCuffAirLeakage,血压袖带漏气,NIBP Cuff Air Leakage
-NIBPPneumaticBlockage,血压气管堵塞,NIBP Pneumatic Blockage
-NIBPCuffOverPressure,血压袖带压力过压,NIBP Cuff Over Pressure
-NIBPPressureError,血压压力错,NIBP Pressure Error
-NIBPSignalWeak,血压信号微弱,NIBP Signal Weak
-NIBPSignalSaturation,血压信号饱和,NIBP Signal Saturation
-NIBPMeasureOverRange,血压测量超界,Measure Over Range
-NIBPMeasureTimeout,血压测量超时,NIBP Measure Timeout
-NIBPExcessiveMoving,血压过分运动,NIBP Excessive Moving
-NIBPHardwareError,血压硬件错误,NIBP Hardware Error
-NIBPTransducerOverRange,血压传感器超界,NIBP Transducer Over Range
-NIBPEEPROMFailure,血压内存出错,NIBP EEPROM Failure
-NIBPServiceError,血压服务模式错误,NIBP Service Error
-NIBPServiceErrorReturn,血压服务模式错误，请退出！,"NIBP service error, Please return!"
-NIBPServiceWait,血压服务模式等待中,NIBP Service Wait
-NIBPServiceWaitAgain,"血压服务模式等待中, 请重试!","NIBP service wait, Please retry!"
+NIBPCuffTypeError,NIBP袖带类型错,NIBP Cuff Type Error 
+NIBPCuffError,NIBP袖带错误,NIBP Cuff Error
+NIBPCuffAirLeakage,NIBP袖带漏气,NIBP Cuff Air Leakage
+NIBPPneumaticBlockage,NIBP气管堵塞,NIBP Pneumatic Blockage
+NIBPCuffOverPressure,NIBP袖带压力过压,NIBP Cuff Over Pressure
+NIBPPressureError,NIBP压力错,NIBP Pressure Error
+NIBPSignalWeak,NIBP信号微弱,NIBP Signal Weak
+NIBPSignalSaturation,NIBP信号饱和,NIBP Signal Saturation
+NIBPMeasureOverRange,NIBP测量超界,Measure Over Range
+NIBPMeasureTimeout,NIBP测量超时,NIBP Measure Timeout
+NIBPExcessiveMoving,NIBP过分运动,NIBP Excessive Moving
+NIBPHardwareError,NIBP硬件错误,NIBP Hardware Error
+NIBPTransducerOverRange,NIBP传感器超界,NIBP Transducer Over Range
+NIBPEEPROMFailure,NIBP内存出错,NIBP EEPROM Failure
+NIBPServiceError,NIBP服务模式错误,NIBP Service Error
+NIBPServiceErrorReturn,NIBP服务模式错误，请退出！,"NIBP service error, Please return!"
+NIBPServiceWait,NIBP服务模式等待中,NIBP Service Wait
+NIBPServiceWaitAgain,"NIBP服务模式等待中, 请重试!","NIBP service wait, Please retry!"
 CalibratePoint1,校准点1,Calibration point1
 CalibratePoint2,校准点2,Calibration point2
 ServiceCalibrate,校准,Calibrate
@@ -866,7 +866,7 @@ SupervisorSTATFunction,STAT功能,STAT Function
 SupervisorAdultInitialCuff,成人初始袖带压,Adult Initial Cuff Inflation
 SupervisorPrediatricInitialCuff,小儿初始袖带压,Pediatric Initial Cuff Inflation
 SupervisorNeonatalInitialCuff,新生儿初始袖带压,Neonate Initial Cuff Inflation
-SupervisorNIBPMeasureMode,血压测量模式,NIBP Measure Mode
+SupervisorNIBPMeasureMode,NIBP测量模式,NIBP Measure Mode
 SupervisorNIBPAutoInterval,自动间隔,NIBP Auto Interval
 SupervisorLocalMenu,本地化,Locale
 SupervisorLocalMenuDesc,本地化设置,Locale Setting
@@ -874,7 +874,7 @@ SupervisorDisplayMenu,显示,Display
 SupervisorDisplayMenuDesc,显示设置,Display Setting
 SupervisorLanguage,语言,Default Language
 SupervisorOtherMenu,其他,Other
-SupervisorNIBPUnit,血压单位,NIBP Unit
+SupervisorNIBPUnit,NIBP单位,NIBP Unit
 SupervisorCO2Unit,CO₂单位,CO₂ Unit
 SupervisorTempUnit,Temp单位,Temp Unit
 SupervisorWeightUnit,体重单位,Weight Unit
