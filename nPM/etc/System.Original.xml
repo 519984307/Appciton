@@ -9,6 +9,7 @@
     </DateTime>
     <DateFormat>0</DateFormat>
     <Timestamp>0</Timestamp>
+    <ErrorLogEraseTime>0</ErrorLogEraseTime>
     <ElapseStartTime>0</ElapseStartTime>
     <General>
         <PatientType>0</PatientType><!--0:adult  1:ped  2:neo-->

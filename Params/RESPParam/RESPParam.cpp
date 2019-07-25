@@ -36,7 +36,8 @@ public:
           waveWidget(NULL),
           oxyCRGRrHrTrend(NULL),
           respMonitoring(false),
-          connectedProvider(false)
+          connectedProvider(false),
+          leadOff(false)
     {
     }
     /**
@@ -51,6 +52,7 @@ public:
     OxyCRGRRHRWaveWidget *oxyCRGRrHrTrend;
     bool respMonitoring;
     bool connectedProvider;
+    bool leadOff;
 };
 /**************************************************************************************************
  * 设置波形速度。
@@ -96,7 +98,10 @@ void RESPParamPrivate::setWaveformSpeed(RESPSweepSpeed speed)
 void RESPParam::initParam(void)
 {
     setZoom(getZoom());
-    setLeadoff(false);
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        setLeadoff(false);
+    }
 }
 
 /**************************************************************************************************
@@ -209,7 +214,7 @@ void RESPParam::setProvider(RESPProviderIFace *provider)
     d_ptr->provider->setApneaTime(getApneaTime());
 
     // 设置呼吸导联
-//    d_ptr->provider->setRESPCalcLead(getCalcLead());
+    d_ptr->provider->setRESPCalcLead(getCalcLead());
 
     // 是否开启RESP功能
     d_ptr->provider->enableRESPCalc(getRespMonitoring());
@@ -290,12 +295,21 @@ void RESPParam::setRR(short rrValue)
 /**************************************************************************************************
  * 电极脱落。
  *************************************************************************************************/
-void RESPParam::setLeadoff(bool flag)
+void RESPParam::setLeadoff(bool flag, bool isFirstConnect)
 {
-    if (NULL != d_ptr->waveWidget)
+    if (!isFirstConnect)
     {
-        d_ptr->waveWidget->leadoff(flag);
-        setOneShotAlarm(RESP_ONESHOT_ALARM_CHECK_ELECTRODES, flag);
+        d_ptr->leadOff = flag;
+        return;
+    }
+    if (flag != d_ptr->leadOff)
+    {
+        d_ptr->leadOff = flag;
+        if (NULL != d_ptr->waveWidget)
+        {
+            d_ptr->waveWidget->leadoff(flag);
+            setOneShotAlarm(RESP_ONESHOT_ALARM_CHECK_ELECTRODES, flag);
+        }
     }
 }
 

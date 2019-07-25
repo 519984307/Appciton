@@ -57,21 +57,14 @@ void NIBPServiceStateMachine::enter()
 {
     NIBPStateMachine::enter();
 
-    if (nibpParam.isErrorDisable())
+    if (nibpParam.getConnectedState())
     {
-        switchToState(NIBP_SERVICE_ERROR_STATE);
+        nibpRepairMenuManager.warnShow(false);
+        switchToState(NIBP_SERVICE_STANDBY_STATE);
     }
     else
     {
-        if (nibpParam.getConnectedState())
-        {
-            nibpRepairMenuManager.warnShow(false);
-            switchToState(NIBP_SERVICE_STANDBY_STATE);
-        }
-        else
-        {
-            switchToState(NIBP_SERVICE_ERROR_STATE);
-        }
+        switchToState(NIBP_SERVICE_ERROR_STATE);
     }
 }
 

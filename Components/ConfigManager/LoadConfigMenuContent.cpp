@@ -200,6 +200,11 @@ void LoadConfigMenuContent::onBtnClick()
     // load the config
     if (btn == d_ptr->loadBtn)
     {
+        MessageBox msg(trs("Prompt"), trs("ChangeConfig"), true, true);
+        if (!msg.exec())
+        {
+            return;
+        }
         // add new config setting
         int index = d_ptr->configListView->curCheckedRow();
         d_ptr->curEditIndex = index;
@@ -267,12 +272,6 @@ void LoadConfigMenuContent::onBtnClick()
         respParam.setCalcLead(respParam.getCalcLead()); // 更新呼吸导联
         co2Param.updateDisplayZoom();   // 更新co2标尺
         layoutManager.updateLayout();   // 更新界面波形
-
-
-        QString title(trs("LoadConfig"));
-        QString text(trs("SuccessToLoad"));
-        MessageBox message(title, text, false);
-        message.exec();
     }
     // view config
     else if (btn == d_ptr->ViewBtn)

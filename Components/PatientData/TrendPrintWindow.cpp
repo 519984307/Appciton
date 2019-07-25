@@ -128,7 +128,7 @@ TrendPrintWindow::TrendPrintWindow(const QList<TrendDataPackage *> &trendDataPac
     connect(d_ptr->endSubBox->yearSbx, SIGNAL(valueChange(int, int)),
             this, SLOT(endTimeChangeSlot(int, int)));
     connect(d_ptr->endSubBox->monthSbx, SIGNAL(valueChange(int, int)),
-            this, SLOT(endTimeChangeSlot(QString, int)));
+            this, SLOT(endTimeChangeSlot(int, int)));
     connect(d_ptr->endSubBox->daySbx, SIGNAL(valueChange(int, int)),
             this, SLOT(endTimeChangeSlot(int, int)));
     connect(d_ptr->endSubBox->hourSbx, SIGNAL(valueChange(int, int)),
@@ -286,7 +286,7 @@ void TrendPrintWindowPrivate::initGroupBox(QGroupBox *groupBox, TrendPrintWindow
     subBox->minSbx = new SpinBox();
     subBox->secondSbx = new SpinBox();
 
-    subBox->yearSbx->setRange(2000, 2099);
+    subBox->yearSbx->setRange(1970, 2037);
     subBox->yearSbx->setStep(1);
     subBox->yearSbx->setArrow(false);
 

@@ -88,6 +88,17 @@ void S5Provider::handlePacket(unsigned char *data, int len)
 
     BLMProvider::handlePacket(data, len);
 
+    if (_errorStatus)
+    {
+        if (data[0] != S5_NOTIFY_ALIVE)
+        {
+            return;
+        }
+        else
+        {
+            _errorStatus = false;
+        }
+    }
     if (!isConnected)
     {
         spo2Param.setConnected(true);
@@ -108,13 +119,33 @@ void S5Provider::handlePacket(unsigned char *data, int len)
     // 启动帧0x40
     case S5_NOTIFY_START_UP:
     {
-        ErrorLogItem *item = new CriticalFaultLogItem();
-        item->setName("S5 Start");
-        errorLog.append(item);
-
-        spo2Param.reset();
-        break;
+        if (_firstStartUp)
+        {
+            ErrorLogItem *item = new CriticalFaultLogItem();
+            item->setName("S5 Start");
+            errorLog.append(item);
+            spo2Param.reset();
+            _firstStartUp = false;
+        }
+        else
+        {
+            if (_startUpError == 0)
+            {
+                startUpTime.restart();
+                _startUpError++;
+                break;
+            }
+            else if (_startUpError == 1 && startUpTime.elapsed() <= 500)
+            {
+                disconnected();          // 500ms连续发两个启动帧断开连接
+                isConnected = false;
+                _errorStatus = true;
+            }
+            _startUpError = 0;
+        }
     }
+
+        break;
     // 状态0x42
     case S5_NOTIFY_STATUS:
         isStatus(data);
@@ -455,6 +486,9 @@ S5Provider::S5Provider()
           , _logicStatus(S5_LOGIC_NC)
           , _lastTime(timeval())
           , _isInvalidWaveData(false)
+          , _firstStartUp(true)
+          , _startUpError(0)
+          , _errorStatus(false)
 {
     initModule();
 }

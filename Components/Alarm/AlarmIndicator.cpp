@@ -114,7 +114,7 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
                 hasPausedPhyAlarm = true;
             }
         }
-        else if (ALARM_TYPE_TECH == node.alarmType)
+        else if (ALARM_TYPE_TECH == node.alarmType && status != ALARM_STATUS_PAUSE)
         {
             // 技术报警只处理没有被acknowledge和不处理报警暂停状态
             if ((!node.acknowledge || node.latch)

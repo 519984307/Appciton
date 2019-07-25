@@ -96,7 +96,7 @@ public:
     {
         static const char *symbol[ECG_GAIN_NR] =
         {
-            "X0.125", "X0.25", "X0.5", "X1", "X2",  "X4", "AUTO"
+            "X0.125", "X0.25", "X0.5", "X1", "X2",  "X4", "Auto"
 //            "0.5 cm/mV", "1.0 cm/mV", "1.5 cm/mV", "2.0 cm/mV", "3.0 cm/mV", "AUTO"
         };
 
@@ -129,7 +129,7 @@ public:
         {
             "HR",
             "PR",
-            "AUTO",
+            "Auto",
         };
         return symbol[src];
     }

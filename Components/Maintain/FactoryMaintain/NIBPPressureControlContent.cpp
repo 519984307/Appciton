@@ -42,7 +42,10 @@ public:
     };
     void loadOptions(void);
     NIBPPressureControlContentPrivate();
+    int getPatientPressure(void);
+    QStringList getPressureList(int pressure);
     SpinBox *chargePressure;          // 设定充气压力值
+    QStringList pressureList;
     ComboBox *overpressureCbo;          // 过压保护开关
     Button *inflateBtn;             // 充气、放气控制按钮
     QLabel *value;
@@ -63,6 +66,7 @@ public:
     int inflateTimeoutNum;          // 充气超时
     int safePressure;
     QString moduleStr;              // 运行模块字符串
+    QLabel* unitLabel;
     QMap<MenuItem, ComboBox *> combos;
 };
 
@@ -78,7 +82,7 @@ NIBPPressureControlContentPrivate::NIBPPressureControlContentPrivate()
       holdPressureFlag(false),
       modeBtn(NULL), isPressureControlMode(false), inModeTimerID(-1),
       timeoutNum(0), isInflate(true), inflateTimerID(-1), pressureTimerID(-1),
-      pressure(InvData()), inflateTimeoutNum(0), safePressure(0)
+      pressure(InvData()), inflateTimeoutNum(0), safePressure(0), unitLabel(NULL)
 {
     machineConfig.getStrValue("NIBP", moduleStr);
 }
@@ -86,12 +90,64 @@ NIBPPressureControlContentPrivate::NIBPPressureControlContentPrivate()
 void NIBPPressureControlContentPrivate::loadOptions(void)
 {
     isPressureControlMode = false;
+    isInflate = true;
     overpressureCbo->setCurrentIndex(1);
     modeBtn->setText(trs("EnterPressureContrlMode"));
     inflateBtn->setText(trs("ServiceInflate"));
     overpressureCbo->setEnabled(false);
     inflateBtn->setEnabled(false);
     modeBtn->setEnabled(true);
+    UnitType currentUnit = nibpParam.getUnit();
+    if (currentUnit != UNIT_MMHG)
+    {
+        unitLabel->setText(Unit::getSymbol(UNIT_KPA));
+    }
+    else
+    {
+        unitLabel->setText(Unit::getSymbol(UNIT_MMHG));
+    }
+    pressureList.clear();
+    pressureList = getPressureList(300);
+    chargePressure->setStringList(pressureList);
+    chargePressure->setValue(40);
+}
+
+int NIBPPressureControlContentPrivate::getPatientPressure(void)
+{
+    PatientType type = patientManager.getType();
+    int pressure;
+    if (type == PATIENT_TYPE_ADULT)
+    {
+        pressure = 290;
+    }
+    else if (type == PATIENT_TYPE_NEO)
+    {
+        pressure = 250;
+    }
+    else if (type == PATIENT_TYPE_PED)
+    {
+        pressure = 150;
+    }
+    return pressure;
+}
+
+QStringList NIBPPressureControlContentPrivate::getPressureList(int pressure)
+{
+    QStringList pressuresList;
+    pressuresList.clear();
+    UnitType unit = nibpParam.getUnit();
+    for (int i = 50; i <= pressure; i += 5)
+    {
+        if (unit != UNIT_MMHG)
+        {
+            pressuresList.append(Unit::convert(UNIT_KPA, UNIT_MMHG, i));
+        }
+        else
+        {
+            pressuresList.append(QString::number(i));
+        }
+    }
+    return pressuresList;
 }
 // 压力控制模式
 /**************************************************************************************************
@@ -130,9 +186,7 @@ void NIBPPressureControlContent::LayoutExec()
     layout->addWidget(label, 2, 0, Qt::AlignCenter);
 
     d_ptr->chargePressure = new SpinBox();
-    d_ptr->chargePressure->setRange(50, 300);
-    d_ptr->chargePressure->setValue(250);
-    d_ptr->chargePressure->setStep(5);
+    d_ptr->chargePressure->setSpinBoxStyle(SpinBox::SPIN_BOX_STYLE_STRING);
     layout->addWidget(d_ptr->chargePressure, 2, 1);
 
     button  = new Button(trs("ServiceInflate"));
@@ -150,8 +204,8 @@ void NIBPPressureControlContent::LayoutExec()
     d_ptr->value = label;
 
     label = new QLabel();
-    label->setText(Unit::getSymbol(nibpParam.getUnit()));
     layout->addWidget(label, 3, 2, Qt::AlignCenter);
+    d_ptr->unitLabel = label;
 
     layout->setRowStretch(4, 1);
 }
@@ -206,7 +260,7 @@ void NIBPPressureControlContent::timerEvent(QTimerEvent *ev)
         bool reply = nibpParam.geReply();
         if (reply || d_ptr->inflateTimeoutNum == TIMEOUT_WAIT_NUMBER * 10)
         {
-            if (reply && nibpParam.getResult())
+            if (reply && nibpParam.getResult())          // N5充到指定压力值才会答复
             {
                 if (d_ptr->isInflate)
                 {
@@ -241,22 +295,32 @@ void NIBPPressureControlContent::timerEvent(QTimerEvent *ev)
         if (d_ptr->pressure != nibpParam.getManometerPressure())
         {
             d_ptr->pressure = nibpParam.getManometerPressure();
-            d_ptr->value->setNum(d_ptr->pressure);
+            if (nibpParam.getUnit() != UNIT_MMHG)
+            {
+                d_ptr->value->setNum(Unit::convert(UNIT_KPA, UNIT_MMHG, d_ptr->pressure).toFloat());
+            }
+            else
+            {
+                d_ptr->value->setNum(d_ptr->pressure);
+            }
         }
-        if (d_ptr->pressure >= INFLATE_SWITCH_SIGN && d_ptr->isInflate)
+        if (d_ptr->moduleStr != "BLM_N5")   // suntech压力控制实现
         {
-            d_ptr->inflateBtn->setText(trs("ServiceDeflate"));
-            d_ptr->isInflate = false;
-        }
-        else if (d_ptr->pressure >= d_ptr->chargePressure->getValue() && d_ptr->holdPressureFlag)
-        {
-            nibpParam.provider().controlPneumatics(0, 1, 1);  //达到压力值范围时候停止冲压,保持压力
-            d_ptr->holdPressureFlag = false;
-        }
-        else if (d_ptr->pressure < INFLATE_SWITCH_SIGN)
-        {
-            d_ptr->inflateBtn->setText(trs("ServiceInflate"));
-            d_ptr->isInflate = true;
+            if (d_ptr->pressure >= INFLATE_SWITCH_SIGN && d_ptr->isInflate)
+            {
+                d_ptr->inflateBtn->setText(trs("ServiceDeflate"));
+                d_ptr->isInflate = false;
+            }
+            else if (d_ptr->pressure >= d_ptr->chargePressure->getValue() && d_ptr->holdPressureFlag)
+            {
+                nibpParam.provider().controlPneumatics(0, 1, 1);  //达到压力值范围时候停止冲压,保持压力
+                d_ptr->holdPressureFlag = false;
+            }
+            else if (d_ptr->pressure < INFLATE_SWITCH_SIGN)
+            {
+                d_ptr->inflateBtn->setText(trs("ServiceInflate"));
+                d_ptr->isInflate = true;
+            }
         }
     }
 }
@@ -279,15 +343,28 @@ void NIBPPressureControlContent::showEvent(QShowEvent *e)
 void NIBPPressureControlContent::hideEvent(QHideEvent *e)
 {
     Q_UNUSED(e)
-    if (d_ptr->moduleStr != "BLM_N5")
+    if (d_ptr->isPressureControlMode)
+    {
+        if (d_ptr->moduleStr != "BLM_N5")
+        {
+            nibpParam.provider().controlPneumatics(0, 0, 0);  //放气
+        }
+        else
+        {
+            nibpParam.provider().servicePressuredeflate();
+            nibpParam.switchState(NIBP_SERVICE_STANDBY_STATE);
+            nibpParam.provider().servicePressurecontrol(false);
+        }
+    }
+    if (d_ptr->pressureTimerID != -1)
     {
         killTimer(d_ptr->pressureTimerID);
         d_ptr->pressureTimerID = -1;
-        nibpParam.provider().controlPneumatics(0, 0, 0);  //放气
     }
-    else
+    if (d_ptr->inflateTimerID != -1)
     {
-        nibpParam.provider().servicePressurecontrol(false);
+        killTimer(d_ptr->inflateTimerID);
+        d_ptr->inflateTimerID = -1;
     }
 }
 
@@ -301,8 +378,17 @@ void NIBPPressureControlContent::inflateBtnReleased()
         d_ptr->inflateTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
         if (d_ptr->isInflate)
         {
-            int value = d_ptr->chargePressure->getValue();
-            nibpParam.provider().servicePressureinflate(value);
+            if (nibpParam.getUnit() != UNIT_MMHG)
+            {
+                int value = Unit::convert(UNIT_MMHG, UNIT_KPA,
+                                          d_ptr->pressureList.at(d_ptr->chargePressure->getValue()).toFloat()).toInt();
+                nibpParam.provider().servicePressureinflate(value);
+            }
+            else
+            {
+                int _pressure = d_ptr->pressureList.at(d_ptr->chargePressure->getValue()).toInt();
+                nibpParam.provider().servicePressureinflate(_pressure);
+            }
             d_ptr->inflateBtn->setText(trs("Inflating"));
             d_ptr->modeBtn->setEnabled(false);
         }
@@ -391,30 +477,23 @@ void NIBPPressureControlContent::onOverpressureReleased(int index)
         nibpParam.provider().servicePressureProtect(!index);
     }
     else
-    {
+    {       
         if (!index)
         {
             d_ptr->overPressureProtect = true;
-            PatientType type = patientManager.getType();
-            if (type == PATIENT_TYPE_ADULT)
-            {
-                d_ptr->safePressure = 290;
-            }
-            else if (type == PATIENT_TYPE_NEO)
-            {
-                d_ptr->safePressure = 250;
-            }
-            else if (type == PATIENT_TYPE_PED)
-            {
-                d_ptr->safePressure = 150;
-            }
-            d_ptr->chargePressure->setRange(50, d_ptr->safePressure);
-            d_ptr->chargePressure->setValue(100);
+            d_ptr->safePressure = d_ptr->getPatientPressure();
+            d_ptr->pressureList.clear();
+            d_ptr->pressureList = d_ptr->getPressureList(d_ptr->safePressure);
+            d_ptr->chargePressure->setStringList(d_ptr->pressureList);
+            d_ptr->chargePressure->setValue(10);
         }
         else
         {
             d_ptr->overPressureProtect = false;
-            d_ptr->chargePressure->setRange(50, 300);
+            d_ptr->pressureList.clear();
+            d_ptr->pressureList = d_ptr->getPressureList(300);
+            d_ptr->chargePressure->setStringList(d_ptr->pressureList);
+            d_ptr->chargePressure->setValue(40);
         }
     }
 }

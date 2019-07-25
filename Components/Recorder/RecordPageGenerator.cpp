@@ -797,7 +797,12 @@ static void drawECGGain(RecordPage *page, QPainter *painter, const RecordWaveSeg
 {
     int rulerHeight = 10 * RECORDER_PIXEL_PER_MM; // height for 1.0 ECG gain
     QString str = "1 mV";
-    switch (waveInfo.waveInfo.ecg.gain)
+    ECGGain gain = waveInfo.waveInfo.ecg.gain;
+    if (gain == ECG_GAIN_AUTO)
+    {
+        gain = ecgParam.getECGAutoGain(ecgParam.waveIDToLeadID(waveInfo.id));
+    }
+    switch (gain)
     {
     case ECG_GAIN_X0125:
         rulerHeight /= 8;
@@ -1845,13 +1850,31 @@ QList<QPainterPath> generatorPainterPath(const GraphAxisInfo &axisInfo, const Tr
             qreal map = mapTrendYValue(iter->data[2], axisInfo, graphInfo);
 
             // draw nibp symbol
-            path.moveTo(x - TICK_LENGTH / 2, sys - 0.866 * TICK_LENGTH);
-            path.lineTo(x, sys);
-            path.lineTo(x + TICK_LENGTH / 2, sys - 0.866 * TICK_LENGTH);
+            if (sys == -axisInfo.validHeight)
+            {
+                path.moveTo(x - TICK_LENGTH / 2, sys + 0.866 * TICK_LENGTH);
+                path.lineTo(x, sys);
+                path.lineTo(x + TICK_LENGTH / 2, sys + 0.866 * TICK_LENGTH);
+            }
+            else
+            {
+                path.moveTo(x - TICK_LENGTH / 2, sys - 0.866 * TICK_LENGTH);
+                path.lineTo(x, sys);
+                path.lineTo(x + TICK_LENGTH / 2, sys - 0.866 * TICK_LENGTH);
+            }
 
-            path.moveTo(x - TICK_LENGTH / 2, dia + 0.866 * TICK_LENGTH);
-            path.lineTo(x, dia);
-            path.lineTo(x + TICK_LENGTH / 2, dia + 0.866 * TICK_LENGTH);
+            if (dia == 0)
+            {
+                path.moveTo(x - TICK_LENGTH / 2, dia - 0.866 * TICK_LENGTH);
+                path.lineTo(x, dia);
+                path.lineTo(x + TICK_LENGTH / 2, dia - 0.866 * TICK_LENGTH);
+            }
+            else
+            {
+                path.moveTo(x - TICK_LENGTH / 2, dia + 0.866 * TICK_LENGTH);
+                path.lineTo(x, dia);
+                path.lineTo(x + TICK_LENGTH / 2, dia + 0.866 * TICK_LENGTH);
+            }
 
             path.moveTo(x, sys);
             path.lineTo(x, dia);

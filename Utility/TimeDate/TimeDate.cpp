@@ -78,7 +78,7 @@ static void getTimeFormat(QString &format, bool showSecond)
         }
         else
         {
-            format = "hh:mm:ss ap";
+            format = "hh:mm:ss AP";
         }
     }
     else
@@ -89,7 +89,7 @@ static void getTimeFormat(QString &format, bool showSecond)
         }
         else
         {
-            format = "hh:mm ap";
+            format = "hh:mm AP";
         }
     }
 }
