@@ -52,6 +52,12 @@ public:
         ITEM_LAB_MAX,
     };
 
+    FactoryVersionInfoPrivate()
+                   : n5SlaveLab(NULL)
+                   , n5SlaveBootloaderLab(NULL)
+    {
+
+    }
     /**
      * @brief loadOptions
      */
