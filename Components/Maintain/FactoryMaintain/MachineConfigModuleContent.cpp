@@ -26,6 +26,7 @@
 #include "SoftKeyManager.h"
 #include "MessageBox.h"
 #include <QProcess>
+#include "SystemBoardProvider.h"
 
 class MachineConfigModuleContentPrivte
 {
@@ -235,7 +236,7 @@ void MachineConfigModuleContentPrivte::configUpdateHint()
     QDialog::DialogCode statue = static_cast<QDialog::DialogCode>(box.exec());
     if (statue == QDialog::Accepted)
     {
-        QProcess::execute("reboot");
+        systemBoardProvider.requestReset();
     }
 }
 
