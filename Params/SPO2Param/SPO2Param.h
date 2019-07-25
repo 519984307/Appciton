@@ -254,6 +254,9 @@ public:
      */
     void initModule();
 
+protected slots:
+    virtual void paramUpdateTimeout();
+
 private slots:
     void checkSelftest();
     void onPaletteChanged(ParamID id);

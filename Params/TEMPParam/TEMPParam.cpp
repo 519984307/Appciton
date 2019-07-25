@@ -196,6 +196,7 @@ void TEMPParam::setTEMP(int16_t t1, int16_t t2, int16_t td)
     if (NULL != _trendWidget)
     {
         _trendWidget->setTEMPValue(t1, t2, td);
+        paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
     }
     // TODO: set temp value to the facotry calibration menu
 }
@@ -328,6 +329,17 @@ UnitType TEMPParam::getUnit(void)
     systemConfig.getNumValue("Unit|TemperatureUnit", u);
 
     return static_cast<UnitType>(u);
+}
+
+void TEMPParam::paramUpdateTimeout()
+{
+    _t1Value = InvData();
+    _t2Value = InvData();
+    _tdValue = InvData();
+    if (_trendWidget != NULL)
+    {
+        _trendWidget->setTEMPValue(_t1Value, _t2Value, _tdValue);
+    }
 }
 
 void TEMPParam::onPaletteChanged(ParamID id)

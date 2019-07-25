@@ -180,6 +180,9 @@ public:
     // resp窒息报警状态
     void setRespApneaStimulation(bool sta);
 
+protected slots:
+    virtual void paramUpdateTimeout();
+
 private slots:
     void onPaletteChanged(ParamID id);
 
