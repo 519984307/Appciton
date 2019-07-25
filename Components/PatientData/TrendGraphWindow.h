@@ -66,6 +66,7 @@ public:
 
 protected:
     void timerEvent(QTimerEvent *ev);
+    void showEvent(QShowEvent *ev);
 
 private slots:
     void onButtonReleased(void);
