@@ -40,9 +40,9 @@ public:
         sysAlarm(false), diaAlarm(false),
         mapAlarm(false), effective(false),
         messageFontSize(100), messageInvFontSize(100),
-        lastTime(0),valueLayout(NULL)
+        lastTime(0), valueLayout(NULL)
     {}
-    ~NIBPTrendWidgetPrivate(){}
+    ~NIBPTrendWidgetPrivate() {}
 
     QLabel *nibpValue;
     QLabel *sysValue;
@@ -339,7 +339,7 @@ void NIBPTrendWidgetPrivate::layoutExec(QHBoxLayout *layout)
 void NIBPTrendWidgetPrivate::adjustValueLayout()
 {
     UserFaceType type = layoutManager.getUFaceType();
-    QLayout* layout = valueLayout->itemAt(1)->layout();
+    QLayout *layout = valueLayout->itemAt(1)->layout();
     if (layout == NULL)
     {
         return;
@@ -574,7 +574,7 @@ void NIBPTrendWidget::setTextSize()
 
     r.setSize(QSize(width() - nameLabel->width(), height()));
     d_ptr->messageInvFontSize = fontManager.adjustNumFontSize(r, true);
-    r.setSize(QSize((width() - nameLabel->width()) *3 / 4, (height() / 3)));
+    r.setSize(QSize((width() - nameLabel->width()) * 3 / 4, (height() / 3)));
     d_ptr->messageFontSize = fontManager.adjustNumFontSize(r, true);
 
     if (d_ptr->message->text() == InvStr())

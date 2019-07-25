@@ -524,7 +524,7 @@ void T5Provider::_shotAlarm()
                 {
                     _temp1 = InvData();
                     // 探头1超界报警
-                    tempParam.setOneShotAlarm(TEMP_OVER_RANGR_1, true);                    
+                    tempParam.setOneShotAlarm(TEMP_OVER_RANGR_1, true);
                 }
                 else
                 {
@@ -569,7 +569,7 @@ void T5Provider::_shotAlarm()
     tempParam.setTEMP(_temp1, _temp2, _tempd);
 }
 
-void T5Provider::_limitHandle(unsigned char* packet)
+void T5Provider::_limitHandle(unsigned char *packet)
 {
     bool isAlarm = false;
     if (0xFF != packet[2])
@@ -594,7 +594,7 @@ void T5Provider::_limitHandle(unsigned char* packet)
             _overRang2 = true;
             isAlarm = true;
         }
-        else if(temp2 > 150 && temp2 < 500 && _overRang2 == true)
+        else if (temp2 > 150 && temp2 < 500 && _overRang2 == true)
         {
             _overRang2 = false;
             isAlarm = true;

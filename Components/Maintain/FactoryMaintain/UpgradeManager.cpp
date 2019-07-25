@@ -24,6 +24,7 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include "LanguageManager.h"
+#include "BLMCO2Provider.h"
 #include "IConfig.h"
 
 #define UPGRADE_FILES_DIR "/upgrade/"
@@ -82,22 +83,22 @@ enum UpgradePacketType
 
 enum UpgradeErrorType
 {
-    UPGRADE_ERR_NONE,
-    UPGRADE_ERR_NO_UDISK,
-    UPGRADE_ERR_NO_UPGRADE_FILE,
-    UPGRADE_ERR_NO_CHECKSUM_FILE,
-    UPGRADE_ERR_READ_FILE_FAIL,
-    UPGRADE_ERR_CHECKSUM_FAIL,
-    UPGRADE_ERR_MODULE_NOT_FOUND,
-    UPGRADE_ERR_MODULE_INITIALIZE_FAIL,
-    UPGRADE_ERR_MODULE_ERASE_FLASH_FAIL,
-    UPGRADE_ERR_IMAGE_FILE_UNMATCH,
-    UPGRADE_ERR_HARDWARE_VERION_UNMATCH,
-    UPGRADE_ERR_WRITE_ATTR_FAIL,
-    UPGRADE_ERR_WRITE_SEGMENT_FAIL,
-    UPGRADE_ERR_COMMUNICATION_FAIL,
-    UPGRADE_ERR_WRITE_FAIL,
-    UPGRADE_ERR_PASSTHROUGH_MODE_FAIL,
+    UPGRADE_ERR_NONE                    = 0,
+    UPGRADE_ERR_NO_UDISK                = 1,
+    UPGRADE_ERR_NO_UPGRADE_FILE         = 2,
+    UPGRADE_ERR_NO_CHECKSUM_FILE        = 3,
+    UPGRADE_ERR_READ_FILE_FAIL          = 4,
+    UPGRADE_ERR_CHECKSUM_FAIL           = 5,
+    UPGRADE_ERR_MODULE_NOT_FOUND        = 6,
+    UPGRADE_ERR_MODULE_INITIALIZE_FAIL  = 7,
+    UPGRADE_ERR_MODULE_ERASE_FLASH_FAIL = 8,
+    UPGRADE_ERR_IMAGE_FILE_UNMATCH      = 9,
+    UPGRADE_ERR_HARDWARE_VERION_UNMATCH = 10,
+    UPGRADE_ERR_WRITE_ATTR_FAIL         = 11,
+    UPGRADE_ERR_WRITE_SEGMENT_FAIL      = 12,
+    UPGRADE_ERR_COMMUNICATION_FAIL      = 13,
+    UPGRADE_ERR_WRITE_FAIL              = 14,
+    UPGRADE_ERR_PASSTHROUGH_MODE_FAIL   = 15,
     UPGRADE_ERR_NR,
 };
 
@@ -159,6 +160,7 @@ public:
           type(UpgradeManager::UPGRADE_MOD_NONE),
           state(STATE_IDLE),
           provider(NULL),
+          co2Provider(NULL),
           noResponseTimer(NULL),
           noResponeCount(0),
           segmentSeq(0),
@@ -256,6 +258,7 @@ public:
     UpgradeState state;
     QByteArray fileContent;
     BLMProvider *provider;
+    BLMCO2Provider *co2Provider;
     QTimer *noResponseTimer;
     int noResponeCount;
     int segmentSeq;     // the file segment sequence number
@@ -374,6 +377,8 @@ QString UpgradeManagerPrivate::getProviderName(UpgradeManager::UpgradeModuleType
         return "BLM_N5";
     case UpgradeManager::UPGRADE_MOD_T5:
         return "BLM_T5";
+    case UpgradeManager::UPGRADE_MOD_CO2:
+        return "BLM_CO2";
     case UpgradeManager::UPGRADE_MOD_PRT48:
         return "PRT48";
     case UpgradeManager::UPGRADE_MOD_NEONATE:
@@ -415,6 +420,11 @@ void UpgradeManagerPrivate::upgradeExit(UpgradeManager::UpgradeResult result, Up
         {
             provider->setUpgradeIface(NULL);
             provider = NULL;
+        }
+        if (co2Provider)
+        {
+            co2Provider->setUpgradeIface(NULL);
+            co2Provider = NULL;
         }
         state = STATE_IDLE;
     }
@@ -668,6 +678,8 @@ QString UpgradeManager::getUpgradeModuleName(UpgradeManager::UpgradeModuleType t
         return "N5Daemon";
     case UPGRADE_MOD_T5:
         return "T5";
+    case UPGRADE_MOD_CO2:
+        return "CO2";
     case UPGRADE_MOD_NEONATE:
         return "Neonate";
     case UPGRADE_MOD_PRT48:
@@ -693,10 +705,21 @@ void UpgradeManager::startModuleUpgrade(UpgradeManager::UpgradeModuleType type)
 
     d_ptr->type = type;
     d_ptr->state = STATE_CHECK_UDISK;
-    d_ptr->provider = BLMProvider::findProvider(d_ptr->getProviderName(d_ptr->type));
-    if (d_ptr->provider)
+    if (d_ptr->type == UPGRADE_MOD_CO2)
     {
-        d_ptr->provider->setUpgradeIface(this);
+        d_ptr->co2Provider = static_cast<BLMCO2Provider *>(paramManager.getProvider("BLM_CO2"));
+        if (d_ptr->co2Provider)
+        {
+            d_ptr->co2Provider->setUpgradeIface(this);
+        }
+    }
+    else
+    {
+        d_ptr->provider = BLMProvider::findProvider(d_ptr->getProviderName(d_ptr->type));
+        if (d_ptr->provider)
+        {
+            d_ptr->provider->setUpgradeIface(this);
+        }
     }
 
     QTimer::singleShot(0, this, SLOT(upgradeProcess()));
@@ -850,13 +873,21 @@ void UpgradeManager::upgradeProcess()
     case STATE_REQUEST_ENTER_UPGRADE_MODE:
     {
         emit upgradeInfoChanged(trs("RequestEnterUpgradeMode"));
-        if (!d_ptr->provider)
+        if (!d_ptr->provider && !d_ptr->co2Provider)
         {
             d_ptr->upgradeExit(UPGRADE_FAIL, UPGRADE_ERR_MODULE_NOT_FOUND);
             break;
         }
 
-        d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_ENTER, NULL, 0);
+        if (d_ptr->type == UPGRADE_MOD_CO2)
+        {
+            d_ptr->co2Provider->enterUpgradeMode();
+            d_ptr->co2Provider->sendUpgradeCmd(UPGRADE_CMD_REQUEST_ENTER, NULL, 0);
+        }
+        else
+        {
+            d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_ENTER, NULL, 0);
+        }
         d_ptr->noResponseTimer->start(2000);
     }
     break;
@@ -864,7 +895,14 @@ void UpgradeManager::upgradeProcess()
     case STATE_REQUEST_SEND_DATA:
     {
         emit upgradeInfoChanged(trs("RequestSendData"));
-        d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_SEND, NULL, 0);
+        if (d_ptr->type == UPGRADE_MOD_CO2)
+        {
+            d_ptr->co2Provider->sendUpgradeCmd(UPGRADE_CMD_REQUEST_SEND, NULL, 0);
+        }
+        else
+        {
+            d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_SEND, NULL, 0);
+        }
         d_ptr->noResponseTimer->start(1000);
     }
     break;
@@ -886,7 +924,14 @@ void UpgradeManager::upgradeProcess()
         ::snprintf(data + 1, 32, "%s", qPrintable(getUpgradeModuleName(d_ptr->type)));  // NOLINT
         // module hardware version
         ::snprintf(data + 33, 16, DEFAULT_HW_VER_STR); // NOLINT
-        d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_ENTER, NULL, 0);
+        if (d_ptr->type == UPGRADE_MOD_CO2)
+        {
+            d_ptr->co2Provider->sendUpgradeCmd(UPGRADE_CMD_REQUEST_SEND, NULL, 0);
+        }
+        else
+        {
+            d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_SEND, NULL, 0);
+        }
         d_ptr->noResponseTimer->start(2000);
     }
     break;
@@ -899,9 +944,18 @@ void UpgradeManager::upgradeProcess()
         }
 
         QByteArray segment = d_ptr->getImageSegment(d_ptr->segmentSeq);
-        d_ptr->provider->sendCmd(UPGRADE_CMD_SEGMENT,
-                                 reinterpret_cast<const unsigned char *>(segment.constData()),
-                                 segment.length());
+        if (d_ptr->type == UPGRADE_MOD_CO2)
+        {
+            d_ptr->co2Provider->sendUpgradeCmd(UPGRADE_CMD_SEGMENT,
+                                               reinterpret_cast<const unsigned char *>(segment.constData()),
+                                               segment.length());
+        }
+        else
+        {
+            d_ptr->provider->sendCmd(UPGRADE_CMD_SEGMENT,
+                                     reinterpret_cast<const unsigned char *>(segment.constData()),
+                                     segment.length());
+        }
         d_ptr->noResponseTimer->start(1000);
 
         int count = (d_ptr->fileContent.size() + 127) / 128;
@@ -1010,7 +1064,14 @@ void UpgradeManager::noResponseTimeout()
     case STATE_REQUEST_ENTER_UPGRADE_MODE:
         if (d_ptr->noResponeCount < 2)
         {
-            d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_ENTER, NULL, 0);
+            if (d_ptr->type == UPGRADE_MOD_CO2)
+            {
+                d_ptr->co2Provider->sendUpgradeCmd(UPGRADE_CMD_REQUEST_ENTER, NULL, 0);
+            }
+            else
+            {
+                d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_ENTER, NULL, 0);
+            }
         }
         else
         {
@@ -1021,7 +1082,14 @@ void UpgradeManager::noResponseTimeout()
     case STATE_REQUEST_SEND_DATA:
         if (d_ptr->noResponeCount < 5)
         {
-            d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_SEND, NULL, 0);
+            if (d_ptr->type == UPGRADE_MOD_CO2)
+            {
+                d_ptr->co2Provider->sendUpgradeCmd(UPGRADE_CMD_REQUEST_SEND, NULL, 0);
+            }
+            else
+            {
+                d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_SEND, NULL, 0);
+            }
         }
         else
         {
@@ -1042,7 +1110,14 @@ void UpgradeManager::noResponseTimeout()
             ::snprintf(data + 1, 32, "%s", qPrintable(getUpgradeModuleName(d_ptr->type))); // NOLINT
             // module hardware version
             ::snprintf(data + 33, 16, DEFAULT_HW_VER_STR); // NOLINT
-            d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_ENTER, NULL, 0);
+            if (d_ptr->type == UPGRADE_MOD_CO2)
+            {
+                d_ptr->co2Provider->sendUpgradeCmd(UPGRADE_CMD_REQUEST_ENTER, NULL, 0);
+            }
+            else
+            {
+                d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_ENTER, NULL, 0);
+            }
         }
         else
         {
@@ -1053,9 +1128,18 @@ void UpgradeManager::noResponseTimeout()
         if (d_ptr->noResponeCount < 5)
         {
             QByteArray segment = d_ptr->getImageSegment(d_ptr->segmentSeq);
-            d_ptr->provider->sendCmd(UPGRADE_CMD_SEGMENT,
-                                     reinterpret_cast<const unsigned char *>(segment.constData()),
-                                     segment.length());
+            if (d_ptr->type == UPGRADE_MOD_CO2)
+            {
+                d_ptr->co2Provider->sendUpgradeCmd(UPGRADE_CMD_SEGMENT,
+                                                   reinterpret_cast<const unsigned char *>(segment.constData()),
+                                                   segment.length());
+            }
+            else
+            {
+                d_ptr->provider->sendCmd(UPGRADE_CMD_SEGMENT,
+                                         reinterpret_cast<const unsigned char *>(segment.constData()),
+                                         segment.length());
+            }
         }
         else
         {

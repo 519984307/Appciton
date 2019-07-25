@@ -78,5 +78,4 @@ public:
     virtual void setCuffPressure(int pressure) = 0;
 
     virtual void setDisableState(bool flag) = 0;
-
 };

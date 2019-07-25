@@ -66,7 +66,7 @@ public:
     int inflateTimeoutNum;          // 充气超时
     int safePressure;
     QString moduleStr;              // 运行模块字符串
-    QLabel* unitLabel;
+    QLabel *unitLabel;
     QMap<MenuItem, ComboBox *> combos;
 };
 
@@ -115,7 +115,7 @@ void NIBPPressureControlContentPrivate::loadOptions(void)
 int NIBPPressureControlContentPrivate::getPatientPressure(void)
 {
     PatientType type = patientManager.getType();
-    int pressure;
+    int pressure = 290;
     if (type == PATIENT_TYPE_ADULT)
     {
         pressure = 290;
@@ -442,17 +442,17 @@ void NIBPPressureControlContent::enterPressureContrlReleased()
             d_ptr->overpressureCbo->setEnabled(true);
             d_ptr->inflateBtn->setEnabled(true);
             d_ptr->isPressureControlMode = true;
-       }
-       else
-       {
-           d_ptr->modeBtn->setText((trs("EnterPressureContrlMode")));
-           d_ptr->value->setText(InvStr());
-           nibpParam.provider().controlPneumatics(0, 0, 0);  //放气
-           d_ptr->overpressureCbo->setEnabled(false);
-           d_ptr->inflateBtn->setEnabled(false);
-           d_ptr->isPressureControlMode = false;
-           nibpParam.provider().controlPneumatics(0, 0, 0);  //放气
-       }
+        }
+        else
+        {
+            d_ptr->modeBtn->setText((trs("EnterPressureContrlMode")));
+            d_ptr->value->setText(InvStr());
+            nibpParam.provider().controlPneumatics(0, 0, 0);  //放气
+            d_ptr->overpressureCbo->setEnabled(false);
+            d_ptr->inflateBtn->setEnabled(false);
+            d_ptr->isPressureControlMode = false;
+            nibpParam.provider().controlPneumatics(0, 0, 0);  //放气
+        }
     }
 }
 
@@ -465,7 +465,7 @@ void NIBPPressureControlContent::onComboBoxIndexChanged(int index)
 
     unsigned char pump = d_ptr->combos[NIBPPressureControlContentPrivate::ITEM_CBO_PUMP]->currentIndex();
     unsigned char controlValve =
-            d_ptr->combos[NIBPPressureControlContentPrivate::ITEM_CBO_CONTROL_VALVE]->currentIndex();
+        d_ptr->combos[NIBPPressureControlContentPrivate::ITEM_CBO_CONTROL_VALVE]->currentIndex();
     unsigned char dumpValve = d_ptr->combos[NIBPPressureControlContentPrivate::ITEM_CBO_DUMP_VALVE]->currentIndex();
     nibpParam.provider().controlPneumatics(pump, controlValve, dumpValve);
 }
@@ -477,7 +477,7 @@ void NIBPPressureControlContent::onOverpressureReleased(int index)
         nibpParam.provider().servicePressureProtect(!index);
     }
     else
-    {       
+    {
         if (!index)
         {
             d_ptr->overPressureProtect = true;

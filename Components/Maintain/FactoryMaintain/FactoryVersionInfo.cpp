@@ -56,7 +56,6 @@ public:
                    : n5SlaveLab(NULL)
                    , n5SlaveBootloaderLab(NULL)
     {
-
     }
     /**
      * @brief loadOptions

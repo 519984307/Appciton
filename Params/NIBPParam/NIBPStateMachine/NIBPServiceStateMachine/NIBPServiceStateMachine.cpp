@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2019/7/25
+ **/
+
 #include "NIBPServiceStateMachine.h"
 #include "NIBPParam.h"
 #include "NIBPState.h"
@@ -39,7 +49,6 @@ NIBPServiceStateMachine::NIBPServiceStateMachine() : NIBPStateMachine(NIBP_STATE
     state = new NIBPServiceErrorState();
     state->setStateMachine(this);
     registerState(state);
-
 }
 
 /**************************************************************************************************
@@ -47,7 +56,6 @@ NIBPServiceStateMachine::NIBPServiceStateMachine() : NIBPStateMachine(NIBP_STATE
  *************************************************************************************************/
 NIBPServiceStateMachine::~NIBPServiceStateMachine()
 {
-
 }
 
 /**************************************************************************************************
@@ -70,7 +78,6 @@ void NIBPServiceStateMachine::enter()
 
 void NIBPServiceStateMachine::exit()
 {
-
 }
 
 /**************************************************************************************************
