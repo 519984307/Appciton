@@ -105,7 +105,7 @@ void NIBPMenuContent::layoutExec()
     itemID = static_cast<int>(NIBPMenuContentPrivate::ITEM_CBO_MEASURE_MODE);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    layout->addWidget(comboBox, d_ptr->combos.count(), 2, 1, 2);
     d_ptr->combos.insert(NIBPMenuContentPrivate::ITEM_CBO_MEASURE_MODE, comboBox);
 
     // auto interval
@@ -127,7 +127,7 @@ void NIBPMenuContent::layoutExec()
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this,
             SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    layout->addWidget(comboBox, d_ptr->combos.count(), 2, 1, 2);
     d_ptr->combos.insert(NIBPMenuContentPrivate::ITEM_CBO_AUTO_INTERVAL, comboBox);
 
     // complete tone
@@ -141,7 +141,7 @@ void NIBPMenuContent::layoutExec()
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(itemFoucsIndexChanged(int)), this, SLOT(onPopupListItemFocusChanged(int)));
     connect(comboBox, SIGNAL(activated(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    layout->addWidget(comboBox, d_ptr->combos.count(), 2, 1, 2);
     d_ptr->combos.insert(NIBPMenuContentPrivate::ITEM_CBO_COMPLETE_TONE, comboBox);
 
     // initial cuff
@@ -150,12 +150,9 @@ void NIBPMenuContent::layoutExec()
     d_ptr->initCuffSpb = new SpinBox();
     d_ptr->initCuffSpb->setSpinBoxStyle(SpinBox::SPIN_BOX_STYLE_STRING);
     connect(d_ptr->initCuffSpb, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxReleased(int)));
-    QHBoxLayout *hLayout = new QHBoxLayout();
     d_ptr->initCuffUnitLbl = new QLabel("mmHg");
-    hLayout->addWidget(d_ptr->initCuffSpb);
-    hLayout->addWidget(d_ptr->initCuffUnitLbl);
-    layout->addLayout(hLayout, d_ptr->combos.count(), 1);
-
+    layout->addWidget(d_ptr->initCuffSpb, d_ptr->combos.count(), 2, 1, 1);
+    layout->addWidget(d_ptr->initCuffUnitLbl, d_ptr->combos.count(), 3, 1, 1);
     int row = d_ptr->combos.count() + 1;
 
     // start stat
@@ -168,7 +165,7 @@ void NIBPMenuContent::layoutExec()
     button->setProperty("Btn", qVariantFromValue(itemID));
     connect(button, SIGNAL(released()), this,
             SLOT(onBtnReleasedChanged()));
-    layout->addWidget(button, row + d_ptr->btns.count(), 1);
+    layout->addWidget(button, row + d_ptr->btns.count(), 2, 1, 2);
     d_ptr->btns.insert(NIBPMenuContentPrivate::ITEM_BTN_START_STAT, button);
 
     // nibp auto addition measure
@@ -181,7 +178,7 @@ void NIBPMenuContent::layoutExec()
     itemID = static_cast<int>(NIBPMenuContentPrivate::ITEM_CBO_ADDITION_MEASURE);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count() + 2, 1);
+    layout->addWidget(comboBox, d_ptr->combos.count() + 2, 2, 1, 2);
     d_ptr->combos.insert(NIBPMenuContentPrivate::ITEM_CBO_ADDITION_MEASURE, comboBox);
 
     // 添加报警设置链接
@@ -189,10 +186,12 @@ void NIBPMenuContent::layoutExec()
                              arg(trs("AlarmSettingUp")).
                              arg(" >>"));
     btn->setButtonStyle(Button::ButtonTextOnly);
-    layout->addWidget(btn, row + d_ptr->btns.count() + 1, 1);
+    layout->addWidget(btn, row + d_ptr->btns.count() + 1, 2, 1, 2);
     connect(btn, SIGNAL(released()), this, SLOT(onAlarmBtnReleased()));
 
     layout->setRowStretch((row + d_ptr->btns.count() + 1), 1);
+    layout->setColumnStretch(0, 2);
+    layout->setColumnStretch(2, 2);
 }
 
 void NIBPMenuContentPrivate::loadOptions()
