@@ -163,6 +163,7 @@ void ErrorLogWindow::init()
     }
     else
     {
+        d_ptr->eraseBtn->setEnabled(true);
         d_ptr->table->setFocusPolicy(Qt::StrongFocus);
     }
     d_ptr->usbCheckTimer->start();
@@ -261,13 +262,13 @@ void ErrorLogWindow::exportReleased()
 
 void ErrorLogWindow::eraseReleased()
 {
-    MessageBox messageBox(trs("ErrorLogErase"), trs("ComfirmClearErrorLog"));
+    MessageBox messageBox(trs("ErrorLogErase"), trs("ConfirmClearErrorLog"));
     windowManager.showWindow(&messageBox, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
     if (QDialog::Accepted == messageBox.result())
     {
         errorLog.clear();
         init();
-        unsigned timestamp = QDateTime::currentDateTime().toTime_t();
+        unsigned int timestamp = QDateTime::currentDateTime().toTime_t();
         systemConfig.setNumValue("ErrorLogEraseTime", timestamp);
         systemConfig.save();
         systemConfig.saveToDisk();

@@ -418,5 +418,22 @@ void TimeEditWindow::onSpinBoxValueChanged(int value, int scale)
         default:
             break;
         }
+
+        // 限制最小时间为1970-1-1 8:0:0
+        QDate curDate(d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_YEAR]->getValue(),
+                   d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_MONTH]->getValue(),
+                   d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getValue());
+        if (curDate == QDate(1970, 1, 1))
+        {
+            d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->setRange(8, 24);
+            if (d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->getValue() < 8)
+            {
+                d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->setValue(8);
+            }
+        }
+        else
+        {
+            d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->setRange(0, 24);
+        }
     }
 }

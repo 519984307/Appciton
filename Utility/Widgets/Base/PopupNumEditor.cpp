@@ -140,8 +140,8 @@ void PopupNumEditor::setEditInfo(const ItemEditInfo &info)
     {
         if (info.curValue < info.lowLimit || info.curValue > info.highLimit)
         {
-            // 如果当前值无效，则设置当前值为最低值
-            d_ptr->editInfo.curValue = info.lowLimit;
+            // 如果当前值无效，则设置起始值
+            d_ptr->editInfo.curValue = info.startValue;
         }
     }
     update();

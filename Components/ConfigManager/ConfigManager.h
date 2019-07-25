@@ -114,11 +114,12 @@ public:
     int getUserDefineConfigMaxLen();
 
     /**
-     * @brief hasExistConfig 是否已经存在同名配置表
+     * @brief hasExistConfig 是否已经存在同名同类型配置表
      * @param name
+     * @param type
      * @return
      */
-    bool hasExistConfig(const QString &name);
+    bool hasExistConfig(const QString &name, PatientType type);
 
     /**
      * @brief loadConfig 加载相应的配置（只能加载预设的配置）

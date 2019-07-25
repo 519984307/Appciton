@@ -25,6 +25,7 @@
 #include <QDesktopWidget>
 #include "LanguageManager.h"
 #include "BLMCO2Provider.h"
+#include "IConfig.h"
 
 #define UPGRADE_FILES_DIR "/upgrade/"
 #define DEFAULT_HW_VER_STR "1.0A"
@@ -406,7 +407,9 @@ void UpgradeManagerPrivate::upgradeExit(UpgradeManager::UpgradeResult result, Up
 
     segmentSeq = 0;
 
-    if (type == UpgradeManager::UPGRADE_MOD_N5DAEMON)
+    QString moduleStr;
+    machineConfig.getStrValue("NIBP", moduleStr);
+    if (type == UpgradeManager::UPGRADE_MOD_N5DAEMON && moduleStr == "BLM_N5")
     {
         handleStateChanged(MODULE_STAT_EXIT_PASSTHROUGH_MODE);
         state = STATE_UPGRADE_EXIT_PASSTHROUGH_MODE;
@@ -846,9 +849,18 @@ void UpgradeManager::upgradeProcess()
 
         if (d_ptr->type == UPGRADE_MOD_N5DAEMON)
         {
-            d_ptr->handleStateChanged(MODULE_STAT_ENTER_PASSTHROUGH_MODE);
-            d_ptr->state = STATE_UPGRADE_ENTER_PASSTHROUGH_MODE;
-            break;
+            QString moduleStr;
+            machineConfig.getStrValue("NIBP", moduleStr);
+            if (moduleStr == "BLM_N5")
+            {
+                d_ptr->handleStateChanged(MODULE_STAT_ENTER_PASSTHROUGH_MODE);
+                d_ptr->state = STATE_UPGRADE_ENTER_PASSTHROUGH_MODE;
+                break;
+            }
+            else
+            {
+                d_ptr->state = STATE_REQUEST_ENTER_UPGRADE_MODE;
+            }
         }
         else
         {

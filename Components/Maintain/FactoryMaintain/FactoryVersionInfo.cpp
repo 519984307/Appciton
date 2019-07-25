@@ -39,6 +39,8 @@ public:
         ITEM_LAB_ECG_BOOTLOADER,
         ITEM_LAB_NIBP_VERSION,
         ITEM_LAB_NIBP_BOOTLOADER,
+        ITEM_LAB_NIBP_SLAVE_VERSION,
+        ITEM_LAB_NIBP_SLAVE_BOOTLOADER,
         ITEM_LAB_SPO2_VERSION,
         ITEM_LAB_SPO2_BOOTLOADER,
         ITEM_LAB_TEMP_VERSION,
@@ -50,12 +52,20 @@ public:
         ITEM_LAB_MAX,
     };
 
+    FactoryVersionInfoPrivate()
+                   : n5SlaveLab(NULL)
+                   , n5SlaveBootloaderLab(NULL)
+    {
+    }
     /**
      * @brief loadOptions
      */
     void loadOptions();
 
     QMap <MenuItem, QLabel *> labs;
+
+    QLabel *n5SlaveLab;
+    QLabel *n5SlaveBootloaderLab;
 };
 
 FactoryVersionInfo::FactoryVersionInfo()
@@ -153,6 +163,25 @@ void FactoryVersionInfo::layoutExec()
         layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
         d_ptr->labs.insert(FactoryVersionInfoPrivate
                            ::ITEM_LAB_NIBP_BOOTLOADER, labelRight);
+
+        // nibp 从片
+        labelLeft = new QLabel(trs("NIBPSlaveVersion") + "    ");
+        layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
+        d_ptr->n5SlaveLab = labelLeft;
+
+        labelRight = new QLabel;
+        layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
+        d_ptr->labs.insert(FactoryVersionInfoPrivate
+                           ::ITEM_LAB_NIBP_SLAVE_VERSION, labelRight);
+
+        labelLeft = new QLabel(trs("NIBPSlaveBootloader") + "    ");
+        layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
+        d_ptr->n5SlaveBootloaderLab = labelLeft;
+
+        labelRight = new QLabel;
+        layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
+        d_ptr->labs.insert(FactoryVersionInfoPrivate
+                           ::ITEM_LAB_NIBP_SLAVE_BOOTLOADER, labelRight);
     }
 
     if (systemManager.isSupport(CONFIG_SPO2))
@@ -193,19 +222,22 @@ void FactoryVersionInfo::layoutExec()
                            ::ITEM_LAB_TEMP_BOOTLOADER, labelRight);
     }
 
-    labelLeft = new QLabel(trs("PRT48Version") + "    ");
-    layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
-    labelRight = new QLabel;
-    layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
-    d_ptr->labs.insert(FactoryVersionInfoPrivate
-                       ::ITEM_LAB_PRT48_VERSION, labelRight);
+    if (systemManager.isSupport(CONFIG_PRINTER))
+    {
+        labelLeft = new QLabel(trs("PRT48Version") + "    ");
+        layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
+        labelRight = new QLabel;
+        layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
+        d_ptr->labs.insert(FactoryVersionInfoPrivate
+                           ::ITEM_LAB_PRT48_VERSION, labelRight);
 
-    labelLeft = new QLabel(trs("PRT48Bootloader") + "    ");
-    layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
-    labelRight = new QLabel;
-    layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
-    d_ptr->labs.insert(FactoryVersionInfoPrivate
-                       ::ITEM_LAB_PRT48_BOOTLOADER, labelRight);
+        labelLeft = new QLabel(trs("PRT48Bootloader") + "    ");
+        layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
+        labelRight = new QLabel;
+        layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
+        d_ptr->labs.insert(FactoryVersionInfoPrivate
+                           ::ITEM_LAB_PRT48_BOOTLOADER, labelRight);
+    }
 
     // screen size
     labelLeft = new QLabel(trs("ScreenSize") + "    ");
@@ -316,6 +348,42 @@ void FactoryVersionInfoPrivate::loadOptions()
         labs[ITEM_LAB_NIBP_BOOTLOADER]->setText(versionSuffix);
     }
 
+    // N5 从片
+    if (p)
+    {
+        version = p->getExtraVersionString();
+        versionSuffix = version.section(' ', -1);
+        version.remove(versionSuffix);
+    }
+    if (labs[ITEM_LAB_NIBP_SLAVE_VERSION])
+    {
+        if (version.isEmpty())
+        {
+            labs[ITEM_LAB_NIBP_SLAVE_VERSION]->hide();
+            n5SlaveLab->hide();
+        }
+        else
+        {
+            n5SlaveLab->show();
+            labs[ITEM_LAB_NIBP_SLAVE_VERSION]->show();
+            labs[ITEM_LAB_NIBP_SLAVE_VERSION]->setText(version);
+        }
+    }
+    if (labs[ITEM_LAB_NIBP_SLAVE_BOOTLOADER])
+    {
+        if (version.isEmpty())  // 如果版本号不存在，不再显示其bootloader
+        {
+            n5SlaveBootloaderLab->hide();
+            labs[ITEM_LAB_NIBP_SLAVE_BOOTLOADER]->hide();
+        }
+        else
+        {
+            n5SlaveBootloaderLab->show();
+            labs[ITEM_LAB_NIBP_SLAVE_BOOTLOADER]->show();
+            labs[ITEM_LAB_NIBP_SLAVE_BOOTLOADER]->setText(versionSuffix);
+        }
+    }
+
     // spo2 version
     str.clear();
     version.clear();
@@ -363,8 +431,14 @@ void FactoryVersionInfoPrivate::loadOptions()
         versionSuffix = version.section(' ', -1);
         version.remove(versionSuffix);
     }
-    labs[ITEM_LAB_PRT48_VERSION]->setText(version);
-    labs[ITEM_LAB_PRT48_BOOTLOADER]->setText(versionSuffix);
+    if (labs[ITEM_LAB_PRT48_VERSION])
+    {
+        labs[ITEM_LAB_PRT48_VERSION]->setText(version);
+    }
+    if (labs[ITEM_LAB_PRT48_BOOTLOADER])
+    {
+        labs[ITEM_LAB_PRT48_BOOTLOADER]->setText(versionSuffix);
+    }
 
     // screen size
     str.clear();

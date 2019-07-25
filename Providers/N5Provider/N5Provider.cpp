@@ -22,6 +22,7 @@
 #include "RawDataCollector.h"
 #include "IConfig.h"
 #include "UpgradeManager.h"
+#include "AlarmSourceManager.h"
 
 static const char *nibpSelfErrorCode[] =
 {
@@ -40,7 +41,6 @@ static const char *nibpSelfErrorCode[] =
     "The air pump is unusual.\r\n",                           // 12
     "The sofaware of overpressure protect is unusual.\r\n",    // 13
     "Comparisons of pressure between master and Daemon fail to pass self-test"  // 14
-
 };
 
 static const char *nibpErrorCode[] =
@@ -108,6 +108,20 @@ void N5Provider::_selfTest(unsigned char *packet, int len)
             case 0x0d:
             case 0x0e:
                 errorStr += nibpSelfErrorCode[packet[i]];
+                break;
+            case 0x7f:
+            case 0x80:
+            case 0x81:
+            case 0x82:
+            case 0x83:
+            case 0x84:
+                errorStr += nibpErrorCode[packet[i] - 127];
+                break;
+            case 0x85:
+                nibpParam.setCalibrateState(false);
+            case 0x86:
+            case 0x87:
+                errorStr += nibpErrorCode[packet[i] - 127];
                 break;
             default:
                 errorStr += "Unknown mistake.\r\n";
@@ -387,6 +401,23 @@ void N5Provider::handlePacket(unsigned char *data, int len)
 
     case N5_RSP_PRESSURE_ZERO:
         nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_ZERO, NULL, 0);
+        break;
+    case N5_STATE_PRESSURE_PROTECT:
+        if (data[1] == 0x01)
+        {
+            nibpParam.setDisableState(true);
+            nibpParam.errorDisable();
+        }
+        else if (data[1] == 0x00)
+        {
+            nibpParam.setDisableState(false);
+            AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
+            if (alarmSource)
+            {
+                alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_DISABLE, false);
+            }
+            nibpParam.handleNIBPEvent(NIBP_EVENT_CONNECTION_NORMAL, NULL, 0);                       // 恢复禁用状态
+        }
         break;
 
     default:

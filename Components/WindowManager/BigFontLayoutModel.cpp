@@ -198,7 +198,7 @@ QVariant BigFontLayoutModel::data(const QModelIndex &index, int role) const
             info.name = node->name;
             if (info.waveid != WAVE_NONE)
             {
-                info.displayName = paramInfo.getParamWaveformName(info.waveid);
+                info.displayName = trs(paramInfo.getParamWaveformName(info.waveid));
             }
             else
             {
@@ -209,7 +209,7 @@ QVariant BigFontLayoutModel::data(const QModelIndex &index, int role) const
                 }
                 else
                 {
-                    info.displayName = info.name;
+                    info.displayName = trs(info.name);
                 }
             }
             d_ptr->fillWaveData(info);

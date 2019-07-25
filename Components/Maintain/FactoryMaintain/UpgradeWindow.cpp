@@ -98,8 +98,11 @@ UpgradeWindow::UpgradeWindow()
     }
 #endif
 
-    d_ptr->upgradeModuleCbo->addItem(
-        trs(UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_PRT48)));
+    if (systemManager.isSupport(CONFIG_PRINTER))
+    {
+        d_ptr->upgradeModuleCbo->addItem(
+                    trs(UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_PRT48)));
+    }
 
     d_ptr->upgradeModuleCbo->addItem(
         trs(UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_nPMBoard)));

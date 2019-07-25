@@ -83,7 +83,7 @@ public:
     void setRR(short rrValue);
 
     // 电极脱落
-    void setLeadoff(bool flag);
+    void setLeadoff(bool flag, bool isFirstConnect = true);
 
     // 设置OneShot报警。
     void setOneShotAlarm(RESPOneShotType t, bool f);

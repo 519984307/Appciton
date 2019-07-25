@@ -27,6 +27,7 @@
 #include "OxyCRGCO2WaveWidget.h"
 #include "AlarmSourceManager.h"
 #include "O2ParamInterface.h"
+#include "IConfig.h"
 
 CO2Param *CO2Param::_selfObj = NULL;
 
@@ -45,7 +46,7 @@ public:
               etco2MaxVal(0),
               etco2MinVal(0),
               brVaule(InvData()),
-              baro(750),
+              baro(1013),
               connectedProvider(false),
               co2Switch(false),
               oxyCRGCO2Wave(NULL)
@@ -900,6 +901,14 @@ void CO2Param::setFiCO2Display(CO2FICO2Display disp)
     }
 }
 
+void CO2Param::updateFiCO2Display()
+{
+    if (NULL != d_ptr->trendWidget)
+    {
+        d_ptr->trendWidget->setFiCO2Display(getFICO2Display());
+    }
+}
+
 /**************************************************************************************************
  * 获取FiCO2显示标志。
  *************************************************************************************************/
@@ -916,7 +925,7 @@ CO2FICO2Display CO2Param::getFICO2Display(void)
 UnitType CO2Param::getUnit(void)
 {
     int unit = UNIT_PERCENT;
-    currentConfig.getNumValue("Local|CO2Unit", unit);
+    systemConfig.getNumValue("Unit|CO2Unit", unit);
     return static_cast<UnitType>(unit);
 }
 
@@ -993,7 +1002,7 @@ CO2Param::CO2Param()
           d_ptr(new CO2ParamPrivate(this))
 {
     int t = UNIT_PERCENT;
-    currentConfig.getNumValue("Local|CO2Unit", t);
+    systemConfig.getNumValue("Unit|CO2Unit", t);
 
     QString path = "AlarmSource|";
     path += paramInfo.getSubParamName(SUB_PARAM_ETCO2);

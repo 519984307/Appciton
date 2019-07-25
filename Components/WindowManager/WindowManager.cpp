@@ -433,8 +433,8 @@ void WindowManager::onWindowHide(Dialog *w)
         if (top)
         {
             top->showMask(false);
-            top->show();
             d_ptr->curWindow = top;
+            top->show();
         }
         else
         {
@@ -446,4 +446,6 @@ void WindowManager::onWindowHide(Dialog *w)
         disconnect(w, SIGNAL(windowHide(Dialog *)), this, SLOT(onWindowHide(Dialog *)));
         d_ptr->timer->stop();
     }
+
+    QApplication::processEvents(QEventLoop::AllEvents);
 }

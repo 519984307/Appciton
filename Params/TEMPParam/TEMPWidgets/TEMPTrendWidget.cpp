@@ -63,7 +63,7 @@ void TEMPTrendWidget::loadConfig()
 void TEMPTrendWidget::setTEMPValue(int16_t t1, int16_t t2, int16_t td)
 {
     UnitType type = tempParam.getUnit();
-    if (t1 == InvData() || t1 < 0 || t1 > 500)
+    if (t1 == InvData())
     {
         _t1Str = InvStr();
     }
@@ -72,7 +72,7 @@ void TEMPTrendWidget::setTEMPValue(int16_t t1, int16_t t2, int16_t td)
         _t1Str = Unit::convert(type, UNIT_TC, t1 / 10.0);
     }
 
-    if (t2 == InvData() || t2 < 0 || t2 > 500)
+    if (t2 == InvData())
     {
         _t2Str = InvStr();
     }

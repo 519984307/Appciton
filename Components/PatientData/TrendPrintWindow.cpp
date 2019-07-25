@@ -54,6 +54,12 @@ public:
      */
     void adjustPrintTime(unsigned printTime, bool start);
 
+    /**
+     * @brief blockSignal block spinbox signal
+     * @param flag
+     */
+    void blockSignal(bool flag, bool start);
+
 public:
     QGroupBox *startBox;
     QGroupBox *endBox;
@@ -128,7 +134,7 @@ TrendPrintWindow::TrendPrintWindow(const QList<TrendDataPackage *> &trendDataPac
     connect(d_ptr->endSubBox->yearSbx, SIGNAL(valueChange(int, int)),
             this, SLOT(endTimeChangeSlot(int, int)));
     connect(d_ptr->endSubBox->monthSbx, SIGNAL(valueChange(int, int)),
-            this, SLOT(endTimeChangeSlot(QString, int)));
+            this, SLOT(endTimeChangeSlot(int, int)));
     connect(d_ptr->endSubBox->daySbx, SIGNAL(valueChange(int, int)),
             this, SLOT(endTimeChangeSlot(int, int)));
     connect(d_ptr->endSubBox->hourSbx, SIGNAL(valueChange(int, int)),
@@ -170,19 +176,23 @@ void TrendPrintWindow::initPrintTime(unsigned start, unsigned end)
     d_ptr->printStartTime = start;
     d_ptr->printEndTime = end;
 
+    d_ptr->blockSignal(true, true);
     d_ptr->startSubBox->yearSbx->setValue(static_cast<int>(timeDate.getDateYear(start)));
     d_ptr->startSubBox->monthSbx->setValue(static_cast<int>(timeDate.getDateMonth(start)));
     d_ptr->startSubBox->daySbx->setValue(static_cast<int>(timeDate.getDateDay(start)));
     d_ptr->startSubBox->hourSbx->setValue(static_cast<int>(timeDate.getTimeHour(start)));
     d_ptr->startSubBox->minSbx->setValue(static_cast<int>(timeDate.getTimeMinute(start)));
     d_ptr->startSubBox->secondSbx->setValue(static_cast<int>(timeDate.getTimeSenonds(start)));
+    d_ptr->blockSignal(false, true);
 
+    d_ptr->blockSignal(true, false);
     d_ptr->endSubBox->yearSbx->setValue(static_cast<int>(timeDate.getDateYear(end)));
     d_ptr->endSubBox->monthSbx->setValue(static_cast<int>(timeDate.getDateMonth(end)));
     d_ptr->endSubBox->daySbx->setValue(static_cast<int>(timeDate.getDateDay(end)));
     d_ptr->endSubBox->hourSbx->setValue(static_cast<int>(timeDate.getTimeHour(end)));
     d_ptr->endSubBox->minSbx->setValue(static_cast<int>(timeDate.getTimeMinute(end)));
     d_ptr->endSubBox->secondSbx->setValue(static_cast<int>(timeDate.getTimeSenonds(end)));
+    d_ptr->blockSignal(false, false);
 
     d_ptr->difftimeInfo();
 }
@@ -202,6 +212,10 @@ void TrendPrintWindow::startTimeChangeSlot(int, int)
     QTime time(h, d_ptr->startSubBox->minSbx->getValue(),
                d_ptr->startSubBox->secondSbx->getValue());
     QDateTime dateTime(date, time);
+    if (!date.isValid() || !time.isValid())
+    {
+        return;
+    }
     unsigned timeStamp = dateTime.toTime_t();
     if (timeStamp < d_ptr->timeStartLimit)
     {
@@ -240,6 +254,10 @@ void TrendPrintWindow::endTimeChangeSlot(int, int)
     QTime time(h, d_ptr->endSubBox->minSbx->getValue(),
                d_ptr->endSubBox->secondSbx->getValue());
     QDateTime dateTime(date, time);
+    if (!date.isValid() || !time.isValid())
+    {
+        return;
+    }
     unsigned timeStamp = dateTime.toTime_t();
     if (timeStamp > d_ptr->timeEndLimit)
     {
@@ -286,7 +304,7 @@ void TrendPrintWindowPrivate::initGroupBox(QGroupBox *groupBox, TrendPrintWindow
     subBox->minSbx = new SpinBox();
     subBox->secondSbx = new SpinBox();
 
-    subBox->yearSbx->setRange(2000, 2099);
+    subBox->yearSbx->setRange(1970, 2037);
     subBox->yearSbx->setStep(1);
     subBox->yearSbx->setArrow(false);
 
@@ -455,4 +473,23 @@ void TrendPrintWindowPrivate::adjustPrintTime(unsigned printTime, bool start)
     subBox->secondSbx->blockSignals(true);
     subBox->secondSbx->setValue(static_cast<int>(timeDate.getTimeSenonds(adjustTime)));
     subBox->secondSbx->blockSignals(false);
+}
+
+void TrendPrintWindowPrivate::blockSignal(bool flag, bool start)
+{
+    SubGroupBox *subBox = NULL;
+    if (start)
+    {
+        subBox = startSubBox;
+    }
+    else
+    {
+        subBox = endSubBox;
+    }
+    subBox->yearSbx->blockSignals(flag);
+    subBox->monthSbx->blockSignals(flag);
+    subBox->daySbx->blockSignals(flag);
+    subBox->hourSbx->blockSignals(flag);
+    subBox->minSbx->blockSignals(flag);
+    subBox->secondSbx->blockSignals(flag);
 }

@@ -95,7 +95,7 @@ void SaveUserConfigWindow::onBtnReleased()
     Button *btn = qobject_cast<Button *>(sender());
     if (btn == d_ptr->okBtn)
     {
-        if (configManager.hasExistConfig(d_ptr->cofNameBtn->text()))
+        if (configManager.hasExistConfig(d_ptr->cofNameBtn->text(), patientManager.getType()))
         {
             MessageBox message(trs("Prompt"), trs("HasExistConfig"), false);
             windowManager.showWindow(&message, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
