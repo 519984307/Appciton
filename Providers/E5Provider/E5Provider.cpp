@@ -426,8 +426,8 @@ void E5Provider::handlePacket(unsigned char *data, int len)
     case TE3_NOTIFY_SYSTEM_STARTED:
     {
         ErrorLogItem *item = new CriticalFaultLogItem();
-        item->setName("TE3 Start");
-        item->setSubSystem(ErrorLogItem::SUB_SYS_TE3);
+        item->setName("TE5 Start");
+        item->setSubSystem(ErrorLogItem::SUB_SYS_TE5);
         item->setSystemState(ErrorLogItem::SYS_STAT_RUNTIME);
         item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
         errorLog.append(item);
@@ -589,9 +589,9 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         if (!errorStr.isEmpty())
         {
             ErrorLogItem *item = new CriticalFaultLogItem();
-            item->setName(QString("TE3 Error:0x%1").arg(data[1], 2, 16, QChar('0')));
+            item->setName(QString("TE5 Error:0x%1").arg(data[1], 2, 16, QChar('0')));
             item->setLog(errorStr);
-            item->setSubSystem(ErrorLogItem::SUB_SYS_TE3);
+            item->setSubSystem(ErrorLogItem::SUB_SYS_TE5);
             item->setSystemState(ErrorLogItem::SYS_STAT_RUNTIME);
             item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
             errorLog.append(item);

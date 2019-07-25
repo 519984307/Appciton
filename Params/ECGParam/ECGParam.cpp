@@ -1063,9 +1063,9 @@ void ECGParam::handleSelfTestResult()
     if (!errStr.isEmpty())
     {
         ErrorLogItem *item = new CriticalFaultLogItem();
-        item->setName("TE3 Self Test Failed");
+        item->setName("TE5 Self Test Failed");
         item->setLog(errStr);
-        item->setSubSystem(ErrorLogItem::SUB_SYS_TE3);
+        item->setSubSystem(ErrorLogItem::SUB_SYS_TE5);
         item->setSystemState(ErrorLogItem::SYS_STAT_SELFTEST);
         item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
         errorLog.append(item);

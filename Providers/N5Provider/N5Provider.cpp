@@ -130,9 +130,9 @@ void N5Provider::_selfTest(unsigned char *packet, int len)
         }
 
         ErrorLogItem *item = new CriticalFaultLogItem();
-        item->setName("N5 Selftest Error");
+        item->setName("TN5 Selftest Error");
         item->setLog(errorStr);
-        item->setSubSystem(ErrorLogItem::SUB_SYS_TN3);
+        item->setSubSystem(ErrorLogItem::SUB_SYS_TN5);
         item->setSystemState(ErrorLogItem::SYS_STAT_SELFTEST);
         item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
 
@@ -177,9 +177,9 @@ void N5Provider::_errorWarm(unsigned char *packet, int len)
     }
 
     ErrorLogItem *item = new CriticalFaultLogItem();
-    item->setName("N5 Error");
+    item->setName("TN5 Error");
     item->setLog(errorStr);
-    item->setSubSystem(ErrorLogItem::SUB_SYS_TN3);
+    item->setSubSystem(ErrorLogItem::SUB_SYS_TN5);
     item->setSystemState(ErrorLogItem::SYS_STAT_RUNTIME);
     item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
     errorLog.append(item);
@@ -307,7 +307,7 @@ void N5Provider::handlePacket(unsigned char *data, int len)
     {
         _sendACK(data[0]);
         ErrorLogItem *item = new CriticalFaultLogItem();
-        item->setName("TN3 Start");
+        item->setName("TN5 Start");
         errorLog.append(item);
         nibpParam.reset();
     }
