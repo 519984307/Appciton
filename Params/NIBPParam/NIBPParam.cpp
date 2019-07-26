@@ -203,11 +203,14 @@ void NIBPParam::exitDemo()
     _mapVaule = InvData();
     _prVaule = InvData();
 
-    // 恢复状态机为进入演示模式前的状态
-    switchState(_oldState);
-    if (curStatusType() == NIBP_MONITOR_STANDBY_STATE || curStatusType() == NIBP_MONITOR_SAFEWAITTIME_STATE)
+    if (_oldState == NIBP_MONITOR_ERROR_STATE)
     {
-        // 若返回的时准备模式，则清除显示数据
+    // 恢复状态机为进入演示模式前的状态
+        switchState(_oldState);
+    }
+    else
+    {
+        switchState(NIBP_MONITOR_STANDBY_STATE);
         clearResult();
     }
     clearTrendListData();
