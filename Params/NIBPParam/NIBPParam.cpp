@@ -202,6 +202,7 @@ void NIBPParam::exitDemo()
     _diaValue = InvData();
     _mapVaule = InvData();
     _prVaule = InvData();
+    _lastTime = 0;
 
     // 恢复状态机为进入演示模式前的状态
     switchState(_oldState);
