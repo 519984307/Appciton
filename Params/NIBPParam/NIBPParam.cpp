@@ -93,6 +93,10 @@ void NIBPParam::initParam(void)
     {
         return;
     }
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        return;
+    }
     int enable = 0;
     machineConfig.getModuleInitialStatus("NIBPNEOMeasureEnable", reinterpret_cast<bool*>(&enable));
     if (patientManager.getType() == PATIENT_TYPE_NEO && enable)
