@@ -263,6 +263,7 @@ void LoadConfigMenuContent::onBtnClick()
         currentConfig.load(loadPath);
         alarmConfig.clearLimitAlarmInfo();
         colorManager.clearColorMap();
+        configManager.setOriginalConfig(static_cast<PatientType>(patitentTypeInt), d_ptr->configs.at(index).fileName);
 
         soundManager.volumeInit();
         layoutManager.updateLayoutWidgetsConfig();

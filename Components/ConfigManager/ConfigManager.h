@@ -126,6 +126,20 @@ public:
      * @param type　病人类型
      */
     void loadConfig(PatientType type);
+
+    /**
+     * @brief getOriginalConfig 获取当前文件的原始文件（包括.original.xml和userDefine.xml）
+     * @param type
+     * @return
+     */
+    QString getOriginalConfig(PatientType type);
+
+    /**
+     * @brief setOriginalConfig 设置当前文件的原始文件（包括.original.xml和userDefine.xml）
+     * @param type
+     * @param path
+     */
+    void setOriginalConfig(PatientType type, QString path);
 signals:
     /**
      * @brief configChange
