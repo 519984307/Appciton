@@ -261,20 +261,7 @@ void NIBPPressureControlContent::timerEvent(QTimerEvent *ev)
         bool reply = nibpParam.geReply();
         if (reply || d_ptr->inflateTimeoutNum == TIMEOUT_WAIT_NUMBER * 10)
         {
-            if (reply && nibpParam.getResult())          // N5充到指定压力值才会答复
-            {
-                if (d_ptr->isInflate)
-                {
-                    d_ptr->isInflate = false;
-                    d_ptr->inflateBtn->setText(trs("ServiceDeflate"));
-                }
-                else
-                {
-                    d_ptr->isInflate = true;
-                    d_ptr->inflateBtn->setText(trs("ServiceInflate"));
-                }
-            }
-            else
+            if (!(reply && nibpParam.getResult()))          // N5充到指定压力值或者放气会答复
             {
                 MessageBox messbox(trs("Warn"), trs("OperationFailedPleaseAgain"), false);
                 messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
@@ -398,14 +385,17 @@ void NIBPPressureControlContent::inflateBtnReleased()
                 int _pressure = d_ptr->pressureList.at(d_ptr->chargePressure->getValue()).toInt();
                 nibpParam.provider().servicePressureinflate(_pressure);
             }
-            d_ptr->inflateBtn->setText(trs("Inflating"));
             d_ptr->modeBtn->setEnabled(false);
             d_ptr->chargePressure->setEnabled(false);
+            d_ptr->isInflate = false;
+            d_ptr->inflateBtn->setText(trs("ServiceDeflate"));
         }
         else
         {
             nibpParam.provider().servicePressuredeflate();
             d_ptr->chargePressure->setEnabled(true);
+            d_ptr->isInflate = true;
+            d_ptr->inflateBtn->setText(trs("ServiceInflate"));
         }
     }
     else
