@@ -33,8 +33,8 @@ void ErrorLogItemBase::setSubSystem(ErrorLogItemBase::SubSystem subSys)
     case SUB_SYS_SYSTEM_BOARD:
         subSysStr = "System Board";
         break;
-    case SUB_SYS_TE5:
-        subSysStr = "TE5";
+    case SUB_SYS_E5:
+        subSysStr = "E5";
         break;
     case SUB_SYS_TS3:
         subSysStr = "TS3";
@@ -42,8 +42,8 @@ void ErrorLogItemBase::setSubSystem(ErrorLogItemBase::SubSystem subSys)
     case SUB_SYS_BLMSPO2:
         subSysStr = "BLMSPO2";
         break;
-    case SUB_SYS_TN5:
-        subSysStr = "TN5";
+    case SUB_SYS_N5:
+        subSysStr = "N5";
         break;
     case SUB_SYS_TT3:
         subSysStr = "TT3";
