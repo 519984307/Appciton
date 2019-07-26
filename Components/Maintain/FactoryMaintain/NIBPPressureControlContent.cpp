@@ -97,6 +97,7 @@ void NIBPPressureControlContentPrivate::loadOptions(void)
     overpressureCbo->setEnabled(false);
     inflateBtn->setEnabled(false);
     modeBtn->setEnabled(true);
+    chargePressure->setEnabled(true);
     UnitType currentUnit = nibpParam.getUnit();
     if (currentUnit != UNIT_MMHG)
     {
@@ -399,10 +400,12 @@ void NIBPPressureControlContent::inflateBtnReleased()
             }
             d_ptr->inflateBtn->setText(trs("Inflating"));
             d_ptr->modeBtn->setEnabled(false);
+            d_ptr->chargePressure->setEnabled(false);
         }
         else
         {
             nibpParam.provider().servicePressuredeflate();
+            d_ptr->chargePressure->setEnabled(true);
         }
     }
     else
@@ -411,10 +414,12 @@ void NIBPPressureControlContent::inflateBtnReleased()
         {
             nibpParam.provider().controlPneumatics(1, 1, 1);  //充气
             d_ptr->holdPressureFlag = true;
+            d_ptr->chargePressure->setEnabled(false);
         }
         else
         {
             nibpParam.provider().controlPneumatics(0, 0, 0);  //放气
+            d_ptr->chargePressure->setEnabled(true);
         }
     }
 }
