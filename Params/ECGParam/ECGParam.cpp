@@ -556,6 +556,7 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
  *************************************************************************************************/
 void ECGParam::updateHR(short hr)
 {
+    ecgDupParam.restartParamUpdateTime();
     if (_hrValue == hr)
     {
         return;

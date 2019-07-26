@@ -132,6 +132,8 @@ public:
     // 刷新参数上下限
     virtual void updateSubParamLimit(SubParamID id);
 
+    void restartParamUpdateTime();
+
 protected slots:
     virtual void paramUpdateTimeout();
 
