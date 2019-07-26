@@ -221,12 +221,10 @@ void ECGDupParam::updatePR(short pr, PRSourceType type, bool isUpdatePr)
             if (_prValue != InvData())
             {
                 _trendWidget->setHRValue(_prValue, _currentHRSource);
-                paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
             }
             else
             {
                 _trendWidget->setHRValue(_prValue, HR_SOURCE_AUTO);
-                paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
             }
             _hrBeatFlag = false;
         }
@@ -236,7 +234,6 @@ void ECGDupParam::updatePR(short pr, PRSourceType type, bool isUpdatePr)
         {
             _hrBeatFlag = false;
             _trendWidget->setHRValue(_prValue, _hrSource);
-            paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
         }
         break;
         case HR_SOURCE_ECG:
@@ -329,19 +326,16 @@ void ECGDupParam::updateHR(short hr)
         {
             _hrBeatFlag = true;
             _trendWidget->setHRValue(_hrValue, HR_SOURCE_ECG);
-            paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
         }
         else if (_prValue != InvData())
         {
             _hrBeatFlag = false;
             _trendWidget->setHRValue(_prValue, _currentHRSource);
-            paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
         }
         else  // HR和PR都为无效时。
         {
             _hrBeatFlag = true;
             _trendWidget->setHRValue(_hrValue, HR_SOURCE_ECG);
-            paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
         }
     }
         break;
@@ -356,7 +350,6 @@ void ECGDupParam::updateHR(short hr)
             _hrBeatFlag = false;
         }
         _trendWidget->setHRValue(_hrValue, _hrSource);
-        paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
     }
         break;
     default:
@@ -529,6 +522,11 @@ void ECGDupParam::updateSubParamLimit(SubParamID id)
     {
         _trendWidget->updateLimit();
     }
+}
+
+void ECGDupParam::restartParamUpdateTime()
+{
+    paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
 }
 
 void ECGDupParam::paramUpdateTimeout()

@@ -161,6 +161,7 @@ void RESPDupParam::updateBR(short br)
     }
 
     handleBRRRValue();
+    paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
 }
 
 /**************************************************************************************************
