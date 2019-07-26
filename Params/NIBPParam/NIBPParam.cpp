@@ -449,13 +449,20 @@ void NIBPParam::setResult(int16_t sys, int16_t dia, int16_t map, int16_t pr, NIB
             systemConfig.getNumValue("PrimaryCfg|NIBP|AutomaticRetry", index);
             if (index)
             {
-                if (isAdditionalMeasure())
+                if (isAdditionalMeasure())    // 如果已经进行过额外测量置false
                 {
                     setAdditionalMeasure(false);
                 }
                 else
                 {
                     setAdditionalMeasure(true);
+                }
+            }
+            else
+            {
+                if (isAdditionalMeasure())
+                {
+                    setAdditionalMeasure(false);
                 }
             }
         }
