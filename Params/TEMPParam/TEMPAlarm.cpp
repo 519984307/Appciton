@@ -324,7 +324,7 @@ bool TEMPOneShotAlarm::isRemoveAfterLatch(int id)
 
 bool TEMPOneShotAlarm::isAlarmed(int id)
 {
-    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO && getAlarmType(id) == ALARM_TYPE_TECH)
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
     {
         return false;
     }
