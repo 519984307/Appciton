@@ -267,6 +267,18 @@ void EventWindow::showEvent(QShowEvent *ev)
     {
         d_ptr->eventTable->setFocusPolicy(Qt::StrongFocus);
     }
+
+    // 更新打印按键状态
+    if (recorderManager.isConnected())
+    {
+        d_ptr->printBtn->setEnabled(true);
+        d_ptr->listPrintBtn->setEnabled(true);
+    }
+    else
+    {
+        d_ptr->printBtn->setEnabled(false);
+        d_ptr->listPrintBtn->setEnabled(false);
+    }
 }
 
 void EventWindow::timerEvent(QTimerEvent *ev)
