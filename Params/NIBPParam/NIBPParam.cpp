@@ -202,6 +202,7 @@ void NIBPParam::exitDemo()
     _diaValue = InvData();
     _mapVaule = InvData();
     _prVaule = InvData();
+    _lastTime = 0;
 
     if (_oldState == NIBP_MONITOR_ERROR_STATE)
     {
