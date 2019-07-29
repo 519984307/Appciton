@@ -330,13 +330,13 @@ bool S5Provider::isResult_BAR(unsigned char *packet)
     // PI;
     bool isLowPerfusion = false;
     short piValue = packet[15];
-    if (piValue > 200)
+    if (piValue > 200 || piValue <= 0)
     {
         piValue = InvData();
         spo2Param.setPerfusionStatus(false);
         isLowPerfusion = false;
     }
-    else if (piValue < 1)
+    else if (piValue < 10)
     {
         piValue = InvData();
         spo2Param.setPerfusionStatus(true);
