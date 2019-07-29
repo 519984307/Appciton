@@ -183,8 +183,7 @@ void AlarmMaintainMenuContentPrivate::
         break;
     case ITEM_CBO_ALARM_AUDIO_OFF:
     {
-            systemConfig.setNumValue("Alarms|AlarmAudio", index);
-            alarmIndicator.updateAlarmAudioState();
+            alarmIndicator.setAlarmAudioState(index);
             AlarmOneShotIFace *systemAlarm = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SYSTEM);
             if (systemAlarm)
             {
@@ -373,7 +372,8 @@ void AlarmMaintainMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
-                       << trs("Close")
+                       << trs("Close")    systemConfig.getNumValue("Alarms|AlarmAudio", index);
+
                        << trs("Open")
                        << trs("OpenAgain"));
     itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_REMINDER_TONE);

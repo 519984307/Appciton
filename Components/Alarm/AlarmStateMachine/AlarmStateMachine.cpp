@@ -141,7 +141,6 @@ void AlarmStateMachine::_timeOut()
         }
 
         _timer->stop();
-        _pressTime = 0;
     }
 }
 
@@ -186,12 +185,20 @@ void AlarmStateMachine::handAlarmEvent(AlarmStateEvent event, unsigned char *dat
     {
         _pressTime = 0;
         _timer->start();
-        break;
+        return;
     }
     case ALARM_STATE_EVENT_MUTE_BTN_RELEASED:
     {
+        if (_pressTime < 10)
+        {
+            if (_currentState)
+            {
+                _currentState->handAlarmEvent(ALARM_STATE_EVENT_MUTE_BTN_PRESSED, 0, 0);
+            }
+        }
         _timer->stop();
-        break;
+        _pressTime = 0;
+        return;
     }
     default:
         break;
