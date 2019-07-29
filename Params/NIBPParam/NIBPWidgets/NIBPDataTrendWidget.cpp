@@ -26,6 +26,7 @@
 #include "MeasureSettingWindow.h"
 #include "AlarmSourceManager.h"
 #include "EventStorageManager.h"
+#include "NIBPAlarm.h"
 
 #ifdef HIDE_NIBP_PR
 #define COLUMN_COUNT    2
@@ -119,56 +120,6 @@ void NIBPDataTrendWidget::collectNIBPTrendData(unsigned t)
     data.valueIsDisplay = paramManager.isParamEnable(PARAM_NIBP);
     data.prvalue = nibpParam.getPR();
 
-    if ((data.sys.value != InvData())
-            && (data.dia.value != InvData())
-            && (data.map.value != InvData())
-            && (data.prvalue != InvData())
-            )
-    {
-        // 报警
-        AlarmLimitIFace *alarmSource = alarmSourceManager.getLimitAlarmSource(LIMIT_ALARMSOURCE_NIBP);
-        if (alarmSource)
-        {
-            int completeResult = alarmSource->getCompare(data.sys.value, NIBP_LIMIT_ALARM_SYS_LOW);
-            if (completeResult != 0)
-            {
-                data.sys.isAlarm = true;
-            }
-            completeResult = alarmSource->getCompare(data.sys.value, NIBP_LIMIT_ALARM_SYS_HIGH);
-            if (completeResult != 0)
-            {
-                data.sys.isAlarm = true;
-            }
-
-            completeResult = alarmSource->getCompare(data.dia.value, NIBP_LIMIT_ALARM_DIA_LOW);
-            if (completeResult != 0)
-            {
-                data.dia.isAlarm = true;
-            }
-            completeResult = alarmSource->getCompare(data.dia.value, NIBP_LIMIT_ALARM_DIA_HIGH);
-            if (completeResult != 0)
-            {
-                data.dia.isAlarm = true;
-            }
-
-            completeResult = alarmSource->getCompare(data.map.value, NIBP_LIMIT_ALARM_MAP_LOW);
-            if (completeResult != 0)
-            {
-                data.map.isAlarm = true;
-            }
-            completeResult = alarmSource->getCompare(data.map.value, NIBP_LIMIT_ALARM_MAP_HIGH);
-            if (completeResult != 0)
-            {
-                data.map.isAlarm = true;
-            }
-
-            // 优先级
-            data.sys.priority = alarmSource->getAlarmPriority(NIBP_LIMIT_ALARM_SYS_HIGH);
-            data.dia.priority = alarmSource->getAlarmPriority(NIBP_LIMIT_ALARM_DIA_HIGH);
-            data.map.priority = alarmSource->getAlarmPriority(NIBP_LIMIT_ALARM_MAP_HIGH);
-        }
-    }
-
     if (10 <= _nibpNrendCacheMap.count())
     {
         _nibpNrendCacheMap.remove(_nibpNrendCacheMap.begin().key());
@@ -190,8 +141,12 @@ void NIBPDataTrendWidget::showValue(void)
     QString textStr;
     QString timeStr;
     QString prStr;
+    bool sysAlarm = false;
+    bool diaAlarm = false;
+    bool mapAlarm = false;
     UnitType defUnitType;
     UnitType unit;
+    NIBPLimitAlarm alarm;
 
     QColor textColor = colorManager.getColor(paramInfo.getParamName(PARAM_NIBP));
 
@@ -247,10 +202,38 @@ void NIBPDataTrendWidget::showValue(void)
                 diaValue = QString::number(providerBuff.dia.value);
                 mapValue = QString::number(providerBuff.map.value);
             }
-            if (providerBuff.sys.isAlarm)
+            AlarmLimitIFace *alarmSource = alarmSourceManager.getLimitAlarmSource(LIMIT_ALARMSOURCE_NIBP);
+            if (alarmSource)
+            {
+                if (alarm.isAlarmEnable(NIBP_LIMIT_ALARM_SYS_LOW))
+                {
+                    if (alarmSource->getCompare(providerBuff.sys.value, NIBP_LIMIT_ALARM_SYS_LOW)
+                            || alarmSource->getCompare(providerBuff.sys.value, NIBP_LIMIT_ALARM_SYS_HIGH))
+                    {
+                        sysAlarm = true;
+                    }
+                }
+                if (alarm.isAlarmEnable(NIBP_LIMIT_ALARM_DIA_LOW))
+                {
+                    if (alarmSource->getCompare(providerBuff.dia.value, NIBP_LIMIT_ALARM_DIA_LOW)
+                            || alarmSource->getCompare(providerBuff.dia.value, NIBP_LIMIT_ALARM_DIA_HIGH))
+                    {
+                        diaAlarm = true;
+                    }
+                }
+                if (alarm.isAlarmEnable(NIBP_LIMIT_ALARM_MAP_LOW))
+                {
+                    if (alarmSource->getCompare(providerBuff.map.value, NIBP_LIMIT_ALARM_MAP_LOW)
+                            || alarmSource->getCompare(providerBuff.map.value, NIBP_LIMIT_ALARM_MAP_HIGH))
+                    {
+                        mapAlarm = true;
+                    }
+                }
+            }
+            if (sysAlarm)
             {
                 valStr = boldwrap.arg(colorwrap
-                                      .arg(getPriotityColor(providerBuff.sys.priority))
+                                      .arg(getPriotityColor(alarm.getAlarmPriority(NIBP_LIMIT_ALARM_SYS_LOW)))
                                       .arg(sysValue));
                 textStr = textStr.arg(valStr);
             }
@@ -259,10 +242,10 @@ void NIBPDataTrendWidget::showValue(void)
                 textStr = textStr.arg(sysValue);
             }
 
-            if (providerBuff.dia.isAlarm)
+            if (diaAlarm)
             {
                 valStr = boldwrap.arg(colorwrap
-                                      .arg(getPriotityColor(providerBuff.dia.priority))
+                                      .arg(getPriotityColor(alarm.getAlarmPriority(NIBP_LIMIT_ALARM_DIA_LOW)))
                                       .arg(diaValue));
                 textStr = textStr.arg(valStr);
             }
@@ -271,10 +254,10 @@ void NIBPDataTrendWidget::showValue(void)
                 textStr = textStr.arg(diaValue);
             }
 
-            if (providerBuff.map.isAlarm)
+            if (mapAlarm)
             {
                 valStr = boldwrap.arg(colorwrap
-                                      .arg(getPriotityColor(providerBuff.map.priority))
+                                      .arg(getPriotityColor(alarm.getAlarmPriority(NIBP_LIMIT_ALARM_MAP_LOW)))
                                       .arg(mapValue));
                 textStr = textStr.arg(valStr);
             }
@@ -404,13 +387,14 @@ void NIBPDataTrendWidget::updateUnit(UnitType unit)
 
 void NIBPDataTrendWidget::getTrendNIBPlist()
 {
-    int eventNum = backend->getBlockNR();
-    unsigned t = 0;
+    int eventNum = backend->getBlockNR();   
     TrendDataType value;
-    SubParamID subId;
-    NIBPTrendCacheData nibpTrendCacheData;
+    SubParamID subId;   
+    unsigned t = 0;
+    NIBPLimitAlarm alarm;
     for (int i = eventNum - 1; i >= 0; i--)
     {
+        NIBPTrendCacheData nibpTrendCacheData;
         if (parseEventData(i) && ctx.infoSegment->type == EventNIBPMeasurement)
         {
             t = ctx.infoSegment->timestamp;
@@ -439,34 +423,34 @@ void NIBPDataTrendWidget::getTrendNIBPlist()
             if (alarmSource)
             {
                 int completeResult = alarmSource->getCompare(nibpTrendCacheData.sys.value, NIBP_LIMIT_ALARM_SYS_LOW);
-                if (completeResult != 0)
+                if (completeResult != 0 && alarm.isAlarmEnable(NIBP_LIMIT_ALARM_SYS_LOW))
                 {
                     nibpTrendCacheData.sys.isAlarm = true;
                 }
                 completeResult = alarmSource->getCompare(nibpTrendCacheData.sys.value, NIBP_LIMIT_ALARM_SYS_HIGH);
-                if (completeResult != 0)
+                if (completeResult != 0 && alarm.isAlarmEnable(NIBP_LIMIT_ALARM_SYS_HIGH))
                 {
                     nibpTrendCacheData.sys.isAlarm = true;
                 }
 
                 completeResult = alarmSource->getCompare(nibpTrendCacheData.dia.value, NIBP_LIMIT_ALARM_DIA_LOW);
-                if (completeResult != 0)
+                if (completeResult != 0 && alarm.isAlarmEnable(NIBP_LIMIT_ALARM_DIA_LOW))
                 {
                     nibpTrendCacheData.dia.isAlarm = true;
                 }
                 completeResult = alarmSource->getCompare(nibpTrendCacheData.dia.value, NIBP_LIMIT_ALARM_DIA_HIGH);
-                if (completeResult != 0)
+                if (completeResult != 0 && alarm.isAlarmEnable(NIBP_LIMIT_ALARM_DIA_HIGH))
                 {
                     nibpTrendCacheData.dia.isAlarm = true;
                 }
 
                 completeResult = alarmSource->getCompare(nibpTrendCacheData.map.value, NIBP_LIMIT_ALARM_MAP_LOW);
-                if (completeResult != 0)
+                if (completeResult != 0 && alarm.isAlarmEnable(NIBP_LIMIT_ALARM_MAP_LOW))
                 {
                     nibpTrendCacheData.map.isAlarm = true;
                 }
                 completeResult = alarmSource->getCompare(nibpTrendCacheData.map.value, NIBP_LIMIT_ALARM_MAP_HIGH);
-                if (completeResult != 0)
+                if (completeResult != 0 && alarm.isAlarmEnable(NIBP_LIMIT_ALARM_MAP_HIGH))
                 {
                     nibpTrendCacheData.map.isAlarm = true;
                 }
