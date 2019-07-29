@@ -1029,6 +1029,7 @@ void NIBPParam::setMeasurMode(NIBPMode mode)
     if (mode == NIBP_MODE_STAT)
     {
         nibpParam.setSTATFirst(true);
+        nibpParam.setFirstAuto(true);
         cmd = 0x01;
         handleNIBPEvent(NIBP_EVENT_TRIGGER_MODEL, &cmd, 1);
     }
@@ -1337,9 +1338,17 @@ void NIBPParam::switchToAuto(void)
     {
         if (nibpParam.getMeasurMode() != NIBP_MODE_STAT)
         {
+            if (nibpParam.isFirstAuto())
+            {
             nibpParam.setModelText(trs("NIBPAUTO") + ":" +
                                    trs(NIBPSymbol::convert((NIBPAutoInterval)nibpParam.getAutoInterval())));
-        }
+            }
+            else
+            {
+                nibpParam.setModelText(trs("NIBPManualStart") + ":" +
+                                       trs(NIBPSymbol::convert((NIBPAutoInterval)nibpParam.getAutoInterval())));
+            }
+        }       
     }
 }
 
@@ -1352,7 +1361,7 @@ void NIBPParam::switchToManual(void)
     nibpParam.setCountdown(-1);
 
     nibpParam.setAutoMeasure(false);
-    nibpParam.setFirstAuto(false);
+    nibpParam.setFirstAuto(true);
     if (nibpParam.curStatusType() != NIBP_MONITOR_ERROR_STATE)
     {
         if (nibpParam.getMeasurMode() != NIBP_MODE_STAT)
