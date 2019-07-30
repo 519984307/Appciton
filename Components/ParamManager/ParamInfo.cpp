@@ -305,6 +305,7 @@ ParamID ParamInfo::getParamID(SubParamID id)
     case SUB_PARAM_NIBP_SYS:
     case SUB_PARAM_NIBP_DIA:
     case SUB_PARAM_NIBP_MAP:
+    case SUB_PARAM_NIBP_PR:
         paramID = PARAM_NIBP;
         break;
     case SUB_PARAM_ART_SYS:
@@ -660,6 +661,7 @@ UnitType ParamInfo::getUnitOfSubParam(SubParamID id)
     {
     case SUB_PARAM_HR_PR:
     case SUB_PARAM_ECG_PVCS:
+    case SUB_PARAM_NIBP_PR:
     case SUB_PARAM_ART_PR:
     case SUB_PARAM_PA_PR:
     case SUB_PARAM_CVP_PR:

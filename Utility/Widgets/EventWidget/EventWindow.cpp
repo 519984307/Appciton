@@ -1201,6 +1201,7 @@ void EventWindowPrivate::eventTrendUpdate()
             titleStr = titleStr.left(titleStr.length() - 4);
             valueFont = fontManager.numFont(23);
             break;
+        case SUB_PARAM_NIBP_PR:
         case SUB_PARAM_ART_PR:
         case SUB_PARAM_PA_PR:
         case SUB_PARAM_CVP_PR:
