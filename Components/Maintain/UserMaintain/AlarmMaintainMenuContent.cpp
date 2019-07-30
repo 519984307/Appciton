@@ -183,8 +183,7 @@ void AlarmMaintainMenuContentPrivate::
         break;
     case ITEM_CBO_ALARM_AUDIO_OFF:
     {
-            systemConfig.setNumValue("Alarms|AlarmAudio", index);
-            alarmIndicator.updateAlarmAudioState();
+            alarmIndicator.setAlarmAudioState(index);
             AlarmOneShotIFace *systemAlarm = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SYSTEM);
             if (systemAlarm)
             {

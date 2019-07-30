@@ -1187,3 +1187,17 @@ void AlarmIndicator::updateAlarmAudioState()
 {
     _alarmStatusWidget->updateAlarmAudioStatus();
 }
+
+bool AlarmIndicator::isAlarmAudioState()
+{
+    int index = 0;
+    systemConfig.getNumValue("Alarms|AlarmAudio", index);
+    return index ? true : false;
+}
+
+void AlarmIndicator::setAlarmAudioState(bool flag)
+{
+    int index = flag ? 1 : 0;
+    systemConfig.setNumValue("Alarms|AlarmAudio", index);
+    updateAlarmAudioState();
+}
