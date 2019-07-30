@@ -122,4 +122,7 @@ private:
     // 子参数ID、数值映射。
     typedef QMap<unsigned, NIBPTrendCacheData> NIBPTrendCacheMap;
     NIBPTrendCacheMap _nibpNrendCacheMap;
+
+    QString moduleStr;
+    int columnNR;
 };
