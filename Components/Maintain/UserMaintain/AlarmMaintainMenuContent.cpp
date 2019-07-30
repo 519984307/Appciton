@@ -372,8 +372,7 @@ void AlarmMaintainMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
-                       << trs("Close")    systemConfig.getNumValue("Alarms|AlarmAudio", index);
-
+                       << trs("Close")
                        << trs("Open")
                        << trs("OpenAgain"));
     itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_REMINDER_TONE);
