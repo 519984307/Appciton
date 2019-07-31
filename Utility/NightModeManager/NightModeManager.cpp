@@ -50,7 +50,6 @@ NightModeManager::~NightModeManager()
 void NightModeManager::setNightMode(bool nightMode)
 {
     int screenBrightness = 0;
-    int alarmVolume = 0;
     int heartBeatVolume = 0;
     int notificationVolume = 0;
     int nibpCompleteTone = 0;
@@ -67,9 +66,6 @@ void NightModeManager::setNightMode(bool nightMode)
     {
         // 屏幕亮度(读取夜间模式)
         systemConfig.getNumValue("NightMode|ScreenBrightness", screenBrightness);
-
-        // 报警音量
-        systemConfig.getNumValue("NightMode|AlarmVolume", alarmVolume);
 
         // 心跳音量
         systemConfig.getNumValue("NightMode|HeartBeatVolume", heartBeatVolume);
@@ -114,9 +110,6 @@ void NightModeManager::setNightMode(bool nightMode)
         SystemManagerInterface *systemManager = SystemManagerInterface::getSystemManager();
         screenBrightness = systemManager->getBrightness();
 
-        systemConfig.getNumValue("Alarms|DefaultAlarmVolume", b);
-        alarmVolume = b;
-
         ConfigManagerInterface *configManagers = ConfigManagerInterface::getConfigManager();
         configManagers->getCurConfig().getNumValue("ECG|QRSVolume", b);
         heartBeatVolume = b;
@@ -144,8 +137,6 @@ void NightModeManager::setNightMode(bool nightMode)
     SystemManagerInterface *systemManager = SystemManagerInterface::getSystemManager();
     systemManager->enableBrightness(brightness);
     SoundManagerInterface *soundManager = SoundManagerInterface::getSoundManager();
-    soundManager->setVolume(SoundManagerInterface::SOUND_TYPE_ALARM,
-                           static_cast<SoundManagerInterface::VolumeLevel>(alarmVolume));
     soundManager->setVolume(SoundManagerInterface::SOUND_TYPE_HEARTBEAT,
                            static_cast<SoundManagerInterface::VolumeLevel>(heartBeatVolume));
     soundManager->setVolume(SoundManagerInterface::SOUND_TYPE_NOTIFICATION,
