@@ -400,13 +400,13 @@ bool S5Provider::isStatus(unsigned char *packet)
         if (packet[2] == S5_INSERT)
         {
             spo2Param.setNotify(false, trs("SPO2CheckSensor"));
-            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, false);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_FINGER_OFF, false);
             _isFingerOff = false;
         }
         else
         {
             spo2Param.setNotify(true, trs("SPO2CheckSensor"));
-            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_FINGER_OFF, true);
             _isFingerOff = true;
         }
     }
@@ -445,11 +445,11 @@ bool S5Provider::isStatus(unsigned char *packet)
     {
         if (packet[2] == S5_LED_ERROR)
         {
-            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LED_FAULT, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, true);
         }
         else if (packet[2] == S5_LED_NOERROR)
         {
-            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LED_FAULT, false);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, false);
         }
     }
 
