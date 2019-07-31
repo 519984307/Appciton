@@ -420,6 +420,10 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
                             if (_trendGraphInfo.trendDataV3.count())
                             {
                                 _trendGraphInfo.trendDataV3.last().status = status;
+                                _trendGraphInfo.trendDataV3.last().data[0] = _trendDataPack.at(i)->subparamValue.value(subID, InvData());
+                                _trendGraphInfo.trendDataV3.last().data[1] = _trendDataPack.at(i)->subparamValue.value(SubParamID(subID + 1), InvData());
+                                _trendGraphInfo.trendDataV3.last().data[2] = _trendDataPack.at(i)->subparamValue.value(SubParamID(subID + 2), InvData());
+                                _trendGraphInfo.trendDataV3.last().isAlarm = _trendDataPack.at(i)->subparamAlarm.value(subID, false);
                             }
                         }
                     }
@@ -502,56 +506,8 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
 
 void TrendWaveWidget::dataIndex(int &startIndex, int &endIndex)
 {
-    // 开始和结尾的索引查找
-    startIndex = InvData();
-    endIndex = InvData();
-
-    // 二分查找时间索引
-    int lowPos = 0;
-    int highPos = _trendDataPack.count() - 1;
-    while (lowPos <= highPos)
-    {
-        int midPos = (lowPos + highPos) / 2;
-        int timeDiff = qAbs(_leftTime - _trendDataPack.at(midPos)->time);
-
-        if (_leftTime < _trendDataPack.at(midPos)->time)
-        {
-            highPos = midPos - 1;
-        }
-        else if (_leftTime > _trendDataPack.at(midPos)->time)
-        {
-            lowPos = midPos + 1;
-        }
-
-        if (timeDiff == 0 || lowPos > highPos)
-        {
-            startIndex = midPos;
-            break;
-        }
-    }
-
-    lowPos = 0;
-    highPos = _trendDataPack.count() - 1;
-    while (lowPos <= highPos)
-    {
-        int midPos = (lowPos + highPos) / 2;
-        int timeDiff = qAbs(_rightTime - _trendDataPack.at(midPos)->time);
-
-        if (_rightTime < _trendDataPack.at(midPos)->time)
-        {
-            highPos = midPos - 1;
-        }
-        else if (_rightTime > _trendDataPack.at(midPos)->time)
-        {
-            lowPos = midPos + 1;
-        }
-
-        if (timeDiff == 0 || lowPos > highPos)
-        {
-            endIndex = midPos;
-            break;
-        }
-    }
+    startIndex = _findIndex(_leftTime);
+    endIndex = _findIndex(_rightTime);
 }
 
 void TrendWaveWidget::updateTimeRange()
