@@ -305,7 +305,6 @@ ParamID ParamInfo::getParamID(SubParamID id)
     case SUB_PARAM_NIBP_SYS:
     case SUB_PARAM_NIBP_DIA:
     case SUB_PARAM_NIBP_MAP:
-    case SUB_PARAM_NIBP_PR:
         paramID = PARAM_NIBP;
         break;
     case SUB_PARAM_ART_SYS:
