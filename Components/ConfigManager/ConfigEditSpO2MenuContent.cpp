@@ -129,18 +129,6 @@ void ConfigEditSpO2MenuContent::readyShow()
             d_ptr->combos[item]->setEnabled(!isOnlyToRead);
         }
     }
-
-    if (d_ptr->focusLable)
-    {
-        if (isOnlyToRead)
-        {
-            d_ptr->focusLable->setFocusPolicy(Qt::StrongFocus);
-        }
-        else
-        {
-            d_ptr->focusLable->setFocusPolicy(Qt::NoFocus);
-        }
-    }
 }
 
 void ConfigEditSpO2MenuContent::layoutExec()
