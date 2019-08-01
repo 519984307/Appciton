@@ -341,6 +341,7 @@ void ECGParam::setProvider(ECGProviderIFace *provider)
         _waveWidget[i]->setDataRate(_provider->getWaveformSample());
     }
 
+    _provider->getSelfTestStatus();
 //    <Gain>1</Gain>
     // todo：其他设置。
 }
