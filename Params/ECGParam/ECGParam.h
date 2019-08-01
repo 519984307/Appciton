@@ -406,5 +406,7 @@ private:
 
     bool _isFristConnect;         // 开机后是否正常连接过导联
     ECGGain _autoGain[ECG_LEAD_NR];      // 自动增益计算出的实际增益
+
+    short getHRMaxValue();
 };
 #define ecgParam (ECGParam::getInstance())
