@@ -839,8 +839,8 @@
 		</TD>
 		<O2 Enable="0" Prio="1">
 		<percent>
-		    <Low Min="0" Max="99">20</Low>
-		    <High Min="1" Max="100">60</High>
+		    <Low Min="18" Max="97">20</Low>
+		    <High Min="20" Max="99">60</High>
 		    <Step>1</Step>
 		    <Scale>1</Scale>
 		</percent>
