@@ -340,13 +340,13 @@ void TrendTableWindow::printWidgetRelease()
         d_ptr->model->displayDataTimeRange(startTime, endTime);
         printWindow.printTimeRange(startLimit, endLimit);
         printWindow.initPrintTime(startTime, endTime);
-        printWindow.exec();
+        windowManager.showWindow(&printWindow, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
     }
 }
 
 void TrendTableWindow::trendDataSetReleased()
 {
-    windowManager.showWindow(&trendTableSetWindow, WindowManager::ShowBehaviorModal);
+    windowManager.showWindow(&trendTableSetWindow, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
     updatePages();
 }
 

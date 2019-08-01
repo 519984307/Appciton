@@ -366,6 +366,10 @@ RainbowProvider::RainbowProvider(const QString &name, bool isPlugIn)
     , SPO2ProviderIFace()
     , d_ptr(new RainbowProviderPrivate(this))
 {
+    d_ptr->averTime = spo2Param.getAverageTime();
+    d_ptr->sensMode = static_cast<SensitivityMode>(spo2Param.getSensitivity());
+    d_ptr->fastSat = spo2Param.getFastSat();
+    d_ptr->enableSmartTone = static_cast<bool>(spo2Param.getSmartPulseTone());
     UartAttrDesc attr(DEFALUT_BAUD_RATE, 8, 'N', 1);
     d_ptr->isPlugIn = isPlugIn;
     if (isPlugIn)

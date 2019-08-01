@@ -150,16 +150,6 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
         bool isEnable = alarmSource->isAlarmEnable(i);
         int completeResult = alarmSource->getCompare(curValue, i);
 
-        // 报警关闭不处理超限报警, don't handle limit alarm when alarm pause
-        if (_curAlarmStatus == ALARM_STATUS_OFF || _curAlarmStatus == ALARM_STATUS_PAUSE)
-        {
-            traceCtrl->Reset();
-            traceCtrl->alarmTimesCount =
-                ALARM_LIMIT_TIMES;     // 处理目的：报警状态恢复正常后，马上刷新报警状态
-            alarmSource->notifyAlarm(i, false);
-            continue;
-        }
-
         // 报警关闭
         if (!isEnable)
         {

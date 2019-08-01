@@ -5,8 +5,9 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by luoyuchun <luoyuchun@blmed.cn>, 2019/7/12
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/6/20
  **/
+
 
 #pragma once
 #include "NIBPState.h"
@@ -27,4 +28,9 @@ public:
 
     NIBPMonitorStandbyState();
     ~NIBPMonitorStandbyState();
+protected:
+    void timerEvent(QTimerEvent *ev);
+
+private:
+    int _timerID;
 };

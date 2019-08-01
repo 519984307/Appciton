@@ -279,6 +279,10 @@ void PatientInfoWindowPrivate::loadOptions()
         dateItem[static_cast<BornDate>(i)]->blockSignals(true);
     }
     dateItem[Born_Date_Year]->setValue(year);
+    if (year == 0)
+    {
+        dateItem[Born_Date_Year]->setStartValue(timeDate.getDateYear());
+    }
     refreshMonthRange();
     dateItem[Born_Date_Month]->setValue(month);
     refreshDayRange();
@@ -739,7 +743,7 @@ void PatientInfoWindow::showEvent(QShowEvent *ev)
     d_ptr->loadOptions();
     if (patientManager.isNewPatient())
     {
-        setWindowTitle(trs("NewPatient"));
+        setWindowTitle(trs("AdmitPatient"));
     }
     else
     {

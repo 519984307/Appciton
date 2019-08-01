@@ -489,6 +489,11 @@ void SoundManager::alarmTimeout()
         return;
     }
 
+    // 如果当前报警时间间隔和当前最高报警等级不一致，则刷新高级间隔
+    if (d_ptr->almTimer->interval() != d_ptr->alarmInterval[d_ptr->curAlarmPriority])
+    {
+        d_ptr->almTimer->setInterval(d_ptr->alarmInterval[d_ptr->curAlarmPriority]);
+    }
     d_ptr->playSound(SOUND_TYPE_ALARM, d_ptr->curAlarmPriority);
 }
 

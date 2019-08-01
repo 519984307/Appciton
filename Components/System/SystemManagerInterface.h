@@ -35,6 +35,7 @@ enum ConfiguredFuncs
     CONFIG_WIFI = 0x400,
     CONFIG_TOUCH = 0x800,
     CONFIG_O2 = 0x1000,
+    CONFIG_PRINTER = 0x2000,
 };
 
 class SystemManagerInterface

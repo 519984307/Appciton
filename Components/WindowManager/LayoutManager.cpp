@@ -899,6 +899,7 @@ void LayoutManagerPrivate::performBigFontLayout()
 
             QWidget *nodeContainer = createContainter();
             gridLayout->addWidget(nodeContainer, row, column);
+            gridLayout->setColumnStretch(column, 1);
 
             QVBoxLayout *vLayout = new QVBoxLayout(nodeContainer);
             vLayout->setMargin(0);

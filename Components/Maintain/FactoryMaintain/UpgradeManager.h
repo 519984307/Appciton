@@ -11,6 +11,7 @@
 #pragma once
 #include <QObject>
 #include "BLMProvider.h"
+#include "BLMCO2Provider.h"
 
 class UpgradeManagerPrivate;
 class UpgradeManager : public QObject, public BLMProviderUpgradeIface
@@ -26,6 +27,7 @@ public:
         UPGRADE_MOD_N5,
         UPGRADE_MOD_N5DAEMON,
         UPGRADE_MOD_T5,
+        UPGRADE_MOD_CO2,
         UPGRADE_MOD_NEONATE,
         UPGRADE_MOD_PRT48,
         UPGRADE_MOD_nPMBoard,

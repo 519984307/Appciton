@@ -88,6 +88,17 @@ void S5Provider::handlePacket(unsigned char *data, int len)
 
     BLMProvider::handlePacket(data, len);
 
+    if (_errorStatus)
+    {
+        if (data[0] != S5_NOTIFY_ALIVE)
+        {
+            return;
+        }
+        else
+        {
+            _errorStatus = false;
+        }
+    }
     if (!isConnected)
     {
         spo2Param.setConnected(true);
@@ -108,13 +119,33 @@ void S5Provider::handlePacket(unsigned char *data, int len)
     // 启动帧0x40
     case S5_NOTIFY_START_UP:
     {
-        ErrorLogItem *item = new CriticalFaultLogItem();
-        item->setName("S5 Start");
-        errorLog.append(item);
-
-        spo2Param.reset();
-        break;
+        if (_firstStartUp)
+        {
+            ErrorLogItem *item = new CriticalFaultLogItem();
+            item->setName("S5 Start");
+            errorLog.append(item);
+            spo2Param.reset();
+            _firstStartUp = false;
+        }
+        else
+        {
+            if (_startUpError == 0)
+            {
+                startUpTime.restart();
+                _startUpError++;
+                break;
+            }
+            else if (_startUpError == 1 && startUpTime.elapsed() <= 500)
+            {
+                disconnected();          // 500ms连续发两个启动帧断开连接
+                isConnected = false;
+                _errorStatus = true;
+            }
+            _startUpError = 0;
+        }
     }
+
+        break;
     // 状态0x42
     case S5_NOTIFY_STATUS:
         isStatus(data);
@@ -297,15 +328,43 @@ bool S5Provider::isResult_BAR(unsigned char *packet)
     // spo2Param.addBarData((packet[15] == 127) ? 50 : packet[15]);
 
     // PI;
+    bool isLowPerfusion = false;
     short piValue = packet[15];
-    if (piValue > 200 || piValue < 1)
+    if (piValue > 200)
     {
         piValue = InvData();
+        spo2Param.setPerfusionStatus(false);
+        isLowPerfusion = false;
+    }
+    else if (piValue < 1)
+    {
+        piValue = InvData();
+        spo2Param.setPerfusionStatus(true);
+        isLowPerfusion = true;
     }
     else
     {
         piValue *= 10;
+        spo2Param.setPerfusionStatus(false);
+        isLowPerfusion = false;
     }
+
+    if (_isCableOff || _isFingerOff)
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, false);
+    }
+    else
+    {
+        if (_isSeaching)
+        {
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, false);
+        }
+        else
+        {
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, isLowPerfusion);
+        }
+    }
+
     spo2Param.setPI(piValue);
 
     // 脉搏音。
@@ -319,18 +378,17 @@ bool S5Provider::isResult_BAR(unsigned char *packet)
  *************************************************************************************************/
 bool S5Provider::isStatus(unsigned char *packet)
 {
-    bool isCableOff = false;
     // 探头插入
     if (packet[1] == S5_STATUS_PROBE)
     {
         if (packet[2] == S5_NO_INSERT)
         {
-            isCableOff = true;
+            _isCableOff = true;
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_OFF, true);
         }
         else
         {
-            isCableOff = false;
+            _isCableOff = false;
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_OFF, false);
         }
     }
@@ -352,7 +410,7 @@ bool S5Provider::isStatus(unsigned char *packet)
         }
     }
 
-    if (isCableOff || _isFingerOff)
+    if (_isCableOff || _isFingerOff)
     {
         spo2Param.setValidStatus(false);
     }
@@ -400,14 +458,21 @@ bool S5Provider::isStatus(unsigned char *packet)
         if (packet[2] == S5_LOGIC_SEARCHING)
         {
             spo2Param.setSearchForPulse(true);
+            _isSeaching = true;
         }
         else if (packet[2] == S5_LOGIC_SEARCH_TOO_LONG)
         {
             spo2Param.setNotify(true, trs("SPO2PulseSearchTooLong"));
+            _isSeaching = true;
         }
         else if (packet[2] == S5_LOGIC_NORMAL && _isFingerOff == false)
         {
             spo2Param.setNotify(false);
+            _isSeaching = false;
+        }
+        else
+        {
+            _isSeaching = false;
         }
     }
 
@@ -448,11 +513,15 @@ S5Provider::S5Provider()
           , _isValuePR(false)
           , _isCableOff(false)
           , _isFingerOff(true)
+          , _isSeaching(false)
           , _gainError(S5_GAIN_NC)
           , _ledFault(false)
           , _logicStatus(S5_LOGIC_NC)
           , _lastTime(timeval())
           , _isInvalidWaveData(false)
+          , _firstStartUp(true)
+          , _startUpError(0)
+          , _errorStatus(false)
 {
     initModule();
 }

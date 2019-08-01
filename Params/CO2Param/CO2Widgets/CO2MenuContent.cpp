@@ -116,6 +116,17 @@ void CO2MenuContentPrivate::loadOptions()
     combos[ITEM_CBO_APNEA_TIME]->setCurrentIndex(index);
 
     combos[ITEM_CBO_WORK_MODE]->setCurrentIndex(static_cast<int>(co2Param.getCO2Switch()));
+
+    if (co2Param.isConnected())
+    {
+        btns[ITEM_BTN_ZERO_CALIB]->setEnabled(true);
+        combos[ITEM_CBO_WORK_MODE]->setEnabled(true);
+    }
+    else
+    {
+        btns[ITEM_BTN_ZERO_CALIB]->setEnabled(false);
+        combos[ITEM_CBO_WORK_MODE]->setEnabled(false);
+    }
 }
 
 void CO2MenuContent::onComboBoxIndexChanged(int index)

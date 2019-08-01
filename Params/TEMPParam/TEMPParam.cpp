@@ -189,15 +189,6 @@ void TEMPParam::setTEMP(int16_t t1, int16_t t2, int16_t td)
     }
     else
     {
-        if (t1 > 500)
-        {
-            // 体温超界则认为是无效值
-            t1 = InvData();
-        }
-        if (t2 > 500)
-        {
-            t2 = InvData();
-        }
         _t1Value = t1;
         _t2Value = t2;
         _tdValue = td;
@@ -205,6 +196,7 @@ void TEMPParam::setTEMP(int16_t t1, int16_t t2, int16_t td)
     if (NULL != _trendWidget)
     {
         _trendWidget->setTEMPValue(t1, t2, td);
+        paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
     }
     // TODO: set temp value to the facotry calibration menu
 }
@@ -291,7 +283,7 @@ void TEMPParam::getCalibrateData(unsigned char *packet)
 
 void TEMPParam::updateSubParamLimit(SubParamID id)
 {
-    if (id == SUB_PARAM_T1)
+    if (id == SUB_PARAM_T1 || id == SUB_PARAM_T2)
     {
         _trendWidget->updateLimit();
     }
@@ -337,6 +329,17 @@ UnitType TEMPParam::getUnit(void)
     systemConfig.getNumValue("Unit|TemperatureUnit", u);
 
     return static_cast<UnitType>(u);
+}
+
+void TEMPParam::paramUpdateTimeout()
+{
+    _t1Value = InvData();
+    _t2Value = InvData();
+    _tdValue = InvData();
+    if (_trendWidget != NULL)
+    {
+        _trendWidget->setTEMPValue(_t1Value, _t2Value, _tdValue);
+    }
 }
 
 void TEMPParam::onPaletteChanged(ParamID id)

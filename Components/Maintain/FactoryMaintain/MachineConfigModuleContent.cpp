@@ -105,7 +105,7 @@ void MachineConfigModuleContentPrivte::loadOptions()
     else
     {
         machineConfig.getStrValue("SPO2", moduleName);
-        index = combos[ITEM_CBO_SPO2]->findText(moduleName);
+        index = combos[ITEM_CBO_SPO2]->findText(trs(moduleName));
         if (index)
         {
             combos[ITEM_CBO_SPO2]->setCurrentIndex(index);
@@ -123,7 +123,7 @@ void MachineConfigModuleContentPrivte::loadOptions()
     else
     {
         machineConfig.getStrValue("NIBP", moduleName);
-        index = combos[ITEM_CBO_NIBP]->findText(moduleName);
+        index = combos[ITEM_CBO_NIBP]->findText(trs(moduleName));
         if (index)
         {
             combos[ITEM_CBO_NIBP]->setCurrentIndex(index);

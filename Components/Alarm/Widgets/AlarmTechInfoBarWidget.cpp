@@ -84,9 +84,27 @@ void AlarmTechInfoBarWidget::_drawText(void)
         r.adjust(focusedBorderWidth() + 6, 0, 0, 0);
     }
 
-    int fontSize = fontManager.textFontSize(r, trs(_text), false, fontManager.getFontSize(4));
+    QString nameStr;
+    switch (_alarmPriority)
+    {
+    case ALARM_PRIO_LOW:
+        nameStr = "*";
+        break;
+    case ALARM_PRIO_MED:
+        nameStr = "**";
+        break;
+    case ALARM_PRIO_HIGH:
+        nameStr = "***";
+        break;
+    default:
+        break;
+    }
+    nameStr += " ";
+    nameStr += trs(_text);
+
+    int fontSize = fontManager.textFontSize(r, nameStr, false, fontManager.getFontSize(4));
     painter.setFont(fontManager.textFont(fontSize));
-    painter.drawText(r, Qt::AlignVCenter | Qt::AlignLeft, trs(_text));
+    painter.drawText(r, Qt::AlignVCenter | Qt::AlignLeft, nameStr);
 
     if (_type != _alarmType && 0 != _pauseTime)
     {

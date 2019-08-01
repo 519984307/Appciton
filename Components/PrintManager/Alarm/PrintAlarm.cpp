@@ -62,15 +62,8 @@ const char *PrintOneShotAlarm::toString(int id)
  *************************************************************************************************/
 bool PrintOneShotAlarm::isRemoveAfterLatch(int id)
 {
-    switch (id)
-    {
-    case PRINT_ONESHOT_ALARM_OUT_OF_PAPER:
-    case PRINT_ONESHOT_ALARM_COMMUNICATION_STOP:
-        return false;
-
-    default:
-        return true;
-    }
+    Q_UNUSED(id)
+    return false;
 }
 
 /**************************************************************************************************
