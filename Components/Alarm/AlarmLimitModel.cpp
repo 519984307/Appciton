@@ -276,7 +276,15 @@ QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
                 editInfo.scale = d_ptr->alarmDataInfos.at(row).limitConfig.scale;
                 editInfo.step = d_ptr->alarmDataInfos.at(row).limitConfig.step;
                 editInfo.curValue = d_ptr->alarmDataInfos.at(row).limitConfig.lowLimit;
-                editInfo.highLimit = d_ptr->alarmDataInfos.at(row).limitConfig.highLimit - editInfo.step;
+                if (d_ptr->alarmDataInfos.at(row).limitConfig.highLimit - editInfo.step >
+                        d_ptr->alarmDataInfos.at(row).limitConfig.maxLowLimit)
+                {
+                    editInfo.highLimit = d_ptr->alarmDataInfos.at(row).limitConfig.maxLowLimit;
+                }
+                else
+                {
+                    editInfo.highLimit = d_ptr->alarmDataInfos.at(row).limitConfig.highLimit - editInfo.step;
+                }
                 editInfo.lowLimit = d_ptr->alarmDataInfos.at(row).limitConfig.minLowLimit;
                 break;
             case SECTION_HIGH_LIMIT:
@@ -285,7 +293,15 @@ QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
                 editInfo.step = d_ptr->alarmDataInfos.at(row).limitConfig.step;
                 editInfo.curValue = d_ptr->alarmDataInfos.at(row).limitConfig.highLimit;
                 editInfo.highLimit = d_ptr->alarmDataInfos.at(row).limitConfig.maxHighLimit;
-                editInfo.lowLimit = d_ptr->alarmDataInfos.at(row).limitConfig.lowLimit + editInfo.step;
+                if (d_ptr->alarmDataInfos.at(row).limitConfig.lowLimit + editInfo.step <
+                        d_ptr->alarmDataInfos.at(row).limitConfig.minHighLimit)
+                {
+                    editInfo.lowLimit = d_ptr->alarmDataInfos.at(row).limitConfig.minHighLimit;
+                }
+                else
+                {
+                    editInfo.lowLimit = d_ptr->alarmDataInfos.at(row).limitConfig.lowLimit + editInfo.step;
+                }
                 break;
             default:
                 break;
