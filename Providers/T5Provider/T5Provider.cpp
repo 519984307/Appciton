@@ -246,7 +246,7 @@ void T5Provider::_selfTest(unsigned char *packet, int len)
         ErrorLogItem *item = new CriticalFaultLogItem();
         item->setName("T5 Selftest Error");
         item->setLog(errorStr);
-        item->setSubSystem(ErrorLogItem::SUB_SYS_TT3);
+        item->setSubSystem(ErrorLogItem::SUB_SYS_T5);
         item->setSystemState(ErrorLogItem::SYS_STAT_SELFTEST);
         item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
         errorLog.append(item);
@@ -289,7 +289,7 @@ void T5Provider::_errorWarm(unsigned char *packet, int len)
     ErrorLogItem *item = new CriticalFaultLogItem();
     item->setName("T5 Error");
     item->setLog(errorStr);
-    item->setSubSystem(ErrorLogItem::SUB_SYS_TT3);
+    item->setSubSystem(ErrorLogItem::SUB_SYS_T5);
     item->setSystemState(ErrorLogItem::SYS_STAT_RUNTIME);
     item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
     errorLog.append(item);
