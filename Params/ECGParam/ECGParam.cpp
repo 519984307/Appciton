@@ -90,6 +90,18 @@ void ECGParam::_getDisabledWaveforms(QStringList &waveforms)
     }
 }
 
+short ECGParam::getHRMaxValue()
+{
+    PatientType patientType = static_cast<PatientType>(getPatientType());
+    if (patientType == PATIENT_TYPE_NEO)
+    {
+        return 350;
+    }
+    else
+    {
+        return 300;
+    }
+}
 /**************************************************************************************************
  * 初始化参数。
  *************************************************************************************************/
@@ -564,6 +576,11 @@ void ECGParam::updateHR(short hr)
     if (hr < 0)
     {
         hr = InvData();
+    }
+
+    if (hr > getHRMaxValue() && hr != InvData())
+    {
+        hr = getHRMaxValue();
     }
 
     _hrValue = hr;
