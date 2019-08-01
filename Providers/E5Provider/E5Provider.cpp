@@ -419,7 +419,8 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         {
             result |= MINOR_SAMPLE_MODULE_INIT_FAILED;
         }
-        Q_UNUSED(result)
+
+        ecgParam.handleSelfTestResult(result);
         break;
     }
 

@@ -42,8 +42,6 @@
 #define GET_DIA_DATA_PERIOD (12000)
 #define DISABLE_DIA_SOFTKEY_PERIOD (900)  // 1s,定时有差异，使用900ms
 
-unsigned ECGParam::selfTestResult = 0;
-
 /**************************************************************************************************
  * 获取禁用的波形控件。
  *************************************************************************************************/
@@ -1032,7 +1030,7 @@ void ECGParam::reset(void)
 /***************************************************************************************************
  * handle ecg selftest result
  **************************************************************************************************/
-void ECGParam::handleSelfTestResult()
+void ECGParam::handleSelfTestResult(unsigned selfTestResult)
 {
     QString errStr("");
     bool flag = true;
@@ -1059,13 +1057,13 @@ void ECGParam::handleSelfTestResult()
         errStr += "Pace Sync Test Failed.\r\n";
         flag = false;
     }
-    systemManager.setPoweronTestResult(TE3_MODULE_SELFTEST_RESULT,
+    systemManager.setPoweronTestResult(E5_MODULE_SELFTEST_RESULT,
                                        flag ? SELFTEST_SUCCESS : SELFTEST_FAILED);
 
     if (!errStr.isEmpty())
     {
         ErrorLogItem *item = new CriticalFaultLogItem();
-        item->setName("TE3 Self Test Failed");
+        item->setName("E5 Self Test Failed");
         item->setLog(errStr);
         item->setSubSystem(ErrorLogItem::SUB_SYS_TE3);
         item->setSystemState(ErrorLogItem::SYS_STAT_SELFTEST);
