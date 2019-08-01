@@ -306,7 +306,7 @@ static QString contructPressTrendStringItem(SubParamID subParamId, TrendDataType
     {
         trendString = paramInfo.getIBPPressName(subParamId);
     }
-    else if (subParamId >= SUB_PARAM_NIBP_SYS && subParamId <= SUB_PARAM_NIBP_MAP)
+    else if (subParamId >= SUB_PARAM_NIBP_SYS && subParamId <= SUB_PARAM_NIBP_PR)
     {
         trendString = paramInfo.getParamName(PARAM_NIBP);
     }

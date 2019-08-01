@@ -778,6 +778,7 @@ TrendTableModelPrivate::TrendTableModelPrivate()
         case SUB_PARAM_ST_V6:
         case SUB_PARAM_NIBP_MAP:
         case SUB_PARAM_NIBP_DIA:
+        case SUB_PARAM_NIBP_PR:
         case SUB_PARAM_ART_DIA:
         case SUB_PARAM_ART_MAP:
         case SUB_PARAM_ART_PR:

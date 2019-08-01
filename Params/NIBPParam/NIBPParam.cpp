@@ -232,7 +232,8 @@ int16_t NIBPParam::getSubParamValue(SubParamID id)
 
     case SUB_PARAM_NIBP_MAP:
         return getMAP();
-
+    case SUB_PARAM_NIBP_PR:
+        return getPR();
     default:
         return InvData();
     }
