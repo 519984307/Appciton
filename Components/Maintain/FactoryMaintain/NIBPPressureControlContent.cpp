@@ -91,7 +91,6 @@ void NIBPPressureControlContentPrivate::loadOptions(void)
 {
     isPressureControlMode = false;
     isInflate = true;
-    overpressureCbo->setCurrentIndex(1);
     modeBtn->setText(trs("EnterPressureContrlMode"));
     inflateBtn->setText(trs("ServiceInflate"));
     overpressureCbo->setEnabled(false);
@@ -179,7 +178,6 @@ void NIBPPressureControlContent::LayoutExec()
     d_ptr->overpressureCbo->setEnabled(false);
     d_ptr->overpressureCbo->addItem(trs("ON"));
     d_ptr->overpressureCbo->addItem(trs("Off"));
-    d_ptr->overpressureCbo->setCurrentIndex(1);
     layout->addWidget(d_ptr->overpressureCbo, 1, 2);
     connect(d_ptr->overpressureCbo, SIGNAL(currentIndexChanged(int)), this, SLOT(onOverpressureReleased(int)));
 
@@ -297,25 +295,18 @@ void NIBPPressureControlContent::timerEvent(QTimerEvent *ev)
         {
             if (d_ptr->overPressureProtect)    // suntech软件过压保护实现
             {
-               if (d_ptr->pressure >= d_ptr->safePressure)
-               {
-                   nibpParam.provider().controlPneumatics(0, 0, 0);  //放气
-               }
+                if (d_ptr->pressure >= d_ptr->safePressure)
+                {
+                    nibpParam.provider().controlPneumatics(0, 0, 0);  //放气
+                    return;
+                }
             }
-            if (d_ptr->pressure >= INFLATE_SWITCH_SIGN && d_ptr->isInflate)
-            {
-                d_ptr->inflateBtn->setText(trs("ServiceDeflate"));
-                d_ptr->isInflate = false;
-            }
-            else if (d_ptr->pressure >= d_ptr->chargePressure->getValue() && d_ptr->holdPressureFlag)
+            if (d_ptr->pressure >=
+                    d_ptr->pressureList.at(d_ptr->chargePressure->getValue()).toInt()
+                    && d_ptr->holdPressureFlag)
             {
                 nibpParam.provider().controlPneumatics(0, 1, 1);  //达到压力值范围时候停止冲压,保持压力
                 d_ptr->holdPressureFlag = false;
-            }
-            else if (d_ptr->pressure < INFLATE_SWITCH_SIGN)
-            {
-                d_ptr->inflateBtn->setText(trs("ServiceInflate"));
-                d_ptr->isInflate = true;
             }
         }
     }
@@ -325,13 +316,18 @@ void NIBPPressureControlContent::showEvent(QShowEvent *e)
 {
     Q_UNUSED(e)
     // 默认设置为过压保护开启
-    if (d_ptr->moduleStr == "BLM_N5")
-    {
-        d_ptr->overpressureCbo->setCurrentIndex(0);
-    }
-    else
+    if (d_ptr->moduleStr != "BLM_N5")
     {
         d_ptr->pressureTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
+        d_ptr->safePressure = d_ptr->getPatientPressure();
+        if (!d_ptr->overpressureCbo->currentIndex())
+        {
+            d_ptr->overPressureProtect = true;
+        }
+        else
+        {
+            d_ptr->overPressureProtect = false;
+        }
     }
     d_ptr->loadOptions();
 }
@@ -403,13 +399,17 @@ void NIBPPressureControlContent::inflateBtnReleased()
         if (d_ptr->isInflate)
         {
             nibpParam.provider().controlPneumatics(1, 1, 1);  //充气
+            d_ptr->inflateBtn->setText(trs("ServiceDeflate"));
             d_ptr->holdPressureFlag = true;
             d_ptr->chargePressure->setEnabled(false);
+            d_ptr->isInflate = false;
         }
         else
         {
             nibpParam.provider().controlPneumatics(0, 0, 0);  //放气
             d_ptr->chargePressure->setEnabled(true);
+            d_ptr->isInflate = true;
+            d_ptr->inflateBtn->setText(trs("ServiceInflate"));
         }
     }
 }
@@ -423,6 +423,7 @@ void NIBPPressureControlContent::enterPressureContrlReleased()
         windowManager.showWindow(&messbox, WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
         return;
     }
+    d_ptr->chargePressure->setEnabled(true);
     if (d_ptr->moduleStr == "BLM_N5")
     {
         d_ptr->inModeTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
@@ -435,6 +436,7 @@ void NIBPPressureControlContent::enterPressureContrlReleased()
         else
         {
             nibpParam.switchState(NIBP_SERVICE_PRESSURECONTROL_STATE);
+            d_ptr->overpressureCbo->setCurrentIndex(0);
         }
     }
     else
@@ -454,7 +456,6 @@ void NIBPPressureControlContent::enterPressureContrlReleased()
             d_ptr->overpressureCbo->setEnabled(false);
             d_ptr->inflateBtn->setEnabled(false);
             d_ptr->isPressureControlMode = false;
-            nibpParam.provider().controlPneumatics(0, 0, 0);  //放气
         }
     }
 }
