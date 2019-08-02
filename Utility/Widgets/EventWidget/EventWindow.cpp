@@ -269,7 +269,7 @@ void EventWindow::showEvent(QShowEvent *ev)
     }
 
     // 更新打印按键状态
-    if (recorderManager.isConnected())
+    if (recorderManager.isConnected() && !d_ptr->printList.isEmpty())
     {
         d_ptr->printBtn->setEnabled(true);
         d_ptr->listPrintBtn->setEnabled(true);
