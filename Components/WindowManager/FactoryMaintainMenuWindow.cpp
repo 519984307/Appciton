@@ -21,6 +21,7 @@
 #include "O2CalibrationMenuContent.h"
 #include "LanguageManager.h"
 #include "SystemManager.h"
+#include "FactoryCO2MenuContent.h"
 
 FactoryMaintainMenuWindow *FactoryMaintainMenuWindow::getInstance()
 {
@@ -46,6 +47,10 @@ FactoryMaintainMenuWindow *FactoryMaintainMenuWindow::getInstance()
         if (systemManager.isSupport(CONFIG_O2))
         {
             instance->addMenuContent(new O2CalibrationMenuContent);
+        }
+        if (systemManager.isSupport(CONFIG_CO2))
+        {
+            instance->addMenuContent(new FactoryCO2MenuContent);
         }
     }
 

@@ -460,6 +460,7 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/FactoryDataRecordContent.cpp            \
     Components/Maintain/Factory/Menu/FactoryTempMenuContent.cpp                 \
     Components/Maintain/Factory/Menu/FactoryTestMenuContent.cpp                 \
+    Components/Maintain/Factory/Menu/FactoryCO2MenuContent.cpp                  \
     Components/Maintain/UserMaintain/UserMaintainManager.cpp                    \
     Components/Maintain/UserMaintain/WifiMaintainMenu.cpp                       \
     Components/Maintain/UserMaintain/UserMaintainGeneralMenuContent.cpp         \
@@ -632,8 +633,8 @@ SOURCES +=                                                                      
     Main/IApplication.cpp                                                       \
     Main/IThread.cpp                                                            \
     Main/MergeConfig.cpp                                                        \
-    Main/Starter.cpp \
-    Components/TimeManager/TimeManagerInterface.cpp \
+    Main/Starter.cpp                                                            \
+    Components/TimeManager/TimeManagerInterface.cpp                             \
     Components/Alarm/AlarmSourceManager.cpp
 
 HEADERS +=                                                                      \
@@ -996,6 +997,7 @@ HEADERS +=                                                                      
     Components/Maintain/Factory/FactoryConfigManager.h                          \
     Components/Maintain/Factory/Menu/FactoryTempMenuContent.h                   \
     Components/Maintain/Factory/Menu/FactoryTestMenuContent.h                   \
+    Components/Maintain/Factory/Menu/FactoryCO2MenuContent.h                    \
     Components/Maintain/FactoryMaintain/FactoryDataRecordContent.h              \
     Components/Maintain/FactoryMaintain/NIBPRepairMenuWindow.h                  \
     Components/Maintain/UserMaintain/UserMaintainManager.h                      \
@@ -1210,7 +1212,7 @@ HEADERS +=                                                                      
     Main/Starter.h                                                              \
     Utility/Widgets/ImportFileSubWidget.h \
     Components/TimeManager/TimeManagerInterface.h \
-    Components/Alarm/AlarmSourceManager.h
+    Components/Alarm/AlarmSourceManager.h \
 
 #头文件修改后，重新编译依赖的源文件
 DEPENDPATH +=                                                                   \

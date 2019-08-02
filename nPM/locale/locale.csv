@@ -635,6 +635,11 @@ CO2SpanCalibInprogress,CO₂正在校准,CO₂ Span Calib In Progress
 CO2ZeroandSpanDisable,CO₂禁止校零和校准,CO₂ Zero and Span Disable
 CO2SampleLineClogged,CO₂采样管堵塞,CO₂ Sample Line Clogged
 CO2NoSampleLine,CO₂没有采样线,CO₂ No Sample Line
+CO2CalibratePotency,校准浓度,Calibration Denstiy
+CO2CommunicationStop,CO₂通讯停止,CO₂ Communication Stop
+CO2Calibrate,CO₂校准,CO₂ Calibrate
+CO2CalibrateMenu,CO₂校准,CO₂ Calibrate
+CO2CalibrateDesc,CO₂校准,CO₂ calibrate
 IBP1LeadOff,IBP通道1导联脱落,IBP1 lead off
 IBP2LeadOff,IBP通道2导联脱落,IBP2 lead off
 IBP1ZeroCalibSuccess,IBP通道1校零成功,IBP1 zero success
