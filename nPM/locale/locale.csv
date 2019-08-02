@@ -612,6 +612,7 @@ SPO2SearchingPulse,SpO₂脉搏搜索,SpO₂ Searching Pulse
 SPO2CommunicationStop,SpO₂通信中断,SpO₂ Communication Stop
 SPO2ProbeFault,SpO₂探头故障,SpO₂ Probe Fault
 SPO2SignalSaturation,SpO₂信号饱和,SpO₂ Signal Saturation
+CO2NoSamplingLine,CO₂没有采样管,CO₂ No Sampling Line
 CO2EtCO2Low,EtCO₂ 低,EtCO₂ Low
 CO2EtCO2High,EtCO₂ 高,EtCO₂ High
 CO2FiCO2Low,FiCO₂ 低,FiCO₂ Low
@@ -632,8 +633,8 @@ CO2ZeroDisable,CO₂禁止校零,CO₂ Zero Disable
 CO2ZeroInprogress,CO₂校零中,CO₂ Zero In Progress
 CO2SpanCalibFailed,CO₂校准失败,CO₂ Span Calib Failed
 CO2SpanCalibInprogress,CO₂正在校准,CO₂ Span Calib In Progress
-CO2ZeroandSpanDisable,CO₂禁止校零和校准,CO₂ Zero and Span Disable
-CO2SampleLineClogged,CO₂采样管堵塞,CO₂ Sample Line Clogged
+CO2ZeroAndSpanDisable,CO₂禁止校零和校准,CO₂ Zero and Span Disable
+CO2SamplingLineClogged,CO₂ 流速低,采样管堵塞,CO₂ Low Flow Rate, Sample Line Clogged
 CO2NoSampleLine,CO₂没有采样线,CO₂ No Sample Line
 CO2CalibratePotency,校准浓度,Calibration Denstiy
 CO2CommunicationStop,CO₂通讯停止,CO₂ Communication Stop
