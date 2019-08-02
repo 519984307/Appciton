@@ -129,6 +129,32 @@ void ConfigEditSpO2MenuContent::readyShow()
             d_ptr->combos[item]->setEnabled(!isOnlyToRead);
         }
     }
+
+    // 模块类型不同时，参数设置菜单的长度也会有所改变;
+    // 当参数设置菜单过长超过一屏时，加入可选择的聚焦点,
+    // 便于使用飞梭查看所有菜单内部item
+    switch (d_ptr->moduleType)
+    {
+        case MODULE_BLM_S5:
+        default:
+        break;
+        case MODULE_MASIMO_SPO2:
+        case MODULE_RAINBOW_SPO2:
+        {
+            if (d_ptr->focusLable)
+            {
+                if (isOnlyToRead)
+                {
+                    d_ptr->focusLable->setFocusPolicy(Qt::StrongFocus);
+                }
+                else
+                {
+                    d_ptr->focusLable->setFocusPolicy(Qt::NoFocus);
+                }
+            }
+        }
+        break;
+    }
 }
 
 void ConfigEditSpO2MenuContent::layoutExec()
