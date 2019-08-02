@@ -71,6 +71,11 @@ QList<WaveformID> EventStorageManagerPrivate::getStoreWaveList(WaveformID paramW
 
     if (paramWave != WAVE_NONE)
     {
+        if (subID == SUB_PARAM_HR_PR && ecgDupParam.getCurHRSource() == HR_SOURCE_SPO2)
+        {
+            // 如果时PR时，第一条波形为pleth
+            paramWave = WAVE_SPO2;
+        }
         storeWaves.append(paramWave);
     }
 
