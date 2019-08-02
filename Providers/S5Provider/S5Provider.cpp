@@ -383,10 +383,14 @@ bool S5Provider::isStatus(unsigned char *packet)
         {
             _isCableOff = true;
             spo2Param.setSensorOff(true);
-            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_OFF, true);
+            if (!_isFirstConnectCable)
+            {
+                spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_OFF, true);
+            }
         }
         else
         {
+            _isFirstConnectCable = false;
             _isCableOff = false;
             spo2Param.setSensorOff(false);
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_OFF, false);
@@ -511,6 +515,7 @@ S5Provider::S5Provider()
           : BLMProvider("BLM_S5")
           , SPO2ProviderIFace()
           , _isValuePR(false)
+          , _isFirstConnectCable(true)
           , _isCableOff(false)
           , _isFingerOff(true)
           , _isSeaching(false)
