@@ -599,13 +599,6 @@ void EventWindow::upReleased()
         int position = curScroller - (maxValue * 4) / (d_ptr->trendListWidget->count() - 4);
         scrollBar->setSliderPosition(position);
     }
-
-    // 上下翻页参数按钮使能
-    curScroller = d_ptr->trendListWidget->verticalScrollBar()->value();
-    bool hasBtn = curScroller > 0;
-    d_ptr->upParamBtn->setEnabled(hasBtn);
-    hasBtn = curScroller < maxValue;
-    d_ptr->downParamBtn->setEnabled(hasBtn);
 }
 
 void EventWindow::downReleased()
@@ -617,17 +610,6 @@ void EventWindow::downReleased()
         QScrollBar *scrollBar = d_ptr->trendListWidget->verticalScrollBar();
         int position = curScroller + (maxValue * 4) / (d_ptr->trendListWidget->count() - 4);
         scrollBar->setSliderPosition(position);
-    }
-
-    // 上下翻页参数按钮使能
-    curScroller = d_ptr->trendListWidget->verticalScrollBar()->value();
-    bool hasBtn = curScroller > 0;
-    d_ptr->upParamBtn->setEnabled(hasBtn);
-    hasBtn = curScroller < maxValue;
-    d_ptr->downParamBtn->setEnabled(hasBtn);
-    if (!hasBtn)
-    {
-        d_ptr->upParamBtn->setFocus();
     }
 }
 
@@ -1171,7 +1153,8 @@ void EventWindowPrivate::eventTrendUpdate()
         {
             if (paramInfo.getParamID(subId) == PARAM_CO2)
             {
-                dataStr = Unit::convert(type, UNIT_PERCENT, ctx.trendSegment->values[i].value / 10.0, co2Param.getBaro());
+                dataStr = Unit::convert(type, UNIT_PERCENT,
+                                        ctx.trendSegment->values[i].value / 10.0, co2Param.getBaro());
             }
             else if (paramInfo.getParamID(subId) == PARAM_TEMP)
             {
