@@ -90,12 +90,12 @@ void ECGParam::_getDisabledWaveforms(QStringList &waveforms)
     }
 }
 
-unsigned ECGParam::getMaxHrValue()
+short ECGParam::getMaxHrValue()
 {
     return 350;
 }
 
-unsigned ECGParam::getMinHrValue()
+short ECGParam::getMinHrValue()
 {
     return 20;
 }
@@ -582,7 +582,7 @@ void ECGParam::updateHR(short hr)
     {
         hr = getMaxHrValue();
     }
-    else if (hr < getMinHrValue())
+    else if (hr < getMinHrValue() && hr != InvData())
     {
         hr = 0;
     }
