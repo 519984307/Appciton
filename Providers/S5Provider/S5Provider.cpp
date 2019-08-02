@@ -338,7 +338,6 @@ bool S5Provider::isResult_BAR(unsigned char *packet)
     }
     else if (piValue < 10)
     {
-        piValue = InvData();
         spo2Param.setPerfusionStatus(true);
         isLowPerfusion = true;
     }
