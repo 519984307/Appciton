@@ -451,6 +451,10 @@ void PatientManager::newPatient()
         {
             nibpParam->clearResult();
             nibpParam->clearTrendListData();
+            if (nibpParam->isMeasuring())
+            {
+                nibpParam->stopMeasure();
+            }
         }
     }
 }
