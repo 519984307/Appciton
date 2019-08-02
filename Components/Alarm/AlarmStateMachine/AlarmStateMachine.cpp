@@ -126,7 +126,7 @@ void AlarmStateMachine::start()
 void AlarmStateMachine::_timeOut()
 {
     ++_pressTime;
-    if (_pressTime > 10 && _pressTime <= 11)  // 1-3s
+    if (_pressTime > 20 && _pressTime <= 21)  // 2s
     {
         if (NULL != _currentState)
         {
@@ -141,7 +141,6 @@ void AlarmStateMachine::_timeOut()
         }
 
         _timer->stop();
-        _pressTime = 0;
     }
 }
 
@@ -186,12 +185,20 @@ void AlarmStateMachine::handAlarmEvent(AlarmStateEvent event, unsigned char *dat
     {
         _pressTime = 0;
         _timer->start();
-        break;
+        return;
     }
     case ALARM_STATE_EVENT_MUTE_BTN_RELEASED:
     {
+        if (_pressTime < 18)  // 系统有延迟这里少等待200ms
+        {
+            if (_currentState)
+            {
+                _currentState->handAlarmEvent(ALARM_STATE_EVENT_MUTE_BTN_PRESSED, 0, 0);
+            }
+        }
         _timer->stop();
-        break;
+        _pressTime = 0;
+        return;
     }
     default:
         break;

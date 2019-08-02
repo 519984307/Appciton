@@ -46,5 +46,7 @@ public:
     // 设置大气压值。
 //    virtual bool setBaroPress(int press) = 0;
 
+    virtual void sendCalibrateData(int value) = 0;
+
     virtual ~CO2ProviderIFace() { }
 };

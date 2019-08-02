@@ -42,7 +42,6 @@ public:
         ITEM_BTN_CALCULATE = 0,
 
         ITEM_CBO_WAVE_LEN,
-        ITEM_CBO_ALARM_VOLUME,
         ITEM_CBO_SCREEN_BRIGHTNESS,
         ITEM_CBO_KEYPRESS_VOLUME,
 #ifdef Q_WS_QWS
@@ -86,45 +85,16 @@ void NormalFunctionMenuContentPrivate::loadOptions()
         combos[ITEM_CBO_WAVE_LEN]->setCurrentIndex(2);
     }
 
-    int isAlarmAudio = 0;
-    systemConfig.getNumValue("Alarms|AlarmAudio", isAlarmAudio);
-
     if (nightModeManager.nightMode())
     {
         combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setEnabled(false);
         combos[ITEM_CBO_KEYPRESS_VOLUME]->setEnabled(false);
-        combos[ITEM_CBO_ALARM_VOLUME]->setEnabled(false);
     }
     else
     {
         combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setEnabled(true);
         combos[ITEM_CBO_KEYPRESS_VOLUME]->setEnabled(true);
-        if (isAlarmAudio)
-        {
-            // 报警音没有关闭才可以设置报警音
-            combos[ITEM_CBO_ALARM_VOLUME]->setEnabled(true);
-        }
-        else
-        {
-            combos[ITEM_CBO_ALARM_VOLUME]->setEnabled(false);
-        }
-
-        combos[ITEM_CBO_ALARM_VOLUME]->blockSignals(true);
-        combos[ITEM_CBO_ALARM_VOLUME]->clear();
         int index = 0;
-        systemConfig.getNumValue("Alarms|MinimumAlarmVolume", index);
-        int volume = 0;
-        systemConfig.getNumValue("Alarms|DefaultAlarmVolume", volume);
-        for (int i = index; i <= SoundManager::VOLUME_LEV_5; i++)
-        {
-            combos[ITEM_CBO_ALARM_VOLUME]->addItem(QString::number(i));
-            if (volume == i)
-            {
-                combos[ITEM_CBO_ALARM_VOLUME]->setCurrentIndex(combos[ITEM_CBO_ALARM_VOLUME]->count() - 1);
-            }
-        }
-        combos[ITEM_CBO_ALARM_VOLUME]->blockSignals(false);
-
         index = systemManager.getBrightness();
         combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setCurrentIndex(index);
 
@@ -203,30 +173,6 @@ void NormalFunctionMenuContent::layoutExec()
     layout->addWidget(comboBox, row, 1);
     row++;
     d_ptr->combos.insert(NormalFunctionMenuContentPrivate::ITEM_CBO_WAVE_LEN, comboBox);
-
-    // alarm volume
-    label = new QLabel(trs("SystemAlarmVolume"));
-    layout->addWidget(label, row, 0);
-    comboBox = new ComboBox();
-
-    // 设置声音触发方式
-    connect(comboBox, SIGNAL(itemFocusChanged(int)),
-            this, SLOT(onPopupListItemFocusChanged(int)));
-
-    int index = 0;
-    systemConfig.getNumValue("Alarms|MinimumAlarmVolume", index);
-    for (int i = index; i <= SoundManager::VOLUME_LEV_5; i++)
-    {
-        comboBox->addItem(QString::number(i));
-    }
-
-    itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(activated(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, row, 1);
-    row++;
-    d_ptr->combos.insert(NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME, comboBox);
 
     // screen brightness
     label = new QLabel(trs("SystemBrightness"));
@@ -383,13 +329,6 @@ void NormalFunctionMenuContent::onComboBoxIndexChanged(int index)
             currentConfig.setNumValue("Event|WaveLength", waveLength);
             break;
         }
-        case NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME:
-        {
-            int volume = box->itemText(index).toInt();
-            soundManager.setVolume(SoundManager::SOUND_TYPE_ALARM, static_cast<SoundManager::VolumeLevel>(volume));
-            systemConfig.setNumValue("Alarms|DefaultAlarmVolume", volume);
-            break;
-        }
         case NormalFunctionMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS:
         {
             systemManager.setBrightness(static_cast<BrightnessLevel>(index));
@@ -489,11 +428,6 @@ void NormalFunctionMenuContent::onPopupListItemFocusChanged(int volume)
         soundManager.setVolume(SoundManager::SOUND_TYPE_NOTIFICATION , static_cast<SoundManager::VolumeLevel>(volume));
         soundManager.keyPressTone();
     }
-    else if (w == d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME])
-    {
-        soundManager.setVolume(SoundManager::SOUND_TYPE_ALARM , static_cast<SoundManager::VolumeLevel>(volume));
-        soundManager.alarmTone();
-    }
 }
 
 void NormalFunctionMenuContent::nightModeHandle(bool isNightMode)
@@ -502,12 +436,10 @@ void NormalFunctionMenuContent::nightModeHandle(bool isNightMode)
     {
         d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS]->setEnabled(false);
         d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME]->setEnabled(false);
-        d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME]->setEnabled(false);
     }
     else
     {
         d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS]->setEnabled(true);
         d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME]->setEnabled(true);
-        d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME]->setEnabled(true);
     }
 }

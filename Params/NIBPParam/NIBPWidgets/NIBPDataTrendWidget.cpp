@@ -26,12 +26,8 @@
 #include "MeasureSettingWindow.h"
 #include "AlarmSourceManager.h"
 #include "EventStorageManager.h"
-
-#ifdef HIDE_NIBP_PR
-#define COLUMN_COUNT    2
-#else
-#define COLUMN_COUNT    3
-#endif
+#include "NIBPAlarm.h"
+#include "IConfig.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -119,56 +115,6 @@ void NIBPDataTrendWidget::collectNIBPTrendData(unsigned t)
     data.valueIsDisplay = paramManager.isParamEnable(PARAM_NIBP);
     data.prvalue = nibpParam.getPR();
 
-    if ((data.sys.value != InvData())
-            && (data.dia.value != InvData())
-            && (data.map.value != InvData())
-            && (data.prvalue != InvData())
-            )
-    {
-        // 报警
-        AlarmLimitIFace *alarmSource = alarmSourceManager.getLimitAlarmSource(LIMIT_ALARMSOURCE_NIBP);
-        if (alarmSource)
-        {
-            int completeResult = alarmSource->getCompare(data.sys.value, NIBP_LIMIT_ALARM_SYS_LOW);
-            if (completeResult != 0)
-            {
-                data.sys.isAlarm = true;
-            }
-            completeResult = alarmSource->getCompare(data.sys.value, NIBP_LIMIT_ALARM_SYS_HIGH);
-            if (completeResult != 0)
-            {
-                data.sys.isAlarm = true;
-            }
-
-            completeResult = alarmSource->getCompare(data.dia.value, NIBP_LIMIT_ALARM_DIA_LOW);
-            if (completeResult != 0)
-            {
-                data.dia.isAlarm = true;
-            }
-            completeResult = alarmSource->getCompare(data.dia.value, NIBP_LIMIT_ALARM_DIA_HIGH);
-            if (completeResult != 0)
-            {
-                data.dia.isAlarm = true;
-            }
-
-            completeResult = alarmSource->getCompare(data.map.value, NIBP_LIMIT_ALARM_MAP_LOW);
-            if (completeResult != 0)
-            {
-                data.map.isAlarm = true;
-            }
-            completeResult = alarmSource->getCompare(data.map.value, NIBP_LIMIT_ALARM_MAP_HIGH);
-            if (completeResult != 0)
-            {
-                data.map.isAlarm = true;
-            }
-
-            // 优先级
-            data.sys.priority = alarmSource->getAlarmPriority(NIBP_LIMIT_ALARM_SYS_HIGH);
-            data.dia.priority = alarmSource->getAlarmPriority(NIBP_LIMIT_ALARM_DIA_HIGH);
-            data.map.priority = alarmSource->getAlarmPriority(NIBP_LIMIT_ALARM_MAP_HIGH);
-        }
-    }
-
     if (10 <= _nibpNrendCacheMap.count())
     {
         _nibpNrendCacheMap.remove(_nibpNrendCacheMap.begin().key());
@@ -190,8 +136,12 @@ void NIBPDataTrendWidget::showValue(void)
     QString textStr;
     QString timeStr;
     QString prStr;
+    bool sysAlarm = false;
+    bool diaAlarm = false;
+    bool mapAlarm = false;
     UnitType defUnitType;
     UnitType unit;
+    NIBPLimitAlarm alarm;
 
     QColor textColor = colorManager.getColor(paramInfo.getParamName(PARAM_NIBP));
 
@@ -201,10 +151,11 @@ void NIBPDataTrendWidget::showValue(void)
         _table->item(i, 0)->setTextColor(textColor);
         QLabel *l = qobject_cast<QLabel *>(_table->cellWidget(i, 1));
         l->setText("");
-#ifndef HIDE_NIBP_PR
-        l = qobject_cast<QLabel *>(_table->cellWidget(i, 2));
-        l->setText("");
-#endif
+        if (moduleStr != "BLM_N5")
+        {
+            l = qobject_cast<QLabel *>(_table->cellWidget(i, 2));
+            l->setText("");
+        }
     }
 
     for (int i = 0; i < _rowNR; i++)
@@ -247,10 +198,38 @@ void NIBPDataTrendWidget::showValue(void)
                 diaValue = QString::number(providerBuff.dia.value);
                 mapValue = QString::number(providerBuff.map.value);
             }
-            if (providerBuff.sys.isAlarm)
+            AlarmLimitIFace *alarmSource = alarmSourceManager.getLimitAlarmSource(LIMIT_ALARMSOURCE_NIBP);
+            if (alarmSource)
+            {
+                if (alarm.isAlarmEnable(NIBP_LIMIT_ALARM_SYS_LOW))
+                {
+                    if (alarmSource->getCompare(providerBuff.sys.value, NIBP_LIMIT_ALARM_SYS_LOW)
+                            || alarmSource->getCompare(providerBuff.sys.value, NIBP_LIMIT_ALARM_SYS_HIGH))
+                    {
+                        sysAlarm = true;
+                    }
+                }
+                if (alarm.isAlarmEnable(NIBP_LIMIT_ALARM_DIA_LOW))
+                {
+                    if (alarmSource->getCompare(providerBuff.dia.value, NIBP_LIMIT_ALARM_DIA_LOW)
+                            || alarmSource->getCompare(providerBuff.dia.value, NIBP_LIMIT_ALARM_DIA_HIGH))
+                    {
+                        diaAlarm = true;
+                    }
+                }
+                if (alarm.isAlarmEnable(NIBP_LIMIT_ALARM_MAP_LOW))
+                {
+                    if (alarmSource->getCompare(providerBuff.map.value, NIBP_LIMIT_ALARM_MAP_LOW)
+                            || alarmSource->getCompare(providerBuff.map.value, NIBP_LIMIT_ALARM_MAP_HIGH))
+                    {
+                        mapAlarm = true;
+                    }
+                }
+            }
+            if (sysAlarm)
             {
                 valStr = boldwrap.arg(colorwrap
-                                      .arg(getPriotityColor(providerBuff.sys.priority))
+                                      .arg(getPriotityColor(alarm.getAlarmPriority(NIBP_LIMIT_ALARM_SYS_LOW)))
                                       .arg(sysValue));
                 textStr = textStr.arg(valStr);
             }
@@ -259,10 +238,10 @@ void NIBPDataTrendWidget::showValue(void)
                 textStr = textStr.arg(sysValue);
             }
 
-            if (providerBuff.dia.isAlarm)
+            if (diaAlarm)
             {
                 valStr = boldwrap.arg(colorwrap
-                                      .arg(getPriotityColor(providerBuff.dia.priority))
+                                      .arg(getPriotityColor(alarm.getAlarmPriority(NIBP_LIMIT_ALARM_DIA_LOW)))
                                       .arg(diaValue));
                 textStr = textStr.arg(valStr);
             }
@@ -271,10 +250,10 @@ void NIBPDataTrendWidget::showValue(void)
                 textStr = textStr.arg(diaValue);
             }
 
-            if (providerBuff.map.isAlarm)
+            if (mapAlarm)
             {
                 valStr = boldwrap.arg(colorwrap
-                                      .arg(getPriotityColor(providerBuff.map.priority))
+                                      .arg(getPriotityColor(alarm.getAlarmPriority(NIBP_LIMIT_ALARM_MAP_LOW)))
                                       .arg(mapValue));
                 textStr = textStr.arg(valStr);
             }
@@ -284,28 +263,30 @@ void NIBPDataTrendWidget::showValue(void)
             }
 
             // PR
-#ifndef HIDE_NIBP_PR
-            if (!providerBuff.prAlarm)
+            if (moduleStr != "BLM_N5")
             {
-                valStr = color.arg(textColor.red())
-                        .arg(textColor.green())
-                        .arg(textColor.blue())
-                        .arg(QString::number(providerBuff.prvalue));
-                prStr = prStr.arg(valStr);
+                if (!providerBuff.prAlarm)
+                {
+                    valStr = color.arg(textColor.red())
+                            .arg(textColor.green())
+                            .arg(textColor.blue())
+                            .arg(QString::number(providerBuff.prvalue));
+                    prStr = prStr.arg(valStr);
+                }
             }
-#endif
             textStr = color.arg(textColor.red()).arg(textColor.green()).arg(textColor.blue()).arg(textStr);
         }
         QLabel *l = qobject_cast<QLabel *>(_table->cellWidget(i, 1));
         l->setAlignment(Qt::AlignHCenter);
         l->setText(textStr);
         l->setTextInteractionFlags(Qt::NoTextInteraction);
-#ifndef HIDE_NIBP_PR
-        QLabel *prLbl = qobject_cast<QLabel *>(_table->cellWidget(i, 2));
-        prLbl->setAlignment(Qt::AlignHCenter);
-        prLbl->setText(prStr);
-        prLbl->setTextInteractionFlags(Qt::NoTextInteraction);
-#endif
+        if (moduleStr != "BLM_N5")
+        {
+            QLabel *prLbl = qobject_cast<QLabel *>(_table->cellWidget(i, 2));
+            prLbl->setAlignment(Qt::AlignHCenter);
+            prLbl->setText(prStr);
+            prLbl->setTextInteractionFlags(Qt::NoTextInteraction);
+        }
         if (t != _nibpNrendCacheMap.begin())
         {
             t = t - 1;
@@ -325,13 +306,14 @@ void NIBPDataTrendWidget::resizeEvent(QResizeEvent *e)
     TrendWidget::resizeEvent(e);
     _rowNR = _table->height() / _tableItemHeight - 1;
     _table->setRowCount(_rowNR);
-    int eachColumnWidth = _table->width() / COLUMN_COUNT;
+    int eachColumnWidth = _table->width() / columnNR;
     _table->setColumnWidth(0, eachColumnWidth);
     _table->setColumnWidth(1, eachColumnWidth);
-#ifndef HIDE_NIBP_PR
-    _table->setColumnWidth(2, eachColumnWidth * 2/3);
-#endif
 
+    if (moduleStr != "BLM_N5")
+    {
+        _table->setColumnWidth(2, eachColumnWidth * 2/3);
+    }
     for (int i = 0; i < _rowNR; i++)
     {
         QColor textColor = colorManager.getColor(paramInfo.getParamName(PARAM_NIBP));
@@ -345,11 +327,12 @@ void NIBPDataTrendWidget::resizeEvent(QResizeEvent *e)
         _table->setCellWidget(i, 1, l);
         l->setText("");
 
-#ifndef HIDE_NIBP_PR
-        QLabel *prLbl = new QLabel();
-        _table->setCellWidget(i, 2, prLbl);
-        prLbl->setText("");
-#endif
+        if (moduleStr != "BLM_N5")
+        {
+            QLabel *prLbl = new QLabel();
+            _table->setCellWidget(i, 2, prLbl);
+            prLbl->setText("");
+        }
     }
 }
 
@@ -404,13 +387,14 @@ void NIBPDataTrendWidget::updateUnit(UnitType unit)
 
 void NIBPDataTrendWidget::getTrendNIBPlist()
 {
-    int eventNum = backend->getBlockNR();
-    unsigned t = 0;
+    int eventNum = backend->getBlockNR();   
     TrendDataType value;
-    SubParamID subId;
-    NIBPTrendCacheData nibpTrendCacheData;
+    SubParamID subId;   
+    unsigned t = 0;
+    NIBPLimitAlarm alarm;
     for (int i = eventNum - 1; i >= 0; i--)
     {
+        NIBPTrendCacheData nibpTrendCacheData;
         if (parseEventData(i) && ctx.infoSegment->type == EventNIBPMeasurement)
         {
             t = ctx.infoSegment->timestamp;
@@ -430,6 +414,8 @@ void NIBPDataTrendWidget::getTrendNIBPlist()
                     continue;
                 case SUB_PARAM_NIBP_MAP:
                     nibpTrendCacheData.map.value = value;
+                case SUB_PARAM_NIBP_PR:
+                    nibpTrendCacheData.prvalue = value;
                     break;
                 default:
                     break;
@@ -439,34 +425,34 @@ void NIBPDataTrendWidget::getTrendNIBPlist()
             if (alarmSource)
             {
                 int completeResult = alarmSource->getCompare(nibpTrendCacheData.sys.value, NIBP_LIMIT_ALARM_SYS_LOW);
-                if (completeResult != 0)
+                if (completeResult != 0 && alarm.isAlarmEnable(NIBP_LIMIT_ALARM_SYS_LOW))
                 {
                     nibpTrendCacheData.sys.isAlarm = true;
                 }
                 completeResult = alarmSource->getCompare(nibpTrendCacheData.sys.value, NIBP_LIMIT_ALARM_SYS_HIGH);
-                if (completeResult != 0)
+                if (completeResult != 0 && alarm.isAlarmEnable(NIBP_LIMIT_ALARM_SYS_HIGH))
                 {
                     nibpTrendCacheData.sys.isAlarm = true;
                 }
 
                 completeResult = alarmSource->getCompare(nibpTrendCacheData.dia.value, NIBP_LIMIT_ALARM_DIA_LOW);
-                if (completeResult != 0)
+                if (completeResult != 0 && alarm.isAlarmEnable(NIBP_LIMIT_ALARM_DIA_LOW))
                 {
                     nibpTrendCacheData.dia.isAlarm = true;
                 }
                 completeResult = alarmSource->getCompare(nibpTrendCacheData.dia.value, NIBP_LIMIT_ALARM_DIA_HIGH);
-                if (completeResult != 0)
+                if (completeResult != 0 && alarm.isAlarmEnable(NIBP_LIMIT_ALARM_DIA_HIGH))
                 {
                     nibpTrendCacheData.dia.isAlarm = true;
                 }
 
                 completeResult = alarmSource->getCompare(nibpTrendCacheData.map.value, NIBP_LIMIT_ALARM_MAP_LOW);
-                if (completeResult != 0)
+                if (completeResult != 0 && alarm.isAlarmEnable(NIBP_LIMIT_ALARM_MAP_LOW))
                 {
                     nibpTrendCacheData.map.isAlarm = true;
                 }
                 completeResult = alarmSource->getCompare(nibpTrendCacheData.map.value, NIBP_LIMIT_ALARM_MAP_HIGH);
-                if (completeResult != 0)
+                if (completeResult != 0 && alarm.isAlarmEnable(NIBP_LIMIT_ALARM_MAP_HIGH))
                 {
                     nibpTrendCacheData.map.isAlarm = true;
                 }
@@ -496,8 +482,19 @@ NIBPDataTrendWidget::NIBPDataTrendWidget()
       _isAlarm(false),
       _rowNR(0),
       _tableItemHeight(20),
-      backend(NULL)
+      backend(NULL),
+      moduleStr("BLM_N5"),
+      columnNR(3)
 {
+    machineConfig.getStrValue("NIBP", moduleStr);
+    if (moduleStr != "BLM_N5")
+    {
+        columnNR = 3;
+    }
+    else
+    {
+        columnNR = 2;
+    }
     _nibpNrendCacheMap.clear();
     // 设置标题栏的相关信息。
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
@@ -516,7 +513,7 @@ NIBPDataTrendWidget::NIBPDataTrendWidget()
     // 开始布局。
     _table = new ITableWidget();
     _table->setFocusPolicy(Qt::NoFocus);                                  // 不聚焦。
-    _table->setColumnCount(COLUMN_COUNT);
+    _table->setColumnCount(columnNR);
     _table->verticalHeader()->setVisible(false);                          // 列首隐藏
     _table->horizontalHeader()->setVisible(true);                        // 列首隐藏
     _table->setShowGrid(false);                                           //显示表格线
@@ -545,6 +542,7 @@ NIBPDataTrendWidget::NIBPDataTrendWidget()
     backend = eventStorageManager.backend();
 
     getTrendNIBPlist();
+
 }
 
 /**************************************************************************************************

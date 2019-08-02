@@ -42,7 +42,7 @@ public:
         ITEM_BTN_ZERO_CALIB,
     };
 
-    CO2MenuContentPrivate() : o2Spb(NULL), n2oSpb(NULL) {}
+    CO2MenuContentPrivate() : o2Spb(NULL), n2oSpb(NULL), o2Lbl(NULL), n2oLbl(NULL) {}
 
     /**
      * @brief loadOptions  // load settings
@@ -53,6 +53,8 @@ public:
     QMap<MenuItem, Button *> btns;
     SpinBox *o2Spb;
     SpinBox *n2oSpb;
+    QLabel *o2Lbl;
+    QLabel *n2oLbl;
 };
 
 CO2MenuContent::CO2MenuContent():
@@ -126,6 +128,23 @@ void CO2MenuContentPrivate::loadOptions()
     {
         btns[ITEM_BTN_ZERO_CALIB]->setEnabled(false);
         combos[ITEM_CBO_WORK_MODE]->setEnabled(false);
+    }
+
+    QString co2Str;
+    machineConfig.getStrValue("CO2", co2Str);
+    if (co2Str == "BLM_CO2")
+    {
+        o2Spb->setVisible(false);
+        n2oSpb->setVisible(false);
+        o2Lbl->setVisible(false);
+        n2oLbl->setVisible(false);
+    }
+    else
+    {
+        o2Spb->setVisible(true);
+        n2oSpb->setVisible(true);
+        o2Lbl->setVisible(true);
+        n2oLbl->setVisible(true);
     }
 }
 
@@ -302,6 +321,7 @@ void CO2MenuContent::layoutExec()
     layout->addWidget(spinBox, row, 1);
     connect(spinBox, SIGNAL(valueChange(int, int)), this, SLOT(o2CompenSpinboxReleased(int, int)));
     d_ptr->o2Spb = spinBox;
+    d_ptr->o2Lbl = label;
 
 
     // n2o compensation
@@ -313,6 +333,7 @@ void CO2MenuContent::layoutExec()
     layout->addWidget(spinBox, row + 1, 1);
     connect(spinBox, SIGNAL(valueChange(int, int)), this, SLOT(n2oCompenSpinboxReleased(int, int)));
     d_ptr->n2oSpb = spinBox;
+    d_ptr->n2oLbl = label;
 
     // 添加报警设置链接
     Button *btn = new Button(QString("%1%2").

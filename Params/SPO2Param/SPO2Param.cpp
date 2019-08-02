@@ -356,6 +356,7 @@ SoundManager::VolumeLevel SPO2Param::getPluseToneVolume(void)
  *************************************************************************************************/
 void SPO2Param::setSPO2(short spo2Value)
 {
+    paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
     if (_spo2Value == spo2Value && !_isForceUpdating)
     {
         return;
@@ -385,7 +386,6 @@ void SPO2Param::setSPO2(short spo2Value)
     if (NULL != _trendWidget)
     {
         _trendWidget->setSPO2Value(_spo2Value);
-        paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
     }
 
     if (NULL != _oxyCRGSPO2Trend)
@@ -407,6 +407,7 @@ short SPO2Param::getSPO2(void)
  *************************************************************************************************/
 void SPO2Param::setPR(short prValue)
 {
+    ecgDupParam.restartParamUpdateTime();
     if (_prValue == prValue && !_isForceUpdating)
     {
         return;

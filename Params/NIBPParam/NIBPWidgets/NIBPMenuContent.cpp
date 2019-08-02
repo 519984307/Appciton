@@ -145,19 +145,16 @@ void NIBPMenuContent::layoutExec()
     d_ptr->combos.insert(NIBPMenuContentPrivate::ITEM_CBO_COMPLETE_TONE, comboBox);
 
     // initial cuff
-    label = new QLabel(trs("NIBPInitialPressure"));
+    QString name = trs("NIBPInitialPressure") + "(" + Unit::getSymbol(UNIT_MMHG) + ")";
+    label = new QLabel(name);
+    d_ptr->initCuffUnitLbl = label;
     layout->addWidget(label, d_ptr->combos.count(), 0);
     d_ptr->initCuffSpb = new SpinBox();
     d_ptr->initCuffSpb->setSpinBoxStyle(SpinBox::SPIN_BOX_STYLE_STRING);
     connect(d_ptr->initCuffSpb, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxReleased(int)));
-    QHBoxLayout *hLayout = new QHBoxLayout();
-    d_ptr->initCuffUnitLbl = new QLabel("mmHg");
-    hLayout->addWidget(d_ptr->initCuffSpb);
-    hLayout->addWidget(d_ptr->initCuffUnitLbl);
-    layout->addLayout(hLayout, d_ptr->combos.count(), 1);
+    layout->addWidget(d_ptr->initCuffSpb, d_ptr->combos.count(), 1);
 
     int row = d_ptr->combos.count() + 1;
-
     // start stat
     label = new QLabel(trs("STAT"));
     layout->addWidget(label, row + d_ptr->btns.count(), 0);
@@ -241,11 +238,11 @@ void NIBPMenuContentPrivate::loadOptions()
         initCuffSpb->setStringList(initCuffStrs);
         if (unit == defUnit)
         {
-            initCuffUnitLbl->setText(Unit::getSymbol(UNIT_MMHG));
+            initCuffUnitLbl->setText(trs("NIBPInitialPressure") + "(" + Unit::getSymbol(UNIT_MMHG) + ")");
         }
         else
         {
-            initCuffUnitLbl->setText(Unit::getSymbol(UNIT_KPA));
+            initCuffUnitLbl->setText(trs("NIBPInitialPressure") + "(" + Unit::getSymbol(UNIT_KPA) + ")");
         }
     }
 

@@ -123,6 +123,11 @@ public:
      */
     bool setModuleWorkMode(CO2WorkMode mode);
 
+    void sendCalibrateData(int value);
+    void setCalibrateData(const unsigned char *packet);
+    bool getCalibrateResult();
+    bool getCalibrateReply();
+
 public:
     // 校零。
     void zeroCalibration(void);

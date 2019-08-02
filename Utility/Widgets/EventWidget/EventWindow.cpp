@@ -118,6 +118,11 @@ public:
     void eventWaveUpdate(void);
 
     void refreshPageInfo();
+
+    /**
+     * @brief updateLevelStatus 更新事件级别状态
+     */
+    void updateLevelStatus();
 public:
     TableView *eventTable;
     EventReviewModel *model;
@@ -267,6 +272,20 @@ void EventWindow::showEvent(QShowEvent *ev)
     {
         d_ptr->eventTable->setFocusPolicy(Qt::StrongFocus);
     }
+
+    // 更新打印按键状态
+    if (recorderManager.isConnected() && !d_ptr->printList.isEmpty())
+    {
+        d_ptr->printBtn->setEnabled(true);
+        d_ptr->listPrintBtn->setEnabled(true);
+    }
+    else
+    {
+        d_ptr->printBtn->setEnabled(false);
+        d_ptr->listPrintBtn->setEnabled(false);
+    }
+
+    d_ptr->updateLevelStatus();
 }
 
 void EventWindow::timerEvent(QTimerEvent *ev)
@@ -334,6 +353,7 @@ void EventWindow::eventTypeSelect(int index)
     {
         d_ptr->eventTable->setFocusPolicy(Qt::NoFocus);
     }
+    d_ptr->updateLevelStatus();
 }
 
 void EventWindow::eventLevelSelect(int index)
@@ -587,13 +607,6 @@ void EventWindow::upReleased()
         int position = curScroller - (maxValue * 4) / (d_ptr->trendListWidget->count() - 4);
         scrollBar->setSliderPosition(position);
     }
-
-    // 上下翻页参数按钮使能
-    curScroller = d_ptr->trendListWidget->verticalScrollBar()->value();
-    bool hasBtn = curScroller > 0;
-    d_ptr->upParamBtn->setEnabled(hasBtn);
-    hasBtn = curScroller < maxValue;
-    d_ptr->downParamBtn->setEnabled(hasBtn);
 }
 
 void EventWindow::downReleased()
@@ -605,17 +618,6 @@ void EventWindow::downReleased()
         QScrollBar *scrollBar = d_ptr->trendListWidget->verticalScrollBar();
         int position = curScroller + (maxValue * 4) / (d_ptr->trendListWidget->count() - 4);
         scrollBar->setSliderPosition(position);
-    }
-
-    // 上下翻页参数按钮使能
-    curScroller = d_ptr->trendListWidget->verticalScrollBar()->value();
-    bool hasBtn = curScroller > 0;
-    d_ptr->upParamBtn->setEnabled(hasBtn);
-    hasBtn = curScroller < maxValue;
-    d_ptr->downParamBtn->setEnabled(hasBtn);
-    if (!hasBtn)
-    {
-        d_ptr->upParamBtn->setFocus();
     }
 }
 
@@ -1159,7 +1161,8 @@ void EventWindowPrivate::eventTrendUpdate()
         {
             if (paramInfo.getParamID(subId) == PARAM_CO2)
             {
-                dataStr = Unit::convert(type, UNIT_PERCENT, ctx.trendSegment->values[i].value / 10.0, co2Param.getBaro());
+                dataStr = Unit::convert(type, UNIT_PERCENT,
+                                        ctx.trendSegment->values[i].value / 10.0, co2Param.getBaro());
             }
             else if (paramInfo.getParamID(subId) == PARAM_TEMP)
             {
@@ -1201,6 +1204,7 @@ void EventWindowPrivate::eventTrendUpdate()
             titleStr = titleStr.left(titleStr.length() - 4);
             valueFont = fontManager.numFont(23);
             break;
+        case SUB_PARAM_NIBP_PR:
         case SUB_PARAM_ART_PR:
         case SUB_PARAM_PA_PR:
         case SUB_PARAM_CVP_PR:
@@ -1282,4 +1286,38 @@ void EventWindowPrivate::refreshPageInfo()
                                           .arg(QString::number(curPage))
                                           .arg(QString::number(totalPage));
     q_ptr->setWindowTitle(title);
+}
+
+void EventWindowPrivate::updateLevelStatus()
+{
+    levelCbo->clear();
+    if (curEventType != EventPhysiologicalAlarm)
+    {
+        for (int i = EVENT_LEVEL_ALL; i < EVENT_LEVEL_NR; i ++)
+        {
+            levelCbo->addItem(trs(EventDataSymbol::convert((EventLevel)i)));
+        }
+    }
+    switch (curEventType) {
+    case EventAll:
+        levelCbo->setEnabled(true);
+        break;
+    case EventPhysiologicalAlarm:
+        levelCbo->setEnabled(true);
+        for (int i = EVENT_LEVEL_MED; i < EVENT_LEVEL_NR; i ++)
+        {
+            levelCbo->addItem(trs(EventDataSymbol::convert((EventLevel)i)));
+        }
+        break;
+    case EventCodeMarker:
+    case EventRealtimePrint:
+    case EventNIBPMeasurement:
+    case EventWaveFreeze:
+    case EventOxyCRG:
+        levelCbo->setEnabled(false);
+        break;
+    default:
+        break;
+    }
+    levelCbo->setCurrentIndex(0);
 }

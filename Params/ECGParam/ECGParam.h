@@ -161,8 +161,7 @@ public:
     // enable VF calc
     void enableVFCalc(bool enable);
 
-    static unsigned selfTestResult;
-    void handleSelfTestResult();
+    void handleSelfTestResult(unsigned selfTestResult);
 
     /**
      * @brief getHrSourceTypeFromId  从参数id转换获取hr来源类型
@@ -284,6 +283,7 @@ public: // 用于访问配置相关信息。
 
     // 设置/获取工频滤波。
     void setNotchFilter(ECGNotchFilter filter);
+    void updateEditNotchFilter();
     ECGNotchFilter getNotchFilter();
     ECGNotchFilter getCalcLeadNotchFilter();
 
@@ -406,5 +406,8 @@ private:
 
     bool _isFristConnect;         // 开机后是否正常连接过导联
     ECGGain _autoGain[ECG_LEAD_NR];      // 自动增益计算出的实际增益
+
+    short getMaxHrValue();
+    short getMinHrValue();
 };
 #define ecgParam (ECGParam::getInstance())

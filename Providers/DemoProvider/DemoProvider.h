@@ -103,6 +103,7 @@ public:
     virtual int getCO2BaseLine(void) {return 0;}
     virtual void setWorkMode(CO2WorkMode /*mode*/) {}
     virtual void enterUpgradeMode() {}
+    virtual void sendCalibrateData(int) {}
 
     // 实现AG的接口。
     virtual int getN2OWaveformSample(void) {return 50;}

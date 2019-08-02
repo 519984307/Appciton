@@ -93,6 +93,10 @@ void NIBPParam::initParam(void)
     {
         return;
     }
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        return;
+    }
     int enable = 0;
     machineConfig.getModuleInitialStatus("NIBPNEOMeasureEnable", reinterpret_cast<bool*>(&enable));
     if (patientManager.getType() == PATIENT_TYPE_NEO && enable)
@@ -198,12 +202,16 @@ void NIBPParam::exitDemo()
     _diaValue = InvData();
     _mapVaule = InvData();
     _prVaule = InvData();
+    _lastTime = 0;
 
-    // 恢复状态机为进入演示模式前的状态
-    switchState(_oldState);
-    if (curStatusType() == NIBP_MONITOR_STANDBY_STATE || curStatusType() == NIBP_MONITOR_SAFEWAITTIME_STATE)
+    if (_oldState == NIBP_MONITOR_ERROR_STATE)
     {
-        // 若返回的时准备模式，则清除显示数据
+    // 恢复状态机为进入演示模式前的状态
+        switchState(_oldState);
+    }
+    else
+    {
+        switchState(NIBP_MONITOR_STANDBY_STATE);
         clearResult();
     }
     clearTrendListData();
@@ -224,7 +232,8 @@ int16_t NIBPParam::getSubParamValue(SubParamID id)
 
     case SUB_PARAM_NIBP_MAP:
         return getMAP();
-
+    case SUB_PARAM_NIBP_PR:
+        return getPR();
     default:
         return InvData();
     }
@@ -445,13 +454,20 @@ void NIBPParam::setResult(int16_t sys, int16_t dia, int16_t map, int16_t pr, NIB
             systemConfig.getNumValue("PrimaryCfg|NIBP|AutomaticRetry", index);
             if (index)
             {
-                if (isAdditionalMeasure())
+                if (isAdditionalMeasure())    // 如果已经进行过额外测量置false
                 {
                     setAdditionalMeasure(false);
                 }
                 else
                 {
                     setAdditionalMeasure(true);
+                }
+            }
+            else
+            {
+                if (isAdditionalMeasure())
+                {
+                    setAdditionalMeasure(false);
                 }
             }
         }
@@ -1018,6 +1034,7 @@ void NIBPParam::setMeasurMode(NIBPMode mode)
     if (mode == NIBP_MODE_STAT)
     {
         nibpParam.setSTATFirst(true);
+        nibpParam.setFirstAuto(true);
         cmd = 0x01;
         handleNIBPEvent(NIBP_EVENT_TRIGGER_MODEL, &cmd, 1);
     }
@@ -1326,9 +1343,17 @@ void NIBPParam::switchToAuto(void)
     {
         if (nibpParam.getMeasurMode() != NIBP_MODE_STAT)
         {
+            if (nibpParam.isFirstAuto())
+            {
             nibpParam.setModelText(trs("NIBPAUTO") + ":" +
                                    trs(NIBPSymbol::convert((NIBPAutoInterval)nibpParam.getAutoInterval())));
-        }
+            }
+            else
+            {
+                nibpParam.setModelText(trs("NIBPManualStart") + ":" +
+                                       trs(NIBPSymbol::convert((NIBPAutoInterval)nibpParam.getAutoInterval())));
+            }
+        }       
     }
 }
 
@@ -1341,7 +1366,7 @@ void NIBPParam::switchToManual(void)
     nibpParam.setCountdown(-1);
 
     nibpParam.setAutoMeasure(false);
-    nibpParam.setFirstAuto(false);
+    nibpParam.setFirstAuto(true);
     if (nibpParam.curStatusType() != NIBP_MONITOR_ERROR_STATE)
     {
         if (nibpParam.getMeasurMode() != NIBP_MODE_STAT)
