@@ -24,7 +24,7 @@
 #include "LayoutManager.h"
 
 #define stretchCount 2
-#define SHUT_DOWN_HINT_TIME 120
+
 class NIBPTrendWidgetPrivate
 {
 public:
