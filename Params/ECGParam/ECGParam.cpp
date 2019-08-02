@@ -2023,6 +2023,21 @@ void ECGParam::setNotchFilter(ECGNotchFilter filter)
     emit updateNotchFilter();
 }
 
+void ECGParam::updateEditNotchFilter()
+{
+    int filter = 0;
+    currentConfig.getNumValue("ECG|NotchFilter", filter);
+    if (filter == _notchFilter)
+    {
+        return;
+    }
+    _notchFilter = static_cast<ECGNotchFilter>(filter);
+    if (NULL != _provider)
+    {
+        _provider->setNotchFilter(_notchFilter);
+    }
+    emit updateNotchFilter();
+}
 /**************************************************************************************************
  * 设置/获取工频滤波。
  *************************************************************************************************/

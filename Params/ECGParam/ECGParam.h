@@ -284,6 +284,7 @@ public: // 用于访问配置相关信息。
 
     // 设置/获取工频滤波。
     void setNotchFilter(ECGNotchFilter filter);
+    void updateEditNotchFilter();
     ECGNotchFilter getNotchFilter();
     ECGNotchFilter getCalcLeadNotchFilter();
 
