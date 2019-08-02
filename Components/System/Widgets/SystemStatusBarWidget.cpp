@@ -126,9 +126,14 @@ void SystemStatusBarWidget::onIconClicked(int iconLabel)
     if (iconLabel == SYSTEM_ICON_LABEL_USB)
     {
         MessageBox msg(trs("Prompt"), trs("SureSafePopUpUDisk"), true, true);
-        if (msg.exec())
+        connect(&usbManager, SIGNAL(popupUDisk()), &msg, SLOT(reject()));  // 弹出u盘时，主动关闭该消息框
+        if (msg.exec() && usbManager.isUSBExist())
         {
             usbManager.stopRawCollectData();
+            this->focusNextChild();
+        }
+        if (usbManager.isUSBExist() == false)  // u盘不存在时，聚焦点主动移动到下一个item
+        {
             this->focusNextChild();
         }
     }
