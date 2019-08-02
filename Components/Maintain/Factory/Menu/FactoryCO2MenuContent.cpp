@@ -1,4 +1,12 @@
-
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by TongZhou Fang fangtongzhou@blmed.cn, 2019/8/2
+ **/
 #include <QVBoxLayout>
 #include <QGridLayout>
 #include <QLabel>
@@ -100,7 +108,7 @@ FactoryCO2MenuContent::FactoryCO2MenuContent()
                   trs("CO2CalibrateDesc")),
       d_ptr(new FactoryCO2MenuContentPrivate)
 {
-    connect(&co2Param, SIGNAL(connectStatusUpdated(bool)), this, SLOT(updateCO2Contect(bool)));
+    connect(&co2Param, SIGNAL(connectStatusUpdated(bool)), this, SLOT(updateCO2Content(bool)));
 }
 
 FactoryCO2MenuContent::~FactoryCO2MenuContent()
@@ -219,7 +227,7 @@ void FactoryCO2MenuContent::onBtnReleased()
     d_ptr->timeoutNum = 0;
 }
 
-void FactoryCO2MenuContent::updateCO2Contect(bool status)
+void FactoryCO2MenuContent::updateCO2Content(bool status)
 {
     if (status)
     {
