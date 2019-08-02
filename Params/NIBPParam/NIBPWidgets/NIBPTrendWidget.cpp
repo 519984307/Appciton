@@ -144,15 +144,9 @@ void NIBPTrendWidget::updateLimit()
  *************************************************************************************************/
 void NIBPTrendWidget::recoverResults(int16_t &sys, int16_t &dia, int16_t &map, unsigned &time)
 {
-    // 判断上次开机与本次开机的时间间隔。
-    unsigned timestamp = 0;
     int data = InvData();
-    systemConfig.getNumValue("Timestamp", timestamp);
-    unsigned _curTime = timeDate.time();
-    unsigned diffTime = (_curTime < timestamp) ? 901 : (_curTime - timestamp);
 
-    // 判断开机时间间隔(关机到开机再次看到界面)。
-    if (diffTime <= SHUT_DOWN_HINT_TIME + 7)  // 两次开机时间小于SHUT_DOWN_HINT_TIME + 7(开机时间大约7s)。
+    if (timeManager.getPowerOnSession() == POWER_ON_SESSION_CONTINUE)
     {
         systemConfig.getNumValue("PrimaryCfg|NIBP|NIBPsys", data);
         sys = data;
