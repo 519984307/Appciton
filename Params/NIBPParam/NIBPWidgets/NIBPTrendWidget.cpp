@@ -24,6 +24,7 @@
 #include "LayoutManager.h"
 
 #define stretchCount 2
+
 class NIBPTrendWidgetPrivate
 {
 public:
@@ -108,7 +109,7 @@ void NIBPTrendWidget::setResults(int16_t sys, int16_t dia, int16_t map, unsigned
     if ((sys == InvData()) || (dia == InvData()) || (map == InvData()))
     {
         d_ptr->effective = false;
-        setShowStacked(2);//显示"---"
+        setShowStacked(2);  //显示"---"
         d_ptr->sysString = InvStr();
         d_ptr->diaString = InvStr();
         d_ptr->mapString = InvStr();
@@ -121,7 +122,7 @@ void NIBPTrendWidget::setResults(int16_t sys, int16_t dia, int16_t map, unsigned
         d_ptr->mapString = "(" + Unit::convert(unit, UNIT_MMHG, map) + ")";
         showValue();
         d_ptr->effective = true;
-        setShowStacked(0);//显示测量结果
+        setShowStacked(0);  // 显示测量结果
     }
 
     d_ptr->sysValue->setText(d_ptr->sysString);
@@ -143,19 +144,29 @@ void NIBPTrendWidget::updateLimit()
  *************************************************************************************************/
 void NIBPTrendWidget::recoverResults(int16_t &sys, int16_t &dia, int16_t &map, unsigned &time)
 {
-    QString str = InvStr();
+    int data = InvData();
 
-    systemConfig.getStrValue("PrimaryCfg|NIBP|NIBPsys", str);
-    sys = str.toShort();
+    if (timeManager.getPowerOnSession() == POWER_ON_SESSION_CONTINUE)
+    {
+        systemConfig.getNumValue("PrimaryCfg|NIBP|NIBPsys", data);
+        sys = data;
 
-    systemConfig.getStrValue("PrimaryCfg|NIBP|NIBPdia", str);
-    dia = str.toShort();
+        systemConfig.getNumValue("PrimaryCfg|NIBP|NIBPdia", data);
+        dia = data;
 
-    systemConfig.getStrValue("PrimaryCfg|NIBP|NIBPmap", str);
-    map = str.toShort();
+        systemConfig.getNumValue("PrimaryCfg|NIBP|NIBPmap", data);
+        map = data;
 
-    systemConfig.getStrValue("PrimaryCfg|NIBP|MeasureTime", str);
-    time = str.toInt();
+        systemConfig.getNumValue("PrimaryCfg|NIBP|MeasureTime", data);
+        time = data;
+    }
+    else
+    {
+        sys = data;
+        dia = data;
+        map = data;
+        time = 0;
+    }
 }
 
 /**************************************************************************************************
