@@ -53,7 +53,7 @@ ST-V2,ST-V2,ST-V2
 ST-V3,ST-V3,ST-V3
 ST-V4,ST-V4,ST-V4
 ST-V5,ST-V5,ST-V5
-ExportFailed,导出失败,Export Failed
+ExportFailure,导出失败,Export Failure
 ST-V6,ST-V6,ST-V6
 PVCS,PVCS,PVCS
 ST,ST,ST
