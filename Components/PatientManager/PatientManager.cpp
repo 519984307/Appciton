@@ -595,7 +595,7 @@ void PatientManagerPrivate::handleDischarge()
         if (dataStorageDirManager)
         {
             dataStorageDirManager->cleanCurData();
-        }       
+        }
     }
 }
 
