@@ -1326,17 +1326,9 @@ void EventWindowPrivate::updateLevelStatus()
         }
         break;
     case EventCodeMarker:
-        levelCbo->setEnabled(false);
-        break;
     case EventRealtimePrint:
-        levelCbo->setEnabled(false);
-        break;
     case EventNIBPMeasurement:
-        levelCbo->setEnabled(false);
-        break;
     case EventWaveFreeze:
-        levelCbo->setEnabled(false);
-        break;
     case EventOxyCRG:
         levelCbo->setEnabled(false);
         break;
