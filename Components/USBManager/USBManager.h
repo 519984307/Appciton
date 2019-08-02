@@ -74,6 +74,11 @@ signals:
     void startCollectData(void);
     void stopCollectData(void);
 
+    /**
+     * @brief popupUDisk - u盘弹出信号
+     */
+    void popupUDisk();
+
 public slots:
     // cancel export
     void cancelExport();
