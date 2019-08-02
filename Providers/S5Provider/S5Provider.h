@@ -115,6 +115,7 @@ private:
     void _sendACK(unsigned char type);
     bool _isValuePR;
 
+    bool _isFirstConnectCable;
     bool _isCableOff;
     bool _isFingerOff;
     bool _isSeaching;
