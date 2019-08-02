@@ -42,8 +42,6 @@
 #define GET_DIA_DATA_PERIOD (12000)
 #define DISABLE_DIA_SOFTKEY_PERIOD (900)  // 1s,定时有差异，使用900ms
 
-unsigned ECGParam::selfTestResult = 0;
-
 /**************************************************************************************************
  * 获取禁用的波形控件。
  *************************************************************************************************/
@@ -352,6 +350,7 @@ void ECGParam::setProvider(ECGProviderIFace *provider)
         _waveWidget[i]->setDataRate(_provider->getWaveformSample());
     }
 
+    _provider->getSelfTestStatus();
 //    <Gain>1</Gain>
     // todo：其他设置。
 }
@@ -1051,7 +1050,7 @@ void ECGParam::reset(void)
 /***************************************************************************************************
  * handle ecg selftest result
  **************************************************************************************************/
-void ECGParam::handleSelfTestResult()
+void ECGParam::handleSelfTestResult(unsigned selfTestResult)
 {
     QString errStr("");
     bool flag = true;
@@ -1078,7 +1077,7 @@ void ECGParam::handleSelfTestResult()
         errStr += "Pace Sync Test Failed.\r\n";
         flag = false;
     }
-    systemManager.setPoweronTestResult(TE3_MODULE_SELFTEST_RESULT,
+    systemManager.setPoweronTestResult(E5_MODULE_SELFTEST_RESULT,
                                        flag ? SELFTEST_SUCCESS : SELFTEST_FAILED);
 
     if (!errStr.isEmpty())

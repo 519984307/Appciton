@@ -161,8 +161,7 @@ public:
     // enable VF calc
     void enableVFCalc(bool enable);
 
-    static unsigned selfTestResult;
-    void handleSelfTestResult();
+    void handleSelfTestResult(unsigned selfTestResult);
 
     /**
      * @brief getHrSourceTypeFromId  从参数id转换获取hr来源类型
