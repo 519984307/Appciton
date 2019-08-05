@@ -229,7 +229,7 @@ N2OCompensation,N₂O补偿(%),N₂O Compensation(%)
 CO2ZeroCalib,CO₂校零,CO₂ Zero
 CO2ZeroStart,开始,Start
 CO2Menu,CO₂,CO₂
-CO2Switch,二氧化碳开关,CO₂ Switch
+CO2Switch,CO₂开关,CO₂ Switch
 CO2WorkMode,CO₂工作模式,CO₂ Work Mode
 O2Module,O₂,O₂
 O2Menu,O₂,O₂
@@ -1413,7 +1413,7 @@ ModuleMaintainMenuDesc,模块维护,Module Maintain
 AnaesthesiaModuleCalibration,麻醉模块化校准,Anaesthesia Module Calibration
 IBP1PressureCalibration,IBP通道1校准,IBP1 Pressure Calibration
 IBP2PressureCalibration,IBP通道2校准,IBP2 Pressure Calibration
-CO2ModuleMaintenance,二氧化碳模块维护,CO₂ Module Maintenance
+CO2ModuleMaintenance,CO₂模块维护,CO₂ Module Maintenance
 NIBPPressureTest,NIBP压力测试,NIBP Pressure Test
 NIBPLeakageDetection,NIBP泄露检测,NIBP Leakage Detection
 NIBPServiceModuleErrorQuitTryAgain,NIBP服务模块错误，请退出重试,NIBP service module error，Please quit and retry!
@@ -1426,7 +1426,7 @@ StopNIBPPressureTest,停止无创血压测试,Stop NIBP Pressure Test
 StopIBPPressureCalibration,停止有创血压校准,Stop IBP Pressure Calibration
 StopNIBPLeakageDetection,停止无创血压泄露检测,Stop NIBP Leakage Detection
 StopECGModuleCalibration,停止ECG模块校准,Stop ECG Module Calibration
-StopCO2ModuleMaintenance,停止二氧化碳模块,Stop CO₂ Module Maintenance
+StopCO2ModuleMaintenance,停止CO₂模块维护,Stop CO₂ Module Maintenance
 StopTouchScreenCalibration,停止触摸屏校准,Stop Touch Screen Calibration
 Cancel,取消覆盖,Cancel
 OthersMaintainMenu,其他,Others
@@ -1575,8 +1575,8 @@ TrendWaveSelect,趋势波形设置,Trend Wave Select
 OxyCRGWidgetSetup,呼吸氧和设置,OxyCRGWidget Setup
 Wave,波形,Wave
 DefaultSetting,缺省设置,Default Setting
-CO2Low,二氧化碳低,CO₂ Low
-CO2High,二氧化碳高,CO₂ High
+CO2Low,CO₂低,CO₂ Low
+CO2High,CO₂高,CO₂ High
 AutoRuler,自动标尺,Auto Ruler
 RESPLow,Resp低,Resp Low
 RESPHigh,Resp高,Resp High
