@@ -1233,6 +1233,23 @@ void EventWindowPrivate::eventTrendUpdate()
             titleStr += "(Et/Fi)";
             valueFont = fontManager.numFont(31);
             break;
+        case SUB_PARAM_PI:
+        {
+            float pi = (dataStr.toInt() * 1.0) / paramInfo.getMultiOfSubParam(subId);
+            valueStr = QString::number(pi, 'f', 2);
+            titleStr = trs(paramInfo.getSubParamName(subId));
+            valueFont = fontManager.numFont(37);
+        }
+            break;
+        case SUB_PARAM_SPHB:
+        case SUB_PARAM_SPMET:
+        {
+            float value = (dataStr.toInt() * 1.0) / paramInfo.getMultiOfSubParam(subId);
+            valueStr = QString::number(value, 'f', 1);
+            titleStr = trs(paramInfo.getSubParamName(subId));
+            valueFont = fontManager.numFont(37);
+        }
+            break;
         default:
             valueStr = dataStr;
             titleStr = trs(paramInfo.getSubParamName(subId));

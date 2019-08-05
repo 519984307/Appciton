@@ -244,12 +244,13 @@ void SPO2Param::handDemoTrendData(void)
     if (isConnected(true))
     {
         d_ptr->plugInSpo2Value = 96;
+        d_ptr->spo2DValue = abs(d_ptr->spo2Value - d_ptr->plugInSpo2Value);
     }
     else
     {
         d_ptr->plugInSpo2Value = InvData();
+        d_ptr->spo2DValue = InvData();
     }
-    d_ptr->spo2DValue = abs(d_ptr->spo2Value - d_ptr->plugInSpo2Value);
     d_ptr->piValue = 210;
     d_ptr->pviValue = 23;
     d_ptr->sphbValue = 180;

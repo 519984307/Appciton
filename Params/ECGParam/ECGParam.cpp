@@ -133,6 +133,7 @@ void ECGParam::handDemoTrendData(void)
 {
     int hrValue = 60;
     ecgDupParam.updateHR(hrValue);
+    ecgDupParam.updatePR(hrValue);
 
     soundManager.heartBeatTone();
     ecgDupParam.updateHRBeatIcon();
