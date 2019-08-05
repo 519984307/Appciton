@@ -1203,6 +1203,7 @@ void EventWindowPrivate::eventTrendUpdate()
             titleStr = paramInfo.getSubParamName(subId);
             titleStr = titleStr.left(titleStr.length() - 4);
             valueFont = fontManager.numFont(23);
+            color = colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(subId)));
             break;
         case SUB_PARAM_NIBP_PR:
         case SUB_PARAM_ART_PR:
@@ -1232,6 +1233,7 @@ void EventWindowPrivate::eventTrendUpdate()
             titleStr = titleStr.right(titleStr.length() - 2);
             titleStr += "(Et/Fi)";
             valueFont = fontManager.numFont(31);
+            color = colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(subId)));
             break;
         case SUB_PARAM_PI:
         {
@@ -1239,6 +1241,7 @@ void EventWindowPrivate::eventTrendUpdate()
             valueStr = QString::number(pi, 'f', 2);
             titleStr = trs(paramInfo.getSubParamName(subId));
             valueFont = fontManager.numFont(37);
+            color = colorManager.getColor(paramInfo.getSubParamName(subId));
         }
             break;
         case SUB_PARAM_SPHB:
@@ -1248,12 +1251,22 @@ void EventWindowPrivate::eventTrendUpdate()
             valueStr = QString::number(value, 'f', 1);
             titleStr = trs(paramInfo.getSubParamName(subId));
             valueFont = fontManager.numFont(37);
+            color = colorManager.getColor(paramInfo.getSubParamName(subId));
         }
+            break;
+        case SUB_PARAM_PVI:
+        case SUB_PARAM_SPOC:
+        case SUB_PARAM_SPCO:
+            valueStr = dataStr;
+            titleStr = trs(paramInfo.getSubParamName(subId));
+            valueFont = fontManager.numFont(37);
+            color = colorManager.getColor(paramInfo.getSubParamName(subId));
             break;
         default:
             valueStr = dataStr;
             titleStr = trs(paramInfo.getSubParamName(subId));
             valueFont = fontManager.numFont(37);
+            color = colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(subId)));
             break;
         }
 
@@ -1269,14 +1282,13 @@ void EventWindowPrivate::eventTrendUpdate()
 
 
         item->setData(EventTrendItemDelegate::TrendAlarmRole, ctx.trendSegment->values[i].alarmFlag);
-        color = colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(subId)));
         if (color != QColor(0, 0, 0))
         {
             item->setTextColor(color);
         }
         else
         {
-            item->setTextColor(Qt::red);
+            item->setTextColor(Qt::white);
         }
         item->setFlags(Qt::NoItemFlags);
     }

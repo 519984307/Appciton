@@ -754,7 +754,15 @@ void TrendWaveWidget::_trendLayout()
         SubParamID  subId = _subParams.at(index);
         _curDisplaySubList.append(subId);
         _subWidgetList.at(i)->setWidgetParam(subId, getTrendGraphType(subId));
-        _subWidgetList.at(i)->setThemeColor(colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(subId))));
+        if (subId == SUB_PARAM_SPCO || subId == SUB_PARAM_SPOC || subId == SUB_PARAM_SPO2_2 || subId == SUB_PARAM_SPO2_D
+                || subId == SUB_PARAM_PI || subId == SUB_PARAM_PVI || subId == SUB_PARAM_SPHB || subId == SUB_PARAM_SPMET)
+        {
+            _subWidgetList.at(i)->setThemeColor(colorManager.getColor(paramInfo.getSubParamName(subId)));
+        }
+        else
+        {
+            _subWidgetList.at(i)->setThemeColor(colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(subId))));
+        }
 
         loadTrendData(subId, startIndex, endIndex);
         _subWidgetList.at(i)->trendDataInfo(_trendGraphInfo);
@@ -857,7 +865,15 @@ void TrendWaveWidget::_initWaveSubWidget()
             subWidget->setWidgetParam(subID, getTrendGraphType(subID));
             subWidget->setVisible(true);
             subWidget->setParent(this);
-            subWidget->setThemeColor(colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID((SubParamID)i))));
+            if (subID == SUB_PARAM_SPCO || subID == SUB_PARAM_SPOC || subID == SUB_PARAM_SPO2_2 || subID == SUB_PARAM_SPO2_D
+                    || subID == SUB_PARAM_PI || subID == SUB_PARAM_PVI || subID == SUB_PARAM_SPHB || subID == SUB_PARAM_SPMET)
+            {
+                subWidget->setThemeColor(colorManager.getColor(paramInfo.getSubParamName(subID)));
+            }
+            else
+            {
+                subWidget->setThemeColor(colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(subID))));
+            }
             subWidget->setFocusPolicy(Qt::NoFocus);
             num++;
         }
