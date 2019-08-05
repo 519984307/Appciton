@@ -1007,7 +1007,14 @@ void NIBPParam::setInitPressure(int index)
 int NIBPParam::getInitPressure()
 {
     int initVal;
-    currentConfig.getNumValue("NIBP|InitialCuffInflation", initVal);
+    if (moduleStr == "BLM_N5")
+    {
+        currentConfig.getNumValue("NIBP|InitialCuffInflation", initVal);
+    }
+    else
+    {
+        currentConfig.getNumValue("NIBP|SUNTECHInitialCuffInflation", initVal);
+    }
     PatientType patienType = patientManager.getType();
     if (patienType == PATIENT_TYPE_ADULT)
     {
@@ -1577,6 +1584,8 @@ NIBPParam::NIBPParam()
 
     _btnTimer = new QTimer();
     connect(_btnTimer, SIGNAL(timeout()), this, SLOT(_btnTimeOut()));
+
+    machineConfig.getStrValue("NIBP", moduleStr);
 }
 
 /**************************************************************************************************

@@ -109,6 +109,7 @@
         <StatFunction>1</StatFunction>
         <AutomaticRetry>0</AutomaticRetry>
         <InitialCuffInflation>4</InitialCuffInflation>
+	<SUNTECHInitialCuffInflation>4</SUNTECHInitialCuffInflation>
 	<CompleteTone>0</CompleteTone>
     </NIBP>
     <SPO2>
