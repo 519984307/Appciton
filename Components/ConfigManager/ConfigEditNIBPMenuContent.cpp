@@ -38,6 +38,7 @@ public:
     QStringList initCuffStrs;
     QLabel *initCuffUnitLbl;
     PatientType curType;
+    QString moduleStr;
 };
 
 ConfigEditNIBPMenuContentPrivate
@@ -47,6 +48,7 @@ ConfigEditNIBPMenuContentPrivate
     , initCuffUnitLbl(NULL)
     , curType(type)
 {
+    machineConfig.getStrValue("NIBP", moduleStr);
 }
 
 ConfigEditNIBPMenuContent::ConfigEditNIBPMenuContent(Config *const config, PatientType type):
@@ -107,7 +109,14 @@ void ConfigEditNIBPMenuContentPrivate::loadOptions()
 
     // init the 'initVal'
     int initVal = 0;
-    config->getNumValue("NIBP|InitialCuffInflation", initVal);
+    if (moduleStr == "BLM_N5")
+    {
+      config->getNumValue("NIBP|InitialCuffInflation", initVal);
+    }
+    else
+    {
+      config->getNumValue("NIBP|SUNTECHInitialCuffInflation", initVal);
+    }
     initCuffSpb->setValue(initVal);
 }
 
@@ -130,7 +139,14 @@ void ConfigEditNIBPMenuContent::onAlarmBtnReleased()
 
 void ConfigEditNIBPMenuContent::onSpinBoxReleased(int value)
 {
-    d_ptr->config->setNumValue("NIBP|InitialCuffInflation", value);
+    if (d_ptr->moduleStr == "BLM_N5")
+    {
+        d_ptr->config->setNumValue("NIBP|InitialCuffInflation", value);
+    }
+    else
+    {
+        d_ptr->config->setNumValue("NIBP|SUNTECHInitialCuffInflation", value);
+    }
 }
 
 void ConfigEditNIBPMenuContent::layoutExec()

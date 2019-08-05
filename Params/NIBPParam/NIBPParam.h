@@ -385,5 +385,7 @@ private:
     QTimer *_btnTimer;
 
     unsigned char _oldState;
+
+    QString moduleStr;
 };
 #define nibpParam (NIBPParam::getInstance())

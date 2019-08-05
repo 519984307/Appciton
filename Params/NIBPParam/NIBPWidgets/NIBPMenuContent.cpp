@@ -66,6 +66,7 @@ public:
     QStringList initCuffStrs;
     UnitType curUnitType;
     PatientType lastType;
+    QString moduleStr;
 };
 
 
@@ -75,6 +76,7 @@ NIBPMenuContent::NIBPMenuContent():
 {
     d_ptr->lastType = patientManager.getType();
     connect(&nibpParam, SIGNAL(statBtnState(bool)), this, SLOT(onStatBtnStateChanged(bool)));
+    machineConfig.getStrValue("NIBP", d_ptr->moduleStr);
 }
 
 NIBPMenuContent::~NIBPMenuContent()
@@ -247,7 +249,14 @@ void NIBPMenuContentPrivate::loadOptions()
     }
 
     int initVal = 0;
-    currentConfig.getNumValue("NIBP|InitialCuffInflation", initVal);
+    if (moduleStr == "BLM_N5")
+    {
+        currentConfig.getNumValue("NIBP|InitialCuffInflation", initVal);
+    }
+    else
+    {
+        currentConfig.getNumValue("NIBP|SUNTECHInitialCuffInflation", initVal);
+    }
     initCuffSpb->setValue(initVal);
 
     lastType = type;
@@ -333,7 +342,14 @@ void NIBPMenuContent::onAlarmBtnReleased()
 
 void NIBPMenuContent::onSpinBoxReleased(int value)
 {
-    currentConfig.setNumValue("NIBP|InitialCuffInflation", value);
+    if (d_ptr->moduleStr == "BLM_N5")
+    {
+        currentConfig.setNumValue("NIBP|InitialCuffInflation", value);
+    }
+    else
+    {
+        currentConfig.setNumValue("NIBP|SUNTECHInitialCuffInflation", value);
+    }
     UnitType curUnit = nibpParam.getUnit();
     UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_NIBP_SYS);
     if (curUnit != defUnit)
