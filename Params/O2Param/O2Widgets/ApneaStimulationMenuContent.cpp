@@ -96,7 +96,7 @@ void ApneaStimulationMenuContent::layoutExec()
     d_ptr->spinbos.insert(ApneaStimulationMenuContentPrivate::ITEM_SPB_VIBRATEINTENSITY, spin);
 
     // resp
-    label = new QLabel("RESP");
+    label = new QLabel(trs("RESP"));
     glayout->addWidget(label, row, 0);
     combo = new ComboBox();
     combo->addItems(QStringList()
@@ -109,7 +109,7 @@ void ApneaStimulationMenuContent::layoutExec()
     d_ptr->combos.insert(ApneaStimulationMenuContentPrivate::ITEM_CBO_RESP, combo);
 
     // CO2
-    label = new QLabel("CO2");
+    label = new QLabel(trs("CO2"));
     glayout->addWidget(label, row, 0);
     combo = new ComboBox();
     combo->addItems(QStringList()
@@ -122,7 +122,7 @@ void ApneaStimulationMenuContent::layoutExec()
     d_ptr->combos.insert(ApneaStimulationMenuContentPrivate::ITEM_CBO_CO2, combo);
 
     // HR
-    label = new QLabel("HR");
+    label = new QLabel(trs("HR"));
     glayout->addWidget(label, row, 0);
     spin = new SpinBox();
     spin->setRange(90, 110);
@@ -135,7 +135,7 @@ void ApneaStimulationMenuContent::layoutExec()
     d_ptr->spinbos.insert(ApneaStimulationMenuContentPrivate::ITEM_SPB_HR, spin);
 
     // SPO2
-    label = new QLabel("SPO2");
+    label = new QLabel(trs("SPO2"));
     glayout->addWidget(label, row, 0);
     spin = new SpinBox();
     spin->setRange(80, 90);
