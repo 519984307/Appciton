@@ -30,7 +30,9 @@ public:
         : interfaceCbo(NULL),
           layoutCbo(NULL),
           paraColorBtn(NULL)
-    {}
+    {
+        spo2Enable = systemManager.isSupport(CONFIG_SPO2);
+    }
 
     void loadOptions();
 
@@ -39,6 +41,7 @@ public:
     ComboBox *interfaceCbo;     // 界面选择
     ComboBox *layoutCbo;        // 布局设置
     Button *paraColorBtn;
+    bool spo2Enable;
 
     enum ScreenLayoutItem
     {
@@ -67,8 +70,10 @@ void ScreenMenuContentPrivate::reloadScreenType()
 #endif
         screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_BIGFONT)));
 
-        screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_SPO2)));
-
+        if (spo2Enable)
+        {
+            screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_SPO2)));
+        }
         screenTypeList << UFACE_MONITOR_STANDARD
                   #ifndef HIDE_MONITOR_OXYCRG
                        << UFACE_MONITOR_OXYCRG
@@ -76,8 +81,11 @@ void ScreenMenuContentPrivate::reloadScreenType()
                   #ifndef HIDE_MONITOR_TREND
                        << UFACE_MONITOR_TREND
                   #endif
-                       << UFACE_MONITOR_BIGFONT
-                       << UFACE_MONITOR_SPO2;
+                       << UFACE_MONITOR_BIGFONT;
+        if (spo2Enable)
+        {
+            screenTypeList.append(UFACE_MONITOR_SPO2);
+        }
     }
     else
     {
@@ -90,9 +98,10 @@ void ScreenMenuContentPrivate::reloadScreenType()
         screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_TREND)));
 #endif
         screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_BIGFONT)));
-
-        screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_SPO2)));
-
+        if (spo2Enable)
+        {
+            screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_SPO2)));
+        }
         screenTypeList << UFACE_MONITOR_STANDARD
                        << UFACE_MONITOR_ECG_FULLSCREEN
                   #ifndef HIDE_MONITOR_OXYCRG
@@ -101,8 +110,11 @@ void ScreenMenuContentPrivate::reloadScreenType()
                   #ifndef HIDE_MONITOR_TREND
                        << UFACE_MONITOR_TREND
                   #endif
-                       << UFACE_MONITOR_BIGFONT
-                       << UFACE_MONITOR_SPO2;
+                       << UFACE_MONITOR_BIGFONT;
+        if (spo2Enable)
+        {
+            screenTypeList.append(UFACE_MONITOR_SPO2);
+        }
     }
 
     interfaceCbo->blockSignals(true);
@@ -175,8 +187,7 @@ void ScreenMenuContent::layoutExec()
     d_ptr->layoutCbo = new ComboBox;
     d_ptr->layoutCbo->addItems(QStringList()
                                << trs("StandardScreenLayout")
-                               << trs("BigFontScreenLayout")
-                               );
+                               << trs("BigFontScreenLayout"));
     layout->addWidget(d_ptr->layoutCbo, count++, 1);
     connect(d_ptr->layoutCbo, SIGNAL(activated(int)), this, SLOT(onComboxIndexChanged(int)));
 
