@@ -9,7 +9,6 @@
  **/
 
 #include "AlarmLimitModel.h"
-#include "ParamInfo.h"
 #include "Utility.h"
 #include <QDebug>
 #include <QColor>
