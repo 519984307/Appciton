@@ -575,12 +575,12 @@ void T5Provider::_limitHandle(unsigned char *packet)
     if (0xFF != packet[2])
     {
         int temp1 = static_cast<int>((packet[2] << 8) + packet[1]);
-        if ((temp1 < 150 || temp1 > 500) && _overRang1 == false)
+        if ((temp1 < 0 || temp1 > 500) && _overRang1 == false)
         {
             _overRang1 = true;
             isAlarm = true;
         }
-        else if (temp1 > 150 && temp1 < 500 && _overRang1 == true)
+        else if (temp1 > 0 && temp1 < 500 && _overRang1 == true)
         {
             _overRang1 = false;
             isAlarm = true;
@@ -589,12 +589,12 @@ void T5Provider::_limitHandle(unsigned char *packet)
     if (0xFF != packet[4])
     {
         int temp2 = static_cast<int>((packet[4] << 8) + packet[3]);
-        if ((temp2 < 150 || temp2 > 500) && _overRang2 == false)
+        if ((temp2 < 0 || temp2 > 500) && _overRang2 == false)
         {
             _overRang2 = true;
             isAlarm = true;
         }
-        else if (temp2 > 150 && temp2 < 500 && _overRang2 == true)
+        else if (temp2 > 0 && temp2 < 500 && _overRang2 == true)
         {
             _overRang2 = false;
             isAlarm = true;
