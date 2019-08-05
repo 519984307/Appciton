@@ -104,6 +104,7 @@ SPO2_2,SpO₂ 2,SpO₂ 2
 SPO2_D,ΔSpO₂,ΔSpO₂
 SPHB,SpHb,SpHb
 SPOC,SpOC,SpOC
+SPCO,SpCO,SpCO
 SPMET,SpMet,SpMet
 PR,PR,PR
 PLETH,Pleth,Pleth
