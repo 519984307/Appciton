@@ -42,8 +42,6 @@
 #define GET_DIA_DATA_PERIOD (12000)
 #define DISABLE_DIA_SOFTKEY_PERIOD (900)  // 1s,定时有差异，使用900ms
 
-unsigned ECGParam::selfTestResult = 0;
-
 /**************************************************************************************************
  * 获取禁用的波形控件。
  *************************************************************************************************/
@@ -353,6 +351,7 @@ void ECGParam::setProvider(ECGProviderIFace *provider)
         _waveWidget[i]->setDataRate(_provider->getWaveformSample());
     }
 
+    _provider->getSelfTestStatus();
 //    <Gain>1</Gain>
     // todo：其他设置。
 }
@@ -568,6 +567,7 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
  *************************************************************************************************/
 void ECGParam::updateHR(short hr)
 {
+    ecgDupParam.restartParamUpdateTime();
     if (_hrValue == hr)
     {
         return;
@@ -1047,7 +1047,7 @@ void ECGParam::reset(void)
 /***************************************************************************************************
  * handle ecg selftest result
  **************************************************************************************************/
-void ECGParam::handleSelfTestResult()
+void ECGParam::handleSelfTestResult(unsigned selfTestResult)
 {
     QString errStr("");
     bool flag = true;
@@ -1074,15 +1074,15 @@ void ECGParam::handleSelfTestResult()
         errStr += "Pace Sync Test Failed.\r\n";
         flag = false;
     }
-    systemManager.setPoweronTestResult(TE3_MODULE_SELFTEST_RESULT,
+    systemManager.setPoweronTestResult(E5_MODULE_SELFTEST_RESULT,
                                        flag ? SELFTEST_SUCCESS : SELFTEST_FAILED);
 
     if (!errStr.isEmpty())
     {
         ErrorLogItem *item = new CriticalFaultLogItem();
-        item->setName("TE3 Self Test Failed");
+        item->setName("E5 Self Test Failed");
         item->setLog(errStr);
-        item->setSubSystem(ErrorLogItem::SUB_SYS_TE3);
+        item->setSubSystem(ErrorLogItem::SUB_SYS_E5);
         item->setSystemState(ErrorLogItem::SYS_STAT_SELFTEST);
         item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
         errorLog.append(item);
@@ -2039,6 +2039,21 @@ void ECGParam::setNotchFilter(ECGNotchFilter filter)
     emit updateNotchFilter();
 }
 
+void ECGParam::updateEditNotchFilter()
+{
+    int filter = 0;
+    currentConfig.getNumValue("ECG|NotchFilter", filter);
+    if (filter == _notchFilter)
+    {
+        return;
+    }
+    _notchFilter = static_cast<ECGNotchFilter>(filter);
+    if (NULL != _provider)
+    {
+        _provider->setNotchFilter(_notchFilter);
+    }
+    emit updateNotchFilter();
+}
 /**************************************************************************************************
  * 设置/获取工频滤波。
  *************************************************************************************************/

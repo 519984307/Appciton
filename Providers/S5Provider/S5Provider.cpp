@@ -330,21 +330,19 @@ bool S5Provider::isResult_BAR(unsigned char *packet)
     // PI;
     bool isLowPerfusion = false;
     short piValue = packet[15];
-    if (piValue > 200)
+    if (piValue > 200 || piValue <= 0)
     {
         piValue = InvData();
         spo2Param.setPerfusionStatus(false);
         isLowPerfusion = false;
     }
-    else if (piValue < 1)
+    else if (piValue < 10)
     {
-        piValue = InvData();
         spo2Param.setPerfusionStatus(true);
         isLowPerfusion = true;
     }
     else
     {
-        piValue *= 10;
         spo2Param.setPerfusionStatus(false);
         isLowPerfusion = false;
     }
@@ -384,10 +382,14 @@ bool S5Provider::isStatus(unsigned char *packet)
         if (packet[2] == S5_NO_INSERT)
         {
             _isCableOff = true;
-            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_OFF, true);
+            if (!_isFirstConnectCable)
+            {
+                spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_OFF, true);
+            }
         }
         else
         {
+            _isFirstConnectCable = false;
             _isCableOff = false;
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_OFF, false);
         }
@@ -399,13 +401,13 @@ bool S5Provider::isStatus(unsigned char *packet)
         if (packet[2] == S5_INSERT)
         {
             spo2Param.setNotify(false, trs("SPO2CheckSensor"));
-            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, false);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_FINGER_OFF, false);
             _isFingerOff = false;
         }
         else
         {
             spo2Param.setNotify(true, trs("SPO2CheckSensor"));
-            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_FINGER_OFF, true);
             _isFingerOff = true;
         }
     }
@@ -444,11 +446,11 @@ bool S5Provider::isStatus(unsigned char *packet)
     {
         if (packet[2] == S5_LED_ERROR)
         {
-            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LED_FAULT, true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, true);
         }
         else if (packet[2] == S5_LED_NOERROR)
         {
-            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LED_FAULT, false);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, false);
         }
     }
 
@@ -511,6 +513,7 @@ S5Provider::S5Provider()
           : BLMProvider("BLM_S5")
           , SPO2ProviderIFace()
           , _isValuePR(false)
+          , _isFirstConnectCable(true)
           , _isCableOff(false)
           , _isFingerOff(true)
           , _isSeaching(false)

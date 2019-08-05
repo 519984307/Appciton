@@ -456,6 +456,10 @@ void PatientManager::newPatient()
         {
             nibpParam->clearResult();
             nibpParam->clearTrendListData();
+            if (nibpParam->isMeasuring())
+            {
+                nibpParam->stopMeasure();
+            }
         }
     }
     if (systemManager.isSupport(PARAM_SPO2))

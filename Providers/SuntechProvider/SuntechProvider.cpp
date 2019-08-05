@@ -449,8 +449,8 @@ void SuntechProvider::controlPneumatics(unsigned char pump, unsigned char contro
 SuntechProvider::SuntechProvider() :
     Provider("SUNTECH_NIBP"), NIBPProviderIFace(),
     _NIBPStart(false), _flagStartCmdSend(-1), _pressure(-1),
-    _timer(NULL), _isModuleDataRespond(false),
-    _isCalibrationRespond(false), _cmdTimer(NULL)
+    _timer(NULL), _cmdTimer(NULL), _isModuleDataRespond(false),
+    _isCalibrationRespond(false)
 {
     UartAttrDesc portAttr(9600, 8, 'N', 1);
     initPort(portAttr);

@@ -34,6 +34,7 @@ enum  // 数据包类型。
     CONFIG_DATA = 0x05,
     SERVICE_DATA = 0x06,
     RAW_DATA = 0x0A,
+    CALIBRATE_RESULT = 0x0D
 };
 
 enum  // 位操作。
@@ -57,6 +58,7 @@ enum  // 设置命令。
     CMD_SET_O2 = 0x04,        // 设置氧气补偿的浓度
     CMD_SET_N20 = 0x05,       // 设置笑气补偿的浓度
     CMD_ZERO_CAL = 0x06,      // 模块校零命令。
+    CMD_CALIBRATE_DATA = 0x08 // 定标不同CO2浓度
 };
 
 /**************************************************************************************************
@@ -394,6 +396,9 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
         rawDataCollector.collectData(RawDataCollector::CO2_DATA, packet + 3, _packetLen - 4);
         break;
 
+    case CALIBRATE_RESULT:
+        co2Param.setCalibrateData(packet + 2);
+        break;
     default:
         break;
     }
@@ -704,6 +709,17 @@ void BLMCO2Provider::enterUpgradeMode()
     cmd[2] = CMD_ENTER_UPGRADE_MODE;
     cmd[3] = 0x0;
 
+    _calcCheckSum(cmd);
+    writeData(cmd, sizeof(cmd));
+}
+
+void BLMCO2Provider::sendCalibrateData(int value)
+{
+    unsigned char cmd[5] = {0};
+    cmd[0] = 0xAA;
+    cmd[1] = 0x55;
+    cmd[2] = CMD_CALIBRATE_DATA;
+    cmd[3] = value;
     _calcCheckSum(cmd);
     writeData(cmd, sizeof(cmd));
 }

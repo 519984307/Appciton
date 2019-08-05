@@ -127,12 +127,11 @@ int CO2LimitAlarm::getCompare(int value, int id)
     QString valueStr;
     if (curUnit == UNIT_MMHG)
     {
-        int low = limitConfig.lowLimit;
-        int high = limitConfig.highLimit;
+        int low = limitConfig.lowLimit * limitConfig.scale;
+        int high = limitConfig.highLimit * limitConfig.scale;
         int v = 0;
         valueStr = Unit::convert(curUnit, defUnit, value, co2Param.getBaro());
         v = valueStr.toInt();
-        v /= mul;
         if (0 == id % 2)
         {
             return v < low ? -1 : 0;

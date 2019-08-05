@@ -49,7 +49,10 @@ public:
               baro(1013),
               connectedProvider(false),
               co2Switch(false),
-              oxyCRGCO2Wave(NULL)
+              oxyCRGCO2Wave(NULL),
+              calibrateChannel(0),
+              calibrateResult(false),
+              calibrateReply(false)
     {
     }
 
@@ -89,6 +92,10 @@ public:
     bool   co2Switch;
 
     OxyCRGCO2WaveWidget *oxyCRGCO2Wave;
+
+    int calibrateChannel;
+    bool calibrateResult;
+    bool calibrateReply;
 };
 /**************************************************************************************************
  * 设置波形速度。
@@ -734,6 +741,36 @@ bool CO2Param::setModuleWorkMode(CO2WorkMode mode)
         return true;
     }
     return false;
+}
+
+void CO2Param::sendCalibrateData(int value)
+{
+    d_ptr->calibrateChannel = value;
+    d_ptr->provider->sendCalibrateData(value);
+}
+
+void CO2Param::setCalibrateData(const unsigned char *packet)
+{
+    if (d_ptr->calibrateChannel == packet[1])
+    {
+        d_ptr->calibrateReply = true;
+        d_ptr->calibrateResult = packet[2];
+    }
+}
+
+bool CO2Param::getCalibrateResult()
+{
+    return d_ptr->calibrateResult;
+}
+
+bool CO2Param::getCalibrateReply()
+{
+    bool reply = d_ptr->calibrateReply;
+    if (reply)
+    {
+        d_ptr->calibrateReply = false;
+    }
+    return reply;
 }
 
 /**************************************************************************************************

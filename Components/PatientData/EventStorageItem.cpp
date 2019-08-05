@@ -305,7 +305,7 @@ bool EventStorageItem::checkCompleted()
         return false;
     }
 
-    if (timeManager.getCurTime() -  d_ptr->eventInfo.timestamp  > (unsigned)(d_ptr->eventInfo.duration_after + 2))
+    if (timeManager.getCurTime() -  d_ptr->eventInfo.timestamp  > (unsigned)(d_ptr->eventInfo.duration_after))
     {
         // time expired
         qdebug("cache time expired");

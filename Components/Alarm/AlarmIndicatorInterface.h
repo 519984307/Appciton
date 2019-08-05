@@ -144,4 +144,15 @@ public:
      * @param status
      */
     virtual void publishAlarm(AlarmStatus status) = 0;
+
+    /**
+     * @brief isAlarmAudioState
+     */
+    virtual bool isAlarmAudioState() = 0;
+
+    /**
+     * @brief setAlarmAudioState 设置报警音暂停状态
+     * @param flag
+     */
+    virtual void setAlarmAudioState(bool flag) = 0;
 };

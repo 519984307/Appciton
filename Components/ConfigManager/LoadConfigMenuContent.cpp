@@ -263,11 +263,13 @@ void LoadConfigMenuContent::onBtnClick()
         currentConfig.load(loadPath);
         alarmConfig.clearLimitAlarmInfo();
         colorManager.clearColorMap();
+        configManager.setOriginalConfig(static_cast<PatientType>(patitentTypeInt), d_ptr->configs.at(index).fileName);
 
         soundManager.volumeInit();
         layoutManager.updateLayoutWidgetsConfig();
         ecgParam.updatePacermaker();    // 更新起博标志
         ecgDupParam.updateHRSource();   // 更新HR来源
+        ecgParam.updateEditNotchFilter(); // 更新ECG工频陷波
         respDupParam.updateRRSource();  // 更新RR来源
         respParam.setCalcLead(respParam.getCalcLead()); // 更新呼吸导联
         co2Param.updateDisplayZoom();   // 更新co2标尺

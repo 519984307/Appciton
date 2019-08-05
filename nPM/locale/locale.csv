@@ -2,12 +2,6 @@ ID,ChineseSimplified,English
 LanguageNameEnglish,英文,English
 LanguageNameChinese,中文,Chinese
 LanguageNameLocal,简体中文,English
-HOST,HOST,HOST
-TE3,TE3,TE3
-TN3,TN3,TN3
-TS3,TS3,TS3
-TT3,TT3,TT3
-PRT72,PRT72,PRT72
 STAnalysize,ST段分析,ST Analysize
 SystemMaintenance,维护,Maintenance
 SystemMaintenanceDesc,维护,Maintenance
@@ -60,7 +54,7 @@ ST-V2,ST-V2,ST-V2
 ST-V3,ST-V3,ST-V3
 ST-V4,ST-V4,ST-V4
 ST-V5,ST-V5,ST-V5
-ExportFailed,导出失败,Export Failed
+ExportFailure,导出失败,Export Failure
 ST-V6,ST-V6,ST-V6
 PVCS,PVCS,PVCS
 ST,ST,ST
@@ -447,7 +441,7 @@ isRelievePatient,是否解除病人,Whether to discharge patient?
 CleanPatientData,清除当前病人数据,Clean Current Patient Data
 isCleanPatient,是否清除当前病人数据,Whether to clean the current patient data?
 WhetherStandby,是否进入待机？,Whether to enter the standby machine？
-RemoveAndRecePatient,"解除当前病人,接收新病人?",Relieving the current patient and receiving new patients?
+RemoveAndRecePatient,"解除当前病人,接收新病人?",Release the current patient and receive new patients?
 ApplicationDataToReceivingPatients,将监护仪中已有数据应用于将被接收的病人？,Application data to receiving patients?
 PatientManagement,病人管理,Patient Management
 ScreenSetup,界面布局,Layout
@@ -466,6 +460,7 @@ SPO2SensMed,中,Medium
 SPO2SensHigh,高,High
 NIBPManual,手动,Manual
 NIBPAUTO,自动,Auto
+NIBPManualStart,自动测量手动启动,Auto Measure Manual Start
 NIBPCONT,连续,Continuous
 STATCLOSE,STAT模式关闭,STAT Close
 STATSTOPPED,STAT停止,STAT Stopped
@@ -633,6 +628,7 @@ SPO2SearchingPulse,SpO₂脉搏搜索,SpO₂ Searching Pulse
 SPO2CommunicationStop,SpO₂通信中断,SpO₂ Communication Stop
 SPO2ProbeFault,SpO₂探头故障,SpO₂ Probe Fault
 SPO2SignalSaturation,SpO₂信号饱和,SpO₂ Signal Saturation
+CO2NoSamplingLine,CO₂没有采样管,CO₂ No Sampling Line
 CO2EtCO2Low,EtCO₂ 低,EtCO₂ Low
 CO2EtCO2High,EtCO₂ 高,EtCO₂ High
 CO2FiCO2Low,FiCO₂ 低,FiCO₂ Low
@@ -653,9 +649,14 @@ CO2ZeroDisable,CO₂禁止校零,CO₂ Zero Disable
 CO2ZeroInprogress,CO₂校零中,CO₂ Zero In Progress
 CO2SpanCalibFailed,CO₂校准失败,CO₂ Span Calib Failed
 CO2SpanCalibInprogress,CO₂正在校准,CO₂ Span Calib In Progress
-CO2ZeroandSpanDisable,CO₂禁止校零和校准,CO₂ Zero and Span Disable
-CO2SampleLineClogged,CO₂采样管堵塞,CO₂ Sample Line Clogged
+CO2ZeroAndSpanDisable,CO₂禁止校零和校准,CO₂ Zero and Span Disable
+CO2SamplingLineClogged,CO₂ 流速低,采样管堵塞,CO₂ Low Flow Rate, Sample Line Clogged
 CO2NoSampleLine,CO₂没有采样线,CO₂ No Sample Line
+CO2CalibratePotency,校准浓度,Calibration Denstiy
+CO2CommunicationStop,CO₂通讯停止,CO₂ Communication Stop
+CO2Calibrate,CO₂校准,CO₂ Calibrate
+CO2CalibrateMenu,CO₂校准,CO₂ Calibrate
+CO2CalibrateDesc,CO₂校准,CO₂ calibrate
 IBP1LeadOff,IBP通道1导联脱落,IBP1 lead off
 IBP2LeadOff,IBP通道2导联脱落,IBP2 lead off
 IBP1ZeroCalibSuccess,IBP通道1校零成功,IBP1 zero success
@@ -1035,7 +1036,7 @@ Upper,过高,Upper
 Lower,过低,Lower
 EventList,事件列表,Event List
 PrintList,打印列表,Print List
-EventListPrint,事件列表,Event Log
+EventListPrint,事件列表打印,Event Log Print
 RealTimePrint,实时打印,Realtime Print
 RealtimeSegmentWavePrint,片段实时波形打印,Realtime Segment Wave Print
 FrozenWavePrint,冻结波形打印,Frozen Wave Print
@@ -1334,7 +1335,7 @@ MACAddress,硬件地址,MAC Address
 ElectronicSerialNumber,电子序列号,Electronic Serial Number
 SetElectronicSerialNumber,设置电子序列号,Set Electronic Serial Number
 MonitorInfoMenuDesc,监护仪信息菜单设置,Monitor Info
-StopNeoNIBPMeasure,禁止NIBP新生儿测量,Close NEO NIBP Measurement
+StopNeoNIBPMeasure,禁止NIBP新生儿测量,Close Neo NIBP Measurement
 NIBPMaintainMenu,NIBP维护,NIBP Maintain
 NIBPMaintain,NIBP维护,NIBP Maintain
 NIBPMaintainMenuDesc,NIBP维护,NIBP Maintain

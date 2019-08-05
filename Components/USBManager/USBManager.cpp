@@ -167,6 +167,10 @@ void USBManager::cancelExport()
 void USBManager::updateConnectStatus(bool status)
 {
     _usbExist = status;
+    if (_usbExist == false)  // u盘不存在时发出u盘弹出信号
+    {
+        emit popupUDisk();
+    }
 }
 
 void USBManager::onExportFinished(DataExporterBase::ExportStatus status)

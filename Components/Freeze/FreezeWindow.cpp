@@ -140,6 +140,16 @@ void FreezeWindow::showEvent(QShowEvent *ev)
 
     // 将开始冻结打印接口放在触发波形冻结事件后面，这样该接口内部的趋势表数据缓冲容器可以及时获取有效缓冲数据
     freezeManager.startFreeze();
+
+    // 更新打印按键状态
+    if (recorderManager.isConnected())
+    {
+        d_ptr->printBtn->setEnabled(true);
+    }
+    else
+    {
+        d_ptr->printBtn->setEnabled(false);
+    }
 }
 
 void FreezeWindow::hideEvent(QHideEvent *ev)

@@ -95,9 +95,9 @@ void AlarmNormalState::handAlarmEvent(AlarmStateEvent event, unsigned char */*da
 
     case ALARM_STATE_EVENT_MUTE_BTN_PRESSED_SHORT_TIME:
     {
-        if (alarmStateMachine->isEnableAlarmAudioOff())
+        if (!alarmIndicator->isAlarmAudioState())
         {
-            alarmStateMachine->switchState(ALARM_AUDIO_OFF_STATE);
+            alarmIndicator->setAlarmAudioState(true);
         }
         break;
     }

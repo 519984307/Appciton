@@ -419,15 +419,16 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         {
             result |= MINOR_SAMPLE_MODULE_INIT_FAILED;
         }
-        Q_UNUSED(result)
+
+        ecgParam.handleSelfTestResult(result);
         break;
     }
 
     case TE3_NOTIFY_SYSTEM_STARTED:
     {
         ErrorLogItem *item = new CriticalFaultLogItem();
-        item->setName("TE3 Start");
-        item->setSubSystem(ErrorLogItem::SUB_SYS_TE3);
+        item->setName("E5 Start");
+        item->setSubSystem(ErrorLogItem::SUB_SYS_E5);
         item->setSystemState(ErrorLogItem::SYS_STAT_RUNTIME);
         item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
         errorLog.append(item);
@@ -589,9 +590,9 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         if (!errorStr.isEmpty())
         {
             ErrorLogItem *item = new CriticalFaultLogItem();
-            item->setName(QString("TE3 Error:0x%1").arg(data[1], 2, 16, QChar('0')));
+            item->setName(QString("E5 Error:0x%1").arg(data[1], 2, 16, QChar('0')));
             item->setLog(errorStr);
-            item->setSubSystem(ErrorLogItem::SUB_SYS_TE3);
+            item->setSubSystem(ErrorLogItem::SUB_SYS_E5);
             item->setSystemState(ErrorLogItem::SYS_STAT_RUNTIME);
             item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
             errorLog.append(item);

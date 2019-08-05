@@ -88,6 +88,9 @@ public:
     // 发送获取版本信息
     void sendVersion(){}
 
+    // 获取自检结果。
+    virtual void getSelfTestStatus(void) {}
+
     ECGProviderIFace() { }
     virtual ~ECGProviderIFace() { }
 };

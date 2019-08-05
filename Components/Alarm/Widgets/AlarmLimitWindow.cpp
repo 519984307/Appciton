@@ -277,7 +277,7 @@ void AlarmLimitWindow::onDefaultsClick()
 
 void AlarmLimitWindow::restoreDefaults()
 {
-    Config defaultConfig(currentConfig.getDefaultFileName(currentConfig.getFileName()));
+    Config defaultConfig(configManager.getOriginalConfig(patientManager.getType()));
 
     QList<ParamID> pids;
     paramManager.getParams(pids);

@@ -135,6 +135,8 @@ void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
     this->infos = infos;
     model->setupAlarmDataInfos(infos, false);
     model->setEachPageRowCount(TABLE_ROW_NUM);
+    prevBtn->setEnabled(table->hasPreivousPage());
+    nextBtn->setEnabled(table->hasNextPage());
 }
 
 ConfigEditAlarmLimitMenuContent::ConfigEditAlarmLimitMenuContent(Config *const config)

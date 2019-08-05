@@ -575,6 +575,22 @@ void RawDataCollector::stopCollectData()
         killTimer(d_ptr->timerId);
         d_ptr->timerId = -1;
     }
+    // U盘卸载时首先应该关掉正在使用的文件
+    for (int i = ECG_DATA; i < DATA_TYPE_NR; i++)
+    {
+        if (d_ptr->files[i])
+        {
+            fsync(d_ptr->files[i]->handle());
+            d_ptr->files[i]->close();
+            delete d_ptr->files[i];
+            d_ptr->files[i] = NULL;
+        }
+    }
+    d_ptr->mutex.lock();
+    qDeleteAll(d_ptr->dataBuffer);
+    d_ptr->dataBuffer.clear();
+    d_ptr->mutex.unlock();
+
     if (usbManager.isUSBExist())
     {
         usbManager.umountUDisk();     // 正常卸载U盘

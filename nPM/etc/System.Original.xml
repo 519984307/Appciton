@@ -158,6 +158,11 @@
             <Pediatric type="Current" name="" >PedConfig.xml</Pediatric>
             <Neonate type="Current" name="" >NeoConfig.xml</Neonate>
         </Default>
+	<Original>
+	    <Adult>AdultConfig.Original.xml</Adult>
+	    <Pediatric>PedConfig.Original.xml</Pediatric>
+	    <Neonate>NeoConfig.Original.xml</Neonate>
+	</Original>
         <UserDefine count="0">
         </UserDefine>
     </ConfigManager>

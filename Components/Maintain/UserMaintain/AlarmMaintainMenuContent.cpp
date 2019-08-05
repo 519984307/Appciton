@@ -28,6 +28,7 @@ public:
     enum MenuItem
     {
         ITEM_CBO_MIN_ALARM_VOLUME,
+        ITEM_CBO_ALARM_VOLUME,
         ITEM_CBO_ALARAM_PAUSE_TIME,
         ITEM_CBO_ALARM_CLOSE_PROMPT_TIME,
         ITEM_CBO_ENABLE_ALARM_OFF,
@@ -41,7 +42,7 @@ public:
         ITEM_CBO_DEFAULT
     };
 
-    AlarmMaintainMenuContentPrivate() : defaultBtn(NULL) {}
+    AlarmMaintainMenuContentPrivate() : defaultBtn(NULL), minAlarmVol(2) {}
 
     void loadOptions();
 
@@ -60,6 +61,7 @@ public:
     QMap<MenuItem, ComboBox *> combos;
     Button *defaultBtn;
     QMap<MenuItem, int> defaultIndexMap;
+    int minAlarmVol;
 };
 
 void AlarmMaintainMenuContentPrivate::loadOptions()
@@ -104,15 +106,29 @@ void AlarmMaintainMenuContentPrivate::loadOptions()
     index = flag ? 1 : 0;
     combos[ITEM_CBO_ALARM_LIGHT_RESET]->setCurrentIndex(index);
 
+#ifndef CLOSE_USELESS_ALARM_FUNCTION
     systemConfig.getNumValue("Alarms|PhyParAlarmLatchlockOn", index);
     combos[ITEM_CBO_ALARM_LATCH_LOCK]->setCurrentIndex(index);
+#endif
 
     systemConfig.getNumValue("Alarms|AlarmAudio", index);
     combos[ITEM_CBO_ALARM_AUDIO_OFF]->setCurrentIndex(index);
+    if (index)
+    {
+        combos[ITEM_CBO_ALARM_VOLUME]->setEnabled(true);
+    }
+    else
+    {
+        combos[ITEM_CBO_ALARM_VOLUME]->setEnabled(false);
+    }
 
-#ifdef DISABLED_ALARM_LATCH
+#ifndef DISABLED_ALARM_LATCH
     combos[ITEM_CBO_ALARM_LATCH_LOCK]->setEnabled(false);
 #endif
+
+    systemConfig.getNumValue("Alarms|MinimumAlarmVolume", minAlarmVol);
+    systemConfig.getNumValue("Alarms|DefaultAlarmVolume", index);
+    combos[ITEM_CBO_ALARM_VOLUME]->setCurrentIndex(index - minAlarmVol);
 }
 
 void AlarmMaintainMenuContentPrivate::
@@ -183,13 +199,27 @@ void AlarmMaintainMenuContentPrivate::
         break;
     case ITEM_CBO_ALARM_AUDIO_OFF:
     {
-            systemConfig.setNumValue("Alarms|AlarmAudio", index);
-            alarmIndicator.updateAlarmAudioState();
+            alarmIndicator.setAlarmAudioState(index);
             AlarmOneShotIFace *systemAlarm = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SYSTEM);
             if (systemAlarm)
             {
                 systemAlarm->setOneShotAlarm(SYSTEM_ONE_SHOT_ALARM_AUDIO_OFF, !index);
             }
+            if (index)
+            {
+                combos[ITEM_CBO_ALARM_VOLUME]->setEnabled(true);
+            }
+            else
+            {
+                combos[ITEM_CBO_ALARM_VOLUME]->setEnabled(false);
+            }
+        break;
+    }
+    case ITEM_CBO_ALARM_VOLUME:
+    {
+        index = index + minAlarmVol;
+        soundManager.setVolume(SoundManager::SOUND_TYPE_ALARM, static_cast<SoundManager::VolumeLevel>(index));
+        systemConfig.setNumValue("Alarms|DefaultAlarmVolume", index);
         break;
     }
     default:
@@ -296,6 +326,25 @@ void AlarmMaintainMenuContent::layoutExec()
     // 设置声音触发方式
     connect(comboBox, SIGNAL(itemFocusChanged(int)), this, SLOT(onPopupListItemFocusChanged(int)));
 #endif
+
+    // 报警音
+    label = new QLabel(trs("SystemAlarmVolume"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    systemConfig.getNumValue("Alarms|MinimumAlarmVolume", d_ptr->minAlarmVol);
+    for (int i = d_ptr->minAlarmVol; i <= SoundManager::VOLUME_LEV_5; i++)
+    {
+        comboBox->addItem(QString::number(i));
+    }
+    // 设置声音触发方式
+    connect(comboBox, SIGNAL(itemFocusChanged(int)), this, SLOT(onPopupListItemFocusChanged(int)));
+
+    itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_VOLUME);
+    comboBox->setProperty("Item", qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_VOLUME, comboBox);
+
     // 报警暂停时间
     label = new QLabel(trs("AlarmPauseTime"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -398,8 +447,8 @@ void AlarmMaintainMenuContent::layoutExec()
 #endif
 
     // alarmLight On Alarm Reset
-//    label = new QLabel(trs("AlarmLightOnAlarmReset"));
-//    layout->addWidget(label, d_ptr->combos.count(), 0);
+    label = new QLabel(trs("AlarmLightOnAlarmReset"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("Close")
@@ -407,12 +456,13 @@ void AlarmMaintainMenuContent::layoutExec()
     itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_LIGHT_RESET);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-//    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_LIGHT_RESET, comboBox);
 
+#ifndef CLOSE_USELESS_ALARM_FUNCTION
     // latch lock
-//    label = new QLabel(trs("LatchLockSwitch"));
-//    layout->addWidget(label, d_ptr->combos.count(), 0);
+    label = new QLabel(trs("LatchLockSwitch"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("Off")
@@ -420,8 +470,9 @@ void AlarmMaintainMenuContent::layoutExec()
     itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_LATCH_LOCK);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-//    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_LATCH_LOCK, comboBox);
+#endif
 
     // Alarm Audio Off
     label = new QLabel(trs("AlarmAudio"));
@@ -492,5 +543,12 @@ void AlarmMaintainMenuContent::onPopupListItemFocusChanged(int volume)
     {
         soundManager.setVolume(SoundManager::SOUND_TYPE_ALARM , static_cast<SoundManager::VolumeLevel>(volume));
         soundManager.alarmTone();
+    }
+    else if (w == d_ptr->combos[AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_VOLUME])
+    {
+        SoundManager::VolumeLevel curVolume = soundManager.getVolume(SoundManager::SOUND_TYPE_ALARM);
+        soundManager.setVolume(SoundManager::SOUND_TYPE_ALARM , static_cast<SoundManager::VolumeLevel>(volume));
+        soundManager.alarmTone();
+        soundManager.setVolume(SoundManager::SOUND_TYPE_ALARM, curVolume);
     }
 }

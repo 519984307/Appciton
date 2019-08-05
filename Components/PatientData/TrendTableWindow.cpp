@@ -166,6 +166,16 @@ void TrendTableWindow::showEvent(QShowEvent *ev)
             d_ptr->table->verticalHeader()->setMinimumWidth(s.width());
         }
     }
+
+    // 更新打印机状态
+    if (recorderManager.isConnected())
+    {
+        d_ptr->printParamBtn->setEnabled(true);
+    }
+    else
+    {
+        d_ptr->printParamBtn->setEnabled(false);
+    }
 }
 
 bool TrendTableWindow::eventFilter(QObject *o, QEvent *e)

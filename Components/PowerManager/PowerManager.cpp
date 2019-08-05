@@ -31,7 +31,7 @@ public:
     explicit PowerMangerPrivate(PowerManger * const q_ptr)
         : q_ptr(q_ptr), lowBattery(false), shutBattery(false),
           adcValue(AD_VALUE_FLOAT_RANGE), lastVolumeAdcValue(0),
-          hasHintShutMessage(false), shutdownTimer(NULL)
+          hasHintShutMessage(false), shutdownTimer(NULL), lowMessage(NULL)
     {
     }
     ~PowerMangerPrivate(){}
@@ -71,7 +71,11 @@ public:
      */
     bool hasBattery(void);
 
-    void shutdownWarn(void);
+    /**
+     * @brief shutdownWarn
+     * @param isWarn 是否提示关机
+     */
+    void shutdownWarn(bool isWarn);
 
     QList<BatteryPowerLevel> powerList;
     QList<short> adValueList;
@@ -80,6 +84,8 @@ public:
      * @brief LeastSquare 最小二乘法
      */
     void LeastSquare(float &midValue);
+
+    MessageBox *lowMessage;
 };
 
 PowerManger::~PowerManger()
@@ -149,6 +155,7 @@ PowerManger::PowerManger()
     {
         d_ptr->powerList.append(BAT_VOLUME_NONE);
     }
+    d_ptr->lowMessage = new MessageBox(trs("Prompt"), trs("shutDownIn2Min"), false, true);
 }
 
 void PowerMangerPrivate::monitorRun()
@@ -161,6 +168,7 @@ void PowerMangerPrivate::monitorRun()
         batteryBarWidget.setStatus(BATTERY_NOT_EXISTED);
         initBatteryData();
         shutdownTimer->stop();
+        shutdownWarn(false);
     }
     else if (powerType == POWER_SUPLY_AC_BAT)
     {
@@ -179,6 +187,7 @@ void PowerMangerPrivate::monitorRun()
         shutdownTimer->stop();
         shutBattery = false;
         lowBattery = false;
+        shutdownWarn(false);
 
         testBatteryTime.Record(BAT_VOLUME_NONE, 0, QTime());
     }
@@ -213,7 +222,7 @@ void PowerMangerPrivate::monitorRun()
         if (shutBattery)
         {
             // 是否电量低于开机所需电量，是则自动关机
-            shutdownWarn();
+            shutdownWarn(true);
         }
         else if (lowBattery)
         {
@@ -226,10 +235,12 @@ void PowerMangerPrivate::monitorRun()
                                          | WindowManager::ShowBehaviorModal);
             }
             shutdownTimer->stop();
+            shutdownWarn(false);
         }
         else
         {
             shutdownTimer->stop();
+            shutdownWarn(false);
         }
         testBatteryTime.Record(curVolume, adcValue, QTime::currentTime());
     }
@@ -319,23 +330,31 @@ bool PowerMangerPrivate::hasBattery()
     return false;
 }
 
-void PowerMangerPrivate::shutdownWarn()
+void PowerMangerPrivate::shutdownWarn(bool isWarn)
 {
-    if (hasHintShutMessage)
+    if (isWarn)
     {
-        return;
+        if (hasHintShutMessage)
+        {
+            return;
+        }
+        if (systemBoardProvider.getPowerSuplyType() != POWER_SUPLY_AC
+                && systemBoardProvider.getPowerSuplyType() != POWER_SUPLY_AC_BAT)
+        {
+            shutdownTimer->start();
+            hasHintShutMessage = true;
+            // 清除界面弹出框
+            windowManager.closeAllWidows();
+            windowManager.showWindow(lowMessage, WindowManager::ShowBehaviorNoAutoClose);
+        }
     }
-
-    if (systemBoardProvider.getPowerSuplyType() != POWER_SUPLY_AC
-            && systemBoardProvider.getPowerSuplyType() != POWER_SUPLY_AC_BAT)
+    else
     {
-        shutdownTimer->start();
-        hasHintShutMessage = true;
-        // 清除界面弹出框
-        windowManager.closeAllWidows();
-        MessageBox lowMessage(trs("Prompt"), trs("shutDownIn2Min"), false, true);
-        windowManager.showWindow(&lowMessage, WindowManager::ShowBehaviorNoAutoClose |
-                                 WindowManager::ShowBehaviorModal);
+        if (lowMessage->isActiveWindow())
+        {
+            lowMessage->reject();
+        }
+        hasHintShutMessage = false;
     }
 }
 

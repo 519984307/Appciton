@@ -148,6 +148,20 @@ void TrendGraphWindow::timerEvent(QTimerEvent *ev)
     }
 }
 
+void TrendGraphWindow::showEvent(QShowEvent *ev)
+{
+    Dialog::showEvent(ev);
+    // 更新打印按键状态
+    if (recorderManager.isConnected())
+    {
+        d_ptr->buttons[TrendGraphWindowPrivate::ACTION_BTN_PRINT]->setEnabled(true);
+    }
+    else
+    {
+        d_ptr->buttons[TrendGraphWindowPrivate::ACTION_BTN_PRINT]->setEnabled(false);
+    }
+}
+
 void TrendGraphWindow::onButtonReleased()
 {
     Button *button = qobject_cast<Button *>(sender());

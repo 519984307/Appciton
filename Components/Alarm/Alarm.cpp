@@ -12,7 +12,6 @@
 #include "IConfig.h"
 #include <QMap>
 #include "AlarmStateMachineInterface.h"
-#include "EventStorageManagerInterface.h"
 #include "ECGParamInterface.h"
 #include "ECGSymbol.h"
 #include "SPO2Symbol.h"
@@ -270,15 +269,13 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
 
             infoSegment.subParamID = alarmSource->getSubParamID(i);
             infoSegment.alarmType = i;
-            EventStorageManagerInterface *eventStorageManager = EventStorageManagerInterface::getEventStorageManager();
-            if (eventStorageManager)
-            {
-                eventStorageManager->triggerAlarmEvent(infoSegment, alarmSource->getWaveformID(i), _timestamp);
-            }
-            else
-            {
-                qDebug() << Q_FUNC_INFO << "get event storage manager faild";
-            }
+
+            EventInfo eventInfo;
+            eventInfo.alarmSource = static_cast<AlarmParamIFace *>(alarmSource);
+            eventInfo.infoSegment = infoSegment;
+            eventInfo.waveId = i;
+            eventList.append(eventInfo);
+
             switch (infoSegment.subParamID)
             {
             case SUB_PARAM_HR_PR:
@@ -555,6 +552,7 @@ void Alarm::_handleAlarm(void)
     QList<ParamID> alarmParamID;
     QList<ParamID> paramID;
     paramID.clear();
+    eventList.clear();
     foreach(AlarmLimitIFace *source, limitAlarmSourceList)
     {
         alarmParamID.clear();
@@ -562,6 +560,20 @@ void Alarm::_handleAlarm(void)
         if (!alarmParamID.isEmpty())
         {
             paramID.append(alarmParamID);
+        }
+    }
+
+    // 统一触发之前产生的事件，目的为了触发的事件是当前时刻全部事件
+    EventStorageManagerInterface *eventStorageManager = EventStorageManagerInterface::getEventStorageManager();
+    if (eventStorageManager)
+    {
+        for (int i = 0; i < eventList.count(); i++)
+        {
+            AlarmParamIFace *alarmSource = eventList.at(i).alarmSource;
+            int id = eventList.at(i).waveId;
+            eventStorageManager->triggerAlarmEvent(eventList.at(i).infoSegment,
+                                                   alarmSource->getWaveformID(id),
+                                                   _timestamp);
         }
     }
 

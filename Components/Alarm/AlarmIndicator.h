@@ -117,6 +117,18 @@ public:
      */
     void updateAlarmAudioState();
 
+    /**
+     * @brief isAlarmAudioState
+     * @return
+     */
+    bool isAlarmAudioState();
+
+    /**
+     * @brief setAlarmAudioState 设置报警音暂停状态
+     * @param flag
+     */
+    void setAlarmAudioState(bool flag);
+
 private:
     AlarmIndicator();
 

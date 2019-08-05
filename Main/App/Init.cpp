@@ -60,19 +60,19 @@ static void _initSystem(void)
         QString selectIndexString;
         if (systemConfig.getCurConfigName().contains("Adult"))
         {
-            selectIndexString = "ConfigManager|Default|Adult";
+            selectIndexString = QString("ConfigManager|Default|%1").arg(PatientSymbol::convert(PATIENT_TYPE_ADULT));
         }
         else if (systemConfig.getCurConfigName().contains("Ped"))
         {
-            selectIndexString = "ConfigManager|Default|Ped";
+            selectIndexString = QString("ConfigManager|Default|%1").arg(PatientSymbol::convert(PATIENT_TYPE_PED));
         }
         else if (systemConfig.getCurConfigName().contains("Neo"))
         {
-            selectIndexString = "ConfigManager|Default|Neo";
+            selectIndexString = QString("ConfigManager|Default|%1").arg(PatientSymbol::convert(PATIENT_TYPE_NEO));
         }
         else
         {
-            selectIndexString = "ConfigManager|Default|Adult";
+            selectIndexString = QString("ConfigManager|Default|%1").arg(PatientSymbol::convert(PATIENT_TYPE_ADULT));
         }
         QString selectTypeString;
         systemConfig.getStrAttr(selectIndexString, "type", selectTypeString);

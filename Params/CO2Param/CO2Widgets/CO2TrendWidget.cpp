@@ -270,8 +270,11 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget")
 
     _etco2Value->setText(InvStr());
     QHBoxLayout *layout = new QHBoxLayout();
-    layout->addWidget(_etCO2Label, 1);
-    layout->addWidget(_etco2Value, 3);
+    layout->setSpacing(10);
+    layout->addStretch();
+    layout->addWidget(_etCO2Label);
+    layout->addWidget(_etco2Value);
+    layout->addStretch();
 
     _awRRName = new QLabel("awRR", this);
     _awRRName->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
@@ -281,7 +284,7 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget")
     QVBoxLayout *vLayout = new QVBoxLayout();
     vLayout->addWidget(_awRRName);
     vLayout->addWidget(_fico2Label);
-    layout->addLayout(vLayout, 1);
+    layout->addLayout(vLayout);
 
     _awRRValue = new QLabel(this);
     _awRRValue->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
@@ -293,7 +296,9 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget")
     vLayout = new QVBoxLayout();
     vLayout->addWidget(_awRRValue);
     vLayout->addWidget(_fico2Value);
-    layout->addLayout(vLayout, 3);
+    layout->addLayout(vLayout);
+    layout->addStretch();
+
     contentLayout->addLayout(layout, 7);
 
     // 释放事件。

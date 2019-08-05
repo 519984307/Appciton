@@ -265,6 +265,20 @@ void ConfigManager::loadConfig(PatientType type)
     layoutManager.updateLayoutWidgetsConfig();
 }
 
+QString ConfigManager::getOriginalConfig(PatientType type)
+{
+    QString findPath = QString("%1|%2").arg("ConfigManager|Original|").arg(PatientSymbol::convert(type));
+    QString path;
+    systemConfig.getStrValue(findPath, path);
+    return QString(CFG_PATH) + path;
+}
+
+void ConfigManager::setOriginalConfig(PatientType type, QString path)
+{
+    QString findPath = QString("%1|%2").arg("ConfigManager|Original|").arg(PatientSymbol::convert(type));
+    systemConfig.setStrValue(findPath, path);
+}
+
 bool ConfigManager::isReadOnly()const
 {
     return d_ptr->isDisableWidgets;

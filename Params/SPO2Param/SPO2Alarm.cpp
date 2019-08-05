@@ -366,7 +366,7 @@ AlarmType SPO2OneShotAlarm::getAlarmType(int id)
  *************************************************************************************************/
 bool SPO2OneShotAlarm::isAlarmed(int id)
 {
-    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO && getAlarmType(id) == ALARM_TYPE_TECH)
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
     {
         return false;
     }

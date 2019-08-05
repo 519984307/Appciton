@@ -168,6 +168,8 @@ public: // CO2ProviderIFace 的接口。
     // 进入升级模式
     virtual void enterUpgradeMode();
 
+    virtual void sendCalibrateData(int value);
+
     /**
      * @brief setUpgradeIface set the upgrade iface to handle the upgrade packet
      * @note set iface to NULL to stop upgrade

@@ -11,6 +11,7 @@
 #pragma once
 #include <QString>
 #include "AlarmParamIFace.h"
+#include "EventStorageManagerInterface.h"
 #include "AlarmInterface.h"
 #include <QMultiMap>
 
@@ -123,5 +124,17 @@ private:
     void _handleAlarm(void);
 
     bool _alarmLightOnAlarmReset;       // 报警复位时的报警灯
+
+    struct EventInfo
+    {
+        EventInfo()
+            : alarmSource(NULL),
+              waveId(-1)
+        {}
+        AlarmParamIFace *alarmSource;
+        int waveId;
+        AlarmInfoSegment infoSegment;
+    };
+    QList<EventInfo> eventList;
 };
 #define alertor (Alarm::getInstance())

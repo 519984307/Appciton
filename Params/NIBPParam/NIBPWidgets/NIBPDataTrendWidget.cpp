@@ -115,56 +115,6 @@ void NIBPDataTrendWidget::collectNIBPTrendData(unsigned t)
     data.valueIsDisplay = paramManager.isParamEnable(PARAM_NIBP);
     data.prvalue = nibpParam.getPR();
 
-    if ((data.sys.value != InvData())
-            && (data.dia.value != InvData())
-            && (data.map.value != InvData())
-            && (data.prvalue != InvData())
-            )
-    {
-        // 报警
-        AlarmLimitIFace *alarmSource = alarmSourceManager.getLimitAlarmSource(LIMIT_ALARMSOURCE_NIBP);
-        if (alarmSource)
-        {
-            int completeResult = alarmSource->getCompare(data.sys.value, NIBP_LIMIT_ALARM_SYS_LOW);
-            if (completeResult != 0)
-            {
-                data.sys.isAlarm = true;
-            }
-            completeResult = alarmSource->getCompare(data.sys.value, NIBP_LIMIT_ALARM_SYS_HIGH);
-            if (completeResult != 0)
-            {
-                data.sys.isAlarm = true;
-            }
-
-            completeResult = alarmSource->getCompare(data.dia.value, NIBP_LIMIT_ALARM_DIA_LOW);
-            if (completeResult != 0)
-            {
-                data.dia.isAlarm = true;
-            }
-            completeResult = alarmSource->getCompare(data.dia.value, NIBP_LIMIT_ALARM_DIA_HIGH);
-            if (completeResult != 0)
-            {
-                data.dia.isAlarm = true;
-            }
-
-            completeResult = alarmSource->getCompare(data.map.value, NIBP_LIMIT_ALARM_MAP_LOW);
-            if (completeResult != 0)
-            {
-                data.map.isAlarm = true;
-            }
-            completeResult = alarmSource->getCompare(data.map.value, NIBP_LIMIT_ALARM_MAP_HIGH);
-            if (completeResult != 0)
-            {
-                data.map.isAlarm = true;
-            }
-
-            // 优先级
-            data.sys.priority = alarmSource->getAlarmPriority(NIBP_LIMIT_ALARM_SYS_HIGH);
-            data.dia.priority = alarmSource->getAlarmPriority(NIBP_LIMIT_ALARM_DIA_HIGH);
-            data.map.priority = alarmSource->getAlarmPriority(NIBP_LIMIT_ALARM_MAP_HIGH);
-        }
-    }
-
     if (10 <= _nibpNrendCacheMap.count())
     {
         _nibpNrendCacheMap.remove(_nibpNrendCacheMap.begin().key());
