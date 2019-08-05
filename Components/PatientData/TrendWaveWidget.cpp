@@ -754,8 +754,7 @@ void TrendWaveWidget::_trendLayout()
         SubParamID  subId = _subParams.at(index);
         _curDisplaySubList.append(subId);
         _subWidgetList.at(i)->setWidgetParam(subId, getTrendGraphType(subId));
-        if (subId == SUB_PARAM_SPCO || subId == SUB_PARAM_SPOC || subId == SUB_PARAM_SPO2_2 || subId == SUB_PARAM_SPO2_D
-                || subId == SUB_PARAM_PI || subId == SUB_PARAM_PVI || subId == SUB_PARAM_SPHB || subId == SUB_PARAM_SPMET)
+        if (paramInfo.getParamID(subId) == PARAM_SPO2)
         {
             _subWidgetList.at(i)->setThemeColor(colorManager.getColor(paramInfo.getSubParamName(subId)));
         }
@@ -865,8 +864,7 @@ void TrendWaveWidget::_initWaveSubWidget()
             subWidget->setWidgetParam(subID, getTrendGraphType(subID));
             subWidget->setVisible(true);
             subWidget->setParent(this);
-            if (subID == SUB_PARAM_SPCO || subID == SUB_PARAM_SPOC || subID == SUB_PARAM_SPO2_2 || subID == SUB_PARAM_SPO2_D
-                    || subID == SUB_PARAM_PI || subID == SUB_PARAM_PVI || subID == SUB_PARAM_SPHB || subID == SUB_PARAM_SPMET)
+            if (paramInfo.getParamID(subID) == PARAM_SPO2)
             {
                 subWidget->setThemeColor(colorManager.getColor(paramInfo.getSubParamName(subID)));
             }
