@@ -24,6 +24,7 @@
 #include "TrendWidget.h"
 #include "ECGParam.h"
 #include "CO2Param.h"
+#include "PatientManager.h"
 
 #define FIRST_ECG_WAVE_HEIGHT 184
 
@@ -1410,6 +1411,11 @@ void LayoutManager::updateLayout()
     emit layoutChanged();
 }
 
+void LayoutManager::patientTypeChangeSlot()
+{
+    updateLayoutWidgetsConfig();
+}
+
 QStringList LayoutManager::getDisplayedWaveforms() const
 {
     return d_ptr->displayWaveforms;
@@ -1543,6 +1549,7 @@ void LayoutManager::updateLayoutWidgetsConfig()
     {
         w->updateWidgetConfig();
     }
+    updateLayout();
 }
 
 LayoutManager::LayoutManager()
@@ -1551,4 +1558,6 @@ LayoutManager::LayoutManager()
     d_ptr->layoutMap = systemConfig.getConfig("PrimaryCfg|UILayout|ContentLayout|Normal");
 
     addLayoutWidget(d_ptr->contentView);
+
+    connect(&patientManager, SIGNAL(signalPatientType(PatientType)), this, SLOT(patientTypeChangeSlot()));
 }

@@ -141,6 +141,11 @@ public slots:
      */
     void updateLayout();
 
+    /**
+     * @brief patientTypeChangeSlot - 病人类型改变槽函数
+     */
+    void patientTypeChangeSlot();
+
 signals:
     /* emit when the content layout changed */
     void layoutChanged();
