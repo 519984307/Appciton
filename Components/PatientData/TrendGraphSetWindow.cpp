@@ -72,7 +72,7 @@ void TrendGraphSetWindow::setCurParam(QList<SubParamID> subList)
             QString name = paramInfo.getSubParamName(sid);
             if (sid == SUB_PARAM_ETCO2)
             {
-                item->label->setText("CO2(Et/Fi)");
+                item->label->setText("CO₂(Et/Fi)");
             }
             else if (sid == SUB_PARAM_T1)
             {
@@ -308,8 +308,7 @@ TrendGraphSetWindow::TrendGraphSetWindow()
     d_ptr->waveNumList->addItems(QStringList()
                                  << "1"
                                  << "2"
-                                 << "3"
-                                );
+                                 << "3");
     d_ptr->waveNumList->setCurrentIndex(index);
     connect(d_ptr->waveNumList, SIGNAL(currentIndexChanged(int)), this, SLOT(waveNumberReleased(int)));
     QHBoxLayout *hLayout = new QHBoxLayout();
