@@ -1721,10 +1721,12 @@ shutDownIn2Min,电量严重不足，将在两分钟后关机，请连接电源,S
 handMeasure,手部测量,Hand Measure
 footMeasure,足部测量,Foot Measure
 CCHDCheck,CCHD筛查,CCHD Check
+SpO2Value,SpO₂数据,SpO₂ Value
+SpO2_2Value,SpO₂ 2数据,SpO₂ 2 Value
 Negative,阴性,Negative
 Positive,阳性,Positive
 Result,结果,Result
-RepeatCheck,一小时内重复测量3次以确认结果,Check again in a hour for result
+RepeatCheck,1小时内重复3次以确认结果,Check again in a hour for result
 footValue,足部数据,foot
 handValue,手部数据,hand
 SPO2ValueInvaild,采集数据无效，请检查SpO₂模块,The collect data is invaild，Please check SpO₂ module
