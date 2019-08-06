@@ -107,7 +107,7 @@ static void _initSystem(void)
     // 报警灯。
     lightManager.getInstance();
     lightManager.setProvider(&systemBoardProvider);
-    systemManager.enableBrightness(systemManager.getBrightness());
+    systemManager.setBrightness(systemManager.getBrightness());
 
     // 自检
     systemBoardProvider.selfTest();
