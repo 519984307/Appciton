@@ -604,7 +604,7 @@ void CO2Param::setConnected(bool isConnected)
     else
     {
         disable();
-        d_ptr->baro = 750;
+        d_ptr->baro = 1013;
         setEtCO2(InvData());
         setFiCO2(InvData());
         setBR(InvData());

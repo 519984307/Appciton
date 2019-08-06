@@ -208,10 +208,6 @@ void ParamManager::connectDemoParamProvider()
             pluginProvider->detachParam(*getParam(PARAM_SPO2));
         }
     }
-    else
-    {
-        qdebug("Demo provider not found");
-    }
 }
 
 /**************************************************************************************************

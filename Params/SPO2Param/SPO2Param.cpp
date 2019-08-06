@@ -209,6 +209,8 @@ void SPO2ParamPrivate::setWaveformSpeed(SPO2WaveVelocity speed, bool isPlugIn)
  *************************************************************************************************/
 void SPO2Param::initParam(void)
 {
+    d_ptr->waveWidget->resetWave();
+    d_ptr->plugInWaveWidget->resetWave();
 }
 
 /**************************************************************************************************
@@ -323,9 +325,16 @@ void SPO2Param::getAvailableWaveforms(QStringList &waveforms,
     waveformShowName.append(trs("PLETH"));
 }
 
-void SPO2Param::getWaveWindow(QString &waveWin)
+void SPO2Param::getWaveWindow(QString &waveWin, bool isPlugIn)
 {
-    waveWin = d_ptr->plugInWaveWidget->name();
+    if (isPlugIn)
+    {
+        waveWin = d_ptr->plugInWaveWidget->name();
+    }
+    else
+    {
+        waveWin = d_ptr->waveWidget->name();
+    }
 }
 
 /**************************************************************************************************
@@ -442,15 +451,10 @@ void SPO2Param::setProvider(SPO2ProviderIFace *provider, bool isPlugIn)
 
     QString str;
     machineConfig.getStrValue("SPO2", str);
-    if (str == "BLM_TS3")
+    if (str == "MASIMO_SPO2" || str.contains("RAINBOW_SPO2") || isPlugIn)
     {
-        //设置灵敏度
         p->setSensitivityFastSat(static_cast<SensitivityMode>(getSensitivity()), getFastSat());
-    }
-    else if (str == "MASIMO_SPO2" || str.contains("RAINBOW"))
-    {
-        p->setSensitivityFastSat(SPO2_MASIMO_SENS_NORMAL, false);
-        p->setAverageTime(SPO2_AVER_TIME_8SEC);
+        p->setAverageTime(getAverageTime());
 
         SPO2SMARTPLUSETONE pulseTone = getSmartPulseTone();
         if (pulseTone == SPO2_SMART_PLUSE_TONE_ON)
@@ -473,8 +477,16 @@ void SPO2Param::setProvider(SPO2ProviderIFace *provider, bool isPlugIn)
 
     QString tile = w->getTitle();
     // 请求波形缓冲区。
-    waveformCache.registerSource(WAVE_SPO2, p->getSPO2WaveformSample(), 0, p->getSPO2MaxValue(),
-                                 tile, p->getSPO2BaseLine());
+    if (isPlugIn)
+    {
+        waveformCache.registerSource(WAVE_SPO2_2, p->getSPO2WaveformSample(), 0, p->getSPO2MaxValue(),
+                                     tile, p->getSPO2BaseLine());
+    }
+    else
+    {
+        waveformCache.registerSource(WAVE_SPO2, p->getSPO2WaveformSample(), 0, p->getSPO2MaxValue(),
+                                     tile, p->getSPO2BaseLine());
+    }
 
     // update spo2 value range
     w->setValueRange(0, p->getSPO2MaxValue());
@@ -1120,36 +1132,35 @@ void SPO2Param::setConnected(bool isConnected, bool isPlugIn)
     else
     {
         d_ptr->connectedPlugInProvider = isConnected;
+    }
+    QString wave;
+    getWaveWindow(wave, isPlugIn);
 
-        QString spo2PluginWave;
-        getWaveWindow(spo2PluginWave);
-
-        int needUpdate = 0;
-        if (isConnected)
+    int needUpdate = 0;
+    if (isConnected)
+    {
+        // update to show SpO2 info
+        needUpdate |= layoutManager.setWidgetLayoutable(wave, true);
+        if (needUpdate)
         {
-            // update to show SpO2 info
-            needUpdate |= layoutManager.setWidgetLayoutable(spo2PluginWave, true);
-            if (needUpdate)
-            {
-                layoutManager.updateLayout();
-            }
-            d_ptr->trendWidget->updateTrendWidget();
+            layoutManager.updateLayout();
         }
-        else
+        d_ptr->trendWidget->updateTrendWidget();
+    }
+    else
+    {
+        AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SPO2_2);
+        if (alarmSource)
         {
-            AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_CO2);
-            if (alarmSource)
-            {
-                alarmSource->clear();
-            }
-            // update to show SpO2 info
-            needUpdate |= layoutManager.setWidgetLayoutable(spo2PluginWave, false);
-            if (needUpdate)
-            {
-                layoutManager.updateLayout();
-            }
-            d_ptr->trendWidget->updateTrendWidget();
+            alarmSource->clear();
         }
+        // update to show SpO2 info
+        needUpdate |= layoutManager.setWidgetLayoutable(wave, false);
+        if (needUpdate)
+        {
+            layoutManager.updateLayout();
+        }
+        d_ptr->trendWidget->updateTrendWidget();
     }
 }
 
