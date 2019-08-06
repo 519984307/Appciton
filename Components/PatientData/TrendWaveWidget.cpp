@@ -754,7 +754,14 @@ void TrendWaveWidget::_trendLayout()
         SubParamID  subId = _subParams.at(index);
         _curDisplaySubList.append(subId);
         _subWidgetList.at(i)->setWidgetParam(subId, getTrendGraphType(subId));
-        _subWidgetList.at(i)->setThemeColor(colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(subId))));
+        if (paramInfo.getParamID(subId) == PARAM_SPO2)
+        {
+            _subWidgetList.at(i)->setThemeColor(colorManager.getColor(paramInfo.getSubParamName(subId)));
+        }
+        else
+        {
+            _subWidgetList.at(i)->setThemeColor(colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(subId))));
+        }
 
         loadTrendData(subId, startIndex, endIndex);
         _subWidgetList.at(i)->trendDataInfo(_trendGraphInfo);
@@ -857,7 +864,14 @@ void TrendWaveWidget::_initWaveSubWidget()
             subWidget->setWidgetParam(subID, getTrendGraphType(subID));
             subWidget->setVisible(true);
             subWidget->setParent(this);
-            subWidget->setThemeColor(colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID((SubParamID)i))));
+            if (paramInfo.getParamID(subID) == PARAM_SPO2)
+            {
+                subWidget->setThemeColor(colorManager.getColor(paramInfo.getSubParamName(subID)));
+            }
+            else
+            {
+                subWidget->setThemeColor(colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(subID))));
+            }
             subWidget->setFocusPolicy(Qt::NoFocus);
             num++;
         }

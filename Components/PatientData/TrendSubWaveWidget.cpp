@@ -117,6 +117,10 @@ void TrendSubWaveWidget::setThemeColor(QColor color)
     {
         _color = color;
     }
+    else
+    {
+        _color = Qt::white;
+    }
 }
 
 void TrendSubWaveWidget::setRulerRange(int down, int up, int scale)
