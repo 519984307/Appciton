@@ -981,7 +981,14 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         {
             if (isCableOff == true)
             {
-                spo2Param.setNotify(true, trs("SPO2CheckSensor"), isPlugIn);
+                if (isPlugIn)
+                {
+                    spo2Param.setNotify(true, trs("SPO22CheckSensor"), isPlugIn);
+                }
+                else
+                {
+                    spo2Param.setNotify(true, trs("SPO2CheckSensor"), isPlugIn);
+                }
                 spo2Param.setValidStatus(false, isPlugIn);
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, true, true);
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, false, true);
@@ -1005,7 +1012,14 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         {
             if (isCableOff == true)
             {
-                spo2Param.setNotify(true, trs("SPO2CheckSensor"), isPlugIn);
+                if (isPlugIn)
+                {
+                    spo2Param.setNotify(true, trs("SPO22CheckSensor"), isPlugIn);
+                }
+                else
+                {
+                    spo2Param.setNotify(true, trs("SPO2CheckSensor"), isPlugIn);
+                }
                 spo2Param.setValidStatus(false, isPlugIn);
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, true);
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, false);
