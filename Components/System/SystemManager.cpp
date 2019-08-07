@@ -561,7 +561,6 @@ void SystemManager::enableBrightness(int br)
 
     if (br == BRT_LEVEL_NR)
     {
-        debug("Invalid brightness!");
         return;
     }
 
@@ -569,7 +568,6 @@ void SystemManager::enableBrightness(int br)
 
     QString str = QString::number(brValue);
 
-    qDebug() << Q_FUNC_INFO << str;
     int ret = write(d_ptr->backlightFd, qPrintable(str), str.length() + 1);
 
     if (ret < 0)
