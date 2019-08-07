@@ -677,7 +677,7 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
         {
             recorderManager.stopPrint();
             d_ptr->generator = gen;
-            d_ptr->waitTimerId = startTimer(2000); // 等待2000ms
+            d_ptr->waitTimerId = startTimer(2000);  // 等待2000ms
             d_ptr->isWait = true;
         }
     }
@@ -711,7 +711,7 @@ void TrendTableModel::timerEvent(QTimerEvent *ev)
 {
     if (d_ptr->printTimerId == ev->timerId())
     {
-        if (!recorderManager.isPrinting() || d_ptr->timeoutNum == 10) // 1000ms超时处理
+        if (!recorderManager.isPrinting() || d_ptr->timeoutNum == 10)  // 1000ms超时处理
         {
             if (!recorderManager.isPrinting() && !recorderManager.getPrintStatus())
             {
@@ -1153,7 +1153,7 @@ QString TrendTableModelPrivate::getParamName(int section)
     {
         QString name;
         name = paramInfo.getSubParamName(id);
-        str = name.right(3);
+        str = trs(name.right(3));
         str += '(';
         str += trs(name.left(name.length() - 3));
         str += '/';
