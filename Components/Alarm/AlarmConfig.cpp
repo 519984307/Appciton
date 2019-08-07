@@ -263,6 +263,7 @@ void AlarmConfig::setLimitAlarmConfig(SubParamID subParamId, UnitType unit, cons
     // TODO: update limit of other unit??
 
     _configCache.insert(key, config);
+    emit LimitChange(subParamId);
 }
 
 QString AlarmConfig::getLowLimitStr(const LimitAlarmConfig &config)

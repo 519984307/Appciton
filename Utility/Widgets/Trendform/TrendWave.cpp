@@ -86,6 +86,7 @@ TrendWave::TrendWave(const QString &name, QWidget *parent)
     connect(&trendDataStorageManager, SIGNAL(newTrendDataArrived(unsigned)), this, SLOT(onNewTrendDataArrived(unsigned)));
     connect(&colorManager, SIGNAL(paletteChanged(ParamID)), this, SLOT(onPaletteChanged(ParamID)));
     connect(&spo2Param, SIGNAL(clearTrendData()), this, SLOT(onClearTrendData()));
+    connect(&alarmConfig, SIGNAL(LimitChange(SubParamID)), this, SLOT(updateRange(SubParamID)));
 }
 
 TrendWave::~TrendWave()
@@ -109,11 +110,18 @@ void TrendWave::addSubParam(SubParamID id)
     {
         d_ptr->waveColor.last() = Qt::white;
     }
-    updateRange();
+    updateRange(id);
 }
 
-void TrendWave::updateRange()
+void TrendWave::updateRange(SubParamID subParam)
 {
+    if (subParam != d_ptr->subParamList.at(0))
+    {
+        return;
+    }
+
+    d_ptr->maxValue = -1;
+    d_ptr->minValue = -1;
     for (int i = 0; i < d_ptr->subParamList.count(); i++)
     {
         LimitAlarmConfig limit = alarmConfig.getLimitAlarmConfig(d_ptr->subParamList.at(i)
@@ -131,6 +139,8 @@ void TrendWave::updateRange()
             d_ptr->scale = limit.scale;
         }
     }
+    d_ptr->updateBGFlag = true;
+    update();
 }
 
 void TrendWave::resizeEvent(QResizeEvent *e)
