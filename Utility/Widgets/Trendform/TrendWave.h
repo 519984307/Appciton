@@ -23,6 +23,9 @@ public:
 
     void addSubParam(SubParamID id);
 
+    /* reimplment */
+    void updateWidgetConfig();
+
 protected:
     /* reimplment */
     void resizeEvent(QResizeEvent *e);

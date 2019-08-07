@@ -110,16 +110,11 @@ void TrendWave::addSubParam(SubParamID id)
     {
         d_ptr->waveColor.last() = Qt::white;
     }
-    updateRange(id);
+    updateWidgetConfig();
 }
 
-void TrendWave::updateRange(SubParamID subParam)
+void TrendWave::updateWidgetConfig()
 {
-    if (subParam != d_ptr->subParamList.at(0))
-    {
-        return;
-    }
-
     d_ptr->maxValue = -1;
     d_ptr->minValue = -1;
     for (int i = 0; i < d_ptr->subParamList.count(); i++)
@@ -139,6 +134,17 @@ void TrendWave::updateRange(SubParamID subParam)
             d_ptr->scale = limit.scale;
         }
     }
+
+    if (d_ptr->subParamList[0] == SUB_PARAM_SPO2 || d_ptr->subParamList[0] == SUB_PARAM_HR_PR)
+    {
+        QColor color = colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(d_ptr->subParamList.at(0))));
+        if (d_ptr->waveColor[0] != color)
+        {
+            d_ptr->waveColor[0] = color;
+        }
+    }
+
+    IWidget::updateWidgetConfig();
     d_ptr->updateBGFlag = true;
     update();
 }
@@ -220,20 +226,11 @@ void TrendWave::onPaletteChanged(ParamID param)
     {
         param = PARAM_DUP_ECG;
     }
-    if (paramInfo.getParamID(d_ptr->subParamList.at(0)) != param)
+    if (param != paramInfo.getParamID(d_ptr->subParamList.at(0)))
     {
         return;
     }
-    if (d_ptr->subParamList[0] == SUB_PARAM_SPO2 || d_ptr->subParamList[0] == SUB_PARAM_HR_PR)
-    {
-        QColor color = colorManager.getColor(paramInfo.getParamName(param));
-        if (d_ptr->waveColor[0] != color)
-        {
-            d_ptr->waveColor[0] = color;
-            d_ptr->updateBGFlag = true;
-            update();
-        }
-    }
+    updateWidgetConfig();
 }
 
 void TrendWave::onClearTrendData()
@@ -241,6 +238,15 @@ void TrendWave::onClearTrendData()
     d_ptr->resetPointBufFlag = true;
     d_ptr->updateBGFlag = true;
     update();
+}
+
+void TrendWave::updateRange(SubParamID subParam)
+{
+    if (subParam != d_ptr->subParamList.at(0))
+    {
+        return;
+    }
+    updateWidgetConfig();
 }
 
 void TrendWavePrivate::drawWave(QPainter *painter, const QRect &r)
