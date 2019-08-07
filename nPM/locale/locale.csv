@@ -624,11 +624,14 @@ SPO2PulseSearch,SpO₂搜索脉搏,SpO₂ Pulse Search
 SPO2PulseSearchTooLong,SpO₂脉搏搜索时间过长,SpO₂ Pulse Search Too Long
 SPO2SensorOff,SpO₂传感器脱落,SpO₂ Sensor Off
 SPO2CheckSensor,SpO₂检查探头,SpO₂ Check Sensor
+SPO22CheckSensor,SpO₂ 2检查探头,SpO₂ 2 Check Sensor
 SPO2SearchPulseTooLong,SpO₂脉搏搜索时间过长,SpO₂ Search Pulse Too Long
 SPO2SearchingPulse,SpO₂脉搏搜索,SpO₂ Searching Pulse
 SPO2CommunicationStop,SpO₂通信中断,SpO₂ Communication Stop
+SPO22CommunicationStop,SpO₂ 2通信中断,SpO₂ 2 Communication Stop
 SPO2ProbeFault,SpO₂探头故障,SpO₂ Probe Fault
 SPO2SignalSaturation,SpO₂信号饱和,SpO₂ Signal Saturation
+SPO22SignalSaturation,SpO₂ 2信号饱和,SpO₂ 2 Signal Saturation
 CO2NoSamplingLine,CO₂没有采样管,CO₂ No Sampling Line
 CO2EtCO2Low,EtCO₂ 低,EtCO₂ Low
 CO2EtCO2High,EtCO₂ 高,EtCO₂ High
@@ -1685,33 +1688,61 @@ isSaveLayout,是否保存布局配置？,Do you want to save the layout config?
 LowBattery,电量过低,Low quantity of electricity
 RESPCheckElectrodes,检查电极,Check Electrodes
 SPO2SignalWeak,SpO₂信号弱,SpO₂ Signal Weak
+SPO22SignalWeak,SpO₂ 2信号弱,SpO₂ 2 Signal Weak
 SPO2CableOff,SpO₂线缆断开,SpO₂ Cable Off
-SPO2FingerOff,未检测到手指,SpO₂ Finger Off
+SPO22CableOff,SpO₂ 2线缆断开,SpO₂ 2 Cable Off
+SPO2FingerOff,SpO₂ 未检测到手指,SpO₂ Finger Off
+SPO22FingerOff,SpO₂ 2 未检测到手指,SpO₂ 2 Finger Off
 SPO2LEDFault,SpO₂调光错误,SpO₂ LED Fault
+SPO22LEDFault,SpO₂ 2调光错误,SpO₂ 2 LED Fault
 SPO2LowPerfusion,SpO₂弱灌注,SpO₂ Low Perfusion
+SPO22LowPerfusion,SpO₂ 2弱灌注,SpO₂ 2 Low Perfusion
 SPO2DefectiveCable,SpO₂线缆故障,SpO₂ Defective cable
+SPO22DefectiveCable,SpO₂ 2线缆故障,SpO₂ 2 Defective cable
 SPO2CableExpired,SpO₂线缆过期,SpO₂ Cable expired
+SPO22CableExpired,SpO₂ 2线缆过期,SpO₂ 2 Cable expired
 SPO2IncompatibleCable,SpO₂不兼容线缆,SpO₂ Incompatible cable
+SPO22IncompatibleCable,SpO₂ 2不兼容线缆,SpO₂ 2 Incompatible cable
 SPO2UnrecongnizedCable,SpO₂未识别线缆,SpO₂ Unrecongnized cable
+SPO22UnrecongnizedCable,SpO₂ 2未识别线缆,SpO₂ 2 Unrecongnized cable
 SPO2CableNearExpiration,SpO₂线缆即将到期,SpO₂ Cable near expiration
+SPO22CableNearExpiration,SpO₂ 2线缆即将到期,SpO₂ 2 Cable near expiration
 SPO2SensorExpired,SpO₂传感器已过期,SpO₂ Sensor expired
+SPO22SensorExpired,SpO₂ 2传感器已过期,SpO₂ 2 Sensor expired
 SPO2IncompatibleSensor,SpO₂传感器不兼容,SpO₂ Incompatible sensor
+SPO22IncompatibleSensor,SpO₂ 2传感器不兼容,SpO₂ 2 Incompatible sensor
 SPO2UnrecongnizedSensor,SpO₂未识别传感器,SpO₂ Unrecongnized sensor
+SPO22UnrecongnizedSensor,SpO₂ 2未识别传感器,SpO₂ 2 Unrecongnized sensor
 SPO2DefectiveSensor,SpO₂传感器故障,SpO₂ Defective sensor
+SPO22DefectiveSensor,SpO₂ 2传感器故障,SpO₂ 2 Defective sensor
 SPO2CheckCableAndSensorFault,SpO₂检查线缆和传感器故障,SpO₂ Check cable and sensor fault
+SPO22CheckCableAndSensorFault,SpO₂ 2检查线缆和传感器故障,SpO₂ 2 Check cable and sensor fault
 SPO2SensorNearExpiration,SpO₂传感器即将到期,SpO₂ Sensor near expiration
+SPO22SensorNearExpiration,SpO₂ 2传感器即将到期,SpO₂ 2 Sensor near expiration
 SPO2NoAdhesiveSensor,SpO₂无粘性传感器,SpO₂ No adhesive sensor
+SPO22NoAdhesiveSensor,SpO₂ 2无粘性传感器,SpO₂ 2 No adhesive sensor
 SPO2AdhesiveSensorExpiraton,SpO₂粘性传感器截止,SpO₂ Adhesive sensor expiraton
+SPO22AdhesiveSensorExpiraton,SpO₂ 2粘性传感器截止,SpO₂ 2 Adhesive sensor expiraton
 SPO2IncompatibleAdhesiveSensor,SpO₂不兼容的粘性传感器,SpO₂ Incompatible adhesive sensor
+SPO22IncompatibleAdhesiveSensor,SpO₂ 2不兼容的粘性传感器,SpO₂ 2 Incompatible adhesive sensor
 SPO2UnrecongnizedAdhesiveSensor,SpO₂未识别的粘性传感器,SpO₂ Unrecongnized adhesive sensor
+SPO22UnrecongnizedAdhesiveSensor,SpO₂ 2未识别的粘性传感器,SpO₂ 2 Unrecongnized adhesive sensor
 SPO2DefectiveAdhesiveSensor,SpO₂有缺陷的粘性传感器,SpO₂ Defective adhesive sensor
+SPO22DefectiveAdhesiveSensor,SpO₂ 2有缺陷的粘性传感器,SpO₂ 2 Defective adhesive sensor
 SPO2SensorIniting,SpO₂传感器初始化,SpO₂ Sensor initing
+SPO22SensorIniting,SpO₂ 2传感器初始化,SpO₂ 2 Sensor initing
 SPO2InterferenceDetected,SpO₂检测到干扰,SpO₂ Interference detected
+SPO22InterferenceDetected,SpO₂ 2检测到干扰,SpO₂ 2 Interference detected
 SPO2DemoMode,SpO₂演示模式,SpO₂ Demo mode
+SPO22DemoMode,SpO₂ 2演示模式,SpO₂ 2 Demo mode
 SPO2AdhesiveSensorNearExpiration,SpO₂粘性传感器即将到期,SpO₂ Adhesive sensor near expiration
+SPO22AdhesiveSensorNearExpiration,SpO₂ 2粘性传感器即将到期,SpO₂ 2 Adhesive sensor near expiration
 SPO2CheckSensorConnection,SpO₂检查传感器连接,SpO₂ Check sensor connection
+SPO22CheckSensorConnection,SpO₂ 2检查传感器连接,SpO₂ 2 Check sensor connection
 SPO2OnlyMode,仅限SpO₂模式,SpO₂ only mode
+SPO22OnlyMode,仅限SpO₂ 2模式,SpO₂ 2 only mode
 SPO2BoardFailure,SpO₂板卡错误,SpO₂ Board Failure
+SPO22BoardFailure,SpO₂ 2板卡错误,SpO₂ 2 Board Failure
 NIBPSimul,NIBP同侧,NIBP Simul
 Input8DigitsPassword,请输入8位数字密码,Please input 8 digits password
 BornDate,出生日期,Born Date
