@@ -56,7 +56,8 @@ void NIBPMonitorStandbyState::handleNIBPEvent(NIBPEvent event, const unsigned ch
         {
             NIBPCountdownTimeInterface* nibpCountdownTime = NIBPCountdownTimeInterface::getNIBPCountdownTime();
             nibpParam->setSTATMeasure(true);
-            if (nibpParam->isFirstAuto())   // 判断是否在AUTO倒计时时候开启stat测量
+            if (nibpParam->getSuperMeasurMode() == NIBP_MODE_AUTO
+                    && nibpParam->isFirstAuto())   // 判断是否在AUTO倒计时时候开启stat测量
             {
                 nibpCountdownTime->setSTATMeasureTimeout(false);
                 nibpParam->setAutoStat(true);

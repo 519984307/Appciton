@@ -15,8 +15,8 @@ Neonate,新生儿,Neo
 AlarmLimit,报警限,Alarm Limit
 Other,其它,Other
 Notch,陷波,Notch
-MachineConfigIsUpdatedNow,机器配置现在已经更新。,Machine config is updated now.
-IsRebootMachine,是否重启机器,Is reboot machine
+MachineConfigIsUpdatedNow,机器配置现在已经更新。,The machine configuration has been updated.
+IsRebootMachine,是否重启机器? ,Do you want to restart the machine?
 UpdateHint,更新提示,Update Hint
 EditPassWordDesc,修改密码,Edit Password
 EditPassWord,修改密码,Edit Password
@@ -634,7 +634,7 @@ CO2ZeroInprogress,CO₂校零中,CO₂ Zero In Progress
 CO2SpanCalibFailed,CO₂校准失败,CO₂ Span Calib Failed
 CO2SpanCalibInprogress,CO₂正在校准,CO₂ Span Calib In Progress
 CO2ZeroAndSpanDisable,CO₂禁止校零和校准,CO₂ Zero and Span Disable
-CO2SamplingLineClogged,CO₂ 流速低,采样管堵塞,CO₂ Low Flow Rate, Sample Line Clogged
+CO2SamplingLineClogged,"CO₂ 流速低,采样管堵塞","CO₂ Low Flow Rate, Sample Line Clogged"
 CO2NoSampleLine,CO₂没有采样线,CO₂ No Sample Line
 CO2CalibratePotency,校准浓度,Calibration Denstiy
 CO2CommunicationStop,CO₂通讯停止,CO₂ Communication Stop

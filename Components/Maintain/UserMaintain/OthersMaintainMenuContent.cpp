@@ -259,17 +259,6 @@ void OthersMaintainMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(OthersMaintainMenuContentPrivate::ITEM_CBO_RESP_WAVE_MODE, comboBox);
 
-#ifndef HIDE_NURSE_CALL_FUNCTION
-    // nurse Call Setting
-    label = new QLabel(trs("NurseCallSetting"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    Button *button = new Button(trs("NurseCallSetting"));
-    d_ptr->NurseCallingBtn = button;
-    button->setButtonStyle(Button::ButtonTextOnly);
-    layout->addWidget(button, d_ptr->combos.count(), 1);
-    connect(button, SIGNAL(released()), this, SLOT(onBtnReleased()));
-#endif
-
 #ifdef ENABLE_O2_APNEASTIMULATION
     // 窒息唤醒
     label = new QLabel(trs("ApneaStimulation"));
