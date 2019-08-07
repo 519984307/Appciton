@@ -131,17 +131,8 @@ void SPO2TrendWidget::isAlarmSPO2(bool flag)
 void SPO2TrendWidget::showValue(void)
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
-    // SPO2
-    if (_isAlarmSPO2 && _spo2String1 != InvStr())
-    {
-        showAlarmStatus(_spo2Value1);
-        showAlarmParamLimit(_spo2Value1, _spo2String1, psrc);
-        restoreNormalStatusLater();
-    }
-    else
-    {
-        showNormalStatus(_spo2Value1, psrc);
-    }
+    QPalette psrc2 = psrc;
+    psrc2.setColor(QPalette::WindowText, Qt::white);
 
     // SPO2_2
     if (_isAlarmSPO2_2 && _spo2String2 != InvStr())
@@ -152,7 +143,7 @@ void SPO2TrendWidget::showValue(void)
     }
     else
     {
-        showNormalStatus(_spo2Value2, psrc);
+        showNormalStatus(_spo2Value2, psrc2);
     }
 
     // SPO2_D
@@ -164,7 +155,19 @@ void SPO2TrendWidget::showValue(void)
     }
     else
     {
-        showNormalStatus(_spo2DeltaValue, psrc);
+        showNormalStatus(_spo2DeltaValue, psrc2);
+    }
+
+    // SPO2
+    if (_isAlarmSPO2 && _spo2String1 != InvStr())
+    {
+        showAlarmStatus(_spo2Value1);
+        showAlarmParamLimit(_spo2Value1, _spo2String1, psrc);
+        restoreNormalStatusLater();
+    }
+    else
+    {
+        showNormalStatus(_spo2Value1, psrc);
     }
 }
 
@@ -306,7 +309,9 @@ void SPO2TrendWidget::setBarValue(int16_t value)
 void SPO2TrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
+    QPalette psrc2 = psrc;
+    psrc2.setColor(QPalette::WindowText, Qt::white);
+    showNormalStatus(_spo2Value2, psrc2);
+    showNormalStatus(_spo2DeltaValue, psrc2);
     showNormalStatus(_spo2Value1, psrc);
-    showNormalStatus(_spo2Value2, psrc);
-    showNormalStatus(_spo2DeltaValue, psrc);
 }
