@@ -97,7 +97,14 @@ void TrendWave::addSubParam(SubParamID id)
 {
     d_ptr->subParamList.append(id);
     d_ptr->yAxisValueBufs.append(YAxisValueBufType());
-    d_ptr->waveColor.append(colorManager.getColor(paramInfo.getSubParamName(id)));
+    if (paramInfo.getParamID(id) != PARAM_SPO2)
+    {
+        d_ptr->waveColor.append(colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(id))));
+    }
+    else
+    {
+        d_ptr->waveColor.append(colorManager.getColor(paramInfo.getSubParamName(id)));
+    }
     if (d_ptr->waveColor.last() == Qt::black)
     {
         d_ptr->waveColor.last() = Qt::white;
@@ -199,11 +206,15 @@ void TrendWave::onNewTrendDataArrived(unsigned timeStamp)
 
 void TrendWave::onPaletteChanged(ParamID param)
 {
+    if (param == PARAM_ECG)
+    {
+        param = PARAM_DUP_ECG;
+    }
     if (paramInfo.getParamID(d_ptr->subParamList.at(0)) != param)
     {
         return;
     }
-    if (d_ptr->subParamList[0] == SUB_PARAM_SPO2)
+    if (d_ptr->subParamList[0] == SUB_PARAM_SPO2 || d_ptr->subParamList[0] == SUB_PARAM_HR_PR)
     {
         QColor color = colorManager.getColor(paramInfo.getParamName(param));
         if (d_ptr->waveColor[0] != color)
