@@ -72,15 +72,17 @@ void TrendGraphSetWindow::setCurParam(QList<SubParamID> subList)
             QString name = paramInfo.getSubParamName(sid);
             if (sid == SUB_PARAM_ETCO2)
             {
-                item->label->setText("CO₂(Et/Fi)");
+                item->label->setText(QString("%1(%2/%3)")
+                                     .arg(trs("CO2")).arg(trs("Et")).arg(trs("Fi")));
             }
             else if (sid == SUB_PARAM_T1)
             {
-                item->label->setText("T1/T2");
+                item->label->setText(QString("%1/%2")
+                                     .arg(trs("T1")).arg(trs("T2")));
             }
             else if (sid == SUB_PARAM_NIBP_SYS)
             {
-                item->label->setText("NIBP");
+                item->label->setText(trs("NIBP"));
             }
             else
             {
