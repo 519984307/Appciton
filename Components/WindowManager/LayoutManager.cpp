@@ -1418,7 +1418,7 @@ void LayoutManager::setUFaceType(UserFaceType type)
     }
     if (!systemManager.isSupport(PARAM_SPO2) && type == UFACE_MONITOR_SPO2)
     {
-        type = UFACE_MONITOR_STANDARD;
+        return;
     }
     d_ptr->curUserFace = type;
 
