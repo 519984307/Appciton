@@ -182,11 +182,12 @@ QVariant CCHDDataModel::headerData(int section, Qt::Orientation orientation, int
         switch (section)
         {
         case HeaderTime:
+            return QSize(d_ptr->tableViewWidth * 3 / 21, ROW_HEIGHT_HINT);
         case HeaderHandValue:
         case HeaderFootValue:
-            return QSize(d_ptr->tableViewWidth / 6, ROW_HEIGHT_HINT);
+            return QSize(d_ptr->tableViewWidth * 4 / 21, ROW_HEIGHT_HINT);
         case HeaderResult:
-            return QSize(d_ptr->tableViewWidth / 2, ROW_HEIGHT_HINT);
+            return QSize(d_ptr->tableViewWidth * 10 / 21, ROW_HEIGHT_HINT);
         default:
             break;
         }

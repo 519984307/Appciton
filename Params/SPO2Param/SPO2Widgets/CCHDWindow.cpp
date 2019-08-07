@@ -56,11 +56,11 @@ CCHDWindow::CCHDWindow()
     : Dialog(),
       d_ptr(new CCHDWindowPrivate())
 {
-    int windowWidth = 650;
+    int windowWidth = 700;
     setWindowTitle(trs("CCHDCheck"));
-    setFixedSize(windowWidth, 320);
+    setFixedSize(windowWidth, 330);
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->setMargin(10);
+    layout->setMargin(5);
 
     // result Data
     d_ptr->tableView = new TableView();
