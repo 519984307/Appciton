@@ -209,8 +209,6 @@ void SPO2ParamPrivate::setWaveformSpeed(SPO2WaveVelocity speed, bool isPlugIn)
  *************************************************************************************************/
 void SPO2Param::initParam(void)
 {
-    d_ptr->waveWidget->resetWave();
-    d_ptr->plugInWaveWidget->resetWave();
 }
 
 /**************************************************************************************************
@@ -307,6 +305,8 @@ void SPO2Param::exitDemo()
     }
 
     setPR(InvData());
+    d_ptr->waveWidget->resetWave();
+    d_ptr->plugInWaveWidget->resetWave();
 }
 
 /**************************************************************************************************
