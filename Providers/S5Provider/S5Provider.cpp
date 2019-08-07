@@ -400,16 +400,24 @@ bool S5Provider::isStatus(unsigned char *packet)
     {
         if (packet[2] == S5_INSERT)
         {
-            spo2Param.setNotify(false, trs("SPO2CheckSensor"));
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_FINGER_OFF, false);
             _isFingerOff = false;
         }
         else
         {
-            spo2Param.setNotify(true, trs("SPO2CheckSensor"));
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_FINGER_OFF, true);
             _isFingerOff = true;
         }
+    }
+
+    // 线缆断开或探头脱落，波形上方都会提示检查探头
+    if (_isCableOff == false && _isFingerOff == false)
+    {
+        spo2Param.setNotify(false, trs("SPO2CheckSensor"));
+    }
+    else
+    {
+        spo2Param.setNotify(true, trs("SPO2CheckSensor"));
     }
 
     if (_isCableOff || _isFingerOff)
