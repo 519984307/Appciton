@@ -406,6 +406,10 @@ bool RainbowProvider::attachParam(Param &param)
     {
         spo2Param.setProvider(this, d_ptr->isPlugIn);
         Provider::attachParam(param);
+        if (d_ptr->isPlugIn)
+        {
+            setFirstCheck(true);
+        }
         return true;
     }
     return false;
