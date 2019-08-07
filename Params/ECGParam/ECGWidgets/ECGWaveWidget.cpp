@@ -26,6 +26,7 @@
 #include "PopupList.h"
 #include "ECGWaveRuler.h"
 #include "LayoutManager.h"
+#include "ECGDupParam.h"
 
 int ECGWaveWidget::_paceHeight = 5;
 /**************************************************************************************************
@@ -1088,6 +1089,10 @@ void ECGWaveWidget::updateWidgetConfig()
     int filterMode = ECG_FILTERMODE_MONITOR;
     currentConfig.getNumValue("ECG|FilterMode", filterMode);
     ecgParam.setFilterMode(filterMode);
+
+    ecgParam.updatePacermaker();    // 更新起博标志
+    ecgDupParam.updateHRSource();   // 更新HR来源
+    ecgParam.updateEditNotchFilter(); // 更新ECG工频陷波
 
     WaveWidget::updateWidgetConfig();
 }
