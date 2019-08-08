@@ -210,15 +210,6 @@ void RESPParam::setProvider(RESPProviderIFace *provider)
     d_ptr->waveWidget->setDataRate(d_ptr->provider->getRESPWaveformSample());
     d_ptr->oxyCRGRESPWave->setDataRate(d_ptr->provider->getRESPWaveformSample());
 
-    // 是否开启RESP功能
-    d_ptr->provider->enableRESPCalc(getRespMonitoring());
-
-    // 设置窒息时间
-    d_ptr->provider->setApneaTime(getApneaTime());
-
-    // 设置呼吸导联
-    d_ptr->provider->setRESPCalcLead(getCalcLead());
-
     QString tile = d_ptr->waveWidget->getTitle();
     // 请求波形缓冲区。
     waveformCache.registerSource(WAVE_RESP, d_ptr->provider->getRESPWaveformSample(),
@@ -335,14 +326,14 @@ void RESPParam::reset()
         return;
     }
 
+    // 是否开启RESP功能
+    d_ptr->provider->enableRESPCalc(getRespMonitoring());
+
     // 设置窒息时间
     d_ptr->provider->setApneaTime(getApneaTime());
 
     // 设置呼吸导联
-//    d_ptr->provider->setRESPCalcLead(getCalcLead());
-
-    // 是否开启RESP功能
-    d_ptr->provider->enableRESPCalc(getRespMonitoring());
+    d_ptr->provider->setRESPCalcLead(getCalcLead());
 }
 
 int RESPParam::getWaveDataRate() const
