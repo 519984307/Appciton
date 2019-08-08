@@ -204,17 +204,19 @@ void CO2Param::initParam(void)
  *************************************************************************************************/
 void CO2Param::handDemoWaveform(WaveformID id, short data)
 {
+    int flag = 0;
     if (id != WAVE_CO2)
     {
         return;
     }
     if (!getCO2Switch())
     {
-        data = InvData();
+        data = 0;
+        flag = 0x4000;
     }
     if (NULL != d_ptr->waveWidget)
     {
-        d_ptr->waveWidget->addData(data);
+        d_ptr->waveWidget->addData(data, flag);
     }
 
     if (d_ptr->oxyCRGCO2Wave)
