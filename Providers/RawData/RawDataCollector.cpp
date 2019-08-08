@@ -300,10 +300,11 @@ void RawDataCollectorPrivate::handleTempRawData(const unsigned char *data, int l
     else
     {
         QTextStream stream(&content);
+        uchar channel = data[0];
+        len--;
         for (int i = 0; i < len / 2; i++)
         {
-            uchar channel = data[0 + 2 * i];
-            uchar tempData = data[1 + 2 * i];
+            unsigned int tempData = data[1 + 2 * i] | (data[2 + 2 * i] << 8);
             QString time;
             timeDate.getTime(time, true);
             stream << channel << "," << tempData << "," << time << endl;
@@ -312,7 +313,7 @@ void RawDataCollectorPrivate::handleTempRawData(const unsigned char *data, int l
         stream.flush();
 
         mutex.lock();
-        dataBuffer.append(new StoreDataType(RawDataCollector::CO2_DATA, content, stop));
+        dataBuffer.append(new StoreDataType(RawDataCollector::TEMP_DATA, content, stop));
         mutex.unlock();
     }
 }
@@ -550,7 +551,7 @@ void RawDataCollectorPrivate::saveTempRawData(const StoreDataType *data)
     }
     else if (f == NULL)
     {
-        QString dirname = usbManager.getUdiskMountPoint() + "/BLM_T5";
+        QString dirname = usbManager.getUdiskMountPoint() + "/BLM_T5/";
         if (!QDir(dirname).exists())
         {
             if (!QDir().mkpath(dirname))
