@@ -329,11 +329,11 @@ void RESPParam::reset()
     // 是否开启RESP功能
     d_ptr->provider->enableRESPCalc(getRespMonitoring());
 
-    // 设置窒息时间
-    d_ptr->provider->setApneaTime(getApneaTime());
-
     // 设置呼吸导联
     d_ptr->provider->setRESPCalcLead(getCalcLead());
+
+    // 设置窒息时间
+    d_ptr->provider->setApneaTime(getApneaTime());
 }
 
 int RESPParam::getWaveDataRate() const
