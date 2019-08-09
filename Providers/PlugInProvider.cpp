@@ -33,9 +33,10 @@
 #define RING_BUFFER_LENGTH 4096
 #define MAXIMUM_PACKET_SIZE 256 // largest packet size, should be larger enough
 #define READ_PLUGIN_PIN_INTERVAL        (200)   // 200ms读一次插件管脚
-#define GLOBAL_TIMER_PERIOD         (100)   // 定时器周期
+#define CHECK_CONNECT_TIMER_PERIOD         (100)   // 检查连接定时器周期
 #define RUN_BAUD_RATE_9600          (9600)
 #define RUN_BAUD_RATE_115200        (115200)
+#define MAX_PACKET_LEN          (40)
 
 enum PluginStatus
 {
@@ -62,7 +63,7 @@ public:
           ringBuff(RING_BUFFER_LENGTH),
           pluginTimerID(-1),
           baudrateTimerID(-1),
-          globalTimerID(-1),
+          checkConnectTimerID(-1),
           baudrate(RUN_BAUD_RATE_9600),
           dataNoFeedTick(0),
           isScan(false)
@@ -176,7 +177,7 @@ public:
     static QMap<QString, PlugInProvider *> plugInProviders;
     int pluginTimerID;
     int baudrateTimerID;
-    int globalTimerID;
+    int checkConnectTimerID;
     unsigned int baudrate;
     unsigned int dataNoFeedTick;
     bool isScan;
@@ -193,7 +194,7 @@ PlugInProvider::PlugInProvider(const QString &name, QObject *parent)
     UartAttrDesc portAttr(9600, 8, 'N', 1);
     d_ptr->initPort(portAttr);
     d_ptr->pluginTimerID = startTimer(READ_PLUGIN_PIN_INTERVAL);
-    d_ptr->globalTimerID = startTimer(GLOBAL_TIMER_PERIOD);
+    d_ptr->checkConnectTimerID = startTimer(CHECK_CONNECT_TIMER_PERIOD);
     connect(d_ptr->uart, SIGNAL(activated(int)), this, SLOT(dataArrived()));
 }
 
@@ -299,11 +300,11 @@ void PlugInProvider::timerEvent(QTimerEvent *ev)
         }
         updateUartBaud(d_ptr->baudrate);
     }
-    else if (ev->timerId() == d_ptr->globalTimerID)
+    else if (ev->timerId() == d_ptr->checkConnectTimerID)
     {
         if (d_ptr->dataNoFeedTick > 150)  // 超过15s后，不再尝试扫描连接
         {
-            killTimer(d_ptr->globalTimerID);
+            killTimer(d_ptr->checkConnectTimerID);
         }
         else if (d_ptr->readPluginPinSta())
         {
@@ -335,7 +336,7 @@ void PlugInProvider::dataArrived()
             unsigned char len = d_ptr->ringBuff.at(1);     // data field length
             unsigned char totalLen = 2 + len + 2;   // 1 frame head + 1 len byte + data length + 1 checksum + 1 frame end
 
-            if (totalLen > 40)
+            if (totalLen > MAX_PACKET_LEN)
             {
                 qDebug() << "packet too large";
                 d_ptr->ringBuff.pop(1);
