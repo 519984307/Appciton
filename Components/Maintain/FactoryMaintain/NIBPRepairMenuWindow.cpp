@@ -34,6 +34,7 @@
 #include "IConfig.h"
 #include "LanguageManager.h"
 #include "NIBPMonitorStateDefine.h"
+#include "NIBPRepairMenuManager.h"
 
 class NIBPRepairMenuWindowPrivate
 {
@@ -45,15 +46,13 @@ public:
 
     bool replyFlag;                     // 进入维护模式标志
     bool repairError;                   // 维护模式错误
-    NIBPMonitorStateID oldMonitorState;
 };
 
 NIBPRepairMenuWindowPrivate::NIBPRepairMenuWindowPrivate()
     : messageBoxWait(NULL),
       messageBoxError(NULL),
       replyFlag(false),
-      repairError(false),
-      oldMonitorState(NIBP_MONITOR_STANDBY_STATE)
+      repairError(false)
 {
 }
 
@@ -96,7 +95,7 @@ void NIBPRepairMenuWindow::init()
     machineConfig.getStrValue("NIBP", str);
     if (str == "BLM_N5")
     {
-        d_ptr->oldMonitorState = static_cast<NIBPMonitorStateID>(nibpParam.curStatusType());
+        nibpRepairMenuManager.setMonitorState(static_cast<NIBPMonitorStateID>(nibpParam.curStatusType()));
         nibpParam.changeMode(NIBP_STATE_MACHINE_SERVICE);
     }
     else
@@ -214,8 +213,9 @@ void NIBPRepairMenuWindow::hideEvent(QHideEvent *event)
     machineConfig.getStrValue("NIBP", str);
     if (str == "BLM_N5")
     {
+        NIBPMonitorStateID id = nibpRepairMenuManager.getMonitorState();
         nibpParam.changeMode(NIBP_STATE_MACHINE_MONITOR);
-        nibpParam.switchState(d_ptr->oldMonitorState);
+        nibpParam.switchState(id);
     }
     MenuWindow::hideEvent(event);
 }

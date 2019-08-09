@@ -10,7 +10,7 @@
  *************************************************************************************************/
 void NIBPServiceErrorState::enter(void)
 {
-
+    nibpRepairMenuManager.setMonitorState(NIBP_MONITOR_ERROR_STATE);
     nibpRepairMenuManager.warnShow(true);
 }
 

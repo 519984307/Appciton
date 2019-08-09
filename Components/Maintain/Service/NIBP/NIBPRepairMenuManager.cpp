@@ -146,6 +146,16 @@ bool NIBPRepairMenuManager::getRepairError(void)
     return _repairError;
 }
 
+void NIBPRepairMenuManager::setMonitorState(NIBPMonitorStateID id)
+{
+    monitorState = id;
+}
+
+NIBPMonitorStateID NIBPRepairMenuManager::getMonitorState()
+{
+    return monitorState;
+}
+
 /***************************************************************************************************
  * 隐藏事件
  **************************************************************************************************/
@@ -163,6 +173,7 @@ NIBPRepairMenuManager::NIBPRepairMenuManager() : MenuGroup("SupervisorMenuManage
 {
     _repairError = false;
     _replyFlag = false;
+    monitorState = NIBP_MONITOR_STANDBY_STATE;
     messageBoxWait = new  MessageBox(trs("Warn"), trs("NIBPServiceWaitAgain"), QStringList(trs("EnglishYESChineseSURE")));
     messageBoxError = new MessageBox(trs("Warn"), trs("NIBPServiceModuleErrorQuitTryAgain"),
                                      QStringList(trs("EnglishYESChineseSURE")), true);
