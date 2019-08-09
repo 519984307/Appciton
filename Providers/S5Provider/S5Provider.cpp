@@ -347,6 +347,15 @@ bool S5Provider::isResult_BAR(unsigned char *packet)
         isLowPerfusion = false;
     }
 
+    // pi value 显示范围0~20，
+    // pi value 分辨率0.01，
+    // 该处pivalue的原始范围值为0~200，
+    // 所以扩大10倍，统一分辨率显示
+    if (piValue != InvData())
+    {
+        piValue *= 10;
+    }
+
     if (_isCableOff || _isFingerOff)
     {
         spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, false);
