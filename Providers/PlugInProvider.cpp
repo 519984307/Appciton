@@ -32,7 +32,8 @@
 #define PACKET_BUFF_SIZE 64
 #define RING_BUFFER_LENGTH 4096
 #define MAXIMUM_PACKET_SIZE 256 // largest packet size, should be larger enough
-#define READ_PLUGIN_PIN_INTERVAL        (500)   // 500ms读一次插件管脚
+#define READ_PLUGIN_PIN_INTERVAL        (200)   // 200ms读一次插件管脚
+#define GLOBAL_TIMER_PERIOD         (100)   // 定时器周期
 #define RUN_BAUD_RATE_9600          (9600)
 #define RUN_BAUD_RATE_115200        (115200)
 
@@ -61,7 +62,10 @@ public:
           ringBuff(RING_BUFFER_LENGTH),
           pluginTimerID(-1),
           baudrateTimerID(-1),
-          baudrate(RUN_BAUD_RATE_9600)
+          globalTimerID(-1),
+          baudrate(RUN_BAUD_RATE_9600),
+          dataNoFeedTick(0),
+          isScan(false)
     {
     }
 
@@ -172,7 +176,10 @@ public:
     static QMap<QString, PlugInProvider *> plugInProviders;
     int pluginTimerID;
     int baudrateTimerID;
+    int globalTimerID;
     unsigned int baudrate;
+    unsigned int dataNoFeedTick;
+    bool isScan;
 
 private:
     PlugInProviderPrivate(const PlugInProviderPrivate &);  // use to pass the cpplint check only, no implementation
@@ -186,6 +193,7 @@ PlugInProvider::PlugInProvider(const QString &name, QObject *parent)
     UartAttrDesc portAttr(9600, 8, 'N', 1);
     d_ptr->initPort(portAttr);
     d_ptr->pluginTimerID = startTimer(READ_PLUGIN_PIN_INTERVAL);
+    d_ptr->globalTimerID = startTimer(GLOBAL_TIMER_PERIOD);
     connect(d_ptr->uart, SIGNAL(activated(int)), this, SLOT(dataArrived()));
 }
 
@@ -261,9 +269,11 @@ void PlugInProvider::timerEvent(QTimerEvent *ev)
     if (ev->timerId() == d_ptr->pluginTimerID)
     {
         static int pluginSta = 1;
-        if (pluginSta != d_ptr->readPluginPinSta())
+        if (pluginSta != d_ptr->readPluginPinSta() || d_ptr->isScan)
         {
-            if (pluginSta == 1)
+            // 每次进来或出去清除ringbuff缓存
+            d_ptr->ringBuff.clear();
+            if (pluginSta == 1 || d_ptr->isScan)
             {
                 updateUartBaud(d_ptr->baudrate);
                 spo2Param.initPluginModule();                 // 初始化SpO2插件模块
@@ -271,6 +281,7 @@ void PlugInProvider::timerEvent(QTimerEvent *ev)
                 d_ptr->baudrateTimerID = startTimer(1500);
             }
             pluginSta = d_ptr->readPluginPinSta();
+            d_ptr->isScan = false;
         }
     }
     else if (ev->timerId() == d_ptr->baudrateTimerID)
@@ -288,12 +299,31 @@ void PlugInProvider::timerEvent(QTimerEvent *ev)
         }
         updateUartBaud(d_ptr->baudrate);
     }
+    else if (ev->timerId() == d_ptr->globalTimerID)
+    {
+        if (d_ptr->dataNoFeedTick > 150)  // 超过15s后，不再尝试扫描连接
+        {
+            killTimer(d_ptr->globalTimerID);
+        }
+        else if (d_ptr->readPluginPinSta())
+        {
+            d_ptr->dataNoFeedTick++;
+
+            if (d_ptr->dataNoFeedTick > 15)  // 超过1.5s没有数据通信时，开始扫描
+            {
+                d_ptr->dataNoFeedTick -= 5;  // 预留500ms时间用于通信回复
+                d_ptr->isScan = true;
+            }
+        }
+    }
 }
 
 #define ArraySize(arr) ((int)(sizeof(arr)/sizeof(arr[0])))      // NOLINT
 
 void PlugInProvider::dataArrived()
 {
+    d_ptr->dataNoFeedTick = 0;
+
     d_ptr->readData(); // 读取数据到RingBuff中
 
     while (d_ptr->ringBuff.dataSize() >= MIN_PACKET_LEN)
@@ -304,6 +334,13 @@ void PlugInProvider::dataArrived()
             // 如果查询不到帧尾，移除ringbuff缓冲区最旧的数据，下次继续查询
             unsigned char len = d_ptr->ringBuff.at(1);     // data field length
             unsigned char totalLen = 2 + len + 2;   // 1 frame head + 1 len byte + data length + 1 checksum + 1 frame end
+
+            if (totalLen > 40)
+            {
+                qDebug() << "packet too large";
+                d_ptr->ringBuff.pop(1);
+                continue;
+            }
 
             if (d_ptr->ringBuff.dataSize() < totalLen)
             {
