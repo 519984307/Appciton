@@ -205,7 +205,7 @@
                 <Scale>1</Scale>
             </percent>
             </SPO2_2>
-            <SPO2_D Enable="1" Prio="1">
+            <SPO2_D Enable="1" Prio="1" Auto="1">
             <percent>
                 <Low Min="0" Max="19">0</Low>
                 <High Min="1" Max="20">3</High>
