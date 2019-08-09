@@ -353,6 +353,17 @@ void EventWindow::eventTypeSelect(int index)
     {
         d_ptr->eventTable->setFocusPolicy(Qt::NoFocus);
     }
+    // 更新打印按键状态
+    if (recorderManager.isConnected() && !d_ptr->printList.isEmpty())
+    {
+        d_ptr->printBtn->setEnabled(true);
+        d_ptr->listPrintBtn->setEnabled(true);
+    }
+    else
+    {
+        d_ptr->printBtn->setEnabled(false);
+        d_ptr->listPrintBtn->setEnabled(false);
+    }
     d_ptr->updateLevelStatus();
 }
 
