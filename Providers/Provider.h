@@ -97,6 +97,8 @@ protected:
     DataDispatcher::DispatchInfo disPatchInfo;
     PlugInProvider::PlugInInfo plugInInfo;
 
+    void setFirstCheck(bool flag);
+
 protected slots:
     // 当端口有数据时调用此方法，派生类实现。
     virtual void dataArrived(void)

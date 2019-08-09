@@ -171,6 +171,11 @@ void Provider::readData(void)
 //    ringBuff.push(bu, 9);
 }
 
+void Provider::setFirstCheck(bool flag)
+{
+    _firstCheck = flag;
+}
+
 /**************************************************************************************************
  * 功能： 获取名称。
  * 返回： Provider的名称。
