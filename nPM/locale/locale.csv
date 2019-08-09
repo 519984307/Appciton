@@ -617,6 +617,20 @@ RESPCheckElecrodes,Resp检查电极,Resp Check Electrodes
 Apnea,Resp窒息,Apnea
 SPO2Low,SpO₂低,SpO₂ Low
 SPO2High,SpO₂高,SpO₂ High
+SPO22Low,SpO₂ 2 低,SpO₂ 2 Low
+SPO22High,SpO₂ 2 高,SpO₂ 2 High
+SPO2DLow,ΔSpO₂低,ΔSpO₂ Low
+SPO2DHigh,ΔSpO₂高,ΔSpO₂ High
+PVILow,PVI低,PVI Low
+PVIHigh,PVI高,PVI High
+SPHBLow,SpHb低,SpHb Low
+SPHBHigh,SpHb高,SpHb High
+SPOCLow,SpOC低,SpOC Low
+SPOCHigh,SpOC高,SpOC High
+SPMETLow,SpMet低,SpMet Low
+SPMETHigh,SpMet高,SpMet High
+SPCOLow,SpCO低,SpCO Low
+SPCOHigh,SpCO高,SpCO High
 SPO2PRLow,PR低,PR Low
 SPO2PRHigh,PR高,PR High
 SPO2Initializing,SpO₂初始化,SpO₂ initializing
