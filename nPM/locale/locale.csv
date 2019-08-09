@@ -1465,7 +1465,7 @@ ConfigManagerDesc,配置管理,Config Manage
 ConfigManager,配置管理,Config Manage
 DefaultConfig,默认配置,Default Config
 DefaultConfigDesc,默认配置,Default Config
-AdultDefaultConfig,成人默认配置,Adult Default Config
+AdultDefaultConfig,成人默认配置,Adu Default Config
 PedDefaultConfig,小儿默认配置,Ped Default Config
 NeoDefaultConfig,新生儿默认配置,Neo Default Config
 FactoryConfig,工厂配置,Factory Config
@@ -1650,7 +1650,7 @@ _12Hour,12 小时,12 Hour
 _24Hour,24 小时,24 Hour
 System,系统,System
 Machine,机器,Machine
-AdultConfig.Original.xml,成人缺省,Default Adult Config.
+AdultConfig.Original.xml,成人缺省,Default Adu Config.
 NeoConfig.Original.xml,新生儿缺省,Default Neo Config.
 PedConfig.Original.xml,小儿缺省,Default Ped Config.
 System.Original.xml,系统配置,System Config.
