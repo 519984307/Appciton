@@ -637,6 +637,7 @@ SPO2Initializing,SpO₂初始化,SpO₂ initializing
 SPO2PulseSearch,SpO₂搜索脉搏,SpO₂ Pulse Search
 SPO2PulseSearchTooLong,SpO₂脉搏搜索时间过长,SpO₂ Pulse Search Too Long
 SPO2SensorOff,SpO₂传感器脱落,SpO₂ Sensor Off
+SpO2Sensor,SpO₂传感器,SpO₂ Sensor
 SPO2CheckSensor,SpO₂检查探头,SpO₂ Check Sensor
 SPO22CheckSensor,SpO₂ 2检查探头,SpO₂ 2 Check Sensor
 SPO2SearchPulseTooLong,SpO₂脉搏搜索时间过长,SpO₂ Search Pulse Too Long
