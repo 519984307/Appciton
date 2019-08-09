@@ -1147,6 +1147,8 @@ void EventWindowPrivate::eventTrendUpdate()
     QString fi;
     QString valueStr;
     QString titleStr;
+    QString t1;
+    QString t2;
     int paramNum = ctx.trendSegment->trendValueNum;
     for (int i = 0; i < paramNum; i ++)
     {
@@ -1166,7 +1168,22 @@ void EventWindowPrivate::eventTrendUpdate()
             }
             else if (paramInfo.getParamID(subId) == PARAM_TEMP)
             {
-                dataStr = Unit::convert(type, UNIT_TC, ctx.trendSegment->values[i].value / 10.0);
+                if (subId != SUB_PARAM_TD)
+                {
+                    dataStr = Unit::convert(type, UNIT_TC, ctx.trendSegment->values[i].value / 10.0);
+                }
+                if (subId == SUB_PARAM_T1)
+                {
+                    t1 = dataStr;
+                }
+                else if (subId == SUB_PARAM_T2)
+                {
+                    t2 = dataStr;
+                }
+                else if (subId == SUB_PARAM_TD)
+                {
+                    dataStr = QString("%1").number(fabs(t1.toDouble() - t2.toDouble()));
+                }
             }
             else if (paramInfo.getParamID(subId) == PARAM_NIBP)
             {
