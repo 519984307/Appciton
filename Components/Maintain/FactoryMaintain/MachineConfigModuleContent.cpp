@@ -52,6 +52,7 @@ public:
 #endif
         ITEM_CBO_BACKLIGHT,
         ITEM_CBO_NIBP_NEO_MEASURE,
+        ITEM_CBO_SCREEN_INFO,
         ITEM_CBO_MAX
     };
 
@@ -210,6 +211,16 @@ void MachineConfigModuleContentPrivte::loadOptions()
     combos[ITEM_CBO_WIFI]->setCurrentIndex(0);
     combos[ITEM_CBO_WIFI]->setEnabled(false);
 #endif
+
+    QStringList screenInfoList = machineConfig.getChildNodeNameList("ScreenInfo");
+    combos[ITEM_CBO_SCREEN_INFO]->clear();
+    foreach(QString screenInfo, screenInfoList)
+    {
+        combos[ITEM_CBO_SCREEN_INFO]->addItem(trs(screenInfo));
+    }
+    index = 0;
+    machineConfig.getNumValue("ScreenInfoEnable", index);
+    combos[ITEM_CBO_SCREEN_INFO]->setCurrentIndex(index);
 
     setCombosBlockSignalStatus(false);
 }
@@ -501,6 +512,16 @@ void MachineConfigModuleContent::layoutExec()
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
+    // machine model
+    label = new QLabel(trs("ScreenSize"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    combo = new ComboBox;
+    layout->addWidget(combo, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(MachineConfigModuleContentPrivte::ITEM_CBO_SCREEN_INFO, combo);
+    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_SCREEN_INFO;
+    combo->setProperty("Item", qVariantFromValue(itemId));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+
     layout->setRowStretch(d_ptr->combos.count(), 1);
 }
 
@@ -622,6 +643,11 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
         {
              enablePath = "NIBPNEOMeasureEnable";
              break;
+        }
+        case MachineConfigModuleContentPrivte::ITEM_CBO_SCREEN_INFO:
+        {
+            enablePath = "ScreenInfoEnable";
+            break;
         }
         default:
             return;

@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Machine>
     <MachineName>nPM</MachineName>
-    <!--屏幕分辨率-->
-    <ScreenWidth>1280</ScreenWidth>
-    <ScreenHeight>800</ScreenHeight>
-    <ScreenPixelWPitch>0.204</ScreenPixelWPitch>
-    <ScreenPixelHPitch>0.204</ScreenPixelHPitch>
     <!--功能机型的使能配置-->
-    <ConfiguredFunctions>ECG12LEAD,SPO2,NIBP,RESP,CO2,AG,CO,IBP,TEMP,Printer,WIFI,Touch,O2,NIBPNEOMeasure</ConfiguredFunctions>
+    <ConfiguredFunctions>ECG12LEAD,SPO2,NIBP,RESP,CO2,AG,CO,IBP,TEMP,Printer,WIFI,Touch,O2,NIBPNEOMeasure,ScreenInfo</ConfiguredFunctions>
     <ECG12LEADEnable>1</ECG12LEADEnable>
     <SPO2Enable>1</SPO2Enable>
     <NIBPEnable>1</NIBPEnable>
@@ -21,6 +16,25 @@
     <WIFIEnable>0</WIFIEnable>
     <TouchEnable>0</TouchEnable>
     <O2Enable>1</O2Enable>
+    <ScreenInfoEnable>2</ScreenInfoEnable>
+    <!--屏幕信息-->
+    <ScreenInfo>
+	<size8Inch>
+	    <ScreenPixelWPitch>0.158</ScreenPixelWPitch>
+    	    <ScreenPixelHPitch>0.158</ScreenPixelHPitch>
+    	    <ScreenSize>8.0</ScreenSize>
+        </size8Inch>
+	<size10Inch>
+	    <ScreenPixelWPitch>0.1695</ScreenPixelWPitch>
+    	    <ScreenPixelHPitch>0.1695</ScreenPixelHPitch>
+    	    <ScreenSize>10.1</ScreenSize>
+	</size10Inch>
+	<size12Inch>
+	    <ScreenPixelWPitch>0.204</ScreenPixelWPitch>
+    	    <ScreenPixelHPitch>0.204</ScreenPixelHPitch>
+    	    <ScreenSize>12.1</ScreenSize>
+	</size12Inch>
+    </ScreenInfo>
     <!--屏幕类型选择  0:商业屏,1:工业屏-->
     <ScreenTypeSelect>0</ScreenTypeSelect>
     <NIBPNEOMeasureEnable>1</NIBPNEOMeasureEnable>	
@@ -30,7 +44,6 @@
     <!--系统信息-->
     <SerialNumber>20180725222</SerialNumber>
     <SoftwareVersion>0.0.0.1</SoftwareVersion>
-    <ScreenSize>12.1</ScreenSize>
     <!--参数信息-->
     <AllParams>ECG,SPO2,RESP,NIBP,CO2,IBP,AG,CO,TEMP,O2</AllParams>
     <!--数据记录使能选择-->

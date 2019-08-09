@@ -20,6 +20,8 @@
 #include "NurseCallManager.h"
 #include "TestBatteryTime.h"
 #include "PlugInProvider.h"
+#include <QApplication>
+#include <QDesktopWidget>
 
 /**************************************************************************************************
  * 功能： 初始化系统。
@@ -136,11 +138,12 @@ static void _initSystem(void)
 static void _initWindowManager(void)
 {
     // Set window size
-    int screenWidth = 0;
-    int screenHeight = 0;
-    machineConfig.getNumValue("ScreenWidth", screenWidth);
-    machineConfig.getNumValue("ScreenHeight", screenHeight);
-    windowManager.setFixedSize(screenWidth, screenHeight);
+#ifdef Q_WS_X11
+    windowManager.setFixedSize(1280, 800);
+#else
+    QRect rect = QApplication::desktop()->screenGeometry();
+    windowManager.setFixedSize(rect.width(), rect.height());
+#endif
 }
 
 /**************************************************************************************************
