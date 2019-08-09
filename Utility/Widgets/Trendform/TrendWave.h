@@ -23,7 +23,8 @@ public:
 
     void addSubParam(SubParamID id);
 
-    void updateRange();
+    /* reimplment */
+    void updateWidgetConfig();
 
 protected:
     /* reimplment */
@@ -38,6 +39,8 @@ protected slots:
     void onPaletteChanged(ParamID param);
 
     void onClearTrendData();
+
+    void updateRange(SubParamID subParam);
 
 private:
     TrendWavePrivate * const d_ptr;

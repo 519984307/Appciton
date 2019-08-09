@@ -86,6 +86,7 @@ TrendWave::TrendWave(const QString &name, QWidget *parent)
     connect(&trendDataStorageManager, SIGNAL(newTrendDataArrived(unsigned)), this, SLOT(onNewTrendDataArrived(unsigned)));
     connect(&colorManager, SIGNAL(paletteChanged(ParamID)), this, SLOT(onPaletteChanged(ParamID)));
     connect(&spo2Param, SIGNAL(clearTrendData()), this, SLOT(onClearTrendData()));
+    connect(&alarmConfig, SIGNAL(LimitChange(SubParamID)), this, SLOT(updateRange(SubParamID)));
 }
 
 TrendWave::~TrendWave()
@@ -109,11 +110,13 @@ void TrendWave::addSubParam(SubParamID id)
     {
         d_ptr->waveColor.last() = Qt::white;
     }
-    updateRange();
+    updateWidgetConfig();
 }
 
-void TrendWave::updateRange()
+void TrendWave::updateWidgetConfig()
 {
+    d_ptr->maxValue = -1;
+    d_ptr->minValue = -1;
     for (int i = 0; i < d_ptr->subParamList.count(); i++)
     {
         LimitAlarmConfig limit = alarmConfig.getLimitAlarmConfig(d_ptr->subParamList.at(i)
@@ -131,6 +134,19 @@ void TrendWave::updateRange()
             d_ptr->scale = limit.scale;
         }
     }
+
+    if (d_ptr->subParamList[0] == SUB_PARAM_SPO2 || d_ptr->subParamList[0] == SUB_PARAM_HR_PR)
+    {
+        QColor color = colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(d_ptr->subParamList.at(0))));
+        if (d_ptr->waveColor[0] != color)
+        {
+            d_ptr->waveColor[0] = color;
+        }
+    }
+
+    IWidget::updateWidgetConfig();
+    d_ptr->updateBGFlag = true;
+    update();
 }
 
 void TrendWave::resizeEvent(QResizeEvent *e)
@@ -210,20 +226,11 @@ void TrendWave::onPaletteChanged(ParamID param)
     {
         param = PARAM_DUP_ECG;
     }
-    if (paramInfo.getParamID(d_ptr->subParamList.at(0)) != param)
+    if (param != paramInfo.getParamID(d_ptr->subParamList.at(0)))
     {
         return;
     }
-    if (d_ptr->subParamList[0] == SUB_PARAM_SPO2 || d_ptr->subParamList[0] == SUB_PARAM_HR_PR)
-    {
-        QColor color = colorManager.getColor(paramInfo.getParamName(param));
-        if (d_ptr->waveColor[0] != color)
-        {
-            d_ptr->waveColor[0] = color;
-            d_ptr->updateBGFlag = true;
-            update();
-        }
-    }
+    updateWidgetConfig();
 }
 
 void TrendWave::onClearTrendData()
@@ -231,6 +238,15 @@ void TrendWave::onClearTrendData()
     d_ptr->resetPointBufFlag = true;
     d_ptr->updateBGFlag = true;
     update();
+}
+
+void TrendWave::updateRange(SubParamID subParam)
+{
+    if (subParam != d_ptr->subParamList.at(0))
+    {
+        return;
+    }
+    updateWidgetConfig();
 }
 
 void TrendWavePrivate::drawWave(QPainter *painter, const QRect &r)
