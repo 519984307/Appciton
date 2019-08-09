@@ -384,6 +384,11 @@ RainbowProvider::RainbowProvider(const QString &name, bool isPlugIn)
 
     initPort(attr);
 
+    if (isPlugIn)
+    {
+        return;
+    }
+
     if (disPatchInfo.dispatcher)
     {
         // reset the hardware
@@ -1280,6 +1285,8 @@ void RainbowProviderPrivate::handleACK()
             {
                 // data is transmited directly through the uart port
                 q_ptr->plugInInfo.plugIn->updateUartBaud(RUN_BAUD_RATE);
+                // 设置波特率在请求板子信息之前
+                q_ptr->plugInInfo.plugIn->setPacketPortBaudrate(PlugInProvider::PLUGIN_TYPE_SPO2, PlugInProvider::BAUDRATE_57600);
                 QTimer::singleShot(50, q_ptr, SLOT(requestBoardInfo()));
             }
             else
