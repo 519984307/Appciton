@@ -88,6 +88,7 @@ public:
      */
     void handleCO2RawData(const unsigned char *data, int len, bool stop);
 
+    void handleTempRawData(const unsigned char *data, int len, bool stop);
     /**
      * @brief saveEcgRawData and the ecg raw data to file
      * @param data the data struct contain data need to store
@@ -111,6 +112,8 @@ public:
      * @param data the data struct contain data need to store
      */
     void saveCO2RawData(const StoreDataType *data);
+
+    void saveTempRawData(const StoreDataType *data);
 
     bool collectionStatus[RawDataCollector::DATA_TYPE_NR];
 
@@ -280,6 +283,37 @@ void RawDataCollectorPrivate::handleCO2RawData(const unsigned char *data, int le
 
         mutex.lock();
         dataBuffer.append(new StoreDataType(RawDataCollector::CO2_DATA, content, stop));
+        mutex.unlock();
+    }
+}
+
+void RawDataCollectorPrivate::handleTempRawData(const unsigned char *data, int len, bool stop)
+{
+    QByteArray content;
+
+    if (stop)
+    {
+        mutex.lock();
+        dataBuffer.append(new StoreDataType(RawDataCollector::TEMP_DATA, content, stop));
+        mutex.unlock();
+    }
+    else
+    {
+        QTextStream stream(&content);
+        uchar channel = data[0];
+        len--;
+        for (int i = 0; i < len / 2; i++)
+        {
+            unsigned int tempData = data[1 + 2 * i] | (data[2 + 2 * i] << 8);
+            QString time;
+            timeDate.getTime(time, true);
+            stream << channel << "," << tempData << "," << time << endl;
+        }
+
+        stream.flush();
+
+        mutex.lock();
+        dataBuffer.append(new StoreDataType(RawDataCollector::TEMP_DATA, content, stop));
         mutex.unlock();
     }
 }
@@ -498,6 +532,59 @@ void RawDataCollectorPrivate::saveCO2RawData(const StoreDataType *data)
     }
 }
 
+void RawDataCollectorPrivate::saveTempRawData(const StoreDataType *data)
+{
+    QFile *f = files[RawDataCollector::TEMP_DATA];
+    if (f == NULL && data->stop)
+    {
+        // do nothing
+        return;
+    }
+    else if (f && data->stop)
+    {
+        // close the file and delete the file descriptor
+        fsync(f->handle());
+        f->close();
+        delete f;
+        files[RawDataCollector::TEMP_DATA] = NULL;
+        return;
+    }
+    else if (f == NULL)
+    {
+        QString dirname = usbManager.getUdiskMountPoint() + "/BLM_T5/";
+        if (!QDir(dirname).exists())
+        {
+            if (!QDir().mkpath(dirname))
+            {
+                qDebug() << "Fail to create directory " << dirname;
+                return;
+            }
+        }
+        QString name = dirname + QString("TEMP_%1.txt").arg(QDateTime::currentDateTime().toString("yyyyMMddHHmmss"));
+
+        // not open the file yet, open now
+        f = new QFile(name);
+        if (!f->open(QIODevice::WriteOnly))
+        {
+            qDebug() << "Fail to create file " << name;
+            delete f;
+            return;
+        }
+        files[RawDataCollector::TEMP_DATA] = f;
+    }
+
+    f->write(data->data);
+
+    if (f->size() > 10 * 1024 * 1024)
+    {
+        // store 10 M data in each file
+        fsync(f->handle());
+        f->close();
+        delete f;
+        files[RawDataCollector::TEMP_DATA] = NULL;
+    }
+}
+
 RawDataCollector &RawDataCollector::getInstance()
 {
     static RawDataCollector *instance = NULL;
@@ -549,6 +636,9 @@ void RawDataCollector::run()
             break;
         case CO2_DATA:
             d_ptr->saveCO2RawData(data);
+            break;
+        case TEMP_DATA:
+            d_ptr->saveTempRawData(data);
             break;
         default:
             break;
@@ -636,6 +726,9 @@ void RawDataCollector::collectData(RawDataCollector::CollectDataType type, const
         break;
     case RawDataCollector::CO2_DATA:
         d_ptr->handleCO2RawData(data, len, stop);
+        break;
+    case RawDataCollector::TEMP_DATA:
+        d_ptr->handleTempRawData(data, len, stop);
         break;
 
     default:

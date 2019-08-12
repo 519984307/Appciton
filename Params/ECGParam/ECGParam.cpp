@@ -90,7 +90,7 @@ void ECGParam::_getDisabledWaveforms(QStringList &waveforms)
 
 short ECGParam::getMaxHrValue()
 {
-    return 350;
+    return 300;
 }
 
 short ECGParam::getMinHrValue()
