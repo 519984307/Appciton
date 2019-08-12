@@ -311,7 +311,7 @@ void PlugInProvider::timerEvent(QTimerEvent *ev)
         {
             killTimer(d_ptr->checkConnectTimerID);
         }
-        else if (d_ptr->readPluginPinSta())
+        else if (!d_ptr->readPluginPinSta())
         {
             // 没有连接上插件
             d_ptr->dataNoFeedTick++;
@@ -321,6 +321,10 @@ void PlugInProvider::timerEvent(QTimerEvent *ev)
                 d_ptr->dataNoFeedTick -= 5;  // 预留500ms时间用于通信回复
                 d_ptr->isScan = true;
             }
+        }
+        else if (d_ptr->readPluginPinSta())
+        {
+            d_ptr->dataNoFeedTick++;
         }
     }
 }
