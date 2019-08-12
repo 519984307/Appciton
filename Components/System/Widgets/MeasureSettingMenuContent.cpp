@@ -289,11 +289,11 @@ void MeasureSettingMenuContentPrivate::loadOptions()
     {
         if (patientManager.getType() == PATIENT_TYPE_NEO)
         {
-            apneaStimulationBtn->setEnabled(true);
+            apneaStimulationBtn->setVisible(true);
         }
         else
         {
-            apneaStimulationBtn->setEnabled(false);
+            apneaStimulationBtn->setVisible(false);
         }
     }
 #endif
