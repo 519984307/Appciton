@@ -227,7 +227,15 @@ void SPO2Param::handDemoWaveform(WaveformID id, short data)
         waveFlag  = waveFlag | SPO2_IQ_FLAG_BIT;
     }
 
-    setValidStatus(true);
+    if (id == WAVE_SPO2)
+    {
+        setValidStatus(true);
+    }
+    else if (id == WAVE_SPO2_2)
+    {
+        setValidStatus(true, true);
+    }
+
     if (id == WAVE_SPO2)
     {
         addWaveformData(data, waveFlag);

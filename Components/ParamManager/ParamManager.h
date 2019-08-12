@@ -14,12 +14,14 @@
 #include "ParamDefine.h"
 #include "UnitManager.h"
 #include "SystemManager.h"
+#include <QObject>
 
 class Provider;
 class BLMProvider;
 class Param;
-class ParamManager
+class ParamManager : public QObject
 {
+    Q_OBJECT
 public:
     static ParamManager &construction(void)
     {
@@ -94,6 +96,13 @@ public:
 
     // 析构。
     ~ParamManager();
+
+signals:
+    /**
+     * @brief providerConnectParam 插件参数provider和Param的连接信号
+     * @param isAttach
+     */
+    void plugInProviderConnectParam(bool isAttach);
 
 private:
     ParamManager();
