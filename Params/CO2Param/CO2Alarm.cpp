@@ -130,7 +130,7 @@ int CO2LimitAlarm::getCompare(int value, int id)
         int low = limitConfig.lowLimit * limitConfig.scale;
         int high = limitConfig.highLimit * limitConfig.scale;
         int v = 0;
-        valueStr = Unit::convert(curUnit, defUnit, value, co2Param.getBaro());
+        valueStr = Unit::convert(curUnit, defUnit, value / mul, co2Param.getBaro());
         v = valueStr.toInt();
         if (0 == id % 2)
         {
