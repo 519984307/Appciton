@@ -143,7 +143,7 @@ void SPO2TrendWidget::showValue(void)
     }
     else
     {
-        showNormalStatus(_spo2Value2, psrc2);
+        _spo2Value2->setPalette(psrc2);
     }
 
     // SPO2_D
@@ -155,7 +155,7 @@ void SPO2TrendWidget::showValue(void)
     }
     else
     {
-        showNormalStatus(_spo2DeltaValue, psrc2);
+        _spo2DeltaValue->setPalette(psrc2);
     }
 
     // SPO2
@@ -169,6 +169,9 @@ void SPO2TrendWidget::showValue(void)
     {
         showNormalStatus(_spo2Value1, psrc);
     }
+
+    // bar
+    showNormalStatus(_spo2Bar, psrc);
 }
 
 /**************************************************************************************************
@@ -314,4 +317,5 @@ void SPO2TrendWidget::doRestoreNormalStatus()
     showNormalStatus(_spo2Value2, psrc2);
     showNormalStatus(_spo2DeltaValue, psrc2);
     showNormalStatus(_spo2Value1, psrc);
+    showNormalStatus(_spo2Bar, psrc);
 }
