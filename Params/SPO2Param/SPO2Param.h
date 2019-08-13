@@ -201,6 +201,34 @@ public:
     void setFastSat(bool isFast);
     bool getFastSat(void);
 
+    /**
+     * @brief getSpHbAveragingMode 设置/获取SpHb平均模式
+     * @return
+     */
+    void setSpHbAveragingMode(SpHbAveragingMode mode);
+    SpHbAveragingMode getSpHbAveragingMode();
+
+    /**
+     * @brief getSpHbBloodVessel 设置/获取SpHb测量血管
+     * @return
+     */
+    void setSpHbBloodVessel(SpHbBloodVesselMode mode);
+    SpHbBloodVesselMode getSpHbBloodVessel();
+
+    /**
+     * @brief getSpHbPrecision 设置/获取SpHb精度模式
+     * @return
+     */
+    void setSpHbPrecision(SpHbPrecisionMode mode);
+    SpHbPrecisionMode getSpHbPrecision();
+
+    /**
+     * @brief getPviAveragingMode 设置/获取PVI平均模式
+     * @return
+     */
+    void setPviAveragingMode(AveragingMode mode);
+    AveragingMode getPviAveragingMode();
+
     // 设置/获取智能音。
     void setSmartPulseTone(SPO2SMARTPLUSETONE sens);
     SPO2SMARTPLUSETONE getSmartPulseTone(void);

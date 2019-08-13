@@ -597,6 +597,7 @@ SOURCES +=                                                                      
     Params/SPO2Param/SPO2Widgets/SPCOTrendWidget.cpp                            \
     Params/SPO2Param/SPO2Widgets/SPO2BarWidget.cpp                              \
     Params/SPO2Param/SPO2Widgets/SPO2MenuContent.cpp                            \
+    Params/SPO2Param/SPO2Widgets/SPO2SeniorMenuContent.cpp                      \
     Params/SPO2Param/SPO2Widgets/CCHDWindow.cpp                                 \
     Params/SPO2Param/SPO2Widgets/CCHDDataModel.cpp                              \
     Params/TEMPParam/TEMPParam.cpp                                              \
@@ -1172,6 +1173,7 @@ HEADERS +=                                                                      
     Params/SPO2Param/SPO2Widgets/SPCOTrendWidget.h                              \
     Params/SPO2Param/SPO2Widgets/SPO2BarWidget.h                                \
     Params/SPO2Param/SPO2Widgets/SPO2MenuContent.h                              \
+    Params/SPO2Param/SPO2Widgets/SPO2SeniorMenuContent.h                        \
     Params/SPO2Param/SPO2Widgets/CCHDWindow.h                                   \
     Params/SPO2Param/SPO2Widgets/CCHDDataModel.h                                \
     Params/TEMPParam/TEMPDefine.h                                               \

@@ -122,6 +122,10 @@
 	<NIBPSameSide>0</NIBPSameSide>
 	<SignalIQ>0</SignalIQ>
 	<Sensor>0</Sensor>
+	<SpHbAveragingMode>0</SpHbAveragingMode>
+	<SpHbBloodVessel>0</SpHbBloodVessel>
+	<SpHbPrecision>0</SpHbPrecision>
+	<PviAveragingMode>0</PviAveragingMode>
     </SPO2>
     <CO2>
         <CO2ModeDefault>1</CO2ModeDefault>

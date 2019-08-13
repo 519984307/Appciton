@@ -17,6 +17,7 @@
 #include "SystemManager.h"
 #include "WindowManager.h"
 #include "PatientManager.h"
+#include "IConfig.h"
 
 class MeasureSettingMenuContentPrivate
 {
@@ -30,18 +31,22 @@ public:
         ITEM_BTN_IBP,
         ITEM_BTN_CO,
         ITEM_BTN_SPO2,
+        ITEM_BTN_SPO2_SENIOR,
         ITEM_BTN_NIBP,
         ITEM_BTN_CO2,
         ITEM_BTN_O2,
         ITEM_BTN_APNEA_STIMULATION,
     };
 
-    MeasureSettingMenuContentPrivate() : apneaStimulationBtn(NULL)
+    MeasureSettingMenuContentPrivate()
+        : apneaStimulationBtn(NULL),
+          spo2SeniorBtn(NULL)
     {}
 
     void loadOptions();
 
     Button *apneaStimulationBtn;
+    Button *spo2SeniorBtn;
 };
 
 
@@ -166,6 +171,18 @@ void MeasureSettingMenuContent::layoutExec()
         connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
         item = MeasureSettingMenuContentPrivate::ITEM_BTN_SPO2;
         btn->setProperty("Item", qVariantFromValue(item));
+
+        // senior param
+        btn = new Button(QString("%1 >>").arg(trs("SPO2SeniorSetting")));
+        hl = new QHBoxLayout;
+        hl->addStretch(1);
+        hl->addWidget(btn, 1);
+        vlayout->addLayout(hl);
+        btn->setButtonStyle(Button::ButtonTextOnly);
+        connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
+        item = MeasureSettingMenuContentPrivate::ITEM_BTN_SPO2_SENIOR;
+        btn->setProperty("Item", qVariantFromValue(item));
+        d_ptr->spo2SeniorBtn = btn;
     }
 
     // nibp
@@ -264,6 +281,9 @@ void MeasureSettingMenuContent::onBtnReleasd()
     case MeasureSettingMenuContentPrivate::ITEM_BTN_SPO2:
         strName = trs("SPO2Menu");
         break;
+    case MeasureSettingMenuContentPrivate::ITEM_BTN_SPO2_SENIOR:
+        strName = trs("SPO2SeniorMenu");
+        break;
     case MeasureSettingMenuContentPrivate::ITEM_BTN_NIBP:
         strName = trs("NIBPMenu");
         break;
@@ -297,4 +317,14 @@ void MeasureSettingMenuContentPrivate::loadOptions()
         }
     }
 #endif
+    QString str;
+    machineConfig.getStrValue("SPO2", str);
+    if (str == "RAINBOW_SPO2")
+    {
+        spo2SeniorBtn->setVisible(true);
+    }
+    else
+    {
+        spo2SeniorBtn->setVisible(false);
+    }
 }

@@ -107,6 +107,7 @@ enum RBInitializeStep
     RB_INIT_SET_PVI,
     RB_INIT_SET_SPHB_PRECISION_MODE,
     RB_INIT_SET_SPHB_ARTERIAL_VENOUS_MODE,
+    RB_INIT_SET_SPHB_AVERAGING_MODE,
     RB_INIT_SET_SPHB,
     RB_INIT_SET_SPMET,
     RB_INIT_SET_SPOC,
@@ -223,6 +224,7 @@ public:
         , spHbPrecision(PRECISION_NEAREST_0_1)
         , pviAveragingMode(AVERAGING_MODE_NORMAL)
         , spHbBloodVessel(BLOOD_VESSEL_ARTERIAL)
+        , spHbAveragingMode(SPHB_AVERAGING_MODE_LONG)
         , provider(SPO2_RAINBOW_TYPE_DAVID)
         , isPlugIn(false)
     {
@@ -356,6 +358,8 @@ public:
 
     SpHbBloodVesselMode spHbBloodVessel;
 
+    SpHbAveragingMode spHbAveragingMode;
+
     SPO2RainbowType provider;
 
     bool isPlugIn;
@@ -370,6 +374,10 @@ RainbowProvider::RainbowProvider(const QString &name, bool isPlugIn)
     d_ptr->sensMode = static_cast<SensitivityMode>(spo2Param.getSensitivity());
     d_ptr->fastSat = spo2Param.getFastSat();
     d_ptr->enableSmartTone = static_cast<bool>(spo2Param.getSmartPulseTone());
+    d_ptr->spHbAveragingMode = spo2Param.getSpHbAveragingMode();
+    d_ptr->spHbBloodVessel = spo2Param.getSpHbBloodVessel();
+    d_ptr->spHbPrecision = spo2Param.getSpHbPrecision();
+    d_ptr->pviAveragingMode = spo2Param.getPviAveragingMode();
     UartAttrDesc attr(DEFALUT_BAUD_RATE, 8, 'N', 1);
     d_ptr->isPlugIn = isPlugIn;
     if (isPlugIn)
@@ -718,7 +726,17 @@ void RainbowProvider::setSpHbBloodVesselMode(SpHbBloodVesselMode mode)
         d_ptr->spHbBloodVessel = mode;
         return;
     }
+    unsigned char data[2] = {RB_CMD_CONF_SPHB_BLOOD_VESSEL_MODE, mode};
+    d_ptr->sendCmd(data, sizeof(data));
+}
 
+void RainbowProvider::setSphbAveragingMode(SpHbAveragingMode mode)
+{
+    if (d_ptr->isReseting)
+    {
+        d_ptr->spHbAveragingMode = mode;
+        return;
+    }
     unsigned char data[2] = {RB_CMD_CONF_SPHB_BLOOD_VESSEL_MODE, mode};
     d_ptr->sendCmd(data, sizeof(data));
 }
@@ -1390,6 +1408,10 @@ void RainbowProviderPrivate::handleACK()
             break;
         case RB_INIT_SET_SPHB_ARTERIAL_VENOUS_MODE:
             q_ptr->setSpHbBloodVesselMode(spHbBloodVessel);
+            curInitializeStep = RB_INIT_SET_SPHB_AVERAGING_MODE;
+            break;
+        case RB_INIT_SET_SPHB_AVERAGING_MODE:
+            q_ptr->setSphbAveragingMode(spHbAveragingMode);
             curInitializeStep = RB_INIT_SET_SPHB;
             break;
         case RB_INIT_SET_SPHB:

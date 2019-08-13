@@ -1307,6 +1307,58 @@ bool SPO2Param::getFastSat()
     return static_cast<bool>(fastSat);
 }
 
+void SPO2Param::setSpHbAveragingMode(SpHbAveragingMode mode)
+{
+    d_ptr->provider->setSphbAveragingMode(mode);
+    currentConfig.setNumValue("SPO2|SpHbAveragingMode", static_cast<int>(mode));
+}
+
+SpHbAveragingMode SPO2Param::getSpHbAveragingMode()
+{
+    int sphbAveragingMode = false;
+    currentConfig.getNumValue("SPO2|SpHbAveragingMode", sphbAveragingMode);
+    return static_cast<SpHbAveragingMode>(sphbAveragingMode);
+}
+
+void SPO2Param::setSpHbBloodVessel(SpHbBloodVesselMode mode)
+{
+    d_ptr->provider->setSpHbBloodVesselMode(mode);
+    currentConfig.setNumValue("SPO2|SpHbBloodVessel", static_cast<int>(mode));
+}
+
+SpHbBloodVesselMode SPO2Param::getSpHbBloodVessel()
+{
+    int spHbBloodVessel = false;
+    currentConfig.getNumValue("SPO2|SpHbBloodVessel", spHbBloodVessel);
+    return static_cast<SpHbBloodVesselMode>(spHbBloodVessel);
+}
+
+void SPO2Param::setSpHbPrecision(SpHbPrecisionMode mode)
+{
+    d_ptr->provider->setSpHbPrecisionMode(mode);
+    currentConfig.setNumValue("SPO2|SpHbPrecision", static_cast<int>(mode));
+}
+
+SpHbPrecisionMode SPO2Param::getSpHbPrecision()
+{
+    int sphbPrecision = false;
+    currentConfig.getNumValue("SPO2|SpHbPrecision", sphbPrecision);
+    return static_cast<SpHbPrecisionMode>(sphbPrecision);
+}
+
+void SPO2Param::setPviAveragingMode(AveragingMode mode)
+{
+    d_ptr->provider->setPVIAveragingMode(mode);
+    currentConfig.setNumValue("SPO2|PviAveragingMode", static_cast<int>(mode));
+}
+
+AveragingMode SPO2Param::getPviAveragingMode()
+{
+    int pviAveragingMode = false;
+    currentConfig.getNumValue("SPO2|PviAveragingMode", pviAveragingMode);
+    return static_cast<AveragingMode>(pviAveragingMode);
+}
+
 /**************************************************************************************************
  * 设置智能音。
  *************************************************************************************************/
