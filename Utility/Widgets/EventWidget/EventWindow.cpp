@@ -1158,6 +1158,8 @@ void EventWindowPrivate::eventTrendUpdate()
     QString fi;
     QString valueStr;
     QString titleStr;
+    bool multiSubaramAlarm = false;
+    bool subParamAlarm = false;
     int paramNum = ctx.trendSegment->trendValueNum;
     for (int i = 0; i < paramNum; i ++)
     {
@@ -1196,6 +1198,7 @@ void EventWindowPrivate::eventTrendUpdate()
         case SUB_PARAM_AUXP1_SYS:
         case SUB_PARAM_AUXP2_SYS:
             sys = dataStr;
+            multiSubaramAlarm = ctx.trendSegment->values[i].alarmFlag;
             continue;
         case SUB_PARAM_NIBP_DIA:
         case SUB_PARAM_ART_DIA:
@@ -1203,6 +1206,7 @@ void EventWindowPrivate::eventTrendUpdate()
         case SUB_PARAM_AUXP1_DIA:
         case SUB_PARAM_AUXP2_DIA:
             dia = dataStr;
+            multiSubaramAlarm |= ctx.trendSegment->values[i].alarmFlag;
             continue;
         case SUB_PARAM_NIBP_MAP:
         case SUB_PARAM_ART_MAP:
@@ -1210,6 +1214,7 @@ void EventWindowPrivate::eventTrendUpdate()
         case SUB_PARAM_AUXP1_MAP:
         case SUB_PARAM_AUXP2_MAP:
             map = dataStr;
+            subParamAlarm = ctx.trendSegment->values[i].alarmFlag || multiSubaramAlarm;
             valueStr = sys + "/" + dia + "(" + map + ")";
             titleStr = paramInfo.getSubParamName(subId);
             titleStr = titleStr.left(titleStr.length() - 4);
@@ -1230,6 +1235,7 @@ void EventWindowPrivate::eventTrendUpdate()
         case SUB_PARAM_ETAA1:
         case SUB_PARAM_ETAA2:
         case SUB_PARAM_ETO2:
+            multiSubaramAlarm = ctx.trendSegment->values[i].alarmFlag;
             et = dataStr;
             continue;
         case SUB_PARAM_FICO2:
@@ -1237,6 +1243,7 @@ void EventWindowPrivate::eventTrendUpdate()
         case SUB_PARAM_FIAA1:
         case SUB_PARAM_FIAA2:
         case SUB_PARAM_FIO2:
+            subParamAlarm = ctx.trendSegment->values[i].alarmFlag || multiSubaramAlarm;
             fi = dataStr;
             valueStr = et + "/" + fi;
             titleStr = trs(paramInfo.getSubParamName(subId));
@@ -1246,6 +1253,7 @@ void EventWindowPrivate::eventTrendUpdate()
             break;
         default:
             valueStr = dataStr;
+            subParamAlarm = ctx.trendSegment->values[i].alarmFlag;
             titleStr = trs(paramInfo.getSubParamName(subId));
             valueFont = fontManager.numFont(37);
             break;
@@ -1262,7 +1270,8 @@ void EventWindowPrivate::eventTrendUpdate()
                       trs(Unit::getSymbol(paramManager.getSubParamUnit(paramInfo.getParamID(subId), subId))));
 
 
-        item->setData(EventTrendItemDelegate::TrendAlarmRole, ctx.trendSegment->values[i].alarmFlag);
+        item->setData(EventTrendItemDelegate::TrendAlarmRole, subParamAlarm);
+
         color = colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(subId)));
         if (color != QColor(0, 0, 0))
         {
