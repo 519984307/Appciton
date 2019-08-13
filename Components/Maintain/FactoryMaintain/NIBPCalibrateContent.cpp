@@ -252,6 +252,10 @@ void NIBPCalibrateContent::hideEvent(QHideEvent *e)
     if (d_ptr->moduleStr == "BLM_N5")
     {
         nibpParam.provider().serviceCalibrate(false);
+        if (nibpParam.curMachineType() == NIBP_STATE_MACHINE_SERVICE)
+        {
+            nibpParam.switchState(NIBP_SERVICE_STANDBY_STATE);
+        }
     }
 }
 

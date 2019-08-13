@@ -296,6 +296,10 @@ void NIBPZeroPointContent::hideEvent(QHideEvent *e)
     Q_UNUSED(e);
     d_ptr->loadOptions();
     nibpParam.provider().serviceCalibrateZero(false);
+    if (nibpParam.curMachineType() == NIBP_STATE_MACHINE_SERVICE)
+    {
+        nibpParam.switchState(NIBP_SERVICE_STANDBY_STATE);
+    }
 }
 
 void NIBPZeroPointContent::enterZeroReleased()

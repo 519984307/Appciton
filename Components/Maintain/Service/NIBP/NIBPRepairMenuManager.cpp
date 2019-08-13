@@ -93,12 +93,11 @@ void NIBPRepairMenuManager::warnShow(bool enable)
     // 模块硬件出错
     if (nibpParam.isErrorDisable())
     {
-        warn->setText(trs("NIBPModuleError"));
+        messageBoxError->exec();
     }
     // 模块通信错误
     else
     {
-        warn->setText(trs("NIBPServiceModuleErrorQuitTryAgain"));
         if (enable)
         {
             if (messageBoxWait != NULL && messageBoxWait->isVisible())
@@ -120,7 +119,6 @@ void NIBPRepairMenuManager::warnShow(bool enable)
     {
         closeStrongFoucs();
     }
-    warn->setVisible(enable);
     _repairError = enable;
 }
 
