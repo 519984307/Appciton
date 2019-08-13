@@ -425,7 +425,7 @@ isRelievePatient,是否解除病人,Whether to discharge patient?
 CleanPatientData,清除当前病人数据,Clean Current Patient Data
 isCleanPatient,是否清除当前病人数据,Whether to clean the current patient data?
 WhetherStandby,是否进入待机？,Whether to enter the standby machine？
-RemoveAndRecePatient,"解除当前病人,接收新病人?",Release the current patient and receive new patients?
+RemoveAndRecePatient,"解除当前病人,接收新病人?",Release the current patient and receive new patient?
 ApplicationDataToReceivingPatients,将监护仪中已有数据应用于将被接收的病人？,Application data to receiving patients?
 PatientManagement,病人管理,Patient Management
 ScreenSetup,界面布局,Layout
