@@ -519,6 +519,12 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
         if (_trendInfo.trendData.at(_cursorPosIndex).isAlarm)
         {
             barPainter.fillRect(dataRect, Qt::white);
+            if (_color == Qt::white)
+            {
+                QPen p = barPainter.pen();
+                p.setColor(Qt::red);
+                barPainter.setPen(p);
+            }
         }
         else
         {
