@@ -518,6 +518,9 @@ static void _calcCheckSum(unsigned char buff[])
  *************************************************************************************************/
 void BLMCO2Provider::disconnected(void)
 {
+#ifdef ENABLE_O2_APNEASTIMULATION
+        co2Param.setRespApneaStimulation(false);
+#endif
     co2Param.setConnected(false);
 }
 
