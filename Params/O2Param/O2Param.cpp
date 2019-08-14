@@ -32,6 +32,7 @@ public:
     int calibReply;
     int motorSta;
     int updateApneaStimulationSta;
+    QTimer updateVibrationTmr;
 };
 
 O2Param &O2Param::getInstance()
@@ -203,6 +204,15 @@ void O2Param::setVibration(bool vibrate)
     {
         d_ptr->provider->sendMotorControl(vibrate);
     }
+
+    if (vibrate)
+    {
+        runningStatus.setShakeStatus(SHAKING);
+    }
+    else
+    {
+        runningStatus.setShakeStatus(SHAKE_ON);
+    }
 }
 
 void O2Param::vibrationIntensityControl(int intensity)
@@ -266,15 +276,15 @@ void O2Param::setVibrationReason(ApneaStimulationReason reason, bool sta)
         // 状态切换或者新建病人都要重新刷新
         if ((preMotorSta != curMotorSta) || (d_ptr->updateApneaStimulationSta))
         {
-            setVibration(curMotorSta);
-            if (curMotorSta)
+            if ((reason == APNEASTIMULATION_REASON_RESP || reason == APNEASTIMULATION_REASON_HR)
+                    && (!d_ptr->updateApneaStimulationSta))
             {
-                runningStatus.setShakeStatus(SHAKING);
+                // 若是原因为低于RESP或HR时，设置定时器，等值稳定后再设置到呼吸窒息
+                d_ptr->updateVibrationTmr.start(1000);
+                return;
             }
-            else
-            {
-                runningStatus.setShakeStatus(SHAKE_ON);
-            }
+
+            setVibration(d_ptr->motorSta);
 
             if (d_ptr->updateApneaStimulationSta)
             {
@@ -293,11 +303,18 @@ void O2Param::paramUpdateTimeout()
     }
 }
 
+void O2Param::updateVibrationTimeout()
+{
+    d_ptr->updateVibrationTmr.stop();
+    setVibration(d_ptr->motorSta);
+}
+
 O2Param::O2Param() :
     Param(PARAM_O2),
     O2ParamInterface(),
     d_ptr(new O2ParamPrivate())
 {
+    connect(&(d_ptr->updateVibrationTmr), SIGNAL(timeout()), this, SLOT(updateVibrationTimeout()));
 }
 
 O2Param::~O2Param()
