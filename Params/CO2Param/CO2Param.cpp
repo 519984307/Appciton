@@ -52,8 +52,7 @@ public:
               oxyCRGCO2Wave(NULL),
               calibrateChannel(0),
               calibrateResult(false),
-              calibrateReply(false),
-              isFirstConnect(true)
+              calibrateReply(false)
     {
     }
 
@@ -97,7 +96,6 @@ public:
     int calibrateChannel;
     bool calibrateResult;
     bool calibrateReply;
-    bool isFirstConnect;
 };
 /**************************************************************************************************
  * 设置波形速度。
@@ -200,7 +198,6 @@ void CO2Param::initParam(void)
     int onoff = 1;
     currentConfig.getNumValue("CO2|CO2ModeDefault", onoff);
     d_ptr->co2Switch = (1 == onoff) ? true : false;
-    d_ptr->isFirstConnect = true;
 }
 
 /**************************************************************************************************
@@ -632,11 +629,7 @@ void CO2Param::setConnected(bool isConnected)
         }
     }
 
-    if (!d_ptr->isFirstConnect)
-    {
-        emit connectStatusUpdated(isConnected);
-    }
-    d_ptr->isFirstConnect = false;
+    emit connectStatusUpdated(isConnected);
 }
 
 /**************************************************************************************************

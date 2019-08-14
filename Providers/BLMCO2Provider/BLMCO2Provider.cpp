@@ -534,11 +534,21 @@ bool BLMCO2Provider::attachParam(Param &param)
     if (param.getParamID() == PARAM_CO2)
     {
         co2Param.setProvider(this);
+        stopCheckConnect(false);
         Provider::attachParam(param);
         return true;
     }
 
     return false;
+}
+
+void BLMCO2Provider::detachParam(Param &param)
+{
+    if (param.getParamID() == PARAM_CO2)
+    {
+        stopCheckConnect(true);
+        Provider::detachParam(param);
+    }
 }
 
 /**************************************************************************************************
