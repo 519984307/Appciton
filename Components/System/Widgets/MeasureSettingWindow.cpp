@@ -21,6 +21,7 @@
 #include "O2MenuContent.h"
 #include "SystemManager.h"
 #include "ApneaStimulationMenuContent.h"
+#include "IConfig.h"
 
 MeasureSettingWindow *MeasureSettingWindow::getInstance()
 {

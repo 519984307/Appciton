@@ -186,4 +186,40 @@ public:
         };
         return symbol[index];
     }
+
+    static const char *convert(AveragingMode index)
+    {
+        static const char *symbol[AVERAGING_MODE_NR] =
+        {
+            "AveragingNormal", "AveragingFast"
+        };
+        return symbol[index];
+    }
+
+    static const char *convert(SpHbPrecisionMode index)
+    {
+        static const char *symbol[PRECISION_NR] =
+        {
+            "Nearest1", "Nearest5", "WholeNumber"
+        };
+        return symbol[index];
+    }
+
+    static const char *convert(SpHbBloodVesselMode index)
+    {
+        static const char *symbol[BLOOD_VESSEL_NR] =
+        {
+            "Arterial", "Venous"
+        };
+        return symbol[index];
+    }
+
+    static const char *convert(SpHbAveragingMode index)
+    {
+        static const char *symbol[SPHB_AVERAGING_NR] =
+        {
+            "SpHbAveragingLong", "SpHbAveragingMedium", "SpHbAveragingShort"
+        };
+        return symbol[index];
+    }
 };

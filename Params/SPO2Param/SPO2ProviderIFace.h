@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/8/13
+ **/
+
+
 #pragma once
 #include "SPO2Define.h"
 
@@ -5,7 +16,6 @@
 class SPO2ProviderIFace
 {
 public:
-
     // 设置灵敏度。
     virtual void setSensitive(SPO2Sensitive sens) = 0;
 
@@ -44,7 +54,7 @@ public:
     virtual void initModule() { }
 
 public:
-    //Masimo
+    // Masimo
 
     // 设置灵敏度和FastSat。
     virtual void setSensitivityFastSat(SensitivityMode /*mode*/, bool /*fastSat*/) { }
@@ -55,7 +65,31 @@ public:
     // 设置SMart Tone使能选项。
     virtual void setSmartTone(bool /*enable*/) { }
 
-    //Nellcor
+    /**
+     * @brief setSpHbPrecisionMode 设置SpHb精确度
+     * @param mode
+     */
+    virtual void setSpHbPrecisionMode(SpHbPrecisionMode /*mode*/){}
+
+    /**
+     * @brief setPVIAveragingMode 设置PVI的平均速度
+     * @param mode
+     */
+    virtual void setPVIAveragingMode(AveragingMode /*mode*/){}
+
+    /**
+     * @brief setSpHbBloodVesselMode 设置SpHb血管模式（动脉/静脉）
+     * @param mode
+     */
+    virtual void setSpHbBloodVesselMode(SpHbBloodVesselMode /*mode*/){}
+
+    /**
+     * @brief setSphbAveragingMode 设置sphb平均速度
+     * @param mode
+     */
+    virtual void setSphbAveragingMode(SpHbAveragingMode /*mode*/){}
+
+    // Nellcor
     /**
      * @brief setSatSeconds 设置过高低限值的容忍时间
      * @param type 时间类型

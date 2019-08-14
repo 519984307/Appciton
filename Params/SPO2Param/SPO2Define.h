@@ -196,6 +196,14 @@ enum AveragingMode
     AVERAGING_MODE_NR
 };
 
+enum SpHbAveragingMode
+{
+    SPHB_AVERAGING_MODE_LONG,
+    SPHB_AVERAGING_MODE_MED,
+    SPHB_AVERAGING_MODE_SHORT,
+    SPHB_AVERAGING_NR
+};
+
 enum SpHbBloodVesselMode
 {
     BLOOD_VESSEL_ARTERIAL,

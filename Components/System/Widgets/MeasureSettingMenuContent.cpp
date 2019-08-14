@@ -17,6 +17,7 @@
 #include "SystemManager.h"
 #include "WindowManager.h"
 #include "PatientManager.h"
+#include "IConfig.h"
 
 class MeasureSettingMenuContentPrivate
 {
@@ -36,7 +37,8 @@ public:
         ITEM_BTN_APNEA_STIMULATION,
     };
 
-    MeasureSettingMenuContentPrivate() : apneaStimulationBtn(NULL)
+    MeasureSettingMenuContentPrivate()
+        : apneaStimulationBtn(NULL)
     {}
 
     void loadOptions();

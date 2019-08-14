@@ -68,20 +68,17 @@ public:
     /* reimplment */
     void initModule();
 
-public:
-    /**
-     * @brief setSpHbPrecisionMode 设置SpHb精确度
-     * @param mode
-     */
+    /* reimplment */
     void setSpHbPrecisionMode(SpHbPrecisionMode mode);
 
-    /**
-     * @brief setPVIAveragingMode 设置PVI的平均速度
-     * @param mode
-     */
+    /* reimplment */
     void setPVIAveragingMode(AveragingMode mode);
 
+    /* reimplment */
     void setSpHbBloodVesselMode(SpHbBloodVesselMode mode);
+
+    /* reimplment */
+    void setSphbAveragingMode(SpHbAveragingMode mode);
 
 private slots:
     /**

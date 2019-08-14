@@ -170,6 +170,20 @@ Normal,正常,Normal
 MaxSensitivity,高灵敏,High
 SPO2Sensitivity,灵敏度,Sensitivity
 FastSat,快速SpO₂,Fast SAT
+SpHbPrecisionMode,SpHb精度模式,SpHb Precision Mode
+SpHbVesselMode,SpHb动脉/静脉模式,SpHb Arterial/Venous Mode
+SpHbAveragingMode,SpHb平均模式,SpHb Averaging Mode
+PviAveragingMode,PVI平均模式,PVI Averaging Mode
+AveragingNormal,正常,Normal
+AveragingFast,快速,Fast
+SpHbAveragingLong,长,Long
+SpHbAveragingMedium,中,Medium
+SpHbAveragingShort,短,Short
+Nearest1,精确0.1,Nearest 0.1
+Nearest5,精确0.5,Nearest 0.5
+WholeNumber,整数,Whole Number
+Arterial,动脉,Arterial
+Venous,静脉,Venous
 ConfigEditSpO2Menu,SpO₂,SpO₂
 SPO2SmartPulseTone,智能脉搏音,Smart Pulse Tone
 ConfigEditIBPMenu,有创血压,IBP
@@ -177,6 +191,7 @@ SPO2SweepSpeed,波形速度,Sweep Speed
 SPO2PRDisplay,脉率显示,PR Display
 SPO2SmartPluseTone,智能脉搏音,Smart Pulse Tone
 SPO2Menu,SpO₂,SpO₂
+SPO2SeniorMenu,SpO₂高级参数,SpO₂ Senior Param
 ShowSignalIQ,信号指示,Signal IQ
 RESPSweepSpeed,波形速度,Sweep Speed
 RESPApneaTime,窒息时间,Apnea Time
@@ -288,6 +303,7 @@ AGSetting,AG设置,AG Setting
 IBPSetting,IBP设置,IBP Setting
 COSetting,CO设置,CO Setting
 SPO2Setting,SpO₂设置,SpO₂ Setting
+SPO2SeniorSetting,SpO₂高级参数设置,SpO₂ Senior Setting
 RRSource,RR来源,RR Source
 BRSource,BR来源,BR Source
 NIBPSetting,NIBP设置,NIBP Setting
@@ -358,6 +374,7 @@ PatientMenuDesc,病人设置,Patient Setting
 ECGMenuDesc,ECG,ECG
 STMenuDesc,ST,ST
 SPO2MenuDesc,SpO₂,SpO₂
+SPO2SeniorMenuDesc,SpO₂高级参数,SpO₂ Senior Param
 RESPMenuDesc,Resp,Resp
 CO2MenuDesc,CO₂,CO₂
 IBPMenuDesc,IBP,IBP
