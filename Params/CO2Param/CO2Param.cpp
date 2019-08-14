@@ -1011,7 +1011,7 @@ void CO2Param::setRespApneaStimulation(bool sta)
     bool co2ApneaStimulation;
     currentConfig.getNumValue("ApneaStimulation|CO2", co2ApneaStimulation);
     O2ParamInterface *o2Param = O2ParamInterface::getO2ParamInterface();
-    if (co2ApneaStimulation && o2Param)
+    if (co2ApneaStimulation && o2Param && d_ptr->co2Switch)
     {
         o2Param->setVibrationReason(APNEASTIMULATION_REASON_RESP, sta);
     }
