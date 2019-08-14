@@ -493,6 +493,6 @@ void PrintSettingMenuContentPrivate::wavesUpdate(QList<int> &waveIDs, QStringLis
     {
         // co2
         waveIDs.append(WAVE_CO2);
-        waveNames.append(paramInfo.getParamWaveformName(WAVE_CO2));
+        waveNames.append(trs(paramInfo.getParamWaveformName(WAVE_CO2)));
     }
 }
