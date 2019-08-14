@@ -304,12 +304,17 @@ void RESPDupParam::setRespApneaStimulation(bool sta)
 {
     bool respApneaStimulation = false;
     currentConfig.getNumValue("ApneaStimulation|RESP", respApneaStimulation);
-    if (respApneaStimulation)
+
+    O2ParamInterface *o2Param = O2ParamInterface::getO2ParamInterface();
+    if (o2Param)
     {
-        O2ParamInterface *o2Param = O2ParamInterface::getO2ParamInterface();
-        if (o2Param)
+        if (respApneaStimulation)
         {
             o2Param->setVibrationReason(APNEASTIMULATION_REASON_RESP, sta);
+        }
+        else
+        {
+            o2Param->setVibrationReason(APNEASTIMULATION_REASON_RESP, false);
         }
     }
 }
@@ -374,18 +379,6 @@ void RESPDupParam::handleBRRRValue()
     {
         _trendWidget->setRRValue(_rrValue, true);
     }
-
-#ifdef ENABLE_O2_APNEASTIMULATION
-    O2ParamInterface *o2Param = O2ParamInterface::getO2ParamInterface();
-    if (o2Param)
-    {
-        if ((_rrValue > 7 || _rrValue == InvData())
-                && (_brValue > 7 || _brValue == InvData()))
-        {
-            o2Param->setVibrationReason(APNEASTIMULATION_REASON_RESP, false);
-        }
-    }
-#endif
 }
 
 /**************************************************************************************************
