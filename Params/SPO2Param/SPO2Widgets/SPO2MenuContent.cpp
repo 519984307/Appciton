@@ -41,7 +41,11 @@ public:
         ITEM_CBO_PULSE_VOL,
         ITEM_CBO_NIBP_SAME_SIDE,
         ITEM_CBO_SIGNAL_IQ,
-        ITEM_CBO_SPO2_SENSOR
+        ITEM_CBO_SPO2_SENSOR,
+        ITEM_CBO_SPHB_PRECISION_MODE,
+        ITEM_CBO_SPHB_VESSEL_MODE,
+        ITEM_CBO_SPHB_AVERAGING_MODE,
+        ITEM_CBO_PVI_AVERAGING_MODE
     };
 
     SPO2MenuContentPrivate()
@@ -59,6 +63,7 @@ public:
     void loadOptions();
 
     QMap<MenuItem, ComboBox *> combos;
+    QMap<MenuItem, QLabel *> seniorParamLbl;
     Button *cchdBtn;
 
     SPO2ModuleType moduleType;
@@ -66,7 +71,7 @@ public:
 
 void SPO2MenuContentPrivate::setCboBlockSignalsStatus(bool isBlocked)
 {
-    for (int i = ITEM_CBO_WAVE_SPEED; i <= ITEM_CBO_SPO2_SENSOR; i++)
+    for (int i = ITEM_CBO_WAVE_SPEED; i <= ITEM_CBO_PVI_AVERAGING_MODE; i++)
     {
         MenuItem item = static_cast<MenuItem>(i);
         if (combos[item])
@@ -134,6 +139,44 @@ void SPO2MenuContentPrivate::loadOptions()
 
     currentConfig.getNumValue("SPO2|Sensor", index);
     combos[ITEM_CBO_SPO2_SENSOR]->setCurrentIndex(index);
+
+
+    QString str;
+    machineConfig.getStrValue("SPO2", str);
+    if (str == "RAINBOW_SPO2")
+    {
+        combos[ITEM_CBO_SPHB_PRECISION_MODE]->setVisible(true);
+        combos[ITEM_CBO_SPHB_VESSEL_MODE]->setVisible(true);
+        combos[ITEM_CBO_SPHB_AVERAGING_MODE]->setVisible(true);
+        combos[ITEM_CBO_PVI_AVERAGING_MODE]->setVisible(true);
+        seniorParamLbl[ITEM_CBO_SPHB_PRECISION_MODE]->setVisible(true);
+        seniorParamLbl[ITEM_CBO_SPHB_VESSEL_MODE]->setVisible(true);
+        seniorParamLbl[ITEM_CBO_SPHB_AVERAGING_MODE]->setVisible(true);
+        seniorParamLbl[ITEM_CBO_PVI_AVERAGING_MODE]->setVisible(true);
+
+        index = static_cast<int>(spo2Param.getSpHbPrecision());
+        combos[ITEM_CBO_SPHB_PRECISION_MODE]->setCurrentIndex(index);
+
+        index = static_cast<int>(spo2Param.getSpHbBloodVessel());
+        combos[ITEM_CBO_SPHB_VESSEL_MODE]->setCurrentIndex(index);
+
+        index = static_cast<int>(spo2Param.getSpHbAveragingMode());
+        combos[ITEM_CBO_SPHB_AVERAGING_MODE]->setCurrentIndex(index);
+
+        index = static_cast<int>(spo2Param.getPviAveragingMode());
+        combos[ITEM_CBO_PVI_AVERAGING_MODE]->setCurrentIndex(index);
+    }
+    else
+    {
+        combos[ITEM_CBO_SPHB_PRECISION_MODE]->setVisible(false);
+        combos[ITEM_CBO_SPHB_VESSEL_MODE]->setVisible(false);
+        combos[ITEM_CBO_SPHB_AVERAGING_MODE]->setVisible(false);
+        combos[ITEM_CBO_PVI_AVERAGING_MODE]->setVisible(false);
+        seniorParamLbl[ITEM_CBO_SPHB_PRECISION_MODE]->setVisible(false);
+        seniorParamLbl[ITEM_CBO_SPHB_VESSEL_MODE]->setVisible(false);
+        seniorParamLbl[ITEM_CBO_SPHB_AVERAGING_MODE]->setVisible(false);
+        seniorParamLbl[ITEM_CBO_PVI_AVERAGING_MODE]->setVisible(false);
+    }
 
     setCboBlockSignalsStatus(false);
 }
@@ -315,6 +358,68 @@ void SPO2MenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_SPO2_SENSOR, comboBox);
 
+    // sphb precision mode
+    label = new QLabel();
+    label->setText(trs("SpHbPrecisionMode"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    d_ptr->seniorParamLbl.insert(SPO2MenuContentPrivate::ITEM_CBO_SPHB_PRECISION_MODE, label);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                   << trs(SPO2Symbol::convert(PRECISION_NEAREST_0_1))
+                   << trs(SPO2Symbol::convert(PRECISION_NEAREST_0_5))
+                   << trs(SPO2Symbol::convert(PRECISION_WHOLE_NUMBER)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    int item = static_cast<int>(SPO2MenuContentPrivate::ITEM_CBO_SPHB_PRECISION_MODE);
+    comboBox->setProperty("Item", qVariantFromValue(item));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_SPHB_PRECISION_MODE, comboBox);
+
+    // sphb vessel mode
+    label = new QLabel();
+    label->setText(trs("SpHbVesselMode"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    d_ptr->seniorParamLbl.insert(SPO2MenuContentPrivate::ITEM_CBO_SPHB_VESSEL_MODE, label);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                    << trs(SPO2Symbol::convert(BLOOD_VESSEL_ARTERIAL))
+                    << trs(SPO2Symbol::convert(BLOOD_VESSEL_VENOUS)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    item = static_cast<int>(SPO2MenuContentPrivate::ITEM_CBO_SPHB_VESSEL_MODE);
+    comboBox->setProperty("Item", qVariantFromValue(item));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_SPHB_VESSEL_MODE, comboBox);
+
+    // sphb averaging mode
+    label = new QLabel();
+    label->setText(trs("SpHbAveragingMode"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    d_ptr->seniorParamLbl.insert(SPO2MenuContentPrivate::ITEM_CBO_SPHB_AVERAGING_MODE, label);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                    << trs(SPO2Symbol::convert(SPHB_AVERAGING_MODE_LONG))
+                    << trs(SPO2Symbol::convert(SPHB_AVERAGING_MODE_MED))
+                    << trs(SPO2Symbol::convert(SPHB_AVERAGING_MODE_SHORT)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    item = static_cast<int>(SPO2MenuContentPrivate::ITEM_CBO_SPHB_AVERAGING_MODE);
+    comboBox->setProperty("Item", qVariantFromValue(item));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_SPHB_AVERAGING_MODE, comboBox);
+
+    // pvi averaging mode
+    label = new QLabel();
+    label->setText(trs("PviAveragingMode"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    d_ptr->seniorParamLbl.insert(SPO2MenuContentPrivate::ITEM_CBO_PVI_AVERAGING_MODE, label);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                    << trs(SPO2Symbol::convert(AVERAGING_MODE_NORMAL))
+                    << trs(SPO2Symbol::convert(AVERAGING_MODE_FAST)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    item = static_cast<int>(SPO2MenuContentPrivate::ITEM_CBO_PVI_AVERAGING_MODE);
+    comboBox->setProperty("Item", qVariantFromValue(item));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_PVI_AVERAGING_MODE, comboBox);
+
     // 添加报警设置链接
     Button *btn = new Button(QString("%1%2").
                              arg(trs("AlarmSettingUp")).
@@ -367,6 +472,18 @@ void SPO2MenuContent::onComboBoxIndexChanged(int index)
             break;
         case SPO2MenuContentPrivate::ITEM_CBO_SPO2_SENSOR:
             spo2Param.setSensor(static_cast<SPO2RainbowSensor>(index));
+            break;
+        case SPO2MenuContentPrivate::ITEM_CBO_SPHB_PRECISION_MODE:
+            spo2Param.setSpHbPrecision(static_cast<SpHbPrecisionMode>(index));
+            break;
+        case SPO2MenuContentPrivate::ITEM_CBO_SPHB_VESSEL_MODE:
+            spo2Param.setSpHbBloodVessel(static_cast<SpHbBloodVesselMode>(index));
+            break;
+        case SPO2MenuContentPrivate::ITEM_CBO_SPHB_AVERAGING_MODE:
+            spo2Param.setSpHbAveragingMode(static_cast<SpHbAveragingMode>(index));
+            break;
+        case SPO2MenuContentPrivate::ITEM_CBO_PVI_AVERAGING_MODE:
+            spo2Param.setPviAveragingMode(static_cast<AveragingMode>(index));
             break;
         default:
             break;

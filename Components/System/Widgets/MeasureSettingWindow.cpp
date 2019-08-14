@@ -20,7 +20,6 @@
 #include "TEMPMenuContent.h"
 #include "O2MenuContent.h"
 #include "SystemManager.h"
-#include "SPO2SeniorMenuContent.h"
 #include "ApneaStimulationMenuContent.h"
 #include "IConfig.h"
 
@@ -55,12 +54,6 @@ MeasureSettingWindow *MeasureSettingWindow::getInstance()
         if (systemManager.isSupport(CONFIG_SPO2))
         {
             instance->addMenuContent(new SPO2MenuContent);
-            QString str;
-            machineConfig.getStrValue("SPO2", str);
-            if (str == "RAINBOW_SPO2")
-            {
-                instance->addMenuContent(new SPO2SeniorMenuContent);
-            }
         }
         if (systemManager.isSupport(CONFIG_NIBP))
         {
