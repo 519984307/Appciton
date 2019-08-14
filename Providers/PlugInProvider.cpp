@@ -196,6 +196,7 @@ PlugInProvider::PlugInProvider(const QString &name, QObject *parent)
     d_ptr->pluginTimerID = startTimer(READ_PLUGIN_PIN_INTERVAL);
     d_ptr->checkConnectTimerID = startTimer(CHECK_CONNECT_TIMER_PERIOD);
     connect(d_ptr->uart, SIGNAL(activated(int)), this, SLOT(dataArrived()));
+    connect(&paramManager, SIGNAL(plugInProviderConnectParam(bool)), this, SLOT(onPlugInProviderConnectParam(bool)));
 }
 
 PlugInProvider::~PlugInProvider()
@@ -269,6 +270,10 @@ void PlugInProvider::timerEvent(QTimerEvent *ev)
 {
     if (ev->timerId() == d_ptr->pluginTimerID)
     {
+        if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+        {
+            return;
+        }
         static int pluginSta = 1;
         if (pluginSta != d_ptr->readPluginPinSta() || d_ptr->isScan)
         {
@@ -306,8 +311,9 @@ void PlugInProvider::timerEvent(QTimerEvent *ev)
         {
             killTimer(d_ptr->checkConnectTimerID);
         }
-        else if (d_ptr->readPluginPinSta())
+        else if (!d_ptr->readPluginPinSta())
         {
+            // 没有连接上插件
             d_ptr->dataNoFeedTick++;
 
             if (d_ptr->dataNoFeedTick > 15)  // 超过1.5s没有数据通信时，开始扫描
@@ -315,6 +321,10 @@ void PlugInProvider::timerEvent(QTimerEvent *ev)
                 d_ptr->dataNoFeedTick -= 5;  // 预留500ms时间用于通信回复
                 d_ptr->isScan = true;
             }
+        }
+        else if (d_ptr->readPluginPinSta())
+        {
+            d_ptr->dataNoFeedTick++;
         }
     }
 }
@@ -402,4 +412,32 @@ void PlugInProvider::dataArrived()
 void PlugInProvider::changeBaudrate()
 {
     setPacketPortBaudrate(PLUGIN_TYPE_SPO2, BAUDRATE_57600);
+}
+
+void PlugInProvider::onPlugInProviderConnectParam(bool isAttach)
+{
+    if (isAttach)
+    {
+        if (d_ptr->dataHandlers[PLUGIN_TYPE_SPO2] != NULL)
+        {
+            d_ptr->dataHandlers[PLUGIN_TYPE_SPO2]->attachParam(*(paramManager.getParam(PARAM_SPO2)));
+        }
+        else
+        {
+            if (systemManager.getCurWorkMode() != WORK_MODE_DEMO)
+            {
+                if (d_ptr->readPluginPinSta() == 0)
+                {
+                    d_ptr->isScan = true;
+                }
+            }
+        }
+    }
+    else
+    {
+        if (d_ptr->dataHandlers[PLUGIN_TYPE_SPO2] != NULL)
+        {
+            d_ptr->dataHandlers[PLUGIN_TYPE_SPO2]->detachParam(*(paramManager.getParam(PARAM_SPO2)));
+        }
+    }
 }
