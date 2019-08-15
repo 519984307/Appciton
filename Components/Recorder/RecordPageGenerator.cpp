@@ -173,6 +173,7 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
     infos.append(str);
 
     infos.append(QString("%1: %2").arg(trs("ID")).arg(patInfo.id));
+    infos.append(QString("%1: %2").arg(trs("PatientPacemarker")).arg(trs(PatientSymbol::convert(static_cast<PatientPacer>(patInfo.pacer)))));
 
     // calculate the info text width
     int textWidth = 0;
@@ -221,7 +222,7 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
     painter.setFont(font);
 
     // we assume the page can hold all the rows
-    QRect textRect(font.pixelSize(), fontH, textWidth, fontH);
+    QRect textRect(font.pixelSize(), 0, textWidth, fontH);
     painter.drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, title);
 
     // left one empty row
@@ -2061,19 +2062,10 @@ QList<RecordWaveSegmentInfo> RecordPageGenerator::getWaveInfos(const QList<Wavef
         case WAVE_ECG_V5:
         case WAVE_ECG_V6:
             info.waveInfo.ecg.gain = ecgParam.getGain(ecgParam.waveIDToLeadID(id));
-            if (ecgParam.getFilterMode() == ECG_FILTERMODE_DIAGNOSTIC)
-            {
-                caption = QString("%1   %2   %3%4").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
-                                                                           ecgParam.getLeadConvention()))
-                        .arg(trs(ECGSymbol::convert(ecgParam.getFilterMode()))).arg(trs("Notch"))
-                        .arg(trs(ECGSymbol::convert(ecgParam.getNotchFilter())));
-            }
-            else
-            {
-                caption = QString("%1   %2").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
-                                                                           ecgParam.getLeadConvention()))
-                        .arg(trs(ECGSymbol::convert(ecgParam.getFilterMode())));
-            }
+            caption = QString("%1   %2   %3 %4").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
+                                                                        ecgParam.getLeadConvention()))
+                    .arg(trs(ECGSymbol::convert(ecgParam.getFilterMode()))).arg(trs("Notch"))
+                    .arg(trs(ECGSymbol::convert(ecgParam.getNotchFilter())));
 
             info.waveInfo.ecg.in12LeadMode = layoutManager.getUFaceType() == UFACE_MONITOR_ECG_FULLSCREEN;
             info.waveInfo.ecg._12LeadDisplayFormat = ecgParam.get12LDisplayFormat();
