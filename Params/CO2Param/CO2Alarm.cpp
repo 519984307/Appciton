@@ -123,14 +123,15 @@ int CO2LimitAlarm::getCompare(int value, int id)
 
     LimitAlarmConfig limitConfig = alarmConfig.getLimitAlarmConfig(subID, curUnit);
 
-    float mul = static_cast<float>(paramInfo.getMultiOfSubParam(subID));
+    int mul = paramInfo.getMultiOfSubParam(subID);
     QString valueStr;
     if (curUnit == UNIT_MMHG)
     {
         int low = limitConfig.lowLimit * limitConfig.scale;
         int high = limitConfig.highLimit * limitConfig.scale;
         int v = 0;
-        valueStr = Unit::convert(curUnit, defUnit, value / mul, co2Param.getBaro());
+        float v1 = value * 1.0 / mul;
+        valueStr = Unit::convert(curUnit, defUnit, v1, co2Param.getBaro());
         v = valueStr.toInt();
         if (0 == id % 2)
         {
