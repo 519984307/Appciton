@@ -130,6 +130,7 @@ void PatientManager::setType(PatientType type)
     if (systemManagerInterface && systemManagerInterface->isSupport(PARAM_ECG))
     {
         ecgDupParam.updateHRSource();
+        ecgParam.updatePacermaker();    // 更新起博标志
     }
     if (config)
     {
