@@ -344,7 +344,6 @@ void LayoutManagerPrivate::doContentLayout()
         break;
     case UFACE_MONITOR_SPO2:
         performSPO2Layout();
-        ecgDupParam.setHrSource(HR_SOURCE_SPO2);
         break;
     default:
         qdebug("Unsupport screen layout!");
@@ -1412,14 +1411,24 @@ IWidget *LayoutManager::getLayoutWidget(const QString &name)
 
 void LayoutManager::setUFaceType(UserFaceType type)
 {
+    static HRSourceType lastHrSource = ecgDupParam.getCurHRSource();
     if (!d_ptr->contentLayout->isEmpty() && d_ptr->curUserFace == type)
     {
         return;
     }
-    if (!systemManager.isSupport(PARAM_SPO2) && type == UFACE_MONITOR_SPO2)
+
+    if (d_ptr->curUserFace != UFACE_MONITOR_SPO2 && type == UFACE_MONITOR_SPO2)
     {
-        return;
+        lastHrSource = ecgDupParam.getCurHRSource();
+        ecgDupParam.setHrSource(HR_SOURCE_SPO2);
+        ecgDupParam.updatePR(0, ecgDupParam.getCurPRSource(), false);   // 切换类型时手动更新pr值，避免上次pr值为无效值
     }
+    else if (d_ptr->curUserFace == UFACE_MONITOR_SPO2 && type != UFACE_MONITOR_SPO2)
+    {
+        ecgDupParam.setHrSource(lastHrSource);
+        ecgDupParam.updateHR(ecgDupParam.getHR(true));   // 切换类型时手动更新hr值，避免上次hr值为无效值
+    }
+
     d_ptr->curUserFace = type;
 
     updateLayout();
