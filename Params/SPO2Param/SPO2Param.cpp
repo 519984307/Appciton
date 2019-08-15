@@ -220,19 +220,30 @@ void SPO2Param::handDemoWaveform(WaveformID id, short data)
     {
         return;
     }
-    if (id == WAVE_SPO2 && NULL != d_ptr->waveWidget)
+    unsigned char waveFlag = 0;
+    if (data >= 93)
     {
-        d_ptr->waveWidget->addData(data);
+        waveFlag = 255;
+        waveFlag  = waveFlag | SPO2_IQ_FLAG_BIT;
     }
-    if (id == WAVE_SPO2_2 && NULL != d_ptr->plugInWaveWidget)
+
+    if (id == WAVE_SPO2)
     {
-        d_ptr->plugInWaveWidget->addData(data);
+        setValidStatus(true);
     }
-    if (NULL != d_ptr->trendWidget)
+    else if (id == WAVE_SPO2_2)
     {
-        d_ptr->trendWidget->setBarValue(data * 15 / 255);
+        setValidStatus(true, true);
     }
-    waveformCache.addData(static_cast<WaveformID>(id), data);
+
+    if (id == WAVE_SPO2)
+    {
+        addWaveformData(data, waveFlag);
+    }
+    else if (id == WAVE_SPO2_2)
+    {
+        addWaveformData(data, waveFlag, true);
+    }
 }
 
 /**************************************************************************************************

@@ -121,6 +121,8 @@ public:
 signals:
     void alarmOff(SubParamID subParamId);
 
+    void LimitChange(SubParamID id);
+
 private slots:
     void onPatientTypeChange(PatientType type);
 

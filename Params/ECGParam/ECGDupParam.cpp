@@ -486,6 +486,17 @@ void ECGDupParam::setHrSource(HRSourceType type)
         _prSource = PR_SOURCE_AUTO;
     }
 
+#ifdef ENABLE_O2_APNEASTIMULATION
+    if (_hrSource != HR_SOURCE_ECG && _hrSource != HR_SOURCE_AUTO)
+    {
+        O2ParamInterface *o2Param = O2ParamInterface::getO2ParamInterface();
+        if (o2Param)
+        {
+            o2Param->setVibrationReason(APNEASTIMULATION_REASON_HR, false);
+        }
+    }
+#endif
+
     int id = ecgParam.getIdFromHrSourceType(type);
     currentConfig.setNumValue("ECG|HRSource", id);
 }

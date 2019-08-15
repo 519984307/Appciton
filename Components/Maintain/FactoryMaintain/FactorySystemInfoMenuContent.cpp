@@ -12,7 +12,7 @@
 #include "LanguageManager.h"
 #include <QLabel>
 #include <Button.h>
-#include <QHBoxLayout>
+#include <QGridLayout>
 #include "KeyInputPanel.h"
 #include "IConfig.h"
 #include "WindowManager.h"
@@ -27,10 +27,11 @@ public:
     void loadOptions();
 
     Button *serialNumBtn;
+    Button *machineTypeBtn;
 };
 
 FactorySystemInfoMenuContentPrivate::FactorySystemInfoMenuContentPrivate():
-    serialNumBtn(NULL)
+    serialNumBtn(NULL), machineTypeBtn(NULL)
 {
 }
 
@@ -55,6 +56,9 @@ void FactorySystemInfoMenuContentPrivate::loadOptions()
     QString str;
     machineConfig.getStrValue("SerialNumber", str);
     serialNumBtn->setText(str);
+
+    systemConfig.getStrValue("MonitorInfo|MachineType", str);
+    machineTypeBtn->setText(str);
 }
 
 void FactorySystemInfoMenuContent::readyShow()
@@ -64,17 +68,25 @@ void FactorySystemInfoMenuContent::readyShow()
 
 void FactorySystemInfoMenuContent::layoutExec()
 {
-    QHBoxLayout *layout = new QHBoxLayout(this);
+    QGridLayout *layout = new QGridLayout(this);
     layout->setMargin(10);
     this->setFocusPolicy(Qt::NoFocus);
 
     QLabel *label = new QLabel(trs("SerialNum"));
-    layout->addWidget(label);
+    layout->addWidget(label, 0, 0);
     Button *button = new Button("");
     button->setButtonStyle(Button::ButtonTextOnly);
-    layout->addWidget(button);
+    layout->addWidget(button, 0, 1);
     connect(button, SIGNAL(released()), this, SLOT(onBtnReleasedChanged()));
     d_ptr->serialNumBtn = button;
+
+    label = new QLabel(trs("ProductModel"));
+    layout->addWidget(label, 1, 0);
+    button = new Button("");
+    button->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(button, 1, 1);
+    connect(button, SIGNAL(released()), this, SLOT(onBtnReleasedChanged()));
+    d_ptr->machineTypeBtn = button;
 
     layout->setAlignment(Qt::AlignTop);
 }
@@ -83,40 +95,67 @@ void FactorySystemInfoMenuContent::onBtnReleasedChanged()
 {
     Button *button = qobject_cast<Button *>(sender());
 
-    if (button != d_ptr->serialNumBtn)
+    if (button == d_ptr->serialNumBtn)
     {
-        return;
+        KeyInputPanel panel;
+        panel.setMaxInputLength(11);
+        panel.setInitString(button->text());
+        panel.setWindowTitle(trs("SerialNum"));
+        panel.setSpaceEnable(false);
+        panel.setSymbolEnable(false);
+        panel.setBtnEnable("[a-zA-Z0-9]");
+
+        windowManager.showWindow(&panel, WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
+        if (panel.result() == QDialog::Rejected)
+        {
+            return;
+        }
+
+        QString str = panel.getStrValue();
+
+        if (str == button->text())
+        {
+            return;
+        }
+        if (str.isNull())
+        {
+            return;
+        }
+
+        button->setText(str);
+        machineConfig.setStrValue("SerialNumber", str);
+        machineConfig.save();
+        machineConfig.saveToDisk();
     }
-
-    KeyInputPanel panel;
-    panel.setMaxInputLength(11);
-    panel.setInitString(button->text());
-    panel.setWindowTitle(trs("SerialNum"));
-    panel.setSpaceEnable(false);
-    panel.setSymbolEnable(false);
-    panel.setBtnEnable("[a-zA-Z0-9]");
-
-    windowManager.showWindow(&panel, WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
-    if (panel.result() == QDialog::Rejected)
+    else if (button == d_ptr->machineTypeBtn)
     {
-        return;
-    }
+        KeyInputPanel panel;
+        panel.setMaxInputLength(10);
+        panel.setInitString(button->text());
+        panel.setWindowTitle(trs("ProductModel"));
+        panel.setSpaceEnable(true);
+        panel.setSymbolEnable(true);
 
-    QString str = panel.getStrValue();
+        windowManager.showWindow(&panel, WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
+        if (panel.result() == QDialog::Rejected)
+        {
+            return;
+        }
 
-    if (str == button->text())
-    {
-        return;
-    }
-    if (str.isNull())
-    {
-        return;
-    }
+        QString str = panel.getStrValue();
 
-    button->setText(str);
-    machineConfig.setStrValue("SerialNumber", str);
-    machineConfig.save();
-    machineConfig.saveToDisk();
+        if (str == button->text())
+        {
+            return;
+        }
+        if (str.isNull())
+        {
+            return;
+        }
+
+        button->setText(str);
+        systemConfig.setStrValue("MonitorInfo|MachineType", str);
+    }
 }
 
 

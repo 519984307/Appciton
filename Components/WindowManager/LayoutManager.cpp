@@ -719,7 +719,8 @@ void LayoutManagerPrivate::perform7LeadLayout()
     }
 }
 
-#define MAX_WIDGET_ROW_IN_OXYCRG_LAYOUT 3       // the maximum widget row can be displayed in the wave area while in the oxycrg layout
+#define MAX_WIDGET_ROW_IN_OXYCRG_LAYOUT 3       // the maximum widget row can be displayed
+                                                // in the wave area while in the oxycrg layout
 void LayoutManagerPrivate::performOxyCRGLayout()
 {
     QVBoxLayout *leftLayout = new QVBoxLayout();
@@ -776,9 +777,9 @@ void LayoutManagerPrivate::performOxyCRGLayout()
         {
             IWidget *w = layoutWidgets.value(layoutNodeMap[nodeIter->name], NULL);
             QWidget *qw = w;
-            if (nodeIter->pos < LAYOUT_WAVE_END_COLUMN) // in the left part, contain wave or param
+            if (nodeIter->pos < LAYOUT_WAVE_END_COLUMN)  // in the left part, contain wave or param
             {
-                if (row < LAYOUT_MAX_WAVE_ROW_NUM) // wave widgets
+                if (row < LAYOUT_MAX_WAVE_ROW_NUM)  // wave widgets
                 {
                     if (waveRemainRow <= MAX_WIDGET_ROW_IN_OXYCRG_LAYOUT && waveRemainRow > 0)
                     {
@@ -1038,7 +1039,7 @@ void LayoutManagerPrivate::performTrendLayout()
                 {
                     displayParams.append(w->name());
                 }
-                if (nodeIter->pos == LAYOUT_WAVE_END_COLUMN) // the first trend node on each row
+                if (nodeIter->pos == LAYOUT_WAVE_END_COLUMN)  // the first trend node on each row
                 {
                     TrendWidget *trendWidget = qobject_cast<TrendWidget *>(w);
                     if (trendWidget)
@@ -1420,10 +1421,12 @@ void LayoutManager::setUFaceType(UserFaceType type)
     {
         lastHrSource = ecgDupParam.getCurHRSource();
         ecgDupParam.setHrSource(HR_SOURCE_SPO2);
+        ecgDupParam.updatePR(0, ecgDupParam.getCurPRSource(), false);   // 切换类型时手动更新pr值，避免上次pr值为无效值
     }
     else if (d_ptr->curUserFace == UFACE_MONITOR_SPO2 && type != UFACE_MONITOR_SPO2)
     {
         ecgDupParam.setHrSource(lastHrSource);
+        ecgDupParam.updateHR(ecgDupParam.getHR(true));   // 切换类型时手动更新hr值，避免上次hr值为无效值
     }
 
     d_ptr->curUserFace = type;

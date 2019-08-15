@@ -155,11 +155,7 @@ void ParamManager::connectParamProvider(WorkMode mode)
             param->initParam();
         }
     }
-    Provider *pluginProvider = _providers.value("RAINBOW_SPO2PlugIn", NULL);
-    if (pluginProvider)
-    {
-        pluginProvider->attachParam(*getParam(PARAM_SPO2));
-    }
+    emit plugInProviderConnectParam(true);
 }
 
 void ParamManager::connectDemoParamProvider()
@@ -202,11 +198,7 @@ void ParamManager::connectDemoParamProvider()
                 param->initParam();
             }
         }
-        Provider *pluginProvider = _providers.value("RAINBOW_SPO2PlugIn", NULL);
-        if (pluginProvider)
-        {
-            pluginProvider->detachParam(*getParam(PARAM_SPO2));
-        }
+        emit plugInProviderConnectParam(false);
     }
 }
 

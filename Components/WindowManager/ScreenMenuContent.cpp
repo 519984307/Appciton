@@ -30,7 +30,9 @@ public:
         : interfaceCbo(NULL),
           layoutCbo(NULL),
           paraColorBtn(NULL)
-    {}
+    {
+        spo2Enable = systemManager.isSupport(CONFIG_SPO2);
+    }
 
     void loadOptions();
 
@@ -39,6 +41,7 @@ public:
     ComboBox *interfaceCbo;     // 界面选择
     ComboBox *layoutCbo;        // 布局设置
     Button *paraColorBtn;
+    bool spo2Enable;
 
     enum ScreenLayoutItem
     {
@@ -56,53 +59,27 @@ void ScreenMenuContentPrivate::reloadScreenType()
 {
     QStringList screenTypeTextList;
     QList<int> screenTypeList;
-    if (ecgParam.getLeadMode() == ECG_LEAD_MODE_3)
+    screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_STANDARD)));
+    screenTypeList.append(UFACE_MONITOR_STANDARD);
+    if (ecgParam.getLeadMode() != ECG_LEAD_MODE_3)
     {
-        screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_STANDARD)));
-#ifndef HIDE_MONITOR_OXYCRG
-        screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_OXYCRG)));
-#endif
-#ifndef HIDE_MONITOR_TREND
-        screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_TREND)));
-#endif
-        screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_BIGFONT)));
-
-        screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_SPO2)));
-
-        screenTypeList << UFACE_MONITOR_STANDARD
-                  #ifndef HIDE_MONITOR_OXYCRG
-                       << UFACE_MONITOR_OXYCRG
-                  #endif
-                  #ifndef HIDE_MONITOR_TREND
-                       << UFACE_MONITOR_TREND
-                  #endif
-                       << UFACE_MONITOR_BIGFONT
-                       << UFACE_MONITOR_SPO2;
-    }
-    else
-    {
-        screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_STANDARD)));
         screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_ECG_FULLSCREEN)));
+        screenTypeList.append(UFACE_MONITOR_ECG_FULLSCREEN);
+    }
 #ifndef HIDE_MONITOR_OXYCRG
-        screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_OXYCRG)));
+    screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_OXYCRG)));
+    screenTypeList.append(UFACE_MONITOR_OXYCRG);
 #endif
 #ifndef HIDE_MONITOR_TREND
-        screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_TREND)));
+    screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_TREND)));
+    screenTypeList.append(UFACE_MONITOR_TREND);
 #endif
-        screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_BIGFONT)));
-
+    screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_BIGFONT)));
+    screenTypeList.append(UFACE_MONITOR_BIGFONT);
+    if (spo2Enable)
+    {
         screenTypeTextList.append(trs(SystemSymbol::convert(UFACE_MONITOR_SPO2)));
-
-        screenTypeList << UFACE_MONITOR_STANDARD
-                       << UFACE_MONITOR_ECG_FULLSCREEN
-                  #ifndef HIDE_MONITOR_OXYCRG
-                       << UFACE_MONITOR_OXYCRG
-                  #endif
-                  #ifndef HIDE_MONITOR_TREND
-                       << UFACE_MONITOR_TREND
-                  #endif
-                       << UFACE_MONITOR_BIGFONT
-                       << UFACE_MONITOR_SPO2;
+        screenTypeList.append(UFACE_MONITOR_SPO2);
     }
 
     interfaceCbo->blockSignals(true);
@@ -175,8 +152,7 @@ void ScreenMenuContent::layoutExec()
     d_ptr->layoutCbo = new ComboBox;
     d_ptr->layoutCbo->addItems(QStringList()
                                << trs("StandardScreenLayout")
-                               << trs("BigFontScreenLayout")
-                               );
+                               << trs("BigFontScreenLayout"));
     layout->addWidget(d_ptr->layoutCbo, count++, 1);
     connect(d_ptr->layoutCbo, SIGNAL(activated(int)), this, SLOT(onComboxIndexChanged(int)));
 

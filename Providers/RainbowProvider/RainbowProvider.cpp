@@ -384,6 +384,11 @@ RainbowProvider::RainbowProvider(const QString &name, bool isPlugIn)
 
     initPort(attr);
 
+    if (isPlugIn)
+    {
+        return;
+    }
+
     if (disPatchInfo.dispatcher)
     {
         // reset the hardware
@@ -406,6 +411,10 @@ bool RainbowProvider::attachParam(Param &param)
     {
         spo2Param.setProvider(this, d_ptr->isPlugIn);
         Provider::attachParam(param);
+        if (d_ptr->isPlugIn)
+        {
+            setFirstCheck(true);
+        }
         return true;
     }
     return false;
@@ -981,7 +990,14 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         {
             if (isCableOff == true)
             {
-                spo2Param.setNotify(true, trs("SPO2CheckSensor"), isPlugIn);
+                if (isPlugIn)
+                {
+                    spo2Param.setNotify(true, trs("SPO22CheckSensor"), isPlugIn);
+                }
+                else
+                {
+                    spo2Param.setNotify(true, trs("SPO2CheckSensor"), isPlugIn);
+                }
                 spo2Param.setValidStatus(false, isPlugIn);
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, true, true);
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, false, true);
@@ -1005,7 +1021,14 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         {
             if (isCableOff == true)
             {
-                spo2Param.setNotify(true, trs("SPO2CheckSensor"), isPlugIn);
+                if (isPlugIn)
+                {
+                    spo2Param.setNotify(true, trs("SPO22CheckSensor"), isPlugIn);
+                }
+                else
+                {
+                    spo2Param.setNotify(true, trs("SPO2CheckSensor"), isPlugIn);
+                }
                 spo2Param.setValidStatus(false, isPlugIn);
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, true);
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, false);
@@ -1262,6 +1285,8 @@ void RainbowProviderPrivate::handleACK()
             {
                 // data is transmited directly through the uart port
                 q_ptr->plugInInfo.plugIn->updateUartBaud(RUN_BAUD_RATE);
+                // 设置波特率在请求板子信息之前
+                q_ptr->plugInInfo.plugIn->setPacketPortBaudrate(PlugInProvider::PLUGIN_TYPE_SPO2, PlugInProvider::BAUDRATE_57600);
                 QTimer::singleShot(50, q_ptr, SLOT(requestBoardInfo()));
             }
             else

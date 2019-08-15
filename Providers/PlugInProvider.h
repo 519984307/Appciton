@@ -110,6 +110,12 @@ private slots:
      */
     void changeBaudrate();
 
+    /**
+     * @brief onPlugInProviderConnectParam 处理插件连接参数
+     * @param isAttach
+     */
+    void onPlugInProviderConnectParam(bool isAttach);
+
 private:
     PlugInProviderPrivate *const d_ptr;
 };

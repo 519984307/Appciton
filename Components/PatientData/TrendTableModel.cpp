@@ -27,6 +27,7 @@
 #include <QTimerEvent>
 #include "LanguageManager.h"
 #include "PatientManager.h"
+#include "math.h"
 
 #define COLUMN_COUNT        7
 #define MAX_ROW_COUNT       9
@@ -1082,7 +1083,7 @@ void TrendTableModelPrivate::loadTrendData()
                 UnitType type = paramManager.getSubParamUnit(paramInfo.getParamID(id), id);
                 QString t1Str = Unit::convert(type, UNIT_TC, T1 * 1.0 / 10);
                 QString t2Str = Unit::convert(type, UNIT_TC, T2 * 1.0 / 10);
-                QString tdStr = Unit::convert(type, UNIT_TC, TD * 1.0 / 10);
+                QString tdStr = QString("%1").number(fabs(t1Str.toDouble() - t2Str.toDouble()));
                 t1Str = T1 == InvData() ? "---" : t1Str;
                 t2Str = T2 == InvData() ? "---" : t2Str;
                 tdStr = TD == InvData() ? "---" : tdStr;

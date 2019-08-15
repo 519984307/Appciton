@@ -617,12 +617,27 @@ RESPCheckElecrodes,Resp检查电极,Resp Check Electrodes
 Apnea,Resp窒息,Apnea
 SPO2Low,SpO₂低,SpO₂ Low
 SPO2High,SpO₂高,SpO₂ High
+SPO22Low,SpO₂ 2 低,SpO₂ 2 Low
+SPO22High,SpO₂ 2 高,SpO₂ 2 High
+SPO2DLow,ΔSpO₂低,ΔSpO₂ Low
+SPO2DHigh,ΔSpO₂高,ΔSpO₂ High
+PVILow,PVI低,PVI Low
+PVIHigh,PVI高,PVI High
+SPHBLow,SpHb低,SpHb Low
+SPHBHigh,SpHb高,SpHb High
+SPOCLow,SpOC低,SpOC Low
+SPOCHigh,SpOC高,SpOC High
+SPMETLow,SpMet低,SpMet Low
+SPMETHigh,SpMet高,SpMet High
+SPCOLow,SpCO低,SpCO Low
+SPCOHigh,SpCO高,SpCO High
 SPO2PRLow,PR低,PR Low
 SPO2PRHigh,PR高,PR High
 SPO2Initializing,SpO₂初始化,SpO₂ initializing
 SPO2PulseSearch,SpO₂搜索脉搏,SpO₂ Pulse Search
 SPO2PulseSearchTooLong,SpO₂脉搏搜索时间过长,SpO₂ Pulse Search Too Long
 SPO2SensorOff,SpO₂传感器脱落,SpO₂ Sensor Off
+SpO2Sensor,SpO₂传感器,SpO₂ Sensor
 SPO2CheckSensor,SpO₂检查探头,SpO₂ Check Sensor
 SPO22CheckSensor,SpO₂ 2检查探头,SpO₂ 2 Check Sensor
 SPO2SearchPulseTooLong,SpO₂脉搏搜索时间过长,SpO₂ Search Pulse Too Long
@@ -1778,3 +1793,7 @@ BLM_N5,BLM N5,BLM N5
 SUNTECH_NIBP,Suntech Nibp,Suntech Nibp
 BLM_CO2,BLM CO₂,BLM CO₂
 MASIMO_CO2,Masimo CO₂,Masimo CO₂
+size8Inch,8 inch,8 inch
+size10Inch,10 inch,10 inch
+size12Inch,12 inch,12 inch
+ScreenInfo,屏幕大小,Screen Size

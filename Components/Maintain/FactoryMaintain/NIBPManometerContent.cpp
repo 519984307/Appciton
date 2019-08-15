@@ -68,7 +68,7 @@ NIBPManometerContent *NIBPManometerContent::getInstance()
  *************************************************************************************************/
 NIBPManometerContent::NIBPManometerContent()
     : MenuContent(trs("ServiceManometer"),
-                  trs("NIBPManometerContent")),
+                  trs("ServiceManometer")),
       d_ptr(new NIBPManometerContentPrivate)
 {
 }

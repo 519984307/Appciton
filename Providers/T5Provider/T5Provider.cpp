@@ -571,20 +571,21 @@ void T5Provider::_shotAlarm()
 
 void T5Provider::_limitHandle(unsigned char *packet)
 {
-    bool isAlarm = false;
     if (0xFF != packet[2])
     {
         int temp1 = static_cast<int>((packet[2] << 8) + packet[1]);
         if ((temp1 < 0 || temp1 > 500) && _overRang1 == false)
         {
             _overRang1 = true;
-            isAlarm = true;
         }
         else if (temp1 > 0 && temp1 < 500 && _overRang1 == true)
         {
             _overRang1 = false;
-            isAlarm = true;
         }
+    }
+    else
+    {
+        _overRang1 = true;
     }
     if (0xFF != packet[4])
     {
@@ -592,18 +593,17 @@ void T5Provider::_limitHandle(unsigned char *packet)
         if ((temp2 < 0 || temp2 > 500) && _overRang2 == false)
         {
             _overRang2 = true;
-            isAlarm = true;
         }
         else if (temp2 > 0 && temp2 < 500 && _overRang2 == true)
         {
             _overRang2 = false;
-            isAlarm = true;
         }
     }
-    if (isAlarm == true)
+    else
     {
-        _shotAlarm();
+        _overRang2 = true;
     }
+    _shotAlarm();
 }
 
 /**************************************************************************************************

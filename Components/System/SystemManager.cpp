@@ -201,7 +201,11 @@ public:
 float SystemManager::getScreenPixelWPitch(void)
 {
     float pixelPitch = 0.284;
-    machineConfig.getNumValue("ScreenPixelWPitch", pixelPitch);
+    int screenInfoIndex = 0;
+    machineConfig.getNumValue("ScreenInfoEnable", screenInfoIndex);
+    QStringList screenInfoList = machineConfig.getChildNodeNameList("ScreenInfo");
+    QString screenInfoPath = QString("ScreenInfo|%1|ScreenPixelWPitch").arg(screenInfoList.at(screenInfoIndex));
+    machineConfig.getNumValue(screenInfoPath, pixelPitch);
     return pixelPitch;
 }
 
@@ -211,7 +215,11 @@ float SystemManager::getScreenPixelWPitch(void)
 float SystemManager::getScreenPixelHPitch(void)
 {
     float pixelPitch = 0.284;
-    machineConfig.getNumValue("ScreenPixelHPitch", pixelPitch);
+    int screenInfoIndex = 0;
+    machineConfig.getNumValue("ScreenInfoEnable", screenInfoIndex);
+    QStringList screenInfoList = machineConfig.getChildNodeNameList("ScreenInfo");
+    QString screenInfoPath = QString("ScreenInfo|%1|ScreenPixelHPitch").arg(screenInfoList.at(screenInfoIndex));
+    machineConfig.getNumValue(screenInfoPath, pixelPitch);
     return pixelPitch;
 }
 
