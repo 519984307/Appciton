@@ -21,7 +21,6 @@
 #include "O2ParamInterface.h"
 #include "SystemManagerInterface.h"
 #include <QFile>
-#include "RunningStatusBarInterface.h"
 #include "ECGDupParam.h"
 
 #define XML_FILE_SUFFIX QString::fromLatin1(".xml")
@@ -159,11 +158,6 @@ QString PatientManager::getTypeStr(void)
 void PatientManager::setPacermaker(PatientPacer type)
 {
     d_ptr->patientInfo.pacer = type;
-    RunningStatusBarInterface *runningStatus = RunningStatusBarInterface::getRunningStatusBar();
-    if (runningStatus)
-    {
-        runningStatus->setPacerStatus(static_cast<bool>(type));
-    }
 }
 
 /**************************************************************************************************
