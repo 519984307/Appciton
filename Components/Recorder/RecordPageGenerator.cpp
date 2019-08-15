@@ -1487,7 +1487,7 @@ static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegme
             if (flag & ECG_INTERNAL_FLAG_BIT && paramId == PARAM_ECG)
             {
                 QPen pen = painter->pen();
-                painter->setPen(QPen(Qt::white, 1, Qt::DashLine));
+                painter->setPen(QPen(Qt::white, 2, Qt::DashLine));
                 painter->drawLine(x2, waveInfo.middleYOffset - 10 / pixelPitch / 2,
                                   x2, waveInfo.middleYOffset + 10 / pixelPitch / 2);
                 painter->setPen(pen);
