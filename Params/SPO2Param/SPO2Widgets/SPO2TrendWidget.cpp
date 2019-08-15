@@ -41,7 +41,6 @@ void SPO2TrendWidget::loadConfig()
     _spo2Name2->setPalette(palette);
     _spo2DeltaValue->setPalette(palette);
     _spo2DeltaName->setPalette(palette);
-    _spo2Bar->setPalette(palette);
     TrendWidget::loadConfig();
 }
 
@@ -170,6 +169,8 @@ void SPO2TrendWidget::showValue(void)
     {
         showNormalStatus(_spo2Value1, psrc);
     }
+
+    _spo2Bar->setPalette(psrc);
 }
 
 /**************************************************************************************************

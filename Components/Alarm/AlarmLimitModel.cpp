@@ -121,7 +121,7 @@ bool AlarmLimitModel::setData(const QModelIndex &index, const QVariant &value, i
                 alarmDataUpdate(d_ptr->alarmDataInfos[row], index.column());
                 break;
             case SECTION_LEVEL:
-                d_ptr->alarmDataInfos[row].alarmLevel = newValue;
+                d_ptr->alarmDataInfos[row].alarmLevel = newValue + 1;
                 alarmDataUpdate(d_ptr->alarmDataInfos[row], index.column());
                 break;
             case SECTION_HIGH_LIMIT:
@@ -211,11 +211,11 @@ QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
         case SECTION_LEVEL:
         {
             char limit = d_ptr->alarmDataInfos.at(row).alarmLevel;
-            if (limit == 0)
+            if (limit == 1)
             {
                 return trs("Medium");
             }
-            else if (limit == 1)
+            else if (limit == 2)
             {
                 return trs("High");
             }
@@ -243,7 +243,7 @@ QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
             case SECTION_LEVEL:
                 editInfo.type = ItemEditInfo::LIST;
                 editInfo.list << trs("Medium") << trs("High");
-                editInfo.curValue = d_ptr->alarmDataInfos.at(row).alarmLevel;
+                editInfo.curValue = d_ptr->alarmDataInfos.at(row).alarmLevel - 1;
                 break;
             case SECTION_LOW_LIMIT:
                 editInfo.type = ItemEditInfo::VALUE;

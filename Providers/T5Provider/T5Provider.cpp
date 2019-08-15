@@ -121,7 +121,7 @@ void T5Provider::handlePacket(unsigned char *data, int len)
         break;
 
     case T5_CYCLE_DATA:
-        rawDataCollector.collectData(RawDataCollector::TEMP_DATA, data, len);
+        rawDataCollector.collectData(RawDataCollector::TEMP_DATA, data + 1, len - 1);
         break;
 
     case T5_DATA_ERROR:

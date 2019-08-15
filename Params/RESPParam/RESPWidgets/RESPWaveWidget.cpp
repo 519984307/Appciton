@@ -21,6 +21,7 @@
 #include "WindowManager.h"
 #include "PopupList.h"
 #include "SystemManager.h"
+#include "RESPDupParam.h"
 
 /**************************************************************************************************
  * 增益改变。
@@ -227,6 +228,12 @@ void RESPWaveWidget::setWaveformMode(RESPSweepMode mode)
     {
         enableFill(false);
     }
+}
+
+void RESPWaveWidget::updateWidgetConfig()
+{
+    respDupParam.updateRRSource();  // 更新RR来源
+    respParam.setCalcLead(respParam.getCalcLead()); // 更新呼吸导联
 }
 
 /**************************************************************************************************
