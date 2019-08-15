@@ -409,5 +409,7 @@ private:
 
     short getMaxHrValue();
     short getMinHrValue();
+
+    void adjustPrintFirstWave(ECGLead preCalcLead, ECGLead curCalcLead);
 };
 #define ecgParam (ECGParam::getInstance())
