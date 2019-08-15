@@ -502,6 +502,11 @@ RecordPage *RecordPageGenerator::createTrendPage(const TrendDataPackage &trendDa
     // if the contains too many lines, need to seperate into several group
     QVector<int> segmentWidths; // record the maximum widht or the group segments
     int avaliableLine = avaliableTextHeight / fontH;
+    if (!trendPageTitle.isEmpty())
+    {
+        // 触发打印加上标题所以少显示一行
+        avaliableLine--;
+    }
     QList<TrendStringSegmentInfo> strSegInfoList;
     converToStringSegmets(trendStringList, strSegInfoList, font);
     int index = -1;
@@ -563,7 +568,6 @@ RecordPage *RecordPageGenerator::createTrendPage(const TrendDataPackage &trendDa
         QRect rect(xoffset, startYoffset, page->width(), fontH);
         painter.drawText(rect, trendPageTitle, textOption);
         startYoffset += fontH;
-        avaliableLine--;
     }
 
     for (int i = 0; i < segmentWidths.size(); i += 3)
