@@ -35,8 +35,8 @@
 #include "ErrorLogItem.h"
 #include "ErrorLog.h"
 #include "OxyCRGRRHRWaveWidget.h"
-#include "RunningStatusBar.h"
 #include "AlarmSourceManager.h"
+#include "RunningStatusBarInterface.h"
 
 #define ECG_TIMER_INTERVAL (100)
 #define GET_DIA_DATA_PERIOD (12000)
@@ -1718,6 +1718,12 @@ void ECGParam::setPacermaker(ECGPaceMode onoff)
     if (NULL != _provider)
     {
         _provider->enablePacermaker(onoff);
+    }
+
+    RunningStatusBarInterface *runningStatus = RunningStatusBarInterface::getRunningStatusBar();
+    if (runningStatus)
+    {
+        runningStatus->setPacerStatus(static_cast<bool>(onoff));
     }
     return;
 }
