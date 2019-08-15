@@ -276,7 +276,9 @@ void O2Param::setVibrationReason(ApneaStimulationReason reason, bool sta)
         // 状态切换或者新建病人都要重新刷新
         if ((preMotorSta != curMotorSta) || (d_ptr->updateApneaStimulationSta))
         {
-            if ((reason == APNEASTIMULATION_REASON_RESP || reason == APNEASTIMULATION_REASON_HR)
+            if ((reason == APNEASTIMULATION_REASON_RESP
+                 || reason == APNEASTIMULATION_REASON_HR
+                 || reason == APNEASTIMULATION_REASON_SPO2)
                     && (!d_ptr->updateApneaStimulationSta))
             {
                 // 若是原因为低于RESP或HR时，设置定时器，等值稳定后再设置到呼吸窒息
