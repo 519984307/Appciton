@@ -29,7 +29,8 @@ void SoftwareVersionWindow::layoutExec()
     QGridLayout *glayout = new QGridLayout;
 
     QLabel *label = new QLabel;
-    label->setPixmap(QPixmap("/usr/local/nPM/icons/betterLife.png"));
+    QPixmap picSrc = QPixmap("/usr/local/nPM/icons/David.png");
+    label->setPixmap(picSrc.scaled(picSrc.width() / 2.5, picSrc.height() / 2.5, Qt::KeepAspectRatio));
     glayout->addWidget(label, 0, 0, 2, 1, Qt::AlignCenter);
     glayout->setColumnStretch(0, 1);
 
