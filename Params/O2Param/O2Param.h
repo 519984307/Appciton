@@ -104,6 +104,8 @@ public:
 protected slots:
     virtual void paramUpdateTimeout();
 
+    void updateVibrationTimeout();
+
 private:
     O2Param();
     ~O2Param();
