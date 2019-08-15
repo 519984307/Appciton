@@ -100,7 +100,6 @@ void O2Param::setProvider(O2ProviderIFace *provider)
     {
         return;
     }
-
     d_ptr->provider = provider;
     d_ptr->provider->sendO2SelfTest();
     d_ptr->provider->sendProbeState();
