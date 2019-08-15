@@ -217,7 +217,7 @@ public:
      * @param soundType sound type
      * @param specType specify wav file type
      */
-    void playSound(SoundManager::SoundType soundType, unsigned short specType = 0)
+    void playSound(SoundManager::SoundType soundType, unsigned short specType = 0, bool isForceUpdate = false)
     {
         WavFile *wav = wavFiles.value(key(soundType, specType));
         if (wav == NULL)
@@ -240,7 +240,7 @@ public:
 
         if (player->isPlaying())
         {
-            if (curSoundType > soundType)
+            if (curSoundType > soundType && !isForceUpdate)
             {
                 // or has high priority sound playing, don't play
                 return;
@@ -439,14 +439,9 @@ void SoundManager::updateAlarm(bool hasAlarm, AlarmPriority curHighestPriority)
     {
         if (d_ptr->almTimer->interval() != d_ptr->alarmInterval[curHighestPriority])
         {
-            // play different alarm level sound
             d_ptr->almTimer->stop();
-
-            // stop the current playing sound
-            if (d_ptr->player->isPlaying())
-            {
-                QMetaObject::invokeMethod(d_ptr->player, "stop");
-            }
+            d_ptr->almTimer->start(d_ptr->alarmInterval[curHighestPriority]);
+            d_ptr->playSound(SOUND_TYPE_ALARM, curHighestPriority, true);
         }
     }
 }
