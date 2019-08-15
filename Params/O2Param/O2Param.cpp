@@ -103,12 +103,6 @@ void O2Param::setProvider(O2ProviderIFace *provider)
     d_ptr->provider = provider;
     d_ptr->provider->sendO2SelfTest();
     d_ptr->provider->sendProbeState();
-    if (patientManager.getType() == PATIENT_TYPE_NEO)
-    {
-        int index = 0;
-        currentConfig.getNumValue("ApneaStimulation|SelfTest", index);
-        o2Param.setVibrationReason(APNEASTIMULATION_REASON_SELFTEST, index);
-    }
 }
 
 bool O2Param::isServiceProviderOk()

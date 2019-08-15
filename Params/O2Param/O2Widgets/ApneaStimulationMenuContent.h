@@ -22,6 +22,10 @@ public:
     virtual void layoutExec();
 
     virtual void readyShow();
+
+protected:
+    virtual void hideEvent(QHideEvent *e);
+
 private slots:
     void onComboBoxIndexChanged(int index);
 

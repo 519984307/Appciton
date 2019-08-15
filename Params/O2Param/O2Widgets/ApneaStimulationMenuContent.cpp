@@ -155,6 +155,12 @@ void ApneaStimulationMenuContent::readyShow()
     d_ptr->loadOptions();
 }
 
+void ApneaStimulationMenuContent::hideEvent(QHideEvent *e)
+{
+    MenuContent::hideEvent(e);
+    o2Param.setVibrationReason(APNEASTIMULATION_REASON_SELFTEST, false);
+}
+
 void ApneaStimulationMenuContent::onComboBoxIndexChanged(int index)
 {
     ComboBox *combo = qobject_cast<ComboBox *>(sender());
@@ -165,7 +171,6 @@ void ApneaStimulationMenuContent::onComboBoxIndexChanged(int index)
         switch (item)
         {
         case ApneaStimulationMenuContentPrivate::ITEM_CBO_SELFTEST:
-            currentConfig.setNumValue("ApneaStimulation|SelfTest", index);
             o2Param.setVibrationReason(APNEASTIMULATION_REASON_SELFTEST, index);
             break;
         case ApneaStimulationMenuContentPrivate::ITEM_CBO_RESP:
@@ -210,8 +215,7 @@ void ApneaStimulationMenuContentPrivate::loadOptions()
     int index = 0;
     if (patientManager.getType() == PATIENT_TYPE_NEO)
     {
-        currentConfig.getNumValue("ApneaStimulation|SelfTest", index);
-        combos[ITEM_CBO_SELFTEST]->setCurrentIndex(index);
+        combos[ITEM_CBO_SELFTEST]->setCurrentIndex(0);   // 每次进入都自测设置为关闭
         combos[ITEM_CBO_SELFTEST]->setEnabled(true);
 
         index = 0;
