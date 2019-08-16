@@ -134,6 +134,7 @@ QString &Provider::getName(void)
 bool Provider::attachParam(Param &param)
 {
     Q_UNUSED(param)
+    _firstCheck = true;
     isConnectedToParam = true;
     return true;
 }

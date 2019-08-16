@@ -135,7 +135,6 @@ class BLMCO2Provider: public Provider, public CO2ProviderIFace
 {
 public: // Provider的接口。
     virtual bool attachParam(Param &param);
-    virtual void detachParam(Param &param);
     virtual void dataArrived(void);
     virtual void sendVersion(void) {}
 
