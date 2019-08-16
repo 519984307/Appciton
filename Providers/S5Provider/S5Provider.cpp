@@ -381,10 +381,10 @@ bool S5Provider::isStatus(unsigned char *packet)
     {
         if (packet[2] == S5_NO_INSERT)
         {
-            _isCableOff = true;
             spo2Param.setSensorOff(true);
             if (!_isFirstConnectCable)
             {
+                _isCableOff = true;
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_OFF, true);
             }
         }
@@ -402,13 +402,11 @@ bool S5Provider::isStatus(unsigned char *packet)
     {
         if (packet[2] == S5_INSERT)
         {
-            spo2Param.setNotify(false, trs("SPO2CheckSensor"));
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_FINGER_OFF, false);
             _isFingerOff = false;
         }
         else
         {
-            spo2Param.setNotify(true, trs("SPO2CheckSensor"));
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_FINGER_OFF, true);
             _isFingerOff = true;
         }
@@ -448,12 +446,24 @@ bool S5Provider::isStatus(unsigned char *packet)
     {
         if (packet[2] == S5_LED_ERROR)
         {
+            _isLedError = true;
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, true);
         }
         else if (packet[2] == S5_LED_NOERROR)
         {
+            _isLedError = false;
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, false);
         }
+    }
+
+    // 探头脱落包括电缆脱落，手指未插入，检测探头
+    if (!_isCableOff && !_isFingerOff && !_isLedError)
+    {
+        spo2Param.setNotify(false, trs("SPO2CheckSensor"));
+    }
+    else
+    {
+        spo2Param.setNotify(true, trs("SPO2CheckSensor"));
     }
 
     // 算法状态
@@ -479,7 +489,6 @@ bool S5Provider::isStatus(unsigned char *packet)
             _isSeaching = false;
         }
     }
-
     return true;
 }
 
@@ -518,6 +527,7 @@ S5Provider::S5Provider()
           , _isFirstConnectCable(true)
           , _isCableOff(false)
           , _isFingerOff(true)
+          , _isLedError(false)
           , _isSeaching(false)
           , _gainError(S5_GAIN_NC)
           , _ledFault(false)
