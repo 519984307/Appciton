@@ -70,8 +70,8 @@ int AlarmLimitModel::rowCount(const QModelIndex &parent) const
 
 void AlarmLimitModel::alarmDataUpdate(const AlarmDataInfo &info, int type)
 {
-    UnitType unit = paramInfo.getUnitOfSubParam(
-                    info.subParamID);
+    UnitType unit = paramManager.getSubParamUnit(info.paramID, info.subParamID);
+
     switch (type)
     {
     case SECTION_STATUS:
@@ -424,7 +424,7 @@ void AlarmLimitModel::setupAlarmDataInfos(const QList<AlarmDataInfo> &dataInfos,
     for (int i = 0; i < dataInfos.count(); i++)
     {
         AlarmDataInfo info = dataInfos.at(i);
-        UnitType unit = paramInfo.getUnitOfSubParam(info.subParamID);
+        UnitType unit = paramManager.getSubParamUnit(info.paramID, info.subParamID);
         alarmConfig.setLimitAlarmConfig(info.subParamID,
                                         unit, info.limitConfig);
         Param *param = paramManager.getParam(info.paramID);

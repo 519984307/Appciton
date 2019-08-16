@@ -195,7 +195,7 @@ void TableView::scrollToAssignedPage(int row)
         return;
     }
 
-    QModelIndex index = model()->index(assignedPage * eachPageRowCount - 1, 0);
+    QModelIndex index = model()->index(assignedPage * eachPageRowCount, 0);
     scrollTo(index, QAbstractItemView::PositionAtTop);
 }
 
