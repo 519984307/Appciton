@@ -207,6 +207,10 @@ void RESPParam::setProvider(RESPProviderIFace *provider)
     }
 
     d_ptr->provider = provider;
+
+    // 是否开启RESP功能
+    d_ptr->provider->enableRESPCalc(true);
+
     d_ptr->waveWidget->setDataRate(d_ptr->provider->getRESPWaveformSample());
     d_ptr->oxyCRGRESPWave->setDataRate(d_ptr->provider->getRESPWaveformSample());
 
@@ -327,7 +331,7 @@ void RESPParam::reset()
     }
 
     // 是否开启RESP功能
-    d_ptr->provider->enableRESPCalc(getRespMonitoring());
+    d_ptr->provider->enableRESPCalc(true);
 
     // 设置呼吸导联
     d_ptr->provider->setRESPCalcLead(getCalcLead());
