@@ -128,7 +128,7 @@ public:
     {
         static const char *symbol[PATIENT_PACER_NR] =
         {
-            "Off", "On"
+            "Wear", "NotWear"
         };
         return symbol[index];
     }

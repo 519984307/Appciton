@@ -484,7 +484,7 @@ void ECGMenuContent::layoutExec()
     d_ptr->combos.insert(ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER, comboBox);
 
     // paceMark
-    label = new QLabel(trs("ECGPaceSignal"));
+    label = new QLabel(trs("ECGPaceDetection"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
