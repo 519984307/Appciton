@@ -102,7 +102,13 @@ void AlarmPauseState::handAlarmEvent(AlarmStateEvent event, unsigned char */*dat
 #if 1
     case ALARM_STATE_EVENT_RESET_BTN_PRESSED:
     {
-        // do noting at pause state
+        alarmIndicator->phyAlarmResetStatusHandle();
+        alarmIndicator->techAlarmResetStatusHandle();
+        if (alarmIndicator->getAlarmCount())
+        {
+            // must has med priority alarm or high priority alarm before enter the reset state
+            alarmStateMachine->switchState(ALARM_RESET_STATE);
+        }
         break;
     }
 

@@ -1139,13 +1139,14 @@ bool AlarmIndicator::phyAlarmResetStatusHandle()
         {
             // 只确认中级和高级的报警
             AlarmInfoNode node = *it;
-            if (0 == it->pauseTime)
+            if (0 != it->pauseTime)
             {
-                if (!node.acknowledge)
-                {
-                    node.acknowledge = true;
-                    ret = true;
-                }
+                it->pauseTime = 0;
+            }
+            if (!node.acknowledge)
+            {
+                node.acknowledge = true;
+                ret = true;
             }
             *it = node;
         }
