@@ -786,6 +786,14 @@ void BLMCO2Provider::sendCalibrateData(int value)
 
 void BLMCO2Provider::setUpgradeIface(BLMProviderUpgradeIface *iface)
 {
+    if (iface == NULL)
+    {
+        stopCheckConnect(false);
+    }
+    else
+    {
+        stopCheckConnect(true);
+    }
     upgradeIface = iface;
 }
 
