@@ -397,9 +397,9 @@ void NIBPDataTrendWidget::updateUnit(UnitType unit)
 
 void NIBPDataTrendWidget::getTrendNIBPlist()
 {
-    int eventNum = backend->getBlockNR();   
+    int eventNum = backend->getBlockNR();
     TrendDataType value;
-    SubParamID subId;   
+    SubParamID subId;
     unsigned t = 0;
     NIBPLimitAlarm alarm;
     for (int i = eventNum - 1; i >= 0; i--)
@@ -543,7 +543,7 @@ NIBPDataTrendWidget::NIBPDataTrendWidget()
     mainLayout->addWidget(_table);
     contentLayout->addLayout(mainLayout);
     contentLayout->addStretch(1);
-
+    nameLabel->setMaximumWidth(76);
     // 释放事件。
     //    connect(this, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
 
@@ -552,7 +552,6 @@ NIBPDataTrendWidget::NIBPDataTrendWidget()
     backend = eventStorageManager.backend();
 
     getTrendNIBPlist();
-
 }
 
 /**************************************************************************************************
