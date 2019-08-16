@@ -263,12 +263,14 @@ void CO2Param::exitDemo()
 {
     d_ptr->etco2Value = InvData();
     d_ptr->fico2Value = InvData();
+    d_ptr->awRRValue =  InvData();
     d_ptr->brVaule = InvData();
 
     if (NULL != d_ptr->trendWidget)
     {
         d_ptr->trendWidget->setEtCO2Value(InvData());
         d_ptr->trendWidget->setFiCO2Value(InvData());
+        d_ptr->trendWidget->setawRRValue(InvData());
     }
     setBR(InvData());
 }
