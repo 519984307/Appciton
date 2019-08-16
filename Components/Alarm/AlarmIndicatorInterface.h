@@ -155,4 +155,10 @@ public:
      * @param flag
      */
     virtual void setAlarmAudioState(bool flag) = 0;
+
+    /**
+     * @brief removeAllAlarmResetStatus 移除全部报警复位状态
+     * @return
+     */
+    virtual bool removeAllAlarmResetStatus() = 0;
 };

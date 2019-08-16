@@ -1164,7 +1164,7 @@ bool AlarmIndicator::techAlarmResetStatusHandle()
     {
         if (it->alarmType == ALARM_TYPE_TECH && it->alarmPriority > ALARM_PRIO_PROMPT)
         {
-            // 只确认中级和高级的报警
+            // 只确认非提示等级的报警
             if (it->removeAfterLatch)
             {
                 it = list->erase(it);
@@ -1174,6 +1174,29 @@ bool AlarmIndicator::techAlarmResetStatusHandle()
             else if (!it->acknowledge)
             {
                 it->acknowledge = true;
+                it->removeLigthAfterConfirm = false;
+                ret = true;
+            }
+        }
+        ++it;
+    }
+    return ret;
+}
+
+bool AlarmIndicator::removeAllAlarmResetStatus()
+{
+    bool ret = false;
+    AlarmInfoList *list;
+    AlarmInfoList::iterator it;
+    list = &_alarmInfoDisplayPool;
+    it = list->begin();
+    while (it != list->end())
+    {
+        if (it->alarmPriority > ALARM_PRIO_PROMPT)
+        {
+            if (it->acknowledge)
+            {
+                it->acknowledge = false;
                 it->removeLigthAfterConfirm = false;
                 ret = true;
             }
