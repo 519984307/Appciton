@@ -161,4 +161,7 @@ public:
      * @return
      */
     virtual bool removeAllAlarmResetStatus() = 0;
+
+    // 清除报警Pause倒计时
+    virtual void clearAlarmPause() = 0;
 };
