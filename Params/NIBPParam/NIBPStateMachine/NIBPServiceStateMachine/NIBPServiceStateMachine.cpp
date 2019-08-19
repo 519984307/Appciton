@@ -67,7 +67,6 @@ void NIBPServiceStateMachine::enter()
 
     if (nibpParam.getConnectedState())
     {
-        nibpRepairMenuManager.warnShow(false);
         switchToState(NIBP_SERVICE_STANDBY_STATE);
     }
     else

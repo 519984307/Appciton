@@ -170,7 +170,10 @@ void NIBPManometerContent::hideEvent(QHideEvent *e)
     if (d_ptr->moduleStr == "BLM_N5")
     {
         nibpParam.provider().serviceManometer(false);
-        nibpParam.switchState(NIBP_SERVICE_STANDBY_STATE);
+        if (nibpParam.curMachineType() == NIBP_STATE_MACHINE_SERVICE)
+        {
+            nibpParam.switchState(NIBP_SERVICE_STANDBY_STATE);
+        }
     }
 }
 
