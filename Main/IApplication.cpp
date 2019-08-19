@@ -23,6 +23,7 @@
 #include <QDateTime>
 #include "Utility.h"
 #include "LanguageManager.h"
+#include "WindowManager.h"
 #endif
 
 /**************************************************************************************************
@@ -200,13 +201,19 @@ void IApplication::handleScreenCaptureResult(long result)
         QImage *image = reinterpret_cast<QImage *>(result);
         MessageBox msgBox(trs("ScreenCapture"), QPixmap::fromImage(*image).scaled(
                               150, 90, Qt::IgnoreAspectRatio, Qt::SmoothTransformation), trs("CaptureSuccess"), false);
-        msgBox.exec();
+
+        Qt::WindowFlags flags = msgBox.windowFlags();
+        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | flags);
+        windowManager.showWindow(&msgBox,
+                                 WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
         delete image;
     }
     else
     {
         MessageBox msgBox(trs("ScreenCapture"), trs("CaptureFail"), false);
-        msgBox.exec();
+        Qt::WindowFlags flags = msgBox.windowFlags();
+        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | flags);
+        windowManager.showWindow(&msgBox, WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
     }
 }
 
