@@ -201,7 +201,9 @@ void IApplication::handleScreenCaptureResult(long result)
         QImage *image = reinterpret_cast<QImage *>(result);
         MessageBox msgBox(trs("ScreenCapture"), QPixmap::fromImage(*image).scaled(
                               150, 90, Qt::IgnoreAspectRatio, Qt::SmoothTransformation), trs("CaptureSuccess"), false);
-        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
+
+        Qt::WindowFlags flags = msgBox.windowFlags();
+        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | flags);
         windowManager.showWindow(&msgBox,
                                  WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
         delete image;
@@ -209,7 +211,8 @@ void IApplication::handleScreenCaptureResult(long result)
     else
     {
         MessageBox msgBox(trs("ScreenCapture"), trs("CaptureFail"), false);
-        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
+        Qt::WindowFlags flags = msgBox.windowFlags();
+        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | flags);
         windowManager.showWindow(&msgBox, WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
     }
 }
