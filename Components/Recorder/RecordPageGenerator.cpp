@@ -2158,7 +2158,16 @@ QList<RecordWaveSegmentInfo> RecordPageGenerator::getWaveInfos(const QList<Wavef
         {
             yOffset += waveRegionHeight;
         }
-        iter->endYOffset = yOffset;
+
+        // 解决打印波形重合问题,两道波形之间增加间隙
+        if (iter != infos.end() - 1)
+        {
+            iter->endYOffset = yOffset - 2;
+        }
+        else
+        {
+            iter->endYOffset = yOffset;
+        }
         iter->middleYOffset = (iter->startYOffset + iter->endYOffset) / 2;
     }
 
