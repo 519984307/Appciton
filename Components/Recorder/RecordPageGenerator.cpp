@@ -1162,6 +1162,12 @@ static qreal mapWaveValue(const RecordWaveSegmentInfo &waveInfo, short wave)
         qreal respZoom = 1.0;
         switch (waveInfo.waveInfo.resp.zoom)
         {
+        case RESP_ZOOM_X025:
+            respZoom = 0.25;
+            break;
+        case RESP_ZOOM_X050:
+            respZoom = 0.5;
+            break;
         case RESP_ZOOM_X100:
             respZoom = 1.0;
             break;
