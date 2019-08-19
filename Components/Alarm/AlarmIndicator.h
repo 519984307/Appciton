@@ -40,9 +40,6 @@ public:
     // 删除栓锁的生理报警
     void delLatchPhyAlarm();
 
-    // 报警暂停状态处理
-    bool phyAlarmPauseStatusHandle();
-
     // 是否有处于非暂停的生理报警
     bool hasNonPausePhyAlarm();
 
@@ -102,6 +99,12 @@ public:
     void updateAlarmPauseTime(int seconds);
 
     /**
+     * @brief phyAlarmPauseStatusHandle 报警暂停状态处理
+     * @return
+     */
+    bool phyAlarmPauseStatusHandle();
+
+    /**
      * @brief phyAlarmResetStatusHandle 处理复位后的生理报警状态
      * @return 是否有新被确认的生理报警
      */
@@ -111,6 +114,12 @@ public:
      * @return 是否有新被确认的技术报警
      */
     bool techAlarmResetStatusHandle();
+
+    /**
+     * @brief removeAllAlarmResetStatus 移除全部报警复位状态
+     * @return
+     */
+    bool removeAllAlarmResetStatus();
 
     /**
      * @brief updateAlarmStateWidget 刷新报警状态图标

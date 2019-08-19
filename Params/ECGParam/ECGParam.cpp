@@ -35,8 +35,8 @@
 #include "ErrorLogItem.h"
 #include "ErrorLog.h"
 #include "OxyCRGRRHRWaveWidget.h"
-#include "RunningStatusBar.h"
 #include "AlarmSourceManager.h"
+#include "RunningStatusBarInterface.h"
 
 #define ECG_TIMER_INTERVAL (100)
 #define GET_DIA_DATA_PERIOD (12000)
@@ -98,6 +98,24 @@ short ECGParam::getMinHrValue()
     return 20;
 }
 
+void ECGParam::adjustPrintWave(ECGLead preCalcLead, ECGLead curCalcLead)
+{
+    QStringList printNodeList = systemConfig.getChildNodeNameList("Print");
+    QStringList printWaveList = printNodeList.filter("SelectWave");
+
+    for (int i = 0; i < printWaveList.count(); i++)
+    {
+        int waveID = 0;
+        systemConfig.getNumValue(QString("Print|%1").arg(printWaveList.at(i)), waveID);
+
+        if (static_cast<WaveformID>(waveID) == leadToWaveID(preCalcLead))
+        {
+            systemConfig.setNumValue(QString("Print|%1").arg(printWaveList.at(i))
+                                     , static_cast<int>(leadToWaveID(curCalcLead)));
+            break;
+        }
+    }
+}
 
 /**************************************************************************************************
  * 初始化参数。
@@ -1454,6 +1472,7 @@ void ECGParam::setCalcLead(ECGLead lead)
         return;
     }
 
+    adjustPrintWave(preCalcLead, lead);
     // 将新的计算导联保存道配置文件。
     currentConfig.setNumValue("ECG|CalcLead", static_cast<int>(lead));
     _calcLead = lead;
@@ -1718,6 +1737,12 @@ void ECGParam::setPacermaker(ECGPaceMode onoff)
     if (NULL != _provider)
     {
         _provider->enablePacermaker(onoff);
+    }
+
+    RunningStatusBarInterface *runningStatus = RunningStatusBarInterface::getRunningStatusBar();
+    if (runningStatus)
+    {
+        runningStatus->setPacerStatus(static_cast<bool>(onoff));
     }
     return;
 }

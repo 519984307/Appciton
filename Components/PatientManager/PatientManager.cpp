@@ -21,7 +21,6 @@
 #include "O2ParamInterface.h"
 #include "SystemManagerInterface.h"
 #include <QFile>
-#include "RunningStatusBarInterface.h"
 #include "ECGDupParam.h"
 
 #define XML_FILE_SUFFIX QString::fromLatin1(".xml")
@@ -130,6 +129,7 @@ void PatientManager::setType(PatientType type)
     if (systemManagerInterface && systemManagerInterface->isSupport(PARAM_ECG))
     {
         ecgDupParam.updateHRSource();
+        ecgParam.updatePacermaker();    // 更新起博标志
     }
     if (config)
     {
@@ -159,11 +159,6 @@ QString PatientManager::getTypeStr(void)
 void PatientManager::setPacermaker(PatientPacer type)
 {
     d_ptr->patientInfo.pacer = type;
-    RunningStatusBarInterface *runningStatus = RunningStatusBarInterface::getRunningStatusBar();
-    if (runningStatus)
-    {
-        runningStatus->setPacerStatus(static_cast<bool>(type));
-    }
 }
 
 /**************************************************************************************************

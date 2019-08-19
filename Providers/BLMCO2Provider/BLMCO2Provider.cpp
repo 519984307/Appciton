@@ -23,6 +23,7 @@
 #include "crc8.h"
 
 #define SOH             (0x01)  // upgrage packet header
+#define MODEL_CONNECT_TIME_OUT 500
 
 enum  // 数据包类型。
 {
@@ -66,6 +67,8 @@ enum  // 设置命令。
  *************************************************************************************************/
 void BLMCO2Provider::_unpacket(const unsigned char packet[])
 {
+    co2ModelConnect = true;
+    connectTmr.start(MODEL_CONNECT_TIME_OUT);
     if (!isConnectedToParam)
     {
         return;
@@ -526,6 +529,12 @@ void BLMCO2Provider::reconnected()
     co2Param.setConnected(true);
 }
 
+void BLMCO2Provider::connectTimeOut()
+{
+    connectTmr.stop();
+    co2ModelConnect = false;
+}
+
 /**************************************************************************************************
  * 模块与参数对接。
  *************************************************************************************************/
@@ -777,6 +786,14 @@ void BLMCO2Provider::sendCalibrateData(int value)
 
 void BLMCO2Provider::setUpgradeIface(BLMProviderUpgradeIface *iface)
 {
+    if (iface == NULL)
+    {
+        stopCheckConnect(false);
+    }
+    else
+    {
+        stopCheckConnect(true);
+    }
     upgradeIface = iface;
 }
 
@@ -812,7 +829,8 @@ bool BLMCO2Provider::sendUpgradeCmd(unsigned char cmdId, const unsigned char *da
 BLMCO2Provider::BLMCO2Provider(const QString &name)
     : Provider(name), CO2ProviderIFace(), _status(CO2ProviderStatus()),
       upgradeIface(NULL),
-      _isLastSOHPaired(false)
+      _isLastSOHPaired(false),
+      co2ModelConnect(false)
 {
     UartAttrDesc portAttr(9600, 8, 'N', 1, _packetLen);
     if (name == "MASIMO_CO2")
@@ -834,6 +852,8 @@ BLMCO2Provider::BLMCO2Provider(const QString &name)
     setDisconnectThreshold(1);
     _etco2Value = InvData();
     _fico2Value = InvData();
+
+    connect(&connectTmr, SIGNAL(timeout()), this, SLOT(connectTimeOut()));
 }
 
 /**************************************************************************************************
@@ -841,4 +861,9 @@ BLMCO2Provider::BLMCO2Provider(const QString &name)
  *************************************************************************************************/
 BLMCO2Provider::~BLMCO2Provider()
 {
+}
+
+bool BLMCO2Provider::isConnectModel()
+{
+    return co2ModelConnect;
 }

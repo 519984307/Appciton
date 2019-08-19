@@ -307,12 +307,17 @@ void NIBPDataTrendWidget::resizeEvent(QResizeEvent *e)
     _rowNR = _table->height() / _tableItemHeight - 1;
     _table->setRowCount(_rowNR);
     int eachColumnWidth = _table->width() / columnNR;
-    _table->setColumnWidth(0, eachColumnWidth);
-    _table->setColumnWidth(1, eachColumnWidth);
 
     if (moduleStr != "BLM_N5")
     {
-        _table->setColumnWidth(2, eachColumnWidth * 2/3);
+        _table->setColumnWidth(0, eachColumnWidth);
+        _table->setColumnWidth(1, eachColumnWidth *8/5);
+        _table->setColumnWidth(2, eachColumnWidth *2/5);
+    }
+    else
+    {
+        _table->setColumnWidth(0, eachColumnWidth);
+        _table->setColumnWidth(1, eachColumnWidth);
     }
     for (int i = 0; i < _rowNR; i++)
     {
@@ -377,6 +382,11 @@ void NIBPDataTrendWidget::clearListData()
         _table->item(i, 0)->setText("");
         QLabel *l = qobject_cast<QLabel *>(_table->cellWidget(i, 1));
         l->setText("");
+        if (moduleStr != "BLM_N5")
+        {
+            l = qobject_cast<QLabel *>(_table->cellWidget(i, 2));
+            l->setText("");
+        }
     }
 }
 
@@ -387,9 +397,9 @@ void NIBPDataTrendWidget::updateUnit(UnitType unit)
 
 void NIBPDataTrendWidget::getTrendNIBPlist()
 {
-    int eventNum = backend->getBlockNR();   
+    int eventNum = backend->getBlockNR();
     TrendDataType value;
-    SubParamID subId;   
+    SubParamID subId;
     unsigned t = 0;
     NIBPLimitAlarm alarm;
     for (int i = eventNum - 1; i >= 0; i--)
@@ -533,7 +543,7 @@ NIBPDataTrendWidget::NIBPDataTrendWidget()
     mainLayout->addWidget(_table);
     contentLayout->addLayout(mainLayout);
     contentLayout->addStretch(1);
-
+    nameLabel->setMaximumWidth(76);
     // 释放事件。
     //    connect(this, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
 
@@ -542,7 +552,6 @@ NIBPDataTrendWidget::NIBPDataTrendWidget()
     backend = eventStorageManager.backend();
 
     getTrendNIBPlist();
-
 }
 
 /**************************************************************************************************

@@ -173,6 +173,7 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
     infos.append(str);
 
     infos.append(QString("%1: %2").arg(trs("ID")).arg(patInfo.id));
+    infos.append(QString("%1: %2").arg(trs("PatientPacemarker")).arg(trs(PatientSymbol::convert(static_cast<PatientPacer>(patInfo.pacer)))));
 
     // calculate the info text width
     int textWidth = 0;
@@ -221,7 +222,7 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
     painter.setFont(font);
 
     // we assume the page can hold all the rows
-    QRect textRect(font.pixelSize(), fontH, textWidth, fontH);
+    QRect textRect(font.pixelSize(), 0, textWidth, fontH);
     painter.drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, title);
 
     // left one empty row
@@ -502,6 +503,11 @@ RecordPage *RecordPageGenerator::createTrendPage(const TrendDataPackage &trendDa
     // if the contains too many lines, need to seperate into several group
     QVector<int> segmentWidths; // record the maximum widht or the group segments
     int avaliableLine = avaliableTextHeight / fontH;
+    if (!trendPageTitle.isEmpty())
+    {
+        // 触发打印加上标题所以少显示一行
+        avaliableLine--;
+    }
     QList<TrendStringSegmentInfo> strSegInfoList;
     converToStringSegmets(trendStringList, strSegInfoList, font);
     int index = -1;
@@ -563,7 +569,6 @@ RecordPage *RecordPageGenerator::createTrendPage(const TrendDataPackage &trendDa
         QRect rect(xoffset, startYoffset, page->width(), fontH);
         painter.drawText(rect, trendPageTitle, textOption);
         startYoffset += fontH;
-        avaliableLine--;
     }
 
     for (int i = 0; i < segmentWidths.size(); i += 3)
@@ -1157,6 +1162,12 @@ static qreal mapWaveValue(const RecordWaveSegmentInfo &waveInfo, short wave)
         qreal respZoom = 1.0;
         switch (waveInfo.waveInfo.resp.zoom)
         {
+        case RESP_ZOOM_X025:
+            respZoom = 0.25;
+            break;
+        case RESP_ZOOM_X050:
+            respZoom = 0.5;
+            break;
         case RESP_ZOOM_X100:
             respZoom = 1.0;
             break;
@@ -1483,7 +1494,7 @@ static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegme
             if (flag & ECG_INTERNAL_FLAG_BIT && paramId == PARAM_ECG)
             {
                 QPen pen = painter->pen();
-                painter->setPen(QPen(Qt::white, 1, Qt::DashLine));
+                painter->setPen(QPen(Qt::white, 2, Qt::DashLine));
                 painter->drawLine(x2, waveInfo.middleYOffset - 10 / pixelPitch / 2,
                                   x2, waveInfo.middleYOffset + 10 / pixelPitch / 2);
                 painter->setPen(pen);
@@ -2057,19 +2068,10 @@ QList<RecordWaveSegmentInfo> RecordPageGenerator::getWaveInfos(const QList<Wavef
         case WAVE_ECG_V5:
         case WAVE_ECG_V6:
             info.waveInfo.ecg.gain = ecgParam.getGain(ecgParam.waveIDToLeadID(id));
-            if (ecgParam.getFilterMode() == ECG_FILTERMODE_DIAGNOSTIC)
-            {
-                caption = QString("%1   %2   %3%4").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
-                                                                           ecgParam.getLeadConvention()))
-                        .arg(trs(ECGSymbol::convert(ecgParam.getFilterMode()))).arg(trs("Notch"))
-                        .arg(trs(ECGSymbol::convert(ecgParam.getNotchFilter())));
-            }
-            else
-            {
-                caption = QString("%1   %2").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
-                                                                           ecgParam.getLeadConvention()))
-                        .arg(trs(ECGSymbol::convert(ecgParam.getFilterMode())));
-            }
+            caption = QString("%1   %2   %3 %4").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
+                                                                        ecgParam.getLeadConvention()))
+                    .arg(trs(ECGSymbol::convert(ecgParam.getFilterMode()))).arg(trs("Notch"))
+                    .arg(trs(ECGSymbol::convert(ecgParam.getNotchFilter())));
 
             info.waveInfo.ecg.in12LeadMode = layoutManager.getUFaceType() == UFACE_MONITOR_ECG_FULLSCREEN;
             info.waveInfo.ecg._12LeadDisplayFormat = ecgParam.get12LDisplayFormat();
@@ -2156,7 +2158,16 @@ QList<RecordWaveSegmentInfo> RecordPageGenerator::getWaveInfos(const QList<Wavef
         {
             yOffset += waveRegionHeight;
         }
-        iter->endYOffset = yOffset;
+
+        // 解决打印波形重合问题,两道波形之间增加间隙
+        if (iter != infos.end() - 1)
+        {
+            iter->endYOffset = yOffset - 2;
+        }
+        else
+        {
+            iter->endYOffset = yOffset;
+        }
         iter->middleYOffset = (iter->startYOffset + iter->endYOffset) / 2;
     }
 

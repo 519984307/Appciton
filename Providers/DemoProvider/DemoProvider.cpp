@@ -19,6 +19,9 @@
 #include "IBPParam.h"
 #include "COParam.h"
 #include "AGParam.h"
+#include "ParamManager.h"
+#include "IConfig.h"
+#include "BLMCO2Provider.h"
 
 #define DEMO_DATA_DIR  "/usr/local/nPM/demodata/"
 
@@ -241,7 +244,13 @@ void DemoProvider::detachParam(Param &param)
     else if (id == PARAM_CO2)
     {
         _demoWaveData[WAVE_CO2].param = NULL;
-        co2Param.setConnected(false);
+        QString str;
+        machineConfig.getStrValue("CO2", str);
+        BLMCO2Provider *co2Provider = reinterpret_cast<BLMCO2Provider *>(paramManager.getProvider(str));
+        if (!co2Provider->isConnectModel())
+        {
+            co2Param.setConnected(false);
+        }
     }
     else if (id == PARAM_IBP)
     {
