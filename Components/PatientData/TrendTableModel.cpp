@@ -867,21 +867,48 @@ void TrendTableModelPrivate::getTrendData()
         TrendDataPackage *pack = new TrendDataPackage;
         pack->time = timeStamp;
         pack->co2Baro = dataSeg->co2Baro;
+        bool nibpAlarm = false;
+        int sysValue;
+        int diaValue;
+        int mapValue;
         for (int j = 0; j < dataSeg->trendValueNum; j ++)
         {
             // 非nibp事件的nibp参数强制显示为无效数据
             SubParamID id = static_cast<SubParamID>(dataSeg->values[j].subParamId);
             TrendDataType value = dataSeg->values[j].value;
-            if (id == SUB_PARAM_NIBP_SYS
-                    || id == SUB_PARAM_NIBP_DIA
-                    || id == SUB_PARAM_NIBP_MAP)
+            if (id == SUB_PARAM_NIBP_SYS)
             {
-                if (!(status & TrendDataStorageManager::CollectStatusNIBP))
-                {
-                    value = InvData();
-                }
+                sysValue = value;
+                nibpAlarm = dataSeg->values[j].alarmFlag;
+                pack->subparamAlarm[id] = dataSeg->values[j].alarmFlag;
+                continue;
             }
-
+            else if (id == SUB_PARAM_NIBP_DIA)
+            {
+                diaValue = value;
+                nibpAlarm |= dataSeg->values[j].alarmFlag;
+                pack->subparamAlarm[id] = dataSeg->values[j].alarmFlag;
+                continue;
+            }
+            else if (id == SUB_PARAM_NIBP_MAP)
+            {
+                mapValue = value;
+                nibpAlarm |= dataSeg->values[j].alarmFlag;
+                pack->subparamAlarm[id] = dataSeg->values[j].alarmFlag;
+                if ((status & TrendDataStorageManager::CollectStatusNIBP) || nibpAlarm)
+                {
+                    pack->subparamValue[SUB_PARAM_NIBP_SYS] = sysValue;
+                    pack->subparamValue[SUB_PARAM_NIBP_DIA] = diaValue;
+                    pack->subparamValue[SUB_PARAM_NIBP_MAP] = mapValue;
+                }
+                else
+                {
+                    pack->subparamValue[SUB_PARAM_NIBP_SYS] = InvData();
+                    pack->subparamValue[SUB_PARAM_NIBP_DIA] = InvData();
+                    pack->subparamValue[SUB_PARAM_NIBP_MAP] = InvData();
+                }
+                continue;
+            }
             pack->subparamValue[id] = value;
             pack->subparamAlarm[id] = dataSeg->values[j].alarmFlag;
         }
