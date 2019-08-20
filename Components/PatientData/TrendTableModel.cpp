@@ -872,7 +872,10 @@ void TrendTableModelPrivate::getTrendData()
             // 非nibp事件的nibp参数强制显示为无效数据
             SubParamID id = static_cast<SubParamID>(dataSeg->values[j].subParamId);
             TrendDataType value = dataSeg->values[j].value;
-            if (id == SUB_PARAM_NIBP_SYS)
+            if (id == SUB_PARAM_NIBP_SYS
+                    || id == SUB_PARAM_NIBP_DIA
+                    || id == SUB_PARAM_NIBP_MAP)
+
             {
                 if (!(status & TrendDataStorageManager::CollectStatusNIBP)
                         && !(status & TrendDataStorageManager::CollectStatusAlarm))
@@ -1085,8 +1088,8 @@ void TrendTableModelPrivate::loadTrendData()
             // 装载参数背景颜色
             bool alarmed = pack->subparamAlarm.value(id, false);
             AlarmPriority prio = alarmConfig.getLimitAlarmPriority(id);
-            int Data = pack->subparamValue.value(static_cast<SubParamID>(id), InvData());;
-            if (alarmed == true && Data != InvData())
+            int data = pack->subparamValue.value(static_cast<SubParamID>(id), InvData());;
+            if (alarmed == true && data != InvData())
             {
                 if (prio == ALARM_PRIO_HIGH)
                 {
