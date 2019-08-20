@@ -872,9 +872,7 @@ void TrendTableModelPrivate::getTrendData()
             // 非nibp事件的nibp参数强制显示为无效数据
             SubParamID id = static_cast<SubParamID>(dataSeg->values[j].subParamId);
             TrendDataType value = dataSeg->values[j].value;
-            if (id == SUB_PARAM_NIBP_SYS
-                    || id == SUB_PARAM_NIBP_DIA
-                    || id == SUB_PARAM_NIBP_MAP)
+            if (id == SUB_PARAM_NIBP_SYS)
             {
                 if (!(status & TrendDataStorageManager::CollectStatusNIBP)
                         && !(status & TrendDataStorageManager::CollectStatusAlarm))
@@ -882,7 +880,6 @@ void TrendTableModelPrivate::getTrendData()
                     value = InvData();
                 }
             }
-
             pack->subparamValue[id] = value;
             pack->subparamAlarm[id] = dataSeg->values[j].alarmFlag;
         }
