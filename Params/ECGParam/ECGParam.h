@@ -340,6 +340,13 @@ public: // 用于访问配置相关信息。
     void setRawDataOnOff(bool sta);
     bool getRawDataOnOff(void);
 
+    /**
+     * @brief adjustPrintWave 调整打印菜单中的设置波形
+     * @param preECGLead 调整前的ECG波形
+     * @param curECGLead 当前的ECG波形
+     */
+    void adjustPrintWave(ECGLead preECGLead, ECGLead curECGLead);
+
 signals:
     void calcLeadChanged();
 
@@ -409,7 +416,5 @@ private:
 
     short getMaxHrValue();
     short getMinHrValue();
-
-    void adjustPrintWave(ECGLead preCalcLead, ECGLead curCalcLead);
 };
 #define ecgParam (ECGParam::getInstance())
