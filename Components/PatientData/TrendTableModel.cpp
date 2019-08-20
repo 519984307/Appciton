@@ -876,7 +876,8 @@ void TrendTableModelPrivate::getTrendData()
                     || id == SUB_PARAM_NIBP_DIA
                     || id == SUB_PARAM_NIBP_MAP)
             {
-                if (!(status & TrendDataStorageManager::CollectStatusNIBP))
+                if (!(status & TrendDataStorageManager::CollectStatusNIBP)
+                        && !(status & TrendDataStorageManager::CollectStatusAlarm))
                 {
                     value = InvData();
                 }
@@ -1087,7 +1088,8 @@ void TrendTableModelPrivate::loadTrendData()
             // 装载参数背景颜色
             bool alarmed = pack->subparamAlarm.value(id, false);
             AlarmPriority prio = alarmConfig.getLimitAlarmPriority(id);
-            if (alarmed == true)
+            int Data = pack->subparamValue.value(static_cast<SubParamID>(id), InvData());;
+            if (alarmed == true && Data != InvData())
             {
                 if (prio == ALARM_PRIO_HIGH)
                 {
