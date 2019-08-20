@@ -222,6 +222,7 @@ void ConfigEditCodeMarkerMenuContent::onComboBoxIndexChanged(int index)
                             = static_cast<ConfigEditCodeMarkerMenuContentPrivate::MenuItem>(i);
                     d_ptr->combos[item]->setCurrentIndex(j);
                     d_ptr->selectedCodeMarkers[i] = d_ptr->allCodeMarkers[j];
+                    break;
                 }
             }
         }
