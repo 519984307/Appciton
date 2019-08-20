@@ -122,7 +122,7 @@ void NIBPMonitorStandbyState::enter()
             nibpParam->setAutoMeasure(false);
             if (nibpParam->isFirstAuto())
             {
-                nibpParam->setModelText(trs("NIBPAuto") + ":" +
+                nibpParam->setModelText(trs("NIBPAUTO") + ":" +
                                         trs(NIBPSymbol::
                                             convert(static_cast<NIBPAutoInterval>(nibpParam->getAutoInterval()))));
             }
