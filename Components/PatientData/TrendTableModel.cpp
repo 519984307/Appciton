@@ -677,7 +677,7 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
         {
             recorderManager.stopPrint();
             d_ptr->generator = gen;
-            d_ptr->waitTimerId = startTimer(2000); // 等待2000ms
+            d_ptr->waitTimerId = startTimer(2000);  // 等待2000ms
             d_ptr->isWait = true;
         }
     }
@@ -711,7 +711,7 @@ void TrendTableModel::timerEvent(QTimerEvent *ev)
 {
     if (d_ptr->printTimerId == ev->timerId())
     {
-        if (!recorderManager.isPrinting() || d_ptr->timeoutNum == 10) // 1000ms超时处理
+        if (!recorderManager.isPrinting() || d_ptr->timeoutNum == 10)  // 1000ms超时处理
         {
             if (!recorderManager.isPrinting() && !recorderManager.getPrintStatus())
             {
@@ -875,7 +875,6 @@ void TrendTableModelPrivate::getTrendData()
             if (id == SUB_PARAM_NIBP_SYS
                     || id == SUB_PARAM_NIBP_DIA
                     || id == SUB_PARAM_NIBP_MAP)
-
             {
                 if (!(status & TrendDataStorageManager::CollectStatusNIBP)
                         && !(status & TrendDataStorageManager::CollectStatusAlarm))
