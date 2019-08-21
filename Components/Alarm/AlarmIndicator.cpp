@@ -84,7 +84,8 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
             if (0 == node.pauseTime
                     && status != ALARM_STATUS_AUDIO_OFF
                     && status != ALARM_STATUS_RESET
-                    && status != ALARM_STATUS_PAUSE)
+                    && status != ALARM_STATUS_PAUSE
+                    && !node.acknowledge)
             {
                 if (phySoundPriority < node.alarmPriority)
                 {
@@ -93,7 +94,7 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
             }
 
             AlarmInterface *alertor = AlarmInterface::getAlarm();
-            if ((!node.acknowledge || (alertor && alertor->getAlarmLightOnAlarmReset()))
+            if (alertor && alertor->getAlarmLightOnAlarmReset()
                     && node.alarmPriority != ALARM_PRIO_PROMPT
                     && status != ALARM_STATUS_PAUSE)
             {
@@ -117,17 +118,19 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
         else if (ALARM_TYPE_TECH == node.alarmType && status != ALARM_STATUS_PAUSE)
         {
             // 技术报警只处理没有被acknowledge和不处理报警暂停状态
+            if (node.latch)
+            {
+                if (lightPriority < node.alarmPriority)
+                {
+                    lightPriority = node.alarmPriority;
+                }
+            }
             if ((!node.acknowledge || node.latch)
                     && node.alarmPriority != ALARM_PRIO_PROMPT)
             {
                 if (techSoundPriority < node.alarmPriority)
                 {
                     techSoundPriority = node.alarmPriority;
-                }
-
-                if (lightPriority < node.alarmPriority)
-                {
-                    lightPriority = node.alarmPriority;
                 }
             }
             else if (node.alarmPriority == ALARM_PRIO_PROMPT)

@@ -543,7 +543,7 @@ NIBPDataTrendWidget::NIBPDataTrendWidget()
     mainLayout->addWidget(_table);
     contentLayout->addLayout(mainLayout);
     contentLayout->addStretch(1);
-    nameLabel->setMaximumWidth(76);
+    nameLabel->setFixedWidth(76);
     // 释放事件。
     //    connect(this, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
 

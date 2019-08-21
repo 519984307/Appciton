@@ -207,6 +207,26 @@ void ConfigEditCodeMarkerMenuContent::onComboBoxIndexChanged(int index)
     int itemType = combo->property("Item").toInt();
     // new code marker
     d_ptr->selectedCodeMarkers[itemType] = d_ptr->allCodeMarkers[index];
+    QString s;
+    for (int i = 0; i < d_ptr->selectedCodeMarkers.count(); i++)
+    {
+        if (d_ptr->selectedCodeMarkers[i] == d_ptr->selectedCodeMarkers[itemType]
+                && i != itemType)
+        {
+            for (int j = 0; j < d_ptr->allCodeMarkers.count(); j++)
+            {
+                 s = d_ptr->allCodeMarkers[j];
+                if (!d_ptr->selectedCodeMarkers.contains(s))
+                {
+                    ConfigEditCodeMarkerMenuContentPrivate::MenuItem item
+                            = static_cast<ConfigEditCodeMarkerMenuContentPrivate::MenuItem>(i);
+                    d_ptr->combos[item]->setCurrentIndex(j);
+                    d_ptr->selectedCodeMarkers[i] = d_ptr->allCodeMarkers[j];
+                    break;
+                }
+            }
+        }
+    }
     QStringList tmpList(d_ptr->selectedCodeMarkers);
     QString strValue = tmpList.join(",");
     int num = 0;

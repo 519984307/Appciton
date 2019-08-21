@@ -677,7 +677,7 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
         {
             recorderManager.stopPrint();
             d_ptr->generator = gen;
-            d_ptr->waitTimerId = startTimer(2000); // 等待2000ms
+            d_ptr->waitTimerId = startTimer(2000);  // 等待2000ms
             d_ptr->isWait = true;
         }
     }
@@ -711,7 +711,7 @@ void TrendTableModel::timerEvent(QTimerEvent *ev)
 {
     if (d_ptr->printTimerId == ev->timerId())
     {
-        if (!recorderManager.isPrinting() || d_ptr->timeoutNum == 10) // 1000ms超时处理
+        if (!recorderManager.isPrinting() || d_ptr->timeoutNum == 10)  // 1000ms超时处理
         {
             if (!recorderManager.isPrinting() && !recorderManager.getPrintStatus())
             {
@@ -876,12 +876,12 @@ void TrendTableModelPrivate::getTrendData()
                     || id == SUB_PARAM_NIBP_DIA
                     || id == SUB_PARAM_NIBP_MAP)
             {
-                if (!(status & TrendDataStorageManager::CollectStatusNIBP))
+                if (!(status & TrendDataStorageManager::CollectStatusNIBP)
+                        && !(status & TrendDataStorageManager::CollectStatusAlarm))
                 {
                     value = InvData();
                 }
             }
-
             pack->subparamValue[id] = value;
             pack->subparamAlarm[id] = dataSeg->values[j].alarmFlag;
         }
@@ -1087,7 +1087,8 @@ void TrendTableModelPrivate::loadTrendData()
             // 装载参数背景颜色
             bool alarmed = pack->subparamAlarm.value(id, false);
             AlarmPriority prio = alarmConfig.getLimitAlarmPriority(id);
-            if (alarmed == true)
+            int data = pack->subparamValue.value(static_cast<SubParamID>(id), InvData());;
+            if (alarmed == true && data != InvData())
             {
                 if (prio == ALARM_PRIO_HIGH)
                 {

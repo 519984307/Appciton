@@ -98,7 +98,7 @@ short ECGParam::getMinHrValue()
     return 20;
 }
 
-void ECGParam::adjustPrintWave(ECGLead preCalcLead, ECGLead curCalcLead)
+void ECGParam::adjustPrintWave(ECGLead preECGLead, ECGLead curECGLead)
 {
     QStringList printNodeList = systemConfig.getChildNodeNameList("Print");
     QStringList printWaveList = printNodeList.filter("SelectWave");
@@ -108,10 +108,10 @@ void ECGParam::adjustPrintWave(ECGLead preCalcLead, ECGLead curCalcLead)
         int waveID = 0;
         systemConfig.getNumValue(QString("Print|%1").arg(printWaveList.at(i)), waveID);
 
-        if (static_cast<WaveformID>(waveID) == leadToWaveID(preCalcLead))
+        if (static_cast<WaveformID>(waveID) == leadToWaveID(preECGLead))
         {
             systemConfig.setNumValue(QString("Print|%1").arg(printWaveList.at(i))
-                                     , static_cast<int>(leadToWaveID(curCalcLead)));
+                                     , static_cast<int>(leadToWaveID(curECGLead)));
             break;
         }
     }
@@ -1472,7 +1472,6 @@ void ECGParam::setCalcLead(ECGLead lead)
         return;
     }
 
-    adjustPrintWave(preCalcLead, lead);
     // 将新的计算导联保存道配置文件。
     currentConfig.setNumValue("ECG|CalcLead", static_cast<int>(lead));
     _calcLead = lead;
@@ -1571,20 +1570,24 @@ void ECGParam::autoSetCalcLead(void)
     }
 
     setCalcLead(leads[index]);
+
+    int preECG1Lead = 0;
+    int preECG2Lead = 0;
+    currentConfig.getNumValue("ECG|Ecg1Wave", preECG1Lead);
+    currentConfig.getNumValue("ECG|Ecg2Wave", preECG2Lead);
+
     if (layoutManager.getUFaceType() == UFACE_MONITOR_STANDARD && getLeadMode() > ECG_LEAD_MODE_3)
     {
         // 标准界面且ECG模式大于3导时，处理ECG2波形与ECG1波形重复
-        int preECG1Lead = 0;
-        int ECG2Lead = 0;
-        currentConfig.getNumValue("ECG|Ecg1Wave", preECG1Lead);
-        currentConfig.getNumValue("ECG|Ecg2Wave", ECG2Lead);
-        if (static_cast<int>(leads[index]) == ECG2Lead)
+        if (static_cast<int>(leads[index]) == preECG2Lead)
         {
             // 计算导联与ECG2波形重复时，将ECG2波形设置为前ECG1波形
             currentConfig.setNumValue("ECG|Ecg2Wave", preECG1Lead);
+            adjustPrintWave(static_cast<ECGLead>(preECG2Lead), static_cast<ECGLead>(preECG1Lead));
         }
     }
 
+    adjustPrintWave(static_cast<ECGLead>(preECG1Lead), leads[index]);
     currentConfig.setNumValue("ECG|Ecg1Wave", static_cast<int>(leads[index]));
     if (NULL != _waveWidget[calcLead] && NULL != _waveWidget[leads[index]])
     {
@@ -1764,6 +1767,12 @@ void ECGParam::updatePacermaker()
     if (NULL != _provider)
     {
         _provider->enablePacermaker(static_cast<ECGPaceMode>(index));
+    }
+
+    RunningStatusBarInterface *runningStatus = RunningStatusBarInterface::getRunningStatusBar();
+    if (runningStatus)
+    {
+        runningStatus->setPacerStatus(static_cast<bool>(index));
     }
 }
 

@@ -67,8 +67,8 @@ ConfigEditRespMenuContent::~ConfigEditRespMenuContent()
 void ConfigEditRespMenuContentPrivate::loadOptions()
 {
     int index = 0;
-    config->getNumValue("Alarm|ApneaTime", index);
-    combos[ITEM_CBO_APNEA_DELAY]->setCurrentIndex(index);
+    config->getNumValue("RESP|ApneaTime", index);
+    combos[ITEM_CBO_APNEA_DELAY]->setCurrentIndex(index - RESP_APNEA_TIME_20_SEC);
     index = 0;
     config->getNumValue("RESP|BreathLead", index);
     combos[ITEM_CBO_BREATH_LEAD]->setCurrentIndex(index);
@@ -114,7 +114,7 @@ void ConfigEditRespMenuContent::onComboIndexChanged(int index)
     switch (indexType)
     {
     case ConfigEditRespMenuContentPrivate::ITEM_CBO_APNEA_DELAY:
-        d_ptr->config->setNumValue("Alarm|ApneaTime", index);
+        d_ptr->config->setNumValue("RESP|ApneaTime", index + RESP_APNEA_TIME_20_SEC);
         break;
     case ConfigEditRespMenuContentPrivate::ITEM_CBO_BREATH_LEAD:
         d_ptr->config->setNumValue("RESP|BreathLead", index);
@@ -158,7 +158,6 @@ void ConfigEditRespMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox;
     comboBox->addItems(QStringList()
-                       << trs(RESPSymbol::convert(RESP_APNEA_TIME_OFF))
                        << trs(RESPSymbol::convert(RESP_APNEA_TIME_20_SEC))
                        << trs(RESPSymbol::convert(RESP_APNEA_TIME_25_SEC))
                        << trs(RESPSymbol::convert(RESP_APNEA_TIME_30_SEC))

@@ -161,17 +161,17 @@ void CO2MenuContent::onComboBoxIndexChanged(int index)
     switch (indexType)
     {
     case CO2MenuContentPrivate::ITEM_CBO_WAVE_SPEED:
-        co2Param.setSweepSpeed((CO2SweepSpeed)index);
+        co2Param.setSweepSpeed(static_cast<CO2SweepSpeed>(index));
         break;
     case CO2MenuContentPrivate::ITEM_CBO_WAVE_RULER:
         co2Param.setDisplayZoom(static_cast<CO2DisplayZoom>(index));
         break;
     case CO2MenuContentPrivate::ITEM_CBO_FICO2_DISPLAY:
-        co2Param.setFiCO2Display((CO2FICO2Display)index);
+        co2Param.setFiCO2Display(static_cast<CO2FICO2Display>(index));
         break;
     case CO2MenuContentPrivate::ITEM_CBO_APNEA_TIME:
         currentConfig.setNumValue("Alarm|ApneaTime", index);
-        co2Param.setApneaTime((ApneaAlarmTime)index);
+        co2Param.setApneaTime(static_cast<ApneaAlarmTime>(index));
         break;
     case CO2MenuContentPrivate::ITEM_CBO_WORK_MODE:
         co2Param.setModuleWorkMode(static_cast<CO2WorkMode>(index + 1));
