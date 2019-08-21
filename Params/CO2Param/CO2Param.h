@@ -128,6 +128,23 @@ public:
     bool getCalibrateResult();
     bool getCalibrateReply();
 
+
+    /**
+     * @brief setZeroStatus 设置失能CO2校零功能状态
+     * @param reason
+     * @param status
+     */
+    void setZeroStatus(CO2DisableZeroReason reason, bool status);
+
+    /**
+     * @brief getDisableZeroStatus 获取是否失能CO2校零功能
+     * @return
+     */
+    bool getDisableZeroStatus();
+
+signals:
+    void updateZeroSta(bool sta);
+
 public:
     // 校零。
     void zeroCalibration(void);

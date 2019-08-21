@@ -144,7 +144,6 @@ enum AlarmClosePromptTime
  *************************************************************************************************/
 enum ApneaAlarmTime
 {
-    APNEA_ALARM_TIME_OFF,
     APNEA_ALARM_TIME_20_SEC,
     APNEA_ALARM_TIME_25_SEC,
     APNEA_ALARM_TIME_30_SEC,
