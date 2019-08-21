@@ -1768,6 +1768,12 @@ void ECGParam::updatePacermaker()
     {
         _provider->enablePacermaker(static_cast<ECGPaceMode>(index));
     }
+
+    RunningStatusBarInterface *runningStatus = RunningStatusBarInterface::getRunningStatusBar();
+    if (runningStatus)
+    {
+        runningStatus->setPacerStatus(static_cast<bool>(index));
+    }
 }
 
 /**************************************************************************************************
