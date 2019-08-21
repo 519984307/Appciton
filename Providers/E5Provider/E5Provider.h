@@ -45,6 +45,7 @@ enum RevPacketType
     TE3_NOTIFY_RESP_ALARM                  = 0xD2,       // RESP报警
     TE3_NOTIFY_VF_ALARM                    = 0xA0,       // VF报警
     TE3_NOTIFY_ASYS_ALARM                  = 0xA1,       // 停搏报警
+    TE3_NOTIFY_RESP_INACCURATE             = 0XD3,       // 呼吸率低
 
     TE3_CYCLE_ACTIVE                       = 0xB0,       // 保活。
     TE3_CYCLE_STORE                        = 0xB9,       // 需要将数据存储至TXT

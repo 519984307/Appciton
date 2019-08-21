@@ -95,7 +95,14 @@ void RESPTrendWidget::setRRValue(int16_t rr , bool isRR, bool isAutoType)
 
     if (rr != InvData())
     {
-        _rrString = QString::number(rr);
+        if (respParam.isRRInaccurate())
+        {
+            _rrString = QString("%1?").arg(QString::number(rr));
+        }
+        else
+        {
+            _rrString = QString::number(rr);
+        }
     }
     else
     {
