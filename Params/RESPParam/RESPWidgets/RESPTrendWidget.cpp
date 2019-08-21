@@ -69,26 +69,6 @@ void RESPTrendWidget::loadConfig()
     setName(trs(paramInfo.getSubParamName(SUB_PARAM_RR_BR)));
     setUnit(Unit::getSymbol(UNIT_RPM));
 
-    int index = 0;
-    currentConfig.getNumValue("RESP|BrSource", index);
-    if (index == BR_RR_SOURCE_CO2 && co2Param.isConnected() == false)
-    {
-        index = BR_RR_AUTO;
-    }
-    switch (index)
-    {
-    case BR_RR_AUTO:
-        respDupParam.setAutoBrSourceStatue(true);
-         break;
-    case BR_RR_SOURCE_ECG:
-        respDupParam.setBrSource(RESPDupParam::BR_SOURCE_ECG);
-        respDupParam.setAutoBrSourceStatue(false);
-        break;
-    case BR_RR_SOURCE_CO2:
-        respDupParam.setBrSource(RESPDupParam::BR_SOURCE_CO2);
-        respDupParam.setAutoBrSourceStatue(false);
-        break;
-    }
     TrendWidget::loadConfig();
 }
 
