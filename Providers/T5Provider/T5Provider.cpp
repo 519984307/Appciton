@@ -19,6 +19,9 @@
 #include "RawDataCollector.h"
 #include "IConfig.h"
 
+#define lowBorderValue 149
+#define highBorderValue 501
+
 enum TempErrorCode
 {
     ERRORCODE_DATA_RESET_DEFAULT = 1,
@@ -357,7 +360,8 @@ void T5Provider::_result(unsigned char *packet)
     {
         if (!_overRang1)
         {
-            _temp1 = static_cast<int>((packet[2] << 8) + packet[1]);
+            _temp1 = _borderValueChange(lowBorderValue, highBorderValue,
+                                        static_cast<int>((packet[2] << 8) +packet[1]));
         }
         sensorOff1 = false;
     }
@@ -366,7 +370,8 @@ void T5Provider::_result(unsigned char *packet)
     {
         if (!_overRang2)
         {
-            _temp2 = static_cast<int>((packet[4] << 8) + packet[3]);
+            _temp2 = _borderValueChange(lowBorderValue, highBorderValue,
+                                        static_cast<int>((packet[4] << 8) + packet[3]));
         }
         sensorOff2 = false;
     }
@@ -574,11 +579,11 @@ void T5Provider::_limitHandle(unsigned char *packet)
     if (0xFF != packet[2])
     {
         int temp1 = static_cast<int>((packet[2] << 8) + packet[1]);
-        if ((temp1 < 150 || temp1 > 500) && _overRang1 == false)
+        if ((temp1 < lowBorderValue || temp1 > highBorderValue) && _overRang1 == false)
         {
             _overRang1 = true;
         }
-        else if (temp1 > 150 && temp1 < 500 && _overRang1 == true)
+        else if (temp1 >= lowBorderValue && temp1 <= highBorderValue && _overRang1 == true)
         {
             _overRang1 = false;
         }
@@ -590,11 +595,11 @@ void T5Provider::_limitHandle(unsigned char *packet)
     if (0xFF != packet[4])
     {
         int temp2 = static_cast<int>((packet[4] << 8) + packet[3]);
-        if ((temp2 < 150 || temp2 > 500) && _overRang2 == false)
+        if ((temp2 < lowBorderValue || temp2 > highBorderValue) && _overRang2 == false)
         {
             _overRang2 = true;
         }
-        else if (temp2 > 150 && temp2 < 500 && _overRang2 == true)
+        else if (temp2 >= lowBorderValue && temp2 <= highBorderValue && _overRang2 == true)
         {
             _overRang2 = false;
         }
@@ -604,6 +609,19 @@ void T5Provider::_limitHandle(unsigned char *packet)
         _overRang2 = true;
     }
     _shotAlarm();
+}
+
+int T5Provider::_borderValueChange(int low, int high, int temp)
+{
+    if (temp == low)
+    {
+        return temp + 1;
+    }
+    else if (temp == high)
+    {
+        return temp -1;
+    }
+    return temp;
 }
 
 /**************************************************************************************************
