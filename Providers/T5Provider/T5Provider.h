@@ -103,7 +103,8 @@ private:
 
     void _limitHandle(unsigned char *packer);
 
-    int _borderValueChange(int lowBorderValue, int high, int temp);
+    //温度边界值改变
+    int borderValueChange(int lowBorderValue, int high, int temp);
 
     bool _disconnected;
     bool _overRang1;
