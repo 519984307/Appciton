@@ -26,6 +26,12 @@ public:
     /* run periodly, data will collect when the timestamp can be divided by 5 */
     void periodRun(unsigned t);
 
+    /**
+     * @brief stopPeriodRun 暂停存储数据到缓冲
+     */
+    void stopPeriodRun();
+    void restartPeriodRun();
+
     /* store data, need to know what cause the data to storage */
     void storeData(unsigned t, TrendDataFlags dataStatus);
 

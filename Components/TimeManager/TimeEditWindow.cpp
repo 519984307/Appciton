@@ -26,6 +26,7 @@
 #include "PatientManager.h"
 #include "NIBPCountdownTime.h"
 #include "NIBPParam.h"
+#include "TrendDataStorageManager.h"
 
 class TimeEditWindowPrivate
 {
@@ -319,6 +320,7 @@ void TimeEditWindow::hideEvent(QHideEvent *ev)
     QDateTime dt = d_ptr->getSetupTime();
     if (d_ptr->oldTime != dt.toTime_t())
     {
+        trendDataStorageManager.stopPeriodRun();
         d_ptr->setSysTime();
         systemTick.resetLastTime();
         patientManager.newPatient();
@@ -326,6 +328,7 @@ void TimeEditWindow::hideEvent(QHideEvent *ev)
         {
             nibpCountdownTime.timeChange(true);
         }
+        trendDataStorageManager.restartPeriodRun();
     }
     Dialog::hideEvent(ev);
 }
