@@ -246,6 +246,11 @@ bool TrendCache::unregisterTrendRecorder(void *recordObj)
     return false;
 }
 
+void TrendCache::clearTrendCache()
+{
+    _trendCacheMap.clear();
+}
+
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
