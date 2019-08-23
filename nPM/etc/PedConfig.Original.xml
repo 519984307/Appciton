@@ -140,7 +140,7 @@
     <RESP>
         <RESPSweepMode>0</RESPSweepMode>
         <AutoActivation>1</AutoActivation>
-        <ApneaDelay>1</ApneaDelay>
+        <ApneaDelay>0</ApneaDelay>
         <BreathLead>2</BreathLead>
         <Gain>2</Gain>
         <SweepSpeed>2</SweepSpeed>

@@ -258,7 +258,7 @@ void RESPMenuContent::onComboBoxIndexChanged(int index)
             currentConfig.setNumValue("RESP|SweepSpeed", index);
             break;
         case RESPMenuContentPrivate::ITEM_CBO_APNEA_DELAY:
-            currentConfig.setNumValue("RESP|ApneaTime", index);
+            currentConfig.setNumValue("RESP|ApneaDelay", index);
             respParam.setApneaTime(static_cast<ApneaAlarmTime>(index));
             break;
         case RESPMenuContentPrivate::ITEM_CBO_RR_SOURCE:
