@@ -824,6 +824,7 @@
 	    <AlarmStatus>1</AlarmStatus>
 	</Alarm>
         <PatientInfo>
+	    <PatientPacer>0</PatientPacer>
        	    <Sex>0</Sex>
 	    <BornDate></BornDate>
             <Blood>0</Blood>
