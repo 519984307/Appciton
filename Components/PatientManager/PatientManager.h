@@ -47,7 +47,7 @@ public:
      * @brief setPacermaker 设置起搏。
      * @param type
      */
-    void setPacermaker(PatientPacer type);
+    void setPacermaker(PatientPacer pacer);
 
     /**
      * @brief getPacermaker 获取起博
