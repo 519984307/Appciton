@@ -104,8 +104,8 @@ static void _task50MSec(void)
         return;
     }
 
-    // 数据收集
-    trendCache.collectTrendData(t);
+    // 数据收集  收集当前时刻趋势数据
+    trendCache.collectTrendData(curT);
 
     /*
      * The paramDataStorageManager should run as follow order

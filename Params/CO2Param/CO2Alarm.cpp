@@ -335,7 +335,8 @@ const char *CO2OneShotAlarm::toString(int id)
  *************************************************************************************************/
 bool CO2OneShotAlarm::isAlarmEnable(int id)
 {
-    if (id == CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS)
+    if (id == CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS ||
+            id == CO2_ONESHOT_ALARM_STANDBY)
     {
         return true;
     }
@@ -357,6 +358,11 @@ bool CO2OneShotAlarm::isAlarmed(int id)
     if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
     {
         return false;
+    }
+
+    if (id == CO2_ONESHOT_ALARM_STANDBY)
+    {
+        return AlarmOneShotIFace::isAlarmed(id);
     }
 
     if (id != CO2_ONESHOT_ALARM_APNEA)

@@ -84,6 +84,8 @@ public:
     /* unregister a recorder, use the record object to find the recorder, return true if the recorder is remove */
     bool unregisterTrendRecorder(void *recordObj);
 
+    void clearTrendCache();
+
 private:
     TrendCache();
 

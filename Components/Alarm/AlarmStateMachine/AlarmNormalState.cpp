@@ -63,6 +63,7 @@ void AlarmNormalState::handAlarmEvent(AlarmStateEvent event, unsigned char */*da
     {
         //删除栓锁报警
         alarmIndicator->delLatchPhyAlarm();
+        alarmIndicator->clearAlarmPause();
         alarmIndicator->phyAlarmResetStatusHandle();
         alarmIndicator->techAlarmResetStatusHandle();
         if (alarmIndicator->getAlarmCount())

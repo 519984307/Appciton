@@ -37,7 +37,8 @@ public:
           oxyCRGRrHrTrend(NULL),
           respMonitoring(false),
           connectedProvider(false),
-          leadOff(false)
+          leadOff(false),
+          isRRInaccurate(false)
     {
     }
     /**
@@ -53,6 +54,7 @@ public:
     bool respMonitoring;
     bool connectedProvider;
     bool leadOff;
+    bool isRRInaccurate;
 };
 /**************************************************************************************************
  * 设置波形速度。
@@ -413,7 +415,7 @@ void RESPParam::setApneaTime(ApneaAlarmTime t)
 ApneaAlarmTime RESPParam::getApneaTime(void)
 {
     int t = APNEA_ALARM_TIME_20_SEC;
-    currentConfig.getNumValue("Alarm|ApneaTime", t);
+    currentConfig.getNumValue("RESP|ApneaDelay", t);
 
     return (ApneaAlarmTime)t;
 }
@@ -549,6 +551,20 @@ void RESPParam::enableRespCalc(bool enable)
     {
         d_ptr->provider->enableRESPCalc(enable);
     }
+}
+
+void RESPParam::rrInaccurate(bool isInaccurate)
+{
+    if (isInaccurate == d_ptr->isRRInaccurate)
+    {
+        return;
+    }
+    d_ptr->isRRInaccurate = isInaccurate;
+}
+
+bool RESPParam::isRRInaccurate()
+{
+    return d_ptr->isRRInaccurate;
 }
 
 void RESPParam::onPaletteChanged(ParamID id)

@@ -284,8 +284,6 @@ void EventWindow::showEvent(QShowEvent *ev)
         d_ptr->printBtn->setEnabled(false);
         d_ptr->listPrintBtn->setEnabled(false);
     }
-
-    d_ptr->updateLevelStatus();
 }
 
 void EventWindow::timerEvent(QTimerEvent *ev)

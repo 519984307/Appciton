@@ -342,6 +342,7 @@ RESPDupParam::RESPDupParam()
       _isAutoBrSource(true),
       _manualBrSourceType(BR_SOURCE_ECG)
 {
+    updateRRSource();
 }
 
 void RESPDupParam::handleBRRRValue()

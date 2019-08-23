@@ -154,7 +154,6 @@ void RESPMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox;
     comboBox->addItems(QStringList()
-                       << trs(RESPSymbol::convert(RESP_APNEA_TIME_OFF))
                        << trs(RESPSymbol::convert(RESP_APNEA_TIME_20_SEC))
                        << trs(RESPSymbol::convert(RESP_APNEA_TIME_25_SEC))
                        << trs(RESPSymbol::convert(RESP_APNEA_TIME_30_SEC))
@@ -259,9 +258,8 @@ void RESPMenuContent::onComboBoxIndexChanged(int index)
             currentConfig.setNumValue("RESP|SweepSpeed", index);
             break;
         case RESPMenuContentPrivate::ITEM_CBO_APNEA_DELAY:
-            currentConfig.setNumValue("Alarm|ApneaTime", index);
-            respParam.setApneaTime((ApneaAlarmTime)index);
-            co2Param.setApneaTime((ApneaAlarmTime)index);
+            currentConfig.setNumValue("RESP|ApneaDelay", index);
+            respParam.setApneaTime(static_cast<ApneaAlarmTime>(index));
             break;
         case RESPMenuContentPrivate::ITEM_CBO_RR_SOURCE:
             respDupParam.setRRSource(static_cast<BRRRSourceType>(index));

@@ -424,6 +424,12 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         break;
     }
 
+    case TE3_NOTIFY_RESP_INACCURATE:
+    {
+        respParam.rrInaccurate(static_cast<bool>(data[1]));
+        break;
+    }
+
     case TE3_NOTIFY_SYSTEM_STARTED:
     {
         ErrorLogItem *item = new CriticalFaultLogItem();

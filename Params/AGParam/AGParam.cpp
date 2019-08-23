@@ -424,11 +424,6 @@ ApneaAlarmTime AGParam::getApneaTime()
  *************************************************************************************************/
 void AGParam::verifyApneanTime(ApneaAlarmTime time)
 {
-    if (getApneaTime() == APNEA_ALARM_TIME_OFF)
-    {
-        return;
-    }
-
     if (getApneaTime() != time)
     {
         if (_provider != NULL)

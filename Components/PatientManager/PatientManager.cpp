@@ -156,9 +156,10 @@ QString PatientManager::getTypeStr(void)
 /**************************************************************************************************
  * 功能： 设置起搏类型。
  *************************************************************************************************/
-void PatientManager::setPacermaker(PatientPacer type)
+void PatientManager::setPacermaker(PatientPacer pacer)
 {
-    d_ptr->patientInfo.pacer = type;
+    d_ptr->patientInfo.pacer = pacer;
+    systemConfig.setNumValue("PrimaryCfg|PatientInfo|PatientPacer", static_cast<int>(pacer));
 }
 
 /**************************************************************************************************
@@ -551,7 +552,7 @@ void PatientManagerPrivate::loadPatientInfo(PatientInfo &info)
     systemConfig.getNumValue("General|PatientType", numValue);
     info.type = (PatientType)numValue;
 
-    systemConfig.getNumValue("General|PatientPacer", numValue);
+    systemConfig.getNumValue("PrimaryCfg|PatientInfo|PatientPacer", numValue);
     info.pacer = (PatientPacer)numValue;
 
     systemConfig.getNumValue("PrimaryCfg|PatientInfo|Sex", numValue);
