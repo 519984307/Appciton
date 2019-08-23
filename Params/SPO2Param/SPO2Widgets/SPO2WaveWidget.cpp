@@ -102,8 +102,12 @@ void SPO2WaveWidget::setNotify(bool enable, QString str)
     }
     else
     {
-        _notify->setVisible(false);
-        _notify->setText(" ");
+        if (_notify->text() == str || str == " ")
+        {
+            // 清空和当前字符串相同的，或者字符为空的情况
+            _notify->setVisible(false);
+            _notify->setText(" ");
+        }
     }
 }
 
