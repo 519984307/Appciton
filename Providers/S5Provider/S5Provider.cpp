@@ -412,6 +412,11 @@ bool S5Provider::isStatus(unsigned char *packet)
         }
     }
 
+    if (_isCableOff && _isFingerOff)
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_FINGER_OFF, false);
+    }
+
     if (_isCableOff || _isFingerOff)
     {
         spo2Param.setValidStatus(false);
