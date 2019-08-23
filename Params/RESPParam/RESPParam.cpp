@@ -415,7 +415,7 @@ void RESPParam::setApneaTime(ApneaAlarmTime t)
 ApneaAlarmTime RESPParam::getApneaTime(void)
 {
     int t = APNEA_ALARM_TIME_20_SEC;
-    currentConfig.getNumValue("RESP|ApneaTime", t);
+    currentConfig.getNumValue("RESP|ApneaDelay", t);
 
     return (ApneaAlarmTime)t;
 }
