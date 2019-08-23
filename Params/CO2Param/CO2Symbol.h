@@ -30,7 +30,7 @@ public:
     {
         static const char *symbol[CO2_APNEA_TIME_NR] =
         {
-            "Off", "_20sec", "_25sec", "_30sec",
+            "_20sec", "_25sec", "_30sec",
             "_35sec", "_40sec", "_45sec",
             "_50sec", "_55sec", "_60sec"
         };
@@ -185,6 +185,7 @@ public:
             "CO2IrO2Delay",
 
             "CO2ZeroingCompleted",
+            "CO2Standby"
         };
         return symbol[index];
     }

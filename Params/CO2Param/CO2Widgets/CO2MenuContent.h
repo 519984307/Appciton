@@ -59,6 +59,12 @@ private slots:
      */
     void n2oCompenSpinboxReleased(int value, int scale);
 
+    /**
+     * @brief disableZero 失能CO2校零
+     * @param sta
+     */
+    void disableZero(bool sta);
+
 private:
     CO2MenuContentPrivate * const d_ptr;
 };
