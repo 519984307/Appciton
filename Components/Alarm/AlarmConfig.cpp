@@ -262,12 +262,12 @@ void AlarmConfig::setLimitAlarmConfig(SubParamID subParamId, UnitType unit, cons
             currentConfig.getNumValue(prefix + "|Scale", mul);
             if (curConfig.highLimit != config.highLimit)
             {                              
-                val = Unit::convert(*it, unit, config.highLimit *1.0 / mul).toFloat();
+                val = Unit::convert(*it, unit, config.highLimit *1.0 / config.scale).toFloat();
                 currentConfig.setNumValue(prefix + "|High", static_cast<int>(val * mul));
             }
             if (curConfig.lowLimit != config.lowLimit)
             {
-                val = Unit::convert(*it, unit, config.lowLimit *1.0 / mul).toFloat();
+                val = Unit::convert(*it, unit, config.lowLimit *1.0 / config.scale).toFloat();
                 currentConfig.setNumValue(prefix + "|Low", static_cast<int>(val * mul));
             }
         }
