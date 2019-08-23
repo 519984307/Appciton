@@ -52,7 +52,7 @@ enum RESPSweepSpeed
  *************************************************************************************************/
 enum RESPApneaTime
 {
-    RESP_APNEA_TIME_20_SEC = 1,
+    RESP_APNEA_TIME_20_SEC,
     RESP_APNEA_TIME_25_SEC,
     RESP_APNEA_TIME_30_SEC,
     RESP_APNEA_TIME_35_SEC,

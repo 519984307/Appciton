@@ -61,7 +61,7 @@ void RESPMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_SWEEP_SPEED]->setCurrentIndex(respParam.getSweepSpeed());
 
     // apnea delay
-    combos[ITEM_CBO_APNEA_DELAY]->setCurrentIndex(respParam.getApneaTime() - RESP_APNEA_TIME_20_SEC);
+    combos[ITEM_CBO_APNEA_DELAY]->setCurrentIndex(respParam.getApneaTime());
 
     // rr source
     combos[ITEM_CBO_RR_SOURCE]->clear();
@@ -258,7 +258,6 @@ void RESPMenuContent::onComboBoxIndexChanged(int index)
             currentConfig.setNumValue("RESP|SweepSpeed", index);
             break;
         case RESPMenuContentPrivate::ITEM_CBO_APNEA_DELAY:
-            index = index + RESP_APNEA_TIME_20_SEC;
             currentConfig.setNumValue("RESP|ApneaTime", index);
             respParam.setApneaTime(static_cast<ApneaAlarmTime>(index));
             break;
