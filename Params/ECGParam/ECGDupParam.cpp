@@ -131,6 +131,12 @@ void ECGDupParam::setTrendWidget(ECGTrendWidget *trendWidget)
 
 void ECGDupParam::updatePR(short pr, PRSourceType type, bool isUpdatePr)
 {
+    // PR为负数时,置为无效值
+    if (pr < 0)
+    {
+        pr = InvData();
+    }
+
     if (isUpdatePr)
     {
         if (type == PR_SOURCE_SPO2)
