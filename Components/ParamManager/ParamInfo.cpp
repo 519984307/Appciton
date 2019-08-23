@@ -757,9 +757,12 @@ UnitType ParamInfo::getUnitOfSubParam(SubParamID id, UnitType &t0, UnitType &t1)
 
     case SUB_PARAM_T1:
     case SUB_PARAM_T2:
-    case SUB_PARAM_TD:
         t0 = UNIT_TF;
         return UNIT_TC;
+
+    case SUB_PARAM_TD:
+        t0 = UNIT_TDF;
+        return UNIT_TDC;
 
     default:
         break;
