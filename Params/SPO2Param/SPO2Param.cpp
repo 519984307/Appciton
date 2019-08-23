@@ -361,6 +361,7 @@ void SPO2Param::setSPO2(short spo2Value)
     {
         return;
     }
+    _isForceUpdating = false;
     _spo2Value = spo2Value;
 
 #ifdef ENABLE_O2_APNEASTIMULATION
@@ -915,10 +916,6 @@ void SPO2Param::setPerfusionStatus(bool isLow)
     {
         _isForceUpdating = true;
         _isLowPerfusion = isLow;
-    }
-    else
-    {
-        _isForceUpdating = false;
     }
 }
 
