@@ -9,9 +9,9 @@ iDMBoard,iDMBoard,iDMBoard
 CompileTime,编译时间,Compile Time
 ChannelPressureEntitle1,压力标名1,Pressure Entitle1
 ChannelPressureEntitle2,压力标名2,Pressure Entitle2
-Adult,成人,Adu
-Pediatric,小儿,Ped
-Neonate,新生儿,Neo
+Adult,成人,Adult
+Pediatric,小儿,Pediatric
+Neonate,新生儿,Neonatal
 AlarmLimit,报警限,Alarm Limit
 Other,其它,Other
 Notch,陷波,Notch
@@ -1321,7 +1321,7 @@ MACAddress,硬件地址,MAC Address
 ElectronicSerialNumber,电子序列号,Electronic Serial Number
 SetElectronicSerialNumber,设置电子序列号,Set Electronic Serial Number
 MonitorInfoMenuDesc,监护仪信息菜单设置,Monitor Info
-StopNeoNIBPMeasure,禁止NIBP新生儿测量,Close Neo NIBP Measurement
+StopNeoNIBPMeasure,禁止NIBP新生儿测量,Close Neonatal NIBP Measurement
 NIBPMaintainMenu,NIBP维护,NIBP Maintain
 NIBPMaintain,NIBP维护,NIBP Maintain
 NIBPMaintainMenuDesc,NIBP维护,NIBP Maintain
@@ -1467,9 +1467,9 @@ ConfigManagerDesc,配置管理,Config Manage
 ConfigManager,配置管理,Config Manage
 DefaultConfig,默认配置,Default Config
 DefaultConfigDesc,默认配置,Default Config
-AdultDefaultConfig,成人默认配置,Adu Default Config
-PedDefaultConfig,小儿默认配置,Ped Default Config
-NeoDefaultConfig,新生儿默认配置,Neo Default Config
+AdultDefaultConfig,成人默认配置,Adult Default Config
+PedDefaultConfig,小儿默认配置,Pediatric Default Config
+NeoDefaultConfig,新生儿默认配置,Neonatal Default Config
 FactoryConfig,工厂配置,Factory Config
 CurrentConfig,当前配置,Current Config
 ConfigManagerment,配置管理,Config Manage
