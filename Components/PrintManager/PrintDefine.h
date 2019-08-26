@@ -150,7 +150,7 @@ public:
     {
         static const QString symbol[PRINT_TIME_NR] =
         {
-            "Continous", "8s"
+            "Continous", "_8sec"
         };
 
         return symbol[index];
