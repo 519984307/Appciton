@@ -156,32 +156,37 @@ void FactoryVersionInfo::layoutExec()
         d_ptr->labs.insert(FactoryVersionInfoPrivate
                            ::ITEM_LAB_NIBP_VERSION, labelRight);
 
-        labelLeft = new QLabel(trs("NIBPBootloader") + "    ");
-        layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
+        QString str;
+        machineConfig.getStrValue("NIBP", str);
+        if (str == "BLM_N5")
+        {
+            labelLeft = new QLabel(trs("NIBPBootloader") + "    ");
+            layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
 
-        labelRight = new QLabel;
-        layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
-        d_ptr->labs.insert(FactoryVersionInfoPrivate
-                           ::ITEM_LAB_NIBP_BOOTLOADER, labelRight);
+            labelRight = new QLabel;
+            layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
+            d_ptr->labs.insert(FactoryVersionInfoPrivate
+                               ::ITEM_LAB_NIBP_BOOTLOADER, labelRight);
 
-        // nibp 从片
-        labelLeft = new QLabel(trs("NIBPSlaveVersion") + "    ");
-        layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
-        d_ptr->n5SlaveLab = labelLeft;
+            // nibp 从片
+            labelLeft = new QLabel(trs("NIBPSlaveVersion") + "    ");
+            layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
+            d_ptr->n5SlaveLab = labelLeft;
 
-        labelRight = new QLabel;
-        layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
-        d_ptr->labs.insert(FactoryVersionInfoPrivate
-                           ::ITEM_LAB_NIBP_SLAVE_VERSION, labelRight);
+            labelRight = new QLabel;
+            layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
+            d_ptr->labs.insert(FactoryVersionInfoPrivate
+                               ::ITEM_LAB_NIBP_SLAVE_VERSION, labelRight);
 
-        labelLeft = new QLabel(trs("NIBPSlaveBootloader") + "    ");
-        layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
-        d_ptr->n5SlaveBootloaderLab = labelLeft;
+            labelLeft = new QLabel(trs("NIBPSlaveBootloader") + "    ");
+            layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
+            d_ptr->n5SlaveBootloaderLab = labelLeft;
 
-        labelRight = new QLabel;
-        layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
-        d_ptr->labs.insert(FactoryVersionInfoPrivate
-                           ::ITEM_LAB_NIBP_SLAVE_BOOTLOADER, labelRight);
+            labelRight = new QLabel;
+            layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
+            d_ptr->labs.insert(FactoryVersionInfoPrivate
+                               ::ITEM_LAB_NIBP_SLAVE_BOOTLOADER, labelRight);
+        }
     }
 
     if (systemManager.isSupport(CONFIG_SPO2))
@@ -194,13 +199,18 @@ void FactoryVersionInfo::layoutExec()
         d_ptr->labs.insert(FactoryVersionInfoPrivate
                            ::ITEM_LAB_SPO2_VERSION, labelRight);
 
-        labelLeft = new QLabel(trs("SPO2Bootloader") + "    ");
-        layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
+        QString str;
+        machineConfig.getStrValue("SPO2", str);
+        if (str == "BLM_S5")
+        {
+            labelLeft = new QLabel(trs("SPO2Bootloader") + "    ");
+            layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
 
-        labelRight = new QLabel;
-        layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
-        d_ptr->labs.insert(FactoryVersionInfoPrivate
-                           ::ITEM_LAB_SPO2_BOOTLOADER, labelRight);
+            labelRight = new QLabel;
+            layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
+            d_ptr->labs.insert(FactoryVersionInfoPrivate
+                               ::ITEM_LAB_SPO2_BOOTLOADER, labelRight);
+        }
     }
 
     if (systemManager.isSupport(CONFIG_TEMP))
@@ -442,19 +452,13 @@ void FactoryVersionInfoPrivate::loadOptions()
 
     // screen size
     str.clear();
-    machineConfig.getStrValue("ScreenSize", str);
+    str = QString::number(systemManager.getScreenSize(), 'f', 1);
     str += " ";
     str += trs("Inch");
     labs[ITEM_LAB_SCREEN_INCH]->setText(str);
 
     // screen resolution
     str.clear();
-    QString width;
-    machineConfig.getStrValue("ScreenWidth", width);
-    str += width;
-    str += "x";
-    QString height;
-    machineConfig.getStrValue("ScreenHeight", height);
-    str += height;
+    str = systemManager.getScreenResolution();
     labs[ITEM_LAB_SCREEN_RESOLUTION]->setText(str);
 }

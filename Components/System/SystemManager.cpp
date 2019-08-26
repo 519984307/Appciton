@@ -223,6 +223,28 @@ float SystemManager::getScreenPixelHPitch(void)
     return pixelPitch;
 }
 
+float SystemManager::getScreenSize()
+{
+    float screenSize = 10.1;
+    int screenInfoIndex = 0;
+    machineConfig.getNumValue("ScreenInfoEnable", screenInfoIndex);
+    QStringList screenInfoList = machineConfig.getChildNodeNameList("ScreenInfo");
+    QString screenInfoPath = QString("ScreenInfo|%1|ScreenSize").arg(screenInfoList.at(screenInfoIndex));
+    machineConfig.getNumValue(screenInfoPath, screenSize);
+    return screenSize;
+}
+
+QString SystemManager::getScreenResolution()
+{
+    QString screenResolution;
+    int screenInfoIndex = 0;
+    machineConfig.getNumValue("ScreenInfoEnable", screenInfoIndex);
+    QStringList screenInfoList = machineConfig.getChildNodeNameList("ScreenInfo");
+    QString screenInfoPath = QString("ScreenInfo|%1|ScreenResolution").arg(screenInfoList.at(screenInfoIndex));
+    machineConfig.getStrValue(screenInfoPath, screenResolution);
+    return screenResolution;
+}
+
 /**************************************************************************************************
  * 功能： 查询是否支持该功能。
  *************************************************************************************************/

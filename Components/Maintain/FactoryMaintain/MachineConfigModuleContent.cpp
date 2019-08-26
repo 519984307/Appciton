@@ -663,7 +663,9 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
     {
         enableIndex = 0;
     }
-    else if (index > 0 && enablePath != "TouchEnable")
+    else if (index > 0 &&
+             enablePath != "TouchEnable" &&
+             enablePath != "ScreenInfoEnable")
     {
         enableIndex = 1;
     }
