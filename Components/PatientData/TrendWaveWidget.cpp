@@ -961,7 +961,7 @@ int TrendWaveWidget::_findIndex(unsigned timeStamp)
 {
     int lowPos = 0;
     int highPos = _trendDataPack.count() - 1;
-    int index = 0;
+    int index = InvData();
     while (lowPos <= highPos)
     {
         int midPos = (lowPos + highPos) / 2;
