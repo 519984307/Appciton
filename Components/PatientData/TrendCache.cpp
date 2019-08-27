@@ -38,6 +38,11 @@ void TrendCache::collectTrendData(unsigned t, bool overwrite)
         return;
     }
 
+    if (clearTrendCacheFlag)
+    {
+        clearTrendCacheFlag = false;
+        return;
+    }
     TrendCacheData data;
     QList<ParamID> paramIDList;
     paramManager.getParams(paramIDList);
@@ -248,6 +253,7 @@ bool TrendCache::unregisterTrendRecorder(void *recordObj)
 
 void TrendCache::clearTrendCache()
 {
+    clearTrendCacheFlag = true;
     _trendCacheMap.clear();
 }
 
@@ -261,6 +267,7 @@ TrendCache::TrendCache()
     _nibpMeasureSuccessTime = 0;
     systemConfig.getNumValue("PrimaryCfg|NIBP|MeasureTime", _nibpMeasureSuccessTime);
     _nibpMeasureTime = _nibpMeasureSuccessTime;
+    clearTrendCacheFlag = false;
 }
 
 /**************************************************************************************************

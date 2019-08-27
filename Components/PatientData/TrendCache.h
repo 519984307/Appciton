@@ -95,6 +95,7 @@ private:
     QList<TrendRecorder> _recorders;
     unsigned _nibpMeasureTime;
     unsigned _nibpMeasureSuccessTime;
+    bool clearTrendCacheFlag;
     QMutex _mutex;
 };
 
