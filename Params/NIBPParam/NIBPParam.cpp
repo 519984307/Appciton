@@ -52,7 +52,7 @@ void NIBPParam::_patientTypeChangeSlot(PatientType type)
     // 模式修改则停止当前的测量。
     handleNIBPEvent(NIBP_EVENT_TRIGGER_PATIENT_TYPE, NULL, 0);
 
-    machineConfig.getModuleInitialStatus("NIBPNEOMeasureEnable", reinterpret_cast<bool*>(&enable));
+    machineConfig.getModuleInitialStatus("NIBPNEOMeasureEnable", reinterpret_cast<bool *>(&enable));
 
     if (!_connectedFlag)
     {
@@ -98,7 +98,7 @@ void NIBPParam::initParam(void)
         return;
     }
     int enable = 0;
-    machineConfig.getModuleInitialStatus("NIBPNEOMeasureEnable", reinterpret_cast<bool*>(&enable));
+    machineConfig.getModuleInitialStatus("NIBPNEOMeasureEnable", reinterpret_cast<bool *>(&enable));
     if (patientManager.getType() == PATIENT_TYPE_NEO && enable)
     {
         _isNeoDisable = true;
@@ -162,17 +162,17 @@ void NIBPParam::handDemoTrendData(void)
 {
     if (autoCounter > counter || manualCounter >= firstCounter)
     {
-    _sysValue = qrand() % 30 + 90;
-    _diaValue = qrand() % 20 + 60;
-    _mapVaule = qrand() % 25 + 75;
-    _prVaule = qrand() % 10 + 60;
-    setResult(_sysValue, _diaValue, _mapVaule, _prVaule, NIBP_ONESHOT_NONE);
-    eventStorageManager.triggerNIBPMeasurementEvent(timeManager.getCurTime(), NIBP_ONESHOT_NONE);
+        _sysValue = qrand() % 30 + 90;
+        _diaValue = qrand() % 20 + 60;
+        _mapVaule = qrand() % 25 + 75;
+        _prVaule = qrand() % 10 + 60;
+        setResult(_sysValue, _diaValue, _mapVaule, _prVaule, NIBP_ONESHOT_NONE);
+        eventStorageManager.triggerNIBPMeasurementEvent(timeManager.getCurTime(), NIBP_ONESHOT_NONE);
 
-    setMeasureResult(NIBP_MEASURE_SUCCESS);
-    autoCounter = 0;
-    firstDemo = false;
-    manualCounter = 0;
+        setMeasureResult(NIBP_MEASURE_SUCCESS);
+        autoCounter = 0;
+        firstDemo = false;
+        manualCounter = 0;
     }
 
     if (firstDemo)
@@ -206,7 +206,7 @@ void NIBPParam::exitDemo()
 
     if (_oldState == NIBP_MONITOR_ERROR_STATE)
     {
-    // 恢复状态机为进入演示模式前的状态
+        // 恢复状态机为进入演示模式前的状态
         switchState(_oldState);
     }
     else
@@ -500,7 +500,7 @@ void NIBPParam::setResult(int16_t sys, int16_t dia, int16_t map, int16_t pr, NIB
     if (_sysValue != InvData() && _diaValue != InvData() && _mapVaule != InvData())
     {
         unsigned t = timeDate.time();
-        trendCache.collectTrendData(t);
+        trendCache.collectTrendData(t, true);
         trendCache.collectTrendAlarmStatus(t);
         // 测量出结果后，收集一次趋势数据
         trendDataStorageManager.storeData(t, TrendDataStorageManager::CollectStatusNIBP);
@@ -1345,15 +1345,15 @@ void NIBPParam::switchToAuto(void)
         {
             if (nibpParam.isFirstAuto())
             {
-            nibpParam.setModelText(trs("NIBPAUTO") + ":" +
-                                   trs(NIBPSymbol::convert((NIBPAutoInterval)nibpParam.getAutoInterval())));
+                nibpParam.setModelText(trs("NIBPAUTO") + ":" +
+                                       trs(NIBPSymbol::convert((NIBPAutoInterval)nibpParam.getAutoInterval())));
             }
             else
             {
                 nibpParam.setModelText(trs("NIBPManualStart") + ":" +
                                        trs(NIBPSymbol::convert((NIBPAutoInterval)nibpParam.getAutoInterval())));
             }
-        }       
+        }
     }
 }
 
@@ -1588,7 +1588,7 @@ NIBPParam &NIBPParam::getInstance()
     if (instance == NULL)
     {
         instance = new NIBPParam();
-        NIBPParamInterface* old = registerNIBPParam(instance);
+        NIBPParamInterface *old = registerNIBPParam(instance);
         if (old)
         {
             delete old;

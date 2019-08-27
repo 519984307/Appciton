@@ -420,10 +420,6 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
                             if (_trendGraphInfo.trendDataV3.count())
                             {
                                 _trendGraphInfo.trendDataV3.last().status = status;
-                                _trendGraphInfo.trendDataV3.last().data[0] = _trendDataPack.at(i)->subparamValue.value(subID, InvData());
-                                _trendGraphInfo.trendDataV3.last().data[1] = _trendDataPack.at(i)->subparamValue.value(SubParamID(subID + 1), InvData());
-                                _trendGraphInfo.trendDataV3.last().data[2] = _trendDataPack.at(i)->subparamValue.value(SubParamID(subID + 2), InvData());
-                                _trendGraphInfo.trendDataV3.last().isAlarm = _trendDataPack.at(i)->subparamAlarm.value(subID, false);
                             }
                         }
                     }
@@ -433,7 +429,9 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
             dataV3.data[0] = _trendDataPack.at(i)->subparamValue.value(subID, InvData());
             dataV3.data[1] = _trendDataPack.at(i)->subparamValue.value(SubParamID(subID + 1), InvData());
             dataV3.data[2] = _trendDataPack.at(i)->subparamValue.value(SubParamID(subID + 2), InvData());
-            dataV3.isAlarm = _trendDataPack.at(i)->subparamAlarm.value(subID, false);
+            dataV3.isAlarm = _trendDataPack.at(i)->subparamAlarm.value(subID, false) ||
+                    _trendDataPack.at(i)->subparamAlarm.value(SubParamID(subID + 1), false) ||
+                    _trendDataPack.at(i)->subparamAlarm.value(SubParamID(subID + 2), false);
             dataV3.timestamp = _trendDataPack.at(i)->time;
             dataV3.status = _trendDataPack.at(i)->status;
             alarm.isAlarmEvent = _trendDataPack.at(i)->alarmFlag;
