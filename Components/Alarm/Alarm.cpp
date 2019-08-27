@@ -1043,14 +1043,8 @@ Alarm::~Alarm()
     _alarmStatusList.clear();
 }
 
-QString Alarm::getPhyAlarmMessage(SubParamID subId, int alarmType, bool isOneShot)
+QString Alarm::getPhyAlarmMessage(ParamID paramId, SubParamID subId, int alarmType, bool isOneShot)
 {
-    ParamInfoInterface *paramInfo = ParamInfoInterface::getParamInfo();
-    ParamID paramId;
-    if (paramInfo)
-    {
-        paramId = paramInfo->getParamID(subId);
-    }
     switch (paramId)
     {
     case PARAM_ECG:

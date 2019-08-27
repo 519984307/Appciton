@@ -588,7 +588,7 @@ QString EventStorageItem::getEventTitle() const
             }
         }
         titleStr += " ";
-        titleStr += trs(Alarm::getPhyAlarmMessage(subparamID,
+        titleStr += trs(Alarm::getPhyAlarmMessage(paramId, subparamID,
                         d_ptr->almInfo->alarmType,
                         d_ptr->almInfo->alarmInfo & 0x01));
 

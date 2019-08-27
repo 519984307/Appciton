@@ -106,7 +106,7 @@ public:
                 }
             }
             titleStr += " ";
-            titleStr += trs(Alarm::getPhyAlarmMessage(subparamID,
+            titleStr += trs(Alarm::getPhyAlarmMessage(paramId, subparamID,
                             ctx.almSegment->alarmType,
                             ctx.almSegment->alarmInfo & 0x01));
 
