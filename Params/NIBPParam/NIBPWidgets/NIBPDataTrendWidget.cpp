@@ -136,9 +136,7 @@ void NIBPDataTrendWidget::showValue(void)
     QString textStr;
     QString timeStr;
     QString prStr;
-    bool sysAlarm = false;
-    bool diaAlarm = false;
-    bool mapAlarm = false;
+
     UnitType defUnitType;
     UnitType unit;
     NIBPLimitAlarm alarm;
@@ -162,7 +160,9 @@ void NIBPDataTrendWidget::showValue(void)
     {
         timeDate.getTime(t.key(), timeStr);
         _table->item(i, 0)->setText(timeStr);
-
+        bool sysAlarm = false;
+        bool diaAlarm = false;
+        bool mapAlarm = false;
         NIBPTrendCacheData providerBuff = t.value();
         if (providerBuff.sys.value == InvData() || providerBuff.dia.value == InvData() ||
                 providerBuff.map.value == InvData())
