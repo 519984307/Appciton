@@ -1665,7 +1665,8 @@ SaveCurrentSettingAs,保存设置,Save Setting
 SaveCurrentSettingAsDesc,保存设置,Save Setting
 reachedTheMaximunOfConfigurations,用户配置已满，继续保存之前请删除已有的用户配置,The maximum of user configurations is reached.Please delete existing user configurations first.
 SaveAsUserConfig,用户配置保存,Save As User Config
-SaveCurrentSettingAndConfigurationName,保存当前监护仪的设置为用户配置，您的配置命名为,Save the current settings as user configuration.Please name the configuration.
+SaveTheCurrentSetting,保存当前监护仪的设置为用户配置,Save the current settings as user configuration.
+NameTheConfigurationName,您的配置命名为,Please name the configuration.
 ConfigurationName,配置名称,Configuraiton Name
 HasExistConfig,该配置名称与监护仪上配置重名。请重新命名！,The configuration name is repeated with the configuration.Please rename!
 ECGFullScreen,ECG全屏,ECG Full Screen

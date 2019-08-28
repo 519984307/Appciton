@@ -48,8 +48,7 @@ SaveUserConfigWindow::SaveUserConfigWindow()
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->setMargin(0);
     QLabel *hint = new QLabel;
-    hint->setWordWrap(true);
-    hint->setText(trs("SaveCurrentSettingAndConfigurationName"));
+    hint->setText(QString("%1\n%2").arg(trs("SaveTheCurrentSetting")).arg(trs("NameTheConfigurationName")));
     vLayout->addWidget(hint);
 
     QLabel *cofNameLbl = new QLabel;
