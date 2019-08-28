@@ -592,6 +592,16 @@ void PatientManagerPrivate::handleDischarge()
         {
             dataStorageDirManager->cleanCurData();
         }
+        SystemManagerInterface *systemManagerInterface = SystemManagerInterface::getSystemManager();
+        if (systemManagerInterface && systemManagerInterface->isSupport(PARAM_NIBP))
+        {
+            NIBPParamInterface *nibpParam = NIBPParamInterface::getNIBPParam();
+            if (nibpParam)
+            {
+                nibpParam->clearResult();
+                nibpParam->clearTrendListData();
+            }
+        }
     }
 }
 
