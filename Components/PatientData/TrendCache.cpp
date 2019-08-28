@@ -38,9 +38,9 @@ void TrendCache::collectTrendData(unsigned t, bool overwrite)
         return;
     }
 
-    if (clearTrendCacheFlag)
+    if (_curTimeDataStopSaveFlag)
     {
-        clearTrendCacheFlag = false;
+        _curTimeDataStopSaveFlag = false;
         return;
     }
     TrendCacheData data;
@@ -253,8 +253,12 @@ bool TrendCache::unregisterTrendRecorder(void *recordObj)
 
 void TrendCache::clearTrendCache()
 {
-    clearTrendCacheFlag = true;
     _trendCacheMap.clear();
+}
+
+void TrendCache::setCurTimeStopDataSave(bool flag)
+{
+    _curTimeDataStopSaveFlag = flag;
 }
 
 /**************************************************************************************************
@@ -267,7 +271,7 @@ TrendCache::TrendCache()
     _nibpMeasureSuccessTime = 0;
     systemConfig.getNumValue("PrimaryCfg|NIBP|MeasureTime", _nibpMeasureSuccessTime);
     _nibpMeasureTime = _nibpMeasureSuccessTime;
-    clearTrendCacheFlag = false;
+    _curTimeDataStopSaveFlag = false;
 }
 
 /**************************************************************************************************

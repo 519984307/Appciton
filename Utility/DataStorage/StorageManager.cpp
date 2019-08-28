@@ -212,5 +212,6 @@ void StorageManager::onNewPatientHandle()
 {
     newPatientHandle();
     trendCache.clearTrendCache();
+    trendCache.setCurTimeStopDataSave(true);
 }
 

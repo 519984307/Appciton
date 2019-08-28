@@ -86,6 +86,8 @@ public:
 
     void clearTrendCache();
 
+    // 设置当前时刻是否收集趋势数据
+    void setCurTimeStopDataSave(bool flag);
 private:
     TrendCache();
 
@@ -95,7 +97,7 @@ private:
     QList<TrendRecorder> _recorders;
     unsigned _nibpMeasureTime;
     unsigned _nibpMeasureSuccessTime;
-    bool clearTrendCacheFlag;
+    bool _curTimeDataStopSaveFlag;
     QMutex _mutex;
 };
 
