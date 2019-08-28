@@ -329,15 +329,18 @@ void NIBPTrendWidgetPrivate::layoutExec(QHBoxLayout *layout)
     diaLayout->addWidget(diaLabel);
     diaLayout->addWidget(diaValue);
     mapLayout = new QVBoxLayout();
+    mapLayout->addStretch();
     mapLayout->addWidget(mapLabel);
+    mapLayout->addStretch();
     mapLayout->addWidget(mapValue);
+    mapLayout->addStretch();
     nibpValueLayout = new QVBoxLayout();
     nibpValueLayout->setSpacing(0);
     nibpValueLayout->addWidget(nibpLabel);
     nibpValueLayout->addWidget(nibpValue);
 
     QHBoxLayout *hLayout0 = new QHBoxLayout();
-    hLayout0->setMargin(margin);
+    hLayout0->setMargin(0);
     hLayout0->setSpacing(10);
     hLayout0->addStretch();
     hLayout0->addLayout(sysLayout);
@@ -385,7 +388,7 @@ void NIBPTrendWidgetPrivate::layoutExec(QHBoxLayout *layout)
 
     // 第二组。
     QVBoxLayout *vLayout5 = new QVBoxLayout();
-    vLayout5->setMargin(1);
+    vLayout5->setMargin(0);
     vLayout5->setSpacing(0);
     vLayout5->addWidget(stackedwidget, 1);
     vLayout5->addLayout(hLayout);
