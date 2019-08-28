@@ -98,8 +98,8 @@ public:
     virtual void setApneaTimeout(ApneaAlarmTime /*t*/) { }
     virtual void setN2OCompensation(int /*comp*/) { }
     virtual void setO2Compensation(int /*comp*/) { }
-    virtual int getCO2WaveformSample(void) { return 100; }
-    virtual int getCO2MaxWaveform(void) { return 200; }
+    virtual int getCO2WaveformSample(void) { return 20; }
+    virtual int getCO2MaxWaveform(void) { return 500; }
     virtual int getCO2BaseLine(void) {return 0;}
     virtual void setWorkMode(CO2WorkMode /*mode*/) {}
     virtual void enterUpgradeMode() {}
