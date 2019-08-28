@@ -22,6 +22,7 @@
 #include "MessageBox.h"
 #include "LanguageManager.h"
 #include <QProcess>
+#include "SystemBoardProvider.h"
 
 class UpgradeWindowPrivate
 {
@@ -195,7 +196,7 @@ void UpgradeWindow::hideEvent(QHideEvent *ev)
         QDialog::DialogCode statue = static_cast<QDialog::DialogCode>(box.exec());
         if (statue == QDialog::Accepted)
         {
-            QProcess::execute("reboot");
+            systemBoardProvider.requestReset();
         }
     }
     Dialog::hideEvent(ev);
