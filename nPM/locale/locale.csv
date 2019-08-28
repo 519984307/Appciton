@@ -495,11 +495,14 @@ NIBP_PR,脉率,PR
 ECG3-Lead,3导联,3-Lead
 ECG5-Lead,5导联,5-Lead
 ECG12-Lead,12导联,12-Lead
+_8sec, 8 秒, 8 sec
 _10sec,10 秒,10 sec
 _15sec,15 秒,15 sec
+_16sec,16 秒,16 sec
 _20sec,20 秒,20 sec
 _25sec,25 秒,25 sec
 _30sec,30 秒,30 sec
+_32sec,32 秒,32 sec
 _35sec,35 秒,35 sec
 _40sec,40 秒,40 sec
 _45sec,45 秒,45 sec
