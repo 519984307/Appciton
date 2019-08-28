@@ -104,8 +104,8 @@ static void _task50MSec(void)
         return;
     }
 
-    // 数据收集  收集当前时刻趋势数据
-    trendCache.collectTrendData(curT);
+    // 数据收集  收集数据时候应该标为上一秒，如果有新的事件触发会触发收集数据并定义为当前秒数
+    trendCache.collectTrendData(t);
 
     /*
      * The paramDataStorageManager should run as follow order
