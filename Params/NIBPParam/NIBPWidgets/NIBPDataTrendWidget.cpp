@@ -168,7 +168,7 @@ void NIBPDataTrendWidget::showValue(void)
                 providerBuff.map.value == InvData())
         {
             QString color = "<font style='color:rgb(%1,%2,%3);'>%4</font>";
-            textStr = QString("<center>%1/%2/%3</center>").arg(InvStr()).arg(InvStr()).arg(InvStr());
+            textStr = QString("<center>%1/%2 (%3)</center>").arg(InvStr()).arg(InvStr()).arg(InvStr());
             textStr = color.arg(textColor.red()).arg(textColor.green()).arg(textColor.blue()).arg(textStr);
             prStr = QString("<center>%1</center>").arg(InvStr());
             prStr = color.arg(textColor.red()).arg(textColor.green()).arg(textColor.blue()).arg(prStr);
@@ -179,7 +179,7 @@ void NIBPDataTrendWidget::showValue(void)
             QString boldwrap = "<b>%1</b>";
             QString colorwrap = "<font color=%1>%2</font>";
             QString color = "<font style='color:rgb(%1,%2,%3);'>%4</font>";
-            textStr = QString("<center>%1/%2/%3</center>");
+            textStr = QString("<center>%1/%2 (%3)</center>");
             prStr = QString("<center>%1</center>");
 
             defUnitType = paramInfo.getUnitOfSubParam(SUB_PARAM_NIBP_SYS);
