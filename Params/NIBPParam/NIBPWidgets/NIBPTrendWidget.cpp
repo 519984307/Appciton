@@ -329,7 +329,6 @@ void NIBPTrendWidgetPrivate::layoutExec(QHBoxLayout *layout)
     diaLayout->addWidget(diaLabel);
     diaLayout->addWidget(diaValue);
     mapLayout = new QVBoxLayout();
-    mapLayout->setSpacing(0);
     mapLayout->addWidget(mapLabel);
     mapLayout->addWidget(mapValue);
     nibpValueLayout = new QVBoxLayout();
