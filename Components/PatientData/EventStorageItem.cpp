@@ -138,6 +138,10 @@ void EventStorageItemPrivate::saveTrendData(unsigned timestamp, const TrendCache
     for (int i = 0; i < SUB_PARAM_NR; i++)
     {
         paramId = paramInfo.getParamID((SubParamID) i);
+        if (static_cast<SubParamID>(i) == SUB_PARAM_NIBP_PR)
+        {
+            paramId = PARAM_NIBP;
+        }
         if (-1 == idList.indexOf(paramId))
         {
             continue;

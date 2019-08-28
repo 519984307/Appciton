@@ -418,12 +418,13 @@ void NIBPDataTrendWidget::getTrendNIBPlist()
                 {
                 case SUB_PARAM_NIBP_SYS:
                     nibpTrendCacheData.sys.value = value;
-                    continue;
+                    break;
                 case SUB_PARAM_NIBP_DIA:
                     nibpTrendCacheData.dia.value = value;
-                    continue;
+                    break;
                 case SUB_PARAM_NIBP_MAP:
                     nibpTrendCacheData.map.value = value;
+                    break;
                 case SUB_PARAM_NIBP_PR:
                     nibpTrendCacheData.prvalue = value;
                     break;
