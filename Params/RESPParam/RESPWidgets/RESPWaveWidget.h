@@ -37,8 +37,6 @@ public:
      */
     void setWaveformMode(RESPSweepMode mode);
 
-    void updateWidgetConfig();
-
 protected:
     void resizeEvent(QResizeEvent *e);
     void focusInEvent(QFocusEvent */*e*/);

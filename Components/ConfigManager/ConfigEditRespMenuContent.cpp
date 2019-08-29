@@ -67,7 +67,7 @@ ConfigEditRespMenuContent::~ConfigEditRespMenuContent()
 void ConfigEditRespMenuContentPrivate::loadOptions()
 {
     int index = 0;
-    config->getNumValue("RESP|ApneaTime", index);
+    config->getNumValue("RESP|ApneaDelay", index);
     combos[ITEM_CBO_APNEA_DELAY]->setCurrentIndex(index);
     index = 0;
     config->getNumValue("RESP|BreathLead", index);
@@ -114,7 +114,7 @@ void ConfigEditRespMenuContent::onComboIndexChanged(int index)
     switch (indexType)
     {
     case ConfigEditRespMenuContentPrivate::ITEM_CBO_APNEA_DELAY:
-        d_ptr->config->setNumValue("RESP|ApneaTime", index);
+        d_ptr->config->setNumValue("RESP|ApneaDelay", index);
         break;
     case ConfigEditRespMenuContentPrivate::ITEM_CBO_BREATH_LEAD:
         d_ptr->config->setNumValue("RESP|BreathLead", index);

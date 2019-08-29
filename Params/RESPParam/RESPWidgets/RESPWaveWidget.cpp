@@ -230,12 +230,6 @@ void RESPWaveWidget::setWaveformMode(RESPSweepMode mode)
     }
 }
 
-void RESPWaveWidget::updateWidgetConfig()
-{
-    respDupParam.updateRRSource();  // 更新RR来源
-    respParam.setCalcLead(respParam.getCalcLead()); // 更新呼吸导联
-}
-
 /**************************************************************************************************
  * 加载配置。
  *************************************************************************************************/
@@ -263,6 +257,8 @@ void RESPWaveWidget::loadConfig()
     }
 
     setZoom(static_cast<int>(respParam.getZoom()));
+    respDupParam.updateRRSource();  // 更新RR来源
+    respParam.setCalcLead(respParam.getCalcLead()); // 更新呼吸导联
 }
 
 /**************************************************************************************************
