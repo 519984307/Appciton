@@ -234,17 +234,6 @@ float SystemManager::getScreenSize()
     return screenSize;
 }
 
-QString SystemManager::getScreenResolution()
-{
-    QString screenResolution;
-    int screenInfoIndex = 0;
-    machineConfig.getNumValue("ScreenInfoEnable", screenInfoIndex);
-    QStringList screenInfoList = machineConfig.getChildNodeNameList("ScreenInfo");
-    QString screenInfoPath = QString("ScreenInfo|%1|ScreenResolution").arg(screenInfoList.at(screenInfoIndex));
-    machineConfig.getStrValue(screenInfoPath, screenResolution);
-    return screenResolution;
-}
-
 /**************************************************************************************************
  * 功能： 查询是否支持该功能。
  *************************************************************************************************/

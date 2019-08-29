@@ -100,9 +100,6 @@ public:
     // 获取屏幕尺寸
     float getScreenSize(void);
 
-    // 获取屏幕分辨率
-    QString getScreenResolution(void);
-
     //  查询是否支持该功能。
     bool isSupport(ConfiguredFuncs funcs) const;
 

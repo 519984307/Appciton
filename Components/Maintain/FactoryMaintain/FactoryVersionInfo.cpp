@@ -20,6 +20,7 @@
 #include <QFile>
 #include <QTextStream>
 #include "FontManager.h"
+#include "WindowManager.h"
 
 #define HARDWARE_VERSION ("/sys/bus/iio/devices/iio:device0/in_voltage7_raw")
 #define HW_VER_TOTAL_NUMBERS (10)
@@ -459,6 +460,10 @@ void FactoryVersionInfoPrivate::loadOptions()
 
     // screen resolution
     str.clear();
-    str = systemManager.getScreenResolution();
+    QString width = windowManager.width();
+    str += width;
+    str += " x ";
+    QString height = windowManager.height();
+    str += height;
     labs[ITEM_LAB_SCREEN_RESOLUTION]->setText(str);
 }

@@ -23,19 +23,16 @@
 	    <ScreenPixelWPitch>0.158</ScreenPixelWPitch>
     	    <ScreenPixelHPitch>0.158</ScreenPixelHPitch>
     	    <ScreenSize>8.0</ScreenSize>
-	    <ScreenResolution>1024x768</ScreenResolution>
         </size8Inch>
 	<size10Inch>
 	    <ScreenPixelWPitch>0.1695</ScreenPixelWPitch>
     	    <ScreenPixelHPitch>0.1695</ScreenPixelHPitch>
     	    <ScreenSize>10.1</ScreenSize>
-	    <ScreenResolution>1280x800</ScreenResolution>
 	</size10Inch>
 	<size12Inch>
 	    <ScreenPixelWPitch>0.204</ScreenPixelWPitch>
     	    <ScreenPixelHPitch>0.204</ScreenPixelHPitch>
     	    <ScreenSize>12.1</ScreenSize>
-	    <ScreenResolution>1280x800</ScreenResolution>
 	</size12Inch>
     </ScreenInfo>
     <!--屏幕类型选择  0:商业屏,1:工业屏-->
