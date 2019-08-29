@@ -123,6 +123,6 @@ void SPMETTrendWidget::setTextSize()
 void SPMETTrendWidget::onRelease()
 {
     MeasureSettingWindow *p = MeasureSettingWindow::getInstance();
-    p->popup(trs("SPO2SeniorMenu"));
+    p->popup(trs("SPO2Menu"));
 }
 
