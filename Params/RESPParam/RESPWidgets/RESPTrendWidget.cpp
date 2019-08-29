@@ -197,7 +197,7 @@ RESPTrendWidget::RESPTrendWidget() : TrendWidget("RESPTrendWidget")
     mainLayout->addWidget(_rrValue);
     mainLayout->addWidget(_rrSource);
 
-    contentLayout->addLayout(mainLayout, 3);
+    contentLayout->addLayout(mainLayout, 7);
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));

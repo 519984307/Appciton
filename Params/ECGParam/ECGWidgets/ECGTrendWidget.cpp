@@ -232,7 +232,7 @@ ECGTrendWidget::ECGTrendWidget() : TrendWidget("ECGTrendWidget"),
     hlayout->addWidget(_hrValue);
     hlayout->addWidget(_hrBeatIcon);
 
-    contentLayout->addLayout(hlayout, 3);
+    contentLayout->addLayout(hlayout, 7);
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
