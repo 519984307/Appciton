@@ -67,6 +67,11 @@ void TrendCache::collectTrendData(unsigned t, bool overwrite)
     for (int i = 0; i < SUB_PARAM_NR; ++i)
     {
         paramID = paramInfo.getParamID((SubParamID)i);
+
+        if (static_cast<SubParamID>(i) == SUB_PARAM_NIBP_PR)  // 收集nibp PR趋势数据
+        {
+            paramID = PARAM_NIBP;
+        }
         if (-1 == paramIDList.indexOf(paramID))
         {
             continue;
