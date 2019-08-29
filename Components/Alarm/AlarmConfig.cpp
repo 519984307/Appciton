@@ -234,9 +234,7 @@ void AlarmConfig::setParamRulerConfig(SubParamID subParamID, UnitType unit, int 
 
 void AlarmConfig::setLimitAlarmConfig(SubParamID subParamId, UnitType unit, const LimitAlarmConfig &config)
 {
-    AlarmConfigKey key(subParamId, unit);
     LimitAlarmConfig curConfig = getLimitAlarmConfig(subParamId, unit);
-
     UnitType defaultUnit = UNIT_NONE;
     UnitType otherUnit1 = UNIT_NONE;
     UnitType otherUnit2 = UNIT_NONE;
@@ -264,16 +262,23 @@ void AlarmConfig::setLimitAlarmConfig(SubParamID subParamId, UnitType unit, cons
             {                              
                 val = Unit::convert(*it, unit, config.highLimit *1.0 / config.scale).toFloat();
                 currentConfig.setNumValue(prefix + "|High", static_cast<int>(val * mul));
+                AlarmConfigKey key(subParamId, *it);
+                LimitAlarmConfig changeConfig = getLimitAlarmConfig(subParamId, *it);
+                changeConfig.highLimit = val * mul;
+                _configCache.insert(key, changeConfig);
             }
             if (curConfig.lowLimit != config.lowLimit)
             {
                 val = Unit::convert(*it, unit, config.lowLimit *1.0 / config.scale).toFloat();
                 currentConfig.setNumValue(prefix + "|Low", static_cast<int>(val * mul));
+                AlarmConfigKey key(subParamId, *it);
+                LimitAlarmConfig changeConfig = getLimitAlarmConfig(subParamId, *it);
+                changeConfig.lowLimit = val * mul;
+                _configCache.insert(key, changeConfig);
             }
         }
     }
 
-    _configCache.insert(key, config);
 }
 
 QString AlarmConfig::getLowLimitStr(const LimitAlarmConfig &config)
