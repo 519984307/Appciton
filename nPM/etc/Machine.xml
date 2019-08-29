@@ -2,7 +2,7 @@
 <Machine>
     <MachineName>nPM</MachineName>
     <!--功能机型的使能配置-->
-    <ConfiguredFunctions>ECG12LEAD,SPO2,NIBP,RESP,CO2,AG,CO,IBP,TEMP,Printer,WIFI,Touch,O2,NIBPNEOMeasure,ScreenInfo</ConfiguredFunctions>
+    <ConfiguredFunctions>ECG12LEAD,SPO2,NIBP,RESP,CO2,AG,CO,IBP,TEMP,Printer,WIFI,Touch,NurseCall,O2,NIBPNEOMeasure,ScreenInfo</ConfiguredFunctions>
     <ECG12LEADEnable>1</ECG12LEADEnable>
     <SPO2Enable>1</SPO2Enable>
     <NIBPEnable>1</NIBPEnable>
@@ -15,6 +15,7 @@
     <PrinterEnable>1</PrinterEnable>
     <WIFIEnable>0</WIFIEnable>
     <TouchEnable>0</TouchEnable>
+    <NurseCallEnable>1</NurseCallEnable>
     <O2Enable>1</O2Enable>
     <ScreenInfoEnable>2</ScreenInfoEnable>
     <!--屏幕信息-->

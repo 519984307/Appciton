@@ -50,6 +50,9 @@ public:
 #ifdef Q_WS_QWS
         ITEM_CBO_TSCREEN,
 #endif
+#ifndef HIDE_NURSE_CALL_FUNCTION
+        ITEM_CBO_NURSECALL,
+#endif
         ITEM_CBO_BACKLIGHT,
         ITEM_CBO_NIBP_NEO_MEASURE,
         ITEM_CBO_SCREEN_INFO,
@@ -170,6 +173,13 @@ void MachineConfigModuleContentPrivte::loadOptions()
     machineConfig.getNumValue("TouchEnable", index);
     combos[ITEM_CBO_TSCREEN]->setCurrentIndex(index);
     itemChangedMap[ITEM_CBO_TSCREEN] = index;
+#endif
+
+#ifndef HIDE_NURSE_CALL_FUNCTION
+    index = 0;
+    machineConfig.getNumValue("NurseCallEnable", index);
+    combos[ITEM_CBO_NURSECALL]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_NURSECALL] = index;
 #endif
 
     index = 0;
@@ -478,6 +488,25 @@ void MachineConfigModuleContent::layoutExec()
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 #endif
 
+#ifndef HIDE_NURSE_CALL_FUNCTION
+    // nurse call
+    label = new QLabel(trs("NurseCall"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    combo = new ComboBox;
+    combo->blockSignals(true);
+    combo->addItems(QStringList()
+                    << trs("Off")
+                    << trs("On")
+                   );
+    combo->blockSignals(false);
+    layout->addWidget(combo, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(MachineConfigModuleContentPrivte
+                         ::ITEM_CBO_NURSECALL, combo);
+    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_NURSECALL;
+    combo->setProperty("Item", qVariantFromValue(itemId));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+#endif
+
     // Backlight Regulation
     label = new QLabel(trs("BacklightAdjustment"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -627,6 +656,11 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
             machineConfig.saveToDisk();
             systemManager.setTouchScreenOnOff(index);
             softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_SCREEN_BAN, index);
+            break;
+#endif
+#ifndef HIDE_NURSE_CALL_FUNCTION
+        case MachineConfigModuleContentPrivte::ITEM_CBO_NURSECALL:
+            enablePath = "NurseCallEnable";
             break;
 #endif
         case MachineConfigModuleContentPrivte::ITEM_CBO_BACKLIGHT:
