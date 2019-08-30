@@ -268,13 +268,15 @@ void OthersMaintainMenuContent::layoutExec()
     d_ptr->combos.insert(OthersMaintainMenuContentPrivate::ITEM_CBO_APNEA_AWAKE, comboBox);
 #endif
 #ifndef HIDE_NURSE_CALL_FUNCTION
-     d_ptr->nurseCallBtn = new Button(QString("%1%2").
-                                      arg(trs("NurseCallSetup")).
-                                      arg(" >>"));
-     d_ptr->nurseCallBtn->setButtonStyle(Button::ButtonTextOnly);
-     layout->addWidget(d_ptr->nurseCallBtn, d_ptr->combos.count() + 1, 1);
-     connect(d_ptr->nurseCallBtn, SIGNAL(released()), this, SLOT(onBtnReleased()));
-
+    if (systemManager.isSupport(CONFIG_NURSECALL))
+    {
+        d_ptr->nurseCallBtn = new Button(QString("%1%2").
+                                         arg(trs("NurseCallSetup")).
+                                         arg(" >>"));
+        d_ptr->nurseCallBtn->setButtonStyle(Button::ButtonTextOnly);
+        layout->addWidget(d_ptr->nurseCallBtn, d_ptr->combos.count() + 1, 1);
+        connect(d_ptr->nurseCallBtn, SIGNAL(released()), this, SLOT(onBtnReleased()));
+    }
 
 #endif
      layout->setRowStretch(d_ptr->combos.count() + 2, 1);

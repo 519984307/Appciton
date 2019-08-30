@@ -267,6 +267,9 @@ bool SystemManager::isSupport(ConfiguredFuncs funcs) const
     case CONFIG_TOUCH:
         path = "TouchEnable";
         break;
+    case CONFIG_NURSECALL:
+        path = "NurseCallEnable";
+        break;
     case CONFIG_O2:
         path = "O2Enable";
         break;

@@ -1349,6 +1349,7 @@ TouchScreenModule,触摸屏,Touch Screen
 ResistiveScreen,电阻屏,Resistive Screen
 CapacitiveScreen,电容屏,Capacitive Screen
 NurseCallingModule,护士呼叫设置模块,Nurse Calling Module
+NurseCall,护士呼叫,Nurse Call
 NurseCallingSettingWindow,护士呼叫设置窗口,Nurse Calling Setting Window
 Continuous,连续,Continuous
 Pulse,脉冲,Pulse
