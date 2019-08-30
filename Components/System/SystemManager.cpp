@@ -1027,7 +1027,7 @@ SystemManager::SystemManager() :  //申请一个动态的模块加载结果数�
 
 #ifdef Q_WS_QWS
     int val = 0;
-    machineConfig.getModuleInitialStatus("TouchEnable", reinterpret_cast<bool*>(&val));
+    machineConfig.getNumValue("TouchEnable", val);
     setTouchScreenOnOff(val);
 #endif
 
