@@ -146,7 +146,7 @@
         <SelectWave3>3</SelectWave3>
         <PrintTime>1</PrintTime> <!--0:continous 1:8s-->
 	<PrintSpeed>1</PrintSpeed>
-        <PhysiologicalAlarm>1</PhysiologicalAlarm>
+        <PhysiologicalAlarm>0</PhysiologicalAlarm>
         <CoderMarker>0</CoderMarker>
         <NIBPReading>0</NIBPReading>
 	<WaveFreeze>0</WaveFreeze>
