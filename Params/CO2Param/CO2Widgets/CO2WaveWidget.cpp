@@ -102,12 +102,6 @@ void CO2WaveWidget::updatePalette(const QPalette &pal)
     updateBackground();
 }
 
-void CO2WaveWidget::updateWidgetConfig()
-{
-    co2Param.updateDisplayZoom();   // 更新co2标尺
-    co2Param.updateFiCO2Display();  // 更新co2的fico2显示
-}
-
 /**************************************************************************************************
  * 窗口是否使能。
  *************************************************************************************************/
@@ -161,6 +155,8 @@ void CO2WaveWidget::loadConfig()
     palette.setColor(QPalette::WindowText, color);
     _ruler->setPalette(palette);
     updateBackground();
+    co2Param.updateDisplayZoom();   // 更新co2标尺
+    co2Param.updateFiCO2Display();  // 更新co2的fico2显示
 }
 
 /**************************************************************************************************

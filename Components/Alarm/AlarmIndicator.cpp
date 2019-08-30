@@ -96,7 +96,8 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
             AlarmInterface *alertor = AlarmInterface::getAlarm();
             if (alertor && alertor->getAlarmLightOnAlarmReset()
                     && node.alarmPriority != ALARM_PRIO_PROMPT
-                    && status != ALARM_STATUS_PAUSE)
+                    && status != ALARM_STATUS_PAUSE
+                    && !node.acknowledge)
             {
                 // 处理确认后且开启了报警复位灯，或者未确认的报警
                 if (lightPriority < node.alarmPriority)
@@ -131,6 +132,11 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
                 if (techSoundPriority < node.alarmPriority)
                 {
                     techSoundPriority = node.alarmPriority;
+                }
+
+                if (lightPriority < node.alarmPriority)
+                {
+                    lightPriority = node.alarmPriority;
                 }
             }
             else if (node.alarmPriority == ALARM_PRIO_PROMPT)

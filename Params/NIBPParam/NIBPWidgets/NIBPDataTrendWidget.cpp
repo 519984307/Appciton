@@ -136,9 +136,7 @@ void NIBPDataTrendWidget::showValue(void)
     QString textStr;
     QString timeStr;
     QString prStr;
-    bool sysAlarm = false;
-    bool diaAlarm = false;
-    bool mapAlarm = false;
+
     UnitType defUnitType;
     UnitType unit;
     NIBPLimitAlarm alarm;
@@ -162,13 +160,15 @@ void NIBPDataTrendWidget::showValue(void)
     {
         timeDate.getTime(t.key(), timeStr);
         _table->item(i, 0)->setText(timeStr);
-
+        bool sysAlarm = false;
+        bool diaAlarm = false;
+        bool mapAlarm = false;
         NIBPTrendCacheData providerBuff = t.value();
         if (providerBuff.sys.value == InvData() || providerBuff.dia.value == InvData() ||
                 providerBuff.map.value == InvData())
         {
             QString color = "<font style='color:rgb(%1,%2,%3);'>%4</font>";
-            textStr = QString("<center>%1/%2/%3</center>").arg(InvStr()).arg(InvStr()).arg(InvStr());
+            textStr = QString("<center>%1/%2 (%3)</center>").arg(InvStr()).arg(InvStr()).arg(InvStr());
             textStr = color.arg(textColor.red()).arg(textColor.green()).arg(textColor.blue()).arg(textStr);
             prStr = QString("<center>%1</center>").arg(InvStr());
             prStr = color.arg(textColor.red()).arg(textColor.green()).arg(textColor.blue()).arg(prStr);
@@ -179,7 +179,7 @@ void NIBPDataTrendWidget::showValue(void)
             QString boldwrap = "<b>%1</b>";
             QString colorwrap = "<font color=%1>%2</font>";
             QString color = "<font style='color:rgb(%1,%2,%3);'>%4</font>";
-            textStr = QString("<center>%1/%2/%3</center>");
+            textStr = QString("<center>%1/%2 (%3)</center>");
             prStr = QString("<center>%1</center>");
 
             defUnitType = paramInfo.getUnitOfSubParam(SUB_PARAM_NIBP_SYS);
@@ -418,12 +418,13 @@ void NIBPDataTrendWidget::getTrendNIBPlist()
                 {
                 case SUB_PARAM_NIBP_SYS:
                     nibpTrendCacheData.sys.value = value;
-                    continue;
+                    break;
                 case SUB_PARAM_NIBP_DIA:
                     nibpTrendCacheData.dia.value = value;
-                    continue;
+                    break;
                 case SUB_PARAM_NIBP_MAP:
                     nibpTrendCacheData.map.value = value;
+                    break;
                 case SUB_PARAM_NIBP_PR:
                     nibpTrendCacheData.prvalue = value;
                     break;

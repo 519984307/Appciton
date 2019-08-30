@@ -175,7 +175,7 @@ public:
     {
         static const char *symbol[ECG_NOTCH_NR] =
         {
-            "Off", "50Hz", "60Hz", "50&60Hz"
+            "Off", "50 Hz", "60 Hz", "50&60 Hz"
         };
 
         return symbol[index];

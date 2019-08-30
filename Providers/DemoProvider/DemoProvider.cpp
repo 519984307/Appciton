@@ -50,7 +50,7 @@ static DemoWaveDataDesc _demoWaveData[WAVE_NR] =
     {"ECG-V6",    WAVE_ECG_V6,    NULL, 250, 0},
     {"RESP",      WAVE_RESP,      NULL, 250, 0},
     {"SPO2",      WAVE_SPO2,      NULL, 250, 0},
-    {"CO2",       WAVE_CO2,       NULL, 100, 0},
+    {"CO2",       WAVE_CO2,       NULL, 20, 0},
     {"N2O",       WAVE_N2O,       NULL, 125, 0},
     {"AA1",       WAVE_AA1,       NULL, 125, 0},
     {"AA2",       WAVE_AA2,       NULL, 125, 0},

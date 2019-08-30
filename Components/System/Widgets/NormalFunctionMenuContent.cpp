@@ -164,9 +164,9 @@ void NormalFunctionMenuContent::layoutExec()
     label = new QLabel(trs("WaveLength"));
     layout->addWidget(label, row, 0);
     comboBox = new ComboBox();
-    comboBox->addItem("8s");
-    comboBox->addItem("16s");
-    comboBox->addItem("32s");
+    comboBox->addItem(trs("_8s"));
+    comboBox->addItem(trs("_16s"));
+    comboBox->addItem(trs("_32s"));
     itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_CBO_WAVE_LEN);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));

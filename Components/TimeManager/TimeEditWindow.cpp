@@ -360,6 +360,23 @@ void TimeEditWindow::onComboBoxIndexChanged(int index)
             break;
         }
     }
+
+    // 限制最小时间为1970-1-1 8:0:0
+    QDate curDate(d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_YEAR]->getValue(),
+               d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_MONTH]->getValue(),
+               d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getValue());
+    if (curDate == QDate(1970, 1, 1))
+    {
+        d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->setRange(8, 23);
+        if (d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->getValue() < 8)
+        {
+            d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->setValue(8);
+        }
+    }
+    else
+    {
+        d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->setRange(0, 23);
+    }
 }
 
 void TimeEditWindow::onSpinBoxValueChanged(int value, int scale)
@@ -428,7 +445,7 @@ void TimeEditWindow::onSpinBoxValueChanged(int value, int scale)
                    d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getValue());
         if (curDate == QDate(1970, 1, 1))
         {
-            d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->setRange(8, 24);
+            d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->setRange(8, 23);
             if (d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->getValue() < 8)
             {
                 d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->setValue(8);
@@ -436,7 +453,7 @@ void TimeEditWindow::onSpinBoxValueChanged(int value, int scale)
         }
         else
         {
-            d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->setRange(0, 24);
+            d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->setRange(0, 23);
         }
     }
 }
