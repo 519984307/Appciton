@@ -335,6 +335,23 @@ void SystemManager::setTouchScreenOnOff(int sta)
         QWSServer::instance()->closeMouse();
     }
 
+    if (isSupport(CONFIG_TOUCH))
+    {
+        runningStatus.setTouchStatus(d_ptr->isTouchScreenOn);
+    }
+    else
+    {
+        runningStatus.clearTouchStatus();
+    }
+
+    // 将触摸屏使能的状态保存在系统配置文件中
+    systemConfig.setNumValue("General|TouchScreen", static_cast<int>(d_ptr->isTouchScreenOn));
+
+    return;
+}
+
+void SystemManager::configTouchScreen(int sta)
+{
     QString fileName = "/etc/.using_capacitor_ts";
     QFile f(fileName);
     if (sta == TOUCHSCREEN_CAPACITIVE)
@@ -351,20 +368,6 @@ void SystemManager::setTouchScreenOnOff(int sta)
             f.remove();
         }
     }
-
-    if (isSupport(CONFIG_TOUCH))
-    {
-        runningStatus.setTouchStatus(d_ptr->isTouchScreenOn);
-    }
-    else
-    {
-        runningStatus.clearTouchStatus();
-    }
-
-    // 将触摸屏使能的状态保存在系统配置文件中
-    systemConfig.setNumValue("General|TouchScreen", static_cast<int>(d_ptr->isTouchScreenOn));
-
-    return;
 }
 #endif
 

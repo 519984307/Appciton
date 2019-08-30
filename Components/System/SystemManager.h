@@ -115,6 +115,12 @@ public:
      * @param sta
      */
     void setTouchScreenOnOff(int sta);
+
+    /**
+     * @brief configTouchScreen 配置触摸屏状态为电容,电阻或普通
+     * @param sta
+     */
+    void configTouchScreen(int sta);
 #endif
 
     // get the module config status
