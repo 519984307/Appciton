@@ -1032,7 +1032,6 @@ SystemManager::SystemManager() :  //申请一个动态的模块加载结果数�
     int val = 0;
     machineConfig.getNumValue("TouchEnable", val);
     setTouchScreenOnOff(val);
-    configTouchScreen(val);
 #endif
 
 #ifdef Q_WS_X11

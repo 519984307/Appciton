@@ -624,6 +624,7 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
             enablePath = "TouchEnable";
             machineConfig.saveToDisk();
             systemManager.setTouchScreenOnOff(index);
+            systemManager.configTouchScreen(index);
             softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_SCREEN_BAN, index);
             break;
 #endif
