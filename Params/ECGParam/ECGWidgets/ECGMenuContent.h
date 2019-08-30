@@ -24,6 +24,10 @@ protected:
     /* reimplment */
     void readyShow();
 
+    void hideEvent(QHideEvent *e);
+
+    void timerEvent(QTimerEvent *e);
+
     /* reimplement */
     void layoutExec();
 

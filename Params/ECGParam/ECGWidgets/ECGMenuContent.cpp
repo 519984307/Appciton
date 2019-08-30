@@ -56,7 +56,8 @@ public:
          arrhythmiaBtn(NULL),
     #endif
          ecg1Label(NULL),
-         ecg2Label(NULL)
+         ecg2Label(NULL),
+         leadModeTimerId(-1)
     {}
 
     // load settings
@@ -82,6 +83,7 @@ public:
     QLabel *ecg1Label;
     QLabel *ecg2Label;
     QList<int> ecgWaveIdList;
+    int leadModeTimerId;
 };
 
 void ECGMenuContentPrivate::loadOptions()
@@ -375,6 +377,26 @@ ECGMenuContent::~ECGMenuContent()
 void ECGMenuContent::readyShow()
 {
     d_ptr->loadOptions();
+    d_ptr->leadModeTimerId = startTimer(500);
+}
+
+void ECGMenuContent::hideEvent(QHideEvent *e)
+{
+    Q_UNUSED(e)
+    if (d_ptr->leadModeTimerId != -1)
+    {
+        killTimer(d_ptr->leadModeTimerId);
+        d_ptr->leadModeTimerId = -1;
+    }
+}
+
+void ECGMenuContent::timerEvent(QTimerEvent *e)
+{
+    if (d_ptr->leadModeTimerId == e->timerId())
+    {
+        ECGLeadMode leadMode = ecgParam.getLeadMode();
+        d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_LEAD_MODE]->setCurrentIndex(leadMode);
+    }
 }
 
 void ECGMenuContent::layoutExec()
