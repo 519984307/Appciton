@@ -61,7 +61,7 @@
         <FilterMode>1</FilterMode>
         <SelfLearn>0</SelfLearn>
         <ECG12LeadPacerMaker>0</ECG12LeadPacerMaker>	
-        <PacerMaker>0</PacerMaker>
+        <PacerMaker>1</PacerMaker>
         <EverLeadOn>0</EverLeadOn>
 	<FullScreenGain>3</FullScreenGain>
         <Gain>
@@ -147,7 +147,7 @@
     <RESP>
         <RESPSweepMode>0</RESPSweepMode>
         <AutoActivation>1</AutoActivation>
-        <ApneaDelay>1</ApneaDelay>
+        <ApneaDelay>0</ApneaDelay>
         <BreathLead>2</BreathLead>
         <Gain>2</Gain>
         <SweepSpeed>2</SweepSpeed>
@@ -602,7 +602,7 @@
 		</TB>
 		<ETCO2 Enable="1" Prio="1">
 		<percent>
-		    <Low Min="0" Max="249">10</Low>
+		    <Low Min="0" Max="249">20</Low>
 		    <High Min="1" Max="250">80</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>

@@ -37,7 +37,8 @@ public:
           oxyCRGRrHrTrend(NULL),
           respMonitoring(false),
           connectedProvider(false),
-          leadOff(false)
+          leadOff(false),
+          isRRInaccurate(false)
     {
     }
     /**
@@ -53,6 +54,7 @@ public:
     bool respMonitoring;
     bool connectedProvider;
     bool leadOff;
+    bool isRRInaccurate;
 };
 /**************************************************************************************************
  * 设置波形速度。
@@ -207,17 +209,12 @@ void RESPParam::setProvider(RESPProviderIFace *provider)
     }
 
     d_ptr->provider = provider;
-    d_ptr->waveWidget->setDataRate(d_ptr->provider->getRESPWaveformSample());
-    d_ptr->oxyCRGRESPWave->setDataRate(d_ptr->provider->getRESPWaveformSample());
 
     // 是否开启RESP功能
-    d_ptr->provider->enableRESPCalc(getRespMonitoring());
+    d_ptr->provider->enableRESPCalc(true);
 
-    // 设置呼吸导联
-    d_ptr->provider->setRESPCalcLead(getCalcLead());
-
-    // 设置窒息时间
-    d_ptr->provider->setApneaTime(getApneaTime());
+    d_ptr->waveWidget->setDataRate(d_ptr->provider->getRESPWaveformSample());
+    d_ptr->oxyCRGRESPWave->setDataRate(d_ptr->provider->getRESPWaveformSample());
 
     QString tile = d_ptr->waveWidget->getTitle();
     // 请求波形缓冲区。
@@ -336,7 +333,7 @@ void RESPParam::reset()
     }
 
     // 是否开启RESP功能
-    d_ptr->provider->enableRESPCalc(getRespMonitoring());
+    d_ptr->provider->enableRESPCalc(true);
 
     // 设置呼吸导联
     d_ptr->provider->setRESPCalcLead(getCalcLead());
@@ -418,7 +415,7 @@ void RESPParam::setApneaTime(ApneaAlarmTime t)
 ApneaAlarmTime RESPParam::getApneaTime(void)
 {
     int t = APNEA_ALARM_TIME_20_SEC;
-    currentConfig.getNumValue("Alarm|ApneaTime", t);
+    currentConfig.getNumValue("RESP|ApneaDelay", t);
 
     return (ApneaAlarmTime)t;
 }
@@ -554,6 +551,20 @@ void RESPParam::enableRespCalc(bool enable)
     {
         d_ptr->provider->enableRESPCalc(enable);
     }
+}
+
+void RESPParam::rrInaccurate(bool isInaccurate)
+{
+    if (isInaccurate == d_ptr->isRRInaccurate)
+    {
+        return;
+    }
+    d_ptr->isRRInaccurate = isInaccurate;
+}
+
+bool RESPParam::isRRInaccurate()
+{
+    return d_ptr->isRRInaccurate;
 }
 
 void RESPParam::onPaletteChanged(ParamID id)

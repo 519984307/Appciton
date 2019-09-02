@@ -348,7 +348,8 @@ void FactoryVersionInfoPrivate::loadOptions()
     {
         version = p->getVersionString();
         versionSuffix = version.section(' ', -1);
-        version.remove(versionSuffix);
+        int lastPos = version.lastIndexOf(versionSuffix);
+        version.remove(lastPos - 1, versionSuffix.size() + 1);
     }
     if (labs[ITEM_LAB_NIBP_VERSION])
     {

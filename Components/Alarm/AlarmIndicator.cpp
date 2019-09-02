@@ -84,7 +84,8 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
             if (0 == node.pauseTime
                     && status != ALARM_STATUS_AUDIO_OFF
                     && status != ALARM_STATUS_RESET
-                    && status != ALARM_STATUS_PAUSE)
+                    && status != ALARM_STATUS_PAUSE
+                    && !node.acknowledge)
             {
                 if (phySoundPriority < node.alarmPriority)
                 {
@@ -93,9 +94,10 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
             }
 
             AlarmInterface *alertor = AlarmInterface::getAlarm();
-            if ((!node.acknowledge || (alertor && alertor->getAlarmLightOnAlarmReset()))
+            if (alertor && alertor->getAlarmLightOnAlarmReset()
                     && node.alarmPriority != ALARM_PRIO_PROMPT
-                    && status != ALARM_STATUS_PAUSE)
+                    && status != ALARM_STATUS_PAUSE
+                    && !node.acknowledge)
             {
                 // 处理确认后且开启了报警复位灯，或者未确认的报警
                 if (lightPriority < node.alarmPriority)
@@ -117,6 +119,13 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
         else if (ALARM_TYPE_TECH == node.alarmType && status != ALARM_STATUS_PAUSE)
         {
             // 技术报警只处理没有被acknowledge和不处理报警暂停状态
+            if (node.latch)
+            {
+                if (lightPriority < node.alarmPriority)
+                {
+                    lightPriority = node.alarmPriority;
+                }
+            }
             if ((!node.acknowledge || node.latch)
                     && node.alarmPriority != ALARM_PRIO_PROMPT)
             {
@@ -1164,7 +1173,7 @@ bool AlarmIndicator::techAlarmResetStatusHandle()
     {
         if (it->alarmType == ALARM_TYPE_TECH && it->alarmPriority > ALARM_PRIO_PROMPT)
         {
-            // 只确认中级和高级的报警
+            // 只确认非提示等级的报警
             if (it->removeAfterLatch)
             {
                 it = list->erase(it);
@@ -1174,6 +1183,29 @@ bool AlarmIndicator::techAlarmResetStatusHandle()
             else if (!it->acknowledge)
             {
                 it->acknowledge = true;
+                it->removeLigthAfterConfirm = false;
+                ret = true;
+            }
+        }
+        ++it;
+    }
+    return ret;
+}
+
+bool AlarmIndicator::removeAllAlarmResetStatus()
+{
+    bool ret = false;
+    AlarmInfoList *list;
+    AlarmInfoList::iterator it;
+    list = &_alarmInfoDisplayPool;
+    it = list->begin();
+    while (it != list->end())
+    {
+        if (it->alarmPriority > ALARM_PRIO_PROMPT)
+        {
+            if (it->acknowledge)
+            {
+                it->acknowledge = false;
                 it->removeLigthAfterConfirm = false;
                 ret = true;
             }

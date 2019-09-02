@@ -118,6 +118,7 @@ private:
     bool _isFirstConnectCable;
     bool _isCableOff;
     bool _isFingerOff;
+    bool _isLedError;
     bool _isSeaching;
     S5GainError _gainError;
     bool _ledFault;

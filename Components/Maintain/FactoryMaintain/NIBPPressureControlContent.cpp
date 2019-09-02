@@ -344,8 +344,11 @@ void NIBPPressureControlContent::hideEvent(QHideEvent *e)
         else
         {
             nibpParam.provider().servicePressuredeflate();
-            nibpParam.switchState(NIBP_SERVICE_STANDBY_STATE);
             nibpParam.provider().servicePressurecontrol(false);
+            if (nibpParam.curMachineType() == NIBP_STATE_MACHINE_SERVICE)
+            {
+                nibpParam.switchState(NIBP_SERVICE_STANDBY_STATE);
+            }
         }
     }
     if (d_ptr->pressureTimerID != -1)
@@ -368,6 +371,7 @@ void NIBPPressureControlContent::inflateBtnReleased()
     if (d_ptr->moduleStr == "BLM_N5")
     {
         d_ptr->inflateTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
+        d_ptr->inflateTimeoutNum = 0;
         if (d_ptr->isInflate)
         {
             if (nibpParam.getUnit() != UNIT_MMHG)

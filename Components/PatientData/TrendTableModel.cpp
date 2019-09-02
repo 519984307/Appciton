@@ -877,12 +877,12 @@ void TrendTableModelPrivate::getTrendData()
                     || id == SUB_PARAM_NIBP_DIA
                     || id == SUB_PARAM_NIBP_MAP)
             {
-                if (!(status & TrendDataStorageManager::CollectStatusNIBP))
+                if (!(status & TrendDataStorageManager::CollectStatusNIBP)
+                        && !(status & TrendDataStorageManager::CollectStatusAlarm))
                 {
                     value = InvData();
                 }
             }
-
             pack->subparamValue[id] = value;
             pack->subparamAlarm[id] = dataSeg->values[j].alarmFlag;
         }
@@ -991,7 +991,7 @@ void TrendTableModelPrivate::loadTrendData()
         {
             TrendDataContent dContent;
             SubParamID id = displayList.at(j);
-
+            bool alarmed = pack->subparamAlarm.value(id, false);
             // 装载参数数据
             switch (id)
             {
@@ -1002,6 +1002,9 @@ void TrendTableModelPrivate::loadTrendData()
                 int sysData = pack->subparamValue.value(static_cast<SubParamID>(id), InvData());;
                 int diaData = pack->subparamValue.value(static_cast<SubParamID>(id + 1), InvData());
                 int mapData = pack->subparamValue.value(static_cast<SubParamID>(id + 2), InvData());
+                alarmed = pack->subparamAlarm.value(id, false) ||
+                        pack->subparamAlarm.value(static_cast<SubParamID>(id + 1), false) ||
+                        pack->subparamAlarm.value(static_cast<SubParamID>(id + 2), false);
                 QString sysStr = QString::number(sysData);
                 QString diaStr = QString::number(diaData);
                 QString mapStr = QString::number(mapData);
@@ -1099,9 +1102,9 @@ void TrendTableModelPrivate::loadTrendData()
             }
 
             // 装载参数背景颜色
-            bool alarmed = pack->subparamAlarm.value(id, false);
             AlarmPriority prio = alarmConfig.getLimitAlarmPriority(id);
-            if (alarmed == true)
+            int data = pack->subparamValue.value(static_cast<SubParamID>(id), InvData());;
+            if (alarmed == true && data != InvData())
             {
                 if (prio == ALARM_PRIO_HIGH)
                 {

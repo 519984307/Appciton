@@ -37,8 +37,6 @@ public:
      */
     void updatePalette(const QPalette &pal);
 
-    void updateWidgetConfig();
-
     // 构造与析构。
     CO2WaveWidget(const QString &waveName, const QString &title);
     ~CO2WaveWidget();

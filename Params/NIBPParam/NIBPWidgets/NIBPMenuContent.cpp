@@ -196,8 +196,10 @@ void NIBPMenuContent::layoutExec()
 
 void NIBPMenuContentPrivate::loadOptions()
 {
+    combos[ITEM_CBO_MEASURE_MODE]->blockSignals(true);
     int index = nibpParam.getSuperMeasurMode();
     combos[ITEM_CBO_MEASURE_MODE]->setCurrentIndex(index);
+    combos[ITEM_CBO_MEASURE_MODE]->blockSignals(false);
     // 时间
     combos[ITEM_CBO_AUTO_INTERVAL]->setCurrentIndex(nibpParam.getAutoInterval());
 

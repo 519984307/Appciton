@@ -217,7 +217,7 @@ public:
      * @param soundType sound type
      * @param specType specify wav file type
      */
-    void playSound(SoundManager::SoundType soundType, unsigned short specType = 0)
+    void playSound(SoundManager::SoundType soundType, unsigned short specType = 0, bool isForceUpdate = false)
     {
         WavFile *wav = wavFiles.value(key(soundType, specType));
         if (wav == NULL)
@@ -240,7 +240,7 @@ public:
 
         if (player->isPlaying())
         {
-            if (curSoundType > soundType)
+            if (curSoundType > soundType && !isForceUpdate)
             {
                 // or has high priority sound playing, don't play
                 return;
@@ -434,6 +434,15 @@ void SoundManager::updateAlarm(bool hasAlarm, AlarmPriority curHighestPriority)
     {
         d_ptr->almTimer->start(d_ptr->alarmInterval[curHighestPriority]);
         d_ptr->playSound(SOUND_TYPE_ALARM, curHighestPriority);
+    }
+    else
+    {
+        if (d_ptr->almTimer->interval() != d_ptr->alarmInterval[curHighestPriority])
+        {
+            d_ptr->almTimer->stop();
+            d_ptr->almTimer->start(d_ptr->alarmInterval[curHighestPriority]);
+            d_ptr->playSound(SOUND_TYPE_ALARM, curHighestPriority, true);
+        }
     }
 }
 

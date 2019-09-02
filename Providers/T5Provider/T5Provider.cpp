@@ -19,6 +19,9 @@
 #include "RawDataCollector.h"
 #include "IConfig.h"
 
+#define LOW_BORDER_VALUE 149
+#define HIGH_BORDER_VALUE 501
+
 enum TempErrorCode
 {
     ERRORCODE_DATA_RESET_DEFAULT = 1,
@@ -357,7 +360,8 @@ void T5Provider::_result(unsigned char *packet)
     {
         if (!_overRang1)
         {
-            _temp1 = static_cast<int>((packet[2] << 8) + packet[1]);
+            _temp1 = borderValueChange(LOW_BORDER_VALUE, HIGH_BORDER_VALUE,
+                                        static_cast<int>((packet[2] << 8) +packet[1]));
         }
         sensorOff1 = false;
     }
@@ -366,7 +370,8 @@ void T5Provider::_result(unsigned char *packet)
     {
         if (!_overRang2)
         {
-            _temp2 = static_cast<int>((packet[4] << 8) + packet[3]);
+            _temp2 = borderValueChange(LOW_BORDER_VALUE, HIGH_BORDER_VALUE,
+                                        static_cast<int>((packet[4] << 8) + packet[3]));
         }
         sensorOff2 = false;
     }
@@ -604,6 +609,19 @@ void T5Provider::_limitHandle(unsigned char *packet)
         _overRang2 = true;
     }
     _shotAlarm();
+}
+
+int T5Provider::borderValueChange(int low, int high, int temp)
+{
+    if (temp == low)
+    {
+        return temp + 1;
+    }
+    else if (temp == high)
+    {
+        return temp -1;
+    }
+    return temp;
 }
 
 /**************************************************************************************************

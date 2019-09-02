@@ -135,6 +135,7 @@ void PatientManager::setType(PatientType type)
     if (systemManagerInterface && systemManagerInterface->isSupport(PARAM_ECG))
     {
         ecgDupParam.updateHRSource();
+        ecgParam.updatePacermaker();    // 更新起博标志
     }
     if (config)
     {
@@ -161,14 +162,10 @@ QString PatientManager::getTypeStr(void)
 /**************************************************************************************************
  * 功能： 设置起搏类型。
  *************************************************************************************************/
-void PatientManager::setPacermaker(PatientPacer type)
+void PatientManager::setPacermaker(PatientPacer pacer)
 {
-    d_ptr->patientInfo.pacer = type;
-    RunningStatusBarInterface *runningStatus = RunningStatusBarInterface::getRunningStatusBar();
-    if (runningStatus)
-    {
-        runningStatus->setPacerStatus(static_cast<bool>(type));
-    }
+    d_ptr->patientInfo.pacer = pacer;
+    systemConfig.setNumValue("PrimaryCfg|PatientInfo|PatientPacer", static_cast<int>(pacer));
 }
 
 /**************************************************************************************************
@@ -569,9 +566,14 @@ void PatientManagerPrivate::loadPatientInfo(PatientInfo &info)
         return;
     }
 
+<<<<<<< HEAD
     // patient type
     xmlFile.getValue("PatientType", strValue);
     info.type = static_cast<PatientType>(strValue.toInt());
+=======
+    systemConfig.getNumValue("PrimaryCfg|PatientInfo|PatientPacer", numValue);
+    info.pacer = (PatientPacer)numValue;
+>>>>>>> master
 
     // pacermaker
     xmlFile.getValue("PacerMaker", strValue);
@@ -621,9 +623,15 @@ void PatientManagerPrivate::handleDischarge()
         {
             dataStorageDirManager->cleanCurData();
         }
-        if (systemManager.isSupport(PARAM_SPO2))
+        SystemManagerInterface *systemManagerInterface = SystemManagerInterface::getSystemManager();
+        if (systemManagerInterface && systemManagerInterface->isSupport(PARAM_NIBP))
         {
-            spo2Param.clearTrendWaveData();
+            NIBPParamInterface *nibpParam = NIBPParamInterface::getNIBPParam();
+            if (nibpParam)
+            {
+                nibpParam->clearResult();
+                nibpParam->clearTrendListData();
+            }
         }
     }
 }

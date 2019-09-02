@@ -139,8 +139,6 @@ void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
     this->infos = infos;
     model->setupAlarmDataInfos(infos, false);
     model->setEachPageRowCount(TABLE_ROW_NUM);
-    prevBtn->setEnabled(table->hasPreivousPage());
-    nextBtn->setEnabled(table->hasNextPage());
 }
 
 ConfigEditAlarmLimitMenuContent::ConfigEditAlarmLimitMenuContent(Config *const config)
@@ -256,7 +254,6 @@ void ConfigEditAlarmLimitMenuContent::setShowParam(const QVariant &param)
 
 void ConfigEditAlarmLimitMenuContent::onbtnClick()
 {
-    bool focusPrevBtn = false;
     Button *btn = qobject_cast<Button *>(sender());
     if (btn == d_ptr->prevBtn)
     {
@@ -265,17 +262,6 @@ void ConfigEditAlarmLimitMenuContent::onbtnClick()
     else if (btn == d_ptr->nextBtn)
     {
         d_ptr->table->scrollToNextPage();
-        if (!d_ptr->table->hasNextPage())
-        {
-            focusPrevBtn = true;
-        }
-    }
-
-    d_ptr->prevBtn->setEnabled(d_ptr->table->hasPreivousPage());
-    d_ptr->nextBtn->setEnabled(d_ptr->table->hasNextPage());
-    if (focusPrevBtn)
-    {
-        d_ptr->prevBtn->setFocus();
     }
 }
 

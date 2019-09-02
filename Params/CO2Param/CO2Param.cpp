@@ -52,7 +52,8 @@ public:
               oxyCRGCO2Wave(NULL),
               calibrateChannel(0),
               calibrateResult(false),
-              calibrateReply(false)
+              calibrateReply(false),
+              disableZero(0)
     {
     }
 
@@ -96,6 +97,8 @@ public:
     int calibrateChannel;
     bool calibrateResult;
     bool calibrateReply;
+
+    int disableZero;
 };
 /**************************************************************************************************
  * 设置波形速度。
@@ -240,6 +243,7 @@ void CO2Param::handDemoTrendData(void)
         d_ptr->fico2Value = 3;
         d_ptr->awRRValue = 20;
         d_ptr->brVaule = 20;
+        d_ptr->baro = 1013;
     }
     else
     {
@@ -262,12 +266,14 @@ void CO2Param::exitDemo()
 {
     d_ptr->etco2Value = InvData();
     d_ptr->fico2Value = InvData();
+    d_ptr->awRRValue =  InvData();
     d_ptr->brVaule = InvData();
 
     if (NULL != d_ptr->trendWidget)
     {
         d_ptr->trendWidget->setEtCO2Value(InvData());
         d_ptr->trendWidget->setFiCO2Value(InvData());
+        d_ptr->trendWidget->setawRRValue(InvData());
     }
     setBR(InvData());
 }
@@ -529,11 +535,6 @@ void CO2Param::setBaro(short baro)
  *************************************************************************************************/
 void CO2Param::verifyApneanTime(ApneaAlarmTime time)
 {
-    if (getApneaTime() == APNEA_ALARM_TIME_OFF)
-    {
-        return;
-    }
-
     if (getApneaTime() != time)
     {
         if (d_ptr->provider != NULL)
@@ -561,13 +562,13 @@ void CO2Param::verifyWorkMode(CO2WorkMode mode)
     // 主机为打开状态，当模块为sleep。
     if (getCO2Switch() && (mode == C02_WORK_SLEEP))
     {
-        d_ptr->provider->setWorkMode(CO2_WORK_MEASUREMENT);
+        setModuleWorkMode(CO2_WORK_MEASUREMENT);
     }
 
     // 主机为关闭状态，当模块为测量。
     if (!getCO2Switch() && (mode == CO2_WORK_MEASUREMENT))
     {
-        d_ptr->provider->setWorkMode(C02_WORK_SLEEP);
+        setModuleWorkMode(C02_WORK_SLEEP);
     }
 }
 
@@ -670,7 +671,7 @@ void CO2Param::addWaveformData(short wave, bool invalid)
 void CO2Param::setOneShotAlarm(CO2OneShotType t, bool status)
 {
     // 只有当CO2开关为ON状态时才报警
-    if (d_ptr->co2Switch)
+    if (d_ptr->co2Switch || t == CO2_ONESHOT_ALARM_STANDBY)
     {
         AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_CO2);
         if (alarmSource)
@@ -732,6 +733,7 @@ bool CO2Param::setModuleWorkMode(CO2WorkMode mode)
         setCO2Switch(false);
         d_ptr->provider->setWorkMode(mode);
         softkeyManager.refreshCO2Key(false);
+        co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_STANDBY, true);
         return true;
     }
 
@@ -740,6 +742,7 @@ bool CO2Param::setModuleWorkMode(CO2WorkMode mode)
         setCO2Switch(true);
         d_ptr->provider->setWorkMode(mode);
         softkeyManager.refreshCO2Key(true);
+        co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_STANDBY, false);
         return true;
     }
     return false;
@@ -773,6 +776,34 @@ bool CO2Param::getCalibrateReply()
         d_ptr->calibrateReply = false;
     }
     return reply;
+}
+
+void CO2Param::setZeroStatus(CO2DisableZeroReason reason, bool status)
+{
+    bool reasonSta = d_ptr->disableZero & (1 << reason);
+    if (reasonSta != status)
+    {
+        bool prvSta = d_ptr->disableZero;
+        if (status)
+        {
+            d_ptr->disableZero |= 1 << reason;
+        }
+        else
+        {
+            d_ptr->disableZero &= ~(1 << reason);
+        }
+        bool curSta = d_ptr->disableZero;
+        if (prvSta != curSta)
+        {
+            softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_CO2_CALIBRATION, !curSta);
+            emit updateZeroSta(curSta);
+        }
+    }
+}
+
+bool CO2Param::getDisableZeroStatus()
+{
+    return d_ptr->disableZero;
 }
 
 /**************************************************************************************************

@@ -99,10 +99,16 @@ void AlarmPauseState::handAlarmEvent(AlarmStateEvent event, unsigned char */*dat
     AlarmStateMachineInterface *alarmStateMachine = AlarmStateMachineInterface::getAlarmStateMachine();
     switch (event)
     {
-#if 1
     case ALARM_STATE_EVENT_RESET_BTN_PRESSED:
     {
-        // do noting at pause state
+        alarmIndicator->clearAlarmPause();
+        alarmIndicator->phyAlarmResetStatusHandle();
+        alarmIndicator->techAlarmResetStatusHandle();
+        if (alarmIndicator->getAlarmCount())
+        {
+            // must has med priority alarm or high priority alarm before enter the reset state
+            alarmStateMachine->switchState(ALARM_RESET_STATE);
+        }
         break;
     }
 
@@ -112,34 +118,6 @@ void AlarmPauseState::handAlarmEvent(AlarmStateEvent event, unsigned char */*dat
         alarmStateMachine->switchState(ALARM_NORMAL_STATE);
         break;
     }
-#else
-    case ALARM_STATE_EVENT_MUTE_BTN_PRESSED:
-    {
-        // 有栓锁的报警和新的技术报警
-        bool ret = alarmIndicator.techAlarmPauseStatusHandle();
-        if (alarmIndicator.hasLatchPhyAlarm())
-        {
-            alarmIndicator.delLatchPhyAlarm();
-            ret |= true;
-        }
-
-        // 有处于未暂停的报警
-        if (alarmIndicator.hasNonPausePhyAlarm())
-        {
-            alarmIndicator.phyAlarmPauseStatusHandle();
-            ret |= true;
-        }
-
-        if (ret)
-        {
-            return;
-        }
-
-        alarmIndicator.phyAlarmPauseStatusHandle();
-        alarmStateMachine.switchState(ALARM_NORMAL_STATE);
-        break;
-    }
-#endif
 
     case ALARM_STATE_EVENT_MUTE_BTN_PRESSED_SHORT_TIME:
         if (alarmStateMachine->isEnableAlarmAudioOff())
@@ -148,12 +126,11 @@ void AlarmPauseState::handAlarmEvent(AlarmStateEvent event, unsigned char */*dat
         }
         break;
 
-#if 0
-    case ALARM_STATE_EVENT_ALL_PHY_ALARM_LATCHED:
-    case ALARM_STATE_EVENT_NO_PAUSED_PHY_ALARM:
-        alarmStateMachine.switchState(ALARM_NORMAL_STATE);
+    case ALARM_STATE_EVENT_NEW_PHY_ALARM:
+    case ALARM_STATE_EVENT_NEW_TECH_ALARM:
+        alarmIndicator->clearAlarmPause();
+        alarmStateMachine->switchState(ALARM_NORMAL_STATE);
         break;
-#endif
 
     case ALARM_STATE_EVENT_MUTE_BTN_PRESSED_LONG_TIME:
         if (alarmStateMachine->isEnableAlarmOff())

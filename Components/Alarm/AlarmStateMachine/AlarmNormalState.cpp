@@ -44,6 +44,7 @@ void AlarmNormalState::enter()
 {
     AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
     alarmIndicator->setAlarmStatus(ALARM_STATUS_NORMAL);
+    alarmIndicator->clearAlarmPause();
     alarmIndicator->updateAlarmAudioState();
     LightManagerInterface *lightManager = LightManagerInterface::getLightManager();
     lightManager->enableAlarmAudioMute(false);
@@ -63,6 +64,7 @@ void AlarmNormalState::handAlarmEvent(AlarmStateEvent event, unsigned char */*da
     {
         //删除栓锁报警
         alarmIndicator->delLatchPhyAlarm();
+        alarmIndicator->clearAlarmPause();
         alarmIndicator->phyAlarmResetStatusHandle();
         alarmIndicator->techAlarmResetStatusHandle();
         if (alarmIndicator->getAlarmCount())

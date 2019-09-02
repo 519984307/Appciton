@@ -28,8 +28,24 @@ void NIBPServiceErrorState::enter(void)
 /**************************************************************************************************
  * 处理事件。
  *************************************************************************************************/
-void NIBPServiceErrorState::handleNIBPEvent(NIBPEvent /*event*/, const unsigned char */*args*/, int /*argLen*/)
+void NIBPServiceErrorState::handleNIBPEvent(NIBPEvent event, const unsigned char *args, int /*arglen*/)
 {
+    switch (event)
+    {
+    case NIBP_EVENT_CURRENT_PRESSURE:
+    {
+        int pressure;
+        pressure = (args[1] << 8) + args[0];
+        if (pressure != -1)
+        {
+            nibpParam.setManometerPressure(pressure);
+            return;
+        }
+    }
+    break;
+    default:
+        break;
+    }
 }
 
 /**************************************************************************************************

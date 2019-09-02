@@ -55,7 +55,7 @@ class TrendDataStorageManagerPrivate: public StorageManagerPrivate
 public:
     Q_DECLARE_PUBLIC(TrendDataStorageManager)
     explicit TrendDataStorageManagerPrivate(TrendDataStorageManager *q_ptr)
-        : StorageManagerPrivate(q_ptr), firstSave(false), lastStoreTimestamp(0)
+        : StorageManagerPrivate(q_ptr), firstSave(false), lastStoreTimestamp(0), isStopRun(false)
     {
         memset(&dataDesc, 0, sizeof(TrendDataDescription));
     }
@@ -72,6 +72,8 @@ public:
     bool firstSave;  // first time save after initialize
     unsigned lastStoreTimestamp;
     QMap<SubParamID, ShortTrendStorage *> shortTrends;
+
+    bool isStopRun;
 };
 
 void TrendDataStorageManagerPrivate::updateAdditionInfo()
@@ -228,7 +230,7 @@ void TrendDataStorageManager::periodRun(unsigned t)
 {
     Q_D(TrendDataStorageManager);
 
-    if (d->lastStoreTimestamp == t)
+    if (d->lastStoreTimestamp == t || d->isStopRun)
     {
         return;
     }
@@ -239,6 +241,18 @@ void TrendDataStorageManager::periodRun(unsigned t)
         status |= CollectStatusPeriod;
         storeData(t, status);
     }
+}
+
+void TrendDataStorageManager::stopPeriodRun()
+{
+    Q_D(TrendDataStorageManager);
+    d->isStopRun = true;
+}
+
+void TrendDataStorageManager::restartPeriodRun()
+{
+    Q_D(TrendDataStorageManager);
+    d->isStopRun = false;
 }
 
 void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)

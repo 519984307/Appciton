@@ -15,6 +15,7 @@
 #include <QMutexLocker>
 #include "StorageFile.h"
 #include "DataStorageDirManagerInterface.h"
+#include "TrendCache.h"
 
 StorageManagerPrivate::~StorageManagerPrivate()
 {
@@ -210,5 +211,7 @@ void StorageManager::saveDataCallback(quint32 dataID, const char *data, quint32 
 void StorageManager::onNewPatientHandle()
 {
     newPatientHandle();
+    trendCache.clearTrendCache();
+    trendCache.setCurTimeStopDataSave(true);
 }
 

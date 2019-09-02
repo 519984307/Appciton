@@ -284,8 +284,6 @@ void EventWindow::showEvent(QShowEvent *ev)
         d_ptr->printBtn->setEnabled(false);
         d_ptr->listPrintBtn->setEnabled(false);
     }
-
-    d_ptr->updateLevelStatus();
 }
 
 void EventWindow::timerEvent(QTimerEvent *ev)
@@ -352,6 +350,17 @@ void EventWindow::eventTypeSelect(int index)
     else
     {
         d_ptr->eventTable->setFocusPolicy(Qt::NoFocus);
+    }
+    // 更新打印按键状态
+    if (recorderManager.isConnected() && !d_ptr->printList.isEmpty())
+    {
+        d_ptr->printBtn->setEnabled(true);
+        d_ptr->listPrintBtn->setEnabled(true);
+    }
+    else
+    {
+        d_ptr->printBtn->setEnabled(false);
+        d_ptr->listPrintBtn->setEnabled(false);
     }
     d_ptr->updateLevelStatus();
 }
@@ -1149,6 +1158,8 @@ void EventWindowPrivate::eventTrendUpdate()
     QString titleStr;
     QString t1;
     QString t2;
+    bool multiSubParamAlarm = false;
+    bool subParamAlarm = false;
     int paramNum = ctx.trendSegment->trendValueNum;
     for (int i = 0; i < paramNum; i ++)
     {
@@ -1202,6 +1213,7 @@ void EventWindowPrivate::eventTrendUpdate()
         case SUB_PARAM_AUXP1_SYS:
         case SUB_PARAM_AUXP2_SYS:
             sys = dataStr;
+            multiSubParamAlarm = ctx.trendSegment->values[i].alarmFlag;
             continue;
         case SUB_PARAM_NIBP_DIA:
         case SUB_PARAM_ART_DIA:
@@ -1209,6 +1221,7 @@ void EventWindowPrivate::eventTrendUpdate()
         case SUB_PARAM_AUXP1_DIA:
         case SUB_PARAM_AUXP2_DIA:
             dia = dataStr;
+            multiSubParamAlarm |= ctx.trendSegment->values[i].alarmFlag;
             continue;
         case SUB_PARAM_NIBP_MAP:
         case SUB_PARAM_ART_MAP:
@@ -1216,6 +1229,7 @@ void EventWindowPrivate::eventTrendUpdate()
         case SUB_PARAM_AUXP1_MAP:
         case SUB_PARAM_AUXP2_MAP:
             map = dataStr;
+            subParamAlarm = ctx.trendSegment->values[i].alarmFlag || multiSubParamAlarm;
             valueStr = sys + "/" + dia + "(" + map + ")";
             titleStr = paramInfo.getSubParamName(subId);
             titleStr = titleStr.left(titleStr.length() - 4);
@@ -1237,6 +1251,7 @@ void EventWindowPrivate::eventTrendUpdate()
         case SUB_PARAM_ETAA1:
         case SUB_PARAM_ETAA2:
         case SUB_PARAM_ETO2:
+            multiSubParamAlarm = ctx.trendSegment->values[i].alarmFlag;
             et = dataStr;
             continue;
         case SUB_PARAM_FICO2:
@@ -1244,6 +1259,7 @@ void EventWindowPrivate::eventTrendUpdate()
         case SUB_PARAM_FIAA1:
         case SUB_PARAM_FIAA2:
         case SUB_PARAM_FIO2:
+            subParamAlarm = ctx.trendSegment->values[i].alarmFlag || multiSubParamAlarm;
             fi = dataStr;
             valueStr = et + "/" + fi;
             titleStr = trs(paramInfo.getSubParamName(subId));
@@ -1281,6 +1297,7 @@ void EventWindowPrivate::eventTrendUpdate()
             break;
         default:
             valueStr = dataStr;
+            subParamAlarm = ctx.trendSegment->values[i].alarmFlag;
             titleStr = trs(paramInfo.getSubParamName(subId));
             valueFont = fontManager.numFont(37);
             color = colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(subId)));
@@ -1298,7 +1315,12 @@ void EventWindowPrivate::eventTrendUpdate()
                       trs(Unit::getSymbol(paramManager.getSubParamUnit(paramInfo.getParamID(subId), subId))));
 
 
-        item->setData(EventTrendItemDelegate::TrendAlarmRole, ctx.trendSegment->values[i].alarmFlag);
+        item->setData(EventTrendItemDelegate::TrendAlarmRole, subParamAlarm);
+
+        subParamAlarm = false;
+        multiSubParamAlarm = false;   // 每次设置报警之后清零。
+
+        color = colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(subId)));
         if (color != QColor(0, 0, 0))
         {
             item->setTextColor(color);

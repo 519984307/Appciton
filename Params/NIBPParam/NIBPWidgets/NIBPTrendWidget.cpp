@@ -23,12 +23,13 @@
 #include "MeasureSettingWindow.h"
 #include "LayoutManager.h"
 
-#define stretchCount 2
-
+#define stretchCount 1
 class NIBPTrendWidgetPrivate
 {
 public:
     NIBPTrendWidgetPrivate() :
+        nibpLabel(NULL), sysLabel(NULL),
+        diaLabel(NULL), mapLabel(NULL),
         nibpValue(NULL), sysValue(NULL),
         diaValue(NULL), mapValue(NULL),
         pressureValue(NULL), lastMeasureCount(NULL),
@@ -41,10 +42,16 @@ public:
         sysAlarm(false), diaAlarm(false),
         mapAlarm(false), effective(false),
         messageFontSize(100), messageInvFontSize(100),
-        lastTime(0), valueLayout(NULL)
+        lastTime(0), valueLayout(NULL),
+        nibpValueLayout(NULL), sysLayout(NULL),
+        diaLayout(NULL), mapLayout(NULL)
     {}
     ~NIBPTrendWidgetPrivate() {}
 
+    QLabel *nibpLabel;
+    QLabel *sysLabel;
+    QLabel *diaLabel;
+    QLabel *mapLabel;
     QLabel *nibpValue;
     QLabel *sysValue;
     QLabel *diaValue;
@@ -79,6 +86,10 @@ public:
     void adjustValueLayout();
     void updateMeasureTime();
     QVBoxLayout *valueLayout;
+    QVBoxLayout *nibpValueLayout;
+    QVBoxLayout *sysLayout;
+    QVBoxLayout *diaLayout;
+    QVBoxLayout *mapLayout;
 };
 
 /**************************************************************************************************
@@ -235,23 +246,43 @@ void NIBPTrendWidgetPrivate::layoutExec(QHBoxLayout *layout)
 {
     // 构造出所有控件。
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
+
+    nibpLabel = new QLabel();
+    nibpLabel->setAlignment(Qt::AlignHCenter | Qt::AlignCenter);
+    nibpLabel->setText(" ");
+
     nibpValue = new QLabel();
     nibpValue->setAlignment(Qt::AlignHCenter | Qt::AlignCenter);
     nibpValue->setPalette(palette);
     nibpValue->setText("/");
+
+    sysLabel = new QLabel();
+    sysLabel->setAlignment(Qt::AlignCenter);
+    sysLabel->setPalette(palette);
+    sysLabel->setText(trs("SYS"));
 
     sysValue = new QLabel();
     sysValue->setAlignment(Qt::AlignCenter);
     sysValue->setPalette(palette);
     sysValue->setText(InvStr());
 
+    diaLabel = new QLabel();
+    diaLabel->setAlignment(Qt::AlignCenter);
+    diaLabel->setPalette(palette);
+    diaLabel->setText(trs("DIA"));
+
     diaValue = new QLabel();
     diaValue->setAlignment(Qt::AlignCenter);
     diaValue->setPalette(palette);
     diaValue->setText(InvStr());
 
+    mapLabel = new QLabel();
+    mapLabel->setAlignment(Qt::AlignCenter);
+    mapLabel->setPalette(palette);
+    mapLabel->setText(trs("MAP"));
+
     mapValue = new QLabel();
-    mapValue->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    mapValue->setAlignment(Qt::AlignCenter);
     mapValue->setPalette(palette);
     mapValue->setText(InvStr());
 
@@ -289,18 +320,36 @@ void NIBPTrendWidgetPrivate::layoutExec(QHBoxLayout *layout)
     // 将数值显示和倒计时放到一起。
     QWidget *groupBox0 = new QWidget();
     valueLayout = new QVBoxLayout(groupBox0);
+    sysLayout = new QVBoxLayout();
+    sysLayout->setSpacing(0);
+    sysLayout->addWidget(sysLabel);
+    sysLayout->addWidget(sysValue);
+    diaLayout = new QVBoxLayout();
+    diaLayout->setSpacing(0);
+    diaLayout->addWidget(diaLabel);
+    diaLayout->addWidget(diaValue);
+    mapLayout = new QVBoxLayout();
+    mapLayout->addStretch();
+    mapLayout->addWidget(mapLabel);
+    mapLayout->addStretch();
+    mapLayout->addWidget(mapValue);
+    mapLayout->addStretch();
+    nibpValueLayout = new QVBoxLayout();
+    nibpValueLayout->setSpacing(0);
+    nibpValueLayout->addWidget(nibpLabel);
+    nibpValueLayout->addWidget(nibpValue);
+
     QHBoxLayout *hLayout0 = new QHBoxLayout();
-    hLayout0->setMargin(margin);
+    hLayout0->setMargin(0);
     hLayout0->setSpacing(10);
     hLayout0->addStretch();
-    hLayout0->addWidget(sysValue);
-    hLayout0->addWidget(nibpValue);
-    hLayout0->addWidget(diaValue);
-    hLayout0->addWidget(mapValue);
+    hLayout0->addLayout(sysLayout);
+    hLayout0->addLayout(nibpValueLayout);
+    hLayout0->addLayout(diaLayout);
+    hLayout0->addLayout(mapLayout);
     hLayout0->addStretch();
-    valueLayout->addStretch();
+
     valueLayout->addLayout(hLayout0);
-    valueLayout->addStretch();
 
 
     QWidget *groupBox1 = new QWidget();
@@ -339,7 +388,7 @@ void NIBPTrendWidgetPrivate::layoutExec(QHBoxLayout *layout)
 
     // 第二组。
     QVBoxLayout *vLayout5 = new QVBoxLayout();
-    vLayout5->setMargin(1);
+    vLayout5->setMargin(0);
     vLayout5->setSpacing(0);
     vLayout5->addWidget(stackedwidget, 1);
     vLayout5->addLayout(hLayout);
@@ -350,24 +399,23 @@ void NIBPTrendWidgetPrivate::layoutExec(QHBoxLayout *layout)
 void NIBPTrendWidgetPrivate::adjustValueLayout()
 {
     UserFaceType type = layoutManager.getUFaceType();
-    QLayout *layout = valueLayout->itemAt(1)->layout();
+    QLayout *layout = valueLayout->itemAt(0)->layout();
     if (layout == NULL)
     {
         return;
     }
     QHBoxLayout *hLayout = reinterpret_cast<QHBoxLayout *>(layout);
-    if (type == UFACE_MONITOR_BIGFONT && valueLayout->count() == stretchCount + 1)
+    if (type == UFACE_MONITOR_BIGFONT && valueLayout->count() == stretchCount)
     {
         // 大字体界面且单行布置值时
-        hLayout->removeWidget(mapValue);
-        valueLayout->insertWidget(valueLayout->count() - 1, mapValue
-                                  , 0 , Qt::AlignHCenter);
+        hLayout->removeItem(mapLayout);
+        valueLayout->insertLayout(1, mapLayout);
     }
-    else if (type != UFACE_MONITOR_BIGFONT && valueLayout->count() == stretchCount + 2)
+    else if (type != UFACE_MONITOR_BIGFONT && valueLayout->count() == stretchCount + 1)
     {
         //　非大字体界面且双行布置值时
-        valueLayout->removeWidget(mapValue);
-        hLayout->insertWidget(hLayout->count() - 1, mapValue);
+        valueLayout->removeItem(mapLayout);
+        hLayout->insertLayout(hLayout->count() - 1, mapLayout);
     }
 }
 
@@ -580,8 +628,13 @@ void NIBPTrendWidget::setTextSize()
 
     font = fontManager.numFont(fontsize / 1.5, true);
     font.setWeight(QFont::Black);
-
     d_ptr->mapValue->setFont(font);
+
+    font = fontManager.numFont(fontsize / 3.0, true);
+    d_ptr->nibpLabel->setFont(font);
+    d_ptr->sysLabel->setFont(font);
+    d_ptr->diaLabel->setFont(font);
+    d_ptr->mapLabel->setFont(font);
 
     r.setSize(QSize(width() - nameLabel->width(), height()));
     d_ptr->messageInvFontSize = fontManager.adjustNumFontSize(r, true);
@@ -670,6 +723,10 @@ void NIBPTrendWidget::updateWidgetConfig()
     // 设置报警关闭标志
     showAlarmOff();
 
+    d_ptr->nibpLabel->setPalette(palette);
+    d_ptr->sysLabel->setPalette(palette);
+    d_ptr->diaLabel->setPalette(palette);
+    d_ptr->mapLabel->setPalette(palette);
     d_ptr->nibpValue->setPalette(palette);
     d_ptr->sysValue->setPalette(palette);
     d_ptr->diaValue->setPalette(palette);

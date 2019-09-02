@@ -136,9 +136,7 @@ void NIBPDataTrendWidget::showValue(void)
     QString textStr;
     QString timeStr;
     QString prStr;
-    bool sysAlarm = false;
-    bool diaAlarm = false;
-    bool mapAlarm = false;
+
     UnitType defUnitType;
     UnitType unit;
     NIBPLimitAlarm alarm;
@@ -162,24 +160,26 @@ void NIBPDataTrendWidget::showValue(void)
     {
         timeDate.getTime(t.key(), timeStr);
         _table->item(i, 0)->setText(timeStr);
-
         NIBPTrendCacheData providerBuff = t.value();
         if (providerBuff.sys.value == InvData() || providerBuff.dia.value == InvData() ||
                 providerBuff.map.value == InvData())
         {
             QString color = "<font style='color:rgb(%1,%2,%3);'>%4</font>";
-            textStr = QString("<center>%1/%2/%3</center>").arg(InvStr()).arg(InvStr()).arg(InvStr());
+            textStr = QString("<center>%1/%2 (%3)</center>").arg(InvStr()).arg(InvStr()).arg(InvStr());
             textStr = color.arg(textColor.red()).arg(textColor.green()).arg(textColor.blue()).arg(textStr);
             prStr = QString("<center>%1</center>").arg(InvStr());
             prStr = color.arg(textColor.red()).arg(textColor.green()).arg(textColor.blue()).arg(prStr);
         }
         else
         {
+            bool sysAlarm = false;
+            bool diaAlarm = false;
+            bool mapAlarm = false;
             QString valStr;
             QString boldwrap = "<b>%1</b>";
             QString colorwrap = "<font color=%1>%2</font>";
             QString color = "<font style='color:rgb(%1,%2,%3);'>%4</font>";
-            textStr = QString("<center>%1/%2/%3</center>");
+            textStr = QString("<center>%1/%2 (%3)</center>");
             prStr = QString("<center>%1</center>");
 
             defUnitType = paramInfo.getUnitOfSubParam(SUB_PARAM_NIBP_SYS);
@@ -382,6 +382,11 @@ void NIBPDataTrendWidget::clearListData()
         _table->item(i, 0)->setText("");
         QLabel *l = qobject_cast<QLabel *>(_table->cellWidget(i, 1));
         l->setText("");
+        if (moduleStr != "BLM_N5")
+        {
+            l = qobject_cast<QLabel *>(_table->cellWidget(i, 2));
+            l->setText("");
+        }
     }
 }
 
@@ -413,12 +418,13 @@ void NIBPDataTrendWidget::getTrendNIBPlist()
                 {
                 case SUB_PARAM_NIBP_SYS:
                     nibpTrendCacheData.sys.value = value;
-                    continue;
+                    break;
                 case SUB_PARAM_NIBP_DIA:
                     nibpTrendCacheData.dia.value = value;
-                    continue;
+                    break;
                 case SUB_PARAM_NIBP_MAP:
                     nibpTrendCacheData.map.value = value;
+                    break;
                 case SUB_PARAM_NIBP_PR:
                     nibpTrendCacheData.prvalue = value;
                     break;
@@ -538,7 +544,7 @@ NIBPDataTrendWidget::NIBPDataTrendWidget()
     mainLayout->addWidget(_table);
     contentLayout->addLayout(mainLayout);
     contentLayout->addStretch(1);
-
+    nameLabel->setFixedWidth(76);
     // 释放事件。
     //    connect(this, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
 

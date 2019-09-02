@@ -26,6 +26,7 @@
 #include "PatientManager.h"
 #include "NIBPCountdownTime.h"
 #include "NIBPParam.h"
+#include "TrendDataStorageManager.h"
 
 class TimeEditWindowPrivate
 {
@@ -319,6 +320,7 @@ void TimeEditWindow::hideEvent(QHideEvent *ev)
     QDateTime dt = d_ptr->getSetupTime();
     if (d_ptr->oldTime != dt.toTime_t())
     {
+        trendDataStorageManager.stopPeriodRun();
         d_ptr->setSysTime();
         systemTick.resetLastTime();
         patientManager.newPatient();
@@ -326,6 +328,7 @@ void TimeEditWindow::hideEvent(QHideEvent *ev)
         {
             nibpCountdownTime.timeChange(true);
         }
+        trendDataStorageManager.restartPeriodRun();
     }
     Dialog::hideEvent(ev);
 }
@@ -356,6 +359,23 @@ void TimeEditWindow::onComboBoxIndexChanged(int index)
         default:
             break;
         }
+    }
+
+    // 限制最小时间为1970-1-1 8:0:0
+    QDate curDate(d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_YEAR]->getValue(),
+               d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_MONTH]->getValue(),
+               d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getValue());
+    if (curDate == QDate(1970, 1, 1))
+    {
+        d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->setRange(8, 23);
+        if (d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->getValue() < 8)
+        {
+            d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->setValue(8);
+        }
+    }
+    else
+    {
+        d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->setRange(0, 23);
     }
 }
 
@@ -425,7 +445,7 @@ void TimeEditWindow::onSpinBoxValueChanged(int value, int scale)
                    d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getValue());
         if (curDate == QDate(1970, 1, 1))
         {
-            d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->setRange(8, 24);
+            d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->setRange(8, 23);
             if (d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->getValue() < 8)
             {
                 d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->setValue(8);
@@ -433,7 +453,7 @@ void TimeEditWindow::onSpinBoxValueChanged(int value, int scale)
         }
         else
         {
-            d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->setRange(0, 24);
+            d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->setRange(0, 23);
         }
     }
 }

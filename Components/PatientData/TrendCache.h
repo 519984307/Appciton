@@ -84,6 +84,10 @@ public:
     /* unregister a recorder, use the record object to find the recorder, return true if the recorder is remove */
     bool unregisterTrendRecorder(void *recordObj);
 
+    void clearTrendCache();
+
+    // 设置当前时刻是否收集趋势数据
+    void setCurTimeStopDataSave(bool flag);
 private:
     TrendCache();
 
@@ -93,6 +97,7 @@ private:
     QList<TrendRecorder> _recorders;
     unsigned _nibpMeasureTime;
     unsigned _nibpMeasureSuccessTime;
+    bool _curTimeDataStopSaveFlag;
     QMutex _mutex;
 };
 

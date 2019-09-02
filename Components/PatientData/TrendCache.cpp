@@ -38,6 +38,11 @@ void TrendCache::collectTrendData(unsigned t, bool overwrite)
         return;
     }
 
+    if (_curTimeDataStopSaveFlag)
+    {
+        _curTimeDataStopSaveFlag = false;
+        return;
+    }
     TrendCacheData data;
     QList<ParamID> paramIDList;
     paramManager.getParams(paramIDList);
@@ -62,6 +67,11 @@ void TrendCache::collectTrendData(unsigned t, bool overwrite)
     for (int i = 0; i < SUB_PARAM_NR; ++i)
     {
         paramID = paramInfo.getParamID((SubParamID)i);
+
+        if (static_cast<SubParamID>(i) == SUB_PARAM_NIBP_PR)  // 收集nibp PR趋势数据
+        {
+            paramID = PARAM_NIBP;
+        }
         if (-1 == paramIDList.indexOf(paramID))
         {
             continue;
@@ -246,6 +256,16 @@ bool TrendCache::unregisterTrendRecorder(void *recordObj)
     return false;
 }
 
+void TrendCache::clearTrendCache()
+{
+    _trendCacheMap.clear();
+}
+
+void TrendCache::setCurTimeStopDataSave(bool flag)
+{
+    _curTimeDataStopSaveFlag = flag;
+}
+
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
@@ -256,6 +276,7 @@ TrendCache::TrendCache()
     _nibpMeasureSuccessTime = 0;
     systemConfig.getNumValue("PrimaryCfg|NIBP|MeasureTime", _nibpMeasureSuccessTime);
     _nibpMeasureTime = _nibpMeasureSuccessTime;
+    _curTimeDataStopSaveFlag = false;
 }
 
 /**************************************************************************************************

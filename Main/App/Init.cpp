@@ -199,7 +199,7 @@ static void _initComponents(void)
     layoutManager.addLayoutWidget(alarmPhyMuteBar);
 
     // running status
-    runningStatus.setPacerStatus(patientManager.getPacermaker());
+    runningStatus.setPacerStatus(ecgParam.getPacermaker());
     runningStatus.setNightModeStatus(nightModeManager.nightMode());
 #ifdef ENABLE_O2_APNEASTIMULATION
     runningStatus.setShakeStatus(static_cast<ShakeStatus>(o2Param.getApneaAwakeStatus()));

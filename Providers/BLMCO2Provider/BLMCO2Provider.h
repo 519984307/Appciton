@@ -133,6 +133,7 @@ struct CO2ProviderStatus
 
 class BLMCO2Provider: public Provider, public CO2ProviderIFace
 {
+    Q_OBJECT
 public: // Provider的接口。
     virtual bool attachParam(Param &param);
     virtual void dataArrived(void);
@@ -184,9 +185,18 @@ public: // CO2ProviderIFace 的接口。
     explicit BLMCO2Provider(const QString &name);
     ~BLMCO2Provider();
 
+    /**
+     * @brief isConnectModel 是否连接了CO2模块
+     * @return
+     */
+    bool isConnectModel();
+
 protected:
     virtual void disconnected(void);
     virtual void reconnected(void);
+
+private slots:
+    void connectTimeOut();
 
 private:
     void _unpacket(const unsigned char packet[]);
@@ -207,4 +217,7 @@ private:
 
     BLMProviderUpgradeIface *upgradeIface;
     bool _isLastSOHPaired; // 遗留在ringBuff最后一个数据（该数据为SOH）是否已经剃掉了多余的SOH。
+
+    QTimer connectTmr;
+    bool co2ModelConnect;
 };

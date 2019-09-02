@@ -56,7 +56,8 @@ public:
          arrhythmiaBtn(NULL),
     #endif
          ecg1Label(NULL),
-         ecg2Label(NULL)
+         ecg2Label(NULL),
+         leadModeTimerId(-1)
     {}
 
     // load settings
@@ -82,6 +83,7 @@ public:
     QLabel *ecg1Label;
     QLabel *ecg2Label;
     QList<int> ecgWaveIdList;
+    int leadModeTimerId;
 };
 
 void ECGMenuContentPrivate::loadOptions()
@@ -375,6 +377,26 @@ ECGMenuContent::~ECGMenuContent()
 void ECGMenuContent::readyShow()
 {
     d_ptr->loadOptions();
+    d_ptr->leadModeTimerId = startTimer(500);
+}
+
+void ECGMenuContent::hideEvent(QHideEvent *e)
+{
+    Q_UNUSED(e)
+    if (d_ptr->leadModeTimerId != -1)
+    {
+        killTimer(d_ptr->leadModeTimerId);
+        d_ptr->leadModeTimerId = -1;
+    }
+}
+
+void ECGMenuContent::timerEvent(QTimerEvent *e)
+{
+    if (d_ptr->leadModeTimerId == e->timerId())
+    {
+        ECGLeadMode leadMode = ecgParam.getLeadMode();
+        d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_LEAD_MODE]->setCurrentIndex(leadMode);
+    }
 }
 
 void ECGMenuContent::layoutExec()
@@ -484,7 +506,7 @@ void ECGMenuContent::layoutExec()
     d_ptr->combos.insert(ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER, comboBox);
 
     // paceMark
-    label = new QLabel(trs("ECGPaceSignal"));
+    label = new QLabel(trs("ECGPaceDetection"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
@@ -678,16 +700,16 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
             d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(false);
 
             bool isUpdateWaveStatus = false;
+            int preECG2Wave = 0;
+            currentConfig.getNumValue("ECG|Ecg2Wave", preECG2Wave);
             // 如果ecg2与ecg1选择相同的item时
             if (lead == ecgParam.getCalcLead())
             {
                 // 更新最新导联
-                int waveIndex = 0;
-                currentConfig.getNumValue("ECG|Ecg2Wave", waveIndex);
-                currentConfig.setNumValue("ECG|Ecg1Wave", waveIndex);
-                lead = static_cast<ECGLead>(waveIndex);
-                ecgParam.setCalcLead(d_ptr->ecgWaveforms[waveIndex]);
-                ecgParam.setLeadMode3DisplayLead(d_ptr->ecgWaveforms[waveIndex]);
+                currentConfig.setNumValue("ECG|Ecg1Wave", preECG2Wave);
+                lead = static_cast<ECGLead>(preECG2Wave);
+                ecgParam.setCalcLead(d_ptr->ecgWaveforms[preECG2Wave]);
+                ecgParam.setLeadMode3DisplayLead(d_ptr->ecgWaveforms[preECG2Wave]);
                 d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(true);
                 ECGGain gain = ecgParam.getGain(lead);
                 d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->setCurrentIndex(gain);
@@ -695,11 +717,12 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
 
                 // 更新ecg1的item选择
                 d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG1]->blockSignals(true);
-                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG1]->setCurrentIndex(waveIndex);
+                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG1]->setCurrentIndex(preECG2Wave);
                 d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG1]->blockSignals(false);
                 isUpdateWaveStatus = true;
             }
             currentConfig.setNumValue("ECG|Ecg2Wave", index);
+            ecgParam.adjustPrintWave(static_cast<ECGLead>(preECG2Wave), static_cast<ECGLead>(index));
             layoutManager.updateLayout();
             if (isUpdateWaveStatus)
             {

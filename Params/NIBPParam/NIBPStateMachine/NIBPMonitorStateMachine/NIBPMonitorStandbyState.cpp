@@ -120,8 +120,18 @@ void NIBPMonitorStandbyState::enter()
         if (nibpParam->getMeasurMode() == NIBP_MODE_AUTO)
         {
             nibpParam->setAutoMeasure(false);
-            nibpParam->setModelText(trs("NIBPAUTO") + ":" +
-                                    trs(NIBPSymbol::convert((NIBPAutoInterval)nibpParam->getAutoInterval())));
+            if (nibpParam->isFirstAuto())
+            {
+                nibpParam->setModelText(trs("NIBPAUTO") + ":" +
+                                        trs(NIBPSymbol::
+                                            convert(static_cast<NIBPAutoInterval>(nibpParam->getAutoInterval()))));
+            }
+            else
+            {
+                nibpParam->setModelText(trs("NIBPManualStart") + ":" +
+                                        trs(NIBPSymbol::
+                                            convert(static_cast<NIBPAutoInterval>(nibpParam->getAutoInterval()))));
+            }
         }
         else if (nibpParam->getMeasurMode() == NIBP_MODE_MANUAL)
         {

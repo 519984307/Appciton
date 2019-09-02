@@ -23,6 +23,7 @@
 #include "crc8.h"
 
 #define SOH             (0x01)  // upgrage packet header
+#define MODEL_CONNECT_TIME_OUT 500
 
 enum  // 数据包类型。
 {
@@ -66,6 +67,8 @@ enum  // 设置命令。
  *************************************************************************************************/
 void BLMCO2Provider::_unpacket(const unsigned char packet[])
 {
+    co2ModelConnect = true;
+    connectTmr.start(MODEL_CONNECT_TIME_OUT);
     if (!isConnectedToParam)
     {
         return;
@@ -100,7 +103,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
     _status.sensorErr    = ((sts & BIT6) == BIT6) ? true : false;
     _status.o2Replace    = ((sts & BIT3) == BIT3) ? true : false;
 
-    if ((co2Param.getAwRRSwitch() == 1) && (co2Param.getApneaTime() != APNEA_ALARM_TIME_OFF))
+    if ((co2Param.getAwRRSwitch() == 1))
     {
 #ifdef ENABLE_O2_APNEASTIMULATION
         co2Param.setRespApneaStimulation(_status.noBreath);
@@ -264,9 +267,6 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
             lastZeroRequired = _status.zeroRequired;      // 需要校零。
             co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_REQUIRED, _status.zeroRequired);
         }
-
-        _status.apneaTime = packet[19];
-        co2Param.verifyApneanTime((ApneaAlarmTime)_status.apneaTime);
         break;
 
     case CONFIG_DATA:  // 模块配置信息
@@ -320,6 +320,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
         {
             // 主流CO2模块报警
             co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_REPLACE_ADAPTER, _status.replaceAdapt);
+            co2Param.setZeroStatus(CO2_ZERO_REASON_NO_ADAPTER, _status.noAdapt);
             co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_NO_ADAPTER, _status.noAdapt);
 //                co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_O2_PORT_FAILURE, _status.o2Clogged);
         }
@@ -347,6 +348,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
 
         if (!isZeroInProgress && _status.zeroInProgress)
         {
+            co2Param.setZeroStatus(CO2_ZERO_REASON_IN_PROGRESS, _status.zeroInProgress);
             co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS, _status.zeroInProgress);
         }
 
@@ -356,19 +358,23 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
             {
                 if (isZeroInProgress && !_status.zeroInProgress)
                 {
+                    co2Param.setZeroStatus(CO2_ZERO_REASON_IN_PROGRESS, _status.zeroInProgress);
                     co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS, _status.zeroInProgress);
                 }
             }
 
-            co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_AND_SPAN_DISABLE, _status.zeroDisable);
+            co2Param.setZeroStatus(CO2_ZERO_REASON_DISABLED, _status.zeroDisable);
+            co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_DISABLE, _status.zeroDisable);
         }
         else
         {
             if (isZeroInProgress && !_status.zeroInProgress)
             {
+                co2Param.setZeroStatus(CO2_ZERO_REASON_IN_PROGRESS, _status.zeroInProgress);
                 co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS, _status.zeroInProgress);
             }
 
+            co2Param.setZeroStatus(CO2_ZERO_REASON_DISABLED, _status.zeroDisable);
             co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_DISABLE, _status.zeroDisable);
         }
 
@@ -381,6 +387,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
         {
             // 旁流CO2模块报警
             co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_SPAN_CALIB_FAILED, _status.spanError);
+            co2Param.setZeroStatus(CO2_ZERO_REASON_IN_PROGRESS, _status.spanCalibInProgress);
             co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_SPAN_CALIB_IN_PROGRESS, _status.spanCalibInProgress);
         }
 //            co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_IR_O2_DELAY, _status.irO2Delay);
@@ -527,6 +534,12 @@ void BLMCO2Provider::disconnected(void)
 void BLMCO2Provider::reconnected()
 {
     co2Param.setConnected(true);
+}
+
+void BLMCO2Provider::connectTimeOut()
+{
+    connectTmr.stop();
+    co2ModelConnect = false;
 }
 
 /**************************************************************************************************
@@ -729,6 +742,14 @@ void BLMCO2Provider::sendCalibrateData(int value)
 
 void BLMCO2Provider::setUpgradeIface(BLMProviderUpgradeIface *iface)
 {
+    if (iface == NULL)
+    {
+        stopCheckConnect(false);
+    }
+    else
+    {
+        stopCheckConnect(true);
+    }
     upgradeIface = iface;
 }
 
@@ -776,6 +797,8 @@ BLMCO2Provider::BLMCO2Provider(const QString &name)
     setDisconnectThreshold(1);
     _etco2Value = InvData();
     _fico2Value = InvData();
+
+    connect(&connectTmr, SIGNAL(timeout()), this, SLOT(connectTimeOut()));
 }
 
 /**************************************************************************************************
@@ -783,4 +806,9 @@ BLMCO2Provider::BLMCO2Provider(const QString &name)
  *************************************************************************************************/
 BLMCO2Provider::~BLMCO2Provider()
 {
+}
+
+bool BLMCO2Provider::isConnectModel()
+{
+    return co2ModelConnect;
 }

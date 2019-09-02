@@ -35,8 +35,8 @@
 #include "ErrorLogItem.h"
 #include "ErrorLog.h"
 #include "OxyCRGRRHRWaveWidget.h"
-#include "RunningStatusBar.h"
 #include "AlarmSourceManager.h"
+#include "RunningStatusBarInterface.h"
 
 #define ECG_TIMER_INTERVAL (100)
 #define GET_DIA_DATA_PERIOD (12000)
@@ -100,6 +100,7 @@ short ECGParam::getHRMaxValue()
         return 300;
     }
 }
+
 /**************************************************************************************************
  * 初始化参数。
  *************************************************************************************************/
@@ -1550,20 +1551,24 @@ void ECGParam::autoSetCalcLead(void)
     }
 
     setCalcLead(leads[index]);
+
+    int preECG1Lead = 0;
+    int preECG2Lead = 0;
+    currentConfig.getNumValue("ECG|Ecg1Wave", preECG1Lead);
+    currentConfig.getNumValue("ECG|Ecg2Wave", preECG2Lead);
+
     if (layoutManager.getUFaceType() == UFACE_MONITOR_STANDARD && getLeadMode() > ECG_LEAD_MODE_3)
     {
         // 标准界面且ECG模式大于3导时，处理ECG2波形与ECG1波形重复
-        int preECG1Lead = 0;
-        int ECG2Lead = 0;
-        currentConfig.getNumValue("ECG|Ecg1Wave", preECG1Lead);
-        currentConfig.getNumValue("ECG|Ecg2Wave", ECG2Lead);
-        if (static_cast<int>(leads[index]) == ECG2Lead)
+        if (static_cast<int>(leads[index]) == preECG2Lead)
         {
             // 计算导联与ECG2波形重复时，将ECG2波形设置为前ECG1波形
             currentConfig.setNumValue("ECG|Ecg2Wave", preECG1Lead);
+            adjustPrintWave(static_cast<ECGLead>(preECG2Lead), static_cast<ECGLead>(preECG1Lead));
         }
     }
 
+    adjustPrintWave(static_cast<ECGLead>(preECG1Lead), leads[index]);
     currentConfig.setNumValue("ECG|Ecg1Wave", static_cast<int>(leads[index]));
     if (NULL != _waveWidget[calcLead] && NULL != _waveWidget[leads[index]])
     {
@@ -1717,6 +1722,12 @@ void ECGParam::setPacermaker(ECGPaceMode onoff)
     {
         _provider->enablePacermaker(onoff);
     }
+
+    RunningStatusBarInterface *runningStatus = RunningStatusBarInterface::getRunningStatusBar();
+    if (runningStatus)
+    {
+        runningStatus->setPacerStatus(static_cast<bool>(onoff));
+    }
     return;
 }
 
@@ -1737,6 +1748,12 @@ void ECGParam::updatePacermaker()
     if (NULL != _provider)
     {
         _provider->enablePacermaker(static_cast<ECGPaceMode>(index));
+    }
+
+    RunningStatusBarInterface *runningStatus = RunningStatusBarInterface::getRunningStatusBar();
+    if (runningStatus)
+    {
+        runningStatus->setPacerStatus(static_cast<bool>(index));
     }
 }
 

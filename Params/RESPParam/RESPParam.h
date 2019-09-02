@@ -144,6 +144,13 @@ public:
     // 使能呼吸计算
     void enableRespCalc(bool enable);
 
+    /**
+     * @brief rrInaccurate 设置Resp值低状态
+     * @param isInaccurate
+     */
+    void rrInaccurate(bool isInaccurate);
+    bool isRRInaccurate();
+
 signals:
     void calcLeadChanged(RESPLead lead);
 

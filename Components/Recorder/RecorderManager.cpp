@@ -222,7 +222,7 @@ void RecorderManager::selfTest()
         return;
     }
 
-    RecordPage *testPage = new RecordPage(10 * RECORDER_PIXEL_PER_MM);
+    RecordPage *testPage = new RecordPage(20 * RECORDER_PIXEL_PER_MM);
     testPage->setID("test");
 
     QPainter painter(testPage);
@@ -235,7 +235,8 @@ void RecorderManager::selfTest()
     pen.setDashPattern(darsh);
     painter.setPen(pen);
 
-    int x = testPage->width() - penWidth;
+    // 打印 20mm空白走纸,前10mm间隔两条虚线
+    int x = testPage->width() - penWidth - 10 * RECORDER_PIXEL_PER_MM;
     painter.drawLine(QPoint(penWidth, 0), QPoint(penWidth, testPage->height() - 1));
     painter.drawLine(QPoint(x, 0), QPoint(x, testPage->height() - 1));
 

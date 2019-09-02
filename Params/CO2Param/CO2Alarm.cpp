@@ -130,7 +130,7 @@ int CO2LimitAlarm::getCompare(int value, int id)
         int low = limitConfig.lowLimit * limitConfig.scale;
         int high = limitConfig.highLimit * limitConfig.scale;
         int v = 0;
-        int v1 = value * 1.0 / mul;
+        float v1 = value * 1.0 / mul;
         valueStr = Unit::convert(curUnit, defUnit, v1, co2Param.getBaro());
         v = valueStr.toInt();
         if (0 == id % 2)
@@ -335,7 +335,8 @@ const char *CO2OneShotAlarm::toString(int id)
  *************************************************************************************************/
 bool CO2OneShotAlarm::isAlarmEnable(int id)
 {
-    if (id == CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS)
+    if (id == CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS ||
+            id == CO2_ONESHOT_ALARM_STANDBY)
     {
         return true;
     }
@@ -357,6 +358,11 @@ bool CO2OneShotAlarm::isAlarmed(int id)
     if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
     {
         return false;
+    }
+
+    if (id == CO2_ONESHOT_ALARM_STANDBY)
+    {
+        return AlarmOneShotIFace::isAlarmed(id);
     }
 
     if (id != CO2_ONESHOT_ALARM_APNEA)

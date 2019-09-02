@@ -322,6 +322,14 @@ void BLMProvider::dataArrived(unsigned char *buff, unsigned int length)
 
 void BLMProvider::setUpgradeIface(BLMProviderUpgradeIface *iface)
 {
+    if (iface == NULL)
+    {
+        stopCheckConnect(false);
+    }
+    else
+    {
+        stopCheckConnect(true);
+    }
     upgradeIface = iface;
 }
 
