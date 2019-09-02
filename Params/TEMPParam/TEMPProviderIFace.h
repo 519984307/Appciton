@@ -21,6 +21,10 @@ public:
     //发送定标数据。
     virtual void sendCalibrateData(int /*channel*/, int /*value*/) {}
 
+    virtual void enterCalibrateState(void){}
+
+    virtual void exitCalibrateState(void){}
+
     //通信中断。
     virtual bool isDisconnected() {return false;}
 };

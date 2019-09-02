@@ -27,6 +27,8 @@ public:
      */
     void showError(QString str);
 
+    void calibrateValueOnTime(int time);
+
 protected:
     /* reimplment */
     void hideEvent(QHideEvent *e);
@@ -40,11 +42,8 @@ protected:
     /* reimplment */
     void timerEvent(QTimerEvent *ev);
 
+    void paintEvent(QPaintEvent *e);
 private slots:
-    /**
-     * @brief onChannelReleased
-     */
-    void onChannelReleased(int);
     /**
      * @brief onBtnReleased
      */

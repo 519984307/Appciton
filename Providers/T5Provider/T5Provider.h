@@ -31,6 +31,9 @@ enum T5PacketType
     T5_CMD_CHANNEL                              = 0x18,       // 体温定标。
     T5_RSP_CHANNEL                              = 0x19,       //
 
+    T5_CMD_CALIBRATE_STATE                      = 0x1A,       // 校准模式
+    T5_RSP_CALIBRATE_STATE                      = 0x1B,
+
     T5_NOTIFY_START_UP                          = 0x40,       // 启动帧。
     T5_NOTIFY_DATA                              = 0x41,       // 测量数据
     T5_NOTIFY_OVERRANGE                         = 0x42,       // 测量超界帧
@@ -38,6 +41,7 @@ enum T5PacketType
 
     T5_CYCLE_ALIVE                              = 0x5B,       // 保活帧
     T5_CYCLE_DATA                               = 0x5C,       // 原始数据
+    T5_OHM_DATA                                 = 0x5D,       // 体温电阻值
 
     T5_DATA_ERROR                               = 0x76,       // 错误警告帧
 
@@ -68,6 +72,9 @@ public: // TEMPProviderIFace 的接口。
     // 定标数据。
     virtual void sendCalibrateData(int channel, int value);
 
+    virtual void enterCalibrateState(void);
+    virtual void exitCalibrateState(void);
+
     //通信中断
     virtual bool isDisconnected(void)
     {
@@ -95,6 +102,9 @@ private:
     //体温值
     void _result(unsigned char *packet);
 
+    //电阻值
+    void ohmResult(unsigned char *packet);
+
     //探头脱离
     void _sensorOff(unsigned char *packet);
 
@@ -115,4 +125,7 @@ private:
     short _temp1;
     short _temp2;
     short _tempd;
+
+    int ohm1;
+    int ohm2;
 };

@@ -228,7 +228,8 @@ void TEMPParam::setOneShotAlarm(TEMPOneShotType t, bool f)
             alarmSource->clear();
         }
     }
-    alarmSource->setOneShotAlarm(TEMP_ONESHOT_ALARM_MODULE_DISABLE, _isTEMPDisable);
+    alarmSource->setOneShotAlarm(
+                TEMP_ONESHOT_ALARM_MODULE_DISABLE, _isTEMPDisable);
     alarmSource->setOneShotAlarm(t, f);
 }
 
@@ -272,6 +273,16 @@ void TEMPParam::sendCalibrateData(int channel, int value)
     _provider->sendCalibrateData(channel, value);
 }
 
+void TEMPParam::enterCalibrateState()
+{
+    _provider->enterCalibrateState();
+}
+
+void TEMPParam::exitCalibrateState()
+{
+    _provider->exitCalibrateState();
+}
+
 void TEMPParam::getCalibrateData(unsigned char *packet)
 {
     if (_calibrateChannel == packet[1] || _calibrateValue == packet[2])
@@ -302,6 +313,33 @@ bool TEMPParam::getCalibrationReply()
 bool TEMPParam::getCalibrationResult()
 {
     return _calibrationResult;
+}
+
+void TEMPParam::setOhm(int ohm1, int ohm2)
+{
+    if (ohm1 < 0)
+    {
+        _ohm1 = InvData();
+    }
+    else
+    {
+        _ohm1 = ohm1;
+    }
+
+    if (ohm2 < 0)
+    {
+        _ohm2 = InvData();
+    }
+    else
+    {
+        _ohm2 = ohm2;
+    }
+}
+
+void TEMPParam::getOhm(int &ohm1, int &ohm2)
+{
+    ohm1 = _ohm1;
+    ohm2 = _ohm2;
 }
 
 /**************************************************************************************************
@@ -358,7 +396,8 @@ void TEMPParam::onPaletteChanged(ParamID id)
 TEMPParam::TEMPParam() : Param(PARAM_TEMP),
     _provider(NULL), _trendWidget(NULL),
     _t1Value(InvData()), _t2Value(InvData()),
-    _tdValue(InvData()), _calibrateChannel(0),
+    _tdValue(InvData()), _ohm1(InvData()),
+    _ohm2(InvData()), _calibrateChannel(0),
     _calibrateValue(0), _isTEMPDisable(false),
     _calibrationReply(false), _calibrationResult(false)
 {

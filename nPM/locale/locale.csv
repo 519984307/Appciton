@@ -1537,7 +1537,7 @@ TEMPCalibrate,校准,Calibrate
 is,是,is
 TEMP1,Temp1,Temp1
 TEMP2,Temp2,Temp2
-TEMPCalibrateOhm,校准电阻值,Resistance
+TEMPCalibrateOhm,校准阻值,Resistance
 Ohm,Ω,Ω
 TEMPModuleNotCalibration1,Temp模块通道1未定标,Temp Channel 1 Not Calibration
 TEMPModuleNotCalibration2,Temp模块通道2未定标,Temp Channel 2 Not Calibration
