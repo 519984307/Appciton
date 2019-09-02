@@ -207,14 +207,14 @@ static NIBPMeasureResultInfo getMeasureResultInfo(unsigned char *data)
     }
     if (type == PATIENT_TYPE_ADULT)
     {
-        if (info.sys > 255 || info.sys < 40 || info.dia > 215 || info.dia < 20 || info.map > 235 || info.map < 20)
+        if (info.sys > 255 || info.sys < 40 || info.dia > 215 || info.dia < 10 || info.map > 235 || info.map < 20)
         {
             info.errCode = 0x06;
         }
     }
     else if (type == PATIENT_TYPE_PED)
     {
-        if (info.sys > 200 || info.sys < 40 || info.dia > 150 || info.dia < 20 || info.map > 165 || info.map < 20)
+        if (info.sys > 200 || info.sys < 40 || info.dia > 150 || info.dia < 10 || info.map > 165 || info.map < 20)
         {
             info.errCode = 0x06;
         }
