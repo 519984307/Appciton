@@ -63,6 +63,7 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
     AlarmPriority lightPriority = ALARM_PRIO_PROMPT;
     AlarmInfoList *list = &_alarmInfoDisplayPool;
     AlarmInfoList::iterator it = list->begin();
+    AlarmInterface *alertor = AlarmInterface::getAlarm();
     for (; it != list->end(); ++it)
     {
         AlarmInfoNode node = *it;
@@ -93,11 +94,8 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
                 }
             }
 
-            AlarmInterface *alertor = AlarmInterface::getAlarm();
-            if (alertor && alertor->getAlarmLightOnAlarmReset()
-                    && node.alarmPriority != ALARM_PRIO_PROMPT
-                    && status != ALARM_STATUS_PAUSE
-                    && !node.acknowledge)
+            if (alertor && node.alarmPriority != ALARM_PRIO_PROMPT
+                    && status != ALARM_STATUS_PAUSE)
             {
                 // 处理确认后且开启了报警复位灯，或者未确认的报警
                 if (lightPriority < node.alarmPriority)
@@ -211,6 +209,12 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
         }
 
         ++index;
+    }
+
+    // 报警复位时报警灯关闭
+    if (!(alertor->getAlarmLightOnAlarmReset()) && status == ALARM_STATUS_RESET)
+    {
+        lightPriority = ALARM_PRIO_PROMPT;
     }
 
     // 更新声音
