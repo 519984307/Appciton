@@ -498,7 +498,7 @@ void FactoryTempMenuContent::timeOut()
     }
     d_ptr->temp2Lab->setText(QString("%1%2").arg(tStr).arg(trs(Unit::getSymbol(type))));
 
-    if (curOhm1 == InvData())
+    if (curOhm1 == InvData() || curOhm1 > 9000 || curOhm1 < 0)
     {
         tStr = InvStr();
     }
@@ -508,7 +508,7 @@ void FactoryTempMenuContent::timeOut()
     }
     d_ptr->calibrate1Ohm->setText(QString("%1%2").arg(tStr).arg(trs("Ohm")));
 
-    if (curOhm2 == InvData())
+    if (curOhm2 == InvData() || curOhm2 > 9000 || curOhm2 < 0)
     {
         tStr = InvStr();
     }
