@@ -384,7 +384,6 @@ void WindowManager::closeAllWidows()
         popup->close();
     }
 
-    bool dialogStatus = false;
     // close the window in the window stack
     while (!d_ptr->windowStacks.isEmpty())
     {
@@ -392,7 +391,6 @@ void WindowManager::closeAllWidows()
         if (p)
         {
             p->close();
-            dialogStatus = true;
         }
     }
 
@@ -407,11 +405,6 @@ void WindowManager::closeAllWidows()
         activeWindow->close();
     }
     d_ptr->timer->stop();
-
-    if (dialogStatus == true)
-    {  // send the signal when the dialgs's status changes
-        emit allDialogsStatusChanged();
-    }
 
     QApplication::processEvents(QEventLoop::AllEvents);
 }
