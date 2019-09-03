@@ -223,6 +223,10 @@ void MenuSidebar::showEvent(QShowEvent *ev)
 
     setWidget(d->widget);
 
+    if (d->curSelectIndex >= 0) {
+        emit selectItemChanged(d->curSelectIndex);
+    }
+
     ScrollArea::showEvent(ev);
 }
 
