@@ -39,6 +39,7 @@ public:
         trendCacheComplete(false),
         waitForTriggerPrintFlag(false),
         triggerPrintStopped(false),
+        extraData(-1),
         almInfo(NULL),
         codeMarkerInfo(NULL),
         oxyCRGInfo(NULL),
@@ -115,6 +116,7 @@ public:
     bool trendCacheComplete;
     bool waitForTriggerPrintFlag;
     bool triggerPrintStopped;
+    quint32 extraData;
 
     AlarmInfoSegment *almInfo;
     CodeMarkerSegment *codeMarkerInfo;
@@ -223,6 +225,26 @@ EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &stor
     d_ptr->almInfo->alarmType = almInfo.alarmType;
     d_ptr->almInfo->alarmInfo = almInfo.alarmInfo;
     d_ptr->almInfo->subParamID = almInfo.subParamID;
+    AlarmPriority priority = ALARM_PRIO_PROMPT;
+    if (almInfo.alarmInfo & 0x01)   // oneshot 报警事件
+    {
+        AlarmOneShotIFace *alarmOneShot = NULL;
+        alarmOneShot = alertor.getAlarmOneShotIFace(static_cast<SubParamID>(almInfo.subParamID));
+        if (alarmOneShot)
+        {
+            priority = alarmOneShot->getAlarmPriority(almInfo.subParamID);
+        }
+    }
+    else
+    {
+        AlarmLimitIFace *alarmLimit = NULL;
+        alarmLimit = alertor.getAlarmLimitIFace(static_cast<SubParamID>(almInfo.subParamID));
+        if (alarmLimit)
+        {
+            priority = alarmLimit->getAlarmPriority(almInfo.subParamID);
+        }
+    }
+    d_ptr->extraData = priority;
     qDebug() << "Create Event Stroage Item:" << this << " type: " << type;
 }
 
@@ -299,6 +321,11 @@ EventStorageItem::~EventStorageItem()
 EventType EventStorageItem::getType() const
 {
     return d_ptr->eventInfo.type;
+}
+
+quint32 EventStorageItem::getExtraData() const
+{
+    return d_ptr->extraData;
 }
 
 bool EventStorageItem::checkCompleted()

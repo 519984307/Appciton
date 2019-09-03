@@ -73,6 +73,9 @@ public:
     // get the event type
     virtual EventType getType() const;
 
+    // get extra data
+    virtual quint32 getExtraData() const;
+
     // start collect trend and waveform data, return false if already start
     virtual bool startCollectTrendAndWaveformData(unsigned t);
 
