@@ -825,8 +825,11 @@ void ECGMenuContent::onPopupListItemFocusChanged(int volume)
     ComboBox * w = qobject_cast<ComboBox*>(sender());
     if (w == d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_QRS_TONE])
     {
+        /* play sound with the focus volume */
         soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT , static_cast<SoundManager::VolumeLevel>(volume));
         soundManager.heartBeatTone();
+        /* reset the sound volume */
+        soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT , static_cast<SoundManager::VolumeLevel>(w->currentIndex()));
     }
 }
 
