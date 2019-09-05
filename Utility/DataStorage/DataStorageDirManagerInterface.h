@@ -33,6 +33,19 @@ public:
      */
     static DataStorageDirManagerInterface *getDataStorageDirManager();
 
+    /**
+     * @brief setDataStorageDir set the data storage directory
+     * @note should only be call before create DataStorageDirManager
+     * @param dir
+     */
+    static bool setDataStorageDir(const QString &dir);
+
+    /**
+     * @brief dataStorageDir get the current data storage dir
+     * @return the data storage dir
+     */
+    static const QString &dataStorageDir();
+
     // 获取当前文件夹
     virtual QString getCurFolder() const = 0;
 
