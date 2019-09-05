@@ -38,9 +38,9 @@ void TrendCache::collectTrendData(unsigned t, bool overwrite)
         return;
     }
 
-    if (_curTimeDataStopSaveFlag)
+    if (_stopCollectTimes > 0)
     {
-        _curTimeDataStopSaveFlag = false;
+        _stopCollectTimes--;
         return;
     }
     TrendCacheData data;
@@ -53,7 +53,7 @@ void TrendCache::collectTrendData(unsigned t, bool overwrite)
     switch (nibpResult)
     {
     case NIBP_MEASURE_SUCCESS:
-        _nibpMeasureSuccessTime = t; // fall through
+        _nibpMeasureSuccessTime = t;    // fall through
     case NIBP_MEASURE_FAIL:
         _nibpMeasureTime = t;
         nibpParam.setMeasureResult(NIBP_MEASURE_RESULT_NONE);
@@ -261,9 +261,9 @@ void TrendCache::clearTrendCache()
     _trendCacheMap.clear();
 }
 
-void TrendCache::setCurTimeStopDataSave(bool flag)
+void TrendCache::stopDataCollect(quint32 times)
 {
-    _curTimeDataStopSaveFlag = flag;
+    _stopCollectTimes = times;
 }
 
 /**************************************************************************************************
@@ -276,7 +276,7 @@ TrendCache::TrendCache()
     _nibpMeasureSuccessTime = 0;
     systemConfig.getNumValue("PrimaryCfg|NIBP|MeasureTime", _nibpMeasureSuccessTime);
     _nibpMeasureTime = _nibpMeasureSuccessTime;
-    _curTimeDataStopSaveFlag = false;
+    _stopCollectTimes = 0;
 }
 
 /**************************************************************************************************

@@ -8,11 +8,13 @@ TEMPLATE = app
 
 include("../../Common/Common.pri")
 include("../../Common/googletest.pri")
+include("../../Common/runtest.pri")
 
 SOURCES += \
         TestErrorLog.cpp \ 
     main.cpp \
     ../../../Utility/ErrorLog/ErrorLog.cpp \
+    ../../../Utility/LanguageManager/LanguageManager.cpp \
     ../../../SOUP/Json/serializer.cpp \
     ../../../SOUP/Json/parser.cpp \
     ../../../Utility/DataStorage/StorageFile.cpp \
@@ -29,6 +31,7 @@ SOURCES += \
 HEADERS += \
     TestErrorLog.h \
     ../../../Utility/ErrorLog/ErrorLog.h \
+    ../../../Utility/LanguageManager/LanguageManager.h \
     ../../../SOUP/Json/serializer.h \
     ../../../SOUP/Json/parser.h \
     ../../../Utility/DataStorage/StorageFile.h \
@@ -47,6 +50,7 @@ INCLUDEPATH += \
      ../../../Utility/ErrorLog \
      ../../../SOUP/Json \
     ../../../Utility/DataStorage \
+    ../../../Utility/LanguageManager \
     ../../../Utility/Config \
     ../../../Utility/ErrorLog \
     ../../../Utility/Config \

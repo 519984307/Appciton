@@ -16,6 +16,7 @@
 #include "StorageFile.h"
 #include <QMutex>
 #include <QFile>
+#include <QDir>
 #include "Debug.h"
 #include <QMutexLocker>
 #include <unistd.h>
@@ -31,7 +32,7 @@ class ErrorLogPrivate
 {
 public:
     explicit ErrorLogPrivate(ErrorLog *const q_ptr) : q_ptr(q_ptr), partNew(new StorageFile()),
-        partOld(new StorageFile())
+        partOld(new StorageFile()), errorLogNewPath(ERRORLOGNEW), errorLogOldPath(ERRORLOGOLD)
     {
     }
 
@@ -58,6 +59,8 @@ public:
     QJson::Parser parser;
     StorageFile *partNew;
     StorageFile *partOld;
+    QString errorLogNewPath;
+    QString errorLogOldPath;
     QList<ErrorLogItemBase *> storeItem;
     QMap<unsigned, unsigned> errorItemTimeStamp;
     QMutex filemutex;
@@ -70,20 +73,20 @@ public:
 void ErrorLogPrivate::loadfile()
 {
     bool broken = false;
-    partNew->reload(ERRORLOGNEW, QIODevice::ReadWrite);
+    partNew->reload(errorLogNewPath, QIODevice::ReadWrite);
     if (!partNew->isValid())
     {
         broken = true;
         StorageFile::remove(partNew);
-        partNew->reload(ERRORLOGNEW, QIODevice::ReadWrite);
+        partNew->reload(errorLogNewPath, QIODevice::ReadWrite);
     }
 
-    partOld->reload(ERRORLOGOLD, QIODevice::ReadWrite);
+    partOld->reload(errorLogOldPath, QIODevice::ReadWrite);
     if (!partOld->isValid())
     {
         broken = true;
         StorageFile::remove(partOld);
-        partOld->reload(ERRORLOGOLD, QIODevice::ReadWrite);
+        partOld->reload(errorLogOldPath, QIODevice::ReadWrite);
     }
 
     if (broken)
@@ -109,7 +112,7 @@ void ErrorLogPrivate::clear()
 void ErrorLogPrivate::switchFile()
 {
     StorageFile::remove(partOld);
-    StorageFile::rename(partNew, ERRORLOGOLD);
+    StorageFile::rename(partNew, errorLogOldPath);
     sync();
     loadfile();
 }
@@ -245,6 +248,12 @@ void ErrorLog::append(const QList<ErrorLogItemBase *> &items)
 void ErrorLog::clear()
 {
     Q_D(ErrorLog);
+    d->listMutex.lock();
+    qDeleteAll(d->storeItem);
+    d->storeItem.clear();
+    d->errorItemTimeStamp.clear();
+    d->listMutex.unlock();
+
     d->filemutex.lock();
     d->clear();
     d->filemutex.unlock();
@@ -413,4 +422,28 @@ ErrorLog &ErrorLog::getInstance()
 
 ErrorLog::~ErrorLog()
 {
+}
+
+bool ErrorLog::setStorageDir(const QString &dir)
+{
+    Q_D(ErrorLog);
+
+    if (!QDir(dir).exists()) {
+        return false;
+    }
+
+    QString newDir = dir;
+
+    d->filemutex.lock();
+
+    if (!newDir.endsWith('/')) {
+        newDir.append('/');
+    }
+    d->errorLogNewPath = newDir + "errorlog_new";
+    d->errorLogOldPath = newDir + "errorlog_old";
+    d->loadfile();
+
+    d->filemutex.unlock();
+
+    return true;
 }

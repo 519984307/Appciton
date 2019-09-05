@@ -16,12 +16,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 include("../../Common/Common.pri")
 include("../../Common/googletest.pri")
+include("../../Common/runtest.pri")
 
 SOURCES += main.cpp \
     TestNightManager.cpp \
     ../../../Utility/NightModeManager/NightModeManager.cpp \
     ../../../Components/SoundManager/SoundManagerInterface.cpp \
     ../../../Components/System/SystemManagerInterface.cpp \
+    ../../../Utility/LanguageManager/LanguageManager.cpp \
     ../../../Utility/Config/IConfig.cpp \
     ../../../Components/WindowManager/IWidget.cpp \
     ../../../Params/NIBPParam/NIBPParamInterface.cpp \
@@ -37,6 +39,7 @@ HEADERS += \
     ../../../Utility/NightModeManager/NightModeManager.h \
     ../../../Components/SoundManager/SoundManagerInterface.h \
     ../../../Components/System/SystemManagerInterface.h \
+    ../../../Utility/LanguageManager/LanguageManager.h \
     ../../../Utility/Config/IConfig.h \
     ../../../Components/WindowManager/IWidget.h \
     ../../../Params/NIBPParam/NIBPParamInterface.h \
@@ -58,6 +61,7 @@ HEADERS += \
 INCLUDEPATH += \
     ../../../Utility/NightModeManager \
     ../../../Components/SoundManager \
+    ../../../Utility/LanguageManager \
     ../../../Components/System \
     ../../../Components/System/Widgets \
     ../../../Utility/Config \
@@ -70,3 +74,7 @@ INCLUDEPATH += \
     ../../../Components/ParamManager \
     ../../Params/NIBP \
     .. \
+
+RESOURCES += \
+    res.qrc
+

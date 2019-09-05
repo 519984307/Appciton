@@ -531,6 +531,7 @@ SOURCES +=                                                                      
     Params/ECGParam/ECGAlarm.cpp                                                \
     Params/ECGParam/ECGDupAlarm.cpp                                             \
     Params/ECGParam/ECGDupParam.cpp                                             \
+    Params/ECGParam/ECGDupParamInterface.cpp                                    \
     Params/ECGParam/ECGParam.cpp                                                \
     Params/ECGParam/ECGParamInterface.cpp                                       \
     Params/ECGParam/ECGWidgets/ECGWaveWidget.cpp                                \
@@ -1076,6 +1077,7 @@ HEADERS +=                                                                      
     Params/ECGParam/ECGDefine.h                                                 \
     Params/ECGParam/ECGDupAlarm.h                                               \
     Params/ECGParam/ECGDupParam.h                                               \
+    Params/ECGParam/ECGDupParamInterface.h                                      \
     Params/ECGParam/ECGParam.h                                                  \
     Params/ECGParam/ECGParamInterface.h                                         \
     Params/ECGParam/ECGProviderIFace.h                                          \

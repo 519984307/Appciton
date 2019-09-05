@@ -20,8 +20,6 @@
 #include "O2ParamInterface.h"
 #include "RESPAlarm.h"
 
-ECGDupParam *ECGDupParam::_selfObj = NULL;
-
 /**************************************************************************************************
  * 初始化参数。
  *************************************************************************************************/
@@ -617,6 +615,20 @@ ECGDupParam::ECGDupParam()
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
+ECGDupParam &ECGDupParam::getInstance()
+{
+    static ECGDupParam *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new ECGDupParam();
+        ECGDupParamInterface *old =  ECGDupParamInterface::registerECGDupParam(instance);
+        if (old) {
+            delete old;
+        }
+    }
+    return *instance;
+}
+
 ECGDupParam::~ECGDupParam()
 {
 }

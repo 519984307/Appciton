@@ -26,9 +26,10 @@ public:
 
     void loadPatientInfo(const PatientInfo &info, const QString &bed);
 
-    void getText(QString &bed, QString &name, QString &type);
+    void getText(QString &bed, QString &name, QString &type);   /* NOLINT */
 
-    void setAlarmPause(int seconds);
+    /* override */
+    void setAlarmPauseTime(int seconds);
 
 protected:
     void paintEvent(QPaintEvent *e);

@@ -16,6 +16,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 include("../../Common/Common.pri")
 include("../../Common/googletest.pri")
+include("../../Common/runtest.pri")
 
 SOURCES += main.cpp \
     TestPatientManager.cpp \
@@ -23,7 +24,9 @@ SOURCES += main.cpp \
     ../../../Components/ConfigManager/ConfigManagerInterface.cpp \
     ../../../Components/WindowManager/IWidget.cpp \
     ../../../Utility/Config/IConfig.cpp \
+    ../../../Utility/LanguageManager/LanguageManager.cpp \
     ../../../Params/ECGParam/ECGParamInterface.cpp \
+    ../../../Params/ECGParam/ECGDupParamInterface.cpp \
     ../../../Utility/DataStorage/DataStorageDirManagerInterface.cpp \
     ../../../Params/NIBPParam/NIBPParamInterface.cpp \
     ../../../Components/Alarm/AlarmIndicatorInterface.cpp \
@@ -40,9 +43,11 @@ HEADERS += \
     ../../../Components/PatientManager/PatientManager.h \
     ../../../Utility/BaseDefine.h \
     ../../../Components/ParamManager/ParamDefine.h \
+    ../../../Utility/LanguageManager/LanguageManager.h \
     ../../../Components/ConfigManager/ConfigManagerInterface.h \
     ../../../Components/WindowManager/IWidget.h \
     ../../../Utility/Config/IConfig.h \
+    ../../../Params/ECGParam/ECGDupParamInterface.h \
     ../../../Params/ECGParam/ECGParamInterface.h \
     ../../../Utility/DataStorage/DataStorageDirManagerInterface.h \
     ../../../Params/NIBPParam/NIBPParamInterface.h \
@@ -76,10 +81,14 @@ INCLUDEPATH += \
     ../../../Components/System \
     ../../../Utility/Config \
     ../../../Utility/ErrorLog \
+    ../../../Utility/LanguageManager \
     ../../Utility \
     ../../Params \
     ../../Params/NIBP \
     ../../Storage/TestDataStorageDirManager \
     ../../Alarm \
     ../../../Components/System/Widgets
+
+RESOURCES += \
+    res.qrc
 

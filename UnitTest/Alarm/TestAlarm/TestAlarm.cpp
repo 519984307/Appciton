@@ -389,7 +389,11 @@ void TestAlarm::testMainRunLimitSource_data()
 
     LimitAlarm *s3 = new LimitAlarm;
     QTest::newRow("pause state/nolatch") << static_cast<AlarmLimitIFace *>(s3)
-                                         << ALARM_STATUS_PAUSE << 0
+                                         << ALARM_STATUS_RESET << 0
+                                         << false
+                                         << false;
+    QTest::newRow("pause state/nolatch") << static_cast<AlarmLimitIFace *>(s3)
+                                         << ALARM_STATUS_RESET << 0
                                          << false
                                          << false;
     QTest::newRow("reset state/nolatch") << static_cast<AlarmLimitIFace *>(s3)
@@ -398,7 +402,7 @@ void TestAlarm::testMainRunLimitSource_data()
                                          << true;
 }
 
-static bool compareAlarmInfoList(QList<Alarm::AlarmInfo> &list1, QList<Alarm::AlarmInfo> &list2)
+static bool compareAlarmInfoList(QList<Alarm::AlarmInfo> &list1, QList<Alarm::AlarmInfo> &list2)    /* NOLINT */
 {
     QList<Alarm::AlarmInfo>::Iterator iter = list1.begin();
     for (; iter != list1.end(); iter++)
@@ -471,7 +475,8 @@ void TestAlarm::testMainRunLimitSource()
         {
             latchCount++;
         }
-        else if (source->getCompare(0, i) == 0 && isLock && lastAlarmStatus[i] && isNeedAddAlarm && source->isAlarmEnable(i))
+        else if (source->getCompare(0, i) == 0 && isLock && lastAlarmStatus[i]
+                 && isNeedAddAlarm && source->isAlarmEnable(i))
         {
             latchCount++;
         }

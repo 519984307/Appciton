@@ -76,7 +76,7 @@ static void _initSystem(void)
         QString selectTypeString;
         systemConfig.getStrAttr(selectIndexString, "type", selectTypeString);
 
-        if (selectTypeString != "Current") // 当前文件配置不再加载
+        if (selectTypeString != "Current")  // 当前文件配置不再加载
         {
             QString selectNameString;
             systemConfig.getStrValue(selectIndexString, selectNameString);
@@ -242,7 +242,7 @@ static void _initProviderParam(void)
     DataDispatcher::addDataDispatcher(new DataDispatcher("DataDispatcher"));
 
     // ECG部分。
-    paramManager.addParam(ecgDupParam.construction());
+    paramManager.addParam(ecgDupParam.getInstance());
 
     AlarmLimitIFace *limitAlarmSource = new ECGDupLimitAlarm();
     alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_ECGDUP);
@@ -447,7 +447,6 @@ static void _initProviderParam(void)
     // CO2部分。
     if (systemManager.isSupport(CONFIG_CO2))
     {
-
         QString str;
         machineConfig.getStrValue("CO2", str);
         paramManager.addProvider(*new BLMCO2Provider(str));

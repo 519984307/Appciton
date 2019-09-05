@@ -15,7 +15,7 @@
 #include "NIBPSymbol.h"
 #include "NIBPCountdownTimeInterface.h"
 #include <QTimerEvent>
-#include "SystemManager.h"
+#include "SystemManagerInterface.h"
 
 /**************************************************************************************************
  * 处理事件。
@@ -34,10 +34,13 @@ void NIBPMonitorStandbyState::handleNIBPEvent(NIBPEvent event, const unsigned ch
         break;
 
     case NIBP_EVENT_TIMEOUT:
-        if (systemManager.getCurWorkMode() != WORK_MODE_DEMO)
+    {
+        SystemManagerInterface *systemManager = SystemManagerInterface::getSystemManager();
+        if (systemManager && systemManager->getCurWorkMode() != WORK_MODE_DEMO)
         {
             switchState(NIBP_MONITOR_ERROR_STATE);
         }
+    }
         break;
 
     case NIBP_EVENT_TRIGGER_BUTTON:

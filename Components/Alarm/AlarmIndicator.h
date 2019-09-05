@@ -16,14 +16,15 @@
 
 class AlarmInfoBarWidget;
 class AlarmStatusWidget;
-class PatientInfoWidget;
+class PatientInfoWidgetInterface;
 class AlarmIndicator : public AlarmIndicatorInterface
 {
 public:
     static AlarmIndicator &getInstance(void);
 
     // 注册报警界面对象。
-    void setAlarmPhyWidgets(AlarmInfoBarWidget *alarmWidget, AlarmStatusWidget *muteWidget, PatientInfoWidget *patInfoWidget);
+    void setAlarmPhyWidgets(AlarmInfoBarWidget *alarmWidget, AlarmStatusWidget *muteWidget,
+                            PatientInfoWidgetInterface *patInfoWidget);
     void setAlarmTechWidgets(AlarmInfoBarWidget *alarmWidget);
 
     // 增加/删除报警消息。
@@ -86,8 +87,8 @@ public:
      */
     int getAlarmCount(AlarmType type, AlarmPriority priority);
 
-    void getAlarmInfo(int index, AlarmInfoNode &node);
-    bool getAlarmInfo(AlarmType type, const char *alArmMessage, AlarmInfoNode &node);
+    void getAlarmInfo(int index, AlarmInfoNode &node);  /* NOLINT */
+    bool getAlarmInfo(AlarmType type, const char *alArmMessage, AlarmInfoNode &node); /* NOLINT */
 
     // 构造与析构。
     virtual ~AlarmIndicator();
@@ -141,17 +142,17 @@ public:
 private:
     AlarmIndicator();
 
-private: // 报警信息显示。
+private:    // 报警信息显示。
     void _displayPhyClear(void);     // 清除生理报警界面。
     void _displayTechClear(void);    // 清除技术报警界面。
-    void _displayPhySet(AlarmInfoNode &node);  // 设置生理报警提示信息。
-    void _displayTechSet(AlarmInfoNode &node); // 设置技术报警提示信息。
-    bool _canPlayAudio(AlarmStatus status, bool isTechAlarm); // check whether can play alarm sound
+    void _displayPhySet(AlarmInfoNode &node);  // 设置生理报警提示信息。 /* NOLINT */
+    void _displayTechSet(AlarmInfoNode &node);  // 设置技术报警提示信息。   /* NOLINT */
+    bool _canPlayAudio(AlarmStatus status, bool isTechAlarm);   // check whether can play alarm sound
 
     AlarmInfoBarWidget *_alarmPhyInfoWidget;
     AlarmInfoBarWidget *_alarmTechInfoWidget;
     AlarmStatusWidget *_alarmStatusWidget;
-    PatientInfoWidget *_patInfoWidget;
+    PatientInfoWidgetInterface *_patInfoWidget;
 
 private:
     // 最大报警信息数量。
@@ -162,7 +163,7 @@ private:
     int _alarmPhyDisplayIndex;
     int _alarmTechDisplayIndex;
 
-    void _displayInfoNode(AlarmInfoNode &alarmNode, int &indexint,
+    void _displayInfoNode(AlarmInfoNode &alarmNode, int &indexint,  /* NOLINT */
                           int newAlarmIndex, int oldAlarmIndex,
                           int firstIndex, int lastIndex);
 

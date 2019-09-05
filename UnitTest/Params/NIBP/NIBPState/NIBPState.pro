@@ -36,6 +36,7 @@ SOURCES += \
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 include("../../../Common/googletest.pri")
+include("../../../Common/runtest.pri")
 
 HEADERS += \
     TestNIBPState.h \

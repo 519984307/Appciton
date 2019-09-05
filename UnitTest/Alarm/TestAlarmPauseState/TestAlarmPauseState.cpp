@@ -68,12 +68,12 @@ void TestAlarmPauseState::testEnter()
     MockAlarmIndicator mockAlarmIndicator;
     AlarmIndicatorInterface::registerAlarmIndicator(&mockAlarmIndicator);
     EXPECT_CALL(mockAlarmIndicator, setAlarmStatus(Eq(ALARM_STATUS_PAUSE)));
-    EXPECT_CALL(mockAlarmIndicator, delAllPhyAlarm);
     EXPECT_CALL(mockAlarmIndicator, updateAlarmPauseTime(static_cast<AlarmPauseTime>(pauseTime)));
 
     MockLightManager mockLightManager;
     LightManagerInterface::registerLightManager(&mockLightManager);
-    EXPECT_CALL(mockLightManager, enableAlarmAudioMute(Eq(true)));
+    /* the alarm pause light not longer turn on in alarm pause state */
+    EXPECT_CALL(mockLightManager, enableAlarmAudioMute(Eq(false)));
 
     d_ptr->pauseState.enter();
     QCOMPARE(d_ptr->pauseState.type(), ALARM_PAUSE_STATE);
