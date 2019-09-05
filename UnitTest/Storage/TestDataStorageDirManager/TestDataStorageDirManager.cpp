@@ -22,7 +22,12 @@ using ::testing::Return;
 
 TestDataStorageDirManager::TestDataStorageDirManager()
 {
-    QString newdir = QString("/run/user/%1").arg(getuid());
+    QString newdir = QString("/run/user/%1/data").arg(getuid());
+    QDir d(newdir);
+    if (!d.exists())
+    {
+        d.mkdir(newdir);
+    }
     DataStorageDirManagerInterface::setDataStorageDir(newdir);
 }
 

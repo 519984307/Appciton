@@ -18,7 +18,7 @@ mkdir $BUILD_DIR && cd $BUILD_DIR
 /opt/qt-lib/qt-4.8.6/bin/qmake $REPO
 
 # build
-make -j4
+make -j4 -s
 
 
 
