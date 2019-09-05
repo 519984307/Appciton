@@ -16,24 +16,18 @@
 #include "ECGDefine.h"
 #include "SoundManager.h"
 
+#include "ECGDupParamInterface.h"
+
 #include "ECGParam.h"
 
 class ECGTrendWidget;
 class ECGWaveWidget;
 class ECGProviderIFace;
-class ECGDupParam: public Param
+class ECGDupParam: public Param, public ECGDupParamInterface
 {
     Q_OBJECT
 public:
-    static ECGDupParam &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new ECGDupParam();
-        }
-        return *_selfObj;
-    }
-    static ECGDupParam *_selfObj;
+    static ECGDupParam &getInstance(void);
 
     // 析构。
     virtual ~ECGDupParam();
@@ -47,8 +41,8 @@ public:
     virtual void handDemoTrendData(void);
 
     // 获取可得的波形控件集。
-    virtual void getAvailableWaveforms(QStringList &waveforms,
-                                       QStringList &waveformShowName, int flag = 0);
+    virtual void getAvailableWaveforms(QStringList &waveforms,          /* NOLINT */
+                                       QStringList &waveformShowName, int flag = 0);    /* NOLINT */
 
     // 获取子参数值。
     virtual short getSubParamValue(SubParamID id);
@@ -115,9 +109,7 @@ public:
      */
     void setHrSource(HRSourceType type);
 
-    /**
-     * @brief updateHRSource 更新HR来源
-     */
+    /* override */
     void updateHRSource();
 
     /**
@@ -158,4 +150,4 @@ private:
     PRSourceType _prSource;
     HRSourceType _currentHRSource;
 };
-#define ecgDupParam (ECGDupParam::construction())
+#define ecgDupParam (ECGDupParam::getInstance())

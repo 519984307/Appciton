@@ -57,5 +57,16 @@ public:
      * @param data
      * @return
      */
-    virtual bool getTrendData(unsigned t, TrendCacheData &data) = 0;
+    virtual bool getTrendData(unsigned t, TrendCacheData &data) = 0;    /* NOLINT */
+
+    /**
+     * @brief clearTrendCache clear the internal cache data
+     */
+    virtual void clearTrendCache() = 0;
+
+    /**
+     * @brief stopDataCollect stop collect data for specific times
+     * @param times the times
+     */
+    virtual void stopDataCollect(quint32 times) = 0;
 };

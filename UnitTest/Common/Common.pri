@@ -11,3 +11,4 @@ HEADERS += $$PROJECT_BASE/Utility/Debug/Debug.h \
 
 INCLUDEPATH += $$PROJECT_BASE/Utility \
     $$PROJECT_BASE/Utility/Debug
+

@@ -348,9 +348,9 @@ void TestTimeDate::testGetTimeMsec()
     QFETCH(bool, result);
     for (int i = 0; i < testNum; i++)
     {
-    int currentMsec = timeDate.getTimeMsec();
-    QTime time = QTime::currentTime();
-    QCOMPARE(currentMsec == time.msec(), result);
+        int currentMsec = timeDate.getTimeMsec();
+        QTime time = QTime::currentTime();
+        QCOMPARE(qAbs(currentMsec - time.msec()) <= 1, result);
     }
 }
 

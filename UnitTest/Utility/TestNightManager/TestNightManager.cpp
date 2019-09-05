@@ -43,7 +43,7 @@ void TestNightManager::testSetNightMode_data()
     QTest::addColumn<int>("completeTips");
     QTest::addColumn<int>("stopNibpMeasure");
 
-    QTest::newRow("nightMode") << true << 1 << 1 << 1 << 1 << 1 << 0;
+    QTest::newRow("nightMode") << true << 0 << 1 << 0 << 0 << 1 << 0;
     QTest::newRow("normalMode") << false << 1 << 1 << 1 << 1 << 1 << 0;
 
     QTest::newRow("nightMode_stop_nibpMeasure") << true << 1 << 1 << 1 << 1 << 1 << 1;
@@ -81,6 +81,7 @@ void TestNightManager::testSetNightMode()
     QFETCH(int, completeTips);
     QFETCH(int, stopNibpMeasure);
 
+    systemConfig.load(":System.Original.xml");
     nightModeData data = {nightMode, screenBrightness, alarmVolume, heartBeatVolume,
                          notificationVolume, completeTips, stopNibpMeasure};
     readyNightModeData(data);
@@ -96,8 +97,24 @@ void TestNightManager::testSetNightMode()
     // mock sound manager
     MockSoundManager mockSoundManager;
     SoundManagerInterface::registerSoundManager(&mockSoundManager);
+
+    // mock configManager
+    MockConfigManager mockConfigManager;
+    MockConfigManager::registerConfigManager(&mockConfigManager);
+    Config currentConfig(":/AdultConfig.Original.xml");
+
+    EXPECT_CALL(mockConfigManager, getCurConfig()).WillRepeatedly(ReturnRef(currentConfig));
+
+
+    /* night mode will no longer set alarm volumn */
     EXPECT_CALL(mockSoundManager, setVolume(SoundManagerInterface::SOUND_TYPE_ALARM,
-                                            static_cast<SoundManagerInterface::VolumeLevel>(alarmVolume)));
+                                            static_cast<SoundManagerInterface::VolumeLevel>(alarmVolume))).Times(0);
+    if (!nightMode) {
+        currentConfig.getNumValue("ECG|QRSVolume", heartBeatVolume);
+        systemConfig.getNumValue("General|KeyPressVolume", notificationVolume);
+
+        systemConfig.getNumValue("PrimaryCfg|NIBP|CompleteTone", completeTips);
+    }
     EXPECT_CALL(mockSoundManager, setVolume(SoundManagerInterface::SOUND_TYPE_HEARTBEAT,
                                             static_cast<SoundManagerInterface::VolumeLevel>(heartBeatVolume)));
     EXPECT_CALL(mockSoundManager, setVolume(SoundManagerInterface::SOUND_TYPE_NOTIFICATION,
@@ -118,11 +135,6 @@ void TestNightManager::testSetNightMode()
     MockNIBPParam::registerNIBPParam(&mockNIBPParam);
     EXPECT_CALL(mockNIBPParam, stopMeasure()).Times(AnyNumber());
 
-    // mock configManager
-    MockConfigManager mockConfigManager;
-    MockConfigManager::registerConfigManager(&mockConfigManager);
-    Config currentConfig("/usr/local/nPM/etc/AdultConfig.xml");
-    EXPECT_CALL(mockConfigManager, getCurConfig()).WillRepeatedly(ReturnRef(currentConfig));
 
 
     nightModeManager.setNightMode(nightMode);

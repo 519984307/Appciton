@@ -360,11 +360,21 @@ void TestPatientManager::testPatientInfo()
 
     // test updatePaitentInfo() and GetHistroyPatientInfo()
     QString testPath = QString(DATA_STORE_PATH) + QString("TestData");
+    QString testFile = testPath + PATIENT_INFO_FILENAME;
     QDir dir(QString(DATA_STORE_PATH));
-    if (!dir.exists(testPath))
+    if (!dir.exists(testPath) || !QFile::exists(testFile))
     {
         dir.mkpath(testPath);
-        QFile::copy(PATIENT_INFO_PATH + PATIENT_INFO_FILENAME, testPath + PATIENT_INFO_FILENAME);
+        QFile f(":" + PATIENT_INFO_FILENAME);
+        if (f.open(QIODevice::ReadOnly|QIODevice::Text)) {
+            QByteArray data = f.readAll();
+            QFile outFile(testPath + PATIENT_INFO_FILENAME);
+            if (outFile.open(QIODevice::WriteOnly|QIODevice::Text)) {
+                outFile.write(data);
+                outFile.close();
+            }
+            f.close();
+        }
     }
     MockDataStorageDirManager mockDataStorageDirManager;
     MockDataStorageDirManager::registerDataStorageDirManager(&mockDataStorageDirManager);

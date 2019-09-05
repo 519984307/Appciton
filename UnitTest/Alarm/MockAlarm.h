@@ -18,4 +18,5 @@ public:
     MOCK_METHOD1(setAlarmLightOnAlarmReset, void(bool));
     MOCK_METHOD0(getAlarmLightOnAlarmReset, bool(void));
     MOCK_METHOD1(addAlarmStatus, void(AlarmStatus));
+    MOCK_METHOD0(removeAllLimitAlarm, void(void));
 };

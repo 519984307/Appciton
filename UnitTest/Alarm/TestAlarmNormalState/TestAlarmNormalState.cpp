@@ -37,7 +37,6 @@ void TestAlarmNormalState::testEnter()
     MockAlarmIndicator mockAlarmIndicator;
     AlarmIndicatorInterface::registerAlarmIndicator(&mockAlarmIndicator);
     EXPECT_CALL(mockAlarmIndicator, setAlarmStatus(Eq(ALARM_STATUS_NORMAL)));
-    EXPECT_CALL(mockAlarmIndicator, updateAlarmStateWidget());
 
     MockLightManager mockLightManager;
     LightManagerInterface::registerLightManager(&mockLightManager);

@@ -23,7 +23,8 @@
 #include <QFile>
 #include "SPO2Param.h"
 #include "RunningStatusBarInterface.h"
-#include "ECGDupParam.h"
+#include "ECGDupParamInterface.h"
+#include "ECGParamInterface.h"
 
 #define XML_FILE_SUFFIX QString::fromLatin1(".xml")
 #define PATIENT_INFO_PATH QString("/usr/local/nPM/etc")
@@ -43,7 +44,7 @@ public:
     PatientInfo patientInfo;
     PatientInfoWidgetInterface *patientInfoWidget;
 
-    void loadPatientInfo(PatientInfo &info);
+    void loadPatientInfo(PatientInfo &info);    /* NOLINT */
     /**
      * @brief handleDischarge 解除病人后，刷新标志状态
      */
@@ -134,8 +135,14 @@ void PatientManager::setType(PatientType type)
     }
     if (systemManagerInterface && systemManagerInterface->isSupport(PARAM_ECG))
     {
-        ecgDupParam.updateHRSource();
-        ecgParam.updatePacermaker();    // 更新起博标志
+        ECGDupParamInterface *ecgDupParam =  ECGDupParamInterface::getECGDupParam();
+        if (ecgDupParam) {
+            ecgDupParam->updateHRSource();
+        }
+        ECGParamInterface *ecgParam = ECGParamInterface::getECGParam();
+        if (ecgParam) {
+            ecgParam->updatePacermaker();    // 更新起博标志
+        }
     }
     if (config)
     {

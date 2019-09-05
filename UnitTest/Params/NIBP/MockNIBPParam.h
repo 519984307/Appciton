@@ -36,4 +36,11 @@ public:
     MOCK_METHOD1(setFirstAuto, void(bool));
     MOCK_METHOD0(isFirstAuto, bool(void));
     MOCK_METHOD0(clearTrendListData, void(void));
+    MOCK_METHOD0(errorDisable, void(void));
+    MOCK_METHOD0(recoverInitTrendWidgetData, void(void));
+    MOCK_METHOD1(setZeroSelfTestState, void(bool));
+    MOCK_METHOD0(isZeroSelfTestState, bool(void));
+    MOCK_METHOD1(setCuffPressure, void(int));
+    MOCK_METHOD1(setDisableState, void(bool));
+    MOCK_CONST_METHOD0(isMeasuring, bool(void));
 };

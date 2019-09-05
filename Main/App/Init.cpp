@@ -79,7 +79,7 @@ static void _initSystem(void)
         QString selectTypeString;
         systemConfig.getStrAttr(selectIndexString, "type", selectTypeString);
 
-        if (selectTypeString != "Current") // 当前文件配置不再加载
+        if (selectTypeString != "Current")  // 当前文件配置不再加载
         {
             QString selectNameString;
             systemConfig.getStrValue(selectIndexString, selectNameString);
@@ -249,7 +249,7 @@ static void _initProviderParam(void)
     PlugInProvider::addPlugInProvider(new PlugInProvider("PlugIn"));
 
     // ECG部分。
-    paramManager.addParam(ecgDupParam.construction());
+    paramManager.addParam(ecgDupParam.getInstance());
 
     AlarmLimitIFace *limitAlarmSource = new ECGDupLimitAlarm();
     alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_ECGDUP);

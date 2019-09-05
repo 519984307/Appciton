@@ -17,6 +17,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 include("../../Common/Common.pri")
 include("../../Common/googletest.pri")
+include("../../Common/runtest.pri")
 
 DEFINES += HIDE_OXYCRG_REVIEW_FUNCTION
 
@@ -24,6 +25,7 @@ SOURCES += main.cpp \
     TestAlarm.cpp \
     ../../../Components/Alarm/Alarm.cpp \
     ../../../Components/Alarm/AlarmIndicatorInterface.cpp \
+    ../../../Utility/LanguageManager/LanguageManager.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmStateMachineInterface.cpp \
     ../../../Utility/Config/IConfig.cpp \
     ../../../Components/PatientData/TrendCacheInterface.cpp \
@@ -41,6 +43,7 @@ SOURCES += main.cpp \
 HEADERS += \
     TestAlarm.h \
     ../../../Components/Alarm/Alarm.h \
+    ../../../Utility/LanguageManager/LanguageManager.h \
     ../../../Components/ParamManager/ParamDefine.h \
     ../../../Components/Alarm/AlarmIndicatorInterface.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmStateMachineInterface.h \
@@ -75,6 +78,7 @@ HEADERS += \
 
 INCLUDEPATH += \
     ../../../Components/Alarm \
+    ../../../Utility/LanguageManager \
     ../../../Components/ParamManager \
     ../../../Components/Alarm \
     ../../../Components/Alarm/AlarmStateMachine \

@@ -19,6 +19,7 @@
 #include "MockSoundManager.h"
 #include "MockLightManager.h"
 #include "MockAlarmStateMachine.h"
+#include "MockAlarm.h"
 #include "IConfig.h"
 
 Q_DECLARE_METATYPE(AlarmParamIFace *)
@@ -30,6 +31,8 @@ Q_DECLARE_METATYPE(AlarmStatus)
 using ::testing::Mock;
 using ::testing::_;
 using ::testing::AnyNumber;
+using ::testing::NiceMock;
+using ::testing::Return;
 
 static const char *useCase[ALARM_INFO_POOL_LEN + 1] = {"01", "02", "03", "04", "05",
                                                    "06", "07", "08", "09", "10",
@@ -184,7 +187,7 @@ void TestAlarmIndicator::testHandleAlarmInfo()
 
     QTime t = QTime::currentTime();
     bool ret = false;
-    if (testCase == 0) // 测试正常情况
+    if (testCase == 0)   // 测试正常情况
     {
         // 正常情况
         ret = alarmIndicator.addAlarmInfo(t.elapsed(), alarmType,
@@ -407,7 +410,8 @@ void TestAlarmIndicator::testLatchAlarmInfo_data()
 
     QTest::newRow("latch phy limit which hasn't latch") << phyLimitNode << phyLimitNonExistNode<< false << false;
     QTest::newRow("latch phy limit which has latch") << phyOneshotNode << phyOneshotNonExistNode<< false << false;
-    QTest::newRow("latch phy oneshot which hasn't latch") << techOneshotNode << techOneshotNonExistNode<< false << false;
+    QTest::newRow("latch phy oneshot which hasn't latch") << techOneshotNode << techOneshotNonExistNode
+                                                          << false << false;
 }
 
 void TestAlarmIndicator::testLatchAlarmInfo()
@@ -754,7 +758,7 @@ void TestAlarmIndicator::testResetStatusHandle_data()
     QTest::newRow("reset hasn't acknowledge phy high oneshot alarm") << phyOneshotNode
                                                                      << true;
     QTest::newRow("reset hasn't acknowledge phy low oneshot alarm") << phyLowOneshotResetNode
-                                                                    << false;
+                                                                    << true;
     QTest::newRow("reset has acknowledge phy oneshot alarm") << phyOneshotResetNode
                                                              << true;
 
@@ -806,16 +810,16 @@ void TestAlarmIndicator::testPublishAlarmHasNoAlarm()
 {
     QFETCH(AlarmStatus, status);
 
-    MockAlarmInfoBarWidget mockPhyInfoBarWidget;
+    NiceMock<MockAlarmInfoBarWidget> mockPhyInfoBarWidget;
     AlarmInfoBarWidget::registerAlarmInfoBar(ALARM_TYPE_PHY, &mockPhyInfoBarWidget);
-    MockAlarmInfoBarWidget mockTechInfoBarWidget;
+    NiceMock<MockAlarmInfoBarWidget> mockTechInfoBarWidget;
     AlarmInfoBarWidget::registerAlarmInfoBar(ALARM_TYPE_TECH, &mockTechInfoBarWidget);
-    MockSoundManager mockSoundManager;
+    NiceMock<MockSoundManager> mockSoundManager;
     SoundManagerInterface::registerSoundManager(&mockSoundManager);
-    MockLightManager mockLightManager;
+    NiceMock<MockLightManager> mockLightManager;
     LightManagerInterface::registerLightManager(&mockLightManager);
 
-    alarmIndicator.setAlarmPhyWidgets(&mockPhyInfoBarWidget, NULL);
+    alarmIndicator.setAlarmPhyWidgets(&mockPhyInfoBarWidget, NULL, NULL);
     alarmIndicator.setAlarmTechWidgets(&mockTechInfoBarWidget);
     EXPECT_CALL(mockPhyInfoBarWidget, clear());
     EXPECT_CALL(mockTechInfoBarWidget, clear());
@@ -839,7 +843,8 @@ void TestAlarmIndicator::testPublishAlarmHasPhyAlarm_data()
     QTest::newRow("normal status/high") << ALARM_STATUS_NORMAL << ALARM_PRIO_HIGH << ALARM_PRIO_HIGH;
     QTest::newRow("pause status/high") << ALARM_STATUS_PAUSE << ALARM_PRIO_HIGH << ALARM_PRIO_LOW;
     QTest::newRow("pause status/prompt") << ALARM_STATUS_PAUSE << ALARM_PRIO_PROMPT << ALARM_PRIO_LOW;
-    QTest::newRow("reset status/low") << ALARM_STATUS_RESET << ALARM_PRIO_LOW << ALARM_PRIO_LOW;
+    /* after alarm reset, not light alarm */
+    QTest::newRow("reset status/low") << ALARM_STATUS_RESET << ALARM_PRIO_LOW << ALARM_PRIO_PROMPT;
     d_ptr->isClearAllAlarm = false;
 }
 
@@ -853,6 +858,8 @@ void TestAlarmIndicator::testPublishAlarmHasPhyAlarm()
     alarmIndicator.addAlarmInfo(QTime::currentTime().elapsed(),
                                 ALARM_TYPE_PHY,
                                 priority, useCase[i++], d_ptr->limitAlarm, 0);
+    NiceMock<MockAlarm> mockAlarm;
+    AlarmInterface::registerAlarm(&mockAlarm);
     MockAlarmInfoBarWidget mockPhyInfoBarWidget;
     AlarmInfoBarWidget::registerAlarmInfoBar(ALARM_TYPE_PHY, &mockPhyInfoBarWidget);
     MockAlarmInfoBarWidget mockTechInfoBarWidget;
@@ -864,8 +871,11 @@ void TestAlarmIndicator::testPublishAlarmHasPhyAlarm()
     MockAlarmStateMachine mockAlarmStateMachine;
     AlarmStateMachineInterface::registerAlarmStateMachine(&mockAlarmStateMachine);
 
-    alarmIndicator.setAlarmPhyWidgets(&mockPhyInfoBarWidget, NULL);
+    alarmIndicator.setAlarmPhyWidgets(&mockPhyInfoBarWidget, NULL, NULL);
     alarmIndicator.setAlarmTechWidgets(&mockTechInfoBarWidget);
+
+
+    ON_CALL(mockAlarm, getAlarmLightOnAlarmReset).WillByDefault(Return(true));
 
     if (status == ALARM_STATUS_PAUSE)
     {
@@ -886,8 +896,9 @@ void TestAlarmIndicator::testPublishAlarmHasPhyAlarm()
     }
 
     bool lightHasAlarm = false;
-    if (priority != ALARM_PRIO_PROMPT && status != ALARM_STATUS_PAUSE)
+    if (priority != ALARM_PRIO_PROMPT && status != ALARM_STATUS_PAUSE && status != ALARM_STATUS_RESET)
     {
+        /* after alarm reset and alarm pause, no light alarm */
         lightHasAlarm = true;
     }
 
@@ -895,7 +906,9 @@ void TestAlarmIndicator::testPublishAlarmHasPhyAlarm()
     {
         EXPECT_CALL(mockPhyInfoBarWidget, display(_));
         EXPECT_CALL(mockAlarmStateMachine, handAlarmEvent(ALARM_STATE_EVENT_NO_PAUSED_PHY_ALARM, _, _));
-        EXPECT_CALL(mockAlarmStateMachine, handAlarmEvent(ALARM_STATE_EVENT_NO_ACKNOWLEDG_ALARM, _, _));
+        if (status != ALARM_STATUS_RESET) {
+            EXPECT_CALL(mockAlarmStateMachine, handAlarmEvent(ALARM_STATE_EVENT_NO_ACKNOWLEDG_ALARM, _, _));
+        }
     }
     else
     {
@@ -938,8 +951,9 @@ void TestAlarmIndicator::testPublishAlarmHasTechAlarm()
     // 增加技术报警
     alarmIndicator.addAlarmInfo(QTime::currentTime().elapsed(),
                                 ALARM_TYPE_TECH,
-                                priority, useCase[j++], d_ptr->oneShotAlarm, 0);
+                                priority, useCase[j++], d_ptr->oneShotAlarm, 0, true);
 
+    NiceMock<MockAlarm> mockAlarm;
     MockAlarmInfoBarWidget mockPhyInfoBarWidget;
     AlarmInfoBarWidget::registerAlarmInfoBar(ALARM_TYPE_PHY, &mockPhyInfoBarWidget);
     MockAlarmInfoBarWidget mockTechInfoBarWidget;
@@ -950,6 +964,10 @@ void TestAlarmIndicator::testPublishAlarmHasTechAlarm()
     LightManagerInterface::registerLightManager(&mockLightManager);
     MockAlarmStateMachine mockAlarmStateMachine;
     AlarmStateMachineInterface::registerAlarmStateMachine(&mockAlarmStateMachine);
+
+    alarmIndicator.setAlarmPhyWidgets(&mockPhyInfoBarWidget, NULL, NULL);
+    alarmIndicator.setAlarmTechWidgets(&mockTechInfoBarWidget);
+    ON_CALL(mockAlarm, getAlarmLightOnAlarmReset).WillByDefault(Return(true));
 
     if (priority != ALARM_PRIO_PROMPT && status == ALARM_STATUS_NORMAL)
     {
@@ -967,6 +985,7 @@ void TestAlarmIndicator::testPublishAlarmHasTechAlarm()
 
     EXPECT_CALL(mockAlarmStateMachine, handAlarmEvent(ALARM_STATE_EVENT_ALL_PHY_ALARM_LATCHED, _, _));
     EXPECT_CALL(mockAlarmStateMachine, handAlarmEvent(ALARM_STATE_EVENT_NO_PAUSED_PHY_ALARM, _, _));
+    EXPECT_CALL(mockAlarmStateMachine, handAlarmEvent(ALARM_STATE_EVENT_NO_ACKNOWLEDG_ALARM, _, _));
 
     if (status == ALARM_STATUS_RESET)
     {
@@ -975,7 +994,6 @@ void TestAlarmIndicator::testPublishAlarmHasTechAlarm()
     }
     else
     {
-        EXPECT_CALL(mockAlarmStateMachine, handAlarmEvent(ALARM_STATE_EVENT_NO_ACKNOWLEDG_ALARM, _, _));
     }
 
     alarmIndicator.publishAlarm(status);

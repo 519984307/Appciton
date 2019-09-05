@@ -1,0 +1,904 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 该文件中的选项受密码保护。-->
+<Supervision>
+    <General>
+        <SuperPassword>97878161</SuperPassword>
+        <Password>1234</Password>
+        <UserMaintainPassword>123456</UserMaintainPassword>
+        <DeviceIdentifier>00000000000</DeviceIdentifier>
+        <DefaultPatientType>0</DefaultPatientType>
+        <!-- 0:adult；1:ped； -->
+        <FullDisclosureRecording>1</FullDisclosureRecording>
+    </General>
+    <Layout>
+        <SelectInterface>3</SelectInterface>
+    </Layout>
+    <Unit>
+        <HightUnit>14</HightUnit>
+        <WeightUnit>12</WeightUnit>
+        <STUnit>11</STUnit>
+        <PressureUnit>5</PressureUnit>
+        <TemperatureUnit>2</TemperatureUnit>
+        <CVPUnit>5</CVPUnit>
+        <ICPUnit>5</ICPUnit>
+        <CO2Unit>5</CO2Unit>
+    </Unit>
+    <OxyCRG>
+        <Trend1>1</Trend1>
+        <Trend2>0</Trend2>
+        <Wave>0</Wave>
+        <Interval>1</Interval>
+        <Ruler>
+            <HRLow>0</HRLow>	
+            <HRHigh>0</HRHigh>	
+            <RRLow>0</RRLow>	
+            <RRHigh>0</RRHigh>	
+            <SPO2Low>0</SPO2Low>	
+            <SPO2High>0</SPO2High>	
+            <CO2Low>0</CO2Low>	
+            <CO2High>0</CO2High>	
+        </Ruler>
+    </OxyCRG>
+    <PACER>
+        <DefaultPacerRate>70</DefaultPacerRate>
+        <FixedRatePacing>1</FixedRatePacing>
+    </PACER>
+    <ECG>
+        <BandWidth>0</BandWidth>
+        <CalcLead>1</CalcLead>
+        <QRSVolume>3</QRSVolume>
+        <ECGLeadConvention>0</ECGLeadConvention>
+        <AlarmSource>0</AlarmSource>
+        <Ecg1Wave>1</Ecg1Wave>
+        <Ecg2Wave>0</Ecg2Wave>
+        <Ecg1Gain>0</Ecg1Gain>
+        <SweepSpeed>2</SweepSpeed>
+        <HRSource>0</HRSource>
+        <DisplayMode>0</DisplayMode>
+        <LeadMode>1</LeadMode>
+        <NotchFilter>0</NotchFilter>
+        <SmartLeadOff>0</SmartLeadOff>
+        <FilterMode>1</FilterMode>
+        <SelfLearn>0</SelfLearn>
+        <ECG12LeadPacerMaker>0</ECG12LeadPacerMaker>	
+        <PacerMaker>1</PacerMaker>
+        <EverLeadOn>0</EverLeadOn>
+	<FullScreenGain>3</FullScreenGain>
+        <Gain>
+            <ECGIWaveWidget>3</ECGIWaveWidget>
+            <ECGIIWaveWidget>3</ECGIIWaveWidget>
+            <ECGIIIWaveWidget>3</ECGIIIWaveWidget>
+            <ECGaVRWaveWidget>3</ECGaVRWaveWidget>
+            <ECGaVLWaveWidget>3</ECGaVLWaveWidget>
+            <ECGaVFWaveWidget>3</ECGaVFWaveWidget>
+            <ECGV1WaveWidget>3</ECGV1WaveWidget>
+            <ECGV2WaveWidget>3</ECGV2WaveWidget>
+            <ECGV3WaveWidget>3</ECGV3WaveWidget>
+            <ECGV4WaveWidget>3</ECGV4WaveWidget>
+            <ECGV5WaveWidget>3</ECGV5WaveWidget>
+            <ECGV6WaveWidget>3</ECGV6WaveWidget>
+        </Gain>
+    </ECG>
+    <AG>
+        <AGModule>0</AGModule>
+        <SweepSpeed>1</SweepSpeed>
+        <DisplayZoom>2</DisplayZoom>
+        <OperationMode>0</OperationMode>
+        <UnitSetUp>7</UnitSetUp>
+        <ApneaAlarm>0</ApneaAlarm>
+        <O2Compensation>1</O2Compensation>
+        <N2OCompensation>0</N2OCompensation>
+        <Anesthetic>0</Anesthetic>
+    </AG>
+    <TEMP>
+        <ChannelOne>0</ChannelOne>
+        <ChannelTwo>0</ChannelTwo>
+        <ChannelDisable>0</ChannelDisable>
+    </TEMP>
+    <IBP>
+        <ChannelPressureEntitle1>0</ChannelPressureEntitle1>
+        <ChannelPressureEntitle2>5</ChannelPressureEntitle2>
+        <RulerLimit1>10</RulerLimit1>
+        <RulerLimit2>10</RulerLimit2>
+        <SweepSpeed>1</SweepSpeed>
+        <FilterMode>0</FilterMode>
+        <Sensitivity>2</Sensitivity>
+        <Calibration>84</Calibration>
+    </IBP>
+    <NIBP>
+        <StatFunction>1</StatFunction>
+        <AutomaticRetry>0</AutomaticRetry>
+        <InitialCuffInflation>8</InitialCuffInflation>
+	<CompleteTone>0</CompleteTone>
+    </NIBP>
+    <SPO2>
+        <AverageTime>2</AverageTime>
+        <Sensitivity>1</Sensitivity>
+        <FastSat>0</FastSat>
+        <SmartPluseTone>0</SmartPluseTone>
+        <SweepSpeed>1</SweepSpeed>
+        <ModuleControl>1</ModuleControl>
+	<NIBPSameSide>0</NIBPSameSide>
+    </SPO2>
+    <CO2>
+        <CO2ModeDefault>1</CO2ModeDefault>
+        <CO2SweepMode>0</CO2SweepMode>
+        <SweepSpeed>2</SweepSpeed>
+        <FiCO2Display>0</FiCO2Display>
+        <DisplayZoom>0</DisplayZoom>
+        <O2Compensation>16</O2Compensation>
+        <N2OCompensation>0</N2OCompensation>
+        <CeroCalibration>0</CeroCalibration>
+    </CO2>
+    <CO>
+        <Ratio>555</Ratio>
+        <InjectionTempSource>1</InjectionTempSource>
+        <InjectionTemp>232</InjectionTemp>
+        <InjectionVolumn>3</InjectionVolumn>
+        <MeasureMode>1</MeasureMode>
+    </CO>
+    <RESP>
+        <RESPSweepMode>0</RESPSweepMode>
+        <AutoActivation>1</AutoActivation>
+        <ApneaDelay>0</ApneaDelay>
+        <BreathLead>2</BreathLead>
+        <Gain>2</Gain>
+        <SweepSpeed>2</SweepSpeed>
+	<BrSource>0</BrSource>
+    </RESP>
+    <Event>
+        <WaveLength>16</WaveLength>
+    </Event>
+    <Alarm>
+        <ApneaTime>1</ApneaTime>
+    </Alarm>
+    <AlarmSource>
+		<HR_PR Enable="1" Prio="1">
+			<bpm>
+			    <Low Min="20" Max="299">50</Low>
+			    <High Min="21" Max="300">120</High>
+			    <Step>1</Step>
+			    <Scale>1</Scale>
+			</bpm>
+		</HR_PR>
+                <RR_BR Enable="1" Prio="1">
+			<rpm>
+				<Low Min="2" Max="149">5</Low>
+				<High Min="3" Max="150">50</High>
+				<Step>1</Step>
+				<Scale>1</Scale>
+			</rpm>
+		</RR_BR>
+		<SPO2 Enable="1" Prio="1">
+		<percent>
+		    <Low Min="50" Max="98">85</Low>
+		    <High Min="52" Max="100">100</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</percent>
+		</SPO2>
+		<NIBP_SYS Enable="1" Prio="1">
+		<mmHg>
+		    <Low Min="40" Max="254">75</Low>
+		    <High Min="41" Max="255">220</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</mmHg>
+		<kPa>
+		    <Low Min="53" Max="339">100</Low>
+		    <High Min="54" Max="340">293</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</kPa>
+		</NIBP_SYS>
+		<NIBP_DIA Enable="1" Prio="1">
+		<mmHg>
+		    <Low Min="10" Max="194">35</Low>
+		    <High Min="11" Max="195">110</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</mmHg>
+		<kPa>
+		    <Low Min="13" Max="259">47</Low>
+		    <High Min="14" Max="260">147</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</kPa>
+		</NIBP_DIA>
+		<NIBP_MAP Enable="1" Prio="1">
+		<mmHg>
+		    <Low Min="20" Max="214">50</Low>
+		    <High Min="21" Max="215">120</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</mmHg>
+		<kPa>
+		    <Low Min="27" Max="285">67</Low>
+		    <High Min="28" Max="286">160</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</kPa>
+		</NIBP_MAP>
+		<ART_SYS Enable="1" Prio="1">
+		<mmHg>
+		    <Low Min="-50" Max="298">90</Low>
+		    <High Min="-48" Max="300">160</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</mmHg>
+		<kPa>
+		    <Low Min="53" Max="352">100</Low>
+		    <High Min="54" Max="353">293</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</kPa>
+		</ART_SYS>
+		<ART_DIA Enable="1" Prio="1">
+		<mmHg>
+		    <Low Min="-50" Max="298">50</Low>
+		    <High Min="-48" Max="300">90</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</mmHg>
+		<kPa>
+		    <Low Min="13" Max="272">47</Low>
+		    <High Min="14" Max="273">147</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</kPa>
+		</ART_DIA>
+		<ART_MAP Enable="1" Prio="1">
+		<mmHg>
+		    <Low Min="-50" Max="298">70</Low>
+		    <High Min="-48" Max="300">110</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</mmHg>
+		<kPa>
+		    <Low Min="27" Max="299">67</Low>
+		    <High Min="28" Max="300">160</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</kPa>
+		</ART_MAP>
+		<ART_PR Enable="1" Prio="1">
+		<bpm>
+		    <Low Min="15" Max="298">50</Low>
+		    <High Min="17" Max="300">121</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</bpm>
+		</ART_PR>
+		<PA_SYS Enable="1" Prio="1">
+		<mmHg>
+		    <Low Min="-50" Max="298">10</Low>
+		    <High Min="-48" Max="300">35</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</mmHg>
+		<kPa>
+		    <Low Min="53" Max="352">100</Low>
+		    <High Min="54" Max="353">293</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</kPa>
+		</PA_SYS>
+		<PA_DIA Enable="1" Prio="1">
+		<mmHg>
+		    <Low Min="10" Max="204">0</Low>
+		    <High Min="11" Max="205">16</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</mmHg>
+		<kPa>
+		    <Low Min="13" Max="272">47</Low>
+		    <High Min="14" Max="273">147</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</kPa>
+		</PA_DIA>
+		<PA_MAP Enable="1" Prio="1">
+		<mmHg>
+		    <Low Min="-50" Max="298">0</Low>
+		    <High Min="-48" Max="300">20</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</mmHg>
+		<kPa>
+		    <Low Min="27" Max="299">67</Low>
+		    <High Min="28" Max="300">160</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</kPa>
+		</PA_MAP>
+		<PA_PR Enable="1" Prio="1">
+		<bpm>
+		    <Low Min="15" Max="298">50</Low>
+		    <High Min="17" Max="300">121</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</bpm>
+		</PA_PR>
+		<CVP_MAP Enable="1" Prio="1">
+		<mmHg>
+		    <Low Min="-50" Max="298">0</Low>
+		    <High Min="-48" Max="300">10</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</mmHg>
+		<kPa>
+		    <Low Min="27" Max="299">67</Low>
+		    <High Min="28" Max="300">160</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</kPa>
+		</CVP_MAP>
+		<CVP_PR Enable="1" Prio="1">
+		<bpm>
+		    <Low Min="15" Max="298">50</Low>
+		    <High Min="17" Max="300">121</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</bpm>
+		</CVP_PR>
+		<LAP_MAP Enable="1" Prio="1">
+		<mmHg>
+		    <Low Min="-50" Max="298">0</Low>
+		    <High Min="-48" Max="300">10</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</mmHg>
+		<kPa>
+		    <Low Min="27" Max="299">67</Low>
+		    <High Min="28" Max="300">160</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</kPa>
+		</LAP_MAP>
+		<LAP_PR Enable="1" Prio="1">
+		<bpm>
+		    <Low Min="15" Max="298">50</Low>
+		    <High Min="17" Max="300">121</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</bpm>
+		</LAP_PR>
+		<RAP_MAP Enable="1" Prio="1">
+		<mmHg>
+		    <Low Min="-50" Max="298">0</Low>
+		    <High Min="-48" Max="300">10</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</mmHg>
+		<kPa>
+		    <Low Min="27" Max="299">67</Low>
+		    <High Min="28" Max="300">160</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</kPa>
+		</RAP_MAP>
+		<RAP_PR Enable="1" Prio="1">
+		<bpm>
+		    <Low Min="-50" Max="298">0</Low>
+		    <High Min="-48" Max="300">10</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</bpm>
+		</RAP_PR>
+		<ICP_MAP Enable="1" Prio="1">
+		<mmHg>
+		    <Low Min="-50" Max="298">0</Low>
+		    <High Min="-48" Max="300">10</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</mmHg>
+		<kPa>
+		    <Low Min="27" Max="299">67</Low>
+		    <High Min="28" Max="300">160</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</kPa>
+		</ICP_MAP>
+		<ICP_PR Enable="1" Prio="1">
+		<bpm>
+		    <Low Min="15" Max="298">50</Low>
+		    <High Min="17" Max="300">121</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</bpm>
+		</ICP_PR>
+		<AUXP1_SYS Enable="1" Prio="1">
+		<mmHg>
+		    <Low Min="-50" Max="298">90</Low>
+		    <High Min="-48" Max="300">160</High>+
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</mmHg>
+		<kPa>
+		    <Low Min="53" Max="352">100</Low>
+		    <High Min="54" Max="353">293</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</kPa>
+		</AUXP1_SYS>
+		<AUXP1_DIA Enable="1" Prio="1">
+		<mmHg>
+		    <Low Min="-50" Max="298">50</Low>
+		    <High Min="-48" Max="300">90</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</mmHg>
+		<kPa>
+		    <Low Min="13" Max="272">47</Low>
+		    <High Min="14" Max="273">147</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</kPa>
+		</AUXP1_DIA>
+		<AUXP1_MAP Enable="1" Prio="1">
+		<mmHg>
+		    <Low Min="-50" Max="298">70</Low>
+		    <High Min="-48" Max="300">110</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</mmHg>
+		<kPa>
+		    <Low Min="27" Max="299">67</Low>
+		    <High Min="28" Max="300">160</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</kPa>
+		</AUXP1_MAP>
+		<AUXP1_PR Enable="1" Prio="1">
+		<bpm>
+		    <Low Min="15" Max="298">50</Low>
+		    <High Min="17" Max="300">121</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</bpm>
+		</AUXP1_PR>
+		<AUXP2_SYS Enable="1" Prio="1">
+		<mmHg>
+		    <Low Min="-50" Max="298">90</Low>
+		    <High Min="-48" Max="300">160</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</mmHg>
+		<kPa>
+		    <Low Min="53" Max="352">100</Low>
+		    <High Min="54" Max="353">293</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</kPa>
+		</AUXP2_SYS>
+		<AUXP2_DIA Enable="1" Prio="1">
+		<mmHg>
+		    <Low Min="-50" Max="298">50</Low>
+		    <High Min="-48" Max="300">90</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</mmHg>
+		<kPa>
+		    <Low Min="13" Max="272">47</Low>
+		    <High Min="14" Max="273">147</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</kPa>
+		</AUXP2_DIA>
+		<AUXP2_MAP Enable="1" Prio="1">
+		<mmHg>
+		    <Low Min="-50" Max="298">70</Low>
+		    <High Min="-48" Max="300">110</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</mmHg>
+		<kPa>
+		    <Low Min="27" Max="299">67</Low>
+		    <High Min="28" Max="300">160</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</kPa>
+		</AUXP2_MAP>
+		<AUXP2_PR Enable="1" Prio="1">
+		<bpm>
+		    <Low Min="15" Max="298">50</Low>
+		    <High Min="17" Max="300">121</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</bpm>
+		</AUXP2_PR>
+		<CO_CO Enable="1" Prio="1">
+		<lpm>
+		    <Low Min="20" Max="1999">400</Low>
+		    <High Min="21" Max="2000">700</High>
+		    <Step>1</Step>
+		    <Scale>100</Scale>
+		</lpm>
+		</CO_CO>
+		<CO_CI Enable="1" Prio="1">
+		<lpmpsqm>
+		    <Low Min="22" Max="39">30</Low>
+		    <High Min="23" Max="40">35</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</lpmpsqm>
+		</CO_CI>
+		<TB Enable="0" Prio="1">
+		<celsius>
+		    <Low Min="230" Max="449">360</Low>
+		    <High Min="231" Max="450">380</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</celsius>
+		<fahrenheit>
+		    <Low Min="590" Max="1219">950</Low>
+		    <High Min="591" Max="1220">1000</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</fahrenheit>
+		</TB>
+		<ETCO2 Enable="1" Prio="1">
+		<percent>
+		    <Low Min="0" Max="249">20</Low>
+		    <High Min="1" Max="250">80</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</percent>
+		<mmHg>
+		    <Low Min="0" Max="189">7</Low>
+		    <High Min="1" Max="190">60</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</mmHg>
+		<kPa>
+		    <Low Min="0" Max="249">10</Low>
+		    <High Min="1" Max="250">80</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</kPa>
+		</ETCO2>
+		<FICO2 Enable="0" Prio="1">
+		<percent>
+		    <Low Min="0" Max="249">0</Low>
+		    <High Min="1" Max="250">80</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</percent>
+		<mmHg>
+		    <Low Min="0" Max="189">0</Low>
+		    <High Min="1" Max="190">60</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</mmHg>
+		<kPa>
+		    <Low Min="0" Max="249">0</Low>
+		    <High Min="1" Max="250">80</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</kPa>
+		</FICO2>
+		<ETN2O Enable="0" Prio="1">
+		<percent>
+		    <Low Min="0" Max="114">1</Low>
+		    <High Min="1" Max="115">8</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</percent>
+		<mmHg>
+		    <Low Min="0" Max="189">7</Low>
+		    <High Min="1" Max="190">60</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</mmHg>
+		<kPa>
+		    <Low Min="0" Max="249">10</Low>
+		    <High Min="1" Max="250">80</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</kPa>
+		</ETN2O>
+		<FIN2O Enable="0" Prio="1">
+		<percent>
+		    <Low Min="0" Max="114">0</Low>
+		    <High Min="1" Max="115">8</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</percent>
+		<mmHg>
+		    <Low Min="0" Max="189">0</Low>
+		    <High Min="1" Max="190">60</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</mmHg>
+		<kPa>
+		    <Low Min="0" Max="249">0</Low>
+		    <High Min="1" Max="250">80</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</kPa>
+		</FIN2O>
+		<ETAA1 Enable="0" Prio="1">
+		<percent>
+		    <Low Min="0" Max="249">10</Low>
+		    <High Min="1" Max="250">80</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</percent>
+		<mmHg>
+		    <Low Min="0" Max="189">7</Low>
+		    <High Min="1" Max="190">60</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</mmHg>
+		<kPa>
+		    <Low Min="0" Max="249">10</Low>
+		    <High Min="1" Max="250">80</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</kPa>
+		</ETAA1>
+		<FIAA1 Enable="0" Prio="1">
+		<percent>
+		    <Low Min="0" Max="249">0</Low>
+		    <High Min="1" Max="250">80</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</percent>
+		<mmHg>
+		    <Low Min="0" Max="189">0</Low>
+		    <High Min="1" Max="190">60</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</mmHg>
+		<kPa>
+		    <Low Min="0" Max="249">0</Low>
+		    <High Min="1" Max="250">80</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</kPa>
+		</FIAA1>
+		<ETAA2 Enable="0" Prio="1">
+		<percent>
+		    <Low Min="0" Max="249">10</Low>
+		    <High Min="1" Max="250">80</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</percent>
+		<mmHg>
+		    <Low Min="0" Max="189">7</Low>
+		    <High Min="1" Max="190">60</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</mmHg>
+		<kPa>
+		    <Low Min="0" Max="249">10</Low>
+		    <High Min="1" Max="250">80</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</kPa>
+		</ETAA2>
+		<FIAA2 Enable="0" Prio="1">
+		<percent>
+		    <Low Min="0" Max="249">0</Low>
+		    <High Min="1" Max="250">80</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</percent>
+		<mmHg>
+		    <Low Min="0" Max="189">0</Low>
+		    <High Min="1" Max="190">60</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</mmHg>
+		<kPa>
+		    <Low Min="0" Max="249">0</Low>
+		    <High Min="1" Max="250">80</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</kPa>
+		</FIAA2>
+		<ETO2 Enable="0" Prio="1">
+		<percent>
+		    <Low Min="0" Max="114">1</Low>
+		    <High Min="1" Max="115">8</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</percent>
+		<mmHg>
+		    <Low Min="0" Max="189">7</Low>
+		    <High Min="1" Max="190">60</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</mmHg>
+		<kPa>
+		    <Low Min="0" Max="249">10</Low>
+		    <High Min="1" Max="250">80</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</kPa>
+		</ETO2>
+		<FIO2 Enable="0" Prio="1">
+		<percent>
+		    <Low Min="0" Max="114">0</Low>
+		    <High Min="1" Max="115">8</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</percent>
+		<mmHg>
+		    <Low Min="0" Max="189">0</Low>
+		    <High Min="1" Max="190">60</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</mmHg>
+		<kPa>
+		    <Low Min="0" Max="249">0</Low>
+		    <High Min="1" Max="250">80</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</kPa>
+		</FIO2>
+		<T1 Enable="0" Prio="1">
+		<celsius>
+		    <Low Min="150" Max="499">350</Low>
+		    <High Min="151" Max="500">378</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</celsius>
+		<fahrenheit>
+		    <Low Min="590" Max="1219">950</Low>
+		    <High Min="591" Max="1220">1000</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</fahrenheit>
+		</T1>
+		<T2 Enable="0" Prio="1">
+		<celsius>
+		    <Low Min="150" Max="499">350</Low>
+		    <High Min="151" Max="500">378</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</celsius>
+		<fahrenheit>
+		    <Low Min="590" Max="1219">950</Low>
+		    <High Min="591" Max="1220">1000</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</fahrenheit>
+		</T2>
+		<TD Enable="0" Prio="1">
+		<celsius>
+		    <Low Min="0" Max="49">0</Low>
+		    <High Min="1" Max="50">5</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</celsius>
+		<fahrenheit>
+		    <Low Min="0" Max="88">0</Low>
+		    <High Min="1" Max="89">9</High>
+		    <Step>1</Step>
+		    <Scale>10</Scale>
+		</fahrenheit>
+		</TD>
+		<O2 Enable="0" Prio="1">
+		<percent>
+		    <Low Min="0" Max="99">20</Low>
+		    <High Min="1" Max="100">60</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</percent>
+		</O2>
+    </AlarmSource>
+    <Display>
+        <AllColors>Green,Yellow,Blue,Red,Brown,Magenta,Orange,Cyan,Purple</AllColors>
+        <Green>
+            <r>140</r>
+            <g>200</g>
+            <b>64</b>
+        </Green>
+        <Yellow>
+            <r>255</r>
+            <g>240</g>
+            <b>0</b>
+        </Yellow>
+        <Blue>
+            <r>0</r>
+            <g>175</g>
+            <b>240</b>
+        </Blue>
+        <Red>
+            <r>235</r>
+            <g>0</g>
+            <b>140</b>
+        </Red>
+        <Brown>
+            <r>207</r>
+            <g>128</g>
+            <b>48</b>
+        </Brown>
+        <Magenta>
+            <r>250</r>
+            <g>50</g>
+            <b>200</b>
+        </Magenta>
+        <Orange>
+            <r>250</r>
+            <g>128</g>
+            <b>10</b>
+        </Orange>
+        <Cyan>
+            <r>95</r>
+            <g>220</g>
+            <b>205</b>
+        </Cyan>
+        <Purple>
+            <r>160</r>
+            <g>150</g>
+            <b>205</b>
+        </Purple>
+        <ECGDUPColor>Green</ECGDUPColor>
+        <ECGColor>Green</ECGColor>
+        <SPO2Color>Cyan</SPO2Color>
+        <NIBPColor>Blue</NIBPColor>
+        <CO2Color>Red</CO2Color>
+        <RESPColor>Red</RESPColor>
+        <RESPDUPColor>Red</RESPDUPColor>
+        <AGColor>Orange</AGColor>
+        <IBPColor>Purple</IBPColor>
+        <TEMPColor>Brown</TEMPColor>
+        <O2Color>Brown</O2Color>
+        <!--do not modify-->
+    </Display>
+    <Print>
+        <ECGAnalysis>0</ECGAnalysis>
+        <ShockDelivery>0</ShockDelivery>
+        <PacerStartUp>0</PacerStartUp>
+        <DiagnosticECG>1</DiagnosticECG>
+        <Print30JSelfTestReport>0</Print30JSelfTestReport>
+    </Print>
+    <ECG12L>
+        <NotchFilter>0</NotchFilter>
+        <ECG12LeadBandwidth>0</ECG12LeadBandwidth>
+        <PrintSnapshotFormat>0</PrintSnapshotFormat>
+        <PDFReportFormat>0</PDFReportFormat>
+        <DisplayFormat>0</DisplayFormat>
+        <TimeIntervalFor2x6Report>0</TimeIntervalFor2x6Report>
+        <AutoPrinting12LReport>1</AutoPrinting12LReport>
+        <AutoTransmission>0</AutoTransmission>
+        <TransmissionFormat>0</TransmissionFormat>
+        <RealtimePrintTopLead>0</RealtimePrintTopLead>
+        <RealtimePrintMiddleLead>1</RealtimePrintMiddleLead>
+        <RealtimePrintBottomLead>2</RealtimePrintBottomLead>
+    </ECG12L>
+    <WiFi>
+        <EnableWifi>0</EnableWifi>
+        <Profiles CurrentSelect="-1" Count="0"/>
+        <LocalPort>0</LocalPort>
+        <ServerIP>0.0.0.0</ServerIP>
+        <ServerPort>0</ServerPort>
+    </WiFi>
+    <Sftp>
+        <ServerIP>0.0.0.0</ServerIP>
+        <ServerPort>22</ServerPort>
+        <Username/>
+        <Password/>
+    </Sftp>
+    <Mail>
+        <SmtpServer>smtp.163.com</SmtpServer>
+        <SmtpServerPort>25</SmtpServerPort>
+        <SmtpUsername>idmtest@163.com</SmtpUsername>
+        <Password>idmtest1</Password>
+        <ConnectionSecurity>0</ConnectionSecurity>
+        <Recipients Count="0"/>
+    </Mail>
+    <CodeMarker>
+        <Marker0>CodeMarker13,CodeMarker14,CodeMarker1,CodeMarker2,CodeMarker18,CodeMarker7,CodeMarker9,CodeMarker10,CodeMarker11,CodeMarker12,CodeMarker16,CodeMarker3,CodeMarker4,CodeMarker6,CodeMarker8,CodeMarker15,CodeMarker19,CodeMarker20,CodeMarker22,CodeMarker28,CodeMarker25,CodeMarker5,CodeMarker31,CodeMarker27,CodeMarker24,CodeMarker17,CodeMarker23,CodeMarker21,CodeMarker26,CodeMarker29,CodeMarker30,CodeMarker32</Marker0>
+        <Marker1>CodeMarker13,CodeMarker14,CodeMarker1,CodeMarker2,CodeMarker18,CodeMarker7,CodeMarker9,CodeMarker10,CodeMarker11,CodeMarker12,CodeMarker16,CodeMarker3,CodeMarker4,CodeMarker6,CodeMarker8,CodeMarker15,CodeMarker19,CodeMarker20,CodeMarker22,CodeMarker28,CodeMarker25,CodeMarker5,CodeMarker31,CodeMarker27,CodeMarker24,CodeMarker17,CodeMarker23,CodeMarker21,CodeMarker26,CodeMarker29,CodeMarker30,CodeMarker32</Marker1>
+        <Marker2>CodeMarker1,CodeMarker2,CodeMarker3,CodeMarker4,CodeMarker5,CodeMarker6,CodeMarker7,CodeMarker8,CodeMarker9,CodeMarker10,CodeMarker11,CodeMarker12,CodeMarker13,CodeMarker14,CodeMarker15,CodeMarker16,CodeMarker17,CodeMarker18,CodeMarker19,CodeMarker20,CodeMarker21,CodeMarker22,CodeMarker23,CodeMarker24,CodeMarker25,CodeMarker26,CodeMarker27,CodeMarker28</Marker2>
+        <Marker3>CodeMarker1,CodeMarker2,CodeMarker3,CodeMarker4,CodeMarker5,CodeMarker6,CodeMarker7,CodeMarker8,CodeMarker9,CodeMarker10,CodeMarker11,CodeMarker12,CodeMarker13,CodeMarker14,CodeMarker15,CodeMarker16,CodeMarker17,CodeMarker18,CodeMarker19,CodeMarker20,CodeMarker21,CodeMarker22,CodeMarker23,CodeMarker24,CodeMarker25,CodeMarker26,CodeMarker27,CodeMarker28</Marker3>
+        <Marker4>CodeMarker1,CodeMarker2,CodeMarker3,CodeMarker4,CodeMarker5,CodeMarker6,CodeMarker7,CodeMarker8,CodeMarker9,CodeMarker10,CodeMarker11,CodeMarker12,CodeMarker13,CodeMarker14,CodeMarker15,CodeMarker16,CodeMarker17,CodeMarker18,CodeMarker19,CodeMarker20,CodeMarker21,CodeMarker22,CodeMarker23,CodeMarker24,CodeMarker25,CodeMarker26,CodeMarker27,CodeMarker28,CodeMarker29,CodeMarker30</Marker4>
+        <SelectMarker>
+            <Language0>CodeMarker13,CodeMarker14,CodeMarker1,CodeMarker2,CodeMarker18,CodeMarker7,CodeMarker9,CodeMarker10,CodeMarker11,CodeMarker12,CodeMarker16,CodeMarker3,CodeMarker4,CodeMarker6,CodeMarker8,CodeMarker15,CodeMarker19,CodeMarker20,CodeMarker22,CodeMarker28,CodeMarker25,CodeMarker5,CodeMarker31,CodeMarker27,CodeMarker24,CodeMarker17,CodeMarker23</Language0>
+            <Language1>CodeMarker13,CodeMarker14,CodeMarker1,CodeMarker2,CodeMarker18,CodeMarker7,CodeMarker9,CodeMarker10,CodeMarker11,CodeMarker12,CodeMarker16,CodeMarker3,CodeMarker4,CodeMarker6,CodeMarker8,CodeMarker15,CodeMarker19,CodeMarker20,CodeMarker22,CodeMarker28,CodeMarker25,CodeMarker5,CodeMarker31,CodeMarker27,CodeMarker24,CodeMarker17,CodeMarker23</Language1>
+        </SelectMarker>
+    </CodeMarker>
+</Supervision>

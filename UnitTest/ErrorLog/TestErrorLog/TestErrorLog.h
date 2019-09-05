@@ -19,10 +19,6 @@ public:
     TestErrorLogTest();
     ~TestErrorLogTest();
 
-private:
-    ErrorLogItem* item;
-    MyThread *_myThread;
-
 private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();

@@ -5,13 +5,12 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by luoyuchun <luoyuchun@blmed.cn>, 2019/7/12
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2019/9/5
  **/
 
 #include "IConfig.h"
 #include <QString>
 #include <QMap>
-#include "SystemManagerInterface.h"
 
 SystemConfig *SystemConfig::_selfObj = NULL;
 MachineConfig *MachineConfig::_selfObj = NULL;
@@ -49,8 +48,7 @@ MachineConfig::MachineConfig()
 
     foreach(path, pathList)
     {
-        bool enable;
-        enable = false;
+        bool enable = false;
         path += QString("Enable");
         getNumValue(path, enable);
         d_ptr->modulesStatusMap[path] = enable;
@@ -76,5 +74,6 @@ void SystemConfig::updateCurConfigName()
     if (numValue > 2)
     {
         curConfigName = CFG_PATH"AdultConfig.xml";
+        numValue = 255;
     }
 }
