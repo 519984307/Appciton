@@ -42,9 +42,9 @@ void TestAlarmStateMachine::testStart_data()
     QTest::addColumn<AlarmStatus>("alarmStatus");
     QTest::addColumn<bool>("enableAlarmAudioMuteFlag");
 
-    QTest::newRow("normal") << reinterpret_cast<int>(ALARM_NORMAL_STATE) << ALARM_STATUS_NORMAL << false;
-    QTest::newRow("pause") << reinterpret_cast<int>(ALARM_PAUSE_STATE) << ALARM_STATUS_PAUSE << false;
-    QTest::newRow("reset") << reinterpret_cast<int>(ALARM_RESET_STATE) << ALARM_STATUS_RESET << false;
+    QTest::newRow("normal") << static_cast<int>(ALARM_NORMAL_STATE) << ALARM_STATUS_NORMAL << false;
+    QTest::newRow("pause") << static_cast<int>(ALARM_PAUSE_STATE) << ALARM_STATUS_PAUSE << false;
+    QTest::newRow("reset") << static_cast<int>(ALARM_RESET_STATE) << ALARM_STATUS_RESET << false;
     QTest::newRow("abnormal") << -1 << ALARM_STATUS_NORMAL << false;
     QTest::newRow("beyond") << 6 << ALARM_STATUS_NORMAL << false;
 }
