@@ -18,7 +18,7 @@ mkdir $BUILD_DIR && cd $BUILD_DIR
 /opt/pmos/host/bin/qmake $REPO
 
 # build
-make -j4
+make -j4 -s
 
 
 

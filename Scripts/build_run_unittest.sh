@@ -18,7 +18,7 @@ mkdir $BUILD_DIR && cd $BUILD_DIR
 /opt/qt-lib/qt-4.8.6/bin/qmake $REPO/UnitTest "CONFIG+=test"
 
 # build and run
-make
+make -s
 
 
 
