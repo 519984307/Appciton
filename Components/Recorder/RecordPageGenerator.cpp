@@ -638,6 +638,7 @@ static bool isPressSubParam(SubParamID SubParamID)
     case SUB_PARAM_NIBP_SYS:
     case SUB_PARAM_NIBP_DIA:
     case SUB_PARAM_NIBP_MAP:
+    case SUB_PARAM_NIBP_PR:
         return true;
     default:
         break;
