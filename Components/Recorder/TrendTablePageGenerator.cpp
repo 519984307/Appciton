@@ -105,7 +105,7 @@ bool TrendTablePageGeneratorPrivate::loadStringList()
 }
 
 static void preparePressSubParamInfos(SubParamID subParamID, const TrendDataPackage &datapack, TrendDataType data[],
-                                      bool alarms[])
+                                      bool alarms[], unsigned eventType)
 {
     switch (subParamID)
     {
@@ -113,9 +113,18 @@ static void preparePressSubParamInfos(SubParamID subParamID, const TrendDataPack
         data[0] = datapack.subparamValue.value(SUB_PARAM_NIBP_SYS, InvData());
         data[1] = datapack.subparamValue.value(SUB_PARAM_NIBP_DIA, InvData());
         data[2] = datapack.subparamValue.value(SUB_PARAM_NIBP_MAP, InvData());
-        alarms[0] = datapack.subparamAlarm.value(SUB_PARAM_NIBP_SYS, false);
-        alarms[1] = datapack.subparamAlarm.value(SUB_PARAM_NIBP_DIA, false);
-        alarms[2] = datapack.subparamAlarm.value(SUB_PARAM_NIBP_MAP, false);
+        if (eventType & TrendDataStorageManager::CollectStatusNIBP)
+        {
+            alarms[0] = datapack.subparamAlarm.value(SUB_PARAM_NIBP_SYS, false);
+            alarms[1] = datapack.subparamAlarm.value(SUB_PARAM_NIBP_DIA, false);
+            alarms[2] = datapack.subparamAlarm.value(SUB_PARAM_NIBP_MAP, false);
+        }
+        else
+        {
+            alarms[0] = false;
+            alarms[1] = false;
+            alarms[2] = false;
+        }
         break;
     case SUB_PARAM_ART_SYS:
         data[0] = datapack.subparamValue.value(SUB_PARAM_ART_SYS, InvData());
@@ -381,7 +390,7 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
 
             TrendDataType datas[3];
             bool alarms[3];
-            preparePressSubParamInfos(subParamID, datapack, datas, alarms);
+            preparePressSubParamInfos(subParamID, datapack, datas, alarms, eventType);
             // set datas[] as InvData() when it is not NIBP event type
             if (!(eventType & TrendDataStorageManager::CollectStatusNIBP))
             {
@@ -409,7 +418,7 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
 
             TrendDataType datas[3];
             bool alarms[3];
-            preparePressSubParamInfos(subParamID, datapack, datas, alarms);
+            preparePressSubParamInfos(subParamID, datapack, datas, alarms, eventType);
             valueStr = contructPressTrendStringItem(subParamID,
                                                     datas,
                                                     alarms,

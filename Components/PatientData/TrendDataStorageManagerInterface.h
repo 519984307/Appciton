@@ -32,6 +32,8 @@ public:
         HasAlarm = (1<<7),              /* has param alarm */
         HRSourceIsSpo2 = (1<<8),              /* SPO2 if set, otherwise, ECG */
         BRSourceIsResp = (1<<9),              /* resp if set, otherwise, CO2 */
+
+        NIBPAlarm = (1 << 10),               /* nibp alarm flag trend data */
     };
 
     Q_DECLARE_FLAGS(TrendDataFlags, TrendDataFlag)

@@ -876,8 +876,7 @@ void TrendTableModelPrivate::getTrendData()
                     || id == SUB_PARAM_NIBP_DIA
                     || id == SUB_PARAM_NIBP_MAP)
             {
-                if (!(status & TrendDataStorageManager::CollectStatusNIBP)
-                        && !(status & TrendDataStorageManager::CollectStatusAlarm))
+                if (!(status & TrendDataStorageManager::CollectStatusNIBP))
                 {
                     value = InvData();
                 }

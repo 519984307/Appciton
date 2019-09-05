@@ -146,6 +146,7 @@ OTHER_FILES +=                                                                  
     nPM/etc/PedConfig.Original.xml                                              \
     nPM/etc/NeoConfig.Original.xml                                              \
     nPM/etc/usercheck.xml                                                       \
+    nPM/etc/PatientInfo.xml                                                     \
 
 SOURCES +=                                                                      \
     SOUP/Json/json_parser.cc                                                    \
