@@ -211,12 +211,6 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
         ++index;
     }
 
-    // 报警复位时报警灯关闭
-    if (!(alertor->getAlarmLightOnAlarmReset()) && status == ALARM_STATUS_RESET)
-    {
-        lightPriority = ALARM_PRIO_PROMPT;
-    }
-
     // 更新声音
     if (phySoundPriority != ALARM_PRIO_PROMPT || techSoundPriority != ALARM_PRIO_PROMPT)
     {

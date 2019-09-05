@@ -97,13 +97,6 @@ public:
      */
     void removeAllLimitAlarm();
 
-    /**
-     * @brief setAlarmLightOnAlarmReset 设置报警复位时的报警灯
-     * @param flag
-     */
-    void setAlarmLightOnAlarmReset(bool flag);
-    bool getAlarmLightOnAlarmReset(void);
-
 private:
     unsigned _timestamp;
     QMultiMap<ParamID, AlarmLimitIFace *> _limitSources;
