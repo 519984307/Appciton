@@ -29,6 +29,8 @@ Q_DECLARE_METATYPE(SubParamID)
 using ::testing::_;
 using ::testing::Mock;
 using ::testing::Return;
+using ::testing::DoAll;
+using ::testing::SetArgReferee;
 
 class TestAlarmPrivate
 {
@@ -543,7 +545,14 @@ void TestAlarm::testMainRunLimitSource()
                 .WillRepeatedly(Return(true));
     }
 
-    EXPECT_CALL(mockTrendCache, getTrendData(t, _)).Times(source->getAlarmSourceNR());
+    TrendCacheData cacheData;
+    /*
+     *  set a valid value for SUB_PARAM_NONE, because Limit Alarm sub param id is none
+     * and need to have a valid value
+     */
+    cacheData.values[SUB_PARAM_NONE] = 0;
+    EXPECT_CALL(mockTrendCache, getTrendData(t, _)).Times(source->getAlarmSourceNR()).
+            WillRepeatedly(DoAll(SetArgReferee<1>(cacheData), Return(true)));
 
     alertor.mainRun(t);
 
@@ -715,6 +724,13 @@ void TestAlarm::testMainRunOneshotSource()
     MockAlarmIndicator::registerAlarmIndicator(&mockAlarmIndicator);
     MockTrendCache mockTrendCache;
     MockTrendCache::registerTrendCache(&mockTrendCache);
+    TrendCacheData cacheData;
+    /*
+     *  set a valid value for SUB_PARAM_NONE, because Limit Alarm sub param id is none
+     * and need to have a valid value
+     */
+    cacheData.values[SUB_PARAM_NONE] = 0;
+    EXPECT_CALL(mockTrendCache, getTrendData(_, _)).WillRepeatedly(DoAll(SetArgReferee<1>(cacheData), Return(true)));
     MockAlarmStateMachine mockAlarmStateMachine;
     MockAlarmStateMachine::registerAlarmStateMachine(&mockAlarmStateMachine);
     MockEventStorageManager mockEventStorageManager;
