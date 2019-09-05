@@ -1178,7 +1178,7 @@ void EventWindowPrivate::updateLevelStatus()
 void EventWindowPrivate::eventTypeOrLevelChange()
 {
     dataIndex.clear();
-    for (int i = 0; i < blockList.count(); i++)
+    for (int i = blockList.count() - 1; i >= 0; i--)
     {
         BlockEntry blockInfo = blockList.at(i);
         if ((blockInfo.type == curEventType || curEventType == EventAll) &&
