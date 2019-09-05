@@ -3,3 +3,4 @@ nPM/bin/nPM
 Main/Version.h
 nPM/locale/*.xml
 build*
+!build*.sh
