@@ -390,7 +390,6 @@ bool S5Provider::isStatus(unsigned char *packet)
     {
         if (packet[2] == S5_NO_INSERT)
         {
-            spo2Param.setSensorOff(true);
             if (!_isFirstConnectCable)
             {
                 _isCableOff = true;
@@ -401,7 +400,6 @@ bool S5Provider::isStatus(unsigned char *packet)
         {
             _isFirstConnectCable = false;
             _isCableOff = false;
-            spo2Param.setSensorOff(false);
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_OFF, false);
         }
     }

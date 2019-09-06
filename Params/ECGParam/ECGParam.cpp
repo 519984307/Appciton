@@ -1564,11 +1564,9 @@ void ECGParam::autoSetCalcLead(void)
         {
             // 计算导联与ECG2波形重复时，将ECG2波形设置为前ECG1波形
             currentConfig.setNumValue("ECG|Ecg2Wave", preECG1Lead);
-            adjustPrintWave(static_cast<ECGLead>(preECG2Lead), static_cast<ECGLead>(preECG1Lead));
         }
     }
 
-    adjustPrintWave(static_cast<ECGLead>(preECG1Lead), leads[index]);
     currentConfig.setNumValue("ECG|Ecg1Wave", static_cast<int>(leads[index]));
     if (NULL != _waveWidget[calcLead] && NULL != _waveWidget[leads[index]])
     {

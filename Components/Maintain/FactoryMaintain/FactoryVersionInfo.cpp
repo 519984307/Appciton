@@ -461,10 +461,10 @@ void FactoryVersionInfoPrivate::loadOptions()
 
     // screen resolution
     str.clear();
-    QString width = windowManager.width();
+    QString width = QString::number(windowManager.width());
     str += width;
     str += " x ";
-    QString height = windowManager.height();
+    QString height = QString::number(windowManager.height());
     str += height;
     labs[ITEM_LAB_SCREEN_RESOLUTION]->setText(str);
 }

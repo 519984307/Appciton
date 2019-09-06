@@ -566,14 +566,9 @@ void PatientManagerPrivate::loadPatientInfo(PatientInfo &info)
         return;
     }
 
-<<<<<<< HEAD
     // patient type
     xmlFile.getValue("PatientType", strValue);
     info.type = static_cast<PatientType>(strValue.toInt());
-=======
-    systemConfig.getNumValue("PrimaryCfg|PatientInfo|PatientPacer", numValue);
-    info.pacer = (PatientPacer)numValue;
->>>>>>> master
 
     // pacermaker
     xmlFile.getValue("PacerMaker", strValue);

@@ -235,9 +235,9 @@ void AlarmConfig::setParamRulerConfig(SubParamID subParamID, UnitType unit, int 
 void AlarmConfig::setLimitAlarmConfig(SubParamID subParamId, UnitType unit, const LimitAlarmConfig &config)
 {
     LimitAlarmConfig curConfig = getLimitAlarmConfig(subParamId, unit);
-    UnitType defaultUnit = paramInfo.getUnitOfSubParam(subParamId, otherUnit1, otherUnit2);
     UnitType otherUnit1 = UNIT_NONE;
     UnitType otherUnit2 = UNIT_NONE;
+    UnitType defaultUnit = paramInfo.getUnitOfSubParam(subParamId, otherUnit1, otherUnit2);
     QList<UnitType> unitList;
     unitList << defaultUnit << otherUnit1 << otherUnit2;
 
@@ -278,15 +278,7 @@ void AlarmConfig::setLimitAlarmConfig(SubParamID subParamId, UnitType unit, cons
         }
     }
 
-    if (curConfig.lowLimit != config.lowLimit)
-    {
-        val = config.lowLimit;
-        currentConfig.setNumValue(prefix + "|Low", val);
-    }
-
     // TODO: update limit of other unit??
-
-    _configCache.insert(key, config);
     emit LimitChange(subParamId);
 }
 

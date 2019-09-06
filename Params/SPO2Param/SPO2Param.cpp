@@ -645,12 +645,9 @@ void SPO2Param::setSPO2(short spo2Value)
     {
         return;
     }
-<<<<<<< HEAD
+
+    d_ptr->isForceUpdating = false;
     d_ptr->spo2Value = spo2Value;
-=======
-    _isForceUpdating = false;
-    _spo2Value = spo2Value;
->>>>>>> master
 
 #ifdef ENABLE_O2_APNEASTIMULATION
     // 窒息唤醒

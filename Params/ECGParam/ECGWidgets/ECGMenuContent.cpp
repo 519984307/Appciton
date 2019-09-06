@@ -722,7 +722,6 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
                 isUpdateWaveStatus = true;
             }
             currentConfig.setNumValue("ECG|Ecg2Wave", index);
-            ecgParam.adjustPrintWave(static_cast<ECGLead>(preECG2Wave), static_cast<ECGLead>(index));
             layoutManager.updateLayout();
             if (isUpdateWaveStatus)
             {
