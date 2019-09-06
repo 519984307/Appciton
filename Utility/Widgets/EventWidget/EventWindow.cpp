@@ -394,7 +394,14 @@ void EventWindow::eventTypeSelect(int index)
 
 void EventWindow::eventLevelSelect(int index)
 {
-    d_ptr->curEventLevel = (EventLevel)index;
+    if (d_ptr->curEventType == EventPhysiologicalAlarm)
+    {
+        d_ptr->curEventLevel = (EventLevel)(index + 3);
+    }
+    else
+    {
+        d_ptr->curEventLevel = (EventLevel)index;
+    }
     d_ptr->eventTypeOrLevelChange();
     d_ptr->calculationPage();
     d_ptr->refreshEventList();
@@ -1181,8 +1188,10 @@ void EventWindowPrivate::eventTypeOrLevelChange()
     for (int i = blockList.count() - 1; i >= 0; i--)
     {
         BlockEntry blockInfo = blockList.at(i);
-        if ((blockInfo.type == curEventType || curEventType == EventAll) &&
-                (blockInfo.extraData == curEventLevel || curEventLevel == EVENT_LEVEL_ALL))
+        EventType type = static_cast<EventType>(blockInfo.type & 0xff);
+        AlarmPriority prio = static_cast<AlarmPriority>((blockInfo.type >> 8) & 0xff);
+        if ((type == curEventType || curEventType == EventAll) &&
+                (prio == levelToPriority(curEventLevel) || curEventLevel == EVENT_LEVEL_ALL))
         {
             dataIndex.append(i);
         }

@@ -71,7 +71,7 @@ public:
     virtual ~EventStorageItem();
 
     // get the event type
-    virtual EventType getType() const;
+    virtual quint32 getType() const;
 
     // get extra data
     virtual quint32 getExtraData() const;

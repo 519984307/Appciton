@@ -91,7 +91,7 @@ public:
      * @brief 获取趋势图打印的数据及其事件发生时刻列表
      */
     const QList<TrendGraphInfo> getTrendGraphPrint();
-    const QList<EventInfoSegment> getEventList();
+    const QList<BlockEntry> getEventList();
 
     /**
      * @brief getPatientInfo 获取病人信息
@@ -205,6 +205,11 @@ private:
      */
     TrendGraphType getTrendGraphType(SubParamID id);
 
+    /**
+     * @brief _loadEventInfoList 加载事件信息列表
+     */
+    void _loadEventInfoList();
+
 private:
     QVBoxLayout *_mainLayout;
     QVBoxLayout *_hLayoutTrend;
@@ -235,10 +240,11 @@ private:
     QList<SubParamID> _curDisplaySubList;           // 当前显示子参数集合
     int _curIndex;
     TrendGraphInfo _trendGraphInfo;                 // 趋势图数据集合
-    QList<EventInfoSegment> _eventList;            // 报警类型和时间
+    QList<BlockEntry> _eventList;            // 报警类型和时间
     QList<TrendGraphInfo> _infosList;                    // 打印趋势图数据链表
     PatientInfo _patientInfo;                        // 病人信息
 
     bool _isHistory;                                // 历史回顾标志
     QString _historyDataPath;                       // 历史数据路径
+    QList<BlockEntry> eventBlockList;               // 事件信息列表
 };

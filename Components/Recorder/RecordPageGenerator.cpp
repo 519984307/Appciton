@@ -1995,7 +1995,7 @@ void RecordPageGenerator::drawTrendGraph(QPainter *painter, const GraphAxisInfo 
     painter->restore();
 }
 
-void RecordPageGenerator::drawTrendGraphEventSymbol(QPainter *painter, const GraphAxisInfo &axisInfo, const TrendGraphInfo &graphInfo, const QList<EventInfoSegment> &eventList)
+void RecordPageGenerator::drawTrendGraphEventSymbol(QPainter *painter, const GraphAxisInfo &axisInfo, const TrendGraphInfo &graphInfo, const QList<BlockEntry> &eventList)
 {
     painter->save();
     painter->translate(axisInfo.origin);
@@ -2011,12 +2011,12 @@ void RecordPageGenerator::drawTrendGraphEventSymbol(QPainter *painter, const Gra
     for (int i = 0; i < eventList.count(); ++i)
     {
         QRectF eventRect;
-        unsigned eventTime = eventList.at(i).timestamp;
+        unsigned eventTime = eventList.at(i).extraData;
         if (eventTime < graphInfo.startTime || eventTime > graphInfo.endTime)
         {
             continue;
         }
-        qreal timeX = timestampToX(eventList.at(i).timestamp, axisInfo, graphInfo);
+        qreal timeX = timestampToX(eventList.at(i).extraData, axisInfo, graphInfo);
         if (timeX > axisInfo.width - 10)
         {
             timeX =  axisInfo.width - 10;

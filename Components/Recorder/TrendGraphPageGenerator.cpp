@@ -64,7 +64,7 @@ public:
     unsigned endTime;
     unsigned deltaT;
     QList<TrendGraphInfo> trendGraphInfos;
-    QList<EventInfoSegment> eventList;
+    QList<BlockEntry> eventList;
     int curDrawnGraph;
     int marginLeft;
     PatientInfo patientInfo;
@@ -207,7 +207,7 @@ RecordPage *TrendGraphPageGeneratorPrivate::drawGraphPage()
 }
 
 TrendGraphPageGenerator::TrendGraphPageGenerator(const QList<TrendGraphInfo> &trendInfos,
-        const QList<EventInfoSegment> &eventList, const PatientInfo &patientInfo, QObject *parent)
+        const QList<BlockEntry> &eventList, const PatientInfo &patientInfo, QObject *parent)
     : RecordPageGenerator(parent), d_ptr(new TrendGraphPageGeneratorPrivate)
 {
     if (trendInfos.size() > 0)
