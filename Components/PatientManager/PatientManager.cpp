@@ -466,7 +466,7 @@ void PatientManager::newPatient()
             }
         }
     }
-    if (systemManager.isSupport(PARAM_SPO2))
+    if (systemManagerInterface && systemManagerInterface->isSupport(PARAM_SPO2))
     {
         spo2Param.clearTrendWaveData();
     }
