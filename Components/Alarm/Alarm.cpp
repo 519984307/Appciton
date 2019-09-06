@@ -1043,7 +1043,7 @@ Alarm::~Alarm()
     _alarmStatusList.clear();
 }
 
-QString Alarm::getPhyAlarmMessage(ParamID paramId, SubParamID subId, int alarmType, bool isOneShot)
+QString Alarm::getPhyAlarmMessage(ParamID paramId, int alarmType, bool isOneShot, SubParamID subId)
 {
     switch (paramId)
     {

@@ -902,7 +902,7 @@ void EventWindowPrivate::loadEventData()
                     }
                 }
                 infoStr += " ";
-                infoStr += trs(Alarm::getPhyAlarmMessage(paramId, subId, alarmId, alarmInfo & 0x1));
+                infoStr += trs(Alarm::getPhyAlarmMessage(paramId, alarmId, alarmInfo & 0x1, subId));
 
                 // 超限报警
                 if (!(alarmInfo & 0x1))
@@ -1072,9 +1072,7 @@ void EventWindowPrivate::eventInfoUpdate(int curRow)
             }
         }
         infoStr += " ";
-        infoStr += trs(Alarm::getPhyAlarmMessage(paramId, subId,
-                       alarmId,
-                       alarmInfo & 0x1));
+        infoStr += trs(Alarm::getPhyAlarmMessage(paramId, alarmId, alarmInfo & 0x1, subId));
 
         if (!(alarmInfo & 0x1))
         {

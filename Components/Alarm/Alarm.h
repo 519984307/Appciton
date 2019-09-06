@@ -84,7 +84,7 @@ public:
     // 析构。
     virtual ~Alarm();
 
-    static QString getPhyAlarmMessage(ParamID paramId, SubParamID subId, int alarmType, bool isOneShot);
+    static QString getPhyAlarmMessage(ParamID paramId, int alarmType, bool isOneShot, SubParamID subId = SUB_PARAM_NONE);
 
     /**
      * @brief setLatchLockSta 设置栓锁是否打开
