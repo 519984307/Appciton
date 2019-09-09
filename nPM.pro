@@ -39,8 +39,6 @@ MOC_DIR = moc
 OBJECTS_DIR = obj
 DESTDIR = $$PWD/nPM/bin
 
-CONFIG += debug
-
 # Install path
 target.path = /usr/local/nPM/bin
 INSTALLS += target
