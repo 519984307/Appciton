@@ -346,30 +346,31 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
         isZeroInProgress = _status.zeroInProgress;
         _status.zeroInProgress = ((val & BIT1) == BIT1) ? true : false;
 
-        if (!isZeroInProgress && _status.zeroInProgress)
+        if (!_status.zeroDisable && !isZeroInProgress && _status.zeroInProgress)
         {
+            // 当前非校零禁止时，前一刻非校零中，目前校零中
             co2Param.setZeroStatus(CO2_ZERO_REASON_IN_PROGRESS, _status.zeroInProgress);
             co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS, _status.zeroInProgress);
         }
 
         if (_status.sidestreamConfig)
         {
-            if (_status.zeroDisable)  //如果校零使能和校零进行中同时为真则代表正在校零
+            if (isZeroInProgress && !_status.zeroInProgress)
             {
-                if (isZeroInProgress && !_status.zeroInProgress)
-                {
-                    co2Param.setZeroStatus(CO2_ZERO_REASON_IN_PROGRESS, _status.zeroInProgress);
-                    co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS, _status.zeroInProgress);
-                }
+                // 前一刻校零中，目前非校零中
+                co2Param.setZeroStatus(CO2_ZERO_REASON_IN_PROGRESS, _status.zeroInProgress);
+                co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS, _status.zeroInProgress);
             }
 
             co2Param.setZeroStatus(CO2_ZERO_REASON_DISABLED, _status.zeroDisable);
-            co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_DISABLE, _status.zeroDisable);
+            // 旁流co2是的zeroDisable是禁止校准和校零
+            co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_AND_SPAN_DISABLE, _status.zeroDisable);
         }
         else
         {
             if (isZeroInProgress && !_status.zeroInProgress)
             {
+                // 前一刻校零中，目前非校零中
                 co2Param.setZeroStatus(CO2_ZERO_REASON_IN_PROGRESS, _status.zeroInProgress);
                 co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS, _status.zeroInProgress);
             }
