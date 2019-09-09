@@ -365,7 +365,7 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
     qMemCopy(reinterpret_cast<char *>(dataSegment) + sizeof(TrendDataSegment), valueSegments.constData(),
              sizeof(TrendValueSegment) * valueSegments.size());
 
-    addData(0, content);
+    addData(0, content, t);
 }
 
 

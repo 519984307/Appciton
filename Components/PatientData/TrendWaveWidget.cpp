@@ -45,7 +45,8 @@ TrendWaveWidget::TrendWaveWidget() : _hLayoutTrend(NULL),
     _cursorPosIndex(0), _currentCursorTime(0), _subWidget(NULL),
     _displayGraphNum(3), _totalGraphNum(3), _curVScroller(0),
     _totalPage(0), _currentPage(0),  _leftTime(0), _rightTime(0),
-    _curIndex(0), _trendGraphInfo(TrendGraphInfo()), _isHistory(false)
+    _curIndex(0), _trendGraphInfo(TrendGraphInfo()), _isHistory(false),
+    backend(NULL)
 {
     QString prefix = "TrendGraph|";
     int index = 0;
@@ -329,13 +330,9 @@ void TrendWaveWidget::setRulerLimit(int index, int down, int up, int scale)
     }
 }
 
-void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, const int endIndex)
+void TrendWaveWidget::loadTrendData(SubParamID subID)
 {
     _trendGraphInfo.reset();
-    if (startIndex == InvData() || endIndex == InvData())
-    {
-        return;
-    }
 
     _trendGraphInfo.startTime = _leftTime;
     _trendGraphInfo.endTime = _rightTime;
@@ -353,9 +350,9 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
     {
         TrendGraphData dataV1;
         AlarmEventInfo alarm;
-        unsigned lastTime = _trendDataPack.at(endIndex)->time;
+        unsigned lastTime = _trendDataPack.last()->time;
         bool startFlag = true;
-        for (int i = endIndex; i >= startIndex; i --)
+        for (int i = _trendDataPack.count() - 1; i >= 0; i--)
         {
             if (startFlag)
             {
@@ -403,9 +400,9 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
     {
         AlarmEventInfo alarm;
         TrendGraphDataV3 dataV3;
-        unsigned lastTime = _trendDataPack.at(endIndex)->time;
+        unsigned lastTime = _trendDataPack.last()->time;
         bool startFlag = true;
-        for (int i = endIndex; i >= startIndex; i --)
+        for (int i = _trendDataPack.count() - 1; i >= 0; i--)
         {
             if (startFlag)
             {
@@ -473,9 +470,9 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
     {
         AlarmEventInfo alarm;
         TrendGraphDataV2 dataV2;
-        unsigned lastTime = _trendDataPack.at(endIndex)->time;
+        unsigned lastTime = _trendDataPack.last()->time;
         bool startFlag = true;
-        for (int i = endIndex; i >= startIndex; i--)
+        for (int i = _trendDataPack.count() - 1; i >= 0; i--)
         {
             if (startFlag)
             {
@@ -530,17 +527,47 @@ void TrendWaveWidget::dataIndex(int &startIndex, int &endIndex)
     endIndex = _findIndex(_rightTime);
 }
 
+void TrendWaveWidget::trendDataPack(int startIndex, int endIndex)
+{
+    if (startIndex == InvData() || endIndex == InvData())
+    {
+        return;
+    }
+
+    QByteArray data;
+    TrendDataSegment *dataSeg;
+    qDeleteAll(_trendDataPack);
+    _trendDataPack.clear();
+
+    for (int i = startIndex; i <= endIndex; i++)
+    {
+        TrendDataPackage *pack;
+        pack = new TrendDataPackage;
+        data = backend->getBlockData((quint32)i);
+        dataSeg = reinterpret_cast<TrendDataSegment *>(data.data());
+        pack->time = dataSeg->timestamp;
+        for (int j = 0; j < dataSeg->trendValueNum; j ++)
+        {
+            pack->subparamValue[(SubParamID)dataSeg->values[j].subParamId] = dataSeg->values[j].value;
+            pack->subparamAlarm[(SubParamID)dataSeg->values[j].subParamId] = dataSeg->values[j].alarmFlag;
+            pack->alarmFlag = dataSeg->eventFlag;
+            pack->status = dataSeg->status;
+        }
+        _trendDataPack.append(pack);
+    }
+}
+
 void TrendWaveWidget::updateTimeRange()
 {
     unsigned t;
     unsigned onePixelTime = TrendDataSymbol::convertValue(_timeInterval);
-    if (_trendDataPack.length() == 0)
+    if (trendBlockList.length() == 0)
     {
         t = _initTime;
     }
     else
     {
-        unsigned lastTime = _trendDataPack.last()->time;
+        unsigned lastTime = trendBlockList.last().extraData;
         t = lastTime - onePixelTime * GRAPH_POINT_NUMBER * (_currentPage - 1);
     }
     _rightTime = t;
@@ -759,6 +786,7 @@ void TrendWaveWidget::_trendLayout()
     int startIndex;
     int endIndex;
     dataIndex(startIndex, endIndex);
+    trendDataPack(startIndex, endIndex);
     for (int i = 0; i < _displayGraphNum; i++)
     {
         int index = _curIndex + i;
@@ -771,7 +799,7 @@ void TrendWaveWidget::_trendLayout()
         _subWidgetList.at(i)->setWidgetParam(subId, getTrendGraphType(subId));
         _subWidgetList.at(i)->setThemeColor(colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(subId))));
 
-        loadTrendData(subId, startIndex, endIndex);
+        loadTrendData(subId);
         _subWidgetList.at(i)->trendDataInfo(_trendGraphInfo);
         _subWidgetList.at(i)->setFixedHeight(subWidgetHeight);
         _subWidgetList.at(i)->loadTrendSubWidgetInfo(info);
@@ -801,40 +829,29 @@ void TrendWaveWidget::_trendLayout()
 
 void TrendWaveWidget::_getTrendData()
 {
-    IStorageBackend *backend;
+    // 动态内存释放
+    if (backend != NULL)
+    {
+        delete backend;
+        backend = NULL;
+    }
+
     if (_isHistory)
     {
+        delete backend;
         backend = StorageManager::open(_historyDataPath + TREND_DATA_FILE_NAME, QIODevice::ReadWrite);
         _patientInfo = patientManager.getHistoryPatientInfo(_historyDataPath + PATIENT_INFO_FILE_NAME);
     }
     else
     {
+        delete backend;
         backend = trendDataStorageManager.backend();
         _patientInfo = patientManager.getPatientInfo();
     }
-    int blockNum = backend->getBlockNR();
-    QByteArray data;
-    TrendDataSegment *dataSeg;
-    qDeleteAll(_trendDataPack);
-    _trendDataPack.clear();
-    _eventList.clear();
-    // TODO: low efficiency
-    for (int i = 0; i < blockNum; i ++)
-    {
-        TrendDataPackage *pack;
-        pack = new TrendDataPackage;
-        data = backend->getBlockData((quint32)i);
-        dataSeg = reinterpret_cast<TrendDataSegment *>(data.data());
-        pack->time = dataSeg->timestamp;
-        for (int j = 0; j < dataSeg->trendValueNum; j ++)
-        {
-            pack->subparamValue[(SubParamID)dataSeg->values[j].subParamId] = dataSeg->values[j].value;
-            pack->subparamAlarm[(SubParamID)dataSeg->values[j].subParamId] = dataSeg->values[j].alarmFlag;
-            pack->alarmFlag = dataSeg->eventFlag;
-            pack->status = dataSeg->status;
-        }
-        _trendDataPack.append(pack);
-    }
+
+    trendBlockList.clear();
+    backend->getBlockEntryList(trendBlockList);
+
     _calculationPage();
 
     // 动态内存释放
@@ -910,13 +927,13 @@ void TrendWaveWidget::_calculationPage()
 {
     int timeInterval = TrendDataSymbol::convertValue(_timeInterval);
     int timeDiff;
-    if (_trendDataPack.count() == 0)
+    if (trendBlockList.count() == 0)
     {
         timeDiff = 0;
     }
     else
     {
-        timeDiff = _trendDataPack.last()->time - _trendDataPack.first()->time;
+        timeDiff = trendBlockList.last().extraData - trendBlockList.first().extraData;
     }
     int dataNum = timeDiff / timeInterval;
     _totalPage = (dataNum % GRAPH_POINT_NUMBER) ? ((dataNum / GRAPH_POINT_NUMBER) + 1) : (dataNum / GRAPH_POINT_NUMBER);
@@ -964,18 +981,18 @@ void TrendWaveWidget::_updateEventIndex()
 int TrendWaveWidget::_findIndex(unsigned timeStamp)
 {
     int lowPos = 0;
-    int highPos = _trendDataPack.count() - 1;
+    int highPos = trendBlockList.count() - 1;
     int index = InvData();
     while (lowPos <= highPos)
     {
         int midPos = (lowPos + highPos) / 2;
-        int timeDiff = qAbs(timeStamp - _trendDataPack.at(midPos)->time);
+        int timeDiff = qAbs(timeStamp - trendBlockList.at(midPos).extraData);
 
-        if (timeStamp < _trendDataPack.at(midPos)->time)
+        if (timeStamp < trendBlockList.at(midPos).extraData)
         {
             highPos = midPos - 1;
         }
-        else if (timeStamp > _trendDataPack.at(midPos)->time)
+        else if (timeStamp > trendBlockList.at(midPos).extraData)
         {
             lowPos = midPos + 1;
         }

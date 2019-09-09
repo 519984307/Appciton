@@ -68,7 +68,7 @@ public:
      * @param startIndex 开始数据的索引
      * @param endIndex 结束数据的索引
      */
-    void loadTrendData(SubParamID id, const int startIndex, const int endIndex);
+    void loadTrendData(SubParamID id);
 
     /**
      * @brief dataIndex 获取开始与结束数据的索引
@@ -76,6 +76,14 @@ public:
      * @param endIndex 结束数据的索引
      */
     void dataIndex(int &startIndex, int &endIndex);
+
+
+    /**
+     * @brief getTrendData 对应位置的趋势图数据包
+     * @param startIndex
+     * @param endIndex
+     */
+    void trendDataPack(int startIndex, int endIndex);
 
     /**
      * @brief updateTimeRange 根据当前数据页和时间间隔更新显示数据时间范围
@@ -247,4 +255,6 @@ private:
     bool _isHistory;                                // 历史回顾标志
     QString _historyDataPath;                       // 历史数据路径
     QList<BlockEntry> eventBlockList;               // 事件信息列表
+    QList<BlockEntry> trendBlockList;               // 趋势数据信息列表
+    IStorageBackend *backend;
 };
