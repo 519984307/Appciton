@@ -31,7 +31,8 @@ public:
     explicit PowerMangerPrivate(PowerManger * const q_ptr)
         : q_ptr(q_ptr), lowBattery(false), shutBattery(false),
           adcValue(AD_VALUE_FLOAT_RANGE), lastVolumeAdcValue(0),
-          hasHintShutMessage(false), shutdownTimer(NULL), lowMessage(NULL)
+          hasHintShutMessage(false), shutdownTimer(NULL), shutDownMessage(NULL),
+          lowBatteryMessage(NULL)
     {
     }
     ~PowerMangerPrivate(){}
@@ -85,7 +86,8 @@ public:
      */
     void LeastSquare(float &midValue);
 
-    MessageBox *lowMessage;
+    MessageBox *shutDownMessage;
+    MessageBox *lowBatteryMessage;
 };
 
 PowerManger::~PowerManger()
@@ -155,7 +157,8 @@ PowerManger::PowerManger()
     {
         d_ptr->powerList.append(BAT_VOLUME_NONE);
     }
-    d_ptr->lowMessage = new MessageBox(trs("Prompt"), trs("shutDownIn2Min"), false, true);
+    d_ptr->shutDownMessage = new MessageBox(trs("Prompt"), trs("shutDownIn2Min"), false, true);
+    d_ptr->lowBatteryMessage = new MessageBox(trs("Prompt"), trs("LowBattery"), false);
 }
 
 void PowerMangerPrivate::monitorRun()
@@ -230,9 +233,7 @@ void PowerMangerPrivate::monitorRun()
             batteryBarWidget.setIconLow();  // 黄灯显示低电量
             if (powerList.at(POWER_LIST_MAX_COUNT - 2) != curVolume)
             {
-                MessageBox lowMessage(trs("Prompt"), trs("LowBattery"), false);
-                windowManager.showWindow(&lowMessage, WindowManager::ShowBehaviorCloseIfVisiable
-                                         | WindowManager::ShowBehaviorModal);
+                windowManager.showWindow(lowBatteryMessage, WindowManager::ShowBehaviorNoAutoClose);
             }
             shutdownTimer->stop();
             shutdownWarn(false);
@@ -345,14 +346,14 @@ void PowerMangerPrivate::shutdownWarn(bool isWarn)
             hasHintShutMessage = true;
             // 清除界面弹出框
             windowManager.closeAllWidows();
-            windowManager.showWindow(lowMessage, WindowManager::ShowBehaviorNoAutoClose);
+            windowManager.showWindow(shutDownMessage, WindowManager::ShowBehaviorNoAutoClose);
         }
     }
     else
     {
-        if (lowMessage->isActiveWindow())
+        if (shutDownMessage->isActiveWindow())
         {
-            lowMessage->reject();
+            shutDownMessage->reject();
         }
         hasHintShutMessage = false;
     }
