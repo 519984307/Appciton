@@ -21,7 +21,7 @@
 #include <QStackedWidget>
 #include <QGroupBox>
 #include "FontManager.h"
-#include "QTimerEvent"
+#include <QTimerEvent>
 #include "MenuWindow.h"
 
 #define TEMP_VALUE_UPDATE_TIME                 (100)
