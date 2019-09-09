@@ -256,5 +256,5 @@ private:
     QString _historyDataPath;                       // 历史数据路径
     QList<BlockEntry> eventBlockList;               // 事件信息列表
     QList<BlockEntry> trendBlockList;               // 趋势数据信息列表
-    IStorageBackend *backend;
+    IStorageBackend *_backend;
 };

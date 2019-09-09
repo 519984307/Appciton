@@ -46,7 +46,7 @@ TrendWaveWidget::TrendWaveWidget() : _hLayoutTrend(NULL),
     _displayGraphNum(3), _totalGraphNum(3), _curVScroller(0),
     _totalPage(0), _currentPage(0),  _leftTime(0), _rightTime(0),
     _curIndex(0), _trendGraphInfo(TrendGraphInfo()), _isHistory(false),
-    backend(NULL)
+    _backend(NULL)
 {
     QString prefix = "TrendGraph|";
     int index = 0;
@@ -543,7 +543,7 @@ void TrendWaveWidget::trendDataPack(int startIndex, int endIndex)
     {
         TrendDataPackage *pack;
         pack = new TrendDataPackage;
-        data = backend->getBlockData((quint32)i);
+        data = _backend->getBlockData((quint32)i);
         dataSeg = reinterpret_cast<TrendDataSegment *>(data.data());
         pack->time = dataSeg->timestamp;
         for (int j = 0; j < dataSeg->trendValueNum; j ++)
@@ -561,7 +561,7 @@ void TrendWaveWidget::updateTimeRange()
 {
     unsigned t;
     unsigned onePixelTime = TrendDataSymbol::convertValue(_timeInterval);
-    if (trendBlockList.length() == 0)
+    if (trendBlockList.count() == 0)
     {
         t = _initTime;
     }
@@ -614,7 +614,24 @@ void TrendWaveWidget::setHistoryDataPath(QString path)
 
 void TrendWaveWidget::setHistoryData(bool flag)
 {
+    // 动态内存释放
+    if (_isHistory)
+    {
+        delete _backend;
+        _backend = NULL;
+    }
+
     _isHistory = flag;
+    if (_isHistory)
+    {
+        _backend = StorageManager::open(_historyDataPath + TREND_DATA_FILE_NAME, QIODevice::ReadWrite);
+        _patientInfo = patientManager.getHistoryPatientInfo(_historyDataPath + PATIENT_INFO_FILE_NAME);
+    }
+    else
+    {
+        _backend = trendDataStorageManager.backend();
+        _patientInfo = patientManager.getPatientInfo();
+    }
 }
 
 QList<SubParamID> TrendWaveWidget::getCurParamList()
@@ -721,6 +738,7 @@ void TrendWaveWidget::showEvent(QShowEvent *e)
 {
     IWidget::showEvent(e);
     _getTrendData();
+    _calculationPage();
     _cursorPosIndex = 0;
     updateTimeRange();
     _loadEventInfoList();
@@ -829,36 +847,8 @@ void TrendWaveWidget::_trendLayout()
 
 void TrendWaveWidget::_getTrendData()
 {
-    // 动态内存释放
-    if (backend != NULL)
-    {
-        delete backend;
-        backend = NULL;
-    }
-
-    if (_isHistory)
-    {
-        delete backend;
-        backend = StorageManager::open(_historyDataPath + TREND_DATA_FILE_NAME, QIODevice::ReadWrite);
-        _patientInfo = patientManager.getHistoryPatientInfo(_historyDataPath + PATIENT_INFO_FILE_NAME);
-    }
-    else
-    {
-        delete backend;
-        backend = trendDataStorageManager.backend();
-        _patientInfo = patientManager.getPatientInfo();
-    }
-
     trendBlockList.clear();
-    backend->getBlockEntryList(trendBlockList);
-
-    _calculationPage();
-
-    // 动态内存释放
-    if (_isHistory)
-    {
-        delete backend;
-    }
+    _backend->getBlockEntryList(trendBlockList);
 }
 
 void TrendWaveWidget::_initWaveSubWidget()
@@ -1054,5 +1044,6 @@ void TrendWaveWidget::_loadEventInfoList()
     if ((_historyDataPath != "") && _isHistory)
     {
         delete backend;
+        backend = NULL;
     }
 }

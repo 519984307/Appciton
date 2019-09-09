@@ -228,7 +228,7 @@ void EventWindow::setHistoryDataPath(QString path)
 void EventWindow::setHistoryData(bool flag)
 {
     // 动态内存释放
-    if (d_ptr->backend != NULL)
+    if (d_ptr->isHistory)
     {
         delete d_ptr->backend;
         d_ptr->backend = NULL;
