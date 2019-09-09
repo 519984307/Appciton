@@ -42,7 +42,7 @@ protected:
     /* reimplment */
     void timerEvent(QTimerEvent *ev);
 
-    void paintEvent(QPaintEvent *e);
+    bool eventFilter(QObject *obj, QEvent *event);
 private slots:
     /**
      * @brief onBtnReleased

@@ -284,6 +284,7 @@ void FactoryTempMenuContent::layoutExec()
             connect(button, SIGNAL(released()), this, SLOT(onBtnReleased()));
             layout->addWidget(button, 1 + i, 2 * j + 1);
             d_ptr->lbtn[j][i] = button;
+            d_ptr->lbtn[j][i]->installEventFilter(this);
 
             label = new QLabel;
             d_ptr->calibrateResultLbl[j][i] = label;
@@ -330,17 +331,20 @@ void FactoryTempMenuContent::timerEvent(QTimerEvent *ev)
     }
 }
 
-void FactoryTempMenuContent::paintEvent(QPaintEvent *e)
+bool FactoryTempMenuContent::eventFilter(QObject *obj, QEvent *ev)
 {
-    if (d_ptr->lbtn[0][0]->hasFocus() || d_ptr->lbtn[1][0]->hasFocus())
+    if (qobject_cast<Button*>(obj) == d_ptr->lbtn[0][0] || qobject_cast<Button*>(obj) == d_ptr->lbtn[1][0])
     {
-        MenuWindow *mw = this->getMenuWindow();
-        if (mw && d_ptr->tempTitle)
+        if (ev->type() == QEvent::FocusIn)
         {
-            mw->ensureWidgetVisiable(d_ptr->tempTitle);
+            MenuWindow *mw = this->getMenuWindow();
+            if (mw && d_ptr->tempTitle)
+            {
+                mw->ensureWidgetVisiable(d_ptr->tempTitle);
+            }
         }
     }
-    MenuContent::paintEvent(e);
+    return MenuContent::eventFilter(obj, ev);
 }
 
 void FactoryTempMenuContent::hideEvent(QHideEvent *e)
@@ -388,7 +392,6 @@ void FactoryTempMenuContent::readyShow()
             }
         }
     }
-
     for (int j = 0; j < TEMP_CALIBRATE_CHANNEL_NR; j++)
     {
         for (int i = 0; i < TEMP_CALIBRATE_NR; ++i)
