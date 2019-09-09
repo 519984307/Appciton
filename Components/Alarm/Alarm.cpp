@@ -1261,16 +1261,3 @@ void Alarm::removeAllLimitAlarm()
         }
     }
 }
-
-void Alarm::setAlarmLightOnAlarmReset(bool flag)
-{
-    int index = flag ? 1 : 0;
-    systemConfig.setNumValue("Alarms|AlarmLightOnAlarmReset", index);
-}
-
-bool Alarm::getAlarmLightOnAlarmReset()
-{
-    int index = 0;
-    systemConfig.getNumValue("Alarms|AlarmLightOnAlarmReset", index);
-    return index;
-}
