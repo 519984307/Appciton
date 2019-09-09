@@ -192,7 +192,18 @@ void TrendWaveWidget::leftMoveEvent()
             else
             {
                 // 将游标移到事件发生时刻
-                _cursorPosIndex = _getTimeIndex(alarmTime);
+                int index = _getTimeIndex(alarmTime);
+
+                // 事件时间没有对应的趋势数据索引
+                if (index == -1)
+                {
+                    // 跳到下一个事件
+                    continue;
+                }
+                else
+                {
+                    _cursorPosIndex = index;
+                }
 
                 int count = _displayGraphNum;
                 for (int i = 0; i < count; i++)
@@ -232,7 +243,18 @@ void TrendWaveWidget::rightMoveEvent()
             else
             {
                 // 将游标移到事件发生时刻
-                _cursorPosIndex = _getTimeIndex(alarmTime);
+                int index = _getTimeIndex(alarmTime);
+
+                // 事件时间没有对应的趋势数据索引
+                if (index == -1)
+                {
+                    // 跳到下一个事件
+                    continue;
+                }
+                else
+                {
+                    _cursorPosIndex = index;
+                }
 
                 int count = _displayGraphNum;
                 for (int i = 0; i < count; i++)
@@ -865,7 +887,7 @@ double TrendWaveWidget::_getCursorPos(unsigned t)
     return dpos;
 }
 
-unsigned TrendWaveWidget::_getTimeIndex(unsigned t)
+int TrendWaveWidget::_getTimeIndex(unsigned t)
 {
     for (int i = 0; i < _trendGraphInfo.alarmInfo.count(); i++)
     {
@@ -874,7 +896,7 @@ unsigned TrendWaveWidget::_getTimeIndex(unsigned t)
             return i;
         }
     }
-    return 0;
+    return -1;
 }
 
 unsigned TrendWaveWidget::_getCursorTime(double pos)
