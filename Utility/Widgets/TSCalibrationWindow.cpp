@@ -367,7 +367,7 @@ void TSCalibrationWindow::paintEvent(QPaintEvent *ev)
 
     QPainter painter(this);
 
-    QString text = trs("TouchCrossHairToCalibrate");
+    QString text = trs("TouchCrosshairToCalibrate");
     QFontMetrics fm = fontMetrics();
     QRect textRect = fm.boundingRect(text);
     textRect.moveCenter(QPoint(width() / 2, height() / 4 + 20));
