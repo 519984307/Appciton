@@ -807,7 +807,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</FIO2>
-		<T1 Enable="0" Prio="1">
+		<T1 Enable="1" Prio="1">
 		<celsius>
 		    <Low Min="150" Max="490">350</Low>
 		    <High Min="151" Max="500">378</High>
@@ -821,7 +821,7 @@
 		    <Scale>10</Scale>
 		</fahrenheit>
 		</T1>
-		<T2 Enable="0" Prio="1">
+		<T2 Enable="1" Prio="1">
 		<celsius>
 		    <Low Min="150" Max="490">350</Low>
 		    <High Min="151" Max="500">378</High>
@@ -835,7 +835,7 @@
 		    <Scale>10</Scale>
 		</fahrenheit>
 		</T2>
-		<TD Enable="0" Prio="1">
+		<TD Enable="1" Prio="1">
 		<celsius>
 		    <Low Min="0" Max="49">0</Low>
 		    <High Min="1" Max="50">5</High>
