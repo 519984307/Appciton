@@ -808,6 +808,7 @@ void TestAlarmIndicator::testPublishAlarmHasNoAlarm_data()
 
 void TestAlarmIndicator::testPublishAlarmHasNoAlarm()
 {
+    // 当前没有报警时，PublishAlarm处理
     QFETCH(AlarmStatus, status);
 
     NiceMock<MockAlarmInfoBarWidget> mockPhyInfoBarWidget;
@@ -850,6 +851,7 @@ void TestAlarmIndicator::testPublishAlarmHasPhyAlarm_data()
 
 void TestAlarmIndicator::testPublishAlarmHasPhyAlarm()
 {
+    // 当前有生理报警时，PublishAlarm处理
     QFETCH(AlarmStatus, status);
     QFETCH(AlarmPriority, priority);
     QFETCH(AlarmPriority, highestPriority);
@@ -879,12 +881,13 @@ void TestAlarmIndicator::testPublishAlarmHasPhyAlarm()
 
     if (status == ALARM_STATUS_PAUSE)
     {
-        // 设置暂停
+        // 报警暂停处理
         alarmIndicator.phyAlarmPauseStatusHandle();
         alarmIndicator.delAllPhyAlarm();
     }
     else if (status == ALARM_STATUS_RESET)
     {
+        // 报警复位处理
         alarmIndicator.phyAlarmResetStatusHandle();
         alarmIndicator.delLatchPhyAlarm();
     }
@@ -892,6 +895,7 @@ void TestAlarmIndicator::testPublishAlarmHasPhyAlarm()
     bool soundHasAlarm = false;
     if (priority > ALARM_PRIO_PROMPT && status == ALARM_STATUS_NORMAL)
     {
+        // 当前报警最高等级大于提示等级，且报警状态为正常时，播放报警音
         soundHasAlarm = true;
     }
 
@@ -904,9 +908,12 @@ void TestAlarmIndicator::testPublishAlarmHasPhyAlarm()
 
     if (status != ALARM_STATUS_PAUSE)
     {
+        // 非报警暂停时，生理报警区显示生理报警，报警状态机处理无生理报警暂停事件
         EXPECT_CALL(mockPhyInfoBarWidget, display(_));
         EXPECT_CALL(mockAlarmStateMachine, handAlarmEvent(ALARM_STATE_EVENT_NO_PAUSED_PHY_ALARM, _, _));
-        if (status != ALARM_STATUS_RESET) {
+        if (status != ALARM_STATUS_RESET)
+        {
+            // 非报警复位时，报警状态机处理无报警确认事件
             EXPECT_CALL(mockAlarmStateMachine, handAlarmEvent(ALARM_STATE_EVENT_NO_ACKNOWLEDG_ALARM, _, _));
         }
     }
@@ -942,6 +949,7 @@ void TestAlarmIndicator::testPublishAlarmHasTechAlarm_data()
 
 void TestAlarmIndicator::testPublishAlarmHasTechAlarm()
 {
+    // 当前有技术报警时，PublishAlarm处理
     QFETCH(AlarmStatus, status);
     QFETCH(AlarmPriority, priority);
     QFETCH(AlarmPriority, highestPriority);
@@ -965,17 +973,20 @@ void TestAlarmIndicator::testPublishAlarmHasTechAlarm()
     MockAlarmStateMachine mockAlarmStateMachine;
     AlarmStateMachineInterface::registerAlarmStateMachine(&mockAlarmStateMachine);
 
+    // 加载生理和技术报警显示栏
     alarmIndicator.setAlarmPhyWidgets(&mockPhyInfoBarWidget, NULL, NULL);
     alarmIndicator.setAlarmTechWidgets(&mockTechInfoBarWidget);
     ON_CALL(mockAlarm, getAlarmLightOnAlarmReset).WillByDefault(Return(true));
 
     if (priority != ALARM_PRIO_PROMPT && status == ALARM_STATUS_NORMAL)
     {
+        // 报警最高等级非提示时，且此时报警状态为正常状态，则更新报警声音和报警灯
         EXPECT_CALL(mockSoundManager, updateAlarm(true, highestPriority));
         EXPECT_CALL(mockLightManager, updateAlarm(true, highestPriority));
     }
     else
     {
+        // 关闭报警音和报警灯
         EXPECT_CALL(mockSoundManager, updateAlarm(false, highestPriority));
         EXPECT_CALL(mockLightManager, updateAlarm(false, highestPriority));
     }
