@@ -19,6 +19,7 @@
 using ::testing::Eq;
 using ::testing::Mock;
 using ::testing::_;
+using ::testing::Return;
 
 Q_DECLARE_METATYPE(AlarmStateEvent)
 
@@ -118,6 +119,18 @@ void TestAlarmPauseState::testHandAlarmEvent()
     if (event == ALARM_STATE_EVENT_MUTE_BTN_PRESSED)
     {
         EXPECT_CALL(mockAlarmIndicator, phyAlarmPauseStatusHandle());
+        EXPECT_CALL(mockAlarmStateMachine, switchState(Eq(ALARM_NORMAL_STATE)));
+    }
+    else if (event == ALARM_STATE_EVENT_RESET_BTN_PRESSED)
+    {
+        EXPECT_CALL(mockAlarmIndicator, clearAlarmPause());
+        EXPECT_CALL(mockAlarmIndicator, phyAlarmResetStatusHandle());
+        EXPECT_CALL(mockAlarmIndicator, techAlarmResetStatusHandle());
+        EXPECT_CALL(mockAlarmIndicator, getAlarmCount()).WillRepeatedly(Return(0));
+    }
+    else if (event == ALARM_STATE_EVENT_NEW_PHY_ALARM || event == ALARM_STATE_EVENT_NEW_TECH_ALARM)
+    {
+        EXPECT_CALL(mockAlarmIndicator, clearAlarmPause());
         EXPECT_CALL(mockAlarmStateMachine, switchState(Eq(ALARM_NORMAL_STATE)));
     }
 
