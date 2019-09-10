@@ -1275,37 +1275,3 @@ void EventWindowPrivate::refreshPageInfo()
                                           .arg(QString::number(totalPage));
     q_ptr->setWindowTitle(title);
 }
-
-void EventWindowPrivate::updateLevelStatus()
-{
-    levelCbo->clear();
-    if (curEventType != EventPhysiologicalAlarm)
-    {
-        for (int i = EVENT_LEVEL_ALL; i < EVENT_LEVEL_NR; i ++)
-        {
-            levelCbo->addItem(trs(EventDataSymbol::convert((EventLevel)i)));
-        }
-    }
-    switch (curEventType) {
-    case EventAll:
-        levelCbo->setEnabled(true);
-        break;
-    case EventPhysiologicalAlarm:
-        levelCbo->setEnabled(true);
-        for (int i = EVENT_LEVEL_MED; i < EVENT_LEVEL_NR; i ++)
-        {
-            levelCbo->addItem(trs(EventDataSymbol::convert((EventLevel)i)));
-        }
-        break;
-    case EventCodeMarker:
-    case EventRealtimePrint:
-    case EventNIBPMeasurement:
-    case EventWaveFreeze:
-    case EventOxyCRG:
-        levelCbo->setEnabled(false);
-        break;
-    default:
-        break;
-    }
-    levelCbo->setCurrentIndex(0);
-}
