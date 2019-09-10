@@ -203,7 +203,7 @@ void SoftKeyManager::setKeyTypeAvailable(SoftBaseKeyType keyType, bool isAvailab
         }
     }
 
-    refreshPage();
+    refreshPage(false);
 }
 
 void SoftKeyManager::refreshCO2Key(bool on)
