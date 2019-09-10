@@ -306,7 +306,7 @@ void N5Provider::handlePacket(unsigned char *data, int len)
     case N5_NOTIFY_START_UP:
     {
         _sendACK(data[0]);
-        ErrorLogItem *item = new CriticalFaultLogItem();
+        ErrorLogItem *item = new ErrorLogItem();
         item->setName("N5 Start");
         errorLog.append(item);
         nibpParam.reset();
