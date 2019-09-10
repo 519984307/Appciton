@@ -127,10 +127,15 @@ void T5Provider::handlePacket(unsigned char *data, int len)
         rawDataCollector.collectData(RawDataCollector::TEMP_DATA, data + 1, len - 1);
         break;
 
+    case T5_OHM_DATA:
+         ohmResult(data);
+         break;
+
     case T5_DATA_ERROR:
         _sendACK(data[0]);
         _errorWarm(data, len);
         break;
+
 
     default:
         break;
@@ -207,6 +212,20 @@ void T5Provider::sendCalibrateData(int channel, int value)
     sendCmd(T5_CMD_CHANNEL, cmd, 2);
 }
 
+void T5Provider::enterCalibrateState()
+{
+    unsigned char cmd[1];
+    cmd[0] = 0x01;
+    sendCmd(T5_CMD_CALIBRATE_STATE, cmd, 1);
+}
+
+void T5Provider::exitCalibrateState()
+{
+    unsigned char cmd[1];
+    cmd[0] = 0x00;
+    sendCmd(T5_CMD_CALIBRATE_STATE, cmd, 1);
+}
+
 /**************************************************************************************************
  * 接收自检状态。
  *************************************************************************************************/
@@ -228,12 +247,10 @@ void T5Provider::_selfTest(unsigned char *packet, int len)
             switch (packet[i])
             {
             case ERRORCODE_CHANNEL1_NOT_CALIBRATION:
-                tempParam.setErrorDisable();
                 tempParam.setOneShotAlarm(TEMP_ONESHOT_ALARM_NOT_CALIBRATION_1, true);
                 errorStr += tempErrorCode[packet[i]];
                 break;
             case ERRORCODE_CHANNEL2_NOT_CALIBRATION:
-                tempParam.setErrorDisable();
                 tempParam.setOneShotAlarm(TEMP_ONESHOT_ALARM_NOT_CALIBRATION_2, true);
                 errorStr += tempErrorCode[packet[i]];
                 break;
@@ -397,6 +414,21 @@ void T5Provider::_result(unsigned char *packet)
     {
         tempParam.setTEMP(_temp1, _temp2, _tempd);
     }
+}
+
+void T5Provider::ohmResult(unsigned char *packet)
+{
+    ohm1 = InvData();
+    ohm2 = InvData();
+    if (!(0xFF == packet[2] && 0xFF == packet[1]))
+    {
+        ohm1 = static_cast<int>((packet[2] << 8) + packet[1]);
+    }
+    if (!(0xFF == packet[4] && 0xFF == packet[3]))
+    {
+        ohm2 = static_cast<int>((packet[4] << 8) + packet[3]);
+    }
+    tempParam.setOhm(ohm1, ohm2);
 }
 
 /**************************************************************************************************
@@ -648,6 +680,9 @@ T5Provider::T5Provider() : BLMProvider("BLM_T5"), TEMPProviderIFace()
     _temp1 = InvData();
     _temp2 = InvData();
     _tempd = InvData();
+
+    ohm1 = InvData();
+    ohm2 = InvData();
 }
 
 /**************************************************************************************************
