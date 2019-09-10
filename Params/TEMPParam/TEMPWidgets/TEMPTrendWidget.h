@@ -13,6 +13,14 @@
 #include "TrendWidget.h"
 #include <QLabel>
 #include "TEMPDefine.h"
+#include <QStackedWidget>
+
+enum TempState
+{
+    TEMP_STATE_ENABLE,
+    TEMP_STATE_DISABLE,
+    TEMP_STATE_NR,
+};
 
 class TEMPTrendWidget: public TrendWidget
 {
@@ -33,6 +41,8 @@ public:
 
     // 刷新上下限
     void updateLimit();
+
+    void setShowStacked(TempState state);
 
     TEMPTrendWidget();
     ~TEMPTrendWidget();
@@ -86,4 +96,7 @@ private:
     QLabel *_t1DownLimit;
     QLabel *_t2UpLimit;
     QLabel *_t2DownLimit;
+
+    QStackedWidget *statckedWidget;  // 窗口显示内容
+    QLabel *message;    // 显示禁用等信息
 };

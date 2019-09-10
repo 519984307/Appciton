@@ -10,6 +10,7 @@
 
 
 #include <QHBoxLayout>
+#include <QWidget>
 #include "TEMPTrendWidget.h"
 #include "UnitManager.h"
 #include "ParamManager.h"
@@ -227,6 +228,14 @@ void TEMPTrendWidget::updateLimit()
     }
 }
 
+void TEMPTrendWidget::setShowStacked(TempState state)
+{
+    if (state != TEMP_STATE_DISABLE || state != TEMP_STATE_ENABLE)
+    {
+        statckedWidget->setCurrentIndex(static_cast<int>(state));
+    }
+}
+
 /**************************************************************************************************
  * 根据布局大小自动调整字体大小。
  *************************************************************************************************/
@@ -256,6 +265,10 @@ void TEMPTrendWidget::setTextSize()
     _t1DownLimit->setFont(limitFont);
     _t2UpLimit->setFont(limitFont);
     _t2DownLimit->setFont(limitFont);
+
+    r.setSize(QSize(widgetWidth * 3 / 4, height() / 3));
+    int messageFont = fontManager.adjustNumFontSize(r, true);
+    message->setFont(fontManager.numFont(messageFont, true));
 }
 
 void TEMPTrendWidget::showAlarmParamLimit(QWidget *valueWidget, const QString &valueStr, QPalette psrc)
@@ -335,7 +348,8 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
         setUnit(trs(Unit::getSymbol(UNIT_TF)));
     }
 
-    QHBoxLayout *hLayout = new QHBoxLayout;
+    QWidget* groupBox0 = new QWidget();
+    QHBoxLayout *hLayout0 = new QHBoxLayout(groupBox0);
     QVBoxLayout *vLayout = new QVBoxLayout();
 
     // T1
@@ -356,8 +370,8 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
     _t1Value = new QLabel();
     _t1Value->setAlignment(Qt::AlignCenter);
     _t1Value->setText(InvStr());
-    hLayout->addLayout(vLayout);
-    hLayout->addWidget(_t1Value);
+    hLayout0->addLayout(vLayout);
+    hLayout0->addWidget(_t1Value);
 
     // T2
     _t2Name = new QLabel();
@@ -378,8 +392,8 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
     _t2Value = new QLabel();
     _t2Value->setAlignment(Qt::AlignCenter);
     _t2Value->setText(InvStr());
-    hLayout->addLayout(vLayout);
-    hLayout->addWidget(_t2Value);
+    hLayout0->addLayout(vLayout);
+    hLayout0->addWidget(_t2Value);
 
     // TD
     _tdName = new QLabel();
@@ -388,9 +402,24 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
     _tdValue = new QLabel();
     _tdValue->setAlignment(Qt::AlignCenter);
     _tdValue->setText(InvStr());
-    hLayout->addWidget(_tdName);
-    hLayout->addWidget(_tdValue);
+    hLayout0->addWidget(_tdName);
+    hLayout0->addWidget(_tdValue);
 
+    QWidget *groupBox1 = new QWidget();
+    message = new QLabel();
+    message->setText(trs("TEMPDisable"));
+    QHBoxLayout *hLayout1 = new QHBoxLayout(groupBox1);
+    hLayout1->setMargin(1);
+    hLayout1->setSpacing(0);
+    hLayout1->addWidget(message, 0, Qt::AlignCenter);
+
+    statckedWidget = new QStackedWidget();
+    statckedWidget->addWidget(groupBox0);
+    statckedWidget->addWidget(groupBox1);
+    statckedWidget->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+
+    QHBoxLayout *hLayout = new QHBoxLayout();
+    hLayout->addWidget(statckedWidget);
     contentLayout->addLayout(hLayout, 7);
 
     // 释放事件。

@@ -297,6 +297,7 @@ void T5Provider::_errorWarm(unsigned char *packet, int len)
         case ERRORCODE_SELF_CHECK_FAILED:
             systemManager.setPoweronTestResult(T5_MODULE_SELFTEST_RESULT, SELFTEST_FAILED);
             tempParam.setErrorDisable();
+            tempParam.setWidgetErrorShow(true);
             tempParam.setOneShotAlarm(TEMP_ONESHOT_ALARM_MODULE_DISABLE, true);
             errorStr += tempErrorCode[packet[i]];
             break;

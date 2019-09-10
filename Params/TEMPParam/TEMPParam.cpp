@@ -24,6 +24,7 @@ TEMPParam *TEMPParam::_selfObj = NULL;
  *************************************************************************************************/
 void TEMPParam::initParam(void)
 {
+    _trendWidget->setShowStacked(TEMP_STATE_ENABLE);
 }
 
 /**************************************************************************************************
@@ -151,6 +152,18 @@ void TEMPParam::setModuleEnable()
     _isTEMPDisable = false;
 }
 
+void TEMPParam::setWidgetErrorShow(bool error)
+{
+    if (error)
+    {
+        _trendWidget->setShowStacked(TEMP_STATE_DISABLE);
+    }
+    else
+    {
+        _trendWidget->setShowStacked(TEMP_STATE_ENABLE);
+    }
+}
+
 /**************************************************************************************************
  * 设置服务模式升级数据提供对象。
  *************************************************************************************************/
@@ -198,7 +211,7 @@ void TEMPParam::setTEMP(int16_t t1, int16_t t2, int16_t td)
         _trendWidget->setTEMPValue(t1, t2, td);
         paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
     }
-    // TODO: set temp value to the facotry calibration menu
+    // Todo: set temp value to the facotry calibration menu
 }
 
 /**************************************************************************************************

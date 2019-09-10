@@ -60,6 +60,9 @@ public:
     void setModuleEnable(void);
     bool getErrorDisable(void) { return _isTEMPDisable;}
 
+    // 设置窗口是否禁用显示
+    void setWidgetErrorShow(bool error);
+
     // 通信中断
     bool getDisconnected(void);
 
