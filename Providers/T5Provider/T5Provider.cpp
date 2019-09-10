@@ -93,7 +93,7 @@ void T5Provider::handlePacket(unsigned char *data, int len)
     {
         _sendACK(data[0]);
 
-        ErrorLogItem *item = new CriticalFaultLogItem();
+        ErrorLogItem *item = new ErrorLogItem();
         item->setName("T5 Start");
         errorLog.append(item);
 

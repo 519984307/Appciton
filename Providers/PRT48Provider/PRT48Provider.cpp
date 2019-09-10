@@ -431,7 +431,7 @@ void PRT48Provider::handlePacket(unsigned char *data, int len)
         QMetaObject::invokeMethod(_sigSender, "restart");
 
         systemManager.setPoweronTestResult(PRINTER72_SELFTEST_RESULT, SELFTEST_MODULE_RESET);
-        ErrorLogItem *item = new CriticalFaultLogItem();
+        ErrorLogItem *item = new ErrorLogItem();
         item->setName(QString("Printer Start"));
         errorLog.append(item);
         break;
