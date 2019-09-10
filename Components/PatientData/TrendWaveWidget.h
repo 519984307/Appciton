@@ -204,7 +204,19 @@ private:
      */
     void _updateEventIndex();
 
+    /**
+     * @brief _findIndex 获取当前时刻在趋势数据中的索引
+     * @param timeStamp
+     * @return
+     */
     int _findIndex(unsigned timeStamp);
+
+    /**
+     * @brief _findPackIndex 查找当前时刻在Pack中的索引
+     * @param timeStamp
+     * @return
+     */
+    int _findPackIndex(unsigned timeStamp);
 
     /**
      * @brief getTrendGraphType 获取id对应的趋势图类型
@@ -217,6 +229,13 @@ private:
      * @brief _loadEventInfoList 加载事件信息列表
      */
     void _loadEventInfoList();
+
+    /**
+     * @brief getTrendDataPackage 获取索引对应的趋势数据
+     * @param index
+     * @return
+     */
+    TrendDataPackage getTrendDataPackage(int index);
 
 private:
     QVBoxLayout *_mainLayout;

@@ -957,12 +957,21 @@ void TrendWaveWidget::_updateEventIndex()
         // 将事件归为前一个时刻后，同时将前一刻的状态也更新
         int curIndex = _findIndex(eventInfo.extraData);
         int lastIndex = _findIndex(curEventTime);
+
+        // 当前事件索引与事件时间移动后的索引不等时
         if (curIndex != lastIndex)
         {
-            _trendDataPack.at(curIndex)->status = _trendDataPack.at(lastIndex)->status;
-            _trendDataPack.at(curIndex)->subparamValue = _trendDataPack.at(lastIndex)->subparamValue;
-            _trendDataPack.at(curIndex)->subparamAlarm = _trendDataPack.at(lastIndex)->subparamAlarm;
-            _trendDataPack.at(curIndex)->alarmFlag = _trendDataPack.at(lastIndex)->alarmFlag;
+            // 时刻在Pack存在有效索引时,将事件时间移动后的趋势数据状态赋予这个时刻
+            // 时间间隔大于5秒时需要将中间的事件移动到能显示的趋势数据上
+            int packIndex = _findPackIndex(eventInfo.extraData);
+            if (packIndex != -1)
+            {
+                TrendDataPackage pack = getTrendDataPackage(lastIndex);
+                _trendDataPack.at(packIndex)->status = pack.status;
+                _trendDataPack.at(packIndex)->subparamValue = pack.subparamValue;
+                _trendDataPack.at(packIndex)->subparamAlarm = pack.subparamAlarm;
+                _trendDataPack.at(packIndex)->alarmFlag = pack.alarmFlag;
+            }
         }
     }
     update();
@@ -994,6 +1003,18 @@ int TrendWaveWidget::_findIndex(unsigned timeStamp)
         }
     }
     return index;
+}
+
+int TrendWaveWidget::_findPackIndex(unsigned timeStamp)
+{
+    for (int i = 0; i < _trendDataPack.count(); i++)
+    {
+        if (timeStamp == _trendDataPack.at(i)->time)
+        {
+            return i;
+        }
+    }
+    return -1;
 }
 
 TrendGraphType TrendWaveWidget::getTrendGraphType(SubParamID id)
@@ -1046,4 +1067,20 @@ void TrendWaveWidget::_loadEventInfoList()
         delete backend;
         backend = NULL;
     }
+}
+
+TrendDataPackage TrendWaveWidget::getTrendDataPackage(int index)
+{
+    TrendDataPackage pack;
+    QByteArray data = _backend->getBlockData((quint32)index);
+    TrendDataSegment *dataSeg = reinterpret_cast<TrendDataSegment *>(data.data());
+    pack.time = dataSeg->timestamp;
+    for (int j = 0; j < dataSeg->trendValueNum; j ++)
+    {
+        pack.subparamValue[(SubParamID)dataSeg->values[j].subParamId] = dataSeg->values[j].value;
+        pack.subparamAlarm[(SubParamID)dataSeg->values[j].subParamId] = dataSeg->values[j].alarmFlag;
+        pack.alarmFlag = dataSeg->eventFlag;
+        pack.status = dataSeg->status;
+    }
+    return pack;
 }
