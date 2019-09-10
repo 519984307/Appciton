@@ -11,6 +11,21 @@
 #pragma once
 #include "Provider.h"
 
+struct BlmCmd
+{
+    BlmCmd() : cmdLen(0)
+    {
+        memset(cmd, 0, 20);
+    }
+    unsigned char cmd [0];
+    unsigned int cmdLen;
+    void reset()
+    {
+        memset(cmd, 0, 20);
+        cmdLen = 0;
+    }
+};
+
 /**
  * @brief The BLMProviderUpgradeIface class BLMProvider upgrade interface
  */
@@ -52,12 +67,20 @@ public:
      */
     static BLMProvider *findProvider(const QString &name);
 
+    /**
+     * @brief resetTimer 复位定时器
+     */
+    void resetTimer();
+
 protected:
     // 接收数据
     void dataArrived();
 
     // 协议命令解析
     virtual void handlePacket(unsigned char */*data*/, int /*len*/);
+
+protected slots:
+    void noResponseTimeout();
 
 private:
     // 发送数据
@@ -76,6 +99,11 @@ private:
     BLMProviderUpgradeIface *upgradeIface;
 
     static QMap<QString, BLMProvider*> providers;
+
+    QTimer *rxdTimer;           // 发送命令定时器
+    int _noResponseCount;              // 重发次数
+    unsigned char _cmdId;        // 命令帧数
+    BlmCmd _blmCmd;
 
 protected:
     static const int HeadLen = 4;               // 包头长度: Head,Length,FCS
