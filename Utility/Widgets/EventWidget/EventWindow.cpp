@@ -61,7 +61,7 @@ class EventWindowPrivate
 public:
     explicit EventWindowPrivate(EventWindow * const q_ptr)
         : eventTable(NULL), model(NULL), upPageBtn(NULL),
-          downPageBtn(NULL), typeCbo(NULL), levelCbo(NULL), listPrintBtn(NULL),
+          downPageBtn(NULL), typeCbo(NULL), listPrintBtn(NULL),
           infoWidget(NULL), trendListWidget(NULL), waveWidget(NULL),
           eventListBtn(NULL), coordinateMoveBtn(NULL), eventMoveBtn(NULL),
           printBtn(NULL),
@@ -118,18 +118,12 @@ public:
     void eventWaveUpdate(void);
 
     void refreshPageInfo();
-
-    /**
-     * @brief updateLevelStatus 更新事件级别状态
-     */
-    void updateLevelStatus();
 public:
     TableView *eventTable;
     EventReviewModel *model;
     Button *upPageBtn;
     Button *downPageBtn;
     ComboBox *typeCbo;
-    ComboBox *levelCbo;
     Button *listPrintBtn;
 
     EventInfoWidget *infoWidget;
@@ -361,22 +355,6 @@ void EventWindow::eventTypeSelect(int index)
     {
         d_ptr->printBtn->setEnabled(false);
         d_ptr->listPrintBtn->setEnabled(false);
-    }
-    d_ptr->updateLevelStatus();
-}
-
-void EventWindow::eventLevelSelect(int index)
-{
-    d_ptr->curEventLevel = (EventLevel)index;
-    d_ptr->loadEventData();
-    d_ptr->refreshPageInfo();
-    if (d_ptr->dataIndex.count())
-    {
-        d_ptr->eventTable->setFocusPolicy(Qt::StrongFocus);
-    }
-    else
-    {
-        d_ptr->eventTable->setFocusPolicy(Qt::NoFocus);
     }
 }
 
@@ -663,14 +641,6 @@ EventWindow::EventWindow()
     }
     connect(d_ptr->typeCbo, SIGNAL(currentIndexChanged(int)), this, SLOT(eventTypeSelect(int)));
 
-    QLabel *levelLabel = new QLabel(trs("Level"));
-    d_ptr->levelCbo = new ComboBox();
-    for (int i = 0; i < EVENT_LEVEL_NR; i ++)
-    {
-        d_ptr->levelCbo->addItem(trs(EventDataSymbol::convert((EventLevel)i)));
-    }
-    connect(d_ptr->levelCbo, SIGNAL(currentIndexChanged(int)), this, SLOT(eventLevelSelect(int)));
-
     d_ptr->listPrintBtn = new Button(trs("PrintList"));
     d_ptr->listPrintBtn->setButtonStyle(Button::ButtonTextOnly);
     connect(d_ptr->listPrintBtn, SIGNAL(released()), this, SLOT(eventListPrintReleased()));
@@ -690,9 +660,6 @@ EventWindow::EventWindow()
     hTableLayout->addStretch(1);
     hTableLayout->addWidget(typeLabel, 1);
     hTableLayout->addWidget(d_ptr->typeCbo, 6);
-    hTableLayout->addStretch(1);
-    hTableLayout->addWidget(levelLabel, 1);
-    hTableLayout->addWidget(d_ptr->levelCbo, 4);
     hTableLayout->addStretch(1);
     hTableLayout->addWidget(d_ptr->listPrintBtn, 4);
     hTableLayout->addStretch(1);
@@ -1307,38 +1274,4 @@ void EventWindowPrivate::refreshPageInfo()
                                           .arg(QString::number(curPage))
                                           .arg(QString::number(totalPage));
     q_ptr->setWindowTitle(title);
-}
-
-void EventWindowPrivate::updateLevelStatus()
-{
-    levelCbo->clear();
-    if (curEventType != EventPhysiologicalAlarm)
-    {
-        for (int i = EVENT_LEVEL_ALL; i < EVENT_LEVEL_NR; i ++)
-        {
-            levelCbo->addItem(trs(EventDataSymbol::convert((EventLevel)i)));
-        }
-    }
-    switch (curEventType) {
-    case EventAll:
-        levelCbo->setEnabled(true);
-        break;
-    case EventPhysiologicalAlarm:
-        levelCbo->setEnabled(true);
-        for (int i = EVENT_LEVEL_MED; i < EVENT_LEVEL_NR; i ++)
-        {
-            levelCbo->addItem(trs(EventDataSymbol::convert((EventLevel)i)));
-        }
-        break;
-    case EventCodeMarker:
-    case EventRealtimePrint:
-    case EventNIBPMeasurement:
-    case EventWaveFreeze:
-    case EventOxyCRG:
-        levelCbo->setEnabled(false);
-        break;
-    default:
-        break;
-    }
-    levelCbo->setCurrentIndex(0);
 }
