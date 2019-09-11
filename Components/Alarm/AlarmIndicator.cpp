@@ -94,8 +94,7 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
                 }
             }
 
-            if (alertor && node.alarmPriority != ALARM_PRIO_PROMPT
-                    && status != ALARM_STATUS_PAUSE)
+            if (alertor && node.alarmPriority != ALARM_PRIO_PROMPT)
             {
                 // 处理确认后且开启了报警复位灯，或者未确认的报警
                 if (lightPriority < node.alarmPriority)
@@ -114,20 +113,12 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
                 hasPausedPhyAlarm = true;
             }
         }
-        else if (ALARM_TYPE_TECH == node.alarmType && status != ALARM_STATUS_PAUSE)
+        else if (ALARM_TYPE_TECH == node.alarmType)
         {
-            // 技术报警只处理没有被acknowledge和不处理报警暂停状态
-            if (node.latch)
-            {
-                if (lightPriority < node.alarmPriority)
-                {
-                    lightPriority = node.alarmPriority;
-                }
-            }
             if ((!node.acknowledge || node.latch)
                     && node.alarmPriority != ALARM_PRIO_PROMPT)
             {
-                if (techSoundPriority < node.alarmPriority)
+                if (status != ALARM_STATUS_PAUSE && techSoundPriority < node.alarmPriority)
                 {
                     techSoundPriority = node.alarmPriority;
                 }
