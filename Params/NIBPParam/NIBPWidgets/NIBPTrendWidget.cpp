@@ -690,16 +690,17 @@ QList<SubParamID> NIBPTrendWidget::getShortTrendSubParams() const
 void NIBPTrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
-    showNormalStatus(d_ptr->nibpValue, psrc);
-    showNormalStatus(d_ptr->sysValue, psrc);
-    showNormalStatus(d_ptr->diaValue, psrc);
-    showNormalStatus(d_ptr->mapValue, psrc);
+    QLayout *lay = d_ptr->stackedwidget->currentWidget()->layout();   // 将窗体所有内容显示正常颜色
+    showNormalStatus(lay, psrc);
     showNormalParamLimit(psrc);
 }
 
 void NIBPTrendWidget::updatePalette(const QPalette &pal)
 {
     setPalette(pal);
+    d_ptr->nibpLabel->setPalette(pal);
+    d_ptr->nibpLabel->setPalette(pal);
+    d_ptr->nibpLabel->setPalette(pal);
     d_ptr->nibpValue->setPalette(pal);
     d_ptr->sysValue->setPalette(pal);
     d_ptr->diaValue->setPalette(pal);
