@@ -24,7 +24,7 @@ TEMPParam *TEMPParam::_selfObj = NULL;
  *************************************************************************************************/
 void TEMPParam::initParam(void)
 {
-    _trendWidget->setShowStacked(TEMP_STATE_ENABLE);
+    _trendWidget->showErrorStatckedWidget(false);
 }
 
 /**************************************************************************************************
@@ -156,11 +156,11 @@ void TEMPParam::setWidgetErrorShow(bool error)
 {
     if (error)
     {
-        _trendWidget->setShowStacked(TEMP_STATE_DISABLE);
+        _trendWidget->showErrorStatckedWidget(true);
     }
     else
     {
-        _trendWidget->setShowStacked(TEMP_STATE_ENABLE);
+        _trendWidget->showErrorStatckedWidget(false);
     }
 }
 

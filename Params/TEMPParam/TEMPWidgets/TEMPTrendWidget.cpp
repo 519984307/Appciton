@@ -51,10 +51,15 @@ void TEMPTrendWidget::loadConfig()
     setPalette(palette);
     _t1Name->setPalette(palette);
     _t2Name->setPalette(palette);
+    _tdName->setPalette(palette);
+    _t1UpLimit->setPalette(palette);
+    _t1DownLimit->setPalette(palette);
+    _t2UpLimit->setPalette(palette);
+    _t2DownLimit->setPalette(palette);
     _t1Value->setPalette(palette);
     _t2Value->setPalette(palette);
-    _tdName->setPalette(palette);
     _tdValue->setPalette(palette);
+    _message->setPalette(palette);
     TrendWidget::loadConfig();
 }
 
@@ -185,7 +190,8 @@ void TEMPTrendWidget::showValue(void)
     }
     else
     {
-        showNormalStatus(psrc);
+        QLayout *lay = statckedWidget->currentWidget()->layout();
+        showNormalStatus(lay, psrc);
     }
 }
 
@@ -228,11 +234,15 @@ void TEMPTrendWidget::updateLimit()
     }
 }
 
-void TEMPTrendWidget::setShowStacked(TempState state)
+void TEMPTrendWidget::showErrorStatckedWidget(bool error)
 {
-    if (state != TEMP_STATE_DISABLE || state != TEMP_STATE_ENABLE)
+    if (error == true)
     {
-        statckedWidget->setCurrentIndex(static_cast<int>(state));
+        statckedWidget->setCurrentIndex(1);
+    }
+    else
+    {
+        statckedWidget->setCurrentIndex(0);
     }
 }
 
@@ -268,7 +278,7 @@ void TEMPTrendWidget::setTextSize()
 
     r.setSize(QSize(widgetWidth * 3 / 4, height() / 3));
     int messageFont = fontManager.adjustNumFontSize(r, true);
-    message->setFont(fontManager.numFont(messageFont, true));
+    _message->setFont(fontManager.numFont(messageFont, true));
 }
 
 void TEMPTrendWidget::showAlarmParamLimit(QWidget *valueWidget, const QString &valueStr, QPalette psrc)
@@ -406,12 +416,12 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
     hLayout0->addWidget(_tdValue);
 
     QWidget *groupBox1 = new QWidget();
-    message = new QLabel();
-    message->setText(trs("TEMPDisable"));
+    _message = new QLabel();
+    _message->setText(trs("TEMPDisable"));
     QHBoxLayout *hLayout1 = new QHBoxLayout(groupBox1);
     hLayout1->setMargin(1);
     hLayout1->setSpacing(0);
-    hLayout1->addWidget(message, 0, Qt::AlignCenter);
+    hLayout1->addWidget(_message, 0, Qt::AlignCenter);
 
     statckedWidget = new QStackedWidget();
     statckedWidget->addWidget(groupBox0);
@@ -450,6 +460,29 @@ QList<SubParamID> TEMPTrendWidget::getShortTrendSubParams() const
 void TEMPTrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_TEMP));
-    showNormalStatus(psrc);
+    showNormalStatus(_t1Value, psrc);
+    showNormalStatus(_t2Value, psrc);
+    showNormalStatus(_tdValue, psrc);
+    showNormalStatus(_t1UpLimit, psrc);
+    showNormalStatus(_t1DownLimit, psrc);
+    showNormalStatus(_t2UpLimit, psrc);
+    showNormalStatus(_t2DownLimit, psrc);
+    showNormalStatus(_message, psrc);
+}
+
+void TEMPTrendWidget::updatePalette(const QPalette &pal)
+{
+    setPalette(pal);
+    _t1Name->setPalette(pal);
+    _t2Name->setPalette(pal);
+    _tdName->setPalette(pal);
+    _t1Value->setPalette(pal);
+    _t2Value->setPalette(pal);
+    _tdValue->setPalette(pal);
+    _t1UpLimit->setPalette(pal);
+    _t1DownLimit->setPalette(pal);
+    _t2UpLimit->setPalette(pal);
+    _t2DownLimit->setPalette(pal);
+    _message->setPalette(pal);
 }
 

@@ -42,7 +42,7 @@ public:
     // 刷新上下限
     void updateLimit();
 
-    void setShowStacked(TempState state);
+    void showErrorStatckedWidget(bool error);
 
     TEMPTrendWidget();
     ~TEMPTrendWidget();
@@ -50,6 +50,8 @@ public:
     QList<SubParamID> getShortTrendSubParams() const;
 public:
     virtual void doRestoreNormalStatus();
+
+    virtual void updatePalette(const QPalette &pal);
 
 protected:
     virtual void setTextSize(void);
@@ -98,5 +100,5 @@ private:
     QLabel *_t2DownLimit;
 
     QStackedWidget *statckedWidget;  // 窗口显示内容
-    QLabel *message;    // 显示禁用等信息
+    QLabel *_message;    // 显示禁用等信息
 };
