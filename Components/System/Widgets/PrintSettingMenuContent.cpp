@@ -37,12 +37,14 @@ public:
     {
         ITEM_CBO_PRINT_TIME,
         ITEM_CBO_PRINT_SPEED,
+        ITEM_CBO_PRINT_PHY_ALARM,
+        ITEM_CBO_PRINT_CODEMARKER,
+        ITEM_CBO_PRINT_NIBP,
+        ITEM_CBO_PRINT_WAVE_FREEZE
     };
 
     PrintSettingMenuContentPrivate()
-        : printTimeCbo(NULL),
-          printSpeedCbo(NULL),
-          printTimerId(-1),
+        : printTimerId(-1),
           waitTimerId(-1),
           isWait(false),
           timeoutNum(0)
@@ -63,8 +65,7 @@ public:
     QList<ComboBox *> selectWaves;
     QList<int> waveIDs;
     QStringList waveNames;
-    ComboBox *printTimeCbo;
-    ComboBox *printSpeedCbo;
+    QMap<MenuItem, ComboBox *> combos;
 
     int printTimerId;
     int waitTimerId;
@@ -74,11 +75,27 @@ public:
 
 void PrintSettingMenuContentPrivate::loadOptions()
 {
-    PrintTime timeSec = recorderManager.getPrintTime();
-    printTimeCbo->setCurrentIndex(timeSec);
+    int index = 0;
+    index = static_cast<int>(recorderManager.getPrintTime());
+    combos[ITEM_CBO_PRINT_TIME]->setCurrentIndex(index);
 
-    PrintSpeed speed = recorderManager.getPrintSpeed();
-    printSpeedCbo->setCurrentIndex(speed);
+    index = static_cast<int>(recorderManager.getPrintSpeed());
+    combos[ITEM_CBO_PRINT_SPEED]->setCurrentIndex(index);
+
+    systemConfig.getNumValue("Print|PhysiologicalAlarm", index);
+    combos[ITEM_CBO_PRINT_PHY_ALARM]->setCurrentIndex(index);
+
+    systemConfig.getNumValue("Print|CoderMarker", index);
+    combos[ITEM_CBO_PRINT_CODEMARKER]->setCurrentIndex(index);
+
+    if (systemManager.isSupport(CONFIG_NIBP))
+    {
+        systemConfig.getNumValue("Print|NIBPReading", index);
+        combos[ITEM_CBO_PRINT_NIBP]->setCurrentIndex(index);
+    }
+
+    systemConfig.getNumValue("Print|WaveFreeze", index);
+    combos[ITEM_CBO_PRINT_WAVE_FREEZE]->setCurrentIndex(index);
 
     // update wave
     wavesUpdate(waveIDs, waveNames);
@@ -220,7 +237,7 @@ void PrintSettingMenuContent::layoutExec()
 
     ComboBox *combo;
     QLabel *label;
-    int item = 0;
+    int itemID;
     int index = 0;
     int lastColumn = 2;
 
@@ -259,34 +276,89 @@ void PrintSettingMenuContent::layoutExec()
     glayout->addWidget(label, index, 0);
 
     combo = new ComboBox;
-    d_ptr->printTimeCbo = combo;
     combo->addItems(QStringList()
                     << trs(PrintSymbol::convert(PRINT_TIME_CONTINOUS))
-                    << trs(PrintSymbol::convert(PRINT_TIME_EIGHT_SEC))
-                   );
-    combo->setProperty("comboItem", qVariantFromValue(item));
+                    << trs(PrintSymbol::convert(PRINT_TIME_EIGHT_SEC)));
+    itemID = static_cast<int>(PrintSettingMenuContentPrivate::ITEM_CBO_PRINT_TIME);
+    combo->setProperty("comboItem", qVariantFromValue(itemID));
+    d_ptr->combos.insert(PrintSettingMenuContentPrivate::ITEM_CBO_PRINT_TIME, combo);
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboxIndexChanged(int)));
     glayout->addWidget(combo, index, lastColumn);
     index++;
-    item++;
 
     // print speed
     label = new QLabel(trs("PrintSpeed"));
     glayout->addWidget(label, index, 0);
 
     combo = new ComboBox;
-    d_ptr->printSpeedCbo = combo;
     combo->addItems(QStringList()
                     << PrintSymbol::convert(PRINT_SPEED_125)
                     << PrintSymbol::convert(PRINT_SPEED_250)
-                    << PrintSymbol::convert(PRINT_SPEED_500)
-                   );
-    combo->setProperty("comboItem", qVariantFromValue(item));
+                    << PrintSymbol::convert(PRINT_SPEED_500));
+    itemID = static_cast<int>(PrintSettingMenuContentPrivate::ITEM_CBO_PRINT_SPEED);
+    combo->setProperty("comboItem", qVariantFromValue(itemID));
+    d_ptr->combos.insert(PrintSettingMenuContentPrivate::ITEM_CBO_PRINT_SPEED, combo);
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboxIndexChanged(int)));
     glayout->addWidget(combo, index, lastColumn);
     index++;
 
-    glayout->setRowStretch(index, 1);
+    // phy alarm
+    label = new QLabel(trs("PhyAlarmTriggerPrint"));
+    glayout->addWidget(label, index, 0);
+    combo = new ComboBox();
+    combo->addItems(QStringList()
+                       << trs("Disable")
+                       << trs("Enable"));
+    itemID = static_cast<int>(PrintSettingMenuContentPrivate::ITEM_CBO_PRINT_PHY_ALARM);
+    combo->setProperty("comboItem", qVariantFromValue(itemID));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboxIndexChanged(int)));
+    glayout->addWidget(combo, index, lastColumn);
+    d_ptr->combos.insert(PrintSettingMenuContentPrivate::ITEM_CBO_PRINT_PHY_ALARM, combo);
+    index++;
+
+    // code marker
+    label = new QLabel(trs("CodeMarkerTriggerPrint"));
+    glayout->addWidget(label, index, 0);
+    combo = new ComboBox();
+    combo->addItems(QStringList()
+                       << trs("Disable")
+                       << trs("Enable"));
+    itemID = static_cast<int>(PrintSettingMenuContentPrivate::ITEM_CBO_PRINT_CODEMARKER);
+    combo->setProperty("comboItem",qVariantFromValue(itemID));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboxIndexChanged(int)));
+    glayout->addWidget(combo, index, lastColumn);
+    d_ptr->combos.insert(PrintSettingMenuContentPrivate::ITEM_CBO_PRINT_CODEMARKER, combo);
+    index++;
+
+    if (systemManager.isSupport(CONFIG_NIBP))
+    {
+        // NIBP Reading
+        label = new QLabel(trs("NIBPReadingTriggerPrint"));
+        glayout->addWidget(label, index, 0);
+        combo = new ComboBox();
+        combo->addItems(QStringList()
+                           << trs("Disable")
+                           << trs("Enable"));
+        itemID = static_cast<int>(PrintSettingMenuContentPrivate::ITEM_CBO_PRINT_NIBP);
+        combo->setProperty("comboItem",qVariantFromValue(itemID));
+        connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboxIndexChanged(int)));
+        glayout->addWidget(combo, index, lastColumn);
+        d_ptr->combos.insert(PrintSettingMenuContentPrivate::ITEM_CBO_PRINT_NIBP, combo);
+        index++;
+    }
+
+    // Wave Freeze
+    label = new QLabel(trs("WaveFreezeTriggerPrint"));
+    glayout->addWidget(label, index, 0);
+    combo = new ComboBox();
+    combo->addItems(QStringList()
+                       << trs("Disable")
+                       << trs("Enable"));
+    itemID = static_cast<int>(PrintSettingMenuContentPrivate::ITEM_CBO_PRINT_WAVE_FREEZE);
+    combo->setProperty("comboItem", qVariantFromValue(itemID));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboxIndexChanged(int)));
+    glayout->addWidget(combo, index, lastColumn);
+    d_ptr->combos.insert(PrintSettingMenuContentPrivate::ITEM_CBO_PRINT_WAVE_FREEZE, combo);
 }
 
 void PrintSettingMenuContent::timerEvent(QTimerEvent *ev)
@@ -321,7 +393,8 @@ void PrintSettingMenuContent::onComboxIndexChanged(int index)
     {
         return;
     }
-    int item = combo->property("comboItem").toInt();
+    PrintSettingMenuContentPrivate::MenuItem
+             item = static_cast<PrintSettingMenuContentPrivate::MenuItem>(combo->property("comboItem").toInt());
     switch (item)
     {
     case PrintSettingMenuContentPrivate::ITEM_CBO_PRINT_SPEED:
@@ -329,6 +402,20 @@ void PrintSettingMenuContent::onComboxIndexChanged(int index)
         break;
     case PrintSettingMenuContentPrivate::ITEM_CBO_PRINT_TIME:
         recorderManager.setPrintTime((PrintTime)index);
+        break;
+    case PrintSettingMenuContentPrivate::ITEM_CBO_PRINT_PHY_ALARM:
+        systemConfig.setNumValue("Print|PhysiologicalAlarm", index);
+        break;
+    case PrintSettingMenuContentPrivate::ITEM_CBO_PRINT_CODEMARKER:
+        systemConfig.setNumValue("Print|CoderMarker", index);
+        break;
+    case PrintSettingMenuContentPrivate::ITEM_CBO_PRINT_NIBP:
+        systemConfig.setNumValue("Print|NIBPReading", index);
+        break;
+    case PrintSettingMenuContentPrivate::ITEM_CBO_PRINT_WAVE_FREEZE:
+        systemConfig.setNumValue("Print|WaveFreeze", index);
+        break;
+    default:
         break;
     }
 }
