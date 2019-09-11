@@ -332,7 +332,6 @@ void T5Provider::_probeState(unsigned char *packet)
     }
     if (packet[1] & 0x10)
     {
-        _sensorOff1 = true;
         _overRang1 = false;
     }
     else
@@ -350,7 +349,6 @@ void T5Provider::_probeState(unsigned char *packet)
     }
     if (packet[2] & 0x10)
     {
-        _sensorOff2 = true;
         _overRang2 = false;
     }
     else
