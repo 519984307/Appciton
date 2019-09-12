@@ -16,18 +16,27 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 include("../../Common/Common.pri")
 include("../../Common/googletest.pri")
+include("../../Common/runtest.pri")
 
 SOURCES += main.cpp \
     TestPatientInfoWidget.cpp \
     ../../../Components/PatientManager/PatientInfoWidget.cpp \
+    ../../../Components/PatientManager/PatientManager.cpp \
     ../../../Components/WindowManager/IWidget.cpp \
     ../../../Utility/LanguageManager/LanguageManager.cpp \
     ../../../Utility/Config/XmlParser.cpp \
     ../../../Utility/FontManager/FontManagerInterface.cpp \
+    ../../../Utility/DataStorage/DataStorageDirManagerInterface.cpp \
     ../../../Utility/Widgets/Base/Dialog.cpp \
     ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
     ../../../Components/WindowManager/WindowManagerInterface.cpp \
     ../../../Components/PatientManager/PatientInfoWindowInterface.cpp \
+    ../../../Components/System/SystemManagerInterface.cpp \
+    ../../../Components/ConfigManager/ConfigManagerInterface.cpp \
+    ../../../Components/Alarm/AlarmIndicatorInterface.cpp \
+    ../../../Params/NIBPParam/NIBPParamInterface.cpp \
+    ../../../Params/ECGParam/ECGParamInterface.cpp \
+    ../../../Params/ECGParam/ECGDupParamInterface.cpp \
     ../../../Utility/Config/Config.cpp \
     ../../../Utility/Config/IConfig.cpp \
     ../../../Utility/ErrorLog/ErrorLogItem.cpp \
@@ -37,15 +46,23 @@ SOURCES += main.cpp \
 HEADERS += \
     TestPatientInfoWidget.h \
     ../../../Components/PatientManager/PatientInfoWidget.h \
+    ../../../Components/PatientManager/PatientManager.h \
     ../../../Components/PatientManager/PatientInfoWidgetInterface.h \
     ../../../Components/WindowManager/IWidget.h \
     ../../../Utility/LanguageManager/LanguageManager.h \
     ../../../Utility/Config/XmlParser.h \
     ../../../Utility/FontManager/FontManagerInterface.h \
+    ../../../Utility/DataStorage/DataStorageDirManagerInterface.h \
     ../../../Utility/Widgets/Base/Dialog.h \
     ../../../Utility/ErrorLog/ErrorLogInterface.h \
     ../../../Components/WindowManager/WindowManagerInterface.h \
     ../../../Components/PatientManager/PatientInfoWindowInterface.h \
+    ../../../Components/System/SystemManagerInterface.h \
+    ../../../Components/ConfigManager/ConfigManagerInterface.h \
+    ../../../Components/Alarm/AlarmIndicatorInterface.h \
+    ../../../Params/NIBPParam/NIBPParamInterface.h \
+    ../../../Params/ECGParam/ECGParamInterface.h \
+    ../../../Params/ECGParam/ECGDupParamInterface.h \
     ../../../Utility/Config/Config.h \
     ../../../Utility/Config/IConfig.h \
     ../../../Utility/ErrorLog/ErrorLogItem.h \
@@ -57,11 +74,21 @@ HEADERS += \
 INCLUDEPATH += \
     ../../../Components/PatientManager \
     ../../../Components/WindowManager \
+    ../../../Components/ParamManager \
     ../../../Utility/LanguageManager \
     ../../../Utility/Config \
+    ../../../Components/ConfigManager \
+    ../../../Components/Alarm \
+    ../../../Components/System \
     ../../../Utility/FontManager \
     ../../../Utility/Widgets/Base \
     ../../../Utility/ErrorLog \
+    ../../Params \
+    ../../../Params/ECGParam \
+    ../../../Params/O2Param \
+    ../../../Params/NIBPParam \
+    ../../../Utility/DataStorage \
+    ../../Alarm \
     ../../Utility \
 
 RESOURCES += \

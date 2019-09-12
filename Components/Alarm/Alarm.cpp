@@ -144,7 +144,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
         {
             trendCache->getTrendData(_timestamp, data);
         }
-        curValue = data.values[alarmSource->getSubParamID(i)];
+        curValue = data.values.value(alarmSource->getSubParamID(i), InvData());
 
         bool isEnable = alarmSource->isAlarmEnable(i);
         int completeResult = alarmSource->getCompare(curValue, i);
@@ -587,7 +587,7 @@ void Alarm::_handleAlarm(void)
         {
             trendCache->collectTrendData(_timestamp);
             trendCache->collectTrendAlarmStatus(_timestamp);
-            trendDataStorageManager->storeData(_timestamp, TrendDataStorageManagerInterface::CollectStatusAlarm);
+            trendDataStorageManager->storeData(_timestamp, TrendDataStorageManagerInterface::NIBPAlarm);
         }
         paramID.removeAll(PARAM_NIBP);
     }
@@ -1260,17 +1260,4 @@ void Alarm::removeAllLimitAlarm()
             source->notifyAlarm(i, false);
         }
     }
-}
-
-void Alarm::setAlarmLightOnAlarmReset(bool flag)
-{
-    int index = flag ? 1 : 0;
-    systemConfig.setNumValue("Alarms|AlarmLightOnAlarmReset", index);
-}
-
-bool Alarm::getAlarmLightOnAlarmReset()
-{
-    int index = 0;
-    systemConfig.getNumValue("Alarms|AlarmLightOnAlarmReset", index);
-    return index;
 }

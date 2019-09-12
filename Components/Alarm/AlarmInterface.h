@@ -21,13 +21,6 @@ public:
     static AlarmInterface *getAlarm(void);
 
     /**
-     * @brief setAlarmLightOnAlarmReset 设置报警复位时的报警灯
-     * @param flag
-     */
-    virtual void setAlarmLightOnAlarmReset(bool flag) = 0;
-    virtual bool getAlarmLightOnAlarmReset(void) = 0;
-
-    /**
      * @brief addAlarmStatus 添加报警状态
      * @param status
      */

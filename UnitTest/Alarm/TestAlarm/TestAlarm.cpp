@@ -29,6 +29,8 @@ Q_DECLARE_METATYPE(SubParamID)
 using ::testing::_;
 using ::testing::Mock;
 using ::testing::Return;
+using ::testing::DoAll;
+using ::testing::SetArgReferee;
 
 class TestAlarmPrivate
 {
@@ -389,7 +391,11 @@ void TestAlarm::testMainRunLimitSource_data()
 
     LimitAlarm *s3 = new LimitAlarm;
     QTest::newRow("pause state/nolatch") << static_cast<AlarmLimitIFace *>(s3)
-                                         << ALARM_STATUS_PAUSE << 0
+                                         << ALARM_STATUS_RESET << 0
+                                         << false
+                                         << false;
+    QTest::newRow("pause state/nolatch") << static_cast<AlarmLimitIFace *>(s3)
+                                         << ALARM_STATUS_RESET << 0
                                          << false
                                          << false;
     QTest::newRow("reset state/nolatch") << static_cast<AlarmLimitIFace *>(s3)
@@ -398,7 +404,7 @@ void TestAlarm::testMainRunLimitSource_data()
                                          << true;
 }
 
-static bool compareAlarmInfoList(QList<Alarm::AlarmInfo> &list1, QList<Alarm::AlarmInfo> &list2)
+static bool compareAlarmInfoList(QList<Alarm::AlarmInfo> &list1, QList<Alarm::AlarmInfo> &list2)    /* NOLINT */
 {
     QList<Alarm::AlarmInfo>::Iterator iter = list1.begin();
     for (; iter != list1.end(); iter++)
@@ -413,11 +419,11 @@ static bool compareAlarmInfoList(QList<Alarm::AlarmInfo> &list1, QList<Alarm::Al
 
 void TestAlarm::testMainRunLimitSource()
 {
-    QFETCH(AlarmLimitIFace *, source);
-    QFETCH(AlarmStatus, alarmStatus);
-    QFETCH(int, isLock);
-    QFETCH(bool, isNeedAddAlarm);
-    QFETCH(bool, isCleanup);
+    QFETCH(AlarmLimitIFace *, source);  // 报警源
+    QFETCH(AlarmStatus, alarmStatus);   // 报警状态
+    QFETCH(int, isLock);                // 报警的栓锁状态
+    QFETCH(bool, isNeedAddAlarm);       // 是否新发生的报警
+    QFETCH(bool, isCleanup);            // 是否需要清除报警池中的报警
     d_ptr->isCleanup = isCleanup;
 
     static bool lastAlarmStatus[ALARM_COUNT] = {false, false, false, false};
@@ -455,6 +461,7 @@ void TestAlarm::testMainRunLimitSource()
             isLock = false;
         }
 
+        // 记录移除报警的个数
         if (!source->isAlarmEnable(i))
         {
             delInfoCount++;
@@ -463,21 +470,26 @@ void TestAlarm::testMainRunLimitSource()
         {
             if (!isLock && source->getCompare(0, i) == 0)
             {
+                // 若报警没被栓锁且没有超限，则删除该报警
                 delInfoCount++;
             }
         }
 
+        // 记录栓锁报警个数
         if (!source->isAlarmEnable(i) && isLock && lastAlarmStatus[i])
         {
             latchCount++;
         }
-        else if (source->getCompare(0, i) == 0 && isLock && lastAlarmStatus[i] && isNeedAddAlarm && source->isAlarmEnable(i))
+        else if (source->getCompare(0, i) == 0 && isLock && lastAlarmStatus[i]
+                 && isNeedAddAlarm && source->isAlarmEnable(i))
         {
+            // 若报警没有超限，但是被栓锁了且上一报警状态是报警的、报警源报警使能
             latchCount++;
         }
 
         if (isNeedAddAlarm && source->getCompare(0, i) != 0)
         {
+            // 添加超限报警
             EXPECT_CALL(mockAlarmIndicator, addAlarmInfo(t, ALARM_TYPE_PHY,
                                                          source->getAlarmPriority(i),
                                                          source->toString(i),
@@ -488,8 +500,10 @@ void TestAlarm::testMainRunLimitSource()
         }
         if (source->isAlarmEnable(i) && source->getCompare(0, i) != 0)
         {
+            // 发生超限报警时
             if (isLock || lastAlarmStatus[i])
             {
+                // 被栓锁或上次报警状态为报警，则检测报警是否存在
                 EXPECT_CALL(mockAlarmIndicator, checkAlarmIsExist(ALARM_TYPE_PHY, source->toString(i)))
                         .Times(::testing::AnyNumber())
                         .WillRepeatedly(Return(false));
@@ -521,24 +535,35 @@ void TestAlarm::testMainRunLimitSource()
 
     if (delInfoCount)
     {
+        // 删除报警
         EXPECT_CALL(mockAlarmIndicator, delAlarmInfo(ALARM_TYPE_PHY, NULL)).Times(delInfoCount);
     }
 
     if (newPhyAlarm)
     {
+        // 有新发生的超限报警，则报警状态机处理新发生的生理报警
         EXPECT_CALL(mockAlarmStateMachine, handAlarmEvent(ALARM_STATE_EVENT_NEW_PHY_ALARM, _, _)).Times(newPhyAlarm);
 
+        // 存储超限报警事件
         EXPECT_CALL(mockEventStorageManager, triggerAlarmEvent(_, source->getWaveformID(0), t)).Times(newPhyAlarm);
     }
 
     if (latchCount)
     {
+        // 处理每个报警的栓锁状态
         EXPECT_CALL(mockAlarmIndicator, latchAlarmInfo(ALARM_TYPE_PHY, NULL))
                 .Times(latchCount)
                 .WillRepeatedly(Return(true));
     }
 
-    EXPECT_CALL(mockTrendCache, getTrendData(t, _)).Times(source->getAlarmSourceNR());
+    TrendCacheData cacheData;
+    /*
+     *  set a valid value for SUB_PARAM_NONE, because Limit Alarm sub param id is none
+     * and need to have a valid value
+     */
+    cacheData.values[SUB_PARAM_NONE] = 0;
+    EXPECT_CALL(mockTrendCache, getTrendData(t, _)).Times(source->getAlarmSourceNR()).
+            WillRepeatedly(DoAll(SetArgReferee<1>(cacheData), Return(true)));
 
     alertor.mainRun(t);
 
@@ -668,14 +693,14 @@ void TestAlarm::testMainRunOneshotSource_data()
 
 void TestAlarm::testMainRunOneshotSource()
 {
-    QFETCH(AlarmOneShotIFace *, source);
-    QFETCH(AlarmStatus, alarmStatus);
-    QFETCH(bool, isLock);
-    QFETCH(bool, isChangeTechAlarm);
-    QFETCH(bool, isChangePhyAlarm);
-    QFETCH(bool, isChangeRemove);
-    QFETCH(bool, isChangeEnable);
-    QFETCH(bool, isCleanup);
+    QFETCH(AlarmOneShotIFace *, source);    // 报警源
+    QFETCH(AlarmStatus, alarmStatus);       // 报警状态
+    QFETCH(bool, isLock);                   // 栓锁状态
+    QFETCH(bool, isChangeTechAlarm);        // 控制技术报警是否发生报警
+    QFETCH(bool, isChangePhyAlarm);         // 控制生理报警是否发生报警
+    QFETCH(bool, isChangeRemove);           // 控制报警是否被移除
+    QFETCH(bool, isChangeEnable);           // 控制报警是否使能
+    QFETCH(bool, isCleanup);                // 是否需要清除报警池中的报警
     d_ptr->isCleanup = isCleanup;
 
     static bool lastOneShotAlarmStatus[ALARM_COUNT] = {false, false, false, false};
@@ -710,6 +735,13 @@ void TestAlarm::testMainRunOneshotSource()
     MockAlarmIndicator::registerAlarmIndicator(&mockAlarmIndicator);
     MockTrendCache mockTrendCache;
     MockTrendCache::registerTrendCache(&mockTrendCache);
+    TrendCacheData cacheData;
+    /*
+     *  set a valid value for SUB_PARAM_NONE, because Limit Alarm sub param id is none
+     * and need to have a valid value
+     */
+    cacheData.values[SUB_PARAM_NONE] = 0;
+    EXPECT_CALL(mockTrendCache, getTrendData(_, _)).WillRepeatedly(DoAll(SetArgReferee<1>(cacheData), Return(true)));
     MockAlarmStateMachine mockAlarmStateMachine;
     MockAlarmStateMachine::registerAlarmStateMachine(&mockAlarmStateMachine);
     MockEventStorageManager mockEventStorageManager;
@@ -721,11 +753,13 @@ void TestAlarm::testMainRunOneshotSource()
     {
         if (alarmStatus == ALARM_STATUS_PAUSE && source->getAlarmType(i) != ALARM_TYPE_TECH)
         {
+            // 生理报警在报警暂停状态时，将所有的上一次报警状态复位
             lastOneShotAlarmStatus[i] = false;
             continue;
         }
         if (source->isNeedRemove(i) && lastOneShotAlarmStatus[i])
         {
+            // 若上次报警发生中，这次要被移除，则让AlarmIndicator移除报警
             EXPECT_CALL(mockAlarmIndicator, delAlarmInfo(source->getAlarmType(i), source->toString(i)));
             lastOneShotAlarmStatus[i] = false;
             continue;
@@ -734,13 +768,16 @@ void TestAlarm::testMainRunOneshotSource()
         {
             if (lastOneShotAlarmStatus[i])
             {
+                // 上次报警发生，此时报警去使能了
                 if (source->getAlarmType(i) != ALARM_TYPE_TECH && isLock)
                 {
+                    // 栓锁了的生理报警，则栓锁报警
                     EXPECT_CALL(mockAlarmIndicator, latchAlarmInfo(source->getAlarmType(i), source->toString(i)))
                             . WillOnce(Return(true));
                 }
                 else
                 {
+                    // 删除非栓锁的报警和技术报警
                     EXPECT_CALL(mockAlarmIndicator, delAlarmInfo(source->getAlarmType(i), source->toString(i)));
                 }
             }
@@ -751,6 +788,7 @@ void TestAlarm::testMainRunOneshotSource()
         if (!source->isNeedRemove(i) && source->isAlarmEnable(i) && source->isAlarmed(i)
                 && !lastOneShotAlarmStatus[i])
         {
+            // 若此报警不需移除，且允许报警，且发生了报警，且上次没有发生报警，同时满足上述条件后，才可添加报警
             machineCount++;
             EXPECT_CALL(mockAlarmIndicator, addAlarmInfo(t, source->getAlarmType(i),
                                                          source->getAlarmPriority(i),
@@ -763,14 +801,17 @@ void TestAlarm::testMainRunOneshotSource()
         {
             if (lastOneShotAlarmStatus[i])
             {
+                // 上次发生了报警，现在报警撤销了
                 if (isLock && source->getAlarmType(i) != ALARM_TYPE_TECH)
                 {
+                    // 若为栓锁的生理报警，则栓锁报警
                     EXPECT_CALL(mockAlarmIndicator, latchAlarmInfo(source->getAlarmType(i), source->toString(i)))
                             . WillOnce(Return(false));
                     lastOneShotAlarmStatus[i] = false;
                 }
                 else
                 {
+                    // 删除非栓锁的生理报警和技术报警
                     EXPECT_CALL(mockAlarmIndicator, delAlarmInfo(source->getAlarmType(i), source->toString(i)));
                     lastOneShotAlarmStatus[i] = false;
                 }
@@ -781,8 +822,10 @@ void TestAlarm::testMainRunOneshotSource()
         {
             if (lastOneShotAlarmStatus[i])
             {
+                // 上次发生了报警，现在仍然在报警状态下
                 if (isLock && source->getAlarmType(i) != ALARM_TYPE_TECH)
                 {
+                    // 检测生理栓锁报警是否存在和更新报警栓锁状态
                     EXPECT_CALL(mockAlarmIndicator, checkAlarmIsExist(source->getAlarmType(i), source->toString(i)))
                             .WillOnce(Return(true));
                     EXPECT_CALL(mockAlarmIndicator, updateLatchAlarmInfo(source->toString(i), false));
@@ -793,11 +836,13 @@ void TestAlarm::testMainRunOneshotSource()
 
         if (source->isAlarmed(i) && source->getAlarmType(i) != ALARM_TYPE_TECH)
         {
+            // 存储生理报警事件
             EXPECT_CALL(mockEventStorageManager, triggerAlarmEvent(_, source->getWaveformID(i), t));
         }
 
         if (!source->isNeedRemove(i))
         {
+            // 非移除报警时，才记录上一时刻的报警状态
             lastOneShotAlarmStatus[i] = source->isAlarmed(i);
         }
     }

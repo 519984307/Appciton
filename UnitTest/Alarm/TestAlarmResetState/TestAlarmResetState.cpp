@@ -52,7 +52,7 @@ void TestAlarmResetState::testHandAlarmEvent_data()
     QTest::addColumn<ALarmStateType>("state");
 
     QTest::newRow("reset btn pressed") << ALARM_STATE_EVENT_RESET_BTN_PRESSED
-                                       << ALARM_RESET_STATE;
+                                       << ALARM_STATE_NONE;
 
     QTest::newRow("mute btn pressed") << ALARM_STATE_EVENT_MUTE_BTN_PRESSED
                                       << ALARM_PAUSE_STATE;
@@ -71,11 +71,19 @@ void TestAlarmResetState::testHandAlarmEvent()
 
     MockAlarmIndicator mockAlarmIndicator;
     AlarmIndicatorInterface::registerAlarmIndicator(&mockAlarmIndicator);
-    EXPECT_CALL(mockAlarmIndicator, phyAlarmPauseStatusHandle()).Times(AnyNumber());
 
     MockAlarmStateMachine mockAlarmStateMachine;
     MockAlarmStateMachine::registerAlarmStateMachine(&mockAlarmStateMachine);
-    EXPECT_CALL(mockAlarmStateMachine, switchState(Eq(state))).Times(AnyNumber());
+
+    if (event != ALARM_STATE_EVENT_RESET_BTN_PRESSED)
+    {
+        EXPECT_CALL(mockAlarmStateMachine, switchState(Eq(state))).Times(AnyNumber());
+    }
+    if (event == ALARM_STATE_EVENT_MUTE_BTN_PRESSED)
+    {
+        EXPECT_CALL(mockAlarmIndicator, phyAlarmPauseStatusHandle()).Times(AnyNumber());
+        EXPECT_CALL(mockAlarmIndicator, removeAllAlarmResetStatus()).Times(AnyNumber());
+    }
 
     AlarmResetState resetState;
     resetState.handAlarmEvent(event, 0, 0);

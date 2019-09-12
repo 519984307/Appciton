@@ -36,7 +36,6 @@ public:
         ITEM_CBO_PAUSE_MAX_ALARM_15MIN,
         ITEM_CBO_REMINDER_TONE,
         ITEM_CBO_REMINDER_TONE_INTERVAL,
-        ITEM_CBO_ALARM_LIGHT_RESET,
         ITEM_CBO_ALARM_LATCH_LOCK,
         ITEM_CBO_ALARM_AUDIO_OFF,
         ITEM_CBO_DEFAULT
@@ -101,10 +100,6 @@ void AlarmMaintainMenuContentPrivate::loadOptions()
     systemConfig.getNumValue("Alarms|ReminderToneIntervals", index);
     combos[ITEM_CBO_REMINDER_TONE_INTERVAL]->setCurrentIndex(index);
 #endif
-
-    bool flag = alertor.getAlarmLightOnAlarmReset();
-    index = flag ? 1 : 0;
-    combos[ITEM_CBO_ALARM_LIGHT_RESET]->setCurrentIndex(index);
 
 #ifndef CLOSE_USELESS_ALARM_FUNCTION
     systemConfig.getNumValue("Alarms|PhyParAlarmLatchlockOn", index);
@@ -182,9 +177,6 @@ void AlarmMaintainMenuContentPrivate::
         break;
     case ITEM_CBO_REMINDER_TONE_INTERVAL:
         systemConfig.setNumValue("Alarms|ReminderToneIntervals", index);
-        break;
-    case ITEM_CBO_ALARM_LIGHT_RESET:
-        alertor.setAlarmLightOnAlarmReset(index);
         break;
     case ITEM_CBO_ALARM_LATCH_LOCK:
         systemConfig.setNumValue("Alarms|PhyParAlarmLatchlockOn", index);
@@ -265,10 +257,6 @@ void AlarmMaintainMenuContentPrivate::defaultIndexInit()
     defalutConfig.getNumValue("Alarms|ReminderToneIntervals", index);
     defaultIndexMap[ITEM_CBO_REMINDER_TONE_INTERVAL] = index;
 #endif
-
-    index = 0;
-    defalutConfig.getNumValue("Alarms|AlarmLightOnAlarmReset", index);
-    defaultIndexMap[ITEM_CBO_ALARM_LIGHT_RESET] = index;
 
     index = 0;
     defalutConfig.getNumValue("Alarms|AlarmAudio", index);
@@ -445,19 +433,6 @@ void AlarmMaintainMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_REMINDER_TONE_INTERVAL, comboBox);
 #endif
-
-    // alarmLight On Alarm Reset
-    label = new QLabel(trs("AlarmLightOnAlarmReset"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs("Close")
-                       << trs("Open"));
-    itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_LIGHT_RESET);
-    comboBox->setProperty("Item", qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_LIGHT_RESET, comboBox);
 
 #ifndef CLOSE_USELESS_ALARM_FUNCTION
     // latch lock

@@ -16,6 +16,7 @@ CONFIG   -= app_bundle
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
 include("../../../Common/googletest.pri")
+include("../../../Common/runtest.pri")
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 # You can also make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -34,6 +35,7 @@ SOURCES += \
     ../../../../Params/NIBPParam/NIBPTrigger/NIBPCountdownTimeInterface.cpp \
     ../../../../Utility/ErrorLog/ErrorLogItem.cpp \
     ../../../../Utility/Config/Config.cpp \
+    ../../../../Components/System/SystemManagerInterface.cpp \
     ../../../../Params/NIBPParam/NIBPParamInterface.cpp \
     ../../../../Params/NIBPParam/NIBPStateMachine/NIBPState.cpp \
     ../../../../Utility/Config/IConfig.cpp \
@@ -56,6 +58,7 @@ HEADERS += \
     ../../../../Utility/Config/IConfig.h \
     ../../../../Params/NIBPParam/NIBPTrigger/NIBPCountdownTimeInterface.h \
     ../../../../Components/PatientManager/PatientDefine.h \
+    ../../../../Components/System/SystemManagerInterface.h \
     ../../../../Utility/BaseDefine.h \
     ../../../../Utility/ErrorLog/ErrorLogItem.h \
     ../../../../Utility/Config/Config.h \
@@ -76,6 +79,8 @@ INCLUDEPATH += \
     ../../../../Utility/ErrorLog \
     ../../../../Params/NIBPParam/NIBPTrigger \
     ../../../../Components/PatientManager \
+    ../../../../Components/System \
+    ../../../../Components/ParamManager \
     ../../../../Utility \
     ..
 

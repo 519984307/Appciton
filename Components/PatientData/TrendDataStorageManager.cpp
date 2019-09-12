@@ -55,7 +55,8 @@ class TrendDataStorageManagerPrivate: public StorageManagerPrivate
 public:
     Q_DECLARE_PUBLIC(TrendDataStorageManager)
     explicit TrendDataStorageManagerPrivate(TrendDataStorageManager *q_ptr)
-        : StorageManagerPrivate(q_ptr), firstSave(false), lastStoreTimestamp(0), isStopRun(false)
+        : StorageManagerPrivate(q_ptr), firstSave(false), lastStoreTimestamp(0), isStopRun(false),
+          checkPendingNIBPAlarm(false), nibpMeasureTime(0)
     {
         memset(&dataDesc, 0, sizeof(TrendDataDescription));
     }
@@ -74,6 +75,10 @@ public:
     QMap<SubParamID, ShortTrendStorage *> shortTrends;
 
     bool isStopRun;
+
+    QList<QByteArray> trendCacheBuff;       // NIBP测量趋势数据到NIBP报警状态之间的数据缓存
+    bool checkPendingNIBPAlarm;             // 等待检测NIBP报警
+    unsigned nibpMeasureTime;               // NIBP测量时间
 };
 
 void TrendDataStorageManagerPrivate::updateAdditionInfo()
@@ -365,7 +370,66 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
     qMemCopy(reinterpret_cast<char *>(dataSegment) + sizeof(TrendDataSegment), valueSegments.constData(),
              sizeof(TrendValueSegment) * valueSegments.size());
 
-    addData(0, content, t);
+    // NIBP测量趋势数据开始等待NIBP报警状态
+    if (dataStatus == TrendDataStorageManagerInterface::CollectStatusNIBP)
+    {
+        d->checkPendingNIBPAlarm = true;
+        d->nibpMeasureTime = t;
+    }
+    else if (dataStatus == TrendDataStorageManagerInterface::NIBPAlarm && d->checkPendingNIBPAlarm)
+    {
+        if (d->trendCacheBuff.count())
+        {
+            QByteArray nibpContent = d->trendCacheBuff.at(0);
+            int valueSegmentNum = (nibpContent.count() - sizeof(TrendDataSegment)) / sizeof(TrendValueSegment);
+            for (int i = 0; i < valueSegmentNum; i++)
+            {
+                TrendValueSegment *segment = reinterpret_cast<TrendValueSegment *>(d->trendCacheBuff[0].data() + sizeof(TrendDataSegment)
+                                                                                   + i * sizeof(TrendValueSegment));
+                if (segment->subParamId == SUB_PARAM_NIBP_SYS
+                        || segment->subParamId == SUB_PARAM_NIBP_DIA
+                        || segment->subParamId == SUB_PARAM_NIBP_MAP)
+                {
+                    // 将NIBP测量结果的报警状态赋值到之前NIBP测量结果的趋势数据中
+                    segment->alarmFlag = alertor.getAlarmSourceStatus(paramInfo.getParamName(PARAM_NIBP), static_cast<SubParamID>(segment->subParamId));
+                    if (segment->subParamId == SUB_PARAM_NIBP_MAP)
+                    {
+                        break;
+                    }
+                }
+            }
+            d->checkPendingNIBPAlarm = false;
+        }
+        // 将缓存中的数据写入文件
+        while (d->trendCacheBuff.count())
+        {
+            addData(0, d->trendCacheBuff.takeFirst());
+        }
+        return;
+    }
+
+    // 当后面的趋势数据与NIBP测量趋势数据的时间间隔大于5s时,将缓存的数据写入文件
+    if ((t - d->nibpMeasureTime > 5) && d->checkPendingNIBPAlarm == true)
+    {
+        while (d->trendCacheBuff.count())
+        {
+            addData(0, d->trendCacheBuff.takeFirst(), t);
+        }
+        // 把最新这条趋势数据加到文件的末尾
+        addData(0, content, t);
+        d->checkPendingNIBPAlarm = false;
+        return;
+    }
+
+    // 等待NIBP报警状态更新前的数据存入缓存
+    if (d->checkPendingNIBPAlarm)
+    {
+        d->trendCacheBuff.append(content);
+    }
+    else
+    {
+        addData(0, content, t);
+    }
 }
 
 

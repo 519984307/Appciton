@@ -17,7 +17,6 @@
 #include <QResizeEvent>
 #include <ThemeManager.h>
 #include <QDebug>
-#include "WindowManager.h"
 
 #define PREFER_ITEM_HEIGHT (68)
 #define DEFAULT_ITEM_NUM 8
@@ -30,8 +29,7 @@ public:
         : ScrollAreaPrivate(q_ptr),
           widget(NULL),
           itemLayout(NULL),
-          curSelectIndex(-1),
-          isUpdatingSelectedIndex(false)
+          curSelectIndex(-1)
     {
     }
 
@@ -43,7 +41,6 @@ public:
     QList<MenuSidebarItem *> itemList;
     QVBoxLayout *itemLayout;
     int curSelectIndex;
-    bool isUpdatingSelectedIndex;
 };
 
 void MenuSidebarPrivate::onItemClicked()
@@ -120,10 +117,6 @@ MenuSidebar::MenuSidebar(QWidget *parent)
 
     d->scroller->setHorizontalOvershootPolicy(QKineticScroller::OvershootAlwaysOff);
     setScrollDirection(ScrollArea::ScrollVertical);
-
-    // 在参数测量菜单中打开报警设置菜单，然后等待超时关闭，最后再次打开该参数测量菜单，出现的meusideitem一直是首项。
-    // 因此此处加入处理：当菜单超时关闭后，再次打开时强制刷新当前menusideitem
-    connect(&windowManager, SIGNAL(allDialogsStatusChanged()), this, SLOT(onDialogsStatusChanged()));
 }
 
 MenuSidebar::~MenuSidebar()
@@ -175,13 +168,8 @@ bool MenuSidebar::setChecked(const QString &text)
         return false;
     }
 
-    if (index != d->curSelectIndex || d->isUpdatingSelectedIndex)
+    if (index != d->curSelectIndex)
     {
-        if (d->isUpdatingSelectedIndex)
-        {
-            d->isUpdatingSelectedIndex = false;
-        }
-
         if (d->curSelectIndex >= 0)
         {
             // uncheck the previous item
@@ -224,12 +212,6 @@ MenuSidebarItem *MenuSidebar::itemAt(int index) const
     return d->itemList.at(index);
 }
 
-void MenuSidebar::onDialogsStatusChanged()
-{
-    Q_D(MenuSidebar);
-    d->isUpdatingSelectedIndex = true;
-}
-
 QSize MenuSidebar::sizeHint() const
 {
     return QSize(200, PREFER_ITEM_HEIGHT * DEFAULT_ITEM_NUM);
@@ -240,6 +222,10 @@ void MenuSidebar::showEvent(QShowEvent *ev)
     Q_D(MenuSidebar);
 
     setWidget(d->widget);
+
+    if (d->curSelectIndex >= 0) {
+        emit selectItemChanged(d->curSelectIndex);
+    }
 
     ScrollArea::showEvent(ev);
 }

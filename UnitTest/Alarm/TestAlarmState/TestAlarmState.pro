@@ -26,10 +26,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 include("../../Common/Common.pri")
+include("../../Common/runtest.pri")
 
 SOURCES += \
         TestAlarmState.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmState.cpp \
+    ../../../Utility/LanguageManager/LanguageManager.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmResetState.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmPauseState.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmNormalState.cpp \
@@ -46,6 +48,7 @@ DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 HEADERS += \
     ../../../Components/Alarm/AlarmStateMachine/AlarmState.h \
+    ../../../Utility/LanguageManager/LanguageManager.h \
     TestAlarmState.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmStateMachineInterface.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmResetState.h \
@@ -63,6 +66,7 @@ HEADERS += \
 INCLUDEPATH += \
     ../../../Components/Alarm/AlarmStateMachine \
     ../../../Components/Alarm \
+    ../../../Utility/LanguageManager \
     ../../../Components/LightManager \
     ../../../Utility/Config \
     ../../../Utility/ErrorLog \

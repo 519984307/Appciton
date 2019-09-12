@@ -432,11 +432,8 @@ void E5Provider::handlePacket(unsigned char *data, int len)
 
     case TE3_NOTIFY_SYSTEM_STARTED:
     {
-        ErrorLogItem *item = new CriticalFaultLogItem();
+        ErrorLogItem *item = new ErrorLogItem();
         item->setName("E5 Start");
-        item->setSubSystem(ErrorLogItem::SUB_SYS_E5);
-        item->setSystemState(ErrorLogItem::SYS_STAT_RUNTIME);
-        item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
         errorLog.append(item);
 
         ecgParam.reset();

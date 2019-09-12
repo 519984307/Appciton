@@ -19,6 +19,7 @@
 using ::testing::Eq;
 using ::testing::Mock;
 using ::testing::_;
+using ::testing::Return;
 
 Q_DECLARE_METATYPE(AlarmStateEvent)
 
@@ -68,12 +69,12 @@ void TestAlarmPauseState::testEnter()
     MockAlarmIndicator mockAlarmIndicator;
     AlarmIndicatorInterface::registerAlarmIndicator(&mockAlarmIndicator);
     EXPECT_CALL(mockAlarmIndicator, setAlarmStatus(Eq(ALARM_STATUS_PAUSE)));
-    EXPECT_CALL(mockAlarmIndicator, delAllPhyAlarm);
     EXPECT_CALL(mockAlarmIndicator, updateAlarmPauseTime(static_cast<AlarmPauseTime>(pauseTime)));
 
     MockLightManager mockLightManager;
     LightManagerInterface::registerLightManager(&mockLightManager);
-    EXPECT_CALL(mockLightManager, enableAlarmAudioMute(Eq(true)));
+    /* the alarm pause light not longer turn on in alarm pause state */
+    EXPECT_CALL(mockLightManager, enableAlarmAudioMute(Eq(false)));
 
     d_ptr->pauseState.enter();
     QCOMPARE(d_ptr->pauseState.type(), ALARM_PAUSE_STATE);
@@ -118,6 +119,18 @@ void TestAlarmPauseState::testHandAlarmEvent()
     if (event == ALARM_STATE_EVENT_MUTE_BTN_PRESSED)
     {
         EXPECT_CALL(mockAlarmIndicator, phyAlarmPauseStatusHandle());
+        EXPECT_CALL(mockAlarmStateMachine, switchState(Eq(ALARM_NORMAL_STATE)));
+    }
+    else if (event == ALARM_STATE_EVENT_RESET_BTN_PRESSED)
+    {
+        EXPECT_CALL(mockAlarmIndicator, clearAlarmPause());
+        EXPECT_CALL(mockAlarmIndicator, phyAlarmResetStatusHandle());
+        EXPECT_CALL(mockAlarmIndicator, techAlarmResetStatusHandle());
+        EXPECT_CALL(mockAlarmIndicator, getAlarmCount()).WillRepeatedly(Return(0));
+    }
+    else if (event == ALARM_STATE_EVENT_NEW_PHY_ALARM || event == ALARM_STATE_EVENT_NEW_TECH_ALARM)
+    {
+        EXPECT_CALL(mockAlarmIndicator, clearAlarmPause());
         EXPECT_CALL(mockAlarmStateMachine, switchState(Eq(ALARM_NORMAL_STATE)));
     }
 

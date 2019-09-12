@@ -9,8 +9,11 @@
  **/
 
 #include "DataStorageDirManagerInterface.h"
+#include "DataStorageDefine.h"
+#include <QDir>
 
 static DataStorageDirManagerInterface *currentIface = NULL;
+static QString storageDir = DATA_STORE_PATH;
 DataStorageDirManagerInterface *DataStorageDirManagerInterface::registerDataStorageDirManager(
     DataStorageDirManagerInterface *interface)
 {
@@ -22,4 +25,22 @@ DataStorageDirManagerInterface *DataStorageDirManagerInterface::registerDataStor
 DataStorageDirManagerInterface *DataStorageDirManagerInterface::getDataStorageDirManager()
 {
     return currentIface;
+}
+
+bool DataStorageDirManagerInterface::setDataStorageDir(const QString &dir)
+{
+    if (currentIface || !QDir(dir).exists())
+    {
+        return false;
+    }
+    storageDir = dir;
+    if (!storageDir.endsWith('/')) {
+        storageDir.append('/');
+    }
+    return true;
+}
+
+const QString &DataStorageDirManagerInterface::dataStorageDir()
+{
+    return storageDir;
 }

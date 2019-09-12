@@ -18,7 +18,7 @@
 #include "AlarmStateMachineInterface.h"
 #include "AlarmInterface.h"
 #include "NurseCallManagerInterface.h"
-#include "PatientInfoWidget.h"
+#include "PatientInfoWidgetInterface.h"
 
 /**************************************************************************************************
  * 功能：发布报警。
@@ -63,6 +63,7 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
     AlarmPriority lightPriority = ALARM_PRIO_PROMPT;
     AlarmInfoList *list = &_alarmInfoDisplayPool;
     AlarmInfoList::iterator it = list->begin();
+    AlarmInterface *alertor = AlarmInterface::getAlarm();
     for (; it != list->end(); ++it)
     {
         AlarmInfoNode node = *it;
@@ -93,11 +94,8 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
                 }
             }
 
-            AlarmInterface *alertor = AlarmInterface::getAlarm();
-            if (alertor && alertor->getAlarmLightOnAlarmReset()
-                    && node.alarmPriority != ALARM_PRIO_PROMPT
-                    && status != ALARM_STATUS_PAUSE
-                    && !node.acknowledge)
+            if (alertor && node.alarmPriority != ALARM_PRIO_PROMPT
+                    && status != ALARM_STATUS_PAUSE)
             {
                 // 处理确认后且开启了报警复位灯，或者未确认的报警
                 if (lightPriority < node.alarmPriority)
@@ -398,7 +396,7 @@ void AlarmIndicator::_displayTechSet(AlarmInfoNode &node)
 
 bool AlarmIndicator::_canPlayAudio(AlarmStatus status, bool isTechAlarm)
 {
-    int alarmAudio = 0;
+    int alarmAudio = 1; /* defaut enable */
     systemConfig.getNumValue("Alarms|AlarmAudio", alarmAudio);
     if (status == ALARM_STATUS_NORMAL)
     {
@@ -473,7 +471,8 @@ void AlarmIndicator::_displayInfoNode(AlarmInfoNode &alarmNode, int &indexint, i
 /**************************************************************************************************
  * 功能：注册生理报警界面指示器。
  *************************************************************************************************/
-void AlarmIndicator::setAlarmPhyWidgets(AlarmInfoBarWidget *alarmWidget, AlarmStatusWidget *muteWidget, PatientInfoWidget *patInfoWidget)
+void AlarmIndicator::setAlarmPhyWidgets(AlarmInfoBarWidget *alarmWidget, AlarmStatusWidget *muteWidget,
+                                        PatientInfoWidgetInterface *patInfoWidget)
 {
     _alarmPhyInfoWidget = alarmWidget;
     _alarmStatusWidget = muteWidget;
@@ -1131,7 +1130,7 @@ void AlarmIndicator::updateAlarmPauseTime(int seconds)
 {
     if (_patInfoWidget)
     {
-        _patInfoWidget->setAlarmPause(seconds);
+        _patInfoWidget->setAlarmPauseTime(seconds);
     }
 }
 

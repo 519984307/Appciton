@@ -15,7 +15,6 @@
 #include <QMutexLocker>
 #include "StorageFile.h"
 #include "DataStorageDirManagerInterface.h"
-#include "TrendCache.h"
 
 StorageManagerPrivate::~StorageManagerPrivate()
 {
@@ -175,7 +174,7 @@ quint32 StorageManager::size() const
  **************************************************************************************************/
 IStorageBackend *StorageManager::open(const QString &filename, QIODevice::OpenMode openmode)
 {
-    // TODO: make a backend factory;
+    /* TODO: make a backend factory; */
     return new StorageFile(filename, openmode);
 }
 
@@ -211,7 +210,5 @@ void StorageManager::saveDataCallback(quint32 dataID, const char *data, quint32 
 void StorageManager::onNewPatientHandle()
 {
     newPatientHandle();
-    trendCache.clearTrendCache();
-    trendCache.setCurTimeStopDataSave(true);
 }
 

@@ -21,4 +21,10 @@ public:
     virtual ~PatientInfoWidgetInterface(){}
 
     virtual void loadPatientInfo(const PatientInfo &info, const QString &bed) = 0;
+
+    /**
+     * @brief setAlarmPause show alarm pause time on patient widget
+     * @param seconds
+     */
+    virtual void setAlarmPauseTime(int seconds) = 0;
 };

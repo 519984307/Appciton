@@ -124,7 +124,7 @@
         <CO2ModeDefault>1</CO2ModeDefault>
         <CO2SweepMode>0</CO2SweepMode>
         <SweepSpeed>2</SweepSpeed>
-        <FiCO2Display>0</FiCO2Display>
+        <FiCO2Display>1</FiCO2Display>
         <DisplayZoom>0</DisplayZoom>
         <O2Compensation>16</O2Compensation>
         <N2OCompensation>0</N2OCompensation>
@@ -539,8 +539,8 @@
 		</TB>
 		<ETCO2 Enable="1" Prio="1">
 		<percent>
-		    <Low Min="0" Max="249">20</Low>
-		    <High Min="1" Max="250">80</High>
+		    <Low Min="20" Max="249">20</Low>
+		    <High Min="21" Max="250">80</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</percent>
@@ -737,7 +737,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</FIO2>
-		<T1 Enable="0" Prio="1">
+		<T1 Enable="1" Prio="1">
 		<celsius>
 		    <Low Min="150" Max="499">350</Low>
 		    <High Min="151" Max="500">378</High>
@@ -751,7 +751,7 @@
 		    <Scale>10</Scale>
 		</fahrenheit>
 		</T1>
-		<T2 Enable="0" Prio="1">
+		<T2 Enable="1" Prio="1">
 		<celsius>
 		    <Low Min="150" Max="499">350</Low>
 		    <High Min="151" Max="500">378</High>
@@ -765,7 +765,7 @@
 		    <Scale>10</Scale>
 		</fahrenheit>
 		</T2>
-		<TD Enable="0" Prio="1">
+		<TD Enable="1" Prio="1">
 		<celsius>
 		    <Low Min="0" Max="49">0</Low>
 		    <High Min="1" Max="50">5</High>

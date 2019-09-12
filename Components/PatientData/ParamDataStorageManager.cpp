@@ -47,8 +47,8 @@ public:
     {}
 
     void updateAdditionInfo();
-    void addData(ParamDataStorageManager::ParamBuf &paramBuf);
-    ParamDataDescription dataDesc; // 数据描述
+    void addData(ParamDataStorageManager::ParamBuf &paramBuf);  /* NOLINT */
+    ParamDataDescription dataDesc;  // 数据描述
     ParamDataStorageManager::ParamBuf lastParamBuf;
     bool forceSave;
     QMutex paramBufMutex;
@@ -117,10 +117,12 @@ void ParamDataStorageManagerPrivate::addData(ParamDataStorageManager::ParamBuf &
     {
         dataType |= TREND_FLAG_NORMAL;
     }
-    q->addData(dataType, reinterpret_cast<char *>(&paramBuf), sizeof(ParamDataStorageManager::ParamBuf), paramBuf.item.t);
+    q->addData(dataType, reinterpret_cast<char *>(&paramBuf), sizeof(ParamDataStorageManager::ParamBuf),
+               paramBuf.item.t);
 
     paramBufMutex.lock();
-    memcpy(reinterpret_cast<char *>(&lastParamBuf), reinterpret_cast<char *>(&paramBuf), sizeof(ParamDataStorageManager::ParamBuf));
+    memcpy(reinterpret_cast<char *>(&lastParamBuf), reinterpret_cast<char *>(&paramBuf),
+           sizeof(ParamDataStorageManager::ParamBuf));
     paramBufMutex.unlock();
 }
 
@@ -524,6 +526,12 @@ void ParamDataStorageManager::getRecentParamData(ParamDataStorageManager::ParamB
     Q_D(ParamDataStorageManager);
     QMutexLocker locker(&d->paramBufMutex);
     memcpy(reinterpret_cast<char *>(&parambuf), reinterpret_cast<char *>(&d->lastParamBuf), sizeof(ParamBuf));
+}
+
+void ParamDataStorageManager::newPatientHandle()
+{
+    trendCache.clearTrendCache();
+    trendCache.stopDataCollect(1);
 }
 
 

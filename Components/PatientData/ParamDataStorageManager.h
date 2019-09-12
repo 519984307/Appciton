@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2019/9/5
+ **/
+
 #pragma once
 #include "StorageManager.h"
 #include "ParamDataDefine.h"
@@ -22,7 +32,6 @@ public:
     // 主运行函数, perform the 30 seconds intreval storage, multi-thread unsafe
     void mainRun(unsigned t);
 
-
     // 添加NIBP数据, called immediately after nibp measurement, multi-thread unsafe
     void addNIBPData(unsigned t);
 
@@ -32,8 +41,12 @@ public:
     // 存储函数
     void run();
 
-    //get the last store param data
-    void getRecentParamData(ParamBuf &parambuf);
+    // get the last store param data
+    void getRecentParamData(ParamBuf &parambuf);    /* NOLINT */
+
+protected:
+    /* override */
+    void newPatientHandle();
 
 private:
     Q_DECLARE_PRIVATE(ParamDataStorageManager)
@@ -43,4 +56,4 @@ private:
 };
 
 #define paramDataStorageManager (ParamDataStorageManager::construction())
-#define deleteParamDataStorageManager() (delete &paramDataStorageManager)
+#define deleteParamDataStorageManager() (delete &paramDataStorageManager)   /* NOLINT */

@@ -1,18 +1,27 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2019/9/5
+ **/
+
 #include "IConfig.h"
 #include <QString>
 #include <QMap>
-#include "SystemManagerInterface.h"
 
 SystemConfig *SystemConfig::_selfObj = NULL;
 MachineConfig *MachineConfig::_selfObj = NULL;
 SupervisorConfig *SupervisorConfig::_selfObj = NULL;
 SupervisorRunConfig *SupervisorRunConfig::_selfObj = NULL;
 
-//QString SUPERVISOR_RUN_CFG_FILE = CFG_PATH"AdultConfig.xml";
+// QString SUPERVISOR_RUN_CFG_FILE = CFG_PATH"AdultConfig.xml";
 
-//QString SUPERVISOR_CFG_FILE = CFG_PATH"AdultConfig.xml";
+// QString SUPERVISOR_CFG_FILE = CFG_PATH"AdultConfig.xml";
 
-//QString ORGINAL_SUPERVISOR_CFG_FILE = CFG_PATH"AdultConfig.xml";
+// QString ORGINAL_SUPERVISOR_CFG_FILE = CFG_PATH"AdultConfig.xml";
 
 class MachineConfigPrivate
 {
@@ -35,12 +44,11 @@ MachineConfig::MachineConfig()
     QString modulesFuncStr;
     getStrValue("ConfiguredFunctions", modulesFuncStr);
     QStringList pathList = modulesFuncStr.split(',');
-    bool enable;
     QString path;
 
     foreach(path, pathList)
     {
-        enable = false;
+        bool enable = false;
         path += QString("Enable");
         getNumValue(path, enable);
         d_ptr->modulesStatusMap[path] = enable;
@@ -51,7 +59,7 @@ void SystemConfig::updateCurConfigName()
 {
     int numValue = 255;
     getNumValue("General|PatientType", numValue);
-    switch(numValue)
+    switch (numValue)
     {
     case 0:
         curConfigName = CFG_PATH"AdultConfig.xml";
@@ -63,9 +71,8 @@ void SystemConfig::updateCurConfigName()
         curConfigName = CFG_PATH"NeoConfig.xml";
         break;
     }
-    if(numValue>2)
+    if (numValue > 2)
     {
         curConfigName = CFG_PATH"AdultConfig.xml";
-        numValue = 255;
     }
 }

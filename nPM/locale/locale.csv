@@ -326,6 +326,10 @@ AlarmLimitMenu,报警限,Alarm Limit
 AlarmLimitMenuDesc,报警限,Alarm Limit Setting
 SelectAlarmNotExist,选择的报警不存在!,The selected alarm does not exist!
 PrintSpeed,打印速度,Print Speed
+PhyAlarmTriggerPrint,生理报警触发打印,Phy. Alarm Trigger Print
+CodeMarkerTriggerPrint,Code Marker触发打印,Code Marker Trigger Print
+NIBPReadingTriggerPrint,NIBP快照触发打印,NIBP Snapshot Trigger Print
+WaveFreezeTriggerPrint,波形冻结触发打印,Wave Freeze Trigger Print
 PrintNumOfTraces,打印波形数量,Number Of Print Traces
 PrintAlarmTriger,报警触发,Alarm Trigger
 Print12LeadFormat,12导格式,12-Lead Format
@@ -1537,7 +1541,7 @@ TEMPCalibrate,校准,Calibrate
 is,是,is
 TEMP1,Temp1,Temp1
 TEMP2,Temp2,Temp2
-TEMPCalibrateOhm,校准电阻值,Resistance
+TEMPCalibrateOhm,校准阻值,Resistance
 Ohm,Ω,Ω
 TEMPModuleNotCalibration1,Temp模块通道1未定标,Temp Channel 1 Not Calibration
 TEMPModuleNotCalibration2,Temp模块通道2未定标,Temp Channel 2 Not Calibration
@@ -1734,3 +1738,4 @@ BLM_N5,BLM N5,BLM N5
 SUNTECH_NIBP,Suntech Nibp,Suntech Nibp
 BLM_CO2,BLM CO₂,BLM CO₂
 MASIMO_CO2,Masimo CO₂,Masimo CO₂
+TouchCrosshairToCalibrate,触摸十字线校准,Touch crosshair to calibrate
