@@ -522,7 +522,6 @@ void FactoryTempMenuContent::timeOut()
     d_ptr->calibrate2Ohm->setText(QString("%1%2").arg(tStr).arg(trs("Ohm")));
 
     return;
-
 }
 
 /**************************************************************************************************

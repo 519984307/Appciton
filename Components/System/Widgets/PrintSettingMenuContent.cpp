@@ -307,8 +307,8 @@ void PrintSettingMenuContent::layoutExec()
     glayout->addWidget(label, index, 0);
     combo = new ComboBox();
     combo->addItems(QStringList()
-                       << trs("Disable")
-                       << trs("Enable"));
+                    << trs("Disable")
+                    << trs("Enable"));
     itemID = static_cast<int>(PrintSettingMenuContentPrivate::ITEM_CBO_PRINT_PHY_ALARM);
     combo->setProperty("comboItem", qVariantFromValue(itemID));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboxIndexChanged(int)));
@@ -321,10 +321,10 @@ void PrintSettingMenuContent::layoutExec()
     glayout->addWidget(label, index, 0);
     combo = new ComboBox();
     combo->addItems(QStringList()
-                       << trs("Disable")
-                       << trs("Enable"));
+                    << trs("Disable")
+                    << trs("Enable"));
     itemID = static_cast<int>(PrintSettingMenuContentPrivate::ITEM_CBO_PRINT_CODEMARKER);
-    combo->setProperty("comboItem",qVariantFromValue(itemID));
+    combo->setProperty("comboItem", qVariantFromValue(itemID));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboxIndexChanged(int)));
     glayout->addWidget(combo, index, lastColumn);
     d_ptr->combos.insert(PrintSettingMenuContentPrivate::ITEM_CBO_PRINT_CODEMARKER, combo);
@@ -337,10 +337,10 @@ void PrintSettingMenuContent::layoutExec()
         glayout->addWidget(label, index, 0);
         combo = new ComboBox();
         combo->addItems(QStringList()
-                           << trs("Disable")
-                           << trs("Enable"));
+                        << trs("Disable")
+                        << trs("Enable"));
         itemID = static_cast<int>(PrintSettingMenuContentPrivate::ITEM_CBO_PRINT_NIBP);
-        combo->setProperty("comboItem",qVariantFromValue(itemID));
+        combo->setProperty("comboItem", qVariantFromValue(itemID));
         connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboxIndexChanged(int)));
         glayout->addWidget(combo, index, lastColumn);
         d_ptr->combos.insert(PrintSettingMenuContentPrivate::ITEM_CBO_PRINT_NIBP, combo);
@@ -352,8 +352,8 @@ void PrintSettingMenuContent::layoutExec()
     glayout->addWidget(label, index, 0);
     combo = new ComboBox();
     combo->addItems(QStringList()
-                       << trs("Disable")
-                       << trs("Enable"));
+                    << trs("Disable")
+                    << trs("Enable"));
     itemID = static_cast<int>(PrintSettingMenuContentPrivate::ITEM_CBO_PRINT_WAVE_FREEZE);
     combo->setProperty("comboItem", qVariantFromValue(itemID));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboxIndexChanged(int)));
@@ -394,7 +394,7 @@ void PrintSettingMenuContent::onComboxIndexChanged(int index)
         return;
     }
     PrintSettingMenuContentPrivate::MenuItem
-             item = static_cast<PrintSettingMenuContentPrivate::MenuItem>(combo->property("comboItem").toInt());
+    item = static_cast<PrintSettingMenuContentPrivate::MenuItem>(combo->property("comboItem").toInt());
     switch (item)
     {
     case PrintSettingMenuContentPrivate::ITEM_CBO_PRINT_SPEED:
