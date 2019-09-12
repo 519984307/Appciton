@@ -8,6 +8,7 @@ CONFIG   -= app_bundle
 
 include("../../Common/Common.pri")
 include("../../Common/googletest.pri")
+include("../../Common/runtest.pri")
 
 TEMPLATE = app
 
@@ -15,6 +16,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     ../../../Utility/Config/XmlParser.cpp \
+    ../../../Utility/LanguageManager/LanguageManager.cpp \
     ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
     ../../../Utility/ErrorLog/ErrorLogItem.cpp \
     ../../../Utility/TimeDate/TimeDate.cpp \
@@ -27,6 +29,7 @@ DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 HEADERS += \
     ../../../Utility/Config/XmlParser.h \
+    ../../../Utility/LanguageManager/LanguageManager.h \
     ../../../Utility/ErrorLog/ErrorLogInterface.h \
     ../../../Utility/ErrorLog/ErrorLogItem.h \
     ../../../Utility/TimeDate/TimeDate.h \
@@ -37,5 +40,6 @@ HEADERS += \
 
 INCLUDEPATH += \
     ../../../Utility/ErrorLog \
+    ../../../Utility/LanguageManager \
     ../../../Utility/TimeDate \
     ../../../Utility/Config \

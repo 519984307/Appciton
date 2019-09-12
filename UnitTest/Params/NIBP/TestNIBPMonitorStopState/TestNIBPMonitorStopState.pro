@@ -24,6 +24,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 include("../../../Common/googletest.pri")
+include("../../../Common/runtest.pri")
 SOURCES += \
     TestNIBPMonitorStopState.cpp \
     main.cpp \

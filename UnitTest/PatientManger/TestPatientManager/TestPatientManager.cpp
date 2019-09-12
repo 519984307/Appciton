@@ -20,6 +20,8 @@
 #include <QDir>
 #include <QFile>
 #include "IConfig.h"
+#include <unistd.h>
+#include <sys/types.h>
 
 Q_DECLARE_METATYPE(PatientType)
 Q_DECLARE_METATYPE(PatientPacer)
@@ -27,8 +29,6 @@ Q_DECLARE_METATYPE(PatientSex)
 Q_DECLARE_METATYPE(PatientBloodType)
 Q_DECLARE_METATYPE(UnitType)
 
-#define DATA_STORE_PATH ("/usr/local/nPM/data/")
-#define PATIENT_INFO_PATH QString("/usr/local/nPM/etc")
 #define PATIENT_INFO_FILENAME QString("/PatientInfo.xml")
 
 using ::testing::Mock;
@@ -38,6 +38,13 @@ using ::testing::_;
 
 void TestPatientManager::initTestCase()
 {
+    QString newdir = QString("/run/user/%1/data").arg(getuid());
+    QDir d(newdir);
+    if (!d.exists())
+    {
+        d.mkdir(newdir);
+    }
+    DataStorageDirManagerInterface::setDataStorageDir(newdir);
     patientManager.setType(PATIENT_TYPE_ADULT);
 }
 
@@ -359,12 +366,22 @@ void TestPatientManager::testPatientInfo()
     QCOMPARE(QString(info.id), id);
 
     // test updatePaitentInfo() and GetHistroyPatientInfo()
-    QString testPath = QString(DATA_STORE_PATH) + QString("TestData");
-    QDir dir(QString(DATA_STORE_PATH));
-    if (!dir.exists(testPath))
+    QString testPath = DataStorageDirManagerInterface::dataStorageDir() + QString("TestData");
+    QString testFile = testPath + PATIENT_INFO_FILENAME;
+    QDir dir(DataStorageDirManagerInterface::dataStorageDir());
+    if (!dir.exists(testPath) || !QFile::exists(testFile))
     {
         dir.mkpath(testPath);
-        QFile::copy(PATIENT_INFO_PATH + PATIENT_INFO_FILENAME, testPath + PATIENT_INFO_FILENAME);
+        QFile f(":" + PATIENT_INFO_FILENAME);
+        if (f.open(QIODevice::ReadOnly|QIODevice::Text)) {
+            QByteArray data = f.readAll();
+            QFile outFile(testPath + PATIENT_INFO_FILENAME);
+            if (outFile.open(QIODevice::WriteOnly|QIODevice::Text)) {
+                outFile.write(data);
+                outFile.close();
+            }
+            f.close();
+        }
     }
     MockDataStorageDirManager mockDataStorageDirManager;
     MockDataStorageDirManager::registerDataStorageDirManager(&mockDataStorageDirManager);

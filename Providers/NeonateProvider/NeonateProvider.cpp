@@ -115,7 +115,7 @@ void NeonateProvider::handlePacket(unsigned char *data, int len)
         break;
     case NEONATE_NOTIFY_START_UP:
     {
-        ErrorLogItem *item = new CriticalFaultLogItem();
+        ErrorLogItem *item = new ErrorLogItem();
         item->setName("T5 Start");
         errorLog.append(item);
         o2Param.reset();

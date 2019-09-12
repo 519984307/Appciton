@@ -14,7 +14,7 @@
 #include <QMutex>
 #include <QList>
 
-#define MAX_TREND_CACHE_NUM (240)//缓存的趋势数据条数
+#define MAX_TREND_CACHE_NUM (240)   // 缓存的趋势数据条数
 
 struct TrendAlarmStatus
 {
@@ -27,7 +27,8 @@ struct TrendRecorder
     void *obj;              /* object that the trend data record to */
 
     /* call when trend data ready*/
-    void (*completeCallback)(unsigned timestamp, const TrendCacheData &data, const TrendAlarmStatus &almStatus, void *obj);
+    void (*completeCallback)(unsigned timestamp, const TrendCacheData &data,
+                             const TrendAlarmStatus &almStatus, void *obj);
 };
 
 // 子参数ID、数值映射。
@@ -66,8 +67,8 @@ public:
     QList<TrendAlarmStatus> getTrendAlarmStatus(unsigned start, unsigned stop);
 
     // 获取趋势数据
-    bool getTrendData(unsigned t, TrendCacheData &data);
-    bool getTrendAlarmStatus(unsigned t, TrendAlarmStatus &alarmStatus);
+    bool getTrendData(unsigned t, TrendCacheData &data);    /* NOLINT */
+    bool getTrendAlarmStatus(unsigned t, TrendAlarmStatus &alarmStatus);    /* NOLINT */
 
     unsigned getLastNibpMeasureTime() const
     {
@@ -84,10 +85,12 @@ public:
     /* unregister a recorder, use the record object to find the recorder, return true if the recorder is remove */
     bool unregisterTrendRecorder(void *recordObj);
 
+    /* override */
     void clearTrendCache();
 
-    // 设置当前时刻是否收集趋势数据
-    void setCurTimeStopDataSave(bool flag);
+    /* override */
+    void stopDataCollect(quint32 times);
+
 private:
     TrendCache();
 
@@ -97,7 +100,7 @@ private:
     QList<TrendRecorder> _recorders;
     unsigned _nibpMeasureTime;
     unsigned _nibpMeasureSuccessTime;
-    bool _curTimeDataStopSaveFlag;
+    quint32 _stopCollectTimes;
     QMutex _mutex;
 };
 

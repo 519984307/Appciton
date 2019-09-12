@@ -31,7 +31,12 @@ public:
     MOCK_METHOD2(latchAlarmInfo, bool(AlarmType, const char *));
     MOCK_METHOD2(updateLatchAlarmInfo, bool(const char *, bool));
     MOCK_METHOD2(delAlarmInfo, void(AlarmType, const char *));
-    MOCK_METHOD8(addAlarmInfo, bool(unsigned , AlarmType, AlarmPriority, const char *, AlarmParamIFace *, int, bool , bool));
+    MOCK_METHOD8(addAlarmInfo, bool(unsigned , AlarmType, AlarmPriority,
+                                    const char *, AlarmParamIFace *, int, bool , bool));
     MOCK_METHOD2(checkAlarmIsExist, bool(AlarmType, const char *));
     MOCK_METHOD1(publishAlarm, void(AlarmStatus));
+    MOCK_METHOD0(isAlarmAudioState, bool(void));
+    MOCK_METHOD1(setAlarmAudioState, void(bool));
+    MOCK_METHOD0(removeAllAlarmResetStatus, bool(void));
+    MOCK_METHOD0(clearAlarmPause, void(void));
 };

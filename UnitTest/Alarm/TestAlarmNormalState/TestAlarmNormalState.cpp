@@ -37,7 +37,8 @@ void TestAlarmNormalState::testEnter()
     MockAlarmIndicator mockAlarmIndicator;
     AlarmIndicatorInterface::registerAlarmIndicator(&mockAlarmIndicator);
     EXPECT_CALL(mockAlarmIndicator, setAlarmStatus(Eq(ALARM_STATUS_NORMAL)));
-    EXPECT_CALL(mockAlarmIndicator, updateAlarmStateWidget());
+    EXPECT_CALL(mockAlarmIndicator, clearAlarmPause());
+    EXPECT_CALL(mockAlarmIndicator, updateAlarmAudioState());
 
     MockLightManager mockLightManager;
     LightManagerInterface::registerLightManager(&mockLightManager);
@@ -76,6 +77,7 @@ void TestAlarmNormalState::testHandAlarmEvent()
     MockAlarmIndicator mockAlarmIndicator;
     AlarmIndicatorInterface::registerAlarmIndicator(&mockAlarmIndicator);
     EXPECT_CALL(mockAlarmIndicator, delLatchPhyAlarm()).Times(AnyNumber());
+    EXPECT_CALL(mockAlarmIndicator, clearAlarmPause()).Times(AnyNumber());
     EXPECT_CALL(mockAlarmIndicator, phyAlarmResetStatusHandle()).Times(AnyNumber());
     EXPECT_CALL(mockAlarmIndicator, techAlarmResetStatusHandle()).Times(AnyNumber());
     EXPECT_CALL(mockAlarmIndicator, getAlarmCount()).Times(AnyNumber()).WillOnce(testing::Return(alarmCount));

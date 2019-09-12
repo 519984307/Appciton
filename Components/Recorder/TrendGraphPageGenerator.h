@@ -23,7 +23,7 @@ public:
         Type = 5
     };
 
-    TrendGraphPageGenerator(const QList<TrendGraphInfo>& trendInfos, const QList<EventInfoSegment>& eventList,
+    TrendGraphPageGenerator(const QList<TrendGraphInfo>& trendInfos, const QList<BlockEntry>& eventList,
                             const PatientInfo &patientInfo, QObject *parent = NULL);
 
     ~TrendGraphPageGenerator();

@@ -14,12 +14,21 @@
 #include "MockSystemAlarm.h"
 #include "AlarmSourceManager.h"
 #include "SystemAlarm.h"
+#include <unistd.h>
+#include <sys/types.h>
 
 using ::testing::_;
 using ::testing::Return;
 
 TestDataStorageDirManager::TestDataStorageDirManager()
 {
+    QString newdir = QString("/run/user/%1/data").arg(getuid());
+    QDir d(newdir);
+    if (!d.exists())
+    {
+        d.mkdir(newdir);
+    }
+    DataStorageDirManagerInterface::setDataStorageDir(newdir);
 }
 
 void TestDataStorageDirManager::init()
