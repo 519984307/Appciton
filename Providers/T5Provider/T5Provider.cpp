@@ -434,29 +434,66 @@ void T5Provider::ohmResult(unsigned char *packet)
  *************************************************************************************************/
 void T5Provider::_sensorOff(unsigned char *packet)
 {
+    static bool sensorHasContected1 = false;  // 开机之后有连接断开才会报探头脱落
+    static bool sensorHasContected2 = false;
+
     if (packet[1] == 0x00)
     {
         _sensorOff1 = false;
+        sensorHasContected1 = true;
+
         _sensorOff2 = false;
+        sensorHasContected2 = true;
     }
     else if (packet[1] == 0x01)
     {
-        _sensorOff1 = true;
+        if (sensorHasContected1)
+        {
+            _sensorOff1 = true;
+        }
+        else
+        {
+            _sensorOff1 = false;
+        }
         _sensorOff2 = false;
+        sensorHasContected2 = true;
 
         _overRang1 = false;
     }
     else if (packet[1] == 0x02)
     {
         _sensorOff1 = false;
-        _sensorOff2 = true;
+        sensorHasContected1 = true;
 
+        if (sensorHasContected2)
+        {
+            _sensorOff2 = true;
+        }
+        else
+        {
+            _sensorOff2 = false;
+        }
         _overRang2 = false;
     }
     else if (packet[1] == 0x03)
     {
-        _sensorOff1 = true;
-        _sensorOff2 = true;
+        if (sensorHasContected1)
+        {
+            _sensorOff1 = true;
+        }
+        else
+        {
+            _sensorOff1 = false;
+        }
+
+        if (sensorHasContected2)
+        {
+            _sensorOff2 = true;
+        }
+        else
+        {
+            _sensorOff2 = false;
+        }
 
         _overRang1 = false;
         _overRang2 = false;
@@ -618,10 +655,6 @@ void T5Provider::_limitHandle(unsigned char *packet)
             _overRang1 = false;
         }
     }
-    else
-    {
-        _overRang1 = true;
-    }
     if (0xFF != packet[4])
     {
         int temp2 = static_cast<int>((packet[4] << 8) + packet[3]);
@@ -633,10 +666,6 @@ void T5Provider::_limitHandle(unsigned char *packet)
         {
             _overRang2 = false;
         }
-    }
-    else
-    {
-        _overRang2 = true;
     }
     _shotAlarm();
 }
