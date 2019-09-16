@@ -78,7 +78,6 @@ void TrendSubWaveWidget::setWidgetParam(SubParamID id, TrendGraphType type)
 void TrendSubWaveWidget::trendDataInfo(TrendGraphInfo &info)
 {
     _trendInfo = info;
-    _cursorPosIndex = 0;
     // 数据更新时判断是否为自动标尺,是则刷新标尺
     if (getAutoRuler())
     {
