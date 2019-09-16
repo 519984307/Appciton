@@ -17,7 +17,7 @@ struct BlmCmd
     {
         memset(cmd, 0, 20);
     }
-    unsigned char cmd [0];
+    unsigned char cmd[20];
     unsigned int cmdLen;
     void reset()
     {
@@ -72,12 +72,17 @@ public:
      */
     void resetTimer();
 
+    void isPrintProvider();
+
 protected:
     // 接收数据
     void dataArrived();
 
     // 协议命令解析
     virtual void handlePacket(unsigned char */*data*/, int /*len*/);
+
+    // 发送通信中断
+    virtual void sendDisconnected(){}
 
 protected slots:
     void noResponseTimeout();
@@ -104,6 +109,7 @@ private:
     int _noResponseCount;              // 重发次数
     unsigned char _cmdId;        // 命令帧数
     BlmCmd _blmCmd;
+    bool _isPrintProvider;
 
 protected:
     static const int HeadLen = 4;               // 包头长度: Head,Length,FCS

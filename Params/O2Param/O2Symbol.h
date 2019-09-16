@@ -40,7 +40,8 @@ public:
             "O2CalibrateReset",
             "O2NotCalibrate",
             "O2MotorNotInPositon",
-            "O2SensorOff"
+            "O2SensorOff",
+            "O2SendCommunicationStop"
         };
         return symbol[index];
     }

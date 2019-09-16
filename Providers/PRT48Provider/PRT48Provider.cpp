@@ -398,6 +398,15 @@ void PRT48Provider::reconnected()
     }
 }
 
+void PRT48Provider::sendDisconnected()
+{
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_PRINT);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(PRINT_ONESHOT_ALARM_SEND_COMMUNICATION_STOP, true);
+    }
+}
+
 /***************************************************************************************************
  * 数据包处理
  **************************************************************************************************/
@@ -636,6 +645,7 @@ PRT48Provider::PRT48Provider()
     , _selfTestResult(PRINTER_SELF_TEST_NOT_PERFORMED)
     , _sigSender(new PrinterProviderSignalSender(this))
 {
+    isPrintProvider();
     // UartAttrDesc portAttr(460800, 8, 'N', 1, 0, FlOW_CTRL_HARD, false);  //new mainboard support flow control, use block io
     UartAttrDesc portAttr(115200, 8, 'N', 1, 0);
     initPort(portAttr);

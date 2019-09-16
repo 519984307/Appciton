@@ -419,6 +419,9 @@ void N5Provider::handlePacket(unsigned char *data, int len)
             nibpParam.handleNIBPEvent(NIBP_EVENT_CONNECTION_NORMAL, NULL, 0);                       // 恢复禁用状态
         }
         break;
+    case N5_CMD_GET_VERSION:
+        qDebug() << 1;
+        break;
 
     default:
         break;
@@ -441,6 +444,15 @@ void N5Provider::reconnected(void)
 {
     nibpParam.connectedFlag(true);
     nibpParam.setConnected(true);
+}
+
+void N5Provider::sendDisconnected()
+{
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_SEND_COMMUNICATION_STOP, true);
+    }
 }
 
 /**************************************************************************************************

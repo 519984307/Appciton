@@ -25,12 +25,11 @@ QMap<QString, BLMProvider *> BLMProvider::providers;
 BLMProvider::BLMProvider(const QString &name)
     : Provider(name), upgradeIface(NULL),
       rxdTimer(NULL), _noResponseCount(0),
-      _cmdId(-1)
+      _cmdId(-1), _isPrintProvider(false)
 {
     providers.insert(name, this);
     _isLastSOHPaired = false;
     rxdTimer = new QTimer();
-    rxdTimer->setInterval(1000);
     connect(rxdTimer, SIGNAL(timeout()), this, SLOT(noResponseTimeout()));
 }
 
@@ -181,7 +180,7 @@ void BLMProvider::dataArrived()
  **************************************************************************************************/
 void BLMProvider::handlePacket(unsigned char *data, int len)
 {
-    if (data[0] == _cmdId)
+    if (data[0] == _cmdId + 1)
     {
         resetTimer();
     }
@@ -220,8 +219,8 @@ void BLMProvider::handlePacket(unsigned char *data, int len)
             versionInfoEx.append(" ");
             p += (15 + 1);  // build date offset + data packet head offset
 
-    //        versionInfo.append(p); // build time
-    //        versionInfo.append(" ");
+            //        versionInfo.append(p); // build time
+            //        versionInfo.append(" ");
             p += (15 + 1);  // build time offset + data packet head offset
 
             versionInfoEx.append(p); // hardware version
@@ -235,7 +234,6 @@ void BLMProvider::handlePacket(unsigned char *data, int len)
 
 void BLMProvider::noResponseTimeout()
 {
-    qDebug() << Q_FUNC_INFO << "BLM CMD = " << _cmdId;
     _noResponseCount++;
     if (_noResponseCount < 2)
     {
@@ -243,7 +241,8 @@ void BLMProvider::noResponseTimeout()
     }
     else
     {
-        disconnected();
+        qDebug() << Q_FUNC_INFO << getName() << "BLM CMD = " << _cmdId;
+        sendDisconnected();
         resetTimer();
     }
 }
@@ -370,6 +369,11 @@ void BLMProvider::resetTimer()
     _cmdId = -1;
 }
 
+void BLMProvider::isPrintProvider()
+{
+    _isPrintProvider = true;
+}
+
 /***************************************************************************************************
  * 发送协议命令
  * 参数:
@@ -399,14 +403,17 @@ bool BLMProvider::sendCmd(unsigned char cmdId, const unsigned char *data, unsign
 
     cmdBuf[cmdLen - 1] = calcCRC(cmdBuf, (cmdLen - 1));
 
-    _cmdId = cmdId;
-    _blmCmd.reset();
-    for (int i =0; i < cmdLen; i++)
+    if (!_isPrintProvider)
     {
-        _blmCmd.cmd[i] = cmdBuf[i];
+        _cmdId = cmdId;
+        _blmCmd.reset();
+        for (unsigned int i = 0; i < cmdLen; i++)
+        {
+            _blmCmd.cmd[i] = cmdBuf[i];
+        }
+        _blmCmd.cmdLen = cmdLen;
+        rxdTimer->start(1000);
     }
-    _blmCmd.cmdLen = cmdLen;
-    rxdTimer->start(1000);
     return _sendData(cmdBuf, cmdLen);
 }
 

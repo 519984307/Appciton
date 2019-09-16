@@ -1018,6 +1018,15 @@ void E5Provider::reconnected(void)
     Q_UNUSED(needFreshWave)
 }
 
+void E5Provider::sendDisconnected()
+{
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_ECG);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(ECG_ONESHOT_ALARM_SEND_COMMUNICATION_STOP, true);
+    }
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/

@@ -79,6 +79,7 @@ protected:
     // 通信中断。
     virtual void disconnected(void);
     virtual void reconnected(void);
+    virtual void sendDisconnected();
 
 // #if defined(Q_WS_QWS)
 #if 1

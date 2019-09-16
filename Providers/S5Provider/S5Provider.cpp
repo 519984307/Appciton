@@ -226,6 +226,15 @@ void S5Provider::reconnected(void)
     spo2Param.setConnected(true);
 }
 
+void S5Provider::sendDisconnected()
+{
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SPO2);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(SPO2_ONESHOT_ALARM_SEND_COMMUNICATION_STOP, true);
+    }
+}
+
 /**************************************************************************************************
  * 获取版本号
  *************************************************************************************************/

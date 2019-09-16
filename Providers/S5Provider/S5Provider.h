@@ -110,6 +110,7 @@ protected:
     virtual void handlePacket(unsigned char *data, int len);
     virtual void disconnected(void);
     virtual void reconnected(void);
+    virtual void sendDisconnected();
 
 private:
     void _sendACK(unsigned char type);
