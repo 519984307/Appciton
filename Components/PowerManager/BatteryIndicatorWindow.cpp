@@ -34,7 +34,7 @@ BatteryIndicatorWindow::BatteryIndicatorWindow()
 {
     int fontSize = fontManager.getFontSize(4);
     setWindowTitle(trs("BatteryInfo"));
-    setFixedSize(400, 350);
+    setFixedSize(400, 200);
 
     QVBoxLayout *layoutV = new QVBoxLayout();
     layoutV->setMargin(10);
@@ -45,70 +45,26 @@ BatteryIndicatorWindow::BatteryIndicatorWindow()
     QLabel *iconLabel = new QLabel();
     iconLabel->setAlignment(Qt::AlignCenter);
     iconLabel->setFont(fontManager.textFont(fontSize));
-    iconLabel->setText(trs("BatteryCapacityIcons"));
-    layoutV->addWidget(iconLabel);
 
     layoutH->setMargin(10);
     layoutH->setSpacing(10);
     BatteryIconWidget *batteryImag = new BatteryIconWidget();
     batteryImag->setVolume(BAT_VOLUME_5);
-    batteryImag->setTimeValue(BAT_REMAIN_TIME_8_HOUR);
-    batteryImag->setStatus(BATTERY_NORMAL);
-    layoutH->addWidget(batteryImag);
-
-    batteryImag = new BatteryIconWidget();
-    batteryImag->setVolume(BAT_VOLUME_4);
-    batteryImag->setTimeValue(BAT_REMAIN_TIME_7_HOUR);
-    batteryImag->setStatus(BATTERY_NORMAL);
-    layoutH->addWidget(batteryImag);
-
-    batteryImag = new BatteryIconWidget();
-    batteryImag->setVolume(BAT_VOLUME_3);
-    batteryImag->setTimeValue(BAT_REMAIN_TIME_5_HOUR);
-    batteryImag->setStatus(BATTERY_NORMAL);
-    layoutH->addWidget(batteryImag);
-
-    layoutV->addLayout(layoutH);
-
-    layoutH = new QHBoxLayout();
-    layoutH->setMargin(10);
-    layoutH->setSpacing(10);
-    batteryImag = new BatteryIconWidget();
-    batteryImag->setVolume(BAT_VOLUME_2);
-    batteryImag->setTimeValue(BAT_REMAIN_TIME_2_HOUR);
     batteryImag->setStatus(BATTERY_NORMAL);
     layoutH->addWidget(batteryImag);
 
     batteryImag = new BatteryIconWidget();
     batteryImag->setVolume(BAT_VOLUME_1);
-    batteryImag->setTimeValue(BAT_REMAIN_TIME_1_HOUR);
+    batteryImag->setTimeValue(BAT_REMAIN_TIME_LOW);
     batteryImag->setFillColor(Qt::red);
     batteryImag->setStatus(BATTERY_NORMAL);
     layoutH->addWidget(batteryImag);
 
     batteryImag = new BatteryIconWidget();
-    batteryImag->setVolume(BAT_VOLUME_0);
-    batteryImag->setTimeValue(BAT_REMAIN_TIME_LOW);
-    batteryImag->setStatus(BATTERY_NORMAL);
-    layoutH->addWidget(batteryImag);
-    layoutV->addLayout(layoutH);
-    layoutV->addStretch();
-
-    // second row.
-    layoutH = new QHBoxLayout();
-    layoutH->setMargin(10);
-    layoutH->setSpacing(10);
-
-    iconLabel = new QLabel();
-    iconLabel->setFont(fontManager.textFont(fontSize));
-    iconLabel->setText(trs("BatteryDisconnected"));
-    iconLabel->setAlignment(Qt::AlignCenter);
-    layoutV->addWidget(iconLabel);
-
-    batteryImag = new BatteryIconWidget();
     batteryImag->setStatus(BATTERY_NOT_EXISTED);
-    layoutV->addWidget(batteryImag, 0 , Qt::AlignCenter);
-    layoutV->addStretch();
+    layoutH->addWidget(batteryImag);
+
+    layoutV->addLayout(layoutH);
 
     d_ptr->timer = new QTimer();
     d_ptr->timer->setInterval(500);
