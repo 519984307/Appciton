@@ -89,7 +89,7 @@ void FactorySystemInfoMenuContent::onBtnReleasedChanged()
     }
 
     KeyInputPanel panel;
-    panel.setMaxInputLength(11);
+    panel.setMaxInputLength(13);
     panel.setInitString(button->text());
     panel.setWindowTitle(trs("SerialNum"));
     panel.setSpaceEnable(false);
