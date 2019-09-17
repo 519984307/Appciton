@@ -109,7 +109,13 @@ void TrendWaveWidget::leftMoveCoordinate()
     {
         _currentPage++;
     }
+    _cursorPosIndex = 0;
     updateTimeRange();
+    int count = _displayGraphNum;
+    for (int i = 0; i < count; i++)
+    {
+        _subWidgetList.at(i)->cursorMove(_cursorPosIndex);
+    }
     update();
 }
 
@@ -123,7 +129,13 @@ void TrendWaveWidget::rightMoveCoordinate()
     {
         _currentPage--;
     }
+    _cursorPosIndex = 0;
     updateTimeRange();
+    int count = _displayGraphNum;
+    for (int i = 0; i < count; i++)
+    {
+        _subWidgetList.at(i)->cursorMove(_cursorPosIndex);
+    }
     update();
 }
 
@@ -309,10 +321,11 @@ void TrendWaveWidget::pageDownParam()
 void TrendWaveWidget::setTimeInterval(ResolutionRatio timeInterval)
 {
     _timeInterval = timeInterval;
-    _calculationPage();
-    _updateEventIndex();
-    updateTimeRange();
-    update();
+    int count = _displayGraphNum;
+    for (int i = 0; i < count; i++)
+    {
+        _subWidgetList.at(i)->cursorMove(0);
+    }
 }
 
 void TrendWaveWidget::setWaveNumber(int num)
@@ -333,7 +346,10 @@ void TrendWaveWidget::setRulerLimit(int index, int down, int up, int scale)
 void TrendWaveWidget::loadTrendData(SubParamID subID)
 {
     _trendGraphInfo.reset();
-
+    if (_trendDataPack.count() == 0)
+    {
+        return;
+    }
     _trendGraphInfo.startTime = _leftTime;
     _trendGraphInfo.endTime = _rightTime;
     _trendGraphInfo.subParamID = subID;
@@ -517,8 +533,6 @@ void TrendWaveWidget::loadTrendData(SubParamID subID)
     default:
         break;
     }
-
-    _cursorPosIndex = 0;
 }
 
 void TrendWaveWidget::dataIndex(int &startIndex, int &endIndex)

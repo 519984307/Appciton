@@ -56,7 +56,6 @@ void AlarmResetState::handAlarmEvent(AlarmStateEvent event, unsigned char *data,
     case ALARM_STATE_EVENT_MUTE_BTN_PRESSED:
     {
         alarmIndicator->phyAlarmPauseStatusHandle();
-        alarmIndicator->removeAllAlarmResetStatus();
         alarmStateMachine->switchState(ALARM_PAUSE_STATE);
         break;
     }

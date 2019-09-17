@@ -740,7 +740,14 @@ void NIBPParam::setText(void)
     {
         if (nibpParam.curStatusType() == NIBP_MONITOR_ERROR_STATE)
         {
-            _trendWidget->showText(trs("NIBPModule") + "\n" + trs("NIBPDisable"));
+            if (_CalibrateState)
+            {
+                _trendWidget->showText(trs("NIBPModule") + "\n" + trs("NIBPDisable"));
+            }
+            else
+            {
+                _trendWidget->showText(trs("NIBPModule") + "\n" + trs("NIBPNotCalibrate"));
+            }
         }
         else
         {

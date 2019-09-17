@@ -77,6 +77,7 @@ enum PrintOneShotType
     PRINT_ONESHOT_ALARM_OUT_OF_PAPER,   // 缺纸
     PRINT_ONESHOT_ALARM_OVER_HEATING,   // 过热
     PRINT_ONESHOT_ALARM_FAULT,          // 打印机故障
+    PRINT_ONESHOT_ALARM_SEND_COMMUNICATION_STOP,
     PRINT_ONESHOT_NR,
 };
 
@@ -142,6 +143,7 @@ public:
             "PrinterOutOfPaper",    // 打印机缺纸
             "PrinterOverHeating",   // 打印头过热
             "PrinterFault",         // 打印机故障
+            "PrinterSendCommunicationStop"
         };
         return symbol[index];
     }

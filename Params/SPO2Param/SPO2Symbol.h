@@ -125,6 +125,7 @@ public:
             "SPO2CheckSensorConnection",
             "SPO2OnlyMode",
             "SPO2BoardFailure"
+            "SPO2SendCommunicationStop"
         };
         return symbol[index];
     }

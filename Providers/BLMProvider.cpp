@@ -23,10 +23,14 @@ QMap<QString, BLMProvider *> BLMProvider::providers;
  * 构造函数
  **************************************************************************************************/
 BLMProvider::BLMProvider(const QString &name)
-    : Provider(name), upgradeIface(NULL)
+    : Provider(name), upgradeIface(NULL),
+      rxdTimer(NULL), _noResponseCount(0),
+      _cmdId(-1)
 {
     providers.insert(name, this);
     _isLastSOHPaired = false;
+    rxdTimer = new QTimer();
+    connect(rxdTimer, SIGNAL(timeout()), this, SLOT(noResponseTimeout()));
 }
 
 /***************************************************************************************************
@@ -176,6 +180,10 @@ void BLMProvider::dataArrived()
  **************************************************************************************************/
 void BLMProvider::handlePacket(unsigned char *data, int len)
 {
+    if (data[0] == _cmdId + 1)
+    {
+        resetTimer();
+    }
     // version data, all BLMProvidor share the same version respond code
     if (data[0] == 0x11 && len >= 80 + 1) // version info length + data packet head offset
     {
@@ -211,8 +219,8 @@ void BLMProvider::handlePacket(unsigned char *data, int len)
             versionInfoEx.append(" ");
             p += (15 + 1);  // build date offset + data packet head offset
 
-    //        versionInfo.append(p); // build time
-    //        versionInfo.append(" ");
+            //        versionInfo.append(p); // build time
+            //        versionInfo.append(" ");
             p += (15 + 1);  // build time offset + data packet head offset
 
             versionInfoEx.append(p); // hardware version
@@ -221,6 +229,20 @@ void BLMProvider::handlePacket(unsigned char *data, int len)
 
             versionInfoEx.append(p); // bootloader git version
         }
+    }
+}
+
+void BLMProvider::noResponseTimeout()
+{
+    _noResponseCount++;
+    if (_noResponseCount < 2)
+    {
+        _sendData(_blmCmd.cmd, _blmCmd.cmdLen);
+    }
+    else
+    {
+        sendDisconnected();
+        resetTimer();
     }
 }
 
@@ -338,6 +360,14 @@ BLMProvider *BLMProvider::findProvider(const QString &name)
     return providers.value(name, NULL);
 }
 
+void BLMProvider::resetTimer()
+{
+    rxdTimer->stop();
+    _blmCmd.reset();
+    _noResponseCount = 0;
+    _cmdId = -1;
+}
+
 /***************************************************************************************************
  * 发送协议命令
  * 参数:
@@ -366,6 +396,15 @@ bool BLMProvider::sendCmd(unsigned char cmdId, const unsigned char *data, unsign
     }
 
     cmdBuf[cmdLen - 1] = calcCRC(cmdBuf, (cmdLen - 1));
+
+    _cmdId = cmdId;
+    _blmCmd.reset();
+    for (unsigned int i = 0; i < cmdLen; i++)
+    {
+        _blmCmd.cmd[i] = cmdBuf[i];
+    }
+    _blmCmd.cmdLen = cmdLen;
+    rxdTimer->start(1000);
     return _sendData(cmdBuf, cmdLen);
 }
 
