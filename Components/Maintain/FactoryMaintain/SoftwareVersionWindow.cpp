@@ -36,7 +36,8 @@ void SoftwareVersionWindow::layoutExec()
     label = new QLabel(QString("%1:").arg(trs("SystemSoftwareVersion")));
     glayout->addWidget(label, 0, 1, Qt::AlignLeft | Qt::AlignHCenter);
     label = new QLabel;
-    label->setText(GIT_VERSION);
+    QString softwaveVersion = QString(GIT_VERSION).left(4);
+    label->setText(softwaveVersion);
     glayout->addWidget(label, 0, 2, Qt::AlignLeft | Qt::AlignHCenter);
 
     label = new QLabel(QString("%1:").arg(trs("CompileTime")));
