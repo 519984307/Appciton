@@ -16,6 +16,8 @@
 #include <unistd.h>
 
 #define SOH             (0x01)  // packet header
+#define NACK            (0x00)  // 错误应答
+#define ACK             (0x01)  // 正确应答
 
 QMap<QString, BLMProvider *> BLMProvider::providers;
 
@@ -241,6 +243,7 @@ void BLMProvider::noResponseTimeout()
     }
     else
     {
+        qDebug() << getName() << "cmd = " << _cmdId;
         sendDisconnected();
         resetTimer();
     }
@@ -397,14 +400,17 @@ bool BLMProvider::sendCmd(unsigned char cmdId, const unsigned char *data, unsign
 
     cmdBuf[cmdLen - 1] = calcCRC(cmdBuf, (cmdLen - 1));
 
-    _cmdId = cmdId;
-    _blmCmd.reset();
-    for (unsigned int i = 0; i < cmdLen; i++)
+    if (cmdId != NACK && cmdId != ACK)
     {
-        _blmCmd.cmd[i] = cmdBuf[i];
+        _cmdId = cmdId;
+        _blmCmd.reset();
+        for (unsigned int i = 0; i < cmdLen; i++)
+        {
+            _blmCmd.cmd[i] = cmdBuf[i];
+        }
+        _blmCmd.cmdLen = cmdLen;
+        rxdTimer->start(1000);
     }
-    _blmCmd.cmdLen = cmdLen;
-    rxdTimer->start(1000);
     return _sendData(cmdBuf, cmdLen);
 }
 
