@@ -437,13 +437,24 @@ void T5Provider::_sensorOff(unsigned char *packet)
     static bool sensorHasContected1 = false;  // 开机之后有连接断开才会报探头脱落
     static bool sensorHasContected2 = false;
 
+    if ((!sensorHasContected1 || !sensorHasContected2) && packet[1] & 0x00)
+    {
+        sensorHasContected1 = true;
+        sensorHasContected2 = true;
+    }
+    else if (!sensorHasContected2 && packet[1] & 0x01)
+    {
+        sensorHasContected2 = true;
+    }
+    else if (!sensorHasContected1 && packet[1] & 0x02)
+    {
+        sensorHasContected1 = true;
+    }
+
     if (packet[1] == 0x00)
     {
         _sensorOff1 = false;
-        sensorHasContected1 = true;
-
         _sensorOff2 = false;
-        sensorHasContected2 = true;
     }
     else if (packet[1] == 0x01)
     {
@@ -456,15 +467,12 @@ void T5Provider::_sensorOff(unsigned char *packet)
             _sensorOff1 = false;
         }
         _sensorOff2 = false;
-        sensorHasContected2 = true;
 
         _overRang1 = false;
     }
     else if (packet[1] == 0x02)
     {
         _sensorOff1 = false;
-        sensorHasContected1 = true;
-
         if (sensorHasContected2)
         {
             _sensorOff2 = true;
