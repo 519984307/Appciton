@@ -118,7 +118,7 @@ void MonitorInfoWindow::layoutExec()
     QLabel *labelLeft;
     QLabel *labelRight;
 
-    labelLeft = new QLabel(trs("CumulativeWorkingTime"));
+    labelLeft = new QLabel(trs("RunningTime"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
     labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
