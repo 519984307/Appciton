@@ -587,20 +587,41 @@ void TestAlarm::testMainRunOneshotSource_data()
     QTest::addColumn<bool>("isChangeRemove");
     QTest::addColumn<bool>("isChangeEnable");
     QTest::addColumn<bool>("isCleanup");
+    QTest::addColumn<bool>("isNeedAddAlarm");
 
     OneShotAlarm *s1 = new OneShotAlarm;
-    QTest::newRow("normal state/alarm/nolatch") << static_cast<AlarmOneShotIFace *>(s1)
+    QTest::newRow("normal state/alarm first/nolatch") << static_cast<AlarmOneShotIFace *>(s1)
                                                       << ALARM_STATUS_NORMAL
                                                       << false
                                                       << false
                                                       << false
                                                       << false
                                                       << false
+                                                      << false
                                                       << false;
+    QTest::newRow("normal state/alarm second/nolatch") << static_cast<AlarmOneShotIFace *>(s1)
+                                                       << ALARM_STATUS_NORMAL
+                                                       << false
+                                                       << false
+                                                       << false
+                                                       << false
+                                                       << false
+                                                       << false
+                                                       << false;
+    QTest::newRow("normal state/alarm third/nolatch") << static_cast<AlarmOneShotIFace *>(s1)
+                                                      << ALARM_STATUS_NORMAL
+                                                      << false
+                                                      << false
+                                                      << false
+                                                      << false
+                                                      << false
+                                                      << false
+                                                      << true;
 
     QTest::newRow("normal state/alarm/latch") << static_cast<AlarmOneShotIFace *>(s1)
                                         << ALARM_STATUS_NORMAL
                                         << true
+                                        << false
                                         << false
                                         << false
                                         << false
@@ -614,12 +635,14 @@ void TestAlarm::testMainRunOneshotSource_data()
                                                         << false
                                                         << false
                                                         << false
+                                                        << false
                                                         << false;
     QTest::newRow("open latch, test tech oneshot alarm which doesn't alarm last time")
                                                         << static_cast<AlarmOneShotIFace *>(s1)
                                                         << ALARM_STATUS_NORMAL
                                                         << true
                                                         << true
+                                                        << false
                                                         << false
                                                         << false
                                                         << false
@@ -632,6 +655,7 @@ void TestAlarm::testMainRunOneshotSource_data()
                                                         << true
                                                         << false
                                                         << false
+                                                        << false
                                                         << false;
     QTest::newRow("open latch, test phy oneshot cancel alarm which is alarm last time")
                                                         << static_cast<AlarmOneShotIFace *>(s1)
@@ -639,6 +663,7 @@ void TestAlarm::testMainRunOneshotSource_data()
                                                         << true
                                                         << false
                                                         << true
+                                                        << false
                                                         << false
                                                         << false
                                                         << false;
@@ -651,6 +676,7 @@ void TestAlarm::testMainRunOneshotSource_data()
                                     << true
                                     << true
                                     << false
+                                    << false
                                     << false;
 
     QTest::newRow("test remove alarm which is alarm last time")
@@ -661,7 +687,8 @@ void TestAlarm::testMainRunOneshotSource_data()
                                                         << false
                                                         << true
                                                         << false
-                                                        << false;
+                                                        << false
+                                                        << true;
     QTest::newRow("test enable alarm which is alarm last time")
                                                         << static_cast<AlarmOneShotIFace *>(s1)
                                                         << ALARM_STATUS_NORMAL
@@ -670,10 +697,12 @@ void TestAlarm::testMainRunOneshotSource_data()
                                                         << false
                                                         << false
                                                         << true
+                                                        << false
                                                         << false;
 
     QTest::newRow("test in pause state")<< static_cast<AlarmOneShotIFace *>(s1)
                                         << ALARM_STATUS_PAUSE
+                                        << false
                                         << false
                                         << false
                                         << false
@@ -688,6 +717,7 @@ void TestAlarm::testMainRunOneshotSource_data()
                                         << false
                                         << false
                                         << false
+                                        << true
                                         << true;
 }
 
@@ -701,6 +731,7 @@ void TestAlarm::testMainRunOneshotSource()
     QFETCH(bool, isChangeRemove);           // 控制报警是否被移除
     QFETCH(bool, isChangeEnable);           // 控制报警是否使能
     QFETCH(bool, isCleanup);                // 是否需要清除报警池中的报警
+    QFETCH(bool, isNeedAddAlarm);           // 是否需要添加报警（3次确认报警后该标志为true）
     d_ptr->isCleanup = isCleanup;
 
     static bool lastOneShotAlarmStatus[ALARM_COUNT] = {false, false, false, false};
@@ -751,9 +782,10 @@ void TestAlarm::testMainRunOneshotSource()
     int machineCount = 0;
     for (int i = 0; i < source->getAlarmSourceNR(); i++)
     {
-        if (alarmStatus == ALARM_STATUS_PAUSE && source->getAlarmType(i) != ALARM_TYPE_TECH)
+        if ((alarmStatus == ALARM_STATUS_PAUSE || alarmStatus == ALARM_STATUS_RESET)
+                && source->getAlarmType(i) != ALARM_TYPE_TECH)
         {
-            // 生理报警在报警暂停状态时，将所有的上一次报警状态复位
+            // 生理报警在报警暂停复位后状态时，清空所有的上一次报警状态
             lastOneShotAlarmStatus[i] = false;
             continue;
         }
@@ -786,7 +818,7 @@ void TestAlarm::testMainRunOneshotSource()
         }
 
         if (!source->isNeedRemove(i) && source->isAlarmEnable(i) && source->isAlarmed(i)
-                && !lastOneShotAlarmStatus[i])
+                && !lastOneShotAlarmStatus[i] && isNeedAddAlarm)
         {
             // 若此报警不需移除，且允许报警，且发生了报警，且上次没有发生报警，同时满足上述条件后，才可添加报警
             machineCount++;
@@ -804,10 +836,13 @@ void TestAlarm::testMainRunOneshotSource()
                 // 上次发生了报警，现在报警撤销了
                 if (isLock && source->getAlarmType(i) != ALARM_TYPE_TECH)
                 {
-                    // 若为栓锁的生理报警，则栓锁报警
-                    EXPECT_CALL(mockAlarmIndicator, latchAlarmInfo(source->getAlarmType(i), source->toString(i)))
-                            . WillOnce(Return(false));
-                    lastOneShotAlarmStatus[i] = false;
+                    if (isNeedAddAlarm)
+                    {
+                        // 若为栓锁的生理报警，则栓锁报警
+                        EXPECT_CALL(mockAlarmIndicator, latchAlarmInfo(source->getAlarmType(i), source->toString(i)))
+                                . WillOnce(Return(false));
+                        lastOneShotAlarmStatus[i] = false;
+                    }
                 }
                 else
                 {
@@ -823,7 +858,7 @@ void TestAlarm::testMainRunOneshotSource()
             if (lastOneShotAlarmStatus[i])
             {
                 // 上次发生了报警，现在仍然在报警状态下
-                if (isLock && source->getAlarmType(i) != ALARM_TYPE_TECH)
+                if (isLock && source->getAlarmType(i) != ALARM_TYPE_TECH && isNeedAddAlarm)
                 {
                     // 检测生理栓锁报警是否存在和更新报警栓锁状态
                     EXPECT_CALL(mockAlarmIndicator, checkAlarmIsExist(source->getAlarmType(i), source->toString(i)))
@@ -834,13 +869,13 @@ void TestAlarm::testMainRunOneshotSource()
             }
         }
 
-        if (source->isAlarmed(i) && source->getAlarmType(i) != ALARM_TYPE_TECH)
+        if (source->isAlarmed(i) && source->getAlarmType(i) != ALARM_TYPE_TECH && isNeedAddAlarm)
         {
             // 存储生理报警事件
             EXPECT_CALL(mockEventStorageManager, triggerAlarmEvent(_, source->getWaveformID(i), t));
         }
 
-        if (!source->isNeedRemove(i))
+        if (!source->isNeedRemove(i) && isNeedAddAlarm)
         {
             // 非移除报警时，才记录上一时刻的报警状态
             lastOneShotAlarmStatus[i] = source->isAlarmed(i);
