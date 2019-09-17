@@ -157,6 +157,15 @@ void NeonateProvider::reconnected()
 {
 }
 
+void NeonateProvider::sendDisconnected()
+{
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_TEMP);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(O2_ONESHOT_ALARM_SEND_COMMUNICATION_STOP, true);
+    }
+}
+
 void NeonateProvider::_selfTest(unsigned char *packet, int len)
 {
     int num = packet[1];

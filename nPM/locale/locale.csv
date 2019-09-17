@@ -227,6 +227,7 @@ O2CalibrateReset,氧浓度校准数据被复位,O₂ Calibrate Is Reset
 O2NotCalibrate,氧浓度传感器未校准,O₂ Sensor Not Calibrate
 O2MotorNotInPositon,唤醒器脱落,Motor Sensor Off
 O2SensorOff,氧浓度探头脱落,O₂ Sensor Off
+O2SendCommunicationStop,O2发送通信中断,O2 Send Communication Stop
 O2Low,氧浓度低,O₂ Low
 O2High,氧浓度高,O₂ High
 ApneaStimulation,窒息唤醒,Apnea Stimulation
@@ -601,6 +602,7 @@ ECGC5LeadOff,ECGC5导联脱落,ECG C5 Lead Off
 ECGC6LeadOff,ECGC6导联脱落,ECG C6 Lead Off
 ECGOverLoad,ECG过载,ECG Over Load
 ECGCommunicationStop,ECG通信中断,ECG Communication Stop
+ECGSendCommunicationStop,ECG发送通信中断,ECG Send Communication Stop
 ECG12LSnapShot,12导 快照,12 Lead SnapShot
 ECGAcquiring12L,获取12导,Acquiring 12 Lead
 ECGAcquired12L,获取12导结束,Acquire 12 Lead Complete
@@ -619,6 +621,7 @@ SPO2CheckSensor,SpO₂检查探头,SpO₂ Check Sensor
 SPO2SearchPulseTooLong,SpO₂脉搏搜索时间过长,SpO₂ Search Pulse Too Long
 SPO2SearchingPulse,SpO₂脉搏搜索,SpO₂ Searching Pulse
 SPO2CommunicationStop,SpO₂通信中断,SpO₂ Communication Stop
+SPO2SendCommunicationStop,SpO₂发送通信中断,SpO₂ Send Communication Stop
 SPO2ProbeFault,SpO₂探头故障,SpO₂ Sensor Failure
 SPO2SignalSaturation,SpO₂信号饱和,SpO₂ Signal Saturation
 CO2NoSamplingLine,CO₂没有采样管,CO₂ No Sampling Line
@@ -735,6 +738,7 @@ NIBPDIAHigh,舒张压高,NIBP DIA High
 NIBPMAPLow,平均压低,NIBP MAP Low
 NIBPMAPHigh,平均压高,NIBP MAP High
 NIBPCommunicationStop,NIBP通信中断,NIBP Communication Stop
+NIBPSendCommunicationStop,NIBP发送通信中断,NIBP Send Communication Stop
 NIBPCommunicationTimeout,NIBP通信超时,NIBP Communication Timeout
 NIBPMeasurementAbort,测量中止,NIBP Measurement Aborted
 NIBPCuffTypeError,NIBP袖带类型错,NIBP Cuff Type Error 
@@ -1108,6 +1112,7 @@ PhyAlarm,生理报警,Phy. Alarm
 AlarmMute,报警静音,Mute
 RecorderAction,记录仪,Recorder Action
 PrinterCommunicationStop,打印机通信中断,Printer Communication Stop
+PrinterSendCommunicationStop,打印机发送通信中断,Printer Send Communication Stop
 PrinterDoorOpened,打印机仓门未关,Printer Door Opened
 PrinterOutOfPaper,打印机缺纸,Printer Out Of Paper
 PrinterOverHeating,打印头过热,Printer Over Heating
@@ -1548,6 +1553,7 @@ TEMPModuleNotCalibration1,Temp模块通道1未定标,Temp Channel 1 Not Calibrat
 TEMPModuleNotCalibration2,Temp模块通道2未定标,Temp Channel 2 Not Calibration
 TEMPModuleDisable,Temp模块禁用,Temp Module Disable
 TEMPCommunicationStop,Temp通信中断,Temp Communication Stop
+TEMPSendCommunicationStop,Temp发送通信中断,Temp Send Communication Stop
 TEMPChannel,Temp通道,Temp Channel
 TEMPCalibrate,Temp校准 ,Temp Calibrate
 N2O,N₂O,N₂O

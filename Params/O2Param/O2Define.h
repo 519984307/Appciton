@@ -23,5 +23,6 @@ enum O2OneShotAlarmType
     O2_ONESHOT_ALARM_NOT_CALIBRATE,                 // 传感器未校准
     O2_ONESHOT_ALARM_MOTOR_NOT_IN_POSITION,         // 马达不在位
     O2_ONESHOT_ALARM_SENSOR_OFF,                    // 探头脱落
+    O2_ONESHOT_ALARM_SEND_COMMUNICATION_STOP,
     O2_ONESHOT_ALARM_NR
 };

@@ -161,6 +161,11 @@ void T5Provider::reconnected(void)
     tempParam.setOneShotAlarm(TEMP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
 }
 
+void T5Provider::sendDisconnected()
+{
+    tempParam.setOneShotAlarm(TEMP_ONESHOT_ALARM_SEND_COMMUNICATION_STOP, true);
+}
+
 /**************************************************************************************************
  * ACK应答。
  *************************************************************************************************/

@@ -392,6 +392,15 @@ void SystemBoardProvider::reconnected(void)
     }
 }
 
+void SystemBoardProvider::sendDisconnected()
+{
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SYSTEM);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(SYSTEM_ONE_SHOT_ALARM_SEND_COMMUNICATION_STOP, true);
+    }
+}
+
 
 /***************************************************************************************************
  * 获取电源类型。
