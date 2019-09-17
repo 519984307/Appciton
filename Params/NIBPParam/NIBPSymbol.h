@@ -100,7 +100,8 @@ public:
             "NIBPEEPROMFailure",
             "NIBPCommunicationStop",
             "NIBPCommunicationTimeout",
-            "NIBPModuleDisable"
+            "NIBPModuleDisable",
+            "NIBPSendCommunicationStop"
         };
         return symbol[index];
     }

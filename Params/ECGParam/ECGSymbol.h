@@ -207,7 +207,8 @@ public:
             "ECGV4LeadOff",       "ECGV5LeadOff",
             "ECGV6LeadOff",       "ECG12LTransfersuccess",
             "ECG12LTransferfail", "ECGOverLoad",
-            "ECGCommunicationStop"
+            "ECGCommunicationStop",
+            "ECGSendCommunicationStop"
         };
 
 

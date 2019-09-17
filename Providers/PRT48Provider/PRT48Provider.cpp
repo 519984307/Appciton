@@ -398,6 +398,15 @@ void PRT48Provider::reconnected()
     }
 }
 
+void PRT48Provider::sendDisconnected()
+{
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_PRINT);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(PRINT_ONESHOT_ALARM_SEND_COMMUNICATION_STOP, true);
+    }
+}
+
 /***************************************************************************************************
  * 数据包处理
  **************************************************************************************************/
