@@ -312,8 +312,8 @@ void WindowManager::showDemoWidget(bool flag)
         QLabel *l = new QLabel(trs("DEMO"), this);
         l->setAutoFillBackground(true);
         QPalette pal = l->palette();
-        pal.setColor(QPalette::Window, QColor(0xc0, 0xc0, 0xc0, 0x80));   // 灰色 透明度百分五十左右
-        pal.setColor(QPalette::WindowText, QColor(0xff, 0xff, 0xff, 0x80));  // 白色 透明度百分五十左右
+        pal.setColor(QPalette::Window, QColor(0xc0, 0xc0, 0xc0, 0x00));   // 透明
+        pal.setColor(QPalette::WindowText, QColor(0xff, 0xff, 0xff, 0xb0));  // 白色 透明度百分六十左右
         l->setPalette(pal);
         l->setFont(fontManager.textFont(64));
         d_ptr->demoWidget = l;
