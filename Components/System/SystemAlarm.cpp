@@ -43,6 +43,7 @@ AlarmPriority SystemAlarm::getAlarmPriority(int id)
     switch (id)
     {
     case SYSTEM_ONE_SHOT_ALARM_COMMUNICATION_STOP:
+    case SYSTEM_ONE_SHOT_ALARM_SEND_COMMUNICATION_STOP:
         return ALARM_PRIO_MED;
 
     case POWERUP_PANEL_RECORD_PRESSED:
