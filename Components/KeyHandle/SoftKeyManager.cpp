@@ -221,6 +221,12 @@ void SoftKeyManager::refreshCO2Key(bool on)
     refreshPage(false);
 }
 
+void SoftKeyManager::refreshTouchKey()
+{
+    d_ptr->currentAction->getBaseActionDesc(SOFT_BASE_KEY_SCREEN_BAN);
+    refreshPage(false);
+}
+
 void SoftKeyManager::_dynamicKeyClicked(int index)
 {
     d_ptr->handleSoftKeyClick(false, index);
