@@ -99,7 +99,7 @@ static const char *alarmLimitOneshotStr[] =
     "SomeLimitAlarmDisabled",
     "PowerupRecorderPressed",
     "PowerupCommunicationStop",
-    "RescueStorageSpaceFull",
+    "CurrentPatientStorageSpaceFull",
     "AlarmAudioOff",
     "AlarmOff"
 };

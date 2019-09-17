@@ -285,7 +285,7 @@ AlarmPriority CO2OneShotAlarm::getAlarmPriority(int id)
         return ALARM_PRIO_HIGH;
     }
 
-    if (id == CO2_ONESHOT_ALARM_ZEROING_COMPLETED)
+    if (id == CO2_ONESHOT_ALARM_ZEROING_COMPLETED || id == CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS)
     {
         return ALARM_PRIO_PROMPT;
     }

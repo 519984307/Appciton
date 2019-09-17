@@ -27,6 +27,7 @@
 #include "AGDefine.h"
 #include "SystemDefine.h"
 #include "EventDataDefine.h"
+#include "IStorageBackend.h"
 
 struct RecordWaveSegmentInfo
 {
@@ -204,7 +205,7 @@ public:
     static void drawTrendGraph(QPainter *painter, const GraphAxisInfo &axisInfo, const TrendGraphInfo &graphInfo);
 
     static void drawTrendGraphEventSymbol(QPainter *painter, const GraphAxisInfo &axisInfo,
-                                          const TrendGraphInfo &graphInfo, const QList<EventInfoSegment> &eventList);
+                                          const TrendGraphInfo &graphInfo, const QList<BlockEntry> &eventList);
 
     /**
      * @brief getWaveInfos get the waveinfo for each wave in @waves base on the current running config

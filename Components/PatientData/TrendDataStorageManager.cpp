@@ -413,10 +413,10 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
     {
         while (d->trendCacheBuff.count())
         {
-            addData(0, d->trendCacheBuff.takeFirst());
+            addData(0, d->trendCacheBuff.takeFirst(), t);
         }
         // 把最新这条趋势数据加到文件的末尾
-        addData(0, content);
+        addData(0, content, t);
         d->checkPendingNIBPAlarm = false;
         return;
     }
@@ -428,7 +428,7 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
     }
     else
     {
-        addData(0, content);
+        addData(0, content, t);
     }
 }
 

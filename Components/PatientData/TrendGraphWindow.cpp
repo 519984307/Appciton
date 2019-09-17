@@ -174,7 +174,7 @@ void TrendGraphWindow::onButtonReleased()
         case TrendGraphWindowPrivate::ACTION_BTN_PRINT:
         {
             QList<TrendGraphInfo>  trendGraphList = d_ptr->waveWidget->getTrendGraphPrint();
-            QList<EventInfoSegment> eventList = d_ptr->waveWidget->getEventList();
+            QList<BlockEntry> eventList = d_ptr->waveWidget->getEventList();
             PatientInfo patientInfo = d_ptr->waveWidget->getPatientInfo();
             RecordPageGenerator *pageGenerator = new TrendGraphPageGenerator(trendGraphList, eventList, patientInfo);
 

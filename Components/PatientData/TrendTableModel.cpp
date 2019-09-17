@@ -154,33 +154,23 @@ int TrendTableModel::columnCount(const QModelIndex &parent) const
 int TrendTableModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return d_ptr->rowCount;
+    return MAX_ROW_COUNT;
 }
 
 QVariant TrendTableModel::data(const QModelIndex &index, int role) const
 {
-    if (index.isValid() == false || d_ptr->indexInfo.total == 0)
-    {
-        return QVariant();
-    }
-
     int row = index.row();
     int column = index.column();
-
-    if (d_ptr->tableDataList.count() < column + 1)
-    {
-        return QVariant();
-    }
-    if (d_ptr->tableDataList.at(0).count() < row + 1)
-    {
-        return QVariant();
-    }
 
     switch (role)
     {
     case Qt::DisplayRole:
     {
-        return d_ptr->tableDataList.at(column).at(row).dataStr;
+        if (d_ptr->tableDataList.count() >= column + 1)
+        {
+            return d_ptr->tableDataList.at(column).at(row).dataStr;
+        }
+        return  QVariant();
     }
     case Qt::SizeHintRole:
     {
@@ -191,21 +181,24 @@ QVariant TrendTableModel::data(const QModelIndex &index, int role) const
         return QVariant(Qt::AlignCenter);
     case Qt::BackgroundColorRole:
     {
-        QColor color = d_ptr->tableDataList.at(column).at(row).backGroundColor;
-
-        QColor colorHead = d_ptr->colHeadList.at(column).backGroundColor;
-        int curSecIndex = d_ptr->indexInfo.event % COLUMN_COUNT;
-        if (curSecIndex == column &&
-                (colorHead != themeManger.getColor(ThemeManager::ControlTypeNR,
-                                        ThemeManager::ElementBackgound,
-                                        ThemeManager::StateDisabled)))
+        if (d_ptr->tableDataList.count() >= column + 1)
         {
-            return QBrush(EVENT_SELECTED_BACKGROUND_COLOR);
-        }
+            QColor color = d_ptr->tableDataList.at(column).at(row).backGroundColor;
 
-        if (color == HIGH_PRIO_ALARM_COLOR || color == MED_PRIO_ALARM_COLOR)
-        {
-            return color;
+            QColor colorHead = d_ptr->colHeadList.at(column).backGroundColor;
+            int curSecIndex = d_ptr->indexInfo.event % COLUMN_COUNT;
+            if (curSecIndex == column &&
+                    (colorHead != themeManger.getColor(ThemeManager::ControlTypeNR,
+                                            ThemeManager::ElementBackgound,
+                                            ThemeManager::StateDisabled)))
+            {
+                return QBrush(EVENT_SELECTED_BACKGROUND_COLOR);
+            }
+
+            if (color == HIGH_PRIO_ALARM_COLOR || color == MED_PRIO_ALARM_COLOR)
+            {
+                return color;
+            }
         }
 
         if (row % 2)
@@ -221,15 +214,18 @@ QVariant TrendTableModel::data(const QModelIndex &index, int role) const
     break;
     case Qt::ForegroundRole:
     {
-        QColor color = d_ptr->tableDataList.at(column).at(row).backGroundColor;
-        QColor colorHead = d_ptr->colHeadList.at(column).backGroundColor;
-
-        int curSecIndex = d_ptr->indexInfo.event % COLUMN_COUNT;
-        if (curSecIndex == column && (colorHead == HIGH_PRIO_ALARM_COLOR || colorHead == MED_PRIO_ALARM_COLOR))
+        if (d_ptr->tableDataList.count() >= column + 1)
         {
-            if (color == HIGH_PRIO_ALARM_COLOR || color == MED_PRIO_ALARM_COLOR)
+            QColor color = d_ptr->tableDataList.at(column).at(row).backGroundColor;
+            QColor colorHead = d_ptr->colHeadList.at(column).backGroundColor;
+
+            int curSecIndex = d_ptr->indexInfo.event % COLUMN_COUNT;
+            if (curSecIndex == column && (colorHead == HIGH_PRIO_ALARM_COLOR || colorHead == MED_PRIO_ALARM_COLOR))
             {
-                return color;
+                if (color == HIGH_PRIO_ALARM_COLOR || color == MED_PRIO_ALARM_COLOR)
+                {
+                    return color;
+                }
             }
         }
         return QBrush(QColor("#2C405A"));
@@ -280,7 +276,9 @@ QVariant TrendTableModel::headerData(int section, Qt::Orientation orientation, i
         {
             if (d_ptr->colHeadList.count() < section + 1)
             {
-                return QVariant();
+                return themeManger.getColor(ThemeManager::ControlTypeNR,
+                                            ThemeManager::ElementBackgound,
+                                            ThemeManager::StateDisabled);
             }
             return d_ptr->colHeadList.at(section).backGroundColor;
         }

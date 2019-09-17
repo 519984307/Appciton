@@ -124,7 +124,7 @@
         <CO2ModeDefault>1</CO2ModeDefault>
         <CO2SweepMode>0</CO2SweepMode>
         <SweepSpeed>2</SweepSpeed>
-        <FiCO2Display>0</FiCO2Display>
+        <FiCO2Display>1</FiCO2Display>
         <DisplayZoom>0</DisplayZoom>
         <O2Compensation>16</O2Compensation>
         <N2OCompensation>0</N2OCompensation>
@@ -539,8 +539,8 @@
 		</TB>
 		<ETCO2 Enable="1" Prio="1">
 		<percent>
-		    <Low Min="0" Max="249">20</Low>
-		    <High Min="1" Max="250">80</High>
+		    <Low Min="20" Max="249">20</Low>
+		    <High Min="21" Max="250">80</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</percent>

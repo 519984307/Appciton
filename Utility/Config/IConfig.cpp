@@ -74,6 +74,5 @@ void SystemConfig::updateCurConfigName()
     if (numValue > 2)
     {
         curConfigName = CFG_PATH"AdultConfig.xml";
-        numValue = 255;
     }
 }

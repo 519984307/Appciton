@@ -121,7 +121,7 @@ void S5Provider::handlePacket(unsigned char *data, int len)
     {
         if (_firstStartUp)
         {
-            ErrorLogItem *item = new CriticalFaultLogItem();
+            ErrorLogItem *item = new ErrorLogItem();
             item->setName("S5 Start");
             errorLog.append(item);
             spo2Param.reset();

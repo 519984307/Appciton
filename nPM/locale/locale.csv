@@ -327,6 +327,10 @@ AlarmLimitMenu,报警限,Alarm Limit
 AlarmLimitMenuDesc,报警限,Alarm Limit Setting
 SelectAlarmNotExist,选择的报警不存在!,The selected alarm does not exist!
 PrintSpeed,打印速度,Print Speed
+PhyAlarmTriggerPrint,生理报警触发打印,Phy. Alarm Trigger Print
+CodeMarkerTriggerPrint,Code Marker触发打印,Code Marker Trigger Print
+NIBPReadingTriggerPrint,NIBP快照触发打印,NIBP Snapshot Trigger Print
+WaveFreezeTriggerPrint,波形冻结触发打印,Wave Freeze Trigger Print
 PrintNumOfTraces,打印波形数量,Number Of Print Traces
 PrintAlarmTriger,报警触发,Alarm Trigger
 Print12LeadFormat,12导格式,12-Lead Format
@@ -779,6 +783,7 @@ TEMPModuleDisConnect,Temp模块未连接,Temp Module DisConnected
 TEMPChannelOne,Temp通道1,Temp Channel One
 TEMPChannelTwo,Temp通道2,Temp Channel Two
 TEMPChannelDisable,Temp通道禁用,Temp Channel Disable
+TEMPDisable,TEMP禁用,TEMP Disable
 ServiceInflate,充气,Inflate
 ServiceDeflate,放气,Deflate
 Inflating,充气中,Inflating
@@ -1710,7 +1715,7 @@ SPO2BoardFailure,SpO₂板卡错误,SpO₂ Board Failure
 NIBPSimul,NIBP同侧,NIBP Simul
 Input8DigitsPassword,请输入8位数字密码,Please input 8 digits password
 BornDate,出生日期,Born Date
-RescueStorageSpaceFull,营救数据存储空间满,Rescue storage space full
+CurrentPatientStorageSpaceFull,当前病人存储空间满,Current patient storage space full
 ChangePatientType,更改病人类型会导致配置更改，您确认要这么做吗？,Changing patient type will cause the configuration changes，Are you sure?
 shutDownIn2Min,电量严重不足，将在两分钟后关机，请连接电源,Serious shortage of electircity.System will shutdown in tow minute.Please connect the power supply.
 handMeasure,手部测量,Hand Measure

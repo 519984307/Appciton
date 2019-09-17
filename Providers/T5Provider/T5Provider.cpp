@@ -93,7 +93,7 @@ void T5Provider::handlePacket(unsigned char *data, int len)
     {
         _sendACK(data[0]);
 
-        ErrorLogItem *item = new CriticalFaultLogItem();
+        ErrorLogItem *item = new ErrorLogItem();
         item->setName("T5 Start");
         errorLog.append(item);
 
@@ -302,6 +302,7 @@ void T5Provider::_errorWarm(unsigned char *packet, int len)
         case ERRORCODE_SELF_CHECK_FAILED:
             systemManager.setPoweronTestResult(T5_MODULE_SELFTEST_RESULT, SELFTEST_FAILED);
             tempParam.setErrorDisable();
+            tempParam.setWidgetErrorShow(true);
             tempParam.setOneShotAlarm(TEMP_ONESHOT_ALARM_MODULE_DISABLE, true);
             errorStr += tempErrorCode[packet[i]];
             break;
@@ -337,7 +338,6 @@ void T5Provider::_probeState(unsigned char *packet)
     }
     if (packet[1] & 0x10)
     {
-        _sensorOff1 = true;
         _overRang1 = false;
     }
     else
@@ -355,7 +355,6 @@ void T5Provider::_probeState(unsigned char *packet)
     }
     if (packet[2] & 0x10)
     {
-        _sensorOff2 = true;
         _overRang2 = false;
     }
     else

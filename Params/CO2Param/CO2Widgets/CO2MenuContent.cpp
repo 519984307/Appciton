@@ -33,7 +33,6 @@ public:
     {
         ITEM_CBO_WAVE_SPEED = 0,
         ITEM_CBO_WAVE_RULER,
-        ITEM_CBO_FICO2_DISPLAY,
         ITEM_CBO_APNEA_TIME,
         ITEM_CBO_WORK_MODE,
 
@@ -113,9 +112,6 @@ void CO2MenuContentPrivate::loadOptions()
     o2Spb->setValue(co2Param.getCompensation(CO2_COMPEN_O2));
     n2oSpb->setValue(co2Param.getCompensation(CO2_COMPEN_N2O));
 
-    // 显示控制。
-    combos[ITEM_CBO_FICO2_DISPLAY]->setCurrentIndex(co2Param.getFICO2Display());
-
     ApneaAlarmTime index = co2Param.getApneaTime();
 
     combos[ITEM_CBO_APNEA_TIME]->setCurrentIndex(index);
@@ -165,9 +161,6 @@ void CO2MenuContent::onComboBoxIndexChanged(int index)
         break;
     case CO2MenuContentPrivate::ITEM_CBO_WAVE_RULER:
         co2Param.setDisplayZoom(static_cast<CO2DisplayZoom>(index));
-        break;
-    case CO2MenuContentPrivate::ITEM_CBO_FICO2_DISPLAY:
-        co2Param.setFiCO2Display(static_cast<CO2FICO2Display>(index));
         break;
     case CO2MenuContentPrivate::ITEM_CBO_APNEA_TIME:
         currentConfig.setNumValue("Alarm|ApneaTime", index);
@@ -253,20 +246,6 @@ void CO2MenuContent::layoutExec()
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     d_ptr->combos.insert(CO2MenuContentPrivate::ITEM_CBO_WAVE_RULER, comboBox);
-
-    // fico2 display
-    label = new QLabel(trs("CO2FiCO2Display"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs(CO2Symbol::convert(CO2_FICO2_DISPLAY_OFF))
-                       << trs(CO2Symbol::convert(CO2_FICO2_DISPLAY_ON))
-                      );
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    itemID = CO2MenuContentPrivate::ITEM_CBO_FICO2_DISPLAY;
-    comboBox->setProperty("Item", itemID);
-    d_ptr->combos.insert(CO2MenuContentPrivate::ITEM_CBO_FICO2_DISPLAY, comboBox);
 
     // apnea time
     label = new QLabel(trs("ApneaDelay"));
