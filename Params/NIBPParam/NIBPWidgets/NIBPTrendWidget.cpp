@@ -699,8 +699,9 @@ void NIBPTrendWidget::updatePalette(const QPalette &pal)
 {
     setPalette(pal);
     d_ptr->nibpLabel->setPalette(pal);
-    d_ptr->nibpLabel->setPalette(pal);
-    d_ptr->nibpLabel->setPalette(pal);
+    d_ptr->sysLabel->setPalette(pal);
+    d_ptr->diaLabel->setPalette(pal);
+    d_ptr->mapLabel->setPalette(pal);
     d_ptr->nibpValue->setPalette(pal);
     d_ptr->sysValue->setPalette(pal);
     d_ptr->diaValue->setPalette(pal);
