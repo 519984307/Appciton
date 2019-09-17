@@ -419,10 +419,6 @@ void N5Provider::handlePacket(unsigned char *data, int len)
             nibpParam.handleNIBPEvent(NIBP_EVENT_CONNECTION_NORMAL, NULL, 0);                       // 恢复禁用状态
         }
         break;
-    case N5_CMD_GET_VERSION:
-        qDebug() << 1;
-        break;
-
     default:
         break;
     }
