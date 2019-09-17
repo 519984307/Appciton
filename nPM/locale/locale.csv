@@ -1330,7 +1330,7 @@ RunningTime,运行时间,Running Time
 TemperatureInsideCase,箱内温度,Temperature Inside Case
 BatteryCapacity,电池电量,Battery Capacity
 ProductModel,产品型号,Product Model
-MACAddress,物理地址(MAC),Physical Address(MAC)
+MACAddress,物理地址(MAC),MAC Address
 ElectronicSerialNumber,电子序列号,Electronic Serial Number
 SetElectronicSerialNumber,设置电子序列号,Set Electronic Serial Number
 MonitorInfoMenuDesc,监护仪信息菜单设置,Monitor Info
