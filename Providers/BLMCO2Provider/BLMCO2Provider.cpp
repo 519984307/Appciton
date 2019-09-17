@@ -346,7 +346,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
         isZeroInProgress = _status.zeroInProgress;
         _status.zeroInProgress = ((val & BIT1) == BIT1) ? true : false;
 
-        if (!_status.zeroDisable && !isZeroInProgress && _status.zeroInProgress)
+        if (!isZeroInProgress && _status.zeroInProgress)
         {
             // 当前非校零禁止时，前一刻非校零中，目前校零中
             co2Param.setZeroStatus(CO2_ZERO_REASON_IN_PROGRESS, _status.zeroInProgress);
@@ -361,10 +361,13 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
                 co2Param.setZeroStatus(CO2_ZERO_REASON_IN_PROGRESS, _status.zeroInProgress);
                 co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS, _status.zeroInProgress);
             }
-
-            co2Param.setZeroStatus(CO2_ZERO_REASON_DISABLED, _status.zeroDisable);
-            // 旁流co2是的zeroDisable是禁止校准和校零
-            co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_AND_SPAN_DISABLE, _status.zeroDisable);
+            if (!_status.zeroInProgress)
+            {
+                // 不是校零时，才发出禁止校零报警
+                co2Param.setZeroStatus(CO2_ZERO_REASON_DISABLED, _status.zeroDisable);
+                // 旁流co2是的zeroDisable是禁止校准和校零
+                co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_AND_SPAN_DISABLE, _status.zeroDisable);
+            }
         }
         else
         {
@@ -375,8 +378,12 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
                 co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS, _status.zeroInProgress);
             }
 
-            co2Param.setZeroStatus(CO2_ZERO_REASON_DISABLED, _status.zeroDisable);
-            co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_DISABLE, _status.zeroDisable);
+            if (!_status.zeroInProgress)
+            {
+                // 不是校零时，才发出禁止校零报警
+                co2Param.setZeroStatus(CO2_ZERO_REASON_DISABLED, _status.zeroDisable);
+                co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_DISABLE, _status.zeroDisable);
+            }
         }
 
         // For ISA Only
@@ -388,7 +395,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
         {
             // 旁流CO2模块报警
             co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_SPAN_CALIB_FAILED, _status.spanError);
-            co2Param.setZeroStatus(CO2_ZERO_REASON_IN_PROGRESS, _status.spanCalibInProgress);
+//            co2Param.setZeroStatus(CO2_ZERO_REASON_IN_PROGRESS, _status.spanCalibInProgress);
             co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_SPAN_CALIB_IN_PROGRESS, _status.spanCalibInProgress);
         }
 //            co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_IR_O2_DELAY, _status.irO2Delay);
