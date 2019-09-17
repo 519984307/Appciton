@@ -779,6 +779,7 @@ TEMPModuleDisConnect,Temp模块未连接,Temp Module DisConnected
 TEMPChannelOne,Temp通道1,Temp Channel One
 TEMPChannelTwo,Temp通道2,Temp Channel Two
 TEMPChannelDisable,Temp通道禁用,Temp Channel Disable
+TEMPDisable,TEMP禁用,TEMP Disable
 ServiceInflate,充气,Inflate
 ServiceDeflate,放气,Deflate
 Inflating,充气中,Inflating
