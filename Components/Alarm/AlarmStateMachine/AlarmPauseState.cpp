@@ -81,6 +81,7 @@ void AlarmPauseState::enter()
     systemConfig.getNumValue("Alarms|AlarmPauseTime", index);
     d_ptr->leftPauseTime = d_ptr->getAlarmPausetime(static_cast<AlarmPauseTime>(index));
     alarmIndicator->updateAlarmPauseTime(d_ptr->leftPauseTime);
+    alarmIndicator->removeAllAlarmResetStatus();
     LightManagerInterface *lightManager = LightManagerInterface::getLightManager();
     if (lightManager)
     {

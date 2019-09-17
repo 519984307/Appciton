@@ -70,6 +70,7 @@ void TestAlarmPauseState::testEnter()
     AlarmIndicatorInterface::registerAlarmIndicator(&mockAlarmIndicator);
     EXPECT_CALL(mockAlarmIndicator, setAlarmStatus(Eq(ALARM_STATUS_PAUSE)));
     EXPECT_CALL(mockAlarmIndicator, updateAlarmPauseTime(static_cast<AlarmPauseTime>(pauseTime)));
+    EXPECT_CALL(mockAlarmIndicator, removeAllAlarmResetStatus());
 
     MockLightManager mockLightManager;
     LightManagerInterface::registerLightManager(&mockLightManager);

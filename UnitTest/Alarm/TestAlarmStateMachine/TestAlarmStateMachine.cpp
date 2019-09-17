@@ -74,11 +74,12 @@ void TestAlarmStateMachine::testStart()
          EXPECT_CALL(mockAlarmIndicator, updateAlarmAudioState());
          EXPECT_CALL(mockAlarmIndicator, clearAlarmPause);
     }
-    else if (alarmState == 2)
+    else if (alarmState == ALARM_PAUSE_STATE)
     {
         /* will not del phy alarm when pause */
         EXPECT_CALL(mockAlarmIndicator, delAllPhyAlarm()).Times(0);
         EXPECT_CALL(mockAlarmIndicator, updateAlarmPauseTime(_));
+        EXPECT_CALL(mockAlarmIndicator, removeAllAlarmResetStatus());
     }
 
     alarmStateMachine.start();
@@ -117,6 +118,7 @@ void TestAlarmStateMachine::testSwitchState()
         /* will not delete phy alarm when alarm pause */
         EXPECT_CALL(mockAlarmIndicator, delAllPhyAlarm()).Times(0);
         EXPECT_CALL(mockAlarmIndicator, updateAlarmPauseTime(_));
+        EXPECT_CALL(mockAlarmIndicator, removeAllAlarmResetStatus());
     }
     else if (type == ALARM_RESET_STATE)
     {
@@ -166,12 +168,12 @@ void TestAlarmStateMachine::testHandAlarmEvent()
         /* will not delete phy alarm when pause */
         EXPECT_CALL(mockAlarmIndicator, delAllPhyAlarm()).Times(0);
         EXPECT_CALL(mockAlarmIndicator, updateAlarmPauseTime(_));
+        EXPECT_CALL(mockAlarmIndicator, removeAllAlarmResetStatus());
     }
     else if (type == ALARM_RESET_STATE)
     {
         // 复位报警状态处理事件的期望
         EXPECT_CALL(mockAlarmIndicator, updateAlarmPauseTime(_));
-        EXPECT_CALL(mockAlarmIndicator, removeAllAlarmResetStatus());
     }
 
     alarmStateMachine.switchState(type);
