@@ -535,6 +535,10 @@ void SPO2Param::setOneShotAlarm(SPO2OneShotType t, bool f)
     AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SPO2);
     if (alarmSource)
     {
+        if (t == SPO2_ONESHOT_ALARM_CABLE_OFF && f == true)
+        {
+            alarmSource->clear();
+        }
         alarmSource->setOneShotAlarm(t, f);
     }
 }
