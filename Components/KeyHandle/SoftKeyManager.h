@@ -55,6 +55,11 @@ public:
 
      void refreshCO2Key(bool on);
 
+     /**
+      * @brief refreshTouchKey 刷新触摸按键内容显示
+      */
+     void refreshTouchKey();
+
 protected:
     void paintEvent(QPaintEvent *e);
     void resizeEvent(QResizeEvent *e);
