@@ -434,42 +434,27 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
             {
                 if (traceCtrl->type != ALARM_TYPE_TECH && _isLatchLock)
                 {
-                    if (traceCtrl->normalTimesCount >= ALARM_LIMIT_TIMES)
+                    // 栓锁打开时，才栓锁PhyOneShotAlarm
+                    AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+                    if (alarmIndicator &&
+                            !alarmIndicator->latchAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage))
                     {
-                        // 正常三次后才可通知是否报警
-                        AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
-                        if (alarmIndicator && alarmIndicator->latchAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage))
-                        {
-                            alarmSource->notifyAlarm(i, true);
-                        }
-                        else
-                        {
-                            alarmSource->notifyAlarm(i, false);
-                            traceCtrl->Reset();
-                        }
+                        alarmSource->notifyAlarm(i, false);
+                        traceCtrl->Reset();
                     }
                     else
                     {
-                        ++traceCtrl->normalTimesCount;
                         alarmSource->notifyAlarm(i, true);
                     }
                 }
                 else
                 {
-                    if (traceCtrl->normalTimesCount >= ALARM_LIMIT_TIMES)
+                    AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+                    if (alarmIndicator)
                     {
-                        // 正常三次后才可删除报警
-                        AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
-                        if (alarmIndicator)
-                        {
-                            alarmIndicator->delAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage);
-                        }
-                        traceCtrl->Reset();
+                        alarmIndicator->delAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage);
                     }
-                    else
-                    {
-                        traceCtrl->normalTimesCount++;
-                    }
+                    traceCtrl->Reset();
                 }
             }
             else
@@ -501,15 +486,6 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
                 }
                 else
                 {
-                    continue;
-                }
-            }
-            else
-            {
-                ++traceCtrl->alarmTimesCount;
-                if (traceCtrl->alarmTimesCount < ALARM_LIMIT_TIMES)
-                {
-                    alarmSource->notifyAlarm(i, false);
                     continue;
                 }
             }
@@ -563,8 +539,6 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
                 alarmStateMachine->handAlarmEvent(ALARM_STATE_EVENT_NEW_PHY_ALARM, 0, 0);
             }
         }
-        traceCtrl->alarmTimesCount = 0;
-        traceCtrl->normalTimesCount = 0;
     }
 }
 
