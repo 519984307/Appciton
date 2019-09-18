@@ -119,7 +119,7 @@ void O2CalibrationMenuContent::percent21Released(void)
 {
     if (o2Param.isServiceProviderOk())
     {
-        o2Param.sendCalibration(0);
+        o2Param.sendCalibration(1);
         d_ptr->calibTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
         d_ptr->calibratePercent = O2_PERCENT_21;
     }
@@ -129,7 +129,7 @@ void O2CalibrationMenuContent::percent100Released(void)
 {
     if (o2Param.isServiceProviderOk())
     {
-        o2Param.sendCalibration(1);
+        o2Param.sendCalibration(2);
         d_ptr->calibTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
         d_ptr->calibratePercent = O2_PERCENT_100;
     }

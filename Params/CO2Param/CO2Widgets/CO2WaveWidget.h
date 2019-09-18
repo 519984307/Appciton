@@ -41,21 +41,18 @@ public:
     CO2WaveWidget(const QString &waveName, const QString &title);
     ~CO2WaveWidget();
 
-    /* reimplment */
-    void updateWidgetConfig();
-
 protected:
     void resizeEvent(QResizeEvent *e);
     void focusInEvent(QFocusEvent */*e*/);
     void hideEvent(QHideEvent *e);
 
+    /* reimplment */
+    void loadConfig();
+
 private slots:
     void _getItemIndex(int);
 
 private:
-    /* reimplment */
-    void _loadConfig();
-
 //    WaveWidgetLabel *_name;        // 名称
     CO2WaveRuler *_ruler;          // 标尺对象
     int _currentItemIndex;

@@ -55,7 +55,7 @@ struct PatientInfo
 {
     PatientInfo()
         :type(PATIENT_TYPE_ADULT),
-          pacer(PATIENT_PACER_ON),
+          pacer(PATIENT_PACER_OFF),
           sex(PATIENT_SEX_NULL),  //  性别为空主要用于开机时性别框要显示为空白
           blood(PATIENT_BLOOD_TYPE_NULL),
           weight(0.0),
@@ -128,7 +128,7 @@ public:
     {
         static const char *symbol[PATIENT_PACER_NR] =
         {
-            "Off", "On"
+            "NotWear", "Wear"
         };
         return symbol[index];
     }

@@ -707,6 +707,7 @@ void WaveWidget::resetWaveWidget()
 void WaveWidget::updateWidgetConfig()
 {
     resetWaveWidget();
+    loadConfig();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

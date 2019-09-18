@@ -41,7 +41,7 @@ TitrateTableSetWindowPrivate::TitrateTableSetWindowPrivate()
 
 
 TitrateTableSetWindow::TitrateTableSetWindow()
-    : Window(),
+    : Dialog(),
       d_ptr(new TitrateTableSetWindowPrivate)
 {
     layoutExec();
@@ -77,7 +77,7 @@ void TitrateTableSetWindow::onBtnYesReleased()
 
 void TitrateTableSetWindow::showEvent(QShowEvent *e)
 {
-    Window::showEvent(e);
+    Dialog::showEvent(e);
 
     QRect r = layoutManager.getMenuArea();
     move(r.x() + (r.width() - width()) / 2, r.y() + (r.height() - height()) / 2);

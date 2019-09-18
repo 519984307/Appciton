@@ -16,15 +16,7 @@
 class ECGLimitAlarm : public AlarmLimitIFace
 {
 public:
-    static ECGLimitAlarm &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new ECGLimitAlarm();
-        }
-        return *_selfObj;
-    }
-    static ECGLimitAlarm *_selfObj;
+    ECGLimitAlarm();
 
 public:
     // 报警源的名字。
@@ -67,24 +59,14 @@ public:
     virtual const char *toString(int id);
 
     // 构造与析构。
-    ECGLimitAlarm();
     virtual ~ECGLimitAlarm();
 };
-#define ecgLimitAlarm (ECGLimitAlarm::construction())
 
 // OneShor报警实现。
 class ECGOneShotAlarm : public AlarmOneShotIFace
 {
 public:
-    static ECGOneShotAlarm &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new ECGOneShotAlarm();
-        }
-        return *_selfObj;
-    }
-    static ECGOneShotAlarm *_selfObj;
+    ECGOneShotAlarm();
 
 public:
     // 报警源的名字。
@@ -126,6 +108,8 @@ public:
     // remove alarm message after latch
     virtual bool isRemoveAfterLatch(int id);
 
+    virtual bool isRemoveLightAfterConfirm(int id);
+
     // 是否需要删除报警
     virtual bool isNeedRemove(int /*id*/);
 
@@ -133,7 +117,5 @@ public:
     virtual ~ECGOneShotAlarm();
 
 private:
-    ECGOneShotAlarm();
     bool _isPhyAlarm;
 };
-#define ecgOneShotAlarm (ECGOneShotAlarm::construction())

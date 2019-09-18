@@ -12,21 +12,41 @@
 
 #include "MenuContent.h"
 
-
+class Button;
+class NIBPCalibrationMenuContentPrivate;
 class NIBPCalibrationMenuContent : public MenuContent
 {
     Q_OBJECT
 public:
     NIBPCalibrationMenuContent();
-    ~NIBPCalibrationMenuContent() {}
+    ~NIBPCalibrationMenuContent();
 protected:
+    /**
+     * @brief readyShow
+     */
+    void showEvent(QShowEvent* e);
     /**
      * @brief layoutExec  布局方法
      */
     virtual void layoutExec(void);
+
+    /**
+     * @brief hideEvent
+     * @param e
+     */
+    void hideEvent(QHideEvent *e);
+
+    /**
+     * @brief timerEvent
+     * @param e
+     */
+    void timerEvent(QTimerEvent *e);
 private slots:
     /**
      * @brief onBtnSlot  按钮槽函数
      */
     void onBtnSlot();
+
+private:
+    NIBPCalibrationMenuContentPrivate * const d_ptr;
 };

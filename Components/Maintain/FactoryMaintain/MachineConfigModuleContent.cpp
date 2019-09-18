@@ -18,6 +18,7 @@
 #include "NIBPSymbol.h"
 #include "TEMPSymbol.h"
 #include "SPO2Symbol.h"
+#include "CO2Symbol.h"
 #ifdef Q_WS_QWS
 #include <QWSServer>
 #include "SystemManager.h"
@@ -25,6 +26,7 @@
 #include "SoftKeyManager.h"
 #include "MessageBox.h"
 #include <QProcess>
+#include "SystemBoardProvider.h"
 
 class MachineConfigModuleContentPrivte
 {
@@ -39,12 +41,17 @@ public:
         ITEM_CBO_AG,
         ITEM_CBO_CO,
         ITEM_CBO_IBP,
+#ifdef ENABLE_O2_APNEASTIMULATION
         ITEM_CBO_O2,
+#endif
+        ITEM_CBO_PRINTER,
         ITEM_CBO_TEMP,
         ITEM_CBO_WIFI,
 #ifdef Q_WS_QWS
         ITEM_CBO_TSCREEN,
 #endif
+        ITEM_CBO_BACKLIGHT,
+        ITEM_CBO_NIBP_NEO_MEASURE,
         ITEM_CBO_MAX
     };
 
@@ -99,7 +106,7 @@ void MachineConfigModuleContentPrivte::loadOptions()
     else
     {
         machineConfig.getStrValue("SPO2", moduleName);
-        index = combos[ITEM_CBO_SPO2]->findText(moduleName);
+        index = combos[ITEM_CBO_SPO2]->findText(trs(moduleName));
         if (index)
         {
             combos[ITEM_CBO_SPO2]->setCurrentIndex(index);
@@ -117,7 +124,7 @@ void MachineConfigModuleContentPrivte::loadOptions()
     else
     {
         machineConfig.getStrValue("NIBP", moduleName);
-        index = combos[ITEM_CBO_NIBP]->findText(moduleName);
+        index = combos[ITEM_CBO_NIBP]->findText(trs(moduleName));
         if (index)
         {
             combos[ITEM_CBO_NIBP]->setCurrentIndex(index);
@@ -132,7 +139,19 @@ void MachineConfigModuleContentPrivte::loadOptions()
 
     index = 0;
     machineConfig.getNumValue("CO2Enable", index);
-    combos[ITEM_CBO_CO2]->setCurrentIndex(index);
+    if (index == 0)
+    {
+        combos[ITEM_CBO_CO2]->setCurrentIndex(0);
+    }
+    else
+    {
+        machineConfig.getStrValue("CO2", moduleName);
+        index = combos[ITEM_CBO_CO2]->findText(trs(moduleName));
+        if (index)
+        {
+            combos[ITEM_CBO_CO2]->setCurrentIndex(index);
+        }
+    }
     itemChangedMap[ITEM_CBO_CO2] = index;
 
     index = 0;
@@ -150,15 +169,18 @@ void MachineConfigModuleContentPrivte::loadOptions()
     combos[ITEM_CBO_IBP]->setCurrentIndex(index);
     itemChangedMap[ITEM_CBO_IBP] = index;
 
+#ifdef ENABLE_O2_APNEASTIMULATION
     index = 0;
     machineConfig.getNumValue("O2Enable", index);
     combos[ITEM_CBO_O2]->setCurrentIndex(index);
     itemChangedMap[ITEM_CBO_O2] = index;
+#endif
 
 #ifdef Q_WS_QWS
     index = 0;
     machineConfig.getNumValue("TouchEnable", index);
     combos[ITEM_CBO_TSCREEN]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_TSCREEN] = index;
 #endif
 
     index = 0;
@@ -167,10 +189,23 @@ void MachineConfigModuleContentPrivte::loadOptions()
     itemChangedMap[ITEM_CBO_TEMP] = index;
 
     index = 0;
+    machineConfig.getNumValue("PrinterEnable", index);
+    combos[ITEM_CBO_PRINTER]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_PRINTER] = index;
+
+    index = 0;
     machineConfig.getNumValue("WIFIEnable", index);
     combos[ITEM_CBO_WIFI]->setCurrentIndex(index);
     itemChangedMap[ITEM_CBO_WIFI] = index;
 
+    // load screen type
+    index = 0;
+    machineConfig.getNumValue("BacklightAdjustment", index);
+    combos[ITEM_CBO_BACKLIGHT]->setCurrentIndex(index);
+
+    index = 0;
+    machineConfig.getNumValue("NIBPNEOMeasureEnable", index);
+    combos[ITEM_CBO_NIBP_NEO_MEASURE]->setCurrentIndex(index);
     itemInitMap = itemChangedMap;
 
 #ifdef HIDE_MACHINE_CONFIG_ITEMS
@@ -182,8 +217,8 @@ void MachineConfigModuleContentPrivte::loadOptions()
     combos[ITEM_CBO_CO]->setEnabled(false);
     combos[ITEM_CBO_IBP]->setCurrentIndex(0);
     combos[ITEM_CBO_IBP]->setEnabled(false);
-    combos[ITEM_CBO_O2]->setCurrentIndex(0);
-    combos[ITEM_CBO_O2]->setEnabled(false);
+//    combos[ITEM_CBO_O2]->setCurrentIndex(0);
+//    combos[ITEM_CBO_O2]->setEnabled(false);
     combos[ITEM_CBO_WIFI]->setCurrentIndex(0);
     combos[ITEM_CBO_WIFI]->setEnabled(false);
 #endif
@@ -201,7 +236,7 @@ void MachineConfigModuleContentPrivte::configUpdateHint()
     QDialog::DialogCode statue = static_cast<QDialog::DialogCode>(box.exec());
     if (statue == QDialog::Accepted)
     {
-        QProcess::execute("reboot");
+        systemBoardProvider.requestReset();
     }
 }
 
@@ -263,7 +298,6 @@ void MachineConfigModuleContent::layoutExec()
                     << trs("Off")
                     << trs(SPO2Symbol::convert(MODULE_BLM_S5))
                     << trs(SPO2Symbol::convert(MODULE_MASIMO_SPO2))
-                    << trs(SPO2Symbol::convert(MODULE_NELLCOR_SPO2))
                     << trs(SPO2Symbol::convert(MODULE_RAINBOW_SPO2))
                    );
     layout->addWidget(combo, d_ptr->combos.count(), 1);
@@ -310,7 +344,8 @@ void MachineConfigModuleContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs("On")
+                    << trs(CO2Symbol::convert(MODULE_BLM_CO2))
+                    << trs(CO2Symbol::convert(MODULE_MASIMO_CO2))
                    );
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
@@ -364,6 +399,7 @@ void MachineConfigModuleContent::layoutExec()
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
+#ifdef ENABLE_O2_APNEASTIMULATION
     // O2 module
     label = new QLabel(trs("O2Module"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -378,6 +414,7 @@ void MachineConfigModuleContent::layoutExec()
     itemId = MachineConfigModuleContentPrivte::ITEM_CBO_O2;
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+#endif
 
     // temp module
     label = new QLabel(trs("TEMPModule"));
@@ -391,6 +428,21 @@ void MachineConfigModuleContent::layoutExec()
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
                          ::ITEM_CBO_TEMP, combo);
     itemId = MachineConfigModuleContentPrivte::ITEM_CBO_TEMP;
+    combo->setProperty("Item", qVariantFromValue(itemId));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+
+    // printer module
+    label = new QLabel(trs("PrinterModule"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    combo = new ComboBox;
+    combo->addItems(QStringList()
+                    << trs("Off")
+                    << trs("On")
+                   );
+    layout->addWidget(combo, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(MachineConfigModuleContentPrivte
+                         ::ITEM_CBO_PRINTER, combo);
+    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_PRINTER;
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
@@ -417,7 +469,8 @@ void MachineConfigModuleContent::layoutExec()
     combo->blockSignals(true);
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs("On")
+                    << trs("ResistiveScreen")
+                    << trs("CapacitiveScreen")
                    );
     combo->blockSignals(false);
     layout->addWidget(combo, d_ptr->combos.count(), 1);
@@ -427,6 +480,40 @@ void MachineConfigModuleContent::layoutExec()
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 #endif
+
+    // Backlight Regulation
+    label = new QLabel(trs("BacklightAdjustment"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    combo = new ComboBox;
+    combo->blockSignals(true);
+    combo->addItems(QStringList()
+                    << trs(SystemSymbol::convert(BACKLIGHT_MODE_1))
+                    << trs(SystemSymbol::convert(BACKLIGHT_MODE_2))
+                   );
+    combo->blockSignals(false);
+    layout->addWidget(combo, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(MachineConfigModuleContentPrivte
+                         ::ITEM_CBO_BACKLIGHT, combo);
+    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_BACKLIGHT;
+    combo->setProperty("Item", qVariantFromValue(itemId));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+
+    layout->setRowStretch(d_ptr->combos.count(), 1);
+
+    label = new QLabel(trs("StopNeoNIBPMeasure"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    combo = new ComboBox;
+    combo->blockSignals(true);
+    combo->addItems(QStringList()
+                    << trs("Off")
+                    << trs("On"));
+    combo->blockSignals(false);
+    layout->addWidget(combo, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(MachineConfigModuleContentPrivte
+                         ::ITEM_CBO_NIBP_NEO_MEASURE, combo);
+    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_NIBP_NEO_MEASURE;
+    combo->setProperty("Item", qVariantFromValue(itemId));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
     layout->setRowStretch(d_ptr->combos.count(), 1);
 }
@@ -488,6 +575,11 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
         case MachineConfigModuleContentPrivte::ITEM_CBO_CO2:
         {
             enablePath = "CO2Enable";
+            modulePath = "CO2";
+            if (index > 0)
+            {
+                moduleName = CO2Symbol::convert(static_cast<CO2ModuleType>(index - 1));
+            }
             break;
         }
         case MachineConfigModuleContentPrivte::ITEM_CBO_AG:
@@ -505,14 +597,21 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
             enablePath = "IBPEnable";
             break;
         }
+#ifdef ENABLE_O2_APNEASTIMULATION
         case MachineConfigModuleContentPrivte::ITEM_CBO_O2:
         {
             enablePath = "O2Enable";
             break;
         }
+#endif
         case MachineConfigModuleContentPrivte::ITEM_CBO_TEMP:
         {
             enablePath = "TEMPEnable";
+            break;
+        }
+        case MachineConfigModuleContentPrivte::ITEM_CBO_PRINTER:
+        {
+            enablePath = "PrinterEnable";
             break;
         }
         case MachineConfigModuleContentPrivte::ITEM_CBO_WIFI:
@@ -522,12 +621,27 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
         }
 #ifdef Q_WS_QWS
         case MachineConfigModuleContentPrivte::ITEM_CBO_TSCREEN:
-            machineConfig.setNumValue("TouchEnable", index);
+            enablePath = "TouchEnable";
             machineConfig.saveToDisk();
             systemManager.setTouchScreenOnOff(index);
-            softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_SCREEN_BAN, index);
-            return;
+            systemManager.configTouchScreen(index);
+            break;
 #endif
+        case MachineConfigModuleContentPrivte::ITEM_CBO_BACKLIGHT:
+        {
+            machineConfig.setNumValue("BacklightAdjustment", index);
+            machineConfig.saveToDisk();
+#ifdef Q_WS_QWS
+            BrightnessLevel br = systemManager.getBrightness();
+            systemManager.setBrightness(br);
+#endif
+            return;
+        }
+        case MachineConfigModuleContentPrivte::ITEM_CBO_NIBP_NEO_MEASURE:
+        {
+             enablePath = "NIBPNEOMeasureEnable";
+             break;
+        }
         default:
             return;
     }
@@ -537,12 +651,12 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
         return;
     }
 
-    int enableIndex;
+    int enableIndex = index;
     if (index == 0)
     {
         enableIndex = 0;
     }
-    else if (index > 0)
+    else if (index > 0 && enablePath != "TouchEnable")
     {
         enableIndex = 1;
     }

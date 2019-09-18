@@ -17,6 +17,7 @@
 #include "PopupList.h"
 #include "FontManager.h"
 #include "LayoutManager.h"
+#include "LanguageManager.h"
 
 /**************************************************************************************************
  * 功能： 设置显示的内容。

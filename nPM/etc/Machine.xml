@@ -7,7 +7,7 @@
     <ScreenPixelWPitch>0.1695</ScreenPixelWPitch>
     <ScreenPixelHPitch>0.1695</ScreenPixelHPitch>
     <!--功能机型的使能配置-->
-    <ConfiguredFunctions>ECG12LEADS,SPO2,NIBP,CO2,IBP,AG,CO,TEMP,WIFI</ConfiguredFunctions>
+    <ConfiguredFunctions>ECG12LEAD,SPO2,NIBP,RESP,CO2,AG,CO,IBP,TEMP,Printer,WIFI,Touch,O2,NIBPNEOMeasure</ConfiguredFunctions>
     <ECG12LEADEnable>1</ECG12LEADEnable>
     <SPO2Enable>1</SPO2Enable>
     <NIBPEnable>1</NIBPEnable>
@@ -17,12 +17,18 @@
     <COEnable>0</COEnable>
     <IBPEnable>0</IBPEnable>
     <TEMPEnable>1</TEMPEnable>
+    <PrinterEnable>1</PrinterEnable>
     <WIFIEnable>0</WIFIEnable>
     <TouchEnable>0</TouchEnable>
     <O2Enable>0</O2Enable>
+    <NIBPNEOMeasureEnable>1</NIBPNEOMeasureEnable>	
+    <!--背光调节方式  0:默认为等级亮度递增方式调节,1:如果0对应模式无法达到亮度递增调节效果，就选择该模式1-->
+    <!--总之，2个模式中要选择能使得背光等级亮度递增的调节模式-->
+    <BacklightAdjustment>0</BacklightAdjustment>
     <!--系统信息-->
     <SerialNumber>20180725222</SerialNumber>
     <SoftwareVersion>0.0.0.1</SoftwareVersion>
+    <ScreenSize>10.1</ScreenSize>
     <!--参数信息-->
     <AllParams>ECG,SPO2,RESP,NIBP,CO2,IBP,AG,CO,TEMP,O2</AllParams>
     <!--数据记录使能选择-->
@@ -31,14 +37,15 @@
         <SPO2>0</SPO2>
         <Battery>0</Battery>
         <NIBP>0</NIBP>
+	<CO2>0</CO2>
         <TEMP>0</TEMP>
     </Record>
     <!--参数与Provider的关系-->
     <ECG SptProvider="DemoProvider,BLM_E5">BLM_E5</ECG>
     <RESP SptProvider="DemoProvider,BLM_E5">BLM_E5</RESP>
-    <SPO2 SptProvider="DemoProvider,BLM_S5,MASIMO_SPO2,NELLCOR_SPO2,RAINBOW_SPO2">RAINBOW_SPO2</SPO2>
+    <SPO2 SptProvider="DemoProvider,BLM_S5,MASIMO_SPO2,RAINBOW_SPO2">BLM_S5</SPO2>
     <NIBP SptProvider="DemoProvider,BLM_N5,SUNTECH_NIBP">BLM_N5</NIBP>
-    <CO2 SptProvider="DemoProvider,BLM_CO2">BLM_CO2</CO2>
+    <CO2 SptProvider="DemoProvider,BLM_CO2,MASIMO_CO2">BLM_CO2</CO2>
     <IBP SptProvider="DemoProvider,WITLEAF_IBP">WITLEAF_IBP</IBP>
     <AG SptProvider="DemoProvider,PHASEIN_AG">PHASEIN_AG</AG>
     <CO SptProvider="DemoProvider,WITLEAF_IBP">WITLEAF_IBP</CO>
@@ -56,6 +63,7 @@
     <BLM_T5Port>DataDispatcher</BLM_T5Port>
     <WITLEAF_IBPPort>/dev/ttyS4</WITLEAF_IBPPort>
     <BLM_CO2Port>/dev/ttyPM2</BLM_CO2Port>
+    <MASIMO_CO2Port>/dev/ttyPM2</MASIMO_CO2Port>
     <DataDispatcherPort>/dev/ttyPM3</DataDispatcherPort>
     <NEONATE_O2Port>/dev/ttyS5</NEONATE_O2Port>
     <!--    <PHASEIN_AGPort>/dev/ttyWK3</PHASEIN_AGPort>-->

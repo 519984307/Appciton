@@ -11,11 +11,11 @@
 #pragma once
 #include <QString>
 #include "AlarmParamIFace.h"
-#include "AlarmIndicator.h"
-#include "SoundManager.h"
+#include "EventStorageManagerInterface.h"
+#include "AlarmInterface.h"
 #include <QMultiMap>
 
-class Alarm
+class Alarm : public AlarmInterface
 {
 public:
     struct AlarmInfo
@@ -25,21 +25,24 @@ public:
         unsigned timestamp;
         bool isOneshot;
         char order;            // record the order of this alarm when many alarms happen in the same timestamp
+
+        bool operator==(const AlarmInfo &info)
+        {
+            if (info.paramid == paramid && info.alarmType == alarmType && info.timestamp == timestamp
+                    && info.isOneshot == isOneshot)
+            {
+                return true;
+            }
+            return false;
+        }
     };
 
-    static Alarm &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new Alarm();
-        }
-        return *_selfObj;
-    }
-    static Alarm *_selfObj;
+    static Alarm &getInstance(void);
+    void clear();
 
     // 注册报警源。
-    void addLimtSource(AlarmLimitIFace &alarmSource);
-    void addOneShotSource(AlarmOneShotIFace &alarmSource);
+    void addLimtSource(AlarmLimitIFace *alarmSource);
+    void addOneShotSource(AlarmOneShotIFace *alarmSource);
 
     // 设置静音键状态。
     void updateMuteKeyStatus(bool isPressed);
@@ -61,6 +64,7 @@ public:
 
     // 添加报警状态
     void addAlarmStatus(AlarmStatus status);
+    int getAlarmStatusCount();
 
     // get the alarm string from alarm source
     const char *getAlarmMessage(ParamID paramId, int alarmType, bool isOneshotAlarm);
@@ -89,9 +93,9 @@ public:
     void setLatchLockSta(bool status);
 
     /**
-     * @brief removeAllPhyAlarm 移除生理报警的跟踪对象
+     * @brief removeAllLimitAlarm 移除生理报警的跟踪对象
      */
-    void removeAllPhyAlarm();
+    void removeAllLimitAlarm();
 
 private:
     unsigned _timestamp;
@@ -111,6 +115,19 @@ private:
     void _handleOneShotAlarm(AlarmOneShotIFace *alarmSource);
 
     void _handleAlarm(void);
+
+    bool _alarmLightOnAlarmReset;       // 报警复位时的报警灯
+
+    struct EventInfo
+    {
+        EventInfo()
+            : alarmSource(NULL),
+              waveId(-1)
+        {}
+        AlarmParamIFace *alarmSource;
+        int waveId;
+        AlarmInfoSegment infoSegment;
+    };
+    QList<EventInfo> eventList;
 };
-#define alertor (Alarm::construction())
-#define deleteAlarm() (delete Alarm::_selfObj)
+#define alertor (Alarm::getInstance())

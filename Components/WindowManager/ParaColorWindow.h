@@ -9,10 +9,10 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 
 class ParaColorWindowPrivate;
-class ParaColorWindow : public Window
+class ParaColorWindow : public Dialog
 {
     Q_OBJECT
 public:
@@ -24,8 +24,6 @@ protected:
 
     /* reimplement */
     void layoutExec();
-
-    void hideEvent(QHideEvent *ev);
 
 private slots:
     void onComboBoxIndexChanged(int index);

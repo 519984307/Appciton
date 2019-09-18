@@ -98,6 +98,7 @@ signals:
      * @param value
      */
     void itemFocusChanged(int value);
+    void itemFoucsIndexChanged(int index);
 
 private slots:
     void onItemSelected();

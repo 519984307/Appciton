@@ -11,8 +11,8 @@
 
 
 #include "ErrorLogItem.h"
-#include "SystemManager.h"
 #include <QFile>
+#include "LanguageManager.h"
 
 void ErrorLogItemBase::setPdCommLogCache(const QVariantList &cachelist)
 {
@@ -33,20 +33,20 @@ void ErrorLogItemBase::setSubSystem(ErrorLogItemBase::SubSystem subSys)
     case SUB_SYS_SYSTEM_BOARD:
         subSysStr = "System Board";
         break;
-    case SUB_SYS_TE3:
-        subSysStr = "TE3";
+    case SUB_SYS_E5:
+        subSysStr = "E5";
         break;
-    case SUB_SYS_TS3:
-        subSysStr = "TS3";
+    case SUB_SYS_S5:
+        subSysStr = "S5";
         break;
     case SUB_SYS_BLMSPO2:
         subSysStr = "BLMSPO2";
         break;
-    case SUB_SYS_TN3:
-        subSysStr = "TN3";
+    case SUB_SYS_N5:
+        subSysStr = "N5";
         break;
-    case SUB_SYS_TT3:
-        subSysStr = "TT3";
+    case SUB_SYS_T5:
+        subSysStr = "T5";
         break;
     case SUB_SYS_CO2:
         subSysStr = "CO2";
@@ -131,15 +131,15 @@ void ErrorLogItem::outputInfo(QTextStream &stream) const
     ErrorLogItemBase::outputInfo(stream);
     if (content.contains("subSys"))
     {
-        stream << "Subsystem: " << content["subSys"].toString() << "\r\n";
+        stream << trs("Subsystem") << content["subSys"].toString() << "\r\n";
     }
     if (content.contains("sysState"))
     {
-        stream << "System State: " << content["sysState"].toString() << "\r\n";
+        stream << trs("SystemState") << content["sysState"].toString() << "\r\n";
     }
     if (content.contains("sysRsp"))
     {
-        stream << "System Response: " << content["sysRsp"].toString() << "\r\n";
+        stream << trs("SystemResponse") << content["sysRsp"].toString() << "\r\n";
     }
 
     stream << content["log"].toString();
@@ -206,15 +206,15 @@ void CrashLogItem::outputInfo(QTextStream &stream) const
     ErrorLogItemBase::outputInfo(stream);
     if (content.contains("subSys"))
     {
-        stream << "Subsystem: " << content["subSys"].toString() << "\r\n";
+        stream << trs("Subsystem") << content["subSys"].toString() << "\r\n";
     }
     if (content.contains("sysState"))
     {
-        stream << "System State: " << content["sysState"].toString() << "\r\n";
+        stream << trs("SystemState") << content["sysState"].toString() << "\r\n";
     }
     if (content.contains("sysRsp"))
     {
-        stream << "System Response: " << content["sysRsp"].toString() << "\r\n";
+        stream << trs("SystemResponse") << content["sysRsp"].toString() << "\r\n";
     }
 
     stream << content["log"].toByteArray();

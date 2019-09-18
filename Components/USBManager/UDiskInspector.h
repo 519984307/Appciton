@@ -22,11 +22,17 @@ public:
     ~UDiskInspector();
 
     // function to check the existance of the USB disk
-    static bool checkUsbConnectStatus();
+    bool checkUsbConnectStatus();
+
+    // 检测是否有U盘插入
+    bool checkUDiskInsert();
 
 signals:
     // status update signal, emit periodly
     void statusUpdate(bool isUSBConnected);
+
+    // 挂载U盘
+    void mountUDisk();
 
 protected:
     void timerEvent(QTimerEvent *ev);

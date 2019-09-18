@@ -14,6 +14,7 @@
 #include "TrendDataDefine.h"
 #include <QScrollArea>
 #include "EventStorageManager.h"
+#include "PatientDefine.h"
 
 class QHBoxLayout;
 class QVBoxLayout;
@@ -38,21 +39,9 @@ public:
     void pageUpParam();
 
     /**
-     * @brief hasUpPage 检查是否可上翻页
-     * @return
-     */
-    bool hasUpPage();
-
-    /**
      * @brief pageDownParam 下翻页
      */
     void pageDownParam();
-
-    /**
-     * @brief hasDownPage 检查是否可下翻页
-     * @return
-     */
-    bool hasDownPage();
 
     /**
      * @brief setTimeInterval 设置时间间隔
@@ -79,7 +68,7 @@ public:
      * @param startIndex 开始数据的索引
      * @param endIndex 结束数据的索引
      */
-    void loadTrendData(SubParamID id, const int startIndex, const int endIndex);
+    void loadTrendData(SubParamID id);
 
     /**
      * @brief dataIndex 获取开始与结束数据的索引
@@ -87,6 +76,14 @@ public:
      * @param endIndex 结束数据的索引
      */
     void dataIndex(int &startIndex, int &endIndex);
+
+
+    /**
+     * @brief getTrendData 对应位置的趋势图数据包
+     * @param startIndex
+     * @param endIndex
+     */
+    void trendDataPack(int startIndex, int endIndex);
 
     /**
      * @brief updateTimeRange 根据当前数据页和时间间隔更新显示数据时间范围
@@ -102,7 +99,13 @@ public:
      * @brief 获取趋势图打印的数据及其事件发生时刻列表
      */
     const QList<TrendGraphInfo> getTrendGraphPrint();
-    const QList<EventInfoSegment> getEventList();
+    const QList<BlockEntry> getEventList();
+
+    /**
+     * @brief getPatientInfo 获取病人信息
+     * @return
+     */
+    const PatientInfo &getPatientInfo();
 
     /**
      * @brief setHistoryDataPath 设置历史回顾数据的文件路径
@@ -180,6 +183,12 @@ private:
     double _getCursorPos(unsigned t);               // 获取坐标位置
 
     /**
+     * @brief _getTimeIndex 获取时间对应的数据索引
+     * @param t
+     */
+    int _getTimeIndex(unsigned t);
+
+    /**
      * @brief _getCursorTime 获取游标位置时间
      * @param pos   游标位置
      */
@@ -196,11 +205,37 @@ private:
     void _updateEventIndex();
 
     /**
+     * @brief _findIndex 获取当前时刻在趋势数据中的索引
+     * @param timeStamp
+     * @return
+     */
+    int _findIndex(unsigned timeStamp);
+
+    /**
+     * @brief _findPackIndex 查找当前时刻在Pack中的索引
+     * @param timeStamp
+     * @return
+     */
+    int _findPackIndex(unsigned timeStamp);
+
+    /**
      * @brief getTrendGraphType 获取id对应的趋势图类型
      * @param id 子参数ID
      * @return
      */
     TrendGraphType getTrendGraphType(SubParamID id);
+
+    /**
+     * @brief _loadEventInfoList 加载事件信息列表
+     */
+    void _loadEventInfoList();
+
+    /**
+     * @brief getTrendDataPackage 获取索引对应的趋势数据
+     * @param index
+     * @return
+     */
+    TrendDataPackage getTrendDataPackage(int index);
 
 private:
     QVBoxLayout *_mainLayout;
@@ -232,9 +267,13 @@ private:
     QList<SubParamID> _curDisplaySubList;           // 当前显示子参数集合
     int _curIndex;
     TrendGraphInfo _trendGraphInfo;                 // 趋势图数据集合
-    QList<EventInfoSegment> _eventList;            // 报警类型和时间
+    QList<BlockEntry> _eventList;            // 报警类型和时间
     QList<TrendGraphInfo> _infosList;                    // 打印趋势图数据链表
+    PatientInfo _patientInfo;                        // 病人信息
 
     bool _isHistory;                                // 历史回顾标志
     QString _historyDataPath;                       // 历史数据路径
+    QList<BlockEntry> eventBlockList;               // 事件信息列表
+    QList<BlockEntry> trendBlockList;               // 趋势数据信息列表
+    IStorageBackend *_backend;
 };

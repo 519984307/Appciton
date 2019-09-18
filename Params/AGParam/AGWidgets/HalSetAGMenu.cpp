@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/3/27
+ **/
+
+
 #include "HalSetAGMenu.h"
 #include "IComboList.h"
 #include "UnitManager.h"
@@ -6,6 +17,7 @@
 #include "MenuManager.h"
 #include "FontManager.h"
 #include "ComboBox.h"
+#include "LanguageManager.h"
 
 enum HalSetType
 {
@@ -23,10 +35,9 @@ public:
 
 HalSetAGMenu::~HalSetAGMenu()
 {
-
 }
 
-HalSetAGMenu::HalSetAGMenu():Window(), d_ptr(new HalSetAGMenuPrivate())
+HalSetAGMenu::HalSetAGMenu(): Dialog(), d_ptr(new HalSetAGMenuPrivate())
 {
     setWindowTitle(trs("HalOfAGSetUp"));
 
@@ -35,22 +46,22 @@ HalSetAGMenu::HalSetAGMenu():Window(), d_ptr(new HalSetAGMenuPrivate())
     typeName.append("Anesthetic");
 
     QStringList comboList[Hal_SET_MAX];
-    for(int i=0; i< OPERATION_MODE_NR; i++)
+    for (int i = 0; i < OPERATION_MODE_NR; i++)
     {
         comboList[OPERATION_MODE].append(CO2Symbol::convert(CO2OperationMode(i)));
     }
     comboList[ANESTHETIC].append("Null");
 
     int typeIndex[Hal_SET_MAX] = {0};
-    for(int i=0; i<Hal_SET_MAX; i++)
+    for (int i = 0; i < Hal_SET_MAX; i++)
     {
-        int index=0;
+        int index = 0;
         currentConfig.getNumValue(QString("AG|%1").arg(typeName.at(i)), index);
         typeIndex[i] = index;
     }
     QGridLayout *gl = new QGridLayout();
     gl->setContentsMargins(10, 10, 10, 10);
-    for(int i=0; i<Hal_SET_MAX; i++)
+    for (int i = 0; i < Hal_SET_MAX; i++)
     {
         d_ptr->labels[i] = new QLabel(trs(typeName.at(i)));
         d_ptr->labels[i]->setFont(fontManager.textFont(fontManager.getFontSize(2)));
@@ -59,8 +70,8 @@ HalSetAGMenu::HalSetAGMenu():Window(), d_ptr(new HalSetAGMenuPrivate())
         d_ptr->combos[i]->setCurrentIndex(typeIndex[i]);
         d_ptr->combos[i]->setProperty("comboId", qVariantFromValue(i));
         d_ptr->combos[i]->setFont(fontManager.textFont(fontManager.getFontSize(2)));
-        gl->addWidget(d_ptr->labels[i], i+1, 0);
-        gl->addWidget(d_ptr->combos[i], i+1, 1);
+        gl->addWidget(d_ptr->labels[i], i + 1, 0);
+        gl->addWidget(d_ptr->combos[i], i + 1, 1);
         connect(d_ptr->combos[i], SIGNAL(currentIndexChanged(int)), this, SLOT(onComboIndexChanged(int)));
     }
     setWindowLayout(gl);
@@ -68,10 +79,10 @@ HalSetAGMenu::HalSetAGMenu():Window(), d_ptr(new HalSetAGMenuPrivate())
 
 void HalSetAGMenu::onComboIndexChanged(int index)
 {
-    ComboBox *combos = qobject_cast<ComboBox*>(sender());
+    ComboBox *combos = qobject_cast<ComboBox *>(sender());
     int typeIndex = combos->property("comboId").toInt();
     QString typeName("");
-    switch((HalSetType)typeIndex)
+    switch ((HalSetType)typeIndex)
     {
     case OPERATION_MODE:
         typeName = "OperationMode";
@@ -83,11 +94,10 @@ void HalSetAGMenu::onComboIndexChanged(int index)
         typeName = "";
         break;
     }
-    if(!typeName.isEmpty())
+    if (!typeName.isEmpty())
     {
         currentConfig.setNumValue(QString("AG|%1").arg(typeName), index);
     }
-
 }
 
 

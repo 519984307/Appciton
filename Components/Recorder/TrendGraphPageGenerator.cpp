@@ -19,6 +19,7 @@
 #include "Utility.h"
 #include "AlarmConfig.h"
 #include "TimeDate.h"
+#include "LanguageManager.h"
 
 #define AXIS_X_SECTION_WIDTH (RECORDER_PIXEL_PER_MM * 16)
 #define AXIS_Y_SECTION_HEIGHT (RECORDER_PIXEL_PER_MM * 8)
@@ -63,9 +64,10 @@ public:
     unsigned endTime;
     unsigned deltaT;
     QList<TrendGraphInfo> trendGraphInfos;
-    QList<EventInfoSegment> eventList;
+    QList<BlockEntry> eventList;
     int curDrawnGraph;
     int marginLeft;
+    PatientInfo patientInfo;
 };
 
 
@@ -136,39 +138,17 @@ GraphAxisInfo TrendGraphPageGeneratorPrivate::getAxisInfo(const RecordPage *page
         // calcuelate the x labels
         unsigned t = startTime;
         QStringList timeList;
-        QList<int> dayList;
         for (int i = 0; i < AXIS_X_SECTION_NUM && t <= endTime; i++)
         {
             QString timeStr;
             timeDate.getTime(t, timeStr, true);
-            int day = timeDate.getDateDay(t);
             timeList.append(timeStr);
-            dayList.append(day);
             t += deltaT;
-        }
-
-        bool crossTwoDay = false;
-        for (int i = 0; i < dayList.size() - 1; i++)
-        {
-            if (dayList.at(i) != dayList.at(i + 1))
-            {
-                crossTwoDay = true;
-                break;
-            }
         }
 
         for (int i = 0; i < timeList.size(); i++)
         {
-            if (crossTwoDay)
-            {
-                axisInfo.xLabels.append(QString("%1%2")
-                                        .arg(timeList.at(i))
-                                        .arg(dayList.at(i)));
-            }
-            else
-            {
-                axisInfo.xLabels.append(timeList.at(i));
-            }
+            axisInfo.xLabels.append(timeList.at(i));
         }
     }
 
@@ -227,7 +207,7 @@ RecordPage *TrendGraphPageGeneratorPrivate::drawGraphPage()
 }
 
 TrendGraphPageGenerator::TrendGraphPageGenerator(const QList<TrendGraphInfo> &trendInfos,
-        const QList<EventInfoSegment> &eventList, QObject *parent)
+        const QList<BlockEntry> &eventList, const PatientInfo &patientInfo, QObject *parent)
     : RecordPageGenerator(parent), d_ptr(new TrendGraphPageGeneratorPrivate)
 {
     if (trendInfos.size() > 0)
@@ -237,6 +217,7 @@ TrendGraphPageGenerator::TrendGraphPageGenerator(const QList<TrendGraphInfo> &tr
     }
     d_ptr->trendGraphInfos = trendInfos;
     d_ptr->eventList = eventList;
+    d_ptr->patientInfo = patientInfo;
     d_ptr->deltaT = (d_ptr->endTime - d_ptr->startTime) /  (AXIS_X_DATA_SECTION_NUM);
 }
 
@@ -256,7 +237,7 @@ RecordPage *TrendGraphPageGenerator::createPage()
     case TitlePage:
         // BUG: patient info of the event might not be the current session patient
         d_ptr->curPageType = TrendGraphPage;
-        return createTitlePage(QString(trs("GraphicTrendsPrint")), patientManager.getPatientInfo());
+        return createTitlePage(QString(trs("GraphicTrendsPrint")), d_ptr->patientInfo);
 
     case TrendGraphPage:
         if (d_ptr->curDrawnGraph < d_ptr->trendGraphInfos.size())

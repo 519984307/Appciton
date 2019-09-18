@@ -18,7 +18,7 @@
 #include "ParamManager.h"
 #include "ParamInfo.h"
 #include "AlarmConfig.h"
-#include "IConfig.h"
+#include "ConfigManager.h"
 #include "PatientManager.h"
 #include "IBPParam.h"
 #include "TableViewItemDelegate.h"
@@ -89,6 +89,17 @@ void AlarmLimitWindowPrivate::loadoptions()
             info.subParamID = subId;
             info.status = alarmConfig.isLimitAlarmEnable(subId);
             UnitType unit  = paramManager.getSubParamUnit(pid, subId);
+            if (subId == SUB_PARAM_TD)
+            {
+                if (unit == UNIT_TC)
+                {
+                    unit = UNIT_TDC;
+                }
+                else if (unit == UNIT_TF)
+                {
+                    unit = UNIT_TDF;
+                }
+            }
             info.limitConfig = alarmConfig.getLimitAlarmConfig(subId, unit);
             int alarmLev = 0;
             currentConfig.getNumAttr(QString("AlarmSource|%1")
@@ -105,7 +116,7 @@ void AlarmLimitWindowPrivate::loadoptions()
 }
 
 AlarmLimitWindow::AlarmLimitWindow(const QString &param)
-    : Window()
+    : Dialog()
     , d_ptr(new AlarmLimitWindowPrivate(param))
 {
     layoutExec();
@@ -113,7 +124,7 @@ AlarmLimitWindow::AlarmLimitWindow(const QString &param)
 }
 
 AlarmLimitWindow::AlarmLimitWindow()
-    : Window()
+    : Dialog()
     , d_ptr(new AlarmLimitWindowPrivate(""))
 {
     layoutExec();
@@ -145,7 +156,7 @@ void AlarmLimitWindow::setItemFocus()
     }
 
     QModelIndex index = d_ptr->table->model()->index(focusIndex, 0);
-    d_ptr->table->scrollTo(index, QAbstractItemView::PositionAtCenter);
+    d_ptr->table->scrollToAssignedPage(index.row());
 
     d_ptr->table->setCurrentIndex(index);
     d_ptr->table->setFocus(Qt::ActiveWindowFocusReason);
@@ -153,7 +164,7 @@ void AlarmLimitWindow::setItemFocus()
 
 void AlarmLimitWindow::showEvent(QShowEvent *ev)
 {
-    Window::showEvent(ev);
+    Dialog::showEvent(ev);
     QTimer::singleShot(0, this, SLOT(setItemFocus()));
 }
 
@@ -235,35 +246,14 @@ void AlarmLimitWindow::layoutExec()
 
 void AlarmLimitWindow::onbtnClick()
 {
-    bool focusPrevBtn = false;
-    bool focusNextBtn = false;
     Button *btn = qobject_cast<Button *>(sender());
     if (btn == d_ptr->prevBtn)
     {
         d_ptr->table->scrollToPreviousPage();
-        if (!d_ptr->table->hasPreivousPage())
-        {
-            focusNextBtn = true;
-        }
     }
     else if (btn == d_ptr->nextBtn)
     {
         d_ptr->table->scrollToNextPage();
-        if (!d_ptr->table->hasNextPage())
-        {
-            focusPrevBtn = true;
-        }
-    }
-
-    d_ptr->prevBtn->setEnabled(d_ptr->table->hasPreivousPage());
-    d_ptr->nextBtn->setEnabled(d_ptr->table->hasNextPage());
-    if (focusPrevBtn)
-    {
-        d_ptr->prevBtn->setFocus();
-    }
-    if (focusNextBtn)
-    {
-        d_ptr->nextBtn->setFocus();
     }
 }
 
@@ -284,7 +274,7 @@ void AlarmLimitWindow::onSelectRowChanged(int row)
 void AlarmLimitWindow::onDefaultsClick()
 {
     QStringList slist;
-    slist << trs("No") << trs("Ok");
+    slist << trs("No") << trs("Yes");
     MessageBox messageBox(trs("Warn"), trs("SureAllAlarmDefaults"), slist, true);
     if (messageBox.exec() == 1)
     {
@@ -294,7 +284,7 @@ void AlarmLimitWindow::onDefaultsClick()
 
 void AlarmLimitWindow::restoreDefaults()
 {
-    Config defaultConfig(currentConfig.getDefaultFileName(currentConfig.getFileName()));
+    Config defaultConfig(configManager.getOriginalConfig(patientManager.getType()));
 
     QList<ParamID> pids;
     paramManager.getParams(pids);
@@ -364,6 +354,7 @@ void AlarmLimitWindow::restoreDefaults()
             infos.append(info);
         }
     }
+    alarmConfig.clearLimitAlarmInfo();
     d_ptr->infos = infos;
     d_ptr->model->setupAlarmDataInfos(infos);
     d_ptr->model->setEachPageRowCount(TABLE_ROW_NUM);

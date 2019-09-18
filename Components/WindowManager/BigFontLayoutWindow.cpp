@@ -55,7 +55,7 @@ BigFontLayoutWindow::~BigFontLayoutWindow()
 
 void BigFontLayoutWindow::hideEvent(QHideEvent *ev)
 {
-    Window::hideEvent(ev);
+    Dialog::hideEvent(ev);
     BigFontLayoutModel *model = qobject_cast<BigFontLayoutModel*>(d_ptr->tableView->model());
     if (model->isChangeLayoutInfo())
     {
@@ -73,7 +73,7 @@ void BigFontLayoutWindow::showEvent(QShowEvent *ev)
 {
     BigFontLayoutModel *model = qobject_cast<BigFontLayoutModel *>(d_ptr->tableView->model());
     model->loadLayoutInfo();
-    Window::showEvent(ev);
+    Dialog::showEvent(ev);
 }
 
 void BigFontLayoutWindow::onButtonClicked()
@@ -102,7 +102,7 @@ void BigFontLayoutWindow::onButtonClicked()
 }
 
 BigFontLayoutWindow::BigFontLayoutWindow()
-    : Window(),
+    : Dialog(),
       d_ptr(new BigFontLayoutWindowPrivate())
 {
     QVBoxLayout *vLayout = new QVBoxLayout();

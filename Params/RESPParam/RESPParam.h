@@ -83,7 +83,7 @@ public:
     void setRR(short rrValue);
 
     // 电极脱落
-    void setLeadoff(bool flag);
+    void setLeadoff(bool flag, bool isFirstConnect = true);
 
     // 设置OneShot报警。
     void setOneShotAlarm(RESPOneShotType t, bool f);
@@ -143,6 +143,13 @@ public:
 
     // 使能呼吸计算
     void enableRespCalc(bool enable);
+
+    /**
+     * @brief rrInaccurate 设置Resp值低状态
+     * @param isInaccurate
+     */
+    void rrInaccurate(bool isInaccurate);
+    bool isRRInaccurate();
 
 signals:
     void calcLeadChanged(RESPLead lead);

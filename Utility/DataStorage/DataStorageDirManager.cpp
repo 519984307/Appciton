@@ -12,16 +12,16 @@
 #include <QDir>
 #include "DataStorageDirManager.h"
 #include "IConfig.h"
-#include "TimeManager.h"
+#include "TimeManagerInterface.h"
 #include <QMutex>
 #include "WaveformCache.h"
 #include "StorageManager.h"
 #include <QDateTime>
-#include "SystemManager.h"
-#include "SystemAlarm.h"
-#include "Alarm.h"
+#include "SystemManagerInterface.h"
+#include "AlarmSourceManager.h"
+#include "SystemDefine.h"
+#include "AlarmInterface.h"
 
-DataStorageDirManager *DataStorageDirManager::_selfObj = NULL;
 static QString _lastFolder;
 static QString _lastFDFileName;
 
@@ -91,7 +91,6 @@ void DataStorageDirManager::cleanCurData()
  * 构造。
  *************************************************************************************************/
 DataStorageDirManager::DataStorageDirManager()
-    : QObject()
 {
     int folderSequenceNum = 0;
     systemConfig.getNumValue("DataStorage|FolderSequenceNum", folderSequenceNum);
@@ -100,11 +99,17 @@ DataStorageDirManager::DataStorageDirManager()
 
     systemConfig.getStrValue("DataStorage|FDFileName", _fdFileName);
 
+    if (_curFolder.contains("nPMD"))
+    {
+        // delete demo data
+        _deleteDir(_curFolder);
+    }
+
     if (_curFolder.isEmpty() && _fdFileName.isEmpty() && folderSequenceNum == 1)
     {
         // check whether exist rescue data,
         // if exist, update the folder sequence number to a proper value
-        QDir resuceDataStorageDir(DATA_STORE_PATH);
+        QDir resuceDataStorageDir(dataStorageDir());
         resuceDataStorageDir.setNameFilters(QStringList() << "*nPM??????????????");
         resuceDataStorageDir.setSorting(QDir::Name);
         QStringList entrylist = resuceDataStorageDir.entryList();
@@ -129,14 +134,19 @@ DataStorageDirManager::DataStorageDirManager()
     QDir dir(_curFolder);
     QString timeStr;
     bool newRescue  = false;
-    if (_curFolder.isEmpty() || !dir.exists() ||
-            (timeManager.getPowerOnSession() == POWER_ON_SESSION_NEW))
+    TimeManagerInterface *timeManager = TimeManagerInterface::getTimeManager();
+    bool powerOnSta = false;
+    if (timeManager)
+    {
+        powerOnSta = timeManager->getPowerOnSession() == POWER_ON_SESSION_NEW ? true : false;
+    }
+    if (_curFolder.isEmpty() || !dir.exists() || powerOnSta)
     {
         _curFolder.clear();
-        unsigned t = timeManager.getStartTime();
+        unsigned t = timeManager->getStartTime();
         QDateTime dt = QDateTime::fromTime_t(t);
         timeStr = dt.toString("yyyyMMddHHmmss");
-        _curFolder += DATA_STORE_PATH;
+        _curFolder += dataStorageDir();
         _curFolder += QString::number(folderSequenceNum) + "nPM" + timeStr;
         dir.setPath(_curFolder);
         if (dir.mkpath(_curFolder))
@@ -155,10 +165,10 @@ DataStorageDirManager::DataStorageDirManager()
         newRescue = true;
     }
 
-    _createFDFileName(_fdFileName, timeManager.getStartTime(), newRescue);
+    _createFDFileName(_fdFileName, timeManager->getStartTime(), newRescue);
 
     QString curFolderName = QDir(_curFolder).dirName();
-    dir.setPath(QString::fromAscii(DATA_STORE_PATH));
+    dir.setPath(dataStorageDir());
     if (dir.exists())
     {
         struct FolderName folderName;
@@ -171,9 +181,11 @@ DataStorageDirManager::DataStorageDirManager()
 
                 // time string is same as the old folder's time string
                 // remove the older one
-                if (!timeStr.isEmpty() && folderName.getDatetimeStr() == timeStr && folderName.name != curFolderName)
+                // 移除同名文件夹和移除演示数据文件夹
+                if ((!timeStr.isEmpty() && folderName.getDatetimeStr() == timeStr && folderName.name != curFolderName)
+                        || folderName.name.contains("nPMD"))
                 {
-                    _deleteDir(DATA_STORE_PATH + folderName.name);
+                    _deleteDir(dataStorageDir() + folderName.name);
                     continue;
                 }
 
@@ -196,7 +208,7 @@ DataStorageDirManager::DataStorageDirManager()
     }
     else
     {
-        dir.mkpath(QString::fromAscii(DATA_STORE_PATH));
+        dir.mkpath(dataStorageDir());
     }
 
     _curDataSize  = dirSize(_curFolder);
@@ -205,6 +217,23 @@ DataStorageDirManager::DataStorageDirManager()
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
+DataStorageDirManager &DataStorageDirManager::getInstance()
+{
+    static DataStorageDirManager *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new DataStorageDirManager;
+
+        // register the new interface and delete the old one
+        DataStorageDirManagerInterface *old = registerDataStorageDirManager(instance);
+        if (old)
+        {
+            delete old;
+        }
+    }
+    return *instance;
+}
+
 DataStorageDirManager::~DataStorageDirManager()
 {
     _folderNameList.clear();
@@ -220,7 +249,7 @@ void DataStorageDirManager::_deleteOldData(void)
         return;
     }
 
-    QString path = DATA_STORE_PATH + _folderNameList.takeFirst().name;
+    QString path = dataStorageDir() + _folderNameList.takeFirst().name;
     quint32 totalSize = 0;
 
     quint32 size = _deleteDir(path);
@@ -269,9 +298,9 @@ void DataStorageDirManager::_createFDFileName(QString &fileName, unsigned time, 
         }
         else
         {
-            fileName = fileName.left(fileName.size() - 6);// remove "?.json"
+            fileName = fileName.left(fileName.size() - 6);  // remove "?.json"
             char a = seqNum + 64;
-            tmpStr = QString("%1").arg(a);// begin with 'A'
+            tmpStr = QString("%1").arg(a);  // begin with 'A'
         }
     }
 
@@ -365,17 +394,22 @@ void DataStorageDirManager::createDir(bool createNew)
 
     QDir dir(_curFolder);
     QString timeStr;
+    TimeManagerInterface *timeManager = TimeManagerInterface::getTimeManager();
     if (_curFolder.isEmpty() || !dir.exists() || _createNew)
     {
         _folderNameList.clear();
         _curFolder.clear();
-        QDateTime dt = QDateTime::fromTime_t(timeManager.getCurTime());
+        QDateTime dt = QDateTime::fromTime_t(timeManager->getCurTime());
         timeStr = dt.toString("yyyyMMddHHmmss");
-        _curFolder += DATA_STORE_PATH;
+        _curFolder += dataStorageDir();
         QString demoFlag = "";
-        if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+        SystemManagerInterface *systemManager = SystemManagerInterface::getSystemManager();
+        if (systemManager)
         {
-            demoFlag = "D";
+            if (systemManager->getCurWorkMode() == WORK_MODE_DEMO)
+            {
+                demoFlag = "D";
+            }
         }
         _curFolder += QString::number(folderSequenceNum) + "nPM" + demoFlag + timeStr;
         dir.setPath(_curFolder);
@@ -394,7 +428,7 @@ void DataStorageDirManager::createDir(bool createNew)
     }
 
     QString curFolderName = QDir(_curFolder).dirName();
-    dir.setPath(QString::fromAscii(DATA_STORE_PATH));
+    dir.setPath(dataStorageDir());
     // 删除日期同名的文件
     if (dir.exists())
     {
@@ -410,7 +444,7 @@ void DataStorageDirManager::createDir(bool createNew)
                 // remove the older one
                 if (!timeStr.isEmpty() && folderName.getDatetimeStr() == timeStr && folderName.name != curFolderName)
                 {
-                    _deleteDir(DATA_STORE_PATH + folderName.name);
+                    _deleteDir(dataStorageDir() + folderName.name);
                     continue;
                 }
 
@@ -433,14 +467,13 @@ void DataStorageDirManager::createDir(bool createNew)
     }
     else
     {
-        dir.mkpath(QString::fromAscii(DATA_STORE_PATH));
+        dir.mkpath(dataStorageDir());
     }
 
     _curDataSize  = dirSize(_curFolder);
 
     if (_storageList.count() > 0)
     {
-
         for (int i = 0; i < _storageList.count(); i++)
         {
             StorageManager *item = NULL;
@@ -453,11 +486,15 @@ void DataStorageDirManager::createDir(bool createNew)
     {
         // 新病人，删除上次删掉备份文件，设置时间，恢复主配置文件
         cleanUpLastIncidentDir();
-        timeManager.setElapsedTime();
+        timeManager->setElapsedTime();
         Config systemDefCfg(systemConfig.getCurConfigName());
         systemConfig.setNodeValue("PrimaryCfg", systemDefCfg);
         emit newPatient();
-        alertor.removeAllPhyAlarm();
+        AlarmInterface *alertor = AlarmInterface::getAlarm();
+        if (alertor)
+        {
+            alertor->removeAllLimitAlarm();
+        }
     }
 }
 
@@ -487,12 +524,18 @@ int DataStorageDirManager::getDirNum() const
  *************************************************************************************************/
 bool DataStorageDirManager::isCurRescueFolderFull()
 {
+    AlarmOneShotIFace *systemAlarm = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SYSTEM);
+    if (systemAlarm == NULL)
+    {
+        return false;
+    }
+
     if (_curDataSize > (unsigned) SIGNAL_RESCUE_MAX_DATA_SIZE)
     {
-        systemAlarm.setOneShotAlarm(STORAGE_SPACE_FULL, true);
+        systemAlarm->setOneShotAlarm(STORAGE_SPACE_FULL, true);
         return true;
     }
-    systemAlarm.setOneShotAlarm(STORAGE_SPACE_FULL, false);
+    systemAlarm->setOneShotAlarm(STORAGE_SPACE_FULL, false);
     return false;
 }
 
@@ -529,7 +572,7 @@ void DataStorageDirManager::deleteAllData()
 
     while (_folderNameList.count() > 1)
     {
-        _deleteDir(DATA_STORE_PATH + _folderNameList.takeAt(0).name);
+        _deleteDir(dataStorageDir()+ _folderNameList.takeAt(0).name);
     }
 
     _previousDataSize = 0;
@@ -562,14 +605,14 @@ void DataStorageDirManager::deleteData(QString &path)
         }
     }
 
-    if (i >= count - 1) // not found or the last one
+    if (i >= count - 1)  // not found or the last one
     {
         return;
     }
 
     _folderNameList.removeAt(i);
 
-    quint32 size = _deleteDir(DATA_STORE_PATH + path);
+    quint32 size = _deleteDir(dataStorageDir() + path);
     if (_previousDataSize > size)
     {
         _previousDataSize -= size;
@@ -594,12 +637,12 @@ void DataStorageDirManager::deleteData(int index)
         return;
     }
 
-    if (index >= count - 1) // not found or the last one
+    if (index >= count - 1)  // not found or the last one
     {
         return;
     }
 
-    quint32 size = _deleteDir(DATA_STORE_PATH + _folderNameList.takeAt(index).name);
+    quint32 size = _deleteDir(dataStorageDir() + _folderNameList.takeAt(index).name);
     if (_previousDataSize > size)
     {
         _previousDataSize -= size;
@@ -635,9 +678,9 @@ bool DataStorageDirManager::cleanUpLastIncidentDir()
  **************************************************************************************************/
 bool DataStorageDirManager::cleanUpIncidentDir(const QString &dir)
 {
-
     QStringList cleanupFilesList;
-    if (timeManager.getPowerOnSession() == POWER_ON_SESSION_CONTINUE)
+    TimeManagerInterface *timeManager = TimeManagerInterface::getTimeManager();
+    if (timeManager->getPowerOnSession() == POWER_ON_SESSION_CONTINUE)
     {
         // If reboot and continue a session, the host will create a new full disclosure file,
         // need to clean up the old one

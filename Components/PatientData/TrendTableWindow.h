@@ -9,13 +9,13 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 #include "IBPDefine.h"
 #include "TrendDataDefine.h"
 #include "TimeDefine.h"
 
 class TrendTableWindowPrivate;
-class TrendTableWindow : public Window
+class TrendTableWindow : public Dialog
 {
     Q_OBJECT
 public:

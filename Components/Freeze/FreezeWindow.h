@@ -9,10 +9,10 @@
  **/
 #pragma once
 
-#include "Window.h"
+#include "Dialog.h"
 
 class FreezeWindowPrivate;
-class FreezeWindow : public Window
+class FreezeWindow : public Dialog
 {
     Q_OBJECT
 public:

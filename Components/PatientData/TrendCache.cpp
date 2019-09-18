@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/3/27
+ **/
+
+
 #include "TrendCache.h"
 #include "ParamManager.h"
 #include "ECGParam.h"
@@ -11,7 +22,6 @@
 #include "Alarm.h"
 #include <QMutexLocker>
 
-TrendCache *TrendCache::_selfObj = NULL;
 
 /**************************************************************************************************
  * 函数说明：收集趋势数据。
@@ -23,11 +33,16 @@ TrendCache *TrendCache::_selfObj = NULL;
 void TrendCache::collectTrendData(unsigned t, bool overwrite)
 {
     QMutexLocker locker(&_mutex);
-    if(_trendCacheMap.contains(t) && !overwrite)
+    if (_trendCacheMap.contains(t) && !overwrite)
     {
         return;
     }
 
+    if (_stopCollectTimes > 0)
+    {
+        _stopCollectTimes--;
+        return;
+    }
     TrendCacheData data;
     QList<ParamID> paramIDList;
     paramManager.getParams(paramIDList);
@@ -35,10 +50,10 @@ void TrendCache::collectTrendData(unsigned t, bool overwrite)
 
     data.co2baro = co2Param.getBaro();
     NIBPMeasureResult nibpResult = nibpParam.getMeasureResult();
-    switch(nibpResult)
+    switch (nibpResult)
     {
     case NIBP_MEASURE_SUCCESS:
-        _nibpMeasureSuccessTime = t; //fall through
+        _nibpMeasureSuccessTime = t;    // fall through
     case NIBP_MEASURE_FAIL:
         _nibpMeasureTime = t;
         nibpParam.setMeasureResult(NIBP_MEASURE_RESULT_NONE);
@@ -52,12 +67,17 @@ void TrendCache::collectTrendData(unsigned t, bool overwrite)
     for (int i = 0; i < SUB_PARAM_NR; ++i)
     {
         paramID = paramInfo.getParamID((SubParamID)i);
+
+        if (static_cast<SubParamID>(i) == SUB_PARAM_NIBP_PR)  // 收集nibp PR趋势数据
+        {
+            paramID = PARAM_NIBP;
+        }
         if (-1 == paramIDList.indexOf(paramID))
         {
             continue;
         }
 
-        if( !paramManager.isSubParamAvaliable(paramID, (SubParamID)i))
+        if (!paramManager.isSubParamAvaliable(paramID, (SubParamID)i))
         {
             continue;
         }
@@ -71,7 +91,6 @@ void TrendCache::collectTrendData(unsigned t, bool overwrite)
     }
 
     _trendCacheMap.insert(t, data);
-
 }
 
 /**************************************************************************************************
@@ -81,7 +100,7 @@ void TrendCache::collectTrendData(unsigned t, bool overwrite)
  *************************************************************************************************/
 void TrendCache::collectTrendAlarmStatus(unsigned t)
 {
-    if(_trendAlarmStatusCacheMap.contains(t))
+    if (_trendAlarmStatusCacheMap.contains(t))
     {
         return;
     }
@@ -99,13 +118,13 @@ void TrendCache::collectTrendAlarmStatus(unsigned t)
             continue;
         }
 
-        if( !paramManager.isSubParamAvaliable(paramID, (SubParamID)i))
+        if (!paramManager.isSubParamAvaliable(paramID, (SubParamID)i))
         {
             continue;
         }
 
         alarmStatus.alarms[(SubParamID)i] = alertor.getAlarmSourceStatus(paramInfo.getParamName(paramID),
-            (SubParamID)i);
+                                            (SubParamID)i);
     }
 
     if (MAX_TREND_CACHE_NUM == _trendAlarmStatusCacheMap.count())
@@ -115,15 +134,15 @@ void TrendCache::collectTrendAlarmStatus(unsigned t)
 
     _trendAlarmStatusCacheMap.insert(t, alarmStatus);
 
-    //handle the trend recorders
+    // handle the trend recorders
     QList<TrendRecorder>::Iterator iter = _recorders.begin();
-    for(; iter != _recorders.end(); iter++)
+    for (; iter != _recorders.end(); iter++)
     {
-        iter->completeCallback(t, _trendCacheMap.find(t).value(), alarmStatus,iter->obj);
-        if(iter->toTimestamp <= (int)t)
+        iter->completeCallback(t, _trendCacheMap.find(t).value(), alarmStatus, iter->obj);
+        if (iter->toTimestamp <= static_cast<int>(t))
         {
             iter = _recorders.erase(iter);
-            if(iter == _recorders.end())
+            if (iter == _recorders.end())
             {
                 break;
             }
@@ -137,7 +156,7 @@ QList<TrendCacheData> TrendCache::getTrendData(unsigned start, unsigned stop)
     for (unsigned t = start; t <= stop; t ++)
     {
         TrendCacheData trendData;
-        if (getTendData(t, trendData))
+        if (getTrendData(t, trendData))
         {
             trendDataList.append(trendData);
         }
@@ -164,7 +183,7 @@ QList<TrendAlarmStatus> TrendCache::getTrendAlarmStatus(unsigned start, unsigned
  * 返回:
  * true，读取成功；false，失败
  *************************************************************************************************/
-bool TrendCache::getTendData(unsigned t, TrendCacheData &data)
+bool TrendCache::getTrendData(unsigned t, TrendCacheData &data)
 {
     if (_trendCacheMap.isEmpty())
     {
@@ -225,9 +244,9 @@ void TrendCache::registerTrendRecorder(const TrendRecorder &recorder)
 bool TrendCache::unregisterTrendRecorder(void *recordObj)
 {
     QList<TrendRecorder>::Iterator iter = _recorders.begin();
-    for(; iter != _recorders.end(); iter++)
+    for (; iter != _recorders.end(); iter++)
     {
-        if(iter->obj == recordObj)
+        if (iter->obj == recordObj)
         {
             _recorders.erase(iter);
             return true;
@@ -235,6 +254,16 @@ bool TrendCache::unregisterTrendRecorder(void *recordObj)
     }
 
     return false;
+}
+
+void TrendCache::clearTrendCache()
+{
+    _trendCacheMap.clear();
+}
+
+void TrendCache::stopDataCollect(quint32 times)
+{
+    _stopCollectTimes = times;
 }
 
 /**************************************************************************************************
@@ -247,12 +276,29 @@ TrendCache::TrendCache()
     _nibpMeasureSuccessTime = 0;
     systemConfig.getNumValue("PrimaryCfg|NIBP|MeasureTime", _nibpMeasureSuccessTime);
     _nibpMeasureTime = _nibpMeasureSuccessTime;
+    _stopCollectTimes = 0;
 }
 
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
+
 TrendCache::~TrendCache()
 {
     _trendCacheMap.clear();
+}
+
+TrendCache &TrendCache::getInstance()
+{
+    static TrendCache *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new TrendCache();
+        TrendCacheInterface *old = registerTrendCache(instance);
+        if (old)
+        {
+            delete old;
+        }
+    }
+    return *instance;
 }

@@ -18,7 +18,7 @@
 #include <QLabel>
 #include <QMap>
 #include "IWidget.h"
-#include "IConfig.h"
+#include "ConfigManager.h"
 #include <QPainter>
 #include "PopupList.h"
 #include "ParamInfo.h"

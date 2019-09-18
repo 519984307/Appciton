@@ -11,33 +11,27 @@
 
 
 #pragma once
-#include "AlarmDefine.h"
 #include <QList>
+#include "AlarmIndicatorInterface.h"
 
-class AlarmPhyInfoBarWidget;
-class AlarmTechInfoBarWidget;
+class AlarmInfoBarWidget;
 class AlarmStatusWidget;
-class AlarmIndicator
+class PatientInfoWidgetInterface;
+class AlarmIndicator : public AlarmIndicatorInterface
 {
 public:
-    static AlarmIndicator &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new AlarmIndicator();
-        }
-        return *_selfObj;
-    }
-    static AlarmIndicator *_selfObj;
+    static AlarmIndicator &getInstance(void);
 
     // 注册报警界面对象。
-    void setAlarmPhyWidgets(AlarmPhyInfoBarWidget *alarmWidget, AlarmStatusWidget *muteWidget);
-    void setAlarmTechWidgets(AlarmTechInfoBarWidget *alarmWidget);
+    void setAlarmPhyWidgets(AlarmInfoBarWidget *alarmWidget, AlarmStatusWidget *muteWidget,
+                            PatientInfoWidgetInterface *patInfoWidget);
+    void setAlarmTechWidgets(AlarmInfoBarWidget *alarmWidget);
 
     // 增加/删除报警消息。
     bool addAlarmInfo(unsigned alarmTime, AlarmType alarmType,
                       AlarmPriority alarmPriority, const char *alarmMessage,
-                      AlarmParamIFace *alarmSource, int alarmID, bool isRemoveAfterLatch = false);
+                      AlarmParamIFace *alarmSource, int alarmID, bool isRemoveAfterLatch = false,
+                      bool isRemoveLightAfterConfirm = true);
     void delAlarmInfo(AlarmType alarmType, const char *alarmMessage);
 
     // 报警栓锁
@@ -46,9 +40,6 @@ public:
 
     // 删除栓锁的生理报警
     void delLatchPhyAlarm();
-
-    // 报警暂停状态处理
-    bool phyAlarmPauseStatusHandle();
 
     // 是否有处于非暂停的生理报警
     bool hasNonPausePhyAlarm();
@@ -66,7 +57,7 @@ public:
     bool checkAlarmIsExist(AlarmType alarmType, const char *alarmMessage);
 
     // 更新报警级别
-    void updataAlarmPriority(AlarmType alarmType, const char *alArmMessage,
+    bool updataAlarmPriority(AlarmType alarmType, const char *alArmMessage,
                          AlarmPriority priority);
 
     // 更新报警信息
@@ -88,8 +79,16 @@ public:
      */
     int getAlarmCount(AlarmPriority priority);
 
-    void getAlarmInfo(int index, AlarmInfoNode &node);
-    bool getAlarmInfo(AlarmType type, const char *alArmMessage, AlarmInfoNode &node);
+    /**
+     * @brief getAlarmCount 获取当前报警个数
+     * @param type 筛选出报警类型一致的报警
+     * @param priority 筛选出报警等级一致的报警
+     * @return
+     */
+    int getAlarmCount(AlarmType type, AlarmPriority priority);
+
+    void getAlarmInfo(int index, AlarmInfoNode &node);  /* NOLINT */
+    bool getAlarmInfo(AlarmType type, const char *alArmMessage, AlarmInfoNode &node); /* NOLINT */
 
     // 构造与析构。
     virtual ~AlarmIndicator();
@@ -99,6 +98,12 @@ public:
      * @param seconds the left pause time
      */
     void updateAlarmPauseTime(int seconds);
+
+    /**
+     * @brief phyAlarmPauseStatusHandle 报警暂停状态处理
+     * @return
+     */
+    bool phyAlarmPauseStatusHandle();
 
     /**
      * @brief phyAlarmResetStatusHandle 处理复位后的生理报警状态
@@ -112,23 +117,42 @@ public:
     bool techAlarmResetStatusHandle();
 
     /**
+     * @brief removeAllAlarmResetStatus 移除全部报警复位状态
+     * @return
+     */
+    bool removeAllAlarmResetStatus();
+
+    /**
      * @brief updateAlarmStateWidget 刷新报警状态图标
      */
-    void updateAlarmStateWidget();
+    void updateAlarmAudioState();
+
+    /**
+     * @brief isAlarmAudioState
+     * @return
+     */
+    bool isAlarmAudioState();
+
+    /**
+     * @brief setAlarmAudioState 设置报警音暂停状态
+     * @param flag
+     */
+    void setAlarmAudioState(bool flag);
 
 private:
     AlarmIndicator();
 
-private: // 报警信息显示。
+private:    // 报警信息显示。
     void _displayPhyClear(void);     // 清除生理报警界面。
     void _displayTechClear(void);    // 清除技术报警界面。
-    void _displayPhySet(AlarmInfoNode &node);  // 设置生理报警提示信息。
-    void _displayTechSet(AlarmInfoNode &node); // 设置技术报警提示信息。
-    bool _canPlayAudio(AlarmStatus status, bool isTechAlarm); // check whether can play alarm sound
+    void _displayPhySet(AlarmInfoNode &node);  // 设置生理报警提示信息。 /* NOLINT */
+    void _displayTechSet(AlarmInfoNode &node);  // 设置技术报警提示信息。   /* NOLINT */
+    bool _canPlayAudio(AlarmStatus status, bool isTechAlarm);   // check whether can play alarm sound
 
-    AlarmPhyInfoBarWidget *_alarmPhyInfoWidget;
-    AlarmTechInfoBarWidget *_alarmTechInfoWidget;
+    AlarmInfoBarWidget *_alarmPhyInfoWidget;
+    AlarmInfoBarWidget *_alarmTechInfoWidget;
     AlarmStatusWidget *_alarmStatusWidget;
+    PatientInfoWidgetInterface *_patInfoWidget;
 
 private:
     // 最大报警信息数量。
@@ -139,16 +163,14 @@ private:
     int _alarmPhyDisplayIndex;
     int _alarmTechDisplayIndex;
 
-    void _displayInfoNode(AlarmInfoNode &alarmNode, int &indexint,
+    void _displayInfoNode(AlarmInfoNode &alarmNode, int &indexint,  /* NOLINT */
                           int newAlarmIndex, int oldAlarmIndex,
                           int firstIndex, int lastIndex);
 
 private:
     AlarmStatus _audioStatus;
     int _audioPauseTime;
-    static const int _checkPatientAlarmPauseTime = 12;
 
     bool _isForbidLight;
 };
-#define alarmIndicator (AlarmIndicator::construction())
-#define deleteAlarmIndicator() (delete AlarmIndicator::_selfObj)
+#define alarmIndicator (AlarmIndicator::getInstance())

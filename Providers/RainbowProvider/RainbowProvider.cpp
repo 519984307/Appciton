@@ -13,6 +13,8 @@
 #include "Debug.h"
 #include "SPO2Alarm.h"
 #include <QTimer>
+#include "AlarmSourceManager.h"
+#include "LanguageManager.h"
 
 #define SOM  (0xA1)
 #define EOM  (0xAF)
@@ -174,6 +176,8 @@ public:
         , enableSmartTone(false)
         , curInitializeStep(RB_INIT_BAUDRATE)
         , isReseting(false)
+        , prValue(InvData())
+        , spo2Value(InvData())
     {
     }
 
@@ -271,6 +275,12 @@ public:
      */
     void requestParamStatus();
 
+    /**
+     * @brief addAlarm  and the function of adding alarms
+     * @param flag
+     */
+    void addAlarms(unsigned int flag);
+
     static const unsigned char minPacketLen = MIN_PACKET_LEN;
 
     RainbowProvider *q_ptr;
@@ -288,6 +298,10 @@ public:
     RBInitializeStep curInitializeStep;
 
     bool isReseting;
+
+    short prValue;
+
+    short spo2Value;
 };
 
 RainbowProvider::RainbowProvider()
@@ -295,6 +309,11 @@ RainbowProvider::RainbowProvider()
     , SPO2ProviderIFace()
     , d_ptr(new RainbowProviderPrivate(this))
 {
+    d_ptr->averTime = spo2Param.getAverageTime();
+    d_ptr->sensMode = static_cast<SensitivityMode>(spo2Param.getSensitivity());
+    d_ptr->fastSat = spo2Param.getFastSat();
+    d_ptr->enableSmartTone = static_cast<bool>(spo2Param.getSmartPulseTone());
+
     disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_SPO2;
     UartAttrDesc attr(DEFALUT_BAUD_RATE, 8, 'N', 1);
     initPort(attr);
@@ -552,14 +571,22 @@ void RainbowProvider::setSmartTone(bool enable)
 
 void RainbowProvider::disconnected()
 {
-    spo2OneShotAlarm.clear();
-    spo2OneShotAlarm.setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SPO2);
+    if (alarmSource)
+    {
+        alarmSource->clear();
+        alarmSource->setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+    }
     spo2Param.setConnected(false);
 }
 
 void RainbowProvider::reconnected()
 {
-    spo2OneShotAlarm.setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SPO2);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+    }
     spo2Param.setConnected(true);
 }
 
@@ -654,7 +681,8 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     {
         return;
     }
-    if (len < 6)
+    // the minimum size of the data field is 4
+    if (len < 4)
     {
         return;
     }
@@ -670,11 +698,11 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         {
             temp = (data[0] << 8) + data[1];
             temp = ((temp % 10) < 5) ? (temp / 10) : (temp / 10 + 1);
-            spo2Param.setSPO2(temp);
+            spo2Value = temp;
         }
         else
         {
-            spo2Param.setSPO2(InvData());
+            spo2Value = InvData();
         }
     }
     break;
@@ -685,11 +713,11 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         if (valid == true)
         {
             temp = (data[0] << 8) + data[1];
-            spo2Param.setPR(temp);
+            prValue = temp;
         }
         else
         {
-            spo2Param.setPR(InvData());
+            prValue = InvData();
         }
     }
     break;
@@ -713,13 +741,17 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     {
         unsigned int temp = (data[0] << 24) + (data[1] << 16) + (data[2] << 8) + data[3];
 
-        bool isCableOff = !!(temp & RB_NOSENSOR_CONNECTED);  // no sensor connected
+        bool isCableOff = !!(temp & RB_NO_CABLE_CONNECTED);  // no cable connected
+
+        isCableOff |= !!(temp & RB_NOSENSOR_CONNECTED);  // no sensor connected
 
         isCableOff |= !!(temp & RB_SENSOR_OFF_PATIENT);  // sensor off patient
 
         bool  isSearching = !!(temp & RB_PULSE_SEARCH);  // pulse search
 
         bool isLowPerfusionIndex = !!(temp & RB_LOW_PERFUSION_INDEX);  // low perfusion index
+
+        addAlarms(temp);
 
         if (isCableOff == true)
         {
@@ -742,11 +774,10 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, isLowPerfusionIndex);
             }
         }
-        if (isLowPerfusionIndex)
-        {
-            spo2Param.setSPO2(UnknownData());
-            spo2Param.setPR(UnknownData());
-        }
+        // 最后更新spo2值和pr值。避免趋势界面的值跳动。
+        spo2Param.setPerfusionStatus(isLowPerfusionIndex);
+        spo2Param.setSPO2(spo2Value);
+        spo2Param.setPR(prValue);
     }
     break;
     case RB_PARAM_OF_VERSION_INFO:
@@ -775,6 +806,11 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
                 isReseting = true;
                 curInitializeStep = RB_INIT_BAUDRATE;
             }
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_BOARD_FAILURE, true);
+        }
+        else
+        {
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_BOARD_FAILURE, false);
         }
     }
     break;
@@ -784,7 +820,8 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         unsigned short sensorFamilyMember = (data[2] << 8) | data[3];
         if (sensorFamilyMember == 8 || sensorType == 0)
         {
-            qDebug() << "No Sensor Connected!";
+            // remove the debug hint
+//            qDebug() << "No Sensor Connected!";
 
             // 传感器探头突然脱落时，会一直进来这里,添加报警
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, true);
@@ -1035,4 +1072,205 @@ void RainbowProviderPrivate::requestParamStatus()
 {
     unsigned char data[2] = {RB_CMD_REQ_PARAM_INFO, RB_PARAM_OF_VERSION_INFO};
     sendCmd(data, sizeof(data));
+}
+
+void RainbowProviderPrivate::addAlarms(unsigned int flag)
+{
+    if (flag & RB_DEFECTIVE_CABLE)
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_DEFECTIVE_CABLE, true);
+    }
+    else
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_DEFECTIVE_CABLE, false);
+    }
+
+    if (flag & RB_CABLE_EXPIRED)
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_EXPIRED, true);
+    }
+    else
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_EXPIRED, false);
+    }
+
+    if (flag & RB_INCOMPATIBLE_CABLE)
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_INCOMPATIBLE_CABLE, true);
+    }
+    else
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_INCOMPATIBLE_CABLE, false);
+    }
+
+    if (flag & RB_UNRECONGNIZED_CABLE)
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_UNRECONGNIZED_CABLE, true);
+    }
+    else
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_UNRECONGNIZED_CABLE, false);
+    }
+
+    if (flag & RB_CABLE_NEAR_EXPIRATION)
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_NEAR_EXPIRATION, true);
+    }
+    else
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_NEAR_EXPIRATION, false);
+    }
+
+    if (flag & RB_SENSOR_EXPIRED)
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SENSOR_EXPIRED, true);
+    }
+    else
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SENSOR_EXPIRED, false);
+    }
+
+    if (flag & RB_INCOMPATIBLE_SENSOR)
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_INCOMPATIBLE_SENSOR, true);
+    }
+    else
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_INCOMPATIBLE_SENSOR, false);
+    }
+
+    if (flag & RB_UNRECONGNIZED_SENSOR)
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_UNRECONGNIZED_SENSOR, true);
+    }
+    else
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_UNRECONGNIZED_SENSOR, false);
+    }
+
+    if (flag & RB_DEFECTIVE_SENSOR)
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_DEFECTIVE_SENSOR, true);
+    }
+    else
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_DEFECTIVE_SENSOR, false);
+    }
+
+    if (flag & RB_CHECK_CABLE_AND_SENSOR_FAULT)
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_CABLE_AND_SENSOR_FAULT, true);
+    }
+    else
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_CABLE_AND_SENSOR_FAULT, false);
+    }
+
+    if (flag & RB_SENSOR_NEAR_EXPIRATION)
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SENSOR_NEAR_EXPIRATION, true);
+    }
+    else
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SENSOR_NEAR_EXPIRATION, false);
+    }
+
+    if (flag & RB_NO_ADHESIVE_SENSOR)
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_NO_ADHESIVE_SENSOR, true);
+    }
+    else
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_NO_ADHESIVE_SENSOR, false);
+    }
+
+    if (flag & RB_ADHESIVE_SENSOR_EXPIRATION)
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_ADHESIVE_SENSOR_EXPIRATION, true);
+    }
+    else
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_ADHESIVE_SENSOR_EXPIRATION, false);
+    }
+
+    if (flag & RB_INCOMPATIBLE_ADHESIVE_SENSOR)
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_INCOMPATIBLE_ADHESIVE_SENSOR, true);
+    }
+    else
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_INCOMPATIBLE_ADHESIVE_SENSOR, false);
+    }
+
+    if (flag & RB_UNRECONGNIZED_ADHESIVE_SENSOR)
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_UNRECONGNIZED_ADHESIVE_SENSOR, true);
+    }
+    else
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_UNRECONGNIZED_ADHESIVE_SENSOR, false);
+    }
+
+    if (flag & RB_DEFECTIVE_ADHESIVE_SENSOR)
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_DEFECTIVE_ADHESIVE_SENSOR, true);
+    }
+    else
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_DEFECTIVE_ADHESIVE_SENSOR, false);
+    }
+
+    if (flag & RB_SENSOR_INITING)
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SENSOR_INITING, true);
+    }
+    else
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SENSOR_INITING, false);
+    }
+
+    if (flag & RB_INTERFERENCE_DETECTED)
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_INTERFERENCE_DETECTED, true);
+    }
+    else
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_INTERFERENCE_DETECTED, false);
+    }
+
+    if (flag & RB_DEMO_MODE)
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_DEMO_MODE, true);
+    }
+    else
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_DEMO_MODE, false);
+    }
+
+    if (flag & RB_ADHESIVE_SENSOR_NEAR_EXPIRATION)
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_ADHESIVE_SENSOR_NEAR_EXPIRATION, true);
+    }
+    else
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_ADHESIVE_SENSOR_NEAR_EXPIRATION, false);
+    }
+
+    if (flag & RB_CHECK_SENSOR_CONNECTION)
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR_CONNECTION, true);
+    }
+    else
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR_CONNECTION, false);
+    }
+
+    if (flag & RB_SPO2_ONLY_MODE)
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SPO2_ONLY_MODE, true);
+    }
+    else
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SPO2_ONLY_MODE, false);
+    }
 }

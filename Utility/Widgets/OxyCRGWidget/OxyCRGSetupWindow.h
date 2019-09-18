@@ -9,10 +9,10 @@
  **/
 #pragma  once
 
-#include "Window.h"
+#include "Dialog.h"
 
 class OxyCRGSetupWindowPrivate;
-class OxyCRGSetupWindow : public Window
+class OxyCRGSetupWindow : public Dialog
 {
     Q_OBJECT
 public:

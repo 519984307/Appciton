@@ -18,10 +18,11 @@
 #include "IBPParam.h"
 #include "IMessageBox.h"
 #include "Button.h"
-#include "NurseCallSettingWindow.h"
+#include "NurseCallSetWindow.h"
 #include "ECGParam.h"
 #include "CO2Param.h"
 #include "RESPParam.h"
+#include "O2ParamInterface.h"
 
 class OthersMaintainMenuContentPrivate
 {
@@ -35,10 +36,12 @@ public:
         ITEM_CBO_CONFIG_SET,
         ITEM_CBO_CO2_WAVE_MODE,
         ITEM_CBO_RESP_WAVE_MODE,
+        ITEM_CBO_APNEA_AWAKE,
+        ITEM_BTN_NURSE_CALL,
     };
 
     OthersMaintainMenuContentPrivate()
-        : NurseCallingBtn(NULL)
+        : nurseCallBtn(NULL)
     {
         combos.clear();
     }
@@ -47,7 +50,7 @@ public:
 
     QMap<MenuItem, ComboBox *> combos;
 
-    Button *NurseCallingBtn;
+    Button *nurseCallBtn;
 };
 
 void OthersMaintainMenuContentPrivate::loadOptions()
@@ -116,6 +119,12 @@ void OthersMaintainMenuContentPrivate::loadOptions()
 
     mode = respParam.getSweepMode();
     combos[ITEM_CBO_RESP_WAVE_MODE]->setCurrentIndex(mode);
+
+#ifdef ENABLE_O2_APNEASTIMULATION
+    bool sta = false;
+    systemConfig.getNumValue("PrimaryCfg|O2|ApneaAwake", sta);
+    combos[ITEM_CBO_APNEA_AWAKE]->setCurrentIndex(sta);
+#endif
 }
 
 OthersMaintainMenuContent::OthersMaintainMenuContent()
@@ -150,7 +159,7 @@ void OthersMaintainMenuContent::layoutExec()
                        << trs("Fat")
                        << trs("Med")
                        << trs("Thin")
-                      );
+                       );
     itemID = static_cast<int>(OthersMaintainMenuContentPrivate::ITEM_CBO_WAVE_LINE);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -165,7 +174,7 @@ void OthersMaintainMenuContent::layoutExec()
     comboBox->addItems(QStringList()
                        << "AAMI"
                        << "IEC"
-                      );
+                       );
     itemID = static_cast<int>(OthersMaintainMenuContentPrivate::ITEM_CBO_ECG_STANDARD);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -181,7 +190,7 @@ void OthersMaintainMenuContent::layoutExec()
     comboBox->addItems(QStringList()
                        << trs("50 Hz")
                        << trs("60 Hz")
-                      );
+                       );
     itemID = static_cast<int>(OthersMaintainMenuContentPrivate::ITEM_CBO_FREQUENCY_NOTCH);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -196,7 +205,7 @@ void OthersMaintainMenuContent::layoutExec()
     comboBox->addItems(QStringList()
                        << trs("Unprotected")
                        << trs("Protected")
-                      );
+                       );
     itemID = static_cast<int>(OthersMaintainMenuContentPrivate::ITEM_CBO_PARAM_SWITCH_PREM);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -211,7 +220,7 @@ void OthersMaintainMenuContent::layoutExec()
     comboBox->addItems(QStringList()
                        << trs("Close")
                        << trs("ParaSwitch")
-                      );
+                       );
     itemID = static_cast<int>(OthersMaintainMenuContentPrivate::ITEM_CBO_CONFIG_SET);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -227,7 +236,7 @@ void OthersMaintainMenuContent::layoutExec()
     comboBox->addItems(QStringList()
                        << trs("CO2Curve")
                        << trs("CO2Filled")
-                      );
+                       );
     itemID = static_cast<int>(OthersMaintainMenuContentPrivate::ITEM_CBO_CO2_WAVE_MODE);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -242,7 +251,7 @@ void OthersMaintainMenuContent::layoutExec()
     comboBox->addItems(QStringList()
                        << trs("RESPCurve")
                        << trs("RESPFilled")
-                      );
+                       );
     itemID = static_cast<int>(OthersMaintainMenuContentPrivate::ITEM_CBO_RESP_WAVE_MODE);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -250,18 +259,33 @@ void OthersMaintainMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(OthersMaintainMenuContentPrivate::ITEM_CBO_RESP_WAVE_MODE, comboBox);
 
-#ifndef HIDE_NURSE_CALL_FUNCTION
-    // nurse Call Setting
-    label = new QLabel(trs("NurseCallSetting"));
+#ifdef ENABLE_O2_APNEASTIMULATION
+    // 窒息唤醒
+    label = new QLabel(trs("ApneaStimulation"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
-    Button *button = new Button(trs("NurseCallSetting"));
-    d_ptr->NurseCallingBtn = button;
-    button->setButtonStyle(Button::ButtonTextOnly);
-    layout->addWidget(button, d_ptr->combos.count(), 1);
-    connect(button, SIGNAL(released()), this, SLOT(onBtnReleased()));
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                       << trs("Off")
+                       << trs("On")
+                       );
+    itemID = static_cast<int>(OthersMaintainMenuContentPrivate::ITEM_CBO_APNEA_AWAKE);
+    comboBox->setProperty("Item",
+                          qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(OthersMaintainMenuContentPrivate::ITEM_CBO_APNEA_AWAKE, comboBox);
 #endif
+#ifndef HIDE_NURSE_CALL_FUNCTION
+     d_ptr->nurseCallBtn = new Button(QString("%1%2").
+                                      arg(trs("NurseCallSetup")).
+                                      arg(" >>"));
+     d_ptr->nurseCallBtn->setButtonStyle(Button::ButtonTextOnly);
+     layout->addWidget(d_ptr->nurseCallBtn, d_ptr->combos.count() + 1, 1);
+     connect(d_ptr->nurseCallBtn, SIGNAL(released()), this, SLOT(onBtnReleased()));
 
-    layout->setRowStretch(d_ptr->combos.count() + 1, 1);
+
+#endif
+     layout->setRowStretch(d_ptr->combos.count() + 2, 1);
 }
 
 void OthersMaintainMenuContent::onComboBoxIndexChanged(int index)
@@ -270,7 +294,7 @@ void OthersMaintainMenuContent::onComboBoxIndexChanged(int index)
     if (box)
     {
         OthersMaintainMenuContentPrivate::MenuItem item
-            = (OthersMaintainMenuContentPrivate::MenuItem)box->property("Item").toInt();
+                = (OthersMaintainMenuContentPrivate::MenuItem)box->property("Item").toInt();
         QString string;
         switch (item)
         {
@@ -295,6 +319,15 @@ void OthersMaintainMenuContent::onComboBoxIndexChanged(int index)
         case OthersMaintainMenuContentPrivate::ITEM_CBO_RESP_WAVE_MODE:
             respParam.setSweepMode(static_cast<RESPSweepMode>(index));
             break;
+        case OthersMaintainMenuContentPrivate::ITEM_CBO_APNEA_AWAKE:
+        {
+            O2ParamInterface *o2Param = O2ParamInterface::getO2ParamInterface();
+            if (o2Param)
+            {
+                o2Param->setApneaAwakeStatus(index);
+            }
+            break;
+        }
         default:
             break;
         }
@@ -303,7 +336,8 @@ void OthersMaintainMenuContent::onComboBoxIndexChanged(int index)
 
 void OthersMaintainMenuContent::onBtnReleased()
 {
-    NurseCallSettingWindow w;
+    NurseCallSetWindow w;
     windowManager.showWindow(&w,
-                             WindowManager::ShowBehaviorModal);
+                             WindowManager::ShowBehaviorNoAutoClose
+                             | WindowManager::ShowBehaviorModal);
 }

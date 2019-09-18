@@ -40,7 +40,7 @@ public:
     HistoryDataSelWindow *const q_ptr;
 };
 HistoryDataSelWindow::HistoryDataSelWindow()
-    : Window(), d_ptr(new HistoryDataSelWindowPrivate(this))
+    : Dialog(), d_ptr(new HistoryDataSelWindowPrivate(this))
 {
     setWindowTitle(trs("HistoryDataList"));
     setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
@@ -89,7 +89,7 @@ HistoryDataSelWindow::~HistoryDataSelWindow()
 
 void HistoryDataSelWindow::showEvent(QShowEvent *ev)
 {
-    Window::showEvent(ev);
+    Dialog::showEvent(ev);
     d_ptr->refreshPage();
 }
 
@@ -114,10 +114,6 @@ void HistoryDataSelWindow::upReleased()
     }
 
     d_ptr->refreshPage();
-    if (!d_ptr->upPageBtn->isEnabled())
-    {
-        d_ptr->downPageBtn->setFocus();
-    }
 }
 
 void HistoryDataSelWindow::downReleased()
@@ -133,20 +129,10 @@ void HistoryDataSelWindow::downReleased()
     }
 
     d_ptr->refreshPage();
-    if (!d_ptr->downPageBtn->isEnabled())
-    {
-        d_ptr->upPageBtn->setFocus();
-    }
 }
 
 void HistoryDataSelWindowPrivate::refreshPage()
 {
-    int curScroller = table->verticalScrollBar()->value();
-    int maxValue = table->verticalScrollBar()->maximum();
-    bool hasBtn = curScroller > 0;
-    upPageBtn->setEnabled(hasBtn);
-    hasBtn = curScroller < maxValue;
-    downPageBtn->setEnabled(hasBtn);
     int totalPage = 1, curPage = 1;
     table->getPageInfo(curPage, totalPage);
     curPage = curPage == 0 ? 1 : curPage;

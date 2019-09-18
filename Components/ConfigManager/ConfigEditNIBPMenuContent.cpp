@@ -22,39 +22,37 @@
 #include "ConfigManager.h"
 #include "SpinBox.h"
 #include "IConfig.h"
+#include "NIBPParam.h"
 
 class ConfigEditNIBPMenuContentPrivate
 {
 public:
-    enum MenuItem
-    {
-        ITEM_CBO_MEASURE_MODE = 0,
-        ITEM_CBO_INTERVAL_TIME,
-        ITEM_CBO_MAX
-    };
-
-    explicit ConfigEditNIBPMenuContentPrivate(Config *const config);
+    explicit ConfigEditNIBPMenuContentPrivate(Config *const config, PatientType type = PATIENT_TYPE_ADULT);
     /**
      * @brief loadOptions
      */
     void loadOptions();
 
-    QMap <MenuItem, ComboBox *> combos;
     Config *const config;
     SpinBox *initCuffSpb;
+    QStringList initCuffStrs;
+    QLabel *initCuffUnitLbl;
+    PatientType curType;
 };
 
 ConfigEditNIBPMenuContentPrivate
-    ::ConfigEditNIBPMenuContentPrivate(Config *const config)
-    :config(config), initCuffSpb(NULL)
+    ::ConfigEditNIBPMenuContentPrivate(Config *const config, PatientType type)
+    : config(config)
+    , initCuffSpb(NULL)
+    , initCuffUnitLbl(NULL)
+    , curType(type)
 {
-    combos.clear();
 }
 
-ConfigEditNIBPMenuContent::ConfigEditNIBPMenuContent(Config *const config):
+ConfigEditNIBPMenuContent::ConfigEditNIBPMenuContent(Config *const config, PatientType type):
     MenuContent(trs("NIBPMenu"),
                 trs("NIBPMenuDesc")),
-    d_ptr(new ConfigEditNIBPMenuContentPrivate(config))
+    d_ptr(new ConfigEditNIBPMenuContentPrivate(config, type))
 {
 }
 
@@ -65,67 +63,59 @@ ConfigEditNIBPMenuContent::~ConfigEditNIBPMenuContent()
 
 void ConfigEditNIBPMenuContentPrivate::loadOptions()
 {
-    int index;
-    index = 0;
-    config->getNumValue("PrimaryCfg|NIBP|MeasureMode", index);
-    combos[ITEM_CBO_MEASURE_MODE]->setCurrentIndex(index);
-    index = 0;
-    config->getNumValue("PrimaryCfg|NIBP|IntervalTime", index);
-    combos[ITEM_CBO_INTERVAL_TIME]->setCurrentIndex(index);
-
-    PatientType type = patientManager.getType();
-    int initVal;
+    UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_NIBP_SYS);
+    UnitType unit = nibpParam.getUnit();
+    PatientType type = curType;
+    int start = 0, end = 0;
     if (type == PATIENT_TYPE_ADULT)
     {
-        initCuffSpb->setRange(120, 280);
+        start = 80;
+        end = 240;
     }
     else if (type == PATIENT_TYPE_PED)
     {
-        initCuffSpb->setRange(80, 250);
+        start = 80;
+        end = 200;
     }
     else if (type == PATIENT_TYPE_NEO)
     {
-        initCuffSpb->setRange(60, 140);
+        start = 60;
+        end = 140;
     }
-    currentConfig.getNumValue("NIBP|InitialCuffInflation", initVal);
-    initCuffSpb->setValue(initVal);
+    initCuffStrs.clear();
+    for (int i = start; i <= end; i += 10)
+    {
+        if (unit == defUnit)
+        {
+            initCuffStrs.append(QString::number(i));
+        }
+        else
+        {
+            initCuffStrs.append(Unit::convert(unit, defUnit, i));
+        }
+    }
+    initCuffSpb->setStringList(initCuffStrs);
 
-    int unit = UNIT_MMHG;
-    config->getNumValue("Local|NIBPUnit", unit);
+    if (unit == defUnit)
+    {
+        initCuffUnitLbl->setText(Unit::getSymbol(UNIT_MMHG));
+    }
+    else
+    {
+        initCuffUnitLbl->setText(Unit::getSymbol(UNIT_KPA));
+    }
+
+    // init the 'initVal'
+    int initVal = 0;
+    config->getNumValue("NIBP|InitialCuffInflation", initVal);
+    initCuffSpb->setValue(initVal);
 }
 
 void ConfigEditNIBPMenuContent::readyShow()
 {
     d_ptr->loadOptions();
     bool isOnlyToRead = configManager.isReadOnly();
-
-    for (int i = 0; i < ConfigEditNIBPMenuContentPrivate::ITEM_CBO_MAX; i++)
-    {
-        d_ptr->combos[ConfigEditNIBPMenuContentPrivate
-                ::MenuItem(i)]->setEnabled(!isOnlyToRead);
-    }
     d_ptr->initCuffSpb->setEnabled(!isOnlyToRead);
-}
-
-void ConfigEditNIBPMenuContent::onComboIndexChanged(int index)
-{
-    ComboBox *combo = qobject_cast<ComboBox *>(sender());
-    if (!combo)
-    {
-        return;
-    }
-    int indexType = combo->property("Item").toInt();
-    switch (indexType)
-    {
-    case ConfigEditNIBPMenuContentPrivate::ITEM_CBO_INTERVAL_TIME:
-        d_ptr->config->setNumValue("PrimaryCfg|NIBP|IntervalTime", index);
-        break;
-    case ConfigEditNIBPMenuContentPrivate::ITEM_CBO_MEASURE_MODE:
-        d_ptr->config->setNumValue("PrimaryCfg|NIBP|MeasureMode", index);
-        break;
-    default:
-        break;
-    }
 }
 
 void ConfigEditNIBPMenuContent::onAlarmBtnReleased()
@@ -149,60 +139,22 @@ void ConfigEditNIBPMenuContent::layoutExec()
     layout->setMargin(10);
 
     QLabel *label;
-    ComboBox *comboBox;
-    int itemID;
-
-    // measure mode
-    label = new QLabel(trs("NIBPMeasureMode"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox;
-    comboBox->addItems(QStringList()
-                       << trs(NIBPSymbol::convert(NIBP_MODE_MANUAL))
-                       << trs(NIBPSymbol::convert(NIBP_MODE_AUTO)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(ConfigEditNIBPMenuContentPrivate
-                         ::ITEM_CBO_MEASURE_MODE, comboBox);
-    itemID = ConfigEditNIBPMenuContentPrivate::ITEM_CBO_MEASURE_MODE;
-    comboBox->setProperty("Item", itemID);
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboIndexChanged(int)));
-
-    // interval time
-    label = new QLabel(trs("NIBPIntervalTime"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox;
-    comboBox->addItems(QStringList()
-                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_2_5))
-                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_5))
-                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_10))
-                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_15))
-                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_20))
-                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_30))
-                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_45))
-                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_60))
-                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_90))
-                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_120)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(ConfigEditNIBPMenuContentPrivate
-                         ::ITEM_CBO_INTERVAL_TIME, comboBox);
-    itemID = ConfigEditNIBPMenuContentPrivate::ITEM_CBO_INTERVAL_TIME;
-    comboBox->setProperty("Item", itemID);
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboIndexChanged(int)));
+    int count = 0;
 
      // initial cuff
-    label = new QLabel(trs("NIBPInitialCuff"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
+    label = new QLabel(trs("NIBPInitialPressure"));
+    layout->addWidget(label, count, 0);
     d_ptr->initCuffSpb = new SpinBox();
-    d_ptr->initCuffSpb->setStep(10);
+    d_ptr->initCuffSpb->setSpinBoxStyle(SpinBox::SPIN_BOX_STYLE_STRING);
     connect(d_ptr->initCuffSpb, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxReleased(int)));
     QHBoxLayout *hLayout = new QHBoxLayout();
-    label = new QLabel("mmHg");
+    d_ptr->initCuffUnitLbl = new QLabel("mmHg");
     hLayout->addWidget(d_ptr->initCuffSpb);
-    hLayout->addWidget(label);
-    layout->addLayout(hLayout, d_ptr->combos.count(), 1);
-
+    hLayout->addWidget(d_ptr->initCuffUnitLbl);
+    layout->addLayout(hLayout, count, 1);
 
     // 添加报警设置链接
-    int count = d_ptr->combos.count() + 1;
+    count = count + 1;
     Button *btn = new Button(QString("%1%2").
                              arg(trs("AlarmSettingUp")).
                              arg(" >>"));

@@ -18,6 +18,7 @@
 #include "WaveformCache.h"
 #include "ConfigManager.h"
 #include <QPainter>
+#include "LanguageManager.h"
 
 #define INVALID_AXIS_VALUE ((1<<30) - 1)
 
@@ -565,6 +566,8 @@ void EventWaveWidget::_drawWave(int index, QPainter &painter)
 
     bool start = true;
     int startIndex = (d_ptr->currentWaveStartSecond + d_ptr->durationBefore) * waveData->sampleRate;
+    QPainterPath path;
+    bool isFirstVaildPoint = true;
     for (int i = 0 + startIndex; (x2 - d_ptr->startX) < d_ptr->waveRagWidth; i++)
     {
         qint16 wave = waveData->waveData[i];
@@ -592,56 +595,21 @@ void EventWaveWidget::_drawWave(int index, QPainter &painter)
             }
             i = j - 1;
             drawDottedLine(&painter, x1, y1, x2, y2);
+            isFirstVaildPoint = true;
         }
 
         // vaild data
         else
         {
-            y2 = waveValue;
-            QLineF line(x1, y1, x2, y2);
-            painter.drawLine(line);
-
-            if (waveDesc.isECG)
+            if (isFirstVaildPoint)
             {
-                QPen pen = painter.pen();
-                pen.setStyle(Qt::SolidLine);
-                painter.setPen(pen);
-                QRect rulerRect(d_ptr->startX + 25, waveDesc.mediumY, 100, 50);
-                switch (d_ptr->gain)
-                {
-                case ECG_EVENT_GAIN_X0125:
-                    painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 16, d_ptr->startX + 20,
-                                     waveDesc.mediumY + 10 / d_ptr->pixelHPitch / 16);
-                    painter.drawText(rulerRect, "1mV");
-                    break;
-                case ECG_EVENT_GAIN_X025:
-                    painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 8, d_ptr->startX + 20,
-                                     waveDesc.mediumY + 10 / d_ptr->pixelHPitch / 8);
-                    painter.drawText(rulerRect, "1mV");
-                    break;
-                case ECG_EVENT_GAIN_X05:
-                    painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 4, d_ptr->startX + 20,
-                                     waveDesc.mediumY + 10 / d_ptr->pixelHPitch / 4);
-                    painter.drawText(rulerRect, "1mV");
-                    break;
-                case ECG_EVENT_GAIN_X10:
-                    painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 2, d_ptr->startX + 20,
-                                     waveDesc.mediumY + 10 / d_ptr->pixelHPitch / 2);
-                    painter.drawText(rulerRect, "1mV");
-                    break;
-                case ECG_EVENT_GAIN_X20:
-                    painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 2, d_ptr->startX + 20,
-                                     waveDesc.mediumY + 10 / d_ptr->pixelHPitch / 2);
-                    painter.drawText(rulerRect, "0.5mV");
-                    break;
-                case ECG_EVENT_GAIN_X40:
-                    painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 2, d_ptr->startX + 20,
-                                     waveDesc.mediumY + 10 / d_ptr->pixelHPitch / 2);
-                    painter.drawText(rulerRect, "0.25mV");
-                    break;
-                default:
-                    break;
-                }
+                path.moveTo(x1, y1);
+                isFirstVaildPoint = false;
+            }
+            else
+            {
+                y2 = waveValue;
+                path.lineTo(x2, y2);
             }
         }
         x1 = x2;
@@ -657,6 +625,53 @@ void EventWaveWidget::_drawWave(int index, QPainter &painter)
             painter.setPen(pen);
         }
     }
+    if (waveDesc.isECG)
+    {
+        // 绘画ECG增益
+        QPen pen = painter.pen();
+        pen.setStyle(Qt::SolidLine);
+        painter.setPen(pen);
+        QRect rulerRect(d_ptr->startX + 25, waveDesc.mediumY, 100, 50);
+        switch (d_ptr->gain)
+        {
+        case ECG_EVENT_GAIN_X0125:
+            painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 16,
+                             d_ptr->startX + 20, waveDesc.mediumY + 10 / d_ptr->pixelHPitch / 16);
+            painter.drawText(rulerRect, "1mV");
+            break;
+        case ECG_EVENT_GAIN_X025:
+            painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 8,
+                             d_ptr->startX + 20, waveDesc.mediumY + 10 / d_ptr->pixelHPitch / 8);
+            painter.drawText(rulerRect, "1mV");
+            break;
+        case ECG_EVENT_GAIN_X05:
+            painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 4,
+                             d_ptr->startX + 20, waveDesc.mediumY + 10 / d_ptr->pixelHPitch / 4);
+            painter.drawText(rulerRect, "1mV");
+            break;
+        case ECG_EVENT_GAIN_X10:
+            painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 4,
+                             d_ptr->startX + 20, waveDesc.mediumY + 10 / d_ptr->pixelHPitch / 4);
+            painter.drawText(rulerRect, "1mV");
+            break;
+        case ECG_EVENT_GAIN_X20:
+            painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 4,
+                             d_ptr->startX + 20, waveDesc.mediumY + 10 / d_ptr->pixelHPitch / 4);
+            painter.drawText(rulerRect, "0.5mV");
+            break;
+        case ECG_EVENT_GAIN_X40:
+            painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 4,
+                             d_ptr->startX + 20, waveDesc.mediumY + 10 / d_ptr->pixelHPitch / 4);
+            painter.drawText(rulerRect, "0.25mV");
+            break;
+        default:
+            break;
+        }
+    }
+    if (!path.isEmpty())
+    {
+        painter.drawPath(path);
+    }
 }
 
 void EventWaveWidget::_drawWaveLabel(QPainter &painter, const WaveformDesc &waveDesc)
@@ -666,7 +681,7 @@ void EventWaveWidget::_drawWaveLabel(QPainter &painter, const WaveformDesc &wave
         return;
     }
 
-    QString title = paramInfo.getParamWaveformName(waveDesc.waveID);
+    QString title = trs(paramInfo.getParamWaveformName(waveDesc.waveID));
     QRect rectLabel(0, waveDesc.startY, 100, 100);
     painter.drawText(rectLabel, Qt::AlignCenter, title);
 }

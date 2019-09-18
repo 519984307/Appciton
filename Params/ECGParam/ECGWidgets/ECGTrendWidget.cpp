@@ -27,9 +27,10 @@
 #include "LayoutManager.h"
 #include "AlarmConfig.h"
 #include "ParamManager.h"
-#include "IConfig.h"
+#include "ConfigManager.h"
 #include "TimeDate.h"
 #include <QBitmap>
+#include "SPO2Param.h"
 
 #define beatIconPath "/usr/local/nPM/icons/beat.png"
 
@@ -70,7 +71,7 @@ void ECGTrendWidget::_drawBeatIcon(QColor color)
     lastIconColor = color;
 }
 
-void ECGTrendWidget::_loadConfig()
+void ECGTrendWidget::loadConfig()
 {
     // 设置标题栏的相关信息。
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
@@ -98,16 +99,20 @@ void ECGTrendWidget::_loadConfig()
     setName(trs(paramInfo.getSubParamName(subId)));
     setUnit(Unit::getSymbol(UNIT_BPM));
 
-    // 设置上下限
-    updateLimit();
+    // 设置滤波模式
+    int mode = ECG_FILTERMODE_MONITOR;
+    currentConfig.getNumValue("ECG|FilterMode", mode);
+    ecgParam.setFilterMode(mode);
+
+    TrendWidget::loadConfig();
 }
 
 /**************************************************************************************************
  * 设置HR的值。
  *************************************************************************************************/
-void ECGTrendWidget::setHRValue(int16_t hr, bool isHR)
+void ECGTrendWidget::setHRValue(int16_t hr, HRSourceType type)
 {
-    if (isHR)
+    if (type == HR_SOURCE_ECG || type == HR_SOURCE_AUTO)
     {
         setName(trs(paramInfo.getSubParamName(SUB_DUP_PARAM_HR)));
     }
@@ -120,13 +125,13 @@ void ECGTrendWidget::setHRValue(int16_t hr, bool isHR)
         setName(trs(paramInfo.getSubParamName(SUB_DUP_PARAM_PR)));
     }
 
-    if (hr >= 0)
+    if (hr >= 0 && type == HR_SOURCE_SPO2 && spo2Param.getPerfusionStatus())
+    {
+        _hrString = QString("%1?").arg(QString::number(hr));
+    }
+    else if (hr >= 0)
     {
         _hrString = QString::number(hr);
-    }
-    else if (hr == UnknownData())
-    {
-        _hrString = InvStr();
     }
     else
     {
@@ -212,9 +217,6 @@ void ECGTrendWidget::blinkBeatPixmap()
 ECGTrendWidget::ECGTrendWidget() : TrendWidget("ECGTrendWidget"),
     _hrString(InvStr()), _isAlarm(false)
 {
-    // 设置报警关闭标志
-    showAlarmOff();
-
     // 开始布局。
     _hrBeatIcon = new QLabel();
     _hrBeatIcon->setFixedSize(24, 24);
@@ -230,7 +232,7 @@ ECGTrendWidget::ECGTrendWidget() : TrendWidget("ECGTrendWidget"),
     hlayout->addWidget(_hrValue);
     hlayout->addWidget(_hrBeatIcon);
 
-    contentLayout->addLayout(hlayout, 3);
+    contentLayout->addLayout(hlayout, 7);
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
@@ -239,7 +241,7 @@ ECGTrendWidget::ECGTrendWidget() : TrendWidget("ECGTrendWidget"),
     _timer->setInterval(190);
     connect(_timer, SIGNAL(timeout()), this, SLOT(_timeOut()));
 
-    _loadConfig();
+    loadConfig();
 }
 
 /**************************************************************************************************
@@ -266,9 +268,4 @@ void ECGTrendWidget::doRestoreNormalStatus()
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
     showNormalStatus(psrc);
     _drawBeatIcon(psrc.windowText().color());
-}
-
-void ECGTrendWidget::updateWidgetConfig()
-{
-    _loadConfig();
 }

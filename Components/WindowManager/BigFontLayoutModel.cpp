@@ -17,7 +17,7 @@
 #include "DemoProvider.h"
 #include "ParamManager.h"
 #include "IBPParam.h"
-
+#include "LanguageManager.h"
 
 struct ParamNodeDescription
 {
@@ -198,7 +198,7 @@ QVariant BigFontLayoutModel::data(const QModelIndex &index, int role) const
             info.name = node->name;
             if (info.waveid != WAVE_NONE)
             {
-                info.displayName = paramInfo.getParamWaveformName(info.waveid);
+                info.displayName = trs(paramInfo.getParamWaveformName(info.waveid));
             }
             else
             {
@@ -209,7 +209,7 @@ QVariant BigFontLayoutModel::data(const QModelIndex &index, int role) const
                 }
                 else
                 {
-                    info.displayName = info.name;
+                    info.displayName = trs(info.name);
                 }
             }
             d_ptr->fillWaveData(info);
@@ -633,6 +633,24 @@ void BigFontLayoutModelPrivate::loadLayoutFromConfig(const QVariantMap &config)
                 paramNode->span = paramMap["@span"].toInt();
                 paramNode->editable = paramMap["@editable"].toInt();
                 paramNode->name = paramMap["@text"].toString();
+#ifdef BIG_FONT_LAYOUT_CO2_REPLACE_RESP
+                if (systemManager.isSupport(PARAM_CO2) && paramManager.getParam(PARAM_CO2)->isConnected())
+                {
+                    // co2 replace resp when co2 connecting
+                    if (paramNode->name == QString(layoutNodeName(LAYOUT_NODE_PARAM_RESP)))
+                    {
+                        paramNode->name = QString(layoutNodeName(LAYOUT_NODE_PARAM_CO2));
+                    }
+                }
+                else
+                {
+                    if (paramNode->name == QString(layoutNodeName(LAYOUT_NODE_PARAM_CO2)))
+                    {
+                        paramNode->name = QString(layoutNodeName(LAYOUT_NODE_PARAM_RESP));
+                    }
+                }
+#endif
+
                 if (paramRow->isEmpty())
                 {
                     paramRow->append(paramNode);
@@ -659,6 +677,24 @@ void BigFontLayoutModelPrivate::loadLayoutFromConfig(const QVariantMap &config)
                 waveNode->span = waveMap["@span"].toInt();
                 waveNode->editable = waveMap["@editable"].toInt();
                 waveNode->name = waveMap["@text"].toString();
+
+#ifdef BIG_FONT_LAYOUT_CO2_REPLACE_RESP
+                if (systemManager.isSupport(PARAM_CO2) && paramManager.getParam(PARAM_CO2)->isConnected())
+                {
+                    // co2 replace resp when co2 connecting
+                    if (waveNode->name == QString(layoutNodeName(LAYOUT_NODE_WAVE_RESP)))
+                    {
+                        waveNode->name = QString(layoutNodeName(LAYOUT_NODE_WAVE_CO2));
+                    }
+                }
+                else
+                {
+                    if (waveNode->name == QString(layoutNodeName(LAYOUT_NODE_WAVE_CO2)))
+                    {
+                        waveNode->name = QString(layoutNodeName(LAYOUT_NODE_WAVE_RESP));
+                    }
+                }
+#endif
 
                 if (waveRow->isEmpty())
                 {

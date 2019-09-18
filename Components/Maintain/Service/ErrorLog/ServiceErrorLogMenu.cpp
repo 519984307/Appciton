@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by TongZhou Fang <fangtongzhou@blmed.cn>, 2019/5/29
+ **/
+
 #include "ServiceErrorLogMenu.h"
 #include <QHBoxLayout>
 #include <QLabel>
@@ -48,8 +58,8 @@ ServiceErrorLogMenu::ServiceErrorLogMenu() : MenuWidget(trs("ErrorLogInfo"))
     _table->setFont(fontManager.textFont(fontSize));
     _table->setRowCount(ROW_NUM);
     _table->setColumnCount(COLUMN_NUM);
-    _table->setFixedSize(itemW, ITEM_H * (ROW_NUM + 1));// 固定尺寸。
-    _table->horizontalHeader()->setDefaultSectionSize(ITEM_H); // 行高。
+    _table->setFixedSize(itemW, ITEM_H * (ROW_NUM + 1));  // 固定尺寸。
+    _table->horizontalHeader()->setDefaultSectionSize(ITEM_H);  // 行高。
     _table->horizontalHeader()->setStyleSheet("QHeaderView::section {border:0px;height:30px;}");
     _table->verticalHeader()->setVisible(false);                        //列首隐藏
 
@@ -122,7 +132,7 @@ ServiceErrorLogMenu::ServiceErrorLogMenu() : MenuWidget(trs("ErrorLogInfo"))
     hLayout->setContentsMargins(0, 0, 20, 5);
     hLayout->addWidget(_info, 0, Qt::AlignRight);
 
-    labelLayout->addWidget(_table,0,Qt::AlignCenter);
+    labelLayout->addWidget(_table, 0, Qt::AlignCenter);
     labelLayout->addLayout(helpLayout);
     labelLayout->addStretch();
     labelLayout->setSpacing(10);
@@ -155,16 +165,16 @@ void ServiceErrorLogMenu::keyPressEvent(QKeyEvent *e)
 {
     switch (e->key())
     {
-        case Qt::Key_Up:
-        case Qt::Key_Left:
-            focusNextPrevChild(false);
-            return;
-        case Qt::Key_Down:
-        case Qt::Key_Right:
-            focusNextChild();
-            return;
-        default:
-            break;
+    case Qt::Key_Up:
+    case Qt::Key_Left:
+        focusNextPrevChild(false);
+        return;
+    case Qt::Key_Down:
+    case Qt::Key_Right:
+        focusNextChild();
+        return;
+    default:
+        break;
     }
 
     QWidget::keyPressEvent(e);
@@ -194,13 +204,12 @@ void ServiceErrorLogMenu::summaryBtnClick()
     QString str;
     QTextStream stream(&str);
     ErrorLog::Summary summary = errorLog.getSummary();
-    stream<<"Number of Errors: "<<summary.NumOfErrors<<endl;
-    stream<<"Number of Critical Faults: "<<summary.numOfCriticalErrors<<endl;
-    stream<<"Most Recent Error: "<<summary.mostRecentErrorDate<<endl;
-    stream<<"Most Recent Critical Fault: "<<summary.mostRecentCriticalErrorDate<<endl;
-    stream<<"Oldest Error: "<<summary.oldestErrorDate<<endl;
-    stream<<"Last Erase Time: "<<summary.lastEraseTimeDate<<endl;
-    stream<<"Number of shocks > 120J: "<<summary.totalShockCount<<endl;
+    stream << trs("NumberOfErrors") << summary.NumOfErrors << endl;
+    stream << trs("NumberOfCriticalFaults") << summary.numOfCriticalErrors << endl;
+    stream << trs("MostRecentError") << summary.mostRecentErrorDate << endl;
+    stream << trs("MostRecentCriticalFault") << summary.mostRecentCriticalErrorDate << endl;
+    stream << trs("OldestError") << summary.oldestErrorDate << endl;
+    stream << trs("LastEraseTime") << summary.lastEraseTimeDate << endl;
 
     ErrorLogViewer viewer;
     viewer.setTitleBarText(trs("Summary"));
@@ -213,9 +222,9 @@ void ServiceErrorLogMenu::summaryBtnClick()
  **************************************************************************************************/
 void ServiceErrorLogMenu::itemClick(int index)
 {
-    if(index >= 0)
+    if (index >= 0)
     {
-        //view the log
+        // view the log
         int realIndex = currentPage * ROW_NUM + index;
         ErrorLogItemBase *item = errorLog.getLog(realIndex);
         if (item->isLogEmpty())
@@ -231,7 +240,7 @@ void ServiceErrorLogMenu::itemClick(int index)
 
 void ServiceErrorLogMenu::USBCheckTimeout()
 {
-    //检查U盘
+    // 检查U盘
     if (!usbManager.isUSBExist())
     {
         _info->show();
@@ -247,10 +256,10 @@ void ServiceErrorLogMenu::USBCheckTimeout()
  **************************************************************************************************/
 void ServiceErrorLogMenu::titleInit()
 {
-   int count = errorLog.count();
-   totalPage = (count + ROW_NUM - 1 ) / ROW_NUM;
-   title = trs("ErrorLog");
-   refreshTitle();
+    int count = errorLog.count();
+    totalPage = (count + ROW_NUM - 1) / ROW_NUM;
+    title = trs("ErrorLog");
+    refreshTitle();
 }
 
 /***************************************************************************************************
@@ -258,32 +267,32 @@ void ServiceErrorLogMenu::titleInit()
  **************************************************************************************************/
 void ServiceErrorLogMenu::loadData()
 {
-    QTableWidgetItem *timeItem;
-    QTableWidgetItem *infoItem;
-    ErrorLogItemBase *errlogItem;
     int index = currentPage * ROW_NUM;
-    for(int i = 0; i < ROW_NUM; i++)
+    for (int i = 0; i < ROW_NUM; i++)
     {
+        QTableWidgetItem *timeItem = NULL;
+        QTableWidgetItem *infoItem = NULL;
+        ErrorLogItemBase *errlogItem = NULL;
         timeItem = _table->item(i, 0);
-        if(!timeItem)
+        if (!timeItem)
         {
             timeItem = new QTableWidgetItem();
             _table->setItem(i, 0, timeItem);
         }
         infoItem = _table->item(i, 1);
-        if(!infoItem)
+        if (!infoItem)
         {
             infoItem = new QTableWidgetItem();
             _table->setItem(i, 1, infoItem);
         }
 
         errlogItem = errorLog.getLog(index);
-        if(errlogItem)
+        if (errlogItem)
         {
             timeItem->setText(errlogItem->getTime());
             infoItem->setText(errlogItem->name());
             infoItem->setIcon(icons[!errlogItem->isLogEmpty()]);
-            if(errlogItem->type() == CriticalFaultLogItem::Type)
+            if (errlogItem->type() == CriticalFaultLogItem::Type)
             {
                 infoItem->setTextColor(Qt::red);
             }
@@ -309,20 +318,20 @@ void ServiceErrorLogMenu::loadData()
  **************************************************************************************************/
 void ServiceErrorLogMenu::refreshTitle()
 {
-//    if(totalPage)
-//    {
-//        setTitleBarText(QString("%1(%2/%3)").arg(title).arg(currentPage+1).arg(totalPage));
-//    }
-//    else
-//    {
-//        setTitleBarText(QString("%1(0/0)").arg(title));
-//    }
+    //    if(totalPage)
+    //    {
+    //        setTitleBarText(QString("%1(%2/%3)").arg(title).arg(currentPage+1).arg(totalPage));
+    //    }
+    //    else
+    //    {
+    //        setTitleBarText(QString("%1(0/0)").arg(title));
+    //    }
 }
 
 /***************************************************************************************************
  * focusNexPrevChild : handle focus issue
  **************************************************************************************************/
-//bool FactoryErrorLogMenu::focusNextPrevChild(bool next)
+// bool FactoryErrorLogMenu::focusNextPrevChild(bool next)
 //{
 //    Q_D(FactoryErrorLogMenu);
 //    if( next &&  downBtn->hasFocus())
@@ -349,11 +358,12 @@ void ServiceErrorLogMenu::refreshTitle()
 #if 0
 void ServiceErrorLogMenu::exportBtnClick()
 {
-    if(udiskManager.isUSBExist())
+    if (udiskManager.isUSBExist())
     {
         udiskManager.exportErrorLog();
         ExportDataWidget exportDataWidget(EXPORT_ERROR_LOG_BY_USB);
-        connect(&udiskManager, SIGNAL(exportProcessChanged(unsigned char)), &exportDataWidget, SLOT(setBarValue(unsigned char)));
+        connect(&udiskManager, SIGNAL(exportProcessChanged(unsigned char)),
+                &exportDataWidget, SLOT(setBarValue(unsigned char)));
         connect(&udiskManager, SIGNAL(exportError()), &exportDataWidget, SLOT(reject()));
         connect(&exportDataWidget, SIGNAL(cancel()), &udiskManager, SLOT(cancelExport()));
         if (0 == exportDataWidget.exec())
@@ -385,15 +395,16 @@ void ServiceErrorLogMenu::exportBtnClick()
 #else
 void ServiceErrorLogMenu::exportBtnClick()
 {
-    if(usbManager.isUSBExist())
+    if (usbManager.isUSBExist())
     {
         ExportDataWidget exportDataWidget(EXPORT_ERROR_LOG_BY_USB);
-        connect(&usbManager, SIGNAL(exportProcessChanged(unsigned char)), &exportDataWidget, SLOT(setBarValue(unsigned char)));
+        connect(&usbManager, SIGNAL(exportProcessChanged(unsigned char)),
+                &exportDataWidget, SLOT(setBarValue(unsigned char)));
         connect(&usbManager, SIGNAL(exportError()), &exportDataWidget, SLOT(reject()));
         connect(&exportDataWidget, SIGNAL(cancel()), &usbManager, SLOT(cancelExport()));
 
-        //start export
-        if(usbManager.exportErrorLog())
+        // start export
+        if (usbManager.exportErrorLog())
         {
             if (0 == exportDataWidget.exec())
             {
@@ -431,13 +442,13 @@ void ServiceErrorLogMenu::exportBtnClick()
 
 void ServiceErrorLogMenu::eraseBtnClick()
 {
-    IMessageBox messageBox(trs("ClearErrorLog"), trs("ComfirmClearErrorLog"));
+    IMessageBox messageBox(trs("ClearErrorLog"), trs("ConfirmClearErrorLog"));
     if (1 == messageBox.exec())
     {
         errorLog.clear();
         loadData();
         init();
-        unsigned timestamp = QDateTime::currentDateTime().toTime_t();
+        unsigned int timestamp = QDateTime::currentDateTime().toTime_t();
         systemConfig.setNumValue("ErrorLogEraseTime", timestamp);
         systemConfig.save();
         systemConfig.saveToDisk();
@@ -446,7 +457,7 @@ void ServiceErrorLogMenu::eraseBtnClick()
 
 void ServiceErrorLogMenu::upBtnClick()
 {
-    if(currentPage > 0 )
+    if (currentPage > 0)
     {
         currentPage--;
         loadData();
@@ -456,7 +467,7 @@ void ServiceErrorLogMenu::upBtnClick()
 
 void ServiceErrorLogMenu::downBtnClick()
 {
-    if(currentPage < totalPage - 1)
+    if (currentPage < totalPage - 1)
     {
         currentPage++;
         loadData();
@@ -469,7 +480,7 @@ void ServiceErrorLogMenu::downBtnClick()
  *************************************************************************************************/
 ServiceErrorLogMenu::~ServiceErrorLogMenu()
 {
-    if(_delegate)
+    if (_delegate)
     {
         delete _delegate;
     }

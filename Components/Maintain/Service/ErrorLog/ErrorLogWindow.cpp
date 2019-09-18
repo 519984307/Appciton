@@ -27,10 +27,13 @@
 #include "MessageBox.h"
 #include "ExportDataWidget.h"
 #include "IConfig.h"
+#include "WindowManager.h"
 
-#define TABLE_ROW_NR        7
+#define TABLE_ROW_NR        6
 
 #define HEIGHT_HINT (themeManger.getAcceptableControlHeight())
+#define DEFAULT_WIDTH (windowManager.getPopWindowWidth())
+#define DEFAULT_HEIGHT (windowManager.getPopWindowHeight())
 
 class ErrorLogWindowPrivate
 {
@@ -46,7 +49,6 @@ public:
      * @param curPage 当前页
      * @param totalPage 总页
      */
-    void updatePageBtnStatus(int curPage, int totalPage);
 
 public:
     TableView *table;
@@ -60,9 +62,9 @@ public:
     QTimer *usbCheckTimer;
 };
 ErrorLogWindow::ErrorLogWindow()
-    : Window(), d_ptr(new ErrorLogWindowPrivate())
+    : Dialog(), d_ptr(new ErrorLogWindowPrivate())
 {
-    setFixedSize(800, 580);
+    setFixedSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
     d_ptr->table = new TableView();
     TableHeaderView *horizontalHeader = new TableHeaderView(Qt::Horizontal);
@@ -79,7 +81,7 @@ ErrorLogWindow::ErrorLogWindow()
     d_ptr->table->setModel(d_ptr->model);
     d_ptr->table->setFixedHeight(d_ptr->model->getHeaderHeightHint()
                                  + d_ptr->model->getRowHeightHint() * TABLE_ROW_NR);
-    d_ptr->table->setFixedWidth(800);
+    d_ptr->table->setFixedWidth(DEFAULT_WIDTH);
     d_ptr->table->setItemDelegate(new TableViewItemDelegate(this));
     connect(d_ptr->table, SIGNAL(rowClicked(int)), this, SLOT(itemClickSlot(int)));
     connect(d_ptr->model, SIGNAL(pageInfoUpdate(int, int)), this, SLOT(onPageInfoUpdated(int, int)));
@@ -156,10 +158,12 @@ void ErrorLogWindow::init()
     }
     if (d_ptr->table->model()->rowCount() == 0)
     {
-        d_ptr->table->setFocusPolicy(Qt::NoFocus);
+        d_ptr->exportBtn->setEnabled(false);
+        d_ptr->eraseBtn->setEnabled(false);
     }
     else
     {
+        d_ptr->eraseBtn->setEnabled(true);
         d_ptr->table->setFocusPolicy(Qt::StrongFocus);
     }
     d_ptr->usbCheckTimer->start();
@@ -168,27 +172,7 @@ void ErrorLogWindow::init()
 void ErrorLogWindow::showEvent(QShowEvent *ev)
 {
     init();
-    Window::showEvent(ev);
-}
-
-void ErrorLogWindowPrivate::updatePageBtnStatus(int curPage, int totalPage)
-{
-    if (totalPage == 1)
-    {
-        downPageBtn->setEnabled(false);
-        upPageBtn->setEnabled(false);
-    }
-    else if (curPage == totalPage)
-    {
-        downPageBtn->setEnabled(false);
-        upPageBtn->setEnabled(true);
-        upPageBtn->setFocus(Qt::BacktabFocusReason);
-    }
-    else
-    {
-        downPageBtn->setEnabled(true);
-        upPageBtn->setEnabled(true);
-    }
+    Dialog::showEvent(ev);
 }
 
 void ErrorLogWindow::itemClickSlot(int row)
@@ -203,6 +187,7 @@ void ErrorLogWindow::itemClickSlot(int row)
 
     ErrorLogViewerWindow(item).exec();
     delete item;
+    d_ptr->table->selectRow(row);
 }
 
 void ErrorLogWindow::summaryReleased()
@@ -210,18 +195,17 @@ void ErrorLogWindow::summaryReleased()
     QString str;
     QTextStream stream(&str);
     ErrorLog::Summary summary = errorLog.getSummary();
-    stream << "Number of Errors: " << summary.NumOfErrors << endl;
-    stream << "Number of Critical Faults: " << summary.numOfCriticalErrors << endl;
-    stream << "Most Recent Error: " << summary.mostRecentErrorDate << endl;
-    stream << "Most Recent Critical Fault: " << summary.mostRecentCriticalErrorDate << endl;
-    stream << "Oldest Error: " << summary.oldestErrorDate << endl;
-    stream << "Last Erase Time: " << summary.lastEraseTimeDate << endl;
-    stream << "Number of shocks > 120J: " << summary.totalShockCount << endl;
+    stream << trs("NumberOfErrors") << summary.NumOfErrors << endl;
+    stream << trs("NumberOfCriticalFaults") << summary.numOfCriticalErrors << endl;
+    stream << trs("MostRecentError") << summary.mostRecentErrorDate << endl;
+    stream << trs("MostRecentCriticalFault") << summary.mostRecentCriticalErrorDate << endl;
+    stream << trs("OldestError") << summary.oldestErrorDate << endl;
+    stream << trs("LastEraseTime") << summary.lastEraseTimeDate << endl;
 
     ErrorLogViewerWindow viewer;
     viewer.setWindowTitle(trs("Summary"));
     viewer.setText(str);
-    viewer.exec();
+    windowManager.showWindow(&viewer, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
 }
 
 void ErrorLogWindow::exportReleased()
@@ -259,7 +243,8 @@ void ErrorLogWindow::exportReleased()
                     msg = trs("TransferFailed");
                 }
                 MessageBox messageBox(trs("Warn"), msg, QStringList(trs("EnglishYESChineseSURE")));
-                messageBox.exec();
+                windowManager.showWindow(&messageBox,
+                                         WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
             }
             else if (QDialog::Accepted == statue)  // 导出成功
             {
@@ -270,18 +255,20 @@ void ErrorLogWindow::exportReleased()
     else
     {
         MessageBox messageBox(trs("Warn"), trs("WarningNoUSB"), QStringList(trs("EnglishYESChineseSURE")));
-        messageBox.exec();
+        windowManager.showWindow(&messageBox,
+                                 WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
     }
 }
 
 void ErrorLogWindow::eraseReleased()
 {
-    MessageBox messageBox(trs("ErrorLogErase"), trs("ComfirmClearErrorLog"));
-    if (1 == messageBox.exec())
+    MessageBox messageBox(trs("ErrorLogErase"), trs("ConfirmClearErrorLog"));
+    windowManager.showWindow(&messageBox, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
+    if (QDialog::Accepted == messageBox.result())
     {
         errorLog.clear();
         init();
-        unsigned timestamp = QDateTime::currentDateTime().toTime_t();
+        unsigned int timestamp = QDateTime::currentDateTime().toTime_t();
         systemConfig.setNumValue("ErrorLogEraseTime", timestamp);
         systemConfig.save();
         systemConfig.saveToDisk();
@@ -294,10 +281,15 @@ void ErrorLogWindow::USBCheckTimeout()
     if (!usbManager.isUSBExist())
     {
         d_ptr->infoLab->show();
+        d_ptr->exportBtn->setEnabled(false);
     }
     else
     {
         d_ptr->infoLab->hide();
+        if (d_ptr->table->model()->rowCount() != 0)
+        {
+            d_ptr->exportBtn->setEnabled(true);
+        }
     }
 }
 
@@ -323,6 +315,4 @@ void ErrorLogWindow::onPageInfoUpdated(int curPage, int totalPage)
     title += trs("PageNum");
     title += ")";
     setWindowTitle(title);
-
-    d_ptr->updatePageBtnStatus(curPage, totalPage);
 }

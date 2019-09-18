@@ -12,8 +12,8 @@
 #include <QObject>
 #include <QBitArray>
 #include "Param.h"
-#include "SystemDefine.h"
 #include "TimeDefine.h"
+#include "SystemManagerInterface.h"
 
 #ifdef Q_WS_X11
 #include <QTcpSocket>
@@ -21,23 +21,6 @@
 #endif
 
 #define IDM_SOFTWARE_VERSION ("1.0.3")
-
-enum ConfiguredFuncs
-{
-    CONFIG_ST = 0x01,
-    CONFIG_RESP = 0x02,
-    CONFIG_ECG12LEADS = 0x04,
-    CONFIG_SPO2 = 0x08,
-    CONFIG_NIBP = 0x10,
-    CONFIG_CO2 = 0x20,
-    CONFIG_TEMP = 0x40,
-    CONFIG_AG = 0x80,
-    CONFIG_CO = 0x100,
-    CONFIG_IBP = 0x200,
-    CONFIG_WIFI = 0x400,
-    CONFIG_TOUCH = 0x800,
-    CONFIG_O2 = 0x1000,
-};
 
 // 前面板按键状态,与系统板获取按键状态命令回复一致
 enum PanelKeyStatus
@@ -92,17 +75,17 @@ enum ModulePoweronTestStatus
     SELFTEST_STATUS_NR
 };
 
-enum WorkMode
+// 触摸屏状态
+enum TouchscreenStatus
 {
-    WORK_MODE_NORMAL = 0,
-    WORK_MODE_DEMO,
-    WORK_MODE_STANDBY,
-    WORK_MODE_NR,
+    TOUCHSCREEN_DISENABLE = 0,              // 关闭
+    TOUCHSCREEN_RESISTIVE = 1,              // 电阻
+    TOUCHSCREEN_CAPACITIVE = 2,             // 电容
 };
 
 class SystemSelftestMenu;
 class SystemManagerPrivate;
-class SystemManager : public QObject
+class SystemManager : public QObject, public SystemManagerInterface
 {
     Q_OBJECT
 public:
@@ -129,9 +112,15 @@ public:
 
     /**
      * @brief setTouchScreenOnOff set the touch screen on and off status
-     * @param onOff
+     * @param sta
      */
-    void setTouchScreenOnOff(bool onOff);
+    void setTouchScreenOnOff(int sta);
+
+    /**
+     * @brief configTouchScreen 配置触摸屏状态为电容,电阻或普通
+     * @param sta
+     */
+    void configTouchScreen(int sta);
 #endif
 
     // get the module config status
@@ -152,10 +141,6 @@ public:
     // 加载初始底层模式。
     void loadInitBMode(void);
 
-    // 获取IDM上位机软件版本
-    void getSoftwareVersion(QString &revision);
-    QString getSoftwareVersionNum();
-
     // 是否确认了自检结果
     bool isAcknownledgeSystemTestResult();
 
@@ -174,7 +159,7 @@ public:
      * @brief getCurWorkMode get the current work mode
      * @return the current work mode
      */
-    WorkMode getCurWorkMode() const;
+    virtual WorkMode getCurWorkMode() const;
 
     /**
      * @brief setWorkMode set the work mode

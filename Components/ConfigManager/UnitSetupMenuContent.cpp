@@ -139,20 +139,23 @@ void UnitSetupMenuContentPrivate::loadOptions()
         combos[ITEM_CBO_ICP_UNIT]->setCurrentIndex(index);
     }
 
-    currentConfig.getNumValue("Local|CO2Unit", unit);
-    if (unit == UNIT_MMHG)
+    if (systemManager.isSupport(CONFIG_CO2))
     {
-        index = 0;
+        systemConfig.getNumValue("Unit|CO2Unit", unit);
+        if (unit == UNIT_MMHG)
+        {
+            index = 0;
+        }
+        else if (unit == UNIT_KPA)
+        {
+            index = 1;
+        }
+        else if (unit == UNIT_PERCENT)
+        {
+            index = 2;
+        }
+        combos[ITEM_CBO_CO2_UNIT]->setCurrentIndex(index);
     }
-    else if (unit == UNIT_KPA)
-    {
-        index = 1;
-    }
-    else if (unit == UNIT_PERCENT)
-    {
-        index = 2;
-    }
-    combos[ITEM_CBO_CO2_UNIT]->setCurrentIndex(index);
 
     bool isOnlyToRead = configManager.isReadOnly();
     QMap<MenuItem, ComboBox *>::iterator it =  combos.begin();
@@ -460,7 +463,7 @@ void UnitSetupMenuContent::onComboBoxIndexChanged(int index)
             {
                 index = UNIT_MMHG;
             }
-            currentConfig.setNumValue("Local|CO2Unit", index);
+            systemConfig.setNumValue("Unit|CO2Unit", index);
             co2Param.updateUnit();
             break;
         default:

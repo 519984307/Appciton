@@ -104,6 +104,7 @@ struct WaveformDataSegment
     WaveformID waveID;      /* waveform id */
     int sampleRate;         /* sample rate of the waveform */
     int waveNum;            /* the number of wave points */
+    char remarks[MAX_WAVE_SEG_INFO_REMARK];        /* record remarks infomation*/
     WaveDataType waveData[0];   /* start location of the wave points */
 };
 

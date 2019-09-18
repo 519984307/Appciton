@@ -9,29 +9,42 @@
  **/
 
 #include "AlarmResetState.h"
-#include "AlarmIndicator.h"
-#include "AlarmStateMachine.h"
-#include "LightManager.h"
+#include "AlarmIndicatorInterface.h"
+#include "AlarmStateMachineInterface.h"
+#include "LightManagerInterface.h"
 
-AlarmResetState::AlarmResetState() : AlarmState(ALARM_RESET_STATE)
+class AlarmResetStatePrivate
+{
+public:
+    AlarmResetStatePrivate(){}
+};
+
+
+AlarmResetState::AlarmResetState()
+    : AlarmState(ALARM_RESET_STATE),
+      d_ptr(new AlarmResetStatePrivate)
 {
 }
 
 AlarmResetState::~AlarmResetState()
 {
+    delete d_ptr;
 }
 
 void AlarmResetState::enter()
 {
-    alarmIndicator.setAlarmStatus(ALARM_STATUS_RESET);
-    lightManager.enableAlarmAudioMute(false);
+    AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+    alarmIndicator->setAlarmStatus(ALARM_STATUS_RESET);
+    LightManagerInterface *lightManager = LightManagerInterface::getLightManager();
+    lightManager->enableAlarmAudioMute(false);
 }
 
 void AlarmResetState::handAlarmEvent(AlarmStateEvent event, unsigned char *data, unsigned len)
 {
     Q_UNUSED(data);
     Q_UNUSED(len);
-
+    AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+    AlarmStateMachineInterface *alarmStateMachine = AlarmStateMachineInterface::getAlarmStateMachine();
     switch (event)
     {
     case ALARM_STATE_EVENT_RESET_BTN_PRESSED:
@@ -42,32 +55,32 @@ void AlarmResetState::handAlarmEvent(AlarmStateEvent event, unsigned char *data,
 
     case ALARM_STATE_EVENT_MUTE_BTN_PRESSED:
     {
-        alarmIndicator.phyAlarmPauseStatusHandle();
-        alarmStateMachine.switchState(ALARM_PAUSE_STATE);
+        alarmIndicator->phyAlarmPauseStatusHandle();
+        alarmStateMachine->switchState(ALARM_PAUSE_STATE);
         break;
     }
 
     case ALARM_STATE_EVENT_MUTE_BTN_PRESSED_SHORT_TIME:
-        if (alarmStateMachine.isEnableAlarmAudioOff())
+        if (alarmStateMachine->isEnableAlarmAudioOff())
         {
-            alarmStateMachine.switchState(ALARM_AUDIO_OFF_STATE);
+            alarmStateMachine->switchState(ALARM_AUDIO_OFF_STATE);
         }
         break;
 
     case ALARM_STATE_EVENT_MUTE_BTN_PRESSED_LONG_TIME:
-        if (alarmStateMachine.isEnableAlarmOff())
+        if (alarmStateMachine->isEnableAlarmOff())
         {
-            alarmStateMachine.switchState(ALARM_OFF_STATE);
+            alarmStateMachine->switchState(ALARM_OFF_STATE);
         }
         break;
 
     case ALARM_STATE_EVENT_NEW_PHY_ALARM:
     case ALARM_STATE_EVENT_NEW_TECH_ALARM:
         // new alarm arrived, switch to normal state
-        alarmStateMachine.switchState(ALARM_NORMAL_STATE);
+        alarmStateMachine->switchState(ALARM_NORMAL_STATE);
         break;
     case ALARM_STATE_EVENT_NO_ACKNOWLEDG_ALARM:
-        alarmStateMachine.switchState(ALARM_NORMAL_STATE);
+        alarmStateMachine->switchState(ALARM_NORMAL_STATE);
         break;
     default:
         break;

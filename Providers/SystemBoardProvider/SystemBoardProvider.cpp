@@ -14,7 +14,6 @@
 #include "SystemManager.h"
 #include "SystemBoardProvider.h"
 #include "WindowManager.h"
-#include "ServiceVersion.h"
 #include "SystemAlarm.h"
 #include "KeyActionManager.h"
 #include "ErrorLog.h"
@@ -22,6 +21,7 @@
 #include "IConfig.h"
 #include "PowerOffWindow.h"
 #include "PowerManager.h"
+#include "AlarmSourceManager.h"
 
 enum SystemBoardMessageType
 {
@@ -227,14 +227,13 @@ void SystemBoardProvider::_parseBatteryInfo(unsigned char *data, int len)
 
     modeStatus.isCharging = data[1];        // 是否正在充电
     modeStatus.adcValue = (data[3] << 8) | data[2];     // ADC值
-
     if (modeStatus.adcValue < 500)
     {
         // 不合理的ADC值，过滤
         return;
     }
 
-    if (modeStatus.powerSuply == POWER_SUPLY_AC_BAT && modeStatus.isCharging)
+    if (modeStatus.powerSuply == POWER_SUPLY_AC_BAT)
     {
         powerManger.setBatteryCapacity(modeStatus.adcValue);
     }
@@ -317,7 +316,7 @@ void SystemBoardProvider::handlePacket(unsigned char *data, int len)
         break;
 
     case MSG_RSP_BATTERY_INFO:
-        _parseBatteryInfo(data, len);
+        _parsePowerStat(data, len);
         break;
 
     case MSG_RSP_SET_ALARM_MUTE_LED:
@@ -374,7 +373,11 @@ void SystemBoardProvider::handlePacket(unsigned char *data, int len)
  *************************************************************************************************/
 void SystemBoardProvider::disconnected(void)
 {
-    systemAlarm.setOneShotAlarm(SYSTEM_ONE_SHOT_ALARM_COMMUNICATION_STOP, true);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SYSTEM);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(SYSTEM_ONE_SHOT_ALARM_COMMUNICATION_STOP, true);
+    }
 }
 
 /**************************************************************************************************
@@ -382,7 +385,20 @@ void SystemBoardProvider::disconnected(void)
  *************************************************************************************************/
 void SystemBoardProvider::reconnected(void)
 {
-    systemAlarm.setOneShotAlarm(SYSTEM_ONE_SHOT_ALARM_COMMUNICATION_STOP, false);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SYSTEM);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(SYSTEM_ONE_SHOT_ALARM_COMMUNICATION_STOP, false);
+    }
+}
+
+void SystemBoardProvider::sendDisconnected()
+{
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SYSTEM);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(SYSTEM_ONE_SHOT_ALARM_SEND_COMMUNICATION_STOP, true);
+    }
 }
 
 
@@ -397,6 +413,11 @@ PowerSuplyType SystemBoardProvider::getPowerSuplyType(void)
 short SystemBoardProvider::getPowerADC()
 {
     return modeStatus.adcValue;
+}
+
+bool SystemBoardProvider::isPowerCharging()
+{
+    return modeStatus.isCharging;
 }
 
 /**************************************************************************************************

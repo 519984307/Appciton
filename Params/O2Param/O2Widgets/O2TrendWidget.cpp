@@ -19,9 +19,9 @@
 
 void O2TrendWidget::setO2Value(int16_t o2)
 {
-    if ((o2 & 0xffff) != 0xffff)
+    if (((o2 & 0xffff) != 0xffff) && o2 != InvData())
     {
-        _o2String = QString("%1").number(o2 / 10.0 , 'f' , 1);
+        _o2String = QString("%1").number(o2);
     }
     else
     {
@@ -60,7 +60,7 @@ O2TrendWidget::O2TrendWidget() : TrendWidget("O2TrendWidget"),
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_O2));
     setPalette(palette);
     setName(trs(paramInfo.getSubParamName(SUB_PARAM_O2)));
-    setUnit(Unit::localeSymbol(UNIT_PERCENT));
+    setUnit(trs(Unit::getSymbol(UNIT_PERCENT)));
 
     // 设置上下限
     updateLimit();
@@ -112,7 +112,7 @@ void O2TrendWidget::setTextSize()
 {
     QRect r = this->rect();
     r.adjust(nameLabel->width(), 0, 0, 0);
-    int fontSize = fontManager.adjustNumFontSize(r, true);
+    int fontSize = fontManager.adjustNumFontSize(r, true, "9999");
     QFont font = fontManager.numFont(fontSize, true);
     font.setWeight(QFont::Black);
     _o2Value->setFont(font);

@@ -2,7 +2,10 @@
 #include "USBManager.h"
 
 void DataExporterBase::exportComplete(DataExporterBase::ExportStatus status) {
-    usbManager.stopWriteUSBDisk();
+    if (status == NoSpace)
+    {
+        usbManager.stopWriteUSBDisk();
+    }
     emit exportFinished(status);
 }
 

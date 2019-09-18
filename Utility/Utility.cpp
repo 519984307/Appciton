@@ -18,8 +18,6 @@
 #include <syslog.h>
 #include <qglobal.h>
 #include <QCoreApplication>
-#include "MessageBox.h"
-#include "LanguageManager.h"
 
 namespace Util
 {
@@ -130,20 +128,6 @@ QString convertToString(int value, int scale)
         }
 
         return QString::number(static_cast<double>(value) / scale, 'f', prec);
-    }
-}
-
-void popupMsgBox(const QString &title, const QPixmap &icon, const QString &text)
-{
-    if (icon.isNull())
-    {
-        MessageBox msgBox(title, text, false);
-        msgBox.exec();
-    }
-    else
-    {
-        MessageBox msgBox(title, icon, text, false);
-        msgBox.exec();
     }
 }
 

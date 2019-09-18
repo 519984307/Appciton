@@ -16,6 +16,8 @@
 #include "NIBPParam.h"
 #include <QMap>
 #include "AlarmDefine.h"
+#include "EventDataParseContext.h"
+#include "IStorageBackend.h"
 
 // nibp数据包
 struct NibpDataPacket
@@ -77,6 +79,17 @@ public:
      */
     void updateWidgetConfig();
 
+    /**
+     * @brief clearListData 清除列表数据
+     */
+    void clearListData();
+
+    void updateUnit(UnitType unit);
+
+    void getTrendNIBPlist();
+
+    bool parseEventData(int dataIndex);
+
     NIBPDataTrendWidget();
     ~NIBPDataTrendWidget();
 
@@ -96,6 +109,9 @@ private:
     int _rowNR;
     int _tableItemHeight;  // 表格高度。
 
+    EventDataPraseContext ctx;
+    IStorageBackend *backend;
+    int eventNum;
     /**
      * @brief getPriotityColor 根据优先级获取显示颜色
      * @param prio
@@ -106,4 +122,7 @@ private:
     // 子参数ID、数值映射。
     typedef QMap<unsigned, NIBPTrendCacheData> NIBPTrendCacheMap;
     NIBPTrendCacheMap _nibpNrendCacheMap;
+
+    QString moduleStr;
+    int columnNR;
 };

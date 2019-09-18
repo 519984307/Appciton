@@ -1,10 +1,18 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2019/3/22
+ **/
+
 #include "COAlarm.h"
 #include "ParamInfo.h"
 #include "AlarmConfig.h"
 #include "COParam.h"
 #include "SystemManager.h"
-
-COLimitAlarm *COLimitAlarm::_selfObj = NULL;
 
 /**************************************************************************************************
  * alarm source name.
@@ -25,9 +33,10 @@ int COLimitAlarm::getAlarmSourceNR()
 /**************************************************************************************************
  * alarm id corresponding to waveform ID
  *************************************************************************************************/
-WaveformID COLimitAlarm::getWaveformID(int /*id*/)
+WaveformID COLimitAlarm::getWaveformID(int id)
 {
-        return WAVE_NONE;
+    Q_UNUSED(id)
+    return WAVE_NONE;
 }
 
 /**************************************************************************************************
@@ -94,7 +103,7 @@ bool COLimitAlarm::isAlarmEnable(int id)
 int COLimitAlarm::getUpper(int id)
 {
     SubParamID subID = getSubParamID(id);
-    UnitType unit;
+    UnitType unit = UNIT_LPM;
     if (subID == SUB_PARAM_CO_CO)
     {
         unit = UNIT_LPM;
@@ -116,7 +125,7 @@ int COLimitAlarm::getUpper(int id)
 int COLimitAlarm::getLower(int id)
 {
     SubParamID subID = getSubParamID(id);
-    UnitType unit;
+    UnitType unit = UNIT_LPM;
     if (subID == SUB_PARAM_CO_CO)
     {
         unit = UNIT_LPM;
@@ -172,9 +181,10 @@ const char *COLimitAlarm::toString(int id)
 /**************************************************************************************************
  * alarm notify.
  *************************************************************************************************/
-void COLimitAlarm::notifyAlarm(int /*id*/, bool /*flag*/)
+void COLimitAlarm::notifyAlarm(int id, bool flag)
 {
-
+    Q_UNUSED(id)
+    Q_UNUSED(flag)
 }
 
 /**************************************************************************************************
@@ -182,7 +192,6 @@ void COLimitAlarm::notifyAlarm(int /*id*/, bool /*flag*/)
  *************************************************************************************************/
 COLimitAlarm::~COLimitAlarm()
 {
-
 }
 
 /**************************************************************************************************
@@ -190,13 +199,10 @@ COLimitAlarm::~COLimitAlarm()
  *************************************************************************************************/
 COLimitAlarm::COLimitAlarm()
 {
-
 }
 
 /**************************************************************************************************
  *************************************************************************************************/
-
-COOneShotAlarm *COOneShotAlarm::_selfObj = NULL;
 
 /**************************************************************************************************
  * one shot alarm source name.
@@ -218,32 +224,36 @@ int COOneShotAlarm::getAlarmSourceNR()
 /**************************************************************************************************
  * one shot alarm id corresponding to waveform ID
  *************************************************************************************************/
-WaveformID COOneShotAlarm::getWaveformID(int /*id*/)
+WaveformID COOneShotAlarm::getWaveformID(int id)
 {
+    Q_UNUSED(id)
     return WAVE_NONE;
 }
 
 /**************************************************************************************************
  * one shot alarm id corresponding to param ID
  *************************************************************************************************/
-SubParamID COOneShotAlarm::getSubParamID(int /*id*/)
+SubParamID COOneShotAlarm::getSubParamID(int id)
 {
+    Q_UNUSED(id)
     return SUB_PARAM_NONE;
 }
 
 /**************************************************************************************************
  * one shot alarm priority.
  *************************************************************************************************/
-AlarmPriority COOneShotAlarm::getAlarmPriority(int /*id*/)
+AlarmPriority COOneShotAlarm::getAlarmPriority(int id)
 {
+    Q_UNUSED(id)
     return ALARM_PRIO_LOW;
 }
 
 /**************************************************************************************************
  * one shot alarm type.
  *************************************************************************************************/
-AlarmType COOneShotAlarm::getAlarmType(int /*id*/)
+AlarmType COOneShotAlarm::getAlarmType(int id)
 {
+    Q_UNUSED(id)
     return ALARM_TYPE_TECH;
 }
 
@@ -265,7 +275,6 @@ bool COOneShotAlarm::isAlarmed(int id)
  *************************************************************************************************/
 void COOneShotAlarm::notifyAlarm(int /*id*/, bool /*isAlarm*/)
 {
-
 }
 
 /**************************************************************************************************
@@ -279,16 +288,18 @@ const char *COOneShotAlarm::toString(int id)
 /**************************************************************************************************
  * enable one shot alarm.
  *************************************************************************************************/
-bool COOneShotAlarm::isAlarmEnable(int /*id*/)
+bool COOneShotAlarm::isAlarmEnable(int id)
 {
+    Q_UNUSED(id)
     return true;
 }
 
 /**************************************************************************************************
  *  remove alarm display information later latch.
  *************************************************************************************************/
-bool COOneShotAlarm::isRemoveAfterLatch(int /*id*/)
+bool COOneShotAlarm::isRemoveAfterLatch(int id)
 {
+    Q_UNUSED(id)
     return false;
 }
 
@@ -297,7 +308,6 @@ bool COOneShotAlarm::isRemoveAfterLatch(int /*id*/)
  *************************************************************************************************/
 COOneShotAlarm::~COOneShotAlarm()
 {
-
 }
 
 /**************************************************************************************************
@@ -305,5 +315,4 @@ COOneShotAlarm::~COOneShotAlarm()
  *************************************************************************************************/
 COOneShotAlarm::COOneShotAlarm()
 {
-
 }

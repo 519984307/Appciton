@@ -31,12 +31,6 @@ bool SPO2WaveWidget::waveEnable()
     return spo2Param.isEnabled();
 }
 
-void SPO2WaveWidget::updateWidgetConfig()
-{
-    _loadConfig();
-    WaveWidget::updateWidgetConfig();
-}
-
 /**************************************************************************************************
  * 响应窗体大小调整事件。
  * 参数:
@@ -72,7 +66,7 @@ void SPO2WaveWidget::focusInEvent(QFocusEvent *e)
 /**************************************************************************************************
  * 载入配置。
  *************************************************************************************************/
-void SPO2WaveWidget::_loadConfig(void)
+void SPO2WaveWidget::loadConfig(void)
 {
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
     setPalette(palette);
@@ -108,8 +102,12 @@ void SPO2WaveWidget::setNotify(bool enable, QString str)
     }
     else
     {
-        _notify->setVisible(false);
-        _notify->setText(" ");
+        if (_notify->text() == str || str == " ")
+        {
+            // 清空和当前字符串相同的，或者字符为空的情况
+            _notify->setVisible(false);
+            _notify->setText(" ");
+        }
     }
 }
 
@@ -134,12 +132,12 @@ SPO2WaveWidget::SPO2WaveWidget(const QString &waveName, const QString &title)
     _notify = new WaveWidgetLabel(" ", Qt::AlignCenter, this);
     _notify->setFont(fontManager.textFont(fontSize));
     _notify->setFocusPolicy(Qt::NoFocus);
-    _notify->setFixedSize(200, fontH);
+    _notify->setFixedSize(300, fontH);
     _notify->setText("");
     _notify->setVisible(false);
     addItem(_notify);
     // 加载配置
-    _loadConfig();
+    loadConfig();
 
     setMargin(QMargins(WAVE_X_OFFSET, fontH, 2, 2));
 }

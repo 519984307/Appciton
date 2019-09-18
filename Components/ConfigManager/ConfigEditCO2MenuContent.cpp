@@ -17,9 +17,8 @@
 #include "CO2Symbol.h"
 #include "CO2Param.h"
 #include "ConfigManager.h"
-#include "KeyInputPanel.h"
-#include "MessageBox.h"
 #include "RESPParam.h"
+#include "SpinBox.h"
 
 class ConfigEditCO2MenuContentPrivate
 {
@@ -27,11 +26,12 @@ public:
     enum MenuItem
     {
         ITEM_CBO_WAVE_SPEED = 0,
+        ITEM_CBO_WAVE_RULER,
         ITEM_CBO_FICO2_DISPLAY,
         ITEM_CBO_APNEA_TIME,
 
-        ITEM_BTN_O2_COMPEN = 0,
-        ITEM_BTN_N2O_COMPEN,
+        ITEM_SPIN_O2_COMPEN = 0,
+        ITEM_SPIN_N2O_COMPEN,
     };
 
     explicit ConfigEditCO2MenuContentPrivate(Config *const config)
@@ -44,7 +44,7 @@ public:
     void loadOptions();
 
     QMap<MenuItem, ComboBox *> combos;
-    QMap<MenuItem, Button *> btns;
+    QMap<MenuItem, SpinBox *> spins;
     Config *const config;
 };
 
@@ -69,12 +69,13 @@ void ConfigEditCO2MenuContent::readyShow()
             ::ITEM_CBO_FICO2_DISPLAY]->setEnabled(!isOnlyToRead);
     d_ptr->combos[ConfigEditCO2MenuContentPrivate
             ::ITEM_CBO_APNEA_TIME]->setEnabled(!isOnlyToRead);
-    d_ptr->btns[ConfigEditCO2MenuContentPrivate
-            ::ITEM_BTN_O2_COMPEN]->setEnabled(!isOnlyToRead);
-    d_ptr->btns[ConfigEditCO2MenuContentPrivate
-            ::ITEM_BTN_N2O_COMPEN]->setEnabled(!isOnlyToRead);
+    d_ptr->spins[ConfigEditCO2MenuContentPrivate
+            ::ITEM_SPIN_O2_COMPEN]->setEnabled(!isOnlyToRead);
+    d_ptr->spins[ConfigEditCO2MenuContentPrivate
+            ::ITEM_SPIN_N2O_COMPEN]->setEnabled(!isOnlyToRead);
+    d_ptr->combos[ConfigEditCO2MenuContentPrivate
+            ::ITEM_CBO_WAVE_RULER]->setEnabled(!isOnlyToRead);
 }
-
 
 void ConfigEditCO2MenuContentPrivate::loadOptions()
 {
@@ -85,17 +86,51 @@ void ConfigEditCO2MenuContentPrivate::loadOptions()
     combos[ITEM_CBO_WAVE_SPEED]->setCurrentIndex(index);
 
     // 气体补偿。
+    index = 0;  // init the 'index'
     config->getNumValue("CO2|O2Compensation", index);
-    btns[ITEM_BTN_O2_COMPEN]->setText(QString::number(index));
+    spins[ITEM_SPIN_O2_COMPEN]->setValue(index);
+
+    index = 0;  // init the 'index'
     config->getNumValue("CO2|N2OCompensation", index);
-    btns[ITEM_BTN_N2O_COMPEN]->setText(QString::number(index));
+    spins[ITEM_SPIN_N2O_COMPEN]->setValue(index);
 
     // 显示控制。
-    config->getNumValue("CO2|FICO2Display", index);
+    index = 0;  // init the 'index'
+    config->getNumValue("CO2|FiCO2Display", index);
     combos[ITEM_CBO_FICO2_DISPLAY]->setCurrentIndex(index);
 
     config->getNumValue("Alarm|ApneaTime", index);
     combos[ITEM_CBO_APNEA_TIME]->setCurrentIndex(index);
+
+    // co2标尺
+    combos[ITEM_CBO_WAVE_RULER]->blockSignals(true);
+    combos[ITEM_CBO_WAVE_RULER]->clear();
+    int maxZoom = CO2_DISPLAY_ZOOM_NR;
+    float zoomArray[CO2_DISPLAY_ZOOM_NR] = {4.0, 8.0, 12.0, 20.0};
+    QString str;
+    UnitType unit = co2Param.getUnit();
+    for (int i = 0; i < maxZoom; i++)
+    {
+        str.clear();
+        if (unit == UNIT_MMHG)
+        {
+            str = "0~";
+            int tempVal = Unit::convert(UNIT_MMHG, UNIT_PERCENT, zoomArray[i]).toInt();
+            tempVal = (tempVal + 5) / 10 * 10;
+            str += QString::number(tempVal);
+        }
+        else
+        {
+            str = QString("0.0~%1").arg(QString::number(zoomArray[i], 'f', 1));
+        }
+        str += " ";
+        str += trs(Unit::getSymbol(unit));
+        combos[ITEM_CBO_WAVE_RULER]->addItem(str);
+    }
+    combos[ITEM_CBO_WAVE_RULER]->blockSignals(false);
+    index = 0;  // init the 'index'
+    config->getNumValue("CO2|DisplayZoom", index);
+    combos[ITEM_CBO_WAVE_RULER]->setCurrentIndex(index);
 }
 
 void ConfigEditCO2MenuContent::onComboBoxIndexChanged(int index)
@@ -107,74 +142,16 @@ void ConfigEditCO2MenuContent::onComboBoxIndexChanged(int index)
     case ConfigEditCO2MenuContentPrivate::ITEM_CBO_WAVE_SPEED:
         d_ptr->config->setNumValue("CO2|SweepSpeed", index);
         break;
+    case ConfigEditCO2MenuContentPrivate::ITEM_CBO_WAVE_RULER:
+        d_ptr->config->setNumValue("CO2|DisplayZoom", index);
+        break;
     case ConfigEditCO2MenuContentPrivate::ITEM_CBO_FICO2_DISPLAY:
-        d_ptr->config->setNumValue("CO2|FICO2Display", index);
+        d_ptr->config->setNumValue("CO2|FiCO2Display", index);
         break;
     case ConfigEditCO2MenuContentPrivate::ITEM_CBO_APNEA_TIME:
         d_ptr->config->setNumValue("Alarm|ApneaTime", index);
         break;
     };
-}
-
-void ConfigEditCO2MenuContent::onBtnReleasedChanged()
-{
-    Button *button = qobject_cast<Button *>(sender());
-    int index = button->property("Btn").toInt();
-
-    // 调用数字键盘
-    KeyInputPanel numberInput(KeyInputPanel::KEY_TYPE_NUMBER);
-    // 最大输入长度
-    numberInput.setMaxInputLength(3);
-    // 固定为数字键盘
-    numberInput.setKeytypeSwitchEnable(false);
-    numberInput.setSymbolEnable(false);
-    numberInput.setSpaceEnable(false);
-    // 设置初始字符串 placeholder模式
-    numberInput.setInitString(button->text(), true);
-
-    unsigned num = 1000;
-    switch (index)
-    {
-    case ConfigEditCO2MenuContentPrivate::ITEM_BTN_O2_COMPEN:
-        numberInput.setWindowTitle(trs("O2Compensation"));
-        if (numberInput.exec())
-        {
-            QString strValue = numberInput.getStrValue();
-            num = strValue.toShort();
-            if (num <= 100)
-            {
-                d_ptr->config->setNumValue("CO2|O2Compensation", num);
-                button->setText(QString::number(num));
-            }
-            else
-            {
-                MessageBox messageBox(trs("O2Compensation"), trs("InvalidInput") + "0-100", QStringList(trs("EnglishYESChineseSURE")));
-                messageBox.exec();
-            }
-        }
-        break;
-    case ConfigEditCO2MenuContentPrivate::ITEM_BTN_N2O_COMPEN:
-        numberInput.setWindowTitle(trs("N2OCompensation"));
-        if (numberInput.exec())
-        {
-            QString strValue = numberInput.getStrValue();
-            num = strValue.toShort();
-            if (num <= 100)
-            {
-                d_ptr->config->setNumValue("CO2|N2OCompensation", num);
-                button->setText(QString::number(num));
-            }
-            else
-            {
-                MessageBox messageBox(trs("N2OCompensation"), trs("InvalidInput") + "0-100",
-                                       QStringList(trs("EnglishYESChineseSURE")));
-                messageBox.exec();
-            }
-        }
-        break;
-    default:
-        break;
-    }
 }
 
 void ConfigEditCO2MenuContent::onAlarmBtnReleased()
@@ -187,11 +164,20 @@ void ConfigEditCO2MenuContent::onAlarmBtnReleased()
     }
 }
 
+void ConfigEditCO2MenuContent::o2CompenSpinboxReleased(int value, int scale)
+{
+    d_ptr->config->setNumValue("CO2|O2Compensation", value * scale);
+}
+
+void ConfigEditCO2MenuContent::n2oCompenSpinboxReleased(int value, int scale)
+{
+    d_ptr->config->setNumValue("CO2|N2OCompensation", value * scale);
+}
+
 void ConfigEditCO2MenuContent::layoutExec()
 {
     QGridLayout *layout = new QGridLayout(this);
     ComboBox *comboBox;
-    Button *button;
     QLabel *label;
     int itemID;
 
@@ -210,6 +196,16 @@ void ConfigEditCO2MenuContent::layoutExec()
     itemID = ConfigEditCO2MenuContentPrivate::ITEM_CBO_WAVE_SPEED;
     comboBox->setProperty("Item", itemID);
     d_ptr->combos.insert(ConfigEditCO2MenuContentPrivate::ITEM_CBO_WAVE_SPEED, comboBox);
+
+    // co2 ruler
+    label = new QLabel(trs("Ruler"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    itemID = static_cast<int>(ConfigEditCO2MenuContentPrivate::ITEM_CBO_WAVE_RULER);
+    comboBox->setProperty("Item", qVariantFromValue(itemID));
+    d_ptr->combos.insert(ConfigEditCO2MenuContentPrivate::ITEM_CBO_WAVE_RULER, comboBox);
 
     // fico2 display
     label = new QLabel(trs("CO2FiCO2Display"));
@@ -230,7 +226,6 @@ void ConfigEditCO2MenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
-                       << trs(CO2Symbol::convert(CO2_APNEA_TIME_OFF))
                        << trs(CO2Symbol::convert(CO2_APNEA_TIME_20_SEC))
                        << trs(CO2Symbol::convert(CO2_APNEA_TIME_25_SEC))
                        << trs(CO2Symbol::convert(CO2_APNEA_TIME_30_SEC))
@@ -251,36 +246,33 @@ void ConfigEditCO2MenuContent::layoutExec()
 
     // o2 compensation
     label = new QLabel(trs("O2Compensation"));
-    layout->addWidget(label, row + d_ptr->btns.count(), 0);
-    button = new Button();
-    button->setButtonStyle(Button::ButtonTextOnly);
-    button->setText(QString(80));
-    connect(button, SIGNAL(released()), this, SLOT(onBtnReleasedChanged()));
-    layout->addWidget(button, row + d_ptr->btns.count(), 1);
-    itemID = ConfigEditCO2MenuContentPrivate::ITEM_BTN_O2_COMPEN;
-    button->setProperty("Btn", itemID);
-    d_ptr->btns.insert(ConfigEditCO2MenuContentPrivate::ITEM_BTN_O2_COMPEN, button);
+    layout->addWidget(label, row, 0);
+    SpinBox *spinBox = new SpinBox();
+    spinBox->setRange(0, 100);
+    spinBox->setStep(1);
+    layout->addWidget(spinBox, row, 1);
+    connect(spinBox, SIGNAL(valueChange(int, int)), this, SLOT(o2CompenSpinboxReleased(int, int)));
+    d_ptr->spins.insert(ConfigEditCO2MenuContentPrivate::ITEM_SPIN_O2_COMPEN, spinBox);
+
 
     // n2o compensation
     label = new QLabel(trs("N2OCompensation"));
-    layout->addWidget(label, row + d_ptr->btns.count(), 0);
-    button = new Button("20");
-    button->setButtonStyle(Button::ButtonTextOnly);
-//    button->setText("20");
-    connect(button, SIGNAL(released()), this, SLOT(onBtnReleasedChanged()));
-    layout->addWidget(button, row + d_ptr->btns.count(), 1);
-    itemID = ConfigEditCO2MenuContentPrivate::ITEM_BTN_N2O_COMPEN;
-    button->setProperty("Btn", itemID);
-    d_ptr->btns.insert(ConfigEditCO2MenuContentPrivate::ITEM_BTN_N2O_COMPEN, button);
+    layout->addWidget(label, row + 1, 0);
+    spinBox = new SpinBox();
+    spinBox->setRange(0, 100);
+    spinBox->setStep(1);
+    layout->addWidget(spinBox, row + 1, 1);
+    connect(spinBox, SIGNAL(valueChange(int, int)), this, SLOT(n2oCompenSpinboxReleased(int, int)));
+    d_ptr->spins.insert(ConfigEditCO2MenuContentPrivate::ITEM_SPIN_N2O_COMPEN, spinBox);
 
     // 添加报警设置链接
     Button *btn = new Button(QString("%1%2").
                              arg(trs("AlarmSettingUp")).
                              arg(" >>"));
     btn->setButtonStyle(Button::ButtonTextOnly);
-    layout->addWidget(btn, (row + d_ptr->btns.count()), 1);
+    layout->addWidget(btn, (row + d_ptr->spins.count()), 1);
     connect(btn, SIGNAL(released()), this, SLOT(onAlarmBtnReleased()));
 
-    layout->setRowStretch((row + d_ptr->btns.count() + 1), 1);
+    layout->setRowStretch((row + d_ptr->spins.count() + 1), 1);
 }
 

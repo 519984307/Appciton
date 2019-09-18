@@ -23,6 +23,9 @@
 #include <QImage>
 #include <QApplication>
 #include <QDesktopWidget>
+#include "LanguageManager.h"
+#include "BLMCO2Provider.h"
+#include "IConfig.h"
 
 #define UPGRADE_FILES_DIR "/upgrade/"
 #define DEFAULT_HW_VER_STR "1.0A"
@@ -43,12 +46,17 @@ enum UpgradeState
     STATE_WAIT_FOR_COMPLETE_MSG,
     STATE_REBOOT,
     STATE_UPGRADE_LOGO,
+    STATE_UPGRADE_ENTER_PASSTHROUGH_MODE,
+    STATE_UPGRADE_EXIT_PASSTHROUGH_MODE
 };
 
 enum UpgradePacketType
 {
     UPGRADE_RSP_NACK    = 0x00,         // nack response
     UPGRADE_RSP_ACK     = 0x01,         // ack response
+
+    UPGRADE_N5_CMD_PASSTHROUGH_MODE = 0x25, // 透传模式。
+    UPGRADE_N5_RSP_PASSTHROUGH_MODE = 0x26,
 
     UPGRADE_NOTIFY_ALIVE = 0x5B,        // module alive packet
     UPGRADE_E5_NOTIFY_ALIVE = 0xB0,     // E5 module alive packet
@@ -75,21 +83,22 @@ enum UpgradePacketType
 
 enum UpgradeErrorType
 {
-    UPGRADE_ERR_NONE,
-    UPGRADE_ERR_NO_UDISK,
-    UPGRADE_ERR_NO_UPGRADE_FILE,
-    UPGRADE_ERR_NO_CHECKSUM_FILE,
-    UPGRADE_ERR_READ_FILE_FAIL,
-    UPGRADE_ERR_CHECKSUM_FAIL,
-    UPGRADE_ERR_MODULE_NOT_FOUND,
-    UPGRADE_ERR_MODULE_INITIALIZE_FAIL,
-    UPGRADE_ERR_MODULE_ERASE_FLASH_FAIL,
-    UPGRADE_ERR_IMAGE_FILE_UNMATCH,
-    UPGRADE_ERR_HARDWARE_VERION_UNMATCH,
-    UPGRADE_ERR_WRITE_ATTR_FAIL,
-    UPGRADE_ERR_WRITE_SEGMENT_FAIL,
-    UPGRADE_ERR_COMMUNICATION_FAIL,
-    UPGRADE_ERR_WRITE_FAIL,
+    UPGRADE_ERR_NONE                    = 0,
+    UPGRADE_ERR_NO_UDISK                = 1,
+    UPGRADE_ERR_NO_UPGRADE_FILE         = 2,
+    UPGRADE_ERR_NO_CHECKSUM_FILE        = 3,
+    UPGRADE_ERR_READ_FILE_FAIL          = 4,
+    UPGRADE_ERR_CHECKSUM_FAIL           = 5,
+    UPGRADE_ERR_MODULE_NOT_FOUND        = 6,
+    UPGRADE_ERR_MODULE_INITIALIZE_FAIL  = 7,
+    UPGRADE_ERR_MODULE_ERASE_FLASH_FAIL = 8,
+    UPGRADE_ERR_IMAGE_FILE_UNMATCH      = 9,
+    UPGRADE_ERR_HARDWARE_VERION_UNMATCH = 10,
+    UPGRADE_ERR_WRITE_ATTR_FAIL         = 11,
+    UPGRADE_ERR_WRITE_SEGMENT_FAIL      = 12,
+    UPGRADE_ERR_COMMUNICATION_FAIL      = 13,
+    UPGRADE_ERR_WRITE_FAIL              = 14,
+    UPGRADE_ERR_PASSTHROUGH_MODE_FAIL   = 15,
     UPGRADE_ERR_NR,
 };
 
@@ -112,6 +121,7 @@ static const char *errorString(UpgradeErrorType errorType)
         "WriteSegmentFail",
         "CommunicationFail",
         "WriteFail",
+        "SwitchPassthroughModeFail"
     };
     return errors[errorType];
 }
@@ -130,6 +140,15 @@ enum ModuleState
     MODULE_STAT_IMAGE_SEQ_ERROR,            // image sequence number error
     MODULE_STAT_WRITE_IMAGE_SEGMENT_FAIL,   // write image segment failed
     MODULE_STAT_WRITE_UPGRADE_COMPLETE,     // upgrade complete
+    MODULE_STAT_ENTER_PASSTHROUGH_MODE,     // nibp enter passthrough mode
+    MODULE_STAT_EXIT_PASSTHROUGH_MODE,      // nibp exit passthrough mode
+};
+
+// 透传模式
+enum NIBPPassthrough
+{
+    NIBP_PASSTHROUGH_OFF,
+    NIBP_PASSTHROUGH_ON,
 };
 
 class UpgradeManagerPrivate
@@ -141,9 +160,11 @@ public:
           type(UpgradeManager::UPGRADE_MOD_NONE),
           state(STATE_IDLE),
           provider(NULL),
+          co2Provider(NULL),
           noResponseTimer(NULL),
           noResponeCount(0),
-          segmentSeq(0)
+          segmentSeq(0),
+          isPassthroughMode(false)
     {}
 
     /**
@@ -237,9 +258,11 @@ public:
     UpgradeState state;
     QByteArray fileContent;
     BLMProvider *provider;
+    BLMCO2Provider *co2Provider;
     QTimer *noResponseTimer;
     int noResponeCount;
     int segmentSeq;     // the file segment sequence number
+    bool isPassthroughMode; // NIBP透传模式
 };
 
 bool UpgradeManagerPrivate::checkUpgradeFile()
@@ -282,7 +305,7 @@ bool UpgradeManagerPrivate::checkUpgradeFile()
                     break;
                 }
             }
-        } while (!line.isEmpty());
+        }while (!line.isEmpty());
 
         return foundUpgradeFile;
     }
@@ -350,11 +373,16 @@ QString UpgradeManagerPrivate::getProviderName(UpgradeManager::UpgradeModuleType
     case UpgradeManager::UPGRADE_MOD_S5:
         return "BLM_S5";
     case UpgradeManager::UPGRADE_MOD_N5:
+    case UpgradeManager::UPGRADE_MOD_N5DAEMON:
         return "BLM_N5";
     case UpgradeManager::UPGRADE_MOD_T5:
         return "BLM_T5";
+    case UpgradeManager::UPGRADE_MOD_CO2:
+        return "BLM_CO2";
     case UpgradeManager::UPGRADE_MOD_PRT48:
         return "PRT48";
+    case UpgradeManager::UPGRADE_MOD_NEONATE:
+        return "NEONATE_O2";
     case UpgradeManager::UPGRADE_MOD_nPMBoard:
         return "SystemBoard";
     default:
@@ -367,8 +395,6 @@ QString UpgradeManagerPrivate::getProviderName(UpgradeManager::UpgradeModuleType
 void UpgradeManagerPrivate::upgradeExit(UpgradeManager::UpgradeResult result, UpgradeErrorType error)
 {
     qdebug("Upgrade exit, result:%d, error:%d", result, error);
-    type = UpgradeManager::UPGRADE_MOD_NONE;
-    state = STATE_IDLE;
 
     if (error != UPGRADE_ERR_NONE)
     {
@@ -377,15 +403,33 @@ void UpgradeManagerPrivate::upgradeExit(UpgradeManager::UpgradeResult result, Up
 
     emit q_ptr->upgradeResult(result);
 
-    if (provider)
-    {
-        provider->setUpgradeIface(NULL);
-        provider = NULL;
-    }
-
     resetTimer();
 
     segmentSeq = 0;
+
+    QString moduleStr;
+    machineConfig.getStrValue("NIBP", moduleStr);
+    if (type == UpgradeManager::UPGRADE_MOD_N5DAEMON && moduleStr == "BLM_N5")
+    {
+        handleStateChanged(MODULE_STAT_EXIT_PASSTHROUGH_MODE);
+        state = STATE_UPGRADE_EXIT_PASSTHROUGH_MODE;
+    }
+    else
+    {
+        if (provider)
+        {
+            provider->setUpgradeIface(NULL);
+            provider = NULL;
+        }
+        if (co2Provider)
+        {
+            co2Provider->setUpgradeIface(NULL);
+            co2Provider = NULL;
+        }
+        state = STATE_IDLE;
+    }
+
+    type = UpgradeManager::UPGRADE_MOD_NONE;
 }
 
 void UpgradeManagerPrivate::handleAck(unsigned char *data, int len)
@@ -466,7 +510,7 @@ void UpgradeManagerPrivate::handleSegmentRsp(unsigned char *data, int len)
                 // all segment is sent, not wait for state change
                 state = STATE_WAIT_FOR_COMPLETE_MSG;
             }
-            else
+            else if (seq == segmentSeq)
             {
                 segmentSeq++;
             }
@@ -540,9 +584,38 @@ void UpgradeManagerPrivate::handleStateChanged(ModuleState modState)
         if (state == STATE_WAIT_FOR_COMPLETE_MSG || state == STATE_WRITE_IMAGE_SEGMENT)
         {
             emit  q_ptr->upgradeInfoChanged(trs("WriteImageComplete"));
-            upgradeExit(UpgradeManager::UPGRADE_SUCCESS, UPGRADE_ERR_NONE);
+            // 当前面板升级成功后启动重启操作
+            if (type == UpgradeManager::UPGRADE_MOD_nPMBoard)
+            {
+                state = STATE_REBOOT;
+                q_ptr->upgradeProcess();
+            }
+            else
+            {
+                if (type == UpgradeManager::UPGRADE_MOD_T5)
+                {
+                    emit q_ptr->upgradeT5ModuleCompleted();
+                }
+                upgradeExit(UpgradeManager::UPGRADE_SUCCESS, UPGRADE_ERR_NONE);
+            }
         }
         break;
+    case MODULE_STAT_ENTER_PASSTHROUGH_MODE:
+    {
+        emit q_ptr->upgradeInfoChanged(trs("EnterPassthroughMode"));
+        unsigned char cmd = NIBP_PASSTHROUGH_ON;
+        provider->sendCmd(UPGRADE_N5_CMD_PASSTHROUGH_MODE, &cmd, 1);
+        noResponseTimer->start(2000);
+        break;
+    }
+    case MODULE_STAT_EXIT_PASSTHROUGH_MODE:
+    {
+        emit q_ptr->upgradeInfoChanged(trs("ExitPassthroughMode"));
+        unsigned char cmd = NIBP_PASSTHROUGH_OFF;
+        provider->sendCmd(UPGRADE_N5_CMD_PASSTHROUGH_MODE, &cmd, 1);
+        noResponseTimer->start(2000);
+        break;
+    }
     default:
         break;
     }
@@ -601,8 +674,14 @@ QString UpgradeManager::getUpgradeModuleName(UpgradeManager::UpgradeModuleType t
         return "S5";
     case UPGRADE_MOD_N5:
         return "N5";
+    case UPGRADE_MOD_N5DAEMON:
+        return "N5Daemon";
     case UPGRADE_MOD_T5:
         return "T5";
+    case UPGRADE_MOD_CO2:
+        return "CO2";
+    case UPGRADE_MOD_NEONATE:
+        return "Neonate";
     case UPGRADE_MOD_PRT48:
         return "PRT48";
     case UPGRADE_MOD_nPMBoard:
@@ -626,6 +705,22 @@ void UpgradeManager::startModuleUpgrade(UpgradeManager::UpgradeModuleType type)
 
     d_ptr->type = type;
     d_ptr->state = STATE_CHECK_UDISK;
+    if (d_ptr->type == UPGRADE_MOD_CO2)
+    {
+        d_ptr->co2Provider = static_cast<BLMCO2Provider *>(paramManager.getProvider("BLM_CO2"));
+        if (d_ptr->co2Provider)
+        {
+            d_ptr->co2Provider->setUpgradeIface(this);
+        }
+    }
+    else
+    {
+        d_ptr->provider = BLMProvider::findProvider(d_ptr->getProviderName(d_ptr->type));
+        if (d_ptr->provider)
+        {
+            d_ptr->provider->setUpgradeIface(this);
+        }
+    }
 
     QTimer::singleShot(0, this, SLOT(upgradeProcess()));
 }
@@ -648,8 +743,35 @@ void UpgradeManager::handlePacket(unsigned char *data, int len)
         break;
     case UPGRADE_NOTIFY_UPGRADE_ALIVE:
         break;
+    case UPGRADE_N5_RSP_PASSTHROUGH_MODE:
+        if (data[1] == NIBP_PASSTHROUGH_OFF)
+        {
+            n5DaemonExitUpgradeMode();
+        }
+        else if (data[1] == NIBP_PASSTHROUGH_ON)
+        {
+            n5DaemonEnterUpgradeMode();
+        }
+        break;
     default:
         break;
+    }
+}
+
+void UpgradeManager::n5DaemonEnterUpgradeMode()
+{
+    d_ptr->state = STATE_REQUEST_ENTER_UPGRADE_MODE;
+    d_ptr->resetTimer();
+    upgradeProcess();
+}
+
+void UpgradeManager::n5DaemonExitUpgradeMode()
+{
+    d_ptr->resetTimer();
+    if (d_ptr->provider)
+    {
+        d_ptr->provider->setUpgradeIface(NULL);
+        d_ptr->provider = NULL;
     }
 }
 
@@ -714,7 +836,7 @@ void UpgradeManager::upgradeProcess()
         d_ptr->fileContent = f.readAll();
 
         // get the md5sum from the file name
-        QString md5 = filename.section('.', 1, 1);
+        QString md5 = filename.section('.', -2, -2);
 
         QString calcMd5 = d_ptr->calcChecksum(d_ptr->fileContent);
 
@@ -725,7 +847,25 @@ void UpgradeManager::upgradeProcess()
             break;
         }
 
-        d_ptr->state = STATE_REQUEST_ENTER_UPGRADE_MODE;
+        if (d_ptr->type == UPGRADE_MOD_N5DAEMON)
+        {
+            QString moduleStr;
+            machineConfig.getStrValue("NIBP", moduleStr);
+            if (moduleStr == "BLM_N5")
+            {
+                d_ptr->handleStateChanged(MODULE_STAT_ENTER_PASSTHROUGH_MODE);
+                d_ptr->state = STATE_UPGRADE_ENTER_PASSTHROUGH_MODE;
+                break;
+            }
+            else
+            {
+                d_ptr->state = STATE_REQUEST_ENTER_UPGRADE_MODE;
+            }
+        }
+        else
+        {
+            d_ptr->state = STATE_REQUEST_ENTER_UPGRADE_MODE;
+        }
         QTimer::singleShot(0, this, SLOT(upgradeProcess()));
     }
     break;
@@ -733,15 +873,21 @@ void UpgradeManager::upgradeProcess()
     case STATE_REQUEST_ENTER_UPGRADE_MODE:
     {
         emit upgradeInfoChanged(trs("RequestEnterUpgradeMode"));
-        d_ptr->provider = BLMProvider::findProvider(d_ptr->getProviderName(d_ptr->type));
-        if (!d_ptr->provider)
+        if (!d_ptr->provider && !d_ptr->co2Provider)
         {
             d_ptr->upgradeExit(UPGRADE_FAIL, UPGRADE_ERR_MODULE_NOT_FOUND);
             break;
         }
 
-        d_ptr->provider->setUpgradeIface(this);
-        d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_ENTER, NULL, 0);
+        if (d_ptr->type == UPGRADE_MOD_CO2)
+        {
+            d_ptr->co2Provider->enterUpgradeMode();
+            d_ptr->co2Provider->sendUpgradeCmd(UPGRADE_CMD_REQUEST_ENTER, NULL, 0);
+        }
+        else
+        {
+            d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_ENTER, NULL, 0);
+        }
         d_ptr->noResponseTimer->start(2000);
     }
     break;
@@ -749,7 +895,14 @@ void UpgradeManager::upgradeProcess()
     case STATE_REQUEST_SEND_DATA:
     {
         emit upgradeInfoChanged(trs("RequestSendData"));
-        d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_SEND, NULL, 0);
+        if (d_ptr->type == UPGRADE_MOD_CO2)
+        {
+            d_ptr->co2Provider->sendUpgradeCmd(UPGRADE_CMD_REQUEST_SEND, NULL, 0);
+        }
+        else
+        {
+            d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_SEND, NULL, 0);
+        }
         d_ptr->noResponseTimer->start(1000);
     }
     break;
@@ -771,7 +924,14 @@ void UpgradeManager::upgradeProcess()
         ::snprintf(data + 1, 32, "%s", qPrintable(getUpgradeModuleName(d_ptr->type)));  // NOLINT
         // module hardware version
         ::snprintf(data + 33, 16, DEFAULT_HW_VER_STR); // NOLINT
-        d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_ENTER, NULL, 0);
+        if (d_ptr->type == UPGRADE_MOD_CO2)
+        {
+            d_ptr->co2Provider->sendUpgradeCmd(UPGRADE_CMD_REQUEST_SEND, NULL, 0);
+        }
+        else
+        {
+            d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_SEND, NULL, 0);
+        }
         d_ptr->noResponseTimer->start(2000);
     }
     break;
@@ -784,13 +944,23 @@ void UpgradeManager::upgradeProcess()
         }
 
         QByteArray segment = d_ptr->getImageSegment(d_ptr->segmentSeq);
-        d_ptr->provider->sendCmd(UPGRADE_CMD_SEGMENT,
-                                 reinterpret_cast<const unsigned char *>(segment.constData()),
-                                 segment.length());
+        if (d_ptr->type == UPGRADE_MOD_CO2)
+        {
+            d_ptr->co2Provider->sendUpgradeCmd(UPGRADE_CMD_SEGMENT,
+                                               reinterpret_cast<const unsigned char *>(segment.constData()),
+                                               segment.length());
+        }
+        else
+        {
+            d_ptr->provider->sendCmd(UPGRADE_CMD_SEGMENT,
+                                     reinterpret_cast<const unsigned char *>(segment.constData()),
+                                     segment.length());
+        }
         d_ptr->noResponseTimer->start(1000);
 
         int count = (d_ptr->fileContent.size() + 127) / 128;
-        emit upgradeProgressChanged(d_ptr->segmentSeq * 100 / count);
+        // d_ptr->segmentSeq是从０开始的序列．
+        emit upgradeProgressChanged(d_ptr->segmentSeq * 100 / (count - 1));
 
         qdebug("write segment %d", d_ptr->segmentSeq);
     }
@@ -894,7 +1064,14 @@ void UpgradeManager::noResponseTimeout()
     case STATE_REQUEST_ENTER_UPGRADE_MODE:
         if (d_ptr->noResponeCount < 2)
         {
-            d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_ENTER, NULL, 0);
+            if (d_ptr->type == UPGRADE_MOD_CO2)
+            {
+                d_ptr->co2Provider->sendUpgradeCmd(UPGRADE_CMD_REQUEST_ENTER, NULL, 0);
+            }
+            else
+            {
+                d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_ENTER, NULL, 0);
+            }
         }
         else
         {
@@ -905,7 +1082,14 @@ void UpgradeManager::noResponseTimeout()
     case STATE_REQUEST_SEND_DATA:
         if (d_ptr->noResponeCount < 5)
         {
-            d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_SEND, NULL, 0);
+            if (d_ptr->type == UPGRADE_MOD_CO2)
+            {
+                d_ptr->co2Provider->sendUpgradeCmd(UPGRADE_CMD_REQUEST_SEND, NULL, 0);
+            }
+            else
+            {
+                d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_SEND, NULL, 0);
+            }
         }
         else
         {
@@ -926,7 +1110,14 @@ void UpgradeManager::noResponseTimeout()
             ::snprintf(data + 1, 32, "%s", qPrintable(getUpgradeModuleName(d_ptr->type))); // NOLINT
             // module hardware version
             ::snprintf(data + 33, 16, DEFAULT_HW_VER_STR); // NOLINT
-            d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_ENTER, NULL, 0);
+            if (d_ptr->type == UPGRADE_MOD_CO2)
+            {
+                d_ptr->co2Provider->sendUpgradeCmd(UPGRADE_CMD_REQUEST_ENTER, NULL, 0);
+            }
+            else
+            {
+                d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_ENTER, NULL, 0);
+            }
         }
         else
         {
@@ -937,9 +1128,18 @@ void UpgradeManager::noResponseTimeout()
         if (d_ptr->noResponeCount < 5)
         {
             QByteArray segment = d_ptr->getImageSegment(d_ptr->segmentSeq);
-            d_ptr->provider->sendCmd(UPGRADE_CMD_SEGMENT,
-                                     reinterpret_cast<const unsigned char *>(segment.constData()),
-                                     segment.length());
+            if (d_ptr->type == UPGRADE_MOD_CO2)
+            {
+                d_ptr->co2Provider->sendUpgradeCmd(UPGRADE_CMD_SEGMENT,
+                                                   reinterpret_cast<const unsigned char *>(segment.constData()),
+                                                   segment.length());
+            }
+            else
+            {
+                d_ptr->provider->sendCmd(UPGRADE_CMD_SEGMENT,
+                                         reinterpret_cast<const unsigned char *>(segment.constData()),
+                                         segment.length());
+            }
         }
         else
         {
@@ -953,6 +1153,13 @@ void UpgradeManager::noResponseTimeout()
     case STATE_REBOOT:
         emit reboot();
         system("reboot");
+        break;
+    case STATE_UPGRADE_ENTER_PASSTHROUGH_MODE:
+        d_ptr->upgradeExit(UPGRADE_FAIL, UPGRADE_ERR_PASSTHROUGH_MODE_FAIL);
+        break;
+    case STATE_UPGRADE_EXIT_PASSTHROUGH_MODE:
+        emit upgradeInfoChanged(trs(errorString(UPGRADE_ERR_PASSTHROUGH_MODE_FAIL)));
+        n5DaemonExitUpgradeMode();
         break;
     default:
         break;

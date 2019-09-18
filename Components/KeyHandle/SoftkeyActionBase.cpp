@@ -10,7 +10,6 @@
 
 
 #include "SoftkeyActionBase.h"
-#include "SoftKeyManager.h"
 #include "SoftkeyActionBase.h"
 #include <QApplication>
 #include "ECGParam.h"
@@ -32,11 +31,11 @@
 #include "NightModeManager.h"
 #include "CalculateWindow.h"
 #include "DischargePatientWindow.h"
-
-#define co2StandbyIcon "standby.png"
-#define co2StandbyHint trs("CO2Standby")
-#define co2MeasureIcon "measure.png"
-#define co2MeasureHint trs("CO2Measure")
+#include "TrendTableWindow.h"
+#include "LanguageManager.h"
+#include "LayoutManager.h"
+#include "BigFontLayoutWindow.h"
+#include "SoftKeyManager.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -45,33 +44,34 @@ static KeyActionDesc _baseKeys[] =
 {
     KeyActionDesc("", "", "main.png",  SoftkeyActionBase::mainsetup
                     , SOFT_BASE_KEY_NR, true, QColor(27, 79, 147)),
-    KeyActionDesc("", trs("Patient"), "PatientInfo.png", SoftkeyActionBase::patientInfo),
-    KeyActionDesc("", trs("NewPatient"), "PatientNew.png", SoftkeyActionBase::patientNew),
-    KeyActionDesc("", trs("Discharge"), "PatientDischarge.png", SoftkeyActionBase::patientRelieve),
-    KeyActionDesc("", trs("ECGCalcLead"), "LeadSelection.png", SoftkeyActionBase::ecgLeadChange),
-    KeyActionDesc("", trs("AlarmLimitMenu"), "limitSet.png", SoftkeyActionBase::limitMenu),
-    KeyActionDesc("", trs("CodeMarker"), "CodeMarker.png", SoftkeyActionBase::codeMarker),
-    KeyActionDesc("", trs("TrendGraph"), "Summary.png", SoftkeyActionBase::summaryReview),
-    KeyActionDesc("", trs("eventReview"), "Summary1.png", SoftkeyActionBase::eventReview),
-    KeyActionDesc("", trs("ChooseScreen"), "screenSwitch.png", SoftkeyActionBase::switchSystemMode),
-    KeyActionDesc("", trs("ScreenSetup"), "interface.png",   SoftkeyActionBase::WindowLayout),
+    KeyActionDesc("", "Patient", "PatientInfo.png", SoftkeyActionBase::patientInfo),
+    KeyActionDesc("", "Admit", "PatientNew.png", SoftkeyActionBase::patientNew),
+    KeyActionDesc("", "Discharge", "PatientDischarge.png", SoftkeyActionBase::patientRelieve),
+    KeyActionDesc("", "ECGCalcLead", "LeadSelection.png", SoftkeyActionBase::ecgLeadChange),
+    KeyActionDesc("", "AlarmLimitMenu", "limitSet.png", SoftkeyActionBase::limitMenu),
+    KeyActionDesc("", "CodeMarker", "CodeMarker.png", SoftkeyActionBase::codeMarker),
+    KeyActionDesc("", "TrendGraph", "Summary.png", SoftkeyActionBase::summaryReview),
+    KeyActionDesc("", "eventReview", "Summary1.png", SoftkeyActionBase::eventReview),
+    KeyActionDesc("", "TrendTable", "trend.png", SoftkeyActionBase::trendTable),
+    KeyActionDesc("", "ChooseScreen", "screenSwitch.png", SoftkeyActionBase::switchSystemMode),
+    KeyActionDesc("", "ScreenSetup", "interface.png",   SoftkeyActionBase::windowLayout),
 #ifndef HIDE_PARAM_SWITCH
-    KeyActionDesc("", trs("ParameterSwitch"), "paraSwitch.png"),
+    KeyActionDesc("", "ParameterSwitch", "paraSwitch.png"),
 #endif
-    KeyActionDesc("", trs("DisableTouchScreen"), "banTouch.png", SoftkeyActionBase::banTouchScreen),
+    KeyActionDesc("", "DisableTouchScreen", "banTouch.png", SoftkeyActionBase::banTouchScreen),
 #ifndef HIDE_STANDBY_FUNCTION
-    KeyActionDesc("", trs("Standby"), "standby.png", SoftkeyActionBase::standby),
+    KeyActionDesc("", "Standby", "standby.png", SoftkeyActionBase::standby),
 #endif
-    KeyActionDesc("", trs("CO2ZeroCalib"), "calib.png", SoftkeyActionBase::CO2Zero),
+    KeyActionDesc("", "CO2ZeroCalib", "calib.png", SoftkeyActionBase::CO2Zero),
     KeyActionDesc("", co2StandbyHint, co2StandbyIcon, SoftkeyActionBase::CO2Handle),
 #ifndef HIDE_IBP_CALIBRATE_ZERO
     KeyActionDesc("", trs("IBPZeroCalib"), "calib.png", SoftkeyActionBase::IBPZero),
 #endif
-    KeyActionDesc("", trs("Calculation"), "dosecalculation.png", SoftkeyActionBase::calculation),
-    KeyActionDesc("", trs("KeyBoardVolumn"), "keyBoard.png", SoftkeyActionBase::keyVolume),
-    KeyActionDesc("", trs("SystemBrightness"), "Brightness.png", SoftkeyActionBase::systemBrightness),
-    KeyActionDesc("", trs("NightMode"), "nightMode.png", SoftkeyActionBase::nightMode),
-    KeyActionDesc("", trs("PrintSetup"), "printSetup.png", SoftkeyActionBase::printSet),
+    KeyActionDesc("", "Calculation", "dosecalculation.png", SoftkeyActionBase::calculation),
+    KeyActionDesc("", "ToneVolume", "keyBoard.png", SoftkeyActionBase::keyVolume),
+    KeyActionDesc("", "SystemBrightness", "Brightness.png", SoftkeyActionBase::systemBrightness),
+    KeyActionDesc("", "NightMode", "nightMode.png", SoftkeyActionBase::nightMode),
+    KeyActionDesc("", "PrintSetup", "printSetup.png", SoftkeyActionBase::printSet),
 };
 
 /***************************************************************************************************
@@ -125,16 +125,23 @@ void SoftkeyActionBase::limitMenu(bool isPressed)
     p->popup(trs("AlarmLimitMenu"));
 }
 
-void SoftkeyActionBase::WindowLayout(bool isPressed)
+void SoftkeyActionBase::windowLayout(bool isPressed)
 {
     if (isPressed)
     {
         return;
     }
 
-    windowManager.showWindow(ScreenLayoutWindow::getInstance(),
-                             WindowManager::ShowBehaviorNoAutoClose |
-                             WindowManager::ShowBehaviorCloseOthers);
+    if (layoutManager.getUFaceType() == UFACE_MONITOR_BIGFONT)
+    {
+        windowManager.showWindow(BigFontLayoutWindow::getInstance(),
+                                 WindowManager::ShowBehaviorCloseOthers);
+    }
+    else
+    {
+        windowManager.showWindow(ScreenLayoutWindow::getInstance(),
+                                 WindowManager::ShowBehaviorCloseOthers);
+    }
 }
 
 /***************************************************************************************************
@@ -249,18 +256,31 @@ void SoftkeyActionBase::banTouchScreen(bool isPressed)
     if (isOn)
     {
         iconPath = QString("banTouch.png");
-        hint = trs("DisableTouchScreen");
+        hint = "DisableTouchScreen";
     }
     else
     {
         iconPath = QString("touch.png");
-        hint = trs("EnabledTouchScreen");
+        hint = "EnabledTouchScreen";
     }
     _baseKeys[SOFT_BASE_KEY_SCREEN_BAN].iconPath = iconPath;
     _baseKeys[SOFT_BASE_KEY_SCREEN_BAN].hint = hint;
     systemManager.setTouchScreenOnOff(!isOn);
     softkeyManager.refreshPage(false);
 #endif
+}
+
+void SoftkeyActionBase::trendTable(bool isPressed)
+{
+    if (isPressed)
+    {
+        return;
+    }
+
+    TrendTableWindow::getInstance()->setHistoryData(false);
+    windowManager.showWindow(TrendTableWindow::getInstance(),
+                             WindowManager::ShowBehaviorHideOthers |
+                             WindowManager::ShowBehaviorNoAutoClose);
 }
 
 void SoftkeyActionBase::switchSystemMode(bool isPressed)
@@ -270,7 +290,7 @@ void SoftkeyActionBase::switchSystemMode(bool isPressed)
         return;
     }
     MainMenuWindow *w = MainMenuWindow::getInstance();
-    w->popup(trs("ScreenConfig"));
+    w->popup(trs("ScreenSetting"));
 }
 
 /***************************************************************************************************
@@ -329,21 +349,12 @@ void SoftkeyActionBase::CO2Handle(bool isPressed)
 
     if (!co2Param.getCO2Switch())
     {
-        if (co2Param.setModuleWorkMode(CO2_WORK_MEASUREMENT) == true)
-        {
-            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].iconPath = QString(co2MeasureIcon);
-            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].hint = co2MeasureHint;
-        }
+        co2Param.setModuleWorkMode(CO2_WORK_MEASUREMENT);
     }
     else
     {
-        if (co2Param.setModuleWorkMode(C02_WORK_SLEEP) == true)
-        {
-            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].iconPath = QString(co2StandbyIcon);
-            _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].hint = co2StandbyHint;
-        }
+        co2Param.setModuleWorkMode(C02_WORK_SLEEP);
     }
-    softkeyManager.refreshPage(false);
 }
 
 void SoftkeyActionBase::IBPZero(bool isPressed)
@@ -361,8 +372,11 @@ void SoftkeyActionBase::systemBrightness(bool isPressed)
     {
         return;
     }
-    MainMenuWindow *w = MainMenuWindow::getInstance();
-    w->popup(trs("NormalFunctionMenu"), qVariantFromValue(QString("SystemBrightness")));
+    if (!nightModeManager.nightMode())
+    {
+        MainMenuWindow *w = MainMenuWindow::getInstance();
+        w->popup(trs("NormalFunctionMenu"), qVariantFromValue(QString("SystemBrightness")));
+    }
 }
 
 void SoftkeyActionBase::keyVolume(bool isPressed)
@@ -372,8 +386,11 @@ void SoftkeyActionBase::keyVolume(bool isPressed)
         return;
     }
 
-    MainMenuWindow *w = MainMenuWindow::getInstance();
-    w->popup(trs("NormalFunctionMenu"), qVariantFromValue(QString("KeyPressVolume")));
+    if (!nightModeManager.nightMode())
+    {
+        MainMenuWindow *w = MainMenuWindow::getInstance();
+        w->popup(trs("NormalFunctionMenu"), qVariantFromValue(QString("ToneVolume")));
+    }
 }
 
 void SoftkeyActionBase::nightMode(bool isPressed)

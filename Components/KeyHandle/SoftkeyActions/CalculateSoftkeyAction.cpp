@@ -36,8 +36,8 @@ static KeyActionDesc _calculationDataKeys[] =
 
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_INFO),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_NEW),
-    KeyActionDesc("", trs("Dose"), "dosecalculation.png", CalculateSoftkeyAction::doseCalculation),
-    KeyActionDesc("", trs("Blood"), "blood.png", CalculateSoftkeyAction::Hemodynamic),
+    KeyActionDesc("", "Dose", "dosecalculation.png", CalculateSoftkeyAction::doseCalculation),
+    KeyActionDesc("", "Blood", "blood.png", CalculateSoftkeyAction::Hemodynamic),
     KeyActionDesc("", "", "SoftkeyArrow.png", CalculateSoftkeyAction::exit),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),

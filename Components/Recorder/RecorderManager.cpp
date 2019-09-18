@@ -10,6 +10,7 @@
 
 #include "RecorderManager.h"
 #include "IConfig.h"
+#include "ConfigManager.h"
 #include "Debug.h"
 #include "RecordPageProcessor.h"
 #include "PrintAlarm.h"
@@ -26,12 +27,14 @@
 #include "ECGParam.h"
 #include "IBPParam.h"
 #include "PrintSettingMenuContent.h"
+#include "CO2Param.h"
+#include "AlarmSourceManager.h"
 
 class RecorderManagerPrivate
 {
 public:
     RecorderManagerPrivate()
-        : connected(false),
+        : connected(true),
           isAborted(false),
           isPrinting(false),
           status(PRINTER_STAT_NORMAL),
@@ -84,7 +87,7 @@ RecorderManager::~RecorderManager()
 PrintSpeed RecorderManager::getPrintSpeed() const
 {
     int speed = 0;
-    currentConfig.getNumValue("Print|PrintSpeed", speed);
+    systemConfig.getNumValue("Print|PrintSpeed", speed);
     if (speed >= PRINT_SPEED_NR)
     {
         speed = PRINT_SPEED_250;
@@ -103,7 +106,7 @@ void RecorderManager::setPrintSpeed(PrintSpeed speed)
     }
 
     d_ptr->curSpeed = speed;
-    currentConfig.setNumValue("Print|PrintSpeed", static_cast<int>(speed));
+    systemConfig.setNumValue("Print|PrintSpeed", static_cast<int>(speed));
 
     // 是否正在打印
     if (isPrinting())
@@ -219,7 +222,7 @@ void RecorderManager::selfTest()
         return;
     }
 
-    RecordPage *testPage = new RecordPage(10 * RECORDER_PIXEL_PER_MM);
+    RecordPage *testPage = new RecordPage(20 * RECORDER_PIXEL_PER_MM);
     testPage->setID("test");
 
     QPainter painter(testPage);
@@ -232,7 +235,8 @@ void RecorderManager::selfTest()
     pen.setDashPattern(darsh);
     painter.setPen(pen);
 
-    int x = testPage->width() - penWidth;
+    // 打印 20mm空白走纸,前10mm间隔两条虚线
+    int x = testPage->width() - penWidth - 10 * RECORDER_PIXEL_PER_MM;
     painter.drawLine(QPoint(penWidth, 0), QPoint(penWidth, testPage->height() - 1));
     painter.drawLine(QPoint(x, 0), QPoint(x, testPage->height() - 1));
 
@@ -361,17 +365,22 @@ void RecorderManager::providerConnectionChanged(bool isConnected)
     }
 
     d_ptr->connected = isConnected;
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_PRINT);
+    if (alarmSource == NULL)
+    {
+        return;
+    }
+
     if (d_ptr->connected)
     {
         // connected
-        printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_FAULT, false);
+        d_ptr->status = PRINTER_STAT_NORMAL;
     }
     else
     {
         // disconected
-        printOneShotAlarm.clear();
-        printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_FAULT, true);
-
+        alarmSource->clear();
+        d_ptr->status = PRINTER_STAT_COMMUNICATION_STOP;
         if (d_ptr->generator)
         {
             // stop the page generator if we has any page generator
@@ -389,9 +398,14 @@ void RecorderManager::providerStatusChanged(PrinterStatus status)
     bool isPrinterFault = (status >> 2) & 0x01;
     bool isPrinting = (status >> 3) & 0x01;
 
-    printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_OUT_OF_PAPER, isOutOfPaper);
-    printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_OVER_HEATING, isOverHeating);
-    printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_FAULT, isPrinterFault);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_PRINT);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(PRINT_ONESHOT_ALARM_OUT_OF_PAPER, isOutOfPaper);
+        alarmSource->setOneShotAlarm(PRINT_ONESHOT_ALARM_OVER_HEATING, isOverHeating);
+        alarmSource->setOneShotAlarm(PRINT_ONESHOT_ALARM_FAULT, isPrinterFault);
+    }
+
     setPrintStatus(isPrinting);
 
     if (isOutOfPaper || isOverHeating || isPrinterFault)
@@ -475,7 +489,7 @@ void RecorderManager::printWavesInit()
         waveIDs.append(waveID);
     }
 
-    if (systemManager.isSupport(CONFIG_CO2))
+    if (co2Param.isConnected())
     {
         // co2
         waveIDs.append(WAVE_CO2);

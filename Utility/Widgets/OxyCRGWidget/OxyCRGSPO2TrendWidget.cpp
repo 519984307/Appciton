@@ -14,7 +14,7 @@
 #include <QPainter>
 #include "ColorManager.h"
 #include "ParamInfo.h"
-#include "IConfig.h"
+#include "ConfigManager.h"
 #include "OxyCRGSymbol.h"
 
 class OxyCRGSPO2TrendWidgetPrivate : public OxyCRGTrendWaveWidgetPrivate

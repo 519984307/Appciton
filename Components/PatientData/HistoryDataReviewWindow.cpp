@@ -30,7 +30,9 @@ public:
         ITEM_TREND_TABLE,
         ITEM_TREND_GRAPH,
         ITEM_EVENT_REVIEW,
+#ifndef HIDE_OXYCRG_REVIEW_FUNCTION
         ITEM_OXYCRGEVENT_REVIEW,
+#endif
         ITEM_HISTORY_TIME
     };
     HistoryDataReviewWindowPrivate()
@@ -62,17 +64,21 @@ void HistoryDataReviewWindow::setHistoryReviewIndex(int index, QString timeStr)
     d_ptr->buttons[HistoryDataReviewWindowPrivate::ITEM_TREND_TABLE]->setEnabled(true);
     d_ptr->buttons[HistoryDataReviewWindowPrivate::ITEM_TREND_GRAPH]->setEnabled(true);
     d_ptr->buttons[HistoryDataReviewWindowPrivate::ITEM_EVENT_REVIEW]->setEnabled(true);
+#ifndef  HIDE_OXYCRG_REVIEW_FUNCTION
     d_ptr->buttons[HistoryDataReviewWindowPrivate::ITEM_OXYCRGEVENT_REVIEW]->setEnabled(true);
+#endif
     d_ptr->buttons[HistoryDataReviewWindowPrivate::ITEM_HISTORY_TIME]->setText(timeStr);
 }
 
 void HistoryDataReviewWindow::showEvent(QShowEvent *ev)
 {
-    Window::showEvent(ev);
+    Dialog::showEvent(ev);
     d_ptr->buttons[HistoryDataReviewWindowPrivate::ITEM_TREND_TABLE]->setEnabled(false);
     d_ptr->buttons[HistoryDataReviewWindowPrivate::ITEM_TREND_GRAPH]->setEnabled(false);
     d_ptr->buttons[HistoryDataReviewWindowPrivate::ITEM_EVENT_REVIEW]->setEnabled(false);
+#ifndef  HIDE_OXYCRG_REVIEW_FUNCTION
     d_ptr->buttons[HistoryDataReviewWindowPrivate::ITEM_OXYCRGEVENT_REVIEW]->setEnabled(false);
+#endif
     d_ptr->buttons[HistoryDataReviewWindowPrivate::ITEM_HISTORY_TIME]->setText(trs("SelectHistoryData"));
 }
 
@@ -102,11 +108,13 @@ void HistoryDataReviewWindow::onButtonReleased()
             EventWindow::getInstance()->setHistoryData(true);
             windowManager.showWindow(EventWindow::getInstance(), WindowManager::ShowBehaviorNone);
             break;
+#ifndef  HIDE_OXYCRG_REVIEW_FUNCTION
         case HistoryDataReviewWindowPrivate::ITEM_OXYCRGEVENT_REVIEW:
             OxyCRGEventWindow::getInstance()->setHistoryDataPath(d_ptr->selHistoryDataPath);
             OxyCRGEventWindow::getInstance()->setHistoryData(true);
             windowManager.showWindow(OxyCRGEventWindow::getInstance(), WindowManager::ShowBehaviorNone);
             break;
+#endif
         case HistoryDataReviewWindowPrivate::ITEM_HISTORY_TIME:
         {
             HistoryDataSelWindow *window = new HistoryDataSelWindow();
@@ -120,7 +128,7 @@ void HistoryDataReviewWindow::onButtonReleased()
 }
 
 HistoryDataReviewWindow::HistoryDataReviewWindow()
-    : Window(), d_ptr(new HistoryDataReviewWindowPrivate())
+    : Dialog(), d_ptr(new HistoryDataReviewWindowPrivate())
 {
     setWindowTitle(trs("HistoryTrend"));
 
@@ -163,6 +171,7 @@ HistoryDataReviewWindow::HistoryDataReviewWindow()
     layout->addWidget(button, 1);
     d_ptr->buttons.insert(HistoryDataReviewWindowPrivate::ITEM_EVENT_REVIEW, button);
 
+#ifndef  HIDE_OXYCRG_REVIEW_FUNCTION
     button = new Button(trs("OxyCRGEventReview"));
     button->setButtonStyle(Button::ButtonTextOnly);
     itemID = static_cast<int>(HistoryDataReviewWindowPrivate::ITEM_OXYCRGEVENT_REVIEW);
@@ -170,7 +179,7 @@ HistoryDataReviewWindow::HistoryDataReviewWindow()
     connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
     layout->addWidget(button, 1);
     d_ptr->buttons.insert(HistoryDataReviewWindowPrivate::ITEM_OXYCRGEVENT_REVIEW, button);
-
+#endif
     setWindowLayout(layout);
 
     setFixedSize(400, 400);

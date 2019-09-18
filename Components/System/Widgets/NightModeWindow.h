@@ -9,10 +9,10 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 
 class NightModeWindowPrivate;
-class NightModeWindow : public Window
+class NightModeWindow : public Dialog
 {
     Q_OBJECT
 public:
@@ -29,19 +29,20 @@ public:
      */
     void layoutExec();
 
-protected:
-    void hideEvent(QHideEvent *ev);
-
 private slots:
     /**
      * @brief onComboBoxIndexChanged  下拉框选项改变槽函数
      * @param index
      */
     void onComboBoxIndexChanged(int index);
-    /**
-     * @brief OnBtnReleased  按钮释放槽函数
-     */
+
     void OnBtnReleased(void);
+
+    /**
+     * @brief onPopupListItemFocusChanged - the slot function when the focus of the popuplist item changed
+     * @param volume: the volume
+     */
+    void onPopupListItemFocusChanged(int volume);
 
 private:
     NightModeWindowPrivate *const d_ptr;

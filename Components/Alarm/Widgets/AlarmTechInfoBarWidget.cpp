@@ -17,8 +17,6 @@
 #include <QPainter>
 #include "WindowManager.h"
 
-static AlarmTechInfoBarWidget *_selfObj = NULL;
-
 /**************************************************************************************************
  * 绘制背景。
  *************************************************************************************************/
@@ -86,17 +84,33 @@ void AlarmTechInfoBarWidget::_drawText(void)
         r.adjust(focusedBorderWidth() + 6, 0, 0, 0);
     }
 
-    int fontSize = fontManager.getFontSize(4);
+    QString nameStr;
+    switch (_alarmPriority)
+    {
+    case ALARM_PRIO_LOW:
+        nameStr = "*";
+        break;
+    case ALARM_PRIO_MED:
+        nameStr = "**";
+        break;
+    case ALARM_PRIO_HIGH:
+        nameStr = "***";
+        break;
+    default:
+        break;
+    }
+    nameStr += " ";
+    nameStr += trs(_text);
+
+    int fontSize = fontManager.textFontSize(r, nameStr, false, fontManager.getFontSize(4));
     painter.setFont(fontManager.textFont(fontSize));
-//    painter.setFont(fontManager.textFont(fontManager.getFontSize(1)));
-    painter.drawText(r, Qt::AlignVCenter | Qt::AlignLeft, trs(_text));
+    painter.drawText(r, Qt::AlignVCenter | Qt::AlignLeft, nameStr);
 
     if (_type != _alarmType && 0 != _pauseTime)
     {
         r.adjust(0, 0, -6, 0);
         QImage image("/usr/local/nPM/icons/MutePause.png");
         painter.drawImage(QRect(width() - 60, (height() - 16) / 2, 16, 16), image);
-//        painter.drawText(r, Qt::AlignVCenter | Qt::AlignRight, QString::number(_pauseTime) + "s");
     }
 }
 
@@ -174,24 +188,18 @@ void AlarmTechInfoBarWidget::display(AlarmInfoNode &node)
 }
 
 /**************************************************************************************************
- * 获取对象。
- *************************************************************************************************/
-AlarmTechInfoBarWidget &AlarmTechInfoBarWidget::getSelf()
-{
-    return *_selfObj;
-}
-
-/**************************************************************************************************
  * 构造。
  *************************************************************************************************/
 AlarmTechInfoBarWidget::AlarmTechInfoBarWidget(const QString &name) :
     IWidget(name),
+    _alarmWindow(NULL),
     _alarmType(ALARM_TYPE_TECH)
 {
-    _selfObj = this;
-//    setFocusPolicy(Qt::NoFocus);
-
-    _alarmWindow = NULL;
+    AlarmInfoBarWidget *old = registerAlarmInfoBar(ALARM_TYPE_TECH, this);
+    if (old)
+    {
+        delete old;
+    }
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 }
 

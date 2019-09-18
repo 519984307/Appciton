@@ -5,7 +5,7 @@
 #include <QScopedPointer>
 
 class CO2SetAGMenuPrivate;
-class CO2SetAGMenu : public Window
+class CO2SetAGMenu : public Dialog
 {
     Q_OBJECT
 public:

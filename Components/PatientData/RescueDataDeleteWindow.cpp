@@ -237,7 +237,7 @@ void RescueDataDeleteWindow::_updateEraseBtnStatus()
 }
 
 RescueDataDeleteWindow::RescueDataDeleteWindow()
-    :Window(),
+    :Dialog(),
       d_ptr(new RescueDataDeleteWindowPrivate())
 {
     QVBoxLayout *contentLayout = new QVBoxLayout();

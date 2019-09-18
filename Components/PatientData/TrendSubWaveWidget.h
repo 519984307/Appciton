@@ -77,6 +77,12 @@ public:
     void rulerRange(int &down, int &up, int &scale);
 
     /**
+     * @brief getUnitType
+     * @return
+     */
+    UnitType getUnitType();
+
+    /**
      * @brief getAutoRuler 获取是否为自动标尺
      * @return
      */

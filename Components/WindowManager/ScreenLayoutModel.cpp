@@ -20,7 +20,7 @@
 #include "ParamInfo.h"
 #include "IBPParam.h"
 #include "OrderedMap.h"
-
+#include "LanguageManager.h"
 
 const char *layoutNodeName(LayoutNodeType nodeType)
 {
@@ -304,7 +304,7 @@ public:
         }
         else if (info.waveid == WAVE_CO2)
         {
-            info.waveMaxValue = demoProvider->getCO2MaxWaveform();
+            info.waveMaxValue = (demoProvider->getCO2MaxWaveform() * 4 + 19) / 20;
             info.drawSpeed = 6.25;
             info.waveMinValue = 0;
             info.baseLine = demoProvider->getCO2BaseLine();
@@ -652,7 +652,7 @@ QVariant ScreenLayoutModel::data(const QModelIndex &index, int role) const
             info.name = node->name;
             if (info.waveid != WAVE_NONE)
             {
-                info.displayName = paramInfo.getParamWaveformName(info.waveid);
+                info.displayName = trs(paramInfo.getParamWaveformName(info.waveid));
             }
             else
             {

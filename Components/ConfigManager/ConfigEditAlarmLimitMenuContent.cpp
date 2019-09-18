@@ -17,7 +17,7 @@
 #include "ParamManager.h"
 #include "ParamInfo.h"
 #include "AlarmConfig.h"
-#include "IConfig.h"
+#include "ConfigManager.h"
 #include "PatientManager.h"
 #include "IBPParam.h"
 #include "TableViewItemDelegate.h"
@@ -122,6 +122,12 @@ void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
                                .arg(paramInfo.getSubParamName(subId, true)),
                                "Prio", alarmLev);
             info.alarmLevel = alarmLev;
+
+            int alarmStatus = 0;
+            config->getNumAttr(QString("AlarmSource|%1")
+                               .arg(paramInfo.getSubParamName(subId, true)),
+                               "Enable", alarmStatus);
+            info.status = alarmStatus;
 
             infos.append(info);
         }
@@ -244,7 +250,6 @@ void ConfigEditAlarmLimitMenuContent::setShowParam(const QVariant &param)
 
 void ConfigEditAlarmLimitMenuContent::onbtnClick()
 {
-    bool focusPrevBtn = false;
     Button *btn = qobject_cast<Button *>(sender());
     if (btn == d_ptr->prevBtn)
     {
@@ -253,17 +258,6 @@ void ConfigEditAlarmLimitMenuContent::onbtnClick()
     else if (btn == d_ptr->nextBtn)
     {
         d_ptr->table->scrollToNextPage();
-        if (!d_ptr->table->hasNextPage())
-        {
-            focusPrevBtn = true;
-        }
-    }
-
-    d_ptr->prevBtn->setEnabled(d_ptr->table->hasPreivousPage());
-    d_ptr->nextBtn->setEnabled(d_ptr->table->hasNextPage());
-    if (focusPrevBtn)
-    {
-        d_ptr->prevBtn->setFocus();
     }
 }
 

@@ -17,6 +17,7 @@
 #include "SoundManager.h"
 #include "SystemManager.h"
 #include "IConfig.h"
+#include "ConfigManager.h"
 #include "SystemDefine.h"
 #include "PrintDefine.h"
 #include "RecorderManager.h"
@@ -25,10 +26,11 @@
 #include "CalculateWindow.h"
 #include "WindowManager.h"
 #include "WiFiProfileWindow.h"
-#include "SoftWareVersionWindow.h"
+#include "SoftwareVersionWindow.h"
 #include "NightModeWindow.h"
 #include "PasswordWindow.h"
 #include "AlarmIndicator.h"
+#include "SoftKeyManager.h"
 #ifdef Q_WS_QWS
 #include <QWSServer>
 #endif
@@ -41,23 +43,21 @@ public:
         ITEM_BTN_CALCULATE = 0,
 
         ITEM_CBO_WAVE_LEN,
-        ITEM_CBO_ALARM_VOLUME,
         ITEM_CBO_SCREEN_BRIGHTNESS,
         ITEM_CBO_KEYPRESS_VOLUME,
-        ITEM_CBO_ALARM_AUDIO_OFF,
 #ifdef Q_WS_QWS
         ITEM_CBO_TOUCH_SCREEN,
 #endif
 
         ITEM_BTN_WIFI_PROFILE,
-        ITEM_BTN_MACHINE_VERSION,
+        ITEM_BTN_SOFTWARE_VERSION,
         ITEM_BTN_ENTER_STANDY,
         ITEM_BTN_NIGHT_MODE,
         ITEM_BTN_DEMO_MODE
     };
 
     NormalFunctionMenuContentPrivate()
-                    : demoBtn(NULL), standbyBtn(NULL)
+                    : demoBtn(NULL), standbyBtn(NULL), touchLab(NULL)
     {}
 
     // load settings
@@ -67,6 +67,7 @@ public:
     Button *standbyBtn;
 
     QMap<MenuItem, ComboBox *> combos;
+    QLabel *touchLab;
 };
 
 void NormalFunctionMenuContentPrivate::loadOptions()
@@ -86,46 +87,16 @@ void NormalFunctionMenuContentPrivate::loadOptions()
         combos[ITEM_CBO_WAVE_LEN]->setCurrentIndex(2);
     }
 
-    int isAlarmAudioOff = 0;
-    systemConfig.getNumValue("Alarms|AlarmAudioOff", isAlarmAudioOff);
-    combos[ITEM_CBO_ALARM_AUDIO_OFF]->setCurrentIndex(isAlarmAudioOff);
-
     if (nightModeManager.nightMode())
     {
         combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setEnabled(false);
         combos[ITEM_CBO_KEYPRESS_VOLUME]->setEnabled(false);
-        combos[ITEM_CBO_ALARM_VOLUME]->setEnabled(false);
     }
     else
     {
         combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setEnabled(true);
         combos[ITEM_CBO_KEYPRESS_VOLUME]->setEnabled(true);
-        if (!isAlarmAudioOff)
-        {
-            // 报警音没有关闭才可以设置报警音
-            combos[ITEM_CBO_ALARM_VOLUME]->setEnabled(true);
-        }
-        else
-        {
-            combos[ITEM_CBO_ALARM_VOLUME]->setEnabled(false);
-        }
-
-        combos[ITEM_CBO_ALARM_VOLUME]->blockSignals(true);
-        combos[ITEM_CBO_ALARM_VOLUME]->clear();
         int index = 0;
-        systemConfig.getNumValue("Alarms|MinimumAlarmVolume", index);
-        int volume = 0;
-        systemConfig.getNumValue("Alarms|DefaultAlarmVolume", volume);
-        for (int i = index; i <= SoundManager::VOLUME_LEV_5; i++)
-        {
-            combos[ITEM_CBO_ALARM_VOLUME]->addItem(QString::number(i));
-            if (volume == i)
-            {
-                combos[ITEM_CBO_ALARM_VOLUME]->setCurrentIndex(combos[ITEM_CBO_ALARM_VOLUME]->count() - 1);
-            }
-        }
-        combos[ITEM_CBO_ALARM_VOLUME]->blockSignals(false);
-
         index = systemManager.getBrightness();
         combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setCurrentIndex(index);
 
@@ -145,8 +116,12 @@ void NormalFunctionMenuContentPrivate::loadOptions()
 #ifdef Q_WS_QWS
     // 加载数据时，强制锁住该信号。该信号会触发openMouse()函数，在调试期间，openMouse函数会有堵塞现象.
     combos[ITEM_CBO_TOUCH_SCREEN]->blockSignals(true);
+    if (!systemManager.isSupport(CONFIG_TOUCH))
+    {
+        touchLab->setVisible(false);
+        combos[ITEM_CBO_TOUCH_SCREEN]->setVisible(false);
+    }
     combos[ITEM_CBO_TOUCH_SCREEN]->setCurrentIndex(systemManager.isTouchScreenOn());
-    combos[ITEM_CBO_TOUCH_SCREEN]->setEnabled(systemManager.isSupport(CONFIG_TOUCH));
     combos[ITEM_CBO_TOUCH_SCREEN]->blockSignals(false);
 #endif
 }
@@ -156,6 +131,7 @@ NormalFunctionMenuContent::NormalFunctionMenuContent()
                   trs("NormalFunctionMenuDesc")),
       d_ptr(new NormalFunctionMenuContentPrivate)
 {
+    connect(&nightModeManager, SIGNAL(nightModeChanged(bool)), this, SLOT(nightModeHandle(bool)));
 }
 
 NormalFunctionMenuContent::~NormalFunctionMenuContent()
@@ -194,53 +170,15 @@ void NormalFunctionMenuContent::layoutExec()
     label = new QLabel(trs("WaveLength"));
     layout->addWidget(label, row, 0);
     comboBox = new ComboBox();
-    comboBox->addItem("8s");
-    comboBox->addItem("16s");
-    comboBox->addItem("32s");
+    comboBox->addItem(trs("_8sec"));
+    comboBox->addItem(trs("_16sec"));
+    comboBox->addItem(trs("_32sec"));
     itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_CBO_WAVE_LEN);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, row, 1);
     row++;
     d_ptr->combos.insert(NormalFunctionMenuContentPrivate::ITEM_CBO_WAVE_LEN, comboBox);
-
-    // alarm volume
-    label = new QLabel(trs("SystemAlarmVolume"));
-    layout->addWidget(label, row, 0);
-    comboBox = new ComboBox();
-
-    // 设置声音触发方式
-    connect(comboBox, SIGNAL(itemFocusChanged(int)),
-            this, SLOT(onPopupListItemFocusChanged(int)));
-
-    int index = 0;
-    systemConfig.getNumValue("Alarms|MinimumAlarmVolume", index);
-    for (int i = index; i <= SoundManager::VOLUME_LEV_5; i++)
-    {
-        comboBox->addItem(QString::number(i));
-    }
-
-    itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, row, 1);
-    row++;
-    d_ptr->combos.insert(NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME, comboBox);
-
-    // alarm audio off
-    label = new QLabel(trs("AlarmAudioOff"));
-    layout->addWidget(label, row, 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs("No")
-                       << trs("Yes"));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_AUDIO_OFF);
-    comboBox->setProperty("Item", qVariantFromValue(itemID));
-    layout->addWidget(comboBox, row, 1);
-    d_ptr->combos.insert(NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_AUDIO_OFF, comboBox);
-    row++;
 
     // screen brightness
     label = new QLabel(trs("SystemBrightness"));
@@ -260,34 +198,34 @@ void NormalFunctionMenuContent::layoutExec()
     d_ptr->combos.insert(NormalFunctionMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS, comboBox);
 
     // key press volume
-    label = new QLabel(trs("KeyPressVolume"));
+    label = new QLabel(trs("ToneVolume"));
     layout->addWidget(label , row , 0);
     comboBox = new ComboBox();
 
     // 设置声音触发方式
-    connect(comboBox, SIGNAL(itemFocusChanged(int)),
+    connect(comboBox, SIGNAL(itemFoucsIndexChanged(int)),
             this, SLOT(onPopupListItemFocusChanged(int)));
 
     comboBox->addItems(QStringList()
-                       <<QString::number(SoundManager::VOLUME_LEV_0)
+                       <<trs("Off")
                        <<QString::number(SoundManager::VOLUME_LEV_1)
                        <<QString::number(SoundManager::VOLUME_LEV_2)
                        <<QString::number(SoundManager::VOLUME_LEV_3)
                        <<QString::number(SoundManager::VOLUME_LEV_4)
-                       <<QString::number(SoundManager::VOLUME_LEV_5)
-                       );
+                       <<QString::number(SoundManager::VOLUME_LEV_5));
     layout->addWidget(comboBox , row , 1);
-    comboBox->setObjectName("KeyPressVolume");
+    comboBox->setObjectName("ToneVolume");
     row++;
     itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME);
     comboBox->setProperty("Item" , qVariantFromValue(itemID));
-    connect(comboBox , SIGNAL(currentIndexChanged(int)) , this , SLOT(onComboBoxIndexChanged(int)));
+    connect(comboBox , SIGNAL(activated(int)) , this , SLOT(onComboBoxIndexChanged(int)));
     d_ptr->combos.insert(NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME , comboBox);
 
 #ifdef Q_WS_QWS
     // touch screen function
     label = new QLabel(trs("TouchScreen"));
     layout->addWidget(label, row, 0);
+    d_ptr->touchLab = label;
     comboBox = new ComboBox();
     comboBox->addItem(trs("Off"));
     comboBox->addItem(trs("On"));
@@ -297,7 +235,6 @@ void NormalFunctionMenuContent::layoutExec()
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox , SIGNAL(currentIndexChanged(int)) , this , SLOT(onComboBoxIndexChanged(int)));
     d_ptr->combos.insert(NormalFunctionMenuContentPrivate::ITEM_CBO_TOUCH_SCREEN, comboBox);
-    comboBox->setEnabled(systemManager.isSupport(CONFIG_TOUCH));
 #endif
 
     if (systemManager.isSupport(CONFIG_WIFI))
@@ -312,11 +249,11 @@ void NormalFunctionMenuContent::layoutExec()
         row++;
     }
 
-    // machine version
-    btn = new Button(trs("MachineVersion"));
+    // Software Version
+    btn = new Button(trs("SoftwareVersion"));
     btn->setButtonStyle(Button::ButtonTextOnly);
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
-    itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_BTN_MACHINE_VERSION);
+    itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_BTN_SOFTWARE_VERSION);
     btn->setProperty("Item", qVariantFromValue(itemID));
     layout->addWidget(btn, row, 1);
     row++;
@@ -398,27 +335,6 @@ void NormalFunctionMenuContent::onComboBoxIndexChanged(int index)
             currentConfig.setNumValue("Event|WaveLength", waveLength);
             break;
         }
-        case NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME:
-        {
-            int volume = box->itemText(index).toInt();
-            soundManager.setVolume(SoundManager::SOUND_TYPE_ALARM, static_cast<SoundManager::VolumeLevel>(volume));
-            systemConfig.setNumValue("Alarms|DefaultAlarmVolume", volume);
-            break;
-        }
-        case NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_AUDIO_OFF:
-        {
-            systemConfig.setNumValue("Alarms|AlarmAudioOff", index);
-            alarmIndicator.updateAlarmStateWidget();
-            if (!index)
-            {
-                d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME]->setEnabled(true);
-            }
-            else
-            {
-                d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME]->setEnabled(false);
-            }
-            break;
-        }
         case NormalFunctionMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS:
         {
             systemManager.setBrightness(static_cast<BrightnessLevel>(index));
@@ -427,7 +343,8 @@ void NormalFunctionMenuContent::onComboBoxIndexChanged(int index)
         case NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME:
         {
             int volume = box->itemText(index).toInt();
-            soundManager.setVolume(SoundManager::SOUND_TYPE_KEY_PRESS , static_cast<SoundManager::VolumeLevel>(volume));
+            soundManager.setVolume(SoundManager::SOUND_TYPE_NOTIFICATION ,
+                                   static_cast<SoundManager::VolumeLevel>(volume));
             systemConfig.setNumValue("General|KeyPressVolume", volume);
             break;
         }
@@ -435,6 +352,7 @@ void NormalFunctionMenuContent::onComboBoxIndexChanged(int index)
         case NormalFunctionMenuContentPrivate::ITEM_CBO_TOUCH_SCREEN:
         {
             systemManager.setTouchScreenOnOff(index);
+            softkeyManager.refreshTouchKey();
             break;
         }
 #endif
@@ -463,9 +381,9 @@ void NormalFunctionMenuContent::onBtnReleasd()
             windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
         }
         break;
-        case NormalFunctionMenuContentPrivate::ITEM_BTN_MACHINE_VERSION:
+        case NormalFunctionMenuContentPrivate::ITEM_BTN_SOFTWARE_VERSION:
         {
-            SoftWareVersionWindow w;
+            SoftwareVersionWindow w;
             windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
         }
         break;
@@ -514,12 +432,21 @@ void NormalFunctionMenuContent::onPopupListItemFocusChanged(int volume)
 
     if (w == d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME])
     {
-        soundManager.setVolume(SoundManager::SOUND_TYPE_KEY_PRESS , static_cast<SoundManager::VolumeLevel>(volume));
+        soundManager.setVolume(SoundManager::SOUND_TYPE_NOTIFICATION , static_cast<SoundManager::VolumeLevel>(volume));
         soundManager.keyPressTone();
     }
-    else if (w == d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME])
+}
+
+void NormalFunctionMenuContent::nightModeHandle(bool isNightMode)
+{
+    if (isNightMode)
     {
-        soundManager.setVolume(SoundManager::SOUND_TYPE_ALARM , static_cast<SoundManager::VolumeLevel>(volume));
-        soundManager.alarmTone();
+        d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS]->setEnabled(false);
+        d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME]->setEnabled(false);
+    }
+    else
+    {
+        d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS]->setEnabled(true);
+        d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME]->setEnabled(true);
     }
 }

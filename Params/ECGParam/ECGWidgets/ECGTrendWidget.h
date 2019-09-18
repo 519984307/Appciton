@@ -20,8 +20,12 @@ class ECGTrendWidget: public TrendWidget
     Q_OBJECT
 
 public:
-    // 刷新HR和ST的值。
-    void setHRValue(int16_t hr, bool isHR);
+    /**
+     * @brief setHRValue  and the function of setting HR value
+     * @param hr  and hr value
+     * @param type
+     */
+    void setHRValue(int16_t hr, HRSourceType type = HR_SOURCE_AUTO);
 
     // 刷新趋势参数上下限
     void updateLimit(void);
@@ -42,12 +46,12 @@ public:
 public:
     virtual void doRestoreNormalStatus();
 
-    /* reimplment */
-    void updateWidgetConfig();
-
 protected:
     void showEvent(QShowEvent *e);
     virtual void setTextSize(void);
+
+    /* reimplment */
+    void loadConfig();
 
 private slots:
     void _releaseHandle(IWidget *);
@@ -61,12 +65,6 @@ private:
     bool _isAlarm;
     void _drawBeatIcon(QColor color);
     QColor lastIconColor;
-
-    /**
-     * @brief _loadConfig  加载配置
-     */
-    void _loadConfig();
-
 private:
     QTimer *_timer;
 };

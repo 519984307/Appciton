@@ -26,6 +26,7 @@ enum PrinterStatus
     PRINTER_STAT_OUT_OF_PAPER_OVER_HEATING_FAULT = 0x07,    // 缺纸,过热,故障
     PRINTER_STAT_PRINTING = 0x08,                           // 正在打印
     PRINTER_STAT_MASK = 0x0F,                               // 掩码
+    PRINTER_STAT_COMMUNICATION_STOP = 0xFF,                 // 通信中断
 };
 
 // 自检状态定义

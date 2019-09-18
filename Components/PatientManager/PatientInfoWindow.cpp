@@ -30,8 +30,9 @@
 #include "TimeSymbol.h"
 #include <QDate>
 #include "FloatHandle.h"
+#include "RunningStatusBar.h"
 
-PatientInfoWindow *PatientInfoWindow::_selfObj = NULL;
+#define PATIENT_BORN_DATE_RANAGE 1900
 class PatientInfoWindowPrivate
 {
 public:
@@ -105,6 +106,15 @@ public:
      * @brief savePatientInfoToManager 保存病人信息到病人配置
      */
     void savePatientInfoToManager(void);
+
+    /**
+     * @brief refreshDayRange 刷新日期范围
+     */
+    void refreshDayRange();
+    /**
+     * @brief refreshDayRange 刷新月份范围
+     */
+    void refreshMonthRange();
 };
 
 
@@ -189,15 +199,7 @@ static bool checkWeightValue(const QString &value)
 void PatientInfoWindowPrivate::loadOptions()
 {
     combos[ITEM_CBO_PATIENT_TYPE]->setCurrentIndex(patientManager.getType());
-    bool patientNew = patientManager.isNewPatient();
-    if (patientNew)         // 新建病人时默认打开起博
-    {
-        combos[ITEM_CBO_PACER_MARKER]->setCurrentIndex(PATIENT_PACER_ON);
-    }
-    else
-    {
-        combos[ITEM_CBO_PACER_MARKER]->setCurrentIndex(patientManager.getPacermaker());
-    }
+    combos[ITEM_CBO_PACER_MARKER]->setCurrentIndex(patientManager.getPacermaker());
     combos[ITEM_CBO_PATIENT_SEX]->setCurrentIndex(patientManager.getSex());
     combos[ITEM_CBO_BLOOD_TYPE]->setCurrentIndex(patientManager.getBlood());
     buttons[ITEM_BTN_PATIENT_NAME]->setText(patientManager.getName());
@@ -250,10 +252,6 @@ void PatientInfoWindowPrivate::loadOptions()
 
     unsigned int year = 0, month = 0, day = 0;
     patientManager.getBornDate(year, month, day);
-    if (year > timeDate.getDateYear())
-    {
-        year = timeDate.getDateYear();
-    }
     switch (dateFormat)
     {
     case DATE_FORMAT_Y_M_D:
@@ -275,14 +273,28 @@ void PatientInfoWindowPrivate::loadOptions()
         break;
     }
 
-    dateItem[Born_Date_Year]->setRange(1970, timeDate.getDateYear());
+    dateItem[Born_Date_Year]->setRange(PATIENT_BORN_DATE_RANAGE, timeDate.getDateYear());
+    for (int i = Born_Date_Year; i <= Born_Date_Day; i++)
+    {
+        dateItem[static_cast<BornDate>(i)]->blockSignals(true);
+    }
     dateItem[Born_Date_Year]->setValue(year);
+    if (year == 0)
+    {
+        dateItem[Born_Date_Year]->setStartValue(timeDate.getDateYear());
+    }
+    refreshMonthRange();
     dateItem[Born_Date_Month]->setValue(month);
+    refreshDayRange();
     dateItem[Born_Date_Day]->setValue(day);
+    for (int i = Born_Date_Year; i <= Born_Date_Day; i++)
+    {
+        dateItem[static_cast<BornDate>(i)]->blockSignals(false);
+    }
 }
 
 PatientInfoWindow::PatientInfoWindow()
-    : Window()
+    : PatientInfoWindowInterface()
     , d_ptr(new PatientInfoWindowPrivate)
 {
     setWindowTitle(trs("PatientInformation"));
@@ -528,15 +540,67 @@ void PatientInfoWindowPrivate::savePatientInfoToManager()
                dateItem[Born_Date_Day]->getValue());
     patientManager.setBornDate(date);
     patientManager.setBlood(static_cast<PatientBloodType>(blood->currentIndex()));
-    QString heightStr = Unit::convert(UNIT_CM, heightType, height->text().toFloat()); // 病人信息保存的身高默认是cm单位
-    patientManager.setHeight(heightStr.toFloat());
+    float heightFloat = height->text().toFloat();
+    if (heightType == UNIT_INCH)
+    {
+        // 病人信息保存的身高默认是cm单位
+        heightFloat = height->text().toFloat() * 2.54;
+    }
+    patientManager.setHeight(heightFloat);
     patientManager.setName(name->text());
     patientManager.setPatID(id->text());
     patientManager.setSex(static_cast<PatientSex>(sex->currentIndex()));
     patientManager.setType(static_cast<PatientType>(type->currentIndex()));
-    QString weightStr = Unit::convert(UNIT_KG, weightType, weight->text().toFloat()); // 病人信息保存的体重默认是kg单位
-    patientManager.setWeight(weightStr.toFloat());
+    float weightFloat = weight->text().toFloat();
+    if (weightType == UNIT_LB)
+    {
+        // 病人信息保存的体重默认是kg单位
+        weightFloat = weight->text().toFloat() / 2.20462;
+    }
+    patientManager.setWeight(weightFloat);
     patientManager.setPacermaker(static_cast<PatientPacer>(pacer->currentIndex()));
+    patientManager.setBedNum(bedNum->text());
+    patientManager.updatePatientInfo();
+}
+
+void PatientInfoWindowPrivate::refreshDayRange()
+{
+    unsigned int year = dateItem[PatientInfoWindowPrivate::Born_Date_Year]->getValue();
+    unsigned int month = dateItem[PatientInfoWindowPrivate::Born_Date_Month]->getValue();
+    unsigned int day = dateItem[PatientInfoWindowPrivate::Born_Date_Day]->getValue();
+    unsigned int upRange = 1;
+    if (year == timeDate.getDateYear() && month == timeDate.getDateMonth())
+    {
+        upRange = timeDate.getDateDay();
+    }
+    else
+    {
+        QDate date(year, month, 1);
+        upRange = date.daysInMonth();
+    }
+
+    dateItem[PatientInfoWindowPrivate::Born_Date_Day]->setRange(1, upRange);
+    if (day > upRange)
+    {
+        // 如果超出日份范围，则设置为最大值。
+        dateItem[PatientInfoWindowPrivate::Born_Date_Day]->setValue(upRange);
+    }
+}
+
+void PatientInfoWindowPrivate::refreshMonthRange()
+{
+    unsigned int year = dateItem[PatientInfoWindowPrivate::Born_Date_Year]->getValue();
+    unsigned int month = dateItem[PatientInfoWindowPrivate::Born_Date_Month]->getValue();
+    unsigned int upRange = 12;
+    if (year == timeDate.getDateYear())
+    {
+        upRange = timeDate.getDateMonth();
+    }
+    dateItem[PatientInfoWindowPrivate::Born_Date_Month]->setRange(1, upRange);
+    if (month > upRange)
+    {
+        dateItem[PatientInfoWindowPrivate::Born_Date_Month]->setValue(upRange);
+    }
 }
 
 void PatientInfoWindow::idReleased()
@@ -632,8 +696,16 @@ void PatientInfoWindow::onBtnReleased()
     Button *btn = qobject_cast<Button *>(sender());
     if (btn == d_ptr->savePatientInfo)
     {
+        if (d_ptr->type->currentIndex() != static_cast<int>(patientManager.getType()))
+        {
+            MessageBox msg(trs("Prompt"), trs("ChangePatientType"), true, true);
+            if (msg.exec() == QDialog::Rejected)
+            {
+                this->hide();
+                return;
+            }
+        }
         d_ptr->savePatientInfoToManager();
-        patientManager.setPacermaker(static_cast<PatientPacer>(d_ptr->pacer->currentIndex()));
     }
     this->hide();
 }
@@ -656,46 +728,14 @@ void PatientInfoWindow::bedNumReleased()
         if (oldStr != text)
         {
             btn->setText(text);
-            patientManager.setBedNum(text);
         }
     }
 }
 
 void PatientInfoWindow::onSpinBoxValueChanged(int, int)
 {
-    SpinBox *spinBox = qobject_cast<SpinBox *>(sender());
-    if (spinBox == d_ptr->dateItem.value(PatientInfoWindowPrivate::Born_Date_Year))
-    {
-        // 设置月份范围和月份的值
-        unsigned int year = spinBox->getValue();
-        unsigned int month = d_ptr->dateItem[PatientInfoWindowPrivate::Born_Date_Month]->getValue();
-        if (year == timeDate.getDateYear())
-        {
-            d_ptr->dateItem[PatientInfoWindowPrivate::Born_Date_Month]->setRange(1, timeDate.getDateMonth());
-        }
-        else
-        {
-            d_ptr->dateItem[PatientInfoWindowPrivate::Born_Date_Month]->setRange(1, 12);
-        }
-        d_ptr->dateItem[PatientInfoWindowPrivate::Born_Date_Month]->setValue(month);
-    }
-    else if (spinBox == d_ptr->dateItem.value(PatientInfoWindowPrivate::Born_Date_Month))
-    {
-        // 设置日份范围和值
-        unsigned int year = d_ptr->dateItem[PatientInfoWindowPrivate::Born_Date_Year]->getValue();
-        unsigned int month = spinBox->getValue();
-        unsigned int day = d_ptr->dateItem[PatientInfoWindowPrivate::Born_Date_Day]->getValue();
-        if (year == timeDate.getDateYear() && month == timeDate.getDateMonth())
-        {
-            d_ptr->dateItem[PatientInfoWindowPrivate::Born_Date_Day]->setRange(1, timeDate.getDateDay());
-        }
-        else
-        {
-            QDate date(year, month, day);
-            d_ptr->dateItem[PatientInfoWindowPrivate::Born_Date_Day]->setRange(1, date.daysInMonth());
-        }
-        d_ptr->dateItem[PatientInfoWindowPrivate::Born_Date_Day]->setValue(day);
-    }
+    d_ptr->refreshMonthRange();
+    d_ptr->refreshDayRange();
 }
 
 void PatientInfoWindow::showEvent(QShowEvent *ev)
@@ -703,19 +743,34 @@ void PatientInfoWindow::showEvent(QShowEvent *ev)
     d_ptr->loadOptions();
     if (patientManager.isNewPatient())
     {
-        setWindowTitle(trs("NewPatient"));
+        setWindowTitle(trs("AdmitPatient"));
     }
     else
     {
         setWindowTitle(trs("PatientInfo"));
     }
-    Window::showEvent(ev);
+    Dialog::showEvent(ev);
 }
 
 void PatientInfoWindow::hideEvent(QHideEvent *ev)
 {
     patientManager.finishPatientInfo();
-    Window::hideEvent(ev);
+    Dialog::hideEvent(ev);
+}
+
+PatientInfoWindow &PatientInfoWindow::getInstance()
+{
+    static PatientInfoWindow *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new PatientInfoWindow;
+        PatientInfoWindowInterface *old = PatientInfoWindow::registerPatientInfoWindow(instance);
+        if (old)
+        {
+            delete old;
+        }
+    }
+    return *instance;
 }
 
 PatientInfoWindow::~PatientInfoWindow()

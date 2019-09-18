@@ -112,11 +112,19 @@ public:
     // 刷新参数上下限
     virtual void updateSubParamLimit(SubParamID id);
 
+    void setRRSource(BRRRSourceType source);
+    void updateRRSource();
+
+    // resp窒息报警状态
+    void setRespApneaStimulation(bool sta);
 signals:
     /**
      * @brief brSourceStatusUpdate  br来源状态更新
      */
     void brSourceStatusUpdate();
+
+protected slots:
+    virtual void paramUpdateTimeout();
 
 private slots:
     void onPaletteChanged(ParamID id);

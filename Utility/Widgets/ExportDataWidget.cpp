@@ -17,7 +17,6 @@
 #include "ExportDataWidget.h"
 #include "WindowManager.h"
 #include "FontManager.h"
-#include "LabelButton.h"
 #include "SystemManager.h"
 #include "Debug.h"
 #include <QDesktopWidget>
@@ -25,12 +24,61 @@
 #include <QPainterPath>
 #include "LayoutManager.h"
 
+//传输开始标题
+static const char *startTitleString[EXPORT_DATA_NR] =
+{
+    "TransferRescueDataByUSB",
+    "TransferRescueDataBySFTP",
+    "TransferSupervisorByUSB",
+    "TransferSupervisorByWIFI",
+    "TransferECG12LeadByUSB",
+    "TransferECG12LeadByWIFI",
+    "TransferErrorLogToUSB",
+};
+
+//传输结束标题
+static const char *endTitleString[EXPORT_DATA_NR] =
+{
+    "TransferRescueDataComplete",
+    "TransferRescueDataComplete",
+    "TransferSupervisorComplete",
+    "TransferSupervisorComplete",
+    "TransferECG12LeadComplete",
+    "TransferECG12LeadComplete",
+    "TransferErrorLogToUSBComplete",
+};
+
+//传输开始信息
+static const char *startInfoString[EXPORT_DATA_NR] =
+{
+    "NotDisconnectUSB",
+    "TransferRescueDataBySFTP",
+    "NotDisconnectUSB",
+    "TransferRescueDataByWIFI",
+    "NotDisconnectUSB",
+    "TransferRescueDataByWIFI",
+    "TransferErrorLogToUSB"
+};
+
+//传输结束信息
+static const char *endInfoString[EXPORT_DATA_NR] =
+{
+    "RemoveUSB",
+    "SucceedRescueDataBySFTP",
+    "RemoveUSB",
+    "SucceedRescueDataByWIFI",
+    "RemoveUSB",
+    "SucceedRescueDataByWIFI",
+    "SucceedErrorLogByUSB"
+};
 
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-ExportDataWidget::ExportDataWidget(Export_Data_Type type) : QDialog(0, Qt::FramelessWindowHint)
+ExportDataWidget::ExportDataWidget(Export_Data_Type type) : Dialog()
 {
+    getCloseBtn()->setHidden(true);
+    setFixedHeight(200);
     if (type < EXPORT_DATA_NR)
     {
         _curType = type;
@@ -39,49 +87,38 @@ ExportDataWidget::ExportDataWidget(Export_Data_Type type) : QDialog(0, Qt::Frame
     {
         _curType = EXPORT_RESCUE_DATA_BY_USB;
     }
-    setAttribute(Qt::WA_NoSystemBackground); // draw background in paintEvent
     setModal(true);
 
-    int fontSize = fontManager.getFontSize(1);
+    int fontSize = fontManager.getFontSize(2);
     int width;
     width = windowManager.getPopWindowWidth() * 8 / 10;
 
+    setWindowTitle(trs(startTitleString[_curType]));
 
-    QPalette p;
-    p.setColor(QPalette::Window, Qt::white);
-    setPalette(p);
-
-    // 标题栏。
-    _title = new QLabel(startTitleString[_curType]);
-    _title->setAlignment(Qt::AlignCenter);
-    _title->setFixedHeight(_titleBarHeight);
-    _title->setFont(fontManager.textFont(fontSize, true));
-    p.setColor(QPalette::Foreground, Qt::white);
-    _title->setPalette(p);
-
-    _info = new QLabel(startInfoString[_curType]);
+    _info = new QLabel(trs(startInfoString[_curType]));
     _info->setFont(fontManager.textFont(fontSize));
 
     _bar = new QProgressBar();
-    _bar->setStyleSheet("QProgressBar{background:black;border-radius:5px;}QProgressBar::chunk{background:green;border-radius:5px;}");
+    _bar->setStyleSheet("QProgressBar{background:black;border-radius:5px;}"
+                        "QProgressBar::chunk{background:green;border-radius:5px;}");
     _bar->setTextVisible(false);
     _bar->setFixedWidth(width * 8 / 10);
 
-    _cancleOrOK = new LButton();
+    _cancleOrOK = new Button();
     _cancleOrOK->setText(trs("Cancel"));
-    _cancleOrOK->setFont(fontManager.textFont(fontSize));
+    _cancleOrOK->setButtonStyle(Button::ButtonTextOnly);
     _cancleOrOK->setFixedWidth(width / 5);
-    connect(_cancleOrOK, SIGNAL(realReleased()), this, SLOT(_cancleOrOKPressed()));
+    _cancleOrOK->setFixedHeight(48);
+    connect(_cancleOrOK, SIGNAL(released()), this, SLOT(_cancleOrOKPressed()));
 
     QVBoxLayout *contentLayout = new QVBoxLayout();
     contentLayout->setMargin(5);
     contentLayout->setSpacing(10);
-    contentLayout->addWidget(_title, 0, Qt::AlignHCenter);
     contentLayout->addWidget(_info, 0, Qt::AlignHCenter);
     contentLayout->addWidget(_bar, 0, Qt::AlignHCenter);
     contentLayout->addWidget(_cancleOrOK, 0, Qt::AlignHCenter);
 
-    setLayout(contentLayout);
+    setWindowLayout(contentLayout);
     setFixedWidth(width);
 
     _bar->setValue(0);
@@ -101,8 +138,8 @@ ExportDataWidget::~ExportDataWidget()
  *************************************************************************************************/
 void ExportDataWidget::init()
 {
-    _title->setText(startTitleString[_curType]);
-    _info->setText(startInfoString[_curType]);
+    setWindowTitle(trs(startTitleString[_curType]));
+    _info->setText(trs(startInfoString[_curType]));
     _cancleOrOK->setText(trs("Cancel"));
     _bar->setValue(0);
     _transferCancel = false;
@@ -129,40 +166,9 @@ void ExportDataWidget::setBarValue(unsigned char value)
 
     if (value == 100)
     {
-        _title->setText(endTitleString[_curType]);
-        _info->setText(endInfoString[_curType]);
+        setWindowTitle(trs(endTitleString[_curType]));
+        _info->setText(trs(endInfoString[_curType]));
         _cancleOrOK->setText(trs("Yes"));
-    }
-}
-
-/**************************************************************************************************
- * 绘画事件。
- *************************************************************************************************/
-void ExportDataWidget::paintEvent(QPaintEvent *e)
-{
-    Q_UNUSED(e)
-    QPainterPath clipPath;
-    clipPath.addRoundedRect(this->rect(), 5, 5);
-
-
-    // 绘制标题栏。
-    QPainter barPainter(this);
-    barPainter.setRenderHint(QPainter::Antialiasing);
-    barPainter.setClipPath(clipPath);
-
-    // 绘制边框。
-    QPen pen;
-    pen.setColor(colorManager.getBarBkColor());
-    pen.setWidth(8);
-    barPainter.setPen(pen);
-    barPainter.setBrush(palette().window());
-    barPainter.drawRect(rect());
-
-    if (_title != NULL)
-    {
-        QRect r = rect();
-        r.setBottom(_titleBarHeight);
-        barPainter.fillRect(r, colorManager.getBarBkColor());
     }
 }
 
@@ -172,7 +178,7 @@ void ExportDataWidget::paintEvent(QPaintEvent *e)
 void ExportDataWidget::showEvent(QShowEvent *e)
 {
     _bar->setValue(0);
-    QDialog::showEvent(e);
+    Dialog::showEvent(e);
 
     QRect r;
     r = layoutManager.getMenuArea();

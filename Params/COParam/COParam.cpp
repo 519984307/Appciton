@@ -10,7 +10,7 @@
 
 #include "COParam.h"
 #include "COTrendWidget.h"
-#include "IConfig.h"
+#include "ConfigManager.h"
 
 COParam *COParam::_selfObj = NULL;
 

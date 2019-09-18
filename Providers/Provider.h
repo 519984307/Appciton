@@ -39,6 +39,9 @@ public:
 
     virtual QString getVersionString() const { return versionInfo;}
 
+    // 获取额外版本号
+    virtual QString getExtraVersionString() const { return versionInfoEx;}
+
     // 关闭串口
     void closePort(void);
 
@@ -103,13 +106,14 @@ protected:
     void feed(void);                              // 有数据时调用清除连接计数器。
     bool isConnected;
     QString versionInfo;
+    QString versionInfoEx;   // 版本信息扩展
     bool isConnectedToParam;
+    bool needConnectedToParam;               // 需要连接参数
 
 private:
     QString _name;
     bool _firstCheck;
 
-    int _timerID;
     int _disconnectCount;
     int _disconnectThreshold;
     bool _stopCheckConnect;     // 待机标志

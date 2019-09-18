@@ -9,17 +9,17 @@
  **/
 
 #include "AlarmPauseState.h"
-#include "AlarmIndicator.h"
-#include "AlarmStateMachine.h"
-#include "LightManager.h"
+#include "AlarmIndicatorInterface.h"
+#include "AlarmStateMachineInterface.h"
 #include <QTimerEvent>
 #include "IConfig.h"
+#include "LightManagerInterface.h"
 
 class AlarmPauseStatePrivate
 {
 public:
     AlarmPauseStatePrivate()
-        :leftPauseTime(-1)
+        : leftPauseTime(-1)
     {}
 
     /**
@@ -74,21 +74,28 @@ AlarmPauseState::~AlarmPauseState()
  *************************************************************************************************/
 void AlarmPauseState::enter()
 {
-    alarmIndicator.setAlarmStatus(ALARM_STATUS_PAUSE);
-    alarmIndicator.delAllPhyAlarm();
-    lightManager.enableAlarmAudioMute(true);
+    AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+    alarmIndicator->setAlarmStatus(ALARM_STATUS_PAUSE);
     beginTimer(1000);
     int index = ALARM_PAUSE_TIME_2MIN;
     systemConfig.getNumValue("Alarms|AlarmPauseTime", index);
     d_ptr->leftPauseTime = d_ptr->getAlarmPausetime(static_cast<AlarmPauseTime>(index));
-    alarmIndicator.updateAlarmPauseTime(d_ptr->leftPauseTime);
+    alarmIndicator->updateAlarmPauseTime(d_ptr->leftPauseTime);
+    alarmIndicator->removeAllAlarmResetStatus();
+    LightManagerInterface *lightManager = LightManagerInterface::getLightManager();
+    if (lightManager)
+    {
+        /* the alarm pause light should be always off, we don't use it any more */
+        lightManager->enableAlarmAudioMute(false);
+    }
 }
 
 void AlarmPauseState::exit()
 {
     endTimer();
     d_ptr->leftPauseTime = -1;
-    alarmIndicator.updateAlarmPauseTime(d_ptr->leftPauseTime);
+    AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+    alarmIndicator->updateAlarmPauseTime(d_ptr->leftPauseTime);
 }
 
 /**************************************************************************************************
@@ -96,68 +103,47 @@ void AlarmPauseState::exit()
  *************************************************************************************************/
 void AlarmPauseState::handAlarmEvent(AlarmStateEvent event, unsigned char */*data*/, unsigned /*len*/)
 {
+    AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+    AlarmStateMachineInterface *alarmStateMachine = AlarmStateMachineInterface::getAlarmStateMachine();
     switch (event)
     {
-#if 1
     case ALARM_STATE_EVENT_RESET_BTN_PRESSED:
     {
-        // do noting at pause state
+        alarmIndicator->clearAlarmPause();
+        alarmIndicator->phyAlarmResetStatusHandle();
+        alarmIndicator->techAlarmResetStatusHandle();
+        if (alarmIndicator->getAlarmCount())
+        {
+            // must has med priority alarm or high priority alarm before enter the reset state
+            alarmStateMachine->switchState(ALARM_RESET_STATE);
+        }
         break;
     }
 
     case ALARM_STATE_EVENT_MUTE_BTN_PRESSED:
     {
-        alarmIndicator.phyAlarmPauseStatusHandle();
-        alarmStateMachine.switchState(ALARM_NORMAL_STATE);
+        alarmIndicator->phyAlarmPauseStatusHandle();
+        alarmStateMachine->switchState(ALARM_NORMAL_STATE);
         break;
     }
-#else
-    case ALARM_STATE_EVENT_MUTE_BTN_PRESSED:
-    {
-        // 有栓锁的报警和新的技术报警
-        bool ret = alarmIndicator.techAlarmPauseStatusHandle();
-        if (alarmIndicator.hasLatchPhyAlarm())
-        {
-            alarmIndicator.delLatchPhyAlarm();
-            ret |= true;
-        }
-
-        // 有处于未暂停的报警
-        if (alarmIndicator.hasNonPausePhyAlarm())
-        {
-            alarmIndicator.phyAlarmPauseStatusHandle();
-            ret |= true;
-        }
-
-        if (ret)
-        {
-            return;
-        }
-
-        alarmIndicator.phyAlarmPauseStatusHandle();
-        alarmStateMachine.switchState(ALARM_NORMAL_STATE);
-        break;
-    }
-#endif
 
     case ALARM_STATE_EVENT_MUTE_BTN_PRESSED_SHORT_TIME:
-        if (alarmStateMachine.isEnableAlarmAudioOff())
+        if (alarmStateMachine->isEnableAlarmAudioOff())
         {
-            alarmStateMachine.switchState(ALARM_AUDIO_OFF_STATE);
+            alarmStateMachine->switchState(ALARM_AUDIO_OFF_STATE);
         }
         break;
 
-#if 0
-    case ALARM_STATE_EVENT_ALL_PHY_ALARM_LATCHED:
-    case ALARM_STATE_EVENT_NO_PAUSED_PHY_ALARM:
-        alarmStateMachine.switchState(ALARM_NORMAL_STATE);
+    case ALARM_STATE_EVENT_NEW_PHY_ALARM:
+    case ALARM_STATE_EVENT_NEW_TECH_ALARM:
+        alarmIndicator->clearAlarmPause();
+        alarmStateMachine->switchState(ALARM_NORMAL_STATE);
         break;
-#endif
 
     case ALARM_STATE_EVENT_MUTE_BTN_PRESSED_LONG_TIME:
-        if (alarmStateMachine.isEnableAlarmOff())
+        if (alarmStateMachine->isEnableAlarmOff())
         {
-            alarmStateMachine.switchState(ALARM_OFF_STATE);
+            alarmStateMachine->switchState(ALARM_OFF_STATE);
         }
         break;
 
@@ -170,11 +156,13 @@ void AlarmPauseState::timerEvent(QTimerEvent *e)
 {
     if (e->timerId() == getTimerID())
     {
+        AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
         d_ptr->leftPauseTime--;
-        alarmIndicator.updateAlarmPauseTime(d_ptr->leftPauseTime);
+        alarmIndicator->updateAlarmPauseTime(d_ptr->leftPauseTime);
         if (d_ptr->leftPauseTime <= 0)
         {
-            alarmStateMachine.switchState(ALARM_NORMAL_STATE);
+            AlarmStateMachineInterface *alarmStateMachine = AlarmStateMachineInterface::getAlarmStateMachine();
+            alarmStateMachine->switchState(ALARM_NORMAL_STATE);
         }
     }
 }

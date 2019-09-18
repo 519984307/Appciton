@@ -1,3 +1,12 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by TongZhou Fang <fangtongzhou@blmed.cn>, 2019/5/29
+ **/
 #include "ErrorLogExporter.h"
 #include "ErrorLog.h"
 #include "USBManager.h"
@@ -7,11 +16,11 @@
 #include "ErrorLogItem.h"
 #include <QApplication>
 #include "Utility.h"
+#include "LanguageManager.h"
 
 ErrorLogExporter::ErrorLogExporter()
-    :DataExporterBase(), _currentProgress(0)
+    : DataExporterBase(), _currentProgress(0)
 {
-
 }
 
 void ErrorLogExporter::startExport()
@@ -25,57 +34,58 @@ void ErrorLogExporter::startExport()
     exportNamePrefix += serialNum;
     quint32 identifier = 10;
     QString filename;
-    do {
+    do
+    {
         filename = exportNamePrefix + QString::number(identifier, 36).toUpper() + ".log";
-        identifier ++;
-        if(identifier % 36 == 0)
+        identifier++;
+        if (identifier % 36 == 0)
         {
             identifier = (identifier - 1) * 36 + 10;
         }
-    }while(QFile::exists(filename));
+    }while (QFile::exists(filename));
 
-    if(exportLog(filename))
+    if (exportLog(filename))
     {
         exportComplete(Success);
     }
     else
     {
-        //request cancel
-        if(_requestCancel)
+        // request cancel
+        if (_requestCancel)
         {
             exportComplete(Cancel);
             return;
         }
 
-        //Fail on usb disconnect
-        if(!usbManager.checkStatus())
+        // Fail on usb disconnect
+        if (!usbManager.checkStatus())
         {
             exportComplete(Disconnect);
             return;
         }
 
         int freeSpace = usbManager.getUSBFreeSize();
-        if(freeSpace == -1) //error happen while calculate free space
+        if (freeSpace == -1)  // error happen while calculate free space
         {
-            //At most case, this error is cause by disconnection
+            // At most case, this error is cause by disconnection
             exportComplete(Disconnect);
             return;
         }
-        else if(freeSpace <= 4) //more than 4KB space left
+        else if (freeSpace <= 4)  // more than 4KB space left
         {
-            //no enough space
+            // no enough space
             exportComplete(NoSpace);
             return;
         }
 
-        //otherwise, failed
+        // otherwise, failed
         exportComplete(Failed);
     }
 }
 
 void ErrorLogExporter::updateProgress(unsigned char progress)
 {
-    if(progress == _currentProgress)
+    if (progress == _currentProgress)
     {
         return;
     }
@@ -87,55 +97,54 @@ void ErrorLogExporter::updateProgress(unsigned char progress)
 #define TEXT_ENDL "\r\n"
 bool ErrorLogExporter::exportLog(const QString &filename)
 {
-    if(filename.isEmpty() || !usbManager.isUSBExist())
+    if (filename.isEmpty() || !usbManager.isUSBExist())
     {
         return false;
     }
 
     QFile file(filename);
-    if(file.open(QIODevice::ReadWrite | QIODevice::Text))
+    if (file.open(QIODevice::ReadWrite | QIODevice::Text))
     {
         QTextStream stream(&file);
         int index = 0;
-        int total =errorLog.count();
+        int total = errorLog.count();
         ErrorLog::Summary summary = errorLog.getSummary();
-        ErrorLogItemBase *item = NULL;
-        stream<<"Error Log export at "<< QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")<<TEXT_ENDL;
-        stream<<"Number of Errors: "<<summary.NumOfErrors<<TEXT_ENDL;
-        stream<<"Number of Critical Faults: "<<summary.numOfCriticalErrors<<TEXT_ENDL;
-        stream<<"Most Recent Error: "<<summary.mostRecentErrorDate<<TEXT_ENDL;
-        stream<<"Most Recent Critical Fault: "<<summary.mostRecentCriticalErrorDate<<TEXT_ENDL;
-        stream<<"Oldest Error: "<<summary.oldestErrorDate<<TEXT_ENDL;
-        stream<<"Last Erase Time: "<<summary.lastEraseTimeDate<<TEXT_ENDL;
-        stream<<"Number of shocks > 120J: "<<summary.totalShockCount<<TEXT_ENDL;
-        stream<<TEXT_ENDL;
+        stream << trs("ErrorLogExportAt") << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") << TEXT_ENDL;
+        stream << trs("NumberOfErrors") << summary.NumOfErrors << TEXT_ENDL;
+        stream << trs("NumberOfCriticalFaults") << summary.numOfCriticalErrors << TEXT_ENDL;
+        stream << trs("MostRecentError") << summary.mostRecentErrorDate << TEXT_ENDL;
+        stream << trs("MostRecentCriticalFault") << summary.mostRecentCriticalErrorDate << TEXT_ENDL;
+        stream << trs("OldestError") << summary.oldestErrorDate << TEXT_ENDL;
+        stream << trs("LastEraseTime") << summary.lastEraseTimeDate << TEXT_ENDL;
+        stream << TEXT_ENDL;
 
-        while(index < total)
+        while (index < total)
         {
+            ErrorLogItemBase *item = NULL;
             updateProgress(100 * (index + 1) / total);
 
-            stream<<"Log("<<index+1<<"/"<<total<<")"<<TEXT_ENDL;
+            stream << "Log(" << index + 1 << "/" << total << ")" << TEXT_ENDL;
             item = errorLog.getLog(index);
-            if(item)
+            if (item)
             {
                 item->outputInfo(stream);
-                stream<<TEXT_ENDL;
+                stream << TEXT_ENDL;
                 delete item;
             }
             else
             {
                 qdebug("get log index %d failed", index);
             }
-            index ++;
+            index++;
 
             Util::waitInEventLoop(1);
 
-            if(_requestCancel)
+            if (_requestCancel)
             {
                 file.remove();
                 return false;
             }
-            else if(stream.status() == QTextStream::WriteFailed)
+            else if (stream.status() == QTextStream::WriteFailed)
             {
                 qdebug("Write %s Failed!", qPrintable(filename));
                 file.remove();
@@ -150,7 +159,7 @@ bool ErrorLogExporter::exportLog(const QString &filename)
 
         stream.flush();
         file.close();
-        if(stream.status() == QTextStream::WriteFailed)
+        if (stream.status() == QTextStream::WriteFailed)
         {
             qdebug("Write %s Failed!", qPrintable(filename));
             file.remove();
@@ -158,8 +167,8 @@ bool ErrorLogExporter::exportLog(const QString &filename)
         }
         else
         {
-            //the log is empty
-            if(total == 0)
+            // the log is empty
+            if (total == 0)
             {
                 updateProgress(100);
             }

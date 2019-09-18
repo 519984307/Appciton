@@ -9,13 +9,13 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 #include <QScopedPointer>
 #include <QModelIndex>
 #include "Param.h"
 
 class EventWindowPrivate;
-class EventWindow : public Window
+class EventWindow : public Dialog
 {
     Q_OBJECT
 public:
@@ -53,7 +53,6 @@ private slots:
     void waveInfoReleased(QModelIndex index);
     void waveInfoReleased(int index);
     void eventTypeSelect(int);
-    void eventLevelSelect(int);
     void eventListPrintReleased(void);
     void upPageReleased(void);
     void downPageReleased(void);

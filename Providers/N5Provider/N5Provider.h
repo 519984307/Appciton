@@ -53,6 +53,7 @@ enum NIBPPacketType
     N5_NOTIFY_LOW_PRESSURE                      = 0x22,       // <15mmHg压力值周期性数据帧。
 
     N5_NOTIFY_PASSTHROUGH_MODE                  = 0x25,       // 透传模式。
+    N5_RSP_PASSTHROUGH_MODE                     = 0x26,
 
     N5_NOTIFY_START_UP                          = 0x40,       // 启动帧。
     N5_NOTIFY_END                               = 0x41,       // 测量结束帧。
@@ -88,6 +89,8 @@ enum NIBPPacketType
     N5_RSP_PRESSURE_PROTECT                     = 0x97,       //
 
     N5_STATE_CHANGE                             = 0xA0,       // 状态改变
+    N5_STATE_ZERO_SELFTEST                      = 0xA1,       // 自校零状态
+    N5_STATE_PRESSURE_PROTECT                   = 0xA2,       // 过压保护状态
     N5_SERVICE_PRESSURE                         = 0xDB,       // 压力帧。
 
     N5_UPGRADE_ALIVE                            = 0xFE,       //升级保活帧
@@ -193,6 +196,7 @@ protected:
     virtual void handlePacket(unsigned char *data, int len);
     virtual void disconnected(void);
     virtual void reconnected(void);
+    virtual void sendDisconnected();
 
 private:
     void _sendACK(unsigned char type);

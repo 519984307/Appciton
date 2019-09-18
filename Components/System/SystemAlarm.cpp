@@ -13,8 +13,6 @@
 #include "KeyActionManager.h"
 #include "AlarmConfig.h"
 
-SystemAlarm *SystemAlarm::_selfObj = NULL;
-
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
@@ -45,6 +43,7 @@ AlarmPriority SystemAlarm::getAlarmPriority(int id)
     switch (id)
     {
     case SYSTEM_ONE_SHOT_ALARM_COMMUNICATION_STOP:
+    case SYSTEM_ONE_SHOT_ALARM_SEND_COMMUNICATION_STOP:
         return ALARM_PRIO_MED;
 
     case POWERUP_PANEL_RECORD_PRESSED:
@@ -54,6 +53,8 @@ AlarmPriority SystemAlarm::getAlarmPriority(int id)
         return ALARM_PRIO_PROMPT;
 
     case STORAGE_SPACE_FULL:
+    case SYSTEM_ONE_SHOT_ALARM_AUDIO_OFF:
+    case SYSTEM_ONE_SHOT_ALARM_OFF:
         return ALARM_PRIO_PROMPT;
 
     default:
@@ -98,7 +99,9 @@ static const char *alarmLimitOneshotStr[] =
     "SomeLimitAlarmDisabled",
     "PowerupRecorderPressed",
     "PowerupCommunicationStop",
-    "RescueStorageSpaceFull"
+    "CurrentPatientStorageSpaceFull",
+    "AlarmAudioOff",
+    "AlarmOff"
 };
 
 /**************************************************************************************************

@@ -15,7 +15,7 @@
 class O2LimitAlarm : public AlarmLimitIFace
 {
 public:
-    static O2LimitAlarm &getInstance();
+    O2LimitAlarm();
 
 public:
     // 报警源名字
@@ -59,18 +59,16 @@ public:
 
 private:
     // 构造与析构
-    O2LimitAlarm();
     virtual ~O2LimitAlarm();
 
     bool _isO2Alarm;
 };
-#define o2LimitAlarm    (O2LimitAlarm::getInstance())
 
 // OneShot 报警实现
 class O2OneShotAlarm : public AlarmOneShotIFace
 {
 public:
-    static O2OneShotAlarm &getInstance();
+    O2OneShotAlarm();
 
 public:
     // 报警源名字
@@ -101,7 +99,5 @@ public:
     virtual bool isAlarmed(int id);
 
 private:
-    O2OneShotAlarm();
     virtual ~O2OneShotAlarm();
 };
-#define o2OneShotAlarm (O2OneShotAlarm::getInstance())

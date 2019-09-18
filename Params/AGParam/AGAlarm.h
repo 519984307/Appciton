@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2019/3/22
+ **/
+
 #pragma once
 #include "AlarmParamIFace.h"
 #include "AGSymbol.h"
@@ -6,15 +16,7 @@
 class AGLimitAlarm : public AlarmLimitIFace
 {
 public:
-    static AGLimitAlarm &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new AGLimitAlarm();
-        }
-        return *_selfObj;
-    }
-    static AGLimitAlarm *_selfObj;
+    AGLimitAlarm();
 
 public:
     virtual QString getAlarmSourceName(void);
@@ -53,7 +55,6 @@ public:
     virtual void notifyAlarm(int id, bool flag);
 
     // constructor and destructor.
-    AGLimitAlarm();
     virtual ~AGLimitAlarm();
 private:
     bool _isEtN2OAlarm;
@@ -64,23 +65,13 @@ private:
     bool _isFiAA1Alarm;
     bool _isEtAA2Alarm;
     bool _isFiAA2Alarm;
-
 };
-#define agLimitAlarm (AGLimitAlarm::construction())
 
 // one shot alarm
 class AGOneShotAlarm : public AlarmOneShotIFace
 {
 public:
-    static AGOneShotAlarm &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new AGOneShotAlarm();
-        }
-        return *_selfObj;
-    }
-    static AGOneShotAlarm *_selfObj;
+    AGOneShotAlarm();
 
 public:
     virtual QString getAlarmSourceName(void);
@@ -109,8 +100,4 @@ public:
 
     // constructor and destructor.
     virtual ~AGOneShotAlarm();
-
-private:
-    AGOneShotAlarm();
 };
-#define agOneShotAlarm (AGOneShotAlarm::construction())

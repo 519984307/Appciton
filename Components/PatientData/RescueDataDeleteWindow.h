@@ -9,10 +9,10 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 
 class RescueDataDeleteWindowPrivate;
-class RescueDataDeleteWindow : public Window
+class RescueDataDeleteWindow : public Dialog
 {
     Q_OBJECT
 public:

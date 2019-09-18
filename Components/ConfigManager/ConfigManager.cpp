@@ -90,6 +90,11 @@ ConfigManager &ConfigManager::getInstance()
     if (instance == NULL)
     {
         instance = new ConfigManager();
+        ConfigManagerInterface *old = registerConfigManager(instance);
+        if (old)
+        {
+            delete old;
+        }
     }
 
     return *instance;
@@ -237,13 +242,13 @@ int ConfigManager::getUserDefineConfigMaxLen()
     return MAX_CONFIG_COUNT;
 }
 
-bool ConfigManager::hasExistConfig(const QString &name)
+bool ConfigManager::hasExistConfig(const QString &name, PatientType type)
 {
     bool flag = false;
     QList<ConfigManager::UserDefineConfigInfo> infos = getUserDefineConfigInfos();
     for (int i = 0; i < infos.count(); i++)
     {
-        if (name == infos.at(i).name)
+        if (name == infos.at(i).name && PatientSymbol::convert(type) == infos.at(i).patType)
         {
             flag = true;
             break;
@@ -258,6 +263,20 @@ void ConfigManager::loadConfig(PatientType type)
     QString filePath = d_ptr->getDefaultConfigFilepath(type);
     currentConfig.setCurrentFilePath(filePath);
     layoutManager.updateLayoutWidgetsConfig();
+}
+
+QString ConfigManager::getOriginalConfig(PatientType type)
+{
+    QString findPath = QString("%1|%2").arg("ConfigManager|Original|").arg(PatientSymbol::convert(type));
+    QString path;
+    systemConfig.getStrValue(findPath, path);
+    return QString(CFG_PATH) + path;
+}
+
+void ConfigManager::setOriginalConfig(PatientType type, QString path)
+{
+    QString findPath = QString("%1|%2").arg("ConfigManager|Original|").arg(PatientSymbol::convert(type));
+    systemConfig.setStrValue(findPath, path);
 }
 
 bool ConfigManager::isReadOnly()const

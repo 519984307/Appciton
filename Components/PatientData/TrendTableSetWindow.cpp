@@ -40,7 +40,7 @@ TrendTableSetWindow::~TrendTableSetWindow()
 
 void TrendTableSetWindow::showEvent(QShowEvent *ev)
 {
-    Window::showEvent(ev);
+    Dialog::showEvent(ev);
 
     QString prefix = "TrendTable|";
     int index = 0;
@@ -51,7 +51,9 @@ void TrendTableSetWindow::showEvent(QShowEvent *ev)
     {
         index = 0;
     }
+    d_ptr->resolutionRatioCbo->blockSignals(true);
     d_ptr->resolutionRatioCbo->setCurrentIndex(index);
+    d_ptr->resolutionRatioCbo->blockSignals(false);
 
     QString groupPrefix = prefix + "TrendGroup";
     systemConfig.getNumValue(groupPrefix, index);
@@ -60,7 +62,9 @@ void TrendTableSetWindow::showEvent(QShowEvent *ev)
     {
         index = count - 1;
     }
+    d_ptr->trendGroupCbo->blockSignals(true);
     d_ptr->trendGroupCbo->setCurrentIndex(index);
+    d_ptr->trendGroupCbo->blockSignals(false);
 }
 
 void TrendTableSetWindow::timeIntervalReleased(int t)
@@ -78,7 +82,7 @@ void TrendTableSetWindow::trendGroupReleased(int g)
 }
 
 TrendTableSetWindow::TrendTableSetWindow()
-    : Window(), d_ptr(new TrendTableSetWindowPrivate())
+    : Dialog(), d_ptr(new TrendTableSetWindowPrivate())
 {
     setFixedSize(340, 240);
 

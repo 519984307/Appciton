@@ -70,8 +70,7 @@ void RESPMenuContentPrivate::loadOptions()
         combos[ITEM_CBO_RR_SOURCE]->addItems(QStringList()
                                              << trs(RESPSymbol::convert(BR_RR_AUTO))
                                              << trs(RESPSymbol::convert(BR_RR_SOURCE_ECG))
-                                             << trs(RESPSymbol::convert(BR_RR_SOURCE_CO2))
-                                             );
+                                             << trs(RESPSymbol::convert(BR_RR_SOURCE_CO2)));
     }
     else
     {
@@ -81,17 +80,10 @@ void RESPMenuContentPrivate::loadOptions()
     }
 
     int index = 0;
-    if (respDupParam.isAutoBrSourceEnabled())
+    currentConfig.getNumValue("RESP|BrSource", index);
+    if (index == BR_RR_SOURCE_CO2 && co2Param.isConnected() == false)
     {
-        index = BR_RR_AUTO;
-    }
-    else if (respDupParam.getBrSource() == RESPDupParam::BR_SOURCE_CO2 && co2Param.isConnected())
-    {
-        index = BR_RR_SOURCE_CO2;
-    }
-    else
-    {
-        index = BR_RR_SOURCE_ECG;
+        index = 0;
     }
     combos[ITEM_CBO_RR_SOURCE]->setCurrentIndex(index);
     if (respDupParam.getParamSourceType() == RESPDupParam::BR)
@@ -107,6 +99,16 @@ void RESPMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_BREATH_LEAD]->setCurrentIndex(respParam.getCalcLead());
 
     // wave gain
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        // demo模式不允许设置增益
+        combos[ITEM_CBO_WAVE_GAIN]->setEnabled(false);
+    }
+    else
+    {
+        combos[ITEM_CBO_WAVE_GAIN]->setEnabled(true);
+    }
+
     combos[ITEM_CBO_WAVE_GAIN]->setCurrentIndex(respParam.getZoom());
 }
 
@@ -123,6 +125,7 @@ RESPMenuContent::RESPMenuContent()
     : MenuContent(trs("RESPMenu"), trs("RESPMenuDesc")),
       d_ptr(new RESPMenuContentPrivate())
 {
+    connect(&co2Param, SIGNAL(connectStatusUpdated(bool)), this, SLOT(updateBRSource()));
 }
 
 RESPMenuContent::~RESPMenuContent()
@@ -151,7 +154,6 @@ void RESPMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox;
     comboBox->addItems(QStringList()
-                       << trs(RESPSymbol::convert(RESP_APNEA_TIME_OFF))
                        << trs(RESPSymbol::convert(RESP_APNEA_TIME_20_SEC))
                        << trs(RESPSymbol::convert(RESP_APNEA_TIME_25_SEC))
                        << trs(RESPSymbol::convert(RESP_APNEA_TIME_30_SEC))
@@ -256,30 +258,11 @@ void RESPMenuContent::onComboBoxIndexChanged(int index)
             currentConfig.setNumValue("RESP|SweepSpeed", index);
             break;
         case RESPMenuContentPrivate::ITEM_CBO_APNEA_DELAY:
-            currentConfig.setNumValue("Alarm|ApneaTime", index);
-            respParam.setApneaTime((ApneaAlarmTime)index);
-            co2Param.setApneaTime((ApneaAlarmTime)index);
+            currentConfig.setNumValue("RESP|ApneaDelay", index);
+            respParam.setApneaTime(static_cast<ApneaAlarmTime>(index));
             break;
         case RESPMenuContentPrivate::ITEM_CBO_RR_SOURCE:
-        {
-            if (index == 0)
-            {
-                respDupParam.setAutoBrSourceStatue(true);
-                break;
-            }
-            else
-            {
-                respDupParam.setAutoBrSourceStatue(false);
-            }
-            if (BR_RR_SOURCE_CO2 == index)
-            {
-                respDupParam.setBrSource(RESPDupParam::BR_SOURCE_CO2);
-            }
-            else if (BR_RR_SOURCE_ECG == index)
-            {
-                respDupParam.setBrSource(RESPDupParam::BR_SOURCE_ECG);
-            }
-        }
+            respDupParam.setRRSource(static_cast<BRRRSourceType>(index));
             break;
         case RESPMenuContentPrivate::ITEM_CBO_WAVE_GAIN:
             respParam.setZoom(static_cast<RESPZoom>(index));
@@ -298,4 +281,11 @@ void RESPMenuContent::onAlarmBtnReleased()
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_RR_BR, true);
     AlarmLimitWindow w(subParamName);
     windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
+}
+
+void RESPMenuContent::updateBRSource()
+{
+    d_ptr->blockItemSignal(true);
+    d_ptr->loadOptions();
+    d_ptr->blockItemSignal(false);
 }

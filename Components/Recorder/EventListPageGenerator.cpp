@@ -13,6 +13,7 @@
 #include "FontManager.h"
 #include <QPainter>
 #include <QDebug>
+#include "LanguageManager.h"
 
 class EventListPageGeneratorPrivate
 {
@@ -27,12 +28,14 @@ public:
     RecordPageGenerator::PageType curPageType;
     QStringList eventList;
     bool isWait;                // 线程加锁
+    PatientInfo patientInfo;    // 病人信息
 };
 
-EventListPageGenerator::EventListPageGenerator(QStringList &eventList, QObject *parent)
+EventListPageGenerator::EventListPageGenerator(QStringList &eventList, const PatientInfo &patientInfo, QObject *parent)
     : RecordPageGenerator(parent), d_ptr(new EventListPageGeneratorPrivate)
 {
     d_ptr->eventList = eventList;
+    d_ptr->patientInfo = patientInfo;
 }
 
 EventListPageGenerator::~EventListPageGenerator()
@@ -45,7 +48,7 @@ RecordPage *EventListPageGenerator::createPage()
     {
     case TitlePage:
         d_ptr->curPageType = EventListPage;
-        return createTitlePage(QString(trs("EventListPrint")), patientManager.getPatientInfo());
+        return createTitlePage(QString(trs("EventListPrint")), d_ptr->patientInfo);
     case EventListPage:
         if (!d_ptr->eventList.isEmpty() && !d_ptr->isWait)
         {

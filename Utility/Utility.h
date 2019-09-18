@@ -87,9 +87,6 @@ void waitInEventLoop(int ms);
 // set up the system log, route the debug message to /var/log/messages
 void setupSysLog();
 
-// popup up a message box
-void popupMsgBox(const QString &title, const QPixmap &icon, const QString &text);
-
 // generate the kernel logo file
 bool generateKernelLogo(QFile &logoFile, const QImage &logoImage);
 

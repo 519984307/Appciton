@@ -13,6 +13,7 @@
 #include <QLabel>
 #include <QGridLayout>
 #include <Button.h>
+#include "LanguageManager.h"
 
 DemoMenuContent::DemoMenuContent()
     : MenuContent(trs("DemoMode"), trs("DemoConfigDesc"))

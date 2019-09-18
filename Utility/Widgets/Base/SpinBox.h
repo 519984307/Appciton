@@ -26,6 +26,18 @@ public:
         SPIN_BOX_DISABLE
     };
 
+    enum SpinBoxStyle
+    {
+        SPIN_BOX_STYLE_NUMBER,
+        SPIN_BOX_STYLE_STRING,
+        SPIN_BOX_STYLE_NONE
+    };
+
+    /**
+     * @brief SpinBox
+     * @param parent
+     * @param showHint  if show hint inside the SpinBox
+     */
     explicit SpinBox(QWidget *parent = NULL);
     ~SpinBox();
 
@@ -38,7 +50,8 @@ public:
 
     /**
      * @brief setValue set current display value
-     * @param value
+     * @param value 当风格为number时，value代表显示值
+     *              当风格为string时，value代表字符串列表下标值
      */
     void setValue(int value);
     int getValue(void);
@@ -66,6 +79,26 @@ public:
 
     /* reimplement */
     QSize sizeHint() const;
+
+
+    /**
+     * @brief setSpinBoxStyle 设置spinbox的类型
+     * @param spinBoxStyle
+     */
+    void setSpinBoxStyle(SpinBoxStyle spinBoxStyle);
+
+    /**
+     * @brief setStringList set stringList
+     * @param strs
+     */
+    void setStringList(QStringList strs);
+
+    /**
+     * @brief setStartValue 设置起始值
+     * @param value
+     */
+    void setStartValue(int value);
+
 signals:
     void valueChange(int value, int scale);
 

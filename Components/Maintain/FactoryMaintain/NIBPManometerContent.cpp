@@ -17,20 +17,22 @@
 #include "Button.h"
 #include "MessageBox.h"
 #include "IConfig.h"
+#include "LanguageManager.h"
 
 class NIBPManometerContentPrivate
 {
 public:
     NIBPManometerContentPrivate()
-        : value(NULL), inModeTimerID(-1),
+        : value(NULL), unitLabel(NULL), inModeTimerID(-1),
           timeoutNum(0), pressureTimerID(-1),
           pressure(InvData()), isManometerMode(false),
           modeBtn(NULL)
     {
         machineConfig.getStrValue("NIBP", moduleStr);
     }
-
+    void loadOptions(void);
     QLabel *value;
+    QLabel *unitLabel;
     int inModeTimerID;          // 进入压力计模式定时器ID
     int timeoutNum;
     int pressureTimerID;        // 获取压力定时器ID
@@ -40,6 +42,15 @@ public:
 
     QString moduleStr;         // 运行模块字符串
 };
+
+void NIBPManometerContentPrivate::loadOptions(void)
+{
+    isManometerMode = false;
+    modeBtn->setEnabled(true);
+    value->setText(InvStr());
+    unitLabel->setText(Unit::getSymbol(nibpParam.getUnit()));
+    modeBtn->setText(trs("EnterManometerMode"));
+}
 
 NIBPManometerContent *NIBPManometerContent::getInstance()
 {
@@ -90,6 +101,7 @@ void NIBPManometerContent::layoutExec()
     label = new QLabel();
     label->setText(Unit::getSymbol(nibpParam.getUnit()));
     layout->addWidget(label, 1, 2);
+    d_ptr->unitLabel = label;
 }
 
 void NIBPManometerContent::timerEvent(QTimerEvent *ev)
@@ -120,7 +132,8 @@ void NIBPManometerContent::timerEvent(QTimerEvent *ev)
             {
                 MessageBox messbox(trs("Warn"), trs("OperationFailedPleaseAgain"), false);
                 messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
-                messbox.exec();
+                windowManager.showWindow(&messbox,
+                                         WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
             }
             killTimer(d_ptr->inModeTimerID);
             d_ptr->inModeTimerID = -1;
@@ -133,17 +146,40 @@ void NIBPManometerContent::timerEvent(QTimerEvent *ev)
     }
     else if (d_ptr->pressureTimerID == ev->timerId())
     {
-        if (d_ptr->pressure != nibpParam.getManometerPressure())
+        if (d_ptr->pressure != nibpParam.getManometerPressure() && d_ptr->isManometerMode)
         {
             d_ptr->pressure = nibpParam.getManometerPressure();
-            d_ptr->value->setNum(nibpParam.getManometerPressure());
+            UnitType unit = nibpParam.getUnit();
+            UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_NIBP_SYS);
+            if (unit != defUnit)
+            {
+                d_ptr->value->setNum(Unit::convert(unit, defUnit, d_ptr->pressure).toInt());
+            }
+            else
+            {
+                d_ptr->value->setNum(d_ptr->pressure);
+            }
+        }
+    }
+}
+
+void NIBPManometerContent::hideEvent(QHideEvent *e)
+{
+    Q_UNUSED(e);
+    d_ptr->loadOptions();
+    if (d_ptr->moduleStr == "BLM_N5")
+    {
+        nibpParam.provider().serviceManometer(false);
+        if (nibpParam.curMachineType() == NIBP_STATE_MACHINE_SERVICE)
+        {
+            nibpParam.switchState(NIBP_SERVICE_STANDBY_STATE);
         }
     }
 }
 
 void NIBPManometerContent::enterManometerReleased()
 {
-    if (d_ptr->moduleStr != "SUNTECH_NIBP")
+    if (d_ptr->moduleStr == "BLM_N5")
     {
         d_ptr->inModeTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
         d_ptr->modeBtn->setEnabled(false);
@@ -187,8 +223,5 @@ NIBPManometerContent::~NIBPManometerContent()
 
 void NIBPManometerContent::init()
 {
-    d_ptr->isManometerMode = false;
-    d_ptr->modeBtn->setEnabled(true);
-    d_ptr->modeBtn->setText(trs("EnterManometerMode"));
+    d_ptr->loadOptions();
 }
-

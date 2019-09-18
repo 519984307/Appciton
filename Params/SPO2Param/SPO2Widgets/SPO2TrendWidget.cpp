@@ -30,15 +30,14 @@ void SPO2TrendWidget::_releaseHandle(IWidget *iWidget)
     p->popup(trs("SPO2Menu"));
 }
 
-void SPO2TrendWidget::_loadConfig()
+void SPO2TrendWidget::loadConfig()
 {
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
     setPalette(palette);
     _spo2Value->setPalette(palette);
     _piName->setPalette(palette);
     _piValue->setPalette(palette);
-    // 设置上下限
-    updateLimit();
+    TrendWidget::loadConfig();
 }
 
 /**************************************************************************************************
@@ -46,14 +45,13 @@ void SPO2TrendWidget::_loadConfig()
  *************************************************************************************************/
 void SPO2TrendWidget::setSPO2Value(int16_t spo2)
 {
-//    debug("------------spo2 = %d",spo2);
-    if (spo2 >= 0)
+    if ((spo2 >= 0 && spo2Param.getPerfusionStatus()) || (spo2 >= 0 && spo2 <= 60))
+    {
+        _spo2String = QString("%1?").arg(QString::number(spo2));
+    }
+    else if (spo2 >= 0)
     {
         _spo2String = QString::number(spo2);
-    }
-    else if (spo2 == UnknownData())
-    {
-        _spo2String = InvStr();
     }
     else
     {
@@ -160,7 +158,7 @@ void SPO2TrendWidget::setTextSize()
 
     _spo2Value->setFont(font);
 
-    font = fontManager.numFont(fontsize/1.5, true);
+    font = fontManager.numFont(fontsize / 2, true);
     font.setWeight(QFont::Black);
     _piValue->setFont(font);
 
@@ -178,10 +176,7 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
     _spo2String = InvStr();
     _piString = InvStr();
     setName(trs(paramInfo.getParamName(PARAM_SPO2)));
-    setUnit(Unit::localeSymbol(UNIT_PERCENT));
-
-    // 设置报警关闭标志
-    showAlarmOff();
+    setUnit(trs(Unit::getSymbol(UNIT_PERCENT)));
 
     // 血氧值。
     _spo2Value = new QLabel();
@@ -193,7 +188,6 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
     _spo2Bar->setFixedWidth(20);
     QVBoxLayout *vLayout = new QVBoxLayout();
     vLayout->addWidget(_spo2Bar);
-    vLayout->setMargin(8);
 
     _piName = new QLabel();
     _piName->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
@@ -204,17 +198,17 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
     _piValue->setText(InvStr());
 
     QHBoxLayout *layout = new QHBoxLayout();
-    layout->addWidget(_spo2Value, 4);
+    layout->addWidget(_spo2Value, 5);
     layout->addLayout(vLayout, 1);
     layout->addWidget(_piName, 1);
-    layout->addWidget(_piValue, 2);
+    layout->addWidget(_piValue, 3);
 
     contentLayout->addLayout(layout, 7);
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 
-    _loadConfig();
+    loadConfig();
 }
 
 /**************************************************************************************************
@@ -235,9 +229,4 @@ void SPO2TrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
     showNormalStatus(psrc);
-}
-
-void SPO2TrendWidget::updateWidgetConfig()
-{
-    _loadConfig();
 }

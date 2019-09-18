@@ -32,7 +32,7 @@ void CO2TrendWidget::_releaseHandle(IWidget *iWidget)
     p->popup(trs("CO2Menu"));
 }
 
-void CO2TrendWidget::_loadConfig()
+void CO2TrendWidget::loadConfig()
 {
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_CO2));
     setPalette(palette);
@@ -42,9 +42,7 @@ void CO2TrendWidget::_loadConfig()
     _fico2Label->setPalette(palette);
     _awRRValue->setPalette(palette);
     _fico2Value->setPalette(palette);
-
-    // 设置上下限
-    updateLimit();
+    TrendWidget::loadConfig();
 }
 
 /**************************************************************************************************
@@ -130,7 +128,7 @@ void CO2TrendWidget::updateLimit()
  *************************************************************************************************/
 void CO2TrendWidget::setUNit(UnitType unit)
 {
-    setUnit(Unit::localeSymbol(unit));
+    setUnit(trs(Unit::getSymbol(unit)));
 }
 
 /**************************************************************************************************
@@ -227,8 +225,9 @@ void CO2TrendWidget::setTextSize()
 
     _etco2Value->setFont(font);
 
+    r.setSize(QSize(w, h / 2));
     fontsize = fontManager.adjustNumFontSize(r, true, "2222");
-    font = fontManager.numFont(fontsize / 3, true);
+    font = fontManager.numFont(fontsize, true);
     font.setWeight(QFont::Black);
     _fico2Value->setFont(font);
     _awRRValue->setFont(font);
@@ -259,11 +258,8 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget")
 
     // 高度设定为与RESP的一致。
 //    setFixedHeight(86);
-    setName("CO2");
-    setUnit(Unit::localeSymbol(co2Param.getUnit()));
-
-    // 设置报警关闭标志
-    showAlarmOff();
+    setName(trs("CO2"));
+    setUnit(trs(Unit::getSymbol(co2Param.getUnit())));
 
 //    // 构造资源。
     _etCO2Label = new QLabel("Et", this);
@@ -274,8 +270,11 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget")
 
     _etco2Value->setText(InvStr());
     QHBoxLayout *layout = new QHBoxLayout();
-    layout->addWidget(_etCO2Label, 1);
-    layout->addWidget(_etco2Value, 3);
+    layout->setSpacing(10);
+    layout->addStretch();
+    layout->addWidget(_etCO2Label);
+    layout->addWidget(_etco2Value);
+    layout->addStretch();
 
     _awRRName = new QLabel("awRR", this);
     _awRRName->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
@@ -285,7 +284,7 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget")
     QVBoxLayout *vLayout = new QVBoxLayout();
     vLayout->addWidget(_awRRName);
     vLayout->addWidget(_fico2Label);
-    layout->addLayout(vLayout, 1);
+    layout->addLayout(vLayout);
 
     _awRRValue = new QLabel(this);
     _awRRValue->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
@@ -297,13 +296,15 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget")
     vLayout = new QVBoxLayout();
     vLayout->addWidget(_awRRValue);
     vLayout->addWidget(_fico2Value);
-    layout->addLayout(vLayout, 3);
+    layout->addLayout(vLayout);
+    layout->addStretch();
+
     contentLayout->addLayout(layout, 7);
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 
-    _loadConfig();
+    loadConfig();
 }
 
 /**************************************************************************************************
@@ -325,9 +326,4 @@ void CO2TrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_CO2));
     showNormalStatus(psrc);
-}
-
-void CO2TrendWidget::updateWidgetConfig()
-{
-    _loadConfig();
 }

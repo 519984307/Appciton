@@ -15,6 +15,7 @@
 #include "IConfig.h"
 #include "WaveformCache.h"
 #include "SystemManager.h"
+#include "AlarmSourceManager.h"
 
 TEMPParam *TEMPParam::_selfObj = NULL;
 
@@ -23,6 +24,7 @@ TEMPParam *TEMPParam::_selfObj = NULL;
  *************************************************************************************************/
 void TEMPParam::initParam(void)
 {
+    _trendWidget->showErrorStatckedWidget(false);
 }
 
 /**************************************************************************************************
@@ -125,6 +127,8 @@ void TEMPParam::reset()
 
     _provider->sendTEMPSelfTest();
     _provider->sendProbeState();
+
+    emit tempReset();
 }
 
 /**************************************************************************************************
@@ -146,6 +150,18 @@ void TEMPParam::setErrorDisable()
 void TEMPParam::setModuleEnable()
 {
     _isTEMPDisable = false;
+}
+
+void TEMPParam::setWidgetErrorShow(bool error)
+{
+    if (error)
+    {
+        _trendWidget->showErrorStatckedWidget(true);
+    }
+    else
+    {
+        _trendWidget->showErrorStatckedWidget(false);
+    }
 }
 
 /**************************************************************************************************
@@ -193,8 +209,9 @@ void TEMPParam::setTEMP(int16_t t1, int16_t t2, int16_t td)
     if (NULL != _trendWidget)
     {
         _trendWidget->setTEMPValue(t1, t2, td);
+        paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
     }
-    // TODO: set temp value to the facotry calibration menu
+    // Todo: set temp value to the facotry calibration menu
 }
 
 /**************************************************************************************************
@@ -212,15 +229,21 @@ void TEMPParam::getTEMP(int16_t &t1, int16_t &t2, int16_t &td)
  *************************************************************************************************/
 void TEMPParam::setOneShotAlarm(TEMPOneShotType t, bool f)
 {
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_TEMP);
+    if (alarmSource == NULL)
+    {
+        return;
+    }
     if (f)
     {
         if (t == TEMP_ONESHOT_ALARM_COMMUNICATION_STOP || t == TEMP_ONESHOT_ALARM_MODULE_DISABLE)
         {
-            tempOneShotAlarm.clear();
+            alarmSource->clear();
         }
     }
-    tempOneShotAlarm.setOneShotAlarm(TEMP_ONESHOT_ALARM_MODULE_DISABLE, _isTEMPDisable);
-    tempOneShotAlarm.setOneShotAlarm(t, f);
+    alarmSource->setOneShotAlarm(
+                TEMP_ONESHOT_ALARM_MODULE_DISABLE, _isTEMPDisable);
+    alarmSource->setOneShotAlarm(t, f);
 }
 
 /**************************************************************************************************
@@ -263,6 +286,16 @@ void TEMPParam::sendCalibrateData(int channel, int value)
     _provider->sendCalibrateData(channel, value);
 }
 
+void TEMPParam::enterCalibrateState()
+{
+    _provider->enterCalibrateState();
+}
+
+void TEMPParam::exitCalibrateState()
+{
+    _provider->exitCalibrateState();
+}
+
 void TEMPParam::getCalibrateData(unsigned char *packet)
 {
     if (_calibrateChannel == packet[1] || _calibrateValue == packet[2])
@@ -274,7 +307,7 @@ void TEMPParam::getCalibrateData(unsigned char *packet)
 
 void TEMPParam::updateSubParamLimit(SubParamID id)
 {
-    if (id == SUB_PARAM_T1)
+    if (id == SUB_PARAM_T1 || id == SUB_PARAM_T2)
     {
         _trendWidget->updateLimit();
     }
@@ -295,6 +328,33 @@ bool TEMPParam::getCalibrationResult()
     return _calibrationResult;
 }
 
+void TEMPParam::setOhm(int ohm1, int ohm2)
+{
+    if (ohm1 < 0)
+    {
+        _ohm1 = InvData();
+    }
+    else
+    {
+        _ohm1 = ohm1;
+    }
+
+    if (ohm2 < 0)
+    {
+        _ohm2 = InvData();
+    }
+    else
+    {
+        _ohm2 = ohm2;
+    }
+}
+
+void TEMPParam::getOhm(int &ohm1, int &ohm2)
+{
+    ohm1 = _ohm1;
+    ohm2 = _ohm2;
+}
+
 /**************************************************************************************************
  * 设置单位。
  *************************************************************************************************/
@@ -306,6 +366,7 @@ void TEMPParam::setUnit(UnitType u)
     {
         _trendWidget->setUNit(u);
         _trendWidget->setTEMPValue(_t1Value, _t2Value, _tdValue);
+        _trendWidget->updateLimit();
     }
 }
 
@@ -319,6 +380,17 @@ UnitType TEMPParam::getUnit(void)
     systemConfig.getNumValue("Unit|TemperatureUnit", u);
 
     return static_cast<UnitType>(u);
+}
+
+void TEMPParam::paramUpdateTimeout()
+{
+    _t1Value = InvData();
+    _t2Value = InvData();
+    _tdValue = InvData();
+    if (_trendWidget != NULL)
+    {
+        _trendWidget->setTEMPValue(_t1Value, _t2Value, _tdValue);
+    }
 }
 
 void TEMPParam::onPaletteChanged(ParamID id)
@@ -337,7 +409,8 @@ void TEMPParam::onPaletteChanged(ParamID id)
 TEMPParam::TEMPParam() : Param(PARAM_TEMP),
     _provider(NULL), _trendWidget(NULL),
     _t1Value(InvData()), _t2Value(InvData()),
-    _tdValue(InvData()), _calibrateChannel(0),
+    _tdValue(InvData()), _ohm1(InvData()),
+    _ohm2(InvData()), _calibrateChannel(0),
     _calibrateValue(0), _isTEMPDisable(false),
     _calibrationReply(false), _calibrationResult(false)
 {

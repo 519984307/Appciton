@@ -9,6 +9,7 @@
     </DateTime>
     <DateFormat>0</DateFormat>
     <Timestamp>0</Timestamp>
+    <ErrorLogEraseTime>0</ErrorLogEraseTime>
     <ElapseStartTime>0</ElapseStartTime>
     <General>
         <PatientType>0</PatientType><!--0:adult  1:ped  2:neo-->
@@ -21,7 +22,7 @@
         <Department>d12</Department>
         <BedNumber>b44</BedNumber>
         <ChangeBedNumberRight>0</ChangeBedNumberRight>
-        <Language CurrentOption="1" OptionCount="2">
+        <Language CurrentOption="1" NextOption="1" OptionCount="2">
             <!-- note："XmlFileName" segment consistent with XML language file name -->
             <Opt0 XmlFileName="English">English</Opt0>
             <Opt1 XmlFileName="ChineseSimplified">简体中文</Opt1>
@@ -31,7 +32,9 @@
         </Language>
         <TouchScreen>1</TouchScreen>
         <DefaultPatientType>0</DefaultPatientType>
-        <DefaultDisplayBrightness>7</DefaultDisplayBrightness>
+        <!-- DefaultDisplayBrightness：不同类型屏幕的背光亮度取值范围不一样，
+        <为了防止在默认亮度值下黑屏，这里默认亮度下选择9，对应的亮度等级10> -->
+        <DefaultDisplayBrightness>9</DefaultDisplayBrightness>
 	<KeyPressVolume>0</KeyPressVolume>
     </General>
     <Alarms>
@@ -55,12 +58,12 @@
         <ReminderTone>1</ReminderTone>
         <PhyParAlarmLatchlockOn>0</PhyParAlarmLatchlockOn>
 	<AlarmOffPrompting>1</AlarmOffPrompting>
-	<AlarmAudioOff>0</AlarmAudioOff>
+	<AlarmAudio>1</AlarmAudio>
 	<EnableAlarmOff>1</EnableAlarmOff>
-	<AlarmOffAtPowerOn>1</AlarmOffAtPowerOn>
+	<AlarmOffAtPowerOn>0</AlarmOffAtPowerOn>
     </Alarms>
     <NightMode>
-        <ScreenBrightness>1</ScreenBrightness>
+        <ScreenBrightness>0</ScreenBrightness>
         <AlarmVolume>1</AlarmVolume>
         <HeartBeatVolume>0</HeartBeatVolume>
         <KeyPressVolume>0</KeyPressVolume>
@@ -80,7 +83,7 @@
     </Unit>
     <SelectStarterLogo>2</SelectStarterLogo>
     <MonitorInfo>
-        <MachineType>Vitavue-10</MachineType>
+        <MachineType>Vitavue 10</MachineType>
         <ElectronicSerialNumber>1234567888</ElectronicSerialNumber>
     </MonitorInfo>
     <SoftWareVersion>
@@ -105,13 +108,13 @@
         <SignalType>1</SignalType>
         <TriggerMode>1</TriggerMode>
         <AlarmLevel>
-            <High>false</High>
-            <Med>false</Med>
-            <Low>false</Low>
+            <High>0</High>
+            <Med>0</Med>
+            <Low>0</Low>
         </AlarmLevel>
         <AlarmType>
-            <Physiology>false</Physiology>
-            <Technology>false</Technology>
+            <Physiology>0</Physiology>
+            <Technology>0</Technology>
         </AlarmType>
     </Others>
     <WiredWork>
@@ -142,7 +145,8 @@
         <SelectWave2>2</SelectWave2>
         <SelectWave3>3</SelectWave3>
         <PrintTime>1</PrintTime> <!--0:continous 1:8s-->
-        <PhysiologicalAlarm>1</PhysiologicalAlarm>
+	<PrintSpeed>1</PrintSpeed>
+        <PhysiologicalAlarm>0</PhysiologicalAlarm>
         <CoderMarker>0</CoderMarker>
         <NIBPReading>0</NIBPReading>
 	<WaveFreeze>0</WaveFreeze>
@@ -154,6 +158,11 @@
             <Pediatric type="Current" name="" >PedConfig.xml</Pediatric>
             <Neonate type="Current" name="" >NeoConfig.xml</Neonate>
         </Default>
+	<Original>
+	    <Adult>AdultConfig.Original.xml</Adult>
+	    <Pediatric>PedConfig.Original.xml</Pediatric>
+	    <Neonate>NeoConfig.Original.xml</Neonate>
+	</Original>
         <UserDefine count="0">
         </UserDefine>
     </ConfigManager>
@@ -190,14 +199,14 @@
             </SPO2>
             <NIBP_SYS Enable="1" Prio="2" Auto="1">
             <mmHg>
-                <Low Min="40" Max="254">75</Low>
-                <High Min="41" Max="255">220</High>
+                <Low Min="10" Max="254">35</Low>
+                <High Min="11" Max="255">220</High>
                 <Step>1</Step>
                 <Scale>1</Scale>
             </mmHg>
             <kPa>
-                <Low Min="53" Max="339">100</Low>
-                <High Min="54" Max="340">293</High>
+                <Low Min="13" Max="339">47</Low>
+                <High Min="14" Max="340">293</High>
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
@@ -792,10 +801,10 @@
             </TD>
             <O2 Enable="0" Prio="2" Auto="1">
             <percent>
-                <Low Min="0" Max="99">20</Low>
-                <High Min="1" Max="100">60</High>
+                <Low Min="0" Max="999">200</Low>
+                <High Min="1" Max="1000">600</High>
                 <Step>1</Step>
-                <Scale>1</Scale>
+                <Scale>10</Scale>
             </percent>
             </O2>
         </Ruler>
@@ -811,7 +820,11 @@
 
     <!--30s后恢复默认选项-->
     <PrimaryCfg>
+	<Alarm>
+	    <AlarmStatus>1</AlarmStatus>
+	</Alarm>
         <PatientInfo>
+	    <PatientPacer>0</PatientPacer>
        	    <Sex>0</Sex>
 	    <BornDate></BornDate>
             <Blood>0</Blood>
@@ -875,12 +888,15 @@
             <AutoInterval>5</AutoInterval>
             <StatFunction>1</StatFunction>
             <AutomaticRetry>0</AutomaticRetry>
-	    <CompleteTone>0</CompleteTone>
+	    <CompleteTone>1</CompleteTone>
         </NIBP>
         <AG>
             <AGModule>0</AGModule>
             <SweepSpeed>1</SweepSpeed>
         </AG>
+	<O2>
+            <ApneaAwake>1</ApneaAwake>
+        </O2>
         <UILayout>
             <!-- 控件的顺序与上面的布局节点对应 -->
             <MainLayout direction="vertical" margin="0" spacing="0">
@@ -889,8 +905,8 @@
                     <LayoutItem width="96">RunningStatusBar</LayoutItem>
                     <LayoutItem width="210">DateTimeWidget</LayoutItem>
                     <LayoutItem width="50">AlarmStatusWidget</LayoutItem>
-                    <LayoutItem width="300">AlarmPhyInfoBarWidget</LayoutItem>
-                    <LayoutItem width="300">AlarmTechInfoBarWidget</LayoutItem>
+                    <LayoutItem stretch="1">AlarmPhyInfoBarWidget</LayoutItem>
+                    <LayoutItem stretch="1">AlarmTechInfoBarWidget</LayoutItem>
                 </LayoutItem>
                 <LayoutItem stretch="1">ContentView</LayoutItem>
                 <LayoutItem height="80" direction="horizontal" spacing="0">

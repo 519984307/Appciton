@@ -62,7 +62,7 @@ void OxyCRGEventSetWindow::compressedSlot(int index)
 }
 
 OxyCRGEventSetWindow::OxyCRGEventSetWindow()
-    : Window(), d_ptr(new OxyCRGEventSetWindowPrivate())
+    : Dialog(), d_ptr(new OxyCRGEventSetWindowPrivate())
 {
     setWindowTitle(trs("Set"));
 

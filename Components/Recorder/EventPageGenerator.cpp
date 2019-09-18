@@ -29,6 +29,7 @@
 #include "CO2Param.h"
 #include "LayoutManager.h"
 #include "NIBPSymbol.h"
+#include "LanguageManager.h"
 
 class EventPageGeneratorPrivate
 {
@@ -37,7 +38,7 @@ public:
         : q_ptr(q_ptr),
           curPageType(RecordPageGenerator::TitlePage),
           curDrawWaveSegment(0), backend(NULL), eventIndex(0),
-          hasParseData(false)
+          hasParseData(false), ecgGain(3)
     {
     }
 
@@ -125,7 +126,7 @@ public:
 
                 titleStr += Util::convertToString(ctx.almSegment->alarmLimit, config.scale);
                 titleStr += " ";
-                titleStr += Unit::localeSymbol(unit);
+                titleStr += trs(Unit::getSymbol(unit));
             }
 
             eventTitle = titleStr;
@@ -200,14 +201,29 @@ public:
             case WAVE_ECG_V4:
             case WAVE_ECG_V5:
             case WAVE_ECG_V6:
-                info.waveInfo.ecg.gain = ecgParam.getGain(ecgParam.waveIDToLeadID(id));
-                caption = QString("%1   %2").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
-                                                 ecgParam.getLeadConvention()))
-                          .arg(ECGSymbol::convert(ecgParam.getFilterMode()));
+            {
+                info.waveInfo.ecg.gain = static_cast<ECGGain>(ecgGain);
+                QString remarks = QString(QLatin1String(waveSeg->remarks));
+                QString filterMode = remarks.section(" ", 0, 0);
+                QString notchFilter = remarks.section(" ", 1);
+                if (filterMode == ECGSymbol::convert(ECG_FILTERMODE_DIAGNOSTIC))
+                {
+                    caption = QString("%1   %2   %3%4").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
+                                                                               ecgParam.getLeadConvention()))
+                            .arg(trs(filterMode)).arg(trs("Notch"))
+                            .arg(trs(notchFilter));
+                }
+                else
+                {
+                    caption = QString("%1   %2").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
+                                                     ecgParam.getLeadConvention()))
+                              .arg(trs(filterMode));
+                }
                 info.waveInfo.ecg.in12LeadMode = layoutManager.getUFaceType() == UFACE_MONITOR_ECG_FULLSCREEN;
                 info.waveInfo.ecg._12LeadDisplayFormat = ecgParam.get12LDisplayFormat();
                 captionLength = fontManager.textWidthInPixels(caption, q_ptr->font());
                 break;
+            }
             case WAVE_RESP:
                 info.waveInfo.resp.zoom = respParam.getZoom();
                 break;
@@ -339,14 +355,18 @@ public:
     IStorageBackend *backend;
     int eventIndex;
     bool hasParseData;
+    PatientInfo patientInfo;
+    int ecgGain;
 };
 
-EventPageGenerator::EventPageGenerator(IStorageBackend *backend, int eventIndex, QObject *parent)
+EventPageGenerator::EventPageGenerator(IStorageBackend *backend, int eventIndex, const PatientInfo &patientInfo, int gain, QObject *parent)
     : RecordPageGenerator(parent), d_ptr(new EventPageGeneratorPrivate(this))
 {
 
     d_ptr->backend = backend;
     d_ptr->eventIndex = eventIndex;
+    d_ptr->patientInfo = patientInfo;
+    d_ptr->ecgGain = gain;
 }
 
 EventPageGenerator::~EventPageGenerator()
@@ -380,7 +400,7 @@ RecordPage *EventPageGenerator::createPage()
     case TitlePage:
         d_ptr->curPageType = TrendPage;
         // BUG: patient info of the event might not be the current session patient
-        return createTitlePage(d_ptr->eventTitle, patientManager.getPatientInfo());
+        return createTitlePage(d_ptr->eventTitle, d_ptr->patientInfo);
 
     case TrendPage:
         d_ptr->curPageType = WaveScalePage;

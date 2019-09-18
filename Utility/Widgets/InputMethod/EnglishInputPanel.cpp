@@ -275,7 +275,7 @@ void EnglishInputPanel::_loadKeyStatus()
  *************************************************************************************************/
 void EnglishInputPanel::showEvent(QShowEvent *e)
 {
-    Window::showEvent(e);
+    Dialog::showEvent(e);
     _loadKeyStatus();
     d_ptr->enter->setFocus();
 }
@@ -360,7 +360,7 @@ void EnglishInputPanel::setCheckValueHook(CheckValue hook)
  * 构造。
  *************************************************************************************************/
 EnglishInputPanel::EnglishInputPanel()
-    : Window(),
+    : Dialog(),
       d_ptr(new EnglishInputPanelPrivate)
 {
     d_ptr->shift = false;

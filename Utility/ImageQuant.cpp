@@ -182,9 +182,9 @@ static oct_node pop_heap(node_heap *h)
 }
 
 static oct_node pool = 0;
+static int len = 0;
 static oct_node node_new(unsigned char idx, unsigned char depth, oct_node p)
 {
-    static int len = 0;
     if (len <= 1)
     {
         oct_node p = reinterpret_cast<oct_node>(calloc(sizeof(oct_node_t), 2048));
@@ -411,6 +411,7 @@ static void color_quant(ImagePtr im, int n_colors, int dither)
 
     node_free();
     free(heap.buf);
+    len = 0;
 }
 
 namespace Util {

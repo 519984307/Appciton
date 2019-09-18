@@ -10,36 +10,11 @@
 
 #pragma once
 #include <QString>
-#include "ParamInfo.h"
-#include "UnitManager.h"
+#include "TrendCacheInterface.h"
 #include <QMutex>
 #include <QList>
 
-#define MAX_TREND_CACHE_NUM (240)//缓存的趋势数据条数
-
-// 趋势缓存数据
-struct TrendCacheData
-{
-    TrendCacheData()
-    {
-        lastNibpMeasureTime = 0;
-        lastNibpMeasureSuccessTime = 0;
-        co2baro = 0;
-    }
-
-    TrendCacheData &operator=(const TrendCacheData &data)
-    {
-        lastNibpMeasureTime = data.lastNibpMeasureTime;
-        lastNibpMeasureSuccessTime = data.lastNibpMeasureSuccessTime;
-        co2baro = data.co2baro;
-        values = data.values;
-        return *this;
-    }
-    unsigned lastNibpMeasureTime;
-    unsigned lastNibpMeasureSuccessTime;
-    TrendDataType co2baro;
-    QMap<SubParamID, TrendDataType> values;
-};
+#define MAX_TREND_CACHE_NUM (240)   // 缓存的趋势数据条数
 
 struct TrendAlarmStatus
 {
@@ -52,7 +27,8 @@ struct TrendRecorder
     void *obj;              /* object that the trend data record to */
 
     /* call when trend data ready*/
-    void (*completeCallback)(unsigned timestamp, const TrendCacheData &data, const TrendAlarmStatus &almStatus, void *obj);
+    void (*completeCallback)(unsigned timestamp, const TrendCacheData &data,
+                             const TrendAlarmStatus &almStatus, void *obj);
 };
 
 // 子参数ID、数值映射。
@@ -62,19 +38,10 @@ typedef QMap<unsigned, TrendAlarmStatus> TrendAlarmStatusCacheMap;
 /**************************************************************************************************
  * Trend数据缓存
  *************************************************************************************************/
-class TrendCache
+class TrendCache : public TrendCacheInterface
 {
 public:
-    static TrendCache &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new TrendCache();
-        }
-
-        return *_selfObj;
-    }
-    static TrendCache *_selfObj;
+    static TrendCache &getInstance(void);
     ~TrendCache();
 
 public:
@@ -100,8 +67,8 @@ public:
     QList<TrendAlarmStatus> getTrendAlarmStatus(unsigned start, unsigned stop);
 
     // 获取趋势数据
-    bool getTendData(unsigned t, TrendCacheData &data);
-    bool getTrendAlarmStatus(unsigned t, TrendAlarmStatus &alarmStatus);
+    bool getTrendData(unsigned t, TrendCacheData &data);    /* NOLINT */
+    bool getTrendAlarmStatus(unsigned t, TrendAlarmStatus &alarmStatus);    /* NOLINT */
 
     unsigned getLastNibpMeasureTime() const
     {
@@ -118,6 +85,12 @@ public:
     /* unregister a recorder, use the record object to find the recorder, return true if the recorder is remove */
     bool unregisterTrendRecorder(void *recordObj);
 
+    /* override */
+    void clearTrendCache();
+
+    /* override */
+    void stopDataCollect(quint32 times);
+
 private:
     TrendCache();
 
@@ -127,8 +100,8 @@ private:
     QList<TrendRecorder> _recorders;
     unsigned _nibpMeasureTime;
     unsigned _nibpMeasureSuccessTime;
+    quint32 _stopCollectTimes;
     QMutex _mutex;
 };
 
-#define trendCache (TrendCache::construction())
-#define deleteTrendCache() (delete TrendCache::_selfObj)
+#define trendCache (TrendCache::getInstance())

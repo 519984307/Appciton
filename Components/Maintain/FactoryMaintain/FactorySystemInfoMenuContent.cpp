@@ -15,6 +15,7 @@
 #include <QHBoxLayout>
 #include "KeyInputPanel.h"
 #include "IConfig.h"
+#include "WindowManager.h"
 
 class FactorySystemInfoMenuContentPrivate
 {
@@ -88,13 +89,15 @@ void FactorySystemInfoMenuContent::onBtnReleasedChanged()
     }
 
     KeyInputPanel panel;
-    panel.setMaxInputLength(11);
+    panel.setMaxInputLength(13);
     panel.setInitString(button->text());
     panel.setWindowTitle(trs("SerialNum"));
     panel.setSpaceEnable(false);
+    panel.setSymbolEnable(false);
     panel.setBtnEnable("[a-zA-Z0-9]");
 
-    if (!panel.exec())
+    windowManager.showWindow(&panel, WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
+    if (panel.result() == QDialog::Rejected)
     {
         return;
     }

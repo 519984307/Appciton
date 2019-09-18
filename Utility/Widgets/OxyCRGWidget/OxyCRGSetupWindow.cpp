@@ -66,7 +66,7 @@ public:
 };
 
 OxyCRGSetupWindow::OxyCRGSetupWindow()
-    : Window(),
+    : Dialog(),
       d_ptr(new OxyCRGSetupWindowPrivate)
 {
     setWindowTitle(trs("OxyCRGWidgetSetup"));
@@ -377,7 +377,7 @@ int OxyCRGSetupWindow::getRRHigh() const
 
 void OxyCRGSetupWindow::showEvent(QShowEvent *ev)
 {
-    Window::showEvent(ev);
+    Dialog::showEvent(ev);
     int index = 0;
     currentConfig.getNumValue("OxyCRG|Trend1", index);
     d_ptr->trend1->setCurrentIndex(index);

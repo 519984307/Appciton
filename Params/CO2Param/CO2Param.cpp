@@ -14,7 +14,7 @@
 #include "CO2ProviderIFace.h"
 #include "CO2TrendWidget.h"
 #include "CO2WaveWidget.h"
-#include "IConfig.h"
+#include "ConfigManager.h"
 #include "WaveformCache.h"
 #include "RESPParam.h"
 #include "ParamManager.h"
@@ -25,6 +25,9 @@
 #include "ComboListPopup.h"
 #include "LayoutManager.h"
 #include "OxyCRGCO2WaveWidget.h"
+#include "AlarmSourceManager.h"
+#include "O2ParamInterface.h"
+#include "IConfig.h"
 
 CO2Param *CO2Param::_selfObj = NULL;
 
@@ -43,10 +46,14 @@ public:
               etco2MaxVal(0),
               etco2MinVal(0),
               brVaule(InvData()),
-              baro(750),
+              baro(1013),
               connectedProvider(false),
               co2Switch(false),
-              oxyCRGCO2Wave(NULL)
+              oxyCRGCO2Wave(NULL),
+              calibrateChannel(0),
+              calibrateResult(false),
+              calibrateReply(false),
+              disableZero(0)
     {
     }
 
@@ -86,6 +93,12 @@ public:
     bool   co2Switch;
 
     OxyCRGCO2WaveWidget *oxyCRGCO2Wave;
+
+    int calibrateChannel;
+    bool calibrateResult;
+    bool calibrateReply;
+
+    int disableZero;
 };
 /**************************************************************************************************
  * 设置波形速度。
@@ -152,8 +165,8 @@ void CO2ParamPrivate::setWaveformZoom(CO2DisplayZoom zoom)
         waveWidget->setRuler(zoom);
         break;
 
-    case CO2_DISPLAY_ZOOM_13:
-        waveWidget->setValueRange(0, (provider->getCO2MaxWaveform() * 13 + 19) / 20);
+    case CO2_DISPLAY_ZOOM_12:
+        waveWidget->setValueRange(0, (provider->getCO2MaxWaveform() * 12 + 19) / 20);
         waveWidget->setRuler(zoom);
         break;
 
@@ -195,13 +208,19 @@ void CO2Param::initParam(void)
  *************************************************************************************************/
 void CO2Param::handDemoWaveform(WaveformID id, short data)
 {
+    int flag = 0;
     if (id != WAVE_CO2)
     {
         return;
     }
+    if (!getCO2Switch())
+    {
+        data = 0;
+        flag = 0x4000;
+    }
     if (NULL != d_ptr->waveWidget)
     {
-        d_ptr->waveWidget->addData(data);
+        d_ptr->waveWidget->addData(data, flag);
     }
 
     if (d_ptr->oxyCRGCO2Wave)
@@ -218,10 +237,21 @@ void CO2Param::handDemoTrendData(void)
 {
 //    d_ptr->etco2Value = qrand() % 80 + 1;
 //    d_ptr->fico2Value = qrand() % 80;
-    d_ptr->etco2Value = 50;
-    d_ptr->fico2Value = 3;
-    d_ptr->awRRValue = 20;
-    d_ptr->brVaule = 20;
+    if (getCO2Switch())
+    {
+        d_ptr->etco2Value = 50;
+        d_ptr->fico2Value = 3;
+        d_ptr->awRRValue = 20;
+        d_ptr->brVaule = 20;
+        d_ptr->baro = 1013;
+    }
+    else
+    {
+        d_ptr->etco2Value = InvData();
+        d_ptr->fico2Value = InvData();
+        d_ptr->awRRValue = InvData();
+        d_ptr->brVaule = InvData();
+    }
 
     if (NULL != d_ptr->trendWidget)
     {
@@ -236,12 +266,14 @@ void CO2Param::exitDemo()
 {
     d_ptr->etco2Value = InvData();
     d_ptr->fico2Value = InvData();
+    d_ptr->awRRValue =  InvData();
     d_ptr->brVaule = InvData();
 
     if (NULL != d_ptr->trendWidget)
     {
         d_ptr->trendWidget->setEtCO2Value(InvData());
         d_ptr->trendWidget->setFiCO2Value(InvData());
+        d_ptr->trendWidget->setawRRValue(InvData());
     }
     setBR(InvData());
 }
@@ -426,6 +458,7 @@ void CO2Param::setEtCO2(short etco2)
     if (NULL != d_ptr->trendWidget)
     {
         d_ptr->trendWidget->setEtCO2Value(etco2);
+        paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
     }
 }
 
@@ -502,11 +535,6 @@ void CO2Param::setBaro(short baro)
  *************************************************************************************************/
 void CO2Param::verifyApneanTime(ApneaAlarmTime time)
 {
-    if (getApneaTime() == APNEA_ALARM_TIME_OFF)
-    {
-        return;
-    }
-
     if (getApneaTime() != time)
     {
         if (d_ptr->provider != NULL)
@@ -534,13 +562,13 @@ void CO2Param::verifyWorkMode(CO2WorkMode mode)
     // 主机为打开状态，当模块为sleep。
     if (getCO2Switch() && (mode == C02_WORK_SLEEP))
     {
-        d_ptr->provider->setWorkMode(CO2_WORK_MEASUREMENT);
+        setModuleWorkMode(CO2_WORK_MEASUREMENT);
     }
 
     // 主机为关闭状态，当模块为测量。
     if (!getCO2Switch() && (mode == CO2_WORK_MEASUREMENT))
     {
-        d_ptr->provider->setWorkMode(C02_WORK_SLEEP);
+        setModuleWorkMode(C02_WORK_SLEEP);
     }
 }
 
@@ -579,11 +607,15 @@ void CO2Param::setConnected(bool isConnected)
     else
     {
         disable();
-        d_ptr->baro = 750;
+        d_ptr->baro = 1013;
         setEtCO2(InvData());
         setFiCO2(InvData());
         setBR(InvData());
-        co2OneShotAlarm.clear();
+        AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_CO2);
+        if (alarmSource)
+        {
+            alarmSource->clear();
+        }
         // update to show CO2 info
         needUpdate |= layoutManager.setWidgetLayoutable(co2Trend, false);
         needUpdate |= layoutManager.setWidgetLayoutable(co2Wave, false);
@@ -596,6 +628,8 @@ void CO2Param::setConnected(bool isConnected)
             softkeyManager.refreshPage();
         }
     }
+
+    emit connectStatusUpdated(isConnected);
 }
 
 /**************************************************************************************************
@@ -637,9 +671,13 @@ void CO2Param::addWaveformData(short wave, bool invalid)
 void CO2Param::setOneShotAlarm(CO2OneShotType t, bool status)
 {
     // 只有当CO2开关为ON状态时才报警
-    if (d_ptr->co2Switch)
+    if (d_ptr->co2Switch || t == CO2_ONESHOT_ALARM_STANDBY)
     {
-        co2OneShotAlarm.setOneShotAlarm(t, status);
+        AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_CO2);
+        if (alarmSource)
+        {
+            alarmSource->setOneShotAlarm(t, status);
+        }
     }
 }
 
@@ -694,6 +732,8 @@ bool CO2Param::setModuleWorkMode(CO2WorkMode mode)
     {
         setCO2Switch(false);
         d_ptr->provider->setWorkMode(mode);
+        softkeyManager.refreshCO2Key(false);
+        co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_STANDBY, true);
         return true;
     }
 
@@ -701,9 +741,69 @@ bool CO2Param::setModuleWorkMode(CO2WorkMode mode)
     {
         setCO2Switch(true);
         d_ptr->provider->setWorkMode(mode);
+        softkeyManager.refreshCO2Key(true);
+        co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_STANDBY, false);
         return true;
     }
     return false;
+}
+
+void CO2Param::sendCalibrateData(int value)
+{
+    d_ptr->calibrateChannel = value;
+    d_ptr->provider->sendCalibrateData(value);
+}
+
+void CO2Param::setCalibrateData(const unsigned char *packet)
+{
+    if (d_ptr->calibrateChannel == packet[1])
+    {
+        d_ptr->calibrateReply = true;
+        d_ptr->calibrateResult = packet[2];
+    }
+}
+
+bool CO2Param::getCalibrateResult()
+{
+    return d_ptr->calibrateResult;
+}
+
+bool CO2Param::getCalibrateReply()
+{
+    bool reply = d_ptr->calibrateReply;
+    if (reply)
+    {
+        d_ptr->calibrateReply = false;
+    }
+    return reply;
+}
+
+void CO2Param::setZeroStatus(CO2DisableZeroReason reason, bool status)
+{
+    bool reasonSta = d_ptr->disableZero & (1 << reason);
+    if (reasonSta != status)
+    {
+        bool prvSta = d_ptr->disableZero;
+        if (status)
+        {
+            d_ptr->disableZero |= 1 << reason;
+        }
+        else
+        {
+            d_ptr->disableZero &= ~(1 << reason);
+        }
+        bool curSta = d_ptr->disableZero;
+        if (prvSta != curSta)
+        {
+            softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_CO2_CALIBRATION, !curSta);
+            emit updateZeroSta(curSta);
+        }
+    }
+}
+
+bool CO2Param::getDisableZeroStatus()
+{
+    return d_ptr->disableZero;
 }
 
 /**************************************************************************************************
@@ -843,6 +943,13 @@ void CO2Param::setDisplayZoom(CO2DisplayZoom zoom)
     d_ptr->setWaveformZoom(zoom);
 }
 
+void CO2Param::updateDisplayZoom()
+{
+    int index = 0;
+    currentConfig.getNumValue("CO2|DisplayZoom", index);
+    d_ptr->setWaveformZoom(static_cast<CO2DisplayZoom>(index));
+}
+
 /**************************************************************************************************
  * 获取波形放大标尺。
  *************************************************************************************************/
@@ -865,6 +972,14 @@ void CO2Param::setFiCO2Display(CO2FICO2Display disp)
     }
 }
 
+void CO2Param::updateFiCO2Display()
+{
+    if (NULL != d_ptr->trendWidget)
+    {
+        d_ptr->trendWidget->setFiCO2Display(getFICO2Display());
+    }
+}
+
 /**************************************************************************************************
  * 获取FiCO2显示标志。
  *************************************************************************************************/
@@ -881,7 +996,7 @@ CO2FICO2Display CO2Param::getFICO2Display(void)
 UnitType CO2Param::getUnit(void)
 {
     int unit = UNIT_PERCENT;
-    currentConfig.getNumValue("Local|CO2Unit", unit);
+    systemConfig.getNumValue("Unit|CO2Unit", unit);
     return static_cast<UnitType>(unit);
 }
 
@@ -924,6 +1039,33 @@ void CO2Param::updateSubParamLimit(SubParamID id)
     }
 }
 
+void CO2Param::setRespApneaStimulation(bool sta)
+{
+    bool co2ApneaStimulation;
+    currentConfig.getNumValue("ApneaStimulation|CO2", co2ApneaStimulation);
+    O2ParamInterface *o2Param = O2ParamInterface::getO2ParamInterface();
+    if (co2ApneaStimulation && o2Param)
+    {
+        o2Param->setVibrationReason(APNEASTIMULATION_REASON_RESP, sta);
+    }
+    else
+    {
+        o2Param->setVibrationReason(APNEASTIMULATION_REASON_RESP, false);
+    }
+}
+
+void CO2Param::paramUpdateTimeout()
+{
+    d_ptr->etco2Value = InvData();
+    d_ptr->fico2Value = InvData();
+
+    if (d_ptr->trendWidget != NULL)
+    {
+        d_ptr->trendWidget->setEtCO2Value(d_ptr->etco2Value);
+        d_ptr->trendWidget->setFiCO2Value(d_ptr->fico2Value);
+    }
+}
+
 void CO2Param::onPaletteChanged(ParamID id)
 {
     if (id != PARAM_CO2 || !systemManager.isSupport(CONFIG_CO2))
@@ -943,7 +1085,7 @@ CO2Param::CO2Param()
           d_ptr(new CO2ParamPrivate(this))
 {
     int t = UNIT_PERCENT;
-    currentConfig.getNumValue("Local|CO2Unit", t);
+    systemConfig.getNumValue("Unit|CO2Unit", t);
 
     QString path = "AlarmSource|";
     path += paramInfo.getSubParamName(SUB_PARAM_ETCO2);

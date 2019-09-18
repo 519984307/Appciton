@@ -262,4 +262,9 @@ void SelectDefaultConfigMenuContent::layoutExec()
 
     //  add a stretch
     layout->setRowStretch(d_ptr->combos.count(), 1);
+
+    // disable these options boxes for fixing to the current configuration
+    d_ptr->combos[SelectDefaultConfigMenuContentPrivate::ITEM_CBO_ADULT_DEFCONFIG]->setEnabled(false);
+    d_ptr->combos[SelectDefaultConfigMenuContentPrivate::ITEM_CBO_PED_DEFCONFIG]->setEnabled(false);
+    d_ptr->combos[SelectDefaultConfigMenuContentPrivate::ITEM_CBO_NEO_DEFCONFIG]->setEnabled(false);
 }

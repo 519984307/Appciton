@@ -70,7 +70,7 @@ TitrateTableWindowPrivate::TitrateTableWindowPrivate()
 }
 
 TitrateTableWindow::TitrateTableWindow()
-    : Window(),
+    : Dialog(),
       d_ptr(new TitrateTableWindowPrivate)
 {
     layoutExecIt();
@@ -574,7 +574,7 @@ void TitrateTableWindow::datumTermDripRate()
 
 void TitrateTableWindow::showEvent(QShowEvent *e)
 {
-    Window::showEvent(e);
+    Dialog::showEvent(e);
 
     // 居中显示。
     QRect r = layoutManager.getMenuArea();

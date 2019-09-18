@@ -9,7 +9,7 @@
  **/
 
 
-#include "Window.h"
+#include "Dialog.h"
 #include "Button.h"
 
 class CodeMarkerWindowPrivate;
@@ -31,7 +31,7 @@ private:
     int _id;
 };
 
-class CodeMarkerWindow : public Window
+class CodeMarkerWindow : public Dialog
 {
     Q_OBJECT
 public:
@@ -51,10 +51,6 @@ public:
     // 获取code marker Type个数。
     int getCodeMarkerTypeSize();
 
-    // 启动定时器。
-    void startTimer(void);
-
-
 protected:
     void showEvent(QShowEvent *e);
     void hideEvent(QHideEvent *e);
@@ -62,8 +58,6 @@ protected:
 
 private slots :
     void _btnReleased();
-    // 5秒后关闭code Marker窗口(当5s内未点击)
-    void _closeWidgetTimerFun(void);
 
     void _timerOut(void);
 

@@ -273,7 +273,7 @@ void OxyCRGEventWindow::setHistoryData(bool flag)
 
 void OxyCRGEventWindow::showEvent(QShowEvent *ev)
 {
-    Window::showEvent(ev);
+    Dialog::showEvent(ev);
 
     d_ptr->stackLayout->setCurrentIndex(0);
     d_ptr->loadOxyCRGEventData();
@@ -407,7 +407,7 @@ void OxyCRGEventWindow::setReleased()
 }
 
 OxyCRGEventWindow::OxyCRGEventWindow()
-    : Window(), d_ptr(new OxyCRGEventWindowPrivate())
+    : Dialog(), d_ptr(new OxyCRGEventWindowPrivate())
 {
     setWindowTitle(trs("OxyCRGEventReview"));
 
@@ -711,7 +711,7 @@ void OxyCRGEventWindowPrivate::eventInfoUpdate(int curRow)
         double limitValue = static_cast<double>(ctx.alamSegment->alarmLimit / config.scale);
         infoStr += QString::number(limitValue);
         infoStr += " ";
-        infoStr += Unit::localeSymbol(type);
+        infoStr += trs(Unit::getSymbol(type));
         break;
     }
     default:

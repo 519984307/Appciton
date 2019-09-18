@@ -12,6 +12,16 @@
 #include "Provider.h"
 #include "NIBPProviderIFace.h"
 
+struct SuntechCMD
+{
+    SuntechCMD() : cmdLength(0)
+    {
+        memset(cmd, 0, 10);
+    }
+    unsigned char cmd[10];
+    unsigned int cmdLength;
+};
+
 class QTimer;
 class SuntechProvider: public Provider, public NIBPProviderIFace
 {
@@ -74,7 +84,8 @@ protected:
 
 private slots:
     void _getCuffPressure(void);
-
+    void _sendCMD(void);
+    void _sendInitval(void);
 private:
     void _handlePacket(unsigned char *data, int len);
 
@@ -90,9 +101,13 @@ private:
     static const int _minPacketLen = 3;      // 最小数据包长度。
 
     int _flagStartCmdSend;
+    int _pressure;
 
     QTimer *_timer;
+    QTimer *_cmdTimer;
 
     bool _isModuleDataRespond;              // 是否为版本信息回复
     bool _isCalibrationRespond;             // 是否为校准回复
+
+    QList<SuntechCMD> list;
 };

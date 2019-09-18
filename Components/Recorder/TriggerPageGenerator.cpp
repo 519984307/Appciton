@@ -87,6 +87,7 @@ TriggerPageGenerator::TriggerPageGenerator(EventStorageItem *item,
     : RecordPageGenerator(parent), d_ptr(new TriggerPageGeneratorPrivate(item))
 {
     connect(this, SIGNAL(stopped()), item, SLOT(onTriggerPrintStopped()));
+    connect(this, SIGNAL(destroyed(QObject*)), item, SLOT(onTriggerPrintStopped()));
 }
 
 TriggerPageGenerator::~TriggerPageGenerator()

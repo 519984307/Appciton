@@ -17,6 +17,11 @@
 #define ICON_FILE_RIGHT             "right.png"
 #define ICON_PATH "/usr/local/nPM/icons/"
 
+#define co2StandbyIcon "standby.png"
+#define co2StandbyHint "CO2Standby"
+#define co2MeasureIcon "measure.png"
+#define co2MeasureHint "CO2Measure"
+
 enum SoftKeyActionType
 {
     SOFTKEY_ACTION_NONE = -1,
@@ -39,6 +44,7 @@ enum SoftBaseKeyType
     SOFT_BASE_KEY_CODE_MARKER,
     SOFT_BASE_KEY_TREND_GRAPH,
     SOFT_BASE_KEY_EVENT_REVIEW,
+    SOFT_BASE_KEY_TREND_TABLE,
     SOFT_BASE_KEY_SYS_MODE,
     SOFT_BASE_KEY_WINDOWLAYOUT,
 #ifndef HIDE_PARAM_SWITCH
@@ -112,11 +118,12 @@ public:    // 一些共有的功能处理。
     static void ecgLeadChange(bool isPressed);
     static void codeMarker(bool isPressed);
     static void limitMenu(bool isPressed);
-    static void WindowLayout(bool isPressed);
+    static void windowLayout(bool isPressed);
     static void rescueData(bool isPressed);
     static void calculation(bool isPressed);
     static void mainsetup(bool isPressed);
     static void banTouchScreen(bool isPressed);
+    static void trendTable(bool isPressed);
     static void switchSystemMode(bool isPressed);
     static void summaryReview(bool isPressed);
     static void eventReview(bool isPressed);

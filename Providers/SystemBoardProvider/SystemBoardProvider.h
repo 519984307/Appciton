@@ -42,6 +42,9 @@ public:// PowerParamProviderIFace.
 
     virtual short getPowerADC(void);
 
+    // 判断电池是否正常充电
+    virtual bool isPowerCharging();
+
     //获取版本号
     virtual void sendVersion(void);
 
@@ -86,6 +89,7 @@ protected:
     virtual void handlePacket(unsigned char *data, int len);
     virtual void disconnected(void);
     virtual void reconnected(void);
+    virtual void sendDisconnected();
 
 private:
     void _parseVersionInfo(unsigned char *data, int len);

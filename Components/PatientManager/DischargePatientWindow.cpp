@@ -52,7 +52,7 @@ DischargePatientWindow::~DischargePatientWindow()
  *************************************************************************************************/
 void DischargePatientWindow::layoutExec()
 {
-    setWindowTitle(trs("RelievePatient"));
+    setWindowTitle(trs("Warn"));
     setFixedSize(450, 250);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
@@ -107,8 +107,8 @@ void DischargePatientWindow::layoutExec()
 
     hlayout = new QHBoxLayout();
     hlayout->addStretch();
-    hlayout->addWidget(d_ptr->yesBtn);
     hlayout->addWidget(d_ptr->noBtn);
+    hlayout->addWidget(d_ptr->yesBtn);
     hlayout->addStretch();
 
     layout->addLayout(hlayout);
@@ -120,15 +120,13 @@ void DischargePatientWindow::showEvent(QShowEvent *e)
 {
     if (patientManager.isMonitoring())
     {
-        setWindowTitle(trs("RelievePatient"));
         d_ptr->hintLbl->setText(trs("isRelievePatient"));
     }
     else
     {
-        setWindowTitle(trs("CleanPatientData"));
         d_ptr->hintLbl->setText(trs("isCleanPatient"));
     }
-    Window::showEvent(e);
+    Dialog::showEvent(e);
 }
 
 void DischargePatientWindow::onBtnRelease()
@@ -165,7 +163,7 @@ void DischargePatientWindow::onBtnRelease()
  * 构造。
  *************************************************************************************************/
 DischargePatientWindow::DischargePatientWindow()
-    : Window(),
+    : Dialog(),
       d_ptr(new DischaregePatientWindowPrivate)
 {
     layoutExec();

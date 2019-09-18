@@ -13,6 +13,10 @@
 #include "NIBPAlarm.h"
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"
+#include "NIBPCountdownTime.h"
+#include "LanguageManager.h"
+#include "IConfig.h"
+#include "PatientManager.h"
 
 /**************************************************************************************************
  * 进入该状态。
@@ -30,7 +34,14 @@ void NIBPMonitorErrorState::enter(void)
 
     nibpParam.setAdditionalMeasure(false);
 
-    nibpParam.setText(trs("NIBPModule") + "\n" + trs("NIBPDisable"));
+    if (nibpParam.isCalibrateState())
+    {
+        nibpParam.setText(trs("NIBPModule") + "\n" + trs("NIBPDisable"));
+    }
+    else
+    {
+        nibpParam.setText(trs("NIBPModule") + "\n" + trs("NIBPNotCalibrate"));
+    }
     nibpParam.setModelText("");
     nibpParam.clearResult();
 
@@ -52,6 +63,13 @@ void NIBPMonitorErrorState::handleNIBPEvent(NIBPEvent event, const unsigned char
     switch (event)
     {
     case NIBP_EVENT_CONNECTION_NORMAL:
+    {
+        int enable = 0;
+        machineConfig.getModuleInitialStatus("NIBPNEOMeasureEnable", reinterpret_cast<bool*>(&enable));
+        if (patientManager.getType() == PATIENT_TYPE_NEO && enable)
+        {
+            break;
+        }
         // 恢复STAT按钮
         nibpParam.setSTATMeasure(false);
         // 防止在错误状态时间内，产生的倒计时测量触发
@@ -59,7 +77,7 @@ void NIBPMonitorErrorState::handleNIBPEvent(NIBPEvent event, const unsigned char
         switchState(NIBP_MONITOR_STANDBY_STATE);
         nibpParam.setText(InvStr());
         break;
-
+    }
     case NIBP_EVENT_TRIGGER_MODEL:
         if (nibpParam.getSuperMeasurMode() == NIBP_MODE_AUTO)
         {

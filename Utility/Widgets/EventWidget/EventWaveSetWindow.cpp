@@ -44,8 +44,12 @@ void EventWaveSetWindow::waveSpeedReleased(int index)
 }
 
 EventWaveSetWindow::EventWaveSetWindow()
-    : Window(), d_ptr(new EventWaveSetWindowPrivate())
+    : Dialog(), d_ptr(new EventWaveSetWindowPrivate())
 {
+    setFixedSize(340, 240);
+
+    setWindowTitle(trs("Set"));
+
     QGridLayout *layout = new QGridLayout();
 
     QLabel *label = new QLabel(trs("Gain"));

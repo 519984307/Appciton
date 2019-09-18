@@ -77,7 +77,7 @@ public:
 };
 
 AlarmInfoWindow::AlarmInfoWindow(const QString &title, AlarmType type)
-    : Window(),
+    : Dialog(),
       d_ptr(new AlarmInfoWindowPrivate)
 {
     d_ptr->title = title;
@@ -176,7 +176,7 @@ void AlarmInfoWindow::showEvent(QShowEvent *ev)
 {
     d_ptr->refreshData = true;
     updateData(true);
-    Window::showEvent(ev);
+    Dialog::showEvent(ev);
 }
 
 void AlarmInfoWindow::_onBtnRelease()
@@ -319,7 +319,24 @@ void AlarmInfoWindowPrivate::loadOption()
             if (i < count)
             {
                 node = nodeList.at(i);
-                alarmList.append(trs(node.alarmMessage));
+                QString nameStr;
+                switch (node.alarmSource->getAlarmPriority(node.alarmID))
+                {
+                case ALARM_PRIO_LOW:
+                    nameStr = "*";
+                    break;
+                case ALARM_PRIO_MED:
+                    nameStr = "**";
+                    break;
+                case ALARM_PRIO_HIGH:
+                    nameStr = "***";
+                    break;
+                default:
+                    break;
+                }
+                nameStr += " ";
+                nameStr += trs(node.alarmMessage);
+                alarmList.append(nameStr);
             }
         }
 

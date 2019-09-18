@@ -59,7 +59,6 @@ void TrendWidget::resizeEvent(QResizeEvent *e)
     unitLabel->setFont(font);
     upLimit->setFont(font);
     downLimit->setFont(font);
-
     setTextSize();
 }
 
@@ -305,6 +304,12 @@ void TrendWidget::setUnitFont(int size, bool isBold)
     unitLabel->setFont(fontManager.textFont(size, isBold));
 }
 
+void TrendWidget::loadConfig()
+{
+    updateLimit();
+    showAlarmOff();
+}
+
 
 /**************************************************************************************************
  * 构造。
@@ -328,7 +333,7 @@ TrendWidget::TrendWidget(const QString &widgetName, bool vertical)
 
     alarmOffIcon = new QLabel(this);
     QPixmap icon("/usr/local/nPM/icons/AlarmOff.png");
-    icon = icon.scaled(20, 20);
+    icon = icon.scaled(32, 32);
     alarmOffIcon->setPixmap(icon);
     alarmOffIcon->setVisible(false);
 

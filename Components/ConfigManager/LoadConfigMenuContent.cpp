@@ -31,6 +31,11 @@
 #include "SoundManager.h"
 #include "AlarmConfig.h"
 #include "ColorManager.h"
+#include "ECGParam.h"
+#include "ECGDupParam.h"
+#include "RESPParam.h"
+#include "RESPDupParam.h"
+#include "CO2Param.h"
 
 #define CONFIG_DIR "/usr/local/nPM/etc"
 #define USER_DEFINE_CONFIG_NAME "UserConfig"
@@ -74,11 +79,11 @@ void LoadConfigMenuContentPrivate::loadConfigs()
     ConfigManager::UserDefineConfigInfo defaultConfig[] =
     {
         {QString("%1(%2)").arg(defaultStr).arg(trs(PatientSymbol::convert(PATIENT_TYPE_ADULT))),
-            "AdultConfig.Original.xml", ""},
+            "AdultConfig.Original.xml", PatientSymbol::convert(PATIENT_TYPE_ADULT)},
         {QString("%1(%2)").arg(defaultStr).arg(trs(PatientSymbol::convert(PATIENT_TYPE_PED))),
-            "PedConfig.Original.xml", ""},
+            "PedConfig.Original.xml", PatientSymbol::convert(PATIENT_TYPE_PED)},
         {QString("%1(%2)").arg(defaultStr).arg(trs(PatientSymbol::convert(PATIENT_TYPE_NEO))),
-            "NeoConfig.Original.xml", ""}
+            "NeoConfig.Original.xml", PatientSymbol::convert(PATIENT_TYPE_NEO)}
     };
     for (int i = 0; i < CONFIG_MAX_NUM; i++)
     {
@@ -195,6 +200,11 @@ void LoadConfigMenuContent::onBtnClick()
     // load the config
     if (btn == d_ptr->loadBtn)
     {
+        MessageBox msg(trs("Prompt"), trs("ChangeConfig"), true, true);
+        if (!msg.exec())
+        {
+            return;
+        }
         // add new config setting
         int index = d_ptr->configListView->curCheckedRow();
         d_ptr->curEditIndex = index;
@@ -253,14 +263,10 @@ void LoadConfigMenuContent::onBtnClick()
         currentConfig.load(loadPath);
         alarmConfig.clearLimitAlarmInfo();
         colorManager.clearColorMap();
+        configManager.setOriginalConfig(static_cast<PatientType>(patitentTypeInt), d_ptr->configs.at(index).fileName);
 
         soundManager.volumeInit();
         layoutManager.updateLayoutWidgetsConfig();
-
-        QString title(trs("LoadConfig"));
-        QString text(trs("SuccessToLoad"));
-        MessageBox message(title, text, false);
-        message.exec();
     }
     // view config
     else if (btn == d_ptr->ViewBtn)
@@ -276,7 +282,18 @@ void LoadConfigMenuContent::onBtnClick()
                                           .arg(fileName));
             ConfigEditMenuWindow *cmWnd = new ConfigEditMenuWindow;
             cmWnd->setCurrentEditConfigName(name);
-            cmWnd->setCurrentEditConfig(d_ptr->curConfig);
+
+            QString strType = d_ptr->configs.at(index).patType;
+            PatientType type = PATIENT_TYPE_ADULT;
+            if (strType == PatientSymbol::convert(PATIENT_TYPE_NEO))
+            {
+                type = PATIENT_TYPE_NEO;
+            }
+            else if (strType == PatientSymbol::convert(PATIENT_TYPE_PED))
+            {
+                type = PATIENT_TYPE_PED;
+            }
+            cmWnd->setCurrentEditConfigInfo(d_ptr->curConfig, type);
             cmWnd->initializeSubMenu();
 
             QString pathName;
@@ -291,6 +308,9 @@ void LoadConfigMenuContent::onBtnClick()
             }
             cmWnd->setWindowTitlePrefix(pathName);
 
+            // force updating the first window title
+            QMetaObject::invokeMethod(cmWnd, "onVisiableItemChanged", Q_ARG(int, 0));
+
             configManager.setWidgetIfOnlyShown(true);
             windowManager.showWindow(cmWnd, WindowManager::ShowBehaviorModal);
             configManager.setWidgetIfOnlyShown(false);
@@ -298,6 +318,11 @@ void LoadConfigMenuContent::onBtnClick()
             {
                 delete cmWnd;
                 cmWnd = NULL;
+            }
+            if (d_ptr->curConfig)
+            {
+                delete d_ptr->curConfig;
+                d_ptr->curConfig = NULL;
             }
         }
     }

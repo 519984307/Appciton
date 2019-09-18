@@ -46,7 +46,7 @@ ScreenLayoutWindow *ScreenLayoutWindow::getInstance()
 }
 
 ScreenLayoutWindow::ScreenLayoutWindow()
-    : Window(), d_ptr(new ScreenLayoutWindowPrivate())
+    : Dialog(), d_ptr(new ScreenLayoutWindowPrivate())
 {
     QVBoxLayout *layout = new QVBoxLayout();
     setWindowLayout(layout);
@@ -103,7 +103,7 @@ ScreenLayoutWindow::~ScreenLayoutWindow()
 
 void ScreenLayoutWindow::hideEvent(QHideEvent *ev)
 {
-    Window::hideEvent(ev);
+    Dialog::hideEvent(ev);
     ScreenLayoutModel *model = qobject_cast<ScreenLayoutModel*>(d_ptr->view->model());
     if (model->isChangeLayoutInfo())
     {
@@ -121,7 +121,7 @@ void ScreenLayoutWindow::showEvent(QShowEvent *ev)
 {
     ScreenLayoutModel *model = qobject_cast<ScreenLayoutModel *>(d_ptr->view->model());
     model->loadLayoutInfo();
-    Window::showEvent(ev);
+    Dialog::showEvent(ev);
 }
 
 void ScreenLayoutWindow::onButtonClicked()

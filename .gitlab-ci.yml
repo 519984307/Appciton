@@ -1,0 +1,19 @@
+build_pc:
+   stage: build
+   script: ./Scripts/build_PC.sh
+
+build_arm:
+   stage: build
+   script: ./Scripts/build_ARM.sh
+
+style_check:
+    stage: test
+    script: echo "Will perform cpplint style check in the future"
+
+static_check:
+    stage: test
+    script: echo "Will perform cppcheck statci check in the future"
+
+uinttest:
+    stage: test
+    script: ./Scripts/build_run_unittest.sh

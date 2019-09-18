@@ -85,6 +85,11 @@ void KeyInputPanel::onKeyClicked()
     ClickedKey(key);
 }
 
+void KeyInputPanel::onBlankClicked()
+{
+    ClickedKey(" ");
+}
+
 /**************************************************************************************************
  * 一般按键点击。
  *************************************************************************************************/
@@ -369,17 +374,18 @@ void KeyInputPanel::_loadHelpBtn(const QString &key)
         {
             while (!str.isEmpty())
             {
+                Qt::GlobalColor color = Qt::black;
+
                 if (-1 == regExp.indexIn(str))
                 {
                     d_ptr->helpKeys[pos]->setEnabled(false);
+                    color = Qt::gray;
                 }
-                else
-                {
-                    QPalette pal;
-                    pal = d_ptr->helpKeys[pos]->palette();
-                    pal.setColor(QPalette::Foreground, Qt::black);
-                    d_ptr->helpKeys[pos]->setPalette(pal);
-                }
+
+                QPalette pal;
+                pal = d_ptr->helpKeys[pos]->palette();
+                pal.setColor(QPalette::Foreground, color);
+                d_ptr->helpKeys[pos]->setPalette(pal);
 
                 pos++;
                 str.remove(0, 1);
@@ -390,6 +396,10 @@ void KeyInputPanel::_loadHelpBtn(const QString &key)
             while (-1 != (pos = regExp.indexIn(str, pos)))
             {
                 d_ptr->helpKeys[pos]->setEnabled(false);
+                QPalette pal;
+                pal = d_ptr->helpKeys[pos]->palette();
+                pal.setColor(QPalette::Foreground, Qt::gray);
+                d_ptr->helpKeys[pos]->setPalette(pal);
                 pos += regExp.matchedLength();
             }
         }
@@ -410,7 +420,7 @@ void KeyInputPanel::_loadHelpBtn(const QString &key)
  *************************************************************************************************/
 void KeyInputPanel::showEvent(QShowEvent *e)
 {
-    Window::showEvent(e);
+    Dialog::showEvent(e);
     _loadKeyStatus();
 
     if (d_ptr->keys.count() > KEY_ORDER_ENTER)
@@ -500,7 +510,7 @@ void KeyInputPanel::setSpaceEnable(bool enable)
 }
 
 /**************************************************************************************************
- * 设置空格按键使能
+ * 设置符号按键使能
  *************************************************************************************************/
 void KeyInputPanel::setSymbolEnable(bool enable)
 {
@@ -542,7 +552,7 @@ void KeyInputPanel::setInvalidHint(const QString &str)
  * 构造。
  *************************************************************************************************/
 KeyInputPanel::KeyInputPanel(KeyType type, bool isShowDecimalPoint)
-    : Window(),
+    : Dialog(),
       d_ptr(new KeyInputPanelPrivate)
 {
     d_ptr->maxLength = 90;
@@ -651,7 +661,7 @@ KeyInputPanel::KeyInputPanel(KeyType type, bool isShowDecimalPoint)
                     key->setButtonStyle(Button::ButtonIconOnly);
                     key->setIconSize(QSize(100, 100));
                     key->setIcon(QIcon("/usr/local/nPM/icons/blank.png"));
-                    connect(key, SIGNAL(clicked()), this, SLOT(onKeyClicked()));
+                    connect(key, SIGNAL(clicked()), this, SLOT(onBlankClicked()));
                     break;
 
                 case 1:

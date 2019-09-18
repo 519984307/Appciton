@@ -15,9 +15,6 @@
 #include "ECGSymbol.h"
 #include "ECGParam.h"
 
-
-ParamInfo *ParamInfo::_selfObj = NULL;
-
 /**************************************************************************************************
  * 功能： 参数ID与名字的映射表。
  *************************************************************************************************/
@@ -632,6 +629,7 @@ UnitType ParamInfo::getUnitOfSubParam(SubParamID id)
     {
     case SUB_PARAM_HR_PR:
     case SUB_PARAM_ECG_PVCS:
+    case SUB_PARAM_NIBP_PR:
     case SUB_PARAM_ART_PR:
     case SUB_PARAM_PA_PR:
     case SUB_PARAM_CVP_PR:
@@ -759,9 +757,12 @@ UnitType ParamInfo::getUnitOfSubParam(SubParamID id, UnitType &t0, UnitType &t1)
 
     case SUB_PARAM_T1:
     case SUB_PARAM_T2:
-    case SUB_PARAM_TD:
         t0 = UNIT_TF;
         return UNIT_TC;
+
+    case SUB_PARAM_TD:
+        t0 = UNIT_TDF;
+        return UNIT_TDC;
 
     default:
         break;
@@ -815,6 +816,21 @@ ParamInfo::ParamInfo()
 /**************************************************************************************************
  * 功能： 析构。
  *************************************************************************************************/
+ParamInfo &ParamInfo::getInstance()
+{
+    static ParamInfo *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new ParamInfo;
+        ParamInfoInterface *old = registerParamInfo(instance);
+        if (old)
+        {
+            delete old;
+        }
+    }
+    return *instance;
+}
+
 ParamInfo::~ParamInfo()
 {
 }

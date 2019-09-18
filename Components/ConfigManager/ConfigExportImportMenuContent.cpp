@@ -194,7 +194,7 @@ TransferResult ConfigExportImportMenuContentPrivate::exportFileToUSB()
         if (copyOk == false)
         {
             MessageBox message(trs("Export"),
-                               trs(QString("%1\r\n%2").arg(name).arg(trs("ExportFailed"))),
+                               trs(QString("%1\r\n%2").arg(name).arg(trs("ExportFailure"))),
                                QStringList() << trs("Yes"));
             message.exec();
             return TRANSFER_FAIL;
@@ -220,7 +220,9 @@ TransferResult ConfigExportImportMenuContentPrivate::insertFileFromUSB()
 
     // 判断导入文件是否为空
     QDir dir(QString("%1%2").arg(FILE_PATH).arg("/"));
-    QStringList files = dir.entryList(QStringList() << "*.xml", QDir::Files | QDir::Readable, QDir::Name);
+    QStringList files = dir.entryList(QStringList() << "A-*.xml"
+                                                    << "N-*.xml"
+                                                    << "P-*.xml", QDir::Files | QDir::Readable, QDir::Name);
     if (files.isEmpty())
     {
         MessageBox messageBox(trs("Import"), trs("PleaseAddImportFiles"), false);
@@ -309,6 +311,18 @@ TransferResult ConfigExportImportMenuContentPrivate::insertFileFromUSB()
             flag = message.exec();
             this->message = NULL;
         }
+        else
+        {
+            // 导入文件不超过规定最大值
+            if (configs.count() >= CONFIG_MAX_NUM)
+            {
+                MessageBox message(trs("ImportFileMaximum"),
+                                   trs(QString("%1\r\n%2").arg(name).arg(trs("ImportFileFailed"))),
+                                   QStringList() << trs("Yes"));
+                message.exec();
+                break;
+            }
+        }
 
         // 从usb设备复制文件到文件系统中
         bool copyOk = true;
@@ -328,7 +342,7 @@ TransferResult ConfigExportImportMenuContentPrivate::insertFileFromUSB()
         if (false == copyOk)
         {
             MessageBox message(trs("Import"),
-                               trs(QString("%1\r\n%2").arg(name).arg(trs("ImportFailed"))),
+                               trs(QString("%1\r\n%2").arg(name).arg(trs("ImportFileFailed"))),
                                QStringList() << trs("Yes"));
             message.exec();
             return TRANSFER_IGNORE;
@@ -337,14 +351,14 @@ TransferResult ConfigExportImportMenuContentPrivate::insertFileFromUSB()
         // 更新导入配置名称，防止命名相同
         int addIndex = 0;
         int num = configs.count();
-        ConfigManager::UserDefineConfigInfo newUserDfine;
-        while (true)
+        ConfigManager::UserDefineConfigInfo newUserDefine;
+        while (true && !isExist)
         {
             bool sameConfigName = false;
-            newUserDfine.name = QString("UserConfig%1").arg(num + (++addIndex));
+            newUserDefine.name = QString("UserConfig%1").arg(num + (++addIndex));
             foreach(ConfigManager::UserDefineConfigInfo info, configs)
             {
-                if (newUserDfine.name == info.name)
+                if (newUserDefine.name == info.name)
                 {
                     sameConfigName = true;
                     break;
@@ -355,22 +369,22 @@ TransferResult ConfigExportImportMenuContentPrivate::insertFileFromUSB()
                 break;
             }
             // 超出命名范围
-            if (addIndex > CONFIG_MAX_NUM)
+            if (addIndex + num > CONFIG_MAX_NUM)
             {
                 MessageBox message(trs("Import"),
-                                   trs(QString("%1\r\n%2").arg(name).arg(trs("ImportFailed"))),
+                                   trs(QString("%1\r\n%2").arg(name).arg(trs("OutOfNamingRange"))),
                                    QStringList() << trs("Yes"));
                 message.exec();
-                return TRANSFER_IGNORE;
+                break;
             }
         }
 
         // 查找系统配置文件中是否存在同名文件，不再更新同名文件名称
         flag = true;
-        newUserDfine.fileName = name;
+        newUserDefine.fileName = name;
         foreach(ConfigManager::UserDefineConfigInfo fileInfo, configs)
         {
-            if (fileInfo.fileName == newUserDfine.fileName)
+            if (fileInfo.fileName == newUserDefine.fileName)
             {
                 flag = false;
                 break;
@@ -379,7 +393,7 @@ TransferResult ConfigExportImportMenuContentPrivate::insertFileFromUSB()
         if (true == flag)
         {
             // 更新用户自定义文件的病人类型
-            const QChar name = newUserDfine.fileName.at(0);
+            const QChar name = newUserDefine.fileName.at(0);
             PatientType type = PATIENT_TYPE_ADULT;
             if (name == 'N')
             {
@@ -391,17 +405,10 @@ TransferResult ConfigExportImportMenuContentPrivate::insertFileFromUSB()
             }
             else
             {
-                newUserDfine.fileName.replace(0, 1, "A");
+                newUserDefine.fileName.replace(0, 1, "A");
             }
-            newUserDfine.patType = PatientSymbol::convert(type);
-
-            configs.append(newUserDfine);
-        }
-
-        // 导入文件不超过规定最大值
-        if (configs.count() > CONFIG_MAX_NUM)
-        {
-            break;
+            newUserDefine.patType = PatientSymbol::convert(type);
+            configs.append(newUserDefine);
         }
     }
 

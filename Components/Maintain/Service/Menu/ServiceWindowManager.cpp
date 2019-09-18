@@ -30,7 +30,6 @@
 #include "NIBPManometer.h"
 #include "NIBPZeroPoint.h"
 #include "NIBPPressureControl.h"
-#include "ServiceVersion.h"
 #include "ServiceCPUTemp.h"
 #include "ServiceErrorLogMenu.h"
 
@@ -134,8 +133,6 @@ void ServiceWindowManager::_upgradeButtonSlot()
 
 void ServiceWindowManager::_versionButtonSlot()
 {
-    serviceVersion.popup();
-    serviceVersion.init();
 }
 
 void ServiceWindowManager::_tempButtonSlot()

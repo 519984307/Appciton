@@ -33,7 +33,6 @@ public:
     explicit ConfigEditTEMPMenuContentPrivate(Config *const config)
         : tempChannelOne(NULL),
           tempChannelTwo(NULL),
-          tempChannelDisable(NULL),
           config(config)
     {
     }
@@ -44,7 +43,6 @@ public:
 
     ComboBox *tempChannelOne;
     ComboBox *tempChannelTwo;
-    ComboBox *tempChannelDisable;
     Config *const config;
 };
 
@@ -81,6 +79,7 @@ void ConfigEditTEMPMenuContent::layoutExec()
     label = new QLabel(trs("TEMPChannelOne"));
     glayout->addWidget(label, layoutIndex, 0);
     combo = new ComboBox;
+    combo->setEnabled(false);
     for (int i = 0; i < TEMP_CHANNEL_NR; i++)
     {
         combo->addItem(trs(TEMPSymbol::convert(TEMPChannelType(i))));
@@ -96,6 +95,7 @@ void ConfigEditTEMPMenuContent::layoutExec()
     label = new QLabel(trs("TEMPChannelTwo"));
     glayout->addWidget(label, layoutIndex, 0);
     combo = new ComboBox;
+    combo->setEnabled(false);
     for (int i = 0; i < TEMP_CHANNEL_NR; i++)
     {
         QString str = TEMPSymbol::convert(TEMPChannelType(i));
@@ -107,25 +107,8 @@ void ConfigEditTEMPMenuContent::layoutExec()
     }
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboIndexUpdated(int)));
     combo->setProperty("Item", qVariantFromValue(comboIndex));
-    comboIndex++;
     glayout->addWidget(combo, layoutIndex, 1);
     d_ptr->tempChannelTwo = combo;
-    layoutIndex++;
-
-
-    // module diable
-    label = new QLabel(trs("TEMPChannelDisable"));
-    glayout->addWidget(label, layoutIndex, 0);
-    combo = new ComboBox;
-    combo->addItems(QStringList()
-                    << trs("No")
-                    << trs("Yes")
-                   );
-    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboIndexUpdated(int)));
-    combo->setProperty("Item", qVariantFromValue(comboIndex));
-    comboIndex++;
-    glayout->addWidget(combo, layoutIndex, 1);
-    d_ptr->tempChannelDisable = combo;
     layoutIndex++;
 
     // 添加报警设置链接
@@ -143,10 +126,6 @@ void ConfigEditTEMPMenuContent::layoutExec()
 void ConfigEditTEMPMenuContent::readyShow()
 {
     d_ptr->loadOption();
-    bool isOnlyToRead = configManager.isReadOnly();
-    d_ptr->tempChannelOne->setEnabled(!isOnlyToRead);
-    d_ptr->tempChannelTwo->setEnabled(!isOnlyToRead);
-    d_ptr->tempChannelDisable->setEnabled(!isOnlyToRead);
 }
 
 void ConfigEditTEMPMenuContent::onComboIndexUpdated(int index)
@@ -168,9 +147,6 @@ void ConfigEditTEMPMenuContent::onComboIndexUpdated(int index)
         break;
     case ConfigEditTEMPMenuContentPrivate::ITEM_CBO_TWO:
         strPath = "TEMP|ChannelTwo";
-        break;
-    case ConfigEditTEMPMenuContentPrivate::ITEM_CBO_ENABLE:
-        strPath = "TEMP|ChannelDisable";
         break;
     }
     d_ptr->config->setNumValue(strPath, index);
@@ -197,8 +173,4 @@ void ConfigEditTEMPMenuContentPrivate::loadOption()
     index = 0;
     config->getNumValue("TEMP|ChannelTwo", index);
     tempChannelTwo->setCurrentIndex(index);
-
-    index = 0;
-    config->getNumValue("TEMP|ChannelDisable", index);
-    tempChannelDisable->setCurrentIndex(index);
 }

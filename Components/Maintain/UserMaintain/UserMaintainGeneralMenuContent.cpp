@@ -14,10 +14,11 @@
 #include "ComboBox.h"
 #include <QGridLayout>
 #include "IConfig.h"
-#include "IMessageBox.h"
 #include "Button.h"
 #include "KeyInputPanel.h"
 #include "PatientManager.h"
+#include "WindowManager.h"
+#include "MessageBox.h"
 
 class UserMaintainGeneralMenuContentPrivate
 {
@@ -59,8 +60,10 @@ void UserMaintainGeneralMenuContentPrivate::loadOptions()
     systemConfig.getNumValue("General|ChangeBedNumberRight", index);
     combos[ITEM_CBO_CHANGE_BEDNUMBER_RIGHT]->setCurrentIndex(index);
 
-    systemConfig.getNumAttr("General|Language" , "CurrentOption", index);
+    combos[ITEM_CBO_LANGUAGE]->blockSignals(true);
+    systemConfig.getNumAttr("General|Language" , "NextOption", index);
     combos[ITEM_CBO_LANGUAGE]->setCurrentIndex(index);
+    combos[ITEM_CBO_LANGUAGE]->blockSignals(false);
 }
 
 UserMaintainGeneralMenuContent::UserMaintainGeneralMenuContent()
@@ -177,7 +180,10 @@ void UserMaintainGeneralMenuContent::onComboBoxIndexChanged(int index)
             break;
         case UserMaintainGeneralMenuContentPrivate::ITEM_CBO_LANGUAGE:
         {
-            systemConfig.setNumAttr("General|Language" , "CurrentOption" , index);
+            systemConfig.setNumAttr("General|Language" , "NextOption" , index);
+            MessageBox msg(trs("Prompt"), trs("ChangeLanguageTip"), false, true);
+            windowManager.showWindow(&msg, WindowManager::ShowBehaviorNoAutoClose
+                                     | WindowManager::ShowBehaviorModal);
             break;
         }
         default:
@@ -220,7 +226,8 @@ void UserMaintainGeneralMenuContent::onButtonReleased()
             QString regKeyStr("[a-zA-Z]|[0-9]|_");
             idPanel.setBtnEnable(regKeyStr);
 
-            if (1 == idPanel.exec())
+            windowManager.showWindow(&idPanel, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
+            if (QDialog::Accepted == idPanel.result())
             {
                 QString oldStr = button->text();
                 QString text = idPanel.getStrValue();
@@ -241,8 +248,8 @@ void UserMaintainGeneralMenuContent::onButtonReleased()
             idPanel.setMaxInputLength(11);
             QString regKeyStr("[a-zA-Z]|[0-9]|_");
             idPanel.setBtnEnable(regKeyStr);
-
-            if (1 == idPanel.exec())
+            windowManager.showWindow(&idPanel, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
+            if (QDialog::Accepted == idPanel.result())
             {
                 QString oldStr = button->text();
                 QString text = idPanel.getStrValue();
@@ -264,7 +271,8 @@ void UserMaintainGeneralMenuContent::onButtonReleased()
             QString regKeyStr("[a-zA-Z]|[0-9]|_");
             idPanel.setBtnEnable(regKeyStr);
 
-            if (1 == idPanel.exec())
+            windowManager.showWindow(&idPanel, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
+            if (QDialog::Accepted == idPanel.result())
             {
                 QString oldStr = button->text();
                 QString text = idPanel.getStrValue();
@@ -299,7 +307,8 @@ void UserMaintainGeneralMenuContent::onButtonReleased()
             QString invaildHint = QString(trs("Input8DigitsPassword"));
             idPanel.setInvalidHint(invaildHint);
 
-            if (1 == idPanel.exec())
+            windowManager.showWindow(&idPanel, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
+            if (QDialog::Accepted == idPanel.result())
             {
                 QString oldStr = button->text();
                 QString text = idPanel.getStrValue();

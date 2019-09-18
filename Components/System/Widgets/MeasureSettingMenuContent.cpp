@@ -16,6 +16,7 @@
 #include "MeasureSettingWindow.h"
 #include "SystemManager.h"
 #include "WindowManager.h"
+#include "PatientManager.h"
 
 class MeasureSettingMenuContentPrivate
 {
@@ -32,7 +33,15 @@ public:
         ITEM_BTN_NIBP,
         ITEM_BTN_CO2,
         ITEM_BTN_O2,
+        ITEM_BTN_APNEA_STIMULATION,
     };
+
+    MeasureSettingMenuContentPrivate() : apneaStimulationBtn(NULL)
+    {}
+
+    void loadOptions();
+
+    Button *apneaStimulationBtn;
 };
 
 
@@ -76,6 +85,8 @@ void MeasureSettingMenuContent::layoutExec()
     btn->setProperty("Item", qVariantFromValue(item));
 
     // resp
+    if (systemManager.isSupport(CONFIG_RESP))
+    {
     btn = new Button(QString("%1 >>").arg(trs("RESPSetting")));
     hl = new QHBoxLayout;
     hl->addStretch(1);
@@ -85,8 +96,11 @@ void MeasureSettingMenuContent::layoutExec()
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
     item = MeasureSettingMenuContentPrivate::ITEM_BTN_RESP;
     btn->setProperty("Item", qVariantFromValue(item));
+    }
 
     // temp
+    if (systemManager.isSupport(CONFIG_TEMP))
+    {
     btn = new Button(QString("%1 >>").arg(trs("TEMPSetting")));
     hl = new QHBoxLayout;
     hl->addStretch(1);
@@ -96,6 +110,7 @@ void MeasureSettingMenuContent::layoutExec()
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
     item = MeasureSettingMenuContentPrivate::ITEM_BTN_TEMP;
     btn->setProperty("Item", qVariantFromValue(item));
+    }
 
     // ag
     if (systemManager.isSupport(CONFIG_AG))
@@ -181,6 +196,7 @@ void MeasureSettingMenuContent::layoutExec()
         btn->setProperty("Item", qVariantFromValue(item));
     }
 
+#ifdef ENABLE_O2_APNEASTIMULATION
     // O2
     if (systemManager.isSupport(CONFIG_O2))
     {
@@ -193,8 +209,25 @@ void MeasureSettingMenuContent::layoutExec()
         connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
         item = MeasureSettingMenuContentPrivate::ITEM_BTN_O2;
         btn->setProperty("Item", qVariantFromValue(item));
+
+        btn = new Button(QString("%1 >>").arg(trs("ApneaStimulationSetup")));
+        hl = new QHBoxLayout;
+        hl->addStretch(1);
+        hl->addWidget(btn, 1);
+        vlayout->addLayout(hl);
+        btn->setButtonStyle(Button::ButtonTextOnly);
+        connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
+        item = MeasureSettingMenuContentPrivate::ITEM_BTN_APNEA_STIMULATION;
+        btn->setProperty("Item", qVariantFromValue(item));
+        d_ptr->apneaStimulationBtn = btn;
     }
+#endif
     vlayout->addStretch();
+}
+
+void MeasureSettingMenuContent::readyShow()
+{
+    d_ptr->loadOptions();
 }
 
 void MeasureSettingMenuContent::onBtnReleasd()
@@ -240,8 +273,28 @@ void MeasureSettingMenuContent::onBtnReleasd()
     case MeasureSettingMenuContentPrivate::ITEM_BTN_O2:
         strName = trs("O2Menu");
         break;
+    case MeasureSettingMenuContentPrivate::ITEM_BTN_APNEA_STIMULATION:
+        strName = trs("ApneaStimulationMenu");
+        break;
     }
 
     p->popup(strName, QVariant(), WindowManager::ShowBehaviorHideOthers);
 }
 
+
+void MeasureSettingMenuContentPrivate::loadOptions()
+{
+#ifdef ENABLE_O2_APNEASTIMULATION
+    if (systemManager.isSupport(CONFIG_O2))
+    {
+        if (patientManager.getType() == PATIENT_TYPE_NEO)
+        {
+            apneaStimulationBtn->setEnabled(true);
+        }
+        else
+        {
+            apneaStimulationBtn->setEnabled(false);
+        }
+    }
+#endif
+}

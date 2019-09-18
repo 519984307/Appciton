@@ -20,6 +20,9 @@
 #include "SystemManager.h"
 #include "WindowManager.h"
 #include "MessageBox.h"
+#include "LanguageManager.h"
+#include <QProcess>
+#include "SystemBoardProvider.h"
 
 class UpgradeWindowPrivate
 {
@@ -30,7 +33,8 @@ public:
           textEdit(NULL),
           progressBar(NULL),
           info(NULL),
-          upgradeModule(UpgradeManager::UPGRADE_MOD_NONE)
+          upgradeModule(UpgradeManager::UPGRADE_MOD_NONE),
+          isUpdate(false)
     {}
 
     ComboBox *upgradeModuleCbo;
@@ -39,10 +43,11 @@ public:
     QProgressBar *progressBar;
     QLabel *info;
     UpgradeManager::UpgradeModuleType upgradeModule;
+    bool isUpdate;
 };
 
 UpgradeWindow::UpgradeWindow()
-    : Window(), d_ptr(new UpgradeWindowPrivate())
+    : Dialog(), d_ptr(new UpgradeWindowPrivate())
 {
     setWindowTitle(trs("Upgrade"));
 
@@ -70,6 +75,8 @@ UpgradeWindow::UpgradeWindow()
     {
         d_ptr->upgradeModuleCbo->addItem(
             trs(UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_N5)));
+        d_ptr->upgradeModuleCbo->addItem(
+            trs(UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_N5DAEMON)));
     }
 
     if (systemManager.isSupport(CONFIG_TEMP))
@@ -78,8 +85,25 @@ UpgradeWindow::UpgradeWindow()
             trs(UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_T5)));
     }
 
-    d_ptr->upgradeModuleCbo->addItem(
-        trs(UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_PRT48)));
+    if (systemManager.isSupport(CONFIG_CO2))
+    {
+        d_ptr->upgradeModuleCbo->addItem(
+            trs(UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_CO2)));
+    }
+
+#ifdef ENABLE_O2_APNEASTIMULATION
+    if (systemManager.isSupport(CONFIG_O2))
+    {
+        d_ptr->upgradeModuleCbo->addItem(
+            UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_NEONATE));
+    }
+#endif
+
+    if (systemManager.isSupport(CONFIG_PRINTER))
+    {
+        d_ptr->upgradeModuleCbo->addItem(
+                    trs(UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_PRT48)));
+    }
 
     d_ptr->upgradeModuleCbo->addItem(
         trs(UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_nPMBoard)));
@@ -159,6 +183,25 @@ void UpgradeWindow::timerEvent(QTimerEvent *ev)
     }
 }
 
+void UpgradeWindow::hideEvent(QHideEvent *ev)
+{
+    if (d_ptr->isUpdate)
+    {
+        d_ptr->isUpdate = false;
+        QString hints = trs("MachineConfigIsUpdatedNow");
+        hints += "\n";
+        hints += trs("IsRebootMachine");
+        hints += "?";
+        MessageBox box(trs("UpdateHint"), hints);
+        QDialog::DialogCode statue = static_cast<QDialog::DialogCode>(box.exec());
+        if (statue == QDialog::Accepted)
+        {
+            systemBoardProvider.requestReset();
+        }
+    }
+    Dialog::hideEvent(ev);
+}
+
 void UpgradeWindow::upgradeMessageUpdate(const QString &msg)
 {
     d_ptr->textEdit->appendPlainText(msg);
@@ -178,11 +221,13 @@ void UpgradeWindow::onUpgradeFinished(UpgradeManager::UpgradeResult result)
 {
     if (result == UpgradeManager::UPGRADE_SUCCESS)
     {
+        d_ptr->isUpdate = true;
         d_ptr->textEdit->appendPlainText(trs("UpgradeSuccess"));
         getCloseBtn()->setEnabled(true);
     }
     else if (result == UpgradeManager::UPGRADE_REBOOT)
     {
+        d_ptr->isUpdate = false;        // 不需要用户进行判断进行重启
         d_ptr->textEdit->appendPlainText(trs("SystemWillRestartPleaseDoNotPowerOff"));
     }
     else

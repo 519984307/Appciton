@@ -12,13 +12,12 @@
 #pragma once
 #include "Param.h"
 #include "NIBPSymbol.h"
-#include "NIBPState.h"
-#include "UnitManager.h"
-#include "PatientManager.h"
-#include "TimeManager.h"
-#include "NIBPCountdownTime.h"
+#include "PatientDefine.h"
+#include "NIBPStateMachine.h"
+#include "NIBPEventDefine.h"
 #include <QMap>
-#include "SoundManager.h"
+#include <QTimer>
+#include "NIBPParamInterface.h"
 
 struct NIBPMeasureResultInfo
 {
@@ -40,22 +39,14 @@ struct NIBPMeasureResultInfo
 class NIBPProviderIFace;
 class NIBPTrendWidget;
 class NIBPDataTrendWidget;
-class NIBPParam: public Param
+class NIBPParam: public Param , public NIBPParamInterface
 {
     Q_OBJECT
 #ifdef CONFIG_UNIT_TEST
     friend class TestNIBPParam;
 #endif
 public:
-    static NIBPParam &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new NIBPParam();
-        }
-        return *_selfObj;
-    }
-    static NIBPParam *_selfObj;
+    static NIBPParam &getInstance(void);
     ~NIBPParam();
 
 public:
@@ -176,6 +167,7 @@ public:
     int16_t getPR(void);
     NIBPMeasureResult getMeasureResult(void);
     void setMeasureResult(NIBPMeasureResult flag);
+    void recoverInitTrendWidgetData();
 
     // 测量时间切换标志
     bool isSwitchTime(void);
@@ -218,8 +210,11 @@ public:
     void createSnapshot(NIBPOneShotType err);
 
 public:
-    // 根据病人类型获取对应的初始压力值。
+    // 设置预充气值。。
     void setInitPressure(int index);
+
+    //获取不同病人类型的初始压力值
+    int getInitPressure();
 
     // 设置/获取测量模式。
     void setMeasurMode(NIBPMode mode);
@@ -285,10 +280,46 @@ public:
     virtual void updateSubParamLimit(SubParamID id);
 
     /**
-     * @brief setNIBPCompleteTone 设置NIBP完成音
-     * @param volume 设置的音量
+     * @brief enterMaintain 进入/退出维护
+     * @param enter 进入为true,退出为false
      */
-    void setNIBPCompleteTone(SoundManager::VolumeLevel volume);
+    void enterMaintain(bool enter);
+
+    /**
+     * @brief isMaintain 是否处于维护
+     * @return
+     */
+    bool isMaintain();
+
+    /**
+     * @brief clearTrendListData 清除趋势列表数据
+     */
+    void clearTrendListData();
+
+    /**
+     * @brief setFirstAuto 设置首次AUTO测量
+     */
+    void setFirstAuto(bool flag);   //
+
+    bool isFirstAuto();
+
+    /**
+     * @brief setFirstAuto AUTO倒计时时候进行STAT测量，要有五秒放气期
+     */
+    void setAutoStat(bool flag);
+
+    bool isAutoStat();
+
+    void setZeroSelfTestState(bool);
+
+    bool isZeroSelfTestState();
+
+    void setDisableState(bool flag);
+
+    bool getNeoDisState();
+
+    void setCalibrateState(bool flag);  // 设置未校准导致禁用状态
+    bool isCalibrateState(void);
 
 signals:
     /**
@@ -338,6 +369,13 @@ private:
     bool _result;                // 校准结果
     int16_t _manometerPressure;             // 压力计模式下压力
 
+    bool _isMaintain;            // 是否维护模式
+    bool _firstAutoFlag;         // 第一次启动AUTO测量标志
+    bool _autoStatFlag;         // auto倒计时开启Stat标志
+    bool _zeroSelfTestFlag;     //开机较零状态标志
+    bool _isNeoDisable;         // 是否新生儿禁用
+    bool _CalibrateState;
+
 private:
     typedef QMap<NIBPStateMachineType, NIBPStateMachine *> MachineStateMap;
     MachineStateMap _machines;
@@ -346,6 +384,6 @@ private:
 
     QTimer *_btnTimer;
 
-    int _stateBeforeDemo;       // 保存进入demo模式前的NIBP状态
+    unsigned char _oldState;
 };
-#define nibpParam (NIBPParam::construction())
+#define nibpParam (NIBPParam::getInstance())

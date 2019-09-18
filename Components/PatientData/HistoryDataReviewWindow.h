@@ -9,11 +9,11 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 #include <QScopedPointer>
 
 class HistoryDataReviewWindowPrivate;
-class HistoryDataReviewWindow : public Window
+class HistoryDataReviewWindow : public Dialog
 {
     Q_OBJECT
 public:

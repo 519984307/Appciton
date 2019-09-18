@@ -19,6 +19,7 @@
 #include "SystemManager.h"
 #include "ECGParam.h"
 #include "IConfig.h"
+#include "ConfigManager.h"
 #include "Button.h"
 #include "ArrhythmiaMenuWindow.h"
 #include "WindowManager.h"
@@ -55,7 +56,8 @@ public:
          arrhythmiaBtn(NULL),
     #endif
          ecg1Label(NULL),
-         ecg2Label(NULL)
+         ecg2Label(NULL),
+         leadModeTimerId(-1)
     {}
 
     // load settings
@@ -81,6 +83,7 @@ public:
     QLabel *ecg1Label;
     QLabel *ecg2Label;
     QList<int> ecgWaveIdList;
+    int leadModeTimerId;
 };
 
 void ECGMenuContentPrivate::loadOptions()
@@ -200,22 +203,18 @@ void ECGMenuContentPrivate::loadOptions()
     WorkMode workMode = systemManager.getCurWorkMode();
     if (workMode == WORK_MODE_DEMO)
     {
-        if (filterMode != ECG_FILTERMODE_DIAGNOSTIC)
-        {
-            filterMode = ECG_FILTERMODE_DIAGNOSTIC;
-            ecgParam.setFilterMode(filterMode);
-        }
         combos[ITEM_CBO_FILTER_MODE]->setEnabled(false);
+        combos[ITEM_CBO_NOTCH_FITER]->setEnabled(false);
     }
     else
     {
         combos[ITEM_CBO_FILTER_MODE]->setEnabled(true);
+        combos[ITEM_CBO_NOTCH_FITER]->setEnabled(true);
     }
 
     // demo模式,12导界面下心电增益改为不可调
     UserFaceType faceType =  layoutManager.getUFaceType();
-    if (workMode == WORK_MODE_DEMO
-            && faceType == UFACE_MONITOR_ECG_FULLSCREEN)
+    if (workMode == WORK_MODE_DEMO)
     {
         combos[ITEM_CBO_ECG_GAIN]->setEnabled(false);
     }
@@ -241,10 +240,18 @@ void ECGMenuContentPrivate::loadOptions()
         combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_OFF)), ECG_NOTCH_OFF);
         combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_50HZ)), ECG_NOTCH_50HZ);
         combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_60HZ)), ECG_NOTCH_60HZ);
-        combos[ITEM_CBO_NOTCH_FITER]->setCurrentIndex(notchFilter);
         break;
     default:
         break;
+    }
+    int notchFilterIndex = combos[ITEM_CBO_NOTCH_FITER]->findText(trs(ECGSymbol::convert(notchFilter)));
+    if (notchFilterIndex > -1)
+    {
+        combos[ITEM_CBO_NOTCH_FITER]->setCurrentIndex(notchFilterIndex);
+    }
+    else
+    {
+        combos[ITEM_CBO_NOTCH_FITER]->setCurrentIndex(0);
     }
 
     combos[ITEM_CBO_PACER_MARK]->setCurrentIndex(ecgParam.getPacermaker());
@@ -370,6 +377,26 @@ ECGMenuContent::~ECGMenuContent()
 void ECGMenuContent::readyShow()
 {
     d_ptr->loadOptions();
+    d_ptr->leadModeTimerId = startTimer(500);
+}
+
+void ECGMenuContent::hideEvent(QHideEvent *e)
+{
+    Q_UNUSED(e)
+    if (d_ptr->leadModeTimerId != -1)
+    {
+        killTimer(d_ptr->leadModeTimerId);
+        d_ptr->leadModeTimerId = -1;
+    }
+}
+
+void ECGMenuContent::timerEvent(QTimerEvent *e)
+{
+    if (d_ptr->leadModeTimerId == e->timerId())
+    {
+        ECGLeadMode leadMode = ecgParam.getLeadMode();
+        d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_LEAD_MODE]->setCurrentIndex(leadMode);
+    }
 }
 
 void ECGMenuContent::layoutExec()
@@ -479,7 +506,7 @@ void ECGMenuContent::layoutExec()
     d_ptr->combos.insert(ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER, comboBox);
 
     // paceMark
-    label = new QLabel(trs("ECGPaceMarker"));
+    label = new QLabel(trs("ECGPaceDetection"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
@@ -525,7 +552,7 @@ void ECGMenuContent::layoutExec()
     itemID = ECGMenuContentPrivate::ITEM_CBO_QRS_TONE;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    connect(comboBox, SIGNAL(activated(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ECGMenuContentPrivate::ITEM_CBO_QRS_TONE, comboBox);
 
@@ -673,16 +700,16 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
             d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(false);
 
             bool isUpdateWaveStatus = false;
+            int preECG2Wave = 0;
+            currentConfig.getNumValue("ECG|Ecg2Wave", preECG2Wave);
             // 如果ecg2与ecg1选择相同的item时
             if (lead == ecgParam.getCalcLead())
             {
                 // 更新最新导联
-                int waveIndex = 0;
-                currentConfig.getNumValue("ECG|Ecg2Wave", waveIndex);
-                currentConfig.setNumValue("ECG|Ecg1Wave", waveIndex);
-                lead = static_cast<ECGLead>(waveIndex);
-                ecgParam.setCalcLead(d_ptr->ecgWaveforms[waveIndex]);
-                ecgParam.setLeadMode3DisplayLead(d_ptr->ecgWaveforms[waveIndex]);
+                currentConfig.setNumValue("ECG|Ecg1Wave", preECG2Wave);
+                lead = static_cast<ECGLead>(preECG2Wave);
+                ecgParam.setCalcLead(d_ptr->ecgWaveforms[preECG2Wave]);
+                ecgParam.setLeadMode3DisplayLead(d_ptr->ecgWaveforms[preECG2Wave]);
                 d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(true);
                 ECGGain gain = ecgParam.getGain(lead);
                 d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->setCurrentIndex(gain);
@@ -690,11 +717,12 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
 
                 // 更新ecg1的item选择
                 d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG1]->blockSignals(true);
-                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG1]->setCurrentIndex(waveIndex);
+                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG1]->setCurrentIndex(preECG2Wave);
                 d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG1]->blockSignals(false);
                 isUpdateWaveStatus = true;
             }
             currentConfig.setNumValue("ECG|Ecg2Wave", index);
+            ecgParam.adjustPrintWave(static_cast<ECGLead>(preECG2Wave), static_cast<ECGLead>(index));
             layoutManager.updateLayout();
             if (isUpdateWaveStatus)
             {
@@ -797,8 +825,11 @@ void ECGMenuContent::onPopupListItemFocusChanged(int volume)
     ComboBox * w = qobject_cast<ComboBox*>(sender());
     if (w == d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_QRS_TONE])
     {
+        /* play sound with the focus volume */
         soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT , static_cast<SoundManager::VolumeLevel>(volume));
         soundManager.heartBeatTone();
+        /* reset the sound volume */
+        soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT , static_cast<SoundManager::VolumeLevel>(w->currentIndex()));
     }
 }
 

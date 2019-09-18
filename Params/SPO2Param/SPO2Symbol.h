@@ -10,7 +10,6 @@
 
 #pragma once
 #include "SPO2Define.h"
-#include "LanguageManager.h"
 
 class SPO2Symbol
 {
@@ -19,7 +18,7 @@ public:
     {
         static const char *symbol[MODULE_SPO2_NR] =
         {
-            "BLM_S5", "MASIMO_SPO2", "NELLCOR_SPO2", "RAINBOW_SPO2"
+            "BLM_S5", "MASIMO_SPO2", "RAINBOW_SPO2"
         };
         return symbol[index];
     }
@@ -85,8 +84,8 @@ public:
     {
         static const char *symbol[SPO2_SMART_PLUSE_TONE_NR] =
         {
-            "On",
             "Off",
+            "On",
         };
         return symbol[index];
     }
@@ -102,7 +101,40 @@ public:
             "SPO2CommunicationStop",
             "SPO2SignalWeak",
             "SPO2SignalSaturation",
-            "SPO2LowPerfusion"
+            "SPO2LowPerfusion",
+            "SPO2DefectiveCable",
+            "SPO2CableExpired",
+            "SPO2IncompatibleCable",
+            "SPO2UnrecongnizedCable",
+            "SPO2CableNearExpiration",
+            "SPO2SensorExpired",
+            "SPO2IncompatibleSensor",
+            "SPO2UnrecongnizedSensor",
+            "SPO2DefectiveSensor",
+            "SPO2CheckCableAndSensorFault",
+            "SPO2SensorNearExpiration",
+            "SPO2NoAdhesiveSensor",
+            "SPO2AdhesiveSensorExpiraton",
+            "SPO2IncompatibleAdhesiveSensor",
+            "SPO2UnrecongnizedAdhesiveSensor",
+            "SPO2DefectiveAdhesiveSensor",
+            "SPO2SensorIniting",
+            "SPO2InterferenceDetected",
+            "SPO2DemoMode",
+            "SPO2AdhesiveSensorNearExpiration",
+            "SPO2CheckSensorConnection",
+            "SPO2OnlyMode",
+            "SPO2BoardFailure"
+            "SPO2SendCommunicationStop"
+        };
+        return symbol[index];
+    }
+
+    static const char *convert(CCHDResult index)
+    {
+        static const char *symbol[CCHD_NR] =
+        {
+            "Negative", "Positive", "RepeatCheck"
         };
         return symbol[index];
     }

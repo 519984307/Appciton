@@ -30,7 +30,7 @@ public:
     {
         static const char *symbol[RESP_APNEA_TIME_NR] =
         {
-            "Off", "_20sec", "_25sec", "_30sec",
+            "_20sec", "_25sec", "_30sec",
             "_35sec", "_40sec", "_45sec",
             "_50sec", "_55sec", "_60sec"
         };
@@ -50,7 +50,7 @@ public:
     {
         static const char *symbol[RESP_ZOOM_NR] =
         {
-            "x0.25", "x0.5", "x1.0", "x2.0", "x3.0", "x4.0", "x5.0"
+            "X0.25", "X0.5", "X1", "X2", "X3", "X4", "X5"
         };
         return symbol[index];
     }
@@ -81,7 +81,8 @@ public:
         static const char *symbol[RESP_ONESHOT_NR] =
         {
             "Apnea",
-            "RESPCommunicationStop"
+            "RESPCommunicationStop",
+            "RESPCheckElecrodes"
         };
         return symbol[index];
     }

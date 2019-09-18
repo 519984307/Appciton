@@ -17,6 +17,13 @@
 #include "SystemManager.h"
 #include "PMessageBox.h"
 #include <QTimer>
+#include "ConfigManager.h"
+#include "RawDataCollector.h"
+#include "IConfig.h"
+#include "crc8.h"
+
+#define SOH             (0x01)  // upgrage packet header
+#define MODEL_CONNECT_TIME_OUT 500
 
 enum  // 数据包类型。
 {
@@ -27,6 +34,8 @@ enum  // 数据包类型。
     SENSOR_REGS = 0x04,
     CONFIG_DATA = 0x05,
     SERVICE_DATA = 0x06,
+    RAW_DATA = 0x0A,
+    CALIBRATE_RESULT = 0x0D
 };
 
 enum  // 位操作。
@@ -45,10 +54,12 @@ enum  // 位操作。
 enum  // 设置命令。
 {
     CMD_SET_MODE = 0x00,      // 设置工作模式
-    CMD_SET_APNE_TIME = 0x01, // 设置窒息时间
+    CMD_SET_APNE_TIME = 0x01,  // 设置窒息时间
+    CMD_ENTER_UPGRADE_MODE = 0x03, // 进入升级模式
     CMD_SET_O2 = 0x04,        // 设置氧气补偿的浓度
     CMD_SET_N20 = 0x05,       // 设置笑气补偿的浓度
     CMD_ZERO_CAL = 0x06,      // 模块校零命令。
+    CMD_CALIBRATE_DATA = 0x08 // 定标不同CO2浓度
 };
 
 /**************************************************************************************************
@@ -56,6 +67,8 @@ enum  // 设置命令。
  *************************************************************************************************/
 void BLMCO2Provider::_unpacket(const unsigned char packet[])
 {
+    co2ModelConnect = true;
+    connectTmr.start(MODEL_CONNECT_TIME_OUT);
     if (!isConnectedToParam)
     {
         return;
@@ -76,7 +89,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
     if (!isConnected)
     {
         co2Param.setConnected(true);
-        setWorkMode(CO2_WORK_MEASUREMENT); // 上电就开始测量。
+        setWorkMode(CO2_WORK_MEASUREMENT);  // 上电就开始测量。
     }
     feed();
 
@@ -89,28 +102,38 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
     _status.unspecAcc    = ((sts & BIT5) == BIT5) ? true : false;
     _status.sensorErr    = ((sts & BIT6) == BIT6) ? true : false;
     _status.o2Replace    = ((sts & BIT3) == BIT3) ? true : false;
-    if ((co2Param.getAwRRSwitch() == 1) && (co2Param.getApneaTime() != APNEA_ALARM_TIME_OFF))
+
+    if ((co2Param.getAwRRSwitch() == 1))
     {
+#ifdef ENABLE_O2_APNEASTIMULATION
+        co2Param.setRespApneaStimulation(_status.noBreath);
+#endif
         co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_APNEA, _status.noBreath);
     }
     else
     {
+#ifdef ENABLE_O2_APNEASTIMULATION
+        co2Param.setRespApneaStimulation(false);
+#endif
         co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_APNEA, false);
     }
 
     // 波形数据，每秒更新20次。
-    int waveValue = packet[4];
-    waveValue <<= 8;
-    waveValue |= packet[5];
-    bool invalid = false;
-    if (waveValue == 0xFFFF)
+    if (packet[2] != RAW_DATA)
     {
-        invalid = true;
-        waveValue = 0;
-    }
+        int waveValue = packet[4];
+        waveValue <<= 8;
+        waveValue |= packet[5];
+        bool invalid = false;
+        if (waveValue == 0xFFFF)
+        {
+            invalid = true;
+            waveValue = 0;
+        }
 
-    waveValue = (waveValue > 2500) ? 2500 : waveValue;
-    co2Param.addWaveformData(waveValue, invalid);
+        waveValue = (waveValue > 2500) ? 2500 : waveValue;
+        co2Param.addWaveformData(waveValue, invalid);
+    }
 
     // 数据，每秒更新2次。
     short value;
@@ -137,7 +160,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
         break;
 
     case GEN_VALS:    //一些其他附加信息值
-        value = (packet[14] == 0xFF) ? InvData() : packet[14];
+        value = (packet[14] == 0xFF) ? 0 : packet[14];  // 当获取不到CO2数据时候将数据置为0
         co2Param.setRR(value);
 
         value = packet[18];
@@ -155,7 +178,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
                 int val = tempStr.toInt();
                 if ((co2Param.getEtCO2MinValue() <= val) && (val <= co2Param.getEtCO2MaxValue()))
                 {
-                    value = (packet[14] == 0xFF) ? InvData() : packet[14];
+                    value = (packet[14] == 0xFF) ? 0 : packet[14];
                     co2Param.setFiCO2(_fico2Value);
                     co2Param.setEtCO2(_etco2Value);
                     co2Param.setBR(value);
@@ -169,7 +192,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
             }
             else
             {
-                value = (packet[14] == 0xFF) ? InvData() : packet[14];
+                value = (packet[14] == 0xFF) ? 0 : packet[14];
                 co2Param.setFiCO2(_fico2Value);
                 co2Param.setEtCO2(_etco2Value);
                 co2Param.setBR(value);
@@ -244,12 +267,9 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
             lastZeroRequired = _status.zeroRequired;      // 需要校零。
             co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_REQUIRED, _status.zeroRequired);
         }
-
-        _status.apneaTime = packet[19];
-        co2Param.verifyApneanTime((ApneaAlarmTime)_status.apneaTime);
         break;
 
-    case CONFIG_DATA: // 模块配置信息
+    case CONFIG_DATA:  // 模块配置信息
         val = packet[14];
 
         // 设备是否支持O2参数。
@@ -271,7 +291,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
         val = packet[15];
         bcd_val_hi = (val & 0xf0) >> 4;
         bcd_val_lo = val & 0x0f;
-        _status.hardwaveVersion = bcd_val_hi * 10 + bcd_val_lo; // BCD code
+        _status.hardwaveVersion = bcd_val_hi * 10 + bcd_val_lo;  // BCD code
 
         val = packet[16];
         bcd_val_hi = (val & 0xf0) >> 4;
@@ -280,7 +300,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
         bcd_val_hi2 = (val & 0xf0) >> 4;
         bcd_val_lo2 = val & 0x0f;
         _status.softwaveVersion = bcd_val_hi * 1000 + bcd_val_lo * 100 + bcd_val_hi2 * 10
-                                  + bcd_val_lo2; // BCD code
+                                  + bcd_val_lo2;  // BCD code
 
         val = packet[18];
         _status.axIDConfig = ((val & BIT0) == BIT0) ? true : false;  // if auto ag id avaiable
@@ -300,6 +320,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
         {
             // 主流CO2模块报警
             co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_REPLACE_ADAPTER, _status.replaceAdapt);
+            co2Param.setZeroStatus(CO2_ZERO_REASON_NO_ADAPTER, _status.noAdapt);
             co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_NO_ADAPTER, _status.noAdapt);
 //                co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_O2_PORT_FAILURE, _status.o2Clogged);
         }
@@ -327,29 +348,42 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
 
         if (!isZeroInProgress && _status.zeroInProgress)
         {
+            // 当前非校零禁止时，前一刻非校零中，目前校零中
+            co2Param.setZeroStatus(CO2_ZERO_REASON_IN_PROGRESS, _status.zeroInProgress);
             co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS, _status.zeroInProgress);
         }
 
         if (_status.sidestreamConfig)
         {
-            if (_status.zeroDisable) //如果校零使能和校零进行中同时为真则代表正在校零
+            if (isZeroInProgress && !_status.zeroInProgress)
             {
-                if (isZeroInProgress && !_status.zeroInProgress)
-                {
-                    co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS, _status.zeroInProgress);
-                }
+                // 前一刻校零中，目前非校零中
+                co2Param.setZeroStatus(CO2_ZERO_REASON_IN_PROGRESS, _status.zeroInProgress);
+                co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS, _status.zeroInProgress);
             }
-
-            co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_AND_SPAN_DISABLE, _status.zeroDisable);
+            if (!_status.zeroInProgress)
+            {
+                // 不是校零时，才发出禁止校零报警
+                co2Param.setZeroStatus(CO2_ZERO_REASON_DISABLED, _status.zeroDisable);
+                // 旁流co2是的zeroDisable是禁止校准和校零
+                co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_AND_SPAN_DISABLE, _status.zeroDisable);
+            }
         }
         else
         {
             if (isZeroInProgress && !_status.zeroInProgress)
             {
+                // 前一刻校零中，目前非校零中
+                co2Param.setZeroStatus(CO2_ZERO_REASON_IN_PROGRESS, _status.zeroInProgress);
                 co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS, _status.zeroInProgress);
             }
 
-            co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_DISABLE, _status.zeroDisable);
+            if (!_status.zeroInProgress)
+            {
+                // 不是校零时，才发出禁止校零报警
+                co2Param.setZeroStatus(CO2_ZERO_REASON_DISABLED, _status.zeroDisable);
+                co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_DISABLE, _status.zeroDisable);
+            }
         }
 
         // For ISA Only
@@ -361,6 +395,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
         {
             // 旁流CO2模块报警
             co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_SPAN_CALIB_FAILED, _status.spanError);
+//            co2Param.setZeroStatus(CO2_ZERO_REASON_IN_PROGRESS, _status.spanCalibInProgress);
             co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_SPAN_CALIB_IN_PROGRESS, _status.spanCalibInProgress);
         }
 //            co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_IR_O2_DELAY, _status.irO2Delay);
@@ -372,9 +407,117 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
         _status.cuvetteAdjuestPress = (val == 0xff) ? InvData() : val;
         break;
 
+    case RAW_DATA:
+        rawDataCollector.collectData(RawDataCollector::CO2_DATA, packet + 3, _packetLen - 4);
+        break;
+
+    case CALIBRATE_RESULT:
+        co2Param.setCalibrateData(packet + 2);
+        break;
     default:
         break;
     }
+}
+
+bool BLMCO2Provider::_checkUpgradePacketValid(const unsigned char *data, unsigned int len)
+{
+    unsigned int minPacketLen = 5;
+    if ((NULL == data) || (len < minPacketLen))
+    {
+        debug("Invalid packet!\n");
+        debug("%s: FCS not match!\n", qPrintable(getName()));
+        return false;
+    }
+
+    unsigned char crc = calcCRC(data, (len - 1));
+    if (data[len - 1] != crc)
+    {
+//        outHex(data, (int)len);
+//        debug("%s: FCS not match : %x!\n", qPrintable(getName()), crc);
+        return false;
+    }
+
+    return true;
+}
+
+void BLMCO2Provider::_readUpgradeData()
+{
+    unsigned char buff[ringBuffLen] = {0};
+    int len = uart->read(buff, ringBuffLen);
+    if (len <= 0 || (buff[0] == 0xaa && buff[1] == 0x55))
+    {
+        return;
+    }
+
+    int startIndex = 0;
+    bool isok;
+    unsigned char v = ringBuff.head(isok);
+
+    if (isok && len > 0)
+    {
+        if ((!_isLastSOHPaired) && (v == SOH) && (buff[0] == SOH))  // SOH为数据包起始数据。
+        {
+            _isLastSOHPaired = true;
+            startIndex = 1;                  // 说明有连续两个SOH出现，需要丢弃一个。
+        }
+    }
+
+    for (int i = startIndex; i < len; i++)
+    {
+        ringBuff.push(buff[i]);
+        if (buff[i] != SOH)
+        {
+            _isLastSOHPaired = false;
+            continue;
+        }
+
+        _isLastSOHPaired = false;
+        i++;
+        if (i >= len)
+        {
+            break;
+        }
+
+        if (buff[i] == SOH)                    // 剔除。
+        {
+            _isLastSOHPaired = true;
+            continue;
+        }
+
+        ringBuff.push(buff[i]);
+    }
+}
+
+bool BLMCO2Provider::_sendUpgradeData(const unsigned char *data, unsigned int len)
+{
+    if ((NULL == data) || (0 == len))
+    {
+        return false;
+    }
+
+    if (SOH != data[0])
+    {
+        // 协议数据以SOH字节开始
+        debug("Invalid command!");
+        return false;
+    }
+
+    int index = 0;
+    unsigned char sendBuf[2 * len];
+
+    sendBuf[index++] = data[0];
+    for (unsigned int i = 1; i < len; i++)
+    {
+        if (SOH == data[i])
+        {
+            // 对SOH字节进行转义
+            sendBuf[index++] = SOH;
+        }
+
+        sendBuf[index++] = data[i];
+    }
+//    outHex(sendBuf, index);
+    return writeData(sendBuf, index) == index;
 }
 
 /**************************************************************************************************
@@ -398,6 +541,12 @@ void BLMCO2Provider::reconnected()
     co2Param.setConnected(true);
 }
 
+void BLMCO2Provider::connectTimeOut()
+{
+    connectTmr.stop();
+    co2ModelConnect = false;
+}
+
 /**************************************************************************************************
  * 模块与参数对接。
  *************************************************************************************************/
@@ -418,28 +567,85 @@ bool BLMCO2Provider::attachParam(Param &param)
  *************************************************************************************************/
 void BLMCO2Provider::dataArrived(void)
 {
-    readData();
-    if (ringBuff.dataSize() < _packetLen)
+    if (upgradeIface == NULL)
     {
-        return;
-    }
-
-    unsigned char buff[64];
-    while (ringBuff.dataSize() >= _packetLen)
-    {
-        if ((ringBuff.at(0) == 0xAA) && (ringBuff.at(1) == 0x55))
+        readData();
+        if (ringBuff.dataSize() < _packetLen)
         {
-            for (int i = 0; i < _packetLen; i++)
+            return;
+        }
+
+        unsigned char buff[64];
+        while (ringBuff.dataSize() >= _packetLen)
+        {
+            if ((ringBuff.at(0) == 0xAA) && (ringBuff.at(1) == 0x55))
             {
-                buff[i] = ringBuff.at(0);
+                for (int i = 0; i < _packetLen; i++)
+                {
+                    buff[i] = ringBuff.at(0);
+                    ringBuff.pop(1);
+                }
+                _unpacket(buff);
+            }
+            else
+            {
+    //            debug("BLMCO2Provider discard data = 0x%x", ringBuff.at(0));
                 ringBuff.pop(1);
             }
-            _unpacket(buff);
         }
-        else
+    }
+    else
+    {
+        _readUpgradeData();
+        unsigned char packet[570];
+        int minPacketLen = 5;
+        while (ringBuff.dataSize() >= minPacketLen)
         {
-//            debug("BLMCO2Provider discard data = 0x%x", ringBuff.at(0));
-            ringBuff.pop(1);
+            if (ringBuff.at(0) != SOH)
+            {
+                // debug("discard (%s:%x)\n", qPrintable(getName()), ringBuff.at(0));
+                ringBuff.pop(1);
+                continue;
+            }
+
+            int len = (ringBuff.at(1) + (ringBuff.at(2) << 8));
+            if ((len <= 0) || (len > 15))
+            {
+                ringBuff.pop(1);
+                break;
+            }
+            if (len > ringBuff.dataSize()) // 数据还不够，继续等待。
+            {
+                break;
+            }
+
+            // 数据包不会超过packet长度，当出现这种情况说明发生了不可预料的错误，直接丢弃该段数据。
+            if (len > static_cast<int>(sizeof(packet)))
+            {
+                ringBuff.pop(1);
+                continue;
+            }
+
+            // 将数据包读到buff中。
+            for (int i = 0; i < len; i++)
+            {
+                packet[i] = ringBuff.at(0);
+                ringBuff.pop(1);
+            }
+
+            if (_checkUpgradePacketValid(packet, len))
+            {
+                if (upgradeIface)
+                {
+                    upgradeIface->handlePacket(&packet[3], len - 4);
+                }
+            }
+            else
+            {
+                outHex(packet, len);
+                debug("FCS error (%s)\n", qPrintable(getName()));
+                ringBuff.pop(1);
+            }
         }
     }
 }
@@ -567,12 +773,89 @@ void BLMCO2Provider::setWorkMode(CO2WorkMode mode)
     writeData(cmd, sizeof(cmd));
 }
 
+void BLMCO2Provider::enterUpgradeMode()
+{
+    unsigned char cmd[5] = {0};
+    cmd[0] = 0xAA;
+    cmd[1] = 0x55;
+    cmd[2] = CMD_ENTER_UPGRADE_MODE;
+    cmd[3] = 0x0;
+
+    _calcCheckSum(cmd);
+    writeData(cmd, sizeof(cmd));
+}
+
+void BLMCO2Provider::sendCalibrateData(int value)
+{
+    unsigned char cmd[5] = {0};
+    cmd[0] = 0xAA;
+    cmd[1] = 0x55;
+    cmd[2] = CMD_CALIBRATE_DATA;
+    cmd[3] = value;
+    _calcCheckSum(cmd);
+    writeData(cmd, sizeof(cmd));
+}
+
+void BLMCO2Provider::setUpgradeIface(BLMProviderUpgradeIface *iface)
+{
+    if (iface == NULL)
+    {
+        stopCheckConnect(false);
+    }
+    else
+    {
+        stopCheckConnect(true);
+    }
+    upgradeIface = iface;
+}
+
+bool BLMCO2Provider::sendUpgradeCmd(unsigned char cmdId, const unsigned char *data, unsigned int len)
+{
+    // 数据包长度包括包头、包长、帧类型、数据和校验和，即：数据长度＋4。
+    unsigned int minPacketLen = 5;
+    unsigned int maxPacketLen = (1 << 9);
+    unsigned int cmdLen = len + minPacketLen;
+    unsigned char cmdBuf[maxPacketLen] = {0};
+    if (cmdLen > maxPacketLen)
+    {
+        debug("Comand too long!");
+        return false;
+    }
+
+    cmdBuf[0] = SOH;
+    cmdBuf[1] = (cmdLen & 0xFF);
+    cmdBuf[2] = ((cmdLen >> 8) & 0xFF);
+    cmdBuf[3] = cmdId;
+    if ((NULL != data) && (0 != len))
+    {
+        qMemCopy(cmdBuf + 4, data, len);
+    }
+
+    cmdBuf[cmdLen - 1] = calcCRC(cmdBuf, (cmdLen - 1));
+    return _sendUpgradeData(cmdBuf, cmdLen);
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-BLMCO2Provider::BLMCO2Provider() : Provider("BLM_CO2"), CO2ProviderIFace(), _status(CO2ProviderStatus())
+BLMCO2Provider::BLMCO2Provider(const QString &name)
+    : Provider(name), CO2ProviderIFace(), _status(CO2ProviderStatus()),
+      upgradeIface(NULL),
+      _isLastSOHPaired(false),
+      co2ModelConnect(false)
 {
     UartAttrDesc portAttr(9600, 8, 'N', 1, _packetLen);
+    if (name == "MASIMO_CO2")
+    {
+        UartAttrDesc desc(9600, 8, 'N', 1, _packetLen);
+        portAttr = desc;
+    }
+    else if (name == "BLM_CO2")
+    {
+        UartAttrDesc desc(115200, 8, 'N', 1);
+        portAttr = desc;
+    }
+
     if (!initPort(portAttr))
     {
         systemManager.setPoweronTestResult(CO2_MODULE_SELFTEST_RESULT, SELFTEST_FAILED);
@@ -581,6 +864,8 @@ BLMCO2Provider::BLMCO2Provider() : Provider("BLM_CO2"), CO2ProviderIFace(), _sta
     setDisconnectThreshold(1);
     _etco2Value = InvData();
     _fico2Value = InvData();
+
+    connect(&connectTmr, SIGNAL(timeout()), this, SLOT(connectTimeOut()));
 }
 
 /**************************************************************************************************
@@ -588,4 +873,9 @@ BLMCO2Provider::BLMCO2Provider() : Provider("BLM_CO2"), CO2ProviderIFace(), _sta
  *************************************************************************************************/
 BLMCO2Provider::~BLMCO2Provider()
 {
+}
+
+bool BLMCO2Provider::isConnectModel()
+{
+    return co2ModelConnect;
 }

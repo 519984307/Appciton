@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2019/3/22
+ **/
+
 #pragma once
 #include "AlarmParamIFace.h"
 #include "COSymbol.h"
@@ -6,15 +16,7 @@
 class COLimitAlarm : public AlarmLimitIFace
 {
 public:
-    static COLimitAlarm &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new COLimitAlarm();
-        }
-        return *_selfObj;
-    }
-    static COLimitAlarm *_selfObj;
+    COLimitAlarm();
 
 public:
     virtual QString getAlarmSourceName(void);
@@ -54,26 +56,13 @@ public:
 
     // constructor and destructor.
     virtual ~COLimitAlarm();
-private:
-    COLimitAlarm();
-
-
 };
-#define coLimitAlarm (COLimitAlarm::construction())
 
 // one shot alarm
 class COOneShotAlarm : public AlarmOneShotIFace
 {
 public:
-    static COOneShotAlarm &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new COOneShotAlarm();
-        }
-        return *_selfObj;
-    }
-    static COOneShotAlarm *_selfObj;
+    COOneShotAlarm();
 
 public:
     virtual QString getAlarmSourceName(void);
@@ -102,8 +91,4 @@ public:
 
     // constructor and destructor.
     virtual ~COOneShotAlarm();
-
-private:
-    COOneShotAlarm();
 };
-#define coOneShotAlarm (COOneShotAlarm::construction())

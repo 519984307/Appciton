@@ -9,13 +9,13 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 
 /**
  * @brief The PasswordWindow class use to verify the input password
  */
 
-class PasswordWindow : public Window
+class PasswordWindow : public Dialog
 {
     Q_OBJECT
 public:

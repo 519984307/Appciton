@@ -84,8 +84,8 @@ void CO2WaveWidget::setRuler(CO2DisplayZoom zoom)
     case CO2_DISPLAY_ZOOM_8:
         _ruler->setRuler(8.0, 4.0, 0);
         break;
-    case CO2_DISPLAY_ZOOM_13:
-        _ruler->setRuler(13.0, 6.0, 0);
+    case CO2_DISPLAY_ZOOM_12:
+        _ruler->setRuler(12.0, 6.0, 0);
         break;
     case CO2_DISPLAY_ZOOM_20:
         _ruler->setRuler(20.0, 10.0, 0);
@@ -134,7 +134,7 @@ CO2WaveWidget::CO2WaveWidget(const QString &waveName, const QString &title)
 
     setMargin(QMargins(WAVE_X_OFFSET, 2, 2, 2));
 
-    _loadConfig();
+    loadConfig();
 }
 
 void CO2WaveWidget::_getItemIndex(int index)
@@ -142,7 +142,7 @@ void CO2WaveWidget::_getItemIndex(int index)
     _currentItemIndex = index;
 }
 
-void CO2WaveWidget::_loadConfig()
+void CO2WaveWidget::loadConfig()
 {
     QPalette palette = colorManager.getPalette(paramInfo.getParamName(PARAM_CO2));
     setPalette(palette);
@@ -155,6 +155,8 @@ void CO2WaveWidget::_loadConfig()
     palette.setColor(QPalette::WindowText, color);
     _ruler->setPalette(palette);
     updateBackground();
+    co2Param.updateDisplayZoom();   // 更新co2标尺
+    co2Param.updateFiCO2Display();  // 更新co2的fico2显示
 }
 
 /**************************************************************************************************
@@ -162,11 +164,4 @@ void CO2WaveWidget::_loadConfig()
  *************************************************************************************************/
 CO2WaveWidget::~CO2WaveWidget()
 {
-}
-
-void CO2WaveWidget::updateWidgetConfig()
-{
-    _loadConfig();
-    // 待加入波形配置代码
-    WaveWidget::updateWidgetConfig();
 }

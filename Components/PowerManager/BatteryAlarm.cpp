@@ -1,8 +1,16 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2019/3/22
+ **/
+
 #include "BatteryAlarm.h"
 #include "BatteryDefine.h"
 #include "SystemManager.h"
-
-BatteryOneShotAlarm *BatteryOneShotAlarm::_selfObj = NULL;
 
 /**************************************************************************************************
  * 报警源的名字。
@@ -27,9 +35,10 @@ AlarmPriority BatteryOneShotAlarm::getAlarmPriority(int id)
 {
     switch (id)
     {
-        case BAT_ONESHOT_LOW_BATTERY:
         case BAT_ONESHOT_REPLACE_BATTERY:
             return ALARM_PRIO_HIGH;
+        case BAT_ONESHOT_LOW_BATTERY:
+            return ALARM_PRIO_MED;
 
         case BAT_ONESHOT_NO_BATTERY:
             return ALARM_PRIO_PROMPT;
@@ -42,8 +51,9 @@ AlarmPriority BatteryOneShotAlarm::getAlarmPriority(int id)
 /**************************************************************************************************
  * 该报警是否为生命报警，技术报警和生理/生命报警分开存放。
  *************************************************************************************************/
-AlarmType BatteryOneShotAlarm::getAlarmType(int /*id*/)
+AlarmType BatteryOneShotAlarm::getAlarmType(int id)
 {
+    Q_UNUSED(id)
     return ALARM_TYPE_TECH;
 }
 
@@ -58,8 +68,9 @@ const char *BatteryOneShotAlarm::toString(int id)
 /**************************************************************************************************
  * 获取报警对应的波形ID，该波形将被存储。
  *************************************************************************************************/
-WaveformID BatteryOneShotAlarm::getWaveformID(int /*id*/)
+WaveformID BatteryOneShotAlarm::getWaveformID(int id)
 {
+    Q_UNUSED(id)
     return WAVE_NONE;
 }
 
@@ -68,7 +79,6 @@ WaveformID BatteryOneShotAlarm::getWaveformID(int /*id*/)
  *************************************************************************************************/
 BatteryOneShotAlarm::BatteryOneShotAlarm()
 {
-
 }
 
 /**************************************************************************************************
@@ -76,6 +86,5 @@ BatteryOneShotAlarm::BatteryOneShotAlarm()
  *************************************************************************************************/
 BatteryOneShotAlarm::~BatteryOneShotAlarm()
 {
-
 }
 

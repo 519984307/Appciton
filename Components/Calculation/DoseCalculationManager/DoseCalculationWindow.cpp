@@ -477,7 +477,7 @@ void DoseCalculationWindow::durationHandle(float duration)
  **************************************************************************************************/
 void DoseCalculationWindow::showEvent(QShowEvent *e)
 {
-    Window::showEvent(e);
+    Dialog::showEvent(e);
 }
 
 
@@ -639,7 +639,7 @@ void DoseCalculationWindow::onBtnTitrateTableReleased()
  * 构造。
  *************************************************************************************************/
 DoseCalculationWindow::DoseCalculationWindow()
-    : Window(),
+    : Dialog(),
       d_ptr(new DoseCalculationWindowPrivate)
 {
     setFixedSize(800, 580);

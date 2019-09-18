@@ -60,6 +60,9 @@ public:
     void setModuleEnable(void);
     bool getErrorDisable(void) { return _isTEMPDisable;}
 
+    // 设置窗口是否禁用显示
+    void setWidgetErrorShow(bool error);
+
     // 通信中断
     bool getDisconnected(void);
 
@@ -94,6 +97,11 @@ public:
     //接收定标数据
     void sendCalibrateData(int channel, int value);
 
+    // 进入校准模式
+    void enterCalibrateState(void);
+
+    // 退出校准模式
+    void exitCalibrateState(void);
     //接收定标数据
     void getCalibrateData(unsigned char *packet);
 
@@ -105,6 +113,10 @@ public:
 
     // 获取校准结果
     bool getCalibrationResult();
+
+    // 设置体温校准下的电阻值
+    void setOhm(int ohm1, int ohm2);
+    void getOhm(int &ohm1, int &ohm2);
 public:
     // 设置/获取单位。
     void setUnit(UnitType u);
@@ -118,6 +130,14 @@ signals:
      */
     void updateTempName(TEMPChannelIndex channel, TEMPChannelType type);
 
+    /**
+     * @brief tempReset  and the signal of temp reset
+     */
+    void tempReset();
+
+protected slots:
+    virtual void paramUpdateTimeout();
+
 private slots:
     void onPaletteChanged(ParamID id);
 
@@ -130,6 +150,9 @@ private:
     int16_t _t1Value;
     int16_t _t2Value;
     int16_t _tdValue;
+
+    int _ohm1;
+    int _ohm2;
 
     int _calibrateChannel;
     int _calibrateValue;

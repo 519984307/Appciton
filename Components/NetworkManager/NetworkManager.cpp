@@ -13,12 +13,12 @@
 #include "Debug.h"
 #include "NetworkManager.h"
 #include "IConfig.h"
+#include "ConfigManager.h"
 #include <QThread>
 #include "WiFiProfileEditor.h"
 #include <QFile>
 #include <sys/types.h>
 #include <signal.h>
-#include "IConfig.h"
 #include "PatientManager.h"
 #include "SystemManager.h"
 

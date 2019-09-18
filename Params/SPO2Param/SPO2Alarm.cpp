@@ -17,8 +17,6 @@
 #include "SystemManager.h"
 #include "NIBPParam.h"
 
-SPO2LimitAlarm *SPO2LimitAlarm::_selfObj = NULL;
-
 /**************************************************************************************************
  * 报警源的名字。
  *************************************************************************************************/
@@ -179,8 +177,6 @@ SPO2LimitAlarm::~SPO2LimitAlarm()
 /**************************************************************************************************
  *************************************************************************************************/
 
-SPO2OneShotAlarm *SPO2OneShotAlarm::_selfObj = NULL;
-
 /**************************************************************************************************
  * 报警源的名字。
  *************************************************************************************************/
@@ -240,7 +236,7 @@ AlarmType SPO2OneShotAlarm::getAlarmType(int id)
  *************************************************************************************************/
 bool SPO2OneShotAlarm::isAlarmed(int id)
 {
-    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO && getAlarmType(id) == ALARM_TYPE_TECH)
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
     {
         return false;
     }
@@ -266,12 +262,8 @@ const char *SPO2OneShotAlarm::toString(int id)
  *************************************************************************************************/
 bool SPO2OneShotAlarm::isRemoveAfterLatch(int id)
 {
-    if (id == SPO2_ONESHOT_ALARM_COMMUNICATION_STOP)
-    {
-        return false;
-    }
-
-    return true;
+    Q_UNUSED(id)
+    return false;
 }
 
 /**************************************************************************************************

@@ -17,6 +17,7 @@
 #include <QDateTime>
 #include "TimeDate.h"
 #include "TrendDataStorageManager.h"
+#include "LanguageManager.h"
 
 // 打印纸每页最多打印10行数据（1 head title + 9 data）
 #define RECORD_PER_PAGE 9
@@ -45,6 +46,7 @@ public:
     int interval;
     QList<SubParamID> subParamList;
     QMap<unsigned int, unsigned int> timestampEventMap;
+    PatientInfo patientInfo;        // 病人信息
 };
 
 bool  dataPacketLessThan(const TrendDataPackage &d1, const TrendDataPackage &d2)
@@ -103,7 +105,7 @@ bool TrendTablePageGeneratorPrivate::loadStringList()
 }
 
 static void preparePressSubParamInfos(SubParamID subParamID, const TrendDataPackage &datapack, TrendDataType data[],
-                                      bool alarms[])
+                                      bool alarms[], unsigned eventType)
 {
     switch (subParamID)
     {
@@ -111,9 +113,18 @@ static void preparePressSubParamInfos(SubParamID subParamID, const TrendDataPack
         data[0] = datapack.subparamValue.value(SUB_PARAM_NIBP_SYS, InvData());
         data[1] = datapack.subparamValue.value(SUB_PARAM_NIBP_DIA, InvData());
         data[2] = datapack.subparamValue.value(SUB_PARAM_NIBP_MAP, InvData());
-        alarms[0] = datapack.subparamAlarm.value(SUB_PARAM_NIBP_SYS, false);
-        alarms[1] = datapack.subparamAlarm.value(SUB_PARAM_NIBP_DIA, false);
-        alarms[2] = datapack.subparamAlarm.value(SUB_PARAM_NIBP_MAP, false);
+        if (eventType & TrendDataStorageManager::CollectStatusNIBP)
+        {
+            alarms[0] = datapack.subparamAlarm.value(SUB_PARAM_NIBP_SYS, false);
+            alarms[1] = datapack.subparamAlarm.value(SUB_PARAM_NIBP_DIA, false);
+            alarms[2] = datapack.subparamAlarm.value(SUB_PARAM_NIBP_MAP, false);
+        }
+        else
+        {
+            alarms[0] = false;
+            alarms[1] = false;
+            alarms[2] = false;
+        }
         break;
     case SUB_PARAM_ART_SYS:
         data[0] = datapack.subparamValue.value(SUB_PARAM_ART_SYS, InvData());
@@ -379,7 +390,7 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
 
             TrendDataType datas[3];
             bool alarms[3];
-            preparePressSubParamInfos(subParamID, datapack, datas, alarms);
+            preparePressSubParamInfos(subParamID, datapack, datas, alarms, eventType);
             // set datas[] as InvData() when it is not NIBP event type
             if (!(eventType & TrendDataStorageManager::CollectStatusNIBP))
             {
@@ -407,7 +418,7 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
 
             TrendDataType datas[3];
             bool alarms[3];
-            preparePressSubParamInfos(subParamID, datapack, datas, alarms);
+            preparePressSubParamInfos(subParamID, datapack, datas, alarms, eventType);
             valueStr = contructPressTrendStringItem(subParamID,
                                                     datas,
                                                     alarms,
@@ -521,7 +532,7 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
 }
 
 TrendTablePageGenerator::TrendTablePageGenerator(IStorageBackend *backend, TrendTablePrintInfo &printInfo,
-        QObject *parent)
+                                                 const PatientInfo &patientInfo, QObject *parent)
     : RecordPageGenerator(parent), d_ptr(new TrendTablePageGeneratorPrivate)
 {
     if (printInfo.startIndex < printInfo.stopIndex)
@@ -544,6 +555,7 @@ TrendTablePageGenerator::TrendTablePageGenerator(IStorageBackend *backend, Trend
     d_ptr->interval = printInfo.interval;
     d_ptr->subParamList = printInfo.list;
     d_ptr->timestampEventMap = printInfo.timestampEventMap;
+    d_ptr->patientInfo = patientInfo;
 }
 
 TrendTablePageGenerator::~TrendTablePageGenerator()
@@ -562,7 +574,7 @@ RecordPage *TrendTablePageGenerator::createPage()
     case TitlePage:
         // BUG: patient info of the event might not be the current session patient
         d_ptr->curPageType = TrendTablePage;
-        return createTitlePage(QString(trs("TabularTrendsPrint")), patientManager.getPatientInfo());
+        return createTitlePage(QString(trs("TabularTrendsPrint")), d_ptr->patientInfo);
     case TrendTablePage:
         if (!d_ptr->stringLists.isEmpty() || d_ptr->loadStringList())
         {

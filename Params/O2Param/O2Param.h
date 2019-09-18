@@ -10,11 +10,12 @@
 
 #pragma once
 #include "Param.h"
+#include "O2ParamInterface.h"
 
 class O2ProviderIFace;
 class O2TrendWidget;
 class O2ParamPrivate;
-class O2Param : public Param
+class O2Param : public Param, public O2ParamInterface
 {
     Q_OBJECT
 public:
@@ -61,9 +62,26 @@ public:
 
     // 刷新参数上下限
     virtual void updateSubParamLimit(SubParamID id);
+
+    /**
+     * @brief setApneaAwakeStatus set apnea awake status
+     * @param flag
+     */
+    void setApneaAwakeStatus(bool sta);
+
+    /**
+     * @brief getApneaAwakeStatus get apnea awake status
+     * @return
+     */
+    bool getApneaAwakeStatus();
+
+    /**
+     * @brief newCreatPatient
+     */
+    void updateApneaStimulationStatus();
 public:
     // 马达控制
-    void sendMotorControl(int control);
+    void setVibration(bool vibrate);
 
     // 震动强度设置
     void vibrationIntensityControl(int intensity);
@@ -79,6 +97,12 @@ public:
 
     // 获取校准结果
     bool getCalibrationResult();
+
+    // 设置唤醒器关联参数状态
+    void setVibrationReason(ApneaStimulationReason reason, bool sta);
+
+protected slots:
+    virtual void paramUpdateTimeout();
 
 private:
     O2Param();

@@ -47,7 +47,10 @@ public:
 
     virtual void resetWaveWidget() {}
 
-    virtual void updateWidgetConfig() {}
+    virtual void updateWidgetConfig()
+    {
+        loadConfig();
+    }
 
 signals:
     void clicked(IWidget *w);   // 按键或鼠标单击信号
@@ -70,6 +73,11 @@ protected:
     {
         return _focusedBorderWidth;
     }
+
+    /**
+     * @brief loadConfig  加载配置
+     */
+    virtual void loadConfig(){}
 
 private:
     void _updateFocusRegion();

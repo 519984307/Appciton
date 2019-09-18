@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2019/9/12
+ **/
+
 #pragma once
 #include "TEMPDefine.h"
 
@@ -20,6 +30,10 @@ public:
 
     //发送定标数据。
     virtual void sendCalibrateData(int /*channel*/, int /*value*/) {}
+
+    virtual void enterCalibrateState(void){}
+
+    virtual void exitCalibrateState(void){}
 
     //通信中断。
     virtual bool isDisconnected() {return false;}

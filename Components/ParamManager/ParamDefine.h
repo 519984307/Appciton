@@ -11,7 +11,6 @@
 #pragma once
 #include <QMap>
 #include <QVector>
-#include "BaseDefine.h"
 
 enum ParamID
 {
@@ -47,6 +46,7 @@ enum SubParamID
     SUB_PARAM_NIBP_SYS,
     SUB_PARAM_NIBP_DIA,
     SUB_PARAM_NIBP_MAP,
+    SUB_PARAM_NIBP_PR,
 
     // IBP
     SUB_PARAM_ART_SYS,

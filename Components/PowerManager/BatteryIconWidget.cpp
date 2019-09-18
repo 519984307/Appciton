@@ -26,8 +26,8 @@ public:
     QString printString;                     // 用于打印的字符串
     BatteryPowerLevel batteryVolume;         // 当前电量等级
     int lastBatteryVolume;
-    int timeRelative;                        // 当前剩余时间
-    int lastTimeRelative;
+    BatteryRemainTime timeRelative;          // 当前剩余时间
+    BatteryRemainTime lastTimeRelative;
     QColor fillColor;                        // 填充颜色
     QColor lastFillColor;
     BatteryIconStatus batteryStatus;         // 电池状态
@@ -141,38 +141,35 @@ void BatteryIconWidget::setFillColor(const QColor &color)
 /**************************************************************************************************
  * 设置剩余时间参数
  *************************************************************************************************/
-void BatteryIconWidget::setTimeValue(int time)
+void BatteryIconWidget::setTimeValue(BatteryRemainTime time)
 {
-    time = (time >= 6) ? 6 : time;
-
-    d_ptr->timeRelative = time;
-
-    // 将剩余可运行时间转变为字符串
-    if (d_ptr->timeRelative == 0)
+    switch (time)
     {
-        d_ptr->printString = "<0:30";
-    }
-    else if (d_ptr->timeRelative == -1)
-    {
-        d_ptr->printString = "low";
-    }
-    else if (d_ptr->timeRelative == -2)
-    {
+    case BAT_REMAIN_TIME_NULL:
         d_ptr->printString = "";
-    }
-    else
-    {
-        if (d_ptr->timeRelative % 2 == 1)
-        {
-            d_ptr->printString = QString("%1%2%3")
-                           .arg(d_ptr->timeRelative / 2).arg(":").arg("30+");
-        }
-        else
-        {
-            d_ptr->printString = QString("%1%2%3")
-                           .arg(d_ptr->timeRelative / 2).arg(":").arg("00+");
-        }
-    }
+        break;
+    case BAT_REMAIN_TIME_LOW:
+        d_ptr->printString = "low";
+        break;
+    case BAT_REMAIN_TIME_1_HOUR:
+        d_ptr->printString = "1:00+";
+        break;
+    case BAT_REMAIN_TIME_2_HOUR:
+        d_ptr->printString = "2:00+";
+        break;
+    case BAT_REMAIN_TIME_5_HOUR:
+        d_ptr->printString = "5:00+";
+        break;
+    case BAT_REMAIN_TIME_7_HOUR:
+        d_ptr->printString = "7:00+";
+        break;
+    case BAT_REMAIN_TIME_8_HOUR:
+        d_ptr->printString = "8:00+";
+        break;
+    default:
+        break;
+    };
+    d_ptr->timeRelative = time;
 }
 
 void BatteryIconWidget::charging()
@@ -256,10 +253,7 @@ void BatteryIconWidgetPrivate::drawBatteryImage(QPainter &painter, QRect &rect)
         // 正常电量图标显示
         drawBatteryFillRect(painter, rect, batteryVolume);
         // 剩余时间显示成字符串,
-        if (batteryVolume > 0 && batteryVolume < 5)
-        {
-            painter.drawText(rect, Qt::AlignCenter, printString);
-        }
+        painter.drawText(rect, Qt::AlignCenter, printString);
         break;
 
     case BATTERY_NOT_EXISTED:
@@ -569,8 +563,8 @@ BatteryIconWidgetPrivate::BatteryIconWidgetPrivate(QColor color)
     : printString(QString()),
       batteryVolume(BAT_VOLUME_NONE),
       lastBatteryVolume(0),
-      timeRelative(-2),
-      lastTimeRelative(-2),
+      timeRelative(BAT_REMAIN_TIME_NULL),
+      lastTimeRelative(BAT_REMAIN_TIME_NULL),
       fillColor(QColor(0, 128, 0)),
       lastFillColor(QColor(0, 128, 0)),
       batteryStatus(BATTERY_NORMAL),

@@ -14,8 +14,6 @@
 #include "PatientManager.h"
 #include "AlarmConfig.h"
 
-ECGDupLimitAlarm *ECGDupLimitAlarm::_selfObj = NULL;
-
 /**************************************************************************************************
  * 报警源的名字。
  *************************************************************************************************/
@@ -49,7 +47,7 @@ WaveformID ECGDupLimitAlarm::getWaveformID(int id)
     bool isHR = ecgDupParam.isHRValid();
     if (isHR)
     {
-        return WAVE_ECG_II;
+        return ecgParam.leadToWaveID(ecgParam.getCalcLead());;
     }
     else
     {
@@ -120,8 +118,7 @@ int ECGDupLimitAlarm::getLower(int paramID)
  *************************************************************************************************/
 int ECGDupLimitAlarm::getCompare(int value, int id)
 {
-    int isHR = 0;
-    currentConfig.getNumValue("ECG|HRSource", isHR);
+    HRSourceType isHR = ecgDupParam.getCurHRSource();
     if (isHR == HR_SOURCE_ECG)
     {
         if (id == ECG_DUP_LIMIT_ALARM_HR_HIGH)

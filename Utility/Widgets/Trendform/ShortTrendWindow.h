@@ -9,11 +9,11 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 
 class ShortTrendWindowPrivate;
 class ShortTrendContainer;
-class ShortTrendWindow : public Window
+class ShortTrendWindow : public Dialog
 {
     Q_OBJECT
 public:

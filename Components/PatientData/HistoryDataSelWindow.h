@@ -9,12 +9,12 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 #include <QScopedPointer>
 #include <QModelIndex>
 
 class HistoryDataSelWindowPrivate;
-class HistoryDataSelWindow : public Window
+class HistoryDataSelWindow : public Dialog
 {
     Q_OBJECT
 public:

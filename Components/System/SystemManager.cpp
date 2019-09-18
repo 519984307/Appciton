@@ -22,7 +22,6 @@
 #include <TDA19988Ctrl.h>
 
 #include "Debug.h"
-#include "Version.h"
 #include "IConfig.h"
 #include "WindowManager.h"
 #include "ECGParam.h"
@@ -48,6 +47,9 @@
 #include "PatientManager.h"
 #include "DataStorageDirManager.h"
 #include "StandbyWindow.h"
+#include "NIBPParam.h"
+#include "LanguageManager.h"
+#include "EventStorageManagerInterface.h"
 
 #define BACKLIGHT_DEV   "/sys/class/backlight/backlight/brightness"       // 背光控制文件接口
 
@@ -85,17 +87,23 @@ public:
           selfTestFinish(false),
           isStandby(false),
           isTurnOff(false)
-    {}
+    {
+    }
 
     /**
      * @brief enterDemoMode enter the demo mode
      */
     void enterDemoMode()
     {
+        if (nibpParam.isMeasuring())
+        {
+            nibpParam.stopMeasure();
+        }
         alarmIndicator.delAllPhyAlarm();
         windowManager.showDemoWidget(true);
         paramManager.connectDemoParamProvider();
         patientManager.newPatient();
+        nibpParam.clearTrendListData();
     }
 
     /**
@@ -239,6 +247,9 @@ bool SystemManager::isSupport(ConfiguredFuncs funcs) const
     case CONFIG_TEMP:
         path = "TEMPEnable";
         break;
+    case CONFIG_PRINTER:
+        path = "PrinterEnable";
+        break;
     case CONFIG_WIFI:
         path = "WIFIEnable";
         break;
@@ -253,7 +264,7 @@ bool SystemManager::isSupport(ConfiguredFuncs funcs) const
     }
 
     bool enable = false;
-    machineConfig.getNumValue(path, enable);
+    machineConfig.getModuleInitialStatus(path, &enable);
     return enable;
 }
 
@@ -301,7 +312,7 @@ bool SystemManager::isSupport(ParamID paramID) const
     }
 
     bool enable = false;
-    machineConfig.getNumValue(path, enable);
+    machineConfig.getModuleInitialStatus(path, &enable);
     return enable;
 }
 
@@ -311,9 +322,9 @@ bool SystemManager::isTouchScreenOn() const
     return d_ptr->isTouchScreenOn;
 }
 
-void SystemManager::setTouchScreenOnOff(bool onOff)
+void SystemManager::setTouchScreenOnOff(int sta)
 {
-    if (onOff && isSupport(CONFIG_TOUCH))
+    if (sta && isSupport(CONFIG_TOUCH))
     {
         d_ptr->isTouchScreenOn = true;
         QWSServer::instance()->openMouse();
@@ -337,6 +348,26 @@ void SystemManager::setTouchScreenOnOff(bool onOff)
     systemConfig.setNumValue("General|TouchScreen", static_cast<int>(d_ptr->isTouchScreenOn));
 
     return;
+}
+
+void SystemManager::configTouchScreen(int sta)
+{
+    QString fileName = "/etc/.using_capacitor_ts";
+    QFile f(fileName);
+    if (sta == TOUCHSCREEN_CAPACITIVE)
+    {
+        if (!f.open(QIODevice::ReadWrite))
+        {
+            qDebug() << "fail to create capacitive file " << fileName;
+        }
+    }
+    else
+    {
+        if (f.exists())
+        {
+            f.remove();
+        }
+    }
 }
 #endif
 
@@ -489,7 +520,20 @@ void SystemManager::enableBrightness(BrightnessLevel br)
     data.append(static_cast<char>(br));
     sendCommand(data);
 #else
-    char lightValue[BRT_LEVEL_NR] = {64, 52, 47, 41, 36, 31, 26, 21, 15, 1};
+    // add screen type select
+    char *lightValue = NULL;
+    char industrialLight[BRT_LEVEL_NR] = {1, 15, 25, 38, 46, 54, 62, 72, 85, 100};
+    char businessLight[BRT_LEVEL_NR] = {64, 52, 47, 41, 36, 31, 26, 21, 15, 1};
+    int index = BACKLIGHT_MODE_1;
+    machineConfig.getNumValue("BacklightAdjustment", index);
+    if (static_cast<BacklightAdjustment>(index) == BACKLIGHT_MODE_2)
+    {
+        lightValue = reinterpret_cast<char*>(&industrialLight);
+    }
+    else
+    {
+        lightValue = reinterpret_cast<char*>(&businessLight);
+    }
 
     if (d_ptr->backlightFd < 0)
     {
@@ -502,10 +546,11 @@ void SystemManager::enableBrightness(BrightnessLevel br)
         return;
     }
 
-    int brValue = lightValue[br];
+    int brValue = *(lightValue + br);
 
     QString str = QString::number(brValue);
 
+    qDebug() << Q_FUNC_INFO << str;
     int ret = write(d_ptr->backlightFd, qPrintable(str), str.length() + 1);
 
     if (ret < 0)
@@ -531,29 +576,6 @@ BrightnessLevel SystemManager::getBrightness(void)
 void SystemManager::loadInitBMode()
 {
     d_ptr->handleBMode();
-}
-
-/***************************************************************************************************
- * 获取软件版本。
- **************************************************************************************************/
-void SystemManager::getSoftwareVersion(QString &revision)
-{
-    revision.clear();
-    revision += getSoftwareVersionNum();
-    revision += ",\r\r\r";
-    revision += BUILD_TIME;
-}
-
-/***************************************************************************************************
- * 获取软件版本。
- **************************************************************************************************/
-QString SystemManager::getSoftwareVersionNum()
-{
-    QString version(IDM_SOFTWARE_VERSION);
-    version += ".";
-    version += SVN_VERSION;
-
-    return version;
 }
 
 /***************************************************************************************************
@@ -601,7 +623,7 @@ void SystemManager::turnOff(bool flag)
     if (flag)
     {
         qDebug() << "System is going to turn off.";
-        Util::waitInEventLoop(1000); // wait long enough to let the world get the message
+        Util::waitInEventLoop(1000);  // wait long enough to let the world get the message
     }
 }
 
@@ -638,6 +660,13 @@ void SystemManager::setWorkMode(WorkMode workmode)
     }
     default:
         break;
+    }
+
+    // 切换模式时,清空当前正在储存的事件
+    EventStorageManagerInterface *eventStorageManager = EventStorageManagerInterface::getEventStorageManager();
+    if (eventStorageManager)
+    {
+        eventStorageManager->clearEventItemList();
     }
 
     // 添加当前工作模式改变信号，用作切换模式下的其他参数的及时更新信号
@@ -697,7 +726,6 @@ void SystemManager::onCtrlSocketReadReady()
 //        char infoData = d_ptr->socketInfoData.takeFirst();
         switch ((ControlInfo)infoType)
         {
-
         case CTRL_INFO_METRONOME:
         {
             emit metronomeReceived();
@@ -905,7 +933,8 @@ void SystemManager::publishTestResult(void)
                 if (NULL != systemSelftestMessage[d_ptr->modulePostResult[i]][i])
                 {
                     showDialog = true;
-                    d_ptr->selfTestResult->appendInfo((ModulePoweronTestResult) i, (ModulePoweronTestStatus)d_ptr->modulePostResult[i],
+                    d_ptr->selfTestResult->appendInfo((ModulePoweronTestResult) i,
+                                                      (ModulePoweronTestStatus)d_ptr->modulePostResult[i],
                                                 trs(systemSelftestMessage[d_ptr->modulePostResult[i]][i]));
                 }
             }
@@ -954,7 +983,7 @@ void SystemManager::publishTestResult(void)
 /***************************************************************************************************
  * 析构。
  **************************************************************************************************/
-SystemManager::SystemManager() ://申请一个动态的模块加载结果数组
+SystemManager::SystemManager() :  //申请一个动态的模块加载结果数组
     d_ptr(new SystemManagerPrivate())
 {
     // 打开背光灯文件描述符
@@ -1001,7 +1030,7 @@ SystemManager::SystemManager() ://申请一个动态的模块加载结果数组
 
 #ifdef Q_WS_QWS
     int val = 0;
-    systemConfig.getNumValue("General|TouchScreen", val);
+    machineConfig.getNumValue("TouchEnable", val);
     setTouchScreenOnOff(val);
 #endif
 
@@ -1026,6 +1055,11 @@ SystemManager &SystemManager::getInstance()
     if (instance == NULL)
     {
         instance = new SystemManager();
+        SystemManagerInterface *old = registerSystemManager(instance);
+        if (old)
+        {
+            delete old;
+        }
     }
     return *instance;
 }

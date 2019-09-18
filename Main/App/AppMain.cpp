@@ -18,6 +18,7 @@
 #include "ErrorLogItem.h"
 #include "LayoutManager.h"
 #include <unistd.h>
+#include "ConfigManager.h"
 
 static IThread *_storageThread = NULL;
 static QThread *_networkThread = NULL;
@@ -47,7 +48,7 @@ static void _taskOneSec2(void)
     }
     else
     {
-        sysStatusBar.changeIcon(SYSTEM_ICON_LABEL_USB, SYSTEM_ICON_USB_CONNECTED);
+        sysStatusBar.changeIcon(SYSTEM_ICON_LABEL_USB, SYSTEM_ICON_USB_CONNECTED, true);
     }
 }
 
@@ -103,7 +104,7 @@ static void _task50MSec(void)
         return;
     }
 
-    // 数据收集
+    // 数据收集  收集数据时候应该标为上一秒，如果有新的事件触发会触发收集数据并定义为当前秒数
     trendCache.collectTrendData(t);
 
     /*
@@ -159,7 +160,7 @@ static void _storageThreadEntry(void)
 
     if (!systemManager.isGoingToTrunOff())
     {
-        rawDataCollector.run();
+//        rawDataCollector.run();
     }
 
     if (!systemManager.isGoingToTrunOff())

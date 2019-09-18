@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2019/3/22
+ **/
+
 #pragma once
 #include "AlarmParamIFace.h"
 #include "ECGSymbol.h"
@@ -6,15 +16,7 @@
 class ECGDupLimitAlarm : public AlarmLimitIFace
 {
 public:
-    static ECGDupLimitAlarm &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new ECGDupLimitAlarm();
-        }
-        return *_selfObj;
-    }
-    static ECGDupLimitAlarm *_selfObj;
+    ECGDupLimitAlarm();
 
 public:
     // 报警源的名字。
@@ -57,10 +59,8 @@ public:
     virtual void notifyAlarm(int id, bool isAlarm);
 
     // 构造与析构。
-    ECGDupLimitAlarm();
     virtual ~ECGDupLimitAlarm();
 
 private:
     bool _isAlarmLimit;
 };
-#define ecgDupLimitAlarm (ECGDupLimitAlarm::construction())

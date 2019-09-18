@@ -20,6 +20,7 @@
 #include <unistd.h>
 #include <QTimer>
 #include "IConfig.h"
+#include "ConfigManager.h"
 #include <QThread>
 #include "NightModeManager.h"
 
@@ -117,7 +118,7 @@ public:
     {
         switch (soundType)
         {
-        case SoundManager::SOUND_TYPE_KEY_PRESS:
+        case SoundManager::SOUND_TYPE_NOTIFICATION:
             return SOUND_DIR"key.wav";
         case SoundManager::SOUND_TYPE_ERROR:
             return SOUND_DIR"error.wav";
@@ -193,7 +194,7 @@ public:
             v = 70;
             break;
         case SoundManager::VOLUME_LEV_2:
-            v = 75;
+            v = 78;
             break;
         case SoundManager::VOLUME_LEV_3:
             v = 80;
@@ -216,7 +217,7 @@ public:
      * @param soundType sound type
      * @param specType specify wav file type
      */
-    void playSound(SoundManager::SoundType soundType, unsigned short specType = 0)
+    void playSound(SoundManager::SoundType soundType, unsigned short specType = 0, bool isForceUpdate = false)
     {
         WavFile *wav = wavFiles.value(key(soundType, specType));
         if (wav == NULL)
@@ -239,7 +240,7 @@ public:
 
         if (player->isPlaying())
         {
-            if (curSoundType > soundType)
+            if (curSoundType > soundType && !isForceUpdate)
             {
                 // or has high priority sound playing, don't play
                 return;
@@ -347,13 +348,18 @@ SoundManager &SoundManager::getInstance()
     if (instance == NULL)
     {
         instance = new SoundManager();
+        SoundManagerInterface *old = registerSoundManager(instance);
+        if (old)
+        {
+            delete old;
+        }
     }
     return *instance;
 }
 
 void SoundManager::keyPressTone()
 {
-    d_ptr->playSound(SOUND_TYPE_KEY_PRESS);
+    d_ptr->playSound(SOUND_TYPE_NOTIFICATION);
 }
 
 void SoundManager::errorTone()
@@ -433,23 +439,21 @@ void SoundManager::updateAlarm(bool hasAlarm, AlarmPriority curHighestPriority)
     {
         if (d_ptr->almTimer->interval() != d_ptr->alarmInterval[curHighestPriority])
         {
-            // play different alarm level sound
             d_ptr->almTimer->stop();
-
-            // stop the current playing sound
-            if (d_ptr->player->isPlaying())
-            {
-                QMetaObject::invokeMethod(d_ptr->player, "stop");
-            }
-
-            // paly the new alarm level
-            d_ptr->playSound(SOUND_TYPE_ALARM, curHighestPriority);
+            d_ptr->almTimer->start(d_ptr->alarmInterval[curHighestPriority]);
+            d_ptr->playSound(SOUND_TYPE_ALARM, curHighestPriority, true);
         }
     }
 }
 
 void SoundManager::setVolume(SoundManager::SoundType type, SoundManager::VolumeLevel lev)
 {
+    int nibpCompleteToneStatus = true;
+    systemConfig.getNumValue("PrimaryCfg|NIBP|CompleteTone", nibpCompleteToneStatus);
+    if (type == SOUND_TYPE_NOTIFICATION && nibpCompleteToneStatus)
+    {
+        d_ptr->soundVolumes[SOUND_TYPE_NIBP_COMPLETE] = lev;
+    }
     d_ptr->soundVolumes[type] = lev;
 }
 
@@ -475,6 +479,18 @@ void SoundManager::stopHandlingSound(bool enable)
     }
 }
 
+void SoundManager::setNIBPCompleteTone(bool status)
+{
+    if (status)
+    {
+        setVolume(SOUND_TYPE_NIBP_COMPLETE, d_ptr->soundVolumes[SOUND_TYPE_NOTIFICATION]);
+    }
+    else
+    {
+        setVolume(SOUND_TYPE_NIBP_COMPLETE, VOLUME_LEV_0);
+    }
+}
+
 void SoundManager::alarmTimeout()
 {
     if (!d_ptr->almTimer)
@@ -482,6 +498,11 @@ void SoundManager::alarmTimeout()
         return;
     }
 
+    // 如果当前报警时间间隔和当前最高报警等级不一致，则刷新高级间隔
+    if (d_ptr->almTimer->interval() != d_ptr->alarmInterval[d_ptr->curAlarmPriority])
+    {
+        d_ptr->almTimer->setInterval(d_ptr->alarmInterval[d_ptr->curAlarmPriority]);
+    }
     d_ptr->playSound(SOUND_TYPE_ALARM, d_ptr->curAlarmPriority);
 }
 
@@ -490,7 +511,7 @@ void SoundManager::volumeInit()
     int alarmVolume = VOLUME_LEV_3;
     int keyVolume = VOLUME_LEV_3;
     int qrsVolume = VOLUME_LEV_3;
-    int nibpVolume = VOLUME_LEV_0;
+    int nibpVolumeFlag = 0;
 
     if (nightModeManager.nightMode())
     {
@@ -505,11 +526,20 @@ void SoundManager::volumeInit()
         currentConfig.getNumValue("ECG|QRSVolume", qrsVolume);
     }
 
-    systemConfig.getNumValue("PrimaryCfg|NIBP|CompleteTone", nibpVolume);
+    systemConfig.getNumValue("PrimaryCfg|NIBP|CompleteTone", nibpVolumeFlag);
     d_ptr->soundVolumes[SOUND_TYPE_ALARM] = static_cast<VolumeLevel>(alarmVolume);
-    d_ptr->soundVolumes[SOUND_TYPE_KEY_PRESS] = static_cast<VolumeLevel>(keyVolume);
+    d_ptr->soundVolumes[SOUND_TYPE_NOTIFICATION] = static_cast<VolumeLevel>(keyVolume);
     d_ptr->soundVolumes[SOUND_TYPE_HEARTBEAT] = static_cast<VolumeLevel>(qrsVolume);
-    d_ptr->soundVolumes[SOUND_TYPE_NIBP_COMPLETE] = static_cast<VolumeLevel>(nibpVolume);
+    d_ptr->soundVolumes[SOUND_TYPE_PULSE] = static_cast<VolumeLevel>(qrsVolume);
+    if (nibpVolumeFlag)
+    {
+        // nibp完成音属于提示音，要和按键提示音保持同样音量
+        d_ptr->soundVolumes[SOUND_TYPE_NIBP_COMPLETE] = static_cast<VolumeLevel>(keyVolume);
+    }
+    else
+    {
+        d_ptr->soundVolumes[SOUND_TYPE_NIBP_COMPLETE] = VOLUME_LEV_0;
+    }
 }
 
 void SoundManager::playFinished()

@@ -147,10 +147,14 @@ UnitType Param::getCurrentUnit(SubParamID /*id*/)
  * 功能： 构造。
  *************************************************************************************************/
 Param::Param(ParamID id)
-    : _paramID(id),
+    : paramUpdateTimer(NULL),
+      _paramID(id),
       _paramName(paramInfo.getParamName(id)),
       _isEnable(true)
 {
+    paramUpdateTimer = new QTimer(this);
+    paramUpdateTimer->setSingleShot(true);
+    connect(paramUpdateTimer, SIGNAL(timeout()), this, SLOT(paramUpdateTimeout()));
     connect(&colorManager, SIGNAL(paletteChanged(ParamID)),
             this, SLOT(onPaletteChanged(ParamID)));
 }

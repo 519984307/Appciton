@@ -19,8 +19,6 @@
 #include "Debug.h"
 #include "AlarmConfig.h"
 
-CO2LimitAlarm *CO2LimitAlarm::_selfObj = NULL;
-
 /**************************************************************************************************
  * 报警源的名字。
  *************************************************************************************************/
@@ -129,12 +127,12 @@ int CO2LimitAlarm::getCompare(int value, int id)
     QString valueStr;
     if (curUnit == UNIT_MMHG)
     {
-        int low = limitConfig.lowLimit;
-        int high = limitConfig.highLimit;
+        int low = limitConfig.lowLimit * limitConfig.scale;
+        int high = limitConfig.highLimit * limitConfig.scale;
         int v = 0;
-        valueStr = Unit::convert(curUnit, defUnit, value, co2Param.getBaro());
+        float v1 = value * 1.0 / mul;
+        valueStr = Unit::convert(curUnit, defUnit, v1, co2Param.getBaro());
         v = valueStr.toInt();
-        v /= mul;
         if (0 == id % 2)
         {
             return v < low ? -1 : 0;
@@ -238,8 +236,6 @@ CO2LimitAlarm::~CO2LimitAlarm()
 /**************************************************************************************************
  *************************************************************************************************/
 
-CO2OneShotAlarm *CO2OneShotAlarm::_selfObj = NULL;
-
 /**************************************************************************************************
  * 报警源的名字。
  *************************************************************************************************/
@@ -276,7 +272,7 @@ WaveformID CO2OneShotAlarm::getWaveformID(int id)
 SubParamID CO2OneShotAlarm::getSubParamID(int id)
 {
     Q_UNUSED(id)
-    return SUB_PARAM_NONE;
+    return SUB_PARAM_ETCO2;
 }
 
 /**************************************************************************************************
@@ -289,7 +285,7 @@ AlarmPriority CO2OneShotAlarm::getAlarmPriority(int id)
         return ALARM_PRIO_HIGH;
     }
 
-    if (id == CO2_ONESHOT_ALARM_ZEROING_COMPLETED)
+    if (id == CO2_ONESHOT_ALARM_ZEROING_COMPLETED || id == CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS)
     {
         return ALARM_PRIO_PROMPT;
     }
@@ -339,7 +335,8 @@ const char *CO2OneShotAlarm::toString(int id)
  *************************************************************************************************/
 bool CO2OneShotAlarm::isAlarmEnable(int id)
 {
-    if (id == CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS)
+    if (id == CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS ||
+            id == CO2_ONESHOT_ALARM_STANDBY)
     {
         return true;
     }
@@ -350,7 +347,7 @@ bool CO2OneShotAlarm::isAlarmEnable(int id)
         v = co2Param.getAwRRSwitch();
     }
 
-    return (static_cast<bool>(v) && co2Param.isEnabled());
+    return (static_cast<bool>(v) && co2Param.isEnabled() && co2Param.getCO2Switch());
 }
 
 /**************************************************************************************************
@@ -358,9 +355,14 @@ bool CO2OneShotAlarm::isAlarmEnable(int id)
  *************************************************************************************************/
 bool CO2OneShotAlarm::isAlarmed(int id)
 {
-    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO && getAlarmType(id) == ALARM_TYPE_TECH)
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
     {
         return false;
+    }
+
+    if (id == CO2_ONESHOT_ALARM_STANDBY)
+    {
+        return AlarmOneShotIFace::isAlarmed(id);
     }
 
     if (id != CO2_ONESHOT_ALARM_APNEA)

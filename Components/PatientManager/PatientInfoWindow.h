@@ -9,22 +9,14 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "PatientInfoWindowInterface.h"
 
 class PatientInfoWindowPrivate;
-class PatientInfoWindow : public Window
+class PatientInfoWindow : public PatientInfoWindowInterface
 {
     Q_OBJECT
 public:
-    static PatientInfoWindow &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new PatientInfoWindow();
-        }
-        return *_selfObj;
-    }
-    static PatientInfoWindow *_selfObj;
+    static PatientInfoWindow &getInstance(void);
     ~PatientInfoWindow();
 
 private slots:
@@ -72,7 +64,4 @@ private:
     PatientInfoWindowPrivate * const d_ptr;
 };
 
-#define patientInfoWindow (PatientInfoWindow::construction())
-#define deletePatientInfoWindow() (delete PatientInfoWindow::_selfObj)
-
-
+#define patientInfoWindow (PatientInfoWindow::getInstance())

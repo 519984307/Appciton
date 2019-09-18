@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>System.Original.xml</file>
+        <file>AdultConfig.Original.xml</file>
+    </qresource>
+</RCC>

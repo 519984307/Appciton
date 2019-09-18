@@ -24,7 +24,7 @@ public:
         Type = 2
     };
 
-    explicit ContinuousPageGenerator(unsigned curTime, QObject *parent = 0);
+    explicit ContinuousPageGenerator(QObject *parent = 0);
     ~ContinuousPageGenerator();
 
     /* override */

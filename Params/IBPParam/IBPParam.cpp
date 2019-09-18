@@ -14,11 +14,12 @@
 #include "TimeDate.h"
 #include "TrendTableWindow.h"
 #include "WaveformCache.h"
-#include "IConfig.h"
+#include "ConfigManager.h"
 #include "IBPDefine.h"
 #include "LayoutManager.h"
 #include "ECGDupParam.h"
 #include "IBPAlarm.h"
+#include "AlarmSourceManager.h"
 
 IBPParam *IBPParam::_selfObj = NULL;
 
@@ -967,6 +968,12 @@ void IBPParam::setCalibration(IBPSignalInput IBP, unsigned short value)
  *************************************************************************************************/
 void IBPParam::calibrationInfo(IBPCalibration calib, IBPSignalInput IBP, int calibinfo)
 {
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_IBP);
+    if (alarmSource == NULL)
+    {
+        return;
+    }
+
     if (calib == IBP_CALIBRATION_ZERO)
     {
         if (IBP == IBP_INPUT_1)
@@ -976,28 +983,28 @@ void IBPParam::calibrationInfo(IBPCalibration calib, IBPSignalInput IBP, int cal
             {
             case IBP_ZERO_SUCCESS:
             {
-                ibpOneShotAlarm.setOneShotAlarm(IBP1_ZERO_SUCCESS, true);
+                alarmSource->setOneShotAlarm(IBP1_ZERO_SUCCESS, true);
                 _trendWidgetIBP1->setZeroFlag(true);
                 break;
             }
             case IBP_ZERO_IS_PULSE:
             {
-                ibpOneShotAlarm.setOneShotAlarm(IBP1_ZERO_IS_PULSE, true);
+                alarmSource->setOneShotAlarm(IBP1_ZERO_IS_PULSE, true);
                 break;
             }
             case IBP_ZERO_BEYOND_RANGE:
             {
-                ibpOneShotAlarm.setOneShotAlarm(IBP1_ZERO_BEYOND_RANGE, true);
+                alarmSource->setOneShotAlarm(IBP1_ZERO_BEYOND_RANGE, true);
                 break;
             }
             case IBP_ZERO_FAIL:
             {
-                ibpOneShotAlarm.setOneShotAlarm(IBP1_ZERO_FAIL, true);
+                alarmSource->setOneShotAlarm(IBP1_ZERO_FAIL, true);
                 break;
             }
             case IBP_ZERO_NOT_SET_TIME:
             {
-                ibpOneShotAlarm.setOneShotAlarm(IBP1_ZERO_NOT_SET_TIME, true);
+                alarmSource->setOneShotAlarm(IBP1_ZERO_NOT_SET_TIME, true);
                 break;
             }
             default:
@@ -1013,28 +1020,28 @@ void IBPParam::calibrationInfo(IBPCalibration calib, IBPSignalInput IBP, int cal
             {
             case IBP_ZERO_SUCCESS:
             {
-                ibpOneShotAlarm.setOneShotAlarm(IBP2_ZERO_SUCCESS, true);
+                alarmSource->setOneShotAlarm(IBP2_ZERO_SUCCESS, true);
                 _trendWidgetIBP2->setZeroFlag(true);
                 break;
             }
             case IBP_ZERO_IS_PULSE:
             {
-                ibpOneShotAlarm.setOneShotAlarm(IBP2_ZERO_IS_PULSE, true);
+                alarmSource->setOneShotAlarm(IBP2_ZERO_IS_PULSE, true);
                 break;
             }
             case IBP_ZERO_BEYOND_RANGE:
             {
-                ibpOneShotAlarm.setOneShotAlarm(IBP2_ZERO_BEYOND_RANGE, true);
+                alarmSource->setOneShotAlarm(IBP2_ZERO_BEYOND_RANGE, true);
                 break;
             }
             case IBP_ZERO_FAIL:
             {
-                ibpOneShotAlarm.setOneShotAlarm(IBP2_ZERO_FAIL, true);
+                alarmSource->setOneShotAlarm(IBP2_ZERO_FAIL, true);
                 break;
             }
             case IBP_ZERO_NOT_SET_TIME:
             {
-                ibpOneShotAlarm.setOneShotAlarm(IBP2_ZERO_NOT_SET_TIME, true);
+                alarmSource->setOneShotAlarm(IBP2_ZERO_NOT_SET_TIME, true);
                 break;
             }
             default:
@@ -1056,32 +1063,32 @@ void IBPParam::calibrationInfo(IBPCalibration calib, IBPSignalInput IBP, int cal
             {
             case IBP_CALIBRATION_SUCCESS:
             {
-                ibpOneShotAlarm.setOneShotAlarm(IBP1_CALIB_SUCCESS, true);
+                alarmSource->setOneShotAlarm(IBP1_CALIB_SUCCESS, true);
                 break;
             }
             case IBP_CALIBRATION_IS_PULSE:
             {
-                ibpOneShotAlarm.setOneShotAlarm(IBP1_CALIB_IS_PULSE, true);
+                alarmSource->setOneShotAlarm(IBP1_CALIB_IS_PULSE, true);
                 break;
             }
             case IBP_CALIBRATION_BEYOND_RANGE:
             {
-                ibpOneShotAlarm.setOneShotAlarm(IBP1_CALIB_BEYOND_RANGE, true);
+                alarmSource->setOneShotAlarm(IBP1_CALIB_BEYOND_RANGE, true);
                 break;
             }
             case IBP_CALIBRATION_NOT_ZERO:
             {
-                ibpOneShotAlarm.setOneShotAlarm(IBP1_CALIB_NOT_ZERO, true);
+                alarmSource->setOneShotAlarm(IBP1_CALIB_NOT_ZERO, true);
                 break;
             }
             case IBP_CALIBRATION_FAIL:
             {
-                ibpOneShotAlarm.setOneShotAlarm(IBP1_CALIB_FAIL, true);
+                alarmSource->setOneShotAlarm(IBP1_CALIB_FAIL, true);
                 break;
             }
             case IBP_CALIBRATION_NOT_SET_TIME:
             {
-                ibpOneShotAlarm.setOneShotAlarm(IBP1_CALIB_NOT_SET_TIME, true);
+                alarmSource->setOneShotAlarm(IBP1_CALIB_NOT_SET_TIME, true);
                 break;
             }
             default:
@@ -1096,32 +1103,32 @@ void IBPParam::calibrationInfo(IBPCalibration calib, IBPSignalInput IBP, int cal
             {
             case IBP_CALIBRATION_SUCCESS:
             {
-                ibpOneShotAlarm.setOneShotAlarm(IBP2_CALIB_SUCCESS, true);
+                alarmSource->setOneShotAlarm(IBP2_CALIB_SUCCESS, true);
                 break;
             }
             case IBP_CALIBRATION_IS_PULSE:
             {
-                ibpOneShotAlarm.setOneShotAlarm(IBP2_CALIB_IS_PULSE, true);
+                alarmSource->setOneShotAlarm(IBP2_CALIB_IS_PULSE, true);
                 break;
             }
             case IBP_CALIBRATION_BEYOND_RANGE:
             {
-                ibpOneShotAlarm.setOneShotAlarm(IBP2_CALIB_BEYOND_RANGE, true);
+                alarmSource->setOneShotAlarm(IBP2_CALIB_BEYOND_RANGE, true);
                 break;
             }
             case IBP_CALIBRATION_NOT_ZERO:
             {
-                ibpOneShotAlarm.setOneShotAlarm(IBP2_CALIB_NOT_ZERO, true);
+                alarmSource->setOneShotAlarm(IBP2_CALIB_NOT_ZERO, true);
                 break;
             }
             case IBP_CALIBRATION_FAIL:
             {
-                ibpOneShotAlarm.setOneShotAlarm(IBP2_CALIB_FAIL, true);
+                alarmSource->setOneShotAlarm(IBP2_CALIB_FAIL, true);
                 break;
             }
             case IBP_CALIBRATION_NOT_SET_TIME:
             {
-                ibpOneShotAlarm.setOneShotAlarm(IBP2_CALIB_NOT_SET_TIME, true);
+                alarmSource->setOneShotAlarm(IBP2_CALIB_NOT_SET_TIME, true);
                 break;
             }
             default:
@@ -1588,9 +1595,14 @@ bool IBPParam::getIBPLeadOff(IBPSignalInput ibp)
 
 void IBPParam::clearCalibAlarm()
 {
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_IBP);
+    if (alarmSource == NULL)
+    {
+        return;
+    }
     for (int id = IBP1_ZERO_SUCCESS; id < IBP_ONESHOT_NR; id++)
     {
-        ibpOneShotAlarm.setOneShotAlarm(id, false);
+        alarmSource->setOneShotAlarm(id, false);
     }
 }
 

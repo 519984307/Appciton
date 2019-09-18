@@ -14,6 +14,7 @@
 #include "MenuGroup.h"
 #include "NIBPProviderIFace.h"
 #include "NIBPServiceStateDefine.h"
+#include "NIBPMonitorStateDefine.h"
 #include "NIBPState.h"
 #include "IMessageBox.h"
 #include "MessageBox.h"
@@ -21,11 +22,8 @@
 #define InvStr() ("---")
 
 class QLabel;
-class IListWidget;
 class QStackedWidget;
 class SubMenu;
-class QScrollArea;
-class IButton;
 class NIBPRepairMenuManager : public MenuGroup
 {
     Q_OBJECT
@@ -60,6 +58,9 @@ public:
     // 获取维护模式是否错误
     bool getRepairError(void);
 
+    void setMonitorState(NIBPMonitorStateID id);
+    NIBPMonitorStateID getMonitorState(void);
+
 signals:
     void foucsChange();
 
@@ -85,5 +86,6 @@ private:
 
     bool _replyFlag;                     //进入维护模式标志
     bool _repairError;                   //维护模式错误
+    NIBPMonitorStateID monitorState;
 };
 #define nibpRepairMenuManager (NIBPRepairMenuManager::Construation())

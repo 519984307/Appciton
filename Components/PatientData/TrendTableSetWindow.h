@@ -9,10 +9,10 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 
 class TrendTableSetWindowPrivate;
-class TrendTableSetWindow : public Window
+class TrendTableSetWindow : public Dialog
 {
     Q_OBJECT
 public:

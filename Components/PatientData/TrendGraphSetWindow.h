@@ -9,7 +9,7 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 #include <QScopedPointer>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -58,7 +58,7 @@ public:
 };
 
 class TrendGraphSetWindowPrivate;
-class TrendGraphSetWindow : public Window
+class TrendGraphSetWindow : public Dialog
 {
     Q_OBJECT
 public:

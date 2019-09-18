@@ -9,7 +9,8 @@
  **/
 
 #pragma once
-#include "LanguageManager.h"
+#include <QString>
+#include <typeinfo>
 
 enum UnitType
 {
@@ -61,11 +62,6 @@ public:
         return symbol[t];
     }
 
-    static QString localeSymbol(UnitType t)
-    {
-        return trs(getSymbol(t));
-    }
-
     // mmHg和%之间的换算公式如下：
     // (二氧化碳)mmHg = (二氧化碳浓度)*(来至ISA的大气压(KPa))*(750 / 100).
     // 若体积分数为srcVal%，当前气压值为baro百帕，因为1mmHg = 1/7.5 KPa,则srcVal%转换成KPa为：
@@ -76,8 +72,16 @@ public:
     static inline QString convert(UnitType destUnit, UnitType srcUnit,
                                   const T2 &srcVal, const float &baro = 1013)
     {
-        QString destVal = QString::number(srcVal);
-
+        QString destVal;
+        if (strcmp(typeid(srcVal).name(), "f") == 0 || strcmp(typeid(srcVal).name(), "d") == 0)
+        {
+            // float或者double类型时,默认显示一位小数
+            destVal = QString::number(srcVal, 'f', 1);
+        }
+        else
+        {
+            destVal = QString::number(srcVal);
+        }
         // % <---> mmHg
         if ((destUnit == UNIT_PERCENT) && (srcUnit == UNIT_MMHG))
         {

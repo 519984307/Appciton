@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Invalid1.xml</file>
+        <file>ValidConfig.xml</file>
+    </qresource>
+</RCC>

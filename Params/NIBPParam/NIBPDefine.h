@@ -113,6 +113,7 @@ enum NIBPOneShotType
     NIBP_ONESHOT_ALARM_COMMUNICATION_STOP,        // 模块通信连接错误。
     NIBP_ONESHOT_ALARM_COMMUNICATION_TIMEOUT,     // 模块通信超时。
     NIBP_ONESHOT_ALARM_MODULE_DISABLE,            // 模块禁用。
+    NIBP_ONESHOT_ALARM_SEND_COMMUNICATION_STOP,             // 发送通信中断
     NIBP_ONESHOT_NR,
 };
 

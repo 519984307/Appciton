@@ -24,6 +24,9 @@
 #include "SystemTick.h"
 #include <QDateTime>
 #include "PatientManager.h"
+#include "NIBPCountdownTime.h"
+#include "NIBPParam.h"
+#include "TrendDataStorageManager.h"
 
 class TimeEditWindowPrivate
 {
@@ -60,6 +63,11 @@ public:
      * @return
      */
     QDateTime getSetupTime();
+
+    /**
+     * @brief updateHourItem
+     */
+    void updateHourItem();
 
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, SpinBox *> spinBoxs;
@@ -105,8 +113,36 @@ QDateTime TimeEditWindowPrivate::getSetupTime()
     return dt;
 }
 
+void TimeEditWindowPrivate::updateHourItem()
+{
+    QStringList hourList;
+    TimeFormat timeFormat = static_cast<TimeFormat>(combos[ITEM_CBO_TIME_FORMAT]->currentIndex());
+    if (timeFormat == TIME_FORMAT_12)
+    {
+        // 设置时间的字符串列表 12AM-11AM 12PM-11PM
+        hourList.append("12 AM");
+        for (int i = 1; i < 12; i++)
+        {
+            hourList.append(QString("%1 AM").arg(QString::number(i)));
+        }
+        hourList.append("12 PM");
+        for (int i = 1; i < 12; i++)
+        {
+            hourList.append(QString("%1 PM").arg(QString::number(i)));
+        }
+
+        spinBoxs[ITEM_SPB_HOUR]->setSpinBoxStyle(SpinBox::SPIN_BOX_STYLE_STRING);
+        spinBoxs[ITEM_SPB_HOUR]->setStringList(hourList);
+    }
+    else
+    {
+        spinBoxs[ITEM_SPB_HOUR]->setSpinBoxStyle(SpinBox::SPIN_BOX_STYLE_NUMBER);
+    }
+    spinBoxs[ITEM_SPB_HOUR]->update();
+}
+
 TimeEditWindow::TimeEditWindow()
-    : Window(),
+    : Dialog(),
       d_ptr(new TimeEditWindowPrivate)
 {
     layoutExec();
@@ -121,7 +157,7 @@ TimeEditWindow::~TimeEditWindow()
 void TimeEditWindow::readyShow()
 {
     d_ptr->loadOptions();
-
+    d_ptr->updateHourItem();
     bool timeEditable = systemManager.getCurWorkMode() != WORK_MODE_DEMO;
     for (int i = TimeEditWindowPrivate::ITEM_SPB_YEAR; i <= TimeEditWindowPrivate::ITEM_SPB_SECOND; i++ )
     {
@@ -284,12 +320,17 @@ void TimeEditWindow::hideEvent(QHideEvent *ev)
     QDateTime dt = d_ptr->getSetupTime();
     if (d_ptr->oldTime != dt.toTime_t())
     {
+        trendDataStorageManager.stopPeriodRun();
         d_ptr->setSysTime();
         systemTick.resetLastTime();
         patientManager.newPatient();
+        if (nibpParam.getMeasurMode() == NIBP_MODE_STAT)
+        {
+            nibpCountdownTime.timeChange(true);
+        }
+        trendDataStorageManager.restartPeriodRun();
     }
-    timeManager.roloadConfig();
-    Window::hideEvent(ev);
+    Dialog::hideEvent(ev);
 }
 
 void TimeEditWindow::onComboBoxIndexChanged(int index)
@@ -309,13 +350,32 @@ void TimeEditWindow::onComboBoxIndexChanged(int index)
             QMetaObject::invokeMethod(&systemManager,
                                       "systemTimeFormatUpdated",
                                       Q_ARG(TimeFormat, static_cast<TimeFormat>(index)));
+            d_ptr->updateHourItem();
             break;
         case TimeEditWindowPrivate::ITEM_CBO_DISPLAY_SEC:
             systemConfig.setNumValue("DateTime|DisplaySecond", index);
+            timeManager.roloadConfig();
             break;
         default:
             break;
         }
+    }
+
+    // 限制最小时间为1970-1-1 8:0:0
+    QDate curDate(d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_YEAR]->getValue(),
+               d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_MONTH]->getValue(),
+               d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getValue());
+    if (curDate == QDate(1970, 1, 1))
+    {
+        d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->setRange(8, 23);
+        if (d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->getValue() < 8)
+        {
+            d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->setValue(8);
+        }
+    }
+    else
+    {
+        d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->setRange(0, 23);
     }
 }
 
@@ -377,6 +437,23 @@ void TimeEditWindow::onSpinBoxValueChanged(int value, int scale)
             break;
         default:
             break;
+        }
+
+        // 限制最小时间为1970-1-1 8:0:0
+        QDate curDate(d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_YEAR]->getValue(),
+                   d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_MONTH]->getValue(),
+                   d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getValue());
+        if (curDate == QDate(1970, 1, 1))
+        {
+            d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->setRange(8, 23);
+            if (d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->getValue() < 8)
+            {
+                d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->setValue(8);
+            }
+        }
+        else
+        {
+            d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_HOUR]->setRange(0, 23);
         }
     }
 }

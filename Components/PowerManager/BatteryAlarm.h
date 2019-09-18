@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2019/3/22
+ **/
+
 #pragma once
 #include "AlarmParamIFace.h"
 
@@ -5,15 +15,7 @@
 class BatteryOneShotAlarm : public AlarmOneShotIFace
 {
 public:
-    static BatteryOneShotAlarm &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new BatteryOneShotAlarm();
-        }
-        return *_selfObj;
-    }
-    static BatteryOneShotAlarm *_selfObj;
+    BatteryOneShotAlarm();
 
 public:
     // 报警源的名字。
@@ -39,8 +41,4 @@ public:
 
     // 构造与析构。
     virtual ~BatteryOneShotAlarm();
-
-private:
-    BatteryOneShotAlarm();
 };
-#define batteryOneShotAlarm (BatteryOneShotAlarm::construction())

@@ -10,6 +10,13 @@
 
 #pragma once
 
+enum CO2ModuleType
+{
+    MODULE_BLM_CO2,
+    MODULE_MASIMO_CO2,
+    MODULE_CO2_NR
+};
+
 /**************************************************************************************************
  * CO2工作模式。
  *************************************************************************************************/
@@ -25,7 +32,6 @@ enum CO2WorkMode
  *************************************************************************************************/
 enum CO2ApneaTime
 {
-    CO2_APNEA_TIME_OFF,
     CO2_APNEA_TIME_20_SEC,
     CO2_APNEA_TIME_25_SEC,
     CO2_APNEA_TIME_30_SEC,
@@ -143,6 +149,13 @@ enum CO2Compensation
     CO2_COMPEN_NR
 };
 
+enum CO2DisableZeroReason
+{
+    CO2_ZERO_REASON_DISABLED,           // 校零失能
+    CO2_ZERO_REASON_IN_PROGRESS,        // 正在校零
+    CO2_ZERO_REASON_NO_ADAPTER          // 主流:没有适配器
+};
+
 /**************************************************************************************************
  * CO2显示放大系数。
  *************************************************************************************************/
@@ -150,7 +163,7 @@ enum CO2DisplayZoom
 {
     CO2_DISPLAY_ZOOM_4,
     CO2_DISPLAY_ZOOM_8,
-    CO2_DISPLAY_ZOOM_13,
+    CO2_DISPLAY_ZOOM_12,
     CO2_DISPLAY_ZOOM_20,
     CO2_DISPLAY_ZOOM_NR
 };
@@ -202,6 +215,7 @@ enum CO2OneShotType
     CO2_ONESHOT_ALARM_IR_O2_DELAY,
 
     CO2_ONESHOT_ALARM_ZEROING_COMPLETED,
+    CO2_ONESHOT_ALARM_STANDBY,
 
     CO2_ONESHOT_NR,
 };

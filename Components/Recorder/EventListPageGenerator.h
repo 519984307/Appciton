@@ -17,7 +17,7 @@ class EventListPageGenerator : public RecordPageGenerator
 {
     Q_OBJECT
 public:
-    explicit EventListPageGenerator(QStringList &eventList, QObject *parent = 0);
+    explicit EventListPageGenerator(QStringList &eventList, const PatientInfo &patientInfo, QObject *parent = 0);
     ~EventListPageGenerator();
 
 protected:

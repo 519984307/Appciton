@@ -12,7 +12,6 @@
 #include "LanguageManager.h"
 #include "IConfig.h"
 
-
 #define LOCALE_FILE_PATH "/usr/local/nPM/locale/"
 
 LanguageManager *LanguageManager::_selfObj = NULL;
@@ -25,8 +24,15 @@ LanguageManager::LanguageManager()
     // 获得当前使用的语言。
     int langNo = 0;
     systemConfig.getNumAttr("General|Language", "CurrentOption", langNo);
+    int langNext = 0 ;
+    systemConfig.getNumAttr("General|Language", "NextOption", langNext);
+    if (langNo != langNext)
+    {
+        systemConfig.setNumAttr("General|Language", "CurrentOption", langNext);
+        langNo = langNext;
+    }
 
-    _curLanguage = (LanguageName) langNo;
+    _curLanguage = (LanguageName)langNo;
 
     // 获取语言文件的名称。
     QString language = QString("General|Language|Opt%1").arg(langNo);
@@ -35,11 +41,6 @@ LanguageManager::LanguageManager()
     QString path =  LOCALE_FILE_PATH + language + ".xml";
 
     _xmlParser.open(path);
-
-    // 载入打印的翻译文件。
-    path = LOCALE_FILE_PATH;
-    path += "PrintEnglish.xml"; // todo:目前只支持英文。
-    _xmlPrintParser.open(path);
 }
 
 /**************************************************************************************************
@@ -101,49 +102,6 @@ QString LanguageManager::translate(const QString &id)
     return it.value();
 }
 
-/**************************************************************************************************
- * 功能：将用户给的索引字符串翻译成某种语种的字符串。
- * 参数：
- *      id：待翻译的字符串；
- * 返回值：翻译好的字符串。
- *************************************************************************************************/
-QString LanguageManager::translatePrint(const char *id)
-{
-    QString idStr = QString::fromLatin1(id);
-    LanguageMap::iterator it = _printLanguageMap.find(idStr);
-    if (_printLanguageMap.end() == it)
-    {
-        QString value;
-        bool ret = _xmlPrintParser.getValue(idStr, value);
-        if (!ret)
-        {
-//            debug("@@\t%s\t@@", id.toAscii().data());
-            return trs(id);
-        }
-        it = _printLanguageMap.insert(idStr, value);
-    }
-
-    return it.value();
-}
-
-QString LanguageManager::translatePrint(const QString &id)
-{
-    LanguageMap::iterator it = _printLanguageMap.find(id);
-    if (_printLanguageMap.end() == it)
-    {
-        QString value;
-        bool ret = _xmlPrintParser.getValue(id, value);
-        if (!ret)
-        {
-//            debug("@@\t%s\t@@", id.toAscii().data());
-            return trs(id);
-        }
-        it = _printLanguageMap.insert(id, value);
-    }
-
-    return it.value();
-}
-
 /***************************************************************************************************
  * get the current language name
  **************************************************************************************************/
@@ -163,15 +121,22 @@ void LanguageManager::reload(int index)
         return;
     }
 
-    QString language = QString("Local|Language|Opt%1").arg(index);
+    if (index >= Language_NR)
+    {
+        // invaild input
+        index = 0;
+    }
 
-    bool ret = currentConfig.getStrAttr(language, "XmlFileName", language);
+    QString language = QString("General|Language|Opt%1").arg(index);
+
+    bool ret = systemConfig.getStrAttr(language, "XmlFileName", language);
     if (!ret)
     {
         return;
     }
     QString path =  LOCALE_FILE_PATH + language + ".xml";
 
+    _curLanguage = static_cast<LanguageName>(index);
     _xmlParser.open(path);
     _languageMap.clear();
 }

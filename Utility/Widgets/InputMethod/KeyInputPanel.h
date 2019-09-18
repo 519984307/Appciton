@@ -8,11 +8,11 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/7/26
  **/
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 #include <QLineEdit>
 
 class KeyInputPanelPrivate;
-class KeyInputPanel: public Window
+class KeyInputPanel: public Dialog
 {
     Q_OBJECT
 
@@ -120,6 +120,11 @@ private slots:
      * @brief onKeyClicked
      */
     void onKeyClicked();
+
+    /**
+     * @brief onBlankClicked blank clicked
+     */
+    void onBlankClicked();
     /**
      * @brief ClickedKey
      * @param key

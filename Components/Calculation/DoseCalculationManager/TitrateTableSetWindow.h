@@ -8,11 +8,11 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/1
  **/
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 
 
 class TitrateTableSetWindowPrivate;
-class TitrateTableSetWindow : public Window
+class TitrateTableSetWindow : public Dialog
 {
     Q_OBJECT
 public:

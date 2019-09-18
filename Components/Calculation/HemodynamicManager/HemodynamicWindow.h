@@ -8,10 +8,10 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/7
  **/
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 
 class HemodynamicWindowPrivate;
-class HemodynamicWindow : public Window
+class HemodynamicWindow : public Dialog
 {
     Q_OBJECT
 public:

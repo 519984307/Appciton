@@ -94,7 +94,7 @@ void CalculateWindow::onBtnReleased()
 }
 
 CalculateWindow::CalculateWindow()
-               : Window(),
+               : Dialog(),
                  d_ptr(new CalculateWindowPrivate)
 {
     layoutExec();

@@ -10,10 +10,10 @@
 
 #pragma once
 #include "StorageManager.h"
-#include "EventDataDefine.h"
+#include "EventStorageManagerInterface.h"
 
 class EventStorageManagerPrivate;
-class EventStorageManager : public StorageManager
+class EventStorageManager : public StorageManager, public EventStorageManagerInterface
 {
     Q_OBJECT
 public:
@@ -71,6 +71,11 @@ public:
      * @return the alarm message
      */
     QString getPhyAlarmMessage(ParamID paramId, int alarmType, bool isOneShot);
+
+    /**
+     * @brief clearEventItemList 清空当前存储事件列表
+     */
+    virtual void clearEventItemList();
 
 protected:
     /*reimplement*/

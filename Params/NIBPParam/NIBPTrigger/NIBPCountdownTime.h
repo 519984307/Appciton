@@ -10,26 +10,19 @@
 
 #pragma once
 #include "NIBPState.h"
+#include "NIBPCountdownTimeInterface.h"
 #include <QTime>
 
 #define STAT_Time    300       // STAT连续测量时间
 #define AUTO_TIME    300       // 自动测量时间
 
 class QTimer;
-class NIBPCountdownTime : public QObject
+class NIBPCountdownTime : public QObject , public NIBPCountdownTimeInterface
 {
     Q_OBJECT
 
 public:
-    static NIBPCountdownTime &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new NIBPCountdownTime();
-        }
-        return *_selfObj;
-    }
-    static NIBPCountdownTime *_selfObj;
+    static NIBPCountdownTime &getInstance(void);
     ~NIBPCountdownTime();
 
 public:
@@ -45,7 +38,9 @@ public:
     void STATMeasureStart(void);
     void STATMeasureStop(void);
     bool isSTATMeasureTimeout(void);
+    void setSTATMeasureTimeout(bool flag);
     int STATMeasureElapseTime(void);
+    void timeChange(bool flag);
 
 private slots:
     void _autoMeasureTimeout(void);
@@ -66,6 +61,6 @@ private:
 
     int _STATTime;                // STAT倒计时时间
     int _STATElapseTime;          // STAT计时器时间
+    bool _timeChangeFlag;         // 系统时钟改变标志
 };
-#define nibpCountdownTime (NIBPCountdownTime::construction())
-#define deleteNIBPCountdownTime() (delete NIBPCountdownTime::_selfObj)
+#define nibpCountdownTime (NIBPCountdownTime::getInstance())

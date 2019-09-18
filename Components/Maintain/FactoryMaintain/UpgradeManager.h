@@ -11,6 +11,7 @@
 #pragma once
 #include <QObject>
 #include "BLMProvider.h"
+#include "BLMCO2Provider.h"
 
 class UpgradeManagerPrivate;
 class UpgradeManager : public QObject, public BLMProviderUpgradeIface
@@ -24,7 +25,10 @@ public:
         UPGRADE_MOD_E5,
         UPGRADE_MOD_S5,
         UPGRADE_MOD_N5,
+        UPGRADE_MOD_N5DAEMON,
         UPGRADE_MOD_T5,
+        UPGRADE_MOD_CO2,
+        UPGRADE_MOD_NEONATE,
         UPGRADE_MOD_PRT48,
         UPGRADE_MOD_nPMBoard,
         UPGRADE_MOD_LOGO,
@@ -59,11 +63,25 @@ public:
     /* reimplement */
     void handlePacket(unsigned char *data, int len);
 
+    /**
+     * @brief enterPassthroughMode 切换透传模式成功后进入升级
+     */
+    void n5DaemonEnterUpgradeMode();
+
+    /**
+     * @brief exitPassthroughMode N5Daemon退出升级
+     */
+    void n5DaemonExitUpgradeMode();
+
 signals:
     void upgradeResult(UpgradeManager::UpgradeResult result);
     void upgradeInfoChanged(const QString &info);
     void upgradeProgressChanged(int value);
     void reboot();
+    /**
+     * @brief upgradeT5ModuleCompleted  and the signal of upgrading the T5 module when completed
+     */
+    void upgradeT5ModuleCompleted();
 
 private slots:
     /**

@@ -62,18 +62,6 @@ public:
         else
         {
             int is12LInt = is12L ? 1 : 0;
-            static const char *symbol[ECG_CONVENTION_NR][ECG_LEAD_NR] =
-            {
-                {
-                    "I",  "II", "III", "aVR", "aVL", "aVF",
-                    "V1", "V2",  "V3", "V4",  "V5",  "V6"
-                },
-
-                {
-                    "I",  "II", "III", "aVR", "aVL", "aVF",
-                    "C1", "C2",  "C3", "C4",  "C5",  "C6"
-                }
-            };
             if (!is12LInt && index >= ECG_LEAD_V1)
             {
                 if (convention == ECG_CONVENTION_AAMI)
@@ -87,6 +75,18 @@ public:
             }
             else
             {
+                static const char *symbol[ECG_CONVENTION_NR][ECG_LEAD_NR] =
+                {
+                    {
+                        "I",  "II", "III", "aVR", "aVL", "aVF",
+                        "V1", "V2",  "V3", "V4",  "V5",  "V6"
+                    },
+
+                    {
+                        "I",  "II", "III", "aVR", "aVL", "aVF",
+                        "C1", "C2",  "C3", "C4",  "C5",  "C6"
+                    }
+                };
                 return symbol[convention][index];
             }
         }
@@ -96,7 +96,7 @@ public:
     {
         static const char *symbol[ECG_GAIN_NR] =
         {
-            "X0.125", "X0.25", "X0.5", "X1", "X2",  "X4", "AUTO"
+            "X0.125", "X0.25", "X0.5", "X1", "X2",  "X4", "Auto"
 //            "0.5 cm/mV", "1.0 cm/mV", "1.5 cm/mV", "2.0 cm/mV", "3.0 cm/mV", "AUTO"
         };
 
@@ -129,7 +129,7 @@ public:
         {
             "HR",
             "PR",
-            "AUTO",
+            "Auto",
         };
         return symbol[src];
     }
@@ -175,7 +175,7 @@ public:
     {
         static const char *symbol[ECG_NOTCH_NR] =
         {
-            "Off", "50Hz", "60Hz", "50&60Hz"
+            "Off", "50 Hz", "60 Hz", "50&60 Hz"
         };
 
         return symbol[index];
@@ -207,7 +207,8 @@ public:
             "ECGV4LeadOff",       "ECGV5LeadOff",
             "ECGV6LeadOff",       "ECG12LTransfersuccess",
             "ECG12LTransferfail", "ECGOverLoad",
-            "ECGCommunicationStop"
+            "ECGCommunicationStop",
+            "ECGSendCommunicationStop"
         };
 
 

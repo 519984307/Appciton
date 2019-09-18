@@ -45,7 +45,7 @@ public:
     void setCountdown(int t);
 
     // 单位更改。
-    void setUNit(UnitType unit);
+    void updateUnit(UnitType unit);
 
     // 是否报警
     void isAlarm(int id, bool flag);
@@ -71,6 +71,8 @@ public:
     QList<SubParamID> getShortTrendSubParams() const;
 public:
     virtual void doRestoreNormalStatus();
+
+    virtual void updatePalette(const QPalette &pal);
 
     /* reimplment */
     void updateWidgetConfig();

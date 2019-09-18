@@ -18,8 +18,6 @@
 #include "SystemManager.h"
 #include "AlarmConfig.h"
 
-ECGLimitAlarm *ECGLimitAlarm::_selfObj = NULL;
-
 /**************************************************************************************************
  * 报警源的名字。
  *************************************************************************************************/
@@ -42,8 +40,7 @@ int ECGLimitAlarm::getAlarmSourceNR(void)
 WaveformID ECGLimitAlarm::getWaveformID(int id)
 {
     Q_UNUSED(id)
-    // todo:返回计算导联的ID
-    return WAVE_ECG_II;
+    return static_cast<WaveformID>(ecgParam.getCalcLead());
 }
 
 /**************************************************************************************************
@@ -135,8 +132,6 @@ ECGLimitAlarm::~ECGLimitAlarm()
 /**************************************************************************************************
  *************************************************************************************************/
 
-ECGOneShotAlarm *ECGOneShotAlarm::_selfObj = NULL;
-
 /**************************************************************************************************
  * 报警源的名字。
  *************************************************************************************************/
@@ -151,7 +146,7 @@ QString ECGOneShotAlarm::getAlarmSourceName(void)
  *************************************************************************************************/
 bool ECGOneShotAlarm::isAlarmed(int id)
 {
-    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO && getAlarmType(id) == ALARM_TYPE_TECH)
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
     {
         return false;
     }
@@ -190,7 +185,6 @@ bool ECGOneShotAlarm::isAlarmed(int id)
         }
         }
     }
-
     return AlarmOneShotIFace::isAlarmed(id);
 }
 
@@ -263,21 +257,9 @@ bool ECGOneShotAlarm::isNeedRemove(int id)
  *************************************************************************************************/
 void ECGOneShotAlarm::notifyAlarm(int id, bool isAlarm)
 {
-    if ((id >= ECG_ONESHOT_ARR_ASYSTOLE) && (id <= ECG_ONESHOT_CHECK_PATIENT_ALARM))
+    if ((id >= ECG_ONESHOT_ARR_ASYSTOLE) && (id <= ECG_ONESHOT_ARR_VFIBVTAC))
     {
         _isPhyAlarm |= isAlarm;
-        if (id == ECG_ONESHOT_CHECK_PATIENT_ALARM)
-        {
-            ecgDupParam.isAlarm(_isPhyAlarm, false);
-
-            for (int i = ECG_LEAD_I; i < ECG_LEAD_NR; i++)
-            {
-                // 只有计算导联才显示check patient
-                ecgParam.updateECGNotifyMesg((ECGLead)i, i == ecgParam.getCalcLead() ? isAlarm : false);
-            }
-
-            _isPhyAlarm = false;
-        }
     }
 }
 
@@ -289,11 +271,6 @@ AlarmType ECGOneShotAlarm::getAlarmType(int id)
     if ((id >= ECG_ONESHOT_ARR_ASYSTOLE) && (id <= ECG_ONESHOT_ARR_VFIBVTAC))
     {
         return ALARM_TYPE_PHY;
-    }
-
-    if (id == ECG_ONESHOT_CHECK_PATIENT_ALARM)
-    {
-        return ALARM_TYPE_LIFE;
     }
 
     return ALARM_TYPE_TECH;
@@ -318,12 +295,6 @@ bool ECGOneShotAlarm::isAlarmEnable(int id)
         return alarmConfig.isLimitAlarmEnable(SUB_PARAM_HR_PR);
     }
 
-    if (id == ECG_ONESHOT_CHECK_PATIENT_ALARM)
-    {
-        return (alarmConfig.isLimitAlarmEnable(SUB_PARAM_HR_PR) &&
-                (patientManager.getType() != PATIENT_TYPE_NEO));
-    }
-
     return true;
 }
 
@@ -332,12 +303,18 @@ bool ECGOneShotAlarm::isAlarmEnable(int id)
  *************************************************************************************************/
 bool ECGOneShotAlarm::isRemoveAfterLatch(int id)
 {
-    if ((id <= ECG_ONESHOT_ALARM_OVERLOAD) && (id >= ECG_ONESHOT_ALARM_LEADOFF))
+    Q_UNUSED(id)
+    return false;
+}
+
+bool ECGOneShotAlarm::isRemoveLightAfterConfirm(int id)
+{
+    if (id >= ECG_ONESHOT_ALARM_LEADOFF && id <= ECG_ONESHOT_ALARM_OVERLOAD)
     {
-        return true;
+        return false;
     }
 
-    return false;
+    return true;
 }
 
 /**************************************************************************************************

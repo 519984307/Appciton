@@ -14,6 +14,7 @@
 #include "RescueDataDefine.h"
 #include "DataStorageDefine.h"
 #include <QObject>
+#include "DataStorageDirManagerInterface.h"
 
 struct FolderName
 {
@@ -56,20 +57,11 @@ struct FolderName
 
 //数据存储目录管理
 class StorageManager;
-class DataStorageDirManager : public QObject
+class DataStorageDirManager : public DataStorageDirManagerInterface
 {
     Q_OBJECT
 public:
-    static DataStorageDirManager &construction()
-    {
-        if (NULL == _selfObj)
-        {
-            _selfObj = new DataStorageDirManager();
-        }
-
-        return *_selfObj;
-    }
-    static DataStorageDirManager *_selfObj;
+    static DataStorageDirManager &getInstance();
     ~DataStorageDirManager();
 
     // 获取营救事件时间列表
@@ -84,7 +76,7 @@ public:
     void addStorage(StorageManager * storage);
 
     // 获取当前文件夹
-    QString getCurFolder() const;
+    virtual QString getCurFolder() const;
 
     // 获取FD文件名
     QString getFDFileName() const {return _fdFileName;}
@@ -116,12 +108,6 @@ public:
      */
     void cleanCurData();
 
-signals:
-    /**
-     * @brief newPatient 新建病人信号
-     */
-    void newPatient();
-
 private:
     DataStorageDirManager();
     int _deleteDir(const QString &path);
@@ -150,5 +136,5 @@ private:
 
     bool _createNew;
 };
-#define dataStorageDirManager (DataStorageDirManager::construction())
-#define deleteDataStorageDirManager() (delete DataStorageDirManager::_selfObj)
+#define dataStorageDirManager (DataStorageDirManager::getInstance())
+#define deleteDataStorageDirManager() (delete &(DataStorageDirManager::getInstance()))

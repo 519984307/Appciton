@@ -44,6 +44,11 @@ private slots:
      */
     void onSelectWaveChanged(const QString &waveName);
 
+    /**
+     * @brief onConnectedStatusChanged  and the slot function of provider`s connected status changed
+     */
+    void onConnectedStatusChanged();
+
 private:
     PrintSettingMenuContentPrivate *const d_ptr;
 };

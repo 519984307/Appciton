@@ -1,6 +1,18 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/3/7
+ **/
+
+
 #include "NIBPMonitorStartingState.h"
 #include "NIBPParam.h"
 #include "PatientManager.h"
+#include "NIBPCountdownTime.h"
 
 /**************************************************************************************************
  * 进入该状态。
@@ -13,7 +25,7 @@ void NIBPMonitorStartingState::enter(void)
 
     //清除显示的数据。
     nibpParam.invResultData();
-    nibpParam.setText(InvStr());
+    nibpParam.setCuffPressure(0);
 
     //清除标志位
     nibpParam.setSwitchFlagTime(false);
@@ -66,7 +78,7 @@ void NIBPMonitorStartingState::handleNIBPEvent(NIBPEvent event, const unsigned c
             else
             {
                 nibpParam.setSTATMeasure(true);
-                nibpCountdownTime.STATMeasureStart(); // 只测量5分钟。
+                nibpCountdownTime.STATMeasureStart();  // 只测量5分钟。
             }
             break;
         }
@@ -98,7 +110,6 @@ void NIBPMonitorStartingState::handleNIBPEvent(NIBPEvent event, const unsigned c
  *************************************************************************************************/
 NIBPMonitorStartingState::NIBPMonitorStartingState() : NIBPState(NIBP_MONITOR_STARTING_STATE)
 {
-//    _isWaiting = false;
 }
 
 /**************************************************************************************************
@@ -106,5 +117,4 @@ NIBPMonitorStartingState::NIBPMonitorStartingState() : NIBPState(NIBP_MONITOR_ST
  *************************************************************************************************/
 NIBPMonitorStartingState::~NIBPMonitorStartingState()
 {
-
 }

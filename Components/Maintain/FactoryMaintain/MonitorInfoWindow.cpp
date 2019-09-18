@@ -38,8 +38,7 @@ public:
         ITEM_BTN_ELEC_SERIALNUM,
     };
     MonitorInfoWindowPrivate()
-            : button(NULL),
-              timer(NULL)
+            : timer(NULL)
     {
     }
     /**
@@ -47,7 +46,6 @@ public:
      */
     void loadOptions();
     QMap <MenuItem, QLabel *> labs;
-    Button *button;
     QTimer *timer;
 };
 
@@ -57,7 +55,7 @@ MonitorInfoWindow::~MonitorInfoWindow()
 }
 
 MonitorInfoWindow::MonitorInfoWindow()
-    : Window(),
+    : Dialog(),
       d_ptr(new MonitorInfoWindowPrivate)
 {
     layoutExec();
@@ -78,7 +76,7 @@ void MonitorInfoWindowPrivate::loadOptions()
 
     tmpStr.clear();
     machineConfig.getStrValue("SerialNumber", tmpStr);
-    button->setText(tmpStr);
+    labs[ITEM_BTN_ELEC_SERIALNUM]->setText(tmpStr);
 
     tmpStr.clear();
     foreach(QNetworkInterface workInterface, QNetworkInterface::allInterfaces())
@@ -106,6 +104,7 @@ void MonitorInfoWindow::onTimeOutExec()
 {
     QString showtime = getRunTime();
     d_ptr->labs[MonitorInfoWindowPrivate::ITEM_LAB_CMLV_WORKTIME]->setText(showtime);
+    d_ptr->labs[MonitorInfoWindowPrivate::ITEM_LAB_BAT_CAPACITY]->setText(powerManger.getBatteryCapacity());
 }
 
 void MonitorInfoWindow::layoutExec()
@@ -114,12 +113,12 @@ void MonitorInfoWindow::layoutExec()
 
     QGridLayout *layout = new QGridLayout;
     layout->setVerticalSpacing(20);
-    setFixedSize(480, 450);
+    setFixedSize(480, 420);
 
     QLabel *labelLeft;
     QLabel *labelRight;
 
-    labelLeft = new QLabel(trs("CumulativeWorkingTime"));
+    labelLeft = new QLabel(trs("RunningTime"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
     labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
@@ -127,7 +126,7 @@ void MonitorInfoWindow::layoutExec()
     d_ptr->labs.insert(MonitorInfoWindowPrivate
                        ::ITEM_LAB_CMLV_WORKTIME, labelRight);
 
-    labelLeft = new QLabel(trs("BatteryQuantity"));
+    labelLeft = new QLabel(trs("BatteryCapacity"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
     labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
@@ -135,7 +134,7 @@ void MonitorInfoWindow::layoutExec()
     d_ptr->labs.insert(MonitorInfoWindowPrivate
                        ::ITEM_LAB_BAT_CAPACITY, labelRight);
 
-    labelLeft = new QLabel(trs("MachineType"));
+    labelLeft = new QLabel(trs("ProductModel"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
     labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
@@ -151,7 +150,7 @@ void MonitorInfoWindow::layoutExec()
     d_ptr->labs.insert(MonitorInfoWindowPrivate
                        ::ITEM_LAB_MAC_ADDR, labelRight);
 
-    labelLeft = new QLabel(trs("ScreenResolationSize"));
+    labelLeft = new QLabel(trs("ScreenResolution"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
     labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
@@ -161,12 +160,11 @@ void MonitorInfoWindow::layoutExec()
 
     labelLeft = new QLabel(trs("ElectronicSerialNumber"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
-    d_ptr->button = new Button("");
-    d_ptr->button->setBorderWidth(0);
-    d_ptr->button->setButtonStyle(Button::ButtonTextBesideIcon);
-    d_ptr->button->setFocusPolicy(Qt::NoFocus);
-    layout->addWidget(d_ptr->button, d_ptr->labs.count(), 1,
-                      Qt::AlignCenter|Qt::AlignRight);
+    labelRight = new QLabel("");
+    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
+    layout->addWidget(labelRight, d_ptr->labs.count(), 1);
+    d_ptr->labs.insert(MonitorInfoWindowPrivate
+                       ::ITEM_BTN_ELEC_SERIALNUM, labelRight);
 
     layout->setRowStretch((layout->rowCount() + 1), 1);
     setWindowLayout(layout);
@@ -188,7 +186,7 @@ QString MonitorInfoWindow::getRunTime()
 
 void MonitorInfoWindow::showEvent(QShowEvent *e)
 {
-    Window::showEvent(e);
+    Dialog::showEvent(e);
     if (d_ptr->timer)
     {
         delete d_ptr->timer;
@@ -202,7 +200,7 @@ void MonitorInfoWindow::showEvent(QShowEvent *e)
 
 void MonitorInfoWindow::hideEvent(QHideEvent *e)
 {
-    Window::hideEvent(e);
+    Dialog::hideEvent(e);
     if (d_ptr->timer)
     {
         delete d_ptr->timer;

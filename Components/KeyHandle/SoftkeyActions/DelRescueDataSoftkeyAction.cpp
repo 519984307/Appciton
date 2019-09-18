@@ -36,8 +36,8 @@ static KeyActionDesc _delRescueDataKeys[] =
 
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_INFO),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_NEW),
-    KeyActionDesc("", trs("DeleteAll"), "delAll.png", DelRescueDataSoftkeyAction::delAll),
-    KeyActionDesc("", trs("DeleteCase"), "delCase.png", DelRescueDataSoftkeyAction::delCase),
+    KeyActionDesc("", "DeleteAll", "delAll.png", DelRescueDataSoftkeyAction::delAll),
+    KeyActionDesc("", "DeleteCase", "delCase.png", DelRescueDataSoftkeyAction::delCase),
     KeyActionDesc("", "", "SoftkeyArrow.png", DelRescueDataSoftkeyAction::exit),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),

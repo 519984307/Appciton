@@ -14,7 +14,7 @@
 #include <QMutex>
 #include <QMutexLocker>
 #include "StorageFile.h"
-#include "DataStorageDirManager.h"
+#include "DataStorageDirManagerInterface.h"
 
 StorageManagerPrivate::~StorageManagerPrivate()
 {
@@ -39,7 +39,8 @@ StorageManager::StorageManager(IStorageBackend *backend)
 {
     Q_D(StorageManager);
     d->backend = backend;
-    connect(&dataStorageDirManager, SIGNAL(newPatient()), this, SLOT(onNewPatientHandle()));
+    DataStorageDirManagerInterface *dataStorageDirManager = DataStorageDirManagerInterface::getDataStorageDirManager();
+    connect(dataStorageDirManager, SIGNAL(newPatient()), this, SLOT(onNewPatientHandle()));
 }
 
 /***************************************************************************************************
@@ -173,7 +174,7 @@ quint32 StorageManager::size() const
  **************************************************************************************************/
 IStorageBackend *StorageManager::open(const QString &filename, QIODevice::OpenMode openmode)
 {
-    // TODO: make a backend factory;
+    /* TODO: make a backend factory; */
     return new StorageFile(filename, openmode);
 }
 
@@ -195,7 +196,8 @@ StorageManager::StorageManager(StorageManagerPrivate *d_ptr, IStorageBackend *ba
 {
     Q_D(StorageManager);
     d->backend = backend;
-    connect(&dataStorageDirManager, SIGNAL(newPatient()), this, SLOT(onNewPatientHandle()));
+    DataStorageDirManagerInterface *dataStorageDirManager = DataStorageDirManagerInterface::getDataStorageDirManager();
+    connect(dataStorageDirManager, SIGNAL(newPatient()), this, SLOT(onNewPatientHandle()));
 }
 
 void StorageManager::saveDataCallback(quint32 dataID, const char *data, quint32 len)

@@ -9,10 +9,10 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 
 class ImportSubWidgetPrivate;
-class ImportSubWidget :public Window
+class ImportSubWidget :public Dialog
 {
     Q_OBJECT
 public:

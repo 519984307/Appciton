@@ -18,7 +18,7 @@
 #include "SoundManager.h"
 #include "SystemManager.h"
 #include "ECGParam.h"
-#include "IConfig.h"
+#include "ConfigManager.h"
 #include "Button.h"
 
 class ConfigEditECGMenuContentPrivate
@@ -35,7 +35,7 @@ public:
         ITEM_CBO_HTBT_VOL,
         ITEM_CBO_LEAD_MODE,
         ITEM_CBO_NOTCH_FILTER,
-
+        ITEM_CBO_PACER_MARK,
         ITEM_CBO_MAX,
     };
 
@@ -103,6 +103,12 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_LEAD_MODE]->clear();
     for (int i = 0; i < ECG_LEAD_MODE_NR; i++)
     {
+#ifdef HIDE_ECG_12_LEAD_FUNCTION
+        if (i == ECG_LEAD_MODE_12)
+        {
+            continue;
+        }
+#endif
         combos[ITEM_CBO_LEAD_MODE]->addItem(trs(ECGSymbol::convert((ECGLeadMode)i)));
     }
     combos[ITEM_CBO_LEAD_MODE]->setCurrentIndex(leadmode);
@@ -117,8 +123,8 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
             break;
         }
 
-        combos[ITEM_CBO_ECG1_WAVE]->addItem(trs(ECGSymbol::convert((ECGLead)i, ECG_CONVENTION_AAMI)));
-        combos[ITEM_CBO_ECG2_WAVE]->addItem(trs(ECGSymbol::convert((ECGLead)i, ECG_CONVENTION_AAMI)));
+        combos[ITEM_CBO_ECG1_WAVE]->addItem(trs(ECGSymbol::convert((ECGLead)i, ecgParam.getLeadNameConvention())));
+        combos[ITEM_CBO_ECG2_WAVE]->addItem(trs(ECGSymbol::convert((ECGLead)i, ecgParam.getLeadNameConvention())));
     }
 
     config->getNumValue("ECG|Ecg1Wave", index);
@@ -181,7 +187,7 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_SWEEP_SPEED]->setCurrentIndex(index);
 
     int filterMode =  0;
-    config->getNumValue("ECG|Filter", filterMode);
+    config->getNumValue("ECG|FilterMode", filterMode);
     combos[ITEM_CBO_FILTER_MODE]->setCurrentIndex(filterMode);
 
     config->getNumValue("ECG|QRSVolume", index);
@@ -193,37 +199,36 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
     {
     case ECG_FILTERMODE_MONITOR:
     case ECG_FILTERMODE_SURGERY:
-        combos[ITEM_CBO_NOTCH_FILTER]->
-        addItems(QStringList()
-                 << trs(ECGSymbol::convert(ECG_NOTCH_OFF))
-                 << trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ)));
-        if (index == ECG_NOTCH_50_AND_60HZ)
-        {
-            combos[ITEM_CBO_NOTCH_FILTER]->setCurrentIndex(1);
-        }
-        else
-        {
-            combos[ITEM_CBO_NOTCH_FILTER]->setCurrentIndex(index);
-        }
+        combos[ITEM_CBO_NOTCH_FILTER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_50HZ)), ECG_NOTCH_50HZ);
+        combos[ITEM_CBO_NOTCH_FILTER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_60HZ)), ECG_NOTCH_60HZ);
+        combos[ITEM_CBO_NOTCH_FILTER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ)), ECG_NOTCH_50_AND_60HZ);
         break;
     case ECG_FILTERMODE_DIAGNOSTIC:
     case ECG_FILTERMODE_ST:
-        combos[ITEM_CBO_NOTCH_FILTER]->
-        addItems(QStringList()
-                 << trs(ECGSymbol::convert(ECG_NOTCH_OFF))
-                 << trs(ECGSymbol::convert(ECG_NOTCH_50HZ))
-                 << trs(ECGSymbol::convert(ECG_NOTCH_60HZ)));
-        combos[ITEM_CBO_NOTCH_FILTER]->setCurrentIndex(index);
+        combos[ITEM_CBO_NOTCH_FILTER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_OFF)), ECG_NOTCH_OFF);
+        combos[ITEM_CBO_NOTCH_FILTER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_50HZ)), ECG_NOTCH_50HZ);
+        combos[ITEM_CBO_NOTCH_FILTER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_60HZ)), ECG_NOTCH_60HZ);
         break;
     default:
         break;
     }
-
+    int notchFilterIndex = combos[ITEM_CBO_NOTCH_FILTER]->findText(trs(ECGSymbol::convert((ECGNotchFilter)index)));
+    if (notchFilterIndex > -1)
+    {
+        combos[ITEM_CBO_NOTCH_FILTER]->setCurrentIndex(notchFilterIndex);
+    }
+    else
+    {
+        combos[ITEM_CBO_NOTCH_FILTER]->setCurrentIndex(0);
+    }
     for (unsigned i = 0; i < ITEM_CBO_MAX; i++)
     {
         MenuItem item = static_cast<MenuItem>(i);
         combos[item]->blockSignals(false);
     }
+
+    config->getNumValue("ECG|PacerMaker", index);
+    combos[ITEM_CBO_PACER_MARK]->setCurrentIndex(index);
 }
 
 ConfigEditECGMenuContent::ConfigEditECGMenuContent(Config *const config)
@@ -306,7 +311,7 @@ void ConfigEditECGMenuContent::layoutExec()
     d_ptr->combos.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG2_WAVE, comboBox);
 
     // ecg1 gain
-    label = new QLabel(trs("Ecg1Gain"));
+    label = new QLabel(trs("ECGGain"));
     d_ptr->comboLabels.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG1_GAIN,
                               label);
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -324,6 +329,7 @@ void ConfigEditECGMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
+                       << trs(ECGSymbol::convert(ECG_SWEEP_SPEED_625))
                        << trs(ECGSymbol::convert(ECG_SWEEP_SPEED_125))
                        << trs(ECGSymbol::convert(ECG_SWEEP_SPEED_250))
                        << trs(ECGSymbol::convert(ECG_SWEEP_SPEED_500)));
@@ -335,7 +341,7 @@ void ConfigEditECGMenuContent::layoutExec()
     d_ptr->combos.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_SWEEP_SPEED, comboBox);
 
     // filter
-    label = new QLabel(trs("Filter"));
+    label = new QLabel(trs("FilterMode"));
     d_ptr->comboLabels.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_FILTER_MODE,
                               label);
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -362,15 +368,17 @@ void ConfigEditECGMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
-                       << QString::number(SoundManager::VOLUME_LEV_0)
+                       << trs("Off")
                        << QString::number(SoundManager::VOLUME_LEV_1)
                        << QString::number(SoundManager::VOLUME_LEV_2)
                        << QString::number(SoundManager::VOLUME_LEV_3)
                        << QString::number(SoundManager::VOLUME_LEV_4)
                        << QString::number(SoundManager::VOLUME_LEV_5));
+    connect(comboBox, SIGNAL(itemFocusChanged(int)),
+            this, SLOT(onPopupListItemFocusChanged(int)));
     itemID = static_cast<int>(ConfigEditECGMenuContentPrivate::ITEM_CBO_HTBT_VOL);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    connect(comboBox, SIGNAL(activated(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_HTBT_VOL, comboBox);
 
@@ -404,6 +412,22 @@ void ConfigEditECGMenuContent::layoutExec()
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_NOTCH_FILTER, comboBox);
+
+    // paceMark
+    label = new QLabel(trs("ECGPaceDetection"));
+    d_ptr->comboLabels.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_PACER_MARK,
+                              label);
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                       << trs(ECGSymbol::convert(ECG_PACE_OFF))
+                       << trs(ECGSymbol::convert(ECG_PACE_ON)));
+    itemID = ConfigEditECGMenuContentPrivate::ITEM_CBO_PACER_MARK;
+    comboBox->setProperty("Item",
+                          qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_PACER_MARK, comboBox);
 
 #ifndef  HIDE_ECG_ST_PVCS_SUBPARAM
     // ST 段开关
@@ -440,31 +464,41 @@ void ConfigEditECGMenuContent::onComboBoxIndexChanged(int index)
             break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_FILTER_MODE:
         {
-            d_ptr->config->setNumValue("ECG|Filter", index);
+            d_ptr->config->setNumValue("ECG|FilterMode", index);
             d_ptr->combos[ConfigEditECGMenuContentPrivate::ITEM_CBO_NOTCH_FILTER]->clear();
             switch (index)
             {
             case ECG_FILTERMODE_MONITOR:
             case ECG_FILTERMODE_SURGERY:
                 d_ptr->combos[ConfigEditECGMenuContentPrivate::ITEM_CBO_NOTCH_FILTER]->
-                addItems(QStringList()
-                         << trs(ECGSymbol::convert(ECG_NOTCH_OFF))
-                         << trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ)));
+                        addItem(trs(ECGSymbol::convert(ECG_NOTCH_50HZ)), ECG_NOTCH_50HZ);
+                d_ptr->combos[ConfigEditECGMenuContentPrivate::ITEM_CBO_NOTCH_FILTER]->
+                        addItem(trs(ECGSymbol::convert(ECG_NOTCH_60HZ)), ECG_NOTCH_60HZ);
+                d_ptr->combos[ConfigEditECGMenuContentPrivate::ITEM_CBO_NOTCH_FILTER]->
+                        addItem(trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ)), ECG_NOTCH_50_AND_60HZ);
                 break;
             case ECG_FILTERMODE_DIAGNOSTIC:
             case ECG_FILTERMODE_ST:
                 d_ptr->combos[ConfigEditECGMenuContentPrivate::ITEM_CBO_NOTCH_FILTER]->
-                addItems(QStringList()
-                         << trs(ECGSymbol::convert(ECG_NOTCH_OFF))
-                         << trs(ECGSymbol::convert(ECG_NOTCH_50HZ))
-                         << trs(ECGSymbol::convert(ECG_NOTCH_60HZ)));
+                        addItem(trs(ECGSymbol::convert(ECG_NOTCH_OFF)), ECG_NOTCH_OFF);
+                d_ptr->combos[ConfigEditECGMenuContentPrivate::ITEM_CBO_NOTCH_FILTER]->
+                        addItem(trs(ECGSymbol::convert(ECG_NOTCH_50HZ)), ECG_NOTCH_50HZ);
+                d_ptr->combos[ConfigEditECGMenuContentPrivate::ITEM_CBO_NOTCH_FILTER]->
+                        addItem(trs(ECGSymbol::convert(ECG_NOTCH_60HZ)), ECG_NOTCH_60HZ);
                 break;
             }
+            d_ptr->combos[ConfigEditECGMenuContentPrivate::ITEM_CBO_NOTCH_FILTER]->
+            setCurrentIndex(ECG_NOTCH_OFF);
         }
         break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_NOTCH_FILTER:
-            d_ptr->config->setNumValue("ECG|NotchFilter", index);
+        {
+            int notch =
+                    d_ptr->combos[ConfigEditECGMenuContentPrivate
+                                                ::ITEM_CBO_NOTCH_FILTER]->itemData(index).toInt();
+            d_ptr->config->setNumValue("ECG|NotchFilter", notch);
             break;
+        }
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_HRPR_SOURCE:
             d_ptr->config->setNumValue("ECG|HRSource", index);
             break;
@@ -531,10 +565,14 @@ void ConfigEditECGMenuContent::onComboBoxIndexChanged(int index)
         break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_HTBT_VOL:
             d_ptr->config->setNumValue("ECG|QRSVolume", index);
+            currentConfig.getNumValue("ECG|QRSVolume", index);
+            soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT, static_cast<SoundManager::VolumeLevel>(index));
             break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_SWEEP_SPEED:
             d_ptr->config->setNumValue("ECG|SweepSpeed", index);
             break;
+        case ConfigEditECGMenuContentPrivate::ITEM_CBO_PACER_MARK:
+            d_ptr->config->setNumValue("ECG|PacerMaker", index);
         default:
             break;
         }
@@ -553,6 +591,12 @@ void ConfigEditECGMenuContent::onAlarmBtnReleased()
     {
         w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
     }
+}
+
+void ConfigEditECGMenuContent::onPopupListItemFocusChanged(int volume)
+{
+        soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT , static_cast<SoundManager::VolumeLevel>(volume));
+        soundManager.heartBeatTone();
 }
 
 

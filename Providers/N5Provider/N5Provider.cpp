@@ -16,12 +16,13 @@
 #include "crc8.h"
 #include "SystemManager.h"
 #include "TimeDate.h"
-#include "ServiceVersion.h"
 #include "NIBPAlarm.h"
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"
 #include "RawDataCollector.h"
 #include "IConfig.h"
+#include "UpgradeManager.h"
+#include "AlarmSourceManager.h"
 
 static const char *nibpSelfErrorCode[] =
 {
@@ -38,10 +39,13 @@ static const char *nibpSelfErrorCode[] =
     "The Big gas valve is unusual.\r\n",                      // 10
     "The small gas valve is unusual.\r\n",                    // 11
     "The air pump is unusual.\r\n",                           // 12
+    "The sofaware of overpressure protect is unusual.\r\n",    // 13
+    "Comparisons of pressure between master and Daemon fail to pass self-test"  // 14
 };
 
 static const char *nibpErrorCode[] =
 {
+    "Master-slave communication is unusual.\r\n",             // 127
     "Flash wrong.\r\n",                                       // 128
     "Data sample exception.\r\n",                             // 129
     "The Big gas valve is unusual for running.\r\n",          // 130
@@ -49,7 +53,7 @@ static const char *nibpErrorCode[] =
     "The air pump is unusual for running.\r\n",               // 132
     "Calibration is unsuccessful.\r\n",                       // 133
     "The Daemon error.\r\n",                                  // 134
-    "The air pump start-up timeout.\r\n"                      // 135
+    "Zero fail on start-up.\r\n"                              // 135
 };
 
 /**************************************************************************************************
@@ -101,7 +105,23 @@ void N5Provider::_selfTest(unsigned char *packet, int len)
             case 0x0A:
             case 0x0B:
             case 0x0C:
+            case 0x0d:
+            case 0x0e:
                 errorStr += nibpSelfErrorCode[packet[i]];
+                break;
+            case 0x7f:
+            case 0x80:
+            case 0x81:
+            case 0x82:
+            case 0x83:
+            case 0x84:
+                errorStr += nibpErrorCode[packet[i] - 127];
+                break;
+            case 0x85:
+                nibpParam.setCalibrateState(false);
+            case 0x86:
+            case 0x87:
+                errorStr += nibpErrorCode[packet[i] - 127];
                 break;
             default:
                 errorStr += "Unknown mistake.\r\n";
@@ -112,12 +132,13 @@ void N5Provider::_selfTest(unsigned char *packet, int len)
         ErrorLogItem *item = new CriticalFaultLogItem();
         item->setName("N5 Selftest Error");
         item->setLog(errorStr);
-        item->setSubSystem(ErrorLogItem::SUB_SYS_TN3);
+        item->setSubSystem(ErrorLogItem::SUB_SYS_N5);
         item->setSystemState(ErrorLogItem::SYS_STAT_SELFTEST);
         item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
 
         errorLog.append(item);
 
+        nibpParam.setDisableState(true);
         nibpParam.errorDisable();
         systemManager.setPoweronTestResult(N5_MODULE_SELFTEST_RESULT, SELFTEST_FAILED);
     }
@@ -130,6 +151,7 @@ void N5Provider::_selfTest(unsigned char *packet, int len)
 void N5Provider::_errorWarm(unsigned char *packet, int len)
 {
     outHex(packet, len);
+    nibpParam.setDisableState(true);
     nibpParam.errorDisable();
     QString errorStr("");
     errorStr = "error code = ";
@@ -138,6 +160,7 @@ void N5Provider::_errorWarm(unsigned char *packet, int len)
 
     switch (packet[1])
     {
+    case 0x7f:
     case 0x80:
     case 0x81:
     case 0x82:
@@ -146,7 +169,7 @@ void N5Provider::_errorWarm(unsigned char *packet, int len)
     case 0x85:
     case 0x86:
     case 0x87:
-        errorStr += nibpErrorCode[packet[1] - 128];
+        errorStr += nibpErrorCode[packet[1] - 127];
         break;
     default:
         errorStr += "Unknown mistake.\r\n";
@@ -156,7 +179,7 @@ void N5Provider::_errorWarm(unsigned char *packet, int len)
     ErrorLogItem *item = new CriticalFaultLogItem();
     item->setName("N5 Error");
     item->setLog(errorStr);
-    item->setSubSystem(ErrorLogItem::SUB_SYS_TN3);
+    item->setSubSystem(ErrorLogItem::SUB_SYS_N5);
     item->setSystemState(ErrorLogItem::SYS_STAT_RUNTIME);
     item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
     errorLog.append(item);
@@ -164,6 +187,9 @@ void N5Provider::_errorWarm(unsigned char *packet, int len)
 
 static NIBPMeasureResultInfo getMeasureResultInfo(unsigned char *data)
 {
+    int type;
+    systemConfig.getNumValue("General|PatientType", type);
+
     NIBPMeasureResultInfo info;
     short t = static_cast<short>(data[0]);
     info.errCode = t;
@@ -175,6 +201,31 @@ static NIBPMeasureResultInfo getMeasureResultInfo(unsigned char *data)
     info.map = t;
     t = static_cast<short>(data[7] + (data[8] << 8));
     info.pr = t;
+    if (info.errCode != 0x00)
+    {
+        return info;
+    }
+    if (type == PATIENT_TYPE_ADULT)
+    {
+        if (info.sys > 255 || info.sys < 40 || info.dia > 215 || info.dia < 20 || info.map > 235 || info.map < 20)
+        {
+            info.errCode = 0x06;
+        }
+    }
+    else if (type == PATIENT_TYPE_PED)
+    {
+        if (info.sys > 200 || info.sys < 40 || info.dia > 150 || info.dia < 20 || info.map > 165 || info.map < 20)
+        {
+            info.errCode = 0x06;
+        }
+    }
+    else if (type == PATIENT_TYPE_NEO)
+    {
+        if (info.sys > 135 || info.sys < 40 || info.dia > 100 || info.dia < 10 || info.map > 110 || info.map < 20)
+        {
+            info.errCode = 0x06;
+        }
+    }
     return info;
 }
 
@@ -255,8 +306,8 @@ void N5Provider::handlePacket(unsigned char *data, int len)
     case N5_NOTIFY_START_UP:
     {
         _sendACK(data[0]);
-        ErrorLogItem *item = new CriticalFaultLogItem();
-        item->setName("TN3 Start");
+        ErrorLogItem *item = new ErrorLogItem();
+        item->setName("N5 Start");
         errorLog.append(item);
         nibpParam.reset();
     }
@@ -292,6 +343,9 @@ void N5Provider::handlePacket(unsigned char *data, int len)
     // 校准点压力值反馈
     case N5_RSP_PRESSURE_POINT:
         nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_RSP_PRESSURE_POINT, &data[1], 1);
+        break;
+
+    case N5_RSP_PASSTHROUGH_MODE:
         break;
 
     // 压力计模式控制
@@ -334,6 +388,12 @@ void N5Provider::handlePacket(unsigned char *data, int len)
         nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_STATE_CHANGE, &data[1], 1);
         break;
 
+    // 开机获取校零状态
+    case N5_STATE_ZERO_SELFTEST:
+        _sendACK(data[0]);
+        nibpParam.handleNIBPEvent(NIBP_EVENT_ZERO_SELFTEST, &data[1], 1);
+        break;
+
     // 服务模式压力帧
     case N5_SERVICE_PRESSURE:
         nibpParam.handleNIBPEvent(NIBP_EVENT_CURRENT_PRESSURE, &data[1], 2);
@@ -342,7 +402,23 @@ void N5Provider::handlePacket(unsigned char *data, int len)
     case N5_RSP_PRESSURE_ZERO:
         nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_ZERO, NULL, 0);
         break;
-
+    case N5_STATE_PRESSURE_PROTECT:
+        if (data[1] == 0x01)
+        {
+            nibpParam.setDisableState(true);
+            nibpParam.errorDisable();
+        }
+        else if (data[1] == 0x00)
+        {
+            nibpParam.setDisableState(false);
+            AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
+            if (alarmSource)
+            {
+                alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_DISABLE, false);
+            }
+            nibpParam.handleNIBPEvent(NIBP_EVENT_CONNECTION_NORMAL, NULL, 0);                       // 恢复禁用状态
+        }
+        break;
     default:
         break;
     }
@@ -364,6 +440,15 @@ void N5Provider::reconnected(void)
 {
     nibpParam.connectedFlag(true);
     nibpParam.setConnected(true);
+}
+
+void N5Provider::sendDisconnected()
+{
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_SEND_COMMUNICATION_STOP, true);
+    }
 }
 
 /**************************************************************************************************

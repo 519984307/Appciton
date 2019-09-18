@@ -10,12 +10,12 @@
 
 #pragma once
 
-#include "Window.h"
+#include "Dialog.h"
 #include "WiFiProfileEditor.h"
 #include <QScopedPointer>
 
 class WiFiProfileWindowPrivate;
-class WiFiProfileWindow: public Window
+class WiFiProfileWindow: public Dialog
 {
     Q_OBJECT
 public:

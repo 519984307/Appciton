@@ -15,27 +15,19 @@
 #include "UnitManager.h"
 
 // 病人管理对象。
-class PatientInfoWidget;
+class PatientInfoWidgetInterface;
 class PatientManagerPrivate;
 class PatientManager : public QObject
 {
     Q_OBJECT
 
 public:
-    static PatientManager &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new PatientManager();
-        }
-        return *_selfObj;
-    }
-    static PatientManager *_selfObj;
+    static PatientManager &getInstance(void);
     ~PatientManager();
 
 public:
     // 设置Widget。
-    void setPatientInfoWidget(PatientInfoWidget &widget);
+    void setPatientInfoWidget(PatientInfoWidgetInterface &widget);
 
 public:
     /**
@@ -55,7 +47,7 @@ public:
      * @brief setPacermaker 设置起搏。
      * @param type
      */
-    void setPacermaker(PatientPacer type);
+    void setPacermaker(PatientPacer pacer);
 
     /**
      * @brief getPacermaker 获取起博
@@ -176,6 +168,13 @@ public:
     const PatientInfo &getPatientInfo(void);
 
     /**
+     * @brief getHistoryPatientInfo 获取指定路径的历史病人信息
+     * @param path
+     * @return
+     */
+    const PatientInfo &getHistoryPatientInfo(const QString &path);
+
+    /**
      * @brief getWeightUnit 获取体重单位
      * @return
      */
@@ -220,12 +219,22 @@ public:
      */
     bool isNewPatient();
 
+    /**
+     * @brief updatePatientInfo 更新病人信息
+     */
+    void updatePatientInfo();
+
 signals:
     void signalPatientType(PatientType type);
+
+private slots:
+    /**
+     * @brief onNewPatientHandle 新建病人后响应函数
+     */
+    void onNewPatientHandle();
 
 private:
     PatientManager();
     PatientManagerPrivate *const d_ptr;
 };
-#define patientManager (PatientManager::construction())
-#define deletePatientManager() (delete PatientManager::_selfObj)
+#define patientManager (PatientManager::getInstance())

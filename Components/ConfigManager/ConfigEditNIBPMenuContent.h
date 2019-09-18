@@ -16,7 +16,7 @@ class ConfigEditNIBPMenuContent : public MenuContent
 {
     Q_OBJECT
 public:
-    explicit ConfigEditNIBPMenuContent(Config *const config);
+    explicit ConfigEditNIBPMenuContent(Config *const config, PatientType type = PATIENT_TYPE_ADULT);
     ~ConfigEditNIBPMenuContent();
 
 protected:
@@ -24,11 +24,6 @@ protected:
     virtual void layoutExec();
 
 private slots:
-    /**
-     * @brief onComboIndexChanged
-     * @param index
-     */
-    void  onComboIndexChanged(int index);
     /**
      * @brief onAlarmBtnReleased
      */

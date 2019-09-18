@@ -10,15 +10,15 @@
 
 #include "ECGDupParam.h"
 #include "BaseDefine.h"
-#include "IConfig.h"
+#include "ConfigManager.h"
 #include "ECGTrendWidget.h"
 #include "Debug.h"
 #include "ECGParam.h"
 #include "SoundManager.h"
 #include "SPO2Param.h"
 #include "IBPParam.h"
-
-ECGDupParam *ECGDupParam::_selfObj = NULL;
+#include "O2ParamInterface.h"
+#include "RESPAlarm.h"
 
 /**************************************************************************************************
  * 初始化参数。
@@ -129,6 +129,12 @@ void ECGDupParam::setTrendWidget(ECGTrendWidget *trendWidget)
 
 void ECGDupParam::updatePR(short pr, PRSourceType type, bool isUpdatePr)
 {
+    // PR为负数时,置为无效值
+    if (pr < 0)
+    {
+        pr = InvData();
+    }
+
     if (isUpdatePr)
     {
         if (type == PR_SOURCE_SPO2)
@@ -160,11 +166,13 @@ void ECGDupParam::updatePR(short pr, PRSourceType type, bool isUpdatePr)
             if (isSPO2Valid && _prValueFromSPO2 != InvData())
             {
                 _prValue = _prValueFromSPO2;
+                _currentHRSource = HR_SOURCE_SPO2;
             }
             else if ((!isIBP1LeadOff || !isIBP2LeadOff)
                  && (_prValueFromIBP != InvData()))
             {
                 _prValue = _prValueFromIBP;
+                _currentHRSource = HR_SOURCE_IBP;
             }
             else
             {
@@ -177,6 +185,7 @@ void ECGDupParam::updatePR(short pr, PRSourceType type, bool isUpdatePr)
             if (isSPO2Valid)
             {
                 _prValue = _prValueFromSPO2;
+                _currentHRSource = HR_SOURCE_SPO2;
             }
             else
             {
@@ -189,6 +198,7 @@ void ECGDupParam::updatePR(short pr, PRSourceType type, bool isUpdatePr)
             if (!isIBP1LeadOff || !isIBP2LeadOff)
             {
                 _prValue = _prValueFromIBP;
+                _currentHRSource = HR_SOURCE_IBP;
             }
             else
             {
@@ -214,11 +224,11 @@ void ECGDupParam::updatePR(short pr, PRSourceType type, bool isUpdatePr)
             }
             if (_prValue != InvData())
             {
-                _trendWidget->setHRValue(_prValue, false);
+                _trendWidget->setHRValue(_prValue, _currentHRSource);
             }
             else
             {
-                _trendWidget->setHRValue(_prValue, true);
+                _trendWidget->setHRValue(_prValue, HR_SOURCE_AUTO);
             }
             _hrBeatFlag = false;
         }
@@ -227,7 +237,7 @@ void ECGDupParam::updatePR(short pr, PRSourceType type, bool isUpdatePr)
         case HR_SOURCE_SPO2:
         {
             _hrBeatFlag = false;
-            _trendWidget->setHRValue(_prValue, false);
+            _trendWidget->setHRValue(_prValue, _hrSource);
         }
         break;
         case HR_SOURCE_ECG:
@@ -287,6 +297,25 @@ void ECGDupParam::updateHR(short hr)
 {
     _hrValue = hr;
 
+#ifdef ENABLE_O2_APNEASTIMULATION
+    O2ParamInterface *o2Param = O2ParamInterface::getO2ParamInterface();
+    if (o2Param)
+    {
+        int apneaStimulationHR = 100;
+        int motorSta = false;
+        currentConfig.getNumValue("ApneaStimulation|HR", apneaStimulationHR);
+        if (hr < apneaStimulationHR && hr != InvData())
+        {
+            motorSta = true;
+        }
+        else
+        {
+            motorSta = false;
+        }
+        o2Param->setVibrationReason(APNEASTIMULATION_REASON_HR, motorSta);
+    }
+#endif
+
     if (_trendWidget == NULL)
     {
         return;
@@ -294,46 +323,40 @@ void ECGDupParam::updateHR(short hr)
 
     switch (_hrSource)
     {
-        case HR_SOURCE_AUTO:
+    case HR_SOURCE_AUTO:
+    {
+        // HR不为无效时即显示。
+        if (_hrValue != InvData())
         {
-            // HR不为无效时即显示。
-            if (_hrValue != InvData())
-            {
-                _hrBeatFlag = true;
-                _trendWidget->setHRValue(_hrValue, true);
-            }
-            else if (_prValue != InvData())
-            {
-                _hrBeatFlag = false;
-                _trendWidget->setHRValue(_prValue, false);
-            }
-            else  // HR和PR都为无效时。
-            {
-                _hrBeatFlag = true;
-                _trendWidget->setHRValue(_hrValue, true);
-            }
+            _hrBeatFlag = true;
+            _trendWidget->setHRValue(_hrValue, HR_SOURCE_ECG);
         }
-        break;
-        case HR_SOURCE_IBP:
-        case HR_SOURCE_SPO2:
+        else if (_prValue != InvData())
         {
             _hrBeatFlag = false;
-            _trendWidget->setHRValue(_prValue, false);
+            _trendWidget->setHRValue(_prValue, _currentHRSource);
         }
-        break;
-        case HR_SOURCE_ECG:
+        else  // HR和PR都为无效时。
         {
-            if (_hrValue != InvData())
-            {
-                _hrBeatFlag = true;
-            }
-            else
-            {
-                _hrBeatFlag = false;
-            }
-            _trendWidget->setHRValue(_hrValue, true);
+            _hrBeatFlag = true;
+            _trendWidget->setHRValue(_hrValue, HR_SOURCE_ECG);
         }
-        case HR_SOURCE_NR:
+    }
+        break;
+    case HR_SOURCE_ECG:
+    {
+        if (_hrValue != InvData())
+        {
+            _hrBeatFlag = true;
+        }
+        else
+        {
+            _hrBeatFlag = false;
+        }
+        _trendWidget->setHRValue(_hrValue, _hrSource);
+    }
+        break;
+    default:
         break;
     }
 }
@@ -395,11 +418,9 @@ bool ECGDupParam::isHRValid(void)
  *************************************************************************************************/
 void ECGDupParam::isAlarm(bool isAlarm, bool isLimit)
 {
+    Q_UNUSED(isLimit)
+
     _isAlarm |= isAlarm;
-    if (isLimit)
-    {
-        return;
-    }
 
     if (NULL != _trendWidget)
     {
@@ -473,6 +494,34 @@ void ECGDupParam::setHrSource(HRSourceType type)
     currentConfig.setNumValue("ECG|HRSource", id);
 }
 
+void ECGDupParam::updateHRSource()
+{
+    int id = PARAM_ECG;
+    currentConfig.getNumValue("ECG|HRSource", id);
+    HRSourceType type = ecgParam.getHrSourceTypeFromId(static_cast<ParamID>(id));
+    _hrSource = type;
+    if (_hrSource == HR_SOURCE_ECG)
+    {
+        updateHR(_hrValue);
+    }
+    else if (_hrSource == HR_SOURCE_SPO2)
+    {
+        updatePR(_prValue);
+    }
+    else if (_hrSource == HR_SOURCE_AUTO)
+    {
+        if (InvData() != _hrValue)
+        {
+            updateHR(_hrValue);
+        }
+
+        if (InvData() != _prValue)
+        {
+            updatePR(_prValue);
+        }
+    }
+}
+
 bool ECGDupParam::isAutoTypeHrSouce() const
 {
     if (_hrSource == HR_SOURCE_AUTO)
@@ -498,6 +547,34 @@ void ECGDupParam::updateSubParamLimit(SubParamID id)
     }
 }
 
+void ECGDupParam::restartParamUpdateTime()
+{
+    paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
+}
+
+void ECGDupParam::paramUpdateTimeout()
+{
+    HRSourceType source = getCurHRSource();
+    switch (source) {
+    case HR_SOURCE_ECG:
+        _hrValue = InvData();
+        if (_trendWidget != NULL)
+        {
+            _trendWidget->setHRValue(_hrValue, source);
+        }
+        break;
+    case HR_SOURCE_SPO2:
+        _prValue = InvData();
+        if (_trendWidget != NULL)
+        {
+            _trendWidget->setHRValue(_prValue, source);
+        }
+        break;
+    default:
+        break;
+    }
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
@@ -510,7 +587,8 @@ ECGDupParam::ECGDupParam()
       _prValueFromSPO2(InvData()),
       _prValueFromIBP(InvData()),
       _hrBeatFlag(true),
-      _isAlarm(false)
+      _isAlarm(false),
+      _currentHRSource(HR_SOURCE_AUTO)
 {
     // 初始化hr/pr来源
     int id = PARAM_ECG;
@@ -537,6 +615,20 @@ ECGDupParam::ECGDupParam()
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
+ECGDupParam &ECGDupParam::getInstance()
+{
+    static ECGDupParam *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new ECGDupParam();
+        ECGDupParamInterface *old =  ECGDupParamInterface::registerECGDupParam(instance);
+        if (old) {
+            delete old;
+        }
+    }
+    return *instance;
+}
+
 ECGDupParam::~ECGDupParam()
 {
 }

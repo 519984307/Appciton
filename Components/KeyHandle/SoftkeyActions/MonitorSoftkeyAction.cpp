@@ -28,6 +28,7 @@ static KeyActionDesc _monitorKeys[] =
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_CODE_MARKER),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_TREND_GRAPH),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_EVENT_REVIEW),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_TREND_TABLE),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_SYS_MODE),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_WINDOWLAYOUT),
 #ifndef HIDE_PARAM_SWITCH

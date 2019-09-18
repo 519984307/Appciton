@@ -24,7 +24,7 @@ public:
     enum MenuItem
     {
         ITEM_CBO_CODE_MARKER1 = 0,
-        ITEM_CBO_MAX = 28,
+        ITEM_CBO_MAX = 27,
     };
 
     explicit ConfigEditCodeMarkerMenuContentPrivate(Config *const config)
@@ -132,7 +132,6 @@ void ConfigEditCodeMarkerMenuContentPrivate::loadOptions()
 
 void ConfigEditCodeMarkerMenuContent::readyShow()
 {
-    d_ptr->loadOptions();
     bool isOnlyToRead = configManager.isReadOnly();
     for (int i = 0; i < ConfigEditCodeMarkerMenuContentPrivate::
          ITEM_CBO_MAX; i++)
@@ -162,14 +161,14 @@ void ConfigEditCodeMarkerMenuContent::layoutExec()
     ComboBox *comboBox;
     ConfigEditCodeMarkerMenuContentPrivate::MenuItem itemId;
 
-    for (int i = 0; i < ConfigEditCodeMarkerMenuContentPrivate::ITEM_CBO_MAX / 2; i++)
+    for (int i = 0; i < ConfigEditCodeMarkerMenuContentPrivate::ITEM_CBO_MAX / 2 + 1; i++)
     {
         label = new QLabel(trs(QString::number(i + 1)));
         if (i == 0)
         {
             d_ptr->codeMarkerFirst = label;
         }
-        layout->addWidget(label, i, 0);
+        layout->addWidget(label, i, 0, Qt::AlignRight);
         comboBox = new ComboBox;
         layout->addWidget(comboBox, i, 1);
         itemId = static_cast<ConfigEditCodeMarkerMenuContentPrivate::MenuItem>(i);
@@ -177,15 +176,15 @@ void ConfigEditCodeMarkerMenuContent::layoutExec()
         comboBox->setProperty("Item", qVariantFromValue(i));
         connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     }
-    int itemHalfTemp = ConfigEditCodeMarkerMenuContentPrivate::ITEM_CBO_MAX / 2;
-    for (int i = itemHalfTemp; i < itemHalfTemp * 2; i++)
+    int itemHalfTemp = ConfigEditCodeMarkerMenuContentPrivate::ITEM_CBO_MAX / 2 + 1;
+    for (int i = itemHalfTemp; i < itemHalfTemp * 2 - 1; i++)
     {
         label = new QLabel(trs(QString::number(i + 1)));
-        if (i == itemHalfTemp * 2 - 1)
+        if (i == itemHalfTemp * 2 - 2)
         {
             d_ptr->codeMarkerLast = label;
         }
-        layout->addWidget(label, (i - itemHalfTemp), 2);
+        layout->addWidget(label, (i - itemHalfTemp), 2, Qt::AlignRight);
         comboBox = new ComboBox;
         layout->addWidget(comboBox, (i - itemHalfTemp), 3);
         itemId = static_cast<ConfigEditCodeMarkerMenuContentPrivate::MenuItem>(i);
@@ -195,6 +194,8 @@ void ConfigEditCodeMarkerMenuContent::layoutExec()
     }
     int itemMax = ConfigEditCodeMarkerMenuContentPrivate::ITEM_CBO_MAX;
     layout->setRowStretch(itemMax, 1);
+
+    d_ptr->loadOptions(); // 初始化的时候加载一遍CodeMarker
 }
 void ConfigEditCodeMarkerMenuContent::onComboBoxIndexChanged(int index)
 {
@@ -206,6 +207,26 @@ void ConfigEditCodeMarkerMenuContent::onComboBoxIndexChanged(int index)
     int itemType = combo->property("Item").toInt();
     // new code marker
     d_ptr->selectedCodeMarkers[itemType] = d_ptr->allCodeMarkers[index];
+    QString s;
+    for (int i = 0; i < d_ptr->selectedCodeMarkers.count(); i++)
+    {
+        if (d_ptr->selectedCodeMarkers[i] == d_ptr->selectedCodeMarkers[itemType]
+                && i != itemType)
+        {
+            for (int j = 0; j < d_ptr->allCodeMarkers.count(); j++)
+            {
+                 s = d_ptr->allCodeMarkers[j];
+                if (!d_ptr->selectedCodeMarkers.contains(s))
+                {
+                    ConfigEditCodeMarkerMenuContentPrivate::MenuItem item
+                            = static_cast<ConfigEditCodeMarkerMenuContentPrivate::MenuItem>(i);
+                    d_ptr->combos[item]->setCurrentIndex(j);
+                    d_ptr->selectedCodeMarkers[i] = d_ptr->allCodeMarkers[j];
+                    break;
+                }
+            }
+        }
+    }
     QStringList tmpList(d_ptr->selectedCodeMarkers);
     QString strValue = tmpList.join(",");
     int num = 0;

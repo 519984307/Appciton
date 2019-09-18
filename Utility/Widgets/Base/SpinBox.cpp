@@ -45,7 +45,23 @@ public:
 
 QString SpinBoxPrivate::value() const
 {
-    return Util::convertToString(info.curValue, info.scale);
+    if (info.type == ItemEditInfo::VALUE)
+    {
+        if (info.curValue >= info.lowLimit && info.curValue <= info.highLimit)
+        {
+            return Util::convertToString(info.curValue, info.scale);
+        }
+        else
+        {
+            // invaild display blank
+            return QString("");
+        }
+    }
+    else
+    {
+        return info.list.at(info.curValue);
+    }
+    return QString();
 }
 
 SpinBox::SpinBox(QWidget *parent)
@@ -79,14 +95,6 @@ void SpinBox::setValue(int value)
         return;
     }
 
-    int min, max;
-    getRange(min, max);
-    if (value < min || value > max)
-    {
-        // 设置的值不是有效范围内
-        value = min;
-    }
-
     d_ptr->info.curValue = value;
     update();
     emit valueChange(d_ptr->info.curValue, d_ptr->info.scale);
@@ -99,8 +107,21 @@ int SpinBox::getValue()
 
 void SpinBox::setRange(int min, int max)
 {
+    if (d_ptr->info.type == ItemEditInfo::LIST)
+    {
+        // 当格式为字符串时，设置范围的值不可超出范围
+        if (max > d_ptr->info.highLimit || min < d_ptr->info.lowLimit)
+        {
+            return;
+        }
+    }
     d_ptr->info.lowLimit = min;
     d_ptr->info.highLimit = max;
+    if (d_ptr->info.startValue > d_ptr->info.highLimit || d_ptr->info.startValue < d_ptr->info.lowLimit)
+    {
+        // 如果起始值不在范围内，设置起始值为最小值
+        d_ptr->info.startValue = min;
+    }
 }
 
 void SpinBox::getRange(int &min, int &max)
@@ -140,6 +161,35 @@ QSize SpinBox::sizeHint() const
     }
 
     return hint;
+}
+
+void SpinBox::setSpinBoxStyle(SpinBox::SpinBoxStyle spinBoxStyle)
+{
+    if (spinBoxStyle == SPIN_BOX_STYLE_NUMBER)
+    {
+        d_ptr->info.type = ItemEditInfo::VALUE;
+    }
+    else if (spinBoxStyle == SPIN_BOX_STYLE_STRING)
+    {
+        d_ptr->info.type = ItemEditInfo::LIST;
+    }
+}
+
+void SpinBox::setStringList(QStringList strs)
+{
+    if (d_ptr->info.type != ItemEditInfo::LIST)
+    {
+        return;
+    }
+    d_ptr->info.list = strs;
+    d_ptr->info.highLimit = strs.count() - 1;
+    d_ptr->info.lowLimit = 0;
+    d_ptr->info.scale = 1;
+}
+
+void SpinBox::setStartValue(int value)
+{
+    d_ptr->info.startValue = value;
 }
 
 void SpinBox::onPopupDestroy()
@@ -336,6 +386,6 @@ void SpinBox::focusInEvent(QFocusEvent *ev)
 
 void SpinBox::focusOutEvent(QFocusEvent *ev)
 {
-    QAbstractButton::focusInEvent(ev);
+    QAbstractButton::focusOutEvent(ev);
     d_ptr->status = SPIN_BOX_FOCUS_OUT;
 }

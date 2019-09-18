@@ -19,7 +19,7 @@
 #include "SoundManager.h"
 #include "SystemManager.h"
 #include "COParam.h"
-#include "IConfig.h"
+#include "ConfigManager.h"
 #include "KeyInputPanel.h"
 #include "MessageBox.h"
 

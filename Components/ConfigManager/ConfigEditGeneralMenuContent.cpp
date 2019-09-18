@@ -103,15 +103,11 @@ void ConfigEditGeneralMenuContent::onBtnReleasedChanged()
     {
         QString newStr(panel.getStrValue());
         // 防止命名相同
-        QList<ConfigManager::UserDefineConfigInfo> configList = configManager.getUserDefineConfigInfos();
-        foreach(ConfigManager::UserDefineConfigInfo info, configList)
+        if (configManager.hasExistConfig(newStr, d_ptr->cmw->getCurrentConfigType()))
         {
-            if (info.name == newStr)
-            {
-                MessageBox message(trs("Prompt"), trs("HasExistConfig"), false, true);
-                message.exec();
-                return;
-            }
+            MessageBox message(trs("Prompt"), trs("HasExistConfig"), false, true);
+            message.exec();
+            return;
         }
 
         d_ptr->cmw->setCurrentEditConfigName(newStr);

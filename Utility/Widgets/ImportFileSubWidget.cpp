@@ -40,7 +40,7 @@ ImportSubWidgetPrivate::ImportSubWidgetPrivate()
 }
 
 ImportSubWidget::ImportSubWidget(const QStringList &iListWidgetName, const QString &path)
-    : Window(),
+    : Dialog(),
       d_ptr(new ImportSubWidgetPrivate)
 {
     setWindowTitle(trs("ImportFiles"));

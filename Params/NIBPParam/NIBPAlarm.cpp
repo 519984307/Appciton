@@ -13,12 +13,9 @@
 #include "NIBPParam.h"
 #include "IConfig.h"
 #include "NIBPSymbol.h"
-#include "PatientManager.h"
 #include "ParamManager.h"
 #include "FloatHandle.h"
 #include "AlarmConfig.h"
-
-NIBPLimitAlarm *NIBPLimitAlarm::_selfObj = NULL;
 
 /**************************************************************************************************
  * 获取正确的报警源名字。
@@ -293,8 +290,6 @@ NIBPLimitAlarm::~NIBPLimitAlarm()
  *---*---*---*---*---*---*---*---*---*---*---*----*---*---*---*---*---*---*---*---*---*---*---*---*
  *************************************************************************************************/
 
-NIBPOneShotAlarm *NIBPOneShotAlarm::_selfObj = NULL;
-
 /**************************************************************************************************
  * 报警源的名字。
  *************************************************************************************************/
@@ -358,21 +353,13 @@ const char *NIBPOneShotAlarm::toString(int id)
  *************************************************************************************************/
 bool NIBPOneShotAlarm::isRemoveAfterLatch(int id)
 {
-    switch (id)
-    {
-        case NIBP_ONESHOT_ALARM_CUFF_OVER_PRESSURE:
-        case NIBP_ONESHOT_ALARM_MEASURE_OVER_RANGE:
-        case NIBP_ONESHOT_ALARM_COMMUNICATION_STOP:
-        case NIBP_ONESHOT_ALARM_MODULE_DISABLE:
-            return false;
-        default:
-            return true;
-    }
+    Q_UNUSED(id)
+    return false;
 }
 
 bool NIBPOneShotAlarm::isAlarmed(int id)
 {
-    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO && getAlarmType(id) == ALARM_TYPE_TECH)
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
     {
         return false;
     }

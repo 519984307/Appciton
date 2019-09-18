@@ -15,6 +15,7 @@
 #include "O2Alarm.h"
 #include "O2Define.h"
 #include "SystemManager.h"
+#include "AlarmSourceManager.h"
 
 bool NeonateProvider::attachParam(Param &param)
 {
@@ -98,9 +99,15 @@ void NeonateProvider::handlePacket(unsigned char *data, int len)
         _selfTest(data, len);
         break;
     case NEONATE_RSP_PROBE_MOTOR:
-        o2OneShotAlarm.setOneShotAlarm(O2_ONESHOT_ALARM_MOTOR_NOT_IN_POSITION, data[1]);
-        o2OneShotAlarm.setOneShotAlarm(O2_ONESHOT_ALARM_SENSOR_OFF, data[2]);
+    {
+        AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_O2);
+        if (alarmSource)
+        {
+            alarmSource->setOneShotAlarm(O2_ONESHOT_ALARM_MOTOR_NOT_IN_POSITION, !data[1]);
+            alarmSource->setOneShotAlarm(O2_ONESHOT_ALARM_SENSOR_OFF, !data[2]);
+        }
         break;
+    }
     case NEONATE_RSP_CALIBRATION:
         o2Param.calibrationResult(data);
         break;
@@ -108,16 +115,22 @@ void NeonateProvider::handlePacket(unsigned char *data, int len)
         break;
     case NEONATE_NOTIFY_START_UP:
     {
-        ErrorLogItem *item = new CriticalFaultLogItem();
+        ErrorLogItem *item = new ErrorLogItem();
         item->setName("T5 Start");
         errorLog.append(item);
         o2Param.reset();
         break;
     }
     case NEONATE_NOTIFY_PROBE_MOTOR:
-        o2OneShotAlarm.setOneShotAlarm(O2_ONESHOT_ALARM_MOTOR_NOT_IN_POSITION, data[1]);
-        o2OneShotAlarm.setOneShotAlarm(O2_ONESHOT_ALARM_SENSOR_OFF, data[2]);
+    {
+        AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_O2);
+        if (alarmSource)
+        {
+            alarmSource->setOneShotAlarm(O2_ONESHOT_ALARM_MOTOR_NOT_IN_POSITION, !data[1]);
+            alarmSource->setOneShotAlarm(O2_ONESHOT_ALARM_SENSOR_OFF, !data[2]);
+        }
         break;
+    }
     case NEONATE_CYCLE_ALIVE:
         feed();
         break;
@@ -144,20 +157,34 @@ void NeonateProvider::reconnected()
 {
 }
 
+void NeonateProvider::sendDisconnected()
+{
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_TEMP);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(O2_ONESHOT_ALARM_SEND_COMMUNICATION_STOP, true);
+    }
+}
+
 void NeonateProvider::_selfTest(unsigned char *packet, int len)
 {
     int num = packet[1];
     if (num > 0)
     {
+        AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_O2);
+        if (alarmSource == NULL)
+        {
+            return;
+        }
         for (int i = 2; i < len; i++)
         {
             switch (packet[i])
             {
             case 0x01:
-                o2OneShotAlarm.setOneShotAlarm(O2_ONESHOT_ALARM_CALIBRATE_RESET, true);
+                alarmSource->setOneShotAlarm(O2_ONESHOT_ALARM_CALIBRATE_RESET, true);
                 break;
             case 0x02:
-                o2OneShotAlarm.setOneShotAlarm(O2_ONESHOT_ALARM_NOT_CALIBRATE, true);
+                alarmSource->setOneShotAlarm(O2_ONESHOT_ALARM_NOT_CALIBRATE, true);
                 break;
             default:
                 break;

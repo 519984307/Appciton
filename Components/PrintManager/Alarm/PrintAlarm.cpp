@@ -1,6 +1,14 @@
-#include "PrintAlarm.h"
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2019/3/22
+ **/
 
-PrintOneShotAlarm *PrintOneShotAlarm::_selfObj = NULL;
+#include "PrintAlarm.h"
 
 /**************************************************************************************************
  * 报警源的名字。
@@ -21,16 +29,23 @@ int PrintOneShotAlarm::getAlarmSourceNR(void)
 /**************************************************************************************************
  * 技术报警报警级别。
  *************************************************************************************************/
-AlarmPriority PrintOneShotAlarm::getAlarmPriority(int /*id*/)
+AlarmPriority PrintOneShotAlarm::getAlarmPriority(int id)
 {
-    return ALARM_PRIO_MED;
+    switch (id)
+    {
+    case PRINT_ONESHOT_ALARM_FAULT:
+        return ALARM_PRIO_HIGH;
+    default:
+        return ALARM_PRIO_MED;
+    }
 }
 
 /**************************************************************************************************
  * 该报警是否为生命报警，技术报警和生理/生命报警分开存放。
  *************************************************************************************************/
-AlarmType PrintOneShotAlarm::getAlarmType(int /*id*/)
+AlarmType PrintOneShotAlarm::getAlarmType(int id)
 {
+    Q_UNUSED(id)
     return ALARM_TYPE_TECH;
 }
 
@@ -47,21 +62,16 @@ const char *PrintOneShotAlarm::toString(int id)
  *************************************************************************************************/
 bool PrintOneShotAlarm::isRemoveAfterLatch(int id)
 {
-    switch (id)
-    {
-        case PRINT_ONESHOT_ALARM_OUT_OF_PAPER:
-            return false;
-
-        default:
-            return true;
-    }
+    Q_UNUSED(id)
+    return false;
 }
 
 /**************************************************************************************************
  * 获取报警对应的波形ID，该波形将被存储。
  *************************************************************************************************/
-WaveformID PrintOneShotAlarm::getWaveformID(int /*id*/)
+WaveformID PrintOneShotAlarm::getWaveformID(int id)
 {
+    Q_UNUSED(id)
     return WAVE_NONE;
 }
 
@@ -70,7 +80,6 @@ WaveformID PrintOneShotAlarm::getWaveformID(int /*id*/)
  *************************************************************************************************/
 PrintOneShotAlarm::PrintOneShotAlarm()
 {
-
 }
 
 /**************************************************************************************************
@@ -78,5 +87,4 @@ PrintOneShotAlarm::PrintOneShotAlarm()
  *************************************************************************************************/
 PrintOneShotAlarm::~PrintOneShotAlarm()
 {
-
 }

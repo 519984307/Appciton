@@ -17,6 +17,7 @@
 #include "ConfigManager.h"
 #include "MessageBox.h"
 #include "PatientManager.h"
+#include "WindowManager.h"
 
 #define MaxInputLength 12
 
@@ -37,7 +38,7 @@ public:
 };
 
 SaveUserConfigWindow::SaveUserConfigWindow()
-    : Window(), d_ptr(new SaveUserConfigWindowPrivate)
+    : Dialog(), d_ptr(new SaveUserConfigWindowPrivate)
 {
     setWindowTitle(trs("SaveAsUserConfig"));
     setFixedSize(510, 300);
@@ -47,17 +48,15 @@ SaveUserConfigWindow::SaveUserConfigWindow()
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->setMargin(0);
     QLabel *hint = new QLabel;
-    hint->setWordWrap(true);
-    hint->setText(trs("SaveCurrentSettingAndConfigurationName"));
+    hint->setText(QString("%1\n%2").arg(trs("SaveTheCurrentSetting")).arg(trs("NameTheConfigurationName")));
     vLayout->addWidget(hint);
 
     QLabel *cofNameLbl = new QLabel;
     cofNameLbl->setText(trs("ConfigurationName"));
-    hLayout->addWidget(cofNameLbl);
+    hLayout->addWidget(cofNameLbl, 1);
     d_ptr->cofNameBtn = new Button;
     d_ptr->cofNameBtn->setButtonStyle(Button::ButtonTextOnly);
-    d_ptr->cofNameBtn->setFixedWidth(280);
-    hLayout->addWidget(d_ptr->cofNameBtn);
+    hLayout->addWidget(d_ptr->cofNameBtn, 1);
     connect(d_ptr->cofNameBtn, SIGNAL(released()), this, SLOT(onConfigNameBtnReleased()));
     vLayout->addLayout(hLayout);
     vLayout->addStretch();
@@ -87,7 +86,7 @@ SaveUserConfigWindow::~SaveUserConfigWindow()
 void SaveUserConfigWindow::showEvent(QShowEvent *e)
 {
     d_ptr->loadOption();
-    Window::showEvent(e);
+    Dialog::showEvent(e);
 }
 
 void SaveUserConfigWindow::onBtnReleased()
@@ -95,10 +94,10 @@ void SaveUserConfigWindow::onBtnReleased()
     Button *btn = qobject_cast<Button *>(sender());
     if (btn == d_ptr->okBtn)
     {
-        if (configManager.hasExistConfig(d_ptr->cofNameBtn->text()))
+        if (configManager.hasExistConfig(d_ptr->cofNameBtn->text(), patientManager.getType()))
         {
             MessageBox message(trs("Prompt"), trs("HasExistConfig"), false);
-            message.exec();
+            windowManager.showWindow(&message, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
         }
         else
         {
@@ -118,7 +117,8 @@ void SaveUserConfigWindow::onConfigNameBtnReleased()
     EnglishInputPanel inputPanel;
     inputPanel.setInitString(btn->text());
     inputPanel.setMaxInputLength(MaxInputLength);
-    if (inputPanel.exec())
+    windowManager.showWindow(&inputPanel, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
+    if (inputPanel.result() == QDialog::Accepted)
     {
         btn->setText(inputPanel.getStrValue());
         if (btn->text().isEmpty())

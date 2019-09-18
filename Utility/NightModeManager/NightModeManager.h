@@ -10,21 +10,15 @@
 
 #pragma once
 #include <QObject>
-#include "SoundManager.h"
+#include "SystemDefine.h"
+#include "SoundManagerInterface.h"
 
 class NightModeManagerPrivate;
-class NightModeManager
+class NightModeManager : public QObject
 {
+    Q_OBJECT
 public:
-    static NightModeManager &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new NightModeManager();
-        }
-        return *_selfObj;
-    }
-    static NightModeManager *_selfObj;
+    static NightModeManager &getInstance(void);
 
     // 复制构造函数
     ~NightModeManager();
@@ -41,9 +35,30 @@ public:
      */
     bool nightMode();
 
+    /**
+     * @brief setBrightness 设置夜间模式的背光亮度
+     * @param level
+     */
+    void setBrightness(BrightnessLevel level);
+
+    /**
+     * @brief setSoundVolume　设置夜间模式的音量
+     * @param soundType
+     * @param volumeLevel
+     */
+    void setSoundVolume(SoundManagerInterface::SoundType soundType, SoundManagerInterface::VolumeLevel volumeLevel);
+
+    /**
+     * @brief setNibpStopMeasure 设置夜间模式的NIBP停止测量状态
+     * @param stopNibpMeasure
+     */
+    void setNibpStopMeasure(bool stopNibpMeasure);
+signals:
+    void nightModeChanged(bool);
+
 private:
     NightModeManager();
     NightModeManager(const NightModeManager &handle);  // stop the cppcheck complain
     NightModeManagerPrivate *d_ptr;
 };
-#define nightModeManager (NightModeManager::construction())
+#define nightModeManager (NightModeManager::getInstance())

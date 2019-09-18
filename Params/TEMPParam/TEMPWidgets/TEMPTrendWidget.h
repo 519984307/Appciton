@@ -13,6 +13,14 @@
 #include "TrendWidget.h"
 #include <QLabel>
 #include "TEMPDefine.h"
+#include <QStackedWidget>
+
+enum TempState
+{
+    TEMP_STATE_ENABLE,
+    TEMP_STATE_DISABLE,
+    TEMP_STATE_NR,
+};
 
 class TEMPTrendWidget: public TrendWidget
 {
@@ -34,6 +42,8 @@ public:
     // 刷新上下限
     void updateLimit();
 
+    void showErrorStatckedWidget(bool error);
+
     TEMPTrendWidget();
     ~TEMPTrendWidget();
 
@@ -41,11 +51,14 @@ public:
 public:
     virtual void doRestoreNormalStatus();
 
-    /* reimplment */
-    void updateWidgetConfig();
+    virtual void updatePalette(const QPalette &pal);
 
 protected:
     virtual void setTextSize(void);
+
+    /* reimplment */
+    void loadConfig();
+    void showAlarmParamLimit(QWidget *value, const QString &valueStr, QPalette psrc);
 
 private slots:
     void _releaseHandle(IWidget *);
@@ -58,11 +71,6 @@ private slots:
     void onTempNameUpdate(TEMPChannelIndex channel, TEMPChannelType type);
 
 private:
-    /**
-     * @brief _loadConfig  加载配置
-     */
-    void _loadConfig();
-
     // 温度组
     enum tempGrp
     {
@@ -85,4 +93,12 @@ private:
     bool _t1Alarm;
     bool _t2Alarm;
     bool _tdAlarm;
+
+    QLabel *_t1UpLimit;
+    QLabel *_t1DownLimit;
+    QLabel *_t2UpLimit;
+    QLabel *_t2DownLimit;
+
+    QStackedWidget *statckedWidget;  // 窗口显示内容
+    QLabel *_message;    // 显示禁用等信息
 };

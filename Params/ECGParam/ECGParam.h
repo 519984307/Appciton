@@ -12,12 +12,12 @@
 #include <QPalette>
 #include "Param.h"
 #include "ECGSymbol.h"
-#include "ECGDefine.h"
 #include "SoundManager.h"
 #include <QBasicTimer>
 #include "SystemDefine.h"
 #include "ECGAlg2SoftInterface.h"
 #include "SystemManager.h"
+#include "ECGParamInterface.h"
 
 enum
 {
@@ -34,19 +34,11 @@ class ECGWaveWidget;
 class ECGProviderIFace;
 class PDProviderIFace;
 class OxyCRGRRHRWaveWidget;
-class ECGParam: public Param
+class ECGParam: public Param, public ECGParamInterface
 {
     Q_OBJECT
 public:
-    static ECGParam &construction()
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new ECGParam();
-        }
-        return *_selfObj;
-    }
-    static ECGParam *_selfObj;
+    static ECGParam &getInstance();
 
     // 析构。
     virtual ~ECGParam();
@@ -169,8 +161,7 @@ public:
     // enable VF calc
     void enableVFCalc(bool enable);
 
-    static unsigned selfTestResult;
-    void handleSelfTestResult();
+    void handleSelfTestResult(unsigned selfTestResult);
 
     /**
      * @brief getHrSourceTypeFromId  从参数id转换获取hr来源类型
@@ -244,6 +235,7 @@ public: // 用于访问配置相关信息。
     // 设置/获取起搏标记。
     void setPacermaker(ECGPaceMode onoff);
     ECGPaceMode getPacermaker(void);
+    void updatePacermaker(void);
 
     // 设置/获取12L起搏标记。
     void set12LPacermaker(ECGPaceMode onoff);
@@ -275,6 +267,7 @@ public: // 用于访问配置相关信息。
     // 设置/获取增益。
     void setGain(ECGGain gain, int waveID);
     ECGGain getGain(ECGLead lead);
+    ECGGain getECGAutoGain(ECGLead lead);
     void setAutoGain(ECGLead lead, int flag);
     bool getAutoGain(ECGLead lead);
 
@@ -290,6 +283,7 @@ public: // 用于访问配置相关信息。
 
     // 设置/获取工频滤波。
     void setNotchFilter(ECGNotchFilter filter);
+    void updateEditNotchFilter();
     ECGNotchFilter getNotchFilter();
     ECGNotchFilter getCalcLeadNotchFilter();
 
@@ -340,6 +334,19 @@ public: // 用于访问配置相关信息。
     void setFristConnect(void);
     bool getFristConnect(void);
 
+    /**
+     * @brief setRawDataOnOff set raw data
+     */
+    void setRawDataOnOff(bool sta);
+    bool getRawDataOnOff(void);
+
+    /**
+     * @brief adjustPrintWave 调整打印菜单中的设置波形
+     * @param preECGLead 调整前的ECG波形
+     * @param curECGLead 当前的ECG波形
+     */
+    void adjustPrintWave(ECGLead preECGLead, ECGLead curECGLead);
+
 signals:
     void calcLeadChanged();
 
@@ -385,6 +392,7 @@ private:
     ECGBandwidth _chestFreqBand;
     ECGBandwidth _12LeadFreqBand;
     ECGFilterMode _filterMode;
+    ECGNotchFilter _notchFilter;
     Display12LeadFormat _12LeadDispFormat;
     ECGLeadNameConvention _ecgStandard;
 
@@ -404,5 +412,9 @@ private:
     bool _connectedProvider;    // 连接Provider标识
 
     bool _isFristConnect;         // 开机后是否正常连接过导联
+    ECGGain _autoGain[ECG_LEAD_NR];      // 自动增益计算出的实际增益
+
+    short getMaxHrValue();
+    short getMinHrValue();
 };
-#define ecgParam (ECGParam::construction())
+#define ecgParam (ECGParam::getInstance())

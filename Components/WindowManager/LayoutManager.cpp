@@ -12,6 +12,7 @@
 #include "ScreenLayoutDefine.h"
 #include "ScreenLayoutModel.h"
 #include "IConfig.h"
+#include "ConfigManager.h"
 #include "QHBoxLayout"
 #include <QMap>
 #include <Debug.h>
@@ -23,6 +24,9 @@
 #include "TrendWidget.h"
 #include "ECGParam.h"
 #include "CO2Param.h"
+#include "PatientManager.h"
+
+#define FIRST_ECG_WAVE_HEIGHT 184
 
 typedef QList<LayoutNode> LayoutRow;
 
@@ -389,6 +393,7 @@ void LayoutManagerPrivate::performStandardLayout()
                 if (row < LAYOUT_MAX_WAVE_ROW_NUM)
                 {
                     waveLayout->addWidget(qw, insetRow, nodeIter->pos, 1, nodeIter->span);
+                    waveLayout->setRowStretch(row, 1);
                     if (w)
                     {
                         displayWaveforms.append(w->name());
@@ -421,9 +426,13 @@ void LayoutManagerPrivate::performStandardLayout()
         }
     }
 
+    // 设置波形和右参数区第一项的最小高度。
+    waveLayout->setRowMinimumHeight(0, FIRST_ECG_WAVE_HEIGHT);
+    rightParamLayout->setRowMinimumHeight(0, FIRST_ECG_WAVE_HEIGHT);
+
     // the wave container stretch
-    leftLayout->setStretch(0, waveLayout->rowCount());
     waveRowCount = waveLayout->rowCount();
+    leftLayout->setStretch(0, waveRowCount);
     // the let param container stretch
     if (leftParamLayout->count() != 0)
     {
@@ -684,6 +693,10 @@ void LayoutManagerPrivate::perform7LeadLayout()
         }
     }
 
+    // 设置第一道ECG波形的高度
+    waveLayout->setRowMinimumHeight(0, FIRST_ECG_WAVE_HEIGHT);
+
+    // 设置左参数区和波形区的竖向比例
     vLayout->setStretch(0, waveLayout->rowCount());
     waveRowCount = waveLayout->rowCount();
     if (leftParamLayout->count() != 0)
@@ -876,10 +889,29 @@ void LayoutManagerPrivate::performBigFontLayout()
 
             QWidget *nodeContainer = createContainter();
             gridLayout->addWidget(nodeContainer, row, column);
+            gridLayout->setColumnStretch(column, 1);
 
             QVBoxLayout *vLayout = new QVBoxLayout(nodeContainer);
             vLayout->setMargin(0);
-
+#ifdef BIG_FONT_LAYOUT_CO2_REPLACE_RESP
+            // co2 replace resp when co2 connecting.
+            if (paramName == QString(layoutNodeName(LAYOUT_NODE_PARAM_RESP)))
+            {
+                if (co2Param.isConnected())
+                {
+                    paramName = QString(layoutNodeName(LAYOUT_NODE_PARAM_CO2));
+                    waveName = QString(layoutNodeName(LAYOUT_NODE_WAVE_CO2));
+                }
+            }
+            else if (paramName == QString(layoutNodeName(LAYOUT_NODE_PARAM_CO2)))
+            {
+                if (!co2Param.isConnected())
+                {
+                    paramName = QString(layoutNodeName(LAYOUT_NODE_PARAM_RESP));
+                    waveName = QString(layoutNodeName(LAYOUT_NODE_WAVE_RESP));
+                }
+            }
+#endif
             IWidget *w = layoutWidgets.value(layoutNodeMap[paramName], NULL);
             if (w && widgetLayoutable[w->name()])
             {
@@ -907,7 +939,6 @@ void LayoutManagerPrivate::performBigFontLayout()
         }
         row++;
     }
-
     waveRowCount = 0;
     leftParamRowCount = 0;
 }
@@ -1380,6 +1411,11 @@ void LayoutManager::updateLayout()
     emit layoutChanged();
 }
 
+void LayoutManager::patientTypeChangeSlot()
+{
+    updateLayoutWidgetsConfig();
+}
+
 QStringList LayoutManager::getDisplayedWaveforms() const
 {
     return d_ptr->displayWaveforms;
@@ -1513,6 +1549,7 @@ void LayoutManager::updateLayoutWidgetsConfig()
     {
         w->updateWidgetConfig();
     }
+    updateLayout();
 }
 
 LayoutManager::LayoutManager()
@@ -1521,4 +1558,6 @@ LayoutManager::LayoutManager()
     d_ptr->layoutMap = systemConfig.getConfig("PrimaryCfg|UILayout|ContentLayout|Normal");
 
     addLayoutWidget(d_ptr->contentView);
+
+    connect(&patientManager, SIGNAL(signalPatientType(PatientType)), this, SLOT(patientTypeChangeSlot()));
 }

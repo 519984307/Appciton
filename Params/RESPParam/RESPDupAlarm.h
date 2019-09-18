@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2019/3/22
+ **/
+
 #pragma once
 #include "AlarmParamIFace.h"
 #include "RESPSymbol.h"
@@ -6,15 +16,7 @@
 class RESPDupLimitAlarm : public AlarmLimitIFace
 {
 public:
-    static RESPDupLimitAlarm &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new RESPDupLimitAlarm();
-        }
-        return *_selfObj;
-    }
-    static RESPDupLimitAlarm *_selfObj;
+    RESPDupLimitAlarm();
 
 public:
     // 报警源的名字。
@@ -56,12 +58,10 @@ public:
     virtual void notifyAlarm(int id, bool isAlarm);
 
     // 构造与析构。
-    RESPDupLimitAlarm();
     virtual ~RESPDupLimitAlarm();
 
 private:
     bool _isRRAlarm;
     bool _isBRAlarm;
 };
-#define respDupLimitAlarm (RESPDupLimitAlarm::construction())
 

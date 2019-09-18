@@ -9,10 +9,12 @@
  **/
 
 #pragma once
+#include <QObject>
 
 class RawDataCollectorPrivate;
-class RawDataCollector
+class RawDataCollector : public QObject
 {
+    Q_OBJECT
 public:
     enum CollectDataType
     {
@@ -20,6 +22,7 @@ public:
         SPO2_DATA,
         NIBP_DATA,
         TEMP_DATA,
+        CO2_DATA,
         DATA_TYPE_NR,
     };
 
@@ -45,6 +48,14 @@ public:
 
     // 循环运行
     void run();
+
+public slots:
+    void startCollectData();
+
+    void stopCollectData();
+
+protected:
+    void timerEvent(QTimerEvent *e);
 
 private:
     RawDataCollector();

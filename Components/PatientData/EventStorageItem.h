@@ -71,7 +71,10 @@ public:
     virtual ~EventStorageItem();
 
     // get the event type
-    virtual EventType getType() const;
+    virtual quint32 getType() const;
+
+    // get extra data
+    virtual quint32 getExtraData() const;
 
     // start collect trend and waveform data, return false if already start
     virtual bool startCollectTrendAndWaveformData(unsigned t);
@@ -128,6 +131,11 @@ public:
      */
     QString getEventTitle() const;
 
+    /**
+     * @brief getEventFolderName get event storage folder name
+     * @return folder name
+     */
+    QString getEventFolderName() const;
 private slots:
     // callback when the trigger page generator is stopped
     void onTriggerPrintStopped();

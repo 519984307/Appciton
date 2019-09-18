@@ -16,17 +16,23 @@
 #include <unistd.h>
 
 #define SOH             (0x01)  // packet header
+#define NACK            (0x00)  // 错误应答
+#define ACK             (0x01)  // 正确应答
 
-QMap<QString, BLMProvider*> BLMProvider::providers;
+QMap<QString, BLMProvider *> BLMProvider::providers;
 
 /***************************************************************************************************
  * 构造函数
  **************************************************************************************************/
 BLMProvider::BLMProvider(const QString &name)
-    : Provider(name), upgradeIface(NULL)
+    : Provider(name), upgradeIface(NULL),
+      rxdTimer(NULL), _noResponseCount(0),
+      _cmdId(-1)
 {
     providers.insert(name, this);
     _isLastSOHPaired = false;
+    rxdTimer = new QTimer();
+    connect(rxdTimer, SIGNAL(timeout()), this, SLOT(noResponseTimeout()));
 }
 
 /***************************************************************************************************
@@ -176,19 +182,70 @@ void BLMProvider::dataArrived()
  **************************************************************************************************/
 void BLMProvider::handlePacket(unsigned char *data, int len)
 {
-    if (data[0] == 0x11 && len > 1) // version data, all BLMProvidor share the same version respond code
+    if (data[0] == _cmdId + 1)
+    {
+        resetTimer();
+    }
+    // version data, all BLMProvidor share the same version respond code
+    if (data[0] == 0x11 && len >= 80 + 1) // version info length + data packet head offset
     {
         const char *p = reinterpret_cast<char *>(&data[1]);
-        versionInfo.append(p); // software version
+        versionInfo.clear();
+        versionInfo.append(p); // software git version
         versionInfo.append(" ");
-        p += 16;
-        versionInfo.append(p); // svn version
+        p += (30 + 1);  // software git version offset + data packet head offset
+
+        versionInfo.append(p); // build date
         versionInfo.append(" ");
-        p += 16;
-        versionInfo.append(p); // build time
-        versionInfo.append(" ");
-        p += 32;
+        p += (15 + 1);  // build date offset + data packet head offset
+
+//        versionInfo.append(p); // build time
+//        versionInfo.append(" ");
+        p += (15 + 1);  // build time offset + data packet head offset
+
         versionInfo.append(p); // hardware version
+        versionInfo.append(" ");
+        p += (1 + 1);  // hardware version offset + data packet head offset
+
+        versionInfo.append(p); // bootloader git version
+
+        if (len == 160 + 1)  // 适用于N5从片版本信息
+        {
+            const char *p = reinterpret_cast<char *>(&data[1 + 80]);
+            versionInfoEx.clear();
+            versionInfoEx.append(p); // software git version
+            versionInfoEx.append(" ");
+            p += (30 + 1);  // software git version offset + data packet head offset
+
+            versionInfoEx.append(p); // build date
+            versionInfoEx.append(" ");
+            p += (15 + 1);  // build date offset + data packet head offset
+
+            //        versionInfo.append(p); // build time
+            //        versionInfo.append(" ");
+            p += (15 + 1);  // build time offset + data packet head offset
+
+            versionInfoEx.append(p); // hardware version
+            versionInfoEx.append(" ");
+            p += (1 + 1);  // hardware version offset + data packet head offset
+
+            versionInfoEx.append(p); // bootloader git version
+        }
+    }
+}
+
+void BLMProvider::noResponseTimeout()
+{
+    _noResponseCount++;
+    if (_noResponseCount < 2)
+    {
+        _sendData(_blmCmd.cmd, _blmCmd.cmdLen);
+    }
+    else
+    {
+        qDebug() << getName() << "cmd = " << _cmdId;
+        sendDisconnected();
+        resetTimer();
     }
 }
 
@@ -290,12 +347,28 @@ void BLMProvider::dataArrived(unsigned char *buff, unsigned int length)
 
 void BLMProvider::setUpgradeIface(BLMProviderUpgradeIface *iface)
 {
+    if (iface == NULL)
+    {
+        stopCheckConnect(false);
+    }
+    else
+    {
+        stopCheckConnect(true);
+    }
     upgradeIface = iface;
 }
 
 BLMProvider *BLMProvider::findProvider(const QString &name)
 {
     return providers.value(name, NULL);
+}
+
+void BLMProvider::resetTimer()
+{
+    rxdTimer->stop();
+    _blmCmd.reset();
+    _noResponseCount = 0;
+    _cmdId = -1;
 }
 
 /***************************************************************************************************
@@ -326,6 +399,18 @@ bool BLMProvider::sendCmd(unsigned char cmdId, const unsigned char *data, unsign
     }
 
     cmdBuf[cmdLen - 1] = calcCRC(cmdBuf, (cmdLen - 1));
+
+    if (cmdId != NACK && cmdId != ACK)
+    {
+        _cmdId = cmdId;
+        _blmCmd.reset();
+        for (unsigned int i = 0; i < cmdLen; i++)
+        {
+            _blmCmd.cmd[i] = cmdBuf[i];
+        }
+        _blmCmd.cmdLen = cmdLen;
+        rxdTimer->start(1000);
+    }
     return _sendData(cmdBuf, cmdLen);
 }
 

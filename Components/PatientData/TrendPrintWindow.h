@@ -9,15 +9,15 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 #include "TrendDataDefine.h"
 
 class TrendPrintWindowPrivate;
-class TrendPrintWindow : public Window
+class TrendPrintWindow : public Dialog
 {
     Q_OBJECT
 public:
-    TrendPrintWindow(const QList<TrendDataPackage *> &trendDataPack);
+    explicit TrendPrintWindow(const QList<TrendDataPackage *> &trendDataPack);
     ~TrendPrintWindow();
 
     void initPrintTime(unsigned start, unsigned end);

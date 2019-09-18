@@ -22,6 +22,9 @@
 #include "WiFiProfileWindow.h"
 #include "IConfig.h"
 #include "SystemManager.h"
+#include "MessageBox.h"
+#include "USBManager.h"
+#include "LanguageManager.h"
 
 SystemStatusBarWidget *SystemStatusBarWidget::_selfObj = NULL;
 #define ICON_WIDTH 32
@@ -119,6 +122,21 @@ void SystemStatusBarWidget::onIconClicked(int iconLabel)
         WiFiProfileWindow w;
         windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
     }
+
+    if (iconLabel == SYSTEM_ICON_LABEL_USB)
+    {
+        MessageBox msg(trs("Prompt"), trs("SureSafePopUpUDisk"), true, true);
+        connect(&usbManager, SIGNAL(popupUDisk()), &msg, SLOT(reject()));  // 弹出u盘时，主动关闭该消息框
+        if (msg.exec() && usbManager.isUSBExist())
+        {
+            usbManager.stopRawCollectData();
+            this->focusNextChild();
+        }
+        if (usbManager.isUSBExist() == false)  // u盘不存在时，聚焦点主动移动到下一个item
+        {
+            this->focusNextChild();
+        }
+    }
 }
 
 /**************************************************************************************************
@@ -139,7 +157,7 @@ void SystemStatusBarWidget::timerEvent(QTimerEvent *e)
     if (e->timerId() == _timer.timerId())
     {
         int index = 0;
-        machineConfig.getNumValue("WIFIEnable", index);
+        machineConfig.getModuleInitialStatus("WIFIEnable", reinterpret_cast<bool*>(&index));
         if (index)
         {
             // 工厂维护中打开wifi模块
@@ -155,7 +173,7 @@ void SystemStatusBarWidget::timerEvent(QTimerEvent *e)
         }
         else
         {
-            changeIcon(SYSTEM_ICON_LABEL_WIFI, SYSTEM_ICON_WIFI_CLOSED, false);
+            changeIcon(SYSTEM_ICON_LABEL_WIFI, SYSTEM_ICON_NONE, false);
         }
     }
 }

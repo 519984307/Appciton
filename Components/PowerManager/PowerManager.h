@@ -29,13 +29,13 @@ public:
     ~PowerManger();
 
     /**
-     * @brief setBatteryQuantity 设置电池电量
+     * @brief setBatteryCapacity 设置电池AD值
      * @param adc
      */
     void setBatteryCapacity(short adc);
 
     /**
-     * @brief getBatteryQuantity 获取电池电量
+     * @brief getBatteryCapacity 获取电池电量
      * @return
      */
     QString getBatteryCapacity();

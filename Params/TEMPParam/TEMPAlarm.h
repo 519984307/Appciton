@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2019/3/22
+ **/
+
 #pragma once
 #include "AlarmParamIFace.h"
 #include "TEMPSymbol.h"
@@ -6,22 +16,17 @@
 class TEMPLimitAlarm : public AlarmLimitIFace
 {
 public:
-    static TEMPLimitAlarm &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new TEMPLimitAlarm();
-        }
-        return *_selfObj;
-    }
-    static TEMPLimitAlarm *_selfObj;
+    TEMPLimitAlarm();
 
 public:
     // 报警源的名字。
     virtual QString getAlarmSourceName(void);
 
     // 获取对应的参数ID。
-    virtual ParamID getParamID(void) { return PARAM_TEMP; }
+    virtual ParamID getParamID(void)
+    {
+        return PARAM_TEMP;
+    }
 
     // 报警源的个数。
     virtual int getAlarmSourceNR(void);
@@ -57,37 +62,30 @@ public:
     virtual void notifyAlarm(int id, bool flag);
 
     // 构造与析构。
-    TEMPLimitAlarm();
     virtual ~TEMPLimitAlarm();
 
 private:
     bool _isT1Alarm;
     bool _isT2Alarm;
     bool _isTDAlarm;
-    float _t1,_t2;
+    float _t1, _t2;
 };
-#define tempLimitAlarm (TEMPLimitAlarm::construction())
 
 // OneShor报警实现。
 class TEMPOneShotAlarm : public AlarmOneShotIFace
 {
 public:
-    static TEMPOneShotAlarm &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new TEMPOneShotAlarm();
-        }
-        return *_selfObj;
-    }
-    static TEMPOneShotAlarm *_selfObj;
+    TEMPOneShotAlarm();
 
 public:
     // 报警源的名字。
     virtual QString getAlarmSourceName(void);
 
     // 获取对应的参数ID。
-    virtual ParamID getParamID(void) { return PARAM_TEMP; }
+    virtual ParamID getParamID(void)
+    {
+        return PARAM_TEMP;
+    }
 
     // 报警源的个数。
     virtual int getAlarmSourceNR(void);
@@ -112,8 +110,4 @@ public:
 
     // 构造与析构。
     virtual ~TEMPOneShotAlarm();
-
-private:
-    TEMPOneShotAlarm();
 };
-#define tempOneShotAlarm (TEMPOneShotAlarm::construction())

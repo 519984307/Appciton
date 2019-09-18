@@ -17,10 +17,13 @@
 #include "Debug.h"
 #include "USBManager.h"
 #include "SoundManager.h"
+#include "MessageBox.h"
 
 #if defined(CONFIG_CAPTURE_SCREEN)
 #include <QDateTime>
 #include "Utility.h"
+#include "LanguageManager.h"
+#include "WindowManager.h"
 #endif
 
 /**************************************************************************************************
@@ -196,13 +199,21 @@ void IApplication::handleScreenCaptureResult(long result)
     if (result)
     {
         QImage *image = reinterpret_cast<QImage *>(result);
-        Util::popupMsgBox("Screen Capture", QPixmap::fromImage(*image).scaled(
-                              150, 90, Qt::IgnoreAspectRatio, Qt::SmoothTransformation), "Capture screen Success.");
+        MessageBox msgBox(trs("ScreenCapture"), QPixmap::fromImage(*image).scaled(
+                              150, 90, Qt::IgnoreAspectRatio, Qt::SmoothTransformation), trs("CaptureSuccess"), false);
+
+        Qt::WindowFlags flags = msgBox.windowFlags();
+        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | flags);
+        windowManager.showWindow(&msgBox,
+                                 WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
         delete image;
     }
     else
     {
-        Util::popupMsgBox("Screen capture", QPixmap(), "Capture screen failed.");
+        MessageBox msgBox(trs("ScreenCapture"), trs("CaptureFail"), false);
+        Qt::WindowFlags flags = msgBox.windowFlags();
+        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | flags);
+        windowManager.showWindow(&msgBox, WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
     }
 }
 
@@ -348,6 +359,13 @@ bool IApplication::qwsEventFilter(QWSEvent *e)
         }
         else if (keyEvent->simpleData.is_press)   // press事件。
         {
+            if ((keyEvent->simpleData.keycode >= Qt::Key_F1 && keyEvent->simpleData.keycode <= Qt::Key_F9)
+                    || keyEvent->simpleData.keycode == Qt::Key_Return
+                    || keyEvent->simpleData.keycode == Qt::Key_Enter)
+            {
+                // 面板9个按键和飞梭按键播放按键音
+                soundManager.keyPressTone();
+            }
             switch (keyEvent->simpleData.keycode)
             {
             case Qt::Key_F1:
@@ -385,13 +403,6 @@ bool IApplication::qwsEventFilter(QWSEvent *e)
             case Qt::Key_F9:
                 keyActionManager.handleKeyAction(KEY_F9_PRESSED);
                 break;
-
-            // 更新：左右按键不需要有按键音，确认键要有按键音
-            case Qt::Key_Return:
-            case Qt::Key_Enter:
-                soundManager.keyPressTone();
-                break;
-
             default:
                 break;
             }

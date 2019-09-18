@@ -13,7 +13,7 @@
 #include <QLabel>
 #include "ComboBox.h"
 #include <QGridLayout>
-#include "IConfig.h"
+#include "ConfigManager.h"
 #include "ECGParam.h"
 #include "PrintDefine.h"
 

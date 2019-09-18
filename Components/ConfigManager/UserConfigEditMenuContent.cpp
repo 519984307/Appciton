@@ -25,6 +25,7 @@
 #include "ListViewItemDelegate.h"
 #include "ConfigManagerMenuWindow.h"
 #include "PatientTypeSelectWindow.h"
+#include <QMetaObject>
 
 #define CONFIG_DIR "/usr/local/nPM/etc"
 #define USER_DEFINE_CONFIG_NAME "UserConfig"
@@ -217,9 +218,15 @@ void UserConfigEditMenuContent::onBtnClick()
             }
             d_ptr->patientType = type;
 
+            // free the memory
+            if (d_ptr->editWindow)
+            {
+                delete d_ptr->editWindow;
+                d_ptr->editWindow = NULL;
+            }
             d_ptr->editWindow = new ConfigEditMenuWindow();
             d_ptr->editWindow->setCurrentEditConfigName(d_ptr->generateDefaultConfigName());
-            d_ptr->editWindow->setCurrentEditConfig(d_ptr->curConfig);
+            d_ptr->editWindow->setCurrentEditConfigInfo(d_ptr->curConfig, type);
             d_ptr->editWindow->initializeSubMenu();
 
             QString name = d_ptr->editWindow->getCurrentEditConfigName();
@@ -227,6 +234,9 @@ void UserConfigEditMenuContent::onBtnClick()
             pathName = "Add-";
             pathName += name;
             d_ptr->editWindow->setWindowTitlePrefix(pathName);
+
+            // force updating the first window title
+            QMetaObject::invokeMethod(d_ptr->editWindow, "onVisiableItemChanged", Q_ARG(int, 0));
 
             windowManager.showWindow(d_ptr->editWindow, WindowManager::ShowBehaviorHideOthers |
                                                         WindowManager::ShowBehaviorNoAutoClose);
@@ -248,9 +258,25 @@ void UserConfigEditMenuContent::onBtnClick()
             d_ptr->curConfig = new Config(QString("%1/%2")
                                           .arg(CONFIG_DIR)
                                           .arg(d_ptr->configs.at(index).fileName));
+            // free the memory
+            if (d_ptr->editWindow)
+            {
+                delete d_ptr->editWindow;
+                d_ptr->editWindow = NULL;
+            }
             d_ptr->editWindow = new ConfigEditMenuWindow();
             d_ptr->editWindow->setCurrentEditConfigName(d_ptr->configs.at(index).name);
-            d_ptr->editWindow->setCurrentEditConfig(d_ptr->curConfig);
+            QString strType = d_ptr->configs.at(index).patType;
+            PatientType type = PATIENT_TYPE_ADULT;
+            if (strType == PatientSymbol::convert(PATIENT_TYPE_NEO))
+            {
+                type = PATIENT_TYPE_NEO;
+            }
+            else if (strType == PatientSymbol::convert(PATIENT_TYPE_PED))
+            {
+                type = PATIENT_TYPE_PED;
+            }
+            d_ptr->editWindow->setCurrentEditConfigInfo(d_ptr->curConfig, type);
             d_ptr->editWindow->initializeSubMenu();
 
             QString fileName = d_ptr->curConfig->getFileName();
@@ -266,6 +292,9 @@ void UserConfigEditMenuContent::onBtnClick()
                 pathName = "Edit-DefaultSetting";
             }
             d_ptr->editWindow->setWindowTitlePrefix(pathName);
+
+            // force updating the first window title
+            QMetaObject::invokeMethod(d_ptr->editWindow, "onVisiableItemChanged", Q_ARG(int, 0));
 
             windowManager.showWindow(d_ptr->editWindow, WindowManager::ShowBehaviorHideOthers |
                                                         WindowManager::ShowBehaviorNoAutoClose);
@@ -322,7 +351,7 @@ void UserConfigEditMenuContent::onEditFinished()
         d_ptr->patientType = PATIENT_TYPE_NULL;
     }
 
-    d_ptr->editWindow->setCurrentEditConfig(NULL);
+    d_ptr->editWindow->setCurrentEditConfigInfo(NULL);
     d_ptr->editWindow->setCurrentEditConfigName(QString());
 
     d_ptr->loadConfigs();

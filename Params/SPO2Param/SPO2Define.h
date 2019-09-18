@@ -17,7 +17,6 @@ enum SPO2ModuleType
 {
     MODULE_BLM_S5,
     MODULE_MASIMO_SPO2,
-    MODULE_NELLCOR_SPO2,
     MODULE_RAINBOW_SPO2,
     MODULE_SPO2_NR,
 };
@@ -60,8 +59,8 @@ enum SPO2ModuleControl
  *************************************************************************************************/
 enum SPO2SMARTPLUSETONE
 {
-    SPO2_SMART_PLUSE_TONE_ON,
     SPO2_SMART_PLUSE_TONE_OFF,
+    SPO2_SMART_PLUSE_TONE_ON,
     SPO2_SMART_PLUSE_TONE_NR
 };
 
@@ -78,6 +77,30 @@ enum SPO2OneShotType
     SPO2_ONESHOT_ALARM_SIGNAL_WEAK,               // 信号太弱。
     SPO2_ONESHOT_ALARM_SIGNAL_SATURATION,         // 信号饱和。
     SPO2_ONESHOT_ALARM_LOW_PERFUSION,             // 低弱灌注。
+    SPO2_ONESHOT_ALARM_DEFECTIVE_CABLE,                  // defective cable
+    SPO2_ONESHOT_ALARM_CABLE_EXPIRED,                    // cable expired
+    SPO2_ONESHOT_ALARM_INCOMPATIBLE_CABLE,               // incompatible cable
+    SPO2_ONESHOT_ALARM_UNRECONGNIZED_CABLE,              // unrecongnized cable
+    SPO2_ONESHOT_ALARM_CABLE_NEAR_EXPIRATION,            // cable near expiration
+    SPO2_ONESHOT_ALARM_SENSOR_EXPIRED,                   // sensor expired
+    SPO2_ONESHOT_ALARM_INCOMPATIBLE_SENSOR,              // incompatible sensor
+    SPO2_ONESHOT_ALARM_UNRECONGNIZED_SENSOR,             // unrecongnized sensor
+    SPO2_ONESHOT_ALARM_DEFECTIVE_SENSOR,                 // defective sensor
+    SPO2_ONESHOT_ALARM_CHECK_CABLE_AND_SENSOR_FAULT,     // check cable and sensor fault
+    SPO2_ONESHOT_ALARM_SENSOR_NEAR_EXPIRATION,           // sensor near expiration
+    SPO2_ONESHOT_ALARM_NO_ADHESIVE_SENSOR,               // no adhesive sensor
+    SPO2_ONESHOT_ALARM_ADHESIVE_SENSOR_EXPIRATION,       // adhesive sensor expiraton
+    SPO2_ONESHOT_ALARM_INCOMPATIBLE_ADHESIVE_SENSOR,     // incompatible adhesive sensor
+    SPO2_ONESHOT_ALARM_UNRECONGNIZED_ADHESIVE_SENSOR,    // unrecongnized adhesive sensor
+    SPO2_ONESHOT_ALARM_DEFECTIVE_ADHESIVE_SENSOR,        // defective adhesive sensor
+    SPO2_ONESHOT_ALARM_SENSOR_INITING,                   // sensor initing
+    SPO2_ONESHOT_ALARM_INTERFERENCE_DETECTED,            // interference detected
+    SPO2_ONESHOT_ALARM_DEMO_MODE,                        // demo mode
+    SPO2_ONESHOT_ALARM_ADHESIVE_SENSOR_NEAR_EXPIRATION,  // adhesive sensor near expiration
+    SPO2_ONESHOT_ALARM_CHECK_SENSOR_CONNECTION,          // check sensor connection
+    SPO2_ONESHOT_ALARM_SPO2_ONLY_MODE,                   // spo2 only mode
+    SPO2_ONESHOT_ALARM_BOARD_FAILURE,                    // spo2 board failure
+    SPO2_ONESHOT_ALARM_SEND_COMMUNICATION_STOP,         // 发送通信中断
     SPO2_ONESHOT_NR
 };
 
@@ -134,4 +157,13 @@ enum RainbowLineFrequency
 {
     RB_LINE_FREQ_50HZ,
     RB_LINE_FREQ_60HZ,
+};
+
+// CCHD筛查结果
+enum CCHDResult
+{
+    Negative,    // 阴性
+    Positive,    // 阳性
+    RepeatCheck, // 重复筛查
+    CCHD_NR
 };

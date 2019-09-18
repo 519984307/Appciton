@@ -88,6 +88,7 @@ bool UDiskInspector::checkUsbConnectStatus()
         if (QFile::exists(usbdev))
         {
             result = true;
+            emit mountUDisk();
             break;
         }
     }
@@ -119,6 +120,7 @@ bool UDiskInspector::checkUsbConnectStatus()
             {
                 qdebug("mount /dev/%s success!", qPrintable(devName));
                 result = true;
+                emit mountUDisk();
                 break;
             }
         }
@@ -129,11 +131,32 @@ bool UDiskInspector::checkUsbConnectStatus()
 #endif
 }
 
+bool UDiskInspector::checkUDiskInsert()
+{
+    static int usbNum = 0;
+    // find a exist usb device and mount it
+    QDir devDir("/sys/class/scsi_disk");
+    int usbFileNum = devDir.count();
+    if (usbFileNum != usbNum)
+    {
+        usbNum = usbFileNum;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+    return true;
+}
+
 void UDiskInspector::timerEvent(QTimerEvent *ev)
 {
     if (ev->timerId() == _timerId)
     {
-        bool status = checkUsbConnectStatus();
-        emit  statusUpdate(status);
+        if (checkUDiskInsert())
+        {
+            bool status = checkUsbConnectStatus();
+            emit  statusUpdate(status);
+        }
     }
 }

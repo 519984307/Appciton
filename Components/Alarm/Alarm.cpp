@@ -9,17 +9,11 @@
  **/
 
 #include "Alarm.h"
-#include "BaseDefine.h"
-#include "TimeDate.h"
 #include "IConfig.h"
 #include <QMap>
-#include "TrendCache.h"
-#include "AlarmStateMachine.h"
-#include "SystemManager.h"
-#include "ECGParam.h"
-#include "ParamManager.h"
-#include "EventDataDefine.h"
-#include "EventStorageManager.h"
+#include "AlarmStateMachineInterface.h"
+#include "ECGParamInterface.h"
+#include "ECGSymbol.h"
 #include "SPO2Symbol.h"
 #include "RESPSymbol.h"
 #include "CO2Symbol.h"
@@ -28,7 +22,11 @@
 #include "AGSymbol.h"
 #include "TEMPSymbol.h"
 #include "NIBPSymbol.h"
-#include "TrendDataStorageManager.h"
+#include "O2Symbol.h"
+#include "TrendDataStorageManagerInterface.h"
+#include "AlarmIndicatorInterface.h"
+#include "TrendCacheInterface.h"
+#include "ParamInfoInterface.h"
 
 #define ALARM_LIMIT_TIMES (3)   // 超限3次后，发生报警
 static int curSecondAlarmNum = 0;  // record the number of alarms happend in the save seconds
@@ -67,8 +65,6 @@ struct AlarmTraceCtrl
 };
 typedef QMap<QString, AlarmTraceCtrl> TraceMap;
 static TraceMap _traceCtrl;
-
-Alarm *Alarm::_selfObj = NULL;
 
 /**************************************************************************************************
  * 功能：获取报警跟踪控制对象。
@@ -136,24 +132,22 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
         if (priority != traceCtrl->priority && NULL != traceCtrl->alarmMessage)
         {
             traceCtrl->priority = priority;
-            alarmIndicator.updataAlarmPriority(traceCtrl->type, traceCtrl->alarmMessage, priority);
+            AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+            if (alarmIndicator)
+            {
+                alarmIndicator->updataAlarmPriority(traceCtrl->type, traceCtrl->alarmMessage, priority);
+            }
         }
         TrendCacheData data;
-        trendCache.getTendData(_timestamp, data);
-        curValue = data.values[alarmSource->getSubParamID(i)];
+        TrendCacheInterface *trendCache = TrendCacheInterface::getTrendCache();
+        if (trendCache)
+        {
+            trendCache->getTrendData(_timestamp, data);
+        }
+        curValue = data.values.value(alarmSource->getSubParamID(i), InvData());
 
         bool isEnable = alarmSource->isAlarmEnable(i);
         int completeResult = alarmSource->getCompare(curValue, i);
-
-        // 报警关闭不处理超限报警, don't handle limit alarm when alarm pause
-        if (_curAlarmStatus == ALARM_STATUS_OFF || _curAlarmStatus == ALARM_STATUS_PAUSE)
-        {
-            traceCtrl->Reset();
-            traceCtrl->alarmTimesCount =
-                ALARM_LIMIT_TIMES;     // 处理目的：报警状态恢复正常后，马上刷新报警状态
-            alarmSource->notifyAlarm(i, false);
-            continue;
-        }
 
         // 报警关闭
         if (!isEnable)
@@ -161,14 +155,18 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
             if (traceCtrl->lastAlarmed && _isLatchLock)
             {
                 traceCtrl->normalTimesCount = ALARM_LIMIT_TIMES;
-                if (alarmIndicator.latchAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage))
+                AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+                if (alarmIndicator && alarmIndicator->latchAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage))
                 {
                     alarmSource->notifyAlarm(i, true);
                     continue;
                 }
             }
-
-            alarmIndicator.delAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage);      // 关闭了报警则取消该生理报警
+            AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+            if (alarmIndicator)
+            {
+                alarmIndicator->delAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage);      // 关闭了报警则取消该生理报警
+            }
             traceCtrl->Reset();
             alarmSource->notifyAlarm(i, false);
             continue;
@@ -183,7 +181,9 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
                 {
                     if (traceCtrl->normalTimesCount >= ALARM_LIMIT_TIMES)
                     {
-                        if (alarmIndicator.latchAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage))
+                        AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+                        if (alarmIndicator
+                                && alarmIndicator->latchAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage))
                         {
                             alarmSource->notifyAlarm(i, true);
                             traceCtrl->isLatched = true;
@@ -202,7 +202,11 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
             }
             else
             {
-                alarmIndicator.delAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage);
+                AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+                if (alarmIndicator)
+                {
+                    alarmIndicator->delAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage);
+                }
                 traceCtrl->Reset();
                 alarmSource->notifyAlarm(i, false);
             }
@@ -231,9 +235,12 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
                 traceCtrl->alarmMessage = alarmSource->toString(i);
                 traceCtrl->timestamp = _timestamp;
                 traceCtrl->order = ++curSecondAlarmNum;
-                alarmIndicator.addAlarmInfo(_timestamp, traceCtrl->type,
-                                            traceCtrl->priority, traceCtrl->alarmMessage, alarmSource, i);
-
+                AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+                if (alarmIndicator)
+                {
+                    alarmIndicator->addAlarmInfo(_timestamp, traceCtrl->type,
+                                                traceCtrl->priority, traceCtrl->alarmMessage, alarmSource, i);
+                }
                 alarmParam.append(alarmSource->getParamID());
                 // summaryStorageManager.addPhyAlarm(_timestamp, alarmSource->getParamID(), i,
                 //        false, alarmSource->getWaveformID(i));
@@ -249,7 +256,8 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
                 traceCtrl->alarmMessage = alarmSource->toString(i);
                 traceCtrl->timestamp = _timestamp;
                 traceCtrl->order = ++curSecondAlarmNum;
-                alarmIndicator.addAlarmInfo(_timestamp, traceCtrl->type,
+                AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+                alarmIndicator->addAlarmInfo(_timestamp, traceCtrl->type,
                                             traceCtrl->priority, traceCtrl->alarmMessage, alarmSource, i);
 
                 alarmParam.append(alarmSource->getParamID());
@@ -261,26 +269,43 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
 
             infoSegment.subParamID = alarmSource->getSubParamID(i);
             infoSegment.alarmType = i;
-            eventStorageManager.triggerAlarmEvent(infoSegment, alarmSource->getWaveformID(i), _timestamp);
+
+            EventInfo eventInfo;
+            eventInfo.alarmSource = static_cast<AlarmParamIFace *>(alarmSource);
+            eventInfo.infoSegment = infoSegment;
+            eventInfo.waveId = i;
+            eventList.append(eventInfo);
+
             switch (infoSegment.subParamID)
             {
             case SUB_PARAM_HR_PR:
+            #ifndef HIDE_OXYCRG_REVIEW_FUNCTION
                 eventStorageManager.triggerAlarmOxyCRGEvent(infoSegment, OxyCRGEventECG, _timestamp);
+            #endif
                 break;
             case SUB_PARAM_SPO2:
+            #ifndef HIDE_OXYCRG_REVIEW_FUNCTION
                 eventStorageManager.triggerAlarmOxyCRGEvent(infoSegment, OxyCRGEventSpO2, _timestamp);
+            #endif
                 break;
             case SUB_PARAM_RR_BR:
+            #ifndef HIDE_OXYCRG_REVIEW_FUNCTION
                 eventStorageManager.triggerAlarmOxyCRGEvent(infoSegment, OxyCRGEventResp, _timestamp);
+            #endif
                 break;
             default:
                 break;
             }
-            alarmStateMachine.handAlarmEvent(ALARM_STATE_EVENT_NEW_PHY_ALARM, 0, 0);
+            AlarmStateMachineInterface *alarmStateMachine = AlarmStateMachineInterface::getAlarmStateMachine();
+            if (alarmStateMachine)
+            {
+                alarmStateMachine->handAlarmEvent(ALARM_STATE_EVENT_NEW_PHY_ALARM, 0, 0);
+            }
         }  //栓锁的报警重新发生报警
         else
         {
-            if (!alarmIndicator.checkAlarmIsExist(traceCtrl->type, traceCtrl->alarmMessage))
+            AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+            if (alarmIndicator && !alarmIndicator->checkAlarmIsExist(traceCtrl->type, traceCtrl->alarmMessage))
             {
                 traceCtrl->Reset();
                 ++traceCtrl->alarmTimesCount;
@@ -299,8 +324,11 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
                 }
                 else
                 {
-                    alarmIndicator.addAlarmInfo(_timestamp, traceCtrl->type,
-                                                traceCtrl->priority, traceCtrl->alarmMessage, alarmSource, i);
+                    if (alarmIndicator)
+                    {
+                        alarmIndicator->addAlarmInfo(_timestamp, traceCtrl->type,
+                                                    traceCtrl->priority, traceCtrl->alarmMessage, alarmSource, i);
+                    }
                 }
             }
         }
@@ -330,6 +358,7 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
         AlarmType type = alarmSource->getAlarmType(i);
         AlarmPriority priority = alarmSource->getAlarmPriority(i);
         bool isRemoveAfterLatch = alarmSource->isRemoveAfterLatch(i);
+        bool isRemoveLightAfterConfirm = alarmSource->isRemoveLightAfterConfirm(i);
 
         // 报警关闭不处理生理报警报警, don't handle phy alarm when in alarm pause state
         if ((_curAlarmStatus == ALARM_STATUS_OFF || _curAlarmStatus == ALARM_STATUS_PAUSE) && type != ALARM_TYPE_TECH)
@@ -343,7 +372,11 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
         if (priority != traceCtrl->priority && NULL != traceCtrl->alarmMessage)
         {
             traceCtrl->priority = priority;
-            alarmIndicator.updataAlarmPriority(traceCtrl->type, traceCtrl->alarmMessage, priority);
+            AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+            if (alarmIndicator)
+            {
+                alarmIndicator->updataAlarmPriority(traceCtrl->type, traceCtrl->alarmMessage, priority);
+            }
         }
 
         // 根据各自要求是否需要删除报警
@@ -351,7 +384,11 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
         {
             if (traceCtrl->lastAlarmed)
             {
-                alarmIndicator.delAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage);
+                AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+                if (alarmIndicator)
+                {
+                    alarmIndicator->delAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage);
+                }
             }
 
             alarmSource->notifyAlarm(i, false);
@@ -365,9 +402,11 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
         {
             if (traceCtrl->lastAlarmed)
             {
-                if (traceCtrl->type != ALARM_TYPE_TECH)
+                if (traceCtrl->type != ALARM_TYPE_TECH && _isLatchLock)
                 {
-                    if (alarmIndicator.latchAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage))
+                    AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+                    if (alarmIndicator &&
+                            alarmIndicator->latchAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage))
                     {
                         alarmSource->notifyAlarm(i, true);
                         continue;
@@ -375,7 +414,11 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
                 }
                 else
                 {
-                    alarmIndicator.delAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage);
+                    AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+                    if (alarmIndicator)
+                    {
+                        alarmIndicator->delAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage);
+                    }
                 }
             }
 
@@ -392,7 +435,9 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
                 if (traceCtrl->type != ALARM_TYPE_TECH && _isLatchLock)
                 {
                     // 栓锁打开时，才栓锁PhyOneShotAlarm
-                    if (!alarmIndicator.latchAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage))
+                    AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+                    if (alarmIndicator &&
+                            !alarmIndicator->latchAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage))
                     {
                         alarmSource->notifyAlarm(i, false);
                         traceCtrl->Reset();
@@ -404,7 +449,11 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
                 }
                 else
                 {
-                    alarmIndicator.delAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage);
+                    AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+                    if (alarmIndicator)
+                    {
+                        alarmIndicator->delAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage);
+                    }
                     traceCtrl->Reset();
                 }
             }
@@ -420,11 +469,13 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
             if (traceCtrl->lastAlarmed)
             {
                 // 生命报警从栓锁恢复到继续报警。
-                if (traceCtrl->type != ALARM_TYPE_TECH)
+                if (traceCtrl->type != ALARM_TYPE_TECH && _isLatchLock)
                 {
-                    if (alarmIndicator.checkAlarmIsExist(traceCtrl->type, traceCtrl->alarmMessage))
+                    AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+                    if (alarmIndicator &&
+                            alarmIndicator->checkAlarmIsExist(traceCtrl->type, traceCtrl->alarmMessage))
                     {
-                        alarmIndicator.updateLatchAlarmInfo(traceCtrl->alarmMessage, false);
+                        alarmIndicator->updateLatchAlarmInfo(traceCtrl->alarmMessage, false);
                         alarmSource->notifyAlarm(i, true);
                         continue;
                     }
@@ -449,8 +500,13 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
         traceCtrl->order = ++curSecondAlarmNum;
 
         // 发布该报警。
-        alarmIndicator.addAlarmInfo(_timestamp, traceCtrl->type,
-                                    traceCtrl->priority, traceCtrl->alarmMessage, alarmSource, i, isRemoveAfterLatch);
+        AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+        if (alarmIndicator)
+        {
+            alarmIndicator->addAlarmInfo(_timestamp, traceCtrl->type,
+                                        traceCtrl->priority, traceCtrl->alarmMessage, alarmSource, i, isRemoveAfterLatch
+                                        , isRemoveLightAfterConfirm);
+        }
 
         if (traceCtrl->type == ALARM_TYPE_LIFE || traceCtrl->type == ALARM_TYPE_PHY)
         {
@@ -459,14 +515,29 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
             infoSegment.subParamID = alarmSource->getSubParamID(i);
             infoSegment.alarmInfo = 1;  // one shot 报警
             infoSegment.alarmType = i;
-            eventStorageManager.triggerAlarmEvent(infoSegment, alarmSource->getWaveformID(i), _timestamp);
-
+            EventStorageManagerInterface *eventStorageManager = EventStorageManagerInterface::getEventStorageManager();
+            if (eventStorageManager)
+            {
+                eventStorageManager->triggerAlarmEvent(infoSegment, alarmSource->getWaveformID(i), _timestamp);
+            }
+            else
+            {
+                qDebug() << Q_FUNC_INFO << "get event storage manager faild.";
+            }
             alarmSource->notifyAlarm(i, true);
-            alarmStateMachine.handAlarmEvent(ALARM_STATE_EVENT_NEW_PHY_ALARM, 0, 0);
+            AlarmStateMachineInterface *alarmStateMachine = AlarmStateMachineInterface::getAlarmStateMachine();
+            if (alarmStateMachine)
+            {
+                alarmStateMachine->handAlarmEvent(ALARM_STATE_EVENT_NEW_PHY_ALARM, 0, 0);
+            }
         }
         else
         {
-            alarmStateMachine.handAlarmEvent(ALARM_STATE_EVENT_NEW_PHY_ALARM, 0, 0);
+            AlarmStateMachineInterface *alarmStateMachine = AlarmStateMachineInterface::getAlarmStateMachine();
+            if (alarmStateMachine)
+            {
+                alarmStateMachine->handAlarmEvent(ALARM_STATE_EVENT_NEW_PHY_ALARM, 0, 0);
+            }
         }
     }
 }
@@ -481,6 +552,7 @@ void Alarm::_handleAlarm(void)
     QList<ParamID> alarmParamID;
     QList<ParamID> paramID;
     paramID.clear();
+    eventList.clear();
     foreach(AlarmLimitIFace *source, limitAlarmSourceList)
     {
         alarmParamID.clear();
@@ -491,17 +563,45 @@ void Alarm::_handleAlarm(void)
         }
     }
 
+    // 统一触发之前产生的事件，目的为了触发的事件是当前时刻全部事件
+    EventStorageManagerInterface *eventStorageManager = EventStorageManagerInterface::getEventStorageManager();
+    if (eventStorageManager)
+    {
+        for (int i = 0; i < eventList.count(); i++)
+        {
+            AlarmParamIFace *alarmSource = eventList.at(i).alarmSource;
+            int id = eventList.at(i).waveId;
+            eventStorageManager->triggerAlarmEvent(eventList.at(i).infoSegment,
+                                                   alarmSource->getWaveformID(id),
+                                                   _timestamp);
+        }
+    }
+
     // 合并同一时刻的所有生理超限报警
     if (-1 != paramID.indexOf(PARAM_NIBP))
     {
         // nibp alarm add after check sys, dia, map
-        trendDataStorageManager.storeData(_timestamp, TrendDataStorageManager::CollectStatusAlarm);
+        TrendDataStorageManagerInterface *trendDataStorageManager = TrendDataStorageManagerInterface::getTrendDataStorageManager();
+        TrendCacheInterface *trendCache = TrendCacheInterface::getTrendCache();
+        if (trendDataStorageManager && trendCache)
+        {
+            trendCache->collectTrendData(_timestamp);
+            trendCache->collectTrendAlarmStatus(_timestamp);
+            trendDataStorageManager->storeData(_timestamp, TrendDataStorageManagerInterface::NIBPAlarm);
+        }
         paramID.removeAll(PARAM_NIBP);
     }
 
     if (!paramID.isEmpty())
     {
-        trendDataStorageManager.storeData(_timestamp, TrendDataStorageManager::CollectStatusAlarm);
+        TrendDataStorageManagerInterface *trendDataStorageManager = TrendDataStorageManagerInterface::getTrendDataStorageManager();
+        TrendCacheInterface *trendCache = TrendCacheInterface::getTrendCache();
+        if (trendDataStorageManager && trendCache)
+        {
+            trendCache->collectTrendData(_timestamp);
+            trendCache->collectTrendAlarmStatus(_timestamp);
+            trendDataStorageManager->storeData(_timestamp, TrendDataStorageManagerInterface::CollectStatusAlarm);
+        }
     }
 
     // 处理生理、技术和生命报警。
@@ -517,9 +617,45 @@ void Alarm::_handleAlarm(void)
  * 参数：
  *      alarmSource：报警源
  *************************************************************************************************/
-void Alarm::addLimtSource(AlarmLimitIFace &alarmSource)
+Alarm &Alarm::getInstance()
 {
-    _limitSources.insert(alarmSource.getParamID(), &alarmSource);
+    static Alarm *instance = NULL;
+
+    if (instance == NULL)
+    {
+        instance = new Alarm();
+        AlarmInterface *old = registerAlarm(instance);
+        if (old)
+        {
+            delete old;
+        }
+    }
+    return *instance;
+}
+
+void Alarm::clear()
+{
+    // 删除报警源。
+    QList<AlarmLimitIFace *> limitAlarmSourceList = _limitSources.values();
+    foreach(AlarmLimitIFace *source, limitAlarmSourceList)
+    {
+        delete source;
+    }
+
+    _limitSources.clear();
+
+    QList<AlarmOneShotIFace *> oneshotSourceList = _oneshotSources.values();
+    foreach(AlarmOneShotIFace *source, oneshotSourceList)
+    {
+        delete source;
+    }
+    _oneshotSources.clear();
+    _alarmStatusList.clear();
+}
+
+void Alarm::addLimtSource(AlarmLimitIFace *alarmSource)
+{
+    _limitSources.insert(alarmSource->getParamID(), alarmSource);
 }
 
 /**************************************************************************************************
@@ -527,9 +663,9 @@ void Alarm::addLimtSource(AlarmLimitIFace &alarmSource)
  * 参数：
  *      alarmSource：报警源
  *************************************************************************************************/
-void Alarm::addOneShotSource(AlarmOneShotIFace &alarmSource)
+void Alarm::addOneShotSource(AlarmOneShotIFace *alarmSource)
 {
-    _oneshotSources.insert(alarmSource.getParamID(), &alarmSource);
+    _oneshotSources.insert(alarmSource->getParamID(), alarmSource);
 }
 
 /**************************************************************************************************
@@ -539,25 +675,39 @@ void Alarm::addOneShotSource(AlarmOneShotIFace &alarmSource)
  *************************************************************************************************/
 void Alarm::updateMuteKeyStatus(bool isPressed)
 {
+    AlarmStateMachineInterface *alarmStateMachine = AlarmStateMachineInterface::getAlarmStateMachine();
     if (isPressed)
     {
-        alarmStateMachine.handAlarmEvent(ALARM_STATE_EVENT_MUTE_BTN_PRESSED, 0, 0);
+        if (alarmStateMachine)
+        {
+            alarmStateMachine->handAlarmEvent(ALARM_STATE_EVENT_MUTE_BTN_PRESSED, 0, 0);
+        }
     }
     else
     {
-        alarmStateMachine.handAlarmEvent(ALARM_STATE_EVENT_MUTE_BTN_RELEASED, 0, 0);
+        if (alarmStateMachine)
+        {
+            alarmStateMachine->handAlarmEvent(ALARM_STATE_EVENT_MUTE_BTN_RELEASED, 0, 0);
+        }
     }
 }
 
 void Alarm::updateResetKeyStatus(bool isPressed)
 {
+    AlarmStateMachineInterface *alarmStateMachine = AlarmStateMachineInterface::getAlarmStateMachine();
     if (isPressed)
     {
-        alarmStateMachine.handAlarmEvent(ALARM_STATE_EVENT_RESET_BTN_PRESSED, 0, 0);
+        if (alarmStateMachine)
+        {
+            alarmStateMachine->handAlarmEvent(ALARM_STATE_EVENT_RESET_BTN_PRESSED, 0, 0);
+        }
     }
     else
     {
-        alarmStateMachine.handAlarmEvent(ALARM_STATE_EVENT_RESET_BTN_RELEASED, 0, 0);
+        if (alarmStateMachine)
+        {
+            alarmStateMachine->handAlarmEvent(ALARM_STATE_EVENT_RESET_BTN_RELEASED, 0, 0);
+        }
     }
 }
 
@@ -652,7 +802,11 @@ void Alarm::mainRun(unsigned t)
     curSecondAlarmNum = 0;
     _timestamp = t;
     _handleAlarm();
-    alarmIndicator.publishAlarm(_curAlarmStatus);
+    AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+    if (alarmIndicator)
+    {
+        alarmIndicator->publishAlarm(_curAlarmStatus);
+    }
 }
 
 /**************************************************************************************************
@@ -674,6 +828,11 @@ void Alarm::addAlarmStatus(AlarmStatus status)
     }
 
     _alarmStatusList.append(status);
+}
+
+int Alarm::getAlarmStatusCount()
+{
+    return _alarmStatusList.count();
 }
 
 /***************************************************************************************************
@@ -803,7 +962,12 @@ bool Alarm::getOneShotAlarmStatus(AlarmOneShotIFace *iface, int alarmId)
  *************************************************************************************************/
 AlarmLimitIFace *Alarm::getAlarmLimitIFace(SubParamID id)
 {
-    ParamID paramId = paramInfo.getParamID(id);
+    ParamInfoInterface *paramInfo = ParamInfoInterface::getParamInfo();
+    if (!paramInfo)
+    {
+        return NULL;
+    }
+    ParamID paramId = paramInfo->getParamID(id);
     if (_limitSources.end() != _limitSources.find(paramId))
     {
         return _limitSources.find(paramId).value();
@@ -813,7 +977,12 @@ AlarmLimitIFace *Alarm::getAlarmLimitIFace(SubParamID id)
 
 AlarmOneShotIFace *Alarm::getAlarmOneShotIFace(SubParamID id)
 {
-    ParamID paramId = paramInfo.getParamID(id);
+    ParamInfoInterface *paramInfo = ParamInfoInterface::getParamInfo();
+    if (!paramInfo)
+    {
+        return NULL;
+    }
+    ParamID paramId = paramInfo->getParamID(id);
     if (paramId == PARAM_DUP_ECG)
     {
         paramId = PARAM_ECG;
@@ -833,7 +1002,8 @@ AlarmOneShotIFace *Alarm::getAlarmOneShotIFace(SubParamID id)
  * 功能： 构造。
  *************************************************************************************************/
 Alarm::Alarm() :
-    _isLatchLock(true)
+    AlarmInterface(),
+    _isLatchLock(true), _alarmLightOnAlarmReset(false)
 {
     // 栓锁状态初始化
     int boltLockIndex = 0;
@@ -880,7 +1050,18 @@ QString Alarm::getPhyAlarmMessage(ParamID paramId, int alarmType, bool isOneShot
     case PARAM_ECG:
         if (isOneShot)
         {
-            return ECGSymbol::convert((ECGOneShotType)alarmType, ecgParam.getLeadConvention());
+            if (alarmType < static_cast<int>(ECG_ONESHOT_NR))
+            {
+                ECGParamInterface *ecgParam = ECGParamInterface::getECGParam();
+                if (ecgParam)
+                {
+                    return ECGSymbol::convert((ECGOneShotType)alarmType, ecgParam->getLeadConvention());
+                }
+                else
+                {
+                    return ECGSymbol::convert(static_cast<ECGOneShotType>(alarmType), ECG_CONVENTION_AAMI);
+                }
+            }
         }
         else
         {
@@ -894,23 +1075,35 @@ QString Alarm::getPhyAlarmMessage(ParamID paramId, int alarmType, bool isOneShot
         }
         else
         {
-            return ECGSymbol::convert((ECGDupLimitAlarmType)alarmType);
+            if (alarmType < static_cast<int>(ECG_DUP_LIMIT_ALARM_NR))
+            {
+                return ECGSymbol::convert((ECGDupLimitAlarmType)alarmType);
+            }
         }
         break;
     case PARAM_SPO2:
         if (isOneShot)
         {
-            return SPO2Symbol::convert((SPO2OneShotType)alarmType);
+            if (alarmType < static_cast<int>(SPO2_ONESHOT_NR))
+            {
+                return SPO2Symbol::convert((SPO2OneShotType)alarmType);
+            }
         }
         else
         {
-            return SPO2Symbol::convert((SPO2LimitAlarmType)alarmType);
+            if (alarmType < static_cast<int>(SPO2_LIMIT_ALARM_NR))
+            {
+                return SPO2Symbol::convert((SPO2LimitAlarmType)alarmType);
+            }
         }
         break;
     case PARAM_RESP:
         if (isOneShot)
         {
-            return RESPSymbol::convert((RESPOneShotType)alarmType);
+            if (alarmType < static_cast<int>(RESP_ONESHOT_NR))
+            {
+                return RESPSymbol::convert((RESPOneShotType)alarmType);
+            }
         }
         else
         {
@@ -924,67 +1117,122 @@ QString Alarm::getPhyAlarmMessage(ParamID paramId, int alarmType, bool isOneShot
         }
         else
         {
-            return RESPSymbol::convert((RESPDupLimitAlarmType)alarmType);
+            if (alarmType < static_cast<int>(RESP_DUP_LIMIT_ALARM_NR))
+            {
+                return RESPSymbol::convert((RESPDupLimitAlarmType)alarmType);
+            }
         }
         break;
     case PARAM_NIBP:
         if (isOneShot)
         {
-            return NIBPSymbol::convert((NIBPOneShotType)alarmType);
+            if (alarmType < static_cast<int>(NIBP_ONESHOT_NR))
+            {
+                return NIBPSymbol::convert((NIBPOneShotType)alarmType);
+            }
         }
         else
         {
-            return NIBPSymbol::convert((NIBPLimitAlarmType)alarmType);
+            if (alarmType < static_cast<int>(NIBP_LIMIT_ALARM_NR))
+            {
+                return NIBPSymbol::convert((NIBPLimitAlarmType)alarmType);
+            }
         }
         break;
     case PARAM_CO2:
         if (isOneShot)
         {
-            return CO2Symbol::convert((CO2OneShotType)alarmType);
+            if (alarmType < static_cast<int>(CO2_ONESHOT_NR))
+            {
+                return CO2Symbol::convert((CO2OneShotType)alarmType);
+            }
         }
         else
         {
-            return CO2Symbol::convert((CO2LimitAlarmType)alarmType);
+            if (alarmType < static_cast<int>(CO2_LIMIT_ALARM_NR))
+            {
+                return CO2Symbol::convert((CO2LimitAlarmType)alarmType);
+            }
         }
         break;
     case PARAM_TEMP:
         if (isOneShot)
         {
-            return TEMPSymbol::convert((TEMPOneShotType)alarmType);
+            if (alarmType < static_cast<int>(TEMP_ONESHOT_NR))
+            {
+                return TEMPSymbol::convert((TEMPOneShotType)alarmType);
+            }
         }
         else
         {
-            return TEMPSymbol::convert((TEMPLimitAlarmType)alarmType);
+            if (alarmType < static_cast<int>(TEMP_LIMIT_ALARM_NR))
+            {
+                return TEMPSymbol::convert((TEMPLimitAlarmType)alarmType);
+            }
         }
         break;
     case PARAM_CO:
         if (isOneShot)
         {
-            return COSymbol::convert((COOneShotType)alarmType);
+            if (alarmType < static_cast<int>(CO_ONESHOT_NR))
+            {
+                return COSymbol::convert((COOneShotType)alarmType);
+            }
         }
         else
         {
-            return COSymbol::convert((COLimitAlarmType)alarmType);
+            if (alarmType < static_cast<int>(CO_LIMIT_ALARM_NR))
+            {
+                return COSymbol::convert((COLimitAlarmType)alarmType);
+            }
         }
         break;
     case PARAM_IBP:
         if (isOneShot)
         {
-            return IBPSymbol::convert((IBPOneShotType)alarmType);
+            if (alarmType < static_cast<int>(IBP_ONESHOT_NR))
+            {
+                return IBPSymbol::convert((IBPOneShotType)alarmType);
+            }
         }
         else
         {
-            return IBPSymbol::convert((IBPLimitAlarmType)alarmType);
+            if (alarmType < static_cast<int>(IBP_LIMIT_ALARM_NR))
+            {
+                return IBPSymbol::convert((IBPLimitAlarmType)alarmType);
+            }
         }
         break;
     case PARAM_AG:
         if (isOneShot)
         {
-            return AGSymbol::convert((AGOneShotType)alarmType);
+            if (alarmType < static_cast<int>(AG_ONESHOT_NR))
+            {
+                return AGSymbol::convert((AGOneShotType)alarmType);
+            }
         }
         else
         {
-            return AGSymbol::convert((AGLimitAlarmType)alarmType);
+            if (alarmType < static_cast<int>(AG_LIMIT_ALARM_NR))
+            {
+                return AGSymbol::convert((AGLimitAlarmType)alarmType);
+            }
+        }
+        break;
+    case PARAM_O2:
+        if (isOneShot)
+        {
+            if (alarmType < static_cast<int>(O2_ONESHOT_ALARM_NR))
+            {
+                return O2Symbol::convert((O2OneShotAlarmType)alarmType);
+            }
+        }
+        else
+        {
+            if (alarmType < static_cast<int>(O2_LIMIT_ALARM_NR))
+            {
+                return O2Symbol::convert((O2LimitAlarmType)alarmType);
+            }
         }
         break;
     default:
@@ -998,7 +1246,7 @@ void Alarm::setLatchLockSta(bool status)
     _isLatchLock = status;
 }
 
-void Alarm::removeAllPhyAlarm()
+void Alarm::removeAllLimitAlarm()
 {
     QList<AlarmLimitIFace *> limitAlarmSourceList = _limitSources.values();
     foreach(AlarmLimitIFace *source, limitAlarmSourceList)

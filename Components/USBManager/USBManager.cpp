@@ -17,6 +17,8 @@
 #include <QProcess>
 #include "IMessageBox.h"
 #include <typeinfo>
+#include "RawDataCollector.h"
+#include "MessageBox.h"
 
 #define USB_MOUNT_PATH "/media/usbdisk"
 
@@ -39,12 +41,12 @@ USBManager::~USBManager()
 
 bool USBManager::isUSBExist() const
 {
-    return _usbExist;
+    return _usbExist && _isMount;
 }
 
 bool USBManager::checkStatus() const
 {
-    return UDiskInspector::checkUsbConnectStatus();
+    return isUSBExist();
 }
 
 int USBManager::getUSBFreeSize() const
@@ -125,6 +127,33 @@ bool USBManager::isUSBExportFinish()
     }
 }
 
+void USBManager::stopRawCollectData()
+{
+    // 卸载U盘之前停止数据收集定时器
+    QMetaObject::invokeMethod(&rawDataCollector, "stopCollectData", Qt::QueuedConnection);
+}
+
+void USBManager::umountUDisk()
+{
+    QString cmd = QString("umount -f %1").arg(USB_MOUNT_PATH);
+    if (QProcess::execute(cmd) != 0)
+    {
+        qdebug("Fail to umount %s", USB_MOUNT_PATH);
+        _isMount = true;
+        MessageBox warnMsg(trs("Warn"), trs("OperationFailedPleaseAgain"), false);
+        warnMsg.exec();
+    }
+    else
+    {
+        _isMount = false;
+    }
+}
+
+void USBManager::forceUmountDisk()
+{
+    _isMount = false;
+}
+
 void USBManager::cancelExport()
 {
     _pendingMutex.lock();
@@ -138,6 +167,10 @@ void USBManager::cancelExport()
 void USBManager::updateConnectStatus(bool status)
 {
     _usbExist = status;
+    if (_usbExist == false)  // u盘不存在时发出u盘弹出信号
+    {
+        emit popupUDisk();
+    }
 }
 
 void USBManager::onExportFinished(DataExporterBase::ExportStatus status)
@@ -178,11 +211,20 @@ void USBManager::onExportProcessUpdate(unsigned char progress)
     emit exportProcessChanged(progress);
 }
 
+void USBManager::mountUDiskSuccess()
+{
+    _isMount = true;
+    // 启动数据收集定时器
+    QMetaObject::invokeMethod(&rawDataCollector, "startCollectData", Qt::QueuedConnection);
+}
+
 USBManager::USBManager()
     : _workerThread(new QThread()),
       _udiskInspector(new UDiskInspector()),
       _lastExportStatus(DataExporterBase::Success),
-      _curExporter(NULL)
+      _curExporter(NULL),
+      _isMount(false),
+      _procThread(NULL)
 {
 
     qRegisterMetaType<DataExporterBase::ExportStatus>();
@@ -190,9 +232,15 @@ USBManager::USBManager()
     _udiskInspector->moveToThread(_workerThread);
     connect(_workerThread, SIGNAL(finished()), _udiskInspector, SLOT(deleteLater()));
     connect(_udiskInspector, SIGNAL(statusUpdate(bool)), this, SLOT(updateConnectStatus(bool)));
+    connect(_udiskInspector, SIGNAL(mountUDisk()), this, SLOT(mountUDiskSuccess()));
     _workerThread->start();
     qdebug("worker thread start.");
     _workerThread->setPriority(QThread::IdlePriority);
+
+    _procThread = new QThread(this);
+    _procThread->setObjectName("RawDataCollect");
+    rawDataCollector.moveToThread(_procThread);
+    _procThread->start();
 }
 
 bool USBManager::_addDataExporter(DataExporterBase *dataExporter)

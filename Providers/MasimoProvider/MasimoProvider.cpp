@@ -13,6 +13,8 @@
 #include "SPO2Alarm.h"
 #include "Debug.h"
 #include "NIBPParam.h"
+#include "AlarmSourceManager.h"
+#include "LanguageManager.h"
 
 #define SOM             (0x02)
 #define EOM             (0x03)
@@ -284,8 +286,12 @@ MasimoSetProvider::~MasimoSetProvider()
  *************************************************************************************************/
 void MasimoSetProvider::disconnected()
 {
-    spo2OneShotAlarm.clear();
-    spo2OneShotAlarm.setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SPO2);
+    if (alarmSource)
+    {
+        alarmSource->clear();
+        alarmSource->setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+    }
     spo2Param.setConnected(false);
 }
 
@@ -294,7 +300,11 @@ void MasimoSetProvider::disconnected()
  *************************************************************************************************/
 void MasimoSetProvider::reconnected()
 {
-    spo2OneShotAlarm.setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SPO2);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+    }
     spo2Param.setConnected(true);
 }
 

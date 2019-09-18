@@ -9,10 +9,10 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 
 class SaveUserConfigWindowPrivate;
-class SaveUserConfigWindow : public Window
+class SaveUserConfigWindow : public Dialog
 {
     Q_OBJECT
 public:

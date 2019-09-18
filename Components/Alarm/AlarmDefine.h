@@ -11,6 +11,7 @@
 
 #pragma once
 #include <stddef.h>
+#include <string.h>
 #define ALARM_INFO_DISPLAY_TIME (3)//每条报警信息显示时间
 
 enum AlarmType
@@ -46,18 +47,8 @@ struct AlarmInfoNode
                   const char *message, AlarmParamIFace *source, int id)
         : alarmType(type), alarmPriority(priority), latch(false), acknowledge(false),
           removeAfterLatch(false), promptAlarmBeep(false), pauseTime(0), displayTime(ALARM_INFO_DISPLAY_TIME),
-          alarmTime(t), alarmMessage(message), alarmSource(source), alarmID(id)
+          alarmTime(t), alarmMessage(message), alarmSource(source), alarmID(id), removeLigthAfterConfirm(true)
     {
-        //    alarmType = type;
-        //    alarmPriority = priority;
-        //    latch = false;
-        //    acknowledge = false;
-        //    removeAfterLatch = false;
-        //    pauseTime = 0;
-        //    displayTime = ALARM_INFO_DISPLAY_TIME;
-        //    alarmTime = t;
-        //    alarmMessage = message;
-        //    promptAlarmBeep = false;
     }
 
     void reset()
@@ -74,6 +65,32 @@ struct AlarmInfoNode
         alarmMessage = NULL;
         alarmSource = NULL;
         alarmID = 0;
+        removeLigthAfterConfirm = true;
+    }
+
+    bool operator == (const AlarmInfoNode &other) const
+    {
+        if (this->alarmMessage == NULL || other.alarmMessage == NULL)
+        {
+            return false;
+        }
+
+        if (this->alarmType == other.alarmType && this->alarmPriority == other.alarmPriority &&
+                this->latch == other.latch && this->acknowledge == other.acknowledge &&
+                this->removeAfterLatch == other.removeAfterLatch &&
+                this->promptAlarmBeep == other.promptAlarmBeep &&
+                this->pauseTime == other.pauseTime && this->displayTime == other.displayTime &&
+                this->alarmTime == other.alarmTime &&
+                (strcmp(this->alarmMessage, other.alarmMessage) == 0) &&
+                this->alarmID == other.alarmID &&
+                this->removeLigthAfterConfirm == other.removeLigthAfterConfirm)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     AlarmType alarmType;
@@ -88,6 +105,7 @@ struct AlarmInfoNode
     const char *alarmMessage;
     AlarmParamIFace *alarmSource;
     int alarmID;
+    bool removeLigthAfterConfirm;
 };
 
 enum AlarmStatus
@@ -126,7 +144,6 @@ enum AlarmClosePromptTime
  *************************************************************************************************/
 enum ApneaAlarmTime
 {
-    APNEA_ALARM_TIME_OFF,
     APNEA_ALARM_TIME_20_SEC,
     APNEA_ALARM_TIME_25_SEC,
     APNEA_ALARM_TIME_30_SEC,

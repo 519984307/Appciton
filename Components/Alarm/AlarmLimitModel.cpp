@@ -18,6 +18,7 @@
 #include "ItemEditInfo.h"
 #include "ParamManager.h"
 #include "ThemeManager.h"
+#include "LanguageManager.h"
 
 
 #define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
@@ -121,7 +122,7 @@ bool AlarmLimitModel::setData(const QModelIndex &index, const QVariant &value, i
                 alarmDataUpdate(d_ptr->alarmDataInfos[row], index.column());
                 break;
             case SECTION_LEVEL:
-                d_ptr->alarmDataInfos[row].alarmLevel = newValue;
+                d_ptr->alarmDataInfos[row].alarmLevel = newValue + 1;
                 alarmDataUpdate(d_ptr->alarmDataInfos[row], index.column());
                 break;
             case SECTION_HIGH_LIMIT:
@@ -188,8 +189,15 @@ QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
         switch (column)
         {
         case SECTION_PARAM_NAME:
-            return trs(paramInfo.getSubParamName(d_ptr->alarmDataInfos.at(row).subParamID));
-            break;
+        {
+            SubParamID subId = d_ptr->alarmDataInfos.at(row).subParamID;
+            ParamID paramId = d_ptr->alarmDataInfos.at(row).paramID;
+            UnitType unit = paramManager.getSubParamUnit(paramId, subId);
+            QString name = QString("%1(%2)")
+                    .arg(trs(paramInfo.getSubParamName(subId)))
+                    .arg(trs(Unit::getSymbol(unit)));
+            return name;
+        }
         case SECTION_STATUS:
             return d_ptr->alarmDataInfos.at(row).status ? trs("On") : trs("Off");
             break;
@@ -211,10 +219,6 @@ QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
             else if (limit == 2)
             {
                 return trs("High");
-            }
-            else
-            {
-                return trs("Low");
             }
         }
         break;
@@ -239,8 +243,8 @@ QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
                 break;
             case SECTION_LEVEL:
                 editInfo.type = ItemEditInfo::LIST;
-                editInfo.list << trs("Low") << trs("Medium") << trs("High");
-                editInfo.curValue = d_ptr->alarmDataInfos.at(row).alarmLevel;
+                editInfo.list << trs("Medium") << trs("High");
+                editInfo.curValue = d_ptr->alarmDataInfos.at(row).alarmLevel - 1;
                 break;
             case SECTION_LOW_LIMIT:
                 editInfo.type = ItemEditInfo::VALUE;
@@ -410,7 +414,7 @@ void AlarmLimitModel::setupAlarmDataInfos(const QList<AlarmDataInfo> &dataInfos,
         alarmConfig.setLimitAlarmConfig(info.subParamID,
                                         unit, info.limitConfig);
         Param *param = paramManager.getParam(info.paramID);
-        if (param)
+        if (param && systemManager.isSupport(param->getParamID()))
         {
             param->updateSubParamLimit(info.subParamID);
         }

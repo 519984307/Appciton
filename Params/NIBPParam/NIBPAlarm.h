@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2019/3/22
+ **/
+
 #pragma once
 #include "AlarmParamIFace.h"
 #include "NIBPSymbol.h"
@@ -6,15 +16,7 @@
 class NIBPLimitAlarm : public AlarmLimitIFace
 {
 public:
-    static NIBPLimitAlarm &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new NIBPLimitAlarm();
-        }
-        return *_selfObj;
-    }
-    static NIBPLimitAlarm *_selfObj;
+    NIBPLimitAlarm();
 
 public:
     // 报警源的名字。
@@ -57,7 +59,6 @@ public:
     virtual void notifyAlarm(int id, bool flag);
 
     // 构造与析构。
-    NIBPLimitAlarm();
     virtual ~NIBPLimitAlarm();
 
 private:
@@ -67,21 +68,12 @@ private:
     bool _isDiaAlarm;
     bool _isMapAlarm;
 };
-#define nibpLimitAlarm (NIBPLimitAlarm::construction())
 
 // OneShor报警实现。
 class NIBPOneShotAlarm : public AlarmOneShotIFace
 {
 public:
-    static NIBPOneShotAlarm &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new NIBPOneShotAlarm();
-        }
-        return *_selfObj;
-    }
-    static NIBPOneShotAlarm *_selfObj;
+    NIBPOneShotAlarm();
 
 public:
     // 报警源的名字。
@@ -113,8 +105,4 @@ public:
 
     // 构造与析构。
     virtual ~NIBPOneShotAlarm();
-
-private:
-    NIBPOneShotAlarm();
 };
-#define nibpOneShotAlarm (NIBPOneShotAlarm::construction())

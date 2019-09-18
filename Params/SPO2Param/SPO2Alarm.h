@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2019/3/22
+ **/
+
 #pragma once
 #include "AlarmParamIFace.h"
 #include "SPO2Symbol.h"
@@ -6,15 +16,7 @@
 class SPO2LimitAlarm : public AlarmLimitIFace
 {
 public:
-    static SPO2LimitAlarm &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new SPO2LimitAlarm();
-        }
-        return *_selfObj;
-    }
-    static SPO2LimitAlarm *_selfObj;
+    SPO2LimitAlarm();
 
 public:
     // 报警源的名字。
@@ -56,27 +58,17 @@ public:
     virtual void notifyAlarm(int id, bool isAlarm);
 
     // 构造与析构。
-    SPO2LimitAlarm();
     virtual ~SPO2LimitAlarm();
 
 private:
     bool _isAlarmLimit;
 };
-#define spo2LimitAlarm (SPO2LimitAlarm::construction())
 
 // OneShor报警实现。
 class SPO2OneShotAlarm : public AlarmOneShotIFace
 {
 public:
-    static SPO2OneShotAlarm &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new SPO2OneShotAlarm();
-        }
-        return *_selfObj;
-    }
-    static SPO2OneShotAlarm *_selfObj;
+    SPO2OneShotAlarm();
 
 public:
     // 报警源的名字。
@@ -108,8 +100,4 @@ public:
 
     // 构造与析构。
     virtual ~SPO2OneShotAlarm();
-
-private:
-    SPO2OneShotAlarm();
 };
-#define spo2OneShotAlarm (SPO2OneShotAlarm::construction())

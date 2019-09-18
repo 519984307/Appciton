@@ -11,7 +11,7 @@
 #include "RESPParam.h"
 #include "RESPAlarm.h"
 #include "OxyCRGRESPWaveWidget.h"
-#include "IConfig.h"
+#include "ConfigManager.h"
 #include "WaveformCache.h"
 #include "RESPDupParam.h"
 #include "SystemManager.h"
@@ -23,6 +23,7 @@
 #include "RESPWaveWidget.h"
 #include "RESPProviderIFace.h"
 #include "ColorManager.h"
+#include "AlarmSourceManager.h"
 
 RESPParam *RESPParam::_selfObj = NULL;
 
@@ -35,7 +36,9 @@ public:
           waveWidget(NULL),
           oxyCRGRrHrTrend(NULL),
           respMonitoring(false),
-          connectedProvider(false)
+          connectedProvider(false),
+          leadOff(false),
+          isRRInaccurate(false)
     {
     }
     /**
@@ -50,6 +53,8 @@ public:
     OxyCRGRRHRWaveWidget *oxyCRGRrHrTrend;
     bool respMonitoring;
     bool connectedProvider;
+    bool leadOff;
+    bool isRRInaccurate;
 };
 /**************************************************************************************************
  * 设置波形速度。
@@ -95,6 +100,10 @@ void RESPParamPrivate::setWaveformSpeed(RESPSweepSpeed speed)
 void RESPParam::initParam(void)
 {
     setZoom(getZoom());
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        setLeadoff(false);
+    }
 }
 
 /**************************************************************************************************
@@ -200,17 +209,12 @@ void RESPParam::setProvider(RESPProviderIFace *provider)
     }
 
     d_ptr->provider = provider;
-    d_ptr->waveWidget->setDataRate(d_ptr->provider->getRESPWaveformSample());
-    d_ptr->oxyCRGRESPWave->setDataRate(d_ptr->provider->getRESPWaveformSample());
-
-    // 设置窒息时间
-    d_ptr->provider->setApneaTime(getApneaTime());
-
-    // 设置呼吸导联
-//    d_ptr->provider->setRESPCalcLead(getCalcLead());
 
     // 是否开启RESP功能
-    d_ptr->provider->enableRESPCalc(getRespMonitoring());
+    d_ptr->provider->enableRESPCalc(true);
+
+    d_ptr->waveWidget->setDataRate(d_ptr->provider->getRESPWaveformSample());
+    d_ptr->oxyCRGRESPWave->setDataRate(d_ptr->provider->getRESPWaveformSample());
 
     QString tile = d_ptr->waveWidget->getTitle();
     // 请求波形缓冲区。
@@ -245,6 +249,7 @@ void RESPParam::setWaveWidget(RESPWaveWidget *waveWidget)
     d_ptr->waveWidget = waveWidget;
     d_ptr->setWaveformSpeed(getSweepSpeed());
     setZoom(getZoom());
+    d_ptr->waveWidget->setWaveformMode(getSweepMode());
 }
 
 void RESPParam::setOxyCRGWaveRESPWidget(OxyCRGRESPWaveWidget *waveWidget)
@@ -287,11 +292,21 @@ void RESPParam::setRR(short rrValue)
 /**************************************************************************************************
  * 电极脱落。
  *************************************************************************************************/
-void RESPParam::setLeadoff(bool flag)
+void RESPParam::setLeadoff(bool flag, bool isFirstConnect)
 {
-    if (NULL != d_ptr->waveWidget)
+    if (!isFirstConnect)
     {
-        d_ptr->waveWidget->leadoff(flag);
+        d_ptr->leadOff = flag;
+        return;
+    }
+    if (flag != d_ptr->leadOff)
+    {
+        d_ptr->leadOff = flag;
+        if (NULL != d_ptr->waveWidget)
+        {
+            d_ptr->waveWidget->leadoff(flag);
+            setOneShotAlarm(RESP_ONESHOT_ALARM_CHECK_ELECTRODES, flag);
+        }
     }
 }
 
@@ -300,7 +315,11 @@ void RESPParam::setLeadoff(bool flag)
  *************************************************************************************************/
 void RESPParam::setOneShotAlarm(RESPOneShotType t, bool f)
 {
-    respOneShotAlarm.setOneShotAlarm(t, f);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_RESP);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(t, f);
+    }
 }
 
 /**************************************************************************************************
@@ -313,14 +332,14 @@ void RESPParam::reset()
         return;
     }
 
-    // 设置窒息时间
-    d_ptr->provider->setApneaTime(getApneaTime());
+    // 是否开启RESP功能
+    d_ptr->provider->enableRESPCalc(true);
 
     // 设置呼吸导联
-//    d_ptr->provider->setRESPCalcLead(getCalcLead());
+    d_ptr->provider->setRESPCalcLead(getCalcLead());
 
-    // 是否开启RESP功能
-    d_ptr->provider->enableRESPCalc(getRespMonitoring());
+    // 设置窒息时间
+    d_ptr->provider->setApneaTime(getApneaTime());
 }
 
 int RESPParam::getWaveDataRate() const
@@ -396,7 +415,7 @@ void RESPParam::setApneaTime(ApneaAlarmTime t)
 ApneaAlarmTime RESPParam::getApneaTime(void)
 {
     int t = APNEA_ALARM_TIME_20_SEC;
-    currentConfig.getNumValue("Alarm|ApneaTime", t);
+    currentConfig.getNumValue("RESP|ApneaDelay", t);
 
     return (ApneaAlarmTime)t;
 }
@@ -500,7 +519,7 @@ void RESPParam::setCalcLead(RESPLead lead)
     {
         if (lead == RESP_LEAD_AUTO)
         {
-            lead = RESP_LEAD_II;
+            lead = RESP_LEAD_I;  // 当为自动导联时，默认选择I导联，因为目前I导联的波形幅度较大，利于波形显示
         }
         d_ptr->provider->setRESPCalcLead(lead);
     }
@@ -532,6 +551,20 @@ void RESPParam::enableRespCalc(bool enable)
     {
         d_ptr->provider->enableRESPCalc(enable);
     }
+}
+
+void RESPParam::rrInaccurate(bool isInaccurate)
+{
+    if (isInaccurate == d_ptr->isRRInaccurate)
+    {
+        return;
+    }
+    d_ptr->isRRInaccurate = isInaccurate;
+}
+
+bool RESPParam::isRRInaccurate()
+{
+    return d_ptr->isRRInaccurate;
 }
 
 void RESPParam::onPaletteChanged(ParamID id)

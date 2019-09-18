@@ -9,14 +9,14 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 #include "MenuContent.h"
 #include <QVariant>
 #include "WindowManager.h"
 
 class MenuSidebar;
 class MenuWindowPrivate;
-class MenuWindow : public Window
+class MenuWindow : public Dialog
 {
     Q_OBJECT
 public:

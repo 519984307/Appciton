@@ -77,7 +77,7 @@ public:
 
 
 ShortTrendWindow::ShortTrendWindow(ShortTrendContainer *const trendContainer)
-    : Window(),
+    : Dialog(),
       d_ptr(new ShortTrendWindowPrivate(trendContainer))
 {
     setFixedSize(800, 580);
@@ -161,7 +161,7 @@ void ShortTrendWindow::showEvent(QShowEvent *e)
 {
     d_ptr->shortTrendContainer->getDefaultTrendList(d_ptr->defaultParaList);
     d_ptr->loadOption();
-    Window::showEvent(e);
+    Dialog::showEvent(e);
 }
 
 void ShortTrendWindow::onBtnReleased()

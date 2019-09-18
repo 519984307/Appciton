@@ -13,6 +13,9 @@
 #include <QStringList>
 #include "ParamInfo.h"
 #include "BaseDefine.h"
+#include <QTimer>
+
+#define PARAM_UPDATE_TIMEOUT    (5000)      //  趋势数据刷新超时5sec
 
 class Param : public QObject
 {
@@ -72,6 +75,13 @@ public:
      * @return
      */
     virtual QList<SubParamID> getShortTrendList(){return QList<SubParamID>();}
+
+protected slots:
+    virtual void paramUpdateTimeout() {}
+
+protected:
+    QTimer *paramUpdateTimer;
+
 private slots:
     virtual void onPaletteChanged(ParamID id)
     {

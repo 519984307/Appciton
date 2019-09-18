@@ -9,11 +9,11 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 #include "ParamInfo.h"
 
 class TrendGraphWindowPrivate;
-class TrendGraphWindow : public Window
+class TrendGraphWindow : public Dialog
 {
     Q_OBJECT
 public:
@@ -66,6 +66,7 @@ public:
 
 protected:
     void timerEvent(QTimerEvent *ev);
+    void showEvent(QShowEvent *ev);
 
 private slots:
     void onButtonReleased(void);

@@ -17,8 +17,6 @@
 #include "FloatHandle.h"
 #include "AlarmConfig.h"
 
-TEMPLimitAlarm *TEMPLimitAlarm::_selfObj = NULL;
-
 /**************************************************************************************************
  * 报警源的名字。
  *************************************************************************************************/
@@ -254,8 +252,6 @@ TEMPLimitAlarm::~TEMPLimitAlarm()
 /**************************************************************************************************
  *************************************************************************************************/
 
-TEMPOneShotAlarm *TEMPOneShotAlarm::_selfObj = NULL;
-
 /**************************************************************************************************
  * 报警源的名字。
  *************************************************************************************************/
@@ -292,7 +288,6 @@ AlarmPriority TEMPOneShotAlarm::getAlarmPriority(int id)
     case TEMP_OVER_RANGR_1:
     case TEMP_OVER_RANGR_2:
     case TEMP_ONESHOT_ALARM_MODULE_DISABLE:
-    case TEMP_ONESHOT_ALARM_COMMUNICATION_STOP:
         return ALARM_PRIO_HIGH;
     case TEMP_ONESHOT_ALARM_NOT_CALIBRATION_1:
     case TEMP_ONESHOT_ALARM_NOT_CALIBRATION_2:
@@ -323,22 +318,13 @@ const char *TEMPOneShotAlarm::toString(int id)
  *************************************************************************************************/
 bool TEMPOneShotAlarm::isRemoveAfterLatch(int id)
 {
-    switch (id)
-    {
-    case TEMP_OVER_RANGR_1:
-    case TEMP_OVER_RANGR_2:
-    case TEMP_OVER_RANGR_ALL:
-    case TEMP_ONESHOT_ALARM_COMMUNICATION_STOP:
-    case TEMP_ONESHOT_ALARM_MODULE_DISABLE:
-        return false;
-    default:
-        return true;
-    }
+    Q_UNUSED(id)
+    return false;
 }
 
 bool TEMPOneShotAlarm::isAlarmed(int id)
 {
-    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO && getAlarmType(id) == ALARM_TYPE_TECH)
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
     {
         return false;
     }

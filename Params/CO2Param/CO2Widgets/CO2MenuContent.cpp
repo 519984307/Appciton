@@ -33,15 +33,17 @@ public:
     {
         ITEM_CBO_WAVE_SPEED = 0,
         ITEM_CBO_WAVE_RULER,
-        ITEM_CBO_FICO2_DISPLAY,
         ITEM_CBO_APNEA_TIME,
+        ITEM_CBO_WORK_MODE,
 
         ITEM_BTN_O2_COMPEN = 0,
         ITEM_BTN_N2O_COMPEN,
         ITEM_BTN_ZERO_CALIB,
     };
 
-    CO2MenuContentPrivate() : o2Spb(NULL), n2oSpb(NULL) {}
+    CO2MenuContentPrivate()
+        : o2Spb(NULL), n2oSpb(NULL), o2Lbl(NULL), n2oLbl(NULL)
+    {}
 
     /**
      * @brief loadOptions  // load settings
@@ -52,12 +54,15 @@ public:
     QMap<MenuItem, Button *> btns;
     SpinBox *o2Spb;
     SpinBox *n2oSpb;
+    QLabel *o2Lbl;
+    QLabel *n2oLbl;
 };
 
 CO2MenuContent::CO2MenuContent():
     MenuContent(trs("CO2Menu") , trs("CO2MenuDesc")),
     d_ptr(new CO2MenuContentPrivate)
 {
+    connect(&co2Param, SIGNAL(updateZeroSta(bool)), this, SLOT(disableZero(bool)));
 }
 
 CO2MenuContent::~CO2MenuContent()
@@ -79,7 +84,7 @@ void CO2MenuContentPrivate::loadOptions()
     combos[ITEM_CBO_WAVE_RULER]->blockSignals(true);
     combos[ITEM_CBO_WAVE_RULER]->clear();
     int maxZoom = CO2_DISPLAY_ZOOM_NR;
-    float zoomArray[CO2_DISPLAY_ZOOM_NR] = {4.0, 8.0, 13.0, 20.0};
+    float zoomArray[CO2_DISPLAY_ZOOM_NR] = {4.0, 8.0, 12.0, 20.0};
     QString str;
     UnitType unit = co2Param.getUnit();
     for (int i = 0; i < maxZoom; i++)
@@ -97,7 +102,7 @@ void CO2MenuContentPrivate::loadOptions()
             str = QString("0.0~%1").arg(QString::number(zoomArray[i], 'f', 1));
         }
         str += " ";
-        str += Unit::localeSymbol(unit);
+        str += trs(Unit::getSymbol(unit));
         combos[ITEM_CBO_WAVE_RULER]->addItem(str);
     }
     combos[ITEM_CBO_WAVE_RULER]->blockSignals(false);
@@ -107,12 +112,41 @@ void CO2MenuContentPrivate::loadOptions()
     o2Spb->setValue(co2Param.getCompensation(CO2_COMPEN_O2));
     n2oSpb->setValue(co2Param.getCompensation(CO2_COMPEN_N2O));
 
-    // 显示控制。
-    combos[ITEM_CBO_FICO2_DISPLAY]->setCurrentIndex(co2Param.getFICO2Display());
-
     ApneaAlarmTime index = co2Param.getApneaTime();
 
     combos[ITEM_CBO_APNEA_TIME]->setCurrentIndex(index);
+
+    combos[ITEM_CBO_WORK_MODE]->blockSignals(true);
+    combos[ITEM_CBO_WORK_MODE]->setCurrentIndex(static_cast<int>(co2Param.getCO2Switch()));
+    combos[ITEM_CBO_WORK_MODE]->blockSignals(false);
+
+    if (co2Param.isConnected())
+    {
+        btns[ITEM_BTN_ZERO_CALIB]->setEnabled(!co2Param.getDisableZeroStatus());
+        combos[ITEM_CBO_WORK_MODE]->setEnabled(true);
+    }
+    else
+    {
+        btns[ITEM_BTN_ZERO_CALIB]->setEnabled(false);
+        combos[ITEM_CBO_WORK_MODE]->setEnabled(false);
+    }
+
+    QString co2Str;
+    machineConfig.getStrValue("CO2", co2Str);
+    if (co2Str == "BLM_CO2")
+    {
+        o2Spb->setVisible(false);
+        n2oSpb->setVisible(false);
+        o2Lbl->setVisible(false);
+        n2oLbl->setVisible(false);
+    }
+    else
+    {
+        o2Spb->setVisible(true);
+        n2oSpb->setVisible(true);
+        o2Lbl->setVisible(true);
+        n2oLbl->setVisible(true);
+    }
 }
 
 void CO2MenuContent::onComboBoxIndexChanged(int index)
@@ -123,18 +157,19 @@ void CO2MenuContent::onComboBoxIndexChanged(int index)
     switch (indexType)
     {
     case CO2MenuContentPrivate::ITEM_CBO_WAVE_SPEED:
-        co2Param.setSweepSpeed((CO2SweepSpeed)index);
+        co2Param.setSweepSpeed(static_cast<CO2SweepSpeed>(index));
         break;
     case CO2MenuContentPrivate::ITEM_CBO_WAVE_RULER:
         co2Param.setDisplayZoom(static_cast<CO2DisplayZoom>(index));
         break;
-    case CO2MenuContentPrivate::ITEM_CBO_FICO2_DISPLAY:
-        co2Param.setFiCO2Display((CO2FICO2Display)index);
-        break;
     case CO2MenuContentPrivate::ITEM_CBO_APNEA_TIME:
         currentConfig.setNumValue("Alarm|ApneaTime", index);
-        respParam.setApneaTime((ApneaAlarmTime)index);
-        co2Param.setApneaTime((ApneaAlarmTime)index);
+        co2Param.setApneaTime(static_cast<ApneaAlarmTime>(index));
+        break;
+    case CO2MenuContentPrivate::ITEM_CBO_WORK_MODE:
+        co2Param.setModuleWorkMode(static_cast<CO2WorkMode>(index + 1));
+        break;
+    default:
         break;
     };
 }
@@ -169,6 +204,11 @@ void CO2MenuContent::o2CompenSpinboxReleased(int value, int scale)
 void CO2MenuContent::n2oCompenSpinboxReleased(int value, int scale)
 {
     co2Param.setCompensation(CO2_COMPEN_N2O, value * scale);
+}
+
+void CO2MenuContent::disableZero(bool sta)
+{
+    d_ptr->btns[CO2MenuContentPrivate::ITEM_BTN_ZERO_CALIB]->setEnabled(!sta);
 }
 
 void CO2MenuContent::layoutExec()
@@ -207,26 +247,11 @@ void CO2MenuContent::layoutExec()
                           qVariantFromValue(itemID));
     d_ptr->combos.insert(CO2MenuContentPrivate::ITEM_CBO_WAVE_RULER, comboBox);
 
-    // fico2 display
-    label = new QLabel(trs("CO2FiCO2Display"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs(CO2Symbol::convert(CO2_FICO2_DISPLAY_OFF))
-                       << trs(CO2Symbol::convert(CO2_FICO2_DISPLAY_ON))
-                      );
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    itemID = CO2MenuContentPrivate::ITEM_CBO_FICO2_DISPLAY;
-    comboBox->setProperty("Item", itemID);
-    d_ptr->combos.insert(CO2MenuContentPrivate::ITEM_CBO_FICO2_DISPLAY, comboBox);
-
     // apnea time
     label = new QLabel(trs("ApneaDelay"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
-                       << trs(CO2Symbol::convert(CO2_APNEA_TIME_OFF))
                        << trs(CO2Symbol::convert(CO2_APNEA_TIME_20_SEC))
                        << trs(CO2Symbol::convert(CO2_APNEA_TIME_25_SEC))
                        << trs(CO2Symbol::convert(CO2_APNEA_TIME_30_SEC))
@@ -242,6 +267,21 @@ void CO2MenuContent::layoutExec()
     itemID = CO2MenuContentPrivate::ITEM_CBO_APNEA_TIME;
     comboBox->setProperty("Item", itemID);
     d_ptr->combos.insert(CO2MenuContentPrivate::ITEM_CBO_APNEA_TIME, comboBox);
+
+
+
+    // CO2 work mode
+    label = new QLabel(trs("CO2WorkMode"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                       << trs("CO2Standby")
+                       << trs("CO2Measure"));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    itemID = CO2MenuContentPrivate::ITEM_CBO_WORK_MODE;
+    comboBox->setProperty("Item", itemID);
+    d_ptr->combos.insert(CO2MenuContentPrivate::ITEM_CBO_WORK_MODE, comboBox);
 
     int row = d_ptr->combos.count();
 
@@ -268,6 +308,7 @@ void CO2MenuContent::layoutExec()
     layout->addWidget(spinBox, row, 1);
     connect(spinBox, SIGNAL(valueChange(int, int)), this, SLOT(o2CompenSpinboxReleased(int, int)));
     d_ptr->o2Spb = spinBox;
+    d_ptr->o2Lbl = label;
 
 
     // n2o compensation
@@ -279,6 +320,7 @@ void CO2MenuContent::layoutExec()
     layout->addWidget(spinBox, row + 1, 1);
     connect(spinBox, SIGNAL(valueChange(int, int)), this, SLOT(n2oCompenSpinboxReleased(int, int)));
     d_ptr->n2oSpb = spinBox;
+    d_ptr->n2oLbl = label;
 
     // 添加报警设置链接
     Button *btn = new Button(QString("%1%2").

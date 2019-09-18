@@ -50,10 +50,10 @@ public:
     void setFillColor(const QColor &color);
 
     // 设置剩余时间参数
-    void setTimeValue(int time);
+    void setTimeValue(BatteryRemainTime time);
 
     // 设置电池图标
-    void setIcon(int time);
+    void setIcon(BatteryPowerLevel level);
     void setIconFull(void);
     void setIconLow(void);
     void charging();

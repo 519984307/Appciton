@@ -123,6 +123,28 @@ public:
      */
     bool setModuleWorkMode(CO2WorkMode mode);
 
+    void sendCalibrateData(int value);
+    void setCalibrateData(const unsigned char *packet);
+    bool getCalibrateResult();
+    bool getCalibrateReply();
+
+
+    /**
+     * @brief setZeroStatus 设置失能CO2校零功能状态
+     * @param reason
+     * @param status
+     */
+    void setZeroStatus(CO2DisableZeroReason reason, bool status);
+
+    /**
+     * @brief getDisableZeroStatus 获取是否失能CO2校零功能
+     * @return
+     */
+    bool getDisableZeroStatus();
+
+signals:
+    void updateZeroSta(bool sta);
+
 public:
     // 校零。
     void zeroCalibration(void);
@@ -148,10 +170,12 @@ public:
 
     // 设置/获取波形放大标尺。
     void setDisplayZoom(CO2DisplayZoom zoom);
+    void updateDisplayZoom();
     CO2DisplayZoom getDisplayZoom(void);
 
     // 设置/获取FiCO2显示。
     void setFiCO2Display(CO2FICO2Display disp);
+    void updateFiCO2Display();
     CO2FICO2Display getFICO2Display(void);
 
     // 获取单位。
@@ -174,8 +198,22 @@ public:
 
     // 刷新参数上下限
     virtual void updateSubParamLimit(SubParamID id);
+
+    // resp窒息报警状态
+    void setRespApneaStimulation(bool sta);
+
+protected slots:
+    virtual void paramUpdateTimeout();
+
 private slots:
     void onPaletteChanged(ParamID id);
+
+signals:
+    /**
+     * @brief connectStatusUpdated  and the signal function of the provider`s status updated
+     * @param isConnected  and if is connected
+     */
+    void connectStatusUpdated(bool isConnected);
 
 private:
     CO2Param();

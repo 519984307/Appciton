@@ -10,9 +10,10 @@
 
 
 #pragma once
-#include <QDialog>
+#include "Dialog.h"
 #include "LanguageManager.h"
 #include "qprogressbar.h"
+#include "Button.h"
 
 //数据类型及传输方式
 enum Export_Data_Type
@@ -27,58 +28,11 @@ enum Export_Data_Type
     EXPORT_DATA_NR
 };
 
-//传输开始标题
-const QString startTitleString[EXPORT_DATA_NR] =
-{
-    trs("TransferRescueDataByUSB"),
-    trs("TransferRescueDataBySFTP"),
-    trs("TransferSupervisorByUSB"),
-    trs("TransferSupervisorByWIFI"),
-    trs("TransferECG12LeadByUSB"),
-    trs("TransferECG12LeadByWIFI"),
-    trs("TransferErrorLogToUSB"),
-};
-
-//传输结束标题
-const QString endTitleString[EXPORT_DATA_NR] =
-{
-    trs("TransferRescueDataComplete"),
-    trs("TransferRescueDataComplete"),
-    trs("TransferSupervisorComplete"),
-    trs("TransferSupervisorComplete"),
-    trs("TransferECG12LeadComplete"),
-    trs("TransferECG12LeadComplete"),
-    trs("TransferErrorLogToUSBComplete"),
-};
-
-//传输开始信息
-const QString startInfoString[EXPORT_DATA_NR] =
-{
-    trs("NotDisconnectUSB"),
-    trs("TransferRescueDataBySFTP"),
-    trs("NotDisconnectUSB"),
-    trs("TransferRescueDataByWIFI"),
-    trs("NotDisconnectUSB"),
-    trs("TransferRescueDataByWIFI"),
-};
-
-//传输结束信息
-const QString endInfoString[EXPORT_DATA_NR] =
-{
-    trs("RemoveUSB"),
-    trs("SucceedRescueDataBySFTP"),
-    trs("RemoveUSB"),
-    trs("SucceedRescueDataByWIFI"),
-    trs("RemoveUSB"),
-    trs("SucceedRescueDataByWIFI"),
-};
-
 //数据传输基类
 class QLabel;
-class LButton;
 class QProgressBar;
 class QTimer;
-class ExportDataWidget : public QDialog
+class ExportDataWidget : public Dialog
 {
     Q_OBJECT
 
@@ -106,7 +60,6 @@ public slots:
     void setBarValue(unsigned char value);
 
 protected:
-    void paintEvent(QPaintEvent *e);
     void showEvent(QShowEvent *e);
 
 private slots:
@@ -116,12 +69,10 @@ signals:
     void cancel();
 
 protected:
-    static const int _titleBarHeight = 30;
-
     QLabel *_title;
     QLabel *_info;
     QProgressBar *_bar;
-    LButton *_cancleOrOK;
+    Button *_cancleOrOK;
 
     bool _transferCancel;
     Export_Data_Type _curType;

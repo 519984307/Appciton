@@ -418,7 +418,7 @@ void WiFiProfileEditorWindowPrivate::onCommit()
  * constructor
  **************************************************************************************************/
 WiFiProfileEditorWindow::WiFiProfileEditorWindow(const WiFiProfileWindowInfo &profile)
-    : Window(),
+    : Dialog(),
       d_ptr(new WiFiProfileEditorWindowPrivate(this))
 {
     Q_D(WiFiProfileEditorWindow);
@@ -486,7 +486,7 @@ void WiFiProfileEditorWindow::keyPressEvent(QKeyEvent *event)
     default:
         break;
     }
-    Window::keyPressEvent(event);
+    Dialog::keyPressEvent(event);
 }
 
 

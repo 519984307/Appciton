@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the unittest project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2019/3/12
+ **/
+
 #pragma once
 #include <QMap>
 #include <QString>
@@ -5,43 +15,35 @@
 #include "RingBuff.h"
 #include "BaseDefine.h"
 #include "ParamDefine.h"
+#include "WaveformCacheInterface.h"
 
-typedef void (*SyncCacheCallback) (WaveformID waveid, long cacheid, int cachelen);
+// typedef void (*SyncCacheCallback) (WaveformID waveid, long cacheid, int cachelen);
 
-struct WaveformRecorder
-{
-    int curRecWaveNum;
-    int totalRecWaveNum;
-    int sampleRate;
-    WaveDataType *buf;
-    void *recObj;
-    void (*recordDurationIncreaseCallback)(WaveformID id, void *obj);
-    void (*recordCompleteCallback)(WaveformID id, void *obj);
-};
+// struct WaveformRecorder
+// {
+//     int curRecWaveNum;
+//     int totalRecWaveNum;
+//     int sampleRate;
+//     WaveDataType *buf;
+//     void *recObj;
+//     void (*recordDurationIncreaseCallback)(WaveformID id, void *obj);
+//     void (*recordCompleteCallback)(WaveformID id, void *obj);
+// };
 
 
 /**************************************************************************************************
  * 波形数据缓存
  *************************************************************************************************/
-class WaveformCache
+class WaveformCache : public WaveformCacheInterface
 {
 public:
-    static WaveformCache &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new WaveformCache();
-        }
-
-        return *_selfObj;
-    }
-    static WaveformCache *_selfObj;
+    static WaveformCache &getInstance();
     ~WaveformCache();
 
 public:
     // 注册一个数据源。
     void registerSource(WaveformID id, int rate, int minValue, int maxValue, QString &waveTitle,
-            int baseline = 0);
+                        int baseline = 0);
 
     // 添加一个波形数据。
     void addData(WaveformID id, WaveDataType data);
@@ -60,7 +62,6 @@ public:
 
 
 public: // 通道相关。
-
     // get the time duration of the channels;
     unsigned channelDuration() const;
 
@@ -70,33 +71,35 @@ public: // 通道相关。
     // stop the realtime channel
     void stopRealtimeChannel();
 
-    //read data from the storage channel
-    int readStorageChannel(WaveformID id, WaveDataType *buff, int time, bool alignToSecond = true, bool startRealtimeChannel = false);
+    // read data from the storage channel
+    int readStorageChannel(WaveformID id, WaveDataType *buff, int time, bool alignToSecond = true,
+                           bool startRealtimeChannel = false);
 
-    //read the oldest data from the realtime channel, the channel will remove the read data
+    // read the oldest data from the realtime channel, the channel will remove the read data
     int readRealtimeChannel(WaveformID id, WaveDataType *buff, int time);
 
-    //read the oldest data from the realtime channel, the channel will remove the read data
+    // read the oldest data from the realtime channel, the channel will remove the read data
     int readRealtimeChannel(WaveformID id, int num, WaveDataType *buff);
 
-    //TODO: deprecated, remove later
-    //register a user buffer as sync cache
-    bool registerSyncCache(WaveformID id, long cacheID, WaveDataType *buff, int buflen, SyncCacheCallback cb=NULL);
-    //TODO: deprecated, remove later
-    //unregister sync cache
+    // TODO: deprecated, remove later
+    // register a user buffer as sync cache
+    bool registerSyncCache(WaveformID id, long cacheID, WaveDataType *buff, int buflen, SyncCacheCallback cb = NULL);
+    // TODO: deprecated, remove later
+    // unregister sync cache
     void unRegisterSyncCache(WaveformID id, long cacheID);
-    //TODO: deprecated, remove later
-    //check whether the sync cache complete
+    // TODO: deprecated, remove later
+    // check whether the sync cache complete
     bool isSyncCacheCompleted(WaveformID id, long cacheID);
 
-    //register a waveform recorder, for each recorder object, it can not record the same waveform twice
+    // register a waveform recorder, for each recorder object, it can not record the same waveform twice
     // recorder will be deleted automatically when complete
     bool registerWaveformRecorder(WaveformID id, const WaveformRecorder &recorder);
 
-    //unregister a waveform recorder
+    // unregister a waveform recorder
     void unRegisterWaveformRecorder(WaveformID id, void *recObj);
 
-
+    // clear all source
+    void clear();
 private:
     inline bool _channelExisted(WaveformID id, const QString &name);
 
@@ -148,11 +151,11 @@ private:
     ChannelDesc *_realtimeChannel[WAVE_NR];
     bool _enableRealtimeChannel;
 
-    //Wave Sync Cache, Cache the wave data directly to user's buffer
+    // Wave Sync Cache, Cache the wave data directly to user's buffer
     struct WaveSyncCache
     {
         WaveSyncCache(long cacheId, WaveDataType *buffer, int bufferLen, SyncCacheCallback cb)
-            :id(cacheId), buff(buffer), bufflen(bufferLen), curCacheLen(0), cb(cb)
+            : id(cacheId), buff(buffer), bufflen(bufferLen), curCacheLen(0), cb(cb)
         {}
         long id;
         WaveDataType *buff;
@@ -167,7 +170,5 @@ private:
     typedef QMap<WaveformID, QList<WaveformRecorder> > WaveformRecorderMap;
     WaveformRecorderMap _waveRecorders;
     QMutex _recorderMutex;
-
 };
-#define waveformCache (WaveformCache::construction())
-#define deleteWaveformCache() (delete WaveformCache::_selfObj)
+#define waveformCache (WaveformCache::getInstance())

@@ -15,6 +15,20 @@
 #include "SPO2Symbol.h"
 #include "SoundManager.h"
 
+typedef struct CCHDData
+{
+    CCHDData()
+        : handValue(InvData()),
+          footValue(InvData()),
+          result(CCHD_NR),
+          time(0)
+    {}
+    short handValue;
+    short footValue;
+    CCHDResult result;
+    unsigned time;
+}cchdData;
+
 class SPO2TrendWidget;
 class SPO2WaveWidget;
 class OxyCRGSPO2TrendWidget;
@@ -201,9 +215,61 @@ public:
     void setNibpSameSide(bool flag);
     bool isNibpSameSide(void);
 
+    void setCCHDData(short value, bool isHand);
+
+    /**
+     * @brief getCCHDResult 获取cchd的筛查结果
+     * @param handValue 手部测量数据
+     * @param footValue 足部测量数据
+     * @return
+     */
+    CCHDResult updateCCHDResult();
+
+    /**
+     * @brief getCCHDDataList 获取cchd数据
+     * @return
+     */
+    QList<cchdData> getCCHDDataList();
+
+    /**
+     * @brief clearCCHDData 清楚数据
+     * @param isCleanup　是否清楚全部数据
+     */
+    void clearCCHDData(bool isCleanup = false);
+
+    /**
+     * @brief setPerfusionStatus  and the function of setting the SPO2 perfusion status
+     * @param isLow  and true if low perfusion
+     */
+    void setPerfusionStatus(bool isLow);
+
+    /**
+     * @brief getPerfusionStatus  and the function of getting the SPO2 perfusion status
+     * @return  and return true if low perfusion
+     */
+    bool getPerfusionStatus() const;
+
+    /**
+     * @brief initModule  and the function of initting the module
+     */
+    void initModule();
+
+protected slots:
+    virtual void paramUpdateTimeout();
+
 private slots:
     void checkSelftest();
     void onPaletteChanged(ParamID id);
+
+    /**
+     * @brief onUpgradeT5ModuleCompleted  and the function of upgrading the T5 module when completed
+     */
+    void onUpgradeT5ModuleCompleted();
+
+    /**
+     * @brief onTempReset  and the function of temp reset
+     */
+    void onTempReset();
 
 private:
     SPO2Param();
@@ -229,5 +295,13 @@ private:
     OxyCRGSPO2TrendWidget *_oxyCRGSPO2Trend;
     bool _connectedProvider;
     SPO2ModuleType _moduleType;
+
+    QList<cchdData> _cchdDataList;
+    int _repeatTimes;
+
+    bool _isLowPerfusion;
+    bool _isForceUpdating;  // 当spo2的弱灌注状态发生变化时，该状态位为true
+
+    bool _isT5ModuleUpgradeCompleted;
 };
 #define spo2Param (SPO2Param::construction())

@@ -9,11 +9,11 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 #include <QScopedPointer>
 
 class EventWaveSetWindowPrivate;
-class EventWaveSetWindow : public Window
+class EventWaveSetWindow : public Dialog
 {
     Q_OBJECT
 public:

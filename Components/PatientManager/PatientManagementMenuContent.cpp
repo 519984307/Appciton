@@ -78,7 +78,7 @@ void PatientManagementMenuContent::layoutExec()
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
 
     // newPatient
-    btn = new Button(trs("NewPatient"));
+    btn = new Button(trs("AdmitPatient"));
     btn->setButtonStyle(Button::ButtonTextOnly);
     btn->setProperty("Item", qVariantFromValue(index));
     glayout->addWidget(btn, index, 1);
@@ -123,7 +123,8 @@ void PatientManagementMenuContent::onBtnReleased()
             {
                 patientManager.newPatient();
             }
-            windowManager.showWindow(&patientInfoWindow , WindowManager::ShowBehaviorCloseIfVisiable);
+            windowManager.showWindow(&patientInfoWindow , WindowManager::ShowBehaviorCloseIfVisiable
+                                                        | WindowManager::ShowBehaviorCloseOthers);
         }
         break;
         case PatientManagementMenuContentPrivate::ITEM_BTN_NEW_PATIENT:

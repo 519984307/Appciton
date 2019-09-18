@@ -19,6 +19,10 @@
 #include "USBManager.h"
 #include "FactoryMaintainManager.h"
 #include "SpinBox.h"
+#include "BatteryDefine.h"
+#include <QDir>
+#include <QFile>
+#include "TestBatteryTime.h"
 
 class FactoryTestMenuContentPrivate
 {
@@ -32,6 +36,8 @@ public:
     static QString btnStr[FACTORY_CONTENT_TEST_NR];
 
     Button *lbtn[FACTORY_CONTENT_TEST_NR];
+
+    void createLogFile();
 };
 
 FactoryTestMenuContentPrivate::FactoryTestMenuContentPrivate()
@@ -42,6 +48,50 @@ FactoryTestMenuContentPrivate::FactoryTestMenuContentPrivate()
     for (int i = 0; i < FACTORY_CONTENT_TEST_NR; i++)
     {
         lbtn[i] = NULL;
+    }
+}
+
+void FactoryTestMenuContentPrivate::createLogFile()
+{
+    QDir logDir(QString(LOG_FILE_PATH));
+    if (!logDir.exists())
+    {
+        // 不存在就新建
+        logDir.mkpath(QString(LOG_FILE_PATH));
+    }
+    QFile logFile(QString(LOG_FILE));
+    if (!logFile.exists())
+    {
+        logFile.open(QIODevice::ReadWrite);
+        logFile.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        logFile.write("\n<BatteryInfo>");
+        for (int i = BAT_VOLUME_0; i <= BAT_VOLUME_5 ; i++)
+        {
+            // add bat_i
+            QString nodeHead = QString("\n\t<BAT_%1>").arg(QString::number(i));
+            QString nodeTail = QString("\n\t</BAT_%1>").arg(QString::number(i));
+            logFile.write(nodeHead.toLocal8Bit());
+            logFile.write(nodeTail.toLocal8Bit());
+        }
+        logFile.write("\n</BatteryInfo>");
+        logFile.close();
+    }
+    XmlParser xmlParser;
+    if (xmlParser.open(QString(LOG_FILE)))
+    {
+        for (int i = BAT_VOLUME_0; i <= BAT_VOLUME_5; i++)
+        {
+            QString nodeName = QString("BAT_%1").arg(QString::number(i));
+            if (!xmlParser.hasNode(QString("%1|AD").arg(nodeName)))
+            {
+                xmlParser.addNode(nodeName, "AD");
+            }
+            if (!xmlParser.hasNode(QString("%1|Time").arg(nodeName)))
+            {
+                xmlParser.addNode(nodeName, "Time");
+            }
+        }
+        xmlParser.saveToFile();
     }
 }
 
@@ -177,6 +227,10 @@ void FactoryTestMenuContent::onBtnReleased(int id)
         usbOutPutTestPacket(true);
         break;
 #endif
+    case FACTORY_CONTENT_TEST_BATTERY:
+        d_ptr->createLogFile();
+        testBatteryTime.open();
+        break;
     default:
         break;
     }
@@ -192,9 +246,10 @@ FactoryTestMenuContent::~FactoryTestMenuContent()
 
 void FactoryTestMenuContent::readyShow()
 {
-    bool enable = true;
 #ifdef DISABLE_FACTORY_MODULE_SELFTEST
-    enable = false;
+    bool enable = false;
+#else
+    bool enable = true;
 #endif
     for (int i = 0; i < FACTORY_CONTENT_TEST_NR; i++)
     {

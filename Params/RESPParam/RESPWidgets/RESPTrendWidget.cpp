@@ -20,6 +20,8 @@
 #include "ParamManager.h"
 #include "FontManager.h"
 #include "RESPDupParam.h"
+#include "ConfigManager.h"
+#include "CO2Param.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -58,7 +60,7 @@ void RESPTrendWidget::_onBrSourceStatusUpdate()
     }
 }
 
-void RESPTrendWidget::_loadConfig()
+void RESPTrendWidget::loadConfig()
 {
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_RESP));
     setPalette(palette);
@@ -66,7 +68,8 @@ void RESPTrendWidget::_loadConfig()
 
     setName(trs(paramInfo.getSubParamName(SUB_PARAM_RR_BR)));
     setUnit(Unit::getSymbol(UNIT_RPM));
-    updateLimit();
+
+    TrendWidget::loadConfig();
 }
 
 /**************************************************************************************************
@@ -92,7 +95,14 @@ void RESPTrendWidget::setRRValue(int16_t rr , bool isRR, bool isAutoType)
 
     if (rr != InvData())
     {
-        _rrString = QString::number(rr);
+        if (respParam.isRRInaccurate())
+        {
+            _rrString = QString("%1?").arg(QString::number(rr));
+        }
+        else
+        {
+            _rrString = QString::number(rr);
+        }
     }
     else
     {
@@ -170,9 +180,6 @@ RESPTrendWidget::RESPTrendWidget() : TrendWidget("RESPTrendWidget")
     _isAlarm = false;
     _rrString = InvStr();
 
-    // 设置报警关闭标志
-    showAlarmOff();
-
     // RR值。
     _rrValue = new QLabel();
     _rrValue->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
@@ -184,17 +191,13 @@ RESPTrendWidget::RESPTrendWidget() : TrendWidget("RESPTrendWidget")
     _rrSource->setFont(fontManager.textFont(18));
 
     // 布局。
-    QHBoxLayout *mainLayout = new QHBoxLayout();
+    QVBoxLayout *mainLayout = new QVBoxLayout();
     mainLayout->setMargin(1);
     mainLayout->setSpacing(1);
-    mainLayout->addStretch(1);
-    mainLayout->addWidget(_rrValue, 2);
-    mainLayout->addStretch(3);
-    mainLayout->addWidget(_rrSource, 1);
-    mainLayout->addStretch(1);
+    mainLayout->addWidget(_rrValue);
+    mainLayout->addWidget(_rrSource);
 
-    contentLayout->addStretch(1);
-    contentLayout->addLayout(mainLayout, 3);
+    contentLayout->addLayout(mainLayout, 7);
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
@@ -202,7 +205,7 @@ RESPTrendWidget::RESPTrendWidget() : TrendWidget("RESPTrendWidget")
     connect(&respDupParam, SIGNAL(brSourceStatusUpdate()), this, SLOT(_onBrSourceStatusUpdate()));
     _onBrSourceStatusUpdate();
 
-    _loadConfig();
+    loadConfig();
 }
 
 /**************************************************************************************************
@@ -223,9 +226,4 @@ void RESPTrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_RESP));
     showNormalStatus(psrc);
-}
-
-void RESPTrendWidget::updateWidgetConfig()
-{
-    _loadConfig();
 }

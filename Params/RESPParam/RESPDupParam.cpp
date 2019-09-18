@@ -12,12 +12,14 @@
 
 #include "RESPDupParam.h"
 #include "BaseDefine.h"
-#include "IConfig.h"
+#include "ConfigManager.h"
 #include "RESPTrendWidget.h"
 #include "CO2TrendWidget.h"
 #include "Debug.h"
 #include "RESPParam.h"
 #include "SystemManager.h"
+#include "O2ParamInterface.h"
+#include "RunningStatusBar.h"
 
 RESPDupParam *RESPDupParam::_selfObj = NULL;
 
@@ -143,6 +145,7 @@ void RESPDupParam::updateRR(short rr)
     }
 
     handleBRRRValue();
+    paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
 }
 
 /**************************************************************************************************
@@ -158,6 +161,7 @@ void RESPDupParam::updateBR(short br)
     }
 
     handleBRRRValue();
+    paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
 }
 
 /**************************************************************************************************
@@ -251,6 +255,71 @@ void RESPDupParam::updateSubParamLimit(SubParamID id)
     }
 }
 
+void RESPDupParam::setRRSource(BRRRSourceType source)
+{
+    switch (source)
+    {
+    case BR_RR_AUTO:
+        setAutoBrSourceStatue(true);
+        break;
+    case BR_RR_SOURCE_CO2:
+        setAutoBrSourceStatue(false);
+        setBrSource(BR_SOURCE_CO2);
+        break;
+    case BR_RR_SOURCE_ECG:
+        setAutoBrSourceStatue(false);
+        setBrSource(BR_SOURCE_ECG);
+        break;
+    default:
+        break;
+    }
+    int index = static_cast<int>(source);
+    currentConfig.setNumValue("RESP|BrSource", index);
+}
+
+void RESPDupParam::updateRRSource()
+{
+    int index = 0;
+    currentConfig.getNumValue("RESP|BrSource", index);
+    BRRRSourceType rrSource = static_cast<BRRRSourceType>(index);
+    switch (rrSource)
+    {
+    case BR_RR_AUTO:
+        setAutoBrSourceStatue(true);
+        break;
+    case BR_RR_SOURCE_CO2:
+        setAutoBrSourceStatue(false);
+        setBrSource(BR_SOURCE_CO2);
+        break;
+    case BR_RR_SOURCE_ECG:
+        setAutoBrSourceStatue(false);
+        setBrSource(BR_SOURCE_ECG);
+        break;
+    default:
+        break;
+    }
+}
+
+void RESPDupParam::setRespApneaStimulation(bool sta)
+{
+    bool respApneaStimulation = false;
+    currentConfig.getNumValue("ApneaStimulation|RESP", respApneaStimulation);
+    if (respApneaStimulation)
+    {
+        O2ParamInterface *o2Param = O2ParamInterface::getO2ParamInterface();
+        if (o2Param)
+        {
+            o2Param->setVibrationReason(APNEASTIMULATION_REASON_RESP, sta);
+        }
+    }
+}
+
+void RESPDupParam::paramUpdateTimeout()
+{
+    _rrValue = InvData();
+    handleBRRRValue();
+}
+
 void RESPDupParam::onPaletteChanged(ParamID id)
 {
     if (id != PARAM_RESP || !systemManager.isSupport(CONFIG_RESP))
@@ -273,6 +342,7 @@ RESPDupParam::RESPDupParam()
       _isAutoBrSource(true),
       _manualBrSourceType(BR_SOURCE_ECG)
 {
+    updateRRSource();
 }
 
 void RESPDupParam::handleBRRRValue()
@@ -281,6 +351,7 @@ void RESPDupParam::handleBRRRValue()
     {
         return;
     }
+
     if (_isAutoBrSource)
     {
         if (_brValue != InvData())  // set br value firstly when the br value is valid.
@@ -293,7 +364,7 @@ void RESPDupParam::handleBRRRValue()
         }
         else  // set br value when the rr value is invalid.
         {
-            _trendWidget->setRRValue(_brValue, false, true);
+            _trendWidget->setRRValue(_rrValue, true, true);
         }
     }
     else if (_manualBrSourceType == BR_SOURCE_CO2)
@@ -304,6 +375,18 @@ void RESPDupParam::handleBRRRValue()
     {
         _trendWidget->setRRValue(_rrValue, true);
     }
+
+#ifdef ENABLE_O2_APNEASTIMULATION
+    O2ParamInterface *o2Param = O2ParamInterface::getO2ParamInterface();
+    if (o2Param)
+    {
+        if ((_rrValue > 7 || _rrValue == InvData())
+                && (_brValue > 7 || _brValue == InvData()))
+        {
+            o2Param->setVibrationReason(APNEASTIMULATION_REASON_RESP, false);
+        }
+    }
+#endif
 }
 
 /**************************************************************************************************

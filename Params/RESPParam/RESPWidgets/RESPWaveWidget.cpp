@@ -21,6 +21,7 @@
 #include "WindowManager.h"
 #include "PopupList.h"
 #include "SystemManager.h"
+#include "RESPDupParam.h"
 
 /**************************************************************************************************
  * 增益改变。
@@ -129,7 +130,7 @@ RESPWaveWidget::RESPWaveWidget(const QString &waveName, const QString &title)
     _onCalcLeadChanged(lead);
 
     // 加载配置
-    _loadConfig();
+    loadConfig();
 
     setMargin(QMargins(WAVE_X_OFFSET, fontH, 2, 2));
 }
@@ -146,6 +147,10 @@ RESPWaveWidget::~RESPWaveWidget()
  *************************************************************************************************/
 void RESPWaveWidget::setZoom(int zoom)
 {
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        return;
+    }
     switch (zoom)
     {
     case RESP_ZOOM_X025:
@@ -213,12 +218,6 @@ bool RESPWaveWidget::waveEnable()
     return respParam.isEnabled();
 }
 
-void RESPWaveWidget::updateWidgetConfig()
-{
-   _loadConfig();
-   WaveWidget::updateWidgetConfig();
-}
-
 void RESPWaveWidget::setWaveformMode(RESPSweepMode mode)
 {
     if (mode == RESP_SWEEP_MODE_FILLED)
@@ -234,7 +233,7 @@ void RESPWaveWidget::setWaveformMode(RESPSweepMode mode)
 /**************************************************************************************************
  * 加载配置。
  *************************************************************************************************/
-void RESPWaveWidget::_loadConfig()
+void RESPWaveWidget::loadConfig()
 {
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_RESP));
     setPalette(palette);
@@ -258,6 +257,8 @@ void RESPWaveWidget::_loadConfig()
     }
 
     setZoom(static_cast<int>(respParam.getZoom()));
+    respDupParam.updateRRSource();  // 更新RR来源
+    respParam.setCalcLead(respParam.getCalcLead()); // 更新呼吸导联
 }
 
 /**************************************************************************************************

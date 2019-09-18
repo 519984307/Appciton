@@ -11,37 +11,13 @@
 #pragma once
 #include <QObject>
 #include <QScopedPointer>
-#include <AlarmDefine.h>
+#include "SoundManagerInterface.h"
 
 class SoundManagerPrivate;
-class SoundManager : public QObject
+class SoundManager : public QObject, public SoundManagerInterface
 {
     Q_OBJECT
 public:
-    enum SoundType
-    {
-        SOUND_TYPE_NONE,        /* no sound playing */
-        SOUND_TYPE_KEY_PRESS,
-        SOUND_TYPE_ERROR,
-        SOUND_TYPE_PULSE,
-        SOUND_TYPE_HEARTBEAT,
-        SOUND_TYPE_NIBP_COMPLETE,
-        SOUND_TYPE_ALARM,
-        SOUND_TYPE_NR,
-    };
-
-    enum VolumeLevel
-    {
-        VOLUME_LEV_0,   /* muted */
-        VOLUME_LEV_1,
-        VOLUME_LEV_2,
-        VOLUME_LEV_3,
-        VOLUME_LEV_4,
-        VOLUME_LEV_5,
-        VOLUME_LEV_MAX = VOLUME_LEV_5,
-        VOLUME_LEV_NR,
-    };
-
     ~SoundManager();
 
     /**
@@ -114,6 +90,12 @@ public:
      * @param enable  true-不允许播放  false-允许播放
      */
     void stopHandlingSound(bool enable);
+
+    /**
+     * @brief setNIBPCompleteTone   是否开启NIBP完成音
+     * @param status
+     */
+    void setNIBPCompleteTone(bool status);
 
 public slots:
     /**

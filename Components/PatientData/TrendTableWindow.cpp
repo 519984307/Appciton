@@ -149,7 +149,7 @@ void TrendTableWindow::updatePages()
 
 void TrendTableWindow::showEvent(QShowEvent *ev)
 {
-    Window::showEvent(ev);
+    Dialog::showEvent(ev);
     d_ptr->updateTable();
     QAbstractButton *btn = d_ptr->table->findChild<QAbstractButton *>();
     if (btn)
@@ -165,6 +165,16 @@ void TrendTableWindow::showEvent(QShowEvent *ev)
         {
             d_ptr->table->verticalHeader()->setMinimumWidth(s.width());
         }
+    }
+
+    // 更新打印机状态
+    if (recorderManager.isConnected())
+    {
+        d_ptr->printParamBtn->setEnabled(true);
+    }
+    else
+    {
+        d_ptr->printParamBtn->setEnabled(false);
     }
 }
 
@@ -198,7 +208,7 @@ bool TrendTableWindow::eventFilter(QObject *o, QEvent *e)
 }
 
 TrendTableWindow::TrendTableWindow()
-    : Window(), d_ptr(new TrendTableWindowPrivate(this))
+    : Dialog(), d_ptr(new TrendTableWindowPrivate(this))
 {
     setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
 
@@ -340,13 +350,13 @@ void TrendTableWindow::printWidgetRelease()
         d_ptr->model->displayDataTimeRange(startTime, endTime);
         printWindow.printTimeRange(startLimit, endLimit);
         printWindow.initPrintTime(startTime, endTime);
-        printWindow.exec();
+        windowManager.showWindow(&printWindow, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
     }
 }
 
 void TrendTableWindow::trendDataSetReleased()
 {
-    windowManager.showWindow(&trendTableSetWindow, WindowManager::ShowBehaviorModal);
+    windowManager.showWindow(&trendTableSetWindow, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
     updatePages();
 }
 

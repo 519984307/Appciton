@@ -9,11 +9,11 @@
  **/
 #pragma once
 
-#include "Window.h"
+#include "Dialog.h"
 #include <QLineEdit>
 
 class EnglishInputPanelPrivate;
-class EnglishInputPanel: public Window
+class EnglishInputPanel: public Dialog
 {
     Q_OBJECT
 

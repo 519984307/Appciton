@@ -17,8 +17,6 @@
 #include "WindowManager.h"
 #include "Alarm.h"
 
-static AlarmPhyInfoBarWidget *_selfObj = NULL;
-
 /**************************************************************************************************
  * 绘制背景。
  *************************************************************************************************/
@@ -84,8 +82,6 @@ void AlarmPhyInfoBarWidget::_drawText(void)
         r.adjust(focusedBorderWidth() + 6, 0, 0, 0);
     }
 
-    int fontSize = fontManager.getFontSize(4);
-    painter.setFont(fontManager.textFont(fontSize));
     QString nameStr;
     switch (_alarmSource->getAlarmPriority(_alarmID))
     {
@@ -103,6 +99,8 @@ void AlarmPhyInfoBarWidget::_drawText(void)
     }
     nameStr += " ";
     nameStr += trs(_text);
+    int fontSize = fontManager.textFontSize(r, nameStr, false, fontManager.getFontSize(4));
+    painter.setFont(fontManager.textFont(fontSize));
     painter.drawText(r, Qt::AlignVCenter | Qt::AlignLeft, nameStr);
 }
 
@@ -116,9 +114,6 @@ void AlarmPhyInfoBarWidget::_drawAlarmPauseMessage()
     QRect tempRect = rect().adjusted(border, border, -border, -border);
     painter.drawRoundedRect(tempRect, 4, 4);
 
-    int fontSize = fontManager.getFontSize(4);
-    painter.setFont(fontManager.textFont(fontSize));
-
     QString s;
     if (_alarmPauseTime == INT_MAX)
     {
@@ -129,6 +124,8 @@ void AlarmPhyInfoBarWidget::_drawAlarmPauseMessage()
         s = QString("%1 %2s").arg(trs("AlarmPause")).arg(_alarmPauseTime);
     }
 
+    int fontSize = fontManager.textFontSize(tempRect, s, false, fontManager.getFontSize(4));
+    painter.setFont(fontManager.textFont(fontSize));
     painter.drawText(tempRect, Qt::AlignCenter, s);
 }
 
@@ -154,12 +151,6 @@ void AlarmPhyInfoBarWidget::_releaseHandle(IWidget *iWidget)
 {
     Q_UNUSED(iWidget)
 
-    if (_alarmPauseTime > 0)
-    {
-        // do not show the alarm window when in alarm pause state
-        return;
-    }
-
     //报警少于一个时，不显示。
     int total = alarmIndicator.getAlarmCount(_alarmType);
     if (total < 1)
@@ -170,7 +161,7 @@ void AlarmPhyInfoBarWidget::_releaseHandle(IWidget *iWidget)
     if (NULL == _alarmWindow)
     {
         _alarmWindow = new AlarmInfoWindow(trs("PhyAlarmList"), _alarmType);
-        connect(_alarmWindow, SIGNAL(windowHide(Window *)), this, SLOT(_alarmListHide()));
+        connect(_alarmWindow, SIGNAL(windowHide(Dialog *)), this, SLOT(_alarmListHide()));
         windowManager.showWindow(_alarmWindow, WindowManager::ShowBehaviorCloseOthers
                                  | WindowManager::ShowBehaviorCloseIfVisiable);
     }
@@ -221,14 +212,6 @@ void AlarmPhyInfoBarWidget::display(AlarmInfoNode &node)
 }
 
 /**************************************************************************************************
- * 获取对象。
- *************************************************************************************************/
-AlarmPhyInfoBarWidget &AlarmPhyInfoBarWidget::getSelf()
-{
-    return *_selfObj;
-}
-
-/**************************************************************************************************
  * 构造。
  *************************************************************************************************/
 AlarmPhyInfoBarWidget::AlarmPhyInfoBarWidget(const QString &name) :
@@ -244,9 +227,11 @@ AlarmPhyInfoBarWidget::AlarmPhyInfoBarWidget(const QString &name) :
     _alarmWindow(NULL),
     _alarmType(ALARM_TYPE_PHY)
 {
-    _selfObj = this;
-//    setFocusPolicy(Qt::NoFocus);
-
+    AlarmInfoBarWidget *old = registerAlarmInfoBar(ALARM_TYPE_PHY, this);
+    if (old)
+    {
+        delete old;
+    }
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 }
 

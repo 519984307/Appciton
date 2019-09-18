@@ -21,6 +21,7 @@
 #include "FontManager.h"
 #include "LayoutManager.h"
 #include <QPoint>
+#include "LanguageManager.h"
 
 #define WAVE_LEFT_RIGHT_MARGIN 4
 #define WAVE_TOP_BOTTOM_MARGIN 2

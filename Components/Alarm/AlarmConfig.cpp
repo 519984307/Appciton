@@ -11,10 +11,9 @@
 
 #include "AlarmConfig.h"
 #include "PatientManager.h"
-#include "ParamInfo.h"
 #include "IConfig.h"
+#include "ConfigManager.h"
 #include "SystemManager.h"
-#include "ParamInfo.h"
 
 AlarmConfig &AlarmConfig::getInstance()
 {
@@ -235,35 +234,51 @@ void AlarmConfig::setParamRulerConfig(SubParamID subParamID, UnitType unit, int 
 
 void AlarmConfig::setLimitAlarmConfig(SubParamID subParamId, UnitType unit, const LimitAlarmConfig &config)
 {
-    AlarmConfigKey key(subParamId, unit);
     LimitAlarmConfig curConfig = getLimitAlarmConfig(subParamId, unit);
+    UnitType defaultUnit = UNIT_NONE;
+    UnitType otherUnit1 = UNIT_NONE;
+    UnitType otherUnit2 = UNIT_NONE;
+    defaultUnit = paramInfo.getUnitOfSubParam(subParamId, otherUnit1, otherUnit2);
+    QList<UnitType> unitList;
+    unitList << defaultUnit << otherUnit1 << otherUnit2;
+
     if (curConfig == config)
     {
         return;
     }
-
-    QString prefix = "AlarmSource|";
-    prefix += paramInfo.getSubParamName(subParamId, true);
-
-    int val = 0;
-
-    prefix += "|";
-    prefix += Unit::getSymbol(unit);
-    if (curConfig.highLimit != config.highLimit)
+    QList<UnitType>::iterator it = unitList.begin();
+    for (; it != unitList.end(); ++it)
     {
-        val = config.highLimit;
-        currentConfig.setNumValue(prefix + "|High", val);
+        if (*it != UNIT_NONE)
+        {
+            QString prefix = "AlarmSource|";
+            prefix += paramInfo.getSubParamName(subParamId, true);
+            prefix += "|";
+            prefix += Unit::getSymbol(*it);
+            float val;
+            int mul;
+            currentConfig.getNumValue(prefix + "|Scale", mul);
+            if (curConfig.highLimit != config.highLimit)
+            {                              
+                val = Unit::convert(*it, unit, config.highLimit *1.0 / config.scale).toFloat();
+                currentConfig.setNumValue(prefix + "|High", static_cast<int>(val * mul));
+                AlarmConfigKey key(subParamId, *it);
+                LimitAlarmConfig changeConfig = getLimitAlarmConfig(subParamId, *it);
+                changeConfig.highLimit = val * mul;
+                _configCache.insert(key, changeConfig);
+            }
+            if (curConfig.lowLimit != config.lowLimit)
+            {
+                val = Unit::convert(*it, unit, config.lowLimit *1.0 / config.scale).toFloat();
+                currentConfig.setNumValue(prefix + "|Low", static_cast<int>(val * mul));
+                AlarmConfigKey key(subParamId, *it);
+                LimitAlarmConfig changeConfig = getLimitAlarmConfig(subParamId, *it);
+                changeConfig.lowLimit = val * mul;
+                _configCache.insert(key, changeConfig);
+            }
+        }
     }
 
-    if (curConfig.lowLimit != config.lowLimit)
-    {
-        val = config.lowLimit;
-        currentConfig.setNumValue(prefix + "|Low", val);
-    }
-
-    // TODO: update limit of other unit??
-
-    _configCache.insert(key, config);
 }
 
 QString AlarmConfig::getLowLimitStr(const LimitAlarmConfig &config)

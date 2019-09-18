@@ -12,12 +12,11 @@
 
 #include <QObject>
 #include <QScopedPointer>
-#include "Config.h"
-#include "PatientDefine.h"
 #include <QList>
+#include "ConfigManagerInterface.h"
 
 class ConfigManagerPrivate;
-class ConfigManager : public QObject
+class ConfigManager : public QObject, public ConfigManagerInterface
 {
     Q_OBJECT
 public:
@@ -115,17 +114,32 @@ public:
     int getUserDefineConfigMaxLen();
 
     /**
-     * @brief hasExistConfig 是否已经存在同名配置表
+     * @brief hasExistConfig 是否已经存在同名同类型配置表
      * @param name
+     * @param type
      * @return
      */
-    bool hasExistConfig(const QString &name);
+    bool hasExistConfig(const QString &name, PatientType type);
 
     /**
      * @brief loadConfig 加载相应的配置（只能加载预设的配置）
      * @param type　病人类型
      */
     void loadConfig(PatientType type);
+
+    /**
+     * @brief getOriginalConfig 获取当前文件的原始文件（包括.original.xml和userDefine.xml）
+     * @param type
+     * @return
+     */
+    QString getOriginalConfig(PatientType type);
+
+    /**
+     * @brief setOriginalConfig 设置当前文件的原始文件（包括.original.xml和userDefine.xml）
+     * @param type
+     * @param path
+     */
+    void setOriginalConfig(PatientType type, QString path);
 signals:
     /**
      * @brief configChange

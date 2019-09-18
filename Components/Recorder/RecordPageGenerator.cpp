@@ -33,10 +33,12 @@
 #include <QDebug>
 #include "RecorderManager.h"
 #include "TimeDate.h"
+#include "TimeManager.h"
 #include "AlarmConfig.h"
 #include "UnitManager.h"
 #include "PatientManager.h"
 #include "EventDataDefine.h"
+#include "TrendDataStorageManager.h"
 
 #define DEFAULT_PAGE_WIDTH 200
 #define PEN_WIDTH 2
@@ -143,7 +145,7 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
 {
     QStringList infos;
     infos.append(QString("%1: %2").arg(trs("Name")).arg(patInfo.name));
-    infos.append(QString("%1: %2").arg(trs("Gender")).arg(trs(PatientSymbol::convert(patInfo.sex))));
+    infos.append(QString("%1: %2").arg(trs("PatientSex")).arg(trs(PatientSymbol::convert(patInfo.sex))));
     infos.append(QString("%1: %2").arg(trs("PatientType")).arg(trs(PatientSymbol::convert(patInfo.type))));
     infos.append(QString("%1: %2").arg(trs("Blood")).arg(PatientSymbol::convert(patInfo.blood)));
     QString str;
@@ -155,22 +157,23 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
     str = QString("%1: ").arg(trs("Weight"));
     if (patInfo.weight)
     {
-        float weight = patientManager.getWeight();
+        float weight = patInfo.weight;
         QString weightStr = Unit::convert(patientManager.getWeightUnit(), UNIT_KG, weight);
-        str += QString("%1 %2").arg(weightStr).arg(Unit::localeSymbol(patientManager.getWeightUnit()));
+        str += QString("%1 %2").arg(weightStr).arg(trs(Unit::getSymbol(patientManager.getWeightUnit())));
     }
     infos.append(str);
 
     str = QString("%1: ").arg(trs("Height"));
     if (patInfo.height)
     {
-        float height = patientManager.getHeight();
+        float height = patInfo.height;
         QString heightStr = Unit::convert(patientManager.getHeightUnit(), UNIT_CM, height);
-        str += QString("%1 %2").arg(heightStr).arg(Unit::localeSymbol(patientManager.getHeightUnit()));
+        str += QString("%1 %2").arg(heightStr).arg(trs(Unit::getSymbol(patientManager.getHeightUnit())));
     }
     infos.append(str);
 
     infos.append(QString("%1: %2").arg(trs("ID")).arg(patInfo.id));
+    infos.append(QString("%1: %2").arg(trs("PatientPacemarker")).arg(trs(PatientSymbol::convert(static_cast<PatientPacer>(patInfo.pacer)))));
 
     // calculate the info text width
     int textWidth = 0;
@@ -199,7 +202,8 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
     }
 
     QString timeDateStr;
-    timeDate.getDateTime(t, timeDateStr, true, true);
+    bool showSecond = timeManager.isShowSecond();
+    timeDate.getDateTime(t, timeDateStr, true, showSecond);
     QString timeStr = QString("%1: %2").arg(trs("PrintTime")).arg(timeDateStr);
 
     // record time width
@@ -218,7 +222,7 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
     painter.setFont(font);
 
     // we assume the page can hold all the rows
-    QRect textRect(font.pixelSize(), fontH, textWidth, fontH);
+    QRect textRect(font.pixelSize(), 0, textWidth, fontH);
     painter.drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, title);
 
     // left one empty row
@@ -279,7 +283,7 @@ static QString contructNormalTrendStringItem(SubParamID subParamId, TrendDataTyp
     trendString += "\t";
 
     // unit
-    trendString += Unit::localeSymbol(unit);
+    trendString += trs(Unit::getSymbol(unit));
 
     return trendString;
 }
@@ -303,7 +307,7 @@ static QString contructPressTrendStringItem(SubParamID subParamId, TrendDataType
     {
         trendString = paramInfo.getIBPPressName(subParamId);
     }
-    else if (subParamId >= SUB_PARAM_NIBP_SYS && subParamId <= SUB_PARAM_NIBP_MAP)
+    else if (subParamId >= SUB_PARAM_NIBP_SYS && subParamId <= SUB_PARAM_NIBP_PR)
     {
         trendString = paramInfo.getParamName(PARAM_NIBP);
     }
@@ -423,7 +427,7 @@ static QString contructPressTrendStringItem(SubParamID subParamId, TrendDataType
     trendString += "\t";
 
     // unit
-    trendString += Unit::localeSymbol(unit);
+    trendString += trs(Unit::getSymbol(unit));
 
     return trendString;
 }
@@ -499,6 +503,11 @@ RecordPage *RecordPageGenerator::createTrendPage(const TrendDataPackage &trendDa
     // if the contains too many lines, need to seperate into several group
     QVector<int> segmentWidths; // record the maximum widht or the group segments
     int avaliableLine = avaliableTextHeight / fontH;
+    if (!trendPageTitle.isEmpty())
+    {
+        // 触发打印加上标题所以少显示一行
+        avaliableLine--;
+    }
     QList<TrendStringSegmentInfo> strSegInfoList;
     converToStringSegmets(trendStringList, strSegInfoList, font);
     int index = -1;
@@ -560,7 +569,6 @@ RecordPage *RecordPageGenerator::createTrendPage(const TrendDataPackage &trendDa
         QRect rect(xoffset, startYoffset, page->width(), fontH);
         painter.drawText(rect, trendPageTitle, textOption);
         startYoffset += fontH;
-        avaliableLine--;
     }
 
     for (int i = 0; i < segmentWidths.size(); i += 3)
@@ -630,6 +638,7 @@ static bool isPressSubParam(SubParamID SubParamID)
     case SUB_PARAM_NIBP_SYS:
     case SUB_PARAM_NIBP_DIA:
     case SUB_PARAM_NIBP_MAP:
+    case SUB_PARAM_NIBP_PR:
         return true;
     default:
         break;
@@ -685,6 +694,14 @@ QStringList RecordPageGenerator::getTrendStringList(const TrendDataPackage &tren
             }
             else
             {
+                if (subparamID == SUB_PARAM_ETCO2 || subparamID == SUB_PARAM_FICO2)
+                {
+                    // co2没有连外接模块时,不打印CO2趋势数据
+                    if (!co2Param.isConnected())
+                    {
+                        continue;
+                    }
+                }
                 strList.append(contructNormalTrendStringItem(subparamID,
                                trendData.subparamValue[subparamID],
                                trendData.subparamAlarm[subparamID],
@@ -786,7 +803,12 @@ static void drawECGGain(RecordPage *page, QPainter *painter, const RecordWaveSeg
 {
     int rulerHeight = 10 * RECORDER_PIXEL_PER_MM; // height for 1.0 ECG gain
     QString str = "1 mV";
-    switch (waveInfo.waveInfo.ecg.gain)
+    ECGGain gain = waveInfo.waveInfo.ecg.gain;
+    if (gain == ECG_GAIN_AUTO)
+    {
+        gain = ecgParam.getECGAutoGain(ecgParam.waveIDToLeadID(waveInfo.id));
+    }
+    switch (gain)
     {
     case ECG_GAIN_X0125:
         rulerHeight /= 8;
@@ -840,9 +862,9 @@ static void drawECGGain(RecordPage *page, QPainter *painter, const RecordWaveSeg
 }
 
 #define RULER_TICK_LEN 8
-// draw a percent style ruler
-static void drawPercentRuler(RecordPage *page, QPainter *painter, const RecordWaveSegmentInfo &waveInfo,
-                             const QString &high, const QString &low)
+// draw a gas style ruler
+static void drawGasRuler(RecordPage *page, QPainter *painter, const RecordWaveSegmentInfo &waveInfo,
+                             const QString &high, const QString &low, const UnitType unit)
 {
     QPainterPath path;
     path.moveTo(RULER_TICK_LEN, waveInfo.startYOffset);
@@ -867,7 +889,7 @@ static void drawPercentRuler(RecordPage *page, QPainter *painter, const RecordWa
 
     rect.setY((waveInfo.endYOffset -  waveInfo.startYOffset - fontH) / 2 + waveInfo.startYOffset);
     rect.setHeight(fontH);
-    painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, "%");
+    painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, trs(Unit::getSymbol(unit)));
 
     painter->restore();
 }
@@ -898,7 +920,7 @@ static void drawIBPRuler(RecordPage *page, QPainter *painter, const RecordWaveSe
 
     rect.setY((waveInfo.endYOffset -  waveInfo.startYOffset - fontH) / 2 + waveInfo.startYOffset);
     rect.setHeight(fontH);
-    painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, Unit::localeSymbol(waveInfo.waveInfo.ibp.unit));
+    painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, trs(Unit::getSymbol(waveInfo.waveInfo.ibp.unit)));
 
     painter->restore();
 }
@@ -965,7 +987,7 @@ RecordPage *RecordPageGenerator::createWaveScalePage(const QList<RecordWaveSegme
             break;
         case WAVE_CO2:
         {
-            int high;
+            int high;           // 高限值
             CO2DisplayZoom zoom = iter->waveInfo.co2.zoom;
             switch (zoom)
             {
@@ -975,7 +997,7 @@ RecordPage *RecordPageGenerator::createWaveScalePage(const QList<RecordWaveSegme
             case CO2_DISPLAY_ZOOM_8:
                 high = 8;
                 break;
-            case CO2_DISPLAY_ZOOM_13:
+            case CO2_DISPLAY_ZOOM_12:
                 high = 12;
                 break;
             case CO2_DISPLAY_ZOOM_20:
@@ -983,8 +1005,15 @@ RecordPage *RecordPageGenerator::createWaveScalePage(const QList<RecordWaveSegme
                 high = 20;
                 break;
             }
-
-            drawPercentRuler(page, &painter, *iter, QString::number(high, 'g', 2), "0");
+            UnitType unit = co2Param.getUnit();
+            QString highString;
+            if (unit == UNIT_MMHG)
+            {
+                high = Unit::convert(UNIT_MMHG, UNIT_PERCENT, high).toInt();
+                high = (high + 5) / 10 * 10;            // 取整
+            }
+            highString = QString::number(high, 'g', 3);
+            drawGasRuler(page, &painter, *iter, highString, "0", unit);
         }
         break;
         case WAVE_N2O:
@@ -1007,7 +1036,7 @@ RecordPage *RecordPageGenerator::createWaveScalePage(const QList<RecordWaveSegme
                 high = 15;
                 break;
             }
-            drawPercentRuler(page, &painter, *iter, QString::number(high, 'g', 2), "0");
+            drawGasRuler(page, &painter, *iter, QString::number(high, 'g', 2), "0", UNIT_PERCENT);
         }
         break;
 
@@ -1088,7 +1117,12 @@ static qreal mapWaveValue(const RecordWaveSegmentInfo &waveInfo, short wave)
     case WAVE_ECG_V6:
     {
         double scale = 0;
-        switch (waveInfo.waveInfo.ecg.gain)
+        ECGGain gain = waveInfo.waveInfo.ecg.gain;
+        if (gain == ECG_GAIN_AUTO)
+        {
+            gain = ecgParam.getECGAutoGain(ecgParam.waveIDToLeadID(waveInfo.id));
+        }
+        switch (gain)
         {
         case ECG_GAIN_X0125:
             scale = 0.125 * 10 * RECORDER_PIXEL_PER_MM / 2.0;
@@ -1129,6 +1163,12 @@ static qreal mapWaveValue(const RecordWaveSegmentInfo &waveInfo, short wave)
         qreal respZoom = 1.0;
         switch (waveInfo.waveInfo.resp.zoom)
         {
+        case RESP_ZOOM_X025:
+            respZoom = 0.25;
+            break;
+        case RESP_ZOOM_X050:
+            respZoom = 0.5;
+            break;
         case RESP_ZOOM_X100:
             respZoom = 1.0;
             break;
@@ -1175,7 +1215,7 @@ static qreal mapWaveValue(const RecordWaveSegmentInfo &waveInfo, short wave)
         case CO2_DISPLAY_ZOOM_8:
             max  = max * 8 / 20;
             break;
-        case CO2_DISPLAY_ZOOM_13:
+        case CO2_DISPLAY_ZOOM_12:
             max = max * 12 / 20;
             break;
         default:
@@ -1287,7 +1327,7 @@ static qreal mapOxyCRGWaveValue(const OxyCRGWaveInfo &waveInfo, qreal waveHeight
         case CO2_DISPLAY_ZOOM_8:
             max  = max * 8 / 20;
             break;
-        case CO2_DISPLAY_ZOOM_13:
+        case CO2_DISPLAY_ZOOM_12:
             max = max * 12 / 20;
             break;
         default:
@@ -1455,7 +1495,7 @@ static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegme
             if (flag & ECG_INTERNAL_FLAG_BIT && paramId == PARAM_ECG)
             {
                 QPen pen = painter->pen();
-                painter->setPen(QPen(Qt::white, 1, Qt::DashLine));
+                painter->setPen(QPen(Qt::white, 2, Qt::DashLine));
                 painter->drawLine(x2, waveInfo.middleYOffset - 10 / pixelPitch / 2,
                                   x2, waveInfo.middleYOffset + 10 / pixelPitch / 2);
                 painter->setPen(pen);
@@ -1811,7 +1851,7 @@ QList<QPainterPath> generatorPainterPath(const GraphAxisInfo &axisInfo, const Tr
         QVector<TrendGraphDataV3>::ConstIterator iter = graphInfo.trendDataV3.constBegin();
         for (; iter != graphInfo.trendDataV3.constEnd(); iter++)
         {
-            if (iter->data[0] == InvData())
+            if (iter->data[0] == InvData() || !(iter->status & TrendDataStorageManager::CollectStatusNIBP))
             {
                 continue;
             }
@@ -1822,13 +1862,31 @@ QList<QPainterPath> generatorPainterPath(const GraphAxisInfo &axisInfo, const Tr
             qreal map = mapTrendYValue(iter->data[2], axisInfo, graphInfo);
 
             // draw nibp symbol
-            path.moveTo(x - TICK_LENGTH / 2, sys - 0.866 * TICK_LENGTH);
-            path.lineTo(x, sys);
-            path.lineTo(x + TICK_LENGTH / 2, sys - 0.866 * TICK_LENGTH);
+            if (sys == -axisInfo.validHeight)
+            {
+                path.moveTo(x - TICK_LENGTH / 2, sys + 0.866 * TICK_LENGTH);
+                path.lineTo(x, sys);
+                path.lineTo(x + TICK_LENGTH / 2, sys + 0.866 * TICK_LENGTH);
+            }
+            else
+            {
+                path.moveTo(x - TICK_LENGTH / 2, sys - 0.866 * TICK_LENGTH);
+                path.lineTo(x, sys);
+                path.lineTo(x + TICK_LENGTH / 2, sys - 0.866 * TICK_LENGTH);
+            }
 
-            path.moveTo(x - TICK_LENGTH / 2, dia + 0.866 * TICK_LENGTH);
-            path.lineTo(x, dia);
-            path.lineTo(x + TICK_LENGTH / 2, dia + 0.866 * TICK_LENGTH);
+            if (dia == 0)
+            {
+                path.moveTo(x - TICK_LENGTH / 2, dia - 0.866 * TICK_LENGTH);
+                path.lineTo(x, dia);
+                path.lineTo(x + TICK_LENGTH / 2, dia - 0.866 * TICK_LENGTH);
+            }
+            else
+            {
+                path.moveTo(x - TICK_LENGTH / 2, dia + 0.866 * TICK_LENGTH);
+                path.lineTo(x, dia);
+                path.lineTo(x + TICK_LENGTH / 2, dia + 0.866 * TICK_LENGTH);
+            }
 
             path.moveTo(x, sys);
             path.lineTo(x, dia);
@@ -1938,7 +1996,7 @@ void RecordPageGenerator::drawTrendGraph(QPainter *painter, const GraphAxisInfo 
     painter->restore();
 }
 
-void RecordPageGenerator::drawTrendGraphEventSymbol(QPainter *painter, const GraphAxisInfo &axisInfo, const TrendGraphInfo &graphInfo, const QList<EventInfoSegment> &eventList)
+void RecordPageGenerator::drawTrendGraphEventSymbol(QPainter *painter, const GraphAxisInfo &axisInfo, const TrendGraphInfo &graphInfo, const QList<BlockEntry> &eventList)
 {
     painter->save();
     painter->translate(axisInfo.origin);
@@ -1954,12 +2012,12 @@ void RecordPageGenerator::drawTrendGraphEventSymbol(QPainter *painter, const Gra
     for (int i = 0; i < eventList.count(); ++i)
     {
         QRectF eventRect;
-        unsigned eventTime = eventList.at(i).timestamp;
+        unsigned eventTime = eventList.at(i).extraData;
         if (eventTime < graphInfo.startTime || eventTime > graphInfo.endTime)
         {
             continue;
         }
-        qreal timeX = timestampToX(eventList.at(i).timestamp, axisInfo, graphInfo);
+        qreal timeX = timestampToX(eventList.at(i).extraData, axisInfo, graphInfo);
         if (timeX > axisInfo.width - 10)
         {
             timeX =  axisInfo.width - 10;
@@ -2011,19 +2069,10 @@ QList<RecordWaveSegmentInfo> RecordPageGenerator::getWaveInfos(const QList<Wavef
         case WAVE_ECG_V5:
         case WAVE_ECG_V6:
             info.waveInfo.ecg.gain = ecgParam.getGain(ecgParam.waveIDToLeadID(id));
-            if (ecgParam.getFilterMode() == ECG_FILTERMODE_DIAGNOSTIC)
-            {
-                caption = QString("%1   %2   %3%4").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
-                                                                           ecgParam.getLeadConvention()))
-                        .arg(trs(ECGSymbol::convert(ecgParam.getFilterMode()))).arg(trs("Notch"))
-                        .arg(trs(ECGSymbol::convert(ecgParam.getNotchFilter())));
-            }
-            else
-            {
-                caption = QString("%1   %2").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
-                                                                           ecgParam.getLeadConvention()))
-                        .arg(trs(ECGSymbol::convert(ecgParam.getFilterMode())));
-            }
+            caption = QString("%1   %2   %3 %4").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
+                                                                        ecgParam.getLeadConvention()))
+                    .arg(trs(ECGSymbol::convert(ecgParam.getFilterMode()))).arg(trs("Notch"))
+                    .arg(trs(ECGSymbol::convert(ecgParam.getNotchFilter())));
 
             info.waveInfo.ecg.in12LeadMode = layoutManager.getUFaceType() == UFACE_MONITOR_ECG_FULLSCREEN;
             info.waveInfo.ecg._12LeadDisplayFormat = ecgParam.get12LDisplayFormat();
@@ -2110,7 +2159,16 @@ QList<RecordWaveSegmentInfo> RecordPageGenerator::getWaveInfos(const QList<Wavef
         {
             yOffset += waveRegionHeight;
         }
-        iter->endYOffset = yOffset;
+
+        // 解决打印波形重合问题,两道波形之间增加间隙
+        if (iter != infos.end() - 1)
+        {
+            iter->endYOffset = yOffset - 2;
+        }
+        else
+        {
+            iter->endYOffset = yOffset;
+        }
         iter->middleYOffset = (iter->startYOffset + iter->endYOffset) / 2;
     }
 
@@ -2262,7 +2320,7 @@ RecordPage *RecordPageGenerator::createOxyCRGGraph(const QList<TrendGraphInfo> &
         case CO2_DISPLAY_ZOOM_8:
             high = 8;
             break;
-        case CO2_DISPLAY_ZOOM_13:
+        case CO2_DISPLAY_ZOOM_12:
             high = 12;
             break;
         case CO2_DISPLAY_ZOOM_20:

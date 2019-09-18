@@ -9,10 +9,10 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 
 class TimeEditWindowPrivate;
-class TimeEditWindow : public Window
+class TimeEditWindow : public Dialog
 {
     Q_OBJECT
 public:

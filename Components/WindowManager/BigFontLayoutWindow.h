@@ -9,10 +9,10 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 
 class BigFontLayoutWindowPrivate;
-class BigFontLayoutWindow :public Window
+class BigFontLayoutWindow :public Dialog
 {
     Q_OBJECT
 public:

@@ -20,8 +20,8 @@
 #include "OxyCRGCO2WaveWidget.h"
 #include "OxyCRGRESPWaveWidget.h"
 
-
 #include "IConfig.h"
+#include "ConfigManager.h"
 #include "SoftKeyManager.h"
 #include "KeyActionManager.h"
 #include "NormalModeKeyAction.h"
@@ -52,6 +52,7 @@
 
 #include "PatientManager.h"
 #include "PatientInfoWidget.h"
+#include "PatientInfoWindow.h"
 
 #include "TimeDate.h"
 #include "TimeManager.h"
@@ -75,10 +76,12 @@
 #include "RecorderManager.h"
 
 #include "Alarm.h"
+#include "AlarmIndicator.h"
 #include "AlarmPhyInfoBarWidget.h"
 #include "AlarmTechInfoBarWidget.h"
 #include "AlarmStatusWidget.h"
 #include "AlarmStateMachine.h"
+#include "AlarmSourceManager.h"
 
 #include "ParamManager.h"
 #include "DemoProvider.h"

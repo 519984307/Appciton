@@ -11,6 +11,7 @@
 #pragma once
 #include "Provider.h"
 #include "CO2ProviderIFace.h"
+#include "BLMProvider.h"
 
 struct CO2ProviderStatus
 {
@@ -132,6 +133,7 @@ struct CO2ProviderStatus
 
 class BLMCO2Provider: public Provider, public CO2ProviderIFace
 {
+    Q_OBJECT
 public: // Provider的接口。
     virtual bool attachParam(Param &param);
     virtual void dataArrived(void);
@@ -162,19 +164,58 @@ public: // CO2ProviderIFace 的接口。
     // 设置工作模式
     virtual void setWorkMode(CO2WorkMode mode);
 
+    // 进入升级模式
+    virtual void enterUpgradeMode();
+
+    virtual void sendCalibrateData(int value);
+
+    /**
+     * @brief setUpgradeIface set the upgrade iface to handle the upgrade packet
+     * @note set iface to NULL to stop upgrade
+     * @param iface the upgrade iface
+     */
+    void setUpgradeIface(BLMProviderUpgradeIface *iface);
+
+    // 发送升级命令
+    bool sendUpgradeCmd(unsigned char cmdId, const unsigned char *data, unsigned int len);
+
     // 构造与析构。
-    BLMCO2Provider();
+    explicit BLMCO2Provider(const QString &name);
     ~BLMCO2Provider();
+
+    /**
+     * @brief isConnectModel 是否连接了CO2模块
+     * @return
+     */
+    bool isConnectModel();
 
 protected:
     virtual void disconnected(void);
     virtual void reconnected(void);
 
+private slots:
+    void connectTimeOut();
+
 private:
     void _unpacket(const unsigned char packet[]);
+
+    // 协议数据校验
+    bool _checkUpgradePacketValid(const unsigned char *data, unsigned int len);
+
+    // 读取升级相关数据数据导RingBuff中
+    void _readUpgradeData(void);
+
+    // 发送升级数据
+    bool _sendUpgradeData(const unsigned char *data, unsigned int len);
 
     static const int _packetLen = 21;      // 数据包长度。
     CO2ProviderStatus _status;
     short _etco2Value;  // 缓存EtCO2的值。
     short _fico2Value;  // 缓存FiCO2的值。
+
+    BLMProviderUpgradeIface *upgradeIface;
+    bool _isLastSOHPaired; // 遗留在ringBuff最后一个数据（该数据为SOH）是否已经剃掉了多余的SOH。
+
+    QTimer connectTmr;
+    bool co2ModelConnect;
 };

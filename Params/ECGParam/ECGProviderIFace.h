@@ -78,12 +78,18 @@ public:
     // enable vf calc control
     virtual void enableVFCalcCtrl(bool /*enable*/) {}
 
+    // enable raw data
+    virtual void enableRawData(bool /*enable*/){}
+
     //发送协议命令
     virtual void sendCmdData(unsigned char /*cmdId*/, const unsigned char */*data*/,
                              unsigned int /*len*/) { }
 
     // 发送获取版本信息
     void sendVersion(){}
+
+    // 获取自检结果。
+    virtual void getSelfTestStatus(void) {}
 
     ECGProviderIFace() { }
     virtual ~ECGProviderIFace() { }

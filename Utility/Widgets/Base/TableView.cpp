@@ -184,6 +184,21 @@ void TableView::scrollToPreviousPage()
     }
 }
 
+void TableView::scrollToAssignedPage(int row)
+{
+    int eachPageRowCount = rowAt(viewport()->height() - 1) - rowAt(1) + 1;
+    int assignedPage = row / eachPageRowCount;
+    int curPage = rowAt(0) / eachPageRowCount;
+    if (curPage == assignedPage)
+    {
+        // 若指定页面在当前页，则直接返回
+        return;
+    }
+
+    QModelIndex index = model()->index(assignedPage * eachPageRowCount - 1, 0);
+    scrollTo(index, QAbstractItemView::PositionAtTop);
+}
+
 bool TableView::hasPreivousPage()
 {
     int row  = rowAt(-1);
@@ -227,14 +242,8 @@ void TableView::getPageInfo(int &curPage, int &totalPage)
     {
         totalPage = model()->rowCount() / eachPageRowCount;
     }
-    curPage = rowAt(0) / eachPageRowCount + 1;
+    curPage = rowAt(1) / eachPageRowCount + 1;
 }
-
-// void TableView::mouseMoveEvent(QMouseEvent *ev)
-// {
-//     Q_UNUSED(ev)
-//     // do nothing, disable the drag behavior
-// }
 
 void TableView::keyPressEvent(QKeyEvent *ev)
 {
@@ -437,6 +446,19 @@ void TableView::mouseReleaseEvent(QMouseEvent *ev)
 
 void TableView::focusInEvent(QFocusEvent *ev)
 {
+    if (!d_ptr->findFirstLastSelectableItem(model(), true).isValid())
+    {
+        // 如果tableview里没有可以聚焦的item，则聚焦下一个控件
+        if (ev->reason() == Qt::TabFocusReason)
+        {
+            focusNextChild();
+        }
+        else if (ev->reason() == Qt::BacktabFocusReason)
+        {
+            focusPreviousChild();
+        }
+        return;
+    }
     if (ev->reason() == Qt::TabFocusReason)
     {
         if (this->selectionBehavior() == QAbstractItemView::SelectRows)

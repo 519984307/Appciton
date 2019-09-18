@@ -14,6 +14,7 @@
 #include "DataStorageDirManager.h"
 #include "EventStorageItem.h"
 #include "ECGParam.h"
+#include "ECGDupParam.h"
 #include <QList>
 #include <QMutex>
 #include "Debug.h"
@@ -44,7 +45,7 @@ public:
     }
 
 
-    QList<WaveformID> getStoreWaveList(WaveformID paramWave);
+    QList<WaveformID> getStoreWaveList(WaveformID paramWave,  int subID = -1);
 
     QList<EventStorageItem *> eventItemList;
     QMutex mutex;
@@ -58,7 +59,7 @@ public:
     EventStorageItem *item;
 };
 
-QList<WaveformID> EventStorageManagerPrivate::getStoreWaveList(WaveformID paramWave)
+QList<WaveformID> EventStorageManagerPrivate::getStoreWaveList(WaveformID paramWave, int subID)
 {
     QList<int> displaywaves = layoutManager.getDisplayedWaveformIDs();
 
@@ -70,12 +71,26 @@ QList<WaveformID> EventStorageManagerPrivate::getStoreWaveList(WaveformID paramW
 
     if (paramWave != WAVE_NONE)
     {
+        if (subID == SUB_PARAM_HR_PR && ecgDupParam.getCurHRSource() == HR_SOURCE_SPO2)
+        {
+            // 如果时PR时，第一条波形为pleth
+            paramWave = WAVE_SPO2;
+        }
         storeWaves.append(paramWave);
     }
 
     if (paramWave != calcLeadWave)
     {
         storeWaves.append(calcLeadWave);
+    }
+
+    // HR报警且来源为ECG,体温报警,只打印计算导联
+    if ((subID == SUB_PARAM_HR_PR && (ecgDupParam.getCurHRSource() == HR_SOURCE_ECG)) ||
+            subID == SUB_PARAM_T1 ||
+            subID == SUB_PARAM_T2 ||
+            subID == SUB_PARAM_TD)
+    {
+        return storeWaves;
     }
 
     foreach(int id, displaywaves)
@@ -102,6 +117,11 @@ EventStorageManager &EventStorageManager::getInstance()
     if (instance == NULL)
     {
         instance = new EventStorageManager();
+        EventStorageManagerInterface *old = registerEventStorageManager(instance);
+        if (old)
+        {
+            delete old;
+        }
     }
     return *instance;
 }
@@ -145,7 +165,7 @@ void EventStorageManager::triggerAlarmEvent(const AlarmInfoSegment &almInfo, Wav
     d->_eventTriggerFlag = true;
 
     EventStorageItem *item = new EventStorageItem(EventPhysiologicalAlarm,
-            d->getStoreWaveList(paramWave),
+            d->getStoreWaveList(paramWave, almInfo.subParamID),
             almInfo);
     item->startCollectTrendAndWaveformData(t);
 
@@ -393,8 +413,11 @@ void EventStorageManager::checkCompletedEvent()
         {
             d->eventItemList.takeFirst();
 
-            addData(item->getType(), item->getStorageData());
-
+            // 事件发生时刻的文件路径与存储时刻的文件路径是否一致
+            if (item->getEventFolderName() == dataStorageDirManager.getCurFolder())
+            {
+                addData(item->getType(), item->getStorageData(), item->getExtraData());
+            }
             delete item;
         }
         else
@@ -425,6 +448,15 @@ void EventStorageManager::clearEventTriggerFlag()
 {
     Q_D(EventStorageManager);
     d->_eventTriggerFlag = false;
+}
+
+void EventStorageManager::clearEventItemList()
+{
+    Q_D(EventStorageManager);
+    if (!d->eventItemList.isEmpty())
+    {
+        d->eventItemList.clear();
+    }
 }
 
 void EventStorageManager::newPatientHandle()

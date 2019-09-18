@@ -44,7 +44,7 @@ public:
 };
 
 MenuWindow::MenuWindow()
-    : Window(), d_ptr(new MenuWindowPrivate())
+    : Dialog(), d_ptr(new MenuWindowPrivate())
 {
     setWindowTitle("Menu Window");
     resize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
@@ -280,7 +280,7 @@ bool MenuWindow::focusNextPrevChild(bool next)
         }
     }
 
-    return Window::focusNextPrevChild(next);
+    return Dialog::focusNextPrevChild(next);
 }
 
 void MenuWindow::showEvent(QShowEvent *ev)
@@ -307,7 +307,7 @@ void MenuWindow::showEvent(QShowEvent *ev)
         connect(d_ptr->retBtn, SIGNAL(clicked()), this, SLOT(onReturnBtnClick()));
     }
 
-    Window::showEvent(ev);
+    Dialog::showEvent(ev);
 
     // 强制保证聚焦在子菜单内部
     QWidget *cur = focusWidget();

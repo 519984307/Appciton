@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/3/27
+ **/
+
+
 #include "ServiceCPUTemp.h"
 #include <QVBoxLayout>
 #include "SystemBoardProvider.h"
@@ -8,6 +19,7 @@
 #include "ParamManager.h"
 #include "MenuManager.h"
 #include "FontManager.h"
+#include "LanguageManager.h"
 
 ServiceCPUTemp *ServiceCPUTemp::_selfObj = NULL;
 
@@ -27,7 +39,6 @@ void ServiceCPUTemp::_returnBtnReleased()
 {
     _Timer->stop();
     menuManager.returnPrevious();
-
 }
 
 void ServiceCPUTemp::_TimeOut()
@@ -86,12 +97,11 @@ void ServiceCPUTemp::_coreVersion(void)
     int temp = fileStr.toInt();
 
     QString Str;
-    Str.sprintf("%.3f", temp / 1000.000);
+    Str = QString::number(temp / 1000.000, 'f', 3);
     Str += "\r\r";
-    Str += Unit::localeSymbol(UNIT_TC);
+    Str += trs(Unit::getSymbol(UNIT_TC));
 
     _CORE->setText(Str);
-
 }
 
 /**************************************************************************************************
@@ -99,5 +109,4 @@ void ServiceCPUTemp::_coreVersion(void)
  *************************************************************************************************/
 ServiceCPUTemp::~ServiceCPUTemp()
 {
-
 }

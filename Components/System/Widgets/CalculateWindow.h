@@ -9,10 +9,10 @@
  **/
 
 #pragma once
-#include "Window.h"
+#include "Dialog.h"
 
 class CalculateWindowPrivate;
-class CalculateWindow : public Window
+class CalculateWindow : public Dialog
 {
     Q_OBJECT
 public:

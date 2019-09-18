@@ -17,6 +17,7 @@
 #include "SoundManager.h"
 #include "SystemManager.h"
 #include "IConfig.h"
+#include "ConfigManager.h"
 #include "ColorManager.h"
 #include "WindowManager.h"
 
@@ -42,10 +43,6 @@ public:
 
     QMap<MenuItem, ComboBox *> combos;
     QStringList colorList;
-
-    // key: 路径    value: 颜色索引
-    QMap<QString, QString>colorSetList;
-    QList<ParamID> paramIdList;
 };
 
 void ParaColorWindowPrivate::loadOptions()
@@ -74,12 +71,11 @@ void ParaColorWindowPrivate::loadOptions()
             continue;
         }
         combos[item]->setCurrentIndex(colorList.indexOf(color));
-        colorSetList.insert(nodePath, color);
     }
 }
 
 ParaColorWindow::ParaColorWindow()
-    : Window(),
+    : Dialog(),
       d_ptr(new ParaColorWindowPrivate)
 {
     QString color;
@@ -98,7 +94,7 @@ ParaColorWindow::~ParaColorWindow()
 void ParaColorWindow::showEvent(QShowEvent *ev)
 {
     d_ptr->loadOptions();
-    Window::showEvent(ev);
+    Dialog::showEvent(ev);
 }
 
 void ParaColorWindow::layoutExec()
@@ -250,20 +246,6 @@ void ParaColorWindow::layoutExec()
     setWindowLayout(layout);
 }
 
-// 保存颜色参数
-void ParaColorWindow::hideEvent(QHideEvent *ev)
-{
-    QMap<QString, QString>::Iterator iter = d_ptr->colorSetList.begin();
-    while (iter != d_ptr->colorSetList.end())
-    {
-        currentConfig.setStrValue(iter.key(),
-                                  iter.value());
-        iter++;
-    }
-    colorManager.updateColorPalatte(d_ptr->paramIdList);
-    Window::hideEvent(ev);
-}
-
 void ParaColorWindow::onComboBoxIndexChanged(int index)
 {
     if (index < 0)
@@ -285,8 +267,6 @@ void ParaColorWindow::onComboBoxIndexChanged(int index)
             strPath = "Display|ECGColor";
             id = PARAM_ECG;
             dupPath = "Display|ECGDUPColor";
-            d_ptr->colorSetList[dupPath] = d_ptr->colorSetList[strPath];
-
             break;
         }
         case ParaColorWindowPrivate::ITEM_CBO_SPO2_COLOR:
@@ -332,20 +312,12 @@ void ParaColorWindow::onComboBoxIndexChanged(int index)
             break;
         }
         }
-        QMap<QString, QString>::Iterator iter = d_ptr->colorSetList.find(strPath);
-        if (iter != d_ptr->colorSetList.end())
+        currentConfig.setStrValue(strPath, d_ptr->colorList.at(index));
+        if (id == PARAM_ECG)
         {
-            iter.value() = d_ptr->colorList.at(index);
+            currentConfig.setStrValue(dupPath, d_ptr->colorList.at(index));
         }
-        if (id != PARAM_NONE && !d_ptr->paramIdList.contains(id))
-        {
-            d_ptr->paramIdList.append(id);
-        }
-        QMap<QString, QString>::Iterator dupIter = d_ptr->colorSetList.find(dupPath);
-        if (dupIter != d_ptr->colorSetList.end())
-        {
-            dupIter.value() = d_ptr->colorList.at(index);
-        }
+        colorManager.updateColorPalatte(id);
     }
 }
 

@@ -13,27 +13,37 @@
 #include "NIBPMonitorStateDefine.h"
 #include "Debug.h"
 #include <QTimer>
+#include "SystemManager.h"
+#include "LanguageManager.h"
 
-NIBPCountdownTime *NIBPCountdownTime::_selfObj = NULL;
 
 void NIBPCountdownTime::run()
 {
 // debug("%d\n",(_countdownTime - countdownElapseTime()) / 1000);
-    if (nibpParam.getMeasurMode() == NIBP_MODE_AUTO && !nibpParam.isAdditionalMeasure())
+    if (nibpParam.getMeasurMode() == NIBP_MODE_AUTO && !nibpParam.isAdditionalMeasure() && nibpParam.isFirstAuto())
     {
         // 更新倒计时。
         nibpParam.setCountdown((_autoTime - autoMeasureElapseTime()) / 1000);
         // 倒计时是否完成(在STANDBY状态才能启动)
-        if ((nibpParam.curStatusType() == NIBP_MONITOR_STANDBY_STATE) && isAutoMeasureTimeout())
+        if ((nibpParam.curStatusType() == NIBP_MONITOR_STANDBY_STATE) &&
+                isAutoMeasureTimeout() && !nibpParam.isMaintain())
         {
             // 转换到测量状态。
-            nibpParam.switchState(NIBP_MONITOR_STARTING_STATE);
+            if (systemManager.getCurWorkMode() != WORK_MODE_DEMO)
+            {
+                nibpParam.switchState(NIBP_MONITOR_STARTING_STATE);
+            }
             setAutoMeasureTimeout(false);
         }
     }
     else if (nibpParam.getMeasurMode() == NIBP_MODE_STAT)
     {
-        if (!nibpParam.isSTATOpenTemp())
+        if (nibpParam.isAutoStat())
+        {
+            nibpParam.setText(trs("NIBPWAITING"));
+            nibpParam.setModelText(trs("STATOPEN"));
+        }
+        else if (!nibpParam.isSTATOpenTemp())
         {
             int t = STATMeasureElapseTime();
             if (t == 0)
@@ -127,6 +137,7 @@ void NIBPCountdownTime::autoMeasureStop(void)
  *************************************************************************************************/
 void NIBPCountdownTime::STATMeasureStart(void)
 {
+    _STATTime = STAT_Time * 1000;
     _STATMeasureTimer->start(_STATTime);
     _STATMeasureElapseTimer.restart();
     _isSTATMeasureTimeout = false;
@@ -146,11 +157,22 @@ bool NIBPCountdownTime::isSTATMeasureTimeout(void)
     return _isSTATMeasureTimeout;
 }
 
+void NIBPCountdownTime::setSTATMeasureTimeout(bool flag)
+{
+    _isSTATMeasureTimeout = flag;
+}
+
 /**************************************************************************************************
  * STAT倒计时时间。
  *************************************************************************************************/
 int NIBPCountdownTime::STATMeasureElapseTime(void)
 {
+    if (_timeChangeFlag)
+    {
+        _STATTime = _STATElapseTime;
+        _STATMeasureElapseTimer.restart();
+        _timeChangeFlag = false;
+    }
     _STATElapseTime = _STATTime - _STATMeasureElapseTimer.elapsed();
     if (_STATElapseTime > 0)
     {
@@ -160,6 +182,11 @@ int NIBPCountdownTime::STATMeasureElapseTime(void)
     {
         return 0;
     }
+}
+
+void NIBPCountdownTime::timeChange(bool flag)
+{
+    _timeChangeFlag = flag;
 }
 
 /**************************************************************************************************
@@ -183,7 +210,7 @@ NIBPCountdownTime::NIBPCountdownTime()
       _STATMeasureTimer(NULL), _isAutoMeasureTimeout(false),
       _isSTATMeasureTimeout(true), _autoTime(AUTO_TIME * 1000),
       _autoElapseTime(0), _STATTime(STAT_Time * 1000),
-      _STATElapseTime(0)
+      _STATElapseTime(0), _timeChangeFlag(false)
 {
     _autoMeasureTimer = new QTimer();
     connect(_autoMeasureTimer, SIGNAL(timeout()), this, SLOT(_autoMeasureTimeout()));
@@ -210,5 +237,19 @@ NIBPCountdownTime::~NIBPCountdownTime()
     }
 }
 
+NIBPCountdownTime &NIBPCountdownTime::getInstance()
+{
+    static NIBPCountdownTime* instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new NIBPCountdownTime();
+        NIBPCountdownTimeInterface* old = registerNIBPCountTime(instance);
+        if (old)
+        {
+            delete old;
+        }
+    }
+    return *instance;
+}
 
 

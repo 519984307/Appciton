@@ -52,7 +52,6 @@ enum RESPSweepSpeed
  *************************************************************************************************/
 enum RESPApneaTime
 {
-    RESP_APNEA_TIME_OFF,
     RESP_APNEA_TIME_20_SEC,
     RESP_APNEA_TIME_25_SEC,
     RESP_APNEA_TIME_30_SEC,
@@ -98,6 +97,7 @@ enum RESPOneShotType
 {
     RESP_ONESHOT_ALARM_APNEA,
     RESP_ONESHOT_ALARM_COMMUNICATION_STOP,
+    RESP_ONESHOT_ALARM_CHECK_ELECTRODES,
     RESP_ONESHOT_NR,
 };
 

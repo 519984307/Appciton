@@ -12,6 +12,7 @@
 #include "BLMProvider.h"
 #include "Provider.h"
 #include "SPO2ProviderIFace.h"
+#include <QTime>
 
 // 收到的数据帧类型。
 enum S5PacketType
@@ -102,21 +103,35 @@ public: // SPO2ProviderIFace 的接口。
     S5Provider();
     ~S5Provider();
 
+    /* reimplment */
+    void initModule();
+
 protected:
     virtual void handlePacket(unsigned char *data, int len);
     virtual void disconnected(void);
     virtual void reconnected(void);
+    virtual void sendDisconnected();
 
 private:
     void _sendACK(unsigned char type);
     bool _isValuePR;
 
+    bool _isFirstConnectCable;
     bool _isCableOff;
     bool _isFingerOff;
+    bool _isLedError;
+    bool _isSeaching;
     S5GainError _gainError;
     bool _ledFault;
     S5LogicStatus _logicStatus;
 
     static const int _packetLen = 9;      // 数据包长度。
     struct timeval _lastTime;
+
+    bool _isInvalidWaveData;
+
+    QTime startUpTime;
+    bool _firstStartUp;
+    int _startUpError;
+    bool _errorStatus;
 };

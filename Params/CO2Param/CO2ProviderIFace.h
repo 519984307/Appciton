@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2019/7/16
+ **/
+
 #pragma once
 #include "CO2Define.h"
 #include "AlarmDefine.h"
@@ -30,8 +40,13 @@ public:
 	// 设置工作模式
     virtual void setWorkMode(CO2WorkMode mode) = 0;
 
+    // 进入升级模式
+    virtual void enterUpgradeMode() = 0;
+
     // 设置大气压值。
 //    virtual bool setBaroPress(int press) = 0;
+
+    virtual void sendCalibrateData(int value) = 0;
 
     virtual ~CO2ProviderIFace() { }
 };

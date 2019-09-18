@@ -10,10 +10,18 @@
 
 #pragma once
 #include "IWidget.h"
+#include "RunningStatusBarInterface.h"
+
+enum ShakeStatus
+{
+    SHAKE_OFF,
+    SHAKE_ON,
+    SHAKING
+};
 
 class RunningStatusBarPrivate;
 
-class RunningStatusBar : public IWidget
+class RunningStatusBar : public IWidget, public RunningStatusBarInterface
 {
 public:
     static RunningStatusBar &getInstance();
@@ -43,6 +51,13 @@ public:
      * @brief clearTouchStatus clear the touch status, should be called when the touch screen function is disabled
      */
     void clearTouchStatus();
+
+    /**
+     * @brief setShakeStatus set apnea shake status
+     * @param sta
+     */
+    void setShakeStatus(ShakeStatus sta);
+    ShakeStatus getShakeStatus(void);
 
 private:
     RunningStatusBar();

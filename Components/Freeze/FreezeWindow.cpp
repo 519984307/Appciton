@@ -63,7 +63,7 @@ FreezeWindowPrivate::FreezeWindowPrivate()
 }
 
 FreezeWindow::FreezeWindow()
-    : Window(),
+    : Dialog(),
       d_ptr(new FreezeWindowPrivate)
 {
     setWindowTitle(trs("Freeze"));
@@ -71,7 +71,7 @@ FreezeWindow::FreezeWindow()
     QStringList waveNames;
     d_ptr->waveIDs = layoutManager.getDisplayedWaveformIDs();
     waveNames = layoutManager.getDisplayedWaveformLabels();
-    QGridLayout *layout = new QGridLayout(this);
+    QGridLayout *layout = new QGridLayout();
     layout->setMargin(10);
 
     QHBoxLayout *hl;
@@ -130,7 +130,7 @@ FreezeWindow::~FreezeWindow()
 
 void FreezeWindow::showEvent(QShowEvent *ev)
 {
-    Window::showEvent(ev);
+    Dialog::showEvent(ev);
     QRect rect = layoutManager.getMenuArea();
 
     move(rect.x() + (rect.width() - width()) / 2, rect.y() + rect.height() - height());
@@ -140,11 +140,21 @@ void FreezeWindow::showEvent(QShowEvent *ev)
 
     // 将开始冻结打印接口放在触发波形冻结事件后面，这样该接口内部的趋势表数据缓冲容器可以及时获取有效缓冲数据
     freezeManager.startFreeze();
+
+    // 更新打印按键状态
+    if (recorderManager.isConnected())
+    {
+        d_ptr->printBtn->setEnabled(true);
+    }
+    else
+    {
+        d_ptr->printBtn->setEnabled(false);
+    }
 }
 
 void FreezeWindow::hideEvent(QHideEvent *ev)
 {
-    Window::hideEvent(ev);
+    Dialog::hideEvent(ev);
     freezeManager.stopFreeze();
     windowManager.closeAllWidows();
 }
@@ -155,7 +165,7 @@ void FreezeWindow::timerEvent(QTimerEvent *ev)
     {
         if (!recorderManager.isPrinting() || d_ptr->timeoutNum == 10)  // 1000ms超时处理
         {
-            if (!recorderManager.isPrinting())
+            if (!recorderManager.isPrinting() && !recorderManager.getPrintStatus())
             {
                 recorderManager.addPageGenerator(d_ptr->generator);
             }

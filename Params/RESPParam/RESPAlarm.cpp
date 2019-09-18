@@ -18,8 +18,6 @@
 #include "AlarmConfig.h"
 #include "SystemManager.h"
 
-RESPLimitAlarm *RESPLimitAlarm::_selfObj = NULL;
-
 /**************************************************************************************************
  * 报警源的名字。
  *************************************************************************************************/
@@ -136,8 +134,6 @@ RESPLimitAlarm::~RESPLimitAlarm()
 /**************************************************************************************************
  *************************************************************************************************/
 
-RESPOneShotAlarm *RESPOneShotAlarm::_selfObj = NULL;
-
 /**************************************************************************************************
  * 报警源的名字。
  *************************************************************************************************/
@@ -173,7 +169,7 @@ WaveformID RESPOneShotAlarm::getWaveformID(int id)
 SubParamID RESPOneShotAlarm::getSubParamID(int id)
 {
     Q_UNUSED(id)
-    return SUB_PARAM_NONE;
+    return SUB_PARAM_RR_BR;
 }
 
 /**************************************************************************************************
@@ -251,7 +247,7 @@ bool RESPOneShotAlarm::isRemoveAfterLatch(int id)
 
 bool RESPOneShotAlarm::isAlarmed(int id)
 {
-    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO && getAlarmType(id) == ALARM_TYPE_TECH)
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
     {
         return false;
     }

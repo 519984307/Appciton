@@ -13,9 +13,10 @@
 #include "AGTrendWidget.h"
 #include "AGAlarm.h"
 #include "WaveformCache.h"
-#include "IConfig.h"
+#include "ConfigManager.h"
 #include "LayoutManager.h"
 #include "SystemManager.h"
+#include "AlarmSourceManager.h"
 
 #define DEMO_DATA_NUM       180
 
@@ -390,7 +391,11 @@ void AGParam::setWaveWidget(AGWaveWidget *waveWidget, AGTypeGas gasType)
  *************************************************************************************************/
 void AGParam::setOneShotAlarm(AGOneShotType t, bool status)
 {
-    agOneShotAlarm.setOneShotAlarm(t, status);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_AG);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(t, status);
+    }
 }
 
 
@@ -419,11 +424,6 @@ ApneaAlarmTime AGParam::getApneaTime()
  *************************************************************************************************/
 void AGParam::verifyApneanTime(ApneaAlarmTime time)
 {
-    if (getApneaTime() == APNEA_ALARM_TIME_OFF)
-    {
-        return;
-    }
-
     if (getApneaTime() != time)
     {
         if (_provider != NULL)

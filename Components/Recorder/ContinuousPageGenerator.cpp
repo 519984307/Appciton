@@ -36,14 +36,13 @@ public:
     explicit ContinuousPageGeneratorPrivate(ContinuousPageGenerator *const q_ptr)
         : q_ptr(q_ptr),
           curPageType(RecordPageGenerator::TitlePage),
-          item(NULL),
           curDrawWaveSegment(0),
           totalDrawWaveSegment(-1)
     {
         TrendCacheData data;
         TrendAlarmStatus almStatus;
         unsigned t = timeDate.time();
-        trendCache.getTendData(t, data);
+        trendCache.getTrendData(t, data);
         trendCache.getTrendAlarmStatus(t, almStatus);
         bool alarm = false;
         foreach(bool st, almStatus.alarms)
@@ -79,7 +78,8 @@ public:
     RecordPageGenerator::PageType curPageType;
     TrendDataPackage trendData;
     QList<RecordWaveSegmentInfo> waveInfos;
-    EventStorageItem *item;
+    QList<WaveformDataSegment *> waveSegments;      // 前4s波形数据
+    QList<WaveformID> waves;                        // 波形ID
     int curDrawWaveSegment;
     int totalDrawWaveSegment;   // total wave segments that need to draw, -1 means unlimit
 };
@@ -173,7 +173,7 @@ void ContinuousPageGeneratorPrivate::fetchWaveData(bool isRealtime)
         }
         else
         {
-            while (curDrawWaveSegment >= item->getCurWaveCacheDuration(iter->id))
+            while (curDrawWaveSegment >= (totalDrawWaveSegment / 2))
             {
                 if (recorderManager.isAbort())
                 {
@@ -189,9 +189,12 @@ void ContinuousPageGeneratorPrivate::fetchWaveData(bool isRealtime)
                 Util::waitInEventLoop(5);
             }
 
-            if (curDrawWaveSegment < item->getCurWaveCacheDuration(iter->id))
+            if (curDrawWaveSegment < (totalDrawWaveSegment / 2))
             {
-                item->getOneSecondWaveform(iter->id, iter->secondWaveBuff.data(), curDrawWaveSegment);
+                int waveIndex = waves.indexOf(iter->id);
+                WaveformDataSegment *waveSegment = waveSegments.at(waveIndex);
+                int startIndex = curDrawWaveSegment * waveSegment->sampleRate;
+                qMemCopy(iter->secondWaveBuff.data(), waveSegment->waveData + startIndex, waveSegment->sampleRate * sizeof(WaveDataType));
             }
             else
             {
@@ -212,24 +215,37 @@ bool ContinuousPageGeneratorPrivate::isParamStop(WaveformID id)
     return paramManager.isParamStopped(paramInfo.getParamID(id));
 }
 
-ContinuousPageGenerator::ContinuousPageGenerator(unsigned curTime, QObject *parent)
+ContinuousPageGenerator::ContinuousPageGenerator(QObject *parent)
     : RecordPageGenerator(parent), d_ptr(new ContinuousPageGeneratorPrivate(this))
 {
     d_ptr->waveInfos = d_ptr->getPrintWaveInfos();
-    QList<WaveformID> waves;
-    for (int i = 0; i < d_ptr->waveInfos.count(); i++)
+    // 获取前4秒波形数据
+    QList<RecordWaveSegmentInfo>::iterator iter;
+    for (iter = d_ptr->waveInfos.begin(); iter < d_ptr->waveInfos.end(); ++iter)
     {
-        waves.append(d_ptr->waveInfos.at(i).id);
+        int waveNum = d_ptr->totalDrawWaveSegment / 2 * iter->sampleRate;
+        WaveformDataSegment *waveSegment = reinterpret_cast<WaveformDataSegment *>(qMalloc(sizeof(WaveformDataSegment) +
+                                           sizeof(WaveDataType) * waveNum));
+        if (waveSegment == NULL)
+        {
+            qDebug() << Q_FUNC_INFO << "Out of memory!";
+            break;
+        }
+        d_ptr->waveSegments.append(waveSegment);
+        waveSegment->waveID = iter->id;
+        waveSegment->sampleRate = iter->sampleRate;
+        waveSegment->waveNum = waveNum;
+        waveformCache.readStorageChannel(iter->id,
+                                         waveSegment->waveData,
+                                         d_ptr->totalDrawWaveSegment / 2, false);
+        d_ptr->waves.append(iter->id);
     }
-    EventStorageItem *item = new EventStorageItem(EventRealtimePrint,
-            waves);
-    item->startCollectTrendAndWaveformData(curTime);
-    d_ptr->item = item;
 }
 
 ContinuousPageGenerator::~ContinuousPageGenerator()
 {
-    delete d_ptr->item;
+    qDeleteAll(d_ptr->waveSegments);
+    d_ptr->waveSegments.clear();
 }
 
 int ContinuousPageGenerator::type() const

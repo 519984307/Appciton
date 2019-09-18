@@ -16,6 +16,7 @@
 #include "DataStorageDirManager.h"
 #include "TimeManager.h"
 #include "IConfig.h"
+#include "ConfigManager.h"
 #include "TrendCache.h"
 #include "ParamManager.h"
 #include "Alarm.h"
@@ -29,6 +30,7 @@
 #include "TimeDate.h"
 #include <QDateTime>
 #include <SystemManager.h>
+#include "AlarmSourceManager.h"
 
 #define NIBP_MAX_PENDING_TIME 3
 
@@ -45,8 +47,8 @@ public:
     {}
 
     void updateAdditionInfo();
-    void addData(ParamDataStorageManager::ParamBuf &paramBuf);
-    ParamDataDescription dataDesc; // 数据描述
+    void addData(ParamDataStorageManager::ParamBuf &paramBuf);  /* NOLINT */
+    ParamDataDescription dataDesc;  // 数据描述
     ParamDataStorageManager::ParamBuf lastParamBuf;
     bool forceSave;
     QMutex paramBufMutex;
@@ -115,10 +117,12 @@ void ParamDataStorageManagerPrivate::addData(ParamDataStorageManager::ParamBuf &
     {
         dataType |= TREND_FLAG_NORMAL;
     }
-    q->addData(dataType, reinterpret_cast<char *>(&paramBuf), sizeof(ParamDataStorageManager::ParamBuf), paramBuf.item.t);
+    q->addData(dataType, reinterpret_cast<char *>(&paramBuf), sizeof(ParamDataStorageManager::ParamBuf),
+               paramBuf.item.t);
 
     paramBufMutex.lock();
-    memcpy(reinterpret_cast<char *>(&lastParamBuf), reinterpret_cast<char *>(&paramBuf), sizeof(ParamDataStorageManager::ParamBuf));
+    memcpy(reinterpret_cast<char *>(&lastParamBuf), reinterpret_cast<char *>(&paramBuf),
+           sizeof(ParamDataStorageManager::ParamBuf));
     paramBufMutex.unlock();
 }
 
@@ -245,7 +249,7 @@ void ParamDataStorageManager::mainRun(unsigned t)
     }
 
     TrendCacheData data;
-    if (!trendCache.getTendData(t, data))
+    if (!trendCache.getTrendData(t, data))
     {
         // no trend data, return
         return;
@@ -254,8 +258,10 @@ void ParamDataStorageManager::mainRun(unsigned t)
     ParamBuf *paramBuf = new ParamBuf();
     paramBuf->item.t = t;
     paramBuf->item.co2Baro = data.co2baro;
-    paramBuf->item.isApneaAlarm = alertor.getOneShotAlarmStatus(&respOneShotAlarm, RESP_ONESHOT_ALARM_APNEA)
-                                  || alertor.getOneShotAlarmStatus(&co2OneShotAlarm, CO2_ONESHOT_ALARM_APNEA);
+    AlarmOneShotIFace *respAlarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_RESP);
+    AlarmOneShotIFace *co2AlarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_CO2);
+    paramBuf->item.isApneaAlarm = alertor.getOneShotAlarmStatus(respAlarmSource, RESP_ONESHOT_ALARM_APNEA)
+                                  || alertor.getOneShotAlarmStatus(co2AlarmSource, CO2_ONESHOT_ALARM_APNEA);
     paramBuf->item.hrSource = ecgDupParam.getCurHRSource();
     paramBuf->item.brSource = respDupParam.getBrSource();
     paramBuf->item.isFico2Display = co2Param.getFICO2Display();
@@ -305,7 +311,7 @@ void ParamDataStorageManager::addNIBPData(unsigned t)
     }
 
     TrendCacheData data;
-    if (!trendCache.getTendData(t, data))
+    if (!trendCache.getTrendData(t, data))
     {
         // no trend data, return
         return;
@@ -326,8 +332,10 @@ void ParamDataStorageManager::addNIBPData(unsigned t)
     ParamBuf *paramBuf = new ParamBuf();
     paramBuf->item.t = t;
     paramBuf->item.co2Baro = data.co2baro;
-    paramBuf->item.isApneaAlarm = alertor.getOneShotAlarmStatus(&respOneShotAlarm, RESP_ONESHOT_ALARM_APNEA)
-                                  || alertor.getOneShotAlarmStatus(&co2OneShotAlarm, CO2_ONESHOT_ALARM_APNEA);
+    AlarmOneShotIFace *respAlarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_RESP);
+    AlarmOneShotIFace *co2AlarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_CO2);
+    paramBuf->item.isApneaAlarm = alertor.getOneShotAlarmStatus(respAlarmSource, RESP_ONESHOT_ALARM_APNEA)
+                                  || alertor.getOneShotAlarmStatus(co2AlarmSource, CO2_ONESHOT_ALARM_APNEA);
     paramBuf->item.hrSource = ecgDupParam.getCurHRSource();
     paramBuf->item.brSource = respDupParam.getBrSource();
     paramBuf->item.isFico2Display = co2Param.getFICO2Display();
@@ -379,7 +387,7 @@ void ParamDataStorageManager::addAlarmData(unsigned t, ParamID id)
     d->lastAlarmTimestamp = t;
 
     TrendCacheData data;
-    if (!trendCache.getTendData(t, data))
+    if (!trendCache.getTrendData(t, data))
     {
         // no trend data, return
         return;
@@ -446,8 +454,10 @@ void ParamDataStorageManager::addAlarmData(unsigned t, ParamID id)
 
     paramBuf->item.t = t;
     paramBuf->item.co2Baro = data.co2baro;
-    paramBuf->item.isApneaAlarm = alertor.getOneShotAlarmStatus(&respOneShotAlarm, RESP_ONESHOT_ALARM_APNEA)
-                                  || alertor.getOneShotAlarmStatus(&co2OneShotAlarm, CO2_ONESHOT_ALARM_APNEA);
+    AlarmOneShotIFace *respAlarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_RESP);
+    AlarmOneShotIFace *co2AlarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_CO2);
+    paramBuf->item.isApneaAlarm = alertor.getOneShotAlarmStatus(respAlarmSource, RESP_ONESHOT_ALARM_APNEA)
+                                  || alertor.getOneShotAlarmStatus(co2AlarmSource, CO2_ONESHOT_ALARM_APNEA);
     paramBuf->item.hrSource = ecgDupParam.getCurHRSource();
     paramBuf->item.brSource = respDupParam.getBrSource();
     paramBuf->item.isFico2Display = co2Param.getFICO2Display();
@@ -516,6 +526,12 @@ void ParamDataStorageManager::getRecentParamData(ParamDataStorageManager::ParamB
     Q_D(ParamDataStorageManager);
     QMutexLocker locker(&d->paramBufMutex);
     memcpy(reinterpret_cast<char *>(&parambuf), reinterpret_cast<char *>(&d->lastParamBuf), sizeof(ParamBuf));
+}
+
+void ParamDataStorageManager::newPatientHandle()
+{
+    trendCache.clearTrendCache();
+    trendCache.stopDataCollect(1);
 }
 
 

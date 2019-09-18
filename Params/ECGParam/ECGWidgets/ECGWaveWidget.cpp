@@ -20,12 +20,13 @@
 #include "LanguageManager.h"
 #include "ColorManager.h"
 #include "ParamInfo.h"
-#include "IConfig.h"
+#include "ConfigManager.h"
 #include "TimeDate.h"
 #include "SystemManager.h"
 #include "PopupList.h"
 #include "ECGWaveRuler.h"
 #include "LayoutManager.h"
+#include "ECGDupParam.h"
 
 int ECGWaveWidget::_paceHeight = 5;
 /**************************************************************************************************
@@ -269,7 +270,7 @@ void ECGWaveWidget::_updateNotchInfo()
         return;
     }
     ECGNotchFilter notchFilter = ecgParam.getNotchFilter();
-    _notchInfo->setText(QString("%1%2")
+    _notchInfo->setText(QString("%1 %2")
                                .arg(trs("Notch"))
                                .arg(trs(ECGSymbol::convert(notchFilter))));
 }
@@ -277,7 +278,7 @@ void ECGWaveWidget::_updateNotchInfo()
 /**************************************************************************************************
  * 载入配置。
  *************************************************************************************************/
-void ECGWaveWidget::_loadConfig(void)
+void ECGWaveWidget::loadConfig(void)
 {
     setSpeed(ecgParam.getSweepSpeed());
 
@@ -465,7 +466,7 @@ void ECGWaveWidget::updateLeadDisplayName(const QString &name)
 
 void ECGWaveWidget::updateWaveConfig()
 {
-    _loadConfig();
+    loadConfig();
 }
 
 /**************************************************************************************************
@@ -709,7 +710,7 @@ void ECGWaveWidget::showEvent(QShowEvent *e)
     rMarkList.clear();
     WaveWidget::showEvent(e);
 
-    _loadConfig();
+    loadConfig();
 
     if (ECG_DISPLAY_NORMAL == ecgParam.getDisplayMode())
     {
@@ -1053,8 +1054,6 @@ void ECGWaveWidget::setWaveInfoVisible(bool isVisible)
 
 void ECGWaveWidget::updateWidgetConfig()
 {
-    _loadConfig();
-
     int index = ECG_DISPLAY_NORMAL;
     currentConfig.getNumValue("ECG|DisplayMode", index);
     ECGDisplayMode mode = static_cast<ECGDisplayMode>(index);
@@ -1080,6 +1079,20 @@ void ECGWaveWidget::updateWidgetConfig()
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
     setPalette(palette);
     _ruler->setPalette(palette);
+
+    // update the lead mode
+    int leadMode = ECG_LEAD_MODE_5;
+    currentConfig.getNumValue("ECG|LeadMode", leadMode);
+    ecgParam.setLeadMode(static_cast<ECGLeadMode>(leadMode));
+
+    // update the filter mode
+    int filterMode = ECG_FILTERMODE_MONITOR;
+    currentConfig.getNumValue("ECG|FilterMode", filterMode);
+    ecgParam.setFilterMode(filterMode);
+
+    ecgParam.updatePacermaker();    // 更新起博标志
+    ecgDupParam.updateHRSource();   // 更新HR来源
+    ecgParam.updateEditNotchFilter(); // 更新ECG工频陷波
 
     WaveWidget::updateWidgetConfig();
 }

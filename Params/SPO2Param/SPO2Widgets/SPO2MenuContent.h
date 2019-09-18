@@ -40,6 +40,11 @@ private slots:
      */
     void onPopupListItemFocusChanged(int volume);
 
+    /**
+     * @brief onCCHDCheckBtnReleased cchd check button click
+     */
+    void onCCHDCheckBtnReleased(void);
+
 private:
     SPO2MenuContentPrivate * const d_ptr;
 };

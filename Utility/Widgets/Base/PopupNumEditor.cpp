@@ -95,7 +95,15 @@ void PopupNumEditorPrivate::decreaseValue()
 
 QString PopupNumEditorPrivate::value() const
 {
-    return Util::convertToString(editInfo.curValue, editInfo.scale);
+    if (editInfo.type == ItemEditInfo::VALUE)
+    {
+        return Util::convertToString(editInfo.curValue, editInfo.scale);
+    }
+    else if (editInfo.type == ItemEditInfo::LIST)
+    {
+        return editInfo.list.at(editInfo.curValue);
+    }
+    return QString();
 }
 
 PopupNumEditor::PopupNumEditor()
@@ -128,6 +136,14 @@ void PopupNumEditor::setEditValueGeometry(const QRect &r)
 void PopupNumEditor::setEditInfo(const ItemEditInfo &info)
 {
     d_ptr->editInfo = info;
+    if (info.type == ItemEditInfo::VALUE)
+    {
+        if (info.curValue < info.lowLimit || info.curValue > info.highLimit)
+        {
+            // 如果当前值无效，则设置起始值
+            d_ptr->editInfo.curValue = info.startValue;
+        }
+    }
     update();
 }
 

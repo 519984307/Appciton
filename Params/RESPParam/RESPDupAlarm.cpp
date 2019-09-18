@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by tongzhou fang <fangtongzhou@blmed.cn>, 2019/1/31
+ **/
 #include "RESPDupAlarm.h"
 #include "RESPDupParam.h"
 #include "IConfig.h"
@@ -5,8 +15,7 @@
 #include "ParamInfo.h"
 #include "CO2Param.h"
 #include "AlarmConfig.h"
-
-RESPDupLimitAlarm *RESPDupLimitAlarm::_selfObj = NULL;
+#include "ECGParam.h"
 
 /**************************************************************************************************
  * 报警源的名字。
@@ -55,24 +64,27 @@ WaveformID RESPDupLimitAlarm::getWaveformID(int id)
 /**************************************************************************************************
  * 获取id对应的参数ID。
  *************************************************************************************************/
-SubParamID RESPDupLimitAlarm::getSubParamID(int /*id*/)
+SubParamID RESPDupLimitAlarm::getSubParamID(int id)
 {
+    Q_UNUSED(id);
     return SUB_PARAM_RR_BR;
 }
 
 /**************************************************************************************************
  * 生理参数报警级别。
  *************************************************************************************************/
-AlarmPriority RESPDupLimitAlarm::getAlarmPriority(int /*paramID*/)
+AlarmPriority RESPDupLimitAlarm::getAlarmPriority(int paramID)
 {
+    Q_UNUSED(paramID);
     return alarmConfig.getLimitAlarmPriority(SUB_PARAM_RR_BR);
 }
 
 /**************************************************************************************************
  * 获取指定的生理参数测量数据。
  *************************************************************************************************/
-int RESPDupLimitAlarm::getValue(int /*paramIndex*/)
+int RESPDupLimitAlarm::getValue(int paramIndex)
 {
+    Q_UNUSED(paramIndex);
     return respDupParam.getRR();
 }
 
@@ -81,7 +93,7 @@ int RESPDupLimitAlarm::getValue(int /*paramIndex*/)
  *************************************************************************************************/
 bool RESPDupLimitAlarm::isAlarmEnable(int paramID)
 {
-    if(!alarmConfig.isLimitAlarmEnable(SUB_PARAM_RR_BR))
+    if (!alarmConfig.isLimitAlarmEnable(SUB_PARAM_RR_BR))
     {
         return false;
     }
@@ -104,8 +116,9 @@ bool RESPDupLimitAlarm::isAlarmEnable(int paramID)
 /**************************************************************************************************
  * 生理参数报警上限。
  *************************************************************************************************/
-int RESPDupLimitAlarm::getUpper(int /*paramID*/)
+int RESPDupLimitAlarm::getUpper(int paramID)
 {
+    Q_UNUSED(paramID);
     UnitType unit = respDupParam.getCurrentUnit(SUB_PARAM_RR_BR);
     return alarmConfig.getLimitAlarmConfig(SUB_PARAM_RR_BR, unit).highLimit;
 }
@@ -113,8 +126,9 @@ int RESPDupLimitAlarm::getUpper(int /*paramID*/)
 /**************************************************************************************************
  * 生理参数报警下限。
  *************************************************************************************************/
-int RESPDupLimitAlarm::getLower(int /*paramID*/)
+int RESPDupLimitAlarm::getLower(int paramID)
 {
+    Q_UNUSED(paramID);
     UnitType unit = respDupParam.getCurrentUnit(SUB_PARAM_RR_BR);
     return alarmConfig.getLimitAlarmConfig(SUB_PARAM_RR_BR, unit).lowLimit;
 }
@@ -124,10 +138,15 @@ int RESPDupLimitAlarm::getLower(int /*paramID*/)
  *************************************************************************************************/
 int RESPDupLimitAlarm::getCompare(int value, int id)
 {
+    if ((respDupParam.getBrSource() == RESPDupParam::BR_SOURCE_ECG && id > 1)
+            || (respDupParam.getBrSource() == RESPDupParam::BR_SOURCE_CO2 && id < 2))
+    {
+        return 0;
+    }
     switch (id)
     {
         case RESP_DUP_LIMIT_ALARM_RR_HIGH:
-            if (!respDupParam.isEnabled())
+            if (!ecgParam.isConnected())
             {
                 return 0;
             }
@@ -141,7 +160,7 @@ int RESPDupLimitAlarm::getCompare(int value, int id)
             }
 
         case RESP_DUP_LIMIT_ALARM_RR_LOW:
-            if (!respDupParam.isEnabled())
+            if (!ecgParam.isConnected())
             {
                 return 0;
             }
@@ -155,7 +174,7 @@ int RESPDupLimitAlarm::getCompare(int value, int id)
             }
 
         case RESP_DUP_LIMIT_ALARM_BR_HIGH:
-            if (!co2Param.isEnabled())
+            if (!co2Param.isConnected())
             {
                 return 0;
             }
@@ -169,7 +188,7 @@ int RESPDupLimitAlarm::getCompare(int value, int id)
             }
 
         case RESP_DUP_LIMIT_ALARM_BR_LOW:
-            if (!co2Param.isEnabled())
+            if (!co2Param.isConnected())
             {
                 return 0;
             }
@@ -222,7 +241,4 @@ RESPDupLimitAlarm::RESPDupLimitAlarm()
  *************************************************************************************************/
 RESPDupLimitAlarm::~RESPDupLimitAlarm()
 {
-
 }
-
-

@@ -37,6 +37,9 @@ private slots:
      */
     void onAlarmBtnReleased(void);
 
+
+    void updateBRSource();
+
 private:
     RESPMenuContentPrivate * const d_ptr;
 };

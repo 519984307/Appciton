@@ -35,10 +35,6 @@ private slots:
      */
     void onAlarmBtnReleased(void);
 
-    void motorControlIndexChanged(int index);
-
-    void onVibrationValueChanged(int value, int scale);
-
 private:
     O2MenuContentPrivate *const d_ptr;
 };
