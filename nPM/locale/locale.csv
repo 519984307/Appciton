@@ -1355,6 +1355,7 @@ ServiceUpdateEntranceDesc,更新,Service Update
 SoftwareVersion,软件版本,Software Version
 SoftwareVersionMenu,软件版本,Software Version
 SystemSoftwareVersion,版本,Version
+ReleaseVersion,发布版本,Release Version
 PowerManagerSoftwareVersion,电源管理软件版本,Power Manager Software Version
 Uboot,系统引导文件,Uboot
 Kernel,内核,Kernel

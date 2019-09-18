@@ -40,11 +40,18 @@ void SoftwareVersionWindow::layoutExec()
     label->setText(softwaveVersion);
     glayout->addWidget(label, 0, 2, Qt::AlignLeft | Qt::AlignHCenter);
 
-    label = new QLabel(QString("%1:").arg(trs("CompileTime")));
+    label = new QLabel(QString("%1:").arg(trs("ReleaseVersion")));
     glayout->addWidget(label, 1, 1, Qt::AlignLeft | Qt::AlignHCenter);
     label = new QLabel;
-    label->setText(QString("%1 %2").arg(__TIME__).arg(__DATE__));
+    softwaveVersion = QString(GIT_VERSION);
+    label->setText(softwaveVersion);
     glayout->addWidget(label, 1, 2, Qt::AlignLeft | Qt::AlignHCenter);
+
+    label = new QLabel(QString("%1:").arg(trs("CompileTime")));
+    glayout->addWidget(label, 2, 1, Qt::AlignLeft | Qt::AlignHCenter);
+    label = new QLabel;
+    label->setText(QString("%1 %2").arg(__TIME__).arg(__DATE__));
+    glayout->addWidget(label, 2, 2, Qt::AlignLeft | Qt::AlignHCenter);
 
     setWindowLayout(glayout);
 
