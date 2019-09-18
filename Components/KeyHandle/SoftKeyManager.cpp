@@ -377,6 +377,9 @@ void SoftKeyManager::setContent(SoftKeyActionType type)
     machineConfig.getModuleInitialStatus("TouchEnable", reinterpret_cast<bool*>(&index));
     setKeyTypeAvailable(SOFT_BASE_KEY_SCREEN_BAN, index);
 
+    machineConfig.getModuleInitialStatus("PrinterEnable", reinterpret_cast<bool*>(&index));
+    setKeyTypeAvailable(SOFT_BASE_KEY_PRINTER_SET, index);
+
     d_ptr->resetPageInfo();
 
     d_ptr->layoutKeyDesc();
