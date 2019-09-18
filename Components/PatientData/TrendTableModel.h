@@ -13,6 +13,7 @@
 #include <QAbstractTableModel>
 #include "TrendDataDefine.h"
 #include "IBPDefine.h"
+#include "TrendDataStorageManager.h"
 
 class TrendTableModelPrivate;
 class TrendTableModel : public QAbstractTableModel
@@ -69,7 +70,7 @@ public:
      * @brief getTrendDataPack  get trend data pack
      * @return  trend data pack (read only)
      */
-    const QList<TrendDataPackage *> &getTrendDataPack();
+    const QList<BlockEntry> &getBlockEntryList();
 
     /**
      * @brief getColumnCount  每次显示的最大固定列数

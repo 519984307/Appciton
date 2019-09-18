@@ -11,13 +11,14 @@
 #pragma once
 #include "Dialog.h"
 #include "TrendDataDefine.h"
+#include "IStorageBackend.h"
 
 class TrendPrintWindowPrivate;
 class TrendPrintWindow : public Dialog
 {
     Q_OBJECT
 public:
-    explicit TrendPrintWindow(const QList<TrendDataPackage *> &trendDataPack);
+    explicit TrendPrintWindow(const QList<BlockEntry> blockList);
     ~TrendPrintWindow();
 
     void initPrintTime(unsigned start, unsigned end);

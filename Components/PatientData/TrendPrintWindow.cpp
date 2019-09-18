@@ -73,13 +73,13 @@ public:
     unsigned printStartTime;
     unsigned printEndTime;
 
-    QList<TrendDataPackage *> trendDataPack;
+    QList<BlockEntry> blockList;            // 趋势数据类型时间信息
 
     TimeFormat timeFormat;
 
     QStringList hourList;
 };
-TrendPrintWindow::TrendPrintWindow(const QList<TrendDataPackage *> &trendDataPack)
+TrendPrintWindow::TrendPrintWindow(const QList<BlockEntry> blockList)
     : Dialog(), d_ptr(new TrendPrintWindowPrivate())
 {
     int index = 0;
@@ -164,7 +164,7 @@ TrendPrintWindow::TrendPrintWindow(const QList<TrendDataPackage *> &trendDataPac
 
     setWindowLayout(layout);
 
-    d_ptr->trendDataPack = trendDataPack;
+    d_ptr->blockList = blockList;
 }
 
 TrendPrintWindow::~TrendPrintWindow()
@@ -407,7 +407,7 @@ void TrendPrintWindowPrivate::difftimeInfo()
 
 void TrendPrintWindowPrivate::adjustPrintTime(unsigned printTime, bool start)
 {
-    int count = trendDataPack.count();
+    int count = blockList.count();
     if (count == 0)
     {
         if (start)
@@ -424,8 +424,8 @@ void TrendPrintWindowPrivate::adjustPrintTime(unsigned printTime, bool start)
     unsigned adjustTime = printTime;
     for (int i = 1; i < count; i++)
     {
-        unsigned curTime = trendDataPack.at(i - 1)->time;
-        unsigned nextTime = trendDataPack.at(i)->time;
+        unsigned curTime = blockList.at(i - 1).extraData;
+        unsigned nextTime = blockList.at(i).extraData;
         if (printTime == curTime)
         {
             adjustTime = curTime;
