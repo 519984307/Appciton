@@ -1110,48 +1110,6 @@ void ECGParam::handleSelfTestResult(unsigned selfTestResult)
     }
 }
 
-HRSourceType ECGParam::getHrSourceTypeFromId(ParamID id)
-{
-    switch (id)
-    {
-        case PARAM_ECG:
-        return HR_SOURCE_ECG;
-        break;
-        case PARAM_SPO2:
-        return HR_SOURCE_SPO2;
-        break;
-        case PARAM_IBP:
-        return HR_SOURCE_IBP;
-        break;
-        case PARAM_NR:
-        return HR_SOURCE_AUTO;
-        break;
-        default:
-        break;
-    }
-    return HR_SOURCE_NR;
-}
-
-ParamID ECGParam::getIdFromHrSourceType(HRSourceType type)
-{
-    switch (type)
-    {
-        case HR_SOURCE_ECG:
-        return PARAM_ECG;
-        break;
-        case HR_SOURCE_SPO2:
-        return PARAM_SPO2;
-        break;
-        case HR_SOURCE_IBP:
-        return PARAM_IBP;
-        break;
-        case HR_SOURCE_AUTO:
-        case HR_SOURCE_NR:
-        break;
-    }
-    return PARAM_NR;
-}
-
 /**************************************************************************************************
  * enable VF calc。
  *************************************************************************************************/

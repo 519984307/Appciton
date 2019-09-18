@@ -80,9 +80,8 @@ void ECGTrendWidget::loadConfig()
     _drawBeatIcon(palette.windowText().color());
     _hrValue->setPalette(palette);
 
-    int index = 0;
-    currentConfig.getNumValue("ECG|HRSource", index);
-    HRSourceType type = ecgParam.getHrSourceTypeFromId(static_cast<ParamID>(index));
+    int type = 0;
+    currentConfig.getNumValue("ECG|HRSource", type);
     SubDupParamID subId;
     switch (type)
     {
