@@ -70,7 +70,7 @@ public:
      * @brief getTrendDataPack  get trend data pack
      * @return  trend data pack (read only)
      */
-    const QList<BlockEntry> &getBlockEntryList();
+    const QVector<BlockEntry> &getBlockEntryList();
 
     /**
      * @brief getColumnCount  每次显示的最大固定列数

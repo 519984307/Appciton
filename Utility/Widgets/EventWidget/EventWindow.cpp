@@ -188,7 +188,7 @@ public:
     PatientInfo patientInfo;            // 病人信息
     int ecgGain;
 
-    QList<BlockEntry> blockList;        // 块数据信息
+    QVector<BlockEntry> blockList;        // 块数据信息
     int curPage;
     int totalPage;
     int curIndex;
@@ -580,7 +580,7 @@ void EventWindow::rightMoveEvent()
 
 void EventWindow::printRelease()
 {
-    int curIndex = d_ptr->eventTable->currentIndex().row();
+    int curIndex = d_ptr->curIndex;
     if (curIndex < d_ptr->dataIndex.size() &&
             curIndex >= 0)
     {
@@ -794,7 +794,7 @@ EventWindow::EventWindow()
 void EventWindowPrivate::loadEventData()
 {
     blockList.clear();
-    backend->getBlockEntryList(blockList);
+    blockList = backend->getBlockEntryList();
 }
 
 AlarmPriority EventWindowPrivate::levelToPriority(EventLevel level)

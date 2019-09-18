@@ -123,7 +123,7 @@ public:
     bool isWait;
     int timeoutNum;
     RecordPageGenerator *generator;
-    QList<BlockEntry> trendBlockList;               // 趋势数据信息列表
+    QVector<BlockEntry> trendBlockList;               // 趋势数据信息列表
     QList<int>  trendIndexList;                     // 符合分辨率的趋势数据索引列表
     IStorageBackend *backend;
     PatientInfo patientInfo;                        // 病人信息
@@ -695,7 +695,7 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
     }
 }
 
-const QList<BlockEntry> &TrendTableModel::getBlockEntryList()
+const QVector<BlockEntry> &TrendTableModel::getBlockEntryList()
 {
     return d_ptr->trendBlockList;
 }
@@ -820,7 +820,7 @@ TrendTableModelPrivate::TrendTableModelPrivate()
 void TrendTableModelPrivate::getTrendData()
 {
     trendBlockList.clear();
-    backend->getBlockEntryList(trendBlockList);
+    trendBlockList = backend->getBlockEntryList();
 
     trendIndexList.clear();
     unsigned interval = TrendDataSymbol::convertValue(timeInterval);

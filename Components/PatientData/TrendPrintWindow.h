@@ -18,7 +18,7 @@ class TrendPrintWindow : public Dialog
 {
     Q_OBJECT
 public:
-    explicit TrendPrintWindow(const QList<BlockEntry> blockList);
+    explicit TrendPrintWindow(const QVector<BlockEntry> blockList);
     ~TrendPrintWindow();
 
     void initPrintTime(unsigned start, unsigned end);

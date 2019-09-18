@@ -73,13 +73,13 @@ public:
     unsigned printStartTime;
     unsigned printEndTime;
 
-    QList<BlockEntry> blockList;            // 趋势数据类型时间信息
+    QVector<BlockEntry> blockList;            // 趋势数据类型时间信息
 
     TimeFormat timeFormat;
 
     QStringList hourList;
 };
-TrendPrintWindow::TrendPrintWindow(const QList<BlockEntry> blockList)
+TrendPrintWindow::TrendPrintWindow(const QVector<BlockEntry> blockList)
     : Dialog(), d_ptr(new TrendPrintWindowPrivate())
 {
     int index = 0;
