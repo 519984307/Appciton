@@ -491,7 +491,7 @@ void ECGDupParam::setHrSource(HRSourceType type)
     }
 
     int id = ecgParam.getIdFromHrSourceType(type);
-    currentConfig.setNumValue("ECG|HRSource", id);
+    currentConfig.setNumValue("ECG|HRSource", id);  //存储paramID数字
 }
 
 void ECGDupParam::updateHRSource()

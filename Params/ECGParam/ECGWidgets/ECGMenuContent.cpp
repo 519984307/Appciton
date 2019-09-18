@@ -108,7 +108,7 @@ void ECGMenuContentPrivate::loadOptions()
 
         if (i == sourceType)
         {
-            cboIndex = itemCount;
+            cboIndex = itemCount;   // 选中对应item
         }
         itemCount++;
         combos[ITEM_CBO_HRPR_SOURCE]->addItem(trs(ECGSymbol::convert(static_cast<HRSourceType>(i))));

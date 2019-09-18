@@ -53,7 +53,7 @@
         <Ecg2Wave>0</Ecg2Wave>
         <Ecg1Gain>0</Ecg1Gain>
         <SweepSpeed>2</SweepSpeed>
-        <HRSource>0</HRSource>
+        <HRSource>13</HRSource>
         <DisplayMode>0</DisplayMode>
         <LeadMode>1</LeadMode>
         <NotchFilter>0</NotchFilter>
