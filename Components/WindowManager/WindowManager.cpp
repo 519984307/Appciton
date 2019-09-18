@@ -242,13 +242,19 @@ void WindowManager::showWindow(Dialog *w, ShowBehavior behaviors)
             top->showMask(true);
         }
     }
-
+    QPointer<Dialog> newP = w;
+    bool timerStart = true;
     if (!(behaviors & ShowBehaviorNoAutoClose))
     {
         d_ptr->timer->start();
     }
+    else
+    {
+        d_ptr->timer->stop();
+        timerStart = false;
+    }
+    newP->setProperty("TimerStart", qVariantFromValue(timerStart));
 
-    QPointer<Dialog> newP = w;
     // remove the window in the stack if it's already exist.
     QList<QPointer<Dialog> >::Iterator iter = d_ptr->windowStacks.begin();
     for (; iter != d_ptr->windowStacks.end(); ++iter)
@@ -383,7 +389,7 @@ void WindowManager::onWindowHide(Dialog *w)
 {
     // find top window
     Dialog *top = topWindow();
-
+    bool timeStart = true;
     if (top == w)
     {
         // remove the window,
@@ -396,6 +402,15 @@ void WindowManager::onWindowHide(Dialog *w)
         {
             top->showMask(false);
             top->show();
+            timeStart = top->property("TimerStart").toBool();
+            if (timeStart)
+            {
+                d_ptr->timer->start();
+            }
+            else
+            {
+                d_ptr->timer->stop();
+            }
         }
         else
         {
