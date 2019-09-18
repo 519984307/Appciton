@@ -443,12 +443,12 @@ void T5Provider::_sensorOff(unsigned char *packet)
     static bool sensorHasContected1 = false;  // 开机之后有连接断开才会报探头脱落
     static bool sensorHasContected2 = false;
 
-    if (!sensorHasContected1 && packet[1] & 0x02)
+    if (!sensorHasContected1 && !(packet[1] & 0x01))
     {
         sensorHasContected1 = true;
     }
 
-    if (!sensorHasContected2 && packet[1] & 0x01)
+    if (!sensorHasContected2 && !(packet[1] & 0x02))
     {
         sensorHasContected2 = true;
     }
