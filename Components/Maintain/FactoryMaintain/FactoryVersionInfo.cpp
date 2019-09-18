@@ -31,6 +31,7 @@ public:
     enum MenuItem
     {
         ITEM_LAB_U_BOOT,
+        ITEM_LAB_SOFTWARE_VERSION,
         ITEM_LAB_HARDWARE_VERSION,
         ITEM_LAB_SYSBD_MOD,
         ITEM_LAB_SYSBD_BOOTLOADER,
@@ -103,6 +104,13 @@ void FactoryVersionInfo::layoutExec()
     d_ptr->labs.insert(FactoryVersionInfoPrivate
                        ::ITEM_LAB_U_BOOT, labelRight);
     labelLeft->setFocusPolicy(Qt::StrongFocus);
+
+    labelLeft = new QLabel(trs("SoftwareVersion"));
+    layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
+    labelRight = new QLabel(GIT_VERSION);
+    layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
+    d_ptr->labs.insert(FactoryVersionInfoPrivate
+                       ::ITEM_LAB_SOFTWARE_VERSION, labelRight);
 
     labelLeft = new QLabel(trs("Hardware"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);

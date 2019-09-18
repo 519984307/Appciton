@@ -1326,11 +1326,11 @@ PHASEIN,PHASEIN,PHASEIN
 M601,M601,M601
 MachineConfigModuleMenuDesc,机器配置,Machine Config
 MonitorInfoMenu,监护仪信息,Monitor Info
-CumulativeWorkingTime,累计工作时间,Cumulative Working Time
+RunningTime,运行时间,Running Time
 TemperatureInsideCase,箱内温度,Temperature Inside Case
 BatteryCapacity,电池电量,Battery Capacity
 ProductModel,产品型号,Product Model
-MACAddress,硬件地址,MAC Address
+MACAddress,物理地址(MAC),MAC Address
 ElectronicSerialNumber,电子序列号,Electronic Serial Number
 SetElectronicSerialNumber,设置电子序列号,Set Electronic Serial Number
 MonitorInfoMenuDesc,监护仪信息菜单设置,Monitor Info

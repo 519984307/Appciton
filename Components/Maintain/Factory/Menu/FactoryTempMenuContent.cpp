@@ -215,6 +215,7 @@ void FactoryTempMenuContent::layoutExec()
     label->setFont(fontManager.textFont(20));
     ohmAndTempHl1->addWidget(label);
     d_ptr->temp1Lab = label;
+    d_ptr->temp1Lab->setVisible(false);         // 现阶段温度不做显示
 
     label = new QLabel;
     label->setFont(fontManager.textFont(20));
@@ -226,6 +227,7 @@ void FactoryTempMenuContent::layoutExec()
     label->setFont(fontManager.textFont(20));
     ohmAndTempHl2->addWidget(label);
     d_ptr->temp2Lab = label;
+    d_ptr->temp2Lab->setVisible(false);     // 现阶段温度不做显示
 
     label = new QLabel;
     label->setFont(fontManager.textFont(20));
