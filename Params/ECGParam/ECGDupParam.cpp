@@ -490,16 +490,14 @@ void ECGDupParam::setHrSource(HRSourceType type)
         _prSource = PR_SOURCE_AUTO;
     }
 
-    int id = ecgParam.getIdFromHrSourceType(type);
-    currentConfig.setNumValue("ECG|HRSource", id);  //存储paramID数字
+    currentConfig.setNumValue("ECG|HRSource", static_cast<int>(type));
 }
 
 void ECGDupParam::updateHRSource()
 {
-    int id = PARAM_ECG;
-    currentConfig.getNumValue("ECG|HRSource", id);
-    HRSourceType type = ecgParam.getHrSourceTypeFromId(static_cast<ParamID>(id));
-    _hrSource = type;
+    int type = 0;
+    currentConfig.getNumValue("ECG|HRSource", type);
+    _hrSource = static_cast<HRSourceType>(type);
     if (_hrSource == HR_SOURCE_ECG)
     {
         updateHR(_hrValue);
@@ -591,10 +589,9 @@ ECGDupParam::ECGDupParam()
       _currentHRSource(HR_SOURCE_AUTO)
 {
     // 初始化hr/pr来源
-    int id = PARAM_ECG;
-    currentConfig.getNumValue("ECG|HRSource", id);
-    HRSourceType type = ecgParam.getHrSourceTypeFromId(static_cast<ParamID>(id));
-    _hrSource = type;
+    int type = 0;
+    currentConfig.getNumValue("ECG|HRSource", type);
+    _hrSource = static_cast<HRSourceType>(type);
 
     switch (_hrSource)
     {
