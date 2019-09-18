@@ -15,6 +15,8 @@
 #include <QMap>
 #include <QLinkedList>
 
+#define ALARM_LIMIT_TIMES 3
+
 class AlarmParamIFace
 {
 public:

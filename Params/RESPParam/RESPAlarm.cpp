@@ -252,6 +252,32 @@ bool RESPOneShotAlarm::isAlarmed(int id)
         return false;
     }
 
+    if (id == RESP_ONESHOT_ALARM_APNEA)
+    {
+        static int apneaAlarmFlag = 0;
+        if (AlarmOneShotIFace::newestAlarmStatus(RESP_ONESHOT_ALARM_APNEA) == false)
+        {
+            if (apneaAlarmFlag < ALARM_LIMIT_TIMES)
+            {
+                apneaAlarmFlag++;
+            }
+        }
+        else
+        {
+            apneaAlarmFlag = 0;
+        }
+
+        if (apneaAlarmFlag >= ALARM_LIMIT_TIMES)
+        {
+            // 正常了3次才刷新状态
+            return AlarmOneShotIFace::isAlarmed(id);
+        }
+        else
+        {
+            return true;
+        }
+    }
+
     return AlarmOneShotIFace::isAlarmed(id);
 }
 

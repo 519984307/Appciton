@@ -185,6 +185,33 @@ bool ECGOneShotAlarm::isAlarmed(int id)
         }
         }
     }
+
+    if (id == ECG_ONESHOT_ARR_ASYSTOLE || id == ECG_ONESHOT_ARR_VFIBVTAC)
+    {
+        static int apneaAlarmFlag = 0;
+        if (AlarmOneShotIFace::newestAlarmStatus(id) == false)
+        {
+            if (apneaAlarmFlag < ALARM_LIMIT_TIMES)
+            {
+                apneaAlarmFlag++;
+            }
+        }
+        else
+        {
+            apneaAlarmFlag = 0;
+        }
+
+        if (apneaAlarmFlag >= ALARM_LIMIT_TIMES)
+        {
+            // 正常了3次才刷新状态
+            return AlarmOneShotIFace::isAlarmed(id);
+        }
+        else
+        {
+            return true;
+        }
+    }
+
     return AlarmOneShotIFace::isAlarmed(id);
 }
 

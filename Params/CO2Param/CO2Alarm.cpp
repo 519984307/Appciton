@@ -373,6 +373,37 @@ bool CO2OneShotAlarm::isAlarmed(int id)
         }
     }
 
+    if (id == CO2_ONESHOT_ALARM_APNEA)
+    {
+        static int apneaAlarmFlag = 0;
+        if (!co2Param.isConnected()  || !co2Param.getCO2Switch())
+        {
+            // 断开连接后，标志置为0
+            apneaAlarmFlag = 0;
+        }
+        if (AlarmOneShotIFace::newestAlarmStatus(CO2_ONESHOT_ALARM_APNEA) == false)
+        {
+            if (apneaAlarmFlag < ALARM_LIMIT_TIMES)
+            {
+                apneaAlarmFlag++;
+            }
+        }
+        else
+        {
+            apneaAlarmFlag = 0;
+        }
+
+        if (apneaAlarmFlag >= ALARM_LIMIT_TIMES)
+        {
+            // 正常了3次才刷新状态
+            return AlarmOneShotIFace::isAlarmed(id);
+        }
+        else
+        {
+            return true;
+        }
+}
+
     return AlarmOneShotIFace::isAlarmed(id);
 }
 
