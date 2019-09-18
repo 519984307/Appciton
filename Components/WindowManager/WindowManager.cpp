@@ -47,7 +47,6 @@ public:
           timer(NULL),
           demoWidget(NULL)
         , curWindow(NULL)
-        , lastWindow(NULL)
     {}
 
     WindowManager * const q_ptr;
@@ -55,7 +54,6 @@ public:
     QTimer *timer;              // timer to auto close the windows
     QWidget *demoWidget;
     Dialog *curWindow;
-    Dialog *lastWindow;
 
     /**
      * @brief menuProperPos 菜单显示合适的位置
@@ -355,20 +353,13 @@ bool WindowManager::eventFilter(QObject *obj, QEvent *ev)
                 break;
             }
         }
-        if (d_ptr->curWindow == d_ptr->lastWindow)
-        {
-            return false;
-        }
-
         if (timerStart == true)
         {
             d_ptr->timer->start();
-            d_ptr->lastWindow = d_ptr->curWindow;
         }
         else
         {
             d_ptr->timer->stop();
-            d_ptr->lastWindow = d_ptr->curWindow;
         }
     }
 
@@ -422,7 +413,7 @@ void WindowManager::onWindowHide(Dialog *w)
 {
     // find top window
     Dialog *top = topWindow();
-    d_ptr->lastWindow = NULL;
+
     if (top == w)
     {
         // remove the window,
