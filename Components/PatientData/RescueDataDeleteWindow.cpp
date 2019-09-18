@@ -22,8 +22,8 @@
 #include "DataStorageDirManager.h"
 #include "ThemeManager.h"
 
-#define PATH_ICON_UP "/usr/local/nPM/icons/ArrowUp.png"
-#define PATH_ICON_DOWN "/usr/local/nPM/icons/ArrowDown.png"
+#define PATH_ICON_UP "/usr/local/nPM/icons/up.png"
+#define PATH_ICON_DOWN "/usr/local/nPM/icons/down.png"
 
 RescueDataDeleteWindow *RescueDataDeleteWindow::_selfObj = NULL;
 
