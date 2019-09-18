@@ -402,6 +402,7 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
         {
             if (traceCtrl->lastAlarmed)
             {
+                traceCtrl->normalTimesCount = ALARM_LIMIT_TIMES;        // 报警关闭后，若再次打开，报警则马上发出。
                 if (traceCtrl->type != ALARM_TYPE_TECH && _isLatchLock)
                 {
                     AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
@@ -434,42 +435,26 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
             {
                 if (traceCtrl->type != ALARM_TYPE_TECH && _isLatchLock)
                 {
-                    if (traceCtrl->normalTimesCount >= ALARM_LIMIT_TIMES)
+                    // 栓锁打开时，才栓锁PhyOneShotAlarm
+                    AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+                    if (alarmIndicator && !alarmIndicator->latchAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage))
                     {
-                        // 正常三次后才可通知是否报警
-                        AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
-                        if (alarmIndicator && alarmIndicator->latchAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage))
-                        {
-                            alarmSource->notifyAlarm(i, true);
-                        }
-                        else
-                        {
-                            alarmSource->notifyAlarm(i, false);
-                            traceCtrl->Reset();
-                        }
+                        alarmSource->notifyAlarm(i, false);
+                        traceCtrl->Reset();
                     }
                     else
                     {
-                        ++traceCtrl->normalTimesCount;
                         alarmSource->notifyAlarm(i, true);
                     }
                 }
                 else
                 {
-                    if (traceCtrl->normalTimesCount >= ALARM_LIMIT_TIMES)
+                    AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+                    if (alarmIndicator)
                     {
-                        // 正常三次后才可删除报警
-                        AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
-                        if (alarmIndicator)
-                        {
-                            alarmIndicator->delAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage);
-                        }
-                        traceCtrl->Reset();
+                        alarmIndicator->delAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage);
                     }
-                    else
-                    {
-                        traceCtrl->normalTimesCount++;
-                    }
+                    traceCtrl->Reset();
                 }
             }
             else
@@ -477,6 +462,10 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
                 alarmSource->notifyAlarm(i, false);
             }
 
+            if (traceCtrl->normalTimesCount < ALARM_LIMIT_TIMES)
+            {
+                traceCtrl->normalTimesCount++;
+            }
             continue;
         }
         else
@@ -506,9 +495,10 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
             }
             else
             {
-                ++traceCtrl->alarmTimesCount;
-                if (traceCtrl->alarmTimesCount < ALARM_LIMIT_TIMES)
+                // 上次没有报警，这次发生了报警
+                if (traceCtrl->normalTimesCount < ALARM_LIMIT_TIMES)
                 {
+                    traceCtrl->normalTimesCount++;
                     alarmSource->notifyAlarm(i, false);
                     continue;
                 }
@@ -563,7 +553,7 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
                 alarmStateMachine->handAlarmEvent(ALARM_STATE_EVENT_NEW_PHY_ALARM, 0, 0);
             }
         }
-        traceCtrl->alarmTimesCount = 0;
+
         traceCtrl->normalTimesCount = 0;
     }
 }
