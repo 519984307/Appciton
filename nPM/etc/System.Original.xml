@@ -13,15 +13,15 @@
     <ElapseStartTime>0</ElapseStartTime>
     <General>
         <PatientType>0</PatientType><!--0:adult  1:ped  2:neo-->
-        <MonitorName>dd-89</MonitorName>
+        <MonitorName></MonitorName>
         <ConfigManagerPassword>12345678</ConfigManagerPassword>
         <DemoModePassword>11111111</DemoModePassword>
         <UserMaintainPassword>66666666</UserMaintainPassword>
         <FactoryMaintainPassword>382425</FactoryMaintainPassword>
         <SuperPassword>672401</SuperPassword>
-        <Department>d12</Department>
-        <BedNumber>b44</BedNumber>
-        <ChangeBedNumberRight>0</ChangeBedNumberRight>
+        <Department></Department>
+        <BedNumber></BedNumber>
+        <ChangeBedNumberRight>1</ChangeBedNumberRight>
         <Language CurrentOption="1" NextOption="1" OptionCount="2">
             <!-- note："XmlFileName" segment consistent with XML language file name -->
             <Opt0 XmlFileName="English">English</Opt0>
