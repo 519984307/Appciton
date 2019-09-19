@@ -44,10 +44,6 @@ public:
     // get the last store param data
     void getRecentParamData(ParamBuf &parambuf);    /* NOLINT */
 
-protected:
-    /* override */
-    void newPatientHandle();
-
 private:
     Q_DECLARE_PRIVATE(ParamDataStorageManager)
     ParamDataStorageManager();

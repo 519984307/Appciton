@@ -528,6 +528,8 @@ void TrendDataStorageManager::newPatientHandle()
     Q_D(TrendDataStorageManager);
     d->backend->reload(dataStorageDirManager.getCurFolder() + TREND_DATA_FILE_NAME,
                        QIODevice::ReadWrite);
+    trendCache.clearTrendCache();
+    trendCache.stopDataCollect(1);
 }
 
 TrendDataStorageManager::TrendDataStorageManager()
