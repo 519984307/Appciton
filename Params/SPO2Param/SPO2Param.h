@@ -300,7 +300,8 @@ private:
     int _repeatTimes;
 
     bool _isLowPerfusion;
-    bool _isForceUpdating;  // 当spo2的弱灌注状态发生变化时，该状态位为true
+    bool _isForceUpdatingPR;  // 当spo2的弱灌注状态发生变化时，该PR状态位为true
+    bool _isForceUpdatingSPO2; // 当spo2的弱灌注状态发生变化时, 该SPO2状态位为true
 
     bool _isT5ModuleUpgradeCompleted;
 };

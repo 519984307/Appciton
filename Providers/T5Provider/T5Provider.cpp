@@ -18,6 +18,7 @@
 #include "ErrorLogItem.h"
 #include "RawDataCollector.h"
 #include "IConfig.h"
+#include "AlarmSourceManager.h"
 
 #define LOW_BORDER_VALUE 149
 #define HIGH_BORDER_VALUE 501
@@ -163,7 +164,11 @@ void T5Provider::reconnected(void)
 
 void T5Provider::sendDisconnected()
 {
-    tempParam.setOneShotAlarm(TEMP_ONESHOT_ALARM_SEND_COMMUNICATION_STOP, true);
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_TEMP);
+    if (alarmSource && !alarmSource->isAlarmed(TEMP_ONESHOT_ALARM_COMMUNICATION_STOP))
+    {
+        alarmSource->setOneShotAlarm(TEMP_ONESHOT_ALARM_SEND_COMMUNICATION_STOP, true);
+    }
 }
 
 /**************************************************************************************************
