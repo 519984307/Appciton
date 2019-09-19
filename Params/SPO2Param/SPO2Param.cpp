@@ -357,11 +357,11 @@ SoundManager::VolumeLevel SPO2Param::getPluseToneVolume(void)
 void SPO2Param::setSPO2(short spo2Value)
 {
     paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
-    if (_spo2Value == spo2Value && !_isForceUpdating)
+    if (_spo2Value == spo2Value && !_isForceUpdatingSPO2)
     {
         return;
     }
-    _isForceUpdating = false;
+    _isForceUpdatingSPO2 = false;
     _spo2Value = spo2Value;
 
 #ifdef ENABLE_O2_APNEASTIMULATION
@@ -409,11 +409,11 @@ short SPO2Param::getSPO2(void)
 void SPO2Param::setPR(short prValue)
 {
     ecgDupParam.restartParamUpdateTime();
-    if (_prValue == prValue && !_isForceUpdating)
+    if (_prValue == prValue && !_isForceUpdatingPR)
     {
         return;
     }
-
+    _isForceUpdatingPR = false;
     _prValue = prValue;
     ecgDupParam.updatePR(prValue);
 }
@@ -918,7 +918,8 @@ void SPO2Param::setPerfusionStatus(bool isLow)
 {
     if (isLow != _isLowPerfusion)
     {
-        _isForceUpdating = true;
+        _isForceUpdatingPR = true;
+        _isForceUpdatingSPO2 = true;
         _isLowPerfusion = isLow;
     }
 }
@@ -970,7 +971,8 @@ SPO2Param::SPO2Param()
          , _moduleType(MODULE_SPO2_NR)
          , _repeatTimes(0)
          , _isLowPerfusion(false)
-         , _isForceUpdating(false)
+         , _isForceUpdatingPR(false)
+         , _isForceUpdatingSPO2(false)
          , _isT5ModuleUpgradeCompleted(false)
 {
     systemConfig.getNumValue("PrimaryCfg|SPO2|EverCheckFinger", _isEverCheckFinger);
