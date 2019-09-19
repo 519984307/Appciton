@@ -361,7 +361,6 @@ void SPO2Param::setSPO2(short spo2Value)
     {
         return;
     }
-    _isForceUpdating = false;
     _spo2Value = spo2Value;
 
 #ifdef ENABLE_O2_APNEASTIMULATION
@@ -413,7 +412,7 @@ void SPO2Param::setPR(short prValue)
     {
         return;
     }
-
+    _isForceUpdating = false;
     _prValue = prValue;
     ecgDupParam.updatePR(prValue);
 }
