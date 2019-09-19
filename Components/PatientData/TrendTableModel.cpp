@@ -14,7 +14,6 @@
 #include "ParamInfo.h"
 #include "ParamManager.h"
 #include "IBPParam.h"
-#include "TrendDataStorageManager.h"
 #include "DataStorageDefine.h"
 #include "TrendDataSymbol.h"
 #include "TrendDataDefine.h"
@@ -124,6 +123,10 @@ public:
     bool isWait;
     int timeoutNum;
     RecordPageGenerator *generator;
+    QVector<BlockEntry> trendBlockList;               // 趋势数据信息列表
+    QList<int>  trendIndexList;                     // 符合分辨率的趋势数据索引列表
+    IStorageBackend *backend;
+    PatientInfo patientInfo;                        // 病人信息
 };
 
 TrendTableModel::TrendTableModel(QObject *parent)
@@ -138,7 +141,6 @@ TrendTableModel::TrendTableModel(QObject *parent)
     QString groupPrefix = prefix + "TrendGroup";
     systemConfig.getNumValue(groupPrefix, index);
     loadCurParam(d_ptr->addModuleCheck(index));
-    updateData();
 }
 
 TrendTableModel::~TrendTableModel()
@@ -154,7 +156,7 @@ int TrendTableModel::columnCount(const QModelIndex &parent) const
 int TrendTableModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return MAX_ROW_COUNT;
+    return d_ptr->rowCount;
 }
 
 QVariant TrendTableModel::data(const QModelIndex &index, int role) const
@@ -415,7 +417,24 @@ void TrendTableModel::setHistoryDataPath(QString path)
 
 void TrendTableModel::setHistoryData(bool flag)
 {
+    // 动态内存释放
+    if (d_ptr->isHistory)
+    {
+        delete d_ptr->backend;
+        d_ptr->backend = NULL;
+    }
+
     d_ptr->isHistory = flag;
+    if (d_ptr->isHistory)
+    {
+        d_ptr->backend = StorageManager::open(d_ptr->historyDataPath + TREND_DATA_FILE_NAME, QIODevice::ReadWrite);
+        d_ptr->patientInfo = patientManager.getHistoryPatientInfo(d_ptr->historyDataPath + PATIENT_INFO_FILE_NAME);
+    }
+    else
+    {
+        d_ptr->backend = trendDataStorageManager.backend();
+        d_ptr->patientInfo = patientManager.getPatientInfo();
+    }
 }
 
 void TrendTableModel::updateData()
@@ -555,8 +574,8 @@ bool TrendTableModel::getDataTimeRange(unsigned &start, unsigned &end)
 {
     if (d_ptr->trendDataPack.count() != 0)
     {
-        start = d_ptr->trendDataPack.first()->time;
-        end = d_ptr->trendDataPack.last()->time;
+        start = d_ptr->trendBlockList.first().extraData;
+        end = d_ptr->trendBlockList.last().extraData;
         return true;
     }
     return false;
@@ -566,15 +585,17 @@ void TrendTableModel::displayDataTimeRange(unsigned &start, unsigned &end)
 {
     if (d_ptr->indexInfo.end <= d_ptr->indexInfo.start
             || d_ptr->indexInfo.end < 1
-            || d_ptr->trendDataPack.count() < d_ptr->indexInfo.end)
+            || d_ptr->trendBlockList.count() < d_ptr->indexInfo.end)
     {
         start = 0;
         end = 0;
         qDebug() << Q_FUNC_INFO << "Trend table print time wrong";
         return;
     }
-    start = d_ptr->trendDataPack.at(d_ptr->indexInfo.start)->time;
-    end = d_ptr->trendDataPack.at(d_ptr->indexInfo.end - 1)->time;
+    start = d_ptr->trendBlockList.at(
+                d_ptr->trendIndexList.at(d_ptr->indexInfo.start)).extraData;
+    end = d_ptr->trendBlockList.at(
+                d_ptr->trendIndexList.at(d_ptr->indexInfo.end - 1)).extraData;
 }
 
 void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
@@ -584,72 +605,56 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
     {
         return;
     }
-    IStorageBackend *backend;
-    PatientInfo patientInfo;
-    if (d_ptr->isHistory)
-    {
-        backend = StorageManager::open(d_ptr->historyDataPath + TREND_DATA_FILE_NAME, QIODevice::ReadOnly);
-        patientInfo = patientManager.getHistoryPatientInfo(d_ptr->historyDataPath + PATIENT_INFO_FILE_NAME);
-    }
-    else
-    {
-        backend = trendDataStorageManager.backend();
-        patientInfo = patientManager.getPatientInfo();
-    }
-    if (backend->getBlockNR() <= 0)
-    {
-        return;
-    }
 
     int startIndex = 0;
     int endIndex = 0;
 
     // 二分查找时间索引
     int lowPos = 0;
-    int highPos = d_ptr->trendDataPack.count() - 1;
+    int highPos = d_ptr->trendIndexList.count() - 1;
     int startPrintId = 0;
     while (lowPos <= highPos)
     {
         int midPos = (lowPos + highPos) / 2;
-        int timeDiff = qAbs(startTime - d_ptr->trendDataPack.at(midPos)->time);
+        int timeDiff = qAbs(startTime - d_ptr->trendBlockList.at(d_ptr->trendIndexList.at(midPos)).extraData);
 
-        if (startTime < d_ptr->trendDataPack.at(midPos)->time)
+        if (startTime < d_ptr->trendBlockList.at(d_ptr->trendIndexList.at(midPos)).extraData)
         {
             highPos = midPos - 1;
         }
-        else if (startTime > d_ptr->trendDataPack.at(midPos)->time)
+        else if (startTime > d_ptr->trendBlockList.at(d_ptr->trendIndexList.at(midPos)).extraData)
         {
             lowPos = midPos + 1;
         }
 
         if (timeDiff == 0 || lowPos > highPos)
         {
-            startIndex = d_ptr->trendDataPack.at(midPos)->index;
+            startIndex = d_ptr->trendIndexList.at(midPos);
             startPrintId = midPos;  // 获取趋势数据包中开始打印时刻的索引
             break;
         }
     }
 
     lowPos = 0;
-    highPos = d_ptr->trendDataPack.count() - 1;
+    highPos = d_ptr->trendIndexList.count() - 1;
     int endPrintId = 0;
     while (lowPos <= highPos)
     {
         int midPos = (lowPos + highPos) / 2;
-        int timeDiff = qAbs(endTime - d_ptr->trendDataPack.at(midPos)->time);
+        int timeDiff = qAbs(endTime - d_ptr->trendBlockList.at(d_ptr->trendIndexList.at(midPos)).extraData);
 
-        if (endTime < d_ptr->trendDataPack.at(midPos)->time)
+        if (endTime < d_ptr->trendBlockList.at(d_ptr->trendIndexList.at(midPos)).extraData)
         {
             highPos = midPos - 1;
         }
-        else if (endTime > d_ptr->trendDataPack.at(midPos)->time)
+        else if (endTime > d_ptr->trendBlockList.at(d_ptr->trendIndexList.at(midPos)).extraData)
         {
             lowPos = midPos + 1;
         }
 
         if (timeDiff == 0 || lowPos > highPos)
         {
-            endIndex = d_ptr->trendDataPack.at(midPos)->index;
+            endIndex = d_ptr->trendIndexList.at(midPos);
             endPrintId = midPos;  // 获取趋势数据包中结束打印时刻的索引
             break;
         }
@@ -662,9 +667,10 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
     printInfo.list = d_ptr->displayList;
     for (int i = startPrintId; i <= endPrintId; i++)
     {
-        printInfo.timestampEventMap[d_ptr->trendDataPack.at(i)->time] = d_ptr->trendDataPack.at(i)->status;
+        printInfo.timestampEventMap[d_ptr->trendBlockList.at(d_ptr->trendIndexList.at(i)).extraData] = d_ptr->trendBlockList.at(
+                    d_ptr->trendIndexList.at(i)).type;
     }
-    RecordPageGenerator *gen = new TrendTablePageGenerator(backend, printInfo, patientInfo);
+    RecordPageGenerator *gen = new TrendTablePageGenerator(d_ptr->backend, printInfo, d_ptr->patientInfo);
     if (recorderManager.isPrinting() && !d_ptr->isWait)
     {
         if (gen->getPriority() <= recorderManager.getCurPrintPriority())
@@ -689,9 +695,9 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
     }
 }
 
-const QList<TrendDataPackage *> &TrendTableModel::getTrendDataPack()
+const QVector<BlockEntry> &TrendTableModel::getBlockEntryList()
 {
-    return d_ptr->trendDataPack;
+    return d_ptr->trendBlockList;
 }
 
 unsigned TrendTableModel::getColumnCount() const
@@ -743,7 +749,8 @@ TrendTableModelPrivate::TrendTableModelPrivate()
       waitTimerId(-1),
       isWait(false),
       timeoutNum(0),
-      generator(NULL)
+      generator(NULL),
+      backend(NULL)
 {
     orderMap.clear();
 
@@ -812,60 +819,93 @@ TrendTableModelPrivate::TrendTableModelPrivate()
 
 void TrendTableModelPrivate::getTrendData()
 {
-    // 获取趋势数据
-    IStorageBackend *backend;
-    if (isHistory)
-    {
-        backend = StorageManager::open(historyDataPath + TREND_DATA_FILE_NAME, QIODevice::ReadOnly);
-    }
-    else
-    {
-        backend = trendDataStorageManager.backend();
-    }
-    QByteArray data;
-    TrendDataSegment *dataSeg;
-    int blockNum = backend->getBlockNR();
+    trendBlockList.clear();
+    trendBlockList = backend->getBlockEntryList();
+
+    trendIndexList.clear();
     unsigned interval = TrendDataSymbol::convertValue(timeInterval);
-
-    // 清空趋势数据缓存
-    qDeleteAll(trendDataPack);
-    trendDataPack.clear();
-
-    // 开始装载趋势数据
-    int count = 0;
     eventList.clear();
-    for (quint32 i = 0; i < static_cast<quint32>(blockNum); i++)
+    int count = 0;
+    for (int i = 0; i < trendBlockList.count(); i++)
     {
-        // 把每一块存储的趋势数据读取出来放入data缓存中,并以TrendDataSegment格式读取
-        data = backend->getBlockData(i);
-        dataSeg = reinterpret_cast<TrendDataSegment *>(data.data());
+        BlockEntry block = trendBlockList.at(i);
 
         // 筛选数据：剔除不能整除时间间隔的且没有报警状态的数据包
-        unsigned timeStamp = dataSeg->timestamp;
-        unsigned status = dataSeg->status;
+        unsigned timeStamp = block.extraData;
+        unsigned status = block.type;
         if (timeInterval != RESOLUTION_RATIO_NIBP && timeStamp % interval != 0)
         {
             if (!(status & (TrendDataStorageManager::CollectStatusAlarm
-                       |TrendDataStorageManager::CollectStatusNIBP
-                       |TrendDataStorageManager::CollectStatusFreeze
-                       |TrendDataStorageManager::CollectStatusPrint
-                       |TrendDataStorageManager::CollectStatusCOResult)))
+                            | TrendDataStorageManager::CollectStatusNIBP
+                            | TrendDataStorageManager::CollectStatusFreeze
+                            | TrendDataStorageManager::CollectStatusPrint
+                            | TrendDataStorageManager::CollectStatusCOResult)))
             {
                 continue;
             }
         }
 
-        // 选择nibp选项时只筛选触发nibp测量的数据
+        // 选择nibp选项时只筛选触发NIBP测量的数据
         if (timeInterval == RESOLUTION_RATIO_NIBP && !(status & TrendDataStorageManager::CollectStatusNIBP))
         {
             continue;
         }
 
+        trendIndexList.append(i);
+
+        // 更新生理报警事件列表
+        if ((status & TrendDataStorageManager::CollectStatusAlarm)
+                || (status & TrendDataStorageManager::CollectStatusPrint)
+                || (status & TrendDataStorageManager::CollectStatusFreeze)
+                || (status & TrendDataStorageManager::CollectStatusNIBP) )
+        {
+            eventList.append(count);
+        }
+        count++;
+
+        indexInfo.total = count;
+    }
+}
+
+void TrendTableModelPrivate::updateIndexInfo()
+{
+    int count = trendIndexList.count() - 1;
+    int coef = count / COLUMN_COUNT;
+    int remainder = count % COLUMN_COUNT;
+    indexInfo.start = coef * COLUMN_COUNT;
+    indexInfo.end = indexInfo.start + remainder + 1;
+    indexInfo.event = -1;
+    indexInfo.total = count + 1;
+}
+
+void TrendTableModelPrivate::loadTrendData()
+{
+    // 索引超出范围，不再装载数据，直接退出
+    if (indexInfo.total < indexInfo.end)
+    {
+        return;
+    }
+
+    QByteArray data;
+    TrendDataSegment *dataSeg;
+    // 清空趋势数据缓存
+    qDeleteAll(trendDataPack);
+    trendDataPack.clear();
+    for (int n = indexInfo.start; n < indexInfo.end; n++)
+    {
+        // 把每一块存储的趋势数据读取出来放入data缓存中,并以TrendDataSegment格式读取
+        data = backend->getBlockData(trendIndexList.at(n));
+        dataSeg = reinterpret_cast<TrendDataSegment *>(data.data());
+
+        // 筛选数据：剔除不能整除时间间隔的且没有报警状态的数据包
+        unsigned timeStamp = dataSeg->timestamp;
+        unsigned status = dataSeg->status;
+
         // 把dataSeg中的数据加载到pack中
         TrendDataPackage *pack = new TrendDataPackage;
         pack->time = timeStamp;
         pack->co2Baro = dataSeg->co2Baro;
-        for (int j = 0; j < dataSeg->trendValueNum; j ++)
+        for (int j = 0; j < dataSeg->trendValueNum; j++)
         {
             // 非nibp事件的nibp参数强制显示为无效数据
             SubParamID id = static_cast<SubParamID>(dataSeg->values[j].subParamId);
@@ -884,52 +924,13 @@ void TrendTableModelPrivate::getTrendData()
         }
         pack->status = status;
         pack->alarmFlag = dataSeg->eventFlag;
-        pack->index = i;
+        pack->index = trendIndexList.at(n);
         trendDataPack.append(pack);
-
-        // 更新生理报警事件列表
-        if ((pack->status & TrendDataStorageManager::CollectStatusAlarm)
-                || (pack->status & TrendDataStorageManager::CollectStatusPrint)
-                || (pack->status & TrendDataStorageManager::CollectStatusFreeze)
-                || (pack->status & TrendDataStorageManager::CollectStatusNIBP) )
-        {
-            eventList.append(count);
-        }
-        count++;
-    }
-
-    // 如果是历史数据，删除备份区数据
-    if (isHistory)
-    {
-        delete backend;
-        backend = NULL;
-    }
-
-    indexInfo.total = count;
-}
-
-void TrendTableModelPrivate::updateIndexInfo()
-{
-    int count = trendDataPack.count() - 1;
-    int coef = count / COLUMN_COUNT;
-    int remainder = count % COLUMN_COUNT;
-    indexInfo.start = coef * COLUMN_COUNT;
-    indexInfo.end = indexInfo.start + remainder + 1;
-    indexInfo.event = -1;
-    indexInfo.total = count + 1;
-}
-
-void TrendTableModelPrivate::loadTrendData()
-{
-    // 索引超出范围，不再装载数据，直接退出
-    if (indexInfo.total < indexInfo.end)
-    {
-        return;
     }
 
     // 装载趋势表头数据
     colHeadList.clear();
-    for (int i = indexInfo.start; i < indexInfo.end; i++)
+    for (int i = 0; i < trendDataPack.count(); i++)
     {
         TrendDataPackage *pack = trendDataPack.at(i);
 
@@ -977,7 +978,7 @@ void TrendTableModelPrivate::loadTrendData()
 
     // 装载趋势表体数据
     tableDataList.clear();
-    for (int i = indexInfo.start; i < indexInfo.end; i++)
+    for (int i = 0; i < trendDataPack.count(); i++)
     {
         TrendDataPackage *pack = trendDataPack.at(i);
 

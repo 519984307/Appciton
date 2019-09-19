@@ -676,21 +676,11 @@ void StorageFile::getBlockInfo(quint32 index, BlockEntry &info)
 /***************************************************************************************************
  * getBlockData : get block entry list
  **************************************************************************************************/
-void StorageFile::getBlockEntryList(QList<BlockEntry> &entryList)
+QVector<BlockEntry> StorageFile::getBlockEntryList()
 {
     Q_D(StorageFile);
-    if (!d->isValid)
-    {
-        return;
-    }
-
     QMutexLocker locker(&d->entryListMutex);
-    entryList.clear();
-    int count = d->blockEntryList.count();
-    for (int i = 0; i < count; ++i)
-    {
-        entryList.append(d->blockEntryList.at(i));
-    }
+    return d->blockEntryList;
 }
 
 /***************************************************************************************************

@@ -77,6 +77,8 @@ public:
     bool isStopRun;
 
     QList<QByteArray> trendCacheBuff;       // NIBP测量趋势数据到NIBP报警状态之间的数据缓存
+    QList<quint32> trendCacheTypeBuff;
+    QList<quint32> trendCacheExtraBuff;
     bool checkPendingNIBPAlarm;             // 等待检测NIBP报警
     unsigned nibpMeasureTime;               // NIBP测量时间
 };
@@ -403,7 +405,9 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
         // 将缓存中的数据写入文件
         while (d->trendCacheBuff.count())
         {
-            addData(0, d->trendCacheBuff.takeFirst());
+            addData(d->trendCacheTypeBuff.takeFirst(),
+                    d->trendCacheBuff.takeFirst(),
+                    d->trendCacheExtraBuff.takeFirst());
         }
         return;
     }
@@ -413,10 +417,12 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
     {
         while (d->trendCacheBuff.count())
         {
-            addData(0, d->trendCacheBuff.takeFirst(), t);
+            addData(d->trendCacheTypeBuff.takeFirst(),
+                    d->trendCacheBuff.takeFirst(),
+                    d->trendCacheExtraBuff.takeFirst());
         }
         // 把最新这条趋势数据加到文件的末尾
-        addData(0, content, t);
+        addData(dataStatus, content, t);
         d->checkPendingNIBPAlarm = false;
         return;
     }
@@ -425,10 +431,12 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
     if (d->checkPendingNIBPAlarm)
     {
         d->trendCacheBuff.append(content);
+        d->trendCacheExtraBuff.append(t);
+        d->trendCacheTypeBuff.append(dataStatus);
     }
     else
     {
-        addData(0, content, t);
+        addData(dataStatus, content, t);
     }
 }
 
