@@ -290,11 +290,7 @@ const char *ECGOneShotAlarm::toString(int id)
  *************************************************************************************************/
 bool ECGOneShotAlarm::isAlarmEnable(int id)
 {
-    if ((id >= ECG_ONESHOT_ARR_ASYSTOLE) && (id <= ECG_ONESHOT_ARR_VFIBVTAC))
-    {
-        return alarmConfig.isLimitAlarmEnable(SUB_PARAM_HR_PR);
-    }
-
+    Q_UNUSED(id)
     return true;
 }
 
