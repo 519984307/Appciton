@@ -20,6 +20,7 @@
 #include "SystemManager.h"
 #include "O2ParamInterface.h"
 #include "RunningStatusBar.h"
+#include "AlarmConfig.h"
 
 RESPDupParam *RESPDupParam::_selfObj = NULL;
 
@@ -126,7 +127,14 @@ void RESPDupParam::isAlarm(bool isAlarm, bool isLimit)
 
     if (NULL != _trendWidget)
     {
-        _trendWidget->isAlarm(_isAlarm);
+        if (!alarmConfig.isLimitAlarmEnable(SUB_PARAM_RR_BR))
+        {
+            _trendWidget->isAlarm(false);
+        }
+        else
+        {
+            _trendWidget->isAlarm(_isAlarm);
+        }
         _isAlarm = false;
     }
 }

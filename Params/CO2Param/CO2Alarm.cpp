@@ -341,13 +341,7 @@ bool CO2OneShotAlarm::isAlarmEnable(int id)
         return true;
     }
 
-    int v = 1;
-    if (id == CO2_ONESHOT_ALARM_APNEA)
-    {
-        v = co2Param.getAwRRSwitch();
-    }
-
-    return (static_cast<bool>(v) && co2Param.isEnabled() && co2Param.getCO2Switch());
+    return (co2Param.isEnabled() && co2Param.getCO2Switch());
 }
 
 /**************************************************************************************************

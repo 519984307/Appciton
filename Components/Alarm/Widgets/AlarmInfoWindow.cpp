@@ -24,10 +24,10 @@
 #include "Alarm.h"
 #include "EventWindow.h"
 #include "WindowManager.h"
+#include "ThemeManager.h"
 
 #define PATH_ICON_UP "/usr/local/nPM/icons/ArrowUp.png"
 #define PATH_ICON_DOWN "/usr/local/nPM/icons/ArrowDown.png"
-#define PATH_ICON_CHECKED "/usr/local/nPM/icons/Checked.png"
 #define LISTVIEW_MAX_VISIABLE_SIZE 6    // 一页最大显示数
 
 class AlarmInfoWindowPrivate
@@ -387,7 +387,7 @@ void AlarmInfoWindowPrivate::updateAcknowledgeFlag()
                 QModelIndex index = listModel->index(row, 0);
                 if (index.isValid())
                 {
-                    listModel->setData(index, QIcon(PATH_ICON_CHECKED), Qt::DecorationRole);
+                    listModel->setData(index, themeManger.getIcon(ThemeManager::IconChecked, QSize(24, 24)) , Qt::DecorationRole);
                 }
             }
             else if (nodeList.at(i).alarmType == ALARM_TYPE_PHY)
@@ -395,7 +395,7 @@ void AlarmInfoWindowPrivate::updateAcknowledgeFlag()
                 QModelIndex index = dataModel->index(row, 0);
                 if (index.isValid())
                 {
-                    dataModel->setData(index, QIcon(PATH_ICON_CHECKED), Qt::DecorationRole);
+                    dataModel->setData(index, themeManger.getIcon(ThemeManager::IconChecked, QSize(24, 24)), Qt::DecorationRole);
                 }
             }
         }

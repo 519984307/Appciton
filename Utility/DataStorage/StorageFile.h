@@ -102,7 +102,7 @@ public:
     void getBlockInfo(quint32 index, BlockEntry &info);
 
     // override
-    void getBlockEntryList(QList<BlockEntry> &entryList);
+    QVector<BlockEntry> getBlockEntryList();
 
     // override
     quint32 readBlockData(quint32 index, char *data, quint32 len);

@@ -163,20 +163,6 @@ public:
 
     void handleSelfTestResult(unsigned selfTestResult);
 
-    /**
-     * @brief getHrSourceTypeFromId  从参数id转换获取hr来源类型
-     * @param id  参数id
-     * @return hr来源类型
-     */
-   static HRSourceType getHrSourceTypeFromId(ParamID id);
-
-    /**
-     * @brief getIdFromHrSourceType  从hr来源类型转换获取参数id
-     * @param type hr来源类型
-     * @return 参数id
-     */
-    static ParamID getIdFromHrSourceType(HRSourceType type);
-
 public:
     enum ECGTimerAction
     {

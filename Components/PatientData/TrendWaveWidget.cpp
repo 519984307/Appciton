@@ -862,7 +862,7 @@ void TrendWaveWidget::_trendLayout()
 void TrendWaveWidget::_getTrendData()
 {
     trendBlockList.clear();
-    _backend->getBlockEntryList(trendBlockList);
+    trendBlockList = _backend->getBlockEntryList();
 }
 
 void TrendWaveWidget::_initWaveSubWidget()
@@ -1074,7 +1074,7 @@ void TrendWaveWidget::_loadEventInfoList()
         backend = eventStorageManager.backend();
     }
     eventBlockList.clear();
-    backend->getBlockEntryList(eventBlockList);
+    eventBlockList = backend->getBlockEntryList();
 
     if ((_historyDataPath != "") && _isHistory)
     {
