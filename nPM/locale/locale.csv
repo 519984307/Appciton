@@ -1747,3 +1747,4 @@ SUNTECH_NIBP,Suntech Nibp,Suntech Nibp
 BLM_CO2,BLM CO₂,BLM CO₂
 MASIMO_CO2,Masimo CO₂,Masimo CO₂
 TouchCrosshairToCalibrate,触摸十字线校准,Touch crosshair to calibrate
+ChangeTime,更改系统时间将会新建病人，是否继续？,"Change system time will create new patients,Whether to continue?"
