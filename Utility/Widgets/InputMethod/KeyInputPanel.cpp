@@ -19,6 +19,9 @@
 #include <QIcon>
 #include <QPainter>
 #include <QColorGroup>
+#include "ThemeManager.h"
+
+#define ICON_SIZE 32
 
 class KeyInputPanelPrivate
 {
@@ -620,7 +623,7 @@ KeyInputPanel::KeyInputPanel(KeyType type, bool isShowDecimalPoint)
                 if (r <= 2)
                 {
                     key->setButtonStyle(Button::ButtonIconOnly);
-                    key->setIconSize(QSize(100, 100));
+                    key->setIconSize(QSize(ICON_SIZE, ICON_SIZE));
                 }
                 switch (r)
                 {
@@ -659,7 +662,7 @@ KeyInputPanel::KeyInputPanel(KeyType type, bool isShowDecimalPoint)
                         break;
                     }
                     key->setButtonStyle(Button::ButtonIconOnly);
-                    key->setIconSize(QSize(100, 100));
+                    key->setIconSize(QSize(ICON_SIZE, ICON_SIZE));
                     key->setIcon(QIcon("/usr/local/nPM/icons/blank.png"));
                     connect(key, SIGNAL(clicked()), this, SLOT(onBlankClicked()));
                     break;
