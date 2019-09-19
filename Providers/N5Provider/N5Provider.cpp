@@ -445,7 +445,7 @@ void N5Provider::reconnected(void)
 void N5Provider::sendDisconnected()
 {
     AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
-    if (alarmSource)
+    if (alarmSource && !alarmSource->isAlarmed(NIBP_ONESHOT_ALARM_COMMUNICATION_STOP))
     {
         alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_SEND_COMMUNICATION_STOP, true);
     }

@@ -401,7 +401,7 @@ void PRT48Provider::reconnected()
 void PRT48Provider::sendDisconnected()
 {
     AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_PRINT);
-    if (alarmSource)
+    if (alarmSource && !alarmSource->isAlarmed(PRINT_ONESHOT_ALARM_COMMUNICATION_STOP))
     {
         alarmSource->setOneShotAlarm(PRINT_ONESHOT_ALARM_SEND_COMMUNICATION_STOP, true);
     }

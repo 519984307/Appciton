@@ -1018,7 +1018,7 @@ void E5Provider::reconnected(void)
 void E5Provider::sendDisconnected()
 {
     AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_ECG);
-    if (alarmSource)
+    if (alarmSource && !alarmSource->isAlarmed(ECG_ONESHOT_ALARM_COMMUNICATION_STOP))
     {
         alarmSource->setOneShotAlarm(ECG_ONESHOT_ALARM_SEND_COMMUNICATION_STOP, true);
     }
