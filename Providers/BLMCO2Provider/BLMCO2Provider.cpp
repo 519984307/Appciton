@@ -150,7 +150,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
         break;
 
     case GEN_VALS:    //一些其他附加信息值
-        value = (packet[14] == 0xFF) ? 0 : packet[14];  // 当获取不到CO2数据时候将数据置为0
+        value = (packet[14] == 0xFF) ? InvData() : packet[14];  // 呼吸率为255时，仍为无数据，应被丢弃
         co2Param.setRR(value);
 
         value = packet[18];
@@ -168,7 +168,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
                 int val = tempStr.toInt();
                 if ((co2Param.getEtCO2MinValue() <= val) && (val <= co2Param.getEtCO2MaxValue()))
                 {
-                    value = (packet[14] == 0xFF) ? 0 : packet[14];
+                    value = (packet[14] == 0xFF) ? InvData() : packet[14];
                     co2Param.setFiCO2(_fico2Value);
                     co2Param.setEtCO2(_etco2Value);
                     co2Param.setBR(value);
@@ -182,7 +182,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
             }
             else
             {
-                value = (packet[14] == 0xFF) ? 0 : packet[14];
+                value = (packet[14] == 0xFF) ? InvData() : packet[14];
                 co2Param.setFiCO2(_fico2Value);
                 co2Param.setEtCO2(_etco2Value);
                 co2Param.setBR(value);
