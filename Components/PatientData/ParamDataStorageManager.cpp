@@ -527,3 +527,9 @@ void ParamDataStorageManager::getRecentParamData(ParamDataStorageManager::ParamB
     QMutexLocker locker(&d->paramBufMutex);
     memcpy(reinterpret_cast<char *>(&parambuf), reinterpret_cast<char *>(&d->lastParamBuf), sizeof(ParamBuf));
 }
+
+void ParamDataStorageManager::newPatientHandle()
+{
+    trendCache.clearTrendCache();
+    trendCache.stopDataCollect(1);
+}
