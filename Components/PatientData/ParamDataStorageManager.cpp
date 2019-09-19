@@ -533,5 +533,3 @@ void ParamDataStorageManager::newPatientHandle()
     trendCache.clearTrendCache();
     trendCache.stopDataCollect(1);
 }
-
-
