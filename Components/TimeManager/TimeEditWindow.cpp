@@ -27,6 +27,8 @@
 #include "NIBPCountdownTime.h"
 #include "NIBPParam.h"
 #include "TrendDataStorageManager.h"
+#include "MessageBox.h"
+#include "WindowManager.h"
 
 class TimeEditWindowPrivate
 {
@@ -320,15 +322,20 @@ void TimeEditWindow::hideEvent(QHideEvent *ev)
     QDateTime dt = d_ptr->getSetupTime();
     if (d_ptr->oldTime != dt.toTime_t())
     {
-        trendDataStorageManager.stopPeriodRun();
-        d_ptr->setSysTime();
-        systemTick.resetLastTime();
-        patientManager.newPatient();
-        if (nibpParam.getMeasurMode() == NIBP_MODE_STAT)
+        MessageBox msg(trs("Prompt"), trs("ChangeTime"), true, true);
+        windowManager.showWindow(&msg, WindowManager::ShowBehaviorModal);
+        if (msg.result() == QDialog::Accepted)
         {
-            nibpCountdownTime.timeChange(true);
+            trendDataStorageManager.stopPeriodRun();
+            d_ptr->setSysTime();
+            systemTick.resetLastTime();
+            patientManager.newPatient();
+            if (nibpParam.getMeasurMode() == NIBP_MODE_STAT)
+            {
+                nibpCountdownTime.timeChange(true);
+            }
+            trendDataStorageManager.restartPeriodRun();
         }
-        trendDataStorageManager.restartPeriodRun();
     }
     Dialog::hideEvent(ev);
 }
