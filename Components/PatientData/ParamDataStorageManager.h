@@ -48,7 +48,6 @@ protected:
     /* override */
     void newPatientHandle();
 
-
 private:
     Q_DECLARE_PRIVATE(ParamDataStorageManager)
     ParamDataStorageManager();
