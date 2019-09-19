@@ -229,7 +229,7 @@ void S5Provider::reconnected(void)
 void S5Provider::sendDisconnected()
 {
     AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SPO2);
-    if (alarmSource)
+    if (alarmSource && !alarmSource->isAlarmed(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP))
     {
         alarmSource->setOneShotAlarm(SPO2_ONESHOT_ALARM_SEND_COMMUNICATION_STOP, true);
     }
