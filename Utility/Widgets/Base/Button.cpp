@@ -33,6 +33,8 @@ public:
     int m_borderWidth;
     int m_borderRadius;
     bool m_press;
+
+    void drawIcon(QPainter &painter, QIcon &ico, QRect iconRect, QIcon::Mode icoMode);
 };
 
 Button::Button(const QString &text, const QIcon &icon, QWidget *parent)
@@ -221,7 +223,7 @@ void Button::paintEvent(QPaintEvent *ev)
     case ButtonIconOnly:
     {
         QRect iconRect = QStyle::alignedRect(layoutDirection(), Qt::AlignCenter, iconSize(), rect);
-        ico.paint(&painter, iconRect, Qt::AlignCenter, icoMode);
+        d_ptr->drawIcon(painter, ico, iconRect, icoMode);
     }
     break;
     case ButtonTextOnly:
@@ -233,7 +235,7 @@ void Button::paintEvent(QPaintEvent *ev)
     {
         QRect iconRect = QStyle::alignedRect(layoutDirection(), Qt::AlignTop | Qt::AlignHCenter, iconSize(), rect.adjusted(0,
                                              PADDING, 0, 0));
-        ico.paint(&painter, iconRect, Qt::AlignCenter, icoMode);
+        d_ptr->drawIcon(painter, ico, iconRect, icoMode);
 
         QRect textRect = rect;
         textRect.setTop(iconRect.bottom() + ICON_TEXT_PADDING);
@@ -245,7 +247,7 @@ void Button::paintEvent(QPaintEvent *ev)
     {
         QRect iconRect = QStyle::alignedRect(layoutDirection(), Qt::AlignVCenter | Qt::AlignLeft, iconSize(),
                                              rect.adjusted(PADDING, 0, 0, 0));
-        ico.paint(&painter, iconRect, Qt::AlignCenter, icoMode);
+        d_ptr->drawIcon(painter, ico, iconRect, icoMode);
 
         QRect textRect = rect;
         textRect.setLeft(iconRect.right() + ICON_TEXT_PADDING);
@@ -298,4 +300,18 @@ void Button::keyReleaseEvent(QKeyEvent *ev)
         break;
     }
     d_ptr->m_press = false;
+}
+
+void ButtonPrivate::drawIcon(QPainter &painter, QIcon &ico, QRect iconRect, QIcon::Mode icoMode)
+{
+    if (!ico.isNull())
+    {
+        QPixmap pix = ico.pixmap(iconRect.size(), icoMode);
+        QImage tmp(iconRect.size(), QImage::Format_ARGB32_Premultiplied);
+        QPainter drawImgPainter(&tmp);
+        drawImgPainter.setCompositionMode(QPainter::CompositionMode_Source);
+        drawImgPainter.drawPixmap(0, 0, iconRect.width(), iconRect.height(), pix);
+        drawImgPainter.end();
+        painter.drawImage(iconRect, tmp);
+    }
 }
