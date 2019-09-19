@@ -269,6 +269,7 @@ void TableViewItemDelegate::drawDecoration(QPainter *painter, const QStyleOption
     Q_UNUSED(option)
     if (!pixmap.isNull())
     {
+        // 以预乘的格式创建image，目的是绘画图前前进行alpha预乘，使图像纹理能正常进行线性插值
         QImage img(rect.size(), QImage::Format_ARGB32_Premultiplied);
         QPainter imagePainter(&img);
         imagePainter.setCompositionMode(QPainter::CompositionMode_Source);

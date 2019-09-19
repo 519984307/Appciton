@@ -34,6 +34,13 @@ public:
     int m_borderRadius;
     bool m_press;
 
+    /**
+     * @brief drawIcon 以转换为Image方式绘画图标
+     * @param painter
+     * @param ico
+     * @param iconRect
+     * @param icoMode
+     */
     void drawIcon(QPainter &painter, QIcon &ico, QRect iconRect, QIcon::Mode icoMode);
 };
 
@@ -307,8 +314,10 @@ void ButtonPrivate::drawIcon(QPainter &painter, QIcon &ico, QRect iconRect, QIco
     if (!ico.isNull())
     {
         QPixmap pix = ico.pixmap(iconRect.size(), icoMode);
+        // 以预乘的格式创建image，目的是绘画图前前进行alpha预乘，使图像纹理能正常进行线性插值
         QImage tmp(iconRect.size(), QImage::Format_ARGB32_Premultiplied);
         QPainter drawImgPainter(&tmp);
+        // 以Source的融合方式，使透明且重叠部分使用源图像
         drawImgPainter.setCompositionMode(QPainter::CompositionMode_Source);
         drawImgPainter.drawPixmap(0, 0, iconRect.width(), iconRect.height(), pix);
         drawImgPainter.end();
