@@ -40,7 +40,7 @@ void SoftwareVersionWindow::layoutExec()
     label->setText(softwaveVersion);
     glayout->addWidget(label, 0, 2, Qt::AlignLeft | Qt::AlignHCenter);
 
-    label = new QLabel(QString("%1:").arg(trs("SystemSoftwareVersion")));
+    label = new QLabel(QString("%1:").arg(trs("SoftwareVersion")));
     glayout->addWidget(label, 1, 1, Qt::AlignLeft | Qt::AlignHCenter);
     label = new QLabel;
     softwaveVersion = QString(GIT_VERSION);
