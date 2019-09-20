@@ -44,6 +44,7 @@ void SystemStatusBarWidget::hideIcon(SystemIconLabel iconlabel)
     {
         l->setPixmap(_icons[SYSTEM_ICON_NONE]);
         _iconMap.value(iconlabel)->setFocusPolicy(Qt::NoFocus);
+        _iconMap.value(iconlabel)->setEnabled(false);
     }
 }
 
