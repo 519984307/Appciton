@@ -831,18 +831,23 @@ ServiceSystem,服务系统,Service System
 ServiceVersion,版本,Version
 ServiceCPUTemp,CPU温度,CPU Temp
 iDMVersion,iDM,iDM
-ECGVersion,ECG,ECG
+ECGSwVersion,ECG软件版本,ECG Software Version
+ECGHwVersion,ECG硬件版本,ECG Hardware Version
 ECGBootloader,ECG Bootloader,ECG Bootloader
-NIBPVersion,NIBP,NIBP
+NIBPSwVersion,NIBP软件版本,NIBP Software Version
+NIBPHwVersion,NIBP硬件版本,NIBP Hardware Version
 NIBPBootloader,NIBP Bootloader,NIBP Bootloader
-NIBPSlaveVersion,NIBP从片,NIBP Slave
+NIBPSlaveSwVersion,NIBP从片软件版本,NIBP Slave Software Version
 NIBPSlaveBootloader,NIBP从片Bootloader,NIBP Slave Bootloader
-SPO2Version,SpO₂,SpO₂
+SPO2SwVersion,SpO₂软件版本,SpO₂ Software Version
+SPO2HwVersion,SpO₂硬件版本,SpO₂ Hardware Version
 SPO2Bootloader,SpO₂ Bootloader,SpO₂ Bootloader
-TEMPVersion,Temp,Temp
+TEMPSwVersion,Temp软件版本,Temp Software Version
+TEMPHwVersion,Temp硬件版本,Temp Hardware Version
 TEMPBootloader,Temp Bootloader,Temp Bootloader
 iDMBoardVersion,iDMBoard,iDMBoard
-PRT48Version,PRT48,PRT48
+PRT48SwVersion,PRT48软件版本,PRT48 Software Version
+PRT48HwVersion,PRT48硬件版本,PRT48 Hardware Version
 PRT48Bootloader,PRT48 Bootloader,PRT48 Bootloader
 SourceOfCO2,来源CO₂,Source of CO₂
 AutoOfCO2,自动(CO₂),Auto(CO₂)
@@ -1334,7 +1339,7 @@ MACAddress,物理地址(MAC),MAC Address
 ElectronicSerialNumber,电子序列号,Electronic Serial Number
 SetElectronicSerialNumber,设置电子序列号,Set Electronic Serial Number
 MonitorInfoMenuDesc,监护仪信息菜单设置,Monitor Info
-StopNeoNIBPMeasure,禁止NIBP新生儿测量,Close Neonatal NIBP Measurement
+NeoNIBPMeasure,NIBP新生儿测量,Neo. NIBP Measurement
 NIBPMaintainMenu,NIBP维护,NIBP Maintain
 NIBPMaintain,NIBP维护,NIBP Maintain
 NIBPMaintainMenuDesc,NIBP维护,NIBP Maintain
@@ -1359,7 +1364,8 @@ ReleaseVersion,发布版本,Release Version
 PowerManagerSoftwareVersion,电源管理软件版本,Power Manager Software Version
 Uboot,系统引导文件,Uboot
 Kernel,内核,Kernel
-SystemboardModule,系统板,System Board Module
+SystemBoardSwVersion,系统板软件版本,System Board Software Version
+SystemBoardHwVersion,系统板硬件版本,System Board Hardwave Version
 SystemboardBootloader,系统板Bootloader,System Board Bootloader
 RecorderModule,记录模块,Recorder Module
 ECGAlgorithmType,ECG算法类型,ECG Algorithm Type

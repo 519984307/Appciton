@@ -168,7 +168,14 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
                 int val = tempStr.toInt();
                 if ((co2Param.getEtCO2MinValue() <= val) && (val <= co2Param.getEtCO2MaxValue()))
                 {
-                    value = (packet[14] == 0xFF) ? InvData() : packet[14];
+                    if (_status.noBreath)
+                    {
+                        value = (packet[14] == 0xFF) ? 0 : packet[14];
+                    }
+                    else
+                    {
+                        value = (packet[14] == 0xFF) ? InvData() : packet[14];
+                    }
                     co2Param.setFiCO2(_fico2Value);
                     co2Param.setEtCO2(_etco2Value);
                     co2Param.setBR(value);
@@ -182,7 +189,14 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
             }
             else
             {
-                value = (packet[14] == 0xFF) ? InvData() : packet[14];
+                if (_status.noBreath)
+                {
+                    value = (packet[14] == 0xFF) ? 0 : packet[14];
+                }
+                else
+                {
+                    value = (packet[14] == 0xFF) ? InvData() : packet[14];
+                }
                 co2Param.setFiCO2(_fico2Value);
                 co2Param.setEtCO2(_etco2Value);
                 co2Param.setBR(value);
