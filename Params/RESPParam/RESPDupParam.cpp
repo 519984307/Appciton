@@ -127,7 +127,7 @@ void RESPDupParam::isAlarm(bool isAlarm, bool isLimit)
 
     if (NULL != _trendWidget)
     {
-        if (!alarmConfig.isLimitAlarmEnable(SUB_PARAM_RR_BR))
+        if (!alarmConfig.isLimitAlarmEnable(SUB_PARAM_RR_BR) || _rrValue == InvData() || _brValue == InvData())
         {
             _trendWidget->isAlarm(false);
         }
