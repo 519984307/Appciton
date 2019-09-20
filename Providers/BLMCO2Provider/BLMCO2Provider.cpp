@@ -170,7 +170,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
                 {
                     if (_status.noBreath)
                     {
-                        value = 0;
+                        value = (packet[14] == 0xFF) ? 0 : packet[14];
                     }
                     else
                     {
@@ -191,7 +191,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
             {
                 if (_status.noBreath)
                 {
-                    value = 0;
+                    value = (packet[14] == 0xFF) ? 0 : packet[14];
                 }
                 else
                 {
