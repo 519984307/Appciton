@@ -58,18 +58,13 @@ void NIBPParam::_patientTypeChangeSlot(PatientType type)
     {
         return;
     }
-    if (type == PATIENT_TYPE_NEO && enable)
+    if (type == PATIENT_TYPE_NEO && !enable)
     {
         _isNeoDisable = true;
         errorDisable();
     }
     else if (_isNeoDisable && !_isNIBPDisable)  // 如果只是新生儿禁用则恢复正常状态。
     {
-        AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
-        if (alarmSource)
-        {
-            alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_DISABLE, false);
-        }
         _isNeoDisable = false;
         switchState(NIBP_MONITOR_STANDBY_STATE);
         handleNIBPEvent(NIBP_EVENT_MODULE_RESET, NULL, 0);                        // 恢复禁用状态
@@ -99,7 +94,7 @@ void NIBPParam::initParam(void)
     }
     int enable = 0;
     machineConfig.getModuleInitialStatus("NIBPNEOMeasureEnable", reinterpret_cast<bool *>(&enable));
-    if (patientManager.getType() == PATIENT_TYPE_NEO && enable)
+    if (patientManager.getType() == PATIENT_TYPE_NEO && !enable)
     {
         _isNeoDisable = true;
         errorDisable();
@@ -133,12 +128,6 @@ void NIBPParam::initParam(void)
 void NIBPParam::errorDisable(void)
 {
     handleNIBPEvent(NIBP_EVENT_MODULE_ERROR, NULL, 0);
-    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
-    if (alarmSource)
-    {
-        alarmSource->clear();
-        alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_DISABLE, true);
-    }
 }
 
 void NIBPParam::setConnected(bool isConnected)
@@ -656,7 +645,6 @@ void NIBPParam::connectedFlag(bool flag)
         if (alarmSource)
         {
             alarmSource->clear();
-            alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_DISABLE, _isNIBPDisable);
             alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_COMMUNICATION_STOP, true);
         }
         _connectedFlag = false;
@@ -740,13 +728,13 @@ void NIBPParam::setText(void)
     {
         if (nibpParam.curStatusType() == NIBP_MONITOR_ERROR_STATE)
         {
-            if (_CalibrateState)
+            if (_isNIBPDisable)
             {
                 _trendWidget->showText(trs("NIBPModule") + "\n" + trs("NIBPDisable"));
             }
             else
             {
-                _trendWidget->showText(trs("NIBPModule") + "\n" + trs("NIBPNotCalibrate"));
+                 _trendWidget->showText(trs("Neonate") + "\n" + trs("NIBPStop"));
             }
         }
         else
@@ -1481,16 +1469,6 @@ bool NIBPParam::getNeoDisState()
     return _isNeoDisable;
 }
 
-void NIBPParam::setCalibrateState(bool flag)
-{
-    _CalibrateState = flag;
-}
-
-bool NIBPParam::isCalibrateState()
-{
-    return _CalibrateState;
-}
-
 /**************************************************************************************************
  * 停止测量。
  *************************************************************************************************/
@@ -1574,7 +1552,7 @@ NIBPParam::NIBPParam()
       _connectedFlag(false), _connectedProvider(false),
       _text(InvStr()),
       _reply(false), _result(false), _manometerPressure(InvData()), _isMaintain(false), _firstAutoFlag(false),
-      _autoStatFlag(false), _zeroSelfTestFlag(false), _isNeoDisable(false), _CalibrateState(true),
+      _autoStatFlag(false), _zeroSelfTestFlag(false), _isNeoDisable(false),
       _activityMachine(NULL), _oldState(0)
 {
     nibpCountdownTime.getInstance();

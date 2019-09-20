@@ -96,6 +96,16 @@ enum NIBPPacketType
     N5_UPGRADE_ALIVE                            = 0xFE,       //升级保活帧
 };
 
+ // NIBP运行或自检中错误类型
+enum NIBPErrorType
+{
+    N5_TYPE_NORMAL          = 0x00,         // 模块正常
+    N5_TYPE_NOT_CALIBRATE   = 0x01,         // 模块未校准
+    N5_TYPE_ABNORMAL        = 0x02,         // 模块异常
+    N5_TYPE_SELFTEST_FAIL   = 0x04,         // 模块自检失败
+    N5_TYPE_ERROR           = 0x08,         // 模块错误
+};
+ // NIBP收到错误是否禁止使用
 class N5Provider: public BLMProvider, public NIBPProviderIFace
 {
 public: // Provider的接口。
@@ -204,6 +214,12 @@ private:
     // 接收自检状态
     void _selfTest(unsigned char *packet, int len);
 
+    void _handleError(unsigned char error);
+    void _handleSelfTestError(unsigned char *packet, int len);
+
     // 错误代码
     void _errorWarm(unsigned char *packet, int len);
+
+    int _error;
+    bool _hardWareProtect;
 };

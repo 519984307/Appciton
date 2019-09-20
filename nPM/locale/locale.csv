@@ -469,7 +469,8 @@ NIBPSTOPPED,停止,Stopped
 NIBPWAITING,NIBP等待,NIBP Waiting
 NIBPNoResponse,无响应,No Response
 NIBPTemporarily,临时,Temporarily
-NIBPDisable,禁用,Disable
+NIBPDisable,故障,Fault
+NIBPStop,停用,Stop use
 NIBPNotCalibrate,未校准,Not Calibrate
 _1min,1 分钟,1 min
 _1.5min,1.5 分钟,1.5 min
@@ -739,6 +740,11 @@ NIBPMAPLow,平均压低,NIBP MAP Low
 NIBPMAPHigh,平均压高,NIBP MAP High
 NIBPCommunicationStop,NIBP通信中断,NIBP Communication Stop
 NIBPSendCommunicationStop,NIBP发送通信中断,NIBP Send Communication Stop
+NIBPSelfTestError,NIBP自测失败,NIBP Selftest Fail
+NIBPModuleAbnormal,NIBP模块异常,NIBP Module Abnormal
+NIBPModuleNotCalibrate,NIBP未校准,NIBP Module Not Calibrated
+NIBPModuleError,NIBP模块错误,NIBP Module Error
+NIBPModuleOverPressure,NIBP模块过压,NIBP Module Overpressure
 NIBPCommunicationTimeout,NIBP通信超时,NIBP Communication Timeout
 NIBPMeasurementAbort,测量中止,NIBP Measurement Aborted
 NIBPCuffTypeError,NIBP袖带类型错,NIBP Cuff Type Error 
