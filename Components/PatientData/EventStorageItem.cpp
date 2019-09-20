@@ -333,6 +333,9 @@ bool EventStorageItem::checkCompleted()
 
     if (timeManager.getCurTime() -  d_ptr->eventInfo.timestamp  > (unsigned)(d_ptr->eventInfo.duration_after))
     {
+        // time expired
+        qdebug("cache time expired");
+
         // unregister recorder
         foreach(WaveformDataSegment *seg, d_ptr->waveSegments)
         {
