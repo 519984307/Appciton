@@ -838,7 +838,6 @@ NIBPSwVersion,NIBP软件版本,NIBP Software Version
 NIBPHwVersion,NIBP硬件版本,NIBP Hardware Version
 NIBPBootloader,NIBP Bootloader,NIBP Bootloader
 NIBPSlaveSwVersion,NIBP从片软件版本,NIBP Slave Software Version
-NIBPSlaveHwVersion,NIBP从片硬件版本,NIBP Slave Hardware Version
 NIBPSlaveBootloader,NIBP从片Bootloader,NIBP Slave Bootloader
 SPO2SwVersion,SpO₂软件版本,SpO₂ Software Version
 SPO2HwVersion,SpO₂硬件版本,SpO₂ Hardware Version
@@ -1365,8 +1364,8 @@ ReleaseVersion,发布版本,Release Version
 PowerManagerSoftwareVersion,电源管理软件版本,Power Manager Software Version
 Uboot,系统引导文件,Uboot
 Kernel,内核,Kernel
-SystemboardModuleSwVersion,系统板软件版本,System Board Software Version
-SystemboardModuleHwVersion,系统板硬件版本,System Board Hardwave Version
+SystemBoardSwVersion,系统板软件版本,System Board Software Version
+SystemBoardHwVersion,系统板硬件版本,System Board Hardwave Version
 SystemboardBootloader,系统板Bootloader,System Board Bootloader
 RecorderModule,记录模块,Recorder Module
 ECGAlgorithmType,ECG算法类型,ECG Algorithm Type

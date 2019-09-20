@@ -44,7 +44,6 @@ public:
         ITEM_LAB_NIBP_HW_VERSION,
         ITEM_LAB_NIBP_BOOTLOADER,
         ITEM_LAB_NIBP_SLAVE_SW_VERSION,
-        ITEM_LAB_NIBP_SLAVE_HW_VERSION,
         ITEM_LAB_NIBP_SLAVE_BOOTLOADER,
         ITEM_LAB_SPO2_SW_VERSION,
         ITEM_LAB_SPO2_HW_VERSION,
@@ -76,6 +75,8 @@ public:
     QLabel *n5SlaveSwLab;
     QLabel *n5SlaveHwLab;
     QLabel *n5SlaveBootloaderLab;
+
+    void getVersionString(QString version, QString &swVersion, QString &hwVersion, QString &suffixVersion);
 };
 
 FactoryVersionInfo::FactoryVersionInfo()
@@ -128,14 +129,14 @@ void FactoryVersionInfo::layoutExec()
     d_ptr->labs.insert(FactoryVersionInfoPrivate
                        ::ITEM_LAB_HARDWARE_VERSION, labelRight);
 
-    labelLeft = new QLabel(trs("SystemboardModuleSwVersion"));
+    labelLeft = new QLabel(trs("SystemBoardSwVersion"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
     labelRight = new QLabel("");
     layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignLeft);
     d_ptr->labs.insert(FactoryVersionInfoPrivate
                        ::ITEM_LAB_SYSBD_MOD_SW_VERSION, labelRight);
 
-    labelLeft = new QLabel(trs("SystemboardModuleHwVersion"));
+    labelLeft = new QLabel(trs("SystemBoardHwVersion"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
     labelRight = new QLabel("");
     layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignLeft);
@@ -210,21 +211,12 @@ void FactoryVersionInfo::layoutExec()
         d_ptr->labs.insert(FactoryVersionInfoPrivate
                            ::ITEM_LAB_NIBP_SLAVE_SW_VERSION, labelRight);
 
-        // nibp 从片
-        labelLeft = new QLabel(trs("NIBPSlaveHwVersion") + "    ");
-        layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
-        d_ptr->n5SlaveHwLab = labelLeft;
-        labelRight = new QLabel;
-        layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignLeft);
-        d_ptr->labs.insert(FactoryVersionInfoPrivate
-                           ::ITEM_LAB_NIBP_SLAVE_HW_VERSION, labelRight);
-
         labelLeft = new QLabel(trs("NIBPSlaveBootloader") + "    ");
         layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
         d_ptr->n5SlaveBootloaderLab = labelLeft;
 
         labelRight = new QLabel;
-        layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
+        layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignLeft);
         d_ptr->labs.insert(FactoryVersionInfoPrivate
                            ::ITEM_LAB_NIBP_SLAVE_BOOTLOADER, labelRight);
     }
@@ -363,11 +355,7 @@ void FactoryVersionInfoPrivate::loadOptions()
     QString versionSuffix;
     if (p)
     {
-        versionSw = p->getVersionString();
-        versionSuffix = versionSw.section(' ', -1, -1, QString::SectionIncludeLeadingSep);
-        versionSw = versionSw.remove(versionSuffix);
-        versionHw = versionSw.section(' ', -1, -1 , QString::SectionIncludeLeadingSep);
-        versionSw = versionSw.remove(versionHw);
+        getVersionString(p->getVersionString(), versionSw, versionHw, versionSuffix);
     }
     if (labs[ITEM_LAB_SYSBD_MOD_SW_VERSION])
     {
@@ -396,11 +384,7 @@ void FactoryVersionInfoPrivate::loadOptions()
     p = paramManager.getProvider(str);
     if (p)
     {
-        versionSw = p->getVersionString();
-        versionSuffix = versionSw.section(' ', -1, -1, QString::SectionIncludeLeadingSep);
-        versionSw = versionSw.remove(versionSuffix);
-        versionHw = versionSw.section(' ', -1, -1 , QString::SectionIncludeLeadingSep);
-        versionSw = versionSw.remove(versionHw);
+        getVersionString(p->getVersionString(), versionSw, versionHw, versionSuffix);
     }
     labs[ITEM_LAB_ECG_SW_VERSION]->setText(versionSw);
     labs[ITEM_LAB_ECG_HW_VERSION]->setText(versionHw);
@@ -413,16 +397,13 @@ void FactoryVersionInfoPrivate::loadOptions()
     p = paramManager.getProvider(str);
     if (p)
     {
-        versionSw = p->getVersionString();
         if (str == "BLM_N5")
         {
-            versionSuffix = versionSw.section(' ', -1, -1, QString::SectionIncludeLeadingSep);
-            versionSw = versionSw.remove(versionSuffix);
-            versionHw = versionSw.section(' ', -1, -1 , QString::SectionIncludeLeadingSep);
-            versionSw = versionSw.remove(versionHw);
+            getVersionString(p->getVersionString(), versionSw, versionHw, versionSuffix);
         }
         else
         {
+            versionSw = p->getVersionString();
             versionSuffix = QString();
             versionHw = QString();
         }
@@ -446,8 +427,8 @@ void FactoryVersionInfoPrivate::loadOptions()
         versionSw = p->getExtraVersionString();
         versionSuffix = versionSw.section(' ', -1, -1, QString::SectionIncludeLeadingSep);
         versionSw = versionSw.remove(versionSuffix);
-        versionHw = versionSw.section(' ', -1, -1 , QString::SectionIncludeLeadingSep);
-        versionSw = versionSw.remove(versionHw);
+        versionSuffix = versionSuffix.remove(' ');
+        versionHw = QString();
     }
     if (labs[ITEM_LAB_NIBP_SLAVE_SW_VERSION])
     {
@@ -461,20 +442,6 @@ void FactoryVersionInfoPrivate::loadOptions()
             n5SlaveSwLab->show();
             labs[ITEM_LAB_NIBP_SLAVE_SW_VERSION]->show();
             labs[ITEM_LAB_NIBP_SLAVE_SW_VERSION]->setText(versionSw);
-        }
-    }
-    if (labs[ITEM_LAB_NIBP_SLAVE_HW_VERSION])
-    {
-        if (versionHw.isEmpty())
-        {
-            labs[ITEM_LAB_NIBP_SLAVE_HW_VERSION]->hide();
-            n5SlaveHwLab->hide();
-        }
-        else
-        {
-            n5SlaveHwLab->show();
-            labs[ITEM_LAB_NIBP_SLAVE_HW_VERSION]->show();
-            labs[ITEM_LAB_NIBP_SLAVE_HW_VERSION]->setText(versionHw);
         }
     }
     if (labs[ITEM_LAB_NIBP_SLAVE_BOOTLOADER])
@@ -499,16 +466,13 @@ void FactoryVersionInfoPrivate::loadOptions()
     p = paramManager.getProvider(str);
     if (p)
     {
-        versionSw = p->getVersionString();
         if (str == "BLM_S5")
         {
-            versionSuffix = versionSw.section(' ', -1, -1, QString::SectionIncludeLeadingSep);
-            versionSw = versionSw.remove(versionSuffix);
-            versionHw = versionSw.section(' ', -1, -1 , QString::SectionIncludeLeadingSep);
-            versionSw = versionSw.remove(versionHw);
+            getVersionString(p->getVersionString(), versionSw, versionHw, versionSuffix);
         }
         else
         {
+            versionSw = p->getVersionString();
             versionSuffix = QString();
             versionHw = QString();
         }
@@ -531,11 +495,7 @@ void FactoryVersionInfoPrivate::loadOptions()
     versionSw.clear();
     if (p)
     {
-        versionSw = p->getVersionString();
-        versionSuffix = versionSw.section(' ', -1, -1, QString::SectionIncludeLeadingSep);
-        versionSw = versionSw.remove(versionSuffix);
-        versionHw = versionSw.section(' ', -1, -1 , QString::SectionIncludeLeadingSep);
-        versionSw = versionSw.remove(versionHw);
+        getVersionString(p->getVersionString(), versionSw, versionHw, versionSuffix);
     }
     if (labs[ITEM_LAB_TEMP_SW_VERSION])
     {
@@ -555,11 +515,7 @@ void FactoryVersionInfoPrivate::loadOptions()
     versionSw.clear();
     if (p)
     {
-        versionSw = p->getVersionString();
-        versionSuffix = versionSw.section(' ', -1, -1, QString::SectionIncludeLeadingSep);
-        versionSw = versionSw.remove(versionSuffix);
-        versionHw = versionSw.section(' ', -1, -1 , QString::SectionIncludeLeadingSep);
-        versionSw = versionSw.remove(versionHw);
+        getVersionString(p->getVersionString(), versionSw, versionHw, versionSuffix);
     }
     if (labs[ITEM_LAB_PRT48_SW_VERSION])
     {
@@ -591,4 +547,14 @@ void FactoryVersionInfoPrivate::loadOptions()
     machineConfig.getStrValue("ScreenHeight", height);
     str += height;
     labs[ITEM_LAB_SCREEN_RESOLUTION]->setText(str);
+}
+
+void FactoryVersionInfoPrivate::getVersionString(QString version, QString &swVersion, QString &hwVersion, QString &suffixVersion)
+{
+    suffixVersion = version.section(' ', -1, -1, QString::SectionIncludeLeadingSep);
+    version = version.remove(suffixVersion);
+    suffixVersion = suffixVersion.remove(' ');
+    hwVersion = version.section(' ', -1, -1 , QString::SectionIncludeLeadingSep);
+    swVersion = version.remove(hwVersion);
+    hwVersion = hwVersion.remove(' ');
 }
