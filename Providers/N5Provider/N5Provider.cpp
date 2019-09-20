@@ -135,35 +135,36 @@ void N5Provider::_handleError(unsigned char error)
 {
     switch(error)
     {
-    case 0x01:
-    case 0x02:
-    case 0x03:
-    case 0x04:
-    case 0x05:
-    case 0x06:
-    case 0x07:
-    case 0x08:
-    case 0x0a:
-    case 0x0b:
-    case 0x0c:
+    case SELF_TEST_6V_FAILED:
+    case SELF_TEST_5V_FAILED:
+    case SELF_TEST_5VA_FAILED:
+    case SELF_TEST_3_3VA1_FAILED:
+    case SELF_TEST_3_3VA2_FAILED:
+    case SELF_TEST_3_3V_FAILED:
+    case SELF_TEST_15V_FAILED:
+    case AD7739_SELF_TEST_FAILED:
+    case The_BIG_GAS_VALUE_IS_UNSUAL:
+    case THE_SMALL_GAS_VALVE_IS_UNUSUAL:
+    case THE_AIR_PUMP_IS_UNUSUAL:
         nibpParam.setDisableState(true);    // 设置为不可测量
         nibpParam.errorDisable();
-    case 0x0d:                              // 过压保护自检失败可以测量
+    case THE_SOFTWARE_OF_OVERPRESSURE_PROTECT_IS_UNUSUAL:                              // 过压保护自检失败可以测量
         _error |= N5_TYPE_SELFTEST_FAIL;   // 模块自检失败
         break;
-    case 0x09:
-    case 0x0f:
+    case RESET_TO_THE_DEFAULT_VALVE:
+    case CALIBRATION_IS_UNSUCCESSFUL:
         _error |= N5_TYPE_NOT_CALIBRATE;  // 模块未校准
         break;
-    case 0x0e:
-    case 0x7e:
-    case 0x7f:
-    case 0x80:
+    case ZERO_FAIL_ON_START_UP:
+    case MASTER_AND_DAEMON_FAIL_TO_PASS_SELF_TEST:
+    case MASTER_SLAVE_COMMUNICATION_IS_UNUSUAL:
+    case FLASH_WRONG:
         _error |= N5_TYPE_ABNORMAL;       // 模块异常
         break;
-    case 0x81:
-    case 0x82:
-    case 0x83:
+    case DATA_SAMPLE_EXCEPTION:
+    case THE_BIG_GAS_VALVE_IS_UNUSUAL_FOR_RUNNING:
+    case THE_SMALL_GAS_VALVE_IS_UNUSUAL_FOR_RUNNING:
+    case THE_AIR_PUMP_IS_UNUSUAL_FOR_RUNNING:
         _error |= N5_TYPE_ERROR;         // 模块错误
         nibpParam.setDisableState(true);
         nibpParam.errorDisable();
@@ -497,10 +498,6 @@ void N5Provider::handlePacket(unsigned char *data, int len)
             }
             nibpParam.handleNIBPEvent(NIBP_EVENT_CONNECTION_NORMAL, NULL, 0);                       // 恢复禁用状态
         }
-
-
-
-
         if (data[1] == 0x01)
         {
             AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
