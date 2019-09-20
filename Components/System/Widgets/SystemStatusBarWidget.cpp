@@ -44,6 +44,7 @@ void SystemStatusBarWidget::hideIcon(SystemIconLabel iconlabel)
     {
         l->setPixmap(_icons[SYSTEM_ICON_NONE]);
         _iconMap.value(iconlabel)->setFocusPolicy(Qt::NoFocus);
+        _iconMap.value(iconlabel)->setEnabled(false);
     }
 }
 
@@ -237,6 +238,7 @@ SystemStatusBarWidget::SystemStatusBarWidget() : IWidget("SystemStatusBarWidget"
         l->setPixmap(_icons[SYSTEM_ICON_NONE]);
         layout->addWidget(l, 0, Qt::AlignCenter);
         mainLayout->addWidget(w);
+        w->setEnabled(false);
         _iconMap.insert((SystemIconLabel)i, w);
     }
     mainLayout->addStretch();
