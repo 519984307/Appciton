@@ -291,7 +291,7 @@ void ECGWaveWidget::loadConfig(void)
 
         // 增益。
         set12LGain(ECG_GAIN_X10);
-        setGain(_12LGain);
+        ecgParam.setGain(ECG_GAIN_X10);
 
         _name->setText(ECGSymbol::convert(ecgParam.waveIDToLeadID((WaveformID)getID()),
                                           ecgParam.getLeadConvention(), is12Lead, ecgParam.get12LDisplayFormat()));
