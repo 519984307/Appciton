@@ -27,7 +27,7 @@ class WavPlayerPrivate
 {
 public:
     WavPlayerPrivate()
-        : playing(false), requestStop(false), curVolume(50),
+        : playing(false), requestStop(false), needReinit(false), curVolume(50),
           playback_handle(NULL),  buffer_time(0), period_time(0),
           chunk_size(0), chunk_bytes(0), buffer_size(0), audiobuf(NULL),
           bits_per_frame(0), channels(0), format(SND_PCM_FORMAT_UNKNOWN), mixer_handle(NULL),
@@ -116,6 +116,7 @@ public:
     {
         playing = c.playing;
         requestStop = c.requestStop;
+        needReinit = c.needReinit;
         curVolume = c.curVolume;
         playback_handle = c.playback_handle;
         buffer_time = c.buffer_time;
@@ -425,6 +426,7 @@ public:
 
     bool playing;
     bool requestStop;
+    bool needReinit;
     int curVolume;
     snd_pcm_t *playback_handle;
     unsigned buffer_time;
@@ -480,18 +482,26 @@ void WavPlayer::play(WavFile *wavfile)
         return;
     }
 
-    wavfile->rewind();
-
-    if (snd_pcm_state(d_ptr->playback_handle) == SND_PCM_STATE_RUNNING)
+    if (d_ptr->needReinit)
     {
-        d_ptr->playing = false;
-        emit finished();
-        return;
+        // 初始化句柄
+        snd_pcm_close(d_ptr->playback_handle);
+        int err;
+        if ((err = snd_pcm_open(&d_ptr->playback_handle, PLAYBACK_DEVICE, SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK)) < 0)
+        {
+            qWarning() << "Cannot open playback device " << PLAYBACK_DEVICE << ":"
+                       << snd_strerror(err);
+            return;
+        }
+        d_ptr->needReinit = false;
     }
+
+    wavfile->rewind();
 
     if (!d_ptr->setParams(wavfile))
     {
         d_ptr->playing = false;
+        d_ptr->needReinit = true;
         emit finished();
         return;
     }
@@ -500,6 +510,7 @@ void WavPlayer::play(WavFile *wavfile)
     if ((err = snd_pcm_prepare(d_ptr->playback_handle)) < 0)
     {
         qDebug() << "Cannot prepare audio interface for use" << snd_strerror(err);
+        d_ptr->needReinit = true;
         d_ptr->playing = false;
         emit finished();
         return;
@@ -539,6 +550,7 @@ void WavPlayer::play(WavFile *wavfile)
 
         if (ret == -1)
         {
+            d_ptr->needReinit = true;
             break;
         }
     }

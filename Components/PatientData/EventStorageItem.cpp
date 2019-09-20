@@ -215,7 +215,6 @@ void EventStorageItemPrivate::trendCacheCompleteCallback(unsigned timestamp, con
 EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms)
     : d_ptr(new EventStorageItemPrivate(this, type, storeWaveforms))
 {
-    qDebug() << "Create Event Stroage Item:" << this << " type: " << type;
 }
 
 EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms,
@@ -248,7 +247,6 @@ EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &stor
     }
 
     d_ptr->eventTypeAndPrio = d_ptr->eventInfo.type | (priority << 8);
-    qDebug() << "Create Event Stroage Item:" << this << " type: " << type;
 }
 
 EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms, const char *codeName)
@@ -256,7 +254,6 @@ EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &stor
 {
     d_ptr->codeMarkerInfo = new CodeMarkerSegment;
     Util::strlcpy(d_ptr->codeMarkerInfo->codeName, codeName, sizeof(d_ptr->codeMarkerInfo->codeName));
-    qDebug() << "Create Event Stroage Item:" << this << " type: " << type;
 }
 
 EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms, OxyCRGEventType oxyCRGtype,
@@ -296,8 +293,6 @@ EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &stor
         d_ptr->eventInfo.duration_after = 120;
         d_ptr->eventInfo.duration_before = 120;
     }
-
-    qDebug() << "Create Event Stroage Item:" << this << " type: " << type;
 }
 
 EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms, OxyCRGEventType oxyCRGtype)
@@ -305,7 +300,6 @@ EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &stor
 {
     d_ptr->oxyCRGInfo = new OxyCRGSegment;
     d_ptr->oxyCRGInfo->type = oxyCRGtype;
-    qDebug() << "Create Event Stroage Item:" << this << " type: " << type;
 }
 
 EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms, NIBPOneShotType measureResult)
@@ -313,12 +307,10 @@ EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &stor
 {
     d_ptr->measureInfo = new NIBPMeasureSegment;
     d_ptr->measureInfo->measureResult = measureResult;
-    qDebug() << "Create Event Stroage Item:" << this << " type: " << type;
 }
 
 EventStorageItem::~EventStorageItem()
 {
-    qDebug() << "Destroy Event Stroage Item:" << this;
 }
 
 quint32 EventStorageItem::getType() const
@@ -341,9 +333,6 @@ bool EventStorageItem::checkCompleted()
 
     if (timeManager.getCurTime() -  d_ptr->eventInfo.timestamp  > (unsigned)(d_ptr->eventInfo.duration_after))
     {
-        // time expired
-        qdebug("cache time expired");
-
         // unregister recorder
         foreach(WaveformDataSegment *seg, d_ptr->waveSegments)
         {

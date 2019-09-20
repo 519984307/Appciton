@@ -30,7 +30,6 @@ public:
 #if defined(CONFIG_CAPTURE_SCREEN)
 public slots:
     void handleScreenCaptureResult(long result);
-    void onFocusChanged(QWidget *old, QWidget *now);
 private:
     /**
      * @brief handleScreenCaptureKeyEvent handle the screen capture key event
