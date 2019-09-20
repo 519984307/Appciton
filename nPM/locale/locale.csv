@@ -1334,7 +1334,7 @@ MACAddress,物理地址(MAC),MAC Address
 ElectronicSerialNumber,电子序列号,Electronic Serial Number
 SetElectronicSerialNumber,设置电子序列号,Set Electronic Serial Number
 MonitorInfoMenuDesc,监护仪信息菜单设置,Monitor Info
-StopNeoNIBPMeasure,禁止NIBP新生儿测量,Close Neonatal NIBP Measurement
+NeoNIBPMeasure,NIBP新生儿测量,Neo. NIBP Measurement
 NIBPMaintainMenu,NIBP维护,NIBP Maintain
 NIBPMaintain,NIBP维护,NIBP Maintain
 NIBPMaintainMenuDesc,NIBP维护,NIBP Maintain
