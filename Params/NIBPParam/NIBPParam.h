@@ -213,6 +213,12 @@ public:
     // 设置预充气值。。
     void setInitPressure(int index);
 
+    /**
+     * @brief setRawDataSend 设置原始数据发送开关
+     * @param onOff
+     */
+    void setRawDataSend(bool onOff);
+
     //获取不同病人类型的初始压力值
     int getInitPressure();
 

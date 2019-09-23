@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2019/9/23
+ **/
+
 #pragma once
 #include "SPO2Define.h"
 
@@ -5,7 +15,6 @@
 class SPO2ProviderIFace
 {
 public:
-
     // 设置灵敏度。
     virtual void setSensitive(SPO2Sensitive sens) = 0;
 
@@ -24,14 +33,14 @@ public:
     // SPO2值与PR值。
     virtual bool isResult_SPO2PR(unsigned char */*packet*/) {return false;}
 
-    //描记波
+    // 描记波
     virtual bool isResult_BAR(unsigned char */*packet*/) {return false;}
 
-    //状态
+    // 状态
     virtual bool isStatus(unsigned char */*packet*/) {return false;}
 
 
-    //发送协议命令
+    // 发送协议命令
     virtual void sendCmdData(unsigned char /*cmdId*/, const unsigned char */*data*/,
                              unsigned int /*len*/) { }
 
@@ -44,7 +53,7 @@ public:
     virtual void initModule() { }
 
 public:
-    //Masimo
+    // Masimo
 
     // 设置灵敏度和FastSat。
     virtual void setSensitivityFastSat(SensitivityMode /*mode*/, bool /*fastSat*/) { }
@@ -55,10 +64,15 @@ public:
     // 设置SMart Tone使能选项。
     virtual void setSmartTone(bool /*enable*/) { }
 
-    //Nellcor
+    // Nellcor
     /**
      * @brief setSatSeconds 设置过高低限值的容忍时间
      * @param type 时间类型
      */
     virtual void setSatSeconds(Spo2SatSecondsType /*type*/){}
+
+    /**
+     * @brief setRawDataSend 设置原始数据发送开关
+     */
+    virtual void setRawDataSend(bool /*onOff*/){}
 };

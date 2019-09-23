@@ -17,6 +17,8 @@
 #include "RawDataCollector.h"
 #include "LanguageManager.h"
 #include "ECGParam.h"
+#include "NIBPParam.h"
+#include "SPO2Param.h"
 
 class FactoryDataRecordContentPrivate
 {
@@ -235,10 +237,12 @@ void FactoryDataRecordContent::onComboBoxIndexChanged(int index)
         break;
     case FactoryDataRecordContentPrivate::ITEM_CBO_SPO2:
         str = "SPO2";
+        spo2Param.setRawDataSend(index);
         rawDataCollector.setCollectStatus(RawDataCollector::SPO2_DATA, index);
         break;
     case FactoryDataRecordContentPrivate::ITEM_CBO_NIBP:
         str = "NIBP";
+        nibpParam.setRawDataSend(index);
         rawDataCollector.setCollectStatus(RawDataCollector::NIBP_DATA, index);
         break;
     case FactoryDataRecordContentPrivate::ITEM_CBO_CO2:

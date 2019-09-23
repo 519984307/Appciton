@@ -579,6 +579,12 @@ bool N5Provider::needStopACK(void)
     return true;
 }
 
+void N5Provider::setRawDataSend(bool onOff)
+{
+    unsigned char cmd = onOff;
+    sendCmd(N5_CMD_RAW_DATA, &cmd, 1);
+}
+
 /**************************************************************************************************
  * 是否为错误数据包。
  *************************************************************************************************/
