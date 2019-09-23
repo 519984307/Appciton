@@ -265,6 +265,7 @@ void T5Provider::_selfTest(unsigned char *packet, int len)
                 errorStr += tempErrorCode[packet[i]];
                 break;
             case ERRORCODE_DATA_RESET_DEFAULT:
+                tempParam.setOneShotAlarm(TEMP_ONESHOT_ALARM_MODULE_ABNORMAL, true);
                 errorStr += tempErrorCode[packet[i]];
                 break;
             default:
