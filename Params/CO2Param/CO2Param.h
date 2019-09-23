@@ -142,8 +142,26 @@ public:
      */
     bool getDisableZeroStatus();
 
+    /**
+     * @brief setO2Enable 设置O2气体补偿使能
+     * @param enable
+     */
+    void setO2Enable(bool enable);
+    bool getO2Enable();
+
+    /**
+     * @brief setN2OEnable 设置N2O气体补偿使能
+     * @param enable
+     */
+    void setN2OEnable(bool enable);
+    bool getN2OEnable();
+
 signals:
     void updateZeroSta(bool sta);
+
+    void updateO2Sta(bool enable);
+
+    void updateN2OSta(bool enable);
 
 public:
     // 校零。

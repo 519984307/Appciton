@@ -65,6 +65,18 @@ private slots:
      */
     void disableZero(bool sta);
 
+    /**
+     * @brief onUpdateO2Sta
+     * @param sta
+     */
+    void onUpdateO2Sta(bool enable);
+
+    /**
+     * @brief onUpdateN2OSta
+     * @param sta
+     */
+    void onUpdateN2OSta(bool enable);
+
 private:
     CO2MenuContentPrivate * const d_ptr;
 };

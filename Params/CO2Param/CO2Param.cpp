@@ -53,7 +53,9 @@ public:
               calibrateChannel(0),
               calibrateResult(false),
               calibrateReply(false),
-              disableZero(0)
+              disableZero(0),
+              o2EnableStatus(false),
+              n2oEnableStatus(false)
     {
     }
 
@@ -99,6 +101,8 @@ public:
     bool calibrateReply;
 
     int disableZero;
+    bool o2EnableStatus;
+    bool n2oEnableStatus;
 };
 /**************************************************************************************************
  * 设置波形速度。
@@ -804,6 +808,28 @@ void CO2Param::setZeroStatus(CO2DisableZeroReason reason, bool status)
 bool CO2Param::getDisableZeroStatus()
 {
     return d_ptr->disableZero;
+}
+
+void CO2Param::setO2Enable(bool enable)
+{
+    d_ptr->o2EnableStatus = enable;
+    emit updateO2Sta(enable);
+}
+
+bool CO2Param::getO2Enable()
+{
+    return d_ptr->o2EnableStatus;
+}
+
+void CO2Param::setN2OEnable(bool enable)
+{
+    d_ptr->n2oEnableStatus = enable;
+    emit updateN2OSta(enable);
+}
+
+bool CO2Param::getN2OEnable()
+{
+    return d_ptr->n2oEnableStatus;
 }
 
 /**************************************************************************************************

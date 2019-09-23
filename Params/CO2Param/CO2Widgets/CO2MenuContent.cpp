@@ -63,6 +63,8 @@ CO2MenuContent::CO2MenuContent():
     d_ptr(new CO2MenuContentPrivate)
 {
     connect(&co2Param, SIGNAL(updateZeroSta(bool)), this, SLOT(disableZero(bool)));
+    connect(&co2Param, SIGNAL(updateO2Sta(bool)), this, SLOT(onUpdateO2Sta(bool)));
+    connect(&co2Param, SIGNAL(updateN2OSta(bool)), this, SLOT(onUpdateN2OSta(bool)));
 }
 
 CO2MenuContent::~CO2MenuContent()
@@ -109,8 +111,14 @@ void CO2MenuContentPrivate::loadOptions()
     combos[ITEM_CBO_WAVE_RULER]->setCurrentIndex(co2Param.getDisplayZoom());
 
     // 气体补偿。
+    o2Spb->blockSignals(true);
+    o2Spb->setEnabled(!co2Param.getO2Enable());     // 若支持o2检测，则不需要设置o2补偿
     o2Spb->setValue(co2Param.getCompensation(CO2_COMPEN_O2));
+    o2Spb->blockSignals(false);
+    n2oSpb->blockSignals(true);
+    n2oSpb->setEnabled(!co2Param.getN2OEnable());   // 若支持N2O检测，则不需要设置N2O补偿
     n2oSpb->setValue(co2Param.getCompensation(CO2_COMPEN_N2O));
+    n2oSpb->blockSignals(false);
 
     ApneaAlarmTime index = co2Param.getApneaTime();
 
@@ -209,6 +217,18 @@ void CO2MenuContent::n2oCompenSpinboxReleased(int value, int scale)
 void CO2MenuContent::disableZero(bool sta)
 {
     d_ptr->btns[CO2MenuContentPrivate::ITEM_BTN_ZERO_CALIB]->setEnabled(!sta);
+}
+
+void CO2MenuContent::onUpdateO2Sta(bool enable)
+{
+    // 若支持O2检测，则不需要进行O2补偿设置
+    d_ptr->o2Spb->setEnabled(!enable);
+}
+
+void CO2MenuContent::onUpdateN2OSta(bool enable)
+{
+    // 若支持N2O检测，则不需要进行N2O补偿设置
+    d_ptr->n2oSpb->setEnabled(!enable);
 }
 
 void CO2MenuContent::layoutExec()

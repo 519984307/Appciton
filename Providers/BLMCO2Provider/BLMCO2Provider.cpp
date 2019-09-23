@@ -278,12 +278,14 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
 
         // 设备是否支持O2参数。
         _status.o2Config = ((val & BIT0) == BIT0) ? true : false;
+        co2Param.setO2Enable(_status.o2Config);
 
         // 设备是否支持CO2参数。
         _status.co2Config = ((val & BIT1) == BIT1) ? true : false;
 
         // 设备是否支持N2O参数。
         _status.n2oConfig = ((val & BIT2) == BIT2) ? true : false;
+        co2Param.setN2OEnable(_status.n2oConfig);
 
         // 麻醉气体支持。
         _status.halConfig = ((val & BIT3) == BIT3) ? true : false;
