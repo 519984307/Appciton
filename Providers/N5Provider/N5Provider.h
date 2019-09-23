@@ -47,8 +47,8 @@ enum NIBPPacketType
     N5_CMD_SELFTEST                             = 0x1E,       // 开机自检。
     N5_RSP_SELFTEST                             = 0x1F,       //
 
-    N5_CMD_LOW_PRESSURE                         = 0x20,       // 获取当前压力值。
-    N5_RSP_LOW_PRESSURE                         = 0x21,       //
+    N5_CMD_RAW_DATA                             = 0x20,       // 设置原始数据发送开关
+    N5_RSP_RAW_DATA                             = 0x21,       //
 
     N5_NOTIFY_LOW_PRESSURE                      = 0x22,       // <15mmHg压力值周期性数据帧。
 
@@ -132,6 +132,12 @@ public: // NIBPProviderIFace的接口。
 
     // 发送停止指令是否有该指令的应答。
     virtual bool needStopACK(void);
+
+    /**
+     * @brief setRawDataSend 设置原始数据发送开关
+     * @param onOff
+     */
+    virtual void enableRawDataSend(bool onOff);
 
     // 是否为错误数据包。
     virtual NIBPOneShotType isMeasureError(unsigned char *packet);

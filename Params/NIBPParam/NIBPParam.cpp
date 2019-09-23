@@ -1008,6 +1008,14 @@ void NIBPParam::setInitPressure(int index)
     }
 }
 
+void NIBPParam::enableRawDataSend(bool onOff)
+{
+    if (_provider != NULL)
+    {
+        _provider->enableRawDataSend(onOff);
+    }
+}
+
 /**************************************************************************************************
  * 获取不同病人类型的初始压力值
  *************************************************************************************************/
