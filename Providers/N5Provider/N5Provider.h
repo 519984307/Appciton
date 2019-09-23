@@ -137,7 +137,7 @@ public: // NIBPProviderIFace的接口。
      * @brief setRawDataSend 设置原始数据发送开关
      * @param onOff
      */
-    virtual void setRawDataSend(bool onOff);
+    virtual void enableRawDataSend(bool onOff);
 
     // 是否为错误数据包。
     virtual NIBPOneShotType isMeasureError(unsigned char *packet);

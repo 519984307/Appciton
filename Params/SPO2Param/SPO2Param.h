@@ -161,7 +161,7 @@ public:
      * @brief setRawDataSend 设置原始数据发送开关
      * @param onOff
      */
-    void setRawDataSend(bool onOff);
+    void enableRawDataSend(bool onOff);
 
     /**
      * @brief setSensitivity  设置灵敏度

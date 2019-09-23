@@ -579,7 +579,7 @@ bool N5Provider::needStopACK(void)
     return true;
 }
 
-void N5Provider::setRawDataSend(bool onOff)
+void N5Provider::enableRawDataSend(bool onOff)
 {
     unsigned char cmd = onOff;
     sendCmd(N5_CMD_RAW_DATA, &cmd, 1);

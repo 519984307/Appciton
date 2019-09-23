@@ -103,7 +103,7 @@ public: // SPO2ProviderIFace 的接口。
      * @brief setRawDataSend 设置原始数据发送开关
      * @param onOff
      */
-    virtual void setRawDataSend(bool onOff);
+    virtual void enableRawDataSend(bool onOff);
 
     // 发送协议命令
     virtual void sendCmdData(unsigned char cmdId, const unsigned char *data, unsigned int len);

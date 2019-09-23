@@ -74,5 +74,5 @@ public:
     /**
      * @brief setRawDataSend 设置原始数据发送开关
      */
-    virtual void setRawDataSend(bool /*onOff*/){}
+    virtual void enableRawDataSend(bool /*onOff*/){}
 };

@@ -228,12 +228,12 @@ void FactoryDataRecordContent::onComboBoxIndexChanged(int index)
         break;
     case FactoryDataRecordContentPrivate::ITEM_CBO_SPO2:
         str = "SPO2";
-        spo2Param.setRawDataSend(index);
+        spo2Param.enableRawDataSend(index);
         rawDataCollector.setCollectStatus(RawDataCollector::SPO2_DATA, index);
         break;
     case FactoryDataRecordContentPrivate::ITEM_CBO_NIBP:
         str = "NIBP";
-        nibpParam.setRawDataSend(index);
+        nibpParam.enableRawDataSend(index);
         rawDataCollector.setCollectStatus(RawDataCollector::NIBP_DATA, index);
         break;
     case FactoryDataRecordContentPrivate::ITEM_CBO_CO2:

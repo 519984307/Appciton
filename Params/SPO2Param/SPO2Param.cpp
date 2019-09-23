@@ -60,11 +60,11 @@ AverageTime SPO2Param::getAverageTime()
     return (AverageTime)time;
 }
 
-void SPO2Param::setRawDataSend(bool onOff)
+void SPO2Param::enableRawDataSend(bool onOff)
 {
     if (_provider != NULL)
     {
-        _provider->setRawDataSend(onOff);
+        _provider->enableRawDataSend(onOff);
     }
 }
 

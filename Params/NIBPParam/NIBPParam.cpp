@@ -1008,11 +1008,11 @@ void NIBPParam::setInitPressure(int index)
     }
 }
 
-void NIBPParam::setRawDataSend(bool onOff)
+void NIBPParam::enableRawDataSend(bool onOff)
 {
     if (_provider != NULL)
     {
-        _provider->setRawDataSend(onOff);
+        _provider->enableRawDataSend(onOff);
     }
 }
 
