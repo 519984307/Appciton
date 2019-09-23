@@ -62,7 +62,7 @@ AverageTime SPO2Param::getAverageTime()
 
 void SPO2Param::setRawDataSend(bool onOff)
 {
-    if (_provider == NULL)
+    if (_provider != NULL)
     {
         _provider->setRawDataSend(onOff);
     }
