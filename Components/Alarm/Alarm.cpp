@@ -429,8 +429,9 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
 
         if (!isAlarm)
         {
-            // 上次报警，现在恢复正常了。
-            if (traceCtrl->lastAlarmed)
+            // 上次报警，现在恢复正常了。如果是生理报警，当恢复正常连续3s才可被撤销报警
+            if (traceCtrl->lastAlarmed &&
+                    (traceCtrl->normalTimesCount >= ALARM_LIMIT_TIMES || traceCtrl->type != ALARM_TYPE_PHY))
             {
                 if (traceCtrl->type != ALARM_TYPE_TECH && _isLatchLock)
                 {
@@ -459,13 +460,28 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
             }
             else
             {
-                alarmSource->notifyAlarm(i, false);
+                if (traceCtrl->normalTimesCount < ALARM_LIMIT_TIMES && traceCtrl->type == ALARM_TYPE_PHY)
+                {
+                    // 生理报警，如果normalTimesCount小于3次，此时报警仍在，报警源应继续通知报警。
+                    alarmSource->notifyAlarm(i, true);
+                }
+                else
+                {
+                    alarmSource->notifyAlarm(i, false);
+                }
+            }
+
+            if (traceCtrl->normalTimesCount < ALARM_LIMIT_TIMES && traceCtrl->type == ALARM_TYPE_PHY)
+            {
+                // 生理报警恢复正常时，normalTimesCount计数。
+                traceCtrl->normalTimesCount++;
             }
 
             continue;
         }
         else
         {
+            traceCtrl->normalTimesCount = 0;    // 发生了报警时，normalTimesCount清零
             if (traceCtrl->lastAlarmed)
             {
                 // 生命报警从栓锁恢复到继续报警。
@@ -486,7 +502,12 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
                 }
                 else
                 {
-                    continue;
+                    AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+                    if (alarmIndicator && alarmIndicator->checkAlarmIsExist(traceCtrl->type, traceCtrl->alarmMessage))
+                    {
+                        // 现在有没被栓锁的报警，如果此时在alarmIndicator中控制报警，则continue，不添加新的报警到alarmIndicator
+                        continue;
+                    }
                 }
             }
         }
