@@ -1561,6 +1561,7 @@ TEMPModuleNotCalibration2,Temp模块通道2未定标,Temp Channel 2 Not Calibrat
 TEMPModuleDisable,Temp模块禁用,Temp Module Disable
 TEMPCommunicationStop,Temp通信中断,Temp Communication Stop
 TEMPSendCommunicationStop,Temp发送通信中断,Temp Send Communication Stop
+TEMPModuleAbnormal,Temp模块异常,Temp Module Is Abnormal
 TEMPChannel,Temp通道,Temp Channel
 TEMPCalibrate,Temp校准 ,Temp Calibrate
 N2O,N₂O,N₂O
