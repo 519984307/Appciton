@@ -54,8 +54,8 @@ public:
               calibrateResult(false),
               calibrateReply(false),
               disableZero(0),
-              o2EnableStatus(false),
-              n2oEnableStatus(false)
+              o2CompensationEnable(false),
+              n2oCompensationEnable(false)
     {
     }
 
@@ -101,8 +101,8 @@ public:
     bool calibrateReply;
 
     int disableZero;
-    bool o2EnableStatus;
-    bool n2oEnableStatus;
+    bool o2CompensationEnable;
+    bool n2oCompensationEnable;
 };
 /**************************************************************************************************
  * 设置波形速度。
@@ -810,26 +810,37 @@ bool CO2Param::getDisableZeroStatus()
     return d_ptr->disableZero;
 }
 
-void CO2Param::setO2Enable(bool enable)
+void CO2Param::enableCompensation(CO2Compensation gas, bool enable)
 {
-    d_ptr->o2EnableStatus = enable;
-    emit updateO2Sta(enable);
+    if (gas == CO2_COMPEN_O2)
+    {
+        if (enable != d_ptr->o2CompensationEnable)
+        {
+            d_ptr->o2CompensationEnable = enable;
+            emit updateCompensation(CO2_COMPEN_O2, enable);
+        }
+    }
+    else if (gas == CO2_COMPEN_N2O)
+    {
+        if (enable != d_ptr->n2oCompensationEnable)
+        {
+            d_ptr->n2oCompensationEnable = enable;
+            emit updateCompensation(CO2_COMPEN_N2O, enable);
+        }
+    }
 }
 
-bool CO2Param::getO2Enable()
+bool CO2Param::getCompensationEnabled(CO2Compensation gas)
 {
-    return d_ptr->o2EnableStatus;
-}
-
-void CO2Param::setN2OEnable(bool enable)
-{
-    d_ptr->n2oEnableStatus = enable;
-    emit updateN2OSta(enable);
-}
-
-bool CO2Param::getN2OEnable()
-{
-    return d_ptr->n2oEnableStatus;
+    if (gas == CO2_COMPEN_O2)
+    {
+        return d_ptr->o2CompensationEnable;
+    }
+    else if (gas == CO2_COMPEN_N2O)
+    {
+        return d_ptr->n2oCompensationEnable;
+    }
+    return false;
 }
 
 /**************************************************************************************************

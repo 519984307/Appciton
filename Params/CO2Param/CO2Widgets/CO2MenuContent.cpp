@@ -63,8 +63,7 @@ CO2MenuContent::CO2MenuContent():
     d_ptr(new CO2MenuContentPrivate)
 {
     connect(&co2Param, SIGNAL(updateZeroSta(bool)), this, SLOT(disableZero(bool)));
-    connect(&co2Param, SIGNAL(updateO2Sta(bool)), this, SLOT(onUpdateO2Sta(bool)));
-    connect(&co2Param, SIGNAL(updateN2OSta(bool)), this, SLOT(onUpdateN2OSta(bool)));
+    connect(&co2Param, SIGNAL(updateCompensation(CO2Compensation, bool)), this, SLOT(onUpdateCompensation(CO2Compensation, bool)));
 }
 
 CO2MenuContent::~CO2MenuContent()
@@ -82,7 +81,7 @@ void CO2MenuContentPrivate::loadOptions()
     // 波形速度。
     combos[ITEM_CBO_WAVE_SPEED]->setCurrentIndex(co2Param.getSweepSpeed());
 
-    // 波形标尺
+    // 波形标尺140.08
     combos[ITEM_CBO_WAVE_RULER]->blockSignals(true);
     combos[ITEM_CBO_WAVE_RULER]->clear();
     int maxZoom = CO2_DISPLAY_ZOOM_NR;
@@ -112,11 +111,11 @@ void CO2MenuContentPrivate::loadOptions()
 
     // 气体补偿。
     o2Spb->blockSignals(true);
-    o2Spb->setEnabled(!co2Param.getO2Enable());     // 若支持o2检测，则不需要设置o2补偿
+    o2Spb->setEnabled(co2Param.getCompensationEnabled(CO2_COMPEN_O2));
     o2Spb->setValue(co2Param.getCompensation(CO2_COMPEN_O2));
     o2Spb->blockSignals(false);
     n2oSpb->blockSignals(true);
-    n2oSpb->setEnabled(!co2Param.getN2OEnable());   // 若支持N2O检测，则不需要设置N2O补偿
+    o2Spb->setEnabled(co2Param.getCompensationEnabled(CO2_COMPEN_N2O));
     n2oSpb->setValue(co2Param.getCompensation(CO2_COMPEN_N2O));
     n2oSpb->blockSignals(false);
 
@@ -219,16 +218,16 @@ void CO2MenuContent::disableZero(bool sta)
     d_ptr->btns[CO2MenuContentPrivate::ITEM_BTN_ZERO_CALIB]->setEnabled(!sta);
 }
 
-void CO2MenuContent::onUpdateO2Sta(bool enable)
+void CO2MenuContent::onUpdateCompensation(CO2Compensation gas, bool enable)
 {
-    // 若支持O2检测，则不需要进行O2补偿设置
-    d_ptr->o2Spb->setEnabled(!enable);
-}
-
-void CO2MenuContent::onUpdateN2OSta(bool enable)
-{
-    // 若支持N2O检测，则不需要进行N2O补偿设置
-    d_ptr->n2oSpb->setEnabled(!enable);
+    if (gas == CO2_COMPEN_O2)
+    {
+        d_ptr->o2Spb->setEnabled(enable);
+    }
+    else if (gas == CO2_COMPEN_N2O)
+    {
+        d_ptr->n2oSpb->setEnabled(enable);
+    }
 }
 
 void CO2MenuContent::layoutExec()
