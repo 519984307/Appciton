@@ -127,13 +127,21 @@ void RESPDupParam::isAlarm(bool isAlarm, bool isLimit)
 
     if (NULL != _trendWidget)
     {
-        if (!alarmConfig.isLimitAlarmEnable(SUB_PARAM_RR_BR) || _rrValue == InvData() || _brValue == InvData())
+        if (!alarmConfig.isLimitAlarmEnable(SUB_PARAM_RR_BR))
         {
             _trendWidget->isAlarm(false);
         }
         else
         {
-            _trendWidget->isAlarm(_isAlarm);
+            if ((getBrSource() == BR_RR_SOURCE_ECG && _rrValue == InvData())
+                    || (getBrSource() == BR_RR_SOURCE_CO2 && _brValue == InvData()))
+            {
+                _trendWidget->isAlarm(false);
+            }
+            else
+            {
+                _trendWidget->isAlarm(_isAlarm);
+            }
         }
         _isAlarm = false;
     }
