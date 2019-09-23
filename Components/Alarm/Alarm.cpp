@@ -557,7 +557,7 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
             AlarmStateMachineInterface *alarmStateMachine = AlarmStateMachineInterface::getAlarmStateMachine();
             if (alarmStateMachine)
             {
-                alarmStateMachine->handAlarmEvent(ALARM_STATE_EVENT_NEW_PHY_ALARM, 0, 0);
+                alarmStateMachine->handAlarmEvent(ALARM_STATE_EVENT_NEW_TECH_ALARM, 0, 0);
             }
         }
     }
