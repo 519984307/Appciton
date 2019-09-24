@@ -66,7 +66,6 @@ void RESPTrendWidget::loadConfig()
     setPalette(palette);
     _rrValue->setPalette(palette);
 
-    setName(trs(paramInfo.getSubParamName(SUB_PARAM_RR_BR)));
     setUnit(Unit::getSymbol(UNIT_RPM));
 
     TrendWidget::loadConfig();
