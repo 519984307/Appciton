@@ -1068,9 +1068,9 @@ void TrendTableModelPrivate::loadTrendData()
                 qint16 T2 = pack->subparamValue.value(static_cast<SubParamID>(id + 1), InvData());
                 qint16 TD = pack->subparamValue.value(static_cast<SubParamID>(id + 2), InvData());
                 UnitType type = paramManager.getSubParamUnit(paramInfo.getParamID(id), id);
-                QString t1Str = Unit::convert(type, UNIT_TC, T1 * 1.0 / 10);
-                QString t2Str = Unit::convert(type, UNIT_TC, T2 * 1.0 / 10);
-                QString tdStr = Unit::convert(type, UNIT_TC, TD * 1.0 / 10);
+                QString t1Str = Unit::convert(type, paramInfo.getUnitOfSubParam(SUB_PARAM_T1), T1 * 1.0 / 10);
+                QString t2Str = Unit::convert(type, paramInfo.getUnitOfSubParam(SUB_PARAM_T2), T2 * 1.0 / 10);
+                QString tdStr = QString::number(qAbs(t1Str.toFloat() - t2Str.toFloat()), 'f', 1);
                 t1Str = T1 == InvData() ? "---" : t1Str;
                 t2Str = T2 == InvData() ? "---" : t2Str;
                 tdStr = TD == InvData() ? "---" : tdStr;
