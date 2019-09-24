@@ -20,6 +20,7 @@ public:
     explicit ListsViewPrivate(ListView *const q_ptr)
         : q_ptr(q_ptr),
           isMultiSelectMode(false),
+          clickale(true),
           isDrawIcon(true)
     {}
 
@@ -32,6 +33,7 @@ public:
     ListView *const q_ptr;
 
     bool isMultiSelectMode;
+    bool clickale;
 
     QMap <int, bool> rowsSelectedMap;
 
@@ -144,6 +146,11 @@ void ListView::setModel(QAbstractItemModel *model)
 void ListView::setDrawIcon(bool isDrawIcon)
 {
     d_ptr->isDrawIcon = isDrawIcon;
+}
+
+void ListView::setClickable(bool clickable)
+{
+    d_ptr->clickale = clickable;
 }
 
 void ListView::keyPressEvent(QKeyEvent *ev)
@@ -295,7 +302,7 @@ void ListView::hideEvent(QHideEvent *ev)
 
 void ListView::onRowClicked(QModelIndex index)
 {
-    if (!index.isValid())
+    if (!index.isValid() || !d_ptr->clickale)
     {
         return;
     }
