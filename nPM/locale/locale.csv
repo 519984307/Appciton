@@ -608,7 +608,7 @@ ECGAcquiring12L,获取12导,Acquiring 12 Lead
 ECGAcquired12L,获取12导结束,Acquire 12 Lead Complete
 RESPCommunicationStop,Resp通信中断,Resp Communication Stop
 RESPCheckElecrodes,Resp检查电极,Resp Check Electrodes
-Apnea,Resp窒息,Apnea
+Apnea,呼吸窒息,Apnea
 SPO2Low,SpO₂低,SpO₂ Low
 SPO2High,SpO₂高,SpO₂ High
 SPO2PRLow,PR低,PR Low
