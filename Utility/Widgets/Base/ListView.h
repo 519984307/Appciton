@@ -57,6 +57,13 @@ public:
      */
     void setDrawIcon(bool isDrawIcon);
 
+    /**
+     * @brief setClickable set whether the item is clickable
+     * @param clickable
+     * @note the item is clicable by default
+     */
+    void setClickable(bool clickable);
+
 protected:
     /* reimplement */
     void keyPressEvent(QKeyEvent *ev);
