@@ -400,7 +400,7 @@ bool BLMProvider::sendCmd(unsigned char cmdId, const unsigned char *data, unsign
 
     cmdBuf[cmdLen - 1] = calcCRC(cmdBuf, (cmdLen - 1));
 
-    if (cmdId != NACK && cmdId != ACK)
+    if (cmdId != NACK && cmdId != ACK && upgradeIface == NULL)
     {
         _cmdId = cmdId;
         _blmCmd.reset();
