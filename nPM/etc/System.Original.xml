@@ -77,7 +77,6 @@
         <STUnit>11</STUnit>
         <PressureUnit>5</PressureUnit>
         <TemperatureUnit>1</TemperatureUnit>
-	<TempDifferenceUnit>3</TempDifferenceUnit>
         <CVPUnit>5</CVPUnit>
         <ICPUnit>5</ICPUnit>
         <CO2Unit>5</CO2Unit>

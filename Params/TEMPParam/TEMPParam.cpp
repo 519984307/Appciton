@@ -362,14 +362,6 @@ void TEMPParam::setUnit(UnitType u)
 {
     systemConfig.setNumValue("Unit|TemperatureUnit", static_cast<int>(u));
 
-    if (u == UNIT_TC)
-    {
-        systemConfig.setNumValue("Unit|TempDifferenceUnit", static_cast<int>(UNIT_TDC));
-    }
-    else if (u == UNIT_TF)
-    {
-        systemConfig.setNumValue("Unit|TempDifferenceUnit", static_cast<int>(UNIT_TDF));
-    }
     if (NULL != _trendWidget)
     {
         _trendWidget->setUNit(u);
@@ -391,8 +383,8 @@ UnitType TEMPParam::getUnit(SubParamID id)
     }
     else if (id == SUB_PARAM_TD)
     {
-        u = UNIT_TDC;
-        systemConfig.getNumValue("Unit|TempDifferenceUnit", u);
+        systemConfig.getNumValue("Unit|TemperatureUnit", u);
+        u += 2;
     }
     return static_cast<UnitType>(u);
 }
