@@ -146,9 +146,7 @@ void N5Provider::_handleError(unsigned char error)
     case The_BIG_GAS_VALUE_IS_UNSUAL:
     case THE_SMALL_GAS_VALVE_IS_UNUSUAL:
     case THE_AIR_PUMP_IS_UNUSUAL:
-        nibpParam.setDisableState(true);    // 设置为不可测量
-        nibpParam.errorDisable();
-    case THE_SOFTWARE_OF_OVERPRESSURE_PROTECT_IS_UNUSUAL:                              // 过压保护自检失败可以测量
+    case THE_SOFTWARE_OF_OVERPRESSURE_PROTECT_IS_UNUSUAL:
         _error |= N5_TYPE_SELFTEST_FAIL;   // 模块自检失败
         break;
     case RESET_TO_THE_DEFAULT_VALVE:
@@ -156,51 +154,43 @@ void N5Provider::_handleError(unsigned char error)
         _error |= N5_TYPE_NOT_CALIBRATE;  // 模块未校准
         break;
     case ZERO_FAIL_ON_START_UP:
-    case MASTER_AND_DAEMON_FAIL_TO_PASS_SELF_TEST:
-    case MASTER_SLAVE_COMMUNICATION_IS_UNUSUAL:
     case FLASH_WRONG:
         _error |= N5_TYPE_ABNORMAL;       // 模块异常
         break;
+    case MASTER_AND_DAEMON_FAIL_TO_PASS_SELF_TEST:
+    case MASTER_SLAVE_COMMUNICATION_IS_UNUSUAL:
     case DATA_SAMPLE_EXCEPTION:
     case THE_BIG_GAS_VALVE_IS_UNUSUAL_FOR_RUNNING:
     case THE_SMALL_GAS_VALVE_IS_UNUSUAL_FOR_RUNNING:
     case THE_AIR_PUMP_IS_UNUSUAL_FOR_RUNNING:
         _error |= N5_TYPE_ERROR;         // 模块错误
-        nibpParam.setDisableState(true);
-        nibpParam.errorDisable();
         break;
     }
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
+    if (!alarmSource)
+    {
+        return;
+    }
+
     if (_error & 0x01)
     {
-        AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
-        if (alarmSource)
-        {
-            alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_NOT_CALIBRAT, true);   // 模块未校准
-        }
+        alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_NOT_CALIBRAT, true);   // 模块未校准
     }
     else if (_error & 0x02)
     {
-        AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
-        if (alarmSource)
-        {
-            alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_ABNORMAL, true);   // 模块异常
-        }
+        alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_ABNORMAL, true);   // 模块异常
     }
     else if (_error & 0x04)
     {
-        AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
-        if (alarmSource)
-        {
-            alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_SELTTEST_ERROR, true);   // 模块自检失败
-        }
+        alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_SELTTEST_ERROR, true);   // 模块自检失败
+        nibpParam.setDisableState(true);    // 设置为不可测量
+        nibpParam.errorDisable();
     }
     else if (_error & 0x08)
     {
-        AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
-        if (alarmSource)
-        {
-            alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_ERROR, true);   // 模块错误
-        }
+        alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_ERROR, true);   // 模块错误
+        nibpParam.setDisableState(true);
+        nibpParam.errorDisable();
     }
 }
 
@@ -475,32 +465,11 @@ void N5Provider::handlePacket(unsigned char *data, int len)
             AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
             if (data[1] & 0x04)
             {
-                _hardWareProtect = true;
                 if (alarmSource)
                 {
                     alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_ABNORMAL, true);
                 }
             }
-            if (alarmSource)
-            {
-                alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_OVER_PRESSURE_PROTECT, true);
-            }
-            nibpParam.setDisableState(true);
-            nibpParam.errorDisable();
-        }
-        else if (data[1] == 0x00 && _hardWareProtect != true)   // 如果触发了硬件过压保护不可取消过压保护状态
-        {
-            nibpParam.setDisableState(false);
-            AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
-            if (alarmSource)
-            {
-                alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_OVER_PRESSURE_PROTECT, false);
-            }
-            nibpParam.handleNIBPEvent(NIBP_EVENT_CONNECTION_NORMAL, NULL, 0);                       // 恢复禁用状态
-        }
-        if (data[1] == 0x01)
-        {
-            AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
             if (alarmSource)
             {
                 alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_OVER_PRESSURE_PROTECT, true);

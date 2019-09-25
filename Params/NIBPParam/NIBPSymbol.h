@@ -105,7 +105,7 @@ public:
             "NIBPSelfTestError",
             "NIBPModuleAbnormal",
             "NIBPModuleNotCalibrate",
-            "NIBPModuleHardWareError",
+            "NIBPModuleError",
             "NIBPModuleOverPressure"
         };
         return symbol[index];
