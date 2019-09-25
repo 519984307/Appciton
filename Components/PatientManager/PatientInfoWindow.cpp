@@ -384,8 +384,6 @@ PatientInfoWindow::PatientInfoWindow()
     d_ptr->combos.insert(PatientInfoWindowPrivate::ITEM_CBO_PACER_MARKER
                          , d_ptr->pacer);
 
-    connect(d_ptr->pacer, SIGNAL(currentIndexChanged(int)), this , SLOT(pacerMakerReleased(int)));
-
     // patient id
     label = new QLabel(trs("PatientID"));
     label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
@@ -500,7 +498,6 @@ PatientInfoWindow::PatientInfoWindow()
         spin->setArrow(false);
         spin->setProperty("Item", qVariantFromValue(itemId));
         connect(spin, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxValueChanged(int, int)));
-        connect(this, SIGNAL(spinValueChange(int, int)), this, SLOT(onSpinBoxValueChanged(int, int)));
         bornDateLayout->addWidget(spin);
         d_ptr->spinBoxs.insert(static_cast<PatientInfoWindowPrivate::MenuItem>(itemId), spin);
     }
