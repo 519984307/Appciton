@@ -1177,6 +1177,7 @@ void EventWindowPrivate::calculationPage()
 
 void EventWindowPrivate::refreshEventList()
 {
+    printList.clear();
     QList<QString> timeList;
     QList<QString> eventList;
     for (int i = 0; i < PAGE_ROW_COUNT; i++)
