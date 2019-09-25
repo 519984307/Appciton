@@ -179,6 +179,7 @@ RESPAutoActivation,Resp激活,Resp Automatic Activation
 EnterPassthroughMode,进入透传模式,Enter Passthrough Mode
 ExitPassthroughMode,退出透传模式,Exit Passthrough Mode
 SwitchPassthroughModeFail,切换透传模式失败,Switch Passthrough Mode Fail
+FlashCRC16CheckError,Flash CRC16 校验错误,Flash CRC16 Check Error
 NIBPMeasurement,无创血压测量,NIBP Measure
 NIBPMeasureMode,测量模式,Measure Mode
 NIBPIntervalTime,间隔时间,NIBP Interval Time
