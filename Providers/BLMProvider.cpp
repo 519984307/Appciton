@@ -45,7 +45,7 @@ BLMProvider::~BLMProvider()
 #if 0
 void BLMProvider::dataArrived()
 {
-    readData(); // 读取数据到RingBuff中
+    readData();  // 读取数据到RingBuff中
 
     while (!ringBuff.isEmpty())
     {
@@ -118,7 +118,7 @@ void BLMProvider::dataArrived()
  **************************************************************************************************/
 void BLMProvider::dataArrived()
 {
-    _readData(); // 读取数据到RingBuff中
+    _readData();  // 读取数据到RingBuff中
 
     unsigned char packet[570];
 
@@ -137,7 +137,7 @@ void BLMProvider::dataArrived()
             ringBuff.pop(1);
             break;
         }
-        if (len > ringBuff.dataSize()) // 数据还不够，继续等待。
+        if (len > ringBuff.dataSize())  // 数据还不够，继续等待。
         {
             break;
         }
@@ -186,50 +186,47 @@ void BLMProvider::handlePacket(unsigned char *data, int len)
     {
         resetTimer();
     }
+
     // version data, all BLMProvidor share the same version respond code
-    if (data[0] == 0x11 && len >= 80 + 1) // version info length + data packet head offset
+    if (data[0] == 0x11 && len >= 80 + 1)   // version info length + data packet head offset
     {
         const char *p = reinterpret_cast<char *>(&data[1]);
         versionInfo.clear();
-        versionInfo.append(p); // software git version
+        versionInfo.append(p);          // software git version
         versionInfo.append(" ");
-        p += (30 + 1);  // software git version offset + data packet head offset
+        p += (30 + 1);                  // software git version offset + data packet head offset
 
-        versionInfo.append(p); // build date
+        versionInfo.append(p);          // build date
         versionInfo.append(" ");
-        p += (15 + 1);  // build date offset + data packet head offset
+        p += (15 + 1);                  // build date offset + data packet head offset
 
-//        versionInfo.append(p); // build time
-//        versionInfo.append(" ");
-        p += (15 + 1);  // build time offset + data packet head offset
+        p += (15 + 1);                  // build time offset + data packet head offset
 
-        versionInfo.append(p); // hardware version
+        versionInfo.append(p);          // hardware version
         versionInfo.append(" ");
-        p += (1 + 1);  // hardware version offset + data packet head offset
+        p += (1 + 1);                   // hardware version offset + data packet head offset
 
-        versionInfo.append(p); // bootloader git version
+        versionInfo.append(p);          // bootloader git version
 
-        if (len == 160 + 1)  // 适用于N5从片版本信息
+        if (len == 160 + 1)             // 适用于N5从片版本信息
         {
             const char *p = reinterpret_cast<char *>(&data[1 + 80]);
             versionInfoEx.clear();
-            versionInfoEx.append(p); // software git version
+            versionInfoEx.append(p);    // software git version
             versionInfoEx.append(" ");
-            p += (30 + 1);  // software git version offset + data packet head offset
+            p += (30 + 1);              // software git version offset + data packet head offset
 
-            versionInfoEx.append(p); // build date
+            versionInfoEx.append(p);    // build date
             versionInfoEx.append(" ");
-            p += (15 + 1);  // build date offset + data packet head offset
+            p += (15 + 1);              // build date offset + data packet head offset
 
-            //        versionInfo.append(p); // build time
-            //        versionInfo.append(" ");
-            p += (15 + 1);  // build time offset + data packet head offset
+            p += (15 + 1);              // build time offset + data packet head offset
 
-            versionInfoEx.append(p); // hardware version
+            versionInfoEx.append(p);    // hardware version
             versionInfoEx.append(" ");
-            p += (1 + 1);  // hardware version offset + data packet head offset
+            p += (1 + 1);               // hardware version offset + data packet head offset
 
-            versionInfoEx.append(p); // bootloader git version
+            versionInfoEx.append(p);    // bootloader git version
         }
     }
 }
@@ -243,7 +240,7 @@ void BLMProvider::noResponseTimeout()
     }
     else
     {
-        qDebug() << getName() << "cmd = " << _cmdId;
+        qWarning() << Q_FUNC_INFO << getName() << "no response for cmd: " << showbase << hex << _cmdId;
         sendDisconnected();
         resetTimer();
     }
@@ -287,7 +284,7 @@ bool BLMProvider::_sendData(const unsigned char *data, unsigned int len)
 
 void BLMProvider::dataArrived(unsigned char *buff, unsigned int length)
 {
-    _readData(buff, length); // 读取数据到RingBuff中
+    _readData(buff, length);   // 读取数据到RingBuff中
 
     unsigned char packet[570];
 
@@ -306,7 +303,7 @@ void BLMProvider::dataArrived(unsigned char *buff, unsigned int length)
             ringBuff.pop(1);
             break;
         }
-        if (len > ringBuff.dataSize()) // 数据还不够，继续等待。
+        if (len > ringBuff.dataSize())  // 数据还不够，继续等待。
         {
             break;
         }
