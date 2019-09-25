@@ -96,6 +96,52 @@ enum NIBPPacketType
     N5_UPGRADE_ALIVE                            = 0xFE,       //升级保活帧
 };
 
+ // NIBP运行或自检中错误类型
+enum NIBPErrorType
+{
+    N5_TYPE_NORMAL          = 0x00,         // 模块正常
+    N5_TYPE_NOT_CALIBRATE   = 0x01,         // 模块未校准
+    N5_TYPE_ABNORMAL        = 0x02,         // 模块异常
+    N5_TYPE_SELFTEST_FAIL   = 0x04,         // 模块自检失败
+    N5_TYPE_ERROR           = 0x08,         // 模块错误
+};
+
+enum NIBPPressureProtectType
+{
+    N5_TYPE_PROTECT_NORMAL              = 0x00,
+    N5_TYPE_PROTECT_MASTE_PROTECT       = 0x01,
+    N5_TYPE_PROTECT_SLAVE_PROTECT       = 0x02,
+    N5_TYPE_PROTECT_HARDWARE_PROTECT    = 0x04,
+};
+
+enum NIBPOneShotNum
+{
+    SELF_TEST_6V_FAILED             =    0x01,
+    SELF_TEST_5V_FAILED             =    0x02,
+    SELF_TEST_5VA_FAILED            =    0X03,
+    SELF_TEST_3_3VA1_FAILED         =    0x04,
+    SELF_TEST_3_3VA2_FAILED         =    0X05,
+    SELF_TEST_3_3V_FAILED           =    0x06,
+    SELF_TEST_15V_FAILED            =    0x07,
+    AD7739_SELF_TEST_FAILED         =    0x08,
+    RESET_TO_THE_DEFAULT_VALVE      =    0x09,
+    The_BIG_GAS_VALUE_IS_UNSUAL     =    0x0a,
+    THE_SMALL_GAS_VALVE_IS_UNUSUAL  =    0x0b,
+    THE_AIR_PUMP_IS_UNUSUAL         =    0x0c,
+    THE_SOFTWARE_OF_OVERPRESSURE_PROTECT_IS_UNUSUAL  =   0x0d,
+    ZERO_FAIL_ON_START_UP                            =   0x0e,
+    CALIBRATION_IS_UNSUCCESSFUL                      =   0x0f,
+    MASTER_AND_DAEMON_FAIL_TO_PASS_SELF_TEST         =   0x7e,
+    MASTER_SLAVE_COMMUNICATION_IS_UNUSUAL            =   0x7f,
+    FLASH_WRONG                                      =   0x80,
+    DATA_SAMPLE_EXCEPTION                            =   0x81,
+    THE_BIG_GAS_VALVE_IS_UNUSUAL_FOR_RUNNING         =   0x82,
+    THE_SMALL_GAS_VALVE_IS_UNUSUAL_FOR_RUNNING       =   0x83,
+    THE_AIR_PUMP_IS_UNUSUAL_FOR_RUNNING              =   0x84,
+    THE_DAEMON_ERROR                                 =   0x85,
+};
+
+ // NIBP收到错误是否禁止使用
 class N5Provider: public BLMProvider, public NIBPProviderIFace
 {
 public: // Provider的接口。
@@ -210,6 +256,12 @@ private:
     // 接收自检状态
     void _selfTest(unsigned char *packet, int len);
 
+    void _handleError(unsigned char error);
+    void _handleSelfTestError(unsigned char *packet, int len);
+
     // 错误代码
     void _errorWarm(unsigned char *packet, int len);
+
+    int _error;
+    bool _hardWareProtect;
 };
