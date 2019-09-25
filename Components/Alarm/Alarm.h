@@ -112,7 +112,7 @@ private:
 
     // 判断报警。
     void _handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alarmParam);
-    void _handleOneShotAlarm(AlarmOneShotIFace *alarmSource);
+    void _handleOneShotAlarm(AlarmOneShotIFace *alarmSource, QList<ParamID> &alarmParam);
 
     void _handleAlarm(void);
 
