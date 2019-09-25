@@ -628,10 +628,11 @@ void NIBPParam::connectedFlag(bool flag)
         if (!_isNIBPDisable)
         {
             handleNIBPEvent(NIBP_EVENT_CONNECTION_NORMAL, NULL, 0);
-            if (alarmSource)
-            {
-                alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
-            }
+        }
+
+        if (alarmSource)
+        {
+            alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
         }
         _connectedFlag = true;
     }
@@ -648,6 +649,7 @@ void NIBPParam::connectedFlag(bool flag)
             alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_COMMUNICATION_STOP, true);
         }
         _connectedFlag = false;
+        _isNIBPDisable = false;
     }
 }
 
@@ -728,7 +730,7 @@ void NIBPParam::setText(void)
     {
         if (nibpParam.curStatusType() == NIBP_MONITOR_ERROR_STATE)
         {
-            if (_isNIBPDisable)
+            if (_isNIBPDisable || !_connectedProvider)
             {
                 _trendWidget->showText(trs("NIBPModule") + "\n" + trs("NIBPDisable"));
             }
