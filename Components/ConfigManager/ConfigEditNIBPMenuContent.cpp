@@ -80,7 +80,7 @@ void ConfigEditNIBPMenuContentPrivate::loadOptions()
     else if (type == PATIENT_TYPE_NEO)
     {
         start = 60;
-        end = 140;
+        end = 130;
     }
     initCuffStrs.clear();
     for (int i = start; i <= end; i += 10)
