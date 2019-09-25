@@ -95,9 +95,9 @@ void TEMPParam::showSubParamValue()
 /**************************************************************************************************
  * 获取当前的单位。
  *************************************************************************************************/
-UnitType TEMPParam::getCurrentUnit(SubParamID /*id*/)
+UnitType TEMPParam::getCurrentUnit(SubParamID id)
 {
-    return getUnit();
+    return getUnit(id);
 }
 
 /**************************************************************************************************
@@ -373,12 +373,19 @@ void TEMPParam::setUnit(UnitType u)
 /**************************************************************************************************
  * 获取单位。
  *************************************************************************************************/
-UnitType TEMPParam::getUnit(void)
+UnitType TEMPParam::getUnit(SubParamID id)
 {
     int u = UNIT_TC;
-
-    systemConfig.getNumValue("Unit|TemperatureUnit", u);
-
+    if (id == SUB_PARAM_T1 || id == SUB_PARAM_T2)
+    {
+        u = UNIT_TC;
+        systemConfig.getNumValue("Unit|TemperatureUnit", u);
+    }
+    else if (id == SUB_PARAM_TD)
+    {
+        systemConfig.getNumValue("Unit|TemperatureUnit", u);
+        u += 2;
+    }
     return static_cast<UnitType>(u);
 }
 

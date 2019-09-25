@@ -186,30 +186,50 @@ private:
     ParamID paramId;
 };
 
-static bool firstIdAlarm = true;
-static bool fourthIdAlarm = false;
-static bool thirdIdRemove = true;
-static bool firstIdEnable = false;
+struct OneShotAlarmInfo
+{
+    OneShotAlarmInfo()
+    {
+        alarmType = ALARM_TYPE_TECH;
+        alarmId = -1;
+        alarmPriority = ALARM_PRIO_PROMPT;
+        isAlarmEnabled = true;
+        isAlarm = false;
+
+        isLastAlarm = false;
+        normalTimeCount = 0;
+    }
+
+    // 当前报警状态
+    AlarmType alarmType;
+    int alarmId;
+    AlarmPriority alarmPriority;
+    bool isAlarmEnabled;
+    bool isAlarm;
+
+    // 上次报警状态
+    bool isLastAlarm;
+    int normalTimeCount;
+};
+
+typedef QVector<OneShotAlarmInfo> OneShotAlarmInfos;
+static QMap<ParamID, OneShotAlarmInfos> infoMap;
+
 class OneShotAlarm : public AlarmOneShotIFace
 {
 public:
-    OneShotAlarm() :
-        paramId(PARAM_NONE)
+    explicit OneShotAlarm(ParamID id)
+        : paramId(id)
     {}
     virtual const char *toString(int id)
     {
         Q_UNUSED(id)
-        return "AlarmOneShot";
+        return "AlarmMessage";
     }
 
     virtual QString getAlarmSourceName(void)
     {
-        return QString("AlarmOneShotSourceName");
-    }
-
-    void setParamID(ParamID id)
-    {
-        paramId = id;
+        return QString("OneShotAlarmSource");
     }
 
     virtual ParamID getParamID(void)
@@ -219,7 +239,7 @@ public:
 
     virtual int getAlarmSourceNR(void)
     {
-        return ALARM_COUNT;
+        return infoMap.value(paramId).count();
     }
 
     virtual WaveformID getWaveformID(int id)
@@ -231,75 +251,58 @@ public:
     // 生理参数报警级别。
     virtual AlarmPriority getAlarmPriority(int id)
     {
-        switch (id)
+        foreach(OneShotAlarmInfo info, infoMap.value(paramId))
         {
-        case 0:
-            return ALARM_PRIO_PROMPT;
-        case 1:
-            return ALARM_PRIO_LOW;
-        case 2:
-            return ALARM_PRIO_MED;
-        default:
-            return ALARM_PRIO_HIGH;
+            if (info.alarmId == id)
+            {
+                return info.alarmPriority;
+            }
         }
+        return ALARM_PRIO_PROMPT;
     }
 
     virtual AlarmType getAlarmType(int id)
     {
-        switch (id)
+        foreach(OneShotAlarmInfo info, infoMap.value(paramId))
         {
-        case 0:
-        case 1:
-        case 2:
-            return ALARM_TYPE_TECH;
-        case 3:
-            return ALARM_TYPE_PHY;
-        default:
-            return ALARM_TYPE_LIFE;
+            if (info.alarmId == id)
+            {
+                return info.alarmType;
+            }
         }
+        return ALARM_TYPE_TECH;
     }
 
     virtual bool isNeedRemove(int id)
     {
-        switch (id)
-        {
-        case 0:
-        case 1:
-        case 3:
-            return false;
-        default:
-            return thirdIdRemove;
-        }
+        Q_UNUSED(id)
+        return false;
     }
 
     // 生理参数报警使能。
     virtual bool isAlarmEnable(int id)
     {
-        switch (id)
+        foreach(OneShotAlarmInfo info, infoMap.value(paramId))
         {
-        case 0:
-            return firstIdEnable;
-        case 2:
-        case 3:
-            return true;
-        default:
-            return false;
+            if (info.alarmId == id)
+            {
+                return info.isAlarmEnabled;
+            }
         }
+        return true;
     }
 
     // 是否发生报警
     virtual bool isAlarmed(int id)
     {
-        switch (id)
+        foreach(OneShotAlarmInfo info, infoMap.value(paramId))
         {
-        case 0:
-            return firstIdAlarm;
-        case 1:
-        case 2:
-            return true;
-        default:
-            return fourthIdAlarm;
+            if (info.alarmId == id)
+            {
+                return info.isAlarm;
+            }
         }
+        return false;
     }
 
 private:

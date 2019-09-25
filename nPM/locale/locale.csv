@@ -179,6 +179,7 @@ RESPAutoActivation,Resp激活,Resp Automatic Activation
 EnterPassthroughMode,进入透传模式,Enter Passthrough Mode
 ExitPassthroughMode,退出透传模式,Exit Passthrough Mode
 SwitchPassthroughModeFail,切换透传模式失败,Switch Passthrough Mode Fail
+FlashCRCError,Flash CRC 错误,Flash CRC Error
 NIBPMeasurement,无创血压测量,NIBP Measure
 NIBPMeasureMode,测量模式,Measure Mode
 NIBPIntervalTime,间隔时间,NIBP Interval Time
@@ -469,7 +470,8 @@ NIBPSTOPPED,停止,Stopped
 NIBPWAITING,NIBP等待,NIBP Waiting
 NIBPNoResponse,无响应,No Response
 NIBPTemporarily,临时,Temporarily
-NIBPDisable,禁用,Disable
+NIBPDisable,故障,Fault
+NIBPStop,停用,Stop use
 NIBPNotCalibrate,未校准,Not Calibrate
 _1min,1 分钟,1 min
 _1.5min,1.5 分钟,1.5 min
@@ -608,7 +610,7 @@ ECGAcquiring12L,获取12导,Acquiring 12 Lead
 ECGAcquired12L,获取12导结束,Acquire 12 Lead Complete
 RESPCommunicationStop,Resp通信中断,Resp Communication Stop
 RESPCheckElecrodes,Resp检查电极,Resp Check Electrodes
-Apnea,Resp窒息,Apnea
+Apnea,呼吸窒息,Apnea
 SPO2Low,SpO₂低,SpO₂ Low
 SPO2High,SpO₂高,SpO₂ High
 SPO2PRLow,PR低,PR Low
@@ -739,6 +741,11 @@ NIBPMAPLow,平均压低,NIBP MAP Low
 NIBPMAPHigh,平均压高,NIBP MAP High
 NIBPCommunicationStop,NIBP通信中断,NIBP Communication Stop
 NIBPSendCommunicationStop,NIBP发送通信中断,NIBP Send Communication Stop
+NIBPSelfTestError,NIBP自测失败,NIBP Selftest Fail
+NIBPModuleAbnormal,NIBP模块异常,NIBP Module Abnormal
+NIBPModuleNotCalibrate,NIBP未校准,NIBP Module Not Calibrated
+NIBPModuleError,NIBP模块硬件错误,NIBP Module HardWare Error
+NIBPModuleOverPressure,NIBP模块过压,NIBP Module Overpressure
 NIBPCommunicationTimeout,NIBP通信超时,NIBP Communication Timeout
 NIBPMeasurementAbort,测量中止,NIBP Measurement Aborted
 NIBPCuffTypeError,NIBP袖带类型错,NIBP Cuff Type Error 
@@ -1561,6 +1568,7 @@ TEMPModuleNotCalibration2,Temp模块通道2未定标,Temp Channel 2 Not Calibrat
 TEMPModuleDisable,Temp模块禁用,Temp Module Disable
 TEMPCommunicationStop,Temp通信中断,Temp Communication Stop
 TEMPSendCommunicationStop,Temp发送通信中断,Temp Send Communication Stop
+TEMPModuleAbnormal,Temp模块异常,Temp Module Is Abnormal
 TEMPChannel,Temp通道,Temp Channel
 TEMPCalibrate,Temp校准 ,Temp Calibrate
 N2O,N₂O,N₂O

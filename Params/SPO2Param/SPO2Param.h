@@ -158,6 +158,12 @@ public:
     AverageTime getAverageTime(void);
 
     /**
+     * @brief setRawDataSend 设置原始数据发送开关
+     * @param onOff
+     */
+    void enableRawDataSend(bool onOff);
+
+    /**
      * @brief setSensitivity  设置灵敏度
      * @param sens  灵敏度值
      */

@@ -120,7 +120,7 @@ public:
 public:
     // 设置/获取单位。
     void setUnit(UnitType u);
-    UnitType getUnit(void);
+    UnitType getUnit(SubParamID id = SUB_PARAM_T1);
 
 signals:
     /**

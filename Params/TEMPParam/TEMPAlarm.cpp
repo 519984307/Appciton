@@ -287,11 +287,10 @@ AlarmPriority TEMPOneShotAlarm::getAlarmPriority(int id)
     {
     case TEMP_OVER_RANGR_1:
     case TEMP_OVER_RANGR_2:
+    case TEMP_OVER_RANGR_ALL:
     case TEMP_ONESHOT_ALARM_MODULE_DISABLE:
+    case TEMP_ONESHOT_ALARM_MODULE_ABNORMAL:
         return ALARM_PRIO_HIGH;
-    case TEMP_ONESHOT_ALARM_NOT_CALIBRATION_1:
-    case TEMP_ONESHOT_ALARM_NOT_CALIBRATION_2:
-        return ALARM_PRIO_PROMPT;
     default:
         return ALARM_PRIO_MED;
     }

@@ -966,6 +966,9 @@ void EventWindowPrivate::eventTrendUpdate()
     QString map;
     QString et;
     QString fi;
+    QString t1;
+    QString t2;
+    QString td;
     QString valueStr;
     QString titleStr;
     bool multiSubParamAlarm = false;
@@ -989,7 +992,7 @@ void EventWindowPrivate::eventTrendUpdate()
             }
             else if (paramInfo.getParamID(subId) == PARAM_TEMP)
             {
-                dataStr = Unit::convert(type, UNIT_TC, ctx.trendSegment->values[i].value / 10.0);
+                dataStr = Unit::convert(type, paramInfo.getUnitOfSubParam(subId), ctx.trendSegment->values[i].value / 10.0);
             }
             else if (paramInfo.getParamID(subId) == PARAM_NIBP)
             {
@@ -1060,6 +1063,27 @@ void EventWindowPrivate::eventTrendUpdate()
             titleStr = titleStr.right(titleStr.length() - 2);
             titleStr += "(Et/Fi)";
             valueFont = fontManager.numFont(31);
+            break;
+        case SUB_PARAM_T1:
+            t1 = dataStr;
+            valueStr = dataStr;
+            subParamAlarm = ctx.trendSegment->values[i].alarmFlag;
+            titleStr = trs(paramInfo.getSubParamName(subId));
+            valueFont = fontManager.numFont(37);
+            break;
+        case SUB_PARAM_T2:
+            t2 = dataStr;
+            valueStr = dataStr;
+            subParamAlarm = ctx.trendSegment->values[i].alarmFlag;
+            titleStr = trs(paramInfo.getSubParamName(subId));
+            valueFont = fontManager.numFont(37);
+            break;
+        case SUB_PARAM_TD:
+            td = QString::number(qAbs(t1.toFloat() - t2.toFloat()), 'f', 1);
+            valueStr = td;
+            subParamAlarm = ctx.trendSegment->values[i].alarmFlag;
+            titleStr = trs(paramInfo.getSubParamName(subId));
+            valueFont = fontManager.numFont(37);
             break;
         default:
             valueStr = dataStr;
@@ -1153,6 +1177,7 @@ void EventWindowPrivate::calculationPage()
 
 void EventWindowPrivate::refreshEventList()
 {
+    printList.clear();
     QList<QString> timeList;
     QList<QString> eventList;
     for (int i = 0; i < PAGE_ROW_COUNT; i++)

@@ -142,8 +142,21 @@ public:
      */
     bool getDisableZeroStatus();
 
+    /**
+     * @brief enableO2Compensation 设置气体补偿使能
+     * @param enable
+     */
+    void enableCompensation(CO2Compensation gas, bool enable);
+    bool getCompensationEnabled(CO2Compensation gas);
+
 signals:
     void updateZeroSta(bool sta);
+
+    /**
+     * @brief updateO2Compensation 更新气体是否可补偿的状态
+     * @param enable
+     */
+    void updateCompensation(CO2Compensation gas, bool enable);
 
 public:
     // 校零。

@@ -265,6 +265,7 @@ void T5Provider::_selfTest(unsigned char *packet, int len)
                 errorStr += tempErrorCode[packet[i]];
                 break;
             case ERRORCODE_DATA_RESET_DEFAULT:
+                tempParam.setOneShotAlarm(TEMP_ONESHOT_ALARM_MODULE_ABNORMAL, true);
                 errorStr += tempErrorCode[packet[i]];
                 break;
             default:
@@ -304,6 +305,8 @@ void T5Provider::_errorWarm(unsigned char *packet, int len)
         switch (packet[i])
         {
         case ERRORCODE_FLASH_WRONG:
+            tempParam.setOneShotAlarm(TEMP_ONESHOT_ALARM_MODULE_ABNORMAL, true);
+            break;
         case ERRORCODE_SELF_CHECK_FAILED:
             systemManager.setPoweronTestResult(T5_MODULE_SELFTEST_RESULT, SELFTEST_FAILED);
             tempParam.setErrorDisable();

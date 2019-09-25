@@ -523,6 +523,12 @@ void S5Provider::sendStatus(void)
     sendCmd(S5_CMD_STATUS, NULL, 0);
 }
 
+void S5Provider::enableRawDataSend(bool onOff)
+{
+    unsigned char cmd = onOff;
+    sendCmd(S5_CMD_RAW_DATA, &cmd, 1);
+}
+
 /**************************************************************************************************
  * 发送协议命令。
  *************************************************************************************************/

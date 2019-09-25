@@ -160,9 +160,6 @@ void NIBPDataTrendWidget::showValue(void)
     {
         timeDate.getTime(t.key(), timeStr);
         _table->item(i, 0)->setText(timeStr);
-        bool sysAlarm = false;
-        bool diaAlarm = false;
-        bool mapAlarm = false;
         NIBPTrendCacheData providerBuff = t.value();
         if (providerBuff.sys.value == InvData() || providerBuff.dia.value == InvData() ||
                 providerBuff.map.value == InvData())
@@ -175,6 +172,9 @@ void NIBPDataTrendWidget::showValue(void)
         }
         else
         {
+            bool sysAlarm = false;
+            bool diaAlarm = false;
+            bool mapAlarm = false;
             QString valStr;
             QString boldwrap = "<b>%1</b>";
             QString colorwrap = "<font color=%1>%2</font>";
@@ -534,8 +534,6 @@ NIBPDataTrendWidget::NIBPDataTrendWidget()
                                           << trs("NIBPList")
                                           << trs("PR");
     _table->setHorizontalHeaderLabels(titleList);
-
-    connect(_table, SIGNAL(released(QMouseEvent *)), this, SLOT(mouseReleaseEvent(QMouseEvent *)));
 
     _table->setSelectionMode(QAbstractItemView::NoSelection);
 

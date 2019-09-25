@@ -37,7 +37,8 @@ public:
     SystemBoardProvider();
     ~SystemBoardProvider();
 
-public:// PowerParamProviderIFace.
+public:
+    // PowerParamProviderIFace.
     virtual PowerSuplyType getPowerSuplyType(void);
 
     virtual short getPowerADC(void);
@@ -51,7 +52,8 @@ public:// PowerParamProviderIFace.
     // 发送协议命令
     virtual void sendCmdData(unsigned char cmdId, const unsigned char *data, unsigned int len);
 
-public: // LightProviderIFace
+public:
+    // LightProviderIFace
     // 自检，发生在开机时刻，依次亮静音灯、低、中、高级别报警灯，最后熄灭。
     virtual void selfTest(void);
 
@@ -73,9 +75,6 @@ public:
     // 触发蜂鸣器。
     void triggerBuzzer(void);
 
-    // 版本信息。
-    void getVersionInfo(QString &hwVersion, QString &swVersion, QString &protoVersion);
-
     // 获取错误警告码
     ErrorWaringCode getErrorWaringCode(void);
 
@@ -92,7 +91,6 @@ protected:
     virtual void sendDisconnected();
 
 private:
-    void _parseVersionInfo(unsigned char *data, int len);
     void _parseKeyEvent(unsigned char *data, int len);
     void _parsePowerStat(unsigned char *data, int len);
     void _parseOperateMode(unsigned char *data, int len);
@@ -116,9 +114,6 @@ private:
             isCharging = false;
         }
 
-        QString hwVersion;
-        QString swVersion;
-        QString protoVersion;
         PowerSuplyType powerSuply;
         ErrorWaringCode errorCode;
         short adcValue;

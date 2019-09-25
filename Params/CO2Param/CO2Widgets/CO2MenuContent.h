@@ -12,6 +12,7 @@
 #pragma once
 
 #include "MenuContent.h"
+#include "CO2Define.h"
 
 class CO2MenuContentPrivate;
 class CO2MenuContent: public MenuContent
@@ -64,6 +65,12 @@ private slots:
      * @param sta
      */
     void disableZero(bool sta);
+
+    /**
+     * @brief onUpdateCompensation 更新气体可补偿状态
+     * @param enable
+     */
+    void onUpdateCompensation(CO2Compensation gas, bool enable);
 
 private:
     CO2MenuContentPrivate * const d_ptr;

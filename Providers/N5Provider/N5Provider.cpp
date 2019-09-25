@@ -35,25 +35,25 @@ static const char *nibpSelfErrorCode[] =
     "3.3V self-test failed.\r\n",                             // 6
     "15V self-test failed.\r\n",                              // 7
     "AD7739 Self-test failed.\r\n",                           // 8
-    "The data saved in Flash is reset to the default value.\r\n",
+    "The data saved in Flash is reset to the default value.\r\n",  // 校准数据恢复默认
     "The Big gas valve is unusual.\r\n",                      // 10
     "The small gas valve is unusual.\r\n",                    // 11
     "The air pump is unusual.\r\n",                           // 12
-    "The sofaware of overpressure protect is unusual.\r\n",    // 13
-    "Comparisons of pressure between master and Daemon fail to pass self-test"  // 14
+    "The sofaware of overpressure protect is unusual.\r\n",   // 13
+    "Zero fail on start-up.\r\n"                              // 14
+    "Calibration is unsuccessful.\r\n",                       // 15
 };
 
 static const char *nibpErrorCode[] =
 {
+    "Comparisons of pressure between master and Daemon fail to pass self-test"  // 126
     "Master-slave communication is unusual.\r\n",             // 127
     "Flash wrong.\r\n",                                       // 128
     "Data sample exception.\r\n",                             // 129
     "The Big gas valve is unusual for running.\r\n",          // 130
     "The small gas valve is unusual for running.\r\n",        // 131
     "The air pump is unusual for running.\r\n",               // 132
-    "Calibration is unsuccessful.\r\n",                       // 133
-    "The Daemon error.\r\n",                                  // 134
-    "Zero fail on start-up.\r\n"                              // 135
+    "The Daemon error.\r\n",                                  // 133
 };
 
 /**************************************************************************************************
@@ -73,21 +73,18 @@ void N5Provider::sendSelfTest()
 void N5Provider::_selfTest(unsigned char *packet, int len)
 {
     int num = packet[1];
-    outHex(packet, len);
     if (num > 0)
     {
-        int error = 0;
         QString errorStr("");
         errorStr = "error code = ";
         for (int i = 2; i < len; i++)
         {
-            if (packet[i] == 0x85 || packet[i] == 0x09)
-            {
-                error++;
-            }
-            errorStr += "0x" + QString::number(packet[1], 16) + ", ";
+            errorStr += "0x" + QString::number(packet[i], 16) + ", ";
         }
         errorStr += "\n";
+
+        /* nibp selftest got error */
+        qWarning() << Q_FUNC_INFO << getName() << "Selftest error, " << errorStr;
 
         for (int i = 2; i < len; i++)
         {
@@ -105,30 +102,16 @@ void N5Provider::_selfTest(unsigned char *packet, int len)
             case 0x0A:
             case 0x0B:
             case 0x0C:
-            case 0x0d:
-            case 0x0e:
+            case 0x0D:
+            case 0x0E:
+            case 0x0F:
                 errorStr += nibpSelfErrorCode[packet[i]];
-                break;
-            case 0x7f:
-            case 0x80:
-            case 0x81:
-            case 0x82:
-            case 0x83:
-            case 0x84:
-                errorStr += nibpErrorCode[packet[i] - 127];
-                break;
-            case 0x85:
-                nibpParam.setCalibrateState(false);
-            case 0x86:
-            case 0x87:
-                errorStr += nibpErrorCode[packet[i] - 127];
                 break;
             default:
                 errorStr += "Unknown mistake.\r\n";
                 break;
             }
         }
-
         ErrorLogItem *item = new CriticalFaultLogItem();
         item->setName("N5 Selftest Error");
         item->setLog(errorStr);
@@ -137,9 +120,6 @@ void N5Provider::_selfTest(unsigned char *packet, int len)
         item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
 
         errorLog.append(item);
-
-        nibpParam.setDisableState(true);
-        nibpParam.errorDisable();
         systemManager.setPoweronTestResult(N5_MODULE_SELFTEST_RESULT, SELFTEST_FAILED);
     }
     else if (num == 0)
@@ -148,11 +128,84 @@ void N5Provider::_selfTest(unsigned char *packet, int len)
     }
 }
 
+void N5Provider::_handleError(unsigned char error)
+{
+    switch(error)
+    {
+    case SELF_TEST_6V_FAILED:
+    case SELF_TEST_5V_FAILED:
+    case SELF_TEST_5VA_FAILED:
+    case SELF_TEST_3_3VA1_FAILED:
+    case SELF_TEST_3_3VA2_FAILED:
+    case SELF_TEST_3_3V_FAILED:
+    case SELF_TEST_15V_FAILED:
+    case AD7739_SELF_TEST_FAILED:
+    case The_BIG_GAS_VALUE_IS_UNSUAL:
+    case THE_SMALL_GAS_VALVE_IS_UNUSUAL:
+    case THE_AIR_PUMP_IS_UNUSUAL:
+    case THE_SOFTWARE_OF_OVERPRESSURE_PROTECT_IS_UNUSUAL:
+        _error |= N5_TYPE_SELFTEST_FAIL;   // 模块自检失败
+        break;
+    case RESET_TO_THE_DEFAULT_VALVE:
+    case CALIBRATION_IS_UNSUCCESSFUL:
+        _error |= N5_TYPE_NOT_CALIBRATE;  // 模块未校准
+        break;
+    case ZERO_FAIL_ON_START_UP:
+    case FLASH_WRONG:
+        _error |= N5_TYPE_ABNORMAL;       // 模块异常
+        break;
+    case MASTER_AND_DAEMON_FAIL_TO_PASS_SELF_TEST:
+    case MASTER_SLAVE_COMMUNICATION_IS_UNUSUAL:
+    case DATA_SAMPLE_EXCEPTION:
+    case THE_BIG_GAS_VALVE_IS_UNUSUAL_FOR_RUNNING:
+    case THE_SMALL_GAS_VALVE_IS_UNUSUAL_FOR_RUNNING:
+    case THE_AIR_PUMP_IS_UNUSUAL_FOR_RUNNING:
+        _error |= N5_TYPE_ERROR;         // 模块错误
+        break;
+    }
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
+    if (!alarmSource)
+    {
+        return;
+    }
+
+    if (_error & N5_TYPE_NOT_CALIBRATE)
+    {
+        alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_NOT_CALIBRATE, true);   // 模块未校准
+    }
+    else if (_error & N5_TYPE_ABNORMAL)
+    {
+        alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_ABNORMAL, true);   // 模块异常
+    }
+    else if (_error & N5_TYPE_SELFTEST_FAIL)
+    {
+        alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_SELTTEST_ERROR, true);   // 模块自检失败
+        nibpParam.setDisableState(true);    // 设置为不可测量
+        nibpParam.errorDisable();
+    }
+    else if (_error & N5_TYPE_ERROR)
+    {
+        alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_ERROR, true);   // 模块错误
+        nibpParam.setDisableState(true);
+        nibpParam.errorDisable();
+    }
+}
+
+void N5Provider::_handleSelfTestError(unsigned char *packet, int len)
+{
+    int num = packet[1];
+    if (num > 0)
+    {
+        for (int i = 2; i < len; i++)
+        {
+            _handleError(packet[i]);
+        }
+    }
+}
+
 void N5Provider::_errorWarm(unsigned char *packet, int len)
 {
     outHex(packet, len);
-    nibpParam.setDisableState(true);
-    nibpParam.errorDisable();
     QString errorStr("");
     errorStr = "error code = ";
     errorStr += "0x" + QString::number(packet[1], 16) + ", ";
@@ -160,6 +213,7 @@ void N5Provider::_errorWarm(unsigned char *packet, int len)
 
     switch (packet[1])
     {
+    case 0x7e:
     case 0x7f:
     case 0x80:
     case 0x81:
@@ -167,9 +221,7 @@ void N5Provider::_errorWarm(unsigned char *packet, int len)
     case 0x83:
     case 0x84:
     case 0x85:
-    case 0x86:
-    case 0x87:
-        errorStr += nibpErrorCode[packet[1] - 127];
+        errorStr += nibpErrorCode[packet[1] - 126];
         break;
     default:
         errorStr += "Unknown mistake.\r\n";
@@ -270,13 +322,15 @@ void N5Provider::handlePacket(unsigned char *data, int len)
     case N5_RSP_GET_MEASUREMENT:
     {
         NIBPMeasureResultInfo info = getMeasureResultInfo(&data[1]);
-        nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_GET_RESULT, reinterpret_cast<unsigned char *>(&info), sizeof(info));
+        nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_GET_RESULT, reinterpret_cast<unsigned char *>(&info),
+                                  sizeof(info));
         break;
     }
 
     // 开机自检
     case N5_RSP_SELFTEST:
         _selfTest(data, len);
+        _handleSelfTestError(data, len);
         break;
 
     // <15mmHg压力值周期性数据帧
@@ -293,6 +347,7 @@ void N5Provider::handlePacket(unsigned char *data, int len)
     case N5_DATA_ERROR:
         _sendACK(data[0]);
         _errorWarm(data, len);
+        _handleError(data[1]);
         break;
 
     // 测量结束帧
@@ -403,18 +458,32 @@ void N5Provider::handlePacket(unsigned char *data, int len)
         nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_ZERO, NULL, 0);
         break;
     case N5_STATE_PRESSURE_PROTECT:
-        if (data[1] == 0x01)
+        if ((data[1] & N5_TYPE_PROTECT_MASTE_PROTECT)
+            || (data[1] & N5_TYPE_PROTECT_SLAVE_PROTECT)
+                || (data[1] & N5_TYPE_PROTECT_HARDWARE_PROTECT))
         {
+            AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
+            if (data[1] & 0x04)
+            {
+                if (alarmSource)
+                {
+                    alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_ABNORMAL, true);
+                }
+            }
+            if (alarmSource)
+            {
+                alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_OVER_PRESSURE_PROTECT, true);
+            }
             nibpParam.setDisableState(true);
             nibpParam.errorDisable();
         }
-        else if (data[1] == 0x00)
+        else if (data[1] == N5_TYPE_PROTECT_NORMAL)
         {
             nibpParam.setDisableState(false);
             AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
             if (alarmSource)
             {
-                alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_DISABLE, false);
+                alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_OVER_PRESSURE_PROTECT, false);
             }
             nibpParam.handleNIBPEvent(NIBP_EVENT_CONNECTION_NORMAL, NULL, 0);                       // 恢复禁用状态
         }
@@ -577,6 +646,12 @@ bool N5Provider::needStartACK(void)
 bool N5Provider::needStopACK(void)
 {
     return true;
+}
+
+void N5Provider::enableRawDataSend(bool onOff)
+{
+    unsigned char cmd = onOff;
+    sendCmd(N5_CMD_RAW_DATA, &cmd, 1);
 }
 
 /**************************************************************************************************
@@ -925,6 +1000,8 @@ N5Provider::N5Provider() : BLMProvider("BLM_N5"), NIBPProviderIFace()
     }
 
     setDisconnectThreshold(5);
+    _error = 0x00;
+    _hardWareProtect = false;
 }
 
 /**************************************************************************************************
