@@ -353,7 +353,6 @@ void TrendWaveWidget::loadTrendData(SubParamID subID)
     _trendGraphInfo.startTime = _leftTime;
     _trendGraphInfo.endTime = _rightTime;
     _trendGraphInfo.subParamID = subID;
-    unsigned interval = TrendDataSymbol::convertValue(_timeInterval);
     switch (subID)
     {
     case SUB_PARAM_HR_PR:
@@ -366,37 +365,8 @@ void TrendWaveWidget::loadTrendData(SubParamID subID)
     {
         TrendGraphData dataV1;
         AlarmEventInfo alarm;
-        unsigned lastTime = _trendDataPack.last()->time;
-        bool startFlag = true;
-        for (int i = _trendDataPack.count() - 1; i >= 0; i--)
+        for (int i = 0; i < _trendDataPack.count(); i++)
         {
-            if (startFlag)
-            {
-                startFlag = false;
-            }
-            else
-            {
-                unsigned t = _trendDataPack.at(i)->time;
-                if (t < lastTime)
-                {
-                    // 处理由于关机引起的数据未记录:向下一个存储数据移动的时间间隔个数
-                    int intervalNum = (lastTime - t) / interval + (((lastTime - t) % interval) ? 1 : 0);
-                    lastTime = lastTime - interval * intervalNum;
-                    dataV1.data = InvData();
-                    dataV1.isAlarm = false;
-                    dataV1.timestamp = lastTime;
-                    alarm.isAlarmEvent = false;
-                    alarm.timestamp = lastTime;
-                    _trendGraphInfo.alarmInfo.append(alarm);
-                    _trendGraphInfo.trendData.append(dataV1);
-                    lastTime = lastTime - interval;
-                    continue;
-                }
-                else if (t > lastTime)
-                {
-                    continue;
-                }
-            }
             dataV1.data = _trendDataPack.at(i)->subparamValue.value(subID, InvData());
             dataV1.isAlarm = _trendDataPack.at(i)->subparamAlarm.value(subID, false);
             dataV1.timestamp = _trendDataPack.at(i)->time;
@@ -404,7 +374,6 @@ void TrendWaveWidget::loadTrendData(SubParamID subID)
             alarm.timestamp = _trendDataPack.at(i)->time;
             _trendGraphInfo.alarmInfo.append(alarm);
             _trendGraphInfo.trendData.append(dataV1);
-            lastTime = lastTime - interval;
         }
         break;
     }
@@ -416,51 +385,8 @@ void TrendWaveWidget::loadTrendData(SubParamID subID)
     {
         AlarmEventInfo alarm;
         TrendGraphDataV3 dataV3;
-        unsigned lastTime = _trendDataPack.last()->time;
-        bool startFlag = true;
-        for (int i = _trendDataPack.count() - 1; i >= 0; i--)
+        for (int i = 0; i < _trendDataPack.count(); i++)
         {
-            if (startFlag)
-            {
-                startFlag = false;
-            }
-            else
-            {
-                unsigned t = _trendDataPack.at(i)->time;
-                if (t < lastTime)
-                {
-                    // 处理由于关机引起的数据未记录:向下一个存储数据移动的时间间隔个数
-                    int intervalNum = (lastTime - t) / interval + (((lastTime - t) % interval) ? 1 : 0);
-                    lastTime = lastTime - interval * intervalNum;
-                    dataV3.data[0] = InvData();
-                    dataV3.data[1] = InvData();
-                    dataV3.data[2] = InvData();
-                    dataV3.isAlarm = false;
-                    dataV3.timestamp = lastTime;
-                    alarm.isAlarmEvent = false;
-                    alarm.timestamp = lastTime;
-                    _trendGraphInfo.alarmInfo.append(alarm);
-                    _trendGraphInfo.trendDataV3.append(dataV3);
-                    lastTime = lastTime - interval;
-                    continue;
-                }
-                else if (t > lastTime)
-                {
-                    if (subID == SUB_PARAM_NIBP_SYS)
-                    {
-                        // NIBP测量标志位保存在后一个时间间隔的数据中.
-                        unsigned status = _trendDataPack.at(i)->status;
-                        if (status & TrendDataStorageManager::CollectStatusNIBP)
-                        {
-                            if (_trendGraphInfo.trendDataV3.count())
-                            {
-                                _trendGraphInfo.trendDataV3.last().status = status;
-                            }
-                        }
-                    }
-                    continue;
-                }
-            }
             dataV3.data[0] = _trendDataPack.at(i)->subparamValue.value(subID, InvData());
             dataV3.data[1] = _trendDataPack.at(i)->subparamValue.value(SubParamID(subID + 1), InvData());
             dataV3.data[2] = _trendDataPack.at(i)->subparamValue.value(SubParamID(subID + 2), InvData());
@@ -473,7 +399,6 @@ void TrendWaveWidget::loadTrendData(SubParamID subID)
             alarm.timestamp = _trendDataPack.at(i)->time;
             _trendGraphInfo.alarmInfo.append(alarm);
             _trendGraphInfo.trendDataV3.append(dataV3);
-            lastTime = lastTime - interval;
         }
         break;
     }
@@ -486,38 +411,8 @@ void TrendWaveWidget::loadTrendData(SubParamID subID)
     {
         AlarmEventInfo alarm;
         TrendGraphDataV2 dataV2;
-        unsigned lastTime = _trendDataPack.last()->time;
-        bool startFlag = true;
-        for (int i = _trendDataPack.count() - 1; i >= 0; i--)
+        for (int i = 0; i < _trendDataPack.count(); i++)
         {
-            if (startFlag)
-            {
-                startFlag = false;
-            }
-            else
-            {
-                unsigned t = _trendDataPack.at(i)->time;
-                if (t < lastTime)
-                {
-                    // 处理由于关机引起的数据未记录:向下一个存储数据移动的时间间隔个数
-                    int intervalNum = (lastTime - t) / interval + (((lastTime - t) % interval) ? 1 : 0);
-                    lastTime = lastTime - interval * intervalNum;
-                    dataV2.data[0] = InvData();
-                    dataV2.data[1] = InvData();
-                    dataV2.isAlarm = false;
-                    dataV2.timestamp = lastTime;
-                    alarm.isAlarmEvent = false;
-                    alarm.timestamp = lastTime;
-                    _trendGraphInfo.alarmInfo.append(alarm);
-                    _trendGraphInfo.trendDataV2.append(dataV2);
-                    lastTime = lastTime - interval;
-                    continue;
-                }
-                else if (t > lastTime)
-                {
-                    continue;
-                }
-            }
             dataV2.data[0] = _trendDataPack.at(i)->subparamValue.value(subID, InvData());
             dataV2.data[1] = _trendDataPack.at(i)->subparamValue.value(SubParamID(subID + 1), InvData());
             dataV2.isAlarm = _trendDataPack.at(i)->subparamAlarm.value(subID, false);
@@ -526,7 +421,6 @@ void TrendWaveWidget::loadTrendData(SubParamID subID)
             alarm.timestamp = _trendDataPack.at(i)->time;
             _trendGraphInfo.alarmInfo.append(alarm);
             _trendGraphInfo.trendDataV2.append(dataV2);
-            lastTime = lastTime - interval;
         }
         break;
     }
@@ -553,10 +447,34 @@ void TrendWaveWidget::trendDataPack(int startIndex, int endIndex)
     qDeleteAll(_trendDataPack);
     _trendDataPack.clear();
 
-    for (int i = startIndex; i <= endIndex; i++)
+    unsigned interval = TrendDataSymbol::convertValue(_timeInterval);
+    unsigned lastTime = trendBlockList.last().extraData;
+    bool startFlag = true;
+    for (int i = endIndex; i >= startIndex; i--)
     {
-        TrendDataPackage *pack;
-        pack = new TrendDataPackage;
+        if (startFlag)
+        {
+            startFlag = false;
+        }
+        else
+        {
+            unsigned t = trendBlockList.at(i).extraData;
+            if (t < lastTime)
+            {
+                // 处理由于关机引起的数据未记录:向下一个存储数据移动的时间间隔个数
+                int intervalNum = (lastTime - t) / interval + (((lastTime - t) % interval) ? 1 : 0);
+                lastTime = lastTime - interval * intervalNum;
+                TrendDataPackage *pack = new TrendDataPackage();
+                pack->time = lastTime;
+                _trendDataPack.append(pack);
+                lastTime = lastTime - interval;
+            }
+            else if (t > lastTime)
+            {
+                continue;
+            }
+        }
+        TrendDataPackage *pack = new TrendDataPackage;
         data = _backend->getBlockData((quint32)i);
         dataSeg = reinterpret_cast<TrendDataSegment *>(data.data());
         pack->time = dataSeg->timestamp;
@@ -568,6 +486,7 @@ void TrendWaveWidget::trendDataPack(int startIndex, int endIndex)
             pack->status = dataSeg->status;
         }
         _trendDataPack.append(pack);
+        lastTime = lastTime - interval;
     }
 }
 

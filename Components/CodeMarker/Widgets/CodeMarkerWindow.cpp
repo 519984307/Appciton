@@ -170,6 +170,8 @@ void CodeMarkerWindow::_btnReleased()
         d_ptr->codeMarkerNum = index;
         d_ptr->isChosen = true;
     }
+    unsigned currentTime = timeManager.getCurTime();
+    eventStorageManager.triggerCodeMarkerEvent(btn->text().toLatin1().data(), currentTime);
 }
 
 void CodeMarkerWindow::_timerOut()
@@ -204,19 +206,6 @@ void CodeMarkerWindowButton::keyPressEvent(QKeyEvent *e)
     }
     switch (e->key())
     {
-    case Qt::Key_Return:
-    case Qt::Key_Enter:
-    {
-        if (!e->isAutoRepeat())
-        {
-            codeMarkerWindow.setPress(true);
-            update();
-        }
-        unsigned currentTime = timeManager.getCurTime();
-        eventStorageManager.triggerCodeMarkerEvent(text().toLatin1().data(), currentTime);
-        emit released();
-        break;
-    }
     case Qt::Key_Left:
     case Qt::Key_Right:
     case Qt::Key_Up:

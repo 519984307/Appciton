@@ -679,14 +679,14 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
 
             ecgParam.setCalcLead(d_ptr->ecgWaveforms[index]);
             ecgParam.setLeadMode3DisplayLead(d_ptr->ecgWaveforms[index]);
-            d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(true);
-            ECGGain gain = ecgParam.getGain(static_cast<ECGLead>(index));
-            d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->setCurrentIndex(gain);
-            d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(false);
             currentConfig.setNumValue("ECG|Ecg1Wave", index);
             layoutManager.updateLayout();
             // 需要在布局更新后调用更新参数接口
             ecgParam.updateWaveWidgetStatus();
+            d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(true);
+            ECGGain gain = ecgParam.getGain(static_cast<ECGLead>(index));
+            d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->setCurrentIndex(gain);
+            d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(false);
             break;
         }
         case ECGMenuContentPrivate::ITEM_CBO_ECG2:

@@ -133,7 +133,16 @@ void RESPDupParam::isAlarm(bool isAlarm, bool isLimit)
         }
         else
         {
-            _trendWidget->isAlarm(_isAlarm);
+            if ((getBrSource() == RESPDupParam::BR_SOURCE_ECG && _rrValue == InvData())
+                    || (getBrSource() == RESPDupParam::BR_SOURCE_CO2 && _brValue == InvData()))
+            {
+                // ECG来源下rr值为无效值，或者CO2来源下br值为无效值，则强制不报警
+                _trendWidget->isAlarm(false);
+            }
+            else
+            {
+                _trendWidget->isAlarm(_isAlarm);
+            }
         }
         _isAlarm = false;
     }

@@ -217,11 +217,6 @@ void IApplication::handleScreenCaptureResult(long result)
     }
 }
 
-void IApplication::onFocusChanged(QWidget *old, QWidget *now)
-{
-    qDebug() << Q_FUNC_INFO << "OLD" << old << "now" << now;
-}
-
 
 #define MENU_KEY Qt::Key_F4
 
@@ -425,7 +420,6 @@ IApplication::IApplication(int &argc, char **argv) : QApplication(argc, argv)
     // motif，cde，s60，cleanlooks，gtk，gtk+，macintosh，但编译Qt库时没有全部编译进去。
     QApplication::setStyle(QStyleFactory::create("cleanlooks"));
 #endif
-    connect(this, SIGNAL(focusChanged(QWidget*, QWidget*)), this, SLOT(onFocusChanged(QWidget*, QWidget*)));
 }
 
 /**************************************************************************************************

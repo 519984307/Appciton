@@ -116,6 +116,11 @@ public:
         return false;
     }
 
+    /**
+     * @brief setRawDataSend 设置原始数据发送开关
+     */
+    virtual void enableRawDataSend(bool /*onOff*/){}
+
     // 校零
     virtual void servicePressureZero(void) { }
     virtual bool isServicePressureZero(unsigned char */*packet*/)

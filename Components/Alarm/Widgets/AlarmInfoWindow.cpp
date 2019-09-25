@@ -139,6 +139,7 @@ void AlarmInfoWindow::layout()
         listView->setIconSize(QSize(24, 24));
         listView->setItemDelegate(new ListViewItemDelegate);
         listView->setSelectionMode(QAbstractItemView::NoSelection);
+        listView->setClickable(false);
         ListDataModel *model = new ListDataModel(this);
         listView->setModel(model);
         listView->setFixedHeight(model->getRowHeightHint() * LISTVIEW_MAX_VISIABLE_SIZE);
@@ -387,7 +388,8 @@ void AlarmInfoWindowPrivate::updateAcknowledgeFlag()
                 QModelIndex index = listModel->index(row, 0);
                 if (index.isValid())
                 {
-                    listModel->setData(index, themeManger.getIcon(ThemeManager::IconChecked, QSize(24, 24)) , Qt::DecorationRole);
+                    listModel->setData(index, themeManger.getIcon(ThemeManager::IconChecked, QSize(24, 24)),
+                                       Qt::DecorationRole);
                 }
             }
             else if (nodeList.at(i).alarmType == ALARM_TYPE_PHY)
@@ -395,7 +397,8 @@ void AlarmInfoWindowPrivate::updateAcknowledgeFlag()
                 QModelIndex index = dataModel->index(row, 0);
                 if (index.isValid())
                 {
-                    dataModel->setData(index, themeManger.getIcon(ThemeManager::IconChecked, QSize(24, 24)), Qt::DecorationRole);
+                    dataModel->setData(index, themeManger.getIcon(ThemeManager::IconChecked, QSize(24, 24)),
+                                       Qt::DecorationRole);
                 }
             }
         }

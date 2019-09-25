@@ -168,7 +168,14 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
                 int val = tempStr.toInt();
                 if ((co2Param.getEtCO2MinValue() <= val) && (val <= co2Param.getEtCO2MaxValue()))
                 {
-                    value = (packet[14] == 0xFF) ? InvData() : packet[14];
+                    if (_status.noBreath)
+                    {
+                        value = (packet[14] == 0xFF) ? 0 : packet[14];
+                    }
+                    else
+                    {
+                        value = (packet[14] == 0xFF) ? InvData() : packet[14];
+                    }
                     co2Param.setFiCO2(_fico2Value);
                     co2Param.setEtCO2(_etco2Value);
                     co2Param.setBR(value);
@@ -182,7 +189,14 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
             }
             else
             {
-                value = (packet[14] == 0xFF) ? InvData() : packet[14];
+                if (_status.noBreath)
+                {
+                    value = (packet[14] == 0xFF) ? 0 : packet[14];
+                }
+                else
+                {
+                    value = (packet[14] == 0xFF) ? InvData() : packet[14];
+                }
                 co2Param.setFiCO2(_fico2Value);
                 co2Param.setEtCO2(_etco2Value);
                 co2Param.setBR(value);
@@ -264,12 +278,14 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
 
         // 设备是否支持O2参数。
         _status.o2Config = ((val & BIT0) == BIT0) ? true : false;
+        co2Param.enableCompensation(CO2_COMPEN_O2, !_status.o2Config);
 
         // 设备是否支持CO2参数。
         _status.co2Config = ((val & BIT1) == BIT1) ? true : false;
 
         // 设备是否支持N2O参数。
         _status.n2oConfig = ((val & BIT2) == BIT2) ? true : false;
+        co2Param.enableCompensation(CO2_COMPEN_N2O, !_status.n2oConfig);
 
         // 麻醉气体支持。
         _status.halConfig = ((val & BIT3) == BIT3) ? true : false;
