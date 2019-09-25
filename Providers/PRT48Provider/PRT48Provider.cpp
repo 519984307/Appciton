@@ -199,36 +199,6 @@ void PRT48Provider::_parseStatusInfo(const unsigned char *data, unsigned int len
 }
 
 /***************************************************************************************************
- * 版本信息解析
- **************************************************************************************************/
-void PRT48Provider::_parseVersionInfo(const unsigned char *data, unsigned int len)
-{
-    if (NULL == data)
-    {
-        return;
-    }
-
-    if (len != 10)
-    {
-        debug("Invalid version info packet!");
-        return;
-    }
-
-    _hwVer = QString("%1.%2.%3")
-             .arg(QString::number(data[1]))
-             .arg(QString::number(data[2]))
-             .arg(QString::number(data[3]));
-    _swVer = QString("%1.%2.%3")
-             .arg(QString::number(data[4]))
-             .arg(QString::number(data[5]))
-             .arg(QString::number(data[6]));
-    _protoVer = QString("%1.%2.%3")
-                .arg(QString::number(data[7]))
-                .arg(QString::number(data[8]))
-                .arg(QString::number(data[9]));
-}
-
-/***************************************************************************************************
  * 自检结果解析
  **************************************************************************************************/
 void PRT48Provider::_parseSelfTestResult(const unsigned char *data, unsigned int len)
@@ -423,7 +393,6 @@ void PRT48Provider::handlePacket(unsigned char *data, int len)
         break;
 
     case PRINTER_CMD_VERSION_INFO:
-        _parseVersionInfo(data, len);
         break;
 
     case PRINTER_CMD_SELF_TEST_RESULT:
@@ -469,7 +438,7 @@ void PRT48Provider::handlePacket(unsigned char *data, int len)
     case PRINTER_CMD_RUN_PAPER_ACK:
     case PRINTER_CMD_ALIGN_MARKER_ACK:
     case PRINTER_CMD_PRINT_TEST_PAGE_ACK:
-        // TODO
+        /* TODO */
         break;
 
     default:
@@ -535,7 +504,7 @@ bool PRT48Provider::sendBitmapData(unsigned char *data, unsigned int len)
 {
     static unsigned char _packetNum = 0;
 
-    unsigned char packet[2 * len + 1 + 1]; // RLE worst case data len (2n+1), plus a packet number
+    unsigned char packet[2 * len + 1 + 1];  // RLE worst case data len (2n+1), plus a packet number
     ::memset(packet, 0, sizeof(packet));
     int retLen;
 
@@ -580,16 +549,6 @@ void PRT48Provider::startSelfTest(void)
 PrinterSelfTestResult PRT48Provider::selfTestResult(void)
 {
     return _selfTestResult;
-}
-
-/***************************************************************************************************
- * 返回版本信息。
- **************************************************************************************************/
-void PRT48Provider::versionInfo(QString &hwVer, QString &swVer, QString &protoVer)
-{
-    hwVer = _hwVer;
-    swVer = _swVer;
-    protoVer = _protoVer;
 }
 
 /***************************************************************************************************
@@ -645,7 +604,8 @@ PRT48Provider::PRT48Provider()
     , _selfTestResult(PRINTER_SELF_TEST_NOT_PERFORMED)
     , _sigSender(new PrinterProviderSignalSender(this))
 {
-    // UartAttrDesc portAttr(460800, 8, 'N', 1, 0, FlOW_CTRL_HARD, false);  //new mainboard support flow control, use block io
+    // new mainboard support flow control, use block io
+    // UartAttrDesc portAttr(460800, 8, 'N', 1, 0, FlOW_CTRL_HARD, false);
     UartAttrDesc portAttr(115200, 8, 'N', 1, 0);
     initPort(portAttr);
     needConnectedToParam = false;

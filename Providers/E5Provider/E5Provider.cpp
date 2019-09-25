@@ -383,11 +383,9 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         break;
 
     case TE3_RSP_FILTER_PARAMETER:
-        qDebug() << data[1] << Q_FUNC_INFO << __LINE__;
         break;
 
     case TE3_RSP_NOTCH_FILTER:
-        qDebug() << data[1] << Q_FUNC_INFO << __LINE__;
         break;
 
     case TE3_RSP_ECG_SAMPLE_CONFIG:
@@ -558,17 +556,17 @@ void E5Provider::handlePacket(unsigned char *data, int len)
 
         case 0x02:
             num = ((data[5] << 24) | (data[4] << 16) | (data[3] << 8) | data[2]);
-            errorStr = QString("Major Collection Module %d Packet Loss.\r\n").arg(num);
+            errorStr = QString("Major Collection Module %1 Packet Loss.\r\n").arg(num);
             break;
 
         case 0x03:
             num = ((data[5] << 24) | (data[4] << 16) | (data[3] << 8) | data[2]);
-            errorStr = QString("Minor Collection Module %d Packet Loss.\r\n").arg(num);
+            errorStr = QString("Minor Collection Module %1 Packet Loss.\r\n").arg(num);
             break;
 
         case 0x04:
             num = ((data[5] << 24) | (data[4] << 16) | (data[3] << 8) | data[2]);
-            errorStr = QString("Major Collecting %d Error Data Frames.\r\n").arg(num);
+            errorStr = QString("Major Collecting %1 Error Data Frames.\r\n").arg(num);
             break;
 
         case 0x05:

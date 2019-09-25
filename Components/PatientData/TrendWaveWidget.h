@@ -245,7 +245,6 @@ private:
     int _waveRegionWidth;
     int _oneFrameWidth;
 
-    unsigned _initTime;
     int _cursorPosIndex;                            //游标位置在存储数据结构容器中的索引值
     unsigned _currentCursorTime;
 

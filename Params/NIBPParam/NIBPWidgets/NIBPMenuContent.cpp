@@ -219,7 +219,7 @@ void NIBPMenuContentPrivate::loadOptions()
         else if (type == PATIENT_TYPE_NEO)
         {
             start = 60;
-            end = 140;
+            end = 130;
         }
         UnitType unit = nibpParam.getUnit();
         curUnitType = unit;

@@ -125,9 +125,6 @@ public:
     // 自检结果
     virtual PrinterSelfTestResult selfTestResult(void) = 0;
 
-    // 版本信息
-    virtual void versionInfo(QString &hwVer, QString &swVer, QString &protoVer) = 0;
-
     //发送协议命令
     virtual void sendCmdData(unsigned char /*cmdId*/, const unsigned char */*data*/,
                              unsigned int /*len*/) { }

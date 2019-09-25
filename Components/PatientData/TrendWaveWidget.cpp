@@ -41,7 +41,6 @@
 TrendWaveWidget::TrendWaveWidget() : _hLayoutTrend(NULL),
     _timeInterval(RESOLUTION_RATIO_5_SECOND),
     _waveRegionWidth(0), _oneFrameWidth(0),
-    _initTime(0),
     _cursorPosIndex(0), _currentCursorTime(0), _subWidget(NULL),
     _displayGraphNum(3), _totalGraphNum(3), _curVScroller(0),
     _totalPage(0), _currentPage(0),  _leftTime(0), _rightTime(0),
@@ -58,8 +57,6 @@ TrendWaveWidget::TrendWaveWidget() : _hLayoutTrend(NULL),
     systemConfig.getNumValue(numberPrefix, index);
     _displayGraphNum = index + 1;
 
-    _initTime = timeDate.time();
-    _initTime = _initTime - _initTime % 5;
     QPalette palette;
     palette.setColor(QPalette::Background, Qt::black);
     setPalette(palette);
@@ -437,6 +434,8 @@ void TrendWaveWidget::dataIndex(int &startIndex, int &endIndex)
 
 void TrendWaveWidget::trendDataPack(int startIndex, int endIndex)
 {
+    qDeleteAll(_trendDataPack);
+    _trendDataPack.clear();
     if (startIndex == InvData() || endIndex == InvData())
     {
         return;
@@ -444,8 +443,6 @@ void TrendWaveWidget::trendDataPack(int startIndex, int endIndex)
 
     QByteArray data;
     TrendDataSegment *dataSeg;
-    qDeleteAll(_trendDataPack);
-    _trendDataPack.clear();
 
     unsigned interval = TrendDataSymbol::convertValue(_timeInterval);
     unsigned lastTime = trendBlockList.last().extraData;
@@ -496,7 +493,8 @@ void TrendWaveWidget::updateTimeRange()
     unsigned onePixelTime = TrendDataSymbol::convertValue(_timeInterval);
     if (trendBlockList.count() == 0)
     {
-        t = _initTime;
+        t = timeDate.time();
+        t = t - t % 5;
     }
     else
     {
@@ -597,6 +595,10 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
     if (_trendGraphInfo.alarmInfo.count() != 0)
     {
         cursorPos = _getCursorPos(_trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp);
+    }
+    else
+    {
+        cursorPos = _getCursorPos(_rightTime);
     }
 
     unsigned t = _rightTime;

@@ -73,21 +73,18 @@ void N5Provider::sendSelfTest()
 void N5Provider::_selfTest(unsigned char *packet, int len)
 {
     int num = packet[1];
-    outHex(packet, len);
     if (num > 0)
     {
-        int error = 0;
         QString errorStr("");
         errorStr = "error code = ";
         for (int i = 2; i < len; i++)
         {
-            if (packet[i] == 0x85 || packet[i] == 0x09)
-            {
-                error++;
-            }
             errorStr += "0x" + QString::number(packet[i], 16) + ", ";
         }
         errorStr += "\n";
+
+        /* nibp selftest got error */
+        qWarning() << Q_FUNC_INFO << getName() << "Selftest error, " << errorStr;
 
         for (int i = 2; i < len; i++)
         {
@@ -325,7 +322,8 @@ void N5Provider::handlePacket(unsigned char *data, int len)
     case N5_RSP_GET_MEASUREMENT:
     {
         NIBPMeasureResultInfo info = getMeasureResultInfo(&data[1]);
-        nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_GET_RESULT, reinterpret_cast<unsigned char *>(&info), sizeof(info));
+        nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_GET_RESULT, reinterpret_cast<unsigned char *>(&info),
+                                  sizeof(info));
         break;
     }
 

@@ -489,12 +489,17 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
                               paramManager.getSubParamUnit(paramID, SUB_PARAM_T2),
                               paramInfo.getUnitOfSubParam(SUB_PARAM_T2),
                               datapack.co2Baro);
-            QString valueTD = constructNormalValueString(SUB_PARAM_TD,
-                              datapack.subparamValue[SUB_PARAM_TD],
-                              datapack.subparamAlarm[SUB_PARAM_TD],
-                              paramManager.getSubParamUnit(paramID, SUB_PARAM_TD),
-                              paramInfo.getUnitOfSubParam(SUB_PARAM_TD),
-                              datapack.co2Baro);
+            QString valueTD;
+            if (datapack.subparamValue[SUB_PARAM_T1] == InvData()
+                    || datapack.subparamValue[SUB_PARAM_T2] == InvData())
+            {
+                // 有一个无效数据，计算的温度差则无效
+                valueTD = InvStr();
+            }
+            else
+            {
+                valueTD = QString::number(qAbs(valueT1.toDouble()- valueT2.toDouble()));
+            }
 
             valueStr = QString("%1/%2/%3").arg(valueT1).arg(valueT2).arg(valueTD);
         }

@@ -342,7 +342,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
 /**************************************************************************************************
  * 功能：处理OneShot报警。
  *************************************************************************************************/
-void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
+void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource, QList<ParamID> &alarmParam)
 {
     bool isEnable = false;
     int n = alarmSource->getAlarmSourceNR();
@@ -551,6 +551,8 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
             {
                 alarmStateMachine->handAlarmEvent(ALARM_STATE_EVENT_NEW_PHY_ALARM, 0, 0);
             }
+
+            alarmParam.append(alarmSource->getParamID());
         }
         else
         {
@@ -626,10 +628,29 @@ void Alarm::_handleAlarm(void)
     }
 
     // 处理生理、技术和生命报警。
+    paramID.clear();
     QList<AlarmOneShotIFace *> oneshotSourceList = _oneshotSources.values();
     foreach(AlarmOneShotIFace *source, oneshotSourceList)
     {
-        _handleOneShotAlarm(source);
+        alarmParamID.clear();
+        _handleOneShotAlarm(source, alarmParamID);
+        if (!alarmParamID.isEmpty())
+        {
+            paramID.append(alarmParamID);
+        }
+    }
+
+    // 处理PhyOneShot报警的趋势数据存储
+    if (!paramID.isEmpty())
+    {
+        TrendDataStorageManagerInterface *trendDataStorageManager = TrendDataStorageManagerInterface::getTrendDataStorageManager();
+        TrendCacheInterface *trendCache = TrendCacheInterface::getTrendCache();
+        if (trendDataStorageManager && trendCache)
+        {
+            trendCache->collectTrendData(_timestamp);
+            trendCache->collectTrendAlarmStatus(_timestamp);
+            trendDataStorageManager->storeData(_timestamp, TrendDataStorageManagerInterface::CollectStatusAlarm);
+        }
     }
 }
 
