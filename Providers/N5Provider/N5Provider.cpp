@@ -169,21 +169,21 @@ void N5Provider::_handleError(unsigned char error)
         return;
     }
 
-    if (_error & 0x01)
+    if (_error & N5_TYPE_NOT_CALIBRATE)
     {
-        alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_NOT_CALIBRAT, true);   // 模块未校准
+        alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_NOT_CALIBRATE, true);   // 模块未校准
     }
-    else if (_error & 0x02)
+    else if (_error & N5_TYPE_ABNORMAL)
     {
         alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_ABNORMAL, true);   // 模块异常
     }
-    else if (_error & 0x04)
+    else if (_error & N5_TYPE_SELFTEST_FAIL)
     {
         alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_SELTTEST_ERROR, true);   // 模块自检失败
         nibpParam.setDisableState(true);    // 设置为不可测量
         nibpParam.errorDisable();
     }
-    else if (_error & 0x08)
+    else if (_error & N5_TYPE_ERROR)
     {
         alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_ERROR, true);   // 模块错误
         nibpParam.setDisableState(true);
@@ -458,7 +458,9 @@ void N5Provider::handlePacket(unsigned char *data, int len)
         nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_ZERO, NULL, 0);
         break;
     case N5_STATE_PRESSURE_PROTECT:
-        if (data[1] & 0x07)
+        if ((data[1] & N5_TYPE_PROTECT_MASTE_PROTECT)
+            || (data[1] & N5_TYPE_PROTECT_SLAVE_PROTECT)
+                || (data[1] & N5_TYPE_PROTECT_HARDWARE_PROTECT))
         {
             AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
             if (data[1] & 0x04)
@@ -475,7 +477,7 @@ void N5Provider::handlePacket(unsigned char *data, int len)
             nibpParam.setDisableState(true);
             nibpParam.errorDisable();
         }
-        else if (data[1] == 0x00)
+        else if (data[1] == N5_TYPE_PROTECT_NORMAL)
         {
             nibpParam.setDisableState(false);
             AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);

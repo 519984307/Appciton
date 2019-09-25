@@ -75,7 +75,6 @@ struct DemoTrendDesc
     Param *param;
 };
 static DemoTrendDesc _demoTrendData[PARAM_NR];
-static QMap<ParamID, bool> _paramIsContect;
 
 /**************************************************************************************************
  * 定时器Slot函数。
@@ -155,35 +154,26 @@ bool DemoProvider::attachParam(Param &param)
         {
             _demoWaveData[i].param = &param;
         }
-        _paramIsContect.insert(PARAM_ECG, ecgParam.isConnected());
         ecgParam.setProvider(this);
-        ecgParam.setConnected(true);
     }
     else if (name == paramInfo.getParamName(PARAM_SPO2))
     {
         _demoWaveData[WAVE_SPO2].param = &param;
-        _paramIsContect.insert(PARAM_SPO2, spo2Param.isConnected());
         spo2Param.setProvider(this);
-        spo2Param.setConnected(true);
     }
     else if (name == paramInfo.getParamName(PARAM_RESP))
     {
         _demoWaveData[WAVE_RESP].param = &param;
-        _paramIsContect.insert(PARAM_RESP, respParam.isConnected());
         respParam.setProvider(this);
-        respParam.setConnected(true);
     }
     else if (name == paramInfo.getParamName(PARAM_NIBP))
     {
-        _paramIsContect.insert(PARAM_NIBP, nibpParam.isConnected());
         nibpParam.setProvider(this);
-        nibpParam.setConnected(true);
     }
     else if (name == paramInfo.getParamName(PARAM_CO2))
     {
         _demoWaveData[WAVE_CO2].param = &param;
         co2Param.setProvider(this);
-        co2Param.setConnected(true);
     }
     else if (name == paramInfo.getParamName(PARAM_IBP))
     {
@@ -195,15 +185,11 @@ bool DemoProvider::attachParam(Param &param)
         _demoWaveData[WAVE_ICP].param = &param;
         _demoWaveData[WAVE_AUXP1].param = &param;
         _demoWaveData[WAVE_AUXP2].param = &param;
-        _paramIsContect.insert(PARAM_IBP, ibpParam.isConnected());
         ibpParam.setProvider(this);
-        ibpParam.setConnected(true);
     }
     else if (name == paramInfo.getParamName(PARAM_CO))
     {
-        _paramIsContect.insert(PARAM_CO, coParam.isConnected());
         coParam.setProvider(this);
-        coParam.setConnected(true);
     }
     else if (name == paramInfo.getParamName(PARAM_AG))
     {
@@ -211,9 +197,7 @@ bool DemoProvider::attachParam(Param &param)
         _demoWaveData[WAVE_AA1].param = &param;
         _demoWaveData[WAVE_AA2].param = &param;
         _demoWaveData[WAVE_O2].param = &param;
-        _paramIsContect.insert(PARAM_AG, agParam.isConnected());
         agParam.setProvider(this);
-        agParam.setConnected(true);
     }
 
     _demoTrendData[param.getParamID()].param = &param;
@@ -239,27 +223,15 @@ void DemoProvider::detachParam(Param &param)
         for (int i = WAVE_ECG_I; i <= WAVE_ECG_V6; i++)
         {
             _demoWaveData[i].param = NULL;
-        }
-        if (_paramIsContect.contains(PARAM_ECG))
-        {
-            ecgParam.setConnected(_paramIsContect.value(PARAM_ECG));
-        }
+        }       
     }
     else if (id == PARAM_RESP)
     {
         _demoWaveData[PARAM_RESP].param = NULL;
-        if (_paramIsContect.contains(PARAM_RESP))
-        {
-            respParam.setConnected(_paramIsContect.value(PARAM_RESP));
-        }
     }
     else if (id == PARAM_SPO2)
     {
         _demoWaveData[WAVE_SPO2].param = NULL;
-        if (_paramIsContect.contains(PARAM_SPO2))
-        {
-            spo2Param.setConnected(_paramIsContect.value(PARAM_SPO2));
-        }
     }
     else if (id == PARAM_CO2)
     {
@@ -282,10 +254,6 @@ void DemoProvider::detachParam(Param &param)
         _demoWaveData[WAVE_ICP].param = NULL;
         _demoWaveData[WAVE_AUXP1].param = NULL;
         _demoWaveData[WAVE_AUXP2].param = NULL;
-        if (_paramIsContect.contains(PARAM_IBP))
-        {
-            ibpParam.setConnected(_paramIsContect.value(PARAM_IBP));
-        }
     }
     else if (id == PARAM_AG)
     {
@@ -293,24 +261,6 @@ void DemoProvider::detachParam(Param &param)
         _demoWaveData[WAVE_AA1].param = NULL;
         _demoWaveData[WAVE_AA2].param = NULL;
         _demoWaveData[WAVE_O2].param = NULL;
-        if (_paramIsContect.contains(PARAM_AG))
-        {
-            agParam.setConnected(_paramIsContect.value(PARAM_IBP));
-        }
-    }
-    else if (id == PARAM_NIBP)
-    {
-        if (_paramIsContect.contains(PARAM_NIBP))
-        {
-            nibpParam.setConnected(_paramIsContect.value(PARAM_NIBP));
-        }
-    }
-    else if (id == PARAM_CO)
-    {
-        if (_paramIsContect.contains(PARAM_CO))
-        {
-            coParam.setConnected(_paramIsContect.value(PARAM_CO));
-        }
     }
 
     _demoTrendData[id].param = NULL;

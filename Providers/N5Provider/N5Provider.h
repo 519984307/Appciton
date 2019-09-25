@@ -105,6 +105,15 @@ enum NIBPErrorType
     N5_TYPE_SELFTEST_FAIL   = 0x04,         // 模块自检失败
     N5_TYPE_ERROR           = 0x08,         // 模块错误
 };
+
+enum NIBPPressureProtectType
+{
+    N5_TYPE_PROTECT_NORMAL              = 0x00,
+    N5_TYPE_PROTECT_MASTE_PROTECT       = 0x01,
+    N5_TYPE_PROTECT_SLAVE_PROTECT       = 0x02,
+    N5_TYPE_PROTECT_HARDWARE_PROTECT    = 0x04,
+};
+
 enum NIBPOneShotNum
 {
     SELF_TEST_6V_FAILED             =    0x01,
