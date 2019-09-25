@@ -519,7 +519,7 @@ void RESPParam::setCalcLead(RESPLead lead)
     {
         if (lead == RESP_LEAD_AUTO)
         {
-            lead = RESP_LEAD_I;  // 当为自动导联时，默认选择I导联，因为目前I导联的波形幅度较大，利于波形显示
+            lead = RESP_LEAD_II;  // 当为自动导联时，默认选择II导联
         }
         d_ptr->provider->setRESPCalcLead(lead);
     }
