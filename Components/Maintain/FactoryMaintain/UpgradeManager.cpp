@@ -99,6 +99,7 @@ enum UpgradeErrorType
     UPGRADE_ERR_COMMUNICATION_FAIL      = 13,
     UPGRADE_ERR_WRITE_FAIL              = 14,
     UPGRADE_ERR_PASSTHROUGH_MODE_FAIL   = 15,
+    UPGRADE_ERR_FLASH_CRC               = 16,
     UPGRADE_ERR_NR,
 };
 
@@ -121,7 +122,8 @@ static const char *errorString(UpgradeErrorType errorType)
         "WriteSegmentFail",
         "CommunicationFail",
         "WriteFail",
-        "SwitchPassthroughModeFail"
+        "SwitchPassthroughModeFail",
+        "FlashCRCError",
     };
     return errors[errorType];
 }
@@ -142,6 +144,7 @@ enum ModuleState
     MODULE_STAT_WRITE_UPGRADE_COMPLETE,     // upgrade complete
     MODULE_STAT_ENTER_PASSTHROUGH_MODE,     // nibp enter passthrough mode
     MODULE_STAT_EXIT_PASSTHROUGH_MODE,      // nibp exit passthrough mode
+    MODULE_STAT_CRC16_CHECK_ERROR,          // flash crc16 校验错误
 };
 
 // 透传模式
@@ -614,6 +617,11 @@ void UpgradeManagerPrivate::handleStateChanged(ModuleState modState)
         unsigned char cmd = NIBP_PASSTHROUGH_OFF;
         provider->sendCmd(UPGRADE_N5_CMD_PASSTHROUGH_MODE, &cmd, 1);
         noResponseTimer->start(2000);
+        break;
+    }
+    case MODULE_STAT_CRC16_CHECK_ERROR:
+    {
+        upgradeExit(UpgradeManager::UPGRADE_FAIL, UPGRADE_ERR_FLASH_CRC);
         break;
     }
     default:
