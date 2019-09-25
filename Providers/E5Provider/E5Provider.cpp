@@ -383,11 +383,9 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         break;
 
     case TE3_RSP_FILTER_PARAMETER:
-        qDebug() << data[1] << Q_FUNC_INFO << __LINE__;
         break;
 
     case TE3_RSP_NOTCH_FILTER:
-        qDebug() << data[1] << Q_FUNC_INFO << __LINE__;
         break;
 
     case TE3_RSP_ECG_SAMPLE_CONFIG:
