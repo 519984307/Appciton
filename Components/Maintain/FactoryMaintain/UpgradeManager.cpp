@@ -99,7 +99,7 @@ enum UpgradeErrorType
     UPGRADE_ERR_COMMUNICATION_FAIL      = 13,
     UPGRADE_ERR_WRITE_FAIL              = 14,
     UPGRADE_ERR_PASSTHROUGH_MODE_FAIL   = 15,
-    UPGRADE_ERR_FLASH_CRC16_CHECK       = 16,
+    UPGRADE_ERR_FLASH_CRC_CHECK         = 16,
     UPGRADE_ERR_NR,
 };
 
@@ -123,7 +123,7 @@ static const char *errorString(UpgradeErrorType errorType)
         "CommunicationFail",
         "WriteFail",
         "SwitchPassthroughModeFail",
-        "FlashCRC16CheckError",
+        "FlashCRCCheckError",
     };
     return errors[errorType];
 }
@@ -621,7 +621,7 @@ void UpgradeManagerPrivate::handleStateChanged(ModuleState modState)
     }
     case MODULE_STAT_CRC16_CHECK_ERROR:
     {
-        upgradeExit(UpgradeManager::UPGRADE_FAIL, UPGRADE_ERR_FLASH_CRC16_CHECK);
+        upgradeExit(UpgradeManager::UPGRADE_FAIL, UPGRADE_ERR_FLASH_CRC_CHECK);
         break;
     }
     default:
