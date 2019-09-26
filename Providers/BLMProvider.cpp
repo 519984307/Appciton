@@ -42,77 +42,6 @@ BLMProvider::~BLMProvider()
 {
 }
 
-#if 0
-void BLMProvider::dataArrived()
-{
-    readData();  // 读取数据到RingBuff中
-
-    while (!ringBuff.isEmpty())
-    {
-        if (ringBuff.at(0) != SOH)
-        {
-            // 协议数据以SOH字节开始
-            debug("Invalid packet header!\n");
-            ringBuff.pop(1);
-            continue;
-        }
-
-        unsigned int dataSize = ringBuff.dataSize();
-        if (dataSize < minPacketLen)
-        {
-            // 数据不够
-            break;
-        }
-
-        unsigned int len = ringBuff.at(1);
-        if (SOH == len)
-        {
-            // 协议数据长度值不可能等于SOH
-            debug("Invalid packet len: SOH!\n");
-            ringBuff.pop(1);
-            continue;
-        }
-
-        if (len > maxPacketLen)
-        {
-            debug("Invalid packet len: too long!\n");
-            ringBuff.pop(2);
-            continue;
-        }
-
-        unsigned int index = 0;
-        unsigned char packet[maxPacketLen];
-        packet[index++] = ringBuff.at(0);
-        packet[index++] = ringBuff.at(1);
-
-        unsigned int i = index;
-        for (; (i < dataSize) && (index < len); i++)
-        {
-            if (ringBuff.at(i) == SOH)
-            {
-                // 移除多余的SOH转义字节
-                i++;
-            }
-
-            packet[index++] = ringBuff.at(i);
-        }
-
-        if (index < len)
-        {
-            // 数据不够
-            break;
-        }
-
-        ringBuff.pop(i);
-
-        if (_checkPacketValid(packet, len))
-        {
-            handlePacket(packet, len);
-        }
-    }
-}
-#else
-
 /***************************************************************************************************
  * 接收数据
  **************************************************************************************************/
@@ -170,12 +99,11 @@ void BLMProvider::dataArrived()
         else
         {
             // outHex(packet, len);
-            debug("FCS error (%s)\n", qPrintable(getName()));
+            debug("FCS error (%s)", qPrintable(getName()));
             ringBuff.pop(1);
         }
     }
 }
-#endif
 
 /***************************************************************************************************
  * handlePacket : handle packet, should be called in derived
@@ -336,7 +264,7 @@ void BLMProvider::dataArrived(unsigned char *buff, unsigned int length)
         else
         {
             // outHex(packet, len);
-            debug("FCS error (%s)\n", qPrintable(getName()));
+            debug("FCS error (%s)", qPrintable(getName()));
             ringBuff.pop(1);
         }
     }
