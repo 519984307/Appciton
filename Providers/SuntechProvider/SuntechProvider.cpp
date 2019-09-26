@@ -16,6 +16,7 @@
 #include <QTimer>
 #include "NIBPMonitorStateDefine.h"
 #include "PatientManager.h"
+#include "AlarmSourceManager.h"
 
 #define     HOST_START_BYTE           0x3A     // receive packet header :
 #define     MODULE_START_BYTE         0x3E     // send packet header >
@@ -209,8 +210,6 @@ void SuntechProvider::startMeasure(PatientType type)
  *************************************************************************************************/
 void SuntechProvider::stopMeasure(void)
 {
-//    _timer->stop();
-
     unsigned char cmd[3] = {0};
 
     cmd[0] = SUNTECH_CMD_SEND_START;
@@ -313,8 +312,6 @@ void SuntechProvider::getResult(void)
 bool SuntechProvider::isResult(unsigned char *packet,
                                short &sys, short &dia, short &map, short &pr, NIBPOneShotType &err)
 {
-//    _timer->stop();
-
     if (packet[0] != 0x18)
     {
         return false;
@@ -443,27 +440,36 @@ void SuntechProvider::controlPneumatics(unsigned char pump, unsigned char contro
     cmd[3] = dumpValve;
     _sendCmd(cmd, 4);
 }
+
+void SuntechProvider::sendSelfTest()
+{
+    unsigned char cmd[3] = {0};
+    cmd[0] = SUNTECH_CMD_STATUS;
+    cmd[1] = 0x10;
+    cmd[2] = 0x03;
+    _sendCmd(cmd, 3);
+    _powerOnSelfTest = true;
+}
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
 SuntechProvider::SuntechProvider() :
     Provider("SUNTECH_NIBP"), NIBPProviderIFace(),
     _NIBPStart(false), _flagStartCmdSend(-1), _pressure(-1),
-    _timer(NULL), _cmdTimer(NULL), _isModuleDataRespond(false),
-    _isCalibrationRespond(false)
+    _presssureTimer(NULL), _cmdTimer(NULL), _isModuleDataRespond(false),
+    _isCalibrationRespond(false), _powerOnSelfTest(true)
 {
     UartAttrDesc portAttr(9600, 8, 'N', 1);
     initPort(portAttr);
     setDisconnectThreshold(5);
 
-    _timer = new QTimer();
-    _timer->setInterval(200);
-    _timer->start();
+    _presssureTimer = new QTimer();
+    _presssureTimer->setInterval(200);
 
     _cmdTimer = new QTimer();
     _cmdTimer->setInterval(100);
     _cmdTimer->start();
-    connect(_timer, SIGNAL(timeout()), this, SLOT(_getCuffPressure()));
+    connect(_presssureTimer, SIGNAL(timeout()), this, SLOT(_getCuffPressure()));
     connect(_cmdTimer, SIGNAL(timeout()), this, SLOT(_sendCMD()));
 }
 
@@ -472,10 +478,16 @@ SuntechProvider::SuntechProvider() :
  *************************************************************************************************/
 SuntechProvider::~SuntechProvider()
 {
-    if (NULL != _timer)
+    if (NULL != _presssureTimer)
     {
-        delete _timer;
-        _timer = NULL;
+        delete _presssureTimer;
+        _presssureTimer = NULL;
+    }
+
+    if (NULL != _cmdTimer)
+    {
+        delete _cmdTimer;
+        _cmdTimer = NULL;
     }
 }
 
@@ -630,12 +642,28 @@ void SuntechProvider::_handlePacket(unsigned char *data, int len)
     case SUNTECH_RSP_CUFF_PRESSURE:
     {
         feed();
-        nibpParam.handleNIBPEvent(NIBP_EVENT_CURRENT_PRESSURE, &data[1], 2);
-        int16_t pressure;
-        pressure = (data[2] << 8) + data[1];
-        if (pressure != -1)
+        if (_powerOnSelfTest)
         {
-            nibpParam.setManometerPressure(pressure);
+            if (data[1] != 0)
+            {
+                AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
+                if (alarmSource)
+                {
+                    alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_ABNORMAL, true);   // 模块异常
+                }
+            }
+            _powerOnSelfTest = false;
+            _presssureTimer->start();
+        }
+        else
+        {
+            nibpParam.handleNIBPEvent(NIBP_EVENT_CURRENT_PRESSURE, &data[1], 2);
+            int16_t pressure;
+            pressure = (data[2] << 8) + data[1];
+            if (pressure != -1)
+            {
+                nibpParam.setManometerPressure(pressure);
+            }
         }
         break;
     }

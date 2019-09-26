@@ -73,6 +73,7 @@ public:
     virtual void controlPneumatics(unsigned char pump,
                                    unsigned char controlValve,
                                    unsigned char dumpValve);
+    virtual void sendSelfTest();
 
     // 构造与析构。
     SuntechProvider();
@@ -103,11 +104,12 @@ private:
     int _flagStartCmdSend;
     int _pressure;
 
-    QTimer *_timer;
+    QTimer *_presssureTimer;
     QTimer *_cmdTimer;
 
     bool _isModuleDataRespond;              // 是否为版本信息回复
     bool _isCalibrationRespond;             // 是否为校准回复
+    bool _powerOnSelfTest;                  // 开机自检
 
     QList<SuntechCMD> list;
 };
