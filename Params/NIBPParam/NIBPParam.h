@@ -330,6 +330,11 @@ public:
      * @return
      */
     bool getNeoDisState();
+    /**
+     * @brief isConnectedModule 获取是否连接真实的模块
+     * @return
+     */
+    bool isConnectedModule();
 
 signals:
     /**
