@@ -12,6 +12,19 @@ void AlarmOneShotIFace::clear(void)
     }
 }
 
+void AlarmOneShotIFace::clear(QList<int> ID)
+{
+    OneShotMap::iterator it = _oneShotAlarms.begin();
+    for (; it != _oneShotAlarms.end(); ++it)
+    {
+        if (ID.contains(it.key()))
+        {
+            continue;
+        }
+        it.value().reset();
+    }
+}
+
 /**************************************************************************************************
  * 设置报警。
  *************************************************************************************************/

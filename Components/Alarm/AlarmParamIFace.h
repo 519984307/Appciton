@@ -105,6 +105,12 @@ public:
     // 清除所有的报警。
     void clear(void);
 
+    /**
+     * @brief clear  清除除了list中所有其他报警
+     * @param ID
+     */
+    void clear(QList<int> ID);
+
     virtual void setOneShotAlarm(int id, bool newStatus);
 
     // 报警条件是否满足，满足则返回true。
