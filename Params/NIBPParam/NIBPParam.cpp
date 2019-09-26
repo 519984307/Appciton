@@ -730,7 +730,7 @@ void NIBPParam::setText(void)
     {
         if (nibpParam.curStatusType() == NIBP_MONITOR_ERROR_STATE)
         {
-            if (_isNIBPDisable || !_connectedFlag)
+            if (_isNIBPDisable || !_connectedProvider)
             {
                 _trendWidget->showText(trs("NIBPModule") + "\n" + trs("NIBPDisable"));
             }
