@@ -40,20 +40,20 @@ static const char *nibpSelfErrorCode[] =
     "The small gas valve is unusual.\r\n",                    // 11
     "The air pump is unusual.\r\n",                           // 12
     "The sofaware of overpressure protect is unusual.\r\n",   // 13
-    "Zero fail on start-up.\r\n"                              // 14
-    "Calibration is unsuccessful.\r\n",                       // 15
+    "Zero fail on start-up.\r\n",                              // 14
+    "Calibration is unsuccessful.\r\n"                       // 15
 };
 
 static const char *nibpErrorCode[] =
 {
-    "Comparisons of pressure between master and Daemon fail to pass self-test"  // 126
+    "Comparisons of pressure between master and Daemon fail to pass self-test",  // 126
     "Master-slave communication is unusual.\r\n",             // 127
     "Flash wrong.\r\n",                                       // 128
     "Data sample exception.\r\n",                             // 129
     "The Big gas valve is unusual for running.\r\n",          // 130
     "The small gas valve is unusual for running.\r\n",        // 131
     "The air pump is unusual for running.\r\n",               // 132
-    "The Daemon error.\r\n",                                  // 133
+    "The Daemon error.\r\n"                                  // 133
 };
 
 /**************************************************************************************************
