@@ -34,7 +34,7 @@ void NIBPMonitorErrorState::enter(void)
 
     nibpParam.setAdditionalMeasure(false);
 
-    if (nibpParam.isErrorDisable() || !nibpParam.isConnected())
+    if (nibpParam.isErrorDisable() || !nibpParam.isConnectedModule())
     {
         nibpParam.setText(trs("NIBPModule") + "\n" + trs("NIBPDisable"));
     }
