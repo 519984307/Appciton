@@ -142,6 +142,7 @@ void TrendWaveWidget::leftMoveCursor()
     {
         if (_trendGraphInfo.alarmInfo.count() == 0)
         {
+            // 没有数据时，索引置为0，避免-1索引导致越界
             _cursorPosIndex = 0;
         }
         else
