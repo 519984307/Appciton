@@ -274,7 +274,7 @@ void NIBPMenuContentPrivate::statBtnShow(void)
 {
     // demo 模式下失能STAT
     WorkMode workMode = systemManager.getCurWorkMode();
-    if (nibpParam.isConnected() && workMode != WORK_MODE_DEMO)
+    if (nibpParam.isConnectedModule() && workMode != WORK_MODE_DEMO)
     {
         btns[ITEM_BTN_START_STAT]->setEnabled(true);
     }
