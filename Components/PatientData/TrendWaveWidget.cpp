@@ -140,7 +140,14 @@ void TrendWaveWidget::leftMoveCursor()
 {
     if (_cursorPosIndex >= _trendGraphInfo.alarmInfo.count() - 1)
     {
-        _cursorPosIndex = _trendGraphInfo.alarmInfo.count() - 1;
+        if (_trendGraphInfo.alarmInfo.count() == 0)
+        {
+            _cursorPosIndex = 0;
+        }
+        else
+        {
+            _cursorPosIndex = _trendGraphInfo.alarmInfo.count() - 1;
+        }
     }
     else
     {
