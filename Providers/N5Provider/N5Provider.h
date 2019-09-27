@@ -262,6 +262,5 @@ private:
     // 错误代码
     void _errorWarm(unsigned char *packet, int len);
 
-    int _error;
     bool _hardWareProtect;
 };
