@@ -18,7 +18,7 @@
 #define SOH             (0x02)  // packet header
 #define MIN_PACKET_LEN   5      // 最小数据包长度: SOH,Length,Type,FCS
 #define RING_BUFFER_LENGTH 4096
-#define MAXIMUM_PACKET_SIZE 256 // largest packet size, should be larger enough
+#define MAXIMUM_PACKET_SIZE 256  // largest packet size, should be larger enough
 
 
 enum PacketPortCommand
@@ -150,7 +150,7 @@ public:
         }
     }
 
-    bool isLastSOHPaired; // 遗留在ringBuff最后一个数据（该数据为SOH）是否已经剃掉了多余的SOH
+    bool isLastSOHPaired;  // 遗留在ringBuff最后一个数据（该数据为SOH）是否已经剃掉了多余的SOH
     QString name;
     Uart *uart;
     QMap<DataDispatcher::PacketType, Provider *> dataHandlers;
@@ -236,7 +236,7 @@ int DataDispatcher::sendData(DataDispatcher::PacketType type, const unsigned cha
     }
 
     sendBuf[i++] = crc;
-    if (sendBuf[i] == SOH)
+    if (crc == SOH)
     {
         sendBuf[i++] = SOH;
     }
@@ -293,7 +293,7 @@ bool DataDispatcher::resetPacketPort(DataDispatcher::PacketType type)
     }
 
     sendBuf[i++] = crc;
-    if (sendBuf[i] == SOH)
+    if (crc == SOH)
     {
         sendBuf[i++] = SOH;
     }
@@ -328,7 +328,7 @@ bool DataDispatcher::setPacketPortBaudrate(DataDispatcher::PacketType type, Data
     }
 
     sendBuf[i++] = crc;
-    if (sendBuf[i] == SOH)
+    if (crc == SOH)
     {
         sendBuf[i++] = SOH;
     }
@@ -338,7 +338,7 @@ bool DataDispatcher::setPacketPortBaudrate(DataDispatcher::PacketType type, Data
 
 void DataDispatcher::dataArrived()
 {
-    d_ptr->readData(); // 读取数据到RingBuff中
+    d_ptr->readData();  // 读取数据到RingBuff中
 
     unsigned char packet[256];
 
@@ -357,7 +357,7 @@ void DataDispatcher::dataArrived()
             d_ptr->ringBuff.pop(1);
             break;
         }
-        if (len > d_ptr->ringBuff.dataSize()) // 数据还不够，继续等待。
+        if (len > d_ptr->ringBuff.dataSize())  // 数据还不够，继续等待。
         {
             break;
         }
