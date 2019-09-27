@@ -120,23 +120,14 @@ IStorageBackend *StorageManager::backend() const
  * addData : Add data to cache, the data will no write immediately, the data will write to backend
  *           when saveData() is called.
  **************************************************************************************************/
-void StorageManager::addData(quint32 dataID, const char *data, quint32 len, quint32 extraData, bool needFreeData)
+void StorageManager::addData(quint32 dataID, const char *data, quint32 len, quint32 extraData)
 {
     Q_D(StorageManager);
     if (data == NULL || len == 0)
     {
         return;
     }
-    char *buf = NULL;
-    if (needFreeData)
-    {
-        buf = const_cast<char *>(data);
-    }
-    else
-    {
-        buf = static_cast<char *>(malloc(len));
-        memcpy(buf, data, len);
-    }
+    char *buf = const_cast<char *>(data);
     StorageItem item(dataID, buf, len, extraData);
     QMutexLocker(&d->mutex);
     d->storageItemList[d->currentCacheList].append(item);

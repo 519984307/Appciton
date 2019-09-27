@@ -34,8 +34,7 @@ public:
     // get the storage backend
     IStorageBackend *backend() const;
     // add the data into the internal cache, no write to flash yet
-    void addData(quint32 dataID, const char *data, quint32 len,
-                 quint32 extraData = 0,  bool needFreeData = false);
+    void addData(quint32 dataID, const char *data, quint32 len, quint32 extraData = 0);
     // overload
     void addData(quint32 dataID, const QByteArray &data, quint32 extraData = 0);
     // return the size of storage backend
