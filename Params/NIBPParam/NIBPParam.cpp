@@ -614,7 +614,7 @@ void NIBPParam::invResultData(void)
                       << NIBP_ONESHOT_ALARM_MODULE_NOT_CALIBRATE
                       << NIBP_ONESHOT_ALARM_SELTTEST_ERROR
                       << NIBP_ONESHOT_ALARM_MODULE_OVER_PRESSURE_PROTECT;
-        alarmSource->clear(noRemovalList);
+        alarmSource->clearRestOfAlarm(noRemovalList);
     }
 }
 

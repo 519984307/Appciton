@@ -12,7 +12,7 @@ void AlarmOneShotIFace::clear(void)
     }
 }
 
-void AlarmOneShotIFace::clear(QList<int> ID)
+void AlarmOneShotIFace::clearRestOfAlarm(QList<int> ID)
 {
     OneShotMap::iterator it = _oneShotAlarms.begin();
     for (; it != _oneShotAlarms.end(); ++it)

@@ -109,7 +109,7 @@ public:
      * @brief clear  清除除了list中所有其他报警
      * @param ID
      */
-    void clear(QList<int> ID);
+    void clearRestOfAlarm(QList<int> ID);
 
     virtual void setOneShotAlarm(int id, bool newStatus);
 
