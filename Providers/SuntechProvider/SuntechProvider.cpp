@@ -58,6 +58,8 @@
 #define     SUNTECH_CMD_CALIBRATE_TRANSDUCER    0X04      // DATA=B0
 #define     SUNTECH_CMD_GET_RETURN_CODE         0x79      // DATA=0x02 0x03
 #define     SUNTECH_CMD_STATUS                  0x79      // DATA=0x10 0x03
+#define     SUNTECH_CMD_STATUS_DATA_FIRST       0x10
+#define     SUNTECH_CMD_STATUS_DATA_SECOND      0x03
 #define     SUNTECH_CMD_RESET                   0x8A
 #define     SUNTECH_CMD_START_NEONATE_BP        0x28      // 新生儿
 #define     SUNTECH_CMD_VENOUS_STASIS           0x86      // DATA=B0 B1 B2
@@ -445,8 +447,8 @@ void SuntechProvider::sendSelfTest()
 {
     unsigned char cmd[3] = {0};
     cmd[0] = SUNTECH_CMD_STATUS;
-    cmd[1] = 0x10;
-    cmd[2] = 0x03;
+    cmd[1] = SUNTECH_CMD_STATUS_DATA_FIRST;
+    cmd[2] = SUNTECH_CMD_STATUS_DATA_SECOND;
     _sendCmd(cmd, 3);
     _powerOnSelfTest = true;
 }

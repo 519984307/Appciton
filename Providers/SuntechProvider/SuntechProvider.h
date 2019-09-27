@@ -73,6 +73,9 @@ public:
     virtual void controlPneumatics(unsigned char pump,
                                    unsigned char controlValve,
                                    unsigned char dumpValve);
+    /**
+     * @brief sendSelfTest 发送自检命令
+     */
     virtual void sendSelfTest();
 
     // 构造与析构。
