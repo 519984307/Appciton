@@ -181,7 +181,7 @@ void ContinuousPageGeneratorPrivate::fetchWaveData(bool isRealtime)
                     break;
                 }
 
-                if (++retryCount >= 220) // wait more than 1 second
+                if (++retryCount >= 220)  // wait more than 1 second
                 {
                     break;
                 }
@@ -194,7 +194,8 @@ void ContinuousPageGeneratorPrivate::fetchWaveData(bool isRealtime)
                 int waveIndex = waves.indexOf(iter->id);
                 WaveformDataSegment *waveSegment = waveSegments.at(waveIndex);
                 int startIndex = curDrawWaveSegment * waveSegment->sampleRate;
-                qMemCopy(iter->secondWaveBuff.data(), waveSegment->waveData + startIndex, waveSegment->sampleRate * sizeof(WaveDataType));
+                qMemCopy(iter->secondWaveBuff.data(), waveSegment->waveData + startIndex,
+                         waveSegment->sampleRate * sizeof(WaveDataType));
             }
             else
             {
@@ -244,7 +245,9 @@ ContinuousPageGenerator::ContinuousPageGenerator(QObject *parent)
 
 ContinuousPageGenerator::~ContinuousPageGenerator()
 {
-    qDeleteAll(d_ptr->waveSegments);
+    foreach(WaveformDataSegment *waveSegment, d_ptr->waveSegments) {
+        qFree(waveSegment);
+    }
     d_ptr->waveSegments.clear();
 }
 
