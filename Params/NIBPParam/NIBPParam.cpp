@@ -608,7 +608,13 @@ void NIBPParam::invResultData(void)
     AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
     if (alarmSource)
     {
-        alarmSource->clear();  // 清除所有报警。
+        QList<int> noRemovalList;    // 不要被清除的技术报警
+        noRemovalList << NIBP_ONESHOT_ALARM_SELTTEST_ERROR
+                      << NIBP_ONESHOT_ALARM_MODULE_ABNORMAL
+                      << NIBP_ONESHOT_ALARM_MODULE_NOT_CALIBRATE
+                      << NIBP_ONESHOT_ALARM_SELTTEST_ERROR
+                      << NIBP_ONESHOT_ALARM_MODULE_OVER_PRESSURE_PROTECT;
+        alarmSource->clearRestOfAlarm(noRemovalList);
     }
 }
 
