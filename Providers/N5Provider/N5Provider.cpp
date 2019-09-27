@@ -130,6 +130,7 @@ void N5Provider::_selfTest(unsigned char *packet, int len)
 
 void N5Provider::_handleError(unsigned char error)
 {
+    int _error = 0x00;
     switch(error)
     {
     case SELF_TEST_6V_FAILED:
@@ -463,7 +464,7 @@ void N5Provider::handlePacket(unsigned char *data, int len)
                 || (data[1] & N5_TYPE_PROTECT_HARDWARE_PROTECT))
         {
             AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
-            if (data[1] & 0x04)
+            if (data[1] & N5_TYPE_PROTECT_HARDWARE_PROTECT)
             {
                 if (alarmSource)
                 {
@@ -1000,7 +1001,6 @@ N5Provider::N5Provider() : BLMProvider("BLM_N5"), NIBPProviderIFace()
     }
 
     setDisconnectThreshold(5);
-    _error = 0x00;
     _hardWareProtect = false;
 }
 

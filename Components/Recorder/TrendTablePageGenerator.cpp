@@ -489,6 +489,7 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
                               paramManager.getSubParamUnit(paramID, SUB_PARAM_T2),
                               paramInfo.getUnitOfSubParam(SUB_PARAM_T2),
                               datapack.co2Baro);
+
             QString valueTD;
             if (datapack.subparamValue[SUB_PARAM_T1] == InvData()
                     || datapack.subparamValue[SUB_PARAM_T2] == InvData())
@@ -498,7 +499,23 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
             }
             else
             {
-                valueTD = QString::number(qAbs(valueT1.toDouble()- valueT2.toDouble()));
+                QString t1 = valueT1;
+                if (t1.contains("*"))
+                {
+                    t1.remove("*");
+                }
+
+                QString t2 = valueT2;
+                if (t2.contains("*"))
+                {
+                    t2.remove("*");
+                }
+
+                if (datapack.subparamAlarm[SUB_PARAM_TD])
+                {
+                    valueTD += "*";
+                }
+                valueTD += QString::number(qAbs(t1.toFloat() - t2.toFloat()), 'f', 1);
             }
 
             valueStr = QString("%1/%2/%3").arg(valueT1).arg(valueT2).arg(valueTD);

@@ -679,6 +679,7 @@ HEADERS +=                                                                      
     Utility/TimeDate/TimeDefine.h                                               \
     Utility/TimeDate/TimeSymbol.h                                               \
     Utility/Uart/Uart.h                                                         \
+    Utility/Uart/UartSocketDefine.h                                             \
     Utility/Uart/UartSocket.h                                                   \
     Utility/BaseDefine.h                                                        \
     Utility/UnitManager.h                                                       \
