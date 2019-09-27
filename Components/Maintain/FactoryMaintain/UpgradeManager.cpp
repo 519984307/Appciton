@@ -422,6 +422,16 @@ void UpgradeManagerPrivate::upgradeExit(UpgradeManager::UpgradeResult result, Up
         if (provider)
         {
             provider->setUpgradeIface(NULL);
+            if (provider->getName() == "BLM_T5")
+            {
+                QString curSpO2Module;
+                machineConfig.getStrValue("SPO2", curSpO2Module);
+                Provider *spo2Provider = paramManager.getProvider(curSpO2Module);
+                if (spo2Provider)
+                {
+                    spo2Provider->stopCheckConnect(false);
+                }
+            }
             provider = NULL;
         }
         if (co2Provider)
@@ -723,6 +733,17 @@ void UpgradeManager::startModuleUpgrade(UpgradeManager::UpgradeModuleType type)
     }
     else
     {
+        if (d_ptr->type == UPGRADE_MOD_T5)
+        {
+            // T5升级时，先停止血氧的检测
+            QString curSpO2Module;
+            machineConfig.getStrValue("SPO2", curSpO2Module);
+            Provider *spo2Provider = paramManager.getProvider(curSpO2Module);
+            if (spo2Provider)
+            {
+                spo2Provider->stopCheckConnect(true);
+            }
+        }
         d_ptr->provider = BLMProvider::findProvider(d_ptr->getProviderName(d_ptr->type));
         if (d_ptr->provider)
         {

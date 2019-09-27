@@ -313,21 +313,7 @@ RainbowProvider::RainbowProvider()
     d_ptr->sensMode = static_cast<SensitivityMode>(spo2Param.getSensitivity());
     d_ptr->fastSat = spo2Param.getFastSat();
     d_ptr->enableSmartTone = static_cast<bool>(spo2Param.getSmartPulseTone());
-
-    disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_SPO2;
-    UartAttrDesc attr(DEFALUT_BAUD_RATE, 8, 'N', 1);
-    initPort(attr);
-
-    if (disPatchInfo.dispatcher)
-    {
-        // reset the hardware
-        disPatchInfo.dispatcher->resetPacketPort(disPatchInfo.packetType);
-        d_ptr->isReseting = true;
-    }
-    else
-    {
-        QTimer::singleShot(200, this, SLOT(changeBaudrate()));
-    }
+    initModule();
 }
 
 RainbowProvider::~RainbowProvider()
@@ -509,7 +495,7 @@ void RainbowProvider::dataArrived(unsigned char *data, unsigned int length)
 void RainbowProvider::dispatchPortHasReset()
 {
     d_ptr->isReseting = false;
-    QTimer::singleShot(0, this, SLOT(changeBaudrate()));
+    QTimer::singleShot(500, this, SLOT(changeBaudrate()));  // 返回复位成功后，需要给模块一点时间复位，才可以成功设置波特率。
 }
 
 int RainbowProvider::getSPO2BaseLine()
@@ -588,6 +574,25 @@ void RainbowProvider::reconnected()
         alarmSource->setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, false);
     }
     spo2Param.setConnected(true);
+}
+
+void RainbowProvider::initModule()
+{
+    disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_SPO2;
+    UartAttrDesc attr(DEFALUT_BAUD_RATE, 8, 'N', 1);
+    initPort(attr);
+
+    if (disPatchInfo.dispatcher)
+    {
+        // reset the hardware
+        d_ptr->curInitializeStep = RB_INIT_BAUDRATE;
+        disPatchInfo.dispatcher->resetPacketPort(disPatchInfo.packetType);
+        d_ptr->isReseting = true;
+    }
+    else
+    {
+        QTimer::singleShot(200, this, SLOT(changeBaudrate()));
+    }
 }
 
 void RainbowProvider::requestBoardInfo()
