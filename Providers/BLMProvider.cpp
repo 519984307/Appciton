@@ -79,11 +79,7 @@ void BLMProvider::dataArrived()
         }
 
         // 将数据包读到buff中。
-        for (int i = 0; i < len; i++)
-        {
-            packet[i] = ringBuff.at(0);
-            ringBuff.pop(1);
-        }
+        ringBuff.copy(0, packet, len);
 
         if (_checkPacketValid(packet, len))
         {
@@ -95,6 +91,8 @@ void BLMProvider::dataArrived()
             {
                 handlePacket(&packet[3], len - 4);
             }
+            /* data has been parse, remove it */
+            ringBuff.pop(len);
         }
         else
         {
@@ -244,11 +242,7 @@ void BLMProvider::dataArrived(unsigned char *buff, unsigned int length)
         }
 
         // 将数据包读到buff中。
-        for (int i = 0; i < len; i++)
-        {
-            packet[i] = ringBuff.at(0);
-            ringBuff.pop(1);
-        }
+        ringBuff.copy(0, packet, len);
 
         if (_checkPacketValid(packet, len))
         {
@@ -260,6 +254,9 @@ void BLMProvider::dataArrived(unsigned char *buff, unsigned int length)
             {
                 handlePacket(&packet[3], len - 4);
             }
+
+            /* data has been parse, remove it */
+            ringBuff.pop(len);
         }
         else
         {
