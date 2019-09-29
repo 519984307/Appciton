@@ -1079,7 +1079,14 @@ void EventWindowPrivate::eventTrendUpdate()
             valueFont = fontManager.numFont(37);
             break;
         case SUB_PARAM_TD:
-            td = QString::number(qAbs(t1.toFloat() - t2.toFloat()), 'f', 1);
+            if (t1 == InvStr() || t2 == InvStr())
+            {
+                td = InvStr();
+            }
+            else
+            {
+                td = QString::number(qAbs(t1.toFloat() - t2.toFloat()), 'f', 1);
+            }
             valueStr = td;
             subParamAlarm = ctx.trendSegment->values[i].alarmFlag;
             titleStr = trs(paramInfo.getSubParamName(subId));

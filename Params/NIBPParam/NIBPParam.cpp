@@ -644,6 +644,8 @@ void NIBPParam::connectedFlag(bool flag)
     }
     else
     {
+        _connectedFlag = false;
+        _isNIBPDisable = false;
         if (systemManager.getCurWorkMode() != WORK_MODE_DEMO)
         {
             handleNIBPEvent(NIBP_EVENT_MODULE_ERROR, NULL, 0);
@@ -654,8 +656,6 @@ void NIBPParam::connectedFlag(bool flag)
             alarmSource->clear();
             alarmSource->setOneShotAlarm(NIBP_ONESHOT_ALARM_COMMUNICATION_STOP, true);
         }
-        _connectedFlag = false;
-        _isNIBPDisable = false;
     }
 }
 
@@ -740,9 +740,13 @@ void NIBPParam::setText(void)
             {
                 _trendWidget->showText(trs("NIBPModule") + "\n" + trs("NIBPDisable"));
             }
-            else
+            else if (nibpParam.getNeoDisState())
             {
                  _trendWidget->showText(trs("Neonate") + "\n" + trs("NIBPStop"));
+            }
+            else
+            {
+                _trendWidget->showText(trs("NIBPModule") + "\n" + trs("NIBPDisable"));
             }
         }
         else
@@ -1570,7 +1574,7 @@ NIBPParam::NIBPParam()
       _statFirst(true), _toggleMeasureLongFlag(false),
       _statOpenTemp(false), _isCreateSnapshotFlag(false),
       _isNIBPDisable(false), _isManualMeasure(false),
-      _connectedFlag(false), _connectedProvider(false),
+      _connectedFlag(true), _connectedProvider(false),
       _text(InvStr()),
       _reply(false), _result(false), _manometerPressure(InvData()), _isMaintain(false), _firstAutoFlag(false),
       _autoStatFlag(false), _zeroSelfTestFlag(false), _isNeoDisable(false),
