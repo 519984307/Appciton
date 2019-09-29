@@ -160,7 +160,7 @@ void ECGMenuContentPrivate::loadOptions()
     }
 
     // 读取的ecg1wave、ecg2wave如果item相同，则复位为0、1.
-    if (index2 == index1)
+    if (leadMode != ECG_LEAD_MODE_3 && index2 == index1)
     {
         index1 = 1;
         index2 = 0;
