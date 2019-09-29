@@ -128,10 +128,10 @@ void SystemBoardProvider::_parseOperateMode(unsigned char *data, int len)
         return;
     }
 
-    powerOffWindow.exec();
-
-    /* TOOD: handle power off */
-    //    _notifyAck(&data[0], len);    //　暂时不应答
+    if (!powerOffWindow.isActiveWindow())
+    {
+        powerOffWindow.exec();
+    }
 }
 
 /***************************************************************************************************
