@@ -86,14 +86,6 @@ void DataStorageDirManager::cleanCurData()
     emit newPatient();
 }
 
-unsigned DataStorageDirManager::getCurFolderCreationTime()
-{
-    QString timeStr = _curFolder.right(14);
-    QDateTime createTime = QDateTime::fromString(timeStr, "yyyyMMddHHmmss");;
-    return createTime.toTime_t();
-}
-
-
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/

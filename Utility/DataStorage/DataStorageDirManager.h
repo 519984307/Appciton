@@ -108,8 +108,6 @@ public:
      */
     void cleanCurData();
 
-    unsigned getCurFolderCreationTime();
-
 private:
     DataStorageDirManager();
     int _deleteDir(const QString &path);
