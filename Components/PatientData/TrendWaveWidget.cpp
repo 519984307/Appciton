@@ -476,6 +476,28 @@ void TrendWaveWidget::trendDataPack(int startIndex, int endIndex)
             }
             else if (t > lastTime)
             {
+                data = _backend->getBlockData((quint32)i);
+                dataSeg = reinterpret_cast<TrendDataSegment *>(data.data());
+                // NIBP测量标志位保存在后一个时间间隔的数据中.
+                unsigned status = dataSeg->status;
+                if (status & TrendDataStorageManager::CollectStatusNIBP)
+                {
+                    if (_trendDataPack.count())
+                    {
+                        _trendDataPack.last()->status = status;
+                        _trendDataPack.last()->alarmFlag = dataSeg->eventFlag;
+                        for (int j = 0; j < dataSeg->trendValueNum; j++)
+                        {
+                            if (dataSeg->values[j].subParamId == SUB_PARAM_NIBP_SYS ||
+                                    dataSeg->values[j].subParamId == SUB_PARAM_NIBP_DIA ||
+                                    dataSeg->values[j].subParamId == SUB_PARAM_NIBP_MAP)
+                            {
+                                _trendDataPack.last()->subparamValue[(SubParamID)dataSeg->values[j].subParamId] = dataSeg->values[j].value;
+                                _trendDataPack.last()->subparamAlarm[(SubParamID)dataSeg->values[j].subParamId] = dataSeg->values[j].alarmFlag;
+                            }
+                        }
+                    }
+                }
                 continue;
             }
         }
@@ -487,9 +509,9 @@ void TrendWaveWidget::trendDataPack(int startIndex, int endIndex)
         {
             pack->subparamValue[(SubParamID)dataSeg->values[j].subParamId] = dataSeg->values[j].value;
             pack->subparamAlarm[(SubParamID)dataSeg->values[j].subParamId] = dataSeg->values[j].alarmFlag;
-            pack->alarmFlag = dataSeg->eventFlag;
-            pack->status = dataSeg->status;
         }
+        pack->alarmFlag = dataSeg->eventFlag;
+        pack->status = dataSeg->status;
         _trendDataPack.append(pack);
         lastTime = lastTime - interval;
     }
