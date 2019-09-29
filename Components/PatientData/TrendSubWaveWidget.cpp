@@ -676,6 +676,7 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
 void TrendSubWaveWidget::showEvent(QShowEvent *e)
 {
     IWidget::showEvent(e);
+    _cursorPosIndex = 0;
 }
 
 double TrendSubWaveWidget::_mapValue(TrendParamDesc desc, int data)
