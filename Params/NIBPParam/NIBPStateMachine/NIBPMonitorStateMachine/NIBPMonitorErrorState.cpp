@@ -29,19 +29,9 @@ void NIBPMonitorErrorState::enter(void)
     //停止的触发时间
     nibpParam.createSnapshot(NIBP_ONESHOT_ABORT);
 
-    // 进入此状态最少持续5s
-    setTimeOut(5 * 1000);
-
     nibpParam.setAdditionalMeasure(false);
 
-    if (nibpParam.isErrorDisable() || !nibpParam.isConnectedModule())
-    {
-        nibpParam.setText(trs("NIBPModule") + "\n" + trs("NIBPDisable"));
-    }
-    else
-    {
-        nibpParam.setText(trs("Neonate") + "\n" + trs("NIBPStop"));
-    }
+    nibpParam.setText(trs("NIBPModule") + "\n" + trs("NIBPDisable"));
     nibpParam.setModelText("");
     nibpParam.clearResult();
 
@@ -89,14 +79,7 @@ void NIBPMonitorErrorState::handleNIBPEvent(NIBPEvent event, const unsigned char
         }
         break;
     case NIBP_EVENT_MODULE_ERROR:
-        if (nibpParam.isErrorDisable())
-        {
-            nibpParam.setText(trs("NIBPModule") + "\n" + trs("NIBPDisable"));
-        }
-        else
-        {
-            nibpParam.setText(trs("Neonate") + "\n" + trs("NIBPStop"));
-        }
+        nibpParam.setText(trs("NIBPModule") + "\n" + trs("NIBPDisable"));
         break;
     default:
         break;
