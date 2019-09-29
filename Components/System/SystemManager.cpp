@@ -102,6 +102,7 @@ public:
         alarmIndicator.delAllPhyAlarm();
         windowManager.showDemoWidget(true);
         paramManager.connectDemoParamProvider();
+        patientManager.setMonitor(true);
         patientManager.newPatient();
         nibpParam.clearTrendListData();
     }

@@ -530,6 +530,9 @@ void TrendDataStorageManager::newPatientHandle()
                        QIODevice::ReadWrite);
     trendCache.clearTrendCache();
     trendCache.stopDataCollect(1);
+    d->trendCacheBuff.clear();
+    d->trendCacheExtraBuff.clear();
+    d->trendCacheTypeBuff.clear();
 }
 
 TrendDataStorageManager::TrendDataStorageManager()
