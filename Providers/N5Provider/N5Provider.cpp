@@ -416,10 +416,7 @@ void N5Provider::handlePacket(unsigned char *data, int len)
 
     // 压力控制（充气）
     case N5_RSP_PRESSURE_INFLATE:
-        if(data[1] == 0 || data[1] == 1)     // 0x8A回复帧，如果等于2时候是发送充气命令立刻恢复,等于1或者0时候是充到指定压力回复。
-        {
-            nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_PRESSURECONTROL_INFLATE, &data[1], 1);
-        }
+        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_PRESSURECONTROL_INFLATE, &data[1], 1);
         break;
 
     // 放气控制
@@ -732,7 +729,7 @@ void N5Provider::servicePressurepoint(const unsigned char *data, unsigned int le
 /**************************************************************************************************
  *进入压力计模式控制。
  *************************************************************************************************/
-void N5Provider::serviceManometer(bool enter)nibpmonitore
+void N5Provider::serviceManometer(bool enter)
 {
     unsigned char cmd;
     if (enter)
