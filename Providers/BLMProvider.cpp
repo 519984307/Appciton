@@ -116,6 +116,7 @@ void BLMProvider::handlePacket(unsigned char *data, int len)
     // version data, all BLMProvidor share the same version respond code
     if (data[0] == 0x11 && len >= 80 + 1)   // version info length + data packet head offset
     {
+        data[80] = '\0';                   // make sure the string is end with NUL
         const char *p = reinterpret_cast<char *>(&data[1]);
         versionInfo.clear();
         versionInfo.append(p);          // software git version
@@ -136,6 +137,7 @@ void BLMProvider::handlePacket(unsigned char *data, int len)
 
         if (len == 160 + 1)             // 适用于N5从片版本信息
         {
+            data[160] = '\0';           // make sure the string is end with NUL
             const char *p = reinterpret_cast<char *>(&data[1 + 80]);
             versionInfoEx.clear();
             versionInfoEx.append(p);    // software git version
