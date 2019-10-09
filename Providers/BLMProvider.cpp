@@ -11,6 +11,10 @@
 #include "Debug.h"
 #include "crc8.h"
 #include "BLMProvider.h"
+#include <QTimerEvent>
+#include <QMutex>
+#include <QMutexLocker>
+#include <QDateTime>
 
 #include <sys/time.h>
 #include <unistd.h>
@@ -21,18 +25,35 @@
 
 QMap<QString, BLMProvider *> BLMProvider::providers;
 
+/*
+ * Note 1: For BLM provider, we add command response check with the BLMCommandInfo
+ *         data structure. If the provider didn't get any response from the module,
+ *         provider will resend the command every second.
+ * Note 2: The BLM Porvider will only check response of the latest command.
+ *         If commands is sending too fast, only check response to the last command.
+ * Note 3: In BLMProvider, the packet type of command response will be cmdID + 1
+ */
+#define BLM_CMD_TIMEOUT_DURATION   3 /* BLM comand timeout in 3 seconds */
+#define MAX_BLM_CMD_PACKET_SIZE 150
+struct BLMCommandInfo {
+    BLMCommandInfo() : timestamp(0), cmdLen(0), cmdID(0), gotResponse(false) {}
+    QMutex mutex;       /* we need mutex because difference thread might send command at the same time */
+    quint32 timestamp;  /* the command timestamp */
+    quint16 cmdLen;     /* length of the command */
+    quint8 cmdID;       /* command id*/
+    bool gotResponse;   /* record this command is got response or not */
+    quint8 cmdBuf[MAX_BLM_CMD_PACKET_SIZE];     /* the command buffer */
+};
+
 /***************************************************************************************************
  * 构造函数
  **************************************************************************************************/
 BLMProvider::BLMProvider(const QString &name)
-    : Provider(name), upgradeIface(NULL),
-      rxdTimer(NULL), _noResponseCount(0),
-      _cmdId(-1)
+    : Provider(name), upgradeIface(NULL), _timerId(-1), _lastBLMCommandInfo(new BLMCommandInfo())
 {
     providers.insert(name, this);
     _isLastSOHPaired = false;
-    rxdTimer = new QTimer();
-    connect(rxdTimer, SIGNAL(timeout()), this, SLOT(noResponseTimeout()));
+    _timerId = startTimer(1000);
 }
 
 /***************************************************************************************************
@@ -40,6 +61,16 @@ BLMProvider::BLMProvider(const QString &name)
  **************************************************************************************************/
 BLMProvider::~BLMProvider()
 {
+    if (_timerId != -1) {
+        killTimer(_timerId);
+        _timerId = -1;
+    }
+
+    if (_lastBLMCommandInfo)
+    {
+        delete _lastBLMCommandInfo;
+        _lastBLMCommandInfo = NULL;
+    }
 }
 
 /***************************************************************************************************
@@ -108,10 +139,15 @@ void BLMProvider::dataArrived()
  **************************************************************************************************/
 void BLMProvider::handlePacket(unsigned char *data, int len)
 {
-    if (data[0] == _cmdId + 1)
-    {
-        resetTimer();
+    /* check command response */
+    _lastBLMCommandInfo->mutex.lock();
+    if (data[0] == _lastBLMCommandInfo->cmdID + 1) {
+        /* NOTE: in BLMProvider, the packet type of command response is always equal to cmdID + 1,
+         *       see the protocol for more detail
+         */
+        _lastBLMCommandInfo->gotResponse = true;
     }
+    _lastBLMCommandInfo->mutex.unlock();
 
     // version data, all BLMProvidor share the same version respond code
     if (data[0] == 0x11 && len >= 80 + 1)   // version info length + data packet head offset
@@ -159,18 +195,30 @@ void BLMProvider::handlePacket(unsigned char *data, int len)
     }
 }
 
-void BLMProvider::noResponseTimeout()
+void BLMProvider::timerEvent(QTimerEvent *ev)
 {
-    _noResponseCount++;
-    if (_noResponseCount < 2)
-    {
-        _sendData(_blmCmd.cmd, _blmCmd.cmdLen);
-    }
-    else
-    {
-        qWarning() << Q_FUNC_INFO << getName() << "no response for cmd: " << showbase << hex << _cmdId;
-        sendDisconnected();
-        resetTimer();
+    Provider::timerEvent(ev);
+
+    if (_timerId == ev->timerId()) {
+        QMutexLocker locker(&_lastBLMCommandInfo->mutex);
+        if (_lastBLMCommandInfo->cmdLen >= minPacketLen && !_lastBLMCommandInfo->gotResponse) {
+            /* last command haven't got response yet, check timeout or resend last command */
+            quint32 curTimestamp = QDateTime::currentDateTime().toTime_t();
+            if (curTimestamp == _lastBLMCommandInfo->timestamp) {
+                /* Duration is too short, handle in the timer event */
+            } else if (curTimestamp - _lastBLMCommandInfo->timestamp > BLM_CMD_TIMEOUT_DURATION) {
+                /* already timeout, the command is fail to send */
+                qWarning() << Q_FUNC_INFO << getName() << "no response for cmd: "
+                           << showbase << hex << _lastBLMCommandInfo->cmdID;
+                sendDisconnected();
+                _lastBLMCommandInfo->cmdLen = 0;
+            } else {
+                /* resend the command */
+                _sendData(_lastBLMCommandInfo->cmdBuf, _lastBLMCommandInfo->cmdLen);
+                qWarning() << Q_FUNC_INFO << getName() << "resend command"
+                           << showbase << hex << _lastBLMCommandInfo->cmdID;
+            }
+        }
     }
 }
 
@@ -287,14 +335,6 @@ BLMProvider *BLMProvider::findProvider(const QString &name)
     return providers.value(name, NULL);
 }
 
-void BLMProvider::resetTimer()
-{
-    rxdTimer->stop();
-    _blmCmd.reset();
-    _noResponseCount = 0;
-    _cmdId = -1;
-}
-
 /***************************************************************************************************
  * 发送协议命令
  * 参数:
@@ -326,14 +366,19 @@ bool BLMProvider::sendCmd(unsigned char cmdId, const unsigned char *data, unsign
 
     if (cmdId != NACK && cmdId != ACK && upgradeIface == NULL)
     {
-        _cmdId = cmdId;
-        _blmCmd.reset();
-        for (unsigned int i = 0; i < cmdLen; i++)
+        QMutexLocker locker(&_lastBLMCommandInfo->mutex);
+        if (cmdLen <= MAX_BLM_CMD_PACKET_SIZE)
         {
-            _blmCmd.cmd[i] = cmdBuf[i];
+            _lastBLMCommandInfo->cmdID = cmdId;
+            _lastBLMCommandInfo->cmdLen = cmdLen;
+            _lastBLMCommandInfo->timestamp = QDateTime::currentDateTime().toTime_t();
+            _lastBLMCommandInfo->gotResponse = false;
+            qMemCopy(_lastBLMCommandInfo->cmdBuf, cmdBuf, cmdLen);
         }
-        _blmCmd.cmdLen = cmdLen;
-        rxdTimer->start(1000);
+        else
+        {
+            qCritical() << "Comand Length" << cmdLen << "is larger than " << MAX_BLM_CMD_PACKET_SIZE;
+        }
     }
     return _sendData(cmdBuf, cmdLen);
 }
