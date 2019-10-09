@@ -23,6 +23,7 @@ MenuSidebarItem::MenuSidebarItem(QWidget *parent)
     setCheckable(true);
     QPalette pal = palette();
     themeManger.setupPalette(ThemeManager::ControlMenuSideBarItem, pal);
+    pal.setColor(QPalette::Background, Qt::transparent);
     setPalette(pal);
 }
 
@@ -74,6 +75,7 @@ void MenuSidebarItem::paintEvent(QPaintEvent *ev)
     QRect rect = contentsRect();
 
     QPainter painter(this);
+    painter.setCompositionMode(QPainter::CompositionMode_SourceAtop);
     painter.fillRect(rect, bgColor);
 
     rect.adjust(2 * MARKER_WIDTH, 0, 0, 0);

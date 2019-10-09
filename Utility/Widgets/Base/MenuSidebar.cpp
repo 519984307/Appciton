@@ -111,7 +111,8 @@ MenuSidebar::MenuSidebar(QWidget *parent)
     bgColor = bgColor.darker(120);
     pal.setColor(QPalette::Window, bgColor);
     pal.setColor(QPalette::Button, bgColor);
-    d->widget->setPalette(pal);
+    pal.setColor(QPalette::Background, Qt::transparent);
+    setPalette(pal);
 
     setFloatbarPolicy(FloatBarShowForAWhileWhenNeeded);
 

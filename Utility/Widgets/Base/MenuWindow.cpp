@@ -46,7 +46,7 @@ public:
 MenuWindow::MenuWindow()
     : Dialog(), d_ptr(new MenuWindowPrivate())
 {
-    setWindowTitle("Menu Window");
+    setWindowTitle("MenuWindow");
     resize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
 
     QHBoxLayout *layout = new QHBoxLayout;
