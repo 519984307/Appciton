@@ -145,18 +145,17 @@ void TrendTableWindow::updatePages()
                    .arg(curPageNum)
                    .arg(allPagesNum)
                    .arg(trs("PageNum")));
-}
 
-void TrendTableWindow::showEvent(QShowEvent *ev)
-{
-    Dialog::showEvent(ev);
-    d_ptr->updateTable();
+    // 更新趋势表的日期
     QAbstractButton *btn = d_ptr->table->findChild<QAbstractButton *>();
     if (btn)
     {
-        QString dataTime;
-        timeDate.getDate(dataTime);
-        btn->setText(dataTime);
+        QString date = d_ptr->model->getCurTableDate();
+        if (date == InvStr())
+        {
+            timeDate.getDate(date, true);
+        }
+        btn->setText(date);
         btn->installEventFilter(this);
         QStyleOptionHeader opt;
         opt.text = btn->text();
@@ -166,6 +165,12 @@ void TrendTableWindow::showEvent(QShowEvent *ev)
             d_ptr->table->verticalHeader()->setMinimumWidth(s.width());
         }
     }
+}
+
+void TrendTableWindow::showEvent(QShowEvent *ev)
+{
+    Dialog::showEvent(ev);
+    d_ptr->updateTable();
 
     // 更新打印机状态
     if (recorderManager.isConnected())

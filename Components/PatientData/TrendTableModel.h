@@ -84,6 +84,12 @@ public:
      */
     void getCurIndexInfo(unsigned &curIndex, unsigned &totalIndex) const;
 
+    /**
+     * @brief getCurTableTime 获取当前表格时间
+     * @return
+     */
+    QString getCurTableDate();
+
 protected:
     void timerEvent(QTimerEvent *ev);
 
