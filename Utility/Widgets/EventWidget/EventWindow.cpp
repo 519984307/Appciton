@@ -248,17 +248,14 @@ void EventWindow::setHistoryData(bool flag)
 
 void EventWindow::findEventIndex(SubParamID id, unsigned time)
 {
-    int eventNum = d_ptr->backend->getBlockNR();
+    Q_UNUSED(id)
+    int eventNum = d_ptr->blockList.count();
     int index = -1;
     for (int i = eventNum - 1; i >= 0; i --)
     {
-        if (d_ptr->parseEventData(i))
+        if (d_ptr->blockList.at(i).extraData == time)
         {
-            if (d_ptr->ctx.infoSegment->timestamp == time &&
-                    d_ptr->ctx.almSegment->subParamID == id)
-            {
-                index = i;
-            }
+            index = i;
         }
     }
     int pos = -1;
