@@ -346,12 +346,12 @@ QVariant AlarmLimitModel::headerData(int section, Qt::Orientation orientation, i
             int w = d_ptr->viewWidth / (SECTION_NR + 1);
             if (section == SECTION_PARAM_NAME)
             {
-                w += w;
+                w += w / 2;
             }
-            else if (section == SECTION_NR - 1)
+            else
             {
-                // add the remains for the last section
-                w += d_ptr->viewWidth % (SECTION_NR + 1);
+                int remainWidth = w / 2;
+                w = w + remainWidth / (SECTION_NR - 1);
             }
 
             return QSize(w, HEADER_HEIGHT_HINT);

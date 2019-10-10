@@ -29,6 +29,7 @@
 #include <QTimer>
 #include <SystemManager.h>
 #include "MessageBox.h"
+#include "WindowManager.h"
 
 #define TABLE_ROW_NUM 7
 
@@ -166,7 +167,7 @@ void AlarmLimitWindow::readyShow()
 void AlarmLimitWindow::layoutExec()
 {
     setWindowTitle(trs("AlarmLimit"));
-    setFixedSize(580, 520);
+    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
     setFocusPolicy(Qt::NoFocus);
 
     QBoxLayout *layout = new QVBoxLayout();
@@ -200,35 +201,34 @@ void AlarmLimitWindow::layoutExec()
 
     d_ptr->table->setItemDelegate(new TableViewItemDelegate(this));
 
-
     QBoxLayout *hlayout = new QHBoxLayout;
+    hlayout->setSpacing(20);
     hlayout->addStretch(1);
-    Button *btn = new Button(trs("Prev"));
+
+    Button *btn = new Button(trs("Defaults"));
     btn->setButtonStyle(Button::ButtonTextOnly);
-    btn->setMinimumWidth(100);
+    btn->setFixedWidth(150);
+    hlayout->addWidget(btn);
+    connect(btn, SIGNAL(clicked(bool)), this, SLOT(onDefaultsClick()));
+    d_ptr->defaultsBtn = btn;
+
+    btn = new Button(trs("Prev"));
+    btn->setButtonStyle(Button::ButtonTextOnly);
+    btn->setFixedWidth(150);
     hlayout->addWidget(btn);
     connect(btn, SIGNAL(clicked(bool)), this, SLOT(onbtnClick()));
     d_ptr->prevBtn = btn;
 
     btn = new Button(trs("Next"));
     btn->setButtonStyle(Button::ButtonTextOnly);
-    btn->setMinimumWidth(100);
+    btn->setFixedWidth(150);
     hlayout->addWidget(btn);
     connect(btn, SIGNAL(clicked(bool)), this, SLOT(onbtnClick()));
     d_ptr->nextBtn = btn;
 
-    btn = new Button(trs("Defaults"));
-    btn->setButtonStyle(Button::ButtonTextOnly);
-    btn->setMinimumWidth(100);
-    hlayout->addWidget(btn);
-    connect(btn, SIGNAL(clicked(bool)), this, SLOT(onDefaultsClick()));
-    d_ptr->defaultsBtn = btn;
-
     hlayout->addStretch(1);
 
     layout->addLayout(hlayout);
-
-    layout->addStretch(1);
 
     setWindowLayout(layout);
 }
