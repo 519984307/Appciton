@@ -129,6 +129,7 @@
         <O2Compensation>16</O2Compensation>
         <N2OCompensation>0</N2OCompensation>
         <CeroCalibration>0</CeroCalibration>
+	<ApneaTime>0</ApneaTime>
     </CO2>
     <CO>
         <Ratio>555</Ratio>
@@ -149,9 +150,6 @@
     <Event>
         <WaveLength>16</WaveLength>
     </Event>
-    <Alarm>
-        <ApneaTime>1</ApneaTime>
-    </Alarm>
     <AlarmSource>
 		<HR_PR Enable="1" Prio="1">
 			<bpm>

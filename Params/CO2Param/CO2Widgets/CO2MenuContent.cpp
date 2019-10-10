@@ -170,7 +170,7 @@ void CO2MenuContent::onComboBoxIndexChanged(int index)
         co2Param.setDisplayZoom(static_cast<CO2DisplayZoom>(index));
         break;
     case CO2MenuContentPrivate::ITEM_CBO_APNEA_TIME:
-        currentConfig.setNumValue("Alarm|ApneaTime", index);
+        currentConfig.setNumValue("CO2|ApneaTime", index);
         co2Param.setApneaTime(static_cast<ApneaAlarmTime>(index));
         break;
     case CO2MenuContentPrivate::ITEM_CBO_WORK_MODE:
