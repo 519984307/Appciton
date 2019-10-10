@@ -99,7 +99,7 @@ void ConfigEditCO2MenuContentPrivate::loadOptions()
     config->getNumValue("CO2|FiCO2Display", index);
     combos[ITEM_CBO_FICO2_DISPLAY]->setCurrentIndex(index);
 
-    config->getNumValue("Alarm|ApneaTime", index);
+    config->getNumValue("CO2|ApneaTime", index);
     combos[ITEM_CBO_APNEA_TIME]->setCurrentIndex(index);
 
     // co2标尺
@@ -149,7 +149,7 @@ void ConfigEditCO2MenuContent::onComboBoxIndexChanged(int index)
         d_ptr->config->setNumValue("CO2|FiCO2Display", index);
         break;
     case ConfigEditCO2MenuContentPrivate::ITEM_CBO_APNEA_TIME:
-        d_ptr->config->setNumValue("Alarm|ApneaTime", index);
+        d_ptr->config->setNumValue("CO2|ApneaTime", index);
         break;
     };
 }
