@@ -74,7 +74,7 @@ enum PrinterCommand
     PRINTER_CMD_KEEP_ALIVE = 0x5b,
 
     // 错误报告
-    PRINTER_CMD_ERROR_INFO = 0x76,
+    PRINTER_CMD_ERROR_INFO = 0x76,  /* FIXME: PRT48 doesn't exist this info packet */
 
     //升级保活帧
     PRINTER_UPGRADE_ALIVE = 0xFE,
@@ -185,6 +185,8 @@ void PRT48Provider::_parseStatusInfo(const unsigned char *data, unsigned int len
         debug("Invalid status info packet!");
         return;
     }
+
+    qDebug() << "Printer status" << hex << data[1];
 
     if (PRINTER_CMD_STATUS_INFO == type)
     {

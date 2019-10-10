@@ -224,7 +224,7 @@ public:
         memset(&cal, 0, sizeof(Calibration));
     }
 
-    void drawCrosshair(QPainter &painter, int x, int y);
+    void drawCrosshair(QPainter *painter, int x, int y);
     QPoint point(CalibrationPoint calPoint);
     QString pointName(CalibrationPoint calPoint);
 
@@ -236,19 +236,19 @@ public:
     TSCalibrationThread *thread;
 };
 
-void TSCalibrationWindowPrivate::drawCrosshair(QPainter &painter, int x, int y)
+void TSCalibrationWindowPrivate::drawCrosshair(QPainter *painter, int x, int y)
 {
     QVector<QLine> lines;
     lines.append(QLine(x - 10, y, x - 2, y));
     lines.append(QLine(x + 2, y, x + 10, y));
     lines.append(QLine(x, y - 10, x, y - 2));
     lines.append(QLine(x, y + 2, x, y + 10));
-    painter.drawLines(lines);
+    painter->drawLines(lines);
 
 
     lines.clear();
-    painter.save();
-    painter.setPen(QColor(CROSSHAIR_FRAME_COLOR));
+    painter->save();
+    painter->setPen(QColor(CROSSHAIR_FRAME_COLOR));
     lines.append(QLine(x - 6, y - 9, x - 9, y - 9));
     lines.append(QLine(x - 9, y - 8, x - 9, y - 6));
     lines.append(QLine(x - 9, y + 6, x - 9, y + 9));
@@ -257,8 +257,8 @@ void TSCalibrationWindowPrivate::drawCrosshair(QPainter &painter, int x, int y)
     lines.append(QLine(x + 9, y + 8, x + 9, y + 6));
     lines.append(QLine(x + 9, y - 6, x + 9, y - 9));
     lines.append(QLine(x + 8, y - 9, x + 6, y - 9));
-    painter.drawLines(lines);
-    painter.restore();
+    painter->drawLines(lines);
+    painter->restore();
 }
 
 QPoint TSCalibrationWindowPrivate::point(TSCalibrationWindowPrivate::CalibrationPoint calPoint)
@@ -375,19 +375,19 @@ void TSCalibrationWindow::paintEvent(QPaintEvent *ev)
     switch (d_ptr->calPoint)
     {
     case TSCalibrationWindowPrivate::TOP_LEFT:
-        d_ptr->drawCrosshair(painter, 50, 50);
+        d_ptr->drawCrosshair(&painter, 50, 50);
         break;
     case TSCalibrationWindowPrivate::TOP_RIGHT:
-        d_ptr->drawCrosshair(painter, width() - 50, 50);
+        d_ptr->drawCrosshair(&painter, width() - 50, 50);
         break;
     case TSCalibrationWindowPrivate::BOTTOM_RIGHT:
-        d_ptr->drawCrosshair(painter, width() - 50, height() -  50);
+        d_ptr->drawCrosshair(&painter, width() - 50, height() -  50);
         break;
     case TSCalibrationWindowPrivate::BOTTOM_LEFT:
-        d_ptr->drawCrosshair(painter, 50, height() - 50);
+        d_ptr->drawCrosshair(&painter, 50, height() - 50);
         break;
     case TSCalibrationWindowPrivate::CENTER:
-        d_ptr->drawCrosshair(painter, width() / 2, height() / 2);
+        d_ptr->drawCrosshair(&painter, width() / 2, height() / 2);
         break;
     default:
         break;
@@ -396,7 +396,7 @@ void TSCalibrationWindow::paintEvent(QPaintEvent *ev)
     QPoint p = d_ptr->point(d_ptr->calPoint);
     if (!p.isNull())
     {
-        d_ptr->drawCrosshair(painter, p.x(), p.y());
+        d_ptr->drawCrosshair(&painter, p.x(), p.y());
     }
 }
 
@@ -446,6 +446,7 @@ void TSCalibrationWindow::onGetTouchPos(const QPoint &pos)
 TSCalibrationThread::TSCalibrationThread(QObject *parent)
     :QThread(parent)
 {
+    setObjectName("TSCalibration");
 }
 
 void TSCalibrationThread::run()

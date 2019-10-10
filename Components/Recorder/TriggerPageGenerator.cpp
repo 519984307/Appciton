@@ -16,8 +16,8 @@
 class TriggerPageGeneratorPrivate
 {
 public:
-    explicit TriggerPageGeneratorPrivate(EventStorageItem *item)
-        : curPageType(RecordPageGenerator::TrendPage),
+    explicit TriggerPageGeneratorPrivate(TriggerPageGenerator * const q_ptr, EventStorageItem *item)
+        : q_ptr(q_ptr), curPageType(RecordPageGenerator::TrendPage),
           item(item),
           curDrawWaveSegment(0)
     {
@@ -28,6 +28,7 @@ public:
 
     bool fetchWaveData();
 
+    TriggerPageGenerator * const q_ptr;
     RecordPageGenerator::PageType curPageType;
     EventStorageItem *item;
     QList<RecordWaveSegmentInfo> waveInfos;
@@ -55,15 +56,22 @@ bool TriggerPageGeneratorPrivate::fetchWaveData()
                 return false;
             }
 
-            if (++retryCount >= 220) // wait more than 1 second
+            if (++retryCount >= 220)  // wait more than 1 second
             {
                 break;
             }
 
+            QPointer<TriggerPageGenerator> generatorGuard(q_ptr);
             Util::waitInEventLoop(5);
+
+            if (generatorGuard) {
+                qWarning() << Q_FUNC_INFO << "Generator is already destroyed, abort";
+                return false;
+            }
 
             if (!itemGuard)
             {
+                qWarning() << Q_FUNC_INFO << "Item is already destroyed, abort";
                 return false;
             }
         }
@@ -84,7 +92,7 @@ bool TriggerPageGeneratorPrivate::fetchWaveData()
 
 TriggerPageGenerator::TriggerPageGenerator(EventStorageItem *item,
         QObject *parent)
-    : RecordPageGenerator(parent), d_ptr(new TriggerPageGeneratorPrivate(item))
+    : RecordPageGenerator(parent), d_ptr(new TriggerPageGeneratorPrivate(this, item))
 {
     connect(this, SIGNAL(stopped()), item, SLOT(onTriggerPrintStopped()));
     connect(this, SIGNAL(destroyed(QObject*)), item, SLOT(onTriggerPrintStopped()));

@@ -139,6 +139,7 @@ void SPO2Param::handDemoTrendData(void)
     {
         _trendWidget->setSPO2Value(_spo2Value);
         _trendWidget->setPIValue(_piValue);
+        setNotify(false);
     }
 
     if (NULL != _oxyCRGSPO2Trend)

@@ -360,14 +360,6 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource, QList<ParamID> &
         bool isRemoveAfterLatch = alarmSource->isRemoveAfterLatch(i);
         bool isRemoveLightAfterConfirm = alarmSource->isRemoveLightAfterConfirm(i);
 
-        // 报警关闭不处理生理报警报警, don't handle phy alarm when in alarm pause state
-        if ((_curAlarmStatus == ALARM_STATUS_OFF || _curAlarmStatus == ALARM_STATUS_PAUSE) && type != ALARM_TYPE_TECH)
-        {
-            alarmSource->notifyAlarm(i, false);
-            traceCtrl->Reset();
-            continue;
-        }
-
         // 更新报警级别
         if (priority != traceCtrl->priority && NULL != traceCtrl->alarmMessage)
         {

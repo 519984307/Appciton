@@ -127,6 +127,7 @@ public:
     QList<int>  trendIndexList;                     // 符合分辨率的趋势数据索引列表
     IStorageBackend *backend;
     PatientInfo patientInfo;                        // 病人信息
+    QString curDateStr;
 };
 
 TrendTableModel::TrendTableModel(QObject *parent)
@@ -711,6 +712,11 @@ void TrendTableModel::getCurIndexInfo(unsigned &curIndex, unsigned &totalIndex) 
     totalIndex = d_ptr->indexInfo.total;
 }
 
+QString TrendTableModel::getCurTableDate()
+{
+    return d_ptr->curDateStr;
+}
+
 void TrendTableModel::timerEvent(QTimerEvent *ev)
 {
     if (d_ptr->printTimerId == ev->timerId())
@@ -750,7 +756,8 @@ TrendTableModelPrivate::TrendTableModelPrivate()
       isWait(false),
       timeoutNum(0),
       generator(NULL),
-      backend(NULL)
+      backend(NULL),
+      curDateStr(InvStr())
 {
     orderMap.clear();
 
@@ -930,10 +937,13 @@ void TrendTableModelPrivate::loadTrendData()
 
     // 装载趋势表头数据
     colHeadList.clear();
+    curDateStr = InvStr();
     for (int i = 0; i < trendDataPack.count(); i++)
     {
         TrendDataPackage *pack = trendDataPack.at(i);
 
+        QString date;
+        timeDate.getDate(pack->time, date, true);
         // 填充TrendDataContent结构体dataStr成员
         QString time;
         timeDate.getTime(pack->time, time, true);
@@ -972,6 +982,11 @@ void TrendTableModelPrivate::loadTrendData()
             }
         }
 
+        // 将趋势表的第一个数据日期显示在左上角
+        if (colHeadList.isEmpty())
+        {
+            curDateStr = date;
+        }
         // 填充colHeadList链表
         colHeadList.append(colHeadContent);
     }

@@ -85,6 +85,7 @@ public:
         alarmInterval[2] = 10000;
 
         playerThread = new QThread(q_ptr);
+        playerThread->setObjectName("player");
         player = new WavPlayer();
         player->moveToThread(playerThread);
 
