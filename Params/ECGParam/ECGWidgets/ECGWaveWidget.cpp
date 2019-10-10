@@ -814,7 +814,7 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
 
     _notchInfo = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
     _notchInfo->setFont(fontManager.textFont(fontSize));
-    _notchInfo->setFixedSize(120, fontH);
+    _notchInfo->setFixedSize(150, fontH);
     _notchInfo->setFocusPolicy(Qt::NoFocus);
     addItem(_notchInfo);
     connect(&ecgParam, SIGNAL(updateNotchFilter()), this, SLOT(_updateNotchInfo()));
