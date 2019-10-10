@@ -304,18 +304,14 @@ void DialogPrivate::drawShadow(QPainter &p, QRectF windowRect, QMargins margin, 
     shadowPath = shadowPath.subtracted(windowPath);
 
     QPainterPath path;
-    QPainterPath cutPath;
+    QPainterPath intersectPath;
     QPointF center;
 
     switch (piece) {
     case TOP_LEFT:
-        // 获取区域
-        cutPath.addRect(windowRect.left() + borderRadius, shadowRect.top(),
-                        shadowRect.width() - margin.left() - borderRadius, margin.top() + borderRadius);
-        path = shadowPath.subtracted(cutPath);
-        cutPath.addRect(shadowRect.left(), windowRect.top() + borderRadius,
-                        shadowRect.width(), shadowRect.height() - margin.top() - borderRadius);
-        path = path.subtracted(cutPath);
+        // 获取区域（区域与路径的交集）
+        intersectPath.addRect(shadowRect.left(), shadowRect.top(), margin.left() + borderRadius, margin.top() + borderRadius);
+        path = shadowPath.intersected(intersectPath);
 
         // 设置渐变
         center.setX(windowRect.left() + borderRadius);
@@ -330,12 +326,9 @@ void DialogPrivate::drawShadow(QPainter &p, QRectF windowRect, QMargins margin, 
 
     case TOP_RIGHT:
         // 获取区域
-        cutPath.addRect(shadowRect.left(), shadowRect.top(),
-                        shadowRect.width() - margin.right() - borderRadius, margin.top() + borderRadius);
-        path = shadowPath.subtracted(cutPath);
-        cutPath.addRect(shadowRect.left(), windowRect.top() + borderRadius,
-                        shadowRect.width(), shadowRect.height() - margin.top() - borderRadius);
-        path = path.subtracted(cutPath);
+        intersectPath.addRect(windowRect.right() - borderRadius, shadowRect.top(),
+                              margin.right() + borderRadius, margin.top() + borderRadius);
+        path = shadowPath.intersected(intersectPath);
 
         // 设置渐变
         center.setX(windowRect.right() - borderRadius);
@@ -348,13 +341,9 @@ void DialogPrivate::drawShadow(QPainter &p, QRectF windowRect, QMargins margin, 
         p.fillPath(path, *radialGradient);
         break;
     case BOTTOM_RIGHT:
-        cutPath.addRect(shadowRect.left(), shadowRect.top(),
-                        shadowRect.width(), shadowRect.height() - margin.bottom() - borderRadius);
-        path = shadowPath.subtracted(cutPath);
-        cutPath.addRect(shadowRect.left(), windowRect.bottom() - borderRadius
-                        , shadowRect.width() - margin.right() - borderRadius
-                        , shadowRect.height() - margin.bottom() - borderRadius);
-        path = path.subtracted(cutPath);
+        intersectPath.addRect(windowRect.right() - borderRadius, windowRect.bottom() - borderRadius,
+                              margin.right() + borderRadius, margin.bottom() + borderRadius);
+        path = shadowPath.intersected(intersectPath);
 
         center.setX(windowRect.right() - borderRadius);
         center.setY(windowRect.bottom() - borderRadius);
@@ -365,13 +354,9 @@ void DialogPrivate::drawShadow(QPainter &p, QRectF windowRect, QMargins margin, 
         p.fillPath(path, *radialGradient);
         break;
     case BOTTOM_LEFT:
-        cutPath.addRect(shadowRect.left(), shadowRect.top(),
-                        shadowRect.width(), shadowRect.height() - margin.bottom() - borderRadius);
-        path = shadowPath.subtracted(cutPath);
-        cutPath.addRect(windowRect.left() + borderRadius, windowRect.bottom() - borderRadius
-                        , shadowRect.width() - margin.left() - borderRadius
-                        , shadowRect.height() - margin.bottom() - borderRadius);
-        path = path.subtracted(cutPath);
+        intersectPath.addRect(shadowRect.left(), windowRect.bottom() - borderRadius,
+                              margin.left() + borderRadius, margin.bottom() + borderRadius);
+        path = shadowPath.intersected(intersectPath);
 
         center.setX(windowRect.left() + borderRadius);
         center.setY(windowRect.bottom() - borderRadius);
