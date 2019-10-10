@@ -347,6 +347,7 @@ QVariant AlarmLimitModel::headerData(int section, Qt::Orientation orientation, i
             if (section == SECTION_PARAM_NAME)
             {
                 w += w / 2;
+                w += d_ptr->viewWidth % (SECTION_NR + 1);
             }
             else
             {
