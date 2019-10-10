@@ -350,6 +350,7 @@ QVariant AlarmLimitModel::headerData(int section, Qt::Orientation orientation, i
             }
             else
             {
+                // 平均分配多余的空间
                 int remainWidth = w / 2;
                 w = w + remainWidth / (SECTION_NR - 1);
             }
