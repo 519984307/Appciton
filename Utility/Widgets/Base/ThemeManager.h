@@ -45,6 +45,7 @@ public:
         ElementBorder,
         ElementBackgound,
         ElementText,
+        ElementShadow,
         ElementNR,
     };
 

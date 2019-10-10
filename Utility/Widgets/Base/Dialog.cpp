@@ -119,12 +119,13 @@ Dialog::Dialog(QWidget *parent)
     d_ptr->m_mask->setVisible(false);
     d_ptr->m_mask->setAutoFillBackground(true);
 
+    QColor shadowColor = themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementShadow, ThemeManager::StateNR);
     d_ptr->radialGradient = new QRadialGradient();
-    d_ptr->radialGradient->setColorAt(0, QColor(0, 0, 0, 255));
-    d_ptr->radialGradient->setColorAt(1, QColor(0, 0, 0, 0));
+    d_ptr->radialGradient->setColorAt(0, shadowColor);
+    d_ptr->radialGradient->setColorAt(1, Qt::transparent);
     d_ptr->linearGradient = new QLinearGradient();
-    d_ptr->linearGradient->setColorAt(0, QColor(0, 0, 0, 255));
-    d_ptr->linearGradient->setColorAt(1, QColor(0, 0, 0, 0));
+    d_ptr->linearGradient->setColorAt(0, shadowColor);
+    d_ptr->linearGradient->setColorAt(1, Qt::transparent);
 }
 
 Dialog::~Dialog()

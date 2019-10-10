@@ -86,6 +86,10 @@ void ThemeManagerPrivate::loadColorScheme()
     colorScheme.insert(COLOR_KEY(ThemeManager::ControlTypeNR, ThemeManager::ElementText,
                                  ThemeManager::StateHighlight), QColor("#2C405A"));
 
+    // default shadow color scheme
+    colorScheme.insert(COLOR_KEY(ThemeManager::ControlTypeNR, ThemeManager::ElementShadow,
+                                 ThemeManager::StateNR), QColor(80, 80, 80, 255));
+
     // Popup List item
     colorScheme.insert(COLOR_KEY(ThemeManager::ControlPopupListItem, ThemeManager::ElementBackgound,
                                  ThemeManager::StateActive), QColor("#BCD2FD"));
