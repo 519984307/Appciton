@@ -301,7 +301,8 @@ void UserMaintainGeneralMenuContent::onButtonReleased()
             idPanel.setSymbolEnable(false);
             idPanel.setSpaceEnable(false);
             // 设置初始字符串 placeholder模式
-            idPanel.setInitString(button->text(), true);
+            QString lastPassword = QString("%1:%2").arg(trs("LastPassword")).arg(button->text());
+            idPanel.setInitString(lastPassword, true);
 
             idPanel.setCheckValueHook(checkPasswordValue);
             QString invaildHint = QString(trs("Input8DigitsPassword"));
