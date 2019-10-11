@@ -139,6 +139,7 @@ void TrendWidget::showAlarmParamLimit(QWidget *valueWidget, const QString &value
     {
         downLimit->setPalette(psrc);
     }
+    darkParamLimit();
 }
 
 // 将控件下的全部控件都刷新颜色
@@ -165,12 +166,14 @@ void TrendWidget::showNormalStatus(QPalette psrc)
 {
     normalPalette(psrc);
     setWidgetPalette(contentLayout, psrc);
+    darkParamLimit();
 }
 
 void TrendWidget::showNormalStatus(QLayout *layout, QPalette psrc)
 {
     normalPalette(psrc);
     setWidgetPalette(layout, psrc);
+    darkParamLimit();
 }
 
 void TrendWidget::showNormalStatus(QWidget *value, QPalette psrc)
@@ -196,6 +199,30 @@ void TrendWidget::showNormalParamLimit(QPalette psrc)
     if (p.windowText().color() != psrc.windowText().color())
     {
         downLimit->setPalette(psrc);
+    }
+
+    darkParamLimit();
+}
+
+void TrendWidget::darkParamLimit()
+{
+    QPalette pal = upLimit->palette();
+    QColor c = pal.color(QPalette::WindowText);
+    if (c.alpha() != 0)
+    {
+        c.setAlpha(150);
+        pal.setColor(QPalette::WindowText, c);
+        upLimit->setPalette(pal);
+    }
+
+
+    pal = downLimit->palette();
+    c = pal.color(QPalette::WindowText);
+    if (c.alpha() != 0)
+    {
+        c.setAlpha(150);
+        pal.setColor(QPalette::WindowText, c);
+        downLimit->setPalette(pal);
     }
 }
 

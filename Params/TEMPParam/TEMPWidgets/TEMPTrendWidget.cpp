@@ -193,6 +193,7 @@ void TEMPTrendWidget::showValue(void)
         QLayout *lay = statckedWidget->currentWidget()->layout();
         showNormalStatus(lay, psrc);
     }
+    darkParamLimit();
 }
 
 void TEMPTrendWidget::updateLimit()
@@ -328,6 +329,46 @@ void TEMPTrendWidget::showAlarmParamLimit(QWidget *valueWidget, const QString &v
         {
             _t2DownLimit->setPalette(psrc);
         }
+    }
+}
+
+void TEMPTrendWidget::darkParamLimit()
+{
+    // 使颜色变暗
+    QPalette pal = _t1UpLimit->palette();
+    QColor c = pal.color(QPalette::WindowText);
+    if (c.alpha() != 0)
+    {
+        c.setAlpha(150);
+        pal.setColor(QPalette::WindowText, c);
+        _t1UpLimit->setPalette(pal);
+    }
+
+    pal = _t1DownLimit->palette();
+    c = pal.color(QPalette::WindowText);
+    if (c.alpha() != 0)
+    {
+        c.setAlpha(150);
+        pal.setColor(QPalette::WindowText, c);
+        _t1DownLimit->setPalette(pal);
+    }
+
+    pal = _t2UpLimit->palette();
+    c = pal.color(QPalette::WindowText);
+    if (c.alpha() != 0)
+    {
+        c.setAlpha(150);
+        pal.setColor(QPalette::WindowText, c);
+        _t2UpLimit->setPalette(pal);
+    }
+
+    pal = _t2DownLimit->palette();
+    c = pal.color(QPalette::WindowText);
+    if (c.alpha() != 0)
+    {
+        c.setAlpha(150);
+        pal.setColor(QPalette::WindowText, c);
+        _t2DownLimit->setPalette(pal);
     }
 }
 
@@ -468,6 +509,7 @@ void TEMPTrendWidget::doRestoreNormalStatus()
     showNormalStatus(_t2UpLimit, psrc);
     showNormalStatus(_t2DownLimit, psrc);
     showNormalStatus(_message, psrc);
+    darkParamLimit();
 }
 
 void TEMPTrendWidget::updatePalette(const QPalette &pal)

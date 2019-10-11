@@ -144,4 +144,9 @@ protected:
      * @param psrc                  参数对应字体调色板
      */
     void showNormalParamLimit(QPalette psrc);
+
+    /**
+     * @brief darkParamLimit 使得上下限颜色变暗
+     */
+    void darkParamLimit();
 };
