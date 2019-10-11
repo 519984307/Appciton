@@ -1247,6 +1247,25 @@ void ECGParam::setLeadMode(ECGLeadMode newMode)
     if (calcLead != newCaclLead)
     {
         setCalcLead(newCaclLead);
+        int preECG1Lead = 0;
+        int preECG2Lead = 0;
+        currentConfig.getNumValue("ECG|Ecg1Wave", preECG1Lead);
+        currentConfig.getNumValue("ECG|Ecg2Wave", preECG2Lead);
+
+        if (layoutManager.getUFaceType() == UFACE_MONITOR_STANDARD)
+        {
+            // 标准界面且ECG模式大于3导时，处理ECG2波形与ECG1波形重复
+            if (static_cast<int>(newCaclLead) == preECG2Lead)
+            {
+                // 计算导联与ECG2波形重复时，将ECG2波形设置为前ECG1波形
+                currentConfig.setNumValue("ECG|Ecg2Wave", preECG1Lead);
+                adjustPrintWave(static_cast<ECGLead>(preECG2Lead), static_cast<ECGLead>(preECG1Lead));
+            }
+        }
+
+        adjustPrintWave(static_cast<ECGLead>(preECG1Lead), newCaclLead);
+        currentConfig.setNumValue("ECG|Ecg1Wave", static_cast<int>(newCaclLead));
+
         if (layoutManager.getUFaceType() != UFACE_MONITOR_ECG_FULLSCREEN)
         {
             needUpdateLayout = 1;
