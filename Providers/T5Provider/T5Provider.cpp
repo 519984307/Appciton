@@ -382,30 +382,18 @@ void T5Provider::_result(unsigned char *packet)
     _temp2 = InvData();
     _tempd = InvData();
 
-    bool sensorOff1 = _sensorOff1;
-    bool sensorOff2 = _sensorOff2;
-
-    if (!(0xFF == packet[2] && 0xFF == packet[1]))
+    if (!_overRang1)
     {
-        if (!_overRang1)
-        {
-            _temp1 = borderValueChange(LOW_BORDER_VALUE, HIGH_BORDER_VALUE,
-                                        static_cast<int>((packet[2] << 8) +packet[1]));
-        }
-        sensorOff1 = false;
+        _temp1 = borderValueChange(LOW_BORDER_VALUE, HIGH_BORDER_VALUE,
+                                    static_cast<int>((packet[2] << 8) +packet[1]));
     }
 
-    if (!(0xFF == packet[4] && 0xFF == packet[3]))
+    if (!_overRang2)
     {
-        if (!_overRang2)
-        {
-            _temp2 = borderValueChange(LOW_BORDER_VALUE, HIGH_BORDER_VALUE,
-                                        static_cast<int>((packet[4] << 8) + packet[3]));
-        }
-        sensorOff2 = false;
+        _temp2 = borderValueChange(LOW_BORDER_VALUE, HIGH_BORDER_VALUE,
+                                    static_cast<int>((packet[4] << 8) + packet[3]));
     }
 
-//    if (_temp1 != InvData() && _temp2 != InvData())
     if (_temp1 >= 0 && _temp1 <= 500 && _temp2 >= 0 && _temp2 <= 500)
     {
         _tempd = abs(_temp1 - _temp2);
@@ -415,17 +403,7 @@ void T5Provider::_result(unsigned char *packet)
         _tempd = InvData();
     }
 
-    if (sensorOff1 != _sensorOff1 || sensorOff2 != _sensorOff2)
-    {
-        _sensorOff1 = sensorOff1;
-        _sensorOff2 = sensorOff2;
-
-        _shotAlarm();
-    }
-    else
-    {
-        tempParam.setTEMP(_temp1, _temp2, _tempd);
-    }
+    tempParam.setTEMP(_temp1, _temp2, _tempd);
 }
 
 void T5Provider::ohmResult(unsigned char *packet)
@@ -661,29 +639,25 @@ void T5Provider::_shotAlarm()
 
 void T5Provider::_limitHandle(unsigned char *packet)
 {
-    if (0xFF != packet[2])
+    // 判断T1超界
+    int temp1 = static_cast<int>((packet[2] << 8) + packet[1]);
+    if ((temp1 < LOW_BORDER_VALUE || temp1 > HIGH_BORDER_VALUE) && _overRang1 == false)
     {
-        int temp1 = static_cast<int>((packet[2] << 8) + packet[1]);
-        if ((temp1 < LOW_BORDER_VALUE || temp1 > HIGH_BORDER_VALUE) && _overRang1 == false)
-        {
-            _overRang1 = true;
-        }
-        else if (temp1 >= LOW_BORDER_VALUE && temp1 <= HIGH_BORDER_VALUE && _overRang1 == true)
-        {
-            _overRang1 = false;
-        }
+        _overRang1 = true;
     }
-    if (0xFF != packet[4])
+    else if (temp1 >= LOW_BORDER_VALUE && temp1 <= HIGH_BORDER_VALUE && _overRang1 == true)
     {
-        int temp2 = static_cast<int>((packet[4] << 8) + packet[3]);
-        if ((temp2 < LOW_BORDER_VALUE || temp2 > HIGH_BORDER_VALUE) && _overRang2 == false)
-        {
-            _overRang2 = true;
-        }
-        else if (temp2 >= LOW_BORDER_VALUE && temp2 <= HIGH_BORDER_VALUE && _overRang2 == true)
-        {
-            _overRang2 = false;
-        }
+        _overRang1 = false;
+    }
+    // 判断T2超界
+    int temp2 = static_cast<int>((packet[4] << 8) + packet[3]);
+    if ((temp2 < LOW_BORDER_VALUE || temp2 > HIGH_BORDER_VALUE) && _overRang2 == false)
+    {
+        _overRang2 = true;
+    }
+    else if (temp2 >= LOW_BORDER_VALUE && temp2 <= HIGH_BORDER_VALUE && _overRang2 == true)
+    {
+        _overRang2 = false;
     }
     _shotAlarm();
 }
