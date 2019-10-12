@@ -45,6 +45,7 @@ public:
         ElementBorder,
         ElementBackgound,
         ElementText,
+        ElementShadow,
         ElementNR,
     };
 
@@ -107,7 +108,7 @@ public:
      */
     int getBorderRadius() const
     {
-        return 4;
+        return 6;
     }
 
     /**
