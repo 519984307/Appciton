@@ -27,9 +27,8 @@
 #include "WindowManager.h"
 #include "ThemeManager.h"
 
-#define PATH_ICON_UP "/usr/local/nPM/icons/ArrowUp.png"
-#define PATH_ICON_DOWN "/usr/local/nPM/icons/ArrowDown.png"
 #define EACH_PAGE_ALARM_COUNT 7    // 一页最大显示数
+#define SELECT_ICON_PATH "/usr/local/nPM/icons/select.png"
 
 class AlarmInfoWindowPrivate
 {
@@ -116,7 +115,7 @@ void AlarmInfoWindow::layout()
     tableView->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
     tableView->setSelectionMode(QAbstractItemView::SingleSelection);
     tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
-    tableView->setIconSize(QSize(24, 24));
+    tableView->setIconSize(QSize(20, 20));
     tableView->setItemDelegate(new TableViewItemDelegate(tableView));
     AlarmInfoModel *model = new AlarmInfoModel(this);
     tableView->setModel(model);
@@ -333,8 +332,7 @@ void AlarmInfoWindowPrivate::updateAcknowledgeFlag()
             QModelIndex index = dataModel->index(row, 0);
             if (index.isValid())
             {
-                dataModel->setData(index, themeManger.getIcon(ThemeManager::IconChecked, QSize(24, 24)),
-                                   Qt::DecorationRole);
+                dataModel->setData(index, QIcon(SELECT_ICON_PATH), Qt::DecorationRole);
             }
         }
     }
