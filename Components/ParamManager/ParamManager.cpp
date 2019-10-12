@@ -193,6 +193,8 @@ void ParamManager::connectDemoParamProvider()
 
             provider->attachParam(*param);
             param->initParam();
+            // 停止参数更新定时器
+            param->stopParamUpdateTimer();
         }
     }
     else

@@ -76,6 +76,11 @@ public:
      */
     virtual QList<SubParamID> getShortTrendList(){return QList<SubParamID>();}
 
+    /**
+     * @brief stopParamUpdateTimer 停止参数更新定时器
+     */
+    void stopParamUpdateTimer();
+
 protected slots:
     virtual void paramUpdateTimeout() {}
 
