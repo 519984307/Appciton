@@ -102,8 +102,6 @@ void MenuWindow::popup(const QString &menuName, const QVariant &param,
 {
     d_ptr->sidebar->setChecked(menuName);
 
-    windowManager.showWindow(this, showFlags);
-
     // find current menucontent and set the show param
     ScrollArea *area = qobject_cast<ScrollArea *>(d_ptr->stackWidget->currentWidget());
     if (area)
@@ -114,6 +112,8 @@ void MenuWindow::popup(const QString &menuName, const QVariant &param,
             content->setShowParam(param);
         }
     }
+
+    windowManager.showWindow(this, showFlags);
 }
 
 void MenuWindow::setWindowTitlePrefix(const QString &prefix)
