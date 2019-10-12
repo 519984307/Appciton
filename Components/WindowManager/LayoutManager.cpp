@@ -26,7 +26,7 @@
 #include "CO2Param.h"
 #include "PatientManager.h"
 
-#define FIRST_ECG_WAVE_HEIGHT 184
+#define FIRST_ECG_WAVE_HEIGHT qRound(31 / systemManager.getScreenPixelHPitch()) // 第一道波形高度不低于30mm，设置31来计算避免误差造成高度不够
 
 typedef QList<LayoutNode> LayoutRow;
 
@@ -430,18 +430,57 @@ void LayoutManagerPrivate::performStandardLayout()
     waveLayout->setRowMinimumHeight(0, FIRST_ECG_WAVE_HEIGHT);
     rightParamLayout->setRowMinimumHeight(0, FIRST_ECG_WAVE_HEIGHT);
 
-    // the wave container stretch
+    // 计算波形行数和左参数区行数
     waveRowCount = waveLayout->rowCount();
-    leftLayout->setStretch(0, waveRowCount);
-    // the let param container stretch
     if (leftParamLayout->count() != 0)
     {
-        leftLayout->setStretch(1, leftParamLayout->rowCount());
         leftParamRowCount = leftParamLayout->rowCount();
     }
     else
     {
         leftParamRowCount = 0;
+    }
+
+    if (ecgParam.getLeadMode() == ECG_LEAD_MODE_3)
+    {
+        // 三导联时，不显示第二条波形
+        insetRow -= 1;
+    }
+
+    int rowH = qRound((contentView->height() - FIRST_ECG_WAVE_HEIGHT) * 1.0 / (insetRow - 1));  // 每行高度
+
+    // 设置右参数的各参数占比，第一道波形最小高度30mm
+    if (ecgParam.getLeadMode() != ECG_LEAD_MODE_3)
+    {
+        // 非3导联时，ECG参数控件合并第一二块区域
+        rightParamLayout->setRowStretch(0, FIRST_ECG_WAVE_HEIGHT + rowH);
+        // 左参数区和波形区的占比
+        leftLayout->setStretch(0, (waveRowCount - 1) * rowH + FIRST_ECG_WAVE_HEIGHT);
+        leftLayout->setStretch(1, leftParamRowCount * rowH);
+        waveLayout->setRowStretch(1, rowH);
+    }
+    else
+    {
+        // 3导联时，ECG参数只占一块
+        rightParamLayout->setRowStretch(0, FIRST_ECG_WAVE_HEIGHT);
+        leftLayout->setStretch(0, (waveRowCount - 2) * rowH + FIRST_ECG_WAVE_HEIGHT);
+        leftLayout->setStretch(1, leftParamRowCount * rowH);
+        waveLayout->setRowStretch(1, 0);
+    }
+    rightParamLayout->setRowStretch(1, 0);
+    for (int i = 2; i < rightParamLayout->rowCount(); i++)
+    {
+        if (rightParamLayout->rowStretch(i) != 0)
+        {
+            rightParamLayout->setRowStretch(i, rowH);
+        }
+    }
+
+    // 波形区的占比
+    waveLayout->setRowStretch(0, FIRST_ECG_WAVE_HEIGHT);
+    for (int i = 2; i < waveLayout->rowCount(); i++)
+    {
+        waveLayout->setRowStretch(i, rowH);
     }
 }
 
@@ -658,10 +697,10 @@ void LayoutManagerPrivate::perform7LeadLayout()
                     qw->setVisible(true);
                     qw->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
                     rightParamLayout->addWidget(qw, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
-                    rightParamLayout->setRowStretch(row, 1);
                 }
                 if (w)
                 {
+                    rightParamLayout->setRowStretch(row, 1);
                     contentWidgets.append(w);
                     displayParams.append(w->name());
                 }
@@ -684,10 +723,10 @@ void LayoutManagerPrivate::perform7LeadLayout()
             qw->setVisible(true);
             qw->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
             rightParamLayout->addWidget(qw, rightParamLayout->rowCount(), 0, 1, nodeIter->span);
-            rightParamLayout->setRowStretch(rightParamLayout->rowCount() - 1, 1);
         }
         if (w)
         {
+            rightParamLayout->setRowStretch(rightParamLayout->rowCount() - 1, 1);
             contentWidgets.append(w);
             displayParams.append(w->name());
         }
