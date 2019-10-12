@@ -190,8 +190,7 @@ void TEMPTrendWidget::showValue(void)
     }
     else
     {
-        QLayout *lay = statckedWidget->currentWidget()->layout();
-        showNormalStatus(lay, psrc);
+        updatePalette(psrc);
     }
 }
 
@@ -291,19 +290,25 @@ void TEMPTrendWidget::showAlarmParamLimit(QWidget *valueWidget, const QString &v
         double down = _t1DownLimit->text().toDouble();
         if (value > up)
         {
-            _t1UpLimit->setPalette(valueWidget->palette());
+            QPalette darkerPal = valueWidget->palette();
+            darkerPalette(darkerPal);
+            _t1UpLimit->setPalette(darkerPal);
         }
         else
         {
+            darkerPalette(psrc);
             _t1UpLimit->setPalette(psrc);
         }
 
         if (value < down)
         {
-            _t1DownLimit->setPalette(valueWidget->palette());
+            QPalette darkerPal = valueWidget->palette();
+            darkerPalette(darkerPal);
+            _t1DownLimit->setPalette(darkerPal);
         }
         else
         {
+            darkerPalette(psrc);
             _t1DownLimit->setPalette(psrc);
         }
     }
@@ -313,22 +318,35 @@ void TEMPTrendWidget::showAlarmParamLimit(QWidget *valueWidget, const QString &v
         double down = _t2DownLimit->text().toDouble();
         if (value > up)
         {
-            _t2UpLimit->setPalette(valueWidget->palette());
+            QPalette darkerPal = valueWidget->palette();
+            darkerPalette(darkerPal);
+            _t2UpLimit->setPalette(darkerPal);
         }
         else
         {
+            darkerPalette(psrc);
             _t2UpLimit->setPalette(psrc);
         }
 
         if (value < down)
         {
-            _t2DownLimit->setPalette(valueWidget->palette());
+            QPalette darkerPal = valueWidget->palette();
+            darkerPalette(darkerPal);
+            _t2DownLimit->setPalette(darkerPal);
         }
         else
         {
+            darkerPalette(psrc);
             _t2DownLimit->setPalette(psrc);
         }
     }
+}
+
+void TEMPTrendWidget::darkerPalette(QPalette &pal)
+{
+    // 使颜色变暗
+    QColor c = pal.color(QPalette::WindowText);
+    pal.setColor(QPalette::WindowText, c.darker(150));
 }
 
 /**************************************************************************************************
@@ -463,10 +481,12 @@ void TEMPTrendWidget::doRestoreNormalStatus()
     showNormalStatus(_t1Value, psrc);
     showNormalStatus(_t2Value, psrc);
     showNormalStatus(_tdValue, psrc);
-    showNormalStatus(_t1UpLimit, psrc);
-    showNormalStatus(_t1DownLimit, psrc);
-    showNormalStatus(_t2UpLimit, psrc);
-    showNormalStatus(_t2DownLimit, psrc);
+    QPalette darkerPal = psrc;
+    darkerPalette(darkerPal);
+    showNormalStatus(_t1UpLimit, darkerPal);
+    showNormalStatus(_t1DownLimit, darkerPal);
+    showNormalStatus(_t2UpLimit, darkerPal);
+    showNormalStatus(_t2DownLimit, darkerPal);
     showNormalStatus(_message, psrc);
 }
 
@@ -479,10 +499,12 @@ void TEMPTrendWidget::updatePalette(const QPalette &pal)
     _t1Value->setPalette(pal);
     _t2Value->setPalette(pal);
     _tdValue->setPalette(pal);
-    _t1UpLimit->setPalette(pal);
-    _t1DownLimit->setPalette(pal);
-    _t2UpLimit->setPalette(pal);
-    _t2DownLimit->setPalette(pal);
+    QPalette darkerPal = pal;
+    darkerPalette(darkerPal);
+    _t1UpLimit->setPalette(darkerPal);
+    _t1DownLimit->setPalette(darkerPal);
+    _t2UpLimit->setPalette(darkerPal);
+    _t2DownLimit->setPalette(darkerPal);
     _message->setPalette(pal);
 }
 

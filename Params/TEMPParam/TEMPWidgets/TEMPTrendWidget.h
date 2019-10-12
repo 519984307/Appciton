@@ -60,6 +60,11 @@ protected:
     void loadConfig();
     void showAlarmParamLimit(QWidget *value, const QString &valueStr, QPalette psrc);
 
+    /**
+     * @brief darkParamLimit 使得上下限颜色变暗
+     */
+    void darkerPalette(QPalette &pal);
+
 private slots:
     void _releaseHandle(IWidget *);
 
