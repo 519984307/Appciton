@@ -532,6 +532,7 @@ Print,打印,Print
 SummaryDesc,摘要描述,Summary Description
 SummaryData,摘要数据,Summary Data
 AlarmList,报警列表,Alarm List
+AlarmDescription,报警描述,Alarm Description
 PhyAlarmList,生理报警,Physiological Alarm
 TechAlarmList,技术报警,Technical Alarm
 AlarmTime,时间,Time

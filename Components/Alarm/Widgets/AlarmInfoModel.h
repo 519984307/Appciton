@@ -29,19 +29,27 @@ public:
     QVariant data(const QModelIndex &index, int role) const;
 
     /* reimplement */
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+
+    /* reimplement */
     bool setData(const QModelIndex &index, const QVariant &value, int role) const;
 
     /**
      * @brief setStringList set the string list
      * @param list the string list
      */
-    void setStringList(const QStringList &nameList, const QStringList &timeList);
+    void setStringList(const QStringList &nameList, const QStringList &timeList, const QStringList &priorityList);
 
     /**
      * @brief getRowHeightHint get the row height hint
      * @return the row height hint
      */
     int getRowHeightHint() const;
+
+protected:
+    /* reimplement */
+    bool eventFilter(QObject *obj, QEvent *ev);
+
 private:
     AlarmInfoModelPrivate * const d_ptr;
 };
