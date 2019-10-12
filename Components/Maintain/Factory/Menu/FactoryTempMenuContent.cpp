@@ -23,6 +23,10 @@
 #include "FontManager.h"
 #include <QTimerEvent>
 #include "MenuWindow.h"
+#include "ScrollArea.h"
+#include "ThemeManager.h"
+#include <QScrollBar>
+#include <QStackedWidget>
 
 #define TEMP_VALUE_UPDATE_TIME                 (100)
 #define CALIBRATION_INTERVAL_TIME              (100)
@@ -70,8 +74,6 @@ public:
     FactoryTempMenuContentPrivate();
 
     QLabel *tempTitle;
-    QLabel *temp1Lab;
-    QLabel *temp2Lab;
     QLabel *calibrate1Ohm;
     QLabel *calibrate2Ohm;
     Button *lbtn[TEMP_CALIBRATE_CHANNEL_NR][TEMP_CALIBRATE_NR];
@@ -90,6 +92,9 @@ public:
 
     TempCalibrateState calibrateResult[TEMP_CALIBRATE_CHANNEL_NR][TEMP_CALIBRATE_NR];
 
+    ScrollArea *scrollArea;
+    QStackedWidget *stackedWidget;
+
     void updateResultLabel(int column, int row);
 
     void updateWaitingLabel();
@@ -97,8 +102,6 @@ public:
 
 FactoryTempMenuContentPrivate::FactoryTempMenuContentPrivate()
     : tempTitle(NULL),
-      temp1Lab(NULL),
-      temp2Lab(NULL),
       calibrate1Ohm(NULL),
       calibrate2Ohm(NULL),
       calibrationTimerId(-1),
@@ -107,7 +110,9 @@ FactoryTempMenuContentPrivate::FactoryTempMenuContentPrivate()
       calibrateChannel(TEMP_CALIBRATE_CHANNEL_1),
       calibrateValue(TEMP_CALIBRATE_0),
       tempValueTimer(NULL),
-      curUnitType(tempParam.getUnit())
+      curUnitType(tempParam.getUnit()),
+      scrollArea(NULL),
+      stackedWidget(NULL)
 {
     for (int column = 0; column < TEMP_CALIBRATE_CHANNEL_NR; column++)
     {
@@ -195,60 +200,49 @@ void FactoryTempMenuContent::layoutExec()
 {
     QVBoxLayout *vLayout = new QVBoxLayout(this);
     QGridLayout *layout = new QGridLayout();
-    this->setFocusPolicy(Qt::NoFocus);
-    QHBoxLayout *errorHl;
-    QHBoxLayout *ohmAndTempHl1;
-    QHBoxLayout *ohmAndTempHl2;
+
     QLabel *label;
     Button *button;
 
-    errorHl = new QHBoxLayout;
-    errorHl->addStretch();
-    label = new QLabel;
-    label->setFont(fontManager.textFont(20));
-    errorHl->addWidget(label);
-    errorHl->addStretch();
-    d_ptr->tempTitle = label;
-
-    ohmAndTempHl1 = new QHBoxLayout;
-    label = new QLabel;
-    label->setFont(fontManager.textFont(20));
-    ohmAndTempHl1->addWidget(label);
-    d_ptr->temp1Lab = label;
-    d_ptr->temp1Lab->setVisible(false);         // 现阶段温度不做显示
-
-    label = new QLabel;
-    label->setFont(fontManager.textFont(20));
-    ohmAndTempHl1->addWidget(label);
-    d_ptr->calibrate1Ohm = label;
-
-    ohmAndTempHl2 = new QHBoxLayout;
-    label = new QLabel;
-    label->setFont(fontManager.textFont(20));
-    ohmAndTempHl2->addWidget(label);
-    d_ptr->temp2Lab = label;
-    d_ptr->temp2Lab->setVisible(false);     // 现阶段温度不做显示
-
-    label = new QLabel;
-    label->setFont(fontManager.textFont(20));
-    ohmAndTempHl2->addWidget(label);
-    d_ptr->calibrate2Ohm = label;
+    // 体温信息
+    QHBoxLayout *tempInfoLayout = new QHBoxLayout;
 
     label = new QLabel(trs("TEMPCalibrateOhm"));
-    layout->addWidget(label, 0, 0);
+    tempInfoLayout->addWidget(label);
 
     label = new QLabel(trs("Temp1"));
     label->setAlignment(Qt::AlignHCenter);
-    layout->addWidget(label, 0, 1);
+    tempInfoLayout->addWidget(label);
 
-    layout->addLayout(ohmAndTempHl1, 0, 2);
+    label = new QLabel;
+    label->setFont(fontManager.textFont(20));
+    tempInfoLayout->addWidget(label);
+    d_ptr->calibrate1Ohm = label;
 
     label = new QLabel(trs("Temp2"));
     label->setAlignment(Qt::AlignHCenter);
-    layout->addWidget(label, 0, 3);
+    tempInfoLayout->addWidget(label);
 
-    layout->addLayout(ohmAndTempHl2, 0, 4);
+    label = new QLabel;
+    label->setFont(fontManager.textFont(20));
+    tempInfoLayout->addWidget(label);
+    d_ptr->calibrate2Ohm = label;
 
+    QWidget *container = new QWidget();
+    container->setLayout(tempInfoLayout);
+    QStackedWidget *stackWidget = new QStackedWidget();
+    d_ptr->stackedWidget = stackWidget;
+    stackWidget->addWidget(container);
+
+    // 模块错误信息
+    label = new QLabel;
+    label->setFont(fontManager.textFont(20));
+    label->setAlignment(Qt::AlignCenter);
+    d_ptr->tempTitle = label;
+    stackWidget->addWidget(label);
+    vLayout->addWidget(stackWidget);
+
+    // 校准按钮
     UnitType type = tempParam.getUnit();
 
     for (int i = 0; i < TEMP_CALIBRATE_NR; i++)
@@ -259,10 +253,7 @@ void FactoryTempMenuContent::layoutExec()
         label->setAlignment(Qt::AlignHCenter);
         layout->addWidget(label, 1 + i, 0);
         d_ptr->ohmLabel[i] = label;
-    }
 
-    for (int i = 0; i < TEMP_CALIBRATE_NR; i++)
-    {
         for (int j = 0; j < TEMP_CALIBRATE_CHANNEL_NR; j++)
         {
             QString btnStr;
@@ -280,6 +271,7 @@ void FactoryTempMenuContent::layoutExec()
                                 .arg(btnStr)
                                 .arg(trs(Unit::getSymbol(type))));
             button->setButtonStyle(Button::ButtonTextOnly);
+            button->setFixedHeight(themeManger.getAcceptableControlHeight());
             columnRowNum.append(j);
             columnRowNum.append(i);
             button->setProperty("Item", qVariantFromValue(columnRowNum));
@@ -293,9 +285,20 @@ void FactoryTempMenuContent::layoutExec()
             layout->addWidget(label, 1 + i, 2 * j + 2, Qt::AlignCenter);
         }
     }
-    layout->setRowStretch(12, 1);
-    vLayout->addLayout(errorHl);
-    vLayout->addLayout(layout);
+
+    ScrollArea *area = new ScrollArea();
+    container = new QWidget();
+    container->setLayout(layout);
+    area->setWidget(container);
+    area->setAcceptDrops(true);
+    area->setContentsMargins(0, 0, 0, 0);
+    area->setFloatbarPolicy(ScrollArea::FloatBarShowForeverWhenNeeded);
+    area->setScrollDirection(ScrollArea::ScrollVertical);
+    area->installEventFilter(this);
+    area->verticalScrollBar()->setMaximum(container->height());
+    d_ptr->scrollArea = area;
+
+    vLayout->addWidget(area);
 }
 
 void FactoryTempMenuContent::timerEvent(QTimerEvent *ev)
@@ -335,15 +338,12 @@ void FactoryTempMenuContent::timerEvent(QTimerEvent *ev)
 
 bool FactoryTempMenuContent::eventFilter(QObject *obj, QEvent *ev)
 {
-    if (qobject_cast<Button*>(obj) == d_ptr->lbtn[0][0] || qobject_cast<Button*>(obj) == d_ptr->lbtn[1][0])
+    Button *btn = qobject_cast<Button*>(obj);
+    if (btn == d_ptr->lbtn[0][0] || btn == d_ptr->lbtn[TEMP_CALIBRATE_CHANNEL_2][TEMP_CALIBRATE_50])
     {
         if (ev->type() == QEvent::FocusIn)
         {
-            MenuWindow *mw = this->getMenuWindow();
-            if (mw && d_ptr->tempTitle)
-            {
-                mw->ensureWidgetVisiable(d_ptr->tempTitle);
-            }
+            d_ptr->scrollArea->ensureWidgetVisible(btn);
         }
     }
     return MenuContent::eventFilter(obj, ev);
@@ -420,6 +420,8 @@ void FactoryTempMenuContent::readyShow()
         return;
     }
 
+    showError(QString());
+
     // 开启温度更新定时器
     d_ptr->tempValueTimer->start(TEMP_VALUE_UPDATE_TIME);
     // 进入体温校准状态
@@ -432,6 +434,14 @@ void FactoryTempMenuContent::readyShow()
 void FactoryTempMenuContent::showError(QString str)
 {
     d_ptr->tempTitle->setText(str);
+    if (str.isEmpty())
+    {
+        d_ptr->stackedWidget->setCurrentIndex(0);
+    }
+    else
+    {
+        d_ptr->stackedWidget->setCurrentIndex(1);
+    }
 }
 
 void FactoryTempMenuContent::calibrateValueOnTime(int time)
@@ -471,37 +481,10 @@ void FactoryTempMenuContent::onBtnReleased()
 
 void FactoryTempMenuContent::timeOut()
 {
-    int16_t t1;
-    int16_t t2;
-    int16_t td;
+    QString tStr;
     int curOhm1 = InvData();
     int curOhm2 = InvData();
-    tempParam.getTEMP(t1, t2, td);
     tempParam.getOhm(curOhm1, curOhm2);
-    Q_UNUSED(td)
-    UnitType type = tempParam.getUnit();
-    QString tStr;
-    if (t1 == InvData() || t1 > 500 || t1 < 0)
-    {
-        tStr = InvStr();
-    }
-    else
-    {
-        // 校准时可以显示实时温度
-        tStr = Unit::convert(type, UNIT_TC, t1 / 10.0);
-    }
-    d_ptr->temp1Lab->setText(QString("%1%2").arg(tStr).arg(trs(Unit::getSymbol(type))));
-
-    if (t2 == InvData() || t2 > 500 || t2 < 0)
-    {
-        tStr = InvStr();
-    }
-    else
-    {
-        // 校准时可以显示实时温度
-        tStr = Unit::convert(type, UNIT_TC, t2 / 10.0);
-    }
-    d_ptr->temp2Lab->setText(QString("%1%2").arg(tStr).arg(trs(Unit::getSymbol(type))));
 
     if (curOhm1 == InvData() || curOhm1 > 9000 || curOhm1 < 0)
     {
