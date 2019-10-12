@@ -63,7 +63,7 @@ protected:
     /**
      * @brief darkParamLimit 使得上下限颜色变暗
      */
-    void darkParamLimit();
+    void darkerPalette(QPalette &pal);
 
 private slots:
     void _releaseHandle(IWidget *);

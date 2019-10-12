@@ -148,5 +148,8 @@ protected:
     /**
      * @brief darkParamLimit 使得上下限颜色变暗
      */
-    void darkParamLimit();
+    void darkerPalette(QPalette &pal);
+
+private:
+    void setWidgetPalette(QLayout *layout, QPalette psrc);
 };

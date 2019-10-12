@@ -124,26 +124,31 @@ void TrendWidget::showAlarmParamLimit(QWidget *valueWidget, const QString &value
     double down = downLimit->text().toDouble();
     if (value > up)
     {
-        upLimit->setPalette(valueWidget->palette());
+        QPalette pal = valueWidget->palette();
+        darkerPalette(pal);
+        upLimit->setPalette(pal);
     }
     else
     {
+        darkerPalette(psrc);
         upLimit->setPalette(psrc);
     }
 
     if (value < down)
     {
-        downLimit->setPalette(valueWidget->palette());
+        QPalette pal = valueWidget->palette();
+        darkerPalette(pal);
+        downLimit->setPalette(pal);
     }
     else
     {
+        darkerPalette(psrc);
         downLimit->setPalette(psrc);
     }
-    darkParamLimit();
 }
 
 // 将控件下的全部控件都刷新颜色
-void setWidgetPalette(QLayout *layout, QPalette psrc)
+void TrendWidget::setWidgetPalette(QLayout *layout, QPalette psrc)
 {
     for (int i = 0; i < layout->count(); i++)
     {
@@ -154,9 +159,16 @@ void setWidgetPalette(QLayout *layout, QPalette psrc)
         else if (layout->itemAt(i)->widget())
         {
             QWidget *item = layout->itemAt(i)->widget();
-            if (item->palette().windowText().color() != psrc.windowText().color())
+            QPalette pal = psrc;
+            if (item == qobject_cast<QWidget *>(upLimit)
+                    || item == qobject_cast<QWidget *>(downLimit))
             {
-                layout->itemAt(i)->widget()->setPalette(psrc);
+                // 使上下限颜色变暗
+                darkerPalette(pal);
+            }
+            if (item->palette().windowText().color() != pal.windowText().color())
+            {
+                item->setPalette(pal);
             }
         }
     }
@@ -166,14 +178,12 @@ void TrendWidget::showNormalStatus(QPalette psrc)
 {
     normalPalette(psrc);
     setWidgetPalette(contentLayout, psrc);
-    darkParamLimit();
 }
 
 void TrendWidget::showNormalStatus(QLayout *layout, QPalette psrc)
 {
     normalPalette(psrc);
     setWidgetPalette(layout, psrc);
-    darkParamLimit();
 }
 
 void TrendWidget::showNormalStatus(QWidget *value, QPalette psrc)
@@ -192,38 +202,22 @@ void TrendWidget::showNormalParamLimit(QPalette psrc)
     QPalette p = upLimit->palette();
     if (p.windowText().color() != psrc.windowText().color())
     {
+        darkerPalette(psrc);
         upLimit->setPalette(psrc);
     }
 
     p = downLimit->palette();
     if (p.windowText().color() != psrc.windowText().color())
     {
+        darkerPalette(psrc);
         downLimit->setPalette(psrc);
     }
-
-    darkParamLimit();
 }
 
-void TrendWidget::darkParamLimit()
+void TrendWidget::darkerPalette(QPalette &pal)
 {
-    QPalette pal = upLimit->palette();
     QColor c = pal.color(QPalette::WindowText);
-    if (c.alpha() != 0)
-    {
-        c.setAlpha(150);
-        pal.setColor(QPalette::WindowText, c);
-        upLimit->setPalette(pal);
-    }
-
-
-    pal = downLimit->palette();
-    c = pal.color(QPalette::WindowText);
-    if (c.alpha() != 0)
-    {
-        c.setAlpha(150);
-        pal.setColor(QPalette::WindowText, c);
-        downLimit->setPalette(pal);
-    }
+    pal.setColor(QPalette::WindowText, c.darker(150));
 }
 
 /**************************************************************************************************
@@ -233,31 +227,13 @@ void TrendWidget::darkParamLimit()
  *************************************************************************************************/
 void TrendWidget::updateAlarm(bool alarmFlag)
 {
-//    QPalette p = nameLabel->palette();
-//    if (alarmFlag)
-//    {
-//        if (p.windowText().color() != Qt::white)
-//        {
-//            p.setColor(QPalette::WindowText, Qt::white);
-//            nameLabel->setPalette(p);
-//            unitLabel->setPalette(p);
-//        }
-//    }
-//    else
-//    {
-//        if (p.windowText().color() != Qt::black)
-//        {
-//            p.setColor(QPalette::WindowText, Qt::black);
-//            nameLabel->setPalette(p);
-//            unitLabel->setPalette(p);
-//        }
-    //    }
     Q_UNUSED(alarmFlag)
 }
 
 void TrendWidget::updatePalette(const QPalette &pal)
 {
     setPalette(pal);
+    showNormalParamLimit(pal);
 }
 
 void TrendWidget::restoreNormalStatusLater()
