@@ -778,8 +778,8 @@
 		    <Scale>10</Scale>
 		</celsius>
 		<fahrenheit>
-		    <Low Min="0" Max="88">0</Low>
-		    <High Min="1" Max="89">9</High>
+		    <Low Min="0" Max="89">0</Low>
+		    <High Min="1" Max="90">9</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</fahrenheit>
