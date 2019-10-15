@@ -24,10 +24,12 @@ FontManager::FontManager()
     QFontDatabase::addApplicationFont("/usr/local/nPM/fonts/DroidSansFallbackFull.ttf");
     // QFontDatabase::addApplicationFont("/usr/local/nPM/fonts/HelveticaNeue-Bold.otf");
     QFontDatabase::addApplicationFont("/usr/local/nPM/fonts/HelveticaNeueLTPro-Bd.otf");
+    QFontDatabase::addApplicationFont("/usr/local/nPM/fonts/FandolHei-Regular-BLM.otf");
     _textFont.setFamily("Droid Sans Fallback");
     // _numFont.setFamily("Helvetica Neue");
     _numFont.setFamily("Helvetica Neue LT Pro");
-    _recordFont.setFamily("Droid Sans Fallback");
+    // _recordFont.setFamily("Droid Sans Fallback");
+    _recordFont.setFamily("FandolHei");
 
 #if 0
     debug("---------------\n");
