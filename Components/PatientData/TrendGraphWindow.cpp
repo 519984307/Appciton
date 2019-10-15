@@ -288,7 +288,7 @@ TrendGraphWindow::TrendGraphWindow()
     d_ptr->buttons.insert(TrendGraphWindowPrivate::ACTION_BTN_SET_WIDGET, button);
 
     // 上翻页坐标
-    QIcon ico = themeManger.getIcon(ThemeManager::IconUp, QSize(24, 24));
+    QIcon ico = themeManger.getIcon(ThemeManager::IconUp, QSize(32, 32));
     button = new Button("", ico);
     button->setButtonStyle(Button::ButtonIconOnly);
     button->setFixedHeight(itemHeight);
@@ -300,7 +300,7 @@ TrendGraphWindow::TrendGraphWindow()
 
     // 下翻页坐标
     button = new Button();
-    ico = themeManger.getIcon(ThemeManager::IconDown, QSize(24, 24));
+    ico = themeManger.getIcon(ThemeManager::IconDown, QSize(32, 32));
     button->setIcon(ico);
     button->setButtonStyle(Button::ButtonIconOnly);
     button->setFixedHeight(itemHeight);

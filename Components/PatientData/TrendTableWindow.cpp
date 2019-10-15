@@ -254,12 +254,12 @@ TrendTableWindow::TrendTableWindow()
                                  + d_ptr->model->getRowHeightHint() * TABLE_ROW_NR);
     d_ptr->table->setItemDelegate(new TableViewItemDelegate(this));
 
-    QIcon ico = themeManger.getIcon(ThemeManager::IconUp, QSize(24, 24));
+    QIcon ico = themeManger.getIcon(ThemeManager::IconUp, QSize(32, 32));
     d_ptr->upBtn = new Button("", ico);
     d_ptr->upBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->upBtn, SIGNAL(released()), this, SLOT(upReleased()));
 
-    ico = themeManger.getIcon(ThemeManager::IconDown, QSize(24, 24));
+    ico = themeManger.getIcon(ThemeManager::IconDown, QSize(32, 32));
     d_ptr->downBtn = new Button("", ico);
     d_ptr->downBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->downBtn, SIGNAL(released()), this, SLOT(downReleased()));

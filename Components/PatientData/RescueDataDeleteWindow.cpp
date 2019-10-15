@@ -258,12 +258,12 @@ RescueDataDeleteWindow::RescueDataDeleteWindow()
     d_ptr->deleteAll->setButtonStyle(Button::ButtonTextOnly);
     connect(d_ptr->deleteAll, SIGNAL(released()), this, SLOT(_deleteAllReleased()));
 
-    QIcon ico = themeManger.getIcon(ThemeManager::IconUp, QSize(24, 24));
+    QIcon ico = themeManger.getIcon(ThemeManager::IconUp, QSize(32, 32));
     d_ptr->up = new Button("", ico);
     d_ptr->up->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->up, SIGNAL(released()), this, SLOT(_upReleased()));
 
-    ico = themeManger.getIcon(ThemeManager::IconDown, QSize(24, 24));
+    ico = themeManger.getIcon(ThemeManager::IconDown, QSize(32, 32));
     d_ptr->down = new Button("", ico);
     d_ptr->down->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->down, SIGNAL(released()), this, SLOT(_downReleased()));
