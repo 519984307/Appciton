@@ -61,7 +61,8 @@ public:
      void refreshTouchKey();
 
      /**
-      * @brief setFocusFirstKey 设置焦点在功能按键
+      * @brief setFocusBaseKey  设置焦点在快捷按键接口
+      * @param keyType  按键类型
       */
      void setFocusBaseKey(SoftBaseKeyType keyType);
 

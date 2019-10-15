@@ -28,6 +28,7 @@
 #include <QApplication>
 #include <QTimer>
 #include "CO2Param.h"
+#include "LanguageManager.h"
 
 #define PREFER_SOFTKEY_WIDTH 98
 #define SOFTKEY_SPACING 2
@@ -220,44 +221,30 @@ void SoftKeyManager::refreshCO2Key(bool on)
     }
     refreshPage(false);
 }
-/*************************************************************************************************
- * 函数说明:
- *         设置焦点在功能按键
- ********************************************************************************************** */
+
+/**
+ * @brief SoftKeyManager::setFocusBaseKey  设置焦点在快捷按键接口
+ * @param keyType    按键类型
+ */
 void SoftKeyManager::setFocusBaseKey(SoftBaseKeyType keyType)
 {
-    int focusIndex = -1;
-    //获取焦点按键文本内容
-    QString focusHint = d_ptr->currentAction->getBaseActionDesc(keyType)->hint;
+    // 获取焦点按键文本内容
+    QString focusHint = trs(d_ptr->currentAction->getBaseActionDesc(keyType)->hint);
 
-    //遍历所有按键，查找焦点按键所在索引
-    int typeCount = d_ptr->keyTypeList.count();
-    for (int i = 0; i < typeCount; ++i)
+    // 遍历所有按键，对比文本标题内容，设置按钮焦点
+    int keyCount = d_ptr->dynamicKeyWidgets.count();
+    for (int i = 0; i < keyCount; ++i)
     {
-        KeyActionDesc *desc = d_ptr->keyTypeList.at(i);
-        if (desc)
+        QString keyWidgetHint = d_ptr->dynamicKeyWidgets.at(i)->hint();
+        if (!keyWidgetHint.isEmpty())
         {
-            //通过比较按键文本，查找焦点按键索引
-            if (QString::compare(focusHint, desc->hint) == 0)
+            // 通过比较按键文本，查找焦点按键索引
+            if (QString::compare(focusHint, keyWidgetHint) == 0)
             {
-                focusIndex = i;
+                d_ptr->dynamicKeyWidgets.at(i)->setFocus();
                 break;
             }
         }
-    }
-
-    if (focusIndex != -1)
-    {
-        int keyIndex = 0;
-        int pageCount = d_ptr->dynamicKeyWidgets.count();
-        //计算按键索引对应按键列表中的索引
-        keyIndex = focusIndex % pageCount;
-
-        d_ptr->dynamicKeyWidgets.at(keyIndex)->setFocus();
-    }
-    else
-    {
-        qDebug() << "Soft key does not exist!";
     }
 }
 
