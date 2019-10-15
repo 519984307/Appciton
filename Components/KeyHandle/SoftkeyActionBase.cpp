@@ -54,7 +54,9 @@ static KeyActionDesc _baseKeys[] =
     KeyActionDesc("", "eventReview", "Summary1.png", SoftkeyActionBase::eventReview),
     KeyActionDesc("", "TrendTable", "trend.png", SoftkeyActionBase::trendTable),
     KeyActionDesc("", "ChooseScreen", "screenSwitch.png", SoftkeyActionBase::switchSystemMode),
+#ifndef HIDE_SCREEN_LAYOUT
     KeyActionDesc("", "ScreenSetup", "interface.png",   SoftkeyActionBase::windowLayout),
+#endif
 #ifndef HIDE_PARAM_SWITCH
     KeyActionDesc("", "ParameterSwitch", "paraSwitch.png"),
 #endif
