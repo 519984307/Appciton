@@ -288,8 +288,8 @@ TrendGraphWindow::TrendGraphWindow()
     d_ptr->buttons.insert(TrendGraphWindowPrivate::ACTION_BTN_SET_WIDGET, button);
 
     // 上翻页坐标
-    button = new Button();
-    button->setIcon(QIcon("/usr/local/nPM/icons/up.png"));
+    QIcon ico = themeManger.getIcon(ThemeManager::IconUp, QSize(24, 24));
+    button = new Button("", ico);
     button->setButtonStyle(Button::ButtonIconOnly);
     button->setFixedHeight(itemHeight);
     buttonID = TrendGraphWindowPrivate::ACTION_BTN_UP_PAGE;
@@ -300,7 +300,8 @@ TrendGraphWindow::TrendGraphWindow()
 
     // 下翻页坐标
     button = new Button();
-    button->setIcon(QIcon("/usr/local/nPM/icons/down.png"));
+    ico = themeManger.getIcon(ThemeManager::IconDown, QSize(24, 24));
+    button->setIcon(ico);
     button->setButtonStyle(Button::ButtonIconOnly);
     button->setFixedHeight(itemHeight);
     buttonID = TrendGraphWindowPrivate::ACTION_BTN_DOWN_PAGE;

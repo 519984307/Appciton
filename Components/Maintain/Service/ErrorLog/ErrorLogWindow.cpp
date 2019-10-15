@@ -101,12 +101,14 @@ ErrorLogWindow::ErrorLogWindow()
     d_ptr->eraseBtn->setFixedHeight(HEIGHT_HINT);
     connect(d_ptr->eraseBtn, SIGNAL(released()), this, SLOT(eraseReleased()));
 
-    d_ptr->upPageBtn = new Button("", QIcon("/usr/local/nPM/icons/up.png"));
+    QIcon ico = themeManger.getIcon(ThemeManager::IconUp, QSize(24, 24));
+    d_ptr->upPageBtn = new Button("", ico);
     d_ptr->upPageBtn->setButtonStyle(Button::ButtonIconOnly);
     d_ptr->upPageBtn->setFixedHeight(HEIGHT_HINT);
     connect(d_ptr->upPageBtn, SIGNAL(released()), d_ptr->model, SLOT(upBtnReleased()));
 
-    d_ptr->downPageBtn = new Button("", QIcon("/usr/local/nPM/icons/down.png"));
+    ico = themeManger.getIcon(ThemeManager::IconDown, QSize(24, 24));
+    d_ptr->downPageBtn = new Button("", ico);
     d_ptr->downPageBtn->setButtonStyle(Button::ButtonIconOnly);
     d_ptr->downPageBtn->setFixedHeight(HEIGHT_HINT);
     connect(d_ptr->downPageBtn, SIGNAL(released()), d_ptr->model, SLOT(downBtnReleased()));
