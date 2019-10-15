@@ -192,6 +192,11 @@ bool AlarmInfoModel::setData(const QModelIndex &index, const QVariant &value, in
 
 void AlarmInfoModel::setStringList(const QStringList &nameList, const QStringList &timeList, const QStringList &priorityList)
 {
+    if (d_ptr->nameList == nameList && d_ptr->timeList == timeList)
+    {
+        return;
+    }
+
     beginResetModel();
     d_ptr->nameList = nameList;
     d_ptr->timeList = timeList;

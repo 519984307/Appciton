@@ -102,6 +102,11 @@ private slots:
      */
     void onSpanChanged(const QModelIndex &index);
 
+    /**
+     * @brief onModelReset 处理model复位后，焦点位置
+     */
+    void onModelReset();
+
 private:
     TableViewPrivate *const d_ptr;
 };

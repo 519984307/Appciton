@@ -11,10 +11,7 @@
 #include "AlarmInfoWindow.h"
 #include "TableView.h"
 #include "AlarmInfoModel.h"
-#include "ListView.h"
-#include "ListDataModel.h"
 #include "TableViewItemDelegate.h"
-#include "ListViewItemDelegate.h"
 #include "LanguageManager.h"
 #include "Button.h"
 #include <QLayout>
@@ -204,24 +201,25 @@ void AlarmInfoWindow::_accessEventWindow(int index)
 void AlarmInfoWindowPrivate::loadOption()
 {
     AlarmInfoNode node;
-    if (refreshData)
+    nodeList.clear();
+    for (int i = totalList - 1; i >= 0; --i)
     {
-        // 显示窗口后，不再获取新的报警数据。
-        nodeList.clear();
-        for (int i = totalList - 1; i >= 0; --i)
+        alarmIndicator.getAlarmInfo(i, node);
+        if (node.alarmType != alarmType)
         {
-            alarmIndicator.getAlarmInfo(i, node);
-            if (node.alarmType != alarmType)
-            {
-                continue;
-            }
-            nodeList.append(node);
+            continue;
         }
-        refreshData = false;
+        nodeList.append(node);
     }
 
     int start = 0, end = 0;
     int count = nodeList.count();
+
+    if (count < 1)
+    {
+        dataModel->setStringList(QStringList(), QStringList(), QStringList());
+        return;
+    }
 
     // 计算当前页码和总页数
     int pageTemp = (0 == count % EACH_PAGE_ALARM_COUNT) ? (count / EACH_PAGE_ALARM_COUNT)
@@ -239,10 +237,6 @@ void AlarmInfoWindowPrivate::loadOption()
         }
     }
 
-    if (count < 1)
-    {
-        return;
-    }
     start = (curPage - 1) * EACH_PAGE_ALARM_COUNT;
     if (curPage < totalPage)
     {
