@@ -137,7 +137,7 @@ public:
     SoftkeyWidget *leftPageKeyWidget;
     SoftkeyWidget *rightPageKeyWidget;
     QList<SoftkeyWidget*> dynamicKeyWidgets;
-    KeyActionDesc emptyKeyDesc; // empty key description, use for the empty soft key
+    KeyActionDesc emptyKeyDesc;  // empty key description, use for the empty soft key
     SoftKeyActionMap actionMaps;
     QSignalMapper *signalMapper;
     QHBoxLayout *dynamicKeyLayout;
@@ -220,6 +220,47 @@ void SoftKeyManager::refreshCO2Key(bool on)
     }
     refreshPage(false);
 }
+/*************************************************************************************************
+ * 函数说明:
+ *         设置焦点在功能按键
+ ********************************************************************************************** */
+void SoftKeyManager::setFocusBaseKey(SoftBaseKeyType keyType)
+{
+    int focusIndex = -1;
+    //获取焦点按键文本内容
+    QString focusHint = d_ptr->currentAction->getBaseActionDesc(keyType)->hint;
+
+    //遍历所有按键，查找焦点按键所在索引
+    int typeCount = d_ptr->keyTypeList.count();
+    for (int i = 0; i < typeCount; ++i)
+    {
+        KeyActionDesc *desc = d_ptr->keyTypeList.at(i);
+        if (desc)
+        {
+            //通过比较按键文本，查找焦点按键索引
+            if (QString::compare(focusHint, desc->hint) == 0)
+            {
+                focusIndex = i;
+                break;
+            }
+        }
+    }
+
+    if (focusIndex != -1)
+    {
+        int keyIndex = 0;
+        int pageCount = d_ptr->dynamicKeyWidgets.count();
+        //计算按键索引对应按键列表中的索引
+        keyIndex = focusIndex % pageCount;
+
+        d_ptr->dynamicKeyWidgets.at(keyIndex)->setFocus();
+    }
+    else
+    {
+        qDebug() << "Soft key does not exist!";
+    }
+}
+
 
 void SoftKeyManager::refreshTouchKey()
 {

@@ -399,7 +399,14 @@ void SoftkeyActionBase::nightMode(bool isPressed)
     {
         return;
     }
-    nightModeManager.setNightMode(!nightModeManager.nightMode());
+
+    bool nightMode = nightModeManager.nightMode();
+
+    softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_KEYBOARD_VOLUMN, nightMode);
+    softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_SCREEN_BRIGHTNESS, nightMode);
+
+    softkeyManager.setFocusBaseKey(SOFT_BASE_KEY_NIGHT_MODE);
+    nightModeManager.setNightMode(!nightMode);
 }
 
 void SoftkeyActionBase::printSet(bool isPressed)

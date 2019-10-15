@@ -60,6 +60,11 @@ public:
       */
      void refreshTouchKey();
 
+     /**
+      * @brief setFocusFirstKey 设置焦点在功能按键
+      */
+     void setFocusBaseKey(SoftBaseKeyType keyType);
+
 protected:
     void paintEvent(QPaintEvent *e);
     void resizeEvent(QResizeEvent *e);
