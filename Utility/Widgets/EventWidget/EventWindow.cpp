@@ -674,7 +674,7 @@ EventWindow::EventWindow()
     d_ptr->listPrintBtn->setButtonStyle(Button::ButtonTextOnly);
     connect(d_ptr->listPrintBtn, SIGNAL(released()), this, SLOT(eventListPrintReleased()));
 
-    QSize iconsize(24, 24);
+    QSize iconsize(32, 32);
     d_ptr->upPageBtn = new Button("", themeManger.getIcon(ThemeManager::IconUp, iconsize));
     d_ptr->upPageBtn->setIconSize(iconsize);
     d_ptr->upPageBtn->setButtonStyle(Button::ButtonIconOnly);

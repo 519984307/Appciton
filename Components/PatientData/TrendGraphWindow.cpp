@@ -290,6 +290,7 @@ TrendGraphWindow::TrendGraphWindow()
     // 上翻页坐标
     QIcon ico = themeManger.getIcon(ThemeManager::IconUp, QSize(32, 32));
     button = new Button("", ico);
+    button->setIconSize(QSize(32, 32));
     button->setButtonStyle(Button::ButtonIconOnly);
     button->setFixedHeight(itemHeight);
     buttonID = TrendGraphWindowPrivate::ACTION_BTN_UP_PAGE;
@@ -302,6 +303,7 @@ TrendGraphWindow::TrendGraphWindow()
     button = new Button();
     ico = themeManger.getIcon(ThemeManager::IconDown, QSize(32, 32));
     button->setIcon(ico);
+    button->setIconSize(QSize(32, 32));
     button->setButtonStyle(Button::ButtonIconOnly);
     button->setFixedHeight(itemHeight);
     buttonID = TrendGraphWindowPrivate::ACTION_BTN_DOWN_PAGE;

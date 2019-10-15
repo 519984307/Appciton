@@ -103,12 +103,14 @@ ErrorLogWindow::ErrorLogWindow()
 
     QIcon ico = themeManger.getIcon(ThemeManager::IconUp, QSize(32, 32));
     d_ptr->upPageBtn = new Button("", ico);
+    d_ptr->upPageBtn->setIconSize(QSize(32, 32));
     d_ptr->upPageBtn->setButtonStyle(Button::ButtonIconOnly);
     d_ptr->upPageBtn->setFixedHeight(HEIGHT_HINT);
     connect(d_ptr->upPageBtn, SIGNAL(released()), d_ptr->model, SLOT(upBtnReleased()));
 
     ico = themeManger.getIcon(ThemeManager::IconDown, QSize(32, 32));
     d_ptr->downPageBtn = new Button("", ico);
+    d_ptr->downPageBtn->setIconSize(QSize(32, 32));
     d_ptr->downPageBtn->setButtonStyle(Button::ButtonIconOnly);
     d_ptr->downPageBtn->setFixedHeight(HEIGHT_HINT);
     connect(d_ptr->downPageBtn, SIGNAL(released()), d_ptr->model, SLOT(downBtnReleased()));

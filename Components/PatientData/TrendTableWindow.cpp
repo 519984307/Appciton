@@ -256,11 +256,13 @@ TrendTableWindow::TrendTableWindow()
 
     QIcon ico = themeManger.getIcon(ThemeManager::IconUp, QSize(32, 32));
     d_ptr->upBtn = new Button("", ico);
+    d_ptr->upBtn->setIconSize(QSize(32, 32));
     d_ptr->upBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->upBtn, SIGNAL(released()), this, SLOT(upReleased()));
 
     ico = themeManger.getIcon(ThemeManager::IconDown, QSize(32, 32));
     d_ptr->downBtn = new Button("", ico);
+    d_ptr->downBtn->setIconSize(QSize(32, 32));
     d_ptr->downBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->downBtn, SIGNAL(released()), this, SLOT(downReleased()));
 
