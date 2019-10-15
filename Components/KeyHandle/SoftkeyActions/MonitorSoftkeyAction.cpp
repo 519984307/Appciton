@@ -30,7 +30,9 @@ static KeyActionDesc _monitorKeys[] =
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_EVENT_REVIEW),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_TREND_TABLE),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_SYS_MODE),
+#ifndef HIDE_SCREEN_LAYOUT
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_WINDOWLAYOUT),
+#endif
 #ifndef HIDE_PARAM_SWITCH
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PARA_SWITCH),
 #endif
