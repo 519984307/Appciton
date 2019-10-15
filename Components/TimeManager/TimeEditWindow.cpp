@@ -29,6 +29,7 @@
 #include "TrendDataStorageManager.h"
 #include "MessageBox.h"
 #include "WindowManager.h"
+#include "ThemeManager.h"
 
 class TimeEditWindowPrivate
 {
@@ -172,7 +173,11 @@ void TimeEditWindow::layoutExec()
     setWindowTitle(trs("SupervisorTimeAndDataMenu"));
 
     QVBoxLayout *vlayout = new QVBoxLayout;
+    vlayout->setMargin(10);
+    vlayout->setSpacing(10);
     QGridLayout *layout = new QGridLayout;
+    layout->setMargin(0);
+    layout->setSpacing(10);
 
     vlayout->addLayout(layout);
 
@@ -187,6 +192,7 @@ void TimeEditWindow::layoutExec()
 
     // year
     spinBox = new SpinBox;
+    spinBox->setFixedHeight(themeManger.getAcceptableControlHeight());
     spinBox->setRange(1970, 2037);
     spinBox->setScale(1);
     spinBox->setStep(1);
@@ -199,6 +205,7 @@ void TimeEditWindow::layoutExec()
 
     // month
     spinBox = new SpinBox;
+    spinBox->setFixedHeight(themeManger.getAcceptableControlHeight());
     spinBox->setRange(1, 12);
     spinBox->setScale(1);
     spinBox->setStep(1);
@@ -211,6 +218,7 @@ void TimeEditWindow::layoutExec()
 
     // day
     spinBox = new SpinBox;
+    spinBox->setFixedHeight(themeManger.getAcceptableControlHeight());
     spinBox->setRange(1, 30);
     spinBox->setScale(1);
     spinBox->setStep(1);
@@ -227,6 +235,7 @@ void TimeEditWindow::layoutExec()
 
     // hour
     spinBox = new SpinBox;
+    spinBox->setFixedHeight(themeManger.getAcceptableControlHeight());
     spinBox->setRange(0, 23);
     spinBox->setScale(1);
     spinBox->setStep(1);
@@ -239,6 +248,7 @@ void TimeEditWindow::layoutExec()
 
     // minute
     spinBox = new SpinBox;
+    spinBox->setFixedHeight(themeManger.getAcceptableControlHeight());
     spinBox->setRange(0, 59);
     spinBox->setScale(1);
     spinBox->setStep(1);
@@ -251,6 +261,7 @@ void TimeEditWindow::layoutExec()
 
     // second
     spinBox = new SpinBox;
+    spinBox->setFixedHeight(themeManger.getAcceptableControlHeight());
     spinBox->setRange(0, 59);
     spinBox->setScale(1);
     spinBox->setStep(1);
@@ -261,13 +272,14 @@ void TimeEditWindow::layoutExec()
     layout->addWidget(spinBox, (d_ptr->combos.count() + d_ptr->spinBoxs.count())/3, 3);
     d_ptr->spinBoxs.insert(TimeEditWindowPrivate::ITEM_SPB_SECOND, spinBox);
 
-    layout->setRowStretch(d_ptr->combos.count() + d_ptr->spinBoxs.count(), 1);
-
     // date format
     layout = new QGridLayout;
+    layout->setMargin(0);
+    layout->setSpacing(10);
     label = new QLabel(trs("SupervisorDateFormat"));
     layout->addWidget(label, 0, 0);
     comboBox = new ComboBox();
+    comboBox->setFixedHeight(themeManger.getAcceptableControlHeight());
     comboBox->addItems(QStringList()
                        << trs(TimeSymbol::convert(DATE_FORMAT_Y_M_D))
                        << trs(TimeSymbol::convert(DATE_FORMAT_M_D_Y))
@@ -284,6 +296,7 @@ void TimeEditWindow::layoutExec()
     label = new QLabel(trs("SupervisorTimeFormat"));
     layout->addWidget(label, 1, 0);
     comboBox = new ComboBox();
+    comboBox->setFixedHeight(themeManger.getAcceptableControlHeight());
     comboBox->addItems(QStringList()
                        << trs(TimeSymbol::convert(TIME_FORMAT_12))
                        << trs(TimeSymbol::convert(TIME_FORMAT_24))
@@ -299,6 +312,7 @@ void TimeEditWindow::layoutExec()
     label = new QLabel(trs("SupervisorDisplaySec"));
     layout->addWidget(label, 2, 0);
     comboBox = new ComboBox();
+    comboBox->setFixedHeight(themeManger.getAcceptableControlHeight());
     comboBox->addItems(QStringList()
                        << trs("No")
                        << trs("Yes")
@@ -314,7 +328,7 @@ void TimeEditWindow::layoutExec()
 
     setWindowLayout(vlayout);
 
-    setFixedSize(580, 350);
+    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
 }
 
 void TimeEditWindow::hideEvent(QHideEvent *ev)
