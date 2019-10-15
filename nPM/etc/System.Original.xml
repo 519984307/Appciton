@@ -67,7 +67,7 @@
         <AlarmVolume>1</AlarmVolume>
         <HeartBeatVolume>0</HeartBeatVolume>
         <KeyPressVolume>0</KeyPressVolume>
-        <NIBPCompletedTips>1</NIBPCompletedTips>
+        <NIBPCompletedTips>0</NIBPCompletedTips>
         <StopNIBPMeasure>1</StopNIBPMeasure>
         <EnterNightMode>0</EnterNightMode>
     </NightMode>
