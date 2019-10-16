@@ -17,6 +17,10 @@
 #include "Utility.h"
 #include <QDebug>
 #include <QTimer>
+#include <QTime>
+
+#define JUMP_NUMBER                     3 // 飞梭快速旋转一次相当于慢速旋转三次
+#define SPIN_ELAPLE_TIME                50 // 飞梭旋转两次时间间隔小于50ms即快速旋转
 
 class PopupNumEditorPrivate
 {
@@ -52,6 +56,7 @@ public:
     bool hasBeenPressed;
 
     QTimer *timer;
+    QTime elapsedTime;
 };
 
 bool PopupNumEditorPrivate::mouseInUpRegion(const QPoint &pos) const
@@ -260,16 +265,42 @@ void PopupNumEditor::keyReleaseEvent(QKeyEvent *ev)
     {
     case Qt::Key_Up:
     case Qt::Key_Left:
+    {
         d_ptr->isDownPressed = false;
-        d_ptr->decreaseValue();
+        int elapsed = d_ptr->elapsedTime.restart();
+        if (elapsed < SPIN_ELAPLE_TIME)
+        {
+            for (int i = 0; i < JUMP_NUMBER; i++)
+            {
+                d_ptr->decreaseValue();
+            }
+        }
+        else
+        {
+            d_ptr->decreaseValue();
+        }
         update();
         break;
+    }
     case Qt::Key_Right:
     case Qt::Key_Down:
+    {
         d_ptr->isUpPressed = false;
-        d_ptr->increaseValue();
+        int elapsed = d_ptr->elapsedTime.restart();
+        if (elapsed < SPIN_ELAPLE_TIME)
+        {
+            for (int i = 0; i < JUMP_NUMBER; i++)
+            {
+                d_ptr->increaseValue();
+            }
+        }
+        else
+        {
+            d_ptr->increaseValue();
+        }
         update();
         break;
+    }
     case Qt::Key_Return:
     case Qt::Key_Enter:
         emit valueChanged(d_ptr->editInfo.curValue);
