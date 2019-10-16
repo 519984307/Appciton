@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/10/16
+ **/
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // 说明：
 // 波形控件中的文本标签
@@ -13,20 +24,20 @@
 // 参数:
 // text: 标签文本字符串
 // flags: 文本对齐标志, 接收如下标志用于控制字符串的绘制:
-//		Qt::AlignLeft
-//		Qt::AlignRight
-//		Qt::AlignHCenter
-//		Qt::AlignJustify
-//		Qt::AlignTop
-//		Qt::AlignBottom
-//		Qt::AlignVCenter
-//		Qt::AlignCenter
-//		Qt::TextDontClip
-//		Qt::TextSingleLine
-//		Qt::TextExpandTabs
-//		Qt::TextShowMnemonic
-//		Qt::TextWordWrap
-//		Qt::TextIncludeTrailingSpaces
+//      Qt::AlignLeft
+// 		Qt::AlignRight
+// 		Qt::AlignHCenter
+// 		Qt::AlignJustify
+// 		Qt::AlignTop
+// 		Qt::AlignBottom
+// 		Qt::AlignVCenter
+// 		Qt::AlignCenter
+// 		Qt::TextDontClip
+// 		Qt::TextSingleLine
+// 		Qt::TextExpandTabs
+// 		Qt::TextShowMnemonic
+// 		Qt::TextWordWrap
+// 		Qt::TextIncludeTrailingSpaces
 // parent: 标签所归属的波形控件
 // isBackground: true表示将标签融入背景位图, false表示标签动态绘制
 //
@@ -34,9 +45,9 @@
 // 无
 ////////////////////////////////////////////////////////////////////////////////
 WaveWidgetLabel::WaveWidgetLabel(const QString &text, int flags,
-        WaveWidget *wave) :
-        IWidget("", wave),
-        _text(text), _flags(flags), _isFixedWidth(false)
+                                 WaveWidget *wave) :
+    IWidget("", wave),
+    _text(text), _flags(flags), _isFixedWidth(false)
 {
     if (NULL != wave)
     {
@@ -88,20 +99,20 @@ void WaveWidgetLabel::setText(const QString &text)
 //
 // 参数:
 // flags: 文本对齐标志, 接收如下标志用于控制字符串的绘制:
-//		Qt::AlignLeft
-//		Qt::AlignRight
-//		Qt::AlignHCenter
-//		Qt::AlignJustify
-//		Qt::AlignTop
-//		Qt::AlignBottom
-//		Qt::AlignVCenter
-//		Qt::AlignCenter
-//		Qt::TextDontClip
-//		Qt::TextSingleLine
-//		Qt::TextExpandTabs
-//		Qt::TextShowMnemonic
-//		Qt::TextWordWrap
-//		Qt::TextIncludeTrailingSpaces
+// 		Qt::AlignLeft
+// 		Qt::AlignRight
+// 		Qt::AlignHCenter
+// 		Qt::AlignJustify
+// 		Qt::AlignTop
+// 		Qt::AlignBottom
+// 		Qt::AlignVCenter
+// 		Qt::AlignCenter
+// 		Qt::TextDontClip
+// 		Qt::TextSingleLine
+// 		Qt::TextExpandTabs
+// 		Qt::TextShowMnemonic
+// 		Qt::TextWordWrap
+// 		Qt::TextIncludeTrailingSpaces
 //
 // 返回值:
 // 无
@@ -133,8 +144,7 @@ void WaveWidgetLabel::resizeToFitText()
     }
 
     QFontMetrics fm(font());
-    QRect rect = fm.boundingRect(text());
-    resize(rect.width(), rect.height());
+    resize(fm.width(text()), fm.height());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -157,6 +167,5 @@ void WaveWidgetLabel::paintEvent(QPaintEvent *e)
     painter.setPen(palette().color(QPalette::WindowText));
 
     QRect r = this->rect();
-    r.adjust(5, 0, -10, 0);
     painter.drawText(r, _flags, _text);
 }

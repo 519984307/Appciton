@@ -180,4 +180,9 @@ private:
         int maxRange;
     };
     autoGainLogicalRange _autoGainLogicalRange[ECG_GAIN_NR - 1];
+
+    /**
+     * @brief _adjustLabelLayout  调整标签布局
+     */
+    void _adjustLabelLayout(void);
 };
