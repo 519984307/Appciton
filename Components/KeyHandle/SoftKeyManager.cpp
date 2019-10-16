@@ -85,6 +85,7 @@ public:
         {
             KeyActionDesc rightKeyDesc;
             rightKeyDesc.focus = false;
+            rightKeyDesc.border = false;
             rightPageKeyWidget->setContent(&rightKeyDesc);
         }
         else
