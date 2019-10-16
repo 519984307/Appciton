@@ -19,8 +19,8 @@
 #include <QTimer>
 #include <QTime>
 
-#define JUMP_NUMBER                     3 // 飞梭快速旋转一次相当于慢速旋转三次
-#define SPIN_ELAPLE_TIME                50 // 飞梭旋转两次时间间隔小于50ms即快速旋转
+#define FAST_SPIN_STEP                      3       // 飞梭快速旋转一次相当于慢速旋转三次
+#define SPIN_ELAPSE_TIME                    50      // 飞梭旋转两次时间间隔小于50ms即快速旋转
 
 class PopupNumEditorPrivate
 {
@@ -268,9 +268,9 @@ void PopupNumEditor::keyReleaseEvent(QKeyEvent *ev)
     {
         d_ptr->isDownPressed = false;
         int elapsed = d_ptr->elapsedTime.restart();
-        if (elapsed < SPIN_ELAPLE_TIME)
+        if (elapsed < SPIN_ELAPSE_TIME)
         {
-            for (int i = 0; i < JUMP_NUMBER; i++)
+            for (int i = 0; i < FAST_SPIN_STEP; i++)
             {
                 d_ptr->decreaseValue();
             }
@@ -287,9 +287,9 @@ void PopupNumEditor::keyReleaseEvent(QKeyEvent *ev)
     {
         d_ptr->isUpPressed = false;
         int elapsed = d_ptr->elapsedTime.restart();
-        if (elapsed < SPIN_ELAPLE_TIME)
+        if (elapsed < SPIN_ELAPSE_TIME)
         {
-            for (int i = 0; i < JUMP_NUMBER; i++)
+            for (int i = 0; i < FAST_SPIN_STEP; i++)
             {
                 d_ptr->increaseValue();
             }
