@@ -16,7 +16,6 @@
 #include "ScrollArea.h"
 #include <QScrollBar>
 #include <QLabel>
-#include <qdebug.h>
 
 class ErrorLogViewerWindowPrivate
 {
@@ -96,7 +95,6 @@ bool ErrorLogViewerWindow::eventFilter(QObject *obj, QEvent *ev)
 {
     if (obj == d_ptr->area)
     {
-        qDebug() << ev->type();
         if (ev->type() == QEvent::KeyRelease)
         {
             bool ret = false;
