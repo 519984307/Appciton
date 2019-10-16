@@ -172,14 +172,9 @@ void TimeEditWindow::layoutExec()
 {
     setWindowTitle(trs("SupervisorTimeAndDataMenu"));
 
-    QVBoxLayout *vlayout = new QVBoxLayout;
-    vlayout->setMargin(10);
-    vlayout->setSpacing(10);
     QGridLayout *layout = new QGridLayout;
-    layout->setMargin(0);
+    layout->setMargin(10);
     layout->setSpacing(10);
-
-    vlayout->addLayout(layout);
 
     ComboBox *comboBox;
     QLabel *label;
@@ -273,11 +268,8 @@ void TimeEditWindow::layoutExec()
     d_ptr->spinBoxs.insert(TimeEditWindowPrivate::ITEM_SPB_SECOND, spinBox);
 
     // date format
-    layout = new QGridLayout;
-    layout->setMargin(0);
-    layout->setSpacing(10);
     label = new QLabel(trs("SupervisorDateFormat"));
-    layout->addWidget(label, 0, 0);
+    layout->addWidget(label, (d_ptr->combos.count() + d_ptr->spinBoxs.count())/3, 0);
     comboBox = new ComboBox();
     comboBox->setFixedHeight(themeManger.getAcceptableControlHeight());
     comboBox->addItems(QStringList()
@@ -289,12 +281,12 @@ void TimeEditWindow::layoutExec()
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, 0, 1);
+    layout->addWidget(comboBox, (d_ptr->combos.count() + d_ptr->spinBoxs.count()) / 3, 1, 1, 3);
     d_ptr->combos.insert(TimeEditWindowPrivate::ITEM_CBO_DATE_FORMAT, comboBox);
 
     // time format
     label = new QLabel(trs("SupervisorTimeFormat"));
-    layout->addWidget(label, 1, 0);
+    layout->addWidget(label, (d_ptr->combos.count() + d_ptr->spinBoxs.count()) / 3 + 1, 0);
     comboBox = new ComboBox();
     comboBox->setFixedHeight(themeManger.getAcceptableControlHeight());
     comboBox->addItems(QStringList()
@@ -305,12 +297,12 @@ void TimeEditWindow::layoutExec()
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, 1, 1);
+    layout->addWidget(comboBox, (d_ptr->combos.count() + d_ptr->spinBoxs.count()) / 3 + 1, 1, 1, 3);
     d_ptr->combos.insert(TimeEditWindowPrivate::ITEM_CBO_TIME_FORMAT, comboBox);
 
     // is display second
     label = new QLabel(trs("SupervisorDisplaySec"));
-    layout->addWidget(label, 2, 0);
+    layout->addWidget(label, (d_ptr->combos.count() + d_ptr->spinBoxs.count()) / 3 + 2, 0);
     comboBox = new ComboBox();
     comboBox->setFixedHeight(themeManger.getAcceptableControlHeight());
     comboBox->addItems(QStringList()
@@ -321,12 +313,15 @@ void TimeEditWindow::layoutExec()
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, 2, 1);
+    layout->addWidget(comboBox, (d_ptr->combos.count() + d_ptr->spinBoxs.count()) / 3 + 2, 1, 1, 3);
     d_ptr->combos.insert(TimeEditWindowPrivate::ITEM_CBO_DISPLAY_SEC, comboBox);
-    vlayout->addLayout(layout);
-    vlayout->addStretch();
 
-    setWindowLayout(vlayout);
+    layout->setRowStretch(layout->rowCount(), 1);
+    layout->setColumnStretch(0, 2);
+    layout->setColumnStretch(1, 1);
+    layout->setColumnStretch(2, 1);
+    layout->setColumnStretch(3, 1);
+    setWindowLayout(layout);
 
     setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
 }
