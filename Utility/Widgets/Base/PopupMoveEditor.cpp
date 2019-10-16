@@ -15,7 +15,7 @@
 #include <QKeyEvent>
 #include <QTimer>
 #include <QStyle>
-#include "SoundManager.h"
+#include "SoundManagerInterface.h"
 
 class PopupMoveEditorPrivate
 {
@@ -219,7 +219,11 @@ void PopupMoveEditor::mouseReleaseEvent(QMouseEvent *ev)
 {
     QWidget::mousePressEvent(ev);
     // 触屏点击播放按键音
-    soundManager.keyPressTone();
+    SoundManagerInterface *sound = SoundManagerInterface::getSoundManager();
+    if (sound)
+    {
+        sound->keyPressTone();
+    }
     if (d_ptr->timer)
     {
         d_ptr->timer->stop();

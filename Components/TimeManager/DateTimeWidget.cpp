@@ -15,7 +15,7 @@
 #include <QLabel>
 #include "WindowManager.h"
 #include "TimeEditWindow.h"
-#include "SoundManager.h"
+#include "SoundManagerInterface.h"
 
 /**************************************************************************************************
  * 功能： 设置显示的内容。
@@ -31,7 +31,11 @@ void DateTimeWidget::mousePressEvent(QMouseEvent *e)
 {
     IWidget::mousePressEvent(e);
     // 触屏点击播放按键音
-    soundManager.keyPressTone();
+    SoundManagerInterface *sound = SoundManagerInterface::getSoundManager();
+    if (sound)
+    {
+        sound->keyPressTone();
+    }
 }
 
 void DateTimeWidget::_release(IWidget *iWidget)

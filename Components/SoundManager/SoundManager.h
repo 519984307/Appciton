@@ -29,7 +29,7 @@ public:
     /**
      * @brief keyPressTone play an key press tone
      */
-    void keyPressTone();
+    virtual void keyPressTone();
 
     /**
      * @brief errorTone play an error tone

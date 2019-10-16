@@ -19,7 +19,7 @@
 #include "TrendWidgetLabel.h"
 #include <QTimer>
 #include "AlarmConfig.h"
-#include "SoundManager.h"
+#include "SoundManagerInterface.h"
 
 /**************************************************************************************************
  * 重绘。
@@ -67,7 +67,11 @@ void TrendWidget::mousePressEvent(QMouseEvent *e)
 {
     IWidget::mousePressEvent(e);
     // 触屏点击播放按键音
-    soundManager.keyPressTone();
+    SoundManagerInterface *sound = SoundManagerInterface::getSoundManager();
+    if (sound)
+    {
+        sound->keyPressTone();
+    }
 }
 
 void TrendWidget::showAlarmOff()

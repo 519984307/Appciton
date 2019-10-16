@@ -15,7 +15,7 @@
 #include <QKeyEvent>
 #include <QPainter>
 #include "ThemeManager.h"
-#include "SoundManager.h"
+#include "SoundManagerInterface.h"
 
 #define DEFAULT_HEIGHT (themeManger.getAcceptableControlHeight())
 
@@ -181,7 +181,11 @@ void ComboBox::mousePressEvent(QMouseEvent *ev)
 {
     QComboBox::mousePressEvent(ev);
     // 触屏点击播放按键音
-    soundManager.keyPressTone();
+    SoundManagerInterface *sound = SoundManagerInterface::getSoundManager();
+    if (sound)
+    {
+        sound->keyPressTone();
+    }
 }
 
 void ComboBox::onPopupDestroyed()

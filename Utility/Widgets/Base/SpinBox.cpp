@@ -17,7 +17,7 @@
 #include "PopupNumEditor.h"
 #include "FontManager.h"
 #include "Utility.h"
-#include "SoundManager.h"
+#include "SoundManagerInterface.h"
 
 #define PADDING 4
 #define ICON_TEXT_PADDING 4
@@ -395,5 +395,9 @@ void SpinBox::mousePressEvent(QMouseEvent *e)
 {
     QAbstractButton::mousePressEvent(e);
     // 触屏点击播放按键音
-    soundManager.keyPressTone();
+    SoundManagerInterface *sound = SoundManagerInterface::getSoundManager();
+    if (sound)
+    {
+        sound->keyPressTone();
+    }
 }

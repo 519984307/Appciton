@@ -16,7 +16,7 @@
 #include "AlarmInfoPopListView.h"
 #include <QPainter>
 #include "WindowManager.h"
-#include "SoundManager.h"
+#include "SoundManagerInterface.h"
 
 /**************************************************************************************************
  * 绘制背景。
@@ -129,7 +129,11 @@ void AlarmTechInfoBarWidget::mousePressEvent(QMouseEvent *e)
 {
     IWidget::mousePressEvent(e);
     // 触屏点击播放按键音
-    soundManager.keyPressTone();
+    SoundManagerInterface *sound = SoundManagerInterface::getSoundManager();
+    if (sound)
+    {
+        sound->keyPressTone();
+    }
 }
 
 void AlarmTechInfoBarWidget::_releaseHandle(IWidget *iWidget)

@@ -18,7 +18,7 @@
 #include "IConfig.h"
 #include <QPainter>
 #include "BatteryIndicatorWindow.h"
-#include "SoundManager.h"
+#include "SoundManagerInterface.h"
 
 #define blackgroundColor QColor(20 , 20 , 20)
 
@@ -122,7 +122,11 @@ void BatteryBarWidget::mousePressEvent(QMouseEvent *e)
 {
     IWidget::mousePressEvent(e);
     // 触屏点击播放按键音
-    soundManager.keyPressTone();
+    SoundManagerInterface *sound = SoundManagerInterface::getSoundManager();
+    if (sound)
+    {
+        sound->keyPressTone();
+    }
 }
 
 /**************************************************************************************************

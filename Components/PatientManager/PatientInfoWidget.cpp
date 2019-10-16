@@ -18,7 +18,7 @@
 #include "WindowManagerInterface.h"
 #include "PatientInfoWindowInterface.h"
 #include "PatientManager.h"
-#include "SoundManager.h"
+#include "SoundManagerInterface.h"
 
 void PatientInfoWidget::loadPatientInfo(const PatientInfo &info, const QString &bed)
 {
@@ -91,7 +91,11 @@ void PatientInfoWidget::mousePressEvent(QMouseEvent *e)
 {
     IWidget::mousePressEvent(e);
     // 触屏点击播放按键音
-    soundManager.keyPressTone();
+    SoundManagerInterface *sound = SoundManagerInterface::getSoundManager();
+    if (sound)
+    {
+        sound->keyPressTone();
+    }
 }
 
 void PatientInfoWidget::_releaseHandle(IWidget *iWidget)

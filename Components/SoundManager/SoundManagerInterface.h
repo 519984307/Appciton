@@ -40,6 +40,11 @@ public:
 
     virtual ~SoundManagerInterface(){}
 
+    /**
+     * @brief keyPressTone play an key press tone
+     */
+    virtual void keyPressTone() = 0;
+
     static SoundManagerInterface *registerSoundManager(SoundManagerInterface *);
 
     static SoundManagerInterface *getSoundManager(void);

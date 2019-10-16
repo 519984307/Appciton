@@ -14,7 +14,7 @@
 #include <QDebug>
 #include <QMouseEvent>
 #include "ThemeManager.h"
-#include "SoundManager.h"
+#include "SoundManagerInterface.h"
 
 #define MARKER_WIDTH 6
 
@@ -142,5 +142,9 @@ void MenuSidebarItem::mousePressEvent(QMouseEvent *e)
 {
     QAbstractButton::mousePressEvent(e);
     // 触屏点击播放按键音
-    soundManager.keyPressTone();
+    SoundManagerInterface *sound = SoundManagerInterface::getSoundManager();
+    if (sound)
+    {
+        sound->keyPressTone();
+    }
 }

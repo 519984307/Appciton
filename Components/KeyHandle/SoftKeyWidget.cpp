@@ -14,7 +14,7 @@
 #include "FontManager.h"
 #include "LanguageManager.h"
 #include <QStyle>
-#include "SoundManager.h"
+#include "SoundManagerInterface.h"
 
 /***************************************************************************************************
  * 功能：重绘事件。
@@ -139,7 +139,11 @@ void SoftkeyWidget::mousePressEvent(QMouseEvent *e)
 {
     IWidget::mousePressEvent(e);
     // 触屏点击播放按键音
-    soundManager.keyPressTone();
+    SoundManagerInterface *sound = SoundManagerInterface::getSoundManager();
+    if (sound)
+    {
+        sound->keyPressTone();
+    }
     _pressed = true;
     update();
 }
