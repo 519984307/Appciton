@@ -15,6 +15,7 @@
 #include <QKeyEvent>
 #include <QPainter>
 #include "ThemeManager.h"
+#include "SoundManager.h"
 
 #define DEFAULT_HEIGHT (themeManger.getAcceptableControlHeight())
 
@@ -174,6 +175,13 @@ void ComboBox::paintEvent(QPaintEvent *ev)
 
     painter.setPen(textColor);
     painter.drawText(contentsRect(), Qt::AlignCenter, currentText());
+}
+
+void ComboBox::mousePressEvent(QMouseEvent *ev)
+{
+    QComboBox::mousePressEvent(ev);
+    // 触屏点击播放按键音
+    soundManager.keyPressTone();
 }
 
 void ComboBox::onPopupDestroyed()

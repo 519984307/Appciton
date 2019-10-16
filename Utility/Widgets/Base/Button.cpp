@@ -14,6 +14,7 @@
 #include <QStyle>
 #include <QKeyEvent>
 #include <ThemeManager.h>
+#include "SoundManager.h"
 
 #define PADDING 4
 #define ICON_TEXT_PADDING 4
@@ -307,6 +308,13 @@ void Button::keyReleaseEvent(QKeyEvent *ev)
         break;
     }
     d_ptr->m_press = false;
+}
+
+void Button::mousePressEvent(QMouseEvent *e)
+{
+    QAbstractButton::mousePressEvent(e);
+    // 触屏点击播放按键音
+    soundManager.keyPressTone();
 }
 
 void ButtonPrivate::drawIcon(QPainter &painter, QIcon &ico, QRect iconRect, QIcon::Mode icoMode)

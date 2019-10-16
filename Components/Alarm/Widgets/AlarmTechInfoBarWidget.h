@@ -34,6 +34,7 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *e);
+    void mousePressEvent(QMouseEvent *e);
 
 private slots:
     void _releaseHandle(IWidget *);

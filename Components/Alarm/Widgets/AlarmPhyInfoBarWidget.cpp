@@ -16,6 +16,7 @@
 #include <QPainter>
 #include "WindowManager.h"
 #include "Alarm.h"
+#include "SoundManager.h"
 
 /**************************************************************************************************
  * 绘制背景。
@@ -145,6 +146,13 @@ void AlarmPhyInfoBarWidget::paintEvent(QPaintEvent *e)
         _drawBackground();
         _drawText();
     }
+}
+
+void AlarmPhyInfoBarWidget::mousePressEvent(QMouseEvent *e)
+{
+    IWidget::mousePressEvent(e);
+    // 触屏点击播放按键音
+    soundManager.keyPressTone();
 }
 
 void AlarmPhyInfoBarWidget::_releaseHandle(IWidget *iWidget)

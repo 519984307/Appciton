@@ -14,6 +14,7 @@
 #include <QPointer>
 #include <QKeyEvent>
 #include <QPainter>
+#include "SoundManager.h"
 
 #define DEFAULT_HEIGHT (themeManger.getAcceptableControlHeight())
 
@@ -180,6 +181,13 @@ void DropList::paintEvent(QPaintEvent *ev)
 
     painter.setPen(textColor);
     painter.drawText(contentsRect(), Qt::AlignCenter, text());
+}
+
+void DropList::mousePressEvent(QMouseEvent *e)
+{
+    QAbstractButton::mousePressEvent(e);
+    // 触屏点击播放按键音
+    soundManager.keyPressTone();
 }
 
 void DropList::setCurrentIndex(int index)

@@ -21,6 +21,7 @@
 #include "FontManager.h"
 #include <QKeyEvent>
 #include <QFocusEvent>
+#include "SoundManager.h"
 
 #define DEFAULT_WIDTH 150
 #define DEFAULT_HEIGHT  100
@@ -417,6 +418,13 @@ bool PopupList::focusNextPrevChild(bool next)
     emit itemFoucsIndexChanged(index);
 
     return true;
+}
+
+void PopupList::mousePressEvent(QMouseEvent *e)
+{
+    QWidget::mousePressEvent(e);
+    // 触屏点击播放按键音
+    soundManager.keyPressTone();
 }
 
 void PopupList::onItemSelected()

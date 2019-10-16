@@ -19,6 +19,7 @@
 #include "TrendWidgetLabel.h"
 #include <QTimer>
 #include "AlarmConfig.h"
+#include "SoundManager.h"
 
 /**************************************************************************************************
  * 重绘。
@@ -60,6 +61,13 @@ void TrendWidget::resizeEvent(QResizeEvent *e)
     upLimit->setFont(font);
     downLimit->setFont(font);
     setTextSize();
+}
+
+void TrendWidget::mousePressEvent(QMouseEvent *e)
+{
+    IWidget::mousePressEvent(e);
+    // 触屏点击播放按键音
+    soundManager.keyPressTone();
 }
 
 void TrendWidget::showAlarmOff()

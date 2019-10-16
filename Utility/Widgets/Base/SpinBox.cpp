@@ -17,6 +17,7 @@
 #include "PopupNumEditor.h"
 #include "FontManager.h"
 #include "Utility.h"
+#include "SoundManager.h"
 
 #define PADDING 4
 #define ICON_TEXT_PADDING 4
@@ -388,4 +389,11 @@ void SpinBox::focusOutEvent(QFocusEvent *ev)
 {
     QAbstractButton::focusOutEvent(ev);
     d_ptr->status = SPIN_BOX_FOCUS_OUT;
+}
+
+void SpinBox::mousePressEvent(QMouseEvent *e)
+{
+    QAbstractButton::mousePressEvent(e);
+    // 触屏点击播放按键音
+    soundManager.keyPressTone();
 }
