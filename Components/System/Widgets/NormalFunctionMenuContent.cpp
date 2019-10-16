@@ -449,4 +449,8 @@ void NormalFunctionMenuContent::nightModeHandle(bool isNightMode)
         d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS]->setEnabled(true);
         d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME]->setEnabled(true);
     }
+
+    // 根据夜间模式状态, 设置屏幕亮度和音量按键类型是否可用
+    softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_KEYBOARD_VOLUMN, !isNightMode);
+    softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_SCREEN_BRIGHTNESS, !isNightMode);
 }
