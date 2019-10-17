@@ -28,7 +28,9 @@ class ScreenMenuContentPrivate
 public:
     ScreenMenuContentPrivate()
         : interfaceCbo(NULL),
+#ifndef HIDE_SCREEN_LAYOUT
           layoutCbo(NULL),
+#endif
           paraColorBtn(NULL)
     {}
 
@@ -37,7 +39,9 @@ public:
     void reloadScreenType();
 
     ComboBox *interfaceCbo;     // 界面选择
+#ifndef HIDE_SCREEN_LAYOUT
     ComboBox *layoutCbo;        // 布局设置
+#endif
     Button *paraColorBtn;
 
     enum ScreenLayoutItem
@@ -196,6 +200,9 @@ void ScreenMenuContent::hideEvent(QHideEvent *ev)
 
 void ScreenMenuContent::onComboxIndexChanged(int index)
 {
+#ifdef HIDE_SCREEN_LAYOUT
+    Q_UNUSED(index)
+#endif
     ComboBox *cbo = qobject_cast<ComboBox *>(sender());
     if (cbo == d_ptr->interfaceCbo)
     {
@@ -229,6 +236,7 @@ void ScreenMenuContent::onComboxIndexChanged(int index)
         d_ptr->layoutCbo->blockSignals(false);
 #endif
     }
+#ifndef HIDE_SCREEN_LAYOUT
     else if (cbo == d_ptr->layoutCbo)
     {
         if (index == ScreenMenuContentPrivate::SCREEN_LAYOUT_STANDARD)
@@ -244,6 +252,7 @@ void ScreenMenuContent::onComboxIndexChanged(int index)
                                      WindowManager::ShowBehaviorCloseOthers);
         }
     }
+#endif
 }
 
 void ScreenMenuContent::onBtnClick()
