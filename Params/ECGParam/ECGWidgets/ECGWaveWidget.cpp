@@ -107,6 +107,20 @@ void ECGWaveWidget::_calcGainRange(void)
     }
 }
 
+void ECGWaveWidget::_adjustLabelLayout()
+{
+    _name->move(0, 0);
+
+    _gain->move(100, 0);
+
+    _filterMode->move(200, 0);
+
+    _notchInfo->move(350, 0);
+
+    _notify->move((width() - _notify->width()) / 2,
+                  qmargins().top() + (height() - qmargins().top()) / 2 - _notify->height() - 1);
+}
+
 /**************************************************************************************************
  * 计算出给定增益对应的实际像素高度
  * 参数:
@@ -273,6 +287,7 @@ void ECGWaveWidget::_updateNotchInfo()
     _notchInfo->setText(QString("%1 %2")
                                .arg(trs("Notch"))
                                .arg(trs(ECGSymbol::convert(notchFilter))));
+    _adjustLabelLayout();
 }
 
 /**************************************************************************************************
@@ -295,9 +310,6 @@ void ECGWaveWidget::loadConfig(void)
 
         _name->setText(ECGSymbol::convert(ecgParam.waveIDToLeadID((WaveformID)getID()),
                                           ecgParam.getLeadConvention(), is12Lead, ecgParam.get12LDisplayFormat()));
-
-        _name->setFixedWidth(70);
-//        _notify->setVisible(false);
     }
     else
     {
@@ -315,10 +327,8 @@ void ECGWaveWidget::loadConfig(void)
 
         // notify
         ecgParam.updateECGNotifyMesg(lead, false);
-
-        _name->setFixedWidth(130);
-//        _notify->setVisible(true);
     }
+    _adjustLabelLayout();
 }
 
 /**************************************************************************************************
@@ -502,6 +512,7 @@ void ECGWaveWidget::setNotifyMesg(ECGWaveNotify mesg)
         _notify->setText("");
         break;
     }
+    _adjustLabelLayout();
 }
 
 /**************************************************************************************************
@@ -664,23 +675,9 @@ void ECGWaveWidget::resizeEvent(QResizeEvent *e)
         return;
     }
 
-    _name->move(0, 0);
-
-    int x = _name->x() + _name->width();
-    _gain->move(x, 0);
-
-    x = _gain->x() + _gain->width();
-    _filterMode->move(x, 0);
-
-    x = _filterMode->x() + _filterMode->width();
-    _notchInfo->move(x, 0);
-
-    _notify->setFixedWidth(200);
-    _notify->move((width() - _notify->width()) / 2,
-                  qmargins().top() + (height() - qmargins().top()) / 2 - _notify->height() - 1);
-
     _initValueRange(ecgParam.getGain(ecgParam.waveIDToLeadID((WaveformID)getID())));
     _calcGainRange();
+    _adjustLabelLayout();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -793,13 +790,13 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
     int fontSize = fontManager.getFontSize(4);
     int fontH = fontManager.textHeightInPixels(fontManager.textFont(fontSize)) + 4;
     _name->setFont(fontManager.textFont(fontSize));
-    _name->setFixedSize(70, fontH);
+    _name->setFixedHeight(fontH);
     _name->setText(leadName);
 
     // ecg第一道波形显示增益、滤波模式、陷波信息
     _gain = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
     _gain->setFont(fontManager.textFont(fontSize));
-    _gain->setFixedSize(80, fontH);
+    _gain->setFixedHeight(fontH);
     _gain->setFocusPolicy(Qt::NoFocus);
     addItem(_gain);
     ECGGain gain = ecgParam.getGain(ecgParam.waveIDToLeadID(id));
@@ -807,14 +804,14 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
 
     _filterMode = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
     _filterMode->setFont(fontManager.textFont(fontSize));
-    _filterMode->setFixedSize(120, fontH);
+    _filterMode->setFixedHeight(fontH);
     _filterMode->setFocusPolicy(Qt::NoFocus);
     addItem(_filterMode);
     connect(&ecgParam, SIGNAL(updateFilterMode()), this, SLOT(_updateFilterMode()));
 
     _notchInfo = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
     _notchInfo->setFont(fontManager.textFont(fontSize));
-    _notchInfo->setFixedSize(150, fontH);
+    _notchInfo->setFixedHeight(fontH);
     _notchInfo->setFocusPolicy(Qt::NoFocus);
     addItem(_notchInfo);
     connect(&ecgParam, SIGNAL(updateNotchFilter()), this, SLOT(_updateNotchInfo()));
@@ -834,6 +831,7 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
     addItem(_ruler);
 
     _12LGain = ECG_GAIN_X10;
+    _adjustLabelLayout();
 }
 
 /**************************************************************************************************
