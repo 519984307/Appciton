@@ -26,6 +26,7 @@ void NIBPServiceStandbyState::run(void)
 void NIBPServiceStandbyState::enter(void)
 {
     timeStop();
+    nibpRepairMenuManager.setMonitorState(NIBP_MONITOR_STANDBY_STATE);
     nibpRepairMenuManager.returnMenu();
 }
 
