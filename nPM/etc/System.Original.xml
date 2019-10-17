@@ -99,6 +99,7 @@
         <BootAndStandbyLogoVersion>04.00.00.01</BootAndStandbyLogoVersion>
     </SoftWareVersion>
     <Others>
+        <WaveDrawMode>1</WaveDrawMode>
         <WaveLine>1</WaveLine>
         <ECGStandard>0</ECGStandard>
         <FrequencyNotch>1</FrequencyNotch>

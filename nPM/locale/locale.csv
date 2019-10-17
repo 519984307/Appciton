@@ -1445,9 +1445,12 @@ StopTouchScreenCalibration,停止触摸屏校准,Stop Touch Screen Calibration
 Cancel,取消覆盖,Cancel
 OthersMaintainMenu,其他,Others
 OthersMaintainMenuDesc,其他,Others
-WaveLine,波线,WaveLine
-Fat,粗,Fat
-Med,中,Med
+WaveDrawMode,波形绘画方式,Wave Draw Mode
+Mono,阶梯,Mono
+Color,色阶,Color
+WaveLine,波形线条,Wave Line
+Thick,粗,Thick
+Medium,中,Medium
 Thin,细,Thin
 ECGStandard,ECG标准,ECG Standard
 AHA,AHA,AHA

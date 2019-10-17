@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2019/10/17
+ **/
+
 ////////////////////////////////////////////////////////////////////////////////
 // 说明：
 // 波形控件的非级联模式基类
@@ -6,7 +16,12 @@
 #include "WaveNormalMode.h"
 #include "WaveWidget.h"
 #include "FloatHandle.h"
+#include <QPainter>
 #include "Debug.h"
+
+#define MAX_VAL(a, b) (((a) > (b)) ? (a) : (b))
+#define MIN_VAL(a, b) (((a) < (b)) ? (a) : (b))
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // 说明:
@@ -49,7 +64,7 @@ WaveNormalMode::~WaveNormalMode()
 ////////////////////////////////////////////////////////////////////////////////
 int WaveNormalMode::dataSize()
 {
-    if(!_wave)
+    if (!_wave)
     {
         return 0;
     }
@@ -61,7 +76,7 @@ int WaveNormalMode::dataSize()
         return 0;
     }
 
-    return (int) ceilf((maxX - minX + 1) * _wave->dataRate() / _wave->waveSpeed() *
+    return ceilf((maxX - minX + 1) * _wave->dataRate() / _wave->waveSpeed() *
             _wave->pixelWPitch());
 }
 
@@ -71,7 +86,7 @@ int WaveNormalMode::dataSize()
  **************************************************************************************************/
 int WaveNormalMode::dataSize(float minDataRateOfSameSpeedWave)
 {
-    if(!_wave)
+    if (!_wave)
     {
         return 0;
     }
@@ -83,9 +98,10 @@ int WaveNormalMode::dataSize(float minDataRateOfSameSpeedWave)
         return 0;
     }
 
-    if(isEqual((float)0, minDataRateOfSameSpeedWave) || isEqual(_wave->dataRate(), minDataRateOfSameSpeedWave))
+    if (isEqual(0.0f, minDataRateOfSameSpeedWave)
+            || isEqual(_wave->dataRate(), minDataRateOfSameSpeedWave))
     {
-        return (int) ceilf((maxX - minX + 1) * _wave->dataRate() / _wave->waveSpeed() *
+        return ceilf((maxX - minX + 1) * _wave->dataRate() / _wave->waveSpeed() *
                            _wave->pixelWPitch());
     }
     else
@@ -93,7 +109,7 @@ int WaveNormalMode::dataSize(float minDataRateOfSameSpeedWave)
         int currentWaveSampleRate = _wave->dataRate();
         int minSampleRate = minDataRateOfSameSpeedWave;
 
-        int dataSizeOfMinSampleWave = (int) ceilf((maxX - minX + 1) * minDataRateOfSameSpeedWave / _wave->waveSpeed() *
+        int dataSizeOfMinSampleWave = ceilf((maxX - minX + 1) * minDataRateOfSameSpeedWave / _wave->waveSpeed() *
                            _wave->pixelWPitch());
 
         return dataSizeOfMinSampleWave * currentWaveSampleRate / minSampleRate;
@@ -156,7 +172,7 @@ int WaveNormalMode::valueToY(int value)
 ////////////////////////////////////////////////////////////////////////////////
 int WaveNormalMode::xToIndex(int x)
 {
-    if(!_wave)
+    if (!_wave)
     {
         return 0;
     }
@@ -177,7 +193,7 @@ int WaveNormalMode::xToIndex(int x)
 ////////////////////////////////////////////////////////////////////////////////
 int WaveNormalMode::indexToX(int index)
 {
-    if(!_wave)
+    if (!_wave)
     {
         return 0;
     }
@@ -198,7 +214,7 @@ int WaveNormalMode::indexToX(int index)
 ////////////////////////////////////////////////////////////////////////////////
 void WaveNormalMode::prepareTransformFactor()
 {
-    if(!_wave)
+    if (!_wave)
     {
         return;
     }
@@ -208,23 +224,99 @@ void WaveNormalMode::prepareTransformFactor()
     int minY = _wave->_margin.top();
     int maxY = _wave->height() - 1 - _wave->_margin.bottom();
 
-    if(isZero(_wave->pixelWPitch()) || isZero(_wave->waveSpeed() / _wave->pixelWPitch()))
+    if (isZero(_wave->pixelWPitch()) || isZero(_wave->waveSpeed() / _wave->pixelWPitch()))
     {
         return;
     }
     int n = (maxX - minX + 1) * _wave->dataRate() / (_wave->waveSpeed() / _wave->pixelWPitch());
 
-    if(1 == n)
+    if (1 == n)
     {
         return;
     }
     _a = ((maxX - minX) << 16) / (n - 1);
 
-    if(_wave->maxValue() == _wave->minValue())
+    if (_wave->maxValue() == _wave->minValue())
     {
         return;
     }
 
     _b = (minY - maxY) * 1.0 / (_wave->maxValue() - _wave->minValue());
     _c = minY - _wave->maxValue() * (minY - maxY) * 1.0 / (_wave->maxValue() - _wave->minValue());
+}
+
+/**
+ * @brief drawColorGradationVLine draw a color gradation vertical line, the middle point will draw with base color
+ *        the two edge color will be gradient
+ * @param painter the paitner
+ * @param xPos the x position
+ * @param yMin the min y axis value
+ * @param yMax the max y axis value
+ * @param yMid the middle y axis value
+ * @param baseColor the base color
+ */
+static void drawColorGradationVLine(QPainter *painter, int xPos, int yMin, int yMax,
+                                             int yMid, const QColor &baseColor)
+{
+    int dy = yMax - yMin;
+    int index = (dy >> 1) + 2;
+    QColor curColor = baseColor;
+    QPen curPen(baseColor);
+    painter->setPen(curPen);
+    painter->drawPoint(xPos, yMid);
+
+    for (int i = 1; i <= (dy >> 1) + 1; ++i)
+    {
+        curColor.setRed(baseColor.red() * (index - i) / index);
+        curColor.setGreen(baseColor.green() * (index - i) / index);
+        curColor.setBlue(baseColor.blue() * (index - i) / index);
+        curPen.setColor(curColor);
+        painter->setPen(curPen);
+        if (yMid + i <= yMax) {
+            painter->drawPoint(xPos, yMid +i);
+        }
+        if (yMid - i >= yMin) {
+            painter->drawPoint(xPos, yMid - i);
+        }
+    }
+}
+
+void WaveNormalMode::drawColorGradationWave(WaveNormalMode *self, QPainter *painter, int beginIndex, int endIndex)
+{
+    int xStart = self->_wave->xBuf(beginIndex);
+    QColor mainColor = self->_wave->palette().color(QPalette::WindowText);
+    int xEnd = self->_wave->xBuf(endIndex);
+    WaveRangeInfo olderRangeInfo = self->_wave->rangeInfo(xStart - 2);
+    WaveRangeInfo oldRangeInfo = self->_wave->rangeInfo(xStart - 1);
+
+    for (int x = xStart; x <= xEnd; x++)
+    {
+        const WaveRangeInfo &info = self->_wave->rangeInfo(x);
+        if (!info.isValid())
+        {
+            olderRangeInfo.clear();
+            oldRangeInfo.clear();
+            continue;
+        }
+
+        if (!oldRangeInfo.isValid())
+        {
+            oldRangeInfo = info;
+        }
+
+        if (!olderRangeInfo.isValid())
+        {
+            olderRangeInfo = oldRangeInfo;
+        }
+        int mid = oldRangeInfo.midvalue();
+        int min = MIN_VAL(olderRangeInfo.min, MIN_VAL(oldRangeInfo.min, info.min));
+        int max = MAX_VAL(olderRangeInfo.max, MAX_VAL(oldRangeInfo.max, info.max));
+        min -= self->_wave->lineWidth();
+        max += self->_wave->lineWidth();
+
+        drawColorGradationVLine(painter, x, min, max, mid, mainColor);
+
+        olderRangeInfo = oldRangeInfo;
+        oldRangeInfo = info;
+    }
 }
