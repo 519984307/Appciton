@@ -189,13 +189,10 @@ void ECGTrendWidget::showEvent(QShowEvent *e)
 void ECGTrendWidget::setTextSize(void)
 {
     QRect r = this->rect();
-    r.adjust(nameLabel->width(), 0, 0, 0);
+    r.adjust(nameLabel->width(), 0, -_hrBeatIcon->width(), 0);
     // 字体。
-//    int fontsize = fontManager.adjustNumFontSizeXML(r);
-//    fontsize = fontManager.getFontSize(fontsize);
     int fontsize = fontManager.adjustNumFontSize(r, true);
     QFont font = fontManager.numFont(fontsize, true);
-//    font.setStretch(105); // 横向放大。
     font.setWeight(QFont::Black);
 
     _hrValue->setFont(font);
@@ -218,7 +215,6 @@ ECGTrendWidget::ECGTrendWidget() : TrendWidget("ECGTrendWidget"),
 {
     // 开始布局。
     _hrBeatIcon = new QLabel();
-    _hrBeatIcon->setFixedSize(24, 24);
     _hrBeatIcon->setPixmap(QPixmap());
 
     _hrValue = new QLabel();
@@ -226,10 +222,10 @@ ECGTrendWidget::ECGTrendWidget() : TrendWidget("ECGTrendWidget"),
     _hrValue->setText(InvStr());
 
     QHBoxLayout *hlayout = new QHBoxLayout();
-    hlayout->setMargin(4);
+    hlayout->setMargin(0);
     hlayout->setSpacing(0);
-    hlayout->addWidget(_hrValue);
-    hlayout->addWidget(_hrBeatIcon);
+    hlayout->addWidget(_hrValue, 6);
+    hlayout->addWidget(_hrBeatIcon, 1);
 
     contentLayout->addLayout(hlayout, 7);
 
