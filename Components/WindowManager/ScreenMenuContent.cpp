@@ -216,6 +216,7 @@ void ScreenMenuContent::onComboxIndexChanged(int index)
             return;
         }
         layoutManager.setUFaceType(type);
+#ifndef HIDE_SCREEN_LAYOUT
         d_ptr->layoutCbo->blockSignals(true);
         if (type == UFACE_MONITOR_BIGFONT)
         {
@@ -226,6 +227,7 @@ void ScreenMenuContent::onComboxIndexChanged(int index)
             d_ptr->layoutCbo->setCurrentIndex(ScreenMenuContentPrivate::SCREEN_LAYOUT_STANDARD);
         }
         d_ptr->layoutCbo->blockSignals(false);
+#endif
     }
     else if (cbo == d_ptr->layoutCbo)
     {
