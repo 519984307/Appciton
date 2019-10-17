@@ -428,7 +428,7 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     // 刻度线
     for (int i = 0; i <= SCALE_NUM; i++)
     {
-        int offset = (_info.yBottom - _info.yTop) / 6 * i + _info.yTop;
+        int offset = (_info.yBottom - _info.yTop) / SCALE_NUM * i + _info.yTop;
         barPainter.setPen(QPen(QColor(100, 100, 100, 200), 1, Qt::SolidLine));
         barPainter.drawLine(_info.xHead, offset, _info.xTail, offset);
         barPainter.setPen(QPen(_color, 1, Qt::SolidLine));
