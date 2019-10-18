@@ -1,11 +1,7 @@
 ID,ChineseSimplified,English
-LanguageNameEnglish,英文,English
-LanguageNameChinese,中文,Chinese
-LanguageNameLocal,简体中文,English
 STAnalysize,ST段分析,ST Analysize
 SystemMaintenance,维护,Maintenance
 SystemMaintenanceDesc,维护,Maintenance
-iDMBoard,iDMBoard,iDMBoard
 CompileTime,编译时间,Compile Time
 ChannelPressureEntitle1,压力标名1,Pressure Entitle1
 ChannelPressureEntitle2,压力标名2,Pressure Entitle2
@@ -13,7 +9,6 @@ Adult,成人,Adult
 Pediatric,小儿,Pediatric
 Neonate,新生儿,Neonatal
 AlarmLimit,报警限,Alarm Limit
-Other,其它,Other
 Notch,陷波,Notch
 MachineConfigIsUpdatedNow,机器配置现在已经更新。,The machine configuration has been updated.
 IsRebootMachine,是否重启机器? ,Do you want to restart the machine?
@@ -37,8 +32,6 @@ UserFaceFullScreen,ECG全屏,ECG Full Screen
 UserFaceOxyCRG,呼吸氧合图,OxyCRG
 UserFaceTrend,趋势,Trend
 UserFaceBigFont,大字体,Big Font
-UserFaceCustom,自定义,Custom
-UserFaceUnknow,未知,Unknow
 ECG,ECG,ECG
 HR,HR,HR
 HR_PR,HR/PR,HR/PR
@@ -109,7 +102,6 @@ RR,RR,RR
 BR,BR,BR
 RR_BR,RR/BR,RR/BR
 Close,关闭,Close
-Back,后退,Back
 PatientID,病人ID,ID
 PatientType,病人类型,Type
 PatientSex,病人性别,Sex
@@ -121,11 +113,8 @@ PatientWeight,体重,Weight
 PatientHeight,身高,Height
 PatientMenu,病人,Patient
 ECGLeadMode,导联模式,Lead Mode
-ECGDisplayMode,显示模式,Display Mode
 ECGCalcLead,计算导联,Calc. Lead
-ECGBandwidth,带宽,Bandwidth
 ECGGain,增益,Gain
-ECGPacemaker,起搏器,Pacemaker
 ECGSweepSpeed,波形速度,Sweep Speed
 ECGQRSToneVolume,QRS 音量,QRS Volume
 BeatVol,脉搏音量,Beat Volume
@@ -140,7 +129,6 @@ ArrhythmiaThresholdMenuDesc,心律失常阈值,"Arrh,Threshold"
 Arrhythmia,心律失常 >>,Arrhythmia >>
 ECGPaceDetection,起搏检测,Pace Detection
 ECG12LPaceMarker,12导起搏标记,12L Pace maker
-SelfLearn,自学习,Self Learn
 Asystole,停搏时间,Asystole
 HeartPause,暂停时间,Heart Pause
 Tachycardia,心动过速,Tachy cardia
@@ -156,26 +144,21 @@ STMenu,ST,ST
 AverageTime,平均时间,Average Time
 Normal,正常,Normal
 MaxSensitivity,高灵敏,High
-SPO2Sensitivity,灵敏度,Sensitivity
 FastSat,快速SpO₂,Fast SAT
 ConfigEditSpO2Menu,SpO₂,SpO₂
 SPO2SmartPulseTone,智能脉搏音,Smart Pulse Tone
 ConfigEditIBPMenu,有创血压,IBP
 SPO2SweepSpeed,波形速度,Sweep Speed
 SPO2PRDisplay,脉率显示,PR Display
-SPO2SmartPluseTone,智能脉搏音,Smart Pulse Tone
 SPO2Menu,SpO₂,SpO₂
 RESPSweepSpeed,波形速度,Sweep Speed
 RESPApneaTime,窒息时间,Apnea Time
-RESPZoom,缩放,Zoom
-RESPLead,Resp导联,Resp Lead
 RESPMenu,Resp,Resp
 RESPWaveMode,Resp波形模式,Resp Wave Mode
 RESPCurve,曲线,Curve
 RESPFilled,填充,Filled
 RRLow,RR低,RR Low
 RRHigh,RR高,RR High
-RESPAutoActivation,Resp激活,Resp Automatic Activation
 EnterPassthroughMode,进入透传模式,Enter Passthrough Mode
 ExitPassthroughMode,退出透传模式,Exit Passthrough Mode
 SwitchPassthroughModeFail,切换透传模式失败,Switch Passthrough Mode Fail
@@ -206,12 +189,10 @@ InflationPressure,充气压力,Inflation Pressure
 OverpressureProtect,过压保护,Over Pressure Protect
 NIBPPressureControlModelEnterFail,进入压力控制模式失败,Pressure Control Enter Fail
 NIBPModuleDisable,NIBP模块禁用,NIBP Module Disable
-CO2ApneaTime,窒息时间,Apnea Time
 CO2SweepSpeed,波形速度,Sweep Speed
 CO2WaveMode,CO₂波形模式,CO₂ Wave Mode
 CO2Curve,曲线,Curve
 CO2Filled,填充,Filled
-CO2Zoom,缩放,Zoom
 CO2FiCO2Display,FiCO₂显示,FiCO₂ Display
 O2Compensation,O₂补偿(%),O₂ Compensation(%)
 N2OCompensation,N₂O补偿(%),N₂O Compensation(%)
@@ -237,7 +218,6 @@ ApneaStimulationMenu,窒息唤醒,Apnea Stimulation
 ApneaStimulationMenuDesc,窒息唤醒,Apnea Stimulation
 SelfTest,自测,Self Test
 VibrationIntensity,震动强度,Vibration Intensity
-Stop,停止,Stop
 AGMenu,AG,AG
 AGSweepSpeed,波形速度,Sweep Speed
 IBPMenu,IBP,IBP
@@ -305,7 +285,6 @@ TEMPTDHigh,Temp差高,ΔT High
 TEMP1SensorOff,Temp1探头脱落,Temp1 Sensor Off
 PrintSettingMenu,打印设置,Print Setting
 PrintSettingMenuDesc,打印设置,Print Setting
-ClearPrintTask,清除打印任务,ClearPrintTask
 Continous,连续,Continous
 TEMP2SensorOff,Temp2探头脱落,Temp2 Sensor Off
 TEMPSensorOffAll,Temp探头全部脱落,All Temp Sensor Off
@@ -319,7 +298,6 @@ TEMPCommunicationStop,Temp通信中断,Temp Communication Stop
 celsius,℃,℃
 fahrenheit,℉,℉
 percent,%,%
-Defaults,恢复默认值,Defaults
 SureAllAlarmDefaults,"所有报警设置将恢复默认值,您确定进行吗?",All alarm settings will reset to the defaults. Are you sure to continue?
 SureAllDataErase,"所有历史数据会被擦除,您确定进行吗?","All historical data will be erased,Are you sure to continue?"
 AlarmSettingUp,报警限设置,Alarm Setting Up
@@ -332,20 +310,12 @@ PhyAlarmTriggerPrint,生理报警触发打印,Phy. Alarm Trigger Print
 CodeMarkerTriggerPrint,Code Marker触发打印,Code Marker Trigger Print
 NIBPReadingTriggerPrint,NIBP快照触发打印,NIBP Snapshot Trigger Print
 WaveFreezeTriggerPrint,波形冻结触发打印,Wave Freeze Trigger Print
-PrintNumOfTraces,打印波形数量,Number Of Print Traces
-PrintAlarmTriger,报警触发,Alarm Trigger
-Print12LeadFormat,12导格式,12-Lead Format
 PrintSetup,打印设置,Print Setup
 WaveLength,波形长度,Wave Length
 SystemAlarmVolume,报警音量,Alarm Audio Volume
 MinimumALarmVolume,最低报警音量,Minimum Alarm Volume
 DefaultAlarmVolume,默认报警音量,Default Alarm Volume
-SystemAlarmMuteTime,报警音暂停,Alarm Mute Time
 SystemBrightness,屏幕亮度,Brightness
-LTAAlarm,生命报警,LTA Alarm
-AlarmSource,报警源,Alarm Source
-SystemMenu,系统,System
-PatientMenuDesc,病人设置,Patient Setting
 ECGMenuDesc,ECG,ECG
 STMenuDesc,ST,ST
 SPO2MenuDesc,SpO₂,SpO₂
@@ -353,25 +323,16 @@ RESPMenuDesc,Resp,Resp
 CO2MenuDesc,CO₂,CO₂
 IBPMenuDesc,IBP,IBP
 COMenuDesc,C.O.,C.O.
-RESPAndCO2Menu,Resp和CO₂,Resp & CO₂
-RESPAndCO2MenuDesc,Resp和CO₂,Resp & CO₂
 TEMPMenu,Temp,Temp
 TEMPMenuDesc,Temp,Temp
 AGMenuDesc,AG,AG
-AlarmSettingMenuDesc,报警,Alarm
-PrintSetupDesc,打印,Print
-SystemMenuDesc,系统,System
-SystemStatusDesc,系统状态,System Status
-SystemInfo,系统信息,System Info
 SystemInfoSetting,系统信息,System Info
 ErrorLog,错误日志,Error Log
-SystemStatus,状态,Status
 SomeLimitAlarmDisabled,有超限报警被关闭,Some Limit Alarms Disabled
 PowerupRecorderPressed,前面板打印键短路,Front Panel Record Btn Stuck
 PowerupCommunicationStop,前面板通信中断,Front Panel Comm. Stop
 WiFiMenu,无线网络,Wifi
 WiFiMenuDesc,无线网络,Wifi
-Switch,开关,Switch
 Add,添加,Add
 Edit,编辑,Edit
 Delete,删除,Delete
@@ -382,7 +343,6 @@ EnglishYESChineseSURE,确定,Yes
 No,否,No
 Disable,禁用,Disable
 Enable,启用,Enable
-Return,返回,Return
 AccessPointProfile,接入点配置,Access Point Profile
 ConfiguredAccessPointProfiles,接入点配置,Configured Access Point Profiles
 SelectAccessPoint,接入点,Access Point
@@ -402,17 +362,6 @@ Mac,Mac,Mac
 LocalIp,本地IP,Local IP
 WiFiAP,SSID,SSID
 EncryptType,加密类型,Encrypt Type
-Signal,信号,Signal
-Status,状态,Status
-Connecting,连接中,Connecting
-Connected,已连接,Connected
-ConnectSuccess,连接成功,Connect Success
-ConnectFailure,连接失败,Connect Failed
-NoLinkAdapter,没有无线网卡,Wireless Adapter Off
-PwdError,密码错误,Password Error
-AuthTimeout,认证超时,Authentication Timeout
-PwdChanged,密码已更改,Password Changed
-Disconnected,网络已断开,Network Disconnected
 GetIPFailed,获取动态IP失败,Get Dymatic IP Failed
 SubnetMask,子网掩码,Subnet Mask
 GateWay,网关,GateWay
@@ -426,7 +375,6 @@ Female,女性,Female
 PatientAge,病人年龄,Age
 PatientName,病人姓名,Name
 PatientInformation,病人信息,Patient Information
-GetPatientInfo,病人信息获取,Get Patient Info
 RelievePatient,解除病人,Discharge Patient
 Discharge,解除病人,Discharge
 isRelievePatient,是否解除病人,Whether to discharge patient?
@@ -434,10 +382,7 @@ CleanPatientData,清除当前病人数据,Clean Current Patient Data
 isCleanPatient,是否清除当前病人数据,Whether to clean the current patient data?
 WhetherStandby,是否进入待机？,Whether to enter the standby machine？
 RemoveAndRecePatient,"解除当前病人,接收新病人?",Release the current patient and receive new patient?
-ApplicationDataToReceivingPatients,将监护仪中已有数据应用于将被接收的病人？,Application data to receiving patients?
-PatientManagement,病人管理,Patient Management
 ScreenSetup,界面布局,Layout
-WindowLayout,界面布局,Window Layout
 ResetLayout,重置布局,Reset Layout
 DefaultLayout,默认布局,Default Layout
 SaveLayout,保存布局,Save Layout
@@ -523,21 +468,14 @@ _180sec,180 秒,180 sec
 _210sec,210 秒,210 sec
 _240sec,240 秒,240 sec
 sec,秒,second
-PatientData,病人数据,Patient Data
 DataReviewMenu,数据回顾,Data Review
 DataReviewMenuDesc,数据回顾,Data Review
-NIBPData,NIBP数据,NIBP Data
-Interval,间隔,Interval
 Print,打印,Print
-SummaryDesc,摘要描述,Summary Description
-SummaryData,摘要数据,Summary Data
-AlarmList,报警列表,Alarm List
 AlarmDescription,报警描述,Alarm Description
 PhyAlarmList,生理报警,Physiological Alarm
 TechAlarmList,技术报警,Technical Alarm
 AlarmTime,时间,Time
 AlarmPriority,优先级,Priority
-AlarmInfo,信息,Message
 High,高,High
 Medium,中,Med
 Low,低,Low
@@ -832,13 +770,9 @@ CommunicationFail,通讯失败,Communication fail
 WriteFail,写入失败,Write Fail
 InvalidImageFormat,无效图片格式,Invalid image format
 ImageTooLarge,"图片文件过大,图片像素不能超过:","Image too large,picture pixels should not exceed :"
-Age,年龄,Age
 FoundLogoFile,找到Logo文件,Found logo file
-UpdateSystemLogo,更新系统,Update system logo
 ServiceSystem,服务系统,Service System
 ServiceVersion,版本,Version
-ServiceCPUTemp,CPU温度,CPU Temp
-iDMVersion,iDM,iDM
 ECGSwVersion,ECG软件版本,ECG Software Version
 ECGHwVersion,ECG硬件版本,ECG Hardware Version
 ECGBootloader,ECG Bootloader,ECG Bootloader
@@ -853,62 +787,19 @@ SPO2Bootloader,SpO₂ Bootloader,SpO₂ Bootloader
 TEMPSwVersion,Temp软件版本,Temp Software Version
 TEMPHwVersion,Temp硬件版本,Temp Hardware Version
 TEMPBootloader,Temp Bootloader,Temp Bootloader
-iDMBoardVersion,iDMBoard,iDMBoard
 PRT48SwVersion,PRT48软件版本,PRT48 Software Version
 PRT48HwVersion,PRT48硬件版本,PRT48 Hardware Version
 PRT48Bootloader,PRT48 Bootloader,PRT48 Bootloader
 SourceOfCO2,来源CO₂,Source of CO₂
 AutoOfCO2,自动(CO₂),Auto(CO₂)
-PDVersion,PD,PD
-COREVersion,CORE,CORE
 VersionReturn,返回,Return
-FactorySystem,工厂模式,Factory System
-PDModuleTest,PD模块测试,PD Module Test
-ModuleCfg,模块配置,Module Config
-SupervisorSystem,超级配置系统主菜单,Supervisor System Main Menu
 SupervisorModifyConfig,修改配置,Modify Config
-SupervisorExitSave,退出 & 保存,Exit & Save Config
-SupervisorExitNotSave,退出不保存,Exit & Not Save Config
-SupervisorDeviceIdentifier,设备标识符,Device Identifier
-SupervisorDefaultPatType,默认病人类型,Default Patient Type
 Password,密码,Password
 SupervisorDel,删除,Del
 SupervisorOK,确定,OK
-NoPasscodeEntered,无密码输入,No PassWord Entered
-InCorrectPasscode,密码错误,Incorrect Password Entered
-SupervisorExportImport,导入/导出,Import/Export
-SupervisorExport,导出,Export
-SupervisorImport,导入,Import
-SupervisorExportingPleaseWait,导出中……,"Exporting, please wait!"
-SupervisorImportingPleaseWait,导入中……,"Importing, please wait!"
-SupervisorPrint,打印,Print
-SupervisorPrintConfig,打印配置,Print Config
-SupervisorRestore,恢复出厂设置,Restore Defaults
-SupervisorRestoreDefaultConfig,加载默认配置,Restore to factory default configurations
-SupervisorGeneralMenu,常规,General
 SupervisorGeneralMenuDesc,常规设置,General Setting
 SupervisorNotchFilter,工频,Notch Filter
-SupervisorLimbFrequency,肢体导联带宽,Limb/chest Leads ECG Bandwidth
 Supervisor12lFrequency,12导带宽,12-Lead ECG Bandwidth
-SupervisorStartOnHRAlarm,HR报警时启动测量,Measure On HR ALarm
-SupervisorStartOnMeasureFail,测量失败再次测量,Measure On Previous Failed
-SupervisorSTATFunction,STAT功能,STAT Function
-SupervisorAdultInitialCuff,成人初始袖带压,Adult Initial Cuff Inflation
-SupervisorPrediatricInitialCuff,小儿初始袖带压,Pediatric Initial Cuff Inflation
-SupervisorNeonatalInitialCuff,新生儿初始袖带压,Neonate Initial Cuff Inflation
-SupervisorNIBPMeasureMode,NIBP测量模式,NIBP Measure Mode
-SupervisorNIBPAutoInterval,自动间隔,NIBP Auto Interval
-SupervisorLocalMenu,本地化,Locale
-SupervisorLocalMenuDesc,本地化设置,Locale Setting
-SupervisorDisplayMenu,显示,Display
-SupervisorDisplayMenuDesc,显示设置,Display Setting
-SupervisorLanguage,语言,Default Language
-SupervisorOtherMenu,其他,Other
-SupervisorNIBPUnit,NIBP单位,NIBP Unit
-SupervisorCO2Unit,CO₂单位,CO₂ Unit
-SupervisorTempUnit,Temp单位,Temp Unit
-SupervisorWeightUnit,体重单位,Weight Unit
-SupervisorHeightUnit,身高单位,Height Unit
 Weight,体重,Weight
 Height,身高,Height
 ID,病人ID,ID
@@ -923,9 +814,6 @@ Magenta,品红色,Magenta
 Orange,橙色,Orange
 Cyan,蓝绿色,Cyan
 Purple,紫色,Purple
-SupervisorAudioMenu,声音,Audio
-SupervisorAudioMenuDesc,声音设置,Audio Setting
-SupervisorVoiceVolume,语音提示音量,Default Voice Prompt Tone
 AlarmPause,报警暂停,Alarm Pause
 AlarmOff,报警关闭,Alarm Off
 AlarmAudioOff,报警音关闭,Alarm Audio Off
@@ -934,49 +822,27 @@ AlarmOffPromptMechanism,报警关闭提示机制,Alarm Off Prompt Mechanism
 EnableAlarmAudioOff,使能报警声音关闭,Enable Alarm Audio Off
 EnableAlarmOff,使能报警关闭,Enable Alarm Off 
 AlarmOffAtPowerOn,开机时报警关闭,Alarm Off At Power On
-SupervisorLocalPort,本地端口,Local Port
-SupervisorServerIP,服务器IP,Server IP
-SupervisorServerPort,服务器端口,Server Port
 Event,事件,Event
 Time,时间,Time
 Date,日期,Date
 SupervisorTimeAndDataMenu,时间和日期,Date Time
-SupervisorTimeAndDataMenuDesc,时间和日期设置,Time And Date Setting
-SupervisorYear,年,Year
-SupervisorMonth,月,Month
-SupervisorDay,日,Day
-SupervisorHour,时,Hour
-SupervisorMinute,分,Minute
-SupervisorSecond,秒,Second
 SupervisorDateFormat,日期格式,Date Format
 YearMonthDay,年/月/日,YYYY/MM/DD
 MonthDayYear,月/日/年,MM/DD/YYYY
 DayMonthYear,日/月/年,DD/MM/YYYY
 SupervisorTimeFormat,时间格式,Time Format
 SupervisorDisplaySec,显示秒,Display Second
-SupervisorCodeMarker,Code Marker,Code Marker
 Monitor,监护,Monitor
 Diagnostic,诊断,Diagnostic
 Surgery,手术,Surgery
-SupervisorCodeMarkerDesc,Code Marker,Code Marker
-SupervisorMonitorLead,监护模式导联,Default ECG Lead In Monitor Mode
-SupervisorLeadNameConvention,导联命名协议,ECG Lead Convention
-SupervisorDisplayUserPrompt,显示用户提示信息,Display User Prompt
-SupervisorDisplayAnalysisKey,显示分析按键,Display Analyze Key
-SupervisorPhyAlarmVisualIndicator,生理报警视觉信号,Physiological Alarm Visual Indicator
-DisplayFixRateKey,固定速率,Fixed Rate Pacing
 TriggerPrintMenu,触发打印,Trigger Print
 TriggerPrintMenuDesc,触发打印,Trigger Print 
-SupervisorAutoPrint30Jtest,自动打印30J自测结果,Print 30J Self-test Results
 SupervisorAutoPrint12L,打印12导,Automatic Printing Of 12-Lead Report
 Supervisor12LMenu,12导,12-Lead
 Supervisor12LMenuDesc,12导,12-Lead
 Print12LSnapshotFormat,12导快照打印格式,12-Lead Snapshot Print Format
-PDFReportFormat,12导PDF报告格式,12-Lead PDF Report Format
 Cabrera,卡布瑞拉,Cabrera
-ECG12LDisplayFormat,显示格式,12-Lead Display Format
 SupervisorTimeWindow2x6PDF,2x6PDF格式时间窗口,2x6 12-Lead Report Time Interval
-SupervisorAutoTransforByWifi,通过Wifi自动传输,Automatic 12-Lead ECG Transmission
 SupervisorTransforFileFormat,传输文件格式,12-Lead File Format
 RealTimePrintTopLead,实时打印顶部导联,Real-Time Print Top Lead
 RealTimePrintMidLead,实时打印中部导联,Real-Time Print Middle Lead
@@ -986,20 +852,7 @@ Warn,警告,Warning
 SureSafePopUpUDisk,是否安全弹出U盘?,Whether to eject the USB flash disk safely?
 WarningNoUSB,没有找到U盘，请检查！,"Not find U disk, please check!"
 WarnLessUSBFreeSpace,U盘空间不足，请检查！,"U disk free space not enough, please check!"
-WarningNoImportFile,导入文件不存在，请检查！,"Import file does not exist, please check!"
-WarningImportFileError,导入文件内容错误:,Import file error:
-WarningLoadDefaultCfgFail,加载默认配置失败，请检查！,"Load default Config fail, please check!"
-FileIsExistContinue,文件存在，是否继续？,"File exists,continue?"
-MD5NOTMATCH,MD5不匹配,MD5 Not Match
-ORIGINALMD5,原始的MD5,Original MD5
-CALCULATEDMD5,计算的MD5,Calculated MD5
-MD5NOFIND,MD5没有找到,MD5 No Find
 Prompt,提示,Prompt
-PromptCfgNotSave,配置文件没有保存，要保存吗？,"Config file is not saved, can you save?"
-PromptExportOK,导出配置成功！,Export Config OK!
-PromptImportOK,"配置已导入, 可在修改配置中查看!","Config Imported, Press Modify Config to View!"
-PromptLoadDefaultCfgOK,"默认配置已加载, 可在修改配置中查看!","Defaults Restored, Press Modify Config to View!"
-ComfirmLoadDefaultCfg,确定恢复默认配置？,Do you Comfirm that restore default config?
 WaveformSources,波形资源,Waveform Sources
 ParameterSources,参数资源,Parameter Sources
 Replace,替换,Replace
@@ -1027,7 +880,6 @@ TransferDisconnect,USB设备非法拔出,U-disk disconnected abnormally
 NotDisconnectUSB,不要断开USB设备,Do not disconnect the U-disk
 RemoveUSB,传输完成，可以移除USB设备了,"Transfer is done, you can remove the U-disk safely"
 USB,USB,USB
-PrintSelectedRescue,打印选择的营救事件,Select Rescue Incident to Print
 TransferSelectedRescue,传输选择的营救事件,Select Rescue Incident to Transfer
 TransferType,传输类型,Transfer Type
 TransferSelect,传输选择项,Transfer Selection
@@ -1035,12 +887,8 @@ TransferAll,传输所有,Transfer All
 EraseSelectedRescueData,是否删除选择的营救数据？,Whether to erase selected rescue data?
 EraseSelect,擦除选择项,Erase Select
 EraseAll,擦除全部,Erase All
-UpDownPage,上下翻页,Up Down Page
-LeftRightPage,左右翻页,Left Right Page
-IncidentMove,事件移动,Incident Move
 Set,设置,Set
 Incident,事件,Incident
-WaveInfo,详细信息,Wave Info
 Type,类型,Type
 Level,级别,Level
 Upper,过高,Upper
@@ -1055,35 +903,10 @@ FreezeTime,冻结时间,Freeze Time
 TabularTrendsPrint,趋势表打印,Tabular Trends Print
 GraphicTrendsPrint,趋势图打印,Graphic Trends Print
 EventTime,事件时间,Event Time
-Gender,性别,Gender
 WaveFreeze,波形冻结,Wave Freeze
 All ,全部,All
 Hint ,提示,Hint
-Interval,间隔,Interval
-Rescue,单个营救,Currect Rescue
-AllRescue,所有营救,All Rescue
-RangeRescue,营救范围,Range Rescue
-CurrentIncident,当前营救事件,Current Incident
-AllIncidents,所有营救事件,All Incidents
 SelectIncidents,选择营救事件,Select Incidents
-Selected,当前选择,Selected
-IncidentLog,事件日志,Incident Log
-AllSnapshots,所有快照,All Snapshots
-RescueData,营救数据,Rescue Data
-AllHeader,所有营救头部信息,Heads of All Incidents
-More,更多,More
-SelectedHeadAndSnapshot,选择营救事件的头部和快照,Head and Snapshots of Selected Incidents
-SelectedLogs,选择营救事件的日志,Logs of Selected Incidents
-AllSnapshotIncident,所有快照,Snapshots of All Incidents
-PrintOption,打印选项,Print Option
-PrintIncident,打印营救事件,Print Incident
-SelectIncidentsToPrint,选择需要打印的营救事件,Select Incidents to Print
-PrintEventLog,打印事件记录,Print Event Log
-SelectSnapshotsToPrint,选择快照打印,Select Snapshots to Print
-SelectSnapshotsToTransfer,选择快照传输,Select Snapshots to Transfer
-SelectSingleIncidentToSelectSnapshots,选择一个营救事件以选择快照！,Select Single Incident to Select Snapshots to print!
-PrintSnapshot,打印快照,Print Snapshot
-PatTrendData,病人趋势数据,Patient Trend Data
 HistoryTrend,历史回顾,History Review
 HistoryDataList,历史数据,History Data
 SelectHistoryData,选择历史数据,Select Data
@@ -1091,8 +914,6 @@ TrendTable,趋势表,Trend Table
 Page,翻页,Page
 TrendGraph,趋势图,Trend Graph
 Scroll,滚动,Scroll
-PreviousEvent,上个事件,Prv Event
-NextEvent,下个事件,Next Event
 EventReview,事件回顾,Event Review
 OxyCRGEventReview,呼吸氧合回顾,OxyCRG Review
 TrendTableSet,趋势表设置,Trend Table Set
@@ -1111,80 +932,37 @@ UpRuler,上标尺,Up Ruler
 Column,显示列,Column
 Trend,趋势,Trend
 Summary,概要,Summary
-SummaryReportComplete,概要报告完成！,Summary Report Complete!
-ExportToUSB,导出到U盘,Export to U-Disk
 Clear,清除,Clear
 ClearAllRescueData,是否清除所有营救数据？,Whether to clear all the rescue data?
-ECGRhythm,ECG节率,ECG Rhythm
-ECGForeAnalysis,ECG前台分析,Foreground ECG Analysis
-ShockDelivery,释放电击,Shock Delivery
 CheckPatient,检查病人,Check Patient
-PacerStartup,起搏开始,Pacer Startup
 NIBPReading,NIBP快照,NIBP Snapshot
 PhyAlarm,生理报警,Phy. Alarm
-AlarmMute,报警静音,Mute
-RecorderAction,记录仪,Recorder Action
 PrinterCommunicationStop,打印机通信中断,Printer Communication Stop
 PrinterSendCommunicationStop,打印机发送通信中断,Printer Send Communication Stop
 PrinterDoorOpened,打印机仓门未关,Printer Door Opened
 PrinterOutOfPaper,打印机缺纸,Printer Out Of Paper
 PrinterOverHeating,打印头过热,Printer Over Heating
 PrinterFault,打印机故障,Printer Fault
-PacerDisabled,起搏失效,Pacer Disabled
 ReplaceBattery,替换电池,Replace Battery
 BatteryDisconnected,电池未连接,Battery Disconnected
 BatteryError,电池错误,Battery Error
 BatteryCommFault,电池通信故障,Battery Comm Fault
 BatteryInfo,电池信息,Battery Info
-BatteryCapacityIcons,电池容量图标,Battery Capacity Icons
-SmtpServer,SMTP服务器,SMTP Server
-SmtpServerPort,SMTP 服务端口,SMTP Server Port
-Username,用户名,Username
 Hardware,硬件,Hardware
-ConnectionSecurity,连接安全性,Connection Security
-ConfiguredMailRecipients,配置邮件接收者,Configured Mail Recipients
-Mail,邮件,Mail
-MailSetting,邮件设置,Mail Setting
-RecipientInfoEdit,接收者信息编辑,Recipient Info Edit
 Name,姓名,Name
-EmailAddress,邮件地址,E-mail Address
-InvalidEmailAddress,无效邮件地址,Invalid E-mail Address
-Confirm,确认,Confirm
-EMAIL,邮件,E-mail
-Transfer,传输,Transfer
-MailCurrentRescue,邮件传送当前营救,Mail Current Rescue
-MailSelectReport,邮件传送选择快照,Mail Select Rescue
-UsbCurrentRescue,U盘传送当前营救,USB Current Rescue
-UsbCurrentReport,U盘传送选择快照,USB Select Report
 TransferECG12LeadByUSB,USB传输12导,Transfer 12 Lead ECG by USB
 TransferECG12LeadByWIFI,wifi传输12导,Transfer 12 Lead ECG by WIFI
 TransferECG12LeadComplete,12导传输完成,Transfer 12 Lead ECG Complete
-ECG12LEADECGSNAPSHOT,12导快照,12 LEAD ECG SNAPSHOT
-IncidentIdentificationNumber,营救事件标识号,Incident Identification Number
-ECG12LeadAcquired,12导获取时间,12 Lead Acquired
-ECG12LeadRescueStarttime,营救开始时间,Rescue Start Time
 SucceedRescueDataByWIFI,成功传送12导联邮件,Succeed to Transfer Email by WIFI
 SucceedErrorLogByUSB,成功通过U盘发送错误日志,Succeed to Transfer Errorlog by USB
-PleaseseletSnapShot,请选择快照,Select SnapShots
-PleaseseletPrint,请选择打印,Select Snapshots to Print 
-ECG12LeadAcquisitionHalted,12导获取取消,12 Lead Acquisition Halted
-USBTransferHasCanceled,12导优盘传送取消,USB Transfer Has Canceled
-ThisSnapShotNoData,此快照没有数据,There is no data in this SnapShot
-ECG12LeadSnapshot,十二导联快照,ECG 12 Lead Snapshot List
 ScreenCapture,截屏,Screen Capture
 CaptureSuccess,截屏成功,Capture screen success.
 CaptureFail,截屏失败,Capture screen fail.
-E-Mail,发送邮件,E-Mail
-NumID,序号,Num
-MailAddress,邮箱地址,Mail Address
-E-mailAddressList,邮箱地址列表,E-mail Address List
 ECGGain,ECG增益,ECG Gain
 Printspeed,打印速度,Print speed
 SerialNum,序列号,Serial Number
 SWVersion,软件版本,Software Version
 CodeMarker,Code Marker,Code Marker
-CodeMarkerSnapshot,CodeMarker Snapshot,CodeMarker Snapshot
-CodeMarkerDefault,Code Marker,Code Marker
 CodeMarker1,CPR,CPR
 CodeMarker2,EPI,EPI
 CodeMarker3,Atrop,Atrop
@@ -1280,32 +1058,18 @@ Channel,通道,Channel
 SmartPluseTone,智能脉搏音,Smart PluseTone
 WaveVelocity,波形速度,Wave Velocity
 RespMenuDesc,Resp菜单设置,Resp
-ModuleControl,模块控制,Module Control
-HIGH,高,HIGH
-NORMAL,中,NORMAL
-LOW,低,LOW
 OFF,关闭,OFF
 ON,打开,ON
 NIBPInitialPressure,初始袖口气压,NIBP Initial Pressure
 IntervalTime,自动间隔时间,Interval Time
 ExportFileCompleted,导出文件完成,Export File Completed
-ExportFileFailed,导出文件失败,Export File Failed
 ExportImport,导出/导入,Export/Import
 ExportImportDesc,导出/导入,Export/Import
 ExportImportConfig,导出/导入配置,Export/Import Config
 Export,导出,Export
 Import,导入,Import
-NotRepeated,取消覆盖,Not Repeated
 Repeated,覆盖,Repeated
-AllNotRepeated,全部取消覆盖,All Not Repeated
-AllRepeated,全部覆盖,All Repeated
 IfSelectTheSameNameFile,存在同名文件，是否选择覆盖,if select the same name file
-ExportFilefailed,导出失败,Export File Failed
-ExportFileCompleted,导出文件完成,Export File Completed
-NotFoundDeviceNode,未发现U盘节点，请插入U盘,Not Found Device Node
-NotFoundUDisk,未发现U盘，请插入U盘,Not Found U Disk
-PleaseSelectFiles,请选择文件,Please Select Files
-PleaseAddExportFiles,请增加导出文件,Please Add Export Files
 ImportFileFailed,导入文件失败,Import File failed
 ImportFileMaximum,导入文件数量已达到最大,Import The Number Of Files  Maximum
 OutOfNamingRange,超出命名范围,Out Of Naming Range
@@ -1319,7 +1083,6 @@ IBPModule,IBP,IBP
 CO2Module,CO₂,CO₂
 ECG12LeadsModule,ECG 12导,ECG 12 Leads
 PrinterModule,打印机模块,Printer Module
-HDMIModule,高清晰度多媒体接口模块,HDMI Module
 WIFIModule,WIFI,WIFI
 TouchScreenModule,触摸屏,Touch Screen
 ResistiveScreen,电阻屏,Resistive Screen
@@ -1336,11 +1099,9 @@ AlarmType,报警类型,Alarm Type
 AnalogOutputModule,模拟输出模块,Analog Output Module
 COModule,C.O.,C.O.
 PHASEIN,PHASEIN,PHASEIN
-M601,M601,M601
 MachineConfigModuleMenuDesc,机器配置,Machine Config
 MonitorInfoMenu,监护仪信息,Monitor Info
 RunningTime,运行时间,Running Time
-TemperatureInsideCase,箱内温度,Temperature Inside Case
 BatteryCapacity,电池电量,Battery Capacity
 ProductModel,产品型号,Product Model
 MACAddress,物理地址(MAC),MAC Address
@@ -1355,9 +1116,6 @@ O2Calibrate,氧浓度校准,O₂ Calibrate
 O2CalibrateDesc,氧浓度校准,O₂ Calibrate
 Percent21Calibration,21% 校准,21% Calibrate
 Percent100Calibration,100% 校准,100% Calibrate
-SelectStarterLogo,开机图片,Start Logo
-SelectStarterLogoMenu,开机图片,Starter Logo
-SelectStarterLogoMenuDesc,开机图片设置,Start Logo
 ServiceErrorLogEntrance,错误日志,ErrorLog
 ServiceErrorLogEntranceDesc,错误日志,ErrorLog
 ErrorLogErase,擦除,Erase
@@ -1367,18 +1125,14 @@ ServiceUpdateEntrance,更新,Service Update
 ServiceUpdateEntranceDesc,更新,Service Update
 SoftwareVersion,软件版本,Software Version
 SoftwareVersionMenu,软件版本,Software Version
-SystemSoftwareVersion,版本,Version
 ReleaseVersion,发布版本,Release Version
-PowerManagerSoftwareVersion,电源管理软件版本,Power Manager Software Version
 Uboot,系统引导文件,Uboot
 Kernel,内核,Kernel
 SystemBoardSwVersion,系统板软件版本,System Board Software Version
 SystemBoardHwVersion,系统板硬件版本,System Board Hardwave Version
 SystemboardBootloader,系统板Bootloader,System Board Bootloader
-RecorderModule,记录模块,Recorder Module
 ECGAlgorithmType,ECG算法类型,ECG Algorithm Type
 UserMaintainGeneralMenuDesc,通用,General
-BootAndStandbyLogoVersion,开机标准logo版本,Boot And Standby LogoVersion
 UserMaintainGeneralMenu,通用,General
 AlarmMaintainMenu,报警维护,Alarm Maintain
 AlarmMaintainMenuDesc,报警维护,Alarm Maintain
@@ -1389,18 +1143,10 @@ AlarmOffPromptMechanism,报警关闭提示机制,Alarm Off Prompt Mechanism
 AlarmAudio,报警音,Alarm Audio
 EnableAlarmOff,报警关闭,Enable Alarm Off
 AlarmOffAtPowerOn,接通电源报警,Alarm Off At Power On
-No,否,No
-Yes,是,Yes
 IsPauseMaxAlarm15Min,是否暂停最大报警15分钟,Is Pause Max Alarm 15Min
-forbid,禁止,forbid
-allow,允许,allow
 ReminderTone,提醒音,Reminder Tone
-AllClosed,全部关闭,All Closed
-AllOpened,全部打开,All Opened
 close,关闭,close
 open,打开,open
-openAgain,再次打开,Open Again
-ReminderToneIntervals,提醒音间隔,Reminder Tone Intervals
 H1min,1分钟,1min
 T1,T1,T1
 T2,T2,T2
@@ -1442,7 +1188,6 @@ StopNIBPLeakageDetection,停止无创血压泄露检测,Stop NIBP Leakage Detect
 StopECGModuleCalibration,停止ECG模块校准,Stop ECG Module Calibration
 StopCO2ModuleMaintenance,停止二氧化碳模块,Stop CO₂ Module Maintenance
 StopTouchScreenCalibration,停止触摸屏校准,Stop Touch Screen Calibration
-Cancel,取消覆盖,Cancel
 OthersMaintainMenu,其他,Others
 OthersMaintainMenuDesc,其他,Others
 WaveDrawMode,波形绘画方式,Wave Draw Mode
@@ -1509,11 +1254,7 @@ General,通用,General
 SetConfigName,设置配置项名称,Set Config Name
 GeneralDesc,通用设置,General
 ConfigName,配置名称,Config Name
-AalrmSource,报警源,Aalrm Source
-Ecg1Wave,波形1,ECG1 Wave
-Ecg2Wave,波形2,ECG2 Wave
 ECG1,ECG1,ECG1
-Ecg1Gain,增益,ECG Gain
 QRSVolume,音量,QRS Volume
 ConfigIBPMenu,有创血压,Config IBP
 NotchFilter,陷波滤波器,Notch Filter
@@ -1547,24 +1288,16 @@ FactoryPrinter,打印机,Factory Printer
 FactoryWifi,无线网,Factory Wifi
 FactoryEnthernet,有线网 ,Factory Enthernet
 FactoryBattery,电池 ,Factory Battery
-RefreshRate,更新速率,Refresh Rate
-Note,注释,Note
-RefreshRateUpdatedRebootNow,刷新率已更新，是否现在重启,Refresh Rate Updated Reboot Now
 FactoryDataRecord,数据记录,Data Record
 FactoryDataRecordDesc,数据记录,Data Record
-PDCommData,PD 通信数据,PD Comm Data
 TEMPCalibrateMenuDesc,Temp校准,Temp Calibrate
 TEMPCalibrateMenu,Temp校准,Temp Calibrate
 SystemInfoSettingDesc,系统信息,System Info
 FactoryVersionInfo,版本信息,Version Info
 FactoryVersionInfoDesc,版本信息,Version Info
-SelectStarterLogo,选择开始菜单,Select Starter Logo
 WaitingCalibration,等待校准,Waiting
 Calibrating,正在校准,Calibrating
-TEMPCalibrate,校准,Calibrate
 is,是,is
-TEMP1,Temp1,Temp1
-TEMP2,Temp2,Temp2
 TEMPCalibrateOhm,校准阻值,Resistance
 Ohm,Ω,Ω
 TEMPModuleNotCalibration1,Temp模块通道1未定标,Temp Channel 1 Not Calibration
@@ -1573,8 +1306,6 @@ TEMPModuleDisable,Temp模块禁用,Temp Module Disable
 TEMPCommunicationStop,Temp通信中断,Temp Communication Stop
 TEMPSendCommunicationStop,Temp发送通信中断,Temp Send Communication Stop
 TEMPModuleAbnormal,Temp模块异常,Temp Module Is Abnormal
-TEMPChannel,Temp通道,Temp Channel
-TEMPCalibrate,Temp校准 ,Temp Calibrate
 N2O,N₂O,N₂O
 AA1,自动识别麻醉气体1,AA1
 AA2,自动识别麻醉气体2,AA2
@@ -1593,12 +1324,7 @@ RulerAdjust,标尺调整,Ruler Adjust
 TrendWaveSelect,趋势波形设置,Trend Wave Select
 OxyCRGWidgetSetup,呼吸氧和设置,OxyCRGWidget Setup
 Wave,波形,Wave
-DefaultSetting,缺省设置,Default Setting
-CO2Low,二氧化碳低,CO₂ Low
-CO2High,二氧化碳高,CO₂ High
 AutoRuler,自动标尺,Auto Ruler
-RESPLow,Resp低,Resp Low
-RESPHigh,Resp高,Resp High
 Static,静态,Static
 PageNum,页,Page
 ImportFiles,导入文件,ImportFiles
@@ -1612,7 +1338,6 @@ ConfigEditSpO2MenuDesc,SpO₂设置,SpO₂
 DeleteSelectedWifiProfile,确定删除选择的wifi配置？, Do delete selected wifi profile ?
 ToneVolume,提示音量,Tone Volume
 SoftKeyPatientInfo,病人信息,Patient Info.
-Interface,界面布局,Interface
 Dose,剂量,Dose
 Blood,血型,Blood
 DeleteAll,删除全部,Delete All
@@ -1635,7 +1360,6 @@ ScreenSettingDesc,界面设置,Screen Setting
 CurrentScreen,当前界面,Current Screen
 ScreenLayout,界面布局,Screen Layout
 Standard,标准,Standard
-_12Lead,12 导联,12 Lead
 OxyCRG,呼吸氧合,OxyCRG
 Trend,趋势,Trend
 BigFont,大字体,Big Font
@@ -1648,7 +1372,6 @@ DemoConfigDesc,演示设置,Demo Configuration
 BatteryCalibrationRequired,电池校准请求,Battery Calibration Required
 StartTime,开始时间,Start Time
 EndTime,结束时间,End Time
-HourSystem,时钟系统,Hour System
 PrintLength,打印长度,Print Length
 Hours,时,Hours
 Minutes,分,Minutes
@@ -1664,7 +1387,6 @@ Standby,待机,Standby
 CO2Standby,CO₂待机,CO₂ Standby
 CO2Measure,CO₂测量,CO₂ Measure
 ChooseScreen,界面选择,Screen
-ManualTirgger,手动触发,Manual Tirgger
 ParameterSwitch,参数开关,Para Switch
 eventReview,事件回顾,Event
 NightMode,夜间模式,Night Mode
