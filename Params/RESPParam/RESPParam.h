@@ -151,6 +151,13 @@ public:
     void rrInaccurate(bool isInaccurate);
     bool isRRInaccurate();
 
+    /**
+     * @brief getRRMeasureMaxRange 获取RR的测量范围
+     * @return
+     */
+    int getRRMeasureMaxRange();
+    int getRRMeasureMinRange();
+
 signals:
     void calcLeadChanged(RESPLead lead);
 

@@ -24,6 +24,7 @@
 #include "RESPProviderIFace.h"
 #include "ColorManager.h"
 #include "AlarmSourceManager.h"
+#include "PatientManager.h"
 
 RESPParam *RESPParam::_selfObj = NULL;
 
@@ -565,6 +566,26 @@ void RESPParam::rrInaccurate(bool isInaccurate)
 bool RESPParam::isRRInaccurate()
 {
     return d_ptr->isRRInaccurate;
+}
+
+int RESPParam::getRRMeasureMaxRange()
+{
+    switch (patientManager.getType())
+    {
+    case PATIENT_TYPE_ADULT:
+        return 120;
+    case PATIENT_TYPE_NEO:
+    case PATIENT_TYPE_PED:
+        return 150;
+    default:
+        break;
+    }
+    return -1;
+}
+
+int RESPParam::getRRMeasureMinRange()
+{
+    return 0;
 }
 
 void RESPParam::onPaletteChanged(ParamID id)

@@ -508,6 +508,12 @@ void E5Provider::handlePacket(unsigned char *data, int len)
             rr = InvData();
         }
 
+        // 设置呼吸率的测量范围
+        if (rr > respParam.getRRMeasureMaxRange() || rr < respParam.getRRMeasureMinRange())
+        {
+            rr = InvData();
+        }
+
         respParam.setRR(rr);
         break;
     }
