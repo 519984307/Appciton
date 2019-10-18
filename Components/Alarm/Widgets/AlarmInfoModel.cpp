@@ -14,8 +14,10 @@
 #include "LanguageManager.h"
 #include <QIcon>
 #include <QResizeEvent>
+#include <QDebug>
 
 #define DEFAULT_ROW_HEIGHT (themeManger.getAcceptableControlHeight())
+#define EACH_PAGE_ALARM_COUNT 7    // 一页最大显示数
 
 enum
 {
@@ -29,13 +31,15 @@ class AlarmInfoModelPrivate
 {
 public:
     AlarmInfoModelPrivate()
-        : viewWidth(0)
+        : viewWidth(0),
+          rowEachPage(0)
     {}
     QStringList nameList;
     QStringList timeList;
     QStringList prorityList;
     QList<QIcon> iconList;
     int viewWidth;
+    int rowEachPage;
 };
 
 AlarmInfoModel::AlarmInfoModel(QObject *parent)
@@ -52,7 +56,18 @@ AlarmInfoModel::~AlarmInfoModel()
 int AlarmInfoModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return d_ptr->nameList.count();
+    // 计算行数
+    int pageCount = d_ptr->nameList.count() / EACH_PAGE_ALARM_COUNT;
+    if (d_ptr->nameList.count() % EACH_PAGE_ALARM_COUNT)
+    {
+        pageCount += 1;
+    }
+    else if (pageCount == 0)
+    {
+        // 没有数据时也仍然占一页
+        pageCount = 1;
+    }
+    return pageCount * EACH_PAGE_ALARM_COUNT;
 }
 
 int AlarmInfoModel::columnCount(const QModelIndex &parent) const
@@ -68,7 +83,7 @@ QVariant AlarmInfoModel::data(const QModelIndex &index, int role) const
     switch (role)
     {
     case Qt::DisplayRole:
-        if (index.isValid())
+        if (index.isValid() && index.row() < d_ptr->nameList.count())
         {
             if (column == SECTION_DATE_TIME)
             {
@@ -87,7 +102,7 @@ QVariant AlarmInfoModel::data(const QModelIndex &index, int role) const
 
     case Qt::DecorationRole:
     {
-        if (column == SECTION_ALARM_DESCRIPTION)
+        if (column == SECTION_ALARM_DESCRIPTION && index.row() < d_ptr->nameList.count())
         {
             return QVariant(d_ptr->iconList[index.row()]);
         }
@@ -192,6 +207,11 @@ bool AlarmInfoModel::setData(const QModelIndex &index, const QVariant &value, in
 
 void AlarmInfoModel::setStringList(const QStringList &nameList, const QStringList &timeList, const QStringList &priorityList)
 {
+    if (d_ptr->nameList == nameList && d_ptr->timeList == timeList)
+    {
+        return;
+    }
+
     beginResetModel();
     d_ptr->nameList = nameList;
     d_ptr->timeList = timeList;
@@ -207,6 +227,21 @@ void AlarmInfoModel::setStringList(const QStringList &nameList, const QStringLis
 int AlarmInfoModel::getRowHeightHint() const
 {
     return DEFAULT_ROW_HEIGHT;
+}
+
+int AlarmInfoModel::getRowEachPage()
+{
+    return EACH_PAGE_ALARM_COUNT;
+}
+
+Qt::ItemFlags AlarmInfoModel::flags(const QModelIndex &index) const
+{
+    Qt::ItemFlags flags;
+    if (index.row() < d_ptr->nameList.count())
+    {
+        flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    }
+    return flags;
 }
 
 bool AlarmInfoModel::eventFilter(QObject *obj, QEvent *ev)

@@ -46,6 +46,15 @@ public:
      */
     int getRowHeightHint() const;
 
+    /**
+     * @brief getRowEachPage 获取每页多少行
+     * @param count
+     */
+    int getRowEachPage();
+
+    /* reimplment */
+    Qt::ItemFlags flags(const QModelIndex &index) const;
+
 protected:
     /* reimplement */
     bool eventFilter(QObject *obj, QEvent *ev);

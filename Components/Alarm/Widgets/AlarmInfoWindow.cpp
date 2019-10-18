@@ -11,10 +11,7 @@
 #include "AlarmInfoWindow.h"
 #include "TableView.h"
 #include "AlarmInfoModel.h"
-#include "ListView.h"
-#include "ListDataModel.h"
 #include "TableViewItemDelegate.h"
-#include "ListViewItemDelegate.h"
 #include "LanguageManager.h"
 #include "Button.h"
 #include <QLayout>
@@ -27,7 +24,6 @@
 #include "WindowManager.h"
 #include "ThemeManager.h"
 
-#define EACH_PAGE_ALARM_COUNT 7    // 一页最大显示数
 #define SELECT_ICON_PATH "/usr/local/nPM/icons/select.png"
 
 class AlarmInfoWindowPrivate
@@ -120,7 +116,7 @@ void AlarmInfoWindow::layout()
     AlarmInfoModel *model = new AlarmInfoModel(this);
     tableView->setModel(model);
     tableView->viewport()->installEventFilter(model);
-    tableView->setFixedHeight(model->getRowHeightHint() * (EACH_PAGE_ALARM_COUNT + 1));
+    tableView->setFixedHeight(model->getRowHeightHint() * (model->getRowEachPage() + 1));
     d_ptr->dataModel = model;
     d_ptr->tableView = tableView;
     vLayout->addWidget(tableView);
@@ -204,28 +200,29 @@ void AlarmInfoWindow::_accessEventWindow(int index)
 void AlarmInfoWindowPrivate::loadOption()
 {
     AlarmInfoNode node;
-    if (refreshData)
+    nodeList.clear();
+    for (int i = totalList - 1; i >= 0; --i)
     {
-        // 显示窗口后，不再获取新的报警数据。
-        nodeList.clear();
-        for (int i = totalList - 1; i >= 0; --i)
+        alarmIndicator.getAlarmInfo(i, node);
+        if (node.alarmType != alarmType)
         {
-            alarmIndicator.getAlarmInfo(i, node);
-            if (node.alarmType != alarmType)
-            {
-                continue;
-            }
-            nodeList.append(node);
+            continue;
         }
-        refreshData = false;
+        nodeList.append(node);
     }
 
     int start = 0, end = 0;
     int count = nodeList.count();
 
+    if (count < 1)
+    {
+        dataModel->setStringList(QStringList(), QStringList(), QStringList());
+        return;
+    }
+
     // 计算当前页码和总页数
-    int pageTemp = (0 == count % EACH_PAGE_ALARM_COUNT) ? (count / EACH_PAGE_ALARM_COUNT)
-                                                              : (count / EACH_PAGE_ALARM_COUNT + 1);
+    int pageTemp = (0 == count % dataModel->getRowEachPage()) ? (count / dataModel->getRowEachPage())
+                                                              : (count / dataModel->getRowEachPage() + 1);
     if (pageTemp == 0)
     {
         return;
@@ -239,14 +236,10 @@ void AlarmInfoWindowPrivate::loadOption()
         }
     }
 
-    if (count < 1)
-    {
-        return;
-    }
-    start = (curPage - 1) * EACH_PAGE_ALARM_COUNT;
+    start = (curPage - 1) * dataModel->getRowEachPage();
     if (curPage < totalPage)
     {
-        end = (curPage - 1) * EACH_PAGE_ALARM_COUNT + EACH_PAGE_ALARM_COUNT;
+        end = (curPage - 1) * dataModel->getRowEachPage() + dataModel->getRowEachPage();
     }
     else if (curPage == totalPage)
     {
@@ -324,11 +317,12 @@ void AlarmInfoWindowPrivate::updateAcknowledgeFlag()
 {
     for (int i = 0; i < nodeList.count(); i++)
     {
-        if (i >= (curPage - 1) * EACH_PAGE_ALARM_COUNT && i < (curPage) * EACH_PAGE_ALARM_COUNT
+        if (i >= (curPage - 1) * dataModel->getRowEachPage()
+                && i < (curPage) * dataModel->getRowEachPage()
                 && nodeList.at(i).acknowledge)
         {
             // 只刷新当前页的确认标志
-            int row = i % EACH_PAGE_ALARM_COUNT;
+            int row = i % dataModel->getRowEachPage();
             QModelIndex index = dataModel->index(row, 0);
             if (index.isValid())
             {
