@@ -16,7 +16,7 @@
 #include "KeyActionManager.h"
 #include "Debug.h"
 #include "USBManager.h"
-#include "SoundManager.h"
+#include "SoundManagerInterface.h"
 #include "MessageBox.h"
 
 #if defined(CONFIG_CAPTURE_SCREEN)
@@ -359,7 +359,11 @@ bool IApplication::qwsEventFilter(QWSEvent *e)
                     || keyEvent->simpleData.keycode == Qt::Key_Enter)
             {
                 // 面板9个按键和飞梭按键播放按键音
-                soundManager.keyPressTone();
+                SoundManagerInterface *sound = SoundManagerInterface::getSoundManager();
+                if (sound)
+                {
+                    sound->keyPressTone();
+                }
             }
             switch (keyEvent->simpleData.keycode)
             {

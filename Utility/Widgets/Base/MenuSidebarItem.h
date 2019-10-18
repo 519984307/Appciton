@@ -41,4 +41,6 @@ protected:
 
     /* reimplement */
     void keyReleaseEvent(QKeyEvent *ev);
+
+    void mousePressEvent(QMouseEvent *e);
 };

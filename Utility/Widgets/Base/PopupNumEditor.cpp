@@ -15,6 +15,7 @@
 #include <QIcon>
 #include "ThemeManager.h"
 #include "Utility.h"
+#include "SoundManagerInterface.h"
 #include <QDebug>
 #include <QTimer>
 #include <QTime>
@@ -336,6 +337,13 @@ void PopupNumEditor::mousePressEvent(QMouseEvent *ev)
 
 void PopupNumEditor::mouseReleaseEvent(QMouseEvent *ev)
 {
+    QWidget::mousePressEvent(ev);
+    // 触屏点击播放按键音
+    SoundManagerInterface *sound = SoundManagerInterface::getSoundManager();
+    if (sound)
+    {
+        sound->keyPressTone();
+    }
     if (d_ptr->timer)
     {
         d_ptr->timer->stop();

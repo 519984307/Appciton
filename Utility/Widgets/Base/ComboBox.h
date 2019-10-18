@@ -35,6 +35,8 @@ protected:
     void hideEvent(QHideEvent *ev);
     /* reimplement */
     void paintEvent(QPaintEvent *ev);
+    /* reimplement */
+    void mousePressEvent(QMouseEvent *ev);
 
 signals:
     /**

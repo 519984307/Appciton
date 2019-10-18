@@ -18,6 +18,7 @@
 #include "WindowManagerInterface.h"
 #include "PatientInfoWindowInterface.h"
 #include "PatientManager.h"
+#include "SoundManagerInterface.h"
 
 void PatientInfoWidget::loadPatientInfo(const PatientInfo &info, const QString &bed)
 {
@@ -83,6 +84,17 @@ void PatientInfoWidget::paintEvent(QPaintEvent *e)
         painter.setBrush(QColor(0, 175, 219));
         painter.setPen(Qt::black);
         painter.drawRoundedRect(tempRect, 4, 4);
+    }
+}
+
+void PatientInfoWidget::mousePressEvent(QMouseEvent *e)
+{
+    IWidget::mousePressEvent(e);
+    // 触屏点击播放按键音
+    SoundManagerInterface *sound = SoundManagerInterface::getSoundManager();
+    if (sound)
+    {
+        sound->keyPressTone();
     }
 }
 

@@ -72,6 +72,7 @@ public:
 
 private slots:
     void onIconClicked(int iconLabel);
+    void onTouchClicked(IWidget* w);
 
 private:
     SystemStatusBarWidget();
