@@ -532,6 +532,7 @@ Print,打印,Print
 SummaryDesc,摘要描述,Summary Description
 SummaryData,摘要数据,Summary Data
 AlarmList,报警列表,Alarm List
+AlarmDescription,报警描述,Alarm Description
 PhyAlarmList,生理报警,Physiological Alarm
 TechAlarmList,技术报警,Technical Alarm
 AlarmTime,时间,Time
@@ -1444,9 +1445,12 @@ StopTouchScreenCalibration,停止触摸屏校准,Stop Touch Screen Calibration
 Cancel,取消覆盖,Cancel
 OthersMaintainMenu,其他,Others
 OthersMaintainMenuDesc,其他,Others
-WaveLine,波线,WaveLine
-Fat,粗,Fat
-Med,中,Med
+WaveDrawMode,波形绘画方式,Wave Draw Mode
+Mono,阶梯,Mono
+Color,色阶,Color
+WaveLine,波形线条,Wave Line
+Thick,粗,Thick
+Medium,中,Medium
 Thin,细,Thin
 ECGStandard,ECG标准,ECG Standard
 AHA,AHA,AHA
@@ -1521,10 +1525,10 @@ English,英文,English
 Chinese,中文,Chinese
 UnitSetup,单位,Unit Setup
 UnitSetupDesc,单位,Unit Setup
-HeightUnit,高度单位,Height Unit
-WeightUnit,重量单位,Weight Unit
+HeightUnit,身高单位,Height Unit
+WeightUnit,体重单位,Weight Unit
 STUnit,ST段单位,ST Unit
-PressureUnit,压力单位,Pressure Unit
+NIBPUnit,NIBP单位,NIBP Unit
 TemperatureUnit,温度单位,Temperature Unit
 CVPUnit,中心静脉压单位,CVP Unit
 ICPUnit,颅内压单位,ICP Unit

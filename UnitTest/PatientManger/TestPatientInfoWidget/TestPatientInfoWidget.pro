@@ -42,6 +42,7 @@ SOURCES += main.cpp \
     ../../../Utility/ErrorLog/ErrorLogItem.cpp \
     ../../../Utility/Widgets/Base/Button.cpp \
     ../../../Utility/Widgets/Base/ThemeManager.cpp \
+    ../../../Components/SoundManager/SoundManagerInterface.cpp
 
 HEADERS += \
     TestPatientInfoWidget.h \
@@ -70,6 +71,7 @@ HEADERS += \
     ../../../Utility/Widgets/Base/ThemeManager.h \
     ../../Utility/MockFontManager.h \
     ../../Utility/MockWindowManager.h \
+    ../../../Components/SoundManager/SoundManagerInterface.h
 
 INCLUDEPATH += \
     ../../../Components/PatientManager \
@@ -90,6 +92,7 @@ INCLUDEPATH += \
     ../../../Utility/DataStorage \
     ../../Alarm \
     ../../Utility \
+    ../../../Components/SoundManager \
 
 RESOURCES += \
     ../../../Utility/Widgets/Base/res/ui.qrc

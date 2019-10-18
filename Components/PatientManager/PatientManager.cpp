@@ -461,6 +461,11 @@ void PatientManager::newPatient()
             }
         }
     }
+    ECGParamInterface *ecgParam = ECGParamInterface::getECGParam();
+    if (ecgParam)
+    {
+        ecgParam->setPacermaker(ECG_PACE_ON);
+    }
 }
 
 void PatientManager::dischargePatient()

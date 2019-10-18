@@ -89,6 +89,8 @@ protected:
     /* reimplement */
     bool focusNextPrevChild(bool next);
 
+    void mousePressEvent(QMouseEvent *e);
+
 signals:
     void selectItemChanged(int index);
     void selectItemChanged(const QString &text);

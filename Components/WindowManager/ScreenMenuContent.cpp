@@ -28,7 +28,9 @@ class ScreenMenuContentPrivate
 public:
     ScreenMenuContentPrivate()
         : interfaceCbo(NULL),
+#ifndef HIDE_SCREEN_LAYOUT
           layoutCbo(NULL),
+#endif
           paraColorBtn(NULL)
     {}
 
@@ -37,7 +39,9 @@ public:
     void reloadScreenType();
 
     ComboBox *interfaceCbo;     // 界面选择
+#ifndef HIDE_SCREEN_LAYOUT
     ComboBox *layoutCbo;        // 布局设置
+#endif
     Button *paraColorBtn;
 
     enum ScreenLayoutItem
@@ -118,6 +122,7 @@ void ScreenMenuContentPrivate::reloadScreenType()
     interfaceCbo->blockSignals(false);
     interfaceCbo->setCurrentIndex(index);
 
+#ifndef HIDE_SCREEN_LAYOUT
     layoutCbo->blockSignals(true);
     if (type == UFACE_MONITOR_BIGFONT)
     {
@@ -128,6 +133,7 @@ void ScreenMenuContentPrivate::reloadScreenType()
         layoutCbo->setCurrentIndex(SCREEN_LAYOUT_STANDARD);
     }
     layoutCbo->blockSignals(false);
+#endif
 }
 
 ScreenMenuContent::ScreenMenuContent()
@@ -164,6 +170,7 @@ void ScreenMenuContent::layoutExec()
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboxIndexChanged(int)));
     d_ptr->interfaceCbo = comboBox;
 
+#ifndef HIDE_SCREEN_LAYOUT
     label = new QLabel(trs("ScreenLayout"));
     layout->addWidget(label, count, 0);
     d_ptr->layoutCbo = new ComboBox;
@@ -173,6 +180,7 @@ void ScreenMenuContent::layoutExec()
                                );
     layout->addWidget(d_ptr->layoutCbo, count++, 1);
     connect(d_ptr->layoutCbo, SIGNAL(activated(int)), this, SLOT(onComboxIndexChanged(int)));
+#endif
 
     d_ptr->paraColorBtn = new Button(trs("ParameterColor"));
     d_ptr->paraColorBtn->setButtonStyle(Button::ButtonTextOnly);
@@ -184,12 +192,17 @@ void ScreenMenuContent::layoutExec()
 
 void ScreenMenuContent::hideEvent(QHideEvent *ev)
 {
+#ifndef HIDE_SCREEN_LAYOUT
     d_ptr->layoutCbo->blockSignals(true);
+#endif
     MenuContent::hideEvent(ev);
 }
 
 void ScreenMenuContent::onComboxIndexChanged(int index)
 {
+#ifdef HIDE_SCREEN_LAYOUT
+    Q_UNUSED(index)
+#endif
     ComboBox *cbo = qobject_cast<ComboBox *>(sender());
     if (cbo == d_ptr->interfaceCbo)
     {
@@ -210,6 +223,7 @@ void ScreenMenuContent::onComboxIndexChanged(int index)
             return;
         }
         layoutManager.setUFaceType(type);
+#ifndef HIDE_SCREEN_LAYOUT
         d_ptr->layoutCbo->blockSignals(true);
         if (type == UFACE_MONITOR_BIGFONT)
         {
@@ -220,7 +234,9 @@ void ScreenMenuContent::onComboxIndexChanged(int index)
             d_ptr->layoutCbo->setCurrentIndex(ScreenMenuContentPrivate::SCREEN_LAYOUT_STANDARD);
         }
         d_ptr->layoutCbo->blockSignals(false);
+#endif
     }
+#ifndef HIDE_SCREEN_LAYOUT
     else if (cbo == d_ptr->layoutCbo)
     {
         if (index == ScreenMenuContentPrivate::SCREEN_LAYOUT_STANDARD)
@@ -236,6 +252,7 @@ void ScreenMenuContent::onComboxIndexChanged(int index)
                                      WindowManager::ShowBehaviorCloseOthers);
         }
     }
+#endif
 }
 
 void ScreenMenuContent::onBtnClick()

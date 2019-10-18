@@ -108,6 +108,7 @@ TrendTableSetWindow::TrendTableSetWindow()
 
     label = new QLabel(trs("TrendGroup"));
     d_ptr->trendGroupCbo = new ComboBox();
+    d_ptr->trendGroupCbo->setEnabled(false);    // 暂时置灰趋势组选择功能(目前不支持IBP,AG参数功能)
     d_ptr->trendGroupCbo->addItem("Resp");
     if (systemManager.isSupport(CONFIG_IBP))
     {

@@ -28,6 +28,7 @@
 #include <QApplication>
 #include <QTimer>
 #include "CO2Param.h"
+#include "LanguageManager.h"
 
 #define PREFER_SOFTKEY_WIDTH 98
 #define SOFTKEY_SPACING 2
@@ -85,6 +86,7 @@ public:
         {
             KeyActionDesc rightKeyDesc;
             rightKeyDesc.focus = false;
+            rightKeyDesc.border = false;
             rightPageKeyWidget->setContent(&rightKeyDesc);
         }
         else
@@ -137,7 +139,7 @@ public:
     SoftkeyWidget *leftPageKeyWidget;
     SoftkeyWidget *rightPageKeyWidget;
     QList<SoftkeyWidget*> dynamicKeyWidgets;
-    KeyActionDesc emptyKeyDesc; // empty key description, use for the empty soft key
+    KeyActionDesc emptyKeyDesc;  // empty key description, use for the empty soft key
     SoftKeyActionMap actionMaps;
     QSignalMapper *signalMapper;
     QHBoxLayout *dynamicKeyLayout;
@@ -220,6 +222,33 @@ void SoftKeyManager::refreshCO2Key(bool on)
     }
     refreshPage(false);
 }
+
+/**
+ * @brief SoftKeyManager::setFocusBaseKey  设置焦点在快捷按键接口
+ * @param keyType    按键类型
+ */
+void SoftKeyManager::setFocusBaseKey(SoftBaseKeyType keyType)
+{
+    // 获取焦点按键文本内容
+    QString focusHint = trs(d_ptr->currentAction->getBaseActionDesc(keyType)->hint);
+
+    // 遍历所有按键，对比文本标题内容，设置按钮焦点
+    int keyCount = d_ptr->dynamicKeyWidgets.count();
+    for (int i = 0; i < keyCount; ++i)
+    {
+        QString keyWidgetHint = d_ptr->dynamicKeyWidgets.at(i)->hint();
+        if (!keyWidgetHint.isEmpty())
+        {
+            // 通过比较按键文本，查找焦点按键索引
+            if (QString::compare(focusHint, keyWidgetHint) == 0)
+            {
+                d_ptr->dynamicKeyWidgets.at(i)->setFocus();
+                break;
+            }
+        }
+    }
+}
+
 
 void SoftKeyManager::refreshTouchKey()
 {

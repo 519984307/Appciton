@@ -871,7 +871,7 @@ void CO2Param::setApneaTime(ApneaAlarmTime t)
 ApneaAlarmTime CO2Param::getApneaTime(void)
 {
     int t = APNEA_ALARM_TIME_20_SEC;
-    currentConfig.getNumValue("Alarm|ApneaTime", t);
+    currentConfig.getNumValue("CO2|ApneaTime", t);
     return (ApneaAlarmTime)t;
 }
 

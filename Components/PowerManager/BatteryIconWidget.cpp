@@ -546,7 +546,7 @@ BatteryIconWidget::BatteryIconWidget(QColor iconColor)
     // 固定电池框大小
     setFixedSize(64, 32);
     d_ptr->chargingTimer = new QTimer();
-    d_ptr->chargingTimer->setInterval(1000 * 2);     // 两秒刷新一次
+    d_ptr->chargingTimer->setInterval(1000);     // 1秒刷新一次
     connect(d_ptr->chargingTimer, SIGNAL(timeout()), this, SLOT(chargingTimeOut()));
 }
 

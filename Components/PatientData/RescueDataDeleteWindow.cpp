@@ -22,9 +22,6 @@
 #include "DataStorageDirManager.h"
 #include "ThemeManager.h"
 
-#define PATH_ICON_UP "/usr/local/nPM/icons/up.png"
-#define PATH_ICON_DOWN "/usr/local/nPM/icons/down.png"
-
 RescueDataDeleteWindow *RescueDataDeleteWindow::_selfObj = NULL;
 
 static long deleteSelectIncidnets(const QVariant &para)
@@ -261,15 +258,16 @@ RescueDataDeleteWindow::RescueDataDeleteWindow()
     d_ptr->deleteAll->setButtonStyle(Button::ButtonTextOnly);
     connect(d_ptr->deleteAll, SIGNAL(released()), this, SLOT(_deleteAllReleased()));
 
-    d_ptr->up = new Button();
+    QIcon ico = themeManger.getIcon(ThemeManager::IconUp, QSize(32, 32));
+    d_ptr->up = new Button("", ico);
+    d_ptr->up->setIconSize(QSize(32, 32));
     d_ptr->up->setButtonStyle(Button::ButtonIconOnly);
-    d_ptr->up->setIcon(QIcon(PATH_ICON_UP));
     connect(d_ptr->up, SIGNAL(released()), this, SLOT(_upReleased()));
 
-    d_ptr->down = new Button();
-
+    ico = themeManger.getIcon(ThemeManager::IconDown, QSize(32, 32));
+    d_ptr->down = new Button("", ico);
+    d_ptr->down->setIconSize(QSize(32, 32));
     d_ptr->down->setButtonStyle(Button::ButtonIconOnly);
-    d_ptr->down->setIcon(QIcon(PATH_ICON_DOWN));
     connect(d_ptr->down, SIGNAL(released()), this, SLOT(_downReleased()));
 
     QHBoxLayout *layout = new QHBoxLayout();

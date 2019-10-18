@@ -63,7 +63,8 @@ CO2MenuContent::CO2MenuContent():
     d_ptr(new CO2MenuContentPrivate)
 {
     connect(&co2Param, SIGNAL(updateZeroSta(bool)), this, SLOT(disableZero(bool)));
-    connect(&co2Param, SIGNAL(updateCompensation(CO2Compensation, bool)), this, SLOT(onUpdateCompensation(CO2Compensation, bool)));
+    connect(&co2Param, SIGNAL(updateCompensation(CO2Compensation, bool)), this,
+            SLOT(onUpdateCompensation(CO2Compensation, bool)));
 }
 
 CO2MenuContent::~CO2MenuContent()
@@ -170,7 +171,7 @@ void CO2MenuContent::onComboBoxIndexChanged(int index)
         co2Param.setDisplayZoom(static_cast<CO2DisplayZoom>(index));
         break;
     case CO2MenuContentPrivate::ITEM_CBO_APNEA_TIME:
-        currentConfig.setNumValue("Alarm|ApneaTime", index);
+        currentConfig.setNumValue("CO2|ApneaTime", index);
         co2Param.setApneaTime(static_cast<ApneaAlarmTime>(index));
         break;
     case CO2MenuContentPrivate::ITEM_CBO_WORK_MODE:
@@ -243,12 +244,14 @@ void CO2MenuContent::layoutExec()
     label = new QLabel(trs("CO2SweepSpeed"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
+    /*
+     * disable 50mm/s for CO2 wave, because the CO2 wave sample rate is too low
+     * and the scan gap is too large when in 50mm/s
+     */
     comboBox->addItems(QStringList()
                        << CO2Symbol::convert(CO2_SWEEP_SPEED_62_5)
                        << CO2Symbol::convert(CO2_SWEEP_SPEED_125)
-                       << CO2Symbol::convert(CO2_SWEEP_SPEED_250)
-                       << CO2Symbol::convert(CO2_SWEEP_SPEED_500)
-                      );
+                       << CO2Symbol::convert(CO2_SWEEP_SPEED_250));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     itemID = CO2MenuContentPrivate::ITEM_CBO_WAVE_SPEED;
@@ -279,8 +282,7 @@ void CO2MenuContent::layoutExec()
                        << trs(CO2Symbol::convert(CO2_APNEA_TIME_45_SEC))
                        << trs(CO2Symbol::convert(CO2_APNEA_TIME_50_SEC))
                        << trs(CO2Symbol::convert(CO2_APNEA_TIME_55_SEC))
-                       << trs(CO2Symbol::convert(CO2_APNEA_TIME_60_SEC))
-                      );
+                       << trs(CO2Symbol::convert(CO2_APNEA_TIME_60_SEC)));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     itemID = CO2MenuContentPrivate::ITEM_CBO_APNEA_TIME;

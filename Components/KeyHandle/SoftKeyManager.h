@@ -60,6 +60,12 @@ public:
       */
      void refreshTouchKey();
 
+     /**
+      * @brief setFocusBaseKey  设置焦点在快捷按键接口
+      * @param keyType  按键类型
+      */
+     void setFocusBaseKey(SoftBaseKeyType keyType);
+
 protected:
     void paintEvent(QPaintEvent *e);
     void resizeEvent(QResizeEvent *e);

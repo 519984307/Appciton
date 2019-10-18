@@ -165,3 +165,11 @@ Param::Param(ParamID id)
 Param::~Param()
 {
 }
+
+void Param::stopParamUpdateTimer()
+{
+    if (paramUpdateTimer != NULL)
+    {
+        paramUpdateTimer->stop();
+    }
+}

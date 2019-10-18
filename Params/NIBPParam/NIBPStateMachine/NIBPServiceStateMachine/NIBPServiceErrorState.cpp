@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/10/16
+ **/
+
+
 #include "NIBPServiceErrorState.h"
 #include "NIBPParam.h"
 #include "NIBPAlarm.h"
@@ -32,10 +43,12 @@ void NIBPServiceErrorState::handleNIBPEvent(NIBPEvent event, const unsigned char
         }
     }
         break;
+    case NIBP_EVENT_CONNECTION_NORMAL:
+        switchState(NIBP_SERVICE_STANDBY_STATE);
+        break;
     default:
         break;
     }
-
 }
 
 /**************************************************************************************************
@@ -43,7 +56,6 @@ void NIBPServiceErrorState::handleNIBPEvent(NIBPEvent event, const unsigned char
  *************************************************************************************************/
 NIBPServiceErrorState::NIBPServiceErrorState() : NIBPState(NIBP_SERVICE_ERROR_STATE)
 {
-
 }
 
 /**************************************************************************************************
@@ -51,5 +63,4 @@ NIBPServiceErrorState::NIBPServiceErrorState() : NIBPState(NIBP_SERVICE_ERROR_ST
  *************************************************************************************************/
 NIBPServiceErrorState::~NIBPServiceErrorState()
 {
-
 }

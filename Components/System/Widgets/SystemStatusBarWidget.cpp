@@ -25,6 +25,7 @@
 #include "MessageBox.h"
 #include "USBManager.h"
 #include "LanguageManager.h"
+#include "SoundManagerInterface.h"
 
 SystemStatusBarWidget *SystemStatusBarWidget::_selfObj = NULL;
 #define ICON_WIDTH 32
@@ -142,6 +143,17 @@ void SystemStatusBarWidget::onIconClicked(int iconLabel)
     }
 }
 
+void SystemStatusBarWidget::onTouchClicked(IWidget* w)
+{
+    Q_UNUSED(w)
+    // 触屏点击播放按键音
+    SoundManagerInterface *sound = SoundManagerInterface::getSoundManager();
+    if (sound)
+    {
+        sound->keyPressTone();
+    }
+}
+
 /**************************************************************************************************
  * 绘画事件。
  *************************************************************************************************/
@@ -228,6 +240,7 @@ SystemStatusBarWidget::SystemStatusBarWidget() : IWidget("SystemStatusBarWidget"
         if (i == SYSTEM_ICON_LABEL_USB)
         {
             w->setFocusPolicy(Qt::NoFocus);
+            connect(w, SIGNAL(clicked(IWidget*)), this, SLOT(onTouchClicked(IWidget*)));
         }
         w->setFixedWidth(ICON_WIDTH);
         connect(w, SIGNAL(released()), _signalMapper, SLOT(map()));

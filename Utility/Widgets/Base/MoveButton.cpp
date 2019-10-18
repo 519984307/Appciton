@@ -16,6 +16,7 @@
 #include "PopupMoveEditor.h"
 #include "FontManager.h"
 #include <QStyle>
+#include "SoundManager.h"
 
 class MoveButtonPrivate
 {
@@ -122,7 +123,7 @@ void MoveButton::keyReleaseEvent(QKeyEvent *ev)
 
 void MoveButton::mousePressEvent(QMouseEvent *ev)
 {
-    Q_UNUSED(ev)
+    QAbstractButton::mousePressEvent(ev);
     QRect vrect = rect();
     QRect rect(this->mapToGlobal(vrect.topLeft()),
                 this->mapToGlobal(vrect.bottomRight()));

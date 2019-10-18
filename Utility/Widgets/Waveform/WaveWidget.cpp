@@ -37,10 +37,12 @@
 #include "FreezeWaveReviewMode.h"
 #include "FreezeTimeIndicator.h"
 #include "LayoutManager.h"
+#include "IConfig.h"
 
 float WaveWidget::_pixelWPitch = 0.248;
 float WaveWidget::_pixelHPitch = 0.248;
 bool WaveWidget::resetWaveFlag = false;
+QList<WaveWidget *> WaveWidget::waveWidgets;
 
 ////////////////////////////////////////////////////////////////////////////////
 // 说明:
@@ -98,6 +100,26 @@ WaveWidget::WaveWidget(const QString &widgetName, const QString &title) : IWidge
 
     connect(&freezeManager, SIGNAL(freeze(bool)), this, SLOT(freeze(bool)));
     connect(&freezeManager, SIGNAL(freezeReview()), this, SLOT(enterFreezeReviewMode()));
+
+    int lineW = 1;
+    systemConfig.getNumValue("Others|WaveLine", lineW);
+    if (lineW > 0 && lineW < 10)
+    {
+        _lineWidth = lineW;
+    }
+
+    int drawMode = WAVE_DRAW_MODE_COLOR;
+    systemConfig.getNumValue("Others|WaveDrawMode", drawMode);
+    if (drawMode == WAVE_DRAW_MODE_MONO)
+    {
+        colorGradationScanMode = false;
+    }
+    else
+    {
+        colorGradationScanMode = true;
+    }
+
+    waveWidgets.append(this);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -171,6 +193,8 @@ WaveWidget::~WaveWidget()
         delete[] _spaceFlag;
         _spaceFlag = NULL;
     }
+
+    waveWidgets.removeOne(this);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -362,6 +386,8 @@ void WaveWidget::_bufPush(int x, int y, int value, int flag, bool isUpdated)
     _dataBuf[_head] = value;
     _flagBuf[_head] = flag;
 
+    _updateRangeInfo(_head);
+
     _spaceFlag[_head] = false;
     if (flag & 0x4000)
     {
@@ -426,7 +452,29 @@ void WaveWidget::_bufPop(int n)
         return;
     }
 
-    _tail = (_tail + qMin(n, _size)) % _size;
+    if (n > _size) {
+        n = _size;
+    }
+
+    int startX = _xBuf[_tail];
+    _tail = (_tail + n) % _size;
+    int endX = _xBuf[_tail];
+    /* clear the wave range info */
+    if (startX > endX)
+    {
+        while (startX <= _xBuf[_size - 1])
+        {
+            _waveRangeInfo[startX].clear();
+            startX++;
+        }
+        startX = _xBuf[0];
+    }
+
+    while (startX < endX)
+    {
+        _waveRangeInfo[startX].clear();
+        startX++;
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -552,6 +600,9 @@ void WaveWidget::_resetBuffer()
         _xBuf[i] = _mode->indexToX(i);
     }
 
+    // clear the wave range info
+    _waveRangeInfo.clear();
+
     memset(_spaceFlag, 0, _size);
 
     // 若已启动了延时模式, 则需要检查是否需要修改延时缓冲区容量
@@ -589,6 +640,34 @@ int WaveWidget::_roundDown(int value, int step)
         value--;
     }
     return value;
+}
+
+void WaveWidget::_updateRangeInfo(int index)
+{
+    int x = _waveBuf[index].x();
+    int y = _waveBuf[index].y();
+    if (y > _waveRangeInfo[x].max)
+    {
+        _waveRangeInfo[x].max = y;
+    }
+    if (y < _waveRangeInfo[x].min)
+    {
+        _waveRangeInfo[x].min = y;
+    }
+
+    /* perform interpolation */
+    if (index > 0) {
+        int lastX = _waveBuf[index - 1].x();
+        int lastY = _waveBuf[index - 1].y();
+        int curX = lastX + 1;
+        while (curX < x) {
+            _waveRangeInfo[curX].clear();
+            int curY = lastY + (y - lastY) * (curX - lastX) / (x - lastX);
+            _waveRangeInfo[curX].min = curY;
+            _waveRangeInfo[curX].max = curY;
+            curX++;
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -681,6 +760,7 @@ void WaveWidget::resetWave()
 {
     _head = 0;
     _tail = 0;
+    _waveRangeInfo.clear();
 
     update();
 }
@@ -708,6 +788,11 @@ void WaveWidget::updateWidgetConfig()
 {
     resetWaveWidget();
     loadConfig();
+}
+
+void WaveWidget::setWaveDrawMode(WaveDrawMode mode)
+{
+    this->colorGradationScanMode = mode == WAVE_DRAW_MODE_COLOR;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -802,6 +887,8 @@ void WaveWidget::setValueRange(int min, int max)
 
     _minValue = min;
     _maxValue = max;
+    /* clear range info when the value range is change */
+    _waveRangeInfo.clear();
 
     _mode->prepareTransformFactor();
     _mode->valueRangeChanged();

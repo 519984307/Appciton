@@ -44,12 +44,7 @@ void SPO2WaveWidget::resizeEvent(QResizeEvent *e)
     {
         return;
     }
-
-    _name->move(0, 0);
-
-    // 设定为固定的高度和宽度后，居中显示。
-    _notify->move((width() - _notify->width()) / 2,
-                  qmargins().top() + (height() - qmargins().top()) / 2 - _notify->height() - 1);
+    _adjustLabelLayout();
 }
 
 /**************************************************************************************************
@@ -87,6 +82,15 @@ void SPO2WaveWidget::loadConfig(void)
     }
 }
 
+void SPO2WaveWidget::_adjustLabelLayout()
+{
+    _name->move(0, 0);
+
+    // 设定为固定的高度和宽度后，居中显示。
+    _notify->move((width() - _notify->width()) / 2,
+                  qmargins().top() + (height() - qmargins().top()) / 2 - _notify->height() - 1);
+}
+
 void SPO2WaveWidget::setNotify(bool enable, QString str)
 {
     // demo模式notify下强制更新为正常标志
@@ -109,6 +113,7 @@ void SPO2WaveWidget::setNotify(bool enable, QString str)
             _notify->setText(" ");
         }
     }
+    _adjustLabelLayout();
 }
 
 
@@ -126,19 +131,19 @@ SPO2WaveWidget::SPO2WaveWidget(const QString &waveName, const QString &title)
     int fontSize = fontManager.getFontSize(4);
     int fontH = fontManager.textHeightInPixels(fontManager.textFont(fontSize)) + 4;
     _name->setFont(fontManager.textFont(fontSize));
-    _name->setFixedSize(130, fontH);
+    _name->setFixedHeight(fontH);
     _name->setText(title);
 
     _notify = new WaveWidgetLabel(" ", Qt::AlignCenter, this);
     _notify->setFont(fontManager.textFont(fontSize));
     _notify->setFocusPolicy(Qt::NoFocus);
-    _notify->setFixedSize(300, fontH);
+    _notify->setFixedHeight(fontH);
     _notify->setText("");
     _notify->setVisible(false);
     addItem(_notify);
     // 加载配置
     loadConfig();
-
+    _adjustLabelLayout();
     setMargin(QMargins(WAVE_X_OFFSET, fontH, 2, 2));
 }
 

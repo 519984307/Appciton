@@ -129,6 +129,7 @@
         <O2Compensation>16</O2Compensation>
         <N2OCompensation>0</N2OCompensation>
         <CeroCalibration>0</CeroCalibration>
+	<ApneaTime>0</ApneaTime>
     </CO2>
     <CO>
         <Ratio>555</Ratio>
@@ -149,9 +150,6 @@
     <Event>
         <WaveLength>16</WaveLength>
     </Event>
-    <Alarm>
-        <ApneaTime>1</ApneaTime>
-    </Alarm>
     <AlarmSource>
 		<HR_PR Enable="1" Prio="1">
 			<bpm>
@@ -773,8 +771,8 @@
 		    <Scale>10</Scale>
 		</celsius>
 		<fahrenheit>
-		    <Low Min="0" Max="88">0</Low>
-		    <High Min="1" Max="89">9</High>
+		    <Low Min="0" Max="89">0</Low>
+		    <High Min="1" Max="90">9</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</fahrenheit>
@@ -791,49 +789,49 @@
     <Display>
         <AllColors>Green,Yellow,Blue,Red,Brown,Magenta,Orange,Cyan,Purple</AllColors>
         <Green>
-            <r>140</r>
-            <g>200</g>
-            <b>64</b>
+            <r>0</r>
+            <g>252</g>
+            <b>0</b>
         </Green>
         <Yellow>
-            <r>255</r>
-            <g>240</g>
+            <r>248</r>
+            <g>252</g>
             <b>0</b>
         </Yellow>
         <Blue>
             <r>0</r>
-            <g>175</g>
-            <b>240</b>
+            <g>188</g>
+            <b>248</b>
         </Blue>
         <Red>
-            <r>235</r>
+            <r>248</r>
             <g>0</g>
-            <b>140</b>
+            <b>0</b>
         </Red>
         <Brown>
-            <r>207</r>
-            <g>128</g>
-            <b>48</b>
+            <r>200</r>
+            <g>132</g>
+            <b>56</b>
         </Brown>
         <Magenta>
-            <r>250</r>
-            <g>50</g>
-            <b>200</b>
+            <r>248</r>
+            <g>0</g>
+            <b>248</b>
         </Magenta>
         <Orange>
-            <r>250</r>
-            <g>128</g>
-            <b>10</b>
+            <r>248</r>
+            <g>164</g>
+            <b>0</b>
         </Orange>
         <Cyan>
-            <r>95</r>
-            <g>220</g>
-            <b>205</b>
+            <r>0</r>
+            <g>252</g>
+            <b>248</b>
         </Cyan>
         <Purple>
-            <r>160</r>
-            <g>150</g>
-            <b>205</b>
+            <r>144</r>
+            <g>112</g>
+            <b>216</b>
         </Purple>
         <ECGDUPColor>Green</ECGDUPColor>
         <ECGColor>Green</ECGColor>

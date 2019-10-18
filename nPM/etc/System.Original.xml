@@ -67,7 +67,7 @@
         <AlarmVolume>1</AlarmVolume>
         <HeartBeatVolume>0</HeartBeatVolume>
         <KeyPressVolume>0</KeyPressVolume>
-        <NIBPCompletedTips>1</NIBPCompletedTips>
+        <NIBPCompletedTips>0</NIBPCompletedTips>
         <StopNIBPMeasure>1</StopNIBPMeasure>
         <EnterNightMode>0</EnterNightMode>
     </NightMode>
@@ -99,14 +99,15 @@
         <BootAndStandbyLogoVersion>04.00.00.01</BootAndStandbyLogoVersion>
     </SoftWareVersion>
     <Others>
+        <WaveDrawMode>1</WaveDrawMode>
         <WaveLine>1</WaveLine>
         <ECGStandard>0</ECGStandard>
         <FrequencyNotch>1</FrequencyNotch>
         <ParaSwitchPrem>1</ParaSwitchPrem>
         <ConfImpactItemSettings>1</ConfImpactItemSettings>
         <NurseCallSetting>1</NurseCallSetting>
-        <SignalType>1</SignalType>
-        <TriggerMode>1</TriggerMode>
+        <SignalType>0</SignalType>
+        <TriggerMode>0</TriggerMode>
         <AlarmLevel>
             <High>0</High>
             <Med>0</Med>
@@ -175,8 +176,8 @@
         <Ruler>
             <HR_PR Enable="1" Prio="2" Auto="1">
                 <bpm>
-                    <Low Min="15" Max="349">50</Low>
-                    <High Min="16" Max="350">120</High>
+                    <Low Min="20" Max="299">50</Low>
+                    <High Min="21" Max="300">120</High>
                     <Step>1</Step>
                     <Scale>1</Scale>
                 </bpm>

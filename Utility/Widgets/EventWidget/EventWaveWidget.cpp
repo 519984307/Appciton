@@ -561,6 +561,7 @@ void EventWaveWidget::_drawWave(int index, QPainter &painter)
     {
         painter.setPen(Qt::red);
     }
+    painter.setRenderHint(QPainter::Antialiasing, true);
 
     _drawWaveLabel(painter, waveDesc);
 

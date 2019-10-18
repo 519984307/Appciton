@@ -432,6 +432,28 @@ void UpgradeManagerPrivate::upgradeExit(UpgradeManager::UpgradeResult result, Up
                     spo2Provider->stopCheckConnect(false);
                 }
             }
+            else if (provider->getName() == "SystemBoard")
+            {
+                QString curModule;
+                machineConfig.getStrValue("SPO2", curModule);
+                Provider *provider = paramManager.getProvider(curModule);
+                if (provider)
+                {
+                    provider->stopCheckConnect(false);
+                }
+                machineConfig.getStrValue("NIBP", curModule);
+                provider = paramManager.getProvider(curModule);
+                if (provider)
+                {
+                    provider->stopCheckConnect(false);
+                }
+                machineConfig.getStrValue("TEMP", curModule);
+                provider = paramManager.getProvider(curModule);
+                if (provider)
+                {
+                    provider->stopCheckConnect(false);
+                }
+            }
             provider = NULL;
         }
         if (co2Provider)
@@ -742,6 +764,29 @@ void UpgradeManager::startModuleUpgrade(UpgradeManager::UpgradeModuleType type)
             if (spo2Provider)
             {
                 spo2Provider->stopCheckConnect(true);
+            }
+        }
+        else if (d_ptr->type == UPGRADE_MOD_nPMBoard)
+        {
+            // nPMBoaed升级时，先停止spo2和NIBP的检测
+            QString curModule;
+            machineConfig.getStrValue("SPO2", curModule);
+            Provider *provider = paramManager.getProvider(curModule);
+            if (provider)
+            {
+                provider->stopCheckConnect(true);
+            }
+            machineConfig.getStrValue("NIBP", curModule);
+            provider = paramManager.getProvider(curModule);
+            if (provider)
+            {
+                provider->stopCheckConnect(true);
+            }
+            machineConfig.getStrValue("TEMP", curModule);
+            provider = paramManager.getProvider(curModule);
+            if (provider)
+            {
+                provider->stopCheckConnect(true);
             }
         }
         d_ptr->provider = BLMProvider::findProvider(d_ptr->getProviderName(d_ptr->type));

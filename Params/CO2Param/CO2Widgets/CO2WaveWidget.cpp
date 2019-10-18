@@ -29,8 +29,6 @@
 void CO2WaveWidget::resizeEvent(QResizeEvent *e)
 {
     _name->move(0, 0);
-//    _zoom->move(_name->rect().width(), 0);
-
     _ruler->resize(RULER_X_OFFSET, 0,
                    width() - RULER_X_OFFSET,
                    height());
@@ -122,11 +120,9 @@ CO2WaveWidget::CO2WaveWidget(const QString &waveName, const QString &title)
 
     int infoFont = fontManager.getFontSize(4);
     int fontH = fontManager.textHeightInPixels(fontManager.textFont(infoFont)) + 4;
-//    _name = new WaveWidgetLabel(" ", Qt::AlignLeft | Qt::AlignVCenter, this);
     _name->setFont(fontManager.textFont(infoFont));
-    _name->setFixedSize(130, fontH);
+    _name->setFixedHeight(fontH);
     _name->setText(title);
-//    addItem(_name);
 
     _ruler = new CO2WaveRuler(this);
     _ruler->setFont(fontManager.textFont(infoFont - 2));
