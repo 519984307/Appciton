@@ -82,7 +82,7 @@ ParaColorWindow::ParaColorWindow()
     currentConfig.getStrValue("Display|AllColors", color);
     d_ptr->colorList = color.split(',', QString::KeepEmptyParts);
     setWindowTitle(trs("ParameterColorDesc"));
-    setFixedSize(480, windowManager.getPopWindowHeight());
+    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
     layoutExec();
 }
 
@@ -105,11 +105,11 @@ void ParaColorWindow::layoutExec()
     ComboBox *comboBox;
     QLabel *label;
     int itemID;
+    int column = 0;
 
     // ECG
     label = new QLabel(trs("ECG"));
-    label->setFixedWidth(120);
-    layout->addWidget(label, d_ptr->combos.count(), 0);
+    layout->addWidget(label, d_ptr->combos.count() / 2, column++);
     comboBox = new ComboBox();
     for (int i = 0; i < d_ptr->colorList.count(); i ++)
     {
@@ -118,7 +118,7 @@ void ParaColorWindow::layoutExec()
     itemID = static_cast<int>(ParaColorWindowPrivate::ITEM_CBO_ECG_COLOR);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    layout->addWidget(comboBox, d_ptr->combos.count() / 2, column++);
     d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_ECG_COLOR, comboBox);
 
     // SPO2
@@ -133,8 +133,9 @@ void ParaColorWindow::layoutExec()
         itemID = static_cast<int>(ParaColorWindowPrivate::ITEM_CBO_SPO2_COLOR);
         comboBox->setProperty("Item", qVariantFromValue(itemID));
         connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-        layout->addWidget(label, d_ptr->combos.count(), 0);
-        layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+        column = column >= 4 ? 0 : column;
+        layout->addWidget(label, d_ptr->combos.count() / 2, column++);
+        layout->addWidget(comboBox, d_ptr->combos.count() / 2, column++);
         d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_SPO2_COLOR, comboBox);
     }
 
@@ -150,8 +151,9 @@ void ParaColorWindow::layoutExec()
         itemID = static_cast<int>(ParaColorWindowPrivate::ITEM_CBO_NIBP_COLOR);
         comboBox->setProperty("Item", qVariantFromValue(itemID));
         connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-        layout->addWidget(label, d_ptr->combos.count(), 0);
-        layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+        column = column >= 4 ? 0 : column;
+        layout->addWidget(label, d_ptr->combos.count() / 2, column++);
+        layout->addWidget(comboBox, d_ptr->combos.count() / 2, column++);
         d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_NIBP_COLOR, comboBox);
     }
 
@@ -167,8 +169,9 @@ void ParaColorWindow::layoutExec()
         itemID = static_cast<int>(ParaColorWindowPrivate::ITEM_CBO_CO2_COLOR);
         comboBox->setProperty("Item", qVariantFromValue(itemID));
         connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-        layout->addWidget(label, d_ptr->combos.count(), 0);
-        layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+        column = column >= 4 ? 0 : column;
+        layout->addWidget(label, d_ptr->combos.count() / 2, column++);
+        layout->addWidget(comboBox, d_ptr->combos.count() / 2, column++);
         d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_CO2_COLOR, comboBox);
     }
 
@@ -184,8 +187,9 @@ void ParaColorWindow::layoutExec()
         itemID = static_cast<int>(ParaColorWindowPrivate::ITEM_CBO_RESP_COLOR);
         comboBox->setProperty("Item", qVariantFromValue(itemID));
         connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-        layout->addWidget(label, d_ptr->combos.count(), 0);
-        layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+        column = column >= 4 ? 0 : column;
+        layout->addWidget(label, d_ptr->combos.count() / 2, column++);
+        layout->addWidget(comboBox, d_ptr->combos.count() / 2, column++);
         d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_RESP_COLOR, comboBox);
     }
 
@@ -201,9 +205,9 @@ void ParaColorWindow::layoutExec()
         itemID = static_cast<int>(ParaColorWindowPrivate::ITEM_CBO_TEMP_COLOR);
         comboBox->setProperty("Item", qVariantFromValue(itemID));
         connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-
-        layout->addWidget(label, d_ptr->combos.count(), 0);
-        layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+        column = column >= 4 ? 0 : column;
+        layout->addWidget(label, d_ptr->combos.count() / 2, column++);
+        layout->addWidget(comboBox, d_ptr->combos.count() / 2, column++);
         d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_TEMP_COLOR, comboBox);
     }
 
@@ -219,8 +223,9 @@ void ParaColorWindow::layoutExec()
         itemID = ParaColorWindowPrivate::ITEM_CBO_AG_COLOR;
         comboBox->setProperty("Item", qVariantFromValue(itemID));
         connect(comboBox , SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-        layout->addWidget(label, d_ptr->combos.count(), 0);
-        layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+        column = column >= 4 ? 0 : column;
+        layout->addWidget(label, d_ptr->combos.count() / 2, column++);
+        layout->addWidget(comboBox, d_ptr->combos.count() / 2, column++);
         d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_AG_COLOR, comboBox);
     }
 
@@ -236,12 +241,18 @@ void ParaColorWindow::layoutExec()
         itemID = ParaColorWindowPrivate::ITEM_CBO_IBP_COLOR;
         comboBox->setProperty("Item", qVariantFromValue(itemID));
         connect(comboBox , SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-        layout->addWidget(label, d_ptr->combos.count(), 0);
-        layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+        column = column >= 4 ? 0 : column;
+        layout->addWidget(label, d_ptr->combos.count() / 2, column++);
+        layout->addWidget(comboBox, d_ptr->combos.count() / 2, column++);
         d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_IBP_COLOR, comboBox);
     }
 
-    layout->setRowStretch(d_ptr->combos.count(), 1);
+    layout->setColumnStretch(0, 1);
+    layout->setColumnStretch(1, 2);
+    layout->setColumnStretch(2, 1);
+    layout->setColumnStretch(3, 2);
+    layout->setSpacing(10);
+    layout->setRowStretch(d_ptr->combos.count() / 2, 1);
 
     setWindowLayout(layout);
 }

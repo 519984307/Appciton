@@ -188,7 +188,7 @@ void DataReviewMenuContent::onBtnReleased()
     {
         windowManager.showWindow(HistoryDataReviewWindow::getInstance(),
                                  WindowManager::
-                                 ShowBehaviorHideOthers);
+                                 ShowBehaviorNone);
     }
     break;
     }
