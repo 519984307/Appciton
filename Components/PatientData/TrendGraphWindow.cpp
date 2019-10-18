@@ -122,7 +122,7 @@ void TrendGraphWindow::timerEvent(QTimerEvent *ev)
 {
     if (d_ptr->printTimerId == ev->timerId())
     {
-        if (!recorderManager.isPrinting() || d_ptr->timeoutNum == 10) // 1000ms超时处理
+        if (!recorderManager.isPrinting() || d_ptr->timeoutNum == 10)  // 1000ms超时处理
         {
             if (!recorderManager.isPrinting() && !recorderManager.getPrintStatus())
             {
@@ -188,7 +188,7 @@ void TrendGraphWindow::onButtonReleased()
                 {
                     recorderManager.stopPrint();
                     d_ptr->generator = pageGenerator;
-                    d_ptr->waitTimerId = startTimer(2000); // 等待2000ms
+                    d_ptr->waitTimerId = startTimer(2000);  // 等待2000ms
                     d_ptr->isWait = true;
                 }
             }
@@ -204,7 +204,9 @@ void TrendGraphWindow::onButtonReleased()
         }
         case TrendGraphWindowPrivate::ACTION_BTN_SET_WIDGET:
         {
-            windowManager.showWindow(&trendGraphSetWindow, WindowManager::ShowBehaviorHideOthers | WindowManager::ShowBehaviorNoAutoClose);
+            windowManager.showWindow(&trendGraphSetWindow,
+                                     WindowManager::ShowBehaviorHideOthers |
+                                     WindowManager::ShowBehaviorNoAutoClose);
             trendGraphSetWindow.setCurParam(d_ptr->waveWidget->getCurParamList());
             break;
         }
