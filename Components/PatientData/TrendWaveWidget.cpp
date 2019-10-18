@@ -325,10 +325,22 @@ void TrendWaveWidget::pageDownParam()
 
 void TrendWaveWidget::setTimeInterval(ResolutionRatio timeInterval)
 {
-    // 设置时间间隔，记录更新时间刻度标志
-    _updateCursorTime = true;
-    // 记录游标时间刻度
-    _currentCursorTime = _trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp;
+    int infoCount = _trendGraphInfo.alarmInfo.count();
+    // 校验趋势图是否存在数据
+    if (infoCount != 0)
+    {
+        // 校验游标索引
+        if (_cursorPosIndex >= infoCount)
+        {
+            _cursorPosIndex = infoCount - 1;
+        }
+        // 记录游标时间刻度
+        _currentCursorTime = _trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp;
+
+        // 记录更新时间刻度标志
+        _updateCursorTime = true;
+    }
+
     _timeInterval = timeInterval;
     int count = _displayGraphNum;
     for (int i = 0; i < count; i++)
