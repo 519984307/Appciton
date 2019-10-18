@@ -25,7 +25,7 @@
 #include "MessageBox.h"
 #include "USBManager.h"
 #include "LanguageManager.h"
-#include "SoundManager.h"
+#include "SoundManagerInterface.h"
 
 SystemStatusBarWidget *SystemStatusBarWidget::_selfObj = NULL;
 #define ICON_WIDTH 32
@@ -147,7 +147,11 @@ void SystemStatusBarWidget::onTouchClicked(IWidget* w)
 {
     Q_UNUSED(w)
     // 触屏点击播放按键音
-    soundManager.keyPressTone();
+    SoundManagerInterface *sound = SoundManagerInterface::getSoundManager();
+    if (sound)
+    {
+        sound->keyPressTone();
+    }
 }
 
 /**************************************************************************************************
