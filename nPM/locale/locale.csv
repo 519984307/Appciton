@@ -1103,6 +1103,9 @@ MachineConfigModuleMenuDesc,机器配置,Machine Config
 MonitorInfoMenu,监护仪信息,Monitor Info
 RunningTime,运行时间,Running Time
 BatteryCapacity,电池电量,Battery Capacity
+BatteryFullCapacity,电池电量满,Full Capacity
+BatteryLowCapacity,电池电量低,Low Capacity
+BatteryNoPresent,电池不存在,No Present
 ProductModel,产品型号,Product Model
 MACAddress,物理地址(MAC),MAC Address
 ElectronicSerialNumber,电子序列号,Electronic Serial Number
