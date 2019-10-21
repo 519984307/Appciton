@@ -502,26 +502,26 @@ NIBP_PR,脉率,PR
 ECG3-Lead,3导联,3-Lead
 ECG5-Lead,5导联,5-Lead
 ECG12-Lead,12导联,12-Lead
-_8sec, 8 秒, 8 sec
-_10sec,10 秒,10 sec
-_15sec,15 秒,15 sec
-_16sec,16 秒,16 sec
-_20sec,20 秒,20 sec
-_25sec,25 秒,25 sec
-_30sec,30 秒,30 sec
-_32sec,32 秒,32 sec
-_35sec,35 秒,35 sec
-_40sec,40 秒,40 sec
-_45sec,45 秒,45 sec
-_50sec,50 秒,50 sec
-_55sec,55 秒,55 sec
-_60sec,60 秒,60 sec
-_90sec,90 秒,90 sec
-_120sec,120 秒,120 sec
-_150sec,150 秒,150 sec
-_180sec,180 秒,180 sec
-_210sec,210 秒,210 sec
-_240sec,240 秒,240 sec
+_8sec, 8 秒, 8 s
+_10sec,10 秒,10 s
+_15sec,15 秒,15 s
+_16sec,16 秒,16 s
+_20sec,20 秒,20 s
+_25sec,25 秒,25 s
+_30sec,30 秒,30 s
+_32sec,32 秒,32 s
+_35sec,35 秒,35 s
+_40sec,40 秒,40 s
+_45sec,45 秒,45 s
+_50sec,50 秒,50 s
+_55sec,55 秒,55 s
+_60sec,60 秒,60 s
+_90sec,90 秒,90 s
+_120sec,120 秒,120 s
+_150sec,150 秒,150 s
+_180sec,180 秒,180 s
+_210sec,210 秒,210 s
+_240sec,240 秒,240 s
 sec,秒,second
 PatientData,病人数据,Patient Data
 DataReviewMenu,数据回顾,Data Review
