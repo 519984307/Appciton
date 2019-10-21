@@ -573,8 +573,8 @@ KeyInputPanel::KeyInputPanel(KeyType type, bool isShowDecimalPoint)
 
     int space = d_ptr->keySpace;
     QVBoxLayout *mainLayout = new QVBoxLayout();
-    mainLayout->setMargin(0);
-    mainLayout->setSpacing(space);
+    mainLayout->setContentsMargins(space, space * 2, space, space);  // 设置布局器四周预留空间
+    mainLayout->setSpacing(space);                                   // 设置布局器内部空间间隔
 
     // 显示框。
     d_ptr->textDisplay = new QLineEdit();
@@ -610,7 +610,6 @@ KeyInputPanel::KeyInputPanel(KeyType type, bool isShowDecimalPoint)
     {
        QHBoxLayout *hLayout = new QHBoxLayout();
         hLayout->setSpacing(space);
-        hLayout->addSpacing(space);
         for (int c = 0; c < 4; c++)
         {
             key = new Button();
@@ -691,10 +690,8 @@ KeyInputPanel::KeyInputPanel(KeyType type, bool isShowDecimalPoint)
             hLayout->addWidget(key);
             d_ptr->keys.append(key);
         }
-        hLayout->addSpacing(space);
         mainLayout->addLayout(hLayout);
     }
-    mainLayout->addSpacing(d_ptr->keySpace);
     setWindowLayout(mainLayout);
 }
 

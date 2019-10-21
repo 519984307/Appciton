@@ -154,7 +154,7 @@ void EnglishInputPanel::ClickedShift(void)
 void EnglishInputPanel::ClickedBackspace(void)
 {
     d_ptr->backSpaceStr = QString("\x7f");
-    ClickedKey(); // ascii code of 'delete'
+    ClickedKey();  // ascii code of 'delete'
 }
 
 /**************************************************************************************************
@@ -375,10 +375,10 @@ EnglishInputPanel::EnglishInputPanel()
     // 设置标题。
     setWindowTitle(trs("EnglishKeyboard"));
 
-    int space = 5;
+    int space = 10;
     QVBoxLayout *mainLayout = new QVBoxLayout();
-    mainLayout->setMargin(0);
-    mainLayout->setSpacing(space);
+    mainLayout->setMargin(space);               // 设置布局器四周预留空间
+    mainLayout->setSpacing(space);              // 设置布局器内部空间间隔
 
     // 显示框。
     d_ptr->textDisplay = new QLineEdit();
@@ -396,29 +396,23 @@ EnglishInputPanel::EnglishInputPanel()
     for (int r = 0; r < 4; r++)
     {
         hLayout = new QHBoxLayout();
-        hLayout->setSpacing(space);
 
         int cn = 0;
-        if (r == 0)
+        if (r < 2)        // 第一 第二行共13个按钮
         {
             cn = 13;
-            hLayout->setContentsMargins(space, 0, space, 0);
+//            hLayout->setContentsMargins(space, 0, space, 0);
         }
-        else if (r == 1)       // 第一、二行，10个按钮。
-        {
-            cn = 13;
-            hLayout->setContentsMargins(space, 0, space, 0);
-        }
-        else if (r == 2) // 第三行，9个按钮。
+        else if (r == 2)  // 第三行，9个按钮。
         {
             cn = 11;
-            hLayout->setContentsMargins(space + (d_ptr->itemWidth + space) * 2 / 2, 0,
+            hLayout->setContentsMargins((d_ptr->itemWidth + space) * 2 / 2, 0,
                                         2 + (d_ptr->itemWidth + space) * 2 / 2, 0);
         }
-        else             // 第四行，7个按钮。
+        else              // 第四行，7个按钮。
         {
             cn = 10;
-            hLayout->setContentsMargins(space + (d_ptr->itemWidth + space) * 3 / 2, 0,
+            hLayout->setContentsMargins((d_ptr->itemWidth + space) * 3 / 2, 0,
                                         2 + (d_ptr->itemWidth + space) * 3 / 2, 0);
         }
 
@@ -438,7 +432,6 @@ EnglishInputPanel::EnglishInputPanel()
 
     // 控制区。
     hLayout = new QHBoxLayout();
-    hLayout->setContentsMargins(space, 0, space, 0);
 
     // Shift键。
     key = new Button();
@@ -487,7 +480,6 @@ EnglishInputPanel::EnglishInputPanel()
     hLayout->addWidget(d_ptr->enter, 1);
 
     mainLayout->addLayout(hLayout);
-    mainLayout->addSpacing(5);
     setWindowLayout(mainLayout);
 
     // proper size to hold all the keys
