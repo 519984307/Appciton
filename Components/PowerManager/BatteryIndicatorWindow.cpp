@@ -32,45 +32,44 @@ BatteryIndicatorWindow::BatteryIndicatorWindow()
     : Dialog(),
       d_ptr(new BatteryIndicatorWindowPrivate())
 {
-    int fontSize = fontManager.getFontSize(4);
     setWindowTitle(trs("BatteryInfo"));
-    setFixedSize(400, 200);
+    setFixedSize(300, 300);
 
-    QVBoxLayout *layoutV = new QVBoxLayout();
-    layoutV->setMargin(10);
-    layoutV->setSpacing(10);
+    QGridLayout *layout = new QGridLayout;
 
-    // first row.
-    QHBoxLayout *layoutH = new QHBoxLayout();
-    QLabel *iconLabel = new QLabel();
-    iconLabel->setAlignment(Qt::AlignCenter);
-    iconLabel->setFont(fontManager.textFont(fontSize));
-
-    layoutH->setMargin(10);
-    layoutH->setSpacing(10);
+    // normal battery
+    QLabel *label = new QLabel();
+    label->setText(trs("BatteryFullCapacity"));
+    layout->addWidget(label, 0, 0);
     BatteryIconWidget *batteryImag = new BatteryIconWidget();
     batteryImag->setVolume(BAT_VOLUME_5);
     batteryImag->setStatus(BATTERY_NORMAL);
-    layoutH->addWidget(batteryImag);
+    layout->addWidget(batteryImag, 0, 1);
 
+    // low battery
+    label = new QLabel();
+    label->setText(trs("BatteryLowCapacity"));
+    layout->addWidget(label, 1, 0);
     batteryImag = new BatteryIconWidget();
     batteryImag->setVolume(BAT_VOLUME_1);
     batteryImag->setTimeValue(BAT_REMAIN_TIME_LOW);
     batteryImag->setFillColor(Qt::red);
     batteryImag->setStatus(BATTERY_NORMAL);
-    layoutH->addWidget(batteryImag);
+    layout->addWidget(batteryImag, 1, 1);
 
+    // Error battery
+    label = new QLabel();
+    label->setText(trs("BatteryNoPresent"));
+    layout->addWidget(label, 2, 0);
     batteryImag = new BatteryIconWidget();
     batteryImag->setStatus(BATTERY_NOT_EXISTED);
-    layoutH->addWidget(batteryImag);
-
-    layoutV->addLayout(layoutH);
+    layout->addWidget(batteryImag, 2, 1);
 
     d_ptr->timer = new QTimer();
     d_ptr->timer->setInterval(500);
     connect(d_ptr->timer, SIGNAL(timeout()), this, SLOT(_timeOutSlot()));
 
-    setWindowLayout(layoutV);
+    setWindowLayout(layout);
 }
 
 BatteryIndicatorWindow::~BatteryIndicatorWindow()
