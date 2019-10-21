@@ -95,7 +95,7 @@ UpgradeWindow::UpgradeWindow()
     if (systemManager.isSupport(CONFIG_O2))
     {
         d_ptr->upgradeModuleCbo->addItem(
-            UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_NEONATE));
+            trs(UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_NEONATE)));
     }
 #endif
 
