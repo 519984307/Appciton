@@ -144,7 +144,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
         {
             trendCache->getTrendData(_timestamp, data);
         }
-        curValue = data.values[alarmSource->getSubParamID(i)];
+        curValue = data.values.value(alarmSource->getSubParamID(i), InvData());
 
         bool isEnable = alarmSource->isAlarmEnable(i);
         int completeResult = alarmSource->getCompare(curValue, i);
@@ -342,7 +342,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
 /**************************************************************************************************
  * 功能：处理OneShot报警。
  *************************************************************************************************/
-void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
+void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource, QList<ParamID> &alarmParam)
 {
     bool isEnable = false;
     int n = alarmSource->getAlarmSourceNR();
@@ -359,14 +359,6 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
         AlarmPriority priority = alarmSource->getAlarmPriority(i);
         bool isRemoveAfterLatch = alarmSource->isRemoveAfterLatch(i);
         bool isRemoveLightAfterConfirm = alarmSource->isRemoveLightAfterConfirm(i);
-
-        // 报警关闭不处理生理报警报警, don't handle phy alarm when in alarm pause state
-        if ((_curAlarmStatus == ALARM_STATUS_OFF || _curAlarmStatus == ALARM_STATUS_PAUSE) && type != ALARM_TYPE_TECH)
-        {
-            alarmSource->notifyAlarm(i, false);
-            traceCtrl->Reset();
-            continue;
-        }
 
         // 更新报警级别
         if (priority != traceCtrl->priority && NULL != traceCtrl->alarmMessage)
@@ -429,8 +421,9 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
 
         if (!isAlarm)
         {
-            // 上次报警，现在恢复正常了。
-            if (traceCtrl->lastAlarmed)
+            // 上次报警，现在恢复正常了。如果是生理报警，当恢复正常连续3s才可被撤销报警
+            if (traceCtrl->lastAlarmed &&
+                    (traceCtrl->normalTimesCount >= ALARM_LIMIT_TIMES || traceCtrl->type != ALARM_TYPE_PHY))
             {
                 if (traceCtrl->type != ALARM_TYPE_TECH && _isLatchLock)
                 {
@@ -459,13 +452,28 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
             }
             else
             {
-                alarmSource->notifyAlarm(i, false);
+                if (traceCtrl->normalTimesCount < ALARM_LIMIT_TIMES && traceCtrl->type == ALARM_TYPE_PHY)
+                {
+                    // 生理报警，如果normalTimesCount小于3次，此时报警仍在，报警源应继续通知报警。
+                    alarmSource->notifyAlarm(i, true);
+                }
+                else
+                {
+                    alarmSource->notifyAlarm(i, false);
+                }
+            }
+
+            if (traceCtrl->normalTimesCount < ALARM_LIMIT_TIMES && traceCtrl->type == ALARM_TYPE_PHY)
+            {
+                // 生理报警恢复正常时，normalTimesCount计数。
+                traceCtrl->normalTimesCount++;
             }
 
             continue;
         }
         else
         {
+            traceCtrl->normalTimesCount = 0;    // 发生了报警时，normalTimesCount清零
             if (traceCtrl->lastAlarmed)
             {
                 // 生命报警从栓锁恢复到继续报警。
@@ -486,7 +494,12 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
                 }
                 else
                 {
-                    continue;
+                    AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
+                    if (alarmIndicator && alarmIndicator->checkAlarmIsExist(traceCtrl->type, traceCtrl->alarmMessage))
+                    {
+                        // 现在有没被栓锁的报警，如果此时在alarmIndicator中控制报警，则continue，不添加新的报警到alarmIndicator
+                        continue;
+                    }
                 }
             }
         }
@@ -530,13 +543,15 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
             {
                 alarmStateMachine->handAlarmEvent(ALARM_STATE_EVENT_NEW_PHY_ALARM, 0, 0);
             }
+
+            alarmParam.append(alarmSource->getParamID());
         }
         else
         {
             AlarmStateMachineInterface *alarmStateMachine = AlarmStateMachineInterface::getAlarmStateMachine();
             if (alarmStateMachine)
             {
-                alarmStateMachine->handAlarmEvent(ALARM_STATE_EVENT_NEW_PHY_ALARM, 0, 0);
+                alarmStateMachine->handAlarmEvent(ALARM_STATE_EVENT_NEW_TECH_ALARM, 0, 0);
             }
         }
     }
@@ -587,7 +602,7 @@ void Alarm::_handleAlarm(void)
         {
             trendCache->collectTrendData(_timestamp);
             trendCache->collectTrendAlarmStatus(_timestamp);
-            trendDataStorageManager->storeData(_timestamp, TrendDataStorageManagerInterface::CollectStatusAlarm);
+            trendDataStorageManager->storeData(_timestamp, TrendDataStorageManagerInterface::NIBPAlarm);
         }
         paramID.removeAll(PARAM_NIBP);
     }
@@ -605,10 +620,29 @@ void Alarm::_handleAlarm(void)
     }
 
     // 处理生理、技术和生命报警。
+    paramID.clear();
     QList<AlarmOneShotIFace *> oneshotSourceList = _oneshotSources.values();
     foreach(AlarmOneShotIFace *source, oneshotSourceList)
     {
-        _handleOneShotAlarm(source);
+        alarmParamID.clear();
+        _handleOneShotAlarm(source, alarmParamID);
+        if (!alarmParamID.isEmpty())
+        {
+            paramID.append(alarmParamID);
+        }
+    }
+
+    // 处理PhyOneShot报警的趋势数据存储
+    if (!paramID.isEmpty())
+    {
+        TrendDataStorageManagerInterface *trendDataStorageManager = TrendDataStorageManagerInterface::getTrendDataStorageManager();
+        TrendCacheInterface *trendCache = TrendCacheInterface::getTrendCache();
+        if (trendDataStorageManager && trendCache)
+        {
+            trendCache->collectTrendData(_timestamp);
+            trendCache->collectTrendAlarmStatus(_timestamp);
+            trendDataStorageManager->storeData(_timestamp, TrendDataStorageManagerInterface::CollectStatusAlarm);
+        }
     }
 }
 
@@ -1267,17 +1301,4 @@ void Alarm::removeAllLimitAlarm()
             source->notifyAlarm(i, false);
         }
     }
-}
-
-void Alarm::setAlarmLightOnAlarmReset(bool flag)
-{
-    int index = flag ? 1 : 0;
-    systemConfig.setNumValue("Alarms|AlarmLightOnAlarmReset", index);
-}
-
-bool Alarm::getAlarmLightOnAlarmReset()
-{
-    int index = 0;
-    systemConfig.getNumValue("Alarms|AlarmLightOnAlarmReset", index);
-    return index;
 }

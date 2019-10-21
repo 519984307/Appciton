@@ -100,6 +100,7 @@ enum SPO2OneShotType
     SPO2_ONESHOT_ALARM_CHECK_SENSOR_CONNECTION,          // check sensor connection
     SPO2_ONESHOT_ALARM_SPO2_ONLY_MODE,                   // spo2 only mode
     SPO2_ONESHOT_ALARM_BOARD_FAILURE,                    // spo2 board failure
+    SPO2_ONESHOT_ALARM_SEND_COMMUNICATION_STOP,         // 发送通信中断
     SPO2_ONESHOT_NR
 };
 

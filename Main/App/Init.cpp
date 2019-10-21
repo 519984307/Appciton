@@ -398,7 +398,7 @@ static void _initProviderParam(void)
             spo2Param.setModuleType(MODULE_RAINBOW_SPO2);
             paramManager.addProvider(*new RainbowProvider("RAINBOW_SPO2"));
         }
-        paramManager.addParam(spo2Param.construction());
+        paramManager.addParam(spo2Param.getInstance());
 
         limitAlarmSource = new SPO2LimitAlarm();
         alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_SPO2);

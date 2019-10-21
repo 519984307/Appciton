@@ -205,7 +205,7 @@ void FactoryTestMenuContent::layoutExec()
         button->setButtonStyle(Button::ButtonTextOnly);
         layout->addWidget(button, i, 1);
         button->setProperty("Item", qVariantFromValue(i));
-        connect(button, SIGNAL(released()), this, SLOT(onBtnReleased(int)));
+        connect(button, SIGNAL(released()), this, SLOT(onBtnReleased()));
         button->blockSignals(false);
         d_ptr->lbtn[i] = button;
     }
@@ -215,8 +215,10 @@ void FactoryTestMenuContent::layoutExec()
 /**************************************************************************************************
  * 按钮槽函数。
  *************************************************************************************************/
-void FactoryTestMenuContent::onBtnReleased(int id)
+void FactoryTestMenuContent::onBtnReleased()
 {
+    Button *btn = qobject_cast<Button *>(sender());
+    int id = btn->property("Item").toInt();
     switch (id)
     {
 #ifdef OUTPUT_TESTPACKET_THROUGH_USB_CONTENT

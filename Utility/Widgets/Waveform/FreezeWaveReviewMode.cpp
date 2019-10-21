@@ -130,6 +130,7 @@ void FreezeWaveReviewMode::_loadWaveData()
     // clear the wave
     _wave->_head = 0;
     _wave->_tail = 0;
+    _wave->_waveRangeInfo.clear();
 
     // load data
     _wave->_freezeDataModel->getWaveData(reinterpret_cast<WaveDataType *>(_wave->_dataBuf), _wave->_size);
@@ -143,6 +144,7 @@ void FreezeWaveReviewMode::_loadWaveData()
         _wave->_waveBuf[i].setY(valueToY(yValue));
         _wave->_flagBuf[i] = (_wave->_dataBuf[i] & 0xFFFF0000) >> 16;
         _wave->_setDyBuf(i);
+        _wave->_updateRangeInfo(i);
     }
 }
 
@@ -193,19 +195,26 @@ void FreezeWaveReviewMode::_drawSparseCurve(FreezeWaveReviewMode *self, QPainter
     {
         return;
     }
-    painter.setPen(
-        QPen(self->_wave->palette().windowText(),
-             self->_wave->lineWidth()));
-    painter.setRenderHint(QPainter::Antialiasing, self->_wave->isAntialias());
-
-    if (beginIndex < endIndex)
+    if (self->_wave->colorGradationScanMode)
     {
-        painter.drawPolyline(&self->_wave->_waveBuf[beginIndex],
-                             endIndex - beginIndex + 1);
+        drawColorGradationWave(self, &painter, beginIndex, endIndex);
     }
-    else if (beginIndex == endIndex)
+    else
     {
-        painter.drawPoints(&self->_wave->_waveBuf[beginIndex], 1);
+        painter.setPen(
+                    QPen(self->_wave->palette().windowText(),
+                         self->_wave->lineWidth()));
+        painter.setRenderHint(QPainter::Antialiasing, self->_wave->isAntialias());
+
+        if (beginIndex < endIndex)
+        {
+            painter.drawPolyline(&self->_wave->_waveBuf[beginIndex],
+                                 endIndex - beginIndex + 1);
+        }
+        else if (beginIndex == endIndex)
+        {
+            painter.drawPoints(&self->_wave->_waveBuf[beginIndex], 1);
+        }
     }
 }
 
@@ -216,37 +225,44 @@ void FreezeWaveReviewMode::_drawDenseCurve(FreezeWaveReviewMode *self, QPainter 
         return;
     }
 
-    painter.setPen(
-        QPen(self->_wave->palette().windowText(),
-             self->_wave->lineWidth()));
-    painter.setRenderHint(QPainter::Antialiasing, self->_wave->isAntialias());
-
-    int i = beginIndex;
-    while (i <= endIndex)
+    if (self->_wave->colorGradationScanMode && !self->_wave->isFill())
     {
-        int j = i + 1;
-        if (j > endIndex)
+        drawColorGradationWave(self, &painter, beginIndex, endIndex);
+    }
+    else
+    {
+        painter.setPen(
+                    QPen(self->_wave->palette().windowText(),
+                         self->_wave->lineWidth()));
+        painter.setRenderHint(QPainter::Antialiasing, self->_wave->isAntialias());
+
+        int i = beginIndex;
+        while (i <= endIndex)
         {
-            painter.drawPoints(&self->_wave->_waveBuf[i], 1);
-            break;
-        }
-        else if (self->_wave->_dyBuf[j])
-        {
-            while (((j + 1) <= endIndex) && self->_wave->_dyBuf[j + 1])
+            int j = i + 1;
+            if (j > endIndex)
             {
-                j++;
+                painter.drawPoints(&self->_wave->_waveBuf[i], 1);
+                break;
             }
-            painter.drawPolyline(&self->_wave->_waveBuf[i], (j - i + 1));
-            i = j + 1;
-        }
-        else
-        {
-            while (((j + 1) <= endIndex) && !self->_wave->_dyBuf[j + 1])
+            else if (self->_wave->_dyBuf[j])
             {
-                j++;
+                while (((j + 1) <= endIndex) && self->_wave->_dyBuf[j + 1])
+                {
+                    j++;
+                }
+                painter.drawPolyline(&self->_wave->_waveBuf[i], (j - i + 1));
+                i = j + 1;
             }
-            painter.drawPoints(&self->_wave->_waveBuf[i], (j - i));
-            i = j;
+            else
+            {
+                while (((j + 1) <= endIndex) && !self->_wave->_dyBuf[j + 1])
+                {
+                    j++;
+                }
+                painter.drawPoints(&self->_wave->_waveBuf[i], (j - i));
+                i = j;
+            }
         }
     }
 }

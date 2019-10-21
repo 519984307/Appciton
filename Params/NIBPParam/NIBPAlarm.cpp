@@ -325,6 +325,8 @@ AlarmPriority NIBPOneShotAlarm::getAlarmPriority(int id)
     {
         case NIBP_ONESHOT_ALARM_MODULE_DISABLE:
         case NIBP_ONESHOT_ALARM_COMMUNICATION_STOP:
+        case NIBP_ONESHOT_ALARM_MODULE_ERROR:
+        case NIBP_ONESHOT_ALARM_SELTTEST_ERROR:
             return ALARM_PRIO_HIGH;
         default:
             return ALARM_PRIO_MED;

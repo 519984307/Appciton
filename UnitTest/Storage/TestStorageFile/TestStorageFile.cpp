@@ -786,8 +786,8 @@ void TestStorageFile::testGetBlockEntryList()
         m_StorageFile->appendBlockData(type, data.data(), data.count(), extraData);
     }
 
-    QList<BlockEntry> list;
-    m_StorageFile->getBlockEntryList(list);
+    QVector<BlockEntry> list;
+    list = m_StorageFile->getBlockEntryList();
 
     QCOMPARE(list.count(), result);
     for (int i = 0; i < list.count(); i++)

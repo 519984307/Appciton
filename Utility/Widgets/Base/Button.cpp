@@ -14,6 +14,7 @@
 #include <QStyle>
 #include <QKeyEvent>
 #include <ThemeManager.h>
+#include "SoundManagerInterface.h"
 
 #define PADDING 4
 #define ICON_TEXT_PADDING 4
@@ -33,6 +34,15 @@ public:
     int m_borderWidth;
     int m_borderRadius;
     bool m_press;
+
+    /**
+     * @brief drawIcon 以转换为Image方式绘画图标
+     * @param painter
+     * @param ico
+     * @param iconRect
+     * @param icoMode
+     */
+    void drawIcon(QPainter &painter, QIcon &ico, QRect iconRect, QIcon::Mode icoMode);
 };
 
 Button::Button(const QString &text, const QIcon &icon, QWidget *parent)
@@ -221,7 +231,7 @@ void Button::paintEvent(QPaintEvent *ev)
     case ButtonIconOnly:
     {
         QRect iconRect = QStyle::alignedRect(layoutDirection(), Qt::AlignCenter, iconSize(), rect);
-        ico.paint(&painter, iconRect, Qt::AlignCenter, icoMode);
+        d_ptr->drawIcon(painter, ico, iconRect, icoMode);
     }
     break;
     case ButtonTextOnly:
@@ -233,7 +243,7 @@ void Button::paintEvent(QPaintEvent *ev)
     {
         QRect iconRect = QStyle::alignedRect(layoutDirection(), Qt::AlignTop | Qt::AlignHCenter, iconSize(), rect.adjusted(0,
                                              PADDING, 0, 0));
-        ico.paint(&painter, iconRect, Qt::AlignCenter, icoMode);
+        d_ptr->drawIcon(painter, ico, iconRect, icoMode);
 
         QRect textRect = rect;
         textRect.setTop(iconRect.bottom() + ICON_TEXT_PADDING);
@@ -245,7 +255,7 @@ void Button::paintEvent(QPaintEvent *ev)
     {
         QRect iconRect = QStyle::alignedRect(layoutDirection(), Qt::AlignVCenter | Qt::AlignLeft, iconSize(),
                                              rect.adjusted(PADDING, 0, 0, 0));
-        ico.paint(&painter, iconRect, Qt::AlignCenter, icoMode);
+        d_ptr->drawIcon(painter, ico, iconRect, icoMode);
 
         QRect textRect = rect;
         textRect.setLeft(iconRect.right() + ICON_TEXT_PADDING);
@@ -298,4 +308,31 @@ void Button::keyReleaseEvent(QKeyEvent *ev)
         break;
     }
     d_ptr->m_press = false;
+}
+
+void Button::mousePressEvent(QMouseEvent *e)
+{
+    QAbstractButton::mousePressEvent(e);
+    // 触屏点击播放按键音
+    SoundManagerInterface *sound = SoundManagerInterface::getSoundManager();
+    if (sound)
+    {
+        sound->keyPressTone();
+    }
+}
+
+void ButtonPrivate::drawIcon(QPainter &painter, QIcon &ico, QRect iconRect, QIcon::Mode icoMode)
+{
+    if (!ico.isNull())
+    {
+        QPixmap pix = ico.pixmap(iconRect.size(), icoMode);
+        // 以预乘的格式创建image，目的是绘画图前前进行alpha预乘，使图像纹理能正常进行线性插值
+        QImage tmp(iconRect.size(), QImage::Format_ARGB32_Premultiplied);
+        QPainter drawImgPainter(&tmp);
+        // 以Source的融合方式，使透明且重叠部分使用源图像
+        drawImgPainter.setCompositionMode(QPainter::CompositionMode_Source);
+        drawImgPainter.drawPixmap(0, 0, iconRect.width(), iconRect.height(), pix);
+        drawImgPainter.end();
+        painter.drawImage(iconRect, tmp);
+    }
 }

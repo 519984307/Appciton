@@ -13,6 +13,7 @@
 #include <QAbstractTableModel>
 #include "TrendDataDefine.h"
 #include "IBPDefine.h"
+#include "TrendDataStorageManager.h"
 
 class TrendTableModelPrivate;
 class TrendTableModel : public QAbstractTableModel
@@ -69,7 +70,7 @@ public:
      * @brief getTrendDataPack  get trend data pack
      * @return  trend data pack (read only)
      */
-    const QList<TrendDataPackage *> &getTrendDataPack();
+    const QVector<BlockEntry> &getBlockEntryList();
 
     /**
      * @brief getColumnCount  每次显示的最大固定列数
@@ -82,6 +83,12 @@ public:
      * @param totalIndex 总索引
      */
     void getCurIndexInfo(unsigned &curIndex, unsigned &totalIndex) const;
+
+    /**
+     * @brief getCurTableTime 获取当前表格时间
+     * @return
+     */
+    QString getCurTableDate();
 
 protected:
     void timerEvent(QTimerEvent *ev);

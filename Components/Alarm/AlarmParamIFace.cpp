@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/10/21
+ **/
+
+
 #include "AlarmParamIFace.h"
 
 /**************************************************************************************************
@@ -8,6 +19,19 @@ void AlarmOneShotIFace::clear(void)
     OneShotMap::iterator it = _oneShotAlarms.begin();
     for (; it != _oneShotAlarms.end(); ++it)
     {
+        it.value().reset();
+    }
+}
+
+void AlarmOneShotIFace::clearRestOfAlarm(QList<int> ID)
+{
+    OneShotMap::iterator it = _oneShotAlarms.begin();
+    for (; it != _oneShotAlarms.end(); ++it)
+    {
+        if (ID.contains(it.key()))
+        {
+            continue;
+        }
         it.value().reset();
     }
 }

@@ -17,6 +17,8 @@
 #include "RawDataCollector.h"
 #include "LanguageManager.h"
 #include "ECGParam.h"
+#include "NIBPParam.h"
+#include "SPO2Param.h"
 
 class FactoryDataRecordContentPrivate
 {
@@ -45,16 +47,10 @@ FactoryDataRecordContentPrivate::FactoryDataRecordContentPrivate()
 void FactoryDataRecordContentPrivate::loadOptions()
 {
     int value = 0;
-    machineConfig.getNumValue("Record|ECG", value);
-    combos[ITEM_CBO_ECG]->setCurrentIndex(value);
-
     QString str;
     machineConfig.getStrValue("SPO2", str);
     if (systemManager.isSupport(CONFIG_SPO2) && str == "BLM_S5")
     {
-        value = 0;
-        machineConfig.getNumValue("Record|SPO2", value);
-        combos[ITEM_CBO_SPO2]->setCurrentIndex(value);
         combos[ITEM_CBO_SPO2]->show();
         labs[ITEM_CBO_SPO2]->show();
     }
@@ -67,9 +63,6 @@ void FactoryDataRecordContentPrivate::loadOptions()
     machineConfig.getStrValue("NIBP", str);
     if (systemManager.isSupport(CONFIG_NIBP) && str == "BLM_N5")
     {
-        value = 0;
-        machineConfig.getNumValue("Record|NIBP", value);
-        combos[ITEM_CBO_NIBP]->setCurrentIndex(value);
         combos[ITEM_CBO_NIBP]->show();
         labs[ITEM_CBO_NIBP]->show();
     }
@@ -235,10 +228,12 @@ void FactoryDataRecordContent::onComboBoxIndexChanged(int index)
         break;
     case FactoryDataRecordContentPrivate::ITEM_CBO_SPO2:
         str = "SPO2";
+        spo2Param.enableRawDataSend(index);
         rawDataCollector.setCollectStatus(RawDataCollector::SPO2_DATA, index);
         break;
     case FactoryDataRecordContentPrivate::ITEM_CBO_NIBP:
         str = "NIBP";
+        nibpParam.enableRawDataSend(index);
         rawDataCollector.setCollectStatus(RawDataCollector::NIBP_DATA, index);
         break;
     case FactoryDataRecordContentPrivate::ITEM_CBO_CO2:

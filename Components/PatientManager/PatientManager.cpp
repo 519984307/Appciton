@@ -21,10 +21,10 @@
 #include "O2ParamInterface.h"
 #include "SystemManagerInterface.h"
 #include <QFile>
-#include "SPO2Param.h"
-#include "RunningStatusBarInterface.h"
 #include "ECGDupParamInterface.h"
 #include "ECGParamInterface.h"
+#include "SPO2ParamInterface.h"
+#include "RunningStatusBarInterface.h"
 
 #define XML_FILE_SUFFIX QString::fromLatin1(".xml")
 #define PATIENT_INFO_PATH QString("/usr/local/nPM/etc")
@@ -468,7 +468,16 @@ void PatientManager::newPatient()
     }
     if (systemManagerInterface && systemManagerInterface->isSupport(PARAM_SPO2))
     {
-        spo2Param.clearTrendWaveData();
+        SPO2ParamInterface *spo2Param = SPO2ParamInterface::getSPO2Param();
+        if (spo2Param)
+        {
+            spo2Param->clearTrendWaveData();
+        }
+    }
+    ECGParamInterface *ecgParam = ECGParamInterface::getECGParam();
+    if (ecgParam)
+    {
+        ecgParam->setPacermaker(ECG_PACE_ON);
     }
 }
 
@@ -567,7 +576,7 @@ void PatientManagerPrivate::loadPatientInfo(PatientInfo &info)
 
     XmlParser xmlFile;
     DataStorageDirManagerInterface *dataStorageDirManager = DataStorageDirManagerInterface::getDataStorageDirManager();
-    if (!xmlFile.open(dataStorageDirManager->getCurFolder() + PATIENT_INFO_FILENAME))
+    if (dataStorageDirManager && !xmlFile.open(dataStorageDirManager->getCurFolder() + PATIENT_INFO_FILENAME))
     {
         qDebug() << "patient info file open fail!";
         return;

@@ -5,7 +5,7 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/8/15
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/10/16
  **/
 
 
@@ -42,7 +42,10 @@ void NIBPServiceErrorState::handleNIBPEvent(NIBPEvent event, const unsigned char
             return;
         }
     }
-    break;
+        break;
+    case NIBP_EVENT_CONNECTION_NORMAL:
+        switchState(NIBP_SERVICE_STANDBY_STATE);
+        break;
     default:
         break;
     }

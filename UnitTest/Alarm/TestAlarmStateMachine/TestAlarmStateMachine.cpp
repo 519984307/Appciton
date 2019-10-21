@@ -68,17 +68,18 @@ void TestAlarmStateMachine::testStart()
         /* don't turn on pause light any more, the light is useless */
         EXPECT_CALL(mockLightManager, enableAlarmAudioMute(enableAlarmAudioMuteFlag));
     }
-    if (alarmState == 1)
+    if (alarmState == ALARM_NORMAL_STATE)
     {
         // enter normal state
-        /* TODO fix this */
-        // EXPECT_CALL(mockAlarmIndicator, updateAlarmStateWidget());
+         EXPECT_CALL(mockAlarmIndicator, updateAlarmAudioState());
+         EXPECT_CALL(mockAlarmIndicator, clearAlarmPause);
     }
-    else if (alarmState == 2)
+    else if (alarmState == ALARM_PAUSE_STATE)
     {
         /* will not del phy alarm when pause */
         EXPECT_CALL(mockAlarmIndicator, delAllPhyAlarm()).Times(0);
         EXPECT_CALL(mockAlarmIndicator, updateAlarmPauseTime(_));
+        EXPECT_CALL(mockAlarmIndicator, removeAllAlarmResetStatus());
     }
 
     alarmStateMachine.start();
@@ -108,17 +109,20 @@ void TestAlarmStateMachine::testSwitchState()
 
     if (type == ALARM_NORMAL_STATE)
     {
-        /* TODO : fix this */
-        // EXPECT_CALL(mockAlarmIndicator, updateAlarmStateWidget());
+        // 正常报警状态处理事件的期望
+        EXPECT_CALL(mockAlarmIndicator, updateAlarmAudioState());
+        EXPECT_CALL(mockAlarmIndicator, clearAlarmPause);
     }
     else if (type == ALARM_PAUSE_STATE)
     {
         /* will not delete phy alarm when alarm pause */
         EXPECT_CALL(mockAlarmIndicator, delAllPhyAlarm()).Times(0);
         EXPECT_CALL(mockAlarmIndicator, updateAlarmPauseTime(_));
+        EXPECT_CALL(mockAlarmIndicator, removeAllAlarmResetStatus());
     }
     else if (type == ALARM_RESET_STATE)
     {
+        // 复位报警状态处理事件的期望
         EXPECT_CALL(mockAlarmIndicator, updateAlarmPauseTime(_));
     }
 
@@ -147,23 +151,28 @@ void TestAlarmStateMachine::testHandAlarmEvent()
     AlarmStateMachineInterface::registerAlarmStateMachine(& mockAlarmStateMachine);
     EXPECT_CALL(mockAlarmIndicator, setAlarmStatus(_));
     EXPECT_CALL(mockLightManager, enableAlarmAudioMute(_));
-    if (type != ALARM_NORMAL_STATE) {
+    if (type != ALARM_NORMAL_STATE)
+    {
+        // 非正常报警状态处理事件的期望
         EXPECT_CALL(mockAlarmIndicator, phyAlarmPauseStatusHandle());
     }
     EXPECT_CALL(mockAlarmStateMachine, switchState(_));
     if (type == ALARM_NORMAL_STATE)
     {
-        /* TODO: fix this */
-        // EXPECT_CALL(mockAlarmIndicator, updateAlarmStateWidget());
+        // 正常报警状态处理事件的期望
+        EXPECT_CALL(mockAlarmIndicator, updateAlarmAudioState());
+        EXPECT_CALL(mockAlarmIndicator, clearAlarmPause);
     }
     else if (type == ALARM_PAUSE_STATE)
     {
         /* will not delete phy alarm when pause */
         EXPECT_CALL(mockAlarmIndicator, delAllPhyAlarm()).Times(0);
         EXPECT_CALL(mockAlarmIndicator, updateAlarmPauseTime(_));
+        EXPECT_CALL(mockAlarmIndicator, removeAllAlarmResetStatus());
     }
     else if (type == ALARM_RESET_STATE)
     {
+        // 复位报警状态处理事件的期望
         EXPECT_CALL(mockAlarmIndicator, updateAlarmPauseTime(_));
     }
 

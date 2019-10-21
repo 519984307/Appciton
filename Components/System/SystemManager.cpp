@@ -104,6 +104,7 @@ public:
         alarmIndicator.delAllPhyAlarm();
         windowManager.showDemoWidget(true);
         paramManager.connectDemoParamProvider();
+        patientManager.setMonitor(true);
         patientManager.newPatient();
         nibpParam.clearTrendListData();
     }
@@ -1065,6 +1066,7 @@ SystemManager::SystemManager() :  //申请一个动态的模块加载结果数�
     d_ptr->isTurnOff = false;
 
     d_ptr->workerThread = new QThread();
+    d_ptr->workerThread->setObjectName("HDMICtrl");
     TDA19988Ctrl *hdmiCtrl = new TDA19988Ctrl();
     hdmiCtrl->moveToThread(d_ptr->workerThread);
     hdmiCtrl->connect(d_ptr->workerThread, SIGNAL(finished()), hdmiCtrl, SLOT(deleteLater()));

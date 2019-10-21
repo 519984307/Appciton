@@ -88,11 +88,10 @@ public:
 
 void ECGMenuContentPrivate::loadOptions()
 {
-    int id = 0;;
+    int sourceType = 0;;
     setCboBlockSignal(true);
     combos[ITEM_CBO_HRPR_SOURCE]->clear();
-    currentConfig.getNumValue("ECG|HRSource", id);
-    int sourceType = ecgParam.getHrSourceTypeFromId(static_cast<ParamID>(id));
+    currentConfig.getNumValue("ECG|HRSource", sourceType);
     int cboIndex = 0;
     int itemCount = 0;
     for (int i = HR_SOURCE_ECG; i < HR_SOURCE_NR; ++i)
@@ -108,7 +107,7 @@ void ECGMenuContentPrivate::loadOptions()
 
         if (i == sourceType)
         {
-            cboIndex = itemCount;
+            cboIndex = itemCount;   // 选中对应item
         }
         itemCount++;
         combos[ITEM_CBO_HRPR_SOURCE]->addItem(trs(ECGSymbol::convert(static_cast<HRSourceType>(i))));
@@ -117,8 +116,7 @@ void ECGMenuContentPrivate::loadOptions()
     if (cboIndex > combos[ITEM_CBO_HRPR_SOURCE]->count())
     {
         cboIndex = 0;
-        id = ecgParam.getIdFromHrSourceType(static_cast<HRSourceType>(cboIndex));
-        currentConfig.setNumValue("ECG|HRSource", id);
+        currentConfig.setNumValue("ECG|HRSource", cboIndex);
     }
     combos[ITEM_CBO_HRPR_SOURCE]->setCurrentIndex(cboIndex);
 
@@ -162,7 +160,7 @@ void ECGMenuContentPrivate::loadOptions()
     }
 
     // 读取的ecg1wave、ecg2wave如果item相同，则复位为0、1.
-    if (index2 == index1)
+    if (leadMode != ECG_LEAD_MODE_3 && index2 == index1)
     {
         index1 = 1;
         index2 = 0;
@@ -681,14 +679,14 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
 
             ecgParam.setCalcLead(d_ptr->ecgWaveforms[index]);
             ecgParam.setLeadMode3DisplayLead(d_ptr->ecgWaveforms[index]);
-            d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(true);
-            ECGGain gain = ecgParam.getGain(static_cast<ECGLead>(index));
-            d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->setCurrentIndex(gain);
-            d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(false);
             currentConfig.setNumValue("ECG|Ecg1Wave", index);
             layoutManager.updateLayout();
             // 需要在布局更新后调用更新参数接口
             ecgParam.updateWaveWidgetStatus();
+            d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(true);
+            ECGGain gain = ecgParam.getGain(static_cast<ECGLead>(index));
+            d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->setCurrentIndex(gain);
+            d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(false);
             break;
         }
         case ECGMenuContentPrivate::ITEM_CBO_ECG2:

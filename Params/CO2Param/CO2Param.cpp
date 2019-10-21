@@ -53,7 +53,9 @@ public:
               calibrateChannel(0),
               calibrateResult(false),
               calibrateReply(false),
-              disableZero(0)
+              disableZero(0),
+              o2CompensationEnable(false),
+              n2oCompensationEnable(false)
     {
     }
 
@@ -99,6 +101,8 @@ public:
     bool calibrateReply;
 
     int disableZero;
+    bool o2CompensationEnable;
+    bool n2oCompensationEnable;
 };
 /**************************************************************************************************
  * 设置波形速度。
@@ -806,6 +810,39 @@ bool CO2Param::getDisableZeroStatus()
     return d_ptr->disableZero;
 }
 
+void CO2Param::enableCompensation(CO2Compensation gas, bool enable)
+{
+    if (gas == CO2_COMPEN_O2)
+    {
+        if (enable != d_ptr->o2CompensationEnable)
+        {
+            d_ptr->o2CompensationEnable = enable;
+            emit updateCompensation(CO2_COMPEN_O2, enable);
+        }
+    }
+    else if (gas == CO2_COMPEN_N2O)
+    {
+        if (enable != d_ptr->n2oCompensationEnable)
+        {
+            d_ptr->n2oCompensationEnable = enable;
+            emit updateCompensation(CO2_COMPEN_N2O, enable);
+        }
+    }
+}
+
+bool CO2Param::getCompensationEnabled(CO2Compensation gas)
+{
+    if (gas == CO2_COMPEN_O2)
+    {
+        return d_ptr->o2CompensationEnable;
+    }
+    else if (gas == CO2_COMPEN_N2O)
+    {
+        return d_ptr->n2oCompensationEnable;
+    }
+    return false;
+}
+
 /**************************************************************************************************
  * 校零。
  *************************************************************************************************/
@@ -834,7 +871,7 @@ void CO2Param::setApneaTime(ApneaAlarmTime t)
 ApneaAlarmTime CO2Param::getApneaTime(void)
 {
     int t = APNEA_ALARM_TIME_20_SEC;
-    currentConfig.getNumValue("Alarm|ApneaTime", t);
+    currentConfig.getNumValue("CO2|ApneaTime", t);
     return (ApneaAlarmTime)t;
 }
 

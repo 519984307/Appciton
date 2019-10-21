@@ -33,7 +33,6 @@ public:
     {
         ITEM_CBO_WAVE_SPEED = 0,
         ITEM_CBO_WAVE_RULER,
-        ITEM_CBO_FICO2_DISPLAY,
         ITEM_CBO_APNEA_TIME,
         ITEM_CBO_WORK_MODE,
 
@@ -64,6 +63,8 @@ CO2MenuContent::CO2MenuContent():
     d_ptr(new CO2MenuContentPrivate)
 {
     connect(&co2Param, SIGNAL(updateZeroSta(bool)), this, SLOT(disableZero(bool)));
+    connect(&co2Param, SIGNAL(updateCompensation(CO2Compensation, bool)), this,
+            SLOT(onUpdateCompensation(CO2Compensation, bool)));
 }
 
 CO2MenuContent::~CO2MenuContent()
@@ -81,7 +82,7 @@ void CO2MenuContentPrivate::loadOptions()
     // 波形速度。
     combos[ITEM_CBO_WAVE_SPEED]->setCurrentIndex(co2Param.getSweepSpeed());
 
-    // 波形标尺
+    // 波形标尺140.08
     combos[ITEM_CBO_WAVE_RULER]->blockSignals(true);
     combos[ITEM_CBO_WAVE_RULER]->clear();
     int maxZoom = CO2_DISPLAY_ZOOM_NR;
@@ -110,11 +111,14 @@ void CO2MenuContentPrivate::loadOptions()
     combos[ITEM_CBO_WAVE_RULER]->setCurrentIndex(co2Param.getDisplayZoom());
 
     // 气体补偿。
+    o2Spb->blockSignals(true);
+    o2Spb->setEnabled(co2Param.getCompensationEnabled(CO2_COMPEN_O2));
     o2Spb->setValue(co2Param.getCompensation(CO2_COMPEN_O2));
+    o2Spb->blockSignals(false);
+    n2oSpb->blockSignals(true);
+    o2Spb->setEnabled(co2Param.getCompensationEnabled(CO2_COMPEN_N2O));
     n2oSpb->setValue(co2Param.getCompensation(CO2_COMPEN_N2O));
-
-    // 显示控制。
-    combos[ITEM_CBO_FICO2_DISPLAY]->setCurrentIndex(co2Param.getFICO2Display());
+    n2oSpb->blockSignals(false);
 
     ApneaAlarmTime index = co2Param.getApneaTime();
 
@@ -166,11 +170,8 @@ void CO2MenuContent::onComboBoxIndexChanged(int index)
     case CO2MenuContentPrivate::ITEM_CBO_WAVE_RULER:
         co2Param.setDisplayZoom(static_cast<CO2DisplayZoom>(index));
         break;
-    case CO2MenuContentPrivate::ITEM_CBO_FICO2_DISPLAY:
-        co2Param.setFiCO2Display(static_cast<CO2FICO2Display>(index));
-        break;
     case CO2MenuContentPrivate::ITEM_CBO_APNEA_TIME:
-        currentConfig.setNumValue("Alarm|ApneaTime", index);
+        currentConfig.setNumValue("CO2|ApneaTime", index);
         co2Param.setApneaTime(static_cast<ApneaAlarmTime>(index));
         break;
     case CO2MenuContentPrivate::ITEM_CBO_WORK_MODE:
@@ -218,6 +219,18 @@ void CO2MenuContent::disableZero(bool sta)
     d_ptr->btns[CO2MenuContentPrivate::ITEM_BTN_ZERO_CALIB]->setEnabled(!sta);
 }
 
+void CO2MenuContent::onUpdateCompensation(CO2Compensation gas, bool enable)
+{
+    if (gas == CO2_COMPEN_O2)
+    {
+        d_ptr->o2Spb->setEnabled(enable);
+    }
+    else if (gas == CO2_COMPEN_N2O)
+    {
+        d_ptr->n2oSpb->setEnabled(enable);
+    }
+}
+
 void CO2MenuContent::layoutExec()
 {
     QGridLayout *layout = new QGridLayout(this);
@@ -231,12 +244,14 @@ void CO2MenuContent::layoutExec()
     label = new QLabel(trs("CO2SweepSpeed"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
+    /*
+     * disable 50mm/s for CO2 wave, because the CO2 wave sample rate is too low
+     * and the scan gap is too large when in 50mm/s
+     */
     comboBox->addItems(QStringList()
                        << CO2Symbol::convert(CO2_SWEEP_SPEED_62_5)
                        << CO2Symbol::convert(CO2_SWEEP_SPEED_125)
-                       << CO2Symbol::convert(CO2_SWEEP_SPEED_250)
-                       << CO2Symbol::convert(CO2_SWEEP_SPEED_500)
-                      );
+                       << CO2Symbol::convert(CO2_SWEEP_SPEED_250));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     itemID = CO2MenuContentPrivate::ITEM_CBO_WAVE_SPEED;
@@ -254,20 +269,6 @@ void CO2MenuContent::layoutExec()
                           qVariantFromValue(itemID));
     d_ptr->combos.insert(CO2MenuContentPrivate::ITEM_CBO_WAVE_RULER, comboBox);
 
-    // fico2 display
-    label = new QLabel(trs("CO2FiCO2Display"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs(CO2Symbol::convert(CO2_FICO2_DISPLAY_OFF))
-                       << trs(CO2Symbol::convert(CO2_FICO2_DISPLAY_ON))
-                      );
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    itemID = CO2MenuContentPrivate::ITEM_CBO_FICO2_DISPLAY;
-    comboBox->setProperty("Item", itemID);
-    d_ptr->combos.insert(CO2MenuContentPrivate::ITEM_CBO_FICO2_DISPLAY, comboBox);
-
     // apnea time
     label = new QLabel(trs("ApneaDelay"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -281,8 +282,7 @@ void CO2MenuContent::layoutExec()
                        << trs(CO2Symbol::convert(CO2_APNEA_TIME_45_SEC))
                        << trs(CO2Symbol::convert(CO2_APNEA_TIME_50_SEC))
                        << trs(CO2Symbol::convert(CO2_APNEA_TIME_55_SEC))
-                       << trs(CO2Symbol::convert(CO2_APNEA_TIME_60_SEC))
-                      );
+                       << trs(CO2Symbol::convert(CO2_APNEA_TIME_60_SEC)));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     itemID = CO2MenuContentPrivate::ITEM_CBO_APNEA_TIME;

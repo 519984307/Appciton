@@ -41,11 +41,11 @@
 TrendWaveWidget::TrendWaveWidget() : _hLayoutTrend(NULL),
     _timeInterval(RESOLUTION_RATIO_5_SECOND),
     _waveRegionWidth(0), _oneFrameWidth(0),
-    _initTime(0),
     _cursorPosIndex(0), _currentCursorTime(0), _subWidget(NULL),
     _displayGraphNum(3), _totalGraphNum(3), _curVScroller(0),
     _totalPage(0), _currentPage(0),  _leftTime(0), _rightTime(0),
-    _curIndex(0), _trendGraphInfo(TrendGraphInfo()), _isHistory(false)
+    _curIndex(0), _trendGraphInfo(TrendGraphInfo()), _isHistory(false),
+    _backend(NULL)
 {
     QString prefix = "TrendGraph|";
     int index = 0;
@@ -57,8 +57,6 @@ TrendWaveWidget::TrendWaveWidget() : _hLayoutTrend(NULL),
     systemConfig.getNumValue(numberPrefix, index);
     _displayGraphNum = index + 1;
 
-    _initTime = timeDate.time();
-    _initTime = _initTime - _initTime % 5;
     QPalette palette;
     palette.setColor(QPalette::Background, Qt::black);
     setPalette(palette);
@@ -108,7 +106,13 @@ void TrendWaveWidget::leftMoveCoordinate()
     {
         _currentPage++;
     }
+    _cursorPosIndex = 0;
     updateTimeRange();
+    int count = _displayGraphNum;
+    for (int i = 0; i < count; i++)
+    {
+        _subWidgetList.at(i)->cursorMove(_cursorPosIndex);
+    }
     update();
 }
 
@@ -122,7 +126,13 @@ void TrendWaveWidget::rightMoveCoordinate()
     {
         _currentPage--;
     }
+    _cursorPosIndex = 0;
     updateTimeRange();
+    int count = _displayGraphNum;
+    for (int i = 0; i < count; i++)
+    {
+        _subWidgetList.at(i)->cursorMove(_cursorPosIndex);
+    }
     update();
 }
 
@@ -130,7 +140,15 @@ void TrendWaveWidget::leftMoveCursor()
 {
     if (_cursorPosIndex >= _trendGraphInfo.alarmInfo.count() - 1)
     {
-        _cursorPosIndex = _trendGraphInfo.alarmInfo.count() - 1;
+        if (_trendGraphInfo.alarmInfo.count() == 0)
+        {
+            // 没有数据时，索引置为0，避免-1索引导致越界
+            _cursorPosIndex = 0;
+        }
+        else
+        {
+            _cursorPosIndex = _trendGraphInfo.alarmInfo.count() - 1;
+        }
     }
     else
     {
@@ -169,8 +187,8 @@ void TrendWaveWidget::leftMoveEvent()
     // 遍历找到下一个事件发生时间
     for (int i = _eventList.count() - 1; i >= 0; i --)
     {
-        EventInfoSegment event = _eventList.at(i);
-        unsigned alarmTime = event.timestamp;
+        BlockEntry event = _eventList.at(i);
+        unsigned alarmTime = event.extraData;
         unsigned curTime = _trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp;
         if (alarmTime < curTime)
         {
@@ -192,7 +210,18 @@ void TrendWaveWidget::leftMoveEvent()
             else
             {
                 // 将游标移到事件发生时刻
-                _cursorPosIndex = _getTimeIndex(alarmTime);
+                int index = _getTimeIndex(alarmTime);
+
+                // 事件时间没有对应的趋势数据索引
+                if (index == -1)
+                {
+                    // 跳到下一个事件
+                    continue;
+                }
+                else
+                {
+                    _cursorPosIndex = index;
+                }
 
                 int count = _displayGraphNum;
                 for (int i = 0; i < count; i++)
@@ -210,8 +239,8 @@ void TrendWaveWidget::rightMoveEvent()
 {
     for (int i = 0; i < _eventList.count(); i ++)
     {
-        EventInfoSegment event = _eventList.at(i);
-        unsigned alarmTime = event.timestamp;
+        BlockEntry event = _eventList.at(i);
+        unsigned alarmTime = event.extraData;
         unsigned curTime = _trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp;
         if (alarmTime > curTime)
         {
@@ -232,7 +261,18 @@ void TrendWaveWidget::rightMoveEvent()
             else
             {
                 // 将游标移到事件发生时刻
-                _cursorPosIndex = _getTimeIndex(alarmTime);
+                int index = _getTimeIndex(alarmTime);
+
+                // 事件时间没有对应的趋势数据索引
+                if (index == -1)
+                {
+                    // 跳到下一个事件
+                    continue;
+                }
+                else
+                {
+                    _cursorPosIndex = index;
+                }
 
                 int count = _displayGraphNum;
                 for (int i = 0; i < count; i++)
@@ -286,10 +326,11 @@ void TrendWaveWidget::pageDownParam()
 void TrendWaveWidget::setTimeInterval(ResolutionRatio timeInterval)
 {
     _timeInterval = timeInterval;
-    _calculationPage();
-    _updateEventIndex();
-    updateTimeRange();
-    update();
+    int count = _displayGraphNum;
+    for (int i = 0; i < count; i++)
+    {
+        _subWidgetList.at(i)->cursorMove(0);
+    }
 }
 
 void TrendWaveWidget::setWaveNumber(int num)
@@ -307,18 +348,16 @@ void TrendWaveWidget::setRulerLimit(int index, int down, int up, int scale)
     }
 }
 
-void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, const int endIndex)
+void TrendWaveWidget::loadTrendData(SubParamID subID)
 {
     _trendGraphInfo.reset();
-    if (startIndex == InvData() || endIndex == InvData())
+    if (_trendDataPack.count() == 0)
     {
         return;
     }
-
     _trendGraphInfo.startTime = _leftTime;
     _trendGraphInfo.endTime = _rightTime;
     _trendGraphInfo.subParamID = subID;
-    unsigned interval = TrendDataSymbol::convertValue(_timeInterval);
     switch (subID)
     {
     case SUB_PARAM_HR_PR:
@@ -337,37 +376,8 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
     {
         TrendGraphData dataV1;
         AlarmEventInfo alarm;
-        unsigned lastTime = _trendDataPack.at(endIndex)->time;
-        bool startFlag = true;
-        for (int i = endIndex; i >= startIndex; i --)
+        for (int i = 0; i < _trendDataPack.count(); i++)
         {
-            if (startFlag)
-            {
-                startFlag = false;
-            }
-            else
-            {
-                unsigned t = _trendDataPack.at(i)->time;
-                if (t < lastTime)
-                {
-                    // 处理由于关机引起的数据未记录:向下一个存储数据移动的时间间隔个数
-                    int intervalNum = (lastTime - t) / interval + (((lastTime - t) % interval) ? 1 : 0);
-                    lastTime = lastTime - interval * intervalNum;
-                    dataV1.data = InvData();
-                    dataV1.isAlarm = false;
-                    dataV1.timestamp = lastTime;
-                    alarm.isAlarmEvent = false;
-                    alarm.timestamp = lastTime;
-                    _trendGraphInfo.alarmInfo.append(alarm);
-                    _trendGraphInfo.trendData.append(dataV1);
-                    lastTime = lastTime - interval;
-                    continue;
-                }
-                else if (t > lastTime)
-                {
-                    continue;
-                }
-            }
             dataV1.data = _trendDataPack.at(i)->subparamValue.value(subID, InvData());
             dataV1.isAlarm = _trendDataPack.at(i)->subparamAlarm.value(subID, false);
             dataV1.timestamp = _trendDataPack.at(i)->time;
@@ -375,7 +385,6 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
             alarm.timestamp = _trendDataPack.at(i)->time;
             _trendGraphInfo.alarmInfo.append(alarm);
             _trendGraphInfo.trendData.append(dataV1);
-            lastTime = lastTime - interval;
         }
         break;
     }
@@ -387,51 +396,8 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
     {
         AlarmEventInfo alarm;
         TrendGraphDataV3 dataV3;
-        unsigned lastTime = _trendDataPack.at(endIndex)->time;
-        bool startFlag = true;
-        for (int i = endIndex; i >= startIndex; i --)
+        for (int i = 0; i < _trendDataPack.count(); i++)
         {
-            if (startFlag)
-            {
-                startFlag = false;
-            }
-            else
-            {
-                unsigned t = _trendDataPack.at(i)->time;
-                if (t < lastTime)
-                {
-                    // 处理由于关机引起的数据未记录:向下一个存储数据移动的时间间隔个数
-                    int intervalNum = (lastTime - t) / interval + (((lastTime - t) % interval) ? 1 : 0);
-                    lastTime = lastTime - interval * intervalNum;
-                    dataV3.data[0] = InvData();
-                    dataV3.data[1] = InvData();
-                    dataV3.data[2] = InvData();
-                    dataV3.isAlarm = false;
-                    dataV3.timestamp = lastTime;
-                    alarm.isAlarmEvent = false;
-                    alarm.timestamp = lastTime;
-                    _trendGraphInfo.alarmInfo.append(alarm);
-                    _trendGraphInfo.trendDataV3.append(dataV3);
-                    lastTime = lastTime - interval;
-                    continue;
-                }
-                else if (t > lastTime)
-                {
-                    if (subID == SUB_PARAM_NIBP_SYS)
-                    {
-                        // NIBP测量标志位保存在后一个时间间隔的数据中.
-                        unsigned status = _trendDataPack.at(i)->status;
-                        if (status & TrendDataStorageManager::CollectStatusNIBP)
-                        {
-                            if (_trendGraphInfo.trendDataV3.count())
-                            {
-                                _trendGraphInfo.trendDataV3.last().status = status;
-                            }
-                        }
-                    }
-                    continue;
-                }
-            }
             dataV3.data[0] = _trendDataPack.at(i)->subparamValue.value(subID, InvData());
             dataV3.data[1] = _trendDataPack.at(i)->subparamValue.value(SubParamID(subID + 1), InvData());
             dataV3.data[2] = _trendDataPack.at(i)->subparamValue.value(SubParamID(subID + 2), InvData());
@@ -444,7 +410,6 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
             alarm.timestamp = _trendDataPack.at(i)->time;
             _trendGraphInfo.alarmInfo.append(alarm);
             _trendGraphInfo.trendDataV3.append(dataV3);
-            lastTime = lastTime - interval;
         }
         break;
     }
@@ -458,38 +423,8 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
     {
         AlarmEventInfo alarm;
         TrendGraphDataV2 dataV2;
-        unsigned lastTime = _trendDataPack.at(endIndex)->time;
-        bool startFlag = true;
-        for (int i = endIndex; i >= startIndex; i--)
+        for (int i = 0; i < _trendDataPack.count(); i++)
         {
-            if (startFlag)
-            {
-                startFlag = false;
-            }
-            else
-            {
-                unsigned t = _trendDataPack.at(i)->time;
-                if (t < lastTime)
-                {
-                    // 处理由于关机引起的数据未记录:向下一个存储数据移动的时间间隔个数
-                    int intervalNum = (lastTime - t) / interval + (((lastTime - t) % interval) ? 1 : 0);
-                    lastTime = lastTime - interval * intervalNum;
-                    dataV2.data[0] = InvData();
-                    dataV2.data[1] = InvData();
-                    dataV2.isAlarm = false;
-                    dataV2.timestamp = lastTime;
-                    alarm.isAlarmEvent = false;
-                    alarm.timestamp = lastTime;
-                    _trendGraphInfo.alarmInfo.append(alarm);
-                    _trendGraphInfo.trendDataV2.append(dataV2);
-                    lastTime = lastTime - interval;
-                    continue;
-                }
-                else if (t > lastTime)
-                {
-                    continue;
-                }
-            }
             dataV2.data[0] = _trendDataPack.at(i)->subparamValue.value(subID, InvData());
             dataV2.data[1] = _trendDataPack.at(i)->subparamValue.value(SubParamID(subID + 1), InvData());
             dataV2.isAlarm = _trendDataPack.at(i)->subparamAlarm.value(subID, false);
@@ -498,15 +433,12 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
             alarm.timestamp = _trendDataPack.at(i)->time;
             _trendGraphInfo.alarmInfo.append(alarm);
             _trendGraphInfo.trendDataV2.append(dataV2);
-            lastTime = lastTime - interval;
         }
         break;
     }
     default:
         break;
     }
-
-    _cursorPosIndex = 0;
 }
 
 void TrendWaveWidget::dataIndex(int &startIndex, int &endIndex)
@@ -515,17 +447,95 @@ void TrendWaveWidget::dataIndex(int &startIndex, int &endIndex)
     endIndex = _findIndex(_rightTime);
 }
 
+void TrendWaveWidget::trendDataPack(int startIndex, int endIndex)
+{
+    qDeleteAll(_trendDataPack);
+    _trendDataPack.clear();
+    if (startIndex == InvData() || endIndex == InvData())
+    {
+        return;
+    }
+
+    QByteArray data;
+    TrendDataSegment *dataSeg;
+
+    unsigned interval = TrendDataSymbol::convertValue(_timeInterval);
+    unsigned lastTime = trendBlockList.last().extraData;
+    bool startFlag = true;
+    for (int i = endIndex; i >= startIndex; i--)
+    {
+        if (startFlag)
+        {
+            startFlag = false;
+        }
+        else
+        {
+            unsigned t = trendBlockList.at(i).extraData;
+            if (t < lastTime)
+            {
+                // 处理由于关机引起的数据未记录:向下一个存储数据移动的时间间隔个数
+                int intervalNum = (lastTime - t) / interval + (((lastTime - t) % interval) ? 1 : 0);
+                lastTime = lastTime - interval * intervalNum;
+                TrendDataPackage *pack = new TrendDataPackage();
+                pack->time = lastTime;
+                _trendDataPack.append(pack);
+                lastTime = lastTime - interval;
+            }
+            else if (t > lastTime)
+            {
+                data = _backend->getBlockData((quint32)i);
+                dataSeg = reinterpret_cast<TrendDataSegment *>(data.data());
+                // NIBP测量标志位保存在后一个时间间隔的数据中.
+                unsigned status = dataSeg->status;
+                if (status & TrendDataStorageManager::CollectStatusNIBP)
+                {
+                    if (_trendDataPack.count())
+                    {
+                        _trendDataPack.last()->status = status;
+                        _trendDataPack.last()->alarmFlag = dataSeg->eventFlag;
+                        for (int j = 0; j < dataSeg->trendValueNum; j++)
+                        {
+                            if (dataSeg->values[j].subParamId == SUB_PARAM_NIBP_SYS ||
+                                    dataSeg->values[j].subParamId == SUB_PARAM_NIBP_DIA ||
+                                    dataSeg->values[j].subParamId == SUB_PARAM_NIBP_MAP)
+                            {
+                                _trendDataPack.last()->subparamValue[(SubParamID)dataSeg->values[j].subParamId] = dataSeg->values[j].value;
+                                _trendDataPack.last()->subparamAlarm[(SubParamID)dataSeg->values[j].subParamId] = dataSeg->values[j].alarmFlag;
+                            }
+                        }
+                    }
+                }
+                continue;
+            }
+        }
+        TrendDataPackage *pack = new TrendDataPackage;
+        data = _backend->getBlockData((quint32)i);
+        dataSeg = reinterpret_cast<TrendDataSegment *>(data.data());
+        pack->time = dataSeg->timestamp;
+        for (int j = 0; j < dataSeg->trendValueNum; j ++)
+        {
+            pack->subparamValue[(SubParamID)dataSeg->values[j].subParamId] = dataSeg->values[j].value;
+            pack->subparamAlarm[(SubParamID)dataSeg->values[j].subParamId] = dataSeg->values[j].alarmFlag;
+        }
+        pack->alarmFlag = dataSeg->eventFlag;
+        pack->status = dataSeg->status;
+        _trendDataPack.append(pack);
+        lastTime = lastTime - interval;
+    }
+}
+
 void TrendWaveWidget::updateTimeRange()
 {
     unsigned t;
     unsigned onePixelTime = TrendDataSymbol::convertValue(_timeInterval);
-    if (_trendDataPack.length() == 0)
+    if (trendBlockList.count() == 0)
     {
-        t = _initTime;
+        t = timeDate.time();
+        t = t - t % 5;
     }
     else
     {
-        unsigned lastTime = _trendDataPack.last()->time;
+        unsigned lastTime = trendBlockList.last().extraData;
         t = lastTime - onePixelTime * GRAPH_POINT_NUMBER * (_currentPage - 1);
     }
     _rightTime = t;
@@ -555,7 +565,7 @@ const QList<TrendGraphInfo> TrendWaveWidget::getTrendGraphPrint()
     return _infosList;
 }
 
-const QList<EventInfoSegment> TrendWaveWidget::getEventList()
+const QList<BlockEntry> TrendWaveWidget::getEventList()
 {
     return _eventList;
 }
@@ -572,7 +582,24 @@ void TrendWaveWidget::setHistoryDataPath(QString path)
 
 void TrendWaveWidget::setHistoryData(bool flag)
 {
+    // 动态内存释放
+    if (_isHistory)
+    {
+        delete _backend;
+        _backend = NULL;
+    }
+
     _isHistory = flag;
+    if (_isHistory)
+    {
+        _backend = StorageManager::open(_historyDataPath + TREND_DATA_FILE_NAME, QIODevice::ReadWrite);
+        _patientInfo = patientManager.getHistoryPatientInfo(_historyDataPath + PATIENT_INFO_FILE_NAME);
+    }
+    else
+    {
+        _backend = trendDataStorageManager.backend();
+        _patientInfo = patientManager.getPatientInfo();
+    }
 }
 
 QList<SubParamID> TrendWaveWidget::getCurParamList()
@@ -605,6 +632,10 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
     if (_trendGraphInfo.alarmInfo.count() != 0)
     {
         cursorPos = _getCursorPos(_trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp);
+    }
+    else
+    {
+        cursorPos = _getCursorPos(_rightTime);
     }
 
     unsigned t = _rightTime;
@@ -656,15 +687,16 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
     // 报警事件的标志
     for (int i = 0; i < _eventList.count(); i ++)
     {
-        EventInfoSegment event = _eventList.at(i);
-        unsigned alarmTime = event.timestamp;
+        BlockEntry event = _eventList.at(i);
+        unsigned alarmTime = event.extraData;
         if (alarmTime <= _rightTime && alarmTime >= _leftTime)
         {
-            if (event.type == EventPhysiologicalAlarm)
+            EventType type = static_cast<EventType>(event.type & 0xff);
+            if (type == EventPhysiologicalAlarm)
             {
                 barPainter.setPen(QPen(Qt::yellow, 2, Qt::SolidLine));
             }
-            else if (event.type != EventOxyCRG)
+            else if (type != EventOxyCRG)
             {
                 barPainter.setPen(QPen(Qt::green, 2, Qt::SolidLine));
             }
@@ -678,8 +710,10 @@ void TrendWaveWidget::showEvent(QShowEvent *e)
 {
     IWidget::showEvent(e);
     _getTrendData();
+    _calculationPage();
     _cursorPosIndex = 0;
     updateTimeRange();
+    _loadEventInfoList();
     _updateEventIndex();
 }
 
@@ -742,6 +776,7 @@ void TrendWaveWidget::_trendLayout()
     int startIndex;
     int endIndex;
     dataIndex(startIndex, endIndex);
+    trendDataPack(startIndex, endIndex);
     for (int i = 0; i < _displayGraphNum; i++)
     {
         int index = _curIndex + i;
@@ -761,7 +796,7 @@ void TrendWaveWidget::_trendLayout()
             _subWidgetList.at(i)->setThemeColor(colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(subId))));
         }
 
-        loadTrendData(subId, startIndex, endIndex);
+        loadTrendData(subId);
         _subWidgetList.at(i)->trendDataInfo(_trendGraphInfo);
         _subWidgetList.at(i)->setFixedHeight(subWidgetHeight);
         _subWidgetList.at(i)->loadTrendSubWidgetInfo(info);
@@ -791,47 +826,8 @@ void TrendWaveWidget::_trendLayout()
 
 void TrendWaveWidget::_getTrendData()
 {
-    IStorageBackend *backend;
-    if (_isHistory)
-    {
-        backend = StorageManager::open(_historyDataPath + TREND_DATA_FILE_NAME, QIODevice::ReadWrite);
-        _patientInfo = patientManager.getHistoryPatientInfo(_historyDataPath + PATIENT_INFO_FILE_NAME);
-    }
-    else
-    {
-        backend = trendDataStorageManager.backend();
-        _patientInfo = patientManager.getPatientInfo();
-    }
-    int blockNum = backend->getBlockNR();
-    QByteArray data;
-    TrendDataSegment *dataSeg;
-    qDeleteAll(_trendDataPack);
-    _trendDataPack.clear();
-    _eventList.clear();
-    // TODO: low efficiency
-    for (int i = 0; i < blockNum; i ++)
-    {
-        TrendDataPackage *pack;
-        pack = new TrendDataPackage;
-        data = backend->getBlockData((quint32)i);
-        dataSeg = reinterpret_cast<TrendDataSegment *>(data.data());
-        pack->time = dataSeg->timestamp;
-        for (int j = 0; j < dataSeg->trendValueNum; j ++)
-        {
-            pack->subparamValue[(SubParamID)dataSeg->values[j].subParamId] = dataSeg->values[j].value;
-            pack->subparamAlarm[(SubParamID)dataSeg->values[j].subParamId] = dataSeg->values[j].alarmFlag;
-            pack->alarmFlag = dataSeg->eventFlag;
-            pack->status = dataSeg->status;
-        }
-        _trendDataPack.append(pack);
-    }
-    _calculationPage();
-
-    // 动态内存释放
-    if (_isHistory)
-    {
-        delete backend;
-    }
+    trendBlockList.clear();
+    trendBlockList = _backend->getBlockEntryList();
 }
 
 void TrendWaveWidget::_initWaveSubWidget()
@@ -884,7 +880,7 @@ double TrendWaveWidget::_getCursorPos(unsigned t)
     return dpos;
 }
 
-unsigned TrendWaveWidget::_getTimeIndex(unsigned t)
+int TrendWaveWidget::_getTimeIndex(unsigned t)
 {
     for (int i = 0; i < _trendGraphInfo.alarmInfo.count(); i++)
     {
@@ -893,7 +889,7 @@ unsigned TrendWaveWidget::_getTimeIndex(unsigned t)
             return i;
         }
     }
-    return 0;
+    return -1;
 }
 
 unsigned TrendWaveWidget::_getCursorTime(double pos)
@@ -907,13 +903,13 @@ void TrendWaveWidget::_calculationPage()
 {
     int timeInterval = TrendDataSymbol::convertValue(_timeInterval);
     int timeDiff;
-    if (_trendDataPack.count() == 0)
+    if (trendBlockList.count() == 0)
     {
         timeDiff = 0;
     }
     else
     {
-        timeDiff = _trendDataPack.last()->time - _trendDataPack.first()->time;
+        timeDiff = trendBlockList.last().extraData - trendBlockList.first().extraData;
     }
     int dataNum = timeDiff / timeInterval;
     _totalPage = (dataNum % GRAPH_POINT_NUMBER) ? ((dataNum / GRAPH_POINT_NUMBER) + 1) : (dataNum / GRAPH_POINT_NUMBER);
@@ -922,56 +918,47 @@ void TrendWaveWidget::_calculationPage()
 
 void TrendWaveWidget::_updateEventIndex()
 {
-    IStorageBackend *backend = NULL;
-    if ((_historyDataPath != "") && _isHistory)
-    {
-        backend =  StorageManager::open(_historyDataPath + EVENT_DATA_FILE_NAME, QIODevice::ReadOnly);
-    }
-    else
-    {
-        backend = eventStorageManager.backend();
-    }
-    int eventNum = backend->getBlockNR();
-    EventDataPraseContext ctx;
+    int eventNum = eventBlockList.count();
     _eventList.clear();
     unsigned preTime = 0;
     for (int i = 0; i < eventNum; i++)
     {
-        ctx.reset();
-        if (ctx.parse(backend, i))
+        BlockEntry eventInfo = eventBlockList.at(i);
+        unsigned t = eventInfo.extraData;
+        unsigned curEventTime = t;      // 事件没进行移动前的时间;
+        int interval = TrendDataSymbol::convertValue(_timeInterval);
+        // 最右边时间 - 最右边时间与事件之间的整数个时间间隔
+        t = _rightTime - (_rightTime - t) / interval * interval;
+        eventInfo.extraData = t;
+        if (i != 0)
         {
-            unsigned t = ctx.infoSegment->timestamp;
-            int interval = TrendDataSymbol::convertValue(_timeInterval);
-            // 最右边时间 - 最右边时间与事件之间的整数个时间间隔
-            t = _rightTime - (_rightTime - t) / interval * interval;
-            EventInfoSegment event;
-            event.type = ctx.infoSegment->type;
-            event.timestamp = t;
-            if (i != 0)
+            if (preTime == t)
             {
-                if (preTime == t)
-                {
-                    continue;       // 相同时间不重复添加进事件列表
-                }
-            }
-            preTime = t;
-            _eventList.append(event);
-
-            // 将事件归为前一个时刻后，同时将前一刻的状态也更新
-            int curIndex = _findIndex(event.timestamp);
-            int lastIndex = _findIndex(ctx.infoSegment->timestamp);
-            if (curIndex != lastIndex)
-            {
-                _trendDataPack.at(curIndex)->status = _trendDataPack.at(lastIndex)->status;
-                _trendDataPack.at(curIndex)->subparamValue = _trendDataPack.at(lastIndex)->subparamValue;
-                _trendDataPack.at(curIndex)->subparamAlarm = _trendDataPack.at(lastIndex)->subparamAlarm;
-            	_trendDataPack.at(curIndex)->alarmFlag = _trendDataPack.at(lastIndex)->alarmFlag;
+                continue;       // 相同时间不重复添加进事件列表
             }
         }
-    }
-    if ((_historyDataPath != "") && _isHistory)
-    {
-        delete backend;
+        preTime = t;
+        _eventList.append(eventInfo);
+
+        // 将事件归为前一个时刻后，同时将前一刻的状态也更新
+        int curIndex = _findIndex(eventInfo.extraData);
+        int lastIndex = _findIndex(curEventTime);
+
+        // 当前事件索引与事件时间移动后的索引不等时
+        if (curIndex != lastIndex)
+        {
+            // 时刻在Pack存在有效索引时,将事件时间移动后的趋势数据状态赋予这个时刻
+            // 时间间隔大于5秒时需要将中间的事件移动到能显示的趋势数据上
+            int packIndex = _findPackIndex(eventInfo.extraData);
+            if (packIndex != -1)
+            {
+                TrendDataPackage pack = getTrendDataPackage(lastIndex);
+                _trendDataPack.at(packIndex)->status = pack.status;
+                _trendDataPack.at(packIndex)->subparamValue = pack.subparamValue;
+                _trendDataPack.at(packIndex)->subparamAlarm = pack.subparamAlarm;
+                _trendDataPack.at(packIndex)->alarmFlag = pack.alarmFlag;
+            }
+        }
     }
     update();
 }
@@ -979,18 +966,18 @@ void TrendWaveWidget::_updateEventIndex()
 int TrendWaveWidget::_findIndex(unsigned timeStamp)
 {
     int lowPos = 0;
-    int highPos = _trendDataPack.count() - 1;
+    int highPos = trendBlockList.count() - 1;
     int index = InvData();
     while (lowPos <= highPos)
     {
         int midPos = (lowPos + highPos) / 2;
-        int timeDiff = qAbs(timeStamp - _trendDataPack.at(midPos)->time);
+        int timeDiff = qAbs(timeStamp - trendBlockList.at(midPos).extraData);
 
-        if (timeStamp < _trendDataPack.at(midPos)->time)
+        if (timeStamp < trendBlockList.at(midPos).extraData)
         {
             highPos = midPos - 1;
         }
-        else if (timeStamp > _trendDataPack.at(midPos)->time)
+        else if (timeStamp > trendBlockList.at(midPos).extraData)
         {
             lowPos = midPos + 1;
         }
@@ -1002,6 +989,18 @@ int TrendWaveWidget::_findIndex(unsigned timeStamp)
         }
     }
     return index;
+}
+
+int TrendWaveWidget::_findPackIndex(unsigned timeStamp)
+{
+    for (int i = 0; i < _trendDataPack.count(); i++)
+    {
+        if (timeStamp == _trendDataPack.at(i)->time)
+        {
+            return i;
+        }
+    }
+    return -1;
 }
 
 TrendGraphType TrendWaveWidget::getTrendGraphType(SubParamID id)
@@ -1040,4 +1039,41 @@ TrendGraphType TrendWaveWidget::getTrendGraphType(SubParamID id)
     default:
         return TREND_GRAPH_TYPE_NR;
     }
+}
+
+void TrendWaveWidget::_loadEventInfoList()
+{
+    IStorageBackend *backend = NULL;
+    if ((_historyDataPath != "") && _isHistory)
+    {
+        backend =  StorageManager::open(_historyDataPath + EVENT_DATA_FILE_NAME, QIODevice::ReadOnly);
+    }
+    else
+    {
+        backend = eventStorageManager.backend();
+    }
+    eventBlockList.clear();
+    eventBlockList = backend->getBlockEntryList();
+
+    if ((_historyDataPath != "") && _isHistory)
+    {
+        delete backend;
+        backend = NULL;
+    }
+}
+
+TrendDataPackage TrendWaveWidget::getTrendDataPackage(int index)
+{
+    TrendDataPackage pack;
+    QByteArray data = _backend->getBlockData((quint32)index);
+    TrendDataSegment *dataSeg = reinterpret_cast<TrendDataSegment *>(data.data());
+    pack.time = dataSeg->timestamp;
+    for (int j = 0; j < dataSeg->trendValueNum; j ++)
+    {
+        pack.subparamValue[(SubParamID)dataSeg->values[j].subParamId] = dataSeg->values[j].value;
+        pack.subparamAlarm[(SubParamID)dataSeg->values[j].subParamId] = dataSeg->values[j].alarmFlag;
+        pack.alarmFlag = dataSeg->eventFlag;
+        pack.status = dataSeg->status;
+    }
+    return pack;
 }

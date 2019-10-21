@@ -20,6 +20,7 @@
 #include <QFile>
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"
+#include "Utility.h"
 
 #define CRASH_LOG_PATH "/usr/local/nPM/bin/crashlog"
 
@@ -50,6 +51,11 @@ bool qt_sendSpontaneousEvent(QObject *receiver, QEvent *event)
 // 启动加载功能，它读取系统板的实际模式，并将其转换成真正系统需要的工作模式，并根据模式的类型调用不同的启动如果。
 int main(int argc, char *argv[])
 {
+#ifndef QT_DEBUG
+    /* redirect the debug message to syslog when we're not debug version */
+    Util::setupSysLog();
+#endif
+
     // errorlog 初始化
     errorLog.getInstance();
 

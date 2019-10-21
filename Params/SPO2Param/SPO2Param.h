@@ -15,6 +15,7 @@
 #include "SPO2Symbol.h"
 #include "SoundManager.h"
 #include "SPO2Define.h"
+#include "SPO2ParamInterface.h"
 
 typedef struct CCHDData
 {
@@ -41,20 +42,12 @@ class SPCOTrendWidget;
 class OxyCRGSPO2TrendWidget;
 class SPO2ProviderIFace;
 class SPO2ParamPrivate;
-class SPO2Param: public Param
+class SPO2Param: public Param, public SPO2ParamInterface
 {
     Q_OBJECT
 
 public:
-    static SPO2Param &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new SPO2Param();
-        }
-        return *_selfObj;
-    }
-    static SPO2Param *_selfObj;
+    static SPO2Param &getInstance(void);
     ~SPO2Param();
 
 public:
@@ -184,6 +177,12 @@ public:
     // 设置/获取平均时间
     void setAverageTime(AverageTime index);
     AverageTime getAverageTime(void);
+
+    /**
+     * @brief setRawDataSend 设置原始数据发送开关
+     * @param onOff
+     */
+    void enableRawDataSend(bool onOff);
 
     /**
      * @brief setSensitivity  设置灵敏度
@@ -358,4 +357,4 @@ private:
     SPO2Param();
     SPO2ParamPrivate * const d_ptr;
 };
-#define spo2Param (SPO2Param::construction())
+#define spo2Param (SPO2Param::getInstance())

@@ -145,18 +145,17 @@ void TrendTableWindow::updatePages()
                    .arg(curPageNum)
                    .arg(allPagesNum)
                    .arg(trs("PageNum")));
-}
 
-void TrendTableWindow::showEvent(QShowEvent *ev)
-{
-    Dialog::showEvent(ev);
-    d_ptr->updateTable();
+    // 更新趋势表的日期
     QAbstractButton *btn = d_ptr->table->findChild<QAbstractButton *>();
     if (btn)
     {
-        QString dataTime;
-        timeDate.getDate(dataTime);
-        btn->setText(dataTime);
+        QString date = d_ptr->model->getCurTableDate();
+        if (date == InvStr())
+        {
+            timeDate.getDate(date, true);
+        }
+        btn->setText(date);
         btn->installEventFilter(this);
         QStyleOptionHeader opt;
         opt.text = btn->text();
@@ -166,6 +165,12 @@ void TrendTableWindow::showEvent(QShowEvent *ev)
             d_ptr->table->verticalHeader()->setMinimumWidth(s.width());
         }
     }
+}
+
+void TrendTableWindow::showEvent(QShowEvent *ev)
+{
+    Dialog::showEvent(ev);
+    d_ptr->updateTable();
 
     // 更新打印机状态
     if (recorderManager.isConnected())
@@ -249,11 +254,15 @@ TrendTableWindow::TrendTableWindow()
                                  + d_ptr->model->getRowHeightHint() * TABLE_ROW_NR);
     d_ptr->table->setItemDelegate(new TableViewItemDelegate(this));
 
-    d_ptr->upBtn = new Button("", QIcon("/usr/local/nPM/icons/up.png"));
+    QIcon ico = themeManger.getIcon(ThemeManager::IconUp, QSize(32, 32));
+    d_ptr->upBtn = new Button("", ico);
+    d_ptr->upBtn->setIconSize(QSize(32, 32));
     d_ptr->upBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->upBtn, SIGNAL(released()), this, SLOT(upReleased()));
 
-    d_ptr->downBtn = new Button("", QIcon("/usr/local/nPM/icons/down.png"));
+    ico = themeManger.getIcon(ThemeManager::IconDown, QSize(32, 32));
+    d_ptr->downBtn = new Button("", ico);
+    d_ptr->downBtn->setIconSize(QSize(32, 32));
     d_ptr->downBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->downBtn, SIGNAL(released()), this, SLOT(downReleased()));
 
@@ -344,7 +353,7 @@ void TrendTableWindow::printWidgetRelease()
     unsigned endLimit = 0;
     if (d_ptr->model->getDataTimeRange(startLimit, endLimit))
     {
-        TrendPrintWindow printWindow(d_ptr->model->getTrendDataPack());
+        TrendPrintWindow printWindow(d_ptr->model->getBlockEntryList());
         unsigned startTime = 0;
         unsigned endTime = 0;
         d_ptr->model->displayDataTimeRange(startTime, endTime);

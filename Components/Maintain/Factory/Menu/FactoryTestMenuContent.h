@@ -45,7 +45,7 @@ protected:
     virtual void readyShow();
 
 private slots:
-    void onBtnReleased(int);
+    void onBtnReleased();
 
 private:
     FactoryTestMenuContentPrivate *const d_ptr;

@@ -25,6 +25,7 @@
 #include "MessageBox.h"
 #include "USBManager.h"
 #include "LanguageManager.h"
+#include "SoundManagerInterface.h"
 
 SystemStatusBarWidget *SystemStatusBarWidget::_selfObj = NULL;
 #define ICON_WIDTH 32
@@ -44,6 +45,7 @@ void SystemStatusBarWidget::hideIcon(SystemIconLabel iconlabel)
     {
         l->setPixmap(_icons[SYSTEM_ICON_NONE]);
         _iconMap.value(iconlabel)->setFocusPolicy(Qt::NoFocus);
+        _iconMap.value(iconlabel)->setEnabled(false);
     }
 }
 
@@ -79,6 +81,7 @@ void SystemStatusBarWidget::changeIcon(SystemIconLabel iconlabel, int status, bo
                 if (w->focusPolicy() == Qt::NoFocus)
                 {
                     w->setFocusPolicy(Qt::StrongFocus);
+                    w->setEnabled(true);
                     layoutManager.updateTabOrder();
                 }
             }
@@ -87,6 +90,7 @@ void SystemStatusBarWidget::changeIcon(SystemIconLabel iconlabel, int status, bo
                 if (w->focusPolicy() == Qt::StrongFocus)
                 {
                     w->setFocusPolicy(Qt::NoFocus);
+                    w->setEnabled(false);
                     layoutManager.updateTabOrder();
                 }
             }
@@ -136,6 +140,17 @@ void SystemStatusBarWidget::onIconClicked(int iconLabel)
         {
             this->focusNextChild();
         }
+    }
+}
+
+void SystemStatusBarWidget::onTouchClicked(IWidget* w)
+{
+    Q_UNUSED(w)
+    // 触屏点击播放按键音
+    SoundManagerInterface *sound = SoundManagerInterface::getSoundManager();
+    if (sound)
+    {
+        sound->keyPressTone();
     }
 }
 
@@ -225,6 +240,7 @@ SystemStatusBarWidget::SystemStatusBarWidget() : IWidget("SystemStatusBarWidget"
         if (i == SYSTEM_ICON_LABEL_USB)
         {
             w->setFocusPolicy(Qt::NoFocus);
+            connect(w, SIGNAL(clicked(IWidget*)), this, SLOT(onTouchClicked(IWidget*)));
         }
         w->setFixedWidth(ICON_WIDTH);
         connect(w, SIGNAL(released()), _signalMapper, SLOT(map()));
@@ -235,6 +251,7 @@ SystemStatusBarWidget::SystemStatusBarWidget() : IWidget("SystemStatusBarWidget"
         l->setPixmap(_icons[SYSTEM_ICON_NONE]);
         layout->addWidget(l, 0, Qt::AlignCenter);
         mainLayout->addWidget(w);
+        w->setEnabled(false);
         _iconMap.insert((SystemIconLabel)i, w);
     }
     mainLayout->addStretch();

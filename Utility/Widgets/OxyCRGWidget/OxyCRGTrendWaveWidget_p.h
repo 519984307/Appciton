@@ -48,7 +48,12 @@ struct OxyCRGWaveBuffer
           newestSegmentIndex(0),
           highDensitiy(false)
     {
-        segments = new OxyCRGWaveSegment[segmentCount];
+        if (this->segmentCount == 0)
+        {
+            /* at least 1 segment */
+            this->segmentCount = 1;
+        }
+        segments = new OxyCRGWaveSegment[this->segmentCount];
     }
 
     ~OxyCRGWaveBuffer()
@@ -65,6 +70,11 @@ struct OxyCRGWaveBuffer
             return;
         }
         delete [] segments;
+        if (segmentCount == 0)
+        {
+            /* at least 1 */
+            segmentCount = 1;
+        }
         segments = new OxyCRGWaveSegment[segmentCount];
         this->segmentCount = segmentCount;
         newestSegmentIndex = 0;
@@ -164,7 +174,7 @@ public:
 
     OxyCRGTrendWaveWidget * q_ptr;
     RingBuff<short> *dataBuf;    // 波形数据缓存
-    OxyCRGWaveBuffer *waveBuffer; // wave buffer
+    OxyCRGWaveBuffer *waveBuffer;  // wave buffer
 
     QString name;                // 波形名称
     int rulerHigh;               // 标尺高值
@@ -183,7 +193,7 @@ public:
     float pointGapSumFraction;   // the point gap sum 's fraction part
 
 private:
-    OxyCRGTrendWaveWidgetPrivate(const OxyCRGTrendWaveWidgetPrivate&other); // make the cppckeck stop complain
+    OxyCRGTrendWaveWidgetPrivate(const OxyCRGTrendWaveWidgetPrivate&other);  // make the cppckeck stop complain
 };
 
 

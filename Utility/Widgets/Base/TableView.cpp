@@ -110,6 +110,7 @@ public:
     TableView *const q_ptr;
     int mouseClickRow;
     QModelIndex lastIndex;  // the last index that has been mouse press or key press
+    QModelIndex indexBeforeModelReset;  // 数据复位前的索引位置
     bool mouseSelectRowChanged;
 };
 
@@ -229,6 +230,8 @@ void TableView::setModel(QAbstractItemModel *model)
             }
         }
     }
+    connect(model, SIGNAL(modelAboutToBeReset()), this, SLOT(onModelToBeReset()));
+    connect(model, SIGNAL(modelReset()), this, SLOT(onModelReset()));
 }
 
 void TableView::getPageInfo(int &curPage, int &totalPage)
@@ -560,4 +563,31 @@ void TableView::onSpanChanged(const QModelIndex &index)
     {
         setSpan(index.row(), index.column(), span.height(), span.width());
     }
+}
+
+void TableView::onModelToBeReset()
+{
+    d_ptr->indexBeforeModelReset = currentIndex();
+}
+
+void TableView::onModelReset()
+{
+    if (!this->hasFocus())
+    {
+        return;
+    }
+    QModelIndex index = d_ptr->indexBeforeModelReset;
+    QVariant var = model()->data(index, Qt::DisplayRole);
+    if (var.isValid())
+    {
+        // model复位后，设置焦点聚焦到第一个index上。
+        setCurrentIndex(index);
+    }
+    else
+    {
+        // 如果第一个index无效，即认为table view没有数据，则聚焦下一个控件
+        focusNextPrevChild(true);
+    }
+
+    d_ptr->indexBeforeModelReset = QModelIndex();
 }

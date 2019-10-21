@@ -81,6 +81,7 @@ protected:
     /* reimplement */
     void keyReleaseEvent(QKeyEvent *ev);
 
+    void mousePressEvent(QMouseEvent *e);
 
 private:
     QScopedPointer<ButtonPrivate> d_ptr;

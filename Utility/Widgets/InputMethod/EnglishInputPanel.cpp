@@ -23,6 +23,7 @@
 #define PATH_ICON_CLEAR "/usr/local/nPM/icons/clear.png"
 #define PATH_ICON_BACKSPACE "/usr/local/nPM/icons/backspace.png"
 #define PATH_ICON_ENTER "/usr/local/nPM/icons/enter.png"
+#define ICON_SIZE 32
 
 class EnglishInputPanelPrivate
 {
@@ -443,7 +444,7 @@ EnglishInputPanel::EnglishInputPanel()
     key = new Button();
     key->setButtonStyle(Button::ButtonIconOnly);
     int height = d_ptr->itemHeight * 2 / 3;
-    key->setIconSize(QSize(height, height));
+    key->setIconSize(QSize(ICON_SIZE, ICON_SIZE));
     key->setIcon(QIcon(PATH_ICON_SHIFT));
     key->setFixedHeight(d_ptr->itemHeight);
     connect(key, SIGNAL(clicked()), this, SLOT(ClickedShift()));
@@ -452,7 +453,7 @@ EnglishInputPanel::EnglishInputPanel()
     // 清除所有。
     key = new Button();
     key->setButtonStyle(Button::ButtonIconOnly);
-    key->setIconSize(QSize(height, height));
+    key->setIconSize(QSize(ICON_SIZE, ICON_SIZE));
     key->setIcon(QIcon(PATH_ICON_CLEAR));
     key->setFixedHeight(d_ptr->itemHeight);
     connect(key, SIGNAL(released()), this, SLOT(ClickedClear()));

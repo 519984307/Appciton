@@ -16,7 +16,7 @@
 #include "KeyActionManager.h"
 #include "Debug.h"
 #include "USBManager.h"
-#include "SoundManager.h"
+#include "SoundManagerInterface.h"
 #include "MessageBox.h"
 
 #if defined(CONFIG_CAPTURE_SCREEN)
@@ -217,11 +217,6 @@ void IApplication::handleScreenCaptureResult(long result)
     }
 }
 
-void IApplication::onFocusChanged(QWidget *old, QWidget *now)
-{
-    qDebug() << Q_FUNC_INFO << "OLD" << old << "now" << now;
-}
-
 
 #define MENU_KEY Qt::Key_F4
 
@@ -364,7 +359,11 @@ bool IApplication::qwsEventFilter(QWSEvent *e)
                     || keyEvent->simpleData.keycode == Qt::Key_Enter)
             {
                 // 面板9个按键和飞梭按键播放按键音
-                soundManager.keyPressTone();
+                SoundManagerInterface *sound = SoundManagerInterface::getSoundManager();
+                if (sound)
+                {
+                    sound->keyPressTone();
+                }
             }
             switch (keyEvent->simpleData.keycode)
             {
@@ -425,7 +424,6 @@ IApplication::IApplication(int &argc, char **argv) : QApplication(argc, argv)
     // motif，cde，s60，cleanlooks，gtk，gtk+，macintosh，但编译Qt库时没有全部编译进去。
     QApplication::setStyle(QStyleFactory::create("cleanlooks"));
 #endif
-    connect(this, SIGNAL(focusChanged(QWidget*, QWidget*)), this, SLOT(onFocusChanged(QWidget*, QWidget*)));
 }
 
 /**************************************************************************************************

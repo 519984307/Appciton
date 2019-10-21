@@ -40,4 +40,8 @@ protected:
 private:
 //    WaveWidgetLabel *_name;
     WaveWidgetLabel *_notify;
+    /**
+     * @brief _adjustLabelLayout  调整标签布局
+     */
+    void _adjustLabelLayout(void);
 };

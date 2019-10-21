@@ -88,6 +88,7 @@ protected:
 protected:
     void paintEvent(QPaintEvent *e);
     void resizeEvent(QResizeEvent *e);
+    void mousePressEvent(QMouseEvent *e);
 
     //字体大小设置
     virtual void setTextSize(void) = 0;
@@ -144,4 +145,12 @@ protected:
      * @param psrc                  参数对应字体调色板
      */
     void showNormalParamLimit(QPalette psrc);
+
+    /**
+     * @brief darkParamLimit 使得上下限颜色变暗
+     */
+    void darkerPalette(QPalette &pal);
+
+private:
+    void setWidgetPalette(QLayout *layout, QPalette psrc);
 };

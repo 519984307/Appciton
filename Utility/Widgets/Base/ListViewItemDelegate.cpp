@@ -9,6 +9,8 @@
  **/
 
 #include "ListViewItemDelegate.h"
+#include <QPainter>
+#include <QPixmap>
 
 class ListViewItemDelegatePrivate
 {
@@ -28,4 +30,20 @@ void ListViewItemDelegate::drawFocus(QPainter *painter, const QStyleOptionViewIt
     Q_UNUSED(option)
     Q_UNUSED(rect)
     // do nothing
+}
+
+void ListViewItemDelegate::drawDecoration(QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect, const QPixmap &pixmap) const
+{
+    Q_UNUSED(option)
+    if (!pixmap.isNull())
+    {
+        // premultiplied alpha channel
+        QImage tmp(rect.size(), QImage::Format_ARGB32_Premultiplied);
+        QPainter drawImagePainter(&tmp);
+        drawImagePainter.setCompositionMode(QPainter::CompositionMode_Source);
+        drawImagePainter.drawPixmap(0, 0, rect.width(), rect.height(), pixmap);
+        drawImagePainter.end();
+
+        painter->drawImage(rect, tmp);
+    }
 }

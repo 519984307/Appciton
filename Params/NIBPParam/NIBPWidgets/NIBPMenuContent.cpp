@@ -221,7 +221,7 @@ void NIBPMenuContentPrivate::loadOptions()
         else if (type == PATIENT_TYPE_NEO)
         {
             start = 60;
-            end = 140;
+            end = 130;
         }
         UnitType unit = nibpParam.getUnit();
         curUnitType = unit;
@@ -283,7 +283,7 @@ void NIBPMenuContentPrivate::statBtnShow(void)
 {
     // demo 模式下失能STAT
     WorkMode workMode = systemManager.getCurWorkMode();
-    if (nibpParam.isConnected() && workMode != WORK_MODE_DEMO)
+    if (nibpParam.isConnectedModule() && workMode != WORK_MODE_DEMO)
     {
         btns[ITEM_BTN_START_STAT]->setEnabled(true);
     }

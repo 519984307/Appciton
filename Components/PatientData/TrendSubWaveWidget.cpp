@@ -26,6 +26,7 @@
 #define GRAPH_POINT_NUMBER          120
 #define DATA_INTERVAL_PIXEL         5
 #define isEqual(a, b) (qAbs((a)-(b)) < 0.000001)
+#define SCALE_NUM                   6   // 刻度线
 
 TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type) : _id(id), _type(type),
     _trendInfo(TrendGraphInfo()), _timeX(TrendParamDesc()), _valueY(TrendParamDesc()), _xSize(0), _ySize(0),
@@ -82,7 +83,6 @@ void TrendSubWaveWidget::setWidgetParam(SubParamID id, TrendGraphType type)
 void TrendSubWaveWidget::trendDataInfo(TrendGraphInfo &info)
 {
     _trendInfo = info;
-    _cursorPosIndex = 0;
     // 数据更新时判断是否为自动标尺,是则刷新标尺
     if (getAutoRuler())
     {
@@ -433,9 +433,23 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     QPainter barPainter(this);
     barPainter.setPen(QPen(_color, 1, Qt::SolidLine));
 
-    barPainter.drawLine(_info.xHead / 3, _info.yTop, _info.xHead / 3 + 5, _info.yTop);
-    barPainter.drawLine(_info.xHead / 3, _info.yTop, _info.xHead / 3, _info.yBottom);
-    barPainter.drawLine(_info.xHead / 3, _info.yBottom, _info.xHead / 3 + 5, _info.yBottom);
+    // 刻度线
+    for (int i = 0; i <= SCALE_NUM; i++)
+    {
+        int offset = (_info.yBottom - _info.yTop) / SCALE_NUM * i + _info.yTop;
+        barPainter.setPen(QPen(QColor(100, 100, 100, 200), 1, Qt::SolidLine));
+        barPainter.drawLine(_info.xHead, offset, _info.xTail, offset);
+        barPainter.setPen(QPen(_color, 1, Qt::SolidLine));
+        if (i % 3 == 0)
+        {
+            barPainter.drawLine(_info.xHead - 10, offset, _info.xHead, offset);
+        }
+        else
+        {
+            barPainter.drawLine(_info.xHead - 5, offset, _info.xHead, offset);
+        }
+    }
+    barPainter.drawLine(_info.xHead, _info.yTop, _info.xHead, _info.yBottom);
 
     // 边框线
     barPainter.setPen(QPen(Qt::gray, 1, Qt::DashLine));
@@ -486,12 +500,12 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     barPainter.setPen(QPen(_color, 1, Qt::SolidLine));
 
     // 趋势标尺上下限
-    QRect upRulerRect(_info.xHead / 3 + 7, _info.yTop - 10, _info.xHead, 30);
-    QRect downRulerRect(_info.xHead / 3 + 7, _info.yBottom - 10, _info.xHead, 30);
+    QRect upRulerRect(_info.xHead / 2, _info.yTop - 10, _info.xHead / 3, 30);
+    QRect downRulerRect(_info.xHead / 2, _info.yBottom - 10, _info.xHead / 3, 30);
     QFont textfont = fontManager.textFont(fontManager.getFontSize(3));
     barPainter.setFont(textfont);
-    barPainter.drawText(upRulerRect, Qt::AlignLeft | Qt::AlignTop, Util::convertToString(_valueY.max, _valueY.scale));
-    barPainter.drawText(downRulerRect, Qt::AlignLeft | Qt::AlignTop, Util::convertToString(_valueY.min, _valueY.scale));
+    barPainter.drawText(upRulerRect, Qt::AlignRight | Qt::AlignTop, Util::convertToString(_valueY.max, _valueY.scale));
+    barPainter.drawText(downRulerRect, Qt::AlignRight | Qt::AlignTop, Util::convertToString(_valueY.min, _valueY.scale));
 
     QFont font;
     font.setPixelSize(15);
@@ -715,6 +729,7 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
 void TrendSubWaveWidget::showEvent(QShowEvent *e)
 {
     IWidget::showEvent(e);
+    _cursorPosIndex = 0;
 }
 
 double TrendSubWaveWidget::_mapValue(TrendParamDesc desc, int data)

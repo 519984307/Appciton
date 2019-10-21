@@ -36,7 +36,6 @@ public:
         ITEM_CBO_PAUSE_MAX_ALARM_15MIN,
         ITEM_CBO_REMINDER_TONE,
         ITEM_CBO_REMINDER_TONE_INTERVAL,
-        ITEM_CBO_ALARM_LIGHT_RESET,
         ITEM_CBO_ALARM_LATCH_LOCK,
         ITEM_CBO_ALARM_AUDIO_OFF,
         ITEM_CBO_DEFAULT
@@ -101,10 +100,6 @@ void AlarmMaintainMenuContentPrivate::loadOptions()
     systemConfig.getNumValue("Alarms|ReminderToneIntervals", index);
     combos[ITEM_CBO_REMINDER_TONE_INTERVAL]->setCurrentIndex(index);
 #endif
-
-    bool flag = alertor.getAlarmLightOnAlarmReset();
-    index = flag ? 1 : 0;
-    combos[ITEM_CBO_ALARM_LIGHT_RESET]->setCurrentIndex(index);
 
 #ifndef CLOSE_USELESS_ALARM_FUNCTION
     systemConfig.getNumValue("Alarms|PhyParAlarmLatchlockOn", index);
@@ -182,9 +177,6 @@ void AlarmMaintainMenuContentPrivate::
         break;
     case ITEM_CBO_REMINDER_TONE_INTERVAL:
         systemConfig.setNumValue("Alarms|ReminderToneIntervals", index);
-        break;
-    case ITEM_CBO_ALARM_LIGHT_RESET:
-        alertor.setAlarmLightOnAlarmReset(index);
         break;
     case ITEM_CBO_ALARM_LATCH_LOCK:
         systemConfig.setNumValue("Alarms|PhyParAlarmLatchlockOn", index);
@@ -267,10 +259,6 @@ void AlarmMaintainMenuContentPrivate::defaultIndexInit()
 #endif
 
     index = 0;
-    defalutConfig.getNumValue("Alarms|AlarmLightOnAlarmReset", index);
-    defaultIndexMap[ITEM_CBO_ALARM_LIGHT_RESET] = index;
-
-    index = 0;
     defalutConfig.getNumValue("Alarms|AlarmAudio", index);
     defaultIndexMap[ITEM_CBO_ALARM_AUDIO_OFF] = index;
 
@@ -345,22 +333,18 @@ void AlarmMaintainMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_VOLUME, comboBox);
 
-    // 报警暂停时间
-    label = new QLabel(trs("AlarmPauseTime"));
+    // Alarm Audio Off
+    label = new QLabel(trs("AlarmAudio"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
-                       << trs(AlarmSymbol::convert(ALARM_PAUSE_TIME_1MIN))
-                       << trs(AlarmSymbol::convert(ALARM_PAUSE_TIME_2MIN))
-                       << trs(AlarmSymbol::convert(ALARM_PAUSE_TIME_3MIN))
-                       << trs(AlarmSymbol::convert(ALARM_PAUSE_TIME_5MIN))
-                       << trs(AlarmSymbol::convert(ALARM_PAUSE_TIME_10MIN))
-                       << trs(AlarmSymbol::convert(ALARM_PAUSE_TIME_15MIN)));
-    itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARAM_PAUSE_TIME);
+                           << trs("Off")
+                           << trs("On"));
+    itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_AUDIO_OFF);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARAM_PAUSE_TIME, comboBox);
+    d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_AUDIO_OFF, comboBox);
 
 #ifndef CLOSE_USELESS_ALARM_FUNCTION
     // 报警关闭,报警音关闭提示时间
@@ -446,19 +430,6 @@ void AlarmMaintainMenuContent::layoutExec()
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_REMINDER_TONE_INTERVAL, comboBox);
 #endif
 
-    // alarmLight On Alarm Reset
-    label = new QLabel(trs("AlarmLightOnAlarmReset"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs("Close")
-                       << trs("Open"));
-    itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_LIGHT_RESET);
-    comboBox->setProperty("Item", qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_LIGHT_RESET, comboBox);
-
 #ifndef CLOSE_USELESS_ALARM_FUNCTION
     // latch lock
     label = new QLabel(trs("LatchLockSwitch"));
@@ -474,18 +445,22 @@ void AlarmMaintainMenuContent::layoutExec()
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_LATCH_LOCK, comboBox);
 #endif
 
-    // Alarm Audio Off
-    label = new QLabel(trs("AlarmAudio"));
+    // 报警暂停时间
+    label = new QLabel(trs("AlarmPauseTime"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
-                           << trs("Off")
-                           << trs("On"));
-    itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_AUDIO_OFF);
+                       << trs(AlarmSymbol::convert(ALARM_PAUSE_TIME_1MIN))
+                       << trs(AlarmSymbol::convert(ALARM_PAUSE_TIME_2MIN))
+                       << trs(AlarmSymbol::convert(ALARM_PAUSE_TIME_3MIN))
+                       << trs(AlarmSymbol::convert(ALARM_PAUSE_TIME_5MIN))
+                       << trs(AlarmSymbol::convert(ALARM_PAUSE_TIME_10MIN))
+                       << trs(AlarmSymbol::convert(ALARM_PAUSE_TIME_15MIN)));
+    itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARAM_PAUSE_TIME);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_AUDIO_OFF, comboBox);
+    d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARAM_PAUSE_TIME, comboBox);
 
     // default
     label = new QLabel(trs("Defaults"));

@@ -30,6 +30,7 @@
 #include "NightModeWindow.h"
 #include "PasswordWindow.h"
 #include "AlarmIndicator.h"
+#include "SoftKeyManager.h"
 #ifdef Q_WS_QWS
 #include <QWSServer>
 #endif
@@ -56,7 +57,7 @@ public:
     };
 
     NormalFunctionMenuContentPrivate()
-                    : demoBtn(NULL), standbyBtn(NULL)
+                    : demoBtn(NULL), standbyBtn(NULL), touchLab(NULL)
     {}
 
     // load settings
@@ -66,6 +67,7 @@ public:
     Button *standbyBtn;
 
     QMap<MenuItem, ComboBox *> combos;
+    QLabel *touchLab;
 };
 
 void NormalFunctionMenuContentPrivate::loadOptions()
@@ -114,8 +116,12 @@ void NormalFunctionMenuContentPrivate::loadOptions()
 #ifdef Q_WS_QWS
     // 加载数据时，强制锁住该信号。该信号会触发openMouse()函数，在调试期间，openMouse函数会有堵塞现象.
     combos[ITEM_CBO_TOUCH_SCREEN]->blockSignals(true);
+    if (!systemManager.isSupport(CONFIG_TOUCH))
+    {
+        touchLab->setVisible(false);
+        combos[ITEM_CBO_TOUCH_SCREEN]->setVisible(false);
+    }
     combos[ITEM_CBO_TOUCH_SCREEN]->setCurrentIndex(systemManager.isTouchScreenOn());
-    combos[ITEM_CBO_TOUCH_SCREEN]->setEnabled(systemManager.isSupport(CONFIG_TOUCH));
     combos[ITEM_CBO_TOUCH_SCREEN]->blockSignals(false);
 #endif
 }
@@ -164,9 +170,9 @@ void NormalFunctionMenuContent::layoutExec()
     label = new QLabel(trs("WaveLength"));
     layout->addWidget(label, row, 0);
     comboBox = new ComboBox();
-    comboBox->addItem(trs("_8s"));
-    comboBox->addItem(trs("_16s"));
-    comboBox->addItem(trs("_32s"));
+    comboBox->addItem(trs("_8sec"));
+    comboBox->addItem(trs("_16sec"));
+    comboBox->addItem(trs("_32sec"));
     itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_CBO_WAVE_LEN);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -220,6 +226,7 @@ void NormalFunctionMenuContent::layoutExec()
     // touch screen function
     label = new QLabel(trs("TouchScreen"));
     layout->addWidget(label, row, 0);
+    d_ptr->touchLab = label;
     comboBox = new ComboBox();
     comboBox->addItem(trs("Off"));
     comboBox->addItem(trs("On"));
@@ -229,7 +236,6 @@ void NormalFunctionMenuContent::layoutExec()
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox , SIGNAL(currentIndexChanged(int)) , this , SLOT(onComboBoxIndexChanged(int)));
     d_ptr->combos.insert(NormalFunctionMenuContentPrivate::ITEM_CBO_TOUCH_SCREEN, comboBox);
-    comboBox->setEnabled(systemManager.isSupport(CONFIG_TOUCH));
 #endif
 
     if (systemManager.isSupport(CONFIG_WIFI))
@@ -347,6 +353,7 @@ void NormalFunctionMenuContent::onComboBoxIndexChanged(int index)
         case NormalFunctionMenuContentPrivate::ITEM_CBO_TOUCH_SCREEN:
         {
             systemManager.setTouchScreenOnOff(index);
+            softkeyManager.refreshTouchKey();
             break;
         }
 #endif
@@ -443,4 +450,8 @@ void NormalFunctionMenuContent::nightModeHandle(bool isNightMode)
         d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS]->setEnabled(true);
         d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME]->setEnabled(true);
     }
+
+    // 根据夜间模式状态, 设置屏幕亮度和音量按键类型是否可用
+    softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_KEYBOARD_VOLUMN, !isNightMode);
+    softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_SCREEN_BRIGHTNESS, !isNightMode);
 }

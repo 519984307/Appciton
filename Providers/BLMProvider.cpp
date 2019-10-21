@@ -11,22 +11,49 @@
 #include "Debug.h"
 #include "crc8.h"
 #include "BLMProvider.h"
+#include <QTimerEvent>
+#include <QMutex>
+#include <QMutexLocker>
+#include <QDateTime>
 
 #include <sys/time.h>
 #include <unistd.h>
 
 #define SOH             (0x01)  // packet header
+#define NACK            (0x00)  // 错误应答
+#define ACK             (0x01)  // 正确应答
 
 QMap<QString, BLMProvider *> BLMProvider::providers;
+
+/*
+ * Note 1: For BLM provider, we add command response check with the BLMCommandInfo
+ *         data structure. If the provider didn't get any response from the module,
+ *         provider will resend the command every second.
+ * Note 2: The BLM Porvider will only check response of the latest command.
+ *         If commands is sending too fast, only check response to the last command.
+ * Note 3: In BLMProvider, the packet type of command response will be cmdID + 1
+ */
+#define BLM_CMD_TIMEOUT_DURATION   3 /* BLM comand timeout in 3 seconds */
+#define MAX_BLM_CMD_PACKET_SIZE 150
+struct BLMCommandInfo {
+    BLMCommandInfo() : timestamp(0), cmdLen(0), cmdID(0), gotResponse(false) {}
+    QMutex mutex;       /* we need mutex because difference thread might send command at the same time */
+    quint32 timestamp;  /* the command timestamp */
+    quint16 cmdLen;     /* length of the command */
+    quint8 cmdID;       /* command id*/
+    bool gotResponse;   /* record this command is got response or not */
+    quint8 cmdBuf[MAX_BLM_CMD_PACKET_SIZE];     /* the command buffer */
+};
 
 /***************************************************************************************************
  * 构造函数
  **************************************************************************************************/
 BLMProvider::BLMProvider(const QString &name)
-    : Provider(name), upgradeIface(NULL)
+    : Provider(name), upgradeIface(NULL), _timerId(-1), _lastBLMCommandInfo(new BLMCommandInfo())
 {
     providers.insert(name, this);
     _isLastSOHPaired = false;
+    _timerId = startTimer(1000);
 }
 
 /***************************************************************************************************
@@ -34,85 +61,24 @@ BLMProvider::BLMProvider(const QString &name)
  **************************************************************************************************/
 BLMProvider::~BLMProvider()
 {
-}
+    if (_timerId != -1) {
+        killTimer(_timerId);
+        _timerId = -1;
+    }
 
-#if 0
-void BLMProvider::dataArrived()
-{
-    readData(); // 读取数据到RingBuff中
-
-    while (!ringBuff.isEmpty())
+    if (_lastBLMCommandInfo)
     {
-        if (ringBuff.at(0) != SOH)
-        {
-            // 协议数据以SOH字节开始
-            debug("Invalid packet header!\n");
-            ringBuff.pop(1);
-            continue;
-        }
-
-        unsigned int dataSize = ringBuff.dataSize();
-        if (dataSize < minPacketLen)
-        {
-            // 数据不够
-            break;
-        }
-
-        unsigned int len = ringBuff.at(1);
-        if (SOH == len)
-        {
-            // 协议数据长度值不可能等于SOH
-            debug("Invalid packet len: SOH!\n");
-            ringBuff.pop(1);
-            continue;
-        }
-
-        if (len > maxPacketLen)
-        {
-            debug("Invalid packet len: too long!\n");
-            ringBuff.pop(2);
-            continue;
-        }
-
-        unsigned int index = 0;
-        unsigned char packet[maxPacketLen];
-        packet[index++] = ringBuff.at(0);
-        packet[index++] = ringBuff.at(1);
-
-        unsigned int i = index;
-        for (; (i < dataSize) && (index < len); i++)
-        {
-            if (ringBuff.at(i) == SOH)
-            {
-                // 移除多余的SOH转义字节
-                i++;
-            }
-
-            packet[index++] = ringBuff.at(i);
-        }
-
-        if (index < len)
-        {
-            // 数据不够
-            break;
-        }
-
-        ringBuff.pop(i);
-
-        if (_checkPacketValid(packet, len))
-        {
-            handlePacket(packet, len);
-        }
+        delete _lastBLMCommandInfo;
+        _lastBLMCommandInfo = NULL;
     }
 }
-#else
 
 /***************************************************************************************************
  * 接收数据
  **************************************************************************************************/
 void BLMProvider::dataArrived()
 {
-    _readData(); // 读取数据到RingBuff中
+    _readData();  // 读取数据到RingBuff中
 
     unsigned char packet[570];
 
@@ -131,7 +97,7 @@ void BLMProvider::dataArrived()
             ringBuff.pop(1);
             break;
         }
-        if (len > ringBuff.dataSize()) // 数据还不够，继续等待。
+        if (len > ringBuff.dataSize())  // 数据还不够，继续等待。
         {
             break;
         }
@@ -144,11 +110,7 @@ void BLMProvider::dataArrived()
         }
 
         // 将数据包读到buff中。
-        for (int i = 0; i < len; i++)
-        {
-            packet[i] = ringBuff.at(0);
-            ringBuff.pop(1);
-        }
+        ringBuff.copy(0, packet, len);
 
         if (_checkPacketValid(packet, len))
         {
@@ -160,66 +122,102 @@ void BLMProvider::dataArrived()
             {
                 handlePacket(&packet[3], len - 4);
             }
+            /* data has been parse, remove it */
+            ringBuff.pop(len);
         }
         else
         {
             // outHex(packet, len);
-            debug("FCS error (%s)\n", qPrintable(getName()));
+            debug("FCS error (%s)", qPrintable(getName()));
             ringBuff.pop(1);
         }
     }
 }
-#endif
 
 /***************************************************************************************************
  * handlePacket : handle packet, should be called in derived
  **************************************************************************************************/
 void BLMProvider::handlePacket(unsigned char *data, int len)
 {
+    /* check command response */
+    _lastBLMCommandInfo->mutex.lock();
+    if (data[0] == _lastBLMCommandInfo->cmdID + 1) {
+        /* NOTE: in BLMProvider, the packet type of command response is always equal to cmdID + 1,
+         *       see the protocol for more detail
+         */
+        _lastBLMCommandInfo->gotResponse = true;
+    }
+    _lastBLMCommandInfo->mutex.unlock();
+
     // version data, all BLMProvidor share the same version respond code
-    if (data[0] == 0x11 && len >= 80 + 1) // version info length + data packet head offset
+    if (data[0] == 0x11 && len >= 80 + 1)   // version info length + data packet head offset
     {
+        data[80] = '\0';                   // make sure the string is end with NUL
         const char *p = reinterpret_cast<char *>(&data[1]);
         versionInfo.clear();
-        versionInfo.append(p); // software git version
+        versionInfo.append(p);          // software git version
         versionInfo.append(" ");
-        p += (30 + 1);  // software git version offset + data packet head offset
+        p += (30 + 1);                  // software git version offset + data packet head offset
 
-        versionInfo.append(p); // build date
+        versionInfo.append(p);          // build date
         versionInfo.append(" ");
-        p += (15 + 1);  // build date offset + data packet head offset
+        p += (15 + 1);                  // build date offset + data packet head offset
 
-//        versionInfo.append(p); // build time
-//        versionInfo.append(" ");
-        p += (15 + 1);  // build time offset + data packet head offset
+        p += (15 + 1);                  // build time offset + data packet head offset
 
-        versionInfo.append(p); // hardware version
+        versionInfo.append(p);          // hardware version
         versionInfo.append(" ");
-        p += (1 + 1);  // hardware version offset + data packet head offset
+        p += (1 + 1);                   // hardware version offset + data packet head offset
 
-        versionInfo.append(p); // bootloader git version
+        versionInfo.append(p);          // bootloader git version
 
-        if (len == 160 + 1)  // 适用于N5从片版本信息
+        if (len == 160 + 1)             // 适用于N5从片版本信息
         {
+            data[160] = '\0';           // make sure the string is end with NUL
             const char *p = reinterpret_cast<char *>(&data[1 + 80]);
             versionInfoEx.clear();
-            versionInfoEx.append(p); // software git version
+            versionInfoEx.append(p);    // software git version
             versionInfoEx.append(" ");
-            p += (30 + 1);  // software git version offset + data packet head offset
+            p += (30 + 1);              // software git version offset + data packet head offset
 
-            versionInfoEx.append(p); // build date
+            versionInfoEx.append(p);    // build date
             versionInfoEx.append(" ");
-            p += (15 + 1);  // build date offset + data packet head offset
+            p += (15 + 1);              // build date offset + data packet head offset
 
-    //        versionInfo.append(p); // build time
-    //        versionInfo.append(" ");
-            p += (15 + 1);  // build time offset + data packet head offset
+            p += (15 + 1);              // build time offset + data packet head offset
 
-            versionInfoEx.append(p); // hardware version
+            versionInfoEx.append(p);    // hardware version
             versionInfoEx.append(" ");
-            p += (1 + 1);  // hardware version offset + data packet head offset
+            p += (1 + 1);               // hardware version offset + data packet head offset
 
-            versionInfoEx.append(p); // bootloader git version
+            versionInfoEx.append(p);    // bootloader git version
+        }
+    }
+}
+
+void BLMProvider::timerEvent(QTimerEvent *ev)
+{
+    Provider::timerEvent(ev);
+
+    if (_timerId == ev->timerId()) {
+        QMutexLocker locker(&_lastBLMCommandInfo->mutex);
+        if (_lastBLMCommandInfo->cmdLen >= minPacketLen && !_lastBLMCommandInfo->gotResponse) {
+            /* last command haven't got response yet, check timeout or resend last command */
+            quint32 curTimestamp = QDateTime::currentDateTime().toTime_t();
+            if (curTimestamp == _lastBLMCommandInfo->timestamp) {
+                /* Duration is too short, handle in the timer event */
+            } else if (curTimestamp - _lastBLMCommandInfo->timestamp > BLM_CMD_TIMEOUT_DURATION) {
+                /* already timeout, the command is fail to send */
+                qWarning() << Q_FUNC_INFO << getName() << "no response for cmd: "
+                           << showbase << hex << _lastBLMCommandInfo->cmdID;
+                sendDisconnected();
+                _lastBLMCommandInfo->cmdLen = 0;
+            } else {
+                /* resend the command */
+                _sendData(_lastBLMCommandInfo->cmdBuf, _lastBLMCommandInfo->cmdLen);
+                qWarning() << Q_FUNC_INFO << getName() << "resend command"
+                           << showbase << hex << _lastBLMCommandInfo->cmdID;
+            }
         }
     }
 }
@@ -262,7 +260,7 @@ bool BLMProvider::_sendData(const unsigned char *data, unsigned int len)
 
 void BLMProvider::dataArrived(unsigned char *buff, unsigned int length)
 {
-    _readData(buff, length); // 读取数据到RingBuff中
+    _readData(buff, length);   // 读取数据到RingBuff中
 
     unsigned char packet[570];
 
@@ -281,7 +279,7 @@ void BLMProvider::dataArrived(unsigned char *buff, unsigned int length)
             ringBuff.pop(1);
             break;
         }
-        if (len > ringBuff.dataSize()) // 数据还不够，继续等待。
+        if (len > ringBuff.dataSize())  // 数据还不够，继续等待。
         {
             break;
         }
@@ -294,11 +292,7 @@ void BLMProvider::dataArrived(unsigned char *buff, unsigned int length)
         }
 
         // 将数据包读到buff中。
-        for (int i = 0; i < len; i++)
-        {
-            packet[i] = ringBuff.at(0);
-            ringBuff.pop(1);
-        }
+        ringBuff.copy(0, packet, len);
 
         if (_checkPacketValid(packet, len))
         {
@@ -310,11 +304,14 @@ void BLMProvider::dataArrived(unsigned char *buff, unsigned int length)
             {
                 handlePacket(&packet[3], len - 4);
             }
+
+            /* data has been parse, remove it */
+            ringBuff.pop(len);
         }
         else
         {
             // outHex(packet, len);
-            debug("FCS error (%s)\n", qPrintable(getName()));
+            debug("FCS error (%s)", qPrintable(getName()));
             ringBuff.pop(1);
         }
     }
@@ -366,6 +363,23 @@ bool BLMProvider::sendCmd(unsigned char cmdId, const unsigned char *data, unsign
     }
 
     cmdBuf[cmdLen - 1] = calcCRC(cmdBuf, (cmdLen - 1));
+
+    if (cmdId != NACK && cmdId != ACK && upgradeIface == NULL)
+    {
+        QMutexLocker locker(&_lastBLMCommandInfo->mutex);
+        if (cmdLen <= MAX_BLM_CMD_PACKET_SIZE)
+        {
+            _lastBLMCommandInfo->cmdID = cmdId;
+            _lastBLMCommandInfo->cmdLen = cmdLen;
+            _lastBLMCommandInfo->timestamp = QDateTime::currentDateTime().toTime_t();
+            _lastBLMCommandInfo->gotResponse = false;
+            qMemCopy(_lastBLMCommandInfo->cmdBuf, cmdBuf, cmdLen);
+        }
+        else
+        {
+            qCritical() << "Comand Length" << cmdLen << "is larger than " << MAX_BLM_CMD_PACKET_SIZE;
+        }
+    }
     return _sendData(cmdBuf, cmdLen);
 }
 

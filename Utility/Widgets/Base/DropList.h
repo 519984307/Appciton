@@ -42,6 +42,8 @@ protected:
     /* reimplement */
     void paintEvent(QPaintEvent *ev);
 
+    void mousePressEvent(QMouseEvent *e);
+
 private slots:
     void showPopup();
 

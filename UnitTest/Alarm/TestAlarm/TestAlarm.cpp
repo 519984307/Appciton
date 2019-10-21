@@ -25,12 +25,16 @@ Q_DECLARE_METATYPE(AlarmLimitIFace *)
 Q_DECLARE_METATYPE(AlarmOneShotIFace *)
 Q_DECLARE_METATYPE(ParamID)
 Q_DECLARE_METATYPE(SubParamID)
+Q_DECLARE_METATYPE(OneShotAlarmInfo)
+
+#define ALARM_LIMIT_TIMES (3)   // 超限3次后，发生报警
 
 using ::testing::_;
 using ::testing::Mock;
 using ::testing::Return;
 using ::testing::DoAll;
 using ::testing::SetArgReferee;
+using ::testing::AnyNumber;
 
 class TestAlarmPrivate
 {
@@ -39,6 +43,32 @@ public:
         : isCleanup(true)
     {}
     bool isCleanup;
+
+    /**
+     * @brief addAlarm 添加报警
+     */
+    void addAlarm(ParamID paramID, OneShotAlarmInfo info)
+    {
+        infoMap[paramID].append(info);
+    }
+
+    int getAlarmInfoPos(ParamID paramID, int id)
+    {
+        for (int i = 0; i < infoMap.value(paramID).count(); i++)
+        {
+            if (infoMap.value(paramID).at(i).alarmId == id)
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    void addOneShotAlarmSource(AlarmOneShotIFace *source)
+    {
+        oneshotAlarmSourcePool.append(source);
+    }
+    QList<AlarmOneShotIFace *> oneshotAlarmSourcePool;
 };
 
 TestAlarm::TestAlarm()
@@ -183,23 +213,21 @@ void TestAlarm::testGetAlarmLimitIFace()
 void TestAlarm::testGetAlarmOneShotIFace_data()
 {
     QTest::addColumn<AlarmOneShotIFace *>("source");
-    QTest::addColumn<SubParamID>("subParamID");
     QTest::addColumn<bool>("result");
     QTest::addColumn<bool>("isAddSource");
 
-    AlarmOneShotIFace *s1 = new OneShotAlarm;
-    QTest::newRow("none param ID") << s1 << s1->getSubParamID(0) << false << true;
-    OneShotAlarm *s2 = new OneShotAlarm;
-    s2->setParamID(PARAM_ECG);
+    AlarmOneShotIFace *s1 = new OneShotAlarm(PARAM_NONE);
+    QTest::newRow("none param ID") << s1
+                                   << false
+                                   << true;
+
+    OneShotAlarm *s2 = new OneShotAlarm(PARAM_ECG);
     QTest::newRow("ecg param ID") << static_cast<AlarmOneShotIFace *>(s2)
-                                  << SUB_PARAM_HR_PR
                                   << false
                                   << true;
 
-    OneShotAlarm *s3 = new OneShotAlarm;
-    s3->setParamID(PARAM_SPO2);
+    OneShotAlarm *s3 = new OneShotAlarm(PARAM_SPO2);
     QTest::newRow("not exist param ID") << static_cast<AlarmOneShotIFace *>(s3)
-                                        << SUB_PARAM_SPO2
                                         << true
                                         << false;
 }
@@ -208,7 +236,6 @@ void TestAlarm::testGetAlarmOneShotIFace()
 {
     d_ptr->isCleanup = true;
     QFETCH(AlarmOneShotIFace *, source);
-    QFETCH(SubParamID, subParamID);
     QFETCH(bool, result);
     QFETCH(bool, isAddSource);
 
@@ -220,7 +247,7 @@ void TestAlarm::testGetAlarmOneShotIFace()
     MockParamInfo mockParamInfo;
     MockParamInfo::registerParamInfo(&mockParamInfo);
     EXPECT_CALL(mockParamInfo, getParamID).WillOnce(Return(source->getParamID()));
-    AlarmOneShotIFace *ret = alertor.getAlarmOneShotIFace(subParamID);
+    AlarmOneShotIFace *ret = alertor.getAlarmOneShotIFace(source->getSubParamID(0));
     QCOMPARE(ret == NULL, result);
     QVERIFY(Mock::VerifyAndClearExpectations(&mockParamInfo));
 }
@@ -240,7 +267,7 @@ void TestAlarm::testGetPhyAlarmMessage_data()
     QTest::newRow("dup ECG/oneshot") << PARAM_DUP_ECG << 0 << true << "";
     QTest::newRow("dup ECG/limit") << PARAM_DUP_ECG << 1 << false << "HRHigh";
     QTest::newRow("spo2/oneshot") << PARAM_SPO2 << 7 << true << "SPO2LowPerfusion";
-    QTest::newRow("spo2/limit") << PARAM_SPO2 << 2 << false << "";
+    QTest::newRow("spo2/limit") << PARAM_SPO2 << 2 << false << "SPO22Low";
     QTest::newRow("resp/limit") << PARAM_RESP << 0 << false << "";
     QTest::newRow("resp/oneshot") << PARAM_RESP << 10 << true << "";
     QTest::newRow("nibp/limit") << PARAM_NIBP << 2 << false << "NIBPDIALow";
@@ -287,7 +314,7 @@ void TestAlarm::testGetAlarmMessage_data()
                                              << false
                                              << limitAlarm1->toString(3);
 
-    OneShotAlarm *oneshotAlarm0 = new OneShotAlarm;
+    OneShotAlarm *oneshotAlarm0 = new OneShotAlarm(PARAM_ECG);
     QTest::newRow("oneshot source/normal id") << static_cast<AlarmLimitIFace *>(NULL)
                                     << static_cast<AlarmOneShotIFace *>(oneshotAlarm0)
                                     << oneshotAlarm0->getParamID()
@@ -295,7 +322,7 @@ void TestAlarm::testGetAlarmMessage_data()
                                     << true
                                     << oneshotAlarm0->toString(0);
 
-    OneShotAlarm *oneshotAlarm1 = new OneShotAlarm;
+    OneShotAlarm *oneshotAlarm1 = new OneShotAlarm(PARAM_NONE);
     QTest::newRow("oneshot source/invaild id") << static_cast<AlarmLimitIFace *>(NULL)
                                              << static_cast<AlarmOneShotIFace *>(oneshotAlarm1)
                                              << oneshotAlarm1->getParamID()
@@ -419,11 +446,11 @@ static bool compareAlarmInfoList(QList<Alarm::AlarmInfo> &list1, QList<Alarm::Al
 
 void TestAlarm::testMainRunLimitSource()
 {
-    QFETCH(AlarmLimitIFace *, source);
-    QFETCH(AlarmStatus, alarmStatus);
-    QFETCH(int, isLock);
-    QFETCH(bool, isNeedAddAlarm);
-    QFETCH(bool, isCleanup);
+    QFETCH(AlarmLimitIFace *, source);  // 报警源
+    QFETCH(AlarmStatus, alarmStatus);   // 报警状态
+    QFETCH(int, isLock);                // 报警的栓锁状态
+    QFETCH(bool, isNeedAddAlarm);       // 是否新发生的报警
+    QFETCH(bool, isCleanup);            // 是否需要清除报警池中的报警
     d_ptr->isCleanup = isCleanup;
 
     static bool lastAlarmStatus[ALARM_COUNT] = {false, false, false, false};
@@ -461,6 +488,7 @@ void TestAlarm::testMainRunLimitSource()
             isLock = false;
         }
 
+        // 记录移除报警的个数
         if (!source->isAlarmEnable(i))
         {
             delInfoCount++;
@@ -469,10 +497,12 @@ void TestAlarm::testMainRunLimitSource()
         {
             if (!isLock && source->getCompare(0, i) == 0)
             {
+                // 若报警没被栓锁且没有超限，则删除该报警
                 delInfoCount++;
             }
         }
 
+        // 记录栓锁报警个数
         if (!source->isAlarmEnable(i) && isLock && lastAlarmStatus[i])
         {
             latchCount++;
@@ -480,11 +510,13 @@ void TestAlarm::testMainRunLimitSource()
         else if (source->getCompare(0, i) == 0 && isLock && lastAlarmStatus[i]
                  && isNeedAddAlarm && source->isAlarmEnable(i))
         {
+            // 若报警没有超限，但是被栓锁了且上一报警状态是报警的、报警源报警使能
             latchCount++;
         }
 
         if (isNeedAddAlarm && source->getCompare(0, i) != 0)
         {
+            // 添加超限报警
             EXPECT_CALL(mockAlarmIndicator, addAlarmInfo(t, ALARM_TYPE_PHY,
                                                          source->getAlarmPriority(i),
                                                          source->toString(i),
@@ -495,8 +527,10 @@ void TestAlarm::testMainRunLimitSource()
         }
         if (source->isAlarmEnable(i) && source->getCompare(0, i) != 0)
         {
+            // 发生超限报警时
             if (isLock || lastAlarmStatus[i])
             {
+                // 被栓锁或上次报警状态为报警，则检测报警是否存在
                 EXPECT_CALL(mockAlarmIndicator, checkAlarmIsExist(ALARM_TYPE_PHY, source->toString(i)))
                         .Times(::testing::AnyNumber())
                         .WillRepeatedly(Return(false));
@@ -528,18 +562,22 @@ void TestAlarm::testMainRunLimitSource()
 
     if (delInfoCount)
     {
+        // 删除报警
         EXPECT_CALL(mockAlarmIndicator, delAlarmInfo(ALARM_TYPE_PHY, NULL)).Times(delInfoCount);
     }
 
     if (newPhyAlarm)
     {
+        // 有新发生的超限报警，则报警状态机处理新发生的生理报警
         EXPECT_CALL(mockAlarmStateMachine, handAlarmEvent(ALARM_STATE_EVENT_NEW_PHY_ALARM, _, _)).Times(newPhyAlarm);
 
+        // 存储超限报警事件
         EXPECT_CALL(mockEventStorageManager, triggerAlarmEvent(_, source->getWaveformID(0), t)).Times(newPhyAlarm);
     }
 
     if (latchCount)
     {
+        // 处理每个报警的栓锁状态
         EXPECT_CALL(mockAlarmIndicator, latchAlarmInfo(ALARM_TYPE_PHY, NULL))
                 .Times(latchCount)
                 .WillRepeatedly(Return(true));
@@ -570,270 +608,152 @@ void TestAlarm::testMainRunOneshotSource_data()
 {
     QTest::addColumn<AlarmOneShotIFace *>("source");
     QTest::addColumn<AlarmStatus>("alarmStatus");
-    QTest::addColumn<bool>("isLock");
-    QTest::addColumn<bool>("isChangeTechAlarm");
-    QTest::addColumn<bool>("isChangePhyAlarm");
-    QTest::addColumn<bool>("isChangeRemove");
-    QTest::addColumn<bool>("isChangeEnable");
-    QTest::addColumn<bool>("isCleanup");
+    QTest::addColumn<OneShotAlarmInfo>("alarmInfo");
+    QTest::addColumn<bool>("removePhyAlarm");
 
-    OneShotAlarm *s1 = new OneShotAlarm;
-    QTest::newRow("normal state/alarm/nolatch") << static_cast<AlarmOneShotIFace *>(s1)
-                                                      << ALARM_STATUS_NORMAL
-                                                      << false
-                                                      << false
-                                                      << false
-                                                      << false
-                                                      << false
-                                                      << false;
+    AlarmOneShotIFace *source1 = new OneShotAlarm(PARAM_ECG);
+    OneShotAlarmInfo alarmInfo1;
+    alarmInfo1.alarmId = 0;
+    alarmInfo1.alarmType = ALARM_TYPE_PHY;
+    alarmInfo1.alarmPriority = ALARM_PRIO_MED;
+    alarmInfo1.isAlarm = true;
+    QTest::newRow("ALM 2 happen phy one shot alarm") << static_cast<AlarmOneShotIFace *>(source1)
+                                                     << ALARM_STATUS_NORMAL
+                                                     << alarmInfo1
+                                                     << false;
 
-    QTest::newRow("normal state/alarm/latch") << static_cast<AlarmOneShotIFace *>(s1)
-                                        << ALARM_STATUS_NORMAL
-                                        << true
-                                        << false
-                                        << false
-                                        << false
-                                        << false
-                                        << false;
-    QTest::newRow("open latch, test tech oneshot cancel alarm which is alarm last time")
-                                                        << static_cast<AlarmOneShotIFace *>(s1)
-                                                        << ALARM_STATUS_NORMAL
-                                                        << true
-                                                        << true
-                                                        << false
-                                                        << false
-                                                        << false
-                                                        << false;
-    QTest::newRow("open latch, test tech oneshot alarm which doesn't alarm last time")
-                                                        << static_cast<AlarmOneShotIFace *>(s1)
-                                                        << ALARM_STATUS_NORMAL
-                                                        << true
-                                                        << true
-                                                        << false
-                                                        << false
-                                                        << false
-                                                        << false;
-    QTest::newRow("open latch, test phy oneshot alarm which doesn't alarm last time")
-                                                        << static_cast<AlarmOneShotIFace *>(s1)
-                                                        << ALARM_STATUS_NORMAL
-                                                        << true
-                                                        << false
-                                                        << true
-                                                        << false
-                                                        << false
-                                                        << false;
-    QTest::newRow("open latch, test phy oneshot cancel alarm which is alarm last time")
-                                                        << static_cast<AlarmOneShotIFace *>(s1)
-                                                        << ALARM_STATUS_NORMAL
-                                                        << true
-                                                        << false
-                                                        << true
-                                                        << false
-                                                        << false
-                                                        << false;
+    QTest::newRow("ALM 2 remove phy one shot alarm first") << static_cast<AlarmOneShotIFace *>(source1)
+                                                     << ALARM_STATUS_NORMAL
+                                                     << alarmInfo1
+                                                     << true;
+    QTest::newRow("ALM 2 remove phy one shot alarm second") << static_cast<AlarmOneShotIFace *>(source1)
+                                                     << ALARM_STATUS_NORMAL
+                                                     << alarmInfo1
+                                                     << true;
+    QTest::newRow("ALM 2 remove phy one shot alarm third") << static_cast<AlarmOneShotIFace *>(source1)
+                                                     << ALARM_STATUS_NORMAL
+                                                     << alarmInfo1
+                                                     << true;
+    QTest::newRow("ALM 2 remove phy one shot alarm forth") << static_cast<AlarmOneShotIFace *>(source1)
+                                                     << ALARM_STATUS_NORMAL
+                                                     << alarmInfo1
+                                                     << true;
 
-    QTest::newRow("alarm phy alarm")
-                                    << static_cast<AlarmOneShotIFace *>(s1)
-                                    << ALARM_STATUS_NORMAL
-                                    << true
-                                    << false
-                                    << true
-                                    << true
-                                    << false
-                                    << false;
+    OneShotAlarmInfo alarmInfo2;
+    alarmInfo2.alarmId = 1;
+    alarmInfo2.alarmType = ALARM_TYPE_TECH;
+    alarmInfo2.alarmPriority = ALARM_PRIO_MED;
+    alarmInfo2.isAlarm = true;
+    QTest::newRow("ALM-3 happen tech oneShot alarm") << static_cast<AlarmOneShotIFace *>(source1)
+                                                     << ALARM_STATUS_NORMAL
+                                                     << alarmInfo2
+                                                     << false;
 
-    QTest::newRow("test remove alarm which is alarm last time")
-                                                        << static_cast<AlarmOneShotIFace *>(s1)
-                                                        << ALARM_STATUS_NORMAL
-                                                        << false
-                                                        << false
-                                                        << false
-                                                        << true
-                                                        << false
-                                                        << false;
-    QTest::newRow("test enable alarm which is alarm last time")
-                                                        << static_cast<AlarmOneShotIFace *>(s1)
-                                                        << ALARM_STATUS_NORMAL
-                                                        << false
-                                                        << false
-                                                        << false
-                                                        << false
-                                                        << true
-                                                        << false;
+    QTest::newRow("ALM-3 remove tech oneShot alarm") << static_cast<AlarmOneShotIFace *>(source1)
+                                                     << ALARM_STATUS_NORMAL
+                                                     << alarmInfo2
+                                                     << true;
 
-    QTest::newRow("test in pause state")<< static_cast<AlarmOneShotIFace *>(s1)
-                                        << ALARM_STATUS_PAUSE
-                                        << false
-                                        << false
-                                        << false
-                                        << false
-                                        << false
-                                        << false;
 
-    QTest::newRow("test in reset state")<< static_cast<AlarmOneShotIFace *>(s1)
-                                        << ALARM_STATUS_RESET
-                                        << false
-                                        << false
-                                        << false
-                                        << false
-                                        << false
-                                        << true;
+    d_ptr->isCleanup = false;
 }
 
 void TestAlarm::testMainRunOneshotSource()
 {
-    QFETCH(AlarmOneShotIFace *, source);
-    QFETCH(AlarmStatus, alarmStatus);
-    QFETCH(bool, isLock);
-    QFETCH(bool, isChangeTechAlarm);
-    QFETCH(bool, isChangePhyAlarm);
-    QFETCH(bool, isChangeRemove);
-    QFETCH(bool, isChangeEnable);
-    QFETCH(bool, isCleanup);
-    d_ptr->isCleanup = isCleanup;
+    QFETCH(AlarmOneShotIFace *, source);        // 报警源
+    QFETCH(AlarmStatus, alarmStatus);           // 当前报警状态
+    QFETCH(OneShotAlarmInfo, alarmInfo);
+    QFETCH(bool, removePhyAlarm);                // 是否取消报警源1的生理报警, -1: 不移除， 其他值代表alarmID
 
-    static bool lastOneShotAlarmStatus[ALARM_COUNT] = {false, false, false, false};
-
-    if (isChangeTechAlarm)
+    // 添加报警到报警池
+    if (!d_ptr->oneshotAlarmSourcePool.contains(source))
     {
-        firstIdAlarm = !firstIdAlarm;
-    }
-    if (isChangePhyAlarm)
-    {
-        fourthIdAlarm = !fourthIdAlarm;
-    }
-    if (isChangeRemove)
-    {
-        thirdIdRemove = !thirdIdRemove;
-    }
-    if (isChangeEnable)
-    {
-        firstIdEnable = !firstIdEnable;
-    }
-    static QList<AlarmOneShotIFace *> sourceList;
-    if (!sourceList.contains(source))
-    {
+        d_ptr->addOneShotAlarmSource(source);
         alertor.addOneShotSource(source);
-        sourceList.append(source);
+    }
+
+    // 添加报警源的报警
+    if (d_ptr->getAlarmInfoPos(source->getParamID(), alarmInfo.alarmId) == -1)
+    {
+        d_ptr->addAlarm(source->getParamID(), alarmInfo);
     }
     alertor.addAlarmStatus(alarmStatus);
-    unsigned t = QTime::currentTime().elapsed();
-    alertor.setLatchLockSta(isLock);
+    // 运行时间
+    static unsigned t = QTime::currentTime().elapsed();
 
-    MockAlarmIndicator mockAlarmIndicator;
-    MockAlarmIndicator::registerAlarmIndicator(&mockAlarmIndicator);
-    MockTrendCache mockTrendCache;
-    MockTrendCache::registerTrendCache(&mockTrendCache);
-    TrendCacheData cacheData;
-    /*
-     *  set a valid value for SUB_PARAM_NONE, because Limit Alarm sub param id is none
-     * and need to have a valid value
-     */
-    cacheData.values[SUB_PARAM_NONE] = 0;
-    EXPECT_CALL(mockTrendCache, getTrendData(_, _)).WillRepeatedly(DoAll(SetArgReferee<1>(cacheData), Return(true)));
-    MockAlarmStateMachine mockAlarmStateMachine;
-    MockAlarmStateMachine::registerAlarmStateMachine(&mockAlarmStateMachine);
-    MockEventStorageManager mockEventStorageManager;
-    MockEventStorageManager::registerEventStorageManager(&mockEventStorageManager);
-    EXPECT_CALL(mockAlarmIndicator, publishAlarm(_));
-
-    int machineCount = 0;
-    for (int i = 0; i < source->getAlarmSourceNR(); i++)
+    if (removePhyAlarm)
     {
-        if (alarmStatus == ALARM_STATUS_PAUSE && source->getAlarmType(i) != ALARM_TYPE_TECH)
+        int pos = d_ptr->getAlarmInfoPos(source->getParamID(), alarmInfo.alarmId);
+        if (pos != -1)
         {
-            lastOneShotAlarmStatus[i] = false;
-            continue;
-        }
-        if (source->isNeedRemove(i) && lastOneShotAlarmStatus[i])
-        {
-            EXPECT_CALL(mockAlarmIndicator, delAlarmInfo(source->getAlarmType(i), source->toString(i)));
-            lastOneShotAlarmStatus[i] = false;
-            continue;
-        }
-        if (!source->isAlarmEnable(i))
-        {
-            if (lastOneShotAlarmStatus[i])
-            {
-                if (source->getAlarmType(i) != ALARM_TYPE_TECH && isLock)
-                {
-                    EXPECT_CALL(mockAlarmIndicator, latchAlarmInfo(source->getAlarmType(i), source->toString(i)))
-                            . WillOnce(Return(true));
-                }
-                else
-                {
-                    EXPECT_CALL(mockAlarmIndicator, delAlarmInfo(source->getAlarmType(i), source->toString(i)));
-                }
-            }
-            lastOneShotAlarmStatus[i] = false;
-            continue;
-        }
-
-        if (!source->isNeedRemove(i) && source->isAlarmEnable(i) && source->isAlarmed(i)
-                && !lastOneShotAlarmStatus[i])
-        {
-            machineCount++;
-            EXPECT_CALL(mockAlarmIndicator, addAlarmInfo(t, source->getAlarmType(i),
-                                                         source->getAlarmPriority(i),
-                                                         source->toString(i),
-                                                         source, i,
-                                                         _, _)).WillOnce(Return(true));
-        }
-
-        if (!source->isAlarmed(i))
-        {
-            if (lastOneShotAlarmStatus[i])
-            {
-                if (isLock && source->getAlarmType(i) != ALARM_TYPE_TECH)
-                {
-                    EXPECT_CALL(mockAlarmIndicator, latchAlarmInfo(source->getAlarmType(i), source->toString(i)))
-                            . WillOnce(Return(false));
-                    lastOneShotAlarmStatus[i] = false;
-                }
-                else
-                {
-                    EXPECT_CALL(mockAlarmIndicator, delAlarmInfo(source->getAlarmType(i), source->toString(i)));
-                    lastOneShotAlarmStatus[i] = false;
-                }
-            }
-            continue;
-        }
-        else
-        {
-            if (lastOneShotAlarmStatus[i])
-            {
-                if (isLock && source->getAlarmType(i) != ALARM_TYPE_TECH)
-                {
-                    EXPECT_CALL(mockAlarmIndicator, checkAlarmIsExist(source->getAlarmType(i), source->toString(i)))
-                            .WillOnce(Return(true));
-                    EXPECT_CALL(mockAlarmIndicator, updateLatchAlarmInfo(source->toString(i), false));
-                }
-                continue;
-            }
-        }
-
-        if (source->isAlarmed(i) && source->getAlarmType(i) != ALARM_TYPE_TECH)
-        {
-            EXPECT_CALL(mockEventStorageManager, triggerAlarmEvent(_, source->getWaveformID(i), t));
-        }
-
-        if (!source->isNeedRemove(i))
-        {
-            lastOneShotAlarmStatus[i] = source->isAlarmed(i);
+            infoMap[source->getParamID()][alarmInfo.alarmId].isAlarm = false;
         }
     }
 
-    EXPECT_CALL(mockAlarmStateMachine, handAlarmEvent(ALARM_STATE_EVENT_NEW_PHY_ALARM, _, _)).Times(machineCount);
+    // 注册Mock
+    MockAlarmIndicator mockAlarmIndicator;
+    MockAlarmIndicator::registerAlarmIndicator(&mockAlarmIndicator);
+    MockEventStorageManager mockEventStorageManager;
+    MockEventStorageManager::registerEventStorageManager(&mockEventStorageManager);
+    MockTrendCache mockTrendCache;
+    MockTrendCache::registerTrendCache(&mockTrendCache);
+    MockAlarmStateMachine mockAlarmStateMachine;
+    MockAlarmStateMachine::registerAlarmStateMachine(&mockAlarmStateMachine);
+
+    EXPECT_CALL(mockAlarmIndicator, publishAlarm(alarmStatus));
+
+    foreach(AlarmOneShotIFace *s, d_ptr->oneshotAlarmSourcePool)
+    {
+        for (int i = 0; i < s->getAlarmSourceNR(); i++)
+        {
+            int pos = d_ptr->getAlarmInfoPos(s->getParamID(), i);
+            OneShotAlarmInfo &info = infoMap[s->getParamID()][pos];
+            if (s->isAlarmed(i))
+            {
+                info.normalTimeCount = 0;
+                if (pos != -1 && !info.isLastAlarm)
+                {
+                    // 上次没有报警，这次报警了，则添加报警到报警池，并触发事件，处理报警状态机事件
+                    EXPECT_CALL(mockAlarmIndicator, addAlarmInfo(t, s->getAlarmType(i),
+                                                                 s->getAlarmPriority(i),
+                                                                 s->toString(i),
+                                                                 s, i,
+                                                                 _, _));
+                    EXPECT_CALL(mockEventStorageManager, triggerAlarmEvent(_, _, t)).Times(AnyNumber());
+
+                    if (s->getAlarmType(i) == ALARM_TYPE_PHY)
+                    {
+                        EXPECT_CALL(mockAlarmStateMachine, handAlarmEvent(ALARM_STATE_EVENT_NEW_PHY_ALARM, 0, 0));
+                    }
+                    else if (s->getAlarmType(i) == ALARM_TYPE_TECH)
+                    {
+                        EXPECT_CALL(mockAlarmStateMachine, handAlarmEvent(ALARM_STATE_EVENT_NEW_TECH_ALARM, 0, 0));
+                    }
+                    info.isLastAlarm = true;
+                }
+            }
+            else
+            {
+                // 当前没有报警
+                if (info.isLastAlarm && (info.normalTimeCount >= ALARM_LIMIT_TIMES || info.alarmType == ALARM_TYPE_TECH))
+                {
+                    // 恢复正常3次后，才可撤销报警
+                    EXPECT_CALL(mockAlarmIndicator, delAlarmInfo(s->getAlarmType(i), s->toString(i)));
+                    info.normalTimeCount = 0;
+                    info.isLastAlarm = false;
+                }
+                info.normalTimeCount++;
+            }
+        }
+    }
+
 
     alertor.mainRun(t);
 
-    // test getOneShotAlarmStatus
-    bool ret = alertor.getOneShotAlarmStatus(source, 0);
-    QCOMPARE(ret, lastOneShotAlarmStatus[0]);
-
+    // 确认Mock
     QVERIFY(Mock::VerifyAndClearExpectations(&mockAlarmIndicator));
+    QVERIFY(Mock::VerifyAndClearExpectations(&mockEventStorageManager));
     QVERIFY(Mock::VerifyAndClearExpectations(&mockTrendCache));
     QVERIFY(Mock::VerifyAndClearExpectations(&mockAlarmStateMachine));
-    QVERIFY(Mock::VerifyAndClearExpectations(&mockEventStorageManager));
 }
 

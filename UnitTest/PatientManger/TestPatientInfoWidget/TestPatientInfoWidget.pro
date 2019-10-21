@@ -42,6 +42,9 @@ SOURCES += main.cpp \
     ../../../Utility/ErrorLog/ErrorLogItem.cpp \
     ../../../Utility/Widgets/Base/Button.cpp \
     ../../../Utility/Widgets/Base/ThemeManager.cpp \
+    ../../../Components/SoundManager/SoundManagerInterface.cpp \
+    ../../../Params/SPO2Param/SPO2ParamInterface.cpp \
+    ../../../Components/System/Widgets/RunningStatusBarInterface.cpp
 
 HEADERS += \
     TestPatientInfoWidget.h \
@@ -70,6 +73,9 @@ HEADERS += \
     ../../../Utility/Widgets/Base/ThemeManager.h \
     ../../Utility/MockFontManager.h \
     ../../Utility/MockWindowManager.h \
+    ../../../Components/SoundManager/SoundManagerInterface.h \
+    ../../../Params/SPO2Param/SPO2ParamInterface.h \
+    ../../../Components/System/Widgets/RunningStatusBarInterface.h
 
 INCLUDEPATH += \
     ../../../Components/PatientManager \
@@ -90,6 +96,9 @@ INCLUDEPATH += \
     ../../../Utility/DataStorage \
     ../../Alarm \
     ../../Utility \
+    ../../../Components/SoundManager \
+    ../../../Params/SPO2Param \
+    ../../../Components/System/Widgets \
 
 RESOURCES += \
     ../../../Utility/Widgets/Base/res/ui.qrc

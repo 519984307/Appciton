@@ -55,6 +55,7 @@ void IThread::msleep(unsigned long d)
  *************************************************************************************************/
 IThread::IThread(const QString &name, iThreadEntry entry)
 {
+    this->setObjectName(name);
     _name = name;
     _entry = entry;
     _isStop = false;

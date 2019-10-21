@@ -120,6 +120,9 @@ DEFINES += DISABLE_ECG_MODULE_CALIBRATION
 #大字体界面，co2模块替换resp模块
 DEFINES += BIG_FONT_LAYOUT_CO2_REPLACE_RESP
 
+#隐藏界面布局功能
+DEFINES += HIDE_SCREEN_LAYOUT
+
 # Depending libraries
 LIBS += -ldl -lasound -lz
 
@@ -146,6 +149,7 @@ OTHER_FILES +=                                                                  
     nPM/etc/PedConfig.Original.xml                                              \
     nPM/etc/NeoConfig.Original.xml                                              \
     nPM/etc/usercheck.xml                                                       \
+    nPM/etc/PatientInfo.xml                                                     \
 
 SOURCES +=                                                                      \
     SOUP/Json/json_parser.cc                                                    \
@@ -587,6 +591,7 @@ SOURCES +=                                                                      
     Params/NIBPParam/NIBPTrigger/NIBPCountdownTime.cpp                          \
     Params/NIBPParam/NIBPTrigger/NIBPCountdownTimeInterface.cpp                 \
     Params/SPO2Param/SPO2Param.cpp                                              \
+    Params/SPO2Param/SPO2ParamInterface.cpp                                     \
     Params/SPO2Param/SPO2Alarm.cpp                                              \
     Params/SPO2Param/SPO2Widgets/SPO2WaveWidget.cpp                             \
     Params/SPO2Param/SPO2Widgets/SPO2TrendWidget.cpp                            \
@@ -686,6 +691,7 @@ HEADERS +=                                                                      
     Utility/TimeDate/TimeDefine.h                                               \
     Utility/TimeDate/TimeSymbol.h                                               \
     Utility/Uart/Uart.h                                                         \
+    Utility/Uart/UartSocketDefine.h                                             \
     Utility/Uart/UartSocket.h                                                   \
     Utility/BaseDefine.h                                                        \
     Utility/UnitManager.h                                                       \
@@ -1160,6 +1166,7 @@ HEADERS +=                                                                      
     Params/NIBPParam/NIBPTrigger/NIBPCountdownTime.h                            \
     Params/NIBPParam/NIBPTrigger/NIBPCountdownTimeInterface.h                   \
     Params/SPO2Param/SPO2Param.h                                                \
+    Params/SPO2Param/SPO2ParamInterface.h                                       \
     Params/SPO2Param/SPO2Alarm.h                                                \
     Params/SPO2Param/SPO2Define.h                                               \
     Params/SPO2Param/SPO2Symbol.h                                               \
