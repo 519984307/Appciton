@@ -121,7 +121,7 @@ void S5Provider::handlePacket(unsigned char *data, int len)
     {
         if (_firstStartUp)
         {
-            ErrorLogItem *item = new CriticalFaultLogItem();
+            ErrorLogItem *item = new ErrorLogItem();
             item->setName("S5 Start");
             errorLog.append(item);
             spo2Param.reset();
@@ -224,6 +224,15 @@ void S5Provider::reconnected(void)
         alarmSource->setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, false);
     }
     spo2Param.setConnected(true);
+}
+
+void S5Provider::sendDisconnected()
+{
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SPO2);
+    if (alarmSource && !alarmSource->isAlarmed(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP))
+    {
+        alarmSource->setOneShotAlarm(SPO2_ONESHOT_ALARM_SEND_COMMUNICATION_STOP, true);
+    }
 }
 
 /**************************************************************************************************
@@ -519,6 +528,12 @@ void S5Provider::setSensitive(SPO2Sensitive sen)
 void S5Provider::sendStatus(void)
 {
     sendCmd(S5_CMD_STATUS, NULL, 0);
+}
+
+void S5Provider::enableRawDataSend(bool onOff)
+{
+    unsigned char cmd = onOff;
+    sendCmd(S5_CMD_RAW_DATA, &cmd, 1);
 }
 
 /**************************************************************************************************

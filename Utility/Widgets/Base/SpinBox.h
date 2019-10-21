@@ -120,6 +120,8 @@ protected:
      /* reimplement */
     void focusOutEvent(QFocusEvent *ev);
 
+    void mousePressEvent(QMouseEvent *e);
+
 private:
     QScopedPointer<SpinBoxPrivate> d_ptr;
 };

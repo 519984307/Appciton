@@ -13,15 +13,15 @@
     <ElapseStartTime>0</ElapseStartTime>
     <General>
         <PatientType>0</PatientType><!--0:adult  1:ped  2:neo-->
-        <MonitorName>dd-89</MonitorName>
+        <MonitorName></MonitorName>
         <ConfigManagerPassword>12345678</ConfigManagerPassword>
         <DemoModePassword>11111111</DemoModePassword>
         <UserMaintainPassword>66666666</UserMaintainPassword>
         <FactoryMaintainPassword>382425</FactoryMaintainPassword>
         <SuperPassword>672401</SuperPassword>
-        <Department>d12</Department>
-        <BedNumber>b44</BedNumber>
-        <ChangeBedNumberRight>0</ChangeBedNumberRight>
+        <Department></Department>
+        <BedNumber></BedNumber>
+        <ChangeBedNumberRight>1</ChangeBedNumberRight>
         <Language CurrentOption="1" NextOption="1" OptionCount="2">
             <!-- note："XmlFileName" segment consistent with XML language file name -->
             <Opt0 XmlFileName="English">English</Opt0>
@@ -33,8 +33,8 @@
         <TouchScreen>1</TouchScreen>
         <DefaultPatientType>0</DefaultPatientType>
         <!-- DefaultDisplayBrightness：不同类型屏幕的背光亮度取值范围不一样，
-        <为了防止在默认亮度值下黑屏，这里默认亮度下进行折中选择4，对应的亮度等级5> -->
-        <DefaultDisplayBrightness>4</DefaultDisplayBrightness>
+        <为了防止在默认亮度值下黑屏，这里默认亮度下选择9，对应的亮度等级10> -->
+        <DefaultDisplayBrightness>9</DefaultDisplayBrightness>
 	<KeyPressVolume>0</KeyPressVolume>
     </General>
     <Alarms>
@@ -67,7 +67,7 @@
         <AlarmVolume>1</AlarmVolume>
         <HeartBeatVolume>0</HeartBeatVolume>
         <KeyPressVolume>0</KeyPressVolume>
-        <NIBPCompletedTips>1</NIBPCompletedTips>
+        <NIBPCompletedTips>0</NIBPCompletedTips>
         <StopNIBPMeasure>1</StopNIBPMeasure>
         <EnterNightMode>0</EnterNightMode>
     </NightMode>
@@ -99,14 +99,15 @@
         <BootAndStandbyLogoVersion>04.00.00.01</BootAndStandbyLogoVersion>
     </SoftWareVersion>
     <Others>
+        <WaveDrawMode>1</WaveDrawMode>
         <WaveLine>1</WaveLine>
         <ECGStandard>0</ECGStandard>
         <FrequencyNotch>1</FrequencyNotch>
         <ParaSwitchPrem>1</ParaSwitchPrem>
         <ConfImpactItemSettings>1</ConfImpactItemSettings>
         <NurseCallSetting>1</NurseCallSetting>
-        <SignalType>1</SignalType>
-        <TriggerMode>1</TriggerMode>
+        <SignalType>0</SignalType>
+        <TriggerMode>0</TriggerMode>
         <AlarmLevel>
             <High>0</High>
             <Med>0</Med>
@@ -175,8 +176,8 @@
         <Ruler>
             <HR_PR Enable="1" Prio="2" Auto="1">
                 <bpm>
-                    <Low Min="15" Max="349">50</Low>
-                    <High Min="16" Max="350">120</High>
+                    <Low Min="20" Max="299">50</Low>
+                    <High Min="21" Max="300">120</High>
                     <Step>1</Step>
                     <Scale>1</Scale>
                 </bpm>

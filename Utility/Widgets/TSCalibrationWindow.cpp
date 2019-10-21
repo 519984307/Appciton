@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/9/9
+ **/
+
+
 #include "TSCalibrationWindow.h"
 #include <QDesktopWidget>
 #include <QApplication>
@@ -31,13 +42,14 @@ static int perform_calibration(Calibration *cal)
 
     /* Get sums for matrix */
     n = x = y = x2 = y2 = xy = 0;
-    for (j = 0; j < 5; j++) {
+    for (j = 0; j < 5; j++)
+    {
         n += 1.0;
-        x += (float)cal->x[j];
-        y += (float)cal->y[j];
-        x2 += (float)(cal->x[j]*cal->x[j]);
-        y2 += (float)(cal->y[j]*cal->y[j]);
-        xy += (float)(cal->x[j]*cal->y[j]);
+        x += static_cast<float>(cal->x[j]);
+        y += static_cast<float>(cal->y[j]);
+        x2 += static_cast<float>(cal->x[j]*cal->x[j]);
+        y2 += static_cast<float>(cal->y[j]*cal->y[j]);
+        xy += static_cast<float>(cal->x[j]*cal->y[j]);
     }
 
     /* Get determinant of matrix -- check if determinant is too small */
@@ -58,15 +70,15 @@ static int perform_calibration(Calibration *cal)
     /* Get sums for x calibration */
     z = zx = zy = 0;
     for (j = 0; j < 5; j++) {
-        z += (float)cal->xfb[j];
-        zx += (float)(cal->xfb[j]*cal->x[j]);
-        zy += (float)(cal->xfb[j]*cal->y[j]);
+        z += static_cast<float>(cal->xfb[j]);
+        zx += static_cast<float>(cal->xfb[j]*cal->x[j]);
+        zy += static_cast<float>(cal->xfb[j]*cal->y[j]);
     }
 
     /* Now multiply out to get the calibration for framebuffer x coord */
-    cal->a[0] = (int)((a*z + b*zx + c*zy)*(scaling));
-    cal->a[1] = (int)((b*z + e*zx + f*zy)*(scaling));
-    cal->a[2] = (int)((c*z + f*zx + i*zy)*(scaling));
+    cal->a[0] = static_cast<int>((a*z + b*zx + c*zy)*(scaling));
+    cal->a[1] = static_cast<int>((b*z + e*zx + f*zy)*(scaling));
+    cal->a[2] = static_cast<int>((c*z + f*zx + i*zy)*(scaling));
 
     qdebug("%f %f %f\n", (a*z + b*zx + c*zy),
                  (b*z + e*zx + f*zy),
@@ -75,22 +87,22 @@ static int perform_calibration(Calibration *cal)
     /* Get sums for y calibration */
     z = zx = zy = 0;
     for (j = 0; j < 5; j++) {
-        z += (float)cal->yfb[j];
-        zx += (float)(cal->yfb[j]*cal->x[j]);
-        zy += (float)(cal->yfb[j]*cal->y[j]);
+        z += static_cast<float>(cal->yfb[j]);
+        zx += static_cast<float>(cal->yfb[j]*cal->x[j]);
+        zy += static_cast<float>(cal->yfb[j]*cal->y[j]);
     }
 
     /* Now multiply out to get the calibration for framebuffer y coord */
-    cal->a[3] = (int)((a*z + b*zx + c*zy)*(scaling));
-    cal->a[4] = (int)((b*z + e*zx + f*zy)*(scaling));
-    cal->a[5] = (int)((c*z + f*zx + i*zy)*(scaling));
+    cal->a[3] = static_cast<int>((a*z + b*zx + c*zy)*(scaling));
+    cal->a[4] = static_cast<int>((b*z + e*zx + f*zy)*(scaling));
+    cal->a[5] = static_cast<int>((c*z + f*zx + i*zy)*(scaling));
 
     qdebug("%f %f %f\n", (a*z + b*zx + c*zy),
                  (b*z + e*zx + f*zy),
                  (c*z + f*zx + i*zy));
 
     /* If we got here, we're OK, so assign scaling to a[6] and return */
-    cal->a[6] = (int)scaling;
+    cal->a[6] = static_cast<int>(scaling);
 
     return 1;
 }
@@ -118,7 +130,6 @@ static void getxy(tsdev *ts, int *x, int *y)
             perror("ts_read");
             exit(1);
         }
-
     } while (samp[0].pressure == 0);
 
     /* Now collect up to MAX_SAMPLES touches into the samp array. */
@@ -131,7 +142,7 @@ static void getxy(tsdev *ts, int *x, int *y)
             exit(1);
         }
     } while (samp[index].pressure > 0);
-    qdebug("Took %d samples...\n",index);
+    qdebug("Took %d samples...\n", index);
 
     /*
      * At this point, we have samples in indices zero to (index-1)
@@ -173,7 +184,6 @@ static void clearTsBuf(tsdev *ts)
     int fd = ts_fd(ts);
     fd_set fdset;
     struct timeval tv;
-    int nfds;
     struct ts_sample sample;
 
     while (1) {
@@ -183,7 +193,7 @@ static void clearTsBuf(tsdev *ts)
         tv.tv_sec = 0;
         tv.tv_usec = 0;
 
-        nfds = select(fd + 1, &fdset, NULL, NULL, &tv);
+        int nfds = select(fd + 1, &fdset, NULL, NULL, &tv);
         if (nfds == 0)
             break;
 
@@ -206,7 +216,7 @@ public:
         CALBRATION_POINT_NR,
     };
 
-    TSCalibrationWindowPrivate(TSCalibrationWindow * const q_ptr)
+    explicit TSCalibrationWindowPrivate(TSCalibrationWindow * const q_ptr)
         : q_ptr(q_ptr),
           calPoint(TOP_LEFT),
           thread(NULL)
@@ -214,7 +224,7 @@ public:
         memset(&cal, 0, sizeof(Calibration));
     }
 
-    void drawCrosshair(QPainter &painter, int x, int y);
+    void drawCrosshair(QPainter *painter, int x, int y);
     QPoint point(CalibrationPoint calPoint);
     QString pointName(CalibrationPoint calPoint);
 
@@ -224,24 +234,21 @@ public:
     Calibration cal;
     CalibrationPoint calPoint;
     TSCalibrationThread *thread;
-
-    int nextCalPointEvt;
-    int finishedEvt;
 };
 
-void TSCalibrationWindowPrivate::drawCrosshair(QPainter &painter, int x, int y)
+void TSCalibrationWindowPrivate::drawCrosshair(QPainter *painter, int x, int y)
 {
     QVector<QLine> lines;
     lines.append(QLine(x - 10, y, x - 2, y));
     lines.append(QLine(x + 2, y, x + 10, y));
     lines.append(QLine(x, y - 10, x, y - 2));
     lines.append(QLine(x, y + 2, x, y + 10));
-    painter.drawLines(lines);
+    painter->drawLines(lines);
 
 
     lines.clear();
-    painter.save();
-    painter.setPen(QColor(CROSSHAIR_FRAME_COLOR));
+    painter->save();
+    painter->setPen(QColor(CROSSHAIR_FRAME_COLOR));
     lines.append(QLine(x - 6, y - 9, x - 9, y - 9));
     lines.append(QLine(x - 9, y - 8, x - 9, y - 6));
     lines.append(QLine(x - 9, y + 6, x - 9, y + 9));
@@ -250,13 +257,13 @@ void TSCalibrationWindowPrivate::drawCrosshair(QPainter &painter, int x, int y)
     lines.append(QLine(x + 9, y + 8, x + 9, y + 6));
     lines.append(QLine(x + 9, y - 6, x + 9, y - 9));
     lines.append(QLine(x + 8, y - 9, x + 6, y - 9));
-    painter.drawLines(lines);
-    painter.restore();
+    painter->drawLines(lines);
+    painter->restore();
 }
 
 QPoint TSCalibrationWindowPrivate::point(TSCalibrationWindowPrivate::CalibrationPoint calPoint)
 {
-    switch(calPoint)
+    switch (calPoint)
     {
     case TOP_LEFT:
         return QPoint(50, 50);
@@ -281,7 +288,7 @@ QPoint TSCalibrationWindowPrivate::point(TSCalibrationWindowPrivate::Calibration
 
 QString TSCalibrationWindowPrivate::pointName(TSCalibrationWindowPrivate::CalibrationPoint calPoint)
 {
-    switch(calPoint)
+    switch (calPoint)
     {
     case TOP_LEFT:
         return "Top Left";
@@ -308,7 +315,7 @@ void TSCalibrationWindowPrivate::saveResult()
     }
 
     QFile file(calfile);
-    if(file.open(QIODevice::WriteOnly))
+    if (file.open(QIODevice::WriteOnly))
     {
         QTextStream stream(&file);
         stream << cal.a[1] << " " << cal.a[2] << " " << cal.a[0] <<" ";
@@ -328,7 +335,7 @@ TSCalibrationWindow::TSCalibrationWindow()
     :QDialog(NULL, Qt::FramelessWindowHint),
       d_ptr(new TSCalibrationWindowPrivate(this))
 {
-    //full screen dialog
+    // full screen dialog
     this->resize(qApp->desktop()->screen()->size());
     move(0, 0);
     QPalette pal = this->palette();
@@ -346,7 +353,6 @@ TSCalibrationWindow::TSCalibrationWindow()
 
 TSCalibrationWindow::~TSCalibrationWindow()
 {
-
 }
 
 void TSCalibrationWindow::showEvent(QShowEvent *ev)
@@ -366,31 +372,31 @@ void TSCalibrationWindow::paintEvent(QPaintEvent *ev)
     QRect textRect = fm.boundingRect(text);
     textRect.moveCenter(QPoint(width() / 2, height() / 4 + 20));
     painter.drawText(textRect, Qt::AlignCenter, text);
-    switch(d_ptr->calPoint)
+    switch (d_ptr->calPoint)
     {
     case TSCalibrationWindowPrivate::TOP_LEFT:
-        d_ptr->drawCrosshair(painter, 50, 50);
+        d_ptr->drawCrosshair(&painter, 50, 50);
         break;
     case TSCalibrationWindowPrivate::TOP_RIGHT:
-        d_ptr->drawCrosshair(painter, width() - 50, 50);
+        d_ptr->drawCrosshair(&painter, width() - 50, 50);
         break;
     case TSCalibrationWindowPrivate::BOTTOM_RIGHT:
-        d_ptr->drawCrosshair(painter, width() - 50, height() -  50);
+        d_ptr->drawCrosshair(&painter, width() - 50, height() -  50);
         break;
     case TSCalibrationWindowPrivate::BOTTOM_LEFT:
-        d_ptr->drawCrosshair(painter, 50, height() - 50);
+        d_ptr->drawCrosshair(&painter, 50, height() - 50);
         break;
     case TSCalibrationWindowPrivate::CENTER:
-        d_ptr->drawCrosshair(painter, width() / 2, height() / 2);
+        d_ptr->drawCrosshair(&painter, width() / 2, height() / 2);
         break;
     default:
         break;
     }
 
     QPoint p = d_ptr->point(d_ptr->calPoint);
-    if(!p.isNull())
+    if (!p.isNull())
     {
-        d_ptr->drawCrosshair(painter, p.x(), p.y());
+        d_ptr->drawCrosshair(&painter, p.x(), p.y());
     }
 }
 
@@ -405,20 +411,20 @@ void TSCalibrationWindow::onGetTouchPos(const QPoint &pos)
     d_ptr->cal.xfb[d_ptr->calPoint] = screenPos.x();
     d_ptr->cal.yfb[d_ptr->calPoint] = screenPos.y();
 
-    qDebug()<<d_ptr->pointName(d_ptr->calPoint)<<": "<<pos;
+    qDebug() << d_ptr->pointName(d_ptr->calPoint) << ": " << pos;
 
-    if(d_ptr->calPoint == TSCalibrationWindowPrivate::CENTER)
+    if (d_ptr->calPoint == TSCalibrationWindowPrivate::CENTER)
     {
-        //finish get touch point
-        if(perform_calibration(&d_ptr->cal))
+        // finish get touch point
+        if (perform_calibration(&d_ptr->cal))
         {
             QString str;
-            for(int i = 0; i<= 6; i++)
+            for (int i = 0; i<= 6; i++)
             {
                 str += QString::number(d_ptr->cal.a[i]);
                 str += " ";
             }
-            qDebug()<<"Result: "<<str;
+            qDebug() << "Result: " << str;
             d_ptr->saveResult();
             done(1);
         }
@@ -429,8 +435,8 @@ void TSCalibrationWindow::onGetTouchPos(const QPoint &pos)
     }
     else
     {
-        //next calibration point
-        d_ptr->calPoint = (TSCalibrationWindowPrivate::CalibrationPoint)(d_ptr->calPoint + 1);
+        // next calibration point
+        d_ptr->calPoint = static_cast<TSCalibrationWindowPrivate::CalibrationPoint>(d_ptr->calPoint + 1);
         update();
         d_ptr->thread->start();
     }
@@ -440,13 +446,13 @@ void TSCalibrationWindow::onGetTouchPos(const QPoint &pos)
 TSCalibrationThread::TSCalibrationThread(QObject *parent)
     :QThread(parent)
 {
-
+    setObjectName("TSCalibration");
 }
 
 void TSCalibrationThread::run()
 {
     tsdev *ts = ts_setup(NULL, 0);
-    if(!ts)
+    if (!ts)
     {
         perror("ts_setup");
         return;
@@ -454,7 +460,8 @@ void TSCalibrationThread::run()
 
     clearTsBuf(ts);
 
-    int x,y;
+    int x;
+    int y;
 
     getxy(ts, &x, &y);
 

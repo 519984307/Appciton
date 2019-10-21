@@ -18,6 +18,7 @@
 #include "ErrorLogItem.h"
 #include "RawDataCollector.h"
 #include "IConfig.h"
+#include "AlarmSourceManager.h"
 
 #define LOW_BORDER_VALUE 149
 #define HIGH_BORDER_VALUE 501
@@ -93,7 +94,7 @@ void T5Provider::handlePacket(unsigned char *data, int len)
     {
         _sendACK(data[0]);
 
-        ErrorLogItem *item = new CriticalFaultLogItem();
+        ErrorLogItem *item = new ErrorLogItem();
         item->setName("T5 Start");
         errorLog.append(item);
 
@@ -127,10 +128,15 @@ void T5Provider::handlePacket(unsigned char *data, int len)
         rawDataCollector.collectData(RawDataCollector::TEMP_DATA, data + 1, len - 1);
         break;
 
+    case T5_OHM_DATA:
+         ohmResult(data);
+         break;
+
     case T5_DATA_ERROR:
         _sendACK(data[0]);
         _errorWarm(data, len);
         break;
+
 
     default:
         break;
@@ -154,6 +160,15 @@ void T5Provider::reconnected(void)
 {
     _disconnected = false;
     tempParam.setOneShotAlarm(TEMP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+}
+
+void T5Provider::sendDisconnected()
+{
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_TEMP);
+    if (alarmSource && !alarmSource->isAlarmed(TEMP_ONESHOT_ALARM_COMMUNICATION_STOP))
+    {
+        alarmSource->setOneShotAlarm(TEMP_ONESHOT_ALARM_SEND_COMMUNICATION_STOP, true);
+    }
 }
 
 /**************************************************************************************************
@@ -207,6 +222,20 @@ void T5Provider::sendCalibrateData(int channel, int value)
     sendCmd(T5_CMD_CHANNEL, cmd, 2);
 }
 
+void T5Provider::enterCalibrateState()
+{
+    unsigned char cmd[1];
+    cmd[0] = 0x01;
+    sendCmd(T5_CMD_CALIBRATE_STATE, cmd, 1);
+}
+
+void T5Provider::exitCalibrateState()
+{
+    unsigned char cmd[1];
+    cmd[0] = 0x00;
+    sendCmd(T5_CMD_CALIBRATE_STATE, cmd, 1);
+}
+
 /**************************************************************************************************
  * 接收自检状态。
  *************************************************************************************************/
@@ -228,16 +257,15 @@ void T5Provider::_selfTest(unsigned char *packet, int len)
             switch (packet[i])
             {
             case ERRORCODE_CHANNEL1_NOT_CALIBRATION:
-                tempParam.setErrorDisable();
                 tempParam.setOneShotAlarm(TEMP_ONESHOT_ALARM_NOT_CALIBRATION_1, true);
                 errorStr += tempErrorCode[packet[i]];
                 break;
             case ERRORCODE_CHANNEL2_NOT_CALIBRATION:
-                tempParam.setErrorDisable();
                 tempParam.setOneShotAlarm(TEMP_ONESHOT_ALARM_NOT_CALIBRATION_2, true);
                 errorStr += tempErrorCode[packet[i]];
                 break;
             case ERRORCODE_DATA_RESET_DEFAULT:
+                tempParam.setOneShotAlarm(TEMP_ONESHOT_ALARM_MODULE_ABNORMAL, true);
                 errorStr += tempErrorCode[packet[i]];
                 break;
             default:
@@ -277,9 +305,12 @@ void T5Provider::_errorWarm(unsigned char *packet, int len)
         switch (packet[i])
         {
         case ERRORCODE_FLASH_WRONG:
+            tempParam.setOneShotAlarm(TEMP_ONESHOT_ALARM_MODULE_ABNORMAL, true);
+            break;
         case ERRORCODE_SELF_CHECK_FAILED:
             systemManager.setPoweronTestResult(T5_MODULE_SELFTEST_RESULT, SELFTEST_FAILED);
             tempParam.setErrorDisable();
+            tempParam.setWidgetErrorShow(true);
             tempParam.setOneShotAlarm(TEMP_ONESHOT_ALARM_MODULE_DISABLE, true);
             errorStr += tempErrorCode[packet[i]];
             break;
@@ -315,7 +346,6 @@ void T5Provider::_probeState(unsigned char *packet)
     }
     if (packet[1] & 0x10)
     {
-        _sensorOff1 = true;
         _overRang1 = false;
     }
     else
@@ -333,7 +363,6 @@ void T5Provider::_probeState(unsigned char *packet)
     }
     if (packet[2] & 0x10)
     {
-        _sensorOff2 = true;
         _overRang2 = false;
     }
     else
@@ -353,30 +382,18 @@ void T5Provider::_result(unsigned char *packet)
     _temp2 = InvData();
     _tempd = InvData();
 
-    bool sensorOff1 = _sensorOff1;
-    bool sensorOff2 = _sensorOff2;
-
-    if (!(0xFF == packet[2] && 0xFF == packet[1]))
+    if (!_overRang1)
     {
-        if (!_overRang1)
-        {
-            _temp1 = borderValueChange(LOW_BORDER_VALUE, HIGH_BORDER_VALUE,
-                                        static_cast<int>((packet[2] << 8) +packet[1]));
-        }
-        sensorOff1 = false;
+        _temp1 = borderValueChange(LOW_BORDER_VALUE, HIGH_BORDER_VALUE,
+                                    static_cast<int>((packet[2] << 8) +packet[1]));
     }
 
-    if (!(0xFF == packet[4] && 0xFF == packet[3]))
+    if (!_overRang2)
     {
-        if (!_overRang2)
-        {
-            _temp2 = borderValueChange(LOW_BORDER_VALUE, HIGH_BORDER_VALUE,
-                                        static_cast<int>((packet[4] << 8) + packet[3]));
-        }
-        sensorOff2 = false;
+        _temp2 = borderValueChange(LOW_BORDER_VALUE, HIGH_BORDER_VALUE,
+                                    static_cast<int>((packet[4] << 8) + packet[3]));
     }
 
-//    if (_temp1 != InvData() && _temp2 != InvData())
     if (_temp1 >= 0 && _temp1 <= 500 && _temp2 >= 0 && _temp2 <= 500)
     {
         _tempd = abs(_temp1 - _temp2);
@@ -386,17 +403,22 @@ void T5Provider::_result(unsigned char *packet)
         _tempd = InvData();
     }
 
-    if (sensorOff1 != _sensorOff1 || sensorOff2 != _sensorOff2)
-    {
-        _sensorOff1 = sensorOff1;
-        _sensorOff2 = sensorOff2;
+    tempParam.setTEMP(_temp1, _temp2, _tempd);
+}
 
-        _shotAlarm();
-    }
-    else
+void T5Provider::ohmResult(unsigned char *packet)
+{
+    ohm1 = InvData();
+    ohm2 = InvData();
+    if (!(0xFF == packet[2] && 0xFF == packet[1]))
     {
-        tempParam.setTEMP(_temp1, _temp2, _tempd);
+        ohm1 = static_cast<int>((packet[2] << 8) + packet[1]);
     }
+    if (!(0xFF == packet[4] && 0xFF == packet[3]))
+    {
+        ohm2 = static_cast<int>((packet[4] << 8) + packet[3]);
+    }
+    tempParam.setOhm(ohm1, ohm2);
 }
 
 /**************************************************************************************************
@@ -404,6 +426,19 @@ void T5Provider::_result(unsigned char *packet)
  *************************************************************************************************/
 void T5Provider::_sensorOff(unsigned char *packet)
 {
+    static bool sensorHasContected1 = false;  // 开机之后有连接断开才会报探头脱落
+    static bool sensorHasContected2 = false;
+
+    if (!sensorHasContected1 && !(packet[1] & 0x01))
+    {
+        sensorHasContected1 = true;
+    }
+
+    if (!sensorHasContected2 && !(packet[1] & 0x02))
+    {
+        sensorHasContected2 = true;
+    }
+
     if (packet[1] == 0x00)
     {
         _sensorOff1 = false;
@@ -411,7 +446,14 @@ void T5Provider::_sensorOff(unsigned char *packet)
     }
     else if (packet[1] == 0x01)
     {
-        _sensorOff1 = true;
+        if (sensorHasContected1)
+        {
+            _sensorOff1 = true;
+        }
+        else
+        {
+            _sensorOff1 = false;
+        }
         _sensorOff2 = false;
 
         _overRang1 = false;
@@ -419,14 +461,35 @@ void T5Provider::_sensorOff(unsigned char *packet)
     else if (packet[1] == 0x02)
     {
         _sensorOff1 = false;
-        _sensorOff2 = true;
-
+        if (sensorHasContected2)
+        {
+            _sensorOff2 = true;
+        }
+        else
+        {
+            _sensorOff2 = false;
+        }
         _overRang2 = false;
     }
     else if (packet[1] == 0x03)
     {
-        _sensorOff1 = true;
-        _sensorOff2 = true;
+        if (sensorHasContected1)
+        {
+            _sensorOff1 = true;
+        }
+        else
+        {
+            _sensorOff1 = false;
+        }
+
+        if (sensorHasContected2)
+        {
+            _sensorOff2 = true;
+        }
+        else
+        {
+            _sensorOff2 = false;
+        }
 
         _overRang1 = false;
         _overRang2 = false;
@@ -576,37 +639,25 @@ void T5Provider::_shotAlarm()
 
 void T5Provider::_limitHandle(unsigned char *packet)
 {
-    if (0xFF != packet[2])
-    {
-        int temp1 = static_cast<int>((packet[2] << 8) + packet[1]);
-        if ((temp1 < 0 || temp1 > 500) && _overRang1 == false)
-        {
-            _overRang1 = true;
-        }
-        else if (temp1 > 0 && temp1 < 500 && _overRang1 == true)
-        {
-            _overRang1 = false;
-        }
-    }
-    else
+    // 判断T1超界
+    int temp1 = static_cast<int>((packet[2] << 8) + packet[1]);
+    if ((temp1 < LOW_BORDER_VALUE || temp1 > HIGH_BORDER_VALUE) && _overRang1 == false)
     {
         _overRang1 = true;
     }
-    if (0xFF != packet[4])
+    else if (temp1 >= LOW_BORDER_VALUE && temp1 <= HIGH_BORDER_VALUE && _overRang1 == true)
     {
-        int temp2 = static_cast<int>((packet[4] << 8) + packet[3]);
-        if ((temp2 < 0 || temp2 > 500) && _overRang2 == false)
-        {
-            _overRang2 = true;
-        }
-        else if (temp2 > 0 && temp2 < 500 && _overRang2 == true)
-        {
-            _overRang2 = false;
-        }
+        _overRang1 = false;
     }
-    else
+    // 判断T2超界
+    int temp2 = static_cast<int>((packet[4] << 8) + packet[3]);
+    if ((temp2 < LOW_BORDER_VALUE || temp2 > HIGH_BORDER_VALUE) && _overRang2 == false)
     {
         _overRang2 = true;
+    }
+    else if (temp2 >= LOW_BORDER_VALUE && temp2 <= HIGH_BORDER_VALUE && _overRang2 == true)
+    {
+        _overRang2 = false;
     }
     _shotAlarm();
 }
@@ -648,6 +699,9 @@ T5Provider::T5Provider() : BLMProvider("BLM_T5"), TEMPProviderIFace()
     _temp1 = InvData();
     _temp2 = InvData();
     _tempd = InvData();
+
+    ohm1 = InvData();
+    ohm2 = InvData();
 }
 
 /**************************************************************************************************

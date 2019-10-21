@@ -284,11 +284,11 @@ Provider::Provider(const QString &name)
       _firstCheck(true), _disconnectCount(0), _disconnectThreshold(5),
       _stopCheckConnect(false)
 {
-// #ifdef Q_WS_X11
-//    uart = new UartSocket();
-// #else
+#ifdef Q_WS_X11
+    uart = new UartSocket();
+#else
     uart = new Uart();
-// #endif
+#endif
     connect(uart, SIGNAL(activated(int)), this, SLOT(dataArrived()));
     uart->setParent(this);
 }

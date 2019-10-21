@@ -23,17 +23,19 @@
 #include "CO2Param.h"
 #include "RESPParam.h"
 #include "O2ParamInterface.h"
+#include "WaveWidget.h"
 
 class OthersMaintainMenuContentPrivate
 {
 public:
     enum MenuItem
     {
-        ITEM_CBO_WAVE_LINE,
         ITEM_CBO_ECG_STANDARD,
         ITEM_CBO_FREQUENCY_NOTCH,
         ITEM_CBO_PARAM_SWITCH_PREM,
         ITEM_CBO_CONFIG_SET,
+        ITEM_CBO_WAVE_DRAW_MODE,
+        ITEM_CBO_WAVE_LINE,
         ITEM_CBO_CO2_WAVE_MODE,
         ITEM_CBO_RESP_WAVE_MODE,
         ITEM_CBO_APNEA_AWAKE,
@@ -56,19 +58,6 @@ public:
 void OthersMaintainMenuContentPrivate::loadOptions()
 {
     QString tmpStr;
-#ifndef HIDE_OTHER_MAINTAIN_ITEMS
-    systemConfig.getStrValue("Others|WaveLine", tmpStr);
-    if (tmpStr.toInt() >= combos[ITEM_CBO_WAVE_LINE]->count())
-    {
-        combos[ITEM_CBO_WAVE_LINE]->setCurrentIndex(0);
-    }
-    else
-    {
-        combos[ITEM_CBO_WAVE_LINE]->setCurrentIndex(tmpStr.toInt());
-    }
-    tmpStr.clear();
-#endif
-
     systemConfig.getStrValue("Others|ECGStandard", tmpStr);
     if (tmpStr.toInt() >= combos[ITEM_CBO_ECG_STANDARD]->count())
     {
@@ -113,6 +102,28 @@ void OthersMaintainMenuContentPrivate::loadOptions()
         combos[ITEM_CBO_CONFIG_SET]->setCurrentIndex(tmpStr.toInt());
     }
 #endif
+    systemConfig.getStrValue("Others|WaveDrawMode", tmpStr);
+    if (tmpStr.toInt() >= combos[ITEM_CBO_WAVE_DRAW_MODE]->count())
+    {
+        combos[ITEM_CBO_WAVE_DRAW_MODE]->setCurrentIndex(0);
+    }
+    else
+    {
+        combos[ITEM_CBO_WAVE_DRAW_MODE]->setCurrentIndex(tmpStr.toInt());
+    }
+    tmpStr.clear();
+
+    systemConfig.getStrValue("Others|WaveLine", tmpStr);
+    if (tmpStr.toInt() >= combos[ITEM_CBO_WAVE_LINE]->count())
+    {
+        combos[ITEM_CBO_WAVE_LINE]->setCurrentIndex(0);
+    }
+    else
+    {
+        combos[ITEM_CBO_WAVE_LINE]->setCurrentIndex(tmpStr.toInt());
+    }
+    tmpStr.clear();
+
 
     int mode = co2Param.getSweepMode();
     combos[ITEM_CBO_CO2_WAVE_MODE]->setCurrentIndex(mode);
@@ -150,22 +161,7 @@ void OthersMaintainMenuContent::layoutExec()
     ComboBox *comboBox;
     QLabel *label;
     int itemID;
-#ifndef HIDE_OTHER_MAINTAIN_ITEMS
-    // waveline setup
-    label = new QLabel(trs("WaveLine"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs("Fat")
-                       << trs("Med")
-                       << trs("Thin"));
-    itemID = static_cast<int>(OthersMaintainMenuContentPrivate::ITEM_CBO_WAVE_LINE);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(OthersMaintainMenuContentPrivate::ITEM_CBO_WAVE_LINE, comboBox);
-#endif
+
     // ecg Standard
     label = new QLabel(trs("ECGStandard"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -224,6 +220,35 @@ void OthersMaintainMenuContent::layoutExec()
     d_ptr->combos.insert(OthersMaintainMenuContentPrivate::ITEM_CBO_CONFIG_SET, comboBox);
 #endif
 
+    // wave draw mode setup
+    label = new QLabel(trs("WaveDrawMode"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                       << trs("Mono")
+                       << trs("Color"));
+    itemID = static_cast<int>(OthersMaintainMenuContentPrivate::ITEM_CBO_WAVE_DRAW_MODE);
+    comboBox->setProperty("Item",
+                          qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(OthersMaintainMenuContentPrivate::ITEM_CBO_WAVE_DRAW_MODE, comboBox);
+
+    // waveline setup
+    label = new QLabel(trs("WaveLine"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                       << trs("Thin")
+                       << trs("Medium")
+                       << trs("Thick"));
+    itemID = static_cast<int>(OthersMaintainMenuContentPrivate::ITEM_CBO_WAVE_LINE);
+    comboBox->setProperty("Item",
+                          qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(OthersMaintainMenuContentPrivate::ITEM_CBO_WAVE_LINE, comboBox);
+
     // CO2波形模式
     label = new QLabel(trs("CO2WaveMode"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -268,15 +293,13 @@ void OthersMaintainMenuContent::layoutExec()
     d_ptr->combos.insert(OthersMaintainMenuContentPrivate::ITEM_CBO_APNEA_AWAKE, comboBox);
 #endif
 #ifndef HIDE_NURSE_CALL_FUNCTION
-    if (systemManager.isSupport(CONFIG_NURSECALL))
-    {
-        d_ptr->nurseCallBtn = new Button(QString("%1%2").
-                                         arg(trs("NurseCallSetup")).
-                                         arg(" >>"));
-        d_ptr->nurseCallBtn->setButtonStyle(Button::ButtonTextOnly);
-        layout->addWidget(d_ptr->nurseCallBtn, d_ptr->combos.count() + 1, 1);
-        connect(d_ptr->nurseCallBtn, SIGNAL(released()), this, SLOT(onBtnReleased()));
-    }
+     d_ptr->nurseCallBtn = new Button(QString("%1%2").
+                                      arg(trs("NurseCallSetup")).
+                                      arg(" >>"));
+     d_ptr->nurseCallBtn->setButtonStyle(Button::ButtonTextOnly);
+     layout->addWidget(d_ptr->nurseCallBtn, d_ptr->combos.count() + 1, 1);
+     connect(d_ptr->nurseCallBtn, SIGNAL(released()), this, SLOT(onBtnReleased()));
+
 
 #endif
      layout->setRowStretch(d_ptr->combos.count() + 2, 1);
@@ -292,10 +315,6 @@ void OthersMaintainMenuContent::onComboBoxIndexChanged(int index)
         QString string;
         switch (item)
         {
-        case OthersMaintainMenuContentPrivate::ITEM_CBO_WAVE_LINE:
-            string = "WaveLine";
-            systemConfig.setNumValue(QString("Others|%1").arg(string), index);
-            break;
         case OthersMaintainMenuContentPrivate::ITEM_CBO_ECG_STANDARD:
             ecgParam.updateECGStandard(index);
             break;
@@ -306,6 +325,30 @@ void OthersMaintainMenuContent::onComboBoxIndexChanged(int index)
         case OthersMaintainMenuContentPrivate::ITEM_CBO_PARAM_SWITCH_PREM:
             string = "ParaSwitchPrem";
             systemConfig.setNumValue(QString("Others|%1").arg(string), index);
+            break;
+        case OthersMaintainMenuContentPrivate::ITEM_CBO_WAVE_DRAW_MODE:
+        {
+            string = "WaveDrawMode";
+            systemConfig.setNumValue(QString("Others|%1").arg(string), index);
+            QList<WaveWidget *> waves =  WaveWidget::getAllWaveWidgets();
+            WaveDrawMode mode = index == 0 ? WAVE_DRAW_MODE_MONO : WAVE_DRAW_MODE_COLOR;
+            foreach(WaveWidget *wave, waves)
+            {
+                wave->setWaveDrawMode(mode);
+            }
+        }
+            break;
+        case OthersMaintainMenuContentPrivate::ITEM_CBO_WAVE_LINE:
+        {
+            string = "WaveLine";
+            int lineWidth = index + 1;
+            systemConfig.setNumValue(QString("Others|%1").arg(string), lineWidth);
+            QList<WaveWidget *> waves =  WaveWidget::getAllWaveWidgets();
+            foreach(WaveWidget *wave, waves)
+            {
+                wave->setLineWidth(lineWidth);
+            }
+        }
             break;
         case OthersMaintainMenuContentPrivate::ITEM_CBO_CO2_WAVE_MODE:
             co2Param.setSweepMode(static_cast<CO2SweepMode>(index));

@@ -209,6 +209,7 @@ RESPAutoActivation,Resp激活,Resp Automatic Activation
 EnterPassthroughMode,进入透传模式,Enter Passthrough Mode
 ExitPassthroughMode,退出透传模式,Exit Passthrough Mode
 SwitchPassthroughModeFail,切换透传模式失败,Switch Passthrough Mode Fail
+FlashCRCError,Flash CRC 错误,Flash CRC Error
 NIBPMeasurement,无创血压测量,NIBP Measure
 NIBPMeasureMode,测量模式,Measure Mode
 NIBPIntervalTime,间隔时间,NIBP Interval Time
@@ -257,6 +258,7 @@ O2CalibrateReset,氧浓度校准数据被复位,O₂ Calibrate Is Reset
 O2NotCalibrate,氧浓度传感器未校准,O₂ Sensor Not Calibrate
 O2MotorNotInPositon,唤醒器脱落,Motor Sensor Off
 O2SensorOff,氧浓度探头脱落,O₂ Sensor Off
+O2SendCommunicationStop,O2发送通信中断,O2 Send Communication Stop
 O2Low,氧浓度低,O₂ Low
 O2High,氧浓度高,O₂ High
 ApneaStimulation,窒息唤醒,Apnea Stimulation
@@ -359,6 +361,10 @@ AlarmLimitMenu,报警限,Alarm Limit
 AlarmLimitMenuDesc,报警限,Alarm Limit Setting
 SelectAlarmNotExist,选择的报警不存在!,The selected alarm does not exist!
 PrintSpeed,打印速度,Print Speed
+PhyAlarmTriggerPrint,生理报警触发打印,Phy. Alarm Trigger Print
+CodeMarkerTriggerPrint,Code Marker触发打印,Code Marker Trigger Print
+NIBPReadingTriggerPrint,NIBP快照触发打印,NIBP Snapshot Trigger Print
+WaveFreezeTriggerPrint,波形冻结触发打印,Wave Freeze Trigger Print
 PrintNumOfTraces,打印波形数量,Number Of Print Traces
 PrintAlarmTriger,报警触发,Alarm Trigger
 Print12LeadFormat,12导格式,12-Lead Format
@@ -498,7 +504,8 @@ NIBPSTOPPED,停止,Stopped
 NIBPWAITING,NIBP等待,NIBP Waiting
 NIBPNoResponse,无响应,No Response
 NIBPTemporarily,临时,Temporarily
-NIBPDisable,禁用,Disable
+NIBPDisable,故障,Fault
+NIBPStop,停用,Stop use
 NIBPNotCalibrate,未校准,Not Calibrate
 _1min,1 分钟,1 min
 _1.5min,1.5 分钟,1.5 min
@@ -559,6 +566,7 @@ Print,打印,Print
 SummaryDesc,摘要描述,Summary Description
 SummaryData,摘要数据,Summary Data
 AlarmList,报警列表,Alarm List
+AlarmDescription,报警描述,Alarm Description
 PhyAlarmList,生理报警,Physiological Alarm
 TechAlarmList,技术报警,Technical Alarm
 AlarmTime,时间,Time
@@ -631,12 +639,13 @@ ECGC5LeadOff,ECGC5导联脱落,ECG C5 Lead Off
 ECGC6LeadOff,ECGC6导联脱落,ECG C6 Lead Off
 ECGOverLoad,ECG过载,ECG Over Load
 ECGCommunicationStop,ECG通信中断,ECG Communication Stop
+ECGSendCommunicationStop,ECG发送通信中断,ECG Send Communication Stop
 ECG12LSnapShot,12导 快照,12 Lead SnapShot
 ECGAcquiring12L,获取12导,Acquiring 12 Lead
 ECGAcquired12L,获取12导结束,Acquire 12 Lead Complete
 RESPCommunicationStop,Resp通信中断,Resp Communication Stop
 RESPCheckElecrodes,Resp检查电极,Resp Check Electrodes
-Apnea,Resp窒息,Apnea
+Apnea,呼吸窒息,Apnea
 SPO2Low,SpO₂低,SpO₂ Low
 SPO2High,SpO₂高,SpO₂ High
 SPO22Low,SpO₂ 2 低,SpO₂ 2 Low
@@ -667,6 +676,8 @@ SPO2SearchingPulse,SpO₂脉搏搜索,SpO₂ Searching Pulse
 SPO2CommunicationStop,SpO₂通信中断,SpO₂ Communication Stop
 SPO22CommunicationStop,SpO₂ 2通信中断,SpO₂ 2 Communication Stop
 SPO2ProbeFault,SpO₂探头故障,SpO₂ Probe Fault
+SPO2SendCommunicationStop,SpO₂发送通信中断,SpO₂ Send Communication Stop
+SPO2ProbeFault,SpO₂探头故障,SpO₂ Sensor Failure
 SPO2SignalSaturation,SpO₂信号饱和,SpO₂ Signal Saturation
 SPO22SignalSaturation,SpO₂ 2信号饱和,SpO₂ 2 Signal Saturation
 CO2NoSamplingLine,CO₂没有采样管,CO₂ No Sampling Line
@@ -783,6 +794,12 @@ NIBPDIAHigh,舒张压高,NIBP DIA High
 NIBPMAPLow,平均压低,NIBP MAP Low
 NIBPMAPHigh,平均压高,NIBP MAP High
 NIBPCommunicationStop,NIBP通信中断,NIBP Communication Stop
+NIBPSendCommunicationStop,NIBP发送通信中断,NIBP Send Communication Stop
+NIBPSelfTestError,NIBP自测失败,NIBP Selftest Fail
+NIBPModuleAbnormal,NIBP模块异常,NIBP Module Abnormal
+NIBPModuleNotCalibrate,NIBP未校准,NIBP Module Not Calibrated
+NIBPModuleError,NIBP模块硬件错误,NIBP Module HardWare Error
+NIBPModuleOverPressure,NIBP模块过压,NIBP Module Overpressure
 NIBPCommunicationTimeout,NIBP通信超时,NIBP Communication Timeout
 NIBPMeasurementAbort,测量中止,NIBP Measurement Aborted
 NIBPCuffTypeError,NIBP袖带类型错,NIBP Cuff Type Error 
@@ -827,6 +844,7 @@ TEMPModuleDisConnect,Temp模块未连接,Temp Module DisConnected
 TEMPChannelOne,Temp通道1,Temp Channel One
 TEMPChannelTwo,Temp通道2,Temp Channel Two
 TEMPChannelDisable,Temp通道禁用,Temp Channel Disable
+TEMPDisable,TEMP禁用,TEMP Disable
 ServiceInflate,充气,Inflate
 ServiceDeflate,放气,Deflate
 Inflating,充气中,Inflating
@@ -874,18 +892,23 @@ ServiceSystem,服务系统,Service System
 ServiceVersion,版本,Version
 ServiceCPUTemp,CPU温度,CPU Temp
 iDMVersion,iDM,iDM
-ECGVersion,ECG,ECG
+ECGSwVersion,ECG软件版本,ECG Software Version
+ECGHwVersion,ECG硬件版本,ECG Hardware Version
 ECGBootloader,ECG Bootloader,ECG Bootloader
-NIBPVersion,NIBP,NIBP
+NIBPSwVersion,NIBP软件版本,NIBP Software Version
+NIBPHwVersion,NIBP硬件版本,NIBP Hardware Version
 NIBPBootloader,NIBP Bootloader,NIBP Bootloader
-NIBPSlaveVersion,NIBP从片,NIBP Slave
+NIBPSlaveSwVersion,NIBP从片软件版本,NIBP Slave Software Version
 NIBPSlaveBootloader,NIBP从片Bootloader,NIBP Slave Bootloader
-SPO2Version,SpO₂,SpO₂
+SPO2SwVersion,SpO₂软件版本,SpO₂ Software Version
+SPO2HwVersion,SpO₂硬件版本,SpO₂ Hardware Version
 SPO2Bootloader,SpO₂ Bootloader,SpO₂ Bootloader
-TEMPVersion,Temp,Temp
+TEMPSwVersion,Temp软件版本,Temp Software Version
+TEMPHwVersion,Temp硬件版本,Temp Hardware Version
 TEMPBootloader,Temp Bootloader,Temp Bootloader
 iDMBoardVersion,iDMBoard,iDMBoard
-PRT48Version,PRT48,PRT48
+PRT48SwVersion,PRT48软件版本,PRT48 Software Version
+PRT48HwVersion,PRT48硬件版本,PRT48 Hardware Version
 PRT48Bootloader,PRT48 Bootloader,PRT48 Bootloader
 SourceOfCO2,来源CO₂,Source of CO₂
 AutoOfCO2,自动(CO₂),Auto(CO₂)
@@ -1155,6 +1178,7 @@ PhyAlarm,生理报警,Phy. Alarm
 AlarmMute,报警静音,Mute
 RecorderAction,记录仪,Recorder Action
 PrinterCommunicationStop,打印机通信中断,Printer Communication Stop
+PrinterSendCommunicationStop,打印机发送通信中断,Printer Send Communication Stop
 PrinterDoorOpened,打印机仓门未关,Printer Door Opened
 PrinterOutOfPaper,打印机缺纸,Printer Out Of Paper
 PrinterOverHeating,打印头过热,Printer Over Heating
@@ -1369,15 +1393,15 @@ PHASEIN,PHASEIN,PHASEIN
 M601,M601,M601
 MachineConfigModuleMenuDesc,机器配置,Machine Config
 MonitorInfoMenu,监护仪信息,Monitor Info
-CumulativeWorkingTime,累计工作时间,Cumulative Working Time
+RunningTime,运行时间,Running Time
 TemperatureInsideCase,箱内温度,Temperature Inside Case
 BatteryCapacity,电池电量,Battery Capacity
 ProductModel,产品型号,Product Model
-MACAddress,硬件地址,MAC Address
+MACAddress,物理地址(MAC),MAC Address
 ElectronicSerialNumber,电子序列号,Electronic Serial Number
 SetElectronicSerialNumber,设置电子序列号,Set Electronic Serial Number
 MonitorInfoMenuDesc,监护仪信息菜单设置,Monitor Info
-StopNeoNIBPMeasure,禁止NIBP新生儿测量,Close Neonatal NIBP Measurement
+NeoNIBPMeasure,NIBP新生儿测量,Neo. NIBP Measurement
 NIBPMaintainMenu,NIBP维护,NIBP Maintain
 NIBPMaintain,NIBP维护,NIBP Maintain
 NIBPMaintainMenuDesc,NIBP维护,NIBP Maintain
@@ -1398,10 +1422,12 @@ ServiceUpdateEntranceDesc,更新,Service Update
 SoftwareVersion,软件版本,Software Version
 SoftwareVersionMenu,软件版本,Software Version
 SystemSoftwareVersion,版本,Version
+ReleaseVersion,发布版本,Release Version
 PowerManagerSoftwareVersion,电源管理软件版本,Power Manager Software Version
 Uboot,系统引导文件,Uboot
 Kernel,内核,Kernel
-SystemboardModule,系统板,System Board Module
+SystemBoardSwVersion,系统板软件版本,System Board Software Version
+SystemBoardHwVersion,系统板硬件版本,System Board Hardwave Version
 SystemboardBootloader,系统板Bootloader,System Board Bootloader
 RecorderModule,记录模块,Recorder Module
 ECGAlgorithmType,ECG算法类型,ECG Algorithm Type
@@ -1473,9 +1499,12 @@ StopTouchScreenCalibration,停止触摸屏校准,Stop Touch Screen Calibration
 Cancel,取消覆盖,Cancel
 OthersMaintainMenu,其他,Others
 OthersMaintainMenuDesc,其他,Others
-WaveLine,波线,WaveLine
-Fat,粗,Fat
-Med,中,Med
+WaveDrawMode,波形绘画方式,Wave Draw Mode
+Mono,阶梯,Mono
+Color,色阶,Color
+WaveLine,波形线条,Wave Line
+Thick,粗,Thick
+Medium,中,Medium
 Thin,细,Thin
 ECGStandard,ECG标准,ECG Standard
 AHA,AHA,AHA
@@ -1550,10 +1579,10 @@ English,英文,English
 Chinese,中文,Chinese
 UnitSetup,单位,Unit Setup
 UnitSetupDesc,单位,Unit Setup
-HeightUnit,高度单位,Height Unit
-WeightUnit,重量单位,Weight Unit
+HeightUnit,身高单位,Height Unit
+WeightUnit,体重单位,Weight Unit
 STUnit,ST段单位,ST Unit
-PressureUnit,压力单位,Pressure Unit
+NIBPUnit,NIBP单位,NIBP Unit
 TemperatureUnit,温度单位,Temperature Unit
 CVPUnit,中心静脉压单位,CVP Unit
 ICPUnit,颅内压单位,ICP Unit
@@ -1590,12 +1619,14 @@ TEMPCalibrate,校准,Calibrate
 is,是,is
 TEMP1,Temp1,Temp1
 TEMP2,Temp2,Temp2
-TEMPCalibrateOhm,校准电阻值,Resistance
+TEMPCalibrateOhm,校准阻值,Resistance
 Ohm,Ω,Ω
 TEMPModuleNotCalibration1,Temp模块通道1未定标,Temp Channel 1 Not Calibration
 TEMPModuleNotCalibration2,Temp模块通道2未定标,Temp Channel 2 Not Calibration
 TEMPModuleDisable,Temp模块禁用,Temp Module Disable
 TEMPCommunicationStop,Temp通信中断,Temp Communication Stop
+TEMPSendCommunicationStop,Temp发送通信中断,Temp Send Communication Stop
+TEMPModuleAbnormal,Temp模块异常,Temp Module Is Abnormal
 TEMPChannel,Temp通道,Temp Channel
 TEMPCalibrate,Temp校准 ,Temp Calibrate
 N2O,N₂O,N₂O
@@ -1785,7 +1816,7 @@ SPO22BoardFailure,SpO₂ 2板卡错误,SpO₂ 2 Board Failure
 NIBPSimul,NIBP同侧,NIBP Simul
 Input8DigitsPassword,请输入8位数字密码,Please input 8 digits password
 BornDate,出生日期,Born Date
-RescueStorageSpaceFull,营救数据存储空间满,Rescue storage space full
+CurrentPatientStorageSpaceFull,当前监护数据存储空间满,Current monitoring data storage space full
 ChangePatientType,更改病人类型会导致配置更改，您确认要这么做吗？,Changing patient type will cause the configuration changes，Are you sure?
 shutDownIn2Min,电量严重不足，将在两分钟后关机，请连接电源,Serious shortage of electircity.System will shutdown in tow minute.Please connect the power supply.
 handMeasure,手部测量,Hand Measure
@@ -1821,3 +1852,5 @@ size8Inch,8 inch,8 inch
 size10Inch,10 inch,10 inch
 size12Inch,12 inch,12 inch
 ScreenInfo,屏幕大小,Screen Size
+TouchCrosshairToCalibrate,触摸十字线校准,Touch crosshair to calibrate
+ChangeTime,更改系统时间将会新建病人，是否继续？,"Change system time will create new patients,Whether to continue?"

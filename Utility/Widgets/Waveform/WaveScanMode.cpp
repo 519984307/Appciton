@@ -203,6 +203,11 @@ void WaveScanMode::prepareTransformFactor()
             // if the sample rate is too small, the use floor function to avoid large scan line space
             _scanLineSpace = floor(_wave->scanLineSpace * 1.0 * (_wave->_pixelWPitch * _wave->dataRate() /
                                    _wave->waveSpeed()));
+            if (_scanLineSpace == 0)
+            {
+                /* at lease 1 sample */
+                _scanLineSpace = 1;
+            }
         }
         else
         {
@@ -245,6 +250,7 @@ void WaveScanMode::valueRangeChanged()
             _wave->_waveBuf[i].setX(_wave->_xBuf[i]);
             _wave->_waveBuf[i].setY(valueToY(_wave->_dataBuf[i]));
             _wave->_setDyBuf(i);
+            _wave->_updateRangeInfo(i);
         }
     }
     else
@@ -254,12 +260,14 @@ void WaveScanMode::valueRangeChanged()
             _wave->_waveBuf[i].setX(_wave->_xBuf[i]);
             _wave->_waveBuf[i].setY(valueToY(_wave->_dataBuf[i]));
             _wave->_setDyBuf(i);
+            _wave->_updateRangeInfo(i);
         }
         for (int i = _wave->_tail; i < _wave->_size; i++)
         {
             _wave->_waveBuf[i].setX(_wave->_xBuf[i]);
             _wave->_waveBuf[i].setY(valueToY(_wave->_dataBuf[i]));
             _wave->_setDyBuf(i);
+            _wave->_updateRangeInfo(i);
         }
     }
 }
@@ -445,19 +453,27 @@ void WaveScanMode::_drawSparseCurve(WaveScanMode *self, QPainter &painter,
     {
         return;
     }
-    painter.setPen(
-        QPen(self->_wave->palette().windowText(),
-             self->_wave->lineWidth()));
-    painter.setRenderHint(QPainter::Antialiasing, self->_wave->isAntialias());
 
-    if (beginIndex < endIndex)
+    if (self->_wave->colorGradationScanMode)
     {
-        painter.drawPolyline(&self->_wave->_waveBuf[beginIndex],
-                             endIndex - beginIndex + 1);
+        drawColorGradationWave(self, &painter, beginIndex, endIndex);
     }
-    else if (beginIndex == endIndex)
+    else
     {
-        painter.drawPoints(&self->_wave->_waveBuf[beginIndex], 1);
+        painter.setPen(
+                    QPen(self->_wave->palette().windowText(),
+                         self->_wave->lineWidth()));
+        painter.setRenderHint(QPainter::Antialiasing, self->_wave->isAntialias());
+
+        if (beginIndex < endIndex)
+        {
+            painter.drawPolyline(&self->_wave->_waveBuf[beginIndex],
+                                 endIndex - beginIndex + 1);
+        }
+        else if (beginIndex == endIndex)
+        {
+            painter.drawPoints(&self->_wave->_waveBuf[beginIndex], 1);
+        }
     }
 }
 
@@ -481,37 +497,44 @@ void WaveScanMode::_drawDenseCurve(WaveScanMode *self, QPainter &painter,
         return;
     }
 
-    painter.setPen(
-        QPen(self->_wave->palette().windowText(),
-             self->_wave->lineWidth()));
-    painter.setRenderHint(QPainter::Antialiasing, self->_wave->isAntialias());
-
-    int i = beginIndex;
-    while (i <= endIndex)
+    if (self->_wave->colorGradationScanMode && !self->_wave->isFill())
     {
-        int j = i + 1;
-        if (j > endIndex)
+        drawColorGradationWave(self, &painter, beginIndex, endIndex);
+    }
+    else
+    {
+        painter.setPen(
+                    QPen(self->_wave->palette().windowText(),
+                         self->_wave->lineWidth()));
+        painter.setRenderHint(QPainter::Antialiasing, self->_wave->isAntialias());
+
+        int i = beginIndex;
+        while (i <= endIndex)
         {
-            painter.drawPoints(&self->_wave->_waveBuf[i], 1);
-            break;
-        }
-        else if (self->_wave->_dyBuf[j])
-        {
-            while (((j + 1) <= endIndex) && self->_wave->_dyBuf[j + 1])
+            int j = i + 1;
+            if (j > endIndex)
             {
-                j++;
+                painter.drawPoints(&self->_wave->_waveBuf[i], 1);
+                break;
             }
-            painter.drawPolyline(&self->_wave->_waveBuf[i], (j - i + 1));
-            i = j + 1;
-        }
-        else
-        {
-            while (((j + 1) <= endIndex) && !self->_wave->_dyBuf[j + 1])
+            else if (self->_wave->_dyBuf[j])
             {
-                j++;
+                while (((j + 1) <= endIndex) && self->_wave->_dyBuf[j + 1])
+                {
+                    j++;
+                }
+                painter.drawPolyline(&self->_wave->_waveBuf[i], (j - i + 1));
+                i = j + 1;
             }
-            painter.drawPoints(&self->_wave->_waveBuf[i], (j - i));
-            i = j;
+            else
+            {
+                while (((j + 1) <= endIndex) && !self->_wave->_dyBuf[j + 1])
+                {
+                    j++;
+                }
+                painter.drawPoints(&self->_wave->_waveBuf[i], (j - i));
+                i = j;
+            }
         }
     }
 }

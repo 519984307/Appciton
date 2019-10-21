@@ -23,6 +23,7 @@
 #include "WaveDefine.h"
 #include <FreezeDataModel.h>
 #include <QPointer>
+#include <QHash>
 
 class QFont;
 class QPixmap;
@@ -35,6 +36,32 @@ class FreezeTimeIndicator;
 
 template<typename T> class QVector;
 template<typename T> class RingBuff;
+
+struct WaveRangeInfo
+{
+    WaveRangeInfo() : min(SHRT_MAX), max(SHRT_MIN) {}
+    WaveRangeInfo(short min, short max) : min(min), max(max) {}
+
+    /**
+     * @brief isValid check whether range info is valid
+     * @return true when valid
+     */
+    bool isValid() const { return min != SHRT_MAX && max != SHRT_MIN; }
+
+    /**
+     * @brief clear clear the range info
+     */
+    void clear() { min = SHRT_MAX; max = SHRT_MIN;}
+
+    /**
+     * @brief midvalue get the middle value of the range
+     * @return the middle value
+     */
+    short midvalue() const { return (min + max) >> 1;}
+
+    short min;
+    short max;
+};
 
 #define WAVE_X_OFFSET       (0)                 // 波形起始偏移
 #define RULER_X_OFFSET      (65)                // 标尺线起始偏移
@@ -64,7 +91,7 @@ public:
     virtual void updatePalette(const QPalette &pal);
 
     bool isFocus();
-    void getSubFocusWidget(QList<QWidget *> &subWidget) const;
+    void getSubFocusWidget(QList<QWidget *> &subWidget) const;  // NOLINT
 
     /**
      * @brief waveLabel get the wave labels
@@ -95,6 +122,12 @@ public:
     inline int xBuf(int i)
     {
         return _xBuf[i];
+    }
+
+    // get the wave range info at specific x value
+    inline const WaveRangeInfo &rangeInfo(int x)
+    {
+        return _waveRangeInfo[x];
     }
 
     // 获取波形标志
@@ -259,6 +292,21 @@ public:
     /* reimplment */
     void updateWidgetConfig();
 
+    /**
+     * @brief getAllWaveWidgets the all the created wave widgets
+     * @return all
+     */
+    static QList<WaveWidget *> getAllWaveWidgets()
+    {
+        return waveWidgets;
+    }
+
+    /**
+     * @brief setWaveDrawMode set the wave draw mode
+     * @param mode draw mode
+     */
+    void setWaveDrawMode(WaveDrawMode mode);
+
 public slots:
     void setWaveSpeed(float waveSpeed);
     void setDataRate(float dataRate);
@@ -352,6 +400,11 @@ private:
     void _startQueueWaveData();
     int _roundUp(int value, int step);
     int _roundDown(int value, int step);
+    /**
+     * @brief _updateRangeInfo udpate the wave range info with the point at index
+     * @param index the data index
+     */
+    void _updateRangeInfo(int index);
 
     WaveMode *_mode;                          // 当前使用的工作模式
     WaveModeFlag _modeFlag;                   // 工作模式标志
@@ -388,13 +441,19 @@ private:
     int  _id;                                 // 波形的唯一ID。
     int _spaceDataNum;                        // 画虚线所需数据个数
     bool _isFreeze;                           // isFreeze or not
-    QPointer<FreezeDataModel> _freezeDataModel; // the freeze wave data model
+    QPointer<FreezeDataModel> _freezeDataModel;  // the freeze wave data model
     FreezeTimeIndicator *_freezeIndicator;      // the freeze time indicator
 
     RingBuff<int> *_queuedDataBuf;            // 波形延时缓冲区
     float _queuedDataRate;                    // 创建波形延时缓冲时参照的速度率
     QBasicTimer _dequeueTimer;                // 模拟采样间隔的定时器
     int _dequeueSizeEachTime;                 // 模拟采样间隔的数据量
+
+    bool colorGradationScanMode;              // 色阶法扫描画波形
+    QHash<int, WaveRangeInfo> _waveRangeInfo;  // 记录了每个整形x坐标所对应的Y坐标的值的范围
+
+    static QList<WaveWidget*> waveWidgets;    // store the created wave widgets
+
     static const int DEQUEUE_FREQ = 25;       // 模拟采样频率, 单位Hz
     static const int QUEUE_SECONDS = 4;       // 允许的最大延时时长, 单位秒
     static const int scanLineSpace = 12;         // 空白扫描宽度12个像素点

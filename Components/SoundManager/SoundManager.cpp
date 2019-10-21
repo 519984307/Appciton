@@ -23,6 +23,7 @@
 #include "ConfigManager.h"
 #include <QThread>
 #include "NightModeManager.h"
+#include "PatientManager.h"
 
 #define SOUND_DIR "/usr/local/nPM/sound/"
 #define PULSE_TONE_DIR "/usr/local/nPM/sound/pulse_tone/"
@@ -84,6 +85,7 @@ public:
         alarmInterval[2] = 10000;
 
         playerThread = new QThread(q_ptr);
+        playerThread->setObjectName("player");
         player = new WavPlayer();
         player->moveToThread(playerThread);
 
@@ -340,6 +342,7 @@ SoundManager::SoundManager()
 {
     d_ptr->playerThread->start();
     qRegisterMetaType<WavFile *>("WavFile*");
+    connect(&patientManager, SIGNAL(signalPatientType(PatientType)), this, SLOT(volumeInit()));
 }
 
 SoundManager &SoundManager::getInstance()

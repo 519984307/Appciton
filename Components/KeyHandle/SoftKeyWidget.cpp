@@ -14,6 +14,7 @@
 #include "FontManager.h"
 #include "LanguageManager.h"
 #include <QStyle>
+#include "SoundManagerInterface.h"
 
 /***************************************************************************************************
  * 功能：重绘事件。
@@ -51,7 +52,7 @@ void SoftkeyWidget::paintEvent(QPaintEvent *e)
     if (!_text.isEmpty())
     {
         QString txt = _text;
-        int fontSize = _adjustFontSize(r, txt);
+        int fontSize = _adjustFontSize(r, &txt);
         painter.setPen(_color);
         painter.setFont(fontManager.textFont(fontSize, true));
         painter.drawText(r, Qt::AlignCenter | Qt::TextWordWrap, txt);
@@ -60,7 +61,7 @@ void SoftkeyWidget::paintEvent(QPaintEvent *e)
     if (!_hint.isEmpty())
     {
         QString hint = _hint;
-        int fontSize = _adjustHintFontSize(r, hint);
+        int fontSize = _adjustHintFontSize(r, &hint);
         painter.setPen(_color);
         painter.setFont(fontManager.textFont(fontSize));
         painter.drawText(r, Qt::AlignBottom | Qt::AlignCenter , hint);
@@ -137,6 +138,12 @@ void SoftkeyWidget::keyReleaseEvent(QKeyEvent *e)
 void SoftkeyWidget::mousePressEvent(QMouseEvent *e)
 {
     IWidget::mousePressEvent(e);
+    // 触屏点击播放按键音
+    SoundManagerInterface *sound = SoundManagerInterface::getSoundManager();
+    if (sound)
+    {
+        sound->keyPressTone();
+    }
     _pressed = true;
     update();
 }
@@ -166,7 +173,7 @@ void SoftkeyWidget::focusOutEvent(QFocusEvent *e)
  *      r:控件大小。
  *      text:换行后的字串
  **************************************************************************************************/
-int SoftkeyWidget::_adjustFontSize(const QRect &r, QString &txt)
+int SoftkeyWidget::_adjustFontSize(const QRect &r, QString *txt)
 {
     if (_text.isEmpty())
     {
@@ -184,7 +191,7 @@ int SoftkeyWidget::_adjustFontSize(const QRect &r, QString &txt)
     int txtLen = fontManager.textWidthInPixels(_text, font);
     if (txtLen <= width)
     {
-        txt = _text;
+        *txt = _text;
         return fontSize;
     }
 
@@ -194,15 +201,15 @@ int SoftkeyWidget::_adjustFontSize(const QRect &r, QString &txt)
     int count = strList.count();
     if (1 == count)
     {
-        txt = _text;
+        *txt = _text;
         text = _text;
         maxLen = txtLen;
     }
     else if (2 == count)
     {
-        txt = strList.at(0);
-        txt += "\n";
-        txt += strList.at(1);
+        *txt = strList.at(0);
+        *txt += "\n";
+        *txt += strList.at(1);
         text = strList.at(0);
         maxLen = fontManager.textWidthInPixels(text, font);
         txtLen = fontManager.textWidthInPixels(strList.at(1), font);
@@ -217,7 +224,7 @@ int SoftkeyWidget::_adjustFontSize(const QRect &r, QString &txt)
         text = strList.at(0);
         text += " ";
         text += strList.at(1);
-        txt = text;
+        *txt = text;
 
         maxLen = fontManager.textWidthInPixels(text, font);
 
@@ -240,8 +247,8 @@ int SoftkeyWidget::_adjustFontSize(const QRect &r, QString &txt)
             text = tmpText;
         }
 
-        txt += "\n";
-        txt += tmpText;
+        *txt += "\n";
+        *txt += tmpText;
     }
 
     while (maxLen > width && fontSize > 0)
@@ -254,7 +261,7 @@ int SoftkeyWidget::_adjustFontSize(const QRect &r, QString &txt)
     return fontSize;
 }
 
-int SoftkeyWidget::_adjustHintFontSize(const QRect &r, QString &hint)
+int SoftkeyWidget::_adjustHintFontSize(const QRect &r, QString *hint)
 {
     if (_hint.isEmpty())
     {
@@ -269,17 +276,17 @@ int SoftkeyWidget::_adjustHintFontSize(const QRect &r, QString &hint)
     int fontSize = fontManager.getFontSize(2);
     int width = r.width() - 6;
     QFont font = fontManager.textFont(fontSize, true);
-    int txtLen = fontManager.textWidthInPixels(hint, font);
+    int txtLen = fontManager.textWidthInPixels(*hint, font);
     if (txtLen <= width)
     {
         return fontSize;
     }
     // 如果字符长度过长，去掉空格显示
-    QStringList hintTxtList = hint.split(' ', QString::SkipEmptyParts);
-    hint.clear();
+    QStringList hintTxtList = hint->split(' ', QString::SkipEmptyParts);
+    hint->clear();
     foreach(QString hintTxt, hintTxtList)
     {
-        hint = hint + hintTxt;
+        *hint = *hint + hintTxt;
     }
     return fontSize;
 }

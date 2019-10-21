@@ -65,8 +65,8 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
 
     // 加载hr/pr来源
     int index = 0;
-    config->getNumValue("ECG|HRSource", index);
-    int sourceType = ecgParam.getHrSourceTypeFromId(static_cast<ParamID>(index));
+    int sourceType = 0;
+    config->getNumValue("ECG|HRSource", sourceType);
     int cboIndex = 0;
     int itemCount = 0;
     combos[ITEM_CBO_HRPR_SOURCE]->clear();
@@ -92,8 +92,7 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
     if (cboIndex > combos[ITEM_CBO_HRPR_SOURCE]->count())
     {
         cboIndex = 0;
-        index = ecgParam.getIdFromHrSourceType(static_cast<HRSourceType>(cboIndex));
-        currentConfig.setNumValue("ECG|HRSource", index);
+        currentConfig.setNumValue("ECG|HRSource", cboIndex);
     }
     combos[ITEM_CBO_HRPR_SOURCE]->setCurrentIndex(cboIndex);
 

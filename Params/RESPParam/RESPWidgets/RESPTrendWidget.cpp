@@ -66,7 +66,6 @@ void RESPTrendWidget::loadConfig()
     setPalette(palette);
     _rrValue->setPalette(palette);
 
-    setName(trs(paramInfo.getSubParamName(SUB_PARAM_RR_BR)));
     setUnit(Unit::getSymbol(UNIT_RPM));
 
     TrendWidget::loadConfig();
@@ -95,7 +94,7 @@ void RESPTrendWidget::setRRValue(int16_t rr , bool isRR, bool isAutoType)
 
     if (rr != InvData())
     {
-        if (respParam.isRRInaccurate())
+        if (respParam.isRRInaccurate() && isRR)
         {
             _rrString = QString("%1?").arg(QString::number(rr));
         }

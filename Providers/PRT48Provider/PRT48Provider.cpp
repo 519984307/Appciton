@@ -74,7 +74,7 @@ enum PrinterCommand
     PRINTER_CMD_KEEP_ALIVE = 0x5b,
 
     // 错误报告
-    PRINTER_CMD_ERROR_INFO = 0x76,
+    PRINTER_CMD_ERROR_INFO = 0x76,  /* FIXME: PRT48 doesn't exist this info packet */
 
     //升级保活帧
     PRINTER_UPGRADE_ALIVE = 0xFE,
@@ -186,6 +186,8 @@ void PRT48Provider::_parseStatusInfo(const unsigned char *data, unsigned int len
         return;
     }
 
+    qDebug() << "Printer status" << hex << data[1];
+
     if (PRINTER_CMD_STATUS_INFO == type)
     {
         // 发送有效应答
@@ -196,36 +198,6 @@ void PRT48Provider::_parseStatusInfo(const unsigned char *data, unsigned int len
 
     // 通知打印管理部件。
     QMetaObject::invokeMethod(_sigSender, "statusChanged", Q_ARG(PrinterStatus, status));
-}
-
-/***************************************************************************************************
- * 版本信息解析
- **************************************************************************************************/
-void PRT48Provider::_parseVersionInfo(const unsigned char *data, unsigned int len)
-{
-    if (NULL == data)
-    {
-        return;
-    }
-
-    if (len != 10)
-    {
-        debug("Invalid version info packet!");
-        return;
-    }
-
-    _hwVer = QString("%1.%2.%3")
-             .arg(QString::number(data[1]))
-             .arg(QString::number(data[2]))
-             .arg(QString::number(data[3]));
-    _swVer = QString("%1.%2.%3")
-             .arg(QString::number(data[4]))
-             .arg(QString::number(data[5]))
-             .arg(QString::number(data[6]));
-    _protoVer = QString("%1.%2.%3")
-                .arg(QString::number(data[7]))
-                .arg(QString::number(data[8]))
-                .arg(QString::number(data[9]));
 }
 
 /***************************************************************************************************
@@ -398,6 +370,15 @@ void PRT48Provider::reconnected()
     }
 }
 
+void PRT48Provider::sendDisconnected()
+{
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_PRINT);
+    if (alarmSource && !alarmSource->isAlarmed(PRINT_ONESHOT_ALARM_COMMUNICATION_STOP))
+    {
+        alarmSource->setOneShotAlarm(PRINT_ONESHOT_ALARM_SEND_COMMUNICATION_STOP, true);
+    }
+}
+
 /***************************************************************************************************
  * 数据包处理
  **************************************************************************************************/
@@ -414,7 +395,6 @@ void PRT48Provider::handlePacket(unsigned char *data, int len)
         break;
 
     case PRINTER_CMD_VERSION_INFO:
-        _parseVersionInfo(data, len);
         break;
 
     case PRINTER_CMD_SELF_TEST_RESULT:
@@ -431,7 +411,7 @@ void PRT48Provider::handlePacket(unsigned char *data, int len)
         QMetaObject::invokeMethod(_sigSender, "restart");
 
         systemManager.setPoweronTestResult(PRINTER72_SELFTEST_RESULT, SELFTEST_MODULE_RESET);
-        ErrorLogItem *item = new CriticalFaultLogItem();
+        ErrorLogItem *item = new ErrorLogItem();
         item->setName(QString("Printer Start"));
         errorLog.append(item);
         break;
@@ -460,7 +440,7 @@ void PRT48Provider::handlePacket(unsigned char *data, int len)
     case PRINTER_CMD_RUN_PAPER_ACK:
     case PRINTER_CMD_ALIGN_MARKER_ACK:
     case PRINTER_CMD_PRINT_TEST_PAGE_ACK:
-        // TODO
+        /* TODO */
         break;
 
     default:
@@ -526,7 +506,7 @@ bool PRT48Provider::sendBitmapData(unsigned char *data, unsigned int len)
 {
     static unsigned char _packetNum = 0;
 
-    unsigned char packet[2 * len + 1 + 1]; // RLE worst case data len (2n+1), plus a packet number
+    unsigned char packet[2 * len + 1 + 1];  // RLE worst case data len (2n+1), plus a packet number
     ::memset(packet, 0, sizeof(packet));
     int retLen;
 
@@ -571,16 +551,6 @@ void PRT48Provider::startSelfTest(void)
 PrinterSelfTestResult PRT48Provider::selfTestResult(void)
 {
     return _selfTestResult;
-}
-
-/***************************************************************************************************
- * 返回版本信息。
- **************************************************************************************************/
-void PRT48Provider::versionInfo(QString &hwVer, QString &swVer, QString &protoVer)
-{
-    hwVer = _hwVer;
-    swVer = _swVer;
-    protoVer = _protoVer;
 }
 
 /***************************************************************************************************
@@ -636,7 +606,8 @@ PRT48Provider::PRT48Provider()
     , _selfTestResult(PRINTER_SELF_TEST_NOT_PERFORMED)
     , _sigSender(new PrinterProviderSignalSender(this))
 {
-    // UartAttrDesc portAttr(460800, 8, 'N', 1, 0, FlOW_CTRL_HARD, false);  //new mainboard support flow control, use block io
+    // new mainboard support flow control, use block io
+    // UartAttrDesc portAttr(460800, 8, 'N', 1, 0, FlOW_CTRL_HARD, false);
     UartAttrDesc portAttr(115200, 8, 'N', 1, 0);
     initPort(portAttr);
     needConnectedToParam = false;

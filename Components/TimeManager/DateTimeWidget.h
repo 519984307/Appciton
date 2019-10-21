@@ -20,6 +20,9 @@ public:
     explicit DateTimeWidget(QWidget *parent = 0);
     void setText(const QString &str);
 
+protected:
+    void mousePressEvent(QMouseEvent *e);
+
 private slots:
     void _release(IWidget *);
 

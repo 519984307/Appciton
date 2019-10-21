@@ -27,6 +27,9 @@
 #include "NIBPCountdownTime.h"
 #include "NIBPParam.h"
 #include "TrendDataStorageManager.h"
+#include "MessageBox.h"
+#include "WindowManager.h"
+#include "ThemeManager.h"
 
 class TimeEditWindowPrivate
 {
@@ -169,10 +172,9 @@ void TimeEditWindow::layoutExec()
 {
     setWindowTitle(trs("SupervisorTimeAndDataMenu"));
 
-    QVBoxLayout *vlayout = new QVBoxLayout;
     QGridLayout *layout = new QGridLayout;
-
-    vlayout->addLayout(layout);
+    layout->setMargin(10);
+    layout->setSpacing(10);
 
     ComboBox *comboBox;
     QLabel *label;
@@ -185,6 +187,7 @@ void TimeEditWindow::layoutExec()
 
     // year
     spinBox = new SpinBox;
+    spinBox->setFixedHeight(themeManger.getAcceptableControlHeight());
     spinBox->setRange(1970, 2037);
     spinBox->setScale(1);
     spinBox->setStep(1);
@@ -197,6 +200,7 @@ void TimeEditWindow::layoutExec()
 
     // month
     spinBox = new SpinBox;
+    spinBox->setFixedHeight(themeManger.getAcceptableControlHeight());
     spinBox->setRange(1, 12);
     spinBox->setScale(1);
     spinBox->setStep(1);
@@ -209,6 +213,7 @@ void TimeEditWindow::layoutExec()
 
     // day
     spinBox = new SpinBox;
+    spinBox->setFixedHeight(themeManger.getAcceptableControlHeight());
     spinBox->setRange(1, 30);
     spinBox->setScale(1);
     spinBox->setStep(1);
@@ -225,6 +230,7 @@ void TimeEditWindow::layoutExec()
 
     // hour
     spinBox = new SpinBox;
+    spinBox->setFixedHeight(themeManger.getAcceptableControlHeight());
     spinBox->setRange(0, 23);
     spinBox->setScale(1);
     spinBox->setStep(1);
@@ -237,6 +243,7 @@ void TimeEditWindow::layoutExec()
 
     // minute
     spinBox = new SpinBox;
+    spinBox->setFixedHeight(themeManger.getAcceptableControlHeight());
     spinBox->setRange(0, 59);
     spinBox->setScale(1);
     spinBox->setStep(1);
@@ -249,6 +256,7 @@ void TimeEditWindow::layoutExec()
 
     // second
     spinBox = new SpinBox;
+    spinBox->setFixedHeight(themeManger.getAcceptableControlHeight());
     spinBox->setRange(0, 59);
     spinBox->setScale(1);
     spinBox->setStep(1);
@@ -259,13 +267,11 @@ void TimeEditWindow::layoutExec()
     layout->addWidget(spinBox, (d_ptr->combos.count() + d_ptr->spinBoxs.count())/3, 3);
     d_ptr->spinBoxs.insert(TimeEditWindowPrivate::ITEM_SPB_SECOND, spinBox);
 
-    layout->setRowStretch(d_ptr->combos.count() + d_ptr->spinBoxs.count(), 1);
-
     // date format
-    layout = new QGridLayout;
     label = new QLabel(trs("SupervisorDateFormat"));
-    layout->addWidget(label, 0, 0);
+    layout->addWidget(label, (d_ptr->combos.count() + d_ptr->spinBoxs.count())/3, 0);
     comboBox = new ComboBox();
+    comboBox->setFixedHeight(themeManger.getAcceptableControlHeight());
     comboBox->addItems(QStringList()
                        << trs(TimeSymbol::convert(DATE_FORMAT_Y_M_D))
                        << trs(TimeSymbol::convert(DATE_FORMAT_M_D_Y))
@@ -275,13 +281,14 @@ void TimeEditWindow::layoutExec()
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, 0, 1);
+    layout->addWidget(comboBox, (d_ptr->combos.count() + d_ptr->spinBoxs.count()) / 3, 1, 1, 3);
     d_ptr->combos.insert(TimeEditWindowPrivate::ITEM_CBO_DATE_FORMAT, comboBox);
 
     // time format
     label = new QLabel(trs("SupervisorTimeFormat"));
-    layout->addWidget(label, 1, 0);
+    layout->addWidget(label, (d_ptr->combos.count() + d_ptr->spinBoxs.count()) / 3 + 1, 0);
     comboBox = new ComboBox();
+    comboBox->setFixedHeight(themeManger.getAcceptableControlHeight());
     comboBox->addItems(QStringList()
                        << trs(TimeSymbol::convert(TIME_FORMAT_12))
                        << trs(TimeSymbol::convert(TIME_FORMAT_24))
@@ -290,13 +297,14 @@ void TimeEditWindow::layoutExec()
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, 1, 1);
+    layout->addWidget(comboBox, (d_ptr->combos.count() + d_ptr->spinBoxs.count()) / 3 + 1, 1, 1, 3);
     d_ptr->combos.insert(TimeEditWindowPrivate::ITEM_CBO_TIME_FORMAT, comboBox);
 
     // is display second
     label = new QLabel(trs("SupervisorDisplaySec"));
-    layout->addWidget(label, 2, 0);
+    layout->addWidget(label, (d_ptr->combos.count() + d_ptr->spinBoxs.count()) / 3 + 2, 0);
     comboBox = new ComboBox();
+    comboBox->setFixedHeight(themeManger.getAcceptableControlHeight());
     comboBox->addItems(QStringList()
                        << trs("No")
                        << trs("Yes")
@@ -305,14 +313,17 @@ void TimeEditWindow::layoutExec()
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, 2, 1);
+    layout->addWidget(comboBox, (d_ptr->combos.count() + d_ptr->spinBoxs.count()) / 3 + 2, 1, 1, 3);
     d_ptr->combos.insert(TimeEditWindowPrivate::ITEM_CBO_DISPLAY_SEC, comboBox);
-    vlayout->addLayout(layout);
-    vlayout->addStretch();
 
-    setWindowLayout(vlayout);
+    layout->setRowStretch(layout->rowCount(), 1);
+    layout->setColumnStretch(0, 2);
+    layout->setColumnStretch(1, 1);
+    layout->setColumnStretch(2, 1);
+    layout->setColumnStretch(3, 1);
+    setWindowLayout(layout);
 
-    setFixedSize(580, 350);
+    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
 }
 
 void TimeEditWindow::hideEvent(QHideEvent *ev)
@@ -320,15 +331,20 @@ void TimeEditWindow::hideEvent(QHideEvent *ev)
     QDateTime dt = d_ptr->getSetupTime();
     if (d_ptr->oldTime != dt.toTime_t())
     {
-        trendDataStorageManager.stopPeriodRun();
-        d_ptr->setSysTime();
-        systemTick.resetLastTime();
-        patientManager.newPatient();
-        if (nibpParam.getMeasurMode() == NIBP_MODE_STAT)
+        MessageBox msg(trs("Prompt"), trs("ChangeTime"), true, true);
+        windowManager.showWindow(&msg, WindowManager::ShowBehaviorModal);
+        if (msg.result() == QDialog::Accepted)
         {
-            nibpCountdownTime.timeChange(true);
+            trendDataStorageManager.stopPeriodRun();
+            d_ptr->setSysTime();
+            systemTick.resetLastTime();
+            patientManager.newPatient();
+            if (nibpParam.getMeasurMode() == NIBP_MODE_STAT)
+            {
+                nibpCountdownTime.timeChange(true);
+            }
+            trendDataStorageManager.restartPeriodRun();
         }
-        trendDataStorageManager.restartPeriodRun();
     }
     Dialog::hideEvent(ev);
 }

@@ -59,6 +59,7 @@ public:
 protected:
     bool focusNextPrevChild(bool next);
     void showEvent(QShowEvent *ev);
+    void paintEvent(QPaintEvent *ev);
 
 private slots:
     void onSelectItemChanged(int index);

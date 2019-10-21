@@ -8,7 +8,6 @@
  ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/8/13
  **/
 
-
 #pragma once
 #include "SPO2Define.h"
 
@@ -34,14 +33,14 @@ public:
     // SPO2值与PR值。
     virtual bool isResult_SPO2PR(unsigned char */*packet*/) {return false;}
 
-    //描记波
+    // 描记波
     virtual bool isResult_BAR(unsigned char */*packet*/) {return false;}
 
-    //状态
+    // 状态
     virtual bool isStatus(unsigned char */*packet*/) {return false;}
 
 
-    //发送协议命令
+    // 发送协议命令
     virtual void sendCmdData(unsigned char /*cmdId*/, const unsigned char */*data*/,
                              unsigned int /*len*/) { }
 
@@ -95,4 +94,9 @@ public:
      * @param type 时间类型
      */
     virtual void setSatSeconds(Spo2SatSecondsType /*type*/){}
+
+    /**
+     * @brief setRawDataSend 设置原始数据发送开关
+     */
+    virtual void enableRawDataSend(bool /*onOff*/){}
 };

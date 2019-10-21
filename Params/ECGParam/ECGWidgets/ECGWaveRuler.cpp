@@ -26,7 +26,7 @@
  **************************************************************************************************/
 void ECGWaveRuler::paintItem(QPainter &painter)
 {
-    painter.setPen(QPen(palette().color(QPalette::Foreground), 3, Qt::SolidLine));
+    painter.setPen(QPen(palette().color(QPalette::Foreground).darker(150), 3, Qt::SolidLine));
     painter.setFont(font());
     float rulerPos = RULER_X_OFFSET;
     float middlePos = _waveWidget->height() / 2;

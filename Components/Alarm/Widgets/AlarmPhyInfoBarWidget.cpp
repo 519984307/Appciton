@@ -16,6 +16,7 @@
 #include <QPainter>
 #include "WindowManager.h"
 #include "Alarm.h"
+#include "SoundManagerInterface.h"
 
 /**************************************************************************************************
  * 绘制背景。
@@ -147,6 +148,17 @@ void AlarmPhyInfoBarWidget::paintEvent(QPaintEvent *e)
     }
 }
 
+void AlarmPhyInfoBarWidget::mousePressEvent(QMouseEvent *e)
+{
+    IWidget::mousePressEvent(e);
+    // 触屏点击播放按键音
+    SoundManagerInterface *sound = SoundManagerInterface::getSoundManager();
+    if (sound)
+    {
+        sound->keyPressTone();
+    }
+}
+
 void AlarmPhyInfoBarWidget::_releaseHandle(IWidget *iWidget)
 {
     Q_UNUSED(iWidget)
@@ -244,9 +256,9 @@ AlarmPhyInfoBarWidget::~AlarmPhyInfoBarWidget()
 
 void AlarmPhyInfoBarWidget::updateList()
 {
-    // 窗口显示时不做数据更新
-    if (NULL != _alarmWindow && _alarmWindow->isHidden())
+    if (NULL != _alarmWindow && _alarmWindow->isActiveWindow())
     {
+        // 报警信息窗口活跃时，才更新窗口数据
         _alarmWindow->updateData();
     }
 }

@@ -35,6 +35,8 @@ protected:
     /* reimplement */
     void keyReleaseEvent(QKeyEvent *e);
 
+    void mousePressEvent(QMouseEvent *e);
+
 private:
     QScopedPointer<PopupListItemPrivate> d_ptr;
 };

@@ -378,35 +378,8 @@ RainbowProvider::RainbowProvider(const QString &name, bool isPlugIn)
     d_ptr->spHbBloodVessel = spo2Param.getSpHbBloodVessel();
     d_ptr->spHbPrecision = spo2Param.getSpHbPrecision();
     d_ptr->pviAveragingMode = spo2Param.getPviAveragingMode();
-    UartAttrDesc attr(DEFALUT_BAUD_RATE, 8, 'N', 1);
     d_ptr->isPlugIn = isPlugIn;
-    if (isPlugIn)
-    {
-        attr.baud = RUN_BAUD_RATE;
-        plugInInfo.plugInType = PlugInProvider::PLUGIN_TYPE_SPO2;
-    }
-    else
-    {
-        disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_SPO2;
-    }
-
-    initPort(attr);
-
-    if (isPlugIn)
-    {
-        return;
-    }
-
-    if (disPatchInfo.dispatcher)
-    {
-        // reset the hardware
-        disPatchInfo.dispatcher->resetPacketPort(disPatchInfo.packetType);
-        d_ptr->isReseting = true;
-    }
-    else
-    {
-        QTimer::singleShot(200, this, SLOT(changeBaudrate()));
-    }
+    initModule();
 }
 
 RainbowProvider::~RainbowProvider()
@@ -592,7 +565,7 @@ void RainbowProvider::dataArrived(unsigned char *data, unsigned int length)
 void RainbowProvider::dispatchPortHasReset()
 {
     d_ptr->isReseting = false;
-    QTimer::singleShot(0, this, SLOT(changeBaudrate()));
+    QTimer::singleShot(500, this, SLOT(changeBaudrate()));  // 返回复位成功后，需要给模块一点时间复位，才可以成功设置波特率。
 }
 
 int RainbowProvider::getSPO2BaseLine()
@@ -690,11 +663,6 @@ void RainbowProvider::reconnected()
     spo2Param.setConnected(true, d_ptr->isPlugIn);
 }
 
-void RainbowProvider::initModule()
-{
-    d_ptr->curInitializeStep = RB_INIT_BAUDRATE;
-}
-
 void RainbowProvider::setSpHbPrecisionMode(SpHbPrecisionMode mode)
 {
     if (d_ptr->isReseting)
@@ -739,6 +707,39 @@ void RainbowProvider::setSphbAveragingMode(SpHbAveragingMode mode)
     }
     unsigned char data[2] = {RB_CMD_CONF_SPHB_BLOOD_VESSEL_MODE, mode};
     d_ptr->sendCmd(data, sizeof(data));
+}
+
+void RainbowProvider::initModule()
+{
+    UartAttrDesc attr(DEFALUT_BAUD_RATE, 8, 'N', 1);
+    if (d_ptr->isPlugIn)
+    {
+        attr.baud = RUN_BAUD_RATE;
+        plugInInfo.plugInType = PlugInProvider::PLUGIN_TYPE_SPO2;
+    }
+    else
+    {
+        disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_SPO2;
+    }
+
+    initPort(attr);
+
+    if (d_ptr->isPlugIn)
+    {
+        return;
+    }
+
+    if (disPatchInfo.dispatcher)
+    {
+        // reset the hardware
+        disPatchInfo.dispatcher->resetPacketPort(disPatchInfo.packetType);
+        d_ptr->isReseting = true;
+    }
+    else
+    {
+        QTimer::singleShot(200, this, SLOT(changeBaudrate()));
+    }
+    d_ptr->curInitializeStep = RB_INIT_BAUDRATE;
 }
 
 void RainbowProvider::requestBoardInfo()

@@ -226,9 +226,9 @@ USBManager::USBManager()
       _isMount(false),
       _procThread(NULL)
 {
-
     qRegisterMetaType<DataExporterBase::ExportStatus>();
 
+    _workerThread->setObjectName("USBManager");
     _udiskInspector->moveToThread(_workerThread);
     connect(_workerThread, SIGNAL(finished()), _udiskInspector, SLOT(deleteLater()));
     connect(_udiskInspector, SIGNAL(statusUpdate(bool)), this, SLOT(updateConnectStatus(bool)));

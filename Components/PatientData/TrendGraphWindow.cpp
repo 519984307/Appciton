@@ -174,7 +174,7 @@ void TrendGraphWindow::onButtonReleased()
         case TrendGraphWindowPrivate::ACTION_BTN_PRINT:
         {
             QList<TrendGraphInfo>  trendGraphList = d_ptr->waveWidget->getTrendGraphPrint();
-            QList<EventInfoSegment> eventList = d_ptr->waveWidget->getEventList();
+            QList<BlockEntry> eventList = d_ptr->waveWidget->getEventList();
             PatientInfo patientInfo = d_ptr->waveWidget->getPatientInfo();
             RecordPageGenerator *pageGenerator = new TrendGraphPageGenerator(trendGraphList, eventList, patientInfo);
 
@@ -288,8 +288,9 @@ TrendGraphWindow::TrendGraphWindow()
     d_ptr->buttons.insert(TrendGraphWindowPrivate::ACTION_BTN_SET_WIDGET, button);
 
     // 上翻页坐标
-    button = new Button();
-    button->setIcon(QIcon("/usr/local/nPM/icons/up.png"));
+    QIcon ico = themeManger.getIcon(ThemeManager::IconUp, QSize(32, 32));
+    button = new Button("", ico);
+    button->setIconSize(QSize(32, 32));
     button->setButtonStyle(Button::ButtonIconOnly);
     button->setFixedHeight(itemHeight);
     buttonID = TrendGraphWindowPrivate::ACTION_BTN_UP_PAGE;
@@ -300,7 +301,9 @@ TrendGraphWindow::TrendGraphWindow()
 
     // 下翻页坐标
     button = new Button();
-    button->setIcon(QIcon("/usr/local/nPM/icons/down.png"));
+    ico = themeManger.getIcon(ThemeManager::IconDown, QSize(32, 32));
+    button->setIcon(ico);
+    button->setIconSize(QSize(32, 32));
     button->setButtonStyle(Button::ButtonIconOnly);
     button->setFixedHeight(itemHeight);
     buttonID = TrendGraphWindowPrivate::ACTION_BTN_DOWN_PAGE;

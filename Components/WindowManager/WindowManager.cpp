@@ -46,14 +46,12 @@ public:
         :q_ptr(q_ptr),
           timer(NULL),
           demoWidget(NULL)
-        , curWindow(NULL)
     {}
 
     WindowManager * const q_ptr;
     QList<QPointer<Dialog> > windowStacks;
     QTimer *timer;              // timer to auto close the windows
     QWidget *demoWidget;
-    Dialog *curWindow;
 
     /**
      * @brief menuProperPos 菜单显示合适的位置
@@ -197,8 +195,6 @@ void WindowManager::showWindow(Dialog *w, ShowBehavior behaviors)
         return;
     }
 
-    d_ptr->curWindow = w;
-
     Dialog *top = topWindow();
 
     if (top == w)
@@ -246,8 +242,19 @@ void WindowManager::showWindow(Dialog *w, ShowBehavior behaviors)
             top->showMask(true);
         }
     }
-
     QPointer<Dialog> newP = w;
+    bool timerStart = true;
+    if (!(behaviors & ShowBehaviorNoAutoClose))
+    {
+        d_ptr->timer->start();
+    }
+    else
+    {
+        d_ptr->timer->stop();
+        timerStart = false;
+    }
+    newP->setProperty("TimerStart", qVariantFromValue(timerStart));
+
     // remove the window in the stack if it's already exist.
     QList<QPointer<Dialog> >::Iterator iter = d_ptr->windowStacks.begin();
     for (; iter != d_ptr->windowStacks.end(); ++iter)
@@ -258,15 +265,6 @@ void WindowManager::showWindow(Dialog *w, ShowBehavior behaviors)
             break;
         }
     }
-
-    // 添加窗口定时器是否启动属性
-    bool timerStart = true;
-    if (behaviors & ShowBehaviorNoAutoClose)
-    {
-        timerStart = false;
-    }
-    newP->setProperty("TimerStart", qVariantFromValue(timerStart));
-
     d_ptr->windowStacks.append(newP);
     connect(w, SIGNAL(windowHide(Dialog *)), this, SLOT(onWindowHide(Dialog *)), Qt::DirectConnection);
 
@@ -312,7 +310,7 @@ void WindowManager::showDemoWidget(bool flag)
         QLabel *l = new QLabel(trs("DEMO"), this);
         l->setAutoFillBackground(true);
         QPalette pal = l->palette();
-        pal.setColor(QPalette::Window, QColor(0xc0, 0xc0, 0xc0, 0xb0));   // 灰色 透明度百分六十左右
+        pal.setColor(QPalette::Window, QColor(0xc0, 0xc0, 0xc0, 0x00));   // 透明
         pal.setColor(QPalette::WindowText, QColor(0xff, 0xff, 0xff, 0xb0));  // 白色 透明度百分六十左右
         l->setPalette(pal);
         l->setFont(fontManager.textFont(64));
@@ -341,28 +339,6 @@ bool WindowManager::eventFilter(QObject *obj, QEvent *ev)
         return false;
     }
 
-    if (ev->type() == QEvent::Show)
-    {
-        bool timerStart = true;
-        QList<QPointer<Dialog> >::Iterator iter = d_ptr->windowStacks.begin();
-        for (; iter != d_ptr->windowStacks.end(); ++iter)
-        {
-            if (iter->data() == d_ptr->curWindow)
-            {
-                timerStart = d_ptr->curWindow->property("TimerStart").toBool();
-                break;
-            }
-        }
-        if (timerStart == true)
-        {
-            d_ptr->timer->start();
-        }
-        else
-        {
-            d_ptr->timer->stop();
-        }
-    }
-
     if ((ev->type() == QEvent::KeyPress) || (ev->type() == QEvent::MouseButtonPress))
     {
         // reactive the timer
@@ -384,7 +360,6 @@ void WindowManager::closeAllWidows()
         popup->close();
     }
 
-    bool dialogStatus = false;
     // close the window in the window stack
     while (!d_ptr->windowStacks.isEmpty())
     {
@@ -392,7 +367,6 @@ void WindowManager::closeAllWidows()
         if (p)
         {
             p->close();
-            dialogStatus = true;
         }
     }
 
@@ -408,11 +382,6 @@ void WindowManager::closeAllWidows()
     }
     d_ptr->timer->stop();
 
-    if (dialogStatus == true)
-    {  // send the signal when the dialgs's status changes
-        emit allDialogsStatusChanged();
-    }
-
     QApplication::processEvents(QEventLoop::AllEvents);
 }
 
@@ -420,7 +389,6 @@ void WindowManager::onWindowHide(Dialog *w)
 {
     // find top window
     Dialog *top = topWindow();
-
     if (top == w)
     {
         // remove the window,
@@ -432,8 +400,16 @@ void WindowManager::onWindowHide(Dialog *w)
         if (top)
         {
             top->showMask(false);
-            d_ptr->curWindow = top;
             top->show();
+            bool timeStart = top->property("TimerStart").toBool();
+            if (timeStart)
+            {
+                d_ptr->timer->start();
+            }
+            else
+            {
+                d_ptr->timer->stop();
+            }
         }
         else
         {

@@ -54,7 +54,9 @@ static KeyActionDesc _baseKeys[] =
     KeyActionDesc("", "eventReview", "Summary1.png", SoftkeyActionBase::eventReview),
     KeyActionDesc("", "TrendTable", "trend.png", SoftkeyActionBase::trendTable),
     KeyActionDesc("", "ChooseScreen", "screenSwitch.png", SoftkeyActionBase::switchSystemMode),
+#ifndef HIDE_SCREEN_LAYOUT
     KeyActionDesc("", "ScreenSetup", "interface.png",   SoftkeyActionBase::windowLayout),
+#endif
 #ifndef HIDE_PARAM_SWITCH
     KeyActionDesc("", "ParameterSwitch", "paraSwitch.png"),
 #endif
@@ -399,7 +401,17 @@ void SoftkeyActionBase::nightMode(bool isPressed)
     {
         return;
     }
-    nightModeManager.setNightMode(!nightModeManager.nightMode());
+
+    bool nightMode = nightModeManager.nightMode();
+
+    // 根据夜间模式状态, 设置屏幕亮度和音量按键类型是否可用
+    softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_KEYBOARD_VOLUMN, nightMode);
+    softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_SCREEN_BRIGHTNESS, nightMode);
+
+    // 设置焦点在快捷按键接口
+    softkeyManager.setFocusBaseKey(SOFT_BASE_KEY_NIGHT_MODE);
+
+    nightModeManager.setNightMode(!nightMode);
 }
 
 void SoftkeyActionBase::printSet(bool isPressed)

@@ -13,6 +13,14 @@
 #include "TrendWidget.h"
 #include <QLabel>
 #include "TEMPDefine.h"
+#include <QStackedWidget>
+
+enum TempState
+{
+    TEMP_STATE_ENABLE,
+    TEMP_STATE_DISABLE,
+    TEMP_STATE_NR,
+};
 
 class TEMPTrendWidget: public TrendWidget
 {
@@ -34,6 +42,8 @@ public:
     // 刷新上下限
     void updateLimit();
 
+    void showErrorStatckedWidget(bool error);
+
     TEMPTrendWidget();
     ~TEMPTrendWidget();
 
@@ -41,12 +51,19 @@ public:
 public:
     virtual void doRestoreNormalStatus();
 
+    virtual void updatePalette(const QPalette &pal);
+
 protected:
     virtual void setTextSize(void);
 
     /* reimplment */
     void loadConfig();
     void showAlarmParamLimit(QWidget *value, const QString &valueStr, QPalette psrc);
+
+    /**
+     * @brief darkParamLimit 使得上下限颜色变暗
+     */
+    void darkerPalette(QPalette &pal);
 
 private slots:
     void _releaseHandle(IWidget *);
@@ -86,4 +103,7 @@ private:
     QLabel *_t1DownLimit;
     QLabel *_t2UpLimit;
     QLabel *_t2DownLimit;
+
+    QStackedWidget *statckedWidget;  // 窗口显示内容
+    QLabel *_message;    // 显示禁用等信息
 };

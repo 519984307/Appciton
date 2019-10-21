@@ -149,6 +149,10 @@ AlarmPriority O2OneShotAlarm::getAlarmPriority(int id)
     {
         return ALARM_PRIO_HIGH;
     }
+    else if (id == O2_ONESHOT_ALARM_SEND_COMMUNICATION_STOP)
+    {
+        return ALARM_PRIO_MED;
+    }
     return ALARM_PRIO_PROMPT;
 }
 

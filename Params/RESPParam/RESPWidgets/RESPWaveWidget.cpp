@@ -79,11 +79,9 @@ void RESPWaveWidget::_adjustLabelLayout()
 {
      _name->move(0, 0);
 
-    int x = _name->x() + _name->width();
-    _gain->move(x, 0);
+    _gain->move(100, 0);
 
-    x = _gain->x() + _gain->width();
-    _lead->move(x, 0);
+    _lead->move(200, 0);
 
     _notify->move((width() - _notify->width()) / 2,
                   qmargins().top() + (height() - qmargins().top()) / 2 - _notify->height() - 1);
@@ -101,13 +99,13 @@ RESPWaveWidget::RESPWaveWidget(const QString &waveName, const QString &title)
 
     int infoFont = fontManager.getFontSize(4);;
     int fontH = fontManager.textHeightInPixels(fontManager.textFont(infoFont)) + 4;
-    _name->setFixedSize(130, fontH);
+    _name->setFixedHeight(fontH);
     _name->setFont(fontManager.textFont(infoFont));
     _name->setText(title);
 
     _gain = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
     _gain->setFont(fontManager.textFont(infoFont));
-    _gain->setFixedSize(120, fontH);
+    _gain->setFixedHeight(fontH);
     _gain->setText("");
     addItem(_gain);
     connect(_gain, SIGNAL(released(IWidget *)), this, SLOT(_respZoom(IWidget *)));
@@ -115,14 +113,12 @@ RESPWaveWidget::RESPWaveWidget(const QString &waveName, const QString &title)
     _notify = new WaveWidgetLabel(" ", Qt::AlignLeft | Qt::AlignVCenter, this);
     _notify->setFont(fontManager.textFont(infoFont));
     _notify->setFixedHeight(fontH);
-    _notify->setFixedWidth(200);
     _notify->setFocusPolicy(Qt::NoFocus);
     addItem(_notify);
 
     _lead = new WaveWidgetLabel("", Qt::AlignCenter, this);
     _lead->setFont(fontManager.textFont(infoFont));
     _lead->setFixedHeight(fontH);
-    _lead->setFixedWidth(100);
     _lead->setFocusPolicy(Qt::NoFocus);
     addItem(_lead);
     connect(&respParam, SIGNAL(calcLeadChanged(RESPLead)), this, SLOT(_onCalcLeadChanged(RESPLead)));

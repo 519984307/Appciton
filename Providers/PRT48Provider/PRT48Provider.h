@@ -56,9 +56,6 @@ public:
     // 自检结果。
     virtual PrinterSelfTestResult selfTestResult(void);
 
-    // 版本信息。
-    virtual void versionInfo(QString &hwVer, QString &swVer, QString &protoVer);
-
     // 返回错误计数。
     unsigned errorCount(void);
 
@@ -79,6 +76,7 @@ protected:
     // 通信中断。
     virtual void disconnected(void);
     virtual void reconnected(void);
+    virtual void sendDisconnected();
 
 // #if defined(Q_WS_QWS)
 #if 1
@@ -95,9 +93,6 @@ private:
     // 状态信息解析
     void _parseStatusInfo(const unsigned char *data, unsigned int len);
 
-    // 版本信息解析
-    void _parseVersionInfo(const unsigned char *data, unsigned int len);
-
     // 自检结果解析
     void _parseSelfTestResult(const unsigned char *data, unsigned int len);
 
@@ -112,9 +107,6 @@ private:
 
 private:
     int _rllc(unsigned char *src, int len, unsigned char *dest, int destLen);
-    QString _hwVer;
-    QString _swVer;
-    QString _protoVer;
 
     unsigned int _errorCount;
     unsigned char _prePacketNum;

@@ -11,6 +11,8 @@
 #pragma once
 #include "Provider.h"
 
+
+
 /**
  * @brief The BLMProviderUpgradeIface class BLMProvider upgrade interface
  */
@@ -21,6 +23,9 @@ public:
 
     virtual void handlePacket(unsigned char * data, int len) = 0;
 };
+
+/* BLMComamndInfo record the command info send to module */
+struct BLMCommandInfo;
 
 /***************************************************************************************************
  * BLM 通信协议(数据收发处理)
@@ -59,6 +64,12 @@ protected:
     // 协议命令解析
     virtual void handlePacket(unsigned char */*data*/, int /*len*/);
 
+    // 发送通信中断
+    virtual void sendDisconnected(){}
+
+    /* reimplement */
+    void timerEvent(QTimerEvent *ev);
+
 private:
     // 发送数据
     bool _sendData(const unsigned char *data, unsigned int len);
@@ -71,11 +82,14 @@ private:
 
     void _readData(unsigned char *buff, unsigned int len);
 
-    bool _isLastSOHPaired; // 遗留在ringBuff最后一个数据（该数据为SOH）是否已经剃掉了多余的SOH。
+    bool _isLastSOHPaired;  // 遗留在ringBuff最后一个数据（该数据为SOH）是否已经剃掉了多余的SOH。
 
     BLMProviderUpgradeIface *upgradeIface;
 
     static QMap<QString, BLMProvider*> providers;
+
+    int _timerId;               /* timer id for the timer event */
+    BLMCommandInfo *_lastBLMCommandInfo;    /* record last command send to module */
 
 protected:
     static const int HeadLen = 4;               // 包头长度: Head,Length,FCS

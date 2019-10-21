@@ -26,6 +26,8 @@ enum S5PacketType
     S5_CMD_SENSITIVITY                          = 0x12,       // 灵敏度设置
     S5_RSP_SENSITIVITY                          = 0x13,       //
     S5_CMD_STATUS                               = 0x14,       // 状态查询
+    S5_CMD_RAW_DATA                             = 0x16,       // 原始数据发送
+    S5_RSP_RAW_DATA                             = 0x17,
 
     S5_NOTIFY_START_UP                          = 0x40,       // 启动帧。
     S5_NOTIFY_STATUS                            = 0x42,       // 状态帧。
@@ -97,6 +99,12 @@ public: // SPO2ProviderIFace 的接口。
     // 查询状态
     virtual void sendStatus(void);
 
+    /**
+     * @brief setRawDataSend 设置原始数据发送开关
+     * @param onOff
+     */
+    virtual void enableRawDataSend(bool onOff);
+
     // 发送协议命令
     virtual void sendCmdData(unsigned char cmdId, const unsigned char *data, unsigned int len);
 
@@ -110,6 +118,7 @@ protected:
     virtual void handlePacket(unsigned char *data, int len);
     virtual void disconnected(void);
     virtual void reconnected(void);
+    virtual void sendDisconnected();
 
 private:
     void _sendACK(unsigned char type);

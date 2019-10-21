@@ -34,6 +34,8 @@ protected:
     void drawDisplay(QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect, const QString &text) const;
     /* reimplement */
     bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index);
+    /* reimplement */
+    void drawDecoration(QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect, const QPixmap &pixmap) const;
 
 protected:
     TableViewItemDelegatePrivate *const d_ptr;

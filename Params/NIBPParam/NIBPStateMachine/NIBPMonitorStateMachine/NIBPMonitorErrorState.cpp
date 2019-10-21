@@ -29,19 +29,9 @@ void NIBPMonitorErrorState::enter(void)
     //停止的触发时间
     nibpParam.createSnapshot(NIBP_ONESHOT_ABORT);
 
-    // 进入此状态最少持续5s
-    setTimeOut(5 * 1000);
-
     nibpParam.setAdditionalMeasure(false);
 
-    if (nibpParam.isCalibrateState())
-    {
-        nibpParam.setText(trs("NIBPModule") + "\n" + trs("NIBPDisable"));
-    }
-    else
-    {
-        nibpParam.setText(trs("NIBPModule") + "\n" + trs("NIBPNotCalibrate"));
-    }
+    nibpParam.setText(trs("NIBPModule") + "\n" + trs("NIBPDisable"));
     nibpParam.setModelText("");
     nibpParam.clearResult();
 
@@ -66,7 +56,7 @@ void NIBPMonitorErrorState::handleNIBPEvent(NIBPEvent event, const unsigned char
     {
         int enable = 0;
         machineConfig.getModuleInitialStatus("NIBPNEOMeasureEnable", reinterpret_cast<bool*>(&enable));
-        if (patientManager.getType() == PATIENT_TYPE_NEO && enable)
+        if (patientManager.getType() == PATIENT_TYPE_NEO && !enable)
         {
             break;
         }
@@ -88,7 +78,9 @@ void NIBPMonitorErrorState::handleNIBPEvent(NIBPEvent event, const unsigned char
             nibpParam.switchToManual();
         }
         break;
-
+    case NIBP_EVENT_MODULE_ERROR:
+        nibpParam.setText(trs("NIBPModule") + "\n" + trs("NIBPDisable"));
+        break;
     default:
         break;
     }

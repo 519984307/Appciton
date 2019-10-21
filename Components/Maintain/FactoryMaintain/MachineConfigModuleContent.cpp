@@ -240,7 +240,6 @@ void MachineConfigModuleContentPrivte::configUpdateHint()
     QString hints = trs("MachineConfigIsUpdatedNow");
     hints += "\n";
     hints += trs("IsRebootMachine");
-    hints += "?";
     MessageBox box(trs("UpdateHint"), hints);
     QDialog::DialogCode statue = static_cast<QDialog::DialogCode>(box.exec());
     if (statue == QDialog::Accepted)
@@ -526,7 +525,7 @@ void MachineConfigModuleContent::layoutExec()
 
     layout->setRowStretch(d_ptr->combos.count(), 1);
 
-    label = new QLabel(trs("StopNeoNIBPMeasure"));
+    label = new QLabel(trs("NeoNIBPMeasure"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     combo = new ComboBox;
     combo->blockSignals(true);
@@ -656,7 +655,6 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
             machineConfig.saveToDisk();
             systemManager.setTouchScreenOnOff(index);
             systemManager.configTouchScreen(index);
-            softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_SCREEN_BAN, index);
             break;
 #endif
 #ifndef HIDE_NURSE_CALL_FUNCTION

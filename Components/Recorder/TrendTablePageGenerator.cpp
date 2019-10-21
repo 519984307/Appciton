@@ -105,7 +105,7 @@ bool TrendTablePageGeneratorPrivate::loadStringList()
 }
 
 static void preparePressSubParamInfos(SubParamID subParamID, const TrendDataPackage &datapack, TrendDataType data[],
-                                      bool alarms[])
+                                      bool alarms[], unsigned eventType)
 {
     switch (subParamID)
     {
@@ -113,9 +113,18 @@ static void preparePressSubParamInfos(SubParamID subParamID, const TrendDataPack
         data[0] = datapack.subparamValue.value(SUB_PARAM_NIBP_SYS, InvData());
         data[1] = datapack.subparamValue.value(SUB_PARAM_NIBP_DIA, InvData());
         data[2] = datapack.subparamValue.value(SUB_PARAM_NIBP_MAP, InvData());
-        alarms[0] = datapack.subparamAlarm.value(SUB_PARAM_NIBP_SYS, false);
-        alarms[1] = datapack.subparamAlarm.value(SUB_PARAM_NIBP_DIA, false);
-        alarms[2] = datapack.subparamAlarm.value(SUB_PARAM_NIBP_MAP, false);
+        if (eventType & TrendDataStorageManager::CollectStatusNIBP)
+        {
+            alarms[0] = datapack.subparamAlarm.value(SUB_PARAM_NIBP_SYS, false);
+            alarms[1] = datapack.subparamAlarm.value(SUB_PARAM_NIBP_DIA, false);
+            alarms[2] = datapack.subparamAlarm.value(SUB_PARAM_NIBP_MAP, false);
+        }
+        else
+        {
+            alarms[0] = false;
+            alarms[1] = false;
+            alarms[2] = false;
+        }
         break;
     case SUB_PARAM_ART_SYS:
         data[0] = datapack.subparamValue.value(SUB_PARAM_ART_SYS, InvData());
@@ -381,7 +390,7 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
 
             TrendDataType datas[3];
             bool alarms[3];
-            preparePressSubParamInfos(subParamID, datapack, datas, alarms);
+            preparePressSubParamInfos(subParamID, datapack, datas, alarms, eventType);
             // set datas[] as InvData() when it is not NIBP event type
             if (!(eventType & TrendDataStorageManager::CollectStatusNIBP))
             {
@@ -409,7 +418,7 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
 
             TrendDataType datas[3];
             bool alarms[3];
-            preparePressSubParamInfos(subParamID, datapack, datas, alarms);
+            preparePressSubParamInfos(subParamID, datapack, datas, alarms, eventType);
             valueStr = contructPressTrendStringItem(subParamID,
                                                     datas,
                                                     alarms,
@@ -480,12 +489,34 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
                               paramManager.getSubParamUnit(paramID, SUB_PARAM_T2),
                               paramInfo.getUnitOfSubParam(SUB_PARAM_T2),
                               datapack.co2Baro);
-            QString valueTD = constructNormalValueString(SUB_PARAM_TD,
-                              datapack.subparamValue[SUB_PARAM_TD],
-                              datapack.subparamAlarm[SUB_PARAM_TD],
-                              paramManager.getSubParamUnit(paramID, SUB_PARAM_TD),
-                              paramInfo.getUnitOfSubParam(SUB_PARAM_TD),
-                              datapack.co2Baro);
+
+            QString valueTD;
+            if (datapack.subparamValue[SUB_PARAM_T1] == InvData()
+                    || datapack.subparamValue[SUB_PARAM_T2] == InvData())
+            {
+                // 有一个无效数据，计算的温度差则无效
+                valueTD = InvStr();
+            }
+            else
+            {
+                QString t1 = valueT1;
+                if (t1.contains("*"))
+                {
+                    t1.remove("*");
+                }
+
+                QString t2 = valueT2;
+                if (t2.contains("*"))
+                {
+                    t2.remove("*");
+                }
+
+                if (datapack.subparamAlarm[SUB_PARAM_TD])
+                {
+                    valueTD += "*";
+                }
+                valueTD += QString::number(qAbs(t1.toFloat() - t2.toFloat()), 'f', 1);
+            }
 
             valueStr = QString("%1/%2/%3").arg(valueT1).arg(valueT2).arg(valueTD);
         }

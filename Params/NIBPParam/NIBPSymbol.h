@@ -100,7 +100,13 @@ public:
             "NIBPEEPROMFailure",
             "NIBPCommunicationStop",
             "NIBPCommunicationTimeout",
-            "NIBPModuleDisable"
+            "NIBPModuleDisable",
+            "NIBPSendCommunicationStop",
+            "NIBPSelfTestError",
+            "NIBPModuleAbnormal",
+            "NIBPModuleNotCalibrate",
+            "NIBPModuleError",
+            "NIBPModuleOverPressure"
         };
         return symbol[index];
     }

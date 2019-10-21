@@ -52,7 +52,7 @@ NIBPCalibrationMenuContent::~NIBPCalibrationMenuContent()
 void NIBPCalibrationMenuContent::showEvent(QShowEvent* e)
 {
     Q_UNUSED(e);
-    if (nibpParam.isConnected())
+    if (nibpParam.isConnectedModule() && !nibpParam.isErrorDisable())
     {
         d_ptr->timerId = startTimer(TIME_INTERVAL);
         d_ptr->enterBtn->setEnabled(true);

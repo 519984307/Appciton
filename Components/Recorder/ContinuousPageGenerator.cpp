@@ -29,6 +29,8 @@
 #include "PrintSettingMenuContent.h"
 #include "LayoutManager.h"
 #include "EventStorageItem.h"
+#include <QPointer>
+#include <QDebug>
 
 class ContinuousPageGeneratorPrivate
 {
@@ -160,7 +162,12 @@ void ContinuousPageGeneratorPrivate::fetchWaveData(bool isRealtime)
                 }
 
                 lastReadSize = curSize;
+                QPointer<ContinuousPageGenerator> guard(q_ptr);
                 Util::waitInEventLoop(5);
+                if (guard.isNull()) {
+                    qWarning() << Q_FUNC_INFO << "generator is already destroyed, Abort!";
+                    return;
+                }
             }
 
             if (curSize < iter->sampleRate)
@@ -173,6 +180,9 @@ void ContinuousPageGeneratorPrivate::fetchWaveData(bool isRealtime)
         }
         else
         {
+            /* FIXME: this while loop is useless, delete it later
+             * curDrawWaveSegment is always less than totalDrawWaveSegement / 2
+             */
             while (curDrawWaveSegment >= (totalDrawWaveSegment / 2))
             {
                 if (recorderManager.isAbort())
@@ -181,12 +191,17 @@ void ContinuousPageGeneratorPrivate::fetchWaveData(bool isRealtime)
                     break;
                 }
 
-                if (++retryCount >= 220) // wait more than 1 second
+                if (++retryCount >= 220)  // wait more than 1 second
                 {
                     break;
                 }
 
+                QPointer<ContinuousPageGenerator> guard(q_ptr);
                 Util::waitInEventLoop(5);
+                if (guard.isNull()) {
+                    qWarning() << Q_FUNC_INFO << "generator is already destroyed, Abort!";
+                    return;
+                }
             }
 
             if (curDrawWaveSegment < (totalDrawWaveSegment / 2))
@@ -194,7 +209,8 @@ void ContinuousPageGeneratorPrivate::fetchWaveData(bool isRealtime)
                 int waveIndex = waves.indexOf(iter->id);
                 WaveformDataSegment *waveSegment = waveSegments.at(waveIndex);
                 int startIndex = curDrawWaveSegment * waveSegment->sampleRate;
-                qMemCopy(iter->secondWaveBuff.data(), waveSegment->waveData + startIndex, waveSegment->sampleRate * sizeof(WaveDataType));
+                qMemCopy(iter->secondWaveBuff.data(), waveSegment->waveData + startIndex,
+                         waveSegment->sampleRate * sizeof(WaveDataType));
             }
             else
             {
@@ -244,7 +260,9 @@ ContinuousPageGenerator::ContinuousPageGenerator(QObject *parent)
 
 ContinuousPageGenerator::~ContinuousPageGenerator()
 {
-    qDeleteAll(d_ptr->waveSegments);
+    foreach(WaveformDataSegment *waveSegment, d_ptr->waveSegments) {
+        qFree(waveSegment);
+    }
     d_ptr->waveSegments.clear();
 }
 
@@ -275,6 +293,7 @@ RecordPage *ContinuousPageGenerator::createPage()
         if (!recorderManager.isAbort())
         {
             RecordPage *page;
+            QPointer<ContinuousPageGenerator> guard(this);
             if (d_ptr->curDrawWaveSegment < d_ptr->totalDrawWaveSegment / 2)
             {
                 d_ptr->fetchWaveData(false);
@@ -284,7 +303,14 @@ RecordPage *ContinuousPageGenerator::createPage()
                 d_ptr->fetchWaveData(true);
             }
 
-            page = createWaveSegments(d_ptr->waveInfos, d_ptr->curDrawWaveSegment++, recorderManager.getPrintSpeed());
+            if (guard) {
+                page = createWaveSegments(d_ptr->waveInfos, d_ptr->curDrawWaveSegment++,
+                                          recorderManager.getPrintSpeed());
+            } else {
+                /* object is already destroyed, return NULL */
+                qWarning() << Q_FUNC_INFO << "generator is already destroyed, Abort!";
+                return NULL;
+            }
 
             if (d_ptr->totalDrawWaveSegment > 0 && d_ptr->curDrawWaveSegment >= d_ptr->totalDrawWaveSegment)
             {

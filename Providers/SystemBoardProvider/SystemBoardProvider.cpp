@@ -66,36 +66,6 @@ enum SystemBoardMessageType
 SystemBoardProvider *SystemBoardProvider::_selfObj = NULL;
 
 /***************************************************************************************************
- * 版本信息解析
- **************************************************************************************************/
-void SystemBoardProvider::_parseVersionInfo(unsigned char *data, int len)
-{
-    if (NULL == data)
-    {
-        return;
-    }
-
-    if (len != 10)
-    {
-        debug("Invalid version info packet!");
-        return;
-    }
-
-    modeStatus.hwVersion = QString("%1.%2.%3")
-                           .arg(QString::number(data[1]))
-                           .arg(QString::number(data[2]))
-                           .arg(QString::number(data[3]));
-    modeStatus.swVersion = QString("%1.%2.%3")
-                           .arg(QString::number(data[4]))
-                           .arg(QString::number(data[5]))
-                           .arg(QString::number(data[6]));
-    modeStatus.protoVersion = QString("%1.%2.%3")
-                              .arg(QString::number(data[7]))
-                              .arg(QString::number(data[8]))
-                              .arg(QString::number(data[9]));
-}
-
-/***************************************************************************************************
  * 按键信息解析
  **************************************************************************************************/
 void SystemBoardProvider::_parseKeyEvent(unsigned char *data, int len)
@@ -159,10 +129,10 @@ void SystemBoardProvider::_parseOperateMode(unsigned char *data, int len)
         return;
     }
 
-    powerOffWindow.exec();
-
-    // TODO: handle power off
-    //    _notifyAck(&data[0], len);    //　暂时不应答
+    if (!powerOffWindow.isActiveWindow())
+    {
+        powerOffWindow.exec();
+    }
 }
 
 /***************************************************************************************************
@@ -299,7 +269,6 @@ void SystemBoardProvider::handlePacket(unsigned char *data, int len)
     switch (type)
     {
     case MSG_RSP_VERSION:
-        _parseVersionInfo(data, len);
         break;
 
     case MSG_RSP_SWITCH_KEY:
@@ -395,6 +364,15 @@ void SystemBoardProvider::reconnected(void)
     }
 }
 
+void SystemBoardProvider::sendDisconnected()
+{
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SYSTEM);
+    if (alarmSource && !alarmSource->isAlarmed(SYSTEM_ONE_SHOT_ALARM_COMMUNICATION_STOP))
+    {
+        alarmSource->setOneShotAlarm(SYSTEM_ONE_SHOT_ALARM_SEND_COMMUNICATION_STOP, true);
+    }
+}
+
 
 /***************************************************************************************************
  * 获取电源类型。
@@ -468,17 +446,6 @@ void SystemBoardProvider::queryBatteryInfo(void)
 void SystemBoardProvider::triggerBuzzer()
 {
     sendCmd(MSG_CMD_TRIGGER_BUZZER, NULL, 0);
-}
-
-/***************************************************************************************************
- * 版本信息
- **************************************************************************************************/
-void SystemBoardProvider::getVersionInfo(QString &hwVersion,
-        QString &swVersion, QString &protoVersion)
-{
-    hwVersion = modeStatus.hwVersion;
-    swVersion = modeStatus.swVersion;
-    protoVersion = modeStatus.protoVersion;
 }
 
 /***************************************************************************************************

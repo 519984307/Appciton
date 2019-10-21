@@ -535,8 +535,6 @@ NIBPDataTrendWidget::NIBPDataTrendWidget()
                                           << trs("PR");
     _table->setHorizontalHeaderLabels(titleList);
 
-    connect(_table, SIGNAL(released(QMouseEvent *)), this, SLOT(mouseReleaseEvent(QMouseEvent *)));
-
     _table->setSelectionMode(QAbstractItemView::NoSelection);
 
     // 布局。

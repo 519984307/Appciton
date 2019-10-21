@@ -249,7 +249,7 @@ void UnitSetupMenuContent::layoutExec()
 #endif
 
     // Pressure unit
-    label = new QLabel(trs("PressureUnit"));
+    label = new QLabel(trs("NIBPUnit"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()

@@ -19,6 +19,7 @@
 #include "TrendWidgetLabel.h"
 #include <QTimer>
 #include "AlarmConfig.h"
+#include "SoundManagerInterface.h"
 
 /**************************************************************************************************
  * 重绘。
@@ -60,6 +61,17 @@ void TrendWidget::resizeEvent(QResizeEvent *e)
     upLimit->setFont(font);
     downLimit->setFont(font);
     setTextSize();
+}
+
+void TrendWidget::mousePressEvent(QMouseEvent *e)
+{
+    IWidget::mousePressEvent(e);
+    // 触屏点击播放按键音
+    SoundManagerInterface *sound = SoundManagerInterface::getSoundManager();
+    if (sound)
+    {
+        sound->keyPressTone();
+    }
 }
 
 void TrendWidget::showAlarmOff()
@@ -124,25 +136,31 @@ void TrendWidget::showAlarmParamLimit(QWidget *valueWidget, const QString &value
     double down = downLimit->text().toDouble();
     if (value > up)
     {
-        upLimit->setPalette(valueWidget->palette());
+        QPalette pal = valueWidget->palette();
+        darkerPalette(pal);
+        upLimit->setPalette(pal);
     }
     else
     {
+        darkerPalette(psrc);
         upLimit->setPalette(psrc);
     }
 
     if (value < down)
     {
-        downLimit->setPalette(valueWidget->palette());
+        QPalette pal = valueWidget->palette();
+        darkerPalette(pal);
+        downLimit->setPalette(pal);
     }
     else
     {
+        darkerPalette(psrc);
         downLimit->setPalette(psrc);
     }
 }
 
 // 将控件下的全部控件都刷新颜色
-void setWidgetPalette(QLayout *layout, QPalette psrc)
+void TrendWidget::setWidgetPalette(QLayout *layout, QPalette psrc)
 {
     for (int i = 0; i < layout->count(); i++)
     {
@@ -153,9 +171,16 @@ void setWidgetPalette(QLayout *layout, QPalette psrc)
         else if (layout->itemAt(i)->widget())
         {
             QWidget *item = layout->itemAt(i)->widget();
-            if (item->palette().windowText().color() != psrc.windowText().color())
+            QPalette pal = psrc;
+            if (item == qobject_cast<QWidget *>(upLimit)
+                    || item == qobject_cast<QWidget *>(downLimit))
             {
-                layout->itemAt(i)->widget()->setPalette(psrc);
+                // 使上下限颜色变暗
+                darkerPalette(pal);
+            }
+            if (item->palette().windowText().color() != pal.windowText().color())
+            {
+                item->setPalette(pal);
             }
         }
     }
@@ -191,14 +216,22 @@ void TrendWidget::showNormalParamLimit(QPalette psrc)
     QPalette p = upLimit->palette();
     if (p.windowText().color() != psrc.windowText().color())
     {
+        darkerPalette(psrc);
         upLimit->setPalette(psrc);
     }
 
     p = downLimit->palette();
     if (p.windowText().color() != psrc.windowText().color())
     {
+        darkerPalette(psrc);
         downLimit->setPalette(psrc);
     }
+}
+
+void TrendWidget::darkerPalette(QPalette &pal)
+{
+    QColor c = pal.color(QPalette::WindowText);
+    pal.setColor(QPalette::WindowText, c.darker(150));
 }
 
 /**************************************************************************************************
@@ -208,31 +241,13 @@ void TrendWidget::showNormalParamLimit(QPalette psrc)
  *************************************************************************************************/
 void TrendWidget::updateAlarm(bool alarmFlag)
 {
-//    QPalette p = nameLabel->palette();
-//    if (alarmFlag)
-//    {
-//        if (p.windowText().color() != Qt::white)
-//        {
-//            p.setColor(QPalette::WindowText, Qt::white);
-//            nameLabel->setPalette(p);
-//            unitLabel->setPalette(p);
-//        }
-//    }
-//    else
-//    {
-//        if (p.windowText().color() != Qt::black)
-//        {
-//            p.setColor(QPalette::WindowText, Qt::black);
-//            nameLabel->setPalette(p);
-//            unitLabel->setPalette(p);
-//        }
-    //    }
     Q_UNUSED(alarmFlag)
 }
 
 void TrendWidget::updatePalette(const QPalette &pal)
 {
     setPalette(pal);
+    showNormalParamLimit(pal);
 }
 
 void TrendWidget::restoreNormalStatusLater()

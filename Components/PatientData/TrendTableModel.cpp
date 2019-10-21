@@ -14,7 +14,6 @@
 #include "ParamInfo.h"
 #include "ParamManager.h"
 #include "IBPParam.h"
-#include "TrendDataStorageManager.h"
 #include "DataStorageDefine.h"
 #include "TrendDataSymbol.h"
 #include "TrendDataDefine.h"
@@ -125,6 +124,11 @@ public:
     bool isWait;
     int timeoutNum;
     RecordPageGenerator *generator;
+    QVector<BlockEntry> trendBlockList;               // 趋势数据信息列表
+    QList<int>  trendIndexList;                     // 符合分辨率的趋势数据索引列表
+    IStorageBackend *backend;
+    PatientInfo patientInfo;                        // 病人信息
+    QString curDateStr;
 };
 
 TrendTableModel::TrendTableModel(QObject *parent)
@@ -139,7 +143,6 @@ TrendTableModel::TrendTableModel(QObject *parent)
     QString groupPrefix = prefix + "TrendGroup";
     systemConfig.getNumValue(groupPrefix, index);
     loadCurParam(d_ptr->addModuleCheck(index));
-    updateData();
 }
 
 TrendTableModel::~TrendTableModel()
@@ -160,28 +163,18 @@ int TrendTableModel::rowCount(const QModelIndex &parent) const
 
 QVariant TrendTableModel::data(const QModelIndex &index, int role) const
 {
-    if (index.isValid() == false || d_ptr->indexInfo.total == 0)
-    {
-        return QVariant();
-    }
-
     int row = index.row();
     int column = index.column();
-
-    if (d_ptr->tableDataList.count() < column + 1)
-    {
-        return QVariant();
-    }
-    if (d_ptr->tableDataList.at(0).count() < row + 1)
-    {
-        return QVariant();
-    }
 
     switch (role)
     {
     case Qt::DisplayRole:
     {
-        return d_ptr->tableDataList.at(column).at(row).dataStr;
+        if (d_ptr->tableDataList.count() >= column + 1)
+        {
+            return d_ptr->tableDataList.at(column).at(row).dataStr;
+        }
+        return  QVariant();
     }
     case Qt::SizeHintRole:
     {
@@ -192,21 +185,24 @@ QVariant TrendTableModel::data(const QModelIndex &index, int role) const
         return QVariant(Qt::AlignCenter);
     case Qt::BackgroundColorRole:
     {
-        QColor color = d_ptr->tableDataList.at(column).at(row).backGroundColor;
-
-        QColor colorHead = d_ptr->colHeadList.at(column).backGroundColor;
-        int curSecIndex = d_ptr->indexInfo.event % COLUMN_COUNT;
-        if (curSecIndex == column &&
-                (colorHead != themeManger.getColor(ThemeManager::ControlTypeNR,
-                                        ThemeManager::ElementBackgound,
-                                        ThemeManager::StateDisabled)))
+        if (d_ptr->tableDataList.count() >= column + 1)
         {
-            return QBrush(EVENT_SELECTED_BACKGROUND_COLOR);
-        }
+            QColor color = d_ptr->tableDataList.at(column).at(row).backGroundColor;
 
-        if (color == HIGH_PRIO_ALARM_COLOR || color == MED_PRIO_ALARM_COLOR)
-        {
-            return color;
+            QColor colorHead = d_ptr->colHeadList.at(column).backGroundColor;
+            int curSecIndex = d_ptr->indexInfo.event % COLUMN_COUNT;
+            if (curSecIndex == column &&
+                    (colorHead != themeManger.getColor(ThemeManager::ControlTypeNR,
+                                            ThemeManager::ElementBackgound,
+                                            ThemeManager::StateDisabled)))
+            {
+                return QBrush(EVENT_SELECTED_BACKGROUND_COLOR);
+            }
+
+            if (color == HIGH_PRIO_ALARM_COLOR || color == MED_PRIO_ALARM_COLOR)
+            {
+                return color;
+            }
         }
 
         if (row % 2)
@@ -222,15 +218,18 @@ QVariant TrendTableModel::data(const QModelIndex &index, int role) const
     break;
     case Qt::ForegroundRole:
     {
-        QColor color = d_ptr->tableDataList.at(column).at(row).backGroundColor;
-        QColor colorHead = d_ptr->colHeadList.at(column).backGroundColor;
-
-        int curSecIndex = d_ptr->indexInfo.event % COLUMN_COUNT;
-        if (curSecIndex == column && (colorHead == HIGH_PRIO_ALARM_COLOR || colorHead == MED_PRIO_ALARM_COLOR))
+        if (d_ptr->tableDataList.count() >= column + 1)
         {
-            if (color == HIGH_PRIO_ALARM_COLOR || color == MED_PRIO_ALARM_COLOR)
+            QColor color = d_ptr->tableDataList.at(column).at(row).backGroundColor;
+            QColor colorHead = d_ptr->colHeadList.at(column).backGroundColor;
+
+            int curSecIndex = d_ptr->indexInfo.event % COLUMN_COUNT;
+            if (curSecIndex == column && (colorHead == HIGH_PRIO_ALARM_COLOR || colorHead == MED_PRIO_ALARM_COLOR))
             {
-                return color;
+                if (color == HIGH_PRIO_ALARM_COLOR || color == MED_PRIO_ALARM_COLOR)
+                {
+                    return color;
+                }
             }
         }
         return QBrush(QColor("#2C405A"));
@@ -281,7 +280,9 @@ QVariant TrendTableModel::headerData(int section, Qt::Orientation orientation, i
         {
             if (d_ptr->colHeadList.count() < section + 1)
             {
-                return QVariant();
+                return themeManger.getColor(ThemeManager::ControlTypeNR,
+                                            ThemeManager::ElementBackgound,
+                                            ThemeManager::StateDisabled);
             }
             return d_ptr->colHeadList.at(section).backGroundColor;
         }
@@ -418,7 +419,24 @@ void TrendTableModel::setHistoryDataPath(QString path)
 
 void TrendTableModel::setHistoryData(bool flag)
 {
+    // 动态内存释放
+    if (d_ptr->isHistory)
+    {
+        delete d_ptr->backend;
+        d_ptr->backend = NULL;
+    }
+
     d_ptr->isHistory = flag;
+    if (d_ptr->isHistory)
+    {
+        d_ptr->backend = StorageManager::open(d_ptr->historyDataPath + TREND_DATA_FILE_NAME, QIODevice::ReadWrite);
+        d_ptr->patientInfo = patientManager.getHistoryPatientInfo(d_ptr->historyDataPath + PATIENT_INFO_FILE_NAME);
+    }
+    else
+    {
+        d_ptr->backend = trendDataStorageManager.backend();
+        d_ptr->patientInfo = patientManager.getPatientInfo();
+    }
 }
 
 void TrendTableModel::updateData()
@@ -558,8 +576,8 @@ bool TrendTableModel::getDataTimeRange(unsigned &start, unsigned &end)
 {
     if (d_ptr->trendDataPack.count() != 0)
     {
-        start = d_ptr->trendDataPack.first()->time;
-        end = d_ptr->trendDataPack.last()->time;
+        start = d_ptr->trendBlockList.first().extraData;
+        end = d_ptr->trendBlockList.last().extraData;
         return true;
     }
     return false;
@@ -569,15 +587,17 @@ void TrendTableModel::displayDataTimeRange(unsigned &start, unsigned &end)
 {
     if (d_ptr->indexInfo.end <= d_ptr->indexInfo.start
             || d_ptr->indexInfo.end < 1
-            || d_ptr->trendDataPack.count() < d_ptr->indexInfo.end)
+            || d_ptr->trendBlockList.count() < d_ptr->indexInfo.end)
     {
         start = 0;
         end = 0;
         qDebug() << Q_FUNC_INFO << "Trend table print time wrong";
         return;
     }
-    start = d_ptr->trendDataPack.at(d_ptr->indexInfo.start)->time;
-    end = d_ptr->trendDataPack.at(d_ptr->indexInfo.end - 1)->time;
+    start = d_ptr->trendBlockList.at(
+                d_ptr->trendIndexList.at(d_ptr->indexInfo.start)).extraData;
+    end = d_ptr->trendBlockList.at(
+                d_ptr->trendIndexList.at(d_ptr->indexInfo.end - 1)).extraData;
 }
 
 void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
@@ -587,72 +607,56 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
     {
         return;
     }
-    IStorageBackend *backend;
-    PatientInfo patientInfo;
-    if (d_ptr->isHistory)
-    {
-        backend = StorageManager::open(d_ptr->historyDataPath + TREND_DATA_FILE_NAME, QIODevice::ReadOnly);
-        patientInfo = patientManager.getHistoryPatientInfo(d_ptr->historyDataPath + PATIENT_INFO_FILE_NAME);
-    }
-    else
-    {
-        backend = trendDataStorageManager.backend();
-        patientInfo = patientManager.getPatientInfo();
-    }
-    if (backend->getBlockNR() <= 0)
-    {
-        return;
-    }
 
     int startIndex = 0;
     int endIndex = 0;
 
     // 二分查找时间索引
     int lowPos = 0;
-    int highPos = d_ptr->trendDataPack.count() - 1;
+    int highPos = d_ptr->trendIndexList.count() - 1;
     int startPrintId = 0;
     while (lowPos <= highPos)
     {
         int midPos = (lowPos + highPos) / 2;
-        int timeDiff = qAbs(startTime - d_ptr->trendDataPack.at(midPos)->time);
+        int timeDiff = qAbs(startTime - d_ptr->trendBlockList.at(d_ptr->trendIndexList.at(midPos)).extraData);
 
-        if (startTime < d_ptr->trendDataPack.at(midPos)->time)
+        if (startTime < d_ptr->trendBlockList.at(d_ptr->trendIndexList.at(midPos)).extraData)
         {
             highPos = midPos - 1;
         }
-        else if (startTime > d_ptr->trendDataPack.at(midPos)->time)
+        else if (startTime > d_ptr->trendBlockList.at(d_ptr->trendIndexList.at(midPos)).extraData)
         {
             lowPos = midPos + 1;
         }
 
         if (timeDiff == 0 || lowPos > highPos)
         {
-            startIndex = d_ptr->trendDataPack.at(midPos)->index;
+            startIndex = d_ptr->trendIndexList.at(midPos);
             startPrintId = midPos;  // 获取趋势数据包中开始打印时刻的索引
             break;
         }
     }
 
     lowPos = 0;
-    highPos = d_ptr->trendDataPack.count() - 1;
+    highPos = d_ptr->trendIndexList.count() - 1;
     int endPrintId = 0;
     while (lowPos <= highPos)
     {
         int midPos = (lowPos + highPos) / 2;
-        int timeDiff = qAbs(endTime - d_ptr->trendDataPack.at(midPos)->time);
+        int timeDiff = qAbs(endTime - d_ptr->trendBlockList.at(d_ptr->trendIndexList.at(midPos)).extraData);
 
-        if (endTime < d_ptr->trendDataPack.at(midPos)->time)
+        if (endTime < d_ptr->trendBlockList.at(d_ptr->trendIndexList.at(midPos)).extraData)
         {
             highPos = midPos - 1;
         }
-        else if (endTime > d_ptr->trendDataPack.at(midPos)->time)
+        else if (endTime > d_ptr->trendBlockList.at(d_ptr->trendIndexList.at(midPos)).extraData)
         {
             lowPos = midPos + 1;
         }
 
         if (timeDiff == 0 || lowPos > highPos)
         {
-            endIndex = d_ptr->trendDataPack.at(midPos)->index;
+            endIndex = d_ptr->trendIndexList.at(midPos);
             endPrintId = midPos;  // 获取趋势数据包中结束打印时刻的索引
             break;
         }
@@ -665,9 +669,10 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
     printInfo.list = d_ptr->displayList;
     for (int i = startPrintId; i <= endPrintId; i++)
     {
-        printInfo.timestampEventMap[d_ptr->trendDataPack.at(i)->time] = d_ptr->trendDataPack.at(i)->status;
+        printInfo.timestampEventMap[d_ptr->trendBlockList.at(d_ptr->trendIndexList.at(i)).extraData] = d_ptr->trendBlockList.at(
+                    d_ptr->trendIndexList.at(i)).type;
     }
-    RecordPageGenerator *gen = new TrendTablePageGenerator(backend, printInfo, patientInfo);
+    RecordPageGenerator *gen = new TrendTablePageGenerator(d_ptr->backend, printInfo, d_ptr->patientInfo);
     if (recorderManager.isPrinting() && !d_ptr->isWait)
     {
         if (gen->getPriority() <= recorderManager.getCurPrintPriority())
@@ -692,9 +697,9 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
     }
 }
 
-const QList<TrendDataPackage *> &TrendTableModel::getTrendDataPack()
+const QVector<BlockEntry> &TrendTableModel::getBlockEntryList()
 {
-    return d_ptr->trendDataPack;
+    return d_ptr->trendBlockList;
 }
 
 unsigned TrendTableModel::getColumnCount() const
@@ -706,6 +711,11 @@ void TrendTableModel::getCurIndexInfo(unsigned &curIndex, unsigned &totalIndex) 
 {
     curIndex = d_ptr->indexInfo.start;
     totalIndex = d_ptr->indexInfo.total;
+}
+
+QString TrendTableModel::getCurTableDate()
+{
+    return d_ptr->curDateStr;
 }
 
 void TrendTableModel::timerEvent(QTimerEvent *ev)
@@ -746,7 +756,9 @@ TrendTableModelPrivate::TrendTableModelPrivate()
       waitTimerId(-1),
       isWait(false),
       timeoutNum(0),
-      generator(NULL)
+      generator(NULL),
+      backend(NULL),
+      curDateStr(InvStr())
 {
     orderMap.clear();
 
@@ -815,106 +827,57 @@ TrendTableModelPrivate::TrendTableModelPrivate()
 
 void TrendTableModelPrivate::getTrendData()
 {
-    // 获取趋势数据
-    IStorageBackend *backend;
-    if (isHistory)
-    {
-        backend = StorageManager::open(historyDataPath + TREND_DATA_FILE_NAME, QIODevice::ReadOnly);
-    }
-    else
-    {
-        backend = trendDataStorageManager.backend();
-    }
-    QByteArray data;
-    TrendDataSegment *dataSeg;
-    int blockNum = backend->getBlockNR();
+    trendBlockList.clear();
+    trendBlockList = backend->getBlockEntryList();
+
+    trendIndexList.clear();
     unsigned interval = TrendDataSymbol::convertValue(timeInterval);
-
-    // 清空趋势数据缓存
-    qDeleteAll(trendDataPack);
-    trendDataPack.clear();
-
-    // 开始装载趋势数据
-    int count = 0;
     eventList.clear();
-    for (quint32 i = 0; i < static_cast<quint32>(blockNum); i++)
+    int count = 0;
+    for (int i = 0; i < trendBlockList.count(); i++)
     {
-        // 把每一块存储的趋势数据读取出来放入data缓存中,并以TrendDataSegment格式读取
-        data = backend->getBlockData(i);
-        dataSeg = reinterpret_cast<TrendDataSegment *>(data.data());
+        BlockEntry block = trendBlockList.at(i);
 
         // 筛选数据：剔除不能整除时间间隔的且没有报警状态的数据包
-        unsigned timeStamp = dataSeg->timestamp;
-        unsigned status = dataSeg->status;
+        unsigned timeStamp = block.extraData;
+        unsigned status = block.type;
         if (timeInterval != RESOLUTION_RATIO_NIBP && timeStamp % interval != 0)
         {
             if (!(status & (TrendDataStorageManager::CollectStatusAlarm
-                       |TrendDataStorageManager::CollectStatusNIBP
-                       |TrendDataStorageManager::CollectStatusFreeze
-                       |TrendDataStorageManager::CollectStatusPrint
-                       |TrendDataStorageManager::CollectStatusCOResult)))
+                            | TrendDataStorageManager::CollectStatusNIBP
+                            | TrendDataStorageManager::CollectStatusFreeze
+                            | TrendDataStorageManager::CollectStatusPrint
+                            | TrendDataStorageManager::CollectStatusCOResult)))
             {
                 continue;
             }
         }
 
-        // 选择nibp选项时只筛选触发nibp测量的数据
+        // 选择nibp选项时只筛选触发NIBP测量的数据
         if (timeInterval == RESOLUTION_RATIO_NIBP && !(status & TrendDataStorageManager::CollectStatusNIBP))
         {
             continue;
         }
 
-        // 把dataSeg中的数据加载到pack中
-        TrendDataPackage *pack = new TrendDataPackage;
-        pack->time = timeStamp;
-        pack->co2Baro = dataSeg->co2Baro;
-        for (int j = 0; j < dataSeg->trendValueNum; j ++)
-        {
-            // 非nibp事件的nibp参数强制显示为无效数据
-            SubParamID id = static_cast<SubParamID>(dataSeg->values[j].subParamId);
-            TrendDataType value = dataSeg->values[j].value;
-            if (id == SUB_PARAM_NIBP_SYS
-                    || id == SUB_PARAM_NIBP_DIA
-                    || id == SUB_PARAM_NIBP_MAP)
-            {
-                if (!(status & TrendDataStorageManager::CollectStatusNIBP)
-                        && !(status & TrendDataStorageManager::CollectStatusAlarm))
-                {
-                    value = InvData();
-                }
-            }
-            pack->subparamValue[id] = value;
-            pack->subparamAlarm[id] = dataSeg->values[j].alarmFlag;
-        }
-        pack->status = status;
-        pack->alarmFlag = dataSeg->eventFlag;
-        pack->index = i;
-        trendDataPack.append(pack);
+        trendIndexList.append(i);
 
         // 更新生理报警事件列表
-        if ((pack->status & TrendDataStorageManager::CollectStatusAlarm)
-                || (pack->status & TrendDataStorageManager::CollectStatusPrint)
-                || (pack->status & TrendDataStorageManager::CollectStatusFreeze)
-                || (pack->status & TrendDataStorageManager::CollectStatusNIBP) )
+        if ((status & TrendDataStorageManager::CollectStatusAlarm)
+                || (status & TrendDataStorageManager::CollectStatusPrint)
+                || (status & TrendDataStorageManager::CollectStatusFreeze)
+                || (status & TrendDataStorageManager::CollectStatusNIBP) )
         {
             eventList.append(count);
         }
         count++;
-    }
 
-    // 如果是历史数据，删除备份区数据
-    if (isHistory)
-    {
-        delete backend;
-        backend = NULL;
+        indexInfo.total = count;
     }
-
-    indexInfo.total = count;
 }
 
 void TrendTableModelPrivate::updateIndexInfo()
 {
-    int count = trendDataPack.count() - 1;
+    int count = trendIndexList.count() - 1;
     int coef = count / COLUMN_COUNT;
     int remainder = count % COLUMN_COUNT;
     indexInfo.start = coef * COLUMN_COUNT;
@@ -931,12 +894,57 @@ void TrendTableModelPrivate::loadTrendData()
         return;
     }
 
+    QByteArray data;
+    TrendDataSegment *dataSeg;
+    // 清空趋势数据缓存
+    qDeleteAll(trendDataPack);
+    trendDataPack.clear();
+    for (int n = indexInfo.start; n < indexInfo.end; n++)
+    {
+        // 把每一块存储的趋势数据读取出来放入data缓存中,并以TrendDataSegment格式读取
+        data = backend->getBlockData(trendIndexList.at(n));
+        dataSeg = reinterpret_cast<TrendDataSegment *>(data.data());
+
+        // 筛选数据：剔除不能整除时间间隔的且没有报警状态的数据包
+        unsigned timeStamp = dataSeg->timestamp;
+        unsigned status = dataSeg->status;
+
+        // 把dataSeg中的数据加载到pack中
+        TrendDataPackage *pack = new TrendDataPackage;
+        pack->time = timeStamp;
+        pack->co2Baro = dataSeg->co2Baro;
+        for (int j = 0; j < dataSeg->trendValueNum; j++)
+        {
+            // 非nibp事件的nibp参数强制显示为无效数据
+            SubParamID id = static_cast<SubParamID>(dataSeg->values[j].subParamId);
+            TrendDataType value = dataSeg->values[j].value;
+            if (id == SUB_PARAM_NIBP_SYS
+                    || id == SUB_PARAM_NIBP_DIA
+                    || id == SUB_PARAM_NIBP_MAP)
+            {
+                if (!(status & TrendDataStorageManager::CollectStatusNIBP))
+                {
+                    value = InvData();
+                }
+            }
+            pack->subparamValue[id] = value;
+            pack->subparamAlarm[id] = dataSeg->values[j].alarmFlag;
+        }
+        pack->status = status;
+        pack->alarmFlag = dataSeg->eventFlag;
+        pack->index = trendIndexList.at(n);
+        trendDataPack.append(pack);
+    }
+
     // 装载趋势表头数据
     colHeadList.clear();
-    for (int i = indexInfo.start; i < indexInfo.end; i++)
+    curDateStr = InvStr();
+    for (int i = 0; i < trendDataPack.count(); i++)
     {
         TrendDataPackage *pack = trendDataPack.at(i);
 
+        QString date;
+        timeDate.getDate(pack->time, date, true);
         // 填充TrendDataContent结构体dataStr成员
         QString time;
         timeDate.getTime(pack->time, time, true);
@@ -975,13 +983,18 @@ void TrendTableModelPrivate::loadTrendData()
             }
         }
 
+        // 将趋势表的第一个数据日期显示在左上角
+        if (colHeadList.isEmpty())
+        {
+            curDateStr = date;
+        }
         // 填充colHeadList链表
         colHeadList.append(colHeadContent);
     }
 
     // 装载趋势表体数据
     tableDataList.clear();
-    for (int i = indexInfo.start; i < indexInfo.end; i++)
+    for (int i = 0; i < trendDataPack.count(); i++)
     {
         TrendDataPackage *pack = trendDataPack.at(i);
 
@@ -1084,9 +1097,9 @@ void TrendTableModelPrivate::loadTrendData()
                 qint16 T2 = pack->subparamValue.value(static_cast<SubParamID>(id + 1), InvData());
                 qint16 TD = pack->subparamValue.value(static_cast<SubParamID>(id + 2), InvData());
                 UnitType type = paramManager.getSubParamUnit(paramInfo.getParamID(id), id);
-                QString t1Str = Unit::convert(type, UNIT_TC, T1 * 1.0 / 10);
-                QString t2Str = Unit::convert(type, UNIT_TC, T2 * 1.0 / 10);
-                QString tdStr = QString("%1").number(fabs(t1Str.toDouble() - t2Str.toDouble()));
+                QString t1Str = Unit::convert(type, paramInfo.getUnitOfSubParam(SUB_PARAM_T1), T1 * 1.0 / 10);
+                QString t2Str = Unit::convert(type, paramInfo.getUnitOfSubParam(SUB_PARAM_T2), T2 * 1.0 / 10);
+                QString tdStr = QString::number(qAbs(t1Str.toFloat() - t2Str.toFloat()), 'f', 1);
                 t1Str = T1 == InvData() ? "---" : t1Str;
                 t2Str = T2 == InvData() ? "---" : t2Str;
                 tdStr = TD == InvData() ? "---" : tdStr;

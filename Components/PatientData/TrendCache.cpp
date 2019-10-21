@@ -258,6 +258,7 @@ bool TrendCache::unregisterTrendRecorder(void *recordObj)
 
 void TrendCache::clearTrendCache()
 {
+    QMutexLocker locker(&_mutex);
     _trendCacheMap.clear();
 }
 

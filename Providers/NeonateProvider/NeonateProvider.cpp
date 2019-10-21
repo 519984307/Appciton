@@ -115,7 +115,7 @@ void NeonateProvider::handlePacket(unsigned char *data, int len)
         break;
     case NEONATE_NOTIFY_START_UP:
     {
-        ErrorLogItem *item = new CriticalFaultLogItem();
+        ErrorLogItem *item = new ErrorLogItem();
         item->setName("T5 Start");
         errorLog.append(item);
         o2Param.reset();
@@ -155,6 +155,15 @@ void NeonateProvider::disconnected()
 
 void NeonateProvider::reconnected()
 {
+}
+
+void NeonateProvider::sendDisconnected()
+{
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_TEMP);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(O2_ONESHOT_ALARM_SEND_COMMUNICATION_STOP, true);
+    }
 }
 
 void NeonateProvider::_selfTest(unsigned char *packet, int len)

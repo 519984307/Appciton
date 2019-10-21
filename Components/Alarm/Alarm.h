@@ -97,13 +97,6 @@ public:
      */
     void removeAllLimitAlarm();
 
-    /**
-     * @brief setAlarmLightOnAlarmReset 设置报警复位时的报警灯
-     * @param flag
-     */
-    void setAlarmLightOnAlarmReset(bool flag);
-    bool getAlarmLightOnAlarmReset(void);
-
 private:
     unsigned _timestamp;
     QMultiMap<ParamID, AlarmLimitIFace *> _limitSources;
@@ -117,9 +110,19 @@ private:
     // 生成一个报警的ID，该ID再Alarm内部使用，用于唯一标识一个报警源。
     void _getAlarmID(AlarmParamIFace *alarmSource, int ID, QString &name);
 
-    // 判断报警。
+    /**
+     * @brief _handleLimitAlarm 处理超限报警
+     * @param alarmSource   报警源
+     * @param alarmParam    用于获取第一次发生超限报警的参数ID
+     */
     void _handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alarmParam);
-    void _handleOneShotAlarm(AlarmOneShotIFace *alarmSource);
+
+    /**
+     * @brief _handleOneShotAlarm 处理Oneshot报警
+     * @param alarmSource   报警源
+     * @param alarmParam    用于获取第一次发生PhyOneshot报警的参数ID
+     */
+    void _handleOneShotAlarm(AlarmOneShotIFace *alarmSource, QList<ParamID> &alarmParam);
 
     void _handleAlarm(void);
 

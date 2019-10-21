@@ -202,6 +202,7 @@ public:
 protected:
     virtual void disconnected(void);
     virtual void reconnected(void);
+    virtual void sendDisconnected();
 
 private:
     int _waveSampleRate;

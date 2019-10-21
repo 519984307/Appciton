@@ -13,6 +13,7 @@
 #include <ThemeManager.h>
 #include <QKeyEvent>
 #include <QDebug>
+#include "SoundManagerInterface.h"
 
 #define DEFAULT_HEIGHT (themeManger.getAcceptableControlHeight())
 
@@ -133,5 +134,16 @@ void PopupListItem::keyReleaseEvent(QKeyEvent *e)
     default:
         QAbstractButton::keyPressEvent(e);
         break;
+    }
+}
+
+void PopupListItem::mousePressEvent(QMouseEvent *e)
+{
+    QAbstractButton::mousePressEvent(e);
+    // 触屏点击播放按键音
+    SoundManagerInterface *sound = SoundManagerInterface::getSoundManager();
+    if (sound)
+    {
+        sound->keyPressTone();
     }
 }

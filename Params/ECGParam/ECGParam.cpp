@@ -101,6 +101,25 @@ short ECGParam::getHRMaxValue()
     }
 }
 
+void ECGParam::adjustPrintWave(ECGLead preECGLead, ECGLead curECGLead)
+{
+    QStringList printNodeList = systemConfig.getChildNodeNameList("Print");
+    QStringList printWaveList = printNodeList.filter("SelectWave");
+
+    for (int i = 0; i < printWaveList.count(); i++)
+    {
+        int waveID = 0;
+        systemConfig.getNumValue(QString("Print|%1").arg(printWaveList.at(i)), waveID);
+
+        if (static_cast<WaveformID>(waveID) == leadToWaveID(preECGLead))
+        {
+            systemConfig.setNumValue(QString("Print|%1").arg(printWaveList.at(i))
+                                     , static_cast<int>(leadToWaveID(curECGLead)));
+            break;
+        }
+    }
+}
+
 /**************************************************************************************************
  * 初始化参数。
  *************************************************************************************************/
@@ -1091,48 +1110,6 @@ void ECGParam::handleSelfTestResult(unsigned selfTestResult)
     }
 }
 
-HRSourceType ECGParam::getHrSourceTypeFromId(ParamID id)
-{
-    switch (id)
-    {
-        case PARAM_ECG:
-        return HR_SOURCE_ECG;
-        break;
-        case PARAM_SPO2:
-        return HR_SOURCE_SPO2;
-        break;
-        case PARAM_IBP:
-        return HR_SOURCE_IBP;
-        break;
-        case PARAM_NR:
-        return HR_SOURCE_AUTO;
-        break;
-        default:
-        break;
-    }
-    return HR_SOURCE_NR;
-}
-
-ParamID ECGParam::getIdFromHrSourceType(HRSourceType type)
-{
-    switch (type)
-    {
-        case HR_SOURCE_ECG:
-        return PARAM_ECG;
-        break;
-        case HR_SOURCE_SPO2:
-        return PARAM_SPO2;
-        break;
-        case HR_SOURCE_IBP:
-        return PARAM_IBP;
-        break;
-        case HR_SOURCE_AUTO:
-        case HR_SOURCE_NR:
-        break;
-    }
-    return PARAM_NR;
-}
-
 /**************************************************************************************************
  * enable VF calc。
  *************************************************************************************************/
@@ -1461,6 +1438,26 @@ void ECGParam::setCalcLead(ECGLead lead)
         _provider->setCalcLead(lead);
     }
 
+    // 将新的ECG1和ECG2对应的波形保存进配置文件
+    int preECG1Lead = 0;
+    int preECG2Lead = 0;
+    currentConfig.getNumValue("ECG|Ecg1Wave", preECG1Lead);
+    currentConfig.getNumValue("ECG|Ecg2Wave", preECG2Lead);
+
+    if (layoutManager.getUFaceType() == UFACE_MONITOR_STANDARD)
+    {
+        // 标准界面且ECG模式大于3导时，处理ECG2波形与ECG1波形重复
+        if (static_cast<int>(lead) == preECG2Lead)
+        {
+            // 计算导联与ECG2波形重复时，将ECG2波形设置为前ECG1波形
+            currentConfig.setNumValue("ECG|Ecg2Wave", preECG1Lead);
+            adjustPrintWave(static_cast<ECGLead>(preECG2Lead), static_cast<ECGLead>(preECG1Lead));
+        }
+    }
+
+    adjustPrintWave(static_cast<ECGLead>(preECG1Lead), lead);
+    currentConfig.setNumValue("ECG|Ecg1Wave", static_cast<int>(lead));
+
     emit calcLeadChanged();
 }
 
@@ -1551,23 +1548,6 @@ void ECGParam::autoSetCalcLead(void)
     }
 
     setCalcLead(leads[index]);
-
-    int preECG1Lead = 0;
-    int preECG2Lead = 0;
-    currentConfig.getNumValue("ECG|Ecg1Wave", preECG1Lead);
-    currentConfig.getNumValue("ECG|Ecg2Wave", preECG2Lead);
-
-    if (layoutManager.getUFaceType() == UFACE_MONITOR_STANDARD && getLeadMode() > ECG_LEAD_MODE_3)
-    {
-        // 标准界面且ECG模式大于3导时，处理ECG2波形与ECG1波形重复
-        if (static_cast<int>(leads[index]) == preECG2Lead)
-        {
-            // 计算导联与ECG2波形重复时，将ECG2波形设置为前ECG1波形
-            currentConfig.setNumValue("ECG|Ecg2Wave", preECG1Lead);
-        }
-    }
-
-    currentConfig.setNumValue("ECG|Ecg1Wave", static_cast<int>(leads[index]));
     if (NULL != _waveWidget[calcLead] && NULL != _waveWidget[leads[index]])
     {
         layoutManager.updateLayout();

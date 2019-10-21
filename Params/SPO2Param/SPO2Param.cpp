@@ -38,8 +38,6 @@
 #include "SPCOTrendWidget.h"
 #include "LayoutManager.h"
 
-SPO2Param *SPO2Param::_selfObj = NULL;
-
 class SPO2ParamPrivate
 {
 public:
@@ -90,6 +88,7 @@ public:
 
     bool isLowPerfusion;
     bool isForceUpdating;  // 当spo2的弱灌注状态发生变化时，该状态位为true
+    bool isForceUpdatingPR;
     bool plugInIsLowPerfusion;
     bool plugInIsForceUpdating;  // 当spo2的弱灌注状态发生变化时，该状态位为true
 
@@ -116,6 +115,14 @@ AverageTime SPO2Param::getAverageTime()
     int time = SPO2_AVER_TIME_8SEC;
     currentConfig.getNumValue("SPO2|AverageTime", time);
     return (AverageTime)time;
+}
+
+void SPO2Param::enableRawDataSend(bool onOff)
+{
+    if (d_ptr->provider != NULL)
+    {
+        d_ptr->provider->enableRawDataSend(onOff);
+    }
 }
 
 /**************************************************************************************************
@@ -156,6 +163,7 @@ SPO2ParamPrivate::SPO2ParamPrivate()
     , repeatTimes(0)
     , isLowPerfusion(false)
     , isForceUpdating(false)
+    , isForceUpdatingPR(false)
     , plugInIsLowPerfusion(false)
     , plugInIsForceUpdating(false)
     , isT5ModuleUpgradeCompleted(false)
@@ -641,6 +649,7 @@ SoundManager::VolumeLevel SPO2Param::getPluseToneVolume(void)
  *************************************************************************************************/
 void SPO2Param::setSPO2(short spo2Value)
 {
+    paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
     if (d_ptr->spo2Value == spo2Value && !d_ptr->isForceUpdating)
     {
         return;
@@ -809,11 +818,12 @@ short SPO2Param::getSpMet()
  *************************************************************************************************/
 void SPO2Param::setPR(short prValue)
 {
+    ecgDupParam.restartParamUpdateTime();
     if (d_ptr->prValue == prValue && !d_ptr->isForceUpdating)
     {
         return;
     }
-
+    d_ptr->isForceUpdatingPR = false;
     d_ptr->prValue = prValue;
     ecgDupParam.updatePR(prValue);
 }
@@ -1016,6 +1026,10 @@ void SPO2Param::setOneShotAlarm(SPO2OneShotType t, bool f, bool isPlugin)
     }
     if (alarmSource)
     {
+        if (t == SPO2_ONESHOT_ALARM_CABLE_OFF && f == true)
+        {
+            alarmSource->clear();
+        }
         alarmSource->setOneShotAlarm(t, f);
     }
 }
@@ -1646,6 +1660,9 @@ void SPO2Param::setPerfusionStatus(bool isLow, bool isPlugIn)
         {
             d_ptr->plugInIsForceUpdating = false;
         }
+        d_ptr->isForceUpdatingPR = true;
+        d_ptr->isForceUpdating = true;
+        d_ptr->isLowPerfusion = isLow;
     }
 }
 
@@ -1728,6 +1745,21 @@ SPO2Param::SPO2Param()
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
+SPO2Param &SPO2Param::getInstance()
+{
+    static SPO2Param *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new SPO2Param();
+        SPO2ParamInterface *old = registerSPO2Param(instance);
+        if (old)
+        {
+            delete old;
+        }
+    }
+    return *instance;
+}
+
 SPO2Param::~SPO2Param()
 {
     delete d_ptr;

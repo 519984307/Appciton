@@ -331,7 +331,7 @@ void TestTimeDate::testGetTimeSecond()
     {
     int currentSecond = timeDate.getTimeSenonds();
     QTime time = QTime::currentTime();
-    QCOMPARE(currentSecond == time.second(), result);
+    QCOMPARE(time.second() - currentSecond <= 1, result);
     }
 }
 

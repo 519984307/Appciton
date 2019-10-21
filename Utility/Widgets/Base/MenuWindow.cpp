@@ -46,7 +46,7 @@ public:
 MenuWindow::MenuWindow()
     : Dialog(), d_ptr(new MenuWindowPrivate())
 {
-    setWindowTitle("Menu Window");
+    setWindowTitle("MenuWindow");
     resize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
 
     QHBoxLayout *layout = new QHBoxLayout;
@@ -315,6 +315,23 @@ void MenuWindow::showEvent(QShowEvent *ev)
     {
         focusNextPrevChild(true);
     }
+}
+
+void MenuWindow::paintEvent(QPaintEvent *ev)
+{
+    Q_UNUSED(ev);
+    QRectF r = contentsRect();
+    QPainter p(this);
+    p.setRenderHint(QPainter::Antialiasing); // 抗锯齿
+    QPainterPath painterPath;
+    painterPath.addRoundedRect(r, themeManger.getBorderRadius(), themeManger.getBorderRadius());
+    // 下部直角
+    int bottomHeight = r.height() - themeManger.getBorderRadius();
+    QRectF bottomRect = r.adjusted(0, bottomHeight, 0, 0);
+    painterPath.addRect(bottomRect);
+    painterPath.setFillRule(Qt::WindingFill);
+
+    p.fillPath(painterPath, palette().background());
 }
 
 void MenuWindow::onSelectItemChanged(int index)

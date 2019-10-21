@@ -103,20 +103,10 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
     _status.sensorErr    = ((sts & BIT6) == BIT6) ? true : false;
     _status.o2Replace    = ((sts & BIT3) == BIT3) ? true : false;
 
-    if ((co2Param.getAwRRSwitch() == 1))
-    {
 #ifdef ENABLE_O2_APNEASTIMULATION
-        co2Param.setRespApneaStimulation(_status.noBreath);
+    co2Param.setRespApneaStimulation(_status.noBreath);
 #endif
-        co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_APNEA, _status.noBreath);
-    }
-    else
-    {
-#ifdef ENABLE_O2_APNEASTIMULATION
-        co2Param.setRespApneaStimulation(false);
-#endif
-        co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_APNEA, false);
-    }
+    co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_APNEA, _status.noBreath);
 
     // 波形数据，每秒更新20次。
     if (packet[2] != RAW_DATA)
@@ -160,7 +150,16 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
         break;
 
     case GEN_VALS:    //一些其他附加信息值
-        value = (packet[14] == 0xFF) ? 0 : packet[14];  // 当获取不到CO2数据时候将数据置为0
+        // 呼吸率为255时，仍为无数据，awrr值应被丢弃
+        if (_status.noBreath)
+        {
+            value = (packet[14] == 0xFF) ? 0: packet[14];
+        }
+        else
+        {
+            value = (packet[14] == 0xFF) ? InvData() : packet[14];
+        }
+
         co2Param.setRR(value);
 
         value = packet[18];
@@ -178,7 +177,14 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
                 int val = tempStr.toInt();
                 if ((co2Param.getEtCO2MinValue() <= val) && (val <= co2Param.getEtCO2MaxValue()))
                 {
-                    value = (packet[14] == 0xFF) ? 0 : packet[14];
+                    if (_status.noBreath)
+                    {
+                        value = (packet[14] == 0xFF) ? 0 : packet[14];
+                    }
+                    else
+                    {
+                        value = (packet[14] == 0xFF) ? InvData() : packet[14];
+                    }
                     co2Param.setFiCO2(_fico2Value);
                     co2Param.setEtCO2(_etco2Value);
                     co2Param.setBR(value);
@@ -192,7 +198,14 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
             }
             else
             {
-                value = (packet[14] == 0xFF) ? 0 : packet[14];
+                if (_status.noBreath)
+                {
+                    value = (packet[14] == 0xFF) ? 0 : packet[14];
+                }
+                else
+                {
+                    value = (packet[14] == 0xFF) ? InvData() : packet[14];
+                }
                 co2Param.setFiCO2(_fico2Value);
                 co2Param.setEtCO2(_etco2Value);
                 co2Param.setBR(value);
@@ -274,12 +287,14 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
 
         // 设备是否支持O2参数。
         _status.o2Config = ((val & BIT0) == BIT0) ? true : false;
+        co2Param.enableCompensation(CO2_COMPEN_O2, !_status.o2Config);
 
         // 设备是否支持CO2参数。
         _status.co2Config = ((val & BIT1) == BIT1) ? true : false;
 
         // 设备是否支持N2O参数。
         _status.n2oConfig = ((val & BIT2) == BIT2) ? true : false;
+        co2Param.enableCompensation(CO2_COMPEN_N2O, !_status.n2oConfig);
 
         // 麻醉气体支持。
         _status.halConfig = ((val & BIT3) == BIT3) ? true : false;
@@ -348,34 +363,42 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
 
         if (!isZeroInProgress && _status.zeroInProgress)
         {
+            // 当前非校零禁止时，前一刻非校零中，目前校零中
             co2Param.setZeroStatus(CO2_ZERO_REASON_IN_PROGRESS, _status.zeroInProgress);
             co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS, _status.zeroInProgress);
         }
 
         if (_status.sidestreamConfig)
         {
-            if (_status.zeroDisable)  //如果校零使能和校零进行中同时为真则代表正在校零
+            if (isZeroInProgress && !_status.zeroInProgress)
             {
-                if (isZeroInProgress && !_status.zeroInProgress)
-                {
-                    co2Param.setZeroStatus(CO2_ZERO_REASON_IN_PROGRESS, _status.zeroInProgress);
-                    co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS, _status.zeroInProgress);
-                }
+                // 前一刻校零中，目前非校零中
+                co2Param.setZeroStatus(CO2_ZERO_REASON_IN_PROGRESS, _status.zeroInProgress);
+                co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS, _status.zeroInProgress);
             }
-
-            co2Param.setZeroStatus(CO2_ZERO_REASON_DISABLED, _status.zeroDisable);
-            co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_DISABLE, _status.zeroDisable);
+            if (!_status.zeroInProgress)
+            {
+                // 不是校零时，才发出禁止校零报警
+                co2Param.setZeroStatus(CO2_ZERO_REASON_DISABLED, _status.zeroDisable);
+                // 旁流co2是的zeroDisable是禁止校准和校零
+                co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_AND_SPAN_DISABLE, _status.zeroDisable);
+            }
         }
         else
         {
             if (isZeroInProgress && !_status.zeroInProgress)
             {
+                // 前一刻校零中，目前非校零中
                 co2Param.setZeroStatus(CO2_ZERO_REASON_IN_PROGRESS, _status.zeroInProgress);
                 co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS, _status.zeroInProgress);
             }
 
-            co2Param.setZeroStatus(CO2_ZERO_REASON_DISABLED, _status.zeroDisable);
-            co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_DISABLE, _status.zeroDisable);
+            if (!_status.zeroInProgress)
+            {
+                // 不是校零时，才发出禁止校零报警
+                co2Param.setZeroStatus(CO2_ZERO_REASON_DISABLED, _status.zeroDisable);
+                co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_ZERO_DISABLE, _status.zeroDisable);
+            }
         }
 
         // For ISA Only
@@ -387,7 +410,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
         {
             // 旁流CO2模块报警
             co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_SPAN_CALIB_FAILED, _status.spanError);
-            co2Param.setZeroStatus(CO2_ZERO_REASON_IN_PROGRESS, _status.spanCalibInProgress);
+//            co2Param.setZeroStatus(CO2_ZERO_REASON_IN_PROGRESS, _status.spanCalibInProgress);
             co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_SPAN_CALIB_IN_PROGRESS, _status.spanCalibInProgress);
         }
 //            co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_IR_O2_DELAY, _status.irO2Delay);

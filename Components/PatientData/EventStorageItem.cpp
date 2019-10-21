@@ -39,6 +39,7 @@ public:
         trendCacheComplete(false),
         waitForTriggerPrintFlag(false),
         triggerPrintStopped(false),
+        extraData(0),
         almInfo(NULL),
         codeMarkerInfo(NULL),
         oxyCRGInfo(NULL),
@@ -53,6 +54,7 @@ public:
         eventInfo.type = type;
         eventInfo.duration_after = duration_after_event;
         eventInfo.duration_before = duration_before_event;
+        eventTypeAndPrio = type | (ALARM_PRIO_PROMPT << 8);
     }
 
     ~EventStorageItemPrivate()
@@ -115,6 +117,7 @@ public:
     bool trendCacheComplete;
     bool waitForTriggerPrintFlag;
     bool triggerPrintStopped;
+    quint32 extraData;          // 事件产生时间
 
     AlarmInfoSegment *almInfo;
     CodeMarkerSegment *codeMarkerInfo;
@@ -122,6 +125,7 @@ public:
     NIBPMeasureSegment *measureInfo;
 
     QString eventFolderName;
+    quint32 eventTypeAndPrio;          // 包括事件类型和事件报警等级
 };
 
 void EventStorageItemPrivate::saveTrendData(unsigned timestamp, const TrendCacheData &data,
@@ -211,7 +215,6 @@ void EventStorageItemPrivate::trendCacheCompleteCallback(unsigned timestamp, con
 EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms)
     : d_ptr(new EventStorageItemPrivate(this, type, storeWaveforms))
 {
-    qDebug() << "Create Event Stroage Item:" << this << " type: " << type;
 }
 
 EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms,
@@ -223,7 +226,27 @@ EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &stor
     d_ptr->almInfo->alarmType = almInfo.alarmType;
     d_ptr->almInfo->alarmInfo = almInfo.alarmInfo;
     d_ptr->almInfo->subParamID = almInfo.subParamID;
-    qDebug() << "Create Event Stroage Item:" << this << " type: " << type;
+    AlarmPriority priority = ALARM_PRIO_PROMPT;
+    if (almInfo.alarmInfo & 0x01)   // oneshot 报警事件
+    {
+        AlarmOneShotIFace *alarmOneShot = NULL;
+        alarmOneShot = alertor.getAlarmOneShotIFace(static_cast<SubParamID>(almInfo.subParamID));
+        if (alarmOneShot)
+        {
+            priority = alarmOneShot->getAlarmPriority(almInfo.subParamID);
+        }
+    }
+    else
+    {
+        AlarmLimitIFace *alarmLimit = NULL;
+        alarmLimit = alertor.getAlarmLimitIFace(static_cast<SubParamID>(almInfo.subParamID));
+        if (alarmLimit)
+        {
+            priority = alarmLimit->getAlarmPriority(almInfo.subParamID);
+        }
+    }
+
+    d_ptr->eventTypeAndPrio = d_ptr->eventInfo.type | (priority << 8);
 }
 
 EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms, const char *codeName)
@@ -231,7 +254,6 @@ EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &stor
 {
     d_ptr->codeMarkerInfo = new CodeMarkerSegment;
     Util::strlcpy(d_ptr->codeMarkerInfo->codeName, codeName, sizeof(d_ptr->codeMarkerInfo->codeName));
-    qDebug() << "Create Event Stroage Item:" << this << " type: " << type;
 }
 
 EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms, OxyCRGEventType oxyCRGtype,
@@ -271,8 +293,6 @@ EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &stor
         d_ptr->eventInfo.duration_after = 120;
         d_ptr->eventInfo.duration_before = 120;
     }
-
-    qDebug() << "Create Event Stroage Item:" << this << " type: " << type;
 }
 
 EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms, OxyCRGEventType oxyCRGtype)
@@ -280,7 +300,6 @@ EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &stor
 {
     d_ptr->oxyCRGInfo = new OxyCRGSegment;
     d_ptr->oxyCRGInfo->type = oxyCRGtype;
-    qDebug() << "Create Event Stroage Item:" << this << " type: " << type;
 }
 
 EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms, NIBPOneShotType measureResult)
@@ -288,17 +307,20 @@ EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &stor
 {
     d_ptr->measureInfo = new NIBPMeasureSegment;
     d_ptr->measureInfo->measureResult = measureResult;
-    qDebug() << "Create Event Stroage Item:" << this << " type: " << type;
 }
 
 EventStorageItem::~EventStorageItem()
 {
-    qDebug() << "Destroy Event Stroage Item:" << this;
 }
 
-EventType EventStorageItem::getType() const
+quint32 EventStorageItem::getType() const
 {
-    return d_ptr->eventInfo.type;
+    return d_ptr->eventTypeAndPrio;
+}
+
+quint32 EventStorageItem::getExtraData() const
+{
+    return d_ptr->extraData;
 }
 
 bool EventStorageItem::checkCompleted()
@@ -350,6 +372,7 @@ bool EventStorageItem::startCollectTrendAndWaveformData(unsigned t)
     }
     d_ptr->startCollect = true;
     d_ptr->eventInfo.timestamp = t;
+    d_ptr->extraData = t;
 
 
     // store the trend data before current timestamp

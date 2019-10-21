@@ -61,7 +61,7 @@ class EventWindowPrivate
 public:
     explicit EventWindowPrivate(EventWindow * const q_ptr)
         : eventTable(NULL), model(NULL), upPageBtn(NULL),
-          downPageBtn(NULL), typeCbo(NULL), levelCbo(NULL), listPrintBtn(NULL),
+          downPageBtn(NULL), typeCbo(NULL), listPrintBtn(NULL),
           infoWidget(NULL), trendListWidget(NULL), waveWidget(NULL),
           eventListBtn(NULL), coordinateMoveBtn(NULL), eventMoveBtn(NULL),
           printBtn(NULL),
@@ -73,7 +73,8 @@ public:
           waitTimerId(-1),
           isWait(false),
           timeoutNum(0),
-          generator(NULL), ecgGain(3)
+          generator(NULL), ecgGain(3),
+          curPage(1), totalPage(1), curIndex(-1)
     {
         backend = eventStorageManager.backend();
         patientInfo = patientManager.getPatientInfo();
@@ -117,19 +118,36 @@ public:
      */
     void eventWaveUpdate(void);
 
+    /**
+     * @brief refreshPageInfo 刷新窗口标题页面信息
+     */
     void refreshPageInfo();
 
     /**
      * @brief updateLevelStatus 更新事件级别状态
      */
     void updateLevelStatus();
+
+    /**
+     * @brief eventTypeOrLevelChange 事件类型或事件级别发生改变
+     */
+    void eventTypeOrLevelChange();
+
+    /**
+     * @brief calculationPage 计算当前页和总页数
+     */
+    void calculationPage();
+
+    /**
+     * @brief refreshEventList 刷新事件列表
+     */
+    void refreshEventList();
 public:
     TableView *eventTable;
     EventReviewModel *model;
     Button *upPageBtn;
     Button *downPageBtn;
     ComboBox *typeCbo;
-    ComboBox *levelCbo;
     Button *listPrintBtn;
 
     EventInfoWidget *infoWidget;
@@ -169,6 +187,11 @@ public:
     QStringList printList;              // 事件列表打印
     PatientInfo patientInfo;            // 病人信息
     int ecgGain;
+
+    QVector<BlockEntry> blockList;        // 块数据信息
+    int curPage;
+    int totalPage;
+    int curIndex;
 };
 
 EventWindow *EventWindow::getInstance()
@@ -207,6 +230,7 @@ void EventWindow::setHistoryData(bool flag)
     if (d_ptr->isHistory)
     {
         delete d_ptr->backend;
+        d_ptr->backend = NULL;
     }
 
     d_ptr->isHistory = flag;
@@ -224,17 +248,14 @@ void EventWindow::setHistoryData(bool flag)
 
 void EventWindow::findEventIndex(SubParamID id, unsigned time)
 {
-    int eventNum = d_ptr->backend->getBlockNR();
+    Q_UNUSED(id)
+    int eventNum = d_ptr->blockList.count();
     int index = -1;
     for (int i = eventNum - 1; i >= 0; i --)
     {
-        if (d_ptr->parseEventData(i))
+        if (d_ptr->blockList.at(i).extraData == time)
         {
-            if (d_ptr->ctx.infoSegment->timestamp == time &&
-                    d_ptr->ctx.almSegment->subParamID == id)
-            {
-                index = i;
-            }
+            index = i;
         }
     }
     int pos = -1;
@@ -263,7 +284,9 @@ void EventWindow::showEvent(QShowEvent *ev)
 
     d_ptr->stackLayout->setCurrentIndex(0);
     d_ptr->loadEventData();
-    d_ptr->refreshPageInfo();
+    d_ptr->eventTypeOrLevelChange();
+    d_ptr->calculationPage();
+    d_ptr->refreshEventList();
     if (d_ptr->eventTable->model()->rowCount() == 0)
     {
         d_ptr->eventTable->setFocusPolicy(Qt::NoFocus);
@@ -330,9 +353,9 @@ void EventWindow::waveInfoReleased(int index)
         return;
     }
 
-    d_ptr->eventTable->selectRow(index);
-    d_ptr->parseEventData(d_ptr->dataIndex.at(index));
-    d_ptr->eventInfoUpdate(index);
+    d_ptr->curIndex = index + (d_ptr->curPage - 1) * PAGE_ROW_COUNT;
+    d_ptr->parseEventData(d_ptr->dataIndex.at(d_ptr->curIndex));
+    d_ptr->eventInfoUpdate(d_ptr->curIndex);
     d_ptr->eventTrendUpdate();
     d_ptr->eventWaveUpdate();
     d_ptr->eventListBtn->setFocus();
@@ -341,8 +364,9 @@ void EventWindow::waveInfoReleased(int index)
 void EventWindow::eventTypeSelect(int index)
 {
     d_ptr->curEventType = (EventType)index;
-    d_ptr->loadEventData();
-    d_ptr->refreshPageInfo();
+    d_ptr->eventTypeOrLevelChange();
+    d_ptr->calculationPage();
+    d_ptr->refreshEventList();
     if (d_ptr->dataIndex.count())
     {
         d_ptr->eventTable->setFocusPolicy(Qt::StrongFocus);
@@ -361,22 +385,6 @@ void EventWindow::eventTypeSelect(int index)
     {
         d_ptr->printBtn->setEnabled(false);
         d_ptr->listPrintBtn->setEnabled(false);
-    }
-    d_ptr->updateLevelStatus();
-}
-
-void EventWindow::eventLevelSelect(int index)
-{
-    d_ptr->curEventLevel = (EventLevel)index;
-    d_ptr->loadEventData();
-    d_ptr->refreshPageInfo();
-    if (d_ptr->dataIndex.count())
-    {
-        d_ptr->eventTable->setFocusPolicy(Qt::StrongFocus);
-    }
-    else
-    {
-        d_ptr->eventTable->setFocusPolicy(Qt::NoFocus);
     }
 }
 
@@ -409,20 +417,30 @@ void EventWindow::eventListPrintReleased()
 
 void EventWindow::upPageReleased()
 {
-    d_ptr->eventTable->scrollToPreviousPage();
+    if (d_ptr->curPage > 1)
+    {
+        d_ptr->curPage--;
+    }
+    d_ptr->refreshEventList();
     d_ptr->refreshPageInfo();
 }
 
 void EventWindow::downPageReleased()
 {
-    d_ptr->eventTable->scrollToNextPage();
+    if (d_ptr->curPage < d_ptr->totalPage)
+    {
+        d_ptr->curPage++;
+    }
+    d_ptr->refreshEventList();
     d_ptr->refreshPageInfo();
 }
 
 void EventWindow::eventListReleased()
 {
-    d_ptr->stackLayout->setCurrentIndex(0);
+    d_ptr->refreshEventList();
     d_ptr->refreshPageInfo();
+    d_ptr->eventTable->selectRow(d_ptr->curIndex % PAGE_ROW_COUNT);
+    d_ptr->stackLayout->setCurrentIndex(0);
 }
 
 void EventWindow::leftMoveCoordinate()
@@ -511,66 +529,55 @@ void EventWindow::rightMoveCoordinate()
 
 void EventWindow::leftMoveEvent()
 {
-    int curIndex = d_ptr->eventTable->currentIndex().row();
-    if (curIndex != 0)
+    if (d_ptr->curIndex != 0)
     {
-        int prvPage = curIndex / PAGE_ROW_COUNT;
-        curIndex--;
-        int curPage = curIndex / PAGE_ROW_COUNT;
-        d_ptr->eventTable->selectRow(curIndex);
+        int prvPage = d_ptr->curIndex / PAGE_ROW_COUNT;
+        d_ptr->curIndex--;
+        int curPage = d_ptr->curIndex / PAGE_ROW_COUNT;
         // 事件列表翻页判断
         if (prvPage != curPage)
         {
-            d_ptr->eventTable->scrollToPreviousPage();
-            d_ptr->refreshPageInfo();
+            d_ptr->curPage--;
         }
-    }
-    if (!d_ptr->backend->getBlockNR())
-    {
-        return;
-    }
+        if (d_ptr->curIndex >= d_ptr->dataIndex.count())
+        {
+            return;
+        }
 
-    if (curIndex >= d_ptr->dataIndex.count())
-    {
-        return;
+        d_ptr->parseEventData(d_ptr->dataIndex.at(d_ptr->curIndex));
+        d_ptr->eventInfoUpdate(d_ptr->curIndex);
+        d_ptr->eventTrendUpdate();
+        d_ptr->eventWaveUpdate();
     }
-
-    d_ptr->parseEventData(d_ptr->dataIndex.at(curIndex));
-    d_ptr->eventInfoUpdate(curIndex);
-    d_ptr->eventTrendUpdate();
-    d_ptr->eventWaveUpdate();
 }
 
 void EventWindow::rightMoveEvent()
 {
-    int curIndex = d_ptr->eventTable->currentIndex().row();
-    if (curIndex != d_ptr->curDisplayEventNum - 1)
+    if (d_ptr->curIndex != d_ptr->curDisplayEventNum - 1)
     {
-        int prvPage = curIndex / PAGE_ROW_COUNT;
-        curIndex++;
-        int curPage = curIndex / PAGE_ROW_COUNT;
-        d_ptr->eventTable->selectRow(curIndex);
+        int prvPage = d_ptr->curIndex / PAGE_ROW_COUNT;
+        d_ptr->curIndex++;
+        int curPage = d_ptr->curIndex / PAGE_ROW_COUNT;
         // 事件列表翻页判断
         if (prvPage != curPage)
         {
-            d_ptr->eventTable->scrollToNextPage();
-            d_ptr->refreshPageInfo();
+            d_ptr->curPage++;
         }
-    }
-    if (!d_ptr->backend->getBlockNR())
-    {
-        return;
-    }
+        if (d_ptr->curIndex >= d_ptr->dataIndex.count())
+        {
+            return;
+        }
 
-    d_ptr->parseEventData(d_ptr->dataIndex.at(curIndex));
-    d_ptr->eventInfoUpdate(curIndex);
-    d_ptr->eventTrendUpdate();
-    d_ptr->eventWaveUpdate();
+        d_ptr->parseEventData(d_ptr->dataIndex.at(d_ptr->curIndex));
+        d_ptr->eventInfoUpdate(d_ptr->curIndex);
+        d_ptr->eventTrendUpdate();
+        d_ptr->eventWaveUpdate();
+    }
 }
 
 void EventWindow::printRelease()
 {
-    int curIndex = d_ptr->eventTable->currentIndex().row();
+    int curIndex = d_ptr->curIndex;
     if (curIndex < d_ptr->dataIndex.size() &&
             curIndex >= 0)
     {
@@ -663,19 +670,11 @@ EventWindow::EventWindow()
     }
     connect(d_ptr->typeCbo, SIGNAL(currentIndexChanged(int)), this, SLOT(eventTypeSelect(int)));
 
-    QLabel *levelLabel = new QLabel(trs("Level"));
-    d_ptr->levelCbo = new ComboBox();
-    for (int i = 0; i < EVENT_LEVEL_NR; i ++)
-    {
-        d_ptr->levelCbo->addItem(trs(EventDataSymbol::convert((EventLevel)i)));
-    }
-    connect(d_ptr->levelCbo, SIGNAL(currentIndexChanged(int)), this, SLOT(eventLevelSelect(int)));
-
     d_ptr->listPrintBtn = new Button(trs("PrintList"));
     d_ptr->listPrintBtn->setButtonStyle(Button::ButtonTextOnly);
     connect(d_ptr->listPrintBtn, SIGNAL(released()), this, SLOT(eventListPrintReleased()));
 
-    QSize iconsize(24, 24);
+    QSize iconsize(32, 32);
     d_ptr->upPageBtn = new Button("", themeManger.getIcon(ThemeManager::IconUp, iconsize));
     d_ptr->upPageBtn->setIconSize(iconsize);
     d_ptr->upPageBtn->setButtonStyle(Button::ButtonIconOnly);
@@ -690,9 +689,6 @@ EventWindow::EventWindow()
     hTableLayout->addStretch(1);
     hTableLayout->addWidget(typeLabel, 1);
     hTableLayout->addWidget(d_ptr->typeCbo, 6);
-    hTableLayout->addStretch(1);
-    hTableLayout->addWidget(levelLabel, 1);
-    hTableLayout->addWidget(d_ptr->levelCbo, 4);
     hTableLayout->addStretch(1);
     hTableLayout->addWidget(d_ptr->listPrintBtn, 4);
     hTableLayout->addStretch(1);
@@ -794,195 +790,8 @@ EventWindow::EventWindow()
 
 void EventWindowPrivate::loadEventData()
 {
-    dataIndex.clear();
-    eventNum = backend->getBlockNR();
-
-    unsigned t = 0;
-    QString timeStr;
-    QString dateStr;
-    QString infoStr;
-    unsigned char alarmInfo;
-    SubParamID subId;
-    unsigned char alarmId;
-    AlarmPriority priority;
-    AlarmPriority curPriority;
-    AlarmLimitIFace *alarmLimit = NULL;
-    AlarmOneShotIFace *alarmOneShot = NULL;
-    QList<QString> timeList;
-    QList<QString> eventList;
-    printList.clear();
-    for (int i = eventNum - 1; i >= 0; i --)
-    {
-        infoStr.clear();
-        priority = ALARM_PRIO_PROMPT;
-        if (parseEventData(i))
-        {
-            if (ctx.infoSegment->type == EventOxyCRG)
-            {
-                continue;
-            }
-
-            if (ctx.infoSegment->type != curEventType && curEventType != EventAll)
-            {
-                continue;
-            }
-            t = ctx.infoSegment->timestamp;
-            // 事件时间
-            timeDate.getDate(t, dateStr, true);
-            timeDate.getTime(t, timeStr, true);
-            QString timeItemStr = dateStr + " " + timeStr;
-
-            switch (ctx.infoSegment->type)
-            {
-            case EventPhysiologicalAlarm:
-            {
-                subId = (SubParamID)(ctx.almSegment->subParamID);
-                alarmId = ctx.almSegment->alarmType;
-                alarmInfo = ctx.almSegment->alarmInfo;
-                if (alarmInfo & 0x01)   // oneshot 报警事件
-                {
-                    alarmOneShot = alertor.getAlarmOneShotIFace(subId);
-                    if (alarmOneShot)
-                    {
-                        priority = alarmOneShot->getAlarmPriority(alarmId);
-                    }
-                }
-                else
-                {
-                    alarmLimit = alertor.getAlarmLimitIFace(subId);
-                    if (alarmLimit)
-                    {
-                        priority = alarmLimit->getAlarmPriority(alarmId);
-                    }
-                }
-
-                if (curEventType != EventAll)
-                {
-                    if (curEventType != ctx.infoSegment->type)
-                    {
-                        continue;
-                    }
-                }
-
-                if (curEventLevel != EVENT_LEVEL_ALL)
-                {
-                    curPriority = levelToPriority(curEventLevel);
-                    if (curPriority != priority)
-                    {
-                        continue;
-                    }
-                }
-
-                // 事件内容
-                if (priority == ALARM_PRIO_LOW)
-                {
-                    infoStr = "*";
-                }
-                else if (priority == ALARM_PRIO_MED)
-                {
-                    infoStr = "**";
-                }
-                else if (priority == ALARM_PRIO_HIGH)
-                {
-                    infoStr = "***";
-                }
-
-                ParamID paramId = paramInfo.getParamID(subId);
-                // oneshot 报警
-                if (alarmInfo & 0x01)
-                {
-                    // 将参数ID转换为oneshot报警对应的参数ID
-                    if (paramId == PARAM_DUP_ECG)
-                    {
-                        paramId = PARAM_ECG;
-                    }
-                    else if (paramId == PARAM_DUP_RESP)
-                    {
-                        paramId = PARAM_RESP;
-                    }
-                }
-                infoStr += " ";
-                infoStr += trs(Alarm::getPhyAlarmMessage(paramId, alarmId, alarmInfo & 0x1, subId));
-
-                // 超限报警
-                if (!(alarmInfo & 0x1))
-                {
-                    if (alarmInfo & 0x2)
-                    {
-                        infoStr += " > ";
-                    }
-                    else
-                    {
-                        infoStr += " < ";
-                    }
-                    UnitType unit = paramManager.getSubParamUnit(paramId, subId);
-                    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subId, unit);
-
-                    infoStr += Util::convertToString(ctx.almSegment->alarmLimit, config.scale);
-                    infoStr += " ";
-                    infoStr += trs(Unit::getSymbol(unit));
-                }
-                timeList.append(timeItemStr);
-                eventList.append(infoStr);
-                break;
-            }
-            case EventCodeMarker:
-            {
-                if (levelToPriority(curEventLevel) != ALARM_PRIO_PROMPT)
-                {
-                    continue;
-                }
-                infoStr = (QString)ctx.codeMarkerSegment->codeName;
-                timeList.append(timeItemStr);
-                eventList.append(infoStr);
-                break;
-            }
-            case EventRealtimePrint:
-            {
-                if (levelToPriority(curEventLevel) != ALARM_PRIO_PROMPT)
-                {
-                    continue;
-                }
-                infoStr = trs("RealtimePrintSegment");
-                timeList.append(timeItemStr);
-                eventList.append(infoStr);
-                break;
-            }
-            case EventNIBPMeasurement:
-            {
-                if (levelToPriority(curEventLevel) != ALARM_PRIO_PROMPT)
-                {
-                    continue;
-                }
-                infoStr = trs("NibpMeasurement");
-                timeList.append(timeItemStr);
-                eventList.append(infoStr);
-                break;
-            }
-            case EventWaveFreeze:
-            {
-                if (levelToPriority(curEventLevel) != ALARM_PRIO_PROMPT)
-                {
-                    continue;
-                }
-                infoStr = trs("WaveFreeze");
-                timeList.append(timeItemStr);
-                eventList.append(infoStr);
-                break;
-            }
-            default:
-                continue;
-            }
-            QString printStr = timeItemStr + " " + infoStr;
-            printList.append(printStr);
-
-            dataIndex.append(i);
-        }
-    }
-    curDisplayEventNum = timeList.count();
-    model->setPageRowCount(PAGE_ROW_COUNT);
-    model->updateEvent(timeList, eventList);
-    eventTable->scrollToTop();
+    blockList.clear();
+    blockList = backend->getBlockEntryList();
 }
 
 AlarmPriority EventWindowPrivate::levelToPriority(EventLevel level)
@@ -1072,7 +881,9 @@ void EventWindowPrivate::eventInfoUpdate(int curRow)
             }
         }
         infoStr += " ";
-        infoStr += trs(Alarm::getPhyAlarmMessage(paramId, alarmId, alarmInfo & 0x1, subId));
+        infoStr += trs(Alarm::getPhyAlarmMessage(paramId,
+                       alarmId,
+                       alarmInfo & 0x1));
 
         if (!(alarmInfo & 0x1))
         {
@@ -1152,10 +963,11 @@ void EventWindowPrivate::eventTrendUpdate()
     QString map;
     QString et;
     QString fi;
-    QString valueStr;
-    QString titleStr;
     QString t1;
     QString t2;
+    QString td;
+    QString valueStr;
+    QString titleStr;
     bool multiSubParamAlarm = false;
     bool subParamAlarm = false;
     int paramNum = ctx.trendSegment->trendValueNum;
@@ -1177,22 +989,7 @@ void EventWindowPrivate::eventTrendUpdate()
             }
             else if (paramInfo.getParamID(subId) == PARAM_TEMP)
             {
-                if (subId != SUB_PARAM_TD)
-                {
-                    dataStr = Unit::convert(type, UNIT_TC, ctx.trendSegment->values[i].value / 10.0);
-                }
-                if (subId == SUB_PARAM_T1)
-                {
-                    t1 = dataStr;
-                }
-                else if (subId == SUB_PARAM_T2)
-                {
-                    t2 = dataStr;
-                }
-                else if (subId == SUB_PARAM_TD)
-                {
-                    dataStr = QString("%1").number(fabs(t1.toDouble() - t2.toDouble()));
-                }
+                dataStr = Unit::convert(type, paramInfo.getUnitOfSubParam(subId), ctx.trendSegment->values[i].value / 10.0);
             }
             else if (paramInfo.getParamID(subId) == PARAM_NIBP)
             {
@@ -1232,7 +1029,6 @@ void EventWindowPrivate::eventTrendUpdate()
             titleStr = paramInfo.getSubParamName(subId);
             titleStr = titleStr.left(titleStr.length() - 4);
             valueFont = fontManager.numFont(23);
-            color = colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(subId)));
             break;
         case SUB_PARAM_NIBP_PR:
         case SUB_PARAM_ART_PR:
@@ -1264,41 +1060,40 @@ void EventWindowPrivate::eventTrendUpdate()
             titleStr = titleStr.right(titleStr.length() - 2);
             titleStr += "(Et/Fi)";
             valueFont = fontManager.numFont(31);
-            color = colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(subId)));
             break;
-        case SUB_PARAM_PI:
-        {
-            float pi = (dataStr.toInt() * 1.0) / paramInfo.getMultiOfSubParam(subId);
-            valueStr = QString::number(pi, 'f', 2);
-            titleStr = trs(paramInfo.getSubParamName(subId));
-            valueFont = fontManager.numFont(37);
-            color = colorManager.getColor(paramInfo.getSubParamName(subId));
-        }
-            break;
-        case SUB_PARAM_SPHB:
-        case SUB_PARAM_SPMET:
-        {
-            float value = (dataStr.toInt() * 1.0) / paramInfo.getMultiOfSubParam(subId);
-            valueStr = QString::number(value, 'f', 1);
-            titleStr = trs(paramInfo.getSubParamName(subId));
-            valueFont = fontManager.numFont(37);
-            color = colorManager.getColor(paramInfo.getSubParamName(subId));
-        }
-            break;
-        case SUB_PARAM_PVI:
-        case SUB_PARAM_SPOC:
-        case SUB_PARAM_SPCO:
+        case SUB_PARAM_T1:
+            t1 = dataStr;
             valueStr = dataStr;
+            subParamAlarm = ctx.trendSegment->values[i].alarmFlag;
             titleStr = trs(paramInfo.getSubParamName(subId));
             valueFont = fontManager.numFont(37);
-            color = colorManager.getColor(paramInfo.getSubParamName(subId));
+            break;
+        case SUB_PARAM_T2:
+            t2 = dataStr;
+            valueStr = dataStr;
+            subParamAlarm = ctx.trendSegment->values[i].alarmFlag;
+            titleStr = trs(paramInfo.getSubParamName(subId));
+            valueFont = fontManager.numFont(37);
+            break;
+        case SUB_PARAM_TD:
+            if (t1 == InvStr() || t2 == InvStr())
+            {
+                td = InvStr();
+            }
+            else
+            {
+                td = QString::number(qAbs(t1.toFloat() - t2.toFloat()), 'f', 1);
+            }
+            valueStr = td;
+            subParamAlarm = ctx.trendSegment->values[i].alarmFlag;
+            titleStr = trs(paramInfo.getSubParamName(subId));
+            valueFont = fontManager.numFont(37);
             break;
         default:
             valueStr = dataStr;
             subParamAlarm = ctx.trendSegment->values[i].alarmFlag;
             titleStr = trs(paramInfo.getSubParamName(subId));
             valueFont = fontManager.numFont(37);
-            color = colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(subId)));
             break;
         }
 
@@ -1325,7 +1120,7 @@ void EventWindowPrivate::eventTrendUpdate()
         }
         else
         {
-            item->setTextColor(Qt::white);
+            item->setTextColor(Qt::red);
         }
         item->setFlags(Qt::NoItemFlags);
     }
@@ -1340,13 +1135,43 @@ void EventWindowPrivate::eventWaveUpdate()
 
 void EventWindowPrivate::refreshPageInfo()
 {
-    int curPage = 1;
-    int totalPage = 1;
-    eventTable->getPageInfo(curPage, totalPage);
-    if (totalPage == 0 && curPage == 0)
+    QString title = QString("%1( %2/%3 )").arg(trs("EventReview"))
+                                          .arg(QString::number(curPage))
+                                          .arg(QString::number(totalPage));
+    q_ptr->setWindowTitle(title);
+}
+
+void EventWindowPrivate::eventTypeOrLevelChange()
+{
+    dataIndex.clear();
+    for (int i = blockList.count() - 1; i >= 0; i--)
     {
-        curPage = 1;
+        BlockEntry blockInfo = blockList.at(i);
+        EventType type = static_cast<EventType>(blockInfo.type & 0xff);
+        AlarmPriority prio = static_cast<AlarmPriority>((blockInfo.type >> 8) & 0xff);
+        if ((type == curEventType || curEventType == EventAll) &&
+                (prio == levelToPriority(curEventLevel) || curEventLevel == EVENT_LEVEL_ALL))
+        {
+            dataIndex.append(i);
+        }
+    }
+    curDisplayEventNum = dataIndex.count();
+}
+
+void EventWindowPrivate::calculationPage()
+{
+    curPage = 1;
+    if (dataIndex.count() == 0)
+    {
         totalPage = 1;
+    }
+    else if (dataIndex.count() % PAGE_ROW_COUNT)
+    {
+        totalPage = dataIndex.count() / PAGE_ROW_COUNT + 1;
+    }
+    else
+    {
+        totalPage = dataIndex.count() / PAGE_ROW_COUNT;
     }
     QString title = QString("%1( %2/%3 )").arg(trs("EventReview"))
                                           .arg(QString::number(curPage))
@@ -1354,36 +1179,189 @@ void EventWindowPrivate::refreshPageInfo()
     q_ptr->setWindowTitle(title);
 }
 
-void EventWindowPrivate::updateLevelStatus()
+void EventWindowPrivate::refreshEventList()
 {
-    levelCbo->clear();
-    if (curEventType != EventPhysiologicalAlarm)
+    printList.clear();
+    QList<QString> timeList;
+    QList<QString> eventList;
+    for (int i = 0; i < PAGE_ROW_COUNT; i++)
     {
-        for (int i = EVENT_LEVEL_ALL; i < EVENT_LEVEL_NR; i ++)
+        QString timeStr;
+        QString dateStr;
+        QString infoStr;
+        SubParamID subId;
+        AlarmPriority priority;
+        AlarmPriority curPriority;
+        int index = i + (curPage - 1) * PAGE_ROW_COUNT;
+        if (index >= dataIndex.count())
         {
-            levelCbo->addItem(trs(EventDataSymbol::convert((EventLevel)i)));
+            break;
+        }
+
+        if (parseEventData(dataIndex.at(index)))
+        {
+            if (ctx.infoSegment->type == EventOxyCRG)
+            {
+                continue;
+            }
+
+            if (ctx.infoSegment->type != curEventType && curEventType != EventAll)
+            {
+                continue;
+            }
+            unsigned t = ctx.infoSegment->timestamp;
+            // 事件时间
+            timeDate.getDate(t, dateStr, true);
+            timeDate.getTime(t, timeStr, true);
+            QString timeItemStr = dateStr + " " + timeStr;
+
+            switch (ctx.infoSegment->type)
+            {
+            case EventPhysiologicalAlarm:
+            {
+                AlarmLimitIFace *alarmLimit = NULL;
+                AlarmOneShotIFace *alarmOneShot = NULL;
+                subId = (SubParamID)(ctx.almSegment->subParamID);
+                unsigned char alarmId = ctx.almSegment->alarmType;
+                unsigned char alarmInfo = ctx.almSegment->alarmInfo;
+                if (alarmInfo & 0x01)   // oneshot 报警事件
+                {
+                    alarmOneShot = alertor.getAlarmOneShotIFace(subId);
+                    if (alarmOneShot)
+                    {
+                        priority = alarmOneShot->getAlarmPriority(alarmId);
+                    }
+                }
+                else
+                {
+                    alarmLimit = alertor.getAlarmLimitIFace(subId);
+                    if (alarmLimit)
+                    {
+                        priority = alarmLimit->getAlarmPriority(alarmId);
+                    }
+                }
+
+                if (curEventType != EventAll)
+                {
+                    if (curEventType != ctx.infoSegment->type)
+                    {
+                        continue;
+                    }
+                }
+
+                if (curEventLevel != EVENT_LEVEL_ALL)
+                {
+                    curPriority = levelToPriority(curEventLevel);
+                    if (curPriority != priority)
+                    {
+                        continue;
+                    }
+                }
+
+                // 事件内容
+                if (priority == ALARM_PRIO_LOW)
+                {
+                    infoStr = "*";
+                }
+                else if (priority == ALARM_PRIO_MED)
+                {
+                    infoStr = "**";
+                }
+                else if (priority == ALARM_PRIO_HIGH)
+                {
+                    infoStr = "***";
+                }
+
+                ParamID paramId = paramInfo.getParamID(subId);
+                // oneshot 报警
+                if (alarmInfo & 0x01)
+                {
+                    // 将参数ID转换为oneshot报警对应的参数ID
+                    if (paramId == PARAM_DUP_ECG)
+                    {
+                        paramId = PARAM_ECG;
+                    }
+                    else if (paramId == PARAM_DUP_RESP)
+                    {
+                        paramId = PARAM_RESP;
+                    }
+                }
+                infoStr += " ";
+                infoStr += trs(Alarm::getPhyAlarmMessage(paramId, alarmId, alarmInfo & 0x1));
+
+                // 超限报警
+                if (!(alarmInfo & 0x1))
+                {
+                    if (alarmInfo & 0x2)
+                    {
+                        infoStr += " > ";
+                    }
+                    else
+                    {
+                        infoStr += " < ";
+                    }
+                    UnitType unit = paramManager.getSubParamUnit(paramId, subId);
+                    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subId, unit);
+
+                    infoStr += Util::convertToString(ctx.almSegment->alarmLimit, config.scale);
+                    infoStr += " ";
+                    infoStr += trs(Unit::getSymbol(unit));
+                }
+                timeList.append(timeItemStr);
+                eventList.append(infoStr);
+                break;
+            }
+            case EventCodeMarker:
+            {
+                if (levelToPriority(curEventLevel) != ALARM_PRIO_PROMPT)
+                {
+                    continue;
+                }
+                infoStr = (QString)ctx.codeMarkerSegment->codeName;
+                timeList.append(timeItemStr);
+                eventList.append(infoStr);
+                break;
+            }
+            case EventRealtimePrint:
+            {
+                if (levelToPriority(curEventLevel) != ALARM_PRIO_PROMPT)
+                {
+                    continue;
+                }
+                infoStr = trs("RealtimePrintSegment");
+                timeList.append(timeItemStr);
+                eventList.append(infoStr);
+                break;
+            }
+            case EventNIBPMeasurement:
+            {
+                if (levelToPriority(curEventLevel) != ALARM_PRIO_PROMPT)
+                {
+                    continue;
+                }
+                infoStr = trs("NibpMeasurement");
+                timeList.append(timeItemStr);
+                eventList.append(infoStr);
+                break;
+            }
+            case EventWaveFreeze:
+            {
+                if (levelToPriority(curEventLevel) != ALARM_PRIO_PROMPT)
+                {
+                    continue;
+                }
+                infoStr = trs("WaveFreeze");
+                timeList.append(timeItemStr);
+                eventList.append(infoStr);
+                break;
+            }
+            default:
+                continue;
+            }
+            QString printStr = timeItemStr + " " + infoStr;
+            printList.append(printStr);
         }
     }
-    switch (curEventType) {
-    case EventAll:
-        levelCbo->setEnabled(true);
-        break;
-    case EventPhysiologicalAlarm:
-        levelCbo->setEnabled(true);
-        for (int i = EVENT_LEVEL_MED; i < EVENT_LEVEL_NR; i ++)
-        {
-            levelCbo->addItem(trs(EventDataSymbol::convert((EventLevel)i)));
-        }
-        break;
-    case EventCodeMarker:
-    case EventRealtimePrint:
-    case EventNIBPMeasurement:
-    case EventWaveFreeze:
-    case EventOxyCRG:
-        levelCbo->setEnabled(false);
-        break;
-    default:
-        break;
-    }
-    levelCbo->setCurrentIndex(0);
+    model->setPageRowCount(PAGE_ROW_COUNT);
+    model->updateEvent(timeList, eventList);
 }

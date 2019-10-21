@@ -285,7 +285,7 @@ AlarmPriority CO2OneShotAlarm::getAlarmPriority(int id)
         return ALARM_PRIO_HIGH;
     }
 
-    if (id == CO2_ONESHOT_ALARM_ZEROING_COMPLETED)
+    if (id == CO2_ONESHOT_ALARM_ZEROING_COMPLETED || id == CO2_ONESHOT_ALARM_ZERO_IN_PROGRESS)
     {
         return ALARM_PRIO_PROMPT;
     }
@@ -341,13 +341,7 @@ bool CO2OneShotAlarm::isAlarmEnable(int id)
         return true;
     }
 
-    int v = 1;
-    if (id == CO2_ONESHOT_ALARM_APNEA)
-    {
-        v = co2Param.getAwRRSwitch();
-    }
-
-    return (static_cast<bool>(v) && co2Param.isEnabled() && co2Param.getCO2Switch());
+    return (co2Param.isEnabled() && co2Param.getCO2Switch());
 }
 
 /**************************************************************************************************

@@ -118,10 +118,10 @@ void MonitorInfoWindow::layoutExec()
     QLabel *labelLeft;
     QLabel *labelRight;
 
-    labelLeft = new QLabel(trs("CumulativeWorkingTime"));
+    labelLeft = new QLabel(trs("RunningTime"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
-    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
+    labelRight->setAlignment(Qt::AlignLeft);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(MonitorInfoWindowPrivate
                        ::ITEM_LAB_CMLV_WORKTIME, labelRight);
@@ -129,7 +129,7 @@ void MonitorInfoWindow::layoutExec()
     labelLeft = new QLabel(trs("BatteryCapacity"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
-    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
+    labelRight->setAlignment(Qt::AlignLeft);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(MonitorInfoWindowPrivate
                        ::ITEM_LAB_BAT_CAPACITY, labelRight);
@@ -137,7 +137,7 @@ void MonitorInfoWindow::layoutExec()
     labelLeft = new QLabel(trs("ProductModel"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
-    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
+    labelRight->setAlignment(Qt::AlignLeft);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(MonitorInfoWindowPrivate
                        ::ITEM_LAB_MACHINE_TYPE, labelRight);
@@ -145,7 +145,7 @@ void MonitorInfoWindow::layoutExec()
     labelLeft = new QLabel(trs("MACAddress"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
-    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
+    labelRight->setAlignment(Qt::AlignLeft);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(MonitorInfoWindowPrivate
                        ::ITEM_LAB_MAC_ADDR, labelRight);
@@ -153,7 +153,7 @@ void MonitorInfoWindow::layoutExec()
     labelLeft = new QLabel(trs("ScreenResolution"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
-    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
+    labelRight->setAlignment(Qt::AlignLeft);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(MonitorInfoWindowPrivate
                        ::ITEM_LAB_SCR_RESOLASIZE, labelRight);
@@ -161,7 +161,7 @@ void MonitorInfoWindow::layoutExec()
     labelLeft = new QLabel(trs("ElectronicSerialNumber"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
-    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
+    labelRight->setAlignment(Qt::AlignLeft);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(MonitorInfoWindowPrivate
                        ::ITEM_BTN_ELEC_SERIALNUM, labelRight);

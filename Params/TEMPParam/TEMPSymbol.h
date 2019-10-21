@@ -48,7 +48,9 @@ public:
             "TEMPCommunicationStop",
             "TEMPModuleDisable",
             "TEMPModuleNotCalibration1",
-            "TEMPModuleNotCalibration2"
+            "TEMPModuleNotCalibration2",
+            "TEMPSendCommunicationStop",
+            "TEMPModuleAbnormal"
         };
         return symbol[index];
     }

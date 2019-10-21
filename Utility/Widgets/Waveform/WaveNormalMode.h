@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2019/10/17
+ **/
+
 ////////////////////////////////////////////////////////////////////////////////
 // 说明：
 // 波形控件的非级联模式基类
@@ -7,6 +17,7 @@
 
 #include "WaveMode.h"
 
+class QColor;
 ////////////////////////////////////////////////////////////////////////////////
 // 说明：
 // 波形控件的非级联模式基类
@@ -23,6 +34,15 @@ public:
     int xToIndex(int x);
     int indexToX(int index);
     void prepareTransformFactor();
+
+protected:
+    /**
+     * @brief drawColorGradationWave draw a color gradataion wave
+     * @param self the wave draw mode
+     * @param beginIndex the wave data start index
+     * @param endIndex the wave data end index
+     */
+    static void drawColorGradationWave(WaveNormalMode *self, QPainter *painter, int beginIndex, int endIndex);
 
 private:
     int _a;          // 波形坐标换算因子a
