@@ -41,7 +41,7 @@
 TrendWaveWidget::TrendWaveWidget() : _hLayoutTrend(NULL),
     _timeInterval(RESOLUTION_RATIO_5_SECOND),
     _waveRegionWidth(0), _oneFrameWidth(0),
-    _cursorPosIndex(0), _currentCursorTime(0), _subWidget(NULL),
+    _cursorPosIndex(0), _currentCursorTime(0), _updateCursorTime(false), _subWidget(NULL),
     _displayGraphNum(3), _totalGraphNum(3), _curVScroller(0),
     _totalPage(0), _currentPage(0),  _leftTime(0), _rightTime(0),
     _curIndex(0), _trendGraphInfo(TrendGraphInfo()), _isHistory(false),
@@ -325,6 +325,22 @@ void TrendWaveWidget::pageDownParam()
 
 void TrendWaveWidget::setTimeInterval(ResolutionRatio timeInterval)
 {
+    int infoCount = _trendGraphInfo.alarmInfo.count();
+    // 校验趋势图是否存在数据
+    if (infoCount != 0)
+    {
+        // 校验游标索引
+        if (_cursorPosIndex >= infoCount)
+        {
+            _cursorPosIndex = infoCount - 1;
+        }
+        // 记录游标时间刻度
+        _currentCursorTime = _trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp;
+
+        // 记录更新时间刻度标志
+        _updateCursorTime = true;
+    }
+
     _timeInterval = timeInterval;
     int count = _displayGraphNum;
     for (int i = 0; i < count; i++)
@@ -434,10 +450,10 @@ void TrendWaveWidget::loadTrendData(SubParamID subID)
     }
 }
 
-void TrendWaveWidget::dataIndex(int &startIndex, int &endIndex)
+void TrendWaveWidget::dataIndex(int *startIndex, int *endIndex)
 {
-    startIndex = _findIndex(_leftTime);
-    endIndex = _findIndex(_rightTime);
+    *startIndex = _findIndex(_leftTime);
+    *endIndex = _findIndex(_rightTime);
 }
 
 void TrendWaveWidget::trendDataPack(int startIndex, int endIndex)
@@ -492,8 +508,11 @@ void TrendWaveWidget::trendDataPack(int startIndex, int endIndex)
                                     dataSeg->values[j].subParamId == SUB_PARAM_NIBP_DIA ||
                                     dataSeg->values[j].subParamId == SUB_PARAM_NIBP_MAP)
                             {
-                                _trendDataPack.last()->subparamValue[(SubParamID)dataSeg->values[j].subParamId] = dataSeg->values[j].value;
-                                _trendDataPack.last()->subparamAlarm[(SubParamID)dataSeg->values[j].subParamId] = dataSeg->values[j].alarmFlag;
+                                _trendDataPack.last()->subparamValue[(SubParamID)dataSeg->values[j].subParamId] =
+                                        dataSeg->values[j].value;
+
+                                _trendDataPack.last()->subparamAlarm[(SubParamID)dataSeg->values[j].subParamId] =
+                                        dataSeg->values[j].alarmFlag;
                             }
                         }
                     }
@@ -652,12 +671,13 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
             barPainter.setFont(font);
         }
 
-        barPainter.drawText(rectAdjust.topLeft().x() + (_waveRegionWidth - GRAPH_DATA_WIDTH) / 2 + i * _oneFrameWidth - 40,
-                            rectAdjust.topLeft().y() - 5, tStr);
+        barPainter.drawText(rectAdjust.topLeft().x() + (_waveRegionWidth - GRAPH_DATA_WIDTH) / 2 +
+                            i * _oneFrameWidth - 40, rectAdjust.topLeft().y() - 5, tStr);
         t = t - onePixelTime * GRAPH_POINT_NUMBER / GRAPH_DISPLAY_DATA_NUMBER;
-        barPainter.drawLine(rectAdjust.topLeft().x() + (_waveRegionWidth - GRAPH_DATA_WIDTH) / 2 + i * _oneFrameWidth,
-                            rectAdjust.topLeft().y(), rectAdjust.topLeft().x() + (_waveRegionWidth - GRAPH_DATA_WIDTH) / 2 + i * _oneFrameWidth,
-                            rectAdjust.topLeft().y() + 5);
+        barPainter.drawLine(rectAdjust.topLeft().x() + (_waveRegionWidth - GRAPH_DATA_WIDTH) / 2 +
+                            i * _oneFrameWidth, rectAdjust.topLeft().y(), rectAdjust.topLeft().x() +
+                            (_waveRegionWidth - GRAPH_DATA_WIDTH) / 2 +
+                            i * _oneFrameWidth, rectAdjust.topLeft().y() + 5);
     }
 
     // 游标线
@@ -708,6 +728,11 @@ void TrendWaveWidget::showEvent(QShowEvent *e)
     updateTimeRange();
     _loadEventInfoList();
     _updateEventIndex();
+    if (_updateCursorTime)
+    {
+        _updateCursorTime = false;  //  重置标志，避免新进入趋势图，设在为历史时刻数据点
+        _onUpdateCursorTime();      //  更新当前时间以及时间间隔
+    }
 }
 
 void TrendWaveWidget::mousePressEvent(QMouseEvent *e)
@@ -768,7 +793,7 @@ void TrendWaveWidget::_trendLayout()
     _totalGraphNum = 0;
     int startIndex;
     int endIndex;
-    dataIndex(startIndex, endIndex);
+    dataIndex(&startIndex, &endIndex);
     trendDataPack(startIndex, endIndex);
     for (int i = 0; i < _displayGraphNum; i++)
     {
@@ -789,7 +814,9 @@ void TrendWaveWidget::_trendLayout()
         _subWidgetList.at(i)->setTimeRange(_leftTime, _rightTime);
         _trendGraphInfo.unit = paramInfo.getUnitOfSubParam(subId);
         _subWidgetList.at(i)->update();
-        _subWidgetList.at(i)->getValueLimit(_trendGraphInfo.scale.max, _trendGraphInfo.scale.min, _trendGraphInfo.scale.scale);
+        _subWidgetList.at(i)->getValueLimit(_trendGraphInfo.scale.max,
+                                            _trendGraphInfo.scale.min,
+                                            _trendGraphInfo.scale.scale);
         _infosList.append(_trendGraphInfo);
         _totalGraphNum++;
     }
@@ -844,7 +871,9 @@ void TrendWaveWidget::_initWaveSubWidget()
             subWidget->setWidgetParam(subID, getTrendGraphType(subID));
             subWidget->setVisible(true);
             subWidget->setParent(this);
-            subWidget->setThemeColor(colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID((SubParamID)i))));
+            subWidget->setThemeColor(colorManager.getColor(
+                                         paramInfo.getParamName(
+                                             paramInfo.getParamID((SubParamID)i))));
             subWidget->setFocusPolicy(Qt::NoFocus);
             num++;
         }
@@ -1031,6 +1060,48 @@ void TrendWaveWidget::_loadEventInfoList()
     {
         delete backend;
         backend = NULL;
+    }
+}
+
+/**
+ * @brief _onUpdateCursorTime 更新游标时间
+ */
+void TrendWaveWidget::_onUpdateCursorTime()
+{
+    if (trendBlockList.count() == 0 ||
+            _trendGraphInfo.alarmInfo.count() == 0 ||
+            _currentCursorTime == 0)
+    {
+        return;
+    }
+
+    unsigned onePixelTime = TrendDataSymbol::convertValue(_timeInterval);
+    unsigned pageRightTime = trendBlockList.last().extraData;                   //  趋势图初始页右边时间
+    unsigned pageLeftTime = pageRightTime - onePixelTime * GRAPH_POINT_NUMBER;  //  趋势图初始页左边时间
+
+    int page = 1;
+    // 遍历查找记录的游标时间在趋势图中的页索引数据
+    while (_currentCursorTime < pageLeftTime)    //  校验游标时间是否在初始页时间范围内
+    {
+        pageRightTime = pageLeftTime;
+        pageLeftTime = pageRightTime - onePixelTime * GRAPH_POINT_NUMBER;
+        page += 1;
+    }
+    _currentPage = page;         //  当前页数
+
+    _rightTime = pageRightTime;  //  趋势图右边时间
+    _leftTime = pageLeftTime;    //  趋势图左边时间
+    _trendLayout();              //  将趋势数据加载入子窗口
+
+    // 遍历趋势图时间信息，查找与记录游标时间相近的时间索引
+    for (int i = 0; i < _trendGraphInfo.alarmInfo.count(); i++)
+    {
+        unsigned timeStamp = _trendGraphInfo.alarmInfo.at(i).timestamp;
+        if (timeStamp <= _currentCursorTime)
+        {
+            _cursorPosIndex = i;
+            break;
+        }
     }
 }
 
