@@ -191,18 +191,27 @@ QVariant AlarmInfoModel::headerData(int section, Qt::Orientation orientation, in
     return QVariant();
 }
 
-bool AlarmInfoModel::setData(const QModelIndex &index, const QVariant &value, int role) const
+bool AlarmInfoModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     int row = index.row();
+    if (index.isValid() && row >= d_ptr->nameList.count())
+    {
+        return false;
+    }
     switch (role)
     {
     case Qt::DecorationRole:
+    {
         d_ptr->iconList[row] = qvariant_cast<QIcon>(value);
-        break;
+        QModelIndex leftIndex = this->index(row, 0);
+        QModelIndex rightIndex = this->index(row, 2);
+        emit dataChanged(leftIndex, rightIndex);
+        return true;
+    }
     default:
         break;
     }
-    return true;
+    return false;
 }
 
 void AlarmInfoModel::setStringList(const QStringList &nameList, const QStringList &timeList, const QStringList &priorityList)

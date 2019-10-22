@@ -32,7 +32,7 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
     /* reimplement */
-    bool setData(const QModelIndex &index, const QVariant &value, int role) const;
+    bool setData(const QModelIndex &index, const QVariant &value, int role);
 
     /**
      * @brief setStringList set the string list
