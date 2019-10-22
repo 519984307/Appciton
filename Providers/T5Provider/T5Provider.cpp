@@ -22,6 +22,7 @@
 
 #define LOW_BORDER_VALUE 149
 #define HIGH_BORDER_VALUE 501
+#define TEMP_INVALID_VALUE      (-1)    // 体温无效值
 
 enum TempErrorCode
 {
@@ -381,17 +382,25 @@ void T5Provider::_result(unsigned char *packet)
     _temp1 = InvData();
     _temp2 = InvData();
     _tempd = InvData();
-
+    short temp = InvData();
     if (!_overRang1)
     {
-        _temp1 = borderValueChange(LOW_BORDER_VALUE, HIGH_BORDER_VALUE,
-                                    static_cast<int>((packet[2] << 8) +packet[1]));
+        temp = static_cast<short>((packet[2] << 8) +packet[1]);
+        if (temp == TEMP_INVALID_VALUE)
+        {
+            temp = InvData();
+        }
+        _temp1 = borderValueChange(LOW_BORDER_VALUE, HIGH_BORDER_VALUE, temp);
     }
 
     if (!_overRang2)
     {
-        _temp2 = borderValueChange(LOW_BORDER_VALUE, HIGH_BORDER_VALUE,
-                                    static_cast<int>((packet[4] << 8) + packet[3]));
+        temp = static_cast<short>((packet[4] << 8) + packet[3]);
+        if (temp == TEMP_INVALID_VALUE)
+        {
+            temp = InvData();
+        }
+        _temp2 = borderValueChange(LOW_BORDER_VALUE, HIGH_BORDER_VALUE, temp);
     }
 
     if (_temp1 >= 0 && _temp1 <= 500 && _temp2 >= 0 && _temp2 <= 500)
@@ -426,17 +435,14 @@ void T5Provider::ohmResult(unsigned char *packet)
  *************************************************************************************************/
 void T5Provider::_sensorOff(unsigned char *packet)
 {
-    static bool sensorHasContected1 = false;  // 开机之后有连接断开才会报探头脱落
-    static bool sensorHasContected2 = false;
-
-    if (!sensorHasContected1 && !(packet[1] & 0x01))
+    if (!_hasBeenConnected1 && !(packet[1] & 0x01))
     {
-        sensorHasContected1 = true;
+        _hasBeenConnected1 = true;
     }
 
-    if (!sensorHasContected2 && !(packet[1] & 0x02))
+    if (!_hasBeenConnected2 && !(packet[1] & 0x02))
     {
-        sensorHasContected2 = true;
+        _hasBeenConnected2 = true;
     }
 
     if (packet[1] == 0x00)
@@ -446,7 +452,7 @@ void T5Provider::_sensorOff(unsigned char *packet)
     }
     else if (packet[1] == 0x01)
     {
-        if (sensorHasContected1)
+        if (_hasBeenConnected1)
         {
             _sensorOff1 = true;
         }
@@ -461,7 +467,7 @@ void T5Provider::_sensorOff(unsigned char *packet)
     else if (packet[1] == 0x02)
     {
         _sensorOff1 = false;
-        if (sensorHasContected2)
+        if (_hasBeenConnected2)
         {
             _sensorOff2 = true;
         }
@@ -473,7 +479,7 @@ void T5Provider::_sensorOff(unsigned char *packet)
     }
     else if (packet[1] == 0x03)
     {
-        if (sensorHasContected1)
+        if (_hasBeenConnected1)
         {
             _sensorOff1 = true;
         }
@@ -482,7 +488,7 @@ void T5Provider::_sensorOff(unsigned char *packet)
             _sensorOff1 = false;
         }
 
-        if (sensorHasContected2)
+        if (_hasBeenConnected2)
         {
             _sensorOff2 = true;
         }
@@ -524,7 +530,10 @@ void T5Provider::_shotAlarm()
         tempParam.setOneShotAlarm(TEMP_OVER_RANGR_2, false);
 
         // 探头全部脱落报警
-        tempParam.setOneShotAlarm(TEMP_SENSOR_OFF_ALL, true);
+        if (_hasBeenConnected1 && _hasBeenConnected2)
+        {
+            tempParam.setOneShotAlarm(TEMP_SENSOR_OFF_ALL, true);
+        }
     }
     else
     {
@@ -579,7 +588,10 @@ void T5Provider::_shotAlarm()
                 // 取消探头1超界
                 tempParam.setOneShotAlarm(TEMP_OVER_RANGR_1, false);
                 // 探头1脱落报警
-                tempParam.setOneShotAlarm(TEMP_SENSOR_OFF_1, true);
+                if (_hasBeenConnected1)
+                {
+                    tempParam.setOneShotAlarm(TEMP_SENSOR_OFF_1, true);
+                }
             }
             // 取消探头全部脱落，取消探头1脱落报警，取消探头1脱落报警，判断探头1是否超界
             else
@@ -607,7 +619,10 @@ void T5Provider::_shotAlarm()
                 // 取消探头2超界
                 tempParam.setOneShotAlarm(TEMP_OVER_RANGR_2, false);
                 // 探头2脱落报警
-                tempParam.setOneShotAlarm(TEMP_SENSOR_OFF_2, true);
+                if (_hasBeenConnected2)
+                {
+                    tempParam.setOneShotAlarm(TEMP_SENSOR_OFF_2, true);
+                }
             }
             // 取消探头全部脱落，取消探头2脱落报警，取消探头2脱落报警，判断探头2是否超界
             else
@@ -640,8 +655,12 @@ void T5Provider::_shotAlarm()
 void T5Provider::_limitHandle(unsigned char *packet)
 {
     // 判断T1超界
-    int temp1 = static_cast<int>((packet[2] << 8) + packet[1]);
-    if ((temp1 < LOW_BORDER_VALUE || temp1 > HIGH_BORDER_VALUE) && _overRang1 == false)
+    short temp1 = static_cast<short>((packet[2] << 8) + packet[1]);
+    if (temp1 == TEMP_INVALID_VALUE)
+    {
+        _overRang1 = false;
+    }
+    else if ((temp1 < LOW_BORDER_VALUE || temp1 > HIGH_BORDER_VALUE) && _overRang1 == false)
     {
         _overRang1 = true;
     }
@@ -650,8 +669,12 @@ void T5Provider::_limitHandle(unsigned char *packet)
         _overRang1 = false;
     }
     // 判断T2超界
-    int temp2 = static_cast<int>((packet[4] << 8) + packet[3]);
-    if ((temp2 < LOW_BORDER_VALUE || temp2 > HIGH_BORDER_VALUE) && _overRang2 == false)
+    short temp2 = static_cast<short>((packet[4] << 8) + packet[3]);
+    if (temp2 == TEMP_INVALID_VALUE)
+    {
+        _overRang2 = false;
+    }
+    else if ((temp2 < LOW_BORDER_VALUE || temp2 > HIGH_BORDER_VALUE) && _overRang2 == false)
     {
         _overRang2 = true;
     }
@@ -678,7 +701,11 @@ int T5Provider::borderValueChange(int low, int high, int temp)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-T5Provider::T5Provider() : BLMProvider("BLM_T5"), TEMPProviderIFace()
+T5Provider::T5Provider() : BLMProvider("BLM_T5"), TEMPProviderIFace(),
+    _disconnected(false), _overRang1(false), _overRang2(false),
+    _sensorOff1(true), _sensorOff2(true), _hasBeenConnected1(false),
+    _hasBeenConnected2(false), _temp1(InvData()), _temp2(InvData()),
+    _tempd(InvData()), ohm1(InvData()), ohm2(InvData())
 {
     disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_T5;
 
@@ -689,19 +716,6 @@ T5Provider::T5Provider() : BLMProvider("BLM_T5"), TEMPProviderIFace()
     }
 
     setDisconnectThreshold(5);
-
-    _disconnected = false;
-    _overRang1 = false;
-    _overRang2 = false;
-    _sensorOff1 = false;
-    _sensorOff2 = false;
-
-    _temp1 = InvData();
-    _temp2 = InvData();
-    _tempd = InvData();
-
-    ohm1 = InvData();
-    ohm2 = InvData();
 }
 
 /**************************************************************************************************
