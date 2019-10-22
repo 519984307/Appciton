@@ -491,9 +491,10 @@ void SystemManager::parseKeyValue(const unsigned char *data, unsigned int len)
         return;
     }
 
-    if (QApplication::activeWindow() == NULL)
+    if (QApplication::activeWindow() == NULL && windowManager.topWindow() == NULL)
     {
         windowManager.activateWindow();
+        qDebug() << Q_FUNC_INFO << "No active window, activate window manager";
     }
 
     QWSServer::processKeyEvent(0xffff, keyCode, Qt::NoModifier, data[1], false);
