@@ -435,14 +435,14 @@ void T5Provider::ohmResult(unsigned char *packet)
  *************************************************************************************************/
 void T5Provider::_sensorOff(unsigned char *packet)
 {
-    if (!_isFristConnect1 && !(packet[1] & 0x01))
+    if (!_hasBeenConnected1 && !(packet[1] & 0x01))
     {
-        _isFristConnect1 = true;
+        _hasBeenConnected1 = true;
     }
 
-    if (!_isFristConnect2 && !(packet[1] & 0x02))
+    if (!_hasBeenConnected2 && !(packet[1] & 0x02))
     {
-        _isFristConnect2 = true;
+        _hasBeenConnected2 = true;
     }
 
     if (packet[1] == 0x00)
@@ -452,7 +452,7 @@ void T5Provider::_sensorOff(unsigned char *packet)
     }
     else if (packet[1] == 0x01)
     {
-        if (_isFristConnect1)
+        if (_hasBeenConnected1)
         {
             _sensorOff1 = true;
         }
@@ -467,7 +467,7 @@ void T5Provider::_sensorOff(unsigned char *packet)
     else if (packet[1] == 0x02)
     {
         _sensorOff1 = false;
-        if (_isFristConnect2)
+        if (_hasBeenConnected2)
         {
             _sensorOff2 = true;
         }
@@ -479,7 +479,7 @@ void T5Provider::_sensorOff(unsigned char *packet)
     }
     else if (packet[1] == 0x03)
     {
-        if (_isFristConnect1)
+        if (_hasBeenConnected1)
         {
             _sensorOff1 = true;
         }
@@ -488,7 +488,7 @@ void T5Provider::_sensorOff(unsigned char *packet)
             _sensorOff1 = false;
         }
 
-        if (_isFristConnect2)
+        if (_hasBeenConnected2)
         {
             _sensorOff2 = true;
         }
@@ -530,7 +530,7 @@ void T5Provider::_shotAlarm()
         tempParam.setOneShotAlarm(TEMP_OVER_RANGR_2, false);
 
         // 探头全部脱落报警
-        if (_isFristConnect1 && _isFristConnect2)
+        if (_hasBeenConnected1 && _hasBeenConnected2)
         {
             tempParam.setOneShotAlarm(TEMP_SENSOR_OFF_ALL, true);
         }
@@ -588,7 +588,7 @@ void T5Provider::_shotAlarm()
                 // 取消探头1超界
                 tempParam.setOneShotAlarm(TEMP_OVER_RANGR_1, false);
                 // 探头1脱落报警
-                if (_isFristConnect1)
+                if (_hasBeenConnected1)
                 {
                     tempParam.setOneShotAlarm(TEMP_SENSOR_OFF_1, true);
                 }
@@ -619,7 +619,7 @@ void T5Provider::_shotAlarm()
                 // 取消探头2超界
                 tempParam.setOneShotAlarm(TEMP_OVER_RANGR_2, false);
                 // 探头2脱落报警
-                if (_isFristConnect2)
+                if (_hasBeenConnected2)
                 {
                     tempParam.setOneShotAlarm(TEMP_SENSOR_OFF_2, true);
                 }
@@ -703,8 +703,8 @@ int T5Provider::borderValueChange(int low, int high, int temp)
  *************************************************************************************************/
 T5Provider::T5Provider() : BLMProvider("BLM_T5"), TEMPProviderIFace(),
     _disconnected(false), _overRang1(false), _overRang2(false),
-    _sensorOff1(true), _sensorOff2(true), _isFristConnect1(false),
-    _isFristConnect2(false), _temp1(InvData()), _temp2(InvData()),
+    _sensorOff1(true), _sensorOff2(true), _hasBeenConnected1(false),
+    _hasBeenConnected2(false), _temp1(InvData()), _temp2(InvData()),
     _tempd(InvData()), ohm1(InvData()), ohm2(InvData())
 {
     disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_T5;
