@@ -123,7 +123,6 @@ void AlarmInfoWindow::layout()
 
     if (d_ptr->alarmType == ALARM_TYPE_PHY)
     {
-        connect(tableView, SIGNAL(clicked(QModelIndex)), this, SLOT(_accessEventWindow(QModelIndex)));
         connect(tableView, SIGNAL(rowClicked(int)), this, SLOT(_accessEventWindow(int)));
     }
 
@@ -175,11 +174,6 @@ void AlarmInfoWindow::_onBtnRelease()
             d_ptr->loadOption();
         }
     }
-}
-
-void AlarmInfoWindow::_accessEventWindow(QModelIndex index)
-{
-    _accessEventWindow(index.row());
 }
 
 void AlarmInfoWindow::_accessEventWindow(int index)

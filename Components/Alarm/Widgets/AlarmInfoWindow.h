@@ -37,7 +37,6 @@ protected:
 
 private slots:
     void _onBtnRelease();
-    void _accessEventWindow(QModelIndex index);
     void _accessEventWindow(int index);
 
 private:
