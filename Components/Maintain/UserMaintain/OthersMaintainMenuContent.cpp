@@ -114,13 +114,14 @@ void OthersMaintainMenuContentPrivate::loadOptions()
     tmpStr.clear();
 
     systemConfig.getStrValue("Others|WaveLine", tmpStr);
-    if (tmpStr.toInt() >= combos[ITEM_CBO_WAVE_LINE]->count())
+    int lineIndex = tmpStr.toInt() - 1;
+    if (lineIndex >= combos[ITEM_CBO_WAVE_LINE]->count())
     {
         combos[ITEM_CBO_WAVE_LINE]->setCurrentIndex(0);
     }
     else
     {
-        combos[ITEM_CBO_WAVE_LINE]->setCurrentIndex(tmpStr.toInt());
+        combos[ITEM_CBO_WAVE_LINE]->setCurrentIndex(lineIndex);
     }
     tmpStr.clear();
 
