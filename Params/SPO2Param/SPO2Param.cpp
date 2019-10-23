@@ -1668,7 +1668,7 @@ void SPO2Param::setPerfusionStatus(bool isLow, bool isPlugIn)
 
 bool SPO2Param::getPerfusionStatus(bool isPlugIn) const
 {
-    if (!isPlugIn)
+    if (isPlugIn)
     {
         return d_ptr->plugInIsLowPerfusion;
     }
