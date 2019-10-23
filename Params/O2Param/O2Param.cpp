@@ -126,6 +126,7 @@ void O2Param::setTrendWidget(O2TrendWidget *trendWidget)
 
 void O2Param::setO2Concentration(int16_t o2)
 {
+    paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
     if (d_ptr->o2Value == o2)
     {
         return;
@@ -134,7 +135,6 @@ void O2Param::setO2Concentration(int16_t o2)
     if (NULL != d_ptr->trendWidget)
     {
         d_ptr->trendWidget->setO2Value(d_ptr->o2Value);
-        paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
     }
 }
 
