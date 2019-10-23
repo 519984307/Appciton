@@ -141,13 +141,13 @@ void ParamManager::connectParamProvider(WorkMode mode)
                 if (mode == WORK_MODE_STANDBY && provider->connected())
                 {
                     provider->reconnected();
-                    provider->stopCheckConnect(false);
                 }
                 else
                 {
                     providerHasSet = true;
                 }
                 provider->attachParam(*param);
+                provider->stopCheckConnect(false);
             }
         }
 
@@ -160,8 +160,7 @@ void ParamManager::connectParamProvider(WorkMode mode)
 
 void ParamManager::connectDemoParamProvider()
 {
-    Provider *provider = NULL;
-    provider = _providers.value("DemoProvider", NULL);
+    Provider *provider = _providers.value("DemoProvider", NULL);
     if (provider)
     {
         // 从配置文件获取机器支持的参数。
@@ -189,6 +188,7 @@ void ParamManager::connectDemoParamProvider()
             if (otherProvider)
             {
                 otherProvider->detachParam(*param);
+                otherProvider->stopCheckConnect(true);
             }
 
             provider->attachParam(*param);
