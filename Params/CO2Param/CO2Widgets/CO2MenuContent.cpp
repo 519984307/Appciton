@@ -36,9 +36,9 @@ public:
         ITEM_CBO_APNEA_TIME,
         ITEM_CBO_WORK_MODE,
 
-        ITEM_BTN_O2_COMPEN = 0,
+        ITEM_BTN_O2_COMPEN,
         ITEM_BTN_N2O_COMPEN,
-        ITEM_BTN_ZERO_CALIB,
+        ITEM_BTN_ZERO_CALIB
     };
 
     CO2MenuContentPrivate()
@@ -179,7 +179,7 @@ void CO2MenuContent::onComboBoxIndexChanged(int index)
         break;
     default:
         break;
-    };
+    }
 }
 
 void CO2MenuContent::onBtnReleasedChanged()
