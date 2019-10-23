@@ -284,7 +284,7 @@ TrendTableWindow::TrendTableWindow()
     d_ptr->setBtn->setButtonStyle(Button::ButtonTextOnly);
     connect(d_ptr->setBtn, SIGNAL(released()), this, SLOT(trendDataSetReleased()));
 
-    QHBoxLayout *hLayout = new QHBoxLayout(this);
+    QHBoxLayout *hLayout = new QHBoxLayout();
     hLayout->addWidget(d_ptr->upBtn, 1);
     hLayout->addWidget(d_ptr->downBtn, 1);
     hLayout->addWidget(d_ptr->pagingBtn, 2);

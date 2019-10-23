@@ -21,7 +21,7 @@ class EventReviewModelPrivate
 {
 public:
     EventReviewModelPrivate()
-        : eachPageRowCount(1)
+        : eachPageRowCount(0)
     {}
 public:
     QList<QString> timeList;
@@ -193,8 +193,14 @@ int EventReviewModel::getHeightHint() const
 {
     return ROW_HEIGHT_HINT;
 }
+
 int EventReviewModelPrivate::calTotalPage()
 {
+    if (!eachPageRowCount)
+    {
+        return 0;
+    }
+
     int page = timeList.count() / eachPageRowCount;
     if (timeList.count() % eachPageRowCount)
     {
