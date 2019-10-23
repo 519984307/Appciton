@@ -203,8 +203,9 @@ bool AlarmInfoModel::setData(const QModelIndex &index, const QVariant &value, in
     case Qt::DecorationRole:
     {
         d_ptr->iconList[row] = qvariant_cast<QIcon>(value);
-        QModelIndex leftIndex = this->index(row, 0);
-        QModelIndex rightIndex = this->index(row, 2);
+        // 刷新数据范围为当前行
+        QModelIndex leftIndex = this->index(row, SECTION_DATE_TIME);
+        QModelIndex rightIndex = this->index(row, SECTION_ALARM_PRIORITY);
         emit dataChanged(leftIndex, rightIndex);
         return true;
     }
