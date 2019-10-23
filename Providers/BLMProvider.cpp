@@ -202,6 +202,13 @@ void BLMProvider::timerEvent(QTimerEvent *ev)
     if (_timerId == ev->timerId()) {
         QMutexLocker locker(&_lastBLMCommandInfo->mutex);
         if (_lastBLMCommandInfo->cmdLen >= minPacketLen && !_lastBLMCommandInfo->gotResponse) {
+            if (isConnectionCheckStop())  {
+                /*
+                 * if the connnection check is stop, there is not need to check the response.
+                 * just invalid the commond info
+                 */
+                _lastBLMCommandInfo->cmdLen = 0;
+            }
             /* last command haven't got response yet, check timeout or resend last command */
             quint32 curTimestamp = QDateTime::currentDateTime().toTime_t();
             if (curTimestamp == _lastBLMCommandInfo->timestamp) {

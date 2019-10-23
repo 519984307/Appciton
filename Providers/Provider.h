@@ -26,10 +26,10 @@ public:
     QString &getName(void);
 
     // 关联Provider和Param对象，具体内容由派生类实现。
-    virtual bool attachParam(Param &param);
+    virtual bool attachParam(Param &param);  // NOLINT
 
     // 脱离Provider和Param对象，具体内容由派生类实现。
-    virtual void detachParam(Param &param);
+    virtual void detachParam(Param &param);  // NOLINT
 
     // 检查连接状态。
     virtual void checkConnection(void);
@@ -78,6 +78,12 @@ public:
      * @param flag
      */
     void stopCheckConnect(bool flag);
+
+    /**
+     * @brief isConnectionCheckStop check whether the connecion checking is stopped
+     * @return  true if stop, otherwise, false
+     */
+    bool isConnectionCheckStop() const { return _stopCheckConnect; }
 
 protected:
     // 初始化端口。
