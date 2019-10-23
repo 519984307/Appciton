@@ -428,7 +428,27 @@ void SystemBoardProvider::selfTest(void)
  **************************************************************************************************/
 void SystemBoardProvider::updateAlarm(bool hasAlarmed, AlarmPriority priority)
 {
-    unsigned char alarmLevel = (hasAlarmed) ? (priority + 1) : 0;
+    unsigned char alarmLevel = 0;
+    if (hasAlarmed)
+    {
+        switch (priority)
+        {
+        case ALARM_PRIO_PROMPT:
+            alarmLevel = 4;
+            break;
+        case ALARM_PRIO_LOW:
+            alarmLevel = 1;
+            break;
+        case ALARM_PRIO_MED:
+            alarmLevel = 2;
+            break;
+        case ALARM_PRIO_HIGH:
+            alarmLevel = 3;
+            break;
+        default:
+            break;
+        }
+    }
     sendCmd(MSG_CMD_SET_ALARM_LED, &alarmLevel, 1);
 }
 

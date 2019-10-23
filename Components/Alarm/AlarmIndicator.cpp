@@ -240,19 +240,9 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
     }
 
     // 更新灯光
-    if (lightPriority != ALARM_PRIO_PROMPT)
+    if (lightManager)
     {
-        if (lightManager)
-        {
-            lightManager->updateAlarm(true, lightPriority);
-        }
-    }
-    else
-    {
-        if (lightManager)
-        {
-            lightManager->updateAlarm(false, lightPriority);
-        }
+        lightManager->updateAlarm(true, lightPriority);
     }
 
     //生理报警
