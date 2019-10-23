@@ -572,51 +572,35 @@ void PatientManager::onNewPatientHandle()
  *************************************************************************************************/
 void PatientManagerPrivate::loadPatientInfo(PatientInfo &info)
 {
+    int numValue = 0;
     QString strValue;
 
-    XmlParser xmlFile;
-    DataStorageDirManagerInterface *dataStorageDirManager = DataStorageDirManagerInterface::getDataStorageDirManager();
-    if (dataStorageDirManager && !xmlFile.open(dataStorageDirManager->getCurFolder() + PATIENT_INFO_FILENAME))
-    {
-        qDebug() << "patient info file open fail!";
-        return;
-    }
+    systemConfig.getNumValue("General|PatientType", numValue);
+    info.type = (PatientType)numValue;
 
-    // patient type
-    xmlFile.getValue("PatientType", strValue);
-    info.type = static_cast<PatientType>(strValue.toInt());
+    systemConfig.getNumValue("PrimaryCfg|PatientInfo|PatientPacer", numValue);
+    info.pacer = (PatientPacer)numValue;
 
-    // pacermaker
-    xmlFile.getValue("PacerMaker", strValue);
-    info.pacer = static_cast<PatientPacer>(strValue.toInt());
+    systemConfig.getNumValue("PrimaryCfg|PatientInfo|Sex", numValue);
+    info.sex = (PatientSex)numValue;
 
-    // sex
-    xmlFile.getValue("Sex", strValue);
-    info.sex = static_cast<PatientSex>(strValue.toInt());
+    systemConfig.getNumValue("PrimaryCfg|PatientInfo|Blood", numValue);
+    info.blood = (PatientBloodType)numValue;
 
-    // bornDate
-    xmlFile.getValue("BornDate", strValue);
-    info.bornDate = QDate::fromString(strValue, "yyyy/MM/dd");
-
-    // blood
-    xmlFile.getValue("Blood", strValue);
-    info.blood = static_cast<PatientBloodType>(strValue.toInt());
-
-    // weight
-    xmlFile.getValue("Weight", strValue);
+    systemConfig.getStrValue("PrimaryCfg|PatientInfo|Weight", strValue);
     info.weight = strValue.toFloat();
 
-    // height
-    xmlFile.getValue("Height", strValue);
+    systemConfig.getStrValue("PrimaryCfg|PatientInfo|Height", strValue);
     info.height = strValue.toFloat();
 
-    // id
-    xmlFile.getValue("ID", strValue);
+    systemConfig.getStrValue("PrimaryCfg|PatientInfo|Name", strValue);
+    ::strncpy(info.name, strValue.toUtf8().constData(), sizeof(info.name));
+
+    systemConfig.getStrValue("PrimaryCfg|PatientInfo|ID", strValue);
     ::strncpy(info.id, strValue.toUtf8().constData(), sizeof(info.id));
 
-    // name
-    xmlFile.getValue("Name", strValue);
-    ::strncpy(info.name, strValue.toUtf8().constData(), sizeof(info.name));
+    systemConfig.getStrValue("PrimaryCfg|PatientInfo|BornDate", strValue);
+    info.bornDate = QDate::fromString(strValue, "yyyy/MM/dd");
 }
 
 void PatientManagerPrivate::handleDischarge()
