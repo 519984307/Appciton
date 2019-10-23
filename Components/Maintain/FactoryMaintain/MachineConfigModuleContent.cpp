@@ -52,6 +52,10 @@ public:
 #endif
         ITEM_CBO_BACKLIGHT,
         ITEM_CBO_NIBP_NEO_MEASURE,
+        ITEM_CBO_HDMI,
+        ITEM_CBO_NURSE_CALL,
+        ITEM_CBO_ANALOG_OUTPUT,
+        ITEM_CBO_SYNC_DEFIBRILLATION,
         ITEM_CBO_MAX
     };
 
@@ -208,6 +212,22 @@ void MachineConfigModuleContentPrivte::loadOptions()
     combos[ITEM_CBO_NIBP_NEO_MEASURE]->setCurrentIndex(index);
     itemInitMap = itemChangedMap;
 
+    index = 0;
+    machineConfig.getNumValue("HDMIEnable", index);
+    combos[ITEM_CBO_HDMI]->setCurrentIndex(index);
+
+    index = 0;
+    machineConfig.getNumValue("NurseCallEnable", index);
+    combos[ITEM_CBO_NURSE_CALL]->setCurrentIndex(index);
+
+    index = 0;
+    machineConfig.getNumValue("AnalogOutputEnable", index);
+    combos[ITEM_CBO_ANALOG_OUTPUT]->setCurrentIndex(index);
+
+    index = 0;
+    machineConfig.getNumValue("SyncDefibrillationEnable", index);
+    combos[ITEM_CBO_SYNC_DEFIBRILLATION]->setCurrentIndex(index);
+
 #ifdef HIDE_MACHINE_CONFIG_ITEMS
     combos[ITEM_CBO_ECG12]->setCurrentIndex(0);
     combos[ITEM_CBO_ECG12]->setEnabled(false);
@@ -221,6 +241,12 @@ void MachineConfigModuleContentPrivte::loadOptions()
 //    combos[ITEM_CBO_O2]->setEnabled(false);
     combos[ITEM_CBO_WIFI]->setCurrentIndex(0);
     combos[ITEM_CBO_WIFI]->setEnabled(false);
+    combos[ITEM_CBO_HDMI]->setCurrentIndex(0);
+    combos[ITEM_CBO_HDMI]->setEnabled(false);
+    combos[ITEM_CBO_ANALOG_OUTPUT]->setCurrentIndex(0);
+    combos[ITEM_CBO_ANALOG_OUTPUT]->setEnabled(false);
+    combos[ITEM_CBO_SYNC_DEFIBRILLATION]->setCurrentIndex(0);
+    combos[ITEM_CBO_SYNC_DEFIBRILLATION]->setEnabled(false);
 #endif
 
     setCombosBlockSignalStatus(false);
@@ -499,6 +525,66 @@ void MachineConfigModuleContent::layoutExec()
 
     layout->setRowStretch(d_ptr->combos.count(), 1);
 
+    label = new QLabel(trs("HDMI"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    combo = new ComboBox;
+    combo->blockSignals(true);
+    combo->addItems(QStringList()
+                    << trs("Off")
+                    << trs("On"));
+    combo->blockSignals(false);
+    layout->addWidget(combo, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(MachineConfigModuleContentPrivte
+                         ::ITEM_CBO_HDMI, combo);
+    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_HDMI;
+    combo->setProperty("Item", qVariantFromValue(itemId));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+
+    label = new QLabel(trs("NurseCall"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    combo = new ComboBox;
+    combo->blockSignals(true);
+    combo->addItems(QStringList()
+                    << trs("Off")
+                    << trs("On"));
+    combo->blockSignals(false);
+    layout->addWidget(combo, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(MachineConfigModuleContentPrivte
+                         ::ITEM_CBO_NURSE_CALL, combo);
+    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_NURSE_CALL;
+    combo->setProperty("Item", qVariantFromValue(itemId));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+
+    label = new QLabel(trs("AnalogOutput"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    combo = new ComboBox;
+    combo->blockSignals(true);
+    combo->addItems(QStringList()
+                    << trs("Off")
+                    << trs("On"));
+    combo->blockSignals(false);
+    layout->addWidget(combo, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(MachineConfigModuleContentPrivte
+                         ::ITEM_CBO_ANALOG_OUTPUT, combo);
+    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_ANALOG_OUTPUT;
+    combo->setProperty("Item", qVariantFromValue(itemId));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+
+    label = new QLabel(trs("SyncDefibrillation"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    combo = new ComboBox;
+    combo->blockSignals(true);
+    combo->addItems(QStringList()
+                    << trs("Off")
+                    << trs("On"));
+    combo->blockSignals(false);
+    layout->addWidget(combo, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(MachineConfigModuleContentPrivte
+                         ::ITEM_CBO_SYNC_DEFIBRILLATION, combo);
+    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_SYNC_DEFIBRILLATION;
+    combo->setProperty("Item", qVariantFromValue(itemId));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+
     label = new QLabel(trs("NeoNIBPMeasure"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     combo = new ComboBox;
@@ -641,6 +727,26 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
              enablePath = "NIBPNEOMeasureEnable";
              break;
         }
+    case MachineConfigModuleContentPrivte::ITEM_CBO_HDMI:
+    {
+         enablePath = "HDMIEnable";
+         break;
+    }
+    case MachineConfigModuleContentPrivte::ITEM_CBO_NURSE_CALL:
+    {
+         enablePath = "NurseCallEnable";
+         break;
+    }
+    case MachineConfigModuleContentPrivte::ITEM_CBO_ANALOG_OUTPUT:
+    {
+         enablePath = "AnalogOutputEnable";
+         break;
+    }
+    case MachineConfigModuleContentPrivte::ITEM_CBO_SYNC_DEFIBRILLATION:
+    {
+         enablePath = "SyncDefibrillationEnable";
+         break;
+    }
         default:
             return;
     }

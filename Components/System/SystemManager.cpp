@@ -260,6 +260,18 @@ bool SystemManager::isSupport(ConfiguredFuncs funcs) const
     case CONFIG_O2:
         path = "O2Enable";
         break;
+    case CONFIG_HDMI:
+        path = "HDMIEnable";
+        break;
+    case CONFIG_NURSE_CALL:
+        path = "NurseCallEnable";
+        break;
+    case CONFIG_ANALOG_OUTPUT:
+        path = "AnalogOutputEnable";
+        break;
+    case CONFIG_SYNC_DEFIBRILLATION:
+        path = "SyncDefibrillationEnable";
+        break;
     default:
         break;
     }

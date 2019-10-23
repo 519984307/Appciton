@@ -7,7 +7,7 @@
     <ScreenPixelWPitch>0.1695</ScreenPixelWPitch>
     <ScreenPixelHPitch>0.1695</ScreenPixelHPitch>
     <!--功能机型的使能配置-->
-    <ConfiguredFunctions>ECG12LEAD,SPO2,NIBP,RESP,CO2,AG,CO,IBP,TEMP,Printer,WIFI,Touch,O2,NIBPNEOMeasure</ConfiguredFunctions>
+    <ConfiguredFunctions>ECG12LEAD,SPO2,NIBP,RESP,CO2,AG,CO,IBP,TEMP,Printer,WIFI,Touch,O2,NIBPNEOMeasure,HDMI,NurseCall,AnalogOutput,SyncDefibrillation</ConfiguredFunctions>
     <ECG12LEADEnable>1</ECG12LEADEnable>
     <SPO2Enable>1</SPO2Enable>
     <NIBPEnable>1</NIBPEnable>
@@ -21,7 +21,11 @@
     <WIFIEnable>0</WIFIEnable>
     <TouchEnable>0</TouchEnable>
     <O2Enable>0</O2Enable>
-    <NIBPNEOMeasureEnable>1</NIBPNEOMeasureEnable>	
+    <NIBPNEOMeasureEnable>1</NIBPNEOMeasureEnable>
+    <HDMIEnable>0</HDMIEnable>
+    <NurseCallEnable>1</NurseCallEnable>
+    <AnalogOutputEnable>0</AnalogOutputEnable>
+    <SyncDefibrillationEnable>0</SyncDefibrillationEnable>	
     <!--背光调节方式  0:默认为等级亮度递增方式调节,1:如果0对应模式无法达到亮度递增调节效果，就选择该模式1-->
     <!--总之，2个模式中要选择能使得背光等级亮度递增的调节模式-->
     <BacklightAdjustment>0</BacklightAdjustment>
