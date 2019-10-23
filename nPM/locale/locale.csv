@@ -1494,3 +1494,4 @@ ChangeTime,更改系统时间将会新建病人，是否继续？,"Change system
 NurseCall,护士呼叫,Nurse Call
 AnalogOutput,模拟输出,Analog Output
 SyncDefibrillation,同步除颤,Sync Defibrillation
+nPMBoardSendCommunicationStop,系统板发送通讯中断,nPMBoard Send Communicaiton Stop
