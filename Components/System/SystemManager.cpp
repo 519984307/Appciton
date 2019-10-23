@@ -467,6 +467,13 @@ void SystemManager::setPoweronTestResult(ModulePoweronTestResult module,
     }
 }
 
+bool SystemManager::isNeonateMachine()
+{
+    int index = 0;
+    machineConfig.getNumValue("NeonateMachine", index);
+    return index == 1;
+}
+
 /***************************************************************************************************
  * 按键协议解析。
  **************************************************************************************************/

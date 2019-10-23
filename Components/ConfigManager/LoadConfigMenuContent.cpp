@@ -85,7 +85,13 @@ void LoadConfigMenuContentPrivate::loadConfigs()
         {QString("%1(%2)").arg(defaultStr).arg(trs(PatientSymbol::convert(PATIENT_TYPE_NEO))),
             "NeoConfig.Original.xml", PatientSymbol::convert(PATIENT_TYPE_NEO)}
     };
-    for (int i = 0; i < CONFIG_MAX_NUM; i++)
+    bool isNeoMachine = systemManager.isNeonateMachine();
+    int startIndex = static_cast<int>(PATIENT_TYPE_ADULT);
+    if (isNeoMachine)
+    {
+        startIndex = static_cast<int>(PATIENT_TYPE_NEO);
+    }
+    for (int i = startIndex; i < CONFIG_MAX_NUM; i++)
     {
         configs.append(defaultConfig[i]);
     }
@@ -98,7 +104,13 @@ void LoadConfigMenuContentPrivate::loadConfigs()
 void LoadConfigMenuContentPrivate::updateConfigList()
 {
     QStringList configNameList;
-    for (int i = 0; i < CONFIG_MAX_NUM; i++)
+    bool isNeoMachine = systemManager.isNeonateMachine();
+    int endIndex = CONFIG_MAX_NUM;
+    if (isNeoMachine)
+    {
+        endIndex = 1;
+    }
+    for (int i = 0; i < endIndex; i++)
     {
         configNameList.append(configs.at(i).name);
     }

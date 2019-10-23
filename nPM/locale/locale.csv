@@ -1854,3 +1854,4 @@ size12Inch,12 inch,12 inch
 ScreenInfo,屏幕大小,Screen Size
 TouchCrosshairToCalibrate,触摸十字线校准,Touch crosshair to calibrate
 ChangeTime,更改系统时间将会新建病人，是否继续？,"Change system time will create new patients,Whether to continue?"
+NeoMachine,新生儿机器,Machine For Neonate

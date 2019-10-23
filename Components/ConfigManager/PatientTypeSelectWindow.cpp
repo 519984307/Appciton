@@ -16,6 +16,7 @@
 #include "Button.h"
 #include "ConfigManager.h"
 #include <QMap>
+#include "SystemManagerInterface.h"
 
 #define CONFIG_DIR  ("/usr/local/nPM/etc/")
 #define CONFIG_MAX_NUM (3)
@@ -57,10 +58,14 @@ PatientTypeSelectWindow::PatientTypeSelectWindow()
 
     // 加载数据
     QString defaultStr = trs("DefaultConfig");
-    QStringList nameList = QStringList()
-                              << QString("%1(%2)").arg(defaultStr).arg(trs(PatientSymbol::convert(PATIENT_TYPE_ADULT)))
-                              << QString("%1(%2)").arg(defaultStr).arg(trs(PatientSymbol::convert(PATIENT_TYPE_PED)))
-                              << QString("%1(%2)").arg(defaultStr).arg(trs(PatientSymbol::convert(PATIENT_TYPE_NEO)));
+    QStringList nameList;
+    SystemManagerInterface *systemManager = SystemManagerInterface::getSystemManager();
+    if (systemManager && !systemManager->isNeonateMachine())
+    {
+        nameList.append(QString("%1(%2)").arg(defaultStr).arg(trs(PatientSymbol::convert(PATIENT_TYPE_ADULT))));
+        nameList.append(QString("%1(%2)").arg(defaultStr).arg(trs(PatientSymbol::convert(PATIENT_TYPE_PED))));
+    }
+    nameList.append(QString("%1(%2)").arg(defaultStr).arg(trs(PatientSymbol::convert(PATIENT_TYPE_NEO))));
     QList<ConfigManager::UserDefineConfigInfo> userConfig
             = configManager.getUserDefineConfigInfos();
     int count = userConfig.count();
@@ -74,14 +79,23 @@ PatientTypeSelectWindow::PatientTypeSelectWindow()
 
     // 保存对应id的配置文件名称
     nameList.clear();
-    nameList = QStringList()
-               << "AdultConfig.Original.xml"
-               << "PedConfig.Original.xml"
-               << "NeoConfig.Original.xml";
+    if (systemManager && !systemManager->isNeonateMachine())
+    {
+        nameList.append("AdultConfig.Original.xml");
+        nameList.append("PedConfig.Original.xml");
+    }
+    nameList.append("NeoConfig.Original.xml");
 
-    d_ptr->patientTypeMap.insert(nameList.at(0), PATIENT_TYPE_ADULT);
-    d_ptr->patientTypeMap.insert(nameList.at(1), PATIENT_TYPE_PED);
-    d_ptr->patientTypeMap.insert(nameList.at(2), PATIENT_TYPE_NEO);
+    if (systemManager && !systemManager->isNeonateMachine())
+    {
+        d_ptr->patientTypeMap.insert(nameList.at(0), PATIENT_TYPE_ADULT);
+        d_ptr->patientTypeMap.insert(nameList.at(1), PATIENT_TYPE_PED);
+        d_ptr->patientTypeMap.insert(nameList.at(2), PATIENT_TYPE_NEO);
+    }
+    else
+    {
+        d_ptr->patientTypeMap.insert(nameList.at(0), PATIENT_TYPE_NEO);
+    }
 
     for (int i = 0; i < count; i++)
     {

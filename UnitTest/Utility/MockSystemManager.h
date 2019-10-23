@@ -20,4 +20,5 @@ public:
     MOCK_CONST_METHOD0(getCurWorkMode, WorkMode(void));
     MOCK_CONST_METHOD1(isSupport, bool(ConfiguredFuncs));
     MOCK_CONST_METHOD1(isSupport, bool(ParamID));
+    MOCK_METHOD0(isNeonateMachine, bool());
 };

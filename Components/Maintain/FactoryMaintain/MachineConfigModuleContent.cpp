@@ -56,6 +56,7 @@ public:
         ITEM_CBO_BACKLIGHT,
         ITEM_CBO_NIBP_NEO_MEASURE,
         ITEM_CBO_SCREEN_INFO,
+        ITEM_CBO_NEO_MACHINE,
         ITEM_CBO_MAX
     };
 
@@ -231,6 +232,15 @@ void MachineConfigModuleContentPrivte::loadOptions()
     index = 0;
     machineConfig.getNumValue("ScreenInfoEnable", index);
     combos[ITEM_CBO_SCREEN_INFO]->setCurrentIndex(index);
+
+    // 新生儿专用机器
+    combos[ITEM_CBO_NEO_MACHINE]->clear();
+    combos[ITEM_CBO_NEO_MACHINE]->addItems(QStringList()
+                                           << trs("No")
+                                           << trs("Yes"));
+    index = 0;
+    machineConfig.getNumValue("NeonateMachine", index);
+    combos[ITEM_CBO_NEO_MACHINE]->setCurrentIndex(index);
 
     setCombosBlockSignalStatus(false);
 }
@@ -550,6 +560,16 @@ void MachineConfigModuleContent::layoutExec()
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
+    // special machine for neonate
+    label = new QLabel(trs("NeoMachine"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    combo = new ComboBox;
+    layout->addWidget(combo, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(MachineConfigModuleContentPrivte::ITEM_CBO_NEO_MACHINE, combo);
+    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_NEO_MACHINE;
+    combo->setProperty("Item", qVariantFromValue(itemId));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+
     layout->setRowStretch(d_ptr->combos.count(), 1);
 }
 
@@ -680,6 +700,11 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
         case MachineConfigModuleContentPrivte::ITEM_CBO_SCREEN_INFO:
         {
             enablePath = "ScreenInfoEnable";
+            break;
+        }
+        case MachineConfigModuleContentPrivte::ITEM_CBO_NEO_MACHINE:
+        {
+            enablePath = "NeonateMachine";
             break;
         }
         default:
