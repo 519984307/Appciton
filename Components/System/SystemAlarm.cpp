@@ -102,7 +102,7 @@ static const char *alarmLimitOneshotStr[] =
     "CurrentPatientStorageSpaceFull",
     "AlarmAudioOff",
     "AlarmOff",
-    "nPMBoardSendCommunicationStop"
+    "SystemBoardSendCommunicationStop"
 };
 
 /**************************************************************************************************
