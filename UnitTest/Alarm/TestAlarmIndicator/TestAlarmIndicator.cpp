@@ -912,13 +912,6 @@ void TestAlarmIndicator::testPublishAlarmHasPhyAlarm()
         soundHasAlarm = true;
     }
 
-    bool lightHasAlarm = false;
-    if (highestPriority != ALARM_PRIO_PROMPT)
-    {
-        /* after alarm reset and alarm pause, no light alarm */
-        lightHasAlarm = true;
-    }
-
     EXPECT_CALL(mockPhyInfoBarWidget, display(_));      // 无论什么报警状态，都显示报警
 
     if (status != ALARM_STATUS_PAUSE)
@@ -935,7 +928,7 @@ void TestAlarmIndicator::testPublishAlarmHasPhyAlarm()
 
     EXPECT_CALL(mockTechInfoBarWidget, clear());
     EXPECT_CALL(mockSoundManager, updateAlarm(soundHasAlarm, soundPriority));
-    EXPECT_CALL(mockLightManager, updateAlarm(lightHasAlarm, lightPriority));
+    EXPECT_CALL(mockLightManager, updateAlarm(true, lightPriority));
 
     alarmIndicator.publishAlarm(status);
 
@@ -1009,7 +1002,7 @@ void TestAlarmIndicator::testPublishAlarmHasTechAlarm()
     {
         // 关闭报警音,灯光
         EXPECT_CALL(mockSoundManager, updateAlarm(false, ALARM_PRIO_PROMPT));
-        EXPECT_CALL(mockLightManager, updateAlarm(false, ALARM_PRIO_PROMPT));
+        EXPECT_CALL(mockLightManager, updateAlarm(true, ALARM_PRIO_PROMPT));
     }
 
     EXPECT_CALL(mockPhyInfoBarWidget, clear());
