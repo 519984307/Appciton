@@ -132,6 +132,12 @@ public:
     // set module power on test result
     void setPoweronTestResult(ModulePoweronTestResult module, ModulePoweronTestStatus result);
 
+    /**
+     * @brief isNeonateMachine 是否为新生儿专用机器
+     * @return
+     */
+    bool isNeonateMachine();
+
 public:
     // 按键协议解析。
     void parseKeyValue(const unsigned char *data, unsigned int len);

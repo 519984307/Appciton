@@ -73,4 +73,10 @@ public:
 
     // check whether param is support
     virtual bool isSupport(ParamID paramID) const = 0;
+
+    /**
+     * @brief isNeonateMachine 是否为新生儿专用机器
+     * @return
+     */
+    virtual bool isNeonateMachine() = 0;
 };

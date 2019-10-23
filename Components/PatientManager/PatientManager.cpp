@@ -575,8 +575,17 @@ void PatientManagerPrivate::loadPatientInfo(PatientInfo &info)
     int numValue = 0;
     QString strValue;
 
-    systemConfig.getNumValue("General|PatientType", numValue);
-    info.type = (PatientType)numValue;
+    int isNeoMachine = 0;
+    machineConfig.getNumValue("NeonateMachine", isNeoMachine);
+    if (isNeoMachine)
+    {
+        info.type = PATIENT_TYPE_NEO;
+    }
+    else
+    {
+        systemConfig.getNumValue("General|PatientType", numValue);
+        info.type = (PatientType)numValue;
+    }
 
     systemConfig.getNumValue("PrimaryCfg|PatientInfo|PatientPacer", numValue);
     info.pacer = (PatientPacer)numValue;

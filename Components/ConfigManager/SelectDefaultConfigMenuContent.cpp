@@ -17,6 +17,7 @@
 #include <QMap>
 #include "LanguageManager.h"
 #include <QList>
+#include "SystemManagerInterface.h"
 
 class SelectDefaultConfigMenuContentPrivate
 {
@@ -227,6 +228,12 @@ void SelectDefaultConfigMenuContent::layoutExec()
     combox->setProperty("Item", qVariantFromValue(itemID));
     combox->setProperty("factoryConfigFile", qVariantFromValue(configManager.factoryConfigFilename(PATIENT_TYPE_ADULT)));
     combox->setProperty("currentConfigFile", qVariantFromValue(configManager.runningConfigFilename(PATIENT_TYPE_ADULT)));
+    SystemManagerInterface *systemManager = SystemManagerInterface::getSystemManager();
+    if (systemManager && systemManager->isNeonateMachine())
+    {
+        label->setVisible(false);
+        combox->setVisible(false);
+    }
 
     //  ped default config
     label = new QLabel(trs("PedDefaultConfig"));
@@ -243,6 +250,11 @@ void SelectDefaultConfigMenuContent::layoutExec()
     combox->setProperty("Item", qVariantFromValue(itemID));
     combox->setProperty("factoryConfigFile", qVariantFromValue(configManager.factoryConfigFilename(PATIENT_TYPE_PED)));
     combox->setProperty("currentConfigFile", qVariantFromValue(configManager.runningConfigFilename(PATIENT_TYPE_PED)));
+    if (systemManager && systemManager->isNeonateMachine())
+    {
+        label->setVisible(false);
+        combox->setVisible(false);
+    }
 
     //  neo default config
     label = new QLabel(trs("NeoDefaultConfig"));
