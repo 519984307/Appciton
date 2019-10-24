@@ -465,7 +465,7 @@ void AlarmMaintainMenuContent::layoutExec()
     // default
     label = new QLabel(trs("Defaults"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
-    d_ptr->defaultBtn = new Button(trs("RecoverDefaults"));
+    d_ptr->defaultBtn = new Button(trs("RestoreDefaults"));
     d_ptr->defaultBtn->setButtonStyle(Button::ButtonTextOnly);
     itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_DEFAULT);
     d_ptr->defaultBtn->setProperty("Item", qVariantFromValue(itemID));
