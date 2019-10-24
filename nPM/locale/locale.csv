@@ -957,7 +957,7 @@ SucceedRescueDataByWIFI,成功传送12导联邮件,Succeed to Transfer Email by 
 SucceedErrorLogByUSB,成功通过U盘发送错误日志,Succeed to Transfer Errorlog by USB
 ScreenCapture,截屏,Screen Capture
 CaptureSuccess,截屏成功,Capture screen successfully.
-CaptureFail,截屏失败,Capture screen fail.
+CaptureFailed,截屏失败,Capture screen failed.
 ECGGain,ECG增益,ECG Gain
 Printspeed,打印速度,Print speed
 SerialNum,序列号,Serial Number
