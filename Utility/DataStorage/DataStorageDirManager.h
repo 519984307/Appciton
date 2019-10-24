@@ -65,7 +65,7 @@ public:
     ~DataStorageDirManager();
 
     // 获取营救事件时间列表
-    void getRescueEvent(QStringList &timeList);
+    void getRescueEvent(QStringList &timeList);   // NOLINT
 
     // 获取指定的营救数据路径
     QString getRescueDataDir(int index, const QString &time);
@@ -78,9 +78,6 @@ public:
     // 获取当前文件夹
     virtual QString getCurFolder() const;
 
-    // 获取FD文件名
-    QString getFDFileName() const {return _fdFileName;}
-
     // 获取文件夹的个数
     int getDirNum() const;
 
@@ -92,7 +89,7 @@ public:
 
     // 删除所有数据
     void deleteAllData();
-    void deleteData(QString &path);
+    void deleteData(const QString &path);   // NOLINT
     void deleteData(int index);
 
     // 整理上一个rescure incident存储目录中文件
@@ -122,15 +119,11 @@ private:
     // 删除较早的数据
     void _deleteOldData(void);
 
-    // 创建FD文件名
-    void _createFDFileName(QString &fileName, unsigned time, bool newRescue);
-
 private:
     unsigned _curDataSize;           // 当前的存储数据大小
     unsigned _previousDataSize;     // the size of previous rescue data
     QString _curFolder;              // 当前目录
-    QString _fdFileName;             // fulldisclosure文件名
-    QList<struct FolderName> _folderNameList;// 存储目录下文件夹名称及对应的大小
+    QList<struct FolderName> _folderNameList;  // 存储目录下文件夹名称及对应的大小
 
     QList<StorageManager *> _storageList;
 
