@@ -14,7 +14,7 @@ MachineConfigIsUpdatedNow,机器配置现在已经更新。,The machine configur
 IsRebootMachine,是否重启监护仪? ,Restart the monitor now?
 UpdateTips,更新提示,Update Tips
 ChangePasswordDesc,修改密码,Change Password
-EditPassWord,修改密码,Edit Password
+ChangePassword,修改密码,Change Password
 LastPassword,上次密码,Last Password
 EditPasswordNotSuccess,修改密码失败,Edit Password Not Success
 EditPasswordSuccess,修改密码成功,Edit Password Success
