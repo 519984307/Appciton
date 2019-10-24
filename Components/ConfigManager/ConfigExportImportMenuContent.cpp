@@ -169,7 +169,7 @@ TransferResult ConfigExportImportMenuContentPrivate::exportFileToUSB()
         if (isExist)
         {
             MessageBox message(trs("Export"),
-                               trs(QString("%1\r\n%2?").arg(name).arg(trs("IfSelectTheSameNameFile"))),
+                               trs(QString("%1\r\n%2?").arg(name).arg(trs("FileExistsOverWrite"))),
                                QStringList() << trs("Cancel") << trs("Repeated"));
             this->message = &message;
             status = static_cast<QDialog::DialogCode>(message.exec());
@@ -305,7 +305,7 @@ TransferResult ConfigExportImportMenuContentPrivate::insertFileFromUSB()
         if (true == isExist)
         {
             MessageBox message(trs("Import"),
-                               trs(QString("%1\r\n%2?").arg(name).arg(trs("IfSelectTheSameNameFile"))),
+                               trs(QString("%1\r\n%2?").arg(name).arg(trs("FileExistsOverWrite"))),
                                QStringList() << trs("Cancel") << trs("Repeated"));
             this->message = &message;
             flag = message.exec();
