@@ -97,7 +97,6 @@ AlarmType SystemAlarm::getAlarmType(int id)
 static const char *alarmLimitOneshotStr[] =
 {
     "SomeLimitAlarmDisabled",
-    "PowerupRecorderPressed",
     "PowerupCommunicationStop",
     "CurrentPatientStorageSpaceFull",
     "AlarmAudioOff",

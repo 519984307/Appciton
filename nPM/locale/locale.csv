@@ -327,7 +327,6 @@ AGMenuDesc,AG,AG
 SystemInfoSetting,系统信息,System Info
 ErrorLog,错误日志,Error Log
 SomeLimitAlarmDisabled,有超限报警被关闭,Some Limit Alarms Is Disabled
-PowerupRecorderPressed,前面板打印键短路,Front Panel Record Btn Stuck
 PowerupCommunicationStop,前面板通信中断,System Board Communication Stop
 WiFiMenu,无线网络,Wifi
 WiFiMenuDesc,无线网络,Wifi
