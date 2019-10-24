@@ -99,7 +99,7 @@ void ConfigManagerPassWordEditMenuContent::onBtnReleased()
     }
     else
     {
-        MessageBox message(trs("ChangePassword"), trs("EditPasswordNotSuccess"), false);
+        MessageBox message(trs("ChangePassword"), trs("ChangePasswordFail"), false);
         message.exec();
     }
 }
