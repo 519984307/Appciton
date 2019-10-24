@@ -369,7 +369,6 @@ NumberKeyboard,数字键盘,Number Keyboard
 ErrorInput,输入错误,Error Input
 Male,男性,Male
 Female,女性,Female
-PatientAge,病人年龄,Age
 PatientName,病人姓名,Name
 PatientInformation,病人信息,Patient Information
 RelievePatient,解除病人,Discharge Patient
