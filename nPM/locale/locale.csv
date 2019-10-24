@@ -183,7 +183,7 @@ EnterPressureContrlMode,进入压力操控模式,Enter Pressure Control
 EnterZeroMode,进入校零模式,Enter Zero
 QuitZeroMode,退出校零模式,Quit Zero
 OperationFailedPleaseAgain,"操作失败,请重试!","Operation failed , Please retry!"
-PumpControl,气泵充气速度,Pump Charging Rate
+PumpSpeed,气泵充气速度,Pump Speed
 ValveControl,气阀控制,Valve Control
 InflationPressure,充气压力,Inflation Pressure
 OverpressureProtect,过压保护,Over Pressure Protect
