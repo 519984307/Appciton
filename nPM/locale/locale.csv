@@ -17,7 +17,7 @@ ChangePasswordDesc,修改密码,Change Password
 ChangePassword,修改密码,Change Password
 OldPassword,旧密码,Old Password
 ChangePasswordFail,修改密码失败,Change Password Failed
-EditPasswordSuccess,修改密码成功,Edit Password Success
+ChangePasswordSuccess,修改密码成功,Change Password Successfully
 RESPModule,Resp,Resp
 NIBPModule,NIBP,NIBP
 TEMPModule,Temp,Temp

@@ -94,7 +94,7 @@ void ConfigManagerPassWordEditMenuContent::onBtnReleased()
     QString prePassword = numberPad.getStrValue();
     if (systemConfig.setStrValue("General|ConfigManagerPassword", prePassword))
     {
-        MessageBox message(trs("ChangePassword"), trs("EditPasswordSuccess"), false);
+        MessageBox message(trs("ChangePassword"), trs("ChangePasswordSuccess"), false);
         message.exec();
     }
     else
