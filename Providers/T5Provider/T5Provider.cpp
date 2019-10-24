@@ -390,6 +390,10 @@ void T5Provider::_result(unsigned char *packet)
         {
             temp = InvData();
         }
+        else if (!_hasBeenConnected1)
+        {
+            _hasBeenConnected1 = true;
+        }
         _temp1 = borderValueChange(LOW_BORDER_VALUE, HIGH_BORDER_VALUE, temp);
     }
 
@@ -399,6 +403,10 @@ void T5Provider::_result(unsigned char *packet)
         if (temp == TEMP_INVALID_VALUE)
         {
             temp = InvData();
+        }
+        else if (!_hasBeenConnected2)
+        {
+            _hasBeenConnected2 = true;
         }
         _temp2 = borderValueChange(LOW_BORDER_VALUE, HIGH_BORDER_VALUE, temp);
     }
