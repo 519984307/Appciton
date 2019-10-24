@@ -173,6 +173,9 @@ void CO2MenuContent::onComboBoxIndexChanged(int index)
     case CO2MenuContentPrivate::ITEM_CBO_APNEA_TIME:
         currentConfig.setNumValue("CO2|ApneaTime", index);
         co2Param.setApneaTime(static_cast<ApneaAlarmTime>(index));
+        // 联动resp的窒息时间
+        currentConfig.setNumValue("RESP|ApneaDelay", index);
+        respParam.setApneaTime(static_cast<ApneaAlarmTime>(index));
         break;
     case CO2MenuContentPrivate::ITEM_CBO_WORK_MODE:
         co2Param.setModuleWorkMode(static_cast<CO2WorkMode>(index + 1));

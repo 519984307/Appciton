@@ -150,6 +150,8 @@ void ConfigEditCO2MenuContent::onComboBoxIndexChanged(int index)
         break;
     case ConfigEditCO2MenuContentPrivate::ITEM_CBO_APNEA_TIME:
         d_ptr->config->setNumValue("CO2|ApneaTime", index);
+        // 联动resp窒息延迟
+        d_ptr->config->setNumValue("RESP|ApneaDelay", index);
         break;
     };
 }
