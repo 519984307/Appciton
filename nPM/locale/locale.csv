@@ -1069,7 +1069,7 @@ ExportImportConfig,导出/导入配置,Export/Import Config
 Export,导出,Export
 Import,导入,Import
 Repeated,覆盖,Repeated
-IfSelectTheSameNameFile,存在同名文件，是否选择覆盖,if select the same name file
+FileExistsOverWrite,存在同名文件，是否选择覆盖,"File exists, overwrite?"
 ImportFileFailed,导入文件失败,Import File failed
 ImportFileMaximum,导入文件数量已达到最大,Import The Number Of Files  Maximum
 OutOfNamingRange,超出命名范围,Out Of Naming Range
