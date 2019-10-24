@@ -378,7 +378,7 @@ PatientInformation,病人信息,Patient Information
 RelievePatient,解除病人,Discharge Patient
 Discharge,解除病人,Discharge
 isRelievePatient,是否解除病人,Whether to discharge patient?
-CleanPatientData,清除当前病人数据,Clean Current Patient Data
+ClearPatientData,清除当前病人数据,Clear Current Patient Data
 isCleanPatient,是否清除当前病人数据,Whether to clean the current patient data?
 WhetherStandby,是否进入待机？,Whether to enter the standby machine？
 RemoveAndRecePatient,"解除当前病人,接收新病人?",Release the current patient and receive new patient?

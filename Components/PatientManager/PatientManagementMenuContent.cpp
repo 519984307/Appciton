@@ -184,6 +184,6 @@ void PatientManagementMenuContentPrivate::loadOption()
     }
     else
     {
-        dischargePatient->setText(trs("CleanPatientData"));
+        dischargePatient->setText(trs("ClearPatientData"));
     }
 }
