@@ -316,7 +316,7 @@ TransferResult ConfigExportImportMenuContentPrivate::insertFileFromUSB()
             // 导入文件不超过规定最大值
             if (configs.count() >= CONFIG_MAX_NUM)
             {
-                MessageBox message(trs("ImportFileMaximum"),
+                MessageBox message(trs("ImportFileExceedRange"),
                                    trs(QString("%1\r\n%2").arg(name).arg(trs("ImportFileFailed"))),
                                    QStringList() << trs("Yes"));
                 message.exec();

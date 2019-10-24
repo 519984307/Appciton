@@ -1071,7 +1071,7 @@ Import,导入,Import
 Repeated,覆盖,Repeated
 FileExistsOverWrite,存在同名文件，是否选择覆盖,"File exists, overwrite?"
 ImportFileFailed,导入文件失败,Import File failed
-ImportFileMaximum,导入文件数量已达到最大,Import The Number Of Files  Maximum
+ImportFileExceedRange,导入文件数量已达到最大,The number of import files exceed range
 OutOfNamingRange,超出命名范围,Out Of Naming Range
 ImportFileCompleted,导入文件完成,Import File Completed
 PleaseAddImportFiles,请增加导入文件,Please Add Import Files
