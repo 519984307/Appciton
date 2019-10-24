@@ -423,7 +423,7 @@ void DataStorageDirManager::createDir(bool createNew)
     {
         for (int i = 0; i < _storageList.count(); i++)
         {
-            StorageManager *item = item = _storageList.at(i);
+            StorageManager *item = _storageList.at(i);
             item->createDir();
         }
     }
