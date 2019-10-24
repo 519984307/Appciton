@@ -232,7 +232,7 @@ void UpgradeWindow::onUpgradeFinished(UpgradeManager::UpgradeResult result)
     }
     else
     {
-        d_ptr->textEdit->appendPlainText(trs("UpgradeFailure"));
+        d_ptr->textEdit->appendPlainText(trs("UpgradeFailed"));
         getCloseBtn()->setEnabled(true);
         d_ptr->progressBar->setValue(0);
     }

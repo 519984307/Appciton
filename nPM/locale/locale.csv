@@ -741,7 +741,7 @@ Upgrade,升级,Upgrade
 UpgradeModule,升级模块,Upgrade Module
 UpgradeStart,开始,Start
 UpgradeSuccess,升级成功,Upgrade Successfully
-UpgradeFailure,升级失败,Upgrade Failure
+UpgradeFailed,升级失败,Upgrade Failed
 SystemWillRestartPleaseDoNotPowerOff,设备将重启，请勿断电,System will restart. Please do not power off.
 BootloaderStart,Bootloader启动,Bootloader start
 BootloaderStartApplication,Bootloader启动应用程序,Bootloader start application
