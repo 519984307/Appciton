@@ -1199,7 +1199,6 @@ RealtimePrintSegment,实时打印,Real Time Print
 NibpMeasurement,NIBP测量,NIBP Measurement
 StopSetting,停止设置,Stop Setting
 SignalType,信号类型,Signal Type
-Continuity,连续,Continuity
 Pluse,波形脉冲,Pluse
 TriggerMode,触发模式,Trigger Mode
 AlarmLevel,报警级别,Alarm Level
