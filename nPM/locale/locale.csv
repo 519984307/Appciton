@@ -164,7 +164,6 @@ SwitchPassthroughModeFail,切换透传模式失败,Switch Passthrough Mode Fail
 FlashCRCError,Flash CRC 错误,Flash CRC Error
 NIBPMeasurement,无创血压测量,NIBP Measure
 NIBPMeasureMode,测量模式,Measure Mode
-NIBPIntervalTime,间隔时间,NIBP Interval Time
 NIBPAutoInterval,自动间隔,Auto Interval
 NIBPCompleteTone,NIBP完成音,NIBP Complete Tone
 NIBPZEROING,校零中,ZEROING
