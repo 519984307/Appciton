@@ -328,6 +328,7 @@ void TimeEditWindow::layoutExec()
 
 void TimeEditWindow::hideEvent(QHideEvent *ev)
 {
+    Dialog::hideEvent(ev);
     QDateTime dt = d_ptr->getSetupTime();
     if (d_ptr->oldTime != dt.toTime_t())
     {
@@ -346,7 +347,6 @@ void TimeEditWindow::hideEvent(QHideEvent *ev)
             trendDataStorageManager.restartPeriodRun();
         }
     }
-    Dialog::hideEvent(ev);
 }
 
 void TimeEditWindow::onComboBoxIndexChanged(int index)
