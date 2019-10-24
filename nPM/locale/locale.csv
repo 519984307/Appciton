@@ -365,7 +365,7 @@ EncryptType,加密类型,Encrypt Type
 GetIPFailed,获取动态IP失败,Get Dynamic IP Failed
 SubnetMask,子网掩码,Subnet Mask
 GateWay,网关,Gateway
-PreferrendDNS,首选DNS,Preferrend DNS
+PreferredDNS,首选DNS,Preferred DNS
 AlternateDNS,备用DNS,Alternate DNS
 EnglishKeyboard,英语键盘,English Keyboard
 NumberKeyboard,数字键盘,Number Keyboard
