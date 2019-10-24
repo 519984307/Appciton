@@ -11,8 +11,8 @@ Neonate,新生儿,Neonatal
 AlarmLimit,报警限,Alarm Limit
 Notch,陷波,Notch
 MachineConfigIsUpdatedNow,机器配置现在已经更新。,The machine configuration has been updated.
-IsRebootMachine,是否重启机器? ,Do you want to restart the machine?
-UpdateHint,更新提示,Update Hint
+IsRebootMachine,是否重启监护仪? ,Restart the monitor now?
+UpdateTips,更新提示,Update Tips
 EditPassWordDesc,修改密码,Edit Password
 EditPassWord,修改密码,Edit Password
 LastPassword,上次密码,Last Password
