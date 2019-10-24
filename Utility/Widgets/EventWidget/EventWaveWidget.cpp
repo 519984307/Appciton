@@ -561,14 +561,13 @@ void EventWaveWidget::_drawWave(int index, QPainter &painter)
     {
         painter.setPen(Qt::red);
     }
-    painter.setRenderHint(QPainter::Antialiasing, true);
 
     _drawWaveLabel(painter, waveDesc);
 
     bool start = true;
     int startIndex = (d_ptr->currentWaveStartSecond + d_ptr->durationBefore) * waveData->sampleRate;
-    QPainterPath path;
     bool isFirstVaildPoint = true;
+    QVector<QPointF> points;
     for (int i = 0 + startIndex; (x2 - d_ptr->startX) < d_ptr->waveRagWidth; i++)
     {
         qint16 wave = waveData->waveData[i];
@@ -604,13 +603,20 @@ void EventWaveWidget::_drawWave(int index, QPainter &painter)
         {
             if (isFirstVaildPoint)
             {
-                path.moveTo(x1, y1);
+                if (!points.isEmpty())
+                {
+                    painter.drawPolyline(points.data(), points.count());
+                }
+                points.clear();
                 isFirstVaildPoint = false;
+                QPointF point(x1, y1);
+                points.append(point);
             }
             else
             {
                 y2 = waveValue;
-                path.lineTo(x2, y2);
+                QPointF point(x2, y2);
+                points.append(point);
             }
         }
         x1 = x2;
@@ -669,9 +675,9 @@ void EventWaveWidget::_drawWave(int index, QPainter &painter)
             break;
         }
     }
-    if (!path.isEmpty())
+    if (!points.isEmpty())
     {
-        painter.drawPath(path);
+        painter.drawPolyline(points.data(), points.count());
     }
 }
 
