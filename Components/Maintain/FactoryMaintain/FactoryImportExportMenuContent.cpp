@@ -173,7 +173,7 @@ TransferResult FactoryImportExportMenuContentPrivate::exportFileToUSB()
         if (copyOk == false)
         {
             MessageBox message(trs("Export"),
-                               trs(QString("%1\r\n%2").arg(trs(name)).arg(trs("ExportFailure"))),
+                               trs(QString("%1\r\n%2").arg(trs(name)).arg(trs("ExportFailed"))),
                                QStringList() << trs("Yes"));
             message.exec();
             return TRANSFER_FAIL;

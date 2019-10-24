@@ -81,7 +81,7 @@ public:
      * @param importTag        import tag
      * @return 返回：ture-valid;false-invalid；
      */
-    bool checkXMLContent(QList<QDomElement> &importTagList, QDomElement &importTag);
+    bool checkXMLContent(QList<QDomElement> &importTagList, QDomElement &importTag);  /* NOLINT */
 
     /**
      * @brief tagFindElement  find tag elements
@@ -194,7 +194,7 @@ TransferResult ConfigExportImportMenuContentPrivate::exportFileToUSB()
         if (copyOk == false)
         {
             MessageBox message(trs("Export"),
-                               trs(QString("%1\r\n%2").arg(name).arg(trs("ExportFailure"))),
+                               trs(QString("%1\r\n%2").arg(name).arg(trs("ExportFailed"))),
                                QStringList() << trs("Yes"));
             message.exec();
             return TRANSFER_FAIL;
