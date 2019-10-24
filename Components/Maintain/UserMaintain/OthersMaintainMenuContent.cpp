@@ -132,6 +132,15 @@ void OthersMaintainMenuContentPrivate::loadOptions()
     mode = respParam.getSweepMode();
     combos[ITEM_CBO_RESP_WAVE_MODE]->setCurrentIndex(mode);
 
+    if (systemManager.isSupport(CONFIG_NURSE_CALL))
+    {
+        nurseCallBtn->setEnabled(true);
+    }
+    else
+    {
+        nurseCallBtn->setEnabled(false);
+    }
+
 #ifdef ENABLE_O2_APNEASTIMULATION
     bool sta = false;
     systemConfig.getNumValue("PrimaryCfg|O2|ApneaAwake", sta);
