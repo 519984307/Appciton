@@ -1307,7 +1307,7 @@ TEMPModuleNotCalibration1,Temp模块通道1未定标,Temp Channel 1 Not Calibrat
 TEMPModuleNotCalibration2,Temp模块通道2未定标,Temp Channel 2 Not Calibration
 TEMPModuleDisable,Temp模块禁用,Temp Module Disable
 TEMPCommunicationStop,Temp通信中断,Temp Communication Stop
-TEMPSendCommunicationStop,Temp发送通信中断,Temp Send Communication Stop
+TempDataTransmissionStop,Temp发送通信中断,Temp Data Transmission Stop
 TEMPModuleAbnormal,Temp模块异常,Temp Module Is Abnormal
 N2O,N₂O,N₂O
 AA1,自动识别麻醉气体1,AA1
