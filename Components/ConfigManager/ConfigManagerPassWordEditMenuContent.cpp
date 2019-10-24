@@ -79,7 +79,7 @@ void ConfigManagerPassWordEditMenuContent::onBtnReleased()
     // 设置初始字符串 placeholder模式
     QString lastPassword;
     systemConfig.getStrValue("General|ConfigManagerPassword", lastPassword);
-    lastPassword = QString("%1:%2").arg(trs("LastPassword")).arg(lastPassword);
+    lastPassword = QString("%1:%2").arg(trs("OldPassword")).arg(lastPassword);
     numberPad.setInitString(lastPassword, true);
     numberPad.setCheckValueHook(checkPasswordValue);
     QString invalidStr = trs("Input8DigitsPassword");

@@ -15,7 +15,7 @@ IsRebootMachine,是否重启监护仪? ,Restart the monitor now?
 UpdateTips,更新提示,Update Tips
 ChangePasswordDesc,修改密码,Change Password
 ChangePassword,修改密码,Change Password
-LastPassword,上次密码,Last Password
+OldPassword,旧密码,Old Password
 EditPasswordNotSuccess,修改密码失败,Edit Password Not Success
 EditPasswordSuccess,修改密码成功,Edit Password Success
 RESPModule,Resp,Resp
