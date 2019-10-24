@@ -683,7 +683,7 @@ NIBPDataTransmissionStop,NIBP发送通信中断,NIBP Data Transmission Stop
 NIBPSelftestFailed,NIBP自测失败,NIBP Selftest Failed
 NIBPModuleAbnormal,NIBP模块异常,NIBP Module Abnormal
 NIBPModuleNotCalibrate,NIBP未校准,NIBP Module Not Calibrated
-NIBPModuleError,NIBP模块硬件错误,NIBP Module HardWare Error
+NIBPModuleError,NIBP模块硬件错误,NIBP Module Hardware Error
 NIBPModuleOverPressure,NIBP模块过压,NIBP Module Overpressure
 NIBPCommunicationTimeout,NIBP通信超时,NIBP Communication Timeout
 NIBPMeasurementAbort,测量中止,NIBP Measurement Aborted
@@ -725,7 +725,7 @@ ControlValve,控制阀,Control Valve
 DumpValve,安全阀,Dump Valve
 ServicePatientType,病人类型,Patient Type
 ServiceChargePressure,预充气压力,Charge Pressure
-TEMPModuleDisConnect,Temp模块未连接,Temp Module DisConnected
+TEMPModuleDisconnected,Temp模块未连接,Temp Module Disconnected
 TEMPChannelOne,Temp通道1,Temp Channel One
 TEMPChannelTwo,Temp通道2,Temp Channel Two
 TEMPChannelDisable,Temp通道禁用,Temp Channel Disable
