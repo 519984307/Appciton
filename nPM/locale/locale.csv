@@ -152,7 +152,6 @@ SPO2SweepSpeed,波形速度,Sweep Speed
 SPO2PRDisplay,脉率显示,PR Display
 SPO2Menu,SpO₂,SpO₂
 RESPSweepSpeed,波形速度,Sweep Speed
-RESPApneaTime,窒息时间,Apnea Time
 RESPMenu,Resp,Resp
 RESPWaveMode,Resp波形模式,Resp Wave Mode
 RESPCurve,曲线,Curve
