@@ -538,9 +538,6 @@ ECGC6LeadOff,ECGC6导联脱落,ECG C6 Lead Off
 ECGOverLoad,ECG过载,ECG Over Load
 ECGCommunicationStop,ECG通信中断,ECG Communication Stop
 ECGSendCommunicationStop,ECG发送通信中断,ECG Send Communication Stop
-ECG12LSnapShot,12导 快照,12 Lead SnapShot
-ECGAcquiring12L,获取12导,Acquiring 12 Lead
-ECGAcquired12L,获取12导结束,Acquire 12 Lead Complete
 RESPCommunicationStop,Resp通信中断,Resp Communication Stop
 RESPCheckElecrodes,Resp检查电极,Resp Check Electrodes
 Apnea,呼吸窒息,Apnea
