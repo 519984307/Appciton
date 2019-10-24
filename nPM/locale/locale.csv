@@ -865,8 +865,6 @@ TransferErrorLogToUSBComplete,U盘传输错误日志完成,Transfer error log to
 TransferErrorLogToUSB,U盘传输错误日志,Transfer error log to USB disk
 TransferFailed,传输失败,Transfer Failed
 TransferCancel,传输取消,Transfer Cancel
-ECG12LTransfersuccess,12导传送成功,ECG 12 Lead Transfer Success
-ECG12LTransferfail,12导传送失败,ECG 12 Lead Transfer Fail
 TransferDisconnect,USB设备非法拔出,USB disk disconnected abnormally
 NotDisconnectUSB,不要断开USB设备,Do not disconnect the USB disk
 RemoveUSB,传输完成，可以移除USB设备了,"Transfer is done, you can remove the U-USB disk safely"
