@@ -115,6 +115,8 @@ void ConfigEditRespMenuContent::onComboIndexChanged(int index)
     {
     case ConfigEditRespMenuContentPrivate::ITEM_CBO_APNEA_DELAY:
         d_ptr->config->setNumValue("RESP|ApneaDelay", index);
+        // 联动co2的窒息延迟
+        d_ptr->config->setNumValue("CO2|ApneaTime", index);
         break;
     case ConfigEditRespMenuContentPrivate::ITEM_CBO_BREATH_LEAD:
         d_ptr->config->setNumValue("RESP|BreathLead", index);

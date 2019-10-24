@@ -21,7 +21,7 @@ class EventReviewModelPrivate
 {
 public:
     EventReviewModelPrivate()
-        : eachPageRowCount(1)
+        : eachPageRowCount(0)
     {}
 public:
     QList<QString> timeList;
@@ -53,7 +53,13 @@ int EventReviewModel::columnCount(const QModelIndex &parent) const
 int EventReviewModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return d_ptr->calTotalPage() * d_ptr->eachPageRowCount;
+    int page = d_ptr->calTotalPage();
+    if (page == 0)
+    {
+        // 没有数据时也仍然占一页
+        page = 1;
+    }
+    return page * d_ptr->eachPageRowCount;
 }
 
 QVariant EventReviewModel::data(const QModelIndex &index, int role) const
@@ -61,7 +67,10 @@ QVariant EventReviewModel::data(const QModelIndex &index, int role) const
     if (!index.isValid() || d_ptr->timeList.count() == 0 ||
             d_ptr->eventList.count() == 0)
     {
-        return QVariant();
+        if (role == Qt::DisplayRole)
+        {
+            return QVariant();
+        }
     }
     int row = index.row();
     int column = index.column();
@@ -87,6 +96,18 @@ QVariant EventReviewModel::data(const QModelIndex &index, int role) const
     }
     case Qt::TextAlignmentRole:
         return QVariant(Qt::AlignCenter);
+    case Qt::BackgroundRole:
+        if (row % 2)
+        {
+            return themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
+                                        ThemeManager::StateDisabled);
+        }
+        else
+        {
+            return themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
+                                        ThemeManager::StateActive);
+        }
+        break;
     case Qt::ForegroundRole:
         return QBrush(QColor("#2C405A"));
         break;
@@ -130,6 +151,10 @@ QVariant EventReviewModel::headerData(int section, Qt::Orientation orientation, 
     case Qt::ForegroundRole:
         return QBrush(QColor("#2C405A"));
         break;
+    case Qt::BackgroundColorRole:
+        return themeManger.getColor(ThemeManager::ControlTypeNR,
+                                    ThemeManager::ElementBackgound,
+                                    ThemeManager::StateDisabled);
     default:
         break;
     }
@@ -168,8 +193,14 @@ int EventReviewModel::getHeightHint() const
 {
     return ROW_HEIGHT_HINT;
 }
+
 int EventReviewModelPrivate::calTotalPage()
 {
+    if (!eachPageRowCount)
+    {
+        return 0;
+    }
+
     int page = timeList.count() / eachPageRowCount;
     if (timeList.count() % eachPageRowCount)
     {

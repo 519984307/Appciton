@@ -139,11 +139,11 @@ public:
     {
         static const char *symbol[PRINT_ONESHOT_NR] =
         {
-            "PrinterCommunicationStop", // 打印机通信中断
+            "PrinterCommunicationStop",  // 打印机通信中断
             "PrinterOutOfPaper",    // 打印机缺纸
             "PrinterOverHeating",   // 打印头过热
             "PrinterFault",         // 打印机故障
-            "PrinterSendCommunicationStop"
+            "PrinterDataTransmissionStop"  // 打印机发送通信中断
         };
         return symbol[index];
     }

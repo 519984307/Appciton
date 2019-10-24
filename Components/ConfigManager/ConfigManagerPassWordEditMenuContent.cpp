@@ -26,8 +26,8 @@ class ConfigManagerPassWordEditMenuContentPrivate
 };
 
 ConfigManagerPassWordEditMenuContent::ConfigManagerPassWordEditMenuContent()
-                                    : MenuContent(trs("EditPassWord"),
-                                                  trs("EditPassWordDesc")),
+                                    : MenuContent(trs("ChangePassword"),
+                                                  trs("ChangePasswordDesc")),
                                       d_ptr(new ConfigManagerPassWordEditMenuContentPrivate)
 {
 }
@@ -42,7 +42,7 @@ void ConfigManagerPassWordEditMenuContent::layoutExec()
     QGridLayout *glayout = new QGridLayout(this);
     glayout->setMargin(10);
 
-    Button *btn = new Button(QString("%1 >>").arg(trs("EditPassWord")));
+    Button *btn = new Button(QString("%1 >>").arg(trs("ChangePassword")));
     btn->setButtonStyle(Button::ButtonTextOnly);
     glayout->addWidget(btn, 0, 1);
     glayout->setColumnStretch(0, 1);
@@ -69,7 +69,7 @@ void ConfigManagerPassWordEditMenuContent::onBtnReleased()
     QString rec("[0-9]");
     numberPad.setBtnEnable(rec);
     // 设置键盘标题
-    numberPad.setWindowTitle(trs("EditPassWord"));
+    numberPad.setWindowTitle(trs("ChangePassword"));
     // 最大输入长度
     numberPad.setMaxInputLength(8);
     // 固定为数字键盘
@@ -79,7 +79,7 @@ void ConfigManagerPassWordEditMenuContent::onBtnReleased()
     // 设置初始字符串 placeholder模式
     QString lastPassword;
     systemConfig.getStrValue("General|ConfigManagerPassword", lastPassword);
-    lastPassword = QString("%1:%2").arg(trs("LastPassword")).arg(lastPassword);
+    lastPassword = QString("%1:%2").arg(trs("OldPassword")).arg(lastPassword);
     numberPad.setInitString(lastPassword, true);
     numberPad.setCheckValueHook(checkPasswordValue);
     QString invalidStr = trs("Input8DigitsPassword");
@@ -94,12 +94,12 @@ void ConfigManagerPassWordEditMenuContent::onBtnReleased()
     QString prePassword = numberPad.getStrValue();
     if (systemConfig.setStrValue("General|ConfigManagerPassword", prePassword))
     {
-        MessageBox message(trs("EditPassWord"), trs("EditPasswordSuccess"), false);
+        MessageBox message(trs("ChangePassword"), trs("ChangePasswordSuccess"), false);
         message.exec();
     }
     else
     {
-        MessageBox message(trs("EditPassWord"), trs("EditPasswordNotSuccess"), false);
+        MessageBox message(trs("ChangePassword"), trs("ChangePasswordFail"), false);
         message.exec();
     }
 }

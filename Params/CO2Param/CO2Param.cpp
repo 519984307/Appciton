@@ -501,12 +501,26 @@ void CO2Param::setBR(short br)
         br = InvData();
     }
 
+    // 呼吸率测量范围
+    if (br > respParam.getRRMeasureMaxRange()
+            || br < respParam.getRRMeasureMinRange())
+    {
+        br = InvData();
+    }
+
     respDupParam.updateBR(br);
 }
 
 void CO2Param::setRR(short rr)
 {
     if (!(isEnabled() && d_ptr->co2Switch))
+    {
+        rr = InvData();
+    }
+
+    // 呼吸率测量范围
+    if (rr > respParam.getRRMeasureMaxRange()
+            || rr < respParam.getRRMeasureMinRange())
     {
         rr = InvData();
     }

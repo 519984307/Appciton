@@ -245,5 +245,6 @@ Provider::~Provider()
 
 void Provider::stopCheckConnect(bool flag)
 {
+    qDebug() << _name << "connection check" << (flag ? "stop" : "start");
     _stopCheckConnect = flag;
 }

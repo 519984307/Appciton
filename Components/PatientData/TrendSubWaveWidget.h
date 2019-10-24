@@ -129,7 +129,7 @@ private:
      * @param data 数据
      * @return 像素位置
      */
-    double _mapValue(TrendParamDesc desc, int data);
+    double _mapValue(TrendParamDesc desc, qreal data);
 
     /**
      * @brief _autoRulerCal 计算自动标尺

@@ -31,7 +31,7 @@ QString ECGLimitAlarm::getAlarmSourceName(void)
  *************************************************************************************************/
 int ECGLimitAlarm::getAlarmSourceNR(void)
 {
-    return 1; // 只有心率报警。
+    return 1;  // 只有心率报警。
 }
 
 /**************************************************************************************************
@@ -224,18 +224,8 @@ AlarmPriority ECGOneShotAlarm::getAlarmPriority(int id)
     {
         return ALARM_PRIO_HIGH;
     }
-    else if ((id >= ECG_ONESHOT_ALARM_TRANSFER_SUCCESS) && (id <= ECG_ONESHOT_ALARM_TRANSFER_FAILED))
-    {
-        return ALARM_PRIO_PROMPT;
-    }
-//    else if (id > ECG_ONESHOT_ALARM_V6_LEADOFF)
-    else if (id > ECG_ONESHOT_ALARM_TRANSFER_FAILED)
-    {
-        return ALARM_PRIO_MED;
-    }
     else
     {
-
         return ALARM_PRIO_MED;
     }
 }

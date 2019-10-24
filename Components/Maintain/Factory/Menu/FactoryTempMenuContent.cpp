@@ -80,7 +80,7 @@ public:
     QLabel *ohmLabel[TEMP_CALIBRATE_NR];
     QLabel *calibrateResultLbl[TEMP_CALIBRATE_CHANNEL_NR][TEMP_CALIBRATE_NR];
 
-    int calibrationTimerId; // 校准时钟
+    int calibrationTimerId;  // 校准时钟
     int onTimeId;  // 定时发送时钟
     int timeoutNum;
 
@@ -410,7 +410,7 @@ void FactoryTempMenuContent::readyShow()
 
     if (!tempParam.isServiceProviderOk())
     {
-        showError(trs("TEMPModuleDisConnect"));
+        showError(trs("TEMPModuleDisconnected"));
         return;
     }
 

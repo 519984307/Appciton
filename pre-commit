@@ -41,9 +41,9 @@ changed_files=$(git diff-index --cached $against | \
 	grep -E '[MA]	.*\.(c|cpp|cc|cxx|h)$' | cut -f 2)
 
 if [ -n "$changed_files" ]; then
-	cpplint --quiet --verbose=3 $changed_files
+	cpplint --quiet $changed_files
 	if [ $? != 0 ]; then
-		echo "[31m Commit fail, please check code style![m"
+		echo "[31m Commit fail, please check code style![m"
 		exit 1
 	fi
 fi
@@ -57,9 +57,10 @@ changed_files=$(git diff-index --cached $against | \
 if [ -n "$changed_files" ]; then
 	cppcheck --error-exitcode=1 --enable=warning,performance,style --template=gcc $changed_files
 	if [ $? != 0 ]; then
-		echo "[31m Code static analysis fail, abort commit![m"
+		echo "[31m Code static analysis fail, abort commit![m"
 		exit 1
 	fi
 fi
 
 exit 0
+

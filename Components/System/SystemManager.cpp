@@ -260,6 +260,18 @@ bool SystemManager::isSupport(ConfiguredFuncs funcs) const
     case CONFIG_O2:
         path = "O2Enable";
         break;
+    case CONFIG_HDMI:
+        path = "HDMIEnable";
+        break;
+    case CONFIG_NURSE_CALL:
+        path = "NurseCallEnable";
+        break;
+    case CONFIG_ANALOG_OUTPUT:
+        path = "AnalogOutputEnable";
+        break;
+    case CONFIG_SYNC_DEFIBRILLATION:
+        path = "SyncDefibrillationEnable";
+        break;
     default:
         break;
     }
@@ -491,9 +503,10 @@ void SystemManager::parseKeyValue(const unsigned char *data, unsigned int len)
         return;
     }
 
-    if (QApplication::activeWindow() == NULL)
+    if (QApplication::activeWindow() == NULL && windowManager.topWindow() == NULL)
     {
         windowManager.activateWindow();
+        qDebug() << Q_FUNC_INFO << "No active window, activate window manager";
     }
 
     QWSServer::processKeyEvent(0xffff, keyCode, Qt::NoModifier, data[1], false);
@@ -551,7 +564,6 @@ void SystemManager::enableBrightness(BrightnessLevel br)
 
     QString str = QString::number(brValue);
 
-    qDebug() << Q_FUNC_INFO << str;
     int ret = write(d_ptr->backlightFd, qPrintable(str), str.length() + 1);
 
     if (ret < 0)

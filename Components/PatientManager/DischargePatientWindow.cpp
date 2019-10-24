@@ -55,7 +55,7 @@ void DischargePatientWindow::layoutExec()
     setWindowTitle(trs("Warn"));
     setFixedSize(450, 250);
 
-    QVBoxLayout *layout = new QVBoxLayout(this);
+    QVBoxLayout *layout = new QVBoxLayout();
     layout->setMargin(10);
     layout->addStretch();
     QHBoxLayout *hlayout = new QHBoxLayout();
@@ -124,7 +124,7 @@ void DischargePatientWindow::showEvent(QShowEvent *e)
     }
     else
     {
-        d_ptr->hintLbl->setText(trs("isCleanPatient"));
+        d_ptr->hintLbl->setText(trs("isClearPatient"));
     }
     Dialog::showEvent(e);
 }

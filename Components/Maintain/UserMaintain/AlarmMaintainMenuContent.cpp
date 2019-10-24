@@ -414,20 +414,6 @@ void AlarmMaintainMenuContent::layoutExec()
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_REMINDER_TONE, comboBox);
-
-    // reminder tone interval
-    label = new QLabel(trs("ReminderToneIntervals"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs("H1min")
-                       << trs("H2min")
-                       << trs("H3min"));
-    itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_REMINDER_TONE_INTERVAL);
-    comboBox->setProperty("Item", qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_REMINDER_TONE_INTERVAL, comboBox);
 #endif
 
 #ifndef CLOSE_USELESS_ALARM_FUNCTION
@@ -465,7 +451,7 @@ void AlarmMaintainMenuContent::layoutExec()
     // default
     label = new QLabel(trs("Defaults"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
-    d_ptr->defaultBtn = new Button(trs("RecoverDefaults"));
+    d_ptr->defaultBtn = new Button(trs("RestoreDefaults"));
     d_ptr->defaultBtn->setButtonStyle(Button::ButtonTextOnly);
     itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_DEFAULT);
     d_ptr->defaultBtn->setProperty("Item", qVariantFromValue(itemID));
