@@ -380,8 +380,8 @@ Discharge,解除病人,Discharge
 isRelievePatient,是否解除病人,Whether to discharge patient?
 ClearPatientData,清除当前病人数据,Clear Current Patient Data
 isClearPatient,是否清除当前病人数据,Whether to clear the current patient data?
-WhetherStandby,是否进入待机？,Whether to enter the standby machine？
-RemoveAndRecePatient,"解除当前病人,接收新病人?",Release the current patient and receive new patient?
+WhetherStandby,是否进入待机？,Whether to enter standby mode?
+DischargeAndRecePatient,"解除当前病人,接收新病人?",Discharge the current patient and receive new patient?
 ScreenSetup,界面布局,Layout
 ResetLayout,重置布局,Reset Layout
 DefaultLayout,默认布局,Default Layout
