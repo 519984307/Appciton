@@ -938,7 +938,7 @@ CheckPatient,检查病人,Check Patient
 NIBPReading,NIBP快照,NIBP Snapshot
 PhyAlarm,生理报警,Phy. Alarm
 PrinterCommunicationStop,打印机通信中断,Printer Communication Stop
-PrinterSendCommunicationStop,打印机发送通信中断,Printer Send Communication Stop
+PrinterDataTransmissionStop,打印机发送通信中断,Printer Data Transmission Stop
 PrinterDoorOpened,打印机仓门未关,Printer Door Opened
 PrinterOutOfPaper,打印机缺纸,Printer Out Of Paper
 PrinterOverHeating,打印头过热,Printer Over Heating
