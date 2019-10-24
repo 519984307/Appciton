@@ -288,7 +288,6 @@ void AlarmInfoWindowPrivate::loadOption()
     if (hasPrevPage())
     {
         prevBtn->setEnabled(true);
-        prevBtn->setFocus();
     }
     else
     {
