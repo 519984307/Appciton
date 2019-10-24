@@ -680,7 +680,7 @@ NIBPMAPLow,平均压低,NIBP MAP Low
 NIBPMAPHigh,平均压高,NIBP MAP High
 NIBPCommunicationStop,NIBP通信中断,NIBP Communication Stop
 NIBPDataTransmissionStop,NIBP发送通信中断,NIBP Data Transmission Stop
-NIBPSelfTestError,NIBP自测失败,NIBP Selftest Fail
+NIBPSelftestFailed,NIBP自测失败,NIBP Selftest Failed
 NIBPModuleAbnormal,NIBP模块异常,NIBP Module Abnormal
 NIBPModuleNotCalibrate,NIBP未校准,NIBP Module Not Calibrated
 NIBPModuleError,NIBP模块硬件错误,NIBP Module HardWare Error

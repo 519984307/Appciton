@@ -102,7 +102,7 @@ public:
             "NIBPCommunicationTimeout",
             "NIBPModuleDisable",
             "NIBPDataTransmissionStop",
-            "NIBPSelfTestError",
+            "NIBPSelftestFailed",
             "NIBPModuleAbnormal",
             "NIBPModuleNotCalibrate",
             "NIBPModuleError",
