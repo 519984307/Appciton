@@ -1362,6 +1362,6 @@ void EventWindowPrivate::refreshEventList()
             printList.append(printStr);
         }
     }
-    model->setPageRowCount(PAGE_ROW_COUNT);
     model->updateEvent(timeList, eventList);
+    model->setPageRowCount(PAGE_ROW_COUNT);
 }
