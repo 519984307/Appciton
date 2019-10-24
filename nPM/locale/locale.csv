@@ -209,7 +209,7 @@ O2CalibrateReset,氧浓度校准数据被复位,O₂ Calibrate Is Reset
 O2NotCalibrate,氧浓度传感器未校准,O₂ Sensor Not Calibrate
 O2MotorNotInPositon,唤醒器脱落,Motor Sensor Off
 O2SensorOff,氧浓度探头脱落,O₂ Sensor Off
-O2SendCommunicationStop,O2发送通信中断,O2 Send Communication Stop
+O2DataTransmissionStop,O₂发送通信中断,O₂ Data Transmission Stop
 O2Low,氧浓度低,O₂ Low
 O2High,氧浓度高,O₂ High
 ApneaStimulation,窒息唤醒,Apnea Stimulation
