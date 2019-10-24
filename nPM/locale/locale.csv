@@ -105,7 +105,7 @@ Close,关闭,Close
 PatientID,病人ID,ID
 PatientType,病人类型,Type
 PatientSex,病人性别,Sex
-PatientPacemarker,起搏器,Pacemaker
+Pacemaker,起搏器,Pacemaker
 Wear,佩戴,Wear
 NotWear,无佩戴,Not Wear
 PatientBloodType,血型,Blood
