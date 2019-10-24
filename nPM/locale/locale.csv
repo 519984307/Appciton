@@ -562,7 +562,7 @@ SPO2CheckSensor,SpO₂检查探头,SpO₂ Check Sensor
 SPO2SearchPulseTooLong,SpO₂脉搏搜索时间过长,SpO₂ Search Pulse Too Long
 SPO2SearchingPulse,SpO₂脉搏搜索,SpO₂ Searching Pulse
 SPO2CommunicationStop,SpO₂通信中断,SpO₂ Communication Stop
-SPO2SendCommunicationStop,SpO₂发送通信中断,SpO₂ Send Communication Stop
+Spo2DataTransmissionStop,SpO₂发送通信中断,SpO₂ Data Transmission Stop
 SPO2ProbeFault,SpO₂探头故障,SpO₂ Sensor Failure
 SPO2SignalSaturation,SpO₂信号饱和,SpO₂ Signal Saturation
 CO2NoSamplingLine,CO₂没有采样管,CO₂ No Sampling Line
