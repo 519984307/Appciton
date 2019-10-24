@@ -605,7 +605,14 @@ void EventWaveWidget::_drawWave(int index, QPainter &painter)
             {
                 if (!points.isEmpty())
                 {
-                    painter.drawPolyline(points.data(), points.count());
+                    if (points.count() == 1) // 处理只有一个点的情况
+                    {
+                        painter.drawPoints(points.data(), points.count());
+                    }
+                    else
+                    {
+                        painter.drawPolyline(points.data(), points.count());
+                    }
                 }
                 points.clear();
                 isFirstVaildPoint = false;
@@ -677,7 +684,14 @@ void EventWaveWidget::_drawWave(int index, QPainter &painter)
     }
     if (!points.isEmpty())
     {
-        painter.drawPolyline(points.data(), points.count());
+        if (points.count() == 1) // 处理只有一个点的情况
+        {
+            painter.drawPoints(points.data(), points.count());
+        }
+        else
+        {
+            painter.drawPolyline(points.data(), points.count());
+        }
     }
 }
 
