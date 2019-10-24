@@ -185,7 +185,7 @@ PumpSpeed,气泵充气速度,Pump Speed
 ValveControl,气阀控制,Valve Control
 InflationPressure,充气压力,Inflation Pressure
 OverpressureProtect,过压保护,Over Pressure Protect
-NIBPPressureControlModelEnterFail,进入压力控制模式失败,Pressure Control Enter Failed
+NIBPPressureControlModelEnterFail,进入压力控制模式失败,Enter Pressure Control Mode Failed
 NIBPModuleDisable,NIBP模块禁用,NIBP Module Disable
 CO2SweepSpeed,波形速度,Sweep Speed
 CO2WaveMode,CO₂波形模式,CO₂ Wave Mode
@@ -326,7 +326,7 @@ TEMPMenuDesc,Temp,Temp
 AGMenuDesc,AG,AG
 SystemInfoSetting,系统信息,System Info
 ErrorLog,错误日志,Error Log
-SomeLimitAlarmDisabled,有超限报警被关闭,Some Limit Alarms Is Disabled
+SomeLimitAlarmDisabled,有超限报警被关闭,Some Limit Alarms Disabled
 PowerupCommunicationStop,前面板通信中断,System Board Communication Stop
 WiFiMenu,无线网络,Wifi
 WiFiMenuDesc,无线网络,Wifi
@@ -867,7 +867,7 @@ TransferFailed,传输失败,Transfer Failed
 TransferCancel,传输取消,Transfer Cancel
 TransferDisconnect,USB设备非法拔出,USB disk disconnected abnormally
 NotDisconnectUSB,不要断开USB设备,Do not disconnect the USB disk
-RemoveUSB,传输完成，可以移除USB设备了,"Transfer is done, you can remove the U-USB disk safely"
+RemoveUSB,传输完成，可以移除USB设备了,"Transfer is done, you can remove the USB disk safely"
 USB,USB,USB
 TransferSelectedRescue,传输选择的营救事件,Select Rescue Incident to Transfer
 TransferType,传输类型,Transfer Type
@@ -1199,7 +1199,7 @@ RealtimePrintSegment,实时打印,Real Time Print
 NibpMeasurement,NIBP测量,NIBP Measurement
 StopSetting,停止设置,Stop Setting
 SignalType,信号类型,Signal Type
-Pluse,波形脉冲,Pluse
+Pluse,脉冲,Pluse
 TriggerMode,触发模式,Trigger Mode
 AlarmLevel,报警级别,Alarm Level
 AlarmType,报警类型,Alarm Type 
