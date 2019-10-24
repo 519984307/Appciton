@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/7/13
+ **/
+
 #include "WiFiProfileEditor.h"
 #include <QRegExp>
 #include "LabelButton.h"
@@ -28,7 +38,6 @@ WiFiProfileInfo::WiFiProfileInfo():
     authType(Wpa_psk),
     isStatic(false)
 {
-
 }
 
 /***************************************************************************************************
@@ -36,7 +45,10 @@ WiFiProfileInfo::WiFiProfileInfo():
  **************************************************************************************************/
 static bool isIpStrValid(const QString &ipStr)
 {
-    QRegExp reg("^(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])$");
+    QRegExp reg("^(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\."
+                "(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\."
+                "(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\."
+                "(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])$");
     return reg.exactMatch(ipStr);
 }
 
@@ -96,8 +108,8 @@ class WiFiProfileEditorPrivate
 {
 public:
     Q_DECLARE_PUBLIC(WiFiProfileEditor)
-    WiFiProfileEditorPrivate(WiFiProfileEditor * const q_ptr)
-        :q_ptr(q_ptr), profileNameBtn(NULL), ssidBtn(NULL),authTypeComboL(NULL),
+    explicit WiFiProfileEditorPrivate(WiFiProfileEditor * const q_ptr)
+        :q_ptr(q_ptr), profileNameBtn(NULL), ssidBtn(NULL), authTypeComboL(NULL),
     securityKeyBtn(NULL), networkSettingComboL(NULL), staticIpBtn(NULL), defaultGatewayBtn(NULL),
     subnetMaskBtn(NULL), preferedDNSBtn(NULL), alternateDNSBtn(NULL), cancelBtn(NULL), commitBtn(NULL){}
 
@@ -162,7 +174,7 @@ void WiFiProfileEditorPrivate::init(const WiFiProfileInfo &profile)
 
     authTypeComboL = new IComboList(trs("EncryptType"));
     authTypeComboL->setFont(font);
-    authTypeComboL->addItems(QStringList()<<"None"<<"WPA PSK"<<"WPA2 PSK");
+    authTypeComboL->addItems(QStringList() << "None" << "WPA PSK" << "WPA2 PSK");
     authTypeComboL->setCurrentIndex(profile.authType);
     authTypeComboL->label->setFixedWidth(labelWidth);
     authTypeComboL->combolist->setFixedWidth(btnWidth);
@@ -173,7 +185,7 @@ void WiFiProfileEditorPrivate::init(const WiFiProfileInfo &profile)
     securityKeyBtn->setValue(profile.securityKey);
     securityKeyBtn->label->setFixedWidth(labelWidth);
     securityKeyBtn->button->setFixedWidth(btnWidth);
-    if(profile.authType == WiFiProfileInfo::Open)
+    if (profile.authType == WiFiProfileInfo::Open)
     {
         securityKeyBtn->setEnabled(false);
     }
@@ -181,7 +193,7 @@ void WiFiProfileEditorPrivate::init(const WiFiProfileInfo &profile)
 
     networkSettingComboL = new IComboList(trs("NetworkSetting"));
     networkSettingComboL->setFont(font);
-    networkSettingComboL->addItems(QStringList()<<trs("DHCP")<<trs("StaticIp"));
+    networkSettingComboL->addItems(QStringList() << trs("DHCP") << trs("StaticIp"));
     networkSettingComboL->setCurrentIndex(profile.isStatic);
     networkSettingComboL->label->setFixedWidth(labelWidth);
     networkSettingComboL->combolist->setFixedWidth(btnWidth);
@@ -208,7 +220,7 @@ void WiFiProfileEditorPrivate::init(const WiFiProfileInfo &profile)
     subnetMaskBtn->button->setFixedWidth(btnWidth);
     contentLayout->addWidget(subnetMaskBtn);
 
-    preferedDNSBtn = new LabelButton(trs("PreferrendDNS"));
+    preferedDNSBtn = new LabelButton(trs("PreferredDNS"));
     preferedDNSBtn->setFont(font);
     preferedDNSBtn->setValue(profile.preferedDNS);
     preferedDNSBtn->label->setFixedWidth(labelWidth);
@@ -242,7 +254,6 @@ void WiFiProfileEditorPrivate::init(const WiFiProfileInfo &profile)
     subnetMaskBtn->setEnabled(profile.isStatic);
     preferedDNSBtn->setEnabled(profile.isStatic);
     alternateDNSBtn->setEnabled(profile.isStatic);
-
 }
 
 /***************************************************************************************************
@@ -252,12 +263,12 @@ void WiFiProfileEditorPrivate::onSwitch(int index)
 {
     Q_Q(WiFiProfileEditor);
     IComboList *sender = qobject_cast<IComboList*>(q->sender());
-    if(!sender)
+    if (!sender)
     {
         return;
     }
 
-    if(sender == networkSettingComboL)
+    if (sender == networkSettingComboL)
     {
         staticIpBtn->setEnabled(index);
         defaultGatewayBtn->setEnabled(index);
@@ -267,7 +278,7 @@ void WiFiProfileEditorPrivate::onSwitch(int index)
     }
     else if (sender == authTypeComboL)
     {
-        if(authTypeComboL->currentIndex() == WiFiProfileInfo::Open)
+        if (authTypeComboL->currentIndex() == WiFiProfileInfo::Open)
         {
             securityKeyBtn->button->setText(QString());
             securityKeyBtn->setEnabled(false);
@@ -284,7 +295,7 @@ void WiFiProfileEditorPrivate::editIpAddress()
 {
     Q_Q(WiFiProfileEditor);
     LButton *sender = qobject_cast<LButton*>(q->sender());
-    if(!sender)
+    if (!sender)
     {
         return;
     }
@@ -310,7 +321,7 @@ void WiFiProfileEditorPrivate::editIpAddress()
     }
     else if (sender == preferedDNSBtn->button)
     {
-        englishPanel.setTitleBarText(trs("PreferrendDNS"));
+        englishPanel.setTitleBarText(trs("PreferredDNS"));
     }
     else if (sender == alternateDNSBtn->button)
     {
@@ -331,13 +342,13 @@ void WiFiProfileEditorPrivate::editNormalText()
 {
     Q_Q(WiFiProfileEditor);
     LButton *sender = qobject_cast<LButton*>(q->sender());
-    if(!sender)
+    if (!sender)
     {
         return;
     }
 
     KeyBoardPanel englishPanel;
-    if(sender == profileNameBtn->button)
+    if (sender == profileNameBtn->button)
     {
         englishPanel.setMaxInputLength(24);
         englishPanel.setTitleBarText(trs("ProfileName"));
@@ -359,7 +370,6 @@ void WiFiProfileEditorPrivate::editNormalText()
         QString text = englishPanel.getStrValue();
         sender->setText(text);
     }
-
 }
 
 /***************************************************************************************************
@@ -375,25 +385,32 @@ void WiFiProfileEditorPrivate::onCommit()
 {
     Q_Q(WiFiProfileEditor);
 
-    //check input
-    if(profileNameBtn->button->text().isEmpty())
+    // check input
+    if (profileNameBtn->button->text().isEmpty())
     {
-        IMessageBox(QString(trs("NoProfileName")), QString(trs("PleaseInputProfileName")), QStringList(trs("EnglishYESChineseSURE"))).exec();
+        IMessageBox(QString(trs("NoProfileName")),
+                    QString(trs("PleaseInputProfileName")),
+                    QStringList(trs("EnglishYESChineseSURE"))).exec();
         return;
     }
 
-    if(ssidBtn->button->text().isEmpty())
+    if (ssidBtn->button->text().isEmpty())
     {
-        IMessageBox(QString(trs("NoSSID")), QString(trs("PleaseInputSSIDName")), QStringList(trs("EnglishYESChineseSURE"))).exec();
+        IMessageBox(QString(trs("NoSSID")),
+                    QString(trs("PleaseInputSSIDName")),
+                    QStringList(trs("EnglishYESChineseSURE"))).exec();
         return;
     }
 
-    if(authTypeComboL->currentIndex() == WiFiProfileInfo::Wpa2_psk || authTypeComboL->currentIndex() == WiFiProfileInfo::Wpa_psk)
+    if (authTypeComboL->currentIndex() == WiFiProfileInfo::Wpa2_psk ||
+            authTypeComboL->currentIndex() == WiFiProfileInfo::Wpa_psk)
     {
         int keylen = securityKeyBtn->button->text().length();
-        if(keylen < 8 || keylen >=64)
+        if (keylen < 8 || keylen >=64)
         {
-            IMessageBox(QString(trs("SecurityKeyError")), QString(trs("WpaPskRequires")), QStringList(trs("EnglishYESChineseSURE"))).exec();
+            IMessageBox(QString(trs("SecurityKeyError")),
+                        QString(trs("WpaPskRequires")),
+                        QStringList(trs("EnglishYESChineseSURE"))).exec();
             return;
         }
     }
@@ -429,7 +446,6 @@ WiFiProfileEditor::WiFiProfileEditor(const WiFiProfileInfo &profile)
  **************************************************************************************************/
 WiFiProfileEditor::~WiFiProfileEditor()
 {
-
 }
 
 /***************************************************************************************************
@@ -444,7 +460,7 @@ WiFiProfileInfo WiFiProfileEditor::getProfileInfo() const
     profile.authType = (WiFiProfileInfo::AuthenticationType)d->authTypeComboL->combolist->currentIndex();
     profile.securityKey = d->securityKeyBtn->button->text();
     profile.isStatic = d->networkSettingComboL->currentIndex();
-    if(profile.isStatic)
+    if (profile.isStatic)
     {
         profile.staticIp = d->staticIpBtn->button->text();
         profile.defaultGateway = d->defaultGatewayBtn->button->text();

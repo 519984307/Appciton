@@ -102,7 +102,7 @@ void NIBPZeroPointContent::layoutExec()
     connect(button, SIGNAL(released()), this, SLOT(enterZeroReleased()));
     d_ptr->modeBtn = button;
 
-    label = new QLabel(trs("PumpControl"));
+    label = new QLabel(trs("PumpSpeed"));
     layout->addWidget(label, 1, 0, Qt::AlignCenter);
 
     d_ptr->pumpSpx = new SpinBox();

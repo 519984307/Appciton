@@ -124,7 +124,7 @@ void DischargePatientWindow::showEvent(QShowEvent *e)
     }
     else
     {
-        d_ptr->hintLbl->setText(trs("isCleanPatient"));
+        d_ptr->hintLbl->setText(trs("isClearPatient"));
     }
     Dialog::showEvent(e);
 }

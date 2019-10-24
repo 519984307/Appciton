@@ -49,7 +49,7 @@ public:
             "TEMPModuleDisable",
             "TEMPModuleNotCalibration1",
             "TEMPModuleNotCalibration2",
-            "TEMPSendCommunicationStop",
+            "TempDataTransmissionStop",
             "TEMPModuleAbnormal"
         };
         return symbol[index];

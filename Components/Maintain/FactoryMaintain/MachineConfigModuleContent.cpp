@@ -257,7 +257,7 @@ void MachineConfigModuleContentPrivte::configUpdateHint()
     QString hints = trs("MachineConfigIsUpdatedNow");
     hints += "\n";
     hints += trs("IsRebootMachine");
-    MessageBox box(trs("UpdateHint"), hints);
+    MessageBox box(trs("UpdateTips"), hints);
     QDialog::DialogCode statue = static_cast<QDialog::DialogCode>(box.exec());
     if (statue == QDialog::Accepted)
     {
@@ -306,8 +306,7 @@ void MachineConfigModuleContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs("On")
-                   );
+                    << trs("On"));
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
                          ::ITEM_CBO_ECG12, combo);
@@ -323,8 +322,7 @@ void MachineConfigModuleContent::layoutExec()
                     << trs("Off")
                     << trs(SPO2Symbol::convert(MODULE_BLM_S5))
                     << trs(SPO2Symbol::convert(MODULE_MASIMO_SPO2))
-                    << trs(SPO2Symbol::convert(MODULE_RAINBOW_SPO2))
-                   );
+                    << trs(SPO2Symbol::convert(MODULE_RAINBOW_SPO2)));
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
                          ::ITEM_CBO_SPO2, combo);
@@ -339,8 +337,7 @@ void MachineConfigModuleContent::layoutExec()
     combo->addItems(QStringList()
                     << trs("Off")
                     << trs(NIBPSymbol::convert(MODULE_N5))
-                    << trs(NIBPSymbol::convert(MODULE_SUNTECH_NIBP))
-                   );
+                    << trs(NIBPSymbol::convert(MODULE_SUNTECH_NIBP)));
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
                          ::ITEM_CBO_NIBP, combo);
@@ -354,8 +351,7 @@ void MachineConfigModuleContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs("On")
-                   );
+                    << trs("On"));
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
                          ::ITEM_CBO_RESP, combo);
@@ -370,8 +366,7 @@ void MachineConfigModuleContent::layoutExec()
     combo->addItems(QStringList()
                     << trs("Off")
                     << trs(CO2Symbol::convert(MODULE_BLM_CO2))
-                    << trs(CO2Symbol::convert(MODULE_MASIMO_CO2))
-                   );
+                    << trs(CO2Symbol::convert(MODULE_MASIMO_CO2)));
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
                          ::ITEM_CBO_CO2, combo);
@@ -385,8 +380,7 @@ void MachineConfigModuleContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs("On")
-                   );
+                    << trs("On"));
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
                          ::ITEM_CBO_AG, combo);
@@ -400,8 +394,7 @@ void MachineConfigModuleContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs("On")
-                   );
+                    << trs("On"));
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
                          ::ITEM_CBO_CO, combo);
@@ -415,8 +408,7 @@ void MachineConfigModuleContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs("On")
-                   );
+                    << trs("On"));
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
                          ::ITEM_CBO_IBP, combo);
@@ -431,8 +423,7 @@ void MachineConfigModuleContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs("On")
-                   );
+                    << trs("On"));
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
                          ::ITEM_CBO_O2, combo);
@@ -447,8 +438,7 @@ void MachineConfigModuleContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs("On")
-                   );
+                    << trs("On"));
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
                          ::ITEM_CBO_TEMP, combo);
@@ -462,8 +452,7 @@ void MachineConfigModuleContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs("On")
-                   );
+                    << trs("On"));
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
                          ::ITEM_CBO_PRINTER, combo);
@@ -477,8 +466,7 @@ void MachineConfigModuleContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs("On")
-                   );
+                    << trs("On"));
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
                          ::ITEM_CBO_WIFI, combo);
@@ -495,8 +483,7 @@ void MachineConfigModuleContent::layoutExec()
     combo->addItems(QStringList()
                     << trs("Off")
                     << trs("ResistiveScreen")
-                    << trs("CapacitiveScreen")
-                   );
+                    << trs("CapacitiveScreen"));
     combo->blockSignals(false);
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
@@ -513,8 +500,7 @@ void MachineConfigModuleContent::layoutExec()
     combo->blockSignals(true);
     combo->addItems(QStringList()
                     << trs(SystemSymbol::convert(BACKLIGHT_MODE_1))
-                    << trs(SystemSymbol::convert(BACKLIGHT_MODE_2))
-                   );
+                    << trs(SystemSymbol::convert(BACKLIGHT_MODE_2)));
     combo->blockSignals(false);
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte

@@ -173,7 +173,8 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
     infos.append(str);
 
     infos.append(QString("%1: %2").arg(trs("ID")).arg(patInfo.id));
-    infos.append(QString("%1: %2").arg(trs("PatientPacemarker")).arg(trs(PatientSymbol::convert(static_cast<PatientPacer>(patInfo.pacer)))));
+    infos.append(QString("%1: %2").arg(trs("Pacemaker")).arg(
+                     trs(PatientSymbol::convert(static_cast<PatientPacer>(patInfo.pacer)))));
 
     // calculate the info text width
     int textWidth = 0;
@@ -452,7 +453,7 @@ struct TrendStringSegmentInfo
  * @param strSegInfoList output string segments info list
  * @param font string display font
  */
-static void converToStringSegmets(const QStringList &trendStringList, QList<TrendStringSegmentInfo> &strSegInfoList,
+static void converToStringSegmets(const QStringList &trendStringList, QList<TrendStringSegmentInfo> &strSegInfoList,    /* NOLINT */
                                   const QFont &font)
 {
     strSegInfoList.clear();
@@ -501,7 +502,7 @@ RecordPage *RecordPageGenerator::createTrendPage(const TrendDataPackage &trendDa
 
 
     // if the contains too many lines, need to seperate into several group
-    QVector<int> segmentWidths; // record the maximum widht or the group segments
+    QVector<int> segmentWidths;  // record the maximum widht or the group segments
     int avaliableLine = avaliableTextHeight / fontH;
     if (!trendPageTitle.isEmpty())
     {
@@ -801,7 +802,7 @@ QStringList RecordPageGenerator::getTrendStringList(const TrendDataPackage &tren
  */
 static void drawECGGain(RecordPage *page, QPainter *painter, const RecordWaveSegmentInfo &waveInfo, int waveNum)
 {
-    int rulerHeight = 10 * RECORDER_PIXEL_PER_MM; // height for 1.0 ECG gain
+    int rulerHeight = 10 * RECORDER_PIXEL_PER_MM;  // height for 1.0 ECG gain
     QString str = "1 mV";
     ECGGain gain = waveInfo.waveInfo.ecg.gain;
     if (gain == ECG_GAIN_AUTO)
@@ -1153,8 +1154,8 @@ static qreal mapWaveValue(const RecordWaveSegmentInfo &waveInfo, short wave)
         }
         endY = waveInfo.middleYOffset + scale;
         startY = waveInfo.middleYOffset - scale;
-        waveData = (waveInfo.maxWaveValue - wave) * ((endY - startY) / (waveInfo.maxWaveValue - waveInfo.minWaveValue)) +
-                   startY;
+        waveData = (waveInfo.maxWaveValue - wave) *
+                ((endY - startY) / (waveInfo.maxWaveValue - waveInfo.minWaveValue)) + startY;
         break;
     }
 
@@ -1189,8 +1190,8 @@ static qreal mapWaveValue(const RecordWaveSegmentInfo &waveInfo, short wave)
         }
 
         short zoomWave = (wave - waveInfo.waveBaseLine) * respZoom + waveInfo.waveBaseLine;
-        waveData = (waveInfo.maxWaveValue -  zoomWave) * ((endY -  startY) / (waveInfo.maxWaveValue -  waveInfo.minWaveValue)) +
-                   startY;
+        waveData = (waveInfo.maxWaveValue -  zoomWave) *
+                ((endY -  startY) / (waveInfo.maxWaveValue -  waveInfo.minWaveValue)) + startY;
         break;
     }
 
@@ -1199,8 +1200,8 @@ static qreal mapWaveValue(const RecordWaveSegmentInfo &waveInfo, short wave)
         qreal spo2Zoom = 1.0;
 
         short zoomWave = (wave - waveInfo.waveBaseLine) * spo2Zoom + waveInfo.waveBaseLine;
-        waveData = (waveInfo.maxWaveValue -  zoomWave) * ((endY -  startY) / (waveInfo.maxWaveValue -  waveInfo.minWaveValue)) +
-                   startY;
+        waveData = (waveInfo.maxWaveValue -  zoomWave) *
+                ((endY -  startY) / (waveInfo.maxWaveValue -  waveInfo.minWaveValue)) + startY;
         break;
     }
 
@@ -1383,7 +1384,7 @@ static void drawDottedLine(QPainter *painter, qreal x1, qreal y1,
  * @param waveInfo the wave segment info
  * @param segmentIndex segment index
  */
-static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegmentInfo &waveInfo, int segmentIndex)
+static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegmentInfo &waveInfo, int segmentIndex)  // NOLINT
 {
     qreal x1 = 0, y1 = 0, x2 = 0, y2 = 0;
     int pageWidth = page->width();
@@ -1455,7 +1456,7 @@ static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegme
                 return;
             }
         }
-        else // valid wave data
+        else  // valid wave data
         {
             short wave = waveInfo.secondWaveBuff[i] & 0xFFFF;
             if (waveInfo.id == WAVE_ECG_aVR && waveInfo.waveInfo.ecg.in12LeadMode
@@ -1691,7 +1692,7 @@ void RecordPageGenerator::drawGraphAxis(QPainter *painter, const GraphAxisInfo &
     }
     QRectF captionRect;
     captionRect.setLeft(pixSize + pixSize / 2);
-    captionRect.setWidth(axisInfo.xSectionWidth * 2); // should be enough
+    captionRect.setWidth(axisInfo.xSectionWidth * 2);  // should be enough
     captionRect.setTop(captionHeigth);
     captionRect.setHeight(fontH);
 
@@ -1996,7 +1997,10 @@ void RecordPageGenerator::drawTrendGraph(QPainter *painter, const GraphAxisInfo 
     painter->restore();
 }
 
-void RecordPageGenerator::drawTrendGraphEventSymbol(QPainter *painter, const GraphAxisInfo &axisInfo, const TrendGraphInfo &graphInfo, const QList<BlockEntry> &eventList)
+void RecordPageGenerator::drawTrendGraphEventSymbol(QPainter *painter,
+                                                    const GraphAxisInfo &axisInfo,
+                                                    const TrendGraphInfo &graphInfo,
+                                                    const QList<BlockEntry> &eventList)
 {
     painter->save();
     painter->translate(axisInfo.origin);
@@ -2023,7 +2027,7 @@ void RecordPageGenerator::drawTrendGraphEventSymbol(QPainter *painter, const Gra
             timeX =  axisInfo.width - 10;
         }
         eventRect.setLeft(timeX);
-        eventRect.setWidth(axisInfo.xSectionWidth); // should be enough
+        eventRect.setWidth(axisInfo.xSectionWidth);  // should be enough
         eventRect.setHeight(fontH);
         if (eventList.at(i).type == EventPhysiologicalAlarm)
         {
@@ -2188,7 +2192,7 @@ static void drawOxyCRGWaveform(QPainter *painter, const GraphAxisInfo &axisInfo,
         // invalid data
         if (flag & INVALID_WAVE_FALG_BIT)
         {
-            short wave = waveInfo.waveData[i] && 0xFFFF;
+            short wave = waveInfo.waveData[i] & 0xFFFF;
             qreal waveData = mapOxyCRGWaveValue(waveInfo, axisInfo.validHeight, wave);
             y1 = y2 = waveData;
 

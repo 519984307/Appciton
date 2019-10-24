@@ -81,7 +81,7 @@ public:
      * @param importTag        import tag
      * @return 返回：ture-valid;false-invalid；
      */
-    bool checkXMLContent(QList<QDomElement> &importTagList, QDomElement &importTag);
+    bool checkXMLContent(QList<QDomElement> &importTagList, QDomElement &importTag);  /* NOLINT */
 
     /**
      * @brief tagFindElement  find tag elements
@@ -169,7 +169,7 @@ TransferResult ConfigExportImportMenuContentPrivate::exportFileToUSB()
         if (isExist)
         {
             MessageBox message(trs("Export"),
-                               trs(QString("%1\r\n%2?").arg(name).arg(trs("IfSelectTheSameNameFile"))),
+                               trs(QString("%1\r\n%2?").arg(name).arg(trs("FileExistsOverWrite"))),
                                QStringList() << trs("Cancel") << trs("Repeated"));
             this->message = &message;
             status = static_cast<QDialog::DialogCode>(message.exec());
@@ -194,7 +194,7 @@ TransferResult ConfigExportImportMenuContentPrivate::exportFileToUSB()
         if (copyOk == false)
         {
             MessageBox message(trs("Export"),
-                               trs(QString("%1\r\n%2").arg(name).arg(trs("ExportFailure"))),
+                               trs(QString("%1\r\n%2").arg(name).arg(trs("ExportFailed"))),
                                QStringList() << trs("Yes"));
             message.exec();
             return TRANSFER_FAIL;
@@ -305,7 +305,7 @@ TransferResult ConfigExportImportMenuContentPrivate::insertFileFromUSB()
         if (true == isExist)
         {
             MessageBox message(trs("Import"),
-                               trs(QString("%1\r\n%2?").arg(name).arg(trs("IfSelectTheSameNameFile"))),
+                               trs(QString("%1\r\n%2?").arg(name).arg(trs("FileExistsOverWrite"))),
                                QStringList() << trs("Cancel") << trs("Repeated"));
             this->message = &message;
             flag = message.exec();
@@ -316,7 +316,7 @@ TransferResult ConfigExportImportMenuContentPrivate::insertFileFromUSB()
             // 导入文件不超过规定最大值
             if (configs.count() >= CONFIG_MAX_NUM)
             {
-                MessageBox message(trs("ImportFileMaximum"),
+                MessageBox message(trs("ImportFileExceedRange"),
                                    trs(QString("%1\r\n%2").arg(name).arg(trs("ImportFileFailed"))),
                                    QStringList() << trs("Yes"));
                 message.exec();

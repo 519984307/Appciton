@@ -31,8 +31,6 @@ public:
     enum MenuItem
     {
         ITEM_CBO_ECG_STANDARD,
-        ITEM_CBO_FREQUENCY_NOTCH,
-        ITEM_CBO_PARAM_SWITCH_PREM,
         ITEM_CBO_CONFIG_SET,
         ITEM_CBO_WAVE_DRAW_MODE,
         ITEM_CBO_WAVE_LINE,
@@ -70,37 +68,7 @@ void OthersMaintainMenuContentPrivate::loadOptions()
     tmpStr.clear();
 
 #ifndef HIDE_OTHER_MAINTAIN_ITEMS
-    systemConfig.getStrValue("Others|FrequencyNotch", tmpStr);
-    if (tmpStr.toInt() >= combos[ITEM_CBO_FREQUENCY_NOTCH]->count())
-    {
-        combos[ITEM_CBO_FREQUENCY_NOTCH]->setCurrentIndex(0);
-    }
-    else
-    {
-        combos[ITEM_CBO_FREQUENCY_NOTCH]->setCurrentIndex(tmpStr.toInt());
-    }
-    tmpStr.clear();
 
-    systemConfig.getStrValue("Others|ParaSwitchPrem", tmpStr);
-    if (tmpStr.toInt() >= combos[ITEM_CBO_PARAM_SWITCH_PREM]->count())
-    {
-        combos[ITEM_CBO_PARAM_SWITCH_PREM]->setCurrentIndex(0);
-    }
-    else
-    {
-        combos[ITEM_CBO_PARAM_SWITCH_PREM]->setCurrentIndex(tmpStr.toInt());
-    }
-    tmpStr.clear();
-
-    systemConfig.getStrValue("Others|ConfImpactItemSettings", tmpStr);
-    if (tmpStr.toInt() >= combos[ITEM_CBO_CONFIG_SET]->count())
-    {
-        combos[ITEM_CBO_CONFIG_SET]->setCurrentIndex(0);
-    }
-    else
-    {
-        combos[ITEM_CBO_CONFIG_SET]->setCurrentIndex(tmpStr.toInt());
-    }
 #endif
     systemConfig.getStrValue("Others|WaveDrawMode", tmpStr);
     if (tmpStr.toInt() >= combos[ITEM_CBO_WAVE_DRAW_MODE]->count())
@@ -187,47 +155,7 @@ void OthersMaintainMenuContent::layoutExec()
     d_ptr->combos.insert(OthersMaintainMenuContentPrivate::ITEM_CBO_ECG_STANDARD, comboBox);
 
 #ifndef HIDE_OTHER_MAINTAIN_ITEMS
-    // frequency Notch
-    label = new QLabel(trs("FrequencyNotch"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs("50 Hz")
-                       << trs("60 Hz"));
-    itemID = static_cast<int>(OthersMaintainMenuContentPrivate::ITEM_CBO_FREQUENCY_NOTCH);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(OthersMaintainMenuContentPrivate::ITEM_CBO_FREQUENCY_NOTCH, comboBox);
 
-    // param Switch Prem
-    label = new QLabel(trs("paraSwitchPrem"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs("Unprotected")
-                       << trs("Protected"));
-    itemID = static_cast<int>(OthersMaintainMenuContentPrivate::ITEM_CBO_PARAM_SWITCH_PREM);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(OthersMaintainMenuContentPrivate::ITEM_CBO_PARAM_SWITCH_PREM, comboBox);
-
-    // config Impact Item Settings
-    label = new QLabel(trs("ConfImpactItemSettings"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs("Close")
-                       << trs("ParaSwitch"));
-    itemID = static_cast<int>(OthersMaintainMenuContentPrivate::ITEM_CBO_CONFIG_SET);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(OthersMaintainMenuContentPrivate::ITEM_CBO_CONFIG_SET, comboBox);
 #endif
 
     // wave draw mode setup
@@ -327,14 +255,6 @@ void OthersMaintainMenuContent::onComboBoxIndexChanged(int index)
         {
         case OthersMaintainMenuContentPrivate::ITEM_CBO_ECG_STANDARD:
             ecgParam.updateECGStandard(index);
-            break;
-        case OthersMaintainMenuContentPrivate::ITEM_CBO_FREQUENCY_NOTCH:
-            string = "FrequencyNotch";
-            systemConfig.setNumValue(QString("Others|%1").arg(string), index);
-            break;
-        case OthersMaintainMenuContentPrivate::ITEM_CBO_PARAM_SWITCH_PREM:
-            string = "ParaSwitchPrem";
-            systemConfig.setNumValue(QString("Others|%1").arg(string), index);
             break;
         case OthersMaintainMenuContentPrivate::ITEM_CBO_WAVE_DRAW_MODE:
         {
