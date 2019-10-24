@@ -1190,10 +1190,8 @@ Thin,细,Thin
 ECGStandard,ECG标准,ECG Standard
 AHA,AHA,AHA
 IEC,IEC,IEC
-paraSwitchPrem,参数开关权限,Para Switch Authority 
 Protected,保护,Protected
 Unprotected,非保护,Unprotected
-ConfImpactItemSettings,受配置影响项设置,Configuration-influenced Settings
 ParaSwitch,参数开关,Parameters Switch
 NurseCallSetup,护士呼叫设置,Nurse Call Setup
 Setting,设置,Setting
