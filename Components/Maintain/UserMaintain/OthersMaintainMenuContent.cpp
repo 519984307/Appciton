@@ -31,7 +31,7 @@ public:
     enum MenuItem
     {
         ITEM_CBO_ECG_STANDARD,
-        ITEM_CBO_FREQUENCY_NOTCH,
+//        ITEM_CBO_FREQUENCY_NOTCH,
         ITEM_CBO_PARAM_SWITCH_PREM,
         ITEM_CBO_CONFIG_SET,
         ITEM_CBO_WAVE_DRAW_MODE,
@@ -179,8 +179,8 @@ void OthersMaintainMenuContent::layoutExec()
 
 #ifndef HIDE_OTHER_MAINTAIN_ITEMS
     // frequency Notch
-    label = new QLabel(trs("FrequencyNotch"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
+//    label = new QLabel(trs("FrequencyNotch"));
+//    layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("50 Hz")
@@ -319,10 +319,10 @@ void OthersMaintainMenuContent::onComboBoxIndexChanged(int index)
         case OthersMaintainMenuContentPrivate::ITEM_CBO_ECG_STANDARD:
             ecgParam.updateECGStandard(index);
             break;
-        case OthersMaintainMenuContentPrivate::ITEM_CBO_FREQUENCY_NOTCH:
-            string = "FrequencyNotch";
-            systemConfig.setNumValue(QString("Others|%1").arg(string), index);
-            break;
+//        case OthersMaintainMenuContentPrivate::ITEM_CBO_FREQUENCY_NOTCH:
+//            string = "FrequencyNotch";
+//            systemConfig.setNumValue(QString("Others|%1").arg(string), index);
+//            break;
         case OthersMaintainMenuContentPrivate::ITEM_CBO_PARAM_SWITCH_PREM:
             string = "ParaSwitchPrem";
             systemConfig.setNumValue(QString("Others|%1").arg(string), index);
