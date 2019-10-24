@@ -46,9 +46,6 @@ AlarmPriority SystemAlarm::getAlarmPriority(int id)
     case SYSTEM_ONE_SHOT_ALARM_SEND_COMMUNICATION_STOP:
         return ALARM_PRIO_MED;
 
-    case POWERUP_PANEL_RECORD_PRESSED:
-        return ALARM_PRIO_LOW;
-
     case SOME_LIMIT_ALARM_DISABLED:
         return ALARM_PRIO_PROMPT;
 
@@ -72,9 +69,6 @@ bool SystemAlarm::isAlarmed(int id)
 
     switch (id)
     {
-    case POWERUP_PANEL_RECORD_PRESSED:
-        keyPressed = keyActionManager.checkKeyPressed(KEY_F9_PRESSED);
-        break;
     case SOME_LIMIT_ALARM_DISABLED:
         return alarmConfig.hasLimitAlarmDisable();
     default:
