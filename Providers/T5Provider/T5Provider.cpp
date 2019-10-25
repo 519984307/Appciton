@@ -20,7 +20,7 @@
 #include "IConfig.h"
 #include "AlarmSourceManager.h"
 
-#define LOW_BORDER_VALUE 149
+#define LOW_BORDER_VALUE 0
 #define HIGH_BORDER_VALUE 501
 #define TEMP_INVALID_VALUE      (-1)    // 体温无效值
 

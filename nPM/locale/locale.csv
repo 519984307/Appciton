@@ -109,7 +109,7 @@ PVITrendWave,PVI,PVI
 SpHbTrendWave,SpHb,SpHb
 SpMetTrendWave,SpMet,SpMet
 SpCOTrendWave,SpCO,SpCO
-PRTrendWave,PR,PR
+PRTrendWave,HR/PR,HR/PR
 NIBP,NIBP,NIBP
 RESP,Resp,Resp
 ParameterColor,参数颜色,Parameter Color
