@@ -695,7 +695,8 @@ void TrendSubWaveWidget::showEvent(QShowEvent *e)
     _cursorPosIndex = 0;
 }
 
-double TrendSubWaveWidget::_mapValue(TrendParamDesc desc, qreal data)
+template<typename T>
+double TrendSubWaveWidget::_mapValue(TrendParamDesc desc, T data)
 {
     if (data == InvData())
     {
