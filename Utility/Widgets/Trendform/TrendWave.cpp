@@ -242,7 +242,7 @@ void TrendWave::onClearTrendData()
 
 void TrendWave::updateRange(SubParamID subParam)
 {
-    if (subParam != d_ptr->subParamList.at(0))
+    if (!d_ptr->subParamList.contains(subParam))
     {
         return;
     }
