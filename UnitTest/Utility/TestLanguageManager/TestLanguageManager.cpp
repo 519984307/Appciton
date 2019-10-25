@@ -44,7 +44,7 @@ void TestLanguageManager::testTranslateChinese_data()
     QTest::addColumn<QString>("id");
     QTest::addColumn<QString>("result");
 
-    QTest::newRow("normal case") << QString("LanguageNameLocal") << QString::fromLocal8Bit("简体中文");
+    QTest::newRow("normal case") << QString("Chinese") << QString::fromLocal8Bit("中文");
     QTest::newRow("null case") << QString() << QString();
     QTest::newRow("no exist case") << QString("noExist") << QString("noExist");
     QTest::newRow("chinese case") << QString::fromLocal8Bit("简体中文") << QString::fromLocal8Bit("简体中文");
@@ -58,7 +58,7 @@ void TestLanguageManager::testTranslateChinese()
 
     // chinese
     languageManager.reload(1);
-    QCOMPARE(languageManager.translate("LanguageNameLocal"), QString::fromLocal8Bit("简体中文"));
+    QCOMPARE(languageManager.translate("Chinese"), QString::fromLocal8Bit("中文"));
     QCOMPARE(languageManager.translate(""), QString());
     QCOMPARE(languageManager.translate("noExist"), QString::fromLocal8Bit("noExist"));
     QCOMPARE(languageManager.translate(NULL), QString("null"));
@@ -70,7 +70,7 @@ void TestLanguageManager::testTranslateEnglish_data()
     QTest::addColumn<QString>("id");
     QTest::addColumn<QString>("result");
 
-    QTest::newRow("normal case") << QString("LanguageNameLocal")<< QString("English");
+    QTest::newRow("normal case") << QString("English")<< QString("English");
     QTest::newRow("null case") << QString() << QString();
     QTest::newRow("no exist case") << QString("noExist") << QString("noExist");
     QTest::newRow("chinese case")<< QString::fromLocal8Bit("简体中文") << QString::fromLocal8Bit("简体中文");
@@ -85,7 +85,7 @@ void TestLanguageManager::testTranslateEnglish()
     languageManager.reload(0);
     QCOMPARE(languageManager.translate(id), result);
 
-    QCOMPARE(languageManager.translate("LanguageNameLocal"), QString("English"));
+    QCOMPARE(languageManager.translate("English"), QString("English"));
     QCOMPARE(languageManager.translate(""), QString());
     QCOMPARE(languageManager.translate("noExist"), QString("noExist"));
     QCOMPARE(languageManager.translate(NULL), QString("null"));

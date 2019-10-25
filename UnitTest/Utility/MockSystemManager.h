@@ -15,7 +15,7 @@ class MockSystemManager : public SystemManagerInterface
 {
 public:
     MOCK_METHOD1(setBrightness, void(BrightnessLevel));
-    MOCK_METHOD1(enableBrightness, void(int));
+    MOCK_METHOD1(enableBrightness, void(BrightnessLevel));
     MOCK_METHOD0(getBrightness, BrightnessLevel(void));
     MOCK_CONST_METHOD0(getCurWorkMode, WorkMode(void));
     MOCK_CONST_METHOD1(isSupport, bool(ConfiguredFuncs));
