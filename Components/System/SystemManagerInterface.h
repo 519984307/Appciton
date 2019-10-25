@@ -36,7 +36,10 @@ enum ConfiguredFuncs
     CONFIG_TOUCH = 0x800,
     CONFIG_O2 = 0x1000,
     CONFIG_PRINTER = 0x2000,
-    CONFIG_NURSECALL = 0x4000,
+    CONFIG_HDMI = 0x4000,
+    CONFIG_NURSE_CALL = 0x8000,
+    CONFIG_ANALOG_OUTPUT = 0x10000,
+    CONFIG_SYNC_DEFIBRILLATION = 0x20000
 };
 
 class SystemManagerInterface
@@ -59,7 +62,7 @@ public:
 
     // 背光亮度设置/获取。
     virtual void setBrightness(BrightnessLevel br) = 0;
-    virtual void enableBrightness(int br) = 0;
+    virtual void enableBrightness(BrightnessLevel br) = 0;
     virtual BrightnessLevel getBrightness(void) = 0;
 
     /**

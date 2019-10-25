@@ -122,6 +122,8 @@ private:
     bool _overRang2;
     bool _sensorOff1;
     bool _sensorOff2;
+    bool _hasBeenConnected1;
+    bool _hasBeenConnected2;
 
     short _temp1;
     short _temp2;

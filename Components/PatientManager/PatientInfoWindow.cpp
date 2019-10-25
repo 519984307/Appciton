@@ -258,8 +258,7 @@ void PatientInfoWindowPrivate::loadOptions()
     DateFormat dateFormat = static_cast<DateFormat>(index);
     bornDateLbl->setText(QString("%1(%2)")
                          .arg(trs("BornDate"))
-                         .arg(trs(TimeSymbol::convert(dateFormat)))
-                         );
+                         .arg(trs(TimeSymbol::convert(dateFormat))));
 
     unsigned int year = 0, month = 0, day = 0;
     patientManager.getBornDate(year, month, day);
@@ -375,7 +374,7 @@ PatientInfoWindow::PatientInfoWindow()
     connect(d_ptr->name, SIGNAL(released()), this, SLOT(nameReleased()));
 
     // patient pace marker
-    label = new QLabel(trs("PatientPacemarker"));
+    label = new QLabel(trs("Pacemaker"));
     label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     layout->addWidget(label
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
@@ -384,8 +383,7 @@ PatientInfoWindow::PatientInfoWindow()
     d_ptr->pacer->setFixedWidth(itemWidth);
     d_ptr->pacer->addItems(QStringList()
                            << trs(PatientSymbol::convert(PATIENT_PACER_OFF))
-                           << trs(PatientSymbol::convert(PATIENT_PACER_ON))
-                          );
+                           << trs(PatientSymbol::convert(PATIENT_PACER_ON)));
     itemId = static_cast<int>
              (PatientInfoWindowPrivate::ITEM_CBO_PACER_MARKER);
     d_ptr->pacer->setProperty("Item" , qVariantFromValue(itemId));
@@ -424,8 +422,8 @@ PatientInfoWindow::PatientInfoWindow()
     d_ptr->sex->addItems(QStringList()
                          << ""
                          << trs(PatientSymbol::convert(PATIENT_SEX_MALE))
-                         << trs(PatientSymbol::convert(PATIENT_SEX_FEMALE))
-                        );
+                         << trs(PatientSymbol::convert(PATIENT_SEX_FEMALE)));
+
     itemId = static_cast<int>(PatientInfoWindowPrivate::ITEM_CBO_PATIENT_SEX);
     d_ptr->sex->setProperty("Item" , qVariantFromValue(itemId));
     layout->addWidget(d_ptr->sex
@@ -466,8 +464,8 @@ PatientInfoWindow::PatientInfoWindow()
                            << trs(PatientSymbol::convert(PATIENT_BLOOD_TYPE_A))
                            << trs(PatientSymbol::convert(PATIENT_BLOOD_TYPE_B))
                            << trs(PatientSymbol::convert(PATIENT_BLOOD_TYPE_AB))
-                           << trs(PatientSymbol::convert(PATIENT_BLOOD_TYPE_O))
-                          );
+                           << trs(PatientSymbol::convert(PATIENT_BLOOD_TYPE_O)));
+
     itemId = static_cast<int>(PatientInfoWindowPrivate::ITEM_CBO_BLOOD_TYPE);
     d_ptr->blood->setProperty("Item" , qVariantFromValue(itemId));
     layout->addWidget(d_ptr->blood

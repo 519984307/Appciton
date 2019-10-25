@@ -41,7 +41,7 @@ public:
             "O2NotCalibrate",
             "O2MotorNotInPositon",
             "O2SensorOff",
-            "O2SendCommunicationStop"
+            "O2DataTransmissionStop"
         };
         return symbol[index];
     }

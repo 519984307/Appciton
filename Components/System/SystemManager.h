@@ -144,8 +144,8 @@ public:
 
     // 背光亮度设置/获取。
     void setBrightness(BrightnessLevel br);
-    void setAutoBrightness(int br);
-    void enableBrightness(int br);
+    void setAutoBrightness(BrightnessLevel br);
+    void enableBrightness(BrightnessLevel br);
     BrightnessLevel getBrightness(void);
 
     // 加载初始底层模式。

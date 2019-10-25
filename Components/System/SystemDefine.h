@@ -15,12 +15,12 @@
 // 交直流模式
 enum PowerStat
 {
-    POWER_UNKNOWN,      // 未知
-    POWER_AC,           // 交流
-    POWER_BAT,          // 电池
-    POWER_AC_BAT,       // 交直流
-    POWER_BAT_ERROR,    // 电池故障
-    POWER_AC_BAT_ERROR, // 交直流故障
+    POWER_UNKNOWN,       // 未知
+    POWER_AC,            // 交流
+    POWER_BAT,           // 电池
+    POWER_AC_BAT,        // 交直流
+    POWER_BAT_ERROR,     // 电池故障
+    POWER_AC_BAT_ERROR,  // 交直流故障
     POWER_NR
 };
 
@@ -77,7 +77,6 @@ enum ErrorWaringCode
 enum SystemOneShotAlarm
 {
     SOME_LIMIT_ALARM_DISABLED,
-    POWERUP_PANEL_RECORD_PRESSED,
     SYSTEM_ONE_SHOT_ALARM_COMMUNICATION_STOP,
     STORAGE_SPACE_FULL,
     SYSTEM_ONE_SHOT_ALARM_AUDIO_OFF,

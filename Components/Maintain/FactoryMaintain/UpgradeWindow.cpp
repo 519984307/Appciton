@@ -192,7 +192,7 @@ void UpgradeWindow::hideEvent(QHideEvent *ev)
         hints += "\n";
         hints += trs("IsRebootMachine");
         hints += "?";
-        MessageBox box(trs("UpdateHint"), hints);
+        MessageBox box(trs("UpdateTips"), hints);
         QDialog::DialogCode statue = static_cast<QDialog::DialogCode>(box.exec());
         if (statue == QDialog::Accepted)
         {
@@ -232,7 +232,7 @@ void UpgradeWindow::onUpgradeFinished(UpgradeManager::UpgradeResult result)
     }
     else
     {
-        d_ptr->textEdit->appendPlainText(trs("UpgradeFailure"));
+        d_ptr->textEdit->appendPlainText(trs("UpgradeFailed"));
         getCloseBtn()->setEnabled(true);
         d_ptr->progressBar->setValue(0);
     }

@@ -123,7 +123,6 @@ void AlarmInfoWindow::layout()
 
     if (d_ptr->alarmType == ALARM_TYPE_PHY)
     {
-        connect(tableView, SIGNAL(clicked(QModelIndex)), this, SLOT(_accessEventWindow(QModelIndex)));
         connect(tableView, SIGNAL(rowClicked(int)), this, SLOT(_accessEventWindow(int)));
     }
 
@@ -175,11 +174,6 @@ void AlarmInfoWindow::_onBtnRelease()
             d_ptr->loadOption();
         }
     }
-}
-
-void AlarmInfoWindow::_accessEventWindow(QModelIndex index)
-{
-    _accessEventWindow(index.row());
 }
 
 void AlarmInfoWindow::_accessEventWindow(int index)
@@ -294,7 +288,6 @@ void AlarmInfoWindowPrivate::loadOption()
     if (hasPrevPage())
     {
         prevBtn->setEnabled(true);
-        prevBtn->setFocus();
     }
     else
     {
@@ -318,15 +311,21 @@ void AlarmInfoWindowPrivate::updateAcknowledgeFlag()
     for (int i = 0; i < nodeList.count(); i++)
     {
         if (i >= (curPage - 1) * dataModel->getRowEachPage()
-                && i < (curPage) * dataModel->getRowEachPage()
-                && nodeList.at(i).acknowledge)
+                && i < (curPage) * dataModel->getRowEachPage())
         {
             // 只刷新当前页的确认标志
             int row = i % dataModel->getRowEachPage();
             QModelIndex index = dataModel->index(row, 0);
             if (index.isValid())
             {
-                dataModel->setData(index, QIcon(SELECT_ICON_PATH), Qt::DecorationRole);
+                if (nodeList.at(i).acknowledge)
+                {
+                    dataModel->setData(index, QIcon(SELECT_ICON_PATH), Qt::DecorationRole);
+                }
+                else
+                {
+                    dataModel->setData(index, QIcon(), Qt::DecorationRole);
+                }
             }
         }
     }

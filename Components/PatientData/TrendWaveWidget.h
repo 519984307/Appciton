@@ -75,7 +75,7 @@ public:
      * @param startIndex 开始数据的索引
      * @param endIndex 结束数据的索引
      */
-    void dataIndex(int &startIndex, int &endIndex);
+    void dataIndex(int *startIndex, int *endIndex);
 
 
     /**
@@ -231,6 +231,11 @@ private:
     void _loadEventInfoList();
 
     /**
+     * @brief _onUpdateCursorTime 更新游标时间
+     */
+    void _onUpdateCursorTime();
+
+    /**
      * @brief getTrendDataPackage 获取索引对应的趋势数据
      * @param index
      * @return
@@ -245,8 +250,9 @@ private:
     int _waveRegionWidth;
     int _oneFrameWidth;
 
-    int _cursorPosIndex;                            //游标位置在存储数据结构容器中的索引值
-    unsigned _currentCursorTime;
+    int _cursorPosIndex;                            // 游标位置在存储数据结构容器中的索引值
+    unsigned _currentCursorTime;                    // 游标时间
+    bool _updateCursorTime;                         // 更新游标时间标志
 
     IWidget *_subWidget;
 

@@ -132,7 +132,7 @@
         <CO2SweepMode>0</CO2SweepMode>
         <SweepSpeed>2</SweepSpeed>
         <FiCO2Display>1</FiCO2Display>
-        <DisplayZoom>0</DisplayZoom>
+        <DisplayZoom>1</DisplayZoom>
         <O2Compensation>16</O2Compensation>
         <N2OCompensation>0</N2OCompensation>
         <CeroCalibration>0</CeroCalibration>

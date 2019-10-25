@@ -27,6 +27,7 @@
 #define DATA_INTERVAL_PIXEL         5
 #define isEqual(a, b) (qAbs((a)-(b)) < 0.000001)
 #define SCALE_NUM                   6   // 刻度线
+#define SCALE_VALUE_AREA_HEIGHT    30  // 标尺值区域高度
 
 TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type) : _id(id), _type(type),
     _trendInfo(TrendGraphInfo()), _timeX(TrendParamDesc()), _valueY(TrendParamDesc()), _xSize(0), _ySize(0),
@@ -194,7 +195,7 @@ QPainterPath TrendSubWaveWidget::getTrendPainterPath(const QVector<TrendGraphDat
         qreal x = _mapValue(_timeX, iter->timestamp);
         ParamID paramId = paramInfo.getParamID(_id);
         UnitType type = paramManager.getSubParamUnit(paramId, _id);
-        int v = 0;
+        qreal v = 0;
         if (paramId == PARAM_CO2)
         {
             v = Unit::convert(type, UNIT_PERCENT, data / 10.0, co2Param.getBaro()).toDouble();
@@ -460,12 +461,12 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     if (!_trendInfo.alarmInfo.count())
     {
         // 趋势标尺上下限
-        QRect upRulerRect(_info.xHead / 3 + 7, _info.yTop - 10, _info.xHead, 30);
-        QRect downRulerRect(_info.xHead / 3 + 7, _info.yBottom - 10, _info.xHead, 30);
+        QRect upRulerRect(_info.xHead / 4, _info.yTop - 10, _info.xHead / 3 * 2, SCALE_VALUE_AREA_HEIGHT);
+        QRect downRulerRect(_info.xHead / 4, _info.yBottom - 10, _info.xHead / 3 * 2, SCALE_VALUE_AREA_HEIGHT);
         QFont textfont = fontManager.textFont(fontManager.getFontSize(3));
         barPainter.setFont(textfont);
-        barPainter.drawText(upRulerRect, Qt::AlignLeft | Qt::AlignTop, Util::convertToString(_valueY.max, _valueY.scale));
-        barPainter.drawText(downRulerRect, Qt::AlignLeft | Qt::AlignTop, Util::convertToString(_valueY.min, _valueY.scale));
+        barPainter.drawText(upRulerRect, Qt::AlignRight | Qt::AlignTop, Util::convertToString(_valueY.max, _valueY.scale));
+        barPainter.drawText(downRulerRect, Qt::AlignRight | Qt::AlignTop, Util::convertToString(_valueY.min, _valueY.scale));
 
         QFont font;
         font.setPixelSize(15);
@@ -500,8 +501,8 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     barPainter.setPen(QPen(_color, 1, Qt::SolidLine));
 
     // 趋势标尺上下限
-    QRect upRulerRect(_info.xHead / 2, _info.yTop - 10, _info.xHead / 3, 30);
-    QRect downRulerRect(_info.xHead / 2, _info.yBottom - 10, _info.xHead / 3, 30);
+    QRect upRulerRect(_info.xHead / 4, _info.yTop - 10, _info.xHead / 3 * 2, SCALE_VALUE_AREA_HEIGHT);
+    QRect downRulerRect(_info.xHead / 4, _info.yBottom - 10, _info.xHead / 3 * 2, SCALE_VALUE_AREA_HEIGHT);
     QFont textfont = fontManager.textFont(fontManager.getFontSize(3));
     barPainter.setFont(textfont);
     barPainter.drawText(upRulerRect, Qt::AlignRight | Qt::AlignTop, Util::convertToString(_valueY.max, _valueY.scale));
@@ -732,7 +733,7 @@ void TrendSubWaveWidget::showEvent(QShowEvent *e)
     _cursorPosIndex = 0;
 }
 
-double TrendSubWaveWidget::_mapValue(TrendParamDesc desc, int data)
+double TrendSubWaveWidget::_mapValue(TrendParamDesc desc, qreal data)
 {
     if (data == InvData())
     {

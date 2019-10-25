@@ -36,9 +36,9 @@ public:
         ITEM_CBO_APNEA_TIME,
         ITEM_CBO_WORK_MODE,
 
-        ITEM_BTN_O2_COMPEN = 0,
+        ITEM_BTN_O2_COMPEN,
         ITEM_BTN_N2O_COMPEN,
-        ITEM_BTN_ZERO_CALIB,
+        ITEM_BTN_ZERO_CALIB
     };
 
     CO2MenuContentPrivate()
@@ -173,13 +173,16 @@ void CO2MenuContent::onComboBoxIndexChanged(int index)
     case CO2MenuContentPrivate::ITEM_CBO_APNEA_TIME:
         currentConfig.setNumValue("CO2|ApneaTime", index);
         co2Param.setApneaTime(static_cast<ApneaAlarmTime>(index));
+        // 联动resp的窒息时间
+        currentConfig.setNumValue("RESP|ApneaDelay", index);
+        respParam.setApneaTime(static_cast<ApneaAlarmTime>(index));
         break;
     case CO2MenuContentPrivate::ITEM_CBO_WORK_MODE:
         co2Param.setModuleWorkMode(static_cast<CO2WorkMode>(index + 1));
         break;
     default:
         break;
-    };
+    }
 }
 
 void CO2MenuContent::onBtnReleasedChanged()

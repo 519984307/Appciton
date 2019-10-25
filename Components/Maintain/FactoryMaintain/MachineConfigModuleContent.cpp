@@ -50,13 +50,14 @@ public:
 #ifdef Q_WS_QWS
         ITEM_CBO_TSCREEN,
 #endif
-#ifndef HIDE_NURSE_CALL_FUNCTION
-        ITEM_CBO_NURSECALL,
-#endif
         ITEM_CBO_BACKLIGHT,
         ITEM_CBO_NIBP_NEO_MEASURE,
         ITEM_CBO_SCREEN_INFO,
         ITEM_CBO_NEO_MACHINE,
+        ITEM_CBO_HDMI,
+        ITEM_CBO_NURSE_CALL,
+        ITEM_CBO_ANALOG_OUTPUT,
+        ITEM_CBO_SYNC_DEFIBRILLATION,
         ITEM_CBO_MAX
     };
 
@@ -144,7 +145,19 @@ void MachineConfigModuleContentPrivte::loadOptions()
 
     index = 0;
     machineConfig.getNumValue("CO2Enable", index);
-    combos[ITEM_CBO_CO2]->setCurrentIndex(index);
+    if (index == 0)
+    {
+        combos[ITEM_CBO_CO2]->setCurrentIndex(0);
+    }
+    else
+    {
+        machineConfig.getStrValue("CO2", moduleName);
+        index = combos[ITEM_CBO_CO2]->findText(trs(moduleName));
+        if (index)
+        {
+            combos[ITEM_CBO_CO2]->setCurrentIndex(index);
+        }
+    }
     itemChangedMap[ITEM_CBO_CO2] = index;
 
     index = 0;
@@ -176,13 +189,6 @@ void MachineConfigModuleContentPrivte::loadOptions()
     itemChangedMap[ITEM_CBO_TSCREEN] = index;
 #endif
 
-#ifndef HIDE_NURSE_CALL_FUNCTION
-    index = 0;
-    machineConfig.getNumValue("NurseCallEnable", index);
-    combos[ITEM_CBO_NURSECALL]->setCurrentIndex(index);
-    itemChangedMap[ITEM_CBO_NURSECALL] = index;
-#endif
-
     index = 0;
     machineConfig.getNumValue("TEMPEnable", index);
     combos[ITEM_CBO_TEMP]->setCurrentIndex(index);
@@ -208,6 +214,22 @@ void MachineConfigModuleContentPrivte::loadOptions()
     combos[ITEM_CBO_NIBP_NEO_MEASURE]->setCurrentIndex(index);
     itemInitMap = itemChangedMap;
 
+    index = 0;
+    machineConfig.getNumValue("HDMIEnable", index);
+    combos[ITEM_CBO_HDMI]->setCurrentIndex(index);
+
+    index = 0;
+    machineConfig.getNumValue("NurseCallEnable", index);
+    combos[ITEM_CBO_NURSE_CALL]->setCurrentIndex(index);
+
+    index = 0;
+    machineConfig.getNumValue("AnalogOutputEnable", index);
+    combos[ITEM_CBO_ANALOG_OUTPUT]->setCurrentIndex(index);
+
+    index = 0;
+    machineConfig.getNumValue("SyncDefibrillationEnable", index);
+    combos[ITEM_CBO_SYNC_DEFIBRILLATION]->setCurrentIndex(index);
+
 #ifdef HIDE_MACHINE_CONFIG_ITEMS
     combos[ITEM_CBO_ECG12]->setCurrentIndex(0);
     combos[ITEM_CBO_ECG12]->setEnabled(false);
@@ -221,6 +243,12 @@ void MachineConfigModuleContentPrivte::loadOptions()
 //    combos[ITEM_CBO_O2]->setEnabled(false);
     combos[ITEM_CBO_WIFI]->setCurrentIndex(0);
     combos[ITEM_CBO_WIFI]->setEnabled(false);
+    combos[ITEM_CBO_HDMI]->setCurrentIndex(0);
+    combos[ITEM_CBO_HDMI]->setEnabled(false);
+    combos[ITEM_CBO_ANALOG_OUTPUT]->setCurrentIndex(0);
+    combos[ITEM_CBO_ANALOG_OUTPUT]->setEnabled(false);
+    combos[ITEM_CBO_SYNC_DEFIBRILLATION]->setCurrentIndex(0);
+    combos[ITEM_CBO_SYNC_DEFIBRILLATION]->setEnabled(false);
 #endif
 
     QStringList screenInfoList = machineConfig.getChildNodeNameList("ScreenInfo");
@@ -250,7 +278,7 @@ void MachineConfigModuleContentPrivte::configUpdateHint()
     QString hints = trs("MachineConfigIsUpdatedNow");
     hints += "\n";
     hints += trs("IsRebootMachine");
-    MessageBox box(trs("UpdateHint"), hints);
+    MessageBox box(trs("UpdateTips"), hints);
     QDialog::DialogCode statue = static_cast<QDialog::DialogCode>(box.exec());
     if (statue == QDialog::Accepted)
     {
@@ -299,8 +327,7 @@ void MachineConfigModuleContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs("On")
-                   );
+                    << trs("On"));
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
                          ::ITEM_CBO_ECG12, combo);
@@ -331,8 +358,7 @@ void MachineConfigModuleContent::layoutExec()
     combo->addItems(QStringList()
                     << trs("Off")
                     << trs(NIBPSymbol::convert(MODULE_N5))
-                    << trs(NIBPSymbol::convert(MODULE_SUNTECH_NIBP))
-                   );
+                    << trs(NIBPSymbol::convert(MODULE_SUNTECH_NIBP)));
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
                          ::ITEM_CBO_NIBP, combo);
@@ -346,8 +372,7 @@ void MachineConfigModuleContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs("On")
-                   );
+                    << trs("On"));
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
                          ::ITEM_CBO_RESP, combo);
@@ -361,8 +386,8 @@ void MachineConfigModuleContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs("On")
-                   );
+                    << trs(CO2Symbol::convert(MODULE_BLM_CO2))
+                    << trs(CO2Symbol::convert(MODULE_MASIMO_CO2)));
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
                          ::ITEM_CBO_CO2, combo);
@@ -376,8 +401,7 @@ void MachineConfigModuleContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs("On")
-                   );
+                    << trs("On"));
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
                          ::ITEM_CBO_AG, combo);
@@ -391,8 +415,7 @@ void MachineConfigModuleContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs("On")
-                   );
+                    << trs("On"));
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
                          ::ITEM_CBO_CO, combo);
@@ -406,8 +429,7 @@ void MachineConfigModuleContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs("On")
-                   );
+                    << trs("On"));
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
                          ::ITEM_CBO_IBP, combo);
@@ -422,8 +444,7 @@ void MachineConfigModuleContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs("On")
-                   );
+                    << trs("On"));
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
                          ::ITEM_CBO_O2, combo);
@@ -438,8 +459,7 @@ void MachineConfigModuleContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs("On")
-                   );
+                    << trs("On"));
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
                          ::ITEM_CBO_TEMP, combo);
@@ -453,8 +473,7 @@ void MachineConfigModuleContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs("On")
-                   );
+                    << trs("On"));
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
                          ::ITEM_CBO_PRINTER, combo);
@@ -468,8 +487,7 @@ void MachineConfigModuleContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs("On")
-                   );
+                    << trs("On"));
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
                          ::ITEM_CBO_WIFI, combo);
@@ -486,32 +504,12 @@ void MachineConfigModuleContent::layoutExec()
     combo->addItems(QStringList()
                     << trs("Off")
                     << trs("ResistiveScreen")
-                    << trs("CapacitiveScreen")
-                   );
+                    << trs("CapacitiveScreen"));
     combo->blockSignals(false);
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
                          ::ITEM_CBO_TSCREEN, combo);
     itemId = MachineConfigModuleContentPrivte::ITEM_CBO_TSCREEN;
-    combo->setProperty("Item", qVariantFromValue(itemId));
-    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-#endif
-
-#ifndef HIDE_NURSE_CALL_FUNCTION
-    // nurse call
-    label = new QLabel(trs("NurseCall"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    combo = new ComboBox;
-    combo->blockSignals(true);
-    combo->addItems(QStringList()
-                    << trs("Off")
-                    << trs("On")
-                   );
-    combo->blockSignals(false);
-    layout->addWidget(combo, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(MachineConfigModuleContentPrivte
-                         ::ITEM_CBO_NURSECALL, combo);
-    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_NURSECALL;
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 #endif
@@ -523,8 +521,7 @@ void MachineConfigModuleContent::layoutExec()
     combo->blockSignals(true);
     combo->addItems(QStringList()
                     << trs(SystemSymbol::convert(BACKLIGHT_MODE_1))
-                    << trs(SystemSymbol::convert(BACKLIGHT_MODE_2))
-                   );
+                    << trs(SystemSymbol::convert(BACKLIGHT_MODE_2)));
     combo->blockSignals(false);
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
@@ -534,6 +531,66 @@ void MachineConfigModuleContent::layoutExec()
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
     layout->setRowStretch(d_ptr->combos.count(), 1);
+
+    label = new QLabel(trs("HDMI"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    combo = new ComboBox;
+    combo->blockSignals(true);
+    combo->addItems(QStringList()
+                    << trs("Off")
+                    << trs("On"));
+    combo->blockSignals(false);
+    layout->addWidget(combo, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(MachineConfigModuleContentPrivte
+                         ::ITEM_CBO_HDMI, combo);
+    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_HDMI;
+    combo->setProperty("Item", qVariantFromValue(itemId));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+
+    label = new QLabel(trs("NurseCall"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    combo = new ComboBox;
+    combo->blockSignals(true);
+    combo->addItems(QStringList()
+                    << trs("Off")
+                    << trs("On"));
+    combo->blockSignals(false);
+    layout->addWidget(combo, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(MachineConfigModuleContentPrivte
+                         ::ITEM_CBO_NURSE_CALL, combo);
+    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_NURSE_CALL;
+    combo->setProperty("Item", qVariantFromValue(itemId));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+
+    label = new QLabel(trs("AnalogOutput"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    combo = new ComboBox;
+    combo->blockSignals(true);
+    combo->addItems(QStringList()
+                    << trs("Off")
+                    << trs("On"));
+    combo->blockSignals(false);
+    layout->addWidget(combo, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(MachineConfigModuleContentPrivte
+                         ::ITEM_CBO_ANALOG_OUTPUT, combo);
+    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_ANALOG_OUTPUT;
+    combo->setProperty("Item", qVariantFromValue(itemId));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+
+    label = new QLabel(trs("SyncDefibrillation"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    combo = new ComboBox;
+    combo->blockSignals(true);
+    combo->addItems(QStringList()
+                    << trs("Off")
+                    << trs("On"));
+    combo->blockSignals(false);
+    layout->addWidget(combo, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(MachineConfigModuleContentPrivte
+                         ::ITEM_CBO_SYNC_DEFIBRILLATION, combo);
+    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_SYNC_DEFIBRILLATION;
+    combo->setProperty("Item", qVariantFromValue(itemId));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
     label = new QLabel(trs("NeoNIBPMeasure"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -630,6 +687,11 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
         case MachineConfigModuleContentPrivte::ITEM_CBO_CO2:
         {
             enablePath = "CO2Enable";
+            modulePath = "CO2";
+            if (index > 0)
+            {
+                moduleName = CO2Symbol::convert(static_cast<CO2ModuleType>(index - 1));
+            }
             break;
         }
         case MachineConfigModuleContentPrivte::ITEM_CBO_AG:
@@ -677,11 +739,6 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
             systemManager.configTouchScreen(index);
             break;
 #endif
-#ifndef HIDE_NURSE_CALL_FUNCTION
-        case MachineConfigModuleContentPrivte::ITEM_CBO_NURSECALL:
-            enablePath = "NurseCallEnable";
-            break;
-#endif
         case MachineConfigModuleContentPrivte::ITEM_CBO_BACKLIGHT:
         {
             machineConfig.setNumValue("BacklightAdjustment", index);
@@ -707,6 +764,26 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
             enablePath = "NeonateMachine";
             break;
         }
+    case MachineConfigModuleContentPrivte::ITEM_CBO_HDMI:
+    {
+         enablePath = "HDMIEnable";
+         break;
+    }
+    case MachineConfigModuleContentPrivte::ITEM_CBO_NURSE_CALL:
+    {
+         enablePath = "NurseCallEnable";
+         break;
+    }
+    case MachineConfigModuleContentPrivte::ITEM_CBO_ANALOG_OUTPUT:
+    {
+         enablePath = "AnalogOutputEnable";
+         break;
+    }
+    case MachineConfigModuleContentPrivte::ITEM_CBO_SYNC_DEFIBRILLATION:
+    {
+         enablePath = "SyncDefibrillationEnable";
+         break;
+    }
         default:
             return;
     }

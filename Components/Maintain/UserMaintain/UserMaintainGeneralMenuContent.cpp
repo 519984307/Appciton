@@ -141,8 +141,7 @@ void UserMaintainGeneralMenuContent::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("Protected")
-                       << trs("Open")
-                      );
+                       << trs("Open"));
     itemID = static_cast<int>(UserMaintainGeneralMenuContentPrivate::ITEM_CBO_CHANGE_BEDNUMBER_RIGHT);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -155,8 +154,7 @@ void UserMaintainGeneralMenuContent::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("English")
-                       << trs("Chinese")
-                      );
+                       << trs("Chinese"));
     itemID = static_cast<int>(UserMaintainGeneralMenuContentPrivate::ITEM_CBO_LANGUAGE);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -226,7 +224,8 @@ void UserMaintainGeneralMenuContent::onButtonReleased()
             QString regKeyStr("[a-zA-Z]|[0-9]|_");
             idPanel.setBtnEnable(regKeyStr);
 
-            windowManager.showWindow(&idPanel, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
+            windowManager.showWindow(&idPanel, WindowManager::ShowBehaviorModal |
+                                     WindowManager::ShowBehaviorNoAutoClose);
             if (QDialog::Accepted == idPanel.result())
             {
                 QString oldStr = button->text();
@@ -248,7 +247,8 @@ void UserMaintainGeneralMenuContent::onButtonReleased()
             idPanel.setMaxInputLength(11);
             QString regKeyStr("[a-zA-Z]|[0-9]|_");
             idPanel.setBtnEnable(regKeyStr);
-            windowManager.showWindow(&idPanel, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
+            windowManager.showWindow(&idPanel, WindowManager::ShowBehaviorModal |
+                                     WindowManager::ShowBehaviorNoAutoClose);
             if (QDialog::Accepted == idPanel.result())
             {
                 QString oldStr = button->text();
@@ -271,7 +271,8 @@ void UserMaintainGeneralMenuContent::onButtonReleased()
             QString regKeyStr("[a-zA-Z]|[0-9]|_");
             idPanel.setBtnEnable(regKeyStr);
 
-            windowManager.showWindow(&idPanel, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
+            windowManager.showWindow(&idPanel, WindowManager::ShowBehaviorModal |
+                                     WindowManager::ShowBehaviorNoAutoClose);
             if (QDialog::Accepted == idPanel.result())
             {
                 QString oldStr = button->text();
@@ -301,14 +302,15 @@ void UserMaintainGeneralMenuContent::onButtonReleased()
             idPanel.setSymbolEnable(false);
             idPanel.setSpaceEnable(false);
             // 设置初始字符串 placeholder模式
-            QString lastPassword = QString("%1:%2").arg(trs("LastPassword")).arg(button->text());
+            QString lastPassword = QString("%1:%2").arg(trs("OldPassword")).arg(button->text());
             idPanel.setInitString(lastPassword, true);
 
             idPanel.setCheckValueHook(checkPasswordValue);
             QString invaildHint = QString(trs("Input8DigitsPassword"));
             idPanel.setInvalidHint(invaildHint);
 
-            windowManager.showWindow(&idPanel, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
+            windowManager.showWindow(&idPanel, WindowManager::ShowBehaviorModal |
+                                     WindowManager::ShowBehaviorNoAutoClose);
             if (QDialog::Accepted == idPanel.result())
             {
                 QString oldStr = button->text();

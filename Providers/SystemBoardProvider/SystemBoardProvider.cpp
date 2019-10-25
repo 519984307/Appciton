@@ -332,7 +332,7 @@ void SystemBoardProvider::handlePacket(unsigned char *data, int len)
         _parseErrorWaringCode(data, len);
         break;
     case MSG_BACKLIGHT_BRIGHTNESS:
-        systemManager.setAutoBrightness(static_cast<int>(data[1]));
+        systemManager.setAutoBrightness(static_cast<BrightnessLevel>(data[1]));
         break;
     default:
         debug("Unknown message type = 0x%x!", type);

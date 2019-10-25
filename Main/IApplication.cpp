@@ -210,7 +210,7 @@ void IApplication::handleScreenCaptureResult(long result)
     }
     else
     {
-        MessageBox msgBox(trs("ScreenCapture"), trs("CaptureFail"), false);
+        MessageBox msgBox(trs("ScreenCapture"), trs("CaptureFailed"), false);
         Qt::WindowFlags flags = msgBox.windowFlags();
         msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | flags);
         windowManager.showWindow(&msgBox, WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);

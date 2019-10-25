@@ -48,7 +48,10 @@ WiFiProfileWindowInfo::WiFiProfileWindowInfo():
  **************************************************************************************************/
 static bool isIpStrValid(const QString &ipStr)
 {
-    QRegExp reg("^(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])$");
+    QRegExp reg("^(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\."
+                "(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\."
+                "(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\."
+                "(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])$");
     return reg.exactMatch(ipStr);
 }
 
@@ -167,8 +170,7 @@ void WiFiProfileEditorWindowPrivate::init(const WiFiProfileWindowInfo &profile)
     authTypeComboL->addItems(QStringList()
                              << "None"
                              << "WPA PSK"
-                             << "WPA2 PSK"
-                            );
+                             << "WPA2 PSK");
     authTypeComboL->setCurrentIndex(profile.authType);
     authTypeComboL->setFixedWidth(q->width() / 4);
     layout->addWidget(authTypeComboL, 1, 1);
@@ -189,8 +191,7 @@ void WiFiProfileEditorWindowPrivate::init(const WiFiProfileWindowInfo &profile)
     networkSettingComboL = new ComboBox;
     networkSettingComboL->addItems(QStringList()
                                    << trs("DHCP")
-                                   << trs("StaticIp")
-                                  );
+                                   << trs("StaticIp"));
     networkSettingComboL->setCurrentIndex(profile.isStatic);
     networkSettingComboL->setFixedWidth(q->width() / 4);
     layout->addWidget(networkSettingComboL, 2, 1);
@@ -216,7 +217,7 @@ void WiFiProfileEditorWindowPrivate::init(const WiFiProfileWindowInfo &profile)
     subnetMaskBtn->setFixedWidth(q->width() / 4);
     layout->addWidget(subnetMaskBtn, 3, 3);
 
-    label = new QLabel(trs("PreferrendDNS"));
+    label = new QLabel(trs("PreferredDNS"));
     layout->addWidget(label, 4, 0);
     preferedDNSBtn = new Button(profile.preferedDNS);
     preferedDNSBtn->setButtonStyle(Button::ButtonTextOnly);
@@ -320,7 +321,7 @@ void WiFiProfileEditorWindowPrivate::editIpAddress()
     }
     else if (sender == preferedDNSBtn)
     {
-        englishPanel.setWindowTitle(trs("PreferrendDNS"));
+        englishPanel.setWindowTitle(trs("PreferredDNS"));
     }
     else if (sender == alternateDNSBtn)
     {

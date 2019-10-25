@@ -279,11 +279,20 @@ bool SystemManager::isSupport(ConfiguredFuncs funcs) const
     case CONFIG_TOUCH:
         path = "TouchEnable";
         break;
-    case CONFIG_NURSECALL:
-        path = "NurseCallEnable";
-        break;
     case CONFIG_O2:
         path = "O2Enable";
+        break;
+    case CONFIG_HDMI:
+        path = "HDMIEnable";
+        break;
+    case CONFIG_NURSE_CALL:
+        path = "NurseCallEnable";
+        break;
+    case CONFIG_ANALOG_OUTPUT:
+        path = "AnalogOutputEnable";
+        break;
+    case CONFIG_SYNC_DEFIBRILLATION:
+        path = "SyncDefibrillationEnable";
         break;
     default:
         break;
@@ -523,9 +532,10 @@ void SystemManager::parseKeyValue(const unsigned char *data, unsigned int len)
         return;
     }
 
-    if (QApplication::activeWindow() == NULL)
+    if (QApplication::activeWindow() == NULL && windowManager.topWindow() == NULL)
     {
         windowManager.activateWindow();
+        qDebug() << Q_FUNC_INFO << "No active window, activate window manager";
     }
 
     QWSServer::processKeyEvent(0xffff, keyCode, Qt::NoModifier, data[1], false);
@@ -540,7 +550,7 @@ void SystemManager::setBrightness(BrightnessLevel br)
     if (br != BRT_LEVEL_AUTO)
     {
         int brValue = br * 2;
-        enableBrightness(brValue);
+        enableBrightness(static_cast<BrightnessLevel>(brValue));
         d_ptr->isAutoBrightness = false;
 
         systemConfig.setNumValue("General|DefaultDisplayBrightness", static_cast<int>(br));
@@ -551,7 +561,7 @@ void SystemManager::setBrightness(BrightnessLevel br)
     }
 }
 
-void SystemManager::setAutoBrightness(int br)
+void SystemManager::setAutoBrightness(BrightnessLevel br)
 {
     if (d_ptr->isAutoBrightness)
     {
@@ -562,7 +572,7 @@ void SystemManager::setAutoBrightness(int br)
 /***************************************************************************************************
  * 背光亮度设置。
  **************************************************************************************************/
-void SystemManager::enableBrightness(int br)
+void SystemManager::enableBrightness(BrightnessLevel br)
 {
 #ifdef Q_WS_X11
     QByteArray data;

@@ -260,6 +260,9 @@ void RESPMenuContent::onComboBoxIndexChanged(int index)
         case RESPMenuContentPrivate::ITEM_CBO_APNEA_DELAY:
             currentConfig.setNumValue("RESP|ApneaDelay", index);
             respParam.setApneaTime(static_cast<ApneaAlarmTime>(index));
+            // 联动CO2的窒息时间
+            currentConfig.setNumValue("CO2|ApneaTime", index);
+            co2Param.setApneaTime(static_cast<ApneaAlarmTime>(index));
             break;
         case RESPMenuContentPrivate::ITEM_CBO_RR_SOURCE:
             respDupParam.setRRSource(static_cast<BRRRSourceType>(index));

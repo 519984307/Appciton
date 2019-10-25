@@ -65,7 +65,13 @@ int AlarmLimitModel::columnCount(const QModelIndex &parent) const
 int AlarmLimitModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return d_ptr->calTotalPage() * d_ptr->eachPageRowCount;
+    int page = d_ptr->calTotalPage();
+    if (page == 0)
+    {
+        // 没有数据时也仍然占一页
+        page = 1;
+    }
+    return page * d_ptr->eachPageRowCount;
 }
 
 void AlarmLimitModel::alarmDataUpdate(const AlarmDataInfo &info, int type)
@@ -303,7 +309,16 @@ QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
         break;
 
     case Qt::BackgroundRole:
-        return Qt::white;
+        if (row % 2)
+        {
+            return themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
+                                        ThemeManager::StateDisabled);
+        }
+        else
+        {
+            return themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
+                                        ThemeManager::StateActive);
+        }
         break;
 
     case Qt::SizeHintRole:
@@ -375,8 +390,9 @@ QVariant AlarmLimitModel::headerData(int section, Qt::Orientation orientation, i
         }
         break;
     case Qt::BackgroundRole:
-        return QBrush(QColor(247, 247, 247));
-        break;
+        return themeManger.getColor(ThemeManager::ControlTypeNR,
+                                    ThemeManager::ElementBackgound,
+                                    ThemeManager::StateDisabled);
     case Qt::ForegroundRole:
         return QBrush(QColor("#2C405A"));
         break;

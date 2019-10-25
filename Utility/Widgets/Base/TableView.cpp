@@ -224,8 +224,9 @@ void TableView::setModel(QAbstractItemModel *model)
         for (int j = 0; j < column; j++)
         {
             QSize span = model->span(model->index(i, j));
-            if (span.isValid())
+            if (span.isValid() && span != QSize(1, 1))
             {
+                // 单一空格不需要设置跨度，否则会发出警告。
                 setSpan(i, j, span.height(), span.width());
             }
         }
@@ -559,8 +560,9 @@ void TableView::checkAfterFocusOut()
 void TableView::onSpanChanged(const QModelIndex &index)
 {
     QSize span = this->model()->span(index);
-    if (span.isValid())
+    if (span.isValid() && span != QSize(1, 1))
     {
+        // 单一空格不需要设置跨度，否则会发出警告。
         setSpan(index.row(), index.column(), span.height(), span.width());
     }
 }
