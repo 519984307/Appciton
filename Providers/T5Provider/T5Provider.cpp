@@ -664,7 +664,7 @@ void T5Provider::_limitHandle(unsigned char *packet)
 {
     // 判断T1超界
     short temp1 = static_cast<short>((packet[2] << 8) + packet[1]);
-    if (temp1 == TEMP_INVALID_VALUE && _sensorOff1)
+    if (temp1 == TEMP_INVALID_VALUE && (_sensorOff1 || !_hasBeenConnected1))
     {
         // 探头脱落且体温为-1时，撤销超界报警
         _overRang1 = false;
@@ -679,7 +679,7 @@ void T5Provider::_limitHandle(unsigned char *packet)
     }
     // 判断T2超界
     short temp2 = static_cast<short>((packet[4] << 8) + packet[3]);
-    if (temp2 == TEMP_INVALID_VALUE && _sensorOff2)
+    if (temp2 == TEMP_INVALID_VALUE && (_sensorOff2 || !_hasBeenConnected2))
     {
         _overRang2 = false;
     }
