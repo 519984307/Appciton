@@ -226,6 +226,7 @@ void FactoryVersionInfo::layoutExec()
         labelLeft = new QLabel(trs("SPO2SwVersion") + "    ");
         layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
         labelRight = new QLabel;
+        labelRight->setWordWrap(true);
         layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignLeft);
         d_ptr->labs.insert(FactoryVersionInfoPrivate
                            ::ITEM_LAB_SPO2_SW_VERSION, labelRight);
@@ -319,6 +320,8 @@ void FactoryVersionInfo::layoutExec()
                        ::ITEM_LAB_SCREEN_RESOLUTION, labelRight);
 
     layout->setRowStretch(d_ptr->labs.count(), 1);
+    layout->setColumnStretch(0, 1);
+    layout->setColumnStretch(1, 1);
 }
 
 void FactoryVersionInfoPrivate::loadOptions()

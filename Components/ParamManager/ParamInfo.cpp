@@ -783,6 +783,12 @@ UnitType ParamInfo::getUnitOfSubParam(SubParamID id, UnitType &t0, UnitType &t1)
         return UNIT_RPM;
 
     case SUB_PARAM_SPO2:
+    case SUB_PARAM_SPO2_2:
+    case SUB_PARAM_SPO2_D:
+    case SUB_PARAM_PI:
+    case SUB_PARAM_PVI:
+    case SUB_PARAM_SPMET:
+    case SUB_PARAM_SPCO:
         return UNIT_PERCENT;
 
     case SUB_PARAM_NIBP_SYS:
