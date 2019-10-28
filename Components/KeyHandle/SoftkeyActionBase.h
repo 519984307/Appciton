@@ -66,6 +66,7 @@ enum SoftBaseKeyType
     SOFT_BASE_KEY_SCREEN_BRIGHTNESS,
     SOFT_BASE_KEY_NIGHT_MODE,
     SOFT_BASE_KEY_PRINTER_SET,
+    SOFT_BASE_KEY_NIBP_MEASURE,
     SOFT_BASE_KEY_NR
 };
 
@@ -137,6 +138,7 @@ public:    // 一些共有的功能处理。
     static void keyVolume(bool isPressed);
     static void nightMode(bool isPressed);
     static void printSet(bool isPressed);
+    static void nibpMeasure(bool isPressed);
 
 public:
     // 获取动作描述总个数。

@@ -50,6 +50,7 @@ static KeyActionDesc _monitorKeys[] =
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_SCREEN_BRIGHTNESS),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NIGHT_MODE),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PRINTER_SET),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NIBP_MEASURE),
 };
 
 /***************************************************************************************************

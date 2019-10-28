@@ -36,6 +36,7 @@
 #include "LayoutManager.h"
 #include "BigFontLayoutWindow.h"
 #include "SoftKeyManager.h"
+#include "NIBPParam.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -74,6 +75,7 @@ static KeyActionDesc _baseKeys[] =
     KeyActionDesc("", "SystemBrightness", "Brightness.png", SoftkeyActionBase::systemBrightness),
     KeyActionDesc("", "NightMode", "nightMode.png", SoftkeyActionBase::nightMode),
     KeyActionDesc("", "PrintSetup", "printSetup.png", SoftkeyActionBase::printSet),
+    KeyActionDesc("", "NibpMeasurement", "NIBPMaitain.png", SoftkeyActionBase::nibpMeasure),
 };
 
 /***************************************************************************************************
@@ -422,6 +424,21 @@ void SoftkeyActionBase::printSet(bool isPressed)
     }
     MainMenuWindow *w = MainMenuWindow::getInstance();
     w->popup(trs("PrintSettingMenu"));
+}
+
+void SoftkeyActionBase::nibpMeasure(bool isPressed)
+{
+    if (isPressed)
+    {
+        return;
+    }
+
+    //  维护模式和demo模式不响应nibp测量按钮
+    if (systemManager.isSupport(CONFIG_NIBP) && systemManager.getCurWorkMode() != WORK_MODE_DEMO
+            && !nibpParam.isMaintain() && !nibpParam.isZeroSelfTestState())
+    {
+        nibpParam.keyReleased();
+    }
 }
 
 /***************************************************************************************************
