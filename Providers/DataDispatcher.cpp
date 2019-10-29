@@ -339,7 +339,7 @@ void DataDispatcher::dataArrived()
         if ((len <= 0) || (len > static_cast<int>(sizeof(packet))))
         {
             d_ptr->ringBuff.pop(1);
-            break;
+            continue;
         }
         if (len > d_ptr->ringBuff.dataSize())  // 数据还不够，继续等待。
         {
