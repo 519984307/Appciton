@@ -250,7 +250,9 @@ void NIBPMenuContentPrivate::loadOptions()
 
     int initVal = 0;
     currentConfig.getNumValue("NIBP|InitialCuffInflation", initVal);
+    initCuffSpb->blockSignals(true);
     initCuffSpb->setValue(initVal);
+    initCuffSpb->blockSignals(false);
 
     lastType = type;
 
