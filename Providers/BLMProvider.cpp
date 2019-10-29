@@ -52,7 +52,7 @@ BLMProvider::BLMProvider(const QString &name)
     : Provider(name), upgradeIface(NULL), _timerId(-1), _lastBLMCommandInfo(new BLMCommandInfo())
 {
     providers.insert(name, this);
-    _isLastSOHPaired = false;
+    _isLastByteSOH = false;
     _timerId = startTimer(1000);
 }
 
@@ -80,7 +80,7 @@ void BLMProvider::dataArrived()
 {
     _readData();  // 读取数据到RingBuff中
 
-    unsigned char packet[570];
+    unsigned char packet[maxPacketLen];
 
     while (ringBuff.dataSize() >= minPacketLen)
     {
@@ -92,21 +92,16 @@ void BLMProvider::dataArrived()
         }
 
         int len = (ringBuff.at(1) + (ringBuff.at(2) << 8));
-        if ((len <= 0) || (len > 570))
+        if ((len < minPacketLen) || (len > maxPacketLen))
         {
+            // 无效数据包长度
             ringBuff.pop(1);
-            break;
+            continue;
         }
+
         if (len > ringBuff.dataSize())  // 数据还不够，继续等待。
         {
             break;
-        }
-
-        // 数据包不会超过packet长度，当出现这种情况说明发生了不可预料的错误，直接丢弃该段数据。
-        if (len > static_cast<int>(sizeof(packet)))
-        {
-            ringBuff.pop(1);
-            continue;
         }
 
         // 将数据包读到buff中。
@@ -269,7 +264,7 @@ void BLMProvider::dataArrived(unsigned char *buff, unsigned int length)
 {
     _readData(buff, length);   // 读取数据到RingBuff中
 
-    unsigned char packet[570];
+    unsigned char packet[maxPacketLen];
 
     while (ringBuff.dataSize() >= minPacketLen)
     {
@@ -281,21 +276,14 @@ void BLMProvider::dataArrived(unsigned char *buff, unsigned int length)
         }
 
         int len = (ringBuff.at(1) + (ringBuff.at(2) << 8));
-        if ((len <= 0) || (len > 570))
+        if ((len < minPacketLen) || (len > maxPacketLen))
         {
             ringBuff.pop(1);
-            break;
+            continue;
         }
         if (len > ringBuff.dataSize())  // 数据还不够，继续等待。
         {
             break;
-        }
-
-        // 数据包不会超过packet长度，当出现这种情况说明发生了不可预料的错误，直接丢弃该段数据。
-        if (len > static_cast<int>(sizeof(packet)))
-        {
-            ringBuff.pop(1);
-            continue;
         }
 
         // 将数据包读到buff中。
@@ -427,42 +415,31 @@ void BLMProvider::_readData(void)
         return;
     }
 
-    int startIndex = 0;
-    bool isok;
-    unsigned char v = ringBuff.head(isok);
-
-    if (isok && len > 0)
+    for (int i = 0; i < len; ++i)
     {
-        if ((!_isLastSOHPaired) && (v == SOH) && (buff[0] == SOH))  // SOH为数据包起始数据。
+        if (buff[i] == SOH)
         {
-            _isLastSOHPaired = true;
-            startIndex = 1;                  // 说明有连续两个SOH出现，需要丢弃一个。
+            if (_isLastByteSOH)
+            {
+                /* conitnuous receiving two SOH, drop one */
+                _isLastByteSOH = false;
+                continue;
+            }
+            else
+            {
+                _isLastByteSOH = true;
+            }
         }
+        else
+        {
+            _isLastByteSOH = false;
+        }
+        ringBuff.push(buff[i]);
     }
 
-    for (int i = startIndex; i < len; i++)
+    if (ringBuff.isFull())
     {
-        ringBuff.push(buff[i]);
-        if (buff[i] != SOH)
-        {
-            _isLastSOHPaired = false;
-            continue;
-        }
-
-        _isLastSOHPaired = false;
-        i++;
-        if (i >= len)
-        {
-            break;
-        }
-
-        if (buff[i] == SOH)                    // 剔除。
-        {
-            _isLastSOHPaired = true;
-            continue;
-        }
-
-        ringBuff.push(buff[i]);
+        qWarning() << getName() << " ring buffer is full!";
     }
 }
 
@@ -473,41 +450,30 @@ void BLMProvider::_readData(unsigned char *buff, unsigned int len)
         return;
     }
 
-    int startIndex = 0;
-    bool isok;
-    unsigned char v = ringBuff.head(isok);
-
-    if (isok && len > 0)
+    for (unsigned int i = 0; i < len; ++i)
     {
-        if ((!_isLastSOHPaired) && (v == SOH) && (buff[0] == SOH))  // SOH为数据包起始数据。
+        if (buff[i] == SOH)
         {
-            _isLastSOHPaired = true;
-            startIndex = 1;                  // 说明有连续两个SOH出现，需要丢弃一个。
+            if (_isLastByteSOH)
+            {
+                /* conitnuous receiving two SOH, drop one */
+                _isLastByteSOH = false;
+                continue;
+            }
+            else
+            {
+                _isLastByteSOH = true;
+            }
         }
+        else
+        {
+            _isLastByteSOH = false;
+        }
+        ringBuff.push(buff[i]);
     }
 
-    for (unsigned int i = startIndex; i < len; i++)
+    if (ringBuff.isFull())
     {
-        ringBuff.push(buff[i]);
-        if (buff[i] != SOH)
-        {
-            _isLastSOHPaired = false;
-            continue;
-        }
-
-        _isLastSOHPaired = false;
-        i++;
-        if (i >= len)
-        {
-            break;
-        }
-
-        if (buff[i] == SOH)                    // 剔除。
-        {
-            _isLastSOHPaired = true;
-            continue;
-        }
-
-        ringBuff.push(buff[i]);
+        qWarning() << getName() << " ring buffer is full!";
     }
 }

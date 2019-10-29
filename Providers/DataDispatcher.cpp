@@ -33,7 +33,7 @@ class DataDispatcherPrivate
 {
 public:
     DataDispatcherPrivate(const QString &name, DataDispatcher *const q_ptr)
-        : isLastSOHPaired(false), name(name),
+        : isLastByteSOH(false), name(name),
           uart(new Uart(q_ptr)),
           ringBuff(RING_BUFFER_LENGTH)
     {
@@ -57,41 +57,25 @@ public:
             return;
         }
 
-        int startIndex = 0;
-        bool isok;
-        unsigned char v = ringBuff.head(isok);
-
-        if (isok && len > 0)
+        for (int i = 0; i < len; ++i)
         {
-            if ((!isLastSOHPaired) && (v == SOH) && (buff[0] == SOH))  // SOH为数据包起始数据。
+            if (buff[i] == SOH)
             {
-                isLastSOHPaired = true;
-                startIndex = 1;                  // 说明有连续两个SOH出现，需要丢弃一个。
+                if (isLastByteSOH)
+                {
+                    /* conitnuous receiving two SOH, drop one */
+                    isLastByteSOH = false;
+                    continue;
+                }
+                else
+                {
+                    isLastByteSOH = true;
+                }
             }
-        }
-
-        for (int i = startIndex; i < len; i++)
-        {
-            ringBuff.push(buff[i]);
-            if (buff[i] != SOH)
+            else
             {
-                isLastSOHPaired = false;
-                continue;
+                isLastByteSOH = false;
             }
-
-            isLastSOHPaired = false;
-            i++;
-            if (i >= len)
-            {
-                break;
-            }
-
-            if (buff[i] == SOH)                    // 剔除。
-            {
-                isLastSOHPaired = true;
-                continue;
-            }
-
             ringBuff.push(buff[i]);
         }
     }
@@ -150,7 +134,7 @@ public:
         }
     }
 
-    bool isLastSOHPaired;  // 遗留在ringBuff最后一个数据（该数据为SOH）是否已经剃掉了多余的SOH
+    bool isLastByteSOH;    // 记录上一个字节是否是SOH
     QString name;
     Uart *uart;
     QMap<DataDispatcher::PacketType, Provider *> dataHandlers;
