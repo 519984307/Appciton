@@ -205,6 +205,10 @@ QPainterPath TrendSubWaveWidget::getTrendPainterPath(const QVector<TrendGraphDat
             QString vStr = Unit::convert(type, UNIT_TC, data / 10.0);
             v = vStr.toDouble();
         }
+        else if (paramId == PARAM_SPO2)
+        {
+            v = data;
+        }
         else
         {
             v = data / 10;
@@ -393,7 +397,16 @@ QList<QPainterPath> TrendSubWaveWidget::generatorPainterPath(const TrendGraphInf
             }
 
             qreal x = _mapValue(_timeX, iter->timestamp);
-            qreal y = _mapValue(_valueY, iter->data);
+            qreal data = iter->data;
+            if (_id == SUB_PARAM_PI)
+            {
+                data = data / 100;
+            }
+            else if (_id == SUB_PARAM_SPHB || _id == SUB_PARAM_SPMET)
+            {
+                data = data / 10;
+            }
+            qreal y = _mapValue(_valueY, data);
 
             if (lastPointInvalid)
             {
@@ -834,7 +847,6 @@ void TrendSubWaveWidget::_autoRulerCal()
             {
                 continue;
             }
-            data = data / _valueY.scale;
             _updateAutoRuler(data);
         }
         break;
