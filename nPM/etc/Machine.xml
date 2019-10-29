@@ -19,7 +19,7 @@
     <TEMPEnable>1</TEMPEnable>
     <PrinterEnable>1</PrinterEnable>
     <WIFIEnable>0</WIFIEnable>
-    <TouchEnable>1</TouchEnable>
+    <TouchEnable>0</TouchEnable>
     <O2Enable>0</O2Enable>
     <NIBPNEOMeasureEnable>1</NIBPNEOMeasureEnable>
     <HDMIEnable>0</HDMIEnable>
@@ -28,7 +28,7 @@
     <SyncDefibrillationEnable>0</SyncDefibrillationEnable>	
     <!--背光调节方式  0:默认为等级亮度递增方式调节,1:如果0对应模式无法达到亮度递增调节效果，就选择该模式1-->
     <!--总之，2个模式中要选择能使得背光等级亮度递增的调节模式-->
-    <BacklightAdjustment>1</BacklightAdjustment>
+    <BacklightAdjustment>0</BacklightAdjustment>
     <!--系统信息-->
     <SerialNumber>20180725222</SerialNumber>
     <SoftwareVersion>0.0.0.1</SoftwareVersion>
