@@ -805,6 +805,7 @@ Orange,橙色,Orange
 Cyan,蓝绿色,Cyan
 Purple,紫色,Purple
 AlarmPause,报警暂停,Alarm Pause
+AlarmReset,报警复位,Alarm Reset
 AlarmOff,报警关闭,Alarm Off
 AlarmAudioOff,报警音关闭,Alarm Audio Off
 AlarmPauseTime,报警暂停时间,Alarm Pause Time

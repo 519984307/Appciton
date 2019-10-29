@@ -1092,7 +1092,7 @@ void CO2Param::updateSubParamLimit(SubParamID id)
 
 void CO2Param::setRespApneaStimulation(bool sta)
 {
-    bool co2ApneaStimulation;
+    int co2ApneaStimulation = 0;
     currentConfig.getNumValue("ApneaStimulation|CO2", co2ApneaStimulation);
     O2ParamInterface *o2Param = O2ParamInterface::getO2ParamInterface();
     if (co2ApneaStimulation && o2Param)

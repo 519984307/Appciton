@@ -30,7 +30,7 @@
 #include "CO2Param.h"
 #include "LanguageManager.h"
 
-#define PREFER_SOFTKEY_WIDTH 98
+#define PREFER_SOFTKEY_WIDTH 97
 #define SOFTKEY_SPACING 2
 #define SOFTKEY_MARGIN 2
 
@@ -48,7 +48,8 @@ public:
           leftPageKeyWidget(NULL),
           rightPageKeyWidget(NULL),
           emptyKeyDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
-          signalMapper(NULL),
+          releasedSignalMapper(NULL),
+          pressedSignalMapper(NULL),
           dynamicKeyLayout(NULL)
     {}
 
@@ -129,7 +130,7 @@ public:
      * @param isMainSetup  是否是主菜单按键
      * @param index 软按键索引
      */
-    void handleSoftKeyClick(bool isMainSetup = true, int index = 0);
+    void handleSoftKeyClick(bool isMainSetup = true, int index = 0, bool isPressed = false);
 
     int totalPages;     // total pages
     int curPage;        // current page index
@@ -141,7 +142,8 @@ public:
     QList<SoftkeyWidget*> dynamicKeyWidgets;
     KeyActionDesc emptyKeyDesc;  // empty key description, use for the empty soft key
     SoftKeyActionMap actionMaps;
-    QSignalMapper *signalMapper;
+    QSignalMapper *releasedSignalMapper;
+    QSignalMapper *pressedSignalMapper;
     QHBoxLayout *dynamicKeyLayout;
     QMap<SoftBaseKeyType, bool> keyTypeStatueMap;
     QList<KeyActionDesc*> keyTypeList;
@@ -256,9 +258,14 @@ void SoftKeyManager::refreshTouchKey()
     refreshPage(false);
 }
 
-void SoftKeyManager::_dynamicKeyClicked(int index)
+void SoftKeyManager::_dynamicKeyReleased(int index)
 {
-    d_ptr->handleSoftKeyClick(false, index);
+    d_ptr->handleSoftKeyClick(false, index, false);
+}
+
+void SoftKeyManager::_dynamicKeyPressed(int index)
+{
+    d_ptr->handleSoftKeyClick(false, index, true);
 }
 
 void SoftKeyManager::_fixedKeyClicked()
@@ -323,8 +330,10 @@ void SoftKeyManager::resizeEvent(QResizeEvent *e)
         SoftkeyWidget *k = new SoftkeyWidget();
         k->setFixedWidth(PREFER_SOFTKEY_WIDTH);
         d_ptr->dynamicKeyLayout->addWidget(k);
-        connect(k, SIGNAL(released()), d_ptr->signalMapper, SLOT(map()));
-        d_ptr->signalMapper->setMapping(k, d_ptr->dynamicKeyWidgets.count());
+        connect(k, SIGNAL(released()), d_ptr->releasedSignalMapper, SLOT(map()));
+        d_ptr->releasedSignalMapper->setMapping(k, d_ptr->dynamicKeyWidgets.count());
+        connect(k, SIGNAL(clicked(IWidget*)), d_ptr->pressedSignalMapper, SLOT(map()));
+        d_ptr->pressedSignalMapper->setMapping(k, d_ptr->dynamicKeyWidgets.count());
         d_ptr->dynamicKeyWidgets.append(k);
     }
 
@@ -403,7 +412,9 @@ void SoftKeyManager::setContent(SoftKeyActionType type)
 #endif
 
     int index = 0;
+#ifndef VITAVUE_12_15_INCHES
     machineConfig.getModuleInitialStatus("TouchEnable", reinterpret_cast<bool*>(&index));
+#endif
     setKeyTypeAvailable(SOFT_BASE_KEY_SCREEN_BAN, index);
 
     machineConfig.getModuleInitialStatus("PrinterEnable", reinterpret_cast<bool*>(&index));
@@ -451,8 +462,11 @@ SoftKeyManager::SoftKeyManager() : IWidget("SoftKeyManager"),
     connect(d_ptr->rightPageKeyWidget, SIGNAL(released()), this, SLOT(_fixedKeyClicked()));
     hbox->addWidget(d_ptr->rightPageKeyWidget, 1);
 
-    d_ptr->signalMapper = new QSignalMapper(this);
-    connect(d_ptr->signalMapper, SIGNAL(mapped(int)), this, SLOT(_dynamicKeyClicked(int)));
+    d_ptr->releasedSignalMapper = new QSignalMapper(this);
+    connect(d_ptr->releasedSignalMapper, SIGNAL(mapped(int)), this, SLOT(_dynamicKeyReleased(int)));
+
+    d_ptr->pressedSignalMapper = new QSignalMapper(this);
+    connect(d_ptr->pressedSignalMapper, SIGNAL(mapped(int)), this, SLOT(_dynamicKeyPressed(int)));
 
     setLayout(hbox);
 
@@ -479,7 +493,7 @@ SoftKeyManager::~SoftKeyManager()
     qDeleteAll(d_ptr->actionMaps);
 }
 
-void SoftKeyManagerPrivate::handleSoftKeyClick(bool isMainSetup, int index)
+void SoftKeyManagerPrivate::handleSoftKeyClick(bool isMainSetup, int index, bool isPressed)
 {
     // 如果存在活动弹出窗口，优先关掉全部窗口
     bool closePupup = false;
@@ -512,7 +526,7 @@ void SoftKeyManagerPrivate::handleSoftKeyClick(bool isMainSetup, int index)
 
                 if (desc != NULL && desc->hook != NULL)
                 {
-                    desc->hook(0);
+                    desc->hook(isPressed);
                 }
             }
         }
@@ -522,7 +536,7 @@ void SoftKeyManagerPrivate::handleSoftKeyClick(bool isMainSetup, int index)
             KeyActionDesc *desc = SoftkeyActionBase::getBaseActionDesc(SOFT_BASE_KEY_MAIN_SETUP);
             if (desc != NULL && desc->hook != NULL)
             {
-                desc->hook(0);
+                desc->hook(isPressed);
             }
         }
     }

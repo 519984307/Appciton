@@ -23,6 +23,13 @@ static KeyActionDesc _monitorKeys[] =
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_INFO),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_NEW),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_DISCHARGE),
+#ifdef VITAVUE_12_15_INCHES
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_ALARM_RESET),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_ALARM_PAUSE),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_RECORD),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NIBP_MEASURE),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_FREEZE),
+#endif
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_ECG_LEAD_MODE),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_ALARM_LIMIT),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_CODE_MARKER),
@@ -50,7 +57,6 @@ static KeyActionDesc _monitorKeys[] =
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_SCREEN_BRIGHTNESS),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NIGHT_MODE),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PRINTER_SET),
-    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NIBP_MEASURE),
 };
 
 /***************************************************************************************************
