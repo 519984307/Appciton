@@ -243,7 +243,7 @@ void CO2Param::handDemoTrendData(void)
     if (getCO2Switch())
     {
         d_ptr->etco2Value = 50;
-        d_ptr->fico2Value = 3;
+        d_ptr->fico2Value = 0;
         d_ptr->awRRValue = 20;
         d_ptr->brVaule = 20;
         d_ptr->baro = 1013;
