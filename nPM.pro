@@ -246,9 +246,6 @@ SOURCES +=                                                                      
     Utility/Widgets/Waveform/WaveWidget.cpp                                     \
     Utility/Widgets/MessageBox.cpp                                              \
     Utility/Widgets/ExportDataWidget.cpp                                        \
-    Utility/Widgets/IButton.cpp                                                 \
-    Utility/Widgets/ITableWidget.cpp                                            \
-    Utility/Widgets/PopupWidget.cpp                                             \
     Utility/Widgets/ImportFileSubWidget.cpp                                     \
     Utility/Widgets/EventWidget/EventWaveWidget.cpp                             \
     Utility/Widgets/EventWidget/EventTrendItemDelegate.cpp                      \
@@ -329,7 +326,6 @@ SOURCES +=                                                                      
     Components/Calculation/HemodynamicManager/HemodynamicDataModel.cpp          \
     Components/PatientData/WaveformCache.cpp                                    \
     Components/PatientData/ParamDataStorageManager.cpp                          \
-    Components/PatientData/RescueDataListWidget.cpp                             \
     Components/PatientData/RescueDataListNewWidget.cpp                          \
     Components/PatientData/TrendCache.cpp                                       \
     Components/PatientData/TrendCacheInterface.cpp                              \
@@ -343,7 +339,6 @@ SOURCES +=                                                                      
     Components/PatientData/EventStorageManagerInterface.cpp                     \
     Components/PatientData/TrendWaveWidget.cpp                                  \
     Components/PatientData/TrendSubWaveWidget.cpp                               \
-    Components/PatientData/IMoveButton.cpp                                      \
     Components/PatientData/TrendTableWindow.cpp                                 \
     Components/PatientData/TrendTableModel.cpp                                  \
     Components/PatientData/TrendTableSetWindow.cpp                              \
@@ -719,10 +714,7 @@ HEADERS +=                                                                      
     Utility/Widgets/Waveform/WaveScanMode.h                                     \
     Utility/Widgets/Waveform/WaveWidget.h                                       \
     Utility/Widgets/ExportDataWidget.h                                          \
-    Utility/Widgets/IButton.h                                                   \
     Utility/Widgets/MessageBox.h                                                \
-    Utility/Widgets/ITableWidget.h                                              \
-    Utility/Widgets/PopupWidget.h                                               \
     Utility/Widgets/EventWidget/EventWaveWidget.h                               \
     Utility/Widgets/EventWidget/EventTrendItemDelegate.h                        \
     Utility/Widgets/EventWidget/EventInfoWidget.h                               \
@@ -808,7 +800,6 @@ HEADERS +=                                                                      
     Components/PatientData/WaveformCache.h                                      \
     Components/PatientData/ParamDataDefine.h                                    \
     Components/PatientData/ParamDataStorageManager.h                            \
-    Components/PatientData/RescueDataListWidget.h                               \
     Components/PatientData/RescueDataListNewWidget.h                            \
     Components/PatientData/RescueDataDefine.h                                   \
     Components/PatientData/TrendCache.h                                         \
@@ -825,7 +816,6 @@ HEADERS +=                                                                      
     Components/PatientData/EventStorageManagerInterface.h                       \
     Components/PatientData/TrendWaveWidget.h                                    \
     Components/PatientData/TrendSubWaveWidget.h                                 \
-    Components/PatientData/IMoveButton.h                                        \
     Components/PatientData/EventDataSymbol.h                                    \
     Components/PatientData/TrendTableWindow.h                                   \
     Components/PatientData/TrendTableModel.h                                    \

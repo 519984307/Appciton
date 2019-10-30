@@ -16,6 +16,8 @@
 #include "FontManager.h"
 #include "ComboBox.h"
 #include "LanguageManager.h"
+#include <QLabel>
+#include <QGridLayout>
 
 enum N2OSetType
 {

@@ -14,7 +14,6 @@
 #include "NormalModeKeyAction.h"
 #include "Debug.h"
 #include "Alarm.h"
-#include "PopupWidget.h"
 #include "NIBPParam.h"
 #include "CO2Param.h"
 #include "SoundManager.h"
