@@ -442,7 +442,6 @@ SOURCES +=                                                                      
     Components/NetworkManager/Widgets/WiFiProfileEditor.cpp                     \
     Components/NetworkManager/Widgets/WiFiProfileWindow.cpp                     \
     Components/NetworkManager/Widgets/WiFiProfileEditorWindow.cpp               \
-    Components/ActivityLog/ActivityLogManager.cpp                               \
     Components/Maintain/UserMaintain/UserMaintainGeneralMenuContent.cpp         \
     Components/Maintain/UserMaintain/ModuleMaintainMenuContent.cpp              \
     Components/Maintain/UserMaintain/AlarmMaintainMenuContent.cpp               \
@@ -958,7 +957,6 @@ HEADERS +=                                                                      
     Components/NetworkManager/Widgets/WiFiProfileEditor.h                       \
     Components/NetworkManager/Widgets/WiFiProfileWindow.h                       \
     Components/NetworkManager/Widgets/WiFiProfileEditorWindow.h                 \
-    Components/ActivityLog/ActivityLogManager.h                                 \
     Components/Maintain/UserMaintain/AlarmMaintainSymbol.h                      \
     Components/Maintain/UserMaintain/AlarmMaintainDefine.h                      \
     Components/Maintain/UserMaintain/UserMaintainGeneralMenuContent.h           \
@@ -1234,7 +1232,6 @@ DEPENDPATH +=                                                                   
     Components/NetworkManager/WpaCtrl/common                                    \
     Components/NetworkManager/WpaCtrl/utils                                     \
     Components/USBManager                                                       \
-    Components/ActivityLog                                                      \
     Components/Maintain/UserMaintain                                            \
     Components/Maintain/FactoryMaintain                                         \
     Components/CodeMarker/Widgets                                               \
@@ -1347,7 +1344,6 @@ INCLUDEPATH +=                                                                  
     Components/NetworkManager/WpaCtrl/common                                    \
     Components/NetworkManager/WpaCtrl/utils                                     \
     Components/USBManager                                                       \
-    Components/ActivityLog                                                      \
     Components/Maintain/UserMaintain                                            \
     Components/Maintain/FactoryMaintain                                         \
     Components/CodeMarker/Widgets                                               \

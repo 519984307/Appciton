@@ -717,7 +717,6 @@ void deleteObjects(void)
 
 //    deleteNetworkManager();
     deleteUsbManager();
-    deleteActivityLogManager();
 
     deleteColorManager();
     deleteLanguageManager();

@@ -150,8 +150,6 @@
 
 #include "USBManager.h"
 
-#include "ActivityLogManager.h"
-
 #include "PMessageBox.h"
 
 #include "OxyCRGWidget.h"
