@@ -443,11 +443,6 @@ SOURCES +=                                                                      
     Components/NetworkManager/Widgets/WiFiProfileWindow.cpp                     \
     Components/NetworkManager/Widgets/WiFiProfileEditorWindow.cpp               \
     Components/ActivityLog/ActivityLogManager.cpp                               \
-    Components/Maintain/Factory/FactoryConfigManager.cpp                        \
-    Components/Maintain/FactoryMaintain/FactoryDataRecordContent.cpp            \
-    Components/Maintain/Factory/Menu/FactoryTempMenuContent.cpp                 \
-    Components/Maintain/Factory/Menu/FactoryTestMenuContent.cpp                 \
-    Components/Maintain/Factory/Menu/FactoryCO2MenuContent.cpp                  \
     Components/Maintain/UserMaintain/UserMaintainGeneralMenuContent.cpp         \
     Components/Maintain/UserMaintain/ModuleMaintainMenuContent.cpp              \
     Components/Maintain/UserMaintain/AlarmMaintainMenuContent.cpp               \
@@ -457,6 +452,8 @@ SOURCES +=                                                                      
     Components/Maintain/UserMaintain/ErrorLogEntranceContent.cpp                \
     Components/Maintain/UserMaintain/DemoMenuContent.cpp                        \
     Components/Maintain/UserMaintain/NurseCallSetWindow.cpp                     \
+    Components/Maintain/FactoryMaintain/FactoryDataRecordContent.cpp            \
+    Components/Maintain/FactoryMaintain/NIBPRepairMenuWindow.cpp                \
     Components/Maintain/FactoryMaintain/FactorySystemInfoMenuContent.cpp        \
     Components/Maintain/FactoryMaintain/SoftwareVersionWindow.cpp               \
     Components/Maintain/FactoryMaintain/MonitorInfoWindow.cpp                   \
@@ -467,13 +464,15 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/NIBPCalibrationMenuContent.cpp          \
     Components/Maintain/FactoryMaintain/NIBPCalibrateContent.cpp                \
     Components/Maintain/FactoryMaintain/NIBPManometerContent.cpp                \
-    Components/Maintain/FactoryMaintain/NIBPRepairMenuWindow.cpp                \
     Components/Maintain/FactoryMaintain/NIBPZeroPointContent.cpp                \
     Components/Maintain/FactoryMaintain/NIBPPressureControlContent.cpp          \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenuContent.cpp      \
     Components/Maintain/FactoryMaintain/UpgradeManager.cpp                      \
     Components/Maintain/FactoryMaintain/UpgradeWindow.cpp                       \
     Components/Maintain/FactoryMaintain/O2CalibrationMenuContent.cpp            \
+    Components/Maintain/FactoryMaintain/FactoryCO2MenuContent.cpp               \
+    Components/Maintain/FactoryMaintain/FactoryTempMenuContent.cpp              \
+    Components/Maintain/FactoryMaintain/FactoryTestMenuContent.cpp              \
     Components/CodeMarker/Widgets/CodeMarkerWindow.cpp                          \
     Components/ConfigManager/ConfigManager.cpp                                  \
     Components/ConfigManager/ConfigManagerInterface.cpp                         \
@@ -960,12 +959,6 @@ HEADERS +=                                                                      
     Components/NetworkManager/Widgets/WiFiProfileWindow.h                       \
     Components/NetworkManager/Widgets/WiFiProfileEditorWindow.h                 \
     Components/ActivityLog/ActivityLogManager.h                                 \
-    Components/Maintain/Factory/FactoryConfigManager.h                          \
-    Components/Maintain/Factory/Menu/FactoryTempMenuContent.h                   \
-    Components/Maintain/Factory/Menu/FactoryTestMenuContent.h                   \
-    Components/Maintain/Factory/Menu/FactoryCO2MenuContent.h                    \
-    Components/Maintain/FactoryMaintain/FactoryDataRecordContent.h              \
-    Components/Maintain/FactoryMaintain/NIBPRepairMenuWindow.h                  \
     Components/Maintain/UserMaintain/AlarmMaintainSymbol.h                      \
     Components/Maintain/UserMaintain/AlarmMaintainDefine.h                      \
     Components/Maintain/UserMaintain/UserMaintainGeneralMenuContent.h           \
@@ -977,6 +970,8 @@ HEADERS +=                                                                      
     Components/Maintain/UserMaintain/ErrorLogEntranceContent.h                  \
     Components/Maintain/UserMaintain/DemoMenuContent.h                          \
     Components/Maintain/UserMaintain/NurseCallSetWindow.h                       \
+    Components/Maintain/FactoryMaintain/FactoryDataRecordContent.h              \
+    Components/Maintain/FactoryMaintain/NIBPRepairMenuWindow.h                  \
     Components/Maintain/FactoryMaintain/FactorySystemInfoMenuContent.h          \
     Components/Maintain/FactoryMaintain/SoftwareVersionWindow.h                 \
     Components/Maintain/FactoryMaintain/MonitorInfoWindow.h                     \
@@ -993,6 +988,9 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/UpgradeManager.h                        \
     Components/Maintain/FactoryMaintain/UpgradeWindow.h                         \
     Components/Maintain/FactoryMaintain/O2CalibrationMenuContent.h              \
+    Components/Maintain/FactoryMaintain/FactoryCO2MenuContent.h                 \
+    Components/Maintain/FactoryMaintain/FactoryTempMenuContent.h                \
+    Components/Maintain/FactoryMaintain/FactoryTestMenuContent.h                \
     Components/CodeMarker/Widgets/CodeMarkerList.h                              \
     Components/CodeMarker/Widgets/CodeMarkerWindow.h                            \
     Components/ConfigManager/ConfigManager.h                                    \
@@ -1184,8 +1182,6 @@ DEPENDPATH +=                                                                   
     SOUP/Json                                                                   \
     Main                                                                        \
     Main/App                                                                    \
-    Main/Factory                                                                \
-    Main/Service                                                                \
     Utility                                                                     \
     Utility/FloatHandle                                                         \
     Utility/RingBuff                                                            \
@@ -1239,8 +1235,6 @@ DEPENDPATH +=                                                                   
     Components/NetworkManager/WpaCtrl/utils                                     \
     Components/USBManager                                                       \
     Components/ActivityLog                                                      \
-    Components/Maintain/Factory                                                 \
-    Components/Maintain/Factory/Menu                                            \
     Components/Maintain/UserMaintain                                            \
     Components/Maintain/FactoryMaintain                                         \
     Components/CodeMarker/Widgets                                               \
@@ -1300,8 +1294,6 @@ INCLUDEPATH +=                                                                  
     SOUP/libssh2/include                                                        \
     Main                                                                        \
     Main/App                                                                    \
-    Main/Factory                                                                \
-    Main/Service                                                                \
     Utility                                                                     \
     Utility/FloatHandle                                                         \
     Utility/RingBuff                                                            \
@@ -1356,8 +1348,6 @@ INCLUDEPATH +=                                                                  
     Components/NetworkManager/WpaCtrl/utils                                     \
     Components/USBManager                                                       \
     Components/ActivityLog                                                      \
-    Components/Maintain/Factory                                                 \
-    Components/Maintain/Factory/Menu                                            \
     Components/Maintain/UserMaintain                                            \
     Components/Maintain/FactoryMaintain                                         \
     Components/CodeMarker/Widgets                                               \
