@@ -287,8 +287,8 @@ void SPO2Param::handDemoTrendData(void)
         d_ptr->spocTrendWidget->setSPOCValue(d_ptr->spocValue);
         d_ptr->spmetTrendWidget->setSpMetValue(d_ptr->spmetValue);
         d_ptr->spcoTrendWidget->setSPCOValue(d_ptr->spcoValue);
-        setNotify(false);
-        setNotify(false, "", true);
+        setNotify(false);   // 清空Pleth 1波形上的提示
+        setNotify(false, "", true); // 清空Pleth 2波形上的提示
     }
 
     if (NULL != d_ptr->oxyCRGSPO2Trend)
