@@ -995,6 +995,14 @@ void EventWindowPrivate::eventTrendUpdate()
             {
                 dataStr = Unit::convert(type, UNIT_MMHG, ctx.trendSegment->values[i].value);
             }
+            else if (subId == SUB_PARAM_PI)
+            {
+                dataStr = QString::number(ctx.trendSegment->values[i].value * 1.0 / 100, 'f', 2);
+            }
+            else if (subId == SUB_PARAM_SPHB || subId == SUB_PARAM_SPMET)
+            {
+                dataStr = QString::number(ctx.trendSegment->values[i].value * 1.0 / 10, 'f', 1);
+            }
             else
             {
                 dataStr = QString::number(ctx.trendSegment->values[i].value);
