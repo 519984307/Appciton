@@ -446,7 +446,6 @@ SOURCES +=                                                                      
     Components/Maintain/Supervisor/Menu/SupervisorPrintMenuContent.cpp          \
     Components/Maintain/Service/ErrorLog/ErrorLogWindow.cpp                     \
     Components/Maintain/Service/ErrorLog/ErrorLogTableModel.cpp                 \
-    Components/Maintain/Service/NIBP/NIBPRepairMenuManager.cpp                  \
     Components/Maintain/Factory/FactoryConfigManager.cpp                        \
     Components/Maintain/FactoryMaintain/FactoryDataRecordContent.cpp            \
     Components/Maintain/Factory/Menu/FactoryTempMenuContent.cpp                 \
@@ -467,6 +466,7 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/ServiceUpdateEntranceContent.cpp        \
     Components/Maintain/FactoryMaintain/MachineConfigModuleContent.cpp          \
     Components/Maintain/FactoryMaintain/FactoryVersionInfo.cpp                  \
+    Components/Maintain/FactoryMaintain/NIBPMaintainMgrInterface.cpp            \
     Components/Maintain/FactoryMaintain/NIBPCalibrationMenuContent.cpp          \
     Components/Maintain/FactoryMaintain/NIBPCalibrateContent.cpp                \
     Components/Maintain/FactoryMaintain/NIBPManometerContent.cpp                \
@@ -966,7 +966,6 @@ HEADERS +=                                                                      
     Components/Maintain/Supervisor/Menu/SupervisorPrintMenuContent.h            \
     Components/Maintain/Service/ErrorLog/ErrorLogWindow.h                       \
     Components/Maintain/Service/ErrorLog/ErrorLogTableModel.h                   \
-    Components/Maintain/Service/NIBP/NIBPRepairMenuManager.h                    \
     Components/Maintain/Factory/FactoryConfigManager.h                          \
     Components/Maintain/Factory/Menu/FactoryTempMenuContent.h                   \
     Components/Maintain/Factory/Menu/FactoryTestMenuContent.h                   \
@@ -990,6 +989,7 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/ServiceUpdateEntranceContent.h          \
     Components/Maintain/FactoryMaintain/MachineConfigModuleContent.h            \
     Components/Maintain/FactoryMaintain/FactoryVersionInfo.h                    \
+    Components/Maintain/FactoryMaintain/NIBPMaintainMgrInterface.h              \
     Components/Maintain/FactoryMaintain/NIBPCalibrationMenuContent.h            \
     Components/Maintain/FactoryMaintain/NIBPCalibrateContent.h                  \
     Components/Maintain/FactoryMaintain/NIBPManometerContent.h                  \
@@ -1250,8 +1250,6 @@ DEPENDPATH +=                                                                   
     Components/Maintain/Supervisor/Menu                                         \
     Components/Maintain/Service                                                 \
     Components/Maintain/Service/ErrorLog                                        \
-    Components/Maintain/Service/NIBP                                            \
-    Components/Maintain/Service/Version                                         \
     Components/Maintain/Factory                                                 \
     Components/Maintain/Factory/Menu                                            \
     Components/Maintain/UserMaintain                                            \
@@ -1373,10 +1371,7 @@ INCLUDEPATH +=                                                                  
     Components/Maintain/Supervisor                                              \
     Components/Maintain/Supervisor/Menu                                         \
     Components/Maintain/Service                                                 \
-    Components/Maintain/Service/Menu                                            \
     Components/Maintain/Service/ErrorLog                                        \
-    Components/Maintain/Service/NIBP                                            \
-    Components/Maintain/Service/Version                                         \
     Components/Maintain/Factory                                                 \
     Components/Maintain/Factory/Menu                                            \
     Components/Maintain/UserMaintain                                            \

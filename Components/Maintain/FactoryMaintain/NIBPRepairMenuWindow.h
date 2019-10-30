@@ -9,10 +9,11 @@
  **/
 #pragma once
 #include "MenuWindow.h"
+#include "NIBPMaintainMgrInterface.h"
 #define InvStr() ("---")
 
 class NIBPRepairMenuWindowPrivate;
-class NIBPRepairMenuWindow : public MenuWindow
+class NIBPRepairMenuWindow : public MenuWindow, public NIBPMaintainMgrInterface
 {
     Q_OBJECT
 
@@ -32,10 +33,6 @@ public:
     void unPacket(bool flag);
 
     /**
-     * @brief returnMenu  返回到菜单列表项。
-     */
-    void returnMenu(void);
-    /**
      * @brief messageBox
      */
     void messageBox(void);
@@ -51,8 +48,11 @@ public:
      */
     bool getRepairError(void);
 
-signals:
-    void foucsChange();
+    /* override */
+    void setMonitorState(NIBPMonitorStateID id);
+
+    /* override */
+    NIBPMonitorStateID getMonitorState(void);
 
 protected:
     /**
@@ -60,12 +60,6 @@ protected:
      * @param event
      */
     virtual void hideEvent(QHideEvent *event);
-
-private slots:
-    /**
-     * @brief closeSlot  关闭窗口
-     */
-    void closeSlot();
 
 private:
     NIBPRepairMenuWindow();

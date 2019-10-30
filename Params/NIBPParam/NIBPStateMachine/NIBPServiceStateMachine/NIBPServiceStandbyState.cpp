@@ -11,7 +11,7 @@
 #include "NIBPServiceStandbyState.h"
 #include "NIBPServiceStateDefine.h"
 #include "NIBPParam.h"
-#include "NIBPRepairMenuManager.h"
+#include "NIBPMaintainMgrInterface.h"
 
 /**************************************************************************************************
  * 主运行。
@@ -26,8 +26,12 @@ void NIBPServiceStandbyState::run(void)
 void NIBPServiceStandbyState::enter(void)
 {
     timeStop();
-    nibpRepairMenuManager.setMonitorState(NIBP_MONITOR_STANDBY_STATE);
-    nibpRepairMenuManager.returnMenu();
+    NIBPMaintainMgrInterface *nibpMaintainMgr;
+    nibpMaintainMgr = NIBPMaintainMgrInterface::getNIBPMaintainMgr();
+    if (nibpMaintainMgr)
+    {
+        nibpMaintainMgr->setMonitorState(NIBP_MONITOR_STANDBY_STATE);
+    }
 }
 
 /**************************************************************************************************
@@ -35,10 +39,15 @@ void NIBPServiceStandbyState::enter(void)
  *************************************************************************************************/
 void NIBPServiceStandbyState::handleNIBPEvent(NIBPEvent event, const unsigned char *args, int /*argLen*/)
 {
+    NIBPMaintainMgrInterface *nibpMaintainMgr;
+    nibpMaintainMgr = NIBPMaintainMgrInterface::getNIBPMaintainMgr();
     switch (event)
     {
     case NIBP_EVENT_MODULE_RESET:
-        nibpRepairMenuManager.unPacket(false);
+        if (nibpMaintainMgr)
+        {
+            nibpMaintainMgr->unPacket(false);
+        }
         switchState(NIBP_SERVICE_ERROR_STATE);
         break;
 
@@ -48,11 +57,17 @@ void NIBPServiceStandbyState::handleNIBPEvent(NIBPEvent event, const unsigned ch
     break;
 
     case NIBP_EVENT_SERVICE_REPAIR_ENTER_SUCCESS:
-        nibpRepairMenuManager.unPacket(true);
+        if (nibpMaintainMgr)
+        {
+            nibpMaintainMgr->unPacket(true);
+        }
         break;
 
     case NIBP_EVENT_SERVICE_REPAIR_ENTER_FAIL:
-        nibpRepairMenuManager.unPacket(false);
+        if (nibpMaintainMgr)
+        {
+            nibpMaintainMgr->unPacket(false);
+        }
         break;
 
     case NIBP_EVENT_SERVICE_CALIBRATE_ENTER:

@@ -11,7 +11,7 @@
 #include "NIBPServicePressureControlState.h"
 #include "NIBPServiceStateDefine.h"
 #include "NIBPParam.h"
-#include "NIBPRepairMenuManager.h"
+#include "NIBPMaintainMgrInterface.h"
 
 /**************************************************************************************************
  * 充气压力指令。
@@ -74,7 +74,10 @@ void NIBPServicePressureControlState::handleNIBPEvent(NIBPEvent event, const uns
     break;
 
     case NIBP_EVENT_SERVICE_REPAIR_RETURN:
-        if (_isEnterSuccess && !nibpRepairMenuManager.getRepairError())
+    {
+        NIBPMaintainMgrInterface *nibpMaintainMgr;
+        nibpMaintainMgr = NIBPMaintainMgrInterface::getNIBPMaintainMgr();
+        if (_isEnterSuccess && nibpMaintainMgr && !nibpMaintainMgr->getRepairError())
         {
             nibpParam.provider().serviceCalibrate(false);
             _isReturn = true;
@@ -84,6 +87,7 @@ void NIBPServicePressureControlState::handleNIBPEvent(NIBPEvent event, const uns
         {
             switchState(NIBP_SERVICE_STANDBY_STATE);
         }
+    }
         break;
 
     case NIBP_EVENT_SERVICE_PRESSURECONTROL_ENTER:
@@ -97,7 +101,6 @@ void NIBPServicePressureControlState::handleNIBPEvent(NIBPEvent event, const uns
             }
             else
             {
-                nibpRepairMenuManager.returnMenu();
                 // 转换到测量状态。
                 switchState(NIBP_SERVICE_STANDBY_STATE);
             }

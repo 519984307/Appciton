@@ -11,7 +11,9 @@
 #include "NIBPParam.h"
 #include "NIBPServiceCalibrateState.h"
 #include "NIBPServiceStateDefine.h"
-#include "NIBPRepairMenuManager.h"
+#include "NIBPMaintainMgrInterface.h"
+#include "MessageBox.h"
+#include "LanguageManager.h"
 
 /**************************************************************************************************
  * 进入该状态。
@@ -42,13 +44,15 @@ void NIBPServiceCalibrateState::handleNIBPEvent(NIBPEvent event, const unsigned 
         _isEnterSuccess = false;
         MessageBox messbox(trs("Warn"), trs("NIBPDirectiveTimeout"), false);
         messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
-//        messbox.setYesBtnTxt(trs("SupervisorOK"));
         messbox.exec();
     }
     break;
 
     case NIBP_EVENT_SERVICE_REPAIR_RETURN:
-        if (_isEnterSuccess && !nibpRepairMenuManager.getRepairError())
+    {
+        NIBPMaintainMgrInterface *nibpMaintaiMgr;
+        nibpMaintaiMgr = NIBPMaintainMgrInterface::getNIBPMaintainMgr();
+        if (_isEnterSuccess && nibpMaintaiMgr && !nibpMaintaiMgr->getRepairError())
         {
             nibpParam.provider().serviceCalibrate(false);
             _isReturn = true;
@@ -58,8 +62,8 @@ void NIBPServiceCalibrateState::handleNIBPEvent(NIBPEvent event, const unsigned 
         {
             switchState(NIBP_SERVICE_STANDBY_STATE);
         }
+    }
         break;
-
     case NIBP_EVENT_SERVICE_CALIBRATE_ENTER:
         timeStop();
         if (_isReturn)
@@ -71,7 +75,6 @@ void NIBPServiceCalibrateState::handleNIBPEvent(NIBPEvent event, const unsigned 
             }
             else
             {
-                nibpRepairMenuManager.returnMenu();
                 // 转换到测量状态。
                 switchState(NIBP_SERVICE_STANDBY_STATE);
             }
