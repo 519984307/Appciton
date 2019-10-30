@@ -443,8 +443,6 @@ SOURCES +=                                                                      
     Components/NetworkManager/Widgets/WiFiProfileWindow.cpp                     \
     Components/NetworkManager/Widgets/WiFiProfileEditorWindow.cpp               \
     Components/ActivityLog/ActivityLogManager.cpp                               \
-    Components/Maintain/Supervisor/Menu/Supervisor12LMenuContent.cpp            \
-    Components/Maintain/Supervisor/Menu/SupervisorPrintMenuContent.cpp          \
     Components/Maintain/Factory/FactoryConfigManager.cpp                        \
     Components/Maintain/FactoryMaintain/FactoryDataRecordContent.cpp            \
     Components/Maintain/Factory/Menu/FactoryTempMenuContent.cpp                 \
@@ -962,8 +960,6 @@ HEADERS +=                                                                      
     Components/NetworkManager/Widgets/WiFiProfileWindow.h                       \
     Components/NetworkManager/Widgets/WiFiProfileEditorWindow.h                 \
     Components/ActivityLog/ActivityLogManager.h                                 \
-    Components/Maintain/Supervisor/Menu/Supervisor12LMenuContent.h              \
-    Components/Maintain/Supervisor/Menu/SupervisorPrintMenuContent.h            \
     Components/Maintain/Factory/FactoryConfigManager.h                          \
     Components/Maintain/Factory/Menu/FactoryTempMenuContent.h                   \
     Components/Maintain/Factory/Menu/FactoryTestMenuContent.h                   \
@@ -1190,7 +1186,6 @@ DEPENDPATH +=                                                                   
     Main/App                                                                    \
     Main/Factory                                                                \
     Main/Service                                                                \
-    Main/Supervisor                                                             \
     Utility                                                                     \
     Utility/FloatHandle                                                         \
     Utility/RingBuff                                                            \
@@ -1244,8 +1239,6 @@ DEPENDPATH +=                                                                   
     Components/NetworkManager/WpaCtrl/utils                                     \
     Components/USBManager                                                       \
     Components/ActivityLog                                                      \
-    Components/Maintain/Supervisor                                              \
-    Components/Maintain/Supervisor/Menu                                         \
     Components/Maintain/Factory                                                 \
     Components/Maintain/Factory/Menu                                            \
     Components/Maintain/UserMaintain                                            \
@@ -1309,7 +1302,6 @@ INCLUDEPATH +=                                                                  
     Main/App                                                                    \
     Main/Factory                                                                \
     Main/Service                                                                \
-    Main/Supervisor                                                             \
     Utility                                                                     \
     Utility/FloatHandle                                                         \
     Utility/RingBuff                                                            \
@@ -1364,8 +1356,6 @@ INCLUDEPATH +=                                                                  
     Components/NetworkManager/WpaCtrl/utils                                     \
     Components/USBManager                                                       \
     Components/ActivityLog                                                      \
-    Components/Maintain/Supervisor                                              \
-    Components/Maintain/Supervisor/Menu                                         \
     Components/Maintain/Factory                                                 \
     Components/Maintain/Factory/Menu                                            \
     Components/Maintain/UserMaintain                                            \
