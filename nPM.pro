@@ -289,7 +289,6 @@ SOURCES +=                                                                      
     Components/System/SystemAlarm.cpp                                           \
     Components/System/TDA19988Ctrl.cpp                                          \
     Components/System/Widgets/SystemModeBarWidget.cpp                           \
-    Components/System/Widgets/SystemSelftestMenu.cpp                            \
     Components/System/Widgets/SystemStatusBarWidget.cpp                         \
     Components/System/Widgets/RunningStatusBar.cpp                              \
     Components/System/Widgets/RunningStatusBarInterface.cpp                     \
@@ -807,7 +806,6 @@ HEADERS +=                                                                      
     Components/System/Widgets/SystemStatusBarWidget.h                           \
     Components/System/Widgets/RunningStatusBar.h                                \
     Components/System/Widgets/RunningStatusBarInterface.h                       \
-    Components/System/Widgets/SystemSelftestMenu.h                              \
     Components/System/Widgets/SystemModeBarWidget.h                             \
     Components/System/Widgets/NormalFunctionMenuContent.h                       \
     Components/System/Widgets/PrintSettingMenuContent.h                         \
