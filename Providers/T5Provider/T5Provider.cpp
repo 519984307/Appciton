@@ -696,7 +696,7 @@ void T5Provider::_limitHandle(unsigned char *packet)
 
 int T5Provider::borderValueChange(int low, int high, int temp)
 {
-    if (temp == low)
+    if (temp == low && low != 0)
     {
         return temp + 1;
     }
