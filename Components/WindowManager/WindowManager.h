@@ -14,7 +14,6 @@
 #include <QList>
 #include "WaveWidget.h"
 #include "SystemDefine.h"
-#include "MenuManager.h"
 #include "WindowManagerInterface.h"
 
 /***************************************************************************************************

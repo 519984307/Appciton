@@ -102,7 +102,6 @@ void SoftkeyActionBase::codeMarker(bool isPressed)
     while (NULL != QApplication::activeModalWidget())
     {
         QApplication::activeModalWidget()->hide();
-        menuManager.close();
     }
 
     if (isVisible)
@@ -197,7 +196,6 @@ void SoftkeyActionBase::patientNew(bool isPressed)
     while (NULL != QApplication::activeModalWidget())
     {
         QApplication::activeModalWidget()->hide();
-        menuManager.close();
     }
 
     if (isVisible)

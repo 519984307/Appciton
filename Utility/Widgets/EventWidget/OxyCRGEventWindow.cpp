@@ -33,6 +33,8 @@
 #include "WindowManager.h"
 #include "DataStorageDefine.h"
 #include "MoveButton.h"
+#include <QTimerEvent>
+#include <QLabel>
 
 #define STOP_PRINT_TIMEOUT          (100)
 
@@ -142,7 +144,8 @@ public:
                 parseBuffer += sizeof(EventSegmentType);
                 ctx.trendSegments.append(reinterpret_cast<TrendDataSegment *>(parseBuffer));
                 // find the location of the next event type
-                parseBuffer += sizeof(TrendDataSegment) + ctx.trendSegments.last()->trendValueNum * sizeof(TrendValueSegment);
+                parseBuffer += sizeof(TrendDataSegment) +
+                        ctx.trendSegments.last()->trendValueNum * sizeof(TrendValueSegment);
                 break;
             case EVENT_WAVEFORM_SEGMENT:
                 // skip the offset of the segment type field

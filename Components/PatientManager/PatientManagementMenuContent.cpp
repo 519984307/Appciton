@@ -161,7 +161,6 @@ void PatientManagementMenuContent::onBtnReleased()
             while (NULL != QApplication::activeModalWidget())
             {
                 QApplication::activeModalWidget()->hide();
-                menuManager.close();
             }
 
             if (isVisible)

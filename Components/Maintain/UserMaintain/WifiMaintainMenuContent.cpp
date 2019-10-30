@@ -19,7 +19,6 @@
 #include <QFocusEvent>
 #include "WiFiProfileEditorWindow.h"
 #include "MessageBox.h"
-#include "SupervisorMenuManager.h"
 #include "ComboBox.h"
 #include "Button.h"
 #include "LanguageManager.h"
@@ -139,7 +138,8 @@ void WifiMaintainMenuContentPrivate::onBtnClick()
             if (duplicate)
             {
                 QString title = trs("ProfileConflict");
-                MessageBox msgBox(title, QString("%1 %2 %3").arg(trs("Profile")).arg(editProfile.profileName).arg(trs("AlreadyExist")),
+                MessageBox msgBox(title, QString("%1 %2 %3").arg(trs("Profile"))
+                                  .arg(editProfile.profileName).arg(trs("AlreadyExist")),
                                   false);
                 msgBox.exec();
                 continue;
@@ -174,7 +174,8 @@ void WifiMaintainMenuContentPrivate::onBtnClick()
             if (duplicate)
             {
                 QString title = trs("ProfileConflict");
-                MessageBox msgBox(title, QString("%1 %2 %3").arg(trs("Profile")).arg(profileName).arg(trs("AlreadyExist")), false);
+                MessageBox msgBox(title, QString("%1 %2 %3").arg(trs("Profile"))
+                                  .arg(profileName).arg(trs("AlreadyExist")), false);
                 msgBox.exec();
                 continue;
             }
@@ -304,7 +305,7 @@ void WifiMaintainMenuContentPrivate::saveProfiles()
     }
 
     systemConfig.setStrAttr("WiFi|Profiles", "Count", QString::number(profiles.count()));
-    int currentSelect = -1; // default select nothing if wifi profile changes
+    int currentSelect = -1;  // default select nothing if wifi profile changes
     systemConfig.setNumAttr("WiFi|Profiles", "CurrentSelect", currentSelect);
 
     systemConfig.save();
@@ -340,8 +341,7 @@ void WifiMaintainMenuContent::layoutExec()
     d->switchCombo = new ComboBox;
     d->switchCombo->addItems(QStringList()
                              << trs("Off")
-                             << trs("On")
-                            );
+                             << trs("On"));
     connect(d->switchCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(onSwitch(int)));
 
     hLayout = new QHBoxLayout;

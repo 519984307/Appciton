@@ -11,7 +11,6 @@
 #include "NIBPServiceManometerState.h"
 #include "NIBPServiceStateDefine.h"
 #include "NIBPParam.h"
-#include "NIBPManometer.h"
 #include "NIBPRepairMenuManager.h"
 
 /**************************************************************************************************
@@ -34,7 +33,6 @@ void NIBPServiceManometerState::handleNIBPEvent(NIBPEvent event, const unsigned 
     {
     case NIBP_EVENT_MODULE_RESET:
     case NIBP_EVENT_MODULE_ERROR:
-        nibpmanometer.unPacket(false);
         _isEnterSuccess = false;
         switchState(NIBP_SERVICE_ERROR_STATE);
         break;

@@ -11,7 +11,6 @@
 #include "NIBPServicePressureControlState.h"
 #include "NIBPServiceStateDefine.h"
 #include "NIBPParam.h"
-#include "NIBPPressureControl.h"
 #include "NIBPRepairMenuManager.h"
 
 /**************************************************************************************************
@@ -65,7 +64,6 @@ void NIBPServicePressureControlState::handleNIBPEvent(NIBPEvent event, const uns
     {
     case NIBP_EVENT_MODULE_RESET:
     case NIBP_EVENT_MODULE_ERROR:
-        nibppressurecontrol.unPacket(false);
         _isEnterSuccess = false;
         switchState(NIBP_SERVICE_ERROR_STATE);
         break;
@@ -114,7 +112,6 @@ void NIBPServicePressureControlState::handleNIBPEvent(NIBPEvent event, const uns
         if (args[0] == 0x01)
         {
             nibpParam.provider().servicePressurecontrol(true);
-            nibppressurecontrol.btnSwitch(true);
             setTimeOut();
         }
         break;

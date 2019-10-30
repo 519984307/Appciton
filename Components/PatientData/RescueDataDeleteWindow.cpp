@@ -21,6 +21,7 @@
 #include "Utility.h"
 #include "DataStorageDirManager.h"
 #include "ThemeManager.h"
+#include <QBoxLayout>
 
 RescueDataDeleteWindow *RescueDataDeleteWindow::_selfObj = NULL;
 

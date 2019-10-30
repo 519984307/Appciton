@@ -21,6 +21,7 @@
 #include "TrendGraphSetWindow.h"
 #include "MoveButton.h"
 #include "ThemeManager.h"
+#include <QTimerEvent>
 
 #define STOP_PRINT_TIMEOUT          (100)
 

@@ -263,11 +263,8 @@ SOURCES +=                                                                      
     Utility/Widgets/ISpinBox.cpp                                                \
     Utility/Widgets/ITableWidget.cpp                                            \
     Utility/Widgets/LabelButton.cpp                                             \
-    Utility/Widgets/MenuGroup.cpp                                               \
-    Utility/Widgets/MenuWidget.cpp                                              \
     Utility/Widgets/PMessageBox.cpp                                             \
     Utility/Widgets/PopupWidget.cpp                                             \
-    Utility/Widgets/SubMenu.cpp                                                 \
     Utility/Widgets/ImportFileSubWidget.cpp                                     \
     Utility/Widgets/TableItemDelegate.cpp                                       \
     Utility/Widgets/EventWidget/EventWaveWidget.cpp                             \
@@ -433,14 +430,9 @@ SOURCES +=                                                                      
     Components/KeyHandle/SoftKeyWidget.cpp                                      \
     Components/KeyHandle/SoftkeyActionBase.cpp                                  \
     Components/KeyHandle/SoftkeyActions/CalculateSoftkeyAction.cpp              \
-    Components/KeyHandle/SoftkeyActions/DelRescueDataSoftkeyAction.cpp          \
     Components/KeyHandle/SoftkeyActions/MonitorSoftkeyAction.cpp                \
-    Components/KeyHandle/SoftkeyActions/RescueDataSoftKeyAction.cpp             \
     Components/KeyHandle/KeyActionManager/KeyActionManager.cpp                  \
     Components/KeyHandle/KeyActionManager/NormalModeKeyAction.cpp               \
-    Components/MenuManager/MenuManager.cpp                                      \
-    Components/MenuManager/SetWidget.cpp                                        \
-    Components/MenuManager/SupervisorMenuManager.cpp                            \
     Components/NetworkManager/NetworkManager.cpp                                \
     Components/NetworkManager/WpaCtrl/common/wpa_ctrl.c                         \
     Components/NetworkManager/WpaCtrl/utils/os_unix.c                           \
@@ -452,23 +444,14 @@ SOURCES +=                                                                      
     Components/ActivityLog/ActivityLogManager.cpp                               \
     Components/Maintain/Supervisor/Menu/Supervisor12LMenuContent.cpp            \
     Components/Maintain/Supervisor/Menu/SupervisorPrintMenuContent.cpp          \
-    Components/Maintain/Service/ErrorLog/ServiceErrorLogMenu.cpp                \
     Components/Maintain/Service/ErrorLog/ErrorLogWindow.cpp                     \
     Components/Maintain/Service/ErrorLog/ErrorLogTableModel.cpp                 \
-    Components/Maintain/Service/Menu/ServiceWindowManager.cpp                   \
-    Components/Maintain/Service/NIBP/NIBPPressureControl.cpp                    \
-    Components/Maintain/Service/NIBP/NIBPCalibrate.cpp                          \
-    Components/Maintain/Service/NIBP/NIBPManometer.cpp                          \
     Components/Maintain/Service/NIBP/NIBPRepairMenuManager.cpp                  \
-    Components/Maintain/Service/NIBP/NIBPZeroPoint.cpp                          \
-    Components/Maintain/Service/Temp/ServiceCPUTemp.cpp                         \
     Components/Maintain/Factory/FactoryConfigManager.cpp                        \
     Components/Maintain/FactoryMaintain/FactoryDataRecordContent.cpp            \
     Components/Maintain/Factory/Menu/FactoryTempMenuContent.cpp                 \
     Components/Maintain/Factory/Menu/FactoryTestMenuContent.cpp                 \
     Components/Maintain/Factory/Menu/FactoryCO2MenuContent.cpp                  \
-    Components/Maintain/UserMaintain/UserMaintainManager.cpp                    \
-    Components/Maintain/UserMaintain/WifiMaintainMenu.cpp                       \
     Components/Maintain/UserMaintain/UserMaintainGeneralMenuContent.cpp         \
     Components/Maintain/UserMaintain/ModuleMaintainMenuContent.cpp              \
     Components/Maintain/UserMaintain/AlarmMaintainMenuContent.cpp               \
@@ -479,7 +462,6 @@ SOURCES +=                                                                      
     Components/Maintain/UserMaintain/DemoMenuContent.cpp                        \
     Components/Maintain/UserMaintain/NurseCallSetWindow.cpp                     \
     Components/Maintain/FactoryMaintain/FactorySystemInfoMenuContent.cpp        \
-    Components/Maintain/FactoryMaintain/FactoryMaintainManager.cpp              \
     Components/Maintain/FactoryMaintain/SoftwareVersionWindow.cpp               \
     Components/Maintain/FactoryMaintain/MonitorInfoWindow.cpp                   \
     Components/Maintain/FactoryMaintain/ServiceUpdateEntranceContent.cpp        \
@@ -782,11 +764,8 @@ HEADERS +=                                                                      
     Utility/Widgets/ISpinBox.h                                                  \
     Utility/Widgets/ITableWidget.h                                              \
     Utility/Widgets/LabelButton.h                                               \
-    Utility/Widgets/MenuGroup.h                                                 \
-    Utility/Widgets/MenuWidget.h                                                \
     Utility/Widgets/PMessageBox.h                                               \
     Utility/Widgets/PopupWidget.h                                               \
-    Utility/Widgets/SubMenu.h                                                   \
     Utility/Widgets/TableItemDelegate.h                                         \
     Utility/Widgets/EventWidget/EventWaveWidget.h                               \
     Utility/Widgets/EventWidget/EventTrendItemDelegate.h                        \
@@ -970,15 +949,10 @@ HEADERS +=                                                                      
     Components/KeyHandle/SoftKeyWidget.h                                        \
     Components/KeyHandle/SoftkeyActionBase.h                                    \
     Components/KeyHandle/SoftkeyActions/CalculateSoftkeyAction.h                \
-    Components/KeyHandle/SoftkeyActions/DelRescueDataSoftkeyAction.h            \
     Components/KeyHandle/SoftkeyActions/MonitorSoftkeyAction.h                  \
-    Components/KeyHandle/SoftkeyActions/RescueDataSoftKeyAction.h               \
     Components/KeyHandle/KeyActionManager/KeyActionManager.h                    \
     Components/KeyHandle/KeyActionManager/KeyActionIFace.h                      \
     Components/KeyHandle/KeyActionManager/NormalModeKeyAction.h                 \
-    Components/MenuManager/MenuManager.h                                        \
-    Components/MenuManager/SetWidget.h                                          \
-    Components/MenuManager/SupervisorMenuManager.h                              \
     Components/NetworkManager/NetworkDefine.h                                   \
     Components/NetworkManager/NetworkSymble.h                                   \
     Components/NetworkManager/NetworkManager.h                                  \
@@ -990,26 +964,17 @@ HEADERS +=                                                                      
     Components/ActivityLog/ActivityLogManager.h                                 \
     Components/Maintain/Supervisor/Menu/Supervisor12LMenuContent.h              \
     Components/Maintain/Supervisor/Menu/SupervisorPrintMenuContent.h            \
-    Components/Maintain/Service/ErrorLog/ServiceErrorLogMenu.h                  \
     Components/Maintain/Service/ErrorLog/ErrorLogWindow.h                       \
     Components/Maintain/Service/ErrorLog/ErrorLogTableModel.h                   \
-    Components/Maintain/Service/Menu/ServiceWindowManager.h                     \
-    Components/Maintain/Service/NIBP/NIBPPressureControl.h                      \
-    Components/Maintain/Service/NIBP/NIBPCalibrate.h                            \
-    Components/Maintain/Service/NIBP/NIBPManometer.h                            \
     Components/Maintain/Service/NIBP/NIBPRepairMenuManager.h                    \
-    Components/Maintain/Service/NIBP/NIBPZeroPoint.h                            \
-    Components/Maintain/Service/Temp/ServiceCPUTemp.h                           \
     Components/Maintain/Factory/FactoryConfigManager.h                          \
     Components/Maintain/Factory/Menu/FactoryTempMenuContent.h                   \
     Components/Maintain/Factory/Menu/FactoryTestMenuContent.h                   \
     Components/Maintain/Factory/Menu/FactoryCO2MenuContent.h                    \
     Components/Maintain/FactoryMaintain/FactoryDataRecordContent.h              \
     Components/Maintain/FactoryMaintain/NIBPRepairMenuWindow.h                  \
-    Components/Maintain/UserMaintain/UserMaintainManager.h                      \
     Components/Maintain/UserMaintain/AlarmMaintainSymbol.h                      \
     Components/Maintain/UserMaintain/AlarmMaintainDefine.h                      \
-    Components/Maintain/UserMaintain/WifiMaintainMenu.h                         \
     Components/Maintain/UserMaintain/UserMaintainGeneralMenuContent.h           \
     Components/Maintain/UserMaintain/ModuleMaintainMenuContent.h                \
     Components/Maintain/UserMaintain/AlarmMaintainMenuContent.h                 \
@@ -1020,7 +985,6 @@ HEADERS +=                                                                      
     Components/Maintain/UserMaintain/DemoMenuContent.h                          \
     Components/Maintain/UserMaintain/NurseCallSetWindow.h                       \
     Components/Maintain/FactoryMaintain/FactorySystemInfoMenuContent.h          \
-    Components/Maintain/FactoryMaintain/FactoryMaintainManager.h                \
     Components/Maintain/FactoryMaintain/SoftwareVersionWindow.h                 \
     Components/Maintain/FactoryMaintain/MonitorInfoWindow.h                     \
     Components/Maintain/FactoryMaintain/ServiceUpdateEntranceContent.h          \
@@ -1275,7 +1239,6 @@ DEPENDPATH +=                                                                   
     Components/Recorder                                                         \
     Components/PowerManager                                                     \
     Components/PowerManager/Battery                                             \
-    Components/MenuManager                                                      \
     Components/NetworkManager                                                   \
     Components/NetworkManager/Widgets                                           \
     Components/NetworkManager/WpaCtrl                                           \
@@ -1286,10 +1249,8 @@ DEPENDPATH +=                                                                   
     Components/Maintain/Supervisor                                              \
     Components/Maintain/Supervisor/Menu                                         \
     Components/Maintain/Service                                                 \
-    Components/Maintain/Service/Menu                                            \
     Components/Maintain/Service/ErrorLog                                        \
     Components/Maintain/Service/NIBP                                            \
-    Components/Maintain/Service/Temp                                            \
     Components/Maintain/Service/Version                                         \
     Components/Maintain/Factory                                                 \
     Components/Maintain/Factory/Menu                                            \
@@ -1402,7 +1363,6 @@ INCLUDEPATH +=                                                                  
     Components/Recorder                                                         \
     Components/PowerManager                                                     \
     Components/PowerManager/Battery                                             \
-    Components/MenuManager                                                      \
     Components/NetworkManager                                                   \
     Components/NetworkManager/Widgets                                           \
     Components/NetworkManager/WpaCtrl                                           \
@@ -1416,7 +1376,6 @@ INCLUDEPATH +=                                                                  
     Components/Maintain/Service/Menu                                            \
     Components/Maintain/Service/ErrorLog                                        \
     Components/Maintain/Service/NIBP                                            \
-    Components/Maintain/Service/Temp                                            \
     Components/Maintain/Service/Version                                         \
     Components/Maintain/Factory                                                 \
     Components/Maintain/Factory/Menu                                            \

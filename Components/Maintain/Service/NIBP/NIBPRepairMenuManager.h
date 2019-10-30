@@ -11,7 +11,6 @@
 
 
 #pragma once
-#include "MenuGroup.h"
 #include "NIBPProviderIFace.h"
 #include "NIBPServiceStateDefine.h"
 #include "NIBPMonitorStateDefine.h"
@@ -23,8 +22,7 @@
 
 class QLabel;
 class QStackedWidget;
-class SubMenu;
-class NIBPRepairMenuManager : public MenuGroup
+class NIBPRepairMenuManager : QObject
 {
     Q_OBJECT
 
@@ -64,13 +62,7 @@ public:
 signals:
     void foucsChange();
 
-protected:
-    void hideEvent(QHideEvent *event);
-
 private slots:
-    // 返回到菜单列表项。
-    virtual void returnMenuList();
-
     //关闭窗口
     void _closeSlot();
 

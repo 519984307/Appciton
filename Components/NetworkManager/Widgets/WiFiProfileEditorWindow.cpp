@@ -24,6 +24,7 @@
 #include "Button.h"
 #include "ComboBox.h"
 #include <QLabel>
+#include <QGridLayout>
 
 #define FONT_SIZE 14
 #define MAX_IP_STRING_LENGTH 15

@@ -19,7 +19,6 @@
 #include <QFile>
 #include "PatientManager.h"
 #include "MessageBox.h"
-#include "MenuManager.h"
 #include <QHBoxLayout>
 #include "ListView.h"
 #include "ListDataModel.h"
@@ -36,6 +35,7 @@
 #include "RESPParam.h"
 #include "RESPDupParam.h"
 #include "CO2Param.h"
+#include <QListWidgetItem>
 
 #define CONFIG_DIR "/usr/local/nPM/etc"
 #define USER_DEFINE_CONFIG_NAME "UserConfig"

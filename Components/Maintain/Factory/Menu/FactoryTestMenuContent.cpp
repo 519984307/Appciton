@@ -17,7 +17,6 @@
 #include <QProcess>
 #include "MessageBox.h"
 #include "USBManager.h"
-#include "FactoryMaintainManager.h"
 #include "SpinBox.h"
 #include "BatteryDefine.h"
 #include <QDir>

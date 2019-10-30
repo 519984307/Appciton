@@ -192,8 +192,6 @@ void NIBPRepairMenuWindow::closeSlot()
 {
     // 转换到状态，发送退出服务模式
     nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_REPAIR_RETURN, NULL, 0);
-
-//    menuManager.returnPrevious();
 }
 
 bool NIBPRepairMenuWindow::getRepairError(void)

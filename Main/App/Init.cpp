@@ -673,15 +673,6 @@ static void _initPrint(void)
  *************************************************************************************************/
 static void _initMenu(void)
 {
-    menuManager.construction();
-    userMaintainManager.construction();
-    wifiMaintainMenu.construction();
-
-    userMaintainManager.addSubMenu(&wifiMaintainMenu);
-
-    // supervisorMenuManager
-    supervisorMenuManager.construction();
-
     //其它弹出菜单初始化
     patientManager.getInstance();
 }
@@ -708,8 +699,6 @@ void deleteObjects(void)
     deleteRecorderManager();
 
     //    deleteWaveWidgetSelectMenu();
-    deleteSupervisorMenuManager();
-    deleteMenuManager();
     // deletePatientMenu();
     deleteParamManager();
     deleteTimeDate();

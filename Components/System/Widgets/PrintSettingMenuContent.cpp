@@ -27,6 +27,7 @@
 #include "ContinuousPageGenerator.h"
 #include "TimeManager.h"
 #include "CO2Param.h"
+#include <QTimerEvent>
 
 #define STOP_PRINT_TIMEOUT          (100)
 
@@ -60,7 +61,7 @@ public:
      * @param waveIDs  获取更新的波形id
      * @param waveNames  获取更新的波形名字
      */
-    void wavesUpdate(QList<int> &waveIDs, QStringList &waveNames);
+    void wavesUpdate(QList<int> *waveIDs, QStringList *waveNames);
 
     QList<ComboBox *> selectWaves;
     QList<int> waveIDs;
@@ -98,7 +99,7 @@ void PrintSettingMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_PRINT_WAVE_FREEZE]->setCurrentIndex(index);
 
     // update wave
-    wavesUpdate(waveIDs, waveNames);
+    wavesUpdate(&waveIDs, &waveNames);
 
     for (int i = 0; i < PRINT_WAVE_NUM; i++)
     {
@@ -242,7 +243,7 @@ void PrintSettingMenuContent::layoutExec()
     int lastColumn = 2;
 
     // select wave
-    d_ptr->wavesUpdate(d_ptr->waveIDs, d_ptr->waveNames);
+    d_ptr->wavesUpdate(&d_ptr->waveIDs, &d_ptr->waveNames);
     for (int i = 0; i < PRINT_WAVE_NUM; i++)
     {
         QString comboName = QString("%1%2").arg(trs("Wave")).arg(i + 1);
@@ -522,18 +523,18 @@ void PrintSettingMenuContent::onConnectedStatusChanged()
     }
 }
 
-void PrintSettingMenuContentPrivate::wavesUpdate(QList<int> &waveIDs, QStringList &waveNames)
+void PrintSettingMenuContentPrivate::wavesUpdate(QList<int> *waveIDs, QStringList *waveNames)
 {
-    waveIDs.clear();
-    waveNames.clear();
+    waveIDs->clear();
+    waveNames->clear();
 
     // ecg
     int index = 0;
     currentConfig.getNumValue("ECG|Ecg1Wave", index);
     ECGLead ecgLead = static_cast<ECGLead>(index);
     WaveformID waveID = ecgParam.leadToWaveID(ecgLead);
-    waveIDs.append(waveID);
-    waveNames.append(ECGSymbol::convert(ecgLead, ecgParam.getLeadConvention()));
+    waveIDs->append(waveID);
+    waveNames->append(ECGSymbol::convert(ecgLead, ecgParam.getLeadConvention()));
 
     ECGLeadMode leadMode = ecgParam.getLeadMode();
     if (leadMode == ECG_LEAD_MODE_5
@@ -543,22 +544,22 @@ void PrintSettingMenuContentPrivate::wavesUpdate(QList<int> &waveIDs, QStringLis
         currentConfig.getNumValue("ECG|Ecg2Wave", index);
         ECGLead ecgLead = static_cast<ECGLead>(index);
         WaveformID waveID = ecgParam.leadToWaveID(ecgLead);
-        waveIDs.append(waveID);
-        waveNames.append(ECGSymbol::convert(ecgLead, ecgParam.getLeadConvention()));
+        waveIDs->append(waveID);
+        waveNames->append(ECGSymbol::convert(ecgLead, ecgParam.getLeadConvention()));
     }
 
     if (systemManager.isSupport(CONFIG_RESP))
     {
         // resp
-        waveIDs.append(WAVE_RESP);
-        waveNames.append(trs(paramInfo.getParamWaveformName(WAVE_RESP)));
+        waveIDs->append(WAVE_RESP);
+        waveNames->append(trs(paramInfo.getParamWaveformName(WAVE_RESP)));
     }
 
     if (systemManager.isSupport(CONFIG_SPO2))
     {
         // spo2
-        waveIDs.append(WAVE_SPO2);
-        waveNames.append(trs(paramInfo.getParamWaveformName(WAVE_SPO2)));
+        waveIDs->append(WAVE_SPO2);
+        waveNames->append(trs(paramInfo.getParamWaveformName(WAVE_SPO2)));
     }
 
     if (systemManager.isSupport(CONFIG_IBP))
@@ -566,20 +567,20 @@ void PrintSettingMenuContentPrivate::wavesUpdate(QList<int> &waveIDs, QStringLis
         // ibp
         IBPPressureName ibpTitle = ibpParam.getEntitle(IBP_INPUT_1);
         waveID = ibpParam.getWaveformID(ibpTitle);
-        waveIDs.append(waveID);
-        waveNames.append(IBPSymbol::convert(ibpTitle));
+        waveIDs->append(waveID);
+        waveNames->append(IBPSymbol::convert(ibpTitle));
 
         ibpTitle = ibpParam.getEntitle(IBP_INPUT_2);
         waveID = ibpParam.getWaveformID(ibpTitle);
-        waveIDs.append(waveID);
-        waveNames.append(IBPSymbol::convert(ibpTitle));
+        waveIDs->append(waveID);
+        waveNames->append(IBPSymbol::convert(ibpTitle));
     }
 
     // add CO2 waveform when the module is connected to the host
     if (co2Param.isConnected())
     {
         // co2
-        waveIDs.append(WAVE_CO2);
-        waveNames.append(trs(paramInfo.getParamWaveformName(WAVE_CO2)));
+        waveIDs->append(WAVE_CO2);
+        waveNames->append(trs(paramInfo.getParamWaveformName(WAVE_CO2)));
     }
 }

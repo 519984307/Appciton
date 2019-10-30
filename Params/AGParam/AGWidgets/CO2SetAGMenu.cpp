@@ -14,7 +14,6 @@
 #include "CO2Symbol.h"
 #include "UnitManager.h"
 #include "ConfigManager.h"
-#include "MenuManager.h"
 #include "FontManager.h"
 #include "ComboBox.h"
 #include "LanguageManager.h"

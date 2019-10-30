@@ -23,15 +23,10 @@
 #include <QScrollArea>
 #include <QScrollBar>
 #include "ColorManager.h"
-#include "SubMenu.h"
 #include "Debug.h"
 #include "FontManager.h"
 
 #include "NIBPParam.h"
-#include "NIBPCalibrate.h"
-#include "NIBPZeroPoint.h"
-#include "NIBPManometer.h"
-#include "NIBPPressureControl.h"
 
 
 
@@ -42,11 +37,6 @@ NIBPRepairMenuManager *NIBPRepairMenuManager::_selfObj = NULL;
  *************************************************************************************************/
 void NIBPRepairMenuManager::init()
 {
-    nibpcalibrate.init();
-    nibpmanometer.init();
-    nibppressurecontrol.init();
-    nibpzeropoint.init();
-
     _repairError = false;
     _replyFlag = false;
 
@@ -71,10 +61,6 @@ void NIBPRepairMenuManager::unPacket(bool flag)
  *************************************************************************************************/
 void NIBPRepairMenuManager::returnMenu()
 {
-    nibpcalibrate.init();
-    nibpmanometer.init();
-    nibppressurecontrol.init();
-    nibpzeropoint.init();
 }
 
 /**************************************************************************************************
@@ -115,28 +101,13 @@ void NIBPRepairMenuManager::warnShow(bool enable)
         }
     }
 
-    if (enable)
-    {
-        closeStrongFoucs();
-    }
     _repairError = enable;
-}
-
-/**************************************************************************************************
- * 重新聚焦菜单列表。
- *************************************************************************************************/
-void NIBPRepairMenuManager::returnMenuList()
-{
-    nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_REPAIR_RETURN, NULL, 0);
-    MenuGroup::returnMenuList();
 }
 
 void NIBPRepairMenuManager::_closeSlot()
 {
     // 转换到状态，发送退出服务模式
     nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_REPAIR_RETURN, NULL, 0);
-
-    menuManager.returnPrevious();
 }
 
 bool NIBPRepairMenuManager::getRepairError(void)
@@ -154,25 +125,16 @@ NIBPMonitorStateID NIBPRepairMenuManager::getMonitorState()
     return monitorState;
 }
 
-/***************************************************************************************************
- * 隐藏事件
- **************************************************************************************************/
-void NIBPRepairMenuManager::hideEvent(QHideEvent *event)
-{
-    // 进入服务模式。
-    nibpParam.changeMode(NIBP_STATE_MACHINE_MONITOR);
-    MenuGroup::hideEvent(event);
-}
-
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-NIBPRepairMenuManager::NIBPRepairMenuManager() : MenuGroup("SupervisorMenuManager")
+NIBPRepairMenuManager::NIBPRepairMenuManager()
 {
     _repairError = false;
     _replyFlag = false;
     monitorState = NIBP_MONITOR_STANDBY_STATE;
-    messageBoxWait = new  MessageBox(trs("Warn"), trs("NIBPServiceWaitAgain"), QStringList(trs("EnglishYESChineseSURE")));
+    messageBoxWait = new  MessageBox(trs("Warn"), trs("NIBPServiceWaitAgain"),
+                                     QStringList(trs("EnglishYESChineseSURE")));
     messageBoxError = new MessageBox(trs("Warn"), trs("NIBPServiceModuleErrorQuitTryAgain"),
                                      QStringList(trs("EnglishYESChineseSURE")), true);
 }

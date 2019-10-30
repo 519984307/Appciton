@@ -25,7 +25,6 @@
 #include "SystemManager.h"
 #include "SoundManager.h"
 #include "SystemAlarm.h"
-#include "MenuManager.h"
 #include <QPointer>
 #include "RecorderManager.h"
 #include "ContinuousPageGenerator.h"
@@ -68,7 +67,6 @@ void NormalModeKeyAction::keyF1Pressed(bool multiBtnPress)
 
 void NormalModeKeyAction::keyF2Pressed(bool multiBtnPress)
 {
-
     static QPointer<FreezeWindow> currentFreezeWindow;
     if (multiBtnPress)
     {
@@ -168,13 +166,10 @@ void NormalModeKeyAction::keyF1Released(bool multiBtnPress)
 
 void NormalModeKeyAction::keyF2Released(bool multiBtnPress)
 {
-
     if (multiBtnPress)
     {
         return;
     }
-
-    // TODO: freeze
 }
 
 void NormalModeKeyAction::keyF3Released(bool multiBtnPress)

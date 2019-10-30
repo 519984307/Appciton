@@ -13,12 +13,12 @@
 #include "BatteryBarWidget.h"
 #include "FontManager.h"
 #include "WindowManager.h"
-#include "MenuManager.h"
 #include "TopBarWidget.h"
 #include "IConfig.h"
 #include <QPainter>
 #include "BatteryIndicatorWindow.h"
 #include "SoundManagerInterface.h"
+#include <QBoxLayout>
 
 #define blackgroundColor QColor(20 , 20 , 20)
 

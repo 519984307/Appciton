@@ -18,6 +18,7 @@
 #include "MessageBox.h"
 #include "IConfig.h"
 #include "LanguageManager.h"
+#include <QTimerEvent>
 
 class NIBPManometerContentPrivate
 {

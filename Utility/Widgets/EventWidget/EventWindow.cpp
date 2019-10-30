@@ -51,6 +51,7 @@
 #include "ThemeManager.h"
 #include "PatientManager.h"
 #include "LanguageManager.h"
+#include <QTimerEvent>
 
 #define TABLE_SPACING               (4)
 #define PAGE_ROW_COUNT               7      // 每页多少行
@@ -989,7 +990,8 @@ void EventWindowPrivate::eventTrendUpdate()
             }
             else if (paramInfo.getParamID(subId) == PARAM_TEMP)
             {
-                dataStr = Unit::convert(type, paramInfo.getUnitOfSubParam(subId), ctx.trendSegment->values[i].value / 10.0);
+                dataStr = Unit::convert(type, paramInfo.getUnitOfSubParam(subId),
+                                        ctx.trendSegment->values[i].value / 10.0);
             }
             else if (paramInfo.getParamID(subId) == PARAM_NIBP)
             {

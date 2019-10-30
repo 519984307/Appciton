@@ -11,7 +11,6 @@
 #include "NIBPServiceZeroPointState.h"
 #include "NIBPServiceStateDefine.h"
 #include "NIBPParam.h"
-#include "NIBPZeroPoint.h"
 #include "NIBPRepairMenuManager.h"
 
 /**************************************************************************************************
@@ -73,7 +72,6 @@ void NIBPServiceZeroPointState::handleNIBPEvent(NIBPEvent event, const unsigned 
     {
     case NIBP_EVENT_MODULE_RESET:
     case NIBP_EVENT_MODULE_ERROR:
-        nibpzeropoint.unPacket(false);
         _isEnterSuccess = false;
         switchState(NIBP_SERVICE_ERROR_STATE);
         break;
@@ -108,7 +106,6 @@ void NIBPServiceZeroPointState::handleNIBPEvent(NIBPEvent event, const unsigned 
             }
             else
             {
-                nibpzeropoint.init();
                 nibpRepairMenuManager.returnMenu();
                 // 转换到测量状态。
                 switchState(NIBP_SERVICE_STANDBY_STATE);
@@ -132,7 +129,6 @@ void NIBPServiceZeroPointState::handleNIBPEvent(NIBPEvent event, const unsigned 
         if (args[0] == 0x01)
         {
             nibpParam.provider().serviceCalibrateZero(true);
-            nibpzeropoint.startSwitch(true);
             setTimeOut();
         }
         break;

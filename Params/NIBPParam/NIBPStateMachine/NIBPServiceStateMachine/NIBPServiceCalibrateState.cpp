@@ -11,7 +11,6 @@
 #include "NIBPParam.h"
 #include "NIBPServiceCalibrateState.h"
 #include "NIBPServiceStateDefine.h"
-#include "NIBPCalibrate.h"
 #include "NIBPRepairMenuManager.h"
 
 /**************************************************************************************************
@@ -34,14 +33,12 @@ void NIBPServiceCalibrateState::handleNIBPEvent(NIBPEvent event, const unsigned 
     case NIBP_EVENT_MODULE_RESET:
     case NIBP_EVENT_MODULE_ERROR:
         timeStop();
-        nibpcalibrate.unPacket(false);
         _isEnterSuccess = false;
         switchState(NIBP_SERVICE_ERROR_STATE);
         break;
 
     case NIBP_EVENT_TIMEOUT:
     {
-        nibpcalibrate.unPacket(false);
         _isEnterSuccess = false;
         MessageBox messbox(trs("Warn"), trs("NIBPDirectiveTimeout"), false);
         messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);

@@ -12,11 +12,11 @@
 #include <QLabel>
 #include <QTime>
 #include "FactoryCO2MenuContent.h"
-#include "FactoryMaintainManager.h"
 #include "LanguageManager.h"
 #include "Button.h"
 #include "CO2Param.h"
 #include "FontManager.h"
+#include <QTimerEvent>
 
 #define CALIBRATE_INTERVAL_TIME                     (100)
 #define TIMEOUT_WAIT_NUMBER                         (5000 / CALIBRATE_INTERVAL_TIME)

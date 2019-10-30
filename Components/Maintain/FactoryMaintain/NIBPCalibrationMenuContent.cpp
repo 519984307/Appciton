@@ -22,6 +22,7 @@
 #include "NIBPRepairMenuWindow.h"
 #include "NIBPParam.h"
 #include "SystemManager.h"
+#include <QTimerEvent>
 
 #define TIME_INTERVAL       100
 
