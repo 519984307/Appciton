@@ -16,6 +16,6 @@ class MockAlarmInfoBarWidget : public AlarmInfoBarWidget
 {
 public:
     MOCK_METHOD0(clear, void(void));
-    MOCK_METHOD1(display, void(AlarmInfoNode &));
+    MOCK_METHOD1(display, void(const AlarmInfoNode &));
     MOCK_METHOD0(updateList, void(void));
 };

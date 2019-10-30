@@ -76,4 +76,7 @@ public:
 
     // check whether param is support
     virtual bool isSupport(ParamID paramID) const = 0;
+
+    /* check whether touchscreen is alreay working */
+    virtual bool isTouchScreenOn() const { return false;}
 };

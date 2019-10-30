@@ -167,7 +167,6 @@ SOURCES +=                                                                      
     Utility/Config/Config.cpp                                                   \
     Utility/Config/XmlParser.cpp                                                \
     Utility/Config/IConfig.cpp                                                  \
-    Utility/DataStorage/CircleFile.cpp                                          \
     Utility/DataStorage/DataStorageDirManager.cpp                               \
     Utility/DataStorage/StorageFile.cpp                                         \
     Utility/DataStorage/StorageManager.cpp                                      \
@@ -217,10 +216,7 @@ SOURCES +=                                                                      
     Utility/Widgets/Base/MoveButton.cpp                                         \
     Utility/Widgets/Base/Dialog.cpp                                             \
     Utility/Widgets/InputMethod/EnglishInputPanel.cpp                           \
-    Utility/Widgets/InputMethod/Key.cpp                                         \
-    Utility/Widgets/InputMethod/KeyBoardPanel.cpp                               \
     Utility/Widgets/InputMethod/KeyInputPanel.cpp                               \
-    Utility/Widgets/InputMethod/NumberPanel.cpp                                 \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWaveWidget.cpp                      \
     Utility/Widgets/OxyCRGWidget/OxyCRGWidget.cpp                               \
     Utility/Widgets/OxyCRGWidget/OxyCRGRESPWaveWidget.cpp                       \
@@ -250,16 +246,10 @@ SOURCES +=                                                                      
     Utility/Widgets/Waveform/WaveWidget.cpp                                     \
     Utility/Widgets/MessageBox.cpp                                              \
     Utility/Widgets/ExportDataWidget.cpp                                        \
-    Utility/Widgets/FreezeTableWidget.cpp                                       \
     Utility/Widgets/IButton.cpp                                                 \
-    Utility/Widgets/IPrograssBar.cpp                                            \
-    Utility/Widgets/ISpinBox.cpp                                                \
     Utility/Widgets/ITableWidget.cpp                                            \
-    Utility/Widgets/LabelButton.cpp                                             \
-    Utility/Widgets/PMessageBox.cpp                                             \
     Utility/Widgets/PopupWidget.cpp                                             \
     Utility/Widgets/ImportFileSubWidget.cpp                                     \
-    Utility/Widgets/TableItemDelegate.cpp                                       \
     Utility/Widgets/EventWidget/EventWaveWidget.cpp                             \
     Utility/Widgets/EventWidget/EventTrendItemDelegate.cpp                      \
     Utility/Widgets/EventWidget/EventInfoWidget.cpp                             \
@@ -635,7 +625,6 @@ HEADERS +=                                                                      
     Utility/Config/XmlParser.h                                                  \
     Utility/DataStorage/DataStorageDefine.h                                     \
     Utility/DataStorage/IStorageBackend.h                                       \
-    Utility/DataStorage/CircleFile.h                                            \
     Utility/DataStorage/StorageFile.h                                           \
     Utility/DataStorage/DataStorageDirManager.h                                 \
     Utility/DataStorage/StorageManager.h                                        \
@@ -695,10 +684,7 @@ HEADERS +=                                                                      
     Utility/Widgets/Base/MoveButton.h                                           \
     Utility/Widgets/Base/Dialog.h                                               \
     Utility/Widgets/InputMethod/EnglishInputPanel.h                             \
-    Utility/Widgets/InputMethod/Key.h                                           \
-    Utility/Widgets/InputMethod/KeyBoardPanel.h                                 \
     Utility/Widgets/InputMethod/KeyInputPanel.h                                 \
-    Utility/Widgets/InputMethod/NumberPanel.h                                   \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWaveWidget.h                        \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWaveWidget_p.h                      \
     Utility/Widgets/OxyCRGWidget/OxyCRGWidget.h                                 \
@@ -733,17 +719,10 @@ HEADERS +=                                                                      
     Utility/Widgets/Waveform/WaveScanMode.h                                     \
     Utility/Widgets/Waveform/WaveWidget.h                                       \
     Utility/Widgets/ExportDataWidget.h                                          \
-    Utility/Widgets/FreezeTableWidget.h                                         \
     Utility/Widgets/IButton.h                                                   \
-    Utility/Widgets/IMessageBox.h                                               \
     Utility/Widgets/MessageBox.h                                                \
-    Utility/Widgets/IPrograssBar.h                                              \
-    Utility/Widgets/ISpinBox.h                                                  \
     Utility/Widgets/ITableWidget.h                                              \
-    Utility/Widgets/LabelButton.h                                               \
-    Utility/Widgets/PMessageBox.h                                               \
     Utility/Widgets/PopupWidget.h                                               \
-    Utility/Widgets/TableItemDelegate.h                                         \
     Utility/Widgets/EventWidget/EventWaveWidget.h                               \
     Utility/Widgets/EventWidget/EventTrendItemDelegate.h                        \
     Utility/Widgets/EventWidget/EventInfoWidget.h                               \
@@ -1264,8 +1243,6 @@ DEPENDPATH +=                                                                   
 
 INCLUDEPATH +=                                                                  \
     SOUP/Json                                                                   \
-    SOUP/libharu/include                                                        \
-    SOUP/libssh2/include                                                        \
     Main                                                                        \
     Main/App                                                                    \
     Utility                                                                     \

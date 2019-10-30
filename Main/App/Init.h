@@ -26,8 +26,6 @@
 #include "KeyActionManager.h"
 #include "NormalModeKeyAction.h"
 #include "WindowManager.h"
-#include "KeyBoardPanel.h"
-#include "NumberPanel.h"
 #include "NellcorProvider.h"
 
 #include "DataStorageDirManager.h"
@@ -57,7 +55,6 @@
 #include "TrendCache.h"
 #include "ParamDataStorageManager.h"
 #include "TrendDataStorageManager.h"
-#include "TrendRescueRangePrint.h"
 
 
 #include "EventStorageManager.h"
@@ -147,8 +144,6 @@
 #include "RawDataCollector.h"
 
 #include "USBManager.h"
-
-#include "PMessageBox.h"
 
 #include "OxyCRGWidget.h"
 

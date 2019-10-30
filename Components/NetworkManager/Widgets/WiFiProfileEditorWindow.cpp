@@ -11,7 +11,6 @@
 #include "WiFiProfileEditorWindow.h"
 
 #include <QRegExp>
-#include "LabelButton.h"
 #include "LanguageManager.h"
 #include "FontManager.h"
 #include "WindowManager.h"
@@ -24,6 +23,7 @@
 #include "ComboBox.h"
 #include <QLabel>
 #include <QGridLayout>
+#include <QKeyEvent>
 
 #define FONT_SIZE 14
 #define MAX_IP_STRING_LENGTH 15

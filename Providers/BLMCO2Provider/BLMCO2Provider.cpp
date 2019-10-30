@@ -15,7 +15,6 @@
 #include <QString>
 #include <sys/time.h>
 #include "SystemManager.h"
-#include "PMessageBox.h"
 #include <QTimer>
 #include "ConfigManager.h"
 #include "RawDataCollector.h"
@@ -55,11 +54,11 @@ enum  // 设置命令。
 {
     CMD_SET_MODE = 0x00,      // 设置工作模式
     CMD_SET_APNE_TIME = 0x01,  // 设置窒息时间
-    CMD_ENTER_UPGRADE_MODE = 0x03, // 进入升级模式
+    CMD_ENTER_UPGRADE_MODE = 0x03,  // 进入升级模式
     CMD_SET_O2 = 0x04,        // 设置氧气补偿的浓度
     CMD_SET_N20 = 0x05,       // 设置笑气补偿的浓度
     CMD_ZERO_CAL = 0x06,      // 模块校零命令。
-    CMD_CALIBRATE_DATA = 0x08 // 定标不同CO2浓度
+    CMD_CALIBRATE_DATA = 0x08  // 定标不同CO2浓度
 };
 
 /**************************************************************************************************
@@ -629,7 +628,7 @@ void BLMCO2Provider::dataArrived(void)
                 ringBuff.pop(1);
                 break;
             }
-            if (len > ringBuff.dataSize()) // 数据还不够，继续等待。
+            if (len > ringBuff.dataSize())  // 数据还不够，继续等待。
             {
                 break;
             }

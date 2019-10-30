@@ -13,7 +13,6 @@
 #include "Button.h"
 #include "LanguageManager.h"
 #include <QGridLayout>
-#include "KeyBoardPanel.h"
 #include <QRegExp>
 #include "ConfigManager.h"
 #include "KeyInputPanel.h"
@@ -67,7 +66,6 @@ void ConfigEditGeneralMenuContent::readyShow()
 
 void ConfigEditGeneralMenuContentPrivate::loadOptions()
 {
-
     btns[ITEM_BTN_CONFIG_NAME]->setText(cmw->getCurrentEditConfigName());
 }
 void ConfigEditGeneralMenuContent::layoutExec()

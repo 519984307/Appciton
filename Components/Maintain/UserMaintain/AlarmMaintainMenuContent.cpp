@@ -14,13 +14,13 @@
 #include "ComboBox.h"
 #include <QGridLayout>
 #include "IConfig.h"
-#include "IMessageBox.h"
 #include "Button.h"
 #include "SoundManager.h"
 #include "AlarmSymbol.h"
 #include "Alarm.h"
 #include "AlarmIndicator.h"
 #include "AlarmSourceManager.h"
+#include "SystemDefine.h"
 
 class AlarmMaintainMenuContentPrivate
 {

@@ -115,9 +115,6 @@ static void _initSystem(void)
     EventStorageManager::getInstance();
     TrendDataStorageManager::getInstance();
 
-    //消息提示框
-    pMessageBox.construction();
-
     // 初始化夜间模式
     runningStatus.getInstance();
     if (nightModeManager.nightMode())
@@ -705,8 +702,6 @@ void deleteObjects(void)
     deleteSuperRunConfig();
     deleteSystemTick();
     deleteKeyActionManager();
-
-    deletepMessageBox();
 
 //    deleteNetworkManager();
     deleteUsbManager();

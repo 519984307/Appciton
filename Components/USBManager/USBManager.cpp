@@ -15,10 +15,10 @@
 #include "ErrorLogExporter.h"
 #include <QTimer>
 #include <QProcess>
-#include "IMessageBox.h"
 #include <typeinfo>
 #include "RawDataCollector.h"
 #include "MessageBox.h"
+#include "LanguageManager.h"
 
 #define USB_MOUNT_PATH "/media/usbdisk"
 
@@ -247,7 +247,7 @@ bool USBManager::_addDataExporter(DataExporterBase *dataExporter)
 {
     if (_curExporter)
     {
-        IMessageBox messageBox(trs("Warn"), trs("WarnUSBDeviceisbusy"), QStringList(trs("EnglishYESChineseSURE")));
+        MessageBox messageBox(trs("Warn"), trs("WarnUSBDeviceisbusy"), QStringList(trs("EnglishYESChineseSURE")));
         messageBox.exec();
         return false;
     }
