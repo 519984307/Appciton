@@ -175,8 +175,9 @@ SOURCES +=                                                                      
     Utility/ErrorLog/ErrorLogInterface.cpp                                      \
     Utility/ErrorLog/ErrorLog.cpp                                               \
     Utility/ErrorLog/ErrorLogItem.cpp                                           \
-    Utility/ErrorLog/ErrorLogViewer.cpp                                         \
     Utility/ErrorLog/ErrorLogViewerWindow.cpp                                   \
+    Utility/ErrorLog/ErrorLogTableModel.cpp                                     \
+    Utility/ErrorLog/ErrorLogWindow.cpp                                         \
     Utility/TimeDate/TimeDate.cpp                                               \
     Utility/Uart/Uart.cpp                                                       \
     Utility/Uart/UartSocket.cpp                                                 \
@@ -444,8 +445,6 @@ SOURCES +=                                                                      
     Components/ActivityLog/ActivityLogManager.cpp                               \
     Components/Maintain/Supervisor/Menu/Supervisor12LMenuContent.cpp            \
     Components/Maintain/Supervisor/Menu/SupervisorPrintMenuContent.cpp          \
-    Components/Maintain/Service/ErrorLog/ErrorLogWindow.cpp                     \
-    Components/Maintain/Service/ErrorLog/ErrorLogTableModel.cpp                 \
     Components/Maintain/Factory/FactoryConfigManager.cpp                        \
     Components/Maintain/FactoryMaintain/FactoryDataRecordContent.cpp            \
     Components/Maintain/Factory/Menu/FactoryTempMenuContent.cpp                 \
@@ -659,8 +658,9 @@ HEADERS +=                                                                      
     Utility/ErrorLog/ErrorLogInterface.h                                        \
     Utility/ErrorLog/ErrorLog.h                                                 \
     Utility/ErrorLog/ErrorLogItem.h                                             \
-    Utility/ErrorLog/ErrorLogViewer.h                                           \
     Utility/ErrorLog/ErrorLogViewerWindow.h                                     \
+    Utility/ErrorLog/ErrorLogTableModel.h                                       \
+    Utility/ErrorLog/ErrorLogWindow.h                                           \
     Utility/TimeDate/TimeDate.h                                                 \
     Utility/TimeDate/TimeDefine.h                                               \
     Utility/TimeDate/TimeSymbol.h                                               \
@@ -964,8 +964,6 @@ HEADERS +=                                                                      
     Components/ActivityLog/ActivityLogManager.h                                 \
     Components/Maintain/Supervisor/Menu/Supervisor12LMenuContent.h              \
     Components/Maintain/Supervisor/Menu/SupervisorPrintMenuContent.h            \
-    Components/Maintain/Service/ErrorLog/ErrorLogWindow.h                       \
-    Components/Maintain/Service/ErrorLog/ErrorLogTableModel.h                   \
     Components/Maintain/Factory/FactoryConfigManager.h                          \
     Components/Maintain/Factory/Menu/FactoryTempMenuContent.h                   \
     Components/Maintain/Factory/Menu/FactoryTestMenuContent.h                   \
@@ -1248,8 +1246,6 @@ DEPENDPATH +=                                                                   
     Components/ActivityLog                                                      \
     Components/Maintain/Supervisor                                              \
     Components/Maintain/Supervisor/Menu                                         \
-    Components/Maintain/Service                                                 \
-    Components/Maintain/Service/ErrorLog                                        \
     Components/Maintain/Factory                                                 \
     Components/Maintain/Factory/Menu                                            \
     Components/Maintain/UserMaintain                                            \
@@ -1370,8 +1366,6 @@ INCLUDEPATH +=                                                                  
     Components/ActivityLog                                                      \
     Components/Maintain/Supervisor                                              \
     Components/Maintain/Supervisor/Menu                                         \
-    Components/Maintain/Service                                                 \
-    Components/Maintain/Service/ErrorLog                                        \
     Components/Maintain/Factory                                                 \
     Components/Maintain/Factory/Menu                                            \
     Components/Maintain/UserMaintain                                            \
@@ -1391,7 +1385,7 @@ INCLUDEPATH +=                                                                  
     Providers/SuntechProvider                                                   \
     Providers/BLMTEMPProvider                                                   \
     Providers/T5Provider                                                        \
-    Providers/N5Provider                                                       \
+    Providers/N5Provider                                                        \
     Providers/E5Provider                                                        \
     Providers/DemoProvider                                                      \
     Providers/PRT48Provider                                                     \
