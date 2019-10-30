@@ -489,14 +489,21 @@ void SoftkeyActionBase::nibpMeasure(bool isPressed)
 {
     if (isPressed)
     {
-        return;
+        // nibp 维护模式和demo模式、开机较零模式不响应nibp测量按钮
+        if (systemManager.isSupport(CONFIG_NIBP) && systemManager.getCurWorkMode() != WORK_MODE_DEMO
+                && !nibpParam.isMaintain() && !nibpParam.isZeroSelfTestState())
+        {
+            nibpParam.keyPressed();
+        }
     }
-
-    //  维护模式和demo模式不响应nibp测量按钮
-    if (systemManager.isSupport(CONFIG_NIBP) && systemManager.getCurWorkMode() != WORK_MODE_DEMO
-            && !nibpParam.isMaintain() && !nibpParam.isZeroSelfTestState())
+    else
     {
-        nibpParam.keyReleased();
+        //  维护模式和demo模式不响应nibp测量按钮
+        if (systemManager.isSupport(CONFIG_NIBP) && systemManager.getCurWorkMode() != WORK_MODE_DEMO
+                && !nibpParam.isMaintain() && !nibpParam.isZeroSelfTestState())
+        {
+            nibpParam.keyReleased();
+        }
     }
 }
 
