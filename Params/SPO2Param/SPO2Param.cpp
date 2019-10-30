@@ -88,7 +88,6 @@ public:
 
     bool isLowPerfusion;
     bool isForceUpdating;  // 当spo2的弱灌注状态发生变化时，该状态位为true
-    bool isForceUpdatingPR;
     bool plugInIsLowPerfusion;
     bool plugInIsForceUpdating;  // 当spo2的弱灌注状态发生变化时，该状态位为true
 
@@ -163,7 +162,6 @@ SPO2ParamPrivate::SPO2ParamPrivate()
     , repeatTimes(0)
     , isLowPerfusion(false)
     , isForceUpdating(false)
-    , isForceUpdatingPR(false)
     , plugInIsLowPerfusion(false)
     , plugInIsForceUpdating(false)
     , isT5ModuleUpgradeCompleted(false)
@@ -655,7 +653,6 @@ void SPO2Param::setSPO2(short spo2Value)
         return;
     }
 
-    d_ptr->isForceUpdating = false;
     d_ptr->spo2Value = spo2Value;
 
 #ifdef ENABLE_O2_APNEASTIMULATION
@@ -823,7 +820,6 @@ void SPO2Param::setPR(short prValue)
     {
         return;
     }
-    d_ptr->isForceUpdatingPR = false;
     d_ptr->prValue = prValue;
     ecgDupParam.updatePR(prValue);
 }
@@ -1660,9 +1656,6 @@ void SPO2Param::setPerfusionStatus(bool isLow, bool isPlugIn)
         {
             d_ptr->plugInIsForceUpdating = false;
         }
-        d_ptr->isForceUpdatingPR = true;
-        d_ptr->isForceUpdating = true;
-        d_ptr->isLowPerfusion = isLow;
     }
 }
 
