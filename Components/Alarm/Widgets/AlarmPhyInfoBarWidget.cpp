@@ -210,7 +210,7 @@ void AlarmPhyInfoBarWidget::clear(void)
 /**************************************************************************************************
  * 设置报警提示信息。
  *************************************************************************************************/
-void AlarmPhyInfoBarWidget::display(AlarmInfoNode &node)
+void AlarmPhyInfoBarWidget::display(const AlarmInfoNode &node)
 {
     _alarmPriority = node.alarmPriority;
     _text = node.alarmMessage;

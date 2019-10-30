@@ -216,11 +216,6 @@ SOURCES +=                                                                      
     Utility/Widgets/Base/PopupMoveEditor.cpp                                    \
     Utility/Widgets/Base/MoveButton.cpp                                         \
     Utility/Widgets/Base/Dialog.cpp                                             \
-    Utility/Widgets/IComboList/ComboList.cpp                                    \
-    Utility/Widgets/IComboList/ComboListPopup.cpp                               \
-    Utility/Widgets/IComboList/ComboListItem.cpp                                \
-    Utility/Widgets/IComboList/IComboList.cpp                                   \
-    Utility/Widgets/IComboList/CombolistWidget.cpp                              \
     Utility/Widgets/InputMethod/EnglishInputPanel.cpp                           \
     Utility/Widgets/InputMethod/Key.cpp                                         \
     Utility/Widgets/InputMethod/KeyBoardPanel.cpp                               \
@@ -257,9 +252,6 @@ SOURCES +=                                                                      
     Utility/Widgets/ExportDataWidget.cpp                                        \
     Utility/Widgets/FreezeTableWidget.cpp                                       \
     Utility/Widgets/IButton.cpp                                                 \
-    Utility/Widgets/IDropList.cpp                                               \
-    Utility/Widgets/ILabel.cpp                                                  \
-    Utility/Widgets/IListWidget.cpp                                             \
     Utility/Widgets/IPrograssBar.cpp                                            \
     Utility/Widgets/ISpinBox.cpp                                                \
     Utility/Widgets/ITableWidget.cpp                                            \
@@ -325,7 +317,6 @@ SOURCES +=                                                                      
     Components/Alarm/AlarmStateMachine/AlarmOffState.cpp                        \
     Components/Alarm/AlarmStateMachine/AlarmAudioOffState.cpp                   \
     Components/Alarm/AlarmStateMachine/AlarmResetState.cpp                      \
-    Components/Alarm/Widgets/AlarmInfoPopListView.cpp                           \
     Components/Alarm/Widgets/AlarmLimitMenuContent.cpp                          \
     Components/Alarm/Widgets/AlarmLimitWindow.cpp                               \
     Components/Alarm/Widgets/AlarmStatusWidget.cpp                              \
@@ -350,11 +341,9 @@ SOURCES +=                                                                      
     Components/PatientData/ParamDataStorageManager.cpp                          \
     Components/PatientData/RescueDataListWidget.cpp                             \
     Components/PatientData/RescueDataListNewWidget.cpp                          \
-    Components/PatientData/RescueDataExportWidget.cpp                           \
     Components/PatientData/TrendCache.cpp                                       \
     Components/PatientData/TrendCacheInterface.cpp                              \
     Components/PatientData/TrendDataUtil.cpp                                    \
-    Components/PatientData/RescueDataDeleteWidget.cpp                           \
     Components/PatientData/RescueDataDeleteWindow.cpp                           \
     Components/PatientData/TrendDataStorageManager.cpp                          \
     Components/PatientData/TrendDataStorageManagerInterface.cpp                 \
@@ -439,7 +428,7 @@ SOURCES +=                                                                      
     Components/NetworkManager/WpaCtrl/utils/os_unix.c                           \
     Components/NetworkManager/WpaCtrl/WpaCtrl.cpp                               \
     Components/NetworkManager/Widgets/LabeledLabel.cpp                          \
-    Components/NetworkManager/Widgets/WiFiProfileEditor.cpp                     \
+    Components/NetworkManager/Widgets/WiFiProfileInfo.cpp                       \
     Components/NetworkManager/Widgets/WiFiProfileWindow.cpp                     \
     Components/NetworkManager/Widgets/WiFiProfileEditorWindow.cpp               \
     Components/Maintain/UserMaintain/UserMaintainGeneralMenuContent.cpp         \
@@ -705,11 +694,6 @@ HEADERS +=                                                                      
     Utility/Widgets/Base/PopupMoveEditor.h                                      \
     Utility/Widgets/Base/MoveButton.h                                           \
     Utility/Widgets/Base/Dialog.h                                               \
-    Utility/Widgets/IComboList/ComboList.h                                      \
-    Utility/Widgets/IComboList/ComboListPopup.h                                 \
-    Utility/Widgets/IComboList/ComboListItem.h                                  \
-    Utility/Widgets/IComboList/IComboList.h                                     \
-    Utility/Widgets/IComboList/CombolistWidget.h                                \
     Utility/Widgets/InputMethod/EnglishInputPanel.h                             \
     Utility/Widgets/InputMethod/Key.h                                           \
     Utility/Widgets/InputMethod/KeyBoardPanel.h                                 \
@@ -751,9 +735,6 @@ HEADERS +=                                                                      
     Utility/Widgets/ExportDataWidget.h                                          \
     Utility/Widgets/FreezeTableWidget.h                                         \
     Utility/Widgets/IButton.h                                                   \
-    Utility/Widgets/IDropList.h                                                 \
-    Utility/Widgets/ILabel.h                                                    \
-    Utility/Widgets/IListWidget.h                                               \
     Utility/Widgets/IMessageBox.h                                               \
     Utility/Widgets/MessageBox.h                                                \
     Utility/Widgets/IPrograssBar.h                                              \
@@ -822,7 +803,6 @@ HEADERS +=                                                                      
     Components/Alarm/AlarmStateMachine/AlarmOffState.h                          \
     Components/Alarm/AlarmStateMachine/AlarmAudioOffState.h                     \
     Components/Alarm/AlarmStateMachine/AlarmResetState.h                        \
-    Components/Alarm/Widgets/AlarmInfoPopListView.h                             \
     Components/Alarm/Widgets/AlarmLimitMenuContent.h                            \
     Components/Alarm/Widgets/AlarmLimitWindow.h                                 \
     Components/Alarm/Widgets/AlarmStatusWidget.h                                \
@@ -852,12 +832,10 @@ HEADERS +=                                                                      
     Components/PatientData/RescueDataListWidget.h                               \
     Components/PatientData/RescueDataListNewWidget.h                            \
     Components/PatientData/RescueDataDefine.h                                   \
-    Components/PatientData/RescueDataExportWidget.h                             \
     Components/PatientData/TrendCache.h                                         \
     Components/PatientData/TrendCacheInterface.h                                \
     Components/PatientData/TrendDataSymbol.h                                    \
     Components/PatientData/TrendDataDefine.h                                    \
-    Components/PatientData/RescueDataDeleteWidget.h                             \
     Components/PatientData/RescueDataDeleteWindow.h                             \
     Components/PatientData/TrendDataStorageManager.h                            \
     Components/PatientData/TrendDataStorageManagerInterface.h                   \
@@ -954,7 +932,7 @@ HEADERS +=                                                                      
     Components/NetworkManager/NetworkManager.h                                  \
     Components/NetworkManager/WpaCtrl/WpaCtrl.h                                 \
     Components/NetworkManager/Widgets/LabeledLabel.h                            \
-    Components/NetworkManager/Widgets/WiFiProfileEditor.h                       \
+    Components/NetworkManager/Widgets/WiFiProfileInfo.h                         \
     Components/NetworkManager/Widgets/WiFiProfileWindow.h                       \
     Components/NetworkManager/Widgets/WiFiProfileEditorWindow.h                 \
     Components/Maintain/UserMaintain/AlarmMaintainSymbol.h                      \
@@ -1194,7 +1172,6 @@ DEPENDPATH +=                                                                   
     Utility/Widgets                                                             \
     Utility/Widgets/Base                                                        \
     Utility/Widgets/Base/KineticScroller                                        \
-    Utility/Widgets/IComboList                                                  \
     Utility/Widgets/Waveform                                                    \
     Utility/Widgets/InputMethod                                                 \
     Utility/Widgets/OxyCRGWidget                                                \
@@ -1306,7 +1283,6 @@ INCLUDEPATH +=                                                                  
     Utility/Widgets                                                             \
     Utility/Widgets/Base                                                        \
     Utility/Widgets/Base/KineticScroller                                        \
-    Utility/Widgets/IComboList                                                  \
     Utility/Widgets/Waveform                                                    \
     Utility/Widgets/InputMethod                                                 \
     Utility/Widgets/OxyCRGWidget                                                \

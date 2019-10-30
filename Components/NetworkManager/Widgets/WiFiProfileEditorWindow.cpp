@@ -12,7 +12,6 @@
 
 #include <QRegExp>
 #include "LabelButton.h"
-#include "IComboList.h"
 #include "LanguageManager.h"
 #include "FontManager.h"
 #include "WindowManager.h"
@@ -30,77 +29,6 @@
 #define MAX_IP_STRING_LENGTH 15
 #define DEFAULT_WIDGET_WIDTH 540
 
-/***************************************************************************************************
- * constructor
- **************************************************************************************************/
-WiFiProfileWindowInfo::WiFiProfileWindowInfo():
-    staticIp(QString::fromLatin1("0.0.0.0")),
-    defaultGateway(QString::fromLatin1("0.0.0.0")),
-    subnetMask(QString::fromLatin1("255.255.255.0")),
-    preferedDNS(QString::fromLatin1("0.0.0.0")),
-    alternateDNS(QString::fromLatin1("0.0.0.0")),
-    authType(Wpa_psk),
-    isStatic(false)
-{
-}
-
-/***************************************************************************************************
- * check whether a ip string is valid
- **************************************************************************************************/
-static bool isIpStrValid(const QString &ipStr)
-{
-    QRegExp reg("^(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\."
-                "(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\."
-                "(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\."
-                "(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])$");
-    return reg.exactMatch(ipStr);
-}
-
-/***************************************************************************************************
- * copy constructor
- **************************************************************************************************/
-WiFiProfileWindowInfo::WiFiProfileWindowInfo(const WiFiProfileWindowInfo &other)
-    : profileName(other.profileName), ssid(other.ssid), securityKey(other.securityKey),
-      staticIp(other.staticIp), defaultGateway(other.defaultGateway), subnetMask(other.subnetMask),
-      preferedDNS(other.preferedDNS), alternateDNS(other.alternateDNS), authType(other.authType),
-      isStatic(other.isStatic)
-{
-}
-
-/*****************************************#include "Utility.h"**********************************************************
- * assignment operation override
- **************************************************************************************************/
-WiFiProfileWindowInfo &WiFiProfileWindowInfo::operator=(const WiFiProfileWindowInfo &other)
-{
-    profileName = other.profileName;
-    ssid = other.ssid;
-    securityKey = other.securityKey;
-    staticIp = other.staticIp;
-    defaultGateway = other.defaultGateway;
-    subnetMask = other.subnetMask;
-    preferedDNS = other.preferedDNS;
-    alternateDNS = other.alternateDNS;
-    authType = other.authType;
-    isStatic = other.isStatic;
-
-    return *this;
-}
-
-/***************************************************************************************************
- * validate the profile, return ture if valid
- **************************************************************************************************/
-bool WiFiProfileWindowInfo::isValid() const
-{
-    if (!isStatic)
-    {
-        return !profileName.isEmpty() && !ssid.isEmpty() && authType >= Open && authType <= Wpa2_psk;
-    }
-
-    return !profileName.isEmpty() && !ssid.isEmpty() && authType >= Open && authType <= Wpa2_psk
-           && isIpStrValid(staticIp) && isIpStrValid(defaultGateway) && isIpStrValid(subnetMask)
-           && isIpStrValid(preferedDNS) && isIpStrValid(alternateDNS);
-}
-
 
 class WiFiProfileEditorWindowPrivate
 {
@@ -111,7 +39,7 @@ public:
           securityKeyBtn(NULL), networkSettingComboL(NULL), staticIpBtn(NULL), defaultGatewayBtn(NULL),
           subnetMaskBtn(NULL), preferedDNSBtn(NULL), alternateDNSBtn(NULL), cancelBtn(NULL), commitBtn(NULL) {}
 
-    void init(const WiFiProfileWindowInfo &info);
+    void init(const WiFiProfileInfo &info);
     void onSwitch(int index);
     void onClick();
     void editIpAddress();
@@ -138,7 +66,7 @@ public:
 /***************************************************************************************************
  * init, do the layout job
  **************************************************************************************************/
-void WiFiProfileEditorWindowPrivate::init(const WiFiProfileWindowInfo &profile)
+void WiFiProfileEditorWindowPrivate::init(const WiFiProfileInfo &profile)
 {
     Q_Q(WiFiProfileEditorWindow);
 
@@ -180,7 +108,7 @@ void WiFiProfileEditorWindowPrivate::init(const WiFiProfileWindowInfo &profile)
     layout->addWidget(label, 1, 2);
     securityKeyBtn = new Button(profile.securityKey);
     securityKeyBtn->setButtonStyle(Button::ButtonTextOnly);
-    if (profile.authType == WiFiProfileWindowInfo::Open)
+    if (profile.authType == WiFiProfileInfo::Open)
     {
         securityKeyBtn->setEnabled(false);
     }
@@ -277,7 +205,7 @@ void WiFiProfileEditorWindowPrivate::onSwitch(int index)
     }
     else if (sender == authTypeComboL)
     {
-        if (authTypeComboL->currentIndex() == WiFiProfileWindowInfo::Open)
+        if (authTypeComboL->currentIndex() == WiFiProfileInfo::Open)
         {
             securityKeyBtn->setText(QString());
             securityKeyBtn->setEnabled(false);
@@ -306,7 +234,7 @@ void WiFiProfileEditorWindowPrivate::editIpAddress()
     englishPanel.setInitString(sender->text());
     englishPanel.setSpaceEnable(false);
     englishPanel.setBtnEnable("[0-9.]");
-    englishPanel.setCheckValueHook(isIpStrValid);
+    englishPanel.setCheckValueHook(WiFiProfileInfo::isIpStrValid);
 
     if (sender == staticIpBtn)
     {
@@ -401,8 +329,8 @@ void WiFiProfileEditorWindowPrivate::onCommit()
         return;
     }
 
-    if (authTypeComboL->currentIndex() == WiFiProfileWindowInfo::Wpa2_psk
-            || authTypeComboL->currentIndex() == WiFiProfileWindowInfo::Wpa_psk)
+    if (authTypeComboL->currentIndex() == WiFiProfileInfo::Wpa2_psk
+            || authTypeComboL->currentIndex() == WiFiProfileInfo::Wpa_psk)
     {
         int keylen = securityKeyBtn->text().length();
         if (keylen < 8 || keylen >= 64)
@@ -419,7 +347,7 @@ void WiFiProfileEditorWindowPrivate::onCommit()
 /***************************************************************************************************
  * constructor
  **************************************************************************************************/
-WiFiProfileEditorWindow::WiFiProfileEditorWindow(const WiFiProfileWindowInfo &profile)
+WiFiProfileEditorWindow::WiFiProfileEditorWindow(const WiFiProfileInfo &profile)
     : Dialog(),
       d_ptr(new WiFiProfileEditorWindowPrivate(this))
 {
@@ -449,13 +377,13 @@ WiFiProfileEditorWindow::~WiFiProfileEditorWindow()
 /***************************************************************************************************
  * getProfileInfo, get the edit result
  **************************************************************************************************/
-WiFiProfileWindowInfo WiFiProfileEditorWindow::getProfileInfo() const
+WiFiProfileInfo WiFiProfileEditorWindow::getProfileInfo() const
 {
     Q_D(const WiFiProfileEditorWindow);
-    WiFiProfileWindowInfo profile;
+    WiFiProfileInfo profile;
     profile.profileName = d->profileNameBtn->text();
     profile.ssid = d->ssidBtn->text();
-    profile.authType = (WiFiProfileWindowInfo::AuthenticationType)d->authTypeComboL->currentIndex();
+    profile.authType = (WiFiProfileInfo::AuthenticationType)d->authTypeComboL->currentIndex();
     profile.securityKey = d->securityKeyBtn->text();
     profile.isStatic = d->networkSettingComboL->currentIndex();
     if (profile.isStatic)

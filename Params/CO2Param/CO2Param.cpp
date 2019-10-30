@@ -22,7 +22,6 @@
 #include "RESPDupParam.h"
 #include "SoftKeyManager.h"
 #include "QApplication"
-#include "ComboListPopup.h"
 #include "LayoutManager.h"
 #include "OxyCRGCO2WaveWidget.h"
 #include "AlarmSourceManager.h"
@@ -77,7 +76,7 @@ public:
      * @param respTrend
      * @param respWave
      */
-    void getCO2RESPWins(QString &co2Trend, QString &co2Wave, QString &respTrend, QString &respWave);
+    void getCO2RESPWins(QString &co2Trend, QString &co2Wave, QString &respTrend, QString &respWave);  /* NOLINT */
 
     CO2Param *q_ptr;
     CO2ProviderIFace *provider;
@@ -164,7 +163,7 @@ void CO2ParamPrivate::setWaveformZoom(CO2DisplayZoom zoom)
         waveWidget->setRuler(zoom);
         break;
 
-    case CO2_DISPLAY_ZOOM_8: // 0～8/15范围，加14为最大余数，保证完全显示波形。
+    case CO2_DISPLAY_ZOOM_8:  // 0～8/15范围，加14为最大余数，保证完全显示波形。
         waveWidget->setValueRange(0, (provider->getCO2MaxWaveform() * 8 + 19) / 20);
         waveWidget->setRuler(zoom);
         break;
@@ -1151,7 +1150,6 @@ CO2Param::CO2Param()
     }
     else if (UNIT_KPA)
     {
-
         path += Unit::getSymbol(UNIT_KPA);
     }
     path += "|";

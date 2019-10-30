@@ -212,10 +212,6 @@ static void _initComponents(void)
     alarmStateMachine.getInstance();
     alarmStateMachine.start();
 
-    // 数据管理。
-    rescueDataExportWidget.construction();
-    rescueDataDeleteWidget.construction();
-
     // U盘管理
     usbManager.getInstance();
     // U盘数据储存
@@ -711,9 +707,6 @@ void deleteObjects(void)
     deleteKeyActionManager();
 
     deletepMessageBox();
-
-    deleteRescueDataExportWidget();
-    deleteRescueDataDeleteWidget();
 
 //    deleteNetworkManager();
     deleteUsbManager();

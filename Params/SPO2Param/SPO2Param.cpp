@@ -18,7 +18,6 @@
 #include "WaveformCache.h"
 #include "ECGDupParam.h"
 #include "SystemManager.h"
-#include "ComboListPopup.h"
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"
 #include <QTimer>
@@ -906,7 +905,8 @@ void SPO2Param::clearCCHDData(bool isCleanup)
     {
         if (!isCleanup)
         {
-            if (_cchdDataList.count() > 3 || _cchdDataList.last().result == Positive || _cchdDataList.last().result == Negative)
+            if (_cchdDataList.count() > 3 || _cchdDataList.last().result == Positive
+                    || _cchdDataList.last().result == Negative)
             {
                 _cchdDataList.clear();
             }
@@ -989,7 +989,8 @@ SPO2Param::SPO2Param()
 
     QTimer::singleShot(2000, this, SLOT(checkSelftest()));
 
-    connect(UpgradeManager::getInstance(), SIGNAL(upgradeT5ModuleCompleted()), this, SLOT(onUpgradeT5ModuleCompleted()));
+    connect(UpgradeManager::getInstance(), SIGNAL(upgradeT5ModuleCompleted()),
+            this, SLOT(onUpgradeT5ModuleCompleted()));
     connect(&tempParam, SIGNAL(tempReset()), this, SLOT(onTempReset()));
 }
 

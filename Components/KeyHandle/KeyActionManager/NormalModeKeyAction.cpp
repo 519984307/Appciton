@@ -21,7 +21,6 @@
 #include "SoftKeyManager.h"
 #include "ECGParam.h"
 #include "WindowManager.h"
-#include "ComboListPopup.h"
 #include "SystemManager.h"
 #include "SoundManager.h"
 #include "SystemAlarm.h"

@@ -22,8 +22,7 @@
 #endif
 #include "NetworkDefine.h"
 #include "WpaCtrl.h"
-
-class WiFiProfileInfo;
+#include "WiFiProfileInfo.h"
 
 /***************************************************************************************************
  * 网络连接管理类，支持有线/WiFi两种网络，暂不支持移动数据连接
@@ -130,5 +129,5 @@ Q_DECLARE_METATYPE(NetworkType);
 #define networkManager (NetworkManager::construction())
 #define deleteNetworkManager() (delete NetworkManager::_selfObj)
 
-#endif // NETWORKMANAGER_H
+#endif  // NETWORKMANAGER_H
 

@@ -58,8 +58,6 @@
 #include "ParamDataStorageManager.h"
 #include "TrendDataStorageManager.h"
 #include "TrendRescueRangePrint.h"
-#include "RescueDataExportWidget.h"
-#include "RescueDataDeleteWidget.h"
 
 
 #include "EventStorageManager.h"

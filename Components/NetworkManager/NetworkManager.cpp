@@ -10,20 +10,19 @@
 
 
 #include <QTimerEvent>
-#include "Debug.h"
-#include "NetworkManager.h"
 #include "IConfig.h"
 #include "ConfigManager.h"
 #include <QThread>
-#include "WiFiProfileEditor.h"
 #include <QFile>
 #include <sys/types.h>
 #include <signal.h>
 #include "PatientManager.h"
 #include "SystemManager.h"
+#include "Debug.h"
+#include "NetworkManager.h"
 
-#define TIMER_INTERVAL     (1000) // 1s
-#define AUTO_START_WIFI_TIME    (5*1000) // auto start wifi after 5s from start up if the wifi is configured on
+#define TIMER_INTERVAL     (1000)   // 1s
+#define AUTO_START_WIFI_TIME    (5*1000)    // auto start wifi after 5s from start up if the wifi is configured on
 #define WIFI_UDHCPC_PID_FILE "/var/run/udhcpc_wifi.pid"
 #define RESOLV_CONF_FILE "/etc/resolv.conf"
 
@@ -136,7 +135,6 @@ void NetworkManager::_closeNetwork(NetworkType type)
  **************************************************************************************************/
 void NetworkManager::setNetworkType(NetworkType type)
 {
-
     if (_netType == type)
     {
         return;
@@ -391,7 +389,8 @@ void NetworkManager::connectWiFiProfile(const WiFiProfileInfo &profile)
                 qdebug("set ssid failed.");
                 return;
             }
-            if (_wpaCtrl->setNetworkParam(id, "key_mgmt", authTypeToString(profile.authType).toAscii().constData(), false))
+            if (_wpaCtrl->setNetworkParam(id, "key_mgmt",
+                                          authTypeToString(profile.authType).toAscii().constData(), false))
             {
                 qdebug("set key_mgmt failed.");
                 return;
@@ -406,7 +405,7 @@ void NetworkManager::connectWiFiProfile(const WiFiProfileInfo &profile)
             }
             else if (profile.authType == WiFiProfileInfo::Open)
             {
-                // TODO
+                /* TODO */
             }
 
             _wpaCtrl->disableNetwork(idStr);
@@ -516,12 +515,12 @@ void NetworkManager::_onWifiApConnected(const QString &ssid)
         }
         QString cmdIpconfig = QString("ifconfig %1 %2 netmask %3").arg(_getInterfaceName(NETWORK_WIFI)).arg(
                                   _curProfile.staticIp).arg(_curProfile.subnetMask);
-        QString cmdRoute = QString("route add default gw %1 dev %2").arg(_curProfile.defaultGateway).arg(_getInterfaceName(
-                               NETWORK_WIFI));
+        QString cmdRoute = QString("route add default gw %1 dev %2").arg(_curProfile.defaultGateway).arg(
+                    _getInterfaceName(NETWORK_WIFI));
 
         qdebug("add static ip...");
         QProcess::execute(cmdIpconfig);
-        QProcess::execute("route del default"); // delete exists default gw
+        QProcess::execute("route del default");  // delete exists default gw
         QProcess::execute(cmdRoute);
 
         QFile resovFile(RESOLV_CONF_FILE);
@@ -548,9 +547,11 @@ void NetworkManager::_onWifiApConnected(const QString &ssid)
         }
         else
         {
-            // start a new dhcpc process, if get the ip address successfully, udhcpc will create a deamon process and exit, the daemon
-            // process will handle the renew issue. Otherwise, udhcpc will loop until get the ip.
-            QProcess::startDetached(QString("udhcpc -i %1 -p %2 ").arg(_getInterfaceName(NETWORK_WIFI)).arg(WIFI_UDHCPC_PID_FILE));
+            // start a new dhcpc process, if get the ip address successfully, udhcpc will create a deamon
+            // process and exit, the daemon process will handle the renew issue.
+            // Otherwise, udhcpc will loop until get the ip.
+            QProcess::startDetached(QString("udhcpc -i %1 -p %2 ").arg(_getInterfaceName(NETWORK_WIFI))
+                                    .arg(WIFI_UDHCPC_PID_FILE));
         }
     }
 
@@ -607,7 +608,7 @@ void NetworkManager::timerEvent(QTimerEvent *e)
         timeCounter = -1;
         if (_wpaCtrl == NULL && isWifiTurnOn() && systemManager.isSupport(CONFIG_WIFI))
         {
-            // TODO: connect to last profile
+            /* TODO: connect to last profile */
             // this->connectWiFiProfile(WiFiProfileMenuContent::getInstance()->getCurrentWifiProfile());
         }
     }
