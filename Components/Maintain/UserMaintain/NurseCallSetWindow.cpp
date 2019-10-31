@@ -123,7 +123,7 @@ NurseCallSetWindow::NurseCallSetWindow()
     btn->setProperty("Item", qVariantFromValue(itemID));
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
     d_ptr->btns.insert(NurseCallSetWindowPrivate::ALARM_LEVEL_MED, btn);
-    label = new QLabel(trs("Med"));
+    label = new QLabel(trs("Medium"));
     hLayout->addWidget(btn, 1);
     hLayout->addWidget(label, 1);
     hLayout->addStretch(2);
