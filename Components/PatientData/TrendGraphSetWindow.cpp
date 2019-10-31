@@ -69,7 +69,7 @@ void TrendGraphSetWindow::setCurParam(QList<SubParamID> subList)
             item->sid = sid;
             ParamID pid = paramInfo.getParamID(sid);
             UnitType type = paramManager.getSubParamUnit(pid, sid);
-            ParamRulerConfig config = trendGraphConfig.getParamRulerConfig(sid, type);
+            ParamRulerConfig config = TrendGraphConfig::getParamRulerConfig(sid, type);
             QString name = paramInfo.getSubParamName(sid);
             if (sid == SUB_PARAM_ETCO2)
             {

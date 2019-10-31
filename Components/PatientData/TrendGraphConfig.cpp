@@ -12,18 +12,7 @@
 #include "IConfig.h"
 
 TrendGraphConfig::TrendGraphConfig()
-    : QObject()
 {
-}
-
-TrendGraphConfig &TrendGraphConfig::getInstance()
-{
-    static TrendGraphConfig *instance = NULL;
-    if (instance == NULL)
-    {
-        instance = new TrendGraphConfig();
-    }
-    return *instance;
 }
 
 ParamRulerConfig TrendGraphConfig::getParamRulerConfig(SubParamID subParamId, UnitType unit)

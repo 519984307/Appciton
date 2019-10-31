@@ -51,13 +51,13 @@ void TrendSubWaveWidget::setWidgetParam(SubParamID id, TrendGraphType type)
     ParamID paramId = paramInfo.getParamID(_id);
     UnitType unitType = paramManager.getSubParamUnit(paramId, _id);
     UnitType defUnitType = paramInfo.getUnitOfSubParam(_id);
-    ParamRulerConfig config = trendGraphConfig.getParamRulerConfig(_id, unitType);
+    ParamRulerConfig config = TrendGraphConfig::getParamRulerConfig(_id, unitType);
     _rulerY.max = config.upRuler;
     _rulerY.min = config.downRuler;
     _rulerY.scale = config.scale;
     if (unitType != defUnitType)
     {
-        ParamRulerConfig defConfig = trendGraphConfig.getParamRulerConfig(_id, defUnitType);
+        ParamRulerConfig defConfig = TrendGraphConfig::getParamRulerConfig(_id, defUnitType);
         _valueY.scale = defConfig.scale;
         _valueY.max = Unit::convert(defUnitType, unitType, static_cast<double>(config.upRuler) / config.scale,
                                     co2Param.getBaro()).toDouble() * _valueY.scale;
@@ -150,7 +150,7 @@ void TrendSubWaveWidget::setRulerRange(int down, int up, int scale)
         _valueY.max = _rulerY.max;
         _valueY.min = _rulerY.min;
     }
-    trendGraphConfig.setParamRulerConfig(_id, unit, _rulerY.min, _rulerY.max);
+    TrendGraphConfig::setParamRulerConfig(_id, unit, _rulerY.min, _rulerY.max);
     update();
 }
 
@@ -786,7 +786,7 @@ void TrendSubWaveWidget::_autoRulerCal()
     ParamID paramId = paramInfo.getParamID(_id);
     UnitType unit = paramManager.getSubParamUnit(paramId, _id);
     UnitType defUnit = paramInfo.getUnitOfSubParam(_id);
-    ParamRulerConfig config = trendGraphConfig.getParamRulerConfig(_id, defUnit);
+    ParamRulerConfig config = TrendGraphConfig::getParamRulerConfig(_id, defUnit);
     int range = _valueY.max - _valueY.min;
     if (_valueY.min < config.minDownRuler)
     {
@@ -810,7 +810,7 @@ void TrendSubWaveWidget::_autoRulerCal()
         _rulerY.max = _valueY.max;
         _rulerY.min = _valueY.min;
     }
-    trendGraphConfig.setParamRulerConfig(_id, unit,
+    TrendGraphConfig::setParamRulerConfig(_id, unit,
                                     _rulerY.min,
                                     _rulerY.max);
 }

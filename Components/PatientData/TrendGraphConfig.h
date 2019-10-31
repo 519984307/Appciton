@@ -9,7 +9,6 @@
  **/
 
 #pragma once
-#include <QObject>
 #include "ParamInfo.h"
 
 struct ParamRulerConfig
@@ -27,11 +26,10 @@ struct ParamRulerConfig
     int scale;
 };
 
-class TrendGraphConfig : public QObject
+class TrendGraphConfig
 {
-    Q_OBJECT
 public:
-    static TrendGraphConfig &getInstance();
+    TrendGraphConfig();
 
     /**
      * @brief getParamRulerConfig 获取参数默认标尺配置
@@ -39,7 +37,7 @@ public:
      * @param unit
      * @return
      */
-    ParamRulerConfig getParamRulerConfig(SubParamID subParamId, UnitType unit);
+    static ParamRulerConfig getParamRulerConfig(SubParamID subParamId, UnitType unit);
 
     /**
      * @brief setParamRulerConfig 设置参数默认标尺配置
@@ -48,10 +46,5 @@ public:
      * @param low
      * @param high
      */
-    void setParamRulerConfig(SubParamID subParamID, UnitType unit, int low, int high);
-
-private:
-    TrendGraphConfig();
+    static void setParamRulerConfig(SubParamID subParamID, UnitType unit, int low, int high);
 };
-
-#define trendGraphConfig TrendGraphConfig::getInstance()
