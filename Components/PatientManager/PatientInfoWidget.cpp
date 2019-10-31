@@ -100,8 +100,9 @@ void PatientInfoWidget::mousePressEvent(QMouseEvent *e)
 
 void PatientInfoWidget::_releaseHandle(IWidget *iWidget)
 {
-    if (iWidget == NULL)
+    if (iWidget == NULL || _stack->currentIndex() == 1)
     {
+        // 报警状态下，不可点击进入病人信息
         return;
     }
 
