@@ -59,7 +59,7 @@ static KeyActionDesc _baseKeys[] =
     KeyActionDesc("", "AlarmReset", "AlarmResetSoftkey.png", SoftkeyActionBase::alarmReset),
     KeyActionDesc("", "AlarmPause", "AlarmPauseSoftkey.png", SoftkeyActionBase::alarmPause),
     KeyActionDesc("", "Print", "manualTirgger.png", SoftkeyActionBase::manualTirgger),
-    KeyActionDesc("", "NIBP", "NIBPMaitain.png", SoftkeyActionBase::nibpMeasure),
+    KeyActionDesc("", "NIBP", "NIBPMeasure.png", SoftkeyActionBase::nibpMeasure),
     KeyActionDesc("", "Freeze", "freeze.png", SoftkeyActionBase::freeze),
 #endif
     KeyActionDesc("", "ECGCalcLead", "LeadSelection.png", SoftkeyActionBase::ecgLeadChange),
