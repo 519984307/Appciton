@@ -31,7 +31,7 @@ void SoftwareVersionWindow::layoutExec()
     QLabel *label = new QLabel;
     QPixmap picSrc = QPixmap("/usr/local/nPM/icons/David.png");
     label->setPixmap(picSrc.scaled(picSrc.width() / 2.5, picSrc.height() / 2.5, Qt::KeepAspectRatio));
-    glayout->addWidget(label, 0, 0, 2, 1, Qt::AlignCenter);
+    glayout->addWidget(label, 0, 0, 3, 1, Qt::AlignCenter);
     glayout->setColumnStretch(0, 1);
 
     label = new QLabel(QString("%1:").arg(trs("ReleaseVersion")));
