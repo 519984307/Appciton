@@ -20,6 +20,8 @@
 #include <QFile>
 #include <QTextStream>
 #include "FontManager.h"
+#include <QApplication>
+#include <QDesktopWidget>
 
 #define HARDWARE_VERSION ("/sys/bus/iio/devices/iio:device0/in_voltage7_raw")
 #define HW_VER_TOTAL_NUMBERS (10)
@@ -535,19 +537,19 @@ void FactoryVersionInfoPrivate::loadOptions()
 
     // screen size
     str.clear();
-    machineConfig.getStrValue("ScreenSize", str);
-    str += " ";
-    str += trs("Inch");
+    int index = 0;
+    machineConfig.getNumValue("ScreenInfoEnable", index);
+    QStringList screenInfoList = machineConfig.getChildNodeNameList("ScreenInfo");
+    str = trs(screenInfoList.at(index));
     labs[ITEM_LAB_SCREEN_INCH]->setText(str);
 
     // screen resolution
     str.clear();
-    QString width;
-    machineConfig.getStrValue("ScreenWidth", width);
+    QRect rect = QApplication::desktop()->screenGeometry();
+    QString width = QString::number(rect.width());
     str += width;
     str += "x";
-    QString height;
-    machineConfig.getStrValue("ScreenHeight", height);
+    QString height = QString::number(rect.height());
     str += height;
     labs[ITEM_LAB_SCREEN_RESOLUTION]->setText(str);
 }
