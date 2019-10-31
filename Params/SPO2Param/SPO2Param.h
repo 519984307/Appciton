@@ -162,7 +162,11 @@ public:
     // 是否超限报警
     void noticeLimitAlarm(SubParamID id, bool isAlarm);
 
-    // 有效状态
+    /**
+     * @brief setValidStatus 设置波形有效状态
+     * @param isValid   是否有效，true：波形将画直线 false：波形将画虚线
+     * @param isPlugIn  是否是插件模块
+     */
     void setValidStatus(bool isValid, bool isPlugIn = false);
     bool isValid(bool isPlugIn = false);
     bool isConnected(bool isPlugin);

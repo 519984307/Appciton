@@ -235,15 +235,6 @@ void SPO2Param::handDemoWaveform(WaveformID id, short data)
 
     if (id == WAVE_SPO2)
     {
-        setValidStatus(true);
-    }
-    else if (id == WAVE_SPO2_2)
-    {
-        setValidStatus(true, true);
-    }
-
-    if (id == WAVE_SPO2)
-    {
         addWaveformData(data, waveFlag);
     }
     else if (id == WAVE_SPO2_2)
@@ -872,7 +863,7 @@ void SPO2Param::addWaveformData(short wave, unsigned char waveFlag, bool isPlugI
     flag = flag | waveFlag;
     if (!isPlugIn)
     {
-        if (!d_ptr->isValid)
+        if (!isValid())
         {
             flag = flag | 0x4000;
             if (NULL != d_ptr->trendWidget)
@@ -896,7 +887,7 @@ void SPO2Param::addWaveformData(short wave, unsigned char waveFlag, bool isPlugI
     }
     else
     {
-        if (!d_ptr->plugInIsValid)
+        if (!isValid(false))
         {
             flag = flag | 0x4000;
         }
@@ -1123,6 +1114,11 @@ void SPO2Param::setValidStatus(bool isValid, bool isPlugIn)
  *************************************************************************************************/
 bool SPO2Param::isValid(bool isPlugIn)
 {
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        // 演示模式下，状态强制置为有效
+        return true;
+    }
     if (!isPlugIn)
     {
         return d_ptr->isValid;
