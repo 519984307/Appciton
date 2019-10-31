@@ -807,7 +807,7 @@ bool BLMCO2Provider::sendUpgradeCmd(unsigned char cmdId, const unsigned char *da
  *************************************************************************************************/
 BLMCO2Provider::BLMCO2Provider(const QString &name)
     : Provider(name), CO2ProviderIFace(), _status(CO2ProviderStatus()),
-      upgradeIface(NULL), _isLastSOHPaired(false)
+      upgradeIface(NULL), _isLastSOHPaired(false), co2ModelConnect(false)
 {
     UartAttrDesc portAttr(9600, 8, 'N', 1, _packetLen);
     plugInInfo.plugInType = PlugInProvider::PLUGIN_TYPE_CO2;
