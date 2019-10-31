@@ -1199,7 +1199,6 @@ DEPENDPATH +=                                                                   
     Providers/E5Provider                                                        \
     Providers/DemoProvider                                                      \
     Providers/PRT48Provider                                                     \
-    Providers/PRT72Provider                                                     \
     Providers/SystemBoardProvider                                               \
     Providers/RawData                                                           \
     Providers/S5Provider                                                        \
@@ -1308,7 +1307,6 @@ INCLUDEPATH +=                                                                  
     Providers/E5Provider                                                        \
     Providers/DemoProvider                                                      \
     Providers/PRT48Provider                                                     \
-    Providers/PRT72Provider                                                     \
     Providers/SystemBoardProvider                                               \
     Providers/RawData                                                           \
     Providers/S5Provider                                                        \
