@@ -10,14 +10,13 @@
 
 #include "Utility.h"
 #include <time.h>
-#include "Debug.h"
 #include <QTimer>
 #include <QEventLoop>
 #include <QDir>
 #include <QFileInfo>
 #include <syslog.h>
-#include <qglobal.h>
 #include <QCoreApplication>
+#include <QDebug>
 
 namespace Util
 {
@@ -49,7 +48,7 @@ quint64 systemBootTime()
     quint64 msec;
     if (clock_gettime(CLOCK_BOOTTIME, &tp))
     {
-        debug("Failed to get boottime");
+        qDebug("Failed to get boottime");
     }
     msec = tp.tv_sec * 1000 + tp.tv_nsec / 1000000;
     return msec;

@@ -28,7 +28,7 @@
 #include "AGParam.h"
 #include "ECGParam.h"
 #include "CO2Param.h"
-#include "Utility.h"
+#include "Framework/Utility/Utility.h"
 #include "LayoutManager.h"
 #include <QDebug>
 #include "RecorderManager.h"

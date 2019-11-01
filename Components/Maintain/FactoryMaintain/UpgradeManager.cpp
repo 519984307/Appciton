@@ -18,7 +18,7 @@
 #include "USBManager.h"
 #include "ParamManager.h"
 #include "Debug.h"
-#include "Utility.h"
+#include "Framework/Utility/Utility.h"
 #include <QFile>
 #include <QImage>
 #include <QApplication>

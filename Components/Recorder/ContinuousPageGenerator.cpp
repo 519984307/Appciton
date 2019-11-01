@@ -24,7 +24,7 @@
 #include "AGParam.h"
 #include "IBPParam.h"
 #include "ParamManager.h"
-#include "Utility.h"
+#include "Framework/Utility/Utility.h"
 #include "IConfig.h"
 #include "PrintSettingMenuContent.h"
 #include "LayoutManager.h"

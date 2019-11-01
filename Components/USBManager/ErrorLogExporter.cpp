@@ -15,8 +15,8 @@
 #include <QDateTime>
 #include "ErrorLogItem.h"
 #include <QApplication>
-#include "Utility.h"
 #include "LanguageManager.h"
+#include "Framework/Utility/Utility.h"
 
 ErrorLogExporter::ErrorLogExporter()
     : DataExporterBase(), _currentProgress(0)

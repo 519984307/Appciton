@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the unittest project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2019/11/1
+ **/
+
 #include "Utility.h"
 #include <stdio.h>
 
@@ -26,25 +36,25 @@ bool RunLengthEncode(const char *src, int srclen, char *dest, int *destlen)
     char lastChar = 0;
     int count = 0;
 
-    if(src == NULL || srclen <= 0 || destlen == NULL || dest == NULL)
+    if (src == NULL || srclen <= 0 || destlen == NULL || dest == NULL)
     {
         return false;
     }
 
-    while(srcIndex < srclen)
+    while (srcIndex < srclen)
     {
-        if(srcIndex == 0)
+        if (srcIndex == 0)
         {
             lastChar = src[srcIndex];
             count = 1;
         }
-        else if(lastChar == src[srcIndex] && count < 255)
+        else if (lastChar == src[srcIndex] && count < 255)
         {
-            count ++;
+            count++;
         }
         else
         {
-            if(count > RLE_DUPLICATE_COUNT || lastChar == RLE_LEAD_CHAR)
+            if (count > RLE_DUPLICATE_COUNT || lastChar == RLE_LEAD_CHAR)
             {
                 dest[destIndex++] = RLE_LEAD_CHAR;
                 dest[destIndex++] = lastChar;
@@ -52,7 +62,7 @@ bool RunLengthEncode(const char *src, int srclen, char *dest, int *destlen)
             }
             else
             {
-                for(int i = 0; i < count; i++ )
+                for (int i = 0; i < count; i++ )
                 {
                     dest[destIndex++] = lastChar;
                 }
@@ -60,11 +70,11 @@ bool RunLengthEncode(const char *src, int srclen, char *dest, int *destlen)
             lastChar = src[srcIndex];
             count = 1;
         }
-        srcIndex ++;
+        srcIndex++;
     }
 
-    //handle last byte
-    if(count > RLE_DUPLICATE_COUNT || lastChar == RLE_LEAD_CHAR)
+    // handle last byte
+    if (count > RLE_DUPLICATE_COUNT || lastChar == RLE_LEAD_CHAR)
     {
         dest[destIndex++] = RLE_LEAD_CHAR;
         dest[destIndex++] = lastChar;
@@ -72,7 +82,7 @@ bool RunLengthEncode(const char *src, int srclen, char *dest, int *destlen)
     }
     else
     {
-        for(int i = 0; i < count; i++ )
+        for (int i = 0; i < count; i++ )
         {
             dest[destIndex++] = lastChar;
         }
@@ -81,13 +91,13 @@ bool RunLengthEncode(const char *src, int srclen, char *dest, int *destlen)
     *destlen = destIndex;
 #if 0
     fprintf(stderr, "before: %x\n", srclen);
-    for(int i = 0; i< srclen; i++)
+    for (int i = 0; i< srclen; i++)
     {
         fprintf(stderr, "%02x ", src[i]);
     }
     fprintf(stderr, "\n");
     fprintf(stderr, "after: %x\n", *destlen);
-    for(int i = 0; i< *destlen; i++)
+    for (int i = 0; i< *destlen; i++)
     {
         fprintf(stderr, "%02x ", dest[i]);
     }
@@ -111,24 +121,24 @@ bool RunLengthDecode(const char *src, int srclen, char *dest, int *destlen)
     int srcIndex = 0;
     int destIndex = 0;
 
-    if(src == NULL || srclen <=0 || dest == NULL || destlen == NULL)
+    if (src == NULL || srclen <=0 || dest == NULL || destlen == NULL)
     {
         return 0;
     }
 
-    while(srcIndex < srclen)
+    while (srcIndex < srclen)
     {
-        if(src[srcIndex] == RLE_LEAD_CHAR)
+        if (src[srcIndex] == RLE_LEAD_CHAR)
         {
-            if(srcIndex + 2 >= srclen)
+            if (srcIndex + 2 >= srclen)
             {
-                //source data length not match
+                // source data length not match
                 return false;
             }
             char value = src[srcIndex + 1];
             char count = src[srcIndex + 2];
 
-            for(int i = 0; i < count; i++)
+            for (int i = 0; i < count; i++)
             {
                 dest[destIndex++] = value;
             }
@@ -145,13 +155,13 @@ bool RunLengthDecode(const char *src, int srclen, char *dest, int *destlen)
 
 #if 0
     fprintf(stderr, "before: %x\n", srclen);
-    for(int i = 0; i< srclen; i++)
+    for (int i = 0; i< srclen; i++)
     {
         fprintf(stderr, "%02x ", src[i]);
     }
     fprintf(stderr, "\n");
     fprintf(stderr, "after: %x\n", *destlen);
-    for(int i = 0; i< *destlen; i++)
+    for (int i = 0; i< *destlen; i++)
     {
         fprintf(stderr, "%02x ", dest[i]);
     }
@@ -160,4 +170,4 @@ bool RunLengthDecode(const char *src, int srclen, char *dest, int *destlen)
 
     return true;
 }
-}
+}  // namespace Util

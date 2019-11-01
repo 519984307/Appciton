@@ -16,7 +16,7 @@
 #include <ThemeManager.h>
 #include "PopupNumEditor.h"
 #include "FontManager.h"
-#include "Utility.h"
+#include "Framework/Utility/Utility.h"
 #include "SoundManagerInterface.h"
 
 #define PADDING 4
@@ -254,7 +254,8 @@ void SpinBox::paintEvent(QPaintEvent *ev)
 
         painter.setPen(pen);
         painter.setBrush(bgColor);
-        QRect r = rect.adjusted(d_ptr->m_borderWidth, d_ptr->m_borderWidth, -d_ptr->m_borderWidth, -d_ptr->m_borderWidth);
+        QRect r = rect.adjusted(d_ptr->m_borderWidth, d_ptr->m_borderWidth, -d_ptr->m_borderWidth,
+                                -d_ptr->m_borderWidth);
         painter.drawRoundedRect(r, d_ptr->m_borderRadius, d_ptr->m_borderRadius);
     }
     else

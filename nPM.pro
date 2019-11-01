@@ -6,6 +6,7 @@
 
 QT       += core gui xml network svg
 DEFINES += QT_NO_EXCEPTIONS
+CONFIG += link_prl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -129,9 +130,8 @@ DEFINES += ECG_MONITOR_NOTIFY_FILTER_OFF
 # Depending libraries
 LIBS += -ldl -lasound -lz
 
-linux-cortexa9hf-vfp-neon-gnueabi-g++ {
-    LIBS += -lts -L$$PWD/nPM/lib/
-}
+# link framework
+LIBS += -L$$PWD/Framework/lib -lFramework
 
 linux-arm-g++ {
     LIBS += -lts -L$$PWD/nPM/lib/
@@ -163,7 +163,6 @@ SOURCES +=                                                                      
     SOUP/Json/qobjecthelper.cpp                                                 \
     SOUP/Json/serializer.cpp                                                    \
     SOUP/Json/serializerrunnable.cpp                                            \
-    Utility/Utility.cpp                                                         \
     Utility/Config/Config.cpp                                                   \
     Utility/Config/XmlParser.cpp                                                \
     Utility/Config/IConfig.cpp                                                  \
@@ -256,8 +255,6 @@ SOURCES +=                                                                      
     Utility/Widgets/EventWidget/EventWaveSetWindow.cpp                          \
     Utility/Widgets/EventWidget/OxyCRGEventWindow.cpp                           \
     Utility/Widgets/EventWidget/OxyCRGEventSetWindow.cpp                        \
-    Utility/RunLengthEncode.cpp                                                 \
-    Utility/ImageQuant.cpp                                                      \
 #################################################################################
     Components/System/SystemTick.cpp                                            \
     Components/System/SystemManager.cpp                                         \
@@ -612,7 +609,6 @@ HEADERS +=                                                                      
     SOUP/Json/serializerrunnable.h                                              \
     SOUP/Json/stack.hh                                                          \
     Utility/OrderedMap.h                                                        \
-    Utility/Utility.h                                                           \
     Utility/Config/Config.h                                                     \
     Utility/Config/ConfigDefine.h                                               \
     Utility/Config/IConfig.h                                                    \
@@ -1227,6 +1223,7 @@ DEPENDPATH +=                                                                   
     Params/RESPParam/RESPWidgets                                                \
     Params/O2Param                                                              \
     Params/O2Param/O2Widgets                                                    \
+    Framework                                                                   \
 
 
 INCLUDEPATH +=                                                                  \
@@ -1335,6 +1332,7 @@ INCLUDEPATH +=                                                                  
     Params/RESPParam/RESPWidgets                                                \
     Params/O2Param                                                              \
     Params/O2Param/O2Widgets                                                    \
+    Framework                                                                   \
 
 linux-arm-g++ {
     SOURCES +=  Utility/Widgets/TSCalibrationWindow.cpp

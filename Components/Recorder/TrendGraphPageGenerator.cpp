@@ -16,7 +16,7 @@
 #include <QVector>
 #include "FontManager.h"
 #include "ParamInfo.h"
-#include "Utility.h"
+#include "Framework/Utility/Utility.h"
 #include "AlarmConfig.h"
 #include "TimeDate.h"
 #include "LanguageManager.h"
@@ -43,7 +43,7 @@ public:
           endTime(0),
           deltaT(0),
           curDrawnGraph(0),
-          marginLeft(20 * RECORDER_PIXEL_PER_MM) // 2 cm
+          marginLeft(20 * RECORDER_PIXEL_PER_MM)  // 2 cm
     {}
 
     RecordPage *createGraphPage();
@@ -184,7 +184,8 @@ RecordPage *TrendGraphPageGeneratorPrivate::drawGraphPage()
         RecordPageGenerator::drawTrendGraph(&painter, axisInfo, trendGraphInfos.at(curDrawnGraph));
 
         // draw event symbol
-        RecordPageGenerator::drawTrendGraphEventSymbol(&painter, axisInfo, trendGraphInfos.at(curDrawnGraph), eventList);
+        RecordPageGenerator::drawTrendGraphEventSymbol(&painter, axisInfo,
+                                                       trendGraphInfos.at(curDrawnGraph), eventList);
 
         curDrawnGraph++;
 
@@ -199,7 +200,8 @@ RecordPage *TrendGraphPageGeneratorPrivate::drawGraphPage()
         GraphAxisInfo axisInfo = getAxisInfo(page, trendGraphInfos.at(curDrawnGraph), false);
         RecordPageGenerator::drawGraphAxis(&painter, axisInfo);
         RecordPageGenerator::drawTrendGraph(&painter, axisInfo, trendGraphInfos.at(curDrawnGraph));
-        RecordPageGenerator::drawTrendGraphEventSymbol(&painter, axisInfo, trendGraphInfos.at(curDrawnGraph), eventList);
+        RecordPageGenerator::drawTrendGraphEventSymbol(&painter, axisInfo,
+                                                       trendGraphInfos.at(curDrawnGraph), eventList);
         curDrawnGraph++;
     }
 

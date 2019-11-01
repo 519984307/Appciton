@@ -18,7 +18,7 @@
 #include "EventStorageManager.h"
 #include "ParamManager.h"
 #include "AlarmConfig.h"
-#include "Utility.h"
+#include "Framework/Utility/Utility.h"
 #include "WaveformCache.h"
 #include "ECGParam.h"
 #include "FontManager.h"
@@ -359,10 +359,10 @@ public:
     int ecgGain;
 };
 
-EventPageGenerator::EventPageGenerator(IStorageBackend *backend, int eventIndex, const PatientInfo &patientInfo, int gain, QObject *parent)
+EventPageGenerator::EventPageGenerator(IStorageBackend *backend, int eventIndex,
+                                       const PatientInfo &patientInfo, int gain, QObject *parent)
     : RecordPageGenerator(parent), d_ptr(new EventPageGeneratorPrivate(this))
 {
-
     d_ptr->backend = backend;
     d_ptr->eventIndex = eventIndex;
     d_ptr->patientInfo = patientInfo;

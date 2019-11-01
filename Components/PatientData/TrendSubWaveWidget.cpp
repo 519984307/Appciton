@@ -21,7 +21,7 @@
 #include "IConfig.h"
 #include "TrendDataStorageManager.h"
 #include "LanguageManager.h"
-#include "Utility.h"
+#include "Framework/Utility/Utility.h"
 
 #define GRAPH_POINT_NUMBER          120
 #define DATA_INTERVAL_PIXEL         5
@@ -457,8 +457,10 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
         QRect downRulerRect(_info.xHead / 4, _info.yBottom - 10, _info.xHead / 3 * 2, SCALE_VALUE_AREA_HEIGHT);
         QFont textfont = fontManager.textFont(fontManager.getFontSize(3));
         barPainter.setFont(textfont);
-        barPainter.drawText(upRulerRect, Qt::AlignRight | Qt::AlignTop, Util::convertToString(_valueY.max, _valueY.scale));
-        barPainter.drawText(downRulerRect, Qt::AlignRight | Qt::AlignTop, Util::convertToString(_valueY.min, _valueY.scale));
+        barPainter.drawText(upRulerRect, Qt::AlignRight | Qt::AlignTop,
+                            Util::convertToString(_valueY.max, _valueY.scale));
+        barPainter.drawText(downRulerRect, Qt::AlignRight | Qt::AlignTop,
+                            Util::convertToString(_valueY.min, _valueY.scale));
 
         QFont font;
         font.setPixelSize(15);
@@ -497,8 +499,10 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     QRect downRulerRect(_info.xHead / 4, _info.yBottom - 10, _info.xHead / 3 * 2, SCALE_VALUE_AREA_HEIGHT);
     QFont textfont = fontManager.textFont(fontManager.getFontSize(3));
     barPainter.setFont(textfont);
-    barPainter.drawText(upRulerRect, Qt::AlignRight | Qt::AlignTop, Util::convertToString(_valueY.max, _valueY.scale));
-    barPainter.drawText(downRulerRect, Qt::AlignRight | Qt::AlignTop, Util::convertToString(_valueY.min, _valueY.scale));
+    barPainter.drawText(upRulerRect, Qt::AlignRight | Qt::AlignTop,
+                        Util::convertToString(_valueY.max, _valueY.scale));
+    barPainter.drawText(downRulerRect, Qt::AlignRight | Qt::AlignTop,
+                        Util::convertToString(_valueY.min, _valueY.scale));
 
     QFont font;
     font.setPixelSize(15);
@@ -771,7 +775,8 @@ void TrendSubWaveWidget::_autoRulerCal()
                 if (paramId == PARAM_CO2)
                 {
                     // 单位转换
-                    v = Unit::convert(type, UNIT_PERCENT, static_cast<float>(data / 10.0), co2Param.getBaro()).toDouble();
+                    v = Unit::convert(type, UNIT_PERCENT,
+                                      static_cast<float>(data / 10.0), co2Param.getBaro()).toDouble();
                     // 计算出的数据乘上 scale
                     v = v * _valueY.scale;
                 }

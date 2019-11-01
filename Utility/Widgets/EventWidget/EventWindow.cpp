@@ -34,7 +34,7 @@
 #include "IBPSymbol.h"
 #include "IBPParam.h"
 #include "ParamManager.h"
-#include "Utility.h"
+#include "Framework/Utility/Utility.h"
 #include "FontManager.h"
 #include "ColorManager.h"
 #include <QScrollBar>

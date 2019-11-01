@@ -14,7 +14,7 @@
 #include "DataStorageDirManager.h"
 #include "TimeManager.h"
 #include "IConfig.h"
-#include "Utility.h"
+#include "Framework/Utility/Utility.h"
 #include "PatientManager.h"
 #include "SystemManager.h"
 #include "TrendCache.h"
@@ -137,7 +137,8 @@ void TrendDataStorageManagerPrivate::updateAdditionInfo()
     firstSave = false;
 }
 
-void TrendDataStorageManagerPrivate::storeShortTrendData(SubParamID subParamID, unsigned timeStamp, TrendDataType data, bool forceSave)
+void TrendDataStorageManagerPrivate::storeShortTrendData(SubParamID subParamID,
+                                    unsigned timeStamp, TrendDataType data, bool forceSave)
 {
     QMap<SubParamID, ShortTrendStorage *>::Iterator iter = shortTrends.find(subParamID);
     if (iter != shortTrends.end())
@@ -312,9 +313,13 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
 
         valueSegments.append(valueSegment);
 
-        if (subParamID == SUB_PARAM_NIBP_SYS || subParamID == SUB_PARAM_NIBP_DIA || subParamID == SUB_PARAM_NIBP_MAP)
+        if (subParamID == SUB_PARAM_NIBP_SYS || subParamID == SUB_PARAM_NIBP_DIA
+                || subParamID == SUB_PARAM_NIBP_MAP)
         {
-            // should record the nibp value when the current timestamp is equal to the nibp measurement complete timestamp
+            /*
+             * should record the nibp value when the current timestamp is equal to the nibp
+             * measurement complete timestamp
+             */
             if (t == data.lastNibpMeasureSuccessTime)
             {
                 d->storeShortTrendData(subParamID, t, valueSegment.value, true);
@@ -386,14 +391,15 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
             int valueSegmentNum = (nibpContent.count() - sizeof(TrendDataSegment)) / sizeof(TrendValueSegment);
             for (int i = 0; i < valueSegmentNum; i++)
             {
-                TrendValueSegment *segment = reinterpret_cast<TrendValueSegment *>(d->trendCacheBuff[0].data() + sizeof(TrendDataSegment)
-                                                                                   + i * sizeof(TrendValueSegment));
+                TrendValueSegment *segment = reinterpret_cast<TrendValueSegment *>(d->trendCacheBuff[0].data()
+                        + sizeof(TrendDataSegment) + i * sizeof(TrendValueSegment));
                 if (segment->subParamId == SUB_PARAM_NIBP_SYS
                         || segment->subParamId == SUB_PARAM_NIBP_DIA
                         || segment->subParamId == SUB_PARAM_NIBP_MAP)
                 {
                     // 将NIBP测量结果的报警状态赋值到之前NIBP测量结果的趋势数据中
-                    segment->alarmFlag = alertor.getAlarmSourceStatus(paramInfo.getParamName(PARAM_NIBP), static_cast<SubParamID>(segment->subParamId));
+                    segment->alarmFlag = alertor.getAlarmSourceStatus(paramInfo.getParamName(PARAM_NIBP),
+                                                                      static_cast<SubParamID>(segment->subParamId));
                     if (segment->subParamId == SUB_PARAM_NIBP_MAP)
                     {
                         break;

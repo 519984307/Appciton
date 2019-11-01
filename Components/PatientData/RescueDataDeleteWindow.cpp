@@ -18,7 +18,7 @@
 #include "LanguageManager.h"
 #include "MessageBox.h"
 #include <QEventLoop>
-#include "Utility.h"
+#include "Framework/Utility/Utility.h"
 #include "DataStorageDirManager.h"
 #include "ThemeManager.h"
 #include <QBoxLayout>

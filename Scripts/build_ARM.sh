@@ -15,7 +15,7 @@ fi
 mkdir $BUILD_DIR && cd $BUILD_DIR 
 
 # generate Makefile
-/opt/pmos/host/bin/qmake $REPO
+/opt/pmos/host/bin/qmake $REPO/Project.pro
 
 # build
 make -j4 -s
