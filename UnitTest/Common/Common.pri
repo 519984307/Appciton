@@ -3,7 +3,7 @@ QT += xml
 CONFIG += link_prl
 
 # project base dir
-PROJECT_BASE = ../../..
+PROJECT_BASE = $$PWD/../..
 
 SOURCES += $$PROJECT_BASE/Utility/Debug/Debug.cpp
 
