@@ -38,3 +38,5 @@ UI_DIR = ui
 MOC_DIR = moc
 OBJECTS_DIR = obj
 DESTDIR = $$PWD/lib
+
+QMAKE_CLEAN += -r $$DESTDIR
