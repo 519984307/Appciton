@@ -1,14 +1,18 @@
 QT += xml
 
+CONFIG += link_prl
+
 # project base dir
 PROJECT_BASE = ../../..
 
-SOURCES += $$PROJECT_BASE/Utility/Debug/Debug.cpp \
-    $$PROJECT_BASE/Utility/Utility.cpp
+SOURCES += $$PROJECT_BASE/Utility/Debug/Debug.cpp
 
-HEADERS += $$PROJECT_BASE/Utility/Debug/Debug.h \
-    $$PROJECT_BASE/Utility/Utility.h
+HEADERS += $$PROJECT_BASE/Utility/Debug/Debug.h
 
-INCLUDEPATH += $$PROJECT_BASE/Utility \
+INCLUDEPATH += \
+    $$PROJECT_BASE                                          \
+    $$PROJECT_BASE/Utility                                  \
+    $$PROJECT_BASE/Framewrok                                \
     $$PROJECT_BASE/Utility/Debug
 
+LIBS += -L$$PROJECT_BASE/Framework/lib -lFramework
