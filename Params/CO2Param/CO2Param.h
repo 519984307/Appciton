@@ -12,7 +12,7 @@
 #include <QPalette>
 #include "Param.h"
 #include "CO2Symbol.h"
-#include "UnitManager.h"
+#include "Framework/Utility/Unit.h"
 #include "AlarmDefine.h"
 
 class CO2TrendWidget;
@@ -47,10 +47,10 @@ public:
     virtual void exitDemo();
 
     // 获取可得的波形控件集。
-    virtual void getAvailableWaveforms(QStringList &waveforms,
-            QStringList &waveformShowName, int flag);
-    virtual void getTrendWindow(QString &trendWin);
-    virtual void getWaveWindow(QString &waveWin);
+    virtual void getAvailableWaveforms(QStringList &waveforms,   // NOLINT
+            QStringList &waveformShowName, int flag);            // NOLINT
+    virtual void getTrendWindow(QString &trendWin);              // NOLINT
+    virtual void getWaveWindow(QString &waveWin);                // NOLINT
 
     // 获取子参数值
     virtual short getSubParamValue(SubParamID id);

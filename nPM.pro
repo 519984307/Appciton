@@ -632,7 +632,6 @@ HEADERS +=                                                                      
     Utility/Uart/UartSocketDefine.h                                             \
     Utility/Uart/UartSocket.h                                                   \
     Utility/BaseDefine.h                                                        \
-    Utility/UnitManager.h                                                       \
     Utility/FloatHandle/FloatHandle.h                                           \
     Utility/Debug/Debug.h                                                       \
     Utility/RingBuff/RingBuff.h                                                 \

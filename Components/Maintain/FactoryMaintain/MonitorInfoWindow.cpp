@@ -22,7 +22,6 @@
 #include "TimeManager.h"
 #include <QTimer>
 #include "PowerManager.h"
-#include "UnitManager.h"
 #include <QNetworkInterface>
 
 class MonitorInfoWindowPrivate

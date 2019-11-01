@@ -14,7 +14,6 @@
 #include "LanguageManager.h"
 #include "FontManager.h"
 #include "ColorManager.h"
-#include "UnitManager.h"
 #include <QString>
 #include <QLabel>
 #include <QPalette>
@@ -108,7 +107,7 @@ protected:
 
     QString _title;                           // 趋势控制标名
 
-    void normalPalette(QPalette &psrc);
+    void normalPalette(QPalette &psrc);   // NOLINT
     QPalette alarmPalette(QPalette psrc);   // isSetName: 是否设置标题颜色
     /**
      * @brief showAlarmStatus   设置报警时状态：闪烁＋白底红字
@@ -149,7 +148,7 @@ protected:
     /**
      * @brief darkParamLimit 使得上下限颜色变暗
      */
-    void darkerPalette(QPalette &pal);
+    void darkerPalette(QPalette &pal);  // NOLINT
 
 private:
     void setWidgetPalette(QLayout *layout, QPalette psrc);

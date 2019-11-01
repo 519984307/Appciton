@@ -12,7 +12,6 @@
 #include <QMap>
 #include <QString>
 #include "ParamDefine.h"
-#include "UnitManager.h"
 #include "SystemManager.h"
 
 class Provider;
@@ -32,8 +31,8 @@ public:
     static ParamManager *_selfObj;
 
     // 将Provider和参数对象加入进来。
-    void addProvider(Provider &provider);
-    void addParam(Param &param);
+    void addProvider(Provider &provider);  // NOLINT
+    void addParam(Param &param); // NOLINT
     /**
      * @brief getProvider get a provider base on the provider name
      * @param name provider name
@@ -49,8 +48,8 @@ public:
     Param *getParam(ParamID id);
 
     // 获取系统的Params。
-    void getParams(QList<Param*> &params);
-    void getParams(QList<ParamID> &paramID);
+    void getParams(QList<Param*> &params);  // NOLINT
+    void getParams(QList<ParamID> &paramID);  // NOLINT
 
     /**
      * @brief connectParamProvider 将数据生产者和参数对象关联起来

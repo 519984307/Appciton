@@ -10,7 +10,6 @@
 
 
 #include "HalSetAGMenu.h"
-#include "UnitManager.h"
 #include "CO2Symbol.h"
 #include "ConfigManager.h"
 #include "FontManager.h"

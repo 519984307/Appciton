@@ -13,6 +13,7 @@
 #include "TrendWidget.h"
 #include <QLabel>
 #include "TEMPDefine.h"
+#include "Framework/Utility/Unit.h"
 #include <QStackedWidget>
 
 enum TempState
@@ -63,7 +64,7 @@ protected:
     /**
      * @brief darkParamLimit 使得上下限颜色变暗
      */
-    void darkerPalette(QPalette &pal);
+    void darkerPalette(QPalette &pal);  // NOLINT
 
 private slots:
     void _releaseHandle(IWidget *);
