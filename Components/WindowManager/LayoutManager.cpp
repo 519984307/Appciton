@@ -1456,6 +1456,11 @@ void LayoutManager::setUFaceType(UserFaceType type)
     {
         return;
     }
+    if (type == UFACE_MONITOR_SPO2 && !systemManager.isSupport(PARAM_SPO2))
+    {
+        // 切换血氧界面且系统不支持血氧时，强制切换为标准界面
+        type = UFACE_MONITOR_STANDARD;
+    }
 
     if (d_ptr->curUserFace != UFACE_MONITOR_SPO2 && type == UFACE_MONITOR_SPO2)
     {
