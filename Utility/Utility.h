@@ -18,13 +18,8 @@ class QPixmap;
 class QImage;
 namespace Util
 {
-#if defined(CONFIG_CAPTURE_SCREEN)
-// capture the screen
-QImage captureScreen();
-#endif
-
 // WorkerThread, use to handle time consuming jobs
-typedef long (*WorkerThreadEntry)(const QVariant &para);
+typedef QVariant (*WorkerThreadEntry)(const QVariant &para);
 class WorkerThread : public QThread
 {
     Q_OBJECT
@@ -45,7 +40,7 @@ public:
     }
 
 signals:
-    void resultReady(long result);
+    void resultReady(const QVariant &result);
 
 protected:
     void run()
@@ -88,6 +83,6 @@ void waitInEventLoop(int ms);
 void setupSysLog();
 
 // generate the kernel logo file
-bool generateKernelLogo(QFile &logoFile, const QImage &logoImage);
+bool generateKernelLogo(QFile *logoFile, const QImage &logoImage);
 
 }   // namespace Util

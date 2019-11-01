@@ -18,6 +18,7 @@
 #include "USBManager.h"
 #include "SoundManagerInterface.h"
 #include "MessageBox.h"
+#include <QDir>
 
 #if defined(CONFIG_CAPTURE_SCREEN)
 #include <QDateTime>
@@ -42,9 +43,9 @@ bool IApplication::x11EventFilter(XEvent *e)
     if (e->type == KeyPress || e->type == KeyRelease)
     {
         Qt::Key key = Qt::Key_unknown;
-        if (e->xkey.keycode == 67)
+        if (e->xkey.keycode == 70)
         {
-            key = Qt::Key_F1;
+            key = Qt::Key_F4;
         }
         else if (e->xkey.keycode == 36)
         {
@@ -173,40 +174,47 @@ bool IApplication::x11EventFilter(XEvent *e)
 #endif
 
 #ifdef CONFIG_CAPTURE_SCREEN
-static long capture(const QVariant &para)
+static QDateTime lastCaptureDatetime;
+/**
+ * @brief saveCaptureImage save the capture image
+ * @param imgData the image
+ * @return the image data if success, otherwise, return invalid data
+ */
+static QVariant saveCaptureImage(const QVariant &imgData)
 {
-    QString filepath = para.toString();
-    if (filepath.isEmpty())
-    {
-        return 0;
-    }
-    QImage *screen = new QImage(Util::captureScreen());
+#ifdef Q_WS_X11
+    /* save the image in the home path when capture on PC */
+    QString savepath = QDir::homePath();
+#else
+    /* save image to the usb disk */
+    QString savepath = usbManager.getUdiskMountPoint();
+#endif
+    QString imgPath = QString("%1/%2.png")
+            .arg(savepath)
+            .arg(lastCaptureDatetime.toString("yyyyMMddhhmmss"));
 
-    if (screen->isNull() || (!screen->save(filepath)))
+    QImage img = imgData.value<QImage>();
+    if (img.isNull() || !img.save(imgPath))
     {
-        delete screen;
-        return 0;
+        /* invalid image or save image failed */
+        return QVariant();
     }
-    else
-    {
-        // Note: screen is deleted in slot
-        return (long) screen;
-    }
+
+    return imgData;
 }
 
-void IApplication::handleScreenCaptureResult(long result)
+void IApplication::handleScreenCaptureResult(const QVariant &result)
 {
-    if (result)
+    if (result.isValid())
     {
-        QImage *image = reinterpret_cast<QImage *>(result);
-        MessageBox msgBox(trs("ScreenCapture"), QPixmap::fromImage(*image).scaled(
+        QImage image = result.value<QImage>();
+        MessageBox msgBox(trs("ScreenCapture"), QPixmap::fromImage(image).scaled(
                               150, 90, Qt::IgnoreAspectRatio, Qt::SmoothTransformation), trs("CaptureSuccess"), false);
 
         Qt::WindowFlags flags = msgBox.windowFlags();
         msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | flags);
         windowManager.showWindow(&msgBox,
                                  WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
-        delete image;
     }
     else
     {
@@ -228,7 +236,6 @@ bool IApplication::handleScreenCaptureKeyEvent(Qt::Key key, bool isPressed)
     // 3. only one capture action during one second
     static bool returnKeyPress = false;
     static bool menuKeyPress = false;
-    static QDateTime lastDatetime;
     static bool isCaptureProcess = false;
     if (key == MENU_KEY)
     {
@@ -248,25 +255,26 @@ bool IApplication::handleScreenCaptureKeyEvent(Qt::Key key, bool isPressed)
             return true;
         }
     }
-    if (returnKeyPress && menuKeyPress && usbManager.isUSBExist())
-    {
-        QDateTime curDt = QDateTime::currentDateTime();
-        if (curDt != lastDatetime)
-        {
-            QString imageFilename = QString("%1/%2.png")
-                                    .arg(usbManager.getUdiskMountPoint())
-                                    .arg(curDt.toString("yyyyMMddhhmmss"));
 
-#ifdef Q_WS_X11
-            isCaptureProcess = true;
-            handleScreenCaptureResult(capture(imageFilename));
-#else
-            Util::WorkerThread *workerThread = new Util::WorkerThread(capture, imageFilename);
-            connect(workerThread, SIGNAL(resultReady(long)), this, SLOT(handleScreenCaptureResult(long)));
-            lastDatetime = curDt;
+    if (returnKeyPress && menuKeyPress)
+    {
+#ifdef Q_WS_QWS
+        /* check whether the usb device is connected */
+        if (!usbManager.isUSBExist())
+        {
+            return false;
+        }
+#endif
+
+        QDateTime curDt = QDateTime::currentDateTime();
+        if (curDt != lastCaptureDatetime)
+        {
+            lastCaptureDatetime = curDt;
+            QImage img = windowManager.captureScreen();
+            Util::WorkerThread *workerThread = new Util::WorkerThread(saveCaptureImage, qVariantFromValue(img));
+            connect(workerThread, SIGNAL(resultReady(QVariant)), this, SLOT(handleScreenCaptureResult(QVariant)));
             workerThread->start();
             isCaptureProcess = true;
-#endif
             return true;
         }
     }

@@ -53,7 +53,7 @@ ImagePtr img_new(int w, int h)
     return im;
 }
 
-#define ON_INHEAP	1
+#define ON_INHEAP   1
 
 typedef struct oct_node_t oct_node_t, *oct_node;
 struct oct_node_t
@@ -280,7 +280,7 @@ static oct_node nearest_color(int *v, node_heap *h)
     oct_node o = 0;
     for (i = 1; i < h->n; i++)
     {
-        int diff =	  3 * abs(h->buf[i]->r - v[0])
+        int diff = 3 * abs(h->buf[i]->r - v[0])
                   + 5 * abs(h->buf[i]->g - v[1])
                   + 2 * abs(h->buf[i]->b - v[2]);
         if (diff < max)
@@ -294,8 +294,7 @@ static oct_node nearest_color(int *v, node_heap *h)
 
 static void error_diffuse(ImagePtr im, node_heap *h)
 {
-
-#	define POS(i, j) (3 * ((i) * im->w + (j)))
+#define POS(i, j) (3 * ((i) * im->w + (j)))
     int i, j;
     int *npx = reinterpret_cast<int *>(calloc(sizeof(int), im->h * im->w * 3)), *px;
     int v[3];
@@ -422,7 +421,7 @@ namespace Util {
  * @param file the file to store the data
  * @param logo the image logo
  */
-bool generateKernelLogo(QFile &logoFile, const QImage &logoImage)
+bool generateKernelLogo(QFile *logoFile, const QImage &logoImage)
 {
     if (logoImage.isNull())
     {
@@ -494,14 +493,14 @@ bool generateKernelLogo(QFile &logoFile, const QImage &logoImage)
     logoheader.clut = NULL;
     logoheader.data = NULL;
 
-    if (!logoFile.seek(0))
+    if (!logoFile->seek(0))
     {
         qDebug() << "Seek fail!";
         return false;
     }
 
     /* write linux logo info data */
-    if (logoFile.write(reinterpret_cast<char *>(&logoheader), sizeof(linux_logo)) != sizeof(linux_logo))
+    if (logoFile->write(reinterpret_cast<char *>(&logoheader), sizeof(linux_logo)) != sizeof(linux_logo))
     {
         qDebug() << "Incomplete write!";
         return false;
@@ -519,7 +518,7 @@ bool generateKernelLogo(QFile &logoFile, const QImage &logoImage)
            pixelIndexData[j] = index + 0x20;
         }
 
-        if (logoFile.write(pixelIndexData.constData(), pixelIndexData.length()) != pixelIndexData.length())
+        if (logoFile->write(pixelIndexData.constData(), pixelIndexData.length()) != pixelIndexData.length())
         {
             qDebug() << "Incomplete write!";
             return false;
@@ -536,7 +535,7 @@ bool generateKernelLogo(QFile &logoFile, const QImage &logoImage)
         clutdata.append(qBlue(logoClut[i]));
     }
 
-    if (logoFile.write(clutdata.constData(), clutdata.length()) != clutdata.length())
+    if (logoFile->write(clutdata.constData(), clutdata.length()) != clutdata.length())
     {
         qDebug() << "Incomplete write!";
         return false;

@@ -31,6 +31,7 @@
 #include "ConfigEditMenuWindow.h"
 #include "NIBPRepairMenuWindow.h"
 #include <QApplication>
+#include <QDesktopWidget>
 #include "Dialog.h"
 #include "FontManager.h"
 #include <QTimer>
@@ -351,6 +352,14 @@ bool WindowManager::eventFilter(QObject *obj, QEvent *ev)
     return false;
 }
 
+QImage WindowManager::captureScreen()
+{
+    QPoint leftTop = mapToGlobal(rect().topLeft());
+    QPixmap pix =  QPixmap::grabWindow(qApp->desktop()->winId(), leftTop.x(), leftTop.y(),
+                                       width(), height());
+    return pix.toImage();
+}
+
 void WindowManager::closeAllWidows()
 {
     // close the popup widget
@@ -389,7 +398,6 @@ void WindowManager::onWindowHide(Dialog *w)
 {
     // find top window
     Dialog *top = topWindow();
-    bool timeStart = true;
     if (top == w)
     {
         // remove the window,
@@ -402,7 +410,7 @@ void WindowManager::onWindowHide(Dialog *w)
         {
             top->showMask(false);
             top->show();
-            timeStart = top->property("TimerStart").toBool();
+            bool timeStart = top->property("TimerStart").toBool();
             if (timeStart)
             {
                 d_ptr->timer->start();

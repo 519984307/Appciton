@@ -11,6 +11,7 @@
 #pragma once
 #include <QMap>
 #include <QWidget>
+#include <QImage>
 #include <QList>
 #include "WaveWidget.h"
 #include "SystemDefine.h"
@@ -63,6 +64,13 @@ public:
      * @return always false
      */
     bool eventFilter(QObject *obj, QEvent *ev);
+
+    /**
+     * @brief capturescreen
+     * @return  the image of the screen
+     */
+    QImage captureScreen();
+
 
 public slots:
     /**

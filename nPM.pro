@@ -256,7 +256,6 @@ SOURCES +=                                                                      
     Utility/Widgets/EventWidget/EventWaveSetWindow.cpp                          \
     Utility/Widgets/EventWidget/OxyCRGEventWindow.cpp                           \
     Utility/Widgets/EventWidget/OxyCRGEventSetWindow.cpp                        \
-    Utility/ScreenCapture.cpp                                                   \
     Utility/RunLengthEncode.cpp                                                 \
     Utility/ImageQuant.cpp                                                      \
 #################################################################################
