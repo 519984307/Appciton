@@ -464,8 +464,8 @@ void BLMCO2Provider::_readUpgradeData()
     }
 
     int startIndex = 0;
-    bool isok;
-    unsigned char v = ringBuff.head(isok);
+    bool isok = false;
+    unsigned char v = ringBuff.head(&isok);
 
     if (isok && len > 0)
     {

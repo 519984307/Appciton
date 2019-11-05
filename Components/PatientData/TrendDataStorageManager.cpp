@@ -520,7 +520,7 @@ TrendDataType TrendDataStorageManager::getLatestShortTrendData(SubParamID subPar
     if (s)
     {
         bool ok = false;
-        TrendDataType d = s->trendBuffer[interval]->head(ok);
+        TrendDataType d = s->trendBuffer[interval]->head(&ok);
         if (ok)
         {
             return d;

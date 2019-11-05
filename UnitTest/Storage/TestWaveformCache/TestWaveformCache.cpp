@@ -112,11 +112,11 @@ void TestWaveformCache::testRegisterSource()
 
     int min;
     int max;
-    waveformCache.getInstance().getRange(id, min, max);
+    waveformCache.getInstance().getRange(id, &min, &max);
     int line;
-    waveformCache.getInstance().getBaseline(id, line);
+    line = waveformCache.getInstance().getBaseline(id);
     QString title;
-    waveformCache.getInstance().getTitle(id, title);
+    title = waveformCache.getInstance().getTitle(id);
 
     QCOMPARE(waveformCache.getInstance().getSampleRate(id), rateResult);
     QCOMPARE(min, minResult);
