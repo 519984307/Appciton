@@ -27,7 +27,9 @@ SOURCES += \
         Utility/RunLengthEncode.cpp
 
 HEADERS += \
-        Utility/Utility.h
+        Utility/Utility.h                                                           \
+        Utility/Unit.h                                                              \
+        Utility/RingBuff.h
 
 unix {
     target.path = /usr/lib
