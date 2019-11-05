@@ -27,7 +27,7 @@
 #include "WaveWidgetLabel.h"
 #include "LanguageManager.h"
 #include "FloatHandle.h"
-#include "RingBuff.h"
+#include "Framework/Utility/RingBuff.h"
 #include "SystemManager.h"
 #include "WaveWidgetItem.h"
 #include "WaveWidgetLabel.h"

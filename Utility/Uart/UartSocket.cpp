@@ -23,7 +23,7 @@
 #include <QTcpSocket>
 #include "UartSocketDefine.h"
 #include "crc8.h"
-#include "RingBuff.h"
+#include "Framework/Utility/RingBuff.h"
 #include <QMap>
 #include <QEventLoop>
 #include <QTimer>

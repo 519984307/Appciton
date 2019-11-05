@@ -2056,8 +2056,8 @@ QList<RecordWaveSegmentInfo> RecordPageGenerator::getWaveInfos(const QList<Wavef
         RecordWaveSegmentInfo info;
         info.id = id;
         info.sampleRate = waveformCache.getSampleRate(id);
-        waveformCache.getRange(id, info.minWaveValue, info.maxWaveValue);
-        waveformCache.getBaseline(id, info.waveBaseLine);
+        waveformCache.getRange(id, &info.minWaveValue, &info.maxWaveValue);
+        info.waveBaseLine = waveformCache.getBaseline(id);
         switch (id)
         {
         case WAVE_ECG_I:

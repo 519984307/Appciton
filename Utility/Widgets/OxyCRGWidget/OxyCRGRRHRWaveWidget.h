@@ -10,7 +10,7 @@
 
 #pragma once
 #include "OxyCRGTrendWaveWidget.h"
-#include "RingBuff.h"
+#include "Framework/Utility/RingBuff.h"
 
 class OxyCRGRRHRWaveWidgetPrivate;
 class OxyCRGRRHRWaveWidget : public OxyCRGTrendWaveWidget

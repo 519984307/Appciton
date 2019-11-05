@@ -9,7 +9,7 @@
  **/
 
 #pragma once
-#include "RingBuff.h"
+#include "Framework/Utility/RingBuff.h"
 #include <QColor>
 #include "BaseDefine.h"
 #include <QPainterPath>

@@ -634,7 +634,6 @@ HEADERS +=                                                                      
     Utility/BaseDefine.h                                                        \
     Utility/FloatHandle/FloatHandle.h                                           \
     Utility/Debug/Debug.h                                                       \
-    Utility/RingBuff/RingBuff.h                                                 \
     Utility/LanguageManager/LanguageManager.h                                   \
     Utility/FontManager/FontManager.h                                           \
     Utility/FontManager/FontManagerInterface.h                                  \
@@ -1123,7 +1122,6 @@ DEPENDPATH +=                                                                   
     Main/App                                                                    \
     Utility                                                                     \
     Utility/FloatHandle                                                         \
-    Utility/RingBuff                                                            \
     Utility/Debug                                                               \
     Utility/TimeDate                                                            \
     Utility/Uart                                                                \
@@ -1231,7 +1229,6 @@ INCLUDEPATH +=                                                                  
     Main/App                                                                    \
     Utility                                                                     \
     Utility/FloatHandle                                                         \
-    Utility/RingBuff                                                            \
     Utility/Debug                                                               \
     Utility/TimeDate                                                            \
     Utility/Uart                                                                \

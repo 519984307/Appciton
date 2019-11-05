@@ -26,7 +26,8 @@
 #include "TimeDate.h"
 #include "EventStorageManager.h"
 #include <QMap>
-#include "RingBuff.h"
+#include "Framework/Utility/RingBuff.h"
+
 
 class ShortTrendStorage
 {

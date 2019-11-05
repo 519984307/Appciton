@@ -655,9 +655,9 @@ void OxyCRGEventWindowPrivate::loadTrendData()
 void OxyCRGEventWindowPrivate::loadWaveformData()
 {
     waveInfo.reset();
-    waveformCache.getRange(waveInfo.id, waveInfo.minWaveValue, waveInfo.maxWaveValue);
+    waveformCache.getRange(waveInfo.id, &waveInfo.minWaveValue, &waveInfo.maxWaveValue);
     waveInfo.sampleRate = waveformCache.getSampleRate(waveInfo.id);
-    waveformCache.getBaseline(waveInfo.id, waveInfo.waveBaseLine);
+    waveInfo.waveBaseLine = waveformCache.getBaseline(waveInfo.id);
     if (waveInfo.id == WAVE_RESP)
     {
         waveInfo.waveInfo.resp.zoom = RESP_ZOOM_X100;

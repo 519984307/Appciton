@@ -185,8 +185,8 @@ public:
             RecordWaveSegmentInfo info;
             info.id = id;
             info.sampleRate = waveSeg->sampleRate;
-            waveformCache.getRange(id, info.minWaveValue, info.maxWaveValue);
-            waveformCache.getBaseline(id, info.waveBaseLine);
+            waveformCache.getRange(id, &info.minWaveValue, &info.maxWaveValue);
+            info.waveBaseLine = waveformCache.getBaseline(id);
             switch (id)
             {
             case WAVE_ECG_I:
