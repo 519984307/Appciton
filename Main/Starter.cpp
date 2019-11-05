@@ -21,6 +21,7 @@
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"
 #include "Framework/Utility/Utility.h"
+#include "Debug.h"
 
 #define CRASH_LOG_PATH "/usr/local/nPM/bin/crashlog"
 

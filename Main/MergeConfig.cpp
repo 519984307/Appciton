@@ -22,6 +22,7 @@
 #include "PatientDefine.h"
 #include "ParamDefine.h"
 #include "ParamInfo.h"
+#include "Debug.h"
 
 MergeConfig *MergeConfig::_object = NULL;
 /***************************************************************************************************

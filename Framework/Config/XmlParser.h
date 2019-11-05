@@ -36,13 +36,13 @@ public:
     bool removeNode(const QString &indexStr);
     bool hasNode(const QString &indexStr);
     QStringList childElementNameList(const QString &indexStr);
-    bool getValue(const QString &indexStr, QString &value);
+    bool getValue(const QString &indexStr, QString &value);  // NOLINT
     bool setValue(const QString &indexStr, const QString &value);
-    bool getAttr(const QString &indexStr, const QString &attr, QString &value);
+    bool getAttr(const QString &indexStr, const QString &attr, QString &value);  // NOLINT
     bool setAttr(const QString &indexStr, const QString &attr,
                  const QString &value);
-    bool getNode(const QString &indexStr, QDomElement &element);
-    bool setNode(const QString &indexStr, QDomElement &tag);
+    bool getNode(const QString &indexStr, QDomElement &element);   // NOLINT
+    bool setNode(const QString &indexStr, QDomElement &tag);  // NOLINT
 
     QVariantMap getConfig(const QString &indexStr);
     void setConfig(const QString &indexStr, const QVariantMap &map);
@@ -57,11 +57,11 @@ public:
      * @brief setCurrentFilePath  设置当前的配置文件路径
      * @param path  文件路径
      */
-    void setCurrentFilePath(QString &path);
+    void setCurrentFilePath(const QString &path);
 
 private:
     QDomElement _findElement(const QString &indexStr);
-    bool _copyNode(QDomElement &dstTag, QDomElement &srcTag);
+    bool _copyNode(QDomElement &dstTag, QDomElement &srcTag);   // NOLINT
 
 private:
     QDomDocument _xml;

@@ -6,6 +6,7 @@ CONFIG -= app_bundle
 
 include("../../Common/googletest.pri")
 include("../../Common/runtest.pri")
+include("../../Common/Common.pri")
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -21,23 +22,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += main.cpp \
     TestLanguageManager.cpp \
     ../../../Utility/LanguageManager/LanguageManager.cpp \
-    ../../../Utility/Config/XmlParser.cpp \
     ../../../Utility/Config/IConfig.cpp \
-    ../../../Utility/Debug/Debug.cpp \
     ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
-    ../../../Utility/Config/Config.cpp \
     ../../../Utility/ErrorLog/ErrorLogItem.cpp
 
 HEADERS += \
     TestLanguageManager.h \
     ../../../Utility/LanguageManager/LanguageManager.h \
-    ../../../Utility/Config/XmlParser.h \
     ../../../Utility/Config/IConfig.h \
-    ../../../Utility/Debug/Debug.h \
     ../../../Components/PatientManager/PatientDefine.h \
     ../../../Utility/BaseDefine.h \
     ../../../Utility/ErrorLog/ErrorLogInterface.h \
-    ../../../Utility/Config/Config.h \
     ../../../Utility/ErrorLog/ErrorLogItem.h \
     ../../../Components/PatientManager/PatientDefine.h
 
@@ -45,6 +40,5 @@ INCLUDEPATH += \
     ../../../Utility \
     ../../../Utility/LanguageManager \
     ../../../Utility/Config \
-    ../../../Utility/Debug \
     ../../../Utility/ErrorLog \
     ../../../Components/PatientManager

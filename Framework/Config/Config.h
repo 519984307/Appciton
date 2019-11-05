@@ -13,16 +13,17 @@
 #include <typeinfo>
 #include <QVariant>
 #include <QVector>
-#include "Debug.h"
-#include "XmlParser.h"
 #include <QStringList>
 #include <QHash>
-#include <QReadWriteLock>
+#include <QDomElement>
 
+class ConfigPrivate;
 class Config
 {
 public:
     explicit Config(const QString &configPath);
+
+    ~Config();
 
     /***************************************************************************
      * 功能： 读取数字值, 支持数据类型int, bool和float。
@@ -33,25 +34,16 @@ public:
      *      如果数据类型不支持或者找不到对应的数值，函数调用失败。
      **************************************************************************/
     template<typename T>
-    bool getNumValue(const QString &indexStr, T &value)
+    bool getNumValue(const QString &indexStr, T &value)  // NOLINT
     {
-        // 访问共享缓冲区时进行加锁操作
-        _cacheLock.lock();
-        // 访问共享缓冲区
-        QString strText = _configCache.value(indexStr);
-        // 访问结束时进行解锁操作
-        _cacheLock.unlock();
         // 当访问的缓冲区为空时，开始读取.xml文件
+        QString strText = _getCacheValue(indexStr);
         if (strText.isNull())
         {
             // no found in cache
-            if (_xmlParser.getValue(indexStr, strText))
+            if (_getValue(indexStr, strText))
             {
-                // add to cache
-                _cacheLock.lock();
-                // 缓冲区数据倒入操作
-                _configCache.insert(indexStr, strText);
-                _cacheLock.unlock();
+                _setCacheValue(indexStr, strText);
             }
             else
             {
@@ -84,7 +76,7 @@ public:
         }
         else
         {
-            debug("Wrong value type for '%s'", qPrintable(indexStr));
+            /* Invalid type */
         }
 
         return ok;
@@ -110,12 +102,9 @@ public:
 
         if (value != curValue)
         {
-            save();
             QString strValue = QVariant(value).toString();
-            _cacheLock.lock();
-            _configCache.insert(indexStr, strValue);
-            _cacheLock.unlock();
-            return _xmlParser.setValue(indexStr, strValue);
+            _setCacheValue(indexStr, strValue);
+            return _setValue(indexStr, strValue);
         }
 
         return true;
@@ -151,7 +140,7 @@ public:
     }
 
     // 读取字符串值
-    bool getStrValue(const QString &indexStr, QString &value);
+    bool getStrValue(const QString &indexStr, QString &value);  // NOLINT
 
     // 设置字符串值
     bool setStrValue(const QString &indexStr, const QString &value);
@@ -160,15 +149,15 @@ public:
 
     // 获取属性字串
     bool getStrAttr(const QString &indexStr, const QString &attr,
-                    QString &value);
+                    QString &value);  // NOLINT
 
     // 设置属性字串
     bool setStrAttr(const QString &indexStr, const QString &attr,
                     const QString &value);
 
     // 设置字段
-    bool setNodeValue(const QString &indexStr, Config &config);
-    bool getNodeValue(const QString &indexStr, QDomElement &element);
+    bool setNodeValue(const QString &indexStr, Config &config);  // NOLINT
+    bool getNodeValue(const QString &indexStr, QDomElement &element);  // NOLINT
 
     // 添加结点
     bool addNode(const QString &indexStr, const QString &tagName,
@@ -191,7 +180,7 @@ public:
      *      成功读取返回true，否则返回false
      **************************************************************************/
     template<typename T>
-    bool getNumAttr(const QString &indexStr, const QString &attr, T &value)
+    bool getNumAttr(const QString &indexStr, const QString &attr, T &value)  // NOLINT
     {
         QString curText;
         if (!getStrAttr(indexStr, attr, curText))
@@ -233,9 +222,8 @@ public:
 
         if (value != curValue)
         {
-            save();
             QString strValue = QVariant(value).toString();
-            return _xmlParser.setAttr(indexStr, attr, strValue);
+            return _setAttr(indexStr, attr, strValue);
         }
 
         return true;
@@ -250,7 +238,7 @@ public:
      *      成功读取返回true，否则返回false
      **************************************************************************/
     template<typename T>
-    bool getCurrentNumValue(const QString &indexStr, T &value)
+    bool getCurrentNumValue(const QString &indexStr, T &value)  // NOLINT
     {
         int index = 0;
         if (!getNumAttr(indexStr, "CurrentOption", index))
@@ -262,13 +250,13 @@ public:
     }
 
     // 读取以“CurrentOption”标识的字串配置
-    bool getCurrentStrValue(const QString &indexStr, QString &value);
+    bool getCurrentStrValue(const QString &indexStr, QString &value);  // NOLINT
 
     // 读取全部可选字段
-    bool getOptionList(const QString &indexStr, QVector<QString> &options);
+    bool getOptionList(const QString &indexStr, QVector<QString> &options);  // NOLINT
 
-    // 存储文件。
-    void save(void);
+    // request save file
+    void requestSave(void);
 
     // 存储配置文件到磁盘中。
     void saveToDisk(void);
@@ -277,34 +265,25 @@ public:
     bool load(const QString &configPath);
 
     /**
-     * @brief allowToSave  是否允许存储
-     * @param enable  失能或使能存储
+     * @brief periodlySaveToDisk contorl periodly save file to the flash
+     * @param enable true to enable, false to disable
      */
-    void allowToSave(bool enable);
+    void periodlySaveToDisk(bool enable);
 
     /**
      * @brief setCurrentFilePath  设置当前的配置文件路径
      * @param path  文件路径
      */
-    void setCurrentFilePath(QString &path);
+    void setCurrentFilePath(const QString &path);
 
     // 重新加载文件的内容。
-    void reload()
-    {
-        _xmlParser.reload();
-    }
+    void reload();
 
     // 获取保存状态
-    bool getSaveStatus()
-    {
-        return _requestToSave;
-    }
+    bool getSaveStatus();
 
     // get current file name
-    QString getFileName()
-    {
-        return _xmlParser.currentFileName();
-    }
+    QString getFileName();
 
     // save the config to file
     bool saveToFile(const QString &filepath);
@@ -328,11 +307,45 @@ private:
 
     void _restoreOrigFile(const QString &configPath);
 
+    /**
+     * @brief _getCacheValue get value from the internal cache
+     * @param indexStr the index string
+     * @return  the value in cache or empty string if not found
+     */
+    QString _getCacheValue(const QString &indexStr);
+
+    /**
+     * @brief _setCacheValue cache value
+     * @param indexStr the index string
+     * @param value the cache value
+     */
+    void _setCacheValue(const QString &indexStr, const QString &value);
+
+    /**
+     * @brief _setAttr set the attribute
+     * @param indexStr the index string
+     * @param attr the attr name
+     * @param valueStr the value string
+     */
+    bool _setAttr(const QString &indexStr, const QString &attr, const QString &valueStr);
+
+    /**
+     * @brief _setValue set the value string
+     * @param indexStr the index string
+     * @param valueStr the value string
+     * @return true if setting successfully, otherwise, false
+     */
+    bool _setValue(const QString &indexStr, const QString &valueStr);
+
+    /**
+     * @brief _getValue set the value string
+     * @param indexStr the index string
+     * @param valueStr store the value string
+     * @return true if getting successfully, otherwise, false
+     */
+    bool _getValue(const QString &indexStr, QString &valueStr);  // NOLINT
+
 private:
-    XmlParser _xmlParser;
-    QHash<QString, QString> _configCache;
-    QMutex _cacheLock;
-    bool _requestToSave;
-    QMutex _requestToSaveMutex;
-    bool _allowToSave;
+    Q_DISABLE_COPY(Config)
+    ConfigPrivate *const d_ptr;
 };

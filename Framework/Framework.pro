@@ -24,12 +24,25 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         Utility/Utility.cpp                                                         \
         Utility/ImageQuant.cpp                                                      \
-        Utility/RunLengthEncode.cpp
+        Utility/RunLengthEncode.cpp                                                 \
+        Config/XmlParser.cpp                                                        \
+        Config/Config.cpp
 
 HEADERS += \
         Utility/Utility.h                                                           \
         Utility/Unit.h                                                              \
-        Utility/RingBuff.h
+        Utility/RingBuff.h                                                          \
+        Config/XmlParser.h                                                          \
+        Config/Config.h
+
+DEPENDPATH += \
+        Utility                                                                     \
+        Config                                                                      \
+
+INCLUDEPATH += \
+       Utility                                                                      \
+       Config                                                                       \
+
 
 unix {
     target.path = /usr/lib

@@ -15,8 +15,7 @@
 #include <QDomAttr>
 #include <QDomText>
 #include "XmlParser.h"
-#include "Debug.h"
-#include "ErrorLogInterface.h"
+#include <QDebug>
 
 /*******************************************************************************
  * 功能： 更新数据到磁盘文件
@@ -57,7 +56,8 @@ bool XmlParser::saveToFile(const QString &filename)
     QFile file(filename);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        qdebug("save failed : %s", qPrintable(file.errorString()));
+        qDebug() << Q_FUNC_INFO << "save to"
+                 << filename <<"failed:" << file.errorString();
         return false;
     }
 
@@ -98,24 +98,7 @@ bool XmlParser::open(const QString &fileName)
     // 判断是否读取XML文件成功
     if (!_xml.setContent(&file))
     {
-        // 读取失败则进入...记录错误日志
-        ErrorLogInterface *errorLog = ErrorLogInterface::getErrorLog();
-        if (errorLog)
-        {
-            ErrorLogItem *item = new CriticalFaultLogItem();
-            item->setName("Prase config file fail");
-            int lastindex = fileName.indexOf('/', -1);
-            if (-1 != lastindex)
-            {
-                QString str = fileName.right(lastindex + 1);
-                str += "is Error!\r\n";
-                item->setLog(str);
-                item->setSubSystem(ErrorLogItem::SUB_SYS_MAIN_PROCESSOR);
-                item->setSystemState(ErrorLogItem::SYS_STAT_RUNTIME);
-                item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
-            }
-            errorLog->append(item);
-        }
+        qDebug() << Q_FUNC_INFO << "Parse config file failed!";
 
         file.close();
         return false;
@@ -468,7 +451,7 @@ QVariantMap XmlParser::getConfig(const QString &indexStr)
     return map;
 }
 
-static QDomElement createDomElement(const QString &tagName, const QVariantMap &map, QDomDocument &doc)
+static QDomElement createDomElement(const QString &tagName, const QVariantMap &map, QDomDocument &doc)  // NOLINT
 {
     QDomElement ele = doc.createElement(tagName);
 
@@ -554,7 +537,7 @@ void XmlParser::setConfig(const QString &indexStr, const QVariantMap &map)
     parent.appendChild(createDomElement(tagName, map, _xml));
 }
 
-void XmlParser::setCurrentFilePath(QString &path)
+void XmlParser::setCurrentFilePath(const QString &path)
 {
     if (path.isEmpty())
     {

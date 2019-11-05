@@ -25,6 +25,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 include("../../../Common/googletest.pri")
 include("../../../Common/runtest.pri")
+include("../../../Common/Common.pri")
 SOURCES += \
     TestNIBPMonitorStopState.cpp \
     main.cpp \
@@ -32,13 +33,10 @@ SOURCES += \
     ../../../../Params/NIBPParam/NIBPParamInterface.cpp \
     ../../../../Params/NIBPParam/NIBPTrigger/NIBPCountdownTimeInterface.cpp \
     ../../../../Params/NIBPParam/NIBPStateMachine/NIBPState.cpp \
-    ../../../../Utility/Debug/Debug.cpp \
     ../../../../Utility/LanguageManager/LanguageManager.cpp \
-    ../../../../Utility/Config/XmlParser.cpp \
     ../../../../Utility/ErrorLog/ErrorLogInterface.cpp \
     ../../../../Utility/Config/IConfig.cpp \
     ../../../../Params/NIBPParam/NIBPStateMachine/NIBPStateMachine.cpp \
-    ../../../../Utility/Config/Config.cpp \
     ../../../../Utility/ErrorLog/ErrorLogItem.cpp \
 
 
@@ -54,9 +52,7 @@ HEADERS += \
     ../../../../Params/NIBPParam/NIBPProviderIFace.h \
     ../../../../Components/PatientManager/PatientDefine.h \
     ../../../../Utility/BaseDefine.h \
-    ../../../../Utility/Debug/Debug.h \
     ../../../../Utility/LanguageManager/LanguageManager.h \
-    ../../../../Utility/Config/XmlParser.h \
     ../../../../Utility/ErrorLog/ErrorLogInterface.h \
     ../../../../Utility/Config/IConfig.h \
     ../../../../Params/NIBPParam/NIBPStateMachine/NIBPState.h \
@@ -76,7 +72,6 @@ INCLUDEPATH += \
     ../../../../Params/NIBPParam/NIBPStateMachine \
     ../../../../Components/PatientManager \
     ../../../../Utility \
-    ../../../../Utility/Debug \
      ../../../../Utility/LanguageManager \
     ../../../../Utility/Config \
     ../../../../Utility/ErrorLog \

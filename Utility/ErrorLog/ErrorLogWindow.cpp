@@ -274,7 +274,7 @@ void ErrorLogWindow::eraseReleased()
         init();
         unsigned int timestamp = QDateTime::currentDateTime().toTime_t();
         systemConfig.setNumValue("ErrorLogEraseTime", timestamp);
-        systemConfig.save();
+        systemConfig.requestSave();
         systemConfig.saveToDisk();
     }
 }

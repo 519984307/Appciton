@@ -28,6 +28,7 @@
 #include "TimeManager.h"
 #include "CO2Param.h"
 #include <QTimerEvent>
+#include <QSet>
 
 #define STOP_PRINT_TIMEOUT          (100)
 

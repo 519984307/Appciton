@@ -17,6 +17,7 @@
 #include <QApplication>
 #include "LanguageManager.h"
 #include "Framework/Utility/Utility.h"
+#include "Debug.h"
 
 ErrorLogExporter::ErrorLogExporter()
     : DataExporterBase(), _currentProgress(0)

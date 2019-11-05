@@ -9,7 +9,7 @@
  **/
 #pragma once
 #include "MenuWindow.h"
-#include "Config.h"
+#include "Framework/Config/Config.h"
 #include "PatientDefine.h"
 
 class ConfigEditMenuWindowPrivate;

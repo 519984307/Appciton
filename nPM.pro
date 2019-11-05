@@ -163,8 +163,6 @@ SOURCES +=                                                                      
     SOUP/Json/qobjecthelper.cpp                                                 \
     SOUP/Json/serializer.cpp                                                    \
     SOUP/Json/serializerrunnable.cpp                                            \
-    Utility/Config/Config.cpp                                                   \
-    Utility/Config/XmlParser.cpp                                                \
     Utility/Config/IConfig.cpp                                                  \
     Utility/DataStorage/DataStorageDirManager.cpp                               \
     Utility/DataStorage/StorageFile.cpp                                         \
@@ -609,10 +607,8 @@ HEADERS +=                                                                      
     SOUP/Json/serializerrunnable.h                                              \
     SOUP/Json/stack.hh                                                          \
     Utility/OrderedMap.h                                                        \
-    Utility/Config/Config.h                                                     \
     Utility/Config/ConfigDefine.h                                               \
     Utility/Config/IConfig.h                                                    \
-    Utility/Config/XmlParser.h                                                  \
     Utility/DataStorage/DataStorageDefine.h                                     \
     Utility/DataStorage/IStorageBackend.h                                       \
     Utility/DataStorage/StorageFile.h                                           \

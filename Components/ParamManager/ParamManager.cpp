@@ -17,6 +17,7 @@
 #include "IConfig.h"
 #include <QStringList>
 #include <iostream>
+#include "Debug.h"
 
 ParamManager *ParamManager::_selfObj = NULL;
 

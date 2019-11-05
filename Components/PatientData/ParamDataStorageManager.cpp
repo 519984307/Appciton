@@ -8,8 +8,6 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/10/26
  **/
 
-
-
 #include "../Utility/DataStorage/StorageManager_p.h"
 #include "ParamDataStorageManager.h"
 #include "StorageFile.h"
@@ -31,6 +29,7 @@
 #include <QDateTime>
 #include <SystemManager.h>
 #include "AlarmSourceManager.h"
+#include <QDebug>
 
 #define NIBP_MAX_PENDING_TIME 3
 

@@ -21,6 +21,7 @@
 #include "ParamInfo.h"
 #include "ParamDefine.h"
 #include "SPO2Param.h"
+#include "Debug.h"
 
 class ConfigEditSpO2MenuContentPrivate
 {

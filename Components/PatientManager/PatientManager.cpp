@@ -23,6 +23,8 @@
 #include <QFile>
 #include "ECGDupParamInterface.h"
 #include "ECGParamInterface.h"
+#include "Framework/Config/XmlParser.h"
+#include <QDebug>
 // #include "ECGDupParam.h"
 
 #define XML_FILE_SUFFIX QString::fromLatin1(".xml")

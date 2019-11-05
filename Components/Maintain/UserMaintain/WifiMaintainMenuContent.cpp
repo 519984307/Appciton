@@ -62,7 +62,7 @@ public:
 void WifiMaintainMenuContentPrivate::onSwitch(int val)
 {
     systemConfig.setNumValue("WiFi|EnableWifi", val);
-    systemConfig.save();
+    systemConfig.requestSave();
     _isEnabled = !!val;
 //    emit WifiMaintainMenuContent.updateWifiProfileSignal(_isEnabled);
 }
@@ -310,7 +310,7 @@ void WifiMaintainMenuContentPrivate::saveProfiles()
     int currentSelect = -1;  // default select nothing if wifi profile changes
     systemConfig.setNumAttr("WiFi|Profiles", "CurrentSelect", currentSelect);
 
-    systemConfig.save();
+    systemConfig.requestSave();
 
 // emit WifiMaintainMenuContent.updateWifiProfileSignal(_isEnabled);
 }

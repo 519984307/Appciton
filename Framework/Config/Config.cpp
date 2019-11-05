@@ -11,8 +11,23 @@
 #include <QFile>
 #include "Config.h"
 #include "unistd.h"
-#include "ErrorLogInterface.h"
-#include "ErrorLogItem.h"
+#include <QDebug>
+#include "XmlParser.h"
+#include <QMutex>
+
+
+class ConfigPrivate
+{
+public:
+    ConfigPrivate() :_requestToSave(false), _allowToSave(true) {}
+
+    XmlParser _xmlParser;
+    QHash<QString, QString> _configCache;
+    QMutex _cacheLock;
+    bool _requestToSave;
+    QMutex _requestToSaveMutex;
+    bool _allowToSave;
+};
 
 /**************************************************************************************************
  * 功能： 构建原始文件的备份文件名
@@ -85,7 +100,7 @@ void Config::_checkBKFile(const QString &fileName)
     QString backupFileName = _getBackupFileName(fileName);
     if (QFile::exists(backupFileName))
     {
-        if (_xmlParser.open(backupFileName))
+        if (d_ptr->_xmlParser.open(backupFileName))
         {
             // merge backup file
             QFile::remove(fileName);
@@ -119,24 +134,54 @@ void Config::_restoreOrigFile(const QString &configPath)
     {
         QFile::remove(configPath);
         QFile::copy(factoryConfigPath, configPath);
-        ErrorLogItem *item = new ErrorLogItem();
-        item->setName("Load default config");
-        QString str = factoryConfigPath;
-        str += "\r\n";
-        item->setLog(str);
-        item->setSubSystem(ErrorLogItem::SUB_SYS_MAIN_PROCESSOR);
-        item->setSystemState(ErrorLogItem::SYS_STAT_RUNTIME);
-        item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
-        ErrorLogInterface *errorLog = ErrorLogInterface::getErrorLog();
-        if (errorLog)
-        {
-            errorLog->append(item);
-        }
-        else
-        {
-            qDebug() << "Failure to store errorlog!\n";
-        }
+        qDebug() << Q_FUNC_INFO << "Load default config" << factoryConfigPath;
     }
+}
+
+QString Config::_getCacheValue(const QString &indexStr)
+{
+    // 访问共享缓冲区时进行加锁操作
+    d_ptr->_cacheLock.lock();
+    // 访问共享缓冲区
+    QString strText = d_ptr->_configCache.value(indexStr);
+    // 访问结束时进行解锁操作
+    d_ptr->_cacheLock.unlock();
+
+    return strText;
+}
+
+void Config::_setCacheValue(const QString &indexStr, const QString &value)
+{
+    // add to cache
+    d_ptr->_cacheLock.lock();
+    // 缓冲区数据倒入操作
+    d_ptr->_configCache.insert(indexStr, value);
+    d_ptr->_cacheLock.unlock();
+}
+
+bool Config::_setAttr(const QString &indexStr, const QString &attr, const QString &valueStr)
+{
+    bool ret = d_ptr->_xmlParser.setAttr(indexStr, attr, valueStr);
+    if (ret)
+    {
+        requestSave();
+    }
+    return ret;
+}
+
+bool Config::_setValue(const QString &indexStr, const QString &valueStr)
+{
+    bool ret = d_ptr->_xmlParser.setValue(indexStr, valueStr);
+    if (ret)
+    {
+        requestSave();
+    }
+    return ret;
+}
+
+bool Config::_getValue(const QString &indexStr, QString &valueStr)
+{
+    return d_ptr->_xmlParser.getValue(indexStr, valueStr);
 }
 
 /**************************************************************************************************
@@ -192,12 +237,12 @@ bool Config::getOptionList(const QString &indexStr, QVector<QString> &options)
 /**************************************************************************************************
  * 功能： 请求存储文件到磁盘。
  *************************************************************************************************/
-void Config::save(void)
+void Config::requestSave(void)
 {
-    QMutexLocker lock(&_requestToSaveMutex);
-    if (_allowToSave)
+    QMutexLocker lock(&d_ptr->_requestToSaveMutex);
+    if (d_ptr->_allowToSave)
     {
-        _requestToSave = true;
+        d_ptr->_requestToSave = true;
     }
 }
 
@@ -206,21 +251,21 @@ void Config::save(void)
  *************************************************************************************************/
 void Config::saveToDisk(void)
 {
-    QMutexLocker lock(&_requestToSaveMutex);
-    if (!_requestToSave)
+    QMutexLocker lock(&d_ptr->_requestToSaveMutex);
+    if (!d_ptr->_requestToSave)
     {
         return;
     }
-    _requestToSave = false;
+    d_ptr->_requestToSave = false;
     lock.unlock();
 
     // 保存数据时先将文件备份。
-    QString fileName = _xmlParser.currentFileName();
+    QString fileName = d_ptr->_xmlParser.currentFileName();
     _newBackupFile(fileName);
-    if (!_xmlParser.saveToFile())
+    if (!d_ptr->_xmlParser.saveToFile())
     {
         _restoreBackupFile(fileName);
-        _xmlParser.reload();
+        d_ptr->_xmlParser.reload();
     }
     _deleteBackupFile(fileName);
     sync();
@@ -237,45 +282,60 @@ bool Config::load(const QString &configPath)
     }
 
     // 先将目标文件替换。
-    if (!QFile::remove(_xmlParser.currentFileName()))
+    if (!QFile::remove(d_ptr->_xmlParser.currentFileName()))
     {
         return false;
     }
 
-    if (!QFile::copy(configPath, _xmlParser.currentFileName()))
+    if (!QFile::copy(configPath, d_ptr->_xmlParser.currentFileName()))
     {
         return false;
     }
 
-    _requestToSave = false;
+    d_ptr->_requestToSave = false;
     sync();
     usleep(10);
 
-    _cacheLock.lock();
-    _configCache.clear();
-    _cacheLock.unlock();
-    return _xmlParser.reload();
+    d_ptr->_cacheLock.lock();
+    d_ptr->_configCache.clear();
+    d_ptr->_cacheLock.unlock();
+    return d_ptr->_xmlParser.reload();
 }
 
-void Config::allowToSave(bool enable)
+void Config::periodlySaveToDisk(bool enable)
 {
-    QMutexLocker lock(&_requestToSaveMutex);
-    _allowToSave = enable;
-    if (_allowToSave == false)
+    QMutexLocker lock(&d_ptr->_requestToSaveMutex);
+    d_ptr->_allowToSave = enable;
+    if (d_ptr->_allowToSave == false)
     {
-        _requestToSave = false;
+        d_ptr->_requestToSave = false;
     }
 }
 
-void Config::setCurrentFilePath(QString &path)
+void Config::setCurrentFilePath(const QString &path)
 {
-    _xmlParser.setCurrentFilePath(path);
+    d_ptr->_xmlParser.setCurrentFilePath(path);
+}
+
+void Config::reload()
+{
+    d_ptr->_xmlParser.reload();
+}
+
+bool Config::getSaveStatus()
+{
+    return d_ptr->_requestToSave;
+}
+
+QString Config::getFileName()
+{
+    return d_ptr->_xmlParser.currentFileName();
 }
 
 // save the config to file
 bool Config::saveToFile(const QString &filepath)
 {
-    if (_xmlParser.saveToFile(filepath))
+    if (d_ptr->_xmlParser.saveToFile(filepath))
     {
         return true;
     }
@@ -287,13 +347,13 @@ bool Config::saveToFile(const QString &filepath)
 
 QVariantMap Config::getConfig(const QString &indexStr)
 {
-    return _xmlParser.getConfig(indexStr);
+    return d_ptr->_xmlParser.getConfig(indexStr);
 }
 
 void Config::setConfig(const QString &indexStr, const QVariantMap &config)
 {
-    _xmlParser.setConfig(indexStr, config);
-    save();
+    d_ptr->_xmlParser.setConfig(indexStr, config);
+    requestSave();
 }
 
 QString Config::getDefaultFileName(const QString &fileName)
@@ -312,17 +372,17 @@ QString Config::getDefaultFileName(const QString &fileName)
 //将指定的路径的值提取出来
 bool Config::getStrValue(const QString &indexStr, QString &value)
 {
-    _cacheLock.lock();
-    QString cacheValue = _configCache.value(indexStr);
-    _cacheLock.unlock();
+    d_ptr->_cacheLock.lock();
+    QString cacheValue = d_ptr->_configCache.value(indexStr);
+    d_ptr->_cacheLock.unlock();
     if (cacheValue.isNull())
     {
-        bool flag = _xmlParser.getValue(indexStr, value);
+        bool flag = d_ptr->_xmlParser.getValue(indexStr, value);
         if (flag)
         {
-            _cacheLock.lock();
-            _configCache.insert(indexStr, value);
-            _cacheLock.unlock();
+            d_ptr->_cacheLock.lock();
+            d_ptr->_configCache.insert(indexStr, value);
+            d_ptr->_cacheLock.unlock();
         }
         return flag;
     }
@@ -351,11 +411,10 @@ bool Config::setStrValue(const QString &indexStr, const QString &value)
 
     if (value != curText)
     {
-        save();
-        _cacheLock.lock();
-        _configCache.insert(indexStr, value);
-        _cacheLock.unlock();
-        return _xmlParser.setValue(indexStr, value);
+        d_ptr->_cacheLock.lock();
+        d_ptr->_configCache.insert(indexStr, value);
+        d_ptr->_cacheLock.unlock();
+        return _setValue(indexStr, value);
     }
 
     return true;
@@ -370,7 +429,7 @@ bool Config::setStrValue(const QString &indexStr, const QString &value)
  *********************************************************************************************/
 bool Config::getNodeValue(const QString &indexStr, QDomElement &element)
 {
-    return _xmlParser.getNode(indexStr, element);
+    return d_ptr->_xmlParser.getNode(indexStr, element);
 }
 
 /**********************************************************************************************
@@ -386,7 +445,11 @@ bool Config::getNodeValue(const QString &indexStr, QDomElement &element)
 bool Config::addNode(const QString &indexStr, const QString &tagName, const QString &value,
                      const QMap<QString, QString> &attrs)
 {
-    return _xmlParser.addNode(indexStr, tagName, value, attrs);
+    bool ret = d_ptr->_xmlParser.addNode(indexStr, tagName, value, attrs);
+    if (ret) {
+        requestSave();
+    }
+    return ret;
 }
 
 /**********************************************************************************************
@@ -398,10 +461,14 @@ bool Config::addNode(const QString &indexStr, const QString &tagName, const QStr
  *********************************************************************************************/
 bool Config::removeNode(const QString &indexStr)
 {
-    _cacheLock.lock();
-    _configCache.clear();
-    _cacheLock.unlock();
-    return _xmlParser.removeNode(indexStr);
+    d_ptr->_cacheLock.lock();
+    d_ptr->_configCache.clear();
+    d_ptr->_cacheLock.unlock();
+    bool ret = d_ptr->_xmlParser.removeNode(indexStr);
+    if (ret) {
+        requestSave();
+    }
+    return ret;
 }
 
 /**********************************************************************************************
@@ -413,7 +480,7 @@ bool Config::removeNode(const QString &indexStr)
  *********************************************************************************************/
 bool Config::exist(const QString &indexStr)
 {
-    return _xmlParser.hasNode(indexStr);
+    return d_ptr->_xmlParser.hasNode(indexStr);
 }
 
 /**********************************************************************************************
@@ -425,7 +492,7 @@ bool Config::exist(const QString &indexStr)
  *********************************************************************************************/
 QStringList Config::getChildNodeNameList(const QString &indexStr)
 {
-    return _xmlParser.childElementNameList(indexStr);
+    return d_ptr->_xmlParser.childElementNameList(indexStr);
 }
 
 /**********************************************************************************************
@@ -444,11 +511,15 @@ bool Config::setNodeValue(const QString &indexStr, Config &config)
         return false;
     }
 
-    save();
-    _cacheLock.lock();
-    _configCache.clear();
-    _cacheLock.unlock();
-    return _xmlParser.setNode(indexStr, element);
+    d_ptr->_cacheLock.lock();
+    d_ptr->_configCache.clear();
+    d_ptr->_cacheLock.unlock();
+    bool ret = d_ptr->_xmlParser.setNode(indexStr, element);
+    if (ret)
+    {
+        requestSave();
+    }
+    return ret;
 }
 
 /**************************************************************************************************
@@ -489,7 +560,7 @@ bool Config::setStrValues(const QVector<QString> &paths, const QVector<QString> 
  *************************************************************************************************/
 bool Config::getStrAttr(const QString &indexStr, const QString &attr, QString &value)
 {
-    return _xmlParser.getAttr(indexStr, attr, value);
+    return d_ptr->_xmlParser.getAttr(indexStr, attr, value);
 }
 
 /**************************************************************************************************
@@ -511,8 +582,8 @@ bool Config::setStrAttr(const QString &indexStr, const QString &attr, const QStr
 
     if (value != curText)
     {
-        save();
-        return _xmlParser.setAttr(indexStr, attr, value);
+        requestSave();
+        return _setAttr(indexStr, attr, value);
     }
 
     return true;
@@ -522,16 +593,25 @@ bool Config::setStrAttr(const QString &indexStr, const QString &attr, const QStr
  * 功能：构造函数。
  *************************************************************************************************/
 Config::Config(const QString &configPath)
+    : d_ptr(new ConfigPrivate())
 {
-    _requestToSave = false;
+    d_ptr->_requestToSave = false;
 
-    _allowToSave = true;
+    d_ptr->_allowToSave = true;
 
     _checkBKFile(configPath);
     //如果打开错误则加载出厂配置
-    if (!_xmlParser.open(configPath))
+    if (!d_ptr->_xmlParser.open(configPath))
     {
         _restoreOrigFile(configPath);
-        _xmlParser.open(configPath);
+        d_ptr->_xmlParser.open(configPath);
+    }
+}
+
+Config::~Config()
+{
+    if (d_ptr)
+    {
+        delete d_ptr;
     }
 }

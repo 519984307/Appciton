@@ -85,14 +85,9 @@ void TestXMLParser::testNoExistFile()
 
 void TestXMLParser::testInvalidXmlFile()
 {
-    MockErrorLog mockErrorLog;
-    ErrorLogInterface::registerErrorLog(&mockErrorLog);
-    EXPECT_CALL(mockErrorLog, append(NotNull()));
-
     XmlParser parser;
 
     QCOMPARE(parser.open(m_invalidConfigFile->fileName()), false);
-    QVERIFY(Mock::VerifyAndClearExpectations(&mockErrorLog));
 }
 void TestXMLParser::testAddNode_data()
 {

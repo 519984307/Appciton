@@ -14,6 +14,8 @@
 #include <QFile>
 #include <unistd.h>
 #include <QTimerEvent>
+#include <QDebug>
+
 
 class NurseCallManagerPrivate
 {
@@ -87,8 +89,8 @@ void NurseCallManager::callNurse(AlarmType type, AlarmPriority prio, bool alarmS
     {
         // 每种报警类型和报警优先级是否报警对应一个位
         int pos = type * 3 + prio;
-        bool posAlarmSta = d_ptr->callSta & (1 << pos); // 当前位对应的报警状态
-        if (posAlarmSta != alarmSta) // 护士呼叫状态与当前位对应不相等进行更新护士呼叫状态
+        bool posAlarmSta = d_ptr->callSta & (1 << pos);  // 当前位对应的报警状态
+        if (posAlarmSta != alarmSta)  // 护士呼叫状态与当前位对应不相等进行更新护士呼叫状态
         {
             bool prvSta = d_ptr->callSta;
             if (alarmSta)

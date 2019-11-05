@@ -39,13 +39,11 @@ DEFINES += SRCDIR=\\\"$$PWD/\\\"
 HEADERS += \
     ../../../Components/PatientData/WaveformCache.h \
     TestWaveformCache.h \
-    ../../../Utility/RingBuff/RingBuff.h \
     ../../../Utility/BaseDefine.h \
     ../../../Components/ParamManager/ParamDefine.h \
     ../../../Components/PatientData/WaveformCacheInterface.h
 
 INCLUDEPATH += \
     ../../../Components/PatientData \
-    ../../../Utility/RingBuff \
     ../../../Utility \
     ../../../Components/ParamManager \
