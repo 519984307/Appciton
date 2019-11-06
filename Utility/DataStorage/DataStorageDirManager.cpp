@@ -15,7 +15,7 @@
 #include "TimeManagerInterface.h"
 #include <QMutex>
 #include "WaveformCache.h"
-#include "StorageManager.h"
+#include "Framework/Storage/StorageManager.h"
 #include <QDateTime>
 #include "SystemManagerInterface.h"
 #include "AlarmSourceManager.h"
@@ -83,6 +83,11 @@ void DataStorageDirManager::cleanCurData()
     totalSize = _previousDataSize + _curDataSize;
 
     systemConfig.setNumValue("DataStorage|DataSize", totalSize);
+    /* reload data */
+    QList<StorageManager*> storageManagers = StorageManager::getActiveStorageManager();
+    foreach(StorageManager *mgr, storageManagers) {
+        mgr->reloadData();
+    }
     emit newPatient();
 }
 
@@ -420,15 +425,6 @@ void DataStorageDirManager::createDir(bool createNew)
 
     _curDataSize  = dirSize(_curFolder);
 
-    if (_storageList.count() > 0)
-    {
-        for (int i = 0; i < _storageList.count(); i++)
-        {
-            StorageManager *item = _storageList.at(i);
-            item->createDir();
-        }
-    }
-
     if (_createNew)
     {
         // 新病人，删除上次删掉备份文件，设置时间，恢复主配置文件
@@ -436,6 +432,11 @@ void DataStorageDirManager::createDir(bool createNew)
         timeManager->setElapsedTime();
         Config systemDefCfg(systemConfig.getCurConfigName());
         systemConfig.setNodeValue("PrimaryCfg", systemDefCfg);
+        /* reload data */
+        QList<StorageManager*> storageManagers = StorageManager::getActiveStorageManager();
+        foreach(StorageManager *mgr, storageManagers) {
+            mgr->reloadData();
+        }
         emit newPatient();
         AlarmInterface *alertor = AlarmInterface::getAlarm();
         if (alertor)
@@ -443,11 +444,6 @@ void DataStorageDirManager::createDir(bool createNew)
             alertor->removeAllLimitAlarm();
         }
     }
-}
-
-void DataStorageDirManager::addStorage(StorageManager *storage)
-{
-    _storageList.append(storage);
 }
 
 /**************************************************************************************************

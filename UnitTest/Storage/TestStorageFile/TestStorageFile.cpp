@@ -364,7 +364,8 @@ void TestStorageFile::testAdditionalData_data()
     QTest::addColumn<QByteArray>("data");
     QTest::addColumn<QByteArray>("result");
 
-    char data1[5] = {static_cast<char>(0xff), static_cast<char>(0xff), static_cast<char>(0xff), static_cast<char>(0xff), static_cast<char>(0xff)};
+    char data1[5] = {static_cast<char>(0xff), static_cast<char>(0xff), static_cast<char>(0xff),
+                     static_cast<char>(0xff), static_cast<char>(0xff)};
     char data2[4] = {0x12, 0, 0x56, 0x78};
     char data3[5] = {0, 0, 0, 0, 0};
     QTest::newRow("default constructor, 100 size, string")
@@ -498,7 +499,8 @@ void TestStorageFile::testBlockData_data()
     QTest::addColumn<QByteArray>("data");
     QTest::addColumn<QByteArray>("result");
 
-    char data1[5] = {static_cast<char>(0xff), static_cast<char>(0xff), static_cast<char>(0xff), static_cast<char>(0xff), static_cast<char>(0xff)};
+    char data1[5] = {static_cast<char>(0xff), static_cast<char>(0xff), static_cast<char>(0xff),
+                     static_cast<char>(0xff), static_cast<char>(0xff)};
     char data2[4] = {0x12, 0x0, 0x56, 0x78};
     char data3[5] = {0, 0, 0, 0, 0};
     QTest::newRow("default constructor, string")
@@ -691,8 +693,7 @@ void TestStorageFile::testGetBlockInfo()
 
     m_StorageFile->appendBlockData(type, data.data(), data.count(), extraData);
 
-    BlockEntry info;
-    m_StorageFile->getBlockInfo(0, info);
+    BlockEntry info = m_StorageFile->getBlockInfo(0);
     QCOMPARE(info.type, typeResult);
     QCOMPARE(info.length, dataLen);
     QCOMPARE(info.extraData, extraResult);

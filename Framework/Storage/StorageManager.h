@@ -13,6 +13,7 @@
 #include <QObject>
 #include <QScopedPointer>
 #include "IStorageBackend.h"
+#include <QList>
 
 /***************************************************************************************************
  * StorageManager : Use to perform data storage, Storage manager need a storage backend to store
@@ -46,24 +47,22 @@ public:
     // check whether a storage file exists
     static bool exist(const QString &filename);
 
-    virtual void createDir() { }
+    /**
+     * @brief getActiveStorageManager get the current active storage managers
+     * @return a list of active  storage managers
+     */
+    static QList<StorageManager*> getActiveStorageManager();
+
+    /**
+     * @brief reloadData reload the storage data
+     */
+    virtual void reloadData() {}
 
 protected:
     const QScopedPointer<StorageManagerPrivate> d_ptr;
     StorageManager(StorageManagerPrivate *d_ptr, IStorageBackend *backend);
     // callback when trying to save a block of data
     virtual void saveDataCallback(quint32 dataID, const char *data, quint32 len);
-
-    /**
-     * @brief newPatientHandle　新建病人后的处理
-     */
-    virtual void newPatientHandle(){}
-
-private slots:
-    /**
-     * @brief onNewPatientHandle 新建病人后响应函数
-     */
-    void onNewPatientHandle();
 
 private:
     Q_DECLARE_PRIVATE(StorageManager)

@@ -9,11 +9,11 @@
  **/
 
 #include "StorageFile.h"
-#include "Debug.h"
 #include <QVector>
 #include <QFile>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QDebug>
 #include <unistd.h>
 
 #define STORAGE_FILE_SUFFIX QString::fromLatin1(".seq")
@@ -90,11 +90,11 @@ void StorageFilePrivate::sync()
         // write to storage file
         if (!updateBlockEntryList())
         {
-            debug("Write block entry list failed!");
+            qDebug() << Q_FUNC_INFO << "Write block entry list failed!";
         }
         if (!updateFileHeader())
         {
-            debug("Write File header failed!");
+            qDebug() << Q_FUNC_INFO << "Write File header failed!";
         }
     }
 
@@ -128,7 +128,8 @@ bool StorageFilePrivate::parseOrCreateStorageFile()
         // try to create storage file
         if (!storageFile.resize(0))
         {
-            debug("Resize %s failed:%s", qPrintable(storageFile.fileName()), qPrintable(storageFile.errorString()));
+            qDebug() << Q_FUNC_INFO << "Fail to resize" << storageFile.fileName()
+                     << "," << storageFile.errorString();
             return false;
         }
 
@@ -138,7 +139,7 @@ bool StorageFilePrivate::parseOrCreateStorageFile()
     }
     else if (!header.isValid())
     {
-        debug("File format invalid");
+        qDebug() << Q_FUNC_INFO << "File format invalid";
         return false;
     }
     else
@@ -164,7 +165,8 @@ bool StorageFilePrivate::parseOrCreateStorageFile()
             if (backupFile.open(QIODevice::ReadOnly))
             {
                 FileHeader headerBackup;
-                if (FILE_HEADER_SIZE == backupFile.read(reinterpret_cast<char *>(&headerBackup), FILE_HEADER_SIZE) && headerBackup.isValid())
+                if (FILE_HEADER_SIZE == backupFile.read(reinterpret_cast<char *>(&headerBackup), FILE_HEADER_SIZE)
+                        && headerBackup.isValid())
                 {
                     QVector<BlockEntry> listBackup(headerBackup.blockNumber);
                     quint32 readLen = headerBackup.blockNumber * BLOCK_ENTRY_SIZE;
@@ -182,11 +184,13 @@ bool StorageFilePrivate::parseOrCreateStorageFile()
 
                     if (!parseBackupSuccess)
                     {
-                        if (header.blockNumber != headerBackup.blockNumber || header.blockEntryListOffset != headerBackup.blockEntryListOffset
+                        if (header.blockNumber != headerBackup.blockNumber
+                                || header.blockEntryListOffset != headerBackup.blockEntryListOffset
                                 || header.blockEntryListChecksum != headerBackup.blockEntryListChecksum)
                         {
                             // try to parse with the file header of the original file
-                            qdebug("Parse backup file failed, try to restore file with the original file header");
+                            qDebug() << Q_FUNC_INFO
+                                     << "Parse backup file failed, try to restore file with the original file header";
                             backupFile.seek(FILE_HEADER_SIZE);
                             listBackup.resize(header.blockNumber);
                             readLen = header.blockNumber * BLOCK_ENTRY_SIZE;
@@ -198,7 +202,7 @@ bool StorageFilePrivate::parseOrCreateStorageFile()
                                 parseBackupSuccess = true;
                                 dataChanged = true;
                             }
-                            qdebug("Restore file success");
+                            qDebug() << Q_FUNC_INFO << "Restore file success";
                         }
                     }
                 }
@@ -208,7 +212,7 @@ bool StorageFilePrivate::parseOrCreateStorageFile()
 
         if (!parseBackupSuccess && !parseSuccess)
         {
-            qdebug("Broken file: %s", qPrintable(storageFile.fileName()));
+            qDebug() << Q_FUNC_INFO << "broken file:" << storageFile.fileName();
             return false;
         }
     }
@@ -217,7 +221,7 @@ bool StorageFilePrivate::parseOrCreateStorageFile()
     {
         if (!backupFile.open(QIODevice::ReadWrite))
         {
-            qdebug("Open or create backup file failed!");
+            qDebug() << Q_FUNC_INFO << "Open or create backup file failed!";
         }
 
         if (parseBackupSuccess)
@@ -288,7 +292,7 @@ bool StorageFilePrivate::backupBlockEntryList(bool append)
         }
         else
         {
-            if (backupFile.seek(FILE_HEADER_SIZE)) // right after file header
+            if (backupFile.seek(FILE_HEADER_SIZE))  // right after file header
             {
                 int writeLen = BLOCK_ENTRY_SIZE * fileHeader.blockNumber;
                 return writeLen == backupFile.write((const char *)blockEntryList.constData(), writeLen);
@@ -305,7 +309,7 @@ void StorageFilePrivate::backup(bool append)
 {
     if (!backupBlockEntryList(append) || !backupHeader())
     {
-        qdebug("Write backup file failed!\n");
+        qDebug() << Q_FUNC_INFO << "Write backup file failed!";
         return;
     }
     backupFile.flush();
@@ -324,27 +328,28 @@ quint32 StorageFilePrivate::write(const char *data, quint32 pos, quint32 len)
 
     if (!storageFile.isOpen())
     {
-        qdebug("File is not opened!");
+        qDebug() << Q_FUNC_INFO << "File is not opened!";
         return 0;
     }
 
     if (storageFile.openMode() == QIODevice::ReadOnly)
     {
-        qdebug("File is readonly!");
+        qDebug() << Q_FUNC_INFO << "File is readonly!";
         return 0;
     }
 
     QMutexLocker locker(&fileMutex);
     if (!storageFile.seek(pos))
     {
-        qdebug("%s seek failed!", qPrintable(storageFile.fileName()));
+        qDebug() << Q_FUNC_INFO << storageFile.fileName() << "seek failed!";
         return 0;
     }
 
     int writeLen = storageFile.write(data, len);
     if (writeLen < 0)
     {
-        qdebug("%s write failed:%s", qPrintable(storageFile.fileName()), qPrintable(storageFile.errorString()));
+        qDebug() << Q_FUNC_INFO << storageFile.fileName() << "write failed:"
+                 << storageFile.errorString();
         return 0;
     }
 
@@ -363,13 +368,13 @@ quint32 StorageFilePrivate::read(char *data, quint32 pos, quint32 len)
 
     if (!storageFile.isOpen())
     {
-        qdebug("File is not opened!");
+        qDebug() << Q_FUNC_INFO << "File is not opened!";
         return 0;
     }
 
     if (storageFile.openMode() == QIODevice::WriteOnly)
     {
-        qdebug("File is WriteOnly!");
+        qDebug() << Q_FUNC_INFO << "File is WriteOnly!";
         return 0;
     }
 
@@ -377,14 +382,15 @@ quint32 StorageFilePrivate::read(char *data, quint32 pos, quint32 len)
     QMutexLocker locker(&fileMutex);
     if (!storageFile.seek(pos))
     {
-        qdebug("%s seek failed!", qPrintable(storageFile.fileName()));
+        qDebug() << Q_FUNC_INFO << storageFile.fileName() << "seek failed!";
         return 0;
     }
 
     int readLen = storageFile.read(data, len);
     if (readLen < 0)
     {
-        qdebug("%s read failed:%s", qPrintable(storageFile.fileName()), qPrintable(storageFile.errorString()));
+        qDebug() << Q_FUNC_INFO << storageFile.fileName() << "read failed:"
+                 << storageFile.errorString();
         return 0;
     }
     return readLen;
@@ -405,7 +411,8 @@ bool StorageFilePrivate::updateBlockEntryList()
 {
     quint32 writeLen = fileHeader.blockNumber * BLOCK_ENTRY_SIZE;
     QMutexLocker locker(&entryListMutex);
-    return writeLen == this->write((const char *) blockEntryList.constData(), fileHeader.blockEntryListOffset, writeLen);
+    return writeLen == this->write((const char *) blockEntryList.constData(),
+                                   fileHeader.blockEntryListOffset, writeLen);
 }
 
 /***************************************************************************************************
@@ -430,8 +437,8 @@ StorageFile::StorageFile(const QString &filename, QIODevice::OpenMode openmode)
         // open or create file
         if (!d->storageFile.open(openmode))
         {
-            qdebug("Failed to open or create file %s: %s\n", qPrintable(d->storageFile.fileName()),
-                   qPrintable(d->storageFile.errorString()));
+            qDebug() << Q_FUNC_INFO << "fail to open or create" << d->storageFile.fileName()
+                     << "," << d->storageFile.errorString();
         }
         else
         {
@@ -562,8 +569,8 @@ void StorageFile::reload(const QString &filename, QIODevice::OpenMode openmode)
         // open or create file
         if (!d->storageFile.open(openmode))
         {
-            qdebug("Failed to open or create file %s: %s\n", qPrintable(d->storageFile.fileName()),
-                   qPrintable(d->storageFile.errorString()));
+            qDebug() << Q_FUNC_INFO << "fail to open or create" << d->storageFile.fileName()
+                     << "," << d->storageFile.errorString();
         }
         else
         {
@@ -660,17 +667,17 @@ quint32 StorageFile::getBlockType(quint32 index)
 /***************************************************************************************************
  * getBlockData : get the block data type of specific index
  **************************************************************************************************/
-void StorageFile::getBlockInfo(quint32 index, BlockEntry &info)
+BlockEntry StorageFile::getBlockInfo(quint32 index)
 {
     Q_D(StorageFile);
     if (!d->isValid
             || index >= d->fileHeader.blockNumber)
     {
-        return;
+        return BlockEntry();
     }
 
     QMutexLocker locker(&d->entryListMutex);
-    info = d->blockEntryList.at(index);
+    return d->blockEntryList.at(index);
 }
 
 /***************************************************************************************************
@@ -726,7 +733,7 @@ quint32 StorageFile::appendBlockData(quint32 type, const char *data, quint32 len
     d->entryListMutex.unlock();
     d->dataChanged = true;
 
-    d->storageFile.flush(); // make sure data is written
+    d->storageFile.flush();  // make sure data is written
     fsync(d->storageFile.handle());
 
     d->backup(true);

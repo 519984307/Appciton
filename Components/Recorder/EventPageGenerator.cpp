@@ -426,7 +426,7 @@ RecordPage *EventPageGenerator::createPage()
         {
             RecordPage *page = NULL;
 
-            page = createWaveSegments(d_ptr->waveInfos, d_ptr->curDrawWaveSegment++, recorderManager.getPrintSpeed());
+            page = createWaveSegments(&d_ptr->waveInfos, d_ptr->curDrawWaveSegment++, recorderManager.getPrintSpeed());
 
             return page;
         }

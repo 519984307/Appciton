@@ -125,8 +125,6 @@ private:
     QString _curFolder;              // 当前目录
     QList<struct FolderName> _folderNameList;  // 存储目录下文件夹名称及对应的大小
 
-    QList<StorageManager *> _storageList;
-
     bool _createNew;
 };
 #define dataStorageDirManager (DataStorageDirManager::getInstance())

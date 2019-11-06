@@ -46,4 +46,5 @@ public:
     QList<StorageItem> storageItemList[2];
     QMutex mutex;
     quint8 currentCacheList;
+    static QList<StorageManager *> activeStorageManagers;
 };

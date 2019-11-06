@@ -36,7 +36,8 @@ public:
     bool loadStringList();
 
     // add sub param value to the string list
-    void addSubParamValueToStringList(const TrendDataPackage &datapack, const QList<SubParamID> &subParamIDs, const unsigned eventType);
+    void addSubParamValueToStringList(const TrendDataPackage &datapack, const QList<SubParamID> &subParamIDs,
+                                      const unsigned eventType);
 
     RecordPageGenerator::PageType curPageType;
     IStorageBackend *backend;
@@ -322,7 +323,7 @@ static QString constructNormalValueString(SubParamID subParamId, TrendDataType d
 void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDataPackage &datapack,
         const QList<SubParamID> &subParamIDs, const unsigned eventType)
 {
-    bool needAddCaption = stringLists.isEmpty(); // if the stringLists is empty, we need to add caption;
+    bool needAddCaption = stringLists.isEmpty();  // if the stringLists is empty, we need to add caption;
 
     int index = 0;
 
@@ -553,7 +554,7 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
     }
 }
 
-TrendTablePageGenerator::TrendTablePageGenerator(IStorageBackend *backend, TrendTablePrintInfo &printInfo,
+TrendTablePageGenerator::TrendTablePageGenerator(IStorageBackend *backend, const TrendTablePrintInfo &printInfo,
                                                  const PatientInfo &patientInfo, QObject *parent)
     : RecordPageGenerator(parent), d_ptr(new TrendTablePageGeneratorPrivate)
 {

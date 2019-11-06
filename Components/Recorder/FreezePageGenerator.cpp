@@ -173,7 +173,8 @@ RecordPage *FreezePageGenerator::createPage()
         if (d_ptr->loadWaveData(d_ptr->curDrawWaveSegment))
         {
             RecordPage *page;
-            page = createWaveSegments(d_ptr->waveSegInfos, d_ptr->curDrawWaveSegment++, recorderManager.getPrintSpeed());
+            page = createWaveSegments(&d_ptr->waveSegInfos, d_ptr->curDrawWaveSegment++,
+                                      recorderManager.getPrintSpeed());
 
             d_ptr->checkAndDrawTimestamp(page);
             return page;

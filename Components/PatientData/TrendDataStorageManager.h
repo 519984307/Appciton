@@ -9,7 +9,7 @@
  **/
 
 #pragma once
-#include "StorageManager.h"
+#include "Framework/Storage/StorageManager.h"
 #include "TrendDataDefine.h"
 #include "TrendDataStorageManagerInterface.h"
 
@@ -69,9 +69,8 @@ public:
      */
     TrendDataType getLatestShortTrendData(SubParamID subParam, ShortTrendInterval interval);
 
-protected:
-    /*reimplement*/
-    void newPatientHandle();
+    /* reimplement */
+    void reloadData();
 
 signals:
     void newTrendDataArrived(ShortTrendInterval interval);

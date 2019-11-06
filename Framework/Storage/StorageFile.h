@@ -56,7 +56,7 @@ class StorageFile: public IStorageBackend
 public:
     enum
     {
-        Type = 0x514553 // "SEQ"
+        Type = 0x514553  // "SEQ"
     };
     StorageFile();
     explicit StorageFile(const QString &filename, QIODevice::OpenMode openmode = QIODevice::ReadWrite);
@@ -99,7 +99,7 @@ public:
     quint32 getBlockType(quint32 index);
 
     // override
-    void getBlockInfo(quint32 index, BlockEntry &info);
+    BlockEntry getBlockInfo(quint32 index);
 
     // override
     QVector<BlockEntry> getBlockEntryList();

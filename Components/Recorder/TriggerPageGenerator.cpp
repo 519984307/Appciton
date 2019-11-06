@@ -135,7 +135,7 @@ RecordPage *TriggerPageGenerator::createPage()
                 // fail to fetch wave data
                 return NULL;
             }
-            return createWaveSegments(d_ptr->waveInfos, d_ptr->curDrawWaveSegment++, recorderManager.getPrintSpeed());
+            return createWaveSegments(&d_ptr->waveInfos, d_ptr->curDrawWaveSegment++, recorderManager.getPrintSpeed());
         }
     // fall through
 

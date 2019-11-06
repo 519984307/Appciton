@@ -8,9 +8,9 @@
  ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/25
  **/
 
-#include "StorageManager_p.h"
+#include "Framework/Storage/StorageFile.h"
+#include "Framework/Storage/StorageManager_p.h"
 #include "TrendDataStorageManager.h"
-#include "StorageFile.h"
 #include "DataStorageDirManager.h"
 #include "TimeManager.h"
 #include "IConfig.h"
@@ -530,7 +530,7 @@ TrendDataType TrendDataStorageManager::getLatestShortTrendData(SubParamID subPar
     return InvData();
 }
 
-void TrendDataStorageManager::newPatientHandle()
+void TrendDataStorageManager::reloadData()
 {
     Q_D(TrendDataStorageManager);
     d->backend->reload(dataStorageDirManager.getCurFolder() + TREND_DATA_FILE_NAME,

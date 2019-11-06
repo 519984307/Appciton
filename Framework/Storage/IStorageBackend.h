@@ -71,7 +71,7 @@ public:
     virtual quint32 getBlockType(quint32 index) = 0;
 
     // get the block info in specific index
-    virtual void getBlockInfo(quint32 index, BlockEntry &info) = 0;
+    virtual BlockEntry getBlockInfo(quint32 index) = 0;
 
     // get block entry list
     virtual QVector<BlockEntry> getBlockEntryList() = 0;

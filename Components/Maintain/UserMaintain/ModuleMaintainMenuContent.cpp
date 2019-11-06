@@ -24,7 +24,6 @@
 #include "MessageBox.h"
 #include "LightManager.h"
 #include "AlarmIndicator.h"
-#include "ParamDataDefine.h"
 #include "WindowManager.h"
 #include "SystemManagerInterface.h"
 

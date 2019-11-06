@@ -1568,7 +1568,7 @@ static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegme
     waveInfo.drawCtx.prevSegmentLastYpos = y2;
 }
 
-RecordPage *RecordPageGenerator::createWaveSegments(QList<RecordWaveSegmentInfo> &waveInfos, int segmentIndex,
+RecordPage *RecordPageGenerator::createWaveSegments(QList<RecordWaveSegmentInfo> *waveInfos, int segmentIndex,
         PrintSpeed speed)
 {
     int pageWidth = 25 * RECORDER_PIXEL_PER_MM;
@@ -1591,8 +1591,8 @@ RecordPage *RecordPageGenerator::createWaveSegments(QList<RecordWaveSegmentInfo>
     QFont font = fontManager.recordFont(24);
     painter.setFont(font);
 
-    QList<RecordWaveSegmentInfo>::iterator iter = waveInfos.begin();
-    for (; iter != waveInfos.end(); ++iter)
+    QList<RecordWaveSegmentInfo>::iterator iter = waveInfos->begin();
+    for (; iter != waveInfos->end(); ++iter)
     {
         drawCaption(page, &painter, *iter, segmentIndex);
         drawWaveSegment(page, &painter, *iter, segmentIndex);

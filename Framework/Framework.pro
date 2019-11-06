@@ -26,14 +26,20 @@ SOURCES += \
         Utility/ImageQuant.cpp                                                      \
         Utility/RunLengthEncode.cpp                                                 \
         Config/XmlParser.cpp                                                        \
-        Config/Config.cpp
+        Config/Config.cpp                                                           \
+        Storage/StorageFile.cpp                                                     \
+        Storage/StorageManager.cpp                                                  \
+
 
 HEADERS += \
         Utility/Utility.h                                                           \
         Utility/Unit.h                                                              \
         Utility/RingBuff.h                                                          \
         Config/XmlParser.h                                                          \
-        Config/Config.h
+        Config/Config.h                                                             \
+        Storage/IStorageBackend.h                                                   \
+        Storage/StorageFile.h                                                       \
+        Storage/StorageManager.h                                                    \
 
 DEPENDPATH += \
         Utility                                                                     \

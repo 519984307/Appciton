@@ -304,7 +304,7 @@ RecordPage *ContinuousPageGenerator::createPage()
             }
 
             if (guard) {
-                page = createWaveSegments(d_ptr->waveInfos, d_ptr->curDrawWaveSegment++,
+                page = createWaveSegments(&d_ptr->waveInfos, d_ptr->curDrawWaveSegment++,
                                           recorderManager.getPrintSpeed());
             } else {
                 /* object is already destroyed, return NULL */

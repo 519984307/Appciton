@@ -27,7 +27,7 @@
 #include "AGDefine.h"
 #include "SystemDefine.h"
 #include "EventDataDefine.h"
-#include "IStorageBackend.h"
+#include "Framework/Storage/IStorageBackend.h"
 
 struct RecordWaveSegmentInfo
 {
@@ -39,13 +39,13 @@ struct RecordWaveSegmentInfo
     int maxWaveValue;               // maximum wave value
     int waveBaseLine;               // wave base line
     int sampleRate;                 // wave sample rate
-    QVector<WaveDataType> secondWaveBuff; // wave buffer of one second, the size should equal to sample
+    QVector<WaveDataType> secondWaveBuff;  // wave buffer of one second, the size should equal to sample
 
     struct {
         qreal prevSegmentLastYpos;  // the y value on the previous segment page edge
         qreal curPageFirstXpos;     // the first wave point's x position
         qreal dashOffset;           // dash offset when draw the dash line
-        unsigned short lastWaveFlags; // the wave flags of the last draw wave point
+        unsigned short lastWaveFlags;  // the wave flags of the last draw wave point
         int captionPixLength;       // store the caption pixel length of the wave caption
         QString caption;            // wave caption string
     } drawCtx;                      // wave draw context
@@ -254,7 +254,8 @@ protected:
      * @return a record page
      */
     static RecordPage *createTrendPage(const TrendDataPackage& trendData, bool showEventTime = false,
-                                       const QString  &timeStringCaption = QString(), const QString &trendPageTitle = QString(),
+                                       const QString  &timeStringCaption = QString(),
+                                       const QString &trendPageTitle = QString(),
                                        const QString &extraInfo = QString());
 
     /**
@@ -280,7 +281,7 @@ protected:
      * @param speed print speed
      * @return page
      */
-    static RecordPage *createWaveSegments(QList<RecordWaveSegmentInfo> &waveInfos, int segmentIndex, PrintSpeed speed);
+    static RecordPage *createWaveSegments(QList<RecordWaveSegmentInfo> *waveInfos, int segmentIndex, PrintSpeed speed);
 
 
     /**
@@ -328,6 +329,6 @@ private:
     bool _requestStop;  // request stop flag
     bool _generate;     // generate page or not
     bool _trigger;      // store the trigger flag
-    QBasicTimer _timer; // timer to provide timer event
-    int _timerInterval; // timer interval
+    QBasicTimer _timer;  // timer to provide timer event
+    int _timerInterval;  // timer interval
 };

@@ -16,7 +16,7 @@
 #include "EventInfoWidget.h"
 #include "OxyCRGEventWaveWidget.h"
 #include <QStackedLayout>
-#include "IStorageBackend.h"
+#include "Framework/Storage/IStorageBackend.h"
 #include "EventStorageManager.h"
 #include "Debug.h"
 #include "TableHeaderView.h"

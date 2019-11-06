@@ -41,8 +41,6 @@ SOURCES += \
     ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
     ../../../Utility/DataStorage/DataStorageDirManagerInterface.cpp \
     ../../../Utility/ErrorLog/ErrorLogItem.cpp \
-    ../../../Utility/DataStorage/StorageManager.cpp \
-    ../../../Utility/DataStorage/StorageFile.cpp \
     ../../../Components/Alarm/AlarmInterface.cpp \
     ../../../Components/Alarm/AlarmParamIFace.cpp
 
@@ -61,9 +59,6 @@ HEADERS += \
     ../../../Utility/ErrorLog/ErrorLogInterface.h \
     ../../../Utility/DataStorage/DataStorageDirManagerInterface.h \
     ../../../Utility/ErrorLog/ErrorLogItem.h \
-    ../../../Utility/DataStorage/StorageManager.h \
-    ../../../Utility/DataStorage/StorageManager_p.h \
-    ../../../Utility/DataStorage/StorageFile.h \
     ../../../Components/Alarm/AlarmInterface.h \
     MockTimeManager.h \
     ../../../Components/Alarm/AlarmParamIFace.h \

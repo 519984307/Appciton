@@ -17,7 +17,6 @@ SOURCES += \
     ../../../Utility/LanguageManager/LanguageManager.cpp \
     ../../../SOUP/Json/serializer.cpp \
     ../../../SOUP/Json/parser.cpp \
-    ../../../Utility/DataStorage/StorageFile.cpp \
     ../../../Utility/Config/IConfig.cpp \
     ../../../Utility/ErrorLog/ErrorLogItem.cpp \
     ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
@@ -32,7 +31,6 @@ HEADERS += \
     ../../../Utility/LanguageManager/LanguageManager.h \
     ../../../SOUP/Json/serializer.h \
     ../../../SOUP/Json/parser.h \
-    ../../../Utility/DataStorage/StorageFile.h \
     ../../../Utility/Config/IConfig.h \
     ../../../Utility/ErrorLog/ErrorLogItem.h \
     ../../../Utility/ErrorLog/ErrorLogInterface.h \
@@ -45,7 +43,6 @@ HEADERS += \
 INCLUDEPATH += \
      ../../../Utility/ErrorLog \
      ../../../SOUP/Json \
-    ../../../Utility/DataStorage \
     ../../../Utility/LanguageManager \
     ../../../Utility/Config \
     ../../../Utility/ErrorLog \

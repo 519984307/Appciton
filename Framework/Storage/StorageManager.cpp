@@ -14,7 +14,8 @@
 #include <QMutex>
 #include <QMutexLocker>
 #include "StorageFile.h"
-#include "DataStorageDirManagerInterface.h"
+
+QList<StorageManager*> StorageManagerPrivate::activeStorageManagers;
 
 StorageManagerPrivate::~StorageManagerPrivate()
 {
@@ -39,8 +40,7 @@ StorageManager::StorageManager(IStorageBackend *backend)
 {
     Q_D(StorageManager);
     d->backend = backend;
-    DataStorageDirManagerInterface *dataStorageDirManager = DataStorageDirManagerInterface::getDataStorageDirManager();
-    connect(dataStorageDirManager, SIGNAL(newPatient()), this, SLOT(onNewPatientHandle()));
+    d->activeStorageManagers.append(this);
 }
 
 /***************************************************************************************************
@@ -53,6 +53,7 @@ StorageManager::~StorageManager()
     d->storageItemList[d->currentCacheList].append(d->storageItemList[!d->currentCacheList]);
     d->mutex.unlock();
     saveData();
+    d->activeStorageManagers.removeAll(this);
 }
 
 /***************************************************************************************************
@@ -179,6 +180,11 @@ bool StorageManager::exist(const QString &filename)
     return f.isValid();
 }
 
+QList<StorageManager *> StorageManager::getActiveStorageManager()
+{
+    return StorageManagerPrivate::activeStorageManagers;
+}
+
 /***************************************************************************************************
  * constructor : call by inherited class to perforem Q and D pointer
  **************************************************************************************************/
@@ -187,8 +193,7 @@ StorageManager::StorageManager(StorageManagerPrivate *d_ptr, IStorageBackend *ba
 {
     Q_D(StorageManager);
     d->backend = backend;
-    DataStorageDirManagerInterface *dataStorageDirManager = DataStorageDirManagerInterface::getDataStorageDirManager();
-    connect(dataStorageDirManager, SIGNAL(newPatient()), this, SLOT(onNewPatientHandle()));
+    d->activeStorageManagers.append(this);
 }
 
 void StorageManager::saveDataCallback(quint32 dataID, const char *data, quint32 len)
@@ -197,9 +202,3 @@ void StorageManager::saveDataCallback(quint32 dataID, const char *data, quint32 
     Q_UNUSED(data);
     Q_UNUSED(len);
 }
-
-void StorageManager::onNewPatientHandle()
-{
-    newPatientHandle();
-}
-

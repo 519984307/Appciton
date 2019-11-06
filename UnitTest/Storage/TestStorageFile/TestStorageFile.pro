@@ -30,17 +30,12 @@ include("../../Common/runtest.pri")
 
 SOURCES += \
         TestStorageFile.cpp \ 
-    $$PROJECT_BASE/Utility/DataStorage/StorageFile.cpp \
     main.cpp
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 HEADERS += \
-    $$PROJECT_BASE/Utility/DataStorage/StorageFile.h \
     TestStorageFile.h
-
-INCLUDEPATH += \
-    $$PROJECT_BASE/Utility/DataStorage
 
 RESOURCES += \
     testresource.qrc

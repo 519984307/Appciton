@@ -13,7 +13,7 @@
 #include "ErrorLogItem.h"
 #include "serializer.h"
 #include "parser.h"
-#include "StorageFile.h"
+#include "Framework/Storage/StorageFile.h"
 #include <QMutex>
 #include <QFile>
 #include <QDir>
