@@ -39,6 +39,13 @@ enum SoftBaseKeyType
     SOFT_BASE_KEY_PAT_INFO,
     SOFT_BASE_KEY_PAT_NEW,
     SOFT_BASE_KEY_PAT_DISCHARGE,
+#ifdef VITAVUE_15_INCHES
+    SOFT_BASE_KEY_ALARM_RESET,
+    SOFT_BASE_KEY_ALARM_PAUSE,
+    SOFT_BASE_KEY_RECORD,
+    SOFT_BASE_KEY_NIBP_MEASURE,
+    SOFT_BASE_KEY_FREEZE,
+#endif
     SOFT_BASE_KEY_ECG_LEAD_MODE,
     SOFT_BASE_KEY_ALARM_LIMIT,
     SOFT_BASE_KEY_CODE_MARKER,
@@ -137,6 +144,11 @@ public:    // 一些共有的功能处理。
     static void keyVolume(bool isPressed);
     static void nightMode(bool isPressed);
     static void printSet(bool isPressed);
+    static void alarmReset(bool isPressed);
+    static void alarmPause(bool isPressed);
+    static void manualTirgger(bool isPressed);
+    static void nibpMeasure(bool isPressed);
+    static void freeze(bool isPressed);
 
 public:
     // 获取动作描述总个数。

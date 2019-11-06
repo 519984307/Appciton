@@ -36,6 +36,14 @@
 #include "LayoutManager.h"
 #include "BigFontLayoutWindow.h"
 #include "SoftKeyManager.h"
+#include "NIBPParam.h"
+#include "RecorderManager.h"
+#include "TrendCache.h"
+#include "TrendDataStorageManager.h"
+#include "TimeManager.h"
+#include "ContinuousPageGenerator.h"
+#include "FreezeWindow.h"
+#include "Alarm.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -47,6 +55,13 @@ static KeyActionDesc _baseKeys[] =
     KeyActionDesc("", "Patient", "PatientInfo.png", SoftkeyActionBase::patientInfo),
     KeyActionDesc("", "Admit", "PatientNew.png", SoftkeyActionBase::patientNew),
     KeyActionDesc("", "Discharge", "PatientDischarge.png", SoftkeyActionBase::patientRelieve),
+#ifdef VITAVUE_15_INCHES
+    KeyActionDesc("", "AlarmReset", "AlarmResetSoftkey.png", SoftkeyActionBase::alarmReset),
+    KeyActionDesc("", "AlarmPause", "AlarmPauseSoftkey.png", SoftkeyActionBase::alarmPause),
+    KeyActionDesc("", "Print", "manualTirgger.png", SoftkeyActionBase::manualTirgger),
+    KeyActionDesc("", "NIBP", "NIBPMeasure.png", SoftkeyActionBase::nibpMeasure),
+    KeyActionDesc("", "Freeze", "freeze.png", SoftkeyActionBase::freeze),
+#endif
     KeyActionDesc("", "ECGCalcLead", "LeadSelection.png", SoftkeyActionBase::ecgLeadChange),
     KeyActionDesc("", "AlarmLimitMenu", "limitSet.png", SoftkeyActionBase::limitMenu),
     KeyActionDesc("", "CodeMarker", "CodeMarker.png", SoftkeyActionBase::codeMarker),
@@ -420,6 +435,106 @@ void SoftkeyActionBase::printSet(bool isPressed)
     }
     MainMenuWindow *w = MainMenuWindow::getInstance();
     w->popup(trs("PrintSettingMenu"));
+}
+
+void SoftkeyActionBase::alarmReset(bool isPressed)
+{
+    if (isPressed)
+    {
+        alertor.updateResetKeyStatus(true);
+    }
+    else
+    {
+        alertor.updateResetKeyStatus(false);
+    }
+}
+
+void SoftkeyActionBase::alarmPause(bool isPressed)
+{
+    if (isPressed)
+    {
+        alertor.updateMuteKeyStatus(true);
+    }
+    else
+    {
+        alertor.updateMuteKeyStatus(false);
+    }
+}
+
+void SoftkeyActionBase::manualTirgger(bool isPressed)
+{
+    if (isPressed)
+    {
+        return;
+    }
+
+    // print
+    if (recorderManager.isPrinting())
+    {
+        recorderManager.stopPrint();
+    }
+    else if (!recorderManager.getPrintStatus())
+    {
+        unsigned t = timeManager.getCurTime();
+        recorderManager.addPageGenerator(new ContinuousPageGenerator());
+        trendCache.collectTrendData(t);
+        trendCache.collectTrendAlarmStatus(t);
+        trendDataStorageManager.storeData(t, TrendDataStorageManager::CollectStatusPrint);
+    }
+}
+
+void SoftkeyActionBase::nibpMeasure(bool isPressed)
+{
+    if (isPressed)
+    {
+        // nibp 维护模式和demo模式、开机较零模式不响应nibp测量按钮
+        if (systemManager.isSupport(CONFIG_NIBP) && systemManager.getCurWorkMode() != WORK_MODE_DEMO
+                && !nibpParam.isMaintain() && !nibpParam.isZeroSelfTestState())
+        {
+            nibpParam.keyPressed();
+        }
+    }
+    else
+    {
+        //  维护模式和demo模式不响应nibp测量按钮
+        if (systemManager.isSupport(CONFIG_NIBP) && systemManager.getCurWorkMode() != WORK_MODE_DEMO
+                && !nibpParam.isMaintain() && !nibpParam.isZeroSelfTestState())
+        {
+            nibpParam.keyReleased();
+        }
+    }
+}
+
+void SoftkeyActionBase::freeze(bool isPressed)
+{
+    if (isPressed)
+    {
+        return;
+    }
+
+    static QPointer<FreezeWindow> currentFreezeWindow;
+
+    if (layoutManager.getUFaceType() == UFACE_MONITOR_BIGFONT)
+    {
+        // should not freeze when in big font interface
+        return;
+    }
+
+    if (currentFreezeWindow)
+    {
+        currentFreezeWindow->done(0);
+        return;
+    }
+
+    while (NULL != QApplication::activeModalWidget())
+    {
+        QApplication::activeModalWidget()->close();
+    }
+
+    windowManager.closeAllWidows();
+    FreezeWindow freezeWindow;
+    currentFreezeWindow = &freezeWindow;
+    freezeWindow.exec();
 }
 
 /***************************************************************************************************
