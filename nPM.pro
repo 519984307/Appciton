@@ -126,8 +126,8 @@ DEFINES += HIDE_SCREEN_LAYOUT
 #支持ECG监护模式下，关闭陷波滤波
 #DEFINES += ECG_MONITOR_NOTIFY_FILTER_OFF
 
-#Vitavue 12/15寸机器
-#DEFINES += VITAVUE_12_15_INCHES
+#Vitavue 15寸机器
+#DEFINES += VITAVUE_15_INCHES
 
 # Depending libraries
 LIBS += -ldl -lasound -lz

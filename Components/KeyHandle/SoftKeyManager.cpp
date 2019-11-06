@@ -412,7 +412,7 @@ void SoftKeyManager::setContent(SoftKeyActionType type)
 #endif
 
     int index = 0;
-#ifndef VITAVUE_12_15_INCHES
+#ifndef VITAVUE_15_INCHES
     machineConfig.getModuleInitialStatus("TouchEnable", reinterpret_cast<bool*>(&index));
 #endif
     setKeyTypeAvailable(SOFT_BASE_KEY_SCREEN_BAN, index);

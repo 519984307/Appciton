@@ -55,7 +55,7 @@ static KeyActionDesc _baseKeys[] =
     KeyActionDesc("", "Patient", "PatientInfo.png", SoftkeyActionBase::patientInfo),
     KeyActionDesc("", "Admit", "PatientNew.png", SoftkeyActionBase::patientNew),
     KeyActionDesc("", "Discharge", "PatientDischarge.png", SoftkeyActionBase::patientRelieve),
-#ifdef VITAVUE_12_15_INCHES
+#ifdef VITAVUE_15_INCHES
     KeyActionDesc("", "AlarmReset", "AlarmResetSoftkey.png", SoftkeyActionBase::alarmReset),
     KeyActionDesc("", "AlarmPause", "AlarmPauseSoftkey.png", SoftkeyActionBase::alarmPause),
     KeyActionDesc("", "Print", "manualTirgger.png", SoftkeyActionBase::manualTirgger),

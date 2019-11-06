@@ -23,7 +23,7 @@ static KeyActionDesc _monitorKeys[] =
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_INFO),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_NEW),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_DISCHARGE),
-#ifdef VITAVUE_12_15_INCHES
+#ifdef VITAVUE_15_INCHES
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_ALARM_RESET),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_ALARM_PAUSE),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_RECORD),

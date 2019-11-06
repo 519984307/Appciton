@@ -46,7 +46,7 @@ public:
         ITEM_CBO_SCREEN_BRIGHTNESS,
         ITEM_CBO_KEYPRESS_VOLUME,
 #ifdef Q_WS_QWS
-#ifndef VITAVUE_12_15_INCHES
+#ifndef VITAVUE_15_INCHES
         ITEM_CBO_TOUCH_SCREEN,
 #endif
 #endif
@@ -115,7 +115,7 @@ void NormalFunctionMenuContentPrivate::loadOptions()
     }
 
 #ifdef Q_WS_QWS
-#ifndef VITAVUE_12_15_INCHES
+#ifndef VITAVUE_15_INCHES
     // 加载数据时，强制锁住该信号。该信号会触发openMouse()函数，在调试期间，openMouse函数会有堵塞现象.
     combos[ITEM_CBO_TOUCH_SCREEN]->blockSignals(true);
     if (!systemManager.isSupport(CONFIG_TOUCH))
@@ -225,7 +225,7 @@ void NormalFunctionMenuContent::layoutExec()
     d_ptr->combos.insert(NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME , comboBox);
 
 #ifdef Q_WS_QWS
-#ifndef VITAVUE_12_15_INCHES
+#ifndef VITAVUE_15_INCHES
     // touch screen function
     label = new QLabel(trs("TouchScreen"));
     layout->addWidget(label, row, 0);
@@ -354,7 +354,7 @@ void NormalFunctionMenuContent::onComboBoxIndexChanged(int index)
             break;
         }
 #ifdef Q_WS_QWS
-#ifndef VITAVUE_12_15_INCHES
+#ifndef VITAVUE_15_INCHES
         case NormalFunctionMenuContentPrivate::ITEM_CBO_TOUCH_SCREEN:
         {
             systemManager.setTouchScreenOnOff(index);
