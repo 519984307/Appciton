@@ -27,7 +27,6 @@ SOURCES += main.cpp \
     ../../../Utility/FontManager/FontManagerInterface.cpp \
     ../../../Utility/DataStorage/DataStorageDirManagerInterface.cpp \
     ../../../Utility/Widgets/Base/Dialog.cpp \
-    ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
     ../../../Components/WindowManager/WindowManagerInterface.cpp \
     ../../../Components/PatientManager/PatientInfoWindowInterface.cpp \
     ../../../Components/System/SystemManagerInterface.cpp \
@@ -37,7 +36,6 @@ SOURCES += main.cpp \
     ../../../Params/ECGParam/ECGParamInterface.cpp \
     ../../../Params/ECGParam/ECGDupParamInterface.cpp \
     ../../../Utility/Config/IConfig.cpp \
-    ../../../Utility/ErrorLog/ErrorLogItem.cpp \
     ../../../Utility/Widgets/Base/Button.cpp \
     ../../../Utility/Widgets/Base/ThemeManager.cpp \
     ../../../Components/SoundManager/SoundManagerInterface.cpp
@@ -52,7 +50,6 @@ HEADERS += \
     ../../../Utility/FontManager/FontManagerInterface.h \
     ../../../Utility/DataStorage/DataStorageDirManagerInterface.h \
     ../../../Utility/Widgets/Base/Dialog.h \
-    ../../../Utility/ErrorLog/ErrorLogInterface.h \
     ../../../Components/WindowManager/WindowManagerInterface.h \
     ../../../Components/PatientManager/PatientInfoWindowInterface.h \
     ../../../Components/System/SystemManagerInterface.h \
@@ -62,7 +59,6 @@ HEADERS += \
     ../../../Params/ECGParam/ECGParamInterface.h \
     ../../../Params/ECGParam/ECGDupParamInterface.h \
     ../../../Utility/Config/IConfig.h \
-    ../../../Utility/ErrorLog/ErrorLogItem.h \
     ../../../Utility/Widgets/Base/Button.h \
     ../../../Utility/Widgets/Base/ThemeManager.h \
     ../../Utility/MockFontManager.h \
@@ -80,7 +76,6 @@ INCLUDEPATH += \
     ../../../Components/System \
     ../../../Utility/FontManager \
     ../../../Utility/Widgets/Base \
-    ../../../Utility/ErrorLog \
     ../../Params \
     ../../../Params/ECGParam \
     ../../../Params/O2Param \

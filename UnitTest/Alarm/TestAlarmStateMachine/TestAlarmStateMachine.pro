@@ -32,8 +32,6 @@ SOURCES += main.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmResetState.cpp \
     ../../../Components/LightManager/LightManagerInterface.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmStateMachineInterface.cpp \
-    ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
-    ../../../Utility/ErrorLog/ErrorLogItem.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmState.cpp \
     ../../../Components/Alarm/AlarmIndicatorInterface.cpp
 
@@ -48,8 +46,6 @@ HEADERS += \
     ../../../Components/Alarm/AlarmStateMachine/AlarmResetState.h \
     ../../../Components/LightManager/LightManagerInterface.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmStateMachineInterface.h \
-    ../../../Utility/ErrorLog/ErrorLogInterface.h \
-    ../../../Utility/ErrorLog/ErrorLogItem.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmState.h \
     ../../../Components/Alarm/AlarmIndicatorInterface.h \
     ../MockAlarmIndicator.h \
@@ -62,7 +58,6 @@ INCLUDEPATH += \
     ../../../Utility/LanguageManager \
     ../../../Utility/Config \
     ../../../Components/LightManager \
-    ../../../Utility/ErrorLog \
     ..
 
 RESOURCES += \

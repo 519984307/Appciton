@@ -32,8 +32,6 @@ SOURCES += main.cpp \
     ../../../Components/Alarm/AlarmIndicatorInterface.cpp \
     ../../../Params/O2Param/O2ParamInterface.cpp \
     ../../../Components/System/SystemManagerInterface.cpp \
-    ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
-    ../../../Utility/ErrorLog/ErrorLogItem.cpp \
     ../../../Components/System/Widgets/RunningStatusBarInterface.cpp
 
 HEADERS += \
@@ -52,8 +50,6 @@ HEADERS += \
     ../../../Components/Alarm/AlarmIndicatorInterface.h \
     ../../../Params/O2Param/O2ParamInterface.h \
     ../../../Components/System/SystemManagerInterface.h \
-    ../../../Utility/ErrorLog/ErrorLogInterface.h \
-    ../../../Utility/ErrorLog/ErrorLogItem.h \
     ../../Utility/MockConfigManager.h \
     ../../Params/MockECGParam.h \
     ../../Utility/MockSystemManager.h \
@@ -75,7 +71,6 @@ INCLUDEPATH += \
     ../../../Params/NIBPParam \
     ../../../Components/Alarm \
     ../../../Components/System \
-    ../../../Utility/ErrorLog \
     ../../../Utility/LanguageManager \
     ../../Utility \
     ../../Params \

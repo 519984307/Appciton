@@ -23,8 +23,8 @@
 #include "TimeManager.h"
 #include "TimeDate.h"
 #include <sys/time.h>
-#include "ErrorLog.h"
-#include "ErrorLogItem.h"
+#include "Framework/ErrorLog/ErrorLog.h"
+#include "Framework/ErrorLog/ErrorLogItem.h"
 #include "IConfig.h"
 #include "WindowManager.h"
 #include "RawDataCollector.h"

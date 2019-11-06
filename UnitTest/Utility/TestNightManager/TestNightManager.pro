@@ -28,8 +28,6 @@ SOURCES += main.cpp \
     ../../../Components/WindowManager/IWidget.cpp \
     ../../../Params/NIBPParam/NIBPParamInterface.cpp \
     ../../../Components/ConfigManager/ConfigManagerInterface.cpp \
-    ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
-    ../../../Utility/ErrorLog/ErrorLogItem.cpp \
     ../../../Components/System/Widgets/RunningStatusBarInterface.cpp \
 
 HEADERS += \
@@ -42,8 +40,6 @@ HEADERS += \
     ../../../Components/WindowManager/IWidget.h \
     ../../../Params/NIBPParam/NIBPParamInterface.h \
     ../../../Components/ConfigManager/ConfigManagerInterface.h \
-    ../../../Utility/ErrorLog/ErrorLogInterface.h \
-    ../../../Utility/ErrorLog/ErrorLogItem.h \
     ../../../Components/PatientManager/PatientDefine.h \
     ../../../Components/System/Widgets/RunningStatusBarInterface.h \
     ../../../Components/System/SystemDefine.h \
@@ -64,7 +60,6 @@ INCLUDEPATH += \
     ../../../Components/WindowManager \
     ../../../Params/NIBPParam \
     ../../../Components/ConfigManager \
-    ../../../Utility/ErrorLog \
     ../../../Components/PatientManager \
     ../../../Components/Alarm \
     ../../../Components/ParamManager \

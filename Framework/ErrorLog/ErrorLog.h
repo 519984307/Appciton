@@ -10,7 +10,7 @@
 
 #pragma once
 #include <QScopedPointer>
-#include "Framework/Utility/Utility.h"
+#include "../Utility/Utility.h"
 #include "ErrorLogInterface.h"
 
 class ErrorLogItemBase;

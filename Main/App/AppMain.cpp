@@ -14,8 +14,8 @@
 #include "Starter.h"
 #include "Debug.h"
 #include "Init.h"
-#include "ErrorLog.h"
-#include "ErrorLogItem.h"
+#include "Framework/ErrorLog/ErrorLogItem.h"
+#include "Framework/ErrorLog/ErrorLog.h"
 #include "LayoutManager.h"
 #include <unistd.h>
 #include "ConfigManager.h"
@@ -252,7 +252,7 @@ static void _stop(void)
 /**************************************************************************************************
  * 功能： 主函数入口。
  *************************************************************************************************/
-void appMain(IApplication &app)
+void appMain(IApplication *app)
 {
     // 创建对象。
     newObjects();
@@ -260,7 +260,7 @@ void appMain(IApplication &app)
 
     _start();            // 启动子系统。
 
-    app.exec();          // 执行主循环。
+    app->exec();          // 执行主循环。
     _stop();             // 停止子系统。
 
     // 退出前释放创建的对象。

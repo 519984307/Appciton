@@ -32,11 +32,9 @@ SOURCES += main.cpp \
     ../../../Utility/FontManager/FontManagerInterface.cpp \
     ../../../Components/Alarm/AlarmInterface.cpp \
     ../../../Components/Alarm/Widgets/AlarmInfoBarWidget.cpp \
-    ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
     ../../../Utility/Widgets/Base/Button.cpp \
     ../../../Utility/Widgets/Base/ThemeManager.cpp \
     ../../../Components/WindowManager/WindowManagerInterface.cpp \
-    ../../../Utility/ErrorLog/ErrorLogItem.cpp \
     ../../../Components/Alarm/AlarmIndicatorInterface.cpp \
     ../../../Components/Alarm/AlarmParamIFace.cpp \
     ../../../Components/Alarm/NurseCallManagerInterface.cpp
@@ -59,11 +57,9 @@ HEADERS += \
     ../../../Utility/FontManager/FontManagerInterface.h \
     ../../../Components/Alarm/AlarmInterface.h \
     ../../../Components/Alarm/Widgets/AlarmInfoBarWidget.h \
-    ../../../Utility/ErrorLog/ErrorLogInterface.h \
     ../../../Utility/Widgets/Base/Button.h \
     ../../../Utility/Widgets/Base/ThemeManager.h \
     ../../../Components/WindowManager/WindowManagerInterface.h \
-    ../../../Utility/ErrorLog/ErrorLogItem.h \
     ../../../Components/Alarm/AlarmIndicatorInterface.h \
     ../../../Components/Alarm/AlarmParamIFace.h \
     ../MockAlarm.h \
@@ -87,7 +83,6 @@ INCLUDEPATH += \
     ../../../Components/ParamManager \
     ../../../Utility/FontManager \
     ../../../Components/Alarm/Widgets \
-    ../../../Utility/ErrorLog \
     ../../../Utility/Widgets/Base \
     .. \
     ../../Utility

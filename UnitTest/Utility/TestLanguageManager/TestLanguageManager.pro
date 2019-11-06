@@ -23,8 +23,6 @@ SOURCES += main.cpp \
     TestLanguageManager.cpp \
     ../../../Utility/LanguageManager/LanguageManager.cpp \
     ../../../Utility/Config/IConfig.cpp \
-    ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
-    ../../../Utility/ErrorLog/ErrorLogItem.cpp
 
 HEADERS += \
     TestLanguageManager.h \
@@ -32,13 +30,10 @@ HEADERS += \
     ../../../Utility/Config/IConfig.h \
     ../../../Components/PatientManager/PatientDefine.h \
     ../../../Utility/BaseDefine.h \
-    ../../../Utility/ErrorLog/ErrorLogInterface.h \
-    ../../../Utility/ErrorLog/ErrorLogItem.h \
     ../../../Components/PatientManager/PatientDefine.h
 
 INCLUDEPATH += \
     ../../../Utility \
     ../../../Utility/LanguageManager \
     ../../../Utility/Config \
-    ../../../Utility/ErrorLog \
     ../../../Components/PatientManager

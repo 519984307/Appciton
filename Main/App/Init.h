@@ -12,7 +12,6 @@
 #pragma once
 
 #include "IThread.h"
-#include "ErrorLog.h"
 
 #include "OxyCRGRRHRWaveWidget.h"
 #include "OxyCRGTrendWaveWidget.h"

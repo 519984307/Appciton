@@ -13,8 +13,8 @@
 #include "Debug.h"
 #include <QString>
 #include "SystemManager.h"
-#include "ErrorLog.h"
-#include "ErrorLogItem.h"
+#include "Framework/ErrorLog/ErrorLog.h"
+#include "Framework/ErrorLog/ErrorLogItem.h"
 #include "RawDataCollector.h"
 #include "IConfig.h"
 #include "AlarmSourceManager.h"

@@ -27,8 +27,6 @@ SOURCES += main.cpp \
     ../../../Components/LightManager/LightManagerInterface.cpp \
     ../../../Utility/Config/IConfig.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmState.cpp \
-    ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
-    ../../../Utility/ErrorLog/ErrorLogItem.cpp
 
 HEADERS += \
     TestAlarmPauseState.h \
@@ -39,8 +37,6 @@ HEADERS += \
     ../../../Components/LightManager/LightManagerInterface.h \
     ../../../Utility/Config/IConfig.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmState.h \
-    ../../../Utility/ErrorLog/ErrorLogInterface.h \
-    ../../../Utility/ErrorLog/ErrorLogItem.h \
     ../MockAlarmIndicator.h \
     ../MockAlarmStateMachine.h \
     ../MockLightManager.h
@@ -51,5 +47,4 @@ INCLUDEPATH += \
     ../../../Components/LightManager \
     ../../../Utility/LanguageManager \
     ../../../Utility/Config \
-    ../../../Utility/ErrorLog \
     ..

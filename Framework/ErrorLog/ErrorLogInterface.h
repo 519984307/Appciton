@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the Project project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2019/11/6
+ **/
+
 #pragma once
 #include "ErrorLogItem.h"
 
@@ -5,13 +15,12 @@ class ErrorLogInterface
 {
 public:
     struct Summary {
-        int NumOfErrors;                        //number of errors
-        int numOfCriticalErrors;                //number of critical errors
-        QString mostRecentErrorDate;            //most recent error
-        QString mostRecentCriticalErrorDate;    //most recent cirtical error
-        QString oldestErrorDate;                //oldest error
-        QString lastEraseTimeDate;              //last erase time
-        int totalShockCount;                    //total shock count
+        int NumOfErrors;                        // number of errors
+        int numOfCriticalErrors;                // number of critical errors
+        QString mostRecentErrorDate;            // most recent error
+        QString mostRecentCriticalErrorDate;    // most recent cirtical error
+        QString oldestErrorDate;                // oldest error
+        int totalShockCount;                    // total shock count
     };
 
     virtual ~ErrorLogInterface() {}
@@ -39,7 +48,7 @@ public:
     /**
      * @brief clear clear all the log
      */
-    virtual void clear() = 0 ;
+    virtual void clear() = 0;
 
     /**
      * @brief getTypeCount get log item number of specific type

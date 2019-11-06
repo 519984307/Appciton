@@ -61,7 +61,7 @@ ErrorLogViewerWindow::ErrorLogViewerWindow(ErrorLogItemBase *item)
     d_ptr->text->setWordWrap(true);
     QString str;
     QTextStream stream(&str);
-    item->outputInfo(stream);
+    item->outputInfo(&stream);
     d_ptr->text->setText(str);
 
     d_ptr->area = new ScrollArea();

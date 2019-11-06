@@ -161,9 +161,6 @@ SOURCES +=                                                                      
     Utility/Config/IConfig.cpp                                                  \
     Utility/DataStorage/DataStorageDirManager.cpp                               \
     Utility/DataStorage/DataStorageDirManagerInterface.cpp                      \
-    Utility/ErrorLog/ErrorLogInterface.cpp                                      \
-    Utility/ErrorLog/ErrorLog.cpp                                               \
-    Utility/ErrorLog/ErrorLogItem.cpp                                           \
     Utility/ErrorLog/ErrorLogViewerWindow.cpp                                   \
     Utility/ErrorLog/ErrorLogTableModel.cpp                                     \
     Utility/ErrorLog/ErrorLogWindow.cpp                                         \
@@ -586,9 +583,6 @@ HEADERS +=                                                                      
     Utility/DataStorage/DataStorageDefine.h                                     \
     Utility/DataStorage/DataStorageDirManager.h                                 \
     Utility/DataStorage/DataStorageDirManagerInterface.h                        \
-    Utility/ErrorLog/ErrorLogInterface.h                                        \
-    Utility/ErrorLog/ErrorLog.h                                                 \
-    Utility/ErrorLog/ErrorLogItem.h                                             \
     Utility/ErrorLog/ErrorLogViewerWindow.h                                     \
     Utility/ErrorLog/ErrorLogTableModel.h                                       \
     Utility/ErrorLog/ErrorLogWindow.h                                           \

@@ -11,19 +11,18 @@
 
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"
-#include "Framework/SOUP/Json/serializer.h"
-#include "Framework/SOUP/Json/parser.h"
-#include "Framework/Storage/StorageFile.h"
+#include "SOUP/Json/serializer.h"
+#include "SOUP/Json/parser.h"
+#include "Storage/StorageFile.h"
 #include <QMutex>
 #include <QFile>
 #include <QDir>
-#include "Debug.h"
 #include <QMutexLocker>
 #include <unistd.h>
 #include <QApplication>
-#include "IConfig.h"
 #include <QDateTime>
 #include <QHash>
+#include <QDebug>
 
 #define ERRORLOGNEW "/usr/local/nPM/data/errorlog_new"
 #define ERRORLOGOLD "/usr/local/nPM/data/errorlog_old"
@@ -91,7 +90,7 @@ void ErrorLogPrivate::loadfile()
 
     if (broken)
     {
-        qdebug("Error log is broken.");
+        qDebug() << Q_FUNC_INFO << "Error log is broken.";
     }
 }
 
@@ -353,13 +352,6 @@ ErrorLog::Summary ErrorLog::getSummary()
     if ((item = getLog(count() - 1)))
     {
         summary.oldestErrorDate = item->getTime();
-    }
-
-    unsigned int num = 0;
-    systemConfig.getNumValue("ErrorLogEraseTime", num);
-    if (num > 0)
-    {
-        summary.lastEraseTimeDate = QDateTime::fromTime_t(num).toString("yyyy-MM-dd HH:mm:ss");
     }
 
     return summary;

@@ -11,8 +11,8 @@
 #include "ErrorLogTableModel.h"
 #include "ThemeManager.h"
 #include "LanguageManager.h"
-#include "ErrorLogItem.h"
-#include "ErrorLog.h"
+#include "Framework/ErrorLog/ErrorLogItem.h"
+#include "Framework/ErrorLog/ErrorLog.h"
 #include <QIcon>
 #include "WindowManager.h"
 

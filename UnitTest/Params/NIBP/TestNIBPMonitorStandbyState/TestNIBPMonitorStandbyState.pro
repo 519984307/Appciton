@@ -30,9 +30,7 @@ SOURCES += \
     ../../../../Params/NIBPParam/NIBPStateMachine/NIBPMonitorStateMachine/NIBPMonitorStandbyState.cpp \
     ../../../../Params/NIBPParam/NIBPStateMachine/NIBPStateMachine.cpp \
     ../../../../Utility/LanguageManager/LanguageManager.cpp \
-    ../../../../Utility/ErrorLog/ErrorLogInterface.cpp \
     ../../../../Params/NIBPParam/NIBPTrigger/NIBPCountdownTimeInterface.cpp \
-    ../../../../Utility/ErrorLog/ErrorLogItem.cpp \
     ../../../../Components/System/SystemManagerInterface.cpp \
     ../../../../Params/NIBPParam/NIBPParamInterface.cpp \
     ../../../../Params/NIBPParam/NIBPStateMachine/NIBPState.cpp \
@@ -50,13 +48,11 @@ HEADERS += \
     ../../../../Params/NIBPParam/NIBPSymbol.h \
     ../../../../Params/NIBPParam/NIBPProviderIFace.h \
     ../../../../Utility/LanguageManager/LanguageManager.h \
-    ../../../../Utility/ErrorLog/ErrorLogInterface.h \
     ../../../../Utility/Config/IConfig.h \
     ../../../../Params/NIBPParam/NIBPTrigger/NIBPCountdownTimeInterface.h \
     ../../../../Components/PatientManager/PatientDefine.h \
     ../../../../Components/System/SystemManagerInterface.h \
     ../../../../Utility/BaseDefine.h \
-    ../../../../Utility/ErrorLog/ErrorLogItem.h \
     ../../../../Params/NIBPParam/NIBPParamInterface.h \
     ../../../../Params/NIBPParam/NIBPEventDefine.h \
     ../../../../Params/NIBPParam/NIBPStateMachine/NIBPStateMachineDefine.h \
@@ -70,7 +66,6 @@ INCLUDEPATH += \
     ../../../../Params/NIBPParam \
     ../../../../Utility/LanguageManager \
     ../../../../Utility/Config \
-    ../../../../Utility/ErrorLog \
     ../../../../Params/NIBPParam/NIBPTrigger \
     ../../../../Components/PatientManager \
     ../../../../Components/System \

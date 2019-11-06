@@ -18,8 +18,8 @@
 #include <sys/time.h>
 #include "RawDataCollector.h"
 #include "SystemManager.h"
-#include "ErrorLogItem.h"
-#include "ErrorLog.h"
+#include "Framework/ErrorLog/ErrorLog.h"
+#include "Framework/ErrorLog/ErrorLogItem.h"
 #include "IConfig.h"
 #include "AlarmSourceManager.h"
 #include "LanguageManager.h"
@@ -303,7 +303,6 @@ bool S5Provider::isResultSPO2PR(unsigned char *packet)
  *************************************************************************************************/
 bool S5Provider::isResult_BAR(unsigned char *packet)
 {
-
     if (packet[0] != S5_NOTIFY_WAVE)
     {
         return false;

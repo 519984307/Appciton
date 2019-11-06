@@ -13,8 +13,8 @@
 #include "NIBPParam.h"
 #include "NIBPAlarm.h"
 #include "NIBPMaintainMgrInterface.h"
-#include "ErrorLog.h"
-#include "ErrorLogItem.h"
+#include "Framework/ErrorLog/ErrorLog.h"
+#include "Framework/ErrorLog/ErrorLogItem.h"
 
 /**************************************************************************************************
  * 进入该状态。

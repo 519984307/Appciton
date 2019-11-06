@@ -34,8 +34,6 @@ SOURCES += main.cpp \
     ../../../Params/ECGParam/ECGParamInterface.cpp \
     ../../../Components/Alarm/AlarmInterface.cpp \
     ../../../Components/ParamManager/ParamInfoInterface.cpp \
-    ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
-    ../../../Utility/ErrorLog/ErrorLogItem.cpp \
     ../../../Components/Alarm/AlarmParamIFace.cpp
 
 HEADERS += \
@@ -61,8 +59,6 @@ HEADERS += \
     ../../../Params/ECGParam/ECGParamInterface.h \
     ../../../Components/Alarm/AlarmInterface.h \
     ../../../Components/ParamManager/ParamInfoInterface.h \
-    ../../../Utility/ErrorLog/ErrorLogInterface.h \
-    ../../../Utility/ErrorLog/ErrorLogItem.h \
     ../../../Components/Alarm/AlarmParamIFace.h \
     ../MockAlarmStateMachine.h \
     ../../Params/MockParamInfo.h \
@@ -91,7 +87,6 @@ INCLUDEPATH += \
     ../../../Params/TEMPParam \
     ../../../Params/NIBPParam \
     ../../../Params/O2Param \
-    ../../../Utility/ErrorLog \
     .. \
     ../../Storage \
     ../../Trend \

@@ -12,7 +12,6 @@
 
 #include "ErrorLogItem.h"
 #include <QFile>
-#include "LanguageManager.h"
 
 void ErrorLogItemBase::setPdCommLogCache(const QVariantList &cachelist)
 {
@@ -26,9 +25,6 @@ void ErrorLogItemBase::setSubSystem(ErrorLogItemBase::SubSystem subSys)
     {
     case SUB_SYS_MAIN_PROCESSOR:
         subSysStr = "Main Processor";
-        break;
-    case SUB_SYS_PD_MODULE:
-        subSysStr = "P/D Module";
         break;
     case SUB_SYS_SYSTEM_BOARD:
         subSysStr = "System Board";
@@ -126,53 +122,23 @@ int ErrorLogItem::type() const
     return Type;
 }
 
-void ErrorLogItem::outputInfo(QTextStream &stream) const
+void ErrorLogItem::outputInfo(QTextStream *stream) const
 {
     ErrorLogItemBase::outputInfo(stream);
     if (content.contains("subSys"))
     {
-        stream << trs("Subsystem") << content["subSys"].toString() << "\r\n";
+        *stream << "Subsystem" << content["subSys"].toString() << "\r\n";
     }
     if (content.contains("sysState"))
     {
-        stream << trs("SystemState") << content["sysState"].toString() << "\r\n";
+        *stream << "System State" << content["sysState"].toString() << "\r\n";
     }
     if (content.contains("sysRsp"))
     {
-        stream << trs("SystemResponse") << content["sysRsp"].toString() << "\r\n";
+        *stream << "System Response" << content["sysRsp"].toString() << "\r\n";
     }
 
-    stream << content["log"].toString();
-
-    if (content.contains("pdCommLog"))
-    {
-        QVariantList pdCacheLog = content["pdCommLog"].toList();
-        stream << "PD communication Log:" << "\r\n";
-        foreach(QVariant v, pdCacheLog)
-        {
-            QVariantMap m = v.toMap();
-            qint64 ts = m["timestamp"].toLongLong();
-            int dir = m["direction"].toInt();
-            QByteArray data = QByteArray::fromBase64(m["data"].toByteArray());
-
-            stream << QDateTime::fromMSecsSinceEpoch(ts).toString("dd/MM/yyyy HH:mm:ss.zzz");
-            if (dir)
-            {
-                stream << " Send: ";
-            }
-            else
-            {
-                stream << " Recv: ";
-            }
-
-            for (int i = 0; i < data.size(); i++)
-            {
-                stream << QString::number(data[i], 16) << " ";
-            }
-
-            stream << "\r\n";
-        }
-    }
+    *stream << content["log"].toString();
 }
 
 bool ErrorLogItem::isLogEmpty() const
@@ -201,23 +167,23 @@ bool CrashLogItem::isLogEmpty() const
     return false;
 }
 
-void CrashLogItem::outputInfo(QTextStream &stream) const
+void CrashLogItem::outputInfo(QTextStream *stream) const
 {
     ErrorLogItemBase::outputInfo(stream);
     if (content.contains("subSys"))
     {
-        stream << trs("Subsystem") << content["subSys"].toString() << "\r\n";
+        *stream << "Subsystem" << content["subSys"].toString() << "\r\n";
     }
     if (content.contains("sysState"))
     {
-        stream << trs("SystemState") << content["sysState"].toString() << "\r\n";
+        *stream << "System State" << content["sysState"].toString() << "\r\n";
     }
     if (content.contains("sysRsp"))
     {
-        stream << trs("SystemResponse") << content["sysRsp"].toString() << "\r\n";
+        *stream << "System Response" << content["sysRsp"].toString() << "\r\n";
     }
 
-    stream << content["log"].toByteArray();
+    *stream << content["log"].toByteArray();
 }
 // 将原始日志内容读取到ErrorLogItemBase基类生成的全局对象中
 void CrashLogItem::collect(const QString &filename)

@@ -38,8 +38,6 @@ SOURCES += \
     ../../../Components/Alarm/AlarmIndicatorInterface.cpp \
     ../../../Components/LightManager/LightManagerInterface.cpp \
     ../../../Utility/Config/IConfig.cpp \
-    ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
-    ../../../Utility/ErrorLog/ErrorLogItem.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmStateMachineInterface.cpp
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
@@ -55,8 +53,6 @@ HEADERS += \
     ../../../Components/Alarm/AlarmIndicatorInterface.h \
     ../../../Components/LightManager/LightManagerInterface.h \
     ../../../Utility/Config/IConfig.h \
-    ../../../Utility/ErrorLog/ErrorLogInterface.h \
-    ../../../Utility/ErrorLog/ErrorLogItem.h \
     ../../../Components/PatientManager/PatientDefine.h
 
 INCLUDEPATH += \
@@ -65,5 +61,4 @@ INCLUDEPATH += \
     ../../../Utility/LanguageManager \
     ../../../Components/LightManager \
     ../../../Utility/Config \
-    ../../../Utility/ErrorLog \
     ../../../Components/PatientManager

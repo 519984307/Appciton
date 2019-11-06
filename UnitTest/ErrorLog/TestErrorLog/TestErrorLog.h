@@ -9,7 +9,7 @@
  **/
 #include <QString>
 #include <QtTest>
-#include "ErrorLog.h"
+#include "Framework/ErrorLog/ErrorLog.h"
 #include "mythread.h"
 class TestErrorLogTest : public QObject
 {

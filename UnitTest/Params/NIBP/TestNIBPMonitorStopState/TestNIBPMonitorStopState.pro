@@ -34,10 +34,8 @@ SOURCES += \
     ../../../../Params/NIBPParam/NIBPTrigger/NIBPCountdownTimeInterface.cpp \
     ../../../../Params/NIBPParam/NIBPStateMachine/NIBPState.cpp \
     ../../../../Utility/LanguageManager/LanguageManager.cpp \
-    ../../../../Utility/ErrorLog/ErrorLogInterface.cpp \
     ../../../../Utility/Config/IConfig.cpp \
     ../../../../Params/NIBPParam/NIBPStateMachine/NIBPStateMachine.cpp \
-    ../../../../Utility/ErrorLog/ErrorLogItem.cpp \
 
 
 HEADERS += \
@@ -53,13 +51,11 @@ HEADERS += \
     ../../../../Components/PatientManager/PatientDefine.h \
     ../../../../Utility/BaseDefine.h \
     ../../../../Utility/LanguageManager/LanguageManager.h \
-    ../../../../Utility/ErrorLog/ErrorLogInterface.h \
     ../../../../Utility/Config/IConfig.h \
     ../../../../Params/NIBPParam/NIBPStateMachine/NIBPState.h \
     ../../../../Params/NIBPParam/NIBPStateMachine/NIBPStateMachine.h \
     ../../../../Params/NIBPParam/NIBPStateMachine/NIBPServiceStateMachine/NIBPServiceStateDefine.h \
     ../../../../Params/NIBPParam/NIBPSymbol.h \
-    ../../../../Utility/ErrorLog/ErrorLogItem.h \
     ../TestNIBPMonitorStandbyState/MockNIBPCountdownTime.h \
     ../MockNIBPParam.h
 
@@ -74,7 +70,6 @@ INCLUDEPATH += \
     ../../../../Utility \
      ../../../../Utility/LanguageManager \
     ../../../../Utility/Config \
-    ../../../../Utility/ErrorLog \
     ../../../../Params/NIBPParam/NIBPStateMachine  \
     ../TestNIBPMonitorStandbyState \
     ..

@@ -8,12 +8,12 @@
  ** Written by TongZhou Fang <fangtongzhou@blmed.cn>, 2019/5/29
  **/
 #include "ErrorLogExporter.h"
-#include "ErrorLog.h"
+#include "Framework/ErrorLog/ErrorLog.h"
+#include "Framework/ErrorLog/ErrorLogItem.h"
 #include "USBManager.h"
 #include "IConfig.h"
 #include <QFile>
 #include <QDateTime>
-#include "ErrorLogItem.h"
 #include <QApplication>
 #include "LanguageManager.h"
 #include "Framework/Utility/Utility.h"
@@ -116,7 +116,13 @@ bool ErrorLogExporter::exportLog(const QString &filename)
         stream << trs("MostRecentError") << summary.mostRecentErrorDate << TEXT_ENDL;
         stream << trs("MostRecentCriticalFault") << summary.mostRecentCriticalErrorDate << TEXT_ENDL;
         stream << trs("OldestError") << summary.oldestErrorDate << TEXT_ENDL;
-        stream << trs("LastEraseTime") << summary.lastEraseTimeDate << TEXT_ENDL;
+        unsigned int num = 0;
+        systemConfig.getNumValue("ErrorLogEraseTime", num);
+        if (num > 0)
+        {
+            stream << trs("LastEraseTime") << QDateTime::fromTime_t(num).toString("yyyy-MM-dd HH:mm:ss")
+                   << TEXT_ENDL;
+        }
         stream << TEXT_ENDL;
 
         while (index < total)
@@ -128,7 +134,7 @@ bool ErrorLogExporter::exportLog(const QString &filename)
             item = errorLog.getLog(index);
             if (item)
             {
-                item->outputInfo(stream);
+                item->outputInfo(&stream);
                 stream << TEXT_ENDL;
                 delete item;
             }

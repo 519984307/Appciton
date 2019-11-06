@@ -10,8 +10,8 @@
 
 #include "NeonateProvider.h"
 #include "O2Param.h"
-#include "ErrorLogItem.h"
-#include "ErrorLog.h"
+#include "Framework/ErrorLog/ErrorLogItem.h"
+#include "Framework/ErrorLog/ErrorLog.h"
 #include "O2Alarm.h"
 #include "O2Define.h"
 #include "SystemManager.h"

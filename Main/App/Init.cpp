@@ -10,7 +10,6 @@
 
 
 #include "Init.h"
-#include "ErrorLogItem.h"
 #include "LayoutManager.h"
 #include "ShortTrendContainer.h"
 #include "NightModeManager.h"
@@ -19,6 +18,8 @@
 #include "ConfigManager.h"
 #include "NurseCallManager.h"
 #include "TestBatteryTime.h"
+#include "Framework/ErrorLog/ErrorLog.h"
+#include "Framework/ErrorLog/ErrorLogItem.h"
 
 /**************************************************************************************************
  * 功能： 初始化系统。

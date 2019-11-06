@@ -18,8 +18,8 @@
 #include "WaveformCache.h"
 #include "ECGDupParam.h"
 #include "SystemManager.h"
-#include "ErrorLog.h"
-#include "ErrorLogItem.h"
+#include "Framework/ErrorLog/ErrorLog.h"
+#include "Framework/ErrorLog/ErrorLogItem.h"
 #include <QTimer>
 #include "OxyCRGSPO2TrendWidget.h"
 #include "NIBPParam.h"

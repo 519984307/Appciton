@@ -39,6 +39,9 @@ SOURCES += \
         SOUP/Json/qobjecthelper.cpp                                                 \
         SOUP/Json/serializer.cpp                                                    \
         SOUP/Json/serializerrunnable.cpp                                            \
+        ErrorLog/ErrorLogItem.cpp                                                   \
+        ErrorLog/ErrorLogInterface.cpp                                              \
+        ErrorLog/ErrorLog.cpp                                                       \
 
 
 HEADERS += \
@@ -57,6 +60,9 @@ HEADERS += \
         SOUP/Json/qjson_export.h                                                    \
         SOUP/Json/parser.h                                                          \
         SOUP/Json/serializer.h                                                      \
+        ErrorLog/ErrorLogItem.h                                                     \
+        ErrorLog/ErrorLogInterface.h                                                \
+        ErrorLog/ErrorLog.h                                                         \
 
 DEPENDPATH += \
         Utility                                                                     \

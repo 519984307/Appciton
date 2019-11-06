@@ -13,30 +13,22 @@ include("../../Common/runtest.pri")
 SOURCES += \
         TestErrorLog.cpp \ 
     main.cpp \
-    ../../../Utility/ErrorLog/ErrorLog.cpp \
     ../../../Utility/LanguageManager/LanguageManager.cpp \
     ../../../Utility/Config/IConfig.cpp \
-    ../../../Utility/ErrorLog/ErrorLogItem.cpp \
-    ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
     mythread.cpp
 
 
 HEADERS += \
     TestErrorLog.h \
-    ../../../Utility/ErrorLog/ErrorLog.h \
     ../../../Utility/LanguageManager/LanguageManager.h \
     ../../../Utility/Config/IConfig.h \
-    ../../../Utility/ErrorLog/ErrorLogItem.h \
-    ../../../Utility/ErrorLog/ErrorLogInterface.h \
     mythread.h
 
 
 
 INCLUDEPATH += \
-     ../../../Utility/ErrorLog \
     ../../../Utility/LanguageManager \
     ../../../Utility/Config \
-    ../../../Utility/ErrorLog \
 
 
 

@@ -18,8 +18,8 @@
 #include <QBrush>
 #endif
 #include <QFile>
-#include "ErrorLog.h"
-#include "ErrorLogItem.h"
+#include "Framework/ErrorLog/ErrorLog.h"
+#include "Framework/ErrorLog/ErrorLogItem.h"
 #include "Framework/Utility/Utility.h"
 #include "Debug.h"
 
@@ -87,5 +87,5 @@ int main(int argc, char *argv[])
 #endif
 
     // 下面开始分析请求的模式，并决定系统最终的运行模式。
-    appMain(app);
+    appMain(&app);
 }

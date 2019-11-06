@@ -21,8 +21,8 @@
 #include "ThemeManager.h"
 #include "USBManager.h"
 #include <QTimer>
-#include "ErrorLogItem.h"
-#include "ErrorLog.h"
+#include "Framework/ErrorLog/ErrorLogItem.h"
+#include "Framework/ErrorLog/ErrorLog.h"
 #include "ErrorLogViewerWindow.h"
 #include "MessageBox.h"
 #include "ExportDataWidget.h"
@@ -204,7 +204,13 @@ void ErrorLogWindow::summaryReleased()
     stream << trs("MostRecentError") << summary.mostRecentErrorDate << endl;
     stream << trs("MostRecentCriticalFault") << summary.mostRecentCriticalErrorDate << endl;
     stream << trs("OldestError") << summary.oldestErrorDate << endl;
-    stream << trs("LastEraseTime") << summary.lastEraseTimeDate << endl;
+    unsigned int num = 0;
+    systemConfig.getNumValue("ErrorLogEraseTime", num);
+    if (num > 0)
+    {
+        stream << trs("LastEraseTime") << QDateTime::fromTime_t(num).toString("yyyy-MM-dd HH:mm:ss")
+               << endl;
+    }
 
     ErrorLogViewerWindow viewer;
     viewer.setWindowTitle(trs("Summary"));

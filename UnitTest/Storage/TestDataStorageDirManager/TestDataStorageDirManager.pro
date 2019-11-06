@@ -38,9 +38,7 @@ SOURCES += \
     ../../../Utility/LanguageManager/LanguageManager.cpp \
     ../../../Components/System/SystemManagerInterface.cpp \
     ../../../Components/Alarm/AlarmSourceManager.cpp \
-    ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
     ../../../Utility/DataStorage/DataStorageDirManagerInterface.cpp \
-    ../../../Utility/ErrorLog/ErrorLogItem.cpp \
     ../../../Components/Alarm/AlarmInterface.cpp \
     ../../../Components/Alarm/AlarmParamIFace.cpp
 
@@ -56,9 +54,7 @@ HEADERS += \
     ../../../Components/ParamManager/ParamDefine.h \
     ../../../Components/System/SystemManagerInterface.h \
     ../../../Components/Alarm/AlarmSourceManager.h \
-    ../../../Utility/ErrorLog/ErrorLogInterface.h \
     ../../../Utility/DataStorage/DataStorageDirManagerInterface.h \
-    ../../../Utility/ErrorLog/ErrorLogItem.h \
     ../../../Components/Alarm/AlarmInterface.h \
     MockTimeManager.h \
     ../../../Components/Alarm/AlarmParamIFace.h \
@@ -73,4 +69,3 @@ INCLUDEPATH += \
     ../../../Components/ParamManager \
     ../../../Components/System \
     ../../../Components/Alarm \
-    ../../../Utility/ErrorLog

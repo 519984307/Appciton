@@ -32,8 +32,8 @@
 #include <QTimer>
 #include "Debug.h"
 #include <QTimer>
-#include "ErrorLogItem.h"
-#include "ErrorLog.h"
+#include "Framework/ErrorLog/ErrorLogItem.h"
+#include "Framework/ErrorLog/ErrorLog.h"
 #include "OxyCRGRRHRWaveWidget.h"
 #include "AlarmSourceManager.h"
 #include "RunningStatusBarInterface.h"

@@ -48,7 +48,6 @@ public:
     enum SubSystem
     {
         SUB_SYS_MAIN_PROCESSOR,
-        SUB_SYS_PD_MODULE,
         SUB_SYS_SYSTEM_BOARD,
         SUB_SYS_E5,
         SUB_SYS_S5,
@@ -113,9 +112,9 @@ public:
         return content["name"].toString();
     }
     // output the log content
-    virtual void outputInfo(QTextStream &stream) const
+    virtual void outputInfo(QTextStream *stream) const
     {
-        stream << content["name"].toString() << " log at " << content["time"].toString() << "\r\n";
+        *stream << content["name"].toString() << " log at " << content["time"].toString() << "\r\n";
     }
     // item creator map
     static  QMap<int, ErrorLogItemCreateFunc> &getItemCreatorMap();
@@ -160,7 +159,7 @@ public:
     // override
     int type() const;
     // override
-    void outputInfo(QTextStream &stream) const;
+    void outputInfo(QTextStream *stream) const;
     // the log is empty
     virtual bool isLogEmpty() const;
 };
@@ -176,7 +175,7 @@ public:
     // override
     int type() const;
     // override
-    void outputInfo(QTextStream &stream) const;
+    void outputInfo(QTextStream *stream) const;
     // override
     void collect(const QString &filename);
     // the log is empty
