@@ -14,7 +14,7 @@
 #include <QPainter>
 #include <QIcon>
 #include "ThemeManager.h"
-#include "Utility.h"
+#include "Framework/Utility/Utility.h"
 #include "SoundManagerInterface.h"
 #include <QDebug>
 #include <QTimer>

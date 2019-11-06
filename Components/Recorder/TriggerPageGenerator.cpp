@@ -9,7 +9,7 @@
  **/
 
 #include "TriggerPageGenerator.h"
-#include "Utility.h"
+#include "Framework/Utility/Utility.h"
 #include <QPointer>
 #include <QDebug>
 

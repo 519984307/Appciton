@@ -21,6 +21,7 @@
 #include "AlarmSourceManager.h"
 #include "SystemDefine.h"
 #include "AlarmInterface.h"
+#include "Debug.h"
 
 static QString _lastFolder;
 

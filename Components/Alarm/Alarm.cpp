@@ -27,6 +27,7 @@
 #include "AlarmIndicatorInterface.h"
 #include "TrendCacheInterface.h"
 #include "ParamInfoInterface.h"
+#include "Debug.h"
 
 #define ALARM_LIMIT_TIMES (3)   // 超限3次后，发生报警
 static int curSecondAlarmNum = 0;  // record the number of alarms happend in the save seconds
@@ -165,7 +166,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
             AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
             if (alarmIndicator)
             {
-                alarmIndicator->delAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage);      // 关闭了报警则取消该生理报警
+                alarmIndicator->delAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage);  // 关闭了报警则取消该生理报警
             }
             traceCtrl->Reset();
             alarmSource->notifyAlarm(i, false);
@@ -596,7 +597,8 @@ void Alarm::_handleAlarm(void)
     if (-1 != paramID.indexOf(PARAM_NIBP))
     {
         // nibp alarm add after check sys, dia, map
-        TrendDataStorageManagerInterface *trendDataStorageManager = TrendDataStorageManagerInterface::getTrendDataStorageManager();
+        TrendDataStorageManagerInterface *trendDataStorageManager;
+        trendDataStorageManager = TrendDataStorageManagerInterface::getTrendDataStorageManager();
         TrendCacheInterface *trendCache = TrendCacheInterface::getTrendCache();
         if (trendDataStorageManager && trendCache)
         {
@@ -609,7 +611,8 @@ void Alarm::_handleAlarm(void)
 
     if (!paramID.isEmpty())
     {
-        TrendDataStorageManagerInterface *trendDataStorageManager = TrendDataStorageManagerInterface::getTrendDataStorageManager();
+        TrendDataStorageManagerInterface *trendDataStorageManager;
+        trendDataStorageManager = TrendDataStorageManagerInterface::getTrendDataStorageManager();
         TrendCacheInterface *trendCache = TrendCacheInterface::getTrendCache();
         if (trendDataStorageManager && trendCache)
         {
@@ -635,7 +638,8 @@ void Alarm::_handleAlarm(void)
     // 处理PhyOneShot报警的趋势数据存储
     if (!paramID.isEmpty())
     {
-        TrendDataStorageManagerInterface *trendDataStorageManager = TrendDataStorageManagerInterface::getTrendDataStorageManager();
+        TrendDataStorageManagerInterface *trendDataStorageManager;
+        trendDataStorageManager = TrendDataStorageManagerInterface::getTrendDataStorageManager();
         TrendCacheInterface *trendCache = TrendCacheInterface::getTrendCache();
         if (trendDataStorageManager && trendCache)
         {

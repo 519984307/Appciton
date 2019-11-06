@@ -13,7 +13,7 @@
 #include <QPainter>
 #include "SystemManager.h"
 #include "FontManager.h"
-#include "Utility.h"
+#include "Framework/Utility/Utility.h"
 #include <QVector>
 #include "TrendDataStorageManager.h"
 #include <QPaintEvent>
@@ -214,7 +214,7 @@ void ShortTrendItemPrivate::updateBackground()
         Q_ASSERT(labels.length() == 3);
         textRect.setWidth(columnWidth / 2);
         textRect.moveTo(waveRegion.bottomLeft());
-        textRect.moveTop(textRect.top() + 2); // left some space between the grid
+        textRect.moveTop(textRect.top() + 2);  // left some space between the grid
         p.drawText(textRect, Qt::AlignVCenter | Qt::AlignLeft, labels.at(0));
         textRect.moveLeft(waveRegion.center().x() - textRect.width() / 2);
         p.drawText(textRect, Qt::AlignCenter, labels.at(1));
@@ -620,7 +620,8 @@ void ShortTrendItem::onNewTrendDataArrived(ShortTrendInterval interval)
                 if (d_ptr->firstValue)
                 {
                     d_ptr->firstValue = false;
-                    d_ptr->setAxisValue(data, ShortTrendItemPrivate::modifyMaxLimit | ShortTrendItemPrivate::modifyMinLimit);
+                    d_ptr->setAxisValue(data,
+                                        ShortTrendItemPrivate::modifyMaxLimit | ShortTrendItemPrivate::modifyMinLimit);
                 }
                 else if (data > d_ptr->maxValue)
                 {

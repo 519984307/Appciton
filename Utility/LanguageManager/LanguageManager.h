@@ -16,7 +16,7 @@
 #include <fstream>
 #include <QString>
 #include <QMap>
-#include "XmlParser.h"
+#include "Framework/Config/XmlParser.h"
 
 class XmlParser;
 class LanguageManager

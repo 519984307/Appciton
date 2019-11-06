@@ -18,13 +18,14 @@
 #include "LanguageManager.h"
 #include "MessageBox.h"
 #include <QEventLoop>
-#include "Utility.h"
+#include "Framework/Utility/Utility.h"
 #include "DataStorageDirManager.h"
 #include "ThemeManager.h"
+#include <QBoxLayout>
 
 RescueDataDeleteWindow *RescueDataDeleteWindow::_selfObj = NULL;
 
-static long deleteSelectIncidnets(const QVariant &para)
+static QVariant deleteSelectIncidnets(const QVariant &para)
 {
     QVariantList list = para.toList();
     foreach(QVariant var, list)
@@ -32,10 +33,10 @@ static long deleteSelectIncidnets(const QVariant &para)
         int index = var.toInt();
         dataStorageDirManager.deleteData(index);
     }
-    return 0;
+    return QVariant();
 }
 
-static long deleteAllData(const QVariant & para)
+static QVariant deleteAllData(const QVariant & para)
 {
     static QMutex mutex;
     Q_UNUSED(para);
@@ -45,7 +46,7 @@ static long deleteAllData(const QVariant & para)
         mutex.unlock();
         return 1;
     }
-    return 0;
+    return QVariant();
 }
 
 class RescueDataDeleteWindowPrivate

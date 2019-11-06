@@ -26,6 +26,7 @@
 #include "ConfigManagerMenuWindow.h"
 #include "PatientTypeSelectWindow.h"
 #include <QMetaObject>
+#include "Debug.h"
 
 #define CONFIG_DIR "/usr/local/nPM/etc"
 #define USER_DEFINE_CONFIG_NAME "UserConfig"
@@ -328,7 +329,7 @@ void UserConfigEditMenuContent::onBtnClick()
 void UserConfigEditMenuContent::onEditFinished()
 {
     // can't add, too many
-    // TODO :show some message
+    /* TODO :show some message */
     QString configName = d_ptr->editWindow->getCurrentEditConfigName();
     if (configName.isEmpty())
     {

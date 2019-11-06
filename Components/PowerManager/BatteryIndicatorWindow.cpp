@@ -16,6 +16,7 @@
 #include "BatteryIconWidget.h"
 #include <QTimer>
 #include "IConfig.h"
+#include <QGridLayout>
 
 class BatteryIndicatorWindowPrivate
 {

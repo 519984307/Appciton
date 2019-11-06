@@ -115,7 +115,7 @@ void FactorySystemInfoMenuContent::onBtnReleasedChanged()
 
     button->setText(str);
     machineConfig.setStrValue("SerialNumber", str);
-    machineConfig.save();
+    machineConfig.requestSave();
     machineConfig.saveToDisk();
 }
 

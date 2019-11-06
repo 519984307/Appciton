@@ -20,6 +20,7 @@
 #include "ParamDefine.h"
 #include "ConfigManager.h"
 #include "RESPDupParam.h"
+#include "Debug.h"
 
 class ConfigEditRespMenuContentPrivate
 {

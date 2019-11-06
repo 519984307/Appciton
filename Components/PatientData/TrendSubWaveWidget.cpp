@@ -22,6 +22,7 @@
 #include "LanguageManager.h"
 #include "Utility.h"
 #include "TrendGraphConfig.h"
+#include "Framework/Utility/Utility.h"
 
 #define GRAPH_POINT_NUMBER          120
 #define DATA_INTERVAL_PIXEL         5
@@ -142,8 +143,10 @@ void TrendSubWaveWidget::setRulerRange(int down, int up, int scale)
     UnitType defUnit = paramInfo.getUnitOfSubParam(_id);
     if (unit != defUnit)
     {
-        _valueY.max = Unit::convert(defUnit, unit, static_cast<double>(up) / scale, co2Param.getBaro()).toDouble() * _valueY.scale;
-        _valueY.min = Unit::convert(defUnit, unit, static_cast<double>(down) / scale, co2Param.getBaro()).toDouble() * _valueY.scale;
+        _valueY.max = Unit::convert(defUnit, unit, static_cast<double>(up) / scale,
+                                    co2Param.getBaro()).toDouble() * _valueY.scale;
+        _valueY.min = Unit::convert(defUnit, unit, static_cast<double>(down) / scale,
+                                    co2Param.getBaro()).toDouble() * _valueY.scale;
     }
     else
     {
@@ -313,7 +316,7 @@ QList<QPainterPath> TrendSubWaveWidget::generatorPainterPath(const TrendGraphInf
             qreal dia = _mapValue(_valueY, diaData);
             qreal map = _mapValue(_valueY, mapData);
 
-            if (sys == _valueY.start )
+            if (sys == _valueY.start)
             {
                 path.moveTo(x - 3, sys + 3);
                 path.lineTo(x, sys);
@@ -460,8 +463,15 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
         QRect downRulerRect(_info.xHead / 4, _info.yBottom - 10, _info.xHead / 3 * 2, SCALE_VALUE_AREA_HEIGHT);
         QFont textfont = fontManager.textFont(fontManager.getFontSize(3));
         barPainter.setFont(textfont);
+        <<< <<< < HEAD
         barPainter.drawText(upRulerRect, Qt::AlignRight | Qt::AlignTop, Util::convertToString(_rulerY.max, _rulerY.scale));
         barPainter.drawText(downRulerRect, Qt::AlignRight | Qt::AlignTop, Util::convertToString(_rulerY.min, _rulerY.scale));
+        == == == =
+            barPainter.drawText(upRulerRect, Qt::AlignRight | Qt::AlignTop,
+                                Util::convertToString(_valueY.max, _valueY.scale));
+        barPainter.drawText(downRulerRect, Qt::AlignRight | Qt::AlignTop,
+                            Util::convertToString(_valueY.min, _valueY.scale));
+        >>> >>> > develop
 
         QFont font;
         font.setPixelSize(15);
@@ -500,8 +510,15 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     QRect downRulerRect(_info.xHead / 4, _info.yBottom - 10, _info.xHead / 3 * 2, SCALE_VALUE_AREA_HEIGHT);
     QFont textfont = fontManager.textFont(fontManager.getFontSize(3));
     barPainter.setFont(textfont);
+    <<< <<< < HEAD
     barPainter.drawText(upRulerRect, Qt::AlignRight | Qt::AlignTop, Util::convertToString(_rulerY.max, _rulerY.scale));
     barPainter.drawText(downRulerRect, Qt::AlignRight | Qt::AlignTop, Util::convertToString(_rulerY.min, _rulerY.scale));
+    == == == =
+        barPainter.drawText(upRulerRect, Qt::AlignRight | Qt::AlignTop,
+                            Util::convertToString(_valueY.max, _valueY.scale));
+    barPainter.drawText(downRulerRect, Qt::AlignRight | Qt::AlignTop,
+                        Util::convertToString(_valueY.min, _valueY.scale));
+    >>> >>> > develop
 
     QFont font;
     font.setPixelSize(15);
@@ -759,7 +776,28 @@ void TrendSubWaveWidget::_autoRulerCal()
                 {
                     continue;
                 }
+                <<< <<< < HEAD
                 _updateAutoRuler(data);
+                == == == =
+                    ParamID paramId = paramInfo.getParamID(_id);
+                UnitType type = paramManager.getSubParamUnit(paramId, _id);
+                int v = data;
+                if (paramId == PARAM_CO2)
+                {
+                    // 单位转换
+                    v = Unit::convert(type, UNIT_PERCENT,
+                                      static_cast<float>(data / 10.0), co2Param.getBaro()).toDouble();
+                    // 计算出的数据乘上 scale
+                    v = v * _valueY.scale;
+                }
+                else if (paramId == PARAM_TEMP)
+                {
+                    v = Unit::convert(type, UNIT_TC, static_cast<float>(data / 10.0)).toDouble();
+                    // 计算出的数据乘上 scale
+                    v = v * _valueY.scale;
+                }
+                _updateAutoRuler(v);
+                >>> >>> > develop
             }
         }
         break;
@@ -811,8 +849,8 @@ void TrendSubWaveWidget::_autoRulerCal()
         _rulerY.min = _valueY.min;
     }
     TrendGraphConfig::setParamRulerConfig(_id, unit,
-                                    _rulerY.min,
-                                    _rulerY.max);
+                                          _rulerY.min,
+                                          _rulerY.max);
 }
 
 void TrendSubWaveWidget::_updateAutoRuler(TrendDataType data)

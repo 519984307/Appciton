@@ -10,7 +10,7 @@
 
 #include "OxyCRGRRHRWaveWidget.h"
 #include "OxyCRGTrendWaveWidget_p.h"
-#include "RingBuff.h"
+#include "Framework/Utility/RingBuff.h"
 #include <QPainterPath>
 #include <QPainter>
 #include <QPointer>
@@ -119,7 +119,7 @@ void OxyCRGRRHRWaveWidgetPrivate::init()
     rrRulerLow = valueLow;
     // 申请存储rr波形数据堆空间
     rrDataBufIndex = 0;
-    rrDataBufLen = waveDataRate * 8 * 60; // 最大8分钟数据
+    rrDataBufLen = waveDataRate * 8 * 60;  // 最大8分钟数据
     rrDataBuf = new RingBuff<short>(rrDataBufLen);
 
     // hr标尺的颜色更深。
@@ -182,7 +182,6 @@ void OxyCRGRRHRWaveWidgetPrivate::updateWaveDrawingContext()
     }
     else
     {
-
         rrWaveBuffer->resize(segmentCount);
     }
 

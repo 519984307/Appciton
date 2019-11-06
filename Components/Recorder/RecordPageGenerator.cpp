@@ -28,14 +28,14 @@
 #include "AGParam.h"
 #include "ECGParam.h"
 #include "CO2Param.h"
-#include "Utility.h"
+#include "Framework/Utility/Utility.h"
+#include "Framework/Utility/Unit.h"
 #include "LayoutManager.h"
 #include <QDebug>
 #include "RecorderManager.h"
 #include "TimeDate.h"
 #include "TimeManager.h"
 #include "AlarmConfig.h"
-#include "UnitManager.h"
 #include "PatientManager.h"
 #include "EventDataDefine.h"
 #include "TrendDataStorageManager.h"
@@ -2056,8 +2056,8 @@ QList<RecordWaveSegmentInfo> RecordPageGenerator::getWaveInfos(const QList<Wavef
         RecordWaveSegmentInfo info;
         info.id = id;
         info.sampleRate = waveformCache.getSampleRate(id);
-        waveformCache.getRange(id, info.minWaveValue, info.maxWaveValue);
-        waveformCache.getBaseline(id, info.waveBaseLine);
+        waveformCache.getRange(id, &info.minWaveValue, &info.maxWaveValue);
+        info.waveBaseLine = waveformCache.getBaseline(id);
         switch (id)
         {
         case WAVE_ECG_I:

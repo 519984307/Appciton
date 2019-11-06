@@ -12,7 +12,7 @@
 #include <QHBoxLayout>
 #include <QWidget>
 #include "TEMPTrendWidget.h"
-#include "UnitManager.h"
+#include "Framework/Utility/Unit.h"
 #include "ParamManager.h"
 #include "ParamInfo.h"
 #include "TEMPParam.h"

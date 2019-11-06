@@ -19,10 +19,11 @@
 #include <QFocusEvent>
 #include "WiFiProfileEditorWindow.h"
 #include "MessageBox.h"
-#include "SupervisorMenuManager.h"
 #include "ComboBox.h"
 #include "Button.h"
 #include "LanguageManager.h"
+#include <QBoxLayout>
+#include <QLabel>
 
 #define PROFILE_MAX_NUM 5
 #define LISTVIEW_MAX_VISIABLE_TIME 4
@@ -51,7 +52,7 @@ public:
     Button *addBtn;
     Button *editBtn;
     Button *delBtn;
-    QVector<WiFiProfileWindowInfo> profiles;
+    QVector<WiFiProfileInfo> profiles;
     bool _isEnabled;
 };
 
@@ -61,7 +62,7 @@ public:
 void WifiMaintainMenuContentPrivate::onSwitch(int val)
 {
     systemConfig.setNumValue("WiFi|EnableWifi", val);
-    systemConfig.save();
+    systemConfig.requestSave();
     _isEnabled = !!val;
 //    emit WifiMaintainMenuContent.updateWifiProfileSignal(_isEnabled);
 }
@@ -106,7 +107,7 @@ void WifiMaintainMenuContentPrivate::updateProfileList()
 /***************************************************************************************************
  * caseInsensitiveLessThan, use to compare profile name
  **************************************************************************************************/
-static bool caseInsensitiveLessThan(const WiFiProfileWindowInfo &p1, const WiFiProfileWindowInfo &p2)
+static bool caseInsensitiveLessThan(const WiFiProfileInfo &p1, const WiFiProfileInfo &p2)
 {
     return p1.profileName.toLower() < p2.profileName.toLower();
 }
@@ -124,8 +125,8 @@ void WifiMaintainMenuContentPrivate::onBtnClick()
         WiFiProfileEditorWindow editor;
         while (editor.exec())
         {
-            QVector<WiFiProfileWindowInfo>::ConstIterator iter;
-            WiFiProfileWindowInfo editProfile = editor.getProfileInfo();
+            QVector<WiFiProfileInfo>::ConstIterator iter;
+            WiFiProfileInfo editProfile = editor.getProfileInfo();
             bool duplicate = false;
             for (iter = profiles.constBegin(); iter != profiles.constEnd(); iter ++)
             {
@@ -139,7 +140,8 @@ void WifiMaintainMenuContentPrivate::onBtnClick()
             if (duplicate)
             {
                 QString title = trs("ProfileConflict");
-                MessageBox msgBox(title, QString("%1 %2 %3").arg(trs("Profile")).arg(editProfile.profileName).arg(trs("AlreadyExist")),
+                MessageBox msgBox(title, QString("%1 %2 %3").arg(trs("Profile"))
+                                  .arg(editProfile.profileName).arg(trs("AlreadyExist")),
                                   false);
                 msgBox.exec();
                 continue;
@@ -174,7 +176,8 @@ void WifiMaintainMenuContentPrivate::onBtnClick()
             if (duplicate)
             {
                 QString title = trs("ProfileConflict");
-                MessageBox msgBox(title, QString("%1 %2 %3").arg(trs("Profile")).arg(profileName).arg(trs("AlreadyExist")), false);
+                MessageBox msgBox(title, QString("%1 %2 %3").arg(trs("Profile"))
+                                  .arg(profileName).arg(trs("AlreadyExist")), false);
                 msgBox.exec();
                 continue;
             }
@@ -233,11 +236,11 @@ void WifiMaintainMenuContentPrivate::loadProfiles()
     for (int i = 0; i < count; i++)
     {
         QString prefix = QString("WiFi|Profiles|Profile%1|").arg(i);
-        WiFiProfileWindowInfo profile;
+        WiFiProfileInfo profile;
         systemConfig.getStrValue(prefix + "ProfileName", profile.profileName);
         systemConfig.getStrValue(prefix + "SSID", profile.ssid);
         systemConfig.getNumValue(prefix + "AuthType", tmpValue);
-        profile.authType = (WiFiProfileWindowInfo::AuthenticationType) tmpValue;
+        profile.authType = (WiFiProfileInfo::AuthenticationType) tmpValue;
         systemConfig.getStrValue(prefix + "SecurityKey", profile.securityKey);
         systemConfig.getNumValue(prefix + "IsStatic", tmpValue);
         profile.isStatic = tmpValue;
@@ -304,10 +307,10 @@ void WifiMaintainMenuContentPrivate::saveProfiles()
     }
 
     systemConfig.setStrAttr("WiFi|Profiles", "Count", QString::number(profiles.count()));
-    int currentSelect = -1; // default select nothing if wifi profile changes
+    int currentSelect = -1;  // default select nothing if wifi profile changes
     systemConfig.setNumAttr("WiFi|Profiles", "CurrentSelect", currentSelect);
 
-    systemConfig.save();
+    systemConfig.requestSave();
 
 // emit WifiMaintainMenuContent.updateWifiProfileSignal(_isEnabled);
 }
@@ -340,8 +343,7 @@ void WifiMaintainMenuContent::layoutExec()
     d->switchCombo = new ComboBox;
     d->switchCombo->addItems(QStringList()
                              << trs("Off")
-                             << trs("On")
-                            );
+                             << trs("On"));
     connect(d->switchCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(onSwitch(int)));
 
     hLayout = new QHBoxLayout;

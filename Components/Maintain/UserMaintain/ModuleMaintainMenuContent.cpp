@@ -18,7 +18,6 @@
 #include "ComboBox.h"
 #include <QGridLayout>
 #include "IConfig.h"
-#include "IMessageBox.h"
 #include "Button.h"
 #include "IBPParam.h"
 #include "KeyInputPanel.h"
@@ -26,6 +25,8 @@
 #include "LightManager.h"
 #include "AlarmIndicator.h"
 #include "ParamDataDefine.h"
+#include "WindowManager.h"
+#include "SystemManagerInterface.h"
 
 class ModuleMaintainMenuContentPrivate
 {
@@ -82,8 +83,9 @@ void ModuleMaintainMenuContent::layoutExec()
     Button *button;
     QLabel *label;
     int itemID;
+    SystemManagerInterface *systemManager = SystemManagerInterface::getSystemManager();
 
-    if (systemManager.isSupport(PARAM_AG))
+    if (systemManager && systemManager->isSupport(PARAM_AG))
     {
         // ag module calibration
         label = new QLabel(trs("AnaesthesiaModuleCalibration"));
@@ -97,7 +99,7 @@ void ModuleMaintainMenuContent::layoutExec()
         d_ptr->buttons.insert(ModuleMaintainMenuContentPrivate::ITEM_BTN_AG_MODULE_CALIBRATION, button);
     }
 
-    if (systemManager.isSupport(PARAM_IBP))
+    if (systemManager && systemManager->isSupport(PARAM_IBP))
     {
         // IBP1 pressure calibration
         label = new QLabel(trs("IBP1PressureCalibration"));
@@ -157,7 +159,7 @@ void ModuleMaintainMenuContent::layoutExec()
     layout->addWidget(button, d_ptr->buttons.count(), 1);
     d_ptr->buttons.insert(ModuleMaintainMenuContentPrivate::ITEM_BTN_TOUCH_SCREEN_CALIBRATION, button);
 
-    if (!systemManager.isSupport(CONFIG_TOUCH))
+    if (systemManager && !systemManager->isSupport(CONFIG_TOUCH))
     {
         // touch screen is not support
         button->setEnabled(false);
@@ -198,7 +200,8 @@ void ModuleMaintainMenuContent::onButtonReleased()
                     }
                     else
                     {
-                        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + " 80-300 ", QStringList(trs("EnglishYESChineseSURE")));
+                        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + " 80-300 ",
+                                              QStringList(trs("EnglishYESChineseSURE")));
                         messageBox.exec();
                     }
                 }
@@ -225,7 +228,8 @@ void ModuleMaintainMenuContent::onButtonReleased()
                     }
                     else
                     {
-                        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + " 80-300 ", QStringList(trs("EnglishYESChineseSURE")));
+                        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + " 80-300 ",
+                                              QStringList(trs("EnglishYESChineseSURE")));
                         messageBox.exec();
                     }
                 }
@@ -242,7 +246,9 @@ void ModuleMaintainMenuContent::onButtonReleased()
         case ModuleMaintainMenuContentPrivate::ITEM_BTN_TOUCH_SCREEN_CALIBRATION:
         {
             windowManager.closeAllWidows();
-            if (systemManager.isTouchScreenOn())
+            SystemManagerInterface *systemManager;
+            systemManager = SystemManagerInterface::getSystemManager();
+            if (systemManager && systemManager->isTouchScreenOn())
             {
                 QWSServer::instance()->closeMouse();
             }
@@ -252,7 +258,7 @@ void ModuleMaintainMenuContent::onButtonReleased()
             TSCalibrationWindow w;
             w.exec();
 
-            if (systemManager.isTouchScreenOn())
+            if (systemManager && systemManager->isTouchScreenOn())
             {
                 QWSServer::instance()->openMouse();
             }

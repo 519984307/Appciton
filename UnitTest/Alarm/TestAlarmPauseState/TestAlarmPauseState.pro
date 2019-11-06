@@ -27,8 +27,6 @@ SOURCES += main.cpp \
     ../../../Components/LightManager/LightManagerInterface.cpp \
     ../../../Utility/Config/IConfig.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmState.cpp \
-    ../../../Utility/Config/Config.cpp \
-    ../../../Utility/Config/XmlParser.cpp \
     ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
     ../../../Utility/ErrorLog/ErrorLogItem.cpp
 
@@ -41,8 +39,6 @@ HEADERS += \
     ../../../Components/LightManager/LightManagerInterface.h \
     ../../../Utility/Config/IConfig.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmState.h \
-    ../../../Utility/Config/Config.h \
-    ../../../Utility/Config/XmlParser.h \
     ../../../Utility/ErrorLog/ErrorLogInterface.h \
     ../../../Utility/ErrorLog/ErrorLogItem.h \
     ../MockAlarmIndicator.h \

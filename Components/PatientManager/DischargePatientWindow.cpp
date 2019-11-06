@@ -18,6 +18,7 @@
 #include "LayoutManager.h"
 #include "PatientManager.h"
 #include "SystemManager.h"
+#include <QLabel>
 
 class DischaregePatientWindowPrivate
 {

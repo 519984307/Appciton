@@ -14,8 +14,6 @@
 #include "CalculateSoftkeyAction.h"
 #include "WindowManager.h"
 #include "SoftKeyManager.h"
-#include "MenuGroup.h"
-#include "MenuManager.h"
 #include "DataStorageDirManager.h"
 #include "DoseCalculationWindow.h"
 #include "DoseCalculationManager.h"
@@ -60,7 +58,6 @@ void CalculateSoftkeyAction::doseCalculation(bool isPressed)
     while (NULL != QApplication::activeModalWidget())
     {
         QApplication::activeModalWidget()->hide();
-        menuManager.close();
     }
 
     if (isVisible)
@@ -93,7 +90,6 @@ void CalculateSoftkeyAction::Hemodynamic(bool isPressed)
     while (NULL != QApplication::activeModalWidget())
     {
         QApplication::activeModalWidget()->hide();
-        menuManager.close();
     }
 
     if (isVisible)

@@ -12,7 +12,7 @@
 #include <QMap>
 #include <QString>
 #include <QMutex>
-#include "RingBuff.h"
+#include "Framework/Utility/RingBuff.h"
 #include "BaseDefine.h"
 #include "ParamDefine.h"
 #include "WaveformCacheInterface.h"
@@ -42,7 +42,7 @@ public:
 
 public:
     // 注册一个数据源。
-    void registerSource(WaveformID id, int rate, int minValue, int maxValue, QString &waveTitle,
+    void registerSource(WaveformID id, int rate, int minValue, int maxValue, const QString &waveTitle,
                         int baseline = 0);
 
     // 添加一个波形数据。
@@ -52,16 +52,17 @@ public:
     int getSampleRate(WaveformID id);
 
     // 获取值的范围。
-    void getRange(WaveformID id, int &minValue, int &maxValue);
+    void getRange(WaveformID id, int *minValue, int *maxValue);
 
     // 获取基线值。
-    void getBaseline(WaveformID id, int &baseline);
+    int getBaseline(WaveformID id);
 
     // 获取标识值。
-    void getTitle(WaveformID id, QString &waveTitle);
+    QString getTitle(WaveformID id);
 
 
-public: // 通道相关。
+public:
+    // 通道相关。
     // get the time duration of the channels;
     unsigned channelDuration() const;
 
@@ -81,16 +82,6 @@ public: // 通道相关。
     // read the oldest data from the realtime channel, the channel will remove the read data
     int readRealtimeChannel(WaveformID id, int num, WaveDataType *buff);
 
-    // TODO: deprecated, remove later
-    // register a user buffer as sync cache
-    bool registerSyncCache(WaveformID id, long cacheID, WaveDataType *buff, int buflen, SyncCacheCallback cb = NULL);
-    // TODO: deprecated, remove later
-    // unregister sync cache
-    void unRegisterSyncCache(WaveformID id, long cacheID);
-    // TODO: deprecated, remove later
-    // check whether the sync cache complete
-    bool isSyncCacheCompleted(WaveformID id, long cacheID);
-
     // register a waveform recorder, for each recorder object, it can not record the same waveform twice
     // recorder will be deleted automatically when complete
     bool registerWaveformRecorder(WaveformID id, const WaveformRecorder &recorder);
@@ -109,7 +100,7 @@ private:
     // 波形的属性。
     struct WaveformAttr
     {
-        WaveformAttr(int r, int min, int max, QString &tile, int base)
+        WaveformAttr(int r, int min, int max, const QString &tile, int base)
         {
             rate = r;
             minValue = min;

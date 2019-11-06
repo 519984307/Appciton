@@ -21,6 +21,7 @@
 #include "EventStorageManager.h"
 #include "TimeManager.h"
 #include "IConfig.h"
+#include <QKeyEvent>
 
 class CodeMarkerWindowPrivate
 {
@@ -148,7 +149,6 @@ void CodeMarkerWindow::showEvent(QShowEvent *e)
 
 void CodeMarkerWindow::hideEvent(QHideEvent *e)
 {
-
     setPress(false);
     d_ptr->isChosen = false;
 

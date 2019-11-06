@@ -38,10 +38,8 @@ SOURCES += \
     ../../../Utility/LanguageManager/LanguageManager.cpp \
     ../../../Components/System/SystemManagerInterface.cpp \
     ../../../Components/Alarm/AlarmSourceManager.cpp \
-    ../../../Utility/Config/Config.cpp \
     ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
     ../../../Utility/DataStorage/DataStorageDirManagerInterface.cpp \
-    ../../../Utility/Config/XmlParser.cpp \
     ../../../Utility/ErrorLog/ErrorLogItem.cpp \
     ../../../Utility/DataStorage/StorageManager.cpp \
     ../../../Utility/DataStorage/StorageFile.cpp \
@@ -57,14 +55,11 @@ HEADERS += \
     ../../../Components/PatientData/RescueDataDefine.h \
     ../../../Utility/Config/IConfig.h \
     ../../../Components/TimeManager/TimeManagerInterface.h \
-    ../../../Utility/RingBuff/RingBuff.h \
     ../../../Components/ParamManager/ParamDefine.h \
     ../../../Components/System/SystemManagerInterface.h \
     ../../../Components/Alarm/AlarmSourceManager.h \
-    ../../../Utility/Config/Config.h \
     ../../../Utility/ErrorLog/ErrorLogInterface.h \
     ../../../Utility/DataStorage/DataStorageDirManagerInterface.h \
-    ../../../Utility/Config/XmlParser.h \
     ../../../Utility/ErrorLog/ErrorLogItem.h \
     ../../../Utility/DataStorage/StorageManager.h \
     ../../../Utility/DataStorage/StorageManager_p.h \
@@ -80,7 +75,6 @@ INCLUDEPATH += \
     ../../../Components/PatientData \
     ../../../Utility/Config \
     ../../../Components/TimeManager \
-    ../../../Utility/RingBuff \
     ../../../Components/ParamManager \
     ../../../Components/System \
     ../../../Components/Alarm \

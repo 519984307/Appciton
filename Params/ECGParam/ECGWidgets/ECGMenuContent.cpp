@@ -30,6 +30,7 @@
 #include "AlarmLimitWindow.h"
 #include "SPO2Param.h"
 #include "NightModeManager.h"
+#include <QTimerEvent>
 
 #define PRINT_WAVE_NUM (3)
 
@@ -423,13 +424,16 @@ void ECGMenuContent::layoutExec()
     label = new QLabel(trs("ECGLeadMode"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
+#ifndef HIDE_ECG_12_LEAD_FUNCTION
     comboBox->addItems(QStringList()
                        << trs(ECGSymbol::convert(ECG_LEAD_MODE_3))
                        << trs(ECGSymbol::convert(ECG_LEAD_MODE_5))
-                   #ifndef HIDE_ECG_12_LEAD_FUNCTION
-                       << trs(ECGSymbol::convert(ECG_LEAD_MODE_12))
-                   #endif
-                       );
+                       << trs(ECGSymbol::convert(ECG_LEAD_MODE_12)));
+#else
+    comboBox->addItems(QStringList()
+                       << trs(ECGSymbol::convert(ECG_LEAD_MODE_3))
+                       << trs(ECGSymbol::convert(ECG_LEAD_MODE_5)));
+#endif
     itemID = ECGMenuContentPrivate::ITEM_CBO_LEAD_MODE;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -480,14 +484,18 @@ void ECGMenuContent::layoutExec()
     label = new QLabel(trs("FilterMode"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
+#ifndef  HIDE_ECG_ST_PVCS_SUBPARAM
     comboBox->addItems(QStringList()
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_SURGERY))
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_MONITOR))
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_DIAGNOSTIC))
-                   #ifndef  HIDE_ECG_ST_PVCS_SUBPARAM
-                       << trs(ECGSymbol::convert(ECG_FILTERMODE_ST))
-                   #endif
-                       );
+                       << trs(ECGSymbol::convert(ECG_FILTERMODE_ST)));
+#else
+    comboBox->addItems(QStringList()
+                       << trs(ECGSymbol::convert(ECG_FILTERMODE_SURGERY))
+                       << trs(ECGSymbol::convert(ECG_FILTERMODE_MONITOR))
+                       << trs(ECGSymbol::convert(ECG_FILTERMODE_DIAGNOSTIC)));
+#endif
     itemID = ECGMenuContentPrivate::ITEM_CBO_FILTER_MODE;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -834,7 +842,8 @@ void ECGMenuContent::onPopupListItemFocusChanged(int volume)
         soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT , static_cast<SoundManager::VolumeLevel>(volume));
         soundManager.heartBeatTone();
         /* reset the sound volume */
-        soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT , static_cast<SoundManager::VolumeLevel>(w->currentIndex()));
+        soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT ,
+                               static_cast<SoundManager::VolumeLevel>(w->currentIndex()));
     }
 }
 

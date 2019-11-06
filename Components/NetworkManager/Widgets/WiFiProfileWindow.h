@@ -11,8 +11,8 @@
 #pragma once
 
 #include "Dialog.h"
-#include "WiFiProfileEditor.h"
 #include <QScopedPointer>
+#include "WiFiProfileInfo.h"
 
 class WiFiProfileWindowPrivate;
 class WiFiProfileWindow: public Dialog

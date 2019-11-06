@@ -12,7 +12,7 @@
 #include "PatientDefine.h"
 #include <QVector>
 #include <QObject>
-#include "UnitManager.h"
+#include "Framework/Utility/Unit.h"
 
 // 病人管理对象。
 class PatientInfoWidgetInterface;
@@ -27,7 +27,7 @@ public:
 
 public:
     // 设置Widget。
-    void setPatientInfoWidget(PatientInfoWidgetInterface &widget);
+    void setPatientInfoWidget(PatientInfoWidgetInterface &widget);  // NOLINT
 
 public:
     /**
@@ -79,7 +79,7 @@ public:
      */
     QDate getBornDate(void);
 
-    void getBornDate(unsigned int &year, unsigned int &month, unsigned int &day);
+    void getBornDate(unsigned int &year, unsigned int &month, unsigned int &day);  // NOLINT
 
     /**
      * @brief setBlood 设置血型

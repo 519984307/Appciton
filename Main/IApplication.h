@@ -16,7 +16,7 @@ class IApplication : public QApplication
 {
     Q_OBJECT
 public:
-    IApplication(int &argc, char **argv);
+    IApplication(int &argc, char **argv);   // NOLINT
     ~IApplication();
 
 #if defined(Q_WS_X11)
@@ -29,7 +29,7 @@ public:
 
 #if defined(CONFIG_CAPTURE_SCREEN)
 public slots:
-    void handleScreenCaptureResult(long result);
+    void handleScreenCaptureResult(const QVariant &result);
 private:
     /**
      * @brief handleScreenCaptureKeyEvent handle the screen capture key event

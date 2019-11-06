@@ -11,8 +11,7 @@
 #include "NIBPServiceZeroPointState.h"
 #include "NIBPServiceStateDefine.h"
 #include "NIBPParam.h"
-#include "NIBPZeroPoint.h"
-#include "NIBPRepairMenuManager.h"
+#include "NIBPMaintainMgrInterface.h"
 
 /**************************************************************************************************
  * 主运行。
@@ -26,7 +25,9 @@ void NIBPServiceZeroPointState::run(void)
  *************************************************************************************************/
 void NIBPServiceZeroPointState::triggerReturn()
 {
-    if (_isEnterSuccess && !nibpRepairMenuManager.getRepairError())
+    NIBPMaintainMgrInterface *nibpMaintainMgr;
+    nibpMaintainMgr = NIBPMaintainMgrInterface::getNIBPMaintainMgr();
+    if (_isEnterSuccess && nibpMaintainMgr && !nibpMaintainMgr->getRepairError())
     {
         nibpParam.provider().serviceCalibrateZero(false);
         _isReturn = true;
@@ -73,7 +74,6 @@ void NIBPServiceZeroPointState::handleNIBPEvent(NIBPEvent event, const unsigned 
     {
     case NIBP_EVENT_MODULE_RESET:
     case NIBP_EVENT_MODULE_ERROR:
-        nibpzeropoint.unPacket(false);
         _isEnterSuccess = false;
         switchState(NIBP_SERVICE_ERROR_STATE);
         break;
@@ -84,7 +84,10 @@ void NIBPServiceZeroPointState::handleNIBPEvent(NIBPEvent event, const unsigned 
     break;
 
     case NIBP_EVENT_SERVICE_REPAIR_RETURN:
-        if (_isEnterSuccess && !nibpRepairMenuManager.getRepairError())
+    {
+        NIBPMaintainMgrInterface *nibpMaintainMgr;
+        nibpMaintainMgr = NIBPMaintainMgrInterface::getNIBPMaintainMgr();
+        if (_isEnterSuccess && nibpMaintainMgr && !nibpMaintainMgr->getRepairError())
         {
             nibpParam.provider().serviceCalibrate(false);
             _isReturn = true;
@@ -92,9 +95,9 @@ void NIBPServiceZeroPointState::handleNIBPEvent(NIBPEvent event, const unsigned 
         }
         else
         {
-            nibpRepairMenuManager.returnMenu();
             switchState(NIBP_SERVICE_STANDBY_STATE);
         }
+    }
         break;
 
     case NIBP_EVENT_SERVICE_CALIBRATE_ZERO_ENTER:
@@ -108,8 +111,6 @@ void NIBPServiceZeroPointState::handleNIBPEvent(NIBPEvent event, const unsigned 
             }
             else
             {
-                nibpzeropoint.init();
-                nibpRepairMenuManager.returnMenu();
                 // 转换到测量状态。
                 switchState(NIBP_SERVICE_STANDBY_STATE);
             }
@@ -132,7 +133,6 @@ void NIBPServiceZeroPointState::handleNIBPEvent(NIBPEvent event, const unsigned 
         if (args[0] == 0x01)
         {
             nibpParam.provider().serviceCalibrateZero(true);
-            nibpzeropoint.startSwitch(true);
             setTimeOut();
         }
         break;

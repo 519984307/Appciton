@@ -34,10 +34,8 @@ SOURCES += main.cpp \
     ../../../Params/ECGParam/ECGParamInterface.cpp \
     ../../../Components/Alarm/AlarmInterface.cpp \
     ../../../Components/ParamManager/ParamInfoInterface.cpp \
-    ../../../Utility/Config/Config.cpp \
     ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
     ../../../Utility/ErrorLog/ErrorLogItem.cpp \
-    ../../../Utility/Config/XmlParser.cpp \
     ../../../Components/Alarm/AlarmParamIFace.cpp
 
 HEADERS += \
@@ -63,10 +61,8 @@ HEADERS += \
     ../../../Params/ECGParam/ECGParamInterface.h \
     ../../../Components/Alarm/AlarmInterface.h \
     ../../../Components/ParamManager/ParamInfoInterface.h \
-    ../../../Utility/Config/Config.h \
     ../../../Utility/ErrorLog/ErrorLogInterface.h \
     ../../../Utility/ErrorLog/ErrorLogItem.h \
-    ../../../Utility/Config/XmlParser.h \
     ../../../Components/Alarm/AlarmParamIFace.h \
     ../MockAlarmStateMachine.h \
     ../../Params/MockParamInfo.h \

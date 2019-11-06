@@ -55,7 +55,7 @@ struct NIBPTrendCacheData
 };
 
 class QLabel;
-class ITableWidget;
+class QTableWidget;
 class NIBPDataTrendWidget: public TrendWidget
 {
     Q_OBJECT
@@ -103,7 +103,7 @@ private slots:
     void _releaseHandle();
 
 private:
-    ITableWidget *_table;
+    QTableWidget *_table;
     QString _hrString;
     bool _isAlarm;
     int _rowNR;

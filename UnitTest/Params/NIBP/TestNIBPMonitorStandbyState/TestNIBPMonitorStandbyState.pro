@@ -17,6 +17,7 @@ CONFIG   -= app_bundle
 DEFINES += QT_DEPRECATED_WARNINGS
 include("../../../Common/googletest.pri")
 include("../../../Common/runtest.pri")
+include("../../../Common/Common.pri")
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 # You can also make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -28,13 +29,10 @@ SOURCES += \
     main.cpp \
     ../../../../Params/NIBPParam/NIBPStateMachine/NIBPMonitorStateMachine/NIBPMonitorStandbyState.cpp \
     ../../../../Params/NIBPParam/NIBPStateMachine/NIBPStateMachine.cpp \
-    ../../../../Utility/Debug/Debug.cpp \
     ../../../../Utility/LanguageManager/LanguageManager.cpp \
-    ../../../../Utility/Config/XmlParser.cpp \
     ../../../../Utility/ErrorLog/ErrorLogInterface.cpp \
     ../../../../Params/NIBPParam/NIBPTrigger/NIBPCountdownTimeInterface.cpp \
     ../../../../Utility/ErrorLog/ErrorLogItem.cpp \
-    ../../../../Utility/Config/Config.cpp \
     ../../../../Components/System/SystemManagerInterface.cpp \
     ../../../../Params/NIBPParam/NIBPParamInterface.cpp \
     ../../../../Params/NIBPParam/NIBPStateMachine/NIBPState.cpp \
@@ -51,9 +49,7 @@ HEADERS += \
     ../../../../Params/NIBPParam/NIBPDefine.h \
     ../../../../Params/NIBPParam/NIBPSymbol.h \
     ../../../../Params/NIBPParam/NIBPProviderIFace.h \
-    ../../../../Utility/Debug/Debug.h \
     ../../../../Utility/LanguageManager/LanguageManager.h \
-    ../../../../Utility/Config/XmlParser.h \
     ../../../../Utility/ErrorLog/ErrorLogInterface.h \
     ../../../../Utility/Config/IConfig.h \
     ../../../../Params/NIBPParam/NIBPTrigger/NIBPCountdownTimeInterface.h \
@@ -61,7 +57,6 @@ HEADERS += \
     ../../../../Components/System/SystemManagerInterface.h \
     ../../../../Utility/BaseDefine.h \
     ../../../../Utility/ErrorLog/ErrorLogItem.h \
-    ../../../../Utility/Config/Config.h \
     ../../../../Params/NIBPParam/NIBPParamInterface.h \
     ../../../../Params/NIBPParam/NIBPEventDefine.h \
     ../../../../Params/NIBPParam/NIBPStateMachine/NIBPStateMachineDefine.h \
@@ -73,7 +68,6 @@ INCLUDEPATH += \
     ../../../../Params/NIBPParam/NIBPStateMachine  \
     ../../../../Params/NIBPParam/NIBPStateMachine/NIBPServiceStateMachine \
     ../../../../Params/NIBPParam \
-    ../../../../Utility/Debug \
     ../../../../Utility/LanguageManager \
     ../../../../Utility/Config \
     ../../../../Utility/ErrorLog \

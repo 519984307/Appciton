@@ -11,8 +11,7 @@
 #include "NIBPServiceManometerState.h"
 #include "NIBPServiceStateDefine.h"
 #include "NIBPParam.h"
-#include "NIBPManometer.h"
-#include "NIBPRepairMenuManager.h"
+#include "NIBPMaintainMgrInterface.h"
 
 /**************************************************************************************************
  * 进入该状态。
@@ -34,7 +33,6 @@ void NIBPServiceManometerState::handleNIBPEvent(NIBPEvent event, const unsigned 
     {
     case NIBP_EVENT_MODULE_RESET:
     case NIBP_EVENT_MODULE_ERROR:
-        nibpmanometer.unPacket(false);
         _isEnterSuccess = false;
         switchState(NIBP_SERVICE_ERROR_STATE);
         break;
@@ -45,7 +43,10 @@ void NIBPServiceManometerState::handleNIBPEvent(NIBPEvent event, const unsigned 
     break;
 
     case NIBP_EVENT_SERVICE_REPAIR_RETURN:
-        if (_isEnterSuccess && !nibpRepairMenuManager.getRepairError())
+    {
+        NIBPMaintainMgrInterface *nibpMaintainMgr;
+        nibpMaintainMgr = NIBPMaintainMgrInterface::getNIBPMaintainMgr();
+        if (_isEnterSuccess && nibpMaintainMgr && !nibpMaintainMgr->getRepairError())
         {
             nibpParam.provider().serviceCalibrate(false);
             _isReturn = true;
@@ -55,6 +56,7 @@ void NIBPServiceManometerState::handleNIBPEvent(NIBPEvent event, const unsigned 
         {
             switchState(NIBP_SERVICE_STANDBY_STATE);
         }
+    }
         break;
 
     case NIBP_EVENT_SERVICE_MANOMETER_ENTER:
@@ -68,7 +70,6 @@ void NIBPServiceManometerState::handleNIBPEvent(NIBPEvent event, const unsigned 
             }
             else
             {
-                nibpRepairMenuManager.returnMenu();
                 switchState(NIBP_SERVICE_STANDBY_STATE);
             }
         }

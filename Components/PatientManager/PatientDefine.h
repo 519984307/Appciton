@@ -82,14 +82,14 @@ struct PatientInfo
 
     // 复制构造函数  ---解决代码检查问题
     PatientInfo(const PatientInfo &other)
+        : type(other.type),
+          pacer(other.pacer),
+          sex(other.sex),
+          bornDate(other.bornDate),
+          blood(other.blood),
+          weight(other.weight),
+          height(other.height)
     {
-        pacer = other.pacer;
-        type = other.type;
-        sex = other.sex;
-        bornDate = other.bornDate;
-        blood = other.blood;
-        weight = other.weight;
-        height = other.height;
         ::memcpy(name, other.name, sizeof(name));
         ::memcpy(id, other.id, sizeof(id));
     }

@@ -11,7 +11,7 @@
 #include "TestBatteryTime.h"
 #include <QFile>
 #include <QDir>
-#include "XmlParser.h"
+#include "Framework/Config/XmlParser.h"
 #include <QTime>
 
 class TestBatteryTimePrivate

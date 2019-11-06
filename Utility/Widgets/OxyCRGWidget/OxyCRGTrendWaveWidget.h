@@ -11,7 +11,6 @@
 #pragma once
 #include "IWidget.h"
 #include "OxyCRGDefine.h"
-#include "RingBuff.h"
 
 class OxyCRGTrendWaveWidgetPrivate;
 class OxyCRGTrendWaveWidget : public IWidget

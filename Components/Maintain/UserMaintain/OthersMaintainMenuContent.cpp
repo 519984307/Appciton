@@ -16,7 +16,6 @@
 #include "IBPSymbol.h"
 #include "IConfig.h"
 #include "IBPParam.h"
-#include "IMessageBox.h"
 #include "Button.h"
 #include "NurseCallSetWindow.h"
 #include "ECGParam.h"
@@ -24,6 +23,7 @@
 #include "RESPParam.h"
 #include "O2ParamInterface.h"
 #include "WaveWidget.h"
+#include "WindowManager.h"
 
 class OthersMaintainMenuContentPrivate
 {

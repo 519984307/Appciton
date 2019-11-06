@@ -11,7 +11,7 @@
 #ifndef TESTXMLPARSER_H
 #define TESTXMLPARSER_H
 #include "MockErrorLog.h"
-#include "XmlParser.h"
+#include "Framework/Config/XmlParser.h"
 #include <QTest>
 
 class QTemporaryFile;

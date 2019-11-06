@@ -10,7 +10,7 @@
 
 #include "AlarmLimitModel.h"
 #include "ParamInfo.h"
-#include "Utility.h"
+#include "Framework/Utility/Utility.h"
 #include <QDebug>
 #include <QColor>
 #include <QResizeEvent>

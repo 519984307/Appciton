@@ -6,6 +6,7 @@
 
 QT       += core gui xml network svg
 DEFINES += QT_NO_EXCEPTIONS
+CONFIG += link_prl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -129,9 +130,8 @@ DEFINES += ECG_MONITOR_NOTIFY_FILTER_OFF
 # Depending libraries
 LIBS += -ldl -lasound -lz
 
-linux-cortexa9hf-vfp-neon-gnueabi-g++ {
-    LIBS += -lts -L$$PWD/nPM/lib/
-}
+# link framework
+LIBS += -L$$PWD/Framework/lib -lFramework
 
 linux-arm-g++ {
     LIBS += -lts -L$$PWD/nPM/lib/
@@ -163,11 +163,7 @@ SOURCES +=                                                                      
     SOUP/Json/qobjecthelper.cpp                                                 \
     SOUP/Json/serializer.cpp                                                    \
     SOUP/Json/serializerrunnable.cpp                                            \
-    Utility/Utility.cpp                                                         \
-    Utility/Config/Config.cpp                                                   \
-    Utility/Config/XmlParser.cpp                                                \
     Utility/Config/IConfig.cpp                                                  \
-    Utility/DataStorage/CircleFile.cpp                                          \
     Utility/DataStorage/DataStorageDirManager.cpp                               \
     Utility/DataStorage/StorageFile.cpp                                         \
     Utility/DataStorage/StorageManager.cpp                                      \
@@ -175,8 +171,9 @@ SOURCES +=                                                                      
     Utility/ErrorLog/ErrorLogInterface.cpp                                      \
     Utility/ErrorLog/ErrorLog.cpp                                               \
     Utility/ErrorLog/ErrorLogItem.cpp                                           \
-    Utility/ErrorLog/ErrorLogViewer.cpp                                         \
     Utility/ErrorLog/ErrorLogViewerWindow.cpp                                   \
+    Utility/ErrorLog/ErrorLogTableModel.cpp                                     \
+    Utility/ErrorLog/ErrorLogWindow.cpp                                         \
     Utility/TimeDate/TimeDate.cpp                                               \
     Utility/Uart/Uart.cpp                                                       \
     Utility/Uart/UartSocket.cpp                                                 \
@@ -215,16 +212,8 @@ SOURCES +=                                                                      
     Utility/Widgets/Base/PopupMoveEditor.cpp                                    \
     Utility/Widgets/Base/MoveButton.cpp                                         \
     Utility/Widgets/Base/Dialog.cpp                                             \
-    Utility/Widgets/IComboList/ComboList.cpp                                    \
-    Utility/Widgets/IComboList/ComboListPopup.cpp                               \
-    Utility/Widgets/IComboList/ComboListItem.cpp                                \
-    Utility/Widgets/IComboList/IComboList.cpp                                   \
-    Utility/Widgets/IComboList/CombolistWidget.cpp                              \
     Utility/Widgets/InputMethod/EnglishInputPanel.cpp                           \
-    Utility/Widgets/InputMethod/Key.cpp                                         \
-    Utility/Widgets/InputMethod/KeyBoardPanel.cpp                               \
     Utility/Widgets/InputMethod/KeyInputPanel.cpp                               \
-    Utility/Widgets/InputMethod/NumberPanel.cpp                                 \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWaveWidget.cpp                      \
     Utility/Widgets/OxyCRGWidget/OxyCRGWidget.cpp                               \
     Utility/Widgets/OxyCRGWidget/OxyCRGRESPWaveWidget.cpp                       \
@@ -254,22 +243,7 @@ SOURCES +=                                                                      
     Utility/Widgets/Waveform/WaveWidget.cpp                                     \
     Utility/Widgets/MessageBox.cpp                                              \
     Utility/Widgets/ExportDataWidget.cpp                                        \
-    Utility/Widgets/FreezeTableWidget.cpp                                       \
-    Utility/Widgets/IButton.cpp                                                 \
-    Utility/Widgets/IDropList.cpp                                               \
-    Utility/Widgets/ILabel.cpp                                                  \
-    Utility/Widgets/IListWidget.cpp                                             \
-    Utility/Widgets/IPrograssBar.cpp                                            \
-    Utility/Widgets/ISpinBox.cpp                                                \
-    Utility/Widgets/ITableWidget.cpp                                            \
-    Utility/Widgets/LabelButton.cpp                                             \
-    Utility/Widgets/MenuGroup.cpp                                               \
-    Utility/Widgets/MenuWidget.cpp                                              \
-    Utility/Widgets/PMessageBox.cpp                                             \
-    Utility/Widgets/PopupWidget.cpp                                             \
-    Utility/Widgets/SubMenu.cpp                                                 \
     Utility/Widgets/ImportFileSubWidget.cpp                                     \
-    Utility/Widgets/TableItemDelegate.cpp                                       \
     Utility/Widgets/EventWidget/EventWaveWidget.cpp                             \
     Utility/Widgets/EventWidget/EventTrendItemDelegate.cpp                      \
     Utility/Widgets/EventWidget/EventInfoWidget.cpp                             \
@@ -279,9 +253,6 @@ SOURCES +=                                                                      
     Utility/Widgets/EventWidget/EventWaveSetWindow.cpp                          \
     Utility/Widgets/EventWidget/OxyCRGEventWindow.cpp                           \
     Utility/Widgets/EventWidget/OxyCRGEventSetWindow.cpp                        \
-    Utility/ScreenCapture.cpp                                                   \
-    Utility/RunLengthEncode.cpp                                                 \
-    Utility/ImageQuant.cpp                                                      \
 #################################################################################
     Components/System/SystemTick.cpp                                            \
     Components/System/SystemManager.cpp                                         \
@@ -289,7 +260,6 @@ SOURCES +=                                                                      
     Components/System/SystemAlarm.cpp                                           \
     Components/System/TDA19988Ctrl.cpp                                          \
     Components/System/Widgets/SystemModeBarWidget.cpp                           \
-    Components/System/Widgets/SystemSelftestMenu.cpp                            \
     Components/System/Widgets/SystemStatusBarWidget.cpp                         \
     Components/System/Widgets/RunningStatusBar.cpp                              \
     Components/System/Widgets/RunningStatusBarInterface.cpp                     \
@@ -328,7 +298,6 @@ SOURCES +=                                                                      
     Components/Alarm/AlarmStateMachine/AlarmOffState.cpp                        \
     Components/Alarm/AlarmStateMachine/AlarmAudioOffState.cpp                   \
     Components/Alarm/AlarmStateMachine/AlarmResetState.cpp                      \
-    Components/Alarm/Widgets/AlarmInfoPopListView.cpp                           \
     Components/Alarm/Widgets/AlarmLimitMenuContent.cpp                          \
     Components/Alarm/Widgets/AlarmLimitWindow.cpp                               \
     Components/Alarm/Widgets/AlarmStatusWidget.cpp                              \
@@ -351,13 +320,10 @@ SOURCES +=                                                                      
     Components/Calculation/HemodynamicManager/HemodynamicDataModel.cpp          \
     Components/PatientData/WaveformCache.cpp                                    \
     Components/PatientData/ParamDataStorageManager.cpp                          \
-    Components/PatientData/RescueDataListWidget.cpp                             \
     Components/PatientData/RescueDataListNewWidget.cpp                          \
-    Components/PatientData/RescueDataExportWidget.cpp                           \
     Components/PatientData/TrendCache.cpp                                       \
     Components/PatientData/TrendCacheInterface.cpp                              \
     Components/PatientData/TrendDataUtil.cpp                                    \
-    Components/PatientData/RescueDataDeleteWidget.cpp                           \
     Components/PatientData/RescueDataDeleteWindow.cpp                           \
     Components/PatientData/TrendDataStorageManager.cpp                          \
     Components/PatientData/TrendDataStorageManagerInterface.cpp                 \
@@ -367,7 +333,6 @@ SOURCES +=                                                                      
     Components/PatientData/EventStorageManagerInterface.cpp                     \
     Components/PatientData/TrendWaveWidget.cpp                                  \
     Components/PatientData/TrendSubWaveWidget.cpp                               \
-    Components/PatientData/IMoveButton.cpp                                      \
     Components/PatientData/TrendTableWindow.cpp                                 \
     Components/PatientData/TrendTableModel.cpp                                  \
     Components/PatientData/TrendTableSetWindow.cpp                              \
@@ -435,42 +400,17 @@ SOURCES +=                                                                      
     Components/KeyHandle/SoftKeyWidget.cpp                                      \
     Components/KeyHandle/SoftkeyActionBase.cpp                                  \
     Components/KeyHandle/SoftkeyActions/CalculateSoftkeyAction.cpp              \
-    Components/KeyHandle/SoftkeyActions/DelRescueDataSoftkeyAction.cpp          \
     Components/KeyHandle/SoftkeyActions/MonitorSoftkeyAction.cpp                \
-    Components/KeyHandle/SoftkeyActions/RescueDataSoftKeyAction.cpp             \
     Components/KeyHandle/KeyActionManager/KeyActionManager.cpp                  \
     Components/KeyHandle/KeyActionManager/NormalModeKeyAction.cpp               \
-    Components/MenuManager/MenuManager.cpp                                      \
-    Components/MenuManager/SetWidget.cpp                                        \
-    Components/MenuManager/SupervisorMenuManager.cpp                            \
     Components/NetworkManager/NetworkManager.cpp                                \
     Components/NetworkManager/WpaCtrl/common/wpa_ctrl.c                         \
     Components/NetworkManager/WpaCtrl/utils/os_unix.c                           \
     Components/NetworkManager/WpaCtrl/WpaCtrl.cpp                               \
     Components/NetworkManager/Widgets/LabeledLabel.cpp                          \
-    Components/NetworkManager/Widgets/WiFiProfileEditor.cpp                     \
+    Components/NetworkManager/Widgets/WiFiProfileInfo.cpp                       \
     Components/NetworkManager/Widgets/WiFiProfileWindow.cpp                     \
     Components/NetworkManager/Widgets/WiFiProfileEditorWindow.cpp               \
-    Components/ActivityLog/ActivityLogManager.cpp                               \
-    Components/Maintain/Supervisor/Menu/Supervisor12LMenuContent.cpp            \
-    Components/Maintain/Supervisor/Menu/SupervisorPrintMenuContent.cpp          \
-    Components/Maintain/Service/ErrorLog/ServiceErrorLogMenu.cpp                \
-    Components/Maintain/Service/ErrorLog/ErrorLogWindow.cpp                     \
-    Components/Maintain/Service/ErrorLog/ErrorLogTableModel.cpp                 \
-    Components/Maintain/Service/Menu/ServiceWindowManager.cpp                   \
-    Components/Maintain/Service/NIBP/NIBPPressureControl.cpp                    \
-    Components/Maintain/Service/NIBP/NIBPCalibrate.cpp                          \
-    Components/Maintain/Service/NIBP/NIBPManometer.cpp                          \
-    Components/Maintain/Service/NIBP/NIBPRepairMenuManager.cpp                  \
-    Components/Maintain/Service/NIBP/NIBPZeroPoint.cpp                          \
-    Components/Maintain/Service/Temp/ServiceCPUTemp.cpp                         \
-    Components/Maintain/Factory/FactoryConfigManager.cpp                        \
-    Components/Maintain/FactoryMaintain/FactoryDataRecordContent.cpp            \
-    Components/Maintain/Factory/Menu/FactoryTempMenuContent.cpp                 \
-    Components/Maintain/Factory/Menu/FactoryTestMenuContent.cpp                 \
-    Components/Maintain/Factory/Menu/FactoryCO2MenuContent.cpp                  \
-    Components/Maintain/UserMaintain/UserMaintainManager.cpp                    \
-    Components/Maintain/UserMaintain/WifiMaintainMenu.cpp                       \
     Components/Maintain/UserMaintain/UserMaintainGeneralMenuContent.cpp         \
     Components/Maintain/UserMaintain/ModuleMaintainMenuContent.cpp              \
     Components/Maintain/UserMaintain/AlarmMaintainMenuContent.cpp               \
@@ -480,23 +420,27 @@ SOURCES +=                                                                      
     Components/Maintain/UserMaintain/ErrorLogEntranceContent.cpp                \
     Components/Maintain/UserMaintain/DemoMenuContent.cpp                        \
     Components/Maintain/UserMaintain/NurseCallSetWindow.cpp                     \
+    Components/Maintain/FactoryMaintain/FactoryDataRecordContent.cpp            \
+    Components/Maintain/FactoryMaintain/NIBPRepairMenuWindow.cpp                \
     Components/Maintain/FactoryMaintain/FactorySystemInfoMenuContent.cpp        \
-    Components/Maintain/FactoryMaintain/FactoryMaintainManager.cpp              \
     Components/Maintain/FactoryMaintain/SoftwareVersionWindow.cpp               \
     Components/Maintain/FactoryMaintain/MonitorInfoWindow.cpp                   \
     Components/Maintain/FactoryMaintain/ServiceUpdateEntranceContent.cpp        \
     Components/Maintain/FactoryMaintain/MachineConfigModuleContent.cpp          \
     Components/Maintain/FactoryMaintain/FactoryVersionInfo.cpp                  \
+    Components/Maintain/FactoryMaintain/NIBPMaintainMgrInterface.cpp            \
     Components/Maintain/FactoryMaintain/NIBPCalibrationMenuContent.cpp          \
     Components/Maintain/FactoryMaintain/NIBPCalibrateContent.cpp                \
     Components/Maintain/FactoryMaintain/NIBPManometerContent.cpp                \
-    Components/Maintain/FactoryMaintain/NIBPRepairMenuWindow.cpp                \
     Components/Maintain/FactoryMaintain/NIBPZeroPointContent.cpp                \
     Components/Maintain/FactoryMaintain/NIBPPressureControlContent.cpp          \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenuContent.cpp      \
     Components/Maintain/FactoryMaintain/UpgradeManager.cpp                      \
     Components/Maintain/FactoryMaintain/UpgradeWindow.cpp                       \
     Components/Maintain/FactoryMaintain/O2CalibrationMenuContent.cpp            \
+    Components/Maintain/FactoryMaintain/FactoryCO2MenuContent.cpp               \
+    Components/Maintain/FactoryMaintain/FactoryTempMenuContent.cpp              \
+    Components/Maintain/FactoryMaintain/FactoryTestMenuContent.cpp              \
     Components/CodeMarker/Widgets/CodeMarkerWindow.cpp                          \
     Components/ConfigManager/ConfigManager.cpp                                  \
     Components/ConfigManager/ConfigManagerInterface.cpp                         \
@@ -663,16 +607,11 @@ HEADERS +=                                                                      
     SOUP/Json/serializer.h                                                      \
     SOUP/Json/serializerrunnable.h                                              \
     SOUP/Json/stack.hh                                                          \
-    Utility/md5.h                                                               \
     Utility/OrderedMap.h                                                        \
-    Utility/Utility.h                                                           \
-    Utility/Config/Config.h                                                     \
     Utility/Config/ConfigDefine.h                                               \
     Utility/Config/IConfig.h                                                    \
-    Utility/Config/XmlParser.h                                                  \
     Utility/DataStorage/DataStorageDefine.h                                     \
     Utility/DataStorage/IStorageBackend.h                                       \
-    Utility/DataStorage/CircleFile.h                                            \
     Utility/DataStorage/StorageFile.h                                           \
     Utility/DataStorage/DataStorageDirManager.h                                 \
     Utility/DataStorage/StorageManager.h                                        \
@@ -680,8 +619,9 @@ HEADERS +=                                                                      
     Utility/ErrorLog/ErrorLogInterface.h                                        \
     Utility/ErrorLog/ErrorLog.h                                                 \
     Utility/ErrorLog/ErrorLogItem.h                                             \
-    Utility/ErrorLog/ErrorLogViewer.h                                           \
     Utility/ErrorLog/ErrorLogViewerWindow.h                                     \
+    Utility/ErrorLog/ErrorLogTableModel.h                                       \
+    Utility/ErrorLog/ErrorLogWindow.h                                           \
     Utility/TimeDate/TimeDate.h                                                 \
     Utility/TimeDate/TimeDefine.h                                               \
     Utility/TimeDate/TimeSymbol.h                                               \
@@ -689,10 +629,8 @@ HEADERS +=                                                                      
     Utility/Uart/UartSocketDefine.h                                             \
     Utility/Uart/UartSocket.h                                                   \
     Utility/BaseDefine.h                                                        \
-    Utility/UnitManager.h                                                       \
     Utility/FloatHandle/FloatHandle.h                                           \
     Utility/Debug/Debug.h                                                       \
-    Utility/RingBuff/RingBuff.h                                                 \
     Utility/LanguageManager/LanguageManager.h                                   \
     Utility/FontManager/FontManager.h                                           \
     Utility/FontManager/FontManagerInterface.h                                  \
@@ -730,16 +668,8 @@ HEADERS +=                                                                      
     Utility/Widgets/Base/PopupMoveEditor.h                                      \
     Utility/Widgets/Base/MoveButton.h                                           \
     Utility/Widgets/Base/Dialog.h                                               \
-    Utility/Widgets/IComboList/ComboList.h                                      \
-    Utility/Widgets/IComboList/ComboListPopup.h                                 \
-    Utility/Widgets/IComboList/ComboListItem.h                                  \
-    Utility/Widgets/IComboList/IComboList.h                                     \
-    Utility/Widgets/IComboList/CombolistWidget.h                                \
     Utility/Widgets/InputMethod/EnglishInputPanel.h                             \
-    Utility/Widgets/InputMethod/Key.h                                           \
-    Utility/Widgets/InputMethod/KeyBoardPanel.h                                 \
     Utility/Widgets/InputMethod/KeyInputPanel.h                                 \
-    Utility/Widgets/InputMethod/NumberPanel.h                                   \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWaveWidget.h                        \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWaveWidget_p.h                      \
     Utility/Widgets/OxyCRGWidget/OxyCRGWidget.h                                 \
@@ -774,23 +704,7 @@ HEADERS +=                                                                      
     Utility/Widgets/Waveform/WaveScanMode.h                                     \
     Utility/Widgets/Waveform/WaveWidget.h                                       \
     Utility/Widgets/ExportDataWidget.h                                          \
-    Utility/Widgets/FreezeTableWidget.h                                         \
-    Utility/Widgets/IButton.h                                                   \
-    Utility/Widgets/IDropList.h                                                 \
-    Utility/Widgets/ILabel.h                                                    \
-    Utility/Widgets/IListWidget.h                                               \
-    Utility/Widgets/IMessageBox.h                                               \
     Utility/Widgets/MessageBox.h                                                \
-    Utility/Widgets/IPrograssBar.h                                              \
-    Utility/Widgets/ISpinBox.h                                                  \
-    Utility/Widgets/ITableWidget.h                                              \
-    Utility/Widgets/LabelButton.h                                               \
-    Utility/Widgets/MenuGroup.h                                                 \
-    Utility/Widgets/MenuWidget.h                                                \
-    Utility/Widgets/PMessageBox.h                                               \
-    Utility/Widgets/PopupWidget.h                                               \
-    Utility/Widgets/SubMenu.h                                                   \
-    Utility/Widgets/TableItemDelegate.h                                         \
     Utility/Widgets/EventWidget/EventWaveWidget.h                               \
     Utility/Widgets/EventWidget/EventTrendItemDelegate.h                        \
     Utility/Widgets/EventWidget/EventInfoWidget.h                               \
@@ -809,7 +723,6 @@ HEADERS +=                                                                      
     Components/System/Widgets/SystemStatusBarWidget.h                           \
     Components/System/Widgets/RunningStatusBar.h                                \
     Components/System/Widgets/RunningStatusBarInterface.h                       \
-    Components/System/Widgets/SystemSelftestMenu.h                              \
     Components/System/Widgets/SystemModeBarWidget.h                             \
     Components/System/Widgets/NormalFunctionMenuContent.h                       \
     Components/System/Widgets/PrintSettingMenuContent.h                         \
@@ -851,7 +764,6 @@ HEADERS +=                                                                      
     Components/Alarm/AlarmStateMachine/AlarmOffState.h                          \
     Components/Alarm/AlarmStateMachine/AlarmAudioOffState.h                     \
     Components/Alarm/AlarmStateMachine/AlarmResetState.h                        \
-    Components/Alarm/Widgets/AlarmInfoPopListView.h                             \
     Components/Alarm/Widgets/AlarmLimitMenuContent.h                            \
     Components/Alarm/Widgets/AlarmLimitWindow.h                                 \
     Components/Alarm/Widgets/AlarmStatusWidget.h                                \
@@ -878,15 +790,12 @@ HEADERS +=                                                                      
     Components/PatientData/WaveformCache.h                                      \
     Components/PatientData/ParamDataDefine.h                                    \
     Components/PatientData/ParamDataStorageManager.h                            \
-    Components/PatientData/RescueDataListWidget.h                               \
     Components/PatientData/RescueDataListNewWidget.h                            \
     Components/PatientData/RescueDataDefine.h                                   \
-    Components/PatientData/RescueDataExportWidget.h                             \
     Components/PatientData/TrendCache.h                                         \
     Components/PatientData/TrendCacheInterface.h                                \
     Components/PatientData/TrendDataSymbol.h                                    \
     Components/PatientData/TrendDataDefine.h                                    \
-    Components/PatientData/RescueDataDeleteWidget.h                             \
     Components/PatientData/RescueDataDeleteWindow.h                             \
     Components/PatientData/TrendDataStorageManager.h                            \
     Components/PatientData/TrendDataStorageManagerInterface.h                   \
@@ -897,7 +806,6 @@ HEADERS +=                                                                      
     Components/PatientData/EventStorageManagerInterface.h                       \
     Components/PatientData/TrendWaveWidget.h                                    \
     Components/PatientData/TrendSubWaveWidget.h                                 \
-    Components/PatientData/IMoveButton.h                                        \
     Components/PatientData/EventDataSymbol.h                                    \
     Components/PatientData/TrendTableWindow.h                                   \
     Components/PatientData/TrendTableModel.h                                    \
@@ -975,46 +883,20 @@ HEADERS +=                                                                      
     Components/KeyHandle/SoftKeyWidget.h                                        \
     Components/KeyHandle/SoftkeyActionBase.h                                    \
     Components/KeyHandle/SoftkeyActions/CalculateSoftkeyAction.h                \
-    Components/KeyHandle/SoftkeyActions/DelRescueDataSoftkeyAction.h            \
     Components/KeyHandle/SoftkeyActions/MonitorSoftkeyAction.h                  \
-    Components/KeyHandle/SoftkeyActions/RescueDataSoftKeyAction.h               \
     Components/KeyHandle/KeyActionManager/KeyActionManager.h                    \
     Components/KeyHandle/KeyActionManager/KeyActionIFace.h                      \
     Components/KeyHandle/KeyActionManager/NormalModeKeyAction.h                 \
-    Components/MenuManager/MenuManager.h                                        \
-    Components/MenuManager/SetWidget.h                                          \
-    Components/MenuManager/SupervisorMenuManager.h                              \
     Components/NetworkManager/NetworkDefine.h                                   \
     Components/NetworkManager/NetworkSymble.h                                   \
     Components/NetworkManager/NetworkManager.h                                  \
     Components/NetworkManager/WpaCtrl/WpaCtrl.h                                 \
     Components/NetworkManager/Widgets/LabeledLabel.h                            \
-    Components/NetworkManager/Widgets/WiFiProfileEditor.h                       \
+    Components/NetworkManager/Widgets/WiFiProfileInfo.h                         \
     Components/NetworkManager/Widgets/WiFiProfileWindow.h                       \
     Components/NetworkManager/Widgets/WiFiProfileEditorWindow.h                 \
-    Components/ActivityLog/ActivityLogManager.h                                 \
-    Components/Maintain/Supervisor/Menu/Supervisor12LMenuContent.h              \
-    Components/Maintain/Supervisor/Menu/SupervisorPrintMenuContent.h            \
-    Components/Maintain/Service/ErrorLog/ServiceErrorLogMenu.h                  \
-    Components/Maintain/Service/ErrorLog/ErrorLogWindow.h                       \
-    Components/Maintain/Service/ErrorLog/ErrorLogTableModel.h                   \
-    Components/Maintain/Service/Menu/ServiceWindowManager.h                     \
-    Components/Maintain/Service/NIBP/NIBPPressureControl.h                      \
-    Components/Maintain/Service/NIBP/NIBPCalibrate.h                            \
-    Components/Maintain/Service/NIBP/NIBPManometer.h                            \
-    Components/Maintain/Service/NIBP/NIBPRepairMenuManager.h                    \
-    Components/Maintain/Service/NIBP/NIBPZeroPoint.h                            \
-    Components/Maintain/Service/Temp/ServiceCPUTemp.h                           \
-    Components/Maintain/Factory/FactoryConfigManager.h                          \
-    Components/Maintain/Factory/Menu/FactoryTempMenuContent.h                   \
-    Components/Maintain/Factory/Menu/FactoryTestMenuContent.h                   \
-    Components/Maintain/Factory/Menu/FactoryCO2MenuContent.h                    \
-    Components/Maintain/FactoryMaintain/FactoryDataRecordContent.h              \
-    Components/Maintain/FactoryMaintain/NIBPRepairMenuWindow.h                  \
-    Components/Maintain/UserMaintain/UserMaintainManager.h                      \
     Components/Maintain/UserMaintain/AlarmMaintainSymbol.h                      \
     Components/Maintain/UserMaintain/AlarmMaintainDefine.h                      \
-    Components/Maintain/UserMaintain/WifiMaintainMenu.h                         \
     Components/Maintain/UserMaintain/UserMaintainGeneralMenuContent.h           \
     Components/Maintain/UserMaintain/ModuleMaintainMenuContent.h                \
     Components/Maintain/UserMaintain/AlarmMaintainMenuContent.h                 \
@@ -1024,13 +906,15 @@ HEADERS +=                                                                      
     Components/Maintain/UserMaintain/ErrorLogEntranceContent.h                  \
     Components/Maintain/UserMaintain/DemoMenuContent.h                          \
     Components/Maintain/UserMaintain/NurseCallSetWindow.h                       \
+    Components/Maintain/FactoryMaintain/FactoryDataRecordContent.h              \
+    Components/Maintain/FactoryMaintain/NIBPRepairMenuWindow.h                  \
     Components/Maintain/FactoryMaintain/FactorySystemInfoMenuContent.h          \
-    Components/Maintain/FactoryMaintain/FactoryMaintainManager.h                \
     Components/Maintain/FactoryMaintain/SoftwareVersionWindow.h                 \
     Components/Maintain/FactoryMaintain/MonitorInfoWindow.h                     \
     Components/Maintain/FactoryMaintain/ServiceUpdateEntranceContent.h          \
     Components/Maintain/FactoryMaintain/MachineConfigModuleContent.h            \
     Components/Maintain/FactoryMaintain/FactoryVersionInfo.h                    \
+    Components/Maintain/FactoryMaintain/NIBPMaintainMgrInterface.h              \
     Components/Maintain/FactoryMaintain/NIBPCalibrationMenuContent.h            \
     Components/Maintain/FactoryMaintain/NIBPCalibrateContent.h                  \
     Components/Maintain/FactoryMaintain/NIBPManometerContent.h                  \
@@ -1040,6 +924,9 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/UpgradeManager.h                        \
     Components/Maintain/FactoryMaintain/UpgradeWindow.h                         \
     Components/Maintain/FactoryMaintain/O2CalibrationMenuContent.h              \
+    Components/Maintain/FactoryMaintain/FactoryCO2MenuContent.h                 \
+    Components/Maintain/FactoryMaintain/FactoryTempMenuContent.h                \
+    Components/Maintain/FactoryMaintain/FactoryTestMenuContent.h                \
     Components/CodeMarker/Widgets/CodeMarkerList.h                              \
     Components/CodeMarker/Widgets/CodeMarkerWindow.h                            \
     Components/ConfigManager/ConfigManager.h                                    \
@@ -1231,12 +1118,8 @@ DEPENDPATH +=                                                                   
     SOUP/Json                                                                   \
     Main                                                                        \
     Main/App                                                                    \
-    Main/Factory                                                                \
-    Main/Service                                                                \
-    Main/Supervisor                                                             \
     Utility                                                                     \
     Utility/FloatHandle                                                         \
-    Utility/RingBuff                                                            \
     Utility/Debug                                                               \
     Utility/TimeDate                                                            \
     Utility/Uart                                                                \
@@ -1248,7 +1131,6 @@ DEPENDPATH +=                                                                   
     Utility/Widgets                                                             \
     Utility/Widgets/Base                                                        \
     Utility/Widgets/Base/KineticScroller                                        \
-    Utility/Widgets/IComboList                                                  \
     Utility/Widgets/Waveform                                                    \
     Utility/Widgets/InputMethod                                                 \
     Utility/Widgets/OxyCRGWidget                                                \
@@ -1280,24 +1162,12 @@ DEPENDPATH +=                                                                   
     Components/Recorder                                                         \
     Components/PowerManager                                                     \
     Components/PowerManager/Battery                                             \
-    Components/MenuManager                                                      \
     Components/NetworkManager                                                   \
     Components/NetworkManager/Widgets                                           \
     Components/NetworkManager/WpaCtrl                                           \
     Components/NetworkManager/WpaCtrl/common                                    \
     Components/NetworkManager/WpaCtrl/utils                                     \
     Components/USBManager                                                       \
-    Components/ActivityLog                                                      \
-    Components/Maintain/Supervisor                                              \
-    Components/Maintain/Supervisor/Menu                                         \
-    Components/Maintain/Service                                                 \
-    Components/Maintain/Service/Menu                                            \
-    Components/Maintain/Service/ErrorLog                                        \
-    Components/Maintain/Service/NIBP                                            \
-    Components/Maintain/Service/Temp                                            \
-    Components/Maintain/Service/Version                                         \
-    Components/Maintain/Factory                                                 \
-    Components/Maintain/Factory/Menu                                            \
     Components/Maintain/UserMaintain                                            \
     Components/Maintain/FactoryMaintain                                         \
     Components/CodeMarker/Widgets                                               \
@@ -1319,7 +1189,6 @@ DEPENDPATH +=                                                                   
     Providers/E5Provider                                                        \
     Providers/DemoProvider                                                      \
     Providers/PRT48Provider                                                     \
-    Providers/PRT72Provider                                                     \
     Providers/SystemBoardProvider                                               \
     Providers/RawData                                                           \
     Providers/S5Provider                                                        \
@@ -1349,20 +1218,15 @@ DEPENDPATH +=                                                                   
     Params/RESPParam/RESPWidgets                                                \
     Params/O2Param                                                              \
     Params/O2Param/O2Widgets                                                    \
+    Framework                                                                   \
 
 
 INCLUDEPATH +=                                                                  \
     SOUP/Json                                                                   \
-    SOUP/libharu/include                                                        \
-    SOUP/libssh2/include                                                        \
     Main                                                                        \
     Main/App                                                                    \
-    Main/Factory                                                                \
-    Main/Service                                                                \
-    Main/Supervisor                                                             \
     Utility                                                                     \
     Utility/FloatHandle                                                         \
-    Utility/RingBuff                                                            \
     Utility/Debug                                                               \
     Utility/TimeDate                                                            \
     Utility/Uart                                                                \
@@ -1375,7 +1239,6 @@ INCLUDEPATH +=                                                                  
     Utility/Widgets                                                             \
     Utility/Widgets/Base                                                        \
     Utility/Widgets/Base/KineticScroller                                        \
-    Utility/Widgets/IComboList                                                  \
     Utility/Widgets/Waveform                                                    \
     Utility/Widgets/InputMethod                                                 \
     Utility/Widgets/OxyCRGWidget                                                \
@@ -1407,24 +1270,12 @@ INCLUDEPATH +=                                                                  
     Components/Recorder                                                         \
     Components/PowerManager                                                     \
     Components/PowerManager/Battery                                             \
-    Components/MenuManager                                                      \
     Components/NetworkManager                                                   \
     Components/NetworkManager/Widgets                                           \
     Components/NetworkManager/WpaCtrl                                           \
     Components/NetworkManager/WpaCtrl/common                                    \
     Components/NetworkManager/WpaCtrl/utils                                     \
     Components/USBManager                                                       \
-    Components/ActivityLog                                                      \
-    Components/Maintain/Supervisor                                              \
-    Components/Maintain/Supervisor/Menu                                         \
-    Components/Maintain/Service                                                 \
-    Components/Maintain/Service/Menu                                            \
-    Components/Maintain/Service/ErrorLog                                        \
-    Components/Maintain/Service/NIBP                                            \
-    Components/Maintain/Service/Temp                                            \
-    Components/Maintain/Service/Version                                         \
-    Components/Maintain/Factory                                                 \
-    Components/Maintain/Factory/Menu                                            \
     Components/Maintain/UserMaintain                                            \
     Components/Maintain/FactoryMaintain                                         \
     Components/CodeMarker/Widgets                                               \
@@ -1442,11 +1293,10 @@ INCLUDEPATH +=                                                                  
     Providers/SuntechProvider                                                   \
     Providers/BLMTEMPProvider                                                   \
     Providers/T5Provider                                                        \
-    Providers/N5Provider                                                       \
+    Providers/N5Provider                                                        \
     Providers/E5Provider                                                        \
     Providers/DemoProvider                                                      \
     Providers/PRT48Provider                                                     \
-    Providers/PRT72Provider                                                     \
     Providers/SystemBoardProvider                                               \
     Providers/RawData                                                           \
     Providers/S5Provider                                                        \
@@ -1476,6 +1326,7 @@ INCLUDEPATH +=                                                                  
     Params/RESPParam/RESPWidgets                                                \
     Params/O2Param                                                              \
     Params/O2Param/O2Widgets                                                    \
+    Framework                                                                   \
 
 linux-arm-g++ {
     SOURCES +=  Utility/Widgets/TSCalibrationWindow.cpp

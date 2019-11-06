@@ -26,6 +26,7 @@
 #include "USBManager.h"
 #include "LanguageManager.h"
 #include "SoundManagerInterface.h"
+#include <QTimerEvent>
 
 SystemStatusBarWidget *SystemStatusBarWidget::_selfObj = NULL;
 #define ICON_WIDTH 32

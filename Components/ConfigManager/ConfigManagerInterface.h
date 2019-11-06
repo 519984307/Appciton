@@ -10,7 +10,7 @@
 
 #pragma once
 #include "PatientDefine.h"
-#include "Config.h"
+#include "Framework/Config/Config.h"
 
 class ConfigManagerInterface
 {

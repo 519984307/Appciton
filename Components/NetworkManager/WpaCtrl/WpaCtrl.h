@@ -1,9 +1,18 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2019/10/30
+ **/
+
 #pragma once
 #include <QObject>
 #include <QScopedPointer>
 #include "wpa_ctrl.h"
 #include <QList>
-#include "WiFiProfileEditor.h"
 
 
 struct WiFiNetworkInfo
@@ -19,7 +28,7 @@ struct WiFiNetworkInfo
 struct SSIDInfo
 {
     SSIDInfo(const QString &ssid, const QString &bssid, const QString &flags, int freq, int signal)
-            :ssid(ssid), bssid(bssid), flags(flags),freq(freq), signal(signal){}
+            :ssid(ssid), bssid(bssid), flags(flags), freq(freq), signal(signal){}
     QString ssid;
     QString bssid;
     QString flags;
@@ -46,35 +55,35 @@ class WpaCtrl : public QObject
 {
     Q_OBJECT
 public:
-    WpaCtrl(QObject *parent);
+    explicit WpaCtrl(QObject *parent);
     ~WpaCtrl();
-    //open the wifi interface, like wlan0
+    // open the wifi interface, like wlan0
     int openInterface(const QString &interface);
-    //check whether this control interface is valid
+    // check whether this control interface is valid
     bool isValid() const;
-    //get the store networks
+    // get the store networks
     QList<WiFiNetworkInfo> getNetworks();
-    //enable network by network id
+    // enable network by network id
     void enableNetwork(const QString &id);
-    //disable network by network id
+    // disable network by network id
     void disableNetwork(const QString &id);
-    //select network by network id
+    // select network by network id
     void selectNetwork(const QString &id);
-    //add a network
+    // add a network
     QString addNetwork();
-    //set the specific network parameter
+    // set the specific network parameter
     int setNetworkParam(int id, const char *field, const char *value, bool quote);
-    //remove a network by network id
+    // remove a network by network id
     void removeNetwork(const QString &id);
-    //request to perform a scan operation
+    // request to perform a scan operation
     void scanRequest();
-    //check whether the scan is finished
+    // check whether the scan is finished
     bool scanResultReady() const;
-    //get latest scan result
+    // get latest scan result
     QList<SSIDInfo> getScanResult() const;
-    //save the network config
+    // save the network config
     void saveConfig();
-    //get the wifi status
+    // get the wifi status
     WiFiStatus status() const;
 
 signals:

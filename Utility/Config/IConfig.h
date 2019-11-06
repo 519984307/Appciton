@@ -9,12 +9,11 @@
  **/
 
 #pragma once
-#include "Config.h"
+#include "Framework/Config/Config.h"
 #include "ConfigDefine.h"
 
 class SystemConfig : public Config
 {
-
 public:
     static SystemConfig &construction(void)
     {

@@ -32,9 +32,7 @@ SOURCES += main.cpp \
     ../../../Utility/FontManager/FontManagerInterface.cpp \
     ../../../Components/Alarm/AlarmInterface.cpp \
     ../../../Components/Alarm/Widgets/AlarmInfoBarWidget.cpp \
-    ../../../Utility/Config/Config.cpp \
     ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
-    ../../../Utility/Config/XmlParser.cpp \
     ../../../Utility/Widgets/Base/Button.cpp \
     ../../../Utility/Widgets/Base/ThemeManager.cpp \
     ../../../Components/WindowManager/WindowManagerInterface.cpp \
@@ -61,9 +59,7 @@ HEADERS += \
     ../../../Utility/FontManager/FontManagerInterface.h \
     ../../../Components/Alarm/AlarmInterface.h \
     ../../../Components/Alarm/Widgets/AlarmInfoBarWidget.h \
-    ../../../Utility/Config/Config.h \
     ../../../Utility/ErrorLog/ErrorLogInterface.h \
-    ../../../Utility/Config/XmlParser.h \
     ../../../Utility/Widgets/Base/Button.h \
     ../../../Utility/Widgets/Base/ThemeManager.h \
     ../../../Components/WindowManager/WindowManagerInterface.h \

@@ -12,7 +12,7 @@
 #include "NIBPServiceErrorState.h"
 #include "NIBPParam.h"
 #include "NIBPAlarm.h"
-#include "NIBPRepairMenuManager.h"
+#include "NIBPMaintainMgrInterface.h"
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"
 
@@ -21,8 +21,13 @@
  *************************************************************************************************/
 void NIBPServiceErrorState::enter(void)
 {
-    nibpRepairMenuManager.setMonitorState(NIBP_MONITOR_ERROR_STATE);
-    nibpRepairMenuManager.warnShow(true);
+    NIBPMaintainMgrInterface *nibpMaintainMgr;
+    nibpMaintainMgr = NIBPMaintainMgrInterface::getNIBPMaintainMgr();
+    if (nibpMaintainMgr)
+    {
+        nibpMaintainMgr->setMonitorState(NIBP_MONITOR_ERROR_STATE);
+        nibpMaintainMgr->warnShow(true);
+    }
 }
 
 /**************************************************************************************************

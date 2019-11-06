@@ -23,7 +23,7 @@
 #include <QTcpSocket>
 #include "UartSocketDefine.h"
 #include "crc8.h"
-#include "RingBuff.h"
+#include "Framework/Utility/RingBuff.h"
 #include <QMap>
 #include <QEventLoop>
 #include <QTimer>
@@ -343,6 +343,7 @@ UartSocketController::UartSocketController(QObject *parent)
     : QObject(parent), d_ptr(new UartSocketControllerPrivate(this))
 {
     d_ptr->socket = new QTcpSocket(this);
+    d_ptr->socket->setSocketOption(QAbstractSocket::LowDelayOption, 1);
     connect(d_ptr->socket, SIGNAL(readyRead()), this, SLOT(onDataReady()));
     connect(d_ptr->socket, SIGNAL(disconnected()), this, SLOT(onDisconnected()));
 }
@@ -357,6 +358,7 @@ void UartSocketController::connectControlServer()
     QEventLoop loop;
     connect(d_ptr->socket, SIGNAL(connected()), &loop, SLOT(quit()));
     connect(d_ptr->socket, SIGNAL(error(QAbstractSocket::SocketError)), &loop, SLOT(quit()));
+    QTimer::singleShot(3000, &loop, SLOT(quit()));
     loop.exec();
 }
 

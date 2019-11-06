@@ -28,8 +28,6 @@ SOURCES += main.cpp \
     ../../../Components/WindowManager/IWidget.cpp \
     ../../../Params/NIBPParam/NIBPParamInterface.cpp \
     ../../../Components/ConfigManager/ConfigManagerInterface.cpp \
-    ../../../Utility/Config/XmlParser.cpp \
-    ../../../Utility/Config/Config.cpp \
     ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
     ../../../Utility/ErrorLog/ErrorLogItem.cpp \
     ../../../Components/System/Widgets/RunningStatusBarInterface.cpp \
@@ -44,8 +42,6 @@ HEADERS += \
     ../../../Components/WindowManager/IWidget.h \
     ../../../Params/NIBPParam/NIBPParamInterface.h \
     ../../../Components/ConfigManager/ConfigManagerInterface.h \
-    ../../../Utility/Config/XmlParser.h \
-    ../../../Utility/Config/Config.h \
     ../../../Utility/ErrorLog/ErrorLogInterface.h \
     ../../../Utility/ErrorLog/ErrorLogItem.h \
     ../../../Components/PatientManager/PatientDefine.h \

@@ -16,8 +16,6 @@
 #include "SoftKeyWidget.h"
 #include "MonitorSoftkeyAction.h"
 #include "ECG12LeadSoftkeyAction.h"
-#include "RescueDataSoftKeyAction.h"
-#include "DelRescueDataSoftkeyAction.h"
 #include "CalculateSoftkeyAction.h"
 #include "ECGParam.h"
 #include "WindowManager.h"

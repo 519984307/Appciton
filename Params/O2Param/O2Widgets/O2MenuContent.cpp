@@ -18,6 +18,7 @@
 #include "ComboBox.h"
 #include "O2Param.h"
 #include "SpinBox.h"
+#include <QLabel>
 
 class O2MenuContentPrivate
 {

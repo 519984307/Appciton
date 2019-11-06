@@ -115,9 +115,6 @@ static void _initSystem(void)
     EventStorageManager::getInstance();
     TrendDataStorageManager::getInstance();
 
-    //消息提示框
-    pMessageBox.construction();
-
     // 初始化夜间模式
     runningStatus.getInstance();
     if (nightModeManager.nightMode())
@@ -211,10 +208,6 @@ static void _initComponents(void)
     //报警状态
     alarmStateMachine.getInstance();
     alarmStateMachine.start();
-
-    // 数据管理。
-    rescueDataExportWidget.construction();
-    rescueDataDeleteWidget.construction();
 
     // U盘管理
     usbManager.getInstance();
@@ -673,15 +666,6 @@ static void _initPrint(void)
  *************************************************************************************************/
 static void _initMenu(void)
 {
-    menuManager.construction();
-    userMaintainManager.construction();
-    wifiMaintainMenu.construction();
-
-    userMaintainManager.addSubMenu(&wifiMaintainMenu);
-
-    // supervisorMenuManager
-    supervisorMenuManager.construction();
-
     //其它弹出菜单初始化
     patientManager.getInstance();
 }
@@ -708,8 +692,6 @@ void deleteObjects(void)
     deleteRecorderManager();
 
     //    deleteWaveWidgetSelectMenu();
-    deleteSupervisorMenuManager();
-    deleteMenuManager();
     // deletePatientMenu();
     deleteParamManager();
     deleteTimeDate();
@@ -721,14 +703,8 @@ void deleteObjects(void)
     deleteSystemTick();
     deleteKeyActionManager();
 
-    deletepMessageBox();
-
-    deleteRescueDataExportWidget();
-    deleteRescueDataDeleteWidget();
-
 //    deleteNetworkManager();
     deleteUsbManager();
-    deleteActivityLogManager();
 
     deleteColorManager();
     deleteLanguageManager();

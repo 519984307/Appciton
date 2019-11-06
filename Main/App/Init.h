@@ -26,20 +26,12 @@
 #include "KeyActionManager.h"
 #include "NormalModeKeyAction.h"
 #include "WindowManager.h"
-#include "MenuManager.h"
-#include "SupervisorMenuManager.h"
-#include "KeyBoardPanel.h"
-#include "NumberPanel.h"
-#include "SetWidget.h"
 #include "NellcorProvider.h"
 
 #include "DataStorageDirManager.h"
 #include "SoundManager.h"
 #include "NetworkManager.h"
 #include "SystemTick.h"
-#include "UserMaintainManager.h"
-#include "FactoryMaintainManager.h"
-#include "WifiMaintainMenu.h"
 #include "SystemStatusBarWidget.h"
 #include "SystemModeBarWidget.h"
 #include "SystemManager.h"
@@ -63,9 +55,6 @@
 #include "TrendCache.h"
 #include "ParamDataStorageManager.h"
 #include "TrendDataStorageManager.h"
-#include "TrendRescueRangePrint.h"
-#include "RescueDataExportWidget.h"
-#include "RescueDataDeleteWidget.h"
 
 
 #include "EventStorageManager.h"
@@ -155,10 +144,6 @@
 #include "RawDataCollector.h"
 
 #include "USBManager.h"
-
-#include "ActivityLogManager.h"
-
-#include "PMessageBox.h"
 
 #include "OxyCRGWidget.h"
 

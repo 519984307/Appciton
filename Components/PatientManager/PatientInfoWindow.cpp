@@ -22,7 +22,7 @@
 #include "DischargePatientWindow.h"
 #include <QMap>
 #include "Button.h"
-#include "UnitManager.h"
+#include "Framework/Utility/Unit.h"
 #include "IConfig.h"
 #include "WindowManager.h"
 #include "SpinBox.h"

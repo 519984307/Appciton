@@ -511,9 +511,7 @@ void NIBPTrendWidget::showValue(void)
     {
         QLayout *lay = d_ptr->stackedwidget->currentWidget()->layout();
         showNormalStatus(lay, psrc);
-        showNormalStatus(d_ptr->lastMeasureCount, psrc);
-        showNormalStatus(d_ptr->countDown, psrc);
-        showNormalStatus(d_ptr->model, psrc);
+        showNormalStatus(psrc);
     }
 
     d_ptr->updateMeasureTime();
@@ -692,7 +690,7 @@ void NIBPTrendWidget::doRestoreNormalStatus()
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
     QLayout *lay = d_ptr->stackedwidget->currentWidget()->layout();   // 将窗体所有内容显示正常颜色
     showNormalStatus(lay, psrc);
-    showNormalParamLimit(psrc);
+    showNormalStatus(psrc);
 }
 
 void NIBPTrendWidget::updatePalette(const QPalette &pal)

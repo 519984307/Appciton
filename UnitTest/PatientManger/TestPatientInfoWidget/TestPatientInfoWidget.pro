@@ -24,7 +24,6 @@ SOURCES += main.cpp \
     ../../../Components/PatientManager/PatientManager.cpp \
     ../../../Components/WindowManager/IWidget.cpp \
     ../../../Utility/LanguageManager/LanguageManager.cpp \
-    ../../../Utility/Config/XmlParser.cpp \
     ../../../Utility/FontManager/FontManagerInterface.cpp \
     ../../../Utility/DataStorage/DataStorageDirManagerInterface.cpp \
     ../../../Utility/Widgets/Base/Dialog.cpp \
@@ -37,7 +36,6 @@ SOURCES += main.cpp \
     ../../../Params/NIBPParam/NIBPParamInterface.cpp \
     ../../../Params/ECGParam/ECGParamInterface.cpp \
     ../../../Params/ECGParam/ECGDupParamInterface.cpp \
-    ../../../Utility/Config/Config.cpp \
     ../../../Utility/Config/IConfig.cpp \
     ../../../Utility/ErrorLog/ErrorLogItem.cpp \
     ../../../Utility/Widgets/Base/Button.cpp \
@@ -51,7 +49,6 @@ HEADERS += \
     ../../../Components/PatientManager/PatientInfoWidgetInterface.h \
     ../../../Components/WindowManager/IWidget.h \
     ../../../Utility/LanguageManager/LanguageManager.h \
-    ../../../Utility/Config/XmlParser.h \
     ../../../Utility/FontManager/FontManagerInterface.h \
     ../../../Utility/DataStorage/DataStorageDirManagerInterface.h \
     ../../../Utility/Widgets/Base/Dialog.h \
@@ -64,7 +61,6 @@ HEADERS += \
     ../../../Params/NIBPParam/NIBPParamInterface.h \
     ../../../Params/ECGParam/ECGParamInterface.h \
     ../../../Params/ECGParam/ECGDupParamInterface.h \
-    ../../../Utility/Config/Config.h \
     ../../../Utility/Config/IConfig.h \
     ../../../Utility/ErrorLog/ErrorLogItem.h \
     ../../../Utility/Widgets/Base/Button.h \

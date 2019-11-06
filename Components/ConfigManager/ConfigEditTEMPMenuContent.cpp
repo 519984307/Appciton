@@ -13,7 +13,7 @@
 #include <QGridLayout>
 #include "LanguageManager.h"
 #include "TEMPSymbol.h"
-#include "Config.h"
+#include "Framework/Config/Config.h"
 #include "ConfigEditMenuWindow.h"
 #include "Button.h"
 #include "ParamInfo.h"
