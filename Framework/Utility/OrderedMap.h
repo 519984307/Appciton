@@ -233,7 +233,6 @@ public:
 
     class const_iterator
     {
-
         QllConstIterator qllConstIter;
         const OMHash *data;
 
@@ -648,4 +647,4 @@ typename OrderedMap<Key, Value>::const_iterator OrderedMap<Key, Value>::find(con
     return const_iterator(hit.value().second, &data);
 }
 
-#endif // ORDEREDMAP_H
+#endif  // ORDEREDMAP_H

@@ -38,6 +38,7 @@ HEADERS += \
         Utility/Unit.h                                                              \
         Utility/crc8.h                                                              \
         Utility/RingBuff.h                                                          \
+        Utility/OrderedMap.h                                                        \
         Config/XmlParser.h                                                          \
         Config/Config.h                                                             \
         Uart/Uart.h                                                                 \

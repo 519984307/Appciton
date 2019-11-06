@@ -18,7 +18,7 @@
 #include "IConfig.h"
 
 #ifdef Q_WS_X11
-#include "UartSocket.h"
+#include "Framework/Uart/UartSocket.h"
 #endif
 
 /**************************************************************************************************
