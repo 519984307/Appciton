@@ -9,7 +9,6 @@
  **/
 
 #include <QTimer>
-#include "crc8.h"
 #include "Debug.h"
 #include "SystemManager.h"
 #include "SystemBoardProvider.h"

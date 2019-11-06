@@ -9,14 +9,12 @@
  **/
 
 #include "Uart.h"
-#include "ErrorLog.h"
-#include "ErrorLogItem.h"
-#include "Debug.h"
 #include <unistd.h>
 #include <errno.h>
 #include <termios.h>
 #include <fcntl.h>
 #include <QSocketNotifier>
+#include <QDebug>
 
 /**************************************************************************************************
  * 功能： 转换波特率
@@ -147,7 +145,7 @@ static bool _settingFD(int fd, const UartAttrDesc &attr)
     if (ret != 0)
     {
         close(fd);
-        debug("tcgetattr failed.");
+        qDebug("tcgetattr failed.");
         return false;
     }
 
@@ -168,7 +166,7 @@ static bool _settingFD(int fd, const UartAttrDesc &attr)
     if (ret != 0)
     {
         close(fd);
-        debug("cfsetspeed failed");
+        qDebug("cfsetspeed failed");
         return false;
     }
 
@@ -195,16 +193,16 @@ static bool _settingFD(int fd, const UartAttrDesc &attr)
     switch (attr.parity)
     {
     case 'o':
-    case 'O': // Odd
+    case 'O':  // Odd
         term.c_cflag |= (PARENB | PARODD);
         break;
     case 'e':
-    case 'E': // Even
+    case 'E':  // Even
         term.c_cflag &= ~PARODD;
         term.c_cflag |= PARENB;
         break;
     case 'n':
-    case 'N': // None
+    case 'N':  // None
         term.c_cflag &= ~PARENB;
         break;
     default:
@@ -234,7 +232,7 @@ static bool _settingFD(int fd, const UartAttrDesc &attr)
     if (ret != 0)
     {
         close(fd);
-        debug("tcflush failed");
+        qDebug("tcflush failed");
         return false;
     }
 
@@ -243,7 +241,7 @@ static bool _settingFD(int fd, const UartAttrDesc &attr)
     if (ret != 0)
     {
         close(fd);
-        debug("tcsetattr failed");
+        qDebug("tcsetattr failed");
         return false;
     }
 
@@ -287,14 +285,7 @@ int Uart::write(const unsigned char buff[], int len)
             }
 
             QString errorStr = strerror(errno);
-            qdebug("%s(%d), %s", qPrintable(_port), _fd, qPrintable(errorStr));
-            ErrorLogItem *item = new CriticalFaultLogItem();
-            item->setName("Uart Write Error");
-            item->setLog(QString("%1:%2\r\n").arg(_port).arg(errorStr));
-            item->setSubSystem(ErrorLogItem::SUB_SYS_MAIN_PROCESSOR);
-            item->setSystemState(ErrorLogItem::SYS_STAT_RUNTIME);
-            item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
-            errorLog.append(item);
+            qDebug() << _port << errorStr;
             return (len - remain);
         }
         ::fsync(_fd);
@@ -302,9 +293,6 @@ int Uart::write(const unsigned char buff[], int len)
         remain -= ret;
         retry = 0;
     }
-// outHex(buff,len);
-// debug("%d",len);
-// debug("%s(%d)", qPrintable(_port), _fd);
     return len;
 }
 
@@ -369,14 +357,14 @@ bool Uart::initPort(const QString &port, const UartAttrDesc &desc, bool needNoti
 
     if ((_fd = open(qPrintable(port), flags)) == -1)
     {
-        debug("open %s failed.", qPrintable(port));
+        qDebug("open %s failed.", qPrintable(port));
         return false;
     }
 
     //设置终端串口的属性，例如波特率、停止位、优先级等
     if (!_settingFD(_fd, desc))
     {
-        debug("%s set attribute failed", qPrintable(port));
+        qDebug("%s set attribute failed", qPrintable(port));
         close(_fd);
         _fd = -1;
         return false;

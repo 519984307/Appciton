@@ -19,14 +19,14 @@
 #include <errno.h>
 #include <unistd.h>
 #include <QSocketNotifier>
-#include "Debug.h"
 #include <QTcpSocket>
 #include "UartSocketDefine.h"
 #include "crc8.h"
-#include "Framework/Utility/RingBuff.h"
+#include "RingBuff.h"
 #include <QMap>
 #include <QEventLoop>
 #include <QTimer>
+#include <QDebug>
 
 #define DEVICE_IP "192.168.10.2"
 #define CONTROL_PORT 8000
@@ -71,14 +71,14 @@ bool UartSocket::initPort(const QString &port, const UartAttrDesc &desc, bool ne
     if (_fd < 0)
     {
         perror("UartSocket");
-        debug("uartSocket:%s, %s:%d connect fail!", qPrintable(port), DEVICE_IP, portnum);
+        qDebug("uartSocket:%s, %s:%d connect fail!", qPrintable(port), DEVICE_IP, portnum);
         return false;
     }
 
     if (::connect(_fd, (struct sockaddr *)&remoteAddr, sizeof(struct sockaddr)) < 0)
     {
         perror("UartSocket");
-        debug("uartSocket:%s, %s:%d connect fail!", qPrintable(port), DEVICE_IP, portnum);
+        qDebug("uartSocket:%s, %s:%d connect fail!", qPrintable(port), DEVICE_IP, portnum);
         close(_fd);
         _fd = -1;
         return false;
@@ -93,7 +93,7 @@ bool UartSocket::initPort(const QString &port, const UartAttrDesc &desc, bool ne
         connect(_notifier, SIGNAL(activated(int)), this, SIGNAL(activated(int)));
         _notifier->setEnabled(true);
     }
-    debug("UartSocket:%s, %s:%d connected!", qPrintable(port), DEVICE_IP, portnum);
+    qDebug("UartSocket:%s, %s:%d connected!", qPrintable(port), DEVICE_IP, portnum);
     return true;
 }
 
@@ -121,7 +121,7 @@ int UartSocket::write(const unsigned char buff[], int len)
                     continue;
             }
 
-            debug("%s(%d), %s", qPrintable(_port), _fd, strerror(errno));
+            qDebug("%s(%d), %s", qPrintable(_port), _fd, strerror(errno));
             return (len - remain);
         }
 ::fsync(_fd);

@@ -13,7 +13,6 @@
 #include "Debug.h"
 #include <QString>
 #include "IConfig.h"
-#include "crc8.h"
 #include "SystemManager.h"
 #include "TimeDate.h"
 #include "NIBPAlarm.h"
@@ -131,7 +130,7 @@ void N5Provider::_selfTest(unsigned char *packet, int len)
 void N5Provider::_handleError(unsigned char error)
 {
     int _error = 0x00;
-    switch(error)
+    switch (error)
     {
     case SELF_TEST_6V_FAILED:
     case SELF_TEST_5V_FAILED:
@@ -416,7 +415,8 @@ void N5Provider::handlePacket(unsigned char *data, int len)
 
     // 压力控制（充气）
     case N5_RSP_PRESSURE_INFLATE:
-        if(data[1] == 0 || data[1] == 1)     // 0x8A回复帧，如果等于2时候是发送充气命令立刻回复,等于1或者0时候是充到指定压力回复。
+        // 0x8A回复帧，如果等于2时候是发送充气命令立刻回复,等于1或者0时候是充到指定压力回复。
+        if (data[1] == 0 || data[1] == 1)
         {
             nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_PRESSURECONTROL_INFLATE, &data[1], 1);
         }

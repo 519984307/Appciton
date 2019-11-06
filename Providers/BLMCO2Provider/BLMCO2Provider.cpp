@@ -19,7 +19,7 @@
 #include "ConfigManager.h"
 #include "RawDataCollector.h"
 #include "IConfig.h"
-#include "crc8.h"
+#include "Framework/Utility/crc8.h"
 
 #define SOH             (0x01)  // upgrage packet header
 #define MODEL_CONNECT_TIME_OUT 500

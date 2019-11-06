@@ -12,7 +12,6 @@
 #include "TEMPParam.h"
 #include "Debug.h"
 #include <QString>
-#include "crc8.h"
 #include "SystemManager.h"
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"

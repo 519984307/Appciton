@@ -30,8 +30,8 @@ struct UartAttrDesc
     }
 
     int baud;      // 波特率。
-    char dataLen; // 数据长度。
-    char stopLen; // 停止位长度。
+    char dataLen;  // 数据长度。
+    char stopLen;  // 停止位长度。
     char parity;   // 奇偶校验, 'O'奇校验，‘E’偶校验，‘N’无校验。
     unsigned char vmin;    // 数据端口有效的最小数据个数。
     FlowControl flowCtrl;  // 数据流控制
@@ -78,7 +78,7 @@ signals:
 
 protected:
     QString _port;
-    int _fd;//串口的文件描述符
+    int _fd;  //串口的文件描述符
     QSocketNotifier *_notifier;
 
 private:

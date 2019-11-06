@@ -27,6 +27,8 @@ SOURCES += \
         Utility/RunLengthEncode.cpp                                                 \
         Config/XmlParser.cpp                                                        \
         Config/Config.cpp                                                           \
+        Uart/Uart.cpp                                                               \
+        Uart/UartSocket.cpp                                                         \
         Storage/StorageFile.cpp                                                     \
         Storage/StorageManager.cpp                                                  \
 
@@ -34,9 +36,12 @@ SOURCES += \
 HEADERS += \
         Utility/Utility.h                                                           \
         Utility/Unit.h                                                              \
+        Utility/crc8.h                                                              \
         Utility/RingBuff.h                                                          \
         Config/XmlParser.h                                                          \
         Config/Config.h                                                             \
+        Uart/Uart.h                                                                 \
+        Uart/UartSocket.h                                                           \
         Storage/IStorageBackend.h                                                   \
         Storage/StorageFile.h                                                       \
         Storage/StorageManager.h                                                    \
@@ -44,10 +49,14 @@ HEADERS += \
 DEPENDPATH += \
         Utility                                                                     \
         Config                                                                      \
+        Storage                                                                     \
+        Uart                                                                        \
 
 INCLUDEPATH += \
-       Utility                                                                      \
-       Config                                                                       \
+        Utility                                                                      \
+        Config                                                                       \
+        Storage                                                                      \
+        Uart                                                                         \
 
 
 unix {

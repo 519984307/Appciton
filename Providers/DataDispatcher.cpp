@@ -9,9 +9,9 @@
  **/
 
 #include "DataDispatcher.h"
-#include "Uart.h"
+#include "Framework/Uart/Uart.h"
 #include "IConfig.h"
-#include "crc8.h"
+#include "Framework/Utility/crc8.h"
 #include "Provider.h"
 #include "Debug.h"
 

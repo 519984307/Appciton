@@ -9,7 +9,7 @@
  **/
 
 #include "Debug.h"
-#include "crc8.h"
+#include "Framework/Utility/crc8.h"
 #include "BLMProvider.h"
 #include <QTimerEvent>
 #include <QMutex>

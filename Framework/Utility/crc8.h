@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the Project project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2019/11/6
+ **/
+
 #pragma once
 
 // 按照多项式 X^8+X^2+X^1+1 生成。
@@ -32,7 +42,7 @@ inline unsigned char calcCRC(const unsigned char *data, unsigned int len)
     }
 
     unsigned char index;    // CRC8校验表格索引
-    unsigned char crc8 = 0; // CRC8字节初始化
+    unsigned char crc8 = 0;   // CRC8字节初始化
 
     // 进行CRC8位校验
     while (len--)

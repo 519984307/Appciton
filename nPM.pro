@@ -173,8 +173,6 @@ SOURCES +=                                                                      
     Utility/ErrorLog/ErrorLogTableModel.cpp                                     \
     Utility/ErrorLog/ErrorLogWindow.cpp                                         \
     Utility/TimeDate/TimeDate.cpp                                               \
-    Utility/Uart/Uart.cpp                                                       \
-    Utility/Uart/UartSocket.cpp                                                 \
     Utility/Debug/Debug.cpp                                                     \
     Utility/LanguageManager/LanguageManager.cpp                                 \
     Utility/FontManager/FontManager.cpp                                         \
@@ -618,9 +616,6 @@ HEADERS +=                                                                      
     Utility/TimeDate/TimeDate.h                                                 \
     Utility/TimeDate/TimeDefine.h                                               \
     Utility/TimeDate/TimeSymbol.h                                               \
-    Utility/Uart/Uart.h                                                         \
-    Utility/Uart/UartSocketDefine.h                                             \
-    Utility/Uart/UartSocket.h                                                   \
     Utility/BaseDefine.h                                                        \
     Utility/FloatHandle/FloatHandle.h                                           \
     Utility/Debug/Debug.h                                                       \
@@ -1112,7 +1107,6 @@ DEPENDPATH +=                                                                   
     Utility/FloatHandle                                                         \
     Utility/Debug                                                               \
     Utility/TimeDate                                                            \
-    Utility/Uart                                                                \
     Utility/Config                                                              \
     Utility/DataStorage                                                         \
     Utility/ColorManager                                                        \
@@ -1219,7 +1213,6 @@ INCLUDEPATH +=                                                                  
     Utility/FloatHandle                                                         \
     Utility/Debug                                                               \
     Utility/TimeDate                                                            \
-    Utility/Uart                                                                \
     Utility/Config                                                              \
     Utility/DataStorage                                                         \
     Utility/ColorManager                                                        \

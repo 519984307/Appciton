@@ -13,7 +13,7 @@
 #include <QString>
 #include <termios.h>
 #include "Param.h"
-#include "Uart.h"
+#include "Framework/Uart/Uart.h"
 #include "Framework/Utility/RingBuff.h"
 #include "DataDispatcher.h"
 
