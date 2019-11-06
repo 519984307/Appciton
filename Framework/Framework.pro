@@ -31,6 +31,14 @@ SOURCES += \
         Uart/UartSocket.cpp                                                         \
         Storage/StorageFile.cpp                                                     \
         Storage/StorageManager.cpp                                                  \
+        SOUP/Json/json_parser.cc                                                    \
+        SOUP/Json/json_scanner.cc                                                   \
+        SOUP/Json/json_scanner.cpp                                                  \
+        SOUP/Json/parser.cpp                                                        \
+        SOUP/Json/parserrunnable.cpp                                                \
+        SOUP/Json/qobjecthelper.cpp                                                 \
+        SOUP/Json/serializer.cpp                                                    \
+        SOUP/Json/serializerrunnable.cpp                                            \
 
 
 HEADERS += \
@@ -46,18 +54,23 @@ HEADERS += \
         Storage/IStorageBackend.h                                                   \
         Storage/StorageFile.h                                                       \
         Storage/StorageManager.h                                                    \
+        SOUP/Json/qjson_export.h                                                    \
+        SOUP/Json/parser.h                                                          \
+        SOUP/Json/serializer.h                                                      \
 
 DEPENDPATH += \
         Utility                                                                     \
         Config                                                                      \
-        Storage                                                                     \
         Uart                                                                        \
+        Storage                                                                     \
+        SOUP/Json                                                                    \
 
 INCLUDEPATH += \
         Utility                                                                      \
         Config                                                                       \
-        Storage                                                                      \
         Uart                                                                         \
+        Storage                                                                      \
+        SOUP/Json                                                                    \
 
 
 unix {

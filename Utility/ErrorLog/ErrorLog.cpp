@@ -11,8 +11,8 @@
 
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"
-#include "serializer.h"
-#include "parser.h"
+#include "Framework/SOUP/Json/serializer.h"
+#include "Framework/SOUP/Json/parser.h"
 #include "Framework/Storage/StorageFile.h"
 #include <QMutex>
 #include <QFile>

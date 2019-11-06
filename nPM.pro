@@ -158,14 +158,6 @@ OTHER_FILES +=                                                                  
     nPM/etc/PatientInfo.xml                                                     \
 
 SOURCES +=                                                                      \
-    SOUP/Json/json_parser.cc                                                    \
-    SOUP/Json/json_scanner.cc                                                   \
-    SOUP/Json/json_scanner.cpp                                                  \
-    SOUP/Json/parser.cpp                                                        \
-    SOUP/Json/parserrunnable.cpp                                                \
-    SOUP/Json/qobjecthelper.cpp                                                 \
-    SOUP/Json/serializer.cpp                                                    \
-    SOUP/Json/serializerrunnable.cpp                                            \
     Utility/Config/IConfig.cpp                                                  \
     Utility/DataStorage/DataStorageDirManager.cpp                               \
     Utility/DataStorage/DataStorageDirManagerInterface.cpp                      \
@@ -589,22 +581,6 @@ SOURCES +=                                                                      
     Components/Alarm/AlarmSourceManager.cpp \
 
 HEADERS +=                                                                      \
-    SOUP/Json/FlexLexer.h                                                       \
-    SOUP/Json/json_parser.hh                                                    \
-    SOUP/Json/json_parser.yy                                                    \
-    SOUP/Json/json_scanner.h                                                    \
-    SOUP/Json/json_scanner.yy                                                   \
-    SOUP/Json/location.hh                                                       \
-    SOUP/Json/parser.h                                                          \
-    SOUP/Json/parser_p.h                                                        \
-    SOUP/Json/parserrunnable.h                                                  \
-    SOUP/Json/position.hh                                                       \
-    SOUP/Json/qjson_debug.h                                                     \
-    SOUP/Json/qjson_export.h                                                    \
-    SOUP/Json/qobjecthelper.h                                                   \
-    SOUP/Json/serializer.h                                                      \
-    SOUP/Json/serializerrunnable.h                                              \
-    SOUP/Json/stack.hh                                                          \
     Utility/Config/ConfigDefine.h                                               \
     Utility/Config/IConfig.h                                                    \
     Utility/DataStorage/DataStorageDefine.h                                     \
@@ -1104,7 +1080,6 @@ HEADERS +=                                                                      
 
 #头文件修改后，重新编译依赖的源文件
 DEPENDPATH +=                                                                   \
-    SOUP/Json                                                                   \
     Main                                                                        \
     Main/App                                                                    \
     Utility                                                                     \
@@ -1210,7 +1185,6 @@ DEPENDPATH +=                                                                   
 
 
 INCLUDEPATH +=                                                                  \
-    SOUP/Json                                                                   \
     Main                                                                        \
     Main/App                                                                    \
     Utility                                                                     \
