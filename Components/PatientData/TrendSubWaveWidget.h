@@ -129,8 +129,7 @@ private:
      * @param data 数据
      * @return 像素位置
      */
-    template<typename T>
-    double _mapValue(TrendParamDesc desc, T data);
+    double _mapValue(TrendParamDesc desc, int data);
 
     /**
      * @brief _autoRulerCal 计算自动标尺
@@ -149,7 +148,8 @@ private:
     TrendGraphType _type;
     TrendGraphInfo _trendInfo;      // 趋势图数据信息
     TrendParamDesc _timeX;
-    TrendParamDesc _valueY;
+    TrendParamDesc _valueY;         // 默认单位的上下标尺信息
+    TrendParamDesc _rulerY;         // 当前单位的上下标尺信息
     int _xSize;                     // 趋势x坐标长度
     int _ySize;                     // 趋势y坐标长度
     int _trendDataHead;             // 趋势数据开始位置

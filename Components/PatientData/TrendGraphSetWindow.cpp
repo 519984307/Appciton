@@ -23,6 +23,7 @@
 #include <QRect>
 #include "TrendGraphWindow.h"
 #include "ThemeManager.h"
+#include "TrendGraphConfig.h"
 
 #define ITEM_HEIGHT                 (themeManger.getAcceptableControlHeight())
 #define ITEM_WIDTH                  150
@@ -68,7 +69,7 @@ void TrendGraphSetWindow::setCurParam(QList<SubParamID> subList)
             item->sid = sid;
             ParamID pid = paramInfo.getParamID(sid);
             UnitType type = paramManager.getSubParamUnit(pid, sid);
-            ParamRulerConfig config = alarmConfig.getParamRulerConfig(sid, type);
+            ParamRulerConfig config = TrendGraphConfig::getParamRulerConfig(sid, type);
             QString name = paramInfo.getSubParamName(sid);
             if (sid == SUB_PARAM_ETCO2)
             {

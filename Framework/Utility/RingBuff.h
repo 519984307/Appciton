@@ -24,7 +24,7 @@ template<typename T>
 class RingBuff
 {
 public:
-    RingBuff(const RingBuff<T> &o);
+    explicit RingBuff(const RingBuff<T> &o);
     explicit RingBuff(int size);
     RingBuff();
     ~RingBuff();
@@ -85,12 +85,12 @@ RingBuff<T>::RingBuff(const RingBuff<T> &o)
  */
 template<typename T>
 RingBuff<T>::RingBuff(int size)
-        : _buf(NULL)
-        , _capacity(0)
-        , _mask(0)
-        , _in(0)
-        , _out(0)
-        , _validDataNum(0)
+    : _buf(NULL)
+    , _capacity(0)
+    , _mask(0)
+    , _in(0)
+    , _out(0)
+    , _validDataNum(0)
 {
     _newSpace(size);
 }
@@ -100,12 +100,12 @@ RingBuff<T>::RingBuff(int size)
  */
 template<typename T>
 RingBuff<T>::RingBuff()
-        : _buf(NULL)
-        , _capacity(0)
-        , _mask(0)
-        , _in(0)
-        , _out(0)
-        , _validDataNum(0)
+    : _buf(NULL)
+    , _capacity(0)
+    , _mask(0)
+    , _in(0)
+    , _out(0)
+    , _validDataNum(0)
 {
 }
 

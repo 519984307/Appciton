@@ -172,9 +172,9 @@ QMap<SubParamID, QPainterPath> OxyCRGEventWaveWidget::generatorPainterPath(const
         TrendConvertDesc waveDesc;
         ParamID paramId = paramInfo.getParamID(trendInfo.subParamID);
         UnitType unitType = paramManager.getSubParamUnit(paramId, trendInfo.subParamID);
-        ParamRulerConfig config = alarmConfig.getParamRulerConfig(trendInfo.subParamID, unitType);
-        waveDesc.max = config.upRuler;
-        waveDesc.min = config.downRuler;
+//        ParamRulerConfig config = alarmConfig.getParamRulerConfig(trendInfo.subParamID, unitType);
+//        waveDesc.max = config.upRuler;
+//        waveDesc.min = config.downRuler;
         switch (trendInfo.subParamID)
         {
         case SUB_PARAM_HR_PR:

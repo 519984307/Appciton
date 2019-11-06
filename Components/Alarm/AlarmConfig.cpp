@@ -174,71 +174,12 @@ LimitAlarmConfig AlarmConfig::getLimitAlarmConfig(SubParamID subParamId, UnitTyp
     return iter.value();
 }
 
-ParamRulerConfig AlarmConfig::getParamRulerConfig(SubParamID subParamId, UnitType unit)
-{
-    ParamRulerConfig config;
-
-    // load data from config file
-    QString prefix = "TrendGraph|Ruler|";
-    prefix += paramInfo.getSubParamName(subParamId, true);
-    prefix += "|";
-    prefix += Unit::getSymbol(unit);
-    prefix += "|";
-    int v = 0;
-    QString highPrefix = prefix + "High";
-    systemConfig.getNumValue(highPrefix, v);
-    config.upRuler = v;
-
-    v = 0;
-    systemConfig.getNumAttr(highPrefix, "Min", v);
-    config.minUpRuler = v;
-
-    v = 0;
-    systemConfig.getNumAttr(highPrefix, "Max", v);
-    config.maxUpRuler = v;
-
-    v = 0;
-    QString lowPrefix = prefix + "Low";
-    systemConfig.getNumValue(lowPrefix, v);
-    config.downRuler = v;
-
-    v = 0;
-    systemConfig.getNumAttr(lowPrefix, "Min", v);
-    config.minDownRuler = v;
-
-    v = 0;
-    systemConfig.getNumAttr(lowPrefix, "Max", v);
-    config.maxDownRuler = v;
-
-    v = 1;
-    systemConfig.getNumValue(prefix + "Scale", v);
-    config.scale = v;
-
-    return config;
-}
-
-void AlarmConfig::setParamRulerConfig(SubParamID subParamID, UnitType unit, int low, int high)
-{
-    // load data from config file
-    QString prefix = "TrendGraph|Ruler|";
-    prefix += paramInfo.getSubParamName(subParamID, true);
-    prefix += "|";
-    prefix += Unit::getSymbol(unit);
-    prefix += "|";
-    QString highPrefix = prefix + "High";
-    systemConfig.setNumValue(highPrefix, high);
-
-    QString lowPrefix = prefix + "Low";
-    systemConfig.setNumValue(lowPrefix, low);
-}
-
 void AlarmConfig::setLimitAlarmConfig(SubParamID subParamId, UnitType unit, const LimitAlarmConfig &config)
 {
     LimitAlarmConfig curConfig = getLimitAlarmConfig(subParamId, unit);
-    UnitType defaultUnit = UNIT_NONE;
     UnitType otherUnit1 = UNIT_NONE;
     UnitType otherUnit2 = UNIT_NONE;
-    defaultUnit = paramInfo.getUnitOfSubParam(subParamId, otherUnit1, otherUnit2);
+    UnitType defaultUnit = paramInfo.getUnitOfSubParam(subParamId, otherUnit1, otherUnit2);
     QList<UnitType> unitList;
     unitList << defaultUnit << otherUnit1 << otherUnit2;
 
@@ -259,8 +200,8 @@ void AlarmConfig::setLimitAlarmConfig(SubParamID subParamId, UnitType unit, cons
             int mul;
             currentConfig.getNumValue(prefix + "|Scale", mul);
             if (curConfig.highLimit != config.highLimit)
-            {                              
-                val = Unit::convert(*it, unit, config.highLimit *1.0 / config.scale).toFloat();
+            {
+                val = Unit::convert(*it, unit, config.highLimit * 1.0 / config.scale).toFloat();
                 currentConfig.setNumValue(prefix + "|High", static_cast<int>(val * mul));
                 AlarmConfigKey key(subParamId, *it);
                 LimitAlarmConfig changeConfig = getLimitAlarmConfig(subParamId, *it);
@@ -269,7 +210,7 @@ void AlarmConfig::setLimitAlarmConfig(SubParamID subParamId, UnitType unit, cons
             }
             if (curConfig.lowLimit != config.lowLimit)
             {
-                val = Unit::convert(*it, unit, config.lowLimit *1.0 / config.scale).toFloat();
+                val = Unit::convert(*it, unit, config.lowLimit * 1.0 / config.scale).toFloat();
                 currentConfig.setNumValue(prefix + "|Low", static_cast<int>(val * mul));
                 AlarmConfigKey key(subParamId, *it);
                 LimitAlarmConfig changeConfig = getLimitAlarmConfig(subParamId, *it);
@@ -278,7 +219,6 @@ void AlarmConfig::setLimitAlarmConfig(SubParamID subParamId, UnitType unit, cons
             }
         }
     }
-
 }
 
 QString AlarmConfig::getLowLimitStr(const LimitAlarmConfig &config)

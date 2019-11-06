@@ -341,6 +341,7 @@ SOURCES +=                                                                      
     Components/PatientData/HistoryDataSelWindow.cpp                             \
     Components/PatientData/HistoryDataSelModel.cpp                              \
     Components/PatientData/WaveformCacheInterface.cpp                           \
+    Components/PatientData/TrendGraphConfig.cpp                                 \
     Components/TimeManager/DateTimeWidget.cpp                                   \
     Components/TimeManager/ElapseTimeWidget.cpp                                 \
     Components/TimeManager/TimeManager.cpp                                      \
@@ -585,7 +586,7 @@ SOURCES +=                                                                      
     Main/MergeConfig.cpp                                                        \
     Main/Starter.cpp                                                            \
     Components/TimeManager/TimeManagerInterface.cpp                             \
-    Components/Alarm/AlarmSourceManager.cpp
+    Components/Alarm/AlarmSourceManager.cpp \
 
 HEADERS +=                                                                      \
     SOUP/Json/FlexLexer.h                                                       \
@@ -805,6 +806,7 @@ HEADERS +=                                                                      
     Components/PatientData/HistoryDataSelWindow.h                               \
     Components/PatientData/HistoryDataSelModel.h                                \
     Components/PatientData/WaveformCacheInterface.h                             \
+    Components/PatientData/TrendGraphConfig.h                                   \
     Components/PatientManager/PatientManager.h                                  \
     Components/PatientManager/PatientDefine.h                                   \
     Components/PatientManager/PatientInfoWidget.h                               \
