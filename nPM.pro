@@ -572,7 +572,6 @@ SOURCES +=                                                                      
     Main/App/Init.cpp                                                           \
     Main/IApplication.cpp                                                       \
     Main/IThread.cpp                                                            \
-    Main/MergeConfig.cpp                                                        \
     Main/Starter.cpp                                                            \
     Components/TimeManager/TimeManagerInterface.cpp                             \
     Components/Alarm/AlarmSourceManager.cpp \
@@ -1066,7 +1065,6 @@ HEADERS +=                                                                      
     Main/App/Init.h                                                             \
     Main/IApplication.h                                                         \
     Main/IThread.h                                                              \
-    Main/MergeConfig.h                                                          \
     Main/Starter.h                                                              \
     Utility/Widgets/ImportFileSubWidget.h \
     Components/TimeManager/TimeManagerInterface.h \
