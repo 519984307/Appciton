@@ -36,9 +36,8 @@ AlarmPriority BatteryOneShotAlarm::getAlarmPriority(int id)
     switch (id)
     {
         case BAT_ONESHOT_REPLACE_BATTERY:
-            return ALARM_PRIO_HIGH;
         case BAT_ONESHOT_LOW_BATTERY:
-            return ALARM_PRIO_MED;
+            return ALARM_PRIO_HIGH;
 
         case BAT_ONESHOT_NO_BATTERY:
             return ALARM_PRIO_PROMPT;
