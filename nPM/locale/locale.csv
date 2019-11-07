@@ -1441,7 +1441,7 @@ Input8DigitsPassword,请输入8位数字密码,Please input 8 digits password
 BornDate,出生日期,Born Date
 CurrentPatientStorageSpaceFull,当前监护数据存储空间满,Current monitoring data storage space full
 ChangePatientType,更改病人类型会导致配置更改，您确认要这么做吗？,Changing patient type will cause the configuration changes，Are you sure?
-shutDownIn2Min,电量严重不足，将在两分钟后关机，请连接电源,Serious shortage of electricity.System will shutdown in tow minute.Please connect the power supply.
+shutDownIn2Min,电量严重不足，将在两分钟后关机，请连接电源,Serious shortage of electricity.System will shutdown in tow minutes.Please connect the power supply.
 handMeasure,手部测量,Hand Measure
 footMeasure,足部测量,Foot Measure
 CCHDCheck,CCHD筛查,CCHD Check
