@@ -13,7 +13,7 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QSignalMapper>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 
 #define BUTTON_WIDTH 120
 #define WINDOW_WIDTH 480

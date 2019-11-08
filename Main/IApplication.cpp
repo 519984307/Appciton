@@ -23,7 +23,7 @@
 #if defined(CONFIG_CAPTURE_SCREEN)
 #include <QDateTime>
 #include "Framework/Utility/Utility.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "WindowManager.h"
 #endif
 

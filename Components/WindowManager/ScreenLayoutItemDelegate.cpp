@@ -21,7 +21,7 @@
 #include "FontManager.h"
 #include "LayoutManager.h"
 #include <QPoint>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 
 #define WAVE_LEFT_RIGHT_MARGIN 4
 #define WAVE_TOP_BOTTOM_MARGIN 2
@@ -60,7 +60,7 @@ void ScreenLayoutItemDelegatePrivate::drawWave(QPainter *painter, const QRect &r
 
     painter->save();
     float xGap = info.drawSpeed / systemManager.getScreenPixelWPitch() /
-                 info.sampleRate; // for the x axis distance betwwen each data point
+                 info.sampleRate;  // for the x axis distance betwwen each data point
     float x, y;
     int baseYValue = rect.center().y();
     if (info.waveMinValue == info.baseLine)

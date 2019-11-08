@@ -15,7 +15,7 @@
 #include "Button.h"
 #include "ComboBox.h"
 #include <QKeyEvent>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "FreezeManager.h"
 #include "FreezePageGenerator.h"
 #include "RecorderManager.h"

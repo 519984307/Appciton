@@ -12,7 +12,7 @@
 #include "ComboBox.h"
 #include <QLabel>
 #include <QGridLayout>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "EventDataSymbol.h"
 #include "EventWindow.h"
 
@@ -70,8 +70,7 @@ EventWaveSetWindow::EventWaveSetWindow()
                               << "6.25mm/s"
                               << "12.5mm/s"
                               << "25mm/s"
-                              << "50mm/s"
-                              );
+                              << "50mm/s");
     d_ptr->speedCbx->setCurrentIndex(1);
     layout->addWidget(d_ptr->speedCbx, 1, 1);
     connect(d_ptr->speedCbx, SIGNAL(currentIndexChanged(int)), this, SLOT(waveSpeedReleased(int)));

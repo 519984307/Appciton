@@ -11,7 +11,7 @@
 
 #include "NIBPMonitorStandbyState.h"
 #include "NIBPParamInterface.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "NIBPSymbol.h"
 #include "NIBPCountdownTimeInterface.h"
 #include <QTimerEvent>

@@ -11,7 +11,7 @@
 #include "WiFiProfileEditorWindow.h"
 
 #include <QRegExp>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "FontManager.h"
 #include "WindowManager.h"
 #include "Debug.h"

@@ -16,7 +16,7 @@
 #include "Button.h"
 #include <QLabel>
 #include <QHBoxLayout>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "Debug.h"
 #include "WindowManager.h"
 #include "NIBPRepairMenuWindow.h"

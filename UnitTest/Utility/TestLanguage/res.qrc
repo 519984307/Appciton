@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>ChineseSimplified.xml</file>
+        <file>English.xml</file>
+        <file>English_broken.xml</file>
+    </qresource>
+</RCC>

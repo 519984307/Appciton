@@ -42,6 +42,8 @@ SOURCES += \
         ErrorLog/ErrorLogItem.cpp                                                   \
         ErrorLog/ErrorLogInterface.cpp                                              \
         ErrorLog/ErrorLog.cpp                                                       \
+        Language/LanguageManager.cpp                                                \
+        Language/Translator.cpp                                                     \
 
 
 HEADERS += \
@@ -63,6 +65,8 @@ HEADERS += \
         ErrorLog/ErrorLogItem.h                                                     \
         ErrorLog/ErrorLogInterface.h                                                \
         ErrorLog/ErrorLog.h                                                         \
+        Language/LanguageManager.h                                                  \
+        Language/Translator.h                                                       \
 
 DEPENDPATH += \
         Utility                                                                     \

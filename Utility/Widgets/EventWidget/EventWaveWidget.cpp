@@ -18,7 +18,7 @@
 #include "WaveformCache.h"
 #include "ConfigManager.h"
 #include <QPainter>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 
 #define INVALID_AXIS_VALUE ((1<<30) - 1)
 

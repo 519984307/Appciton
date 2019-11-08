@@ -17,7 +17,7 @@
 #include "WaveWidgetLabel.h"
 #include "ECGWaveRuler.h"
 #include "FontManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "ColorManager.h"
 #include "ParamInfo.h"
 #include "ConfigManager.h"
@@ -1090,7 +1090,7 @@ void ECGWaveWidget::updateWidgetConfig()
 
     ecgParam.updatePacermaker();    // 更新起博标志
     ecgDupParam.updateHRSource();   // 更新HR来源
-    ecgParam.updateEditNotchFilter(); // 更新ECG工频陷波
+    ecgParam.updateEditNotchFilter();  // 更新ECG工频陷波
 
     WaveWidget::updateWidgetConfig();
 }

@@ -14,7 +14,7 @@
 #include "Button.h"
 #include <QLabel>
 #include <QSignalMapper>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "DoseCalculationDefine.h"
 #include "DoseCalculationManager.h"
 #include "WindowManager.h"
@@ -101,8 +101,7 @@ void DoseCalculationWindow::layoutExec()
     combo->addItems(QStringList()
                     << trs(PatientSymbol::convert(PATIENT_TYPE_ADULT))
                     << trs(PatientSymbol::convert(PATIENT_TYPE_PED))
-                    << trs(PatientSymbol::convert(PATIENT_TYPE_NEO))
-                   );
+                    << trs(PatientSymbol::convert(PATIENT_TYPE_NEO)));
     layout->addWidget(combo, index, 1);
     index++;
     combo->setProperty("comboItem", qVariantFromValue(itemId));
@@ -185,7 +184,8 @@ void DoseCalculationWindow::initDrugParam()
         }
         else
         {
-            doseCalculationManager.setDrugParam(i, d_ptr->calcParam[i]->text().toFloat(), d_ptr->calcParamUnit[i]->text());
+            doseCalculationManager.setDrugParam(i, d_ptr->calcParam[i]->text().toFloat(),
+                                                d_ptr->calcParamUnit[i]->text());
         }
     }
 }
@@ -195,16 +195,19 @@ void DoseCalculationWindow::initDrugParam()
  *************************************************************************************************/
 void DoseCalculationWindow::updateDrugParam()
 {
-
     for (int i = 0; i < CALCULATION_PARAM_NR; i ++)
     {
         if (i <= CALCULATION_PARAM_DOSE4)
         {
-            if (doseCalculationManager.getDrugParam(i).value >= 0 && doseCalculationManager.getDrugParam(i).value < 10000)
+            if (doseCalculationManager.getDrugParam(i).value >= 0
+                    && doseCalculationManager.getDrugParam(i).value < 10000)
             {
-                if ((doseCalculationManager.getDrugParam(CALCULATION_PARAM_WEIGHT).value == 0 && i == CALCULATION_PARAM_WEIGHT)
-                        || (doseCalculationManager.getDrugParam(CALCULATION_PARAM_WEIGHT).value == 0 && i == CALCULATION_PARAM_DOSE3)
-                        || (doseCalculationManager.getDrugParam(CALCULATION_PARAM_WEIGHT).value == 0 && i == CALCULATION_PARAM_DOSE4))
+                if ((doseCalculationManager.getDrugParam(CALCULATION_PARAM_WEIGHT).value == 0
+                     && i == CALCULATION_PARAM_WEIGHT)
+                        || (doseCalculationManager.getDrugParam(CALCULATION_PARAM_WEIGHT).value == 0
+                            && i == CALCULATION_PARAM_DOSE3)
+                        || (doseCalculationManager.getDrugParam(CALCULATION_PARAM_WEIGHT).value == 0
+                            && i == CALCULATION_PARAM_DOSE4))
                 {
                     d_ptr->calcParam[i]->setText("");
                 }
@@ -235,7 +238,8 @@ void DoseCalculationWindow::updateDrugParam()
         }
         else
         {
-            if (doseCalculationManager.getDrugParam(i).value >= 0 && doseCalculationManager.getDrugParam(i).value < 1000)
+            if (doseCalculationManager.getDrugParam(i).value >= 0
+                    && doseCalculationManager.getDrugParam(i).value < 1000)
             {
                 d_ptr->calcParam[i]->setText(QString::number(doseCalculationManager.getDrugParam(i).value, 'f', 2));
                 d_ptr->calcParamUnit[i]->setText(doseCalculationManager.getDrugParam(i).unit);
@@ -255,7 +259,6 @@ void DoseCalculationWindow::updataParamDefault(void)
 {
     for (int j = 0; j < CALCULATION_PARAM_NR; j ++)
     {
-
         d_ptr->calcParam[j]->setText(DoseCalculationSymbol::convert(doseCalculationManager.getType(),
                                      doseCalculationManager.getDrugName(),
                                      static_cast<DoseCalculationParam>(j)));
@@ -275,7 +278,8 @@ void DoseCalculationWindow::weightHandle(float weight)
 {
     if ((weight < 0.1) || (weight > 200))
     {
-        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0.1-200", QStringList(trs("EnglishYESChineseSURE")));
+        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0.1-200",
+                              QStringList(trs("EnglishYESChineseSURE")));
         messageBox.exec();
     }
     else
@@ -292,7 +296,8 @@ void DoseCalculationWindow::totalHandle(float total)
 {
     if ((total < 0) || (total > 10000))
     {
-        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0-9999.99", QStringList(trs("EnglishYESChineseSURE")));
+        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0-9999.99",
+                              QStringList(trs("EnglishYESChineseSURE")));
         messageBox.exec();
     }
     else
@@ -309,7 +314,8 @@ void DoseCalculationWindow::volumeHandle(float volume)
 {
     if ((volume < 0) || (volume > 10000))
     {
-        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0-9999.99", QStringList(trs("EnglishYESChineseSURE")));
+        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0-9999.99",
+                              QStringList(trs("EnglishYESChineseSURE")));
         messageBox.exec();
     }
     else
@@ -326,7 +332,8 @@ void DoseCalculationWindow::concentrationHandle(float concentration)
 {
     if ((concentration < 0) || (concentration > 10000))
     {
-        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0-9999.99", QStringList(trs("EnglishYESChineseSURE")));
+        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0-9999.99",
+                              QStringList(trs("EnglishYESChineseSURE")));
         messageBox.exec();
     }
     else
@@ -343,7 +350,8 @@ void DoseCalculationWindow::dose1Handle(float dose1)
 {
     if ((dose1 < 0) || (dose1 > 10000))
     {
-        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0-9999.99", QStringList(trs("EnglishYESChineseSURE")));
+        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0-9999.99",
+                              QStringList(trs("EnglishYESChineseSURE")));
         messageBox.exec();
     }
     else
@@ -360,7 +368,8 @@ void DoseCalculationWindow::dose2Handle(float dose2)
 {
     if ((dose2 < 0) || (dose2 > 10000))
     {
-        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0-9999.99", QStringList(trs("EnglishYESChineseSURE")));
+        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0-9999.99",
+                              QStringList(trs("EnglishYESChineseSURE")));
         messageBox.exec();
     }
     else
@@ -377,7 +386,8 @@ void DoseCalculationWindow::dose3Handle(float dose3)
 {
     if ((dose3 < 0) || (dose3 > 10000))
     {
-        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0-9999.99", QStringList(trs("EnglishYESChineseSURE")));
+        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0-9999.99",
+                              QStringList(trs("EnglishYESChineseSURE")));
         messageBox.exec();
     }
     else
@@ -394,7 +404,8 @@ void DoseCalculationWindow::dose4Handle(float dose4)
 {
     if ((dose4 < 0) || (dose4 > 10000))
     {
-        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0-9999.99", QStringList(trs("EnglishYESChineseSURE")));
+        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0-9999.99",
+                              QStringList(trs("EnglishYESChineseSURE")));
         messageBox.exec();
     }
     else
@@ -411,7 +422,8 @@ void DoseCalculationWindow::infusionRateHandle(float infusionRate)
 {
     if ((infusionRate < 0) || (infusionRate > 1000))
     {
-        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0-999.99", QStringList(trs("EnglishYESChineseSURE")));
+        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0-999.99",
+                              QStringList(trs("EnglishYESChineseSURE")));
         messageBox.exec();
     }
     else
@@ -428,7 +440,8 @@ void DoseCalculationWindow::dripRateHandle(float dripRate)
 {
     if ((dripRate < 0) || (dripRate > 1000))
     {
-        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0-999.99", QStringList(trs("EnglishYESChineseSURE")));
+        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0-999.99",
+                              QStringList(trs("EnglishYESChineseSURE")));
         messageBox.exec();
     }
     else
@@ -445,7 +458,8 @@ void DoseCalculationWindow::dropSizeHandle(float dropSize)
 {
     if ((dropSize < 0) || (dropSize > 1000))
     {
-        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0-999.99", QStringList(trs("EnglishYESChineseSURE")));
+        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0-999.99",
+                              QStringList(trs("EnglishYESChineseSURE")));
         messageBox.exec();
     }
     else
@@ -462,7 +476,8 @@ void DoseCalculationWindow::durationHandle(float duration)
 {
     if ((duration < 0) || (duration > 1000))
     {
-        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0-999.99", QStringList(trs("EnglishYESChineseSURE")));
+        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0-999.99",
+                              QStringList(trs("EnglishYESChineseSURE")));
         messageBox.exec();
     }
     else
@@ -611,7 +626,6 @@ void DoseCalculationWindow::onComboUpdataParamDefault(int index)
 
     for (int j = 0; j < CALCULATION_PARAM_NR; j ++)
     {
-
         d_ptr->calcParam[j]->setText(DoseCalculationSymbol::convert(doseCalculationManager.getType(),
                                      doseCalculationManager.getDrugName(),
                                      static_cast<DoseCalculationParam>(j)));

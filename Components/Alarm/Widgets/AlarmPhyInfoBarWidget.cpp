@@ -10,7 +10,7 @@
 
 
 #include "AlarmPhyInfoBarWidget.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "FontManager.h"
 #include "AlarmIndicator.h"
 #include <QPainter>

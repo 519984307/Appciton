@@ -21,7 +21,6 @@ include("../../Common/runtest.pri")
 SOURCES += main.cpp \
     TestAlarmIndicator.cpp \
     ../../../Components/Alarm/AlarmIndicator.cpp \
-    ../../../Utility/LanguageManager/LanguageManager.cpp \
     ../../../Components/SoundManager/SoundManagerInterface.cpp \
     ../../../Components/Alarm/Widgets/AlarmStatusWidget.cpp \
     ../../../Components/WindowManager/IWidget.cpp \
@@ -42,7 +41,6 @@ SOURCES += main.cpp \
 HEADERS += \
     TestAlarmIndicator.h \
     ../../../Components/Alarm/AlarmIndicator.h \
-    ../../../Utility/LanguageManager/LanguageManager.h \
     ../../../Components/Alarm/AlarmDefine.h \
     ../../../Components/SoundManager/SoundManagerInterface.h \
     ../../../Components/Alarm/Widgets/AlarmStatusWidget.h \
@@ -72,7 +70,6 @@ HEADERS += \
 INCLUDEPATH += \
     ../../../Components/Alarm \
     ../../../Components/SoundManager \
-    ../../../Utility/LanguageManager \
     ../../../Components/Alarm/Widgets \
     ../../../Components/WindowManager \
     ../../../Utility/Widgets/Base \

@@ -16,7 +16,7 @@
 #include <QGridLayout>
 #include <QLabel>
 #include "NIBPSymbol.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "NIBPParam.h"
 #include "ConfigManager.h"
 #include "NIBPMonitorStateDefine.h"

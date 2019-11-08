@@ -35,7 +35,6 @@ SOURCES += \
     ../../../Utility/DataStorage/DataStorageDirManager.cpp \
     ../../../Utility/Config/IConfig.cpp \
     ../../../Components/TimeManager/TimeManagerInterface.cpp \
-    ../../../Utility/LanguageManager/LanguageManager.cpp \
     ../../../Components/System/SystemManagerInterface.cpp \
     ../../../Components/Alarm/AlarmSourceManager.cpp \
     ../../../Utility/DataStorage/DataStorageDirManagerInterface.cpp \
@@ -47,7 +46,6 @@ DEFINES += SRCDIR=\\\"$$PWD/\\\"
 HEADERS += \
     TestDataStorageDirManager.h \
     ../../../Utility/DataStorage/DataStorageDirManager.h \
-    ../../../Utility/LanguageManager/LanguageManager.h \
     ../../../Components/PatientData/RescueDataDefine.h \
     ../../../Utility/Config/IConfig.h \
     ../../../Components/TimeManager/TimeManagerInterface.h \
@@ -62,7 +60,6 @@ HEADERS += \
 
 INCLUDEPATH += \
     ../../../Utility/DataStorage \
-    ../../../Utility/LanguageManager \
     ../../../Components/PatientData \
     ../../../Utility/Config \
     ../../../Components/TimeManager \

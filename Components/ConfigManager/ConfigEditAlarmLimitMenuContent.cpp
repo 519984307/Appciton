@@ -8,7 +8,7 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/7/19
  **/
 #include "ConfigEditAlarmLimitMenuContent.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "TableView.h"
 #include "TableHeaderView.h"
 #include "AlarmLimitModel.h"

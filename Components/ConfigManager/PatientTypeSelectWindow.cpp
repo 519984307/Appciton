@@ -9,7 +9,7 @@
  **/
 
 #include "PatientTypeSelectWindow.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "ListView.h"
 #include <QGridLayout>
 #include "ListDataModel.h"

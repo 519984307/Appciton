@@ -10,7 +10,7 @@
 
 #include "TrendTableWindow.h"
 #include "ThemeManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "TableView.h"
 #include "TableHeaderView.h"
 #include "TrendTableModel.h"
@@ -19,7 +19,7 @@
 #include "ComboBox.h"
 #include "WindowManager.h"
 #include "FontManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "ParamManager.h"
 #include "TimeDate.h"
 #include "TimeManager.h"
@@ -159,7 +159,8 @@ void TrendTableWindow::updatePages()
         btn->installEventFilter(this);
         QStyleOptionHeader opt;
         opt.text = btn->text();
-        QSize s = (btn->style()->sizeFromContents(QStyle::CT_HeaderSection, &opt, QSize(), btn).expandedTo(QApplication::globalStrut()));
+        QSize s = (btn->style()->sizeFromContents(QStyle::CT_HeaderSection, &opt, QSize(), btn)
+                   .expandedTo(QApplication::globalStrut()));
         if (s.isValid())
         {
             d_ptr->table->verticalHeader()->setMinimumWidth(s.width());
@@ -194,7 +195,7 @@ bool TrendTableWindow::eventFilter(QObject *o, QEvent *e)
 
             QStyleOptionHeader opt;
             opt.rect = btn->rect();
-            opt.text = btn->text(); // this line is the only difference to QTableCornerButton
+            opt.text = btn->text();  // this line is the only difference to QTableCornerButton
 
             QPainter painter(btn);
             QPalette pal = palette();
@@ -232,7 +233,8 @@ TrendTableWindow::TrendTableWindow()
         horizontalHeader->setFont(fontManager.textFont(IN_24_HOUR_HEADER_FONT_SIZE));
     }
     d_ptr->horizontalHeader = horizontalHeader;
-    connect(&systemManager, SIGNAL(systemTimeFormatUpdated(TimeFormat)), this, SLOT(onSystemTimeFormatUpdated(TimeFormat)));
+    connect(&systemManager, SIGNAL(systemTimeFormatUpdated(TimeFormat)),
+            this, SLOT(onSystemTimeFormatUpdated(TimeFormat)));
 
     TableHeaderView *verticalHeader = new TableHeaderView(Qt::Vertical);
     verticalHeader->setFont(fontManager.textFont(IN_24_HOUR_HEADER_FONT_SIZE));
@@ -359,13 +361,15 @@ void TrendTableWindow::printWidgetRelease()
         d_ptr->model->displayDataTimeRange(startTime, endTime);
         printWindow.printTimeRange(startLimit, endLimit);
         printWindow.initPrintTime(startTime, endTime);
-        windowManager.showWindow(&printWindow, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
+        windowManager.showWindow(&printWindow,
+                                 WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
     }
 }
 
 void TrendTableWindow::trendDataSetReleased()
 {
-    windowManager.showWindow(&trendTableSetWindow, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
+    windowManager.showWindow(&trendTableSetWindow,
+                             WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
     updatePages();
 }
 

@@ -11,7 +11,7 @@
 #include <QMap>
 #include <QLabel>
 #include "Button.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QGridLayout>
 #include <QRegExp>
 #include "ConfigManager.h"

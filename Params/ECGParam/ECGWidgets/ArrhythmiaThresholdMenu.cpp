@@ -9,7 +9,7 @@
  **/
 
 #include "ArrhythmiaThresholdMenu.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "ECGAlg2SoftInterface.h"
 #include <QLabel>
 #include <QHBoxLayout>
@@ -87,8 +87,7 @@ void ArrhythmiaThresholdMenu::layoutExec()
     d_ptr->pauseCbo->addItems(QStringList()
                               << "1.5"
                               << "2.0"
-                              << "2.5"
-                             );
+                              << "2.5");
     connect(d_ptr->pauseCbo, SIGNAL(currentIndexChanged(int)), this, SLOT(pauseChangeSlot(int)));
     hLayout->addWidget(d_ptr->pauseCbo, 1);
     unitLab = new QLabel("s");

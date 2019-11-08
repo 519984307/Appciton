@@ -23,7 +23,6 @@ SOURCES += main.cpp \
     ../../../Utility/NightModeManager/NightModeManager.cpp \
     ../../../Components/SoundManager/SoundManagerInterface.cpp \
     ../../../Components/System/SystemManagerInterface.cpp \
-    ../../../Utility/LanguageManager/LanguageManager.cpp \
     ../../../Utility/Config/IConfig.cpp \
     ../../../Components/WindowManager/IWidget.cpp \
     ../../../Params/NIBPParam/NIBPParamInterface.cpp \
@@ -35,7 +34,6 @@ HEADERS += \
     ../../../Utility/NightModeManager/NightModeManager.h \
     ../../../Components/SoundManager/SoundManagerInterface.h \
     ../../../Components/System/SystemManagerInterface.h \
-    ../../../Utility/LanguageManager/LanguageManager.h \
     ../../../Utility/Config/IConfig.h \
     ../../../Components/WindowManager/IWidget.h \
     ../../../Params/NIBPParam/NIBPParamInterface.h \
@@ -53,7 +51,6 @@ HEADERS += \
 INCLUDEPATH += \
     ../../../Utility/NightModeManager \
     ../../../Components/SoundManager \
-    ../../../Utility/LanguageManager \
     ../../../Components/System \
     ../../../Components/System/Widgets \
     ../../../Utility/Config \

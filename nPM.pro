@@ -166,7 +166,6 @@ SOURCES +=                                                                      
     Utility/ErrorLog/ErrorLogWindow.cpp                                         \
     Utility/TimeDate/TimeDate.cpp                                               \
     Utility/Debug/Debug.cpp                                                     \
-    Utility/LanguageManager/LanguageManager.cpp                                 \
     Utility/FontManager/FontManager.cpp                                         \
     Utility/FontManager/FontManagerInterface.cpp                                \
     Utility/ColorManager/ColorManager.cpp                                       \
@@ -591,7 +590,6 @@ HEADERS +=                                                                      
     Utility/BaseDefine.h                                                        \
     Utility/FloatHandle/FloatHandle.h                                           \
     Utility/Debug/Debug.h                                                       \
-    Utility/LanguageManager/LanguageManager.h                                   \
     Utility/FontManager/FontManager.h                                           \
     Utility/FontManager/FontManagerInterface.h                                  \
     Utility/ColorManager/ColorManager.h                                         \
@@ -1082,7 +1080,6 @@ DEPENDPATH +=                                                                   
     Utility/DataStorage                                                         \
     Utility/ColorManager                                                        \
     Utility/FontManager                                                         \
-    Utility/LanguageManager                                                     \
     Utility/Widgets                                                             \
     Utility/Widgets/Base                                                        \
     Utility/Widgets/Base/KineticScroller                                        \
@@ -1188,7 +1185,6 @@ INCLUDEPATH +=                                                                  
     Utility/ColorManager                                                        \
     Utility/NightModeManager                                                    \
     Utility/FontManager                                                         \
-    Utility/LanguageManager                                                     \
     Utility/Widgets                                                             \
     Utility/Widgets/Base                                                        \
     Utility/Widgets/Base/KineticScroller                                        \

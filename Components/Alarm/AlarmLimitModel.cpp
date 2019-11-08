@@ -18,7 +18,7 @@
 #include "ItemEditInfo.h"
 #include "ParamManager.h"
 #include "ThemeManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 
 
 #define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())

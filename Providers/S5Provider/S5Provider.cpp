@@ -22,7 +22,7 @@
 #include "Framework/ErrorLog/ErrorLogItem.h"
 #include "IConfig.h"
 #include "AlarmSourceManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 
 #define PROBE_IN_OUT            0x0001
 #define FINGER_IN_OUT           0x0002

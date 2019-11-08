@@ -14,7 +14,7 @@
 #include "ConfigManager.h"
 #include <QGridLayout>
 #include <QScrollArea>
-#include <LanguageManager.h>
+#include "Framework/Language/LanguageManager.h"
 #include "FontManager.h"
 #include "WindowManager.h"
 #include <QTimer>

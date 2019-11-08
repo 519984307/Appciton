@@ -26,7 +26,6 @@ SOURCES += main.cpp \
     TestAlarmStateMachine.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmStateMachine.cpp \
     ../../../Utility/Config/IConfig.cpp \
-    ../../../Utility/LanguageManager/LanguageManager.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmNormalState.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmPauseState.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmResetState.cpp \
@@ -40,7 +39,6 @@ HEADERS += \
     ../../../Components/Alarm/AlarmStateMachine/AlarmStateMachine.h \
     ../../../Components/Alarm/AlarmDefine.h \
     ../../../Utility/Config/IConfig.h \
-    ../../../Utility/LanguageManager/LanguageManager.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmNormalState.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmPauseState.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmResetState.h \
@@ -55,7 +53,6 @@ HEADERS += \
 INCLUDEPATH += \
     ../../../Components/Alarm/AlarmStateMachine \
     ../../../Components/Alarm \
-    ../../../Utility/LanguageManager \
     ../../../Utility/Config \
     ../../../Components/LightManager \
     ..

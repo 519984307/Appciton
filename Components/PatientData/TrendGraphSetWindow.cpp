@@ -12,7 +12,7 @@
 #include "DropList.h"
 #include <QVBoxLayout>
 #include "Button.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "TrendDataSymbol.h"
 #include "IConfig.h"
 #include "ParamManager.h"
@@ -310,8 +310,7 @@ TrendGraphSetWindow::TrendGraphSetWindow()
     d_ptr->waveNumList->addItems(QStringList()
                                  << "1"
                                  << "2"
-                                 << "3"
-                                );
+                                 << "3");
     d_ptr->waveNumList->setCurrentIndex(index);
     connect(d_ptr->waveNumList, SIGNAL(currentIndexChanged(int)), this, SLOT(waveNumberReleased(int)));
     QHBoxLayout *hLayout = new QHBoxLayout();

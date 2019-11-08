@@ -9,7 +9,7 @@
  **/
 
 #include "TrendGraphWindow.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "Button.h"
 #include "TrendWaveWidget.h"
 #include <QVariant>

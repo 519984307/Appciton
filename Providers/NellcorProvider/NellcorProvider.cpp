@@ -14,7 +14,7 @@
 #include "Debug.h"
 #include "NIBPParam.h"
 #include "AlarmSourceManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 
 enum OxismartReport
 {
@@ -197,7 +197,7 @@ void NellcorSetProvider::_sendCmd(const unsigned char *data, unsigned int len)
 }
 
 /*======================================================================*/
-/*  Description:   CRC Lookup Table	*/
+/*  Description: CRC Lookup Table                                       */
 /*======================================================================*/
 static unsigned char crcTable[256] =
 {

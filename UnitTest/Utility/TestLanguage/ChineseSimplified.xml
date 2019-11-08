@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<language>
+	<Adult>成人</Adult>
+	<AlarmLimit>报警限</AlarmLimit>
+	<MachineConfigIsUpdatedNow>机器配置现在已经更新。</MachineConfigIsUpdatedNow>
+	<IsRebootMachine>是否重启监护仪? </IsRebootMachine>
+</language>

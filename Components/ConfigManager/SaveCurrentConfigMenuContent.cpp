@@ -9,7 +9,7 @@
  **/
 
 #include "SaveCurrentConfigMenuContent.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "Button.h"
 #include <QGridLayout>
 #include "SaveUserConfigWindow.h"

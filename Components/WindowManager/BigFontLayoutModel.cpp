@@ -17,7 +17,7 @@
 #include "DemoProvider.h"
 #include "ParamManager.h"
 #include "IBPParam.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 
 struct ParamNodeDescription
 {

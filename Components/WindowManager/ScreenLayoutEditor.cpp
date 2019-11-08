@@ -12,7 +12,7 @@
 #include <ComboBox.h>
 #include <Button.h>
 #include <QLabel>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QDesktopWidget>
 #include <QApplication>
 
@@ -153,8 +153,9 @@ void ScreenLayoutEditor::onComboIndexChanged(int index)
         QVariantMap m = d_ptr->replaceList.at(index).toMap();
         emit commitChanged(ReplaceRole, m["name"].toString());
     }
-    else if (d_ptr->insertCbo == cbo && !d_ptr->insertCbo->itemText(index).isEmpty()) // do nothing if the text is empty
+    else if (d_ptr->insertCbo == cbo && !d_ptr->insertCbo->itemText(index).isEmpty())
     {
+        // do nothing if the text is empty
         QVariantMap m = d_ptr->insertList.at(index).toMap();
         emit commitChanged(InsertRole, m["name"].toString());
 

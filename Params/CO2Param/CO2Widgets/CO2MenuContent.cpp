@@ -11,7 +11,7 @@
 #include "CO2MenuContent.h"
 #include <QMap>
 #include <QLabel>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "Button.h"
 #include "ComboBox.h"
 #include <QGridLayout>

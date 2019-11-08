@@ -23,7 +23,7 @@
 #include <QImage>
 #include <QApplication>
 #include <QDesktopWidget>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "BLMCO2Provider.h"
 #include "IConfig.h"
 

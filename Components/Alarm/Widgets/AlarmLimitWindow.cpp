@@ -9,7 +9,7 @@
  **/
 
 #include "AlarmLimitWindow.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "TableView.h"
 #include "TableHeaderView.h"
 #include "AlarmLimitModel.h"

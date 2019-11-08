@@ -10,7 +10,7 @@
 
 #include "OxyCRGWidget.h"
 #include "FontManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "WindowManager.h"
 #include "ColorManager.h"
 #include "OxyCRGWidgetLabel.h"

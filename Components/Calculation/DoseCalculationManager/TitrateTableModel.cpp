@@ -12,7 +12,7 @@
 #include <QEvent>
 #include "TitrateTableManager.h"
 #include "TitrateTableDefine.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QResizeEvent>
 #include "TitrateTableWindow.h"
 

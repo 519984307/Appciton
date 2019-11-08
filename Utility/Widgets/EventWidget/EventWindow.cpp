@@ -50,7 +50,7 @@
 #include "NIBPSymbol.h"
 #include "ThemeManager.h"
 #include "PatientManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QTimerEvent>
 
 #define TABLE_SPACING               (4)

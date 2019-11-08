@@ -12,7 +12,7 @@
 #include "SelectDefaultConfigMenuContent.h"
 #include "UserConfigEditMenuContent.h"
 #include "ConfigExportImportMenuContent.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "ConfigManagerPassWordEditMenuContent.h"
 #include "SaveCurrentConfigMenuContent.h"
 

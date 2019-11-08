@@ -15,7 +15,7 @@
 #include "ComboBox.h"
 #include "SystemManager.h"
 #include "RawDataCollector.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "ECGParam.h"
 #include "NIBPParam.h"
 #include "SPO2Param.h"
@@ -137,8 +137,7 @@ void FactoryDataRecordContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs("On")
-                   );
+                    << trs("On"));
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(FactoryDataRecordContentPrivate
                          ::ITEM_CBO_ECG, combo);
@@ -153,8 +152,7 @@ void FactoryDataRecordContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs("On")
-                   );
+                    << trs("On"));
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(FactoryDataRecordContentPrivate
                          ::ITEM_CBO_SPO2, combo);
@@ -169,8 +167,7 @@ void FactoryDataRecordContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs("On")
-                   );
+                    << trs("On"));
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(FactoryDataRecordContentPrivate
                          ::ITEM_CBO_NIBP, combo);
@@ -185,8 +182,7 @@ void FactoryDataRecordContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs("On")
-                   );
+                    << trs("On"));
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(FactoryDataRecordContentPrivate
                          ::ITEM_CBO_CO2, combo);
@@ -201,8 +197,7 @@ void FactoryDataRecordContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs("On")
-                   );
+                    << trs("On"));
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(FactoryDataRecordContentPrivate
                          ::ITEM_CBO_TEMP, combo);

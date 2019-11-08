@@ -15,7 +15,7 @@
 #include <QFile>
 #include <QDateTime>
 #include <QApplication>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "Framework/Utility/Utility.h"
 #include "Debug.h"
 

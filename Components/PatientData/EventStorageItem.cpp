@@ -27,7 +27,7 @@
 #include "Alarm.h"
 #include "AlarmConfig.h"
 #include "DataStorageDirManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 
 class EventStorageItemPrivate
 {

@@ -12,7 +12,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include "Button.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "WindowManager.h"
 #include "UpgradeWindow.h"
 #include "WindowManager.h"

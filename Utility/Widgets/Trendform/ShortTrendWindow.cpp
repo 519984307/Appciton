@@ -13,7 +13,7 @@
 #include "ShortTrendWindow.h"
 #include <QGroupBox>
 #include <QLayout>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
 #include "ComboBox.h"
 #include "Button.h"

@@ -11,7 +11,7 @@
 #include "OxyCRGEventWindow.h"
 #include "TableView.h"
 #include "Button.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "ComboBox.h"
 #include "EventInfoWidget.h"
 #include "OxyCRGEventWaveWidget.h"

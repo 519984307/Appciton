@@ -9,7 +9,7 @@
  **/
 
 #include "ContinuousPageGenerator.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "PatientManager.h"
 #include "TrendCache.h"
 #include "TimeDate.h"

@@ -9,7 +9,7 @@
  **/
 
 #include "FactorySystemInfoMenuContent.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
 #include <Button.h>
 #include <QHBoxLayout>

@@ -11,7 +11,7 @@
 
 #pragma once
 #include "Dialog.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "qprogressbar.h"
 #include "Button.h"
 

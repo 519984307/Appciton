@@ -13,7 +13,7 @@
 #include <QLabel>
 #include "ComboBox.h"
 #include "Button.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QMap>
 #include "IConfig.h"
 #include "NurseCallManagerInterface.h"

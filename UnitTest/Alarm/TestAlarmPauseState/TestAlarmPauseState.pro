@@ -21,7 +21,6 @@ include("../../Common/runtest.pri")
 SOURCES += main.cpp \
     TestAlarmPauseState.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmPauseState.cpp \
-    ../../../Utility/LanguageManager/LanguageManager.cpp \
     ../../../Components/Alarm/AlarmIndicatorInterface.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmStateMachineInterface.cpp \
     ../../../Components/LightManager/LightManagerInterface.cpp \
@@ -31,7 +30,6 @@ SOURCES += main.cpp \
 HEADERS += \
     TestAlarmPauseState.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmPauseState.h \
-    ../../../Utility/LanguageManager/LanguageManager.h \
     ../../../Components/Alarm/AlarmIndicatorInterface.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmStateMachineInterface.h \
     ../../../Components/LightManager/LightManagerInterface.h \
@@ -45,6 +43,5 @@ INCLUDEPATH += \
     ../../../Components/Alarm/AlarmStateMachine \
     ../../../Components/Alarm \
     ../../../Components/LightManager \
-    ../../../Utility/LanguageManager \
     ../../../Utility/Config \
     ..

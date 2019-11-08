@@ -13,7 +13,7 @@
 #include "CO2Param.h"
 #include "ParamManager.h"
 #include "ColorManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "ParamInfo.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>

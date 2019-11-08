@@ -9,7 +9,7 @@
  **/
 
 #include "ErrorLogViewerWindow.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QVBoxLayout>
 #include <QApplication>
 #include <QKeyEvent>

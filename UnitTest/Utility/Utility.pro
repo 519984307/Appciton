@@ -2,4 +2,4 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     TestNightManager \
-    TestLanguageManager
+    TestLanguage

@@ -16,7 +16,7 @@
 #include <QPainter>
 #include <QStringList>
 #include "FontManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "ParamInfo.h"
 #include "SystemManager.h"
 #include "ParamManager.h"

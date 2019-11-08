@@ -19,7 +19,7 @@
 #include "CO2Param.h"
 #include "IConfig.h"
 #include "TrendDataStorageManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "TrendGraphConfig.h"
 #include "Framework/Utility/Utility.h"
 
@@ -462,8 +462,10 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
         QRect downRulerRect(_info.xHead / 4, _info.yBottom - 10, _info.xHead / 3 * 2, SCALE_VALUE_AREA_HEIGHT);
         QFont textfont = fontManager.textFont(fontManager.getFontSize(3));
         barPainter.setFont(textfont);
-        barPainter.drawText(upRulerRect, Qt::AlignRight | Qt::AlignTop, Util::convertToString(_rulerY.max, _rulerY.scale));
-        barPainter.drawText(downRulerRect, Qt::AlignRight | Qt::AlignTop, Util::convertToString(_rulerY.min, _rulerY.scale));
+        barPainter.drawText(upRulerRect, Qt::AlignRight | Qt::AlignTop,
+                            Util::convertToString(_rulerY.max, _rulerY.scale));
+        barPainter.drawText(downRulerRect, Qt::AlignRight | Qt::AlignTop,
+                            Util::convertToString(_rulerY.min, _rulerY.scale));
 
         QFont font;
         font.setPixelSize(15);
@@ -502,8 +504,10 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     QRect downRulerRect(_info.xHead / 4, _info.yBottom - 10, _info.xHead / 3 * 2, SCALE_VALUE_AREA_HEIGHT);
     QFont textfont = fontManager.textFont(fontManager.getFontSize(3));
     barPainter.setFont(textfont);
-    barPainter.drawText(upRulerRect, Qt::AlignRight | Qt::AlignTop, Util::convertToString(_rulerY.max, _rulerY.scale));
-    barPainter.drawText(downRulerRect, Qt::AlignRight | Qt::AlignTop, Util::convertToString(_rulerY.min, _rulerY.scale));
+    barPainter.drawText(upRulerRect, Qt::AlignRight | Qt::AlignTop,
+                        Util::convertToString(_rulerY.max, _rulerY.scale));
+    barPainter.drawText(downRulerRect, Qt::AlignRight | Qt::AlignTop,
+                        Util::convertToString(_rulerY.min, _rulerY.scale));
 
     QFont font;
     font.setPixelSize(15);

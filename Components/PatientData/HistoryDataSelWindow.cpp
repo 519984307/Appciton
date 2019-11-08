@@ -12,7 +12,7 @@
 #include "TableView.h"
 #include "Button.h"
 #include "HistoryDataSelModel.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QHeaderView>
 #include <QVBoxLayout>
 #include <QHBoxLayout>

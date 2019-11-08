@@ -13,7 +13,7 @@
 #include "NIBPParamInterface.h"
 #include "NIBPCountdownTimeInterface.h"
 #include "NIBPState.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 
 /**************************************************************************************************
  * 进入该状态。

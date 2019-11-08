@@ -19,7 +19,7 @@
 #include "FactoryTestMenuContent.h"
 #include "FactoryTempMenuContent.h"
 #include "O2CalibrationMenuContent.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "SystemManager.h"
 #include "FactoryCO2MenuContent.h"
 

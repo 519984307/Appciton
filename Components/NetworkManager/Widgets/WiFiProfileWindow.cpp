@@ -12,7 +12,7 @@
 #include "ComboBox.h"
 #include <QLabel>
 #include "Button.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QMap>
 #include <QGridLayout>
 #include <QPalette>

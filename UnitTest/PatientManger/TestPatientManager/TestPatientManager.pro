@@ -24,7 +24,6 @@ SOURCES += main.cpp \
     ../../../Components/ConfigManager/ConfigManagerInterface.cpp \
     ../../../Components/WindowManager/IWidget.cpp \
     ../../../Utility/Config/IConfig.cpp \
-    ../../../Utility/LanguageManager/LanguageManager.cpp \
     ../../../Params/ECGParam/ECGParamInterface.cpp \
     ../../../Params/ECGParam/ECGDupParamInterface.cpp \
     ../../../Utility/DataStorage/DataStorageDirManagerInterface.cpp \
@@ -39,7 +38,6 @@ HEADERS += \
     ../../../Components/PatientManager/PatientManager.h \
     ../../../Utility/BaseDefine.h \
     ../../../Components/ParamManager/ParamDefine.h \
-    ../../../Utility/LanguageManager/LanguageManager.h \
     ../../../Components/ConfigManager/ConfigManagerInterface.h \
     ../../../Components/WindowManager/IWidget.h \
     ../../../Utility/Config/IConfig.h \
@@ -71,7 +69,6 @@ INCLUDEPATH += \
     ../../../Params/NIBPParam \
     ../../../Components/Alarm \
     ../../../Components/System \
-    ../../../Utility/LanguageManager \
     ../../Utility \
     ../../Params \
     ../../Params/NIBP \

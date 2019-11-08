@@ -23,7 +23,7 @@
 #include <QTimer>
 #include "SystemManager.h"
 #include "FontManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 
 class OxyCRGRRHRWaveWidgetPrivate :
     public OxyCRGTrendWaveWidgetPrivate

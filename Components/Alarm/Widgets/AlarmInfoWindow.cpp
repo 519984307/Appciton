@@ -12,7 +12,7 @@
 #include "TableView.h"
 #include "AlarmInfoModel.h"
 #include "TableViewItemDelegate.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "Button.h"
 #include <QLayout>
 #include "AlarmIndicator.h"

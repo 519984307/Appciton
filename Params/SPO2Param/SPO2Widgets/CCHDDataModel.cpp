@@ -9,7 +9,7 @@
  **/
 
 #include "CCHDDataModel.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "ThemeManager.h"
 #include "WindowManager.h"
 #include "TimeDate.h"

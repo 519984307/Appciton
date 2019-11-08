@@ -9,7 +9,7 @@
  **/
 
 #include "TrendTableSetWindow.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "Button.h"
 #include "ComboBox.h"
 #include <QLabel>

@@ -25,7 +25,7 @@
 #include "WaveReviewMode.h"
 #include "WaveReviewCascadeMode.h"
 #include "WaveWidgetLabel.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "FloatHandle.h"
 #include "Framework/Utility/RingBuff.h"
 #include "SystemManager.h"

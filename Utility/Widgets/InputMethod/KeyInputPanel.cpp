@@ -9,7 +9,7 @@
  **/
 #include <QGridLayout>
 #include "FontManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "KeyInputPanel.h"
 #include "Button.h"
 #include <QCoreApplication>

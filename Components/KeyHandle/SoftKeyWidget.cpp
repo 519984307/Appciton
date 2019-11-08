@@ -12,7 +12,7 @@
 #include <QPainter>
 #include "SoftKeyWidget.h"
 #include "FontManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QStyle>
 #include "SoundManagerInterface.h"
 

@@ -9,7 +9,7 @@
  **/
 
 #include "O2CalibrationMenuContent.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "Button.h"
 #include <QLabel>
 #include <QGridLayout>
