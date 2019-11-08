@@ -125,7 +125,7 @@ void ECGMenuContentPrivate::loadOptions()
     ECGLeadMode leadMode = ecgParam.getLeadMode();
     combos[ITEM_CBO_LEAD_MODE]->setCurrentIndex(leadMode);
 
-    ecgParam.getAvailableWaveforms(ecgWaveforms, ecgWaveformTitles, true);
+    ecgParam.getAvailableWaveforms(&ecgWaveforms, &ecgWaveformTitles, true);
     combos[ITEM_CBO_ECG1]->clear();
     combos[ITEM_CBO_ECG2]->clear();
     combos[ITEM_CBO_ECG1]->addItems(ecgWaveformTitles);

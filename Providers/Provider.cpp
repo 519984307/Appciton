@@ -131,7 +131,7 @@ QString &Provider::getName(void)
  * 功能： 关联Provider与Param的接口。
  * 返回：如果失败则返回false。
  *************************************************************************************************/
-bool Provider::attachParam(Param &param)
+bool Provider::attachParam(Param *param)
 {
     Q_UNUSED(param)
     isConnectedToParam = true;
@@ -141,7 +141,7 @@ bool Provider::attachParam(Param &param)
 /**************************************************************************************************
  * 功能： 关联Provider与Param的接口。
  *************************************************************************************************/
-void Provider::detachParam(Param &param)
+void Provider::detachParam(Param *param)
 {
     isConnectedToParam = false;
     Q_UNUSED(param)

@@ -197,7 +197,7 @@ void AlarmInfoWindowPrivate::loadOption()
     nodeList.clear();
     for (int i = totalList - 1; i >= 0; --i)
     {
-        alarmIndicator.getAlarmInfo(i, node);
+        node = alarmIndicator.getAlarmInfo(i);
         if (node.alarmType != alarmType)
         {
             continue;

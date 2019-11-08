@@ -27,7 +27,7 @@ public:
 
 public:
     // 设置Widget。
-    void setPatientInfoWidget(PatientInfoWidgetInterface &widget);  // NOLINT
+    void setPatientInfoWidget(PatientInfoWidgetInterface *widget);
 
 public:
     /**
@@ -78,8 +78,6 @@ public:
      * @return
      */
     QDate getBornDate(void);
-
-    void getBornDate(unsigned int &year, unsigned int &month, unsigned int &day);  // NOLINT
 
     /**
      * @brief setBlood 设置血型

@@ -147,36 +147,37 @@ void RESPParam::exitDemo()
 /**************************************************************************************************
  * 获取可得的波形控件集。
  *************************************************************************************************/
-void RESPParam::getAvailableWaveforms(QStringList &waveforms,
-                                      QStringList &waveformShowName, int /*flag*/)
+void RESPParam::getAvailableWaveforms(QStringList *waveforms,
+                                      QStringList *waveformShowName, int /*flag*/)
 {
-    waveforms.clear();
-    waveformShowName.clear();
+    waveforms->clear();
+    waveformShowName->clear();
 
     if (NULL != d_ptr->waveWidget)
     {
-        waveforms.append(d_ptr->waveWidget->name());
-        waveformShowName.append(d_ptr->waveWidget->getTitle());
+        waveforms->append(d_ptr->waveWidget->name());
+        waveformShowName->append(d_ptr->waveWidget->getTitle());
     }
 }
 
 /**************************************************************************************************
  * 获取可得的趋势窗体名。
  *************************************************************************************************/
-void RESPParam::getTrendWindow(QString &trendWin)
+QString RESPParam::getTrendWindowName()
 {
-    respDupParam.getTrendWindow(trendWin);
+    return respDupParam.getTrendWindowName();
 }
 
 /**************************************************************************************************
  * 获取可得的波形窗体名。
  *************************************************************************************************/
-void RESPParam::getWaveWindow(QString &waveWin)
+QString RESPParam::getWaveWindowName()
 {
     if (NULL != d_ptr->waveWidget)
     {
-        waveWin = d_ptr->waveWidget->name();
+        return d_ptr->waveWidget->name();
     }
+    return QString();
 }
 
 /**************************************************************************************************
@@ -472,10 +473,8 @@ void RESPParam::setRespMonitoring(int enable)
         return;
     }
 
-    QString name, trendName;
-    getWaveWindow(name);
-    getTrendWindow(trendName);
-
+    QString name = getWaveWindowName();
+    QString trendName = getTrendWindowName();
 
     int needUpdate = 0;
     currentConfig.setNumValue("RESP|AutoActivation", enable);

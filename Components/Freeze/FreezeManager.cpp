@@ -61,8 +61,8 @@ void FreezeManager::startFreeze()
     unsigned t = timeDate.time();
     trendCache.collectTrendData(t);
     trendCache.collectTrendAlarmStatus(t);
-    trendCache.getTrendData(t, data);
-    trendCache.getTrendAlarmStatus(t, almStatus);
+    trendCache.getTrendData(t, &data);
+    trendCache.getTrendAlarmStatus(t, &almStatus);
     bool alarm = false;
     foreach(bool st, almStatus.alarms) {
         if (st)

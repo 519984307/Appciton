@@ -23,7 +23,7 @@ public:
     ~RainbowProvider();
 
     /* reimplment */
-    bool attachParam(Param &param);
+    bool attachParam(Param *param);
 
     /* reimplment */
     void dataArrived();

@@ -15,7 +15,7 @@
 class NellcorSetProvider : public Provider, public SPO2ProviderIFace
 {
 public:
-    virtual bool attachParam(Param &param);
+    virtual bool attachParam(Param *param);
     virtual void dataArrived(void);
 
     /**
@@ -239,7 +239,7 @@ private:
 
     bool _isEnableSensorEventRecord;  // 是否启用传感器事件记录功能
 
-    QDateTime _dataTime; // 日期时间
+    QDateTime _dataTime;    // 日期时间
 
     // 传感器事件状态
     unsigned char _sensorEventStatus;  // 传感器事件状态

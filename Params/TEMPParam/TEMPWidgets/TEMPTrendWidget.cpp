@@ -282,7 +282,7 @@ void TEMPTrendWidget::setTextSize()
 
 void TEMPTrendWidget::showAlarmParamLimit(QWidget *valueWidget, const QString &valueStr, QPalette psrc)
 {
-    normalPalette(psrc);
+    normalPalette(&psrc);
     double value = valueStr.toDouble();
     if (valueWidget == _t1Value)
     {
@@ -342,7 +342,7 @@ void TEMPTrendWidget::showAlarmParamLimit(QWidget *valueWidget, const QString &v
     }
 }
 
-void TEMPTrendWidget::darkerPalette(QPalette &pal)
+void TEMPTrendWidget::darkerPalette(QPalette pal)
 {
     // 使颜色变暗
     QColor c = pal.color(QPalette::WindowText);

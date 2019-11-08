@@ -67,8 +67,8 @@ public:
     QList<TrendAlarmStatus> getTrendAlarmStatus(unsigned start, unsigned stop);
 
     // 获取趋势数据
-    bool getTrendData(unsigned t, TrendCacheData &data);    /* NOLINT */
-    bool getTrendAlarmStatus(unsigned t, TrendAlarmStatus &alarmStatus);    /* NOLINT */
+    bool getTrendData(unsigned t, TrendCacheData *data);
+    bool getTrendAlarmStatus(unsigned t, TrendAlarmStatus *alarmStatus);
 
     unsigned getLastNibpMeasureTime() const
     {

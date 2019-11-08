@@ -105,8 +105,6 @@ void NIBPDataTrendWidget::collectNIBPTrendData(unsigned t)
     }
 
     NIBPTrendCacheData data;
-    QList<ParamID> paramIDList;
-    paramManager.getParams(paramIDList);
 
     data.lastNibpMeasureTime = t;
     data.sys.value = paramManager.getSubParamValue(PARAM_NIBP, SUB_PARAM_NIBP_SYS);

@@ -133,8 +133,7 @@ void EventStorageItemPrivate::saveTrendData(unsigned timestamp, const TrendCache
 {
     QVector<TrendValueSegment> valueSegments;
 
-    QList<ParamID> idList;
-    paramManager.getParams(idList);
+    QList<ParamID> idList = paramManager.getParamIDs();
 
     bool hasAlarm = false;
     ParamID paramId = PARAM_NONE;
@@ -388,7 +387,7 @@ bool EventStorageItem::startCollectTrendAndWaveformData(unsigned t)
         {
             TrendCacheData trendData;
             TrendAlarmStatus trendAlarmStatus;
-            if (trendCache.getTrendData(time, trendData) && trendCache.getTrendAlarmStatus(time, trendAlarmStatus))
+            if (trendCache.getTrendData(time, &trendData) && trendCache.getTrendAlarmStatus(time, &trendAlarmStatus))
             {
                 d_ptr->saveTrendData(time, trendData, trendAlarmStatus);
             }
@@ -402,8 +401,8 @@ bool EventStorageItem::startCollectTrendAndWaveformData(unsigned t)
     }
     else
     {
-        trendCache.getTrendData(t, trendData);
-        trendCache.getTrendAlarmStatus(t, trendAlarmStatus);
+        trendCache.getTrendData(t, &trendData);
+        trendCache.getTrendAlarmStatus(t, &trendAlarmStatus);
         d_ptr->saveTrendData(t, trendData, trendAlarmStatus);
     }
 

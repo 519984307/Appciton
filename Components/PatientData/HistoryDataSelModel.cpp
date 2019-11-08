@@ -147,8 +147,7 @@ void HistoryDataSelModel::updateData()
     d_ptr->strList.clear();
     d_ptr->firstDataList.clear();
     d_ptr->secondDataList.clear();
-    QStringList list;
-    dataStorageDirManager.getRescueEvent(list);
+    QStringList list = dataStorageDirManager.getRescueEvent();
     d_ptr->strList.append(list);
     d_ptr->strList.removeFirst();   // 不提供当前文件夹的数据回顾
 

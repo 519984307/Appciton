@@ -668,8 +668,8 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
     printInfo.list = d_ptr->displayList;
     for (int i = startPrintId; i <= endPrintId; i++)
     {
-        printInfo.timestampEventMap[d_ptr->trendBlockList.at(d_ptr->trendIndexList.at(i)).extraData] = d_ptr->trendBlockList.at(
-                    d_ptr->trendIndexList.at(i)).type;
+        printInfo.timestampEventMap[d_ptr->trendBlockList.at(d_ptr->trendIndexList.at(i)).extraData]
+                = d_ptr->trendBlockList.at(d_ptr->trendIndexList.at(i)).type;
     }
     RecordPageGenerator *gen = new TrendTablePageGenerator(d_ptr->backend, printInfo, d_ptr->patientInfo);
     if (recorderManager.isPrinting() && !d_ptr->isWait)
@@ -761,8 +761,7 @@ TrendTableModelPrivate::TrendTableModelPrivate()
 {
     orderMap.clear();
 
-    QList<ParamID> paramIDList;
-    paramManager.getParams(paramIDList);
+    QList<ParamID> paramIDList = paramManager.getParamIDs();
     qSort(paramIDList);
 
     for (int i = 0; i < SUB_PARAM_NR; i ++)

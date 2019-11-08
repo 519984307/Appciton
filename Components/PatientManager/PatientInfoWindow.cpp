@@ -250,7 +250,13 @@ void PatientInfoWindowPrivate::loadOptions()
                          .arg(trs(TimeSymbol::convert(dateFormat))));
 
     unsigned int year = 0, month = 0, day = 0;
-    patientManager.getBornDate(year, month, day);
+    QDate date = patientManager.getBornDate();
+    if (date.isValid())
+    {
+        year = date.year();
+        month = date.month();
+        day = date.day();
+    }
     switch (dateFormat)
     {
     case DATE_FORMAT_Y_M_D:

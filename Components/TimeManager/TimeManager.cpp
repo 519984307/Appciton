@@ -64,7 +64,9 @@ void TimeManager::_refreshWidgets()
         systemConfig.setNumValue("ElapseStartTime", _elapseStartTime);
     }
 
-    t.sprintf("%.2d:%.2d:%.2d", hour, min, sec); // NOLINT
+    t = QString("%1:%2:%3").arg(hour, 2, 10, QLatin1Char('0'))
+                           .arg(min, 2, 10, QLatin1Char('0'))
+                           .arg(sec, 2, 10, QLatin1Char('0'));
     if (_elapsedWidget)
     {
         _elapsedWidget->setText(t);
@@ -169,7 +171,7 @@ TimeManager::TimeManager()
     unsigned diffTime = (_curTime < timestamp) ? 901 : (_curTime - timestamp);
 
     // 判断开机时间间隔(关机到开机再次看到界面)。
-    if (diffTime <= SHUT_DOWN_HINT_TIME + 7) // 两次开机时间小于SHUT_DOWN_HINT_TIME + 7(开机时间大约7s)。
+    if (diffTime <= SHUT_DOWN_HINT_TIME + 7)    // 两次开机时间小于SHUT_DOWN_HINT_TIME + 7(开机时间大约7s)。
     {
         _powerOnSession = POWER_ON_SESSION_CONTINUE;
     }

@@ -222,17 +222,17 @@ void IBPParam::noticeLimitAlarm(int id, bool isAlarm, IBPSignalInput ibp)
     }
 }
 
-void IBPParam::getAvailableWaveforms(QStringList &waveforms, QStringList &waveformShowName, int)
+void IBPParam::getAvailableWaveforms(QStringList *waveforms, QStringList *waveformShowName, int)
 {
-    waveforms.clear();
-    waveformShowName.clear();
+    waveforms->clear();
+    waveformShowName->clear();
 
     if (NULL != _waveWidgetIBP1 && NULL != _waveWidgetIBP2)
     {
-        waveforms.append(_waveWidgetIBP1->name());
-        waveforms.append(_waveWidgetIBP2->name());
-        waveformShowName.append(_waveWidgetIBP1->getTitle());
-        waveformShowName.append(_waveWidgetIBP2->getTitle());
+        waveforms->append(_waveWidgetIBP1->name());
+        waveforms->append(_waveWidgetIBP2->name());
+        waveformShowName->append(_waveWidgetIBP1->getTitle());
+        waveformShowName->append(_waveWidgetIBP2->getTitle());
     }
 }
 
@@ -799,7 +799,7 @@ QList<SubParamID> IBPParam::getShortTrendList(IBPSignalInput IBP)
 
 IBPScaleInfo IBPParam::getIBPScale(IBPPressureName name)
 {
-    // TODO implement this function
+    // TODO(chenbingyun): implement this function
     IBPScaleInfo info;
     int highLimit = 0;
     switch (name)
@@ -910,7 +910,7 @@ IBPRulerLimit IBPParam::getRulerLimit(IBPPressureName name)
     return ruler;
 }
 
-void IBPParam::setScaleInfo(IBPScaleInfo &info, IBPPressureName name)
+void IBPParam::setScaleInfo(const IBPScaleInfo &info, const IBPPressureName &name)
 {
     if (_ibp1.pressureName == name)
     {
@@ -1397,13 +1397,17 @@ void IBPParam::setParamData(IBPSignalInput IBP, unsigned short sys, unsigned sho
     ecgDupParam.updatePR(static_cast<short>(pr), PR_SOURCE_IBP);
 }
 
-/**************************************************************************************************
- * 获取ibp两通道标名对应的参数ID。
- *************************************************************************************************/
-void IBPParam::getSubParamID(SubParamID &ibp1, SubParamID &ibp2)
+SubParamID IBPParam::getSubParamID(IBPSignalInput inputID)
 {
-    ibp1 = getSubParamID(_ibp1.pressureName);
-    ibp2 = getSubParamID(_ibp2.pressureName);
+    if (inputID == IBP_INPUT_1)
+    {
+        return getSubParamID(_ibp1.pressureName);
+    }
+    else if (inputID == IBP_INPUT_2)
+    {
+        return getSubParamID(_ibp2.pressureName);
+    }
+    return SUB_PARAM_NONE;
 }
 
 /**************************************************************************************************

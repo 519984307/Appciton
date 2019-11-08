@@ -143,7 +143,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
         TrendCacheInterface *trendCache = TrendCacheInterface::getTrendCache();
         if (trendCache)
         {
-            trendCache->getTrendData(_timestamp, data);
+            trendCache->getTrendData(_timestamp, &data);
         }
         curValue = data.values.value(alarmSource->getSubParamID(i), InvData());
 

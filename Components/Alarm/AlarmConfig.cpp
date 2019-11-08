@@ -179,7 +179,7 @@ void AlarmConfig::setLimitAlarmConfig(SubParamID subParamId, UnitType unit, cons
     LimitAlarmConfig curConfig = getLimitAlarmConfig(subParamId, unit);
     UnitType otherUnit1 = UNIT_NONE;
     UnitType otherUnit2 = UNIT_NONE;
-    UnitType defaultUnit = paramInfo.getUnitOfSubParam(subParamId, otherUnit1, otherUnit2);
+    UnitType defaultUnit = paramInfo.getUnitOfSubParam(subParamId, &otherUnit1, &otherUnit2);
     QList<UnitType> unitList;
     unitList << defaultUnit << otherUnit1 << otherUnit2;
 

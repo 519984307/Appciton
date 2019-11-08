@@ -65,9 +65,9 @@ enum S5LEDStatus
 /**************************************************************************************************
  * 模块与参数对接。
  *************************************************************************************************/
-bool S5Provider::attachParam(Param &param)
+bool S5Provider::attachParam(Param *param)
 {
-    if (param.getParamID() == PARAM_SPO2)
+    if (param->getParamID() == PARAM_SPO2)
     {
         spo2Param.setProvider(this);
         Provider::attachParam(param);

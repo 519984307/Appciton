@@ -65,7 +65,7 @@ private slots:
     void _releaseHandle(IWidget *);
 
 private:
-    void _setValue(int16_t v, QString &str);  // NOLINT
+    QString _getValue(int16_t v);
 
     QLabel *_etCO2Label;
     QLabel *_etco2Value;

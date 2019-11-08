@@ -50,10 +50,10 @@ enum O2Concentration
 
 class NeonateProvider : public BLMProvider, public O2ProviderIFace
 {
-public: // Provider的接口
-    virtual bool attachParam(Param &param);
+public:     // Provider的接口
+    virtual bool attachParam(Param *param);
 
-public: // O2ProviderIFace的接口
+public:     // O2ProviderIFace的接口
     NeonateProvider();
     ~NeonateProvider();
 

@@ -75,9 +75,9 @@ enum VolumeWarnPriority
 /**************************************************************************************************
  * 模块与参数对接。
  *************************************************************************************************/
-bool NellcorSetProvider::attachParam(Param &param)
+bool NellcorSetProvider::attachParam(Param *param)
 {
-    if (param.getParamID() == PARAM_SPO2)
+    if (param->getParamID() == PARAM_SPO2)
     {
         spo2Param.setProvider(this);
         Provider::attachParam(param);
@@ -197,7 +197,7 @@ void NellcorSetProvider::_sendCmd(const unsigned char *data, unsigned int len)
 }
 
 /*======================================================================*/
-/*  Description:   CRC Lookup Table	*/
+/*  Description:  CRC Lookup Table*/
 /*======================================================================*/
 static unsigned char crcTable[256] =
 {

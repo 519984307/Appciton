@@ -120,8 +120,8 @@ struct WitleafProviderStatus
 
 class WitleafProvider: public Provider, public IBPProviderIFace, public COProviderIFace
 {
-public: // Provider的接口。
-    virtual bool attachParam(Param &param);
+public:     // Provider的接口。
+    virtual bool attachParam(Param *param);
     virtual void dataArrived(void);
 
     // 协议命令解析
@@ -139,7 +139,7 @@ public: // Provider的接口。
     virtual void disconnected(void);          // 模块连接断开时回调，之类实现。
     virtual void reconnected(void);           // 模块连接恢复时回调，之类实现。
 
-public:// IBPProviderIFace的接口
+public:     // IBPProviderIFace的接口
     // 模块信息查询
     virtual void moduleInfo(void);
     virtual bool isModuleInfo(unsigned char */*packet*/)

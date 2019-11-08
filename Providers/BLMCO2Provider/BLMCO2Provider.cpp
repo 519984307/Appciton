@@ -564,9 +564,9 @@ void BLMCO2Provider::connectTimeOut()
 /**************************************************************************************************
  * 模块与参数对接。
  *************************************************************************************************/
-bool BLMCO2Provider::attachParam(Param &param)
+bool BLMCO2Provider::attachParam(Param *param)
 {
-    if (param.getParamID() == PARAM_CO2)
+    if (param->getParamID() == PARAM_CO2)
     {
         co2Param.setProvider(this);
         Provider::attachParam(param);

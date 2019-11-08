@@ -28,9 +28,9 @@ enum  // 位操作。
 /**************************************************************************************************
  * 模块与参数对接。
  *************************************************************************************************/
-bool PhaseinProvider::attachParam(Param &param)
+bool PhaseinProvider::attachParam(Param *param)
 {
-    if (param.getParamID() == PARAM_AG)
+    if (param->getParamID() == PARAM_AG)
     {
         agParam.setProvider(this);
         Provider::attachParam(param);
@@ -448,7 +448,6 @@ void PhaseinProvider::_unpacket(const unsigned char packet[])
     }
     case SERVICE_DATA:
     {
-
         _status.sensorSN = (packet[14] << 8) | packet[15];
 
         unsigned char staRegister = packet[16];

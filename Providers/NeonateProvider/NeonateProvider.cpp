@@ -17,9 +17,9 @@
 #include "SystemManager.h"
 #include "AlarmSourceManager.h"
 
-bool NeonateProvider::attachParam(Param &param)
+bool NeonateProvider::attachParam(Param *param)
 {
-    if (param.getParamID() == PARAM_O2)
+    if (param->getParamID() == PARAM_O2)
     {
         o2Param.setProvider(this);
         Provider::attachParam(param);

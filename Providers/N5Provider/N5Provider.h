@@ -144,13 +144,13 @@ enum NIBPOneShotNum
  // NIBP收到错误是否禁止使用
 class N5Provider: public BLMProvider, public NIBPProviderIFace
 {
-public: // Provider的接口。
-    virtual bool attachParam(Param &param);
+public:     // Provider的接口。
+    virtual bool attachParam(Param *param);
 
 #ifdef CONFIG_UNIT_TEST
     friend class TestNIBPParam;
 #endif
-public: // NIBPProviderIFace的接口。
+public:     // NIBPProviderIFace的接口。
     //获取版本号
     virtual void sendVersion(void);
 

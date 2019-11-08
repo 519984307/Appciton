@@ -40,10 +40,6 @@ public:
     virtual void handDemoWaveform(WaveformID id, short data);
     virtual void handDemoTrendData(void);
 
-    // 获取可得的波形控件集。
-    virtual void getAvailableWaveforms(QStringList &waveforms,          /* NOLINT */
-                                       QStringList &waveformShowName, int flag = 0);    /* NOLINT */
-
     // 获取子参数值。
     virtual short getSubParamValue(SubParamID id);
 

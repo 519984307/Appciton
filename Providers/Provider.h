@@ -26,10 +26,10 @@ public:
     QString &getName(void);
 
     // 关联Provider和Param对象，具体内容由派生类实现。
-    virtual bool attachParam(Param &param);  // NOLINT
+    virtual bool attachParam(Param *param);
 
     // 脱离Provider和Param对象，具体内容由派生类实现。
-    virtual void detachParam(Param &param);  // NOLINT
+    virtual void detachParam(Param *param);
 
     // 检查连接状态。
     virtual void checkConnection(void);
