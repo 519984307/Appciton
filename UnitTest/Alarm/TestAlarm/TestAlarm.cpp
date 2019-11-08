@@ -590,7 +590,7 @@ void TestAlarm::testMainRunLimitSource()
      */
     cacheData.values[SUB_PARAM_NONE] = 0;
     EXPECT_CALL(mockTrendCache, getTrendData(t, _)).Times(source->getAlarmSourceNR()).
-            WillRepeatedly(DoAll(SetArgReferee<1>(cacheData), Return(true)));
+            WillRepeatedly(Return(true));
 
     alertor.mainRun(t);
 
@@ -695,8 +695,6 @@ void TestAlarm::testMainRunOneshotSource()
     MockAlarmIndicator::registerAlarmIndicator(&mockAlarmIndicator);
     MockEventStorageManager mockEventStorageManager;
     MockEventStorageManager::registerEventStorageManager(&mockEventStorageManager);
-    MockTrendCache mockTrendCache;
-    MockTrendCache::registerTrendCache(&mockTrendCache);
     MockAlarmStateMachine mockAlarmStateMachine;
     MockAlarmStateMachine::registerAlarmStateMachine(&mockAlarmStateMachine);
 
@@ -735,7 +733,8 @@ void TestAlarm::testMainRunOneshotSource()
             else
             {
                 // 当前没有报警
-                if (info.isLastAlarm && (info.normalTimeCount >= ALARM_LIMIT_TIMES || info.alarmType == ALARM_TYPE_TECH))
+                if (info.isLastAlarm && (info.normalTimeCount >= ALARM_LIMIT_TIMES
+                                         || info.alarmType == ALARM_TYPE_TECH))
                 {
                     // 恢复正常3次后，才可撤销报警
                     EXPECT_CALL(mockAlarmIndicator, delAlarmInfo(s->getAlarmType(i), s->toString(i)));
@@ -753,7 +752,6 @@ void TestAlarm::testMainRunOneshotSource()
     // 确认Mock
     QVERIFY(Mock::VerifyAndClearExpectations(&mockAlarmIndicator));
     QVERIFY(Mock::VerifyAndClearExpectations(&mockEventStorageManager));
-    QVERIFY(Mock::VerifyAndClearExpectations(&mockTrendCache));
     QVERIFY(Mock::VerifyAndClearExpectations(&mockAlarmStateMachine));
 }
 

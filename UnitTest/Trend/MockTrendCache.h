@@ -15,7 +15,7 @@
 class MockTrendCache : public TrendCacheInterface
 {
 public:
-    MOCK_METHOD2(getTrendData, bool(unsigned t, TrendCacheData &data));  /* NOLINT */
+    MOCK_METHOD2(getTrendData, bool(unsigned t, TrendCacheData *data));  /* NOLINT */
     MOCK_METHOD2(collectTrendData, void(unsigned t, bool overwrite));
     MOCK_METHOD1(collectTrendAlarmStatus, void(unsigned t));
     MOCK_METHOD0(clearTrendCache, void(void));

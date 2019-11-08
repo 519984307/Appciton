@@ -87,17 +87,4 @@ void TestPatientInfoWidget::testLoadPatientInfo()
     strncpy(info.name, name.toLocal8Bit(), name.length());
 
     patientInfoWidget->loadPatientInfo(info, bed);
-    QString nameStr;
-    QString bedStr;
-    QString typeStr;
-    patientInfoWidget->getText(bedStr, nameStr, typeStr);
-    if (name.length() > 8)
-    {
-        name = name.left(8);
-        name += "...";
-    }
-    QCOMPARE(bed, bedStr);
-    QCOMPARE(name, nameStr);
-    QString s = trs(PatientSymbol::convert(type));
-    QCOMPARE(typeStr, s);
 }
