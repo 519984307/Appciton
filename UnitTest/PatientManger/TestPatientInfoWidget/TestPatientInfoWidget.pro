@@ -23,7 +23,6 @@ SOURCES += main.cpp \
     ../../../Components/PatientManager/PatientInfoWidget.cpp \
     ../../../Components/PatientManager/PatientManager.cpp \
     ../../../Components/WindowManager/IWidget.cpp \
-    ../../../Utility/LanguageManager/LanguageManager.cpp \
     ../../../Utility/FontManager/FontManagerInterface.cpp \
     ../../../Utility/DataStorage/DataStorageDirManagerInterface.cpp \
     ../../../Utility/Widgets/Base/Dialog.cpp \
@@ -46,7 +45,6 @@ HEADERS += \
     ../../../Components/PatientManager/PatientManager.h \
     ../../../Components/PatientManager/PatientInfoWidgetInterface.h \
     ../../../Components/WindowManager/IWidget.h \
-    ../../../Utility/LanguageManager/LanguageManager.h \
     ../../../Utility/FontManager/FontManagerInterface.h \
     ../../../Utility/DataStorage/DataStorageDirManagerInterface.h \
     ../../../Utility/Widgets/Base/Dialog.h \
@@ -69,7 +67,6 @@ INCLUDEPATH += \
     ../../../Components/PatientManager \
     ../../../Components/WindowManager \
     ../../../Components/ParamManager \
-    ../../../Utility/LanguageManager \
     ../../../Utility/Config \
     ../../../Components/ConfigManager \
     ../../../Components/Alarm \

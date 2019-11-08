@@ -10,7 +10,7 @@
 
 
 #include "PatientInfoWidget.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "FontManagerInterface.h"
 #include <QBoxLayout>
 #include <QLabel>

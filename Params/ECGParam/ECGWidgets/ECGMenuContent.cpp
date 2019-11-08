@@ -9,7 +9,7 @@
  **/
 
 #include "ECGMenuContent.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
 #include "ComboBox.h"
 #include <QGridLayout>

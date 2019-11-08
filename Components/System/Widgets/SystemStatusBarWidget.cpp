@@ -24,7 +24,7 @@
 #include "SystemManager.h"
 #include "MessageBox.h"
 #include "USBManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "SoundManagerInterface.h"
 #include <QTimerEvent>
 

@@ -13,7 +13,7 @@
 #include "NIBPServiceStateDefine.h"
 #include "NIBPMaintainMgrInterface.h"
 #include "MessageBox.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 
 /**************************************************************************************************
  * 进入该状态。

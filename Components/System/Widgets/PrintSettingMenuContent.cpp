@@ -13,7 +13,7 @@
 #include "ComboBox.h"
 #include <QLabel>
 #include <QGridLayout>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "RecorderManager.h"
 #include "WindowManager.h"
 #include "IConfig.h"

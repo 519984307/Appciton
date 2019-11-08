@@ -9,7 +9,7 @@
  **/
 
 #include "DataReviewMenuContent.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QMap>
 #include <QGridLayout>
 #include "Button.h"

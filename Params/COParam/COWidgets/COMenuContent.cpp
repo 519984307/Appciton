@@ -9,7 +9,7 @@
  **/
 
 #include "COMenuContent.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
 #include "ComboBox.h"
 #include "Button.h"
@@ -59,7 +59,8 @@ void COMenuContentPrivate::loadOptions()
     {
         buttons[ITEM_CBO_INJECTION_TEMP]->setEnabled(true);
     }
-    buttons[ITEM_CBO_INJECTION_TEMP]->setText(QString::number(static_cast<double>(coParam.getInjectionTemp() * 1.0 / 10)));
+    QString text = QString::number(static_cast<double>(coParam.getInjectionTemp() * 1.0 / 10));
+    buttons[ITEM_CBO_INJECTION_TEMP]->setText(text);
     buttons[ITEM_CBO_INJECTION_VOLUMN]->setText(QString::number(coParam.getInjectionVolumn()));
     buttons[ITEM_CBO_MEASURE_CONTROL]->setText(trs(COSymbol::convert(coParam.getMeasureCtrl())));
 }
@@ -106,8 +107,7 @@ void COMenuContent::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs(COSymbol::convert(CO_TI_MODE_AUTO))
-                       << trs(COSymbol::convert(CO_TI_MODE_MANUAL))
-                       );
+                       << trs(COSymbol::convert(CO_TI_MODE_MANUAL)));
     itemID = static_cast<int>(COMenuContentPrivate::ITEM_CBO_INJECT_TEMP_SOURCE);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -227,7 +227,9 @@ void COMenuContent::onButtonReleased()
                     }
                     else
                     {
-                        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + " 0.001-0.999 ", QStringList(trs("EnglishYESChineseSURE")));
+                        MessageBox messageBox(trs("Prompt"),
+                                              trs("InvalidInput") + " 0.001-0.999 ",
+                                              QStringList(trs("EnglishYESChineseSURE")));
                         messageBox.exec();
                     }
                 }
@@ -266,7 +268,9 @@ void COMenuContent::onButtonReleased()
                     }
                     else
                     {
-                        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + " 0.0-27.0 ", QStringList(trs("EnglishYESChineseSURE")));
+                        MessageBox messageBox(trs("Prompt"),
+                                              trs("InvalidInput") + " 0.0-27.0 ",
+                                              QStringList(trs("EnglishYESChineseSURE")));
                         messageBox.exec();
                     }
                 }
@@ -304,7 +308,9 @@ void COMenuContent::onButtonReleased()
                     }
                     else
                     {
-                        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + " 1-200 ", QStringList(trs("EnglishYESChineseSURE")));
+                        MessageBox messageBox(trs("Prompt"),
+                                              trs("InvalidInput") + " 1-200 ",
+                                              QStringList(trs("EnglishYESChineseSURE")));
                         messageBox.exec();
                     }
                 }

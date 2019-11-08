@@ -29,7 +29,7 @@
 #include "CO2Param.h"
 #include "LayoutManager.h"
 #include "NIBPSymbol.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 
 class EventPageGeneratorPrivate
 {

@@ -26,7 +26,7 @@
 #include <QApplication>
 #include <QTimer>
 #include "CO2Param.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 
 #define PREFER_SOFTKEY_WIDTH 97
 #define SOFTKEY_SPACING 2

@@ -31,7 +31,6 @@ include("../../Common/runtest.pri")
 SOURCES += \
         TestAlarmState.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmState.cpp \
-    ../../../Utility/LanguageManager/LanguageManager.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmResetState.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmPauseState.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmNormalState.cpp \
@@ -44,7 +43,6 @@ DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 HEADERS += \
     ../../../Components/Alarm/AlarmStateMachine/AlarmState.h \
-    ../../../Utility/LanguageManager/LanguageManager.h \
     TestAlarmState.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmStateMachineInterface.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmResetState.h \
@@ -58,7 +56,6 @@ HEADERS += \
 INCLUDEPATH += \
     ../../../Components/Alarm/AlarmStateMachine \
     ../../../Components/Alarm \
-    ../../../Utility/LanguageManager \
     ../../../Components/LightManager \
     ../../../Utility/Config \
     ../../../Components/PatientManager

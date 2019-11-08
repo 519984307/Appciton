@@ -14,7 +14,7 @@
 #include "Debug.h"
 #include "NIBPParam.h"
 #include "AlarmSourceManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 
 enum OxismartReport
 {

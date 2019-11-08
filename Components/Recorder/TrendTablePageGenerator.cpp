@@ -17,7 +17,7 @@
 #include <QDateTime>
 #include "TimeDate.h"
 #include "TrendDataStorageManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 
 // 打印纸每页最多打印10行数据（1 head title + 9 data）
 #define RECORD_PER_PAGE 9

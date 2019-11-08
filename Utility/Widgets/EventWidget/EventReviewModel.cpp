@@ -10,7 +10,7 @@
 
 #include "EventReviewModel.h"
 #include "ThemeManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "WindowManager.h"
 #define COLUMN_COUNT            2
 

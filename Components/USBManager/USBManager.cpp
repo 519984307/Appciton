@@ -18,7 +18,7 @@
 #include <typeinfo>
 #include "RawDataCollector.h"
 #include "MessageBox.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 
 #define USB_MOUNT_PATH "/media/usbdisk"
 

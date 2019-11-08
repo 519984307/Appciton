@@ -14,7 +14,7 @@
 #include "SPO2Alarm.h"
 #include <QTimer>
 #include "AlarmSourceManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 
 #define SOM  (0xA1)
 #define EOM  (0xAF)
@@ -366,7 +366,7 @@ void RainbowProvider::dataArrived()
         // 1 frame head + 1 lenblmpr byte + data length + 1 checksum + 1 frame end
         unsigned char totalLen = 2 + len + 2;
 
-#if 0   // TODO(zhuweijuan): check the packet length
+#if 0   /* TODO: check the packet length */
         if (totalLen > 40)
         {
             qDebug() << "packet too large";
@@ -445,9 +445,10 @@ void RainbowProvider::dataArrived(unsigned char *data, unsigned int length)
 
         // 如果查询不到帧尾，移除ringbuff缓冲区最旧的数据，下次继续查询
         unsigned char len = ringBuff.at(1);     // data field length
-        unsigned char totalLen = 2 + len + 2;   // 1 frame head + 1 len byte + data length + 1 checksum + 1 frame end
+        // 1 frame head + 1 len byte + data length + 1 checksum + 1 frame end
+        unsigned char totalLen = 2 + len + 2;
 
-#if 1   // TODO(zhuweijuan): check the packet length
+#if 1   /* TODO: check the packet length */
         if (totalLen > 40)
         {
             qWarning() << "packet too large, drop " << hex << ringBuff.at(0);

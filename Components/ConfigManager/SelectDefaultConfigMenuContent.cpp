@@ -15,7 +15,7 @@
 #include <QLabel>
 #include <QGridLayout>
 #include <QMap>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QList>
 #include "Debug.h"
 

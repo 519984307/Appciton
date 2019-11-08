@@ -15,7 +15,7 @@
 #include <QLayout>
 #include <QHeaderView>
 #include "Button.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "LayoutManager.h"
 #include "MessageBox.h"
 #include "WindowManager.h"

@@ -10,7 +10,7 @@
 #include "UserConfigEditMenuContent.h"
 #include <QMap>
 #include "Button.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "ConfigManager.h"
 #include <QLabel>
 #include "PatientManager.h"

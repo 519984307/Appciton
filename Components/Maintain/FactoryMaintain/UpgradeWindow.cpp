@@ -20,7 +20,7 @@
 #include "SystemManager.h"
 #include "WindowManager.h"
 #include "MessageBox.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QProcess>
 #include "SystemBoardProvider.h"
 

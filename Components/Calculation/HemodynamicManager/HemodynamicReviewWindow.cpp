@@ -10,7 +10,7 @@
 #include "HemodynamicReviewWindow.h"
 #include "Button.h"
 #include <QLabel>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "HemodynamicDefine.h"
 #include "HemodynamicDataModel.h"
 #include "TableView.h"

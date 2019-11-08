@@ -9,7 +9,7 @@
  **/
 
 #include "HistoryDataReviewWindow.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "Button.h"
 #include <QVBoxLayout>
 #include <QVariant>

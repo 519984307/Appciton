@@ -21,7 +21,7 @@
 #include "MessageBox.h"
 #include "ComboBox.h"
 #include "Button.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QBoxLayout>
 #include <QLabel>
 

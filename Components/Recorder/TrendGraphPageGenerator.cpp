@@ -19,7 +19,7 @@
 #include "Framework/Utility/Utility.h"
 #include "AlarmConfig.h"
 #include "TimeDate.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 
 #define AXIS_X_SECTION_WIDTH (RECORDER_PIXEL_PER_MM * 16)
 #define AXIS_Y_SECTION_HEIGHT (RECORDER_PIXEL_PER_MM * 8)

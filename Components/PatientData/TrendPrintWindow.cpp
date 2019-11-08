@@ -9,7 +9,7 @@
  **/
 
 #include "TrendPrintWindow.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
 #include <QGroupBox>
 #include "Button.h"

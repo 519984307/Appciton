@@ -10,7 +10,7 @@
 #include "SystemMaintenanceMenuContent.h"
 #include <QMap>
 #include "Button.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QGridLayout>
 #include <QVariant>
 #include "TimeEditWindow.h"

@@ -10,7 +10,7 @@
 
 #include "OxyCRGEventSetWindow.h"
 #include "ComboBox.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QGridLayout>
 #include <QLabel>
 #include "OxyCRGEventWindow.h"

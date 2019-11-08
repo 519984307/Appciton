@@ -20,7 +20,7 @@
 #include "NIBPServiceStateDefine.h"
 #include "MessageBox.h"
 #include "IConfig.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QTimerEvent>
 
 #define CALIBRATION_INTERVAL_TIME              (100)

@@ -33,7 +33,6 @@ SOURCES += \
     ../../../../Params/NIBPParam/NIBPParamInterface.cpp \
     ../../../../Params/NIBPParam/NIBPTrigger/NIBPCountdownTimeInterface.cpp \
     ../../../../Params/NIBPParam/NIBPStateMachine/NIBPState.cpp \
-    ../../../../Utility/LanguageManager/LanguageManager.cpp \
     ../../../../Utility/Config/IConfig.cpp \
     ../../../../Params/NIBPParam/NIBPStateMachine/NIBPStateMachine.cpp \
 
@@ -50,7 +49,6 @@ HEADERS += \
     ../../../../Params/NIBPParam/NIBPProviderIFace.h \
     ../../../../Components/PatientManager/PatientDefine.h \
     ../../../../Utility/BaseDefine.h \
-    ../../../../Utility/LanguageManager/LanguageManager.h \
     ../../../../Utility/Config/IConfig.h \
     ../../../../Params/NIBPParam/NIBPStateMachine/NIBPState.h \
     ../../../../Params/NIBPParam/NIBPStateMachine/NIBPStateMachine.h \
@@ -68,7 +66,6 @@ INCLUDEPATH += \
     ../../../../Params/NIBPParam/NIBPStateMachine \
     ../../../../Components/PatientManager \
     ../../../../Utility \
-     ../../../../Utility/LanguageManager \
     ../../../../Utility/Config \
     ../../../../Params/NIBPParam/NIBPStateMachine  \
     ../TestNIBPMonitorStandbyState \

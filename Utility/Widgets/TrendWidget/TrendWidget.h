@@ -11,7 +11,7 @@
 
 #pragma once
 #include "IWidget.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "FontManager.h"
 #include "ColorManager.h"
 #include <QString>

@@ -9,7 +9,7 @@
  **/
 
 #include "TimeEditWindow.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
 #include "ComboBox.h"
 #include <QGridLayout>
@@ -275,8 +275,7 @@ void TimeEditWindow::layoutExec()
     comboBox->addItems(QStringList()
                        << trs(TimeSymbol::convert(DATE_FORMAT_Y_M_D))
                        << trs(TimeSymbol::convert(DATE_FORMAT_M_D_Y))
-                       << trs(TimeSymbol::convert(DATE_FORMAT_D_M_Y))
-                      );
+                       << trs(TimeSymbol::convert(DATE_FORMAT_D_M_Y)));
     itemID = static_cast<int>(TimeEditWindowPrivate::ITEM_CBO_DATE_FORMAT);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -291,8 +290,7 @@ void TimeEditWindow::layoutExec()
     comboBox->setFixedHeight(themeManger.getAcceptableControlHeight());
     comboBox->addItems(QStringList()
                        << trs(TimeSymbol::convert(TIME_FORMAT_12))
-                       << trs(TimeSymbol::convert(TIME_FORMAT_24))
-                      );
+                       << trs(TimeSymbol::convert(TIME_FORMAT_24)));
     itemID = static_cast<int>(TimeEditWindowPrivate::ITEM_CBO_TIME_FORMAT);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -307,8 +305,7 @@ void TimeEditWindow::layoutExec()
     comboBox->setFixedHeight(themeManger.getAcceptableControlHeight());
     comboBox->addItems(QStringList()
                        << trs("No")
-                       << trs("Yes")
-                      );
+                       << trs("Yes"));
     itemID = static_cast<int>(TimeEditWindowPrivate::ITEM_CBO_DISPLAY_SEC);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));

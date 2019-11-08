@@ -166,7 +166,6 @@ SOURCES +=                                                                      
     Utility/ErrorLog/ErrorLogWindow.cpp                                         \
     Utility/TimeDate/TimeDate.cpp                                               \
     Utility/Debug/Debug.cpp                                                     \
-    Utility/LanguageManager/LanguageManager.cpp                                 \
     Utility/FontManager/FontManager.cpp                                         \
     Utility/FontManager/FontManagerInterface.cpp                                \
     Utility/ColorManager/ColorManager.cpp                                       \
@@ -572,7 +571,6 @@ SOURCES +=                                                                      
     Main/App/Init.cpp                                                           \
     Main/IApplication.cpp                                                       \
     Main/IThread.cpp                                                            \
-    Main/MergeConfig.cpp                                                        \
     Main/Starter.cpp                                                            \
     Components/TimeManager/TimeManagerInterface.cpp                             \
     Components/Alarm/AlarmSourceManager.cpp \
@@ -592,7 +590,6 @@ HEADERS +=                                                                      
     Utility/BaseDefine.h                                                        \
     Utility/FloatHandle/FloatHandle.h                                           \
     Utility/Debug/Debug.h                                                       \
-    Utility/LanguageManager/LanguageManager.h                                   \
     Utility/FontManager/FontManager.h                                           \
     Utility/FontManager/FontManagerInterface.h                                  \
     Utility/ColorManager/ColorManager.h                                         \
@@ -1066,7 +1063,6 @@ HEADERS +=                                                                      
     Main/App/Init.h                                                             \
     Main/IApplication.h                                                         \
     Main/IThread.h                                                              \
-    Main/MergeConfig.h                                                          \
     Main/Starter.h                                                              \
     Utility/Widgets/ImportFileSubWidget.h \
     Components/TimeManager/TimeManagerInterface.h \
@@ -1084,7 +1080,6 @@ DEPENDPATH +=                                                                   
     Utility/DataStorage                                                         \
     Utility/ColorManager                                                        \
     Utility/FontManager                                                         \
-    Utility/LanguageManager                                                     \
     Utility/Widgets                                                             \
     Utility/Widgets/Base                                                        \
     Utility/Widgets/Base/KineticScroller                                        \
@@ -1190,7 +1185,6 @@ INCLUDEPATH +=                                                                  
     Utility/ColorManager                                                        \
     Utility/NightModeManager                                                    \
     Utility/FontManager                                                         \
-    Utility/LanguageManager                                                     \
     Utility/Widgets                                                             \
     Utility/Widgets/Base                                                        \
     Utility/Widgets/Base/KineticScroller                                        \

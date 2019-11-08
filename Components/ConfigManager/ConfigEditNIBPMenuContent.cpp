@@ -10,7 +10,7 @@
 #include "ConfigEditNIBPMenuContent.h"
 #include <QMap>
 #include <QLabel>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "ComboBox.h"
 #include "NIBPSymbol.h"
 #include "NIBPDefine.h"

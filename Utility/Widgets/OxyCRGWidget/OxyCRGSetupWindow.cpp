@@ -10,7 +10,7 @@
 #include "OxyCRGSetupWindow.h"
 #include "ComboBox.h"
 #include <QLabel>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QGridLayout>
 #include "OxyCRGSymbol.h"
 #include "ConfigManager.h"
@@ -84,8 +84,7 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
     ComboBox *combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs(OxyCRGSymbol::convert(TREND_HR_PR))
-                    << trs(OxyCRGSymbol::convert(TREND_RR))
-                    );
+                    << trs(OxyCRGSymbol::convert(TREND_RR)));
     layout->addWidget(combo, layoutIndex, 1);
     combo->setProperty("Item", qVariantFromValue(comboIndex));
     d_ptr->trend1 = combo;
@@ -110,8 +109,7 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs(OxyCRGSymbol::convert(OXYCRG_WAVE_RESP))
-                    << trs(OxyCRGSymbol::convert(OXYCRG_WAVE_CO2))
-                    );
+                    << trs(OxyCRGSymbol::convert(OXYCRG_WAVE_CO2)));
     layout->addWidget(combo, layoutIndex, 1);
     combo->setProperty("Item", qVariantFromValue(comboIndex));
     d_ptr->wave = combo;
@@ -148,8 +146,7 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
                     << trs(OxyCRGSymbol::convert(HR_LOW_0))
                     << trs(OxyCRGSymbol::convert(HR_LOW_40))
                     << trs(OxyCRGSymbol::convert(HR_LOW_80))
-                    << trs(OxyCRGSymbol::convert(HR_LOW_120))
-                    );
+                    << trs(OxyCRGSymbol::convert(HR_LOW_120)));
     layout->addWidget(combo, layoutIndexTwo, 1);
     combo->setProperty("Item", qVariantFromValue(comboIndex));
     combo->setMinimumWidth(100);
@@ -168,8 +165,7 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
                     << trs(OxyCRGSymbol::convert(HR_HIGH_240))
                     << trs(OxyCRGSymbol::convert(HR_HIGH_280))
                     << trs(OxyCRGSymbol::convert(HR_HIGH_320))
-                    << trs(OxyCRGSymbol::convert(HR_HIGH_360))
-                    );
+                    << trs(OxyCRGSymbol::convert(HR_HIGH_360)));
     layout->addWidget(combo, layoutIndexTwo, 1);
     combo->setProperty("Item", qVariantFromValue(comboIndex));
     d_ptr->hrHigh = combo;
@@ -199,8 +195,7 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs(OxyCRGSymbol::convert(RR_LOW_0))
-                    << trs(OxyCRGSymbol::convert(RR_LOW_40))
-                    );
+                    << trs(OxyCRGSymbol::convert(RR_LOW_40)));
     layout->addWidget(combo, layoutIndexThree, 1);
     combo->setProperty("Item", qVariantFromValue(comboIndex));
     combo->setMinimumWidth(100);
@@ -217,8 +212,7 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
                     << trs(OxyCRGSymbol::convert(RR_HIGH_40))
                     << trs(OxyCRGSymbol::convert(RR_HIGH_80))
                     << trs(OxyCRGSymbol::convert(RR_HIGH_120))
-                    << trs(OxyCRGSymbol::convert(RR_HIGH_160))
-                    );
+                    << trs(OxyCRGSymbol::convert(RR_HIGH_160)));
     layout->addWidget(combo, layoutIndexThree, 1);
     combo->setProperty("Item", qVariantFromValue(comboIndex));
     d_ptr->rrHigh = combo;
@@ -250,8 +244,7 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
                     << trs(OxyCRGSymbol::convert(SPO2_LOW_68))
                     << trs(OxyCRGSymbol::convert(SPO2_LOW_76))
                     << trs(OxyCRGSymbol::convert(SPO2_LOW_84))
-                    << trs(OxyCRGSymbol::convert(SPO2_LOW_92))
-                    );
+                    << trs(OxyCRGSymbol::convert(SPO2_LOW_92)));
     layout->addWidget(combo, layoutIndexFour, 1);
     combo->setProperty("Item", qVariantFromValue(comboIndex));
     combo->setMinimumWidth(100);
@@ -309,8 +302,7 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
                     << trs(OxyCRGSymbol::convert(CO2_HIGH_40))
                     << trs(OxyCRGSymbol::convert(CO2_HIGH_50))
                     << trs(OxyCRGSymbol::convert(CO2_HIGH_60))
-                    << trs(OxyCRGSymbol::convert(CO2_HIGH_80))
-                    );
+                    << trs(OxyCRGSymbol::convert(CO2_HIGH_80)));
     layout->addWidget(combo, layoutIndexFive, 1);
     combo->setProperty("Item", qVariantFromValue(comboIndex));
     d_ptr->co2High = combo;

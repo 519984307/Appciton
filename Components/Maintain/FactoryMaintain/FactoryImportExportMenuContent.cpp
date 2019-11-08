@@ -25,7 +25,7 @@
 #include "ListView.h"
 #include "ListDataModel.h"
 #include "ListViewItemDelegate.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "USBManager.h"
 #include "ThemeManager.h"
 #include <QTimer>

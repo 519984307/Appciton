@@ -15,13 +15,14 @@
 #include <QPointer>
 #include "WindowManager.h"
 #include "FontManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "MessageBox.h"
 #include <QEventLoop>
 #include "Framework/Utility/Utility.h"
 #include "DataStorageDirManager.h"
 #include "ThemeManager.h"
 #include <QBoxLayout>
+#include <QMutex>
 
 RescueDataDeleteWindow *RescueDataDeleteWindow::_selfObj = NULL;
 
@@ -79,7 +80,8 @@ RescueDataDeleteWindow::~RescueDataDeleteWindow()
 void RescueDataDeleteWindow::_updateWindowTitle()
 {
     QString str;
-    if (languageManager.getCurLanguage() == LanguageManager::English)
+    LanguageManager *langMgr = LanguageManager::getInstance();
+    if (langMgr->getCurLanguage() == LanguageManager::English)
     {
         str = QString("%1 (page %2 of %3)")
                 .arg(trs("EraseData"))

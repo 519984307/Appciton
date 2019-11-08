@@ -8,7 +8,7 @@
  ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/9/17
  **/
 #include "PowerOffWindow.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
 #include <QLayout>
 #include "ThemeManager.h"

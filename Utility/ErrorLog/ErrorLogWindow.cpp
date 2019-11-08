@@ -9,7 +9,7 @@
  **/
 
 #include "ErrorLogWindow.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "TableView.h"
 #include "Button.h"
 #include <QLabel>

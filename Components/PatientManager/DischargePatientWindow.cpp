@@ -11,7 +11,7 @@
 #include <QHBoxLayout>
 #include "Button.h"
 #include "WindowManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "DataStorageDirManager.h"
 #include "PatientInfoWindow.h"
 #include <QGridLayout>

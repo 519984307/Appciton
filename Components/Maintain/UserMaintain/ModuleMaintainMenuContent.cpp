@@ -9,7 +9,7 @@
  **/
 
 #include "ModuleMaintainMenuContent.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #ifdef Q_WS_QWS
 #include "TSCalibrationWindow.h"
 #include <QWSServer>

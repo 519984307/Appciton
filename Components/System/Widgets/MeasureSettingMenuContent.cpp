@@ -12,7 +12,7 @@
 #include "Button.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "MeasureSettingWindow.h"
 #include "SystemManager.h"
 #include "WindowManager.h"

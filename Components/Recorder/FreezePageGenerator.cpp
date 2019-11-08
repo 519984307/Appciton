@@ -15,7 +15,7 @@
 #include <QPainter>
 #include "FontManager.h"
 #include <QDateTime>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 
 class FreezePageGeneratorPrivate
 {

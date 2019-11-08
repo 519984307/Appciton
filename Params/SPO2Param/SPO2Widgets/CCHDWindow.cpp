@@ -11,7 +11,7 @@
 #include "CCHDWindow.h"
 #include "Button.h"
 #include <QLabel>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLayout>
 #include "BaseDefine.h"
 #include "SPO2Param.h"

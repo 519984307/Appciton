@@ -14,7 +14,7 @@
 #include "Framework/ErrorLog/ErrorLog.h"
 #include "Framework/ErrorLog/ErrorLogItem.h"
 #include "NIBPCountdownTime.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "IConfig.h"
 #include "PatientManager.h"
 

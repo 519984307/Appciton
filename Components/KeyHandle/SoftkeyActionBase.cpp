@@ -32,7 +32,7 @@
 #include "CalculateWindow.h"
 #include "DischargePatientWindow.h"
 #include "TrendTableWindow.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "LayoutManager.h"
 #include "BigFontLayoutWindow.h"
 #include "SoftKeyManager.h"

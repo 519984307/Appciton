@@ -19,7 +19,7 @@
 #include "CO2Param.h"
 #include "IConfig.h"
 #include "TrendDataStorageManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "TrendGraphConfig.h"
 #include "Framework/Utility/Utility.h"
 

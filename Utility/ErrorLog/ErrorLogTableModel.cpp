@@ -10,7 +10,7 @@
 
 #include "ErrorLogTableModel.h"
 #include "ThemeManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "Framework/ErrorLog/ErrorLogItem.h"
 #include "Framework/ErrorLog/ErrorLog.h"
 #include <QIcon>

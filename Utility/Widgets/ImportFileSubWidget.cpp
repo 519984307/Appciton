@@ -12,7 +12,7 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include "Button.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "ListView.h"
 #include "ListViewItemDelegate.h"
 #include "ListDataModel.h"

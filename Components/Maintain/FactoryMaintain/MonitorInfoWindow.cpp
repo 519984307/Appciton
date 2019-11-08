@@ -12,7 +12,7 @@
 #include <QMap>
 #include <QGridLayout>
 #include <QLabel>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "IConfig.h"
 #include "KeyInputPanel.h"
 #include "Button.h"

@@ -25,7 +25,7 @@
 #include "TableViewItemDelegate.h"
 #include <QGridLayout>
 #include <QHBoxLayout>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "TitrateTableSetWindow.h"
 #include "LayoutManager.h"
 
@@ -187,7 +187,8 @@ void TitrateTableWindow::updateTitrateTableData()
     d_ptr->titrateTable->clearSpans();
     d_ptr->titrateTableInfos.clear();
     // 刷新窗口名称
-    setWindowTitle(trs("TitrationTable") + "-" + trs(DoseCalculationSymbol::convert(doseCalculationManager.getDrugName())));
+    setWindowTitle(trs("TitrationTable")
+                   + "-" + trs(DoseCalculationSymbol::convert(doseCalculationManager.getDrugName())));
 
     // 刷新刷新参数栏
     float paramValue;
@@ -243,9 +244,9 @@ void TitrateTableWindow::datumTermDose()
 {
     // 换算出浓度对应剂量的单位和值
     DrugInfo concentration;
-    concentration.unit = doseCalculationManager.getDrugParam(CALCULATION_PARAM_CONCENTRATION).
-                         unit.left(doseCalculationManager.getDrugParam(CALCULATION_PARAM_CONCENTRATION).unit.length() - 3);
-    concentration.value = doseCalculationManager.getDrugParam(CALCULATION_PARAM_CONCENTRATION).value;
+    DrugInfo tmp = doseCalculationManager.getDrugParam(CALCULATION_PARAM_CONCENTRATION);
+    concentration.unit = tmp.unit.left(tmp.unit.length() - 3);
+    concentration.value = tmp.value;
     QString convertUnit = doseCalculationManager.getDrugParam(
                               DoseCalculationSymbol::convert(
                                   static_cast<TitrateTableParam>(TITRATE_TABLE_DOSE)) +
@@ -298,7 +299,7 @@ void TitrateTableWindow::datumTermDose()
         maxDose = MAX_DOSE;
     }
 
-    float itemCount = maxDose / TitrateTableDefine::convert(titrateTableManager.getSetTableParam().step);
+    float itemCount = maxDose / (titrateTableManager.getSetTableParam().step + 1);
     if (itemCount - static_cast<int>(itemCount) > 0)
     {
         itemCount = static_cast<int>(itemCount) + 1;
@@ -343,7 +344,7 @@ void TitrateTableWindow::datumTermDose()
         dataInfos.doseValue = QString::number(doseValue, 'f', 2);
         dataInfos.rateVlue = QString::number(infusionRateValue, 'f', 2);
         d_ptr->titrateTableInfos.append(dataInfos);
-        doseValue = doseValue + TitrateTableDefine::convert(titrateTableManager.getSetTableParam().step);
+        doseValue = doseValue + (titrateTableManager.getSetTableParam().step + 1);
     }
 }
 
@@ -403,7 +404,7 @@ void TitrateTableWindow::datumTermInfusionRate()
         maxInfusionRate = MAX_INFUSIONRATE;
     }
 
-    float itemCount = maxInfusionRate / TitrateTableDefine::convert(titrateTableManager.getSetTableParam().step);
+    float itemCount = maxInfusionRate / (titrateTableManager.getSetTableParam().step + 1);
     if (itemCount - static_cast<int>(itemCount) > 0)
     {
         itemCount = static_cast<int>(itemCount) + 1;
@@ -451,8 +452,7 @@ void TitrateTableWindow::datumTermInfusionRate()
         dataInfos.doseValue = QString::number(doseValue, 'f', 2);
         dataInfos.rateVlue = QString::number(infusionRateValue, 'f', 2);
         d_ptr->titrateTableInfos.append(dataInfos);
-        infusionRateValue = infusionRateValue + TitrateTableDefine
-                            ::convert(titrateTableManager.getSetTableParam().step);
+        infusionRateValue = infusionRateValue + (titrateTableManager.getSetTableParam().step + 1);
     }
 }
 
@@ -513,7 +513,7 @@ void TitrateTableWindow::datumTermDripRate()
         maxDripRate = MAX_DRIPRATE;
     }
 
-    float itemCount = maxDripRate / TitrateTableDefine::convert(titrateTableManager.getSetTableParam().step);
+    float itemCount = maxDripRate / (titrateTableManager.getSetTableParam().step + 1);
     if (itemCount - static_cast<int>(itemCount) > 0)
     {
         itemCount = static_cast<int>(itemCount) + 1;
@@ -566,8 +566,7 @@ void TitrateTableWindow::datumTermDripRate()
         dataInfos.doseValue = QString::number(doseValue, 'f', 2);
         dataInfos.rateVlue = QString::number(dripRateValue, 'f', 2);
         d_ptr->titrateTableInfos.append(dataInfos);
-        dripRateValue = dripRateValue + TitrateTableDefine
-                        ::convert(titrateTableManager.getSetTableParam().step);
+        dripRateValue = dripRateValue + (titrateTableManager.getSetTableParam().step + 1);
     }
 }
 

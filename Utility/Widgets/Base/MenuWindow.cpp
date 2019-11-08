@@ -17,7 +17,7 @@
 #include "MenuSidebarItem.h"
 #include "WindowManager.h"
 #include "Button.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QList>
 #include <QPainter>
 #include "ThemeManager.h"
@@ -322,7 +322,7 @@ void MenuWindow::paintEvent(QPaintEvent *ev)
     Q_UNUSED(ev);
     QRectF r = contentsRect();
     QPainter p(this);
-    p.setRenderHint(QPainter::Antialiasing); // 抗锯齿
+    p.setRenderHint(QPainter::Antialiasing);  // 抗锯齿
     QPainterPath painterPath;
     painterPath.addRoundedRect(r, themeManger.getBorderRadius(), themeManger.getBorderRadius());
     // 下部直角

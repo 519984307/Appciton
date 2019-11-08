@@ -11,7 +11,7 @@
 #include "ScreenMenuContent.h"
 #include "ComboBox.h"
 #include "Button.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
 #include <QGridLayout>
 #include <ScreenLayoutWindow.h>
@@ -176,8 +176,7 @@ void ScreenMenuContent::layoutExec()
     d_ptr->layoutCbo = new ComboBox;
     d_ptr->layoutCbo->addItems(QStringList()
                                << trs("StandardScreenLayout")
-                               << trs("BigFontScreenLayout")
-                               );
+                               << trs("BigFontScreenLayout"));
     layout->addWidget(d_ptr->layoutCbo, count++, 1);
     connect(d_ptr->layoutCbo, SIGNAL(activated(int)), this, SLOT(onComboxIndexChanged(int)));
 #endif

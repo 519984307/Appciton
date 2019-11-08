@@ -1,3 +1,12 @@
+/**
+ ** This file is part of the Project project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2019/11/8
+ **/
 #pragma once
 
 enum StepOption
@@ -34,49 +43,8 @@ enum DoseType
 
 struct SetTableParam
 {
-    SetTableParam()
-    {
-        step = STEP_OPTION_ONE;
-        datumTerm = DATUM_TERM_DOSE;
-        doseType = DOSE_TYPE_H;
-    }
+    SetTableParam() :step(STEP_OPTION_ONE), datumTerm(DATUM_TERM_DOSE), doseType(DOSE_TYPE_H) {}
     StepOption step;
     DatumTerm datumTerm;
     DoseType doseType;
-};
-
-class TitrateTableDefine
-{
-public:
-    static const char *convert(DatumTerm index)
-    {
-        static const char *symbol[DATUM_TERM_NR] =
-        {
-            "Dosemin",
-            "InfusionRate",
-            "DripRate"
-        };
-        return symbol[index];
-    }
-
-    static const char *convert(DoseType index)
-    {
-        static const char *symbol[DOSE_TYPE_NR] =
-        {
-            "minDose",
-            "hDose",
-            "kgminDose",
-            "kghDose"
-        };
-        return symbol[index];
-    }
-
-    static const int &convert(StepOption index)
-    {
-        static const int symbol[STEP_OPTION_NR] =
-        {
-            1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-        };
-        return symbol[index];
-    }
 };

@@ -11,7 +11,7 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QProcess>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "FactoryTempMenuContent.h"
 #include "Button.h"
 #include "ComboBox.h"

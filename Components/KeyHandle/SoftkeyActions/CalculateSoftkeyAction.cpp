@@ -18,7 +18,7 @@
 #include "DoseCalculationWindow.h"
 #include "DoseCalculationManager.h"
 #include "HemodynamicWindow.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "LayoutManager.h"
 
 /***************************************************************************************************

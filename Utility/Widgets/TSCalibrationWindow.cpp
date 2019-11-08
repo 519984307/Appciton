@@ -19,7 +19,7 @@
 #include <QTextStream>
 #include <QPainter>
 #include "FontManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QFontMetrics>
 #include <QVector>
 #include <errno.h>

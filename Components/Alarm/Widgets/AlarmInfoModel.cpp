@@ -11,7 +11,7 @@
 #include "AlarmInfoModel.h"
 #include <QStringList>
 #include "ThemeManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QIcon>
 #include <QResizeEvent>
 #include <QDebug>
@@ -215,7 +215,8 @@ bool AlarmInfoModel::setData(const QModelIndex &index, const QVariant &value, in
     return false;
 }
 
-void AlarmInfoModel::setStringList(const QStringList &nameList, const QStringList &timeList, const QStringList &priorityList)
+void AlarmInfoModel::setStringList(const QStringList &nameList, const QStringList &timeList,
+                                   const QStringList &priorityList)
 {
     if (d_ptr->nameList == nameList && d_ptr->timeList == timeList)
     {

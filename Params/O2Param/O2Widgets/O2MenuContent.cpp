@@ -9,7 +9,7 @@
  **/
 
 #include "O2MenuContent.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QGridLayout>
 #include "Button.h"
 #include "ParamInfo.h"

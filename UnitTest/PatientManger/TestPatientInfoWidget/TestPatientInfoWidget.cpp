@@ -15,7 +15,7 @@
 #include "PatientInfoWindowInterface.h"
 #include <QFont>
 #include <QLayout>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QVariant>
 
 using ::testing::Mock;

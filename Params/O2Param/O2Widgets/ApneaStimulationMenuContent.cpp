@@ -9,7 +9,7 @@
  **/
 
 #include "ApneaStimulationMenuContent.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "ComboBox.h"
 #include "SpinBox.h"
 #include <QGridLayout>

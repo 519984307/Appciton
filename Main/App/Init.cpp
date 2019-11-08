@@ -21,6 +21,51 @@
 #include "Framework/ErrorLog/ErrorLog.h"
 #include "Framework/ErrorLog/ErrorLogItem.h"
 
+#include "Framework/Language/LanguageManager.h"
+#include "Framework/Language/Translator.h"
+
+/**
+ * @brief initLanguage initialize the language manager
+ */
+static void initLanguage()
+{
+#define LOCALE_FILE_PATH "/usr/local/nPM/locale/"
+     int langNo = 0;
+     systemConfig.getNumAttr("General|Language", "CurrentOption", langNo);
+     int langNext = 0;
+     systemConfig.getNumAttr("General|Language", "NextOption", langNext);
+
+     if (langNo != langNext)
+     {
+         /* If not identical, we need to switch the new language */
+         systemConfig.setNumAttr("General|Language", "CurrentOption", langNext);
+         langNo = langNext;
+     }
+
+     LanguageManager::LanguageId langId = static_cast<LanguageManager::LanguageId>(langNo);
+
+     LanguageManager *langMgr = LanguageManager::getInstance();
+
+     // 获取语言文件的名称。
+     QString language = QString("General|Language|Opt%1").arg(langNo);
+
+     systemConfig.getStrAttr(language, "XmlFileName", language);
+     QString path =  LOCALE_FILE_PATH + language + ".xml";
+
+     Translator *translator = new Translator(path);
+     if (!translator->isValid())
+     {
+         qWarning() << Q_FUNC_INFO << "Load langage file" << path << "Failed";
+         delete translator;
+         return;
+     }
+
+     if (!langMgr->registerTranslator(langId, translator))
+     {
+         qDebug() << Q_FUNC_INFO << "register Language translator failed!";
+         delete translator;
+     }
+}
 /**************************************************************************************************
  * 功能： 初始化系统。
  *************************************************************************************************/
@@ -31,6 +76,7 @@ static void _initSystem(void)
 
     systemConfig.construction();
 
+    initLanguage();
     // superConfig.construction();
 
     // superRunConfig.construction();
@@ -708,6 +754,5 @@ void deleteObjects(void)
     deleteUsbManager();
 
     deleteColorManager();
-    deleteLanguageManager();
     deleteErrorCatch();
 }

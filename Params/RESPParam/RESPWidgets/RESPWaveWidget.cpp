@@ -14,7 +14,7 @@
 #include "RESPParam.h"
 #include "FontManager.h"
 #include "WaveWidgetLabel.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "ColorManager.h"
 #include "ParamInfo.h"
 #include "WindowManager.h"

@@ -12,12 +12,20 @@
 #include <QCoreApplication>
 #include <QTest>
 #include "TestLanguageManager.h"
+#include "TestTranslator.h"
 #include "googletest.h"
 
 int main(int argc, char *argv[])
 {
     ::testing::InitGoogleMock(&argc, argv);
     QCoreApplication a(argc, argv);
+    TestTranslator testTranslator;
+    int ret = QTest::qExec(&testTranslator, argc, argv);
+    if (ret)
+    {
+        return ret;
+    }
     TestLanguageManager tc;
-    return QTest::qExec(&tc, argc, argv);
+    ret = QTest::qExec(&tc, argc, argv);
+    return ret;
 }

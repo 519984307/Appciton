@@ -15,7 +15,7 @@
 #include "SystemManager.h"
 #include <QVBoxLayout>
 #include <QGridLayout>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 
 SoftwareVersionWindow::SoftwareVersionWindow(): Dialog()
 {

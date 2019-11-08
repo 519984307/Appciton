@@ -9,7 +9,7 @@
  **/
 #include <QGridLayout>
 #include <QLabel>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "ComboBox.h"
 #include "FactoryTestMenuContent.h"
 #include "Debug.h"
@@ -22,6 +22,7 @@
 #include <QDir>
 #include <QFile>
 #include "TestBatteryTime.h"
+#include "Framework/Config/XmlParser.h"
 
 class FactoryTestMenuContentPrivate
 {

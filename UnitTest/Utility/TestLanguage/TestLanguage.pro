@@ -1,5 +1,5 @@
 QT -= gui
-QT += testlib xml core
+QT += testlib core
 
 CONFIG += c++11 console
 CONFIG -= app_bundle
@@ -21,19 +21,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp \
     TestLanguageManager.cpp \
-    ../../../Utility/LanguageManager/LanguageManager.cpp \
-    ../../../Utility/Config/IConfig.cpp \
+    TestTranslator.cpp \
 
 HEADERS += \
     TestLanguageManager.h \
-    ../../../Utility/LanguageManager/LanguageManager.h \
-    ../../../Utility/Config/IConfig.h \
-    ../../../Components/PatientManager/PatientDefine.h \
-    ../../../Utility/BaseDefine.h \
-    ../../../Components/PatientManager/PatientDefine.h
+    TestTranslator.h \
 
 INCLUDEPATH += \
     ../../../Utility \
-    ../../../Utility/LanguageManager \
-    ../../../Utility/Config \
-    ../../../Components/PatientManager
+
+RESOURCES += \
+    res.qrc

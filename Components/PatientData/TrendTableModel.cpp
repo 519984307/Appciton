@@ -24,7 +24,7 @@
 #include "AlarmConfig.h"
 #include "CO2Param.h"
 #include <QTimerEvent>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "PatientManager.h"
 
 #define COLUMN_COUNT        7
@@ -668,8 +668,8 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
     printInfo.list = d_ptr->displayList;
     for (int i = startPrintId; i <= endPrintId; i++)
     {
-        printInfo.timestampEventMap[d_ptr->trendBlockList.at(d_ptr->trendIndexList.at(i)).extraData]
-                = d_ptr->trendBlockList.at(d_ptr->trendIndexList.at(i)).type;
+        quint32 type = d_ptr->trendBlockList.at(d_ptr->trendIndexList.at(i)).type;
+        printInfo.timestampEventMap[d_ptr->trendBlockList.at(d_ptr->trendIndexList.at(i)).extraData] = type;
     }
     RecordPageGenerator *gen = new TrendTablePageGenerator(d_ptr->backend, printInfo, d_ptr->patientInfo);
     if (recorderManager.isPrinting() && !d_ptr->isWait)
