@@ -126,18 +126,22 @@ bool AlarmLimitModel::setData(const QModelIndex &index, const QVariant &value, i
             case SECTION_STATUS:
                 d_ptr->alarmDataInfos[row].status = newValue;
                 alarmDataUpdate(d_ptr->alarmDataInfos[row], index.column());
+                emit dataChanged(index, index);
                 break;
             case SECTION_LEVEL:
                 d_ptr->alarmDataInfos[row].alarmLevel = newValue + 1;
                 alarmDataUpdate(d_ptr->alarmDataInfos[row], index.column());
+                emit dataChanged(index, index);
                 break;
             case SECTION_HIGH_LIMIT:
                 d_ptr->alarmDataInfos[row].limitConfig.highLimit = newValue;
                 alarmDataUpdate(d_ptr->alarmDataInfos[row], index.column());
+                emit dataChanged(index, index);
                 break;
             case SECTION_LOW_LIMIT:
                 d_ptr->alarmDataInfos[row].limitConfig.lowLimit = newValue;
                 alarmDataUpdate(d_ptr->alarmDataInfos[row], index.column());
+                emit dataChanged(index, index);
                 break;
             default:
                 break;
@@ -157,7 +161,6 @@ bool AlarmLimitModel::setData(const QModelIndex &index, const QVariant &value, i
         {
             d_ptr->editIndex = index;
         }
-        emit dataChanged(d_ptr->editIndex, d_ptr->editIndex);
     }
 
 
