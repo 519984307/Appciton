@@ -320,7 +320,7 @@ void TrendPrintWindowPrivate::initGroupBox(QGroupBox *groupBox, TrendPrintWindow
     subBox->monthSbx->setStep(1);
     subBox->monthSbx->setArrow(false);
 
-    subBox->daySbx->setRange(1, 30);
+    subBox->daySbx->setRange(1, 31);
     subBox->daySbx->setStep(1);
     subBox->daySbx->setArrow(false);
 
