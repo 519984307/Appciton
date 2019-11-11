@@ -34,6 +34,7 @@ using ::testing::Mock;
 using ::testing::Return;
 using ::testing::DoAll;
 using ::testing::SetArgReferee;
+using ::testing::SetArgPointee;
 using ::testing::AnyNumber;
 
 class TestAlarmPrivate
@@ -590,7 +591,7 @@ void TestAlarm::testMainRunLimitSource()
      */
     cacheData.values[SUB_PARAM_NONE] = 0;
     EXPECT_CALL(mockTrendCache, getTrendData(t, _)).Times(source->getAlarmSourceNR()).
-            WillRepeatedly(Return(true));
+            WillRepeatedly(DoAll(SetArgPointee<1>(cacheData), Return(true)));
 
     alertor.mainRun(t);
 
