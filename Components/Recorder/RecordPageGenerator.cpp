@@ -2029,12 +2029,13 @@ void RecordPageGenerator::drawTrendGraphEventSymbol(QPainter *painter,
         eventRect.setLeft(timeX);
         eventRect.setWidth(axisInfo.xSectionWidth);  // should be enough
         eventRect.setHeight(fontH);
-        if (eventList.at(i).type == EventPhysiologicalAlarm)
+        EventType type = static_cast<EventType>(eventList.at(i).type & 0xff);
+        if (type == EventPhysiologicalAlarm)
         {
             eventRect.setTop(aEventFlagHeight);
             painter->drawText(eventRect, Qt::AlignLeft | Qt::AlignVCenter, "A");
         }
-        else if (eventList.at(i).type != EventOxyCRG)
+        else if (type != EventOxyCRG)
         {
             eventRect.setTop(mEventFlagHeight);
             painter->drawText(eventRect, Qt::AlignLeft | Qt::AlignVCenter, "M");
