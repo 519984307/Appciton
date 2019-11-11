@@ -38,13 +38,13 @@ public:
      * @brief trendDataInfo 载入趋势图数据
      * @param info 趋势数据
      */
-    void trendDataInfo(TrendGraphInfo info);
+    void trendDataInfo(const TrendGraphInfo &info);
 
     /**
      * @brief loadTrendSubWidgetInfo 载入趋势图数据的范围值
      * @param info 横纵坐标的实际像素范围
      */
-    void loadTrendSubWidgetInfo(TrendSubWidgetInfo info);
+    void loadTrendSubWidgetInfo(const TrendSubWidgetInfo &info);
 
     /**
      * @brief getLimitMax getLimitMin getLimitScale 获取超限信息

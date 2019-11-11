@@ -366,7 +366,7 @@ void AlarmIndicator::_displayTechClear()
 /**************************************************************************************************
  * 设置生理报警提示信息。
  *************************************************************************************************/
-void AlarmIndicator::_displayPhySet(AlarmInfoNode node)
+void AlarmIndicator::_displayPhySet(const AlarmInfoNode &node)
 {
     if (_alarmPhyInfoWidget)
     {
@@ -377,7 +377,7 @@ void AlarmIndicator::_displayPhySet(AlarmInfoNode node)
 /**************************************************************************************************
  * 设置技术报警提示信息。
  *************************************************************************************************/
-void AlarmIndicator::_displayTechSet(AlarmInfoNode node)
+void AlarmIndicator::_displayTechSet(const AlarmInfoNode &node)
 {
     if (_alarmTechInfoWidget)
     {

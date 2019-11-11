@@ -92,7 +92,7 @@ void TrendSubWaveWidget::setWidgetParam(SubParamID id, TrendGraphType type)
     _paramUnit = trs(Unit::getSymbol(paramManager.getSubParamUnit(paramInfo.getParamID(_id), _id)));
 }
 
-void TrendSubWaveWidget::trendDataInfo(TrendGraphInfo info)
+void TrendSubWaveWidget::trendDataInfo(const TrendGraphInfo &info)
 {
     _trendInfo = info;
     // 数据更新时判断是否为自动标尺,是则刷新标尺
@@ -102,7 +102,7 @@ void TrendSubWaveWidget::trendDataInfo(TrendGraphInfo info)
     }
 }
 
-void TrendSubWaveWidget::loadTrendSubWidgetInfo(TrendSubWidgetInfo info)
+void TrendSubWaveWidget::loadTrendSubWidgetInfo(const TrendSubWidgetInfo &info)
 {
     _info = info;
     _valueY.start = info.yTop;
