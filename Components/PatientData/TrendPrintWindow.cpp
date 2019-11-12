@@ -177,18 +177,26 @@ void TrendPrintWindow::initPrintTime(unsigned start, unsigned end)
     d_ptr->printEndTime = end;
 
     d_ptr->blockSignal(true, true);
-    d_ptr->startSubBox->yearSbx->setValue(static_cast<int>(timeDate.getDateYear(start)));
-    d_ptr->startSubBox->monthSbx->setValue(static_cast<int>(timeDate.getDateMonth(start)));
-    d_ptr->startSubBox->daySbx->setValue(static_cast<int>(timeDate.getDateDay(start)));
+    QDate startDate(timeDate.getDateYear(start),
+                    timeDate.getDateMonth(start),
+                    timeDate.getDateDay(start));
+    d_ptr->startSubBox->yearSbx->setValue(startDate.year());
+    d_ptr->startSubBox->monthSbx->setValue(startDate.month());
+    d_ptr->startSubBox->daySbx->setValue(startDate.day());
+    d_ptr->startSubBox->daySbx->setRange(1, startDate.daysInMonth());
     d_ptr->startSubBox->hourSbx->setValue(static_cast<int>(timeDate.getTimeHour(start)));
     d_ptr->startSubBox->minSbx->setValue(static_cast<int>(timeDate.getTimeMinute(start)));
     d_ptr->startSubBox->secondSbx->setValue(static_cast<int>(timeDate.getTimeSenonds(start)));
     d_ptr->blockSignal(false, true);
 
     d_ptr->blockSignal(true, false);
-    d_ptr->endSubBox->yearSbx->setValue(static_cast<int>(timeDate.getDateYear(end)));
-    d_ptr->endSubBox->monthSbx->setValue(static_cast<int>(timeDate.getDateMonth(end)));
-    d_ptr->endSubBox->daySbx->setValue(static_cast<int>(timeDate.getDateDay(end)));
+    QDate endDate(timeDate.getDateYear(end),
+                  timeDate.getDateMonth(end),
+                  timeDate.getDateDay(end));
+    d_ptr->endSubBox->yearSbx->setValue(endDate.year());
+    d_ptr->endSubBox->monthSbx->setValue(endDate.month());
+    d_ptr->endSubBox->daySbx->setValue(endDate.day());
+    d_ptr->endSubBox->daySbx->setRange(1, endDate.daysInMonth());
     d_ptr->endSubBox->hourSbx->setValue(static_cast<int>(timeDate.getTimeHour(end)));
     d_ptr->endSubBox->minSbx->setValue(static_cast<int>(timeDate.getTimeMinute(end)));
     d_ptr->endSubBox->secondSbx->setValue(static_cast<int>(timeDate.getTimeSenonds(end)));
@@ -220,9 +228,13 @@ void TrendPrintWindow::startTimeChangeSlot(int, int)
     if (timeStamp < d_ptr->timeStartLimit)
     {
         d_ptr->blockSignal(true, true);
-        d_ptr->startSubBox->yearSbx->setValue(static_cast<int>(timeDate.getDateYear(d_ptr->timeStartLimit)));
-        d_ptr->startSubBox->monthSbx->setValue(static_cast<int>(timeDate.getDateMonth(d_ptr->timeStartLimit)));
-        d_ptr->startSubBox->daySbx->setValue(static_cast<int>(timeDate.getDateDay(d_ptr->timeStartLimit)));
+        QDate startLimitDate(timeDate.getDateYear(d_ptr->timeStartLimit),
+                             timeDate.getDateMonth(d_ptr->timeStartLimit),
+                             timeDate.getDateDay(d_ptr->timeStartLimit));
+        d_ptr->startSubBox->yearSbx->setValue(startLimitDate.year());
+        d_ptr->startSubBox->monthSbx->setValue(startLimitDate.month());
+        d_ptr->startSubBox->daySbx->setValue(startLimitDate.day());
+        d_ptr->startSubBox->daySbx->setRange(1, startLimitDate.daysInMonth());  // 设置天数可修改范围
         d_ptr->startSubBox->hourSbx->setValue(static_cast<int>(timeDate.getTimeHour(d_ptr->timeStartLimit)));
         d_ptr->startSubBox->minSbx->setValue(static_cast<int>(timeDate.getTimeMinute(d_ptr->timeStartLimit)));
         d_ptr->startSubBox->secondSbx->setValue(static_cast<int>(timeDate.getTimeSenonds(d_ptr->timeStartLimit)));
@@ -232,9 +244,13 @@ void TrendPrintWindow::startTimeChangeSlot(int, int)
     else if (timeStamp > d_ptr->printEndTime)
     {
         d_ptr->blockSignal(true, true);
-        d_ptr->startSubBox->yearSbx->setValue(static_cast<int>(timeDate.getDateYear(d_ptr->printEndTime)));
-        d_ptr->startSubBox->monthSbx->setValue(static_cast<int>(timeDate.getDateMonth(d_ptr->printEndTime)));
-        d_ptr->startSubBox->daySbx->setValue(static_cast<int>(timeDate.getDateDay(d_ptr->printEndTime)));
+        QDate printEndDate(timeDate.getDateYear(d_ptr->printEndTime),
+                           timeDate.getDateMonth(d_ptr->printEndTime),
+                           timeDate.getDateDay(d_ptr->printEndTime));
+        d_ptr->startSubBox->yearSbx->setValue(printEndDate.year());
+        d_ptr->startSubBox->monthSbx->setValue(printEndDate.month());
+        d_ptr->startSubBox->daySbx->setValue(printEndDate.day());
+        d_ptr->startSubBox->daySbx->setRange(1, printEndDate.daysInMonth());    // 设置天数可修改范围
         d_ptr->startSubBox->hourSbx->setValue(static_cast<int>(timeDate.getTimeHour(d_ptr->printEndTime)));
         d_ptr->startSubBox->minSbx->setValue(static_cast<int>(timeDate.getTimeMinute(d_ptr->printEndTime)));
         d_ptr->startSubBox->secondSbx->setValue(static_cast<int>(timeDate.getTimeSenonds(d_ptr->printEndTime)));
@@ -266,9 +282,13 @@ void TrendPrintWindow::endTimeChangeSlot(int, int)
     if (timeStamp > d_ptr->timeEndLimit)
     {
         d_ptr->blockSignal(true, false);
-        d_ptr->endSubBox->yearSbx->setValue(static_cast<int>(timeDate.getDateYear(d_ptr->timeEndLimit)));
-        d_ptr->endSubBox->monthSbx->setValue(static_cast<int>(timeDate.getDateMonth(d_ptr->timeEndLimit)));
-        d_ptr->endSubBox->daySbx->setValue(static_cast<int>(timeDate.getDateDay(d_ptr->timeEndLimit)));
+        QDate endLimitDate(timeDate.getDateYear(d_ptr->timeEndLimit),
+                           timeDate.getDateMonth(d_ptr->timeEndLimit),
+                           timeDate.getDateDay(d_ptr->timeEndLimit));
+        d_ptr->endSubBox->yearSbx->setValue(endLimitDate.year());
+        d_ptr->endSubBox->monthSbx->setValue(endLimitDate.month());
+        d_ptr->endSubBox->daySbx->setValue(endLimitDate.day());
+        d_ptr->endSubBox->daySbx->setRange(1, endLimitDate.daysInMonth());
         d_ptr->endSubBox->hourSbx->setValue(static_cast<int>(timeDate.getTimeHour(d_ptr->timeEndLimit)));
         d_ptr->endSubBox->minSbx->setValue(static_cast<int>(timeDate.getTimeMinute(d_ptr->timeEndLimit)));
         d_ptr->endSubBox->secondSbx->setValue(static_cast<int>(timeDate.getTimeSenonds(d_ptr->timeEndLimit)));
@@ -278,9 +298,13 @@ void TrendPrintWindow::endTimeChangeSlot(int, int)
     else if (timeStamp < d_ptr->printStartTime)
     {
         d_ptr->blockSignal(true, false);
-        d_ptr->endSubBox->yearSbx->setValue(static_cast<int>(timeDate.getDateYear(d_ptr->printStartTime)));
-        d_ptr->endSubBox->monthSbx->setValue(static_cast<int>(timeDate.getDateMonth(d_ptr->printStartTime)));
-        d_ptr->endSubBox->daySbx->setValue(static_cast<int>(timeDate.getDateDay(d_ptr->printStartTime)));
+        QDate printStartDate(timeDate.getDateYear(d_ptr->printStartTime),
+                             timeDate.getDateMonth(d_ptr->printStartTime),
+                             timeDate.getDateDay(d_ptr->printStartTime));
+        d_ptr->endSubBox->yearSbx->setValue(printStartDate.year());
+        d_ptr->endSubBox->monthSbx->setValue(printStartDate.month());
+        d_ptr->endSubBox->daySbx->setValue(printStartDate.day());
+        d_ptr->endSubBox->daySbx->setRange(1, printStartDate.daysInMonth());
         d_ptr->endSubBox->hourSbx->setValue(static_cast<int>(timeDate.getTimeHour(d_ptr->printStartTime)));
         d_ptr->endSubBox->minSbx->setValue(static_cast<int>(timeDate.getTimeMinute(d_ptr->printStartTime)));
         d_ptr->endSubBox->secondSbx->setValue(static_cast<int>(timeDate.getTimeSenonds(d_ptr->printStartTime)));
@@ -458,16 +482,20 @@ void TrendPrintWindowPrivate::adjustPrintTime(unsigned printTime, bool start)
         subBox = endSubBox;
     }
 
+    QDate adjustDate(timeDate.getDateYear(adjustTime),
+                     timeDate.getDateMonth(adjustTime),
+                     timeDate.getDateDay(adjustTime));
     subBox->yearSbx->blockSignals(true);
-    subBox->yearSbx->setValue(static_cast<int>(timeDate.getDateYear(adjustTime)));
+    subBox->yearSbx->setValue(adjustDate.year());
     subBox->yearSbx->blockSignals(false);
 
     subBox->monthSbx->blockSignals(true);
-    subBox->monthSbx->setValue(static_cast<int>(timeDate.getDateMonth(adjustTime)));
+    subBox->monthSbx->setValue(adjustDate.month());
     subBox->monthSbx->blockSignals(false);
 
     subBox->daySbx->blockSignals(true);
-    subBox->daySbx->setValue(static_cast<int>(timeDate.getDateDay(adjustTime)));
+    subBox->daySbx->setValue(adjustDate.day());
+    subBox->daySbx->setRange(1, adjustDate.daysInMonth());
     subBox->daySbx->blockSignals(false);
 
     subBox->hourSbx->blockSignals(true);
