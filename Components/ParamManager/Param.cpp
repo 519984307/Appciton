@@ -89,27 +89,27 @@ void Param::exitDemo()
 /**************************************************************************************************
  * 功能： 获取当前的波形控件名称。
  *************************************************************************************************/
-void Param::getAvailableWaveforms(QStringList &waveforms, QStringList &waveformShowName, int flag)
+void Param::getAvailableWaveforms(QStringList *waveforms, QStringList *waveformShowName, int flag)
 {
     Q_UNUSED(flag)
-    waveforms.clear();
-    waveformShowName.clear();
+    waveforms->clear();
+    waveformShowName->clear();
 }
 
 /**************************************************************************************************
  * 功能： 获取趋势控件名称。
  *************************************************************************************************/
-void Param::getTrendWindow(QString &trendWin)
+QString Param::getTrendWindowName()
 {
-    trendWin.clear();
+    return QString();
 }
 
 /**************************************************************************************************
  * 功能： 获取当前的波形控件名称。
  *************************************************************************************************/
-void Param::getWaveWindow(QString &waveWin)
+QString Param::getWaveWindowName()
 {
-    waveWin.clear();
+    return QString();
 }
 
 /**************************************************************************************************

@@ -60,11 +60,11 @@ public:
     virtual void exitDemo();
 
     // 获取可得的波形控件集。
-    virtual void getAvailableWaveforms(QStringList &waveforms,
-                                       QStringList &waveformShowName, int flag);
+    virtual void getAvailableWaveforms(QStringList *waveforms,
+                                       QStringList *waveformShowName, int flag);
 
     // 获取可得的趋势控件集。
-    virtual void getTrendWindow(QStringList &trend);
+    virtual QStringList getTrendWindowNames();
 
     // 获取子参数值。
     virtual short getSubParamValue(SubParamID id);
@@ -149,7 +149,7 @@ public:
     void updateECGStandard(int standard);
 
     // 获取可得的导联集。
-    void getAvailableLeads(QList<ECGLead> &leads);
+    QList<ECGLead> getAvailableLeads();
 
     // waveID to LeadID
     ECGLead waveIDToLeadID(WaveformID id);
@@ -172,7 +172,7 @@ public:
         ECG_ACTION_DIA_GET_SNAPSHOT_DATA,
     };
 
-public: // 用于访问配置相关信息。
+public:     // 用于访问配置相关信息。
     // 设置/获取导联模式。
     void setLeadMode(ECGLeadMode mode);
     ECGLeadMode getLeadMode(void) const;
@@ -360,7 +360,7 @@ private:
     ECGParam();
 
     // 获取禁用的波形控件。
-    void _getDisabledWaveforms(QStringList &waveforms);
+    QStringList _getDisabledWaveforms();
 
     ECGProviderIFace *_provider;
     ECGPVCSTrendWidget *_pvcsTrendWidget;

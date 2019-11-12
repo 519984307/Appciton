@@ -166,17 +166,17 @@ void SPO2Param::exitDemo()
 /**************************************************************************************************
  * 获取可得的波形控件集。
  *************************************************************************************************/
-void SPO2Param::getAvailableWaveforms(QStringList &waveforms,
-                                      QStringList &waveformShowName, int /*flag*/)
+void SPO2Param::getAvailableWaveforms(QStringList *waveforms,
+                                      QStringList *waveformShowName, int /*flag*/)
 {
-    waveforms.clear();
-    waveformShowName.clear();
+    waveforms->clear();
+    waveformShowName->clear();
 
     if (NULL != _waveWidget)
     {
-        waveforms.append(_waveWidget->name());
+        waveforms->append(_waveWidget->name());
     }
-    waveformShowName.append(trs("PLETH"));
+    waveformShowName->append(trs("PLETH"));
 }
 
 /**************************************************************************************************

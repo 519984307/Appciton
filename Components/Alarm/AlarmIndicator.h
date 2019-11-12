@@ -87,8 +87,7 @@ public:
      */
     int getAlarmCount(AlarmType type, AlarmPriority priority);
 
-    void getAlarmInfo(int index, AlarmInfoNode &node);  /* NOLINT */
-    bool getAlarmInfo(AlarmType type, const char *alArmMessage, AlarmInfoNode &node); /* NOLINT */
+    AlarmInfoNode getAlarmInfo(int index);
 
     // 构造与析构。
     virtual ~AlarmIndicator();
@@ -145,8 +144,8 @@ private:
 private:    // 报警信息显示。
     void _displayPhyClear(void);     // 清除生理报警界面。
     void _displayTechClear(void);    // 清除技术报警界面。
-    void _displayPhySet(AlarmInfoNode &node);  // 设置生理报警提示信息。 /* NOLINT */
-    void _displayTechSet(AlarmInfoNode &node);  // 设置技术报警提示信息。   /* NOLINT */
+    void _displayPhySet(const AlarmInfoNode &node);  // 设置生理报警提示信息。
+    void _displayTechSet(const AlarmInfoNode &node);  // 设置技术报警提示信息。
     bool _canPlayAudio(AlarmStatus status, bool isTechAlarm);   // check whether can play alarm sound
 
     AlarmInfoBarWidget *_alarmPhyInfoWidget;
@@ -163,7 +162,7 @@ private:
     int _alarmPhyDisplayIndex;
     int _alarmTechDisplayIndex;
 
-    void _displayInfoNode(AlarmInfoNode &alarmNode, int &indexint,  /* NOLINT */
+    void _displayInfoNode(AlarmInfoNode *alarmNode, int *indexint,
                           int newAlarmIndex, int oldAlarmIndex,
                           int firstIndex, int lastIndex);
 

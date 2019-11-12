@@ -50,8 +50,7 @@ public:
 
 void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
 {
-    QList<ParamID> pids;
-    paramManager.getParams(pids);
+    QList<ParamID> pids = paramManager.getParamIDs();
     QList<AlarmDataInfo> infos;
     for (int i = 0; i < SUB_PARAM_NR; ++i)
     {

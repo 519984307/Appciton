@@ -69,14 +69,6 @@ public:
      * @param zoom
      */
     void setWaveformZoom(CO2DisplayZoom zoom);
-    /**
-     * @brief getCO2RESPWins
-     * @param co2Trend
-     * @param co2Wave
-     * @param respTrend
-     * @param respWave
-     */
-    void getCO2RESPWins(QString &co2Trend, QString &co2Wave, QString &respTrend, QString &respWave);  /* NOLINT */
 
     CO2Param *q_ptr;
     CO2ProviderIFace *provider;
@@ -184,19 +176,6 @@ void CO2ParamPrivate::setWaveformZoom(CO2DisplayZoom zoom)
 }
 
 /**************************************************************************************************
- * 获取CO2和RESP的窗体名称。
- *************************************************************************************************/
-void CO2ParamPrivate::getCO2RESPWins(QString &co2Trend, QString &co2Wave,
-                               QString &respTrend, QString &respWave)
-{
-    // 获取它们的窗体信息。
-    q_ptr->getTrendWindow(co2Trend);
-    q_ptr->getWaveWindow(co2Wave);
-    respParam.getTrendWindow(respTrend);
-    respParam.getWaveWindow(respWave);
-}
-
-/**************************************************************************************************
  * 初始化参数。
  *************************************************************************************************/
 void CO2Param::initParam(void)
@@ -284,38 +263,40 @@ void CO2Param::exitDemo()
 /**************************************************************************************************
  * 获取可得的波形控件集。
  *************************************************************************************************/
-void CO2Param::getAvailableWaveforms(QStringList &waveforms, QStringList &waveformShowName, int)
+void CO2Param::getAvailableWaveforms(QStringList *waveforms, QStringList *waveformShowName, int)
 {
-    waveforms.clear();
-    waveformShowName.clear();
+    waveforms->clear();
+    waveformShowName->clear();
 
     if (NULL != d_ptr->waveWidget)
     {
-        waveforms.append(d_ptr->waveWidget->name());
-        waveformShowName.append(d_ptr->waveWidget->getTitle());
+        waveforms->append(d_ptr->waveWidget->name());
+        waveformShowName->append(d_ptr->waveWidget->getTitle());
     }
 }
 
 /**************************************************************************************************
  * 获取可得的趋势窗体名。
  *************************************************************************************************/
-void CO2Param::getTrendWindow(QString &trendWin)
+QString CO2Param::getTrendWindowName()
 {
     if (NULL != d_ptr->trendWidget)
     {
-        trendWin = d_ptr->trendWidget->name();
+        return d_ptr->trendWidget->name();
     }
+    return QString();
 }
 
 /**************************************************************************************************
  * 获取可得的波形窗体名。
  *************************************************************************************************/
-void CO2Param::getWaveWindow(QString &waveWin)
+QString CO2Param::getWaveWindowName()
 {
     if (NULL != d_ptr->waveWidget)
     {
-        waveWin = d_ptr->waveWidget->name();
+        return d_ptr->waveWidget->name();
     }
+    return QString();
 }
 
 /**************************************************************************************************
@@ -601,8 +582,8 @@ void CO2Param::setConnected(bool isConnected)
 
     d_ptr->connectedProvider = isConnected;
 
-    QString co2Trend, co2Wave, respTrend, respWave;
-    d_ptr->getCO2RESPWins(co2Trend, co2Wave, respTrend, respWave);
+    QString co2Trend = getTrendWindowName();
+    QString co2Wave = getWaveWindowName();
 
     int needUpdate = 0;
     if (isConnected)

@@ -45,7 +45,7 @@ struct CO2ProviderStatus
     unsigned char workMode;    // MODE, 0:self test, 1:sleep, 2:measurement
 
     // O2 compensation conc (byte 1)
-    unsigned char o2CompensationConc; // 0--115
+    unsigned char o2CompensationConc;  // 0--115
 
     // Sensor error register (byte 2)
     bool softwareErr;          // SW_ERR, Software error. Restart sensor.
@@ -97,7 +97,7 @@ struct CO2ProviderStatus
 
     // Sensor configuration register 1 (byte 4)
     bool axIDConfig;            // ID_CFG, agent id option fitted, auto agent id transmit
-    bool n2oCompensationAvaiable;// N2O_COMP, 1 = Host N2O compensation available.
+    bool n2oCompensationAvaiable;   // N2O_COMP, 1 = Host N2O compensation available.
                                 // When this bit is set, it is possible to set the N2O concentration
                                 // from host using the command SetN2O.
     int o2SensorType;           // O2_SENSOR_TYPE, 0:galvanic o2, 1:servomex pm1116(isa only),
@@ -125,7 +125,7 @@ struct CO2ProviderStatus
     char irO2Delay;             // 0--15
 
     // (byte 3)
-    unsigned char n2oCompensationConc;// compensation concentration
+    unsigned char n2oCompensationConc;  // compensation concentration
 
     // (byte 5)
     int cuvetteAdjuestPress;  // only for sidestream maintenance.
@@ -134,12 +134,12 @@ struct CO2ProviderStatus
 class BLMCO2Provider: public Provider, public CO2ProviderIFace
 {
     Q_OBJECT
-public: // Provider的接口。
-    virtual bool attachParam(Param &param);
+public:     // Provider的接口。
+    virtual bool attachParam(Param *param);
     virtual void dataArrived(void);
     virtual void sendVersion(void) {}
 
-public: // CO2ProviderIFace 的接口。
+public:     // CO2ProviderIFace 的接口。
     // 校零。
     virtual void zeroCalibration(void);
 
@@ -214,7 +214,7 @@ private:
     short _fico2Value;  // 缓存FiCO2的值。
 
     BLMProviderUpgradeIface *upgradeIface;
-    bool _isLastSOHPaired; // 遗留在ringBuff最后一个数据（该数据为SOH）是否已经剃掉了多余的SOH。
+    bool _isLastSOHPaired;  // 遗留在ringBuff最后一个数据（该数据为SOH）是否已经剃掉了多余的SOH。
 
     QTimer connectTmr;
     bool co2ModelConnect;

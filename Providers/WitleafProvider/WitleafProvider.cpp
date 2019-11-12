@@ -31,9 +31,9 @@ enum  // 位操作。
 /**************************************************************************************************
  * 模块与参数对接。
  *************************************************************************************************/
-bool WitleafProvider::attachParam(Param &param)
+bool WitleafProvider::attachParam(Param *param)
 {
-    const QString &name = param.getName();
+    const QString &name = param->getName();
     if (name == paramInfo.getParamName(PARAM_IBP))
     {
         ibpParam.setProvider(this);
@@ -73,7 +73,7 @@ void WitleafProvider::dataArrived()
             break;
         }
 
-        if (len > ringBuff.dataSize()) // 数据还不够，继续等待。
+        if (len > ringBuff.dataSize())  // 数据还不够，继续等待。
         {
             break;
         }
@@ -420,7 +420,9 @@ void WitleafProvider::setAvergTime(IBPSignalInput IBP, unsigned char time)
  *************************************************************************************************/
 void WitleafProvider::setZero(IBPSignalInput IBP, IBPCalibration calibration, unsigned short pressure)
 {
-    unsigned char data[4] = {IBP, calibration, (unsigned char)((pressure >> 8) & 0xff), (unsigned char)(pressure & 0xff)};
+    unsigned char data[4] = {IBP, calibration,
+                             (unsigned char)((pressure >> 8) & 0xff),
+                             (unsigned char)(pressure & 0xff)};
     sendCmd(4, PARAM_TYPE_IBP, IBP_DATA_DC, IBP_CMD_SET_ZERO, data, NULL);
 }
 

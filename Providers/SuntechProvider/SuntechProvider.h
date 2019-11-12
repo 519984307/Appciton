@@ -28,7 +28,7 @@ class SuntechProvider: public Provider, public NIBPProviderIFace
     Q_OBJECT
 
 public:
-    virtual bool attachParam(Param &param);
+    virtual bool attachParam(Param *param);
     virtual void dataArrived(void);
 
     virtual void sendVersion(void);
@@ -60,8 +60,8 @@ public:
     virtual void getResult(void);
 
     // 是否为结果包。
-    virtual bool isResult(unsigned char *packet, short &sys,
-                          short &dia, short &map, short &pr, NIBPOneShotType &err);
+    virtual bool isResult(unsigned char *packet, short *sys,
+                          short *dia, short *map, short *pr, NIBPOneShotType *err);
 
     // 获取模块信息
     void getReturnString(void);

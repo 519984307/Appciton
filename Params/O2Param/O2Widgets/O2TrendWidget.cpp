@@ -45,7 +45,7 @@ void O2TrendWidget::isAlarm(bool flag)
 void O2TrendWidget::showValue()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_O2));
-    normalPalette(psrc);
+    normalPalette(&psrc);
     if (_isAlarm)
     {
         showAlarmStatus(_o2Value);
@@ -103,7 +103,7 @@ QList<SubParamID> O2TrendWidget::getShortTrendSubParams() const
 void O2TrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_O2));
-    normalPalette(psrc);
+    normalPalette(&psrc);
     showNormalParamLimit(psrc);
     showNormalStatus(_o2Value, psrc);
 }

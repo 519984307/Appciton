@@ -80,13 +80,13 @@ public:
 
     // 设置/获取TEMP的值。
     void setTEMP(int16_t t1, int16_t t2, int16_t td);
-    void getTEMP(int16_t &t1, int16_t &t2, int16_t &td);
+    int16_t getTEMP(SubParamID id);
 
     // 设置OneShot报警。
     void setOneShotAlarm(TEMPOneShotType t, bool f);
 
     // 获取趋势界面。
-    virtual void getTrendWindow(QString &trendWin);
+    virtual QString getTrendWindowName();
 
     // 超限报警通知
     void noticeLimitAlarm(int id, bool flag);
@@ -116,7 +116,7 @@ public:
 
     // 设置体温校准下的电阻值
     void setOhm(int ohm1, int ohm2);
-    void getOhm(int &ohm1, int &ohm2);
+    int getOhm(SubParamID id);
 public:
     // 设置/获取单位。
     void setUnit(UnitType u);

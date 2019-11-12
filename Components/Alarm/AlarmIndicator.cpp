@@ -264,7 +264,7 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
         }
         AlarmInfoNode alarmPhyNode;
 
-        _displayInfoNode(alarmPhyNode, _alarmPhyDisplayIndex,
+        _displayInfoNode(&alarmPhyNode, &_alarmPhyDisplayIndex,
                          newPhyAlarmIndex, oldPhyAlarmIndex, firstPhyIndex, lastPhyIndex);
         if (NULL != alarmPhyNode.alarmMessage && alarmPhyNode.alarmType == ALARM_TYPE_PHY)
         {
@@ -285,7 +285,7 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
             _alarmTechDisplayIndex = firstTechIndex;
         }
         AlarmInfoNode alarmTechNode;
-        _displayInfoNode(alarmTechNode, _alarmTechDisplayIndex,
+        _displayInfoNode(&alarmTechNode, &_alarmTechDisplayIndex,
                          newTechAlarmIndex, oldTechAlarmIndex, firstTechIndex, lastTechIndex);
 
         if (NULL != alarmTechNode.alarmMessage)
@@ -366,7 +366,7 @@ void AlarmIndicator::_displayTechClear()
 /**************************************************************************************************
  * 设置生理报警提示信息。
  *************************************************************************************************/
-void AlarmIndicator::_displayPhySet(AlarmInfoNode &node)
+void AlarmIndicator::_displayPhySet(const AlarmInfoNode &node)
 {
     if (_alarmPhyInfoWidget)
     {
@@ -377,7 +377,7 @@ void AlarmIndicator::_displayPhySet(AlarmInfoNode &node)
 /**************************************************************************************************
  * 设置技术报警提示信息。
  *************************************************************************************************/
-void AlarmIndicator::_displayTechSet(AlarmInfoNode &node)
+void AlarmIndicator::_displayTechSet(const AlarmInfoNode &node)
 {
     if (_alarmTechInfoWidget)
     {
@@ -419,42 +419,43 @@ bool AlarmIndicator::_canPlayAudio(AlarmStatus status, bool isTechAlarm)
 /**************************************************************************************************
  * 报警信息显示。
  *************************************************************************************************/
-void AlarmIndicator::_displayInfoNode(AlarmInfoNode &alarmNode, int &indexint, int newAlarmIndex, int oldAlarmIndex,
+void AlarmIndicator::_displayInfoNode(AlarmInfoNode *alarmNode, int *indexint, int newAlarmIndex, int oldAlarmIndex,
                                       int firstIndex, int lastIndex)
 {
     //最新的报警优先显示
     if (-1 != newAlarmIndex)
     {
-        alarmNode = _alarmInfoDisplayPool.at(newAlarmIndex);
-        --alarmNode.displayTime;
-        _alarmInfoDisplayPool[newAlarmIndex] = alarmNode;
+        *alarmNode = _alarmInfoDisplayPool.at(newAlarmIndex);
+        --alarmNode->displayTime;
+        _alarmInfoDisplayPool[newAlarmIndex] = *alarmNode;
     }
     //有报警还有显示剩余时间
-    else if ((-1 != oldAlarmIndex) && (indexint != oldAlarmIndex))
+    else if ((-1 != oldAlarmIndex) && (*indexint != oldAlarmIndex))
     {
-        alarmNode = _alarmInfoDisplayPool.at(oldAlarmIndex);
-        --alarmNode.displayTime;
-        _alarmInfoDisplayPool[oldAlarmIndex] = alarmNode;
+        *alarmNode = _alarmInfoDisplayPool.at(oldAlarmIndex);
+        --alarmNode->displayTime;
+        _alarmInfoDisplayPool[oldAlarmIndex] = *alarmNode;
     }
     else
     {
-        alarmNode = _alarmInfoDisplayPool.at(indexint);
-        if (0 != alarmNode.displayTime)
+        int index = *indexint;
+        *alarmNode = _alarmInfoDisplayPool.at(index);
+        if (0 != alarmNode->displayTime)
         {
-            --alarmNode.displayTime;
-            _alarmInfoDisplayPool[indexint] = alarmNode;
+            --alarmNode->displayTime;
+            _alarmInfoDisplayPool[*indexint] = *alarmNode;
         }
         else
         {
             // 如果是当前记录的索引大于技术报警总数，则从头开始。
-            indexint = lastIndex;
-            if (indexint == -1)
+            *indexint = lastIndex;
+            if (*indexint == -1)
             {
-                indexint = firstIndex;
+                *indexint = firstIndex;
             }
-            alarmNode = _alarmInfoDisplayPool.at(indexint);
-            alarmNode.displayTime = 2;
-            _alarmInfoDisplayPool[indexint] = alarmNode;
+            *alarmNode = _alarmInfoDisplayPool.at(index);
+            alarmNode->displayTime = 2;
+            _alarmInfoDisplayPool[index] = *alarmNode;
         }
     }
 }
@@ -1041,45 +1042,13 @@ int AlarmIndicator::getAlarmCount(AlarmType type, AlarmPriority priority)
  *      index：指定的序号
  *      node：带回报警信息
  *************************************************************************************************/
-void AlarmIndicator::getAlarmInfo(int index, AlarmInfoNode &node)
+AlarmInfoNode AlarmIndicator::getAlarmInfo(int index)
 {
     if (index >= _alarmInfoDisplayPool.count())
     {
-        return;
+        return AlarmInfoNode();
     }
-
-    node = _alarmInfoDisplayPool.at(index);
-}
-
-/**************************************************************************************************
- * 功能：获取指定的报警信息
- * 参数：
- *      alarmType:报警类型
- *      alArmMessage:报警信息
- *      node：带回报警信息
- * 返回：true成功，false失败
- *************************************************************************************************/
-bool AlarmIndicator::getAlarmInfo(AlarmType type, const char *alArmMessage,
-                                  AlarmInfoNode &node)
-{
-    if (alArmMessage == NULL)
-    {
-        return false;
-    }
-    AlarmInfoList *list = &_alarmInfoDisplayPool;
-
-    // 查找报警信息并更新。
-    AlarmInfoList::iterator it = list->begin();
-    for (; it != list->end(); ++it)
-    {
-        if ((it->alarmType == type) && strcmp(it->alarmMessage, alArmMessage) == 0)
-        {
-            node = *it;
-            return true;
-        }
-    }
-
-    return false;
+    return _alarmInfoDisplayPool.at(index);
 }
 
 /**************************************************************************************************

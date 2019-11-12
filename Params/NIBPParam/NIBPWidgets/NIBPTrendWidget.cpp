@@ -576,7 +576,7 @@ void NIBPTrendWidget::showText(QString text)
     }
 
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
-    normalPalette(psrc);
+    normalPalette(&psrc);
     if (!d_ptr->sysAlarm && !d_ptr->diaAlarm && !d_ptr->mapAlarm)
     {
         showNormalStatus(d_ptr->message, psrc);
@@ -592,7 +592,7 @@ void NIBPTrendWidget::showText(QString text)
 void NIBPTrendWidget::showModelText(const QString &text)
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
-    normalPalette(psrc);
+    normalPalette(&psrc);
     if (!d_ptr->sysAlarm && !d_ptr->diaAlarm && !d_ptr->mapAlarm)
     {
         showNormalStatus(d_ptr->model, psrc);

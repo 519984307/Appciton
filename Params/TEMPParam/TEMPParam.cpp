@@ -214,14 +214,21 @@ void TEMPParam::setTEMP(int16_t t1, int16_t t2, int16_t td)
     // Todo: set temp value to the facotry calibration menu
 }
 
-/**************************************************************************************************
- * 获取TEMP的值。
- *************************************************************************************************/
-void TEMPParam::getTEMP(int16_t &t1, int16_t &t2, int16_t &td)
+int16_t TEMPParam::getTEMP(SubParamID id)
 {
-    t1 = _t1Value;
-    t2 = _t2Value;
-    td = _tdValue;
+    if (id == SUB_PARAM_T1)
+    {
+        return _t1Value;
+    }
+    else if (id == SUB_PARAM_T2)
+    {
+        return _t2Value;
+    }
+    else if (id == SUB_PARAM_TD)
+    {
+        return _tdValue;
+    }
+    return 0;
 }
 
 /**************************************************************************************************
@@ -249,12 +256,13 @@ void TEMPParam::setOneShotAlarm(TEMPOneShotType t, bool f)
 /**************************************************************************************************
  * 获取趋势界面。
  *************************************************************************************************/
-void TEMPParam::getTrendWindow(QString &trendWin)
+QString TEMPParam::getTrendWindowName()
 {
     if (NULL != _trendWidget)
     {
-        trendWin = _trendWidget->name();
+        return _trendWidget->name();
     }
+    return QString();
 }
 
 /**************************************************************************************************
@@ -349,10 +357,17 @@ void TEMPParam::setOhm(int ohm1, int ohm2)
     }
 }
 
-void TEMPParam::getOhm(int &ohm1, int &ohm2)
+int TEMPParam::getOhm(SubParamID id)
 {
-    ohm1 = _ohm1;
-    ohm2 = _ohm2;
+    if (id == SUB_PARAM_T1)
+    {
+        return _ohm1;
+    }
+    else if (id == SUB_PARAM_T2)
+    {
+        return _ohm2;
+    }
+    return 0;
 }
 
 /**************************************************************************************************

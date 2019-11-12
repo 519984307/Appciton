@@ -565,10 +565,9 @@ const QList<TrendGraphInfo> TrendWaveWidget::getTrendGraphPrint()
 {
     for (int i = 0; i < _infosList.count(); i++)
     {
-        int down;
-        int up;
-        int scale;
-        _subWidgetList.at(i)->rulerRange(down, up, scale);
+        int down = _subWidgetList.at(i)->getLimitMin();
+        int up = _subWidgetList.at(i)->getLimitMax();
+        int scale = _subWidgetList.at(i)->getLimitScale();
         _infosList[i].unit = _subWidgetList.at(i)->getUnitType();
         _infosList[i].scale.min = down;
         _infosList[i].scale.max = up;
@@ -814,9 +813,9 @@ void TrendWaveWidget::_trendLayout()
         _subWidgetList.at(i)->setTimeRange(_leftTime, _rightTime);
         _trendGraphInfo.unit = paramInfo.getUnitOfSubParam(subId);
         _subWidgetList.at(i)->update();
-        _subWidgetList.at(i)->getValueLimit(_trendGraphInfo.scale.max,
-                                            _trendGraphInfo.scale.min,
-                                            _trendGraphInfo.scale.scale);
+        _trendGraphInfo.scale.max = _subWidgetList.at(i)->getLimitMax();
+        _trendGraphInfo.scale.min = _subWidgetList.at(i)->getLimitMin();
+        _trendGraphInfo.scale.scale = _subWidgetList.at(i)->getLimitScale();
         _infosList.append(_trendGraphInfo);
         _totalGraphNum++;
     }
@@ -845,8 +844,7 @@ void TrendWaveWidget::_getTrendData()
 
 void TrendWaveWidget::_initWaveSubWidget()
 {
-    QList<ParamID> pids;
-    paramManager.getParams(pids);
+    QList<ParamID> pids = paramManager.getParamIDs();
     // 初始化前三道波形
     int num = 0;
     for (int i = 0; i < SUB_PARAM_NR; i ++)

@@ -320,9 +320,9 @@ RainbowProvider::~RainbowProvider()
 {
 }
 
-bool RainbowProvider::attachParam(Param &param)
+bool RainbowProvider::attachParam(Param *param)
 {
-    if (param.getParamID() == PARAM_SPO2)
+    if (param->getParamID() == PARAM_SPO2)
     {
         spo2Param.setProvider(this);
         Provider::attachParam(param);

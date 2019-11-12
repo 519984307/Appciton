@@ -81,7 +81,7 @@ public:
      * @param importTag        import tag
      * @return 返回：ture-valid;false-invalid；
      */
-    bool checkXMLContent(QList<QDomElement> &importTagList, QDomElement &importTag);  /* NOLINT */
+    bool checkXMLContent(QList<QDomElement> *importTagList, QDomElement *importTag);
 
     /**
      * @brief tagFindElement  find tag elements
@@ -290,7 +290,7 @@ TransferResult ConfigExportImportMenuContentPrivate::insertFileFromUSB()
         // 检查导入文件是否合乎要求
         QList<QDomElement> tagList;
         QDomElement  tag = importXml.documentElement();
-        bool flag = checkXMLContent(tagList, tag);
+        bool flag = checkXMLContent(&tagList, &tag);
         if (false == flag)
         {
             return TRANSFER_FAIL;
@@ -656,21 +656,21 @@ bool ConfigExportImportMenuContentPrivate::compareTagAttribute(QDomElement impor
     return true;
 }
 
-bool ConfigExportImportMenuContentPrivate::checkXMLContent(QList<QDomElement> &importTagList, QDomElement &importTag)
+bool ConfigExportImportMenuContentPrivate::checkXMLContent(QList<QDomElement> *importTagList, QDomElement *importTag)
 {
-    if (importTag.isNull())
+    if (importTag->isNull())
     {
         QStringList nameList;
 
-        for (int i = 0; i < importTagList.count(); i++)
+        for (int i = 0; i < importTagList->count(); i++)
         {
-            nameList.append(importTagList.at(i).nodeName());
+            nameList.append(importTagList->at(i).nodeName());
         }
 
         QDomElement localTag = tagFindElement(nameList);
         if (!localTag.isNull())
         {
-            bool attrFlag = compareTagAttribute(importTagList.at(importTagList.count() - 1), localTag);
+            bool attrFlag = compareTagAttribute(importTagList->at(importTagList->count() - 1), localTag);
 
             if (attrFlag == false)
             {
@@ -679,31 +679,31 @@ bool ConfigExportImportMenuContentPrivate::checkXMLContent(QList<QDomElement> &i
             }
         }
 
-        if (importTagList.empty())
+        if (importTagList->empty())
         {
             valid = true;
             return valid;
         }
-        importTag = importTagList.last().nextSiblingElement();  // 下一个同类子节点
-        importTagList.removeLast();  // 移除最后一个子节点
-        if (importTagList.empty())
+        *importTag = importTagList->last().nextSiblingElement();  // 下一个同类子节点
+        importTagList->removeLast();  // 移除最后一个子节点
+        if (importTagList->empty())
         {
             valid = true;
             return valid;
         }
 
-        if (importTag.isNull())
+        if (importTag->isNull())
         {
-            importTag = importTagList.last();
-            importTag = importTag.nextSiblingElement();  // 下一个同类子节点
-            importTagList.removeLast();  // 移除最后一个子节点
+            *importTag = importTagList->last();
+            *importTag = importTag->nextSiblingElement();  // 下一个同类子节点
+            importTagList->removeLast();  // 移除最后一个子节点
         }
         checkXMLContent(importTagList, importTag);
     }
     else
     {
-        importTagList.append(importTag);
-        importTag = importTag.firstChildElement();
+        importTagList->append(*importTag);
+        *importTag = importTag->firstChildElement();
         checkXMLContent(importTagList, importTag);
     }
 

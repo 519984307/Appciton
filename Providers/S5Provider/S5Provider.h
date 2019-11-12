@@ -61,11 +61,10 @@ enum S5GainError
 
 class S5Provider: public BLMProvider, public SPO2ProviderIFace
 {
+public:     // Provider的接口。
+    virtual bool attachParam(Param *param);
 
-public: // Provider的接口。
-    virtual bool attachParam(Param &param);
-
-public: // SPO2ProviderIFace 的接口。
+public:     // SPO2ProviderIFace 的接口。
     //获取版本号
     virtual void sendVersion(void);
 

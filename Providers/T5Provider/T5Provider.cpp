@@ -51,9 +51,9 @@ static const char *tempErrorCode[] =
 /**************************************************************************************************
  * 模块与参数对接。
  *************************************************************************************************/
-bool T5Provider::attachParam(Param &param)
+bool T5Provider::attachParam(Param *param)
 {
-    if (param.getParamID() == PARAM_TEMP)
+    if (param->getParamID() == PARAM_TEMP)
     {
         tempParam.setProvider(this);
         Provider::attachParam(param);

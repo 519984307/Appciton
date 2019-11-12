@@ -41,9 +41,9 @@ public:
     int pageNum;                    // 每一页的个数
     int widgetHeight;
 
-    QList<QString> strList;         // 字符
-    QList<unsigned char> checkFlag; // 选中标志
-    QList<Button *> btnList;        // 按钮列表
+    QList<QString> strList;          // 字符
+    QList<unsigned char> checkFlag;  // 选中标志
+    QList<Button *> btnList;         // 按钮列表
 };
 
 RescueDataListNewWidget::RescueDataListNewWidget(int w, int h)
@@ -310,8 +310,7 @@ void RescueDataListNewWidget::_loadData()
 void RescueDataListNewWidget::_caclInfo()
 {
     d_ptr->strList.clear();
-    QStringList list;
-    dataStorageDirManager.getRescueEvent(list);
+    QStringList list = dataStorageDirManager.getRescueEvent();
     d_ptr->strList.append(list);
     list.clear();
 

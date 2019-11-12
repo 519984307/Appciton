@@ -481,9 +481,8 @@ void FactoryTempMenuContent::onBtnReleased()
 void FactoryTempMenuContent::timeOut()
 {
     QString tStr;
-    int curOhm1 = InvData();
-    int curOhm2 = InvData();
-    tempParam.getOhm(curOhm1, curOhm2);
+    int curOhm1 = tempParam.getOhm(SUB_PARAM_T1);
+    int curOhm2 = tempParam.getOhm(SUB_PARAM_T2);
 
     if (curOhm1 == InvData() || curOhm1 > 9000 || curOhm1 < 0)
     {

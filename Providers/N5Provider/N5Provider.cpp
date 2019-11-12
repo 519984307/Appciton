@@ -527,9 +527,9 @@ void N5Provider::sendDisconnected()
 /**************************************************************************************************
  * 模块与参数对接。
  *************************************************************************************************/
-bool N5Provider::attachParam(Param &param)
+bool N5Provider::attachParam(Param *param)
 {
-    if (param.getParamID() == PARAM_NIBP)
+    if (param->getParamID() == PARAM_NIBP)
     {
         nibpParam.setProvider(this);
         Provider::attachParam(param);

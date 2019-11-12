@@ -91,7 +91,7 @@ public:
     virtual void updatePalette(const QPalette &pal);
 
     bool isFocus();
-    void getSubFocusWidget(QList<QWidget *> &subWidget) const;  // NOLINT
+    QList<QWidget*> getSubFocusWidget() const;
 
     /**
      * @brief waveLabel get the wave labels

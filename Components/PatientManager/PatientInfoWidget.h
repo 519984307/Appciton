@@ -26,8 +26,6 @@ public:
 
     void loadPatientInfo(const PatientInfo &info, const QString &bed);
 
-    void getText(QString &bed, QString &name, QString &type);   /* NOLINT */
-
     /* override */
     void setAlarmPauseTime(int seconds);
 

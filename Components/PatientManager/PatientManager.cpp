@@ -45,7 +45,7 @@ public:
     PatientInfo patientInfo;
     PatientInfoWidgetInterface *patientInfoWidget;
 
-    void loadPatientInfo(PatientInfo &info);    /* NOLINT */
+    PatientInfo getPatientInfo();
     /**
      * @brief handleDischarge 解除病人后，刷新标志状态
      */
@@ -61,9 +61,9 @@ public:
  * 参数：
  *      widget: 窗体控件。
  *************************************************************************************************/
-void PatientManager::setPatientInfoWidget(PatientInfoWidgetInterface &widget)
+void PatientManager::setPatientInfoWidget(PatientInfoWidgetInterface *widget)
 {
-    d_ptr->patientInfoWidget = &widget;
+    d_ptr->patientInfoWidget = widget;
     d_ptr->patientInfoWidget->loadPatientInfo(d_ptr->patientInfo, getBedNum());
 }
 
@@ -206,18 +206,6 @@ void PatientManager::setBornDate(QDate bornDate)
 QDate PatientManager::getBornDate()
 {
     return d_ptr->patientInfo.bornDate;
-}
-
-void PatientManager::getBornDate(unsigned int &year, unsigned int &month, unsigned int &day)
-{
-    QDate bornDate = d_ptr->patientInfo.bornDate;
-    if (!bornDate.isValid())
-    {
-        return;
-    }
-    year = static_cast<unsigned int>(bornDate.year());
-    month = static_cast<unsigned int>(bornDate.month());
-    day = static_cast<unsigned int>(bornDate.day());
 }
 
 void PatientManager::setBlood(PatientBloodType blood)
@@ -559,10 +547,11 @@ void PatientManager::onNewPatientHandle()
 /**************************************************************************************************
  * 载入配置信息。
  *************************************************************************************************/
-void PatientManagerPrivate::loadPatientInfo(PatientInfo &info)
+PatientInfo PatientManagerPrivate::getPatientInfo()
 {
     int numValue = 0;
     QString strValue;
+    PatientInfo info;
 
     systemConfig.getNumValue("General|PatientType", numValue);
     info.type = (PatientType)numValue;
@@ -590,6 +579,8 @@ void PatientManagerPrivate::loadPatientInfo(PatientInfo &info)
 
     systemConfig.getStrValue("PrimaryCfg|PatientInfo|BornDate", strValue);
     info.bornDate = QDate::fromString(strValue, "yyyy/MM/dd");
+
+    return info;
 }
 
 void PatientManagerPrivate::handleDischarge()
@@ -627,7 +618,7 @@ PatientManager::PatientManager()
     : d_ptr(new PatientManagerPrivate(this))
 {
     onNewPatientHandle();
-    d_ptr->loadPatientInfo(d_ptr->patientInfo);
+    d_ptr->patientInfo = d_ptr->getPatientInfo();
     DataStorageDirManagerInterface *dataStorageDirManager = DataStorageDirManagerInterface::getDataStorageDirManager();
     if (dataStorageDirManager)
     {

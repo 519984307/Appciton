@@ -29,7 +29,8 @@ public:
     virtual int getBaseLine(void) = 0;
 
     // 获取+/-0.5mV对应的数值。
-    virtual void get05mV(int &p05mv, int &n05mv) = 0;
+    virtual int getP05mV() = 0;
+    virtual int getN05mV() = 0;
 
     virtual void getLeadCabelType() = 0;
 

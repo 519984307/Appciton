@@ -26,9 +26,9 @@ ParamManager *ParamManager::_selfObj = NULL;
  * 参数：
  *      provider： 数据生产者。
  *************************************************************************************************/
-void ParamManager::addProvider(Provider &provider)
+void ParamManager::addProvider(Provider *provider)
 {
-    _providers.insert(provider.getName(), &provider);
+    _providers.insert(provider->getName(), provider);
 }
 
 /**************************************************************************************************
@@ -36,10 +36,10 @@ void ParamManager::addProvider(Provider &provider)
  * 参数：
  *      param： 参数对象。
  *************************************************************************************************/
-void ParamManager::addParam(Param &param)
+void ParamManager::addParam(Param *param)
 {
-    _params.insert(param.getName(), &param);
-    _paramWithID.insert(param.getParamID(), &param);
+    _params.insert(param->getName(), param);
+    _paramWithID.insert(param->getParamID(), param);
 }
 
 Provider *ParamManager::getProvider(const QString &name)
@@ -57,14 +57,15 @@ Param *ParamManager::getParam(ParamID id)
  * 参数：
  *      params： 带回参数对象。
  *************************************************************************************************/
-void ParamManager::getParams(QList<Param *> &params)
+QList<Param *> ParamManager::getParams()
 {
-    params.clear();
+    QList<Param *> params;
     ParamMap::Iterator it = _params.begin();
     for (; it != _params.end(); ++it)
     {
         params.append(it.value());
     }
+    return params;
 }
 
 /**************************************************************************************************
@@ -72,9 +73,9 @@ void ParamManager::getParams(QList<Param *> &params)
  * 参数：
  *      paramID: 带回参数的ID。
  *************************************************************************************************/
-void ParamManager::getParams(QList<ParamID> &paramID)
+QList<ParamID> ParamManager::getParamIDs()
 {
-    paramID.clear();
+    QList<ParamID> paramID;
     ParamWithIDMap::Iterator it = _paramWithID.begin();
     for (; it != _paramWithID.end(); ++it)
     {
@@ -85,6 +86,7 @@ void ParamManager::getParams(QList<ParamID> &paramID)
 
         paramID.append(it.key());
     }
+    return paramID;
 }
 
 /**************************************************************************************************
@@ -121,7 +123,7 @@ void ParamManager::connectParamProvider(WorkMode mode)
         // deattach the demo provider if the param is return from the demo mode
         if (demoProvider)
         {
-            demoProvider->detachParam(*param);
+            demoProvider->detachParam(param);
             param->exitDemo();
         }
 
@@ -147,7 +149,7 @@ void ParamManager::connectParamProvider(WorkMode mode)
                 {
                     providerHasSet = true;
                 }
-                provider->attachParam(*param);
+                provider->attachParam(param);
                 provider->stopCheckConnect(false);
             }
         }
@@ -188,11 +190,11 @@ void ParamManager::connectDemoParamProvider()
             Provider *otherProvider = _providers.value(str, NULL);
             if (otherProvider)
             {
-                otherProvider->detachParam(*param);
+                otherProvider->detachParam(param);
                 otherProvider->stopCheckConnect(true);
             }
 
-            provider->attachParam(*param);
+            provider->attachParam(param);
             param->initParam();
             // 停止参数更新定时器
             param->stopParamUpdateTimer();
@@ -378,7 +380,7 @@ void ParamManager::disconnectParamProvider(WorkMode mode)
                 if (provider->connectedToParam())
                 {
                     provider->disconnected();
-                    provider->detachParam(*param);
+                    provider->detachParam(param);
                     provider->stopCheckConnect(true);
                 }
             }

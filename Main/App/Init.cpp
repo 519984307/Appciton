@@ -222,7 +222,7 @@ static void _initComponents(void)
     // 病人管理初始化。
     PatientInfoWidget *patientInfoWidget = new PatientInfoWidget();
     layoutManager.addLayoutWidget(patientInfoWidget);
-    patientManager.setPatientInfoWidget(*patientInfoWidget);
+    patientManager.setPatientInfoWidget(patientInfoWidget);
     patientInfoWindow.getInstance();
 
     // 初始化报警。
@@ -268,27 +268,27 @@ static void _initProviderParam(void)
 {
     paramInfo.getInstance();
 
-    paramManager.addProvider(systemBoardProvider);
+    paramManager.addProvider(&systemBoardProvider);
 
     // 创建Provider.
     DemoProvider *demo = new DemoProvider();
-    paramManager.addProvider(*demo);
+    paramManager.addProvider(demo);
     // TE3Provider *te3 = new TE3Provider();
     // paramManager.addProvider(*te3);
 
     E5Provider *te3 = new E5Provider();
-    paramManager.addProvider(*te3);
+    paramManager.addProvider(te3);
 
     DataDispatcher::addDataDispatcher(new DataDispatcher("DataDispatcher"));
 
     // ECG部分。
-    paramManager.addParam(ecgDupParam.getInstance());
+    paramManager.addParam(&ecgDupParam.getInstance());
 
     AlarmLimitIFace *limitAlarmSource = new ECGDupLimitAlarm();
     alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_ECGDUP);
     alertor.addLimtSource(limitAlarmSource);
 
-    paramManager.addParam(ecgParam.getInstance());
+    paramManager.addParam(&ecgParam.getInstance());
 
     limitAlarmSource = new ECGLimitAlarm();
     alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_ECG);
@@ -380,13 +380,13 @@ static void _initProviderParam(void)
     // RESP部分。
     if (systemManager.isSupport(CONFIG_RESP) || systemManager.isSupport(CONFIG_CO2))
     {
-        paramManager.addParam(respDupParam.construction());
+        paramManager.addParam(&respDupParam.construction());
         limitAlarmSource = new RESPDupLimitAlarm();
         alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_RESPDUP);
         alertor.addLimtSource(limitAlarmSource);
         if (systemManager.isSupport(CONFIG_RESP))
         {
-            paramManager.addParam(respParam.construction());
+            paramManager.addParam(&respParam.construction());
 
             limitAlarmSource = new RESPLimitAlarm();
             alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_RESP);
@@ -418,20 +418,20 @@ static void _initProviderParam(void)
         machineConfig.getStrValue("SPO2", str);
         if (str == "MASIMO_SPO2")
         {
-            paramManager.addProvider(*new MasimoSetProvider());
+            paramManager.addProvider(new MasimoSetProvider());
             spo2Param.setModuleType(MODULE_MASIMO_SPO2);
         }
         else if (str == "BLM_S5")
         {
-            paramManager.addProvider(*new S5Provider());
+            paramManager.addProvider(new S5Provider());
             spo2Param.setModuleType(MODULE_BLM_S5);
         }
         else if (str == "RAINBOW_SPO2")
         {
-            paramManager.addProvider(*new RainbowProvider());
+            paramManager.addProvider(new RainbowProvider());
             spo2Param.setModuleType(MODULE_RAINBOW_SPO2);
         }
-        paramManager.addParam(spo2Param.construction());
+        paramManager.addParam(&spo2Param.construction());
 
         limitAlarmSource = new SPO2LimitAlarm();
         alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_SPO2);
@@ -460,14 +460,14 @@ static void _initProviderParam(void)
         machineConfig.getStrValue("NIBP", str);
         if (str == "SUNTECH_NIBP")
         {
-            paramManager.addProvider(*new SuntechProvider());
+            paramManager.addProvider(new SuntechProvider());
         }
         else
         {
-            paramManager.addProvider(*new N5Provider());
+            paramManager.addProvider(new N5Provider());
         }
 
-        paramManager.addParam(nibpParam.getInstance());
+        paramManager.addParam(&nibpParam.getInstance());
 
         limitAlarmSource = new NIBPLimitAlarm();
         alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_NIBP);
@@ -489,9 +489,9 @@ static void _initProviderParam(void)
     {
         QString str;
         machineConfig.getStrValue("CO2", str);
-        paramManager.addProvider(*new BLMCO2Provider(str));
+        paramManager.addProvider(new BLMCO2Provider(str));
 
-        paramManager.addParam(co2Param.construction());
+        paramManager.addParam(&co2Param.construction());
 
         limitAlarmSource = new CO2LimitAlarm();
         alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_CO2);
@@ -517,8 +517,8 @@ static void _initProviderParam(void)
     // IBP test
     if (systemManager.isSupport(CONFIG_IBP))
     {
-        paramManager.addProvider(*new WitleafProvider());
-        paramManager.addParam(ibpParam.construction());
+        paramManager.addProvider(new WitleafProvider());
+        paramManager.addParam(&ibpParam.construction());
 
         limitAlarmSource = new IBPLimitAlarm();
         alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_IBP);
@@ -551,7 +551,7 @@ static void _initProviderParam(void)
     // CO
     if (systemManager.isSupport(CONFIG_CO))
     {
-        paramManager.addParam(coParam.construction());
+        paramManager.addParam(&coParam.construction());
 
         limitAlarmSource = new COLimitAlarm();
         alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_CO);
@@ -568,8 +568,8 @@ static void _initProviderParam(void)
     // AG
     if (systemManager.isSupport(CONFIG_AG))
     {
-        paramManager.addProvider(*new PhaseinProvider());
-        paramManager.addParam(agParam.construction());
+        paramManager.addProvider(new PhaseinProvider());
+        paramManager.addParam(&agParam.construction());
 
         limitAlarmSource = new AGLimitAlarm();
         alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_AG);
@@ -618,10 +618,10 @@ static void _initProviderParam(void)
         machineConfig.getStrValue("TEMP", str);
         if (str == "BLM_T5")
         {
-            paramManager.addProvider(*new T5Provider());
+            paramManager.addProvider(new T5Provider());
         }
 
-        paramManager.addParam(tempParam.construction());
+        paramManager.addParam(&tempParam.construction());
 
         limitAlarmSource = new TEMPLimitAlarm();
         alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_TEMP);
@@ -702,7 +702,7 @@ static void _initPrint(void)
         recorderManager.setPrintPrividerIFace(prtProvider);
         recorderManager.selfTest();
         recorderManager.printWavesInit();
-        paramManager.addProvider(*prtProvider);
+        paramManager.addProvider(prtProvider);
     }
 
     paramManager.getVersion();

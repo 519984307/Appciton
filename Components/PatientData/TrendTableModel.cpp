@@ -761,8 +761,7 @@ TrendTableModelPrivate::TrendTableModelPrivate()
 {
     orderMap.clear();
 
-    QList<ParamID> paramIDList;
-    paramManager.getParams(paramIDList);
+    QList<ParamID> paramIDList = paramManager.getParamIDs();
     qSort(paramIDList);
 
     for (int i = 0; i < SUB_PARAM_NR; i ++)
