@@ -28,7 +28,6 @@
 #include "WindowManager.h"
 #include "AlarmConfig.h"
 #include "AlarmParamIFace.h"
-#include "TimeDate.h"
 #include "Alarm.h"
 #include "ParamInfo.h"
 #include "IBPSymbol.h"
@@ -51,6 +50,7 @@
 #include "ThemeManager.h"
 #include "PatientManager.h"
 #include "Framework/Language/LanguageManager.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include <QTimerEvent>
 
 #define TABLE_SPACING               (4)
@@ -936,12 +936,9 @@ void EventWindowPrivate::eventInfoUpdate(int curRow)
     }
 
 
-    unsigned t = 0;
-    QString timeStr;
-    QString dateStr;
-    t = ctx.infoSegment->timestamp;
-    timeDate.getDate(t, dateStr, true);
-    timeDate.getTime(t, timeStr, true);
+    unsigned t = ctx.infoSegment->timestamp;
+    QString timeStr = timeDate->getTime(t, true);
+    QString dateStr = timeDate->getDate(t, true);
     timeInfoStr = dateStr + " " + timeStr;
 
     indexStr = QString::number(curRow + 1) + "/" + QString::number(curDisplayEventNum);
@@ -1213,8 +1210,8 @@ void EventWindowPrivate::refreshEventList()
             }
             unsigned t = ctx.infoSegment->timestamp;
             // 事件时间
-            timeDate.getDate(t, dateStr, true);
-            timeDate.getTime(t, timeStr, true);
+            dateStr = timeDate->getDate(t, true);
+            timeStr = timeDate->getTime(t, true);
             QString timeItemStr = dateStr + " " + timeStr;
 
             switch (ctx.infoSegment->type)

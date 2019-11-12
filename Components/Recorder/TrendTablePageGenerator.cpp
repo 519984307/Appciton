@@ -15,9 +15,9 @@
 #include "ParamManager.h"
 #include "ParamInfo.h"
 #include <QDateTime>
-#include "TimeDate.h"
 #include "TrendDataStorageManager.h"
 #include "Framework/Language/LanguageManager.h"
+#include "Framework/TimeDate/TimeDate.h"
 
 // 打印纸每页最多打印10行数据（1 head title + 9 data）
 #define RECORD_PER_PAGE 9
@@ -333,8 +333,7 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
         stringLists.append(QStringList() << trs("Event"));
     }
 
-    QString timeDateStr;
-    timeDate.getDateTime(datapack.time, timeDateStr, true, true);
+    QString timeDateStr = timeDate->getDateTime(datapack.time, true, true);
     stringLists[index++].append(timeDateStr);
 
     // 优先打印报警事件状态

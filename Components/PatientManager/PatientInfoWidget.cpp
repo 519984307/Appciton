@@ -34,13 +34,6 @@ void PatientInfoWidget::loadPatientInfo(const PatientInfo &info, const QString &
     _bed->setText(bed);
 }
 
-void PatientInfoWidget::getText(QString &bed, QString &name, QString &type)
-{
-    bed = _bed->text();
-    name = _patientName->text();
-    type = _patientType->text();
-}
-
 void PatientInfoWidget::setAlarmPauseTime(int seconds)
 {
     if (seconds > 0)

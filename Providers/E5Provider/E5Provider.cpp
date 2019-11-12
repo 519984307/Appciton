@@ -21,7 +21,6 @@
 #include "SystemManager.h"
 
 #include "TimeManager.h"
-#include "TimeDate.h"
 #include <sys/time.h>
 #include "Framework/ErrorLog/ErrorLog.h"
 #include "Framework/ErrorLog/ErrorLogItem.h"
@@ -34,15 +33,15 @@
 /**************************************************************************************************
  * 模块与参数对接。
  *************************************************************************************************/
-bool E5Provider::attachParam(Param &param)
+bool E5Provider::attachParam(Param *param)
 {
     Provider::attachParam(param);
-    if (param.getParamID() == PARAM_ECG)
+    if (param->getParamID() == PARAM_ECG)
     {
         ecgParam.setProvider(this);
         return true;
     }
-    if (param.getParamID() == PARAM_RESP)
+    if (param->getParamID() == PARAM_RESP)
     {
         respParam.setProvider(this);
         return true;
@@ -641,14 +640,14 @@ void E5Provider::setWaveformSample(int rate)
     _waveSampleRate = rate;
 }
 
-/**************************************************************************************************
- * 获取+/-0.5mV对应的数值。
- *************************************************************************************************/
-void E5Provider::get05mV(int &p05mv, int &n05mv)
+int E5Provider::getP05mV()
 {
-    // about 1.225uV per unit
-    p05mv = 408;
-    n05mv = -408;
+    return 408;
+}
+
+int E5Provider::getN05mV()
+{
+    return -408;
 }
 
 /**************************************************************************************************

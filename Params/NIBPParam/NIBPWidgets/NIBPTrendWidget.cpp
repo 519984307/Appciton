@@ -15,13 +15,13 @@
 #include "ParamInfo.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include "TimeDate.h"
 #include "TimeManager.h"
 #include "WindowManager.h"
 #include "IConfig.h"
 #include "TrendWidgetLabel.h"
 #include "MeasureSettingWindow.h"
 #include "LayoutManager.h"
+#include "Framework/TimeDate/TimeDate.h"
 
 #define stretchCount 1
 class NIBPTrendWidgetPrivate
@@ -428,8 +428,7 @@ void NIBPTrendWidgetPrivate::updateMeasureTime()
     else
     {
         QString timeStr("@ ");
-        QString tmpStr;
-        timeDate.getTime(lastTime, tmpStr, false);
+        QString tmpStr = timeDate->getTime(lastTime, false);
         timeStr += tmpStr;
         measureTime = timeStr;
     }
@@ -576,7 +575,7 @@ void NIBPTrendWidget::showText(QString text)
     }
 
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
-    normalPalette(psrc);
+    normalPalette(&psrc);
     if (!d_ptr->sysAlarm && !d_ptr->diaAlarm && !d_ptr->mapAlarm)
     {
         showNormalStatus(d_ptr->message, psrc);
@@ -592,7 +591,7 @@ void NIBPTrendWidget::showText(QString text)
 void NIBPTrendWidget::showModelText(const QString &text)
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
-    normalPalette(psrc);
+    normalPalette(&psrc);
     if (!d_ptr->sysAlarm && !d_ptr->diaAlarm && !d_ptr->mapAlarm)
     {
         showNormalStatus(d_ptr->model, psrc);

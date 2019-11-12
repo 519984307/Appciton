@@ -9,14 +9,14 @@
  **/
 
 #include "TimeEditWindow.h"
-#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
 #include "ComboBox.h"
 #include <QGridLayout>
 #include "IConfig.h"
 #include "SpinBox.h"
-#include "TimeSymbol.h"
-#include "TimeDate.h"
+#include "Framework/Language/LanguageManager.h"
+#include "Framework/TimeDate/TimeSymbol.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include <QProcess>
 #include <QVBoxLayout>
 #include "TimeManager.h"
@@ -79,19 +79,19 @@ public:
 
 void TimeEditWindowPrivate::loadOptions()
 {
-    oldTime = timeDate.time();
-    spinBoxs[ITEM_SPB_YEAR]->setValue(timeDate.getDateYear());
-    spinBoxs[ITEM_SPB_MONTH]->setValue(timeDate.getDateMonth());
-    spinBoxs[ITEM_SPB_DAY]->setValue(timeDate.getDateDay());
-    spinBoxs[ITEM_SPB_HOUR]->setValue(timeDate.getTimeHour());
-    spinBoxs[ITEM_SPB_MINUTE]->setValue(timeDate.getTimeMinute());
-    spinBoxs[ITEM_SPB_SECOND]->setValue(timeDate.getTimeSenonds());
+    oldTime = timeDate->time();
+    spinBoxs[ITEM_SPB_YEAR]->setValue(timeDate->getDateYear());
+    spinBoxs[ITEM_SPB_MONTH]->setValue(timeDate->getDateMonth());
+    spinBoxs[ITEM_SPB_DAY]->setValue(timeDate->getDateDay());
+    spinBoxs[ITEM_SPB_HOUR]->setValue(timeDate->getTimeHour());
+    spinBoxs[ITEM_SPB_MINUTE]->setValue(timeDate->getTimeMinute());
+    spinBoxs[ITEM_SPB_SECOND]->setValue(timeDate->getTimeSeconds());
 
     int value = 0;
-    systemConfig.getNumValue("DateTime|DateFormat", value);
+    value = systemManager.getSystemDateFormat();
     combos[ITEM_CBO_DATE_FORMAT]->setCurrentIndex(value);
 
-    systemConfig.getNumValue("DateTime|TimeFormat", value);
+    value = systemManager.getSystemTimeFormat();
     combos[ITEM_CBO_TIME_FORMAT]->setCurrentIndex(value);
 
     systemConfig.getNumValue("DateTime|DisplaySecond", value);
@@ -356,13 +356,10 @@ void TimeEditWindow::onComboBoxIndexChanged(int index)
         switch (item)
         {
         case TimeEditWindowPrivate::ITEM_CBO_DATE_FORMAT:
-            systemConfig.setNumValue("DateTime|DateFormat", index);
+            systemManager.setSystemDateFormat(static_cast<DateFormat>(index));
             break;
         case TimeEditWindowPrivate::ITEM_CBO_TIME_FORMAT:
-            systemConfig.setNumValue("DateTime|TimeFormat", index);
-            QMetaObject::invokeMethod(&systemManager,
-                                      "systemTimeFormatUpdated",
-                                      Q_ARG(TimeFormat, static_cast<TimeFormat>(index)));
+            systemManager.setSystemTimeFormat(static_cast<TimeFormat>(index));
             d_ptr->updateHourItem();
             break;
         case TimeEditWindowPrivate::ITEM_CBO_DISPLAY_SEC:

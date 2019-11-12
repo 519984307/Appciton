@@ -160,12 +160,6 @@ void TestPatientManager::testBornDate()
     QFETCH(QDate, result);
     patientManager.setBornDate(date);
     QCOMPARE(result, patientManager.getBornDate());
-    unsigned int year = -1;
-    unsigned int month = -1;
-    unsigned int day = -1;
-    patientManager.getBornDate(year, month, day);
-    QDate d(year, month, day);
-    QCOMPARE(result, d);
 }
 
 void TestPatientManager::testBlood_data()

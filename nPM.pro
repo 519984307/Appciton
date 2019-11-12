@@ -164,7 +164,6 @@ SOURCES +=                                                                      
     Utility/ErrorLog/ErrorLogViewerWindow.cpp                                   \
     Utility/ErrorLog/ErrorLogTableModel.cpp                                     \
     Utility/ErrorLog/ErrorLogWindow.cpp                                         \
-    Utility/TimeDate/TimeDate.cpp                                               \
     Utility/Debug/Debug.cpp                                                     \
     Utility/FontManager/FontManager.cpp                                         \
     Utility/FontManager/FontManagerInterface.cpp                                \
@@ -584,9 +583,6 @@ HEADERS +=                                                                      
     Utility/ErrorLog/ErrorLogViewerWindow.h                                     \
     Utility/ErrorLog/ErrorLogTableModel.h                                       \
     Utility/ErrorLog/ErrorLogWindow.h                                           \
-    Utility/TimeDate/TimeDate.h                                                 \
-    Utility/TimeDate/TimeDefine.h                                               \
-    Utility/TimeDate/TimeSymbol.h                                               \
     Utility/BaseDefine.h                                                        \
     Utility/FloatHandle/FloatHandle.h                                           \
     Utility/Debug/Debug.h                                                       \
@@ -1075,7 +1071,6 @@ DEPENDPATH +=                                                                   
     Utility                                                                     \
     Utility/FloatHandle                                                         \
     Utility/Debug                                                               \
-    Utility/TimeDate                                                            \
     Utility/Config                                                              \
     Utility/DataStorage                                                         \
     Utility/ColorManager                                                        \
@@ -1179,7 +1174,6 @@ INCLUDEPATH +=                                                                  
     Utility                                                                     \
     Utility/FloatHandle                                                         \
     Utility/Debug                                                               \
-    Utility/TimeDate                                                            \
     Utility/Config                                                              \
     Utility/DataStorage                                                         \
     Utility/ColorManager                                                        \
@@ -1275,7 +1269,6 @@ INCLUDEPATH +=                                                                  
     Params/RESPParam/RESPWidgets                                                \
     Params/O2Param                                                              \
     Params/O2Param/O2Widgets                                                    \
-    Framework                                                                   \
 
 linux-arm-g++ {
     SOURCES +=  Utility/Widgets/TSCalibrationWindow.cpp

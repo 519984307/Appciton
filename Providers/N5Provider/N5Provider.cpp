@@ -14,7 +14,6 @@
 #include <QString>
 #include "IConfig.h"
 #include "SystemManager.h"
-#include "TimeDate.h"
 #include "NIBPAlarm.h"
 #include "Framework/ErrorLog/ErrorLog.h"
 #include "Framework/ErrorLog/ErrorLogItem.h"
@@ -527,9 +526,9 @@ void N5Provider::sendDisconnected()
 /**************************************************************************************************
  * 模块与参数对接。
  *************************************************************************************************/
-bool N5Provider::attachParam(Param &param)
+bool N5Provider::attachParam(Param *param)
 {
-    if (param.getParamID() == PARAM_NIBP)
+    if (param->getParamID() == PARAM_NIBP)
     {
         nibpParam.setProvider(this);
         Provider::attachParam(param);

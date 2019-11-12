@@ -44,8 +44,7 @@ void TrendCache::collectTrendData(unsigned t, bool overwrite)
         return;
     }
     TrendCacheData data;
-    QList<ParamID> paramIDList;
-    paramManager.getParams(paramIDList);
+    QList<ParamID> paramIDList = paramManager.getParamIDs();
     ParamID paramID;
 
     data.co2baro = co2Param.getBaro();
@@ -106,8 +105,7 @@ void TrendCache::collectTrendAlarmStatus(unsigned t)
     }
 
     TrendAlarmStatus alarmStatus;
-    QList<ParamID> paramIDList;
-    paramManager.getParams(paramIDList);
+    QList<ParamID> paramIDList = paramManager.getParamIDs();
     ParamID paramID;
 
     for (int i = 0; i < SUB_PARAM_NR; ++i)
@@ -156,7 +154,7 @@ QList<TrendCacheData> TrendCache::getTrendData(unsigned start, unsigned stop)
     for (unsigned t = start; t <= stop; t ++)
     {
         TrendCacheData trendData;
-        if (getTrendData(t, trendData))
+        if (getTrendData(t, &trendData))
         {
             trendDataList.append(trendData);
         }
@@ -170,7 +168,7 @@ QList<TrendAlarmStatus> TrendCache::getTrendAlarmStatus(unsigned start, unsigned
     for (unsigned t = start; t <= stop; t ++)
     {
         TrendAlarmStatus trendAlarmStatus;
-        getTrendAlarmStatus(t, trendAlarmStatus);
+        getTrendAlarmStatus(t, &trendAlarmStatus);
         alarmStatusList.append(trendAlarmStatus);
     }
     return alarmStatusList;
@@ -183,7 +181,7 @@ QList<TrendAlarmStatus> TrendCache::getTrendAlarmStatus(unsigned start, unsigned
  * 返回:
  * true，读取成功；false，失败
  *************************************************************************************************/
-bool TrendCache::getTrendData(unsigned t, TrendCacheData &data)
+bool TrendCache::getTrendData(unsigned t, TrendCacheData *data)
 {
     if (_trendCacheMap.isEmpty())
     {
@@ -196,12 +194,12 @@ bool TrendCache::getTrendData(unsigned t, TrendCacheData &data)
         --trendIter;
         if (t - trendIter.key() <= 2)
         {
-            data = trendIter.value();
+            *data = trendIter.value();
         }
         return false;
     }
 
-    data = trendIter.value();
+    *data = trendIter.value();
     return true;
 }
 
@@ -212,7 +210,7 @@ bool TrendCache::getTrendData(unsigned t, TrendCacheData &data)
  * 返回:
  * true，读取成功；false，失败
  *************************************************************************************************/
-bool TrendCache::getTrendAlarmStatus(unsigned t, TrendAlarmStatus &data)
+bool TrendCache::getTrendAlarmStatus(unsigned t, TrendAlarmStatus *data)
 {
     if (_trendAlarmStatusCacheMap.isEmpty())
     {
@@ -225,12 +223,12 @@ bool TrendCache::getTrendAlarmStatus(unsigned t, TrendAlarmStatus &data)
         --trendIter;
         if (t - trendIter.key() <= 2)
         {
-            data = trendIter.value();
+            *data = trendIter.value();
         }
         return false;
     }
 
-    data = trendIter.value();
+    *data = trendIter.value();
     return true;
 }
 

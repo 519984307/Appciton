@@ -267,14 +267,14 @@ void DataStorageDirManager::_deleteOldData(void)
 /**************************************************************************************************
  * 获取营救事件时间列表。
  *************************************************************************************************/
-void DataStorageDirManager::getRescueEvent(QStringList &timeList)
+QStringList DataStorageDirManager::getRescueEvent()
 {
     if (_folderNameList.isEmpty())
     {
-        return;
+        return QStringList();
     }
 
-    timeList.clear();
+    QStringList timeList;
 
     QString tmpstr;
     int count = _folderNameList.count();
@@ -284,6 +284,7 @@ void DataStorageDirManager::getRescueEvent(QStringList &timeList)
         timeList << tmpstr;
         tmpstr.clear();
     }
+    return timeList;
 }
 
 /**************************************************************************************************

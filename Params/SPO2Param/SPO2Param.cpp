@@ -20,11 +20,11 @@
 #include "SystemManager.h"
 #include "Framework/ErrorLog/ErrorLog.h"
 #include "Framework/ErrorLog/ErrorLogItem.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include <QTimer>
 #include "OxyCRGSPO2TrendWidget.h"
 #include "NIBPParam.h"
 #include "AlarmSourceManager.h"
-#include "TimeDate.h"
 #include "O2ParamInterface.h"
 #include "RunningStatusBar.h"
 #include "UpgradeManager.h"
@@ -166,17 +166,17 @@ void SPO2Param::exitDemo()
 /**************************************************************************************************
  * 获取可得的波形控件集。
  *************************************************************************************************/
-void SPO2Param::getAvailableWaveforms(QStringList &waveforms,
-                                      QStringList &waveformShowName, int /*flag*/)
+void SPO2Param::getAvailableWaveforms(QStringList *waveforms,
+                                      QStringList *waveformShowName, int /*flag*/)
 {
-    waveforms.clear();
-    waveformShowName.clear();
+    waveforms->clear();
+    waveformShowName->clear();
 
     if (NULL != _waveWidget)
     {
-        waveforms.append(_waveWidget->name());
+        waveforms->append(_waveWidget->name());
     }
-    waveformShowName.append(trs("PLETH"));
+    waveformShowName->append(trs("PLETH"));
 }
 
 /**************************************************************************************************
@@ -889,7 +889,7 @@ CCHDResult SPO2Param::updateCCHDResult()
         result = Positive;
     }
     _cchdDataList.last().result = result;
-    _cchdDataList.last().time = timeDate.time();
+    _cchdDataList.last().time = timeDate->time();
     return result;
 }
 

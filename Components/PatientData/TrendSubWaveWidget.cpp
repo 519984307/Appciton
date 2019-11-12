@@ -12,7 +12,6 @@
 #include "IWidget.h"
 #include <QPainter>
 #include <QLabel>
-#include "TimeDate.h"
 #include "ParamInfo.h"
 #include "ParamManager.h"
 #include "FontManager.h"
@@ -20,8 +19,8 @@
 #include "IConfig.h"
 #include "TrendDataStorageManager.h"
 #include "Framework/Language/LanguageManager.h"
-#include "TrendGraphConfig.h"
 #include "Framework/Utility/Utility.h"
+#include "TrendGraphConfig.h"
 
 #define GRAPH_POINT_NUMBER          120
 #define DATA_INTERVAL_PIXEL         5
@@ -92,7 +91,7 @@ void TrendSubWaveWidget::setWidgetParam(SubParamID id, TrendGraphType type)
     _paramUnit = trs(Unit::getSymbol(paramManager.getSubParamUnit(paramInfo.getParamID(_id), _id)));
 }
 
-void TrendSubWaveWidget::trendDataInfo(TrendGraphInfo &info)
+void TrendSubWaveWidget::trendDataInfo(const TrendGraphInfo &info)
 {
     _trendInfo = info;
     // 数据更新时判断是否为自动标尺,是则刷新标尺
@@ -102,7 +101,7 @@ void TrendSubWaveWidget::trendDataInfo(TrendGraphInfo &info)
     }
 }
 
-void TrendSubWaveWidget::loadTrendSubWidgetInfo(TrendSubWidgetInfo &info)
+void TrendSubWaveWidget::loadTrendSubWidgetInfo(const TrendSubWidgetInfo &info)
 {
     _info = info;
     _valueY.start = info.yTop;
@@ -116,11 +115,19 @@ void TrendSubWaveWidget::loadTrendSubWidgetInfo(TrendSubWidgetInfo &info)
     _trendDataHead = info.xHead + info.xTail;
 }
 
-void TrendSubWaveWidget::getValueLimit(int &max, int &min, int &scale)
+int TrendSubWaveWidget::getLimitMax()
 {
-    max = _valueY.max;
-    min = _valueY.min;
-    scale = _valueY.scale;
+    return _valueY.max;
+}
+
+int TrendSubWaveWidget::getLimitMin()
+{
+    return _valueY.min;
+}
+
+int TrendSubWaveWidget::getLimitScale()
+{
+    return _valueY.scale;
 }
 
 void TrendSubWaveWidget::setThemeColor(QColor color)
@@ -154,13 +161,6 @@ void TrendSubWaveWidget::setRulerRange(int down, int up, int scale)
     }
     TrendGraphConfig::setParamRulerConfig(_id, unit, _rulerY.min, _rulerY.max);
     update();
-}
-
-void TrendSubWaveWidget::rulerRange(int &down, int &up, int &scale)
-{
-    down = _valueY.min;
-    up = _valueY.max;
-    scale = _valueY.scale;
 }
 
 UnitType TrendSubWaveWidget::getUnitType()

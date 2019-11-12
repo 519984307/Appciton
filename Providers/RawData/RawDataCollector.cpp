@@ -19,8 +19,8 @@
 #include <QDebug>
 #include <unistd.h>
 #include <QTimerEvent>
-#include "TimeDate.h"
 #include "USBManager.h"
+#include "Framework/TimeDate/TimeDate.h"
 
 struct StoreDataType
 {
@@ -192,7 +192,6 @@ void RawDataCollectorPrivate::handleSPO2RawData(const unsigned char *data, int l
         data += 1;
         for (int n = 0; n < 5; n++)
         {
-
             int v = data[0] | (data[1] << 8) | (data[2] << 16);
             data += 3;
             stream << v;
@@ -264,8 +263,7 @@ void RawDataCollectorPrivate::handleCO2RawData(const unsigned char *data, int le
         QTextStream stream(&content);
         unsigned int tar = (data[0]) | (data[1] << 8) | (data[2] << 16);
         unsigned int ref = (data[3]) | (data[4] << 8) | (data[5] << 16);
-        QString time;
-        timeDate.getTime(time, true);
+        QString time = timeDate->getTime(true);
         stream << tar << "," << ref << "," << time << endl;
 
         stream.flush();
@@ -294,8 +292,7 @@ void RawDataCollectorPrivate::handleTempRawData(const unsigned char *data, int l
         for (int i = 0; i < len / 2; i++)
         {
             unsigned int tempData = data[1 + 2 * i] | (data[2 + 2 * i] << 8);
-            QString time;
-            timeDate.getTime(time, true);
+            QString time = timeDate->getTime(true);
             stream << channel << "," << tempData << "," << time << endl;
         }
 

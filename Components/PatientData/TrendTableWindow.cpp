@@ -11,6 +11,7 @@
 #include "TrendTableWindow.h"
 #include "ThemeManager.h"
 #include "Framework/Language/LanguageManager.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include "TableView.h"
 #include "TableHeaderView.h"
 #include "TrendTableModel.h"
@@ -19,9 +20,7 @@
 #include "ComboBox.h"
 #include "WindowManager.h"
 #include "FontManager.h"
-#include "Framework/Language/LanguageManager.h"
 #include "ParamManager.h"
-#include "TimeDate.h"
 #include "TimeManager.h"
 #include "TrendDataStorageManager.h"
 #include "IBPParam.h"
@@ -153,7 +152,7 @@ void TrendTableWindow::updatePages()
         QString date = d_ptr->model->getCurTableDate();
         if (date == InvStr())
         {
-            timeDate.getDate(date, true);
+           date = timeDate->getDate(true);
         }
         btn->setText(date);
         btn->installEventFilter(this);
@@ -222,8 +221,7 @@ TrendTableWindow::TrendTableWindow()
     TableHeaderView *horizontalHeader = new TableHeaderView(Qt::Horizontal);
 
     // 初始化水平表头的字体
-    int formatIndex = TIME_FORMAT_12;
-    systemConfig.getNumValue("DateTime|TimeFormat", formatIndex);
+    int formatIndex = systemManager.getSystemTimeFormat();
     if (formatIndex == TIME_FORMAT_12)
     {
         horizontalHeader->setFont(fontManager.textFont(IN_12_HOUR_HEADER_FONT_SIZE));

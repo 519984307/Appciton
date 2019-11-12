@@ -44,6 +44,7 @@ SOURCES += \
         ErrorLog/ErrorLog.cpp                                                       \
         Language/LanguageManager.cpp                                                \
         Language/Translator.cpp                                                     \
+        TimeDate/TimeDate.cpp                                                       \
 
 
 HEADERS += \
@@ -67,21 +68,27 @@ HEADERS += \
         ErrorLog/ErrorLog.h                                                         \
         Language/LanguageManager.h                                                  \
         Language/Translator.h                                                       \
+        TimeDate/TimeDefine.h                                                       \
+        TimeDate/TimeSymbol.h                                                       \
+        TimeDate/TimeDate.h                                                         \
 
 DEPENDPATH += \
         Utility                                                                     \
         Config                                                                      \
         Uart                                                                        \
         Storage                                                                     \
-        SOUP/Json                                                                    \
+        SOUP/Json                                                                   \
+        Language                                                                    \
+        TimeDate                                                                    \
 
 INCLUDEPATH += \
-        Utility                                                                      \
-        Config                                                                       \
-        Uart                                                                         \
-        Storage                                                                      \
-        SOUP/Json                                                                    \
-
+        Utility                                                                     \
+        Config                                                                      \
+        Uart                                                                        \
+        Storage                                                                     \
+        SOUP/Json                                                                   \
+        Language                                                                    \
+        TimeDate                                                                    \
 
 unix {
     target.path = /usr/lib

@@ -43,6 +43,7 @@
 #include "StandbyWindow.h"
 #include "NIBPParam.h"
 #include "Framework/Language/LanguageManager.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include "EventStorageManagerInterface.h"
 
 #define BACKLIGHT_DEV   "/sys/class/backlight/backlight/brightness"       // 背光控制文件接口
@@ -70,7 +71,8 @@ class SystemManagerPrivate
 public:
     SystemManagerPrivate()
         : modulePostResult(MODULE_POWERON_TEST_RESULT_NR, SELFTEST_UNKNOWN),
-          workerThread(NULL), workMode(WORK_MODE_NORMAL), backlightFd(-1),
+          workerThread(NULL), workMode(WORK_MODE_NORMAL), timeFormat(TIME_FORMAT_12),
+          dateFormat(DATE_FORMAT_Y_M_D), backlightFd(-1),
       #ifdef Q_WS_QWS
           isTouchScreenOn(false),
       #endif
@@ -132,6 +134,8 @@ public:
     QVector<int>  modulePostResult;     // module power on selt-test result
     QThread *workerThread;
     WorkMode workMode;
+    TimeFormat timeFormat;
+    DateFormat dateFormat;
     int backlightFd;                    // 背光控制文件句柄。
 #ifdef Q_WS_QWS
     bool isTouchScreenOn;
@@ -583,6 +587,39 @@ void SystemManager::setWorkMode(WorkMode workmode)
     emit workModeChanged(workmode);
 }
 
+void SystemManager::setSystemTimeFormat(const TimeFormat &format)
+{
+    if (d_ptr->timeFormat == format || format >= TIME_FORMAT_NR)
+    {
+        return;
+    }
+    d_ptr->timeFormat = format;
+    timeDate->setTimeFormat(format);
+    systemConfig.setNumValue("DateTime|TimeFormat", static_cast<int>(format));
+    emit systemTimeFormatUpdated(format);
+}
+
+TimeFormat SystemManager::getSystemTimeFormat() const
+{
+    return d_ptr->timeFormat;
+}
+
+void SystemManager::setSystemDateFormat(const DateFormat &format)
+{
+    if (d_ptr->dateFormat == format || format >= DATE_FORMAT_NR)
+    {
+        return;
+    }
+    d_ptr->dateFormat = format;
+    timeDate->setDateFormat(format);
+    systemConfig.setNumValue("DateTime|DateFormat", static_cast<int>(format));
+}
+
+DateFormat SystemManager::getSystemDateFormat() const
+{
+    return d_ptr->dateFormat;
+}
+
 void SystemManagerPrivate::setStandbyStatus(bool standby)
 {
     isStandby = standby;
@@ -637,6 +674,24 @@ SystemManager::SystemManager() :  //申请一个动态的模块加载结果数�
     hdmiCtrl->moveToThread(d_ptr->workerThread);
     hdmiCtrl->connect(d_ptr->workerThread, SIGNAL(finished()), hdmiCtrl, SLOT(deleteLater()));
     d_ptr->workerThread->start();
+
+    /* load the time foramt */
+    int timeformat = TIME_FORMAT_12;
+    systemConfig.getNumValue("DateTime|TimeFormat", timeformat);
+    if (timeformat < TIME_FORMAT_NR && timeformat >=0)
+    {
+        d_ptr->timeFormat = static_cast<TimeFormat>(timeformat);
+    }
+    timeDate->setTimeFormat(d_ptr->timeFormat);
+
+    /* load the date format */
+    int dateformat = DATE_FORMAT_Y_M_D;
+    systemConfig.getNumValue("DateTime|DateFormat", dateformat);
+    if (dateformat < DATE_FORMAT_NR && dateformat >=0)
+    {
+        d_ptr->dateFormat = static_cast<DateFormat>(dateformat);
+    }
+    timeDate->setDateFormat(d_ptr->dateFormat);
 
 #ifdef Q_WS_QWS
     int val = 0;

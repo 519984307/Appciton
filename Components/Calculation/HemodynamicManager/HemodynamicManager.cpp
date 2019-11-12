@@ -1,7 +1,17 @@
+/**
+ ** This file is part of the Project project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2019/11/12
+ **/
+
 #include "HemodynamicManager.h"
 #include <qmath.h>
 #include <QDateTime>
-#include "TimeDate.h"
+#include "Framework/TimeDate/TimeDate.h"
 #define MAX_CALC_DATA   10
 
 HemodynamicManager *HemodynamicManager::_selfObj = NULL;
@@ -11,7 +21,6 @@ HemodynamicManager *HemodynamicManager::_selfObj = NULL;
  *************************************************************************************************/
 HemodynamicManager::~HemodynamicManager()
 {
-
 }
 
 /**************************************************************************************************
@@ -337,7 +346,7 @@ void HemodynamicManager::calcAction()
 
 
     // 获取当前计算的时间戳
-    _hemodynamicInfo.calcTime = timeDate.time();
+    _hemodynamicInfo.calcTime = timeDate->time();
 }
 
 /**************************************************************************************************
@@ -350,7 +359,6 @@ void HemodynamicManager::insertReviewData(HemodynamicInfo data)
         _reviewData.removeFirst();
     }
     _reviewData.append(data);
-
 }
 
 /**************************************************************************************************

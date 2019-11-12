@@ -57,7 +57,7 @@ public:
      * @param data
      * @return
      */
-    virtual bool getTrendData(unsigned t, TrendCacheData &data) = 0;    /* NOLINT */
+    virtual bool getTrendData(unsigned t, TrendCacheData *data) = 0;
 
     /**
      * @brief clearTrendCache clear the internal cache data

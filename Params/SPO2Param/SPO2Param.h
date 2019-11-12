@@ -60,8 +60,8 @@ public:
     virtual void exitDemo();
 
     // 获取可得的波形控件集。
-    virtual void getAvailableWaveforms(QStringList &waveforms,
-                                       QStringList &waveformShowName, int flag);
+    virtual void getAvailableWaveforms(QStringList *waveforms,
+                                       QStringList *waveformShowName, int flag);
 
     // 获取子参数值
     virtual short getSubParamValue(SubParamID id);
@@ -306,8 +306,8 @@ private:
     int _repeatTimes;
 
     bool _isLowPerfusion;
-    bool _isForceUpdatingPR;  // 当spo2的弱灌注状态发生变化时，该PR状态位为true
-    bool _isForceUpdatingSPO2; // 当spo2的弱灌注状态发生变化时, 该SPO2状态位为true
+    bool _isForceUpdatingPR;        // 当spo2的弱灌注状态发生变化时，该PR状态位为true
+    bool _isForceUpdatingSPO2;      // 当spo2的弱灌注状态发生变化时, 该SPO2状态位为true
 
     bool _isT5ModuleUpgradeCompleted;
 };

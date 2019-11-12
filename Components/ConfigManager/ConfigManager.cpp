@@ -13,7 +13,6 @@
 #include "PatientManager.h"
 #include "IConfig.h"
 #include "Debug.h"
-#include "TimeDate.h"
 #include <QFile>
 #include <QDateTime>
 #include "LayoutManager.h"

@@ -30,10 +30,10 @@
 #include "CO2Param.h"
 #include "Framework/Utility/Utility.h"
 #include "Framework/Utility/Unit.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include "LayoutManager.h"
 #include <QDebug>
 #include "RecorderManager.h"
-#include "TimeDate.h"
 #include "TimeManager.h"
 #include "AlarmConfig.h"
 #include "PatientManager.h"
@@ -148,10 +148,10 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
     infos.append(QString("%1: %2").arg(trs("PatientSex")).arg(trs(PatientSymbol::convert(patInfo.sex))));
     infos.append(QString("%1: %2").arg(trs("PatientType")).arg(trs(PatientSymbol::convert(patInfo.type))));
     infos.append(QString("%1: %2").arg(trs("Blood")).arg(PatientSymbol::convert(patInfo.blood)));
+
+    QDateTime dt(patInfo.bornDate, QTime(12, 0)); /* dummy dt */
     QString str;
-    QString fotmat;
-    timeDate.getDateFormat(fotmat, true);
-    str = QString("%1: %2").arg(trs("BornDate")).arg(patInfo.bornDate.toString(fotmat));
+    str = QString("%1: %2").arg(trs("BornDate")).arg(timeDate->getDate(dt.toTime_t(), true));
     infos.append(str);
 
     str = QString("%1: ").arg(trs("Weight"));
@@ -196,15 +196,14 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
         textWidth =  w;
     }
 
-    unsigned t = timeDate.time();
+    unsigned t = timeDate->time();
     if (timestamp)
     {
         t = timestamp;
     }
 
-    QString timeDateStr;
     bool showSecond = timeManager.isShowSecond();
-    timeDate.getDateTime(t, timeDateStr, true, showSecond);
+    QString timeDateStr = timeDate->getDateTime(t, true, showSecond);
     QString timeStr = QString("%1: %2").arg(trs("PrintTime")).arg(timeDateStr);
 
     // record time width
@@ -453,10 +452,10 @@ struct TrendStringSegmentInfo
  * @param strSegInfoList output string segments info list
  * @param font string display font
  */
-static void converToStringSegmets(const QStringList &trendStringList, QList<TrendStringSegmentInfo> &strSegInfoList,    /* NOLINT */
+static void converToStringSegmets(const QStringList &trendStringList, QList<TrendStringSegmentInfo> *strSegInfoList,
                                   const QFont &font)
 {
-    strSegInfoList.clear();
+    strSegInfoList->clear();
     foreach(QString str, trendStringList)
     {
         TrendStringSegmentInfo segInfo;
@@ -466,7 +465,7 @@ static void converToStringSegmets(const QStringList &trendStringList, QList<Tren
         segInfo.nameSegmentWidth = fontManager.textWidthInPixels(segInfo.nameSegment, font) + font.pixelSize();
         segInfo.valueSegmentWidth = fontManager.textWidthInPixels(segInfo.valueSegment, font) + font.pixelSize();
         segInfo.unitSegmentWidth = fontManager.textWidthInPixels(segInfo.unitSegment, font) + font.pixelSize();
-        strSegInfoList.append(segInfo);
+        strSegInfoList->append(segInfo);
     }
 }
 
@@ -482,8 +481,7 @@ RecordPage *RecordPageGenerator::createTrendPage(const TrendDataPackage &trendDa
     QString timeStr;
     if (showEventTime)
     {
-        QString timeDateStr;
-        timeDate.getDateTime(trendData.time, timeDateStr, true, true);
+        QString timeDateStr = timeDate->getDateTime(trendData.time, true, true);
         if (timeStringCaption.isEmpty())
         {
             timeStr = QString("%1: %2").arg(trs("EventTime")).arg(timeDateStr);
@@ -510,7 +508,7 @@ RecordPage *RecordPageGenerator::createTrendPage(const TrendDataPackage &trendDa
         avaliableLine--;
     }
     QList<TrendStringSegmentInfo> strSegInfoList;
-    converToStringSegmets(trendStringList, strSegInfoList, font);
+    converToStringSegmets(trendStringList, &strSegInfoList, font);
     int index = -1;
     int n = 0;
     foreach(TrendStringSegmentInfo segInfo, strSegInfoList)
@@ -1384,20 +1382,20 @@ static void drawDottedLine(QPainter *painter, qreal x1, qreal y1,
  * @param waveInfo the wave segment info
  * @param segmentIndex segment index
  */
-static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegmentInfo &waveInfo, int segmentIndex)  // NOLINT
+static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegmentInfo *waveInfo, int segmentIndex)
 {
     qreal x1 = 0, y1 = 0, x2 = 0, y2 = 0;
     int pageWidth = page->width();
-    qreal offsetX = pageWidth * 1.0 / waveInfo.sampleRate;
+    qreal offsetX = pageWidth * 1.0 / waveInfo->sampleRate;
     int i;
 
-    int wavebuffSize = waveInfo.secondWaveBuff.size();
+    int wavebuffSize = waveInfo->secondWaveBuff.size();
 
     float pixelPitch = systemManager.getScreenPixelHPitch();
-    ParamID paramId = paramInfo.getParamID(waveInfo.id);
-    for (i = 0; i < waveInfo.sampleRate && i < wavebuffSize; i++)
+    ParamID paramId = paramInfo.getParamID(waveInfo->id);
+    for (i = 0; i < waveInfo->sampleRate && i < wavebuffSize; i++)
     {
-        unsigned short flag = waveInfo.secondWaveBuff[i] >> 16;
+        unsigned short flag = waveInfo->secondWaveBuff[i] >> 16;
         // invalid data
         if (flag & INVALID_WAVE_FALG_BIT)
         {
@@ -1405,16 +1403,16 @@ static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegme
             {
                 // start point
                 x1 = 0;
-                x2 = waveInfo.drawCtx.curPageFirstXpos;
+                x2 = waveInfo->drawCtx.curPageFirstXpos;
             }
-            short wave = waveInfo.secondWaveBuff[i] & 0xFFFF;
-            double waveData = mapWaveValue(waveInfo, wave);
+            short wave = waveInfo->secondWaveBuff[i] & 0xFFFF;
+            double waveData = mapWaveValue(*waveInfo, wave);
             y1 = y2 = waveData;
 
             int j = i + 1;
-            while (j < waveInfo.sampleRate && j < wavebuffSize)
+            while (j < waveInfo->sampleRate && j < wavebuffSize)
             {
-                flag = waveInfo.secondWaveBuff[j] >> 16;
+                flag = waveInfo->secondWaveBuff[j] >> 16;
                 if (!(flag & INVALID_WAVE_FALG_BIT))
                 {
                     break;
@@ -1435,55 +1433,55 @@ static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegme
                 drawDottedLine(painter, x1, waveData, pageWidth, waveData);
 
                 qreal tmp = (pageWidth - x1) / DASH_LENGTH;
-                waveInfo.drawCtx.dashOffset = tmp - static_cast<int>(tmp);
+                waveInfo->drawCtx.dashOffset = tmp - static_cast<int>(tmp);
             }
             else
             {
-                drawDottedLine(painter, x1, waveData, x2, waveData, waveInfo.drawCtx.dashOffset);
-                waveInfo.drawCtx.dashOffset = 0.0;
+                drawDottedLine(painter, x1, waveData, x2, waveData, waveInfo->drawCtx.dashOffset);
+                waveInfo->drawCtx.dashOffset = 0.0;
             }
 
             x1 = x2;
             x2 += offsetX;
             y1 = y2;
 
-            waveInfo.drawCtx.lastWaveFlags = flag;
+            waveInfo->drawCtx.lastWaveFlags = flag;
 
             if (x2 > pageWidth - 1)
             {
-                waveInfo.drawCtx.prevSegmentLastYpos = y1;
-                waveInfo.drawCtx.curPageFirstXpos = x2 - pageWidth + 1;
+                waveInfo->drawCtx.prevSegmentLastYpos = y1;
+                waveInfo->drawCtx.curPageFirstXpos = x2 - pageWidth + 1;
                 return;
             }
         }
         else  // valid wave data
         {
-            short wave = waveInfo.secondWaveBuff[i] & 0xFFFF;
-            if (waveInfo.id == WAVE_ECG_aVR && waveInfo.waveInfo.ecg.in12LeadMode
-                    && waveInfo.waveInfo.ecg._12LeadDisplayFormat == DISPLAY_12LEAD_CABRELA)
+            short wave = waveInfo->secondWaveBuff[i] & 0xFFFF;
+            if (waveInfo->id == WAVE_ECG_aVR && waveInfo->waveInfo.ecg.in12LeadMode
+                    && waveInfo->waveInfo.ecg._12LeadDisplayFormat == DISPLAY_12LEAD_CABRELA)
             {
                 wave = - wave;
             }
 
-            double waveData = mapWaveValue(waveInfo, wave);
+            double waveData = mapWaveValue(*waveInfo, wave);
 
             if (i == 0)
             {
                 if (segmentIndex == 0)
                 {
                     y1 = waveData;
-                    waveInfo.drawCtx.dashOffset = 0.0;
+                    waveInfo->drawCtx.dashOffset = 0.0;
                 }
                 else
                 {
-                    y1 = waveInfo.drawCtx.prevSegmentLastYpos;
+                    y1 = waveInfo->drawCtx.prevSegmentLastYpos;
                 }
                 x1 = 0;
-                x2 = waveInfo.drawCtx.curPageFirstXpos;
+                x2 = waveInfo->drawCtx.curPageFirstXpos;
             }
             else
             {
-                if ((waveInfo.secondWaveBuff[i - 1] >> 16) & INVALID_WAVE_FALG_BIT)
+                if ((waveInfo->secondWaveBuff[i - 1] >> 16) & INVALID_WAVE_FALG_BIT)
                 {
                     y1 = waveData;
                 }
@@ -1497,8 +1495,8 @@ static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegme
             {
                 QPen pen = painter->pen();
                 painter->setPen(QPen(Qt::white, 2, Qt::DashLine));
-                painter->drawLine(x2, waveInfo.middleYOffset - 10 / pixelPitch / 2,
-                                  x2, waveInfo.middleYOffset + 10 / pixelPitch / 2);
+                painter->drawLine(x2, waveInfo->middleYOffset - 10 / pixelPitch / 2,
+                                  x2, waveInfo->middleYOffset + 10 / pixelPitch / 2);
                 painter->setPen(pen);
             }
 
@@ -1506,7 +1504,7 @@ static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegme
             x2 += offsetX;
             y1 = y2;
 
-            waveInfo.drawCtx.lastWaveFlags = flag;
+            waveInfo->drawCtx.lastWaveFlags = flag;
 
             if (x2 > pageWidth - 1)
             {
@@ -1515,25 +1513,25 @@ static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegme
         }
     }
 
-    waveInfo.drawCtx.curPageFirstXpos = 0;
+    waveInfo->drawCtx.curPageFirstXpos = 0;
     if (x2 > pageWidth - 1)
     {
         bool drawLine = false;
         QLineF line;
         y2 = y1;
-        if (i + 1 < waveInfo.sampleRate)
+        if (i + 1 < waveInfo->sampleRate)
         {
-            if (!(waveInfo.drawCtx.lastWaveFlags & INVALID_WAVE_FALG_BIT))
+            if (!(waveInfo->drawCtx.lastWaveFlags & INVALID_WAVE_FALG_BIT))
             {
-                short wave = waveInfo.secondWaveBuff[i + 1] & 0xFFFF;
-                if (waveInfo.id == WAVE_ECG_aVR && waveInfo.waveInfo.ecg.in12LeadMode
-                        && waveInfo.waveInfo.ecg._12LeadDisplayFormat == DISPLAY_12LEAD_CABRELA)
+                short wave = waveInfo->secondWaveBuff[i + 1] & 0xFFFF;
+                if (waveInfo->id == WAVE_ECG_aVR && waveInfo->waveInfo.ecg.in12LeadMode
+                        && waveInfo->waveInfo.ecg._12LeadDisplayFormat == DISPLAY_12LEAD_CABRELA)
                 {
                     wave = -wave;
                 }
 
                 // 当x1在页宽范围内，x2不在页宽范围内时，通过计算两点连线的斜率来判断x坐标为页宽时点的y坐标，并进行连线
-                qreal tmpValue = mapWaveValue(waveInfo, wave);
+                qreal tmpValue = mapWaveValue(*waveInfo, wave);
                 qreal deltaY = (tmpValue * 1000 - y1 * 1000) / 1000.0 * (pageWidth * 1.0 - 1.0 - x1) / offsetX;
                 y2 = y1 + deltaY;
                 line.setLine(x1, y1, pageWidth - 1, y2);
@@ -1542,7 +1540,7 @@ static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegme
         }
         else
         {
-            if (!(waveInfo.drawCtx.lastWaveFlags & INVALID_WAVE_FALG_BIT))
+            if (!(waveInfo->drawCtx.lastWaveFlags & INVALID_WAVE_FALG_BIT))
             {
                 drawLine = true;
                 line.setLine(x1, y1, pageWidth - 1, y2);
@@ -1552,12 +1550,12 @@ static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegme
         if (drawLine)
         {
             painter->drawLine(line);
-            waveInfo.drawCtx.curPageFirstXpos = x2 - pageWidth + 1;
+            waveInfo->drawCtx.curPageFirstXpos = x2 - pageWidth + 1;
         }
     }
     else
     {
-        if (!(waveInfo.drawCtx.lastWaveFlags & INVALID_WAVE_FALG_BIT) && wavebuffSize == waveInfo.sampleRate)
+        if (!(waveInfo->drawCtx.lastWaveFlags & INVALID_WAVE_FALG_BIT) && wavebuffSize == waveInfo->sampleRate)
         {
             // draw to the edge
             y2 = y1;
@@ -1565,7 +1563,7 @@ static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegme
             painter->drawLine(line);
         }
     }
-    waveInfo.drawCtx.prevSegmentLastYpos = y2;
+    waveInfo->drawCtx.prevSegmentLastYpos = y2;
 }
 
 RecordPage *RecordPageGenerator::createWaveSegments(QList<RecordWaveSegmentInfo> *waveInfos, int segmentIndex,
@@ -1595,7 +1593,7 @@ RecordPage *RecordPageGenerator::createWaveSegments(QList<RecordWaveSegmentInfo>
     for (; iter != waveInfos->end(); ++iter)
     {
         drawCaption(page, &painter, *iter, segmentIndex);
-        drawWaveSegment(page, &painter, *iter, segmentIndex);
+        drawWaveSegment(page, &painter, &(*iter), segmentIndex);
     }
     return page;
 }
@@ -2029,12 +2027,13 @@ void RecordPageGenerator::drawTrendGraphEventSymbol(QPainter *painter,
         eventRect.setLeft(timeX);
         eventRect.setWidth(axisInfo.xSectionWidth);  // should be enough
         eventRect.setHeight(fontH);
-        if (eventList.at(i).type == EventPhysiologicalAlarm)
+        EventType type = static_cast<EventType>(eventList.at(i).type & 0xff);
+        if (type == EventPhysiologicalAlarm)
         {
             eventRect.setTop(aEventFlagHeight);
             painter->drawText(eventRect, Qt::AlignLeft | Qt::AlignVCenter, "A");
         }
-        else if (eventList.at(i).type != EventOxyCRG)
+        else if (type != EventOxyCRG)
         {
             eventRect.setTop(mEventFlagHeight);
             painter->drawText(eventRect, Qt::AlignLeft | Qt::AlignVCenter, "M");

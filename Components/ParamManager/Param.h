@@ -46,10 +46,10 @@ public:
     virtual void exitDemo(void);
 
     // 获取当前的波形控件名称。
-    virtual void getAvailableWaveforms(QStringList &waveforms, QStringList &waveformShowName,
+    virtual void getAvailableWaveforms(QStringList *waveforms, QStringList *waveformShowName,
                                        int flag = 0);
-    virtual void getTrendWindow(QString &trendWin);
-    virtual void getWaveWindow(QString &waveWin);
+    virtual QString getTrendWindowName();
+    virtual QString getWaveWindowName();
 
     // 获取子参数值
     virtual short getSubParamValue(SubParamID id);

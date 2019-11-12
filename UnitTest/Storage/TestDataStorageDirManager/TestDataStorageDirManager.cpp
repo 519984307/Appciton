@@ -59,8 +59,7 @@ void TestDataStorageDirManager::testGetRescueEvent()
     EXPECT_CALL(mockTimeManager, getPowerOnSession).Times(1).WillOnce(testing::Return(POWER_ON_SESSION_NEW));
     EXPECT_CALL(mockTimeManager, getStartTime).WillRepeatedly(testing::Return(0));
     dataStorageDirManager.createDir();
-    QStringList timeList;
-    dataStorageDirManager.getRescueEvent(timeList);
+    QStringList timeList = dataStorageDirManager.getRescueEvent();
     QVERIFY(timeList.count() != 0);
 }
 

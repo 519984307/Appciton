@@ -11,7 +11,7 @@
 #include "TimeManager.h"
 #include "DateTimeWidget.h"
 #include "ElapseTimeWidget.h"
-#include "TimeDate.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include "IConfig.h"
 #include "SystemTick.h"
 #include <QProcess>
@@ -25,10 +25,8 @@
 void TimeManager::_refreshWidgets()
 {
     // 刷新日期和时间。
-    QString text;
-    QString t;
-    timeDate.getTime(_curTime, text, _showSecond);
-    timeDate.getDate(_curTime, t, true);
+    QString text = timeDate->getTime(_curTime, _showSecond);
+    QString t = timeDate->getDate(_curTime, true);
     t += " ";
     t += text;
     t += " ";
@@ -64,7 +62,9 @@ void TimeManager::_refreshWidgets()
         systemConfig.setNumValue("ElapseStartTime", _elapseStartTime);
     }
 
-    t.sprintf("%.2d:%.2d:%.2d", hour, min, sec); // NOLINT
+    t = QString("%1:%2:%3").arg(hour, 2, 10, QLatin1Char('0'))
+                           .arg(min, 2, 10, QLatin1Char('0'))
+                           .arg(sec, 2, 10, QLatin1Char('0'));
     if (_elapsedWidget)
     {
         _elapsedWidget->setText(t);
@@ -165,11 +165,11 @@ TimeManager::TimeManager()
     // 判断上次开机与本次开机的时间间隔。
     unsigned timestamp = 0;
     systemConfig.getNumValue("Timestamp", timestamp);
-    _curTime = timeDate.time();
+    _curTime = timeDate->time();
     unsigned diffTime = (_curTime < timestamp) ? 901 : (_curTime - timestamp);
 
     // 判断开机时间间隔(关机到开机再次看到界面)。
-    if (diffTime <= SHUT_DOWN_HINT_TIME + 7) // 两次开机时间小于SHUT_DOWN_HINT_TIME + 7(开机时间大约7s)。
+    if (diffTime <= SHUT_DOWN_HINT_TIME + 7)    // 两次开机时间小于SHUT_DOWN_HINT_TIME + 7(开机时间大约7s)。
     {
         _powerOnSession = POWER_ON_SESSION_CONTINUE;
     }

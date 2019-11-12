@@ -23,7 +23,6 @@
 #include "Alarm.h"
 #include "ECGDupParam.h"
 #include "RESPDupParam.h"
-#include "TimeDate.h"
 #include "EventStorageManager.h"
 #include <QMap>
 #include "Framework/Utility/RingBuff.h"
@@ -269,7 +268,7 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
     }
 
     TrendCacheData data;
-    if (!trendCache.getTrendData(t, data))
+    if (!trendCache.getTrendData(t, &data))
     {
         // no trend data
         return;
@@ -278,8 +277,7 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
     d->lastStoreTimestamp = t;
 
 
-    QList<ParamID> idList;
-    paramManager.getParams(idList);
+    QList<ParamID> idList = paramManager.getParamIDs();
 
     QVector<TrendValueSegment> valueSegments;
 

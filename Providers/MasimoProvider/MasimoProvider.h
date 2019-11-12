@@ -36,7 +36,7 @@ enum avgTimeList
 class MasimoSetProvider : public Provider, public SPO2ProviderIFace
 {
 public:
-    virtual bool attachParam(Param &param);
+    virtual bool attachParam(Param *param);
     virtual void dataArrived(void);
     virtual void dataArrived(unsigned char *buf, unsigned int length);
 

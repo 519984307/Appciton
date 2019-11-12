@@ -19,6 +19,7 @@
 #include <QDebug>
 #include <QTimer>
 #include <QTime>
+#include <QApplication>
 
 #define FAST_SPIN_STEP                      3       // 飞梭快速旋转一次相当于慢速旋转三次
 #define SPIN_ELAPSE_TIME                    50      // 飞梭旋转两次时间间隔小于50ms即快速旋转
@@ -305,6 +306,7 @@ void PopupNumEditor::keyReleaseEvent(QKeyEvent *ev)
     case Qt::Key_Return:
     case Qt::Key_Enter:
         emit valueChanged(d_ptr->editInfo.curValue);
+        QApplication::processEvents();
         this->close();
         break;
     default:
@@ -373,6 +375,7 @@ void PopupNumEditor::mouseReleaseEvent(QMouseEvent *ev)
     {
         // click somewhere else
         emit valueChanged(d_ptr->editInfo.curValue);
+        QApplication::processEvents();
         close();
     }
 

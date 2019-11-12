@@ -12,7 +12,7 @@
 #include "Dialog.h"
 #include "IBPDefine.h"
 #include "TrendDataDefine.h"
-#include "TimeDefine.h"
+#include "Framework/TimeDate/TimeDefine.h"
 
 class TrendTableWindowPrivate;
 class TrendTableWindow : public Dialog

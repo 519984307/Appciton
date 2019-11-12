@@ -43,8 +43,8 @@ class DemoProvider: public Provider,
 public:
     virtual void sendVersion() { }
     // 实现Provider的接口。
-    virtual bool attachParam(Param &param);
-    virtual void detachParam(Param &param);
+    virtual bool attachParam(Param *param);
+    virtual void detachParam(Param *param);
     virtual void dataArrived(void);
     virtual void checkConnection() {}
     virtual bool connected() {return true;}
@@ -54,7 +54,9 @@ public:
     virtual void setWaveformSample(int) {}
 
     virtual int getBaseLine(void) {return 128;}
-    virtual void get05mV(int &p05mv, int &n05mv){p05mv = 192; n05mv = 64;}
+    virtual int getP05mV(){return 192;}
+    virtual int getN05mV(){return 64;}
+
     virtual void getLeadCabelType() { }
     virtual void setLeadSystem(ECGLeadMode /*leadMode*/) { }
     virtual void setCalcLead(ECGLead /*lead*/) { }

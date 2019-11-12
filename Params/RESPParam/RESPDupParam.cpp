@@ -48,14 +48,6 @@ void RESPDupParam::handDemoTrendData(void)
 /**************************************************************************************************
  * 功能： 获取子参数值。
  *************************************************************************************************/
-void RESPDupParam::getAvailableWaveforms(QStringList &/*waveforms*/,
-        QStringList &/*waveformShowName*/, int /*flag*/)
-{
-}
-
-/**************************************************************************************************
- * 功能： 获取子参数值。
- *************************************************************************************************/
 short RESPDupParam::getSubParamValue(SubParamID id)
 {
     switch (id)
@@ -98,12 +90,13 @@ bool RESPDupParam::isEnabled()
 /**************************************************************************************************
  * 获取可得的趋势窗体名。
  *************************************************************************************************/
-void RESPDupParam::getTrendWindow(QString &trendWin)
+QString RESPDupParam::getTrendWindowName()
 {
     if (NULL != _trendWidget)
     {
-        trendWin = _trendWidget->name();
+        return _trendWidget->name();
     }
+    return QString();
 }
 
 /**************************************************************************************************

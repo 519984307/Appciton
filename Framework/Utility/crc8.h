@@ -41,13 +41,12 @@ inline unsigned char calcCRC(const unsigned char *data, unsigned int len)
         return 0;
     }
 
-    unsigned char index;    // CRC8校验表格索引
     unsigned char crc8 = 0;   // CRC8字节初始化
 
     // 进行CRC8位校验
     while (len--)
     {
-        index = crc8 ^ (*data++);
+        unsigned char index = crc8 ^ (*data++);     // CRC8校验表格索引
         crc8 = crc8Table[index];
     }
 
