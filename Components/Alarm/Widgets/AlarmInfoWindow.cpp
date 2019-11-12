@@ -13,10 +13,10 @@
 #include "AlarmInfoModel.h"
 #include "TableViewItemDelegate.h"
 #include "Framework/Language/LanguageManager.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include "Button.h"
 #include <QLayout>
 #include "AlarmIndicator.h"
-#include "TimeDate.h"
 #include <QHeaderView>
 #include "TableHeaderView.h"
 #include "Alarm.h"
@@ -266,11 +266,9 @@ void AlarmInfoWindowPrivate::loadOption()
                 break;
             }
             priorityList.append(priorityStr);
-            QString dateStr;
-            QString timeStr;
+            QString dateStr = timeDate->getDate(node.alarmTime, true);
+            QString timeStr = timeDate->getTime(node.alarmTime, true);
             QString str;
-            timeDate.getTime(node.alarmTime, timeStr, true);
-            timeDate.getDate(node.alarmTime, dateStr, true);
             str = dateStr + " " + timeStr;
             timeList.append(str);
         }

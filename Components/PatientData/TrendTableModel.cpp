@@ -9,7 +9,6 @@
  **/
 
 #include "TrendTableModel.h"
-#include "TimeDate.h"
 #include "ThemeManager.h"
 #include "ParamInfo.h"
 #include "ParamManager.h"
@@ -25,6 +24,7 @@
 #include "CO2Param.h"
 #include <QTimerEvent>
 #include "Framework/Language/LanguageManager.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include "PatientManager.h"
 
 #define COLUMN_COUNT        7
@@ -941,11 +941,9 @@ void TrendTableModelPrivate::loadTrendData()
     {
         TrendDataPackage *pack = trendDataPack.at(i);
 
-        QString date;
-        timeDate.getDate(pack->time, date, true);
+        QString date = timeDate->getDate(pack->time, true);
         // 填充TrendDataContent结构体dataStr成员
-        QString time;
-        timeDate.getTime(pack->time, time, true);
+        QString time = timeDate->getTime(pack->time, true);
         TrendDataContent colHeadContent(time);
 
         // 手动触发事件发生时，表头颜色显示优先级低于报警事件显示

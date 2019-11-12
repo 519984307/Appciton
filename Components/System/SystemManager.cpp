@@ -43,6 +43,7 @@
 #include "StandbyWindow.h"
 #include "NIBPParam.h"
 #include "Framework/Language/LanguageManager.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include "EventStorageManagerInterface.h"
 
 #define BACKLIGHT_DEV   "/sys/class/backlight/backlight/brightness"       // 背光控制文件接口
@@ -593,6 +594,8 @@ void SystemManager::setSystemTimeFormat(const TimeFormat &format)
         return;
     }
     d_ptr->timeFormat = format;
+    timeDate->setTimeFormat(format);
+    systemConfig.setNumValue("DateTime|TimeFormat", static_cast<int>(format));
     emit systemTimeFormatUpdated(format);
 }
 
@@ -608,6 +611,8 @@ void SystemManager::setSystemDateFormat(const DateFormat &format)
         return;
     }
     d_ptr->dateFormat = format;
+    timeDate->setDateFormat(format);
+    systemConfig.setNumValue("DateTime|DateFormat", static_cast<int>(format));
 }
 
 DateFormat SystemManager::getSystemDateFormat() const
@@ -677,6 +682,7 @@ SystemManager::SystemManager() :  //申请一个动态的模块加载结果数�
     {
         d_ptr->timeFormat = static_cast<TimeFormat>(timeformat);
     }
+    timeDate->setTimeFormat(d_ptr->timeFormat);
 
     /* load the date format */
     int dateformat = DATE_FORMAT_Y_M_D;
@@ -685,6 +691,7 @@ SystemManager::SystemManager() :  //申请一个动态的模块加载结果数�
     {
         d_ptr->dateFormat = static_cast<DateFormat>(dateformat);
     }
+    timeDate->setDateFormat(d_ptr->dateFormat);
 
 #ifdef Q_WS_QWS
     int val = 0;

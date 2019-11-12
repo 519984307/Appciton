@@ -14,7 +14,6 @@
 #include <QString>
 #include "IConfig.h"
 #include "SystemManager.h"
-#include "TimeDate.h"
 #include "NIBPAlarm.h"
 #include "Framework/ErrorLog/ErrorLog.h"
 #include "Framework/ErrorLog/ErrorLogItem.h"

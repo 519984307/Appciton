@@ -11,7 +11,7 @@
 #include "TimeManager.h"
 #include "DateTimeWidget.h"
 #include "ElapseTimeWidget.h"
-#include "TimeDate.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include "IConfig.h"
 #include "SystemTick.h"
 #include <QProcess>
@@ -25,10 +25,8 @@
 void TimeManager::_refreshWidgets()
 {
     // 刷新日期和时间。
-    QString text;
-    QString t;
-    timeDate.getTime(_curTime, text, _showSecond);
-    timeDate.getDate(_curTime, t, true);
+    QString text = timeDate->getTime(_curTime, _showSecond);
+    QString t = timeDate->getDate(_curTime, true);
     t += " ";
     t += text;
     t += " ";
@@ -167,7 +165,7 @@ TimeManager::TimeManager()
     // 判断上次开机与本次开机的时间间隔。
     unsigned timestamp = 0;
     systemConfig.getNumValue("Timestamp", timestamp);
-    _curTime = timeDate.time();
+    _curTime = timeDate->time();
     unsigned diffTime = (_curTime < timestamp) ? 901 : (_curTime - timestamp);
 
     // 判断开机时间间隔(关机到开机再次看到界面)。

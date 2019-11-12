@@ -23,7 +23,6 @@
 #include "Alarm.h"
 #include "ECGDupParam.h"
 #include "RESPDupParam.h"
-#include "TimeDate.h"
 #include "EventStorageManager.h"
 #include <QMap>
 #include "Framework/Utility/RingBuff.h"

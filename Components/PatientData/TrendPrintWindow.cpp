@@ -10,17 +10,17 @@
 
 #include "TrendPrintWindow.h"
 #include "Framework/Language/LanguageManager.h"
+#include "Framework/TimeDate/TimeDate.h"
+#include "Framework/TimeDate/TimeSymbol.h"
 #include <QLabel>
 #include <QGroupBox>
 #include "Button.h"
 #include "SpinBox.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include "TimeDate.h"
 #include <QDateTime>
 #include "TrendTableWindow.h"
 #include "IConfig.h"
-#include "TimeSymbol.h"
 #include "SystemManager.h"
 
 class TrendPrintWindowPrivate
@@ -176,21 +176,21 @@ void TrendPrintWindow::initPrintTime(unsigned start, unsigned end)
     d_ptr->printEndTime = end;
 
     d_ptr->blockSignal(true, true);
-    d_ptr->startSubBox->yearSbx->setValue(static_cast<int>(timeDate.getDateYear(start)));
-    d_ptr->startSubBox->monthSbx->setValue(static_cast<int>(timeDate.getDateMonth(start)));
-    d_ptr->startSubBox->daySbx->setValue(static_cast<int>(timeDate.getDateDay(start)));
-    d_ptr->startSubBox->hourSbx->setValue(static_cast<int>(timeDate.getTimeHour(start)));
-    d_ptr->startSubBox->minSbx->setValue(static_cast<int>(timeDate.getTimeMinute(start)));
-    d_ptr->startSubBox->secondSbx->setValue(static_cast<int>(timeDate.getTimeSenonds(start)));
+    d_ptr->startSubBox->yearSbx->setValue(static_cast<int>(timeDate->getDateYear(start)));
+    d_ptr->startSubBox->monthSbx->setValue(static_cast<int>(timeDate->getDateMonth(start)));
+    d_ptr->startSubBox->daySbx->setValue(static_cast<int>(timeDate->getDateDay(start)));
+    d_ptr->startSubBox->hourSbx->setValue(static_cast<int>(timeDate->getTimeHour(start)));
+    d_ptr->startSubBox->minSbx->setValue(static_cast<int>(timeDate->getTimeMinute(start)));
+    d_ptr->startSubBox->secondSbx->setValue(static_cast<int>(timeDate->getTimeSeconds(start)));
     d_ptr->blockSignal(false, true);
 
     d_ptr->blockSignal(true, false);
-    d_ptr->endSubBox->yearSbx->setValue(static_cast<int>(timeDate.getDateYear(end)));
-    d_ptr->endSubBox->monthSbx->setValue(static_cast<int>(timeDate.getDateMonth(end)));
-    d_ptr->endSubBox->daySbx->setValue(static_cast<int>(timeDate.getDateDay(end)));
-    d_ptr->endSubBox->hourSbx->setValue(static_cast<int>(timeDate.getTimeHour(end)));
-    d_ptr->endSubBox->minSbx->setValue(static_cast<int>(timeDate.getTimeMinute(end)));
-    d_ptr->endSubBox->secondSbx->setValue(static_cast<int>(timeDate.getTimeSenonds(end)));
+    d_ptr->endSubBox->yearSbx->setValue(static_cast<int>(timeDate->getDateYear(end)));
+    d_ptr->endSubBox->monthSbx->setValue(static_cast<int>(timeDate->getDateMonth(end)));
+    d_ptr->endSubBox->daySbx->setValue(static_cast<int>(timeDate->getDateDay(end)));
+    d_ptr->endSubBox->hourSbx->setValue(static_cast<int>(timeDate->getTimeHour(end)));
+    d_ptr->endSubBox->minSbx->setValue(static_cast<int>(timeDate->getTimeMinute(end)));
+    d_ptr->endSubBox->secondSbx->setValue(static_cast<int>(timeDate->getTimeSeconds(end)));
     d_ptr->blockSignal(false, false);
 
     d_ptr->difftimeInfo();
@@ -219,24 +219,24 @@ void TrendPrintWindow::startTimeChangeSlot(int, int)
     if (timeStamp < d_ptr->timeStartLimit)
     {
         d_ptr->blockSignal(true, true);
-        d_ptr->startSubBox->yearSbx->setValue(static_cast<int>(timeDate.getDateYear(d_ptr->timeStartLimit)));
-        d_ptr->startSubBox->monthSbx->setValue(static_cast<int>(timeDate.getDateMonth(d_ptr->timeStartLimit)));
-        d_ptr->startSubBox->daySbx->setValue(static_cast<int>(timeDate.getDateDay(d_ptr->timeStartLimit)));
-        d_ptr->startSubBox->hourSbx->setValue(static_cast<int>(timeDate.getTimeHour(d_ptr->timeStartLimit)));
-        d_ptr->startSubBox->minSbx->setValue(static_cast<int>(timeDate.getTimeMinute(d_ptr->timeStartLimit)));
-        d_ptr->startSubBox->secondSbx->setValue(static_cast<int>(timeDate.getTimeSenonds(d_ptr->timeStartLimit)));
+        d_ptr->startSubBox->yearSbx->setValue(static_cast<int>(timeDate->getDateYear(d_ptr->timeStartLimit)));
+        d_ptr->startSubBox->monthSbx->setValue(static_cast<int>(timeDate->getDateMonth(d_ptr->timeStartLimit)));
+        d_ptr->startSubBox->daySbx->setValue(static_cast<int>(timeDate->getDateDay(d_ptr->timeStartLimit)));
+        d_ptr->startSubBox->hourSbx->setValue(static_cast<int>(timeDate->getTimeHour(d_ptr->timeStartLimit)));
+        d_ptr->startSubBox->minSbx->setValue(static_cast<int>(timeDate->getTimeMinute(d_ptr->timeStartLimit)));
+        d_ptr->startSubBox->secondSbx->setValue(static_cast<int>(timeDate->getTimeSeconds(d_ptr->timeStartLimit)));
         d_ptr->blockSignal(false, true);
         d_ptr->printStartTime = d_ptr->timeStartLimit;
     }
     else if (timeStamp > d_ptr->printEndTime)
     {
         d_ptr->blockSignal(true, true);
-        d_ptr->startSubBox->yearSbx->setValue(static_cast<int>(timeDate.getDateYear(d_ptr->printEndTime)));
-        d_ptr->startSubBox->monthSbx->setValue(static_cast<int>(timeDate.getDateMonth(d_ptr->printEndTime)));
-        d_ptr->startSubBox->daySbx->setValue(static_cast<int>(timeDate.getDateDay(d_ptr->printEndTime)));
-        d_ptr->startSubBox->hourSbx->setValue(static_cast<int>(timeDate.getTimeHour(d_ptr->printEndTime)));
-        d_ptr->startSubBox->minSbx->setValue(static_cast<int>(timeDate.getTimeMinute(d_ptr->printEndTime)));
-        d_ptr->startSubBox->secondSbx->setValue(static_cast<int>(timeDate.getTimeSenonds(d_ptr->printEndTime)));
+        d_ptr->startSubBox->yearSbx->setValue(static_cast<int>(timeDate->getDateYear(d_ptr->printEndTime)));
+        d_ptr->startSubBox->monthSbx->setValue(static_cast<int>(timeDate->getDateMonth(d_ptr->printEndTime)));
+        d_ptr->startSubBox->daySbx->setValue(static_cast<int>(timeDate->getDateDay(d_ptr->printEndTime)));
+        d_ptr->startSubBox->hourSbx->setValue(static_cast<int>(timeDate->getTimeHour(d_ptr->printEndTime)));
+        d_ptr->startSubBox->minSbx->setValue(static_cast<int>(timeDate->getTimeMinute(d_ptr->printEndTime)));
+        d_ptr->startSubBox->secondSbx->setValue(static_cast<int>(timeDate->getTimeSeconds(d_ptr->printEndTime)));
         d_ptr->blockSignal(false, true);
         d_ptr->printStartTime = d_ptr->printEndTime;
     }
@@ -265,24 +265,24 @@ void TrendPrintWindow::endTimeChangeSlot(int, int)
     if (timeStamp > d_ptr->timeEndLimit)
     {
         d_ptr->blockSignal(true, false);
-        d_ptr->endSubBox->yearSbx->setValue(static_cast<int>(timeDate.getDateYear(d_ptr->timeEndLimit)));
-        d_ptr->endSubBox->monthSbx->setValue(static_cast<int>(timeDate.getDateMonth(d_ptr->timeEndLimit)));
-        d_ptr->endSubBox->daySbx->setValue(static_cast<int>(timeDate.getDateDay(d_ptr->timeEndLimit)));
-        d_ptr->endSubBox->hourSbx->setValue(static_cast<int>(timeDate.getTimeHour(d_ptr->timeEndLimit)));
-        d_ptr->endSubBox->minSbx->setValue(static_cast<int>(timeDate.getTimeMinute(d_ptr->timeEndLimit)));
-        d_ptr->endSubBox->secondSbx->setValue(static_cast<int>(timeDate.getTimeSenonds(d_ptr->timeEndLimit)));
+        d_ptr->endSubBox->yearSbx->setValue(static_cast<int>(timeDate->getDateYear(d_ptr->timeEndLimit)));
+        d_ptr->endSubBox->monthSbx->setValue(static_cast<int>(timeDate->getDateMonth(d_ptr->timeEndLimit)));
+        d_ptr->endSubBox->daySbx->setValue(static_cast<int>(timeDate->getDateDay(d_ptr->timeEndLimit)));
+        d_ptr->endSubBox->hourSbx->setValue(static_cast<int>(timeDate->getTimeHour(d_ptr->timeEndLimit)));
+        d_ptr->endSubBox->minSbx->setValue(static_cast<int>(timeDate->getTimeMinute(d_ptr->timeEndLimit)));
+        d_ptr->endSubBox->secondSbx->setValue(static_cast<int>(timeDate->getTimeSeconds(d_ptr->timeEndLimit)));
         d_ptr->blockSignal(false, false);
         d_ptr->printEndTime = d_ptr->timeEndLimit;
     }
     else if (timeStamp < d_ptr->printStartTime)
     {
         d_ptr->blockSignal(true, false);
-        d_ptr->endSubBox->yearSbx->setValue(static_cast<int>(timeDate.getDateYear(d_ptr->printStartTime)));
-        d_ptr->endSubBox->monthSbx->setValue(static_cast<int>(timeDate.getDateMonth(d_ptr->printStartTime)));
-        d_ptr->endSubBox->daySbx->setValue(static_cast<int>(timeDate.getDateDay(d_ptr->printStartTime)));
-        d_ptr->endSubBox->hourSbx->setValue(static_cast<int>(timeDate.getTimeHour(d_ptr->printStartTime)));
-        d_ptr->endSubBox->minSbx->setValue(static_cast<int>(timeDate.getTimeMinute(d_ptr->printStartTime)));
-        d_ptr->endSubBox->secondSbx->setValue(static_cast<int>(timeDate.getTimeSenonds(d_ptr->printStartTime)));
+        d_ptr->endSubBox->yearSbx->setValue(static_cast<int>(timeDate->getDateYear(d_ptr->printStartTime)));
+        d_ptr->endSubBox->monthSbx->setValue(static_cast<int>(timeDate->getDateMonth(d_ptr->printStartTime)));
+        d_ptr->endSubBox->daySbx->setValue(static_cast<int>(timeDate->getDateDay(d_ptr->printStartTime)));
+        d_ptr->endSubBox->hourSbx->setValue(static_cast<int>(timeDate->getTimeHour(d_ptr->printStartTime)));
+        d_ptr->endSubBox->minSbx->setValue(static_cast<int>(timeDate->getTimeMinute(d_ptr->printStartTime)));
+        d_ptr->endSubBox->secondSbx->setValue(static_cast<int>(timeDate->getTimeSeconds(d_ptr->printStartTime)));
         d_ptr->blockSignal(false, false);
         d_ptr->printEndTime = d_ptr->printStartTime;
     }
@@ -456,27 +456,27 @@ void TrendPrintWindowPrivate::adjustPrintTime(unsigned printTime, bool start)
     }
 
     subBox->yearSbx->blockSignals(true);
-    subBox->yearSbx->setValue(static_cast<int>(timeDate.getDateYear(adjustTime)));
+    subBox->yearSbx->setValue(static_cast<int>(timeDate->getDateYear(adjustTime)));
     subBox->yearSbx->blockSignals(false);
 
     subBox->monthSbx->blockSignals(true);
-    subBox->monthSbx->setValue(static_cast<int>(timeDate.getDateMonth(adjustTime)));
+    subBox->monthSbx->setValue(static_cast<int>(timeDate->getDateMonth(adjustTime)));
     subBox->monthSbx->blockSignals(false);
 
     subBox->daySbx->blockSignals(true);
-    subBox->daySbx->setValue(static_cast<int>(timeDate.getDateDay(adjustTime)));
+    subBox->daySbx->setValue(static_cast<int>(timeDate->getDateDay(adjustTime)));
     subBox->daySbx->blockSignals(false);
 
     subBox->hourSbx->blockSignals(true);
-    subBox->hourSbx->setValue(static_cast<int>(timeDate.getTimeHour(adjustTime)));
+    subBox->hourSbx->setValue(static_cast<int>(timeDate->getTimeHour(adjustTime)));
     subBox->hourSbx->blockSignals(false);
 
     subBox->minSbx->blockSignals(true);
-    subBox->minSbx->setValue(static_cast<int>(timeDate.getTimeMinute(adjustTime)));
+    subBox->minSbx->setValue(static_cast<int>(timeDate->getTimeMinute(adjustTime)));
     subBox->minSbx->blockSignals(false);
 
     subBox->secondSbx->blockSignals(true);
-    subBox->secondSbx->setValue(static_cast<int>(timeDate.getTimeSenonds(adjustTime)));
+    subBox->secondSbx->setValue(static_cast<int>(timeDate->getTimeSeconds(adjustTime)));
     subBox->secondSbx->blockSignals(false);
 }
 

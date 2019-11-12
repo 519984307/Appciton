@@ -13,7 +13,6 @@
 #include "NIBPAlarm.h"
 #include "IConfig.h"
 #include "ConfigManager.h"
-#include "TimeDate.h"
 #include "N5Provider.h"
 #include "NIBPTrendWidget.h"
 #include "NIBPDataTrendWidget.h"
@@ -36,6 +35,7 @@
 #include "NIBPCountdownTime.h"
 #include "AlarmSourceManager.h"
 #include "TrendCache.h"
+#include "Framework/TimeDate/TimeDate.h"
 
 /**************************************************************************************************
  * 病人类型修改。
@@ -488,7 +488,7 @@ void NIBPParam::setResult(int16_t sys, int16_t dia, int16_t map, int16_t pr, NIB
 
     if (_sysValue != InvData() && _diaValue != InvData() && _mapVaule != InvData())
     {
-        unsigned t = timeDate.time();
+        unsigned t = timeDate->time();
         trendCache.collectTrendData(t, true);
         trendCache.collectTrendAlarmStatus(t);
         // 测量出结果后，收集一次趋势数据

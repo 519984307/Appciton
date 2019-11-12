@@ -23,6 +23,7 @@
 
 #include "Framework/Language/LanguageManager.h"
 #include "Framework/Language/Translator.h"
+#include "Framework/TimeDate/TimeDate.h"
 
 /**
  * @brief initLanguage initialize the language manager
@@ -205,7 +206,8 @@ static void _initComponents(void)
     timeManager.registerWidgets(timeWigdet, NULL);
 
     // 基础时间日期管理。
-    timeDate.construction();
+    timeDate->getInstance();
+
 
     // 系统状态栏
     layoutManager.addLayoutWidget(&sysStatusBar);
@@ -741,7 +743,6 @@ void deleteObjects(void)
     //    deleteWaveWidgetSelectMenu();
     // deletePatientMenu();
     deleteParamManager();
-    deleteTimeDate();
     deleteMachineConfig();
     deleteDataStorageDirManager();
     deleteSystemConfig();

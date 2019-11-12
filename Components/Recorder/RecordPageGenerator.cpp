@@ -30,10 +30,10 @@
 #include "CO2Param.h"
 #include "Framework/Utility/Utility.h"
 #include "Framework/Utility/Unit.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include "LayoutManager.h"
 #include <QDebug>
 #include "RecorderManager.h"
-#include "TimeDate.h"
 #include "TimeManager.h"
 #include "AlarmConfig.h"
 #include "PatientManager.h"
@@ -148,10 +148,10 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
     infos.append(QString("%1: %2").arg(trs("PatientSex")).arg(trs(PatientSymbol::convert(patInfo.sex))));
     infos.append(QString("%1: %2").arg(trs("PatientType")).arg(trs(PatientSymbol::convert(patInfo.type))));
     infos.append(QString("%1: %2").arg(trs("Blood")).arg(PatientSymbol::convert(patInfo.blood)));
+
+    QDateTime dt(patInfo.bornDate, QTime(12, 0)); /* dummy dt */
     QString str;
-    QString fotmat;
-    timeDate.getDateFormat(fotmat, true);
-    str = QString("%1: %2").arg(trs("BornDate")).arg(patInfo.bornDate.toString(fotmat));
+    str = QString("%1: %2").arg(trs("BornDate")).arg(timeDate->getDate(dt.toTime_t(), true));
     infos.append(str);
 
     str = QString("%1: ").arg(trs("Weight"));
@@ -196,15 +196,14 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
         textWidth =  w;
     }
 
-    unsigned t = timeDate.time();
+    unsigned t = timeDate->time();
     if (timestamp)
     {
         t = timestamp;
     }
 
-    QString timeDateStr;
     bool showSecond = timeManager.isShowSecond();
-    timeDate.getDateTime(t, timeDateStr, true, showSecond);
+    QString timeDateStr = timeDate->getDateTime(t, true, showSecond);
     QString timeStr = QString("%1: %2").arg(trs("PrintTime")).arg(timeDateStr);
 
     // record time width
@@ -482,8 +481,7 @@ RecordPage *RecordPageGenerator::createTrendPage(const TrendDataPackage &trendDa
     QString timeStr;
     if (showEventTime)
     {
-        QString timeDateStr;
-        timeDate.getDateTime(trendData.time, timeDateStr, true, true);
+        QString timeDateStr = timeDate->getDateTime(trendData.time, true, true);
         if (timeStringCaption.isEmpty())
         {
             timeStr = QString("%1: %2").arg(trs("EventTime")).arg(timeDateStr);

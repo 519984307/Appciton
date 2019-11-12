@@ -10,9 +10,9 @@
 
 #include "CCHDDataModel.h"
 #include "Framework/Language/LanguageManager.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include "ThemeManager.h"
 #include "WindowManager.h"
-#include "TimeDate.h"
 
 #define ROW_COUNT 3
 #define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
@@ -81,8 +81,7 @@ QVariant CCHDDataModel::data(const QModelIndex &index, int role) const
             unsigned timeStamp = d_ptr->cchdDataList.at(row).time;
             if (timeStamp)
             {
-                QString time;
-                timeDate.getTime(timeStamp, time, true);
+                QString time = timeDate->getTime(timeStamp, true);
                 return time;
             }
             else

@@ -12,7 +12,7 @@
 #include "DataStorageDirManager.h"
 #include "ThemeManager.h"
 #include <QDateTime>
-#include "TimeDate.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include "WindowManager.h"
 
 #define COLUMN_COUNT        2
@@ -185,8 +185,7 @@ int HistoryDataSelModel::getEachPageRowCount()
 
 QString HistoryDataSelModelPrivate::convertTimeStr(const QString str)
 {
-    QString timeStr;
     QDateTime dt = QDateTime::fromString(str, "yyyyMMddHHmmss");
-    timeDate.getDateTime(dt.toTime_t(), timeStr, true, true);
+    QString timeStr = timeDate->getDateTime(dt.toTime_t(), true, true);
     return timeStr;
 }

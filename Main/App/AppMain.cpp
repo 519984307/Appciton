@@ -16,6 +16,7 @@
 #include "Init.h"
 #include "Framework/ErrorLog/ErrorLogItem.h"
 #include "Framework/ErrorLog/ErrorLog.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include "LayoutManager.h"
 #include <unistd.h>
 #include "ConfigManager.h"
@@ -61,7 +62,7 @@ static void _task50MSec0(void)
     static unsigned t = 0;
     if (0 != t)
     {
-        double diff_t = timeDate.difftime(timeDate.time(), t);
+        double diff_t = timeDate->difftime(timeDate->time(), t);
         t += static_cast<int>(diff_t);
         if (isZero(diff_t))
         {
@@ -70,7 +71,7 @@ static void _task50MSec0(void)
     }
     else
     {
-        t = timeDate.time();
+        t = timeDate->time();
     }
 
     timeManager.mainRun(t);

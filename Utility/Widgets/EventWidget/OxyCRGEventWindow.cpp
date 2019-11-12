@@ -11,16 +11,16 @@
 #include "OxyCRGEventWindow.h"
 #include "TableView.h"
 #include "Button.h"
-#include "Framework/Language/LanguageManager.h"
 #include "ComboBox.h"
 #include "EventInfoWidget.h"
 #include "OxyCRGEventWaveWidget.h"
 #include <QStackedLayout>
+#include "Framework/Language/LanguageManager.h"
 #include "Framework/Storage/IStorageBackend.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include "EventStorageManager.h"
 #include "Debug.h"
 #include "TableHeaderView.h"
-#include "TimeDate.h"
 #include "ParamInfo.h"
 #include "EventReviewModel.h"
 #include "AlarmConfig.h"
@@ -544,8 +544,8 @@ void OxyCRGEventWindowPrivate::loadOxyCRGEventData()
 
             t = ctx.infoSegment->timestamp;
 
-            timeDate.getDate(t, dateStr, true);
-            timeDate.getTime(t, timeStr, true);
+            dateStr = timeDate->getDate(t, true);
+            timeStr = timeDate->getTime(t, true);
             QString timeItemStr = dateStr + " " + timeStr;
 
             switch (ctx.oxyCRGSegment->type)
@@ -722,11 +722,9 @@ void OxyCRGEventWindowPrivate::eventInfoUpdate(int curRow)
     }
 
     unsigned t = 0;
-    QString timeStr;
-    QString dateStr;
+    QString timeStr = timeDate->getTime(t, true);
+    QString dateStr = timeDate->getDate(t, true);
     t = ctx.infoSegment->timestamp;
-    timeDate.getDate(t, dateStr, true);
-    timeDate.getTime(t, timeStr, true);
     timeInfoStr = dateStr + " " + timeStr;
 
     indexStr = QString::number(curRow + 1) + "/" + QString::number(curDisplayEventNum);

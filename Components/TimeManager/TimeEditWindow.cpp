@@ -9,14 +9,14 @@
  **/
 
 #include "TimeEditWindow.h"
-#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
 #include "ComboBox.h"
 #include <QGridLayout>
 #include "IConfig.h"
 #include "SpinBox.h"
-#include "TimeSymbol.h"
-#include "TimeDate.h"
+#include "Framework/Language/LanguageManager.h"
+#include "Framework/TimeDate/TimeSymbol.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include <QProcess>
 #include <QVBoxLayout>
 #include "TimeManager.h"
@@ -79,13 +79,13 @@ public:
 
 void TimeEditWindowPrivate::loadOptions()
 {
-    oldTime = timeDate.time();
-    spinBoxs[ITEM_SPB_YEAR]->setValue(timeDate.getDateYear());
-    spinBoxs[ITEM_SPB_MONTH]->setValue(timeDate.getDateMonth());
-    spinBoxs[ITEM_SPB_DAY]->setValue(timeDate.getDateDay());
-    spinBoxs[ITEM_SPB_HOUR]->setValue(timeDate.getTimeHour());
-    spinBoxs[ITEM_SPB_MINUTE]->setValue(timeDate.getTimeMinute());
-    spinBoxs[ITEM_SPB_SECOND]->setValue(timeDate.getTimeSenonds());
+    oldTime = timeDate->time();
+    spinBoxs[ITEM_SPB_YEAR]->setValue(timeDate->getDateYear());
+    spinBoxs[ITEM_SPB_MONTH]->setValue(timeDate->getDateMonth());
+    spinBoxs[ITEM_SPB_DAY]->setValue(timeDate->getDateDay());
+    spinBoxs[ITEM_SPB_HOUR]->setValue(timeDate->getTimeHour());
+    spinBoxs[ITEM_SPB_MINUTE]->setValue(timeDate->getTimeMinute());
+    spinBoxs[ITEM_SPB_SECOND]->setValue(timeDate->getTimeSeconds());
 
     int value = 0;
     value = systemManager.getSystemDateFormat();

@@ -12,7 +12,6 @@
 #include "IWidget.h"
 #include <QPainter>
 #include <QLabel>
-#include "TimeDate.h"
 #include "ParamInfo.h"
 #include "ParamManager.h"
 #include "FontManager.h"
@@ -20,8 +19,8 @@
 #include "IConfig.h"
 #include "TrendDataStorageManager.h"
 #include "Framework/Language/LanguageManager.h"
-#include "TrendGraphConfig.h"
 #include "Framework/Utility/Utility.h"
+#include "TrendGraphConfig.h"
 
 #define GRAPH_POINT_NUMBER          120
 #define DATA_INTERVAL_PIXEL         5

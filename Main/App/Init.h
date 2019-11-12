@@ -45,7 +45,6 @@
 #include "PatientInfoWidget.h"
 #include "PatientInfoWindow.h"
 
-#include "TimeDate.h"
 #include "TimeManager.h"
 #include "DateTimeWidget.h"
 #include "ElapseTimeWidget.h"

@@ -10,7 +10,6 @@
 #include "ConfigManager.h"
 #include <unistd.h>
 #include <QProcess>
-#include "TimeDate.h"
 #include <dirent.h>
 #include <QDir>
 #include "ExportDataWidget.h"

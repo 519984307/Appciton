@@ -16,10 +16,10 @@
 #include <QVector>
 #include "FontManager.h"
 #include "ParamInfo.h"
-#include "Framework/Utility/Utility.h"
 #include "AlarmConfig.h"
-#include "TimeDate.h"
 #include "Framework/Language/LanguageManager.h"
+#include "Framework/TimeDate/TimeDate.h"
+#include "Framework/Utility/Utility.h"
 
 #define AXIS_X_SECTION_WIDTH (RECORDER_PIXEL_PER_MM * 16)
 #define AXIS_Y_SECTION_HEIGHT (RECORDER_PIXEL_PER_MM * 8)
@@ -140,8 +140,7 @@ GraphAxisInfo TrendGraphPageGeneratorPrivate::getAxisInfo(const RecordPage *page
         QStringList timeList;
         for (int i = 0; i < AXIS_X_SECTION_NUM && t <= endTime; i++)
         {
-            QString timeStr;
-            timeDate.getTime(t, timeStr, true);
+            QString timeStr = timeDate->getTime(t, true);
             timeList.append(timeStr);
             t += deltaT;
         }

@@ -12,15 +12,21 @@
 
 #include <QString>
 #include <QtTest>
-#include "TimeDate.h"
-class TestTimeDate : public QObject
+#include "Framework/TimeDate/TimeDate.h"
+
+class TestTimeDate : public QObject, public TimeDate
 {
     Q_OBJECT
-
 public:
     TestTimeDate();
+
 private Q_SLOTS:
-    void testTime_data();
+    void init();
+    void cleanup();
+    void testGetDateFormat();
+    void testSetDateFormat();
+    void testGetTimeFormat();
+    void testSetTimeformat();
     void testTime();
     void testDifftime_data();
     void testDifftime();
@@ -28,10 +34,14 @@ private Q_SLOTS:
     void testGetTime();
     void testGetDate_data();
     void testGetDate();
+    void testGetDateTime_data();
+    void testGetDateTime();
     void testGetTimeStr_data();
     void testGetTimeStr();
     void testGetDateStr_data();
     void testGetDateStr();
+    void testGetDateTimeStr_data();
+    void testGetDateTimeStr();
     void testGetDateYear_data();
     void testGetDateYear();
     void testGetDateMonth_data();
@@ -44,9 +54,10 @@ private Q_SLOTS:
     void testGetTimeMinute();
     void testGetTimeSecond_data();
     void testGetTimeSecond();
-    void testGetTimeMsec_data();
-    void testGetTimeMsec();
 private:
 };
+
+Q_DECLARE_METATYPE(TimeFormat)
+Q_DECLARE_METATYPE(DateFormat)
 
 #endif  //  TESTTIMEDATE_H

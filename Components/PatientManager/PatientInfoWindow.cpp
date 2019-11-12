@@ -22,12 +22,12 @@
 #include "DischargePatientWindow.h"
 #include <QMap>
 #include "Button.h"
-#include "Framework/Utility/Unit.h"
 #include "IConfig.h"
 #include "WindowManager.h"
 #include "SpinBox.h"
-#include "TimeDate.h"
-#include "TimeSymbol.h"
+#include "Framework/Utility/Unit.h"
+#include "Framework/TimeDate/TimeDate.h"
+#include "Framework/TimeDate/TimeSymbol.h"
 #include <QDate>
 #include "FloatHandle.h"
 #include "RunningStatusBar.h"
@@ -278,7 +278,7 @@ void PatientInfoWindowPrivate::loadOptions()
         break;
     }
 
-    dateItem[Born_Date_Year]->setRange(PATIENT_BORN_DATE_RANAGE, timeDate.getDateYear());
+    dateItem[Born_Date_Year]->setRange(PATIENT_BORN_DATE_RANAGE, timeDate->getDateYear());
     for (int i = Born_Date_Year; i <= Born_Date_Day; i++)
     {
         dateItem[static_cast<BornDate>(i)]->blockSignals(true);
@@ -286,7 +286,7 @@ void PatientInfoWindowPrivate::loadOptions()
     dateItem[Born_Date_Year]->setValue(year);
     if (year == 0)
     {
-        dateItem[Born_Date_Year]->setStartValue(timeDate.getDateYear());
+        dateItem[Born_Date_Year]->setStartValue(timeDate->getDateYear());
     }
     refreshMonthRange();
     dateItem[Born_Date_Month]->setValue(month);
@@ -570,9 +570,9 @@ void PatientInfoWindowPrivate::refreshDayRange()
     unsigned int month = dateItem[PatientInfoWindowPrivate::Born_Date_Month]->getValue();
     unsigned int day = dateItem[PatientInfoWindowPrivate::Born_Date_Day]->getValue();
     unsigned int upRange = 1;
-    if (year == timeDate.getDateYear() && month == timeDate.getDateMonth())
+    if (year == timeDate->getDateYear() && month == timeDate->getDateMonth())
     {
-        upRange = timeDate.getDateDay();
+        upRange = timeDate->getDateDay();
     }
     else
     {
@@ -593,9 +593,9 @@ void PatientInfoWindowPrivate::refreshMonthRange()
     unsigned int year = dateItem[PatientInfoWindowPrivate::Born_Date_Year]->getValue();
     unsigned int month = dateItem[PatientInfoWindowPrivate::Born_Date_Month]->getValue();
     unsigned int upRange = 12;
-    if (year == timeDate.getDateYear())
+    if (year == timeDate->getDateYear())
     {
-        upRange = timeDate.getDateMonth();
+        upRange = timeDate->getDateMonth();
     }
     dateItem[PatientInfoWindowPrivate::Born_Date_Month]->setRange(1, upRange);
     if (month > upRange)

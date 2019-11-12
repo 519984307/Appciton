@@ -10,7 +10,6 @@
 
 #include "TrendWaveWidget.h"
 #include "TrendSubWaveWidget.h"
-#include "TimeDate.h"
 #include "ColorManager.h"
 #include "ParamInfo.h"
 #include "TrendGraphSetWindow.h"
@@ -26,7 +25,7 @@
 #include <QMouseEvent>
 #include "ParamManager.h"
 #include "FontManager.h"
-#include "TimeDefine.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include "EventDataParseContext.h"
 #include "Debug.h"
 #include "PatientManager.h"
@@ -542,7 +541,7 @@ void TrendWaveWidget::updateTimeRange()
     unsigned onePixelTime = TrendDataSymbol::convertValue(_timeInterval);
     if (trendBlockList.count() == 0)
     {
-        t = timeDate.time();
+        t = timeDate->time();
         t = t - t % 5;
     }
     else
@@ -656,7 +655,7 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
     // 坐标刻度
     for (int i = GRAPH_DISPLAY_DATA_NUMBER; i >= 0; i --)
     {
-        timeDate.getTime(t, tStr, true);
+        tStr = timeDate->getTime(t, true);
         int timeFormat = systemManager.getSystemTimeFormat();
         if (timeFormat == TIME_FORMAT_24)
         {
@@ -686,9 +685,9 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
     QRect timeRect = rect().adjusted(_waveRegionWidth + 5, 12, -5, 0);
     if (_cursorPosIndex < _trendGraphInfo.alarmInfo.count() && _cursorPosIndex >= 0)
     {
-        timeDate.getDate(_trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp, tStr);
+        tStr = timeDate->getDate(_trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp);
         barPainter.drawText(timeRect, Qt::AlignLeft, tStr);
-        timeDate.getTime(_trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp, tStr, true);
+        tStr = timeDate->getTime(_trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp, true);
         barPainter.drawText(timeRect, Qt::AlignRight, tStr);
     }
 

@@ -12,7 +12,7 @@
 #include <QObject>
 #include <QBitArray>
 #include "Param.h"
-#include "TimeDefine.h"
+#include "Framework/TimeDate/TimeDefine.h"
 #include "SystemManagerInterface.h"
 
 // 模块开机检查结果类型

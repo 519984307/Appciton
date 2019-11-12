@@ -18,11 +18,11 @@
 #include "FontManager.h"
 #include "WaveWidgetLabel.h"
 #include "Framework/Language/LanguageManager.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include "ColorManager.h"
 #include "ParamInfo.h"
 #include "WindowManager.h"
 #include "Debug.h"
-#include "TimeDate.h"
 #include "PopupList.h"
 #include "SystemManager.h"
 
@@ -215,14 +215,14 @@ void IBPWaveWidget::_autoRulerHandle(short data)
     _autoRulerTracePeek = (_autoRulerTracePeek < data) ? data : _autoRulerTracePeek;
     _autoRulerTraveVally = (_autoRulerTraveVally > data) ? data : _autoRulerTraveVally;
 
-    unsigned t = timeDate.time();
+    unsigned t = timeDate->time();
     if (_autoRulerTime == 0)
     {
         _autoRulerTime = t;
         return;
     }
 
-    if (abs(timeDate.difftime(_autoRulerTime, t)) < 6)
+    if (abs(timeDate->difftime(_autoRulerTime, t)) < 6)
     {
         return;
     }

@@ -20,7 +20,7 @@
 #include "Debug.h"
 #include "NIBPAlarm.h"
 #include "WindowManager.h"
-#include "TimeDate.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include "Alarm.h"
 #include "TrendWidgetLabel.h"
 #include "MeasureSettingWindow.h"
@@ -156,7 +156,7 @@ void NIBPDataTrendWidget::showValue(void)
 
     for (int i = 0; i < _rowNR; i++)
     {
-        timeDate.getTime(t.key(), timeStr);
+        timeStr = timeDate->getTime(t.key());
         _table->item(i, 0)->setText(timeStr);
         NIBPTrendCacheData providerBuff = t.value();
         if (providerBuff.sys.value == InvData() || providerBuff.dia.value == InvData() ||

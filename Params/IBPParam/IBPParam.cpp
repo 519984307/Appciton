@@ -11,7 +11,6 @@
 #include "IBPParam.h"
 #include "IBPWaveWidget.h"
 #include "IBPTrendWidget.h"
-#include "TimeDate.h"
 #include "TrendTableWindow.h"
 #include "WaveformCache.h"
 #include "ConfigManager.h"
@@ -20,6 +19,7 @@
 #include "ECGDupParam.h"
 #include "IBPAlarm.h"
 #include "AlarmSourceManager.h"
+#include "Framework/TimeDate/TimeDate.h"
 
 IBPParam *IBPParam::_selfObj = NULL;
 
@@ -940,13 +940,13 @@ IBPScaleInfo &IBPParam::getScaleInfo(IBPSignalInput ibp)
 void IBPParam::zeroCalibration(IBPSignalInput IBP)
 {
     clearCalibAlarm();
-    unsigned zeroTime = timeDate.time();
-    unsigned int year = timeDate.getDateYear(zeroTime) - 2000;
-    unsigned int month = timeDate.getDateMonth(zeroTime);
-    unsigned int day = timeDate.getDateDay(zeroTime);
-    unsigned int hour = timeDate.getTimeHour(zeroTime);
-    unsigned int min = timeDate.getTimeMinute(zeroTime);
-    unsigned int second = timeDate.getTimeSenonds(zeroTime);
+    unsigned zeroTime = timeDate->time();
+    unsigned int year = timeDate->getDateYear(zeroTime) - 2000;
+    unsigned int month = timeDate->getDateMonth(zeroTime);
+    unsigned int day = timeDate->getDateDay(zeroTime);
+    unsigned int hour = timeDate->getTimeHour(zeroTime);
+    unsigned int min = timeDate->getTimeMinute(zeroTime);
+    unsigned int second = timeDate->getTimeSeconds(zeroTime);
     _provider->setTimeZero(IBP, IBP_CALIBRATION_ZERO,
                            (unsigned int)second, (unsigned int)min,
                            (unsigned int)hour, (unsigned int)day,

@@ -15,13 +15,13 @@
 #include "ParamInfo.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include "TimeDate.h"
 #include "TimeManager.h"
 #include "WindowManager.h"
 #include "IConfig.h"
 #include "TrendWidgetLabel.h"
 #include "MeasureSettingWindow.h"
 #include "LayoutManager.h"
+#include "Framework/TimeDate/TimeDate.h"
 
 #define stretchCount 1
 class NIBPTrendWidgetPrivate
@@ -428,8 +428,7 @@ void NIBPTrendWidgetPrivate::updateMeasureTime()
     else
     {
         QString timeStr("@ ");
-        QString tmpStr;
-        timeDate.getTime(lastTime, tmpStr, false);
+        QString tmpStr = timeDate->getTime(lastTime, false);
         timeStr += tmpStr;
         measureTime = timeStr;
     }

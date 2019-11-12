@@ -14,7 +14,7 @@
 #include <QVariant>
 #include "DataStorageDirManager.h"
 #include <QDateTime>
-#include "TimeDate.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include "ThemeManager.h"
 
 #define PIC_WIDTH (16)
@@ -337,8 +337,7 @@ void RescueDataListNewWidget::_caclInfo()
 
 QString RescueDataListNewWidgetPrivate::convertTimeStr(const QString &str)
 {
-    QString timeStr;
     QDateTime dt = QDateTime::fromString(str, "yyyyMMddHHmmss");
-    timeDate.getDateTime(dt.toTime_t(), timeStr, true, true);
+    QString timeStr = timeDate->getDateTime(dt.toTime_t(), true, true);
     return timeStr;
 }

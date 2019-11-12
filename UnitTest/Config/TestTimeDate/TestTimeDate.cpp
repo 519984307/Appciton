@@ -13,347 +13,425 @@
 #include <time.h>
 #include <stdio.h>
 #include <QtGlobal>
-#include "IConfig.h"
-#include "TimeDefine.h"
+#include "Framework/TimeDate/TimeDefine.h"
 
+static QString getTimeFormatStr(TimeFormat timeformat, bool showSeconds)
+{
+    QString formatStr = "hh:mm";
+    if (showSeconds)
+    {
+        formatStr += ":ss";
+    }
+
+    if (TIME_FORMAT_12 == timeformat)
+    {
+        formatStr += " AP";
+    }
+
+    return formatStr;
+}
+
+static QString getDateFormatStr(DateFormat dateformat, bool year4digits)
+{
+    QString formatStr;
+    if (year4digits)
+    {
+        if (dateformat == DATE_FORMAT_Y_M_D)
+        {
+            formatStr = "yyyy/MM/dd";
+        }
+        else if (dateformat == DATE_FORMAT_M_D_Y)
+        {
+            formatStr = "MM/dd/yyyy";
+        }
+        else if (dateformat == DATE_FORMAT_D_M_Y)
+        {
+            formatStr = "dd/MM/yyyy";
+        }
+    }
+    else
+    {
+        if (dateformat == DATE_FORMAT_Y_M_D)
+        {
+            formatStr = "yy/MM/dd";
+        }
+        else if (dateformat == DATE_FORMAT_M_D_Y)
+        {
+            formatStr = "MM/dd/yy";
+        }
+        else if (dateformat == DATE_FORMAT_D_M_Y)
+        {
+            formatStr = "dd/MM/yy";
+        }
+    }
+    return formatStr;
+}
 
 TestTimeDate::TestTimeDate()
 {
-     TimeFormat timeFormat = TIME_FORMAT_24;
-     systemConfig.setNumValue("DateTime|TimeFormat", static_cast<int>(timeFormat));
 }
 
-void TestTimeDate::testTime_data()
+void TestTimeDate::init()
 {
-    QTest::addColumn<int>("Time");
-    QTest::addColumn<bool>("result");
-    QTest::newRow("oneSecond") << 1000 << true;
-    QTest::newRow("twoSecond") << 2000 << true;
-    QTest::newRow("threeSecond") << 3000 << true;
+    if (!instance)
+    {
+        /* create the instance */
+        timeDate->getInstance();
+    }
+}
+
+void TestTimeDate::cleanup()
+{
+    if (instance)
+    {
+        /* delete instance */
+        delete instance;
+        instance = NULL;
+    }
+}
+
+void TestTimeDate::testGetDateFormat()
+{
+    /* default date format will be DATE_FORMAT_Y_M_D */
+    QCOMPARE(timeDate->getDateFormat(), DATE_FORMAT_Y_M_D);
+}
+
+void TestTimeDate::testSetDateFormat()
+{
+    timeDate->setDateFormat(DATE_FORMAT_M_D_Y);
+    QCOMPARE(timeDate->getDateFormat(), DATE_FORMAT_M_D_Y);
+
+    timeDate->setDateFormat(DATE_FORMAT_D_M_Y);
+    QCOMPARE(timeDate->getDateFormat(), DATE_FORMAT_D_M_Y);
+
+    /* set invalid format will not change the exist format */
+    timeDate->setDateFormat(DATE_FORMAT_NR);
+    QCOMPARE(timeDate->getDateFormat(), DATE_FORMAT_D_M_Y);
+}
+
+void TestTimeDate::testGetTimeFormat()
+{
+    /* default time format will be TIME_FORMAT_12 */
+    QCOMPARE(timeDate->getTimeFormat(), TIME_FORMAT_12);
+}
+
+void TestTimeDate::testSetTimeformat()
+{
+    timeDate->setTimeFormat(TIME_FORMAT_24);
+    QCOMPARE(timeDate->getTimeFormat(), TIME_FORMAT_24);
+
+    /* set invalid format will not change the exist format */
+    timeDate->setTimeFormat(TIME_FORMAT_NR);
+    QCOMPARE(timeDate->getTimeFormat(), TIME_FORMAT_24);
 }
 
 void TestTimeDate::testTime()
 {
-   QFETCH(int, Time);
-   QFETCH(bool, result);
-   uint time1 = timeDate.time();
+   uint time1 = timeDate->time();
    uint time2 = QDateTime::currentDateTime().toTime_t();
-   QCOMPARE(time1 == time2, result);
 
-   QTest::qSleep(Time);
-
-   time2 = QDateTime::currentDateTime().toTime_t();
-
-   QCOMPARE((static_cast<bool>(time2 - time1 - Time/1000)), !result);
+   QVERIFY2(time1 == time2, "timestamp should be equal to the system timestamp");
 }
 
 void TestTimeDate::testDifftime_data()
 {
-    QTest::addColumn<int>("Difftime");
-    QTest::addColumn<bool>("result");
-    QTest::newRow("oneSecond") << 1 << true;
-    QTest::newRow("twoSecond") << 2 << true;
-    QTest::newRow("threeSecond") << 3 << true;
+    QTest::addColumn<int>("diffTime");
+    QTest::newRow("oneSecond") << 1;
+    QTest::newRow("twoSecond") << 2;
 }
 
 void TestTimeDate::testDifftime()
 {
-    QFETCH(int, Difftime);
-    QFETCH(bool, result);
-    time_t time1 = time(NULL);
-    QTest::qSleep(Difftime*1000);
-    time_t time2 = time(NULL);
+    QFETCH(int, diffTime);
+    time_t time1 = ::time(NULL);
+    QTest::qSleep(diffTime*1000);
+    time_t time2 = ::time(NULL);
 
-    QCOMPARE(!(static_cast<bool>(timeDate.difftime(time2, time1) - Difftime)), result);
+    QCOMPARE(static_cast<int>(timeDate->difftime(time2, time1)), diffTime);
 }
 
 void TestTimeDate::testGetTime_data()
 {
-    QTest::addColumn<bool>("ifShowSecond");
-    QTest::addColumn<bool>("result");
-    QTest::newRow("showSecond") << true << true;
-    QTest::newRow("NotShowSecond") << false << true;
+    QTest::addColumn<TimeFormat>("format");
+    QTest::addColumn<bool>("showSeconds");
+    QTest::newRow("12h format, show seconds") << TIME_FORMAT_12 << true;
+    QTest::newRow("12h format, not show seconds") << TIME_FORMAT_12 << false;
+    QTest::newRow("24h fromat, show seconds") << TIME_FORMAT_24 << true;
+    QTest::newRow("24h fromat, not show seconds") << TIME_FORMAT_24 << false;
 }
 
 void TestTimeDate::testGetTime()
 {
-    QFETCH(bool, ifShowSecond);
-    QFETCH(bool, result);
-    QString str;
-    QString time;
-    timeDate.getTime(str, ifShowSecond);
-    QTime currentTime = QTime::currentTime();
-    if (ifShowSecond)
-    {
-    time = QString("%1:%2:%3").arg(currentTime.hour(), 2, 10, QLatin1Char('0')).
-                arg(currentTime.minute(), 2, 10, QLatin1Char('0'))
-                .arg(currentTime.second(), 2, 10, QLatin1Char('0'));
-    QCOMPARE(str == time, result);
-    }
-    else
-    {
-    timeDate.getTime(str, ifShowSecond);
-    time = QString("%1:%2").arg(currentTime.hour(), 2, 10, QLatin1Char('0')).
-            arg(currentTime.minute(), 2, 10, QLatin1Char('0'));
-    QCOMPARE(str == time, result);
-    }
+    QFETCH(TimeFormat, format);
+    QFETCH(bool, showSeconds);
+
+    timeDate->setTimeFormat(format);
+
+    QString timeStr1 = timeDate->getTime(showSeconds);
+    QString formatStr = getTimeFormatStr(format, showSeconds);
+    QString timeStr2 = QDateTime::currentDateTime().toString(formatStr);
+
+    QCOMPARE(timeStr1, timeStr2);
 }
 
 void TestTimeDate::testGetDate_data()
 {
-    QTest::addColumn<bool>("ifShow4Bits");
-    QTest::addColumn<bool>("result");
-    QTest::newRow("showYear4Bits") << true << true;
-    QTest::newRow("NotShowYear4Bits") << false << true;
+    QTest::addColumn<DateFormat>("format");
+    QTest::addColumn<bool>("year4digits");
+
+    QTest::newRow("YYYY/MM/DD") << DATE_FORMAT_Y_M_D << true;
+    QTest::newRow("DD/MM/YYYY") << DATE_FORMAT_D_M_Y << true;
+    QTest::newRow("DD/MM/YYYY") << DATE_FORMAT_M_D_Y << true;
+    QTest::newRow("DD/MM/YY") << DATE_FORMAT_D_M_Y << false;
 }
 void TestTimeDate::testGetDate()
 {
-    QFETCH(bool, ifShow4Bits);
-    QFETCH(bool, result);
-    QString str;
-    QString date;
-    timeDate.getDate(str, ifShow4Bits);
-    QDate currentDate = QDate::currentDate();
-    if (ifShow4Bits)
-    {
-    date = QString("%1/%2/%3").arg(currentDate.year(), 4, 10, QLatin1Char('0'))
-                    .arg(currentDate.month(), 2, 10, QLatin1Char('0'))
-                        .arg(currentDate.day(), 2, 10, QLatin1Char('0'));
-    QCOMPARE(str == date, result);
-    }
-    else
-    {
-    date = QString("%1/%2/%3").arg(currentDate.year()%100, 2, 10, QLatin1Char('0'))
-            .arg(currentDate.month(), 2, 10, QLatin1Char('0'))
-                .arg(currentDate.day(), 2, 10, QLatin1Char('0'));
-    QCOMPARE(str == date, result);
-    }
+    QFETCH(DateFormat, format);
+    QFETCH(bool, year4digits);
+
+    timeDate->setDateFormat(format);
+    QString dateStr1 = timeDate->getDate(year4digits);
+    QString formatstr = getDateFormatStr(format, year4digits);
+    QString dateStr2 = QDateTime::currentDateTime().toString(formatstr);
+
+    QCOMPARE(dateStr1, dateStr2);
+}
+
+void TestTimeDate::testGetDateTime_data()
+{
+    QTest::addColumn<DateFormat>("dateformat");
+    QTest::addColumn<TimeFormat>("timeformat");
+    QTest::addColumn<bool>("year4digits");
+    QTest::addColumn<bool>("showSeconds");
+
+    QTest::newRow("YYYY/MM/DD, 12h, show second") << DATE_FORMAT_Y_M_D
+                                                  << TIME_FORMAT_12  << true << true;
+    QTest::newRow("DD/MM/YYYY, 24h, not show second") << DATE_FORMAT_D_M_Y
+                                                      << TIME_FORMAT_24 << true << false;
+    QTest::newRow("DD/MM/YY, 12h, show second") << DATE_FORMAT_M_D_Y
+                                                << TIME_FORMAT_12 << false << true;
+    QTest::newRow("DD/MM/YY, 24h, not show second") << DATE_FORMAT_D_M_Y
+                                                    << TIME_FORMAT_24 << false << false;
+}
+
+void TestTimeDate::testGetDateTime()
+{
+    QFETCH(DateFormat, dateformat);
+    QFETCH(TimeFormat, timeformat);
+    QFETCH(bool, year4digits);
+    QFETCH(bool, showSeconds);
+
+    timeDate->setDateFormat(dateformat);
+    timeDate->setTimeFormat(timeformat);
+
+    QString dateStr1 = timeDate->getDateTime(year4digits, showSeconds);
+    QString formatstr = getDateFormatStr(dateformat, year4digits);
+    formatstr += " " + getTimeFormatStr(timeformat, showSeconds);
+    QString dateStr2 = QDateTime::currentDateTime().toString(formatstr);
+
+    QCOMPARE(dateStr1, dateStr2);
 }
 
 void TestTimeDate::testGetTimeStr_data()
 {
-    QTest::addColumn<int>("Date");
-    QTest::addColumn<bool>("ifShowSecond");
-    QTest::addColumn<bool>("result");
-    QTest::newRow("random2") << 2 << true << true;
-    QTest::newRow("random246") << 246 << true << true;
-    QTest::newRow("random24682") << 24682 << false << true;
-    QTest::newRow("random2468246") << 2468246 << true << true;
-    QTest::newRow("random246824682") << 246824682 << false << true;
+    QTest::addColumn<uint>("timestamp");
+    QTest::addColumn<TimeFormat>("format");
+    QTest::addColumn<bool>("showSeconds");
+    QTest::newRow("12h format, show seconds") << 0u << TIME_FORMAT_12 << true;
+    QTest::newRow("12h format, not show seconds") << QDateTime::currentDateTime().toTime_t()
+                                                  << TIME_FORMAT_12 << false;
+    QTest::newRow("24h fromat, show seconds") << QDateTime::currentDateTime().toTime_t()
+                                              << TIME_FORMAT_24 << true;
+    QTest::newRow("24h fromat, not show seconds") << UINT_MAX << TIME_FORMAT_24 << false;
+    QTest::newRow("24h fromat, show seconds") << UINT_MAX << TIME_FORMAT_24 << true;
 }
 
 void TestTimeDate::testGetTimeStr()
 {
-    QFETCH(int, Date);
-    QFETCH(bool, ifShowSecond);
-    QFETCH(bool, result);
-    QString str;
-    QString timestr;
-    timeDate.getTime(Date, str, ifShowSecond);
-    QDateTime time = QDateTime::fromTime_t(Date);
-    if (ifShowSecond)
-    {
-    timestr = QString("%1:%2:%3").arg(time.time().hour(), 2, 10, QLatin1Char('0'))
-                    .arg(time.time().minute(), 2, 10, QLatin1Char('0'))
-                        .arg(time.time().second(), 2, 10, QLatin1Char('0'));
-    QCOMPARE(timestr == str, result);
-    }
-    else
-    {
-    timestr = QString("%1:%2").arg(time.time().hour(), 2, 10, QLatin1Char('0'))
-            .arg(time.time().minute(), 2, 10, QLatin1Char('0'));
-    QCOMPARE(timestr == str, result);
-    }
+    QFETCH(uint, timestamp);
+    QFETCH(TimeFormat, format);
+    QFETCH(bool, showSeconds);
+
+    timeDate->setTimeFormat(format);
+
+    QString timeStr1 = timeDate->getTime(timestamp, showSeconds);
+    QString formatStr = getTimeFormatStr(format, showSeconds);
+    QString timeStr2 = QDateTime::fromTime_t(timestamp).toString(formatStr);
+
+    QCOMPARE(timeStr1, timeStr2);
 }
 
 void TestTimeDate::testGetDateStr_data()
 {
-    QTest::addColumn<int>("Date");
-    QTest::addColumn<bool>("ifShowYear4Bits");
-    QTest::addColumn<bool>("result");
-    QTest::newRow("random1") << 1 << true << true;
-    QTest::newRow("random135") << 135 << false << true;
-    QTest::newRow("random13579") << 13579 << true << true;
-    QTest::newRow("random1357913") << 1357913 << false << true;
-    QTest::newRow("random135791357") << 135791357 << true << true;
+    QTest::addColumn<uint>("timestamp");
+    QTest::addColumn<DateFormat>("format");
+    QTest::addColumn<bool>("year4digits");
+
+    QTest::newRow("YYYY/MM/DD") << 0u << DATE_FORMAT_Y_M_D << true;
+    QTest::newRow("DD/MM/YYYY") << QDateTime::currentDateTime().toTime_t() << DATE_FORMAT_D_M_Y << true;
+    QTest::newRow("DD/MM/YYYY") << UINT_MAX <<DATE_FORMAT_M_D_Y << true;
+    QTest::newRow("DD/MM/YY") << QDateTime::currentDateTime().toTime_t() << DATE_FORMAT_D_M_Y << false;
 }
 
 void TestTimeDate::testGetDateStr()
 {
-    QFETCH(int, Date);
-    QFETCH(bool, ifShowYear4Bits);
-    QFETCH(bool, result);
-    QString str;
-    QString  datestr;
-    timeDate.getDate(Date, str, ifShowYear4Bits);
-    QDateTime date = QDateTime::fromTime_t(Date);
-    if (ifShowYear4Bits)
-    {
-    datestr = QString("%1/%2/%3").arg(date.date().year(), 2, 10, QLatin1Char('0'))
-                    .arg(date.date().month(), 2, 10, QLatin1Char('0'))
-                        .arg(date.date().day(), 2, 10, QLatin1Char('0'));
-    QCOMPARE(datestr == str, result);
-    }
-    else
-    {
-    datestr = QString("%1/%2/%3").arg(date.date().year()%100, 2, 10, QLatin1Char('0'))
-            .arg(date.date().month(), 2, 10, QLatin1Char('0'))
-                 .arg(date.date().day(), 2, 10, QLatin1Char('0'));
-    QCOMPARE(datestr == str, result);
-    }
+    QFETCH(uint, timestamp);
+    QFETCH(DateFormat, format);
+    QFETCH(bool, year4digits);
+
+    timeDate->setDateFormat(format);
+    QString dateStr1 = timeDate->getDate(timestamp, year4digits);
+    QString formatStr = getDateFormatStr(format, year4digits);
+    QString dateStr2 = QDateTime::fromTime_t(timestamp).toString(formatStr);
+
+    QCOMPARE(dateStr1, dateStr2);
+}
+
+void TestTimeDate::testGetDateTimeStr_data()
+{
+    QTest::addColumn<uint>("timestamp");
+    QTest::addColumn<DateFormat>("dateformat");
+    QTest::addColumn<TimeFormat>("timeformat");
+    QTest::addColumn<bool>("year4digits");
+    QTest::addColumn<bool>("showSeconds");
+
+    QTest::newRow("YYYY/MM/DD, 12h, show second") << 0u << DATE_FORMAT_Y_M_D
+                                                  << TIME_FORMAT_12  << true << true;
+    QTest::newRow("DD/MM/YYYY, 24h, not show second") << QDateTime::currentDateTime().toTime_t()
+                                                      << DATE_FORMAT_D_M_Y << TIME_FORMAT_24
+                                                      << true << false;
+    QTest::newRow("DD/MM/YY, 12h, show second")  << QDateTime::currentDateTime().toTime_t()
+                                                 << DATE_FORMAT_M_D_Y << TIME_FORMAT_12
+                                                 << false << true;
+    QTest::newRow("DD/MM/YY, 24h, not show second") << UINT_MAX << DATE_FORMAT_D_M_Y
+                                                    << TIME_FORMAT_24 << false << false;
+}
+
+void TestTimeDate::testGetDateTimeStr()
+{
+    QFETCH(uint, timestamp);
+    QFETCH(DateFormat, dateformat);
+    QFETCH(TimeFormat, timeformat);
+    QFETCH(bool, year4digits);
+    QFETCH(bool, showSeconds);
+
+    timeDate->setTimeFormat(timeformat);
+    timeDate->setDateFormat(dateformat);
+
+    QString dateStr1 = timeDate->getDateTime(timestamp, year4digits, showSeconds);
+    QString formatstr = getDateFormatStr(dateformat, year4digits);
+    formatstr += " " + getTimeFormatStr(timeformat, showSeconds);
+    QString dateStr2 = QDateTime::fromTime_t(timestamp).toString(formatstr);
+
+    QCOMPARE(dateStr1, dateStr2);
 }
 
 void TestTimeDate::testGetDateYear_data()
 {
-    QTest::addColumn<int>("testNum");
-    QTest::addColumn<bool>("result");
-    QTest::newRow("testNum100") << 100 << true;
-    QTest::newRow("testNum200") << 200 << true;
-    QTest::newRow("testNum500") << 500 << true;
-    QTest::newRow("testNum1000") << 10000 << true;
+    QTest::addColumn<uint>("timestamp");
+    QTest::addColumn<uint>("value");
+
+    QTest::newRow("current time") << 0u
+                                  << static_cast<uint>(QDateTime::currentDateTime().date().year());
+    QTest::newRow("2019/11/12 16:51:30") << QDateTime(QDate(2019, 11, 12), QTime(16, 51, 30)).toTime_t()
+                                         << 2019u;
 }
 
 void TestTimeDate::testGetDateYear()
 {
-    QFETCH(int, testNum);
-    QFETCH(bool, result);
-    for (int i = 0; i < testNum; i++)
-    {
-    int currentYear = timeDate.getDateYear();
-    QDate date = QDate::currentDate();
-    QCOMPARE(currentYear == date.year(), result);
-    }
+    QFETCH(uint, timestamp);
+    QFETCH(uint, value);
+
+    QCOMPARE(timeDate->getDateYear(timestamp), value);
 }
 
 void TestTimeDate::testGetDateMonth_data()
 {
-    QTest::addColumn<int>("testNum");
-    QTest::addColumn<bool>("result");
-    QTest::newRow("testNum100") << 100 << true;
-    QTest::newRow("testNum200") << 200 << true;
-    QTest::newRow("testNum500") << 500 << true;
-    QTest::newRow("testNum1000") << 10000 << true;
+    QTest::addColumn<uint>("timestamp");
+    QTest::addColumn<uint>("value");
+
+    QTest::newRow("current time") << 0u
+                                  << static_cast<uint>(QDateTime::currentDateTime().date().month());
+    QTest::newRow("2019/11/12 16:51:30") << QDateTime(QDate(2019, 11, 12), QTime(16, 51, 30)).toTime_t()
+                                         << 11u;
 }
 
 void TestTimeDate::testGetDateMonth()
 {
-    QFETCH(int, testNum);
-    QFETCH(bool, result);
-    for (int i = 0; i < testNum; i++)
-    {
-    int currentMonth = timeDate.getDateMonth();
-    QDate date = QDate::currentDate();
-    QCOMPARE(currentMonth == date.month(), result);
-    }
+    QFETCH(uint, timestamp);
+    QFETCH(uint, value);
+
+    QCOMPARE(timeDate->getDateMonth(timestamp), value);
 }
 
 void TestTimeDate::testGetDateDay_data()
 {
-    QTest::addColumn<int>("testNum");
-    QTest::addColumn<bool>("result");
-    QTest::newRow("testNum100") << 100 << true;
-    QTest::newRow("testNum200") << 200 << true;
-    QTest::newRow("testNum500") << 500 << true;
-    QTest::newRow("testNum1000") << 10000 << true;
+    QTest::addColumn<uint>("timestamp");
+    QTest::addColumn<uint>("value");
+
+    QTest::newRow("current time") << 0u << static_cast<uint>(QDateTime::currentDateTime().date().day());
+    QTest::newRow("2019/11/12 16:51:30") << QDateTime(QDate(2019, 11, 12), QTime(16, 51, 30)).toTime_t()
+                                         << 12u;
 }
 
 void TestTimeDate::testGetDateDay()
 {
-    QFETCH(int, testNum);
-    QFETCH(bool, result);
-    for (int i = 0; i < testNum; i++)
-    {
-    int currentDay = timeDate.getDateDay();
-    QDate date = QDate::currentDate();
-    QCOMPARE(currentDay ==  date.day(), result);
-    }
+    QFETCH(uint, timestamp);
+    QFETCH(uint, value);
+
+    QCOMPARE(timeDate->getDateDay(timestamp), value);
 }
 
 void TestTimeDate::testGetTimeHour_data()
 {
-    QTest::addColumn<int>("testNum");
-    QTest::addColumn<bool>("result");
-    QTest::newRow("testNum100") << 100 << true;
-    QTest::newRow("testNum200") << 200 << true;
-    QTest::newRow("testNum500") << 500 << true;
-    QTest::newRow("testNum1000") << 10000 << true;
+    QTest::addColumn<uint>("timestamp");
+    QTest::addColumn<uint>("value");
+
+    QTest::newRow("current time") << 0u << static_cast<uint>(QDateTime::currentDateTime().time().hour());
+    QTest::newRow("2019/11/12 16:51:30") << QDateTime(QDate(2019, 11, 12), QTime(16, 51, 30)).toTime_t()
+                                         << 16u;
 }
 
 void TestTimeDate::testGetTimeHour()
 {
-    QFETCH(int, testNum);
-    QFETCH(bool, result);
-    for (int i = 0; i < testNum; i++)
-    {
-    int currentHour = timeDate.getTimeHour();
-    QTime time = QTime::currentTime();
-    QCOMPARE(currentHour ==  time.hour(), result);
-    }
+    QFETCH(uint, timestamp);
+    QFETCH(uint, value);
+
+    QCOMPARE(timeDate->getTimeHour(timestamp), value);
 }
 
 void TestTimeDate::testGetTimeMinute_data()
 {
-    QTest::addColumn<int>("testNum");
-    QTest::addColumn<bool>("result");
-    QTest::newRow("testNum100") << 100 << true;
-    QTest::newRow("testNum200") << 200 << true;
-    QTest::newRow("testNum500") << 500 << true;
-    QTest::newRow("testNum1000") << 10000 << true;
+    QTest::addColumn<uint>("timestamp");
+    QTest::addColumn<uint>("value");
+
+    QTest::newRow("current time") << 0u << static_cast<uint>(QDateTime::currentDateTime().time().minute());
+    QTest::newRow("2019/11/12 16:51:30") << QDateTime(QDate(2019, 11, 12), QTime(16, 51, 30)).toTime_t()
+                                         << 51u;
 }
 
 void TestTimeDate::testGetTimeMinute()
 {
-    QFETCH(int, testNum);
-    QFETCH(bool, result);
-    for (int i = 0; i < testNum; i++)
-    {
-    int currentMinute = timeDate.getTimeMinute();
-    QTime time = QTime::currentTime();
-    QCOMPARE(currentMinute == time.minute(), result);
-    }
+    QFETCH(uint, timestamp);
+    QFETCH(uint, value);
+
+    QCOMPARE(timeDate->getTimeMinute(timestamp), value);
 }
 
 void TestTimeDate::testGetTimeSecond_data()
 {
-    QTest::addColumn<int>("testNum");
-    QTest::addColumn<bool>("result");
-    QTest::newRow("testNum100") << 100 << true;
-    QTest::newRow("testNum200") << 200 << true;
-    QTest::newRow("testNum500") << 500 << true;
-    QTest::newRow("testNum1000") << 10000 << true;
+    QTest::addColumn<uint>("timestamp");
+    QTest::addColumn<uint>("value");
+
+    QTest::newRow("current time") << 0u << static_cast<uint>(QDateTime::currentDateTime().time().second());
+    QTest::newRow("2019/11/12 16:51:30") << QDateTime(QDate(2019, 11, 12), QTime(16, 51, 30)).toTime_t()
+                                         << 30u;
 }
 
 void TestTimeDate::testGetTimeSecond()
 {
-    QFETCH(int, testNum);
-    QFETCH(bool, result);
-    for (int i = 0; i < testNum; i++)
-    {
-    int currentSecond = timeDate.getTimeSenonds();
-    QTime time = QTime::currentTime();
-    QCOMPARE(time.second() - currentSecond <= 1, result);
-    }
+    QFETCH(uint, timestamp);
+    QFETCH(uint, value);
+
+    QCOMPARE(timeDate->getTimeSeconds(timestamp), value);
 }
-
-void TestTimeDate::testGetTimeMsec_data()
-{
-    QTest::addColumn<int>("testNum");
-    QTest::addColumn<bool>("result");
-    QTest::newRow("testNum100") << 100 << true;
-}
-
-void TestTimeDate::testGetTimeMsec()
-{
-    QFETCH(int, testNum);
-    QFETCH(bool, result);
-    for (int i = 0; i < testNum; i++)
-    {
-        int currentMsec = timeDate.getTimeMsec();
-        QTime time = QTime::currentTime();
-        QCOMPARE(qAbs(currentMsec - time.msec()) <= 1, result);
-    }
-}
-
-//  QTEST_APPLESS_MAIN(TestTimeDate)
-
-//  #include "testtimedate.moc"

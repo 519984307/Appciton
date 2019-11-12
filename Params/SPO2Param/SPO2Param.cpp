@@ -20,11 +20,11 @@
 #include "SystemManager.h"
 #include "Framework/ErrorLog/ErrorLog.h"
 #include "Framework/ErrorLog/ErrorLogItem.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include <QTimer>
 #include "OxyCRGSPO2TrendWidget.h"
 #include "NIBPParam.h"
 #include "AlarmSourceManager.h"
-#include "TimeDate.h"
 #include "O2ParamInterface.h"
 #include "RunningStatusBar.h"
 #include "UpgradeManager.h"
@@ -889,7 +889,7 @@ CCHDResult SPO2Param::updateCCHDResult()
         result = Positive;
     }
     _cchdDataList.last().result = result;
-    _cchdDataList.last().time = timeDate.time();
+    _cchdDataList.last().time = timeDate->time();
     return result;
 }
 

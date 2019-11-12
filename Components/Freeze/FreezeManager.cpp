@@ -11,12 +11,11 @@
 
 #include "FreezeManager.h"
 #include "ParamDefine.h"
-#include "TimeDate.h"
 #include <QList>
-#include "TimeDate.h"
 #include "TrendCache.h"
 #include "TrendDataDefine.h"
 #include "TrendDataStorageManager.h"
+#include "Framework/TimeDate/TimeDate.h"
 
 class FreezeManagerPrivate
 {
@@ -58,7 +57,7 @@ void FreezeManager::startFreeze()
     emit freeze(true);
     TrendCacheData data;
     TrendAlarmStatus almStatus;
-    unsigned t = timeDate.time();
+    unsigned t = timeDate->time();
     trendCache.collectTrendData(t);
     trendCache.collectTrendAlarmStatus(t);
     trendCache.getTrendData(t, &data);
@@ -134,7 +133,7 @@ FreezeDataModel *FreezeManager::getWaveDataModel(int waveid)
         }
     }
 
-    FreezeDataModel *model = new FreezeDataModel(timeDate.time(), id);
+    FreezeDataModel *model = new FreezeDataModel(timeDate->time(), id);
     d_ptr->dataModels.append(model);
     return model;
 }
