@@ -123,6 +123,29 @@ public:
      */
     void setWorkMode(WorkMode workmode);
 
+    /**
+     * @brief setSystemTimeFormat set the system time format
+     * @param format the new format
+     */
+    void setSystemTimeFormat(const TimeFormat &format);
+
+    /**
+     * @brief getSystemTimeFormat get the current system time format
+     * @return the current system time format
+     */
+    TimeFormat getSystemTimeFormat() const;
+
+    /**
+     * @brief setSystemDateFormat set the system date format
+     * @param format the new date  fomate
+     */
+    void setSystemDateFormat(const DateFormat &format);
+    /**
+     * @brief getSystemDateFormat get the current system date format
+     * @return  the current system date format
+     */
+    DateFormat getSystemDateFormat() const;
+
 signals:
     void workModeChanged(WorkMode mode);
 

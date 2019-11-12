@@ -88,10 +88,10 @@ void TimeEditWindowPrivate::loadOptions()
     spinBoxs[ITEM_SPB_SECOND]->setValue(timeDate.getTimeSenonds());
 
     int value = 0;
-    systemConfig.getNumValue("DateTime|DateFormat", value);
+    value = systemManager.getSystemDateFormat();
     combos[ITEM_CBO_DATE_FORMAT]->setCurrentIndex(value);
 
-    systemConfig.getNumValue("DateTime|TimeFormat", value);
+    value = systemManager.getSystemTimeFormat();
     combos[ITEM_CBO_TIME_FORMAT]->setCurrentIndex(value);
 
     systemConfig.getNumValue("DateTime|DisplaySecond", value);
@@ -356,13 +356,10 @@ void TimeEditWindow::onComboBoxIndexChanged(int index)
         switch (item)
         {
         case TimeEditWindowPrivate::ITEM_CBO_DATE_FORMAT:
-            systemConfig.setNumValue("DateTime|DateFormat", index);
+            systemManager.setSystemDateFormat(static_cast<DateFormat>(index));
             break;
         case TimeEditWindowPrivate::ITEM_CBO_TIME_FORMAT:
-            systemConfig.setNumValue("DateTime|TimeFormat", index);
-            QMetaObject::invokeMethod(&systemManager,
-                                      "systemTimeFormatUpdated",
-                                      Q_ARG(TimeFormat, static_cast<TimeFormat>(index)));
+            systemManager.setSystemTimeFormat(static_cast<TimeFormat>(index));
             d_ptr->updateHourItem();
             break;
         case TimeEditWindowPrivate::ITEM_CBO_DISPLAY_SEC:

@@ -657,8 +657,7 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
     for (int i = GRAPH_DISPLAY_DATA_NUMBER; i >= 0; i --)
     {
         timeDate.getTime(t, tStr, true);
-        int timeFormat = 0;
-        systemConfig.getNumValue("DateTime|TimeFormat", timeFormat);
+        int timeFormat = systemManager.getSystemTimeFormat();
         if (timeFormat == TIME_FORMAT_24)
         {
             QFont font = fontManager.textFont(fontManager.getFontSize(3));

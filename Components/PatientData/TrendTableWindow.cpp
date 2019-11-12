@@ -222,8 +222,7 @@ TrendTableWindow::TrendTableWindow()
     TableHeaderView *horizontalHeader = new TableHeaderView(Qt::Horizontal);
 
     // 初始化水平表头的字体
-    int formatIndex = TIME_FORMAT_12;
-    systemConfig.getNumValue("DateTime|TimeFormat", formatIndex);
+    int formatIndex = systemManager.getSystemTimeFormat();
     if (formatIndex == TIME_FORMAT_12)
     {
         horizontalHeader->setFont(fontManager.textFont(IN_12_HOUR_HEADER_FONT_SIZE));

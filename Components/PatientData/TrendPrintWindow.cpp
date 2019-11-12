@@ -21,6 +21,7 @@
 #include "TrendTableWindow.h"
 #include "IConfig.h"
 #include "TimeSymbol.h"
+#include "SystemManager.h"
 
 class TrendPrintWindowPrivate
 {
@@ -82,9 +83,7 @@ public:
 TrendPrintWindow::TrendPrintWindow(const QVector<BlockEntry> blockList)
     : Dialog(), d_ptr(new TrendPrintWindowPrivate())
 {
-    int index = 0;
-    systemConfig.getNumValue("DateTime|TimeFormat", index);
-    d_ptr->timeFormat = static_cast<TimeFormat>(index);
+    d_ptr->timeFormat = systemManager.getSystemTimeFormat();
     if (d_ptr->timeFormat == TIME_FORMAT_12)
     {
         // 设置时间的字符串列表 12AM-11AM 12PM-11PM
@@ -353,9 +352,7 @@ void TrendPrintWindowPrivate::initGroupBox(QGroupBox *groupBox, TrendPrintWindow
     groupBox->setLayout(mainLayout);
 
     // adjust the name of the date format
-    int index = 0;
-    systemConfig.getNumValue("DateTime|DateFormat", index);
-    DateFormat dateFormat = static_cast<DateFormat>(index);
+    DateFormat dateFormat = systemManager.getSystemDateFormat();
     QString dateFormatName =  QString("%1(%2)").arg(trs("Date"))
             .arg(trs(TimeSymbol::convert(dateFormat)));
     subBox->dateLbl->setText(dateFormatName);

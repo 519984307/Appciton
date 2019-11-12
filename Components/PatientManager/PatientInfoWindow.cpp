@@ -31,6 +31,7 @@
 #include <QDate>
 #include "FloatHandle.h"
 #include "RunningStatusBar.h"
+#include "SystemManager.h"
 
 #define PATIENT_BORN_DATE_RANAGE 1900
 class PatientInfoWindowPrivate
@@ -243,8 +244,7 @@ void PatientInfoWindowPrivate::loadOptions()
     buttons[ITEM_BTN_PATIENT_BED]->setEnabled(index);
 
     // born date item
-    systemConfig.getNumValue("DateTime|DateFormat", index);
-    DateFormat dateFormat = static_cast<DateFormat>(index);
+    DateFormat dateFormat = systemManager.getSystemDateFormat();
     bornDateLbl->setText(QString("%1(%2)")
                          .arg(trs("BornDate"))
                          .arg(trs(TimeSymbol::convert(dateFormat))));
