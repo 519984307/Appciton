@@ -15,7 +15,6 @@
 #include <QKeyEvent>
 #include <ThemeManager.h>
 #include "PopupNumEditor.h"
-#include "FontManager.h"
 #include "Framework/Utility/Utility.h"
 #include "SoundManagerInterface.h"
 
@@ -349,7 +348,8 @@ void SpinBox::keyReleaseEvent(QKeyEvent *ev)
         QPalette pal = palette();
         PopupNumEditor *editor = new PopupNumEditor();
         editor->setEditInfo(d_ptr->info);
-        editor->setFont(fontManager.textFont(font().pixelSize()));
+        QFontInfo info = fontInfo();
+        editor->setFont(QFont(info.family(), info.pixelSize(), info.weight(), info.italic()));
         editor->setPalette(pal);
         editor->setEditValueGeometry(rect);
         QObject::connect(editor, SIGNAL(valueChanged(int)), this, SLOT(onEditValueUpdate(int)));
@@ -372,7 +372,8 @@ void SpinBox::mouseReleaseEvent(QMouseEvent *ev)
     QPalette pal = palette();
     PopupNumEditor *editor = new PopupNumEditor();
     editor->setEditInfo(d_ptr->info);
-    editor->setFont(fontManager.textFont(font().pixelSize()));
+    QFontInfo info = fontInfo();
+    editor->setFont(QFont(info.family(), info.pixelSize(), info.weight(), info.italic()));
     editor->setPalette(pal);
     editor->setEditValueGeometry(rect);
     QObject::connect(editor, SIGNAL(valueChanged(int)), this, SLOT(onEditValueUpdate(int)));
