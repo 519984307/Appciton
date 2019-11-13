@@ -21,7 +21,6 @@
 #include "FontManager.h"
 #include <QKeyEvent>
 #include <QFocusEvent>
-#include "SoundManagerInterface.h"
 
 #define DEFAULT_WIDTH 150
 #define DEFAULT_HEIGHT  100
@@ -424,11 +423,7 @@ void PopupList::mousePressEvent(QMouseEvent *e)
 {
     QWidget::mousePressEvent(e);
     // 触屏点击播放按键音
-    SoundManagerInterface *sound = SoundManagerInterface::getSoundManager();
-    if (sound)
-    {
-        sound->keyPressTone();
-    }
+    themeManager.playClickSound();
 }
 
 void PopupList::onItemSelected()

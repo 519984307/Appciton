@@ -16,6 +16,7 @@
 #include <QPainter>
 #include <QDebug>
 #include "FontManagerInterface.h"
+#include "SoundManagerInterface.h"
 #include <QApplication>
 
 #define COLOR_KEY(type, elem, state) (((type) << 16) | (elem) << 8 | (state))
@@ -307,6 +308,16 @@ QPixmap ThemeManager::getShadowElement(ThemeManager::ShadowElementType type, con
     map[key] = QPixmapCache::insert(pm);
 
     return pm;
+}
+
+void ThemeManager::playClickSound()
+{
+    // 触屏点击播放按键音
+    SoundManagerInterface *sound = SoundManagerInterface::getSoundManager();
+    if (sound)
+    {
+        sound->keyPressTone();
+    }
 }
 
 ThemeManager::ThemeManager()

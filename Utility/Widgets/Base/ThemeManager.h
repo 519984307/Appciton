@@ -161,6 +161,11 @@ public:
      */
     QPixmap getShadowElement(ShadowElementType type, const QSize &size);
 
+    /**
+     * @brief clickSoundEffect play the UI widget click sound
+     */
+    void playClickSound();
+
 private:
     ThemeManager();
     ThemeManagerPrivate *const d_ptr;
