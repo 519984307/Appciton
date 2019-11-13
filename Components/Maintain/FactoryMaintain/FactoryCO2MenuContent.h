@@ -8,7 +8,7 @@
  ** Written by TongZhou Fang fangtongzhou@blmed.cn, 2019/8/2
  **/
 #pragma once
-#include "MenuContent.h"
+#include "Framework/UI/MenuContent.h"
 
 class FactoryCO2MenuContentPrivate;
 class FactoryCO2MenuContent : public MenuContent

@@ -10,10 +10,10 @@
 
 #include "ErrorLogViewerWindow.h"
 #include "Framework/Language/LanguageManager.h"
+#include "Framework/UI/ScrollArea.h"
 #include <QVBoxLayout>
 #include <QApplication>
 #include <QKeyEvent>
-#include "ScrollArea.h"
 #include <QScrollBar>
 #include <QLabel>
 

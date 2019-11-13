@@ -9,12 +9,12 @@
  **/
 
 #include "ScreenLayoutWindow.h"
-#include "TableView.h"
 #include <QBoxLayout>
 #include <QHeaderView>
 #include "ScreenLayoutModel.h"
 #include "ScreenLayoutItemDelegate.h"
-#include "Button.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/TableView.h"
 #include "Framework/Language/LanguageManager.h"
 #include "LayoutManager.h"
 #include "MessageBox.h"

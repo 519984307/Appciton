@@ -12,9 +12,9 @@
 #include <QMap>
 #include <QLabel>
 #include "IConfig.h"
-#include "ComboBox.h"
 #include "SystemManager.h"
 #include "RawDataCollector.h"
+#include "Framework/UI/ComboBox.h"
 #include "Framework/Language/LanguageManager.h"
 #include "ECGParam.h"
 #include "NIBPParam.h"

@@ -14,13 +14,12 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QEvent>
-#include "Framework/Language/LanguageManager.h"
+#include "LanguageManager.h"
 #include "ThemeManager.h"
-#include "FontManager.h"
 #include <QTimer>
-#include "IConfig.h"
 
-#define PASSWORD_LEN (8)                      //密码长度
+#define PASSWORD_LEN (8)                      // 密码长度
+#define DEFAULT_SUPER_PASSWORD  "672401"
 
 class PasswordWidgetPrivate
 {
@@ -43,9 +42,8 @@ public:
 
     PasswordWidgetPrivate(const QString &name, const QString &password)
         : passwordEdit(NULL), name(name), widgetPassword(password),
-          timer(NULL)
+          superPassword(DEFAULT_SUPER_PASSWORD), timer(NULL)
     {
-        systemConfig.getStrValue("General|SuperPassword", superPassword);
     }
 
     QMap<KeyItem, Button *> buttons;
@@ -153,11 +151,23 @@ void PasswordWidget::layoutExec()
     vlayout->addStretch(1);
 }
 
+void PasswordWidget::setPassword(const QString &password)
+{
+    d_ptr->widgetPassword = password;
+}
+
+void PasswordWidget::setSuperPassword(const QString &password)
+{
+    d_ptr->superPassword = password;
+}
+
 void PasswordWidget::changeEvent(QEvent *ev)
 {
     if (ev->type() == QEvent::FontChange)
     {
-        d_ptr->passwordEdit->setFont(fontManager.textFont(font().pixelSize()));
+        QFontInfo fontinfo(font());
+        QFont f(fontinfo.family(), fontinfo.pixelSize(), fontinfo.weight(), fontinfo.italic());
+        d_ptr->passwordEdit->setFont(f);
     }
 }
 

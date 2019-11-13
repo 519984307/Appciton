@@ -11,10 +11,10 @@
 #include "SelectDefaultConfigMenuContent.h"
 #include "ConfigManager.h"
 #include "IConfig.h"
-#include "ComboBox.h"
 #include <QLabel>
 #include <QGridLayout>
 #include <QMap>
+#include "Framework/UI/ComboBox.h"
 #include "Framework/Language/LanguageManager.h"
 #include <QList>
 #include "Debug.h"

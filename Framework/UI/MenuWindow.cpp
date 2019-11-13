@@ -14,12 +14,13 @@
 #include <QStackedWidget>
 #include "MenuSidebar.h"
 #include "MenuSidebarItem.h"
-#include "WindowManager.h"
 #include "Button.h"
-#include "Framework/Language/LanguageManager.h"
+#include "LanguageManager.h"
 #include <QList>
 #include <QPainter>
+#include <QDebug>
 #include "ThemeManager.h"
+#include "WindowManagerInterface.h"
 
 class MenuWindowPrivate
 {
@@ -46,7 +47,7 @@ MenuWindow::MenuWindow()
     : Dialog(), d_ptr(new MenuWindowPrivate())
 {
     setWindowTitle("MenuWindow");
-    resize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
+    resize(themeManager.defaultWindowSize());
 
     QHBoxLayout *layout = new QHBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
@@ -97,7 +98,7 @@ void MenuWindow::addMenuContent(MenuContent *menu)
 }
 
 void MenuWindow::popup(const QString &menuName, const QVariant &param,
-                       const WindowManager::ShowBehaviorFlags &showFlags)
+                       const WindowManagerInterface::ShowBehaviorFlags &showFlags)
 {
     d_ptr->sidebar->setChecked(menuName);
 
@@ -112,7 +113,16 @@ void MenuWindow::popup(const QString &menuName, const QVariant &param,
         }
     }
 
-    windowManager.showWindow(this, showFlags);
+    WindowManagerInterface *windowManager = WindowManagerInterface::getWindowManager();
+    if (windowManager)
+    {
+        windowManager->showWindow(this, showFlags);
+    }
+    else
+    {
+        qWarning() << Q_FUNC_INFO << "Pop up window without window manager";
+        this->exec();
+    }
 }
 
 void MenuWindow::setWindowTitlePrefix(const QString &prefix)

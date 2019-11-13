@@ -9,20 +9,20 @@
  **/
 
 #include "AlarmInfoWindow.h"
-#include "TableView.h"
-#include "AlarmInfoModel.h"
-#include "TableViewItemDelegate.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/TableHeaderView.h"
+#include "Framework/UI/TableView.h"
+#include "Framework/UI/ThemeManager.h"
+#include "Framework/UI/TableViewItemDelegate.h"
 #include "Framework/Language/LanguageManager.h"
 #include "Framework/TimeDate/TimeDate.h"
-#include "Button.h"
+#include "AlarmInfoModel.h"
 #include <QLayout>
 #include "AlarmIndicator.h"
 #include <QHeaderView>
-#include "TableHeaderView.h"
 #include "Alarm.h"
 #include "EventWindow.h"
 #include "WindowManager.h"
-#include "ThemeManager.h"
 
 #define SELECT_ICON_PATH "/usr/local/nPM/icons/select.png"
 

@@ -9,7 +9,7 @@
  **/
 
 #include "TrendTableModel.h"
-#include "ThemeManager.h"
+#include "Framework/UI/ThemeManager.h"
 #include "ParamInfo.h"
 #include "ParamManager.h"
 #include "IBPParam.h"

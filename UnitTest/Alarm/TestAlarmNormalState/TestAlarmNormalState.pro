@@ -4,6 +4,7 @@ QT += testlib
 CONFIG += c++11 console
 CONFIG -= app_bundle
 
+include("../../Common/Common.pri")
 include("../../Common/googletest.pri")
 include("../../Common/runtest.pri")
 

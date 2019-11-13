@@ -9,9 +9,9 @@
  **/
 #include "ScreenLayoutEditor.h"
 #include <QGridLayout>
-#include <ComboBox.h>
-#include <Button.h>
 #include <QLabel>
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/Button.h"
 #include "Framework/Language/LanguageManager.h"
 #include <QDesktopWidget>
 #include <QApplication>

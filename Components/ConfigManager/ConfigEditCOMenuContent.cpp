@@ -9,10 +9,10 @@
  **/
 
 #include "ConfigEditCOMenuContent.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/Button.h"
 #include "Framework/Language/LanguageManager.h"
 #include <QLabel>
-#include "ComboBox.h"
-#include "Button.h"
 #include <QGridLayout>
 #include <QList>
 #include "COSymbol.h"

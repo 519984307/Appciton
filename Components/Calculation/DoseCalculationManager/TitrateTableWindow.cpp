@@ -12,20 +12,20 @@
 #include "DoseCalculationDefine.h"
 #include "DoseCalculationManager.h"
 #include "TitrateTableManager.h"
-#include "TableView.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/TableView.h"
+#include "Framework/UI/TableHeaderView.h"
+#include "Framework/UI/TableViewItemDelegate.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
 #include <QEvent>
-#include "Button.h"
 #include <QAbstractSlider>
 #include <QAbstractScrollArea>
 #include <QScrollBar>
 #include "WindowManager.h"
 #include <QHeaderView>
-#include "TableHeaderView.h"
-#include "TableViewItemDelegate.h"
 #include <QGridLayout>
 #include <QHBoxLayout>
-#include "Framework/Language/LanguageManager.h"
 #include "TitrateTableSetWindow.h"
 #include "LayoutManager.h"
 

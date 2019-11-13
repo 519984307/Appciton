@@ -9,20 +9,20 @@
  **/
 
 #include "TrendGraphSetWindow.h"
-#include "DropList.h"
 #include <QVBoxLayout>
-#include "Button.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/DropList.h"
+#include "Framework/UI/ScrollArea.h"
+#include "Framework/UI/ThemeManager.h"
 #include "Framework/Language/LanguageManager.h"
 #include "TrendDataSymbol.h"
 #include "IConfig.h"
 #include "ParamManager.h"
-#include "ScrollArea.h"
 #include "AlarmConfig.h"
 #include "IBPParam.h"
 #include <QPainter>
 #include <QRect>
 #include "TrendGraphWindow.h"
-#include "ThemeManager.h"
 #include "TrendGraphConfig.h"
 
 #define ITEM_HEIGHT                 (themeManager.getAcceptableControlHeight())
@@ -187,7 +187,7 @@ void TrendGraphSetWindow::upDownRulerChange(int, int)
         {
             int min;
             int max;
-            item->downRuler->getRange(min, max);
+            item->downRuler->getRange(&min, &max);
             max = item->upRuler->getValue() - 1;
             item->downRuler->setRange(min, max);
         }
@@ -195,7 +195,7 @@ void TrendGraphSetWindow::upDownRulerChange(int, int)
         {
             int min;
             int max;
-            item->upRuler->getRange(min, max);
+            item->upRuler->getRange(&min, &max);
             min = item->downRuler->getValue() + 1;
             item->upRuler->setRange(min, max);
         }

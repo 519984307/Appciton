@@ -11,8 +11,8 @@
 #pragma once
 #include "Dialog.h"
 #include "MenuContent.h"
+#include "WindowManagerInterface.h"
 #include <QVariant>
-#include "WindowManager.h"
 
 class MenuSidebar;
 class MenuWindowPrivate;
@@ -37,7 +37,8 @@ public:
      * @param showFlags 菜单显示行为
      */
     void popup(const QString &menuName, const QVariant &param = QVariant(),
-               const WindowManager::ShowBehaviorFlags &showFlags = WindowManager::ShowBehaviorCloseOthers);
+               const WindowManagerInterface::ShowBehaviorFlags &showFlags
+               = WindowManagerInterface::ShowBehaviorCloseOthers);
 
     /**
      * @brief setWindowTitlePrefix

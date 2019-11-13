@@ -9,18 +9,19 @@
  **/
 
 #include "OxyCRGEventWindow.h"
-#include "TableView.h"
-#include "Button.h"
-#include "ComboBox.h"
-#include "EventInfoWidget.h"
-#include "OxyCRGEventWaveWidget.h"
-#include <QStackedLayout>
+#include "Framework/UI/TableView.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/MoveButton.h"
+#include "Framework/UI/TableHeaderView.h"
 #include "Framework/Language/LanguageManager.h"
 #include "Framework/Storage/IStorageBackend.h"
 #include "Framework/TimeDate/TimeDate.h"
+#include "EventInfoWidget.h"
+#include "OxyCRGEventWaveWidget.h"
+#include <QStackedLayout>
 #include "EventStorageManager.h"
 #include "Debug.h"
-#include "TableHeaderView.h"
 #include "ParamInfo.h"
 #include "EventReviewModel.h"
 #include "AlarmConfig.h"
@@ -32,7 +33,6 @@
 #include "OxyCRGEventSetWindow.h"
 #include "WindowManager.h"
 #include "DataStorageDefine.h"
-#include "MoveButton.h"
 #include <QTimerEvent>
 #include <QLabel>
 

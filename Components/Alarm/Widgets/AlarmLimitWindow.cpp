@@ -10,8 +10,10 @@
 
 #include "AlarmLimitWindow.h"
 #include "Framework/Language/LanguageManager.h"
-#include "TableView.h"
-#include "TableHeaderView.h"
+#include "Framework/UI/TableView.h"
+#include "Framework/UI/TableHeaderView.h"
+#include "Framework/UI/TableViewItemDelegate.h"
+#include "Framework/UI/Button.h"
 #include "AlarmLimitModel.h"
 #include <QBoxLayout>
 #include <QHeaderView>
@@ -21,8 +23,6 @@
 #include "ConfigManager.h"
 #include "PatientManager.h"
 #include "IBPParam.h"
-#include "TableViewItemDelegate.h"
-#include <Button.h>
 #include <QDebug>
 #include <QCoreApplication>
 #include <QFocusEvent>

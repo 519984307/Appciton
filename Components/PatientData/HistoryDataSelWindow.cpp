@@ -9,10 +9,10 @@
  **/
 
 #include "HistoryDataSelWindow.h"
-#include "TableView.h"
-#include "Button.h"
-#include "HistoryDataSelModel.h"
+#include "Framework/UI/TableView.h"
+#include "Framework/UI/Button.h"
 #include "Framework/Language/LanguageManager.h"
+#include "HistoryDataSelModel.h"
 #include <QHeaderView>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -134,7 +134,7 @@ void HistoryDataSelWindow::downReleased()
 void HistoryDataSelWindowPrivate::refreshPage()
 {
     int totalPage = 1, curPage = 1;
-    table->getPageInfo(curPage, totalPage);
+    table->getPageInfo(&curPage, &totalPage);
     curPage = curPage == 0 ? 1 : curPage;
     totalPage = totalPage == 0 ? 1 : totalPage;
     QString title = QString("%1(%2 / %3)").arg(trs("HistoryDataList")).arg(curPage).arg(totalPage);

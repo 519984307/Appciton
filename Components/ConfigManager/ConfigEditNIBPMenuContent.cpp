@@ -10,17 +10,17 @@
 #include "ConfigEditNIBPMenuContent.h"
 #include <QMap>
 #include <QLabel>
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/SpinBox.h"
 #include "Framework/Language/LanguageManager.h"
-#include "ComboBox.h"
 #include "NIBPSymbol.h"
 #include "NIBPDefine.h"
 #include <QGridLayout>
 #include "PatientManager.h"
-#include "Button.h"
 #include "ParamInfo.h"
 #include "ParamDefine.h"
 #include "ConfigManager.h"
-#include "SpinBox.h"
 #include "IConfig.h"
 #include "NIBPParam.h"
 

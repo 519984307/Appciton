@@ -148,6 +148,12 @@ public:
     }
 
     /**
+     * @brief defaultWindowSize get the default window size
+     * @return
+     */
+    QSize defaultWindowSize() const {return QSize(710, 530);}
+
+    /**
      * @brief defaultFont get the UI default font
      * @return
      */

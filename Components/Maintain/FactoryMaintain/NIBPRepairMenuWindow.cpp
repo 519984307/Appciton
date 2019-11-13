@@ -25,6 +25,7 @@
 #include <QScrollBar>
 #include "ColorManager.h"
 #include "FontManager.h"
+#include "WindowManager.h"
 
 #include "NIBPParam.h"
 #include "NIBPCalibrateContent.h"

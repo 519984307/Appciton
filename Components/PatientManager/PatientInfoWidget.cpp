@@ -11,14 +11,14 @@
 
 #include "PatientInfoWidget.h"
 #include "Framework/Language/LanguageManager.h"
-#include "FontManagerInterface.h"
+#include "Framework/Font/FontManagerInterface.h"
+#include "Framework/Sound/SoundManagerInterface.h"
 #include <QBoxLayout>
 #include <QLabel>
 #include "IConfig.h"
 #include "WindowManagerInterface.h"
 #include "PatientInfoWindowInterface.h"
 #include "PatientManager.h"
-#include "SoundManagerInterface.h"
 
 void PatientInfoWidget::loadPatientInfo(const PatientInfo &info, const QString &bed)
 {

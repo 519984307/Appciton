@@ -23,9 +23,7 @@ SOURCES += main.cpp \
     ../../../Components/PatientManager/PatientInfoWidget.cpp \
     ../../../Components/PatientManager/PatientManager.cpp \
     ../../../Components/WindowManager/IWidget.cpp \
-    ../../../Utility/FontManager/FontManagerInterface.cpp \
     ../../../Utility/DataStorage/DataStorageDirManagerInterface.cpp \
-    ../../../Utility/Widgets/Base/Dialog.cpp \
     ../../../Components/WindowManager/WindowManagerInterface.cpp \
     ../../../Components/PatientManager/PatientInfoWindowInterface.cpp \
     ../../../Components/System/SystemManagerInterface.cpp \
@@ -35,9 +33,6 @@ SOURCES += main.cpp \
     ../../../Params/ECGParam/ECGParamInterface.cpp \
     ../../../Params/ECGParam/ECGDupParamInterface.cpp \
     ../../../Utility/Config/IConfig.cpp \
-    ../../../Utility/Widgets/Base/Button.cpp \
-    ../../../Utility/Widgets/Base/ThemeManager.cpp \
-    ../../../Components/SoundManager/SoundManagerInterface.cpp
 
 HEADERS += \
     TestPatientInfoWidget.h \
@@ -45,9 +40,7 @@ HEADERS += \
     ../../../Components/PatientManager/PatientManager.h \
     ../../../Components/PatientManager/PatientInfoWidgetInterface.h \
     ../../../Components/WindowManager/IWidget.h \
-    ../../../Utility/FontManager/FontManagerInterface.h \
     ../../../Utility/DataStorage/DataStorageDirManagerInterface.h \
-    ../../../Utility/Widgets/Base/Dialog.h \
     ../../../Components/WindowManager/WindowManagerInterface.h \
     ../../../Components/PatientManager/PatientInfoWindowInterface.h \
     ../../../Components/System/SystemManagerInterface.h \
@@ -57,11 +50,8 @@ HEADERS += \
     ../../../Params/ECGParam/ECGParamInterface.h \
     ../../../Params/ECGParam/ECGDupParamInterface.h \
     ../../../Utility/Config/IConfig.h \
-    ../../../Utility/Widgets/Base/Button.h \
-    ../../../Utility/Widgets/Base/ThemeManager.h \
     ../../Utility/MockFontManager.h \
     ../../Utility/MockWindowManager.h \
-    ../../../Components/SoundManager/SoundManagerInterface.h
 
 INCLUDEPATH += \
     ../../../Components/PatientManager \
@@ -71,8 +61,6 @@ INCLUDEPATH += \
     ../../../Components/ConfigManager \
     ../../../Components/Alarm \
     ../../../Components/System \
-    ../../../Utility/FontManager \
-    ../../../Utility/Widgets/Base \
     ../../Params \
     ../../../Params/ECGParam \
     ../../../Params/O2Param \
@@ -80,8 +68,3 @@ INCLUDEPATH += \
     ../../../Utility/DataStorage \
     ../../Alarm \
     ../../Utility \
-    ../../../Components/SoundManager \
-
-RESOURCES += \
-    ../../../Utility/Widgets/Base/res/ui.qrc
-

@@ -12,29 +12,11 @@
 #pragma once
 #include <stddef.h>
 #include <string.h>
-#define ALARM_INFO_DISPLAY_TIME (3)//每条报警信息显示时间
+#include "Framework/Alarm/AlarmTypeDefine.h"
 
-enum AlarmType
-{
-    ALARM_TYPE_PHY,
-    ALARM_TYPE_LIFE,
-    ALARM_TYPE_TECH
-};
+#define ALARM_INFO_DISPLAY_TIME (3)  // 每条报警信息显示时间
 
-enum LimitAlarmType
-{
-    NotLimitAlarm,
-    LowLimitAlarm,
-    HighLimitAlarm
-};
 
-enum AlarmPriority
-{
-    ALARM_PRIO_PROMPT = -1,     // 指示提示信息。
-    ALARM_PRIO_LOW,        // 低级。
-    ALARM_PRIO_MED,        // 中级。
-    ALARM_PRIO_HIGH,       // 高级。
-};
 class AlarmParamIFace;
 struct AlarmInfoNode
 {
@@ -110,11 +92,11 @@ struct AlarmInfoNode
 
 enum AlarmStatus
 {
-    ALARM_STATUS_NORMAL,   // 报警正常。
-    ALARM_STATUS_PAUSE,    // alarm pause。
-    ALARM_STATUS_AUDIO_OFF,// 报警音关闭。
-    ALARM_STATUS_OFF,      // 报警关闭
-    ALARM_STATUS_RESET,    // alarm reset
+    ALARM_STATUS_NORMAL,     // 报警正常。
+    ALARM_STATUS_PAUSE,      // alarm pause。
+    ALARM_STATUS_AUDIO_OFF,  // 报警音关闭。
+    ALARM_STATUS_OFF,        // 报警关闭
+    ALARM_STATUS_RESET,      // alarm reset
 };
 
 // 报警暂停时间

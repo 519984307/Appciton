@@ -19,7 +19,7 @@
 #include "TrendWidgetLabel.h"
 #include <QTimer>
 #include "AlarmConfig.h"
-#include "SoundManagerInterface.h"
+#include "Framework/Sound/SoundManagerInterface.h"
 
 /**************************************************************************************************
  * 重绘。

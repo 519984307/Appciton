@@ -9,10 +9,10 @@
  **/
 
 #include "EventWaveSetWindow.h"
-#include "ComboBox.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
 #include <QGridLayout>
-#include "Framework/Language/LanguageManager.h"
 #include "EventDataSymbol.h"
 #include "EventWindow.h"
 

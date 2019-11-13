@@ -90,7 +90,6 @@ public:
         }
         else
         {
-
             index = model->index(q_ptr->rowAt(q_ptr->viewport()->height() - 1),
                                  q_ptr->columnAt(q_ptr->viewport()->width() - 1));
             if (!index.isValid())
@@ -235,18 +234,27 @@ void TableView::setModel(QAbstractItemModel *model)
     connect(model, SIGNAL(modelReset()), this, SLOT(onModelReset()));
 }
 
-void TableView::getPageInfo(int &curPage, int &totalPage)
+void TableView::getPageInfo(int *curPage, int *totalPage)
 {
     int eachPageRowCount = rowAt(viewport()->height() - 1) - rowAt(1) + 1;
     if (model()->rowCount() % eachPageRowCount)
     {
-        totalPage = model()->rowCount() / eachPageRowCount + 1;
+        if (totalPage)
+        {
+            *totalPage = model()->rowCount() / eachPageRowCount + 1;
+        }
     }
     else
     {
-        totalPage = model()->rowCount() / eachPageRowCount;
+        if (totalPage)
+        {
+            *totalPage = model()->rowCount() / eachPageRowCount;
+        }
     }
-    curPage = rowAt(1) / eachPageRowCount + 1;
+    if (curPage)
+    {
+        *curPage = rowAt(1) / eachPageRowCount + 1;
+    }
 }
 
 void TableView::keyPressEvent(QKeyEvent *ev)

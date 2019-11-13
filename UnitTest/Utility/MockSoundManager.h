@@ -9,7 +9,7 @@
  **/
 
 #pragma once
-#include "SoundManagerInterface.h"
+#include "Framework/Sound/SoundManagerInterface.h"
 #include "gmock/gmock.h"
 
 class MockSoundManager : public SoundManagerInterface

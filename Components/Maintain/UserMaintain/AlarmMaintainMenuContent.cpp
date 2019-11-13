@@ -9,12 +9,12 @@
  **/
 
 #include "AlarmMaintainMenuContent.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
 #include "Framework/Language/LanguageManager.h"
 #include <QLabel>
-#include "ComboBox.h"
 #include <QGridLayout>
 #include "IConfig.h"
-#include "Button.h"
 #include "SoundManager.h"
 #include "AlarmSymbol.h"
 #include "Alarm.h"

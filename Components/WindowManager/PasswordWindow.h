@@ -9,7 +9,7 @@
  **/
 
 #pragma once
-#include "Dialog.h"
+#include "Framework/UI/Dialog.h"
 
 /**
  * @brief The PasswordWindow class use to verify the input password

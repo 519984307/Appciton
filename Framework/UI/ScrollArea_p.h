@@ -10,7 +10,7 @@
 
 #include "ScrollArea.h"
 #include "FloatScrollBar.h"
-#include "qscrollareakineticscroller.h"
+#include "KineticScroller/qscrollareakineticscroller.h"
 
 class ScrollAreaPrivate
 {

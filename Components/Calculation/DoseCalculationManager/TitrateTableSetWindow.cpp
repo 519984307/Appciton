@@ -8,15 +8,15 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/1
  **/
 #include "TitrateTableSetWindow.h"
-#include "ComboBox.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/Button.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
-#include "Button.h"
 #include "TitrateTableManager.h"
 #include "TitrateTableWindow.h"
 #include "WindowManager.h"
 #include <QGridLayout>
 #include "TitrateTableDefine.h"
-#include "Framework/Language/LanguageManager.h"
 #include "LayoutManager.h"
 
 class TitrateTableSetWindowPrivate

@@ -9,9 +9,9 @@
  **/
 
 #include "SaveUserConfigWindow.h"
+#include "Framework/UI/Button.h"
 #include "Framework/Language/LanguageManager.h"
 #include <QLabel>
-#include "Button.h"
 #include <QBoxLayout>
 #include "EnglishInputPanel.h"
 #include "ConfigManager.h"

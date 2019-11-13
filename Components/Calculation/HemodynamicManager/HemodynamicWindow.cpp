@@ -8,16 +8,16 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/7
  **/
 #include "HemodynamicWindow.h"
-#include "Button.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ThemeManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
 #include <QStackedLayout>
 #include "HemodynamicDefine.h"
-#include "Framework/Language/LanguageManager.h"
 #include <QTableWidget>
 #include "HemodynamicManager.h"
 #include "KeyInputPanel.h"
 #include "MessageBox.h"
-#include "ThemeManager.h"
 #include <QHeaderView>
 #include "HemodynamicReviewWindow.h"
 #include "WindowManager.h"

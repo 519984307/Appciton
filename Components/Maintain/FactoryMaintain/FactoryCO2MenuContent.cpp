@@ -13,7 +13,7 @@
 #include <QTime>
 #include "FactoryCO2MenuContent.h"
 #include "Framework/Language/LanguageManager.h"
-#include "Button.h"
+#include "Framework/UI/Button.h"
 #include "CO2Param.h"
 #include "FontManager.h"
 #include <QTimerEvent>

@@ -24,7 +24,8 @@ ListViewItemDelegate::ListViewItemDelegate(QObject *parent)
 {
 }
 
-void ListViewItemDelegate::drawFocus(QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect) const
+void ListViewItemDelegate::drawFocus(QPainter *painter, const QStyleOptionViewItem &option,
+                                     const QRect &rect) const
 {
     Q_UNUSED(painter)
     Q_UNUSED(option)
@@ -32,7 +33,8 @@ void ListViewItemDelegate::drawFocus(QPainter *painter, const QStyleOptionViewIt
     // do nothing
 }
 
-void ListViewItemDelegate::drawDecoration(QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect, const QPixmap &pixmap) const
+void ListViewItemDelegate::drawDecoration(QPainter *painter, const QStyleOptionViewItem &option,
+                                          const QRect &rect, const QPixmap &pixmap) const
 {
     Q_UNUSED(option)
     if (!pixmap.isNull())

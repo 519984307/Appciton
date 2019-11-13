@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include "MenuContent.h"
+#include "Framework/UI/MenuContent.h"
 
 class PatientManagementMenuContentPrivate;
 class PatientManagementMenuContent : public MenuContent

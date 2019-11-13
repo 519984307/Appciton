@@ -9,7 +9,7 @@
  **/
 
 #pragma once
-#include "MenuContent.h"
+#include "Framework/UI/MenuContent.h"
 
 class NIBPZeroPointContentPrivate;
 class NIBPZeroPointContent : public MenuContent

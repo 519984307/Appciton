@@ -11,10 +11,10 @@
 
 #include "CO2SetAGMenu.h"
 #include "CO2Symbol.h"
-#include "Framework/Utility/Unit.h"
 #include "ConfigManager.h"
 #include "FontManager.h"
-#include "ComboBox.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/Utility/Unit.h"
 #include "Framework/Language/LanguageManager.h"
 #include <QLabel>
 #include <QGridLayout>

@@ -7,22 +7,22 @@
  **
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/7/25
  **/
+#include "FactoryTestMenuContent.h"
 #include <QGridLayout>
 #include <QLabel>
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/SpinBox.h"
 #include "Framework/Language/LanguageManager.h"
-#include "ComboBox.h"
-#include "FactoryTestMenuContent.h"
+#include "Framework/Config/XmlParser.h"
 #include "Debug.h"
-#include "Button.h"
 #include <QProcess>
 #include "MessageBox.h"
 #include "USBManager.h"
-#include "SpinBox.h"
 #include "BatteryDefine.h"
 #include <QDir>
 #include <QFile>
 #include "TestBatteryTime.h"
-#include "Framework/Config/XmlParser.h"
 
 class FactoryTestMenuContentPrivate
 {

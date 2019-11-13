@@ -9,16 +9,16 @@
  **/
 
 #include "ModuleMaintainMenuContent.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
 #include "Framework/Language/LanguageManager.h"
 #ifdef Q_WS_QWS
 #include "TSCalibrationWindow.h"
 #include <QWSServer>
 #endif
 #include <QLabel>
-#include "ComboBox.h"
 #include <QGridLayout>
 #include "IConfig.h"
-#include "Button.h"
 #include "IBPParam.h"
 #include "KeyInputPanel.h"
 #include "MessageBox.h"

@@ -17,13 +17,13 @@
 #include "IBPDefine.h"
 #include "FontManager.h"
 #include "WaveWidgetLabel.h"
+#include "Framework/UI/PopupList.h"
 #include "Framework/Language/LanguageManager.h"
 #include "Framework/TimeDate/TimeDate.h"
 #include "ColorManager.h"
 #include "ParamInfo.h"
 #include "WindowManager.h"
 #include "Debug.h"
-#include "PopupList.h"
 #include "SystemManager.h"
 
 /**************************************************************************************************

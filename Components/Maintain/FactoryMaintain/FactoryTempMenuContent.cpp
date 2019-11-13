@@ -11,19 +11,19 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QProcess>
-#include "Framework/Language/LanguageManager.h"
 #include "FactoryTempMenuContent.h"
-#include "Button.h"
-#include "ComboBox.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/MenuWindow.h"
+#include "Framework/UI/ScrollArea.h"
+#include "Framework/UI/ThemeManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "TEMPParam.h"
 #include <QTimer>
 #include <QStackedWidget>
 #include <QGroupBox>
 #include "FontManager.h"
 #include <QTimerEvent>
-#include "MenuWindow.h"
-#include "ScrollArea.h"
-#include "ThemeManager.h"
 #include <QScrollBar>
 #include <QStackedWidget>
 

@@ -15,7 +15,7 @@
 #include <QKeyEvent>
 #include <ThemeManager.h>
 #include "PopupNumEditor.h"
-#include "Framework/Utility/Utility.h"
+#include "Utility.h"
 
 #define PADDING 4
 #define ICON_TEXT_PADDING 4
@@ -123,10 +123,16 @@ void SpinBox::setRange(int min, int max)
     }
 }
 
-void SpinBox::getRange(int &min, int &max)
+void SpinBox::getRange(int *min, int *max)
 {
-    min = d_ptr->info.lowLimit;
-    max = d_ptr->info.highLimit;
+    if (min)
+    {
+        *min = d_ptr->info.lowLimit;
+    }
+    if (max)
+    {
+        *max = d_ptr->info.highLimit;
+    }
 }
 
 void SpinBox::setScale(int scale)

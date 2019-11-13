@@ -21,18 +21,13 @@ include("../../Common/runtest.pri")
 SOURCES += main.cpp \
     TestAlarmIndicator.cpp \
     ../../../Components/Alarm/AlarmIndicator.cpp \
-    ../../../Components/SoundManager/SoundManagerInterface.cpp \
     ../../../Components/Alarm/Widgets/AlarmStatusWidget.cpp \
     ../../../Components/WindowManager/IWidget.cpp \
-    ../../../Utility/Widgets/Base/Dialog.cpp \
     ../../../Components/LightManager/LightManagerInterface.cpp \
     ../../../Utility/Config/IConfig.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmStateMachineInterface.cpp \
-    ../../../Utility/FontManager/FontManagerInterface.cpp \
     ../../../Components/Alarm/AlarmInterface.cpp \
     ../../../Components/Alarm/Widgets/AlarmInfoBarWidget.cpp \
-    ../../../Utility/Widgets/Base/Button.cpp \
-    ../../../Utility/Widgets/Base/ThemeManager.cpp \
     ../../../Components/WindowManager/WindowManagerInterface.cpp \
     ../../../Components/Alarm/AlarmIndicatorInterface.cpp \
     ../../../Components/Alarm/AlarmParamIFace.cpp \
@@ -42,21 +37,16 @@ HEADERS += \
     TestAlarmIndicator.h \
     ../../../Components/Alarm/AlarmIndicator.h \
     ../../../Components/Alarm/AlarmDefine.h \
-    ../../../Components/SoundManager/SoundManagerInterface.h \
     ../../../Components/Alarm/Widgets/AlarmStatusWidget.h \
     ../../../Components/PatientManager/PatientInfoWidgetInterface.h \
     ../../../Components/WindowManager/IWidget.h \
-    ../../../Utility/Widgets/Base/Dialog.h \
     ../../../Components/LightManager/LightManagerInterface.h \
     ../../../Utility/Config/IConfig.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmStateMachineInterface.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmStateDefine.h \
     ../../../Components/ParamManager/ParamDefine.h \
-    ../../../Utility/FontManager/FontManagerInterface.h \
     ../../../Components/Alarm/AlarmInterface.h \
     ../../../Components/Alarm/Widgets/AlarmInfoBarWidget.h \
-    ../../../Utility/Widgets/Base/Button.h \
-    ../../../Utility/Widgets/Base/ThemeManager.h \
     ../../../Components/WindowManager/WindowManagerInterface.h \
     ../../../Components/Alarm/AlarmIndicatorInterface.h \
     ../../../Components/Alarm/AlarmParamIFace.h \

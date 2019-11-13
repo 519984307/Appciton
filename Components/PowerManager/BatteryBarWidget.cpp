@@ -17,7 +17,7 @@
 #include "IConfig.h"
 #include <QPainter>
 #include "BatteryIndicatorWindow.h"
-#include "SoundManagerInterface.h"
+#include "Framework/Sound/SoundManagerInterface.h"
 #include <QBoxLayout>
 
 #define blackgroundColor QColor(20 , 20 , 20)

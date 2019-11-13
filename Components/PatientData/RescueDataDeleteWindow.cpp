@@ -10,17 +10,17 @@
 
 #include "RescueDataDeleteWindow.h"
 #include "RescueDataListNewWidget.h"
-#include "TableView.h"
-#include "Button.h"
+#include "Framework/UI/TableView.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ThemeManager.h"
+#include "Framework/Language/LanguageManager.h"
+#include "Framework/Utility/Utility.h"
 #include <QPointer>
 #include "WindowManager.h"
 #include "FontManager.h"
-#include "Framework/Language/LanguageManager.h"
 #include "MessageBox.h"
 #include <QEventLoop>
-#include "Framework/Utility/Utility.h"
 #include "DataStorageDirManager.h"
-#include "ThemeManager.h"
 #include <QBoxLayout>
 #include <QMutex>
 
@@ -103,7 +103,7 @@ void RescueDataDeleteWindow::_updateWindowTitle()
 void RescueDataDeleteWindow::_deleteSelectReleased()
 {
     QStringList list;
-    d_ptr->dataListWidget->getStrList(list);
+    d_ptr->dataListWidget->getStrList(&list);
     if (list.empty())
     {
         MessageBox msgbox(trs("Prompt"), trs("NoIncidents"), QStringList(trs("EnglishYESChineseSURE")));
@@ -112,7 +112,7 @@ void RescueDataDeleteWindow::_deleteSelectReleased()
     }
 
     QStringList checkList;
-    d_ptr->dataListWidget->getCheckList(checkList);
+    d_ptr->dataListWidget->getCheckList(&checkList);
     if (checkList.isEmpty())
     {
         MessageBox msgbox(trs("Prompt"), trs("SelectIncidents"), QStringList(trs("EnglishYESChineseSURE")));
@@ -161,7 +161,7 @@ void RescueDataDeleteWindow::_deleteSelectReleased()
 void RescueDataDeleteWindow::_deleteAllReleased()
 {
     QStringList list;
-    d_ptr->dataListWidget->getStrList(list);
+    d_ptr->dataListWidget->getStrList(&list);
     if (list.empty())
     {
         MessageBox msgbox(trs("Prompt"), trs("NoIncidents"), QStringList(trs("EnglishYESChineseSURE")));
@@ -211,8 +211,8 @@ void RescueDataDeleteWindow::_downReleased()
 void RescueDataDeleteWindow::_updateEraseBtnStatus()
 {
     QStringList checkList , strList;
-    d_ptr->dataListWidget->getCheckList(checkList);
-    d_ptr->dataListWidget->getStrList(strList);
+    d_ptr->dataListWidget->getCheckList(&checkList);
+    d_ptr->dataListWidget->getStrList(&strList);
     int checkListCount = checkList.count();
     int strListCount = strList.count();
     // erase select button

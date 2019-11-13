@@ -9,9 +9,9 @@
  **/
 
 #include "WiFiProfileWindow.h"
-#include "ComboBox.h"
 #include <QLabel>
-#include "Button.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
 #include "Framework/Language/LanguageManager.h"
 #include <QMap>
 #include <QGridLayout>

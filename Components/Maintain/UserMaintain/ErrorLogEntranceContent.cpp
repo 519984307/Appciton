@@ -9,7 +9,7 @@
  **/
 
 #include "ErrorLogEntranceContent.h"
-#include "Button.h"
+#include "Framework/UI/Button.h"
 #include "Framework/Language/LanguageManager.h"
 #include <QHBoxLayout>
 #include "ErrorLogWindow.h"

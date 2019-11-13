@@ -24,7 +24,8 @@ protected:
     void drawFocus(QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect) const;
 
     /* reimplement */
-    void drawDecoration(QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect, const QPixmap &pixmap) const;
+    void drawDecoration(QPainter *painter, const QStyleOptionViewItem &option,
+                        const QRect &rect, const QPixmap &pixmap) const;
 
 private:
     ListViewItemDelegatePrivate * const d_ptr;

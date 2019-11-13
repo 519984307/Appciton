@@ -9,7 +9,7 @@
  **/
 
 #include "ErrorLogTableModel.h"
-#include "ThemeManager.h"
+#include "Framework/UI/ThemeManager.h"
 #include "Framework/Language/LanguageManager.h"
 #include "Framework/ErrorLog/ErrorLogItem.h"
 #include "Framework/ErrorLog/ErrorLog.h"

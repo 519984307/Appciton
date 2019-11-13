@@ -10,10 +10,11 @@
 
 #include "TimeEditWindow.h"
 #include <QLabel>
-#include "ComboBox.h"
 #include <QGridLayout>
 #include "IConfig.h"
-#include "SpinBox.h"
+#include "Framework/UI/SpinBox.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/ThemeManager.h"
 #include "Framework/Language/LanguageManager.h"
 #include "Framework/TimeDate/TimeSymbol.h"
 #include "Framework/TimeDate/TimeDate.h"
@@ -29,7 +30,6 @@
 #include "TrendDataStorageManager.h"
 #include "MessageBox.h"
 #include "WindowManager.h"
-#include "ThemeManager.h"
 
 class TimeEditWindowPrivate
 {
@@ -405,7 +405,7 @@ void TimeEditWindow::onSpinBoxValueChanged(int value, int scale)
             {
                 int min = 0;
                 int max = 0;
-                d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getRange(min, max);
+                d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getRange(&min, &max);
                 QDate date(val, 2, 1);
                 int curMax = date.daysInMonth();
                 int curVal = d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getValue();
@@ -425,7 +425,7 @@ void TimeEditWindow::onSpinBoxValueChanged(int value, int scale)
         {
             int min = 0;
             int max = 0;
-            d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getRange(min, max);
+            d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getRange(&min, &max);
             QDate date(d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_YEAR]->getValue(), val, 1);
             int curMax = date.daysInMonth();
             int curVal = d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getValue();

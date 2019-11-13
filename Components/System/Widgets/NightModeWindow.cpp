@@ -11,15 +11,15 @@
 #include "NightModeWindow.h"
 #include <QGridLayout>
 #include <QLabel>
-#include "ComboBox.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/Button.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QMap>
-#include "Button.h"
 #include "IConfig.h"
 #include "SoundManager.h"
 #include "NightModeManager.h"
 #include "SystemManager.h"
 #include "SystemDefine.h"
-#include "Framework/Language/LanguageManager.h"
 #include "ConfigManagerInterface.h"
 #include "SoundManager.h"
 

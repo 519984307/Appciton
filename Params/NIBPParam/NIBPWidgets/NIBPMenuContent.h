@@ -11,7 +11,7 @@
 
 #pragma  once
 
-#include "MenuContent.h"
+#include "Framework/UI/MenuContent.h"
 
 class NIBPMenuContentPrivate;
 class NIBPMenuContent : public MenuContent

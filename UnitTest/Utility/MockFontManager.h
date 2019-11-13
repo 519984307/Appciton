@@ -9,7 +9,7 @@
  **/
 
 #pragma once
-#include "FontManagerInterface.h"
+#include "Framework/Font/FontManagerInterface.h"
 #include "gmock/gmock.h"
 
 class MockFontManager : public FontManagerInterface

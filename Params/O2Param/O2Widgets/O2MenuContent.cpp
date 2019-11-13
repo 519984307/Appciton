@@ -9,15 +9,15 @@
  **/
 
 #include "O2MenuContent.h"
-#include "Framework/Language/LanguageManager.h"
 #include <QGridLayout>
-#include "Button.h"
 #include "ParamInfo.h"
 #include "AlarmLimitWindow.h"
 #include "WindowManager.h"
-#include "ComboBox.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/SpinBox.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/Language/LanguageManager.h"
 #include "O2Param.h"
-#include "SpinBox.h"
 #include <QLabel>
 
 class O2MenuContentPrivate

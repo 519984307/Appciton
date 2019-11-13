@@ -145,7 +145,6 @@ void ScrollArea::setOverShot(bool enable)
     }
     else
     {
-
         d_ptr->scroller->setVerticalOvershootPolicy(QKineticScroller::OvershootAlwaysOff);
     }
 }

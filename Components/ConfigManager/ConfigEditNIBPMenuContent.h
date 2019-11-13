@@ -8,7 +8,7 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/7/17
  **/
 
-#include "MenuContent.h"
+#include "Framework/UI/MenuContent.h"
 #include "ConfigEditMenuWindow.h"
 
 class ConfigEditNIBPMenuContentPrivate;

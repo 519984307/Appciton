@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include "Dialog.h"
+#include "Framework/UI/Dialog.h"
 #include <QScopedPointer>
 #include "WiFiProfileInfo.h"
 

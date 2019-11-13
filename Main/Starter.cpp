@@ -60,6 +60,9 @@ int main(int argc, char *argv[])
     // errorlog 初始化
     errorLog.getInstance();
 
+    /* init framework resources */
+    Q_INIT_RESOURCE(ui);
+
     IApplication app(argc, argv);
 
     // 检查并固定系统时间

@@ -32,7 +32,7 @@
 #include "NIBPRepairMenuWindow.h"
 #include <QApplication>
 #include <QDesktopWidget>
-#include "Dialog.h"
+#include "Framework/UI/Dialog.h"
 #include "FontManager.h"
 #include <QTimer>
 #include "TopBarWidget.h"

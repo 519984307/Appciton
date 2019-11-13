@@ -9,9 +9,10 @@
  **/
 
 #include "ConfigEditEcgMenuContent.h"
-#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
-#include "ComboBox.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QGridLayout>
 #include <QList>
 #include "ECGSymbol.h"
@@ -19,7 +20,6 @@
 #include "SystemManager.h"
 #include "ECGParam.h"
 #include "ConfigManager.h"
-#include "Button.h"
 
 class ConfigEditECGMenuContentPrivate
 {

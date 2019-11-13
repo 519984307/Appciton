@@ -9,13 +9,13 @@
  **/
 
 #include "BigFontLayoutWindow.h"
-#include "TableView.h"
+#include "Framework/UI/TableView.h"
+#include "Framework/UI/Button.h"
+#include "Framework/Language/LanguageManager.h"
 #include "BigFontLayoutModel.h"
 #include "ScreenLayoutItemDelegate.h"
 #include <QLayout>
 #include <QHeaderView>
-#include "Button.h"
-#include "Framework/Language/LanguageManager.h"
 #include "LayoutManager.h"
 #include "MessageBox.h"
 #include "WindowManager.h"

@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include "MenuContent.h"
+#include "Framework/UI/MenuContent.h"
 #include "CO2Define.h"
 
 class CO2MenuContentPrivate;

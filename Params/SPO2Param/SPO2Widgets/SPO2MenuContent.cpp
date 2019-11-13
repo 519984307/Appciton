@@ -9,9 +9,10 @@
  **/
 
 #include "SPO2MenuContent.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
 #include "Framework/Language/LanguageManager.h"
 #include <QLabel>
-#include "ComboBox.h"
 #include <QGridLayout>
 #include <QList>
 #include "SPO2Symbol.h"
@@ -21,12 +22,12 @@
 #include "IConfig.h"
 #include "ConfigManager.h"
 #include "MainMenuWindow.h"
-#include "Button.h"
 #include "AlarmLimitWindow.h"
 #include "ECGParam.h"
 #include "NightModeManager.h"
 #include "CCHDWindow.h"
 #include "PatientManager.h"
+#include "WindowManager.h"
 
 class SPO2MenuContentPrivate
 {

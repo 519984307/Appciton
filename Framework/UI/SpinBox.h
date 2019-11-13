@@ -62,7 +62,7 @@ public:
      * @param max max value
      */
     void setRange(int min, int max);
-    void getRange(int &min, int &max);
+    void getRange(int *min, int *max);
 
     /**
      * @brief setScale set scale

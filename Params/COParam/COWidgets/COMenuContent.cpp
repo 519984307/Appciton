@@ -9,10 +9,10 @@
  **/
 
 #include "COMenuContent.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
 #include "Framework/Language/LanguageManager.h"
 #include <QLabel>
-#include "ComboBox.h"
-#include "Button.h"
 #include <QGridLayout>
 #include <QList>
 #include "COSymbol.h"
@@ -24,6 +24,7 @@
 #include "MessageBox.h"
 #include "MainMenuWindow.h"
 #include "AlarmLimitWindow.h"
+#include "WindowManager.h"
 
 class COMenuContentPrivate
 {

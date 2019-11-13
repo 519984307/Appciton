@@ -9,9 +9,9 @@
  **/
 
 #include "FactorySystemInfoMenuContent.h"
+#include "Framework/UI/Button.h"
 #include "Framework/Language/LanguageManager.h"
 #include <QLabel>
-#include <Button.h>
 #include <QHBoxLayout>
 #include "KeyInputPanel.h"
 #include "IConfig.h"

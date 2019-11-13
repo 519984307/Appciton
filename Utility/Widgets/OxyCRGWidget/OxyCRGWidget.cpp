@@ -20,7 +20,7 @@
 #include "IWidget.h"
 #include "ConfigManager.h"
 #include <QPainter>
-#include "PopupList.h"
+#include "Framework/UI/PopupList.h"
 #include "ParamInfo.h"
 #include "SystemManager.h"
 #include "OxyCRGSetupWindow.h"

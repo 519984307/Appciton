@@ -21,7 +21,6 @@ include("../../Common/runtest.pri")
 SOURCES += main.cpp \
     TestNightManager.cpp \
     ../../../Utility/NightModeManager/NightModeManager.cpp \
-    ../../../Components/SoundManager/SoundManagerInterface.cpp \
     ../../../Components/System/SystemManagerInterface.cpp \
     ../../../Utility/Config/IConfig.cpp \
     ../../../Components/WindowManager/IWidget.cpp \
@@ -32,7 +31,6 @@ SOURCES += main.cpp \
 HEADERS += \
     TestNightManager.h \
     ../../../Utility/NightModeManager/NightModeManager.h \
-    ../../../Components/SoundManager/SoundManagerInterface.h \
     ../../../Components/System/SystemManagerInterface.h \
     ../../../Utility/Config/IConfig.h \
     ../../../Components/WindowManager/IWidget.h \

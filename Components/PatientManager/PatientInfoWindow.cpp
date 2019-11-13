@@ -11,8 +11,6 @@
 #include "PatientInfoWindow.h"
 #include <QGridLayout>
 #include <QLabel>
-#include "ComboBox.h"
-#include "Framework/Language/LanguageManager.h"
 #include <QStringList>
 #include "MessageBox.h"
 #include <QHBoxLayout>
@@ -21,13 +19,15 @@
 #include "PatientManager.h"
 #include "DischargePatientWindow.h"
 #include <QMap>
-#include "Button.h"
 #include "IConfig.h"
 #include "WindowManager.h"
-#include "SpinBox.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/SpinBox.h"
 #include "Framework/Utility/Unit.h"
 #include "Framework/TimeDate/TimeDate.h"
 #include "Framework/TimeDate/TimeSymbol.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QDate>
 #include "FloatHandle.h"
 #include "RunningStatusBar.h"

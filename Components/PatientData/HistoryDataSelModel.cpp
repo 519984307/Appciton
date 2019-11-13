@@ -10,7 +10,7 @@
 
 #include "HistoryDataSelModel.h"
 #include "DataStorageDirManager.h"
-#include "ThemeManager.h"
+#include "Framework/UI/ThemeManager.h"
 #include <QDateTime>
 #include "Framework/TimeDate/TimeDate.h"
 #include "WindowManager.h"

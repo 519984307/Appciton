@@ -9,9 +9,10 @@
  **/
 
 #include "NormalFunctionMenuContent.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/Button.h"
 #include "Framework/Language/LanguageManager.h"
 #include <QLabel>
-#include "ComboBox.h"
 #include <QGridLayout>
 #include <QList>
 #include "SoundManager.h"
@@ -22,7 +23,6 @@
 #include "PrintDefine.h"
 #include "RecorderManager.h"
 #include "NightModeManager.h"
-#include "Button.h"
 #include "CalculateWindow.h"
 #include "WindowManager.h"
 #include "WiFiProfileWindow.h"

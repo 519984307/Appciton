@@ -9,9 +9,9 @@
  **/
 
 #include "ParaColorWindow.h"
+#include "Framework/UI/ComboBox.h"
 #include "Framework/Language/LanguageManager.h"
 #include <QLabel>
-#include "ComboBox.h"
 #include <QGridLayout>
 #include <QList>
 #include "SoundManager.h"

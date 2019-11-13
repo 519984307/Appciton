@@ -11,7 +11,7 @@
 #include "CCHDDataModel.h"
 #include "Framework/Language/LanguageManager.h"
 #include "Framework/TimeDate/TimeDate.h"
-#include "ThemeManager.h"
+#include "Framework/UI/ThemeManager.h"
 #include "WindowManager.h"
 
 #define ROW_COUNT 3

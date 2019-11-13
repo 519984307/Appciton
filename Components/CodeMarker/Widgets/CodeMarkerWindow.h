@@ -9,8 +9,8 @@
  **/
 
 
-#include "Dialog.h"
-#include "Button.h"
+#include "Framework/UI/Dialog.h"
+#include "Framework/UI/Button.h"
 
 class CodeMarkerWindowPrivate;
 

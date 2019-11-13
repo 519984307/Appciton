@@ -166,38 +166,8 @@ SOURCES +=                                                                      
     Utility/ErrorLog/ErrorLogWindow.cpp                                         \
     Utility/Debug/Debug.cpp                                                     \
     Utility/FontManager/FontManager.cpp                                         \
-    Utility/FontManager/FontManagerInterface.cpp                                \
     Utility/ColorManager/ColorManager.cpp                                       \
     Utility/NightModeManager/NightModeManager.cpp                               \
-    Utility/Widgets/Base/ShadowEffect.cpp                                       \
-    Utility/Widgets/Base/ThemeManager.cpp                                       \
-    Utility/Widgets/Base/Button.cpp                                             \
-    Utility/Widgets/Base/Frame.cpp                                              \
-    Utility/Widgets/Base/FrameItem.cpp                                          \
-    Utility/Widgets/Base/ComboBox.cpp                                           \
-    Utility/Widgets/Base/PopupList.cpp                                          \
-    Utility/Widgets/Base/PopupListItem.cpp                                      \
-    Utility/Widgets/Base/PopupNumEditor.cpp                                     \
-    Utility/Widgets/Base/TableView.cpp                                          \
-    Utility/Widgets/Base/TableHeaderView.cpp                                    \
-    Utility/Widgets/Base/TableViewItemDelegate.cpp                              \
-    Utility/Widgets/Base/ListView.cpp                                           \
-    Utility/Widgets/Base/ListDataModel.cpp                                      \
-    Utility/Widgets/Base/ListViewItemDelegate.cpp                               \
-    Utility/Widgets/Base/MenuWindow.cpp                                         \
-    Utility/Widgets/Base/MenuSidebar.cpp                                        \
-    Utility/Widgets/Base/MenuSidebarItem.cpp                                    \
-    Utility/Widgets/Base/MenuContent.cpp                                        \
-    Utility/Widgets/Base/ScrollArea.cpp                                         \
-    Utility/Widgets/Base/FloatScrollBar.cpp                                     \
-    Utility/Widgets/Base/KineticScroller/qkineticscroller.cpp                   \
-    Utility/Widgets/Base/KineticScroller/qscrollareakineticscroller.cpp         \
-    Utility/Widgets/Base/PasswordWidget.cpp                                     \
-    Utility/Widgets/Base/SpinBox.cpp                                            \
-    Utility/Widgets/Base/DropList.cpp                                           \
-    Utility/Widgets/Base/PopupMoveEditor.cpp                                    \
-    Utility/Widgets/Base/MoveButton.cpp                                         \
-    Utility/Widgets/Base/Dialog.cpp                                             \
     Utility/Widgets/InputMethod/EnglishInputPanel.cpp                           \
     Utility/Widgets/InputMethod/KeyInputPanel.cpp                               \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWaveWidget.cpp                      \
@@ -260,7 +230,6 @@ SOURCES +=                                                                      
     Components/System/Widgets/PowerOffWindow.cpp                                \
     Components/System/Widgets/NightModeWindow.cpp                               \
     Components/SoundManager/SoundManager.cpp                                    \
-    Components/SoundManager/SoundManagerInterface.cpp                           \
     Components/SoundManager/WavFile.cpp                                         \
     Components/SoundManager/WavPlayer.cpp                                       \
     Components/LightManager/LightManager.cpp                                    \
@@ -587,41 +556,8 @@ HEADERS +=                                                                      
     Utility/FloatHandle/FloatHandle.h                                           \
     Utility/Debug/Debug.h                                                       \
     Utility/FontManager/FontManager.h                                           \
-    Utility/FontManager/FontManagerInterface.h                                  \
     Utility/ColorManager/ColorManager.h                                         \
     Utility/NightModeManager/NightModeManager.h                                 \
-    Utility/Widgets/Base/ShadowEffect.h                                         \
-    Utility/Widgets/Base/ThemeManager.h                                         \
-    Utility/Widgets/Base/Button.h                                               \
-    Utility/Widgets/Base/Frame.h                                                \
-    Utility/Widgets/Base/FrameItem.h                                            \
-    Utility/Widgets/Base/ComboBox.h                                             \
-    Utility/Widgets/Base/PopupList.h                                            \
-    Utility/Widgets/Base/PopupListItem.h                                        \
-    Utility/Widgets/Base/ItemEditInfo.h                                         \
-    Utility/Widgets/Base/PopupNumEditor.h                                       \
-    Utility/Widgets/Base/TableView.h                                            \
-    Utility/Widgets/Base/TableHeaderView.h                                      \
-    Utility/Widgets/Base/TableViewItemDelegate.h                                \
-    Utility/Widgets/Base/TableViewItemDelegate_p.h                              \
-    Utility/Widgets/Base/ListView.h                                             \
-    Utility/Widgets/Base/ListDataModel.h                                        \
-    Utility/Widgets/Base/ListViewItemDelegate.h                                 \
-    Utility/Widgets/Base/MenuWindow.h                                           \
-    Utility/Widgets/Base/MenuSidebar.h                                          \
-    Utility/Widgets/Base/MenuSidebarItem.h                                      \
-    Utility/Widgets/Base/MenuContent.h                                          \
-    Utility/Widgets/Base/ScrollArea.h                                           \
-    Utility/Widgets/Base/FloatScrollBar.h                                       \
-    Utility/Widgets/Base/KineticScroller/qkineticscroller.h                     \
-    Utility/Widgets/Base/KineticScroller/qkineticscroller_p.h                   \
-    Utility/Widgets/Base/KineticScroller/qscrollareakineticscroller.h           \
-    Utility/Widgets/Base/PasswordWidget.h                                       \
-    Utility/Widgets/Base/SpinBox.h                                              \
-    Utility/Widgets/Base/DropList.h                                             \
-    Utility/Widgets/Base/PopupMoveEditor.h                                      \
-    Utility/Widgets/Base/MoveButton.h                                           \
-    Utility/Widgets/Base/Dialog.h                                               \
     Utility/Widgets/InputMethod/EnglishInputPanel.h                             \
     Utility/Widgets/InputMethod/KeyInputPanel.h                                 \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWaveWidget.h                        \
@@ -689,7 +625,6 @@ HEADERS +=                                                                      
     Components/System/Widgets/PowerOffWindow.h                                  \
     Components/System/Widgets/NightModeWindow.h                                 \
     Components/SoundManager/SoundManager.h                                      \
-    Components/SoundManager/SoundManagerInterface.h                             \
     Components/SoundManager/WavFile.h                                           \
     Components/SoundManager/WavPlayer.h                                         \
     Components/LightManager/LightManager.h                                      \
@@ -1275,6 +1210,3 @@ linux-arm-g++ {
 
     HEADERS +=  Utility/Widgets/TSCalibrationWindow.h
 }
-
-RESOURCES += \
-    Utility/Widgets/Base/res/ui.qrc

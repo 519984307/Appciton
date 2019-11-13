@@ -8,12 +8,12 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/7/25
  **/
 #include "MessageBox.h"
-#include "Button.h"
+#include "Framework/UI/Button.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QTimer>
 #include <QGridLayout>
 #include <QLabel>
 #include <QSignalMapper>
-#include "Framework/Language/LanguageManager.h"
 
 #define BUTTON_WIDTH 120
 #define WINDOW_WIDTH 480

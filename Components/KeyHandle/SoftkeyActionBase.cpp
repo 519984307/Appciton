@@ -18,7 +18,7 @@
 #include "MessageBox.h"
 #include "CO2Param.h"
 #include "DoseCalculationManager.h"
-#include "MenuWindow.h"
+#include "Framework/UI/MenuWindow.h"
 #include "PatientManager.h"
 #include "PatientInfoWindow.h"
 #include "CodeMarkerWindow.h"

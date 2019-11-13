@@ -8,15 +8,16 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/24
  **/
 #include "TEMPMenuContent.h"
-#include "ComboBox.h"
 #include <QLabel>
 #include <QGridLayout>
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
 #include "Framework/Language/LanguageManager.h"
 #include "TEMPSymbol.h"
 #include "TEMPParam.h"
 #include "MainMenuWindow.h"
-#include "Button.h"
 #include "AlarmLimitWindow.h"
+#include "WindowManager.h"
 
 class TEMPMenuContentPrivate
 {

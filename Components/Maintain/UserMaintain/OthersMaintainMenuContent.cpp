@@ -9,14 +9,14 @@
  **/
 
 #include "OthersMaintainMenuContent.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
 #include "Framework/Language/LanguageManager.h"
 #include <QLabel>
-#include "ComboBox.h"
 #include <QGridLayout>
 #include "IBPSymbol.h"
 #include "IConfig.h"
 #include "IBPParam.h"
-#include "Button.h"
 #include "NurseCallSetWindow.h"
 #include "ECGParam.h"
 #include "CO2Param.h"

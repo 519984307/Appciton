@@ -22,6 +22,18 @@ public:
 
     void layoutExec();
 
+    /**
+     * @brief setPassword set the normal password
+     * @param password the new password
+     */
+    void setPassword(const QString &password);
+
+    /**
+     * @brief setSuperPassword set the super password
+     * @param password the super passwrod
+     */
+    void setSuperPassword(const QString &password);
+
 signals:
     void correctPassword(void);
 

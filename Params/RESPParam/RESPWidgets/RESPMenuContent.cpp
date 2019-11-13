@@ -9,21 +9,22 @@
  **/
 
 #include "RESPMenuContent.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
 #include "Framework/Language/LanguageManager.h"
 #include <QLabel>
-#include <ComboBox.h>
 #include <QGridLayout>
 #include "RESPParam.h"
 #include <QMap>
 #include "ConfigManager.h"
 #include "SystemManager.h"
-#include "Button.h"
 #include "MainMenuWindow.h"
 #include "RESPSymbol.h"
 #include "CO2Param.h"
 #include "IConfig.h"
 #include "RESPDupParam.h"
 #include "AlarmLimitWindow.h"
+#include "WindowManager.h"
 
 class RESPMenuContentPrivate
 {

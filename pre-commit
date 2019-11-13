@@ -39,6 +39,7 @@ fi
 # We should pass only added or modified C/C++ source files and header files to cpplint, ignore file in SOUP folder
 changed_files=$(git diff-index --cached $against | \
 	grep -v 'SOUP' | \
+	grep -v 'KineticScroller' | \
 	grep -E '[MA]	.*\.(c|cpp|cc|cxx|h)$' | cut -f 2)
 
 if [ -n "$changed_files" ]; then
@@ -52,6 +53,7 @@ fi
 # We should pass only added or modified C/C++ source files to cppcheck.
 changed_files=$(git diff-index --cached $against | \
 	grep -v 'SOUP' | \
+	grep -v 'KineticScroller' | \
 	grep -E '[MA]	.*\.(c|cpp|cc|cxx)$' | cut -f 2)
 
 

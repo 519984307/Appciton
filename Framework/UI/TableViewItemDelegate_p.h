@@ -31,7 +31,7 @@ public:
     TableViewItemDelegate *const q_ptr;
     QModelIndex curPaintingIndex;   // record current painting item's index
     QModelIndex curEditingIndex;    // record current painting item's index
-    QAbstractItemModel *curEditingModel; // current editing model
+    QAbstractItemModel *curEditingModel;  // current editing model
     Qt::CheckState checkState;  // record current item's check state
     QPalette pal;   // palette to used when draw check state
 };

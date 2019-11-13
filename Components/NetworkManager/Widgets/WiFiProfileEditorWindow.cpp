@@ -11,6 +11,8 @@
 #include "WiFiProfileEditorWindow.h"
 
 #include <QRegExp>
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
 #include "Framework/Language/LanguageManager.h"
 #include "FontManager.h"
 #include "WindowManager.h"
@@ -19,8 +21,6 @@
 #include "MessageBox.h"
 #include "SystemManager.h"
 #include <QApplication>
-#include "Button.h"
-#include "ComboBox.h"
 #include <QLabel>
 #include <QGridLayout>
 #include <QKeyEvent>

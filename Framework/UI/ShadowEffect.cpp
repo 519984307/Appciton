@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the Project project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2019/11/13
+ **/
+
 #include "ShadowEffect.h"
 #include <QPainter>
 
@@ -10,7 +20,8 @@ ShadowEffect::ShadowEffect(QObject *parent) :
 }
 
 QT_BEGIN_NAMESPACE
-extern Q_GUI_EXPORT void qt_blurImage(QPainter *p, QImage &blurImage, qreal radius, bool quality, bool alphaOnly, int transposed = 0 );
+extern Q_GUI_EXPORT void qt_blurImage(QPainter *p, QImage &blurImage, qreal radius,     // NOLINT
+                                      bool quality, bool alphaOnly, int transposed = 0);
 QT_END_NAMESPACE
 
 void ShadowEffect::draw(QPainter* painter)

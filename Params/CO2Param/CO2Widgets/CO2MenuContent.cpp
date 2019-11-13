@@ -11,9 +11,10 @@
 #include "CO2MenuContent.h"
 #include <QMap>
 #include <QLabel>
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/SpinBox.h"
 #include "Framework/Language/LanguageManager.h"
-#include "Button.h"
-#include "ComboBox.h"
 #include <QGridLayout>
 #include "CO2Symbol.h"
 #include "CO2Param.h"
@@ -24,7 +25,7 @@
 #include "RESPParam.h"
 #include "IConfig.h"
 #include "AlarmLimitWindow.h"
-#include "SpinBox.h"
+#include "WindowManager.h"
 
 class CO2MenuContentPrivate
 {

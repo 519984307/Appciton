@@ -9,12 +9,12 @@
  **/
 
 #include "UserMaintainGeneralMenuContent.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/Button.h"
 #include "Framework/Language/LanguageManager.h"
 #include <QLabel>
-#include "ComboBox.h"
 #include <QGridLayout>
 #include "IConfig.h"
-#include "Button.h"
 #include "KeyInputPanel.h"
 #include "PatientManager.h"
 #include "WindowManager.h"

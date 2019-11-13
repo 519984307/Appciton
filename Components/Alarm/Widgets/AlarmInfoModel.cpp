@@ -10,7 +10,7 @@
 
 #include "AlarmInfoModel.h"
 #include <QStringList>
-#include "ThemeManager.h"
+#include "Framework/UI/ThemeManager.h"
 #include "Framework/Language/LanguageManager.h"
 #include <QIcon>
 #include <QResizeEvent>

@@ -12,10 +12,10 @@
 #include <QMap>
 #include <QGridLayout>
 #include <QLabel>
+#include "Framework/UI/Button.h"
 #include "Framework/Language/LanguageManager.h"
 #include "IConfig.h"
 #include "KeyInputPanel.h"
-#include "Button.h"
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QVBoxLayout>

@@ -9,7 +9,7 @@
  **/
 
 #pragma once
-#include "Dialog.h"
+#include "Framework/UI/Dialog.h"
 #include "PatientDefine.h"
 
 class PatientTypeSelectWindowPrivate;
@@ -25,7 +25,7 @@ public:
      * @param patientType 病人类型
      * @param configPath 完整的配置文件路径
      */
-    void getConfigInfo(PatientType &patientType, QString &configPath) const;
+    void getConfigInfo(PatientType *patientType, QString *configPath) const;
 
 private slots:
     /**

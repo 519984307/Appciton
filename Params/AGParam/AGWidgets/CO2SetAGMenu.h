@@ -9,7 +9,7 @@
  **/
 #pragma once
 
-#include "MenuWindow.h"
+#include "Framework/UI/MenuWindow.h"
 #include <QScopedPointer>
 
 class CO2SetAGMenuPrivate;

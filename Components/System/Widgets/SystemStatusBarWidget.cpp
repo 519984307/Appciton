@@ -25,7 +25,7 @@
 #include "MessageBox.h"
 #include "USBManager.h"
 #include "Framework/Language/LanguageManager.h"
-#include "SoundManagerInterface.h"
+#include "Framework/Sound/SoundManagerInterface.h"
 #include <QTimerEvent>
 
 SystemStatusBarWidget *SystemStatusBarWidget::_selfObj = NULL;

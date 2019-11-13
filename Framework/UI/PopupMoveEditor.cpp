@@ -49,7 +49,7 @@ public:
     QSize iconSize;
 };
 
-PopupMoveEditor::PopupMoveEditor(QString &text)
+PopupMoveEditor::PopupMoveEditor(const QString &text)
     : QWidget(NULL, Qt::Popup | Qt::FramelessWindowHint),
       d_ptr(new PopupMoveEditorPrivate(this, text))
 {

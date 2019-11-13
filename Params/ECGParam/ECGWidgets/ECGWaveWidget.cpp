@@ -23,7 +23,7 @@
 #include "ParamInfo.h"
 #include "ConfigManager.h"
 #include "SystemManager.h"
-#include "PopupList.h"
+#include "Framework/UI/PopupList.h"
 #include "ECGWaveRuler.h"
 #include "LayoutManager.h"
 #include "ECGDupParam.h"

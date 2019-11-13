@@ -10,12 +10,12 @@
 #include "ConfigEditRespMenuContent.h"
 #include <QGridLayout>
 #include <QLabel>
-#include "ComboBox.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
 #include "Framework/Language/LanguageManager.h"
 #include <QMap>
 #include "RESPDefine.h"
 #include "RESPSymbol.h"
-#include "Button.h"
 #include "ParamInfo.h"
 #include "ParamDefine.h"
 #include "ConfigManager.h"

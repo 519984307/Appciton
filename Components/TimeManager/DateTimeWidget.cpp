@@ -15,7 +15,7 @@
 #include <QLabel>
 #include "WindowManager.h"
 #include "TimeEditWindow.h"
-#include "SoundManagerInterface.h"
+#include "Framework/Sound/SoundManagerInterface.h"
 
 /**************************************************************************************************
  * 功能： 设置显示的内容。

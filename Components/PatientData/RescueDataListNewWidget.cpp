@@ -15,7 +15,7 @@
 #include "DataStorageDirManager.h"
 #include <QDateTime>
 #include "Framework/TimeDate/TimeDate.h"
-#include "ThemeManager.h"
+#include "Framework/UI/ThemeManager.h"
 
 #define PIC_WIDTH (16)
 
@@ -98,38 +98,51 @@ RescueDataListNewWidget::~RescueDataListNewWidget()
     delete d_ptr;
 }
 
-void RescueDataListNewWidget::getCheckList(QList<int> &list)
+void RescueDataListNewWidget::getCheckList(QList<int> *list)
 {
-    list.clear();
+    if (!list)
+    {
+        return;
+    }
+
+    list->clear();
 
     int count = d_ptr->strList.count();
     for (int i = 0; i < count; ++i)
     {
         if (d_ptr->checkFlag.at(i))
         {
-            list << i;
+            *list << i;
         }
     }
 }
 
-void RescueDataListNewWidget::getCheckList(QStringList &list)
+void RescueDataListNewWidget::getCheckList(QStringList *list)
 {
-    list.clear();
+    if (!list)
+    {
+        return;
+    }
+
+    list->clear();
 
     int count = d_ptr->strList.count();
     for (int i = 0; i < count; ++i)
     {
         if (d_ptr->checkFlag.at(i))
         {
-            list << d_ptr->strList.at(i);
+            *list << d_ptr->strList.at(i);
         }
     }
 }
 
-void RescueDataListNewWidget::getStrList(QStringList &strList)
+void RescueDataListNewWidget::getStrList(QStringList *strList)
 {
-    strList.clear();
-    strList.append(d_ptr->strList);
+    if (strList)
+    {
+        strList->clear();
+        strList->append(d_ptr->strList);
+    }
 }
 
 void RescueDataListNewWidget::pageChange(bool upPage)

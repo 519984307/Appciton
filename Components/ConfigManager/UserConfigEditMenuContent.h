@@ -8,7 +8,7 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018.07.14
  **/
 #pragma once
-#include "MenuContent.h"
+#include "Framework/UI/MenuContent.h"
 
 class UserConfigEditMenuContentPrivate;
 class UserConfigEditMenuContent: public MenuContent

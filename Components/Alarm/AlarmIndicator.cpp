@@ -11,7 +11,7 @@
 #include "AlarmIndicator.h"
 #include "AlarmStatusWidget.h"
 #include "AlarmInfoBarWidget.h"
-#include "SoundManagerInterface.h"
+#include "Framework/Sound/SoundManagerInterface.h"
 #include "LightManagerInterface.h"
 #include "IConfig.h"
 #include "AlarmSourceManager.h"

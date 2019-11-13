@@ -16,7 +16,7 @@
 #include <QPainter>
 #include "WindowManager.h"
 #include "Alarm.h"
-#include "SoundManagerInterface.h"
+#include "Framework/Sound/SoundManagerInterface.h"
 
 /**************************************************************************************************
  * 绘制背景。

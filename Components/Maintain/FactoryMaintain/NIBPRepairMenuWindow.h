@@ -8,7 +8,7 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/7/24
  **/
 #pragma once
-#include "MenuWindow.h"
+#include "Framework/UI/MenuWindow.h"
 #include "NIBPMaintainMgrInterface.h"
 #define InvStr() ("---")
 

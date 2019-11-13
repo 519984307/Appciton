@@ -10,8 +10,8 @@
 
 #include "CalculateWindow.h"
 #include "Framework/Language/LanguageManager.h"
+#include "Framework/UI/Button.h"
 #include <QBoxLayout>
-#include "Button.h"
 #include "DoseCalculationWindow.h"
 #include "HemodynamicWindow.h"
 #include "WindowManager.h"

@@ -10,11 +10,11 @@
 #include "DoseCalculationWindow.h"
 #include <QGridLayout>
 #include <QHBoxLayout>
-#include "ComboBox.h"
-#include "Button.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/Button.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
 #include <QSignalMapper>
-#include "Framework/Language/LanguageManager.h"
 #include "DoseCalculationDefine.h"
 #include "DoseCalculationManager.h"
 #include "WindowManager.h"

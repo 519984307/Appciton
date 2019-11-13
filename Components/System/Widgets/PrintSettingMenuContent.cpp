@@ -9,11 +9,11 @@
  **/
 
 #include "PrintSettingMenuContent.h"
-#include "Button.h"
-#include "ComboBox.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
 #include <QGridLayout>
-#include "Framework/Language/LanguageManager.h"
 #include "RecorderManager.h"
 #include "WindowManager.h"
 #include "IConfig.h"

@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include "MenuContent.h"
+#include "Framework/UI/MenuContent.h"
 
 #define PRINT_WAVE_NUM 3
 

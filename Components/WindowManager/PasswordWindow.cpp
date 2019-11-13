@@ -10,13 +10,22 @@
 
 #include "PasswordWindow.h"
 #include <QVBoxLayout>
-#include "PasswordWidget.h"
+#include "Framework/UI/PasswordWidget.h"
+#include "IConfig.h"
 
 PasswordWindow::PasswordWindow(const QString &name, const QString &password)
 {
     QVBoxLayout *layout = new QVBoxLayout();
 
     PasswordWidget *w = new PasswordWidget(name, password);
+
+    /* set the supper password */
+    QString superPassword;
+    systemConfig.getStrValue("General|SuperPassword", superPassword);
+    if (!superPassword.isEmpty())
+    {
+        w->setSuperPassword(superPassword);
+    }
     layout->addWidget(w);
     connect(w, SIGNAL(correctPassword()), this, SLOT(accept()));
     setWindowLayout(layout);

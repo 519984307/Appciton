@@ -14,11 +14,12 @@
 #include "NIBPRepairMenuWindow.h"
 #include "NIBPEventDefine.h"
 #include "NIBPServiceStateDefine.h"
-#include "Button.h"
+#include "Framework/UI/Button.h"
 #include "MessageBox.h"
 #include "IConfig.h"
 #include "Framework/Language/LanguageManager.h"
 #include <QTimerEvent>
+#include "WindowManager.h"
 
 class NIBPManometerContentPrivate
 {

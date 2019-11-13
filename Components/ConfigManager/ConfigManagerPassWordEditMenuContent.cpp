@@ -10,7 +10,7 @@
 
 #include "ConfigManagerPassWordEditMenuContent.h"
 #include "Framework/Language/LanguageManager.h"
-#include "Button.h"
+#include "Framework/UI/Button.h"
 #include <QGridLayout>
 #include "KeyInputPanel.h"
 #include "IConfig.h"

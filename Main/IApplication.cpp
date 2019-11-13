@@ -16,7 +16,7 @@
 #include "KeyActionManager.h"
 #include "Debug.h"
 #include "USBManager.h"
-#include "SoundManagerInterface.h"
+#include "Framework/Sound/SoundManagerInterface.h"
 #include "MessageBox.h"
 #include <QDir>
 

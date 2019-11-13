@@ -12,16 +12,16 @@
 #include "FontManager.h"
 #include "NetworkManager.h"
 #include "Debug.h"
-#include "ListView.h"
-#include "ListDataModel.h"
-#include "ListViewItemDelegate.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ListView.h"
+#include "Framework/UI/ListDataModel.h"
+#include "Framework/UI/ListViewItemDelegate.h"
+#include "Framework/Language/LanguageManager.h"
 #include "IConfig.h"
 #include <QFocusEvent>
 #include "WiFiProfileEditorWindow.h"
 #include "MessageBox.h"
-#include "ComboBox.h"
-#include "Button.h"
-#include "Framework/Language/LanguageManager.h"
 #include <QBoxLayout>
 #include <QLabel>
 

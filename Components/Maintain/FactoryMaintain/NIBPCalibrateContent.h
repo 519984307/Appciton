@@ -9,12 +9,12 @@
  **/
 
 #pragma once
-#include "MenuContent.h"
+#include "Framework/UI/MenuContent.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/SpinBox.h"
 #include <QList>
 #include <QHBoxLayout>
 #include <QLabel>
-#include "Button.h"
-#include "SpinBox.h"
 
 class CalibrateSetItem : public QWidget
 {

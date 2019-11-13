@@ -9,12 +9,12 @@
  **/
 
 #pragma once
-#include "Dialog.h"
+#include "Framework/UI/Dialog.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/SpinBox.h"
 #include <QScopedPointer>
 #include <QHBoxLayout>
 #include <QLabel>
-#include "ComboBox.h"
-#include "SpinBox.h"
 #include "ParamInfo.h"
 #include "TrendDataDefine.h"
 

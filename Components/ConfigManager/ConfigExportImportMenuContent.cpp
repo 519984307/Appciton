@@ -18,16 +18,16 @@
 #include "ConfigExportImportMenuContent.h"
 #include <QGridLayout>
 #include <QMap>
-#include "Button.h"
 #include <QDomComment>
 #include <QHBoxLayout>
-#include "ListView.h"
-#include "ListDataModel.h"
-#include "ListViewItemDelegate.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ListView.h"
+#include "Framework/UI/ListDataModel.h"
+#include "Framework/UI/ListViewItemDelegate.h"
+#include "Framework/UI/ThemeManager.h"
 #include <QLabel>
 #include <QString>
 #include "USBManager.h"
-#include "ThemeManager.h"
 #include <QTimer>
 
 #define CONFIG_MAX_NUM 3

@@ -10,9 +10,9 @@
 
 #include "DataReviewMenuContent.h"
 #include "Framework/Language/LanguageManager.h"
+#include "Framework/UI/Button.h"
 #include <QMap>
 #include <QGridLayout>
-#include "Button.h"
 #include <QVariant>
 #include "TrendTableWindow.h"
 #include "WindowManager.h"

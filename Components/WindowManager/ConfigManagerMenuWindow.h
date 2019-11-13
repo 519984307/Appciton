@@ -9,7 +9,7 @@
  **/
 
 #pragma once
-#include "MenuWindow.h"
+#include "Framework/UI/MenuWindow.h"
 
 class ConfigManagerMenuWindow : public MenuWindow
 {

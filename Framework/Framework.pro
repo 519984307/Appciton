@@ -45,6 +45,38 @@ SOURCES += \
         Language/LanguageManager.cpp                                                \
         Language/Translator.cpp                                                     \
         TimeDate/TimeDate.cpp                                                       \
+        UI/Button.cpp                                                               \
+        UI/ComboBox.cpp                                                             \
+        UI/Dialog.cpp                                                               \
+        UI/DropList.cpp                                                             \
+        UI/FloatScrollBar.cpp                                                       \
+        UI/Frame.cpp                                                                \
+        UI/FrameItem.cpp                                                            \
+        UI/ListDataModel.cpp                                                        \
+        UI/ListView.cpp                                                             \
+        UI/ListViewItemDelegate.cpp                                                 \
+        UI/MenuContent.cpp                                                          \
+        UI/MenuSidebar.cpp                                                          \
+        UI/MenuSidebarItem.cpp                                                      \
+        UI/MenuWindow.cpp                                                           \
+        UI/MoveButton.cpp                                                           \
+        UI/PasswordWidget.cpp                                                       \
+        UI/PopupList.cpp                                                            \
+        UI/PopupListItem.cpp                                                        \
+        UI/PopupMoveEditor.cpp                                                      \
+        UI/PopupNumEditor.cpp                                                       \
+        UI/ScrollArea.cpp                                                           \
+        UI/ShadowEffect.cpp                                                         \
+        UI/SpinBox.cpp                                                              \
+        UI/TableHeaderView.cpp                                                      \
+        UI/TableView.cpp                                                            \
+        UI/TableViewItemDelegate.cpp                                                \
+        UI/ThemeManager.cpp                                                         \
+        UI/KineticScroller/qkineticscroller.cpp                                     \
+        UI/KineticScroller/qscrollareakineticscroller.cpp                           \
+        Windows/WindowManagerInterface.cpp                                          \
+        Font/FontManagerInterface.cpp                                               \
+        Sound/SoundManagerInterface.cpp                                             \
 
 
 HEADERS += \
@@ -71,6 +103,42 @@ HEADERS += \
         TimeDate/TimeDefine.h                                                       \
         TimeDate/TimeSymbol.h                                                       \
         TimeDate/TimeDate.h                                                         \
+        UI/Button.h                                                                 \
+        UI/ComboBox.h                                                               \
+        UI/Dialog.h                                                                 \
+        UI/DropList.h                                                               \
+        UI/FloatScrollBar.h                                                         \
+        UI/Frame.h                                                                  \
+        UI/FrameItem.h                                                              \
+        UI/ItemEditInfo.h                                                           \
+        UI/ListDataModel.h                                                          \
+        UI/ListView.h                                                               \
+        UI/ListViewItemDelegate.h                                                   \
+        UI/MenuContent.h                                                            \
+        UI/MenuSidebar.h                                                            \
+        UI/MenuSidebarItem.h                                                        \
+        UI/MenuWindow.h                                                             \
+        UI/MoveButton.h                                                             \
+        UI/PasswordWidget.h                                                         \
+        UI/PopupList.h                                                              \
+        UI/PopupListItem.h                                                          \
+        UI/PopupMoveEditor.h                                                        \
+        UI/PopupNumEditor.h                                                         \
+        UI/ScrollArea.h                                                             \
+        UI/ShadowEffect.h                                                           \
+        UI/SpinBox.h                                                                \
+        UI/TableHeaderView.h                                                        \
+        UI/TableView.h                                                              \
+        UI/TableViewItemDelegate.h                                                  \
+        UI/TableViewItemDelegate_p.h                                                \
+        UI/ThemeManager.h                                                           \
+        UI/KineticScroller/qkineticscroller.h                                       \
+        UI/KineticScroller/qkineticscroller_p.h                                     \
+        UI/KineticScroller/qscrollareakineticscroller.h                             \
+        Windows/WindowManagerInterface.h                                            \
+        Font/FontManagerInterface.h                                                 \
+        Sound/SoundManagerInterface.h                                               \
+        Alarm/AlarmTypeDefine.h                                                     \
 
 DEPENDPATH += \
         Utility                                                                     \
@@ -80,6 +148,11 @@ DEPENDPATH += \
         SOUP/Json                                                                   \
         Language                                                                    \
         TimeDate                                                                    \
+        UI                                                                          \
+        UI/KineticScroller                                                          \
+        Windows                                                                     \
+        Font                                                                        \
+        Sound                                                                       \
 
 INCLUDEPATH += \
         Utility                                                                     \
@@ -89,6 +162,13 @@ INCLUDEPATH += \
         SOUP/Json                                                                   \
         Language                                                                    \
         TimeDate                                                                    \
+        UI                                                                          \
+        UI/KineticScroller                                                          \
+        Windows                                                                     \
+        Font                                                                        \
+        Sound                                                                       \
+
+RESOURCES += UI/res/ui.qrc
 
 unix {
     target.path = /usr/lib

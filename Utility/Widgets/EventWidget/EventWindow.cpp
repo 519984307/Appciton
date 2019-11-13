@@ -9,17 +9,22 @@
  **/
 
 #include "EventWindow.h"
-#include "TableView.h"
-#include "Button.h"
-#include "ComboBox.h"
-#include "MoveButton.h"
+#include "Framework/UI/TableView.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/MoveButton.h"
+#include "Framework/UI/TableHeaderView.h"
+#include "Framework/UI/TableViewItemDelegate.h"
+#include "Framework/UI/ThemeManager.h"
+#include "Framework/Utility/Utility.h"
+#include "Framework/Language/LanguageManager.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include "EventInfoWidget.h"
 #include <QListWidget>
 #include "EventWaveWidget.h"
 #include <QStackedLayout>
 #include "EventDataParseContext.h"
 #include "EventReviewModel.h"
-#include "TableHeaderView.h"
 #include "EventDataSymbol.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -33,7 +38,6 @@
 #include "IBPSymbol.h"
 #include "IBPParam.h"
 #include "ParamManager.h"
-#include "Framework/Utility/Utility.h"
 #include "FontManager.h"
 #include "ColorManager.h"
 #include <QScrollBar>
@@ -42,15 +46,11 @@
 #include "IConfig.h"
 #include "EventWaveSetWindow.h"
 #include "DataStorageDefine.h"
-#include "TableViewItemDelegate.h"
 #include "MessageBox.h"
 #include "CO2Param.h"
 #include "EventListPageGenerator.h"
 #include "NIBPSymbol.h"
-#include "ThemeManager.h"
 #include "PatientManager.h"
-#include "Framework/Language/LanguageManager.h"
-#include "Framework/TimeDate/TimeDate.h"
 #include <QTimerEvent>
 
 #define TABLE_SPACING               (4)

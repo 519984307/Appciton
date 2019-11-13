@@ -10,13 +10,12 @@
 #include "ConfigEditIBPMenuContent.h"
 #include <QGridLayout>
 #include <QLabel>
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
 #include "Framework/Language/LanguageManager.h"
 #include <QMap>
-#include "ComboBox.h"
-#include "ComboBox.h"
 #include "ConfigManager.h"
 #include "IBPSymbol.h"
-#include "Button.h"
 #include "ParamInfo.h"
 #include "ParamDefine.h"
 #include "Debug.h"

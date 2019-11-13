@@ -9,10 +9,10 @@
  **/
 
 #pragma once
-#include "Dialog.h"
+#include "Framework/UI/Dialog.h"
+#include "Framework/TimeDate/TimeDefine.h"
 #include "IBPDefine.h"
 #include "TrendDataDefine.h"
-#include "Framework/TimeDate/TimeDefine.h"
 
 class TrendTableWindowPrivate;
 class TrendTableWindow : public Dialog

@@ -9,16 +9,16 @@
  **/
 
 #include "IBPMenuContent.h"
-#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
-#include "ComboBox.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/SpinBox.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QGridLayout>
 #include "IBPSymbol.h"
 #include "IConfig.h"
 #include "IBPParam.h"
 #include "MessageBox.h"
-#include "Button.h"
-#include "SpinBox.h"
 #include "KeyInputPanel.h"
 #include "MainMenuWindow.h"
 #include <QGroupBox>
@@ -26,6 +26,7 @@
 #include <QHBoxLayout>
 #include <QTimerEvent>
 #include "AlarmLimitWindow.h"
+#include "WindowManager.h"
 
 #define AUTO_SCALE_UPDATE_TIME          (2 * 1000)
 #define ZERO_INTERVAL_TIME              (100)

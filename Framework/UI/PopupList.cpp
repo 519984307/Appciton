@@ -18,7 +18,6 @@
 #include <QApplication>
 #include "ThemeManager.h"
 #include <QResizeEvent>
-#include "FontManager.h"
 #include <QKeyEvent>
 #include <QFocusEvent>
 
@@ -85,11 +84,12 @@ PopupList::PopupList(QWidget *parent, bool concatToParent)
 
     if (parent)
     {
-        setFont(fontManager.textFont(parent->font().pixelSize()));
+        QFontInfo fontInfo(parent->font());
+        setFont(QFont(fontInfo.family(), fontInfo.pixelSize(), fontInfo.weight(), fontInfo.italic()));
     }
     else
     {
-        setFont(fontManager.textFont(themeManager.defaultFontPixSize()));
+        setFont(themeManager.defaultFont());
     }
 
     QPalette p =  palette();

@@ -11,7 +11,7 @@
 #include "HemodynamicDataModel.h"
 #include <QBrush>
 #include <QColor>
-#include "ThemeManager.h"
+#include "Framework/UI/ThemeManager.h"
 #include "WindowManager.h"
 
 #define MAX_ROW_COUNT  8

@@ -9,7 +9,7 @@
  **/
 
 #include "EventReviewModel.h"
-#include "ThemeManager.h"
+#include "Framework/UI/ThemeManager.h"
 #include "Framework/Language/LanguageManager.h"
 #include "WindowManager.h"
 #define COLUMN_COUNT            2

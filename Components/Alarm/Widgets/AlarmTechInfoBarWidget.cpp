@@ -11,11 +11,11 @@
 
 #include "AlarmTechInfoBarWidget.h"
 #include "Framework/Language/LanguageManager.h"
+#include "Framework/Sound/SoundManagerInterface.h"
 #include "FontManager.h"
 #include "AlarmIndicator.h"
 #include <QPainter>
 #include "WindowManager.h"
-#include "SoundManagerInterface.h"
 
 /**************************************************************************************************
  * 绘制背景。

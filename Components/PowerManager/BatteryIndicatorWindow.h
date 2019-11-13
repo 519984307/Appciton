@@ -8,7 +8,7 @@
  ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/23
  **/
 
-#include "Dialog.h"
+#include "Framework/UI/Dialog.h"
 
 class BatteryIndicatorWindowPrivate;
 class BatteryIndicatorWindow : public Dialog

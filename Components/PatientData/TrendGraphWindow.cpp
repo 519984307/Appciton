@@ -9,8 +9,10 @@
  **/
 
 #include "TrendGraphWindow.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/MoveButton.h"
+#include "Framework/UI/ThemeManager.h"
 #include "Framework/Language/LanguageManager.h"
-#include "Button.h"
 #include "TrendWaveWidget.h"
 #include <QVariant>
 #include <QHBoxLayout>
@@ -19,8 +21,6 @@
 #include "TrendGraphPageGenerator.h"
 #include "RecorderManager.h"
 #include "TrendGraphSetWindow.h"
-#include "MoveButton.h"
-#include "ThemeManager.h"
 #include <QTimerEvent>
 
 #define STOP_PRINT_TIMEOUT          (100)

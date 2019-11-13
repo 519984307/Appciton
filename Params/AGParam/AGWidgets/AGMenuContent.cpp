@@ -9,9 +9,10 @@
  **/
 
 #include "AGMenuContent.h"
-#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
-#include "ComboBox.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QGridLayout>
 #include "AGSymbol.h"
 #include "IConfig.h"
@@ -19,9 +20,9 @@
 #include "CO2SetAGMenu.h"
 #include "N2OSetAGMenu.h"
 #include "HalSetAGMenu.h"
-#include "Button.h"
 #include "MainMenuWindow.h"
 #include "AlarmLimitWindow.h"
+#include "WindowManager.h"
 
 class AGMenuContentPrivate
 {

@@ -8,14 +8,14 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/20
  **/
 #include "OxyCRGSetupWindow.h"
-#include "ComboBox.h"
-#include <QLabel>
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/Button.h"
 #include "Framework/Language/LanguageManager.h"
+#include <QLabel>
 #include <QGridLayout>
 #include "OxyCRGSymbol.h"
 #include "ConfigManager.h"
 #include <QGroupBox>
-#include "Button.h"
 
 class OxyCRGSetupWindowPrivate
 {

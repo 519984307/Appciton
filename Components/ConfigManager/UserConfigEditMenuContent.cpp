@@ -9,8 +9,6 @@
  **/
 #include "UserConfigEditMenuContent.h"
 #include <QMap>
-#include "Button.h"
-#include "Framework/Language/LanguageManager.h"
 #include "ConfigManager.h"
 #include <QLabel>
 #include "PatientManager.h"
@@ -20,9 +18,11 @@
 #include "ConfigEditMenuWindow.h"
 #include "WindowManager.h"
 #include <QHideEvent>
-#include "ListView.h"
-#include "ListDataModel.h"
-#include "ListViewItemDelegate.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ListView.h"
+#include "Framework/UI/ListDataModel.h"
+#include "Framework/UI/ListViewItemDelegate.h"
+#include "Framework/Language/LanguageManager.h"
 #include "ConfigManagerMenuWindow.h"
 #include "PatientTypeSelectWindow.h"
 #include <QMetaObject>
@@ -201,7 +201,7 @@ void UserConfigEditMenuContent::onBtnClick()
 
             PatientType type = PATIENT_TYPE_NULL;
             QString configPath;
-            patientW.getConfigInfo(type, configPath);
+            patientW.getConfigInfo(&type, &configPath);
 
             QFile myFile(configPath);
 

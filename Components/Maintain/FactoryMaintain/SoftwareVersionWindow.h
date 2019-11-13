@@ -10,7 +10,7 @@
 
 #define pragma once
 
-#include "Dialog.h"
+#include "Framework/UI/Dialog.h"
 
 class SoftwareVersionWindow : public Dialog
 {

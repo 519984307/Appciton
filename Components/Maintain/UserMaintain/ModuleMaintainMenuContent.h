@@ -9,7 +9,7 @@
  **/
 
 #pragma once
-#include "MenuContent.h"
+#include "Framework/UI/MenuContent.h"
 
 class ModuleMaintainMenuContentPrivate;
 class ModuleMaintainMenuContent : public MenuContent

@@ -9,13 +9,13 @@
  **/
 
 #include "TrendPrintWindow.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/SpinBox.h"
 #include "Framework/Language/LanguageManager.h"
 #include "Framework/TimeDate/TimeDate.h"
 #include "Framework/TimeDate/TimeSymbol.h"
 #include <QLabel>
 #include <QGroupBox>
-#include "Button.h"
-#include "SpinBox.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QDateTime>

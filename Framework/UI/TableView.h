@@ -56,7 +56,7 @@ public:
      * @param curPage     当前页码
      * @param totalPage   总页数
      */
-    void getPageInfo(int &curPage, int &totalPage);
+    void getPageInfo(int *curPage, int *totalPage);
 
 signals:
     /* emit when the row is clicked */

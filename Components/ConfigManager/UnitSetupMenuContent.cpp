@@ -9,14 +9,14 @@
  **/
 
 #include "UnitSetupMenuContent.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/Utility/Unit.h"
 #include "Framework/Language/LanguageManager.h"
 #include <QLabel>
-#include "ComboBox.h"
 #include <QGridLayout>
 #include "IConfig.h"
-#include "Button.h"
 #include "ConfigManager.h"
-#include "Framework/Utility/Unit.h"
 #include "TEMPParam.h"
 #include "CO2Param.h"
 #include "NIBPParam.h"

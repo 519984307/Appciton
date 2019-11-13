@@ -10,14 +10,14 @@
 #include "ConfigEditSpO2MenuContent.h"
 #include <QGridLayout>
 #include <QLabel>
-#include "Framework/Language/LanguageManager.h"
 #include <QMap>
-#include "ComboBox.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QGridLayout>
 #include "SPO2Symbol.h"
 #include "SPO2Define.h"
 #include "ConfigManager.h"
-#include "Button.h"
 #include "ParamInfo.h"
 #include "ParamDefine.h"
 #include "SPO2Param.h"

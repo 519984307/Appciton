@@ -10,7 +10,7 @@
 #include "ConfigEditGeneralMenuContent.h"
 #include <QMap>
 #include <QLabel>
-#include "Button.h"
+#include "Framework/UI/Button.h"
 #include "Framework/Language/LanguageManager.h"
 #include <QGridLayout>
 #include <QRegExp>

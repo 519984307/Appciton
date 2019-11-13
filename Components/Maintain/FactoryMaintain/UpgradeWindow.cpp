@@ -11,8 +11,6 @@
 #include "UpgradeWindow.h"
 #include "UpgradeManager.h"
 #include "USBManager.h"
-#include "ComboBox.h"
-#include "Button.h"
 #include <QBoxLayout>
 #include <QPlainTextEdit>
 #include <QLabel>
@@ -20,6 +18,8 @@
 #include "SystemManager.h"
 #include "WindowManager.h"
 #include "MessageBox.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/Button.h"
 #include "Framework/Language/LanguageManager.h"
 #include <QProcess>
 #include "SystemBoardProvider.h"

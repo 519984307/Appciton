@@ -8,10 +8,10 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/7/19
  **/
 #include "ConfigEditCodeMarkerMenuContent.h"
-#include "ComboBox.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
 #include <QGridLayout>
-#include "Framework/Language/LanguageManager.h"
 #include <QMap>
 #include <QVBoxLayout>
 #include <QEvent>

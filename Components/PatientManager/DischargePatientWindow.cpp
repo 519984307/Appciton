@@ -9,7 +9,7 @@
  **/
 #include "DischargePatientWindow.h"
 #include <QHBoxLayout>
-#include "Button.h"
+#include "Framework/UI/Button.h"
 #include "WindowManager.h"
 #include "Framework/Language/LanguageManager.h"
 #include "DataStorageDirManager.h"

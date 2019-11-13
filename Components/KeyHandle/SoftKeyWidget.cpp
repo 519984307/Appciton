@@ -14,7 +14,7 @@
 #include "FontManager.h"
 #include "Framework/Language/LanguageManager.h"
 #include <QStyle>
-#include "SoundManagerInterface.h"
+#include "Framework/Sound/SoundManagerInterface.h"
 
 /***************************************************************************************************
  * 功能：重绘事件。

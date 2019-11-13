@@ -9,9 +9,9 @@
  **/
 #include "PowerOffWindow.h"
 #include "Framework/Language/LanguageManager.h"
+#include "Framework/UI/ThemeManager.h"
 #include <QLabel>
 #include <QLayout>
-#include "ThemeManager.h"
 #include "FontManager.h"
 #include "WindowManager.h"
 

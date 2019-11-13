@@ -10,14 +10,14 @@
 
 #include "AlarmLimitModel.h"
 #include "ParamInfo.h"
-#include "Framework/Utility/Utility.h"
 #include <QDebug>
 #include <QColor>
 #include <QResizeEvent>
 #include <QBrush>
-#include "ItemEditInfo.h"
 #include "ParamManager.h"
-#include "ThemeManager.h"
+#include "Framework/UI/ThemeManager.h"
+#include "Framework/UI/ItemEditInfo.h"
+#include "Framework/Utility/Utility.h"
 #include "Framework/Language/LanguageManager.h"
 
 

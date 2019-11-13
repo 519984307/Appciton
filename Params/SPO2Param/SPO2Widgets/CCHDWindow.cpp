@@ -9,17 +9,17 @@
  **/
 
 #include "CCHDWindow.h"
-#include "Button.h"
-#include <QLabel>
+#include "Framework/UI/Button.h"
+#include "Framework/UI/TableView.h"
+#include "Framework/UI/TableHeaderView.h"
+#include "Framework/UI/TableViewItemDelegate.h"
 #include "Framework/Language/LanguageManager.h"
+#include <QLabel>
 #include <QLayout>
 #include "BaseDefine.h"
 #include "SPO2Param.h"
 #include "SPO2Symbol.h"
-#include "TableView.h"
 #include "CCHDDataModel.h"
-#include "TableViewItemDelegate.h"
-#include "TableHeaderView.h"
 #include "MessageBox.h"
 
 class CCHDWindowPrivate

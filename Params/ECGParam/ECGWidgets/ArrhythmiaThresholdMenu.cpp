@@ -19,8 +19,8 @@
 #include "WindowManager.h"
 #include "MessageBox.h"
 #include "ECGParam.h"
-#include "ComboBox.h"
-#include "SpinBox.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/SpinBox.h"
 
 class ArrhythmiaThresholdMenuPrivate
 {

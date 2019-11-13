@@ -17,7 +17,6 @@
 #include <QTableView>
 #include "ItemEditInfo.h"
 #include "PopupNumEditor.h"
-#include "FontManager.h"
 #include <QDebug>
 #include <QImage>
 
@@ -62,7 +61,8 @@ bool TableViewItemDelegatePrivate::showEditor(const QTableView *view, QAbstractI
         {
             PopupNumEditor *editor = new PopupNumEditor();
             editor->setEditInfo(info);
-            editor->setFont(fontManager.textFont(view->font().pixelSize()));
+            QFontInfo fontInfo(view->font());
+            editor->setFont(QFont(fontInfo.family(), fontInfo.pixelSize(), fontInfo.weight(), fontInfo.italic()));
             editor->setPalette(pal);
             editor->setEditValueGeometry(rect);
             QObject::connect(editor, SIGNAL(valueChanged(int)), q_ptr, SLOT(onEditValueUpdate(int)));

@@ -9,9 +9,10 @@
  **/
 
 #include "ECGMenuContent.h"
-#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
-#include "ComboBox.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QGridLayout>
 #include <QList>
 #include "ECGSymbol.h"
@@ -20,7 +21,6 @@
 #include "ECGParam.h"
 #include "IConfig.h"
 #include "ConfigManager.h"
-#include "Button.h"
 #include "ArrhythmiaMenuWindow.h"
 #include "WindowManager.h"
 #include <QTimer>
