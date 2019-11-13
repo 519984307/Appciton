@@ -42,7 +42,7 @@ public:
      * @param iconRect
      * @param icoMode
      */
-    void drawIcon(QPainter &painter, QIcon &ico, QRect iconRect, QIcon::Mode icoMode);
+    void drawIcon(QPainter *painter, const QIcon &ico, QRect iconRect, QIcon::Mode icoMode);
 };
 
 Button::Button(const QString &text, const QIcon &icon, QWidget *parent)
@@ -52,7 +52,7 @@ Button::Button(const QString &text, const QIcon &icon, QWidget *parent)
     setText(text);
     setIcon(icon);
     QPalette pal = palette();
-    themeManger.setupPalette(ThemeManager::ControlButton, pal);
+    themeManger.setupPalette(ThemeManager::ControlButton, &pal);
     setPalette(pal);
 }
 
@@ -214,7 +214,8 @@ void Button::paintEvent(QPaintEvent *ev)
 
         painter.setPen(pen);
         painter.setBrush(bgColor);
-        QRect r = rect.adjusted(d_ptr->m_borderWidth / 2, d_ptr->m_borderWidth / 2, -d_ptr->m_borderWidth / 2, -d_ptr->m_borderWidth / 2);
+        QRect r = rect.adjusted(d_ptr->m_borderWidth / 2, d_ptr->m_borderWidth / 2,
+                                -d_ptr->m_borderWidth / 2, -d_ptr->m_borderWidth / 2);
         painter.drawRoundedRect(r, d_ptr->m_borderRadius, d_ptr->m_borderRadius);
     }
     else
@@ -231,7 +232,7 @@ void Button::paintEvent(QPaintEvent *ev)
     case ButtonIconOnly:
     {
         QRect iconRect = QStyle::alignedRect(layoutDirection(), Qt::AlignCenter, iconSize(), rect);
-        d_ptr->drawIcon(painter, ico, iconRect, icoMode);
+        d_ptr->drawIcon(&painter, ico, iconRect, icoMode);
     }
     break;
     case ButtonTextOnly:
@@ -241,9 +242,9 @@ void Button::paintEvent(QPaintEvent *ev)
     break;
     case ButtonTextUnderIcon:
     {
-        QRect iconRect = QStyle::alignedRect(layoutDirection(), Qt::AlignTop | Qt::AlignHCenter, iconSize(), rect.adjusted(0,
-                                             PADDING, 0, 0));
-        d_ptr->drawIcon(painter, ico, iconRect, icoMode);
+        QRect iconRect = QStyle::alignedRect(layoutDirection(), Qt::AlignTop | Qt::AlignHCenter,
+                                             iconSize(), rect.adjusted(0, PADDING, 0, 0));
+        d_ptr->drawIcon(&painter, ico, iconRect, icoMode);
 
         QRect textRect = rect;
         textRect.setTop(iconRect.bottom() + ICON_TEXT_PADDING);
@@ -255,7 +256,7 @@ void Button::paintEvent(QPaintEvent *ev)
     {
         QRect iconRect = QStyle::alignedRect(layoutDirection(), Qt::AlignVCenter | Qt::AlignLeft, iconSize(),
                                              rect.adjusted(PADDING, 0, 0, 0));
-        d_ptr->drawIcon(painter, ico, iconRect, icoMode);
+        d_ptr->drawIcon(&painter, ico, iconRect, icoMode);
 
         QRect textRect = rect;
         textRect.setLeft(iconRect.right() + ICON_TEXT_PADDING);
@@ -321,7 +322,7 @@ void Button::mousePressEvent(QMouseEvent *e)
     }
 }
 
-void ButtonPrivate::drawIcon(QPainter &painter, QIcon &ico, QRect iconRect, QIcon::Mode icoMode)
+void ButtonPrivate::drawIcon(QPainter *painter, const QIcon &ico, QRect iconRect, QIcon::Mode icoMode)
 {
     if (!ico.isNull())
     {
@@ -333,6 +334,6 @@ void ButtonPrivate::drawIcon(QPainter &painter, QIcon &ico, QRect iconRect, QIco
         drawImgPainter.setCompositionMode(QPainter::CompositionMode_Source);
         drawImgPainter.drawPixmap(0, 0, iconRect.width(), iconRect.height(), pix);
         drawImgPainter.end();
-        painter.drawImage(iconRect, tmp);
+        painter->drawImage(iconRect, tmp);
     }
 }

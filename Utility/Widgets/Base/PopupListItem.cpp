@@ -31,7 +31,7 @@ PopupListItem::PopupListItem(const QString &text, QWidget *parent)
     setText(text);
 
     QPalette p = palette();
-    themeManger.setupPalette(ThemeManager::ControlPopupListItem, p);
+    themeManger.setupPalette(ThemeManager::ControlPopupListItem, &p);
     setPalette(p);
 
     setCheckable(true);

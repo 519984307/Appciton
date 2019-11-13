@@ -10,7 +10,6 @@
 
 
 #include "MenuWindow.h"
-#include "FontManager.h"
 #include <QBoxLayout>
 #include <QStackedWidget>
 #include "MenuSidebar.h"

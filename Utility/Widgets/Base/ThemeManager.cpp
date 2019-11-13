@@ -15,6 +15,8 @@
 #include <QSvgRenderer>
 #include <QPainter>
 #include <QDebug>
+#include "FontManagerInterface.h"
+#include <QApplication>
 
 #define COLOR_KEY(type, elem, state) (((type) << 16) | (elem) << 8 | (state))
 
@@ -173,33 +175,33 @@ const QColor &ThemeManager::getColor(ThemeManager::ControlType type, ThemeManage
     return iter.value();
 }
 
-void ThemeManager::setupPalette(ThemeManager::ControlType type, QPalette &pal)
+void ThemeManager::setupPalette(ThemeManager::ControlType type, QPalette *pal)
 {
-    pal.setColor(QPalette::Inactive, QPalette::Shadow,
+    pal->setColor(QPalette::Inactive, QPalette::Shadow,
                  getColor(type, ElementBorder, StateInactive));
-    pal.setColor(QPalette::Active, QPalette::Shadow,
+    pal->setColor(QPalette::Active, QPalette::Shadow,
                  getColor(type, ElementBorder, StateActive));
-    pal.setColor(QPalette::Disabled, QPalette::Shadow,
+    pal->setColor(QPalette::Disabled, QPalette::Shadow,
                  getColor(type, ElementBorder, StateDisabled));
-    pal.setColor(QPalette::Highlight,
+    pal->setColor(QPalette::Highlight,
                  getColor(type, ElementBorder, StateHighlight));
 
-    pal.setColor(QPalette::Inactive, QPalette::WindowText,
+    pal->setColor(QPalette::Inactive, QPalette::WindowText,
                  getColor(type, ElementText, StateInactive));
-    pal.setColor(QPalette::Active, QPalette::WindowText,
+    pal->setColor(QPalette::Active, QPalette::WindowText,
                  getColor(type, ElementText, StateActive));
-    pal.setColor(QPalette::Disabled, QPalette::WindowText,
+    pal->setColor(QPalette::Disabled, QPalette::WindowText,
                  getColor(type, ElementText, StateDisabled));
-    pal.setColor(QPalette::HighlightedText,
+    pal->setColor(QPalette::HighlightedText,
                  getColor(type, ElementText, StateHighlight));
 
-    pal.setColor(QPalette::Inactive, QPalette::Window,
+    pal->setColor(QPalette::Inactive, QPalette::Window,
                  getColor(type, ElementBackgound, StateInactive));
-    pal.setColor(QPalette::Active, QPalette::Window,
+    pal->setColor(QPalette::Active, QPalette::Window,
                  getColor(type, ElementBackgound, StateActive));
-    pal.setColor(QPalette::Disabled, QPalette::Window,
+    pal->setColor(QPalette::Disabled, QPalette::Window,
                  getColor(type, ElementBackgound, StateDisabled));
-    pal.setColor(QPalette::Highlight,
+    pal->setColor(QPalette::Highlight,
                  getColor(type, ElementBackgound, StateHighlight));
 }
 
@@ -253,6 +255,21 @@ QPixmap ThemeManager::getPixmap(ThemeManager::IconType icon, const QSize &size)
    return pm;
 }
 
+QFont ThemeManager::defaultFont() const
+{
+    FontManagerInterface *fontManager = FontManagerInterface::getFontManager();
+    if (fontManager)
+    {
+        /* use the text font */
+        return fontManager->textFont(themeManger.defaultFontPixSize());
+    }
+
+    /* use the application default font */
+    QFont f =  qApp->font();
+    f.setPixelSize(themeManger.defaultFontPixSize());
+    return f;
+}
+
 QPixmap ThemeManager::getShadowElement(ThemeManager::ShadowElementType type, const QSize &size)
 {
     QPixmap pm;
@@ -297,6 +314,6 @@ ThemeManager::ThemeManager()
 {
     d_ptr->shadowRenderer = new QSvgRenderer(QString(":/ui/shadow.svg"), this);
     d_ptr->loadColorScheme();
-    QPixmapCache::setCacheLimit(10*1024); // 10M
+    QPixmapCache::setCacheLimit(10*1024);  // 10M
 }
 

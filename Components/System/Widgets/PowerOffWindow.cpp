@@ -37,7 +37,7 @@ PowerOffWindow::PowerOffWindow()
     setFixedSize(300, 200);
     setFont(fontManager.textFont(themeManger.defaultFontPixSize()));
     QPalette pal = palette();
-    themeManger.setupPalette(ThemeManager::ControlWindow, pal);
+    themeManger.setupPalette(ThemeManager::ControlWindow, &pal);
     setPalette(pal);
     d_ptr->layoutExec();
 }

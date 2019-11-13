@@ -11,7 +11,6 @@
 #include "FrameItem.h"
 #include "Frame.h"
 #include <QPainter>
-#include "FontManager.h"
 
 #define BORDER_COLOR QColor(223, 222, 222)
 #define BORDER_WIDTH 2

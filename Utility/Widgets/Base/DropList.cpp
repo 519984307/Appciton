@@ -38,7 +38,7 @@ DropList::DropList(const QString &text, QWidget *parent)
 {
     setText(text);
     QPalette pal = palette();
-    themeManger.setupPalette(ThemeManager::ControlComboBox, pal);
+    themeManger.setupPalette(ThemeManager::ControlComboBox, &pal);
     setPalette(pal);
 
     connect(this, SIGNAL(released()), this, SLOT(showPopup()));

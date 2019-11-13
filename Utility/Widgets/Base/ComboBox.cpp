@@ -35,7 +35,7 @@ ComboBox::ComboBox(QWidget *parent)
     : QComboBox(parent), d_ptr(new ComboBoxPrivate)
 {
     QPalette pal = palette();
-    themeManger.setupPalette(ThemeManager::ControlComboBox, pal);
+    themeManger.setupPalette(ThemeManager::ControlComboBox, &pal);
     setPalette(pal);
 }
 

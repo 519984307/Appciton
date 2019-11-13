@@ -70,7 +70,7 @@ SpinBox::SpinBox(QWidget *parent)
 
 {
     QPalette pal = palette();
-    themeManger.setupPalette(ThemeManager::ControlSpinBox, pal);
+    themeManger.setupPalette(ThemeManager::ControlSpinBox, &pal);
     setPalette(pal);
 }
 

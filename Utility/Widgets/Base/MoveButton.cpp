@@ -14,9 +14,7 @@
 #include <QIcon>
 #include <QKeyEvent>
 #include "PopupMoveEditor.h"
-#include "FontManager.h"
 #include <QStyle>
-#include "SoundManager.h"
 
 class MoveButtonPrivate
 {
@@ -108,7 +106,8 @@ void MoveButton::keyReleaseEvent(QKeyEvent *ev)
                     this->mapToGlobal(vrect.bottomRight()));
         PopupMoveEditor *editor = new PopupMoveEditor(d_ptr->name);
         editor->setEditorGeometry(rect);
-        editor->setFont(fontManager.textFont(this->font().pixelSize()));
+        QFontInfo fontinfo(font());
+        editor->setFont(QFont(fontinfo.family(), fontinfo.pixelSize(), fontinfo.weight(), fontinfo.italic()));
         editor->setPalette(palette());
         connect(editor, SIGNAL(leftMove()), this, SIGNAL(leftMove()));
         connect(editor, SIGNAL(rightMove()), this, SIGNAL(rightMove()));
@@ -129,7 +128,8 @@ void MoveButton::mousePressEvent(QMouseEvent *ev)
                 this->mapToGlobal(vrect.bottomRight()));
     PopupMoveEditor *editor = new PopupMoveEditor(d_ptr->name);
     editor->setEditorGeometry(rect);
-    editor->setFont(fontManager.textFont(this->font().pixelSize()));
+    QFontInfo fontinfo(font());
+    editor->setFont(QFont(fontinfo.family(), fontinfo.pixelSize(), fontinfo.weight(), fontinfo.italic()));
     editor->setPalette(palette());
     connect(editor, SIGNAL(leftMove()), this, SIGNAL(leftMove()));
     connect(editor, SIGNAL(rightMove()), this, SIGNAL(rightMove()));

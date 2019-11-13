@@ -23,7 +23,7 @@ MenuSidebarItem::MenuSidebarItem(QWidget *parent)
 {
     setCheckable(true);
     QPalette pal = palette();
-    themeManger.setupPalette(ThemeManager::ControlMenuSideBarItem, pal);
+    themeManger.setupPalette(ThemeManager::ControlMenuSideBarItem, &pal);
     setPalette(pal);
 }
 

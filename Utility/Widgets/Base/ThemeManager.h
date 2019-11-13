@@ -12,6 +12,7 @@
 
 #include <QObject>
 #include <QPalette>
+#include <QFont>
 
 class QIcon;
 class ThemeManagerPrivate;
@@ -91,7 +92,7 @@ public:
      * @param type control type
      * @param pal reference of the palette
      */
-    void setupPalette(ControlType type, QPalette &pal);
+    void setupPalette(ControlType type, QPalette *pal);
 
     /**
      * @brief getBorderWidth get the border width of the contorl
@@ -145,6 +146,12 @@ public:
     {
         return 20;
     }
+
+    /**
+     * @brief defaultFont get the UI default font
+     * @return
+     */
+    QFont defaultFont() const;
 
     /**
      * @brief getShadownPixmapElement get the shadow element

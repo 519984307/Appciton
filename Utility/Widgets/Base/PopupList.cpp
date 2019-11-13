@@ -54,7 +54,7 @@ public:
     int curSelectIndex;
     bool concatToParent;
     bool popAbove;
-    QRect globalRect; // A global rect this popup should pop around
+    QRect globalRect;  // A global rect this popup should pop around
     int maximumDisplayItemNum;
 };
 
@@ -94,7 +94,7 @@ PopupList::PopupList(QWidget *parent, bool concatToParent)
     }
 
     QPalette p =  palette();
-    themeManger.setupPalette(ThemeManager::ControlPopupList, p);
+    themeManger.setupPalette(ThemeManager::ControlPopupList, &p);
     setPalette(p);
 
     d_ptr->widget = new QWidget();

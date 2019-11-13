@@ -15,7 +15,6 @@
 #include <QBoxLayout>
 #include <QFrame>
 #include <QResizeEvent>
-#include "FontManagerInterface.h"
 #include "ThemeManager.h"
 #include "WindowManagerInterface.h"
 #include <QPaintEvent>
@@ -102,14 +101,10 @@ Dialog::Dialog(QWidget *parent)
     vLayout->addWidget(d_ptr->m_widget, 1);
     connect(closeBtn, SIGNAL(clicked(bool)), this, SLOT(close()));
 
-    FontManagerInterface *fontManager = FontManagerInterface::getFontManager();
-    if (fontManager)
-    {
-        setFont(fontManager->textFont(themeManger.defaultFontPixSize()));
-    }
+    setFont(themeManger.defaultFont());
 
     QPalette pal = palette();
-    themeManger.setupPalette(ThemeManager::ControlWindow, pal);
+    themeManger.setupPalette(ThemeManager::ControlWindow, &pal);
     setPalette(pal);
 
     d_ptr->m_mask = new QWidget(this);

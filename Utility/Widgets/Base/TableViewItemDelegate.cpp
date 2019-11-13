@@ -39,7 +39,6 @@ bool TableViewItemDelegatePrivate::showEditor(const QTableView *view, QAbstractI
     QVariant value = model->data(index, Qt::EditRole);
     if (value.canConvert<ItemEditInfo>())
     {
-
         ItemEditInfo info = qvariant_cast<ItemEditInfo>(value);
 
         QRect vrect = view->visualRect(index);
@@ -79,13 +78,13 @@ bool TableViewItemDelegatePrivate::showEditor(const QTableView *view, QAbstractI
 TableViewItemDelegate::TableViewItemDelegate(QObject *parent)
     : QItemDelegate(parent), d_ptr(new TableViewItemDelegatePrivate(this))
 {
-    themeManger.setupPalette(ThemeManager::ControlComboBox, d_ptr->pal);
+    themeManger.setupPalette(ThemeManager::ControlComboBox, &d_ptr->pal);
 }
 
 TableViewItemDelegate::TableViewItemDelegate(TableViewItemDelegatePrivate * const d_ptr, QObject *parent)
     : QItemDelegate(parent), d_ptr(d_ptr)
 {
-    themeManger.setupPalette(ThemeManager::ControlComboBox, d_ptr->pal);
+    themeManger.setupPalette(ThemeManager::ControlComboBox, &d_ptr->pal);
 }
 
 TableViewItemDelegate::~TableViewItemDelegate()
@@ -199,7 +198,8 @@ void TableViewItemDelegate::drawDisplay(QPainter *painter, const QStyleOptionVie
         QStyleOptionViewItem opt(option);
         opt.state &= (~QStyle::State_Selected);
         QRect r = QItemDelegate::rect(opt, d_ptr->curPaintingIndex, Qt::DisplayRole);
-        r = QStyle::alignedRect(option.direction, option.displayAlignment, r.size().boundedTo(option.rect.size()), option.rect);
+        r = QStyle::alignedRect(option.direction, option.displayAlignment,
+                                r.size().boundedTo(option.rect.size()), option.rect);
         QItemDelegate::drawDisplay(painter, opt, r, text);
     }
 }
@@ -239,7 +239,6 @@ bool TableViewItemDelegate::editorEvent(QEvent *event, QAbstractItemModel *model
     if ((event->type() == QEvent::MouseButtonDblClick)
             || (event->type() == QEvent::MouseButtonPress))
     {
-
         d_ptr->curEditingModel = model;
         d_ptr->curEditingIndex = index;
 
@@ -264,7 +263,8 @@ bool TableViewItemDelegate::editorEvent(QEvent *event, QAbstractItemModel *model
     return false;
 }
 
-void TableViewItemDelegate::drawDecoration(QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect, const QPixmap &pixmap) const
+void TableViewItemDelegate::drawDecoration(QPainter *painter, const QStyleOptionViewItem &option,
+                                           const QRect &rect, const QPixmap &pixmap) const
 {
     Q_UNUSED(option)
     if (!pixmap.isNull())
