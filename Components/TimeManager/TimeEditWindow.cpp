@@ -187,7 +187,7 @@ void TimeEditWindow::layoutExec()
 
     // year
     spinBox = new SpinBox;
-    spinBox->setFixedHeight(themeManger.getAcceptableControlHeight());
+    spinBox->setFixedHeight(themeManager.getAcceptableControlHeight());
     spinBox->setRange(1970, 2037);
     spinBox->setScale(1);
     spinBox->setStep(1);
@@ -200,7 +200,7 @@ void TimeEditWindow::layoutExec()
 
     // month
     spinBox = new SpinBox;
-    spinBox->setFixedHeight(themeManger.getAcceptableControlHeight());
+    spinBox->setFixedHeight(themeManager.getAcceptableControlHeight());
     spinBox->setRange(1, 12);
     spinBox->setScale(1);
     spinBox->setStep(1);
@@ -213,7 +213,7 @@ void TimeEditWindow::layoutExec()
 
     // day
     spinBox = new SpinBox;
-    spinBox->setFixedHeight(themeManger.getAcceptableControlHeight());
+    spinBox->setFixedHeight(themeManager.getAcceptableControlHeight());
     spinBox->setRange(1, 30);
     spinBox->setScale(1);
     spinBox->setStep(1);
@@ -230,7 +230,7 @@ void TimeEditWindow::layoutExec()
 
     // hour
     spinBox = new SpinBox;
-    spinBox->setFixedHeight(themeManger.getAcceptableControlHeight());
+    spinBox->setFixedHeight(themeManager.getAcceptableControlHeight());
     spinBox->setRange(0, 23);
     spinBox->setScale(1);
     spinBox->setStep(1);
@@ -243,7 +243,7 @@ void TimeEditWindow::layoutExec()
 
     // minute
     spinBox = new SpinBox;
-    spinBox->setFixedHeight(themeManger.getAcceptableControlHeight());
+    spinBox->setFixedHeight(themeManager.getAcceptableControlHeight());
     spinBox->setRange(0, 59);
     spinBox->setScale(1);
     spinBox->setStep(1);
@@ -256,7 +256,7 @@ void TimeEditWindow::layoutExec()
 
     // second
     spinBox = new SpinBox;
-    spinBox->setFixedHeight(themeManger.getAcceptableControlHeight());
+    spinBox->setFixedHeight(themeManager.getAcceptableControlHeight());
     spinBox->setRange(0, 59);
     spinBox->setScale(1);
     spinBox->setStep(1);
@@ -271,7 +271,7 @@ void TimeEditWindow::layoutExec()
     label = new QLabel(trs("SupervisorDateFormat"));
     layout->addWidget(label, (d_ptr->combos.count() + d_ptr->spinBoxs.count())/3, 0);
     comboBox = new ComboBox();
-    comboBox->setFixedHeight(themeManger.getAcceptableControlHeight());
+    comboBox->setFixedHeight(themeManager.getAcceptableControlHeight());
     comboBox->addItems(QStringList()
                        << trs(TimeSymbol::convert(DATE_FORMAT_Y_M_D))
                        << trs(TimeSymbol::convert(DATE_FORMAT_M_D_Y))
@@ -287,7 +287,7 @@ void TimeEditWindow::layoutExec()
     label = new QLabel(trs("SupervisorTimeFormat"));
     layout->addWidget(label, (d_ptr->combos.count() + d_ptr->spinBoxs.count()) / 3 + 1, 0);
     comboBox = new ComboBox();
-    comboBox->setFixedHeight(themeManger.getAcceptableControlHeight());
+    comboBox->setFixedHeight(themeManager.getAcceptableControlHeight());
     comboBox->addItems(QStringList()
                        << trs(TimeSymbol::convert(TIME_FORMAT_12))
                        << trs(TimeSymbol::convert(TIME_FORMAT_24)));
@@ -302,7 +302,7 @@ void TimeEditWindow::layoutExec()
     label = new QLabel(trs("SupervisorDisplaySec"));
     layout->addWidget(label, (d_ptr->combos.count() + d_ptr->spinBoxs.count()) / 3 + 2, 0);
     comboBox = new ComboBox();
-    comboBox->setFixedHeight(themeManger.getAcceptableControlHeight());
+    comboBox->setFixedHeight(themeManager.getAcceptableControlHeight());
     comboBox->addItems(QStringList()
                        << trs("No")
                        << trs("Yes"));

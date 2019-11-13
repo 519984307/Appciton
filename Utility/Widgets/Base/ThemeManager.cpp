@@ -261,12 +261,12 @@ QFont ThemeManager::defaultFont() const
     if (fontManager)
     {
         /* use the text font */
-        return fontManager->textFont(themeManger.defaultFontPixSize());
+        return fontManager->textFont(themeManager.defaultFontPixSize());
     }
 
     /* use the application default font */
     QFont f =  qApp->font();
-    f.setPixelSize(themeManger.defaultFontPixSize());
+    f.setPixelSize(themeManager.defaultFontPixSize());
     return f;
 }
 

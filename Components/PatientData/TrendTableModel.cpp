@@ -32,8 +32,8 @@
 #define DEFAULT_WIDTH       (680)
 #define STOP_PRINT_TIMEOUT  (100)
 
-#define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
-#define HEADER_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
+#define ROW_HEIGHT_HINT (themeManager.getAcceptableControlHeight())
+#define HEADER_HEIGHT_HINT (themeManager.getAcceptableControlHeight())
 
 #define HIGH_PRIO_ALARM_COLOR (QColor(Qt::red))
 #define MED_PRIO_ALARM_COLOR (QColor(Qt::yellow))
@@ -85,7 +85,7 @@ public:
     {
         TrendDataContent(QString str = "---",
                          QColor dColor = QColor("#2C405A"),
-                         QColor bColor = themeManger.getColor(ThemeManager::ControlTypeNR,
+                         QColor bColor = themeManager.getColor(ThemeManager::ControlTypeNR,
                                          ThemeManager::ElementBackgound,
                                          ThemeManager::StateDisabled)
                         )
@@ -191,7 +191,7 @@ QVariant TrendTableModel::data(const QModelIndex &index, int role) const
             QColor colorHead = d_ptr->colHeadList.at(column).backGroundColor;
             int curSecIndex = d_ptr->indexInfo.event % COLUMN_COUNT;
             if (curSecIndex == column &&
-                    (colorHead != themeManger.getColor(ThemeManager::ControlTypeNR,
+                    (colorHead != themeManager.getColor(ThemeManager::ControlTypeNR,
                                             ThemeManager::ElementBackgound,
                                             ThemeManager::StateDisabled)))
             {
@@ -206,11 +206,11 @@ QVariant TrendTableModel::data(const QModelIndex &index, int role) const
 
         if (row % 2)
         {
-            return themeManger.getColor(ThemeManager::ControlTypeNR,
+            return themeManager.getColor(ThemeManager::ControlTypeNR,
                                         ThemeManager::ElementBackgound,
                                         ThemeManager::StateDisabled);
         }
-        return themeManger.getColor(ThemeManager::ControlTypeNR,
+        return themeManager.getColor(ThemeManager::ControlTypeNR,
                                     ThemeManager::ElementBackgound,
                                     ThemeManager::StateActive);
     }
@@ -279,7 +279,7 @@ QVariant TrendTableModel::headerData(int section, Qt::Orientation orientation, i
         {
             if (d_ptr->colHeadList.count() < section + 1)
             {
-                return themeManger.getColor(ThemeManager::ControlTypeNR,
+                return themeManager.getColor(ThemeManager::ControlTypeNR,
                                             ThemeManager::ElementBackgound,
                                             ThemeManager::StateDisabled);
             }
@@ -289,11 +289,11 @@ QVariant TrendTableModel::headerData(int section, Qt::Orientation orientation, i
         {
             if (section % 2)
             {
-                return themeManger.getColor(ThemeManager::ControlTypeNR,
+                return themeManager.getColor(ThemeManager::ControlTypeNR,
                                             ThemeManager::ElementBackgound,
                                             ThemeManager::StateDisabled);
             }
-            return themeManger.getColor(ThemeManager::ControlTypeNR,
+            return themeManager.getColor(ThemeManager::ControlTypeNR,
                                         ThemeManager::ElementBackgound,
                                         ThemeManager::StateActive);
         }

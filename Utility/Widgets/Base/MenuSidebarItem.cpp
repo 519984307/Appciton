@@ -23,7 +23,7 @@ MenuSidebarItem::MenuSidebarItem(QWidget *parent)
 {
     setCheckable(true);
     QPalette pal = palette();
-    themeManger.setupPalette(ThemeManager::ControlMenuSideBarItem, &pal);
+    themeManager.setupPalette(ThemeManager::ControlMenuSideBarItem, &pal);
     setPalette(pal);
 }
 
@@ -32,9 +32,9 @@ QSize MenuSidebarItem::sizeHint() const
     QFontMetrics fm = fontMetrics();
     int w = fm.width(text()) + MARKER_WIDTH * 2;
     int h = fm.height() * 3;
-    if (h < themeManger.getAcceptableControlHeight())
+    if (h < themeManager.getAcceptableControlHeight())
     {
-        h = themeManger.getAcceptableControlHeight();
+        h = themeManager.getAcceptableControlHeight();
     }
     return QSize(w, h);
 }

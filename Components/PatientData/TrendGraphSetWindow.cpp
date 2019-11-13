@@ -25,7 +25,7 @@
 #include "ThemeManager.h"
 #include "TrendGraphConfig.h"
 
-#define ITEM_HEIGHT                 (themeManger.getAcceptableControlHeight())
+#define ITEM_HEIGHT                 (themeManager.getAcceptableControlHeight())
 #define ITEM_WIDTH                  150
 #define INIT_ITEM_NUM               3
 #define WINDOW_HEIGHT               400

@@ -59,7 +59,7 @@ public:
           deleteAll(NULL),
           up(NULL),
           down(NULL),
-          widgetHeight(themeManger.getAcceptableControlHeight())
+          widgetHeight(themeManager.getAcceptableControlHeight())
     {}
     ~RescueDataDeleteWindowPrivate(){}
 
@@ -261,13 +261,13 @@ RescueDataDeleteWindow::RescueDataDeleteWindow()
     d_ptr->deleteAll->setButtonStyle(Button::ButtonTextOnly);
     connect(d_ptr->deleteAll, SIGNAL(released()), this, SLOT(_deleteAllReleased()));
 
-    QIcon ico = themeManger.getIcon(ThemeManager::IconUp, QSize(32, 32));
+    QIcon ico = themeManager.getIcon(ThemeManager::IconUp, QSize(32, 32));
     d_ptr->up = new Button("", ico);
     d_ptr->up->setIconSize(QSize(32, 32));
     d_ptr->up->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->up, SIGNAL(released()), this, SLOT(_upReleased()));
 
-    ico = themeManger.getIcon(ThemeManager::IconDown, QSize(32, 32));
+    ico = themeManager.getIcon(ThemeManager::IconDown, QSize(32, 32));
     d_ptr->down = new Button("", ico);
     d_ptr->down->setIconSize(QSize(32, 32));
     d_ptr->down->setButtonStyle(Button::ButtonIconOnly);

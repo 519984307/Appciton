@@ -39,7 +39,7 @@
 #define CONFIG_FILE_SYSTEM    ("System.Original.xml")
 #define CONFIG_FILE_MACHINE   ("Machine.xml")
 #define LISTVIEW_MAX_VISIABLE_TIME (5)
-#define HEIGHT_HINT (themeManger.getAcceptableControlHeight())
+#define HEIGHT_HINT (themeManager.getAcceptableControlHeight())
 
 enum TransferResult
 {

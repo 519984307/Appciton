@@ -34,7 +34,7 @@
 #define FILE_PATH          ("/media/usbdisk/etc")
 #define CONFIG_DIR         ("/usr/local/nPM/etc/")
 #define LISTVIEW_MAX_VISIABLE_TIME (5)
-#define HEIGHT_HINT (themeManger.getAcceptableControlHeight())
+#define HEIGHT_HINT (themeManager.getAcceptableControlHeight())
 #define PARAMETER_PREFIX_NUM0   (4)  // 参数前缀的长度
 #define PARAMETER_PREFIX_NUM1   (2)  // 参数前缀的长度
 #define PARAMETER_PREFIX0       ("Enable")  // 参数前缀

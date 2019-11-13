@@ -14,8 +14,8 @@
 #include "WindowManager.h"
 #define COLUMN_COUNT            2
 
-#define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
-#define HEADER_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
+#define ROW_HEIGHT_HINT (themeManager.getAcceptableControlHeight())
+#define HEADER_HEIGHT_HINT (themeManager.getAcceptableControlHeight())
 
 class EventReviewModelPrivate
 {
@@ -99,12 +99,12 @@ QVariant EventReviewModel::data(const QModelIndex &index, int role) const
     case Qt::BackgroundRole:
         if (row % 2)
         {
-            return themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
+            return themeManager.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
                                         ThemeManager::StateDisabled);
         }
         else
         {
-            return themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
+            return themeManager.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
                                         ThemeManager::StateActive);
         }
         break;
@@ -152,7 +152,7 @@ QVariant EventReviewModel::headerData(int section, Qt::Orientation orientation, 
         return QBrush(QColor("#2C405A"));
         break;
     case Qt::BackgroundColorRole:
-        return themeManger.getColor(ThemeManager::ControlTypeNR,
+        return themeManager.getColor(ThemeManager::ControlTypeNR,
                                     ThemeManager::ElementBackgound,
                                     ThemeManager::StateDisabled);
     default:

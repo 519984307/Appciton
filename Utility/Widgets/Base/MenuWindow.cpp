@@ -296,7 +296,7 @@ void MenuWindow::showEvent(QShowEvent *ev)
         bottomLayout->addStretch(1);
 
         QSize iconSize(32, 32);
-        QIcon icon = themeManger.getIcon(ThemeManager::IconReturn, iconSize);
+        QIcon icon = themeManager.getIcon(ThemeManager::IconReturn, iconSize);
         d_ptr->retBtn = new Button(QString(), icon);
         d_ptr->retBtn->setButtonStyle(Button::ButtonIconOnly);
         d_ptr->retBtn->setIconSize(iconSize);
@@ -323,9 +323,9 @@ void MenuWindow::paintEvent(QPaintEvent *ev)
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing);  // 抗锯齿
     QPainterPath painterPath;
-    painterPath.addRoundedRect(r, themeManger.getBorderRadius(), themeManger.getBorderRadius());
+    painterPath.addRoundedRect(r, themeManager.getBorderRadius(), themeManager.getBorderRadius());
     // 下部直角
-    int bottomHeight = r.height() - themeManger.getBorderRadius();
+    int bottomHeight = r.height() - themeManager.getBorderRadius();
     QRectF bottomRect = r.adjusted(0, bottomHeight, 0, 0);
     painterPath.addRect(bottomRect);
     painterPath.setFillRule(Qt::WindingFill);

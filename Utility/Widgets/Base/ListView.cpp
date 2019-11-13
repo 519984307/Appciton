@@ -232,7 +232,7 @@ void ListView::keyReleaseEvent(QKeyEvent *ev)
             // record selected rows when is on multi select mode
             d_ptr->rowsSelectedMap[index.row()] = true;
         }
-        icon = themeManger.getIcon(ThemeManager::IconChecked, QSize(24, 24));
+        icon = themeManager.getIcon(ThemeManager::IconChecked, QSize(24, 24));
         // set current checked row
         if (d_ptr->isDrawIcon)
         {
@@ -327,7 +327,7 @@ void ListView::onRowClicked(QModelIndex index)
         // record selected rows when is on multi select mode
         d_ptr->rowsSelectedMap[index.row()] = true;
     }
-    icon = themeManger.getIcon(ThemeManager::IconChecked, QSize(24, 24));
+    icon = themeManager.getIcon(ThemeManager::IconChecked, QSize(24, 24));
 
     // set current checked row
 

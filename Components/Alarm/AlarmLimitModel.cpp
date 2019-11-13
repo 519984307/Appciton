@@ -21,8 +21,8 @@
 #include "Framework/Language/LanguageManager.h"
 
 
-#define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
-#define HEADER_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
+#define ROW_HEIGHT_HINT (themeManager.getAcceptableControlHeight())
+#define HEADER_HEIGHT_HINT (themeManager.getAcceptableControlHeight())
 
 class AlarmLimitModelPrivate
 {
@@ -299,12 +299,12 @@ QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
     case Qt::BackgroundRole:
         if (row % 2)
         {
-            return themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
+            return themeManager.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
                                         ThemeManager::StateDisabled);
         }
         else
         {
-            return themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
+            return themeManager.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
                                         ThemeManager::StateActive);
         }
         break;
@@ -378,7 +378,7 @@ QVariant AlarmLimitModel::headerData(int section, Qt::Orientation orientation, i
         }
         break;
     case Qt::BackgroundRole:
-        return themeManger.getColor(ThemeManager::ControlTypeNR,
+        return themeManager.getColor(ThemeManager::ControlTypeNR,
                                     ThemeManager::ElementBackgound,
                                     ThemeManager::StateDisabled);
     case Qt::ForegroundRole:

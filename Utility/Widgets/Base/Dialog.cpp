@@ -74,7 +74,7 @@ Dialog::Dialog(QWidget *parent)
     closeBtn->setFixedSize(TITLE_BAR_HEIGHT, TITLE_BAR_HEIGHT);
     closeBtn->setIcon(QIcon(":/ui/close.svg"));
     closeBtn->setButtonStyle(Button::ButtonIconOnly);
-    closeBtn->setBorderRadius(themeManger.getBorderRadius());
+    closeBtn->setBorderRadius(themeManager.getBorderRadius());
     QHBoxLayout *hlayout = new QHBoxLayout();
     hlayout->setContentsMargins(TITLE_BAR_HEIGHT, 0, 0, 0);
     hlayout->addWidget(titleLbl, 1);
@@ -101,10 +101,10 @@ Dialog::Dialog(QWidget *parent)
     vLayout->addWidget(d_ptr->m_widget, 1);
     connect(closeBtn, SIGNAL(clicked(bool)), this, SLOT(close()));
 
-    setFont(themeManger.defaultFont());
+    setFont(themeManager.defaultFont());
 
     QPalette pal = palette();
-    themeManger.setupPalette(ThemeManager::ControlWindow, &pal);
+    themeManager.setupPalette(ThemeManager::ControlWindow, &pal);
     setPalette(pal);
 
     d_ptr->m_mask = new QWidget(this);
@@ -114,7 +114,7 @@ Dialog::Dialog(QWidget *parent)
     d_ptr->m_mask->setVisible(false);
     d_ptr->m_mask->setAutoFillBackground(true);
 
-    QColor shadowColor = themeManger.getColor(ThemeManager::ControlTypeNR,
+    QColor shadowColor = themeManager.getColor(ThemeManager::ControlTypeNR,
                                               ThemeManager::ElementShadow, ThemeManager::StateNR);
     d_ptr->radialGradient = new QRadialGradient();
     d_ptr->radialGradient->setColorAt(0, shadowColor);
@@ -276,7 +276,7 @@ void Dialog::paintEvent(QPaintEvent *ev)
     }
 
     QPainterPath painterPath;
-    painterPath.addRoundedRect(r, themeManger.getBorderRadius(), themeManger.getBorderRadius());
+    painterPath.addRoundedRect(r, themeManager.getBorderRadius(), themeManager.getBorderRadius());
     p.fillPath(painterPath, palette().background());
 #else
     QDialog::paintEvent(ev);
@@ -290,7 +290,7 @@ int Dialog::getTitleHeight() const
 
 void DialogPrivate::drawShadow(QPainter *p, QRectF windowRect, QMargins margin, ShadowPiece piece)
 {
-    int borderRadius = themeManger.getBorderRadius();
+    int borderRadius = themeManager.getBorderRadius();
     QRectF shadowRect = windowRect;
     shadowRect.adjust(-margin.left(), -margin.top(), margin.right(), margin.bottom());
     QPainterPath shadowPath;

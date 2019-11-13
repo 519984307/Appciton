@@ -45,8 +45,8 @@ void MoveButton::paintEvent(QPaintEvent *ev)
 
     const QPalette &pal = palette();
     QRect r = rect();
-    int bw = themeManger.getBorderWidth();
-    int br = themeManger.getBorderRadius();
+    int bw = themeManager.getBorderWidth();
+    int br = themeManager.getBorderRadius();
     QColor bgColor = pal.color(QPalette::Inactive, QPalette::Window);
     QPen pen(pal.color(QPalette::Inactive, QPalette::Shadow), bw);
     if (hasFocus())
@@ -67,12 +67,12 @@ void MoveButton::paintEvent(QPaintEvent *ev)
     QRect leftRegion = r;
     leftRegion.setRight(r.width() / 4);
     QRect iconRect = QStyle::alignedRect(layoutDirection(), Qt::AlignCenter, iconSize(), leftRegion);
-    painter.drawPixmap(iconRect, themeManger.getPixmap(ThemeManager::IconLeft, iconSize()));
+    painter.drawPixmap(iconRect, themeManager.getPixmap(ThemeManager::IconLeft, iconSize()));
 
     QRect rightRegion = r;
     rightRegion.setLeft(r.width() * 3 / 4);
     iconRect = QStyle::alignedRect(layoutDirection(), Qt::AlignCenter, iconSize(), rightRegion);
-    painter.drawPixmap(iconRect, themeManger.getPixmap(ThemeManager::IconRight, iconSize()));
+    painter.drawPixmap(iconRect, themeManager.getPixmap(ThemeManager::IconRight, iconSize()));
 
     QRect textRect = r;
     textRect.adjust(r.width() / 4, bw , - r.width() / 4, - bw);

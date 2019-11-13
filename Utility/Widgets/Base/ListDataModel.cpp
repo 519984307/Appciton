@@ -13,7 +13,7 @@
 #include <QIcon>
 #include "ThemeManager.h"
 
-#define DEFAULT_ROW_HEIGHT (themeManger.getAcceptableControlHeight())
+#define DEFAULT_ROW_HEIGHT (themeManager.getAcceptableControlHeight())
 
 class ListDataModelPrivate
 {
@@ -69,12 +69,12 @@ QVariant ListDataModel::data(const QModelIndex &index, int role) const
     case Qt::BackgroundRole:
         if (index.row() % 2)
         {
-            return themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
+            return themeManager.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
                                         ThemeManager::StateDisabled);
         }
         else
         {
-            return themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
+            return themeManager.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
                                         ThemeManager::StateActive);
         }
         break;

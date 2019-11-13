@@ -90,11 +90,11 @@ PopupList::PopupList(QWidget *parent, bool concatToParent)
     }
     else
     {
-        setFont(fontManager.textFont(themeManger.defaultFontPixSize()));
+        setFont(fontManager.textFont(themeManager.defaultFontPixSize()));
     }
 
     QPalette p =  palette();
-    themeManger.setupPalette(ThemeManager::ControlPopupList, &p);
+    themeManager.setupPalette(ThemeManager::ControlPopupList, &p);
     setPalette(p);
 
     d_ptr->widget = new QWidget();
@@ -111,7 +111,7 @@ PopupList::PopupList(QWidget *parent, bool concatToParent)
     d_ptr->scrollArea->setFloatbarPolicy(ScrollArea::FloatBarShowForeverWhenNeeded);
     d_ptr->scrollArea->setOverShot(false);
     layout->addWidget(d_ptr->scrollArea);
-    int borderRadius = themeManger.getBorderRadius();
+    int borderRadius = themeManager.getBorderRadius();
     setContentsMargins(borderRadius, borderRadius, borderRadius, borderRadius);
 }
 
@@ -226,7 +226,7 @@ void PopupList::showEvent(QShowEvent *e)
 
         QDesktopWidget *desktop = QApplication::desktop();
         QPoint pos =  parent->mapToGlobal(parent->rect().bottomLeft());
-        int borderRadius = themeManger.getBorderRadius();
+        int borderRadius = themeManager.getBorderRadius();
 
         int screenHeight = desktop->height();
 
@@ -274,7 +274,7 @@ void PopupList::showEvent(QShowEvent *e)
     {
         QDesktopWidget *desktop = QApplication::desktop();
         QPoint pos =  d_ptr->globalRect.bottomLeft();
-        int borderRadius = themeManger.getBorderRadius();
+        int borderRadius = themeManager.getBorderRadius();
 
         int screenHeight = desktop->height();
         // need gap between when not cancat to the parent widget
@@ -319,8 +319,8 @@ void PopupList::paintEvent(QPaintEvent *e)
     painter.setRenderHint(QPainter::Antialiasing);
 
     QRect r = rect();
-    int borderWidth = themeManger.getBorderWidth();
-    int borderRadius = themeManger.getBorderRadius();
+    int borderWidth = themeManager.getBorderWidth();
+    int borderRadius = themeManager.getBorderRadius();
     int adjustWidth = borderWidth / 2;
     if (d_ptr->concatToParent)
     {
@@ -346,7 +346,7 @@ void PopupList::paintEvent(QPaintEvent *e)
 void PopupList::resizeEvent(QResizeEvent *e)
 {
     QWidget::resizeEvent(e);
-    int borderRadius = themeManger.getBorderRadius();
+    int borderRadius = themeManager.getBorderRadius();
     d_ptr->scrollArea->setFixedWidth(e->size().width() - borderRadius - borderRadius);
 }
 

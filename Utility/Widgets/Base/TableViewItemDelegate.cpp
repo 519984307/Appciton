@@ -78,13 +78,13 @@ bool TableViewItemDelegatePrivate::showEditor(const QTableView *view, QAbstractI
 TableViewItemDelegate::TableViewItemDelegate(QObject *parent)
     : QItemDelegate(parent), d_ptr(new TableViewItemDelegatePrivate(this))
 {
-    themeManger.setupPalette(ThemeManager::ControlComboBox, &d_ptr->pal);
+    themeManager.setupPalette(ThemeManager::ControlComboBox, &d_ptr->pal);
 }
 
 TableViewItemDelegate::TableViewItemDelegate(TableViewItemDelegatePrivate * const d_ptr, QObject *parent)
     : QItemDelegate(parent), d_ptr(d_ptr)
 {
-    themeManger.setupPalette(ThemeManager::ControlComboBox, &d_ptr->pal);
+    themeManager.setupPalette(ThemeManager::ControlComboBox, &d_ptr->pal);
 }
 
 TableViewItemDelegate::~TableViewItemDelegate()
@@ -159,8 +159,8 @@ void TableViewItemDelegate::drawCheck(QPainter *painter, const QStyleOptionViewI
         bgColor = d_ptr->pal.color(QPalette::Inactive, QPalette::Window);
     }
 
-    int borderWidth = themeManger.getBorderWidth();
-    int radius = themeManger.getBorderRadius();
+    int borderWidth = themeManager.getBorderWidth();
+    int radius = themeManager.getBorderRadius();
     QRect r = option.rect.adjusted(MARGIN, 0, -MARGIN, 0);
     r.adjust(borderWidth / 2, borderWidth / 2, -borderWidth / 2, -borderWidth / 2);
     QPen pen(borderColor, borderWidth);

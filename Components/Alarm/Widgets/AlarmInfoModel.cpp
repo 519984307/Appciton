@@ -16,7 +16,7 @@
 #include <QResizeEvent>
 #include <QDebug>
 
-#define DEFAULT_ROW_HEIGHT (themeManger.getAcceptableControlHeight())
+#define DEFAULT_ROW_HEIGHT (themeManager.getAcceptableControlHeight())
 #define EACH_PAGE_ALARM_COUNT 7    // 一页最大显示数
 
 enum
@@ -122,12 +122,12 @@ QVariant AlarmInfoModel::data(const QModelIndex &index, int role) const
     case Qt::BackgroundRole:
         if (row % 2)
         {
-            return themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
+            return themeManager.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
                                         ThemeManager::StateDisabled);
         }
         else
         {
-            return themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
+            return themeManager.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
                                         ThemeManager::StateActive);
         }
         break;
@@ -181,7 +181,7 @@ QVariant AlarmInfoModel::headerData(int section, Qt::Orientation orientation, in
             }
         }
         case Qt::BackgroundColorRole:
-            return themeManger.getColor(ThemeManager::ControlTypeNR,
+            return themeManager.getColor(ThemeManager::ControlTypeNR,
                                         ThemeManager::ElementBackgound,
                                         ThemeManager::StateDisabled);
         default:

@@ -198,10 +198,10 @@ bool TrendTableWindow::eventFilter(QObject *o, QEvent *e)
 
             QPainter painter(btn);
             QPalette pal = palette();
-            QColor textColor = themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementText,
+            QColor textColor = themeManager.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementText,
                                                     ThemeManager::StateInactive);
             pal.setColor(QPalette::Background,
-                         themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
+                         themeManager.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
                                                                     ThemeManager::StateDisabled));
             painter.fillRect(opt.rect, pal.background());
             painter.setPen(QPen(textColor, 1, Qt::SolidLine));
@@ -254,13 +254,13 @@ TrendTableWindow::TrendTableWindow()
                                  + d_ptr->model->getRowHeightHint() * TABLE_ROW_NR);
     d_ptr->table->setItemDelegate(new TableViewItemDelegate(this));
 
-    QIcon ico = themeManger.getIcon(ThemeManager::IconUp, QSize(32, 32));
+    QIcon ico = themeManager.getIcon(ThemeManager::IconUp, QSize(32, 32));
     d_ptr->upBtn = new Button("", ico);
     d_ptr->upBtn->setIconSize(QSize(32, 32));
     d_ptr->upBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->upBtn, SIGNAL(released()), this, SLOT(upReleased()));
 
-    ico = themeManger.getIcon(ThemeManager::IconDown, QSize(32, 32));
+    ico = themeManager.getIcon(ThemeManager::IconDown, QSize(32, 32));
     d_ptr->downBtn = new Button("", ico);
     d_ptr->downBtn->setIconSize(QSize(32, 32));
     d_ptr->downBtn->setButtonStyle(Button::ButtonIconOnly);

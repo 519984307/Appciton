@@ -17,7 +17,7 @@
 
 #define COLUMN_COUNT        2
 #define ROW_COUNT       8  // 每页8行
-#define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
+#define ROW_HEIGHT_HINT (themeManager.getAcceptableControlHeight())
 
 class HistoryDataSelModelPrivate
 {

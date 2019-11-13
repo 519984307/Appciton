@@ -15,7 +15,7 @@
 #include <QDebug>
 #include "SoundManagerInterface.h"
 
-#define DEFAULT_HEIGHT (themeManger.getAcceptableControlHeight())
+#define DEFAULT_HEIGHT (themeManager.getAcceptableControlHeight())
 
 
 class PopupListItemPrivate
@@ -31,7 +31,7 @@ PopupListItem::PopupListItem(const QString &text, QWidget *parent)
     setText(text);
 
     QPalette p = palette();
-    themeManger.setupPalette(ThemeManager::ControlPopupListItem, &p);
+    themeManager.setupPalette(ThemeManager::ControlPopupListItem, &p);
     setPalette(p);
 
     setCheckable(true);

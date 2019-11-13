@@ -16,7 +16,7 @@
 #include <QPainter>
 #include "SoundManagerInterface.h"
 
-#define DEFAULT_HEIGHT (themeManger.getAcceptableControlHeight())
+#define DEFAULT_HEIGHT (themeManager.getAcceptableControlHeight())
 
 class DropListPrivate
 {
@@ -38,7 +38,7 @@ DropList::DropList(const QString &text, QWidget *parent)
 {
     setText(text);
     QPalette pal = palette();
-    themeManger.setupPalette(ThemeManager::ControlComboBox, &pal);
+    themeManager.setupPalette(ThemeManager::ControlComboBox, &pal);
     setPalette(pal);
 
     connect(this, SIGNAL(released()), this, SLOT(showPopup()));
@@ -171,8 +171,8 @@ void DropList::paintEvent(QPaintEvent *ev)
     }
 
     QRect r = contentsRect();
-    int borderWidth = themeManger.getBorderWidth();
-    int radius = themeManger.getBorderRadius();
+    int borderWidth = themeManager.getBorderWidth();
+    int radius = themeManager.getBorderRadius();
     r.adjust(borderWidth / 2, borderWidth / 2, -borderWidth / 2, -borderWidth / 2);
     QPen pen(borderColor, borderWidth);
     painter.setPen(pen);

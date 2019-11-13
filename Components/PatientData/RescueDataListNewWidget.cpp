@@ -28,7 +28,7 @@ public:
           totalPage(0),
           curPage(0),
           pageNum(-1),
-          widgetHeight(themeManger.getAcceptableControlHeight())
+          widgetHeight(themeManager.getAcceptableControlHeight())
     {}
 
     ~RescueDataListNewWidgetPrivate(){}
@@ -225,7 +225,7 @@ void RescueDataListNewWidget::_btnPressed()
 
     if (0 == *(iter + index))
     {
-        QIcon pixmap = themeManger.getIcon(ThemeManager::IconChecked);
+        QIcon pixmap = themeManager.getIcon(ThemeManager::IconChecked);
         btn->setIcon(pixmap);
         *(iter + index) = 1;
     }

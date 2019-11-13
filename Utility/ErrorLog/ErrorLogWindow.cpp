@@ -31,7 +31,7 @@
 
 #define TABLE_ROW_NR        6
 
-#define HEIGHT_HINT (themeManger.getAcceptableControlHeight())
+#define HEIGHT_HINT (themeManager.getAcceptableControlHeight())
 #define DEFAULT_WIDTH (windowManager.getPopWindowWidth())
 #define DEFAULT_HEIGHT (windowManager.getPopWindowHeight())
 
@@ -101,14 +101,14 @@ ErrorLogWindow::ErrorLogWindow()
     d_ptr->eraseBtn->setFixedHeight(HEIGHT_HINT);
     connect(d_ptr->eraseBtn, SIGNAL(released()), this, SLOT(eraseReleased()));
 
-    QIcon ico = themeManger.getIcon(ThemeManager::IconUp, QSize(32, 32));
+    QIcon ico = themeManager.getIcon(ThemeManager::IconUp, QSize(32, 32));
     d_ptr->upPageBtn = new Button("", ico);
     d_ptr->upPageBtn->setIconSize(QSize(32, 32));
     d_ptr->upPageBtn->setButtonStyle(Button::ButtonIconOnly);
     d_ptr->upPageBtn->setFixedHeight(HEIGHT_HINT);
     connect(d_ptr->upPageBtn, SIGNAL(released()), d_ptr->model, SLOT(upBtnReleased()));
 
-    ico = themeManger.getIcon(ThemeManager::IconDown, QSize(32, 32));
+    ico = themeManager.getIcon(ThemeManager::IconDown, QSize(32, 32));
     d_ptr->downPageBtn = new Button("", ico);
     d_ptr->downPageBtn->setIconSize(QSize(32, 32));
     d_ptr->downPageBtn->setButtonStyle(Button::ButtonIconOnly);

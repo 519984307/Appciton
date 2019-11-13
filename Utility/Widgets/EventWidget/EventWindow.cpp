@@ -676,12 +676,12 @@ EventWindow::EventWindow()
     connect(d_ptr->listPrintBtn, SIGNAL(released()), this, SLOT(eventListPrintReleased()));
 
     QSize iconsize(32, 32);
-    d_ptr->upPageBtn = new Button("", themeManger.getIcon(ThemeManager::IconUp, iconsize));
+    d_ptr->upPageBtn = new Button("", themeManager.getIcon(ThemeManager::IconUp, iconsize));
     d_ptr->upPageBtn->setIconSize(iconsize);
     d_ptr->upPageBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->upPageBtn, SIGNAL(released()), this, SLOT(upPageReleased()));
 
-    d_ptr->downPageBtn = new Button("", themeManger.getIcon(ThemeManager::IconDown, iconsize));
+    d_ptr->downPageBtn = new Button("", themeManager.getIcon(ThemeManager::IconDown, iconsize));
     d_ptr->downPageBtn->setIconSize(iconsize);
     d_ptr->downPageBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->downPageBtn, SIGNAL(released()), this, SLOT(downPageReleased()));
@@ -748,12 +748,12 @@ EventWindow::EventWindow()
     d_ptr->setBtn->setButtonStyle(Button::ButtonTextOnly);
     connect(d_ptr->setBtn, SIGNAL(released()), this, SLOT(setReleased()));
 
-    d_ptr->upParamBtn = new Button("", themeManger.getIcon(ThemeManager::IconUp, iconsize));
+    d_ptr->upParamBtn = new Button("", themeManager.getIcon(ThemeManager::IconUp, iconsize));
     d_ptr->upParamBtn->setIconSize(iconsize);
     d_ptr->upParamBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->upParamBtn, SIGNAL(released()), this, SLOT(upReleased()));
 
-    d_ptr->downParamBtn = new Button("", themeManger.getIcon(ThemeManager::IconDown, iconsize));
+    d_ptr->downParamBtn = new Button("", themeManager.getIcon(ThemeManager::IconDown, iconsize));
     d_ptr->downParamBtn->setIconSize(iconsize);
     d_ptr->downParamBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->downParamBtn, SIGNAL(released()), this, SLOT(downReleased()));

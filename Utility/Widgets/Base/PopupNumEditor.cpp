@@ -164,8 +164,8 @@ void PopupNumEditor::paintEvent(QPaintEvent *ev)
 
     const QPalette &pal = palette();
     QRect r = rect();
-    int bw = themeManger.getBorderWidth();
-    int br = themeManger.getBorderRadius();
+    int bw = themeManager.getBorderWidth();
+    int br = themeManager.getBorderRadius();
     QPen pen(pal.color(QPalette::Inactive, QPalette::Shadow), bw);
     QColor bgColor = pal.color(QPalette::Inactive, QPalette::Window);
 
@@ -188,7 +188,7 @@ void PopupNumEditor::paintEvent(QPaintEvent *ev)
     painter.drawRoundedRect(upRegion.adjusted(bw / 2, bw / 2, - bw / 2, br + bw), br, br);
 
     int iconWidth = upRegion.height() > upRegion.width() ? upRegion.width() : upRegion.height();
-    const QIcon upIcon = themeManger.getIcon(ThemeManager::IconUp, QSize(iconWidth, iconWidth));
+    const QIcon upIcon = themeManager.getIcon(ThemeManager::IconUp, QSize(iconWidth, iconWidth));
     upIcon.paint(&painter, upRegion);
 
     QRect downRegion = r;
@@ -208,7 +208,7 @@ void PopupNumEditor::paintEvent(QPaintEvent *ev)
     }
     painter.drawRoundedRect(downRegion.adjusted(bw / 2, -br - bw, -bw / 2, -bw / 2), br, br);
 
-    const QIcon downIcon = themeManger.getIcon(ThemeManager::IconDown, QSize(iconWidth, iconWidth));
+    const QIcon downIcon = themeManager.getIcon(ThemeManager::IconDown, QSize(iconWidth, iconWidth));
     downIcon.paint(&painter, downRegion);
 
     painter.setBrush(pal.color(QPalette::Active, QPalette::Window));
@@ -227,8 +227,8 @@ void PopupNumEditor::paintEvent(QPaintEvent *ev)
 
 QSize PopupNumEditor::sizeHint() const
 {
-    int width = themeManger.getBorderWidth() * 2 + d_ptr->valueRect.width();
-    int height = themeManger.getBorderWidth() * 2 + d_ptr->valueRect.height() * 3;
+    int width = themeManager.getBorderWidth() * 2 + d_ptr->valueRect.width();
+    int height = themeManager.getBorderWidth() * 2 + d_ptr->valueRect.height() * 3;
     return QSize(width, height);
 }
 

@@ -28,8 +28,8 @@ public:
           prvRect(0, 0, 40, 100),
           name(text),
           timer(NULL),
-          iconSize(themeManger.getAcceptableControlHeight(),
-                   themeManger.getAcceptableControlHeight())
+          iconSize(themeManager.getAcceptableControlHeight(),
+                   themeManager.getAcceptableControlHeight())
     {}
 
     // check the mouse in which region
@@ -84,8 +84,8 @@ void PopupMoveEditor::paintEvent(QPaintEvent *ev)
 
     const QPalette &pal = palette();
     QRect r = rect();
-    int bw = themeManger.getBorderWidth();
-    int br = themeManger.getBorderRadius();
+    int bw = themeManager.getBorderWidth();
+    int br = themeManager.getBorderRadius();
     QPen pen(pal.color(QPalette::Inactive, QPalette::Shadow), bw);
     QColor bgColor = pal.color(QPalette::Inactive, QPalette::Window);
 
@@ -105,7 +105,7 @@ void PopupMoveEditor::paintEvent(QPaintEvent *ev)
     painter.drawRoundedRect(leftRegion.adjusted(bw / 2, bw / 2, br + bw, - bw / 2), br, br);
 
     QRect iconRect = QStyle::alignedRect(layoutDirection(), Qt::AlignCenter, d_ptr->iconSize, leftRegion);
-    painter.drawPixmap(iconRect, themeManger.getPixmap(ThemeManager::IconLeft, d_ptr->iconSize));
+    painter.drawPixmap(iconRect, themeManager.getPixmap(ThemeManager::IconLeft, d_ptr->iconSize));
 
     QRect rightRegion = r;
     rightRegion.setLeft(r.width() * 2 / 3);
@@ -122,7 +122,7 @@ void PopupMoveEditor::paintEvent(QPaintEvent *ev)
     painter.drawRoundedRect(rightRegion.adjusted(-br - bw, bw / 2,  -bw / 2, -bw / 2), br, br);
 
     iconRect = QStyle::alignedRect(layoutDirection(), Qt::AlignCenter, d_ptr->iconSize, rightRegion);
-    painter.drawPixmap(iconRect, themeManger.getPixmap(ThemeManager::IconRight, d_ptr->iconSize));
+    painter.drawPixmap(iconRect, themeManager.getPixmap(ThemeManager::IconRight, d_ptr->iconSize));
 
     painter.setBrush(pal.color(QPalette::Active, QPalette::Window));
 
@@ -138,8 +138,8 @@ void PopupMoveEditor::paintEvent(QPaintEvent *ev)
 
 QSize PopupMoveEditor::sizeHint() const
 {
-    int width = themeManger.getBorderWidth() * 2 + d_ptr->prvRect.width() * 3 / 2;
-    int height = themeManger.getBorderWidth() * 2 + d_ptr->prvRect.height() * 3 / 2;
+    int width = themeManager.getBorderWidth() * 2 + d_ptr->prvRect.width() * 3 / 2;
+    int height = themeManager.getBorderWidth() * 2 + d_ptr->prvRect.height() * 3 / 2;
     return QSize(width, height);
 }
 

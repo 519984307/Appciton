@@ -15,7 +15,7 @@
 #include "WindowManager.h"
 
 #define ROW_COUNT 3
-#define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
+#define ROW_HEIGHT_HINT (themeManager.getAcceptableControlHeight())
 
 
 enum ColumnHeader
@@ -165,7 +165,7 @@ QVariant CCHDDataModel::headerData(int section, Qt::Orientation orientation, int
         break;
     }
     case Qt::BackgroundColorRole:
-        return themeManger.getColor(ThemeManager::ControlTypeNR,
+        return themeManager.getColor(ThemeManager::ControlTypeNR,
                                     ThemeManager::ElementBackgound,
                                     ThemeManager::StateDisabled);
         break;

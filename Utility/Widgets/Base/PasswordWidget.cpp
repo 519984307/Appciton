@@ -98,12 +98,12 @@ void PasswordWidget::layoutExec()
     d_ptr->passwordEdit->setReadOnly(true);
     d_ptr->passwordEdit->setFocusPolicy(Qt::NoFocus);
     d_ptr->passwordEdit->setPlaceholderText(trs("Password"));
-    QColor borderColor = themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBorder,
+    QColor borderColor = themeManager.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBorder,
                          ThemeManager::StateInactive);
     d_ptr->passwordEdit->setStyleSheet(QString("border:%1px solid %2;border-radius:%3px;padding:2px 4px;Height:30px")
-                                       .arg(themeManger.getBorderWidth())
+                                       .arg(themeManager.getBorderWidth())
                                        .arg(borderColor.name())
-                                       .arg(themeManger.getBorderRadius()));
+                                       .arg(themeManager.getBorderRadius()));
     layout->addWidget(d_ptr->passwordEdit, 1, 0, 1, 3);
 
     int row = 2;

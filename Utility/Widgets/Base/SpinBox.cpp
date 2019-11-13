@@ -20,14 +20,14 @@
 
 #define PADDING 4
 #define ICON_TEXT_PADDING 4
-#define DEFAULT_BUTTON_HEIGHT (themeManger.getAcceptableControlHeight())
+#define DEFAULT_BUTTON_HEIGHT (themeManager.getAcceptableControlHeight())
 
 class SpinBoxPrivate
 {
 public:
     SpinBoxPrivate()
-        : m_borderWidth(themeManger.getBorderWidth()),
-          m_borderRadius(themeManger.getBorderRadius()),
+        : m_borderWidth(themeManager.getBorderWidth()),
+          m_borderRadius(themeManager.getBorderRadius()),
           arrow(false),
           status(SpinBox::SPIN_BOX_FOCUS_IN)
     {}
@@ -70,7 +70,7 @@ SpinBox::SpinBox(QWidget *parent)
 
 {
     QPalette pal = palette();
-    themeManger.setupPalette(ThemeManager::ControlSpinBox, &pal);
+    themeManager.setupPalette(ThemeManager::ControlSpinBox, &pal);
     setPalette(pal);
 }
 
@@ -269,7 +269,7 @@ void SpinBox::paintEvent(QPaintEvent *ev)
     {
         if (d_ptr->info.curValue < d_ptr->info.highLimit)
         {
-            QIcon upIcon = themeManger.getIcon(ThemeManager::IconUp);
+            QIcon upIcon = themeManager.getIcon(ThemeManager::IconUp);
             QRect upRect = QStyle::alignedRect(layoutDirection(), Qt::AlignVCenter | Qt::AlignHCenter,
                                                iconSize(), rect.adjusted(width() / 6 * 5, 0, 0, -(height() / 2)));
             upIcon.paint(&painter, upRect);
@@ -277,7 +277,7 @@ void SpinBox::paintEvent(QPaintEvent *ev)
 
         if (d_ptr->info.curValue > d_ptr->info.lowLimit)
         {
-            QIcon downIcon = themeManger.getIcon(ThemeManager::IconDown);
+            QIcon downIcon = themeManager.getIcon(ThemeManager::IconDown);
             QRect downRect = QStyle::alignedRect(layoutDirection(), Qt::AlignVCenter | Qt::AlignHCenter,
                                                  iconSize(), rect.adjusted(width() / 6 * 5, height() / 2, 0, 0));
             downIcon.paint(&painter, downRect);

@@ -270,7 +270,7 @@ void FactoryTempMenuContent::layoutExec()
                                 .arg(btnStr)
                                 .arg(trs(Unit::getSymbol(type))));
             button->setButtonStyle(Button::ButtonTextOnly);
-            button->setFixedHeight(themeManger.getAcceptableControlHeight());
+            button->setFixedHeight(themeManager.getAcceptableControlHeight());
             columnRowNum.append(j);
             columnRowNum.append(i);
             button->setProperty("Item", qVariantFromValue(columnRowNum));

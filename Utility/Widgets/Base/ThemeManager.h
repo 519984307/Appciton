@@ -166,4 +166,4 @@ private:
     ThemeManagerPrivate *const d_ptr;
 };
 
-#define themeManger (ThemeManager::getInstance())
+#define themeManager (ThemeManager::getInstance())

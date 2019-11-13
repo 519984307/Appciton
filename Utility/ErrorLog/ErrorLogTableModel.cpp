@@ -21,8 +21,8 @@
 #define DEFAULT_WIDTH       (windowManager.getPopWindowWidth())
 #define DEFAULT_ICON_WIDTH          (80)
 
-#define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
-#define HEADER_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
+#define ROW_HEIGHT_HINT (themeManager.getAcceptableControlHeight())
+#define HEADER_HEIGHT_HINT (themeManager.getAcceptableControlHeight())
 
 class ErrorLogTableModelPrivate
 {

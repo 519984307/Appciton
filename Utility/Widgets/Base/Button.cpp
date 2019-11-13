@@ -18,15 +18,15 @@
 
 #define PADDING 4
 #define ICON_TEXT_PADDING 4
-#define DEFAULT_BUTTON_HEIGHT (themeManger.getAcceptableControlHeight())
+#define DEFAULT_BUTTON_HEIGHT (themeManager.getAcceptableControlHeight())
 
 class ButtonPrivate
 {
 public:
     ButtonPrivate()
         : m_btnStyle(Button::ButtonTextBesideIcon),
-          m_borderWidth(themeManger.getBorderWidth()),
-          m_borderRadius(themeManger.getBorderRadius()),
+          m_borderWidth(themeManager.getBorderWidth()),
+          m_borderRadius(themeManager.getBorderRadius()),
           m_press(false)
     {}
 
@@ -52,7 +52,7 @@ Button::Button(const QString &text, const QIcon &icon, QWidget *parent)
     setText(text);
     setIcon(icon);
     QPalette pal = palette();
-    themeManger.setupPalette(ThemeManager::ControlButton, &pal);
+    themeManager.setupPalette(ThemeManager::ControlButton, &pal);
     setPalette(pal);
 }
 
