@@ -256,28 +256,28 @@ void Dialog::paintEvent(QPaintEvent *ev)
     if (!m.isNull())
     {
         // top left
-        d_ptr->drawShadow(p, r, m, TOP_LEFT);
+        d_ptr->drawShadow(&p, r, m, TOP_LEFT);
 
         // top right
-        d_ptr->drawShadow(p, r, m, TOP_RIGHT);
+        d_ptr->drawShadow(&p, r, m, TOP_RIGHT);
 
         // bottom right
-        d_ptr->drawShadow(p, r, m, BOTTOM_RIGHT);
+        d_ptr->drawShadow(&p, r, m, BOTTOM_RIGHT);
 
         // bottom left
-        d_ptr->drawShadow(p, r, m, BOTTOM_LEFT);
+        d_ptr->drawShadow(&p, r, m, BOTTOM_LEFT);
 
         // top
-        d_ptr->drawShadow(p, r, m, TOP);
+        d_ptr->drawShadow(&p, r, m, TOP);
 
         // right
-        d_ptr->drawShadow(p, r, m, RIGHT);
+        d_ptr->drawShadow(&p, r, m, RIGHT);
 
         // bottom
-        d_ptr->drawShadow(p, r, m, BOTTOM);
+        d_ptr->drawShadow(&p, r, m, BOTTOM);
 
         // left
-        d_ptr->drawShadow(p, r, m, LEFT);
+        d_ptr->drawShadow(&p, r, m, LEFT);
     }
 
     QPainterPath painterPath;
