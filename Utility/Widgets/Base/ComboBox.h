@@ -10,7 +10,6 @@
 
 #pragma once
 #include <QComboBox>
-#include "SoundManager.h"
 
 class ComboBoxPrivate;
 class ComboBox: public QComboBox

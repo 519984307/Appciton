@@ -56,7 +56,7 @@ public:
     QRadialGradient *radialGradient;
     QLinearGradient *linearGradient;
 
-    void drawShadow(QPainter &p, QRectF windowRect, QMargins margin, ShadowPiece piece);
+    void drawShadow(QPainter *p, QRectF windowRect, QMargins margin, ShadowPiece piece);
 };
 
 Dialog::Dialog(QWidget *parent)
@@ -102,7 +102,7 @@ Dialog::Dialog(QWidget *parent)
     vLayout->addWidget(d_ptr->m_widget, 1);
     connect(closeBtn, SIGNAL(clicked(bool)), this, SLOT(close()));
 
-    FontMangerInterface *fontManager = FontMangerInterface::getFontManager();
+    FontManagerInterface *fontManager = FontManagerInterface::getFontManager();
     if (fontManager)
     {
         setFont(fontManager->textFont(themeManger.defaultFontPixSize()));
@@ -119,7 +119,8 @@ Dialog::Dialog(QWidget *parent)
     d_ptr->m_mask->setVisible(false);
     d_ptr->m_mask->setAutoFillBackground(true);
 
-    QColor shadowColor = themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementShadow, ThemeManager::StateNR);
+    QColor shadowColor = themeManger.getColor(ThemeManager::ControlTypeNR,
+                                              ThemeManager::ElementShadow, ThemeManager::StateNR);
     d_ptr->radialGradient = new QRadialGradient();
     d_ptr->radialGradient->setColorAt(0, shadowColor);
     d_ptr->radialGradient->setColorAt(1, Qt::transparent);
@@ -250,7 +251,7 @@ void Dialog::paintEvent(QPaintEvent *ev)
     QRectF r = contentsRect();
     QMargins m = contentsMargins();
     QPainter p(this);
-    p.setRenderHint(QPainter::Antialiasing); // 抗锯齿
+    p.setRenderHint(QPainter::Antialiasing);  // 抗锯齿
     p.setCompositionMode(QPainter::CompositionMode_SourceOver);
     if (!m.isNull())
     {
@@ -292,7 +293,7 @@ int Dialog::getTitleHeight() const
     return TITLE_BAR_HEIGHT;
 }
 
-void DialogPrivate::drawShadow(QPainter &p, QRectF windowRect, QMargins margin, ShadowPiece piece)
+void DialogPrivate::drawShadow(QPainter *p, QRectF windowRect, QMargins margin, ShadowPiece piece)
 {
     int borderRadius = themeManger.getBorderRadius();
     QRectF shadowRect = windowRect;
@@ -310,7 +311,8 @@ void DialogPrivate::drawShadow(QPainter &p, QRectF windowRect, QMargins margin, 
     switch (piece) {
     case TOP_LEFT:
         // 获取区域（区域与路径的交集）
-        intersectPath.addRect(shadowRect.left(), shadowRect.top(), margin.left() + borderRadius, margin.top() + borderRadius);
+        intersectPath.addRect(shadowRect.left(), shadowRect.top(),
+                              margin.left() + borderRadius, margin.top() + borderRadius);
         path = shadowPath.intersected(intersectPath);
 
         // 设置渐变
@@ -321,7 +323,7 @@ void DialogPrivate::drawShadow(QPainter &p, QRectF windowRect, QMargins margin, 
         radialGradient->setRadius(borderRadius + margin.top());
 
         // 绘画
-        p.fillPath(path, *radialGradient);
+        p->fillPath(path, *radialGradient);
         break;
 
     case TOP_RIGHT:
@@ -338,7 +340,7 @@ void DialogPrivate::drawShadow(QPainter &p, QRectF windowRect, QMargins margin, 
         radialGradient->setRadius(borderRadius + margin.right());
 
         // 绘画
-        p.fillPath(path, *radialGradient);
+        p->fillPath(path, *radialGradient);
         break;
     case BOTTOM_RIGHT:
         intersectPath.addRect(windowRect.right() - borderRadius, windowRect.bottom() - borderRadius,
@@ -351,7 +353,7 @@ void DialogPrivate::drawShadow(QPainter &p, QRectF windowRect, QMargins margin, 
         radialGradient->setFocalPoint(center);
         radialGradient->setRadius(borderRadius + margin.bottom());
 
-        p.fillPath(path, *radialGradient);
+        p->fillPath(path, *radialGradient);
         break;
     case BOTTOM_LEFT:
         intersectPath.addRect(shadowRect.left(), windowRect.bottom() - borderRadius,
@@ -364,39 +366,43 @@ void DialogPrivate::drawShadow(QPainter &p, QRectF windowRect, QMargins margin, 
         radialGradient->setFocalPoint(center);
         radialGradient->setRadius(borderRadius + margin.left());
 
-        p.fillPath(path, *radialGradient);
+        p->fillPath(path, *radialGradient);
         break;
     case TOP:
-        path.addRect(windowRect.left() + borderRadius, shadowRect.top(), windowRect.width() - 2 * borderRadius, margin.top());
+        path.addRect(windowRect.left() + borderRadius, shadowRect.top(),
+                     windowRect.width() - 2 * borderRadius, margin.top());
 
         linearGradient->setStart(windowRect.width() / 2 , windowRect.top() + borderRadius);
         linearGradient->setFinalStop(windowRect.width() / 2, shadowRect.top());
 
-        p.fillPath(path, *linearGradient);
+        p->fillPath(path, *linearGradient);
         break;
     case RIGHT:
-        path.addRect(windowRect.right(), windowRect.top() + borderRadius, margin.right(), windowRect.height() - 2 * borderRadius);
+        path.addRect(windowRect.right(), windowRect.top() + borderRadius,
+                     margin.right(), windowRect.height() - 2 * borderRadius);
 
         linearGradient->setStart(windowRect.right() - borderRadius, windowRect.height() / 2);
         linearGradient->setFinalStop(shadowRect.right(), windowRect.height() / 2);
 
-        p.fillPath(path, *linearGradient);
+        p->fillPath(path, *linearGradient);
         break;
     case BOTTOM:
-        path.addRect(windowRect.left() + borderRadius, windowRect.bottom(), windowRect.width() - 2 * borderRadius, margin.bottom());
+        path.addRect(windowRect.left() + borderRadius, windowRect.bottom(),
+                     windowRect.width() - 2 * borderRadius, margin.bottom());
 
         linearGradient->setStart(windowRect.width() / 2 , windowRect.bottom() - borderRadius);
         linearGradient->setFinalStop(windowRect.width() / 2, shadowRect.bottom());
 
-        p.fillPath(path, *linearGradient);
+        p->fillPath(path, *linearGradient);
         break;
     case LEFT:
-        path.addRect(shadowRect.left(), windowRect.top() + borderRadius, margin.left(), windowRect.height() - 2 * borderRadius);
+        path.addRect(shadowRect.left(), windowRect.top() + borderRadius,
+                     margin.left(), windowRect.height() - 2 * borderRadius);
 
         linearGradient->setStart(windowRect.left() + borderRadius, windowRect.height() / 2);
         linearGradient->setFinalStop(shadowRect.left(), windowRect.height() / 2);
 
-        p.fillPath(path, *linearGradient);
+        p->fillPath(path, *linearGradient);
         break;
     default:
         break;

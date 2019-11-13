@@ -11,14 +11,14 @@
 #pragma once
 #include <QFont>
 
-class FontMangerInterface
+class FontManagerInterface
 {
 public:
-    virtual ~FontMangerInterface(){}
+    virtual ~FontManagerInterface(){}
 
-    static FontMangerInterface *registerFontManager(FontMangerInterface *instance);
+    static FontManagerInterface *registerFontManager(FontManagerInterface *instance);
 
-    static FontMangerInterface *getFontManager(void);
+    static FontManagerInterface *getFontManager(void);
 
     virtual QFont textFont(int fontSize = -1, bool isBold = false) = 0;
 

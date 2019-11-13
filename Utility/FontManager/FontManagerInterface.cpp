@@ -11,16 +11,16 @@
 #include "FontManagerInterface.h"
 #include <stddef.h>
 
-static FontMangerInterface* fontManager = NULL;
+static FontManagerInterface* fontManager = NULL;
 
-FontMangerInterface *FontMangerInterface::registerFontManager(FontMangerInterface *instance)
+FontManagerInterface *FontManagerInterface::registerFontManager(FontManagerInterface *instance)
 {
-    FontMangerInterface *old = fontManager;
+    FontManagerInterface *old = fontManager;
     fontManager = instance;
     return old;
 }
 
-FontMangerInterface *FontMangerInterface::getFontManager()
+FontManagerInterface *FontManagerInterface::getFontManager()
 {
     return fontManager;
 }

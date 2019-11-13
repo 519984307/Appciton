@@ -51,7 +51,7 @@ void PatientInfoWidget::setAlarmPauseTime(int seconds)
                                     .arg(seconds % 60, 2, 10, QLatin1Char('0'));
         }
 
-        FontMangerInterface *fontManager = FontMangerInterface::getFontManager();
+        FontManagerInterface *fontManager = FontManagerInterface::getFontManager();
         if (fontManager)
         {
             int fontSize = fontManager->getFontSize(4);
@@ -114,7 +114,7 @@ void PatientInfoWidget::_releaseHandle(IWidget *iWidget)
  *************************************************************************************************/
 PatientInfoWidget::PatientInfoWidget(QWidget *parent) : PatientInfoWidgetInterface(parent)
 {
-    FontMangerInterface *fontManager = FontMangerInterface::getFontManager();
+    FontManagerInterface *fontManager = FontManagerInterface::getFontManager();
     if (!fontManager)
     {
         return;

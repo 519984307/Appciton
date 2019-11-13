@@ -12,7 +12,7 @@
 #pragma once
 #include "FontManagerInterface.h"
 
-class FontManager : public FontMangerInterface
+class FontManager : public FontManagerInterface
 {
 public:
     static FontManager &getInstance(void);

@@ -12,7 +12,7 @@
 #include "FontManagerInterface.h"
 #include "gmock/gmock.h"
 
-class MockFontManager : public FontMangerInterface
+class MockFontManager : public FontManagerInterface
 {
 public:
     MOCK_METHOD2(textFont, QFont(int, bool));

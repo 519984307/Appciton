@@ -26,6 +26,8 @@
 #include "AlarmIndicator.h"
 #include "WindowManager.h"
 #include "SystemManagerInterface.h"
+#include "SoundManager.h"
+
 
 class ModuleMaintainMenuContentPrivate
 {
