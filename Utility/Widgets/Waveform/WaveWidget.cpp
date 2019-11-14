@@ -32,7 +32,6 @@
 #include "WaveWidgetItem.h"
 #include "WaveWidgetLabel.h"
 #include "Debug.h"
-#include "WindowManager.h"
 #include "FreezeManager.h"
 #include "FreezeWaveReviewMode.h"
 #include "FreezeTimeIndicator.h"

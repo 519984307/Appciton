@@ -13,7 +13,6 @@
 #include "Framework/UI/ThemeManager.h"
 #include <QDateTime>
 #include "Framework/TimeDate/TimeDate.h"
-#include "WindowManager.h"
 
 #define COLUMN_COUNT        2
 #define ROW_COUNT       8  // 每页8行

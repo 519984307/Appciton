@@ -15,7 +15,6 @@
 #include <QBitmap>
 #include <QTimer>
 #include "ExportDataWidget.h"
-#include "WindowManager.h"
 #include "FontManager.h"
 #include "SystemManager.h"
 #include "Debug.h"

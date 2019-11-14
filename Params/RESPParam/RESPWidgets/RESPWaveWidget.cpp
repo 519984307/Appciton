@@ -17,7 +17,6 @@
 #include "Framework/Language/LanguageManager.h"
 #include "ColorManager.h"
 #include "ParamInfo.h"
-#include "WindowManager.h"
 #include "Framework/UI/PopupList.h"
 #include "SystemManager.h"
 #include "RESPDupParam.h"

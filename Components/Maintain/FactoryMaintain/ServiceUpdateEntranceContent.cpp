@@ -13,9 +13,7 @@
 #include <QLabel>
 #include "Framework/UI/Button.h"
 #include "Framework/Language/LanguageManager.h"
-#include "WindowManager.h"
 #include "UpgradeWindow.h"
-#include "WindowManager.h"
 #include "KeyActionManager.h"
 
 /**************************************************************************************************

@@ -16,7 +16,6 @@
 #include "Framework/Language/LanguageManager.h"
 #include "Framework/Utility/Utility.h"
 #include <QPointer>
-#include "WindowManager.h"
 #include "FontManager.h"
 #include "MessageBox.h"
 #include <QEventLoop>

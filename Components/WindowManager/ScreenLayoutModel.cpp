@@ -9,7 +9,6 @@
  **/
 
 #include "ScreenLayoutModel.h"
-#include "WindowManager.h"
 #include "DemoProvider.h"
 #include "ParamManager.h"
 #include "ScreenLayoutDefine.h"

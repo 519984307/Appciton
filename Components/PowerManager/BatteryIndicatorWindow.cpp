@@ -10,7 +10,6 @@
 
 #include "BatteryIndicatorWindow.h"
 #include <QLabel>
-#include "WindowManager.h"
 #include "FontManager.h"
 #include "Framework/Language/LanguageManager.h"
 #include "BatteryIconWidget.h"

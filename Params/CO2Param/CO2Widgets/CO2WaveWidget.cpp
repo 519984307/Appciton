@@ -21,7 +21,6 @@
 #include "Framework/UI/ThemeManager.h"
 #include "Framework/Language/LanguageManager.h"
 #include "CO2Param.h"
-#include "WindowManager.h"
 
 /**************************************************************************************************
  * 尺寸变化。

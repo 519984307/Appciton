@@ -30,7 +30,6 @@
 #include <QTimer>
 #include <SystemManager.h>
 #include "MessageBox.h"
-#include "WindowManager.h"
 
 #define TABLE_ROW_NUM 7
 

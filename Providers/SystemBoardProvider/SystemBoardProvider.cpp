@@ -12,7 +12,6 @@
 #include "Debug.h"
 #include "SystemManager.h"
 #include "SystemBoardProvider.h"
-#include "WindowManager.h"
 #include "SystemAlarm.h"
 #include "KeyActionManager.h"
 #include "Framework/ErrorLog/ErrorLog.h"

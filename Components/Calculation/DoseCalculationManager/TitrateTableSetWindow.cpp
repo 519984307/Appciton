@@ -14,7 +14,6 @@
 #include <QLabel>
 #include "TitrateTableManager.h"
 #include "TitrateTableWindow.h"
-#include "WindowManager.h"
 #include <QGridLayout>
 #include "TitrateTableDefine.h"
 #include "LayoutManager.h"

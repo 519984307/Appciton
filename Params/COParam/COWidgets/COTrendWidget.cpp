@@ -15,7 +15,6 @@
 #include "ParamInfo.h"
 #include <QHBoxLayout>
 #include "TrendWidgetLabel.h"
-#include "WindowManager.h"
 #include <QDebug>
 #include "MeasureSettingWindow.h"
 #include "BaseDefine.h"

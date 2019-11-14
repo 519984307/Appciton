@@ -16,7 +16,6 @@
 #include "ColorManager.h"
 #include "ParamInfo.h"
 #include "Debug.h"
-#include "WindowManager.h"
 #include "ECGSymbol.h"
 #include "TrendWidgetLabel.h"
 #include "MeasureSettingWindow.h"

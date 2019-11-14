@@ -20,7 +20,6 @@
 #include "DischargePatientWindow.h"
 #include <QMap>
 #include "IConfig.h"
-#include "WindowManager.h"
 #include "Framework/UI/Button.h"
 #include "Framework/UI/ComboBox.h"
 #include "Framework/UI/SpinBox.h"

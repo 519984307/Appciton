@@ -8,8 +8,8 @@
  ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/7/12
  **/
 
-#include "Debug.h"
 #include "WindowManager.h"
+#include "Debug.h"
 #include "IConfig.h"
 #include <QApplication>
 #include <QLabel>

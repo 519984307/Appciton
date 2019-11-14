@@ -19,7 +19,6 @@
 #include <QHeaderView>
 #include "LayoutManager.h"
 #include "MessageBox.h"
-#include "WindowManager.h"
 
 class BigFontLayoutWindowPrivate
 {

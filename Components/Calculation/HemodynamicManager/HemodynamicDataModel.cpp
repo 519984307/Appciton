@@ -12,7 +12,6 @@
 #include <QBrush>
 #include <QColor>
 #include "Framework/UI/ThemeManager.h"
-#include "WindowManager.h"
 
 #define MAX_ROW_COUNT  8
 #define ROW_HEIGHT_HINT 45

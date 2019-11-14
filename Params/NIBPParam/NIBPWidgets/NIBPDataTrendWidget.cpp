@@ -19,7 +19,6 @@
 #include "ParamInfo.h"
 #include "Debug.h"
 #include "NIBPAlarm.h"
-#include "WindowManager.h"
 #include "Framework/TimeDate/TimeDate.h"
 #include "Alarm.h"
 #include "TrendWidgetLabel.h"

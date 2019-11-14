@@ -17,7 +17,6 @@
 #include "Framework/Language/LanguageManager.h"
 #include "Framework/UI/ThemeManager.h"
 #include "FontManager.h"
-#include "WindowManager.h"
 #include <QTimer>
 #include "EventStorageManager.h"
 #include "TimeManager.h"

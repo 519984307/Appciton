@@ -16,7 +16,6 @@
 #include "Framework/UI/ThemeManager.h"
 #include "Framework/Language/LanguageManager.h"
 #include "FontManager.h"
-#include "WindowManager.h"
 #include "Debug.h"
 #include "KeyInputPanel.h"
 #include "MessageBox.h"

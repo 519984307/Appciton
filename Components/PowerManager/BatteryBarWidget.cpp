@@ -12,7 +12,6 @@
 #include <QPixmap>
 #include "BatteryBarWidget.h"
 #include "FontManager.h"
-#include "WindowManager.h"
 #include "TopBarWidget.h"
 #include "IConfig.h"
 #include <QPainter>

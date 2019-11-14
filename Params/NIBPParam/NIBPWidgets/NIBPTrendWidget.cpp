@@ -16,7 +16,6 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include "TimeManager.h"
-#include "WindowManager.h"
 #include "IConfig.h"
 #include "TrendWidgetLabel.h"
 #include "MeasureSettingWindow.h"

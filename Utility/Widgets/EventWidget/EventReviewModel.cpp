@@ -11,7 +11,6 @@
 #include "EventReviewModel.h"
 #include "Framework/UI/ThemeManager.h"
 #include "Framework/Language/LanguageManager.h"
-#include "WindowManager.h"
 #define COLUMN_COUNT            2
 
 #define ROW_HEIGHT_HINT (themeManager.getAcceptableControlHeight())

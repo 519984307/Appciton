@@ -15,7 +15,6 @@
 #include <QLabel>
 #include <QGridLayout>
 #include "RecorderManager.h"
-#include "WindowManager.h"
 #include "IConfig.h"
 #include "ConfigManager.h"
 #include "LayoutManager.h"

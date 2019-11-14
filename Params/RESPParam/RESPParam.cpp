@@ -16,7 +16,6 @@
 #include "RESPDupParam.h"
 #include "SystemManager.h"
 #include "LayoutManager.h"
-#include "WindowManager.h"
 #include "OxyCRGRRHRWaveWidget.h"
 #include "LayoutManager.h"
 #include "OxyCRGRESPWaveWidget.h"

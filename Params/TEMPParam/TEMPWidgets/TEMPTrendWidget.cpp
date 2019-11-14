@@ -16,7 +16,6 @@
 #include "ParamManager.h"
 #include "ParamInfo.h"
 #include "TEMPParam.h"
-#include "WindowManager.h"
 #include "TrendWidgetLabel.h"
 #include "MeasureSettingWindow.h"
 #include "AlarmConfig.h"

@@ -22,7 +22,6 @@
 #include "Framework/TimeDate/TimeDate.h"
 #include "ColorManager.h"
 #include "ParamInfo.h"
-#include "WindowManager.h"
 #include "Debug.h"
 #include "SystemManager.h"
 

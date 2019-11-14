@@ -19,7 +19,6 @@
 #include <QHBoxLayout>
 #include "HistoryDataReviewWindow.h"
 #include <QScrollBar>
-#include "WindowManager.h"
 
 class HistoryDataSelWindowPrivate
 {

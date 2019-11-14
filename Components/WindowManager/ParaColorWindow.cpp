@@ -20,7 +20,6 @@
 #include "IConfig.h"
 #include "ConfigManager.h"
 #include "ColorManager.h"
-#include "WindowManager.h"
 
 class ParaColorWindowPrivate
 {

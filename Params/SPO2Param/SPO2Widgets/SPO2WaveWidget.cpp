@@ -20,7 +20,6 @@
 #include "ParamInfo.h"
 #include "IConfig.h"
 #include "Debug.h"
-#include "WindowManager.h"
 #include "SystemManager.h"
 
 /**************************************************************************************************

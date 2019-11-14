@@ -25,7 +25,6 @@
 #include "Framework/ErrorLog/ErrorLog.h"
 #include "Framework/ErrorLog/ErrorLogItem.h"
 #include "IConfig.h"
-#include "WindowManager.h"
 #include "RawDataCollector.h"
 #include "AlarmSourceManager.h"
 #include "ConfigManager.h"

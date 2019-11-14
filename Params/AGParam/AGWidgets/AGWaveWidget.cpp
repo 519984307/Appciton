@@ -18,7 +18,6 @@
 #include "AGWaveRuler.h"
 #include "AGSymbol.h"
 #include "AGParam.h"
-#include "WindowManager.h"
 
 /**************************************************************************************************
  * 设置麻醉剂类型。

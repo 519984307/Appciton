@@ -13,7 +13,6 @@
 #include "MonitorSoftkeyAction.h"
 #include "SoftKeyManager.h"
 #include "ECGParam.h"
-#include "WindowManager.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。

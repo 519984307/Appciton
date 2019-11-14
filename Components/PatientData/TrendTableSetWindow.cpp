@@ -18,7 +18,6 @@
 #include "TrendDataSymbol.h"
 #include "TrendTableWindow.h"
 #include "IConfig.h"
-#include "WindowManager.h"
 #include "SystemManager.h"
 
 TrendTableSetWindow *TrendTableSetWindow::selfObj = NULL;

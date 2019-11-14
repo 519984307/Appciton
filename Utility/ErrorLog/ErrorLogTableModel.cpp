@@ -14,7 +14,6 @@
 #include "Framework/ErrorLog/ErrorLogItem.h"
 #include "Framework/ErrorLog/ErrorLog.h"
 #include <QIcon>
-#include "WindowManager.h"
 
 #define COLUMN_COUNT        3
 #define MAX_ROW_COUNT       6

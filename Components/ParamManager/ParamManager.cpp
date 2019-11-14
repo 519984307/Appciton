@@ -10,7 +10,6 @@
 
 #include "ParamManager.h"
 #include "SystemManager.h"
-#include "WindowManager.h"
 #include "Provider.h"
 #include "BLMProvider.h"
 #include "Param.h"

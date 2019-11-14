@@ -16,7 +16,6 @@
 #include <QVBoxLayout>
 #include <QVariant>
 #include "KeyInputPanel.h"
-#include "WindowManager.h"
 #include "MessageBox.h"
 #include "ECGParam.h"
 #include "Framework/UI/ComboBox.h"
