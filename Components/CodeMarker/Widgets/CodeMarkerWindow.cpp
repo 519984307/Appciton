@@ -15,6 +15,7 @@
 #include <QGridLayout>
 #include <QScrollArea>
 #include "Framework/Language/LanguageManager.h"
+#include "Framework/UI/ThemeManager.h"
 #include "FontManager.h"
 #include "WindowManager.h"
 #include <QTimer>
@@ -72,7 +73,7 @@ CodeMarkerWindow::CodeMarkerWindow() : Dialog()
     int fontSize = fontManager.getFontSize(3);
 
     setWindowTitle(trs("CodeMarker"));
-    setFixedWidth(windowManager.getPopWindowWidth());
+    setFixedWidth(themeManager.defaultWindowSize().width());
     // scroll
     d_ptr->scrollArea = new QScrollArea();
     d_ptr->scrollArea->setFocusPolicy(Qt::NoFocus);

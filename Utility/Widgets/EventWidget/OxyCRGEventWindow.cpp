@@ -14,6 +14,7 @@
 #include "Framework/UI/ComboBox.h"
 #include "Framework/UI/MoveButton.h"
 #include "Framework/UI/TableHeaderView.h"
+#include "Framework/UI/ThemeManager.h"
 #include "Framework/Language/LanguageManager.h"
 #include "Framework/Storage/IStorageBackend.h"
 #include "Framework/TimeDate/TimeDate.h"
@@ -515,9 +516,7 @@ OxyCRGEventWindow::OxyCRGEventWindow()
 
     setWindowLayout(d_ptr->stackLayout);
 
-    int width = windowManager.getPopWindowWidth();
-    int height = windowManager.getPopWindowHeight();
-    setFixedSize(width, height);
+    setFixedSize(themeManager.defaultWindowSize());
 }
 
 void OxyCRGEventWindowPrivate::loadOxyCRGEventData()

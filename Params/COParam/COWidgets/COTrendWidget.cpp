@@ -18,6 +18,7 @@
 #include "WindowManager.h"
 #include <QDebug>
 #include "MeasureSettingWindow.h"
+#include "BaseDefine.h"
 
 #define     INVALDATA     0xffff
 

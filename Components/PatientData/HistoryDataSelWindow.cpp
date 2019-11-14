@@ -11,6 +11,7 @@
 #include "HistoryDataSelWindow.h"
 #include "Framework/UI/TableView.h"
 #include "Framework/UI/Button.h"
+#include "Framework/UI/ThemeManager.h"
 #include "Framework/Language/LanguageManager.h"
 #include "HistoryDataSelModel.h"
 #include <QHeaderView>
@@ -43,7 +44,7 @@ HistoryDataSelWindow::HistoryDataSelWindow()
     : Dialog(), d_ptr(new HistoryDataSelWindowPrivate(this))
 {
     setWindowTitle(trs("HistoryDataList"));
-    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
+    setFixedSize(themeManager.defaultWindowSize());
 
     d_ptr->table = new TableView();
     d_ptr->table->horizontalHeader()->setVisible(false);

@@ -784,9 +784,7 @@ EventWindow::EventWindow()
 
     setWindowLayout(d_ptr->stackLayout);
 
-    int width = windowManager.getPopWindowWidth();
-    int height = windowManager.getPopWindowHeight();
-    setFixedSize(width, height);
+    setFixedSize(themeManager.defaultWindowSize());
 }
 
 void EventWindowPrivate::loadEventData()

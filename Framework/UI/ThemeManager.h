@@ -172,8 +172,11 @@ public:
      */
     void playClickSound();
 
-private:
+protected:
+    static ThemeManager * instance;
     ThemeManager();
+
+private:
     ThemeManagerPrivate *const d_ptr;
 };
 

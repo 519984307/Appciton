@@ -97,7 +97,7 @@ void AlarmInfoWindow::updateData(bool isShowFirstPage)
 void AlarmInfoWindow::layout()
 {
     setWindowTitle(d_ptr->title);
-    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
+    setFixedSize(themeManager.defaultWindowSize());
 
     QVBoxLayout *vLayout = new QVBoxLayout();
     setWindowLayout(vLayout);

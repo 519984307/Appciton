@@ -320,7 +320,7 @@ void TimeEditWindow::layoutExec()
     layout->setColumnStretch(3, 1);
     setWindowLayout(layout);
 
-    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
+    setFixedSize(themeManager.defaultWindowSize());
 }
 
 void TimeEditWindow::hideEvent(QHideEvent *ev)

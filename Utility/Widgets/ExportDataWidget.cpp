@@ -23,6 +23,7 @@
 #include <QApplication>
 #include <QPainterPath>
 #include "LayoutManager.h"
+#include "Framework/UI/ThemeManager.h"
 
 //传输开始标题
 static const char *startTitleString[EXPORT_DATA_NR] =
@@ -91,7 +92,7 @@ ExportDataWidget::ExportDataWidget(Export_Data_Type type) : Dialog()
 
     int fontSize = fontManager.getFontSize(2);
     int width;
-    width = windowManager.getPopWindowWidth() * 8 / 10;
+    width = themeManager.defaultWindowSize().width() * 8 / 10;
 
     setWindowTitle(trs(startTitleString[_curType]));
 

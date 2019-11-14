@@ -12,6 +12,7 @@
 #include <QHBoxLayout>
 #include "Framework/UI/ComboBox.h"
 #include "Framework/UI/Button.h"
+#include "Framework/UI/ThemeManager.h"
 #include "Framework/Language/LanguageManager.h"
 #include <QLabel>
 #include <QSignalMapper>
@@ -168,7 +169,7 @@ void DoseCalculationWindow::layoutExec()
 
     layout->setColumnMinimumWidth(0, 100);
     setWindowLayout(layout);
-    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
+    setFixedSize(themeManager.defaultWindowSize());
 }
 
 /**************************************************************************************************

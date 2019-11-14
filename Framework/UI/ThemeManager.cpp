@@ -23,6 +23,9 @@
 
 typedef QMap<int, QPixmapCache::Key> CacheKeyMap;
 
+
+ThemeManager * ThemeManager::instance = NULL;
+
 class ThemeManagerPrivate
 {
 public:
@@ -126,7 +129,6 @@ void ThemeManagerPrivate::loadColorScheme()
 
 ThemeManager &ThemeManager::getInstance()
 {
-    static ThemeManager *instance = NULL;
     if (instance == NULL)
     {
         instance = new ThemeManager;

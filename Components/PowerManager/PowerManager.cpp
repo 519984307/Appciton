@@ -18,6 +18,7 @@
 #include "Framework/Language/LanguageManager.h"
 #include "math.h"
 #include "TestBatteryTime.h"
+#include <QTime>
 #define TWO_MINUTE 1000 * 120
 #define POWER_LIST_MAX_COUNT 3
 #define AD_VALUE_LIST_COUNT 30

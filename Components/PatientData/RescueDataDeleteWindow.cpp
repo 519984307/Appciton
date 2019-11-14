@@ -241,8 +241,9 @@ RescueDataDeleteWindow::RescueDataDeleteWindow()
       d_ptr(new RescueDataDeleteWindowPrivate())
 {
     QVBoxLayout *contentLayout = new QVBoxLayout();
-    int maxw = windowManager.getPopWindowWidth();
-    int maxh = windowManager.getPopWindowHeight();
+    QSize winSize = themeManager.defaultWindowSize();
+    int maxw = winSize.width();
+    int maxh = winSize.height();
 
     int margins = contentsMargins().left() * 2 + 10;
     d_ptr->dataListWidget = new RescueDataListNewWidget(maxw - margins,

@@ -13,6 +13,7 @@
 #include <QRegExp>
 #include "Framework/UI/Button.h"
 #include "Framework/UI/ComboBox.h"
+#include "Framework/UI/ThemeManager.h"
 #include "Framework/Language/LanguageManager.h"
 #include "FontManager.h"
 #include "WindowManager.h"
@@ -70,7 +71,7 @@ void WiFiProfileEditorWindowPrivate::init(const WiFiProfileInfo &profile)
 {
     Q_Q(WiFiProfileEditorWindow);
 
-    q->resize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
+    q->resize(themeManager.defaultWindowSize());
     q->setToolTip(trs("WiFiProfileEdit"));
 
     QGridLayout *layout = new QGridLayout;

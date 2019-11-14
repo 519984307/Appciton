@@ -24,6 +24,7 @@
 #include "Framework/UI/Button.h"
 #include "Framework/UI/ComboBox.h"
 #include "Framework/UI/SpinBox.h"
+#include "Framework/UI/ThemeManager.h"
 #include "Framework/Utility/Unit.h"
 #include "Framework/TimeDate/TimeDate.h"
 #include "Framework/TimeDate/TimeSymbol.h"
@@ -303,7 +304,7 @@ PatientInfoWindow::PatientInfoWindow()
     , d_ptr(new PatientInfoWindowPrivate)
 {
     setWindowTitle(trs("PatientInformation"));
-    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
+    setFixedSize(themeManager.defaultWindowSize());
     QGridLayout *layout = new QGridLayout();
     QVBoxLayout *backgroundLayout = new QVBoxLayout();
     QHBoxLayout *buttonLayout = new QHBoxLayout();

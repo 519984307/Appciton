@@ -15,6 +15,7 @@
 #include "ScreenLayoutItemDelegate.h"
 #include "Framework/UI/Button.h"
 #include "Framework/UI/TableView.h"
+#include "Framework/UI/ThemeManager.h"
 #include "Framework/Language/LanguageManager.h"
 #include "LayoutManager.h"
 #include "MessageBox.h"
@@ -91,7 +92,7 @@ ScreenLayoutWindow::ScreenLayoutWindow()
     d_ptr->view->setModel(model);
     connect(model, SIGNAL(spanChanged(QModelIndex)), d_ptr->view, SLOT(onSpanChanged(QModelIndex)));
 
-    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
+    setFixedSize(themeManager.defaultWindowSize());
 
     setWindowTitle(trs("StandardScreenLayout"));
 }

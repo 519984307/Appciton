@@ -231,8 +231,9 @@ TrendGraphWindow::TrendGraphWindow()
     : Dialog(), d_ptr(new TrendGraphWindowPrivate())
 {
     setWindowTitle(trs("TrendGraph"));
-    int maxWidth = windowManager.getPopWindowWidth();
-    int maxHeight = windowManager.getPopWindowHeight();
+    QSize winSize = themeManager.defaultWindowSize();
+    int maxWidth = winSize.width();
+    int maxHeight = winSize.height();
     setFixedSize(maxWidth, maxHeight);
     int margin = 5;
     int spacing = 5;

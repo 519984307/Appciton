@@ -21,6 +21,7 @@
 #include "MeasureSettingWindow.h"
 #include "AlarmConfig.h"
 #include "ParamManager.h"
+#include <math.h>
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。

@@ -44,6 +44,7 @@
 #include "ContinuousPageGenerator.h"
 #include "FreezeWindow.h"
 #include "Alarm.h"
+#include <QPointer>
 
 /***************************************************************************************************
  * 所有的快捷按键定义。

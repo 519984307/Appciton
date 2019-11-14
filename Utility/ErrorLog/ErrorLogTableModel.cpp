@@ -18,7 +18,7 @@
 
 #define COLUMN_COUNT        3
 #define MAX_ROW_COUNT       6
-#define DEFAULT_WIDTH       (windowManager.getPopWindowWidth())
+#define DEFAULT_WIDTH       (themeManager.defaultWindowSize().width())
 #define DEFAULT_ICON_WIDTH          (80)
 
 #define ROW_HEIGHT_HINT (themeManager.getAcceptableControlHeight())

@@ -14,6 +14,7 @@
 #include "Framework/UI/TableHeaderView.h"
 #include "Framework/UI/TableViewItemDelegate.h"
 #include "Framework/UI/Button.h"
+#include "Framework/UI/ThemeManager.h"
 #include "AlarmLimitModel.h"
 #include <QBoxLayout>
 #include <QHeaderView>
@@ -166,7 +167,7 @@ void AlarmLimitWindow::readyShow()
 void AlarmLimitWindow::layoutExec()
 {
     setWindowTitle(trs("AlarmLimit"));
-    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
+    setFixedSize(themeManager.defaultWindowSize());
     setFocusPolicy(Qt::NoFocus);
 
     QBoxLayout *layout = new QVBoxLayout();
