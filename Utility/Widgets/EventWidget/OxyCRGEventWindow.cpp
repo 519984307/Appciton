@@ -721,10 +721,9 @@ void OxyCRGEventWindowPrivate::eventInfoUpdate(int curRow)
         break;
     }
 
-    unsigned t = 0;
+    unsigned t = ctx.infoSegment->timestamp;
     QString timeStr = timeDate->getTime(t, true);
     QString dateStr = timeDate->getDate(t, true);
-    t = ctx.infoSegment->timestamp;
     timeInfoStr = dateStr + " " + timeStr;
 
     indexStr = QString::number(curRow + 1) + "/" + QString::number(curDisplayEventNum);
