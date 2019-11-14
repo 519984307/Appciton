@@ -9,13 +9,12 @@
  **/
 #include <QGridLayout>
 #include "FontManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "EnglishInputPanel.h"
-#include "Button.h"
+#include "Framework/UI/Button.h"
 #include <QCoreApplication>
 #include <QInputMethodEvent>
 #include <QLineEdit>
-#include "Button.h"
 #include <QList>
 #include "Debug.h"
 

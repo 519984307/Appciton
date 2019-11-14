@@ -9,9 +9,9 @@
  **/
 
 #pragma once
-#include "Dialog.h"
+#include "Framework/UI/Dialog.h"
+#include "Framework/Storage/IStorageBackend.h"
 #include "TrendDataDefine.h"
-#include "IStorageBackend.h"
 
 class TrendPrintWindowPrivate;
 class TrendPrintWindow : public Dialog

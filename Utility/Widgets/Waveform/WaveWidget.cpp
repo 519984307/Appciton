@@ -25,14 +25,13 @@
 #include "WaveReviewMode.h"
 #include "WaveReviewCascadeMode.h"
 #include "WaveWidgetLabel.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "FloatHandle.h"
-#include "RingBuff.h"
+#include "Framework/Utility/RingBuff.h"
 #include "SystemManager.h"
 #include "WaveWidgetItem.h"
 #include "WaveWidgetLabel.h"
 #include "Debug.h"
-#include "WindowManager.h"
 #include "FreezeManager.h"
 #include "FreezeWaveReviewMode.h"
 #include "FreezeTimeIndicator.h"
@@ -307,14 +306,14 @@ bool WaveWidget::isFocus()
 ////////////////////////////////////////////////////////////////////////////////
 // 功能:获取子菜单控件
 ////////////////////////////////////////////////////////////////////////////////
-void WaveWidget::getSubFocusWidget(QList<QWidget *> &subWidget) const
+QList<QWidget *> WaveWidget::getSubFocusWidget() const
 {
-    subWidget.clear();
+    QList<QWidget*> subWidget;
 
     int count = _labelItems.count();
     if (0 == count)
     {
-        return;
+        return subWidget;
     }
 
     for (int i = count - 1; i >= 0; --i)
@@ -325,6 +324,7 @@ void WaveWidget::getSubFocusWidget(QList<QWidget *> &subWidget) const
             subWidget.append(widget);
         }
     }
+    return subWidget;
 }
 
 QString WaveWidget::waveLabel() const

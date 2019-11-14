@@ -14,6 +14,7 @@
 
 int main(int argc, char *argv[])
 {
+    Q_INIT_RESOURCE(ui);
     ::testing::InitGoogleMock(&argc, argv);
     QApplication a(argc, argv);
     TestPatientInfoWidget tc;

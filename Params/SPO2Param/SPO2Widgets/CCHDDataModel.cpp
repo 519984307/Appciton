@@ -9,13 +9,12 @@
  **/
 
 #include "CCHDDataModel.h"
-#include "LanguageManager.h"
-#include "ThemeManager.h"
-#include "WindowManager.h"
-#include "TimeDate.h"
+#include "Framework/Language/LanguageManager.h"
+#include "Framework/TimeDate/TimeDate.h"
+#include "Framework/UI/ThemeManager.h"
 
 #define ROW_COUNT 3
-#define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
+#define ROW_HEIGHT_HINT (themeManager.getAcceptableControlHeight())
 
 
 enum ColumnHeader
@@ -81,8 +80,7 @@ QVariant CCHDDataModel::data(const QModelIndex &index, int role) const
             unsigned timeStamp = d_ptr->cchdDataList.at(row).time;
             if (timeStamp)
             {
-                QString time;
-                timeDate.getTime(timeStamp, time, true);
+                QString time = timeDate->getTime(timeStamp, true);
                 return time;
             }
             else
@@ -166,7 +164,7 @@ QVariant CCHDDataModel::headerData(int section, Qt::Orientation orientation, int
         break;
     }
     case Qt::BackgroundColorRole:
-        return themeManger.getColor(ThemeManager::ControlTypeNR,
+        return themeManager.getColor(ThemeManager::ControlTypeNR,
                                     ThemeManager::ElementBackgound,
                                     ThemeManager::StateDisabled);
         break;

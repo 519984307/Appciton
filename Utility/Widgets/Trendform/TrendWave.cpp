@@ -13,13 +13,13 @@
 #include <QPainter>
 #include "BaseDefine.h"
 #include "TrendDataStorageManager.h"
-#include "TimeDate.h"
-#include "RingBuff.h"
+#include "Framework/TimeDate/TimeDate.h"
+#include "Framework/Utility/RingBuff.h"
 #include "TrendCache.h"
 #include "FontManager.h"
 #include "AlarmConfig.h"
 #include "ParamInfo.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "ColorManager.h"
 #include "SPO2Param.h"
 #include <QVector>
@@ -83,7 +83,8 @@ TrendWave::TrendWave(const QString &name, QWidget *parent)
     setFocusPolicy(Qt::NoFocus);
     QPalette pal = this->palette();
     pal.setColor(QPalette::Background, Qt::black);
-    connect(&trendDataStorageManager, SIGNAL(newTrendDataArrived(unsigned)), this, SLOT(onNewTrendDataArrived(unsigned)));
+    connect(&trendDataStorageManager, SIGNAL(newTrendDataArrived(unsigned)),
+            this, SLOT(onNewTrendDataArrived(unsigned)));
     connect(&colorManager, SIGNAL(paletteChanged(ParamID)), this, SLOT(onPaletteChanged(ParamID)));
     connect(&spo2Param, SIGNAL(clearTrendData()), this, SLOT(onClearTrendData()));
     connect(&alarmConfig, SIGNAL(LimitChange(SubParamID)), this, SLOT(updateRange(SubParamID)));
@@ -120,7 +121,8 @@ void TrendWave::updateWidgetConfig()
     for (int i = 0; i < d_ptr->subParamList.count(); i++)
     {
         LimitAlarmConfig limit = alarmConfig.getLimitAlarmConfig(d_ptr->subParamList.at(i)
-                                                                 , paramInfo.getUnitOfSubParam(d_ptr->subParamList.at(i)));
+                                                                 , paramInfo.getUnitOfSubParam(
+                                                                     d_ptr->subParamList.at(i)));
         if (d_ptr->maxValue == -1 || limit.highLimit > d_ptr->maxValue)
         {
             d_ptr->maxValue = limit.highLimit;
@@ -191,7 +193,7 @@ void TrendWave::onNewTrendDataArrived(unsigned timeStamp)
         return;
     }
     TrendCacheData datas;
-    trendCache.getTrendData(timeStamp, datas);
+    trendCache.getTrendData(timeStamp, &datas);
     for (int i = 0; i < d_ptr->subParamList.count(); i++)
     {
         TrendDataType data = datas.values.value(d_ptr->subParamList.at(i));

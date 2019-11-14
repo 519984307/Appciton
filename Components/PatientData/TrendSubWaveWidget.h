@@ -38,21 +38,21 @@ public:
      * @brief trendDataInfo 载入趋势图数据
      * @param info 趋势数据
      */
-    void trendDataInfo(TrendGraphInfo &info);
+    void trendDataInfo(const TrendGraphInfo &info);
 
     /**
      * @brief loadTrendSubWidgetInfo 载入趋势图数据的范围值
      * @param info 横纵坐标的实际像素范围
      */
-    void loadTrendSubWidgetInfo(TrendSubWidgetInfo &info);
+    void loadTrendSubWidgetInfo(const TrendSubWidgetInfo &info);
 
     /**
-     * @brief getValueLimit 获取子窗口趋势上下限
-     * @param max
-     * @param min
-     * @param scale
+     * @brief getLimitMax getLimitMin getLimitScale 获取超限信息
+     * @return
      */
-    void getValueLimit(int &max, int &min, int &scale);
+    int getLimitMax();
+    int getLimitMin();
+    int getLimitScale();
 
 public:
     /**
@@ -67,14 +67,6 @@ public:
      * @param up 上限
      */
     void setRulerRange(int down, int up, int scale);
-
-    /**
-     * @brief rulerRange 获取标尺上下限
-     * @param down 下限
-     * @param up 上限
-     * @param scale 比例
-     */
-    void rulerRange(int &down, int &up, int &scale);
 
     /**
      * @brief getUnitType
@@ -129,8 +121,7 @@ private:
      * @param data 数据
      * @return 像素位置
      */
-    template<typename T>
-    double _mapValue(TrendParamDesc desc, T data);
+    double _mapValue(TrendParamDesc desc, int data);
 
     /**
      * @brief _autoRulerCal 计算自动标尺
@@ -149,7 +140,8 @@ private:
     TrendGraphType _type;
     TrendGraphInfo _trendInfo;      // 趋势图数据信息
     TrendParamDesc _timeX;
-    TrendParamDesc _valueY;
+    TrendParamDesc _valueY;         // 默认单位的上下标尺信息
+    TrendParamDesc _rulerY;         // 当前单位的上下标尺信息
     int _xSize;                     // 趋势x坐标长度
     int _ySize;                     // 趋势y坐标长度
     int _trendDataHead;             // 趋势数据开始位置

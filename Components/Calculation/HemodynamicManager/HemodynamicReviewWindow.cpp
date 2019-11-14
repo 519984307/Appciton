@@ -8,16 +8,17 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/7
  **/
 #include "HemodynamicReviewWindow.h"
-#include "Button.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/TableView.h"
+#include "Framework/UI/TableViewItemDelegate.h"
+#include "Framework/UI/TableHeaderView.h"
+#include "Framework/UI/ThemeManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
-#include "LanguageManager.h"
 #include "HemodynamicDefine.h"
 #include "HemodynamicDataModel.h"
-#include "TableView.h"
-#include "TableViewItemDelegate.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <TableHeaderView.h>
 #include "HemodynamicManager.h"
 #include <QDateTime>
 #include "WindowManager.h"
@@ -176,7 +177,7 @@ void HemodynaimcReviewWindow::layoutExec()
 
     vlayout->addLayout(hlyout);
     vlayout->addStretch(1);
-    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
+    setFixedSize(themeManager.defaultWindowSize());
     setWindowLayout(vlayout);
 }
 

@@ -13,8 +13,8 @@
 #include <QString>
 #include <QTest>
 #include <QTemporaryFile>
-#include "StorageManager.h"
-#include "StorageFile.h"
+#include "Framework/Storage/StorageFile.h"
+#include "Framework/Storage/StorageManager.h"
 #include <QObject>
 
 class TestStorageManager : public QObject
@@ -47,4 +47,4 @@ private:
     QTemporaryFile *m_File;
     StorageFile *m_Backend;
 };
-#endif // TESTSTORAGEMANAGER_H
+#endif  // TESTSTORAGEMANAGER_H

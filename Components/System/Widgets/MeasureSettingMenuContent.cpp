@@ -9,10 +9,10 @@
  **/
 
 #include "MeasureSettingMenuContent.h"
-#include "Button.h"
+#include "Framework/UI/Button.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include "LanguageManager.h"
 #include "MeasureSettingWindow.h"
 #include "SystemManager.h"
 #include "WindowManager.h"

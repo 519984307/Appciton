@@ -16,11 +16,9 @@
 #include "WiredNetworkMaintainMenuContent.h"
 #include "OthersMaintainMenuContent.h"
 #include "UnitSetupMenuContent.h"
-#include "Supervisor12LMenuContent.h"
-#include "SupervisorPrintMenuContent.h"
 #include "ErrorLogEntranceContent.h"
 #include "DemoMenuContent.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "SystemManager.h"
 
 UserMaintainMenuWindow *UserMaintainMenuWindow::getInstance()

@@ -9,18 +9,18 @@
  **/
 
 #include "AlarmMaintainMenuContent.h"
-#include "LanguageManager.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
-#include "ComboBox.h"
 #include <QGridLayout>
 #include "IConfig.h"
-#include "IMessageBox.h"
-#include "Button.h"
 #include "SoundManager.h"
 #include "AlarmSymbol.h"
 #include "Alarm.h"
 #include "AlarmIndicator.h"
 #include "AlarmSourceManager.h"
+#include "SystemDefine.h"
 
 class AlarmMaintainMenuContentPrivate
 {

@@ -9,16 +9,16 @@
  **/
 
 #include "HistoryDataSelWindow.h"
-#include "TableView.h"
-#include "Button.h"
+#include "Framework/UI/TableView.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ThemeManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "HistoryDataSelModel.h"
-#include "LanguageManager.h"
 #include <QHeaderView>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include "HistoryDataReviewWindow.h"
 #include <QScrollBar>
-#include "WindowManager.h"
 
 class HistoryDataSelWindowPrivate
 {
@@ -43,7 +43,7 @@ HistoryDataSelWindow::HistoryDataSelWindow()
     : Dialog(), d_ptr(new HistoryDataSelWindowPrivate(this))
 {
     setWindowTitle(trs("HistoryDataList"));
-    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
+    setFixedSize(themeManager.defaultWindowSize());
 
     d_ptr->table = new TableView();
     d_ptr->table->horizontalHeader()->setVisible(false);
@@ -134,7 +134,7 @@ void HistoryDataSelWindow::downReleased()
 void HistoryDataSelWindowPrivate::refreshPage()
 {
     int totalPage = 1, curPage = 1;
-    table->getPageInfo(curPage, totalPage);
+    table->getPageInfo(&curPage, &totalPage);
     curPage = curPage == 0 ? 1 : curPage;
     totalPage = totalPage == 0 ? 1 : totalPage;
     QString title = QString("%1(%2 / %3)").arg(trs("HistoryDataList")).arg(curPage).arg(totalPage);

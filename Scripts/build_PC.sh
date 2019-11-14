@@ -15,7 +15,7 @@ fi
 mkdir $BUILD_DIR && cd $BUILD_DIR 
 
 # generate Makefile
-/opt/qt-lib/qt-4.8.6/bin/qmake $REPO
+/opt/qt-lib/qt-4.8.6/bin/qmake $REPO/Project.pro
 
 # build
 make -j4 -s

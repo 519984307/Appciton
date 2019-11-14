@@ -9,14 +9,15 @@
  **/
 
 #include "TimeEditWindow.h"
-#include "LanguageManager.h"
 #include <QLabel>
-#include "ComboBox.h"
 #include <QGridLayout>
 #include "IConfig.h"
-#include "SpinBox.h"
-#include "TimeSymbol.h"
-#include "TimeDate.h"
+#include "Framework/UI/SpinBox.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/ThemeManager.h"
+#include "Framework/Language/LanguageManager.h"
+#include "Framework/TimeDate/TimeSymbol.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include <QProcess>
 #include <QVBoxLayout>
 #include "TimeManager.h"
@@ -29,7 +30,6 @@
 #include "TrendDataStorageManager.h"
 #include "MessageBox.h"
 #include "WindowManager.h"
-#include "ThemeManager.h"
 
 class TimeEditWindowPrivate
 {
@@ -79,19 +79,19 @@ public:
 
 void TimeEditWindowPrivate::loadOptions()
 {
-    oldTime = timeDate.time();
-    spinBoxs[ITEM_SPB_YEAR]->setValue(timeDate.getDateYear());
-    spinBoxs[ITEM_SPB_MONTH]->setValue(timeDate.getDateMonth());
-    spinBoxs[ITEM_SPB_DAY]->setValue(timeDate.getDateDay());
-    spinBoxs[ITEM_SPB_HOUR]->setValue(timeDate.getTimeHour());
-    spinBoxs[ITEM_SPB_MINUTE]->setValue(timeDate.getTimeMinute());
-    spinBoxs[ITEM_SPB_SECOND]->setValue(timeDate.getTimeSenonds());
+    oldTime = timeDate->time();
+    spinBoxs[ITEM_SPB_YEAR]->setValue(timeDate->getDateYear());
+    spinBoxs[ITEM_SPB_MONTH]->setValue(timeDate->getDateMonth());
+    spinBoxs[ITEM_SPB_DAY]->setValue(timeDate->getDateDay());
+    spinBoxs[ITEM_SPB_HOUR]->setValue(timeDate->getTimeHour());
+    spinBoxs[ITEM_SPB_MINUTE]->setValue(timeDate->getTimeMinute());
+    spinBoxs[ITEM_SPB_SECOND]->setValue(timeDate->getTimeSeconds());
 
     int value = 0;
-    systemConfig.getNumValue("DateTime|DateFormat", value);
+    value = systemManager.getSystemDateFormat();
     combos[ITEM_CBO_DATE_FORMAT]->setCurrentIndex(value);
 
-    systemConfig.getNumValue("DateTime|TimeFormat", value);
+    value = systemManager.getSystemTimeFormat();
     combos[ITEM_CBO_TIME_FORMAT]->setCurrentIndex(value);
 
     systemConfig.getNumValue("DateTime|DisplaySecond", value);
@@ -187,7 +187,7 @@ void TimeEditWindow::layoutExec()
 
     // year
     spinBox = new SpinBox;
-    spinBox->setFixedHeight(themeManger.getAcceptableControlHeight());
+    spinBox->setFixedHeight(themeManager.getAcceptableControlHeight());
     spinBox->setRange(1970, 2037);
     spinBox->setScale(1);
     spinBox->setStep(1);
@@ -200,7 +200,7 @@ void TimeEditWindow::layoutExec()
 
     // month
     spinBox = new SpinBox;
-    spinBox->setFixedHeight(themeManger.getAcceptableControlHeight());
+    spinBox->setFixedHeight(themeManager.getAcceptableControlHeight());
     spinBox->setRange(1, 12);
     spinBox->setScale(1);
     spinBox->setStep(1);
@@ -213,7 +213,7 @@ void TimeEditWindow::layoutExec()
 
     // day
     spinBox = new SpinBox;
-    spinBox->setFixedHeight(themeManger.getAcceptableControlHeight());
+    spinBox->setFixedHeight(themeManager.getAcceptableControlHeight());
     spinBox->setRange(1, 30);
     spinBox->setScale(1);
     spinBox->setStep(1);
@@ -230,7 +230,7 @@ void TimeEditWindow::layoutExec()
 
     // hour
     spinBox = new SpinBox;
-    spinBox->setFixedHeight(themeManger.getAcceptableControlHeight());
+    spinBox->setFixedHeight(themeManager.getAcceptableControlHeight());
     spinBox->setRange(0, 23);
     spinBox->setScale(1);
     spinBox->setStep(1);
@@ -243,7 +243,7 @@ void TimeEditWindow::layoutExec()
 
     // minute
     spinBox = new SpinBox;
-    spinBox->setFixedHeight(themeManger.getAcceptableControlHeight());
+    spinBox->setFixedHeight(themeManager.getAcceptableControlHeight());
     spinBox->setRange(0, 59);
     spinBox->setScale(1);
     spinBox->setStep(1);
@@ -256,7 +256,7 @@ void TimeEditWindow::layoutExec()
 
     // second
     spinBox = new SpinBox;
-    spinBox->setFixedHeight(themeManger.getAcceptableControlHeight());
+    spinBox->setFixedHeight(themeManager.getAcceptableControlHeight());
     spinBox->setRange(0, 59);
     spinBox->setScale(1);
     spinBox->setStep(1);
@@ -271,12 +271,11 @@ void TimeEditWindow::layoutExec()
     label = new QLabel(trs("SupervisorDateFormat"));
     layout->addWidget(label, (d_ptr->combos.count() + d_ptr->spinBoxs.count())/3, 0);
     comboBox = new ComboBox();
-    comboBox->setFixedHeight(themeManger.getAcceptableControlHeight());
+    comboBox->setFixedHeight(themeManager.getAcceptableControlHeight());
     comboBox->addItems(QStringList()
                        << trs(TimeSymbol::convert(DATE_FORMAT_Y_M_D))
                        << trs(TimeSymbol::convert(DATE_FORMAT_M_D_Y))
-                       << trs(TimeSymbol::convert(DATE_FORMAT_D_M_Y))
-                      );
+                       << trs(TimeSymbol::convert(DATE_FORMAT_D_M_Y)));
     itemID = static_cast<int>(TimeEditWindowPrivate::ITEM_CBO_DATE_FORMAT);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -288,11 +287,10 @@ void TimeEditWindow::layoutExec()
     label = new QLabel(trs("SupervisorTimeFormat"));
     layout->addWidget(label, (d_ptr->combos.count() + d_ptr->spinBoxs.count()) / 3 + 1, 0);
     comboBox = new ComboBox();
-    comboBox->setFixedHeight(themeManger.getAcceptableControlHeight());
+    comboBox->setFixedHeight(themeManager.getAcceptableControlHeight());
     comboBox->addItems(QStringList()
                        << trs(TimeSymbol::convert(TIME_FORMAT_12))
-                       << trs(TimeSymbol::convert(TIME_FORMAT_24))
-                      );
+                       << trs(TimeSymbol::convert(TIME_FORMAT_24)));
     itemID = static_cast<int>(TimeEditWindowPrivate::ITEM_CBO_TIME_FORMAT);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -304,11 +302,10 @@ void TimeEditWindow::layoutExec()
     label = new QLabel(trs("SupervisorDisplaySec"));
     layout->addWidget(label, (d_ptr->combos.count() + d_ptr->spinBoxs.count()) / 3 + 2, 0);
     comboBox = new ComboBox();
-    comboBox->setFixedHeight(themeManger.getAcceptableControlHeight());
+    comboBox->setFixedHeight(themeManager.getAcceptableControlHeight());
     comboBox->addItems(QStringList()
                        << trs("No")
-                       << trs("Yes")
-                      );
+                       << trs("Yes"));
     itemID = static_cast<int>(TimeEditWindowPrivate::ITEM_CBO_DISPLAY_SEC);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -323,7 +320,7 @@ void TimeEditWindow::layoutExec()
     layout->setColumnStretch(3, 1);
     setWindowLayout(layout);
 
-    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
+    setFixedSize(themeManager.defaultWindowSize());
 }
 
 void TimeEditWindow::hideEvent(QHideEvent *ev)
@@ -359,13 +356,10 @@ void TimeEditWindow::onComboBoxIndexChanged(int index)
         switch (item)
         {
         case TimeEditWindowPrivate::ITEM_CBO_DATE_FORMAT:
-            systemConfig.setNumValue("DateTime|DateFormat", index);
+            systemManager.setSystemDateFormat(static_cast<DateFormat>(index));
             break;
         case TimeEditWindowPrivate::ITEM_CBO_TIME_FORMAT:
-            systemConfig.setNumValue("DateTime|TimeFormat", index);
-            QMetaObject::invokeMethod(&systemManager,
-                                      "systemTimeFormatUpdated",
-                                      Q_ARG(TimeFormat, static_cast<TimeFormat>(index)));
+            systemManager.setSystemTimeFormat(static_cast<TimeFormat>(index));
             d_ptr->updateHourItem();
             break;
         case TimeEditWindowPrivate::ITEM_CBO_DISPLAY_SEC:
@@ -411,7 +405,7 @@ void TimeEditWindow::onSpinBoxValueChanged(int value, int scale)
             {
                 int min = 0;
                 int max = 0;
-                d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getRange(min, max);
+                d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getRange(&min, &max);
                 QDate date(val, 2, 1);
                 int curMax = date.daysInMonth();
                 int curVal = d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getValue();
@@ -431,7 +425,7 @@ void TimeEditWindow::onSpinBoxValueChanged(int value, int scale)
         {
             int min = 0;
             int max = 0;
-            d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getRange(min, max);
+            d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getRange(&min, &max);
             QDate date(d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_YEAR]->getValue(), val, 1);
             int curMax = date.daysInMonth();
             int curVal = d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getValue();

@@ -14,7 +14,7 @@
 #include <QPainterPath>
 #include "BaseDefine.h"
 #include "FontManager.h"
-#include "ThemeManager.h"
+#include "Framework/UI/ThemeManager.h"
 #include "ConfigManager.h"
 #include "WaveWidgetLabel.h"
 #include <QTimer>
@@ -61,7 +61,8 @@ int OxyCRGTrendWaveWidgetPrivate::getIntervalSeconds(OxyCRGInterval interval)
     return 120;
 }
 
-void OxyCRGTrendWaveWidgetPrivate::drawWave(QPainter *painter, const QRect &waveRegion, const OxyCRGWaveBuffer *buffer, const QColor &waveColor)
+void OxyCRGTrendWaveWidgetPrivate::drawWave(QPainter *painter, const QRect &waveRegion,
+                                            const OxyCRGWaveBuffer *buffer, const QColor &waveColor)
 {
     if (!painter || !waveRegion.isValid() || !buffer)
     {

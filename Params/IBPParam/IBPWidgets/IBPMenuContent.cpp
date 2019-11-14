@@ -9,16 +9,16 @@
  **/
 
 #include "IBPMenuContent.h"
-#include "LanguageManager.h"
 #include <QLabel>
-#include "ComboBox.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/SpinBox.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QGridLayout>
 #include "IBPSymbol.h"
 #include "IConfig.h"
 #include "IBPParam.h"
 #include "MessageBox.h"
-#include "Button.h"
-#include "SpinBox.h"
 #include "KeyInputPanel.h"
 #include "MainMenuWindow.h"
 #include <QGroupBox>
@@ -26,6 +26,7 @@
 #include <QHBoxLayout>
 #include <QTimerEvent>
 #include "AlarmLimitWindow.h"
+#include "WindowManager.h"
 
 #define AUTO_SCALE_UPDATE_TIME          (2 * 1000)
 #define ZERO_INTERVAL_TIME              (100)
@@ -123,7 +124,7 @@ void IBPMenuContentPrivate::loadOptions()
     {
         if (autoTimerId == -1)
         {
-            autoTimerId = q_ptr->startTimer(AUTO_SCALE_UPDATE_TIME); // 2s
+            autoTimerId = q_ptr->startTimer(AUTO_SCALE_UPDATE_TIME);  // 2s
         }
     }
     else
@@ -239,8 +240,7 @@ void IBPMenuContent::layoutExec()
                        << IBPSymbol::convert(IBP_PRESSURE_RAP)
                        << IBPSymbol::convert(IBP_PRESSURE_ICP)
                        << IBPSymbol::convert(IBP_PRESSURE_AUXP1)
-                       << IBPSymbol::convert(IBP_PRESSURE_AUXP2)
-                      );
+                       << IBPSymbol::convert(IBP_PRESSURE_AUXP2));
     itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_ENTITLE_1);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -317,8 +317,7 @@ void IBPMenuContent::layoutExec()
                        << IBPSymbol::convert(IBP_PRESSURE_RAP)
                        << IBPSymbol::convert(IBP_PRESSURE_ICP)
                        << IBPSymbol::convert(IBP_PRESSURE_AUXP1)
-                       << IBPSymbol::convert(IBP_PRESSURE_AUXP2)
-                      );
+                       << IBPSymbol::convert(IBP_PRESSURE_AUXP2));
     itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_ENTITLE_2);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -386,8 +385,7 @@ void IBPMenuContent::layoutExec()
                        << IBPSymbol::convert(IBP_SWEEP_SPEED_62_5)
                        << IBPSymbol::convert(IBP_SWEEP_SPEED_125)
                        << IBPSymbol::convert(IBP_SWEEP_SPEED_250)
-                       << IBPSymbol::convert(IBP_SWEEP_SPEED_500)
-                      );
+                       << IBPSymbol::convert(IBP_SWEEP_SPEED_500));
     itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_SWEEP_SPEED);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -401,8 +399,7 @@ void IBPMenuContent::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << IBPSymbol::convert(IBP_FILTER_MODE_0)
-                       << IBPSymbol::convert(IBP_FILTER_MODE_1)
-                      );
+                       << IBPSymbol::convert(IBP_FILTER_MODE_1));
     itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_FILTER_MODE);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -417,8 +414,7 @@ void IBPMenuContent::layoutExec()
     comboBox->addItems(QStringList()
                        << trs(IBPSymbol::convert(IBP_SENSITIVITY_HIGH))
                        << trs(IBPSymbol::convert(IBP_SENSITIVITY_MID))
-                       << trs(IBPSymbol::convert(IBP_SENSITIVITY_LOW))
-                      );
+                       << trs(IBPSymbol::convert(IBP_SENSITIVITY_LOW)));
     itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_SENSITIVITY);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -555,9 +551,8 @@ void IBPMenuContent::onComboBoxIndexChanged(int index)
             }
             d_ptr->ibp1 = static_cast<IBPPressureName>(index);
             ibpParam.setEntitle(d_ptr->ibp1, IBP_INPUT_1);
-            d_ptr->combos[IBPMenuContentPrivate::ITEM_CBO_RULER_1]->setCurrentIndex(
-                ibpParam.getRulerLimit(d_ptr->ibp1)
-            );
+            ComboBox *cbo = d_ptr->combos[IBPMenuContentPrivate::ITEM_CBO_RULER_1];
+            cbo->setCurrentIndex(ibpParam.getRulerLimit(d_ptr->ibp1));
             break;
         }
         case IBPMenuContentPrivate::ITEM_CBO_ENTITLE_2:
@@ -573,14 +568,13 @@ void IBPMenuContent::onComboBoxIndexChanged(int index)
             }
             d_ptr->ibp2 = static_cast<IBPPressureName>(index);
             ibpParam.setEntitle(d_ptr->ibp2, IBP_INPUT_2);
-            d_ptr->combos[IBPMenuContentPrivate::ITEM_CBO_RULER_2]->setCurrentIndex(
-                ibpParam.getRulerLimit(d_ptr->ibp2)
-            );
+            ComboBox *cbo = d_ptr->combos[IBPMenuContentPrivate::ITEM_CBO_RULER_2];
+            cbo->setCurrentIndex(ibpParam.getRulerLimit(d_ptr->ibp2));
             break;
         }
         case IBPMenuContentPrivate::ITEM_CBO_RULER_1:
         {
-            d_ptr->rulerLimit1 = (IBPRulerLimit)index;
+            d_ptr->rulerLimit1 = static_cast<IBPRulerLimit>(index);
             ibpParam.setRulerLimit(static_cast<IBPRulerLimit>(index), IBP_INPUT_1);
             if (index == IBP_RULER_LIMIT_MANUAL)
             {

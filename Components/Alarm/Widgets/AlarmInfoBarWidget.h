@@ -30,7 +30,7 @@ public:
      * @brief display 设置报警提示信息。
      * @param node
      */
-    virtual void display(AlarmInfoNode &node) = 0;
+    virtual void display(const AlarmInfoNode &node) = 0;
 
     /**
      * @brief updateList 更新报警列表

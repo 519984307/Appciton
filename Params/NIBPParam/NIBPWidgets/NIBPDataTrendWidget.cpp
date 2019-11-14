@@ -12,15 +12,14 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QHeaderView>
+#include <QTableWidget>
 #include "NIBPDataTrendWidget.h"
 #include "ParamManager.h"
 #include "ColorManager.h"
 #include "ParamInfo.h"
 #include "Debug.h"
 #include "NIBPAlarm.h"
-#include "WindowManager.h"
-#include "ITableWidget.h"
-#include "TimeDate.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include "Alarm.h"
 #include "TrendWidgetLabel.h"
 #include "MeasureSettingWindow.h"
@@ -105,8 +104,6 @@ void NIBPDataTrendWidget::collectNIBPTrendData(unsigned t)
     }
 
     NIBPTrendCacheData data;
-    QList<ParamID> paramIDList;
-    paramManager.getParams(paramIDList);
 
     data.lastNibpMeasureTime = t;
     data.sys.value = paramManager.getSubParamValue(PARAM_NIBP, SUB_PARAM_NIBP_SYS);
@@ -158,7 +155,7 @@ void NIBPDataTrendWidget::showValue(void)
 
     for (int i = 0; i < _rowNR; i++)
     {
-        timeDate.getTime(t.key(), timeStr);
+        timeStr = timeDate->getTime(t.key());
         _table->item(i, 0)->setText(timeStr);
         NIBPTrendCacheData providerBuff = t.value();
         if (providerBuff.sys.value == InvData() || providerBuff.dia.value == InvData() ||
@@ -522,11 +519,18 @@ NIBPDataTrendWidget::NIBPDataTrendWidget()
                                 "background-color:black;}")
             .arg(color.red()).arg(color.green()).arg(color.blue());
     // 开始布局。
-    _table = new ITableWidget();
+    int fontsize = fontManager.getFontSize(1);
+    _table = new QTableWidget();
     _table->setFocusPolicy(Qt::NoFocus);                                  // 不聚焦。
     _table->setColumnCount(columnNR);
     _table->verticalHeader()->setVisible(false);                          // 列首隐藏
     _table->horizontalHeader()->setVisible(true);                        // 列首隐藏
+    _table->horizontalHeader()->setStretchLastSection(true);  // 使最后一列和右边界对齐。
+    _table->horizontalHeader()->setFont(fontManager.textFont(fontsize));
+    _table->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);  // 不显示横向滚动条
+    _table->setFont(fontManager.textFont(fontsize));
+    _table->setFrameShape(QFrame::NoFrame);  // 设置边框。
+    _table->setEditTriggers(QAbstractItemView::NoEditTriggers);  // 不能编辑。
     _table->setShowGrid(false);                                           //显示表格线
     _table->setStyleSheet(Style);
     _table->horizontalHeader()->setStyleSheet(headStyle);

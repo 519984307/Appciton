@@ -8,13 +8,13 @@
  ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/25
  **/
 
-#include "StorageManager_p.h"
+#include "Framework/Storage/StorageFile.h"
+#include "Framework/Storage/StorageManager_p.h"
 #include "TrendDataStorageManager.h"
-#include "StorageFile.h"
 #include "DataStorageDirManager.h"
 #include "TimeManager.h"
 #include "IConfig.h"
-#include "Utility.h"
+#include "Framework/Utility/Utility.h"
 #include "PatientManager.h"
 #include "SystemManager.h"
 #include "TrendCache.h"
@@ -23,10 +23,10 @@
 #include "Alarm.h"
 #include "ECGDupParam.h"
 #include "RESPDupParam.h"
-#include "TimeDate.h"
 #include "EventStorageManager.h"
 #include <QMap>
-#include "RingBuff.h"
+#include "Framework/Utility/RingBuff.h"
+
 
 class ShortTrendStorage
 {
@@ -137,7 +137,8 @@ void TrendDataStorageManagerPrivate::updateAdditionInfo()
     firstSave = false;
 }
 
-void TrendDataStorageManagerPrivate::storeShortTrendData(SubParamID subParamID, unsigned timeStamp, TrendDataType data, bool forceSave)
+void TrendDataStorageManagerPrivate::storeShortTrendData(SubParamID subParamID,
+                                    unsigned timeStamp, TrendDataType data, bool forceSave)
 {
     QMap<SubParamID, ShortTrendStorage *>::Iterator iter = shortTrends.find(subParamID);
     if (iter != shortTrends.end())
@@ -271,7 +272,7 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
     }
 
     TrendCacheData data;
-    if (!trendCache.getTrendData(t, data))
+    if (!trendCache.getTrendData(t, &data))
     {
         // no trend data
         return;
@@ -280,8 +281,7 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
     d->lastStoreTimestamp = t;
 
 
-    QList<ParamID> idList;
-    paramManager.getParams(idList);
+    QList<ParamID> idList = paramManager.getParamIDs();
 
     QVector<TrendValueSegment> valueSegments;
 
@@ -316,9 +316,13 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
 
         valueSegments.append(valueSegment);
 
-        if (subParamID == SUB_PARAM_NIBP_SYS || subParamID == SUB_PARAM_NIBP_DIA || subParamID == SUB_PARAM_NIBP_MAP)
+        if (subParamID == SUB_PARAM_NIBP_SYS || subParamID == SUB_PARAM_NIBP_DIA
+                || subParamID == SUB_PARAM_NIBP_MAP)
         {
-            // should record the nibp value when the current timestamp is equal to the nibp measurement complete timestamp
+            /*
+             * should record the nibp value when the current timestamp is equal to the nibp
+             * measurement complete timestamp
+             */
             if (t == data.lastNibpMeasureSuccessTime)
             {
                 d->storeShortTrendData(subParamID, t, valueSegment.value, true);
@@ -390,14 +394,15 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
             int valueSegmentNum = (nibpContent.count() - sizeof(TrendDataSegment)) / sizeof(TrendValueSegment);
             for (int i = 0; i < valueSegmentNum; i++)
             {
-                TrendValueSegment *segment = reinterpret_cast<TrendValueSegment *>(d->trendCacheBuff[0].data() + sizeof(TrendDataSegment)
-                                                                                   + i * sizeof(TrendValueSegment));
+                TrendValueSegment *segment = reinterpret_cast<TrendValueSegment *>(d->trendCacheBuff[0].data()
+                        + sizeof(TrendDataSegment) + i * sizeof(TrendValueSegment));
                 if (segment->subParamId == SUB_PARAM_NIBP_SYS
                         || segment->subParamId == SUB_PARAM_NIBP_DIA
                         || segment->subParamId == SUB_PARAM_NIBP_MAP)
                 {
                     // 将NIBP测量结果的报警状态赋值到之前NIBP测量结果的趋势数据中
-                    segment->alarmFlag = alertor.getAlarmSourceStatus(paramInfo.getParamName(PARAM_NIBP), static_cast<SubParamID>(segment->subParamId));
+                    segment->alarmFlag = alertor.getAlarmSourceStatus(paramInfo.getParamName(PARAM_NIBP),
+                                                                      static_cast<SubParamID>(segment->subParamId));
                     if (segment->subParamId == SUB_PARAM_NIBP_MAP)
                     {
                         break;
@@ -517,7 +522,7 @@ TrendDataType TrendDataStorageManager::getLatestShortTrendData(SubParamID subPar
     if (s)
     {
         bool ok = false;
-        TrendDataType d = s->trendBuffer[interval]->head(ok);
+        TrendDataType d = s->trendBuffer[interval]->head(&ok);
         if (ok)
         {
             return d;
@@ -527,7 +532,7 @@ TrendDataType TrendDataStorageManager::getLatestShortTrendData(SubParamID subPar
     return InvData();
 }
 
-void TrendDataStorageManager::newPatientHandle()
+void TrendDataStorageManager::reloadData()
 {
     Q_D(TrendDataStorageManager);
     d->backend->reload(dataStorageDirManager.getCurFolder() + TREND_DATA_FILE_NAME,

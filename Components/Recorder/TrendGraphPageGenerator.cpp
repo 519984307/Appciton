@@ -16,10 +16,10 @@
 #include <QVector>
 #include "FontManager.h"
 #include "ParamInfo.h"
-#include "Utility.h"
 #include "AlarmConfig.h"
-#include "TimeDate.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
+#include "Framework/TimeDate/TimeDate.h"
+#include "Framework/Utility/Utility.h"
 
 #define AXIS_X_SECTION_WIDTH (RECORDER_PIXEL_PER_MM * 16)
 #define AXIS_Y_SECTION_HEIGHT (RECORDER_PIXEL_PER_MM * 8)
@@ -43,7 +43,7 @@ public:
           endTime(0),
           deltaT(0),
           curDrawnGraph(0),
-          marginLeft(20 * RECORDER_PIXEL_PER_MM) // 2 cm
+          marginLeft(20 * RECORDER_PIXEL_PER_MM)  // 2 cm
     {}
 
     RecordPage *createGraphPage();
@@ -140,8 +140,7 @@ GraphAxisInfo TrendGraphPageGeneratorPrivate::getAxisInfo(const RecordPage *page
         QStringList timeList;
         for (int i = 0; i < AXIS_X_SECTION_NUM && t <= endTime; i++)
         {
-            QString timeStr;
-            timeDate.getTime(t, timeStr, true);
+            QString timeStr = timeDate->getTime(t, true);
             timeList.append(timeStr);
             t += deltaT;
         }
@@ -184,7 +183,8 @@ RecordPage *TrendGraphPageGeneratorPrivate::drawGraphPage()
         RecordPageGenerator::drawTrendGraph(&painter, axisInfo, trendGraphInfos.at(curDrawnGraph));
 
         // draw event symbol
-        RecordPageGenerator::drawTrendGraphEventSymbol(&painter, axisInfo, trendGraphInfos.at(curDrawnGraph), eventList);
+        RecordPageGenerator::drawTrendGraphEventSymbol(&painter, axisInfo,
+                                                       trendGraphInfos.at(curDrawnGraph), eventList);
 
         curDrawnGraph++;
 
@@ -199,7 +199,8 @@ RecordPage *TrendGraphPageGeneratorPrivate::drawGraphPage()
         GraphAxisInfo axisInfo = getAxisInfo(page, trendGraphInfos.at(curDrawnGraph), false);
         RecordPageGenerator::drawGraphAxis(&painter, axisInfo);
         RecordPageGenerator::drawTrendGraph(&painter, axisInfo, trendGraphInfos.at(curDrawnGraph));
-        RecordPageGenerator::drawTrendGraphEventSymbol(&painter, axisInfo, trendGraphInfos.at(curDrawnGraph), eventList);
+        RecordPageGenerator::drawTrendGraphEventSymbol(&painter, axisInfo,
+                                                       trendGraphInfos.at(curDrawnGraph), eventList);
         curDrawnGraph++;
     }
 

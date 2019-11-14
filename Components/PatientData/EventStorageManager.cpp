@@ -9,8 +9,8 @@
  **/
 
 #include "EventStorageManager.h"
-#include "StorageManager_p.h"
-#include "StorageFile.h"
+#include "Framework/Storage/StorageManager_p.h"
+#include "Framework/Storage/StorageFile.h"
 #include "DataStorageDirManager.h"
 #include "EventStorageItem.h"
 #include "ECGParam.h"
@@ -187,7 +187,7 @@ void EventStorageManager::triggerAlarmEvent(const AlarmInfoSegment &almInfo, Wav
             {
                 recorderManager.stopPrint();
                 d->generator = generator;
-                d->waitTimerId = startTimer(2000); // 等待2000ms
+                d->waitTimerId = startTimer(2000);  // 等待2000ms
                 d->isWait = true;
                 d->item = item;
             }
@@ -236,7 +236,7 @@ void EventStorageManager::triggerCodeMarkerEvent(const char *codeName, unsigned 
             {
                 recorderManager.stopPrint();
                 d->generator = generator;
-                d->waitTimerId = startTimer(2000); // 等待2000ms
+                d->waitTimerId = startTimer(2000);  // 等待2000ms
                 d->isWait = true;
                 d->item = item;
             }
@@ -298,7 +298,7 @@ void EventStorageManager::triggerNIBPMeasurementEvent(unsigned t, NIBPOneShotTyp
             {
                 recorderManager.stopPrint();
                 d->generator = generator;
-                d->waitTimerId = startTimer(2000); // 等待2000ms
+                d->waitTimerId = startTimer(2000);  // 等待2000ms
                 d->isWait = true;
                 d->item = item;
             }
@@ -459,7 +459,7 @@ void EventStorageManager::clearEventItemList()
     }
 }
 
-void EventStorageManager::newPatientHandle()
+void EventStorageManager::reloadData()
 {
     Q_D(EventStorageManager);
     d->backend->reload(dataStorageDirManager.getCurFolder() + EVENT_DATA_FILE_NAME, QIODevice::ReadWrite);
@@ -470,7 +470,7 @@ void EventStorageManager::timerEvent(QTimerEvent *ev)
     Q_D(EventStorageManager);
     if (d->printTimerId == ev->timerId())
     {
-        if (!recorderManager.isPrinting() || d->timeoutNum == 10) // 1000ms超时处理
+        if (!recorderManager.isPrinting() || d->timeoutNum == 10)  // 1000ms超时处理
         {
             // 没有打印任务时打印当前任务
             if (!recorderManager.isPrinting())

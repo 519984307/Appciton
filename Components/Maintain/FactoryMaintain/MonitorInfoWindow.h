@@ -8,7 +8,7 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/7/20
  **/
 
-#include "Dialog.h"
+#include "Framework/UI/Dialog.h"
 
 class MonitorInfoWindowPrivate;
 class MonitorInfoWindow : public Dialog

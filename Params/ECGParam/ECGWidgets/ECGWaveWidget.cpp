@@ -17,13 +17,13 @@
 #include "WaveWidgetLabel.h"
 #include "ECGWaveRuler.h"
 #include "FontManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include "ColorManager.h"
 #include "ParamInfo.h"
 #include "ConfigManager.h"
-#include "TimeDate.h"
 #include "SystemManager.h"
-#include "PopupList.h"
+#include "Framework/UI/PopupList.h"
 #include "ECGWaveRuler.h"
 #include "LayoutManager.h"
 #include "ECGDupParam.h"
@@ -39,14 +39,14 @@ void ECGWaveWidget::_autoGainHandle(int data)
     _autoGainTracePeek = (_autoGainTracePeek < data) ? data : _autoGainTracePeek;
     _autoGainTraveVally = (_autoGainTraveVally > data) ? data : _autoGainTraveVally;
 
-    unsigned t = timeDate.time();
+    unsigned t = timeDate->time();
     if (_autoGainTime == 0)
     {
         _autoGainTime = t;
         return;
     }
 
-    if (abs(timeDate.difftime(_autoGainTime, t)) < 6)
+    if (abs(timeDate->difftime(_autoGainTime, t)) < 6)
     {
         return;
     }
@@ -1090,7 +1090,7 @@ void ECGWaveWidget::updateWidgetConfig()
 
     ecgParam.updatePacermaker();    // 更新起博标志
     ecgDupParam.updateHRSource();   // 更新HR来源
-    ecgParam.updateEditNotchFilter(); // 更新ECG工频陷波
+    ecgParam.updateEditNotchFilter();  // 更新ECG工频陷波
 
     WaveWidget::updateWidgetConfig();
 }

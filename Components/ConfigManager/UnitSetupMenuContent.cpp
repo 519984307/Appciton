@@ -9,14 +9,14 @@
  **/
 
 #include "UnitSetupMenuContent.h"
-#include "LanguageManager.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/Utility/Unit.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
-#include "ComboBox.h"
 #include <QGridLayout>
 #include "IConfig.h"
-#include "Button.h"
 #include "ConfigManager.h"
-#include "UnitManager.h"
 #include "TEMPParam.h"
 #include "CO2Param.h"
 #include "NIBPParam.h"
@@ -207,8 +207,7 @@ void UnitSetupMenuContent::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs(Unit::getSymbol(UnitType(UNIT_CM)))
-                       << trs(Unit::getSymbol(UnitType(UNIT_INCH)))
-                      );
+                       << trs(Unit::getSymbol(UnitType(UNIT_INCH))));
     itemID = static_cast<int>(UnitSetupMenuContentPrivate::ITEM_CBO_HEIGHT_UNIT);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -222,8 +221,7 @@ void UnitSetupMenuContent::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs(Unit::getSymbol(UnitType(UNIT_KG)))
-                       << trs(Unit::getSymbol(UnitType(UNIT_LB)))
-                      );
+                       << trs(Unit::getSymbol(UnitType(UNIT_LB))));
     itemID = static_cast<int>(UnitSetupMenuContentPrivate::ITEM_CBO_WEIGHT_UNIT);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -238,8 +236,7 @@ void UnitSetupMenuContent::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs(Unit::getSymbol(UnitType(UNIT_MV)))
-                       << trs(Unit::getSymbol(UnitType(UNIT_MM)))
-                      );
+                       << trs(Unit::getSymbol(UnitType(UNIT_MM))));
     itemID = static_cast<int>(UnitSetupMenuContentPrivate::ITEM_CBO_ST_UNIT);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -254,8 +251,7 @@ void UnitSetupMenuContent::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs(Unit::getSymbol(UnitType(UNIT_MMHG)))
-                       << trs(Unit::getSymbol(UnitType(UNIT_KPA)))
-                      );
+                       << trs(Unit::getSymbol(UnitType(UNIT_KPA))));
     itemID = static_cast<int>(UnitSetupMenuContentPrivate::ITEM_CBO_PRESSURE_UNIT);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -269,8 +265,7 @@ void UnitSetupMenuContent::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs(Unit::getSymbol(UnitType(UNIT_TF)))
-                       << trs(Unit::getSymbol(UnitType(UNIT_TC)))
-                      );
+                       << trs(Unit::getSymbol(UnitType(UNIT_TC))));
     itemID = static_cast<int>(UnitSetupMenuContentPrivate::ITEM_CBO_TEMP_UNIT);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -287,8 +282,7 @@ void UnitSetupMenuContent::layoutExec()
         comboBox->addItems(QStringList()
                            << trs(Unit::getSymbol(UnitType(UNIT_MMHG)))
                            << trs(Unit::getSymbol(UnitType(UNIT_KPA)))
-                           << trs(Unit::getSymbol(UnitType(UNIT_CMH2O)))
-                          );
+                           << trs(Unit::getSymbol(UnitType(UNIT_CMH2O))));
         itemID = static_cast<int>(UnitSetupMenuContentPrivate::ITEM_CBO_CVP_UNIT);
         comboBox->setProperty("Item",
                               qVariantFromValue(itemID));
@@ -303,8 +297,7 @@ void UnitSetupMenuContent::layoutExec()
         comboBox->addItems(QStringList()
                            << trs(Unit::getSymbol(UnitType(UNIT_MMHG)))
                            << trs(Unit::getSymbol(UnitType(UNIT_KPA)))
-                           << trs(Unit::getSymbol(UnitType(UNIT_CMH2O)))
-                          );
+                           << trs(Unit::getSymbol(UnitType(UNIT_CMH2O))));
         itemID = static_cast<int>(UnitSetupMenuContentPrivate::ITEM_CBO_ICP_UNIT);
         comboBox->setProperty("Item",
                               qVariantFromValue(itemID));
@@ -320,8 +313,7 @@ void UnitSetupMenuContent::layoutExec()
     comboBox->addItems(QStringList()
                        << trs(Unit::getSymbol(UnitType(UNIT_MMHG)))
                        << trs(Unit::getSymbol(UnitType(UNIT_KPA)))
-                       << trs(Unit::getSymbol(UnitType(UNIT_PERCENT)))
-                      );
+                       << trs(Unit::getSymbol(UnitType(UNIT_PERCENT))));
     itemID = static_cast<int>(UnitSetupMenuContentPrivate::ITEM_CBO_CO2_UNIT);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));

@@ -15,9 +15,9 @@
 #include "ParamManager.h"
 #include "ParamInfo.h"
 #include <QDateTime>
-#include "TimeDate.h"
 #include "TrendDataStorageManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
+#include "Framework/TimeDate/TimeDate.h"
 
 // 打印纸每页最多打印10行数据（1 head title + 9 data）
 #define RECORD_PER_PAGE 9
@@ -36,7 +36,8 @@ public:
     bool loadStringList();
 
     // add sub param value to the string list
-    void addSubParamValueToStringList(const TrendDataPackage &datapack, const QList<SubParamID> &subParamIDs, const unsigned eventType);
+    void addSubParamValueToStringList(const TrendDataPackage &datapack, const QList<SubParamID> &subParamIDs,
+                                      const unsigned eventType);
 
     RecordPageGenerator::PageType curPageType;
     IStorageBackend *backend;
@@ -322,7 +323,7 @@ static QString constructNormalValueString(SubParamID subParamId, TrendDataType d
 void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDataPackage &datapack,
         const QList<SubParamID> &subParamIDs, const unsigned eventType)
 {
-    bool needAddCaption = stringLists.isEmpty(); // if the stringLists is empty, we need to add caption;
+    bool needAddCaption = stringLists.isEmpty();  // if the stringLists is empty, we need to add caption;
 
     int index = 0;
 
@@ -332,8 +333,7 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
         stringLists.append(QStringList() << trs("Event"));
     }
 
-    QString timeDateStr;
-    timeDate.getDateTime(datapack.time, timeDateStr, true, true);
+    QString timeDateStr = timeDate->getDateTime(datapack.time, true, true);
     stringLists[index++].append(timeDateStr);
 
     // 优先打印报警事件状态
@@ -553,7 +553,7 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
     }
 }
 
-TrendTablePageGenerator::TrendTablePageGenerator(IStorageBackend *backend, TrendTablePrintInfo &printInfo,
+TrendTablePageGenerator::TrendTablePageGenerator(IStorageBackend *backend, const TrendTablePrintInfo &printInfo,
                                                  const PatientInfo &patientInfo, QObject *parent)
     : RecordPageGenerator(parent), d_ptr(new TrendTablePageGeneratorPrivate)
 {

@@ -9,9 +9,9 @@
  **/
 
 #include "ApneaStimulationMenuContent.h"
-#include "LanguageManager.h"
-#include "ComboBox.h"
-#include "SpinBox.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/SpinBox.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QGridLayout>
 #include <QLabel>
 #include "ConfigManager.h"

@@ -15,7 +15,7 @@
 #include "SystemManager.h"
 #include <QRect>
 #include "Debug.h"
-#include "ThemeManager.h"
+#include "Framework/UI/ThemeManager.h"
 #include "FontManager.h"
 
 /***************************************************************************************************

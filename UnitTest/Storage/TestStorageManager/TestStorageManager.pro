@@ -31,17 +31,13 @@ include("../../Common/runtest.pri")
 SOURCES += \
         TestStorageManager.cpp \ 
     main.cpp \
-    ../../../Utility/DataStorage/StorageManager.cpp \
-    ../../../Utility/DataStorage/DataStorageDirManagerInterface.cpp \
-    ../../../Utility/DataStorage/StorageFile.cpp
+    ../../../Utility/DataStorage/DataStorageDirManagerInterface.cpp
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 HEADERS += \
     TestStorageManager.h \
-    ../../../Utility/DataStorage/StorageManager.h \
-    ../../../Utility/DataStorage/DataStorageDirManagerInterface.h \
-    ../../../Utility/DataStorage/StorageFile.h
+    ../../../Utility/DataStorage/DataStorageDirManagerInterface.h
 
 INCLUDEPATH += \
     ../../../Utility/DataStorage/

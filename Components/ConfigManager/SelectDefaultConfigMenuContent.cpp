@@ -11,13 +11,14 @@
 #include "SelectDefaultConfigMenuContent.h"
 #include "ConfigManager.h"
 #include "IConfig.h"
-#include "ComboBox.h"
 #include <QLabel>
 #include <QGridLayout>
 #include <QMap>
-#include "LanguageManager.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QList>
 #include "SystemManagerInterface.h"
+#include "Debug.h"
 
 class SelectDefaultConfigMenuContentPrivate
 {
@@ -196,7 +197,7 @@ void SelectDefaultConfigMenuContent::onCurrentIndexChanged(int index)
             break;
         }
 
-        systemConfig.save();
+        systemConfig.requestSave();
     }
 }
 void SelectDefaultConfigMenuContent::onUserDefinedConfigChanged()
@@ -226,8 +227,10 @@ void SelectDefaultConfigMenuContent::layoutExec()
     connect(combox, SIGNAL(currentIndexChanged(int)), this, SLOT(onCurrentIndexChanged(int)));
     itemID = SelectDefaultConfigMenuContentPrivate::ITEM_CBO_ADULT_DEFCONFIG;
     combox->setProperty("Item", qVariantFromValue(itemID));
-    combox->setProperty("factoryConfigFile", qVariantFromValue(configManager.factoryConfigFilename(PATIENT_TYPE_ADULT)));
-    combox->setProperty("currentConfigFile", qVariantFromValue(configManager.runningConfigFilename(PATIENT_TYPE_ADULT)));
+    combox->setProperty("factoryConfigFile",
+                        qVariantFromValue(configManager.factoryConfigFilename(PATIENT_TYPE_ADULT)));
+    combox->setProperty("currentConfigFile",
+                        qVariantFromValue(configManager.runningConfigFilename(PATIENT_TYPE_ADULT)));
     SystemManagerInterface *systemManager = SystemManagerInterface::getSystemManager();
     if (systemManager && systemManager->isNeonateMachine())
     {

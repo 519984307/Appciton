@@ -8,10 +8,10 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/7/19
  **/
 #include "ConfigEditCodeMarkerMenuContent.h"
-#include "ComboBox.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
 #include <QGridLayout>
-#include "LanguageManager.h"
 #include <QMap>
 #include <QVBoxLayout>
 #include <QEvent>
@@ -61,21 +61,12 @@ ConfigEditCodeMarkerMenuContent::~ConfigEditCodeMarkerMenuContent()
 void ConfigEditCodeMarkerMenuContent::hideEvent(QHideEvent *ev)
 {
     MenuContent::hideEvent(ev);
-
-    if (d_ptr->languageIndex != languageManager.getCurLanguage())
-    {
-        languageManager.reload(languageManager.getCurLanguage());
-    }
 }
 
 void ConfigEditCodeMarkerMenuContentPrivate::loadOptions()
 {
     languageIndex = 0;
     systemConfig.getNumAttr("General|Language", "CurrentOption", languageIndex);
-    if (languageIndex != languageManager.getCurLanguage())
-    {
-        languageManager.reload(languageIndex);
-    }
 
     QString codemarkerStr;
     QString indexStr = "CodeMarker|Marker";
@@ -195,7 +186,7 @@ void ConfigEditCodeMarkerMenuContent::layoutExec()
     int itemMax = ConfigEditCodeMarkerMenuContentPrivate::ITEM_CBO_MAX;
     layout->setRowStretch(itemMax, 1);
 
-    d_ptr->loadOptions(); // 初始化的时候加载一遍CodeMarker
+    d_ptr->loadOptions();  // 初始化的时候加载一遍CodeMarker
 }
 void ConfigEditCodeMarkerMenuContent::onComboBoxIndexChanged(int index)
 {

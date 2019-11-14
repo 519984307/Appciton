@@ -9,13 +9,12 @@
  **/
 
 #include "EventReviewModel.h"
-#include "ThemeManager.h"
-#include "LanguageManager.h"
-#include "WindowManager.h"
+#include "Framework/UI/ThemeManager.h"
+#include "Framework/Language/LanguageManager.h"
 #define COLUMN_COUNT            2
 
-#define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
-#define HEADER_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
+#define ROW_HEIGHT_HINT (themeManager.getAcceptableControlHeight())
+#define HEADER_HEIGHT_HINT (themeManager.getAcceptableControlHeight())
 
 class EventReviewModelPrivate
 {
@@ -91,7 +90,7 @@ QVariant EventReviewModel::data(const QModelIndex &index, int role) const
     }
     case Qt::SizeHintRole:
     {
-        int w = windowManager.getPopWindowWidth() / COLUMN_COUNT;
+        int w = themeManager.defaultWindowSize().width() / COLUMN_COUNT;
         return QSize(w, HEADER_HEIGHT_HINT);
     }
     case Qt::TextAlignmentRole:
@@ -99,12 +98,12 @@ QVariant EventReviewModel::data(const QModelIndex &index, int role) const
     case Qt::BackgroundRole:
         if (row % 2)
         {
-            return themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
+            return themeManager.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
                                         ThemeManager::StateDisabled);
         }
         else
         {
-            return themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
+            return themeManager.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
                                         ThemeManager::StateActive);
         }
         break;
@@ -126,7 +125,7 @@ QVariant EventReviewModel::headerData(int section, Qt::Orientation orientation, 
     {
         if (orientation == Qt::Horizontal)
         {
-            int w = windowManager.getPopWindowWidth() / (COLUMN_COUNT);
+            int w = themeManager.defaultWindowSize().width() / (COLUMN_COUNT);
             return QSize(w, HEADER_HEIGHT_HINT);
         }
         break;
@@ -152,7 +151,7 @@ QVariant EventReviewModel::headerData(int section, Qt::Orientation orientation, 
         return QBrush(QColor("#2C405A"));
         break;
     case Qt::BackgroundColorRole:
-        return themeManger.getColor(ThemeManager::ControlTypeNR,
+        return themeManager.getColor(ThemeManager::ControlTypeNR,
                                     ThemeManager::ElementBackgound,
                                     ThemeManager::StateDisabled);
     default:

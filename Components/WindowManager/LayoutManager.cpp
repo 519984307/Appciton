@@ -18,7 +18,7 @@
 #include <Debug.h>
 #include "IWidget.h"
 #include <QList>
-#include "OrderedMap.h"
+#include "Framework/Utility/OrderedMap.h"
 #include "WaveWidget.h"
 #include "ShortTrendContainer.h"
 #include "TrendWidget.h"
@@ -28,7 +28,8 @@
 #include "SPO2Param.h"
 #include "PatientManager.h"
 
-#define FIRST_ECG_WAVE_HEIGHT qRound(31 / systemManager.getScreenPixelHPitch()) // 第一道波形高度不低于30mm，设置31来计算避免误差造成高度不够
+// 第一道波形高度不低于30mm，设置31来计算避免误差造成高度不够
+#define FIRST_ECG_WAVE_HEIGHT qRound(31 / systemManager.getScreenPixelHPitch())
 
 typedef QList<LayoutNode> LayoutRow;
 
@@ -759,8 +760,8 @@ void LayoutManagerPrivate::perform7LeadLayout()
     }
 }
 
-#define MAX_WIDGET_ROW_IN_OXYCRG_LAYOUT 3       // the maximum widget row can be displayed
-                                                // in the wave area while in the oxycrg layout
+// the maximum widget row can be displayed in the wave area while in the oxycrg layout
+#define MAX_WIDGET_ROW_IN_OXYCRG_LAYOUT 3
 void LayoutManagerPrivate::performOxyCRGLayout()
 {
     QVBoxLayout *leftLayout = new QVBoxLayout();

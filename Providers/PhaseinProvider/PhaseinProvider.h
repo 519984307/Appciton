@@ -27,12 +27,12 @@ enum  // 数据包类型。
 
 enum  // 设置命令。
 {
-    CMD_SET_MODE = 0x00,      // 设置工作模式
-    CMD_SET_APNE_TIME = 0x01, // 设置窒息时间
-    CMD_SET_AGENT_ID = 0x02,  // 设置主麻醉类型ID
-    CMD_SET_O2 = 0x04,        // 设置氧气补偿的浓度
-    CMD_SET_N20 = 0x05,       // 设置笑气补偿的浓度
-    CMD_ZERO_CAL = 0x06,      // 模块校零命令。
+    CMD_SET_MODE = 0x00,        // 设置工作模式
+    CMD_SET_APNE_TIME = 0x01,   // 设置窒息时间
+    CMD_SET_AGENT_ID = 0x02,    // 设置主麻醉类型ID
+    CMD_SET_O2 = 0x04,          // 设置氧气补偿的浓度
+    CMD_SET_N20 = 0x05,         // 设置笑气补偿的浓度
+    CMD_ZERO_CAL = 0x06,        // 模块校零命令。
 };
 
 struct  AGProviderStatus
@@ -68,7 +68,7 @@ struct  AGProviderStatus
     unsigned char workMode;    // MODE, 0:self test, 1:sleep, 2:measurement
 
     // O2 compensation conc (byte 1)
-    unsigned char o2CompensationConc; // 0--115
+    unsigned char o2CompensationConc;   // 0--115
 
     // Sensor error register (byte 2)
     bool softwareErr;          // SW_ERR, Software error. Restart sensor.
@@ -120,7 +120,7 @@ struct  AGProviderStatus
 
     // Sensor configuration register 1 (byte 4)
     bool axIDConfig;            // ID_CFG, agent id option fitted, auto agent id transmit
-    bool n2oCompensationAvaiable;// N2O_COMP, 1 = Host N2O compensation available.
+    bool n2oCompensationAvaiable;   // N2O_COMP, 1 = Host N2O compensation available.
     // When this bit is set, it is possible to set the N2O concentration
     // from host using the command SetN2O.
     int o2SensorType;           // O2_SENSOR_TYPE, 0:galvanic o2, 1:servomex pm1116(isa only),
@@ -148,7 +148,7 @@ struct  AGProviderStatus
     char irO2Delay;             // 0--15
 
     // (byte 3)
-    unsigned char n2oCompensationConc;// compensation concentration
+    unsigned char n2oCompensationConc;  // compensation concentration
 
     // (byte 5)
     int cuvetteAdjuestPress;  // only for sidestream maintenance.
@@ -157,7 +157,7 @@ struct  AGProviderStatus
 class PhaseinProvider: public Provider, public AGProviderIFace
 {
 public:    // Provider interface
-    bool attachParam(Param &param);
+    bool attachParam(Param *param);
     void dataArrived(void);
 
     // send command.
@@ -247,6 +247,6 @@ public:
 private:
     void _unpacket(const unsigned char packet[]);
     static const int _packetLen = 21;      // 数据包长度。
-    static const int _maxPacketLen = 5; // max send packet len
+    static const int _maxPacketLen = 5;     // max send packet len
     AGProviderStatus _status;
 };

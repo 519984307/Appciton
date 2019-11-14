@@ -9,7 +9,6 @@
  **/
 
 #include "ScreenLayoutModel.h"
-#include "WindowManager.h"
 #include "DemoProvider.h"
 #include "ParamManager.h"
 #include "ScreenLayoutDefine.h"
@@ -19,8 +18,8 @@
 #include "IConfig.h"
 #include "ParamInfo.h"
 #include "IBPParam.h"
-#include "OrderedMap.h"
-#include "LanguageManager.h"
+#include "Framework/Utility/OrderedMap.h"
+#include "Framework/Language/LanguageManager.h"
 
 const char *layoutNodeName(LayoutNodeType nodeType)
 {
@@ -287,54 +286,54 @@ public:
      * @brief fillWaveData fill the wave info if the @info has a valid waveid
      * @param info the info structure that need to fill wave infos
      */
-    void fillWaveData(ScreenLayoutItemInfo &info)
+    void fillWaveData(ScreenLayoutItemInfo *info)
     {
-        if (info.waveid == WAVE_NONE || !demoProvider)
+        if (info->waveid == WAVE_NONE || !demoProvider)
         {
             return;
         }
 
-        info.waveContent = getWaveData(info.waveid);
-        if (info.waveid >= WAVE_ECG_I && info.waveid <= WAVE_ECG_V6)
+        info->waveContent = getWaveData(info->waveid);
+        if (info->waveid >= WAVE_ECG_I && info->waveid <= WAVE_ECG_V6)
         {
-            info.baseLine = demoProvider->getBaseLine();
-            info.waveMaxValue = 255;
-            info.waveMinValue = 0;
-            info.sampleRate = demoProvider->getWaveformSample();
+            info->baseLine = demoProvider->getBaseLine();
+            info->waveMaxValue = 255;
+            info->waveMinValue = 0;
+            info->sampleRate = demoProvider->getWaveformSample();
         }
-        else if (info.waveid == WAVE_RESP)
+        else if (info->waveid == WAVE_RESP)
         {
-            info.waveMaxValue = demoProvider->maxRESPWaveValue();
-            info.waveMinValue = demoProvider->minRESPWaveValue();
-            info.baseLine = demoProvider->getRESPBaseLine();
-            info.sampleRate = demoProvider->getRESPWaveformSample();
+            info->waveMaxValue = demoProvider->maxRESPWaveValue();
+            info->waveMinValue = demoProvider->minRESPWaveValue();
+            info->baseLine = demoProvider->getRESPBaseLine();
+            info->sampleRate = demoProvider->getRESPWaveformSample();
         }
-        else if (info.waveid == WAVE_SPO2)
+        else if (info->waveid == WAVE_SPO2)
         {
-            info.waveMaxValue = demoProvider->getSPO2MaxValue();
-            info.waveMinValue = 0;
-            info.baseLine = demoProvider->getSPO2BaseLine();
-            info.sampleRate = demoProvider->getSPO2WaveformSample();
+            info->waveMaxValue = demoProvider->getSPO2MaxValue();
+            info->waveMinValue = 0;
+            info->baseLine = demoProvider->getSPO2BaseLine();
+            info->sampleRate = demoProvider->getSPO2WaveformSample();
         }
-        else if (info.waveid == WAVE_CO2)
+        else if (info->waveid == WAVE_CO2)
         {
-            info.waveMaxValue = (demoProvider->getCO2MaxWaveform() * 4 + 19) / 20;
-            info.drawSpeed = 6.25;
-            info.waveMinValue = 0;
-            info.baseLine = demoProvider->getCO2BaseLine();
-            info.sampleRate = demoProvider->getSPO2WaveformSample();
+            info->waveMaxValue = (demoProvider->getCO2MaxWaveform() * 4 + 19) / 20;
+            info->drawSpeed = 6.25;
+            info->waveMinValue = 0;
+            info->baseLine = demoProvider->getCO2BaseLine();
+            info->sampleRate = demoProvider->getSPO2WaveformSample();
         }
-        else if (info.waveid >= WAVE_N2O && info.waveid <= WAVE_O2)
+        else if (info->waveid >= WAVE_N2O && info->waveid <= WAVE_O2)
         {
-            info.waveMaxValue = demoProvider->getN2OMaxWaveform();
-            info.waveMinValue = 0;
-            info.baseLine = demoProvider->getN2OBaseLine();
-            info.sampleRate = demoProvider->getN2OWaveformSample();
+            info->waveMaxValue = demoProvider->getN2OMaxWaveform();
+            info->waveMinValue = 0;
+            info->baseLine = demoProvider->getN2OBaseLine();
+            info->sampleRate = demoProvider->getN2OWaveformSample();
         }
-        else if (info.waveid >= WAVE_ART && info.waveid <= WAVE_AUXP2)
+        else if (info->waveid >= WAVE_ART && info->waveid <= WAVE_AUXP2)
         {
-            info.baseLine = demoProvider->getIBPBaseLine();
-            info.sampleRate = demoProvider->getIBPWaveformSample();
+            info->baseLine = demoProvider->getIBPBaseLine();
+            info->sampleRate = demoProvider->getIBPWaveformSample();
         }
     }
 
@@ -342,7 +341,7 @@ public:
     void loadItemInfos()
     {
         // two ecg wave at most
-        // TODO: find the proper ECG Wave
+        /* TODO: find the proper ECG Wave */
         waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_ECG1), WAVE_ECG_I);
         waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_ECG2), WAVE_ECG_II);
 
@@ -350,6 +349,7 @@ public:
         waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_SPO2), WAVE_SPO2);
         waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_CO2), WAVE_CO2);
 
+        const char *nodeName;
         if (systemManager.isSupport(CONFIG_IBP))
         {
             // find proper IBP Wave base of the wave name
@@ -358,11 +358,14 @@ public:
             waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_IBP2),
                               ibpParam.getWaveformID(ibpParam.getEntitle(IBP_INPUT_2)));
 
+            const char *waveformName;
             // IBP's pressure name is identical to it's wave name
-            paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_IBP1)] = ParamNodeDescription(
-                        paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_NODE_WAVE_IBP1)]),  PARAM_SPAN_TWO);
-            paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_IBP2)] = ParamNodeDescription(
-                        paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_NODE_WAVE_IBP2)]), PARAM_SPAN_TWO);
+            nodeName = layoutNodeName(LAYOUT_NODE_PARAM_IBP1);
+            waveformName = paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_NODE_WAVE_IBP1)]);
+            paramNodeDescriptions[nodeName] = ParamNodeDescription(waveformName, PARAM_SPAN_TWO);
+            nodeName = layoutNodeName(LAYOUT_NODE_PARAM_IBP2);
+            waveformName = paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_NODE_WAVE_IBP2)]);
+            paramNodeDescriptions[nodeName] = ParamNodeDescription(waveformName, PARAM_SPAN_TWO);
         }
 
         if (systemManager.isSupport(CONFIG_AG))
@@ -378,17 +381,21 @@ public:
             paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_O2)] = ParamNodeDescription("AG_O2", PARAM_SPAN_TWO);
         }
 
-        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_ECG)] = ParamNodeDescription(paramInfo.getParamName(PARAM_ECG),
-                                                                                            PARAM_SPAN_ONE);
-        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_SPO2)] = ParamNodeDescription(paramInfo.getParamName(PARAM_SPO2),
-                                                                                             PARAM_SPAN_TWO);
-        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_RESP)] = ParamNodeDescription(paramInfo.getParamName(PARAM_RESP),
-                                                                                             PARAM_SPAN_ONE);
+        nodeName = layoutNodeName(LAYOUT_NODE_PARAM_ECG);
+        paramNodeDescriptions[nodeName] = ParamNodeDescription(paramInfo.getParamName(PARAM_ECG), PARAM_SPAN_ONE);
+        nodeName = layoutNodeName(LAYOUT_NODE_PARAM_SPO2);
+        paramNodeDescriptions[nodeName] = ParamNodeDescription(paramInfo.getParamName(PARAM_SPO2), PARAM_SPAN_TWO);
+        nodeName = layoutNodeName(LAYOUT_NODE_PARAM_RESP);
+        paramNodeDescriptions[nodeName] = ParamNodeDescription(paramInfo.getParamName(PARAM_RESP), PARAM_SPAN_ONE);
 
-        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_CO2)] = ParamNodeDescription(paramInfo.getParamName(PARAM_CO2), PARAM_SPAN_TWO);
-        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_NIBP)] = ParamNodeDescription(paramInfo.getParamName(PARAM_NIBP), PARAM_SPAN_TWO);
-        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_NIBPLIST)] = ParamNodeDescription(trs("NIBPList"), PARAM_SPAN_TWO);
-        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_TEMP)] = ParamNodeDescription(paramInfo.getParamName(PARAM_TEMP), PARAM_SPAN_ONE);
+        nodeName = layoutNodeName(LAYOUT_NODE_PARAM_CO2);
+        paramNodeDescriptions[nodeName] = ParamNodeDescription(paramInfo.getParamName(PARAM_CO2), PARAM_SPAN_TWO);
+        nodeName = layoutNodeName(LAYOUT_NODE_PARAM_NIBP);
+        paramNodeDescriptions[nodeName] = ParamNodeDescription(paramInfo.getParamName(PARAM_NIBP), PARAM_SPAN_TWO);
+        nodeName = layoutNodeName(LAYOUT_NODE_PARAM_NIBPLIST);
+        paramNodeDescriptions[nodeName] = ParamNodeDescription(trs("NIBPList"), PARAM_SPAN_TWO);
+        nodeName = layoutNodeName(LAYOUT_NODE_PARAM_TEMP);
+        paramNodeDescriptions[nodeName] = ParamNodeDescription(paramInfo.getParamName(PARAM_TEMP), PARAM_SPAN_ONE);
 
 #ifndef HIDE_ECG_ST_PVCS_SUBPARAM
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_ST)] = ParamNodeDescription("ST", PARAM_SPAN_TWO);
@@ -682,7 +689,7 @@ QVariant ScreenLayoutModel::data(const QModelIndex &index, int role) const
                 }
             }
 
-            d_ptr->fillWaveData(info);
+            d_ptr->fillWaveData(&info);
             return qVariantFromValue(info);
         }
     }
@@ -777,7 +784,6 @@ QVariant ScreenLayoutModel::data(const QModelIndex &index, int role) const
 
         if (d_ptr->itemInWaveRegion(index))
         {
-
             QVariantList list;
             QStringList unlayoutWaves = d_ptr->getUnlayoutedWaveforms();
             QStringList::ConstIterator iter = unlayoutWaves.constBegin();
@@ -796,7 +802,7 @@ QVariant ScreenLayoutModel::data(const QModelIndex &index, int role) const
             QVariantList list;
             QStringList unlayoutParams = d_ptr->getUnlayoutedParams();
             QStringList::ConstIterator iter = unlayoutParams.constBegin();
-            bool oddColumn = index.column() % 2; // this column can only hold param node with span of 1
+            bool oddColumn = index.column() % 2;  // this column can only hold param node with span of 1
             for (; iter != unlayoutParams.constEnd(); ++iter)
             {
                 if (oddColumn && d_ptr->paramNodeDescriptions[*iter].paramSpan == PARAM_SPAN_TWO)

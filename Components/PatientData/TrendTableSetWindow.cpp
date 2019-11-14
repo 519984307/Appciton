@@ -9,16 +9,15 @@
  **/
 
 #include "TrendTableSetWindow.h"
-#include "LanguageManager.h"
-#include "Button.h"
-#include "ComboBox.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include "TrendDataSymbol.h"
 #include "TrendTableWindow.h"
 #include "IConfig.h"
-#include "WindowManager.h"
 #include "SystemManager.h"
 
 TrendTableSetWindow *TrendTableSetWindow::selfObj = NULL;

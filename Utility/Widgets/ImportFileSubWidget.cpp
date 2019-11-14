@@ -11,11 +11,11 @@
 #include "ImportFileSubWidget.h"
 #include <QVBoxLayout>
 #include <QLabel>
-#include "Button.h"
-#include "LanguageManager.h"
-#include "ListView.h"
-#include "ListViewItemDelegate.h"
-#include "ListDataModel.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ListView.h"
+#include "Framework/UI/ListViewItemDelegate.h"
+#include "Framework/UI/ListDataModel.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QMap>
 
 #define LISTVIEW_MAX_VISIABLE_TIME 5

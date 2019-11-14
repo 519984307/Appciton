@@ -9,8 +9,10 @@
  **/
 
 #include "TrendGraphWindow.h"
-#include "LanguageManager.h"
-#include "Button.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/MoveButton.h"
+#include "Framework/UI/ThemeManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "TrendWaveWidget.h"
 #include <QVariant>
 #include <QHBoxLayout>
@@ -19,8 +21,7 @@
 #include "TrendGraphPageGenerator.h"
 #include "RecorderManager.h"
 #include "TrendGraphSetWindow.h"
-#include "MoveButton.h"
-#include "ThemeManager.h"
+#include <QTimerEvent>
 
 #define STOP_PRINT_TIMEOUT          (100)
 
@@ -230,12 +231,13 @@ TrendGraphWindow::TrendGraphWindow()
     : Dialog(), d_ptr(new TrendGraphWindowPrivate())
 {
     setWindowTitle(trs("TrendGraph"));
-    int maxWidth = windowManager.getPopWindowWidth();
-    int maxHeight = windowManager.getPopWindowHeight();
+    QSize winSize = themeManager.defaultWindowSize();
+    int maxWidth = winSize.width();
+    int maxHeight = winSize.height();
     setFixedSize(maxWidth, maxHeight);
     int margin = 5;
     int spacing = 5;
-    int itemHeight = themeManger.getAcceptableControlHeight();
+    int itemHeight = themeManager.getAcceptableControlHeight();
 
     d_ptr->waveWidget = new TrendWaveWidget();
     int margins = contentsMargins().left() * 2 + margin * 2;
@@ -290,7 +292,7 @@ TrendGraphWindow::TrendGraphWindow()
     d_ptr->buttons.insert(TrendGraphWindowPrivate::ACTION_BTN_SET_WIDGET, button);
 
     // 上翻页坐标
-    QIcon ico = themeManger.getIcon(ThemeManager::IconUp, QSize(32, 32));
+    QIcon ico = themeManager.getIcon(ThemeManager::IconUp, QSize(32, 32));
     button = new Button("", ico);
     button->setIconSize(QSize(32, 32));
     button->setButtonStyle(Button::ButtonIconOnly);
@@ -303,7 +305,7 @@ TrendGraphWindow::TrendGraphWindow()
 
     // 下翻页坐标
     button = new Button();
-    ico = themeManger.getIcon(ThemeManager::IconDown, QSize(32, 32));
+    ico = themeManager.getIcon(ThemeManager::IconDown, QSize(32, 32));
     button->setIcon(ico);
     button->setIconSize(QSize(32, 32));
     button->setButtonStyle(Button::ButtonIconOnly);

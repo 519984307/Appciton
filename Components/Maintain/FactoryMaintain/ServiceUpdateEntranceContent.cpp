@@ -11,11 +11,9 @@
 #include "ServiceUpdateEntranceContent.h"
 #include <QHBoxLayout>
 #include <QLabel>
-#include "Button.h"
-#include "LanguageManager.h"
-#include "WindowManager.h"
+#include "Framework/UI/Button.h"
+#include "Framework/Language/LanguageManager.h"
 #include "UpgradeWindow.h"
-#include "WindowManager.h"
 #include "KeyActionManager.h"
 
 /**************************************************************************************************

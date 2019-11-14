@@ -12,7 +12,7 @@
 #include "PromptInfoBarWidget.h"
 #include <QHBoxLayout>
 #include <QPainter>
-#include <LanguageManager.h>
+#include "Framework/Language/LanguageManager.h"
 #include "FontManager.h"
 
 static PromptInfoBarWidget *_selfObj = NULL;

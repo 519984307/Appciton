@@ -9,9 +9,9 @@
  **/
 
 #include "FactorySystemInfoMenuContent.h"
-#include "LanguageManager.h"
+#include "Framework/UI/Button.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
-#include <Button.h>
 #include <QHBoxLayout>
 #include "KeyInputPanel.h"
 #include "IConfig.h"
@@ -115,7 +115,7 @@ void FactorySystemInfoMenuContent::onBtnReleasedChanged()
 
     button->setText(str);
     machineConfig.setStrValue("SerialNumber", str);
-    machineConfig.save();
+    machineConfig.requestSave();
     machineConfig.saveToDisk();
 }
 

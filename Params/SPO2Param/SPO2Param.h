@@ -61,9 +61,9 @@ public:
     virtual void exitDemo();
 
     // 获取可得的波形控件集。
-    virtual void getAvailableWaveforms(QStringList &waveforms,
-                                       QStringList &waveformShowName, int flag);
-    virtual void getWaveWindow(QString &waveWin, bool isPlugIn = false);
+    virtual void getAvailableWaveforms(QStringList *waveforms,
+                                       QStringList *waveformShowName, int flag);
+    virtual QString getWaveWindow(bool isPlugIn = false);
 
     // 获取子参数值
     virtual short getSubParamValue(SubParamID id);

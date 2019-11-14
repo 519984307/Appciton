@@ -94,8 +94,8 @@ class E5Provider: public BLMProvider, public ECGProviderIFace,
 #ifdef CONFIG_UNIT_TEST
 friend class TestParamFunction;
 #endif
-public: // Provider的接口。
-    virtual bool attachParam(Param &param);
+public:     // Provider的接口。
+    virtual bool attachParam(Param *param);
 
     // 协议命令解析
     virtual void handlePacket(unsigned char *data, int len);
@@ -103,7 +103,7 @@ public: // Provider的接口。
     // 发送协议命令
     virtual void sendCmdData(unsigned char cmdId, const unsigned char *data, unsigned int len);
 
-public: // ECGProviderIFace 的接口。
+public:     // ECGProviderIFace 的接口。
     // 获取自检结果。
     virtual void getSelfTestStatus(void);
 
@@ -117,7 +117,8 @@ public: // ECGProviderIFace 的接口。
     virtual int getBaseLine(void) {return 0;}
 
     // 获取+/-0.5mV对应的数值。
-    virtual void get05mV(int &p05mv, int &n05mv);
+    virtual int getP05mV();
+    virtual int getN05mV();
 
     // 获取导联线类型
     virtual void getLeadCabelType();
@@ -167,7 +168,7 @@ public: // ECGProviderIFace 的接口。
     //获取版本号
     virtual void sendVersion(void);
 
-public: // RESPProviderIFace的接口。
+public:     // RESPProviderIFace的接口。
     // 获取最大值
     virtual int maxRESPWaveValue() {return 0x3FFF;}
 

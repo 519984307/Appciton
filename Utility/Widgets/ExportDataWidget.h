@@ -10,10 +10,10 @@
 
 
 #pragma once
-#include "Dialog.h"
-#include "LanguageManager.h"
+#include "Framework/UI/Dialog.h"
+#include "Framework/Language/LanguageManager.h"
+#include "Framework/UI/Button.h"
 #include "qprogressbar.h"
-#include "Button.h"
 
 //数据类型及传输方式
 enum Export_Data_Type

@@ -10,12 +10,12 @@
 
 #include "BatteryIndicatorWindow.h"
 #include <QLabel>
-#include "WindowManager.h"
 #include "FontManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "BatteryIconWidget.h"
 #include <QTimer>
 #include "IConfig.h"
+#include <QGridLayout>
 
 class BatteryIndicatorWindowPrivate
 {

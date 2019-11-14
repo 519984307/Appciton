@@ -9,19 +9,20 @@
  **/
 
 #include "AlarmLimitModel.h"
-#include "Utility.h"
+#include "ParamInfo.h"
 #include <QDebug>
 #include <QColor>
 #include <QResizeEvent>
 #include <QBrush>
-#include "ItemEditInfo.h"
 #include "ParamManager.h"
-#include "ThemeManager.h"
-#include "LanguageManager.h"
+#include "Framework/UI/ThemeManager.h"
+#include "Framework/UI/ItemEditInfo.h"
+#include "Framework/Utility/Utility.h"
+#include "Framework/Language/LanguageManager.h"
 
 
-#define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
-#define HEADER_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
+#define ROW_HEIGHT_HINT (themeManager.getAcceptableControlHeight())
+#define HEADER_HEIGHT_HINT (themeManager.getAcceptableControlHeight())
 
 class AlarmLimitModelPrivate
 {
@@ -125,18 +126,22 @@ bool AlarmLimitModel::setData(const QModelIndex &index, const QVariant &value, i
             case SECTION_STATUS:
                 d_ptr->alarmDataInfos[row].status = newValue;
                 alarmDataUpdate(d_ptr->alarmDataInfos[row], index.column());
+                emit dataChanged(index, index);
                 break;
             case SECTION_LEVEL:
                 d_ptr->alarmDataInfos[row].alarmLevel = newValue + 1;
                 alarmDataUpdate(d_ptr->alarmDataInfos[row], index.column());
+                emit dataChanged(index, index);
                 break;
             case SECTION_HIGH_LIMIT:
                 d_ptr->alarmDataInfos[row].limitConfig.highLimit = newValue;
                 alarmDataUpdate(d_ptr->alarmDataInfos[row], index.column());
+                emit dataChanged(index, index);
                 break;
             case SECTION_LOW_LIMIT:
                 d_ptr->alarmDataInfos[row].limitConfig.lowLimit = newValue;
                 alarmDataUpdate(d_ptr->alarmDataInfos[row], index.column());
+                emit dataChanged(index, index);
                 break;
             default:
                 break;
@@ -156,7 +161,6 @@ bool AlarmLimitModel::setData(const QModelIndex &index, const QVariant &value, i
         {
             d_ptr->editIndex = index;
         }
-        emit dataChanged(d_ptr->editIndex, d_ptr->editIndex);
     }
 
 
@@ -311,12 +315,12 @@ QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
     case Qt::BackgroundRole:
         if (row % 2)
         {
-            return themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
+            return themeManager.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
                                         ThemeManager::StateDisabled);
         }
         else
         {
-            return themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
+            return themeManager.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
                                         ThemeManager::StateActive);
         }
         break;
@@ -390,7 +394,7 @@ QVariant AlarmLimitModel::headerData(int section, Qt::Orientation orientation, i
         }
         break;
     case Qt::BackgroundRole:
-        return themeManger.getColor(ThemeManager::ControlTypeNR,
+        return themeManager.getColor(ThemeManager::ControlTypeNR,
                                     ThemeManager::ElementBackgound,
                                     ThemeManager::StateDisabled);
     case Qt::ForegroundRole:

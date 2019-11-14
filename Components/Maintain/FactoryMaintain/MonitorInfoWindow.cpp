@@ -12,17 +12,16 @@
 #include <QMap>
 #include <QGridLayout>
 #include <QLabel>
-#include "LanguageManager.h"
+#include "Framework/UI/Button.h"
+#include "Framework/Language/LanguageManager.h"
 #include "IConfig.h"
 #include "KeyInputPanel.h"
-#include "Button.h"
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QVBoxLayout>
 #include "TimeManager.h"
 #include <QTimer>
 #include "PowerManager.h"
-#include "UnitManager.h"
 #include <QNetworkInterface>
 
 class MonitorInfoWindowPrivate

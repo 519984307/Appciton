@@ -11,20 +11,14 @@
 #pragma once
 #include <QMap>
 #include <QWidget>
-#include <QList>
-#include "WaveWidget.h"
+#include <QImage>
 #include "SystemDefine.h"
-#include "MenuManager.h"
 #include "WindowManagerInterface.h"
 
 /***************************************************************************************************
  * 窗体管理器: 负责管理所有窗体布局
  **************************************************************************************************/
 class IWidget;
-class SoftKeyManager;
-class QHBoxLayout;
-class QVBoxLayout;
-class QGridLayout;
 class Dialog;
 class WindowManagerPrivate;
 class WindowManager : public QWidget, public WindowManagerInterface
@@ -65,6 +59,13 @@ public:
      */
     bool eventFilter(QObject *obj, QEvent *ev);
 
+    /**
+     * @brief capturescreen
+     * @return  the image of the screen
+     */
+    QImage captureScreen();
+
+
 public slots:
     /**
      * @brief closeAllWidows close all the windows
@@ -76,13 +77,6 @@ public slots:
      * @param w
      */
     void onWindowHide(Dialog *w);
-
-public:
-    // 获取弹出菜单宽度, TODO: remove
-    int getPopWindowWidth();
-
-    // 获取弹出菜单高度, TODO: remove
-    int getPopWindowHeight();
 
 private:
     WindowManager();

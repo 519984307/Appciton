@@ -82,4 +82,7 @@ public:
      * @return
      */
     virtual bool isNeonateMachine() = 0;
+
+    /* check whether touchscreen is alreay working */
+    virtual bool isTouchScreenOn() const { return false;}
 };

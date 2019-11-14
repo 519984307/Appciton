@@ -25,7 +25,6 @@ SOURCES += main.cpp \
     TestAlarm.cpp \
     ../../../Components/Alarm/Alarm.cpp \
     ../../../Components/Alarm/AlarmIndicatorInterface.cpp \
-    ../../../Utility/LanguageManager/LanguageManager.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmStateMachineInterface.cpp \
     ../../../Utility/Config/IConfig.cpp \
     ../../../Components/PatientData/TrendCacheInterface.cpp \
@@ -34,16 +33,11 @@ SOURCES += main.cpp \
     ../../../Params/ECGParam/ECGParamInterface.cpp \
     ../../../Components/Alarm/AlarmInterface.cpp \
     ../../../Components/ParamManager/ParamInfoInterface.cpp \
-    ../../../Utility/Config/Config.cpp \
-    ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
-    ../../../Utility/ErrorLog/ErrorLogItem.cpp \
-    ../../../Utility/Config/XmlParser.cpp \
     ../../../Components/Alarm/AlarmParamIFace.cpp
 
 HEADERS += \
     TestAlarm.h \
     ../../../Components/Alarm/Alarm.h \
-    ../../../Utility/LanguageManager/LanguageManager.h \
     ../../../Components/ParamManager/ParamDefine.h \
     ../../../Components/Alarm/AlarmIndicatorInterface.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmStateMachineInterface.h \
@@ -63,10 +57,6 @@ HEADERS += \
     ../../../Params/ECGParam/ECGParamInterface.h \
     ../../../Components/Alarm/AlarmInterface.h \
     ../../../Components/ParamManager/ParamInfoInterface.h \
-    ../../../Utility/Config/Config.h \
-    ../../../Utility/ErrorLog/ErrorLogInterface.h \
-    ../../../Utility/ErrorLog/ErrorLogItem.h \
-    ../../../Utility/Config/XmlParser.h \
     ../../../Components/Alarm/AlarmParamIFace.h \
     ../MockAlarmStateMachine.h \
     ../../Params/MockParamInfo.h \
@@ -78,7 +68,6 @@ HEADERS += \
 
 INCLUDEPATH += \
     ../../../Components/Alarm \
-    ../../../Utility/LanguageManager \
     ../../../Components/ParamManager \
     ../../../Components/Alarm \
     ../../../Components/Alarm/AlarmStateMachine \
@@ -95,7 +84,6 @@ INCLUDEPATH += \
     ../../../Params/TEMPParam \
     ../../../Params/NIBPParam \
     ../../../Params/O2Param \
-    ../../../Utility/ErrorLog \
     .. \
     ../../Storage \
     ../../Trend \

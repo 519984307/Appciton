@@ -8,7 +8,7 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/7/30
  **/
 #pragma once
-#include "Dialog.h"
+#include "Framework/UI/Dialog.h"
 
 class DoseCalculationWindowPrivate;
 class DoseCalculationWindow : public Dialog

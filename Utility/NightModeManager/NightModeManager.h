@@ -11,7 +11,7 @@
 #pragma once
 #include <QObject>
 #include "SystemDefine.h"
-#include "SoundManagerInterface.h"
+#include "Framework/Sound/SoundManagerInterface.h"
 
 class NightModeManagerPrivate;
 class NightModeManager : public QObject

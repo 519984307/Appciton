@@ -11,7 +11,7 @@
 
 #pragma once
 #include <stddef.h>
-#include "UnitManager.h"
+#include "Framework/Utility/Unit.h"
 #include "ParamInfoInterface.h"
 
 class ParamInfo : public ParamInfoInterface
@@ -27,7 +27,7 @@ public:
 
     // Param 与 SubParam之间转换。
     ParamID getParamID(SubParamID id);
-    void getSubParams(ParamID id, QList<SubParamID> &ids);
+    QList<SubParamID> getSubParams(ParamID id);
     const char *getSubParamName(SubParamID id, bool ignoreModuleConfig = false);
     const char *getSubParamName(SubDupParamID id);
     const char *getIBPPressName(SubParamID id);
@@ -44,10 +44,10 @@ public:
     UnitType getUnitOfSubParam(SubParamID id);
 
     // 查询子参数的默认单位。
-    UnitType getUnitOfSubParam(SubParamID id, UnitType &t0, UnitType &t1);
+    UnitType getUnitOfSubParam(SubParamID id, UnitType *t0, UnitType *t1);
 
     // sort the param id
-    static void sortSubParamId(QList<SubParamID> &subIDlist);
+    static void sortSubParamId(QList<SubParamID> *subIDlist);
 
 private:
     ParamInfo();

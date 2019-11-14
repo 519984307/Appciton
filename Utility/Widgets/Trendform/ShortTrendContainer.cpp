@@ -17,7 +17,7 @@
 #include "ParamManager.h"
 #include "AlarmConfig.h"
 #include "TrendDataStorageManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "ShortTrendWindow.h"
 #include "WindowManager.h"
 

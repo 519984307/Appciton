@@ -8,16 +8,16 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/7/31
  **/
 #include "TitrateTableModel.h"
-#include "ThemeManager.h"
+#include "Framework/UI/ThemeManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QEvent>
 #include "TitrateTableManager.h"
 #include "TitrateTableDefine.h"
-#include "LanguageManager.h"
 #include <QResizeEvent>
 #include "TitrateTableWindow.h"
 
-#define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
-#define HEADER_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
+#define ROW_HEIGHT_HINT (themeManager.getAcceptableControlHeight())
+#define HEADER_HEIGHT_HINT (themeManager.getAcceptableControlHeight())
 
 class TitrateTableModelPrivate
 {

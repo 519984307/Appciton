@@ -9,9 +9,10 @@
  **/
 
 #include "ConfigEditEcgMenuContent.h"
-#include "LanguageManager.h"
 #include <QLabel>
-#include "ComboBox.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QGridLayout>
 #include <QList>
 #include "ECGSymbol.h"
@@ -19,7 +20,6 @@
 #include "SystemManager.h"
 #include "ECGParam.h"
 #include "ConfigManager.h"
-#include "Button.h"
 
 class ConfigEditECGMenuContentPrivate
 {
@@ -345,14 +345,18 @@ void ConfigEditECGMenuContent::layoutExec()
                               label);
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
+#ifdef  HIDE_ECG_ST_PVCS_SUBPARAM
+    comboBox->addItems(QStringList()
+                       << trs(ECGSymbol::convert(ECG_FILTERMODE_SURGERY))
+                       << trs(ECGSymbol::convert(ECG_FILTERMODE_MONITOR))
+                       << trs(ECGSymbol::convert(ECG_FILTERMODE_DIAGNOSTIC)));
+#else
     comboBox->addItems(QStringList()
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_SURGERY))
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_MONITOR))
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_DIAGNOSTIC))
-                   #ifndef  HIDE_ECG_ST_PVCS_SUBPARAM
-                       << trs(ECGSymbol::convert(ECG_FILTERMODE_ST))
-                   #endif
-                       );
+                       << trs(ECGSymbol::convert(ECG_FILTERMODE_ST)));
+#endif
     itemID = static_cast<int>(ConfigEditECGMenuContentPrivate::ITEM_CBO_FILTER_MODE);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));

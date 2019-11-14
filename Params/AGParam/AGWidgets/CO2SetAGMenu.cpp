@@ -10,14 +10,14 @@
 
 
 #include "CO2SetAGMenu.h"
-#include "IComboList.h"
 #include "CO2Symbol.h"
-#include "UnitManager.h"
 #include "ConfigManager.h"
-#include "MenuManager.h"
 #include "FontManager.h"
-#include "ComboBox.h"
-#include "LanguageManager.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/Utility/Unit.h"
+#include "Framework/Language/LanguageManager.h"
+#include <QLabel>
+#include <QGridLayout>
 
 enum CO2SetType
 {

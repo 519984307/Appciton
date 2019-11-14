@@ -8,34 +8,19 @@
  ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/7/12
  **/
 
-#include "Debug.h"
-#include <QList>
-#include <QMap>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QGridLayout>
-#include "IWidget.h"
 #include "WindowManager.h"
-#include "SoftKeyManager.h"
+#include "Debug.h"
 #include "IConfig.h"
-#include "SystemModeBarWidget.h"
-#include "TrendWidget.h"
-#include "CO2Param.h"
-#include "RESPParam.h"
-#include "ECGParam.h"
-#include "ECGSymbol.h"
-#include "MainMenuWindow.h"
-#include "ConfigManagerMenuWindow.h"
-#include "UserMaintainMenuWindow.h"
-#include "FactoryMaintainMenuWindow.h"
-#include "ConfigEditMenuWindow.h"
-#include "NIBPRepairMenuWindow.h"
 #include <QApplication>
-#include "Dialog.h"
-#include "FontManager.h"
+#include <QLabel>
+#include <QDesktopWidget>
 #include <QTimer>
-#include "TopBarWidget.h"
+#include <QPointer>
 #include "LayoutManager.h"
+#include "FontManager.h"
+#include "IWidget.h"
+#include "Framework/UI/Dialog.h"
+#include "Framework/Language/LanguageManager.h"
 
 #define WINDOW_MARGINS 3
 
@@ -67,22 +52,6 @@ void WindowManager::onLayoutChanged()
     {
         d_ptr->demoWidget->raise();
     }
-}
-
-/***************************************************************************************************
- * 功能： 获取弹出菜单宽度
- **************************************************************************************************/
-int WindowManager::getPopWindowWidth()
-{
-    return 710;
-}
-
-/***************************************************************************************************
- * 功能： 获取弹出菜单高度
- **************************************************************************************************/
-int WindowManager::getPopWindowHeight()
-{
-    return 530;
 }
 
 /***************************************************************************************************
@@ -349,6 +318,14 @@ bool WindowManager::eventFilter(QObject *obj, QEvent *ev)
     }
 
     return false;
+}
+
+QImage WindowManager::captureScreen()
+{
+    QPoint leftTop = mapToGlobal(rect().topLeft());
+    QPixmap pix =  QPixmap::grabWindow(qApp->desktop()->winId(), leftTop.x(), leftTop.y(),
+                                       width(), height());
+    return pix.toImage();
 }
 
 void WindowManager::closeAllWidows()

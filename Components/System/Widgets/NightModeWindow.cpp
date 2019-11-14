@@ -11,15 +11,15 @@
 #include "NightModeWindow.h"
 #include <QGridLayout>
 #include <QLabel>
-#include "ComboBox.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/Button.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QMap>
-#include "Button.h"
 #include "IConfig.h"
 #include "SoundManager.h"
 #include "NightModeManager.h"
 #include "SystemManager.h"
 #include "SystemDefine.h"
-#include "LanguageManager.h"
 #include "ConfigManagerInterface.h"
 #include "SoundManager.h"
 
@@ -287,7 +287,8 @@ void NightModeWindow::onPopupListItemFocusChanged(int volume)
         {
             configInterface->getCurConfig().getNumValue("ECG|QRSVolume", orignalVolume);
         }
-        soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT, static_cast<SoundManager::VolumeLevel>(orignalVolume));
+        soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT,
+                               static_cast<SoundManager::VolumeLevel>(orignalVolume));
     }
     else if (w == d_ptr->combos[NightModeWindowPrivate::ITEM_CBO_NIBP_COMPLETED_TIPS])
     {
@@ -304,6 +305,7 @@ void NightModeWindow::onPopupListItemFocusChanged(int volume)
         soundManager.setVolume(SoundManager::SOUND_TYPE_NOTIFICATION , static_cast<SoundManager::VolumeLevel>(volume));
         soundManager.keyPressTone();
         systemConfig.getNumValue("General|KeyPressVolume", orignalVolume);
-        soundManager.setVolume(SoundManager::SOUND_TYPE_NOTIFICATION,  static_cast<SoundManager::VolumeLevel>(orignalVolume));
+        soundManager.setVolume(SoundManager::SOUND_TYPE_NOTIFICATION,
+                               static_cast<SoundManager::VolumeLevel>(orignalVolume));
     }
 }

@@ -8,7 +8,7 @@
  ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2019/3/11
  **/
 
-#include "Dialog.h"
+#include "Framework/UI/Dialog.h"
 
 class CCHDWindowPrivate;
 class CCHDWindow : public Dialog

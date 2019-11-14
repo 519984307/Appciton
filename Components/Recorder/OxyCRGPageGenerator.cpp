@@ -11,7 +11,7 @@
 #include "OxyCRGPageGenerator.h"
 #include "PatientManager.h"
 #include "TrendCache.h"
-#include "TimeDate.h"
+#include "Framework/TimeDate/TimeDate.h"
 
 class OxyCRGPageGeneratorPrivate
 {
@@ -21,9 +21,9 @@ public:
     {
         TrendCacheData data;
         TrendAlarmStatus almStatus;
-        unsigned t = timeDate.time();
-        trendCache.getTrendData(t, data);
-        trendCache.getTrendAlarmStatus(t, almStatus);
+        unsigned t = timeDate->time();
+        trendCache.getTrendData(t, &data);
+        trendCache.getTrendAlarmStatus(t, &almStatus);
         bool alarm = false;
         foreach(bool st, almStatus.alarms)
         {

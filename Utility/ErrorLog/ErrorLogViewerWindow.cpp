@@ -9,11 +9,11 @@
  **/
 
 #include "ErrorLogViewerWindow.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
+#include "Framework/UI/ScrollArea.h"
 #include <QVBoxLayout>
 #include <QApplication>
 #include <QKeyEvent>
-#include "ScrollArea.h"
 #include <QScrollBar>
 #include <QLabel>
 
@@ -61,7 +61,7 @@ ErrorLogViewerWindow::ErrorLogViewerWindow(ErrorLogItemBase *item)
     d_ptr->text->setWordWrap(true);
     QString str;
     QTextStream stream(&str);
-    item->outputInfo(stream);
+    item->outputInfo(&stream);
     d_ptr->text->setText(str);
 
     d_ptr->area = new ScrollArea();

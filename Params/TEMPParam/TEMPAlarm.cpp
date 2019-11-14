@@ -75,8 +75,9 @@ AlarmPriority TEMPLimitAlarm::getAlarmPriority(int id)
  *************************************************************************************************/
 int TEMPLimitAlarm::getValue(int id)
 {
-    short t1, t2, td;
-    tempParam.getTEMP(t1, t2, td);
+    short t1 = tempParam.getTEMP(SUB_PARAM_T1);
+    short t2 = tempParam.getTEMP(SUB_PARAM_T2);
+    short td = tempParam.getTEMP(SUB_PARAM_TD);
 
     switch (id)
     {

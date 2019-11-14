@@ -9,12 +9,12 @@
  **/
 
 #include "WiredNetworkMaintainMenuContent.h"
-#include "LanguageManager.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
-#include "ComboBox.h"
 #include <QGridLayout>
 #include "IConfig.h"
-#include "Button.h"
 #include "KeyInputPanel.h"
 
 #define MAX_IP_STRING_LENGTH 15
@@ -123,8 +123,7 @@ void WiredNetworkMaintainMenuContent::layoutExec()
     d_ptr->addressTypeCbx = new ComboBox;
     d_ptr->addressTypeCbx->addItems(QStringList()
                                  << trs("Static")
-                                 << trs("DHCP")
-                                );
+                                 << trs("DHCP"));
     itemID = static_cast<int>(WiredNetworkMaintainMenuContentPrivate::ITEM_CBO_ADDRESS_TYPE);
     d_ptr->addressTypeCbx->setProperty("Item", qVariantFromValue(itemID));
     connect(d_ptr->addressTypeCbx, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -189,7 +188,11 @@ void WiredNetworkMaintainMenuContent::onComboBoxIndexChanged(int index)
 
 static bool isIpStrValid(const QString &ipStr)
 {
-    QRegExp reg("^(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])$");
+    QString pattern = "^(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\."
+                      "(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\."
+                      "(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\."
+                      "(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])$";
+    QRegExp reg(pattern);
     return reg.exactMatch(ipStr);
 }
 

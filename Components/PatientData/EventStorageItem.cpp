@@ -18,7 +18,7 @@
 #include "ParamManager.h"
 #include "WaveformCache.h"
 #include "ConfigManager.h"
-#include "Utility.h"
+#include "Framework/Utility/Utility.h"
 #include <QMap>
 #include <QBuffer>
 #include "Debug.h"
@@ -27,7 +27,7 @@
 #include "Alarm.h"
 #include "AlarmConfig.h"
 #include "DataStorageDirManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 
 class EventStorageItemPrivate
 {
@@ -133,8 +133,7 @@ void EventStorageItemPrivate::saveTrendData(unsigned timestamp, const TrendCache
 {
     QVector<TrendValueSegment> valueSegments;
 
-    QList<ParamID> idList;
-    paramManager.getParams(idList);
+    QList<ParamID> idList = paramManager.getParamIDs();
 
     bool hasAlarm = false;
     ParamID paramId = PARAM_NONE;
@@ -168,8 +167,8 @@ void EventStorageItemPrivate::saveTrendData(unsigned timestamp, const TrendCache
         valueSegments.append(valueSegment);
     }
 
-    TrendDataSegment *trendSeg = reinterpret_cast<TrendDataSegment *>(qMalloc(sizeof(TrendDataSegment) + valueSegments.size() * sizeof(
-                                     TrendValueSegment)));
+    TrendDataSegment *trendSeg = reinterpret_cast<TrendDataSegment *>(
+                qMalloc(sizeof(TrendDataSegment) + valueSegments.size() * sizeof(TrendValueSegment)));
 
     qMemSet(trendSeg, 0, sizeof(TrendDataSegment));
 
@@ -302,7 +301,8 @@ EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &stor
     d_ptr->oxyCRGInfo->type = oxyCRGtype;
 }
 
-EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms, NIBPOneShotType measureResult)
+EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms,
+                                   NIBPOneShotType measureResult)
     : d_ptr(new EventStorageItemPrivate(this, type, storeWaveforms))
 {
     d_ptr->measureInfo = new NIBPMeasureSegment;
@@ -387,7 +387,7 @@ bool EventStorageItem::startCollectTrendAndWaveformData(unsigned t)
         {
             TrendCacheData trendData;
             TrendAlarmStatus trendAlarmStatus;
-            if (trendCache.getTrendData(time, trendData) && trendCache.getTrendAlarmStatus(time, trendAlarmStatus))
+            if (trendCache.getTrendData(time, &trendData) && trendCache.getTrendAlarmStatus(time, &trendAlarmStatus))
             {
                 d_ptr->saveTrendData(time, trendData, trendAlarmStatus);
             }
@@ -401,8 +401,8 @@ bool EventStorageItem::startCollectTrendAndWaveformData(unsigned t)
     }
     else
     {
-        trendCache.getTrendData(t, trendData);
-        trendCache.getTrendAlarmStatus(t, trendAlarmStatus);
+        trendCache.getTrendData(t, &trendData);
+        trendCache.getTrendAlarmStatus(t, &trendAlarmStatus);
         d_ptr->saveTrendData(t, trendData, trendAlarmStatus);
     }
 
@@ -501,7 +501,8 @@ QByteArray EventStorageItem::getStorageData() const
         foreach(TrendDataSegment *trendSeg, d_ptr->trendSegments)
         {
             buffer.write(reinterpret_cast<char *>(&type), sizeof(type));
-            buffer.write(reinterpret_cast<char *>(trendSeg), sizeof(TrendDataSegment) + sizeof(TrendValueSegment) * trendSeg->trendValueNum);
+            buffer.write(reinterpret_cast<char *>(trendSeg), sizeof(TrendDataSegment)
+                         + sizeof(TrendValueSegment) * trendSeg->trendValueNum);
         }
     }
 
@@ -512,7 +513,8 @@ QByteArray EventStorageItem::getStorageData() const
         foreach(WaveformDataSegment *waveSeg, d_ptr->waveSegments)
         {
             buffer.write(reinterpret_cast<char *>(&type), sizeof(type));
-            buffer.write(reinterpret_cast<char *>(waveSeg), sizeof(WaveformDataSegment) + sizeof(WaveDataType) * waveSeg->waveNum);
+            buffer.write(reinterpret_cast<char *>(waveSeg),
+                         sizeof(WaveformDataSegment) + sizeof(WaveDataType) * waveSeg->waveNum);
         }
     }
 

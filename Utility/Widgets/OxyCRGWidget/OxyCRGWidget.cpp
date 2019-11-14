@@ -10,7 +10,7 @@
 
 #include "OxyCRGWidget.h"
 #include "FontManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "WindowManager.h"
 #include "ColorManager.h"
 #include "OxyCRGWidgetLabel.h"
@@ -20,11 +20,10 @@
 #include "IWidget.h"
 #include "ConfigManager.h"
 #include <QPainter>
-#include "PopupList.h"
+#include "Framework/UI/PopupList.h"
 #include "ParamInfo.h"
 #include "SystemManager.h"
 #include "OxyCRGSetupWindow.h"
-#include "IMessageBox.h"
 #include "ECGParam.h"
 #include "OxyCRGTrendWaveWidget.h"
 #include "OxyCRGCO2WaveWidget.h"
@@ -489,7 +488,7 @@ void OxyCRGWidget::onRecordClicked(IWidget *widget)
     {
         return;
     }
-    // TODO
+    /* TODO */
 }
 
 void OxyCRGWidget::onIntervalChanged(int index)
@@ -500,7 +499,7 @@ void OxyCRGWidget::onIntervalChanged(int index)
 
 void OxyCRGWidget::onAutoClicked()
 {
-    // TODO:  this is not a auto ruler setting function, fixed it
+    /* TODO:  this is not a auto ruler setting function, fixed it */
     if (d_ptr->rrHrTrend)
     {
         QString strValueHigh = OxyCRGSymbol::convert(RR_HIGH_40);

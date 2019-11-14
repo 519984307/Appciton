@@ -9,16 +9,16 @@
  **/
 
 #include "BigFontLayoutWindow.h"
-#include "TableView.h"
+#include "Framework/UI/TableView.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ThemeManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "BigFontLayoutModel.h"
 #include "ScreenLayoutItemDelegate.h"
 #include <QLayout>
 #include <QHeaderView>
-#include "Button.h"
-#include "LanguageManager.h"
 #include "LayoutManager.h"
 #include "MessageBox.h"
-#include "WindowManager.h"
 
 class BigFontLayoutWindowPrivate
 {
@@ -151,7 +151,7 @@ BigFontLayoutWindow::BigFontLayoutWindow()
     d_ptr->tableView->setModel(model);
     connect(model, SIGNAL(spanChanged(QModelIndex)), d_ptr->tableView, SLOT(onSpanChanged(QModelIndex)));
 
-    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
+    setFixedSize(themeManager.defaultWindowSize());
 
     setWindowTitle(trs("BigFontScreenLayout"));
 }

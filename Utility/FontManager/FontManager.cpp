@@ -89,7 +89,7 @@ FontManager &FontManager::getInstance()
     if (instance == NULL)
     {
         instance = new FontManager();
-        FontMangerInterface *old = registerFontManager(instance);
+        FontManagerInterface *old = registerFontManager(instance);
         if (old)
         {
             delete old;

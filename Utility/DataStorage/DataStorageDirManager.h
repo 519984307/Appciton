@@ -65,7 +65,7 @@ public:
     ~DataStorageDirManager();
 
     // 获取营救事件时间列表
-    void getRescueEvent(QStringList &timeList);   // NOLINT
+    QStringList getRescueEvent();
 
     // 获取指定的营救数据路径
     QString getRescueDataDir(int index, const QString &time);
@@ -89,7 +89,7 @@ public:
 
     // 删除所有数据
     void deleteAllData();
-    void deleteData(const QString &path);   // NOLINT
+    void deleteData(const QString &path);
     void deleteData(int index);
 
     // 整理上一个rescure incident存储目录中文件
@@ -124,8 +124,6 @@ private:
     unsigned _previousDataSize;     // the size of previous rescue data
     QString _curFolder;              // 当前目录
     QList<struct FolderName> _folderNameList;  // 存储目录下文件夹名称及对应的大小
-
-    QList<StorageManager *> _storageList;
 
     bool _createNew;
 };

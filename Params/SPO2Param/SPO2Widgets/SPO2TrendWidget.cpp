@@ -13,7 +13,6 @@
 #include "ParamManager.h"
 #include "ParamInfo.h"
 #include <QHBoxLayout>
-#include "WindowManager.h"
 #include "SPO2Param.h"
 #include "TrendWidgetLabel.h"
 #include "MeasureSettingWindow.h"

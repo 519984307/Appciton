@@ -13,7 +13,7 @@
 #include "CO2Param.h"
 #include "ParamManager.h"
 #include "ColorManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "ParamInfo.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -48,12 +48,12 @@ void CO2TrendWidget::loadConfig()
 /**************************************************************************************************
  * 转换值。
  *************************************************************************************************/
-void CO2TrendWidget::_setValue(int16_t v, QString &str)
+QString CO2TrendWidget::_getValue(int16_t v)
 {
+    QString str;
     if (v == InvData())
     {
-        str = InvStr();
-        return;
+        return InvStr();
     }
 
     UnitType unit = co2Param.getUnit();
@@ -70,11 +70,11 @@ void CO2TrendWidget::_setValue(int16_t v, QString &str)
             str = QString("%1").number(v * 1.0 / mul, 'f', 1);
         }
 
-        return;
+        return str;
     }
 
 
-    str = Unit::convert(unit, dunit, v * 1.0 / mul, co2Param.getBaro());
+    return Unit::convert(unit, dunit, v * 1.0 / mul, co2Param.getBaro());
 }
 
 /**************************************************************************************************
@@ -90,7 +90,7 @@ bool CO2TrendWidget::enable()
  *************************************************************************************************/
 void CO2TrendWidget::setEtCO2Value(int16_t v)
 {
-    _setValue(v, _etco2Str);
+    _etco2Str = _getValue(v);
     _etco2Value->setText(_etco2Str);
 }
 
@@ -99,7 +99,7 @@ void CO2TrendWidget::setEtCO2Value(int16_t v)
  *************************************************************************************************/
 void CO2TrendWidget::setFiCO2Value(int16_t v)
 {
-    _setValue(v, _fico2Str);
+    _fico2Str = _getValue(v);
     _fico2Value->setText(_fico2Str);
 }
 

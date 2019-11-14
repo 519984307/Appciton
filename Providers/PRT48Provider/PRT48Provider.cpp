@@ -12,9 +12,9 @@
 #include "Debug.h"
 #include "PRT48Provider.h"
 #include "SystemManager.h"
-#include "Utility.h"
-#include "ErrorLog.h"
-#include "ErrorLogItem.h"
+#include "Framework/Utility/Utility.h"
+#include "Framework/ErrorLog/ErrorLog.h"
+#include "Framework/ErrorLog/ErrorLogItem.h"
 #include "AlarmSourceManager.h"
 #include "RecorderManager.h"
 

@@ -9,7 +9,7 @@
  **/
 
 #pragma once
-#include "MenuContent.h"
+#include "Framework/UI/MenuContent.h"
 
 class O2CalibrationMenuContentPrivate;
 class O2CalibrationMenuContent : public MenuContent

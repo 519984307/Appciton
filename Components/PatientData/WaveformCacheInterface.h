@@ -31,7 +31,7 @@ public:
     virtual ~WaveformCacheInterface() {}
 
     // 注册一个数据源。
-    virtual void registerSource(WaveformID id, int rate, int minValue, int maxValue, QString &waveTitle,
+    virtual void registerSource(WaveformID id, int rate, int minValue, int maxValue, const QString &waveTitle,
                                 int baseline = 0) = 0;
 
     // 添加一个波形数据。
@@ -41,16 +41,17 @@ public:
     virtual int getSampleRate(WaveformID id) = 0;
 
     // 获取值的范围。
-    virtual void getRange(WaveformID id, int &minValue, int &maxValue) = 0;
+    virtual void getRange(WaveformID id, int *minValue, int *maxValue) = 0;
 
     // 获取基线值。
-    virtual void getBaseline(WaveformID id, int &baseline) = 0;
+    virtual int getBaseline(WaveformID id) = 0;
 
     // 获取标识值。
-    virtual void getTitle(WaveformID id, QString &waveTitle) = 0;
+    virtual QString getTitle(WaveformID id) = 0;
 
 
-public: // 通道相关。
+public:
+    // 通道相关。
     // get the time duration of the channels;
     virtual unsigned channelDuration() const = 0;
 
@@ -69,17 +70,6 @@ public: // 通道相关。
 
     // read the oldest data from the realtime channel, the channel will remove the read data
     virtual int readRealtimeChannel(WaveformID id, int num, WaveDataType *buff) = 0;
-
-    // TODO: deprecated, remove later
-    // register a user buffer as sync cache
-    virtual bool registerSyncCache(WaveformID id, long cacheID, WaveDataType *buff, int buflen,
-                                   SyncCacheCallback cb = NULL) = 0;
-    // TODO: deprecated, remove later
-    // unregister sync cache
-    virtual void unRegisterSyncCache(WaveformID id, long cacheID) = 0;
-    // TODO: deprecated, remove later
-    // check whether the sync cache complete
-    virtual bool isSyncCacheCompleted(WaveformID id, long cacheID) = 0;
 
     // register a waveform recorder, for each recorder object, it can not record the same waveform twice
     // recorder will be deleted automatically when complete

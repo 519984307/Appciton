@@ -35,16 +35,9 @@ SOURCES += \
     ../../../Utility/DataStorage/DataStorageDirManager.cpp \
     ../../../Utility/Config/IConfig.cpp \
     ../../../Components/TimeManager/TimeManagerInterface.cpp \
-    ../../../Utility/LanguageManager/LanguageManager.cpp \
     ../../../Components/System/SystemManagerInterface.cpp \
     ../../../Components/Alarm/AlarmSourceManager.cpp \
-    ../../../Utility/Config/Config.cpp \
-    ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
     ../../../Utility/DataStorage/DataStorageDirManagerInterface.cpp \
-    ../../../Utility/Config/XmlParser.cpp \
-    ../../../Utility/ErrorLog/ErrorLogItem.cpp \
-    ../../../Utility/DataStorage/StorageManager.cpp \
-    ../../../Utility/DataStorage/StorageFile.cpp \
     ../../../Components/Alarm/AlarmInterface.cpp \
     ../../../Components/Alarm/AlarmParamIFace.cpp
 
@@ -53,22 +46,13 @@ DEFINES += SRCDIR=\\\"$$PWD/\\\"
 HEADERS += \
     TestDataStorageDirManager.h \
     ../../../Utility/DataStorage/DataStorageDirManager.h \
-    ../../../Utility/LanguageManager/LanguageManager.h \
     ../../../Components/PatientData/RescueDataDefine.h \
     ../../../Utility/Config/IConfig.h \
     ../../../Components/TimeManager/TimeManagerInterface.h \
-    ../../../Utility/RingBuff/RingBuff.h \
     ../../../Components/ParamManager/ParamDefine.h \
     ../../../Components/System/SystemManagerInterface.h \
     ../../../Components/Alarm/AlarmSourceManager.h \
-    ../../../Utility/Config/Config.h \
-    ../../../Utility/ErrorLog/ErrorLogInterface.h \
     ../../../Utility/DataStorage/DataStorageDirManagerInterface.h \
-    ../../../Utility/Config/XmlParser.h \
-    ../../../Utility/ErrorLog/ErrorLogItem.h \
-    ../../../Utility/DataStorage/StorageManager.h \
-    ../../../Utility/DataStorage/StorageManager_p.h \
-    ../../../Utility/DataStorage/StorageFile.h \
     ../../../Components/Alarm/AlarmInterface.h \
     MockTimeManager.h \
     ../../../Components/Alarm/AlarmParamIFace.h \
@@ -76,12 +60,9 @@ HEADERS += \
 
 INCLUDEPATH += \
     ../../../Utility/DataStorage \
-    ../../../Utility/LanguageManager \
     ../../../Components/PatientData \
     ../../../Utility/Config \
     ../../../Components/TimeManager \
-    ../../../Utility/RingBuff \
     ../../../Components/ParamManager \
     ../../../Components/System \
     ../../../Components/Alarm \
-    ../../../Utility/ErrorLog

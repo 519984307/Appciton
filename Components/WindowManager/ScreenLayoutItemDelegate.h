@@ -9,7 +9,7 @@
  **/
 
 #pragma once
-#include "TableViewItemDelegate.h"
+#include "Framework/UI/TableViewItemDelegate.h"
 
 class ScreenLayoutItemDelegatePrivate;
 class QTableView;
@@ -21,7 +21,8 @@ public:
 
 protected:
     /* reimplement */
-    void drawDisplay(QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect, const QString &text) const;
+    void drawDisplay(QPainter *painter, const QStyleOptionViewItem &option,
+                     const QRect &rect, const QString &text) const;
 
 private slots:
     void onSelectChanged(const QString &text);

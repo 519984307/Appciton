@@ -14,7 +14,7 @@
 #include "Debug.h"
 #include "NIBPParam.h"
 #include "AlarmSourceManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 
 #define SOM             (0x02)
 #define EOM             (0x03)
@@ -22,9 +22,9 @@
 /**************************************************************************************************
  * 模块与参数对接。
  *************************************************************************************************/
-bool MasimoSetProvider::attachParam(Param &param)
+bool MasimoSetProvider::attachParam(Param *param)
 {
-    if (param.getParamID() == PARAM_SPO2)
+    if (param->getParamID() == PARAM_SPO2)
     {
         spo2Param.setProvider(this);
         Provider::attachParam(param);

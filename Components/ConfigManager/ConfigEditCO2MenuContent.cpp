@@ -10,15 +10,15 @@
 #include "ConfigEditCO2MenuContent.h"
 #include <QMap>
 #include <QLabel>
-#include "LanguageManager.h"
-#include "Button.h"
-#include "ComboBox.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/SpinBox.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QGridLayout>
 #include "CO2Symbol.h"
 #include "CO2Param.h"
 #include "ConfigManager.h"
 #include "RESPParam.h"
-#include "SpinBox.h"
 
 class ConfigEditCO2MenuContentPrivate
 {

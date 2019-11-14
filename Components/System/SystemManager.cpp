@@ -20,26 +20,20 @@
 #include <QVector>
 #include <QThread>
 #include <TDA19988Ctrl.h>
-
 #include "Debug.h"
 #include "IConfig.h"
-#include "WindowManager.h"
 #include "ECGParam.h"
 #include "CO2Param.h"
 #include "RESPParam.h"
 #include "AlarmStateMachine.h"
-#include "SystemSelftestMenu.h"
-#include "ComboListPopup.h"
-#include "Utility.h"
-#include "ErrorLog.h"
-#include "ErrorLogItem.h"
-#include <QProcess>
-#include <QDir>
-#include <QKeyEvent>
+#include "Framework/Utility/Utility.h"
+#include "Framework/ErrorLog/ErrorLog.h"
+#include "Framework/ErrorLog/ErrorLogItem.h"
 #include "WindowManager.h"
 #include "ParamManager.h"
 #include "AlarmIndicator.h"
 #include <QTimer>
+#include <QFileInfo>
 #ifdef Q_WS_QWS
 #include <QWSServer>
 #include "RunningStatusBar.h"
@@ -48,7 +42,8 @@
 #include "DataStorageDirManager.h"
 #include "StandbyWindow.h"
 #include "NIBPParam.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include "EventStorageManagerInterface.h"
 
 #define BACKLIGHT_DEV   "/sys/class/backlight/backlight/brightness"       // 背光控制文件接口
@@ -77,15 +72,11 @@ class SystemManagerPrivate
 public:
     SystemManagerPrivate()
         : modulePostResult(MODULE_POWERON_TEST_RESULT_NR, SELFTEST_UNKNOWN),
-          publishTestTimer(NULL), workerThread(NULL), selfTestResult(NULL),
-      #ifdef Q_WS_X11
-          ctrlSocket(NULL),
-      #endif
-          workMode(WORK_MODE_NORMAL), backlightFd(-1),
+          workerThread(NULL), workMode(WORK_MODE_NORMAL), timeFormat(TIME_FORMAT_12),
+          dateFormat(DATE_FORMAT_Y_M_D), backlightFd(-1),
       #ifdef Q_WS_QWS
           isTouchScreenOn(false),
       #endif
-          selfTestFinish(false),
           isStandby(false),
           isTurnOff(false),
           isAutoBrightness(false)
@@ -142,55 +133,15 @@ public:
      */
     void setStandbyStatus(bool standby);
 
-    /**
-     * @brief handleBMode handle the board mode
-     */
-    void handleBMode()
-    {
-        QDesktopWidget *pDesk = QApplication::desktop();
-
-        // Layout & Show
-        windowManager.move((pDesk->width() - windowManager.width()) / 2,
-                           (pDesk->height() - windowManager.height()) / 2);
-
-        // 显示界面界面。
-        //    UserFaceType type = UFACE_MONITOR_STANDARD;
-
-        // 处理CO2和RESP的使能。
-        //    _handleCO2RESP();//因调试需要，临时关闭
-
-        // 立即刷新界面，防止界面残留
-        QApplication::processEvents(QEventLoop::ExcludeSocketNotifiers |
-                                    QEventLoop::ExcludeUserInputEvents);
-
-        // 清除下拉列表
-        if (ComboListPopup::current())
-        {
-            ComboListPopup::current()->close();
-        }
-
-        // 清除上个模式留下的弹出框
-        while (NULL != QApplication::activeModalWidget())
-        {
-            QApplication::activeModalWidget()->hide();
-            menuManager.close();
-        }
-    }
-
     QVector<int>  modulePostResult;     // module power on selt-test result
-    QTimer *publishTestTimer;
     QThread *workerThread;
-    SystemSelftestMenu *selfTestResult;
-#ifdef Q_WS_X11
-    QTcpSocket *ctrlSocket;
-    QQueue<char> socketInfoData;
-#endif
     WorkMode workMode;
+    TimeFormat timeFormat;
+    DateFormat dateFormat;
     int backlightFd;                    // 背光控制文件句柄。
 #ifdef Q_WS_QWS
     bool isTouchScreenOn;
 #endif
-    bool selfTestFinish;
     bool isStandby;
     bool isTurnOff;
     bool isAutoBrightness;
@@ -440,11 +391,6 @@ void SystemManager::setPoweronTestResult(ModulePoweronTestResult module,
         return;
     }
 
-    if (d_ptr->selfTestFinish)
-    {
-        return;
-    }
-
     if (SELFTEST_SUCCESS == d_ptr->modulePostResult[module])
     {
         return;
@@ -468,11 +414,6 @@ void SystemManager::setPoweronTestResult(ModulePoweronTestResult module,
     if (NULL == systemSelftestMessage[result][module])
     {
         return;
-    }
-
-    if (d_ptr->selfTestResult->isVisible())
-    {
-        d_ptr->selfTestResult->appendInfo(module, result, trs(systemSelftestMessage[result][module]));
     }
 }
 
@@ -575,10 +516,7 @@ void SystemManager::setAutoBrightness(BrightnessLevel br)
 void SystemManager::enableBrightness(BrightnessLevel br)
 {
 #ifdef Q_WS_X11
-    QByteArray data;
-    data.append(0x81);
-    data.append(static_cast<char>(br));
-    sendCommand(data);
+    Q_UNUSED(br)
 #else
     // add screen type select
     char *lightValue = NULL;
@@ -628,43 +566,6 @@ BrightnessLevel SystemManager::getBrightness(void)
     int b = BRT_LEVEL_4;
     systemConfig.getNumValue("General|DefaultDisplayBrightness", b);
     return static_cast<BrightnessLevel>(b);
-}
-
-/***************************************************************************************************
- * 加载初始底层模式。
- **************************************************************************************************/
-void SystemManager::loadInitBMode()
-{
-    d_ptr->handleBMode();
-}
-
-/***************************************************************************************************
- * 是否确认了自检结果。
- **************************************************************************************************/
-bool SystemManager::isAcknownledgeSystemTestResult()
-{
-    return !d_ptr->selfTestResult->isVisible();
-}
-
-bool SystemManager::isSystemSelftestOver() const
-{
-    return d_ptr->selfTestFinish;
-}
-
-void SystemManager::systemSelftestOver()
-{
-    d_ptr->selfTestFinish = true;
-}
-
-/***************************************************************************************************
- * hide system selftest dialog。
- **************************************************************************************************/
-void SystemManager::closeSystemTestDialog()
-{
-    if (d_ptr->selfTestResult->isVisible())
-    {
-        d_ptr->selfTestResult->hide();
-    }
 }
 
 bool SystemManager::isGoingToTrunOff() const
@@ -733,6 +634,39 @@ void SystemManager::setWorkMode(WorkMode workmode)
     emit workModeChanged(workmode);
 }
 
+void SystemManager::setSystemTimeFormat(const TimeFormat &format)
+{
+    if (d_ptr->timeFormat == format || format >= TIME_FORMAT_NR)
+    {
+        return;
+    }
+    d_ptr->timeFormat = format;
+    timeDate->setTimeFormat(format);
+    systemConfig.setNumValue("DateTime|TimeFormat", static_cast<int>(format));
+    emit systemTimeFormatUpdated(format);
+}
+
+TimeFormat SystemManager::getSystemTimeFormat() const
+{
+    return d_ptr->timeFormat;
+}
+
+void SystemManager::setSystemDateFormat(const DateFormat &format)
+{
+    if (d_ptr->dateFormat == format || format >= DATE_FORMAT_NR)
+    {
+        return;
+    }
+    d_ptr->dateFormat = format;
+    timeDate->setDateFormat(format);
+    systemConfig.setNumValue("DateTime|DateFormat", static_cast<int>(format));
+}
+
+DateFormat SystemManager::getSystemDateFormat() const
+{
+    return d_ptr->dateFormat;
+}
+
 void SystemManagerPrivate::setStandbyStatus(bool standby)
 {
     isStandby = standby;
@@ -743,300 +677,6 @@ void SystemManagerPrivate::setStandbyStatus(bool standby)
     else
     {
         paramManager.connectParamProvider(WORK_MODE_STANDBY);
-    }
-}
-
-#ifdef Q_WS_X11
-bool SystemManager::sendCommand(const QByteArray &cmd)
-{
-    if (d_ptr->ctrlSocket->isValid() && d_ptr->ctrlSocket->state() == QAbstractSocket::ConnectedState)
-    {
-        d_ptr->ctrlSocket->write(cmd);
-        d_ptr->ctrlSocket->waitForBytesWritten(1000);
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-#define SOCKET_INFO_PACKET_LENGHT 2
-enum ControlInfo
-{
-    CTRL_INFO_METRONOME = 0x80,
-};
-
-void SystemManager::onCtrlSocketReadReady()
-{
-    QByteArray data = d_ptr->ctrlSocket->readAll();
-    for (int i = 0; i < data.size(); i++)
-    {
-        d_ptr->socketInfoData.append(data.at(i));
-    }
-
-    while (d_ptr->socketInfoData.size() >= SOCKET_INFO_PACKET_LENGHT)
-    {
-        unsigned char infoType = d_ptr->socketInfoData.takeFirst();
-        if (!(infoType & 0x80))
-        {
-            // not a info type
-            continue;
-        }
-//        char infoData = d_ptr->socketInfoData.takeFirst();
-        switch ((ControlInfo)infoType)
-        {
-        case CTRL_INFO_METRONOME:
-        {
-            emit metronomeReceived();
-        }
-        break;
-
-        default:
-            qdebug("unknown info type:%02x", infoType);
-            break;
-        }
-    }
-}
-#endif
-
-/***************************************************************************************************
- * publish test result time out。
- **************************************************************************************************/
-void SystemManager::publishTestResult(void)
-{
-    if (!d_ptr->selfTestFinish)
-    {
-        int successCount = d_ptr->modulePostResult.count(SELFTEST_SUCCESS);
-        int failCount = d_ptr->modulePostResult.count(SELFTEST_FAILED);
-        int notsupportCount = d_ptr->modulePostResult.count(SELFTEST_NOT_SUPPORT);
-        int notPerformCount = d_ptr->modulePostResult.count(SELFTEST_UNKNOWN);
-
-        if (successCount + failCount + notsupportCount == MODULE_POWERON_TEST_RESULT_NR)
-        {
-            d_ptr->publishTestTimer->stop();
-            if (MODULE_POWERON_TEST_RESULT_NR == (successCount + notsupportCount))
-            {
-                d_ptr->selfTestResult->testOver(true, trs("SystemSelfTestPass"));
-                if (!d_ptr->selfTestResult->isVisible())
-                {
-                    // 清除下拉列表
-                    if (ComboListPopup::current())
-                    {
-                        ComboListPopup::current()->close();
-                    }
-
-                    // 清除上个模式留下的弹出框
-                    while (NULL != QApplication::activeModalWidget())
-                    {
-                        QApplication::activeModalWidget()->hide();
-                        menuManager.close();
-                    }
-
-                    d_ptr->selfTestResult->show();
-                }
-            }
-            else
-            {
-                // test fail
-                QString str("");
-                if (SELFTEST_SUCCESS != d_ptr->modulePostResult[TE3_MODULE_SELFTEST_RESULT])
-                {
-                    str += trs("ECG");
-                }
-
-                if (SELFTEST_SUCCESS != d_ptr->modulePostResult[E5_MODULE_SELFTEST_RESULT])
-                {
-                    str += trs("ECG");
-                }
-
-                if (SELFTEST_SUCCESS != d_ptr->modulePostResult[N5_MODULE_SELFTEST_RESULT] &&
-                        SELFTEST_NOT_SUPPORT != d_ptr->modulePostResult[N5_MODULE_SELFTEST_RESULT])
-                {
-                    if (!str.isEmpty())
-                    {
-                        str += ",";
-                    }
-
-                    str += trs("NIBP");
-                }
-
-                if (SELFTEST_SUCCESS != d_ptr->modulePostResult[TS3_MODULE_SELFTEST_RESULT] &&
-                        SELFTEST_NOT_SUPPORT != d_ptr->modulePostResult[TS3_MODULE_SELFTEST_RESULT])
-                {
-                    if (!str.isEmpty())
-                    {
-                        str += ",";
-                    }
-
-                    str += trs("SPO2");
-                }
-
-                if (SELFTEST_SUCCESS != d_ptr->modulePostResult[S5_MODULE_SELFTEST_RESULT] &&
-                        SELFTEST_NOT_SUPPORT != d_ptr->modulePostResult[S5_MODULE_SELFTEST_RESULT])
-                {
-                    if (!str.isEmpty())
-                    {
-                        str += ",";
-                    }
-
-                    str += trs("SPO2");
-                }
-
-                if (SELFTEST_SUCCESS != d_ptr->modulePostResult[TT3_MODULE_SELFTEST_RESULT] &&
-                        SELFTEST_NOT_SUPPORT != d_ptr->modulePostResult[TT3_MODULE_SELFTEST_RESULT])
-                {
-                    if (!str.isEmpty())
-                    {
-                        str += ",";
-                    }
-
-                    str += trs("TEMP");
-                }
-
-                if (SELFTEST_SUCCESS != d_ptr->modulePostResult[T5_MODULE_SELFTEST_RESULT] &&
-                        SELFTEST_NOT_SUPPORT != d_ptr->modulePostResult[T5_MODULE_SELFTEST_RESULT])
-                {
-                    if (!str.isEmpty())
-                    {
-                        str += ",";
-                    }
-
-                    str += trs("TEMP");
-                }
-
-                if (SELFTEST_SUCCESS != d_ptr->modulePostResult[CO2_MODULE_SELFTEST_RESULT] &&
-                        SELFTEST_NOT_SUPPORT != d_ptr->modulePostResult[CO2_MODULE_SELFTEST_RESULT])
-                {
-                    if (!str.isEmpty())
-                    {
-                        str += ",";
-                    }
-
-                    str += trs("CO2");
-                }
-
-                if (SELFTEST_SUCCESS != d_ptr->modulePostResult[PRINTER72_SELFTEST_RESULT])
-                {
-                    if (!str.isEmpty())
-                    {
-                        str += ",";
-                    }
-
-                    str += trs("Printer");
-                }
-
-                if (SELFTEST_SUCCESS != d_ptr->modulePostResult[PRINTER48_SELFTEST_RESULT])
-                {
-                    if (!str.isEmpty())
-                    {
-                        str += ",";
-                    }
-
-                    str += trs("Printer");
-                }
-
-                if (SELFTEST_SUCCESS != d_ptr->modulePostResult[PANEL_KEY_POWERON_TEST_RESULT])
-                {
-                    if (!str.isEmpty())
-                    {
-                        str += ",";
-                    }
-
-                    str += trs("FrontPanelKey");
-                }
-
-                if (!str.isEmpty())
-                {
-                    str += trs("SelfTestFail");
-                }
-
-                d_ptr->selfTestResult->testOver(false, str);
-                if (d_ptr->selfTestResult->isVisible())
-                {
-                    return;
-                }
-
-                // 清除下拉列表
-                if (ComboListPopup::current())
-                {
-                    ComboListPopup::current()->close();
-                }
-
-                // 清除上个模式留下的弹出框
-                while (NULL != QApplication::activeModalWidget())
-                {
-                    QApplication::activeModalWidget()->hide();
-                    menuManager.close();
-                }
-
-                d_ptr->selfTestResult->show();
-            }
-        }
-        else if (successCount + notPerformCount != MODULE_POWERON_TEST_RESULT_NR)
-        {
-            if (d_ptr->selfTestResult->isVisible())
-            {
-                return;
-            }
-
-            bool showDialog = false;
-            for (int i = TE3_MODULE_SELFTEST_RESULT; i < MODULE_POWERON_TEST_RESULT_NR; ++i)
-            {
-                if (d_ptr->modulePostResult[i] == SELFTEST_SUCCESS ||
-                        d_ptr->modulePostResult[i] == SELFTEST_NOT_SUPPORT ||
-                        d_ptr->modulePostResult[i] == SELFTEST_UNKNOWN)
-                {
-                    continue;
-                }
-
-                if (NULL != systemSelftestMessage[d_ptr->modulePostResult[i]][i])
-                {
-                    showDialog = true;
-                    d_ptr->selfTestResult->appendInfo((ModulePoweronTestResult) i,
-                                                      (ModulePoweronTestStatus)d_ptr->modulePostResult[i],
-                                                trs(systemSelftestMessage[d_ptr->modulePostResult[i]][i]));
-                }
-            }
-
-            if (showDialog)
-            {
-                // 清除下拉列表
-                if (ComboListPopup::current())
-                {
-                    ComboListPopup::current()->close();
-                }
-
-                // 清除上个模式留下的弹出框
-                while (NULL != QApplication::activeModalWidget())
-                {
-                    QApplication::activeModalWidget()->hide();
-                    menuManager.close();
-                }
-
-                d_ptr->selfTestResult->show();
-            }
-        }
-    }
-    else
-    {
-        if (!d_ptr->selfTestResult->isVisible())
-        {
-            // 清除下拉列表
-            if (ComboListPopup::current())
-            {
-                ComboListPopup::current()->close();
-            }
-
-            // 清除上个模式留下的弹出框
-            while (NULL != QApplication::activeModalWidget())
-            {
-                QApplication::activeModalWidget()->hide();
-                menuManager.close();
-            }
-
-            d_ptr->selfTestResult->show();
-        }
     }
 }
 
@@ -1052,11 +692,6 @@ SystemManager::SystemManager() :  //申请一个动态的模块加载结果数�
     {
         debug("Open %s failed: %s\n", BACKLIGHT_DEV, strerror(errno));
     }
-
-    // 构建一个500ms的轮询函数接口_publishTestResult()--发布测试结果
-    d_ptr->publishTestTimer = new QTimer();
-    d_ptr->publishTestTimer->setInterval(500);
-    connect(d_ptr->publishTestTimer, SIGNAL(timeout()), this, SLOT(publishTestResult()));
 
     // 查询配置文件中是否支持下列项目
     if (!isSupport(CONFIG_SPO2))
@@ -1078,8 +713,6 @@ SystemManager::SystemManager() :  //申请一个动态的模块加载结果数�
     // 暂时没有自检
     d_ptr->modulePostResult[CO2_MODULE_SELFTEST_RESULT] = SELFTEST_SUCCESS;
 
-    d_ptr->selfTestResult = new SystemSelftestMenu();
-    d_ptr->selfTestFinish = false;
     d_ptr->isTurnOff = false;
 
     d_ptr->workerThread = new QThread();
@@ -1089,21 +722,28 @@ SystemManager::SystemManager() :  //申请一个动态的模块加载结果数�
     hdmiCtrl->connect(d_ptr->workerThread, SIGNAL(finished()), hdmiCtrl, SLOT(deleteLater()));
     d_ptr->workerThread->start();
 
+    /* load the time foramt */
+    int timeformat = TIME_FORMAT_12;
+    systemConfig.getNumValue("DateTime|TimeFormat", timeformat);
+    if (timeformat < TIME_FORMAT_NR && timeformat >=0)
+    {
+        d_ptr->timeFormat = static_cast<TimeFormat>(timeformat);
+    }
+    timeDate->setTimeFormat(d_ptr->timeFormat);
+
+    /* load the date format */
+    int dateformat = DATE_FORMAT_Y_M_D;
+    systemConfig.getNumValue("DateTime|DateFormat", dateformat);
+    if (dateformat < DATE_FORMAT_NR && dateformat >=0)
+    {
+        d_ptr->dateFormat = static_cast<DateFormat>(dateformat);
+    }
+    timeDate->setDateFormat(d_ptr->dateFormat);
+
 #ifdef Q_WS_QWS
     int val = 0;
     machineConfig.getNumValue("TouchEnable", val);
     setTouchScreenOnOff(val);
-#endif
-
-#ifdef Q_WS_X11
-    d_ptr->ctrlSocket = new QTcpSocket(this);
-    d_ptr->ctrlSocket->connectToHost("192.168.10.2", 8088);
-    d_ptr->ctrlSocket->setSocketOption(QAbstractSocket::LowDelayOption, 1);
-    connect(d_ptr->ctrlSocket, SIGNAL(readyRead()), this, SLOT(onCtrlSocketReadReady()));
-    if (!d_ptr->ctrlSocket->waitForConnected(1000))
-    {
-        qdebug("connect to control server failed!");
-    }
 #endif
 }
 
@@ -1127,28 +767,12 @@ SystemManager &SystemManager::getInstance()
 
 SystemManager::~SystemManager()
 {
-#ifdef Q_WS_X11
-    delete d_ptr->ctrlSocket;
-#endif
-
     if (d_ptr->backlightFd != -1)
     {
         close(d_ptr->backlightFd);
     }
 
     d_ptr->modulePostResult.clear();
-
-    if (NULL != d_ptr->publishTestTimer)
-    {
-        delete d_ptr->publishTestTimer;
-        d_ptr->publishTestTimer = NULL;
-    }
-
-    if (NULL != d_ptr->selfTestResult)
-    {
-        delete d_ptr->selfTestResult;
-        d_ptr->selfTestResult = NULL;
-    }
 
     if (NULL != d_ptr->workerThread)
     {

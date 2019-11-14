@@ -24,7 +24,6 @@ SOURCES += main.cpp \
     ../../../Components/ConfigManager/ConfigManagerInterface.cpp \
     ../../../Components/WindowManager/IWidget.cpp \
     ../../../Utility/Config/IConfig.cpp \
-    ../../../Utility/LanguageManager/LanguageManager.cpp \
     ../../../Params/ECGParam/ECGParamInterface.cpp \
     ../../../Params/ECGParam/ECGDupParamInterface.cpp \
     ../../../Utility/DataStorage/DataStorageDirManagerInterface.cpp \
@@ -32,19 +31,13 @@ SOURCES += main.cpp \
     ../../../Components/Alarm/AlarmIndicatorInterface.cpp \
     ../../../Params/O2Param/O2ParamInterface.cpp \
     ../../../Components/System/SystemManagerInterface.cpp \
-    ../../../Utility/Config/XmlParser.cpp \
-    ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
-    ../../../Utility/Config/Config.cpp \
-    ../../../Utility/ErrorLog/ErrorLogItem.cpp \
-    ../../../Components/System/Widgets/RunningStatusBarInterface.cpp \
-    ../../../Params/SPO2Param/SPO2ParamInterface.cpp
+    ../../../Components/System/Widgets/RunningStatusBarInterface.cpp
 
 HEADERS += \
     TestPatientManager.h \
     ../../../Components/PatientManager/PatientManager.h \
     ../../../Utility/BaseDefine.h \
     ../../../Components/ParamManager/ParamDefine.h \
-    ../../../Utility/LanguageManager/LanguageManager.h \
     ../../../Components/ConfigManager/ConfigManagerInterface.h \
     ../../../Components/WindowManager/IWidget.h \
     ../../../Utility/Config/IConfig.h \
@@ -55,18 +48,13 @@ HEADERS += \
     ../../../Components/Alarm/AlarmIndicatorInterface.h \
     ../../../Params/O2Param/O2ParamInterface.h \
     ../../../Components/System/SystemManagerInterface.h \
-    ../../../Utility/Config/XmlParser.h \
-    ../../../Utility/ErrorLog/ErrorLogInterface.h \
-    ../../../Utility/Config/Config.h \
-    ../../../Utility/ErrorLog/ErrorLogItem.h \
     ../../Utility/MockConfigManager.h \
     ../../Params/MockECGParam.h \
     ../../Utility/MockSystemManager.h \
     ../../Params/NIBP/MockNIBPParam.h \
     ../../Storage/TestDataStorageDirManager/MockDataStorageDirManager.h \
     ../../Alarm/MockAlarmIndicator.h \
-    ../../../Components/System/Widgets/RunningStatusBarInterface.h \
-    ../../../Params/SPO2Param/SPO2ParamInterface.h
+    ../../../Components/System/Widgets/RunningStatusBarInterface.h
 
 INCLUDEPATH += \
     ../../../Components/PatientManager \
@@ -81,16 +69,12 @@ INCLUDEPATH += \
     ../../../Params/NIBPParam \
     ../../../Components/Alarm \
     ../../../Components/System \
-    ../../../Utility/Config \
-    ../../../Utility/ErrorLog \
-    ../../../Utility/LanguageManager \
     ../../Utility \
     ../../Params \
     ../../Params/NIBP \
     ../../Storage/TestDataStorageDirManager \
     ../../Alarm \
-    ../../../Components/System/Widgets \
-    ../../../Params/SPO2Param
+    ../../../Components/System/Widgets
 
 RESOURCES += \
     res.qrc

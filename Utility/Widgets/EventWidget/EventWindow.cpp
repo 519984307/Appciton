@@ -9,17 +9,22 @@
  **/
 
 #include "EventWindow.h"
-#include "TableView.h"
-#include "Button.h"
-#include "ComboBox.h"
-#include "MoveButton.h"
+#include "Framework/UI/TableView.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/MoveButton.h"
+#include "Framework/UI/TableHeaderView.h"
+#include "Framework/UI/TableViewItemDelegate.h"
+#include "Framework/UI/ThemeManager.h"
+#include "Framework/Utility/Utility.h"
+#include "Framework/Language/LanguageManager.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include "EventInfoWidget.h"
 #include <QListWidget>
 #include "EventWaveWidget.h"
 #include <QStackedLayout>
 #include "EventDataParseContext.h"
 #include "EventReviewModel.h"
-#include "TableHeaderView.h"
 #include "EventDataSymbol.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -28,13 +33,11 @@
 #include "WindowManager.h"
 #include "AlarmConfig.h"
 #include "AlarmParamIFace.h"
-#include "TimeDate.h"
 #include "Alarm.h"
 #include "ParamInfo.h"
 #include "IBPSymbol.h"
 #include "IBPParam.h"
 #include "ParamManager.h"
-#include "Utility.h"
 #include "FontManager.h"
 #include "ColorManager.h"
 #include <QScrollBar>
@@ -43,14 +46,12 @@
 #include "IConfig.h"
 #include "EventWaveSetWindow.h"
 #include "DataStorageDefine.h"
-#include "TableViewItemDelegate.h"
 #include "MessageBox.h"
 #include "CO2Param.h"
 #include "EventListPageGenerator.h"
 #include "NIBPSymbol.h"
-#include "ThemeManager.h"
 #include "PatientManager.h"
-#include "LanguageManager.h"
+#include <QTimerEvent>
 
 #define TABLE_SPACING               (4)
 #define PAGE_ROW_COUNT               7      // 每页多少行
@@ -675,12 +676,12 @@ EventWindow::EventWindow()
     connect(d_ptr->listPrintBtn, SIGNAL(released()), this, SLOT(eventListPrintReleased()));
 
     QSize iconsize(32, 32);
-    d_ptr->upPageBtn = new Button("", themeManger.getIcon(ThemeManager::IconUp, iconsize));
+    d_ptr->upPageBtn = new Button("", themeManager.getIcon(ThemeManager::IconUp, iconsize));
     d_ptr->upPageBtn->setIconSize(iconsize);
     d_ptr->upPageBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->upPageBtn, SIGNAL(released()), this, SLOT(upPageReleased()));
 
-    d_ptr->downPageBtn = new Button("", themeManger.getIcon(ThemeManager::IconDown, iconsize));
+    d_ptr->downPageBtn = new Button("", themeManager.getIcon(ThemeManager::IconDown, iconsize));
     d_ptr->downPageBtn->setIconSize(iconsize);
     d_ptr->downPageBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->downPageBtn, SIGNAL(released()), this, SLOT(downPageReleased()));
@@ -747,12 +748,12 @@ EventWindow::EventWindow()
     d_ptr->setBtn->setButtonStyle(Button::ButtonTextOnly);
     connect(d_ptr->setBtn, SIGNAL(released()), this, SLOT(setReleased()));
 
-    d_ptr->upParamBtn = new Button("", themeManger.getIcon(ThemeManager::IconUp, iconsize));
+    d_ptr->upParamBtn = new Button("", themeManager.getIcon(ThemeManager::IconUp, iconsize));
     d_ptr->upParamBtn->setIconSize(iconsize);
     d_ptr->upParamBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->upParamBtn, SIGNAL(released()), this, SLOT(upReleased()));
 
-    d_ptr->downParamBtn = new Button("", themeManger.getIcon(ThemeManager::IconDown, iconsize));
+    d_ptr->downParamBtn = new Button("", themeManager.getIcon(ThemeManager::IconDown, iconsize));
     d_ptr->downParamBtn->setIconSize(iconsize);
     d_ptr->downParamBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->downParamBtn, SIGNAL(released()), this, SLOT(downReleased()));
@@ -783,9 +784,7 @@ EventWindow::EventWindow()
 
     setWindowLayout(d_ptr->stackLayout);
 
-    int width = windowManager.getPopWindowWidth();
-    int height = windowManager.getPopWindowHeight();
-    setFixedSize(width, height);
+    setFixedSize(themeManager.defaultWindowSize());
 }
 
 void EventWindowPrivate::loadEventData()
@@ -935,12 +934,9 @@ void EventWindowPrivate::eventInfoUpdate(int curRow)
     }
 
 
-    unsigned t = 0;
-    QString timeStr;
-    QString dateStr;
-    t = ctx.infoSegment->timestamp;
-    timeDate.getDate(t, dateStr, true);
-    timeDate.getTime(t, timeStr, true);
+    unsigned t = ctx.infoSegment->timestamp;
+    QString timeStr = timeDate->getTime(t, true);
+    QString dateStr = timeDate->getDate(t, true);
     timeInfoStr = dateStr + " " + timeStr;
 
     indexStr = QString::number(curRow + 1) + "/" + QString::number(curDisplayEventNum);
@@ -989,7 +985,8 @@ void EventWindowPrivate::eventTrendUpdate()
             }
             else if (paramInfo.getParamID(subId) == PARAM_TEMP)
             {
-                dataStr = Unit::convert(type, paramInfo.getUnitOfSubParam(subId), ctx.trendSegment->values[i].value / 10.0);
+                dataStr = Unit::convert(type, paramInfo.getUnitOfSubParam(subId),
+                                        ctx.trendSegment->values[i].value / 10.0);
             }
             else if (paramInfo.getParamID(subId) == PARAM_NIBP)
             {
@@ -1228,8 +1225,8 @@ void EventWindowPrivate::refreshEventList()
             }
             unsigned t = ctx.infoSegment->timestamp;
             // 事件时间
-            timeDate.getDate(t, dateStr, true);
-            timeDate.getTime(t, timeStr, true);
+            dateStr = timeDate->getDate(t, true);
+            timeStr = timeDate->getTime(t, true);
             QString timeItemStr = dateStr + " " + timeStr;
 
             switch (ctx.infoSegment->type)

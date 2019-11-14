@@ -9,7 +9,7 @@
  **/
 
 #pragma once
-#include "MenuContent.h"
+#include "Framework/UI/MenuContent.h"
 #include "SoundManager.h"
 
 class ECGMenuContentPrivate;

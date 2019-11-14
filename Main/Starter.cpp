@@ -18,9 +18,10 @@
 #include <QBrush>
 #endif
 #include <QFile>
-#include "ErrorLog.h"
-#include "ErrorLogItem.h"
-#include "Utility.h"
+#include "Framework/ErrorLog/ErrorLog.h"
+#include "Framework/ErrorLog/ErrorLogItem.h"
+#include "Framework/Utility/Utility.h"
+#include "Debug.h"
 
 #define CRASH_LOG_PATH "/usr/local/nPM/bin/crashlog"
 
@@ -59,6 +60,9 @@ int main(int argc, char *argv[])
     // errorlog 初始化
     errorLog.getInstance();
 
+    /* init framework resources */
+    Q_INIT_RESOURCE(ui);
+
     IApplication app(argc, argv);
 
     // 检查并固定系统时间
@@ -86,5 +90,5 @@ int main(int argc, char *argv[])
 #endif
 
     // 下面开始分析请求的模式，并决定系统最终的运行模式。
-    appMain(app);
+    appMain(&app);
 }

@@ -9,9 +9,9 @@
  **/
 #include <QGridLayout>
 #include "FontManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "KeyInputPanel.h"
-#include "Button.h"
+#include "Framework/UI/Button.h"
 #include <QCoreApplication>
 #include <QInputMethodEvent>
 #include <QLineEdit>
@@ -19,7 +19,7 @@
 #include <QIcon>
 #include <QPainter>
 #include <QColorGroup>
-#include "ThemeManager.h"
+#include "Framework/UI/ThemeManager.h"
 
 #define ICON_SIZE 32
 

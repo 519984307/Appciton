@@ -16,7 +16,6 @@
 #include <QHBoxLayout>
 #include "TrendWidgetLabel.h"
 #include "AGSymbol.h"
-#include "WindowManager.h"
 #include <QDebug>
 #include "MeasureSettingWindow.h"
 #include "AlarmConfig.h"

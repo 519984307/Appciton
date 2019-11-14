@@ -14,13 +14,14 @@
 #include "ConfigManager.h"
 #include <QGridLayout>
 #include <QScrollArea>
-#include <LanguageManager.h>
+#include "Framework/Language/LanguageManager.h"
+#include "Framework/UI/ThemeManager.h"
 #include "FontManager.h"
-#include "WindowManager.h"
 #include <QTimer>
 #include "EventStorageManager.h"
 #include "TimeManager.h"
 #include "IConfig.h"
+#include <QKeyEvent>
 
 class CodeMarkerWindowPrivate
 {
@@ -71,7 +72,7 @@ CodeMarkerWindow::CodeMarkerWindow() : Dialog()
     int fontSize = fontManager.getFontSize(3);
 
     setWindowTitle(trs("CodeMarker"));
-    setFixedWidth(windowManager.getPopWindowWidth());
+    setFixedWidth(themeManager.defaultWindowSize().width());
     // scroll
     d_ptr->scrollArea = new QScrollArea();
     d_ptr->scrollArea->setFocusPolicy(Qt::NoFocus);
@@ -148,7 +149,6 @@ void CodeMarkerWindow::showEvent(QShowEvent *e)
 
 void CodeMarkerWindow::hideEvent(QHideEvent *e)
 {
-
     setPress(false);
     d_ptr->isChosen = false;
 

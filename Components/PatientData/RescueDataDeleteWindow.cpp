@@ -10,21 +10,22 @@
 
 #include "RescueDataDeleteWindow.h"
 #include "RescueDataListNewWidget.h"
-#include "TableView.h"
-#include "Button.h"
+#include "Framework/UI/TableView.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ThemeManager.h"
+#include "Framework/Language/LanguageManager.h"
+#include "Framework/Utility/Utility.h"
 #include <QPointer>
-#include "WindowManager.h"
 #include "FontManager.h"
-#include "LanguageManager.h"
 #include "MessageBox.h"
 #include <QEventLoop>
-#include "Utility.h"
 #include "DataStorageDirManager.h"
-#include "ThemeManager.h"
+#include <QBoxLayout>
+#include <QMutex>
 
 RescueDataDeleteWindow *RescueDataDeleteWindow::_selfObj = NULL;
 
-static long deleteSelectIncidnets(const QVariant &para)
+static QVariant deleteSelectIncidnets(const QVariant &para)
 {
     QVariantList list = para.toList();
     foreach(QVariant var, list)
@@ -32,10 +33,10 @@ static long deleteSelectIncidnets(const QVariant &para)
         int index = var.toInt();
         dataStorageDirManager.deleteData(index);
     }
-    return 0;
+    return QVariant();
 }
 
-static long deleteAllData(const QVariant & para)
+static QVariant deleteAllData(const QVariant & para)
 {
     static QMutex mutex;
     Q_UNUSED(para);
@@ -45,7 +46,7 @@ static long deleteAllData(const QVariant & para)
         mutex.unlock();
         return 1;
     }
-    return 0;
+    return QVariant();
 }
 
 class RescueDataDeleteWindowPrivate
@@ -57,7 +58,7 @@ public:
           deleteAll(NULL),
           up(NULL),
           down(NULL),
-          widgetHeight(themeManger.getAcceptableControlHeight())
+          widgetHeight(themeManager.getAcceptableControlHeight())
     {}
     ~RescueDataDeleteWindowPrivate(){}
 
@@ -78,7 +79,8 @@ RescueDataDeleteWindow::~RescueDataDeleteWindow()
 void RescueDataDeleteWindow::_updateWindowTitle()
 {
     QString str;
-    if (languageManager.getCurLanguage() == LanguageManager::English)
+    LanguageManager *langMgr = LanguageManager::getInstance();
+    if (langMgr->getCurLanguage() == LanguageManager::English)
     {
         str = QString("%1 (page %2 of %3)")
                 .arg(trs("EraseData"))
@@ -100,7 +102,7 @@ void RescueDataDeleteWindow::_updateWindowTitle()
 void RescueDataDeleteWindow::_deleteSelectReleased()
 {
     QStringList list;
-    d_ptr->dataListWidget->getStrList(list);
+    d_ptr->dataListWidget->getStrList(&list);
     if (list.empty())
     {
         MessageBox msgbox(trs("Prompt"), trs("NoIncidents"), QStringList(trs("EnglishYESChineseSURE")));
@@ -109,7 +111,7 @@ void RescueDataDeleteWindow::_deleteSelectReleased()
     }
 
     QStringList checkList;
-    d_ptr->dataListWidget->getCheckList(checkList);
+    d_ptr->dataListWidget->getCheckList(&checkList);
     if (checkList.isEmpty())
     {
         MessageBox msgbox(trs("Prompt"), trs("SelectIncidents"), QStringList(trs("EnglishYESChineseSURE")));
@@ -158,7 +160,7 @@ void RescueDataDeleteWindow::_deleteSelectReleased()
 void RescueDataDeleteWindow::_deleteAllReleased()
 {
     QStringList list;
-    d_ptr->dataListWidget->getStrList(list);
+    d_ptr->dataListWidget->getStrList(&list);
     if (list.empty())
     {
         MessageBox msgbox(trs("Prompt"), trs("NoIncidents"), QStringList(trs("EnglishYESChineseSURE")));
@@ -208,8 +210,8 @@ void RescueDataDeleteWindow::_downReleased()
 void RescueDataDeleteWindow::_updateEraseBtnStatus()
 {
     QStringList checkList , strList;
-    d_ptr->dataListWidget->getCheckList(checkList);
-    d_ptr->dataListWidget->getStrList(strList);
+    d_ptr->dataListWidget->getCheckList(&checkList);
+    d_ptr->dataListWidget->getStrList(&strList);
     int checkListCount = checkList.count();
     int strListCount = strList.count();
     // erase select button
@@ -238,8 +240,9 @@ RescueDataDeleteWindow::RescueDataDeleteWindow()
       d_ptr(new RescueDataDeleteWindowPrivate())
 {
     QVBoxLayout *contentLayout = new QVBoxLayout();
-    int maxw = windowManager.getPopWindowWidth();
-    int maxh = windowManager.getPopWindowHeight();
+    QSize winSize = themeManager.defaultWindowSize();
+    int maxw = winSize.width();
+    int maxh = winSize.height();
 
     int margins = contentsMargins().left() * 2 + 10;
     d_ptr->dataListWidget = new RescueDataListNewWidget(maxw - margins,
@@ -258,13 +261,13 @@ RescueDataDeleteWindow::RescueDataDeleteWindow()
     d_ptr->deleteAll->setButtonStyle(Button::ButtonTextOnly);
     connect(d_ptr->deleteAll, SIGNAL(released()), this, SLOT(_deleteAllReleased()));
 
-    QIcon ico = themeManger.getIcon(ThemeManager::IconUp, QSize(32, 32));
+    QIcon ico = themeManager.getIcon(ThemeManager::IconUp, QSize(32, 32));
     d_ptr->up = new Button("", ico);
     d_ptr->up->setIconSize(QSize(32, 32));
     d_ptr->up->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->up, SIGNAL(released()), this, SLOT(_upReleased()));
 
-    ico = themeManger.getIcon(ThemeManager::IconDown, QSize(32, 32));
+    ico = themeManager.getIcon(ThemeManager::IconDown, QSize(32, 32));
     d_ptr->down = new Button("", ico);
     d_ptr->down->setIconSize(QSize(32, 32));
     d_ptr->down->setButtonStyle(Button::ButtonIconOnly);

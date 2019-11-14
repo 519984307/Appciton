@@ -8,7 +8,7 @@
  ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/24
  **/
 
-#include "MenuContent.h"
+#include "Framework/UI/MenuContent.h"
 
 class  ScreenMenuContentPrivate;
 class ScreenMenuContent : public MenuContent

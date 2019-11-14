@@ -47,8 +47,8 @@ public:
     void noticeLimitAlarm(int id, bool flag);
 
     // 获取可得的波形控件集。
-    virtual void getAvailableWaveforms(QStringList &waveforms,
-            QStringList &waveformShowName, int);
+    virtual void getAvailableWaveforms(QStringList *waveforms,
+            QStringList *waveformShowName, int);
 
     // 获取当前的单位。
     virtual UnitType getCurrentUnit(SubParamID id);

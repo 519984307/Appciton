@@ -11,7 +11,6 @@
 
 #include "IBPTrendWidget.h"
 #include "IBPParam.h"
-#include "WindowManager.h"
 #include "TrendWidgetLabel.h"
 #include "ParamManager.h"
 #include "ParamInfo.h"

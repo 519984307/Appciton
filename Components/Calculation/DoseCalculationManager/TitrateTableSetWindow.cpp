@@ -8,15 +8,14 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/1
  **/
 #include "TitrateTableSetWindow.h"
-#include "ComboBox.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/Button.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
-#include "Button.h"
 #include "TitrateTableManager.h"
 #include "TitrateTableWindow.h"
-#include "WindowManager.h"
 #include <QGridLayout>
 #include "TitrateTableDefine.h"
-#include "LanguageManager.h"
 #include "LayoutManager.h"
 
 class TitrateTableSetWindowPrivate
@@ -99,9 +98,7 @@ void TitrateTableSetWindow::layoutExec()
     combo = new ComboBox;
     for (int i = 0; i < STEP_OPTION_NR; i++)
     {
-        combo->addItem(QString::number(
-                           TitrateTableDefine::convert(
-                               static_cast<StepOption>(i))));
+        combo->addItem(QString::number(i+1));
     }
     layout->addWidget(combo, 0, 1);
     combo->setCurrentIndex(titrateTableManager.
@@ -110,12 +107,16 @@ void TitrateTableSetWindow::layoutExec()
 
     label = new QLabel(trs("DatumTerm"));
     layout->addWidget(label, 1, 0);
+    const char *symbolDatuTerm[DATUM_TERM_NR] =
+    {
+        "Dosemin",
+        "InfusionRate",
+        "DripRate"
+    };
     combo = new ComboBox;
     for (int i = 0; i < DATUM_TERM_NR; i++)
     {
-        combo->addItem(trs(
-                           TitrateTableDefine::convert(
-                               static_cast<DatumTerm>(i))));
+        combo->addItem(trs(symbolDatuTerm[i]));
     }
     layout->addWidget(combo, 1, 1);
     combo->setCurrentIndex(titrateTableManager.
@@ -124,12 +125,17 @@ void TitrateTableSetWindow::layoutExec()
 
     label = new QLabel(trs("Dosetype"));
     layout->addWidget(label, 2, 0);
+    const char *symbolDose[DOSE_TYPE_NR] =
+    {
+        "minDose",
+        "hDose",
+        "kgminDose",
+        "kghDose"
+    };
     combo = new ComboBox;
     for (int i = 0; i < DOSE_TYPE_NR; i++)
     {
-        combo->addItem(trs(
-                           TitrateTableDefine::convert(
-                               static_cast<DoseType>(i))));
+        combo->addItem(trs(symbolDose[i]));
     }
     layout->addWidget(combo, 2, 1);
     combo->setCurrentIndex(titrateTableManager.

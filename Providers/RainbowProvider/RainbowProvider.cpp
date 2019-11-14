@@ -14,7 +14,7 @@
 #include "SPO2Alarm.h"
 #include <QTimer>
 #include "AlarmSourceManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 
 #define SOM  (0xA1)
 #define EOM  (0xAF)
@@ -184,7 +184,7 @@ enum Spo2Exceptions
 
 enum SpCOExceptions
 {
-    INVAILD_SPCO = 0X0004, // invaild spco
+    INVAILD_SPCO = 0X0004,  // invaild spco
 };
 
 enum PVIExceptions
@@ -386,9 +386,9 @@ RainbowProvider::~RainbowProvider()
 {
 }
 
-bool RainbowProvider::attachParam(Param &param)
+bool RainbowProvider::attachParam(Param *param)
 {
-    if (param.getParamID() == PARAM_SPO2)
+    if (param->getParamID() == PARAM_SPO2)
     {
         spo2Param.setProvider(this, d_ptr->isPlugIn);
         Provider::attachParam(param);
@@ -433,9 +433,10 @@ void RainbowProvider::dataArrived()
 
         // 如果查询不到帧尾，移除ringbuff缓冲区最旧的数据，下次继续查询
         unsigned char len = ringBuff.at(1);     // data field length
-        unsigned char totalLen = 2 + len + 2;   // 1 frame head + 1 lenblmpr byte + data length + 1 checksum + 1 frame end
+        // 1 frame head + 1 lenblmpr byte + data length + 1 checksum + 1 frame end
+        unsigned char totalLen = 2 + len + 2;
 
-#if 0   // TODO: check the packet length
+#if 0   /* TODO: check the packet length */
         if (totalLen > 40)
         {
             qDebug() << "packet too large";
@@ -514,9 +515,10 @@ void RainbowProvider::dataArrived(unsigned char *data, unsigned int length)
 
         // 如果查询不到帧尾，移除ringbuff缓冲区最旧的数据，下次继续查询
         unsigned char len = ringBuff.at(1);     // data field length
-        unsigned char totalLen = 2 + len + 2;   // 1 frame head + 1 len byte + data length + 1 checksum + 1 frame end
+        // 1 frame head + 1 len byte + data length + 1 checksum + 1 frame end
+        unsigned char totalLen = 2 + len + 2;
 
-#if 1   // TODO: check the packet length
+#if 1   /* TODO: check the packet length */
         if (totalLen > 40)
         {
             qWarning() << "packet too large, drop " << hex << ringBuff.at(0);
@@ -565,7 +567,8 @@ void RainbowProvider::dataArrived(unsigned char *data, unsigned int length)
 void RainbowProvider::dispatchPortHasReset()
 {
     d_ptr->isReseting = false;
-    QTimer::singleShot(500, this, SLOT(changeBaudrate()));  // 返回复位成功后，需要给模块一点时间复位，才可以成功设置波特率。
+    // 返回复位成功后，需要给模块一点时间复位，才可以成功设置波特率。
+    QTimer::singleShot(500, this, SLOT(changeBaudrate()));
 }
 
 int RainbowProvider::getSPO2BaseLine()
@@ -1154,13 +1157,15 @@ void RainbowProviderPrivate::handleWaveformInfo(unsigned char *data, int len)
     {
         unsigned char signalIQ = data[2];
         spo2Param.addWaveformData(waveData, signalIQ, isPlugIn);
-        spo2Param.addWaveformData(waveData, signalIQ, isPlugIn);  // add wavedata twice for rounding SPO2 Waveform Sample  62.5 * 2 = 125
+        // add wavedata twice for rounding SPO2 Waveform Sample  62.5 * 2 = 125
+        spo2Param.addWaveformData(waveData, signalIQ, isPlugIn);
         spo2Param.setPulseAudio(true);
     }
     else
     {
         spo2Param.addWaveformData(waveData, 0, isPlugIn);
-        spo2Param.addWaveformData(waveData, 0, isPlugIn);  // add wavedata twice for rounding SPO2 Waveform Sample  62.5 * 2 = 125
+        // add wavedata twice for rounding SPO2 Waveform Sample  62.5 * 2 = 125
+        spo2Param.addWaveformData(waveData, 0, isPlugIn);
     }
 }
 
@@ -1305,7 +1310,8 @@ void RainbowProviderPrivate::handleACK()
                 // data is transmited directly through the uart port
                 q_ptr->plugInInfo.plugIn->updateUartBaud(RUN_BAUD_RATE);
                 // 设置波特率在请求板子信息之前
-                q_ptr->plugInInfo.plugIn->setPacketPortBaudrate(PlugInProvider::PLUGIN_TYPE_SPO2, PlugInProvider::BAUDRATE_57600);
+                q_ptr->plugInInfo.plugIn->setPacketPortBaudrate(PlugInProvider::PLUGIN_TYPE_SPO2,
+                                                                PlugInProvider::BAUDRATE_57600);
                 QTimer::singleShot(50, q_ptr, SLOT(requestBoardInfo()));
             }
             else
@@ -1379,8 +1385,10 @@ void RainbowProviderPrivate::handleACK()
             break;
         case RB_INIT_SET_WAVEFORM:
             // get here after the baseline
-            configPeriodWaveformOut(CLIPPED_AUTOSCALE_DATA | SIGNAL_IQ_AUDIO_VISUAL_DATA, 16);  // 每16ms输出一次波形
-            if (provider == SPO2_RAINBOW_TYPE_BLM || (isPlugIn && spo2Param.getProviderInfo(false) == SPO2_RAINBOW_TYPE_DAVID))
+            // 每16ms输出一次波形
+            configPeriodWaveformOut(CLIPPED_AUTOSCALE_DATA | SIGNAL_IQ_AUDIO_VISUAL_DATA, 16);
+            if (provider == SPO2_RAINBOW_TYPE_BLM ||
+                    (isPlugIn && spo2Param.getProviderInfo(false) == SPO2_RAINBOW_TYPE_DAVID))
             {
                 // BLM的板子不配置高级参数
                 // 如果内置的是David板时，不配置插件的高级参数

@@ -9,9 +9,9 @@
  **/
 
 #include "SaveUserConfigWindow.h"
-#include "LanguageManager.h"
+#include "Framework/UI/Button.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
-#include "Button.h"
 #include <QBoxLayout>
 #include "EnglishInputPanel.h"
 #include "ConfigManager.h"
@@ -97,7 +97,8 @@ void SaveUserConfigWindow::onBtnReleased()
         if (configManager.hasExistConfig(d_ptr->cofNameBtn->text(), patientManager.getType()))
         {
             MessageBox message(trs("Prompt"), trs("HasExistConfig"), false);
-            windowManager.showWindow(&message, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
+            windowManager.showWindow(&message,
+                                     WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
         }
         else
         {

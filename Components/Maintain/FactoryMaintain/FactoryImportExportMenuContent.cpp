@@ -12,7 +12,12 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QLabel>
-#include "Button.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ListView.h"
+#include "Framework/UI/ListDataModel.h"
+#include "Framework/UI/ListViewItemDelegate.h"
+#include "Framework/UI/ThemeManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QList>
 #include <QListWidgetItem>
 #include <QDomDocument>
@@ -22,12 +27,7 @@
 #include <QProcess>
 #include "ImportFileSubWidget.h"
 #include <QDir>
-#include "ListView.h"
-#include "ListDataModel.h"
-#include "ListViewItemDelegate.h"
-#include "LanguageManager.h"
 #include "USBManager.h"
-#include "ThemeManager.h"
 #include <QTimer>
 
 #define CONFIG_MAX_NUM        (6)
@@ -39,7 +39,7 @@
 #define CONFIG_FILE_SYSTEM    ("System.Original.xml")
 #define CONFIG_FILE_MACHINE   ("Machine.xml")
 #define LISTVIEW_MAX_VISIABLE_TIME (5)
-#define HEIGHT_HINT (themeManger.getAcceptableControlHeight())
+#define HEIGHT_HINT (themeManager.getAcceptableControlHeight())
 
 enum TransferResult
 {

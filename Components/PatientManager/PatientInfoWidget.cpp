@@ -10,15 +10,15 @@
 
 
 #include "PatientInfoWidget.h"
-#include "LanguageManager.h"
-#include "FontManagerInterface.h"
+#include "Framework/Language/LanguageManager.h"
+#include "Framework/Font/FontManagerInterface.h"
+#include "Framework/Sound/SoundManagerInterface.h"
 #include <QBoxLayout>
 #include <QLabel>
 #include "IConfig.h"
 #include "WindowManagerInterface.h"
 #include "PatientInfoWindowInterface.h"
 #include "PatientManager.h"
-#include "SoundManagerInterface.h"
 
 void PatientInfoWidget::loadPatientInfo(const PatientInfo &info, const QString &bed)
 {
@@ -32,13 +32,6 @@ void PatientInfoWidget::loadPatientInfo(const PatientInfo &info, const QString &
     _patientName->setText(nameStr);
     _patientType->setText(typeStr);
     _bed->setText(bed);
-}
-
-void PatientInfoWidget::getText(QString &bed, QString &name, QString &type)
-{
-    bed = _bed->text();
-    name = _patientName->text();
-    type = _patientType->text();
 }
 
 void PatientInfoWidget::setAlarmPauseTime(int seconds)
@@ -58,7 +51,7 @@ void PatientInfoWidget::setAlarmPauseTime(int seconds)
                                     .arg(seconds % 60, 2, 10, QLatin1Char('0'));
         }
 
-        FontMangerInterface *fontManager = FontMangerInterface::getFontManager();
+        FontManagerInterface *fontManager = FontManagerInterface::getFontManager();
         if (fontManager)
         {
             int fontSize = fontManager->getFontSize(4);
@@ -100,8 +93,9 @@ void PatientInfoWidget::mousePressEvent(QMouseEvent *e)
 
 void PatientInfoWidget::_releaseHandle(IWidget *iWidget)
 {
-    if (iWidget == NULL)
+    if (iWidget == NULL || _stack->currentIndex() == 1)
     {
+        // 报警状态下，不可点击进入病人信息
         return;
     }
 
@@ -120,7 +114,7 @@ void PatientInfoWidget::_releaseHandle(IWidget *iWidget)
  *************************************************************************************************/
 PatientInfoWidget::PatientInfoWidget(QWidget *parent) : PatientInfoWidgetInterface(parent)
 {
-    FontMangerInterface *fontManager = FontMangerInterface::getFontManager();
+    FontManagerInterface *fontManager = FontManagerInterface::getFontManager();
     if (!fontManager)
     {
         return;

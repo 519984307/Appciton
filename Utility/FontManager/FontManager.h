@@ -10,9 +10,9 @@
 
 
 #pragma once
-#include "FontManagerInterface.h"
+#include "Framework/Font/FontManagerInterface.h"
 
-class FontManager : public FontMangerInterface
+class FontManager : public FontManagerInterface
 {
 public:
     static FontManager &getInstance(void);

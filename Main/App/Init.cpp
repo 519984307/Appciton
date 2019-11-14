@@ -10,7 +10,6 @@
 
 
 #include "Init.h"
-#include "ErrorLogItem.h"
 #include "LayoutManager.h"
 #include "ShortTrendContainer.h"
 #include "NightModeManager.h"
@@ -22,7 +21,55 @@
 #include "PlugInProvider.h"
 #include <QApplication>
 #include <QDesktopWidget>
+#include "Framework/ErrorLog/ErrorLog.h"
+#include "Framework/ErrorLog/ErrorLogItem.h"
 
+#include "Framework/Language/LanguageManager.h"
+#include "Framework/Language/Translator.h"
+#include "Framework/TimeDate/TimeDate.h"
+
+/**
+ * @brief initLanguage initialize the language manager
+ */
+static void initLanguage()
+{
+#define LOCALE_FILE_PATH "/usr/local/nPM/locale/"
+     int langNo = 0;
+     systemConfig.getNumAttr("General|Language", "CurrentOption", langNo);
+     int langNext = 0;
+     systemConfig.getNumAttr("General|Language", "NextOption", langNext);
+
+     if (langNo != langNext)
+     {
+         /* If not identical, we need to switch the new language */
+         systemConfig.setNumAttr("General|Language", "CurrentOption", langNext);
+         langNo = langNext;
+     }
+
+     LanguageManager::LanguageId langId = static_cast<LanguageManager::LanguageId>(langNo);
+
+     LanguageManager *langMgr = LanguageManager::getInstance();
+
+     // 获取语言文件的名称。
+     QString language = QString("General|Language|Opt%1").arg(langNo);
+
+     systemConfig.getStrAttr(language, "XmlFileName", language);
+     QString path =  LOCALE_FILE_PATH + language + ".xml";
+
+     Translator *translator = new Translator(path);
+     if (!translator->isValid())
+     {
+         qWarning() << Q_FUNC_INFO << "Load langage file" << path << "Failed";
+         delete translator;
+         return;
+     }
+
+     if (!langMgr->registerTranslator(langId, translator))
+     {
+         qDebug() << Q_FUNC_INFO << "register Language translator failed!";
+         delete translator;
+     }
+}
 /**************************************************************************************************
  * 功能： 初始化系统。
  *************************************************************************************************/
@@ -33,6 +80,7 @@ static void _initSystem(void)
 
     systemConfig.construction();
 
+    initLanguage();
     // superConfig.construction();
 
     // superRunConfig.construction();
@@ -118,9 +166,6 @@ static void _initSystem(void)
     EventStorageManager::getInstance();
     TrendDataStorageManager::getInstance();
 
-    //消息提示框
-    pMessageBox.construction();
-
     // 初始化夜间模式
     runningStatus.getInstance();
     if (nightModeManager.nightMode())
@@ -165,7 +210,8 @@ static void _initComponents(void)
     timeManager.registerWidgets(timeWigdet, NULL);
 
     // 基础时间日期管理。
-    timeDate.construction();
+    timeDate->getInstance();
+
 
     // 系统状态栏
     layoutManager.addLayoutWidget(&sysStatusBar);
@@ -182,7 +228,7 @@ static void _initComponents(void)
     // 病人管理初始化。
     PatientInfoWidget *patientInfoWidget = new PatientInfoWidget();
     layoutManager.addLayoutWidget(patientInfoWidget);
-    patientManager.setPatientInfoWidget(*patientInfoWidget);
+    patientManager.setPatientInfoWidget(patientInfoWidget);
     patientInfoWindow.getInstance();
 
     // 初始化报警。
@@ -216,10 +262,6 @@ static void _initComponents(void)
     alarmStateMachine.getInstance();
     alarmStateMachine.start();
 
-    // 数据管理。
-    rescueDataExportWidget.construction();
-    rescueDataDeleteWidget.construction();
-
     // U盘管理
     usbManager.getInstance();
     // U盘数据储存
@@ -232,16 +274,16 @@ static void _initProviderParam(void)
 {
     paramInfo.getInstance();
 
-    paramManager.addProvider(systemBoardProvider);
+    paramManager.addProvider(&systemBoardProvider);
 
     // 创建Provider.
     DemoProvider *demo = new DemoProvider();
-    paramManager.addProvider(*demo);
+    paramManager.addProvider(demo);
     // TE3Provider *te3 = new TE3Provider();
     // paramManager.addProvider(*te3);
 
     E5Provider *te3 = new E5Provider();
-    paramManager.addProvider(*te3);
+    paramManager.addProvider(te3);
 
     DataDispatcher::addDataDispatcher(new DataDispatcher("DataDispatcher"));
 
@@ -249,13 +291,13 @@ static void _initProviderParam(void)
     PlugInProvider::addPlugInProvider(new PlugInProvider("PlugIn"));
 
     // ECG部分。
-    paramManager.addParam(ecgDupParam.getInstance());
+    paramManager.addParam(&ecgDupParam.getInstance());
 
     AlarmLimitIFace *limitAlarmSource = new ECGDupLimitAlarm();
     alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_ECGDUP);
     alertor.addLimtSource(limitAlarmSource);
 
-    paramManager.addParam(ecgParam.getInstance());
+    paramManager.addParam(&ecgParam.getInstance());
 
     limitAlarmSource = new ECGLimitAlarm();
     alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_ECG);
@@ -347,13 +389,13 @@ static void _initProviderParam(void)
     // RESP部分。
     if (systemManager.isSupport(CONFIG_RESP) || systemManager.isSupport(CONFIG_CO2))
     {
-        paramManager.addParam(respDupParam.construction());
+        paramManager.addParam(&respDupParam.construction());
         limitAlarmSource = new RESPDupLimitAlarm();
         alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_RESPDUP);
         alertor.addLimtSource(limitAlarmSource);
         if (systemManager.isSupport(CONFIG_RESP))
         {
-            paramManager.addParam(respParam.construction());
+            paramManager.addParam(&respParam.construction());
 
             limitAlarmSource = new RESPLimitAlarm();
             alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_RESP);
@@ -385,20 +427,20 @@ static void _initProviderParam(void)
         machineConfig.getStrValue("SPO2", str);
         if (str == "MASIMO_SPO2")
         {
-            paramManager.addProvider(*new MasimoSetProvider());
+            paramManager.addProvider(new MasimoSetProvider());
             spo2Param.setModuleType(MODULE_MASIMO_SPO2);
         }
         else if (str == "BLM_S5")
         {
-            paramManager.addProvider(*new S5Provider());
+            paramManager.addProvider(new S5Provider());
             spo2Param.setModuleType(MODULE_BLM_S5);
         }
         else if (str == "RAINBOW_SPO2")
         {
             spo2Param.setModuleType(MODULE_RAINBOW_SPO2);
-            paramManager.addProvider(*new RainbowProvider("RAINBOW_SPO2"));
+            paramManager.addProvider(new RainbowProvider("RAINBOW_SPO2"));
         }
-        paramManager.addParam(spo2Param.getInstance());
+        paramManager.addParam(&spo2Param.getInstance());
 
         limitAlarmSource = new SPO2LimitAlarm();
         alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_SPO2);
@@ -477,14 +519,14 @@ static void _initProviderParam(void)
         machineConfig.getStrValue("NIBP", str);
         if (str == "SUNTECH_NIBP")
         {
-            paramManager.addProvider(*new SuntechProvider());
+            paramManager.addProvider(new SuntechProvider());
         }
         else
         {
-            paramManager.addProvider(*new N5Provider());
+            paramManager.addProvider(new N5Provider());
         }
 
-        paramManager.addParam(nibpParam.getInstance());
+        paramManager.addParam(&nibpParam.getInstance());
 
         limitAlarmSource = new NIBPLimitAlarm();
         alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_NIBP);
@@ -506,8 +548,9 @@ static void _initProviderParam(void)
     {
         QString str;
         machineConfig.getStrValue("CO2", str);
-        paramManager.addProvider(*new BLMCO2Provider(str));
-        paramManager.addParam(co2Param.construction());
+        paramManager.addProvider(new BLMCO2Provider(str));
+
+        paramManager.addParam(&co2Param.construction());
 
         limitAlarmSource = new CO2LimitAlarm();
         alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_CO2);
@@ -533,8 +576,8 @@ static void _initProviderParam(void)
     // IBP test
     if (systemManager.isSupport(CONFIG_IBP))
     {
-        paramManager.addProvider(*new WitleafProvider());
-        paramManager.addParam(ibpParam.construction());
+        paramManager.addProvider(new WitleafProvider());
+        paramManager.addParam(&ibpParam.construction());
 
         limitAlarmSource = new IBPLimitAlarm();
         alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_IBP);
@@ -567,7 +610,7 @@ static void _initProviderParam(void)
     // CO
     if (systemManager.isSupport(CONFIG_CO))
     {
-        paramManager.addParam(coParam.construction());
+        paramManager.addParam(&coParam.construction());
 
         limitAlarmSource = new COLimitAlarm();
         alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_CO);
@@ -584,8 +627,8 @@ static void _initProviderParam(void)
     // AG
     if (systemManager.isSupport(CONFIG_AG))
     {
-        paramManager.addProvider(*new PhaseinProvider());
-        paramManager.addParam(agParam.construction());
+        paramManager.addProvider(new PhaseinProvider());
+        paramManager.addParam(&agParam.construction());
 
         limitAlarmSource = new AGLimitAlarm();
         alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_AG);
@@ -634,10 +677,10 @@ static void _initProviderParam(void)
         machineConfig.getStrValue("TEMP", str);
         if (str == "BLM_T5")
         {
-            paramManager.addProvider(*new T5Provider());
+            paramManager.addProvider(new T5Provider());
         }
 
-        paramManager.addParam(tempParam.construction());
+        paramManager.addParam(&tempParam.construction());
 
         limitAlarmSource = new TEMPLimitAlarm();
         alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_TEMP);
@@ -654,8 +697,8 @@ static void _initProviderParam(void)
 #ifdef ENABLE_O2_APNEASTIMULATION
     if (systemManager.isSupport(CONFIG_O2))
     {
-         paramManager.addProvider(*new NeonateProvider());
-         paramManager.addParam(o2Param.getInstance());
+         paramManager.addProvider(new NeonateProvider());
+         paramManager.addParam(&o2Param.getInstance());
 
          limitAlarmSource = new O2LimitAlarm();
          alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_O2);
@@ -718,7 +761,7 @@ static void _initPrint(void)
         recorderManager.setPrintPrividerIFace(prtProvider);
         recorderManager.selfTest();
         recorderManager.printWavesInit();
-        paramManager.addProvider(*prtProvider);
+        paramManager.addProvider(prtProvider);
     }
 
     paramManager.getVersion();
@@ -729,15 +772,6 @@ static void _initPrint(void)
  *************************************************************************************************/
 static void _initMenu(void)
 {
-    menuManager.construction();
-    userMaintainManager.construction();
-    wifiMaintainMenu.construction();
-
-    userMaintainManager.addSubMenu(&wifiMaintainMenu);
-
-    // supervisorMenuManager
-    supervisorMenuManager.construction();
-
     //其它弹出菜单初始化
     patientManager.getInstance();
 }
@@ -764,11 +798,8 @@ void deleteObjects(void)
     deleteRecorderManager();
 
     //    deleteWaveWidgetSelectMenu();
-    deleteSupervisorMenuManager();
-    deleteMenuManager();
     // deletePatientMenu();
     deleteParamManager();
-    deleteTimeDate();
     deleteMachineConfig();
     deleteDataStorageDirManager();
     deleteSystemConfig();
@@ -777,16 +808,9 @@ void deleteObjects(void)
     deleteSystemTick();
     deleteKeyActionManager();
 
-    deletepMessageBox();
-
-    deleteRescueDataExportWidget();
-    deleteRescueDataDeleteWidget();
-
 //    deleteNetworkManager();
     deleteUsbManager();
-    deleteActivityLogManager();
 
     deleteColorManager();
-    deleteLanguageManager();
     deleteErrorCatch();
 }

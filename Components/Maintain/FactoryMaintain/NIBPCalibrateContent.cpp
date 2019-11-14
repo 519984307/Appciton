@@ -12,15 +12,17 @@
 #include "NIBPParam.h"
 #include "NIBPRepairMenuWindow.h"
 #include <QLabel>
-#include "Button.h"
-#include "ComboBox.h"
-#include "SpinBox.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/SpinBox.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QGridLayout>
 #include "NIBPEventDefine.h"
 #include "NIBPServiceStateDefine.h"
 #include "MessageBox.h"
 #include "IConfig.h"
-#include "LanguageManager.h"
+#include "WindowManager.h"
+#include <QTimerEvent>
 
 #define CALIBRATION_INTERVAL_TIME              (100)
 #define TIMEOUT_WAIT_NUMBER                    (5000 / CALIBRATION_INTERVAL_TIME)

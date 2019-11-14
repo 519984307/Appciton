@@ -12,38 +12,8 @@
 #include <QObject>
 #include <QBitArray>
 #include "Param.h"
-#include "TimeDefine.h"
+#include "Framework/TimeDate/TimeDefine.h"
 #include "SystemManagerInterface.h"
-
-#ifdef Q_WS_X11
-#include <QTcpSocket>
-#include <QQueue>
-#endif
-
-#define IDM_SOFTWARE_VERSION ("1.0.3")
-
-// 前面板按键状态,与系统板获取按键状态命令回复一致
-enum PanelKeyStatus
-{
-    PANEL_KEY_0 = 0,
-    PANEL_KEY_1,
-    PANEL_KEY_2,
-    PANEL_KEY_3,
-    PANEL_KEY_4,
-    PANEL_KEY_ALARM,
-    PANEL_KEY_MENU,
-    PANEL_KEY_NIBP,
-    PANEL_KEY_RECORDER,
-    PANEL_KEY_ENERGY_DN,
-    PANEL_KEY_ENERGY_UP,
-    PANEL_KEY_CHARGING,
-    PANEL_KEY_SHOCK,
-    PANEL_KEY_ENTER,
-    PANEL_KEY_0_4,
-    PANEL_KEY_1_4,
-    PANEL_KEY_0_3,
-    PANEL_KEY_NR = 24
-};
 
 // 模块开机检查结果类型
 enum ModulePoweronTestResult
@@ -83,7 +53,6 @@ enum TouchscreenStatus
     TOUCHSCREEN_CAPACITIVE = 2,             // 电容
 };
 
-class SystemSelftestMenu;
 class SystemManagerPrivate;
 class SystemManager : public QObject, public SystemManagerInterface
 {
@@ -148,19 +117,6 @@ public:
     void enableBrightness(BrightnessLevel br);
     BrightnessLevel getBrightness(void);
 
-    // 加载初始底层模式。
-    void loadInitBMode(void);
-
-    // 是否确认了自检结果
-    bool isAcknownledgeSystemTestResult();
-
-    // system self-test is over
-    bool isSystemSelftestOver() const;
-    void systemSelftestOver();
-
-    // hide system test diag
-    void closeSystemTestDialog();
-
     // check whether the system is going to turn off
     bool isGoingToTrunOff() const;
     void turnOff(bool flag);
@@ -177,16 +133,28 @@ public:
      */
     void setWorkMode(WorkMode workmode);
 
-#ifdef Q_WS_X11
-public:
-    bool sendCommand(const QByteArray &cmd);
+    /**
+     * @brief setSystemTimeFormat set the system time format
+     * @param format the new format
+     */
+    void setSystemTimeFormat(const TimeFormat &format);
 
-public slots:
-    void onCtrlSocketReadReady();
+    /**
+     * @brief getSystemTimeFormat get the current system time format
+     * @return the current system time format
+     */
+    TimeFormat getSystemTimeFormat() const;
 
-signals:
-    void metronomeReceived();
-#endif
+    /**
+     * @brief setSystemDateFormat set the system date format
+     * @param format the new date  fomate
+     */
+    void setSystemDateFormat(const DateFormat &format);
+    /**
+     * @brief getSystemDateFormat get the current system date format
+     * @return  the current system date format
+     */
+    DateFormat getSystemDateFormat() const;
 
 signals:
     void workModeChanged(WorkMode mode);
@@ -202,9 +170,6 @@ signals:
      * @param flag 待机标志
      */
     void standbySignal(bool flag);
-
-private slots:
-    void publishTestResult();
 
 private:
     SystemManager();

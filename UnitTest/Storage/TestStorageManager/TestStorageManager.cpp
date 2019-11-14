@@ -189,8 +189,7 @@ void TestStorageManager::testAddSaveData()
     }
 
     QByteArray readData = m_Backend->getBlockData(0);
-    BlockEntry info;
-    m_Backend->getBlockInfo(0, info);
+    BlockEntry info = m_Backend->getBlockInfo(0);
     m_Backend->remove(m_Backend);
 
     QCOMPARE(readData, dataResult);

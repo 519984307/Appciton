@@ -14,7 +14,6 @@
 #include "AlarmInfoWindow.h"
 #include "AlarmInfoBarWidget.h"
 
-class AlarmInfoPopListView;
 class AlarmTechInfoBarWidget : public IWidget, public AlarmInfoBarWidget
 {
     Q_OBJECT
@@ -24,7 +23,7 @@ public:
     void clear(void);
 
     // 设置报警提示信息。
-    void display(AlarmInfoNode &node);
+    void display(const AlarmInfoNode &node);
 
     // 构造与析构。
     explicit AlarmTechInfoBarWidget(const QString &name);

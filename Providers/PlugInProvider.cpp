@@ -9,10 +9,10 @@
  **/
 
 #include "PlugInProvider.h"
-#include "Uart.h"
+#include "Framework/Uart/Uart.h"
 #include "IConfig.h"
-#include "RingBuff.h"
-#include "crc8.h"
+#include "Framework/Utility/RingBuff.h"
+#include "Framework/Utility/crc8.h"
 #include "Provider.h"
 #include <QTimerEvent>
 #include <QFile>
@@ -23,6 +23,7 @@
 #include "SPO2Alarm.h"
 #include "BLMCO2Provider.h"
 #include "CO2Param.h"
+#include "Debug.h"
 
 #define SPO2_SOH             (0xA1)  // rainbow spo2 packet header
 #define SPO2_EOM             (0xAF)  // rainbow spo2 packet end
@@ -31,7 +32,7 @@
 #define MIN_PACKET_LEN   5      // 最小数据包长度: SOH,Length,Type,FCS
 #define PACKET_BUFF_SIZE 64
 #define RING_BUFFER_LENGTH 4096
-#define MAXIMUM_PACKET_SIZE 256 // largest packet size, should be larger enough
+#define MAXIMUM_PACKET_SIZE 256  // largest packet size, should be larger enough
 #define READ_PLUGIN_PIN_INTERVAL        (200)   // 200ms读一次插件管脚
 #define CHECK_CONNECT_TIMER_PERIOD         (100)   // 检查连接定时器周期
 #define RUN_BAUD_RATE_9600          (9600)
@@ -148,8 +149,8 @@ public:
         {
             Provider *provider = NULL;
             provider = new RainbowProvider("RAINBOW_SPO2PlugIn", true);
-            paramManager.addProvider(*provider);
-            provider->attachParam(*paramManager.getParam(PARAM_SPO2));
+            paramManager.addProvider(provider);
+            provider->attachParam(paramManager.getParam(PARAM_SPO2));
             return true;
         }
         return false;
@@ -169,7 +170,7 @@ public:
     }
 
     PlugInProvider *const q_ptr;
-    bool isLastSOHPaired; // 遗留在ringBuff最后一个数据（该数据为SOH）是否已经剃掉了多余的SOH
+    bool isLastSOHPaired;  // 遗留在ringBuff最后一个数据（该数据为SOH）是否已经剃掉了多余的SOH
     QString name;
     Uart *uart;
     QMap<PlugInProvider::PlugInType, Provider *> dataHandlers;
@@ -283,7 +284,7 @@ void PlugInProvider::timerEvent(QTimerEvent *ev)
             {
                 updateUartBaud(d_ptr->baudrate);
                 spo2Param.initPluginModule();                 // 初始化SpO2插件模块
-                QTimer::singleShot(1000, this, SLOT(changeBaudrate())); // 预留rainbow模块重启时间
+                QTimer::singleShot(1000, this, SLOT(changeBaudrate()));  // 预留rainbow模块重启时间
                 d_ptr->baudrateTimerID = startTimer(1500);
             }
             pluginSta = d_ptr->readPluginPinSta();
@@ -335,7 +336,7 @@ void PlugInProvider::dataArrived()
 {
     d_ptr->dataNoFeedTick = 0;
 
-    d_ptr->readData(); // 读取数据到RingBuff中
+    d_ptr->readData();  // 读取数据到RingBuff中
 
     while (d_ptr->ringBuff.dataSize() >= MIN_PACKET_LEN)
     {
@@ -344,7 +345,8 @@ void PlugInProvider::dataArrived()
         {
             // 如果查询不到帧尾，移除ringbuff缓冲区最旧的数据，下次继续查询
             unsigned char len = d_ptr->ringBuff.at(1);     // data field length
-            unsigned char totalLen = 2 + len + 2;   // 1 frame head + 1 len byte + data length + 1 checksum + 1 frame end
+            // 1 frame head + 1 len byte + data length + 1 checksum + 1 frame end
+            unsigned char totalLen = 2 + len + 2;
 
             if (totalLen > MAX_PACKET_LEN)
             {
@@ -420,7 +422,7 @@ void PlugInProvider::onPlugInProviderConnectParam(bool isAttach)
     {
         if (d_ptr->dataHandlers[PLUGIN_TYPE_SPO2] != NULL)
         {
-            d_ptr->dataHandlers[PLUGIN_TYPE_SPO2]->attachParam(*(paramManager.getParam(PARAM_SPO2)));
+            d_ptr->dataHandlers[PLUGIN_TYPE_SPO2]->attachParam(paramManager.getParam(PARAM_SPO2));
         }
         else
         {
@@ -437,7 +439,7 @@ void PlugInProvider::onPlugInProviderConnectParam(bool isAttach)
     {
         if (d_ptr->dataHandlers[PLUGIN_TYPE_SPO2] != NULL)
         {
-            d_ptr->dataHandlers[PLUGIN_TYPE_SPO2]->detachParam(*(paramManager.getParam(PARAM_SPO2)));
+            d_ptr->dataHandlers[PLUGIN_TYPE_SPO2]->detachParam(paramManager.getParam(PARAM_SPO2));
         }
     }
 }

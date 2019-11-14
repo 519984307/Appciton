@@ -10,13 +10,13 @@
 
 #include "AlarmInfoModel.h"
 #include <QStringList>
-#include "ThemeManager.h"
-#include "LanguageManager.h"
+#include "Framework/UI/ThemeManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QIcon>
 #include <QResizeEvent>
 #include <QDebug>
 
-#define DEFAULT_ROW_HEIGHT (themeManger.getAcceptableControlHeight())
+#define DEFAULT_ROW_HEIGHT (themeManager.getAcceptableControlHeight())
 #define EACH_PAGE_ALARM_COUNT 7    // 一页最大显示数
 
 enum
@@ -122,12 +122,12 @@ QVariant AlarmInfoModel::data(const QModelIndex &index, int role) const
     case Qt::BackgroundRole:
         if (row % 2)
         {
-            return themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
+            return themeManager.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
                                         ThemeManager::StateDisabled);
         }
         else
         {
-            return themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
+            return themeManager.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
                                         ThemeManager::StateActive);
         }
         break;
@@ -181,7 +181,7 @@ QVariant AlarmInfoModel::headerData(int section, Qt::Orientation orientation, in
             }
         }
         case Qt::BackgroundColorRole:
-            return themeManger.getColor(ThemeManager::ControlTypeNR,
+            return themeManager.getColor(ThemeManager::ControlTypeNR,
                                         ThemeManager::ElementBackgound,
                                         ThemeManager::StateDisabled);
         default:
@@ -215,7 +215,8 @@ bool AlarmInfoModel::setData(const QModelIndex &index, const QVariant &value, in
     return false;
 }
 
-void AlarmInfoModel::setStringList(const QStringList &nameList, const QStringList &timeList, const QStringList &priorityList)
+void AlarmInfoModel::setStringList(const QStringList &nameList, const QStringList &timeList,
+                                   const QStringList &priorityList)
 {
     if (d_ptr->nameList == nameList && d_ptr->timeList == timeList)
     {

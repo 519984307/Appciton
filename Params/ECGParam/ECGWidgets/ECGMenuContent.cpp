@@ -9,9 +9,10 @@
  **/
 
 #include "ECGMenuContent.h"
-#include "LanguageManager.h"
 #include <QLabel>
-#include "ComboBox.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QGridLayout>
 #include <QList>
 #include "ECGSymbol.h"
@@ -20,7 +21,6 @@
 #include "ECGParam.h"
 #include "IConfig.h"
 #include "ConfigManager.h"
-#include "Button.h"
 #include "ArrhythmiaMenuWindow.h"
 #include "WindowManager.h"
 #include <QTimer>
@@ -30,6 +30,7 @@
 #include "AlarmLimitWindow.h"
 #include "SPO2Param.h"
 #include "NightModeManager.h"
+#include <QTimerEvent>
 
 #define PRINT_WAVE_NUM (3)
 
@@ -124,7 +125,7 @@ void ECGMenuContentPrivate::loadOptions()
     ECGLeadMode leadMode = ecgParam.getLeadMode();
     combos[ITEM_CBO_LEAD_MODE]->setCurrentIndex(leadMode);
 
-    ecgParam.getAvailableWaveforms(ecgWaveforms, ecgWaveformTitles, true);
+    ecgParam.getAvailableWaveforms(&ecgWaveforms, &ecgWaveformTitles, true);
     combos[ITEM_CBO_ECG1]->clear();
     combos[ITEM_CBO_ECG2]->clear();
     combos[ITEM_CBO_ECG1]->addItems(ecgWaveformTitles);
@@ -229,6 +230,9 @@ void ECGMenuContentPrivate::loadOptions()
     {
     case ECG_FILTERMODE_MONITOR:
     case ECG_FILTERMODE_SURGERY:
+#ifdef ECG_MONITOR_NOTIFY_FILTER_OFF
+        combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_OFF)), ECG_NOTCH_OFF);
+#endif
         combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_50HZ)), ECG_NOTCH_50HZ);
         combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_60HZ)), ECG_NOTCH_60HZ);
         combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ)), ECG_NOTCH_50_AND_60HZ);
@@ -420,13 +424,16 @@ void ECGMenuContent::layoutExec()
     label = new QLabel(trs("ECGLeadMode"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
+#ifndef HIDE_ECG_12_LEAD_FUNCTION
     comboBox->addItems(QStringList()
                        << trs(ECGSymbol::convert(ECG_LEAD_MODE_3))
                        << trs(ECGSymbol::convert(ECG_LEAD_MODE_5))
-                   #ifndef HIDE_ECG_12_LEAD_FUNCTION
-                       << trs(ECGSymbol::convert(ECG_LEAD_MODE_12))
-                   #endif
-                       );
+                       << trs(ECGSymbol::convert(ECG_LEAD_MODE_12)));
+#else
+    comboBox->addItems(QStringList()
+                       << trs(ECGSymbol::convert(ECG_LEAD_MODE_3))
+                       << trs(ECGSymbol::convert(ECG_LEAD_MODE_5)));
+#endif
     itemID = ECGMenuContentPrivate::ITEM_CBO_LEAD_MODE;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -477,14 +484,18 @@ void ECGMenuContent::layoutExec()
     label = new QLabel(trs("FilterMode"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
+#ifndef  HIDE_ECG_ST_PVCS_SUBPARAM
     comboBox->addItems(QStringList()
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_SURGERY))
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_MONITOR))
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_DIAGNOSTIC))
-                   #ifndef  HIDE_ECG_ST_PVCS_SUBPARAM
-                       << trs(ECGSymbol::convert(ECG_FILTERMODE_ST))
-                   #endif
-                       );
+                       << trs(ECGSymbol::convert(ECG_FILTERMODE_ST)));
+#else
+    comboBox->addItems(QStringList()
+                       << trs(ECGSymbol::convert(ECG_FILTERMODE_SURGERY))
+                       << trs(ECGSymbol::convert(ECG_FILTERMODE_MONITOR))
+                       << trs(ECGSymbol::convert(ECG_FILTERMODE_DIAGNOSTIC)));
+#endif
     itemID = ECGMenuContentPrivate::ITEM_CBO_FILTER_MODE;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -750,6 +761,10 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
             {
             case ECG_FILTERMODE_MONITOR:
             case ECG_FILTERMODE_SURGERY:
+#ifdef ECG_MONITOR_NOTIFY_FILTER_OFF
+                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
+                        addItem(trs(ECGSymbol::convert(ECG_NOTCH_OFF)), ECG_NOTCH_OFF);
+#endif
                 d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
                         addItem(trs(ECGSymbol::convert(ECG_NOTCH_50HZ)), ECG_NOTCH_50HZ);
                 d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
@@ -826,7 +841,8 @@ void ECGMenuContent::onPopupListItemFocusChanged(int volume)
         soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT , static_cast<SoundManager::VolumeLevel>(volume));
         soundManager.heartBeatTone();
         /* reset the sound volume */
-        soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT , static_cast<SoundManager::VolumeLevel>(w->currentIndex()));
+        soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT ,
+                               static_cast<SoundManager::VolumeLevel>(w->currentIndex()));
     }
 }
 

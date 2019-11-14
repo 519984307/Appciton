@@ -14,6 +14,7 @@
 #include "CO2Define.h"
 #include <QLabel>
 #include <QResizeEvent>
+#include "Framework/Utility/Unit.h"
 #include "Debug.h"
 class CO2TrendWidget: public TrendWidget
 {
@@ -64,7 +65,7 @@ private slots:
     void _releaseHandle(IWidget *);
 
 private:
-    void _setValue(int16_t v, QString &str);
+    QString _getValue(int16_t v);
 
     QLabel *_etCO2Label;
     QLabel *_etco2Value;

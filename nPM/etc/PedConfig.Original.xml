@@ -56,7 +56,7 @@
         <HRSource>3</HRSource>
         <DisplayMode>0</DisplayMode>
         <LeadMode>1</LeadMode>
-        <NotchFilter>0</NotchFilter>
+        <NotchFilter>1</NotchFilter>
         <SmartLeadOff>0</SmartLeadOff>
         <FilterMode>1</FilterMode>
         <SelfLearn>0</SelfLearn>

@@ -14,15 +14,15 @@
 #include "SPO2Param.h"
 #include "FontManager.h"
 #include "WaveWidgetLabel.h"
-#include "LanguageManager.h"
+#include "Framework/UI/PopupList.h"
+#include "Framework/Language/LanguageManager.h"
 #include "ColorManager.h"
 #include "ParamInfo.h"
-#include "PopupList.h"
 #include "IConfig.h"
 #include "Debug.h"
-#include "WindowManager.h"
 #include "SystemManager.h"
 #include <QPainter>
+#include <QPaintEvent>
 
 /**************************************************************************************************
  * wave is enable。
@@ -98,7 +98,7 @@ void SPO2WaveWidget::paintEvent(QPaintEvent *e)
                     if (drawFlag)   // 一个波峰只画一次IQ
                     {
                         // has IQ value,以波形高度为100%来绘画
-                        unsigned char iqValue = flag & (~SPO2_IQ_FLAG_BIT); // IQ值（%）
+                        unsigned char iqValue = flag & (~SPO2_IQ_FLAG_BIT);  // IQ值（%）
                         int pointY = this->rect().height() * iqValue / 100;
                         QPoint start(xBuf(i), this->rect().height() - pointY);
                         QPoint end(xBuf(i), this->rect().height() - 5);
@@ -132,7 +132,7 @@ void SPO2WaveWidget::paintEvent(QPaintEvent *e)
                     if (drawFlag)
                     {
                         // has IQ value,以波形高度为100%来绘画
-                        unsigned char iqValue = flag & (~SPO2_IQ_FLAG_BIT); // IQ值（%）
+                        unsigned char iqValue = flag & (~SPO2_IQ_FLAG_BIT);  // IQ值（%）
                         int pointY = this->rect().height() * iqValue / 100;
                         QPoint start(xBuf(i), this->rect().height() - pointY);
                         QPoint end(xBuf(i), this->rect().height() - 5);
@@ -159,7 +159,7 @@ void SPO2WaveWidget::paintEvent(QPaintEvent *e)
                     if (drawFlag)
                     {
                         // has IQ value,以波形高度为100%来绘画
-                        unsigned char iqValue = flag & (~SPO2_IQ_FLAG_BIT); // IQ值（%）
+                        unsigned char iqValue = flag & (~SPO2_IQ_FLAG_BIT);  // IQ值（%）
                         int pointY = this->rect().height() * iqValue / 100;
                         QPoint start(xBuf(i), this->rect().height() - pointY - 10);
                         QPoint end(xBuf(i), this->rect().height() - 5);

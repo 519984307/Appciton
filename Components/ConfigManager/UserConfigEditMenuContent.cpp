@@ -9,8 +9,6 @@
  **/
 #include "UserConfigEditMenuContent.h"
 #include <QMap>
-#include "Button.h"
-#include "LanguageManager.h"
 #include "ConfigManager.h"
 #include <QLabel>
 #include "PatientManager.h"
@@ -20,12 +18,15 @@
 #include "ConfigEditMenuWindow.h"
 #include "WindowManager.h"
 #include <QHideEvent>
-#include "ListView.h"
-#include "ListDataModel.h"
-#include "ListViewItemDelegate.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ListView.h"
+#include "Framework/UI/ListDataModel.h"
+#include "Framework/UI/ListViewItemDelegate.h"
+#include "Framework/Language/LanguageManager.h"
 #include "ConfigManagerMenuWindow.h"
 #include "PatientTypeSelectWindow.h"
 #include <QMetaObject>
+#include "Debug.h"
 
 #define CONFIG_DIR "/usr/local/nPM/etc"
 #define USER_DEFINE_CONFIG_NAME "UserConfig"
@@ -200,7 +201,7 @@ void UserConfigEditMenuContent::onBtnClick()
 
             PatientType type = PATIENT_TYPE_NULL;
             QString configPath;
-            patientW.getConfigInfo(type, configPath);
+            patientW.getConfigInfo(&type, &configPath);
 
             QFile myFile(configPath);
 
@@ -328,7 +329,7 @@ void UserConfigEditMenuContent::onBtnClick()
 void UserConfigEditMenuContent::onEditFinished()
 {
     // can't add, too many
-    // TODO :show some message
+    /* TODO :show some message */
     QString configName = d_ptr->editWindow->getCurrentEditConfigName();
     if (configName.isEmpty())
     {

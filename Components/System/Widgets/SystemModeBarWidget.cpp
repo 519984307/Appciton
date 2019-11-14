@@ -14,10 +14,10 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPainter>
-#include "PopupList.h"
+#include "Framework/UI/PopupList.h"
+#include "Framework/Language/LanguageManager.h"
 #include "FontManager.h"
 #include "LayoutManager.h"
-#include "LanguageManager.h"
 
 /**************************************************************************************************
  * 功能： 设置显示的内容。

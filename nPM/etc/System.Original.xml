@@ -32,9 +32,7 @@
         </Language>
         <TouchScreen>1</TouchScreen>
         <DefaultPatientType>0</DefaultPatientType>
-        <!-- DefaultDisplayBrightness：不同类型屏幕的背光亮度取值范围不一样，
-        <为了防止在默认亮度值下黑屏，这里默认亮度下选择9，对应的亮度等级10> -->
-        <DefaultDisplayBrightness>9</DefaultDisplayBrightness>
+        <DefaultDisplayBrightness>4</DefaultDisplayBrightness>
 	<KeyPressVolume>0</KeyPressVolume>
     </General>
     <Alarms>

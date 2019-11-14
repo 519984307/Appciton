@@ -11,8 +11,8 @@
 #include <QGridLayout>
 #include <QMap>
 #include <QLabel>
-#include "ComboBox.h"
-#include "LanguageManager.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/Language/LanguageManager.h"
 #include "IConfig.h"
 #include "RESPSymbol.h"
 #include "NIBPSymbol.h"

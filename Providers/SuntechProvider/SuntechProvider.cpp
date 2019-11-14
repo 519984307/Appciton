@@ -94,9 +94,9 @@ void SuntechProvider::_sendReset(void)
 /**************************************************************************************************
  * 模块与参数对接。
  *************************************************************************************************/
-bool SuntechProvider::attachParam(Param &param)
+bool SuntechProvider::attachParam(Param *param)
 {
-    if (param.getParamID() == PARAM_NIBP)
+    if (param->getParamID() == PARAM_NIBP)
     {
         nibpParam.setProvider(this);
         Provider::attachParam(param);
@@ -312,14 +312,14 @@ void SuntechProvider::getResult(void)
  * 是否为结果包。
  *************************************************************************************************/
 bool SuntechProvider::isResult(unsigned char *packet,
-                               short &sys, short &dia, short &map, short &pr, NIBPOneShotType &err)
+                               short *sys, short *dia, short *map, short *pr, NIBPOneShotType *err)
 {
     if (packet[0] != 0x18)
     {
         return false;
     }
 
-    err = NIBP_ONESHOT_NONE;
+    *err = NIBP_ONESHOT_NONE;
 
     // 测量有错误，获取错误码。
     if (packet[19] != 0x00)
@@ -327,40 +327,40 @@ bool SuntechProvider::isResult(unsigned char *packet,
         switch (packet[19])
         {
         case 0x01:
-            err = NIBP_ONESHOT_ALARM_SIGNAL_WEAK;
+            *err = NIBP_ONESHOT_ALARM_SIGNAL_WEAK;
             break;
         case 0x02:
-            err = NIBP_ONESHOT_ALARM_EXCESSIVE_MOVING;
+            *err = NIBP_ONESHOT_ALARM_EXCESSIVE_MOVING;
             break;
         case 0x03:
-            err = NIBP_ONESHOT_ALARM_MEASURE_OVER_RANGE;
+            *err = NIBP_ONESHOT_ALARM_MEASURE_OVER_RANGE;
             break;
         case 0x04:
-            err = NIBP_ONESHOT_ALARM_MEASURE_TIMEOUT;
+            *err = NIBP_ONESHOT_ALARM_MEASURE_TIMEOUT;
             break;
         case 0x85:
-            err = NIBP_ONESHOT_ALARM_PNEUMATIC_BLOCKAGE;
+            *err = NIBP_ONESHOT_ALARM_PNEUMATIC_BLOCKAGE;
             break;
         case 0x87:
-            err = NIBP_ONESHOT_ALARM_CUFF_ERROR;
+            *err = NIBP_ONESHOT_ALARM_CUFF_ERROR;
             break;
         case 0x88:
-            err = NIBP_ONESHOT_ALARM_MEASURE_TIMEOUT;
+            *err = NIBP_ONESHOT_ALARM_MEASURE_TIMEOUT;
             break;
         case 0x89:
-            err = NIBP_ONESHOT_ALARM_CUFF_OVER_PRESSURE;
+            *err = NIBP_ONESHOT_ALARM_CUFF_OVER_PRESSURE;
             break;
         case 0x90:
-            err = NIBP_ONESHOT_ALARM_HARDWARE_ERROR;
+            *err = NIBP_ONESHOT_ALARM_HARDWARE_ERROR;
             break;
         case 0x91:
-            err = NIBP_ONESHOT_ALARM_MEASURE_TIMEOUT;
+            *err = NIBP_ONESHOT_ALARM_MEASURE_TIMEOUT;
             break;
         case 0x97:
-            err = NIBP_ONESHOT_ALARM_TRANSDUCER_OVER_RANGE;
+            *err = NIBP_ONESHOT_ALARM_TRANSDUCER_OVER_RANGE;
             break;
         case 0x99:
-            err = NIBP_ONESHOT_ALARM_EEPROM_FAILURE;
+            *err = NIBP_ONESHOT_ALARM_EEPROM_FAILURE;
             break;
         default:
             break;
@@ -368,10 +368,10 @@ bool SuntechProvider::isResult(unsigned char *packet,
         return true;
     }
 
-    sys = static_cast<int>((packet[2] << 8) + packet[1]);
-    dia = static_cast<int>((packet[4] << 8) + packet[3]);
-    map = static_cast<int>((packet[18] << 8) + packet[17]);
-    pr = static_cast<int>((packet[16] << 8) + packet[15]);
+    *sys = static_cast<int>((packet[2] << 8) + packet[1]);
+    *dia = static_cast<int>((packet[4] << 8) + packet[3]);
+    *map = static_cast<int>((packet[18] << 8) + packet[17]);
+    *pr = static_cast<int>((packet[16] << 8) + packet[15]);
 
     return true;
 }

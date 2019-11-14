@@ -9,8 +9,8 @@
  **/
 
 #include "HistoryDataReviewWindow.h"
-#include "LanguageManager.h"
-#include "Button.h"
+#include "Framework/Language/LanguageManager.h"
+#include "Framework/UI/Button.h"
 #include <QVBoxLayout>
 #include <QVariant>
 #include "DataStorageDirManager.h"

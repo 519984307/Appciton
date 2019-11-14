@@ -9,15 +9,16 @@
  **/
 #include "DischargePatientWindow.h"
 #include <QHBoxLayout>
-#include "Button.h"
+#include "Framework/UI/Button.h"
 #include "WindowManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "DataStorageDirManager.h"
 #include "PatientInfoWindow.h"
 #include <QGridLayout>
 #include "LayoutManager.h"
 #include "PatientManager.h"
 #include "SystemManager.h"
+#include <QLabel>
 
 class DischaregePatientWindowPrivate
 {

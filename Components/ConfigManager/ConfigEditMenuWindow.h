@@ -8,8 +8,8 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/7/16
  **/
 #pragma once
-#include "MenuWindow.h"
-#include "Config.h"
+#include "Framework/UI/MenuWindow.h"
+#include "Framework/Config/Config.h"
 #include "PatientDefine.h"
 
 class ConfigEditMenuWindowPrivate;

@@ -9,7 +9,7 @@
  **/
 
 #include <QWidget>
-#include "Button.h"
+#include "Framework/UI/Button.h"
 
 class RescueDataListNewWidgetPrivate;
 class RescueDataListNewWidget : public QWidget
@@ -21,11 +21,11 @@ public:
     ~RescueDataListNewWidget();
 
     //获取选择标记字串
-    void getCheckList(QList<int> &list);
-    void getCheckList(QStringList &list);
+    void getCheckList(QList<int> *list);
+    void getCheckList(QStringList *list);
 
     //获取全部字串
-    void getStrList(QStringList &strList);
+    void getStrList(QStringList *strList);
 
     //翻页
     void pageChange(bool upPage);

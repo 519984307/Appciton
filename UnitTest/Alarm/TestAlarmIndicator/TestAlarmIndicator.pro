@@ -21,24 +21,14 @@ include("../../Common/runtest.pri")
 SOURCES += main.cpp \
     TestAlarmIndicator.cpp \
     ../../../Components/Alarm/AlarmIndicator.cpp \
-    ../../../Utility/LanguageManager/LanguageManager.cpp \
-    ../../../Components/SoundManager/SoundManagerInterface.cpp \
     ../../../Components/Alarm/Widgets/AlarmStatusWidget.cpp \
     ../../../Components/WindowManager/IWidget.cpp \
-    ../../../Utility/Widgets/Base/Dialog.cpp \
     ../../../Components/LightManager/LightManagerInterface.cpp \
     ../../../Utility/Config/IConfig.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmStateMachineInterface.cpp \
-    ../../../Utility/FontManager/FontManagerInterface.cpp \
     ../../../Components/Alarm/AlarmInterface.cpp \
     ../../../Components/Alarm/Widgets/AlarmInfoBarWidget.cpp \
-    ../../../Utility/Config/Config.cpp \
-    ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
-    ../../../Utility/Config/XmlParser.cpp \
-    ../../../Utility/Widgets/Base/Button.cpp \
-    ../../../Utility/Widgets/Base/ThemeManager.cpp \
     ../../../Components/WindowManager/WindowManagerInterface.cpp \
-    ../../../Utility/ErrorLog/ErrorLogItem.cpp \
     ../../../Components/Alarm/AlarmIndicatorInterface.cpp \
     ../../../Components/Alarm/AlarmParamIFace.cpp \
     ../../../Components/Alarm/NurseCallManagerInterface.cpp
@@ -46,28 +36,18 @@ SOURCES += main.cpp \
 HEADERS += \
     TestAlarmIndicator.h \
     ../../../Components/Alarm/AlarmIndicator.h \
-    ../../../Utility/LanguageManager/LanguageManager.h \
     ../../../Components/Alarm/AlarmDefine.h \
-    ../../../Components/SoundManager/SoundManagerInterface.h \
     ../../../Components/Alarm/Widgets/AlarmStatusWidget.h \
     ../../../Components/PatientManager/PatientInfoWidgetInterface.h \
     ../../../Components/WindowManager/IWidget.h \
-    ../../../Utility/Widgets/Base/Dialog.h \
     ../../../Components/LightManager/LightManagerInterface.h \
     ../../../Utility/Config/IConfig.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmStateMachineInterface.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmStateDefine.h \
     ../../../Components/ParamManager/ParamDefine.h \
-    ../../../Utility/FontManager/FontManagerInterface.h \
     ../../../Components/Alarm/AlarmInterface.h \
     ../../../Components/Alarm/Widgets/AlarmInfoBarWidget.h \
-    ../../../Utility/Config/Config.h \
-    ../../../Utility/ErrorLog/ErrorLogInterface.h \
-    ../../../Utility/Config/XmlParser.h \
-    ../../../Utility/Widgets/Base/Button.h \
-    ../../../Utility/Widgets/Base/ThemeManager.h \
     ../../../Components/WindowManager/WindowManagerInterface.h \
-    ../../../Utility/ErrorLog/ErrorLogItem.h \
     ../../../Components/Alarm/AlarmIndicatorInterface.h \
     ../../../Components/Alarm/AlarmParamIFace.h \
     ../MockAlarm.h \
@@ -80,7 +60,6 @@ HEADERS += \
 INCLUDEPATH += \
     ../../../Components/Alarm \
     ../../../Components/SoundManager \
-    ../../../Utility/LanguageManager \
     ../../../Components/Alarm/Widgets \
     ../../../Components/WindowManager \
     ../../../Utility/Widgets/Base \
@@ -91,7 +70,6 @@ INCLUDEPATH += \
     ../../../Components/ParamManager \
     ../../../Utility/FontManager \
     ../../../Components/Alarm/Widgets \
-    ../../../Utility/ErrorLog \
     ../../../Utility/Widgets/Base \
     .. \
     ../../Utility

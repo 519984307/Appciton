@@ -106,11 +106,6 @@ void KeyActionManager::handleKeyAction(int keyType)
         return;
     }
 
-    if (systemManager.isSystemSelftestOver())
-    {
-        systemManager.closeSystemTestDialog();
-    }
-
     bool multiBtnPress = false;
     if (keyType <= KEY_F9_PRESSED)
     {

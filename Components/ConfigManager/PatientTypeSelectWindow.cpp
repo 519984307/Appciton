@@ -9,11 +9,11 @@
  **/
 
 #include "PatientTypeSelectWindow.h"
-#include "LanguageManager.h"
-#include "ListView.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ListView.h"
+#include "Framework/UI/ListDataModel.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QGridLayout>
-#include "ListDataModel.h"
-#include "Button.h"
 #include "ConfigManager.h"
 #include <QMap>
 #include "SystemManagerInterface.h"
@@ -144,10 +144,16 @@ PatientTypeSelectWindow::~PatientTypeSelectWindow()
     delete d_ptr;
 }
 
-void PatientTypeSelectWindow::getConfigInfo(PatientType &patientType, QString &configPath) const
+void PatientTypeSelectWindow::getConfigInfo(PatientType *patientType, QString *configPath) const
 {
-    patientType = d_ptr->patientType;
-    configPath = d_ptr->configPath;
+    if (patientType)
+    {
+        *patientType = d_ptr->patientType;
+    }
+    if (configPath)
+    {
+        *configPath = d_ptr->configPath;
+    }
 }
 
 void PatientTypeSelectWindow::updateBtnStatus()

@@ -14,8 +14,9 @@
 #include "Starter.h"
 #include "Debug.h"
 #include "Init.h"
-#include "ErrorLog.h"
-#include "ErrorLogItem.h"
+#include "Framework/ErrorLog/ErrorLogItem.h"
+#include "Framework/ErrorLog/ErrorLog.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include "LayoutManager.h"
 #include <unistd.h>
 #include "ConfigManager.h"
@@ -61,7 +62,7 @@ static void _task50MSec0(void)
     static unsigned t = 0;
     if (0 != t)
     {
-        double diff_t = timeDate.difftime(timeDate.time(), t);
+        double diff_t = timeDate->difftime(timeDate->time(), t);
         t += static_cast<int>(diff_t);
         if (isZero(diff_t))
         {
@@ -70,7 +71,7 @@ static void _task50MSec0(void)
     }
     else
     {
-        t = timeDate.time();
+        t = timeDate->time();
     }
 
     timeManager.mainRun(t);
@@ -252,7 +253,7 @@ static void _stop(void)
 /**************************************************************************************************
  * 功能： 主函数入口。
  *************************************************************************************************/
-void appMain(IApplication &app)
+void appMain(IApplication *app)
 {
     // 创建对象。
     newObjects();
@@ -260,7 +261,7 @@ void appMain(IApplication &app)
 
     _start();            // 启动子系统。
 
-    app.exec();          // 执行主循环。
+    app->exec();          // 执行主循环。
     _stop();             // 停止子系统。
 
     // 退出前释放创建的对象。

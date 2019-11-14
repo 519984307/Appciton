@@ -18,7 +18,7 @@
 #include "EventStorageManager.h"
 #include "ParamManager.h"
 #include "AlarmConfig.h"
-#include "Utility.h"
+#include "Framework/Utility/Utility.h"
 #include "WaveformCache.h"
 #include "ECGParam.h"
 #include "FontManager.h"
@@ -29,7 +29,7 @@
 #include "CO2Param.h"
 #include "LayoutManager.h"
 #include "NIBPSymbol.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 
 class EventPageGeneratorPrivate
 {
@@ -184,8 +184,8 @@ public:
             RecordWaveSegmentInfo info;
             info.id = id;
             info.sampleRate = waveSeg->sampleRate;
-            waveformCache.getRange(id, info.minWaveValue, info.maxWaveValue);
-            waveformCache.getBaseline(id, info.waveBaseLine);
+            waveformCache.getRange(id, &info.minWaveValue, &info.maxWaveValue);
+            info.waveBaseLine = waveformCache.getBaseline(id);
             switch (id)
             {
             case WAVE_ECG_I:
@@ -358,10 +358,10 @@ public:
     int ecgGain;
 };
 
-EventPageGenerator::EventPageGenerator(IStorageBackend *backend, int eventIndex, const PatientInfo &patientInfo, int gain, QObject *parent)
+EventPageGenerator::EventPageGenerator(IStorageBackend *backend, int eventIndex,
+                                       const PatientInfo &patientInfo, int gain, QObject *parent)
     : RecordPageGenerator(parent), d_ptr(new EventPageGeneratorPrivate(this))
 {
-
     d_ptr->backend = backend;
     d_ptr->eventIndex = eventIndex;
     d_ptr->patientInfo = patientInfo;
@@ -425,7 +425,7 @@ RecordPage *EventPageGenerator::createPage()
         {
             RecordPage *page = NULL;
 
-            page = createWaveSegments(d_ptr->waveInfos, d_ptr->curDrawWaveSegment++, recorderManager.getPrintSpeed());
+            page = createWaveSegments(&d_ptr->waveInfos, d_ptr->curDrawWaveSegment++, recorderManager.getPrintSpeed());
 
             return page;
         }

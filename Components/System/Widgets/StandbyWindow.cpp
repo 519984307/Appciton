@@ -15,7 +15,7 @@
 #include <QPainter>
 #include "FontManager.h"
 #include "WindowManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "IConfig.h"
 #include "SystemManager.h"
 #include "LayoutManager.h"

@@ -10,7 +10,7 @@
 
 #pragma once
 #include <QScopedPointer>
-#include "MenuContent.h"
+#include "Framework/UI/MenuContent.h"
 
 class WifiMaintainMenuContentPrivate;
 class WifiMaintainMenuContent: public MenuContent

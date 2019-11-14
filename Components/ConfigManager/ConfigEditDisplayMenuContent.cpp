@@ -10,9 +10,9 @@
 #include "ConfigEditDisplayMenuContent.h"
 #include <QGridLayout>
 #include <QLabel>
-#include "LanguageManager.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QMap>
-#include "ComboBox.h"
 #include "ConfigManager.h"
 #include "SystemManager.h"
 

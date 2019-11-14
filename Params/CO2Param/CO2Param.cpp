@@ -22,7 +22,6 @@
 #include "RESPDupParam.h"
 #include "SoftKeyManager.h"
 #include "QApplication"
-#include "ComboListPopup.h"
 #include "LayoutManager.h"
 #include "OxyCRGCO2WaveWidget.h"
 #include "AlarmSourceManager.h"
@@ -70,14 +69,6 @@ public:
      * @param zoom
      */
     void setWaveformZoom(CO2DisplayZoom zoom);
-    /**
-     * @brief getCO2RESPWins
-     * @param co2Trend
-     * @param co2Wave
-     * @param respTrend
-     * @param respWave
-     */
-    void getCO2RESPWins(QString &co2Trend, QString &co2Wave, QString &respTrend, QString &respWave);
 
     CO2Param *q_ptr;
     CO2ProviderIFace *provider;
@@ -164,7 +155,7 @@ void CO2ParamPrivate::setWaveformZoom(CO2DisplayZoom zoom)
         waveWidget->setRuler(zoom);
         break;
 
-    case CO2_DISPLAY_ZOOM_8: // 0～8/15范围，加14为最大余数，保证完全显示波形。
+    case CO2_DISPLAY_ZOOM_8:  // 0～8/15范围，加14为最大余数，保证完全显示波形。
         waveWidget->setValueRange(0, (provider->getCO2MaxWaveform() * 8 + 19) / 20);
         waveWidget->setRuler(zoom);
         break;
@@ -182,19 +173,6 @@ void CO2ParamPrivate::setWaveformZoom(CO2DisplayZoom zoom)
     default:
         break;
     }
-}
-
-/**************************************************************************************************
- * 获取CO2和RESP的窗体名称。
- *************************************************************************************************/
-void CO2ParamPrivate::getCO2RESPWins(QString &co2Trend, QString &co2Wave,
-                               QString &respTrend, QString &respWave)
-{
-    // 获取它们的窗体信息。
-    q_ptr->getTrendWindow(co2Trend);
-    q_ptr->getWaveWindow(co2Wave);
-    respParam.getTrendWindow(respTrend);
-    respParam.getWaveWindow(respWave);
 }
 
 /**************************************************************************************************
@@ -244,7 +222,7 @@ void CO2Param::handDemoTrendData(void)
     if (getCO2Switch())
     {
         d_ptr->etco2Value = 50;
-        d_ptr->fico2Value = 3;
+        d_ptr->fico2Value = 0;
         d_ptr->awRRValue = 20;
         d_ptr->brVaule = 20;
         d_ptr->baro = 1013;
@@ -285,38 +263,40 @@ void CO2Param::exitDemo()
 /**************************************************************************************************
  * 获取可得的波形控件集。
  *************************************************************************************************/
-void CO2Param::getAvailableWaveforms(QStringList &waveforms, QStringList &waveformShowName, int)
+void CO2Param::getAvailableWaveforms(QStringList *waveforms, QStringList *waveformShowName, int)
 {
-    waveforms.clear();
-    waveformShowName.clear();
+    waveforms->clear();
+    waveformShowName->clear();
 
     if (NULL != d_ptr->waveWidget)
     {
-        waveforms.append(d_ptr->waveWidget->name());
-        waveformShowName.append(d_ptr->waveWidget->getTitle());
+        waveforms->append(d_ptr->waveWidget->name());
+        waveformShowName->append(d_ptr->waveWidget->getTitle());
     }
 }
 
 /**************************************************************************************************
  * 获取可得的趋势窗体名。
  *************************************************************************************************/
-void CO2Param::getTrendWindow(QString &trendWin)
+QString CO2Param::getTrendWindowName()
 {
     if (NULL != d_ptr->trendWidget)
     {
-        trendWin = d_ptr->trendWidget->name();
+        return d_ptr->trendWidget->name();
     }
+    return QString();
 }
 
 /**************************************************************************************************
  * 获取可得的波形窗体名。
  *************************************************************************************************/
-void CO2Param::getWaveWindow(QString &waveWin)
+QString CO2Param::getWaveWindowName()
 {
     if (NULL != d_ptr->waveWidget)
     {
-        waveWin = d_ptr->waveWidget->name();
+        return d_ptr->waveWidget->name();
     }
+    return QString();
 }
 
 /**************************************************************************************************
@@ -602,8 +582,8 @@ void CO2Param::setConnected(bool isConnected)
 
     d_ptr->connectedProvider = isConnected;
 
-    QString co2Trend, co2Wave, respTrend, respWave;
-    d_ptr->getCO2RESPWins(co2Trend, co2Wave, respTrend, respWave);
+    QString co2Trend = getTrendWindowName();
+    QString co2Wave = getWaveWindowName();
 
     int needUpdate = 0;
     if (isConnected)
@@ -1092,7 +1072,7 @@ void CO2Param::updateSubParamLimit(SubParamID id)
 
 void CO2Param::setRespApneaStimulation(bool sta)
 {
-    bool co2ApneaStimulation;
+    int co2ApneaStimulation = 0;
     currentConfig.getNumValue("ApneaStimulation|CO2", co2ApneaStimulation);
     O2ParamInterface *o2Param = O2ParamInterface::getO2ParamInterface();
     if (co2ApneaStimulation && o2Param && d_ptr->co2Switch)
@@ -1151,7 +1131,6 @@ CO2Param::CO2Param()
     }
     else if (UNIT_KPA)
     {
-
         path += Unit::getSymbol(UNIT_KPA);
     }
     path += "|";

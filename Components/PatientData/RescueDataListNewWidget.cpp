@@ -14,8 +14,8 @@
 #include <QVariant>
 #include "DataStorageDirManager.h"
 #include <QDateTime>
-#include "TimeDate.h"
-#include "ThemeManager.h"
+#include "Framework/TimeDate/TimeDate.h"
+#include "Framework/UI/ThemeManager.h"
 
 #define PIC_WIDTH (16)
 
@@ -28,7 +28,7 @@ public:
           totalPage(0),
           curPage(0),
           pageNum(-1),
-          widgetHeight(themeManger.getAcceptableControlHeight())
+          widgetHeight(themeManager.getAcceptableControlHeight())
     {}
 
     ~RescueDataListNewWidgetPrivate(){}
@@ -41,9 +41,9 @@ public:
     int pageNum;                    // 每一页的个数
     int widgetHeight;
 
-    QList<QString> strList;         // 字符
-    QList<unsigned char> checkFlag; // 选中标志
-    QList<Button *> btnList;        // 按钮列表
+    QList<QString> strList;          // 字符
+    QList<unsigned char> checkFlag;  // 选中标志
+    QList<Button *> btnList;         // 按钮列表
 };
 
 RescueDataListNewWidget::RescueDataListNewWidget(int w, int h)
@@ -98,38 +98,51 @@ RescueDataListNewWidget::~RescueDataListNewWidget()
     delete d_ptr;
 }
 
-void RescueDataListNewWidget::getCheckList(QList<int> &list)
+void RescueDataListNewWidget::getCheckList(QList<int> *list)
 {
-    list.clear();
+    if (!list)
+    {
+        return;
+    }
+
+    list->clear();
 
     int count = d_ptr->strList.count();
     for (int i = 0; i < count; ++i)
     {
         if (d_ptr->checkFlag.at(i))
         {
-            list << i;
+            *list << i;
         }
     }
 }
 
-void RescueDataListNewWidget::getCheckList(QStringList &list)
+void RescueDataListNewWidget::getCheckList(QStringList *list)
 {
-    list.clear();
+    if (!list)
+    {
+        return;
+    }
+
+    list->clear();
 
     int count = d_ptr->strList.count();
     for (int i = 0; i < count; ++i)
     {
         if (d_ptr->checkFlag.at(i))
         {
-            list << d_ptr->strList.at(i);
+            *list << d_ptr->strList.at(i);
         }
     }
 }
 
-void RescueDataListNewWidget::getStrList(QStringList &strList)
+void RescueDataListNewWidget::getStrList(QStringList *strList)
 {
-    strList.clear();
-    strList.append(d_ptr->strList);
+    if (strList)
+    {
+        strList->clear();
+        strList->append(d_ptr->strList);
+    }
 }
 
 void RescueDataListNewWidget::pageChange(bool upPage)
@@ -225,7 +238,7 @@ void RescueDataListNewWidget::_btnPressed()
 
     if (0 == *(iter + index))
     {
-        QIcon pixmap = themeManger.getIcon(ThemeManager::IconChecked);
+        QIcon pixmap = themeManager.getIcon(ThemeManager::IconChecked);
         btn->setIcon(pixmap);
         *(iter + index) = 1;
     }
@@ -310,8 +323,7 @@ void RescueDataListNewWidget::_loadData()
 void RescueDataListNewWidget::_caclInfo()
 {
     d_ptr->strList.clear();
-    QStringList list;
-    dataStorageDirManager.getRescueEvent(list);
+    QStringList list = dataStorageDirManager.getRescueEvent();
     d_ptr->strList.append(list);
     list.clear();
 
@@ -338,8 +350,7 @@ void RescueDataListNewWidget::_caclInfo()
 
 QString RescueDataListNewWidgetPrivate::convertTimeStr(const QString &str)
 {
-    QString timeStr;
     QDateTime dt = QDateTime::fromString(str, "yyyyMMddHHmmss");
-    timeDate.getDateTime(dt.toTime_t(), timeStr, true, true);
+    QString timeStr = timeDate->getDateTime(dt.toTime_t(), true, true);
     return timeStr;
 }

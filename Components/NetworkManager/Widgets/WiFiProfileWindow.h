@@ -10,9 +10,9 @@
 
 #pragma once
 
-#include "Dialog.h"
-#include "WiFiProfileEditor.h"
+#include "Framework/UI/Dialog.h"
 #include <QScopedPointer>
+#include "WiFiProfileInfo.h"
 
 class WiFiProfileWindowPrivate;
 class WiFiProfileWindow: public Dialog

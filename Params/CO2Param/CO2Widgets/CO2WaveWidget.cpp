@@ -15,13 +15,12 @@
 #include "CO2WaveRuler.h"
 #include "FontManager.h"
 #include "WaveWidgetLabel.h"
-#include "LanguageManager.h"
 #include "ColorManager.h"
 #include "ParamInfo.h"
-#include "PopupList.h"
+#include "Framework/UI/PopupList.h"
+#include "Framework/UI/ThemeManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "CO2Param.h"
-#include "WindowManager.h"
-#include "ThemeManager.h"
 
 /**************************************************************************************************
  * 尺寸变化。

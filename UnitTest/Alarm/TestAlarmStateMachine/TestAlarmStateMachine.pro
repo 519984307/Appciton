@@ -26,16 +26,11 @@ SOURCES += main.cpp \
     TestAlarmStateMachine.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmStateMachine.cpp \
     ../../../Utility/Config/IConfig.cpp \
-    ../../../Utility/LanguageManager/LanguageManager.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmNormalState.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmPauseState.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmResetState.cpp \
     ../../../Components/LightManager/LightManagerInterface.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmStateMachineInterface.cpp \
-    ../../../Utility/Config/Config.cpp \
-    ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
-    ../../../Utility/ErrorLog/ErrorLogItem.cpp \
-    ../../../Utility/Config/XmlParser.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmState.cpp \
     ../../../Components/Alarm/AlarmIndicatorInterface.cpp
 
@@ -44,16 +39,11 @@ HEADERS += \
     ../../../Components/Alarm/AlarmStateMachine/AlarmStateMachine.h \
     ../../../Components/Alarm/AlarmDefine.h \
     ../../../Utility/Config/IConfig.h \
-    ../../../Utility/LanguageManager/LanguageManager.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmNormalState.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmPauseState.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmResetState.h \
     ../../../Components/LightManager/LightManagerInterface.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmStateMachineInterface.h \
-    ../../../Utility/Config/Config.h \
-    ../../../Utility/ErrorLog/ErrorLogInterface.h \
-    ../../../Utility/ErrorLog/ErrorLogItem.h \
-    ../../../Utility/Config/XmlParser.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmState.h \
     ../../../Components/Alarm/AlarmIndicatorInterface.h \
     ../MockAlarmIndicator.h \
@@ -63,10 +53,8 @@ HEADERS += \
 INCLUDEPATH += \
     ../../../Components/Alarm/AlarmStateMachine \
     ../../../Components/Alarm \
-    ../../../Utility/LanguageManager \
     ../../../Utility/Config \
     ../../../Components/LightManager \
-    ../../../Utility/ErrorLog \
     ..
 
 RESOURCES += \

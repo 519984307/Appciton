@@ -17,7 +17,7 @@
 #include <QMap>
 #include "AlarmDefine.h"
 #include "EventDataParseContext.h"
-#include "IStorageBackend.h"
+#include "Framework/Storage/IStorageBackend.h"
 
 // nibp数据包
 struct NibpDataPacket
@@ -55,7 +55,7 @@ struct NIBPTrendCacheData
 };
 
 class QLabel;
-class ITableWidget;
+class QTableWidget;
 class NIBPDataTrendWidget: public TrendWidget
 {
     Q_OBJECT
@@ -103,7 +103,7 @@ private slots:
     void _releaseHandle();
 
 private:
-    ITableWidget *_table;
+    QTableWidget *_table;
     QString _hrString;
     bool _isAlarm;
     int _rowNR;

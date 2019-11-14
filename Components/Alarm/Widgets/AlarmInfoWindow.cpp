@@ -9,20 +9,20 @@
  **/
 
 #include "AlarmInfoWindow.h"
-#include "TableView.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/TableHeaderView.h"
+#include "Framework/UI/TableView.h"
+#include "Framework/UI/ThemeManager.h"
+#include "Framework/UI/TableViewItemDelegate.h"
+#include "Framework/Language/LanguageManager.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include "AlarmInfoModel.h"
-#include "TableViewItemDelegate.h"
-#include "LanguageManager.h"
-#include "Button.h"
 #include <QLayout>
 #include "AlarmIndicator.h"
-#include "TimeDate.h"
 #include <QHeaderView>
-#include "TableHeaderView.h"
 #include "Alarm.h"
 #include "EventWindow.h"
 #include "WindowManager.h"
-#include "ThemeManager.h"
 
 #define SELECT_ICON_PATH "/usr/local/nPM/icons/select.png"
 
@@ -97,7 +97,7 @@ void AlarmInfoWindow::updateData(bool isShowFirstPage)
 void AlarmInfoWindow::layout()
 {
     setWindowTitle(d_ptr->title);
-    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
+    setFixedSize(themeManager.defaultWindowSize());
 
     QVBoxLayout *vLayout = new QVBoxLayout();
     setWindowLayout(vLayout);
@@ -197,7 +197,7 @@ void AlarmInfoWindowPrivate::loadOption()
     nodeList.clear();
     for (int i = totalList - 1; i >= 0; --i)
     {
-        alarmIndicator.getAlarmInfo(i, node);
+        node = alarmIndicator.getAlarmInfo(i);
         if (node.alarmType != alarmType)
         {
             continue;
@@ -266,11 +266,9 @@ void AlarmInfoWindowPrivate::loadOption()
                 break;
             }
             priorityList.append(priorityStr);
-            QString dateStr;
-            QString timeStr;
+            QString dateStr = timeDate->getDate(node.alarmTime, true);
+            QString timeStr = timeDate->getTime(node.alarmTime, true);
             QString str;
-            timeDate.getTime(node.alarmTime, timeStr, true);
-            timeDate.getDate(node.alarmTime, dateStr, true);
             str = dateStr + " " + timeStr;
             timeList.append(str);
         }

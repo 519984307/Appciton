@@ -18,7 +18,7 @@
 #include "WaveformCache.h"
 #include "ConfigManager.h"
 #include <QPainter>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 
 #define INVALID_AXIS_VALUE ((1<<30) - 1)
 
@@ -275,13 +275,13 @@ public:
 
     int indexToX(int index) const
     {
-        // TODO
+        /* TODO */
         return index;
     }
 
     int valueToY(int height) const
     {
-        // TODO
+        /* TODO */
         return height;
     }
 
@@ -291,7 +291,7 @@ public:
     ECGEventGain gain;
     float pixelWPicth;      // horizontal gap between two pixel, in unit of mm
     float pixelHPitch;      // veritical gap between two pixel, in unit of mm
-    int displayWaveSeconds; // seconds of waveform to display
+    int displayWaveSeconds;  // seconds of waveform to display
     bool bufferEmpty;        // buffer is empty, need to fill data
     int totalWaveDuration;    // the duration of the wave segments
     int currentWaveStartSecond;
@@ -521,13 +521,13 @@ void EventWaveWidget::_drawWave(int index, QPainter &painter)
     WaveformDesc waveDesc;
     waveDesc.reset();
     QColor color;
-    qreal x1 = 0, y1 = 0, x2 = 0, y2 = 0; // 需要连接的两点。
+    qreal x1 = 0, y1 = 0, x2 = 0, y2 = 0;  // 需要连接的两点。
     waveDesc.startY = index * WAVE_REG_HIGH / WAVE_NUM + WAVE_TOP_MARGIN;
     waveDesc.mediumY = waveDesc.startY + WAVE_DATA_REG_HIGH / 2;
     waveDesc.endY = waveDesc.startY + WAVE_DATA_REG_HIGH;
     waveDesc.waveID = waveData->waveID;
     ParamID paramId = paramInfo.getParamID(waveData->waveID);
-    waveformCache.getRange(waveDesc.waveID, waveDesc.waveRangeMin, waveDesc.waveRangeMax);
+    waveformCache.getRange(waveDesc.waveID, &waveDesc.waveRangeMin, &waveDesc.waveRangeMax);
     if (waveData->sampleRate)
     {
         switch (d_ptr->speed)
@@ -605,7 +605,7 @@ void EventWaveWidget::_drawWave(int index, QPainter &painter)
             {
                 if (!points.isEmpty())
                 {
-                    if (points.count() == 1) // 处理只有一个点的情况
+                    if (points.count() == 1)  // 处理只有一个点的情况
                     {
                         painter.drawPoints(points.data(), points.count());
                     }
@@ -684,7 +684,7 @@ void EventWaveWidget::_drawWave(int index, QPainter &painter)
     }
     if (!points.isEmpty())
     {
-        if (points.count() == 1) // 处理只有一个点的情况
+        if (points.count() == 1)  // 处理只有一个点的情况
         {
             painter.drawPoints(points.data(), points.count());
         }

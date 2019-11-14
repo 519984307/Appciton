@@ -10,21 +10,23 @@
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QLabel>
-#include "ComboBox.h"
 #include "NIBPPressureControlContent.h"
 #include "NIBPParam.h"
 #include "NIBPSymbol.h"
 #include "PatientManager.h"
-#include "SpinBox.h"
 #include "NIBPRepairMenuWindow.h"
-#include "Button.h"
-#include "MenuWindow.h"
 #include <QLayout>
 #include "NIBPProviderIFace.h"
 #include "NIBPServiceStateDefine.h"
 #include "MessageBox.h"
 #include "IConfig.h"
-#include "LanguageManager.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/SpinBox.h"
+#include "Framework/UI/MenuWindow.h"
+#include "Framework/Language/LanguageManager.h"
+#include <QTimerEvent>
+#include "WindowManager.h"
 
 #define CALIBRATION_INTERVAL_TIME              (100)
 #define TIMEOUT_WAIT_NUMBER                    (5000 / CALIBRATION_INTERVAL_TIME)

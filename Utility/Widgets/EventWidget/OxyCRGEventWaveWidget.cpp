@@ -170,11 +170,11 @@ QMap<SubParamID, QPainterPath> OxyCRGEventWaveWidget::generatorPainterPath(const
         QPointF lastPoint;
         bool lastPointInvalid = true;
         TrendConvertDesc waveDesc;
-        ParamID paramId = paramInfo.getParamID(trendInfo.subParamID);
-        UnitType unitType = paramManager.getSubParamUnit(paramId, trendInfo.subParamID);
-        ParamRulerConfig config = alarmConfig.getParamRulerConfig(trendInfo.subParamID, unitType);
-        waveDesc.max = config.upRuler;
-        waveDesc.min = config.downRuler;
+//        ParamID paramId = paramInfo.getParamID(trendInfo.subParamID);
+//        UnitType unitType = paramManager.getSubParamUnit(paramId, trendInfo.subParamID);
+//        ParamRulerConfig config = alarmConfig.getParamRulerConfig(trendInfo.subParamID, unitType);
+//        waveDesc.max = config.upRuler;
+//        waveDesc.min = config.downRuler;
         switch (trendInfo.subParamID)
         {
         case SUB_PARAM_HR_PR:
@@ -257,7 +257,8 @@ QMap<SubParamID, QPainterPath> OxyCRGEventWaveWidget::generatorPainterPath(const
 
             painter.drawText(d_ptr->waveRegWidth - (d_ptr->timeDesc.start / 4) - 30, waveDesc.start + 10,
                          QString::number(waveDesc.max));
-            painter.drawText(d_ptr->waveRegWidth - (d_ptr->timeDesc.start / 4) - 30, waveDesc.end + 10, QString::number(waveDesc.min));
+            painter.drawText(d_ptr->waveRegWidth - (d_ptr->timeDesc.start / 4) - 30, waveDesc.end + 10,
+                             QString::number(waveDesc.min));
         }
         paths.insert(trendInfo.subParamID, path);
     }
@@ -272,7 +273,7 @@ QPainterPath OxyCRGEventWaveWidget::generatorWaveformPath(const OxyCRGWaveInfo &
     waveDesc.startY = d_ptr->singleParamHigh * 2 + d_ptr->singleParamHigh / 6;
     waveDesc.endY = waveDesc.startY + d_ptr->singleParamHigh / 3 * 2;
     waveDesc.waveID = waveInfo.id;
-    waveformCache.getRange(waveDesc.waveID, waveDesc.waveRangeMin, waveDesc.waveRangeMax);
+    waveformCache.getRange(waveDesc.waveID, &waveDesc.waveRangeMin, &waveDesc.waveRangeMax);
     double pixelPoint = d_ptr->timeDesc.end - d_ptr->timeDesc.start;
     if (waveInfo.sampleRate)
     {

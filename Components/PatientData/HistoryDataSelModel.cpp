@@ -10,14 +10,13 @@
 
 #include "HistoryDataSelModel.h"
 #include "DataStorageDirManager.h"
-#include "ThemeManager.h"
+#include "Framework/UI/ThemeManager.h"
 #include <QDateTime>
-#include "TimeDate.h"
-#include "WindowManager.h"
+#include "Framework/TimeDate/TimeDate.h"
 
 #define COLUMN_COUNT        2
 #define ROW_COUNT       8  // 每页8行
-#define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
+#define ROW_HEIGHT_HINT (themeManager.getAcceptableControlHeight())
 
 class HistoryDataSelModelPrivate
 {
@@ -98,7 +97,7 @@ QVariant HistoryDataSelModel::data(const QModelIndex &index, int role) const
     }
     case Qt::SizeHintRole:
     {
-        int w = windowManager.getPopWindowWidth() / COLUMN_COUNT;
+        int w = themeManager.defaultWindowSize().width() / COLUMN_COUNT;
         return QSize(w, ROW_HEIGHT_HINT);
     }
     case Qt::TextAlignmentRole:
@@ -147,8 +146,7 @@ void HistoryDataSelModel::updateData()
     d_ptr->strList.clear();
     d_ptr->firstDataList.clear();
     d_ptr->secondDataList.clear();
-    QStringList list;
-    dataStorageDirManager.getRescueEvent(list);
+    QStringList list = dataStorageDirManager.getRescueEvent();
     d_ptr->strList.append(list);
     d_ptr->strList.removeFirst();   // 不提供当前文件夹的数据回顾
 
@@ -186,8 +184,7 @@ int HistoryDataSelModel::getEachPageRowCount()
 
 QString HistoryDataSelModelPrivate::convertTimeStr(const QString str)
 {
-    QString timeStr;
     QDateTime dt = QDateTime::fromString(str, "yyyyMMddHHmmss");
-    timeDate.getDateTime(dt.toTime_t(), timeStr, true, true);
+    QString timeStr = timeDate->getDateTime(dt.toTime_t(), true, true);
     return timeStr;
 }

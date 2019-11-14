@@ -9,12 +9,13 @@
  **/
 
 #include "CalculateWindow.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
+#include "Framework/UI/Button.h"
 #include <QBoxLayout>
-#include "Button.h"
 #include "DoseCalculationWindow.h"
 #include "HemodynamicWindow.h"
 #include "WindowManager.h"
+#include <QVariant>
 
 class CalculateWindowPrivate
 {

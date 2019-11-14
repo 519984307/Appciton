@@ -15,12 +15,11 @@
 #include <QString>
 #include <sys/time.h>
 #include "SystemManager.h"
-#include "PMessageBox.h"
 #include <QTimer>
 #include "ConfigManager.h"
 #include "RawDataCollector.h"
 #include "IConfig.h"
-#include "crc8.h"
+#include "Framework/Utility/crc8.h"
 
 #define SOH             (0x01)  // upgrage packet header
 #define MODEL_CONNECT_TIME_OUT 500
@@ -55,11 +54,11 @@ enum  // 设置命令。
 {
     CMD_SET_MODE = 0x00,      // 设置工作模式
     CMD_SET_APNE_TIME = 0x01,  // 设置窒息时间
-    CMD_ENTER_UPGRADE_MODE = 0x03, // 进入升级模式
+    CMD_ENTER_UPGRADE_MODE = 0x03,  // 进入升级模式
     CMD_SET_O2 = 0x04,        // 设置氧气补偿的浓度
     CMD_SET_N20 = 0x05,       // 设置笑气补偿的浓度
     CMD_ZERO_CAL = 0x06,      // 模块校零命令。
-    CMD_CALIBRATE_DATA = 0x08 // 定标不同CO2浓度
+    CMD_CALIBRATE_DATA = 0x08  // 定标不同CO2浓度
 };
 
 /**************************************************************************************************
@@ -465,8 +464,8 @@ void BLMCO2Provider::_readUpgradeData()
     }
 
     int startIndex = 0;
-    bool isok;
-    unsigned char v = ringBuff.head(isok);
+    bool isok = false;
+    unsigned char v = ringBuff.head(&isok);
 
     if (isok && len > 0)
     {
@@ -568,9 +567,9 @@ void BLMCO2Provider::connectTimeOut()
 /**************************************************************************************************
  * 模块与参数对接。
  *************************************************************************************************/
-bool BLMCO2Provider::attachParam(Param &param)
+bool BLMCO2Provider::attachParam(Param *param)
 {
-    if (param.getParamID() == PARAM_CO2)
+    if (param->getParamID() == PARAM_CO2)
     {
         co2Param.setProvider(this);
         Provider::attachParam(param);
@@ -585,28 +584,85 @@ bool BLMCO2Provider::attachParam(Param &param)
  *************************************************************************************************/
 void BLMCO2Provider::dataArrived(void)
 {
-    readData();
-    if (ringBuff.dataSize() < _packetLen)
+    if (upgradeIface == NULL)
     {
-        return;
-    }
-
-    unsigned char buff[64];
-    while (ringBuff.dataSize() >= _packetLen)
-    {
-        if ((ringBuff.at(0) == 0xAA) && (ringBuff.at(1) == 0x55))
+        readData();
+        if (ringBuff.dataSize() < _packetLen)
         {
-            for (int i = 0; i < _packetLen; i++)
+            return;
+        }
+
+        unsigned char buff[64];
+        while (ringBuff.dataSize() >= _packetLen)
+        {
+            if ((ringBuff.at(0) == 0xAA) && (ringBuff.at(1) == 0x55))
             {
-                buff[i] = ringBuff.at(0);
+                for (int i = 0; i < _packetLen; i++)
+                {
+                    buff[i] = ringBuff.at(0);
+                    ringBuff.pop(1);
+                }
+                _unpacket(buff);
+            }
+            else
+            {
+    //            debug("BLMCO2Provider discard data = 0x%x", ringBuff.at(0));
                 ringBuff.pop(1);
             }
-            _unpacket(buff);
         }
-        else
+    }
+    else
+    {
+        _readUpgradeData();
+        unsigned char packet[570];
+        int minPacketLen = 5;
+        while (ringBuff.dataSize() >= minPacketLen)
         {
-//            debug("BLMCO2Provider discard data = 0x%x", ringBuff.at(0));
-            ringBuff.pop(1);
+            if (ringBuff.at(0) != SOH)
+            {
+                // debug("discard (%s:%x)\n", qPrintable(getName()), ringBuff.at(0));
+                ringBuff.pop(1);
+                continue;
+            }
+
+            int len = (ringBuff.at(1) + (ringBuff.at(2) << 8));
+            if ((len <= 0) || (len > 15))
+            {
+                ringBuff.pop(1);
+                break;
+            }
+            if (len > ringBuff.dataSize())  // 数据还不够，继续等待。
+            {
+                break;
+            }
+
+            // 数据包不会超过packet长度，当出现这种情况说明发生了不可预料的错误，直接丢弃该段数据。
+            if (len > static_cast<int>(sizeof(packet)))
+            {
+                ringBuff.pop(1);
+                continue;
+            }
+
+            // 将数据包读到buff中。
+            for (int i = 0; i < len; i++)
+            {
+                packet[i] = ringBuff.at(0);
+                ringBuff.pop(1);
+            }
+
+            if (_checkUpgradePacketValid(packet, len))
+            {
+                if (upgradeIface)
+                {
+                    upgradeIface->handlePacket(&packet[3], len - 4);
+                }
+            }
+            else
+            {
+                outHex(packet, len);
+                debug("FCS error (%s)\n", qPrintable(getName()));
+                ringBuff.pop(1);
+            }
         }
     }
 }

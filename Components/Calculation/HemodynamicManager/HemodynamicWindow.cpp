@@ -8,16 +8,16 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/7
  **/
 #include "HemodynamicWindow.h"
-#include "Button.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ThemeManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
 #include <QStackedLayout>
 #include "HemodynamicDefine.h"
-#include "LanguageManager.h"
 #include <QTableWidget>
 #include "HemodynamicManager.h"
 #include "KeyInputPanel.h"
 #include "MessageBox.h"
-#include "ThemeManager.h"
 #include <QHeaderView>
 #include "HemodynamicReviewWindow.h"
 #include "WindowManager.h"
@@ -365,19 +365,20 @@ void HemodynamicWindow::updateData()
         {
             if (text != InvStr() && i > HEMODYNAMIC_OUTPUT_BSA)
             {
+                QTableWidgetItem *item = d_ptr->outputTable->item(i - static_cast<int>(HEMODYNAMIC_OUTPUT_BSA), 4);
                 if (value < hemodynamicManager.outputLimit[i].low)
                 {
-                    d_ptr->outputTable->item(i - static_cast<int>(HEMODYNAMIC_OUTPUT_BSA), 4)->setBackground(YELLOW_BACKGROUND);
+                    item->setBackground(YELLOW_BACKGROUND);
                     text = text + DOWN_ARROW;
                 }
                 else if (value > hemodynamicManager.outputLimit[i].high)
                 {
-                    d_ptr->outputTable->item(i - static_cast<int>(HEMODYNAMIC_OUTPUT_BSA), 4)->setBackground(YELLOW_BACKGROUND);
+                    item->setBackground(YELLOW_BACKGROUND);
                     text = text + UP_ARROW;
                 }
                 else
                 {
-                    d_ptr->outputTable->item(i - static_cast<int>(HEMODYNAMIC_OUTPUT_BSA), 4)->setBackground(WHITE_BACKGROUND);
+                    item->setBackground(WHITE_BACKGROUND);
                 }
             }
             d_ptr->outputTable->item(i - static_cast<int>(HEMODYNAMIC_OUTPUT_BSA), 4)->setText(text);
@@ -442,10 +443,13 @@ void HemodynamicWindow::onBtnParamReleased()
         float value = text.toFloat(&ok);
         if (ok)
         {
-            if ((value < hemodynamicManager.inputLimit[index].low) || (value > hemodynamicManager.inputLimit[index].high))
+            if ((value < hemodynamicManager.inputLimit[index].low)
+                    || (value > hemodynamicManager.inputLimit[index].high))
             {
-                MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + QString::number(hemodynamicManager.inputLimit[index].low) +
-                                      "-" + QString::number(hemodynamicManager.inputLimit[index].high), QStringList(trs("EnglishYESChineseSURE")));
+                MessageBox messageBox(trs("Prompt"),
+                                      trs("InvalidInput") + QString::number(hemodynamicManager.inputLimit[index].low)
+                                      + "-" + QString::number(hemodynamicManager.inputLimit[index].high),
+                                      QStringList(trs("EnglishYESChineseSURE")));
                 messageBox.exec();
             }
             else
@@ -462,7 +466,7 @@ void HemodynamicWindow::onCheckOutputReleased()
     setWindowTitle(trs("Output"));
     d_ptr->reference->setFocus();
     updateData();
-    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
+    setFixedSize(themeManager.defaultWindowSize());
     emit checkInputSignal(1);
 }
 

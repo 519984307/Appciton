@@ -9,21 +9,20 @@
  **/
 
 #include "LoadConfigMenuContent.h"
-#include "Button.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ListView.h"
+#include "Framework/UI/ListDataModel.h"
+#include "Framework/UI/ListViewItemDelegate.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
 #include <QMap>
-#include "LanguageManager.h"
 #include "ConfigManager.h"
 #include <QList>
 #include "IConfig.h"
 #include <QFile>
 #include "PatientManager.h"
 #include "MessageBox.h"
-#include "MenuManager.h"
 #include <QHBoxLayout>
-#include "ListView.h"
-#include "ListDataModel.h"
-#include "ListViewItemDelegate.h"
 #include "ConfigEditMenuWindow.h"
 #include "WindowManager.h"
 #include "SystemManager.h"
@@ -36,6 +35,8 @@
 #include "RESPParam.h"
 #include "RESPDupParam.h"
 #include "CO2Param.h"
+#include <QListWidgetItem>
+#include "Debug.h"
 
 #define CONFIG_DIR "/usr/local/nPM/etc"
 #define USER_DEFINE_CONFIG_NAME "UserConfig"
@@ -266,12 +267,12 @@ void LoadConfigMenuContent::onBtnClick()
 
         // 更新当前选择的文件
         QString curConfigName = systemConfig.getCurConfigName();
-        currentConfig.allowToSave(false);
+        currentConfig.periodlySaveToDisk(false);
         QFile::remove(curConfigName);
         QString loadPath = QString("%1/%2").arg(CONFIG_DIR).arg(d_ptr->configs.at(index).fileName);
         QFile::copy(loadPath, curConfigName);
         currentConfig.setCurrentFilePath(curConfigName);
-        currentConfig.allowToSave(true);
+        currentConfig.periodlySaveToDisk(true);
         currentConfig.load(loadPath);
         alarmConfig.clearLimitAlarmInfo();
         colorManager.clearColorMap();

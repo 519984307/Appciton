@@ -9,49 +9,23 @@
  **/
 
 #pragma once
-#include "Dialog.h"
+#include "Framework/UI/Dialog.h"
 #include <QScopedPointer>
 #include <QMetaType>
+#include "WiFiProfileInfo.h"
 
 
-class WiFiProfileWindowInfo {
-public:
-    enum AuthenticationType{
-        Open,
-        Wpa_psk,
-        Wpa2_psk
-    };
-
-    WiFiProfileWindowInfo();
-    WiFiProfileWindowInfo(const WiFiProfileWindowInfo &other);
-    WiFiProfileWindowInfo& operator= (const WiFiProfileWindowInfo &other);
-
-    bool isValid() const;
-
-    QString profileName;
-    QString ssid;
-    QString securityKey;
-    QString staticIp;
-    QString defaultGateway;
-    QString subnetMask;
-    QString preferedDNS;
-    QString alternateDNS;
-    AuthenticationType authType;
-    bool isStatic;
-};
-
-Q_DECLARE_METATYPE(WiFiProfileWindowInfo);
 
 class WiFiProfileEditorWindowPrivate;
 class WiFiProfileEditorWindow : public Dialog
 {
     Q_OBJECT
 public:
-    explicit WiFiProfileEditorWindow(const WiFiProfileWindowInfo &profile = WiFiProfileWindowInfo());
+    explicit WiFiProfileEditorWindow(const WiFiProfileInfo &profile = WiFiProfileInfo());
      ~WiFiProfileEditorWindow();
 
      // get the edit result
-     WiFiProfileWindowInfo getProfileInfo() const;
+     WiFiProfileInfo getProfileInfo() const;
 
  protected:
      void keyPressEvent(QKeyEvent *event);

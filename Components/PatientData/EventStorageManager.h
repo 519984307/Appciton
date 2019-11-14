@@ -9,7 +9,7 @@
  **/
 
 #pragma once
-#include "StorageManager.h"
+#include "Framework/Storage/StorageManager.h"
 #include "EventStorageManagerInterface.h"
 
 class EventStorageManagerPrivate;
@@ -77,9 +77,11 @@ public:
      */
     virtual void clearEventItemList();
 
+    /* reimplement */
+    void reloadData();
+
 protected:
     /*reimplement*/
-    void newPatientHandle();
     void timerEvent(QTimerEvent *ev);
 
 private:

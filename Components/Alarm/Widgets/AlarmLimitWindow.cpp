@@ -9,9 +9,12 @@
  **/
 
 #include "AlarmLimitWindow.h"
-#include "LanguageManager.h"
-#include "TableView.h"
-#include "TableHeaderView.h"
+#include "Framework/Language/LanguageManager.h"
+#include "Framework/UI/TableView.h"
+#include "Framework/UI/TableHeaderView.h"
+#include "Framework/UI/TableViewItemDelegate.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ThemeManager.h"
 #include "AlarmLimitModel.h"
 #include <QBoxLayout>
 #include <QHeaderView>
@@ -21,15 +24,12 @@
 #include "ConfigManager.h"
 #include "PatientManager.h"
 #include "IBPParam.h"
-#include "TableViewItemDelegate.h"
-#include <Button.h>
 #include <QDebug>
 #include <QCoreApplication>
 #include <QFocusEvent>
 #include <QTimer>
 #include <SystemManager.h>
 #include "MessageBox.h"
-#include "WindowManager.h"
 
 #define TABLE_ROW_NUM 7
 
@@ -59,8 +59,7 @@ public:
 
 void AlarmLimitWindowPrivate::loadoptions()
 {
-    QList<ParamID> pids;
-    paramManager.getParams(pids);
+    QList<ParamID> pids = paramManager.getParamIDs();
     QList<AlarmDataInfo> infos;
     for (int i = 0; i < SUB_PARAM_NR; ++i)
     {
@@ -171,7 +170,7 @@ void AlarmLimitWindow::readyShow()
 void AlarmLimitWindow::layoutExec()
 {
     setWindowTitle(trs("AlarmLimit"));
-    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
+    setFixedSize(themeManager.defaultWindowSize());
     setFocusPolicy(Qt::NoFocus);
 
     QBoxLayout *layout = new QVBoxLayout();
@@ -279,8 +278,7 @@ void AlarmLimitWindow::restoreDefaults()
 {
     Config defaultConfig(configManager.getOriginalConfig(patientManager.getType()));
 
-    QList<ParamID> pids;
-    paramManager.getParams(pids);
+    QList<ParamID> pids = paramManager.getParamIDs();
     QList<AlarmDataInfo> infos;
     for (int i = 0; i < SUB_PARAM_NR; ++i)
     {

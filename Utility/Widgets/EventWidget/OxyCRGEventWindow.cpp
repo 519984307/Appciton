@@ -9,18 +9,20 @@
  **/
 
 #include "OxyCRGEventWindow.h"
-#include "TableView.h"
-#include "Button.h"
-#include "LanguageManager.h"
-#include "ComboBox.h"
+#include "Framework/UI/TableView.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/MoveButton.h"
+#include "Framework/UI/TableHeaderView.h"
+#include "Framework/UI/ThemeManager.h"
+#include "Framework/Language/LanguageManager.h"
+#include "Framework/Storage/IStorageBackend.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include "EventInfoWidget.h"
 #include "OxyCRGEventWaveWidget.h"
 #include <QStackedLayout>
-#include "IStorageBackend.h"
 #include "EventStorageManager.h"
 #include "Debug.h"
-#include "TableHeaderView.h"
-#include "TimeDate.h"
 #include "ParamInfo.h"
 #include "EventReviewModel.h"
 #include "AlarmConfig.h"
@@ -32,7 +34,8 @@
 #include "OxyCRGEventSetWindow.h"
 #include "WindowManager.h"
 #include "DataStorageDefine.h"
-#include "MoveButton.h"
+#include <QTimerEvent>
+#include <QLabel>
 
 #define STOP_PRINT_TIMEOUT          (100)
 
@@ -142,7 +145,8 @@ public:
                 parseBuffer += sizeof(EventSegmentType);
                 ctx.trendSegments.append(reinterpret_cast<TrendDataSegment *>(parseBuffer));
                 // find the location of the next event type
-                parseBuffer += sizeof(TrendDataSegment) + ctx.trendSegments.last()->trendValueNum * sizeof(TrendValueSegment);
+                parseBuffer += sizeof(TrendDataSegment) +
+                        ctx.trendSegments.last()->trendValueNum * sizeof(TrendValueSegment);
                 break;
             case EVENT_WAVEFORM_SEGMENT:
                 // skip the offset of the segment type field
@@ -512,9 +516,7 @@ OxyCRGEventWindow::OxyCRGEventWindow()
 
     setWindowLayout(d_ptr->stackLayout);
 
-    int width = windowManager.getPopWindowWidth();
-    int height = windowManager.getPopWindowHeight();
-    setFixedSize(width, height);
+    setFixedSize(themeManager.defaultWindowSize());
 }
 
 void OxyCRGEventWindowPrivate::loadOxyCRGEventData()
@@ -541,8 +543,8 @@ void OxyCRGEventWindowPrivate::loadOxyCRGEventData()
 
             t = ctx.infoSegment->timestamp;
 
-            timeDate.getDate(t, dateStr, true);
-            timeDate.getTime(t, timeStr, true);
+            dateStr = timeDate->getDate(t, true);
+            timeStr = timeDate->getTime(t, true);
             QString timeItemStr = dateStr + " " + timeStr;
 
             switch (ctx.oxyCRGSegment->type)
@@ -597,18 +599,18 @@ void OxyCRGEventWindowPrivate::loadTrendData()
     trendInfoSPO2.unit = paramManager.getSubParamUnit(paramInfo.getParamID(SUB_PARAM_SPO2), SUB_PARAM_SPO2);
     trendInfoRR.unit = paramManager.getSubParamUnit(paramInfo.getParamID(SUB_PARAM_RR_BR), SUB_PARAM_RR_BR);
 
-    ParamRulerConfig config = alarmConfig.getParamRulerConfig(SUB_PARAM_HR_PR, trendInfoHR.unit);
-    trendInfoHR.scale.min = config.downRuler;
-    trendInfoHR.scale.max = config.upRuler;
-    trendInfoHR.scale.scale = config.scale;
-    config = alarmConfig.getParamRulerConfig(SUB_PARAM_SPO2, trendInfoSPO2.unit);
-    trendInfoSPO2.scale.min = config.downRuler;
-    trendInfoSPO2.scale.max = config.upRuler;
-    trendInfoSPO2.scale.scale = config.scale;
-    config = alarmConfig.getParamRulerConfig(SUB_PARAM_RR_BR, trendInfoRR.unit);
-    trendInfoRR.scale.min = config.downRuler;
-    trendInfoRR.scale.max = config.upRuler;
-    trendInfoRR.scale.scale = config.scale;
+//    ParamRulerConfig config = alarmConfig.getParamRulerConfig(SUB_PARAM_HR_PR, trendInfoHR.unit);
+//    trendInfoHR.scale.min = config.downRuler;
+//    trendInfoHR.scale.max = config.upRuler;
+//    trendInfoHR.scale.scale = config.scale;
+//    config = alarmConfig.getParamRulerConfig(SUB_PARAM_SPO2, trendInfoSPO2.unit);
+//    trendInfoSPO2.scale.min = config.downRuler;
+//    trendInfoSPO2.scale.max = config.upRuler;
+//    trendInfoSPO2.scale.scale = config.scale;
+//    config = alarmConfig.getParamRulerConfig(SUB_PARAM_RR_BR, trendInfoRR.unit);
+//    trendInfoRR.scale.min = config.downRuler;
+//    trendInfoRR.scale.max = config.upRuler;
+//    trendInfoRR.scale.scale = config.scale;
 
     TrendGraphData dataHR;
     TrendGraphData dataSPO2;
@@ -652,9 +654,9 @@ void OxyCRGEventWindowPrivate::loadTrendData()
 void OxyCRGEventWindowPrivate::loadWaveformData()
 {
     waveInfo.reset();
-    waveformCache.getRange(waveInfo.id, waveInfo.minWaveValue, waveInfo.maxWaveValue);
+    waveformCache.getRange(waveInfo.id, &waveInfo.minWaveValue, &waveInfo.maxWaveValue);
     waveInfo.sampleRate = waveformCache.getSampleRate(waveInfo.id);
-    waveformCache.getBaseline(waveInfo.id, waveInfo.waveBaseLine);
+    waveInfo.waveBaseLine = waveformCache.getBaseline(waveInfo.id);
     if (waveInfo.id == WAVE_RESP)
     {
         waveInfo.waveInfo.resp.zoom = RESP_ZOOM_X100;
@@ -718,12 +720,9 @@ void OxyCRGEventWindowPrivate::eventInfoUpdate(int curRow)
         break;
     }
 
-    unsigned t = 0;
-    QString timeStr;
-    QString dateStr;
-    t = ctx.infoSegment->timestamp;
-    timeDate.getDate(t, dateStr, true);
-    timeDate.getTime(t, timeStr, true);
+    unsigned t = ctx.infoSegment->timestamp;
+    QString timeStr = timeDate->getTime(t, true);
+    QString dateStr = timeDate->getDate(t, true);
     timeInfoStr = dateStr + " " + timeStr;
 
     indexStr = QString::number(curRow + 1) + "/" + QString::number(curDisplayEventNum);

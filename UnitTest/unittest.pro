@@ -1,6 +1,11 @@
 TEMPLATE = subdirs
 
+Framework.subdir = $$PWD/../Framework
+Googletest.file = Common/googletest.pro
+
 SUBDIRS += \
+    Googletest \
+    Framework \
     Config \
     Providers \
     Params \
@@ -18,3 +23,5 @@ SUBDIRS += \
     Trend \
     Event \
     ScreenLayout
+
+CONFIG += ordered

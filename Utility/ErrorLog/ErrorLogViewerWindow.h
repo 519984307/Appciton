@@ -9,8 +9,8 @@
  **/
 
 #pragma once
-#include "Dialog.h"
-#include "ErrorLogItem.h"
+#include "Framework/UI/Dialog.h"
+#include "Framework/ErrorLog/ErrorLogItem.h"
 #include <QScopedPointer>
 
 class ErrorLogViewerWindowPrivate;

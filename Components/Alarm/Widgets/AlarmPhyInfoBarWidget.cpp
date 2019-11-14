@@ -10,13 +10,13 @@
 
 
 #include "AlarmPhyInfoBarWidget.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "FontManager.h"
 #include "AlarmIndicator.h"
 #include <QPainter>
 #include "WindowManager.h"
 #include "Alarm.h"
-#include "SoundManagerInterface.h"
+#include "Framework/Sound/SoundManagerInterface.h"
 
 /**************************************************************************************************
  * 绘制背景。
@@ -210,7 +210,7 @@ void AlarmPhyInfoBarWidget::clear(void)
 /**************************************************************************************************
  * 设置报警提示信息。
  *************************************************************************************************/
-void AlarmPhyInfoBarWidget::display(AlarmInfoNode &node)
+void AlarmPhyInfoBarWidget::display(const AlarmInfoNode &node)
 {
     _alarmPriority = node.alarmPriority;
     _text = node.alarmMessage;

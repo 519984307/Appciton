@@ -10,13 +10,12 @@
 
 
 #include "AlarmTechInfoBarWidget.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
+#include "Framework/Sound/SoundManagerInterface.h"
 #include "FontManager.h"
 #include "AlarmIndicator.h"
-#include "AlarmInfoPopListView.h"
 #include <QPainter>
 #include "WindowManager.h"
-#include "SoundManagerInterface.h"
 
 /**************************************************************************************************
  * 绘制背景。
@@ -187,7 +186,7 @@ void AlarmTechInfoBarWidget::clear(void)
 /**************************************************************************************************
  * 设置报警提示信息。
  *************************************************************************************************/
-void AlarmTechInfoBarWidget::display(AlarmInfoNode &node)
+void AlarmTechInfoBarWidget::display(const AlarmInfoNode &node)
 {
     _alarmPriority = node.alarmPriority;
     _text = node.alarmMessage;

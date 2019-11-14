@@ -13,10 +13,10 @@
 #include "ShortTrendWindow.h"
 #include <QGroupBox>
 #include <QLayout>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
-#include "ComboBox.h"
-#include "Button.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/Button.h"
 #include "ShortTrendContainer.h"
 #include <QStringList>
 #include "ParamInfo.h"
@@ -247,8 +247,8 @@ void ShortTrendWindowPrivate::loadParaList()
     }
     if (systemManager.isSupport(CONFIG_IBP))
     {
-        SubParamID ibp1, ibp2;
-        ibpParam.getSubParamID(ibp1, ibp2);
+        SubParamID ibp1 = ibpParam.getSubParamID(IBP_INPUT_1);
+        SubParamID ibp2 = ibpParam.getSubParamID(IBP_INPUT_2);
         paraList[ibp1] = paramInfo.getParamWaveformName(
                              ibpParam.getWaveformID(ibpParam.getEntitle(IBP_INPUT_1)));
         paraList[ibp2] = paramInfo.getParamWaveformName(
@@ -314,8 +314,8 @@ QList<SubParamID> ShortTrendWindowPrivate::getSubParamID(SubParamID id)
         break;
     case PARAM_IBP:
     {
-        SubParamID ibp1, ibp2;
-        ibpParam.getSubParamID(ibp1, ibp2);
+        SubParamID ibp1 = ibpParam.getSubParamID(IBP_INPUT_1);
+        SubParamID ibp2 = ibpParam.getSubParamID(IBP_INPUT_2);
         if (id == ibp1)
         {
             subparams = ibpParam.getShortTrendList(IBP_INPUT_1);
@@ -331,7 +331,7 @@ QList<SubParamID> ShortTrendWindowPrivate::getSubParamID(SubParamID id)
     case PARAM_DUP_RESP:
     case PARAM_SPO2:
     case PARAM_TEMP:
-        paramInfo.getSubParams(paraID, subparams);
+        subparams = paramInfo.getSubParams(paraID);
         break;
     case PARAM_AG:
     {

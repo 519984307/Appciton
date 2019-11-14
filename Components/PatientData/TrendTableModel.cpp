@@ -9,8 +9,7 @@
  **/
 
 #include "TrendTableModel.h"
-#include "TimeDate.h"
-#include "ThemeManager.h"
+#include "Framework/UI/ThemeManager.h"
 #include "ParamInfo.h"
 #include "ParamManager.h"
 #include "IBPParam.h"
@@ -24,7 +23,8 @@
 #include "AlarmConfig.h"
 #include "CO2Param.h"
 #include <QTimerEvent>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include "PatientManager.h"
 #include "math.h"
 
@@ -33,8 +33,8 @@
 #define DEFAULT_WIDTH       (680)
 #define STOP_PRINT_TIMEOUT  (100)
 
-#define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
-#define HEADER_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
+#define ROW_HEIGHT_HINT (themeManager.getAcceptableControlHeight())
+#define HEADER_HEIGHT_HINT (themeManager.getAcceptableControlHeight())
 
 #define HIGH_PRIO_ALARM_COLOR (QColor(Qt::red))
 #define MED_PRIO_ALARM_COLOR (QColor(Qt::yellow))
@@ -86,7 +86,7 @@ public:
     {
         TrendDataContent(QString str = "---",
                          QColor dColor = QColor("#2C405A"),
-                         QColor bColor = themeManger.getColor(ThemeManager::ControlTypeNR,
+                         QColor bColor = themeManager.getColor(ThemeManager::ControlTypeNR,
                                          ThemeManager::ElementBackgound,
                                          ThemeManager::StateDisabled)
                         )
@@ -192,7 +192,7 @@ QVariant TrendTableModel::data(const QModelIndex &index, int role) const
             QColor colorHead = d_ptr->colHeadList.at(column).backGroundColor;
             int curSecIndex = d_ptr->indexInfo.event % COLUMN_COUNT;
             if (curSecIndex == column &&
-                    (colorHead != themeManger.getColor(ThemeManager::ControlTypeNR,
+                    (colorHead != themeManager.getColor(ThemeManager::ControlTypeNR,
                                             ThemeManager::ElementBackgound,
                                             ThemeManager::StateDisabled)))
             {
@@ -207,11 +207,11 @@ QVariant TrendTableModel::data(const QModelIndex &index, int role) const
 
         if (row % 2)
         {
-            return themeManger.getColor(ThemeManager::ControlTypeNR,
+            return themeManager.getColor(ThemeManager::ControlTypeNR,
                                         ThemeManager::ElementBackgound,
                                         ThemeManager::StateDisabled);
         }
-        return themeManger.getColor(ThemeManager::ControlTypeNR,
+        return themeManager.getColor(ThemeManager::ControlTypeNR,
                                     ThemeManager::ElementBackgound,
                                     ThemeManager::StateActive);
     }
@@ -280,7 +280,7 @@ QVariant TrendTableModel::headerData(int section, Qt::Orientation orientation, i
         {
             if (d_ptr->colHeadList.count() < section + 1)
             {
-                return themeManger.getColor(ThemeManager::ControlTypeNR,
+                return themeManager.getColor(ThemeManager::ControlTypeNR,
                                             ThemeManager::ElementBackgound,
                                             ThemeManager::StateDisabled);
             }
@@ -290,11 +290,11 @@ QVariant TrendTableModel::headerData(int section, Qt::Orientation orientation, i
         {
             if (section % 2)
             {
-                return themeManger.getColor(ThemeManager::ControlTypeNR,
+                return themeManager.getColor(ThemeManager::ControlTypeNR,
                                             ThemeManager::ElementBackgound,
                                             ThemeManager::StateDisabled);
             }
-            return themeManger.getColor(ThemeManager::ControlTypeNR,
+            return themeManager.getColor(ThemeManager::ControlTypeNR,
                                         ThemeManager::ElementBackgound,
                                         ThemeManager::StateActive);
         }
@@ -669,8 +669,8 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
     printInfo.list = d_ptr->displayList;
     for (int i = startPrintId; i <= endPrintId; i++)
     {
-        printInfo.timestampEventMap[d_ptr->trendBlockList.at(d_ptr->trendIndexList.at(i)).extraData] = d_ptr->trendBlockList.at(
-                    d_ptr->trendIndexList.at(i)).type;
+        quint32 type = d_ptr->trendBlockList.at(d_ptr->trendIndexList.at(i)).type;
+        printInfo.timestampEventMap[d_ptr->trendBlockList.at(d_ptr->trendIndexList.at(i)).extraData] = type;
     }
     RecordPageGenerator *gen = new TrendTablePageGenerator(d_ptr->backend, printInfo, d_ptr->patientInfo);
     if (recorderManager.isPrinting() && !d_ptr->isWait)
@@ -762,8 +762,7 @@ TrendTableModelPrivate::TrendTableModelPrivate()
 {
     orderMap.clear();
 
-    QList<ParamID> paramIDList;
-    paramManager.getParams(paramIDList);
+    QList<ParamID> paramIDList = paramManager.getParamIDs();
     qSort(paramIDList);
 
     for (int i = 0; i < SUB_PARAM_NR; i ++)
@@ -943,11 +942,9 @@ void TrendTableModelPrivate::loadTrendData()
     {
         TrendDataPackage *pack = trendDataPack.at(i);
 
-        QString date;
-        timeDate.getDate(pack->time, date, true);
+        QString date = timeDate->getDate(pack->time, true);
         // 填充TrendDataContent结构体dataStr成员
-        QString time;
-        timeDate.getTime(pack->time, time, true);
+        QString time = timeDate->getTime(pack->time, true);
         TrendDataContent colHeadContent(time);
 
         // 手动触发事件发生时，表头颜色显示优先级低于报警事件显示
@@ -1005,6 +1002,7 @@ void TrendTableModelPrivate::loadTrendData()
             TrendDataContent dContent;
             SubParamID id = displayList.at(j);
             bool alarmed = pack->subparamAlarm.value(id, false);
+            AlarmPriority prio = ALARM_PRIO_PROMPT;
             // 装载参数数据
             switch (id)
             {
@@ -1015,9 +1013,6 @@ void TrendTableModelPrivate::loadTrendData()
                 int sysData = pack->subparamValue.value(static_cast<SubParamID>(id), InvData());;
                 int diaData = pack->subparamValue.value(static_cast<SubParamID>(id + 1), InvData());
                 int mapData = pack->subparamValue.value(static_cast<SubParamID>(id + 2), InvData());
-                alarmed = pack->subparamAlarm.value(id, false) ||
-                        pack->subparamAlarm.value(static_cast<SubParamID>(id + 1), false) ||
-                        pack->subparamAlarm.value(static_cast<SubParamID>(id + 2), false);
                 QString sysStr = QString::number(sysData);
                 QString diaStr = QString::number(diaData);
                 QString mapStr = QString::number(mapData);
@@ -1032,6 +1027,29 @@ void TrendTableModelPrivate::loadTrendData()
                 diaStr = diaData == InvData() ? "---" : diaStr;
                 mapStr = mapData == InvData() ? "---" : mapStr;
                 dContent.dataStr = sysStr + "/" + diaStr + "\n(" + mapStr + ")";
+
+                // 获得报警报警和报警最高等级
+                prio = ALARM_PRIO_PROMPT;
+                if (pack->subparamAlarm.value(id, false))
+                {
+                    alarmed = true;
+                    prio = prio > alarmConfig.getLimitAlarmPriority(static_cast<SubParamID>(id)) ?
+                                prio : alarmConfig.getLimitAlarmPriority(static_cast<SubParamID>(id));
+                }
+
+                if (pack->subparamAlarm.value(static_cast<SubParamID>(id + 1), false))
+                {
+                    alarmed = true;
+                    prio = prio > alarmConfig.getLimitAlarmPriority(static_cast<SubParamID>(id + 1)) ?
+                                prio : alarmConfig.getLimitAlarmPriority(static_cast<SubParamID>(id + 1));
+                }
+
+                if (pack->subparamAlarm.value(static_cast<SubParamID>(id + 2), false))
+                {
+                    alarmed = true;
+                    prio = prio > alarmConfig.getLimitAlarmPriority(static_cast<SubParamID>(id + 2)) ?
+                                prio : alarmConfig.getLimitAlarmPriority(static_cast<SubParamID>(id + 2));
+                }
             }
             break;
             case SUB_PARAM_ART_SYS:
@@ -1046,6 +1064,29 @@ void TrendTableModelPrivate::loadTrendData()
                 QString diaStr = ibpDia == InvData() ? "---" : QString::number(ibpDia);
                 QString mapStr = ibpMap == InvData() ? "---" : QString::number(ibpMap);
                 dContent.dataStr = sysStr + "/" + diaStr + "\n(" + mapStr + ")";
+
+                // 获得报警报警和报警最高等级
+                prio = ALARM_PRIO_PROMPT;
+                if (pack->subparamAlarm.value(static_cast<SubParamID>(id - 2), false))
+                {
+                    alarmed = true;
+                    prio = prio > alarmConfig.getLimitAlarmPriority(static_cast<SubParamID>(id - 2)) ?
+                                prio : alarmConfig.getLimitAlarmPriority(static_cast<SubParamID>(id - 2));
+                }
+
+                if (pack->subparamAlarm.value(static_cast<SubParamID>(id - 1), false))
+                {
+                    alarmed = true;
+                    prio = prio > alarmConfig.getLimitAlarmPriority(static_cast<SubParamID>(id - 1)) ?
+                                prio : alarmConfig.getLimitAlarmPriority(static_cast<SubParamID>(id - 1));
+                }
+
+                if (pack->subparamAlarm.value(static_cast<SubParamID>(id), false))
+                {
+                    alarmed = true;
+                    prio = prio > alarmConfig.getLimitAlarmPriority(static_cast<SubParamID>(id)) ?
+                                prio : alarmConfig.getLimitAlarmPriority(static_cast<SubParamID>(id));
+                }
             }
             break;
             case SUB_PARAM_ETCO2:
@@ -1076,6 +1117,22 @@ void TrendTableModelPrivate::loadTrendData()
                     dataStr2 = data2 == InvData() ? "---" : QString::number(data2);
                 }
                 dContent.dataStr = dataStr1 + "/" + dataStr2;
+
+                // 获得报警报警和报警最高等级
+                prio = ALARM_PRIO_PROMPT;
+                if (pack->subparamAlarm.value(id, false))
+                {
+                    alarmed = true;
+                    prio = prio > alarmConfig.getLimitAlarmPriority(static_cast<SubParamID>(id)) ?
+                                prio : alarmConfig.getLimitAlarmPriority(static_cast<SubParamID>(id));
+                }
+
+                if (pack->subparamAlarm.value(static_cast<SubParamID>(id + 1), false))
+                {
+                    alarmed = true;
+                    prio = prio > alarmConfig.getLimitAlarmPriority(static_cast<SubParamID>(id + 1)) ?
+                                prio : alarmConfig.getLimitAlarmPriority(static_cast<SubParamID>(id + 1));
+                }
             }
             break;
             case SUB_PARAM_PI:
@@ -1104,18 +1161,41 @@ void TrendTableModelPrivate::loadTrendData()
                 t2Str = T2 == InvData() ? "---" : t2Str;
                 tdStr = TD == InvData() ? "---" : tdStr;
                 dContent.dataStr = t1Str + "/" + t2Str + "\n" + tdStr;
+
+                // 获得报警报警和报警最高等级
+                prio = ALARM_PRIO_PROMPT;
+                if (pack->subparamAlarm.value(id, false))
+                {
+                    alarmed = true;
+                    prio = prio > alarmConfig.getLimitAlarmPriority(static_cast<SubParamID>(id)) ?
+                                prio : alarmConfig.getLimitAlarmPriority(static_cast<SubParamID>(id));
+                }
+
+                if (pack->subparamAlarm.value(static_cast<SubParamID>(id + 1), false))
+                {
+                    alarmed = true;
+                    prio = prio > alarmConfig.getLimitAlarmPriority(static_cast<SubParamID>(id + 1)) ?
+                                prio : alarmConfig.getLimitAlarmPriority(static_cast<SubParamID>(id + 1));
+                }
+
+                if (pack->subparamAlarm.value(static_cast<SubParamID>(id + 2), false))
+                {
+                    alarmed = true;
+                    prio = prio > alarmConfig.getLimitAlarmPriority(static_cast<SubParamID>(id + 2)) ?
+                                prio : alarmConfig.getLimitAlarmPriority(static_cast<SubParamID>(id + 2));
+                }
             }
             break;
             default:
             {
                 qint16 data = pack->subparamValue.value(id, InvData());
                 dContent.dataStr = data == InvData() ? "---" : QString::number(data);
+                prio = alarmConfig.getLimitAlarmPriority(id);
             }
             break;
             }
 
             // 装载参数背景颜色
-            AlarmPriority prio = alarmConfig.getLimitAlarmPriority(id);
             int data = pack->subparamValue.value(static_cast<SubParamID>(id), InvData());;
             if (alarmed == true && data != InvData())
             {

@@ -18,11 +18,11 @@
 #include <sys/time.h>
 #include "RawDataCollector.h"
 #include "SystemManager.h"
-#include "ErrorLogItem.h"
-#include "ErrorLog.h"
+#include "Framework/ErrorLog/ErrorLog.h"
+#include "Framework/ErrorLog/ErrorLogItem.h"
 #include "IConfig.h"
 #include "AlarmSourceManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 
 #define PROBE_IN_OUT            0x0001
 #define FINGER_IN_OUT           0x0002
@@ -65,9 +65,9 @@ enum S5LEDStatus
 /**************************************************************************************************
  * 模块与参数对接。
  *************************************************************************************************/
-bool S5Provider::attachParam(Param &param)
+bool S5Provider::attachParam(Param *param)
 {
-    if (param.getParamID() == PARAM_SPO2)
+    if (param->getParamID() == PARAM_SPO2)
     {
         spo2Param.setProvider(this);
         Provider::attachParam(param);
@@ -303,7 +303,6 @@ bool S5Provider::isResultSPO2PR(unsigned char *packet)
  *************************************************************************************************/
 bool S5Provider::isResult_BAR(unsigned char *packet)
 {
-
     if (packet[0] != S5_NOTIFY_WAVE)
     {
         return false;

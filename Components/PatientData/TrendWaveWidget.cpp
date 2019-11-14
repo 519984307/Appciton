@@ -10,7 +10,6 @@
 
 #include "TrendWaveWidget.h"
 #include "TrendSubWaveWidget.h"
-#include "TimeDate.h"
 #include "ColorManager.h"
 #include "ParamInfo.h"
 #include "TrendGraphSetWindow.h"
@@ -26,7 +25,7 @@
 #include <QMouseEvent>
 #include "ParamManager.h"
 #include "FontManager.h"
-#include "TimeDefine.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include "EventDataParseContext.h"
 #include "Debug.h"
 #include "PatientManager.h"
@@ -549,7 +548,7 @@ void TrendWaveWidget::updateTimeRange()
     unsigned onePixelTime = TrendDataSymbol::convertValue(_timeInterval);
     if (trendBlockList.count() == 0)
     {
-        t = timeDate.time();
+        t = timeDate->time();
         t = t - t % 5;
     }
     else
@@ -572,10 +571,9 @@ const QList<TrendGraphInfo> TrendWaveWidget::getTrendGraphPrint()
 {
     for (int i = 0; i < _infosList.count(); i++)
     {
-        int down;
-        int up;
-        int scale;
-        _subWidgetList.at(i)->rulerRange(down, up, scale);
+        int down = _subWidgetList.at(i)->getLimitMin();
+        int up = _subWidgetList.at(i)->getLimitMax();
+        int scale = _subWidgetList.at(i)->getLimitScale();
         _infosList[i].unit = _subWidgetList.at(i)->getUnitType();
         _infosList[i].scale.min = down;
         _infosList[i].scale.max = up;
@@ -664,9 +662,8 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
     // 坐标刻度
     for (int i = GRAPH_DISPLAY_DATA_NUMBER; i >= 0; i --)
     {
-        timeDate.getTime(t, tStr, true);
-        int timeFormat = 0;
-        systemConfig.getNumValue("DateTime|TimeFormat", timeFormat);
+        tStr = timeDate->getTime(t, true);
+        int timeFormat = systemManager.getSystemTimeFormat();
         if (timeFormat == TIME_FORMAT_24)
         {
             QFont font = fontManager.textFont(fontManager.getFontSize(3));
@@ -695,9 +692,9 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
     QRect timeRect = rect().adjusted(_waveRegionWidth + 5, 12, -5, 0);
     if (_cursorPosIndex < _trendGraphInfo.alarmInfo.count() && _cursorPosIndex >= 0)
     {
-        timeDate.getDate(_trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp, tStr);
+        tStr = timeDate->getDate(_trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp);
         barPainter.drawText(timeRect, Qt::AlignLeft, tStr);
-        timeDate.getTime(_trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp, tStr, true);
+        tStr = timeDate->getTime(_trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp, true);
         barPainter.drawText(timeRect, Qt::AlignRight, tStr);
     }
 
@@ -818,7 +815,8 @@ void TrendWaveWidget::_trendLayout()
         }
         else
         {
-            _subWidgetList.at(i)->setThemeColor(colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(subId))));
+            _subWidgetList.at(i)->setThemeColor(colorManager.getColor(
+                                                    paramInfo.getParamName(paramInfo.getParamID(subId))));
         }
 
         loadTrendData(subId);
@@ -828,9 +826,9 @@ void TrendWaveWidget::_trendLayout()
         _subWidgetList.at(i)->setTimeRange(_leftTime, _rightTime);
         _trendGraphInfo.unit = paramInfo.getUnitOfSubParam(subId);
         _subWidgetList.at(i)->update();
-        _subWidgetList.at(i)->getValueLimit(_trendGraphInfo.scale.max,
-                                            _trendGraphInfo.scale.min,
-                                            _trendGraphInfo.scale.scale);
+        _trendGraphInfo.scale.max = _subWidgetList.at(i)->getLimitMax();
+        _trendGraphInfo.scale.min = _subWidgetList.at(i)->getLimitMin();
+        _trendGraphInfo.scale.scale = _subWidgetList.at(i)->getLimitScale();
         _infosList.append(_trendGraphInfo);
         _totalGraphNum++;
     }
@@ -859,8 +857,7 @@ void TrendWaveWidget::_getTrendData()
 
 void TrendWaveWidget::_initWaveSubWidget()
 {
-    QList<ParamID> pids;
-    paramManager.getParams(pids);
+    QList<ParamID> pids = paramManager.getParamIDs();
     // 初始化前三道波形
     int num = 0;
     for (int i = 0; i < SUB_PARAM_NR; i ++)

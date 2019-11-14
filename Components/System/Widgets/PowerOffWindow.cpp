@@ -8,10 +8,10 @@
  ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/9/17
  **/
 #include "PowerOffWindow.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
+#include "Framework/UI/ThemeManager.h"
 #include <QLabel>
 #include <QLayout>
-#include "ThemeManager.h"
 #include "FontManager.h"
 #include "WindowManager.h"
 
@@ -35,9 +35,9 @@ PowerOffWindow::PowerOffWindow()
 {
     this->setWindowModality(Qt::ApplicationModal);  // 设置窗口模式为应用程序模态
     setFixedSize(300, 200);
-    setFont(fontManager.textFont(themeManger.defaultFontPixSize()));
+    setFont(fontManager.textFont(themeManager.defaultFontPixSize()));
     QPalette pal = palette();
-    themeManger.setupPalette(ThemeManager::ControlWindow, pal);
+    themeManager.setupPalette(ThemeManager::ControlWindow, &pal);
     setPalette(pal);
     d_ptr->layoutExec();
 }
@@ -63,7 +63,7 @@ void PowerOffWindowPrivate::layoutExec()
     QLabel *tip = new QLabel;
     tip->setText(trs("ShuttingDown"));
     tip->setAlignment(Qt::AlignCenter|Qt::AlignHCenter);
-    tip->setFont(fontManager.textFont(themeManger.defaultFontPixSize()));
+    tip->setFont(fontManager.textFont(themeManager.defaultFontPixSize()));
 
     QFrame *line = new QFrame;
     line->setFrameStyle(QFrame::HLine | QFrame::Sunken);

@@ -9,22 +9,23 @@
  **/
 
 #include "TrendGraphSetWindow.h"
-#include "DropList.h"
 #include <QVBoxLayout>
-#include "Button.h"
-#include "LanguageManager.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/DropList.h"
+#include "Framework/UI/ScrollArea.h"
+#include "Framework/UI/ThemeManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "TrendDataSymbol.h"
 #include "IConfig.h"
 #include "ParamManager.h"
-#include "ScrollArea.h"
 #include "AlarmConfig.h"
 #include "IBPParam.h"
 #include <QPainter>
 #include <QRect>
 #include "TrendGraphWindow.h"
-#include "ThemeManager.h"
+#include "TrendGraphConfig.h"
 
-#define ITEM_HEIGHT                 (themeManger.getAcceptableControlHeight())
+#define ITEM_HEIGHT                 (themeManager.getAcceptableControlHeight())
 #define ITEM_WIDTH                  150
 #define INIT_ITEM_NUM               3
 #define WINDOW_HEIGHT               400
@@ -68,7 +69,7 @@ void TrendGraphSetWindow::setCurParam(QList<SubParamID> subList)
             item->sid = sid;
             ParamID pid = paramInfo.getParamID(sid);
             UnitType type = paramManager.getSubParamUnit(pid, sid);
-            ParamRulerConfig config = alarmConfig.getParamRulerConfig(sid, type);
+            ParamRulerConfig config = TrendGraphConfig::getParamRulerConfig(sid, type);
             QString name = paramInfo.getSubParamName(sid);
             if (sid == SUB_PARAM_ETCO2)
             {
@@ -188,7 +189,7 @@ void TrendGraphSetWindow::upDownRulerChange(int, int)
         {
             int min;
             int max;
-            item->downRuler->getRange(min, max);
+            item->downRuler->getRange(&min, &max);
             max = item->upRuler->getValue() - 1;
             item->downRuler->setRange(min, max);
         }
@@ -196,7 +197,7 @@ void TrendGraphSetWindow::upDownRulerChange(int, int)
         {
             int min;
             int max;
-            item->upRuler->getRange(min, max);
+            item->upRuler->getRange(&min, &max);
             min = item->downRuler->getValue() + 1;
             item->upRuler->setRange(min, max);
         }

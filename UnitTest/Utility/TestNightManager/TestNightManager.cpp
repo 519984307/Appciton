@@ -10,7 +10,7 @@
 
 #include "TestNightManager.h"
 #include "NightModeManager.h"
-#include "SoundManagerInterface.h"
+#include "Framework/Sound/SoundManagerInterface.h"
 #include "ConfigManagerInterface.h"
 #include "MockSystemManager.h"
 #include "MockSoundManager.h"

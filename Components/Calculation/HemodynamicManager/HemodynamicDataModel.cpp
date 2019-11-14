@@ -11,8 +11,7 @@
 #include "HemodynamicDataModel.h"
 #include <QBrush>
 #include <QColor>
-#include "ThemeManager.h"
-#include "WindowManager.h"
+#include "Framework/UI/ThemeManager.h"
 
 #define MAX_ROW_COUNT  8
 #define ROW_HEIGHT_HINT 45
@@ -29,7 +28,7 @@ public:
 };
 
 HemodynamicDataModelPrivate::HemodynamicDataModelPrivate()
-                           : viewWidth(windowManager.getPopWindowWidth())
+                           : viewWidth(themeManager.defaultWindowSize().width())
 {
     dataInfos.clear();
     headDataInfo.time.clear();

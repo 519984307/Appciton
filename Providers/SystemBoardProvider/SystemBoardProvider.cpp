@@ -9,15 +9,13 @@
  **/
 
 #include <QTimer>
-#include "crc8.h"
 #include "Debug.h"
 #include "SystemManager.h"
 #include "SystemBoardProvider.h"
-#include "WindowManager.h"
 #include "SystemAlarm.h"
 #include "KeyActionManager.h"
-#include "ErrorLog.h"
-#include "ErrorLogItem.h"
+#include "Framework/ErrorLog/ErrorLog.h"
+#include "Framework/ErrorLog/ErrorLogItem.h"
 #include "IConfig.h"
 #include "PowerOffWindow.h"
 #include "PowerManager.h"

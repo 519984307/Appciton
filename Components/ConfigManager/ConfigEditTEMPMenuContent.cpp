@@ -8,14 +8,14 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/24
  **/
 #include "ConfigEditTEMPMenuContent.h"
-#include "ComboBox.h"
+#include "Framework/UI/ComboBox.h"
 #include <QLabel>
 #include <QGridLayout>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "TEMPSymbol.h"
-#include "Config.h"
+#include "Framework/Config/Config.h"
 #include "ConfigEditMenuWindow.h"
-#include "Button.h"
+#include "Framework/UI/Button.h"
 #include "ParamInfo.h"
 #include "ParamDefine.h"
 #include "ConfigManager.h"

@@ -10,7 +10,7 @@
 
 #pragma once
 #include <QObject>
-#include "UnitManager.h"
+#include "Framework/Utility/Unit.h"
 #include "ParamDefine.h"
 #include <QPair>
 #include <QHash>
@@ -39,21 +39,6 @@ struct LimitAlarmConfig
     int minLowLimit;
     int scale;
     int step;
-};
-
-struct ParamRulerConfig
-{
-    ParamRulerConfig()
-        : upRuler(0), minUpRuler(0), maxUpRuler(0), downRuler(0), minDownRuler(0), maxDownRuler(0), scale(1)
-    {}
-
-    int upRuler;
-    int minUpRuler;
-    int maxUpRuler;
-    int downRuler;
-    int minDownRuler;
-    int maxDownRuler;
-    int scale;
 };
 
 struct LimitAlarmControl
@@ -98,11 +83,6 @@ public:
     // get the alarm config
     LimitAlarmConfig getLimitAlarmConfig(SubParamID subParamId, UnitType unit);
 
-    // get ruler config
-    ParamRulerConfig getParamRulerConfig(SubParamID subParamId, UnitType unit);
-
-    // set ruler config
-    void setParamRulerConfig(SubParamID subParamID, UnitType unit, int low, int high);
 
     // set the alarm config
     void setLimitAlarmConfig(SubParamID subParamId, UnitType unit, const LimitAlarmConfig &config);

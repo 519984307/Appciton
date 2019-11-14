@@ -13,15 +13,16 @@
 #include "NIBPManometerContent.h"
 #include "NIBPPressureControlContent.h"
 #include "NIBPZeroPointContent.h"
-#include "Button.h"
+#include "Framework/UI/Button.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
 #include <QHBoxLayout>
-#include "LanguageManager.h"
 #include "Debug.h"
 #include "WindowManager.h"
 #include "NIBPRepairMenuWindow.h"
 #include "NIBPParam.h"
 #include "SystemManager.h"
+#include <QTimerEvent>
 
 #define TIME_INTERVAL       100
 

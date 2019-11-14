@@ -95,8 +95,7 @@ void TestAlarmIndicator::cleanup()
     {
         for (int i = 0; i < alarmIndicator.getAlarmCount(); i++)
         {
-            AlarmInfoNode node;
-            alarmIndicator.getAlarmInfo(i, node);
+            AlarmInfoNode node = alarmIndicator.getAlarmInfo(i);
             alarmIndicator.delAlarmInfo(node.alarmType, node.alarmMessage);
             if (alarmIndicator.checkAlarmIsExist(node.alarmType, node.alarmMessage) == false)
             {
@@ -197,11 +196,6 @@ void TestAlarmIndicator::testHandleAlarmInfo()
         // test add alarm info
         QCOMPARE(ret, result);
 
-        // test get alarm info
-        AlarmInfoNode tmpNode;
-        QCOMPARE(alarmIndicator.getAlarmInfo(alarmType, alarmInterface->toString(0), tmpNode),
-                 result);
-
         // test get alarm info count
         QCOMPARE(alarmIndicator.getAlarmCount(alarmType), countResult);
 
@@ -226,10 +220,6 @@ void TestAlarmIndicator::testHandleAlarmInfo()
         // test add alarm info
         QCOMPARE(ret, result);
 
-        // test get alarm info
-        AlarmInfoNode tmpNode;
-        QCOMPARE(alarmIndicator.getAlarmInfo(alarmType, useCase[i - 1], tmpNode), result);
-
         // test get alarm info count
         QCOMPARE(alarmIndicator.getAlarmCount(alarmType), countResult);
 
@@ -248,9 +238,6 @@ void TestAlarmIndicator::testHandleAlarmInfo()
                                     alarmInterface, 1);
 
         QCOMPARE(ret, result);
-
-        AlarmInfoNode tmpNode;
-        QCOMPARE(alarmIndicator.getAlarmInfo(alarmType, NULL, tmpNode), result);
 
         // test get alarm info count
         QCOMPARE(alarmIndicator.getAlarmCount(alarmType), countResult);
@@ -346,8 +333,7 @@ void TestAlarmIndicator::testUpdateAlarmInfo()
                                 prepareNode.alarmSource,
                                 prepareNode.alarmID);
     alarmIndicator.updateAlarmInfo(node);
-    AlarmInfoNode newInfo;
-    alarmIndicator.getAlarmInfo(0, newInfo);
+    AlarmInfoNode newInfo = alarmIndicator.getAlarmInfo(0);
 
     QCOMPARE(prepareNode == newInfo, result);
 }

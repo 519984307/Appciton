@@ -82,7 +82,7 @@ private:
 
     void _readData(unsigned char *buff, unsigned int len);
 
-    bool _isLastSOHPaired;  // 遗留在ringBuff最后一个数据（该数据为SOH）是否已经剃掉了多余的SOH。
+    bool _isLastByteSOH;    // 记录上一个接收字节是否是SOH
 
     BLMProviderUpgradeIface *upgradeIface;
 
@@ -94,6 +94,6 @@ private:
 protected:
     static const int HeadLen = 4;               // 包头长度: Head,Length,FCS
     static const int minPacketLen = 5;          // 最小数据包长度: Head,Length,Type,FCS
-    static const int maxPacketLen = (1 << 9);   // 最大数据包长度: 1字节最大表示范围。
+    static const int maxPacketLen = 570;        // 目前最长的数据包：E5心电波形数据包, 570
 };
 

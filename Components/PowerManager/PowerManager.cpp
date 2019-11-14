@@ -15,9 +15,10 @@
 #include <QTimer>
 #include "PowerOffWindow.h"
 #include "AlarmSourceManager.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "math.h"
 #include "TestBatteryTime.h"
+#include <QTime>
 #define TWO_MINUTE 1000 * 120
 #define POWER_LIST_MAX_COUNT 3
 #define AD_VALUE_LIST_COUNT 30
@@ -84,7 +85,7 @@ public:
     /**
      * @brief LeastSquare 最小二乘法
      */
-    void LeastSquare(float &midValue);
+    float LeastSquare();
 
     MessageBox *shutDownMessage;
     MessageBox *lowBatteryMessage;
@@ -108,12 +109,11 @@ void PowerManger::setBatteryCapacity(short adc)
 QString PowerManger::getBatteryCapacity()
 {
     QString batQuantityStr;
-    float matchADValue = 0;
-    d_ptr->LeastSquare(matchADValue);
+    float matchADValue = d_ptr->LeastSquare();
 
     if (d_ptr->powerType == POWER_SUPLY_AC_BAT || d_ptr->powerType == POWER_SUPLY_BAT)
     {
-        float batQuantity = ((matchADValue - BAT_LEVEL_0) * 1.0 ) / (BAT_LEVEL_5 - BAT_LEVEL_0) * 100;
+        float batQuantity = ((matchADValue - BAT_LEVEL_0) * 1.0) / (BAT_LEVEL_5 - BAT_LEVEL_0) * 100;
         if (batQuantity < 0)
         {
             batQuantity = 0;
@@ -359,7 +359,7 @@ void PowerMangerPrivate::shutdownWarn(bool isWarn)
     }
 }
 
-void PowerMangerPrivate::LeastSquare(float &midValue)
+float PowerMangerPrivate::LeastSquare()
 {
     double t1 = 0;
     double t2 = 0;
@@ -374,5 +374,5 @@ void PowerMangerPrivate::LeastSquare(float &midValue)
     }
     double a = (t3 * adValueList.count() - t2 * t4) / (t1 * adValueList.count() - t2 * t2);
     double b = (t1 * t4 - t2 * t3) / (t1 * adValueList.count() - t2 * t2);
-    midValue = a * adValueList.count() / 2 + b;
+    return a * adValueList.count() / 2 + b;
 }

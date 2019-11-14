@@ -19,7 +19,7 @@
 #include "TrendWidgetLabel.h"
 #include <QTimer>
 #include "AlarmConfig.h"
-#include "SoundManagerInterface.h"
+#include "Framework/Sound/SoundManagerInterface.h"
 
 /**************************************************************************************************
  * 重绘。
@@ -98,11 +98,11 @@ void TrendWidget::showAlarmOff()
  * 参数：
  *      psrc:趋势数据设置颜色。
  *************************************************************************************************/
-void TrendWidget::normalPalette(QPalette &psrc)
+void TrendWidget::normalPalette(QPalette *psrc)
 {
-    if (psrc.window().color() != Qt::black)     // 趋势数据正常情况下，背景为黑色
+    if (psrc->window().color() != Qt::black)     // 趋势数据正常情况下，背景为黑色
     {
-        psrc.setColor(QPalette::Window, Qt::black);
+        psrc->setColor(QPalette::Window, Qt::black);
     }
 }
 
@@ -130,31 +130,31 @@ void TrendWidget::showAlarmStatus(QWidget *value)
 
 void TrendWidget::showAlarmParamLimit(QWidget *valueWidget, const QString &valueStr, QPalette psrc)
 {
-    normalPalette(psrc);
+    normalPalette(&psrc);
     double value = valueStr.toDouble();
     double up = upLimit->text().toDouble();
     double down = downLimit->text().toDouble();
     if (value > up)
     {
         QPalette pal = valueWidget->palette();
-        darkerPalette(pal);
+        darkerPalette(&pal);
         upLimit->setPalette(pal);
     }
     else
     {
-        darkerPalette(psrc);
+        darkerPalette(&psrc);
         upLimit->setPalette(psrc);
     }
 
     if (value < down)
     {
         QPalette pal = valueWidget->palette();
-        darkerPalette(pal);
+        darkerPalette(&pal);
         downLimit->setPalette(pal);
     }
     else
     {
-        darkerPalette(psrc);
+        darkerPalette(&psrc);
         downLimit->setPalette(psrc);
     }
 }
@@ -176,7 +176,7 @@ void TrendWidget::setWidgetPalette(QLayout *layout, QPalette psrc)
                     || item == qobject_cast<QWidget *>(downLimit))
             {
                 // 使上下限颜色变暗
-                darkerPalette(pal);
+                darkerPalette(&pal);
             }
             if (item->palette().windowText().color() != pal.windowText().color())
             {
@@ -188,19 +188,19 @@ void TrendWidget::setWidgetPalette(QLayout *layout, QPalette psrc)
 
 void TrendWidget::showNormalStatus(QPalette psrc)
 {
-    normalPalette(psrc);
+    normalPalette(&psrc);
     setWidgetPalette(contentLayout, psrc);
 }
 
 void TrendWidget::showNormalStatus(QLayout *layout, QPalette psrc)
 {
-    normalPalette(psrc);
+    normalPalette(&psrc);
     setWidgetPalette(layout, psrc);
 }
 
 void TrendWidget::showNormalStatus(QWidget *value, QPalette psrc)
 {
-    normalPalette(psrc);
+    normalPalette(&psrc);
     setPalette(psrc);
     QPalette p = value->palette();
     if (p.windowText().color() != psrc.windowText().color())
@@ -216,22 +216,22 @@ void TrendWidget::showNormalParamLimit(QPalette psrc)
     QPalette p = upLimit->palette();
     if (p.windowText().color() != psrc.windowText().color())
     {
-        darkerPalette(psrc);
+        darkerPalette(&psrc);
         upLimit->setPalette(psrc);
     }
 
     p = downLimit->palette();
     if (p.windowText().color() != psrc.windowText().color())
     {
-        darkerPalette(psrc);
+        darkerPalette(&psrc);
         downLimit->setPalette(psrc);
     }
 }
 
-void TrendWidget::darkerPalette(QPalette &pal)
+void TrendWidget::darkerPalette(QPalette *pal)
 {
-    QColor c = pal.color(QPalette::WindowText);
-    pal.setColor(QPalette::WindowText, c.darker(150));
+    QColor c = pal->color(QPalette::WindowText);
+    pal->setColor(QPalette::WindowText, c.darker(150));
 }
 
 /**************************************************************************************************

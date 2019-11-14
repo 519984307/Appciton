@@ -14,12 +14,10 @@
 #include "RESPParam.h"
 #include "FontManager.h"
 #include "WaveWidgetLabel.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "ColorManager.h"
 #include "ParamInfo.h"
-#include "ComboListPopup.h"
-#include "WindowManager.h"
-#include "PopupList.h"
+#include "Framework/UI/PopupList.h"
 #include "SystemManager.h"
 #include "RESPDupParam.h"
 
@@ -254,7 +252,7 @@ void RESPWaveWidget::loadConfig()
 
     setZoom(static_cast<int>(respParam.getZoom()));
     respDupParam.updateRRSource();  // 更新RR来源
-    respParam.setCalcLead(respParam.getCalcLead()); // 更新呼吸导联
+    respParam.setCalcLead(respParam.getCalcLead());  // 更新呼吸导联
 }
 
 /**************************************************************************************************

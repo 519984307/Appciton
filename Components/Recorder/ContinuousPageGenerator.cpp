@@ -9,10 +9,11 @@
  **/
 
 #include "ContinuousPageGenerator.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
+#include "Framework/TimeDate/TimeDate.h"
+#include "Framework/Utility/Utility.h"
 #include "PatientManager.h"
 #include "TrendCache.h"
-#include "TimeDate.h"
 #include "SystemManager.h"
 #include "ParamInfo.h"
 #include "WaveformCache.h"
@@ -24,7 +25,6 @@
 #include "AGParam.h"
 #include "IBPParam.h"
 #include "ParamManager.h"
-#include "Utility.h"
 #include "IConfig.h"
 #include "PrintSettingMenuContent.h"
 #include "LayoutManager.h"
@@ -43,9 +43,9 @@ public:
     {
         TrendCacheData data;
         TrendAlarmStatus almStatus;
-        unsigned t = timeDate.time();
-        trendCache.getTrendData(t, data);
-        trendCache.getTrendAlarmStatus(t, almStatus);
+        unsigned t = timeDate->time();
+        trendCache.getTrendData(t, &data);
+        trendCache.getTrendAlarmStatus(t, &almStatus);
         bool alarm = false;
         foreach(bool st, almStatus.alarms)
         {
@@ -304,7 +304,7 @@ RecordPage *ContinuousPageGenerator::createPage()
             }
 
             if (guard) {
-                page = createWaveSegments(d_ptr->waveInfos, d_ptr->curDrawWaveSegment++,
+                page = createWaveSegments(&d_ptr->waveInfos, d_ptr->curDrawWaveSegment++,
                                           recorderManager.getPrintSpeed());
             } else {
                 /* object is already destroyed, return NULL */

@@ -10,16 +10,16 @@
 
 #include "NeonateProvider.h"
 #include "O2Param.h"
-#include "ErrorLogItem.h"
-#include "ErrorLog.h"
+#include "Framework/ErrorLog/ErrorLogItem.h"
+#include "Framework/ErrorLog/ErrorLog.h"
 #include "O2Alarm.h"
 #include "O2Define.h"
 #include "SystemManager.h"
 #include "AlarmSourceManager.h"
 
-bool NeonateProvider::attachParam(Param &param)
+bool NeonateProvider::attachParam(Param *param)
 {
-    if (param.getParamID() == PARAM_O2)
+    if (param->getParamID() == PARAM_O2)
     {
         o2Param.setProvider(this);
         Provider::attachParam(param);

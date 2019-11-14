@@ -32,8 +32,8 @@
 #include <QTimer>
 #include "Debug.h"
 #include <QTimer>
-#include "ErrorLogItem.h"
-#include "ErrorLog.h"
+#include "Framework/ErrorLog/ErrorLogItem.h"
+#include "Framework/ErrorLog/ErrorLog.h"
 #include "OxyCRGRRHRWaveWidget.h"
 #include "AlarmSourceManager.h"
 #include "RunningStatusBarInterface.h"
@@ -45,15 +45,15 @@
 /**************************************************************************************************
  * 获取禁用的波形控件。
  *************************************************************************************************/
-void ECGParam::_getDisabledWaveforms(QStringList &waveforms)
+QStringList ECGParam::_getDisabledWaveforms()
 {
-    waveforms.clear();
+    QStringList waveforms;
 
     for (int i = ECG_LEAD_I; i < ECG_LEAD_NR; i++)
     {
         if (_waveWidget[(ECGLead)i] == NULL)
         {
-            return;
+            return waveforms;
         }
     }
 
@@ -86,6 +86,7 @@ void ECGParam::_getDisabledWaveforms(QStringList &waveforms)
         waveforms.append(_waveWidget[ECG_LEAD_V5]->name());
         waveforms.append(_waveWidget[ECG_LEAD_V6]->name());
     }
+    return waveforms;
 }
 
 short ECGParam::getHRMaxValue()
@@ -337,8 +338,8 @@ void ECGParam::setProvider(ECGProviderIFace *provider)
     // enable data sync
     _provider->enableDataSyncCtrl(true);
 
-    int p05, n05;
-    _provider->get05mV(p05, n05);
+    int p05 = _provider->getP05mV();
+    int n05 = _provider->getN05mV();
 
     // 设置波形控件的采样率。
     for (int i = ECG_LEAD_I; i < ECG_LEAD_NR; i++)
@@ -935,9 +936,9 @@ void ECGParam::updateECGStandard(int standard)
 /**************************************************************************************************
  * 获取可得的导联集。
  *************************************************************************************************/
-void ECGParam::getAvailableLeads(QList<ECGLead> &leads)
+QList<ECGLead> ECGParam::getAvailableLeads()
 {
-    leads.clear();
+    QList<ECGLead> leads;
     leads.append(ECG_LEAD_I);
     leads.append(ECG_LEAD_II);
     leads.append(ECG_LEAD_III);
@@ -957,6 +958,7 @@ void ECGParam::getAvailableLeads(QList<ECGLead> &leads)
         leads.append(ECG_LEAD_V5);
         leads.append(ECG_LEAD_V6);
     }
+    return leads;
 }
 
 
@@ -1059,9 +1061,6 @@ void ECGParam::reset(void)
 
     // 设置工频滤波。
     _provider->setNotchFilter(getNotchFilter());
-
-    int p05, n05;
-    _provider->get05mV(p05, n05);
 }
 
 /***************************************************************************************************
@@ -1123,11 +1122,11 @@ void ECGParam::enableVFCalc(bool enable)
 /**************************************************************************************************
  * 获取可得的波形控件集。
  *************************************************************************************************/
-void ECGParam::getAvailableWaveforms(QStringList &waveforms,
-                                     QStringList &waveformShowName, int)
+void ECGParam::getAvailableWaveforms(QStringList *waveforms,
+                                     QStringList *waveformShowName, int)
 {
-    waveforms.clear();
-    waveformShowName.clear();
+    waveforms->clear();
+    waveformShowName->clear();
 
     for (int i = 0; i < ECG_LEAD_NR; ++i)
     {
@@ -1137,47 +1136,47 @@ void ECGParam::getAvailableWaveforms(QStringList &waveforms,
         }
     }
 
-    waveforms.append(_waveWidget[ECG_LEAD_I]->name());
-    waveforms.append(_waveWidget[ECG_LEAD_II]->name());
-    waveforms.append(_waveWidget[ECG_LEAD_III]->name());
-    waveformShowName.append(_waveWidget[ECG_LEAD_I]->getTitle());
-    waveformShowName.append(_waveWidget[ECG_LEAD_II]->getTitle());
-    waveformShowName.append(_waveWidget[ECG_LEAD_III]->getTitle());
+    waveforms->append(_waveWidget[ECG_LEAD_I]->name());
+    waveforms->append(_waveWidget[ECG_LEAD_II]->name());
+    waveforms->append(_waveWidget[ECG_LEAD_III]->name());
+    waveformShowName->append(_waveWidget[ECG_LEAD_I]->getTitle());
+    waveformShowName->append(_waveWidget[ECG_LEAD_II]->getTitle());
+    waveformShowName->append(_waveWidget[ECG_LEAD_III]->getTitle());
 
     if (_curLeadMode >= ECG_LEAD_MODE_5)
     {
-        waveforms.append(_waveWidget[ECG_LEAD_AVR]->name());
-        waveforms.append(_waveWidget[ECG_LEAD_AVL]->name());
-        waveforms.append(_waveWidget[ECG_LEAD_AVF]->name());
-        waveforms.append(_waveWidget[ECG_LEAD_V1]->name());
+        waveforms->append(_waveWidget[ECG_LEAD_AVR]->name());
+        waveforms->append(_waveWidget[ECG_LEAD_AVL]->name());
+        waveforms->append(_waveWidget[ECG_LEAD_AVF]->name());
+        waveforms->append(_waveWidget[ECG_LEAD_V1]->name());
 
-        waveformShowName.append(_waveWidget[ECG_LEAD_AVR]->getTitle());
-        waveformShowName.append(_waveWidget[ECG_LEAD_AVL]->getTitle());
-        waveformShowName.append(_waveWidget[ECG_LEAD_AVF]->getTitle());
-        waveformShowName.append(_waveWidget[ECG_LEAD_V1]->getTitle());
+        waveformShowName->append(_waveWidget[ECG_LEAD_AVR]->getTitle());
+        waveformShowName->append(_waveWidget[ECG_LEAD_AVL]->getTitle());
+        waveformShowName->append(_waveWidget[ECG_LEAD_AVF]->getTitle());
+        waveformShowName->append(_waveWidget[ECG_LEAD_V1]->getTitle());
     }
     if (_curLeadMode >= ECG_LEAD_MODE_12)
     {
-        waveforms.append(_waveWidget[ECG_LEAD_V2]->name());
-        waveforms.append(_waveWidget[ECG_LEAD_V3]->name());
-        waveforms.append(_waveWidget[ECG_LEAD_V4]->name());
-        waveforms.append(_waveWidget[ECG_LEAD_V5]->name());
-        waveforms.append(_waveWidget[ECG_LEAD_V6]->name());
+        waveforms->append(_waveWidget[ECG_LEAD_V2]->name());
+        waveforms->append(_waveWidget[ECG_LEAD_V3]->name());
+        waveforms->append(_waveWidget[ECG_LEAD_V4]->name());
+        waveforms->append(_waveWidget[ECG_LEAD_V5]->name());
+        waveforms->append(_waveWidget[ECG_LEAD_V6]->name());
 
-        waveformShowName.append(_waveWidget[ECG_LEAD_V2]->getTitle());
-        waveformShowName.append(_waveWidget[ECG_LEAD_V3]->getTitle());
-        waveformShowName.append(_waveWidget[ECG_LEAD_V4]->getTitle());
-        waveformShowName.append(_waveWidget[ECG_LEAD_V5]->getTitle());
-        waveformShowName.append(_waveWidget[ECG_LEAD_V6]->getTitle());
+        waveformShowName->append(_waveWidget[ECG_LEAD_V2]->getTitle());
+        waveformShowName->append(_waveWidget[ECG_LEAD_V3]->getTitle());
+        waveformShowName->append(_waveWidget[ECG_LEAD_V4]->getTitle());
+        waveformShowName->append(_waveWidget[ECG_LEAD_V5]->getTitle());
+        waveformShowName->append(_waveWidget[ECG_LEAD_V6]->getTitle());
     }
 }
 
 /**************************************************************************************************
  * 获取可得的趋势控件集。
  *************************************************************************************************/
-void ECGParam::getTrendWindow(QStringList &trend)
+QStringList ECGParam::getTrendWindowNames()
 {
-    trend.clear();
+    QStringList trend;
     if (_pvcsTrendWidget != NULL)
     {
         trend.append(_pvcsTrendWidget->name());
@@ -1186,6 +1185,7 @@ void ECGParam::getTrendWindow(QStringList &trend)
     {
         trend.append(_ecgSTTrendWidget->name());
     }
+    return trend;
 }
 
 /**************************************************************************************************
@@ -1253,14 +1253,13 @@ void ECGParam::setLeadMode(ECGLeadMode newMode)
     }
 
     // update visiable or invisiable waves
-    QStringList disabledWaveforms;
-    _getDisabledWaveforms(disabledWaveforms);  // 不会被显示的波形集合。
+    QStringList disabledWaveforms = _getDisabledWaveforms();  // 不会被显示的波形集合。
     foreach(const QString &n, disabledWaveforms) {
         needUpdateLayout += layoutManager.setWidgetLayoutable(n, false);
     }
     QStringList visiableWaveforms;
     QStringList visiableWaveformsTitle;
-    getAvailableWaveforms(visiableWaveforms, visiableWaveformsTitle, 0);
+    getAvailableWaveforms(&visiableWaveforms, &visiableWaveformsTitle, 0);
     foreach(const QString &n, visiableWaveforms)
     {
         needUpdateLayout += layoutManager.setWidgetLayoutable(n, true);
@@ -1511,8 +1510,7 @@ ECGLead ECGParam::getCalcLead(void)
 void ECGParam::autoSetCalcLead(void)
 {
     // 获取支持的导联。
-    QList<ECGLead> leads;
-    getAvailableLeads(leads);
+    QList<ECGLead> leads = getAvailableLeads();
 
     if (leads.isEmpty())
     {

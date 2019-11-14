@@ -9,8 +9,8 @@
  **/
 
 #include "PatientManagementMenuContent.h"
-#include "Button.h"
-#include "LanguageManager.h"
+#include "Framework/UI/Button.h"
+#include "Framework/Language/LanguageManager.h"
 #include "QGridLayout"
 #include "PatientManager.h"
 #include "PatientInfoWindow.h"
@@ -19,6 +19,7 @@
 #include <QApplication>
 #include "RescueDataDeleteWindow.h"
 #include "DischargePatientWindow.h"
+#include <QVariant>
 
 class PatientManagementMenuContentPrivate
 {
@@ -161,7 +162,6 @@ void PatientManagementMenuContent::onBtnReleased()
             while (NULL != QApplication::activeModalWidget())
             {
                 QApplication::activeModalWidget()->hide();
-                menuManager.close();
             }
 
             if (isVisible)

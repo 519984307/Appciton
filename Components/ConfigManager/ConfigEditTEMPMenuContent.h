@@ -9,7 +9,7 @@
  **/
 #pragma once
 
-#include "MenuContent.h"
+#include "Framework/UI/MenuContent.h"
 class ConfigEditTEMPMenuContentPrivate;
 class Config;
 class ConfigEditTEMPMenuContent : public MenuContent

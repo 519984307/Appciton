@@ -10,15 +10,15 @@
 #include "ConfigEditIBPMenuContent.h"
 #include <QGridLayout>
 #include <QLabel>
-#include "LanguageManager.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QMap>
-#include "ComboBox.h"
-#include "ComboBox.h"
 #include "ConfigManager.h"
 #include "IBPSymbol.h"
-#include "Button.h"
 #include "ParamInfo.h"
 #include "ParamDefine.h"
+#include "Debug.h"
 
 class ConfigEditIBPMenuContentPrivate
 {
@@ -63,7 +63,6 @@ ConfigEditIBPMenuContent::~ConfigEditIBPMenuContent()
 
 void ConfigEditIBPMenuContentPrivate::loadOptions()
 {
-
     QStringList strList = QStringList()
                           << "ChannelPressureEntitle1"
                           << "ChannelPressureEntitle2"
@@ -114,8 +113,7 @@ void ConfigEditIBPMenuContent::layoutExec()
                        << trs(IBPSymbol::convert(IBP_PRESSURE_RAP))
                        << trs(IBPSymbol::convert(IBP_PRESSURE_ICP))
                        << trs(IBPSymbol::convert(IBP_PRESSURE_AUXP1))
-                       << trs(IBPSymbol::convert(IBP_PRESSURE_AUXP2))
-                      );
+                       << trs(IBPSymbol::convert(IBP_PRESSURE_AUXP2)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditIBPMenuContentPrivate
                          ::ITEM_CBO_PRESSURE_NAME1, comboBox);
@@ -136,8 +134,7 @@ void ConfigEditIBPMenuContent::layoutExec()
                        << trs(IBPSymbol::convert(IBP_PRESSURE_RAP))
                        << trs(IBPSymbol::convert(IBP_PRESSURE_ICP))
                        << trs(IBPSymbol::convert(IBP_PRESSURE_AUXP1))
-                       << trs(IBPSymbol::convert(IBP_PRESSURE_AUXP2))
-                      );
+                       << trs(IBPSymbol::convert(IBP_PRESSURE_AUXP2)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditIBPMenuContentPrivate
                          ::ITEM_CBO_PRESSURE_NAME2, comboBox);
@@ -154,8 +151,7 @@ void ConfigEditIBPMenuContent::layoutExec()
                        << trs(IBPSymbol::convert(IBP_SWEEP_SPEED_62_5))
                        << trs(IBPSymbol::convert(IBP_SWEEP_SPEED_125))
                        << trs(IBPSymbol::convert(IBP_SWEEP_SPEED_250))
-                       << trs(IBPSymbol::convert(IBP_SWEEP_SPEED_500))
-                      );
+                       << trs(IBPSymbol::convert(IBP_SWEEP_SPEED_500)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditIBPMenuContentPrivate
                          ::ITEM_CBO_SWEEP_SPEED, comboBox);
@@ -170,8 +166,7 @@ void ConfigEditIBPMenuContent::layoutExec()
     comboBox = new ComboBox;
     comboBox->addItems(QStringList()
                        << trs(IBPSymbol::convert(IBP_FILTER_MODE_0))
-                       << trs(IBPSymbol::convert(IBP_FILTER_MODE_1))
-                      );
+                       << trs(IBPSymbol::convert(IBP_FILTER_MODE_1)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditIBPMenuContentPrivate
                          ::ITEM_CBO_FILTER_MODE, comboBox);
@@ -187,8 +182,7 @@ void ConfigEditIBPMenuContent::layoutExec()
     comboBox->addItems(QStringList()
                        << trs(IBPSymbol::convert(IBP_SENSITIVITY_HIGH))
                        << trs(IBPSymbol::convert(IBP_SENSITIVITY_MID))
-                       << trs(IBPSymbol::convert(IBP_SENSITIVITY_LOW))
-                      );
+                       << trs(IBPSymbol::convert(IBP_SENSITIVITY_LOW)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditIBPMenuContentPrivate
                          ::ITEM_CBO_IBP_SENS, comboBox);

@@ -13,7 +13,7 @@
 #include <QString>
 #include <QtTest>
 #include <QMetaType>
-#include "StorageFile.h"
+#include "Framework/Storage/StorageFile.h"
 
 class TestStorageFile : public QObject
 {
@@ -60,4 +60,4 @@ private:
     StorageFile *m_StorageFile;
     QTemporaryFile *m_File;
 };
-#endif // TESTSTORAGEFILE_H
+#endif  // TESTSTORAGEFILE_H

@@ -9,9 +9,10 @@
  **/
 
 #include "AGMenuContent.h"
-#include "LanguageManager.h"
 #include <QLabel>
-#include "ComboBox.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QGridLayout>
 #include "AGSymbol.h"
 #include "IConfig.h"
@@ -19,9 +20,9 @@
 #include "CO2SetAGMenu.h"
 #include "N2OSetAGMenu.h"
 #include "HalSetAGMenu.h"
-#include "Button.h"
 #include "MainMenuWindow.h"
 #include "AlarmLimitWindow.h"
+#include "WindowManager.h"
 
 class AGMenuContentPrivate
 {
@@ -89,8 +90,7 @@ void AGMenuContent::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                       << trs(AGSymbol::convert(AG_MODULE_SWITCH_ENABLE))
-                      << trs(AGSymbol::convert(AG_MODULE_SWITCH_DISABLE))
-                      );
+                      << trs(AGSymbol::convert(AG_MODULE_SWITCH_DISABLE)));
     itemID = AGMenuContentPrivate::ITEM_CBO_MODULE_SWITCH;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -185,8 +185,7 @@ void AGMenuContent::layoutExec()
                       << trs(AGSymbol::convert(AG_SWEEP_SPEED_62_5))
                       << trs(AGSymbol::convert(AG_SWEEP_SPEED_125))
                       << trs(AGSymbol::convert(AG_SWEEP_SPEED_250))
-                      << trs(AGSymbol::convert(AG_SWEEP_SPEED_500))
-                      );
+                      << trs(AGSymbol::convert(AG_SWEEP_SPEED_500)));
     itemID = AGMenuContentPrivate::ITEM_CBO_SWEEP_SPEED;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));

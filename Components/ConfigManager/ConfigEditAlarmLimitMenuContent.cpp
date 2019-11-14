@@ -8,9 +8,11 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/7/19
  **/
 #include "ConfigEditAlarmLimitMenuContent.h"
-#include "LanguageManager.h"
-#include "TableView.h"
-#include "TableHeaderView.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/TableView.h"
+#include "Framework/UI/TableHeaderView.h"
+#include "Framework/UI/TableViewItemDelegate.h"
+#include "Framework/Language/LanguageManager.h"
 #include "AlarmLimitModel.h"
 #include <QBoxLayout>
 #include <QHeaderView>
@@ -20,8 +22,6 @@
 #include "ConfigManager.h"
 #include "PatientManager.h"
 #include "IBPParam.h"
-#include "TableViewItemDelegate.h"
-#include <Button.h>
 #include <QDebug>
 #include "ConfigEditAlarmLimitModel.h"
 #include "SystemManager.h"
@@ -50,8 +50,7 @@ public:
 
 void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
 {
-    QList<ParamID> pids;
-    paramManager.getParams(pids);
+    QList<ParamID> pids = paramManager.getParamIDs();
     QList<AlarmDataInfo> infos;
     for (int i = 0; i < SUB_PARAM_NR; ++i)
     {

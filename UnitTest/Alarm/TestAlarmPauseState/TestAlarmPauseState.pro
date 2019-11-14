@@ -21,30 +21,20 @@ include("../../Common/runtest.pri")
 SOURCES += main.cpp \
     TestAlarmPauseState.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmPauseState.cpp \
-    ../../../Utility/LanguageManager/LanguageManager.cpp \
     ../../../Components/Alarm/AlarmIndicatorInterface.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmStateMachineInterface.cpp \
     ../../../Components/LightManager/LightManagerInterface.cpp \
     ../../../Utility/Config/IConfig.cpp \
     ../../../Components/Alarm/AlarmStateMachine/AlarmState.cpp \
-    ../../../Utility/Config/Config.cpp \
-    ../../../Utility/Config/XmlParser.cpp \
-    ../../../Utility/ErrorLog/ErrorLogInterface.cpp \
-    ../../../Utility/ErrorLog/ErrorLogItem.cpp
 
 HEADERS += \
     TestAlarmPauseState.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmPauseState.h \
-    ../../../Utility/LanguageManager/LanguageManager.h \
     ../../../Components/Alarm/AlarmIndicatorInterface.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmStateMachineInterface.h \
     ../../../Components/LightManager/LightManagerInterface.h \
     ../../../Utility/Config/IConfig.h \
     ../../../Components/Alarm/AlarmStateMachine/AlarmState.h \
-    ../../../Utility/Config/Config.h \
-    ../../../Utility/Config/XmlParser.h \
-    ../../../Utility/ErrorLog/ErrorLogInterface.h \
-    ../../../Utility/ErrorLog/ErrorLogItem.h \
     ../MockAlarmIndicator.h \
     ../MockAlarmStateMachine.h \
     ../MockLightManager.h
@@ -53,7 +43,5 @@ INCLUDEPATH += \
     ../../../Components/Alarm/AlarmStateMachine \
     ../../../Components/Alarm \
     ../../../Components/LightManager \
-    ../../../Utility/LanguageManager \
     ../../../Utility/Config \
-    ../../../Utility/ErrorLog \
     ..

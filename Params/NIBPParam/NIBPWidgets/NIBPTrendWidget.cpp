@@ -15,13 +15,12 @@
 #include "ParamInfo.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include "TimeDate.h"
 #include "TimeManager.h"
-#include "WindowManager.h"
 #include "IConfig.h"
 #include "TrendWidgetLabel.h"
 #include "MeasureSettingWindow.h"
 #include "LayoutManager.h"
+#include "Framework/TimeDate/TimeDate.h"
 
 #define stretchCount 1
 class NIBPTrendWidgetPrivate
@@ -428,8 +427,7 @@ void NIBPTrendWidgetPrivate::updateMeasureTime()
     else
     {
         QString timeStr("@ ");
-        QString tmpStr;
-        timeDate.getTime(lastTime, tmpStr, false);
+        QString tmpStr = timeDate->getTime(lastTime, false);
         timeStr += tmpStr;
         measureTime = timeStr;
     }
@@ -511,9 +509,7 @@ void NIBPTrendWidget::showValue(void)
     {
         QLayout *lay = d_ptr->stackedwidget->currentWidget()->layout();
         showNormalStatus(lay, psrc);
-        showNormalStatus(d_ptr->lastMeasureCount, psrc);
-        showNormalStatus(d_ptr->countDown, psrc);
-        showNormalStatus(d_ptr->model, psrc);
+        showNormalStatus(psrc);
     }
 
     d_ptr->updateMeasureTime();
@@ -578,7 +574,7 @@ void NIBPTrendWidget::showText(QString text)
     }
 
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
-    normalPalette(psrc);
+    normalPalette(&psrc);
     if (!d_ptr->sysAlarm && !d_ptr->diaAlarm && !d_ptr->mapAlarm)
     {
         showNormalStatus(d_ptr->message, psrc);
@@ -594,7 +590,7 @@ void NIBPTrendWidget::showText(QString text)
 void NIBPTrendWidget::showModelText(const QString &text)
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
-    normalPalette(psrc);
+    normalPalette(&psrc);
     if (!d_ptr->sysAlarm && !d_ptr->diaAlarm && !d_ptr->mapAlarm)
     {
         showNormalStatus(d_ptr->model, psrc);
@@ -692,7 +688,7 @@ void NIBPTrendWidget::doRestoreNormalStatus()
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
     QLayout *lay = d_ptr->stackedwidget->currentWidget()->layout();   // 将窗体所有内容显示正常颜色
     showNormalStatus(lay, psrc);
-    showNormalParamLimit(psrc);
+    showNormalStatus(psrc);
 }
 
 void NIBPTrendWidget::updatePalette(const QPalette &pal)

@@ -9,10 +9,10 @@
  **/
 
 #include "WiFiProfileWindow.h"
-#include "ComboBox.h"
 #include <QLabel>
-#include "Button.h"
-#include "LanguageManager.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QMap>
 #include <QGridLayout>
 #include <QPalette>
@@ -21,7 +21,6 @@
 #include "IConfig.h"
 #include "NetworkManager.h"
 #include <QTimerEvent>
-#include "WifiMaintainMenu.h"
 
 class WiFiProfileWindowPrivate
 {
@@ -60,8 +59,8 @@ WiFiProfileWindow::WiFiProfileWindow()
 
     connect(this, SIGNAL(selectProfile(WiFiProfileInfo)), &networkManager, SLOT(connectWiFiProfile(WiFiProfileInfo)),
             Qt::QueuedConnection);
-    connect(&networkManager, SIGNAL(wifiConnectToAp(QString)), this, SLOT(onWifiConnected(QString)), Qt::QueuedConnection);
-    connect(&wifiMaintainMenu, SIGNAL(updateWifiProfileSignal(bool)), this, SLOT(updateWifiProfileSlot(bool)));
+    connect(&networkManager, SIGNAL(wifiConnectToAp(QString)), this, SLOT(onWifiConnected(QString)),
+            Qt::QueuedConnection);
     connect(&configManager, SIGNAL(configUpdated()), this, SLOT(d->onConfigUpdated()));
 
     layoutExec();
@@ -287,8 +286,8 @@ void WiFiProfileWindowPrivate::onWifiConnected(const QString &ssid)
     {
         if (profiles[select].ssid == ssid)
         {
-            if (combos[ITEM_CBO_ACCESSPOINT_PROFILE]->currentIndex() != select +
-                    1)  // the first item is the off option, need to skip
+            // the first item is the off option, need to skip
+            if (combos[ITEM_CBO_ACCESSPOINT_PROFILE]->currentIndex() != select + 1)
             {
                 combos[ITEM_CBO_ACCESSPOINT_PROFILE]->blockSignals(true);
                 combos[ITEM_CBO_ACCESSPOINT_PROFILE]->setCurrentIndex(select + 1);
@@ -299,8 +298,9 @@ void WiFiProfileWindowPrivate::onWifiConnected(const QString &ssid)
     }
     else
     {
-        qDebug() << Q_FUNC_INFO << "Wifi Connected to " << ssid << ", which doesn't belong to the profile.";
-        onProfileSelect(0); // set to off
+        qDebug() << Q_FUNC_INFO << "Wifi Connected to " << ssid
+                 << ", which doesn't belong to the profile.";
+        onProfileSelect(0);  // set to off
     }
 }
 
@@ -337,7 +337,8 @@ void WiFiProfileWindow::timerEvent(QTimerEvent *e)
                 && d->combos[WiFiProfileWindowPrivate::ITEM_CBO_ACCESSPOINT_PROFILE]->currentIndex() != 0)
         {
             d->btns[WiFiProfileWindowPrivate::ITEM_BTN_LOCAL_IP]->setText(networkManager.getIpString(NETWORK_WIFI));
-            d->btns[WiFiProfileWindowPrivate::ITEM_BTN_MAC_ADDRESS]->setText(networkManager.getMacAddress(NETWORK_WIFI));
+            d->btns[WiFiProfileWindowPrivate::ITEM_BTN_MAC_ADDRESS]->setText(
+                        networkManager.getMacAddress(NETWORK_WIFI));
         }
         else
         {

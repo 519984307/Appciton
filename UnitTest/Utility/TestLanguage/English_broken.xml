@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<language>
+	<Adult>Adult</Adult>
+	<AlarmLimit>Alarm Limit</AlarmLimit>
+	<MachineConfigIsUpdatedNow>The machine configuration has been updated.</MachineConfigIsUpdatedNow>
+	<IsRebootMachine>Restart the monitor now?
+</language>

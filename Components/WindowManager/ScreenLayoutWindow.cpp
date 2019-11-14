@@ -9,16 +9,16 @@
  **/
 
 #include "ScreenLayoutWindow.h"
-#include "TableView.h"
 #include <QBoxLayout>
 #include <QHeaderView>
 #include "ScreenLayoutModel.h"
 #include "ScreenLayoutItemDelegate.h"
-#include "Button.h"
-#include "LanguageManager.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/TableView.h"
+#include "Framework/UI/ThemeManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "LayoutManager.h"
 #include "MessageBox.h"
-#include "WindowManager.h"
 
 class ScreenLayoutWindowPrivate
 {
@@ -91,7 +91,7 @@ ScreenLayoutWindow::ScreenLayoutWindow()
     d_ptr->view->setModel(model);
     connect(model, SIGNAL(spanChanged(QModelIndex)), d_ptr->view, SLOT(onSpanChanged(QModelIndex)));
 
-    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
+    setFixedSize(themeManager.defaultWindowSize());
 
     setWindowTitle(trs("StandardScreenLayout"));
 }

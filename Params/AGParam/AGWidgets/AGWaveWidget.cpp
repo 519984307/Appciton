@@ -10,15 +10,14 @@
  **/
 
 #include "AGWaveWidget.h"
-#include "LanguageManager.h"
+#include "Framework/UI/PopupList.h"
+#include "Framework/Language/LanguageManager.h"
 #include "ColorManager.h"
 #include "FontManager.h"
 #include "WaveWidgetLabel.h"
 #include "AGWaveRuler.h"
 #include "AGSymbol.h"
 #include "AGParam.h"
-#include "WindowManager.h"
-#include "PopupList.h"
 
 /**************************************************************************************************
  * 设置麻醉剂类型。

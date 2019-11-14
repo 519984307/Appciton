@@ -71,9 +71,11 @@ protected:
     void resizeEvent(QResizeEvent *e);
 
 private slots:
-    /* handle the dynamic key clicked signal */
-    void _dynamicKeyClicked(int index);
-    /* handle the fixed key clicked event */
+    /* handle the dynamic key released signal */
+    void _dynamicKeyReleased(int index);
+    /* handle the dynamic key pressed signal */
+    void _dynamicKeyPressed(int index);
+        /* handle the fixed key clicked event */
     void _fixedKeyClicked();
 
 private:

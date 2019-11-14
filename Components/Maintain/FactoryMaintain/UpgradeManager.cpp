@@ -18,12 +18,12 @@
 #include "USBManager.h"
 #include "ParamManager.h"
 #include "Debug.h"
-#include "Utility.h"
+#include "Framework/Utility/Utility.h"
 #include <QFile>
 #include <QImage>
 #include <QApplication>
 #include <QDesktopWidget>
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "BLMCO2Provider.h"
 #include "IConfig.h"
 
@@ -55,7 +55,7 @@ enum UpgradePacketType
     UPGRADE_RSP_NACK    = 0x00,         // nack response
     UPGRADE_RSP_ACK     = 0x01,         // ack response
 
-    UPGRADE_N5_CMD_PASSTHROUGH_MODE = 0x25, // 透传模式。
+    UPGRADE_N5_CMD_PASSTHROUGH_MODE = 0x25,  // 透传模式。
     UPGRADE_N5_RSP_PASSTHROUGH_MODE = 0x26,
 
     UPGRADE_NOTIFY_ALIVE = 0x5B,        // module alive packet
@@ -265,7 +265,7 @@ public:
     QTimer *noResponseTimer;
     int noResponeCount;
     int segmentSeq;     // the file segment sequence number
-    bool isPassthroughMode; // NIBP透传模式
+    bool isPassthroughMode;  // NIBP透传模式
 };
 
 bool UpgradeManagerPrivate::checkUpgradeFile()
@@ -1107,7 +1107,7 @@ void UpgradeManager::upgradeProcess()
 
         emit upgradeInfoChanged(trs("UpdateSystemFile"));
         QApplication::processEvents();
-        if (!Util::generateKernelLogo(logoFile, image))
+        if (!Util::generateKernelLogo(&logoFile, image))
         {
             qdebug("generate logo fail");
             d_ptr->upgradeExit(UPGRADE_FAIL, UPGRADE_ERR_WRITE_FAIL);

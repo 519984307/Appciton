@@ -12,17 +12,18 @@
 #include "TEMPParam.h"
 #include "Debug.h"
 #include <QString>
-#include "crc8.h"
 #include "SystemManager.h"
-#include "ErrorLog.h"
-#include "ErrorLogItem.h"
+#include "Framework/ErrorLog/ErrorLog.h"
+#include "Framework/ErrorLog/ErrorLogItem.h"
 #include "RawDataCollector.h"
 #include "IConfig.h"
 #include "AlarmSourceManager.h"
 
 #define LOW_BORDER_VALUE 0
 #define HIGH_BORDER_VALUE 501
-#define TEMP_INVALID_VALUE      (-1)    // 体温无效值
+#define TEMP_OVERRANGE_VALUE    (-1)    // 体温超界时体温值
+#define TEMP_SENSOR_OFF_VALUE   (-2)    // 体温探头脱落时的体温值
+#define TEMP_OVERRANGE_COUNT    (2)     // 体温超界多少次才仍然超界
 
 enum TempErrorCode
 {
@@ -50,9 +51,9 @@ static const char *tempErrorCode[] =
 /**************************************************************************************************
  * 模块与参数对接。
  *************************************************************************************************/
-bool T5Provider::attachParam(Param &param)
+bool T5Provider::attachParam(Param *param)
 {
-    if (param.getParamID() == PARAM_TEMP)
+    if (param->getParamID() == PARAM_TEMP)
     {
         tempParam.setProvider(this);
         Provider::attachParam(param);
@@ -106,6 +107,7 @@ void T5Provider::handlePacket(unsigned char *data, int len)
     // 测量数据
     case T5_NOTIFY_DATA:
         _sendACK(data[0]);
+        _sensorOff(data);
         _limitHandle(data);     // 处理超界
         _result(data);
         break;
@@ -118,7 +120,6 @@ void T5Provider::handlePacket(unsigned char *data, int len)
     // 探头脱落帧
     case T5_NOTIFY_PROBE_OFF:
         _sendACK(data[0]);
-        _sensorOff(data);
         break;
 
     case T5_CYCLE_ALIVE:
@@ -386,7 +387,7 @@ void T5Provider::_result(unsigned char *packet)
     if (!_overRang1)
     {
         temp = static_cast<short>((packet[2] << 8) +packet[1]);
-        if (temp == TEMP_INVALID_VALUE)
+        if (temp == TEMP_OVERRANGE_VALUE || temp == TEMP_SENSOR_OFF_VALUE)
         {
             temp = InvData();
         }
@@ -400,7 +401,7 @@ void T5Provider::_result(unsigned char *packet)
     if (!_overRang2)
     {
         temp = static_cast<short>((packet[4] << 8) + packet[3]);
-        if (temp == TEMP_INVALID_VALUE)
+        if (temp == TEMP_OVERRANGE_VALUE || temp == TEMP_SENSOR_OFF_VALUE)
         {
             temp = InvData();
         }
@@ -443,72 +444,36 @@ void T5Provider::ohmResult(unsigned char *packet)
  *************************************************************************************************/
 void T5Provider::_sensorOff(unsigned char *packet)
 {
-    if (!_hasBeenConnected1 && !(packet[1] & 0x01))
+    short temp1 = static_cast<short>((packet[2] << 8) + packet[1]);
+    short temp2 = static_cast<short>((packet[4] << 8) + packet[3]);
+
+    if (!_hasBeenConnected1 && temp1 != TEMP_SENSOR_OFF_VALUE)
     {
         _hasBeenConnected1 = true;
     }
 
-    if (!_hasBeenConnected2 && !(packet[1] & 0x02))
+    if (!_hasBeenConnected2 && temp2 != TEMP_SENSOR_OFF_VALUE)
     {
         _hasBeenConnected2 = true;
     }
 
-    if (packet[1] == 0x00)
+    if (temp1 == TEMP_SENSOR_OFF_VALUE && _hasBeenConnected1)
+    {
+        _sensorOff1 = true;
+    }
+    else
     {
         _sensorOff1 = false;
+    }
+
+    if (temp2 == TEMP_SENSOR_OFF_VALUE && _hasBeenConnected2)
+    {
+        _sensorOff2 = true;
+    }
+    else
+    {
         _sensorOff2 = false;
     }
-    else if (packet[1] == 0x01)
-    {
-        if (_hasBeenConnected1)
-        {
-            _sensorOff1 = true;
-        }
-        else
-        {
-            _sensorOff1 = false;
-        }
-        _sensorOff2 = false;
-
-        _overRang1 = false;
-    }
-    else if (packet[1] == 0x02)
-    {
-        _sensorOff1 = false;
-        if (_hasBeenConnected2)
-        {
-            _sensorOff2 = true;
-        }
-        else
-        {
-            _sensorOff2 = false;
-        }
-        _overRang2 = false;
-    }
-    else if (packet[1] == 0x03)
-    {
-        if (_hasBeenConnected1)
-        {
-            _sensorOff1 = true;
-        }
-        else
-        {
-            _sensorOff1 = false;
-        }
-
-        if (_hasBeenConnected2)
-        {
-            _sensorOff2 = true;
-        }
-        else
-        {
-            _sensorOff2 = false;
-        }
-
-        _overRang1 = false;
-        _overRang2 = false;
-    }
-    _shotAlarm();
 }
 
 /**************************************************************************************************
@@ -664,10 +629,26 @@ void T5Provider::_limitHandle(unsigned char *packet)
 {
     // 判断T1超界
     short temp1 = static_cast<short>((packet[2] << 8) + packet[1]);
-    if (temp1 == TEMP_INVALID_VALUE && (_sensorOff1 || !_hasBeenConnected1))
+    static short tempOverRangeCount1 = 0;
+    static short tempOverRangeCount2 = 0;
+
+    if (temp1 == TEMP_SENSOR_OFF_VALUE)
     {
-        // 探头脱落且体温为-1时，撤销超界报警
         _overRang1 = false;
+    }
+    else if (temp1 == TEMP_OVERRANGE_VALUE && _overRang1 == false)
+    {
+        if (tempOverRangeCount1 >= TEMP_OVERRANGE_COUNT)
+        {
+            // 超界2次后，才确认为超界
+            _overRang1 = true;
+            tempOverRangeCount1 = 0;
+        }
+        else
+        {
+            _overRang1 = false;
+            tempOverRangeCount1++;
+        }
     }
     else if ((temp1 < LOW_BORDER_VALUE || temp1 > HIGH_BORDER_VALUE) && _overRang1 == false)
     {
@@ -677,11 +658,26 @@ void T5Provider::_limitHandle(unsigned char *packet)
     {
         _overRang1 = false;
     }
+
     // 判断T2超界
     short temp2 = static_cast<short>((packet[4] << 8) + packet[3]);
-    if (temp2 == TEMP_INVALID_VALUE && (_sensorOff2 || !_hasBeenConnected2))
+    if (temp2 == TEMP_SENSOR_OFF_VALUE)
     {
         _overRang2 = false;
+    }
+    else if (temp2 == TEMP_OVERRANGE_VALUE && _overRang2 == false)
+    {
+        if (tempOverRangeCount2 >= TEMP_OVERRANGE_COUNT)
+        {
+            // 超界2次后，才确认为超界
+            _overRang2 = true;
+            tempOverRangeCount2 = 0;
+        }
+        else
+        {
+            _overRang2 = false;
+            tempOverRangeCount2++;
+        }
     }
     else if ((temp2 < LOW_BORDER_VALUE || temp2 > HIGH_BORDER_VALUE) && _overRang2 == false)
     {

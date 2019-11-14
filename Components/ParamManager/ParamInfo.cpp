@@ -367,8 +367,9 @@ ParamID ParamInfo::getParamID(SubParamID id)
  * 参数：
  *      ids： 返回子参数ID。
  *************************************************************************************************/
-void ParamInfo::getSubParams(ParamID id, QList<SubParamID> &ids)
+QList<SubParamID> ParamInfo::getSubParams(ParamID id)
 {
+    QList<SubParamID> ids;
     ids.clear();
     switch (id)
     {
@@ -417,6 +418,7 @@ void ParamInfo::getSubParams(ParamID id, QList<SubParamID> &ids)
     default:
         break;
     }
+    return ids;
 }
 
 /**************************************************************************************************
@@ -755,10 +757,10 @@ UnitType ParamInfo::getUnitOfSubParam(SubParamID id)
  *      t1：可选单位。
  * 返回： 默认单位。
  *************************************************************************************************/
-UnitType ParamInfo::getUnitOfSubParam(SubParamID id, UnitType &t0, UnitType &t1)
+UnitType ParamInfo::getUnitOfSubParam(SubParamID id, UnitType *t0, UnitType *t1)
 {
-    t0 = UNIT_NONE;
-    t1 = UNIT_NONE;
+    *t0 = UNIT_NONE;
+    *t1 = UNIT_NONE;
 
     switch (id)
     {
@@ -794,22 +796,22 @@ UnitType ParamInfo::getUnitOfSubParam(SubParamID id, UnitType &t0, UnitType &t1)
     case SUB_PARAM_NIBP_SYS:
     case SUB_PARAM_NIBP_DIA:
     case SUB_PARAM_NIBP_MAP:
-        t0 = UNIT_KPA;
+        *t0 = UNIT_KPA;
         return UNIT_MMHG;
 
     case SUB_PARAM_ETCO2:
     case SUB_PARAM_FICO2:
-        t0 = UNIT_MMHG;
-        t1 = UNIT_KPA;
+        *t0 = UNIT_MMHG;
+        *t1 = UNIT_KPA;
         return UNIT_PERCENT;
 
     case SUB_PARAM_T1:
     case SUB_PARAM_T2:
-        t0 = UNIT_TF;
+        *t0 = UNIT_TF;
         return UNIT_TC;
 
     case SUB_PARAM_TD:
-        t0 = UNIT_TDF;
+        *t0 = UNIT_TDF;
         return UNIT_TDC;
 
     default:
@@ -849,9 +851,9 @@ static bool subParamIDLessThan(unsigned int a, unsigned int b)
 /***************************************************************************************************
  * sort the sub param in a list
  **************************************************************************************************/
-void ParamInfo::sortSubParamId(QList<SubParamID> &subIDlist)
+void ParamInfo::sortSubParamId(QList<SubParamID> *subIDlist)
 {
-    qSort(subIDlist.begin(), subIDlist.end(), subParamIDLessThan);
+    qSort(subIDlist->begin(), subIDlist->end(), subParamIDLessThan);
 }
 
 /**************************************************************************************************

@@ -11,7 +11,8 @@
 #pragma once
 #include <QObject>
 #include <QScopedPointer>
-#include "SoundManagerInterface.h"
+#include "Framework/Sound/SoundManagerInterface.h"
+#include "AlarmDefine.h"
 
 class SoundManagerPrivate;
 class SoundManager : public QObject, public SoundManagerInterface

@@ -11,7 +11,7 @@
 #pragma once
 #include "RecorderManager.h"
 #include <QScopedPointer>
-#include <IStorageBackend.h>
+#include "Framework/Storage/IStorageBackend.h"
 
 class EventPageGeneratorPrivate;
 class EventPageGenerator : public RecordPageGenerator
@@ -22,7 +22,8 @@ public:
         Type = 3
     };
 
-    EventPageGenerator(IStorageBackend *backend, int eventIndex, const PatientInfo &patientInfo, int gain, QObject *parent = 0);
+    EventPageGenerator(IStorageBackend *backend, int eventIndex, const PatientInfo &patientInfo,
+                       int gain, QObject *parent = 0);
 
     ~EventPageGenerator();
 

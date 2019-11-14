@@ -9,19 +9,19 @@
  **/
 
 #include "TrendTableWindow.h"
-#include "ThemeManager.h"
-#include "LanguageManager.h"
-#include "TableView.h"
-#include "TableHeaderView.h"
+#include "Framework/UI/ThemeManager.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/MoveButton.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/TableView.h"
+#include "Framework/UI/TableHeaderView.h"
+#include "Framework/UI/TableViewItemDelegate.h"
+#include "Framework/Language/LanguageManager.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include "TrendTableModel.h"
-#include "Button.h"
-#include "MoveButton.h"
-#include "ComboBox.h"
 #include "WindowManager.h"
 #include "FontManager.h"
-#include "LanguageManager.h"
 #include "ParamManager.h"
-#include "TimeDate.h"
 #include "TimeManager.h"
 #include "TrendDataStorageManager.h"
 #include "IBPParam.h"
@@ -40,7 +40,6 @@
 #include "EventDataParseContext.h"
 #include "DataStorageDefine.h"
 #include "TrendDataSymbol.h"
-#include "TableViewItemDelegate.h"
 #include "TrendTableSetWindow.h"
 #include "TrendPrintWindow.h"
 
@@ -153,13 +152,14 @@ void TrendTableWindow::updatePages()
         QString date = d_ptr->model->getCurTableDate();
         if (date == InvStr())
         {
-            timeDate.getDate(date, true);
+           date = timeDate->getDate(true);
         }
         btn->setText(date);
         btn->installEventFilter(this);
         QStyleOptionHeader opt;
         opt.text = btn->text();
-        QSize s = (btn->style()->sizeFromContents(QStyle::CT_HeaderSection, &opt, QSize(), btn).expandedTo(QApplication::globalStrut()));
+        QSize s = (btn->style()->sizeFromContents(QStyle::CT_HeaderSection, &opt, QSize(), btn)
+                   .expandedTo(QApplication::globalStrut()));
         if (s.isValid())
         {
             d_ptr->table->verticalHeader()->setMinimumWidth(s.width());
@@ -194,14 +194,14 @@ bool TrendTableWindow::eventFilter(QObject *o, QEvent *e)
 
             QStyleOptionHeader opt;
             opt.rect = btn->rect();
-            opt.text = btn->text(); // this line is the only difference to QTableCornerButton
+            opt.text = btn->text();  // this line is the only difference to QTableCornerButton
 
             QPainter painter(btn);
             QPalette pal = palette();
-            QColor textColor = themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementText,
+            QColor textColor = themeManager.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementText,
                                                     ThemeManager::StateInactive);
             pal.setColor(QPalette::Background,
-                         themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
+                         themeManager.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
                                                                     ThemeManager::StateDisabled));
             painter.fillRect(opt.rect, pal.background());
             painter.setPen(QPen(textColor, 1, Qt::SolidLine));
@@ -215,14 +215,13 @@ bool TrendTableWindow::eventFilter(QObject *o, QEvent *e)
 TrendTableWindow::TrendTableWindow()
     : Dialog(), d_ptr(new TrendTableWindowPrivate(this))
 {
-    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
+    setFixedSize(themeManager.defaultWindowSize());
 
     d_ptr->table = new TableView();
     TableHeaderView *horizontalHeader = new TableHeaderView(Qt::Horizontal);
 
     // 初始化水平表头的字体
-    int formatIndex = TIME_FORMAT_12;
-    systemConfig.getNumValue("DateTime|TimeFormat", formatIndex);
+    int formatIndex = systemManager.getSystemTimeFormat();
     if (formatIndex == TIME_FORMAT_12)
     {
         horizontalHeader->setFont(fontManager.textFont(IN_12_HOUR_HEADER_FONT_SIZE));
@@ -232,7 +231,8 @@ TrendTableWindow::TrendTableWindow()
         horizontalHeader->setFont(fontManager.textFont(IN_24_HOUR_HEADER_FONT_SIZE));
     }
     d_ptr->horizontalHeader = horizontalHeader;
-    connect(&systemManager, SIGNAL(systemTimeFormatUpdated(TimeFormat)), this, SLOT(onSystemTimeFormatUpdated(TimeFormat)));
+    connect(&systemManager, SIGNAL(systemTimeFormatUpdated(TimeFormat)),
+            this, SLOT(onSystemTimeFormatUpdated(TimeFormat)));
 
     TableHeaderView *verticalHeader = new TableHeaderView(Qt::Vertical);
     verticalHeader->setFont(fontManager.textFont(IN_24_HOUR_HEADER_FONT_SIZE));
@@ -254,13 +254,13 @@ TrendTableWindow::TrendTableWindow()
                                  + d_ptr->model->getRowHeightHint() * TABLE_ROW_NR);
     d_ptr->table->setItemDelegate(new TableViewItemDelegate(this));
 
-    QIcon ico = themeManger.getIcon(ThemeManager::IconUp, QSize(32, 32));
+    QIcon ico = themeManager.getIcon(ThemeManager::IconUp, QSize(32, 32));
     d_ptr->upBtn = new Button("", ico);
     d_ptr->upBtn->setIconSize(QSize(32, 32));
     d_ptr->upBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->upBtn, SIGNAL(released()), this, SLOT(upReleased()));
 
-    ico = themeManger.getIcon(ThemeManager::IconDown, QSize(32, 32));
+    ico = themeManager.getIcon(ThemeManager::IconDown, QSize(32, 32));
     d_ptr->downBtn = new Button("", ico);
     d_ptr->downBtn->setIconSize(QSize(32, 32));
     d_ptr->downBtn->setButtonStyle(Button::ButtonIconOnly);
@@ -359,13 +359,15 @@ void TrendTableWindow::printWidgetRelease()
         d_ptr->model->displayDataTimeRange(startTime, endTime);
         printWindow.printTimeRange(startLimit, endLimit);
         printWindow.initPrintTime(startTime, endTime);
-        windowManager.showWindow(&printWindow, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
+        windowManager.showWindow(&printWindow,
+                                 WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
     }
 }
 
 void TrendTableWindow::trendDataSetReleased()
 {
-    windowManager.showWindow(&trendTableSetWindow, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
+    windowManager.showWindow(&trendTableSetWindow,
+                             WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorNoAutoClose);
     updatePages();
 }
 

@@ -8,7 +8,9 @@
  ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/30
  **/
 
-#include "TableViewItemDelegate_p.h"
+#include "Framework/UI/PopupList.h"
+#include "Framework/UI/TableViewItemDelegate_p.h"
+#include "Framework/Language/LanguageManager.h"
 #include "ScreenLayoutItemDelegate.h"
 #include "ScreenLayoutDefine.h"
 #include "SystemManager.h"
@@ -16,12 +18,10 @@
 #include <QDebug>
 #include <QPainterPath>
 #include <QTableView>
-#include "PopupList.h"
 #include "ScreenLayoutEditor.h"
 #include "FontManager.h"
 #include "LayoutManager.h"
 #include <QPoint>
-#include "LanguageManager.h"
 
 #define WAVE_LEFT_RIGHT_MARGIN 4
 #define WAVE_TOP_BOTTOM_MARGIN 2
@@ -60,7 +60,7 @@ void ScreenLayoutItemDelegatePrivate::drawWave(QPainter *painter, const QRect &r
 
     painter->save();
     float xGap = info.drawSpeed / systemManager.getScreenPixelWPitch() /
-                 info.sampleRate; // for the x axis distance betwwen each data point
+                 info.sampleRate;  // for the x axis distance betwwen each data point
     float x, y;
     int baseYValue = rect.center().y();
     if (info.waveMinValue == info.baseLine)

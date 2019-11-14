@@ -28,7 +28,6 @@
 #include "AlarmConfig.h"
 #include "ParamManager.h"
 #include "ConfigManager.h"
-#include "TimeDate.h"
 #include <QBitmap>
 #include "SPO2Param.h"
 
@@ -191,7 +190,7 @@ void ECGTrendWidget::setTextSize(void)
     QRect r = this->rect();
     r.adjust(nameLabel->width(), 0, -_hrBeatIcon->width(), 0);
     // 字体。
-    int fontsize = fontManager.adjustNumFontSize(r, true);
+    int fontsize = fontManager.adjustNumFontSize(r, true, "9999");
     QFont font = fontManager.numFont(fontsize, true);
     font.setWeight(QFont::Black);
 

@@ -50,10 +50,10 @@ enum T5PacketType
 
 class T5Provider: public BLMProvider, public TEMPProviderIFace
 {
-public: // Provider的接口。
-    virtual bool attachParam(Param &param);
+public:     // Provider的接口。
+    virtual bool attachParam(Param *param);
 
-public: // TEMPProviderIFace 的接口。
+public:     // TEMPProviderIFace 的接口。
     T5Provider();
     ~T5Provider();
 

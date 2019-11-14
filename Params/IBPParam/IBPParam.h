@@ -11,7 +11,7 @@
 #pragma once
 #include <QPalette>
 #include "Param.h"
-#include "UnitManager.h"
+#include "Framework/Utility/Unit.h"
 #include "AlarmDefine.h"
 #include "IBPSymbol.h"
 #include "IBPDefine.h"
@@ -53,8 +53,8 @@ public:
     void noticeLimitAlarm(int id, bool isAlarm, IBPSignalInput ibp);
 
     // 获取可得的波形控件集。
-    virtual void getAvailableWaveforms(QStringList &waveforms,
-                                       QStringList &waveformShowName, int);
+    virtual void getAvailableWaveforms(QStringList *waveforms,
+                                       QStringList *waveformShowName, int);
 
     // 获取当前的单位。
     virtual UnitType getCurrentUnit(SubParamID id);
@@ -102,7 +102,7 @@ public:
     IBPRulerLimit getRulerLimit(IBPPressureName name);
 
     // 设置/获取标尺信息
-    void setScaleInfo(IBPScaleInfo &info, IBPPressureName name);
+    void setScaleInfo(const IBPScaleInfo &info, const IBPPressureName &name);
     IBPScaleInfo &getScaleInfo(IBPSignalInput ibp);
 
     // 获取IBP导联脱落状态
@@ -157,8 +157,12 @@ public:
     void setParamData(IBPSignalInput IBP, unsigned short sys, unsigned short dia,
                       unsigned short mean, unsigned short pr);
 
-    // 获取ibp两通道标名对应的参数ID
-    void getSubParamID(SubParamID &ibp1, SubParamID &ibp2);
+    /**
+     * @brief getSubParamID 获取ibp两通道标名对应的参数ID。
+     * @param inputID
+     * @return
+     */
+    SubParamID getSubParamID(IBPSignalInput inputID);
 
     // 参数名获取标名
     IBPPressureName getPressureName(SubParamID id);

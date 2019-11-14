@@ -9,9 +9,10 @@
  **/
 
 #include "ScreenMenuContent.h"
-#include "ComboBox.h"
-#include "Button.h"
-#include "LanguageManager.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ThemeManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
 #include <QGridLayout>
 #include <ScreenLayoutWindow.h>
@@ -20,7 +21,6 @@
 #include "LayoutManager.h"
 #include "BigFontLayoutWindow.h"
 #include "IConfig.h"
-#include "ThemeManager.h"
 #include "ECGParam.h"
 
 class ScreenMenuContentPrivate

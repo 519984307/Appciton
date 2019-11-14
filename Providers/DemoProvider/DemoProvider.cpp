@@ -145,23 +145,23 @@ void DemoProvider::timerEvent(QTimerEvent *event)
 /**************************************************************************************************
  * 与参数绑定。
  *************************************************************************************************/
-bool DemoProvider::attachParam(Param &param)
+bool DemoProvider::attachParam(Param *param)
 {
-    const QString &name = param.getName();
+    const QString &name = param->getName();
 
     if (name == paramInfo.getParamName(PARAM_ECG))
     {
         for (int i = WAVE_ECG_I; i <= WAVE_ECG_V6; i++)
         {
-            _demoWaveData[i].param = &param;
+            _demoWaveData[i].param = param;
         }
         ecgParam.setProvider(this);
         ecgParam.setConnected(true);
     }
     else if (name == paramInfo.getParamName(PARAM_SPO2))
     {
-        _demoWaveData[WAVE_SPO2].param = &param;
-        _demoWaveData[WAVE_SPO2_2].param = &param;
+        _demoWaveData[WAVE_SPO2].param = param;
+        _demoWaveData[WAVE_SPO2_2].param = param;
         spo2Param.setProvider(this);
         spo2Param.setConnected(true);
         if (spo2Param.isConnected(true))
@@ -172,7 +172,7 @@ bool DemoProvider::attachParam(Param &param)
     }
     else if (name == paramInfo.getParamName(PARAM_RESP))
     {
-        _demoWaveData[WAVE_RESP].param = &param;
+        _demoWaveData[WAVE_RESP].param = param;
         respParam.setProvider(this);
         respParam.setConnected(true);
     }
@@ -183,20 +183,20 @@ bool DemoProvider::attachParam(Param &param)
     }
     else if (name == paramInfo.getParamName(PARAM_CO2))
     {
-        _demoWaveData[WAVE_CO2].param = &param;
+        _demoWaveData[WAVE_CO2].param = param;
         co2Param.setProvider(this);
         co2Param.setConnected(true);
     }
     else if (name == paramInfo.getParamName(PARAM_IBP))
     {
-        _demoWaveData[WAVE_ART].param = &param;
-        _demoWaveData[WAVE_PA].param = &param;
-        _demoWaveData[WAVE_CVP].param = &param;
-        _demoWaveData[WAVE_LAP].param = &param;
-        _demoWaveData[WAVE_RAP].param = &param;
-        _demoWaveData[WAVE_ICP].param = &param;
-        _demoWaveData[WAVE_AUXP1].param = &param;
-        _demoWaveData[WAVE_AUXP2].param = &param;
+        _demoWaveData[WAVE_ART].param = param;
+        _demoWaveData[WAVE_PA].param = param;
+        _demoWaveData[WAVE_CVP].param = param;
+        _demoWaveData[WAVE_LAP].param = param;
+        _demoWaveData[WAVE_RAP].param = param;
+        _demoWaveData[WAVE_ICP].param = param;
+        _demoWaveData[WAVE_AUXP1].param = param;
+        _demoWaveData[WAVE_AUXP2].param = param;
         ibpParam.setProvider(this);
         ibpParam.setConnected(true);
     }
@@ -207,19 +207,19 @@ bool DemoProvider::attachParam(Param &param)
     }
     else if (name == paramInfo.getParamName(PARAM_AG))
     {
-        _demoWaveData[WAVE_N2O].param = &param;
-        _demoWaveData[WAVE_AA1].param = &param;
-        _demoWaveData[WAVE_AA2].param = &param;
-        _demoWaveData[WAVE_O2].param = &param;
+        _demoWaveData[WAVE_N2O].param = param;
+        _demoWaveData[WAVE_AA1].param = param;
+        _demoWaveData[WAVE_AA2].param = param;
+        _demoWaveData[WAVE_O2].param = param;
         agParam.setProvider(this);
         agParam.setConnected(true);
     }
 
-    _demoTrendData[param.getParamID()].param = &param;
+    _demoTrendData[param->getParamID()].param = param;
 
     if (_timerID == 0)
     {
-        _timerID = startTimer(4); // 250Hz,4ms.
+        _timerID = startTimer(4);   // 250Hz,4ms.
         _time.start();
     }
 
@@ -229,9 +229,9 @@ bool DemoProvider::attachParam(Param &param)
 /**************************************************************************************************
  * 与参数脱离。
  *************************************************************************************************/
-void DemoProvider::detachParam(Param &param)
+void DemoProvider::detachParam(Param *param)
 {
-    ParamID id = param.getParamID();
+    ParamID id = param->getParamID();
 
     if (id == PARAM_ECG)
     {

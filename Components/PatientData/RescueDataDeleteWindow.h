@@ -9,7 +9,7 @@
  **/
 
 #pragma once
-#include "Dialog.h"
+#include "Framework/UI/Dialog.h"
 
 class RescueDataDeleteWindowPrivate;
 class RescueDataDeleteWindow : public Dialog

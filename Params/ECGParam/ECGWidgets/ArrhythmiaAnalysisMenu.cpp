@@ -9,7 +9,7 @@
  **/
 
 #include "ArrhythmiaAnalysisMenu.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 
 class ArrhythmiaAnalysisMenuPrivate
 {

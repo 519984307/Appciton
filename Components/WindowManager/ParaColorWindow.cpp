@@ -9,9 +9,10 @@
  **/
 
 #include "ParaColorWindow.h"
-#include "LanguageManager.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/ThemeManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QLabel>
-#include "ComboBox.h"
 #include <QGridLayout>
 #include <QList>
 #include "SoundManager.h"
@@ -19,7 +20,6 @@
 #include "IConfig.h"
 #include "ConfigManager.h"
 #include "ColorManager.h"
-#include "WindowManager.h"
 
 class ParaColorWindowPrivate
 {
@@ -82,7 +82,7 @@ ParaColorWindow::ParaColorWindow()
     currentConfig.getStrValue("Display|AllColors", color);
     d_ptr->colorList = color.split(',', QString::KeepEmptyParts);
     setWindowTitle(trs("ParameterColorDesc"));
-    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
+    setFixedSize(themeManager.defaultWindowSize());
     layoutExec();
 }
 

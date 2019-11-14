@@ -11,7 +11,7 @@
 #pragma once
 #include "RecorderManager.h"
 #include <QScopedPointer>
-#include <IStorageBackend.h>
+#include "Framework/Storage/IStorageBackend.h"
 
 struct TrendTablePrintInfo
 {
@@ -33,7 +33,8 @@ public:
         Type = 4
     };
 
-    TrendTablePageGenerator(IStorageBackend *backend, TrendTablePrintInfo &printInfo, const PatientInfo &patientInfo, QObject *parent = 0);
+    TrendTablePageGenerator(IStorageBackend *backend, const TrendTablePrintInfo &printInfo,
+                            const PatientInfo &patientInfo, QObject *parent = 0);
 
     ~TrendTablePageGenerator();
 

@@ -13,7 +13,6 @@
 #include "PatientManager.h"
 #include "IConfig.h"
 #include "Debug.h"
-#include "TimeDate.h"
 #include <QFile>
 #include <QDateTime>
 #include "LayoutManager.h"
@@ -42,7 +41,7 @@ public:
     Config *patientConfig[3];
     Config *curConfig;
 
-    bool isDisableWidgets;//是否失能控件标志位 1:失能
+    bool isDisableWidgets;  //是否失能控件标志位 1:失能
 };
 
 ConfigManagerPrivate::~ConfigManagerPrivate()
@@ -198,7 +197,7 @@ void ConfigManager::saveUserConfigInfo(const QList<ConfigManager::UserDefineConf
         }
     }
     emit userDefineConfigChanged();
-    systemConfig.save();
+    systemConfig.requestSave();
 }
 
 QString ConfigManager::factoryConfigFilename(PatientType patType)

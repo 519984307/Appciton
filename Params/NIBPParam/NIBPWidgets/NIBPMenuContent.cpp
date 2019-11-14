@@ -11,25 +11,26 @@
 
 #include "NIBPMenuContent.h"
 #include <QMap>
-#include "ComboBox.h"
-#include "Button.h"
+#include "Framework/UI/Button.h"
+#include "Framework/UI/ComboBox.h"
+#include "Framework/UI/SpinBox.h"
+#include "Framework/Language/LanguageManager.h"
 #include <QGridLayout>
 #include <QLabel>
 #include "NIBPSymbol.h"
-#include "LanguageManager.h"
 #include "NIBPParam.h"
 #include "ConfigManager.h"
 #include "NIBPMonitorStateDefine.h"
 #include "MainMenuWindow.h"
 #include "AlarmLimitWindow.h"
-#include "SpinBox.h"
 #include "IConfig.h"
-#include "UnitManager.h"
+#include "Framework/Utility/Unit.h"
 #include "SystemManager.h"
 #include "SoundManager.h"
 #include "NightModeManager.h"
 #include "PatientManager.h"
 #include "NIBPCountdownTime.h"
+#include "WindowManager.h"
 
 class NIBPMenuContentPrivate
 {
@@ -260,6 +261,7 @@ void NIBPMenuContentPrivate::loadOptions()
         currentConfig.getNumValue("NIBP|SUNTECHInitialCuffInflation", initVal);
     }
     initCuffSpb->setValue(initVal);
+    initCuffSpb->blockSignals(false);
 
     lastType = type;
 

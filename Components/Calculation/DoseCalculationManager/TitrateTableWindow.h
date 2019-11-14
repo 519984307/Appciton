@@ -9,7 +9,7 @@
  **/
 
 #pragma once
-#include "Dialog.h"
+#include "Framework/UI/Dialog.h"
 
 #define MAX_ROWCOUNT            9
 #define NUM_ABREAST             3

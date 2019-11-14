@@ -10,14 +10,14 @@
 
 #include "BigFontLayoutModel.h"
 #include "ScreenLayoutDefine.h"
-#include "OrderedMap.h"
+#include "Framework/Utility/OrderedMap.h"
 #include "ParamInfo.h"
 #include <QStringList>
 #include "IConfig.h"
 #include "DemoProvider.h"
 #include "ParamManager.h"
 #include "IBPParam.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 
 struct ParamNodeDescription
 {
@@ -45,7 +45,7 @@ public:
     }
 
     LayoutNode * findNode(const QModelIndex &index);
-    void fillWaveData(ScreenLayoutItemInfo &info);
+    void fillWaveData(ScreenLayoutItemInfo *info);
 
     /**
      * @brief getUnlayoutedParams  获得没有被布局的参数
@@ -212,7 +212,7 @@ QVariant BigFontLayoutModel::data(const QModelIndex &index, int role) const
                     info.displayName = trs(info.name);
                 }
             }
-            d_ptr->fillWaveData(info);
+            d_ptr->fillWaveData(&info);
             return qVariantFromValue(info);
         }
         break;
@@ -371,7 +371,6 @@ void BigFontLayoutModel::saveLayoutInfo()
 
 void BigFontLayoutModel::loadLayoutInfo(bool isDefaultConfig)
 {
-
     QVariantMap config;
     if (isDefaultConfig)
     {
@@ -437,56 +436,56 @@ LayoutNode *BigFontLayoutModelPrivate::findNode(const QModelIndex &index)
     return NULL;
 }
 
-void BigFontLayoutModelPrivate::fillWaveData(ScreenLayoutItemInfo &info)
+void BigFontLayoutModelPrivate::fillWaveData(ScreenLayoutItemInfo *info)
 {
-    if (info.waveid == WAVE_NONE || !demoProvider)
+    if (info->waveid == WAVE_NONE || !demoProvider)
     {
         return;
     }
 
-    info.waveContent = getWaveData(info.waveid);
-    if (info.waveid >= WAVE_ECG_I && info.waveid <= WAVE_ECG_V6)
+    info->waveContent = getWaveData(info->waveid);
+    if (info->waveid >= WAVE_ECG_I && info->waveid <= WAVE_ECG_V6)
     {
-        info.baseLine = demoProvider->getBaseLine();
-        info.waveMaxValue = 255;
-        info.waveMinValue = 0;
-        info.sampleRate = demoProvider->getWaveformSample();
+        info->baseLine = demoProvider->getBaseLine();
+        info->waveMaxValue = 255;
+        info->waveMinValue = 0;
+        info->sampleRate = demoProvider->getWaveformSample();
     }
-    else if (info.waveid == WAVE_RESP)
+    else if (info->waveid == WAVE_RESP)
     {
-        info.waveMaxValue = demoProvider->maxRESPWaveValue();
-        info.waveMinValue = demoProvider->minRESPWaveValue();
-        info.baseLine = demoProvider->getRESPBaseLine();
-        info.sampleRate = demoProvider->getRESPWaveformSample();
+        info->waveMaxValue = demoProvider->maxRESPWaveValue();
+        info->waveMinValue = demoProvider->minRESPWaveValue();
+        info->baseLine = demoProvider->getRESPBaseLine();
+        info->sampleRate = demoProvider->getRESPWaveformSample();
     }
-    else if (info.waveid == WAVE_SPO2)
+    else if (info->waveid == WAVE_SPO2)
     {
-        info.waveMaxValue = demoProvider->getSPO2MaxValue();
-        info.waveMinValue = 0;
-        info.baseLine = demoProvider->getSPO2BaseLine();
-        info.sampleRate = demoProvider->getSPO2WaveformSample();
+        info->waveMaxValue = demoProvider->getSPO2MaxValue();
+        info->waveMinValue = 0;
+        info->baseLine = demoProvider->getSPO2BaseLine();
+        info->sampleRate = demoProvider->getSPO2WaveformSample();
     }
-    else if (info.waveid == WAVE_CO2)
+    else if (info->waveid == WAVE_CO2)
     {
-        info.waveMaxValue = demoProvider->getCO2MaxWaveform();
-        info.drawSpeed = 6.25;
-        info.waveMinValue = 0;
-        info.baseLine = demoProvider->getCO2BaseLine();
-        info.sampleRate = demoProvider->getSPO2WaveformSample();
+        info->waveMaxValue = demoProvider->getCO2MaxWaveform();
+        info->drawSpeed = 6.25;
+        info->waveMinValue = 0;
+        info->baseLine = demoProvider->getCO2BaseLine();
+        info->sampleRate = demoProvider->getSPO2WaveformSample();
     }
-    else if (info.waveid >= WAVE_N2O && info.waveid <= WAVE_O2)
+    else if (info->waveid >= WAVE_N2O && info->waveid <= WAVE_O2)
     {
-        info.waveMaxValue = demoProvider->getN2OMaxWaveform();
-        info.waveMinValue = 0;
-        info.baseLine = demoProvider->getN2OBaseLine();
-        info.sampleRate = demoProvider->getN2OWaveformSample();
+        info->waveMaxValue = demoProvider->getN2OMaxWaveform();
+        info->waveMinValue = 0;
+        info->baseLine = demoProvider->getN2OBaseLine();
+        info->sampleRate = demoProvider->getN2OWaveformSample();
     }
-    else if (info.waveid >= WAVE_ART && info.waveid <= WAVE_AUXP2)
+    else if (info->waveid >= WAVE_ART && info->waveid <= WAVE_AUXP2)
     {
-        info.waveMaxValue = demoProvider->getIBPMaxWaveform();
-        info.waveMinValue = 0;
-        info.baseLine = demoProvider->getIBPBaseLine();
-        info.sampleRate = demoProvider->getIBPWaveformSample();
+        info->waveMaxValue = demoProvider->getIBPMaxWaveform();
+        info->waveMinValue = 0;
+        info->baseLine = demoProvider->getIBPBaseLine();
+        info->sampleRate = demoProvider->getIBPWaveformSample();
     }
 }
 
@@ -726,7 +725,7 @@ void BigFontLayoutModelPrivate::loadLayoutFromConfig(const QVariantMap &config)
 void BigFontLayoutModelPrivate::loadItemInfos()
 {
     // two ecg wave at most
-    // TODO: find the proper ECG Wave
+    /* TODO: find the proper ECG Wave */
     waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_ECG1), WAVE_ECG_I);
     waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_ECG2), WAVE_ECG_II);
 
@@ -743,11 +742,13 @@ void BigFontLayoutModelPrivate::loadItemInfos()
                            ibpParam.getWaveformID(ibpParam.getEntitle(IBP_INPUT_2)));
         // IBP's pressure name is identical to it's wave name
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_IBP1)] = ParamNodeDescription(
-                    paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_NODE_WAVE_IBP1)]), LAYOUT_NODE_WAVE_IBP1);
+                    paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_NODE_WAVE_IBP1)]),
+                LAYOUT_NODE_WAVE_IBP1);
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_IBP2)] = ParamNodeDescription(
-                    paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_NODE_WAVE_IBP2)]), LAYOUT_NODE_WAVE_IBP2);
+                    paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_NODE_WAVE_IBP2)]),
+                LAYOUT_NODE_WAVE_IBP2);
     }
-
+    const char *nodeName;
     if (systemManager.isSupport((CONFIG_AG)))
     {
         waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_N2O), WAVE_N2O);
@@ -755,21 +756,32 @@ void BigFontLayoutModelPrivate::loadItemInfos()
         waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_AA2), WAVE_AA2);
         waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_O2), WAVE_O2);
 
-        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_AA1)] = ParamNodeDescription("AA1", LAYOUT_NODE_WAVE_AA1);
-        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_AA2)] = ParamNodeDescription("AA2", LAYOUT_NODE_WAVE_AA2);
-        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_N2O)] = ParamNodeDescription("N2O", LAYOUT_NODE_WAVE_N2O);
-        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_O2)] = ParamNodeDescription("AG_O2", LAYOUT_NODE_WAVE_O2);
+        nodeName = layoutNodeName(LAYOUT_NODE_PARAM_AA1);
+        paramNodeDescriptions[nodeName] = ParamNodeDescription("AA1", LAYOUT_NODE_WAVE_AA1);
+        nodeName = layoutNodeName(LAYOUT_NODE_PARAM_AA2);
+        paramNodeDescriptions[nodeName] = ParamNodeDescription("AA2", LAYOUT_NODE_WAVE_AA2);
+        nodeName = layoutNodeName(LAYOUT_NODE_PARAM_N2O);
+        paramNodeDescriptions[nodeName] = ParamNodeDescription("N2O", LAYOUT_NODE_WAVE_N2O);
+        nodeName = layoutNodeName(LAYOUT_NODE_PARAM_O2);
+        paramNodeDescriptions[nodeName] = ParamNodeDescription("AG_O2", LAYOUT_NODE_WAVE_O2);
     }
 
 
-    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_ECG)] = ParamNodeDescription(paramInfo.getParamName(PARAM_ECG), LAYOUT_NODE_WAVE_ECG1);
-    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_SPO2)] = ParamNodeDescription(paramInfo.getParamName(PARAM_SPO2), LAYOUT_NODE_WAVE_SPO2);
-    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_RESP)] = ParamNodeDescription(paramInfo.getParamName(PARAM_RESP), LAYOUT_NODE_WAVE_RESP);
+    nodeName = layoutNodeName(LAYOUT_NODE_PARAM_ECG);
+    paramNodeDescriptions[nodeName] = ParamNodeDescription(paramInfo.getParamName(PARAM_ECG), LAYOUT_NODE_WAVE_ECG1);
+    nodeName = layoutNodeName(LAYOUT_NODE_PARAM_SPO2);
+    paramNodeDescriptions[nodeName] = ParamNodeDescription(paramInfo.getParamName(PARAM_SPO2), LAYOUT_NODE_WAVE_SPO2);
+    nodeName = layoutNodeName(LAYOUT_NODE_PARAM_RESP);
+    paramNodeDescriptions[nodeName] = ParamNodeDescription(paramInfo.getParamName(PARAM_RESP), LAYOUT_NODE_WAVE_RESP);
 
-    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_CO2)] = ParamNodeDescription(paramInfo.getParamName(PARAM_CO2), LAYOUT_NODE_WAVE_CO2);
-    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_NIBP)] = ParamNodeDescription(paramInfo.getParamName(PARAM_NIBP));
-    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_NIBPLIST)] = ParamNodeDescription(trs("NIBPList"));
-    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_TEMP)] = ParamNodeDescription(paramInfo.getParamName(PARAM_TEMP));
+    nodeName = layoutNodeName(LAYOUT_NODE_PARAM_CO2);
+    paramNodeDescriptions[nodeName] = ParamNodeDescription(paramInfo.getParamName(PARAM_CO2), LAYOUT_NODE_WAVE_CO2);
+    nodeName = layoutNodeName(LAYOUT_NODE_PARAM_NIBP);
+    paramNodeDescriptions[nodeName] = ParamNodeDescription(paramInfo.getParamName(PARAM_NIBP));
+    nodeName = layoutNodeName(LAYOUT_NODE_PARAM_NIBPLIST);
+    paramNodeDescriptions[nodeName] = ParamNodeDescription(trs("NIBPList"));
+    nodeName = layoutNodeName(LAYOUT_NODE_PARAM_TEMP);
+    paramNodeDescriptions[nodeName] = ParamNodeDescription(paramInfo.getParamName(PARAM_TEMP));
 
 #ifndef HIDE_ECG_ST_PVCS_SUBPARAM
     paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_ST)] = ParamNodeDescription("ST");

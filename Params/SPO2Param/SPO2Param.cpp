@@ -18,14 +18,13 @@
 #include "WaveformCache.h"
 #include "ECGDupParam.h"
 #include "SystemManager.h"
-#include "ComboListPopup.h"
-#include "ErrorLog.h"
-#include "ErrorLogItem.h"
+#include "Framework/ErrorLog/ErrorLog.h"
+#include "Framework/ErrorLog/ErrorLogItem.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include <QTimer>
 #include "OxyCRGSPO2TrendWidget.h"
 #include "NIBPParam.h"
 #include "AlarmSourceManager.h"
-#include "TimeDate.h"
 #include "O2ParamInterface.h"
 #include "RunningStatusBar.h"
 #include "UpgradeManager.h"
@@ -277,7 +276,7 @@ void SPO2Param::handDemoTrendData(void)
         d_ptr->spmetTrendWidget->setSpMetValue(d_ptr->spmetValue);
         d_ptr->spcoTrendWidget->setSPCOValue(d_ptr->spcoValue);
         setNotify(false);   // 清空Pleth 1波形上的提示
-        setNotify(false, "", true); // 清空Pleth 2波形上的提示
+        setNotify(false, "", true);  // 清空Pleth 2波形上的提示
     }
 
     if (NULL != d_ptr->oxyCRGSPO2Trend)
@@ -322,28 +321,28 @@ void SPO2Param::exitDemo()
 /**************************************************************************************************
  * 获取可得的波形控件集。
  *************************************************************************************************/
-void SPO2Param::getAvailableWaveforms(QStringList &waveforms,
-                                      QStringList &waveformShowName, int /*flag*/)
+void SPO2Param::getAvailableWaveforms(QStringList *waveforms,
+                                      QStringList *waveformShowName, int /*flag*/)
 {
-    waveforms.clear();
-    waveformShowName.clear();
+    waveforms->clear();
+    waveformShowName->clear();
 
     if (NULL != d_ptr->waveWidget)
     {
-        waveforms.append(d_ptr->waveWidget->name());
+        waveforms->append(d_ptr->waveWidget->name());
     }
-    waveformShowName.append(trs("PLETH"));
+    waveformShowName->append(trs("PLETH"));
 }
 
-void SPO2Param::getWaveWindow(QString &waveWin, bool isPlugIn)
+QString SPO2Param::getWaveWindow(bool isPlugIn)
 {
     if (isPlugIn)
     {
-        waveWin = d_ptr->plugInWaveWidget->name();
+        return d_ptr->plugInWaveWidget->name();
     }
     else
     {
-        waveWin = d_ptr->waveWidget->name();
+        return d_ptr->waveWidget->name();
     }
 }
 
@@ -1154,8 +1153,7 @@ void SPO2Param::setConnected(bool isConnected, bool isPlugIn)
     {
         d_ptr->connectedPlugInProvider = isConnected;
     }
-    QString wave;
-    getWaveWindow(wave, isPlugIn);
+    QString wave = getWaveWindow(isPlugIn);
 
     int needUpdate = 0;
     if (isConnected)
@@ -1594,7 +1592,7 @@ CCHDResult SPO2Param::updateCCHDResult()
         result = Positive;
     }
     d_ptr->cchdDataList.last().result = result;
-    d_ptr->cchdDataList.last().time = timeDate.time();
+    d_ptr->cchdDataList.last().time = timeDate->time();
     return result;
 }
 
@@ -1729,7 +1727,8 @@ SPO2Param::SPO2Param()
 
     QTimer::singleShot(2000, this, SLOT(checkSelftest()));
 
-    connect(UpgradeManager::getInstance(), SIGNAL(upgradeT5ModuleCompleted()), this, SLOT(onUpgradeT5ModuleCompleted()));
+    connect(UpgradeManager::getInstance(), SIGNAL(upgradeT5ModuleCompleted()),
+            this, SLOT(onUpgradeT5ModuleCompleted()));
     connect(&tempParam, SIGNAL(tempReset()), this, SLOT(onTempReset()));
 }
 

@@ -25,6 +25,7 @@
 #include <QScrollBar>
 #include "ColorManager.h"
 #include "FontManager.h"
+#include "WindowManager.h"
 
 #include "NIBPParam.h"
 #include "NIBPCalibrateContent.h"
@@ -32,9 +33,8 @@
 #include "NIBPManometerContent.h"
 #include "NIBPPressureControlContent.h"
 #include "IConfig.h"
-#include "LanguageManager.h"
+#include "Framework/Language/LanguageManager.h"
 #include "NIBPMonitorStateDefine.h"
-#include "NIBPRepairMenuManager.h"
 
 class NIBPRepairMenuWindowPrivate
 {
@@ -46,13 +46,15 @@ public:
 
     bool replyFlag;                     // 进入维护模式标志
     bool repairError;                   // 维护模式错误
+    NIBPMonitorStateID monitorState;
 };
 
 NIBPRepairMenuWindowPrivate::NIBPRepairMenuWindowPrivate()
     : messageBoxWait(NULL),
       messageBoxError(NULL),
       replyFlag(false),
-      repairError(false)
+      repairError(false),
+      monitorState(NIBP_MONITOR_STANDBY_STATE)
 {
 }
 
@@ -95,7 +97,7 @@ void NIBPRepairMenuWindow::init()
     machineConfig.getStrValue("NIBP", str);
     if (str == "BLM_N5")
     {
-        nibpRepairMenuManager.setMonitorState(static_cast<NIBPMonitorStateID>(nibpParam.curStatusType()));
+        d_ptr->monitorState = static_cast<NIBPMonitorStateID>(nibpParam.curStatusType());
         nibpParam.changeMode(NIBP_STATE_MACHINE_SERVICE);
     }
     else
@@ -132,13 +134,6 @@ void NIBPRepairMenuWindow::unPacket(bool flag)
 }
 
 /**************************************************************************************************
- * 返回列表。
- *************************************************************************************************/
-void NIBPRepairMenuWindow::returnMenu()
-{
-}
-
-/**************************************************************************************************
  * 提示框显示。
  *************************************************************************************************/
 void NIBPRepairMenuWindow::messageBox(void)
@@ -155,15 +150,15 @@ void NIBPRepairMenuWindow::warnShow(bool enable)
     // 模块硬件出错
     if (nibpParam.isErrorDisable())
     {
-//        warn->setText(trs("NIBPModuleError"));
+        windowManager.showWindow(d_ptr->messageBoxError,
+                                 WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
     }
-    // 模块通信错误
     else
     {
-//        warn->setText(trs("NIBPServiceModuleErrorQuitTryAgain"));
+        // 模块通信错误
         if (enable)
         {
-            if (d_ptr->messageBoxWait != NULL && d_ptr->messageBoxWait->isVisible())
+            if (d_ptr->messageBoxWait->isVisible())
             {
                 d_ptr->messageBoxWait->close();
             }
@@ -172,33 +167,30 @@ void NIBPRepairMenuWindow::warnShow(bool enable)
         }
         else
         {
-            if (d_ptr->messageBoxError != NULL && d_ptr->messageBoxError->isVisible())
+            if (d_ptr->messageBoxError->isVisible())
             {
                 d_ptr->messageBoxError->close();
             }
         }
     }
 
-    if (enable)
-    {
-//        closeStrongFoucs();
-    }
-//    warn->setVisible(enable);
     d_ptr->repairError = enable;
 }
 
 
-void NIBPRepairMenuWindow::closeSlot()
-{
-    // 转换到状态，发送退出服务模式
-    nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_REPAIR_RETURN, NULL, 0);
-
-//    menuManager.returnPrevious();
-}
-
 bool NIBPRepairMenuWindow::getRepairError(void)
 {
     return d_ptr->repairError;
+}
+
+void NIBPRepairMenuWindow::setMonitorState(NIBPMonitorStateID id)
+{
+    d_ptr->monitorState = id;
+}
+
+NIBPMonitorStateID NIBPRepairMenuWindow::getMonitorState()
+{
+    return d_ptr->monitorState;
 }
 
 /***************************************************************************************************
@@ -213,7 +205,7 @@ void NIBPRepairMenuWindow::hideEvent(QHideEvent *event)
     machineConfig.getStrValue("NIBP", str);
     if (str == "BLM_N5")
     {
-        NIBPMonitorStateID id = nibpRepairMenuManager.getMonitorState();
+        NIBPMonitorStateID id = d_ptr->monitorState;
         nibpParam.changeMode(NIBP_STATE_MACHINE_MONITOR);
         nibpParam.switchState(id);
     }

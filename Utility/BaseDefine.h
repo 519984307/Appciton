@@ -39,9 +39,5 @@ enum WaveFlagBit
 #define MAX_WAVEFORM_CACHE_LEN \
     (MAX_TIME_LEN * MAX_SAMPLE_RATE * sizeof(WaveDataType))    // 单位:字节
 
-#define MAX_SUMMARY_TITLE_LEN (64)       // Summary名称长度
-#define MAX_SUMMARY_DATA_LEN \
-    (MAX_WAVEFORM_CACHE_LEN + MAX_SUMMARY_TITLE_LEN + 512)   // Summary数据长度
-
-#define MAX_DEVICE_ID_LEN (11 + 1) //设备标识符长度
+#define MAX_DEVICE_ID_LEN (11 + 1)  // 设备标识符长度
 #define MAX_SERIAL_NUM_LEN (11 + 1)
