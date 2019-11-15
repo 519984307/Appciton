@@ -714,6 +714,8 @@ void RainbowProvider::setSphbAveragingMode(SpHbAveragingMode mode)
 
 void RainbowProvider::initModule()
 {
+    d_ptr->curInitializeStep = RB_INIT_BAUDRATE;
+
     UartAttrDesc attr(DEFALUT_BAUD_RATE, 8, 'N', 1);
     if (d_ptr->isPlugIn)
     {
@@ -742,7 +744,6 @@ void RainbowProvider::initModule()
     {
         QTimer::singleShot(200, this, SLOT(changeBaudrate()));
     }
-    d_ptr->curInitializeStep = RB_INIT_BAUDRATE;
 }
 
 void RainbowProvider::requestBoardInfo()
