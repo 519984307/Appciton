@@ -31,7 +31,8 @@ SOURCES += main.cpp \
     ../../../Components/Alarm/AlarmIndicatorInterface.cpp \
     ../../../Params/O2Param/O2ParamInterface.cpp \
     ../../../Components/System/SystemManagerInterface.cpp \
-    ../../../Components/System/Widgets/RunningStatusBarInterface.cpp
+    ../../../Components/System/Widgets/RunningStatusBarInterface.cpp \
+    ../../../Params/SPO2Param/SPO2ParamInterface.cpp
 
 HEADERS += \
     TestPatientManager.h \
@@ -54,7 +55,8 @@ HEADERS += \
     ../../Params/NIBP/MockNIBPParam.h \
     ../../Storage/TestDataStorageDirManager/MockDataStorageDirManager.h \
     ../../Alarm/MockAlarmIndicator.h \
-    ../../../Components/System/Widgets/RunningStatusBarInterface.h
+    ../../../Components/System/Widgets/RunningStatusBarInterface.h \
+    ../../../Params/SPO2Param/SPO2ParamInterface.h
 
 INCLUDEPATH += \
     ../../../Components/PatientManager \
@@ -74,7 +76,8 @@ INCLUDEPATH += \
     ../../Params/NIBP \
     ../../Storage/TestDataStorageDirManager \
     ../../Alarm \
-    ../../../Components/System/Widgets
+    ../../../Components/System/Widgets \
+    ../../../Params/SPO2Param
 
 RESOURCES += \
     res.qrc

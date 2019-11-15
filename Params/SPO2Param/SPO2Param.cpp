@@ -886,7 +886,7 @@ void SPO2Param::addWaveformData(short wave, unsigned char waveFlag, bool isPlugI
     }
     else
     {
-        if (!isValid(false))
+        if (!isValid(true))
         {
             flag = flag | 0x4000;
         }
