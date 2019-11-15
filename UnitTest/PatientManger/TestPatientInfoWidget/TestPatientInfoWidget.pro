@@ -33,6 +33,8 @@ SOURCES += main.cpp \
     ../../../Params/ECGParam/ECGParamInterface.cpp \
     ../../../Params/ECGParam/ECGDupParamInterface.cpp \
     ../../../Utility/Config/IConfig.cpp \
+    ../../../Components/System/Widgets/RunningStatusBarInterface.cpp \
+    ../../../Params/SPO2Param/SPO2ParamInterface.cpp
 
 HEADERS += \
     TestPatientInfoWidget.h \
@@ -52,6 +54,8 @@ HEADERS += \
     ../../../Utility/Config/IConfig.h \
     ../../Utility/MockFontManager.h \
     ../../Utility/MockWindowManager.h \
+    ../../../Components/System/Widgets/RunningStatusBarInterface.h \
+    ../../../Params/SPO2Param/SPO2ParamInterface.h
 
 INCLUDEPATH += \
     ../../../Components/PatientManager \
@@ -68,3 +72,5 @@ INCLUDEPATH += \
     ../../../Utility/DataStorage \
     ../../Alarm \
     ../../Utility \
+    ../../../Components/System/Widgets  \
+    ../../../Params/SPO2Param
