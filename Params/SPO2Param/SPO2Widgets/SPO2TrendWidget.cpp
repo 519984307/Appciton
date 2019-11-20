@@ -93,6 +93,19 @@ void SPO2TrendWidget::setSPO2DeltaValue(int16_t spo2)
     _spo2DeltaValue->setText(_spo2StringD);
 }
 
+void SPO2TrendWidget::setPIValue(int16_t pi)
+{
+    if (pi >= 0)
+    {
+        _piString = QString::number(pi / (100 * 1.0), 'f', 2);
+    }
+    else
+    {
+        _piString = InvStr();
+    }
+    _piValue->setText(_piString);
+}
+
 void SPO2TrendWidget::updateLimit()
 {
     UnitType unitType = paramManager.getSubParamUnit(PARAM_SPO2, SUB_PARAM_SPO2);
@@ -192,11 +205,13 @@ void SPO2TrendWidget::setTextSize()
     font.setWeight(QFont::Black);
     _spo2Value2->setFont(font);
     _spo2DeltaValue->setFont(font);
+    _piValue->setFont(font);
 
     int fontSize = fontManager.getFontSize(3);
     font = fontManager.textFont(fontSize);
     _spo2Name2->setFont(font);
     _spo2DeltaName->setFont(font);
+    _piName->setFont(font);
 }
 
 /**************************************************************************************************
@@ -247,10 +262,18 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
     hLayout->addWidget(_spo2DeltaValue);
     vLayout->addLayout(hLayout);
 
+    _piName = new QLabel();
+    _piName->setText(trs("PI"));
+
+    _piValue = new QLabel();
+    _piValue->setText(InvStr());
+
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setMargin(10);
-    layout->addWidget(_spo2Value1);
-    layout->addWidget(_spo2Bar);
+    layout->addWidget(_spo2Value1, 3);
+    layout->addWidget(_spo2Bar, 1);
+    layout->addWidget(_piName, 1, Qt::AlignCenter);
+    layout->addWidget(_piValue, 2, Qt::AlignBottom | Qt::AlignHCenter);
     layout->addLayout(vLayout);
 
     contentLayout->addLayout(layout, 7);
@@ -285,6 +308,8 @@ void SPO2TrendWidget::updateTrendWidget()
         _spo2Value2->setVisible(true);
         _spo2DeltaName->setVisible(true);
         _spo2DeltaValue->setVisible(true);
+        _piName->setVisible(false);
+        _piValue->setVisible(false);
     }
     else
     {
@@ -292,6 +317,8 @@ void SPO2TrendWidget::updateTrendWidget()
         _spo2Value2->setVisible(false);
         _spo2DeltaName->setVisible(false);
         _spo2DeltaValue->setVisible(false);
+        _piName->setVisible(true);
+        _piValue->setVisible(true);
     }
 }
 
