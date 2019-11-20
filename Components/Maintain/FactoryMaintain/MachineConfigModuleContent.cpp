@@ -239,12 +239,8 @@ void MachineConfigModuleContentPrivte::loadOptions()
     combos[ITEM_CBO_CO]->setEnabled(false);
     combos[ITEM_CBO_IBP]->setCurrentIndex(0);
     combos[ITEM_CBO_IBP]->setEnabled(false);
-//    combos[ITEM_CBO_O2]->setCurrentIndex(0);
-//    combos[ITEM_CBO_O2]->setEnabled(false);
     combos[ITEM_CBO_WIFI]->setCurrentIndex(0);
     combos[ITEM_CBO_WIFI]->setEnabled(false);
-    combos[ITEM_CBO_HDMI]->setCurrentIndex(0);
-    combos[ITEM_CBO_HDMI]->setEnabled(false);
     combos[ITEM_CBO_ANALOG_OUTPUT]->setCurrentIndex(0);
     combos[ITEM_CBO_ANALOG_OUTPUT]->setEnabled(false);
     combos[ITEM_CBO_SYNC_DEFIBRILLATION]->setCurrentIndex(0);
