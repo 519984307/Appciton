@@ -53,6 +53,9 @@ public:
         ITEM_LAB_TEMP_SW_VERSION,
         ITEM_LAB_TEMP_HW_VERSION,
         ITEM_LAB_TEMP_BOOTLOADER,
+        ITEM_LAB_NEO_SW_VERSION,
+        ITEM_LAB_NEO_HW_VERSION,
+        ITEM_LAB_NEO_BOOTLOADER,
         ITEM_LAB_PRT48_SW_VERSION,
         ITEM_LAB_PRT48_HW_VERSION,
         ITEM_LAB_PRT48_BOOTLOADER,
@@ -275,6 +278,36 @@ void FactoryVersionInfo::layoutExec()
         d_ptr->labs.insert(FactoryVersionInfoPrivate
                            ::ITEM_LAB_TEMP_BOOTLOADER, labelRight);
     }
+
+
+#ifdef ENABLE_O2_APNEASTIMULATION
+    if (systemManager.isSupport(PARAM_O2))
+    {
+        labelLeft = new QLabel(trs("NeonateSwVersion") + "    ");
+        layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
+
+        labelRight = new QLabel;
+        layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignLeft);
+        d_ptr->labs.insert(FactoryVersionInfoPrivate
+                           ::ITEM_LAB_NEO_SW_VERSION, labelRight);
+
+        labelLeft = new QLabel(trs("NeonateHwVersion") + "    ");
+        layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
+
+        labelRight = new QLabel;
+        layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignLeft);
+        d_ptr->labs.insert(FactoryVersionInfoPrivate
+                           ::ITEM_LAB_NEO_HW_VERSION, labelRight);
+
+        labelLeft = new QLabel(trs("NeonateBootloader") + "    ");
+        layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
+
+        labelRight = new QLabel;
+        layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignLeft);
+        d_ptr->labs.insert(FactoryVersionInfoPrivate
+                           ::ITEM_LAB_NEO_BOOTLOADER, labelRight);
+    }
+#endif
 
     if (systemManager.isSupport(CONFIG_PRINTER))
     {
@@ -513,6 +546,26 @@ void FactoryVersionInfoPrivate::loadOptions()
     if (labs[ITEM_LAB_TEMP_BOOTLOADER])
     {
         labs[ITEM_LAB_TEMP_BOOTLOADER]->setText(versionSuffix);
+    }
+
+    // neonate version
+    p = paramManager.getProvider("NEONATE_O2");
+    versionSw.clear();
+    if (p)
+    {
+        getVersionString(p->getVersionString(), &versionSw, &versionHw, &versionSuffix);
+    }
+    if (labs[ITEM_LAB_NEO_SW_VERSION])
+    {
+        labs[ITEM_LAB_NEO_SW_VERSION]->setText(versionSw);
+    }
+    if (labs[ITEM_LAB_NEO_HW_VERSION])
+    {
+        labs[ITEM_LAB_NEO_HW_VERSION]->setText(versionHw);
+    }
+    if (labs[ITEM_LAB_NEO_BOOTLOADER])
+    {
+        labs[ITEM_LAB_NEO_BOOTLOADER]->setText(versionSuffix);
     }
 
     // prt48 version

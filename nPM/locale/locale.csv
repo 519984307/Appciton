@@ -833,6 +833,9 @@ SPO2Bootloader,SpO₂ Bootloader,SpO₂ Bootloader
 TEMPSwVersion,Temp软件版本,Temp Software Version
 TEMPHwVersion,Temp硬件版本,Temp Hardware Version
 TEMPBootloader,Temp Bootloader,Temp Bootloader
+NeonateSwVersion,Neonate软件版本,Neonate Software Version
+NeonateHwVersion,Neonate硬件版本,Neonate Hardware Version
+NeonateBootloader,Neonate Bootloader, Neonate Bootloader
 PRT48SwVersion,PRT48软件版本,PRT48 Software Version
 PRT48HwVersion,PRT48硬件版本,PRT48 Hardware Version
 PRT48Bootloader,PRT48 Bootloader,PRT48 Bootloader
