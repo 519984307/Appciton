@@ -67,6 +67,7 @@ protected:
 
 private slots:
     void _releaseHandle(IWidget *);
+    void onLayoutChange();
 
 private:
     QLabel *_spo2Value1;

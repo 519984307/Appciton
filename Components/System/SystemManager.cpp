@@ -246,7 +246,7 @@ bool SystemManager::isSupport(ConfiguredFuncs funcs) const
         path = "SyncDefibrillationEnable";
         break;
     case CONFIG_SPO2_HIGH_CONFIGURE:
-        path = "SpO2Configure";
+        path = "SpO2ConfigureEnable";
         break;
     default:
         break;

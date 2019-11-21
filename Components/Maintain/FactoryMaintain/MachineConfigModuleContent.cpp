@@ -272,7 +272,7 @@ void MachineConfigModuleContentPrivte::loadOptions()
     combos[ITEM_CBO_NEO_MACHINE]->setCurrentIndex(index);
 
     index = 0;
-    machineConfig.getNumValue("SpO2Configure", index);
+    machineConfig.getNumValue("SpO2ConfigureEnable", index);
     combos[ITEM_CBO_SPO2_CONFIGURE]->setCurrentIndex(index);
 
     setCombosBlockSignalStatus(false);
@@ -804,7 +804,7 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
         }
         case MachineConfigModuleContentPrivte::ITEM_CBO_SPO2_CONFIGURE:
         {
-            enablePath = "SpO2Configure";
+            enablePath = "SpO2ConfigureEnable";
             break;
         }
         default:

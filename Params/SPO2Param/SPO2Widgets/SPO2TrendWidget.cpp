@@ -18,6 +18,7 @@
 #include "MeasureSettingWindow.h"
 #include "AlarmConfig.h"
 #include "ParamManager.h"
+#include "LayoutManager.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -27,6 +28,20 @@ void SPO2TrendWidget::_releaseHandle(IWidget *iWidget)
     Q_UNUSED(iWidget)
     MeasureSettingWindow *p = MeasureSettingWindow::getInstance();
     p->popup(trs("SPO2Menu"));
+}
+
+void SPO2TrendWidget::onLayoutChange()
+{
+    if (layoutManager.getUFaceType() == UFACE_MONITOR_SPO2)
+    {
+        _piName->setVisible(false);
+        _piValue->setVisible(false);
+    }
+    else
+    {
+        _piName->setVisible(true);
+        _piValue->setVisible(true);
+    }
 }
 
 void SPO2TrendWidget::loadConfig()
@@ -193,7 +208,7 @@ void SPO2TrendWidget::showValue(void)
 void SPO2TrendWidget::setTextSize()
 {
     QRect r = this->rect();
-    if (spo2Param.isConnected(true))
+    if (_spo2Value2->isVisible() && _piValue->isVisible())
     {
         r.adjust(nameLabel->width() * 3 + _spo2Bar->width(), 0, 0, 0);
         r.setWidth(r.width() / 3);
@@ -297,6 +312,7 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
+    connect(&layoutManager, SIGNAL(layoutChanged()), this, SLOT(onLayoutChange()));
 
     loadConfig();
 }
