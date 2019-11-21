@@ -40,6 +40,8 @@ void SPO2TrendWidget::loadConfig()
     _spo2Name2->setPalette(palette);
     _spo2DeltaValue->setPalette(palette);
     _spo2DeltaName->setPalette(palette);
+    _piValue->setPalette(palette);
+    _piName->setPalette(palette);
     TrendWidget::loadConfig();
 }
 
@@ -191,20 +193,33 @@ void SPO2TrendWidget::showValue(void)
 void SPO2TrendWidget::setTextSize()
 {
     QRect r = this->rect();
-    r.adjust(nameLabel->width(), 0, 0, 0);
-    r.setWidth(r.width() / 2);
+    if (spo2Param.isConnected(true))
+    {
+        r.adjust(nameLabel->width() * 3 + _spo2Bar->width(), 0, 0, 0);
+        r.setWidth(r.width() / 3);
+    }
+    else
+    {
+        r.adjust(nameLabel->width() * 2 + _spo2Bar->width(), 0, 0, 0);
+        r.setWidth(r.width() / 2);
+    }
+
     // 字体。
-    int fontsize = fontManager.adjustNumFontSize(r, true);
+    int fontsize = fontManager.adjustNumFontSize(r, true, "9999");
     QFont font = fontManager.numFont(fontsize, true);
     font.setWeight(QFont::Black);
     _spo2Value1->setFont(font);
 
     r.setHeight(r.height() / 2);
-    fontsize = fontManager.adjustNumFontSize(r, true);
+    fontsize = fontManager.adjustNumFontSize(r, true, "9999");
     font = fontManager.numFont(fontsize, true);
     font.setWeight(QFont::Black);
     _spo2Value2->setFont(font);
     _spo2DeltaValue->setFont(font);
+
+    fontsize = fontManager.adjustNumFontSize(r, true, "99999");
+    font = fontManager.numFont(fontsize, true);
+    font.setWeight(QFont::Black);
     _piValue->setFont(font);
 
     int fontSize = fontManager.getFontSize(3);
@@ -272,9 +287,9 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
     layout->setMargin(10);
     layout->addWidget(_spo2Value1, 3);
     layout->addWidget(_spo2Bar, 1);
+    layout->addLayout(vLayout);
     layout->addWidget(_piName, 1, Qt::AlignCenter);
     layout->addWidget(_piValue, 2, Qt::AlignBottom | Qt::AlignHCenter);
-    layout->addLayout(vLayout);
 
     contentLayout->addLayout(layout, 7);
 
@@ -308,8 +323,6 @@ void SPO2TrendWidget::updateTrendWidget()
         _spo2Value2->setVisible(true);
         _spo2DeltaName->setVisible(true);
         _spo2DeltaValue->setVisible(true);
-        _piName->setVisible(false);
-        _piValue->setVisible(false);
     }
     else
     {
@@ -317,9 +330,8 @@ void SPO2TrendWidget::updateTrendWidget()
         _spo2Value2->setVisible(false);
         _spo2DeltaName->setVisible(false);
         _spo2DeltaValue->setVisible(false);
-        _piName->setVisible(true);
-        _piValue->setVisible(true);
     }
+    setTextSize();
 }
 
 void SPO2TrendWidget::setBarValue(int16_t value)
