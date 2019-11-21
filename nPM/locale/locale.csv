@@ -1576,4 +1576,7 @@ SystemBoardSendCommunicationStop,系统板发送通讯中断,System Board Send C
 NurseCall,护士呼叫,Nurse Call
 AnalogOutput,模拟输出,Analog Output
 SyncDefibrillation,同步除颤,Sync Defibrillation
+SpO2Configure,Rainbow SpO₂配置,Rainbow SpO₂ Configuration
+LowConfigure,低配,Low Configuration
+HighConfigure,高配,High Configuration
 SystemBoardSendCommunicationStop,系统板发送通讯中断,System Board Send Communicaiton Stop

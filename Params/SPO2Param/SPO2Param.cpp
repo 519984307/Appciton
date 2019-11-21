@@ -269,6 +269,7 @@ void SPO2Param::handDemoTrendData(void)
         d_ptr->trendWidget->setSPO2Value(d_ptr->spo2Value);
         d_ptr->trendWidget->setPlugInSPO2Value(d_ptr->plugInSpo2Value);
         d_ptr->trendWidget->setSPO2DeltaValue(d_ptr->spo2DValue);
+        d_ptr->trendWidget->setPIValue(d_ptr->piValue);
         d_ptr->piTrendWidget->setPIValue(d_ptr->piValue);
         d_ptr->pviTrendWidget->setPVIValue(d_ptr->pviValue);
         d_ptr->sphbTrendWidget->setSPHBValue(d_ptr->sphbValue);
@@ -826,6 +827,10 @@ void SPO2Param::setPI(short piValue)
     if (NULL != d_ptr->piTrendWidget)
     {
         d_ptr->piTrendWidget->setPIValue(d_ptr->piValue);
+    }
+    if (NULL != d_ptr->trendWidget)
+    {
+        d_ptr->trendWidget->setPIValue(d_ptr->piValue);
     }
 }
 

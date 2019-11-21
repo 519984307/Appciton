@@ -58,6 +58,7 @@ public:
         ITEM_CBO_NURSE_CALL,
         ITEM_CBO_ANALOG_OUTPUT,
         ITEM_CBO_SYNC_DEFIBRILLATION,
+        ITEM_CBO_SPO2_CONFIGURE,
         ITEM_CBO_MAX
     };
 
@@ -265,6 +266,10 @@ void MachineConfigModuleContentPrivte::loadOptions()
     index = 0;
     machineConfig.getNumValue("NeonateMachine", index);
     combos[ITEM_CBO_NEO_MACHINE]->setCurrentIndex(index);
+
+    index = 0;
+    machineConfig.getNumValue("SpO2ConfigureEnable", index);
+    combos[ITEM_CBO_SPO2_CONFIGURE]->setCurrentIndex(index);
 
     setCombosBlockSignalStatus(false);
 }
@@ -623,6 +628,19 @@ void MachineConfigModuleContent::layoutExec()
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
+    // spo2 configure
+    label = new QLabel(trs("SpO2Configure"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    combo = new ComboBox;
+    combo->addItems(QStringList()
+                    << trs("LowConfigure")
+                    << trs("HighConfigure"));
+    layout->addWidget(combo, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(MachineConfigModuleContentPrivte::ITEM_CBO_SPO2_CONFIGURE, combo);
+    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_SPO2_CONFIGURE;
+    combo->setProperty("Item", qVariantFromValue(itemId));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+
     layout->setRowStretch(d_ptr->combos.count(), 1);
 }
 
@@ -760,26 +778,31 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
             enablePath = "NeonateMachine";
             break;
         }
-    case MachineConfigModuleContentPrivte::ITEM_CBO_HDMI:
-    {
-         enablePath = "HDMIEnable";
-         break;
-    }
-    case MachineConfigModuleContentPrivte::ITEM_CBO_NURSE_CALL:
-    {
-         enablePath = "NurseCallEnable";
-         break;
-    }
-    case MachineConfigModuleContentPrivte::ITEM_CBO_ANALOG_OUTPUT:
-    {
-         enablePath = "AnalogOutputEnable";
-         break;
-    }
-    case MachineConfigModuleContentPrivte::ITEM_CBO_SYNC_DEFIBRILLATION:
-    {
-         enablePath = "SyncDefibrillationEnable";
-         break;
-    }
+        case MachineConfigModuleContentPrivte::ITEM_CBO_HDMI:
+        {
+             enablePath = "HDMIEnable";
+             break;
+        }
+        case MachineConfigModuleContentPrivte::ITEM_CBO_NURSE_CALL:
+        {
+             enablePath = "NurseCallEnable";
+             break;
+        }
+        case MachineConfigModuleContentPrivte::ITEM_CBO_ANALOG_OUTPUT:
+        {
+             enablePath = "AnalogOutputEnable";
+             break;
+        }
+        case MachineConfigModuleContentPrivte::ITEM_CBO_SYNC_DEFIBRILLATION:
+        {
+             enablePath = "SyncDefibrillationEnable";
+             break;
+        }
+        case MachineConfigModuleContentPrivte::ITEM_CBO_SPO2_CONFIGURE:
+        {
+            enablePath = "SpO2ConfigureEnable";
+            break;
+        }
         default:
             return;
     }

@@ -18,6 +18,7 @@
 #include "MeasureSettingWindow.h"
 #include "AlarmConfig.h"
 #include "ParamManager.h"
+#include "LayoutManager.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -27,6 +28,20 @@ void SPO2TrendWidget::_releaseHandle(IWidget *iWidget)
     Q_UNUSED(iWidget)
     MeasureSettingWindow *p = MeasureSettingWindow::getInstance();
     p->popup(trs("SPO2Menu"));
+}
+
+void SPO2TrendWidget::onLayoutChange()
+{
+    if (layoutManager.getUFaceType() == UFACE_MONITOR_SPO2)
+    {
+        _piName->setVisible(false);
+        _piValue->setVisible(false);
+    }
+    else
+    {
+        _piName->setVisible(true);
+        _piValue->setVisible(true);
+    }
 }
 
 void SPO2TrendWidget::loadConfig()
@@ -40,6 +55,8 @@ void SPO2TrendWidget::loadConfig()
     _spo2Name2->setPalette(palette);
     _spo2DeltaValue->setPalette(palette);
     _spo2DeltaName->setPalette(palette);
+    _piValue->setPalette(palette);
+    _piName->setPalette(palette);
     TrendWidget::loadConfig();
 }
 
@@ -91,6 +108,19 @@ void SPO2TrendWidget::setSPO2DeltaValue(int16_t spo2)
         _spo2StringD = InvStr();
     }
     _spo2DeltaValue->setText(_spo2StringD);
+}
+
+void SPO2TrendWidget::setPIValue(int16_t pi)
+{
+    if (pi >= 0)
+    {
+        _piString = QString::number(pi / (100 * 1.0), 'f', 2);
+    }
+    else
+    {
+        _piString = InvStr();
+    }
+    _piValue->setText(_piString);
 }
 
 void SPO2TrendWidget::updateLimit()
@@ -178,25 +208,40 @@ void SPO2TrendWidget::showValue(void)
 void SPO2TrendWidget::setTextSize()
 {
     QRect r = this->rect();
-    r.adjust(nameLabel->width(), 0, 0, 0);
-    r.setWidth(r.width() / 2);
+    if (_spo2Value2->isVisible() && _piValue->isVisible())
+    {
+        r.adjust(nameLabel->width() * 3 + _spo2Bar->width(), 0, 0, 0);
+        r.setWidth(r.width() / 3);
+    }
+    else
+    {
+        r.adjust(nameLabel->width() * 2 + _spo2Bar->width(), 0, 0, 0);
+        r.setWidth(r.width() / 2);
+    }
+
     // 字体。
-    int fontsize = fontManager.adjustNumFontSize(r, true);
+    int fontsize = fontManager.adjustNumFontSize(r, true, "9999");
     QFont font = fontManager.numFont(fontsize, true);
     font.setWeight(QFont::Black);
     _spo2Value1->setFont(font);
 
     r.setHeight(r.height() / 2);
-    fontsize = fontManager.adjustNumFontSize(r, true);
+    fontsize = fontManager.adjustNumFontSize(r, true, "9999");
     font = fontManager.numFont(fontsize, true);
     font.setWeight(QFont::Black);
     _spo2Value2->setFont(font);
     _spo2DeltaValue->setFont(font);
 
+    fontsize = fontManager.adjustNumFontSize(r, true, "99999");
+    font = fontManager.numFont(fontsize, true);
+    font.setWeight(QFont::Black);
+    _piValue->setFont(font);
+
     int fontSize = fontManager.getFontSize(3);
     font = fontManager.textFont(fontSize);
     _spo2Name2->setFont(font);
     _spo2DeltaName->setFont(font);
+    _piName->setFont(font);
 }
 
 /**************************************************************************************************
@@ -247,11 +292,19 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
     hLayout->addWidget(_spo2DeltaValue);
     vLayout->addLayout(hLayout);
 
+    _piName = new QLabel();
+    _piName->setText(trs("PI"));
+
+    _piValue = new QLabel();
+    _piValue->setText(InvStr());
+
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setMargin(10);
-    layout->addWidget(_spo2Value1);
-    layout->addWidget(_spo2Bar);
+    layout->addWidget(_spo2Value1, 3);
+    layout->addWidget(_spo2Bar, 1);
     layout->addLayout(vLayout);
+    layout->addWidget(_piName, 1, Qt::AlignCenter);
+    layout->addWidget(_piValue, 2, Qt::AlignBottom | Qt::AlignHCenter);
 
     contentLayout->addLayout(layout, 7);
 
@@ -259,6 +312,7 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
+    connect(&layoutManager, SIGNAL(layoutChanged()), this, SLOT(onLayoutChange()));
 
     loadConfig();
 }
@@ -293,6 +347,7 @@ void SPO2TrendWidget::updateTrendWidget()
         _spo2DeltaName->setVisible(false);
         _spo2DeltaValue->setVisible(false);
     }
+    setTextSize();
 }
 
 void SPO2TrendWidget::setBarValue(int16_t value)

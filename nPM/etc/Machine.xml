@@ -2,7 +2,7 @@
 <Machine>
     <MachineName>nPM</MachineName>
     <!--功能机型的使能配置-->
-    <ConfiguredFunctions>ECG12LEAD,SPO2,NIBP,RESP,CO2,AG,CO,IBP,TEMP,Printer,WIFI,Touch,O2,NIBPNEOMeasure,HDMI,NurseCall,AnalogOutput,SyncDefibrillation</ConfiguredFunctions>
+    <ConfiguredFunctions>ECG12LEAD,SPO2,NIBP,RESP,CO2,AG,CO,IBP,TEMP,Printer,WIFI,Touch,O2,NIBPNEOMeasure,HDMI,NurseCall,AnalogOutput,SyncDefibrillation,SpO2Configure</ConfiguredFunctions>
     <ECG12LEADEnable>1</ECG12LEADEnable>
     <SPO2Enable>1</SPO2Enable>
     <NIBPEnable>1</NIBPEnable>
@@ -40,6 +40,8 @@
     <ScreenTypeSelect>0</ScreenTypeSelect>
     <NIBPNEOMeasureEnable>1</NIBPNEOMeasureEnable>	
     <HDMIEnable>0</HDMIEnable>
+    <!--血氧配置选择 0：低配 1：高配-->
+    <SpO2ConfigureEnable>0</SpO2ConfigureEnable>
     <AnalogOutputEnable>0</AnalogOutputEnable>
     <SyncDefibrillationEnable>0</SyncDefibrillationEnable>	
     <!--背光调节方式  0:默认为等级亮度递增方式调节,1:如果0对应模式无法达到亮度递增调节效果，就选择该模式1-->

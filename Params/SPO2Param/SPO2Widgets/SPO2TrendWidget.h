@@ -27,6 +27,8 @@ public:
 
     void setSPO2DeltaValue(int16_t spo2);
 
+    void setPIValue(int16_t pi);
+
     // 刷新趋势参数上下限
     void updateLimit(void);
 
@@ -65,6 +67,7 @@ protected:
 
 private slots:
     void _releaseHandle(IWidget *);
+    void onLayoutChange();
 
 private:
     QLabel *_spo2Value1;
@@ -72,10 +75,13 @@ private:
     QLabel *_spo2Value2;
     QLabel *_spo2DeltaName;
     QLabel *_spo2DeltaValue;
+    QLabel *_piName;
+    QLabel *_piValue;
     SPO2BarWidget *_spo2Bar;
     QString _spo2String1;
     QString _spo2String2;
     QString _spo2StringD;
+    QString _piString;
     bool _isAlarmSPO2;
     bool _isAlarmSPO2_2;
     bool _isAlarmSPO2_D;
