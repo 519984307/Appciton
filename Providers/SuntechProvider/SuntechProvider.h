@@ -22,6 +22,12 @@ struct SuntechCMD
     unsigned int cmdLength;
 };
 
+enum SuntechModel
+{
+    SUNTECH_MODEL,
+    SUNTECH_A_PLUS_MODEL
+};
+
 class QTimer;
 class SuntechProvider: public Provider, public NIBPProviderIFace
 {
@@ -115,4 +121,6 @@ private:
     bool _powerOnSelfTest;                  // 开机自检
 
     QList<SuntechCMD> list;
+
+    SuntechModel _suntechModel;
 };

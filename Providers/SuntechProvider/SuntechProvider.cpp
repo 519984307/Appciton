@@ -43,26 +43,28 @@
 
 // COMMANDS
 
-#define     SUNTECH_CMD_SEND_START              0x79
-#define     SUNTECH_CMD_SET_INITIAL_INFIAL      0X17      // DATA=I0
-#define     SUNTECH_CMD_START_ADU_BP            0X20      // 成人
-#define     SUNTECH_CMD_START_PED_BP            0X87      // 小儿
-#define     SUNTECH_CMD_START_NEO_BP            0X28      // 新生儿
-#define     SUNTECH_CMD_ABORT_BP                0x01      // 停止测量
-#define     SUNTECH_CMD_GET_CUFF_PRESSURE       0x05      // 获取当前压力
-#define     SUNTECH_CMD_GET_BP_DATA             0x03      // 获取测量结果
-#define     SUNTECH_CMD_GET_MODULE_DATA         0x00
-#define     SUNTECH_CMD_GET_RETURN_STRING       0x79      // DATA=0x02 0x40
-#define     SUNTECH_CMD_SET_SLEEP_MODE          0x81      // DATA=B0 B1 B2 B3
-#define     SUNTECH_CMD_CONTROL_PNEUMATICS      0x0C      // DATA=B0 B1 B2
-#define     SUNTECH_CMD_CALIBRATE_TRANSDUCER    0X04      // DATA=B0
-#define     SUNTECH_CMD_GET_RETURN_CODE         0x79      // DATA=0x02 0x03
-#define     SUNTECH_CMD_STATUS                  0x79      // DATA=0x10 0x03
-#define     SUNTECH_CMD_STATUS_DATA_FIRST       0x10
-#define     SUNTECH_CMD_STATUS_DATA_SECOND      0x03
-#define     SUNTECH_CMD_RESET                   0x8A
-#define     SUNTECH_CMD_START_NEONATE_BP        0x28      // 新生儿
-#define     SUNTECH_CMD_VENOUS_STASIS           0x86      // DATA=B0 B1 B2
+#define     SUNTECH_CMD_SEND_START                  0x79
+#define     SUNTECH_CMD_SET_INITIAL_INFIAL          0X17      // DATA=I0
+#define     SUNTECH_CMD_START_ADU_BP                0X20      // 成人
+#define     SUNTECH_CMD_START_PED_BP                0X87      // 小儿
+#define     SUNTECH_CMD_START_NEO_BP                0X28      // 新生儿
+#define     SUNTECH_CMD_ABORT_BP                    0x01      // 停止测量
+#define     SUNTECH_CMD_GET_CUFF_PRESSURE           0x05      // 获取当前压力
+#define     SUNTECH_CMD_GET_BP_DATA                 0x03      // 获取测量结果
+#define     SUNTECH_CMD_GET_MODULE_DATA             0x00
+#define     SUNTECH_CMD_GET_RETURN_STRING           0x79      // DATA=0x02 0x40
+#define     SUNTECH_CMD_SET_SLEEP_MODE              0x81      // DATA=B0 B1 B2 B3
+#define     SUNTECH_CMD_CONTROL_PNEUMATICS          0x0C      // DATA=B0 B1 B2
+#define     SUNTECH_CMD_CALIBRATE_TRANSDUCER        0X04      // DATA=B0
+#define     SUNTECH_CMD_GET_RETURN_CODE             0x79      // DATA=0x02 0x03
+#define     SUNTECH_CMD_STATUS                      0x79      // DATA=0x10 0x03
+#define     SUNTECH_CMD_STATUS_DATA_FIRST           0x10
+#define     SUNTECH_CMD_STATUS_DATA_SECOND          0x03
+#define     SUNTECH_A_PLUS_CMD_STATUS_DATA_FIRST    0x11      // Suntech A+ STATUS Data
+#define     SUNTECH_A_PLUS_CMD_STATUS_DATA_SECOND   0x00
+#define     SUNTECH_CMD_RESET                       0x8A
+#define     SUNTECH_CMD_START_NEONATE_BP            0x28      // 新生儿
+#define     SUNTECH_CMD_VENOUS_STASIS               0x86      // DATA=B0 B1 B2
 
 enum ErrCode
 {
@@ -80,6 +82,9 @@ enum ErrCode
     SUNTECH_ERRCODE_TRANSDUCTER_OUT_OF_RANGE    = 0x61,         // 传感器超出范围
     SUNTECH_ERRCODE_EEPROM_CALIBR_FAILURE       = 0x63,         // EEPROM校准数据失败
 };
+
+#define SUNTECH_VERSION "LX3.412-SM V221"
+#define SUNTECH_A_PLUS_VERSION "SB 089 -SM H356"
 
 /**************************************************************************************************
  * 发送复位命令。
@@ -446,9 +451,18 @@ void SuntechProvider::controlPneumatics(unsigned char pump, unsigned char contro
 void SuntechProvider::sendSelfTest()
 {
     unsigned char cmd[3] = {0};
-    cmd[0] = SUNTECH_CMD_STATUS;
-    cmd[1] = SUNTECH_CMD_STATUS_DATA_FIRST;
-    cmd[2] = SUNTECH_CMD_STATUS_DATA_SECOND;
+    if (_suntechModel == SUNTECH_A_PLUS_MODEL)
+    {
+        cmd[0] = SUNTECH_CMD_STATUS;
+        cmd[1] = SUNTECH_A_PLUS_CMD_STATUS_DATA_FIRST;
+        cmd[2] = SUNTECH_A_PLUS_CMD_STATUS_DATA_SECOND;
+    }
+    else
+    {
+        cmd[0] = SUNTECH_CMD_STATUS;
+        cmd[1] = SUNTECH_CMD_STATUS_DATA_FIRST;
+        cmd[2] = SUNTECH_CMD_STATUS_DATA_SECOND;
+    }
     _sendCmd(cmd, 3);
     _powerOnSelfTest = true;
 }
@@ -459,11 +473,15 @@ SuntechProvider::SuntechProvider() :
     Provider("SUNTECH_NIBP"), NIBPProviderIFace(),
     _NIBPStart(false), _flagStartCmdSend(-1), _pressure(-1),
     _presssureTimer(NULL), _cmdTimer(NULL), _isModuleDataRespond(false),
-    _isCalibrationRespond(false), _powerOnSelfTest(true)
+    _isCalibrationRespond(false), _powerOnSelfTest(true),
+    _suntechModel(SUNTECH_MODEL)
 {
     UartAttrDesc portAttr(9600, 8, 'N', 1);
     initPort(portAttr);
     setDisconnectThreshold(5);
+
+    // 发送版本
+    sendVersion();
 
     _presssureTimer = new QTimer();
     _presssureTimer->setInterval(200);
