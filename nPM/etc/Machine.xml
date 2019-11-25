@@ -46,7 +46,7 @@
     <SyncDefibrillationEnable>0</SyncDefibrillationEnable>	
     <!--背光调节方式  0:默认为等级亮度递增方式调节,1:如果0对应模式无法达到亮度递增调节效果，就选择该模式1-->
     <!--总之，2个模式中要选择能使得背光等级亮度递增的调节模式-->
-    <BacklightAdjustment>0</BacklightAdjustment>
+    <BacklightAdjustment>1</BacklightAdjustment>
     <!--机器是否为新生儿专用机器-->
     <NeonateMachine>0</NeonateMachine>
     <!--系统信息-->
