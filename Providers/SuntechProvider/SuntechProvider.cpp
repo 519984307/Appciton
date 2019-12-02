@@ -83,8 +83,8 @@ enum ErrCode
     SUNTECH_ERRCODE_EEPROM_CALIBR_FAILURE       = 0x63,         // EEPROM校准数据失败
 };
 
-#define SUNTECH_VERSION "LX3.412-SM V221"
-#define SUNTECH_A_PLUS_VERSION "SB 089 -SM H356"
+#define SUNTECH_VERSION "LX"
+#define SUNTECH_A_PLUS_VERSION "SB"
 
 /**************************************************************************************************
  * 发送复位命令。
@@ -703,7 +703,17 @@ void SuntechProvider::_handlePacket(unsigned char *data, int len)
     case SUNTECH_RSP_GET_RETURN_STRING:
     {
         const char *p = reinterpret_cast<const char*>(data + 1);
-        versionInfo = QString("%1-%2").arg(QString(p)).arg(QString(p + 0x08));
+        QString versionInfo = QString("%1-%2").arg(QString(p)).arg(QString(p + 0x08));
+        setVersionString(versionInfo);
+
+        if (versionInfo.left(2) == SUNTECH_VERSION)
+        {
+            _suntechModel = SUNTECH_MODEL;
+        }
+        else if (versionInfo.left(2) == SUNTECH_A_PLUS_VERSION)
+        {
+            _suntechModel = SUNTECH_A_PLUS_MODEL;
+        }
         break;
     }
     // 校准结果
