@@ -168,8 +168,8 @@
 		</HR_PR>
                 <RR_BR Enable="1" Prio="1">
 			<rpm>
-				<Low Min="0" Max="149">5</Low>
-				<High Min="3" Max="150">50</High>
+				<Low Min="0" Max="119">5</Low>
+				<High Min="3" Max="120">50</High>
 				<Step>1</Step>
 				<Scale>1</Scale>
 			</rpm>
