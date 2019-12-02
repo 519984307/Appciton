@@ -703,8 +703,7 @@ void SuntechProvider::_handlePacket(unsigned char *data, int len)
     case SUNTECH_RSP_GET_RETURN_STRING:
     {
         const char *p = reinterpret_cast<const char*>(data + 1);
-        QString versionInfo = QString("%1-%2").arg(QString(p)).arg(QString(p + 0x08));
-        setVersionString(versionInfo);
+        versionInfo = QString("%1-%2").arg(QString(p)).arg(QString(p + 0x08));
 
         if (versionInfo.left(2) == SUNTECH_VERSION)
         {
