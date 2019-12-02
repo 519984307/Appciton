@@ -305,6 +305,7 @@ void SPO2Param::exitDemo()
         d_ptr->trendWidget->setSPO2Value(InvData());
         d_ptr->trendWidget->setPlugInSPO2Value(InvData());
         d_ptr->trendWidget->setSPO2DeltaValue(InvData());
+        d_ptr->trendWidget->setPIValue(InvData());
         d_ptr->piTrendWidget->setPIValue(InvData());
         d_ptr->pviTrendWidget->setPVIValue(InvData());
         d_ptr->sphbTrendWidget->setSPHBValue(InvData());

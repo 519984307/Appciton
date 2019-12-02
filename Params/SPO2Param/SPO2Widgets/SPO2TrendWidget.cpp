@@ -302,7 +302,7 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
     layout->setMargin(10);
     layout->addWidget(_spo2Value1, 3);
     layout->addWidget(_spo2Bar, 1);
-    layout->addLayout(vLayout);
+    layout->addLayout(vLayout, 3);
     layout->addWidget(_piName, 1, Qt::AlignCenter);
     layout->addWidget(_piValue, 2, Qt::AlignBottom | Qt::AlignHCenter);
 
