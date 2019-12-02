@@ -496,13 +496,12 @@ void SystemManager::setBrightness(BrightnessLevel br)
         int brValue = br * 2;
         enableBrightness(static_cast<BrightnessLevel>(brValue));
         d_ptr->isAutoBrightness = false;
-
-        systemConfig.setNumValue("General|DefaultDisplayBrightness", static_cast<int>(br));
     }
     else
     {
         d_ptr->isAutoBrightness = true;
     }
+    systemConfig.setNumValue("General|DefaultDisplayBrightness", static_cast<int>(br));
 }
 
 void SystemManager::setAutoBrightness(BrightnessLevel br)
