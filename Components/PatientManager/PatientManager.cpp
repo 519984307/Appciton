@@ -570,6 +570,7 @@ PatientInfo PatientManagerPrivate::getPatientInfo()
     machineConfig.getNumValue("NeonateMachine", isNeoMachine);
     if (isNeoMachine)
     {
+        systemConfig.setNumValue("General|PatientType", static_cast<int>(PATIENT_TYPE_NEO));
         info.type = PATIENT_TYPE_NEO;
     }
     else
