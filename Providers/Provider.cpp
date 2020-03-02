@@ -136,7 +136,7 @@ int Provider::writeData(const unsigned char buff[], int len)
 
     if (plugInInfo.plugIn)
     {
-        return plugInInfo.plugIn->sendData(plugInInfo.plugInType, buff, len);
+        plugInInfo.plugIn->sendData(plugInInfo.plugInType, buff, len);
     }
 
     return uart->write(buff, len);
