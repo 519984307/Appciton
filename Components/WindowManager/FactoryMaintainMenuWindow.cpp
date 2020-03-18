@@ -48,10 +48,6 @@ FactoryMaintainMenuWindow *FactoryMaintainMenuWindow::getInstance()
         {
             instance->addMenuContent(new O2CalibrationMenuContent);
         }
-        if (systemManager.isSupport(CONFIG_CO2))
-        {
-            instance->addMenuContent(new FactoryCO2MenuContent);
-        }
     }
 
     return instance;
