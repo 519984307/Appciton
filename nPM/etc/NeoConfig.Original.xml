@@ -628,7 +628,7 @@
 		<FICO2 Enable="0" Prio="1">
 		<percent>
 		    <Low Min="0" Max="249">0</Low>
-		    <High Min="1" Max="250">80</High>
+                    <High Min="1" Max="250">10</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</percent>
