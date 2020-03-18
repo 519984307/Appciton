@@ -778,7 +778,7 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</ETO2>
-		<FIO2 Enable="0" Prio="1">
+		<FIO2 Enable="1" Prio="1">
 		<percent>
 		    <Low Min="0" Max="114">0</Low>
 		    <High Min="1" Max="115">8</High>
