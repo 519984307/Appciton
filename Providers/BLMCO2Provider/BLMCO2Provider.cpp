@@ -408,7 +408,6 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
         if (_status.sidestreamConfig)
         {
             // 旁流CO2模块报警
-            co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_SPAN_CALIB_FAILED, _status.spanError);
 //            co2Param.setZeroStatus(CO2_ZERO_REASON_IN_PROGRESS, _status.spanCalibInProgress);
             co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_SPAN_CALIB_IN_PROGRESS, _status.spanCalibInProgress);
         }
