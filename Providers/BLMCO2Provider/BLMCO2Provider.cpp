@@ -559,6 +559,10 @@ void BLMCO2Provider::reconnected()
 
 void BLMCO2Provider::connectTimeOut()
 {
+    if (isPlugIn == true)
+    {
+        isPlugIn = false;
+    }
     connectTmr.stop();
     co2ModelConnect = false;
 }
@@ -583,6 +587,11 @@ bool BLMCO2Provider::attachParam(Param *param)
  *************************************************************************************************/
 void BLMCO2Provider::dataArrived(void)
 {
+    if (isPlugIn == true)
+    {
+        return;
+    }
+
     if (upgradeIface == NULL)
     {
         readData();
@@ -669,6 +678,10 @@ void BLMCO2Provider::dataArrived(void)
 void BLMCO2Provider::dataArrived(unsigned char *data, unsigned int length)
 {
     Q_UNUSED(length);
+    if (isPlugIn == false)
+    {
+        isPlugIn = true;
+    }
     _unpacket(data);
 }
 
@@ -862,7 +875,8 @@ bool BLMCO2Provider::sendUpgradeCmd(unsigned char cmdId, const unsigned char *da
  *************************************************************************************************/
 BLMCO2Provider::BLMCO2Provider(const QString &name)
     : Provider(name), CO2ProviderIFace(), _status(CO2ProviderStatus()),
-      upgradeIface(NULL), _isLastSOHPaired(false), co2ModelConnect(false)
+      upgradeIface(NULL), _isLastSOHPaired(false), co2ModelConnect(false),
+      isPlugIn(false)
 {
     UartAttrDesc portAttr(9600, 8, 'N', 1, _packetLen);
     plugInInfo.plugInType = PlugInProvider::PLUGIN_TYPE_CO2;
