@@ -52,6 +52,7 @@ enum RBSendPacketType
     RB_CMD_CONF_SPHB_PRECISION_MODE    = 0X0B,     // configure SpHb precision mode
     RB_CMD_CONF_PVI_AVERAGING_MODE     = 0X0C,     // configure PVI averaging mode
     RB_CMD_CONF_SPHB_BLOOD_VESSEL_MODE = 0X0D,     // configure SpHb arterial or venous mode
+    RB_CMD_CONF_SPHB_AVERAGING_MODE    = 0x0E,     // configure SpHb averaging mode
     RB_CMD_REQ_PARAM_INFO              = 0x10,     // request parameter info by force
     RB_CMD_CONF_PERIOD_PARAM_OUTPUT    = 0x20,     // configure periodic parameter output
     RB_CMD_CONF_PERIOD_WAVE_OUTPUT     = 0x21,     // configure periodic waveform output
@@ -227,6 +228,7 @@ public:
         , spHbAveragingMode(SPHB_AVERAGING_MODE_LONG)
         , provider(SPO2_RAINBOW_TYPE_DAVID)
         , isPlugIn(false)
+        , cmdAckNum(0)
     {
     }
 
@@ -363,6 +365,8 @@ public:
     SPO2RainbowType provider;
 
     bool isPlugIn;
+
+    short cmdAckNum;    /* command ack num, some command need multi ack, because it send multi commnads */
 };
 
 RainbowProvider::RainbowProvider(const QString &name, bool isPlugIn)
@@ -708,7 +712,7 @@ void RainbowProvider::setSphbAveragingMode(SpHbAveragingMode mode)
         d_ptr->spHbAveragingMode = mode;
         return;
     }
-    unsigned char data[2] = {RB_CMD_CONF_SPHB_BLOOD_VESSEL_MODE, mode};
+    unsigned char data[2] = {RB_CMD_CONF_SPHB_AVERAGING_MODE, mode};
     d_ptr->sendCmd(data, sizeof(data));
 }
 
@@ -1346,13 +1350,19 @@ void RainbowProviderPrivate::handleACK()
             break;
         case RB_INIT_SET_AVERAGE_TIME:
             // get here after the line frequency
+            cmdAckNum = 0;
             q_ptr->setSensitivityFastSat(sensMode, fastSat);
             curInitializeStep = RB_INIT_SET_FAST_SAT;
             break;
         case RB_INIT_SET_FAST_SAT:
-            // get here after the fast sat
-            q_ptr->setSmartTone(enableSmartTone);
-            curInitializeStep = RB_INIT_SMART_TONE;
+            cmdAckNum++;
+            /* need two ack for @sendSensitivityFastSat api */
+            if (cmdAckNum == 2)
+            {
+                // get here after the fast sat
+                q_ptr->setSmartTone(enableSmartTone);
+                curInitializeStep = RB_INIT_SMART_TONE;
+            }
             break;
         case RB_INIT_SMART_TONE:
             // get here after the smart tone
