@@ -219,7 +219,7 @@ public:
         , fastSat(false)
         , enableSmartTone(false)
         , curInitializeStep(RB_INIT_BAUDRATE)
-        , isReseting(false)
+        , isInitializing(false)
         , prValue(InvData())
         , spo2Value(InvData())
         , spHbPrecision(PRECISION_NEAREST_0_1)
@@ -348,7 +348,11 @@ public:
 
     RBInitializeStep curInitializeStep;
 
-    bool isReseting;
+    bool isInitializing;    /* mark whether the module is in initialize state. When then module is
+                             * intiliazing, all the setting command is save into the private data but
+                             * not send to the module directly. The setting will be send during
+                             * initilizing process.
+                             */
 
     short prValue;
 
@@ -414,13 +418,6 @@ void RainbowProvider::dataArrived()
     // 接收数据
     readData();
 
-    if (d_ptr->isReseting)
-    {
-        while (ringBuff.dataSize())
-        {
-            ringBuff.pop(1);
-        }
-    }
 
     // 无效数据退出处理
     if (ringBuff.dataSize() < d_ptr->minPacketLen)
@@ -496,13 +493,6 @@ void RainbowProvider::dataArrived(unsigned char *data, unsigned int length)
     // 接收数据
     d_ptr->readData(data, length);
 
-    if (d_ptr->isReseting)
-    {
-        while (ringBuff.dataSize())
-        {
-            ringBuff.pop(1);
-        }
-    }
 
     // 无效数据退出处理
     if (ringBuff.dataSize() < d_ptr->minPacketLen)
@@ -574,7 +564,6 @@ void RainbowProvider::dataArrived(unsigned char *data, unsigned int length)
 
 void RainbowProvider::dispatchPortHasReset()
 {
-    d_ptr->isReseting = false;
     // 返回复位成功后，需要给模块一点时间复位，才可以成功设置波特率。
     QTimer::singleShot(500, this, SLOT(changeBaudrate()));
 }
@@ -597,7 +586,7 @@ void RainbowProvider::sendVersion()
 
 void RainbowProvider::setSensitivityFastSat(SensitivityMode mode, bool fastSat)
 {
-    if (d_ptr->isReseting)
+    if (d_ptr->isInitializing)
     {
         d_ptr->sensMode = mode;
         d_ptr->fastSat = fastSat;
@@ -614,7 +603,7 @@ void RainbowProvider::setSensitivityFastSat(SensitivityMode mode, bool fastSat)
 
 void RainbowProvider::setAverageTime(AverageTime mode)
 {
-    if (d_ptr->isReseting)
+    if (d_ptr->isInitializing)
     {
         d_ptr->averTime = mode;
         return;
@@ -626,7 +615,7 @@ void RainbowProvider::setAverageTime(AverageTime mode)
 
 void RainbowProvider::setSmartTone(bool enable)
 {
-    if (d_ptr->isReseting)
+    if (d_ptr->isInitializing)
     {
         d_ptr->enableSmartTone = enable;
         return;
@@ -676,7 +665,7 @@ void RainbowProvider::reconnected()
 
 void RainbowProvider::setSpHbPrecisionMode(SpHbPrecisionMode mode)
 {
-    if (d_ptr->isReseting)
+    if (d_ptr->isInitializing)
     {
         d_ptr->spHbPrecision = mode;
         return;
@@ -688,7 +677,7 @@ void RainbowProvider::setSpHbPrecisionMode(SpHbPrecisionMode mode)
 
 void RainbowProvider::setPVIAveragingMode(AveragingMode mode)
 {
-    if (d_ptr->isReseting)
+    if (d_ptr->isInitializing)
     {
         d_ptr->pviAveragingMode = mode;
         return;
@@ -700,7 +689,7 @@ void RainbowProvider::setPVIAveragingMode(AveragingMode mode)
 
 void RainbowProvider::setSpHbBloodVesselMode(SpHbBloodVesselMode mode)
 {
-    if (d_ptr->isReseting)
+    if (d_ptr->isInitializing)
     {
         d_ptr->spHbBloodVessel = mode;
         return;
@@ -711,7 +700,7 @@ void RainbowProvider::setSpHbBloodVesselMode(SpHbBloodVesselMode mode)
 
 void RainbowProvider::setSphbAveragingMode(SpHbAveragingMode mode)
 {
-    if (d_ptr->isReseting)
+    if (d_ptr->isInitializing)
     {
         d_ptr->spHbAveragingMode = mode;
         return;
@@ -723,6 +712,7 @@ void RainbowProvider::setSphbAveragingMode(SpHbAveragingMode mode)
 void RainbowProvider::initModule()
 {
     d_ptr->curInitializeStep = RB_INIT_BAUDRATE;
+    d_ptr->isInitializing = true;
     plugInInfo.pluginType = PluginProvider::PLUGIN_TYPE_SPO2;
     disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_SPO2;
 
@@ -739,7 +729,6 @@ void RainbowProvider::initModule()
     {
         // reset the hardware
         disPatchInfo.dispatcher->resetPacketPort(disPatchInfo.packetType);
-        d_ptr->isReseting = true;
     }
     else
     {
@@ -759,8 +748,9 @@ void RainbowProvider::changeBaudrate()
 
 void RainbowProvider::setLineFrequency(RainbowLineFrequency freq)
 {
-    if (d_ptr->isReseting)
+    if (d_ptr->isInitializing)
     {
+        d_ptr->lineFreq = freq;
         return;
     }
 
@@ -1116,7 +1106,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
             if (q_ptr->disPatchInfo.dispatcher)
             {
                 q_ptr->disPatchInfo.dispatcher->resetPacketPort(q_ptr->disPatchInfo.packetType);
-                isReseting = true;
+                isInitializing = true;
                 curInitializeStep = RB_INIT_BAUDRATE;
             }
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_BOARD_FAILURE, true);
@@ -1297,6 +1287,12 @@ void RainbowProviderPrivate::configPeriodWaveformOut(unsigned int selectionBits,
     sendCmd(data, sizeof(data));
 }
 
+/*
+ *
+ */
+#define SEND_INITSETTING_START()   {isInitializing = false;}
+#define SEND_INITSETTING_END()  {isInitializing = true;}
+
 void RainbowProviderPrivate::handleACK()
 {
     if (curInitializeStep != RB_INIT_COMPLETED)
@@ -1342,18 +1338,24 @@ void RainbowProviderPrivate::handleACK()
             break;
         case RB_INIT_SENSOR_PARAM_CHECK:
             // get here after the param check command success
+            SEND_INITSETTING_START();
             q_ptr->setLineFrequency(lineFreq);
+            SEND_INITSETTING_END();
             curInitializeStep = RB_INIT_SET_LINE_FREQ;
             break;
         case RB_INIT_SET_LINE_FREQ:
             // get here after the line frequency
+            SEND_INITSETTING_START();
             q_ptr->setAverageTime(averTime);
+            SEND_INITSETTING_END();
             curInitializeStep = RB_INIT_SET_AVERAGE_TIME;
             break;
         case RB_INIT_SET_AVERAGE_TIME:
             // get here after the line frequency
             cmdAckNum = 0;
+            SEND_INITSETTING_START();
             q_ptr->setSensitivityFastSat(sensMode, fastSat);
+            SEND_INITSETTING_END();
             curInitializeStep = RB_INIT_SET_FAST_SAT;
             break;
         case RB_INIT_SET_FAST_SAT:
@@ -1362,7 +1364,9 @@ void RainbowProviderPrivate::handleACK()
             if (cmdAckNum == 2)
             {
                 // get here after the fast sat
+                SEND_INITSETTING_START();
                 q_ptr->setSmartTone(enableSmartTone);
+                SEND_INITSETTING_END();
                 curInitializeStep = RB_INIT_SMART_TONE;
             }
             break;
@@ -1406,6 +1410,7 @@ void RainbowProviderPrivate::handleACK()
                 // BLM的板子不配置高级参数
                 // 如果内置的是David板时，不配置插件的高级参数
                 curInitializeStep = RB_INIT_COMPLETED;
+                isInitializing = false;
             }
             else
             {
@@ -1417,7 +1422,9 @@ void RainbowProviderPrivate::handleACK()
             curInitializeStep = RB_INIT_SET_PVI_AVERAGING_MODE;
             break;
         case RB_INIT_SET_PVI_AVERAGING_MODE:
+            SEND_INITSETTING_START();
             q_ptr->setPVIAveragingMode(pviAveragingMode);
+            SEND_INITSETTING_END();
             curInitializeStep = RB_INIT_SET_PVI;
             break;
         case RB_INIT_SET_PVI:
@@ -1425,15 +1432,21 @@ void RainbowProviderPrivate::handleACK()
             curInitializeStep = RB_INIT_SET_SPHB_PRECISION_MODE;
             break;
         case RB_INIT_SET_SPHB_PRECISION_MODE:
+            SEND_INITSETTING_START();
             q_ptr->setSpHbPrecisionMode(spHbPrecision);
+            SEND_INITSETTING_END();
             curInitializeStep = RB_INIT_SET_SPHB_ARTERIAL_VENOUS_MODE;
             break;
         case RB_INIT_SET_SPHB_ARTERIAL_VENOUS_MODE:
+            SEND_INITSETTING_START();
             q_ptr->setSpHbBloodVesselMode(spHbBloodVessel);
+            SEND_INITSETTING_END();
             curInitializeStep = RB_INIT_SET_SPHB_AVERAGING_MODE;
             break;
         case RB_INIT_SET_SPHB_AVERAGING_MODE:
+            SEND_INITSETTING_START();
             q_ptr->setSphbAveragingMode(spHbAveragingMode);
+            SEND_INITSETTING_END();
             curInitializeStep = RB_INIT_SET_SPHB;
             break;
         case RB_INIT_SET_SPHB:
@@ -1449,6 +1462,7 @@ void RainbowProviderPrivate::handleACK()
             curInitializeStep = RB_INIT_COMPLETED;
             break;
         case RB_INIT_COMPLETED:
+            isInitializing = false;
             break;
         default:
             break;
@@ -1456,6 +1470,7 @@ void RainbowProviderPrivate::handleACK()
     }
     else  // 当初始化完成时，请求参数状态（里面含有版本信息）
     {
+        isInitializing = false;
         spo2Param.setProviderInfo(isPlugin, provider);
         requestParamStatus();
     }
