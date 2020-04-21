@@ -950,9 +950,20 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         bool valid = !(temp & INVAILD_SPHB);
         if (valid)
         {
-            temp = (data[0] << 8) + data[1];
-            float value = temp * 1.0 / 100 + 0.5;
-            spo2Param.setSpHb(value * 10);
+            if (spo2Param.getSpHbUnit() == SPHB_UNIT_G_DL)
+            {
+                /* keep one decimal */
+                temp = (data[0] << 8) + data[1];
+                spo2Param.setSpHb((temp + 5) / 10);
+            }
+            else
+            {
+                /* Use the alt SpHb value, mmol/L. However, the param only accept g/dL value,
+                 * so we convert the unit here, 1 g/dL = 0.62 mmol/L */
+                temp = (data[6] << 8) + data[7];
+                float altValue = temp / 0.62;
+                spo2Param.setSpHb((altValue + 5) / 10);
+            }
         }
         else
         {

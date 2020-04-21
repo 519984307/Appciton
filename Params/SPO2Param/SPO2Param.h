@@ -211,6 +211,19 @@ public:
     void setSpHbAveragingMode(SpHbAveragingMode mode);
     SpHbAveragingMode getSpHbAveragingMode();
 
+
+    /**
+     * @brief setSpHbUnit set the SpHb unit
+     * @param unit the unit type
+     */
+    void setSpHbUnit(SpHbUnitType unit);
+
+    /**
+     * @brief getSpHbUnit get the SpHb unit type
+     * @return the SpHb Unit type
+     */
+    SpHbUnitType getSpHbUnit();
+
     /**
      * @brief getSpHbBloodVessel 设置/获取SpHb测量血管
      * @return

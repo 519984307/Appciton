@@ -39,6 +39,7 @@ enum UnitType
     UNIT_LPMPSQM,
     UNIT_CMH2O,
     UNIT_GDL,
+    UNIT_MMOL_L,
     UNIT_MLDL,
     UNIT_NR
 };
@@ -59,7 +60,7 @@ public:
         {
             " ", "celsius", "fahrenheit", "celsius", "fahrenheit", "mmHg", "kPa", "percent",
             "rpm", "bpm", "μv", "mv", "kg", "lb", "cm", "mm", "inch", "ms", "PPM", "CPM", "mA",
-            "lpm", "lpmpsqm", "cmH2O", "gdL", "mLdL"
+            "lpm", "lpmpsqm", "cmH2O", "gdL", "mmolL", "mLdL"
         };
         return symbol[t];
     }
@@ -172,6 +173,15 @@ public:
         else if ((destUnit == UNIT_TDC) && (srcUnit == UNIT_TDF))
         {
             destVal = QString::number(srcVal / 1.8, 'f', 1);
+        }
+
+        else if ((destUnit == UNIT_GDL) && (srcUnit == UNIT_MMOL_L))
+        {
+            destVal = QString::number(srcVal / 0.62, 'f', 1);
+        }
+        else if ((destUnit == UNIT_MMOL_L) && (srcUnit == UNIT_GDL))
+        {
+            destVal = QString::number(srcVal * 0.62, 'f', 1);
         }
 
         return destVal;

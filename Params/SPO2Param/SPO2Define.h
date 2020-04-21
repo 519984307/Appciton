@@ -176,17 +176,17 @@ enum RainbowLineFrequency
 // CCHD筛查结果
 enum CCHDResult
 {
-    Negative,    // 阴性
-    Positive,    // 阳性
-    RepeatCheck, // 重复筛查
+    Negative,     // 阴性
+    Positive,     // 阳性
+    RepeatCheck,  // 重复筛查
     CCHD_NR
 };
 
 enum SpHbPrecisionMode
 {
-    PRECISION_NEAREST_0_1,  // nearest 0.1
-    PRECISION_NEAREST_0_5,  // nearest 0.5
-    PRECISION_WHOLE_NUMBER, // whole number
+    PRECISION_NEAREST_0_1,      // nearest 0.1
+    PRECISION_NEAREST_0_5,      // nearest 0.5
+    PRECISION_WHOLE_NUMBER,     // whole number
     PRECISION_NR
 };
 
@@ -203,6 +203,13 @@ enum SpHbAveragingMode
     SPHB_AVERAGING_MODE_MED,
     SPHB_AVERAGING_MODE_SHORT,
     SPHB_AVERAGING_NR
+};
+
+enum SpHbUnitType
+{
+    SPHB_UNIT_G_DL,
+    SPHB_UNIT_MMOL_L,
+    SPHB_UNIT_NR,
 };
 
 enum SpHbBloodVesselMode

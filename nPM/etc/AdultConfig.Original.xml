@@ -125,6 +125,7 @@
 	<SpHbAveragingMode>0</SpHbAveragingMode>
 	<SpHbBloodVessel>0</SpHbBloodVessel>
 	<SpHbPrecision>0</SpHbPrecision>
+	<SpHbUnit>0</SpHbUnit>
 	<PviAveragingMode>0</PviAveragingMode>
     </SPO2>
     <CO2>

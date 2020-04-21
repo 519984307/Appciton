@@ -16,6 +16,7 @@
 #include "TrendWidgetLabel.h"
 #include "AlarmConfig.h"
 #include "MeasureSettingWindow.h"
+#include "SPO2Param.h"
 
 class SPHBTrendWidgetPrivate
 {
@@ -37,7 +38,14 @@ void SPHBTrendWidget::setSPHBValue(int16_t sphb)
 {
     if (sphb >= 0)
     {
-        d_ptr->sphbString = QString::number(sphb / (d_ptr->scale * 1.0), 'f', 1);
+        if (spo2Param.getSpHbUnit() == SPHB_UNIT_G_DL)
+        {
+            d_ptr->sphbString = QString::number(sphb / (d_ptr->scale * 1.0), 'f', 1);
+        }
+        else
+        {
+            d_ptr->sphbString = Unit::convert(UNIT_MMOL_L, UNIT_GDL, sphb / (d_ptr->scale * 1.0));
+        }
     }
     else
     {
@@ -51,6 +59,11 @@ void SPHBTrendWidget::updateLimit()
     LimitAlarmConfig limit = alarmConfig.getLimitAlarmConfig(SUB_PARAM_SPHB, UNIT_GDL);
     setLimit(limit.highLimit, limit.lowLimit, limit.scale);
     d_ptr->scale = limit.scale;
+}
+
+void SPHBTrendWidget::updateUnit(UnitType unit)
+{
+    setUnit(trs(Unit::getSymbol(unit)));
 }
 
 void SPHBTrendWidget::isAlarm(bool flag)
@@ -78,7 +91,8 @@ SPHBTrendWidget::SPHBTrendWidget()
       d_ptr(new SPHBTrendWidgetPrivate())
 {
     setName(trs(paramInfo.getSubParamName(SUB_PARAM_SPHB)));
-    setUnit(trs(Unit::getSymbol(UNIT_GDL)));
+    setUnit(trs(Unit::getSymbol(spo2Param.getSpHbUnit() == SPHB_UNIT_G_DL
+                                ? UNIT_GDL : UNIT_MMOL_L)));
 
     d_ptr->sphbValue = new QLabel();
     d_ptr->sphbValue->setText(InvStr());

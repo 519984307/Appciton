@@ -10,6 +10,7 @@
 
 #pragma once
 #include "TrendWidget.h"
+#include "Framework/Utility/Unit.h"
 
 class SPHBTrendWidgetPrivate;
 class SPHBTrendWidget : public TrendWidget
@@ -21,6 +22,12 @@ public:
     /*reimplment*/
     void updateLimit();
 
+    /**
+     * @brief updateUnit update the display unit label
+     * @param unit
+     */
+    void updateUnit(UnitType unit);
+
     // 是否报警
     void isAlarm(bool flag);
 
@@ -31,6 +38,7 @@ public:
     ~SPHBTrendWidget();
 
     QList<SubParamID> getShortTrendSubParams() const;
+
 
 public:
     virtual void doRestoreNormalStatus();

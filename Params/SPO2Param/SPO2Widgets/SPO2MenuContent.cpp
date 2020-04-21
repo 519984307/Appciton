@@ -46,6 +46,7 @@ public:
         ITEM_CBO_SPHB_PRECISION_MODE,
         ITEM_CBO_SPHB_VESSEL_MODE,
         ITEM_CBO_SPHB_AVERAGING_MODE,
+        ITEM_CBO_SPHB_UNIT,
         ITEM_CBO_PVI_AVERAGING_MODE
     };
 
@@ -149,10 +150,12 @@ void SPO2MenuContentPrivate::loadOptions()
         combos[ITEM_CBO_SPHB_PRECISION_MODE]->setVisible(true);
         combos[ITEM_CBO_SPHB_VESSEL_MODE]->setVisible(true);
         combos[ITEM_CBO_SPHB_AVERAGING_MODE]->setVisible(true);
+        combos[ITEM_CBO_SPHB_UNIT]->setVisible(true);
         combos[ITEM_CBO_PVI_AVERAGING_MODE]->setVisible(true);
         seniorParamLbl[ITEM_CBO_SPHB_PRECISION_MODE]->setVisible(true);
         seniorParamLbl[ITEM_CBO_SPHB_VESSEL_MODE]->setVisible(true);
         seniorParamLbl[ITEM_CBO_SPHB_AVERAGING_MODE]->setVisible(true);
+        seniorParamLbl[ITEM_CBO_SPHB_UNIT]->setVisible(true);
         seniorParamLbl[ITEM_CBO_PVI_AVERAGING_MODE]->setVisible(true);
 
         index = static_cast<int>(spo2Param.getSpHbPrecision());
@@ -164,6 +167,9 @@ void SPO2MenuContentPrivate::loadOptions()
         index = static_cast<int>(spo2Param.getSpHbAveragingMode());
         combos[ITEM_CBO_SPHB_AVERAGING_MODE]->setCurrentIndex(index);
 
+        index = static_cast<int>(spo2Param.getSpHbUnit());
+        combos[ITEM_CBO_SPHB_UNIT]->setCurrentIndex(index);
+
         index = static_cast<int>(spo2Param.getPviAveragingMode());
         combos[ITEM_CBO_PVI_AVERAGING_MODE]->setCurrentIndex(index);
     }
@@ -172,10 +178,12 @@ void SPO2MenuContentPrivate::loadOptions()
         combos[ITEM_CBO_SPHB_PRECISION_MODE]->setVisible(false);
         combos[ITEM_CBO_SPHB_VESSEL_MODE]->setVisible(false);
         combos[ITEM_CBO_SPHB_AVERAGING_MODE]->setVisible(false);
+        combos[ITEM_CBO_SPHB_UNIT]->setVisible(false);
         combos[ITEM_CBO_PVI_AVERAGING_MODE]->setVisible(false);
         seniorParamLbl[ITEM_CBO_SPHB_PRECISION_MODE]->setVisible(false);
         seniorParamLbl[ITEM_CBO_SPHB_VESSEL_MODE]->setVisible(false);
         seniorParamLbl[ITEM_CBO_SPHB_AVERAGING_MODE]->setVisible(false);
+        seniorParamLbl[ITEM_CBO_SPHB_UNIT]->setVisible(false);
         seniorParamLbl[ITEM_CBO_PVI_AVERAGING_MODE]->setVisible(false);
     }
 
@@ -406,6 +414,21 @@ void SPO2MenuContent::layoutExec()
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_SPHB_AVERAGING_MODE, comboBox);
 
+    // sphb Unit
+    label = new QLabel();
+    label->setText(trs("SpHbUnit"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    d_ptr->seniorParamLbl.insert(SPO2MenuContentPrivate::ITEM_CBO_SPHB_UNIT, label);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                    << trs(Unit::getSymbol(UNIT_GDL))
+                    << trs(Unit::getSymbol(UNIT_MMOL_L)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    item = static_cast<int>(SPO2MenuContentPrivate::ITEM_CBO_SPHB_UNIT);
+    comboBox->setProperty("Item", qVariantFromValue(item));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_SPHB_UNIT, comboBox);
+
     // pvi averaging mode
     label = new QLabel();
     label->setText(trs("PviAveragingMode"));
@@ -482,6 +505,9 @@ void SPO2MenuContent::onComboBoxIndexChanged(int index)
             break;
         case SPO2MenuContentPrivate::ITEM_CBO_SPHB_AVERAGING_MODE:
             spo2Param.setSpHbAveragingMode(static_cast<SpHbAveragingMode>(index));
+            break;
+        case SPO2MenuContentPrivate::ITEM_CBO_SPHB_UNIT:
+            spo2Param.setSpHbUnit(static_cast<SpHbUnitType>(index));
             break;
         case SPO2MenuContentPrivate::ITEM_CBO_PVI_AVERAGING_MODE:
             spo2Param.setPviAveragingMode(static_cast<AveragingMode>(index));

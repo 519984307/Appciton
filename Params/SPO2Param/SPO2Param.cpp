@@ -1342,6 +1342,23 @@ SpHbAveragingMode SPO2Param::getSpHbAveragingMode()
     return static_cast<SpHbAveragingMode>(sphbAveragingMode);
 }
 
+void SPO2Param::setSpHbUnit(SpHbUnitType unit)
+{
+    currentConfig.setNumValue("SPO2|SpHbUnit", static_cast<int>(unit));
+    if (NULL != d_ptr->sphbTrendWidget)
+    {
+        UnitType u = unit == SPHB_UNIT_G_DL ? UNIT_GDL : UNIT_MMOL_L;
+        d_ptr->sphbTrendWidget->updateUnit(u);
+    }
+}
+
+SpHbUnitType SPO2Param::getSpHbUnit()
+{
+    int  unit = SPHB_UNIT_G_DL;
+    currentConfig.getNumValue("SPO2|SpHbUnit", unit);
+    return static_cast<SpHbUnitType>(unit);
+}
+
 void SPO2Param::setSpHbBloodVessel(SpHbBloodVesselMode mode)
 {
     d_ptr->provider->setSpHbBloodVesselMode(mode);
