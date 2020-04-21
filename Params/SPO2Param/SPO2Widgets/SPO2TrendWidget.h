@@ -23,7 +23,7 @@ public:
     // 设置SPO2的值。
     void setSPO2Value(int16_t spo2);
 
-    void setPlugInSPO2Value(int16_t spo2);
+    void setPluginSPO2Value(int16_t spo2);
 
     void setSPO2DeltaValue(int16_t spo2);
 

@@ -559,9 +559,9 @@ void BLMCO2Provider::reconnected()
 
 void BLMCO2Provider::connectTimeOut()
 {
-    if (isPlugIn == true)
+    if (isPlugin == true)
     {
-        isPlugIn = false;
+        isPlugin = false;
     }
     connectTmr.stop();
     co2ModelConnect = false;
@@ -587,7 +587,7 @@ bool BLMCO2Provider::attachParam(Param *param)
  *************************************************************************************************/
 void BLMCO2Provider::dataArrived(void)
 {
-    if (isPlugIn == true)
+    if (isPlugin == true)
     {
         return;
     }
@@ -678,9 +678,9 @@ void BLMCO2Provider::dataArrived(void)
 void BLMCO2Provider::dataArrived(unsigned char *data, unsigned int length)
 {
     Q_UNUSED(length);
-    if (isPlugIn == false)
+    if (isPlugin == false)
     {
-        isPlugIn = true;
+        isPlugin = true;
     }
     _unpacket(data);
 }
@@ -876,10 +876,10 @@ bool BLMCO2Provider::sendUpgradeCmd(unsigned char cmdId, const unsigned char *da
 BLMCO2Provider::BLMCO2Provider(const QString &name)
     : Provider(name), CO2ProviderIFace(), _status(CO2ProviderStatus()),
       upgradeIface(NULL), _isLastSOHPaired(false), co2ModelConnect(false),
-      isPlugIn(false)
+      isPlugin(false)
 {
     UartAttrDesc portAttr(9600, 8, 'N', 1, _packetLen);
-    plugInInfo.plugInType = PluginProvider::PLUGIN_TYPE_CO2;
+    plugInInfo.pluginType = PluginProvider::PLUGIN_TYPE_CO2;
 
     if (!initPort(portAttr))
     {
@@ -894,10 +894,10 @@ BLMCO2Provider::BLMCO2Provider(const QString &name)
 
     if (name == QString::fromLatin1("MASIMO_CO2"))
     {
-        plugInInfo.plugIn = PluginProvider::getPlugInProvider("PlugIn");
+        plugInInfo.plugIn = PluginProvider::getPluginProvider("Plugin");
         if (plugInInfo.plugIn)
         {
-            plugInInfo.plugIn->connectProvider(plugInInfo.plugInType, this);
+            plugInInfo.plugIn->connectProvider(plugInInfo.pluginType, this);
         }
     }
 }

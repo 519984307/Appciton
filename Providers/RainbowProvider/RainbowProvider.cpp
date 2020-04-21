@@ -227,7 +227,7 @@ public:
         , spHbBloodVessel(BLOOD_VESSEL_ARTERIAL)
         , spHbAveragingMode(SPHB_AVERAGING_MODE_LONG)
         , provider(SPO2_RAINBOW_TYPE_DAVID)
-        , isPlugIn(false)
+        , isPlugin(false)
         , cmdAckNum(0)
     {
     }
@@ -364,12 +364,12 @@ public:
 
     SPO2RainbowType provider;
 
-    bool isPlugIn;
+    bool isPlugin;
 
     short cmdAckNum;    /* command ack num, some command need multi ack, because it send multi commnads */
 };
 
-RainbowProvider::RainbowProvider(const QString &name, bool isPlugIn)
+RainbowProvider::RainbowProvider(const QString &name, bool isPlugin)
     : Provider(name)
     , SPO2ProviderIFace()
     , d_ptr(new RainbowProviderPrivate(this))
@@ -382,10 +382,10 @@ RainbowProvider::RainbowProvider(const QString &name, bool isPlugIn)
     d_ptr->spHbBloodVessel = spo2Param.getSpHbBloodVessel();
     d_ptr->spHbPrecision = spo2Param.getSpHbPrecision();
     d_ptr->pviAveragingMode = spo2Param.getPviAveragingMode();
-    d_ptr->isPlugIn = isPlugIn;
-    if (d_ptr->isPlugIn)
+    d_ptr->isPlugin = isPlugin;
+    if (d_ptr->isPlugin)
     {
-        plugInInfo.plugIn = PluginProvider::getPlugInProvider("PlugIn");
+        plugInInfo.plugIn = PluginProvider::getPluginProvider("Plugin");
     }
     initModule();
 }
@@ -398,9 +398,9 @@ bool RainbowProvider::attachParam(Param *param)
 {
     if (param->getParamID() == PARAM_SPO2)
     {
-        spo2Param.setProvider(this, d_ptr->isPlugIn);
+        spo2Param.setProvider(this, d_ptr->isPlugin);
         Provider::attachParam(param);
-        if (d_ptr->isPlugIn)
+        if (d_ptr->isPlugin)
         {
             setFirstCheck(true);
         }
@@ -639,7 +639,7 @@ void RainbowProvider::setSmartTone(bool enable)
 void RainbowProvider::disconnected()
 {
     AlarmOneShotIFace *alarmSource = NULL;
-    if (d_ptr->isPlugIn)
+    if (d_ptr->isPlugin)
     {
         alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SPO2_2);
     }
@@ -653,13 +653,13 @@ void RainbowProvider::disconnected()
         alarmSource->clear();
         alarmSource->setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, true);
     }
-    spo2Param.setConnected(false, d_ptr->isPlugIn);
+    spo2Param.setConnected(false, d_ptr->isPlugin);
 }
 
 void RainbowProvider::reconnected()
 {
     AlarmOneShotIFace *alarmSource = NULL;
-    if (d_ptr->isPlugIn)
+    if (d_ptr->isPlugin)
     {
         alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_SPO2_2);
     }
@@ -671,7 +671,7 @@ void RainbowProvider::reconnected()
     {
         alarmSource->setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, false);
     }
-    spo2Param.setConnected(true, d_ptr->isPlugIn);
+    spo2Param.setConnected(true, d_ptr->isPlugin);
 }
 
 void RainbowProvider::setSpHbPrecisionMode(SpHbPrecisionMode mode)
@@ -723,10 +723,10 @@ void RainbowProvider::setSphbAveragingMode(SpHbAveragingMode mode)
 void RainbowProvider::initModule()
 {
     d_ptr->curInitializeStep = RB_INIT_BAUDRATE;
-    plugInInfo.plugInType = PluginProvider::PLUGIN_TYPE_SPO2;
+    plugInInfo.pluginType = PluginProvider::PLUGIN_TYPE_SPO2;
     disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_SPO2;
 
-    if (d_ptr->isPlugIn)
+    if (d_ptr->isPlugin)
     {
         return;
     }
@@ -779,7 +779,7 @@ void RainbowProviderPrivate::handlePacket(unsigned char *data, int len)
     // 如果主机与该模块未连接成功，直接退出
     if (q_ptr->isConnected == false)
     {
-        spo2Param.setConnected(true, isPlugIn);
+        spo2Param.setConnected(true, isPlugin);
     }
 
     // 发送保活帧
@@ -888,7 +888,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     break;
     case RB_PARAM_OF_PR:
     {
-        if (!isPlugIn)
+        if (!isPlugin)
         {
             temp = (data[4] << 8) + data[5];
             bool valid = !(temp & INVAILD_PR);
@@ -906,7 +906,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     break;
     case RB_PARAM_OF_PI:
     {
-        if (!isPlugIn)
+        if (!isPlugin)
         {
             temp = (data[4] << 8) + data[5];
             bool valid = !(temp & INVAILD_PI);
@@ -1018,27 +1018,27 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
 
         addAlarms(temp);
 
-        if (isPlugIn)
+        if (isPlugin)
         {
             if (isCableOff == true)
             {
-                if (isPlugIn)
+                if (isPlugin)
                 {
-                    spo2Param.setNotify(true, trs("SPO22CheckSensor"), isPlugIn);
+                    spo2Param.setNotify(true, trs("SPO22CheckSensor"), isPlugin);
                 }
                 else
                 {
-                    spo2Param.setNotify(true, trs("SPO2CheckSensor"), isPlugIn);
+                    spo2Param.setNotify(true, trs("SPO2CheckSensor"), isPlugin);
                 }
-                spo2Param.setValidStatus(false, isPlugIn);
+                spo2Param.setValidStatus(false, isPlugin);
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, true, true);
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, false, true);
             }
             else
             {
-                spo2Param.setValidStatus(true, isPlugIn);
+                spo2Param.setValidStatus(true, isPlugin);
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, false, true);
-                spo2Param.setSearchForPulse(isSearching, isPlugIn);  // search pulse标志。
+                spo2Param.setSearchForPulse(isSearching, isPlugin);  // search pulse标志。
                 if (isSearching)
                 {
                     spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, false, true);
@@ -1053,23 +1053,23 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         {
             if (isCableOff == true)
             {
-                if (isPlugIn)
+                if (isPlugin)
                 {
-                    spo2Param.setNotify(true, trs("SPO22CheckSensor"), isPlugIn);
+                    spo2Param.setNotify(true, trs("SPO22CheckSensor"), isPlugin);
                 }
                 else
                 {
-                    spo2Param.setNotify(true, trs("SPO2CheckSensor"), isPlugIn);
+                    spo2Param.setNotify(true, trs("SPO2CheckSensor"), isPlugin);
                 }
-                spo2Param.setValidStatus(false, isPlugIn);
+                spo2Param.setValidStatus(false, isPlugin);
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, true);
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, false);
             }
             else
             {
-                spo2Param.setValidStatus(true, isPlugIn);
+                spo2Param.setValidStatus(true, isPlugin);
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, false);
-                spo2Param.setSearchForPulse(isSearching, isPlugIn);  // search pulse标志。
+                spo2Param.setSearchForPulse(isSearching, isPlugin);  // search pulse标志。
                 if (isSearching)
                 {
                     spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, false);
@@ -1081,15 +1081,15 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
             }
         }
         // 最后更新spo2值和pr值。避免趋势界面的值跳动。
-        spo2Param.setPerfusionStatus(isLowPerfusionIndex, isPlugIn);
-        if (!isPlugIn)
+        spo2Param.setPerfusionStatus(isLowPerfusionIndex, isPlugin);
+        if (!isPlugin)
         {
             spo2Param.setSPO2(spo2Value);
             spo2Param.setPR(prValue);
         }
         else
         {
-            spo2Param.setPlugInSPO2(spo2Value);
+            spo2Param.setPluginSPO2(spo2Value);
         }
     }
     break;
@@ -1166,16 +1166,16 @@ void RainbowProviderPrivate::handleWaveformInfo(unsigned char *data, int len)
     if (data[2] & SPO2_IQ_FLAG_BIT)  // get beep pulse audio status
     {
         unsigned char signalIQ = data[2];
-        spo2Param.addWaveformData(waveData, signalIQ, isPlugIn);
+        spo2Param.addWaveformData(waveData, signalIQ, isPlugin);
         // add wavedata twice for rounding SPO2 Waveform Sample  62.5 * 2 = 125
-        spo2Param.addWaveformData(waveData, signalIQ, isPlugIn);
+        spo2Param.addWaveformData(waveData, signalIQ, isPlugin);
         spo2Param.setPulseAudio(true);
     }
     else
     {
-        spo2Param.addWaveformData(waveData, 0, isPlugIn);
+        spo2Param.addWaveformData(waveData, 0, isPlugin);
         // add wavedata twice for rounding SPO2 Waveform Sample  62.5 * 2 = 125
-        spo2Param.addWaveformData(waveData, 0, isPlugIn);
+        spo2Param.addWaveformData(waveData, 0, isPlugin);
     }
 }
 
@@ -1401,7 +1401,7 @@ void RainbowProviderPrivate::handleACK()
             // 每16ms输出一次波形
             configPeriodWaveformOut(CLIPPED_AUTOSCALE_DATA | SIGNAL_IQ_AUDIO_VISUAL_DATA, 16);
             if (provider == SPO2_RAINBOW_TYPE_BLM ||
-                    (isPlugIn && spo2Param.getProviderInfo(false) == SPO2_RAINBOW_TYPE_DAVID))
+                    (isPlugin && spo2Param.getProviderInfo(false) == SPO2_RAINBOW_TYPE_DAVID))
             {
                 // BLM的板子不配置高级参数
                 // 如果内置的是David板时，不配置插件的高级参数
@@ -1456,7 +1456,7 @@ void RainbowProviderPrivate::handleACK()
     }
     else  // 当初始化完成时，请求参数状态（里面含有版本信息）
     {
-        spo2Param.setProviderInfo(isPlugIn, provider);
+        spo2Param.setProviderInfo(isPlugin, provider);
         requestParamStatus();
     }
 }
@@ -1469,7 +1469,7 @@ void RainbowProviderPrivate::requestParamStatus()
 
 void RainbowProviderPrivate::addAlarms(unsigned int flag)
 {
-    if (isPlugIn)
+    if (isPlugin)
     {
         if (flag & RB_DEFECTIVE_CABLE)
         {

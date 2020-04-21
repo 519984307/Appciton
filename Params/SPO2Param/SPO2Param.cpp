@@ -79,7 +79,7 @@ public:
 
     OxyCRGSPO2TrendWidget *oxyCRGSPO2Trend;
     bool connectedProvider;
-    bool connectedPlugInProvider;
+    bool connectedPluginProvider;
     SPO2ModuleType moduleType;
 
     QList<cchdData> cchdDataList;
@@ -156,7 +156,7 @@ SPO2ParamPrivate::SPO2ParamPrivate()
     , recPackageInPowerOn2sec(0)
     , oxyCRGSPO2Trend(NULL)
     , connectedProvider(false)
-    , connectedPlugInProvider(false)
+    , connectedPluginProvider(false)
     , moduleType(MODULE_SPO2_NR)
     , repeatTimes(0)
     , isLowPerfusion(false)
@@ -267,7 +267,7 @@ void SPO2Param::handDemoTrendData(void)
     if (NULL != d_ptr->trendWidget)
     {
         d_ptr->trendWidget->setSPO2Value(d_ptr->spo2Value);
-        d_ptr->trendWidget->setPlugInSPO2Value(d_ptr->plugInSpo2Value);
+        d_ptr->trendWidget->setPluginSPO2Value(d_ptr->plugInSpo2Value);
         d_ptr->trendWidget->setSPO2DeltaValue(d_ptr->spo2DValue);
         d_ptr->trendWidget->setPIValue(d_ptr->piValue);
         d_ptr->piTrendWidget->setPIValue(d_ptr->piValue);
@@ -303,7 +303,7 @@ void SPO2Param::exitDemo()
     if (NULL != d_ptr->trendWidget)
     {
         d_ptr->trendWidget->setSPO2Value(InvData());
-        d_ptr->trendWidget->setPlugInSPO2Value(InvData());
+        d_ptr->trendWidget->setPluginSPO2Value(InvData());
         d_ptr->trendWidget->setSPO2DeltaValue(InvData());
         d_ptr->trendWidget->setPIValue(InvData());
         d_ptr->piTrendWidget->setPIValue(InvData());
@@ -689,7 +689,7 @@ void SPO2Param::setSPO2(short spo2Value)
     }
 }
 
-void SPO2Param::setPlugInSPO2(short spo2Value)
+void SPO2Param::setPluginSPO2(short spo2Value)
 {
     if (d_ptr->plugInSpo2Value == spo2Value && !d_ptr->plugInIsForceUpdating)
     {
@@ -699,7 +699,7 @@ void SPO2Param::setPlugInSPO2(short spo2Value)
 
     if (NULL != d_ptr->trendWidget)
     {
-        d_ptr->trendWidget->setPlugInSPO2Value(d_ptr->plugInSpo2Value);
+        d_ptr->trendWidget->setPluginSPO2Value(d_ptr->plugInSpo2Value);
         if (d_ptr->spo2Value != InvData() && d_ptr->plugInSpo2Value != InvData())
         {
             d_ptr->spo2DValue = abs(d_ptr->spo2Value - d_ptr->plugInSpo2Value);
@@ -1141,7 +1141,7 @@ bool SPO2Param::isConnected(bool isPlugin)
 {
     if (isPlugin)
     {
-        return d_ptr->connectedPlugInProvider;
+        return d_ptr->connectedPluginProvider;
     }
     else
     {
@@ -1157,7 +1157,7 @@ void SPO2Param::setConnected(bool isConnected, bool isPlugIn)
     }
     else
     {
-        d_ptr->connectedPlugInProvider = isConnected;
+        d_ptr->connectedPluginProvider = isConnected;
     }
     QString wave = getWaveWindow(isPlugIn);
 

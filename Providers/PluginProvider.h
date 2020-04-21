@@ -18,7 +18,7 @@ class PluginProvider : public QObject
 {
     Q_OBJECT
 public:
-    enum PlugInType
+    enum PluginType
     {
         PLUGIN_TYPE_INVALID = -1,    // invalid packet type
         PLUGIN_TYPE_CTRL = 0xF0,     // control packet type
@@ -39,11 +39,11 @@ public:
         BAUDRATE_NR
     };
 
-    struct PlugInInfo
+    struct PluginInfo
     {
-        PlugInInfo() : plugIn(NULL), plugInType(PLUGIN_TYPE_INVALID) {}
+        PluginInfo() : plugIn(NULL), pluginType(PLUGIN_TYPE_INVALID) {}
         PluginProvider *plugIn;
-        PlugInType plugInType;
+        PluginType pluginType;
     };
 
 public:
@@ -56,7 +56,7 @@ public:
      * @param type the plugin type
      * @param provider pointer to the provider
      */
-    void connectProvider(PlugInType type, Provider *provider);
+    void connectProvider(PluginType type, Provider *provider);
 
     /**
      * @brief sendData send data through the data dispatcher
@@ -64,19 +64,19 @@ public:
      * @param len the buffer length
      * @return the length of data have beed send
      */
-    int sendData(PlugInType type, const unsigned char *buff, int len);
+    int sendData(PluginType type, const unsigned char *buff, int len);
     /**
-     * @brief addPlugInProvider add a plugin provider to the system
+     * @brief addPluginProvider add a plugin provider to the system
      * @param PlugInProvider the new added PlugInProvider
      */
-    static void addPlugInProvider(PluginProvider *plugInProvider);
+    static void addPluginProvider(PluginProvider *plugInProvider);
 
     /**
      * @brief getPlugInProvider get a plugin provider from the system base on the name
      * @param name the plugin provider name
      * @return the plugin provider object or null is not exist
      */
-    static PluginProvider *getPlugInProvider(const QString &name);
+    static PluginProvider *getPluginProvider(const QString &name);
 
     virtual void sendVersion(void) {}
 
@@ -89,7 +89,7 @@ public:
      * @param baud 波特率
      * @return
      */
-    bool setPacketPortBaudrate(PlugInType type, PluginProvider::PacketPortBaudrate baud);
+    bool setPacketPortBaudrate(PluginType type, PluginProvider::PacketPortBaudrate baud);
 
     /**
      * @brief updateUartBaud 更新串口波特率
@@ -115,12 +115,6 @@ private slots:
      * @brief startInitModule start the module initlization process
      */
     void startInitModule();
-
-    // /**
-    //  * @brief onPlugInProviderConnectParam 处理插件连接参数
-    //  * @param isAttach
-    //  */
-    // void onPlugInProviderConnectParam(bool isAttach);
 
     /**
      * @brief onWorkModeChanged handle the work mode change event

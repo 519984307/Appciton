@@ -80,7 +80,7 @@ void SPO2TrendWidget::setSPO2Value(int16_t spo2)
     _spo2Value1->setText(_spo2String1);
 }
 
-void SPO2TrendWidget::setPlugInSPO2Value(int16_t spo2)
+void SPO2TrendWidget::setPluginSPO2Value(int16_t spo2)
 {
     if (spo2 >= 0 && spo2Param.getPerfusionStatus(true))
     {

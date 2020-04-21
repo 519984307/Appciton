@@ -95,7 +95,7 @@ public:
      * @note
      * Should be invoked when we know the plugin provider type
      */
-    void setupProvider(PluginProvider::PlugInType type)
+    void setupProvider(PluginProvider::PluginType type)
     {
         /* module is already known before reset timer expired */
         if (moudleResetTimerID != -1)
@@ -137,12 +137,12 @@ public:
         }
     }
 
-    bool initPluginModule(PluginProvider::PlugInType type)
+    bool initPluginModule(PluginProvider::PluginType type)
     {
         if (type == PluginProvider::PLUGIN_TYPE_SPO2 && systemManager.isSupport(CONFIG_SPO2))
         {
             Provider *provider = NULL;
-            provider = new RainbowProvider("RAINBOW_SPO2PlugIn", true);
+            provider = new RainbowProvider("RAINBOW_SPO2Plugin", true);
             paramManager.addProvider(provider);
             if (systemManager.getCurWorkMode() != WORK_MODE_DEMO)
             {
@@ -200,7 +200,7 @@ public:
     PluginProvider *const q_ptr;
     QString name;
     Uart *uart;
-    QMap<PluginProvider::PlugInType, Provider *> dataHandlers;
+    QMap<PluginProvider::PluginType, Provider *> dataHandlers;
     RingBuff<unsigned char> ringBuff;
     static QMap<QString, PluginProvider *> plugInProviders;
     Provider *workingProvider;
@@ -238,7 +238,7 @@ QString PluginProvider::getName() const
     return d_ptr->name;
 }
 
-void PluginProvider::connectProvider(PluginProvider::PlugInType type, Provider *provider)
+void PluginProvider::connectProvider(PluginProvider::PluginType type, Provider *provider)
 {
     if (type == PLUGIN_TYPE_INVALID)
     {
@@ -247,7 +247,7 @@ void PluginProvider::connectProvider(PluginProvider::PlugInType type, Provider *
     d_ptr->dataHandlers[type] = provider;
 }
 
-int PluginProvider::sendData(PluginProvider::PlugInType type, const unsigned char *buff, int len)
+int PluginProvider::sendData(PluginProvider::PluginType type, const unsigned char *buff, int len)
 {
     if (type == PLUGIN_TYPE_SPO2)
     {
@@ -256,7 +256,7 @@ int PluginProvider::sendData(PluginProvider::PlugInType type, const unsigned cha
     return d_ptr->uart->write(buff, len);
 }
 
-void PluginProvider::addPlugInProvider(PluginProvider *plugInProvider)
+void PluginProvider::addPluginProvider(PluginProvider *plugInProvider)
 {
     if (plugInProvider)
     {
@@ -264,12 +264,12 @@ void PluginProvider::addPlugInProvider(PluginProvider *plugInProvider)
     }
 }
 
-PluginProvider *PluginProvider::getPlugInProvider(const QString &name)
+PluginProvider *PluginProvider::getPluginProvider(const QString &name)
 {
     return PluginProviderPrivate::plugInProviders.value(name, NULL);
 }
 
-bool PluginProvider::setPacketPortBaudrate(PluginProvider::PlugInType type, PluginProvider::PacketPortBaudrate baud)
+bool PluginProvider::setPacketPortBaudrate(PluginProvider::PluginType type, PluginProvider::PacketPortBaudrate baud)
 {
     if (type == PLUGIN_TYPE_SPO2)
     {

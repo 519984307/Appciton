@@ -82,13 +82,13 @@
     <BLM_S5Port>DataDispatcher</BLM_S5Port>
     <MASIMO_SPO2Port>DataDispatcher</MASIMO_SPO2Port>
     <RAINBOW_SPO2Port>DataDispatcher</RAINBOW_SPO2Port>
-    <RAINBOW_SPO2PlugInPort>PlugIn</RAINBOW_SPO2PlugInPort>
+    <RAINBOW_SPO2PluginPort>Plugin</RAINBOW_SPO2PluginPort>
     <SystemBoardPort>/dev/ttyPM0</SystemBoardPort>
     <BLM_T5Port>DataDispatcher</BLM_T5Port>
     <WITLEAF_IBPPort>/dev/ttyS4</WITLEAF_IBPPort>
     <MASIMO_CO2Port>/dev/ttyPM2</MASIMO_CO2Port>
     <DataDispatcherPort>/dev/ttyPM3</DataDispatcherPort>
     <NEONATE_O2Port>/dev/ttyS5</NEONATE_O2Port>
-    <PlugInPort>/dev/ttyS2</PlugInPort>
+    <PluginPort>/dev/ttyS2</PluginPort>
     <!--    <PHASEIN_AGPort>/dev/ttyWK3</PHASEIN_AGPort>-->
 </Machine>

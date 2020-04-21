@@ -288,7 +288,7 @@ static void _initProviderParam(void)
     DataDispatcher::addDataDispatcher(new DataDispatcher("DataDispatcher"));
 
     // 插件式转发
-    PluginProvider::addPlugInProvider(new PluginProvider("PlugIn"));
+    PluginProvider::addPluginProvider(new PluginProvider("Plugin"));
 
     // ECG部分。
     paramManager.addParam(&ecgDupParam.getInstance());

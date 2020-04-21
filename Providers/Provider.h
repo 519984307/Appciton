@@ -101,7 +101,7 @@ protected:
     static const int ringBuffLen = 4096;
     Uart *uart;
     DataDispatcher::DispatchInfo disPatchInfo;
-    PluginProvider::PlugInInfo plugInInfo;
+    PluginProvider::PluginInfo plugInInfo;
 
     void setFirstCheck(bool flag);
 

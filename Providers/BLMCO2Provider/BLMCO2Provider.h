@@ -220,5 +220,5 @@ private:
 
     QTimer connectTmr;
     bool co2ModelConnect;
-    bool isPlugIn;              // 是否为插件模块
+    bool isPlugin;              // 是否为插件模块
 };
