@@ -256,11 +256,11 @@ int PluginProvider::sendData(PluginProvider::PluginType type, const unsigned cha
     return d_ptr->uart->write(buff, len);
 }
 
-void PluginProvider::addPluginProvider(PluginProvider *plugInProvider)
+void PluginProvider::addPluginProvider(PluginProvider *pluginProvider)
 {
-    if (plugInProvider)
+    if (pluginProvider)
     {
-        PluginProviderPrivate::plugInProviders.insert(plugInProvider->getName(), plugInProvider);
+        PluginProviderPrivate::plugInProviders.insert(pluginProvider->getName(), pluginProvider);
     }
 }
 

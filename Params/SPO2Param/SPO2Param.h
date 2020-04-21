@@ -63,7 +63,7 @@ public:
     // 获取可得的波形控件集。
     virtual void getAvailableWaveforms(QStringList *waveforms,
                                        QStringList *waveformShowName, int flag);
-    virtual QString getWaveWindow(bool isPlugIn = false);
+    virtual QString getWaveWindow(bool isPlugin = false);
 
     // 获取子参数值
     virtual short getSubParamValue(SubParamID id);
@@ -75,7 +75,7 @@ public:
     virtual UnitType getCurrentUnit(SubParamID id);
 
     // 设置数据提供对象。
-    void setProvider(SPO2ProviderIFace *provider, bool isPlugIn = false);
+    void setProvider(SPO2ProviderIFace *provider, bool isPlugin = false);
 
     // 模块复位
     void reset();
@@ -88,7 +88,7 @@ public:
     void setTrendWidget(PVITrendWidget *trendWidget);
     void setTrendWidget(PITrendWidget *trendWidget);
     void setTrendWidget(SPCOTrendWidget *trendWidget);
-    void setWaveWidget(SPO2WaveWidget *waveWidget, bool isPlugIn = false);
+    void setWaveWidget(SPO2WaveWidget *waveWidget, bool isPlugin = false);
     void setOxyCRGSPO2Trend(OxyCRGSPO2TrendWidget *trendWidget);
 
     // PR音量
@@ -97,7 +97,7 @@ public:
     // 设置/获取SPO2的值。
     void setSPO2(short spo2Value);
     void setPluginSPO2(short spo2Value);
-    short getSPO2(bool isPlugIn = false);
+    short getSPO2(bool isPlugin = false);
 
     // 获取血氧差值
     short getSPO2D();
@@ -130,7 +130,7 @@ public:
     short getSpCO();
 
     // 设置波形值。
-    void addWaveformData(short wave, unsigned char waveFlag = 0, bool isPlugIn = false);
+    void addWaveformData(short wave, unsigned char waveFlag = 0, bool isPlugin = false);
 
     // 设置棒图值。
     void addBarData(short data);
@@ -151,10 +151,10 @@ public:
     SoundManager::VolumeLevel getBeatVol(void) const;
 
     // 设置波形上的提示信息。
-    void setNotify(bool enable, QString str = " ", bool isPlugIn = false);
+    void setNotify(bool enable, QString str = " ", bool isPlugin = false);
 
     // 设置搜索脉搏标志。
-    void setSearchForPulse(bool pulse, bool isPlugIn = false);
+    void setSearchForPulse(bool pulse, bool isPlugin = false);
 
     // 设置OneShot报警。
     void setOneShotAlarm(SPO2OneShotType t, bool f, bool isPlugin = false);
@@ -165,14 +165,14 @@ public:
     /**
      * @brief setValidStatus 设置波形有效状态
      * @param isValid   是否有效，true：波形将画直线 false：波形将画虚线
-     * @param isPlugIn  是否是插件模块
+     * @param isPlugin  是否是插件模块
      */
-    void setValidStatus(bool isValid, bool isPlugIn = false);
-    bool isValid(bool isPlugIn = false);
+    void setValidStatus(bool isValid, bool isPlugin = false);
+    bool isValid(bool isPlugin = false);
     bool isConnected(bool isPlugin);
 
     // 设置连接，供给对象调用。
-    void setConnected(bool isConnected, bool isPlugIn = false);
+    void setConnected(bool isConnected, bool isPlugin = false);
 
     // received package
     void receivePackage();
@@ -291,13 +291,13 @@ public:
      * @brief setPerfusionStatus  and the function of setting the SPO2 perfusion status
      * @param isLow  and true if low perfusion
      */
-    void setPerfusionStatus(bool isLow, bool isPlugIn = false);
+    void setPerfusionStatus(bool isLow, bool isPlugin = false);
 
     /**
      * @brief getPerfusionStatus  and the function of getting the SPO2 perfusion status
      * @return  and return true if low perfusion
      */
-    bool getPerfusionStatus(bool isPlugIn = false) const;
+    bool getPerfusionStatus(bool isPlugin = false) const;
 
     /**
      * @brief initModule  the function of initting the module
@@ -324,11 +324,11 @@ public:
 
     /**
      * @brief setProviderInfo
-     * @param isPlugIn
+     * @param isPlugin
      * @param type
      */
-    void setProviderInfo(bool isPlugIn, SPO2RainbowType type);
-    SPO2RainbowType getProviderInfo(bool isPlugIn);
+    void setProviderInfo(bool isPlugin, SPO2RainbowType type);
+    SPO2RainbowType getProviderInfo(bool isPlugin);
 
     /**
      * @brief setSensor 设置当前使用的探头

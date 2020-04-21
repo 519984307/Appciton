@@ -67,12 +67,12 @@ public:
     int sendData(PluginType type, const unsigned char *buff, int len);
     /**
      * @brief addPluginProvider add a plugin provider to the system
-     * @param PlugInProvider the new added PlugInProvider
+     * @param PluginProvider the new added PluginProvider
      */
-    static void addPluginProvider(PluginProvider *plugInProvider);
+    static void addPluginProvider(PluginProvider *pluginProvider);
 
     /**
-     * @brief getPlugInProvider get a plugin provider from the system base on the name
+     * @brief getPluginProvider get a plugin provider from the system base on the name
      * @param name the plugin provider name
      * @return the plugin provider object or null is not exist
      */
