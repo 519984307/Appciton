@@ -12,9 +12,9 @@
 #include <QObject>
 #include "SystemManagerInterface.h"
 
-class PlugInProviderPrivate;
+class PluginProviderPrivate;
 class Provider;
-class PlugInProvider : public QObject
+class PluginProvider : public QObject
 {
     Q_OBJECT
 public:
@@ -42,13 +42,13 @@ public:
     struct PlugInInfo
     {
         PlugInInfo() : plugIn(NULL), plugInType(PLUGIN_TYPE_INVALID) {}
-        PlugInProvider *plugIn;
+        PluginProvider *plugIn;
         PlugInType plugInType;
     };
 
 public:
-    explicit PlugInProvider(const QString &name, QObject *parent = NULL);
-    virtual ~PlugInProvider();
+    explicit PluginProvider(const QString &name, QObject *parent = NULL);
+    virtual ~PluginProvider();
 
     QString getName() const;
     /**
@@ -69,14 +69,14 @@ public:
      * @brief addPlugInProvider add a plugin provider to the system
      * @param PlugInProvider the new added PlugInProvider
      */
-    static void addPlugInProvider(PlugInProvider *plugInProvider);
+    static void addPlugInProvider(PluginProvider *plugInProvider);
 
     /**
      * @brief getPlugInProvider get a plugin provider from the system base on the name
      * @param name the plugin provider name
      * @return the plugin provider object or null is not exist
      */
-    static PlugInProvider *getPlugInProvider(const QString &name);
+    static PluginProvider *getPlugInProvider(const QString &name);
 
     virtual void sendVersion(void) {}
 
@@ -89,7 +89,7 @@ public:
      * @param baud 波特率
      * @return
      */
-    bool setPacketPortBaudrate(PlugInType type, PlugInProvider::PacketPortBaudrate baud);
+    bool setPacketPortBaudrate(PlugInType type, PluginProvider::PacketPortBaudrate baud);
 
     /**
      * @brief updateUartBaud 更新串口波特率
@@ -129,5 +129,5 @@ private slots:
     void onWorkModeChanged(WorkMode curMode);
 
 private:
-    PlugInProviderPrivate *const d_ptr;
+    PluginProviderPrivate *const d_ptr;
 };

@@ -18,7 +18,7 @@
 #include "ConfigManager.h"
 #include "NurseCallManager.h"
 #include "TestBatteryTime.h"
-#include "PlugInProvider.h"
+#include "PluginProvider.h"
 #include <QApplication>
 #include <QDesktopWidget>
 #include "Framework/ErrorLog/ErrorLog.h"
@@ -288,7 +288,7 @@ static void _initProviderParam(void)
     DataDispatcher::addDataDispatcher(new DataDispatcher("DataDispatcher"));
 
     // 插件式转发
-    PlugInProvider::addPlugInProvider(new PlugInProvider("PlugIn"));
+    PluginProvider::addPlugInProvider(new PluginProvider("PlugIn"));
 
     // ECG部分。
     paramManager.addParam(&ecgDupParam.getInstance());

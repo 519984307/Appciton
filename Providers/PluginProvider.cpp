@@ -8,7 +8,7 @@
  ** Written by luoyuchun <luoyuchun@blmed.cn>, 2019/6/4
  **/
 
-#include "PlugInProvider.h"
+#include "PluginProvider.h"
 #include "Framework/Uart/Uart.h"
 #include "IConfig.h"
 #include "Framework/Utility/RingBuff.h"
@@ -38,10 +38,10 @@
 #define WORKING_BAUDRATE_57600         (57600)
 #define MAX_PACKET_LEN          (40)
 
-class PlugInProviderPrivate
+class PluginProviderPrivate
 {
 public:
-    PlugInProviderPrivate(const QString &name, PlugInProvider *const q_ptr)
+    PluginProviderPrivate(const QString &name, PluginProvider *const q_ptr)
         : q_ptr(q_ptr),
           name(name),
           uart(new Uart(q_ptr)),
@@ -95,7 +95,7 @@ public:
      * @note
      * Should be invoked when we know the plugin provider type
      */
-    void setupProvider(PlugInProvider::PlugInType type)
+    void setupProvider(PluginProvider::PlugInType type)
     {
         /* module is already known before reset timer expired */
         if (moudleResetTimerID != -1)
@@ -129,7 +129,7 @@ public:
             ConnectionCheckTimerID = q_ptr->startTimer(CHECK_CONNECT_TIMER_PERIOD);
 
             /* need to swithc the baudrate for rainbow */
-            if (type == PlugInProvider::PLUGIN_TYPE_SPO2)
+            if (type == PluginProvider::PLUGIN_TYPE_SPO2)
             {
                 spo2Param.initModule(true);
                 QTimer::singleShot(50, q_ptr, SLOT(startInitModule()));
@@ -137,9 +137,9 @@ public:
         }
     }
 
-    bool initPluginModule(PlugInProvider::PlugInType type)
+    bool initPluginModule(PluginProvider::PlugInType type)
     {
-        if (type == PlugInProvider::PLUGIN_TYPE_SPO2 && systemManager.isSupport(CONFIG_SPO2))
+        if (type == PluginProvider::PLUGIN_TYPE_SPO2 && systemManager.isSupport(CONFIG_SPO2))
         {
             Provider *provider = NULL;
             provider = new RainbowProvider("RAINBOW_SPO2PlugIn", true);
@@ -181,7 +181,7 @@ public:
      * the module will response NACK. We could send this command to get the module
      * response during detection
      */
-    void sendRainbowBaudrateCmd(PlugInProvider::PacketPortBaudrate baudrate)
+    void sendRainbowBaudrateCmd(PluginProvider::PacketPortBaudrate baudrate)
     {
         int index = 0;
         unsigned char data[2] = {0x23, baudrate};
@@ -197,12 +197,12 @@ public:
         uart->write(buff, index);
     }
 
-    PlugInProvider *const q_ptr;
+    PluginProvider *const q_ptr;
     QString name;
     Uart *uart;
-    QMap<PlugInProvider::PlugInType, Provider *> dataHandlers;
+    QMap<PluginProvider::PlugInType, Provider *> dataHandlers;
     RingBuff<unsigned char> ringBuff;
-    static QMap<QString, PlugInProvider *> plugInProviders;
+    static QMap<QString, PluginProvider *> plugInProviders;
     Provider *workingProvider;
     int pluginDetectTimerID;
     int baudrateSwitchTimerID;
@@ -213,13 +213,13 @@ public:
     bool lastPluginState;       /* record the last plugin state, true means the last plugin check result was connected*/
 
 private:
-    PlugInProviderPrivate(const PlugInProviderPrivate &);  // use to pass the cpplint check only, no implementation
+    PluginProviderPrivate(const PluginProviderPrivate &);  // use to pass the cpplint check only, no implementation
 };
 
-QMap<QString, PlugInProvider *> PlugInProviderPrivate::plugInProviders;
+QMap<QString, PluginProvider *> PluginProviderPrivate::plugInProviders;
 
-PlugInProvider::PlugInProvider(const QString &name, QObject *parent)
-    : QObject(parent), d_ptr(new PlugInProviderPrivate(name, this))
+PluginProvider::PluginProvider(const QString &name, QObject *parent)
+    : QObject(parent), d_ptr(new PluginProviderPrivate(name, this))
 {
     UartAttrDesc portAttr(9600, 8, 'N', 1);
     d_ptr->initPort(portAttr);
@@ -228,17 +228,17 @@ PlugInProvider::PlugInProvider(const QString &name, QObject *parent)
     connect(&systemManager, SIGNAL(workModeChanged(WorkMode)), this, SLOT(onWorkModeChanged(WorkMode)));
 }
 
-PlugInProvider::~PlugInProvider()
+PluginProvider::~PluginProvider()
 {
     delete d_ptr;
 }
 
-QString PlugInProvider::getName() const
+QString PluginProvider::getName() const
 {
     return d_ptr->name;
 }
 
-void PlugInProvider::connectProvider(PlugInProvider::PlugInType type, Provider *provider)
+void PluginProvider::connectProvider(PluginProvider::PlugInType type, Provider *provider)
 {
     if (type == PLUGIN_TYPE_INVALID)
     {
@@ -247,7 +247,7 @@ void PlugInProvider::connectProvider(PlugInProvider::PlugInType type, Provider *
     d_ptr->dataHandlers[type] = provider;
 }
 
-int PlugInProvider::sendData(PlugInProvider::PlugInType type, const unsigned char *buff, int len)
+int PluginProvider::sendData(PluginProvider::PlugInType type, const unsigned char *buff, int len)
 {
     if (type == PLUGIN_TYPE_SPO2)
     {
@@ -256,20 +256,20 @@ int PlugInProvider::sendData(PlugInProvider::PlugInType type, const unsigned cha
     return d_ptr->uart->write(buff, len);
 }
 
-void PlugInProvider::addPlugInProvider(PlugInProvider *plugInProvider)
+void PluginProvider::addPlugInProvider(PluginProvider *plugInProvider)
 {
     if (plugInProvider)
     {
-        PlugInProviderPrivate::plugInProviders.insert(plugInProvider->getName(), plugInProvider);
+        PluginProviderPrivate::plugInProviders.insert(plugInProvider->getName(), plugInProvider);
     }
 }
 
-PlugInProvider *PlugInProvider::getPlugInProvider(const QString &name)
+PluginProvider *PluginProvider::getPlugInProvider(const QString &name)
 {
-    return PlugInProviderPrivate::plugInProviders.value(name, NULL);
+    return PluginProviderPrivate::plugInProviders.value(name, NULL);
 }
 
-bool PlugInProvider::setPacketPortBaudrate(PlugInProvider::PlugInType type, PlugInProvider::PacketPortBaudrate baud)
+bool PluginProvider::setPacketPortBaudrate(PluginProvider::PlugInType type, PluginProvider::PacketPortBaudrate baud)
 {
     if (type == PLUGIN_TYPE_SPO2)
     {
@@ -289,13 +289,13 @@ bool PlugInProvider::setPacketPortBaudrate(PlugInProvider::PlugInType type, Plug
     return true;
 }
 
-void PlugInProvider::updateUartBaud(unsigned int baud)
+void PluginProvider::updateUartBaud(unsigned int baud)
 {
     UartAttrDesc attr(baud, 8, 'N', 1);
     d_ptr->uart->updateSetting(attr);
 }
 
-void PlugInProvider::timerEvent(QTimerEvent *ev)
+void PluginProvider::timerEvent(QTimerEvent *ev)
 {
     if (ev->timerId() == d_ptr->pluginDetectTimerID)
     {
@@ -414,7 +414,7 @@ void PlugInProvider::timerEvent(QTimerEvent *ev)
     }
 }
 
-void PlugInProvider::dataArrived()
+void PluginProvider::dataArrived()
 {
     d_ptr->connLostTickCounter = 0;
 
@@ -524,12 +524,12 @@ void PlugInProvider::dataArrived()
     }
 }
 
-void PlugInProvider::changeBaudrate()
+void PluginProvider::changeBaudrate()
 {
     setPacketPortBaudrate(PLUGIN_TYPE_SPO2, BAUDRATE_57600);
 }
 
-void PlugInProvider::startInitModule()
+void PluginProvider::startInitModule()
 {
     if (d_ptr->workingProvider == d_ptr->dataHandlers[PLUGIN_TYPE_SPO2])
     {
@@ -537,7 +537,7 @@ void PlugInProvider::startInitModule()
     }
 }
 
-void PlugInProvider::onWorkModeChanged(WorkMode curMode)
+void PluginProvider::onWorkModeChanged(WorkMode curMode)
 {
     if (curMode == WORK_MODE_NORMAL)
     {

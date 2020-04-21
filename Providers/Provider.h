@@ -16,7 +16,7 @@
 #include "Framework/Uart/Uart.h"
 #include "Framework/Utility/RingBuff.h"
 #include "DataDispatcher.h"
-#include "PlugInProvider.h"
+#include "PluginProvider.h"
 
 class Provider: public QObject
 {
@@ -101,7 +101,7 @@ protected:
     static const int ringBuffLen = 4096;
     Uart *uart;
     DataDispatcher::DispatchInfo disPatchInfo;
-    PlugInProvider::PlugInInfo plugInInfo;
+    PluginProvider::PlugInInfo plugInInfo;
 
     void setFirstCheck(bool flag);
 

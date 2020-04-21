@@ -385,7 +385,7 @@ RainbowProvider::RainbowProvider(const QString &name, bool isPlugIn)
     d_ptr->isPlugIn = isPlugIn;
     if (d_ptr->isPlugIn)
     {
-        plugInInfo.plugIn = PlugInProvider::getPlugInProvider("PlugIn");
+        plugInInfo.plugIn = PluginProvider::getPlugInProvider("PlugIn");
     }
     initModule();
 }
@@ -723,7 +723,7 @@ void RainbowProvider::setSphbAveragingMode(SpHbAveragingMode mode)
 void RainbowProvider::initModule()
 {
     d_ptr->curInitializeStep = RB_INIT_BAUDRATE;
-    plugInInfo.plugInType = PlugInProvider::PLUGIN_TYPE_SPO2;
+    plugInInfo.plugInType = PluginProvider::PLUGIN_TYPE_SPO2;
     disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_SPO2;
 
     if (d_ptr->isPlugIn)

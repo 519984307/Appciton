@@ -544,7 +544,7 @@ SOURCES +=                                                                      
     Providers/S5Provider/S5Provider.cpp                                         \
     Providers/DataDispatcher.cpp                                                \
     Providers/NeonateProvider/NeonateProvider.cpp                               \
-    Providers/PlugInProvider.cpp                                                \
+    Providers/PluginProvider.cpp                                                \
 #################################################################################
     Main/App/AppMain.cpp                                                        \
     Main/App/Init.cpp                                                           \
@@ -1010,7 +1010,7 @@ HEADERS +=                                                                      
     Providers/S5Provider/S5Provider.h                                           \
     Providers/DataDispatcher.h                                                  \
     Providers/NeonateProvider/NeonateProvider.h                                 \
-    Providers/PlugInProvider.h                                                  \
+    Providers/PluginProvider.h                                                  \
 #################################################################################
     Main/App/Init.h                                                             \
     Main/IApplication.h                                                         \

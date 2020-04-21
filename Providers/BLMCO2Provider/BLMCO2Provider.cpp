@@ -879,7 +879,7 @@ BLMCO2Provider::BLMCO2Provider(const QString &name)
       isPlugIn(false)
 {
     UartAttrDesc portAttr(9600, 8, 'N', 1, _packetLen);
-    plugInInfo.plugInType = PlugInProvider::PLUGIN_TYPE_CO2;
+    plugInInfo.plugInType = PluginProvider::PLUGIN_TYPE_CO2;
 
     if (!initPort(portAttr))
     {
@@ -894,7 +894,7 @@ BLMCO2Provider::BLMCO2Provider(const QString &name)
 
     if (name == QString::fromLatin1("MASIMO_CO2"))
     {
-        plugInInfo.plugIn = PlugInProvider::getPlugInProvider("PlugIn");
+        plugInInfo.plugIn = PluginProvider::getPlugInProvider("PlugIn");
         if (plugInInfo.plugIn)
         {
             plugInInfo.plugIn->connectProvider(plugInInfo.plugInType, this);
