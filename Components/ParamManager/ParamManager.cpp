@@ -157,7 +157,6 @@ void ParamManager::connectParamProvider(WorkMode mode)
             param->initParam();
         }
     }
-    emit plugInProviderConnectParam(true);
 }
 
 void ParamManager::connectDemoParamProvider()
@@ -201,7 +200,6 @@ void ParamManager::connectDemoParamProvider()
             // 停止参数更新定时器
             param->stopParamUpdateTimer();
         }
-        emit plugInProviderConnectParam(false);
     }
 }
 

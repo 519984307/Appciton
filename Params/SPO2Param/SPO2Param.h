@@ -300,14 +300,10 @@ public:
     bool getPerfusionStatus(bool isPlugIn = false) const;
 
     /**
-     * @brief initModule  and the function of initting the module
+     * @brief initModule  the function of initting the module
+     * @param plugin true to initializing the plugin module, otherwise, initialize the internal module
      */
-    void initModule();
-
-    /**
-     * @brief initPluginModule init plugin spo2 module
-     */
-    void initPluginModule();
+    void initModule(bool plugin);
 
     /**
      * @brief clearTrendWaveData 清除趋势波形的数据

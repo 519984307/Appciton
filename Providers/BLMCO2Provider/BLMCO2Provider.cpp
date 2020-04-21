@@ -891,6 +891,15 @@ BLMCO2Provider::BLMCO2Provider(const QString &name)
     _fico2Value = InvData();
 
     connect(&connectTmr, SIGNAL(timeout()), this, SLOT(connectTimeOut()));
+
+    if (name == QString::fromLatin1("MASIMO_CO2"))
+    {
+        plugInInfo.plugIn = PlugInProvider::getPlugInProvider("PlugIn");
+        if (plugInInfo.plugIn)
+        {
+            plugInInfo.plugIn->connectProvider(plugInInfo.plugInType, this);
+        }
+    }
 }
 
 /**************************************************************************************************

@@ -383,6 +383,10 @@ RainbowProvider::RainbowProvider(const QString &name, bool isPlugIn)
     d_ptr->spHbPrecision = spo2Param.getSpHbPrecision();
     d_ptr->pviAveragingMode = spo2Param.getPviAveragingMode();
     d_ptr->isPlugIn = isPlugIn;
+    if (d_ptr->isPlugIn)
+    {
+        plugInInfo.plugIn = PlugInProvider::getPlugInProvider("PlugIn");
+    }
     initModule();
 }
 
@@ -719,24 +723,17 @@ void RainbowProvider::setSphbAveragingMode(SpHbAveragingMode mode)
 void RainbowProvider::initModule()
 {
     d_ptr->curInitializeStep = RB_INIT_BAUDRATE;
-
-    UartAttrDesc attr(DEFALUT_BAUD_RATE, 8, 'N', 1);
-    if (d_ptr->isPlugIn)
-    {
-        attr.baud = RUN_BAUD_RATE;
-        plugInInfo.plugInType = PlugInProvider::PLUGIN_TYPE_SPO2;
-    }
-    else
-    {
-        disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_SPO2;
-    }
-
-    initPort(attr);
+    plugInInfo.plugInType = PlugInProvider::PLUGIN_TYPE_SPO2;
+    disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_SPO2;
 
     if (d_ptr->isPlugIn)
     {
         return;
     }
+
+    UartAttrDesc attr(DEFALUT_BAUD_RATE, 8, 'N', 1);
+    initPort(attr);
+
 
     if (disPatchInfo.dispatcher)
     {
@@ -812,6 +809,14 @@ void RainbowProviderPrivate::handlePacket(unsigned char *data, int len)
                 provider = SPO2_RAINBOW_TYPE_NR;
                 qdebug("rainbow板子解锁失败");
             }
+        }
+
+        if (curInitializeStep == RB_INIT_BAUDRATE)
+        {
+            /* we get an nack while initialize the baudrate, maybe the module is already
+             * unlocked and work in 57600 baudrate, just skip unlock step */
+            curInitializeStep = RB_INIT_UNLOCK_BOARD;
+            handleACK();
         }
     }
     break;
@@ -1314,9 +1319,6 @@ void RainbowProviderPrivate::handleACK()
             {
                 // data is transmited directly through the uart port
                 q_ptr->plugInInfo.plugIn->updateUartBaud(RUN_BAUD_RATE);
-                // 设置波特率在请求板子信息之前
-                q_ptr->plugInInfo.plugIn->setPacketPortBaudrate(PlugInProvider::PLUGIN_TYPE_SPO2,
-                                                                PlugInProvider::BAUDRATE_57600);
                 QTimer::singleShot(50, q_ptr, SLOT(requestBoardInfo()));
             }
             else

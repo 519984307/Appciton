@@ -10,6 +10,7 @@
 
 #pragma once
 #include <QObject>
+#include "SystemManagerInterface.h"
 
 class PlugInProviderPrivate;
 class Provider;
@@ -52,8 +53,8 @@ public:
     QString getName() const;
     /**
      * @brief connectProvider connect data dispatcher to the provider
-     * @param type
-     * @param provider
+     * @param type the plugin type
+     * @param provider pointer to the provider
      */
     void connectProvider(PlugInType type, Provider *provider);
 
@@ -111,10 +112,21 @@ private slots:
     void changeBaudrate();
 
     /**
-     * @brief onPlugInProviderConnectParam 处理插件连接参数
-     * @param isAttach
+     * @brief startInitModule start the module initlization process
      */
-    void onPlugInProviderConnectParam(bool isAttach);
+    void startInitModule();
+
+    // /**
+    //  * @brief onPlugInProviderConnectParam 处理插件连接参数
+    //  * @param isAttach
+    //  */
+    // void onPlugInProviderConnectParam(bool isAttach);
+
+    /**
+     * @brief onWorkModeChanged handle the work mode change event
+     * @param curMode the current work mode
+     */
+    void onWorkModeChanged(WorkMode curMode);
 
 private:
     PlugInProviderPrivate *const d_ptr;

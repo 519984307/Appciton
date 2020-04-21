@@ -1269,7 +1269,7 @@ void SPO2Param::onTempReset()
         // 共用的串口转发板的串口波特率恢复成9600，与部分血氧模块不匹配，
         // 需要在体温模块升级成功后，重新初始化血氧模块，
         // 更新血氧模块的数据端口转发波特率。
-        initModule();
+        initModule(false);
     }
 }
 
@@ -1670,19 +1670,21 @@ bool SPO2Param::getPerfusionStatus(bool isPlugIn) const
     return d_ptr->isLowPerfusion;
 }
 
-void SPO2Param::initModule()
+void SPO2Param::initModule(bool plugin)
 {
-    if (d_ptr->provider)
+    if (plugin)
     {
-        d_ptr->provider->initModule();
+        if (d_ptr->plugInProvider)
+        {
+            d_ptr->plugInProvider->initModule();
+        }
     }
-}
-
-void SPO2Param::initPluginModule()
-{
-    if (d_ptr->plugInProvider)
+    else
     {
-        d_ptr->plugInProvider->initModule();
+        if (d_ptr->provider)
+        {
+            d_ptr->provider->initModule();
+        }
     }
 }
 

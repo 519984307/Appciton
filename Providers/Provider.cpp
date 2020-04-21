@@ -70,53 +70,9 @@ bool Provider::initPort(const UartAttrDesc &desc, bool needNotify)
         return true;
     }
 
-    // CO2兼容插件和外接模块
-    bool initResult = true;
-    if (_name == "MASIMO_CO2")
-    {
-        initResult = uart->initPort(port, desc, needNotify);
-        port = "PlugIn";
-    }
 
-    plugInInfo.plugIn = PlugInProvider::getPlugInProvider(port);
-    if (plugInInfo.plugIn)
-    {
-        debug("%s connect to data dispatcher(%s), datatype %d",
-              qPrintable(_name),
-              qPrintable(port),
-              plugInInfo.plugInType);
-        plugInInfo.plugIn->connectProvider(plugInInfo.plugInType, this);
 
-        PlugInProvider::PacketPortBaudrate portBaud = PlugInProvider::BAUDRATE_9600;
-        switch (desc.baud) {
-        case 9600:
-            portBaud = PlugInProvider::BAUDRATE_9600;
-            break;
-        case 19200:
-            portBaud = PlugInProvider::BAUDRATE_19200;
-            break;
-        case 28800:
-            portBaud = PlugInProvider::BAUDRATE_28800;
-            break;
-        case 38400:
-            portBaud = PlugInProvider::BAUDRATE_38400;
-            break;
-        case 57600:
-            portBaud = PlugInProvider::BAUDRATE_57600;
-            break;
-        case 115200:
-            portBaud = PlugInProvider::BAUDRATE_115200;
-            break;
-        case 230400:
-            portBaud = PlugInProvider::BAUDRATE_230400;
-            break;
-        default:
-            qWarning("Unsupport dispatch port baudrate: %d\n", desc.baud);
-            break;
-        }
-        plugInInfo.plugIn->setPacketPortBaudrate(plugInInfo.plugInType, portBaud);
-        return initResult;
-    }
+    /* The plugin provider will auto detect baudrate, it's no need to set it here*/
 
     debug("%s", qPrintable(_name));
     debug("%s", qPrintable(port));
@@ -136,7 +92,7 @@ int Provider::writeData(const unsigned char buff[], int len)
 
     if (plugInInfo.plugIn)
     {
-        plugInInfo.plugIn->sendData(plugInInfo.plugInType, buff, len);
+        return plugInInfo.plugIn->sendData(plugInInfo.plugInType, buff, len);
     }
 
     return uart->write(buff, len);

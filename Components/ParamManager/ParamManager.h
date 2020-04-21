@@ -96,13 +96,6 @@ public:
     // 析构。
     ~ParamManager();
 
-signals:
-    /**
-     * @brief providerConnectParam 插件参数provider和Param的连接信号
-     * @param isAttach
-     */
-    void plugInProviderConnectParam(bool isAttach);
-
 private:
     ParamManager();
 

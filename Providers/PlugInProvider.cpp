@@ -12,7 +12,6 @@
 #include "Framework/Uart/Uart.h"
 #include "IConfig.h"
 #include "Framework/Utility/RingBuff.h"
-#include "Framework/Utility/crc8.h"
 #include "Provider.h"
 #include <QTimerEvent>
 #include <QFile>
@@ -20,54 +19,41 @@
 #include <QTimer>
 #include "ParamManager.h"
 #include "RainbowProvider.h"
-#include "SPO2Alarm.h"
 #include "BLMCO2Provider.h"
-#include "CO2Param.h"
 #include "Debug.h"
 
-#define SPO2_SOH             (0xA1)  // rainbow spo2 packet header
-#define SPO2_EOM             (0xAF)  // rainbow spo2 packet end
+#define SPO2_RAINBOW_SOH             (0xA1)  // rainbow spo2 packet header
+#define SPO2_RAINBOW_EOM             (0xAF)  // rainbow spo2 packet end
 #define CO2_SOH_1            (0xAA)  // co2 packet header 1
 #define CO2_SOH_2            (0x55)  // co2 packet header 2
 #define MIN_PACKET_LEN   5      // 最小数据包长度: SOH,Length,Type,FCS
+#define CO2_FRAME_LEN   21      // frame lenght of co2 packet
 #define PACKET_BUFF_SIZE 64
 #define RING_BUFFER_LENGTH 4096
-#define MAXIMUM_PACKET_SIZE 256  // largest packet size, should be larger enough
 #define READ_PLUGIN_PIN_INTERVAL        (200)   // 200ms读一次插件管脚
-#define CHECK_CONNECT_TIMER_PERIOD         (100)   // 检查连接定时器周期
-#define RUN_BAUD_RATE_9600          (9600)
-#define RUN_BAUD_RATE_115200        (115200)
+#define CHECK_CONNECT_TIMER_PERIOD         (200)   // 检查连接定时器周期
+#define MODULE_RESET_DURATION          (500)
+#define BAUDRATE_SWITCH_DURATION       (500)
+#define WORKING_BAUDRATE_9600          (9600)
+#define WORKING_BAUDRATE_57600         (57600)
 #define MAX_PACKET_LEN          (40)
-
-enum PluginStatus
-{
-    PLUGIN_STATUS_CO2 = 0,
-    PLUGIN_STATUS_SPO2 = 1
-};
-
-enum PacketPortCommand
-{
-    PORT_CMD_RESET  = 0x10,         // reset port
-    PORT_CMD_RESET_RSP = 0x11,      // reset port response
-    PORT_CMD_BAUDRATE = 0x12,       // baudrate
-    PORT_CMD_BAUDRATE_RSP = 0x13,   // baudrate
-};
 
 class PlugInProviderPrivate
 {
 public:
     PlugInProviderPrivate(const QString &name, PlugInProvider *const q_ptr)
         : q_ptr(q_ptr),
-          isLastSOHPaired(false),
           name(name),
           uart(new Uart(q_ptr)),
           ringBuff(RING_BUFFER_LENGTH),
-          pluginTimerID(-1),
-          baudrateTimerID(-1),
-          checkConnectTimerID(-1),
-          baudrate(RUN_BAUD_RATE_9600),
-          dataNoFeedTick(0),
-          isScan(false)
+          workingProvider(NULL),
+          pluginDetectTimerID(-1),
+          baudrateSwitchTimerID(-1),
+          ConnectionCheckTimerID(-1),
+          moudleResetTimerID(-1),
+          curDetectBaudrate(WORKING_BAUDRATE_9600),
+          connLostTickCounter(0),
+          lastPluginState(false)
     {
     }
 
@@ -92,26 +78,6 @@ public:
         ringBuff.push(buf, ret);
     }
 
-    bool checkPacketValid(const unsigned char *data, unsigned int len)
-    {
-        if ((NULL == data) || (len < MIN_PACKET_LEN))
-        {
-            debug("Invalid packet!\n");
-            debug("%s: FCS not match!\n", qPrintable(name));
-            return false;
-        }
-
-        unsigned char crc = calcCRC(data, (len - 1));
-        if (data[len - 1] != crc)
-        {
-            // outHex(data, (int)len);
-            // debug("%s: FCS not match : %x!\n", qPrintable(getName()), crc);
-            return false;
-        }
-
-        return true;
-    }
-
     unsigned char calcChecksum(const unsigned char *data, int len)
     {
         unsigned char sum = 0;
@@ -123,40 +89,78 @@ public:
         return sum;
     }
 
-    void handlePacket(unsigned char *data, int len, PlugInProvider::PlugInType type)
+    /**
+     * @brief setupProvider setup the provider
+     * @param type
+     * @note
+     * Should be invoked when we know the plugin provider type
+     */
+    void setupProvider(PlugInProvider::PlugInType type)
     {
-        if (baudrateTimerID != -1)
+        /* module is already known before reset timer expired */
+        if (moudleResetTimerID != -1)
         {
-            q_ptr->killTimer(baudrateTimerID);
-            baudrateTimerID = -1;
-            baudrate = RUN_BAUD_RATE_9600;
+            q_ptr->killTimer(moudleResetTimerID);
+            moudleResetTimerID = -1;
         }
+
+        /* module is already known, no need to switch baudrate */
+        if (baudrateSwitchTimerID != -1)
+        {
+            q_ptr->killTimer(baudrateSwitchTimerID);
+            baudrateSwitchTimerID = -1;
+        }
+
         if (NULL == dataHandlers[type])
         {
-            // 初始化provider;
+            /* initilize the provider */
             if (!initPluginModule(type))
             {
                 return;
             }
         }
-        dataHandlers[type]->dataArrived(data, len);
+
+        workingProvider = dataHandlers[type];
+        qDebug() << Q_FUNC_INFO << "Setup working provider" << type;
+
+        if (ConnectionCheckTimerID == -1)
+        {
+            /* start the conneciton checking timer */
+            ConnectionCheckTimerID = q_ptr->startTimer(CHECK_CONNECT_TIMER_PERIOD);
+
+            /* need to swithc the baudrate for rainbow */
+            if (type == PlugInProvider::PLUGIN_TYPE_SPO2)
+            {
+                spo2Param.initModule(true);
+                QTimer::singleShot(50, q_ptr, SLOT(startInitModule()));
+            }
+        }
     }
 
     bool initPluginModule(PlugInProvider::PlugInType type)
     {
-        if (type == PlugInProvider::PLUGIN_TYPE_SPO2 && systemManager.isSupport(CONFIG_SPO2)
-                && systemManager.getCurWorkMode() != WORK_MODE_DEMO)
+        if (type == PlugInProvider::PLUGIN_TYPE_SPO2 && systemManager.isSupport(CONFIG_SPO2))
         {
             Provider *provider = NULL;
             provider = new RainbowProvider("RAINBOW_SPO2PlugIn", true);
             paramManager.addProvider(provider);
-            provider->attachParam(paramManager.getParam(PARAM_SPO2));
+            if (systemManager.getCurWorkMode() != WORK_MODE_DEMO)
+            {
+                provider->attachParam(paramManager.getParam(PARAM_SPO2));
+            }
+            dataHandlers[type] = provider;
             return true;
         }
         return false;
     }
 
-    int readPluginPinSta()
+    /**
+     * @brief isPluginConnected check whether a plugin is connected
+     * @return true when a plugin is connected;
+     * @note
+     * When a plugin is connectd, the detect pin will be low level
+     */
+    bool isPluginConnected()
     {
         QByteArray data;
         QFile callFile("/sys/class/pmos/plugin_insert_recognition");
@@ -166,22 +170,47 @@ public:
             return -1;
         }
         data = callFile.read(1);
-        return data.toInt();
+        return data.toInt() == 0;
+    }
+
+    /**
+     * @brief sendRainbowBaudratetCmd send randbow spo2 baudrate command
+     * @param baudrate the baudrate
+     * @note
+     * When the badurate is identical the rainbow current running baudrate,
+     * the module will response NACK. We could send this command to get the module
+     * response during detection
+     */
+    void sendRainbowBaudrateCmd(PlugInProvider::PacketPortBaudrate baudrate)
+    {
+        int index = 0;
+        unsigned char data[2] = {0x23, baudrate};
+        unsigned char buff[PACKET_BUFF_SIZE] = {0};
+        buff[index++] = SPO2_RAINBOW_SOH;
+        buff[index++] = sizeof(data);
+        for (unsigned int i = 0; i < sizeof(data); i++)
+        {
+            buff[index++] = data[i];
+        }
+        buff[index++] = calcChecksum(data, sizeof(data));
+        buff[index++] = SPO2_RAINBOW_EOM;
+        uart->write(buff, index);
     }
 
     PlugInProvider *const q_ptr;
-    bool isLastSOHPaired;  // 遗留在ringBuff最后一个数据（该数据为SOH）是否已经剃掉了多余的SOH
     QString name;
     Uart *uart;
     QMap<PlugInProvider::PlugInType, Provider *> dataHandlers;
     RingBuff<unsigned char> ringBuff;
     static QMap<QString, PlugInProvider *> plugInProviders;
-    int pluginTimerID;
-    int baudrateTimerID;
-    int checkConnectTimerID;
-    unsigned int baudrate;
-    unsigned int dataNoFeedTick;
-    bool isScan;
+    Provider *workingProvider;
+    int pluginDetectTimerID;
+    int baudrateSwitchTimerID;
+    int ConnectionCheckTimerID;
+    int moudleResetTimerID;         /* module reset timer ID */
+    unsigned int curDetectBaudrate;
+    unsigned int connLostTickCounter;
+    bool lastPluginState;       /* record the last plugin state, true means the last plugin check result was connected*/
 
 private:
     PlugInProviderPrivate(const PlugInProviderPrivate &);  // use to pass the cpplint check only, no implementation
@@ -194,10 +223,9 @@ PlugInProvider::PlugInProvider(const QString &name, QObject *parent)
 {
     UartAttrDesc portAttr(9600, 8, 'N', 1);
     d_ptr->initPort(portAttr);
-    d_ptr->pluginTimerID = startTimer(READ_PLUGIN_PIN_INTERVAL);
-    d_ptr->checkConnectTimerID = startTimer(CHECK_CONNECT_TIMER_PERIOD);
+    d_ptr->pluginDetectTimerID = startTimer(READ_PLUGIN_PIN_INTERVAL);
     connect(d_ptr->uart, SIGNAL(activated(int)), this, SLOT(dataArrived()));
-    connect(&paramManager, SIGNAL(plugInProviderConnectParam(bool)), this, SLOT(onPlugInProviderConnectParam(bool)));
+    connect(&systemManager, SIGNAL(workModeChanged(WorkMode)), this, SLOT(onWorkModeChanged(WorkMode)));
 }
 
 PlugInProvider::~PlugInProvider()
@@ -248,14 +276,14 @@ bool PlugInProvider::setPacketPortBaudrate(PlugInProvider::PlugInType type, Plug
         int index = 0;
         unsigned char data[2] = {0x23, baud};
         unsigned char buff[PACKET_BUFF_SIZE] = {0};
-        buff[index++] = SPO2_SOH;
+        buff[index++] = SPO2_RAINBOW_SOH;
         buff[index++] = sizeof(data);
         for (unsigned int i = 0; i < sizeof(data); i++)
         {
             buff[index++] = data[i];
         }
         buff[index++] = d_ptr->calcChecksum(data, sizeof(data));
-        buff[index++] = SPO2_EOM;
+        buff[index++] = SPO2_RAINBOW_EOM;
         return d_ptr->uart->write(buff, index);
     }
     return true;
@@ -269,79 +297,147 @@ void PlugInProvider::updateUartBaud(unsigned int baud)
 
 void PlugInProvider::timerEvent(QTimerEvent *ev)
 {
-    if (ev->timerId() == d_ptr->pluginTimerID)
+    if (ev->timerId() == d_ptr->pluginDetectTimerID)
     {
         if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
         {
             return;
         }
-        static int pluginSta = 1;
-        if (pluginSta != d_ptr->readPluginPinSta() || d_ptr->isScan)
+
+        /* plugin connectd state is changed or we need restart scanning */
+        if (d_ptr->lastPluginState != d_ptr->isPluginConnected())
         {
-            // 每次进来或出去清除ringbuff缓存
-            d_ptr->ringBuff.clear();
-            if (pluginSta == 1 || d_ptr->isScan)
+            bool hasPluginConnected = d_ptr->isPluginConnected();
+            if (hasPluginConnected)
             {
-                updateUartBaud(d_ptr->baudrate);
-                spo2Param.initPluginModule();                 // 初始化SpO2插件模块
-                QTimer::singleShot(1000, this, SLOT(changeBaudrate()));  // 预留rainbow模块重启时间
-                d_ptr->baudrateTimerID = startTimer(1500);
+                /* haven't detect any module */
+                if (d_ptr->workingProvider == NULL)
+                {
+                    // clear the buffer
+                    d_ptr->ringBuff.clear();
+                    d_ptr->moudleResetTimerID = startTimer(MODULE_RESET_DURATION);
+                    /* reset baudrate */
+                    d_ptr->curDetectBaudrate = WORKING_BAUDRATE_9600;
+                    updateUartBaud(d_ptr->curDetectBaudrate);
+                }
+                qDebug() << Q_FUNC_INFO << "Plugin connected";
             }
-            pluginSta = d_ptr->readPluginPinSta();
-            d_ptr->isScan = false;
+            else
+            {
+                /* stop the module reset timer */
+                if (d_ptr->moudleResetTimerID)
+                {
+                    killTimer(d_ptr->moudleResetTimerID);
+                    d_ptr->moudleResetTimerID = -1;
+                }
+
+                /* stop baudrate switching timer */
+                if (d_ptr->baudrateSwitchTimerID != -1)
+                {
+                    killTimer(d_ptr->baudrateSwitchTimerID);
+                    d_ptr->baudrateSwitchTimerID = -1;
+                }
+
+                /* stop connection checking timer */
+                if (d_ptr->ConnectionCheckTimerID != -1)
+                {
+                    d_ptr->connLostTickCounter = 0;
+                    killTimer(d_ptr->ConnectionCheckTimerID);
+                    d_ptr->ConnectionCheckTimerID = -1;
+                }
+
+                d_ptr->workingProvider = NULL;
+                qDebug() << Q_FUNC_INFO << "Plugin disconnected";
+            }
+
+            d_ptr->lastPluginState = hasPluginConnected;
         }
     }
-    else if (ev->timerId() == d_ptr->baudrateTimerID)
+    else if (ev->timerId() == d_ptr->moudleResetTimerID)
     {
-        if (d_ptr->baudrate == RUN_BAUD_RATE_9600)
+        /* module should reset complete, stop reset timer */
+        killTimer(d_ptr->moudleResetTimerID);
+        d_ptr->moudleResetTimerID = -1;
+
+        if (d_ptr->workingProvider)
         {
-            d_ptr->baudrate = RUN_BAUD_RATE_115200;
-        }
-        else if (d_ptr->baudrate == RUN_BAUD_RATE_115200)
-        {
-            d_ptr->baudrate = RUN_BAUD_RATE_9600;
-            killTimer(d_ptr->baudrateTimerID);
-            d_ptr->baudrateTimerID = -1;
+            /* moudle has beed detected during reset time */
             return;
         }
-        updateUartBaud(d_ptr->baudrate);
-    }
-    else if (ev->timerId() == d_ptr->checkConnectTimerID)
-    {
-        if (d_ptr->dataNoFeedTick > 150)  // 超过15s后，不再尝试扫描连接
-        {
-            killTimer(d_ptr->checkConnectTimerID);
-        }
-        else if (!d_ptr->readPluginPinSta())
-        {
-            // 没有连接上插件
-            d_ptr->dataNoFeedTick++;
 
-            if (d_ptr->dataNoFeedTick > 15)  // 超过1.5s没有数据通信时，开始扫描
+        /* send test command, we start test with the baudrate of 9600 */
+        d_ptr->sendRainbowBaudrateCmd(BAUDRATE_9600);
+
+        d_ptr->baudrateSwitchTimerID = startTimer(BAUDRATE_SWITCH_DURATION);
+    }
+    else if (ev->timerId() == d_ptr->baudrateSwitchTimerID)
+    {
+        if (d_ptr->curDetectBaudrate == WORKING_BAUDRATE_9600)
+        {
+            d_ptr->curDetectBaudrate = WORKING_BAUDRATE_57600;
+            updateUartBaud(d_ptr->curDetectBaudrate);
+            d_ptr->sendRainbowBaudrateCmd(BAUDRATE_57600);
+        }
+        else
+        {
+            /* no any response, stop detection */
+            killTimer(d_ptr->baudrateSwitchTimerID);
+            d_ptr->baudrateSwitchTimerID = -1;
+        }
+    }
+    else if (ev->timerId() == d_ptr->ConnectionCheckTimerID)
+    {
+        if (d_ptr->isPluginConnected())
+        {
+            d_ptr->connLostTickCounter++;
+            if (d_ptr->connLostTickCounter > 3 * (1000 / CHECK_CONNECT_TIMER_PERIOD ))
             {
-                d_ptr->dataNoFeedTick -= 5;  // 预留500ms时间用于通信回复
-                d_ptr->isScan = true;
+                /* 3 seconds has passed without receive any data */
+                /* the moudle might be disconectd */
+                d_ptr->lastPluginState = false;
+                d_ptr->connLostTickCounter = 0;
+                d_ptr->workingProvider = NULL;
+                killTimer(d_ptr->ConnectionCheckTimerID);
+                d_ptr->ConnectionCheckTimerID = -1;
+                qDebug() << Q_FUNC_INFO << "Communication stop";
             }
         }
-        else if (d_ptr->readPluginPinSta())
+        else
         {
-            d_ptr->dataNoFeedTick++;
+            /* already disconnect, stop the timer */
+            d_ptr->connLostTickCounter = 0;
+            d_ptr->workingProvider = NULL;
+            killTimer(d_ptr->ConnectionCheckTimerID);
+            d_ptr->ConnectionCheckTimerID = -1;
+            qDebug() << Q_FUNC_INFO << "Plugin disconnect, communicaton stop";
         }
     }
 }
 
-#define ArraySize(arr) ((int)(sizeof(arr)/sizeof(arr[0])))      // NOLINT
-
 void PlugInProvider::dataArrived()
 {
-    d_ptr->dataNoFeedTick = 0;
+    d_ptr->connLostTickCounter = 0;
 
     d_ptr->readData();  // 读取数据到RingBuff中
 
+    if (d_ptr->workingProvider)
+    {
+        /* the working provier is alreay known, pass data directory to the provider */
+        while (d_ptr->ringBuff.dataSize() > 0)
+        {
+            unsigned char buff[PACKET_BUFF_SIZE];
+            int readNum = d_ptr->ringBuff.copy(0, buff, PACKET_BUFF_SIZE);
+            d_ptr->ringBuff.pop(readNum);
+            d_ptr->workingProvider->dataArrived(buff, readNum);
+        }
+        return;
+    }
+
+    /* check the working provider */
     while (d_ptr->ringBuff.dataSize() >= MIN_PACKET_LEN)
     {
         // 如果查询不到帧头，移除ringbuff缓冲区最旧的数据，下次继续查询
-        if (d_ptr->ringBuff.at(0) == SPO2_SOH)
+        if (d_ptr->ringBuff.at(0) == SPO2_RAINBOW_SOH)
         {
             // 如果查询不到帧尾，移除ringbuff缓冲区最旧的数据，下次继续查询
             unsigned char len = d_ptr->ringBuff.at(1);     // data field length
@@ -361,7 +457,7 @@ void PlugInProvider::dataArrived()
                 break;
             }
 
-            if (d_ptr->ringBuff.at(totalLen - 1) != SPO2_EOM)
+            if (d_ptr->ringBuff.at(totalLen - 1) != SPO2_RAINBOW_EOM)
             {
                 d_ptr->ringBuff.pop(1);
                 continue;
@@ -381,7 +477,9 @@ void PlugInProvider::dataArrived()
             // 如果求和检验码匹配，则进一步处理数据包，否则丢弃最旧数据
             if (csum == buff[totalLen - 2])
             {
-                d_ptr->handlePacket(buff, len + 4, PLUGIN_TYPE_SPO2);
+                // d_ptr->handlePacket(buff, len + 4, PLUGIN_TYPE_SPO2);
+                d_ptr->setupProvider(PLUGIN_TYPE_SPO2);
+                break;
             }
             else
             {
@@ -394,15 +492,30 @@ void PlugInProvider::dataArrived()
         }
         else if ((d_ptr->ringBuff.at(0) == 0xAA) && (d_ptr->ringBuff.at(1) == 0x55))
         {
-            int len = 21;
-            int i = 0;
-            unsigned char buff[PACKET_BUFF_SIZE] = {0};
-            for (; i < len; i++)
+            if (d_ptr->ringBuff.dataSize() >= CO2_FRAME_LEN)
             {
-                buff[i] = d_ptr->ringBuff.at(0);
-                d_ptr->ringBuff.pop(1);
+                unsigned char sum = 0;
+                for (int i = 2; i < CO2_FRAME_LEN; i++)
+                {
+                    sum += d_ptr->ringBuff.at(i);
+                }
+
+                if (sum == 0)
+                {
+                    d_ptr->setupProvider(PLUGIN_TYPE_CO2);
+                    break;
+                }
+                else
+                {
+                    /* checksum fail */
+                    d_ptr->ringBuff.pop(1);
+                }
             }
-            d_ptr->handlePacket(buff, i, PLUGIN_TYPE_CO2);
+            else
+            {
+                /* no enough data */
+                break;
+            }
         }
         else
         {
@@ -416,26 +529,26 @@ void PlugInProvider::changeBaudrate()
     setPacketPortBaudrate(PLUGIN_TYPE_SPO2, BAUDRATE_57600);
 }
 
-void PlugInProvider::onPlugInProviderConnectParam(bool isAttach)
+void PlugInProvider::startInitModule()
 {
-    if (isAttach)
+    if (d_ptr->workingProvider == d_ptr->dataHandlers[PLUGIN_TYPE_SPO2])
+    {
+        d_ptr->sendRainbowBaudrateCmd(BAUDRATE_57600);
+    }
+}
+
+void PlugInProvider::onWorkModeChanged(WorkMode curMode)
+{
+    if (curMode == WORK_MODE_NORMAL)
     {
         if (d_ptr->dataHandlers[PLUGIN_TYPE_SPO2] != NULL)
         {
             d_ptr->dataHandlers[PLUGIN_TYPE_SPO2]->attachParam(paramManager.getParam(PARAM_SPO2));
         }
-        else
-        {
-            if (systemManager.getCurWorkMode() != WORK_MODE_DEMO)
-            {
-                if (d_ptr->readPluginPinSta() == 0)
-                {
-                    d_ptr->isScan = true;
-                }
-            }
-        }
+        /* force disconnect the plugin, if the plugin is connected, the state will update in the timeEvent */
+        d_ptr->lastPluginState = false;
     }
-    else
+    else if (curMode == WORK_MODE_DEMO)
     {
         if (d_ptr->dataHandlers[PLUGIN_TYPE_SPO2] != NULL)
         {
