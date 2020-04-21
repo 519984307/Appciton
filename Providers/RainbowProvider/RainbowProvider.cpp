@@ -621,7 +621,7 @@ void RainbowProvider::setSmartTone(bool enable)
         return;
     }
 
-    unsigned char data[2] = {RB_CMD_CONF_SMART_TONE_MODE, !!enable};
+    unsigned char data[2] = {RB_CMD_CONF_SMART_TONE_MODE, !enable};
     d_ptr->sendCmd(data, 2);
 }
 
