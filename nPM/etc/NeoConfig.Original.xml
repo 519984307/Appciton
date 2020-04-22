@@ -221,6 +221,12 @@
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</gdL>
+                <mmolL>
+                    <Low Min="0" Max="154">43</Low>
+                    <High Min="1" Max="155">124</High>
+                    <Step>1</Step>
+                    <Scale>10</Scale>
+                </mmolL>
 		</SPHB>
 		<SPOC Enable="0" Prio="1">
 		<mLdL>

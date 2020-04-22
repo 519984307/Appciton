@@ -421,7 +421,14 @@ UnitType SPO2Param::getCurrentUnit(SubParamID id)
     switch (id)
     {
     case SUB_PARAM_SPHB:
-        return UNIT_GDL;
+    {
+        if (getSpHbUnit() == SPHB_UNIT_G_DL)
+        {
+            return UNIT_GDL;
+        }
+
+        return UNIT_MMOL_L;
+    }
     case SUB_PARAM_SPOC:
         return UNIT_MLDL;
     default:

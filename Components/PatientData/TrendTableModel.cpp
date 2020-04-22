@@ -1142,6 +1142,19 @@ void TrendTableModelPrivate::loadTrendData()
                 break;
             }
             case SUB_PARAM_SPHB:
+            {
+                qint16 data = pack->subparamValue.value(id, InvData());
+                if (data == InvData())
+                {
+                    dContent.dataStr = "---";
+                }
+                else
+                {
+                    UnitType type = paramManager.getSubParamUnit(paramInfo.getParamID(id), id);
+                    dContent.dataStr = Unit::convert(type, paramInfo.getUnitOfSubParam(SUB_PARAM_SPHB), data / 10.0);
+                }
+                break;
+            }
             case SUB_PARAM_SPMET:
             {
                 qint16 data = pack->subparamValue.value(id, InvData());

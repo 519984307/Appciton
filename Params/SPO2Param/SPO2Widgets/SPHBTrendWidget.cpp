@@ -16,7 +16,7 @@
 #include "TrendWidgetLabel.h"
 #include "AlarmConfig.h"
 #include "MeasureSettingWindow.h"
-#include "SPO2Param.h"
+#include "ParamManager.h"
 
 class SPHBTrendWidgetPrivate
 {
@@ -38,14 +38,9 @@ void SPHBTrendWidget::setSPHBValue(int16_t sphb)
 {
     if (sphb >= 0)
     {
-        if (spo2Param.getSpHbUnit() == SPHB_UNIT_G_DL)
-        {
-            d_ptr->sphbString = QString::number(sphb / (d_ptr->scale * 1.0), 'f', 1);
-        }
-        else
-        {
-            d_ptr->sphbString = Unit::convert(UNIT_MMOL_L, UNIT_GDL, sphb / (d_ptr->scale * 1.0));
-        }
+        UnitType unit = paramManager.getSubParamUnit(PARAM_SPO2, SUB_PARAM_SPHB);
+
+        d_ptr->sphbString = Unit::convert(unit, UNIT_GDL, sphb / (d_ptr->scale * 1.0));
     }
     else
     {
@@ -56,7 +51,8 @@ void SPHBTrendWidget::setSPHBValue(int16_t sphb)
 
 void SPHBTrendWidget::updateLimit()
 {
-    LimitAlarmConfig limit = alarmConfig.getLimitAlarmConfig(SUB_PARAM_SPHB, UNIT_GDL);
+    UnitType unit = paramManager.getSubParamUnit(PARAM_SPO2, SUB_PARAM_SPHB);
+    LimitAlarmConfig limit = alarmConfig.getLimitAlarmConfig(SUB_PARAM_SPHB, unit);
     setLimit(limit.highLimit, limit.lowLimit, limit.scale);
     d_ptr->scale = limit.scale;
 }
@@ -64,6 +60,7 @@ void SPHBTrendWidget::updateLimit()
 void SPHBTrendWidget::updateUnit(UnitType unit)
 {
     setUnit(trs(Unit::getSymbol(unit)));
+    updateLimit();
 }
 
 void SPHBTrendWidget::isAlarm(bool flag)
@@ -91,8 +88,7 @@ SPHBTrendWidget::SPHBTrendWidget()
       d_ptr(new SPHBTrendWidgetPrivate())
 {
     setName(trs(paramInfo.getSubParamName(SUB_PARAM_SPHB)));
-    setUnit(trs(Unit::getSymbol(spo2Param.getSpHbUnit() == SPHB_UNIT_G_DL
-                                ? UNIT_GDL : UNIT_MMOL_L)));
+    setUnit(trs(Unit::getSymbol(paramManager.getSubParamUnit(PARAM_SPO2, SUB_PARAM_SPHB))));
 
     d_ptr->sphbValue = new QLabel();
     d_ptr->sphbValue->setText(InvStr());
