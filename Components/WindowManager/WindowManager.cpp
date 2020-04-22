@@ -186,7 +186,7 @@ void WindowManager::showWindow(Dialog *w, ShowBehavior behaviors)
     {
         while (!d_ptr->windowStacks.isEmpty())
         {
-            Dialog *p = d_ptr->windowStacks.last();
+            Dialog *p = d_ptr->windowStacks.takeLast();
             if (p)
             {
                 p->close();
