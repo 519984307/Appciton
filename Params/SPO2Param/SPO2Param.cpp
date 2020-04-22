@@ -36,6 +36,9 @@
 #include "SPMETTrendWidget.h"
 #include "SPCOTrendWidget.h"
 #include "LayoutManager.h"
+#include "MessageBox.h"
+#include "WindowManager.h"
+#include <QPointer>
 
 class SPO2ParamPrivate
 {
@@ -93,6 +96,8 @@ public:
     bool isT5ModuleUpgradeCompleted;
     bool isShowSignalIQ;
     QMap<bool, SPO2RainbowType> providerInfo;
+
+    QPointer<MessageBox> curProgramMsgBox;    /* keep the current avaliabe message box window */
 };
 
 void SPO2Param::setAverageTime(AverageTime index)
@@ -1262,6 +1267,31 @@ void SPO2Param::onPaletteChanged(ParamID id)
     d_ptr->trendWidget->updatePalette(pal);
 }
 
+void SPO2Param::handleRainbowProgram(int result)
+{
+    MessageBox *msgBox = qobject_cast<MessageBox *>(sender());
+    if (msgBox)
+    {
+        msgBox->deleteLater();
+        bool isPlugin = msgBox->property("isPlugin").toBool();
+
+        SPO2ProviderIFace *p = isPlugin ? d_ptr->plugInProvider : d_ptr->provider;
+        if (p)
+        {
+            p->setProgramResponse(result);
+        }
+
+        if (result)
+        {
+            MessageBox *msgBox = new MessageBox(trs("SPO2Program"),
+                                                trs("Programming"),
+                                                QStringList(trs("EnglishYESChineseSURE")));
+            d_ptr->curProgramMsgBox = msgBox;
+            WindowManager::getInstance().showWindow(msgBox, WindowManager::ShowBehaviorCloseOthers);
+        }
+    }
+}
+
 void SPO2Param::onUpgradeT5ModuleCompleted()
 {
     d_ptr->isT5ModuleUpgradeCompleted = true;
@@ -1791,6 +1821,111 @@ void SPO2Param::setSensor(SPO2RainbowSensor sensor)
 {
     currentConfig.setNumValue("SPO2|Sensor", static_cast<int>(sensor));
     layoutManager.updateLayout();
+}
+
+void SPO2Param::showRainbowProgramMessage(SPO2RainbowProgramMessageType msg, bool isPlugin)
+{
+    SPO2ProviderIFace *p = isPlugin ? d_ptr->plugInProvider : d_ptr->provider;
+    if (!p)
+    {
+        return;
+    }
+
+    switch (msg)
+    {
+    case SPO2_RAINBOW_PROG_MSG_REQUEST_ENTER_PROGRAM_MODE:
+    {
+        if (d_ptr->curProgramMsgBox)
+        {
+            d_ptr->curProgramMsgBox->disconnect();
+            d_ptr->curProgramMsgBox->deleteLater();
+        }
+
+        MessageBox *msgBox = new MessageBox(trs("SPO2Program"), trs("RequestEnterProgramMode"));
+        connect(msgBox, SIGNAL(finished(int)), this, SLOT(handleRainbowProgram(int)));
+        msgBox->setProperty("isPlugin", isPlugin);
+        d_ptr->curProgramMsgBox = msgBox;
+        WindowManager::getInstance().showWindow(msgBox, WindowManager::ShowBehaviorCloseOthers
+                                  |WindowManager::ShowBehaviorNoAutoClose);
+    }
+        break;
+    case SPO2_RAINBOW_PROG_MSG_PROGRAM_COMPLETE:
+    {
+        if (d_ptr->curProgramMsgBox)
+        {
+            d_ptr->curProgramMsgBox->disconnect();
+            d_ptr->curProgramMsgBox->deleteLater();
+        }
+
+        MessageBox *msgBox = new MessageBox(trs("SPO2Program"), trs("ProgramComplete"),
+                                            QStringList(trs("EnglishYESChineseSURE")));
+        d_ptr->curProgramMsgBox = msgBox;
+        WindowManager::getInstance().showWindow(msgBox, WindowManager::ShowBehaviorCloseOthers);
+    }
+        break;
+    case SPO2_RAINBOW_PROG_MSG_COMMUNICATION_ERROR:
+    {
+        if (d_ptr->curProgramMsgBox)
+        {
+            d_ptr->curProgramMsgBox->disconnect();
+            d_ptr->curProgramMsgBox->deleteLater();
+        }
+
+        MessageBox *msgBox = new MessageBox(trs("SPO2Program"),
+                                            trs("CommunicationError"),
+                                            QStringList(trs("EnglishYESChineseSURE")));
+        d_ptr->curProgramMsgBox = msgBox;
+        WindowManager::getInstance().showWindow(msgBox, WindowManager::ShowBehaviorCloseOthers);
+    }
+        break;
+    case SPO2_RAINBOW_PROG_MSG_FLASH_ERROR:
+    {
+        if (d_ptr->curProgramMsgBox)
+        {
+            d_ptr->curProgramMsgBox->disconnect();
+            d_ptr->curProgramMsgBox->deleteLater();
+        }
+
+        MessageBox *msgBox = new MessageBox(trs("SPO2Program"),
+                                            trs("FlashError"),
+                                            QStringList(trs("EnglishYESChineseSURE")));
+        d_ptr->curProgramMsgBox = msgBox;
+        WindowManager::getInstance().showWindow(msgBox, WindowManager::ShowBehaviorCloseOthers);
+    }
+        break;
+    case SPO2_RAINBOW_PROG_MSG_INVALID_UPGRADE_APPLICATION:
+    {
+        if (d_ptr->curProgramMsgBox)
+        {
+            d_ptr->curProgramMsgBox->disconnect();
+            d_ptr->curProgramMsgBox->deleteLater();
+        }
+
+        MessageBox *msgBox = new MessageBox(trs("SPO2Program"),
+                                            trs("InvalidUpgradeApplication"),
+                                            QStringList(trs("EnglishYESChineseSURE")));
+        d_ptr->curProgramMsgBox = msgBox;
+        WindowManager::getInstance().showWindow(msgBox, WindowManager::ShowBehaviorCloseOthers);
+    }
+        break;
+    case SPO2_RAINBOW_PROG_MSG_INVALID_TOOL_CONFIGURATION:
+    {
+        if (d_ptr->curProgramMsgBox)
+        {
+            d_ptr->curProgramMsgBox->disconnect();
+            d_ptr->curProgramMsgBox->deleteLater();
+        }
+
+        MessageBox *msgBox = new MessageBox(trs("SPO2Program"),
+                                            trs("InvalidToolConfiguration"),
+                                            QStringList(trs("EnglishYESChineseSURE")));
+        d_ptr->curProgramMsgBox = msgBox;
+        WindowManager::getInstance().showWindow(msgBox, WindowManager::ShowBehaviorCloseOthers);
+    }
+        break;
+    default:
+        break;
+    }
 }
 
 /**************************************************************************************************

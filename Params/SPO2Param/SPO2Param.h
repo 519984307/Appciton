@@ -361,12 +361,25 @@ public:
      */
     void setSensor(SPO2RainbowSensor sensor);
 
+    /**
+     * @brief showRainbowProgramMessage show the rainbow module program message
+     * @param msg the program message
+     * @param isPlugin is a plugin module or not
+     */
+    void showRainbowProgramMessage(SPO2RainbowProgramMessageType msg, bool isPlugin);
+
 signals:
     void clearTrendData();
 
 private slots:
     void checkSelftest();
     void onPaletteChanged(ParamID id);
+
+    /**
+     * @brief handleRainbowProgram handle the rainbow program
+     * @param result the result from the user notification message box
+     */
+    void handleRainbowProgram(int result);
 
     /**
      * @brief onUpgradeT5ModuleCompleted  and the function of upgrading the T5 module when completed

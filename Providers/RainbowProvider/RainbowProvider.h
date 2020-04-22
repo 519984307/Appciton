@@ -83,6 +83,9 @@ public:
     /* reimplement */
     void setLineFrequency(SPO2LineFrequencyType freq);
 
+    /* reimplement */
+    void setProgramResponse(bool ack);
+
 private slots:
     /**
      * @brief requestBoardInfo send get board info command
@@ -93,6 +96,16 @@ private slots:
      * @brief changeBaudrate change the baudrate
      */
     void changeBaudrate();
+
+    /**
+     * @brief programFinished handle the program finished issue
+     */
+    void programFinished();
+
+    /**
+     * @brief programPeriodTimeOut handle the timer period timeout during program
+     */
+    void programPeriodTimeOut();
 
 private:
     RainbowProviderPrivate *const d_ptr;

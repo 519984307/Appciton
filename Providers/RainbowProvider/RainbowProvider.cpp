@@ -57,6 +57,8 @@ enum RBSendPacketType
     RB_CMD_CONF_PERIOD_PARAM_OUTPUT    = 0x20,     // configure periodic parameter output
     RB_CMD_CONF_PERIOD_WAVE_OUTPUT     = 0x21,     // configure periodic waveform output
     RB_CMD_CONF_UPDATE_BAUDRATE        = 0x23,     // upgrade the baudrate
+    RB_CMD_PROGRAM_MODE_ACK            = 0x40,     // program mode ack
+    RB_CMD_PROGRAM_MODE_NAK            = 0x41,     // program mode nak
 };
 
 enum RBParamIDType
@@ -208,6 +210,14 @@ enum SpOCExceptions
     INVAILD_SPOC = 0X0004,
 };
 
+enum RBProgramingError
+{
+    RB_PROG_ERR_COMM_ERROR,         /* communication error */
+    RB_PROG_ERR_FLASH_ERROR,        /* flash error */
+    RB_PROG_ERR_INVALID_APP,        /* invalid upgrade application */
+    RB_PROG_ERR_INVALID_TOOL_CONF,  /* invalid tool configuration */
+};
+
 class RainbowProviderPrivate
 {
 public:
@@ -228,6 +238,8 @@ public:
         , spHbAveragingMode(SPHB_AVERAGING_MODE_LONG)
         , provider(SPO2_RAINBOW_TYPE_DAVID)
         , isPlugin(false)
+        , inProgramMode(false)
+        , programTimer(NULL)
         , cmdAckNum(0)
     {
     }
@@ -369,7 +381,8 @@ public:
     SPO2RainbowType provider;
 
     bool isPlugin;
-
+    bool inProgramMode;
+    QTimer *programTimer;   /* timer to timeout every second during program */
     short cmdAckNum;    /* command ack num, some command need multi ack, because it send multi commnads */
 };
 
@@ -387,6 +400,11 @@ RainbowProvider::RainbowProvider(const QString &name, bool isPlugin)
     d_ptr->spHbPrecision = spo2Param.getSpHbPrecision();
     d_ptr->pviAveragingMode = spo2Param.getPviAveragingMode();
     d_ptr->isPlugin = isPlugin;
+
+    d_ptr->programTimer = new QTimer(this);
+    d_ptr->programTimer->setInterval(1000);
+    connect(d_ptr->programTimer, SIGNAL(timeout()), this, SLOT(programPeriodTimeOut()));
+
     if (d_ptr->isPlugin)
     {
         plugInInfo.plugIn = PluginProvider::getPluginProvider("Plugin");
@@ -746,6 +764,22 @@ void RainbowProvider::changeBaudrate()
     d_ptr->updateBaudRate();
 }
 
+void RainbowProvider::programFinished()
+{
+    d_ptr->programTimer->stop();
+    initModule();
+}
+
+void RainbowProvider::programPeriodTimeOut()
+{
+    /*
+     * During program, the moudle will not send any data except the program infomation.
+     * We don't known how long the program process will take, we just keep call feed to avoid
+     * the moudle communication fail error
+     */
+    feed();
+}
+
 void RainbowProvider::setLineFrequency(SPO2LineFrequencyType freq)
 {
     if (d_ptr->isInitializing)
@@ -756,6 +790,14 @@ void RainbowProvider::setLineFrequency(SPO2LineFrequencyType freq)
 
     unsigned char data[2] = {RB_CMD_CONF_LINE_FREQ, freq};
     d_ptr->sendCmd(data, 2);
+}
+
+void RainbowProvider::setProgramResponse(bool ack)
+{
+    unsigned char data = ack ? RB_CMD_PROGRAM_MODE_ACK : RB_CMD_PROGRAM_MODE_NAK;
+    d_ptr->sendCmd(&data, 1);
+    d_ptr->inProgramMode = ack;
+    d_ptr->programTimer->start();
 }
 
 void RainbowProviderPrivate::handlePacket(unsigned char *data, int len)
@@ -826,10 +868,35 @@ void RainbowProviderPrivate::handlePacket(unsigned char *data, int len)
     }
     break;
     case  RB_ENTER_PROGRAM_MODE:
+        spo2Param.showRainbowProgramMessage(SPO2_RAINBOW_PROG_MSG_REQUEST_ENTER_PROGRAM_MODE, isPlugin);
         break;
     case  RB_PROGRAM_COMPLETE:
+        spo2Param.showRainbowProgramMessage(SPO2_RAINBOW_PROG_MSG_PROGRAM_COMPLETE, isPlugin);
+        /* handle program finished issue after 2 second */
+        QTimer::singleShot(2000, q_ptr, SLOT(programFinished()));
         break;
     case  RB_PROGRAM_ERROR:
+    {
+        switch (static_cast<RBProgramingError>(data[1]))
+        {
+        case RB_PROG_ERR_COMM_ERROR:
+            spo2Param.showRainbowProgramMessage(SPO2_RAINBOW_PROG_MSG_COMMUNICATION_ERROR, isPlugin);
+            break;
+        case RB_PROG_ERR_FLASH_ERROR:
+            spo2Param.showRainbowProgramMessage(SPO2_RAINBOW_PROG_MSG_FLASH_ERROR, isPlugin);
+            break;
+        case RB_PROG_ERR_INVALID_APP:
+            spo2Param.showRainbowProgramMessage(SPO2_RAINBOW_PROG_MSG_INVALID_UPGRADE_APPLICATION, isPlugin);
+            break;
+        case RB_PROG_ERR_INVALID_TOOL_CONF:
+            spo2Param.showRainbowProgramMessage(SPO2_RAINBOW_PROG_MSG_INVALID_TOOL_CONFIGURATION, isPlugin);
+            break;
+        default:
+            break;
+        }
+        /* handle program finished issue after 2 second */
+        QTimer::singleShot(2000, q_ptr, SLOT(programFinished()));
+    }
         break;
 
     case  RB_BOARD_INFO:

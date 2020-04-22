@@ -94,6 +94,13 @@ public:
      */
     virtual void setLineFrequency(SPO2LineFrequencyType /*freq*/){}
 
+    /**
+     * @brief setProgramResponse set the program reqeust response
+     * @note
+     * For rainbow only
+     */
+    virtual void setProgramResponse(bool /*ack*/){}
+
     // Nellcor
     /**
      * @brief setSatSeconds 设置过高低限值的容忍时间
