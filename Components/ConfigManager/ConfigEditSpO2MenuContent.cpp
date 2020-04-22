@@ -99,6 +99,14 @@ void ConfigEditSpO2MenuContentPrivate::loadOptions()
     // Sensitivity
     index = 0;
     config->getNumValue("SPO2|Sensitivity", index);
+    if (spo2Param.getModuleType() == MODULE_MASIMO_SPO2
+            || spo2Param.getModuleType() == MODULE_RAINBOW_SPO2)
+    {
+        if (index > SPO2_MASIMO_SENS_MAX)
+        {
+            index -= 1;
+        }
+    }
     combos[ITEM_CBO_SENSITIVITY]->setCurrentIndex(index);
 
     // Smart Pluse Tone
@@ -209,7 +217,12 @@ void ConfigEditSpO2MenuContent::layoutExec()
     if (moduleType == MODULE_MASIMO_SPO2
             || moduleType == MODULE_RAINBOW_SPO2)
     {
-        for (int i = SPO2_MASIMO_SENS_MAX; i < SPO2_MASIMO_SENS_NR; i++)
+        /*
+         * According to the MX-5 Prev V&V communication protocol Checklist/Data Table 16.1,
+         * ensure Maximum sensitivity is not allowed as a default. The device must use Normal
+         * or APOD instead upon power cycle or reset.
+         */
+        for (int i = SPO2_MASIMO_SENS_NORMAL; i < SPO2_MASIMO_SENS_NR; i++)
         {
             comboBox->addItem(trs(SPO2Symbol::convert(static_cast<SensitivityMode>(i))));
         }
@@ -317,6 +330,11 @@ void ConfigEditSpO2MenuContent::onComboBoxIndexChanged(int index)
         str = "SmartPluseTone";
         break;
     case ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SENSITIVITY:
+        if (spo2Param.getModuleType() == MODULE_MASIMO_SPO2
+                || spo2Param.getModuleType() == MODULE_RAINBOW_SPO2)
+        {
+            index += 1;
+        }
         str = "Sensitivity";
         break;
     case ConfigEditSpO2MenuContentPrivate::ITEM_CBO_WAVE_SPEED:

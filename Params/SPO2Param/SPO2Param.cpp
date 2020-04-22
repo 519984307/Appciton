@@ -1540,6 +1540,22 @@ void SPO2Param::updateSubParamLimit(SubParamID id)
 void SPO2Param::setModuleType(SPO2ModuleType type)
 {
     d_ptr->moduleType = type;
+    if (type == MODULE_RAINBOW_SPO2)
+    {
+        /*
+         * According to the MX-5 Prev &V communication protocol Checklist/Data Table 16.1,
+         * ensure Maximum sensitivity is not allowed as a default. The device must use Normal
+         * or APOD instead upon power cycle or reset.
+         */
+
+        int sens = 0;
+        currentConfig.getNumValue("SPO2|Sensitivity", sens);
+        if (sens == SPO2_MASIMO_SENS_MAX)
+        {
+            sens = SPO2_MASIMO_SENS_NORMAL;
+            currentConfig.setNumValue("SPO2|Sensitivity", sens);
+        }
+    }
 }
 
 SPO2ModuleType SPO2Param::getModuleType() const
