@@ -1357,6 +1357,13 @@ void SPO2Param::setSpHbUnit(SpHbUnitType unit)
         UnitType u = unit == SPHB_UNIT_G_DL ? UNIT_GDL : UNIT_MMOL_L;
         d_ptr->sphbTrendWidget->updateUnit(u);
     }
+
+    IWidget *w = layoutManager.getLayoutWidget("SpHbTrendWave");
+    if (w)
+    {
+        /* update widget config will refresh the display unit of the trend wave widget */
+        w->updateWidgetConfig();
+    }
 }
 
 SpHbUnitType SPO2Param::getSpHbUnit()

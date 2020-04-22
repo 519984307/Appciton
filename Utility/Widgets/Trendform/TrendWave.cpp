@@ -22,6 +22,7 @@
 #include "Framework/Language/LanguageManager.h"
 #include "ColorManager.h"
 #include "SPO2Param.h"
+#include "ParamManager.h"
 #include <QVector>
 
 #define DELTA_X 5   // 两值间的x轴像素值
@@ -369,8 +370,21 @@ void TrendWavePrivate::updateBackground()
     QString maxStr, minStr;
     if (scale != 1)
     {
-        maxStr = QString::number(maxValue / (scale * 1.0), 'f', 1);
-        minStr = QString::number(minValue / (scale * 1.0), 'f', 1);
+        if (subParamList.count() > 0)
+        {
+            /* display the limit value with current unit */
+            SubParamID subParamID = subParamList.at(0);
+            ParamID paramID = paramInfo.getParamID(subParamID);
+            UnitType curUnit = paramManager.getSubParamUnit(paramID, subParamID);
+            UnitType defUnit = paramInfo.getUnitOfSubParam(subParamID);
+            maxStr = Unit::convert(curUnit, defUnit, maxValue / (scale * 1.0));
+            minStr = Unit::convert(curUnit, defUnit, minValue / (scale * 1.0));
+        }
+        else
+        {
+            maxStr = QString::number(maxValue / (scale * 1.0), 'f', 1);
+            minStr = QString::number(minValue / (scale * 1.0), 'f', 1);
+        }
     }
     else
     {
