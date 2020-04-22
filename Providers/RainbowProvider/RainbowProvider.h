@@ -80,6 +80,9 @@ public:
     /* reimplment */
     void setSphbAveragingMode(SpHbAveragingMode mode);
 
+    /* reimplement */
+    void setLineFrequency(SPO2LineFrequencyType freq);
+
 private slots:
     /**
      * @brief requestBoardInfo send get board info command
@@ -90,13 +93,6 @@ private slots:
      * @brief changeBaudrate change the baudrate
      */
     void changeBaudrate();
-
-public:
-    /**
-     * @brief setLineFrequency
-     * @param freq
-     */
-    void setLineFrequency(RainbowLineFrequency freq);
 
 private:
     RainbowProviderPrivate *const d_ptr;

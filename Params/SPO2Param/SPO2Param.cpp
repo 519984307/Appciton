@@ -473,6 +473,7 @@ void SPO2Param::setProvider(SPO2ProviderIFace *provider, bool isPlugin)
     {
         p->setSensitivityFastSat(static_cast<SensitivityMode>(getSensitivity()), getFastSat());
         p->setAverageTime(getAverageTime());
+        p->setLineFrequency(getLineFrequency());
 
         SPO2SMARTPLUSETONE pulseTone = getSmartPulseTone();
         if (pulseTone == SPO2_SMART_PLUSE_TONE_ON)
@@ -1450,6 +1451,30 @@ SPO2SMARTPLUSETONE SPO2Param::getSmartPulseTone(void)
     int sens = SPO2_SMART_PLUSE_TONE_OFF;
     currentConfig.getNumValue("SPO2|SmartPluseTone", sens);
     return (SPO2SMARTPLUSETONE)sens;
+}
+
+void SPO2Param::setLineFrequency(SPO2LineFrequencyType freq)
+{
+    int v = freq;
+
+    if (d_ptr->provider)
+    {
+        d_ptr->provider->setLineFrequency(freq);
+    }
+
+    if (d_ptr->plugInProvider)
+    {
+        d_ptr->plugInProvider->setLineFrequency(freq);
+    }
+
+    currentConfig.setNumValue("SPO2|LineFrequency", v);
+}
+
+SPO2LineFrequencyType SPO2Param::getLineFrequency()
+{
+    int freq = SPO2_LINE_FREQ_50HZ;
+    currentConfig.getNumValue("SPO2|LineFrequency", freq);
+    return static_cast<SPO2LineFrequencyType>(freq);
 }
 
 /**************************************************************************************************

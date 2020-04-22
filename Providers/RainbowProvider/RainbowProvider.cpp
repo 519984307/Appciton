@@ -213,7 +213,7 @@ class RainbowProviderPrivate
 public:
     explicit RainbowProviderPrivate(RainbowProvider *p)
         : q_ptr(p)
-        , lineFreq(RB_LINE_FREQ_50HZ)
+        , lineFreq(SPO2_LINE_FREQ_50HZ)
         , averTime(SPO2_AVER_TIME_2_4SEC)
         , sensMode(SPO2_MASIMO_SENS_MAX)
         , fastSat(false)
@@ -336,7 +336,7 @@ public:
 
     RainbowProvider *q_ptr;
 
-    RainbowLineFrequency lineFreq;
+    SPO2LineFrequencyType lineFreq;
 
     AverageTime averTime;
 
@@ -746,7 +746,7 @@ void RainbowProvider::changeBaudrate()
     d_ptr->updateBaudRate();
 }
 
-void RainbowProvider::setLineFrequency(RainbowLineFrequency freq)
+void RainbowProvider::setLineFrequency(SPO2LineFrequencyType freq)
 {
     if (d_ptr->isInitializing)
     {

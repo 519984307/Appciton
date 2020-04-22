@@ -184,6 +184,7 @@ SPO2PRDisplay,脉率显示,PR Display
 SPO2Menu,SpO₂,SpO₂
 SPO2SeniorMenu,SpO₂高级参数,SpO₂ Senior Param
 ShowSignalIQ,信号指示,Signal IQ
+LineFrequency,线路频率,Line Frequency
 RESPSweepSpeed,波形速度,Sweep Speed
 RESPMenu,Resp,Resp
 RESPWaveMode,Resp波形模式,Resp Wave Mode

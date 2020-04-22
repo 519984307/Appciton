@@ -167,10 +167,10 @@ enum WaveUpdateType
     WAVE_UPDATE_NR  // 无效值
 };
 
-enum RainbowLineFrequency
+enum SPO2LineFrequencyType
 {
-    RB_LINE_FREQ_50HZ,
-    RB_LINE_FREQ_60HZ,
+    SPO2_LINE_FREQ_50HZ,
+    SPO2_LINE_FREQ_60HZ,
 };
 
 // CCHD筛查结果

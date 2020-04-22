@@ -88,6 +88,12 @@ public:
      */
     virtual void setSphbAveragingMode(SpHbAveragingMode /*mode*/){}
 
+    /**
+     * @brief setLineFrequency set the line frequency, rainbow only
+     * @param freq
+     */
+    virtual void setLineFrequency(SPO2LineFrequencyType /*freq*/){}
+
     // Nellcor
     /**
      * @brief setSatSeconds 设置过高低限值的容忍时间

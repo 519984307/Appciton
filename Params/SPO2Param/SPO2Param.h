@@ -249,6 +249,18 @@ public:
     void setSmartPulseTone(SPO2SMARTPLUSETONE sens);
     SPO2SMARTPLUSETONE getSmartPulseTone(void);
 
+    /**
+     * @brief setLineFrequency set the module line frequency
+     * @param freq
+     */
+    void setLineFrequency(SPO2LineFrequencyType freq);
+
+    /**
+     * @brief getLineFrequency get the line frequency
+     * @return
+     */
+    SPO2LineFrequencyType getLineFrequency();
+
     // 设置/获取波形速度。
     void setSweepSpeed(int speed);
     int getSweepSpeed(void);
