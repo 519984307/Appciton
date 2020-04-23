@@ -236,7 +236,7 @@ public:
         , pviAveragingMode(AVERAGING_MODE_NORMAL)
         , spHbBloodVessel(BLOOD_VESSEL_ARTERIAL)
         , spHbAveragingMode(SPHB_AVERAGING_MODE_LONG)
-        , provider(SPO2_RAINBOW_TYPE_DAVID)
+        , provider(SPO2_RAINBOW_FACTORY_ID_DAVID)
         , isPlugin(false)
         , inProgramMode(false)
         , programTimer(NULL)
@@ -378,7 +378,7 @@ public:
 
     SpHbAveragingMode spHbAveragingMode;
 
-    SPO2RainbowType provider;
+    SPO2RainbowFactoryIDType provider;
 
     bool isPlugin;
     bool inProgramMode;
@@ -729,6 +729,7 @@ void RainbowProvider::setSphbAveragingMode(SpHbAveragingMode mode)
 
 void RainbowProvider::initModule()
 {
+    d_ptr->provider = SPO2_RAINBOW_FACTORY_ID_DAVID;
     d_ptr->curInitializeStep = RB_INIT_BAUDRATE;
     d_ptr->isInitializing = true;
     plugInInfo.pluginType = PluginProvider::PLUGIN_TYPE_SPO2;
@@ -825,18 +826,18 @@ void RainbowProviderPrivate::handlePacket(unsigned char *data, int len)
     break;
     case  RB_NCK:
     {
-        if (curInitializeStep == RB_INIT_GET_BOARD_INFO && provider == SPO2_RAINBOW_TYPE_DAVID)
+        if (curInitializeStep == RB_INIT_GET_BOARD_INFO)
         {
-            if (provider == SPO2_RAINBOW_TYPE_DAVID)
+            if (provider == SPO2_RAINBOW_FACTORY_ID_DAVID)
             {
                 // 解锁david板子失败后再次解锁
-                provider = SPO2_RAINBOW_TYPE_BLM;
+                provider = SPO2_RAINBOW_FACTORY_ID_BLM;
                 QTimer::singleShot(50, q_ptr, SLOT(requestBoardInfo()));
             }
-            else if (provider == SPO2_RAINBOW_TYPE_BLM)
+            else if (provider == SPO2_RAINBOW_FACTORY_ID_BLM)
             {
-                provider = SPO2_RAINBOW_TYPE_NR;
-                qdebug("rainbow板子解锁失败");
+                provider = SPO2_RAINBOW_FACTORY_ID_NR;
+                qdebug("rainbow unlock failed");
             }
         }
         else  if (curInitializeStep == RB_INIT_BAUDRATE)
@@ -1309,11 +1310,11 @@ void RainbowProviderPrivate::unlockBoard(unsigned int sn, unsigned int flag)
 {
     unsigned char data[9] = {0};
     unsigned int unlockKey = MANU_ID_BLM ^ sn;
-    if (provider == SPO2_RAINBOW_TYPE_DAVID)
+    if (provider == SPO2_RAINBOW_FACTORY_ID_DAVID)
     {
         unlockKey = MANU_ID_DAVID ^ sn;
     }
-    else if (provider == SPO2_RAINBOW_TYPE_BLM)
+    else if (provider == SPO2_RAINBOW_FACTORY_ID_BLM)
     {
         unlockKey = MANU_ID_BLM ^ sn;
     }
@@ -1482,8 +1483,8 @@ void RainbowProviderPrivate::handleACK()
             // get here after the baseline
             // 每16ms输出一次波形
             configPeriodWaveformOut(CLIPPED_AUTOSCALE_DATA | SIGNAL_IQ_AUDIO_VISUAL_DATA, 16);
-            if (provider == SPO2_RAINBOW_TYPE_BLM ||
-                    (isPlugin && spo2Param.getProviderInfo(false) == SPO2_RAINBOW_TYPE_DAVID))
+            if (provider == SPO2_RAINBOW_FACTORY_ID_BLM ||
+                    (isPlugin && spo2Param.getProviderInfo(false) == SPO2_RAINBOW_FACTORY_ID_DAVID))
             {
                 // BLM的板子不配置高级参数
                 // 如果内置的是David板时，不配置插件的高级参数

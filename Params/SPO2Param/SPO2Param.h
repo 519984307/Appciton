@@ -352,8 +352,8 @@ public:
      * @param isPlugin
      * @param type
      */
-    void setProviderInfo(bool isPlugin, SPO2RainbowType type);
-    SPO2RainbowType getProviderInfo(bool isPlugin);
+    void setProviderInfo(bool isPlugin, SPO2RainbowFactoryIDType type);
+    SPO2RainbowFactoryIDType getProviderInfo(bool isPlugin);
 
     /**
      * @brief setSensor 设置当前使用的探头

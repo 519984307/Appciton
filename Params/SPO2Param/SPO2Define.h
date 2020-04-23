@@ -220,11 +220,11 @@ enum SpHbBloodVesselMode
 };
 
 
-enum SPO2RainbowType
+enum SPO2RainbowFactoryIDType
 {
-    SPO2_RAINBOW_TYPE_DAVID,
-    SPO2_RAINBOW_TYPE_BLM,
-    SPO2_RAINBOW_TYPE_NR
+    SPO2_RAINBOW_FACTORY_ID_DAVID,
+    SPO2_RAINBOW_FACTORY_ID_BLM,
+    SPO2_RAINBOW_FACTORY_ID_NR
 };
 
 enum SPO2RainbowSensor
