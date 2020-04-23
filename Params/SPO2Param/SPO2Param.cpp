@@ -95,7 +95,6 @@ public:
 
     bool isT5ModuleUpgradeCompleted;
     bool isShowSignalIQ;
-    QMap<bool, SPO2RainbowFactoryIDType> providerInfo;
 
     QPointer<MessageBox> curProgramMsgBox;    /* keep the current avaliabe message box window */
 };
@@ -1805,16 +1804,6 @@ void SPO2Param::showSignalIQ(bool show)
 bool SPO2Param::isShowSignalIQ()
 {
     return d_ptr->isShowSignalIQ;
-}
-
-void SPO2Param::setProviderInfo(bool isPlugin, SPO2RainbowFactoryIDType type)
-{
-    d_ptr->providerInfo.insert(isPlugin, type);
-}
-
-SPO2RainbowFactoryIDType SPO2Param::getProviderInfo(bool isPlugin)
-{
-    return d_ptr->providerInfo.value(isPlugin, SPO2_RAINBOW_FACTORY_ID_NR);
 }
 
 void SPO2Param::setSensor(SPO2RainbowSensor sensor)

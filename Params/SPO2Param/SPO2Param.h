@@ -348,14 +348,6 @@ public:
     bool isShowSignalIQ();
 
     /**
-     * @brief setProviderInfo
-     * @param isPlugin
-     * @param type
-     */
-    void setProviderInfo(bool isPlugin, SPO2RainbowFactoryIDType type);
-    SPO2RainbowFactoryIDType getProviderInfo(bool isPlugin);
-
-    /**
      * @brief setSensor 设置当前使用的探头
      * @param sensor
      */

@@ -15,6 +15,7 @@
 #include <QTimer>
 #include "AlarmSourceManager.h"
 #include "Framework/Language/LanguageManager.h"
+#include "SystemManager.h"
 
 #define SOM  (0xA1)
 #define EOM  (0xAF)
@@ -1483,16 +1484,22 @@ void RainbowProviderPrivate::handleACK()
             // get here after the baseline
             // 每16ms输出一次波形
             configPeriodWaveformOut(CLIPPED_AUTOSCALE_DATA | SIGNAL_IQ_AUDIO_VISUAL_DATA, 16);
-            if (provider == SPO2_RAINBOW_FACTORY_ID_BLM ||
-                    (isPlugin && spo2Param.getProviderInfo(false) == SPO2_RAINBOW_FACTORY_ID_DAVID))
+            if (provider == SPO2_RAINBOW_FACTORY_ID_BLM
+                    || isPlugin
+                    || !systemManager.isSupport(CONFIG_SPO2_HIGH_CONFIGURE))
             {
-                // BLM的板子不配置高级参数
-                // 如果内置的是David板时，不配置插件的高级参数
+                // BLM rainbow didn't support senior parameters
+                // plugin module didn't support senior parameters
+                // system is configured not support senior parameters
                 curInitializeStep = RB_INIT_COMPLETED;
                 isInitializing = false;
             }
             else
             {
+                /*
+                 * when got here, not BLM rainbow module and not plugin and
+                 * system support senior parameters
+                 */
                 curInitializeStep = RB_INIT_SET_SPCO;
             }
             break;
@@ -1550,7 +1557,6 @@ void RainbowProviderPrivate::handleACK()
     else  // 当初始化完成时，请求参数状态（里面含有版本信息）
     {
         isInitializing = false;
-        spo2Param.setProviderInfo(isPlugin, provider);
         requestParamStatus();
     }
 }
