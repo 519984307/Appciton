@@ -1534,7 +1534,7 @@ SPO22OnlyMode,仅限SpO₂ 2模式,SpO₂ 2 only mode
 SPO2BoardFailure,SpO₂板卡错误,SpO₂ Board Failure
 SPO22BoardFailure,SpO₂ 2板卡错误,SpO₂ 2 Board Failure
 SPO2Program,SpO₂ 编程,SpO₂ Program 
-RequestEnterProgramMode,请求进行编程模式,Request Enter Program Mode
+RequestEnterProgramMode,请求进入编程模式,Request Enter Program Mode
 Programming,正在编程,Programming
 ProgramComplete,编程完成,Program Complete
 CommunicationError,通信失败,Communication Error
