@@ -605,10 +605,10 @@ void RainbowProvider::sendVersion()
 
 void RainbowProvider::setSensitivityFastSat(SensitivityMode mode, bool fastSat)
 {
+    d_ptr->sensMode = mode;
+    d_ptr->fastSat = fastSat;
     if (d_ptr->isInitializing)
     {
-        d_ptr->sensMode = mode;
-        d_ptr->fastSat = fastSat;
         return;
     }
 
@@ -622,9 +622,9 @@ void RainbowProvider::setSensitivityFastSat(SensitivityMode mode, bool fastSat)
 
 void RainbowProvider::setAverageTime(AverageTime mode)
 {
+    d_ptr->averTime = mode;
     if (d_ptr->isInitializing)
     {
-        d_ptr->averTime = mode;
         return;
     }
 
@@ -634,9 +634,9 @@ void RainbowProvider::setAverageTime(AverageTime mode)
 
 void RainbowProvider::setSmartTone(bool enable)
 {
+    d_ptr->enableSmartTone = enable;
     if (d_ptr->isInitializing)
     {
-        d_ptr->enableSmartTone = enable;
         return;
     }
 
@@ -684,9 +684,9 @@ void RainbowProvider::reconnected()
 
 void RainbowProvider::setSpHbPrecisionMode(SpHbPrecisionMode mode)
 {
+    d_ptr->spHbPrecision = mode;
     if (d_ptr->isInitializing)
     {
-        d_ptr->spHbPrecision = mode;
         return;
     }
 
@@ -696,9 +696,9 @@ void RainbowProvider::setSpHbPrecisionMode(SpHbPrecisionMode mode)
 
 void RainbowProvider::setPVIAveragingMode(AveragingMode mode)
 {
+    d_ptr->pviAveragingMode = mode;
     if (d_ptr->isInitializing)
     {
-        d_ptr->pviAveragingMode = mode;
         return;
     }
 
@@ -708,9 +708,9 @@ void RainbowProvider::setPVIAveragingMode(AveragingMode mode)
 
 void RainbowProvider::setSpHbBloodVesselMode(SpHbBloodVesselMode mode)
 {
+    d_ptr->spHbBloodVessel = mode;
     if (d_ptr->isInitializing)
     {
-        d_ptr->spHbBloodVessel = mode;
         return;
     }
     unsigned char data[2] = {RB_CMD_CONF_SPHB_BLOOD_VESSEL_MODE, mode};
@@ -719,9 +719,9 @@ void RainbowProvider::setSpHbBloodVesselMode(SpHbBloodVesselMode mode)
 
 void RainbowProvider::setSphbAveragingMode(SpHbAveragingMode mode)
 {
+    d_ptr->spHbAveragingMode = mode;
     if (d_ptr->isInitializing)
     {
-        d_ptr->spHbAveragingMode = mode;
         return;
     }
     unsigned char data[2] = {RB_CMD_CONF_SPHB_AVERAGING_MODE, mode};
@@ -780,9 +780,9 @@ void RainbowProvider::programPeriodTimeOut()
 
 void RainbowProvider::setLineFrequency(SPO2LineFrequencyType freq)
 {
+    d_ptr->lineFreq = freq;
     if (d_ptr->isInitializing)
     {
-        d_ptr->lineFreq = freq;
         return;
     }
 
@@ -1368,7 +1368,8 @@ void RainbowProviderPrivate::configPeriodWaveformOut(unsigned int selectionBits,
 }
 
 /*
- *
+ * before sending the parameters setting at inialization, we have to
+ * deasset the @isInitializeing flag temporarily
  */
 #define SEND_INITSETTING_START()   {isInitializing = false;}
 #define SEND_INITSETTING_END()  {isInitializing = true;}
