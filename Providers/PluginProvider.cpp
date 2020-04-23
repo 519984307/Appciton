@@ -389,17 +389,20 @@ void PluginProvider::timerEvent(QTimerEvent *ev)
     {
         if (d_ptr->isPluginConnected())
         {
-            d_ptr->connLostTickCounter++;
-            if (d_ptr->connLostTickCounter > 3 * (1000 / CHECK_CONNECT_TIMER_PERIOD ))
+            if (!d_ptr->workingProvider->isConnectionCheckStop())
             {
-                /* 3 seconds has passed without receive any data */
-                /* the moudle might be disconectd */
-                d_ptr->lastPluginState = false;
-                d_ptr->connLostTickCounter = 0;
-                d_ptr->workingProvider = NULL;
-                killTimer(d_ptr->ConnectionCheckTimerID);
-                d_ptr->ConnectionCheckTimerID = -1;
-                qDebug() << Q_FUNC_INFO << "Communication stop";
+                d_ptr->connLostTickCounter++;
+                if (d_ptr->connLostTickCounter > 3 * (1000 / CHECK_CONNECT_TIMER_PERIOD ))
+                {
+                    /* 3 seconds has passed without receive any data */
+                    /* the moudle might be disconectd */
+                    d_ptr->lastPluginState = false;
+                    d_ptr->connLostTickCounter = 0;
+                    d_ptr->workingProvider = NULL;
+                    killTimer(d_ptr->ConnectionCheckTimerID);
+                    d_ptr->ConnectionCheckTimerID = -1;
+                    qDebug() << Q_FUNC_INFO << "Communication stop";
+                }
             }
         }
         else

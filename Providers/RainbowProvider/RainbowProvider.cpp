@@ -402,7 +402,7 @@ RainbowProvider::RainbowProvider(const QString &name, bool isPlugin)
     d_ptr->isPlugin = isPlugin;
 
     d_ptr->programTimer = new QTimer(this);
-    d_ptr->programTimer->setInterval(1000);
+    d_ptr->programTimer->setInterval(60 * 1000);   /* timeout in 1 minutes */
     connect(d_ptr->programTimer, SIGNAL(timeout()), this, SLOT(programPeriodTimeOut()));
 
     if (d_ptr->isPlugin)
@@ -767,17 +767,13 @@ void RainbowProvider::changeBaudrate()
 void RainbowProvider::programFinished()
 {
     d_ptr->programTimer->stop();
+    stopCheckConnect(false);
     initModule();
 }
 
 void RainbowProvider::programPeriodTimeOut()
 {
-    /*
-     * During program, the moudle will not send any data except the program infomation.
-     * We don't known how long the program process will take, we just keep call feed to avoid
-     * the moudle communication fail error
-     */
-    feed();
+    programFinished();
 }
 
 void RainbowProvider::setLineFrequency(SPO2LineFrequencyType freq)
@@ -798,6 +794,7 @@ void RainbowProvider::setProgramResponse(bool ack)
     d_ptr->sendCmd(&data, 1);
     d_ptr->inProgramMode = ack;
     d_ptr->programTimer->start();
+    stopCheckConnect(true);
 }
 
 void RainbowProviderPrivate::handlePacket(unsigned char *data, int len)
@@ -842,13 +839,16 @@ void RainbowProviderPrivate::handlePacket(unsigned char *data, int len)
                 qdebug("rainbow板子解锁失败");
             }
         }
-
-        if (curInitializeStep == RB_INIT_BAUDRATE)
+        else  if (curInitializeStep == RB_INIT_BAUDRATE)
         {
             /* we get an nack while initialize the baudrate, maybe the module is already
              * unlocked and work in 57600 baudrate, just skip unlock step */
             curInitializeStep = RB_INIT_UNLOCK_BOARD;
             handleACK();
+        }
+        else
+        {
+            qDebug() << Q_FUNC_INFO << "NAK: " << data[1];
         }
     }
     break;
