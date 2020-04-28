@@ -552,6 +552,7 @@ SOURCES +=                                                                      
     Providers/DataDispatcher.cpp                                                \
     Providers/NeonateProvider/NeonateProvider.cpp                               \
     Providers/PluginProvider.cpp                                                \
+    Providers/SmartIBPProvider/SmartIBPProvider.cpp                             \
 #################################################################################
     Main/App/AppMain.cpp                                                        \
     Main/App/Init.cpp                                                           \
@@ -560,12 +561,8 @@ SOURCES +=                                                                      
     Main/Starter.cpp \
 
 HEADERS +=                                                                      \
-    Components/DataUploader/BLMDataUploader.h \
-    Components/DataUploader/BLMMessageDefine.h \
     Components/DataUploader/BLMMessageHandler.h \
     Components/DataUploader/DataUploaderIFace.h \
-    Components/DataUploader/JSONParser.h \
-    Components/DataUploader/JSONSerializer.h \
     Components/ParamManager/ParamPreProcessor.h \
     Params/CO2Param/CO2ParamInterface.h \
     Params/RESPParam/RESPParamInterface.h \
@@ -1036,6 +1033,7 @@ HEADERS +=                                                                      
     Providers/DataDispatcher.h                                                  \
     Providers/NeonateProvider/NeonateProvider.h                                 \
     Providers/PluginProvider.h                                                  \
+    Providers/SmartIBPProvider/SmartIBPProvider.h                               \
 #################################################################################
     Main/App/Init.h                                                             \
     Main/IApplication.h                                                         \
@@ -1119,6 +1117,7 @@ DEPENDPATH +=                                                                   
     Providers/RawData                                                           \
     Providers/S5Provider                                                        \
     Providers/NeonateProvider                                                   \
+    Providers/SmartIBPProvider                                                  \
     Params                                                                      \
     Params/AGParam                                                              \
     Params/AGParam/AGWidgets                                                    \
@@ -1223,6 +1222,7 @@ INCLUDEPATH +=                                                                  
     Providers/RawData                                                           \
     Providers/S5Provider                                                        \
     Providers/NeonateProvider                                                   \
+    Providers/SmartIBPProvider                                                  \
     Params                                                                      \
     Params/AGParam                                                              \
     Params/AGParam/AGWidgets                                                    \

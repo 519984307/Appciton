@@ -27,6 +27,7 @@
 #include "Framework/Language/LanguageManager.h"
 #include "Framework/Language/Translator.h"
 #include "Framework/TimeDate/TimeDate.h"
+#include "Providers/SmartIBPProvider/SmartIBPProvider.h"
 
 /**
  * @brief initLanguage initialize the language manager
@@ -579,7 +580,7 @@ static void _initProviderParam(void)
     // IBP test
     if (systemManager.isSupport(CONFIG_IBP))
     {
-        paramManager.addProvider(new WitleafProvider());
+        paramManager.addProvider(new SmartIBPProvider(QString()));
         paramManager.addParam(&ibpParam.construction());
 
         limitAlarmSource = new IBPLimitAlarm();
