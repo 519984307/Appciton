@@ -22,11 +22,17 @@ public:
     ~SmartIBPProvider();
 
     /* reimplement */
+    bool attachParam(Param *param);
+
+    /* reimplement */
     void sendVersion();
     /* reimplement */
     void disconnected();
     /* reimplement */
     void reconnected();
+
+    /* reimplement */
+    void setZero(IBPSignalInput IBP, IBPCalibration calibration, unsigned short value);
 
     /* get wave sample rate */
     virtual int getIBPWaveformSample(void);

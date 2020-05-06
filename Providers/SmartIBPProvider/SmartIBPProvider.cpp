@@ -9,7 +9,8 @@
  **/
 
 #include "SmartIBPProvider.h"
-#include <QDebug>
+#include "IBPParam.h"
+#include "Debug/Debug.h"
 
 #define MAX_PACKET_LENGTH       12      /* maximum packet length */
 #define MIN_PARSE_LENGTH        2       /* minimum length of data to start parse */
@@ -30,10 +31,10 @@
 
 struct IBPChannelData
 {
-    quint16 sys;
-    quint16 dia;
-    quint16 map;
-    quint16 pr;
+    qint16 sys;
+    qint16 dia;
+    qint16 map;
+    qint16 pr;
     bool sensorOff;
 };
 
@@ -88,7 +89,7 @@ public:
      * @param type the data type
      * @param val the chanel value
      */
-    void setChannelData(IBPChannelData *chn, quint8 type, quint16 val)
+    void setChannelData(IBPChannelData *chn, quint8 type, qint16 val)
     {
         switch (type) {
         case DATA_TYPE_SYS:
@@ -141,6 +142,18 @@ SmartIBPProvider::~SmartIBPProvider()
 {
 }
 
+bool SmartIBPProvider::attachParam(Param *param)
+{
+    if (param->getName() == paramInfo->getParamName(PARAM_IBP))
+    {
+        ibpParam.setProvider(this);
+        Provider::attachParam(param);
+        return true;
+    }
+
+    return false;
+}
+
 void SmartIBPProvider::sendVersion()
 {
     /* no supported */
@@ -148,15 +161,37 @@ void SmartIBPProvider::sendVersion()
 
 void SmartIBPProvider::disconnected()
 {
+    if (isConnectedToParam())
+    {
+        ibpParam.setConnected(false);
+    }
 }
 
 void SmartIBPProvider::reconnected()
 {
+    if (isConnectedToParam())
+    {
+        ibpParam.setConnected(true);
+    }
+}
+
+void SmartIBPProvider::setZero(IBPSignalInput IBP, IBPCalibration calibration, unsigned short value)
+{
+    Q_UNUSED(value)
+
+    if (calibration == IBP_CALIBRATION_ZERO)
+    {
+        pimpl->sendCmd(MODULE_CMD_ZERO, IBP);
+    }
+    else if (calibration == IBP_CALIBRATION_SET)
+    {
+        pimpl->sendCmd(MODULE_CMD_CALIBRATE, IBP);
+    }
 }
 
 int SmartIBPProvider::getIBPWaveformSample()
 {
-    return 250;
+    return 100;
 }
 
 int SmartIBPProvider::getIBPBaseLine()
@@ -166,7 +201,7 @@ int SmartIBPProvider::getIBPBaseLine()
 
 int SmartIBPProvider::getIBPMaxWaveform()
 {
-    return 10000;
+    return 400;
 }
 
 void SmartIBPProvider::dataArrived()
@@ -183,9 +218,9 @@ void SmartIBPProvider::dataArrived()
         }
 
         quint8 length = ringBuff.at(1);
-        if (length != 0x04 && length != 0x0A)
+        if (length != 0x06 && length != 0x0A)
         {
-            /* possible length field value of packet from module is 0x04 0r 0x0A */
+            /* possible length field value of packet from module is 0x06 0r 0x0A */
             qDebug() << "Invalid Packet length:" << length;
             ringBuff.pop(1);
             continue;
@@ -205,6 +240,7 @@ void SmartIBPProvider::dataArrived()
             ringBuff.pop(length + 2);
 
             pimpl->handlePacket(buf + 2, length - 1);
+            // outHex(buf, length + 2);
         }
         else
         {
@@ -216,26 +252,76 @@ void SmartIBPProvider::dataArrived()
 
 void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
 {
+    Q_UNUSED(len)
     switch (data[0])
     {
     case MODULE_ID:
     {
         /* periodic data */
         bool ch1SensorOff = data[1] & 0x40;
-        quint16 ch1Wave = ((data[1] & 0x1F) << 7) + (data[2] & 0x7F);
+        qint16 ch1Wave = (((data[1] & 0x1F) << 7) + (data[2] & 0x7F) - 0x320) / 8;
         quint8 ch1Type = (data[3] & 0x60) >> 5;
-        quint16 ch1Val = ((data[3] &0x1F) << 7) + (data[4] & 0x7F);
+        qint16 ch1Val = ((data[3] &0x1F) << 7) + (data[4] & 0x7F);
+        if (ch1Type != DATA_TYPE_PR)
+        {
+            ch1Val = (ch1Val - 0x320) / 8;
+        }
 
         chn1Data.sensorOff = ch1SensorOff;
-        setChannelData(&chn1Data, ch1Type, ch1Val);
+        if (ch1SensorOff)
+        {
+            chn1Data.sys = InvData();
+            chn1Data.dia = InvData();
+            chn1Data.map = InvData();
+            chn1Data.pr = InvData();
+        }
+        else
+        {
+            setChannelData(&chn1Data, ch1Type, ch1Val);
+        }
 
         bool ch2SensorOff = data[5] & 0x40;
-        quint16 ch2Wave = ((data[5] & 0x1F) << 7) + (data[6] & 0x7F);
+        quint16 ch2Wave = (((data[5] & 0x1F) << 7) + (data[6] & 0x7F) - 0x320) / 8;
         quint8 ch2Type = (data[7] & 0x60) >> 5;
         quint16 ch2Val = ((data[7] &0x1F) << 7) + (data[8] & 0x7F);
+        if (ch2Type != DATA_TYPE_PR)
+        {
+            ch2Val = (ch2Val - 0x320) / 8;
+        }
 
         chn2Data.sensorOff = ch2SensorOff;
-        setChannelData(&chn2Data, ch2Type, ch2Val);
+        if (ch2SensorOff)
+        {
+            chn2Data.sys = InvData();
+            chn2Data.dia = InvData();
+            chn2Data.map = InvData();
+            chn2Data.pr = InvData();
+        }
+        else
+        {
+            setChannelData(&chn2Data, ch2Type, ch2Val);
+        }
+
+        ibpParam.leadStatus(ch1SensorOff, ch2SensorOff);
+
+        ibpParam.addWaveformData(ch1Wave, ch1SensorOff, IBP_INPUT_1);
+        ibpParam.addWaveformData(ch2Wave, ch2SensorOff, IBP_INPUT_2);
+
+        if (ch1Type == DATA_TYPE_PR)
+        {
+            ibpParam.setRealTimeData(chn1Data.sys, chn1Data.dia, chn1Data.map,
+                                     chn1Data.pr, IBP_INPUT_1);
+            // qDebug() << "Ch1" << ch1SensorOff << chn1Data.sys
+            // << chn1Data.dia << chn1Data.map << chn1Data.pr;
+        }
+
+        if (ch2Type == DATA_TYPE_PR)
+        {
+            ibpParam.setRealTimeData(chn2Data.sys, chn2Data.dia, chn2Data.map,
+                                     chn2Data.pr, IBP_INPUT_2);
+            // qDebug() << "Ch2" << ch2SensorOff << chn2Data.sys
+            // << chn2Data.dia << chn2Data.map << chn2Data.pr;
+        }
     }
         break;
     case MODULE_CMD_RSP:
@@ -254,7 +340,7 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
     }
         break;
     default:
-        /* unknow packet id */
+        /* unknown packet id */
         qDebug() << Q_FUNC_INFO << "unknown packet type";
         break;
     }
