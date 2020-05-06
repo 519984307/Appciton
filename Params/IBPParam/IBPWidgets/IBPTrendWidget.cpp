@@ -399,6 +399,7 @@ void IBPTrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_IBP));
     showNormalStatus(_stackedwidget->currentWidget()->layout(), psrc);
+    showNormalStatus(psrc);
 }
 
 /**************************************************************************************************
