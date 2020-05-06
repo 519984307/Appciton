@@ -328,6 +328,7 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
     {
         /* comman respone */
         quint8 cmd = data[2];
+        quint8 chn = data[3];
         quint8 result = data[4];
         if (result == 0)
         {
@@ -336,6 +337,19 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
         else
         {
             qDebug() << Q_FUNC_INFO << "CMD" << cmd << "fail!";
+        }
+
+        if (cmd == IBP_CALIBRATION_ZERO)
+        {
+            ibpParam.calibrationInfo(IBP_CALIBRATION_ZERO,
+                                     static_cast<IBPSignalInput>(chn),
+                                     result == 0 ? IBP_ZERO_SUCCESS : IBP_ZERO_FAIL);
+        }
+        else if (cmd == IBP_CALIBRATION_SET)
+        {
+            ibpParam.calibrationInfo(IBP_CALIBRATION_SET,
+                                     static_cast<IBPSignalInput>(chn),
+                                     result == 0 ? IBP_CALIBRATION_SUCCESS: IBP_CALIBRATION_FAIL);
         }
     }
         break;

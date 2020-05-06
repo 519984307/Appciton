@@ -135,6 +135,25 @@ struct IBPParamInfo
     unsigned short pr;
 };
 
+enum IBPZeroResult
+{
+    IBP_ZERO_SUCCESS = 0,
+    IBP_ZERO_IS_PULSE = 1,
+    IBP_ZERO_BEYOND_RANGE = 2,
+    IBP_ZERO_FAIL = 4,
+    IBP_ZERO_NOT_SET_TIME = 5,
+};
+
+enum IBPCalibrationResult
+{
+    IBP_CALIBRATION_SUCCESS = 0,
+    IBP_CALIBRATION_IS_PULSE = 1,
+    IBP_CALIBRATION_BEYOND_RANGE = 2,
+    IBP_CALIBRATION_NOT_ZERO = 3,
+    IBP_CALIBRATION_FAIL = 4,
+    IBP_CALIBRATION_NOT_SET_TIME = 6,
+};
+
 /**************************************************************************************************
  * 超限报警定义
  *************************************************************************************************/
