@@ -144,7 +144,7 @@ SmartIBPProvider::~SmartIBPProvider()
 
 bool SmartIBPProvider::attachParam(Param *param)
 {
-    if (param->getName() == paramInfo->getParamName(PARAM_IBP))
+    if (param->getName() == paramInfo.getParamName(PARAM_IBP))
     {
         ibpParam.setProvider(this);
         Provider::attachParam(param);
@@ -161,7 +161,7 @@ void SmartIBPProvider::sendVersion()
 
 void SmartIBPProvider::disconnected()
 {
-    if (isConnectedToParam())
+    if (isConnectedToParam)
     {
         ibpParam.setConnected(false);
     }
@@ -169,7 +169,7 @@ void SmartIBPProvider::disconnected()
 
 void SmartIBPProvider::reconnected()
 {
-    if (isConnectedToParam())
+    if (isConnectedToParam)
     {
         ibpParam.setConnected(true);
     }
@@ -268,7 +268,7 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
         }
 
         chn1Data.sensorOff = ch1SensorOff;
-        if (ch1SensorOff)
+        if (ch1SensorOff || !ibpParam.hasBeenZero(IBP_INPUT_1))
         {
             chn1Data.sys = InvData();
             chn1Data.dia = InvData();
@@ -290,7 +290,7 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
         }
 
         chn2Data.sensorOff = ch2SensorOff;
-        if (ch2SensorOff)
+        if (ch2SensorOff || !ibpParam.hasBeenZero(IBP_INPUT_2))
         {
             chn2Data.sys = InvData();
             chn2Data.dia = InvData();

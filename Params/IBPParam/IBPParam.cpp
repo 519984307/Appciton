@@ -31,7 +31,7 @@ IBPParam *IBPParam::_selfObj = NULL;
 IBPParam::IBPParam() : Param(PARAM_IBP),  _provider(NULL), _waveWidgetIBP1(NULL),
     _waveWidgetIBP2(NULL), _trendWidgetIBP1(NULL), _trendWidgetIBP2(NULL),
     _staIBP1(false), _staIBP2(false), _connectedProvider(false), _ibp1ZeroReply(false),
-    _ibp2ZeroReply(false)
+    _ibp2ZeroReply(false), _ibp1HasBeenZero(false), _ibp2HasBeenZero(false)
 {
     _ibp1.pressureName = IBP_PRESSURE_ART;
     _ibp2.pressureName = IBP_PRESSURE_PA;
@@ -920,6 +920,15 @@ IBPScaleInfo &IBPParam::getScaleInfo(IBPSignalInput ibp)
  *************************************************************************************************/
 void IBPParam::zeroCalibration(IBPSignalInput IBP)
 {
+    if (IBP == IBP_INPUT_1)
+    {
+        _ibp1HasBeenZero = false;
+    }
+    else if (IBP == IBP_INPUT_2)
+    {
+        _ibp2HasBeenZero = false;
+    }
+
     clearCalibAlarm();
     unsigned zeroTime = timeDate->time();
     unsigned int year = timeDate->getDateYear(zeroTime) - 2000;
@@ -933,6 +942,18 @@ void IBPParam::zeroCalibration(IBPSignalInput IBP)
                            (unsigned int)hour, (unsigned int)day,
                            (unsigned int)month, (unsigned int)year);
     _provider->setZero(IBP, IBP_CALIBRATION_ZERO, 0x00);
+}
+
+bool IBPParam::hasBeenZero(IBPSignalInput IBP)
+{
+    if (IBP == IBP_INPUT_1)
+    {
+        return _ibp1HasBeenZero;
+    }
+    else if (IBP == IBP_INPUT_2)
+    {
+        return _ibp2HasBeenZero;
+    }
 }
 
 /**************************************************************************************************
@@ -960,6 +981,10 @@ void IBPParam::calibrationInfo(IBPCalibration calib, IBPSignalInput IBP, int cal
         if (IBP == IBP_INPUT_1)
         {
             _ibp1ZeroReply = true;
+            if (!_ibp1HasBeenZero)
+            {
+                _ibp1HasBeenZero = true;
+            }
             switch (static_cast<IBPZeroResult>(calibinfo))
             {
             case IBP_ZERO_SUCCESS:
@@ -997,6 +1022,10 @@ void IBPParam::calibrationInfo(IBPCalibration calib, IBPSignalInput IBP, int cal
         else if (IBP == IBP_INPUT_2)
         {
             _ibp2ZeroReply = true;
+            if (!_ibp2HasBeenZero)
+            {
+                _ibp2HasBeenZero = true;
+            }
             switch (static_cast<IBPZeroResult>(calibinfo))
             {
             case IBP_ZERO_SUCCESS:

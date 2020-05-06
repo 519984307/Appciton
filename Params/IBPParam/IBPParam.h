@@ -117,6 +117,13 @@ public:
     // 校零。
     void zeroCalibration(IBPSignalInput IBP);
 
+    /**
+     * @brief hasBeenZero check whether the channel has been zero or not
+     * @param IBP the ibp channel
+     * @return true if the channel is already zeroed
+     */
+    bool hasBeenZero(IBPSignalInput IBP);
+
     // 校准
     void setCalibration(IBPSignalInput IBP, unsigned short value);
 
@@ -200,5 +207,7 @@ private:
 
     bool _ibp1ZeroReply;                // 校零回复
     bool _ibp2ZeroReply;
+    bool _ibp1HasBeenZero;              /* check whether the channel has been zero */
+    bool _ibp2HasBeenZero;              /* check whether the channel has been zero */
 };
 #define ibpParam (IBPParam::construction())
