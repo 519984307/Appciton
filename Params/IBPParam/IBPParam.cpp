@@ -954,6 +954,8 @@ bool IBPParam::hasBeenZero(IBPSignalInput IBP)
     {
         return _ibp2HasBeenZero;
     }
+
+    return false;
 }
 
 /**************************************************************************************************
@@ -1620,15 +1622,26 @@ void IBPParam::clearCalibAlarm()
     }
 }
 
-bool IBPParam::getIBPZeroResult()
+bool IBPParam::hasIBPZeroReply(IBPSignalInput chn)
 {
-    bool replyResult = _ibp1ZeroReply && _ibp2ZeroReply;
-    if (replyResult)
+    bool *reply = NULL;
+    if (chn == IBP_INPUT_1)
     {
-        _ibp1ZeroReply = false;
-        _ibp2ZeroReply = false;
+        reply = &_ibp1ZeroReply;
     }
-    return replyResult;
+    else if (chn == IBP_INPUT_2)
+    {
+        reply = &_ibp2ZeroReply;
+    }
+
+    bool ret = false;
+    if (reply)
+    {
+        ret = *reply;
+        *reply = false;
+    }
+
+    return ret;
 }
 
 void IBPParam::onPaletteChanged(ParamID id)

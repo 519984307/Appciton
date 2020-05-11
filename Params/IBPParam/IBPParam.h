@@ -111,8 +111,13 @@ public:
     // 清空校准相关报警
     void clearCalibAlarm(void);
 
-    // 获取IBP校零结果是否成功
-    bool getIBPZeroResult(void);
+    /**
+     * @brief hasIBPZeroReply check whether received ibp zero reply
+     * @param chn the channel
+     * @return true when got reply
+     */
+    bool hasIBPZeroReply(IBPSignalInput chn);
+
 public:
     // 校零。
     void zeroCalibration(IBPSignalInput IBP);
