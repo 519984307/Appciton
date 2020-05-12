@@ -439,7 +439,7 @@ void WitleafProvider::setFilter(IBPSignalInput IBP, IBPFilterMode filter)
 /**************************************************************************************************
  * IBP表明设置
  *************************************************************************************************/
-void WitleafProvider::setIndicate(IBPPressureName pressurenameIBP1, IBPPressureName pressurenameIBP2,
+void WitleafProvider::setIndicate(IBPLabel pressurenameIBP1, IBPLabel pressurenameIBP2,
                                   IBPAuxiliarySet auxiliarysetIBP1, IBPAuxiliarySet auxiliarysetIBP2)
 {
     unsigned char indicate = 0;

@@ -39,7 +39,7 @@ public:
     virtual bool isSetFilter(unsigned char */*packet*/) {return false;}
 
     // IBP表明设置
-    virtual void setIndicate(IBPPressureName /*pressurenameIBP1*/, IBPPressureName /*pressurenameIBP2*/,
+    virtual void setIndicate(IBPLabel /*pressurenameIBP1*/, IBPLabel /*pressurenameIBP2*/,
                              IBPAuxiliarySet /*auxiliarysetIBP1*/, IBPAuxiliarySet /*auxiliarysetIBP2*/){}
     virtual bool isSetIndicate(unsigned char */*packet*/) {return false;}
 

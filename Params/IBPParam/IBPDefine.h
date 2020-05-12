@@ -23,17 +23,17 @@ enum IBPModuleType
 /**************************************************************************************************
  * IBP压力标名
  *************************************************************************************************/
-enum IBPPressureName
+enum IBPLabel
 {
-    IBP_PRESSURE_ART    =   0x00,               // 动脉压
-    IBP_PRESSURE_PA ,                           // 肺动脉压
-    IBP_PRESSURE_CVP,                           // 中心静脉压
-    IBP_PRESSURE_LAP,                           // 左心房压
-    IBP_PRESSURE_RAP,                           // 右心房压
-    IBP_PRESSURE_ICP,                           // 颅内压
-    IBP_PRESSURE_AUXP1,                         // 扩充压力P1
-    IBP_PRESSURE_AUXP2,                         // 扩充压力P2
-    IBP_PRESSURE_NR
+    IBP_LABEL_ART    =   0x00,               // 动脉压
+    IBP_LABEL_PA ,                           // 肺动脉压
+    IBP_LABEL_CVP,                           // 中心静脉压
+    IBP_LABEL_LAP,                           // 左心房压
+    IBP_LABEL_RAP,                           // 右心房压
+    IBP_LABEL_ICP,                           // 颅内压
+    IBP_LABEL_AUXP1,                         // 扩充压力P1
+    IBP_LABEL_AUXP2,                         // 扩充压力P2
+    IBP_LABEL_NR
 };
 
 /**
@@ -128,14 +128,14 @@ enum IBPSweepSpeed
 struct IBPParamInfo
 {
     IBPParamInfo()
-        : pressureName(IBP_PRESSURE_ART),
+        : pressureName(IBP_LABEL_ART),
         sys(InvData()),
         dia(InvData()),
         mean(InvData()),
         pr(InvData())
     {
     }
-    IBPPressureName pressureName;
+    IBPLabel pressureName;
     unsigned short sys;
     unsigned short dia;
     unsigned short mean;

@@ -81,7 +81,7 @@ void IBPWaveWidget::setLimit(int low, int high)
 /**************************************************************************************************
  * 设置标名。
  *************************************************************************************************/
-void IBPWaveWidget::setEntitle(IBPPressureName entitle)
+void IBPWaveWidget::setEntitle(IBPLabel entitle)
 {
     _name->setText(IBPSymbol::convert(entitle));
     QString zoomStr = QString::number(ibpParam.getIBPScale(entitle).low) + "-" +
@@ -93,7 +93,7 @@ void IBPWaveWidget::setEntitle(IBPPressureName entitle)
 /**************************************************************************************************
  * 获取标名。
  *************************************************************************************************/
-IBPPressureName IBPWaveWidget::getEntitle()
+IBPLabel IBPWaveWidget::getEntitle()
 {
     return _entitle;
 }
@@ -123,7 +123,7 @@ void IBPWaveWidget::setRulerLimit(IBPRulerLimit ruler)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-IBPWaveWidget::IBPWaveWidget(WaveformID id, const QString &waveName, const IBPPressureName &entitle)
+IBPWaveWidget::IBPWaveWidget(WaveformID id, const QString &waveName, const IBPLabel &entitle)
     : WaveWidget(waveName, IBPSymbol::convert(entitle)),
       _entitle(entitle)
 {

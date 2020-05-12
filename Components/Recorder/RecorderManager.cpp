@@ -480,7 +480,7 @@ void RecorderManager::printWavesInit()
     if (systemManager.isSupport(CONFIG_IBP))
     {
         // ibp
-        IBPPressureName ibpTitle = ibpParam.getEntitle(IBP_INPUT_1);
+        IBPLabel ibpTitle = ibpParam.getEntitle(IBP_INPUT_1);
         waveID = ibpParam.getWaveformID(ibpTitle);
         waveIDs.append(waveID);
 

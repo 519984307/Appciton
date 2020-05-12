@@ -26,7 +26,7 @@
  *************************************************************************************************/
 void IBPTrendWidget::setData(int16_t sys, int16_t dia, int16_t map)
 {
-    if ((_entitle < IBP_PRESSURE_CVP) || (_entitle > IBP_PRESSURE_ICP))
+    if ((_entitle < IBP_LABEL_CVP) || (_entitle > IBP_LABEL_ICP))
     {
         if (!_isZero)
         {
@@ -82,28 +82,28 @@ void IBPTrendWidget::updateLimit()
     SubParamID id;
     switch (_entitle)
     {
-    case IBP_PRESSURE_ART:
+    case IBP_LABEL_ART:
         id = SUB_PARAM_ART_SYS;
         break;
-    case IBP_PRESSURE_PA:
+    case IBP_LABEL_PA:
         id = SUB_PARAM_PA_SYS;
         break;
-    case IBP_PRESSURE_CVP:
+    case IBP_LABEL_CVP:
         id = SUB_PARAM_CVP_MAP;
         break;
-    case IBP_PRESSURE_LAP:
+    case IBP_LABEL_LAP:
         id = SUB_PARAM_LAP_MAP;
         break;
-    case IBP_PRESSURE_RAP:
+    case IBP_LABEL_RAP:
         id = SUB_PARAM_RAP_MAP;
         break;
-    case IBP_PRESSURE_ICP:
+    case IBP_LABEL_ICP:
         id = SUB_PARAM_ICP_MAP;
         break;
-    case IBP_PRESSURE_AUXP1:
+    case IBP_LABEL_AUXP1:
         id = SUB_PARAM_AUXP1_SYS;
         break;
-    case IBP_PRESSURE_AUXP2:
+    case IBP_LABEL_AUXP2:
         id = SUB_PARAM_AUXP2_SYS;
         break;
     default:
@@ -117,11 +117,11 @@ void IBPTrendWidget::updateLimit()
 /**************************************************************************************************
  * 设置标名。
  *************************************************************************************************/
-void IBPTrendWidget::setEntitle(IBPPressureName entitle)
+void IBPTrendWidget::setEntitle(IBPLabel entitle)
 {
     setName(IBPSymbol::convert(entitle));
     _entitle = entitle;
-    if (entitle >= IBP_PRESSURE_CVP && entitle <= IBP_PRESSURE_ICP)
+    if (entitle >= IBP_LABEL_CVP && entitle <= IBP_LABEL_ICP)
     {
         setShowStacked(2);
     }
@@ -216,10 +216,10 @@ void IBPTrendWidget::showValue()
             showAlarmStatus(_sysValue);
             switch (_entitle)
             {
-            case IBP_PRESSURE_ART:
-            case IBP_PRESSURE_PA:
-            case IBP_PRESSURE_AUXP1:
-            case IBP_PRESSURE_AUXP2:
+            case IBP_LABEL_ART:
+            case IBP_LABEL_PA:
+            case IBP_LABEL_AUXP1:
+            case IBP_LABEL_AUXP2:
                 showAlarmParamLimit(_sysValue, _sysString, psrc);
                 break;
             default:
@@ -238,10 +238,10 @@ void IBPTrendWidget::showValue()
             showAlarmStatus(_veinValue);
             switch (_entitle)
             {
-            case IBP_PRESSURE_ICP:
-            case IBP_PRESSURE_LAP:
-            case IBP_PRESSURE_RAP:
-            case IBP_PRESSURE_CVP:
+            case IBP_LABEL_ICP:
+            case IBP_LABEL_LAP:
+            case IBP_LABEL_RAP:
+            case IBP_LABEL_CVP:
                 showAlarmParamLimit(_mapValue, _mapString, psrc);
                 break;
             default:
@@ -259,7 +259,7 @@ void IBPTrendWidget::showValue()
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-IBPTrendWidget::IBPTrendWidget(const QString &trendName, const IBPPressureName &entitle)
+IBPTrendWidget::IBPTrendWidget(const QString &trendName, const IBPLabel &entitle)
     : TrendWidget(trendName),  _entitle(entitle), _isZero(false), _sysAlarm(false),
       _diaAlarm(false), _mapAlarm(false)
 {
@@ -368,25 +368,25 @@ QList<SubParamID> IBPTrendWidget::getShortTrendSubParams() const
 {
     QList<SubParamID> list;
     switch (_entitle) {
-    case IBP_PRESSURE_ART:
+    case IBP_LABEL_ART:
         list << SUB_PARAM_ART_SYS << SUB_PARAM_ART_DIA << SUB_PARAM_ART_MAP;
         break;
-    case IBP_PRESSURE_PA:
+    case IBP_LABEL_PA:
         list << SUB_PARAM_PA_SYS << SUB_PARAM_PA_DIA << SUB_PARAM_PA_MAP;
         break;
-    case IBP_PRESSURE_CVP:
+    case IBP_LABEL_CVP:
         list << SUB_PARAM_CVP_MAP;
         break;
-    case IBP_PRESSURE_LAP:
+    case IBP_LABEL_LAP:
         list << SUB_PARAM_LAP_MAP;
         break;
-    case IBP_PRESSURE_RAP:
+    case IBP_LABEL_RAP:
         list << SUB_PARAM_RAP_MAP;
         break;
-    case IBP_PRESSURE_AUXP1:
+    case IBP_LABEL_AUXP1:
         list << SUB_PARAM_AUXP1_SYS << SUB_PARAM_AUXP1_DIA << SUB_PARAM_AUXP1_MAP;
         break;
-    case IBP_PRESSURE_AUXP2:
+    case IBP_LABEL_AUXP2:
         list << SUB_PARAM_AUXP2_SYS << SUB_PARAM_AUXP2_DIA << SUB_PARAM_AUXP2_MAP;
         break;
     default:

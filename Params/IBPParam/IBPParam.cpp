@@ -33,8 +33,8 @@ IBPParam::IBPParam() : Param(PARAM_IBP),  _provider(NULL), _waveWidgetIBP1(NULL)
     _staIBP1(false), _staIBP2(false), _connectedProvider(false), _ibp1ZeroReply(false),
     _ibp2ZeroReply(false), _ibp1HasBeenZero(false), _ibp2HasBeenZero(false)
 {
-    _ibp1.pressureName = IBP_PRESSURE_ART;
-    _ibp2.pressureName = IBP_PRESSURE_PA;
+    _ibp1.pressureName = IBP_LABEL_ART;
+    _ibp2.pressureName = IBP_LABEL_PA;
 
     ibpScaleList.clear();
     IBPScaleInfo manualScale;
@@ -240,11 +240,11 @@ short IBPParam::getSubParamValue(SubParamID id)
     switch (id)
     {
     case SUB_PARAM_ART_SYS:
-        if (_ibp1.pressureName == IBP_PRESSURE_ART)
+        if (_ibp1.pressureName == IBP_LABEL_ART)
         {
             return getParamData(IBP_INPUT_1).sys;
         }
-        else if (_ibp2.pressureName == IBP_PRESSURE_ART)
+        else if (_ibp2.pressureName == IBP_LABEL_ART)
         {
             return getParamData(IBP_INPUT_2).sys;
         }
@@ -253,11 +253,11 @@ short IBPParam::getSubParamValue(SubParamID id)
             return InvData();
         }
     case SUB_PARAM_ART_DIA:
-        if (_ibp1.pressureName == IBP_PRESSURE_ART)
+        if (_ibp1.pressureName == IBP_LABEL_ART)
         {
             return getParamData(IBP_INPUT_1).dia;
         }
-        else if (_ibp2.pressureName == IBP_PRESSURE_ART)
+        else if (_ibp2.pressureName == IBP_LABEL_ART)
         {
             return getParamData(IBP_INPUT_2).dia;
         }
@@ -266,11 +266,11 @@ short IBPParam::getSubParamValue(SubParamID id)
             return InvData();
         }
     case SUB_PARAM_ART_MAP:
-        if (_ibp1.pressureName == IBP_PRESSURE_ART)
+        if (_ibp1.pressureName == IBP_LABEL_ART)
         {
             return getParamData(IBP_INPUT_1).mean;
         }
-        else if (_ibp2.pressureName == IBP_PRESSURE_ART)
+        else if (_ibp2.pressureName == IBP_LABEL_ART)
         {
             return getParamData(IBP_INPUT_2).mean;
         }
@@ -279,11 +279,11 @@ short IBPParam::getSubParamValue(SubParamID id)
             return InvData();
         }
     case SUB_PARAM_ART_PR:
-        if (_ibp1.pressureName == IBP_PRESSURE_ART)
+        if (_ibp1.pressureName == IBP_LABEL_ART)
         {
             return getParamData(IBP_INPUT_1).pr;
         }
-        else if (_ibp2.pressureName == IBP_PRESSURE_ART)
+        else if (_ibp2.pressureName == IBP_LABEL_ART)
         {
             return getParamData(IBP_INPUT_2).pr;
         }
@@ -292,11 +292,11 @@ short IBPParam::getSubParamValue(SubParamID id)
             return InvData();
         }
     case SUB_PARAM_PA_SYS:
-        if (_ibp1.pressureName == IBP_PRESSURE_PA)
+        if (_ibp1.pressureName == IBP_LABEL_PA)
         {
             return getParamData(IBP_INPUT_1).sys;
         }
-        else if (_ibp2.pressureName == IBP_PRESSURE_PA)
+        else if (_ibp2.pressureName == IBP_LABEL_PA)
         {
             return getParamData(IBP_INPUT_2).sys;
         }
@@ -305,11 +305,11 @@ short IBPParam::getSubParamValue(SubParamID id)
             return InvData();
         }
     case SUB_PARAM_PA_DIA:
-        if (_ibp1.pressureName == IBP_PRESSURE_PA)
+        if (_ibp1.pressureName == IBP_LABEL_PA)
         {
             return getParamData(IBP_INPUT_1).dia;
         }
-        else if (_ibp2.pressureName == IBP_PRESSURE_PA)
+        else if (_ibp2.pressureName == IBP_LABEL_PA)
         {
             return getParamData(IBP_INPUT_2).dia;
         }
@@ -318,11 +318,11 @@ short IBPParam::getSubParamValue(SubParamID id)
             return InvData();
         }
     case SUB_PARAM_PA_MAP:
-        if (_ibp1.pressureName == IBP_PRESSURE_PA)
+        if (_ibp1.pressureName == IBP_LABEL_PA)
         {
             return getParamData(IBP_INPUT_1).mean;
         }
-        else if (_ibp2.pressureName == IBP_PRESSURE_PA)
+        else if (_ibp2.pressureName == IBP_LABEL_PA)
         {
             return getParamData(IBP_INPUT_2).mean;
         }
@@ -331,11 +331,11 @@ short IBPParam::getSubParamValue(SubParamID id)
             return InvData();
         }
     case SUB_PARAM_PA_PR:
-        if (_ibp1.pressureName == IBP_PRESSURE_PA)
+        if (_ibp1.pressureName == IBP_LABEL_PA)
         {
             return getParamData(IBP_INPUT_1).pr;
         }
-        else if (_ibp2.pressureName == IBP_PRESSURE_PA)
+        else if (_ibp2.pressureName == IBP_LABEL_PA)
         {
             return getParamData(IBP_INPUT_2).pr;
         }
@@ -344,11 +344,11 @@ short IBPParam::getSubParamValue(SubParamID id)
             return InvData();
         }
     case SUB_PARAM_CVP_MAP:
-        if (_ibp1.pressureName == IBP_PRESSURE_CVP)
+        if (_ibp1.pressureName == IBP_LABEL_CVP)
         {
             return getParamData(IBP_INPUT_1).mean;
         }
-        else if (_ibp2.pressureName == IBP_PRESSURE_CVP)
+        else if (_ibp2.pressureName == IBP_LABEL_CVP)
         {
             return getParamData(IBP_INPUT_2).mean;
         }
@@ -357,11 +357,11 @@ short IBPParam::getSubParamValue(SubParamID id)
             return InvData();
         }
     case SUB_PARAM_CVP_PR:
-        if (_ibp1.pressureName == IBP_PRESSURE_CVP)
+        if (_ibp1.pressureName == IBP_LABEL_CVP)
         {
             return getParamData(IBP_INPUT_1).pr;
         }
-        else if (_ibp2.pressureName == IBP_PRESSURE_CVP)
+        else if (_ibp2.pressureName == IBP_LABEL_CVP)
         {
             return getParamData(IBP_INPUT_2).pr;
         }
@@ -370,11 +370,11 @@ short IBPParam::getSubParamValue(SubParamID id)
             return InvData();
         }
     case SUB_PARAM_LAP_MAP:
-        if (_ibp1.pressureName == IBP_PRESSURE_LAP)
+        if (_ibp1.pressureName == IBP_LABEL_LAP)
         {
             return getParamData(IBP_INPUT_1).mean;
         }
-        else if (_ibp2.pressureName == IBP_PRESSURE_LAP)
+        else if (_ibp2.pressureName == IBP_LABEL_LAP)
         {
             return getParamData(IBP_INPUT_2).mean;
         }
@@ -383,11 +383,11 @@ short IBPParam::getSubParamValue(SubParamID id)
             return InvData();
         }
     case SUB_PARAM_LAP_PR:
-        if (_ibp1.pressureName == IBP_PRESSURE_LAP)
+        if (_ibp1.pressureName == IBP_LABEL_LAP)
         {
             return getParamData(IBP_INPUT_1).pr;
         }
-        else if (_ibp2.pressureName == IBP_PRESSURE_LAP)
+        else if (_ibp2.pressureName == IBP_LABEL_LAP)
         {
             return getParamData(IBP_INPUT_2).pr;
         }
@@ -396,11 +396,11 @@ short IBPParam::getSubParamValue(SubParamID id)
             return InvData();
         }
     case SUB_PARAM_RAP_MAP:
-        if (_ibp1.pressureName == IBP_PRESSURE_RAP)
+        if (_ibp1.pressureName == IBP_LABEL_RAP)
         {
             return getParamData(IBP_INPUT_1).mean;
         }
-        else if (_ibp2.pressureName == IBP_PRESSURE_RAP)
+        else if (_ibp2.pressureName == IBP_LABEL_RAP)
         {
             return getParamData(IBP_INPUT_2).mean;
         }
@@ -409,11 +409,11 @@ short IBPParam::getSubParamValue(SubParamID id)
             return InvData();
         }
     case SUB_PARAM_RAP_PR:
-        if (_ibp1.pressureName == IBP_PRESSURE_RAP)
+        if (_ibp1.pressureName == IBP_LABEL_RAP)
         {
             return getParamData(IBP_INPUT_1).pr;
         }
-        else if (_ibp2.pressureName == IBP_PRESSURE_RAP)
+        else if (_ibp2.pressureName == IBP_LABEL_RAP)
         {
             return getParamData(IBP_INPUT_2).pr;
         }
@@ -422,11 +422,11 @@ short IBPParam::getSubParamValue(SubParamID id)
             return InvData();
         }
     case SUB_PARAM_ICP_MAP:
-        if (_ibp1.pressureName == IBP_PRESSURE_ICP)
+        if (_ibp1.pressureName == IBP_LABEL_ICP)
         {
             return getParamData(IBP_INPUT_1).mean;
         }
-        else if (_ibp2.pressureName == IBP_PRESSURE_ICP)
+        else if (_ibp2.pressureName == IBP_LABEL_ICP)
         {
             return getParamData(IBP_INPUT_2).mean;
         }
@@ -435,11 +435,11 @@ short IBPParam::getSubParamValue(SubParamID id)
             return InvData();
         }
     case SUB_PARAM_ICP_PR:
-        if (_ibp1.pressureName == IBP_PRESSURE_ICP)
+        if (_ibp1.pressureName == IBP_LABEL_ICP)
         {
             return getParamData(IBP_INPUT_1).pr;
         }
-        else if (_ibp2.pressureName == IBP_PRESSURE_ICP)
+        else if (_ibp2.pressureName == IBP_LABEL_ICP)
         {
             return getParamData(IBP_INPUT_2).pr;
         }
@@ -448,11 +448,11 @@ short IBPParam::getSubParamValue(SubParamID id)
             return InvData();
         }
     case SUB_PARAM_AUXP1_SYS:
-        if (_ibp1.pressureName == IBP_PRESSURE_AUXP1)
+        if (_ibp1.pressureName == IBP_LABEL_AUXP1)
         {
             return getParamData(IBP_INPUT_1).sys;
         }
-        else if (_ibp2.pressureName == IBP_PRESSURE_AUXP1)
+        else if (_ibp2.pressureName == IBP_LABEL_AUXP1)
         {
             return getParamData(IBP_INPUT_2).sys;
         }
@@ -461,11 +461,11 @@ short IBPParam::getSubParamValue(SubParamID id)
             return InvData();
         }
     case SUB_PARAM_AUXP1_DIA:
-        if (_ibp1.pressureName == IBP_PRESSURE_AUXP1)
+        if (_ibp1.pressureName == IBP_LABEL_AUXP1)
         {
             return getParamData(IBP_INPUT_1).dia;
         }
-        else if (_ibp2.pressureName == IBP_PRESSURE_AUXP1)
+        else if (_ibp2.pressureName == IBP_LABEL_AUXP1)
         {
             return getParamData(IBP_INPUT_2).dia;
         }
@@ -474,11 +474,11 @@ short IBPParam::getSubParamValue(SubParamID id)
             return InvData();
         }
     case SUB_PARAM_AUXP1_MAP:
-        if (_ibp1.pressureName == IBP_PRESSURE_AUXP1)
+        if (_ibp1.pressureName == IBP_LABEL_AUXP1)
         {
             return getParamData(IBP_INPUT_1).mean;
         }
-        else if (_ibp2.pressureName == IBP_PRESSURE_AUXP1)
+        else if (_ibp2.pressureName == IBP_LABEL_AUXP1)
         {
             return getParamData(IBP_INPUT_2).mean;
         }
@@ -487,11 +487,11 @@ short IBPParam::getSubParamValue(SubParamID id)
             return InvData();
         }
     case SUB_PARAM_AUXP1_PR:
-        if (_ibp1.pressureName == IBP_PRESSURE_AUXP1)
+        if (_ibp1.pressureName == IBP_LABEL_AUXP1)
         {
             return getParamData(IBP_INPUT_1).pr;
         }
-        else if (_ibp2.pressureName == IBP_PRESSURE_AUXP1)
+        else if (_ibp2.pressureName == IBP_LABEL_AUXP1)
         {
             return getParamData(IBP_INPUT_2).pr;
         }
@@ -500,11 +500,11 @@ short IBPParam::getSubParamValue(SubParamID id)
             return InvData();
         }
     case SUB_PARAM_AUXP2_SYS:
-        if (_ibp1.pressureName == IBP_PRESSURE_AUXP2)
+        if (_ibp1.pressureName == IBP_LABEL_AUXP2)
         {
             return getParamData(IBP_INPUT_1).sys;
         }
-        else if (_ibp2.pressureName == IBP_PRESSURE_AUXP2)
+        else if (_ibp2.pressureName == IBP_LABEL_AUXP2)
         {
             return getParamData(IBP_INPUT_2).sys;
         }
@@ -513,11 +513,11 @@ short IBPParam::getSubParamValue(SubParamID id)
             return InvData();
         }
     case SUB_PARAM_AUXP2_DIA:
-        if (_ibp1.pressureName == IBP_PRESSURE_AUXP2)
+        if (_ibp1.pressureName == IBP_LABEL_AUXP2)
         {
             return getParamData(IBP_INPUT_1).dia;
         }
-        else if (_ibp2.pressureName == IBP_PRESSURE_AUXP2)
+        else if (_ibp2.pressureName == IBP_LABEL_AUXP2)
         {
             return getParamData(IBP_INPUT_2).dia;
         }
@@ -526,11 +526,11 @@ short IBPParam::getSubParamValue(SubParamID id)
             return InvData();
         }
     case SUB_PARAM_AUXP2_MAP:
-        if (_ibp1.pressureName == IBP_PRESSURE_AUXP2)
+        if (_ibp1.pressureName == IBP_LABEL_AUXP2)
         {
             return getParamData(IBP_INPUT_1).mean;
         }
-        else if (_ibp2.pressureName == IBP_PRESSURE_AUXP2)
+        else if (_ibp2.pressureName == IBP_LABEL_AUXP2)
         {
             return getParamData(IBP_INPUT_2).mean;
         }
@@ -539,11 +539,11 @@ short IBPParam::getSubParamValue(SubParamID id)
             return InvData();
         }
     case SUB_PARAM_AUXP2_PR:
-        if (_ibp1.pressureName == IBP_PRESSURE_AUXP2)
+        if (_ibp1.pressureName == IBP_LABEL_AUXP2)
         {
             return getParamData(IBP_INPUT_1).pr;
         }
-        else if (_ibp2.pressureName == IBP_PRESSURE_AUXP2)
+        else if (_ibp2.pressureName == IBP_LABEL_AUXP2)
         {
             return getParamData(IBP_INPUT_2).pr;
         }
@@ -564,34 +564,34 @@ bool IBPParam::isSubParamAvaliable(SubParamID id)
     case SUB_PARAM_ART_DIA:
     case SUB_PARAM_ART_MAP:
     case SUB_PARAM_ART_PR:
-        return _ibp1.pressureName == IBP_PRESSURE_ART || _ibp2.pressureName == IBP_PRESSURE_ART;
+        return _ibp1.pressureName == IBP_LABEL_ART || _ibp2.pressureName == IBP_LABEL_ART;
     case SUB_PARAM_PA_SYS:
     case SUB_PARAM_PA_DIA:
     case SUB_PARAM_PA_MAP:
     case SUB_PARAM_PA_PR:
-        return _ibp1.pressureName == IBP_PRESSURE_PA || _ibp2.pressureName == IBP_PRESSURE_PA;
+        return _ibp1.pressureName == IBP_LABEL_PA || _ibp2.pressureName == IBP_LABEL_PA;
     case SUB_PARAM_CVP_MAP:
     case SUB_PARAM_CVP_PR:
-        return _ibp1.pressureName == IBP_PRESSURE_CVP || _ibp2.pressureName == IBP_PRESSURE_CVP;
+        return _ibp1.pressureName == IBP_LABEL_CVP || _ibp2.pressureName == IBP_LABEL_CVP;
     case SUB_PARAM_LAP_MAP:
     case SUB_PARAM_LAP_PR:
-        return _ibp1.pressureName == IBP_PRESSURE_LAP || _ibp2.pressureName == IBP_PRESSURE_LAP;
+        return _ibp1.pressureName == IBP_LABEL_LAP || _ibp2.pressureName == IBP_LABEL_LAP;
     case SUB_PARAM_RAP_MAP:
     case SUB_PARAM_RAP_PR:
-        return _ibp1.pressureName == IBP_PRESSURE_RAP || _ibp2.pressureName == IBP_PRESSURE_RAP;
+        return _ibp1.pressureName == IBP_LABEL_RAP || _ibp2.pressureName == IBP_LABEL_RAP;
     case SUB_PARAM_ICP_MAP:
     case SUB_PARAM_ICP_PR:
-        return _ibp1.pressureName == IBP_PRESSURE_ICP || _ibp2.pressureName == IBP_PRESSURE_ICP;
+        return _ibp1.pressureName == IBP_LABEL_ICP || _ibp2.pressureName == IBP_LABEL_ICP;
     case SUB_PARAM_AUXP1_SYS:
     case SUB_PARAM_AUXP1_DIA:
     case SUB_PARAM_AUXP1_MAP:
     case SUB_PARAM_AUXP1_PR:
-        return _ibp1.pressureName == IBP_PRESSURE_AUXP1 || _ibp2.pressureName == IBP_PRESSURE_AUXP1;
+        return _ibp1.pressureName == IBP_LABEL_AUXP1 || _ibp2.pressureName == IBP_LABEL_AUXP1;
     case SUB_PARAM_AUXP2_SYS:
     case SUB_PARAM_AUXP2_DIA:
     case SUB_PARAM_AUXP2_MAP:
     case SUB_PARAM_AUXP2_PR:
-        return _ibp1.pressureName == IBP_PRESSURE_AUXP2 || _ibp2.pressureName == IBP_PRESSURE_AUXP2;
+        return _ibp1.pressureName == IBP_LABEL_AUXP2 || _ibp2.pressureName == IBP_LABEL_AUXP2;
     default:
         break;
     }
@@ -615,28 +615,28 @@ void IBPParam::setProvider(IBPProviderIFace *provider)
     _provider = provider;
 
     // 注册波形缓存
-    QString title = IBPSymbol::convert(IBP_PRESSURE_ART);
+    QString title = IBPSymbol::convert(IBP_LABEL_ART);
     waveformCache.registerSource(WAVE_ART, _provider->getIBPWaveformSample(),
                                  0, _provider->getIBPMaxWaveform(), title, _provider->getIBPBaseLine());
-    title = IBPSymbol::convert(IBP_PRESSURE_PA);
+    title = IBPSymbol::convert(IBP_LABEL_PA);
     waveformCache.registerSource(WAVE_PA, _provider->getIBPWaveformSample(),
                                  0, _provider->getIBPMaxWaveform(), title, _provider->getIBPBaseLine());
-    title = IBPSymbol::convert(IBP_PRESSURE_CVP);
+    title = IBPSymbol::convert(IBP_LABEL_CVP);
     waveformCache.registerSource(WAVE_CVP, _provider->getIBPWaveformSample(),
                                  0, _provider->getIBPMaxWaveform(), title, _provider->getIBPBaseLine());
-    title = IBPSymbol::convert(IBP_PRESSURE_RAP);
+    title = IBPSymbol::convert(IBP_LABEL_RAP);
     waveformCache.registerSource(WAVE_RAP, _provider->getIBPWaveformSample(),
                                  0, _provider->getIBPMaxWaveform(), title, _provider->getIBPBaseLine());
-    title = IBPSymbol::convert(IBP_PRESSURE_LAP);
+    title = IBPSymbol::convert(IBP_LABEL_LAP);
     waveformCache.registerSource(WAVE_LAP, _provider->getIBPWaveformSample(),
                                  0, _provider->getIBPMaxWaveform(), title, _provider->getIBPBaseLine());
-    title = IBPSymbol::convert(IBP_PRESSURE_ICP);
+    title = IBPSymbol::convert(IBP_LABEL_ICP);
     waveformCache.registerSource(WAVE_ICP, _provider->getIBPWaveformSample(),
                                  0, _provider->getIBPMaxWaveform(), title, _provider->getIBPBaseLine());
-    title = IBPSymbol::convert(IBP_PRESSURE_AUXP1);
+    title = IBPSymbol::convert(IBP_LABEL_AUXP1);
     waveformCache.registerSource(WAVE_AUXP1, _provider->getIBPWaveformSample(),
                                  0, _provider->getIBPMaxWaveform(), title, _provider->getIBPBaseLine());
-    title = IBPSymbol::convert(IBP_PRESSURE_AUXP2);
+    title = IBPSymbol::convert(IBP_LABEL_AUXP2);
     waveformCache.registerSource(WAVE_AUXP2, _provider->getIBPWaveformSample(),
                                  0, _provider->getIBPMaxWaveform(), title, _provider->getIBPBaseLine());
 
@@ -776,25 +776,25 @@ QList<SubParamID> IBPParam::getShortTrendList(IBPSignalInput IBP)
     return paraList;
 }
 
-IBPScaleInfo IBPParam::getIBPScale(IBPPressureName name)
+IBPScaleInfo IBPParam::getIBPScale(IBPLabel name)
 {
     // TODO(chenbingyun): implement this function
     IBPScaleInfo info;
     int highLimit = 0;
     switch (name)
     {
-    case IBP_PRESSURE_ART:
-    case IBP_PRESSURE_AUXP1:
-    case IBP_PRESSURE_AUXP2:
+    case IBP_LABEL_ART:
+    case IBP_LABEL_AUXP1:
+    case IBP_LABEL_AUXP2:
         highLimit = 160;
         break;
-    case IBP_PRESSURE_PA:
-    case IBP_PRESSURE_CVP:
+    case IBP_LABEL_PA:
+    case IBP_LABEL_CVP:
         highLimit = 30;
         break;
-    case IBP_PRESSURE_LAP:
-    case IBP_PRESSURE_RAP:
-    case IBP_PRESSURE_ICP:
+    case IBP_LABEL_LAP:
+    case IBP_LABEL_RAP:
+    case IBP_LABEL_ICP:
         highLimit = 20;
         break;
     default:
@@ -864,23 +864,23 @@ IBPRulerLimit IBPParam::getRulerLimit(IBPSignalInput ibp)
     return static_cast<IBPRulerLimit>(ruler);
 }
 
-IBPRulerLimit IBPParam::getRulerLimit(IBPPressureName name)
+IBPRulerLimit IBPParam::getRulerLimit(IBPLabel name)
 {
     IBPRulerLimit ruler = IBP_RULER_LIMIT_0_160;
     switch (name)
     {
-    case IBP_PRESSURE_ART:
-    case IBP_PRESSURE_AUXP1:
-    case IBP_PRESSURE_AUXP2:
+    case IBP_LABEL_ART:
+    case IBP_LABEL_AUXP1:
+    case IBP_LABEL_AUXP2:
         ruler = IBP_RULER_LIMIT_0_160;
         break;
-    case IBP_PRESSURE_PA:
-    case IBP_PRESSURE_CVP:
+    case IBP_LABEL_PA:
+    case IBP_LABEL_CVP:
         ruler = IBP_RULER_LIMIT_0_30;
         break;
-    case IBP_PRESSURE_LAP:
-    case IBP_PRESSURE_RAP:
-    case IBP_PRESSURE_ICP:
+    case IBP_LABEL_LAP:
+    case IBP_LABEL_RAP:
+    case IBP_LABEL_ICP:
         ruler = IBP_RULER_LIMIT_0_20;
         break;
     default:
@@ -889,7 +889,7 @@ IBPRulerLimit IBPParam::getRulerLimit(IBPPressureName name)
     return ruler;
 }
 
-void IBPParam::setScaleInfo(const IBPScaleInfo &info, const IBPPressureName &name)
+void IBPParam::setScaleInfo(const IBPScaleInfo &info, const IBPLabel &name)
 {
     if (_ibp1.pressureName == name)
     {
@@ -1216,7 +1216,7 @@ IBPSweepSpeed IBPParam::getSweepSpeed()
 /**************************************************************************************************
  * 设置标名。
  *************************************************************************************************/
-void IBPParam::setEntitle(IBPPressureName entitle, IBPSignalInput IBP)
+void IBPParam::setEntitle(IBPLabel entitle, IBPSignalInput IBP)
 {
     if (IBP == IBP_INPUT_1)
     {
@@ -1235,18 +1235,18 @@ void IBPParam::setEntitle(IBPPressureName entitle, IBPSignalInput IBP)
         return;
     }
 
-    if (((_ibp1.pressureName >= IBP_PRESSURE_CVP) && (_ibp1.pressureName <= IBP_PRESSURE_ICP))
-            && ((_ibp2.pressureName >= IBP_PRESSURE_CVP) && (_ibp2.pressureName <= IBP_PRESSURE_ICP)))
+    if (((_ibp1.pressureName >= IBP_LABEL_CVP) && (_ibp1.pressureName <= IBP_LABEL_ICP))
+            && ((_ibp2.pressureName >= IBP_LABEL_CVP) && (_ibp2.pressureName <= IBP_LABEL_ICP)))
     {
         _provider->setIndicate(_ibp1.pressureName, _ibp2.pressureName, IBP_MEASURE_CALC_1, IBP_MEASURE_CALC_1);
     }
-    else if (((_ibp1.pressureName >= IBP_PRESSURE_CVP) && (_ibp1.pressureName <= IBP_PRESSURE_ICP))
-             && ((_ibp2.pressureName < IBP_PRESSURE_CVP) || (_ibp2.pressureName > IBP_PRESSURE_ICP)))
+    else if (((_ibp1.pressureName >= IBP_LABEL_CVP) && (_ibp1.pressureName <= IBP_LABEL_ICP))
+             && ((_ibp2.pressureName < IBP_LABEL_CVP) || (_ibp2.pressureName > IBP_LABEL_ICP)))
     {
         _provider->setIndicate(_ibp1.pressureName, _ibp2.pressureName, IBP_MEASURE_CALC_1, IBP_MEASURE_CALC_3);
     }
-    else if (((_ibp1.pressureName < IBP_PRESSURE_CVP) || (_ibp1.pressureName > IBP_PRESSURE_ICP))
-             && ((_ibp2.pressureName >= IBP_PRESSURE_CVP) && (_ibp2.pressureName <= IBP_PRESSURE_ICP)))
+    else if (((_ibp1.pressureName < IBP_LABEL_CVP) || (_ibp1.pressureName > IBP_LABEL_ICP))
+             && ((_ibp2.pressureName >= IBP_LABEL_CVP) && (_ibp2.pressureName <= IBP_LABEL_ICP)))
     {
         _provider->setIndicate(_ibp1.pressureName, _ibp2.pressureName, IBP_MEASURE_CALC_3, IBP_MEASURE_CALC_1);
     }
@@ -1256,7 +1256,7 @@ void IBPParam::setEntitle(IBPPressureName entitle, IBPSignalInput IBP)
     }
 }
 
-IBPPressureName IBPParam::getEntitle(IBPSignalInput signal) const
+IBPLabel IBPParam::getEntitle(IBPSignalInput signal) const
 {
     if (signal == IBP_INPUT_1)
     {
@@ -1268,7 +1268,7 @@ IBPPressureName IBPParam::getEntitle(IBPSignalInput signal) const
     }
 }
 
-IBPPressureName IBPParam::getEntitle(IBPLimitAlarmType alarmType) const
+IBPLabel IBPParam::getEntitle(IBPLimitAlarmType alarmType) const
 {
     switch (alarmType)
     {
@@ -1280,7 +1280,7 @@ IBPPressureName IBPParam::getEntitle(IBPLimitAlarmType alarmType) const
     case ART_LIMIT_ALARM_MEAN_HIGH:
     case ART_LIMIT_ALARM_PR_LOW:
     case ART_LIMIT_ALARM_PR_HIGH:
-        return IBP_PRESSURE_ART;
+        return IBP_LABEL_ART;
     case PA_LIMIT_ALARM_SYS_LOW:
     case PA_LIMIT_ALARM_SYS_HIGH:
     case PA_LIMIT_ALARM_DIA_LOW:
@@ -1289,27 +1289,27 @@ IBPPressureName IBPParam::getEntitle(IBPLimitAlarmType alarmType) const
     case PA_LIMIT_ALARM_MEAN_HIGH:
     case PA_LIMIT_ALARM_PR_LOW:
     case PA_LIMIT_ALARM_PR_HIGH:
-        return IBP_PRESSURE_PA;
+        return IBP_LABEL_PA;
     case CVP_LIMIT_ALARM_MEAN_LOW:
     case CVP_LIMIT_ALARM_MEAN_HIGH:
     case CVP_LIMIT_ALARM_PR_LOW:
     case CVP_LIMIT_ALARM_PR_HIGH:
-        return IBP_PRESSURE_CVP;
+        return IBP_LABEL_CVP;
     case LAP_LIMIT_ALARM_MEAN_LOW:
     case LAP_LIMIT_ALARM_MEAN_HIGH:
     case LAP_LIMIT_ALARM_PR_LOW:
     case LAP_LIMIT_ALARM_PR_HIGH:
-        return IBP_PRESSURE_LAP;
+        return IBP_LABEL_LAP;
     case RAP_LIMIT_ALARM_MEAN_LOW:
     case RAP_LIMIT_ALARM_MEAN_HIGH:
     case RAP_LIMIT_ALARM_PR_LOW:
     case RAP_LIMIT_ALARM_PR_HIGH:
-        return IBP_PRESSURE_RAP;
+        return IBP_LABEL_RAP;
     case ICP_LIMIT_ALARM_MEAN_LOW:
     case ICP_LIMIT_ALARM_MEAN_HIGH:
     case ICP_LIMIT_ALARM_PR_LOW:
     case ICP_LIMIT_ALARM_PR_HIGH:
-        return IBP_PRESSURE_ICP;
+        return IBP_LABEL_ICP;
     case AUXP1_LIMIT_ALARM_SYS_LOW:
     case AUXP1_LIMIT_ALARM_SYS_HIGH:
     case AUXP1_LIMIT_ALARM_DIA_LOW:
@@ -1318,7 +1318,7 @@ IBPPressureName IBPParam::getEntitle(IBPLimitAlarmType alarmType) const
     case AUXP1_LIMIT_ALARM_MEAN_HIGH:
     case AUXP1_LIMIT_ALARM_PR_LOW:
     case AUXP1_LIMIT_ALARM_PR_HIGH:
-        return IBP_PRESSURE_AUXP1;
+        return IBP_LABEL_AUXP1;
     case AUXP2_LIMIT_ALARM_SYS_LOW:
     case AUXP2_LIMIT_ALARM_SYS_HIGH:
     case AUXP2_LIMIT_ALARM_DIA_LOW:
@@ -1327,9 +1327,9 @@ IBPPressureName IBPParam::getEntitle(IBPLimitAlarmType alarmType) const
     case AUXP2_LIMIT_ALARM_MEAN_HIGH:
     case AUXP2_LIMIT_ALARM_PR_LOW:
     case AUXP2_LIMIT_ALARM_PR_HIGH:
-        return IBP_PRESSURE_AUXP2;
+        return IBP_LABEL_AUXP2;
     default:
-        return IBP_PRESSURE_NR;
+        return IBP_LABEL_NR;
     }
 }
 
@@ -1423,50 +1423,50 @@ SubParamID IBPParam::getSubParamID(IBPSignalInput inputID)
 /**************************************************************************************************
  * 根据参数ID获取压力标名
  *************************************************************************************************/
-IBPPressureName IBPParam::getPressureName(SubParamID id)
+IBPLabel IBPParam::getPressureName(SubParamID id)
 {
-    IBPPressureName name;
+    IBPLabel name;
     switch (id)
     {
     case SUB_PARAM_ART_SYS:
     case SUB_PARAM_ART_MAP:
     case SUB_PARAM_ART_DIA:
     case SUB_PARAM_ART_PR:
-        name = IBP_PRESSURE_ART;
+        name = IBP_LABEL_ART;
         break;
     case SUB_PARAM_PA_SYS:
     case SUB_PARAM_PA_DIA:
     case SUB_PARAM_PA_MAP:
     case SUB_PARAM_PA_PR:
-        name = IBP_PRESSURE_PA;
+        name = IBP_LABEL_PA;
         break;
     case SUB_PARAM_CVP_MAP:
     case SUB_PARAM_CVP_PR:
-        name = IBP_PRESSURE_CVP;
+        name = IBP_LABEL_CVP;
         break;
     case SUB_PARAM_LAP_MAP:
     case SUB_PARAM_LAP_PR:
-        name = IBP_PRESSURE_LAP;
+        name = IBP_LABEL_LAP;
         break;
     case SUB_PARAM_RAP_MAP:
     case SUB_PARAM_RAP_PR:
-        name = IBP_PRESSURE_RAP;
+        name = IBP_LABEL_RAP;
         break;
     case SUB_PARAM_ICP_MAP:
     case SUB_PARAM_ICP_PR:
-        name = IBP_PRESSURE_ICP;
+        name = IBP_LABEL_ICP;
         break;
     case SUB_PARAM_AUXP1_SYS:
     case SUB_PARAM_AUXP1_DIA:
     case SUB_PARAM_AUXP1_MAP:
     case SUB_PARAM_AUXP1_PR:
-        name = IBP_PRESSURE_AUXP1;
+        name = IBP_LABEL_AUXP1;
         break;
     case SUB_PARAM_AUXP2_SYS:
     case SUB_PARAM_AUXP2_DIA:
     case SUB_PARAM_AUXP2_MAP:
     case SUB_PARAM_AUXP2_PR:
-        name = IBP_PRESSURE_AUXP2;
+        name = IBP_LABEL_AUXP2;
         break;
     default:
         break;
@@ -1474,34 +1474,34 @@ IBPPressureName IBPParam::getPressureName(SubParamID id)
     return name;
 }
 
-IBPPressureName IBPParam::getPressureName(WaveformID id)
+IBPLabel IBPParam::getPressureName(WaveformID id)
 {
-    IBPPressureName name;
+    IBPLabel name;
     switch (id)
     {
     case WAVE_ART:
-        name = IBP_PRESSURE_ART;
+        name = IBP_LABEL_ART;
         break;
     case WAVE_PA:
-        name = IBP_PRESSURE_PA;
+        name = IBP_LABEL_PA;
         break;
     case WAVE_CVP:
-        name = IBP_PRESSURE_CVP;
+        name = IBP_LABEL_CVP;
         break;
     case WAVE_LAP:
-        name = IBP_PRESSURE_LAP;
+        name = IBP_LABEL_LAP;
         break;
     case WAVE_RAP:
-        name = IBP_PRESSURE_RAP;
+        name = IBP_LABEL_RAP;
         break;
     case WAVE_ICP:
-        name = IBP_PRESSURE_ICP;
+        name = IBP_LABEL_ICP;
         break;
     case WAVE_AUXP1:
-        name = IBP_PRESSURE_AUXP1;
+        name = IBP_LABEL_AUXP1;
         break;
     case WAVE_AUXP2:
-        name = IBP_PRESSURE_AUXP2;
+        name = IBP_LABEL_AUXP2;
         break;
     default:
         break;
@@ -1512,33 +1512,33 @@ IBPPressureName IBPParam::getPressureName(WaveformID id)
 /**************************************************************************************************
  * 根据压力标名获取参数ID
  *************************************************************************************************/
-SubParamID IBPParam::getSubParamID(IBPPressureName name)
+SubParamID IBPParam::getSubParamID(IBPLabel name)
 {
     SubParamID id;
     switch (name)
     {
-    case IBP_PRESSURE_ART:
+    case IBP_LABEL_ART:
         id = SUB_PARAM_ART_SYS;
         break;
-    case IBP_PRESSURE_PA:
+    case IBP_LABEL_PA:
         id = SUB_PARAM_PA_SYS;
         break;
-    case IBP_PRESSURE_CVP:
+    case IBP_LABEL_CVP:
         id = SUB_PARAM_CVP_MAP;
         break;
-    case IBP_PRESSURE_LAP:
+    case IBP_LABEL_LAP:
         id = SUB_PARAM_LAP_MAP;
         break;
-    case IBP_PRESSURE_RAP:
+    case IBP_LABEL_RAP:
         id = SUB_PARAM_RAP_MAP;
         break;
-    case IBP_PRESSURE_ICP:
+    case IBP_LABEL_ICP:
         id = SUB_PARAM_ICP_MAP;
         break;
-    case IBP_PRESSURE_AUXP1:
+    case IBP_LABEL_AUXP1:
         id = SUB_PARAM_AUXP1_SYS;
         break;
-    case IBP_PRESSURE_AUXP2:
+    case IBP_LABEL_AUXP2:
         id = SUB_PARAM_AUXP2_SYS;
         break;
     default:
@@ -1547,33 +1547,33 @@ SubParamID IBPParam::getSubParamID(IBPPressureName name)
     return id;
 }
 
-WaveformID IBPParam::getWaveformID(IBPPressureName name)
+WaveformID IBPParam::getWaveformID(IBPLabel name)
 {
     WaveformID waveID;
     switch (name)
     {
-    case IBP_PRESSURE_ART:
+    case IBP_LABEL_ART:
         waveID = WAVE_ART;
         break;
-    case IBP_PRESSURE_PA:
+    case IBP_LABEL_PA:
         waveID = WAVE_PA;
         break;
-    case IBP_PRESSURE_CVP:
+    case IBP_LABEL_CVP:
         waveID = WAVE_CVP;
         break;
-    case IBP_PRESSURE_LAP:
+    case IBP_LABEL_LAP:
         waveID = WAVE_LAP;
         break;
-    case IBP_PRESSURE_RAP:
+    case IBP_LABEL_RAP:
         waveID = WAVE_RAP;
         break;
-    case IBP_PRESSURE_ICP:
+    case IBP_LABEL_ICP:
         waveID = WAVE_ICP;
         break;
-    case IBP_PRESSURE_AUXP1:
+    case IBP_LABEL_AUXP1:
         waveID = WAVE_AUXP1;
         break;
-    case IBP_PRESSURE_AUXP2:
+    case IBP_LABEL_AUXP2:
         waveID = WAVE_AUXP2;
         break;
     default:

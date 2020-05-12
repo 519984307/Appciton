@@ -32,13 +32,13 @@ public:
     void setLimit(int low, int high);
 
     // 设置获取标名。
-    void setEntitle(IBPPressureName entitle);
-    IBPPressureName getEntitle(void);
+    void setEntitle(IBPLabel entitle);
+    IBPLabel getEntitle(void);
 
     void setRulerLimit(IBPRulerLimit ruler);
 
     // 构造与析构。
-    IBPWaveWidget(WaveformID id, const QString &waveName, const IBPPressureName &entitle);
+    IBPWaveWidget(WaveformID id, const QString &waveName, const IBPLabel &entitle);
     ~IBPWaveWidget();
 
     /**
@@ -68,7 +68,7 @@ private:
 //    WaveWidgetLabel *_name;         // 名称
     WaveWidgetLabel *_leadSta;          // 导联状态
     IBPWaveRuler *_ruler;               // 标尺对象
-    IBPPressureName _entitle;           // 标名
+    IBPLabel _entitle;           // 标名
     int _lowLimit;                      // 下标尺
     int _highLimit;                     // 上标尺
     bool _isAutoRuler;

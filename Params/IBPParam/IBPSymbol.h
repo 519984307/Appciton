@@ -16,9 +16,9 @@
 class IBPSymbol
 {
 public:
-    static const char *convert(IBPPressureName index)
+    static const char *convert(IBPLabel index)
     {
-        static const char *symbol[IBP_PRESSURE_NR] =
+        static const char *symbol[IBP_LABEL_NR] =
         {
             "ART",  "PA", "CVP", "LAP", "RAP", "ICP", "AUXP1", "AUXP2"
         };

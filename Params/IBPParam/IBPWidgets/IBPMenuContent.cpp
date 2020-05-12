@@ -77,8 +77,8 @@ public:
     QMap<MenuItem, SpinBox *> spinBoxs;
     QGroupBox *oneGBox;
     QGroupBox *twoGBox;
-    IBPPressureName ibp1;
-    IBPPressureName ibp2;
+    IBPLabel ibp1;
+    IBPLabel ibp2;
     int autoTimerId;
     IBPRulerLimit rulerLimit1;
     IBPRulerLimit rulerLimit2;
@@ -161,7 +161,7 @@ void IBPMenuContentPrivate::updatePrintWaveIds()
         // 旧的打印波形与当前保存的波形一致时
         if (waveId == waveIdList.at(0))
         {
-            IBPPressureName ibpTitle = ibpParam.getEntitle(IBP_INPUT_1);
+            IBPLabel ibpTitle = ibpParam.getEntitle(IBP_INPUT_1);
             int ibpWaveID = ibpParam.getWaveformID(ibpTitle);
             // 替换波形
             if (ibpWaveID != waveId)
@@ -188,7 +188,7 @@ void IBPMenuContentPrivate::updatePrintWaveIds()
         // 旧的打印波形与当前保存的波形一致时
         if (waveId == waveIdList.at(1))
         {
-            IBPPressureName ibpTitle = ibpParam.getEntitle(IBP_INPUT_2);
+            IBPLabel ibpTitle = ibpParam.getEntitle(IBP_INPUT_2);
             int ibpWaveID = ibpParam.getWaveformID(ibpTitle);
             // 替换波形
             if (ibpWaveID != waveId)
@@ -238,14 +238,14 @@ void IBPMenuContent::layoutExec()
     gLayout->addWidget(label, 0, 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
-                       << IBPSymbol::convert(IBP_PRESSURE_ART)
-                       << IBPSymbol::convert(IBP_PRESSURE_PA)
-                       << IBPSymbol::convert(IBP_PRESSURE_CVP)
-                       << IBPSymbol::convert(IBP_PRESSURE_LAP)
-                       << IBPSymbol::convert(IBP_PRESSURE_RAP)
-                       << IBPSymbol::convert(IBP_PRESSURE_ICP)
-                       << IBPSymbol::convert(IBP_PRESSURE_AUXP1)
-                       << IBPSymbol::convert(IBP_PRESSURE_AUXP2));
+                       << IBPSymbol::convert(IBP_LABEL_ART)
+                       << IBPSymbol::convert(IBP_LABEL_PA)
+                       << IBPSymbol::convert(IBP_LABEL_CVP)
+                       << IBPSymbol::convert(IBP_LABEL_LAP)
+                       << IBPSymbol::convert(IBP_LABEL_RAP)
+                       << IBPSymbol::convert(IBP_LABEL_ICP)
+                       << IBPSymbol::convert(IBP_LABEL_AUXP1)
+                       << IBPSymbol::convert(IBP_LABEL_AUXP2));
     itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_ENTITLE_1);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -326,14 +326,14 @@ void IBPMenuContent::layoutExec()
     gLayout->addWidget(label, 0, 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
-                       << IBPSymbol::convert(IBP_PRESSURE_ART)
-                       << IBPSymbol::convert(IBP_PRESSURE_PA)
-                       << IBPSymbol::convert(IBP_PRESSURE_CVP)
-                       << IBPSymbol::convert(IBP_PRESSURE_LAP)
-                       << IBPSymbol::convert(IBP_PRESSURE_RAP)
-                       << IBPSymbol::convert(IBP_PRESSURE_ICP)
-                       << IBPSymbol::convert(IBP_PRESSURE_AUXP1)
-                       << IBPSymbol::convert(IBP_PRESSURE_AUXP2));
+                       << IBPSymbol::convert(IBP_LABEL_ART)
+                       << IBPSymbol::convert(IBP_LABEL_PA)
+                       << IBPSymbol::convert(IBP_LABEL_CVP)
+                       << IBPSymbol::convert(IBP_LABEL_LAP)
+                       << IBPSymbol::convert(IBP_LABEL_RAP)
+                       << IBPSymbol::convert(IBP_LABEL_ICP)
+                       << IBPSymbol::convert(IBP_LABEL_AUXP1)
+                       << IBPSymbol::convert(IBP_LABEL_AUXP2));
     itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_ENTITLE_2);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -580,7 +580,7 @@ void IBPMenuContent::onComboBoxIndexChanged(int index)
                 ibpParam.setEntitle(d_ptr->ibp2, IBP_INPUT_2);
                 box->blockSignals(false);
             }
-            d_ptr->ibp1 = static_cast<IBPPressureName>(index);
+            d_ptr->ibp1 = static_cast<IBPLabel>(index);
             ibpParam.setEntitle(d_ptr->ibp1, IBP_INPUT_1);
             ComboBox *cbo = d_ptr->combos[IBPMenuContentPrivate::ITEM_CBO_RULER_1];
             cbo->setCurrentIndex(ibpParam.getRulerLimit(d_ptr->ibp1));
@@ -597,7 +597,7 @@ void IBPMenuContent::onComboBoxIndexChanged(int index)
                 ibpParam.setEntitle(d_ptr->ibp1, IBP_INPUT_1);
                 box->blockSignals(false);
             }
-            d_ptr->ibp2 = static_cast<IBPPressureName>(index);
+            d_ptr->ibp2 = static_cast<IBPLabel>(index);
             ibpParam.setEntitle(d_ptr->ibp2, IBP_INPUT_2);
             ComboBox *cbo = d_ptr->combos[IBPMenuContentPrivate::ITEM_CBO_RULER_2];
             cbo->setCurrentIndex(ibpParam.getRulerLimit(d_ptr->ibp2));

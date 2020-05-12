@@ -93,16 +93,16 @@ public:
      * @param name
      * @return
      */
-    IBPScaleInfo getIBPScale(IBPPressureName name);
+    IBPScaleInfo getIBPScale(IBPLabel name);
 
     // 设置/获取波形标尺限。
     void setRulerLimit(IBPRulerLimit ruler, IBPSignalInput ibp);
     void setRulerLimit(int low, int high, IBPSignalInput ibp);
     IBPRulerLimit getRulerLimit(IBPSignalInput ibp);
-    IBPRulerLimit getRulerLimit(IBPPressureName name);
+    IBPRulerLimit getRulerLimit(IBPLabel name);
 
     // 设置/获取标尺信息
-    void setScaleInfo(const IBPScaleInfo &info, const IBPPressureName &name);
+    void setScaleInfo(const IBPScaleInfo &info, const IBPLabel &name);
     IBPScaleInfo &getScaleInfo(IBPSignalInput ibp);
 
     // 获取IBP导联脱落状态
@@ -156,11 +156,11 @@ public:
     IBPSweepSpeed getSweepSpeed(void);
 
     // 设置标名。
-    void setEntitle(IBPPressureName entitle, IBPSignalInput IBP);
+    void setEntitle(IBPLabel entitle, IBPSignalInput IBP);
 
     // get pressure name
-    IBPPressureName getEntitle(IBPSignalInput signal) const;
-    IBPPressureName getEntitle(IBPLimitAlarmType alarmType) const;
+    IBPLabel getEntitle(IBPSignalInput signal) const;
+    IBPLabel getEntitle(IBPLimitAlarmType alarmType) const;
 
     // 设置滤波
     void setFilter(IBPFilterMode filter);
@@ -183,10 +183,10 @@ public:
     SubParamID getSubParamID(IBPSignalInput inputID);
 
     // 参数名获取标名
-    IBPPressureName getPressureName(SubParamID id);
-    IBPPressureName getPressureName(WaveformID id);
-    SubParamID getSubParamID(IBPPressureName name);
-    WaveformID getWaveformID(IBPPressureName name);
+    IBPLabel getPressureName(SubParamID id);
+    IBPLabel getPressureName(WaveformID id);
+    SubParamID getSubParamID(IBPLabel name);
+    WaveformID getWaveformID(IBPLabel name);
 
     // 刷新参数上下限
     virtual void updateSubParamLimit(SubParamID id);

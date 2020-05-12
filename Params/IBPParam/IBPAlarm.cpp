@@ -196,9 +196,9 @@ AlarmPriority IBPLimitAlarm::getAlarmPriority(int id)
  *************************************************************************************************/
 int IBPLimitAlarm::getValue(int id)
 {
-    IBPPressureName ibp1 = ibpParam.getEntitle(IBP_INPUT_1);
-    IBPPressureName ibp2 = ibpParam.getEntitle(IBP_INPUT_2);
-    IBPPressureName idName = ibpParam.getEntitle(static_cast<IBPLimitAlarmType>(id));
+    IBPLabel ibp1 = ibpParam.getEntitle(IBP_INPUT_1);
+    IBPLabel ibp2 = ibpParam.getEntitle(IBP_INPUT_2);
+    IBPLabel idName = ibpParam.getEntitle(static_cast<IBPLimitAlarmType>(id));
     switch (id)
     {
     case ART_LIMIT_ALARM_SYS_LOW:
@@ -341,10 +341,10 @@ int IBPLimitAlarm::getLower(int id)
  *************************************************************************************************/
 int IBPLimitAlarm::getCompare(int value, int id)
 {
-    IBPPressureName ibp1 = ibpParam.getEntitle(IBP_INPUT_1);
-    IBPPressureName ibp2 = ibpParam.getEntitle(IBP_INPUT_2);
+    IBPLabel ibp1 = ibpParam.getEntitle(IBP_INPUT_1);
+    IBPLabel ibp2 = ibpParam.getEntitle(IBP_INPUT_2);
     IBPLimitAlarmType type = static_cast<IBPLimitAlarmType>(id);
-    IBPPressureName idName = ibpParam.getEntitle(type);
+    IBPLabel idName = ibpParam.getEntitle(type);
     if (idName != ibp1 && idName != ibp2)
     {
         return 0;
@@ -400,10 +400,10 @@ const char *IBPLimitAlarm::toString(int id)
 void IBPLimitAlarm::notifyAlarm(int id, bool flag)
 {
     SubParamID subID = getSubParamID(id);
-    IBPPressureName ibp1 = ibpParam.getEntitle(IBP_INPUT_1);
-    IBPPressureName ibp2 = ibpParam.getEntitle(IBP_INPUT_2);
+    IBPLabel ibp1 = ibpParam.getEntitle(IBP_INPUT_1);
+    IBPLabel ibp2 = ibpParam.getEntitle(IBP_INPUT_2);
     IBPLimitAlarmType type = static_cast<IBPLimitAlarmType>(id);
-    IBPPressureName idName = ibpParam.getEntitle(type);
+    IBPLabel idName = ibpParam.getEntitle(type);
 
     bool isAlarm;
     switch (type)

@@ -28,7 +28,7 @@ public:
     void updateLimit(void);
 
     // 设置标名。
-    void setEntitle(IBPPressureName entitle);
+    void setEntitle(IBPLabel entitle);
 
     // IBP显示框设置
     void setShowStacked(int num);
@@ -43,7 +43,7 @@ public:
     void showValue(void);
 
     // 构造与析构。
-    IBPTrendWidget(const QString &trendName, const IBPPressureName &entitle);
+    IBPTrendWidget(const QString &trendName, const IBPLabel &entitle);
     ~IBPTrendWidget();
 
     QList<SubParamID> getShortTrendSubParams() const;
@@ -59,7 +59,7 @@ private slots:
 private slots:
 
 private:
-    IBPPressureName _entitle;
+    IBPLabel _entitle;
     QLabel *_zeroWarn;          // 校零提示；
 
     QLabel *_ibpValue;          // 动脉压

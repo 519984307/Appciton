@@ -106,14 +106,14 @@ void ConfigEditIBPMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox;
     comboBox->addItems(QStringList()
-                       << trs(IBPSymbol::convert(IBP_PRESSURE_ART))
-                       << trs(IBPSymbol::convert(IBP_PRESSURE_PA))
-                       << trs(IBPSymbol::convert(IBP_PRESSURE_CVP))
-                       << trs(IBPSymbol::convert(IBP_PRESSURE_LAP))
-                       << trs(IBPSymbol::convert(IBP_PRESSURE_RAP))
-                       << trs(IBPSymbol::convert(IBP_PRESSURE_ICP))
-                       << trs(IBPSymbol::convert(IBP_PRESSURE_AUXP1))
-                       << trs(IBPSymbol::convert(IBP_PRESSURE_AUXP2)));
+                       << trs(IBPSymbol::convert(IBP_LABEL_ART))
+                       << trs(IBPSymbol::convert(IBP_LABEL_PA))
+                       << trs(IBPSymbol::convert(IBP_LABEL_CVP))
+                       << trs(IBPSymbol::convert(IBP_LABEL_LAP))
+                       << trs(IBPSymbol::convert(IBP_LABEL_RAP))
+                       << trs(IBPSymbol::convert(IBP_LABEL_ICP))
+                       << trs(IBPSymbol::convert(IBP_LABEL_AUXP1))
+                       << trs(IBPSymbol::convert(IBP_LABEL_AUXP2)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditIBPMenuContentPrivate
                          ::ITEM_CBO_PRESSURE_NAME1, comboBox);
@@ -127,14 +127,14 @@ void ConfigEditIBPMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox;
     comboBox->addItems(QStringList()
-                       << trs(IBPSymbol::convert(IBP_PRESSURE_ART))
-                       << trs(IBPSymbol::convert(IBP_PRESSURE_PA))
-                       << trs(IBPSymbol::convert(IBP_PRESSURE_CVP))
-                       << trs(IBPSymbol::convert(IBP_PRESSURE_LAP))
-                       << trs(IBPSymbol::convert(IBP_PRESSURE_RAP))
-                       << trs(IBPSymbol::convert(IBP_PRESSURE_ICP))
-                       << trs(IBPSymbol::convert(IBP_PRESSURE_AUXP1))
-                       << trs(IBPSymbol::convert(IBP_PRESSURE_AUXP2)));
+                       << trs(IBPSymbol::convert(IBP_LABEL_ART))
+                       << trs(IBPSymbol::convert(IBP_LABEL_PA))
+                       << trs(IBPSymbol::convert(IBP_LABEL_CVP))
+                       << trs(IBPSymbol::convert(IBP_LABEL_LAP))
+                       << trs(IBPSymbol::convert(IBP_LABEL_RAP))
+                       << trs(IBPSymbol::convert(IBP_LABEL_ICP))
+                       << trs(IBPSymbol::convert(IBP_LABEL_AUXP1))
+                       << trs(IBPSymbol::convert(IBP_LABEL_AUXP2)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditIBPMenuContentPrivate
                          ::ITEM_CBO_PRESSURE_NAME2, comboBox);
