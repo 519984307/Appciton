@@ -757,7 +757,6 @@ void IBPParam::setWaveWidget(IBPWaveWidget *waveWidget, IPBChannel IBP)
         _waveWidgetIBP2 = waveWidget;
     }
 
-//    waveWidget->setLimit(limit[waveWidget->getEntitle()].low, limit[waveWidget->getEntitle()].high);
     waveWidget->setLimit(getIBPScale(waveWidget->getEntitle()).low, getIBPScale(waveWidget->getEntitle()).high);
     _setWaveformSpeed(getSweepSpeed());
 }
@@ -778,7 +777,6 @@ QList<SubParamID> IBPParam::getShortTrendList(IPBChannel IBP)
 
 IBPScaleInfo IBPParam::getIBPScale(IBPLabel name)
 {
-    // TODO(chenbingyun): implement this function
     IBPScaleInfo info;
     int highLimit = 0;
     switch (name)

@@ -35,8 +35,6 @@ public:
     }
     ~IBPParam();
 
-//    static IBPEntitleLimitInfo limit[IBP_PRESSURE_NR];
-//    static IBPEntitleLimitInfo rulerLimit[IBP_RULER_RANGE_NR];
     QList<IBPScaleInfo> ibpScaleList;                      // all scale for ibp
 
 public:

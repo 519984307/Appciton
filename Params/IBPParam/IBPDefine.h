@@ -10,8 +10,6 @@
 
 #pragma once
 #include "BaseDefine.h"
-#define  IBP_AUTO_SCALE_INDEX               0
-#define  IBP_MANUAL_SCALE_INDEX             14
 
 enum IBPModuleType
 {
