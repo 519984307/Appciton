@@ -1238,21 +1238,23 @@ void IBPParam::setEntitle(IBPLabel entitle, IPBChannel IBP)
     if (((_ibp1.pressureName >= IBP_LABEL_CVP) && (_ibp1.pressureName <= IBP_LABEL_ICP))
             && ((_ibp2.pressureName >= IBP_LABEL_CVP) && (_ibp2.pressureName <= IBP_LABEL_ICP)))
     {
-        _provider->setIndicate(_ibp1.pressureName, _ibp2.pressureName, IBP_MEASURE_CALC_1, IBP_MEASURE_CALC_1);
+        _provider->setIndicate(_ibp1.pressureName, _ibp2.pressureName, IBP_MEASURE_MAP, IBP_MEASURE_MAP);
     }
     else if (((_ibp1.pressureName >= IBP_LABEL_CVP) && (_ibp1.pressureName <= IBP_LABEL_ICP))
              && ((_ibp2.pressureName < IBP_LABEL_CVP) || (_ibp2.pressureName > IBP_LABEL_ICP)))
     {
-        _provider->setIndicate(_ibp1.pressureName, _ibp2.pressureName, IBP_MEASURE_CALC_1, IBP_MEASURE_CALC_3);
+        _provider->setIndicate(_ibp1.pressureName, _ibp2.pressureName, IBP_MEASURE_MAP, IBP_MEASURE_SYS_DIA_MAP);
     }
     else if (((_ibp1.pressureName < IBP_LABEL_CVP) || (_ibp1.pressureName > IBP_LABEL_ICP))
              && ((_ibp2.pressureName >= IBP_LABEL_CVP) && (_ibp2.pressureName <= IBP_LABEL_ICP)))
     {
-        _provider->setIndicate(_ibp1.pressureName, _ibp2.pressureName, IBP_MEASURE_CALC_3, IBP_MEASURE_CALC_1);
+        _provider->setIndicate(_ibp1.pressureName, _ibp2.pressureName,
+                               IBP_MEASURE_SYS_DIA_MAP, IBP_MEASURE_MAP);
     }
     else
     {
-        _provider->setIndicate(_ibp1.pressureName, _ibp2.pressureName, IBP_MEASURE_CALC_3, IBP_MEASURE_CALC_3);
+        _provider->setIndicate(_ibp1.pressureName, _ibp2.pressureName,
+                               IBP_MEASURE_SYS_DIA_MAP, IBP_MEASURE_SYS_DIA_MAP);
     }
 }
 

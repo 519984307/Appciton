@@ -99,10 +99,10 @@ enum IBPSensitivity
  *      测量计算3(0x00): sys,map,dia
  *      测量计算1(0x01): map
  *************************************************************************************************/
-enum IBPAuxiliarySet
+enum IBPMeasueType
 {
-    IBP_MEASURE_CALC_3          =   0x00,
-    IBP_MEASURE_CALC_1          =   0x01,
+    IBP_MEASURE_SYS_DIA_MAP     =   0x00,
+    IBP_MEASURE_MAP             =   0x01,
     IBP_MEASURE_CALC_NR
 };
 

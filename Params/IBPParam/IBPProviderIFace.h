@@ -40,7 +40,7 @@ public:
 
     // IBP表明设置
     virtual void setIndicate(IBPLabel /*pressurenameIBP1*/, IBPLabel /*pressurenameIBP2*/,
-                             IBPAuxiliarySet /*auxiliarysetIBP1*/, IBPAuxiliarySet /*auxiliarysetIBP2*/){}
+                             IBPMeasueType /*auxiliarysetIBP1*/, IBPMeasueType /*auxiliarysetIBP2*/){}
     virtual bool isSetIndicate(unsigned char */*packet*/) {return false;}
 
     // IBP 校零/校准时间设定
