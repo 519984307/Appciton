@@ -27,15 +27,15 @@ public:
     virtual bool isModuleSelfCheck(unsigned char */*packet*/) {return false;}
 
     // IBP 平均时间设置
-    virtual void setAvergTime(IPBChannel /*IBP1/2*/, unsigned char /*time*/){}
+    virtual void setAvergTime(IBPChannel /*IBP1/2*/, unsigned char /*time*/){}
     virtual bool isSetAvergTime(unsigned char */*packet*/) {return false;}
 
     // IBP校准、校零设置
-    virtual void setZero(IPBChannel /*IBP1/2*/, IBPCalibration /*calibration*/, unsigned short /*pressure*/){}
+    virtual void setZero(IBPChannel /*IBP1/2*/, IBPCalibration /*calibration*/, unsigned short /*pressure*/){}
     virtual bool isSetZero(unsigned char */*packet*/) {return false;}
 
     // IBP滤波设置
-    virtual void setFilter(IPBChannel /*IBP1/2*/, IBPFilterMode /*filter*/){}
+    virtual void setFilter(IBPChannel /*IBP1/2*/, IBPFilterMode /*filter*/){}
     virtual bool isSetFilter(unsigned char */*packet*/) {return false;}
 
     // IBP表明设置
@@ -44,7 +44,7 @@ public:
     virtual bool isSetIndicate(unsigned char */*packet*/) {return false;}
 
     // IBP 校零/校准时间设定
-    virtual void setTimeZero(IPBChannel /*IBP1/2*/, IBPCalibration /*calibration*/,
+    virtual void setTimeZero(IBPChannel /*IBP1/2*/, IBPCalibration /*calibration*/,
                              unsigned char /*second*/, unsigned char /*minute*/,
                              unsigned char /*hour*/, unsigned char /*day*/,
                              unsigned char /*month*/, unsigned char /*year*/){}

@@ -245,7 +245,7 @@ void WitleafProvider::handlePacket(unsigned char *data, int len)
         case IBP_RSP_ZERO_RESULT:
         {
             IBPCalibration calib = (IBPCalibration)((data[3] >> 7) & 0x01);
-            IPBChannel chn = (IPBChannel)((data[3] >> 6) & 0x01);
+            IBPChannel IBP = (IBPChannel)((data[3] >> 6) & 0x01);
             int info = 0;
             if (calib == IBP_CALIBRATION_ZERO)
             {
@@ -255,7 +255,7 @@ void WitleafProvider::handlePacket(unsigned char *data, int len)
             {
                 info = (data[3] >> 3) & 0x07;
             }
-            ibpParam.setCalibrationInfo(calib, chn, info);
+            ibpParam.setCalibrationInfo(calib, IBP, info);
             break;
         }
         default:
@@ -411,18 +411,18 @@ void WitleafProvider::moduleSelfCheck()
  *      字节1：0x00(IBP1), 0x01(IBP2);
  *      字节2：0x01~0x12:实际时间值,单位为秒
  *************************************************************************************************/
-void WitleafProvider::setAvergTime(IPBChannel chn, unsigned char time)
+void WitleafProvider::setAvergTime(IBPChannel IBP, unsigned char time)
 {
-    unsigned char data[2] = {chn, time};
+    unsigned char data[2] = {IBP, time};
     sendCmd(2, PARAM_TYPE_IBP, IBP_DATA_DC, IBP_CMD_SET_AVERG_TIME, data, NULL);
 }
 
 /**************************************************************************************************
  * IBP校准、校零设置
  *************************************************************************************************/
-void WitleafProvider::setZero(IPBChannel chn, IBPCalibration calibration, unsigned short pressure)
+void WitleafProvider::setZero(IBPChannel IBP, IBPCalibration calibration, unsigned short pressure)
 {
-    unsigned char data[4] = {chn, calibration,
+    unsigned char data[4] = {IBP, calibration,
                              (unsigned char)((pressure >> 8) & 0xff),
                              (unsigned char)(pressure & 0xff)};
     sendCmd(4, PARAM_TYPE_IBP, IBP_DATA_DC, IBP_CMD_SET_ZERO, data, NULL);
@@ -431,9 +431,9 @@ void WitleafProvider::setZero(IPBChannel chn, IBPCalibration calibration, unsign
 /**************************************************************************************************
  * IBP滤波设置
  *************************************************************************************************/
-void WitleafProvider::setFilter(IPBChannel chn, IBPFilterMode filter)
+void WitleafProvider::setFilter(IBPChannel IBP, IBPFilterMode filter)
 {
-    unsigned char data[2] = {chn, filter};
+    unsigned char data[2] = {IBP, filter};
     sendCmd(2, PARAM_TYPE_IBP, IBP_DATA_DC, IBP_CMD_SET_FILTER, data, NULL);
 }
 
@@ -506,12 +506,12 @@ void WitleafProvider::setHemodymicParam() {}
 /**************************************************************************************************
  * IBP 校零/校准时间设定
  *************************************************************************************************/
-void WitleafProvider::setTimeZero(IPBChannel chn, IBPCalibration calibration,
+void WitleafProvider::setTimeZero(IBPChannel IBP, IBPCalibration calibration,
                                   unsigned char second, unsigned char minute,
                                   unsigned char hour, unsigned char day,
                                   unsigned char month, unsigned char year)
 {
-    unsigned char onechar = (second & 0x3f) | ((calibration & 0x01) << 6) | ((chn & 0x01) << 7);
+    unsigned char onechar = (second & 0x3f) | ((calibration & 0x01) << 6) | ((IBP & 0x01) << 7);
     unsigned char data[6] = {onechar, minute, hour, day, month, year};
     sendCmd(6, PARAM_TYPE_IBP, IBP_DATA_DC, IBP_CMD_SET_TIME_ZERO, data, NULL);
 }

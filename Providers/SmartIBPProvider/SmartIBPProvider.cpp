@@ -195,7 +195,7 @@ void SmartIBPProvider::reconnected()
     }
 }
 
-void SmartIBPProvider::setZero(IPBChannel IBP, IBPCalibration calibration, unsigned short value)
+void SmartIBPProvider::setZero(IBPChannel IBP, IBPCalibration calibration, unsigned short value)
 {
     Q_UNUSED(value)
 
@@ -397,13 +397,13 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
         if (cmd == IBP_CALIBRATION_ZERO)
         {
             ibpParam.setCalibrationInfo(IBP_CALIBRATION_ZERO,
-                                     static_cast<IPBChannel>(chn),
+                                     static_cast<IBPChannel>(chn),
                                      result == 0 ? IBP_ZERO_SUCCESS : IBP_ZERO_FAIL);
         }
         else if (cmd == IBP_CALIBRATION_SET)
         {
             ibpParam.setCalibrationInfo(IBP_CALIBRATION_SET,
-                                     static_cast<IPBChannel>(chn),
+                                     static_cast<IBPChannel>(chn),
                                      result == 0 ? IBP_CALIBRATION_SUCCESS: IBP_CALIBRATION_FAIL);
         }
     }

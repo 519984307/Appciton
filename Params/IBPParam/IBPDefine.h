@@ -47,7 +47,7 @@ struct IBPScaleInfo
 };
 
 /* IBP channel define */
-enum IPBChannel
+enum IBPChannel
 {
     IBP_CHN_1         =   0x00,
     IBP_CHN_2         =   0x01,
