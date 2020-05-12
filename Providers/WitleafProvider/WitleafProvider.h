@@ -257,7 +257,7 @@ public:     // IBPProviderIFace的接口
     // 获取最大的波形值
     virtual int getIBPMaxWaveform(void)
     {
-        return 2600;
+        return 300;
     }
 
 public:
@@ -269,6 +269,7 @@ private:
     bool _checkPacketValid(const unsigned char *data, unsigned int len);
 
 private:
+    WitleafProvider(const WitleafProvider &other);  /* no implement, just stop cppcheck complain */
     static const int _minPacketLen = 6;          // 最小数据包长度: Start,Length,ParamType,DataType,DataID,CheckSum
     static const int _maxPacketLen = (1 << 9);   // 最大数据包长度: 1字节最大表示范围。
 

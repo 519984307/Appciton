@@ -72,8 +72,7 @@ void IBPWaveWidget::setLimit(int low, int high)
     _lowLimit = low;
     _highLimit = high;
     _ruler->setRuler(high, (high + low) / 2, low);
-    low = low * 10 + 1000;
-    high = high * 10 + 1000;
+
     setValueRange(low, high);
 }
 

@@ -126,7 +126,7 @@ public:
 
     // 实现IBP的接口
     virtual int getIBPWaveformSample(void) {return 250;}
-    virtual int getIBPMaxWaveform(void){return 2600;}
+    virtual int getIBPMaxWaveform(void){return 300;}
     virtual int getIBPBaseLine(void){return 0;}
 
 

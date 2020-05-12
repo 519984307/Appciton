@@ -108,15 +108,6 @@ IBPParam::~IBPParam()
  *************************************************************************************************/
 void IBPParam::handDemoWaveform(WaveformID id, short data)
 {
-    if (id == WAVE_ART)
-    {
-        data = data * 10 + 1000;
-    }
-    if (id == WAVE_PA)
-    {
-        data = data + 1000;
-    }
-
     WaveformID ibp1WaveID = getWaveformID(getEntitle(IBP_INPUT_1));
     WaveformID ibp2WaveID = getWaveformID(getEntitle(IBP_INPUT_2));
 
