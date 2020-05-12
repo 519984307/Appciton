@@ -257,7 +257,7 @@ public:     // IBPProviderIFace的接口
     // 获取最大的波形值
     virtual int getIBPMaxWaveform(void)
     {
-        return 300;
+        return 3000;
     }
 
 public:

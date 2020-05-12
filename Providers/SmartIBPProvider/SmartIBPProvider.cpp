@@ -221,7 +221,7 @@ int SmartIBPProvider::getIBPBaseLine()
 
 int SmartIBPProvider::getIBPMaxWaveform()
 {
-    return 400;
+    return 3000;
 }
 
 void SmartIBPProvider::dataArrived()
@@ -290,7 +290,7 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
     {
         /* periodic data */
         bool ch1SensorOff = data[1] & 0x40;
-        qint16 ch1Wave = (((data[1] & 0x1F) << 7) + (data[2] & 0x7F) - 0x320) / 8;
+        qint16 ch1Wave = ((data[1] & 0x1F) << 7) + (data[2] & 0x7F);;
         quint8 ch1Type = (data[3] & 0x60) >> 5;
         qint16 ch1Val = ((data[3] &0x1F) << 7) + (data[4] & 0x7F);
         if (ch1Type != DATA_TYPE_PR)
@@ -312,7 +312,7 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
         }
 
         bool ch2SensorOff = data[5] & 0x40;
-        qint16 ch2Wave = (((data[5] & 0x1F) << 7) + (data[6] & 0x7F) - 0x320) / 8;
+        qint16 ch2Wave = ((data[5] & 0x1F) << 7) + (data[6] & 0x7F);
         quint8 ch2Type = (data[7] & 0x60) >> 5;
         quint16 ch2Val = ((data[7] &0x1F) << 7) + (data[8] & 0x7F);
         if (ch2Type != DATA_TYPE_PR)
@@ -335,8 +335,31 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
 
         ibpParam.leadStatus(ch1SensorOff, ch2SensorOff);
 
-        ibpParam.addWaveformData(ch1Wave, ch1SensorOff || !validPressureValue(ch1Wave), IBP_INPUT_1);
-        ibpParam.addWaveformData(ch2Wave, ch2SensorOff || !validPressureValue(ch2Wave), IBP_INPUT_2);
+        bool chn1WaveInvalid  = ch1SensorOff;
+        if (ch1Wave == INVALID_MEASURE_VALUE)
+        {
+            ch1Wave = q_ptr->getIBPBaseLine();
+            chn1WaveInvalid = true;
+        }
+        else
+        {
+            /* the wave data should scale by 10, since the wave data unit is 0.1mmhg */
+            ch1Wave = (ch1Wave - 0x320) * 10 / 8;
+        }
+        ibpParam.addWaveformData(ch1Wave, chn1WaveInvalid, IBP_INPUT_1);
+
+        bool chn2WaveInvalid  = ch2SensorOff;
+        if (ch2Wave == INVALID_MEASURE_VALUE)
+        {
+            ch2Wave = q_ptr->getIBPBaseLine();
+            chn2WaveInvalid = true;
+        }
+        else
+        {
+            /* the wave data should scale by 10, since the wave data unit is 0.1mmhg */
+            ch2Wave = (ch2Wave - 0x320) * 10 / 8;
+        }
+        ibpParam.addWaveformData(ch2Wave, chn2WaveInvalid, IBP_INPUT_2);
 
         if (ch1Type == DATA_TYPE_PR)
         {

@@ -108,6 +108,12 @@ IBPParam::~IBPParam()
  *************************************************************************************************/
 void IBPParam::handDemoWaveform(WaveformID id, short data)
 {
+    if (id == WAVE_ART)
+    {
+        /* Need to scale for ART, the demo data is stored in 1 byte, so it's not scaled yet. */
+        data *= 10;
+    }
+
     WaveformID ibp1WaveID = getWaveformID(getEntitle(IBP_INPUT_1));
     WaveformID ibp2WaveID = getWaveformID(getEntitle(IBP_INPUT_2));
 
@@ -684,6 +690,7 @@ void IBPParam::setRealTimeData(unsigned short sys, unsigned short dia, unsigned 
  *************************************************************************************************/
 void IBPParam::addWaveformData(short wave, bool invalid, IBPSignalInput IBP)
 {
+    /* NOTE: The wave data's unit should be 0.1 mmhg */
     int flag = 0;
 
     if (invalid)
