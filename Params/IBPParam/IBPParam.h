@@ -37,6 +37,17 @@ public:
 
     QList<IBPScaleInfo> ibpScaleList;                      // all scale for ibp
 
+    struct ChannelData {
+        IBPWaveWidget *waveWidget;      /* channel wave */
+        IBPTrendWidget *trendWidget;    /* channel trend */
+
+        IBPParamInfo paramData;         /* channel parameter data */
+        IBPScaleInfo scale;             /* channel scale */
+
+        bool leadOff;                   // 导联状态
+        bool zeroReply;                 // 校零回复
+    };
+
 public:
     // 处理demo数据
     virtual void handDemoWaveform(WaveformID id, short data);
@@ -101,7 +112,7 @@ public:
 
     // 设置/获取标尺信息
     void setScaleInfo(const IBPScaleInfo &info, const IBPLabel &name);
-    IBPScaleInfo &getScaleInfo(IPBChannel chn);
+    IBPScaleInfo getScaleInfo(IPBChannel chn);
 
     // 清空校准相关报警
     void clearCalibAlarm(void);
@@ -120,15 +131,11 @@ public:
     IBPModuleType getMoudleType() const;
 
 public:
-    // 校零。
-    void zeroCalibration(IPBChannel chn);
-
     /**
-     * @brief hasBeenZero check whether the channel has been zero or not
-     * @param chn the ibp channel
-     * @return true if the channel is already zeroed
+     * @brief zeroChannel zero channel
+     * @param chn the channel
      */
-    bool hasBeenZero(IPBChannel chn);
+    void zeroChannel(IPBChannel chn);
 
     // 校准
     void setCalibration(IPBChannel chn, unsigned short value);
@@ -136,8 +143,12 @@ public:
     // 校零校准信息
     void setCalibrationInfo(IBPCalibration calib, IPBChannel chn, int calibinfo);
 
-    // 导联状态
-    void leadStatus(bool staIBP1, bool staIBP2);
+    /**
+     * @brief setLeadStatus set the channel lead status
+     * @param chn the channel id
+     * @param leadOff leadof status
+     */
+    void setLeadStatus(IPBChannel chn, bool leadOff);
 
     /**
      * @brief isIBPLeadOff  获取ibp导联脱落状态
@@ -154,7 +165,7 @@ public:
     void setEntitle(IBPLabel entitle, IPBChannel chn);
 
     // get pressure name
-    IBPLabel getEntitle(IPBChannel signal) const;
+    IBPLabel getEntitle(IPBChannel chn) const;
     IBPLabel getEntitle(IBPLimitAlarmType alarmType) const;
 
     // 设置滤波
@@ -175,7 +186,7 @@ public:
      * @param inputID
      * @return
      */
-    SubParamID getSubParamID(IPBChannel inputID);
+    SubParamID getSubParamID(IPBChannel chn);
 
     // 参数名获取标名
     IBPLabel getPressureName(SubParamID id);
@@ -194,26 +205,8 @@ private:
     void _setWaveformSpeed(IBPSweepSpeed speed);
 
     IBPProviderIFace *_provider;
-
-    IBPWaveWidget *_waveWidgetIBP1;
-    IBPWaveWidget *_waveWidgetIBP2;
-
-    IBPTrendWidget *_trendWidgetIBP1;
-    IBPTrendWidget *_trendWidgetIBP2;
-
-    IBPParamInfo _ibp1;
-    IBPParamInfo _ibp2;
-
-    IBPScaleInfo _scale1;
-    IBPScaleInfo _scale2;
-
-    bool _staIBP1;                        // 导联状态
-    bool _staIBP2;
     bool _connectedProvider;
 
-    bool _ibp1ZeroReply;                // 校零回复
-    bool _ibp2ZeroReply;
-    bool _ibp1HasBeenZero;              /* check whether the channel has been zero */
-    bool _ibp2HasBeenZero;              /* check whether the channel has been zero */
+    ChannelData _chnData[IBP_CHN_NR];
 };
 #define ibpParam (IBPParam::construction())

@@ -379,7 +379,7 @@ void SoftkeyActionBase::IBPZero(bool isPressed)
     {
         return;
     }
-    ibpParam.zeroCalibration(IBP_CHN_1);
+    ibpParam.zeroChannel(IBP_CHN_1);
 }
 
 void SoftkeyActionBase::systemBrightness(bool isPressed)

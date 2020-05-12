@@ -702,13 +702,13 @@ void IBPMenuContent::onButtonReleased()
         switch (item)
         {
         case IBPMenuContentPrivate::ITEM_CBO_ZERO_1:
-            ibpParam.zeroCalibration(IBP_CHN_1);
+            ibpParam.zeroChannel(IBP_CHN_1);
             button->setText(trs("ZeroInProgress"));
             button->setEnabled(false);
             d_ptr->chn1ZeroTimerID = startTimer(ZERO_INTERVAL_TIME);
             break;
         case IBPMenuContentPrivate::ITEM_CBO_ZERO_2:
-            ibpParam.zeroCalibration(IBP_CHN_2);
+            ibpParam.zeroChannel(IBP_CHN_2);
             button->setText(trs("ZeroInProgress"));
             button->setEnabled(false);
             d_ptr->chn2ZeroTimerID = startTimer(ZERO_INTERVAL_TIME);

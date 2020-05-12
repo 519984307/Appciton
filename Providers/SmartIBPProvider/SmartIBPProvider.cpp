@@ -333,7 +333,8 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
             setChannelData(&chn2Data, ch2Type, ch2Val);
         }
 
-        ibpParam.leadStatus(ch1SensorOff, ch2SensorOff);
+        ibpParam.setLeadStatus(IBP_CHN_1, ch1SensorOff);
+        ibpParam.setLeadStatus(IBP_CHN_2, ch1SensorOff);
 
         bool chn1WaveInvalid  = ch1SensorOff;
         if (ch1Wave == INVALID_MEASURE_VALUE)

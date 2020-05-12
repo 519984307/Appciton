@@ -238,7 +238,8 @@ void WitleafProvider::handlePacket(unsigned char *data, int len)
             _status.tbLeadStatus   = (circleReport & BIT2) ? true : false;
             _status.tiLeadStatus   = (circleReport & BIT3) ? true : false;
             _status.modulePowerStatus = (circleReport & BIT4) ? true : false;
-            ibpParam.leadStatus(_status.ibp1LeadStatus, _status.ibp2LeadStatus);
+            ibpParam.setLeadStatus(IBP_CHN_1, _status.ibp1LeadStatus);
+            ibpParam.setLeadStatus(IBP_CHN_2, _status.ibp2LeadStatus);
             break;
         }
         case IBP_RSP_ZERO_RESULT:
