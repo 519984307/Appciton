@@ -187,14 +187,14 @@ void IBPParam::showSubParamValue()
     }
 }
 
-void IBPParam::noticeLimitAlarm(int id, bool isAlarm, IPBChannel ibp)
+void IBPParam::noticeLimitAlarm(int id, bool isAlarm, IPBChannel chn)
 {
-    if (ibp == IBP_CHN_1 && NULL != _trendWidgetIBP1)
+    if (chn == IBP_CHN_1 && NULL != _trendWidgetIBP1)
     {
         _trendWidgetIBP1->isAlarm(id, isAlarm);
     }
 
-    if (ibp == IBP_CHN_2 && NULL != _trendWidgetIBP2)
+    if (chn == IBP_CHN_2 && NULL != _trendWidgetIBP2)
     {
         _trendWidgetIBP2->isAlarm(id, isAlarm);
     }
@@ -662,17 +662,17 @@ bool IBPParam::isConnected()
  * 设置实时数据。
  *************************************************************************************************/
 void IBPParam::setRealTimeData(unsigned short sys, unsigned short dia, unsigned short map,
-                               unsigned short pr, IPBChannel IBP)
+                               unsigned short pr, IPBChannel chn)
 {
-    setParamData(IBP, sys, dia, map, pr);
-    if (IBP == IBP_CHN_1)
+    setParamData(chn, sys, dia, map, pr);
+    if (chn == IBP_CHN_1)
     {
         if (NULL != _trendWidgetIBP1)
         {
             _trendWidgetIBP1->setData(sys, dia, map);
         }
     }
-    else if (IBP == IBP_CHN_2)
+    else if (chn == IBP_CHN_2)
     {
         if (NULL != _trendWidgetIBP2)
         {
@@ -688,7 +688,7 @@ void IBPParam::setRealTimeData(unsigned short sys, unsigned short dia, unsigned 
 /**************************************************************************************************
  * 设置波形值。
  *************************************************************************************************/
-void IBPParam::addWaveformData(short wave, bool invalid, IPBChannel IBP)
+void IBPParam::addWaveformData(short wave, bool invalid, IPBChannel chn)
 {
     /* NOTE: The wave data's unit should be 0.1 mmhg */
     int flag = 0;
@@ -699,7 +699,7 @@ void IBPParam::addWaveformData(short wave, bool invalid, IPBChannel IBP)
         wave = 0;
     }
 
-    if (IBP == IBP_CHN_1)
+    if (chn == IBP_CHN_1)
     {
         WaveformID ibp1WaveID = getWaveformID(getEntitle(IBP_CHN_1));
         if (_waveWidgetIBP1 != NULL)
@@ -708,7 +708,7 @@ void IBPParam::addWaveformData(short wave, bool invalid, IPBChannel IBP)
         }
         waveformCache.addData(ibp1WaveID, (flag << 16) | wave);
     }
-    else if (IBP == IBP_CHN_2)
+    else if (chn == IBP_CHN_2)
     {
         WaveformID ibp2WaveID = getWaveformID(getEntitle(IBP_CHN_2));
         if (_waveWidgetIBP2 != NULL)
@@ -722,17 +722,17 @@ void IBPParam::addWaveformData(short wave, bool invalid, IPBChannel IBP)
 /**************************************************************************************************
  * 设置趋势对象。
  *************************************************************************************************/
-void IBPParam::setIBPTrendWidget(IBPTrendWidget *trendWidget, IPBChannel IBP)
+void IBPParam::setIBPTrendWidget(IBPTrendWidget *trendWidget, IPBChannel chn)
 {
     if (trendWidget == NULL)
     {
         return;
     }
-    if (IBP == IBP_CHN_1)
+    if (chn == IBP_CHN_1)
     {
         _trendWidgetIBP1 = trendWidget;
     }
-    else if (IBP == IBP_CHN_2)
+    else if (chn == IBP_CHN_2)
     {
         _trendWidgetIBP2 = trendWidget;
     }
@@ -741,18 +741,18 @@ void IBPParam::setIBPTrendWidget(IBPTrendWidget *trendWidget, IPBChannel IBP)
 /**************************************************************************************************
  * 设置波形对象。
  *************************************************************************************************/
-void IBPParam::setWaveWidget(IBPWaveWidget *waveWidget, IPBChannel IBP)
+void IBPParam::setWaveWidget(IBPWaveWidget *waveWidget, IPBChannel chn)
 {
     if (waveWidget == NULL)
     {
         return;
     }
 
-    if (IBP == IBP_CHN_1)
+    if (chn == IBP_CHN_1)
     {
         _waveWidgetIBP1 = waveWidget;
     }
-    else if (IBP == IBP_CHN_2)
+    else if (chn == IBP_CHN_2)
     {
         _waveWidgetIBP2 = waveWidget;
     }
@@ -761,14 +761,14 @@ void IBPParam::setWaveWidget(IBPWaveWidget *waveWidget, IPBChannel IBP)
     _setWaveformSpeed(getSweepSpeed());
 }
 
-QList<SubParamID> IBPParam::getShortTrendList(IPBChannel IBP)
+QList<SubParamID> IBPParam::getShortTrendList(IPBChannel chn)
 {
     QList<SubParamID> paraList;
-    if (IBP == IBP_CHN_1)
+    if (chn == IBP_CHN_1)
     {
         paraList = _trendWidgetIBP1->getShortTrendSubParams();
     }
-    else if (IBP == IBP_CHN_2)
+    else if (chn == IBP_CHN_2)
     {
         paraList = _trendWidgetIBP2->getShortTrendSubParams();
     }
@@ -810,9 +810,9 @@ IBPScaleInfo IBPParam::getIBPScale(IBPLabel name)
     return info;
 }
 
-void IBPParam::setRulerLimit(IBPRulerLimit ruler, IPBChannel ibp)
+void IBPParam::setRulerLimit(IBPRulerLimit ruler, IPBChannel chn)
 {
-    if (ibp == IBP_CHN_1)
+    if (chn == IBP_CHN_1)
     {
         currentConfig.setNumValue("IBP|RulerLimit1", static_cast<int>(ruler));
         if (_waveWidgetIBP1 != NULL)
@@ -820,7 +820,7 @@ void IBPParam::setRulerLimit(IBPRulerLimit ruler, IPBChannel ibp)
             _waveWidgetIBP1->setRulerLimit(ruler);
         }
     }
-    else if (ibp == IBP_CHN_2)
+    else if (chn == IBP_CHN_2)
     {
         currentConfig.setNumValue("IBP|RulerLimit2", static_cast<int>(ruler));
         if (_waveWidgetIBP2 != NULL)
@@ -830,16 +830,16 @@ void IBPParam::setRulerLimit(IBPRulerLimit ruler, IPBChannel ibp)
     }
 }
 
-void IBPParam::setRulerLimit(int low, int high, IPBChannel ibp)
+void IBPParam::setRulerLimit(int low, int high, IPBChannel chn)
 {
-    if (ibp == IBP_CHN_1)
+    if (chn == IBP_CHN_1)
     {
         if (_waveWidgetIBP1 != NULL)
         {
             _waveWidgetIBP1->setLimit(low, high);
         }
     }
-    else if (ibp == IBP_CHN_2)
+    else if (chn == IBP_CHN_2)
     {
         if (_waveWidgetIBP2 != NULL)
         {
@@ -848,14 +848,14 @@ void IBPParam::setRulerLimit(int low, int high, IPBChannel ibp)
     }
 }
 
-IBPRulerLimit IBPParam::getRulerLimit(IPBChannel ibp)
+IBPRulerLimit IBPParam::getRulerLimit(IPBChannel chn)
 {
     int ruler = IBP_RULER_LIMIT_0_160;
-    if (ibp == IBP_CHN_1)
+    if (chn == IBP_CHN_1)
     {
         currentConfig.getNumValue("IBP|RulerLimit1", ruler);
     }
-    else if (ibp == IBP_CHN_2)
+    else if (chn == IBP_CHN_2)
     {
         currentConfig.getNumValue("IBP|RulerLimit2", ruler);
     }
@@ -899,9 +899,9 @@ void IBPParam::setScaleInfo(const IBPScaleInfo &info, const IBPLabel &name)
     }
 }
 
-IBPScaleInfo &IBPParam::getScaleInfo(IPBChannel ibp)
+IBPScaleInfo &IBPParam::getScaleInfo(IPBChannel chn)
 {
-    if (ibp == IBP_CHN_1)
+    if (chn == IBP_CHN_1)
     {
         return _scale1;
     }
@@ -914,13 +914,13 @@ IBPScaleInfo &IBPParam::getScaleInfo(IPBChannel ibp)
 /**************************************************************************************************
  * 设置校零。
  *************************************************************************************************/
-void IBPParam::zeroCalibration(IPBChannel IBP)
+void IBPParam::zeroCalibration(IPBChannel chn)
 {
-    if (IBP == IBP_CHN_1)
+    if (chn == IBP_CHN_1)
     {
         _ibp1HasBeenZero = false;
     }
-    else if (IBP == IBP_CHN_2)
+    else if (chn == IBP_CHN_2)
     {
         _ibp2HasBeenZero = false;
     }
@@ -933,20 +933,20 @@ void IBPParam::zeroCalibration(IPBChannel IBP)
     unsigned int hour = timeDate->getTimeHour(zeroTime);
     unsigned int min = timeDate->getTimeMinute(zeroTime);
     unsigned int second = timeDate->getTimeSeconds(zeroTime);
-    _provider->setTimeZero(IBP, IBP_CALIBRATION_ZERO,
+    _provider->setTimeZero(chn, IBP_CALIBRATION_ZERO,
                            (unsigned int)second, (unsigned int)min,
                            (unsigned int)hour, (unsigned int)day,
                            (unsigned int)month, (unsigned int)year);
-    _provider->setZero(IBP, IBP_CALIBRATION_ZERO, 0x00);
+    _provider->setZero(chn, IBP_CALIBRATION_ZERO, 0x00);
 }
 
-bool IBPParam::hasBeenZero(IPBChannel IBP)
+bool IBPParam::hasBeenZero(IPBChannel chn)
 {
-    if (IBP == IBP_CHN_1)
+    if (chn == IBP_CHN_1)
     {
         return _ibp1HasBeenZero;
     }
-    else if (IBP == IBP_CHN_2)
+    else if (chn == IBP_CHN_2)
     {
         return _ibp2HasBeenZero;
     }
@@ -957,16 +957,16 @@ bool IBPParam::hasBeenZero(IPBChannel IBP)
 /**************************************************************************************************
  * 设置校准。
  *************************************************************************************************/
-void IBPParam::setCalibration(IPBChannel IBP, unsigned short value)
+void IBPParam::setCalibration(IPBChannel chn, unsigned short value)
 {
     clearCalibAlarm();
-    _provider->setZero(IBP, IBP_CALIBRATION_SET, value);
+    _provider->setZero(chn, IBP_CALIBRATION_SET, value);
 }
 
 /**************************************************************************************************
  * 校零校准信息。
  *************************************************************************************************/
-void IBPParam::calibrationInfo(IBPCalibration calib, IPBChannel IBP, int calibinfo)
+void IBPParam::calibrationInfo(IBPCalibration calib, IPBChannel chn, int calibinfo)
 {
     AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_IBP);
     if (alarmSource == NULL)
@@ -976,7 +976,7 @@ void IBPParam::calibrationInfo(IBPCalibration calib, IPBChannel IBP, int calibin
 
     if (calib == IBP_CALIBRATION_ZERO)
     {
-        if (IBP == IBP_CHN_1)
+        if (chn == IBP_CHN_1)
         {
             _ibp1ZeroReply = true;
             if (!_ibp1HasBeenZero)
@@ -1017,7 +1017,7 @@ void IBPParam::calibrationInfo(IBPCalibration calib, IPBChannel IBP, int calibin
             }
             }
         }
-        else if (IBP == IBP_CHN_2)
+        else if (chn == IBP_CHN_2)
         {
             _ibp2ZeroReply = true;
             if (!_ibp2HasBeenZero)
@@ -1065,7 +1065,7 @@ void IBPParam::calibrationInfo(IBPCalibration calib, IPBChannel IBP, int calibin
     }
     else if (calib == IBP_CALIBRATION_SET)
     {
-        if (IBP == IBP_CHN_1)
+        if (chn == IBP_CHN_1)
         {
             switch (static_cast<IBPCalibrationResult>(calibinfo))
             {
@@ -1105,7 +1105,7 @@ void IBPParam::calibrationInfo(IBPCalibration calib, IPBChannel IBP, int calibin
             }
             }
         }
-        else if (IBP == IBP_CHN_2)
+        else if (chn == IBP_CHN_2)
         {
             switch (static_cast<IBPCalibrationResult>(calibinfo))
             {
@@ -1182,13 +1182,13 @@ void IBPParam::leadStatus(bool staIBP1, bool staIBP2)
     }
 }
 
-bool IBPParam::isIBPLeadOff(IPBChannel IBP)
+bool IBPParam::isIBPLeadOff(IPBChannel chn)
 {
-    if (IBP == IBP_CHN_1)
+    if (chn == IBP_CHN_1)
     {
         return _staIBP1;
     }
-    else if (IBP == IBP_CHN_2)
+    else if (chn == IBP_CHN_2)
     {
         return _staIBP2;
     }
@@ -1214,15 +1214,15 @@ IBPSweepSpeed IBPParam::getSweepSpeed()
 /**************************************************************************************************
  * 设置标名。
  *************************************************************************************************/
-void IBPParam::setEntitle(IBPLabel entitle, IPBChannel IBP)
+void IBPParam::setEntitle(IBPLabel entitle, IPBChannel chn)
 {
-    if (IBP == IBP_CHN_1)
+    if (chn == IBP_CHN_1)
     {
         _waveWidgetIBP1->setEntitle(entitle);
         _trendWidgetIBP1->setEntitle(entitle);
         _ibp1.pressureName = entitle;
     }
-    else if (IBP == IBP_CHN_2)
+    else if (chn == IBP_CHN_2)
     {
         _ibp2.pressureName = entitle;
         _waveWidgetIBP2->setEntitle(entitle);
@@ -1371,9 +1371,9 @@ IBPSensitivity IBPParam::getSensitivity()
 /**************************************************************************************************
  * 获取IBP计算结果数据。
  *************************************************************************************************/
-IBPParamInfo IBPParam::getParamData(IPBChannel IBP)
+IBPParamInfo IBPParam::getParamData(IPBChannel chn)
 {
-    if (IBP == IBP_CHN_1)
+    if (chn == IBP_CHN_1)
     {
         return _ibp1;
     }
@@ -1386,10 +1386,10 @@ IBPParamInfo IBPParam::getParamData(IPBChannel IBP)
 /**************************************************************************************************
  * 设置IBP计算结果数据缓存。
  *************************************************************************************************/
-void IBPParam::setParamData(IPBChannel IBP, unsigned short sys, unsigned short dia, unsigned short mean,
+void IBPParam::setParamData(IPBChannel chn, unsigned short sys, unsigned short dia, unsigned short mean,
                             unsigned short pr)
 {
-    if (IBP == IBP_CHN_1)
+    if (chn == IBP_CHN_1)
     {
         _ibp1.sys = sys;
         _ibp1.dia = dia;
@@ -1594,13 +1594,13 @@ void IBPParam::updateSubParamLimit(SubParamID id)
     }
 }
 
-bool IBPParam::getIBPLeadOff(IPBChannel ibp)
+bool IBPParam::getIBPLeadOff(IPBChannel chn)
 {
-    if (ibp == IBP_CHN_1)
+    if (chn == IBP_CHN_1)
     {
         return _staIBP1;
     }
-    else if (ibp == IBP_CHN_2)
+    else if (chn == IBP_CHN_2)
     {
         return _staIBP2;
     }

@@ -201,7 +201,7 @@ void WitleafProvider::handlePacket(unsigned char *data, int len)
                 waveValue = 0;
             }
             qint16 waveValueMmhg = (waveValue - 1000);
-            ibpParam.addWaveformData(waveValueMmhg, invalid);
+            ibpParam.addWaveformData(waveValueMmhg, invalid, IBP_CHN_1);
 
             waveValue = data[6];
             waveValue <<= 8;
