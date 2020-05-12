@@ -354,9 +354,9 @@ public:
         {
             // find proper IBP Wave base of the wave name
             waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_IBP1),
-                              ibpParam.getWaveformID(ibpParam.getEntitle(IBP_INPUT_1)));
+                              ibpParam.getWaveformID(ibpParam.getEntitle(IBP_CHN_1)));
             waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_IBP2),
-                              ibpParam.getWaveformID(ibpParam.getEntitle(IBP_INPUT_2)));
+                              ibpParam.getWaveformID(ibpParam.getEntitle(IBP_CHN_2)));
 
             const char *waveformName;
             // IBP's pressure name is identical to it's wave name

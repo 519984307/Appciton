@@ -59,7 +59,7 @@ public:
     PrintProviderIFace *iface;
     QPointer<RecordPageGenerator> generator;
     PrintTime timeSec;
-    RecordPageGenerator::PrintPriority curPrintPriority; 	// current printing page priority
+    RecordPageGenerator::PrintPriority curPrintPriority;  // current printing page priority
     bool updatePrintSpeed;
 };
 
@@ -187,7 +187,8 @@ void RecorderManager::setPrintStatus(bool sta)
     if (d_ptr->updatePrintSpeed && (sta == false))
     {
         d_ptr->updatePrintSpeed = false;
-        QMetaObject::invokeMethod(d_ptr->processor, "setPrintSpeed", Qt::QueuedConnection, Q_ARG(PrintSpeed, d_ptr->curSpeed));
+        QMetaObject::invokeMethod(d_ptr->processor, "setPrintSpeed", Qt::QueuedConnection,
+                                  Q_ARG(PrintSpeed, d_ptr->curSpeed));
     }
     d_ptr->isPrinting = sta;
 }
@@ -257,7 +258,6 @@ bool RecorderManager::addPageGenerator(RecordPageGenerator *generator)
     }
     else
     {
-
         if (generator->getPriority() == RecordPageGenerator::PriorityContinuous)
         {
             // don't add the generator
@@ -480,11 +480,11 @@ void RecorderManager::printWavesInit()
     if (systemManager.isSupport(CONFIG_IBP))
     {
         // ibp
-        IBPLabel ibpTitle = ibpParam.getEntitle(IBP_INPUT_1);
+        IBPLabel ibpTitle = ibpParam.getEntitle(IBP_CHN_1);
         waveID = ibpParam.getWaveformID(ibpTitle);
         waveIDs.append(waveID);
 
-        ibpTitle = ibpParam.getEntitle(IBP_INPUT_2);
+        ibpTitle = ibpParam.getEntitle(IBP_CHN_2);
         waveID = ibpParam.getWaveformID(ibpTitle);
         waveIDs.append(waveID);
     }

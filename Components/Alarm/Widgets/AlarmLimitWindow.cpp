@@ -77,8 +77,8 @@ void AlarmLimitWindowPrivate::loadoptions()
 
         if (pid == PARAM_IBP && systemManager.isSupport(PARAM_IBP))
         {
-            IBPLabel pressName1 = ibpParam.getEntitle(IBP_INPUT_1);
-            IBPLabel pressName2 = ibpParam.getEntitle(IBP_INPUT_2);
+            IBPLabel pressName1 = ibpParam.getEntitle(IBP_CHN_1);
+            IBPLabel pressName2 = ibpParam.getEntitle(IBP_CHN_2);
             IBPLabel curPressName = ibpParam.getPressureName(subId);
             if (curPressName != pressName1 && curPressName != pressName2)
             {
@@ -290,8 +290,8 @@ void AlarmLimitWindow::restoreDefaults()
         }
         if (pid == PARAM_IBP && systemManager.isSupport(PARAM_IBP))
         {
-            IBPLabel pressName1 = ibpParam.getEntitle(IBP_INPUT_1);
-            IBPLabel pressName2 = ibpParam.getEntitle(IBP_INPUT_2);
+            IBPLabel pressName1 = ibpParam.getEntitle(IBP_CHN_1);
+            IBPLabel pressName2 = ibpParam.getEntitle(IBP_CHN_2);
             IBPLabel curPressName = ibpParam.getPressureName(subId);
             if (curPressName != pressName1 && curPressName != pressName2)
             {

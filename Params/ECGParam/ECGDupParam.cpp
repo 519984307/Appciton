@@ -154,8 +154,8 @@ void ECGDupParam::updatePR(short pr, PRSourceType type, bool isUpdatePr)
         }
     }
 
-    bool isIBP1LeadOff = ibpParam.isIBPLeadOff(IBP_INPUT_1);
-    bool isIBP2LeadOff = ibpParam.isIBPLeadOff(IBP_INPUT_2);
+    bool isIBP1LeadOff = ibpParam.isIBPLeadOff(IBP_CHN_1);
+    bool isIBP2LeadOff = ibpParam.isIBPLeadOff(IBP_CHN_2);
     bool isSPO2Valid = spo2Param.isValid();
 
     // 演示模式下，强制设定相关标志位

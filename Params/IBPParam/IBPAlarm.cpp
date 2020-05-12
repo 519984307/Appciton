@@ -196,8 +196,8 @@ AlarmPriority IBPLimitAlarm::getAlarmPriority(int id)
  *************************************************************************************************/
 int IBPLimitAlarm::getValue(int id)
 {
-    IBPLabel ibp1 = ibpParam.getEntitle(IBP_INPUT_1);
-    IBPLabel ibp2 = ibpParam.getEntitle(IBP_INPUT_2);
+    IBPLabel ibp1 = ibpParam.getEntitle(IBP_CHN_1);
+    IBPLabel ibp2 = ibpParam.getEntitle(IBP_CHN_2);
     IBPLabel idName = ibpParam.getEntitle(static_cast<IBPLimitAlarmType>(id));
     switch (id)
     {
@@ -211,11 +211,11 @@ int IBPLimitAlarm::getValue(int id)
     case AUXP2_LIMIT_ALARM_SYS_HIGH:
         if (idName == ibp1)
         {
-            return ibpParam.getParamData(IBP_INPUT_1).sys;
+            return ibpParam.getParamData(IBP_CHN_1).sys;
         }
         else if (idName == ibp2)
         {
-            return ibpParam.getParamData(IBP_INPUT_2).sys;
+            return ibpParam.getParamData(IBP_CHN_2).sys;
         }
     case ART_LIMIT_ALARM_DIA_LOW:
     case ART_LIMIT_ALARM_DIA_HIGH:
@@ -227,11 +227,11 @@ int IBPLimitAlarm::getValue(int id)
     case AUXP2_LIMIT_ALARM_DIA_HIGH:
         if (idName == ibp1)
         {
-            return ibpParam.getParamData(IBP_INPUT_1).dia;
+            return ibpParam.getParamData(IBP_CHN_1).dia;
         }
         else if (idName == ibp2)
         {
-            return ibpParam.getParamData(IBP_INPUT_2).dia;
+            return ibpParam.getParamData(IBP_CHN_2).dia;
         }
     case ART_LIMIT_ALARM_MEAN_LOW:
     case ART_LIMIT_ALARM_MEAN_HIGH:
@@ -251,11 +251,11 @@ int IBPLimitAlarm::getValue(int id)
     case AUXP2_LIMIT_ALARM_MEAN_HIGH:
         if (idName == ibp1)
         {
-            return ibpParam.getParamData(IBP_INPUT_1).mean;
+            return ibpParam.getParamData(IBP_CHN_1).mean;
         }
         else if (idName == ibp2)
         {
-            return ibpParam.getParamData(IBP_INPUT_2).mean;
+            return ibpParam.getParamData(IBP_CHN_2).mean;
         }
     case ART_LIMIT_ALARM_PR_LOW:
     case ART_LIMIT_ALARM_PR_HIGH:
@@ -275,11 +275,11 @@ int IBPLimitAlarm::getValue(int id)
     case AUXP2_LIMIT_ALARM_PR_HIGH:
         if (idName == ibp1)
         {
-            return ibpParam.getParamData(IBP_INPUT_1).pr;
+            return ibpParam.getParamData(IBP_CHN_1).pr;
         }
         else if (idName == ibp2)
         {
-            return ibpParam.getParamData(IBP_INPUT_2).pr;
+            return ibpParam.getParamData(IBP_CHN_2).pr;
         }
     default:
         return -1;
@@ -341,8 +341,8 @@ int IBPLimitAlarm::getLower(int id)
  *************************************************************************************************/
 int IBPLimitAlarm::getCompare(int value, int id)
 {
-    IBPLabel ibp1 = ibpParam.getEntitle(IBP_INPUT_1);
-    IBPLabel ibp2 = ibpParam.getEntitle(IBP_INPUT_2);
+    IBPLabel ibp1 = ibpParam.getEntitle(IBP_CHN_1);
+    IBPLabel ibp2 = ibpParam.getEntitle(IBP_CHN_2);
     IBPLimitAlarmType type = static_cast<IBPLimitAlarmType>(id);
     IBPLabel idName = ibpParam.getEntitle(type);
     if (idName != ibp1 && idName != ibp2)
@@ -400,8 +400,8 @@ const char *IBPLimitAlarm::toString(int id)
 void IBPLimitAlarm::notifyAlarm(int id, bool flag)
 {
     SubParamID subID = getSubParamID(id);
-    IBPLabel ibp1 = ibpParam.getEntitle(IBP_INPUT_1);
-    IBPLabel ibp2 = ibpParam.getEntitle(IBP_INPUT_2);
+    IBPLabel ibp1 = ibpParam.getEntitle(IBP_CHN_1);
+    IBPLabel ibp2 = ibpParam.getEntitle(IBP_CHN_2);
     IBPLimitAlarmType type = static_cast<IBPLimitAlarmType>(id);
     IBPLabel idName = ibpParam.getEntitle(type);
 
@@ -548,11 +548,11 @@ void IBPLimitAlarm::notifyAlarm(int id, bool flag)
     }
     if (idName == ibp1)
     {
-        ibpParam.noticeLimitAlarm(subID, isAlarm, IBP_INPUT_1);
+        ibpParam.noticeLimitAlarm(subID, isAlarm, IBP_CHN_1);
     }
     else if (idName == ibp2)
     {
-        ibpParam.noticeLimitAlarm(subID, isAlarm, IBP_INPUT_2);
+        ibpParam.noticeLimitAlarm(subID, isAlarm, IBP_CHN_2);
     }
 }
 
@@ -650,11 +650,11 @@ bool IBPOneShotAlarm::isAlarmed(int id)
 
     if (id == IBP1_LEAD_OFF)
     {
-        return  ibpParam.getIBPLeadOff(IBP_INPUT_1);
+        return  ibpParam.getIBPLeadOff(IBP_CHN_1);
     }
     else if (id == IBP2_LEAD_OFF)
     {
-        return  ibpParam.getIBPLeadOff(IBP_INPUT_2);
+        return  ibpParam.getIBPLeadOff(IBP_CHN_2);
     }
     return AlarmOneShotIFace::isAlarmed(id);
 }

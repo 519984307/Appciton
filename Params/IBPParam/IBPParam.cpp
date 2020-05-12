@@ -114,8 +114,8 @@ void IBPParam::handDemoWaveform(WaveformID id, short data)
         data *= 10;
     }
 
-    WaveformID ibp1WaveID = getWaveformID(getEntitle(IBP_INPUT_1));
-    WaveformID ibp2WaveID = getWaveformID(getEntitle(IBP_INPUT_2));
+    WaveformID ibp1WaveID = getWaveformID(getEntitle(IBP_CHN_1));
+    WaveformID ibp2WaveID = getWaveformID(getEntitle(IBP_CHN_2));
 
     if (id == ibp1WaveID)
     {
@@ -187,14 +187,14 @@ void IBPParam::showSubParamValue()
     }
 }
 
-void IBPParam::noticeLimitAlarm(int id, bool isAlarm, IBPSignalInput ibp)
+void IBPParam::noticeLimitAlarm(int id, bool isAlarm, IPBChannel ibp)
 {
-    if (ibp == IBP_INPUT_1 && NULL != _trendWidgetIBP1)
+    if (ibp == IBP_CHN_1 && NULL != _trendWidgetIBP1)
     {
         _trendWidgetIBP1->isAlarm(id, isAlarm);
     }
 
-    if (ibp == IBP_INPUT_2 && NULL != _trendWidgetIBP2)
+    if (ibp == IBP_CHN_2 && NULL != _trendWidgetIBP2)
     {
         _trendWidgetIBP2->isAlarm(id, isAlarm);
     }
@@ -242,11 +242,11 @@ short IBPParam::getSubParamValue(SubParamID id)
     case SUB_PARAM_ART_SYS:
         if (_ibp1.pressureName == IBP_LABEL_ART)
         {
-            return getParamData(IBP_INPUT_1).sys;
+            return getParamData(IBP_CHN_1).sys;
         }
         else if (_ibp2.pressureName == IBP_LABEL_ART)
         {
-            return getParamData(IBP_INPUT_2).sys;
+            return getParamData(IBP_CHN_2).sys;
         }
         else
         {
@@ -255,11 +255,11 @@ short IBPParam::getSubParamValue(SubParamID id)
     case SUB_PARAM_ART_DIA:
         if (_ibp1.pressureName == IBP_LABEL_ART)
         {
-            return getParamData(IBP_INPUT_1).dia;
+            return getParamData(IBP_CHN_1).dia;
         }
         else if (_ibp2.pressureName == IBP_LABEL_ART)
         {
-            return getParamData(IBP_INPUT_2).dia;
+            return getParamData(IBP_CHN_2).dia;
         }
         else
         {
@@ -268,11 +268,11 @@ short IBPParam::getSubParamValue(SubParamID id)
     case SUB_PARAM_ART_MAP:
         if (_ibp1.pressureName == IBP_LABEL_ART)
         {
-            return getParamData(IBP_INPUT_1).mean;
+            return getParamData(IBP_CHN_1).mean;
         }
         else if (_ibp2.pressureName == IBP_LABEL_ART)
         {
-            return getParamData(IBP_INPUT_2).mean;
+            return getParamData(IBP_CHN_2).mean;
         }
         else
         {
@@ -281,11 +281,11 @@ short IBPParam::getSubParamValue(SubParamID id)
     case SUB_PARAM_ART_PR:
         if (_ibp1.pressureName == IBP_LABEL_ART)
         {
-            return getParamData(IBP_INPUT_1).pr;
+            return getParamData(IBP_CHN_1).pr;
         }
         else if (_ibp2.pressureName == IBP_LABEL_ART)
         {
-            return getParamData(IBP_INPUT_2).pr;
+            return getParamData(IBP_CHN_2).pr;
         }
         else
         {
@@ -294,11 +294,11 @@ short IBPParam::getSubParamValue(SubParamID id)
     case SUB_PARAM_PA_SYS:
         if (_ibp1.pressureName == IBP_LABEL_PA)
         {
-            return getParamData(IBP_INPUT_1).sys;
+            return getParamData(IBP_CHN_1).sys;
         }
         else if (_ibp2.pressureName == IBP_LABEL_PA)
         {
-            return getParamData(IBP_INPUT_2).sys;
+            return getParamData(IBP_CHN_2).sys;
         }
         else
         {
@@ -307,11 +307,11 @@ short IBPParam::getSubParamValue(SubParamID id)
     case SUB_PARAM_PA_DIA:
         if (_ibp1.pressureName == IBP_LABEL_PA)
         {
-            return getParamData(IBP_INPUT_1).dia;
+            return getParamData(IBP_CHN_1).dia;
         }
         else if (_ibp2.pressureName == IBP_LABEL_PA)
         {
-            return getParamData(IBP_INPUT_2).dia;
+            return getParamData(IBP_CHN_2).dia;
         }
         else
         {
@@ -320,11 +320,11 @@ short IBPParam::getSubParamValue(SubParamID id)
     case SUB_PARAM_PA_MAP:
         if (_ibp1.pressureName == IBP_LABEL_PA)
         {
-            return getParamData(IBP_INPUT_1).mean;
+            return getParamData(IBP_CHN_1).mean;
         }
         else if (_ibp2.pressureName == IBP_LABEL_PA)
         {
-            return getParamData(IBP_INPUT_2).mean;
+            return getParamData(IBP_CHN_2).mean;
         }
         else
         {
@@ -333,11 +333,11 @@ short IBPParam::getSubParamValue(SubParamID id)
     case SUB_PARAM_PA_PR:
         if (_ibp1.pressureName == IBP_LABEL_PA)
         {
-            return getParamData(IBP_INPUT_1).pr;
+            return getParamData(IBP_CHN_1).pr;
         }
         else if (_ibp2.pressureName == IBP_LABEL_PA)
         {
-            return getParamData(IBP_INPUT_2).pr;
+            return getParamData(IBP_CHN_2).pr;
         }
         else
         {
@@ -346,11 +346,11 @@ short IBPParam::getSubParamValue(SubParamID id)
     case SUB_PARAM_CVP_MAP:
         if (_ibp1.pressureName == IBP_LABEL_CVP)
         {
-            return getParamData(IBP_INPUT_1).mean;
+            return getParamData(IBP_CHN_1).mean;
         }
         else if (_ibp2.pressureName == IBP_LABEL_CVP)
         {
-            return getParamData(IBP_INPUT_2).mean;
+            return getParamData(IBP_CHN_2).mean;
         }
         else
         {
@@ -359,11 +359,11 @@ short IBPParam::getSubParamValue(SubParamID id)
     case SUB_PARAM_CVP_PR:
         if (_ibp1.pressureName == IBP_LABEL_CVP)
         {
-            return getParamData(IBP_INPUT_1).pr;
+            return getParamData(IBP_CHN_1).pr;
         }
         else if (_ibp2.pressureName == IBP_LABEL_CVP)
         {
-            return getParamData(IBP_INPUT_2).pr;
+            return getParamData(IBP_CHN_2).pr;
         }
         else
         {
@@ -372,11 +372,11 @@ short IBPParam::getSubParamValue(SubParamID id)
     case SUB_PARAM_LAP_MAP:
         if (_ibp1.pressureName == IBP_LABEL_LAP)
         {
-            return getParamData(IBP_INPUT_1).mean;
+            return getParamData(IBP_CHN_1).mean;
         }
         else if (_ibp2.pressureName == IBP_LABEL_LAP)
         {
-            return getParamData(IBP_INPUT_2).mean;
+            return getParamData(IBP_CHN_2).mean;
         }
         else
         {
@@ -385,11 +385,11 @@ short IBPParam::getSubParamValue(SubParamID id)
     case SUB_PARAM_LAP_PR:
         if (_ibp1.pressureName == IBP_LABEL_LAP)
         {
-            return getParamData(IBP_INPUT_1).pr;
+            return getParamData(IBP_CHN_1).pr;
         }
         else if (_ibp2.pressureName == IBP_LABEL_LAP)
         {
-            return getParamData(IBP_INPUT_2).pr;
+            return getParamData(IBP_CHN_2).pr;
         }
         else
         {
@@ -398,11 +398,11 @@ short IBPParam::getSubParamValue(SubParamID id)
     case SUB_PARAM_RAP_MAP:
         if (_ibp1.pressureName == IBP_LABEL_RAP)
         {
-            return getParamData(IBP_INPUT_1).mean;
+            return getParamData(IBP_CHN_1).mean;
         }
         else if (_ibp2.pressureName == IBP_LABEL_RAP)
         {
-            return getParamData(IBP_INPUT_2).mean;
+            return getParamData(IBP_CHN_2).mean;
         }
         else
         {
@@ -411,11 +411,11 @@ short IBPParam::getSubParamValue(SubParamID id)
     case SUB_PARAM_RAP_PR:
         if (_ibp1.pressureName == IBP_LABEL_RAP)
         {
-            return getParamData(IBP_INPUT_1).pr;
+            return getParamData(IBP_CHN_1).pr;
         }
         else if (_ibp2.pressureName == IBP_LABEL_RAP)
         {
-            return getParamData(IBP_INPUT_2).pr;
+            return getParamData(IBP_CHN_2).pr;
         }
         else
         {
@@ -424,11 +424,11 @@ short IBPParam::getSubParamValue(SubParamID id)
     case SUB_PARAM_ICP_MAP:
         if (_ibp1.pressureName == IBP_LABEL_ICP)
         {
-            return getParamData(IBP_INPUT_1).mean;
+            return getParamData(IBP_CHN_1).mean;
         }
         else if (_ibp2.pressureName == IBP_LABEL_ICP)
         {
-            return getParamData(IBP_INPUT_2).mean;
+            return getParamData(IBP_CHN_2).mean;
         }
         else
         {
@@ -437,11 +437,11 @@ short IBPParam::getSubParamValue(SubParamID id)
     case SUB_PARAM_ICP_PR:
         if (_ibp1.pressureName == IBP_LABEL_ICP)
         {
-            return getParamData(IBP_INPUT_1).pr;
+            return getParamData(IBP_CHN_1).pr;
         }
         else if (_ibp2.pressureName == IBP_LABEL_ICP)
         {
-            return getParamData(IBP_INPUT_2).pr;
+            return getParamData(IBP_CHN_2).pr;
         }
         else
         {
@@ -450,11 +450,11 @@ short IBPParam::getSubParamValue(SubParamID id)
     case SUB_PARAM_AUXP1_SYS:
         if (_ibp1.pressureName == IBP_LABEL_AUXP1)
         {
-            return getParamData(IBP_INPUT_1).sys;
+            return getParamData(IBP_CHN_1).sys;
         }
         else if (_ibp2.pressureName == IBP_LABEL_AUXP1)
         {
-            return getParamData(IBP_INPUT_2).sys;
+            return getParamData(IBP_CHN_2).sys;
         }
         else
         {
@@ -463,11 +463,11 @@ short IBPParam::getSubParamValue(SubParamID id)
     case SUB_PARAM_AUXP1_DIA:
         if (_ibp1.pressureName == IBP_LABEL_AUXP1)
         {
-            return getParamData(IBP_INPUT_1).dia;
+            return getParamData(IBP_CHN_1).dia;
         }
         else if (_ibp2.pressureName == IBP_LABEL_AUXP1)
         {
-            return getParamData(IBP_INPUT_2).dia;
+            return getParamData(IBP_CHN_2).dia;
         }
         else
         {
@@ -476,11 +476,11 @@ short IBPParam::getSubParamValue(SubParamID id)
     case SUB_PARAM_AUXP1_MAP:
         if (_ibp1.pressureName == IBP_LABEL_AUXP1)
         {
-            return getParamData(IBP_INPUT_1).mean;
+            return getParamData(IBP_CHN_1).mean;
         }
         else if (_ibp2.pressureName == IBP_LABEL_AUXP1)
         {
-            return getParamData(IBP_INPUT_2).mean;
+            return getParamData(IBP_CHN_2).mean;
         }
         else
         {
@@ -489,11 +489,11 @@ short IBPParam::getSubParamValue(SubParamID id)
     case SUB_PARAM_AUXP1_PR:
         if (_ibp1.pressureName == IBP_LABEL_AUXP1)
         {
-            return getParamData(IBP_INPUT_1).pr;
+            return getParamData(IBP_CHN_1).pr;
         }
         else if (_ibp2.pressureName == IBP_LABEL_AUXP1)
         {
-            return getParamData(IBP_INPUT_2).pr;
+            return getParamData(IBP_CHN_2).pr;
         }
         else
         {
@@ -502,11 +502,11 @@ short IBPParam::getSubParamValue(SubParamID id)
     case SUB_PARAM_AUXP2_SYS:
         if (_ibp1.pressureName == IBP_LABEL_AUXP2)
         {
-            return getParamData(IBP_INPUT_1).sys;
+            return getParamData(IBP_CHN_1).sys;
         }
         else if (_ibp2.pressureName == IBP_LABEL_AUXP2)
         {
-            return getParamData(IBP_INPUT_2).sys;
+            return getParamData(IBP_CHN_2).sys;
         }
         else
         {
@@ -515,11 +515,11 @@ short IBPParam::getSubParamValue(SubParamID id)
     case SUB_PARAM_AUXP2_DIA:
         if (_ibp1.pressureName == IBP_LABEL_AUXP2)
         {
-            return getParamData(IBP_INPUT_1).dia;
+            return getParamData(IBP_CHN_1).dia;
         }
         else if (_ibp2.pressureName == IBP_LABEL_AUXP2)
         {
-            return getParamData(IBP_INPUT_2).dia;
+            return getParamData(IBP_CHN_2).dia;
         }
         else
         {
@@ -528,11 +528,11 @@ short IBPParam::getSubParamValue(SubParamID id)
     case SUB_PARAM_AUXP2_MAP:
         if (_ibp1.pressureName == IBP_LABEL_AUXP2)
         {
-            return getParamData(IBP_INPUT_1).mean;
+            return getParamData(IBP_CHN_1).mean;
         }
         else if (_ibp2.pressureName == IBP_LABEL_AUXP2)
         {
-            return getParamData(IBP_INPUT_2).mean;
+            return getParamData(IBP_CHN_2).mean;
         }
         else
         {
@@ -541,11 +541,11 @@ short IBPParam::getSubParamValue(SubParamID id)
     case SUB_PARAM_AUXP2_PR:
         if (_ibp1.pressureName == IBP_LABEL_AUXP2)
         {
-            return getParamData(IBP_INPUT_1).pr;
+            return getParamData(IBP_CHN_1).pr;
         }
         else if (_ibp2.pressureName == IBP_LABEL_AUXP2)
         {
-            return getParamData(IBP_INPUT_2).pr;
+            return getParamData(IBP_CHN_2).pr;
         }
         else
         {
@@ -662,17 +662,17 @@ bool IBPParam::isConnected()
  * 设置实时数据。
  *************************************************************************************************/
 void IBPParam::setRealTimeData(unsigned short sys, unsigned short dia, unsigned short map,
-                               unsigned short pr, IBPSignalInput IBP)
+                               unsigned short pr, IPBChannel IBP)
 {
     setParamData(IBP, sys, dia, map, pr);
-    if (IBP == IBP_INPUT_1)
+    if (IBP == IBP_CHN_1)
     {
         if (NULL != _trendWidgetIBP1)
         {
             _trendWidgetIBP1->setData(sys, dia, map);
         }
     }
-    else if (IBP == IBP_INPUT_2)
+    else if (IBP == IBP_CHN_2)
     {
         if (NULL != _trendWidgetIBP2)
         {
@@ -688,7 +688,7 @@ void IBPParam::setRealTimeData(unsigned short sys, unsigned short dia, unsigned 
 /**************************************************************************************************
  * 设置波形值。
  *************************************************************************************************/
-void IBPParam::addWaveformData(short wave, bool invalid, IBPSignalInput IBP)
+void IBPParam::addWaveformData(short wave, bool invalid, IPBChannel IBP)
 {
     /* NOTE: The wave data's unit should be 0.1 mmhg */
     int flag = 0;
@@ -699,18 +699,18 @@ void IBPParam::addWaveformData(short wave, bool invalid, IBPSignalInput IBP)
         wave = 0;
     }
 
-    if (IBP == IBP_INPUT_1)
+    if (IBP == IBP_CHN_1)
     {
-        WaveformID ibp1WaveID = getWaveformID(getEntitle(IBP_INPUT_1));
+        WaveformID ibp1WaveID = getWaveformID(getEntitle(IBP_CHN_1));
         if (_waveWidgetIBP1 != NULL)
         {
             _waveWidgetIBP1->addWaveformData(wave, flag);
         }
         waveformCache.addData(ibp1WaveID, (flag << 16) | wave);
     }
-    else if (IBP == IBP_INPUT_2)
+    else if (IBP == IBP_CHN_2)
     {
-        WaveformID ibp2WaveID = getWaveformID(getEntitle(IBP_INPUT_2));
+        WaveformID ibp2WaveID = getWaveformID(getEntitle(IBP_CHN_2));
         if (_waveWidgetIBP2 != NULL)
         {
             _waveWidgetIBP2->addWaveformData(wave, flag);
@@ -722,17 +722,17 @@ void IBPParam::addWaveformData(short wave, bool invalid, IBPSignalInput IBP)
 /**************************************************************************************************
  * 设置趋势对象。
  *************************************************************************************************/
-void IBPParam::setIBPTrendWidget(IBPTrendWidget *trendWidget, IBPSignalInput IBP)
+void IBPParam::setIBPTrendWidget(IBPTrendWidget *trendWidget, IPBChannel IBP)
 {
     if (trendWidget == NULL)
     {
         return;
     }
-    if (IBP == IBP_INPUT_1)
+    if (IBP == IBP_CHN_1)
     {
         _trendWidgetIBP1 = trendWidget;
     }
-    else if (IBP == IBP_INPUT_2)
+    else if (IBP == IBP_CHN_2)
     {
         _trendWidgetIBP2 = trendWidget;
     }
@@ -741,18 +741,18 @@ void IBPParam::setIBPTrendWidget(IBPTrendWidget *trendWidget, IBPSignalInput IBP
 /**************************************************************************************************
  * 设置波形对象。
  *************************************************************************************************/
-void IBPParam::setWaveWidget(IBPWaveWidget *waveWidget, IBPSignalInput IBP)
+void IBPParam::setWaveWidget(IBPWaveWidget *waveWidget, IPBChannel IBP)
 {
     if (waveWidget == NULL)
     {
         return;
     }
 
-    if (IBP == IBP_INPUT_1)
+    if (IBP == IBP_CHN_1)
     {
         _waveWidgetIBP1 = waveWidget;
     }
-    else if (IBP == IBP_INPUT_2)
+    else if (IBP == IBP_CHN_2)
     {
         _waveWidgetIBP2 = waveWidget;
     }
@@ -762,14 +762,14 @@ void IBPParam::setWaveWidget(IBPWaveWidget *waveWidget, IBPSignalInput IBP)
     _setWaveformSpeed(getSweepSpeed());
 }
 
-QList<SubParamID> IBPParam::getShortTrendList(IBPSignalInput IBP)
+QList<SubParamID> IBPParam::getShortTrendList(IPBChannel IBP)
 {
     QList<SubParamID> paraList;
-    if (IBP == IBP_INPUT_1)
+    if (IBP == IBP_CHN_1)
     {
         paraList = _trendWidgetIBP1->getShortTrendSubParams();
     }
-    else if (IBP == IBP_INPUT_2)
+    else if (IBP == IBP_CHN_2)
     {
         paraList = _trendWidgetIBP2->getShortTrendSubParams();
     }
@@ -812,9 +812,9 @@ IBPScaleInfo IBPParam::getIBPScale(IBPLabel name)
     return info;
 }
 
-void IBPParam::setRulerLimit(IBPRulerLimit ruler, IBPSignalInput ibp)
+void IBPParam::setRulerLimit(IBPRulerLimit ruler, IPBChannel ibp)
 {
-    if (ibp == IBP_INPUT_1)
+    if (ibp == IBP_CHN_1)
     {
         currentConfig.setNumValue("IBP|RulerLimit1", static_cast<int>(ruler));
         if (_waveWidgetIBP1 != NULL)
@@ -822,7 +822,7 @@ void IBPParam::setRulerLimit(IBPRulerLimit ruler, IBPSignalInput ibp)
             _waveWidgetIBP1->setRulerLimit(ruler);
         }
     }
-    else if (ibp == IBP_INPUT_2)
+    else if (ibp == IBP_CHN_2)
     {
         currentConfig.setNumValue("IBP|RulerLimit2", static_cast<int>(ruler));
         if (_waveWidgetIBP2 != NULL)
@@ -832,16 +832,16 @@ void IBPParam::setRulerLimit(IBPRulerLimit ruler, IBPSignalInput ibp)
     }
 }
 
-void IBPParam::setRulerLimit(int low, int high, IBPSignalInput ibp)
+void IBPParam::setRulerLimit(int low, int high, IPBChannel ibp)
 {
-    if (ibp == IBP_INPUT_1)
+    if (ibp == IBP_CHN_1)
     {
         if (_waveWidgetIBP1 != NULL)
         {
             _waveWidgetIBP1->setLimit(low, high);
         }
     }
-    else if (ibp == IBP_INPUT_2)
+    else if (ibp == IBP_CHN_2)
     {
         if (_waveWidgetIBP2 != NULL)
         {
@@ -850,14 +850,14 @@ void IBPParam::setRulerLimit(int low, int high, IBPSignalInput ibp)
     }
 }
 
-IBPRulerLimit IBPParam::getRulerLimit(IBPSignalInput ibp)
+IBPRulerLimit IBPParam::getRulerLimit(IPBChannel ibp)
 {
     int ruler = IBP_RULER_LIMIT_0_160;
-    if (ibp == IBP_INPUT_1)
+    if (ibp == IBP_CHN_1)
     {
         currentConfig.getNumValue("IBP|RulerLimit1", ruler);
     }
-    else if (ibp == IBP_INPUT_2)
+    else if (ibp == IBP_CHN_2)
     {
         currentConfig.getNumValue("IBP|RulerLimit2", ruler);
     }
@@ -901,9 +901,9 @@ void IBPParam::setScaleInfo(const IBPScaleInfo &info, const IBPLabel &name)
     }
 }
 
-IBPScaleInfo &IBPParam::getScaleInfo(IBPSignalInput ibp)
+IBPScaleInfo &IBPParam::getScaleInfo(IPBChannel ibp)
 {
-    if (ibp == IBP_INPUT_1)
+    if (ibp == IBP_CHN_1)
     {
         return _scale1;
     }
@@ -916,13 +916,13 @@ IBPScaleInfo &IBPParam::getScaleInfo(IBPSignalInput ibp)
 /**************************************************************************************************
  * 设置校零。
  *************************************************************************************************/
-void IBPParam::zeroCalibration(IBPSignalInput IBP)
+void IBPParam::zeroCalibration(IPBChannel IBP)
 {
-    if (IBP == IBP_INPUT_1)
+    if (IBP == IBP_CHN_1)
     {
         _ibp1HasBeenZero = false;
     }
-    else if (IBP == IBP_INPUT_2)
+    else if (IBP == IBP_CHN_2)
     {
         _ibp2HasBeenZero = false;
     }
@@ -942,13 +942,13 @@ void IBPParam::zeroCalibration(IBPSignalInput IBP)
     _provider->setZero(IBP, IBP_CALIBRATION_ZERO, 0x00);
 }
 
-bool IBPParam::hasBeenZero(IBPSignalInput IBP)
+bool IBPParam::hasBeenZero(IPBChannel IBP)
 {
-    if (IBP == IBP_INPUT_1)
+    if (IBP == IBP_CHN_1)
     {
         return _ibp1HasBeenZero;
     }
-    else if (IBP == IBP_INPUT_2)
+    else if (IBP == IBP_CHN_2)
     {
         return _ibp2HasBeenZero;
     }
@@ -959,7 +959,7 @@ bool IBPParam::hasBeenZero(IBPSignalInput IBP)
 /**************************************************************************************************
  * 设置校准。
  *************************************************************************************************/
-void IBPParam::setCalibration(IBPSignalInput IBP, unsigned short value)
+void IBPParam::setCalibration(IPBChannel IBP, unsigned short value)
 {
     clearCalibAlarm();
     _provider->setZero(IBP, IBP_CALIBRATION_SET, value);
@@ -968,7 +968,7 @@ void IBPParam::setCalibration(IBPSignalInput IBP, unsigned short value)
 /**************************************************************************************************
  * 校零校准信息。
  *************************************************************************************************/
-void IBPParam::calibrationInfo(IBPCalibration calib, IBPSignalInput IBP, int calibinfo)
+void IBPParam::calibrationInfo(IBPCalibration calib, IPBChannel IBP, int calibinfo)
 {
     AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_IBP);
     if (alarmSource == NULL)
@@ -978,7 +978,7 @@ void IBPParam::calibrationInfo(IBPCalibration calib, IBPSignalInput IBP, int cal
 
     if (calib == IBP_CALIBRATION_ZERO)
     {
-        if (IBP == IBP_INPUT_1)
+        if (IBP == IBP_CHN_1)
         {
             _ibp1ZeroReply = true;
             if (!_ibp1HasBeenZero)
@@ -1019,7 +1019,7 @@ void IBPParam::calibrationInfo(IBPCalibration calib, IBPSignalInput IBP, int cal
             }
             }
         }
-        else if (IBP == IBP_INPUT_2)
+        else if (IBP == IBP_CHN_2)
         {
             _ibp2ZeroReply = true;
             if (!_ibp2HasBeenZero)
@@ -1067,7 +1067,7 @@ void IBPParam::calibrationInfo(IBPCalibration calib, IBPSignalInput IBP, int cal
     }
     else if (calib == IBP_CALIBRATION_SET)
     {
-        if (IBP == IBP_INPUT_1)
+        if (IBP == IBP_CHN_1)
         {
             switch (static_cast<IBPCalibrationResult>(calibinfo))
             {
@@ -1107,7 +1107,7 @@ void IBPParam::calibrationInfo(IBPCalibration calib, IBPSignalInput IBP, int cal
             }
             }
         }
-        else if (IBP == IBP_INPUT_2)
+        else if (IBP == IBP_CHN_2)
         {
             switch (static_cast<IBPCalibrationResult>(calibinfo))
             {
@@ -1184,13 +1184,13 @@ void IBPParam::leadStatus(bool staIBP1, bool staIBP2)
     }
 }
 
-bool IBPParam::isIBPLeadOff(IBPSignalInput IBP)
+bool IBPParam::isIBPLeadOff(IPBChannel IBP)
 {
-    if (IBP == IBP_INPUT_1)
+    if (IBP == IBP_CHN_1)
     {
         return _staIBP1;
     }
-    else if (IBP == IBP_INPUT_2)
+    else if (IBP == IBP_CHN_2)
     {
         return _staIBP2;
     }
@@ -1216,15 +1216,15 @@ IBPSweepSpeed IBPParam::getSweepSpeed()
 /**************************************************************************************************
  * 设置标名。
  *************************************************************************************************/
-void IBPParam::setEntitle(IBPLabel entitle, IBPSignalInput IBP)
+void IBPParam::setEntitle(IBPLabel entitle, IPBChannel IBP)
 {
-    if (IBP == IBP_INPUT_1)
+    if (IBP == IBP_CHN_1)
     {
         _waveWidgetIBP1->setEntitle(entitle);
         _trendWidgetIBP1->setEntitle(entitle);
         _ibp1.pressureName = entitle;
     }
-    else if (IBP == IBP_INPUT_2)
+    else if (IBP == IBP_CHN_2)
     {
         _ibp2.pressureName = entitle;
         _waveWidgetIBP2->setEntitle(entitle);
@@ -1256,9 +1256,9 @@ void IBPParam::setEntitle(IBPLabel entitle, IBPSignalInput IBP)
     }
 }
 
-IBPLabel IBPParam::getEntitle(IBPSignalInput signal) const
+IBPLabel IBPParam::getEntitle(IPBChannel signal) const
 {
-    if (signal == IBP_INPUT_1)
+    if (signal == IBP_CHN_1)
     {
         return _ibp1.pressureName;
     }
@@ -1339,8 +1339,8 @@ IBPLabel IBPParam::getEntitle(IBPLimitAlarmType alarmType) const
 void IBPParam::setFilter(IBPFilterMode filter)
 {
     currentConfig.setNumValue("IBP|FilterMode", static_cast<int>(filter));
-    _provider->setFilter(IBP_INPUT_1, filter);
-    _provider->setFilter(IBP_INPUT_2, filter);
+    _provider->setFilter(IBP_CHN_1, filter);
+    _provider->setFilter(IBP_CHN_2, filter);
 }
 
 IBPFilterMode IBPParam::getFilter()
@@ -1357,8 +1357,8 @@ void IBPParam::setSensitivity(IBPSensitivity sensitivity)
 {
     currentConfig.setNumValue("IBP|Sensitivity", static_cast<int>(sensitivity));
     unsigned char time = IBPSymbol::convertNumber(sensitivity);
-    _provider->setAvergTime(IBP_INPUT_1, time);
-    _provider->setAvergTime(IBP_INPUT_2, time);
+    _provider->setAvergTime(IBP_CHN_1, time);
+    _provider->setAvergTime(IBP_CHN_2, time);
 }
 
 IBPSensitivity IBPParam::getSensitivity()
@@ -1371,9 +1371,9 @@ IBPSensitivity IBPParam::getSensitivity()
 /**************************************************************************************************
  * 获取IBP计算结果数据。
  *************************************************************************************************/
-IBPParamInfo IBPParam::getParamData(IBPSignalInput IBP)
+IBPParamInfo IBPParam::getParamData(IPBChannel IBP)
 {
-    if (IBP == IBP_INPUT_1)
+    if (IBP == IBP_CHN_1)
     {
         return _ibp1;
     }
@@ -1386,10 +1386,10 @@ IBPParamInfo IBPParam::getParamData(IBPSignalInput IBP)
 /**************************************************************************************************
  * 设置IBP计算结果数据缓存。
  *************************************************************************************************/
-void IBPParam::setParamData(IBPSignalInput IBP, unsigned short sys, unsigned short dia, unsigned short mean,
+void IBPParam::setParamData(IPBChannel IBP, unsigned short sys, unsigned short dia, unsigned short mean,
                             unsigned short pr)
 {
-    if (IBP == IBP_INPUT_1)
+    if (IBP == IBP_CHN_1)
     {
         _ibp1.sys = sys;
         _ibp1.dia = dia;
@@ -1407,13 +1407,13 @@ void IBPParam::setParamData(IBPSignalInput IBP, unsigned short sys, unsigned sho
     ecgDupParam.updatePR(static_cast<short>(pr), PR_SOURCE_IBP);
 }
 
-SubParamID IBPParam::getSubParamID(IBPSignalInput inputID)
+SubParamID IBPParam::getSubParamID(IPBChannel inputID)
 {
-    if (inputID == IBP_INPUT_1)
+    if (inputID == IBP_CHN_1)
     {
         return getSubParamID(_ibp1.pressureName);
     }
-    else if (inputID == IBP_INPUT_2)
+    else if (inputID == IBP_CHN_2)
     {
         return getSubParamID(_ibp2.pressureName);
     }
@@ -1594,13 +1594,13 @@ void IBPParam::updateSubParamLimit(SubParamID id)
     }
 }
 
-bool IBPParam::getIBPLeadOff(IBPSignalInput ibp)
+bool IBPParam::getIBPLeadOff(IPBChannel ibp)
 {
-    if (ibp == IBP_INPUT_1)
+    if (ibp == IBP_CHN_1)
     {
         return _staIBP1;
     }
-    else if (ibp == IBP_INPUT_2)
+    else if (ibp == IBP_CHN_2)
     {
         return _staIBP2;
     }
@@ -1620,14 +1620,14 @@ void IBPParam::clearCalibAlarm()
     }
 }
 
-bool IBPParam::hasIBPZeroReply(IBPSignalInput chn)
+bool IBPParam::hasIBPZeroReply(IPBChannel chn)
 {
     bool *reply = NULL;
-    if (chn == IBP_INPUT_1)
+    if (chn == IBP_CHN_1)
     {
         reply = &_ibp1ZeroReply;
     }
-    else if (chn == IBP_INPUT_2)
+    else if (chn == IBP_CHN_2)
     {
         reply = &_ibp2ZeroReply;
     }

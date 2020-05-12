@@ -737,9 +737,9 @@ void BigFontLayoutModelPrivate::loadItemInfos()
     if (systemManager.isSupport(CONFIG_IBP))
     {
         waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_IBP1),
-                           ibpParam.getWaveformID(ibpParam.getEntitle(IBP_INPUT_1)));
+                           ibpParam.getWaveformID(ibpParam.getEntitle(IBP_CHN_1)));
         waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_IBP2),
-                           ibpParam.getWaveformID(ibpParam.getEntitle(IBP_INPUT_2)));
+                           ibpParam.getWaveformID(ibpParam.getEntitle(IBP_CHN_2)));
         // IBP's pressure name is identical to it's wave name
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_IBP1)] = ParamNodeDescription(
                     paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_NODE_WAVE_IBP1)]),

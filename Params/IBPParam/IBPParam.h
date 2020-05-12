@@ -50,7 +50,7 @@ public:
     virtual void showSubParamValue();
 
     // 是否超限报警
-    void noticeLimitAlarm(int id, bool isAlarm, IBPSignalInput ibp);
+    void noticeLimitAlarm(int id, bool isAlarm, IPBChannel ibp);
 
     // 获取可得的波形控件集。
     virtual void getAvailableWaveforms(QStringList *waveforms,
@@ -76,18 +76,18 @@ public:
 
     // 设置测量实时数据。
     void setRealTimeData(unsigned short sys, unsigned short dia, unsigned short map,
-                         unsigned short pr, IBPSignalInput IBP);
+                         unsigned short pr, IPBChannel IBP);
 
     // 设置波形值。
-    void addWaveformData(short wave, bool invalid, IBPSignalInput = IBP_INPUT_1);
+    void addWaveformData(short wave, bool invalid, IPBChannel = IBP_CHN_1);
 
     // 设置界面对象
-    void setIBPTrendWidget(IBPTrendWidget *trendWidget, IBPSignalInput IBP = IBP_INPUT_1);
-    void setWaveWidget(IBPWaveWidget *waveWidget, IBPSignalInput IBP = IBP_INPUT_1);
+    void setIBPTrendWidget(IBPTrendWidget *trendWidget, IPBChannel IBP = IBP_CHN_1);
+    void setWaveWidget(IBPWaveWidget *waveWidget, IPBChannel IBP = IBP_CHN_1);
 
 
     /*reimplement*/
-    QList<SubParamID> getShortTrendList(IBPSignalInput IBP);
+    QList<SubParamID> getShortTrendList(IPBChannel IBP);
     /**
      * @brief getIBPScale get the IBP scale info
      * @param name
@@ -96,17 +96,17 @@ public:
     IBPScaleInfo getIBPScale(IBPLabel name);
 
     // 设置/获取波形标尺限。
-    void setRulerLimit(IBPRulerLimit ruler, IBPSignalInput ibp);
-    void setRulerLimit(int low, int high, IBPSignalInput ibp);
-    IBPRulerLimit getRulerLimit(IBPSignalInput ibp);
+    void setRulerLimit(IBPRulerLimit ruler, IPBChannel ibp);
+    void setRulerLimit(int low, int high, IPBChannel ibp);
+    IBPRulerLimit getRulerLimit(IPBChannel ibp);
     IBPRulerLimit getRulerLimit(IBPLabel name);
 
     // 设置/获取标尺信息
     void setScaleInfo(const IBPScaleInfo &info, const IBPLabel &name);
-    IBPScaleInfo &getScaleInfo(IBPSignalInput ibp);
+    IBPScaleInfo &getScaleInfo(IPBChannel ibp);
 
     // 获取IBP导联脱落状态
-    bool getIBPLeadOff(IBPSignalInput ibp);
+    bool getIBPLeadOff(IPBChannel ibp);
 
     // 清空校准相关报警
     void clearCalibAlarm(void);
@@ -116,7 +116,7 @@ public:
      * @param chn the channel
      * @return true when got reply
      */
-    bool hasIBPZeroReply(IBPSignalInput chn);
+    bool hasIBPZeroReply(IPBChannel chn);
 
     /**
      * @brief getMoudleType get the connect module type
@@ -126,20 +126,20 @@ public:
 
 public:
     // 校零。
-    void zeroCalibration(IBPSignalInput IBP);
+    void zeroCalibration(IPBChannel IBP);
 
     /**
      * @brief hasBeenZero check whether the channel has been zero or not
      * @param IBP the ibp channel
      * @return true if the channel is already zeroed
      */
-    bool hasBeenZero(IBPSignalInput IBP);
+    bool hasBeenZero(IPBChannel IBP);
 
     // 校准
-    void setCalibration(IBPSignalInput IBP, unsigned short value);
+    void setCalibration(IPBChannel IBP, unsigned short value);
 
     // 校零校准信息
-    void calibrationInfo(IBPCalibration calib, IBPSignalInput IBP, int calibinfo);
+    void calibrationInfo(IBPCalibration calib, IPBChannel IBP, int calibinfo);
 
     // 导联状态
     void leadStatus(bool staIBP1, bool staIBP2);
@@ -149,17 +149,17 @@ public:
      * @param IBP  ibp通道
      * @return  导联脱落状态
      */
-    bool isIBPLeadOff(IBPSignalInput IBP);
+    bool isIBPLeadOff(IPBChannel IBP);
 
     // 设置/获取波形速度。
     void setSweepSpeed(IBPSweepSpeed speed);
     IBPSweepSpeed getSweepSpeed(void);
 
     // 设置标名。
-    void setEntitle(IBPLabel entitle, IBPSignalInput IBP);
+    void setEntitle(IBPLabel entitle, IPBChannel IBP);
 
     // get pressure name
-    IBPLabel getEntitle(IBPSignalInput signal) const;
+    IBPLabel getEntitle(IPBChannel signal) const;
     IBPLabel getEntitle(IBPLimitAlarmType alarmType) const;
 
     // 设置滤波
@@ -171,8 +171,8 @@ public:
     IBPSensitivity getSensitivity(void);
 
     // 设置获取IBP计算结果值
-    IBPParamInfo getParamData(IBPSignalInput IBP);
-    void setParamData(IBPSignalInput IBP, unsigned short sys, unsigned short dia,
+    IBPParamInfo getParamData(IPBChannel IBP);
+    void setParamData(IPBChannel IBP, unsigned short sys, unsigned short dia,
                       unsigned short mean, unsigned short pr);
 
     /**
@@ -180,7 +180,7 @@ public:
      * @param inputID
      * @return
      */
-    SubParamID getSubParamID(IBPSignalInput inputID);
+    SubParamID getSubParamID(IPBChannel inputID);
 
     // 参数名获取标名
     IBPLabel getPressureName(SubParamID id);

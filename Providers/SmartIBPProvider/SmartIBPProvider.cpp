@@ -195,7 +195,7 @@ void SmartIBPProvider::reconnected()
     }
 }
 
-void SmartIBPProvider::setZero(IBPSignalInput IBP, IBPCalibration calibration, unsigned short value)
+void SmartIBPProvider::setZero(IPBChannel IBP, IBPCalibration calibration, unsigned short value)
 {
     Q_UNUSED(value)
 
@@ -346,7 +346,7 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
             /* the wave data should scale by 10, since the wave data unit is 0.1mmhg */
             ch1Wave = (ch1Wave - 0x320) * 10 / 8;
         }
-        ibpParam.addWaveformData(ch1Wave, chn1WaveInvalid, IBP_INPUT_1);
+        ibpParam.addWaveformData(ch1Wave, chn1WaveInvalid, IBP_CHN_1);
 
         bool chn2WaveInvalid  = ch2SensorOff;
         if (ch2Wave == INVALID_MEASURE_VALUE)
@@ -359,12 +359,12 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
             /* the wave data should scale by 10, since the wave data unit is 0.1mmhg */
             ch2Wave = (ch2Wave - 0x320) * 10 / 8;
         }
-        ibpParam.addWaveformData(ch2Wave, chn2WaveInvalid, IBP_INPUT_2);
+        ibpParam.addWaveformData(ch2Wave, chn2WaveInvalid, IBP_CHN_2);
 
         if (ch1Type == DATA_TYPE_PR)
         {
             ibpParam.setRealTimeData(chn1Data.sys, chn1Data.dia, chn1Data.map,
-                                     chn1Data.pr, IBP_INPUT_1);
+                                     chn1Data.pr, IBP_CHN_1);
             // qDebug() << "Ch1" << ch1SensorOff << chn1Data.sys
             // << chn1Data.dia << chn1Data.map << chn1Data.pr;
         }
@@ -372,7 +372,7 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
         if (ch2Type == DATA_TYPE_PR)
         {
             ibpParam.setRealTimeData(chn2Data.sys, chn2Data.dia, chn2Data.map,
-                                     chn2Data.pr, IBP_INPUT_2);
+                                     chn2Data.pr, IBP_CHN_2);
             // qDebug() << "Ch2" << ch2SensorOff << chn2Data.sys
             // << chn2Data.dia << chn2Data.map << chn2Data.pr;
         }
@@ -396,13 +396,13 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
         if (cmd == IBP_CALIBRATION_ZERO)
         {
             ibpParam.calibrationInfo(IBP_CALIBRATION_ZERO,
-                                     static_cast<IBPSignalInput>(chn),
+                                     static_cast<IPBChannel>(chn),
                                      result == 0 ? IBP_ZERO_SUCCESS : IBP_ZERO_FAIL);
         }
         else if (cmd == IBP_CALIBRATION_SET)
         {
             ibpParam.calibrationInfo(IBP_CALIBRATION_SET,
-                                     static_cast<IBPSignalInput>(chn),
+                                     static_cast<IPBChannel>(chn),
                                      result == 0 ? IBP_CALIBRATION_SUCCESS: IBP_CALIBRATION_FAIL);
         }
     }

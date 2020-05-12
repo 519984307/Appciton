@@ -1345,8 +1345,8 @@ void TrendTableModelPrivate::loadTableTitle()
         case SUB_PARAM_AUXP1_SYS:
         case SUB_PARAM_AUXP2_SYS:
         {
-            SubParamID ibp1 = ibpParam.getSubParamID(ibpParam.getEntitle(IBP_INPUT_1));
-            SubParamID ibp2 = ibpParam.getSubParamID(ibpParam.getEntitle(IBP_INPUT_2));
+            SubParamID ibp1 = ibpParam.getSubParamID(ibpParam.getEntitle(IBP_CHN_1));
+            SubParamID ibp2 = ibpParam.getSubParamID(ibpParam.getEntitle(IBP_CHN_2));
             if (id != ibp1 && id != ibp2)
             {
                 continue;

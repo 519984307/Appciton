@@ -32,7 +32,7 @@ public:
     void reconnected();
 
     /* reimplement */
-    void setZero(IBPSignalInput IBP, IBPCalibration calibration, unsigned short value);
+    void setZero(IPBChannel IBP, IBPCalibration calibration, unsigned short value);
 
     /* get wave sample rate */
     virtual int getIBPWaveformSample(void);
