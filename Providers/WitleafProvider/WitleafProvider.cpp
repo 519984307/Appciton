@@ -254,7 +254,7 @@ void WitleafProvider::handlePacket(unsigned char *data, int len)
             {
                 info = (data[3] >> 3) & 0x07;
             }
-            ibpParam.calibrationInfo(calib, chn, info);
+            ibpParam.setCalibrationInfo(calib, chn, info);
             break;
         }
         default:

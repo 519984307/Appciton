@@ -103,9 +103,6 @@ public:
     void setScaleInfo(const IBPScaleInfo &info, const IBPLabel &name);
     IBPScaleInfo &getScaleInfo(IPBChannel chn);
 
-    // 获取IBP导联脱落状态
-    bool getIBPLeadOff(IPBChannel chn);
-
     // 清空校准相关报警
     void clearCalibAlarm(void);
 
@@ -137,7 +134,7 @@ public:
     void setCalibration(IPBChannel chn, unsigned short value);
 
     // 校零校准信息
-    void calibrationInfo(IBPCalibration calib, IPBChannel chn, int calibinfo);
+    void setCalibrationInfo(IBPCalibration calib, IPBChannel chn, int calibinfo);
 
     // 导联状态
     void leadStatus(bool staIBP1, bool staIBP2);

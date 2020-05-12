@@ -966,7 +966,7 @@ void IBPParam::setCalibration(IPBChannel chn, unsigned short value)
 /**************************************************************************************************
  * 校零校准信息。
  *************************************************************************************************/
-void IBPParam::calibrationInfo(IBPCalibration calib, IPBChannel chn, int calibinfo)
+void IBPParam::setCalibrationInfo(IBPCalibration calib, IPBChannel chn, int calibinfo)
 {
     AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_IBP);
     if (alarmSource == NULL)
@@ -1592,19 +1592,6 @@ void IBPParam::updateSubParamLimit(SubParamID id)
     {
         _trendWidgetIBP2->updateLimit();
     }
-}
-
-bool IBPParam::getIBPLeadOff(IPBChannel chn)
-{
-    if (chn == IBP_CHN_1)
-    {
-        return _staIBP1;
-    }
-    else if (chn == IBP_CHN_2)
-    {
-        return _staIBP2;
-    }
-    return true;
 }
 
 void IBPParam::clearCalibAlarm()

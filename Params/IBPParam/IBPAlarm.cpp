@@ -650,11 +650,11 @@ bool IBPOneShotAlarm::isAlarmed(int id)
 
     if (id == IBP1_LEAD_OFF)
     {
-        return  ibpParam.getIBPLeadOff(IBP_CHN_1);
+        return  ibpParam.isIBPLeadOff(IBP_CHN_1);
     }
     else if (id == IBP2_LEAD_OFF)
     {
-        return  ibpParam.getIBPLeadOff(IBP_CHN_2);
+        return  ibpParam.isIBPLeadOff(IBP_CHN_2);
     }
     return AlarmOneShotIFace::isAlarmed(id);
 }

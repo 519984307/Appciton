@@ -395,13 +395,13 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
 
         if (cmd == IBP_CALIBRATION_ZERO)
         {
-            ibpParam.calibrationInfo(IBP_CALIBRATION_ZERO,
+            ibpParam.setCalibrationInfo(IBP_CALIBRATION_ZERO,
                                      static_cast<IPBChannel>(chn),
                                      result == 0 ? IBP_ZERO_SUCCESS : IBP_ZERO_FAIL);
         }
         else if (cmd == IBP_CALIBRATION_SET)
         {
-            ibpParam.calibrationInfo(IBP_CALIBRATION_SET,
+            ibpParam.setCalibrationInfo(IBP_CALIBRATION_SET,
                                      static_cast<IPBChannel>(chn),
                                      result == 0 ? IBP_CALIBRATION_SUCCESS: IBP_CALIBRATION_FAIL);
         }
