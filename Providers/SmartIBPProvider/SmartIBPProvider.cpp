@@ -29,6 +29,10 @@
 #define DATA_TYPE_MAP       0x02
 #define DATA_TYPE_PR        0x03
 
+#define INVALID_MEASURE_VALUE   0xFFF
+#define MIN_PRESSURE_VALUE  (-50)
+#define MAX_PRESSURE_VALUE  (350)
+
 struct IBPChannelData
 {
     qint16 sys;
@@ -83,6 +87,18 @@ public:
      */
     void handlePacket(const quint8 *data, int len);
 
+
+    /**
+     * @brief validPressureValue check the pressure value is valid or not
+     * @param value the input pressure value
+     * @return  true if valid, otherwise, false
+     */
+    bool validPressureValue(qint16 value)
+    {
+        /* check the pressure value is valid or not */
+        return (value >= MIN_PRESSURE_VALUE && value <= MAX_PRESSURE_VALUE);
+    }
+
     /**
      * @brief setChannelType set the channel data
      * @param chn the channel data struct
@@ -91,6 +107,10 @@ public:
      */
     void setChannelData(IBPChannelData *chn, quint8 type, qint16 val)
     {
+        if (!validPressureValue(val))
+        {
+            val = InvData();
+        }
         switch (type) {
         case DATA_TYPE_SYS:
             chn->sys = val;
@@ -253,6 +273,17 @@ void SmartIBPProvider::dataArrived()
 void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
 {
     Q_UNUSED(len)
+
+    if (!q_ptr->isConnectedToParam())
+    {
+        return;
+    }
+
+    if (!q_ptr->connected())
+    {
+        ibpParam.setConnected(true);
+    }
+
     switch (data[0])
     {
     case MODULE_ID:
@@ -268,7 +299,7 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
         }
 
         chn1Data.sensorOff = ch1SensorOff;
-        if (ch1SensorOff || !ibpParam.hasBeenZero(IBP_INPUT_1))
+        if (ch1SensorOff)
         {
             chn1Data.sys = InvData();
             chn1Data.dia = InvData();
@@ -281,7 +312,7 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
         }
 
         bool ch2SensorOff = data[5] & 0x40;
-        quint16 ch2Wave = (((data[5] & 0x1F) << 7) + (data[6] & 0x7F) - 0x320) / 8;
+        qint16 ch2Wave = (((data[5] & 0x1F) << 7) + (data[6] & 0x7F) - 0x320) / 8;
         quint8 ch2Type = (data[7] & 0x60) >> 5;
         quint16 ch2Val = ((data[7] &0x1F) << 7) + (data[8] & 0x7F);
         if (ch2Type != DATA_TYPE_PR)
@@ -290,7 +321,7 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
         }
 
         chn2Data.sensorOff = ch2SensorOff;
-        if (ch2SensorOff || !ibpParam.hasBeenZero(IBP_INPUT_2))
+        if (ch2SensorOff)
         {
             chn2Data.sys = InvData();
             chn2Data.dia = InvData();
@@ -304,8 +335,8 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
 
         ibpParam.leadStatus(ch1SensorOff, ch2SensorOff);
 
-        ibpParam.addWaveformData(ch1Wave, ch1SensorOff, IBP_INPUT_1);
-        ibpParam.addWaveformData(ch2Wave, ch2SensorOff, IBP_INPUT_2);
+        ibpParam.addWaveformData(ch1Wave, ch1SensorOff || !validPressureValue(ch1Wave), IBP_INPUT_1);
+        ibpParam.addWaveformData(ch2Wave, ch2SensorOff || !validPressureValue(ch2Wave), IBP_INPUT_2);
 
         if (ch1Type == DATA_TYPE_PR)
         {
