@@ -1,3 +1,0 @@
-[submodule "WebSockets"]
-	path = WebSockets
-	url = git@192.168.0.7:PMOS/Utility/WebSockets.git
