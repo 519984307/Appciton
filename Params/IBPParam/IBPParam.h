@@ -118,6 +118,12 @@ public:
      */
     bool hasIBPZeroReply(IBPSignalInput chn);
 
+    /**
+     * @brief getMoudleType get the connect module type
+     * @return the module type
+     */
+    IBPModuleType getMoudleType() const;
+
 public:
     // 校零。
     void zeroCalibration(IBPSignalInput IBP);

@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the Project project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by lianghuan <lianghuan@blmed.cn>, 2020/6/8
+ **/
+
+
 #pragma once
 #include "PatientDefine.h"
 #include "IBPDefine.h"
@@ -47,6 +58,12 @@ public:
 
     // 获取最大的波形值
     virtual int getIBPMaxWaveform(void) = 0;
+
+    /**
+     * @brief getIBPModuleType get the provide type
+     * @return the type of the provider
+     */
+    virtual IBPModuleType getIBPModuleType() const = 0;
 
 public:
     IBPProviderIFace() {  }

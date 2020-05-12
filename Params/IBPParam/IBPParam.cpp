@@ -1642,6 +1642,15 @@ bool IBPParam::hasIBPZeroReply(IBPSignalInput chn)
     return ret;
 }
 
+IBPModuleType IBPParam::getMoudleType() const
+{
+    if (_provider)
+    {
+        return _provider->getIBPModuleType();
+    }
+    return IBP_MODULE_NR;
+}
+
 void IBPParam::onPaletteChanged(ParamID id)
 {
     if (id != PARAM_IBP || !systemManager.isSupport(CONFIG_IBP))

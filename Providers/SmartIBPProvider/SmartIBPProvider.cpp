@@ -151,7 +151,7 @@ public:
     IBPChannelData chn2Data;        /* data of channel 2 */
 };
 
-SmartIBPProvider::SmartIBPProvider(const QString &port)
+SmartIBPProvider::SmartIBPProvider(const QString /*&port*/)
     :Provider("SMART_IBP"), pimpl(new SmartIBPProviderPrivate(this))
 {
     UartAttrDesc portAttr(115200, 8, 'N', 1);
@@ -274,7 +274,7 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
 {
     Q_UNUSED(len)
 
-    if (!q_ptr->isConnectedToParam())
+    if (!q_ptr->isConnectedToParam)
     {
         return;
     }

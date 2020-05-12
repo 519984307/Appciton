@@ -18,7 +18,7 @@ class SmartIBPProvider : public Provider, public IBPProviderIFace
 {
     Q_OBJECT
 public:
-    Q_INVOKABLE explicit SmartIBPProvider(const QString &port);
+    Q_INVOKABLE explicit SmartIBPProvider(const QString);
     ~SmartIBPProvider();
 
     /* reimplement */
@@ -42,6 +42,9 @@ public:
 
     /* get the maximum waveform value */
     virtual int getIBPMaxWaveform(void);
+
+    /* reimplement */
+    IBPModuleType getIBPModuleType() const { return IBP_MODULE_SMART_IBP; }
 
 protected:
     void dataArrived();

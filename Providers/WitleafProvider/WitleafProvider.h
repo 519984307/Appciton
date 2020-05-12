@@ -260,6 +260,9 @@ public:     // IBPProviderIFace的接口
         return 3000;
     }
 
+    /* reimplement */
+    IBPModuleType getIBPModuleType() const { return IBP_MODULE_WITLEAF; }
+
 public:
     WitleafProvider();
     ~WitleafProvider();

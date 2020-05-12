@@ -13,6 +13,13 @@
 #define  IBP_AUTO_SCALE_INDEX               0
 #define  IBP_MANUAL_SCALE_INDEX             14
 
+enum IBPModuleType
+{
+    IBP_MODULE_SMART_IBP,
+    IBP_MODULE_WITLEAF,
+    IBP_MODULE_NR,
+};
+
 /**************************************************************************************************
  * IBP压力标名
  *************************************************************************************************/

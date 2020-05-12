@@ -26,6 +26,16 @@ public:
         return symbol[index];
     }
 
+    static const char *convert(IBPModuleType type)
+    {
+        static const char *symbol[IBP_MODULE_NR] = {
+            "SMART_IBP", "WITLEAF_IBP"
+        };
+
+        return symbol[type];
+    }
+
+
     static const char *convert(IBPSweepSpeed index)
     {
         static const char *symbol[IBP_SWEEP_SPEED_NR] =

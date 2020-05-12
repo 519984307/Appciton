@@ -561,11 +561,6 @@ SOURCES +=                                                                      
     Main/Starter.cpp \
 
 HEADERS +=                                                                      \
-    Components/DataUploader/BLMMessageHandler.h \
-    Components/DataUploader/DataUploaderIFace.h \
-    Components/ParamManager/ParamPreProcessor.h \
-    Params/CO2Param/CO2ParamInterface.h \
-    Params/RESPParam/RESPParamInterface.h \
     Utility/Config/ConfigDefine.h                                               \
     Utility/Config/IConfig.h                                                    \
     Utility/DataStorage/DataStorageDefine.h                                     \

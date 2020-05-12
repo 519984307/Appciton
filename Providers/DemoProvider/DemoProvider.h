@@ -128,6 +128,7 @@ public:
     virtual int getIBPWaveformSample(void) {return 250;}
     virtual int getIBPMaxWaveform(void){return 3000;}
     virtual int getIBPBaseLine(void){return 0;}
+    virtual IBPModuleType getIBPModuleType() const { return IBP_MODULE_NR;}
 
 
     /**
