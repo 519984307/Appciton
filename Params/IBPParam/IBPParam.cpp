@@ -433,6 +433,13 @@ void IBPParam::setRealTimeData(unsigned short sys, unsigned short dia, unsigned 
         return;
     }
 
+    IBPParamInfo &data = _chnData[chn].paramData;
+    if (data.sys == sys && data.dia == dia && data.mean == map && data.pr == pr)
+    {
+        /* nothing changed, do nothing */
+        return;
+    }
+
     setParamData(chn, sys, dia, map, pr);
 
     if (_chnData[chn].trendWidget)
