@@ -405,6 +405,11 @@ void SoftKeyManager::setContent(SoftKeyActionType type)
         setKeyTypeAvailable(SOFT_BASE_KEY_CO2_HANDLE, false);
     }
 
+    if (!systemManager.isSupport(PARAM_IBP))
+    {
+        setKeyTypeAvailable(SOFT_BASE_KEY_IBP_ZERO, false);
+    }
+
 #ifdef HIDE_CALCULATE_FUNCITON
     setKeyTypeAvailable(SOFT_BASE_KEY_CALCULATION, false);
 #endif

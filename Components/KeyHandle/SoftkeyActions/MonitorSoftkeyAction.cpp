@@ -48,9 +48,7 @@ static KeyActionDesc _monitorKeys[] =
 #endif
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_CO2_CALIBRATION),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_CO2_HANDLE),
-#ifndef HIDE_IBP_CALIBRATE_ZERO
-    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_IBP_CALIBRATION),
-#endif
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_IBP_ZERO),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_CALCULATION),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_KEYBOARD_VOLUMN),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_SCREEN_BRIGHTNESS),
