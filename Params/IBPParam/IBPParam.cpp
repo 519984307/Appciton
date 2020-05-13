@@ -37,6 +37,7 @@ IBPParam::IBPParam() : Param(PARAM_IBP),  _provider(NULL),  _connectedProvider(f
         _chnData[i].leadOff = false;
         _chnData[i].needZero = true;
         _chnData[i].zeroReply = false;
+        _chnData[i].lastZeroResult = false;
     }
 
     _chnData[IBP_CHN_1].paramData.pressureName = IBP_LABEL_ART;
@@ -705,6 +706,7 @@ void IBPParam::setCalibrationInfo(IBPCalibration calib, IBPChannel chn, int cali
             case IBP_ZERO_SUCCESS:
             {
                 alarmSource->setOneShotAlarm(IBP1_ZERO_SUCCESS, true);
+                _chnData[chn].lastZeroResult = true;
                 if (_chnData[chn].trendWidget)
                 {
                     _chnData[chn].trendWidget->setZeroFlag(true);
@@ -746,6 +748,7 @@ void IBPParam::setCalibrationInfo(IBPCalibration calib, IBPChannel chn, int cali
             case IBP_ZERO_SUCCESS:
             {
                 alarmSource->setOneShotAlarm(IBP2_ZERO_SUCCESS, true);
+                _chnData[chn].lastZeroResult = true;
                 if (_chnData[chn].trendWidget)
                 {
                     _chnData[chn].trendWidget->setZeroFlag(true);
@@ -1322,6 +1325,16 @@ bool IBPParam::hasIBPZeroReply(IBPChannel chn)
         _chnData[chn].zeroReply = false;
     }
     return ret;
+}
+
+bool IBPParam::getLastZeroResult(IBPChannel chn)
+{
+    if (chn >= IBP_CHN_NR)
+    {
+        return false;
+    }
+
+    return _chnData[chn].lastZeroResult;
 }
 
 bool IBPParam::channelNeedZero(IBPChannel chn) const

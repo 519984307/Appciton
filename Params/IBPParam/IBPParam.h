@@ -46,6 +46,7 @@ public:
 
         bool leadOff;                   // 导联状态
         bool needZero;                  // chnnel need zero flag
+        bool lastZeroResult;            // last zero result, true for success
         bool zeroReply;                 // 校零回复
     };
 
@@ -124,6 +125,13 @@ public:
      * @return true when got reply
      */
     bool hasIBPZeroReply(IBPChannel chn);
+
+    /**
+     * @brief getLastZeroResult get last zero result
+     * @param chn the IBP channel
+     * @return the result
+     */
+    bool getLastZeroResult(IBPChannel chn);
 
     /**
      * @brief channelNeedZero check whether the channel need zero

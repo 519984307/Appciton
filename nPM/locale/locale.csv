@@ -258,6 +258,11 @@ Sensitivity,灵敏度,Sensitivity
 FilterMode,滤波模式,Filter Mode
 IBPZeroCalib,IBP校零,IBP Zero
 IBPZeroStart,开始,Start
+IBPZero,IBP校零,IBP Zero
+ZeroChannel,校零通道,Zero Channel
+IBPZeroing,IBP校零中,IBP Zeroing
+ZeroFailed,校零失败,Zero Failed
+ZeroSuccessfully,校零成功,Zero Successfully
 COMenu,C.O.,C.O.
 Auto,自动,Auto
 Manual,手动,Manual

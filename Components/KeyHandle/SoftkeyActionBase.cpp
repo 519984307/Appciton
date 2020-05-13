@@ -43,6 +43,7 @@
 #include "TimeManager.h"
 #include "ContinuousPageGenerator.h"
 #include "FreezeWindow.h"
+#include "IBPZeroWindow.h"
 #include "Alarm.h"
 #include <QPointer>
 
@@ -377,7 +378,10 @@ void SoftkeyActionBase::IBPZero(bool isPressed)
     {
         return;
     }
-    ibpParam.zeroChannel(IBP_CHN_1);
+
+    windowManager.closeAllWidows();
+    IBPZeroWindow w;
+    w.exec();
 }
 
 void SoftkeyActionBase::systemBrightness(bool isPressed)

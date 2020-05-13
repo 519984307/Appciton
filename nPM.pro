@@ -466,6 +466,7 @@ SOURCES +=                                                                      
     Params/IBPParam/IBPWidgets/IBPTrendWidget.cpp                               \
     Params/IBPParam/IBPWidgets/IBPWaveRuler.cpp                                 \
     Params/IBPParam/IBPWidgets/IBPMenuContent.cpp                               \
+    Params/IBPParam/IBPWidgets/IBPZeroWindow.cpp                                \
     Params/IBPParam/IBPAlarm.cpp                                                \
     Params/COParam/COAlarm.cpp                                                  \
     Params/COParam/COParam.cpp                                                  \
@@ -917,6 +918,7 @@ HEADERS +=                                                                      
     Params/IBPParam/IBPSymbol.h                                                 \
     Params/IBPParam/IBPWidgets/IBPWaveRuler.h                                   \
     Params/IBPParam/IBPWidgets/IBPMenuContent.h                                 \
+    Params/IBPParam/IBPWidgets/IBPZeroWindow.h                                  \
     Params/IBPParam/IBPAlarm.h                                                  \
     Params/COParam/COAlarm.h                                                    \
     Params/COParam/COSymbol.h                                                   \
