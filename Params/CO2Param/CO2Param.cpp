@@ -625,11 +625,11 @@ void CO2Param::setConnected(bool isConnected)
         if (needUpdate)
         {
             layoutManager.updateLayout();
-            // 显示co2相关的软按键
-            softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_CO2_CALIBRATION, true);
-            softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_CO2_HANDLE, true);
-            softkeyManager.refreshPage();
         }
+        // 显示co2相关的软按键
+        softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_CO2_CALIBRATION, true);
+        softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_CO2_HANDLE, true);
+        softkeyManager.refreshPage();
     }
     else
     {
@@ -649,11 +649,11 @@ void CO2Param::setConnected(bool isConnected)
         if (needUpdate)
         {
             layoutManager.updateLayout();
-            // 隐藏co2相关的软按键
-            softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_CO2_CALIBRATION, false);
-            softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_CO2_HANDLE, false);
-            softkeyManager.refreshPage();
         }
+        // 隐藏co2相关的软按键
+        softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_CO2_CALIBRATION, false);
+        softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_CO2_HANDLE, false);
+        softkeyManager.refreshPage();
     }
 
     emit connectStatusUpdated(isConnected);
