@@ -38,6 +38,8 @@ IBPParam::IBPParam() : Param(PARAM_IBP),  _provider(NULL),  _connectedProvider(f
         _chnData[i].needZero = true;
         _chnData[i].zeroReply = false;
         _chnData[i].lastZeroResult = false;
+        _chnData[i].calibReply = false;
+        _chnData[i].lastCalibResult = false;
     }
 
     _chnData[IBP_CHN_1].paramData.pressureName = IBP_LABEL_ART;
@@ -673,6 +675,7 @@ void IBPParam::zeroChannel(IBPChannel chn)
                            (unsigned int)hour, (unsigned int)day,
                            (unsigned int)month, (unsigned int)year);
     _provider->setZero(chn, IBP_CALIBRATION_ZERO, 0x00);
+    _chnData[chn].lastZeroResult = false;
 }
 
 /**************************************************************************************************
@@ -682,6 +685,7 @@ void IBPParam::setCalibration(IBPChannel chn, unsigned short value)
 {
     clearCalibAlarm();
     _provider->setZero(chn, IBP_CALIBRATION_SET, value);
+    _chnData[chn].lastCalibResult = false;
 }
 
 /**************************************************************************************************
@@ -790,11 +794,13 @@ void IBPParam::setCalibrationInfo(IBPCalibration calib, IBPChannel chn, int cali
     {
         if (chn == IBP_CHN_1)
         {
+            _chnData[chn].calibReply = true;
             switch (static_cast<IBPCalibrationResult>(calibinfo))
             {
             case IBP_CALIBRATION_SUCCESS:
             {
                 alarmSource->setOneShotAlarm(IBP1_CALIB_SUCCESS, true);
+                _chnData[chn].lastCalibResult = true;
                 break;
             }
             case IBP_CALIBRATION_IS_PULSE:
@@ -830,10 +836,12 @@ void IBPParam::setCalibrationInfo(IBPCalibration calib, IBPChannel chn, int cali
         }
         else if (chn == IBP_CHN_2)
         {
+            _chnData[chn].calibReply = true;
             switch (static_cast<IBPCalibrationResult>(calibinfo))
             {
             case IBP_CALIBRATION_SUCCESS:
             {
+                _chnData[chn].lastCalibResult = true;
                 alarmSource->setOneShotAlarm(IBP2_CALIB_SUCCESS, true);
                 break;
             }
@@ -1335,6 +1343,27 @@ bool IBPParam::getLastZeroResult(IBPChannel chn)
     }
 
     return _chnData[chn].lastZeroResult;
+}
+
+bool IBPParam::hasIBPCalibReply(IBPChannel chn)
+{
+    bool ret = false;
+    if (chn < IBP_CHN_NR)
+    {
+        ret = _chnData[chn].calibReply;
+        _chnData[chn].calibReply = false;
+    }
+    return ret;
+}
+
+bool IBPParam::getLaseCalibResult(IBPChannel chn)
+{
+    if (chn >= IBP_CHN_NR)
+    {
+        return false;
+    }
+
+    return _chnData[chn].lastCalibResult;
 }
 
 bool IBPParam::channelNeedZero(IBPChannel chn) const

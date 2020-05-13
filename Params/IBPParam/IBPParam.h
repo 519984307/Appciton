@@ -48,6 +48,9 @@ public:
         bool needZero;                  // chnnel need zero flag
         bool lastZeroResult;            // last zero result, true for success
         bool zeroReply;                 // 校零回复
+
+        bool calibReply;                /* got calibrate reply */
+        bool lastCalibResult;           /* last calibrate result */
     };
 
 public:
@@ -132,6 +135,20 @@ public:
      * @return the result
      */
     bool getLastZeroResult(IBPChannel chn);
+
+    /**
+     * @brief hasIBPCalibReply check whether received ibp calibrate reply
+     * @param chn the ibp channel
+     * @return  true when got reply
+     */
+    bool hasIBPCalibReply(IBPChannel chn);
+
+    /**
+     * @brief getLaseCalibResult get last calibrate result
+     * @param chn the IBP channel
+     * @return the result
+     */
+    bool getLaseCalibResult(IBPChannel chn);
 
     /**
      * @brief channelNeedZero check whether the channel need zero

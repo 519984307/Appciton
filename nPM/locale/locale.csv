@@ -262,6 +262,13 @@ IBPZeroing,IBP校零中,IBP Zeroing
 ZeroFailed,校零失败,Zero Failed
 ZeroSuccessfully,校零成功,Zero Successfully
 Zero,校零,Zero
+IBPCalibrate,IBP校准,IBP Calibrate
+IBPCalibrateDesc,IBP校准,IBP Calibrate
+IBPCalibrating,IBP正在校准,IBP Calibrating
+CalibrateChannel,校准通道,Calibrate Channel
+CalibratePoint,校准点,Calibrate Point
+CalibrateSuccessfully,校准成功,Calibrate Successfully
+CalibrateFailed,校准失败,Calibrate Failed
 COMenu,C.O.,C.O.
 Auto,自动,Auto
 Manual,手动,Manual

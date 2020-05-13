@@ -402,6 +402,7 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/FactoryCO2MenuContent.cpp               \
     Components/Maintain/FactoryMaintain/FactoryTempMenuContent.cpp              \
     Components/Maintain/FactoryMaintain/FactoryTestMenuContent.cpp              \
+    Components/Maintain/FactoryMaintain/IBPCalibrationMenuContent.cpp           \
     Components/CodeMarker/Widgets/CodeMarkerWindow.cpp                          \
     Components/ConfigManager/ConfigManager.cpp                                  \
     Components/ConfigManager/ConfigManagerInterface.cpp                         \
@@ -834,6 +835,7 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/FactoryCO2MenuContent.h                 \
     Components/Maintain/FactoryMaintain/FactoryTempMenuContent.h                \
     Components/Maintain/FactoryMaintain/FactoryTestMenuContent.h                \
+    Components/Maintain/FactoryMaintain/IBPCalibrationMenuContent.h             \
     Components/CodeMarker/Widgets/CodeMarkerList.h                              \
     Components/CodeMarker/Widgets/CodeMarkerWindow.h                            \
     Components/ConfigManager/ConfigManager.h                                    \

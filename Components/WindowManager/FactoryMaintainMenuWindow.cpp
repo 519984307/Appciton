@@ -19,6 +19,7 @@
 #include "FactoryTestMenuContent.h"
 #include "FactoryTempMenuContent.h"
 #include "O2CalibrationMenuContent.h"
+#include "IBPCalibrationMenuContent.h"
 #include "Framework/Language/LanguageManager.h"
 #include "SystemManager.h"
 #include "FactoryCO2MenuContent.h"
@@ -43,6 +44,10 @@ FactoryMaintainMenuWindow *FactoryMaintainMenuWindow::getInstance()
         if (systemManager.isSupport(CONFIG_TEMP))
         {
             instance->addMenuContent(new FactoryTempMenuContent);
+        }
+        if (systemManager.isSupport(CONFIG_IBP))
+        {
+            instance->addMenuContent(new IBPCalibrationMenuContent);
         }
         if (systemManager.isSupport(CONFIG_O2))
         {
