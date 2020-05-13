@@ -117,20 +117,22 @@ public:
      */
     bool validPressureValue(IBPChannelData *chn, qint16 value)
     {
+        /* check the pressure value is valid or not */
+        bool valid = (value >= MIN_PRESSURE_VALUE && value <= MAX_PRESSURE_VALUE);
+
         /* after zero all the receive zero value should be invalid */
-        if (chn->checkValidDataAfterZero)
+        if (valid && chn->checkValidDataAfterZero)
         {
             if (value == 0)
             {
-                return false;
+                valid = false;
             }
             else
             {
                 chn->checkValidDataAfterZero = false;
             }
         }
-        /* check the pressure value is valid or not */
-        return (value >= MIN_PRESSURE_VALUE && value <= MAX_PRESSURE_VALUE);
+        return valid;
     }
 
     /**
