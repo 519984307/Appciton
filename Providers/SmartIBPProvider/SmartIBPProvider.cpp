@@ -36,12 +36,14 @@
 struct IBPChannelData
 {
     IBPChannelData()
-        : sys(InvData()), dia(InvData()), map(InvData()), pr(InvData()), sensorOff(false) {}
+        : sys(InvData()), dia(InvData()), map(InvData()), pr(InvData()),
+          sensorOff(false), checkValidDataAfterZero(true) {}
     qint16 sys;
     qint16 dia;
     qint16 map;
     qint16 pr;
     bool sensorOff;
+    bool checkValidDataAfterZero;
 };
 
 class SmartIBPProviderPrivate
@@ -89,14 +91,26 @@ public:
      */
     void handlePacket(const quint8 *data, int len);
 
-
     /**
      * @brief validPressureValue check the pressure value is valid or not
+     * @param chn ibp channe data
      * @param value the input pressure value
      * @return  true if valid, otherwise, false
      */
-    bool validPressureValue(qint16 value)
+    bool validPressureValue(IBPChannelData *chn, qint16 value)
     {
+        /* after zero all the receive zero value should be invalid */
+        if (chn->checkValidDataAfterZero)
+        {
+            if (value == 0)
+            {
+                return false;
+            }
+            else
+            {
+                chn->checkValidDataAfterZero = false;
+            }
+        }
         /* check the pressure value is valid or not */
         return (value >= MIN_PRESSURE_VALUE && value <= MAX_PRESSURE_VALUE);
     }
@@ -109,19 +123,15 @@ public:
      */
     void setChannelData(IBPChannelData *chn, quint8 type, qint16 val)
     {
-        if (!validPressureValue(val))
-        {
-            val = InvData();
-        }
         switch (type) {
         case DATA_TYPE_SYS:
-            chn->sys = validPressureValue(val) ? val : InvData();
+            chn->sys = validPressureValue(chn, val) ? val : InvData();
             break;
         case DATA_TYPE_DIA:
-            chn->dia = validPressureValue(val) ? val : InvData();
+            chn->dia = validPressureValue(chn, val) ? val : InvData();
             break;
         case DATA_TYPE_MAP:
-            chn->map = validPressureValue(val) ? val : InvData();
+            chn->map = validPressureValue(chn, val) ? val : InvData();
             break;
         case DATA_TYPE_PR:
             chn->pr = val;
@@ -299,10 +309,6 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
         {
             ch1Val = (ch1Val - 0x320) / 8;
         }
-        else
-        {
-            qDebug() << "PR1" << ch1Val;
-        }
 
         chn1Data.sensorOff = ch1SensorOff;
         if (ch1SensorOff || ibpParam.channelNeedZero(IBP_CHN_1))
@@ -327,7 +333,6 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
         }
         else
         {
-            qDebug() << "PR2" << ch2Val;
             /*
              * It seem that the pr value from channel 2 is always zero and
              * the real pr value is always on channel 1 event channel 1 is lead off.
@@ -425,6 +430,14 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
             ibpParam.setCalibrationInfo(IBP_CALIBRATION_ZERO,
                                      static_cast<IBPChannel>(chn),
                                      result == 0 ? IBP_ZERO_SUCCESS : IBP_ZERO_FAIL);
+            if (chn == 0)
+            {
+                chn1Data.checkValidDataAfterZero = true;
+            }
+            else if (chn == 1)
+            {
+                chn2Data.checkValidDataAfterZero = true;
+            }
         }
         else if (cmd == IBP_CALIBRATION_SET)
         {
