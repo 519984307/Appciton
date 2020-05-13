@@ -83,7 +83,7 @@ static KeyActionDesc _baseKeys[] =
 #endif
     KeyActionDesc("", "CO2ZeroCalib", "calib.png", SoftkeyActionBase::CO2Zero),
     KeyActionDesc("", co2StandbyHint, co2StandbyIcon, SoftkeyActionBase::CO2Handle),
-    KeyActionDesc("", trs("IBPZeroCalib"), "calib.png", SoftkeyActionBase::IBPZero),
+    KeyActionDesc("", trs("IBPZero"), "calib.png", SoftkeyActionBase::IBPZero),
     KeyActionDesc("", "Calculation", "dosecalculation.png", SoftkeyActionBase::calculation),
     KeyActionDesc("", "ToneVolume", "keyBoard.png", SoftkeyActionBase::keyVolume),
     KeyActionDesc("", "SystemBrightness", "Brightness.png", SoftkeyActionBase::systemBrightness),

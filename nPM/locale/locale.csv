@@ -256,8 +256,6 @@ IBPSweepSpeed,波形速度,Sweep Speed
 PressureEntitle,压力标名,Label
 Sensitivity,灵敏度,Sensitivity
 FilterMode,滤波模式,Filter Mode
-IBPZeroCalib,IBP校零,IBP Zero
-IBPZeroStart,开始,Start
 IBPZero,IBP校零,IBP Zero
 ZeroChannel,校零通道,Zero Channel
 IBPZeroing,IBP校零中,IBP Zeroing
