@@ -130,10 +130,10 @@ struct IBPParamInfo
     {
     }
     IBPLabel pressureName;
-    unsigned short sys;
-    unsigned short dia;
-    unsigned short mean;
-    unsigned short pr;
+    short sys;
+    short dia;
+    short mean;
+    short pr;
 };
 
 enum IBPZeroResult

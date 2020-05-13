@@ -28,13 +28,14 @@ IBPParam *IBPParam::_selfObj = NULL;
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-IBPParam::IBPParam() : Param(PARAM_IBP),  _provider(NULL),  _connectedProvider(false)
+IBPParam::IBPParam() : Param(PARAM_IBP),  _provider(NULL),  _connectedProvider(false), _lastPrUpdateTime(0)
 {
     for (int i = 0; i < IBP_CHN_NR; i++)
     {
         _chnData[i].waveWidget = NULL;
         _chnData[i].trendWidget = NULL;
         _chnData[i].leadOff = false;
+        _chnData[i].needZero = true;
         _chnData[i].zeroReply = false;
     }
 
@@ -397,6 +398,14 @@ void IBPParam::setProvider(IBPProviderIFace *provider)
     {
         _chnData[i].waveWidget->setDataRate(provider->getIBPWaveformSample());
     }
+
+    for (int i = 0; i < IBP_CHN_NR; i++)
+    {
+        if (_chnData[i].trendWidget)
+        {
+            _chnData[i].trendWidget->setZeroFlag(!_chnData[i].needZero);
+        }
+    }
 }
 
 void IBPParam::setConnected(bool isConnected)
@@ -474,6 +483,10 @@ void IBPParam::setIBPTrendWidget(IBPTrendWidget *trendWidget, IBPChannel chn)
         return;
     }
     _chnData[chn].trendWidget = trendWidget;
+    if (trendWidget)
+    {
+        trendWidget->setZeroFlag(!_chnData[chn].needZero);
+    }
 }
 
 /**************************************************************************************************
@@ -679,6 +692,7 @@ void IBPParam::setCalibrationInfo(IBPCalibration calib, IBPChannel chn, int cali
         if (chn == IBP_CHN_1)
         {
             _chnData[chn].zeroReply = true;
+            _chnData[chn].needZero = false;
             switch (static_cast<IBPZeroResult>(calibinfo))
             {
             case IBP_ZERO_SUCCESS:
@@ -719,6 +733,7 @@ void IBPParam::setCalibrationInfo(IBPCalibration calib, IBPChannel chn, int cali
         else if (chn == IBP_CHN_2)
         {
             _chnData[chn].zeroReply = true;
+            _chnData[chn].needZero = false;
             switch (static_cast<IBPZeroResult>(calibinfo))
             {
             case IBP_ZERO_SUCCESS:
@@ -868,6 +883,7 @@ void IBPParam::setLeadStatus(IBPChannel chn, bool leadOff)
         {
             /* after leadoff, need to zero again, set zero flag to false */
             _chnData[chn].trendWidget->setZeroFlag(false);
+            _chnData[chn].needZero = true;
         }
     }
 }
@@ -1070,7 +1086,28 @@ void IBPParam::setParamData(IBPChannel chn, unsigned short sys, unsigned short d
     data.mean = mean;
     data.pr = pr;
 
-    ecgDupParam.updatePR(static_cast<short>(pr), PR_SOURCE_IBP);
+    unsigned t = timeDate->time();
+    /* udpate pr per second */
+    if (_lastPrUpdateTime != t)
+    {
+        short val = InvData();
+        for (int i = 0; i < IBP_CHN_NR; i++)
+        {
+            if (_chnData[i].leadOff || _chnData[i].paramData.pr == InvData())
+            {
+                continue;
+            }
+
+            /* use the largest pr value of all the channel */
+            if (_chnData[i].paramData.pr > val)
+            {
+                val = _chnData[i].paramData.pr;
+            }
+        }
+
+        ecgDupParam.updatePR(val, PR_SOURCE_IBP);
+        _lastPrUpdateTime = t;
+    }
 }
 
 SubParamID IBPParam::getSubParamID(IBPChannel chn)
@@ -1278,6 +1315,15 @@ bool IBPParam::hasIBPZeroReply(IBPChannel chn)
         _chnData[chn].zeroReply = false;
     }
     return ret;
+}
+
+bool IBPParam::channelNeedZero(IBPChannel chn) const
+{
+    if (chn >= IBP_CHN_NR)
+    {
+        return false;
+    }
+    return _chnData[chn].needZero;
 }
 
 IBPModuleType IBPParam::getMoudleType() const

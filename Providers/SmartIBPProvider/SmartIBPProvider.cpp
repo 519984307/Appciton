@@ -115,13 +115,13 @@ public:
         }
         switch (type) {
         case DATA_TYPE_SYS:
-            chn->sys = val;
+            chn->sys = validPressureValue(val) ? val : InvData();
             break;
         case DATA_TYPE_DIA:
-            chn->dia = val;
+            chn->dia = validPressureValue(val) ? val : InvData();
             break;
         case DATA_TYPE_MAP:
-            chn->map = val;
+            chn->map = validPressureValue(val) ? val : InvData();
             break;
         case DATA_TYPE_PR:
             chn->pr = val;
@@ -299,9 +299,13 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
         {
             ch1Val = (ch1Val - 0x320) / 8;
         }
+        else
+        {
+            qDebug() << "PR1" << ch1Val;
+        }
 
         chn1Data.sensorOff = ch1SensorOff;
-        if (ch1SensorOff)
+        if (ch1SensorOff || ibpParam.channelNeedZero(IBP_CHN_1))
         {
             chn1Data.sys = InvData();
             chn1Data.dia = InvData();
@@ -321,9 +325,22 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
         {
             ch2Val = (ch2Val - 0x320) / 8;
         }
+        else
+        {
+            qDebug() << "PR2" << ch2Val;
+            /*
+             * It seem that the pr value from channel 2 is always zero and
+             * the real pr value is always on channel 1 event channel 1 is lead off.
+             * So when the channel 2's pr is zero, use the pr from channel 1
+             */
+            if (ch2Val == 0)
+            {
+                ch2Val = ((data[3] &0x1F) << 7) + (data[4] & 0x7F);
+            }
+        }
 
         chn2Data.sensorOff = ch2SensorOff;
-        if (ch2SensorOff)
+        if (ch2SensorOff || ibpParam.channelNeedZero(IBP_CHN_2))
         {
             chn2Data.sys = InvData();
             chn2Data.dia = InvData();
@@ -366,18 +383,25 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
 
         if (ch1Type == DATA_TYPE_PR)
         {
+            /* if all the pressure valus is invalid, set the pr valud to invaid also */
+            if (chn1Data.sys == InvData() && chn1Data.dia == InvData() && chn1Data.map == InvData())
+            {
+                chn1Data.pr = InvData();
+            }
+
             ibpParam.setRealTimeData(chn1Data.sys, chn1Data.dia, chn1Data.map,
                                      chn1Data.pr, IBP_CHN_1);
-            // qDebug() << "Ch1" << ch1SensorOff << chn1Data.sys
-            // << chn1Data.dia << chn1Data.map << chn1Data.pr;
         }
 
         if (ch2Type == DATA_TYPE_PR)
         {
+            /* if all the pressure valus is invalid, set the pr valud to invaid also */
+            if (chn2Data.sys == InvData() && chn2Data.dia == InvData() && chn2Data.map == InvData())
+            {
+                chn2Data.pr = InvData();
+            }
             ibpParam.setRealTimeData(chn2Data.sys, chn2Data.dia, chn2Data.map,
                                      chn2Data.pr, IBP_CHN_2);
-            // qDebug() << "Ch2" << ch2SensorOff << chn2Data.sys
-            // << chn2Data.dia << chn2Data.map << chn2Data.pr;
         }
     }
         break;

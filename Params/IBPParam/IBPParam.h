@@ -45,6 +45,7 @@ public:
         IBPScaleInfo scale;             /* channel scale */
 
         bool leadOff;                   // 导联状态
+        bool needZero;                  // chnnel need zero flag
         bool zeroReply;                 // 校零回复
     };
 
@@ -123,6 +124,13 @@ public:
      * @return true when got reply
      */
     bool hasIBPZeroReply(IBPChannel chn);
+
+    /**
+     * @brief channelNeedZero check whether the channel need zero
+     * @param chn the channel id
+     * @return true when need zero
+     */
+    bool channelNeedZero(IBPChannel chn) const;
 
     /**
      * @brief getMoudleType get the connect module type
@@ -208,5 +216,6 @@ private:
     bool _connectedProvider;
 
     ChannelData _chnData[IBP_CHN_NR];
+    unsigned _lastPrUpdateTime;
 };
 #define ibpParam (IBPParam::construction())
