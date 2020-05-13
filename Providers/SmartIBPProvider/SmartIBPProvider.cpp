@@ -33,6 +33,8 @@
 #define MIN_PRESSURE_VALUE  (-50)
 #define MAX_PRESSURE_VALUE  (350)
 
+#define MAX_CACHE_WAVE_NUM  4
+
 struct IBPChannelData
 {
     IBPChannelData()
@@ -44,6 +46,22 @@ struct IBPChannelData
     qint16 pr;
     bool sensorOff;
     bool checkValidDataAfterZero;
+};
+
+struct IBPChannelWaveCache
+{
+    IBPChannelWaveCache()
+        : index(0)
+    {
+        for (int i = 0; i < MAX_CACHE_WAVE_NUM; i++)
+        {
+            waves[i] = 0;
+            flags[i] = true;
+        }
+    }
+    short waves[MAX_CACHE_WAVE_NUM];
+    bool flags[MAX_CACHE_WAVE_NUM];
+    int index;
 };
 
 class SmartIBPProviderPrivate
@@ -113,6 +131,33 @@ public:
         }
         /* check the pressure value is valid or not */
         return (value >= MIN_PRESSURE_VALUE && value <= MAX_PRESSURE_VALUE);
+    }
+
+    /**
+     * @brief addWaveHelper add wave data helper function, use to lower the wave fresh rate
+     * @param wave the wave value
+     * @param invalid  the wave flag
+     * @param chn the channel
+     * @note
+     * The wave data sample rate is 100HZ, lower it to 25HZ
+     */
+    void addWaveHelper(short wave, bool invalid, IBPChannel chn)
+    {
+        static IBPChannelWaveCache caches[IBP_CHN_NR];
+
+        IBPChannelWaveCache &cache = caches[chn];
+
+        cache.waves[cache.index] = wave;
+        cache.flags[cache.index] = invalid;
+        cache.index++;
+        if (cache.index >= MAX_CACHE_WAVE_NUM)
+        {
+            for (int i = 0; i < cache.index; i++)
+            {
+                ibpParam.addWaveformData(cache.waves[i], cache.flags[i], chn);
+            }
+            cache.index = 0;
+        }
     }
 
     /**
@@ -371,7 +416,7 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
             /* the wave data should scale by 10, since the wave data unit is 0.1mmhg */
             ch1Wave = (ch1Wave - 0x320) * 10 / 8;
         }
-        ibpParam.addWaveformData(ch1Wave, chn1WaveInvalid, IBP_CHN_1);
+        addWaveHelper(ch1Wave, chn1WaveInvalid, IBP_CHN_1);
 
         bool chn2WaveInvalid  = ch2SensorOff;
         if (ch2Wave == INVALID_MEASURE_VALUE)
@@ -384,7 +429,7 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
             /* the wave data should scale by 10, since the wave data unit is 0.1mmhg */
             ch2Wave = (ch2Wave - 0x320) * 10 / 8;
         }
-        ibpParam.addWaveformData(ch2Wave, chn2WaveInvalid, IBP_CHN_2);
+        addWaveHelper(ch2Wave, chn2WaveInvalid, IBP_CHN_2);
 
         if (ch1Type == DATA_TYPE_PR)
         {
