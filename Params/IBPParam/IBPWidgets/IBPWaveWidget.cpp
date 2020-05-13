@@ -105,7 +105,7 @@ void IBPWaveWidget::setRulerLimit(IBPRulerLimit ruler)
         return;
     }
 
-    if (ruler == IBP_RULER_LIMIT_AOTU)
+    if (ruler == IBP_RULER_LIMIT_AUTO)
     {
         _isAutoRuler = true;
     }

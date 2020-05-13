@@ -125,7 +125,7 @@ void IBPMenuContentPrivate::loadOptions()
         spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2]->setEnabled(false);
     }
 
-    if (rulerLimit1 == IBP_RULER_LIMIT_AOTU || rulerLimit2 == IBP_RULER_LIMIT_AOTU)
+    if (rulerLimit1 == IBP_RULER_LIMIT_AUTO || rulerLimit2 == IBP_RULER_LIMIT_AUTO)
     {
         if (autoTimerId == -1)
         {
@@ -484,14 +484,14 @@ void IBPMenuContent::timerEvent(QTimerEvent *ev)
         else
         {
             IBPScaleInfo info;
-            if (d_ptr->rulerLimit1 == IBP_RULER_LIMIT_AOTU)
+            if (d_ptr->rulerLimit1 == IBP_RULER_LIMIT_AUTO)
             {
                 info = ibpParam.getScaleInfo(IBP_CHN_1);
                 d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_1]->setValue(info.low);
                 d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_1]->setValue(info.high);
             }
 
-            if (d_ptr->rulerLimit1 == IBP_RULER_LIMIT_AOTU)
+            if (d_ptr->rulerLimit1 == IBP_RULER_LIMIT_AUTO)
             {
                 info = ibpParam.getScaleInfo(IBP_CHN_2);
                 d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2]->setValue(info.low);
@@ -627,7 +627,7 @@ void IBPMenuContent::onComboBoxIndexChanged(int index)
                 d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_1]->setEnabled(false);
                 d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_1]->setEnabled(false);
             }
-            if (index == IBP_RULER_LIMIT_AOTU)
+            if (index == IBP_RULER_LIMIT_AUTO)
             {
                 if (d_ptr->autoTimerId == -1)
                 {
@@ -636,7 +636,7 @@ void IBPMenuContent::onComboBoxIndexChanged(int index)
             }
             else
             {
-                if (d_ptr->rulerLimit2 != IBP_RULER_LIMIT_AOTU && d_ptr->autoTimerId != -1)
+                if (d_ptr->rulerLimit2 != IBP_RULER_LIMIT_AUTO && d_ptr->autoTimerId != -1)
                 {
                     killTimer(d_ptr->autoTimerId);
                     d_ptr->autoTimerId = -1;
@@ -661,7 +661,7 @@ void IBPMenuContent::onComboBoxIndexChanged(int index)
                 d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_2]->setEnabled(false);
                 d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2]->setEnabled(false);
             }
-            if (index == IBP_RULER_LIMIT_AOTU)
+            if (index == IBP_RULER_LIMIT_AUTO)
             {
                 if (d_ptr->autoTimerId == -1)
                 {
@@ -670,7 +670,7 @@ void IBPMenuContent::onComboBoxIndexChanged(int index)
             }
             else
             {
-                if (d_ptr->rulerLimit1 != IBP_RULER_LIMIT_AOTU && d_ptr->autoTimerId != -1)
+                if (d_ptr->rulerLimit1 != IBP_RULER_LIMIT_AUTO && d_ptr->autoTimerId != -1)
                 {
                     killTimer(d_ptr->autoTimerId);
                     d_ptr->autoTimerId = -1;
