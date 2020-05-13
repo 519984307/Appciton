@@ -35,6 +35,8 @@
 
 struct IBPChannelData
 {
+    IBPChannelData()
+        : sys(InvData()), dia(InvData()), map(InvData()), pr(InvData()), sensorOff(false) {}
     qint16 sys;
     qint16 dia;
     qint16 map;
@@ -334,7 +336,7 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
         }
 
         ibpParam.setLeadStatus(IBP_CHN_1, ch1SensorOff);
-        ibpParam.setLeadStatus(IBP_CHN_2, ch1SensorOff);
+        ibpParam.setLeadStatus(IBP_CHN_2, ch2SensorOff);
 
         bool chn1WaveInvalid  = ch1SensorOff;
         if (ch1Wave == INVALID_MEASURE_VALUE)
