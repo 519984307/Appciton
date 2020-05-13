@@ -63,7 +63,7 @@ public:
                 bool fComma = false;
                 for (int i = 0; i < IBP_CHN_NR; i++)
                 {
-                    if (zeroResult.count(i))
+                    if (zeroResult.at(i))
                     {
                         if (sComma)
                         {
@@ -95,7 +95,7 @@ public:
             }
             else
             {
-                result = trs("ZeroFailed");
+                result = QString("IBP %1 %2").arg(zeroChannel + 1).arg(trs("ZeroFailed"));
             }
         }
         return result;
