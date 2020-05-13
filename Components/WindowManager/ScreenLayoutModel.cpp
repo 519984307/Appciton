@@ -178,7 +178,12 @@ public:
                 int pos = nodeMap["@pos"].toInt();
                 bool editable = nodeMap["@editable"].toBool();
                 LayoutNode *node = new LayoutNode();
-                node->name = nodeMap["@text"].toString();
+                QString nodeName = nodeMap["@text"].toString();
+                /* is the node is not supported, it's left empty */
+                if (isNodeSupport(nodeName))
+                {
+                    node->name = nodeName;
+                }
                 node->editable = editable;
                 node->pos = pos;
                 node->span = span;
@@ -337,6 +342,15 @@ public:
         }
     }
 
+    /**
+     * @brief isNodeSupport check whether support specific node by the name
+     * @param name the node name
+     * @return true if support, otherwise, false
+     */
+    bool isNodeSupport(const QString &name)
+    {
+        return waveIDMaps.contains(name) || paramNodeDescriptions.contains(name);
+    }
 
     void loadItemInfos()
     {
