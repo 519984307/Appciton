@@ -144,8 +144,11 @@ void IBPMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_RULER_1]->setCurrentIndex(rulerLimit1);
     combos[ITEM_CBO_RULER_2]->setCurrentIndex(rulerLimit2);
     combos[ITEM_CBO_SWEEP_SPEED]->setCurrentIndex(ibpParam.getSweepSpeed());
-    combos[ITEM_CBO_FILTER_MODE]->setCurrentIndex(ibpParam.getFilter());
-    combos[ITEM_CBO_SENSITIVITY]->setCurrentIndex(ibpParam.getSensitivity());
+    if (ibpParam.getMoudleType() == IBP_MODULE_WITLEAF)
+    {
+        combos[ITEM_CBO_FILTER_MODE]->setCurrentIndex(ibpParam.getFilter());
+        combos[ITEM_CBO_SENSITIVITY]->setCurrentIndex(ibpParam.getSensitivity());
+    }
 }
 
 void IBPMenuContentPrivate::updatePrintWaveIds()
@@ -404,9 +407,10 @@ void IBPMenuContent::layoutExec()
     d_ptr->buttons.insert(IBPMenuContentPrivate::ITEM_CBO_ZERO_2, button);
 
     // 波形速度
+    int row = 0;
     gLayout = new QGridLayout();
     label = new QLabel(trs("IBPSweepSpeed"));
-    gLayout->addWidget(label, 0, 0);
+    gLayout->addWidget(label, row, 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << IBPSymbol::convert(IBP_SWEEP_SPEED_62_5)
@@ -417,44 +421,50 @@ void IBPMenuContent::layoutExec()
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    gLayout->addWidget(comboBox, 0, 1);
+    gLayout->addWidget(comboBox, row, 1);
     d_ptr->combos.insert(IBPMenuContentPrivate::ITEM_CBO_SWEEP_SPEED, comboBox);
 
-    // 滤波模式
-    label = new QLabel(trs("FilterMode"));
-    gLayout->addWidget(label, 1, 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << IBPSymbol::convert(IBP_FILTER_MODE_0)
-                       << IBPSymbol::convert(IBP_FILTER_MODE_1));
-    itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_FILTER_MODE);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    gLayout->addWidget(comboBox, 1, 1);
-    d_ptr->combos.insert(IBPMenuContentPrivate::ITEM_CBO_FILTER_MODE, comboBox);
+    if (ibpParam.getMoudleType() == IBP_MODULE_WITLEAF)
+    {
+        // 滤波模式
+        row++;
+        label = new QLabel(trs("FilterMode"));
+        gLayout->addWidget(label, row, 0);
+        comboBox = new ComboBox();
+        comboBox->addItems(QStringList()
+                           << IBPSymbol::convert(IBP_FILTER_MODE_0)
+                           << IBPSymbol::convert(IBP_FILTER_MODE_1));
+        itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_FILTER_MODE);
+        comboBox->setProperty("Item",
+                              qVariantFromValue(itemID));
+        connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+        gLayout->addWidget(comboBox, row, 1);
+        d_ptr->combos.insert(IBPMenuContentPrivate::ITEM_CBO_FILTER_MODE, comboBox);
 
-    // 灵敏度
-    label = new QLabel(trs("Sensitivity"));
-    gLayout->addWidget(label, 2, 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs(IBPSymbol::convert(IBP_SENSITIVITY_HIGH))
-                       << trs(IBPSymbol::convert(IBP_SENSITIVITY_MID))
-                       << trs(IBPSymbol::convert(IBP_SENSITIVITY_LOW)));
-    itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_SENSITIVITY);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    gLayout->addWidget(comboBox, 2, 1);
-    d_ptr->combos.insert(IBPMenuContentPrivate::ITEM_CBO_SENSITIVITY, comboBox);
+        // 灵敏度
+        row++;
+        label = new QLabel(trs("Sensitivity"));
+        gLayout->addWidget(label, row, 0);
+        comboBox = new ComboBox();
+        comboBox->addItems(QStringList()
+                           << trs(IBPSymbol::convert(IBP_SENSITIVITY_HIGH))
+                           << trs(IBPSymbol::convert(IBP_SENSITIVITY_MID))
+                           << trs(IBPSymbol::convert(IBP_SENSITIVITY_LOW)));
+        itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_SENSITIVITY);
+        comboBox->setProperty("Item",
+                              qVariantFromValue(itemID));
+        connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+        gLayout->addWidget(comboBox, row, 1);
+        d_ptr->combos.insert(IBPMenuContentPrivate::ITEM_CBO_SENSITIVITY, comboBox);
+    }
 
     // 添加报警设置链接
+    row++;
     Button *btn = new Button(QString("%1%2").
                              arg(trs("AlarmSettingUp")).
                              arg(" >>"));
     btn->setButtonStyle(Button::ButtonTextOnly);
-    gLayout->addWidget(btn, 5, 1);
+    gLayout->addWidget(btn, row, 1);
     connect(btn, SIGNAL(released()), this, SLOT(onAlarmBtnReleased()));
 
     gLayout->setRowStretch(d_ptr->combos.count() + d_ptr->buttons.count() + 1, 1);
