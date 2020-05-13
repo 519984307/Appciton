@@ -31,7 +31,12 @@ protected:
 private slots:
     void onSpinBoxValueChanged(int value, int scale);
     void onComboBoxIndexChanged(int index);
-    void onButtonReleased(void);
+
+    /**
+     * @brief onZeroButtonRelease handle zero
+     */
+    void onZeroButtonRelease(void);
+
     /**
      * @brief onAlarmBtnReleased
      */

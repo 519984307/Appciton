@@ -27,6 +27,7 @@
 #include <QTimerEvent>
 #include "AlarmLimitWindow.h"
 #include "WindowManager.h"
+#include "IBPZeroWindow.h"
 
 #define AUTO_SCALE_UPDATE_TIME          (2 * 1000)
 #define ZERO_INTERVAL_TIME              (100)
@@ -42,12 +43,10 @@ public:
         ITEM_CBO_RULER_1,
         ITEM_SBO_UP_SCALE_1,
         ITEM_SBO_DOWN_SCALE_1,
-        ITEM_CBO_ZERO_1,
         ITEM_CBO_ENTITLE_2,
         ITEM_CBO_RULER_2,
         ITEM_SBO_UP_SCALE_2,
         ITEM_SBO_DOWN_SCALE_2,
-        ITEM_CBO_ZERO_2,
         ITEM_CBO_SWEEP_SPEED,
         ITEM_CBO_FILTER_MODE,
         ITEM_CBO_SENSITIVITY,
@@ -56,11 +55,7 @@ public:
     explicit IBPMenuContentPrivate(IBPMenuContent *const q_ptr) :
         q_ptr(q_ptr),
         oneGBox(NULL), twoGBox(NULL),
-        autoTimerId(-1),
-        chn1ZeroTimerID(-1),
-        chn1ZeroDuration(0),
-        chn2ZeroTimerID(-1),
-        chn2ZeroDuration(0)
+        autoTimerId(-1)
     {}
 
     // load settings
@@ -82,10 +77,6 @@ public:
     int autoTimerId;
     IBPRulerLimit rulerLimit1;
     IBPRulerLimit rulerLimit2;
-    int chn1ZeroTimerID;
-    int chn1ZeroDuration;
-    int chn2ZeroTimerID;
-    int chn2ZeroDuration;
     QList<int> waveIdList;
 };
 
@@ -226,7 +217,6 @@ void IBPMenuContent::layoutExec()
 
     ComboBox *comboBox;
     QLabel *label;
-    Button *button;
     SpinBox *spinBox;
     int itemID;
 
@@ -307,17 +297,6 @@ void IBPMenuContent::layoutExec()
     gLayout->addWidget(spinBox, 3, 1);
     d_ptr->spinBoxs.insert(IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_1, spinBox);
 
-    // channel 1 校零
-    label = new QLabel(trs("IBPZeroCalib"));
-    gLayout->addWidget(label, 4, 0);
-    button = new Button(trs("IBPZeroStart"));
-    button->setButtonStyle(Button::ButtonTextOnly);
-    itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_ZERO_1);
-    button->setProperty("Item", qVariantFromValue(itemID));
-    connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
-    gLayout->addWidget(button, 4, 1);
-    d_ptr->buttons.insert(IBPMenuContentPrivate::ITEM_CBO_ZERO_1, button);
-
     // 通道2 QGroupBoxd
     gLayout = new QGridLayout();
     d_ptr->twoGBox = new QGroupBox("IBP2");
@@ -395,17 +374,6 @@ void IBPMenuContent::layoutExec()
     gLayout->addWidget(spinBox, 3, 1);
     d_ptr->spinBoxs.insert(IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2, spinBox);
 
-    // channel 2 校零
-    label = new QLabel(trs("IBPZeroCalib"));
-    gLayout->addWidget(label, 4, 0);
-    button = new Button(trs("IBPZeroStart"));
-    button->setButtonStyle(Button::ButtonTextOnly);
-    itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_ZERO_2);
-    button->setProperty("Item", qVariantFromValue(itemID));
-    connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
-    gLayout->addWidget(button, 4, 1);
-    d_ptr->buttons.insert(IBPMenuContentPrivate::ITEM_CBO_ZERO_2, button);
-
     // 波形速度
     int row = 0;
     gLayout = new QGridLayout();
@@ -458,9 +426,16 @@ void IBPMenuContent::layoutExec()
         d_ptr->combos.insert(IBPMenuContentPrivate::ITEM_CBO_SENSITIVITY, comboBox);
     }
 
+    row++;
+    // zero
+    Button *btn = new Button(trs("Zero"));
+    btn->setButtonStyle(Button::ButtonTextOnly);
+    gLayout->addWidget(btn, row, 1);
+    connect(btn, SIGNAL(released()), this, SLOT(onZeroButtonRelease()));
+
     // 添加报警设置链接
     row++;
-    Button *btn = new Button(QString("%1%2").
+    btn = new Button(QString("%1%2").
                              arg(trs("AlarmSettingUp")).
                              arg(" >>"));
     btn->setButtonStyle(Button::ButtonTextOnly);
@@ -497,36 +472,6 @@ void IBPMenuContent::timerEvent(QTimerEvent *ev)
                 d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2]->setValue(info.low);
                 d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_2]->setValue(info.high);
             }
-        }
-    }
-    else if (d_ptr->chn1ZeroTimerID == ev->timerId())
-    {
-        if (ibpParam.hasIBPZeroReply(IBP_CHN_1) || d_ptr->chn1ZeroDuration == TIMEOUT_WAIT_NUMBER)
-        {
-            d_ptr->buttons[IBPMenuContentPrivate::ITEM_CBO_ZERO_1]->setEnabled(true);
-            d_ptr->buttons[IBPMenuContentPrivate::ITEM_CBO_ZERO_1]->setText(trs("IBPZeroStart"));
-            killTimer(d_ptr->chn1ZeroTimerID);
-            d_ptr->chn1ZeroTimerID = -1;
-            d_ptr->chn1ZeroDuration = 0;
-        }
-        else
-        {
-            d_ptr->chn1ZeroDuration++;
-        }
-    }
-    else if (d_ptr->chn2ZeroTimerID == ev->timerId())
-    {
-        if (ibpParam.hasIBPZeroReply(IBP_CHN_2) || d_ptr->chn1ZeroDuration == TIMEOUT_WAIT_NUMBER)
-        {
-            d_ptr->buttons[IBPMenuContentPrivate::ITEM_CBO_ZERO_2]->setEnabled(true);
-            d_ptr->buttons[IBPMenuContentPrivate::ITEM_CBO_ZERO_2]->setText(trs("IBPZeroStart"));
-            killTimer(d_ptr->chn2ZeroTimerID);
-            d_ptr->chn2ZeroTimerID = -1;
-            d_ptr->chn2ZeroDuration = 0;
-        }
-        else
-        {
-            d_ptr->chn2ZeroDuration++;
         }
     }
 }
@@ -702,31 +647,10 @@ void IBPMenuContent::onComboBoxIndexChanged(int index)
     }
 }
 
-void IBPMenuContent::onButtonReleased()
+void IBPMenuContent::onZeroButtonRelease()
 {
-    Button *button = qobject_cast<Button *>(sender());
-    if (button)
-    {
-        IBPMenuContentPrivate::MenuItem item
-            = (IBPMenuContentPrivate::MenuItem) button->property("Item").toInt();
-        switch (item)
-        {
-        case IBPMenuContentPrivate::ITEM_CBO_ZERO_1:
-            ibpParam.zeroChannel(IBP_CHN_1);
-            button->setText(trs("ZeroInProgress"));
-            button->setEnabled(false);
-            d_ptr->chn1ZeroTimerID = startTimer(ZERO_INTERVAL_TIME);
-            break;
-        case IBPMenuContentPrivate::ITEM_CBO_ZERO_2:
-            ibpParam.zeroChannel(IBP_CHN_2);
-            button->setText(trs("ZeroInProgress"));
-            button->setEnabled(false);
-            d_ptr->chn2ZeroTimerID = startTimer(ZERO_INTERVAL_TIME);
-            break;
-        default:
-            break;
-        }
-    }
+    IBPZeroWindow w;
+    windowManager.showWindow(&w, WindowManager::ShowBehaviorModal|WindowManager::ShowBehaviorCloseOthers);
 }
 
 void IBPMenuContent::onAlarmBtnReleased()

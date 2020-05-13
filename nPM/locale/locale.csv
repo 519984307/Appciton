@@ -263,6 +263,7 @@ ZeroChannel,校零通道,Zero Channel
 IBPZeroing,IBP校零中,IBP Zeroing
 ZeroFailed,校零失败,Zero Failed
 ZeroSuccessfully,校零成功,Zero Successfully
+Zero,校零,Zero
 COMenu,C.O.,C.O.
 Auto,自动,Auto
 Manual,手动,Manual
