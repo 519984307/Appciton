@@ -57,7 +57,7 @@ ScreenLayoutEditor::ScreenLayoutEditor(const QString &title)
     setWindowLayout(gridLayout);
     setWindowTitle(title);
 
-    this->setFixedWidth(250);
+    this->setMinimumWidth(250);
 
     // initialize to disable
     d_ptr->replaceCbo->setEnabled(false);
@@ -84,6 +84,12 @@ void ScreenLayoutEditor::setReplaceList(const QVariantList &list)
     {
         QVariantMap m = iter->toMap();
         displayList.append(m["displayName"].toString());
+    }
+
+    if (!displayList.isEmpty())
+    {
+        // prepend one more empty item to help exit the combo and do nothing
+        displayList.prepend(QString());
     }
 
     d_ptr->replaceCbo->blockSignals(true);
@@ -116,8 +122,8 @@ void ScreenLayoutEditor::setInsertList(const QVariantList &list)
 
     if (!displayList.isEmpty())
     {
-        // add one more empty item to help exit the combo and do nothing
-        displayList.append(QString());
+        // prepend one more empty item to help exit the combo and do nothing
+        displayList.prepend(QString());
     }
 
     d_ptr->insertCbo->blockSignals(true);
@@ -148,15 +154,16 @@ void ScreenLayoutEditor::setRemoveable(bool flag)
 void ScreenLayoutEditor::onComboIndexChanged(int index)
 {
     ComboBox *cbo = qobject_cast<ComboBox *>(sender());
-    if (d_ptr->replaceCbo == cbo)
+    if (d_ptr->replaceCbo == cbo && !d_ptr->replaceCbo->itemText(index).isEmpty())
     {
-        QVariantMap m = d_ptr->replaceList.at(index).toMap();
+        /* we have add a empty option, so need to minus 1 */
+        QVariantMap m = d_ptr->replaceList.at(index - 1).toMap();
         emit commitChanged(ReplaceRole, m["name"].toString());
     }
     else if (d_ptr->insertCbo == cbo && !d_ptr->insertCbo->itemText(index).isEmpty())
     {
-        // do nothing if the text is empty
-        QVariantMap m = d_ptr->insertList.at(index).toMap();
+        /* we have add a empty option, so need to minus 1 */
+        QVariantMap m = d_ptr->insertList.at(index - 1).toMap();
         emit commitChanged(InsertRole, m["name"].toString());
 
         // close after changed

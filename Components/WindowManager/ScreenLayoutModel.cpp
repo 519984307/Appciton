@@ -423,7 +423,10 @@ public:
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_ST)] = NODE_DESC("ST", PARAM_SPAN_TWO, PARAM_ECG);
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_PVCS)] = NODE_DESC("PVCs", PARAM_SPAN_ONE, PARAM_ECG);
 #endif
-        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_OXYGEN)] = NODE_DESC("O2", PARAM_SPAN_ONE, PARAM_O2);
+        if (systemManager.isSupport(CONFIG_O2))
+        {
+            paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_OXYGEN)] = NODE_DESC("O2", PARAM_SPAN_ONE, PARAM_O2);
+        }
     }
 
     /**
