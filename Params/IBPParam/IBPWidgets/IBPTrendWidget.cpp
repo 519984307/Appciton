@@ -242,7 +242,7 @@ void IBPTrendWidget::showValue()
             case IBP_LABEL_LAP:
             case IBP_LABEL_RAP:
             case IBP_LABEL_CVP:
-                showAlarmParamLimit(_mapValue, _mapString, psrc);
+                showAlarmParamLimit(_veinValue, _veinString, psrc);
                 break;
             default:
                 break;
