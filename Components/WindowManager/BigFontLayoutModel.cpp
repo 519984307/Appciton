@@ -18,15 +18,21 @@
 #include "ParamManager.h"
 #include "IBPParam.h"
 #include "Framework/Language/LanguageManager.h"
+#include "SystemManager.h"
+#include "ColorManager.h"
 
 struct ParamNodeDescription
 {
-    ParamNodeDescription(){}
-    explicit ParamNodeDescription(const QString &displayName, LayoutNodeType waveNode = LAYOUT_NODE_NONE)
-        : displayName(displayName), waveNode(waveNode){}
+    ParamNodeDescription() : waveNode(LAYOUT_NODE_NONE), paramID(PARAM_NONE) {}
+    explicit ParamNodeDescription(const QString &displayName, LayoutNodeType waveNode,
+                                  ParamID paramID)
+        : displayName(displayName), waveNode(waveNode), paramID(paramID){}
     QString displayName;
     LayoutNodeType waveNode;
+    ParamID paramID;
 };
+
+#define NODE_DESC(dispName, waveNode, paramID) ParamNodeDescription(dispName, waveNode, paramID)
 
 typedef QList<LayoutNode *> LayoutRow;
 
@@ -217,6 +223,32 @@ QVariant BigFontLayoutModel::data(const QModelIndex &index, int role) const
         }
         break;
     }
+    case Qt::ForegroundRole:
+    {
+        LayoutNode *node = d_ptr->findNode(index);
+        if (node)
+        {
+            ParamID paramID = PARAM_NONE;
+            WaveformID waveID = d_ptr->waveIDMaps.value(node->name, WAVE_NONE);
+            if (waveID != WAVE_NONE)
+            {
+                paramID = paramInfo.getParamID(waveID);
+            }
+            else
+            {
+                ParamNodeDescription desc = d_ptr->paramNodeDescriptions.value(node->name);
+                paramID = desc.paramID;
+            }
+            QColor color = colorManager.getColor(paramInfo.getParamName(paramID));
+            return QBrush(color);
+        }
+    }
+        break;
+    case Qt::BackgroundRole:
+    {
+        return QBrush(Qt::black);
+    }
+        break;
     case ReplaceRole:
     {
         LayoutNode *node = d_ptr->findNode(index);
@@ -467,11 +499,12 @@ void BigFontLayoutModelPrivate::fillWaveData(ScreenLayoutItemInfo *info)
     }
     else if (info->waveid == WAVE_CO2)
     {
-        info->waveMaxValue = demoProvider->getCO2MaxWaveform();
+        /* divided by 2 to make the wave higher */
+        info->waveMaxValue = demoProvider->getCO2MaxWaveform() / 2;
         info->drawSpeed = 6.25;
         info->waveMinValue = 0;
         info->baseLine = demoProvider->getCO2BaseLine();
-        info->sampleRate = demoProvider->getSPO2WaveformSample();
+        info->sampleRate = demoProvider->getCO2WaveformSample();
     }
     else if (info->waveid >= WAVE_N2O && info->waveid <= WAVE_O2)
     {
@@ -734,21 +767,20 @@ void BigFontLayoutModelPrivate::loadItemInfos()
     waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_CO2), WAVE_CO2);
 
     // find proper IBP Wave base of the wave name
+    QString nodeName;
     if (systemManager.isSupport(CONFIG_IBP))
     {
-        waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_IBP1),
-                           ibpParam.getWaveformID(ibpParam.getEntitle(IBP_CHN_1)));
-        waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_IBP2),
-                           ibpParam.getWaveformID(ibpParam.getEntitle(IBP_CHN_2)));
+        QString nodeName = layoutNodeName(LAYOUT_NODE_PARAM_IBP1);
+        waveIDMaps.insert(nodeName, ibpParam.getWaveformID(ibpParam.getEntitle(IBP_CHN_1)));
         // IBP's pressure name is identical to it's wave name
-        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_IBP1)] = ParamNodeDescription(
-                    paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_NODE_WAVE_IBP1)]),
-                LAYOUT_NODE_WAVE_IBP1);
-        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_IBP2)] = ParamNodeDescription(
-                    paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_NODE_WAVE_IBP2)]),
-                LAYOUT_NODE_WAVE_IBP2);
+        paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamWaveformName(waveIDMaps[nodeName]),
+                                                    LAYOUT_NODE_WAVE_IBP1, PARAM_IBP);
+
+        nodeName = layoutNodeName(LAYOUT_NODE_WAVE_IBP2);
+        waveIDMaps.insert(nodeName, ibpParam.getWaveformID(ibpParam.getEntitle(IBP_CHN_2)));
+        paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamWaveformName(waveIDMaps[nodeName]),
+                                                    LAYOUT_NODE_WAVE_IBP2, PARAM_IBP);
     }
-    const char *nodeName;
     if (systemManager.isSupport((CONFIG_AG)))
     {
         waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_N2O), WAVE_N2O);
@@ -757,37 +789,39 @@ void BigFontLayoutModelPrivate::loadItemInfos()
         waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_O2), WAVE_O2);
 
         nodeName = layoutNodeName(LAYOUT_NODE_PARAM_AA1);
-        paramNodeDescriptions[nodeName] = ParamNodeDescription("AA1", LAYOUT_NODE_WAVE_AA1);
+        paramNodeDescriptions[nodeName] = NODE_DESC("AA1", LAYOUT_NODE_WAVE_AA1, PARAM_AG);
         nodeName = layoutNodeName(LAYOUT_NODE_PARAM_AA2);
-        paramNodeDescriptions[nodeName] = ParamNodeDescription("AA2", LAYOUT_NODE_WAVE_AA2);
+        paramNodeDescriptions[nodeName] = NODE_DESC("AA2", LAYOUT_NODE_WAVE_AA2, PARAM_AG);
         nodeName = layoutNodeName(LAYOUT_NODE_PARAM_N2O);
-        paramNodeDescriptions[nodeName] = ParamNodeDescription("N2O", LAYOUT_NODE_WAVE_N2O);
+        paramNodeDescriptions[nodeName] = NODE_DESC("N2O", LAYOUT_NODE_WAVE_N2O, PARAM_AG);
         nodeName = layoutNodeName(LAYOUT_NODE_PARAM_O2);
-        paramNodeDescriptions[nodeName] = ParamNodeDescription("AG_O2", LAYOUT_NODE_WAVE_O2);
+        paramNodeDescriptions[nodeName] = NODE_DESC("AG_O2", LAYOUT_NODE_WAVE_O2, PARAM_AG);
     }
 
-
     nodeName = layoutNodeName(LAYOUT_NODE_PARAM_ECG);
-    paramNodeDescriptions[nodeName] = ParamNodeDescription(paramInfo.getParamName(PARAM_ECG), LAYOUT_NODE_WAVE_ECG1);
+    paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_ECG), LAYOUT_NODE_WAVE_ECG1, PARAM_ECG);
     nodeName = layoutNodeName(LAYOUT_NODE_PARAM_SPO2);
-    paramNodeDescriptions[nodeName] = ParamNodeDescription(paramInfo.getParamName(PARAM_SPO2), LAYOUT_NODE_WAVE_SPO2);
+    paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_SPO2), LAYOUT_NODE_WAVE_SPO2, PARAM_SPO2);
     nodeName = layoutNodeName(LAYOUT_NODE_PARAM_RESP);
-    paramNodeDescriptions[nodeName] = ParamNodeDescription(paramInfo.getParamName(PARAM_RESP), LAYOUT_NODE_WAVE_RESP);
+    paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_RESP), LAYOUT_NODE_WAVE_RESP, PARAM_RESP);
 
     nodeName = layoutNodeName(LAYOUT_NODE_PARAM_CO2);
-    paramNodeDescriptions[nodeName] = ParamNodeDescription(paramInfo.getParamName(PARAM_CO2), LAYOUT_NODE_WAVE_CO2);
+    paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_CO2), LAYOUT_NODE_WAVE_CO2, PARAM_CO2);
     nodeName = layoutNodeName(LAYOUT_NODE_PARAM_NIBP);
-    paramNodeDescriptions[nodeName] = ParamNodeDescription(paramInfo.getParamName(PARAM_NIBP));
+    paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_NIBP), LAYOUT_NODE_NONE, PARAM_NIBP);
     nodeName = layoutNodeName(LAYOUT_NODE_PARAM_NIBPLIST);
-    paramNodeDescriptions[nodeName] = ParamNodeDescription(trs("NIBPList"));
+    paramNodeDescriptions[nodeName] = NODE_DESC(trs("NIBPList"), LAYOUT_NODE_NONE, PARAM_NIBP);
     nodeName = layoutNodeName(LAYOUT_NODE_PARAM_TEMP);
-    paramNodeDescriptions[nodeName] = ParamNodeDescription(paramInfo.getParamName(PARAM_TEMP));
+    paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_TEMP), LAYOUT_NODE_NONE, PARAM_TEMP);
 
 #ifndef HIDE_ECG_ST_PVCS_SUBPARAM
-    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_ST)] = ParamNodeDescription("ST");
-    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_PVCS)] = ParamNodeDescription("PVCs");
+    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_ST)] = NODE_DESC("ST", LAYOUT_NODE_NONE, PARAM_ECG);
+    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_PVCS)] = NODE_DESC("PVCs", LAYOUT_NODE_NONE, PARAM_ECG);
 #endif
-    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_OXYGEN)] = ParamNodeDescription("O2");
+    if (systemManager.isSupport(CONFIG_O2))
+    {
+        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_OXYGEN)] = NODE_DESC("O2", LAYOUT_NODE_NONE, PARAM_O2);
+    }
 }
 
 QByteArray BigFontLayoutModelPrivate::getWaveData(WaveformID waveid)
