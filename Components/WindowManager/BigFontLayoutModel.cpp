@@ -770,16 +770,20 @@ void BigFontLayoutModelPrivate::loadItemInfos()
     QString nodeName;
     if (systemManager.isSupport(CONFIG_IBP))
     {
-        QString nodeName = layoutNodeName(LAYOUT_NODE_PARAM_IBP1);
+        nodeName = layoutNodeName(LAYOUT_NODE_WAVE_IBP1);
         waveIDMaps.insert(nodeName, ibpParam.getWaveformID(ibpParam.getEntitle(IBP_CHN_1)));
-        // IBP's pressure name is identical to it's wave name
-        paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamWaveformName(waveIDMaps[nodeName]),
-                                                    LAYOUT_NODE_WAVE_IBP1, PARAM_IBP);
-
         nodeName = layoutNodeName(LAYOUT_NODE_WAVE_IBP2);
         waveIDMaps.insert(nodeName, ibpParam.getWaveformID(ibpParam.getEntitle(IBP_CHN_2)));
-        paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamWaveformName(waveIDMaps[nodeName]),
-                                                    LAYOUT_NODE_WAVE_IBP2, PARAM_IBP);
+
+        nodeName = layoutNodeName(LAYOUT_NODE_PARAM_IBP1);
+        // IBP's pressure name is identical to it's wave name
+        QString waveformName;
+        waveformName = paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_NODE_WAVE_IBP1)]);
+        paramNodeDescriptions[nodeName] = NODE_DESC(waveformName, LAYOUT_NODE_WAVE_IBP1, PARAM_IBP);
+
+        nodeName = layoutNodeName(LAYOUT_NODE_PARAM_IBP2);
+        waveformName = paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_NODE_WAVE_IBP2)]);
+        paramNodeDescriptions[nodeName] = NODE_DESC(waveformName, LAYOUT_NODE_WAVE_IBP2, PARAM_IBP);
     }
     if (systemManager.isSupport((CONFIG_AG)))
     {
