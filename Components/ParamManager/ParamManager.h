@@ -22,6 +22,7 @@ class ParamManager : public QObject
 {
     Q_OBJECT
 public:
+
     static ParamManager &construction(void)
     {
         if (_selfObj == NULL)
@@ -35,6 +36,27 @@ public:
     // 将Provider和参数对象加入进来。
     void addProvider(Provider *provider);
     void addParam(Param *param);
+
+    /**
+     * @brief setSupportParams set a list of param that will be manager by param manager
+     * @param paramNameList the Param name list
+     */
+    void setSupportParams(const QStringList &paramNameList);
+
+    /**
+     * @brief setParamProvider set the param's provider that it will connect to when works in normal mode
+     * @param param the param name
+     * @param provider the provider name
+     */
+    void setParamProvider(const QString &param, const QString &provider);
+
+    /**
+     * @brief getParamProvider get the param's provider
+     * @param param the param name
+     * @return pointor to the param provider or NULL if the provider not exist
+     */
+    Provider *getParamProvider(const QString &param);
+
     /**
      * @brief getProvider get a provider base on the provider name
      * @param name provider name
@@ -102,7 +124,8 @@ private:
     typedef QMap<QString, Provider*> ProviderMap;
     typedef QMap<QString, Param*> ParamMap;
     typedef QMap<ParamID, Param*> ParamWithIDMap;
-    typedef QMap<ParamID, BLMProvider*> BLMProviderMap;
+    QMap<QString, QString> paramProviderMap;
+    QStringList supportParams;
     ProviderMap _providers;
     ParamMap _params;
     ParamWithIDMap _paramWithID;

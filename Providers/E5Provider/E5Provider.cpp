@@ -929,6 +929,11 @@ void E5Provider::enableRESPCalc(bool enable)
     sendCmd(TE3_CMD_SET_RESP_CALS_SWITCH, &data, 1);
 }
 
+RESPModuleType E5Provider::getRespModuleType() const
+{
+    return MODULE_BLM_E5;
+}
+
 /**************************************************************************************************
  * 连接中断。
  *************************************************************************************************/

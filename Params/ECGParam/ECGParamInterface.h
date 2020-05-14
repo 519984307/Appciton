@@ -30,4 +30,15 @@ public:
     virtual void setPacermaker(ECGPaceMode onoff) = 0;
     virtual ECGPaceMode getPacermaker(void) = 0;
     virtual void updatePacermaker(void) = 0;
+
+    /**
+     * @brief getLeadMode get the lead mode
+     * @return  the lead mode
+     */
+    virtual ECGLeadMode getLeadMode(void) const = 0;
+
+    /**
+     * @brief reset reset the module
+     */
+    virtual void reset() = 0;
 };

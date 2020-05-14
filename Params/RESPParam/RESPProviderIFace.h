@@ -33,6 +33,12 @@ public:
     // 启用RESP
     virtual void enableRESPCalc(bool enable) = 0;
 
+    /**
+     * @brief getRespModuleType get the module type
+     * @return module type
+     */
+    virtual RESPModuleType getRespModuleType() const = 0;
+
     // 析构。
     virtual ~RESPProviderIFace() { }
 };

@@ -196,6 +196,9 @@ public:     // RESPProviderIFace的接口。
     // 启用RESP
     virtual void enableRESPCalc(bool enable);
 
+    /* reimplement */
+    RESPModuleType getRespModuleType() const;
+
 public:
     E5Provider();
     ~E5Provider();

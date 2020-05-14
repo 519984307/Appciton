@@ -16,6 +16,7 @@
 #include "WaveformCache.h"
 #include "SystemManager.h"
 #include "AlarmSourceManager.h"
+#include "Components/DataUploader/BLMMessageDefine.h"
 
 TEMPParam *TEMPParam::_selfObj = NULL;
 
@@ -100,6 +101,32 @@ UnitType TEMPParam::getCurrentUnit(SubParamID id)
     return getUnit(id);
 }
 
+QVariantMap TEMPParam::getTrendVariant(int id)
+{
+    QVariantMap map;
+    if (id == BLM_TREND_PARAM_TEMP_T1)
+    {
+        map["ParamID"] = BLM_PARAM_TEMP;
+        map["TrendID"] = BLM_TREND_PARAM_TEMP_T1;
+        map["Value"] = _t1Value;
+        map["Status"] = _t1Value == InvData() ? 1 : 0;
+    }
+    else if (id == BLM_TREND_PARAM_TEMP_T2)
+    {
+        map["ParamID"] = BLM_PARAM_TEMP;
+        map["TrendID"] = BLM_TREND_PARAM_TEMP_T2;
+        map["Value"] = _t2Value;
+        map["Status"] = _t2Value == InvData() ? 1 : 0;
+    }
+    else if (id == BLM_TREND_PARAM_TEMP_TD)
+    {
+        map["ParamID"] = BLM_PARAM_TEMP;
+        map["TrendID"] = BLM_TREND_PARAM_TEMP_TD;
+        map["Value"] = _tdValue;
+        map["Status"] = _tdValue == InvData() ? 1 : 0;
+    }
+    return map;
+}
 /**************************************************************************************************
  * 设置数据提供对象。
  *************************************************************************************************/

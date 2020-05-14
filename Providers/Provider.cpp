@@ -136,7 +136,7 @@ void Provider::setFirstCheck(bool flag)
  * 功能： 获取名称。
  * 返回： Provider的名称。
  *************************************************************************************************/
-QString &Provider::getName(void)
+const QString &Provider::getName(void) const
 {
     return _name;
 }

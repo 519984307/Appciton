@@ -285,6 +285,9 @@ static void _initProviderParam(void)
     E5Provider *te3 = new E5Provider();
     paramManager.addProvider(te3);
 
+    QString ecgModule;
+    machineConfig.getStrValue("ECG", ecgModule);
+
     DataDispatcher::addDataDispatcher(new DataDispatcher("DataDispatcher"));
 
     // 插件式转发
@@ -715,6 +718,23 @@ static void _initProviderParam(void)
     // short trend container
     ShortTrendContainer *trendContainer = new ShortTrendContainer;
     layoutManager.addLayoutWidget(trendContainer);
+
+    // get the support params
+    QString str;
+    machineConfig.getStrValue("AllParams", str);
+    QStringList paramList = str.split(',');
+    // trim text
+    for (QStringList::iterator iter = paramList.begin(); iter != paramList.end(); ++iter)
+    {
+        *iter = (*iter).trimmed();
+    }
+    paramManager.setSupportParams(paramList);
+    // set the params provider
+    foreach(const QString &paramName, paramList)
+    {
+        machineConfig.getStrValue(paramName, str);
+        paramManager.setParamProvider(paramName, str.trimmed());
+    }
 
     // 关联设备和参数对象。
     paramManager.connectParamProvider(WORK_MODE_NORMAL);

@@ -21,6 +21,7 @@
 #include "O2ParamInterface.h"
 #include "RunningStatusBar.h"
 #include "AlarmConfig.h"
+#include "Components/DataUploader/BLMMessageDefine.h"
 
 RESPDupParam *RESPDupParam::_selfObj = NULL;
 
@@ -85,6 +86,19 @@ UnitType RESPDupParam::getCurrentUnit(SubParamID /*id*/)
 bool RESPDupParam::isEnabled()
 {
     return respParam.isEnabled();
+}
+
+QVariantMap RESPDupParam::getTrendVariant(int id)
+{
+    QVariantMap map;
+    if (id == BLM_TREND_PARAM_RR_BR)
+    {
+        map["ParamID"] = BLM_PARAM_RESP;
+        map["TrendID"] = BLM_TREND_PARAM_RR_BR;
+        map["Value"] = _rrValue;
+        map["Status"] = _rrValue == InvData() ? 1 : 0;
+    }
+    return map;
 }
 
 /**************************************************************************************************

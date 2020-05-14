@@ -24,7 +24,7 @@ class Provider: public QObject
 
 public:
     // 获取Provider的名称。
-    QString &getName(void);
+    const QString &getName(void) const;
 
     // 关联Provider和Param对象，具体内容由派生类实现。
     virtual bool attachParam(Param *param);

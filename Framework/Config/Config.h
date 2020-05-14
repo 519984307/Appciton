@@ -17,6 +17,8 @@
 #include <QHash>
 #include <QDomElement>
 
+typedef void (*ConfigChangedCallback)(const QString &index, const QString &val);
+
 class ConfigPrivate;
 class Config
 {
@@ -296,6 +298,14 @@ public:
 
     // get default file name
     QString getDefaultFileName(const QString &fileName);
+
+    /**
+     * @brief setConfigChangedCallback set the config changed callback
+     * @param cb the callback function
+     * @note only monitry value change and string changed, not attr or node change
+     */
+    void setConfigChangedCallback(ConfigChangedCallback cb);
+
 private:
     QString _getBackupFileName(const QString &fileName);
     QString _getFactoryFileName(const QString &fileName);

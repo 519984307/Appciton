@@ -27,6 +27,7 @@
 #include "AlarmSourceManager.h"
 #include "O2ParamInterface.h"
 #include "IConfig.h"
+#include "Components/DataUploader/BLMMessageDefine.h"
 
 CO2Param *CO2Param::_selfObj = NULL;
 
@@ -195,6 +196,14 @@ void CO2Param::handDemoWaveform(WaveformID id, short data)
     {
         return;
     }
+
+    if (preProcessor)
+    {
+        int dataInt = data;
+        preProcessor->preProcessWave(WAVE_CO2, &dataInt, &flag);
+        data = dataInt;
+    }
+
     if (!getCO2Switch())
     {
         data = 0;
@@ -334,6 +343,26 @@ void CO2Param::showSubParamValue()
 UnitType CO2Param::getCurrentUnit(SubParamID /*id*/)
 {
     return getUnit();
+}
+
+QVariantMap CO2Param::getTrendVariant(int id)
+{
+    QVariantMap map;
+    if (id == BLM_TREND_PARAM_ETCO2)
+    {
+        map["ParamID"] = BLM_PARAM_CO2;
+        map["TrendID"] = BLM_TREND_PARAM_ETCO2;
+        map["Value"] = d_ptr->etco2Value;
+        map["Status"] = d_ptr->etco2Value == InvData() ? 1 : 0;
+    }
+    else if (id == BLM_TREND_PARAM_FICO2)
+    {
+        map["ParamID"] = BLM_PARAM_CO2;
+        map["TrendID"] = BLM_TREND_PARAM_FICO2;
+        map["Value"] = d_ptr->fico2Value;
+        map["Status"] = d_ptr->fico2Value == InvData() ? 1 : 0;
+    }
+    return map;
 }
 
 /**************************************************************************************************
@@ -650,6 +679,13 @@ void CO2Param::addWaveformData(short wave, bool invalid)
         wave = 0;
     }
 
+    if (preProcessor)
+    {
+        int waveInt = wave;
+        preProcessor->preProcessWave(WAVE_CO2, &waveInt, &flag);
+        wave = waveInt;
+    }
+
     if (d_ptr->waveWidget != NULL)
     {
         d_ptr->waveWidget->addData(wave, flag);
@@ -835,6 +871,15 @@ bool CO2Param::getCompensationEnabled(CO2Compensation gas)
         return d_ptr->n2oCompensationEnable;
     }
     return false;
+}
+
+CO2ModuleType CO2Param::getCo2ModuleType() const
+{
+    if (d_ptr->provider)
+    {
+        return d_ptr->provider->getCo2ModuleType();
+    }
+    return MODULE_CO2_NR;
 }
 
 /**************************************************************************************************

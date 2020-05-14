@@ -41,6 +41,21 @@ void ParamManager::addParam(Param *param)
     _paramWithID.insert(param->getParamID(), param);
 }
 
+void ParamManager::setSupportParams(const QStringList &paramNameList)
+{
+    supportParams = paramNameList;
+}
+
+void ParamManager::setParamProvider(const QString &param, const QString &provider)
+{
+    paramProviderMap[param] = provider;
+}
+
+Provider *ParamManager::getParamProvider(const QString &param)
+{
+    return _providers.value(paramProviderMap.value(param, QString()), NULL);
+}
+
 Provider *ParamManager::getProvider(const QString &name)
 {
     return _providers.value(name, NULL);

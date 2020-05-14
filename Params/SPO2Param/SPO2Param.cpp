@@ -39,6 +39,7 @@
 #include "MessageBox.h"
 #include "WindowManager.h"
 #include <QPointer>
+#include "Components/DataUploader/BLMMessageDefine.h"
 
 class SPO2ParamPrivate
 {
@@ -229,6 +230,7 @@ void SPO2Param::handDemoWaveform(WaveformID id, short data)
     {
         return;
     }
+
     unsigned char waveFlag = 0;
     if (data >= 93)
     {
@@ -438,6 +440,27 @@ UnitType SPO2Param::getCurrentUnit(SubParamID id)
     default:
         return UNIT_PERCENT;
     }
+}
+
+QVariantMap SPO2Param::getTrendVariant(int id)
+{
+    QVariantMap map;
+
+    if (id == BLM_TREND_PARAM_SPO2)
+    {
+        map["ParamID"] = BLM_PARAM_SPO2;
+        map["TrendID"] = BLM_TREND_PARAM_SPO2;
+        map["Value"] = d_ptr->spo2Value;
+        map["Status"] = d_ptr->spo2Value == InvData() ? 1 : 0;
+    }
+    else if (id == BLM_TREND_PARAM_PI)
+    {
+        map["ParamID"] = BLM_PARAM_SPO2;
+        map["TrendID"] = BLM_TREND_PARAM_PI;
+        map["Value"] = d_ptr->piValue;
+        map["Status"] = d_ptr->piValue == InvData() ? 1 : 0;
+    }
+    return map;
 }
 
 /**************************************************************************************************
@@ -896,6 +919,13 @@ void SPO2Param::addWaveformData(short wave, unsigned char waveFlag, bool isPlugi
             }
         }
 
+        if (preProcessor)
+        {
+            int waveInt = wave;
+            preProcessor->preProcessWave(WAVE_SPO2, &waveInt, &flag);
+            wave = waveInt;
+        }
+
         if (d_ptr->waveWidget != NULL)
         {
             d_ptr->waveWidget->addData(wave, flag);
@@ -912,6 +942,8 @@ void SPO2Param::addWaveformData(short wave, unsigned char waveFlag, bool isPlugi
         {
             d_ptr->plugInWaveWidget->addData(wave, flag);
         }
+
+
         waveformCache.addData(WAVE_SPO2_2, (flag << 16) | wave);
     }
 }

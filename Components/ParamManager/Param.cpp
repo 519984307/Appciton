@@ -148,6 +148,7 @@ UnitType Param::getCurrentUnit(SubParamID /*id*/)
  *************************************************************************************************/
 Param::Param(ParamID id)
     : paramUpdateTimer(NULL),
+      preProcessor(NULL),
       _paramID(id),
       _paramName(paramInfo.getParamName(id)),
       _isEnable(true)
@@ -172,4 +173,9 @@ void Param::stopParamUpdateTimer()
     {
         paramUpdateTimer->stop();
     }
+}
+
+void Param::setPreProcessor(ParamPreProcessor *processor)
+{
+    preProcessor = processor;
 }

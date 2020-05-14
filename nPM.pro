@@ -130,11 +130,14 @@ DEFINES += ECG_MONITOR_NOTIFY_FILTER_OFF
 #Vitavue 15寸机器
 #DEFINES += VITAVUE_15_INCHES
 
+# support the betterview
+DEFINES += SUPPORT_BLM_DATA_UPLOADER
+
 # Depending libraries
 LIBS += -ldl -lasound -lz
 
 # link framework
-LIBS += -L$$PWD/Framework/lib -lFramework
+LIBS += -L$$PWD/Framework/lib -lFramework -L$$PWD/WebSockets/lib -lWebSockets
 
 linux-arm-g++ {
     LIBS += -lts -L$$PWD/nPM/lib/
@@ -158,6 +161,10 @@ OTHER_FILES +=                                                                  
     nPM/etc/PatientInfo.xml                                                     \
 
 SOURCES +=                                                                      \
+    Components/DataUploader/BLMDataUploader.cpp \
+    Components/DataUploader/BLMMessageHandler.cpp \
+    Components/DataUploader/JSONParser.cpp \
+    Components/DataUploader/JSONSerializer.cpp \
     Utility/Config/IConfig.cpp                                                  \
     Utility/DataStorage/DataStorageDirManager.cpp                               \
     Utility/DataStorage/DataStorageDirManagerInterface.cpp                      \
@@ -553,6 +560,15 @@ SOURCES +=                                                                      
     Main/Starter.cpp \
 
 HEADERS +=                                                                      \
+    Components/DataUploader/BLMDataUploader.h \
+    Components/DataUploader/BLMMessageDefine.h \
+    Components/DataUploader/BLMMessageHandler.h \
+    Components/DataUploader/DataUploaderIFace.h \
+    Components/DataUploader/JSONParser.h \
+    Components/DataUploader/JSONSerializer.h \
+    Components/ParamManager/ParamPreProcessor.h \
+    Params/CO2Param/CO2ParamInterface.h \
+    Params/RESPParam/RESPParamInterface.h \
     Utility/Config/ConfigDefine.h                                               \
     Utility/Config/IConfig.h                                                    \
     Utility/DataStorage/DataStorageDefine.h                                     \
@@ -646,6 +662,7 @@ HEADERS +=                                                                      
     Components/ParamManager/ParamDefine.h                                       \
     Components/ParamManager/ParamInfo.h                                         \
     Components/ParamManager/ParamInfoInterface.h                                \
+    Components/ParamManager/ParamPreProcessor.h                                 \
     Components/Alarm/Alarm.h                                                    \
     Components/Alarm/AlarmInterface.h                                           \
     Components/Alarm/AlarmConfig.h                                              \
@@ -857,6 +874,12 @@ HEADERS +=                                                                      
     Components/Freeze/FreezeManager.h                                           \
     Components/Freeze/FreezeWindow.h                                            \
     Components/Freeze/FreezeDataModel.h                                         \
+    Components/DataUploader/DataUploaderIFace.h                                 \
+    Components/DataUploader/BLMDataUploader.h                                   \
+    Components/DataUploader/BLMMessageDefine.h                                  \
+    Components/DataUploader/BLMMessageHandler.h                                 \
+    Components/DataUploader/JSONParser.h                                        \
+    Components/DataUploader/JSONSerializer.h                                    \
 #################################################################################
     Params/AGParam/AGWidgets/AGTrendWidget.h                                    \
     Params/AGParam/AGWidgets/AGWaveRuler.h                                      \
@@ -892,6 +915,7 @@ HEADERS +=                                                                      
     Params/CO2Param/CO2Define.h                                                 \
     Params/CO2Param/CO2Symbol.h                                                 \
     Params/CO2Param/CO2ProviderIFace.h                                          \
+    Params/CO2Param/CO2ParamInterface.h                                         \
     Params/CO2Param/CO2Widgets/CO2WaveWidget.h                                  \
     Params/CO2Param/CO2Widgets/CO2WaveRuler.h                                   \
     Params/CO2Param/CO2Widgets/CO2TrendWidget.h                                 \
@@ -975,6 +999,7 @@ HEADERS +=                                                                      
     Params/RESPParam/RESPDupParam.h                                             \
     Params/RESPParam/RESPParam.h                                                \
     Params/RESPParam/RESPProviderIFace.h                                        \
+    Params/RESPParam/RESPParamInterface.h                                       \
     Params/RESPParam/RESPSymbol.h                                               \
     Params/RESPParam/RESPWidgets/RESPWaveWidget.h                               \
     Params/RESPParam/RESPWidgets/RESPTrendWidget.h                              \
@@ -1075,6 +1100,7 @@ DEPENDPATH +=                                                                   
     Components/Calculation/HemodynamicManager                                   \
     Components/ConfigManager                                                    \
     Components/Freeze                                                           \
+    Components/DataUploader                                                     \
     Providers                                                                   \
     Providers/PhaseinProvider                                                   \
     Providers/BLMCO2Provider                                                    \
