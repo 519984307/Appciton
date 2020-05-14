@@ -185,7 +185,7 @@ void IBPZeroWindow::timerEvent(QTimerEvent *ev)
             }
 
             /* check complete */
-            if ((allChannel && pimpl->zeroReply.count(true))
+            if ((allChannel && pimpl->zeroReply.count(true) == IBP_CHN_NR)
                  || (!allChannel && pimpl->zeroReply.at(pimpl->zeroChannel)))
             {
                 pimpl->infoLbl->setText(pimpl->getZeroResult());
