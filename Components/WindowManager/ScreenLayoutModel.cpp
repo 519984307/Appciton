@@ -20,8 +20,6 @@
 #include "IBPParam.h"
 #include "Framework/Utility/OrderedMap.h"
 #include "Framework/Language/LanguageManager.h"
-#include "ParamInfo.h"
-#include "ParamManager.h"
 #include "ColorManager.h"
 #include "SystemManager.h"
 
@@ -87,7 +85,7 @@ enum ParamNodeSpan
 
 struct ParamNodeDescription
 {
-    ParamNodeDescription() : paramSpan(PARAM_SPAN_ONE), paramID(PARAM_NONE){}
+    ParamNodeDescription() : paramSpan(PARAM_SPAN_TWO), paramID(PARAM_NONE){}
     ParamNodeDescription(const QString &displayName, ParamNodeSpan span, ParamID paramID)
         : displayName(displayName), paramSpan(span), paramID(paramID) {}
 
@@ -404,11 +402,11 @@ public:
         }
 
         nodeName = layoutNodeName(LAYOUT_NODE_PARAM_ECG);
-        paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_ECG), PARAM_SPAN_ONE, PARAM_ECG);
+        paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_ECG), PARAM_SPAN_TWO, PARAM_ECG);
         nodeName = layoutNodeName(LAYOUT_NODE_PARAM_SPO2);
         paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_SPO2), PARAM_SPAN_TWO, PARAM_SPO2);
         nodeName = layoutNodeName(LAYOUT_NODE_PARAM_RESP);
-        paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_RESP), PARAM_SPAN_ONE, PARAM_RESP);
+        paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_RESP), PARAM_SPAN_TWO, PARAM_RESP);
 
         nodeName = layoutNodeName(LAYOUT_NODE_PARAM_CO2);
         paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_CO2), PARAM_SPAN_TWO, PARAM_CO2);
@@ -417,15 +415,15 @@ public:
         nodeName = layoutNodeName(LAYOUT_NODE_PARAM_NIBPLIST);
         paramNodeDescriptions[nodeName] = NODE_DESC(trs("NIBPList"), PARAM_SPAN_TWO, PARAM_NIBP);
         nodeName = layoutNodeName(LAYOUT_NODE_PARAM_TEMP);
-        paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_TEMP), PARAM_SPAN_ONE, PARAM_TEMP);
+        paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_TEMP), PARAM_SPAN_TWO, PARAM_TEMP);
 
 #ifndef HIDE_ECG_ST_PVCS_SUBPARAM
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_ST)] = NODE_DESC("ST", PARAM_SPAN_TWO, PARAM_ECG);
-        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_PVCS)] = NODE_DESC("PVCs", PARAM_SPAN_ONE, PARAM_ECG);
+        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_PVCS)] = NODE_DESC("PVCs", PARAM_SPAN_TWO, PARAM_ECG);
 #endif
         if (systemManager.isSupport(CONFIG_O2))
         {
-            paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_OXYGEN)] = NODE_DESC("O2", PARAM_SPAN_ONE, PARAM_O2);
+            paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_OXYGEN)] = NODE_DESC("O2", PARAM_SPAN_TWO, PARAM_O2);
         }
     }
 
@@ -654,6 +652,7 @@ bool ScreenLayoutModel::setData(const QModelIndex &index, const QVariant &value,
             node->name = QString();
             QModelIndex anotherIndex = index;
 
+#if 0
             // handle the row span for param node region
             if (!d_ptr->itemInWaveRegion(index))
             {
@@ -670,6 +669,7 @@ bool ScreenLayoutModel::setData(const QModelIndex &index, const QVariant &value,
                     emit spanChanged(index);
                 }
             }
+#endif
             emit dataChanged(index, anotherIndex);
             d_ptr->isChangeData = true;
         }

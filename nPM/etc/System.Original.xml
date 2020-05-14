@@ -1000,8 +1000,7 @@
                     </LayoutRow>
                     <LayoutRow>
                         <LayoutNode pos="0" span="4" editable="1">RESPWave</LayoutNode>
-                        <LayoutNode pos="4" span="1" editable="1">RESP</LayoutNode>
-                        <LayoutNode pos="5" span="1" editable="1"></LayoutNode>
+                        <LayoutNode pos="4" span="2" editable="1">RESP</LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
                         <LayoutNode pos="0" span="4" editable="1">CO2Wave</LayoutNode>
