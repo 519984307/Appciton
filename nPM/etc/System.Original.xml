@@ -1008,8 +1008,8 @@
                         <LayoutNode pos="4" span="2" editable="1">CO2</LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
-                        <LayoutNode pos="0" span="4" editable="1"></LayoutNode>
-                        <LayoutNode pos="4" span="2" editable="1"></LayoutNode>
+                        <LayoutNode pos="0" span="4" editable="1">IBP1Wave</LayoutNode>
+                        <LayoutNode pos="4" span="2" editable="1">IBP1</LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
                         <LayoutNode pos="0" span="2" editable="1">NIBP</LayoutNode>
