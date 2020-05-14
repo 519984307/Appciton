@@ -73,6 +73,11 @@ enum LayoutNodeType
     LAYOUT_NODE_NR,
 };
 
+/**
+ * @brief layoutNodeName get the layout node name
+ * @param nodeType the node type
+ * @return  the node name
+ */
 const char *layoutNodeName(LayoutNodeType nodeType);
 
 /**

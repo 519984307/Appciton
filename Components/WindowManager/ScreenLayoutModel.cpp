@@ -20,6 +20,10 @@
 #include "IBPParam.h"
 #include "Framework/Utility/OrderedMap.h"
 #include "Framework/Language/LanguageManager.h"
+#include "ParamInfo.h"
+#include "ParamManager.h"
+#include "ColorManager.h"
+#include "SystemManager.h"
 
 const char *layoutNodeName(LayoutNodeType nodeType)
 {
@@ -83,13 +87,16 @@ enum ParamNodeSpan
 
 struct ParamNodeDescription
 {
-    ParamNodeDescription() : paramSpan(PARAM_SPAN_ONE) {}
-    ParamNodeDescription(const QString &displayName, ParamNodeSpan span)
-        : displayName(displayName), paramSpan(span) {}
+    ParamNodeDescription() : paramSpan(PARAM_SPAN_ONE), paramID(PARAM_NONE){}
+    ParamNodeDescription(const QString &displayName, ParamNodeSpan span, ParamID paramID)
+        : displayName(displayName), paramSpan(span), paramID(paramID) {}
 
     QString displayName;
     ParamNodeSpan paramSpan;
+    ParamID paramID;
 };
+
+#define NODE_DESC(dispName, span, paramID) ParamNodeDescription(dispName, span, paramID)
 
 typedef QList<LayoutNode *> LayoutRow;
 
@@ -322,11 +329,12 @@ public:
         }
         else if (info->waveid == WAVE_CO2)
         {
-            info->waveMaxValue = (demoProvider->getCO2MaxWaveform() * 4 + 19) / 20;
+            /* devided by 2 to make the wave look larger */
+            info->waveMaxValue = demoProvider->getCO2MaxWaveform() / 2;
             info->drawSpeed = 6.25;
             info->waveMinValue = 0;
             info->baseLine = demoProvider->getCO2BaseLine();
-            info->sampleRate = demoProvider->getSPO2WaveformSample();
+            info->sampleRate = demoProvider->getCO2WaveformSample();
         }
         else if (info->waveid >= WAVE_N2O && info->waveid <= WAVE_O2)
         {
@@ -376,10 +384,10 @@ public:
             // IBP's pressure name is identical to it's wave name
             nodeName = layoutNodeName(LAYOUT_NODE_PARAM_IBP1);
             waveformName = paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_NODE_WAVE_IBP1)]);
-            paramNodeDescriptions[nodeName] = ParamNodeDescription(waveformName, PARAM_SPAN_TWO);
+            paramNodeDescriptions[nodeName] = NODE_DESC(waveformName, PARAM_SPAN_TWO, PARAM_NIBP);
             nodeName = layoutNodeName(LAYOUT_NODE_PARAM_IBP2);
             waveformName = paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_NODE_WAVE_IBP2)]);
-            paramNodeDescriptions[nodeName] = ParamNodeDescription(waveformName, PARAM_SPAN_TWO);
+            paramNodeDescriptions[nodeName] = NODE_DESC(waveformName, PARAM_SPAN_TWO, PARAM_NIBP);
         }
 
         if (systemManager.isSupport(CONFIG_AG))
@@ -389,33 +397,33 @@ public:
             waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_AA2), WAVE_AA2);
             waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_O2), WAVE_O2);
 
-            paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_AA1)] = ParamNodeDescription("AA1",  PARAM_SPAN_TWO);
-            paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_AA2)] = ParamNodeDescription("AA2", PARAM_SPAN_TWO);
-            paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_N2O)] = ParamNodeDescription("N2O", PARAM_SPAN_TWO);
-            paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_O2)] = ParamNodeDescription("AG_O2", PARAM_SPAN_TWO);
+            paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_AA1)] = NODE_DESC("AA1",  PARAM_SPAN_TWO, PARAM_AG);
+            paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_AA2)] = NODE_DESC("AA2", PARAM_SPAN_TWO, PARAM_AG);
+            paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_N2O)] = NODE_DESC("N2O", PARAM_SPAN_TWO, PARAM_AG);
+            paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_O2)] = NODE_DESC("AG_O2", PARAM_SPAN_TWO, PARAM_AG);
         }
 
         nodeName = layoutNodeName(LAYOUT_NODE_PARAM_ECG);
-        paramNodeDescriptions[nodeName] = ParamNodeDescription(paramInfo.getParamName(PARAM_ECG), PARAM_SPAN_ONE);
+        paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_ECG), PARAM_SPAN_ONE, PARAM_ECG);
         nodeName = layoutNodeName(LAYOUT_NODE_PARAM_SPO2);
-        paramNodeDescriptions[nodeName] = ParamNodeDescription(paramInfo.getParamName(PARAM_SPO2), PARAM_SPAN_TWO);
+        paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_SPO2), PARAM_SPAN_TWO, PARAM_SPO2);
         nodeName = layoutNodeName(LAYOUT_NODE_PARAM_RESP);
-        paramNodeDescriptions[nodeName] = ParamNodeDescription(paramInfo.getParamName(PARAM_RESP), PARAM_SPAN_ONE);
+        paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_RESP), PARAM_SPAN_ONE, PARAM_RESP);
 
         nodeName = layoutNodeName(LAYOUT_NODE_PARAM_CO2);
-        paramNodeDescriptions[nodeName] = ParamNodeDescription(paramInfo.getParamName(PARAM_CO2), PARAM_SPAN_TWO);
+        paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_CO2), PARAM_SPAN_TWO, PARAM_CO2);
         nodeName = layoutNodeName(LAYOUT_NODE_PARAM_NIBP);
-        paramNodeDescriptions[nodeName] = ParamNodeDescription(paramInfo.getParamName(PARAM_NIBP), PARAM_SPAN_TWO);
+        paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_NIBP), PARAM_SPAN_TWO, PARAM_NIBP);
         nodeName = layoutNodeName(LAYOUT_NODE_PARAM_NIBPLIST);
-        paramNodeDescriptions[nodeName] = ParamNodeDescription(trs("NIBPList"), PARAM_SPAN_TWO);
+        paramNodeDescriptions[nodeName] = NODE_DESC(trs("NIBPList"), PARAM_SPAN_TWO, PARAM_NIBP);
         nodeName = layoutNodeName(LAYOUT_NODE_PARAM_TEMP);
-        paramNodeDescriptions[nodeName] = ParamNodeDescription(paramInfo.getParamName(PARAM_TEMP), PARAM_SPAN_ONE);
+        paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_TEMP), PARAM_SPAN_ONE, PARAM_TEMP);
 
 #ifndef HIDE_ECG_ST_PVCS_SUBPARAM
-        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_ST)] = ParamNodeDescription("ST", PARAM_SPAN_TWO);
-        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_PVCS)] = ParamNodeDescription("PVCs", PARAM_SPAN_ONE);
+        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_ST)] = NODE_DESC("ST", PARAM_SPAN_TWO, PARAM_ECG);
+        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_PVCS)] = NODE_DESC("PVCs", PARAM_SPAN_ONE, PARAM_ECG);
 #endif
-        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_OXYGEN)] = ParamNodeDescription("O2", PARAM_SPAN_ONE);
+        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_OXYGEN)] = NODE_DESC("O2", PARAM_SPAN_ONE, PARAM_O2);
     }
 
     /**
@@ -708,6 +716,33 @@ QVariant ScreenLayoutModel::data(const QModelIndex &index, int role) const
         }
     }
     break;
+    case Qt::ForegroundRole:
+    {
+        LayoutNode *node = d_ptr->findNode(index);
+        if (node)
+        {
+            ParamID paramID = PARAM_NONE;
+            WaveformID waveID = d_ptr->waveIDMaps.value(node->name, WAVE_NONE);
+            if (waveID != WAVE_NONE)
+            {
+                paramID = paramInfo.getParamID(waveID);
+            }
+            else
+            {
+                ParamNodeDescription desc = d_ptr->paramNodeDescriptions.value(node->name,
+                                                                               ParamNodeDescription());
+                paramID = desc.paramID;
+            }
+            QColor color = colorManager.getColor(paramInfo.getParamName(paramID));
+            return QBrush(color);
+        }
+    }
+        break;
+    case Qt::BackgroundRole:
+    {
+        return QBrush(Qt::black);
+    }
+        break;
     case ReplaceRole:
     {
         LayoutNode *node = d_ptr->findNode(index);
