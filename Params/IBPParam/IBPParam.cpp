@@ -944,6 +944,7 @@ void IBPParam::setEntitle(IBPLabel entitle, IBPChannel chn)
 
     _chnData[chn].waveWidget->setEntitle(entitle);
     _chnData[chn].trendWidget->setEntitle(entitle);
+    _chnData[chn].trendWidget->updateLimit();
     _chnData[chn].paramData.pressureName = entitle;
 
     IBPMeasueType measureType[IBP_CHN_NR];
