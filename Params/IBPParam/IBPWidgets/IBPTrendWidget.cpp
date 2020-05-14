@@ -66,6 +66,7 @@ void IBPTrendWidget::setData(int16_t sys, int16_t dia, int16_t map)
             int16_t calMap = map;
             setShowStacked(2);
             _veinString = QString::number(calMap);
+            _mapString = _veinString;
         }
     }
 
@@ -242,6 +243,7 @@ void IBPTrendWidget::showValue()
             case IBP_LABEL_LAP:
             case IBP_LABEL_RAP:
             case IBP_LABEL_CVP:
+                showAlarmParamLimit(_mapValue, _mapString, psrc);
                 showAlarmParamLimit(_veinValue, _veinString, psrc);
                 break;
             default:
