@@ -1024,21 +1024,21 @@
                 <BigFont>
                     <LayoutRow>
                         <LayoutNode>
-                            <Param pos="0" span="1" editable="0">ECG</Param>
+                            <Param pos="0" span="1" editable="1">ECG</Param>
                             <Wave pos="0" span="3" editable="0">ECG1Wave</Wave>
                         </LayoutNode>
                         <LayoutNode>
-                            <Param pos="3" span="1" editable="0">NIBP</Param>
+                            <Param pos="3" span="1" editable="1">NIBP</Param>
                             <Wave pos="3" span="3" editable="0"></Wave>
                         </LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
                         <LayoutNode>
-                            <Param pos="0" span="1" editable="0">SPO2</Param>
+                            <Param pos="0" span="1" editable="1">SPO2</Param>
                             <Wave pos="0" span="3" editable="0">SPO2Wave</Wave>
                         </LayoutNode>
                         <LayoutNode>
-                            <Param pos="3" span="1" editable="0">RESP</Param>
+                            <Param pos="3" span="1" editable="1">RESP</Param>
                             <Wave pos="3" span="3" editable="0">RESPWave</Wave>
                         </LayoutNode>
                     </LayoutRow>
