@@ -382,6 +382,7 @@ void LayoutManagerPrivate::performStandardLayout()
     int curRightParamRow = 0;
     int curLeftParamRow = 0;
     int rightLayoutColumn = 0;
+    bool hasVisableLeftParamWidget = false;
     QVector<QVector<IWidget *> > rightParamsWidget;
     QVector<QVector<int> > rightParamPos;
     for (; iter != layoutInfos.end(); ++iter)
@@ -419,6 +420,7 @@ void LayoutManagerPrivate::performStandardLayout()
                         leftParamLayout->addWidget(w, curLeftParamRow, nodeIter->pos, 1, nodeIter->span);
                         displayParams.append(w->name());
                         contentWidgets.append(w);
+                        hasVisableLeftParamWidget = true;
                     }
                     else
                     {
@@ -493,23 +495,30 @@ void LayoutManagerPrivate::performStandardLayout()
 
     // 计算波形行数和左参数区行数
     waveRowCount = waveLayout->rowCount();
-    leftParamRowCount = leftParamLayout->rowCount();
+    leftParamRowCount = hasVisableLeftParamWidget ? leftParamLayout->rowCount() : 0;
     int rowHeightLeft;
     int rowHeightRight;
     int leftRowNum = waveRowCount + leftParamRowCount;
     if (displayWaveforms.count() >= 2 && displayWaveforms.at(1).contains("ECG")
-            && (leftRowNum > rightLayoutColumn && leftRowNum < 7))
+            && (leftRowNum > curRightParamRow && leftRowNum < 7))
     {
         /*
          * The first two wave is ecg and we have the more row at the left region than the right region,
          * set the ECG trend with the height of the first two ecg wave, the left row numbe should be lest
          * than 7 to avoid the height is two small for trend widget
          */
-        rowHeightRight = qRound((contentView->height() - FIRST_ECG_WAVE_HEIGHT) * 1.0 / (leftRowNum - 1));
-        rowHeightLeft = rowHeightRight;
+        rowHeightLeft = qRound((contentView->height() - FIRST_ECG_WAVE_HEIGHT) * 1.0 / (leftRowNum - 1));
 
         waveLayout->setRowStretch(0, FIRST_ECG_WAVE_HEIGHT);
-        rightParamLayout->setRowStretch(0, FIRST_ECG_WAVE_HEIGHT + rowHeightRight);
+        rightParamLayout->setRowStretch(0, FIRST_ECG_WAVE_HEIGHT + rowHeightLeft);
+        if (curRightParamRow > 1)
+        {
+            rowHeightRight = (contentView->height() - (FIRST_ECG_WAVE_HEIGHT + rowHeightLeft)) / (curRightParamRow - 1);
+        }
+        else
+        {
+            rowHeightRight = rowHeightLeft;
+        }
     }
     else
     {
@@ -528,9 +537,16 @@ void LayoutManagerPrivate::performStandardLayout()
         waveLayout->setRowStretch(i, rowHeightLeft);
     }
 
-    for (int i = 0; i < leftParamLayout->rowCount(); i++)
+    if (hasVisableLeftParamWidget)
     {
-        leftParamLayout->setRowStretch(i, rowHeightLeft);
+        for (int i = 0; i < leftParamLayout->rowCount(); i++)
+        {
+            leftParamLayout->setRowStretch(i, rowHeightLeft);
+        }
+    }
+    else
+    {
+        leftParamContainer->setVisible(false);
     }
 
     for (int i = 1; i < rightParamLayout->rowCount(); i++)
