@@ -67,6 +67,8 @@ public:
     // 使能
     virtual bool isEnabled();
 
+    virtual QVariantMap getTrendVariant(int id);
+
     // 设置界面对象。
     void setTrendWidget(RESPTrendWidget *trendWidget);
 

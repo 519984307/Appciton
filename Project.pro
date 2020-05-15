@@ -1,5 +1,5 @@
 TEMPLATE = subdirs
 
-SUBDIRS = Framework nPM.pro
+SUBDIRS = Framework WebSockets nPM.pro
 
 CONFIG += ordered

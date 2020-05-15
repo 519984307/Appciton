@@ -24,8 +24,9 @@ public:
     XmlParser _xmlParser;
     QHash<QString, QString> _configCache;
     QMutex _cacheLock;
-    bool _requestToSave;
     QMutex _requestToSaveMutex;
+    ConfigChangedCallback callback;
+    bool _requestToSave;
     bool _allowToSave;
 };
 
@@ -359,6 +360,11 @@ void Config::setConfig(const QString &indexStr, const QVariantMap &config)
 QString Config::getDefaultFileName(const QString &fileName)
 {
     return _getFactoryFileName(fileName);
+}
+
+void Config::setConfigChangedCallback(ConfigChangedCallback cb)
+{
+    d_ptr->callback = cb;
 }
 
 /**************************************************************************************************

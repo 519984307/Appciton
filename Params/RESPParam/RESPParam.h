@@ -14,6 +14,7 @@
 #include "Param.h"
 #include "RESPSymbol.h"
 #include "AlarmDefine.h"
+#include "RESPParamInterface.h"
 
 class OxyCRGRESPWaveWidget;
 class RESPParamPrivate;
@@ -21,7 +22,7 @@ class RESPWaveWidget;
 class RESPProviderIFace;
 class RESPFullDisclosure;
 class OxyCRGRRHRWaveWidget;
-class RESPParam: public Param
+class RESPParam: public Param, public RESPParamInterface
 {
     Q_OBJECT
 public:
@@ -157,6 +158,12 @@ public:
      */
     int getRRMeasureMaxRange();
     int getRRMeasureMinRange();
+
+    /**
+     * @brief getModuleType get the module type
+     * @return
+     */
+    RESPModuleType getModuleType() const;
 
 signals:
     void calcLeadChanged(RESPLead lead);

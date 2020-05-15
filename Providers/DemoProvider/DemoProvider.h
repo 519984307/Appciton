@@ -88,6 +88,8 @@ public:
     virtual void setWaveformZoom(RESPZoom /*zoom*/) { }
     virtual void setRESPCalcLead(RESPLead /*lead*/) { }
     virtual void enableRESPCalc(bool /*enable*/) {}
+    /* reimplement */
+    RESPModuleType getRespModuleType() const { return MODULE_NR;}
 
     // 实现NIBP的接口。
     virtual void setPatientType(int) { }
@@ -106,6 +108,7 @@ public:
     virtual void setWorkMode(CO2WorkMode /*mode*/) {}
     virtual void enterUpgradeMode() {}
     virtual void sendCalibrateData(int) {}
+    virtual CO2ModuleType getCo2ModuleType() const { return MODULE_CO2_NR;}
 
     // 实现AG的接口。
     virtual int getN2OWaveformSample(void) {return 50;}

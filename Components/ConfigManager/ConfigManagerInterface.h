@@ -47,4 +47,16 @@ public:
      * @param type　病人类型
      */
     virtual void loadConfig(PatientType type) = 0;
+
+    /**
+     * @brief getSysConfig get the system config
+     * @return the system config
+     */
+    virtual Config *getSysConfig() = 0;
+
+    /**
+     * @brief machineConfig get the machine config
+     * @return the machine config
+     */
+    virtual Config *getMachineConfig() = 0;
 };

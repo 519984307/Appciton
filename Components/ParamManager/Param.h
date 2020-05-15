@@ -11,8 +11,10 @@
 #pragma once
 #include <QString>
 #include <QStringList>
+#include <QVariantMap>
 #include "ParamInfo.h"
 #include "BaseDefine.h"
+#include "ParamPreProcessor.h"
 #include <QTimer>
 
 #define PARAM_UPDATE_TIMEOUT    (5000)      //  趋势数据刷新超时5sec
@@ -81,11 +83,25 @@ public:
      */
     void stopParamUpdateTimer();
 
+    /**
+     * @brief setPreProcessor set the pre processor
+     * @param processor pointor to the processor or NULL
+     */
+    void setPreProcessor(ParamPreProcessor *processor);
+
+    /**
+     * @brief getTrendVariant get trend data variant
+     * @param id trend id
+     * @return
+     */
+    virtual QVariantMap getTrendVariant(int /*id*/){return QVariantMap();}
+
 protected slots:
     virtual void paramUpdateTimeout() {}
 
 protected:
     QTimer *paramUpdateTimer;
+    ParamPreProcessor *preProcessor;
 
 private slots:
     virtual void onPaletteChanged(ParamID id)

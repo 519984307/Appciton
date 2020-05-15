@@ -21,6 +21,11 @@
 #include <unistd.h>
 #include "ConfigManager.h"
 
+#ifdef SUPPORT_BLM_DATA_UPLOADER
+#include "Components/DataUploader/BLMDataUploader.h"
+#include <QHostAddress>
+#endif
+
 static IThread *_storageThread = NULL;
 static QThread *_networkThread = NULL;
 
@@ -230,6 +235,19 @@ static void _start(void)
 
 #else
     systemManager.loadInitBMode();
+#endif
+
+#ifdef SUPPORT_BLM_DATA_UPLOADER
+    BLMDataUploader *blmUploader = new BLMDataUploader();
+    DataUploaderIface *uploader = blmUploader;
+#if 1
+    /* unsecured mode */
+    uploader->connectToServer(QHostAddress("192.168.10.1"), 6000);
+#else
+    /* secured mode */
+    blmUploader->setSecuredMode(true);
+    uploader->connectToServer(QHostAddress("192.168.10.1"), 6443);
+#endif
 #endif
 }
 

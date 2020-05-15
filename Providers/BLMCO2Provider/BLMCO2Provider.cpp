@@ -913,3 +913,19 @@ bool BLMCO2Provider::isConnectModel()
 {
     return co2ModelConnect;
 }
+
+CO2ModuleType BLMCO2Provider::getCo2ModuleType() const
+{
+    if (getName() == "MASIMO_CO2")
+    {
+        return MODULE_MASIMO_CO2;
+    }
+    else if (getName() == "BLM_CO2")
+    {
+        return MODULE_BLM_CO2;
+    }
+    else
+    {
+        return MODULE_CO2_NR;
+    }
+}

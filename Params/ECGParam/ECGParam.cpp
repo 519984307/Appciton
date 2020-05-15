@@ -142,6 +142,14 @@ void ECGParam::handDemoWaveform(WaveformID id, short data)
 {
     if (NULL != _waveWidget[id])
     {
+        if (preProcessor)
+        {
+            int flag = 0;
+            int dataInt = data;
+            preProcessor->preProcessWave(id, &dataInt, &flag);
+            data = dataInt;
+        }
+
         _waveWidget[id]->addWaveformData(data);
     }
     waveformCache.addData((WaveformID)id, data);
@@ -565,6 +573,11 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
         {
 //            norfalg &= ~ECG_EXTERNAL_DOT_FLAG_BIT;
             norfalg &= ~ECG_EXTERNAL_SOLD_FLAG_BIT;
+        }
+
+        if (preProcessor)
+        {
+            preProcessor->preProcessWave(static_cast<WaveformID>(i), &waveform[i], &norfalg);
         }
 
         if (!(i == WAVE_ECG_aVR && faceType == UFACE_MONITOR_ECG_FULLSCREEN &&

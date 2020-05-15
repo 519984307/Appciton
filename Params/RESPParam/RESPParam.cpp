@@ -38,6 +38,7 @@ public:
           respMonitoring(false),
           connectedProvider(false),
           leadOff(false),
+          isEverLeadOn(false),
           isRRInaccurate(false)
     {
     }
@@ -54,6 +55,7 @@ public:
     bool respMonitoring;
     bool connectedProvider;
     bool leadOff;
+    bool isEverLeadOn;
     bool isRRInaccurate;
 };
 /**************************************************************************************************
@@ -115,6 +117,15 @@ void RESPParam::handDemoWaveform(WaveformID id, short data)
     {
         return;
     }
+
+    if (preProcessor)
+    {
+        int flag = 0;
+        int dataInt = data;
+        preProcessor->preProcessWave(WAVE_RESP, &dataInt, &flag);
+        data = dataInt;
+    }
+
     if (NULL != d_ptr->waveWidget)
     {
         d_ptr->waveWidget->addData(data);
@@ -124,6 +135,7 @@ void RESPParam::handDemoWaveform(WaveformID id, short data)
     {
         d_ptr->oxyCRGRESPWave->addWaveData(data);
     }
+
     waveformCache.addData((WaveformID)id, data);
 }
 
@@ -267,14 +279,21 @@ void RESPParam::setOxyCRGWaveRESPWidget(OxyCRGRESPWaveWidget *waveWidget)
  *************************************************************************************************/
 void RESPParam::addWaveformData(int wave, int flag)
 {
+    if (preProcessor)
+    {
+        preProcessor->preProcessWave(WAVE_RESP, &wave, &flag);
+    }
+
     if (NULL != d_ptr->waveWidget)
     {
         d_ptr->waveWidget->addData(wave, flag);
     }
+
     if (d_ptr->oxyCRGRESPWave)
     {
         d_ptr->oxyCRGRESPWave->addWaveData(wave);
     }
+
     waveformCache.addData(WAVE_RESP, (flag << 16) | (wave & 0xFFFF));
 }
 
@@ -310,6 +329,7 @@ void RESPParam::setLeadoff(bool flag, bool isFirstConnect)
         }
     }
 }
+
 
 /**************************************************************************************************
  * 设置报警。
@@ -584,6 +604,15 @@ int RESPParam::getRRMeasureMaxRange()
 int RESPParam::getRRMeasureMinRange()
 {
     return 0;
+}
+
+RESPModuleType RESPParam::getModuleType() const
+{
+    if (d_ptr->provider)
+    {
+        return d_ptr->provider->getRespModuleType();
+    }
+    return MODULE_BLM_E5;
 }
 
 void RESPParam::onPaletteChanged(ParamID id)

@@ -48,5 +48,11 @@ public:
 
     virtual void sendCalibrateData(int value) = 0;
 
+    /**
+     * @brief getCO2ModuleType get the module type
+     * @return the module type
+     */
+    virtual CO2ModuleType getCo2ModuleType() const = 0;
+
     virtual ~CO2ProviderIFace() { }
 };

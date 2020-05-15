@@ -18,6 +18,7 @@ enum WaveFlagBit
 {
     ECG_INTERNAL_FLAG_BIT = 1,                   // 内部起搏
     ECG_EXTERNAL_SOLD_FLAG_BIT = (1 << 1),       // 外部起搏(实线)
+    WAVE_QRS_FLAG = (1 << 2),                   // qrs flag
     INVALID_WAVE_FALG_BIT = (1 << 14),           // 无效波形
     ECG_WAVE_RATE_250_BIT = (1 << 15),           // 波形采样速率为250/S
     SPO2_IQ_FLAG_BIT = (1 << 7)

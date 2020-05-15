@@ -49,6 +49,8 @@ public:
     // 获取当前的单位。
     virtual UnitType getCurrentUnit(SubParamID id);
 
+    virtual QVariantMap getTrendVariant(int id);
+
     // 设置数据提供对象。
     void setProvider(ECGProviderIFace *provider);
 

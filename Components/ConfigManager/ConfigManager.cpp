@@ -121,6 +121,16 @@ Config &ConfigManager::getCurConfig()
     return *d_ptr->curConfig;
 }
 
+Config *ConfigManager::getSysConfig()
+{
+    return &systemConfig;
+}
+
+Config *ConfigManager::getMachineConfig()
+{
+    return &machineConfig;
+}
+
 QList<ConfigManager::UserDefineConfigInfo> ConfigManager::getUserDefineConfigInfos()
 {
     int count = 0;

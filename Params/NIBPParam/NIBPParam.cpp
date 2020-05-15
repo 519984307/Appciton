@@ -36,6 +36,7 @@
 #include "AlarmSourceManager.h"
 #include "TrendCache.h"
 #include "Framework/TimeDate/TimeDate.h"
+#include "Components/DataUploader/BLMMessageDefine.h"
 
 /**************************************************************************************************
  * 病人类型修改。
@@ -249,6 +250,33 @@ void NIBPParam::showSubParamValue()
 UnitType NIBPParam::getCurrentUnit(SubParamID /*id*/)
 {
     return getUnit();
+}
+
+QVariantMap NIBPParam::getTrendVariant(int id)
+{
+    QVariantMap map;
+    if (id == BLM_TREND_PARAM_NIBP_SYS)
+    {
+        map["ParamID"] = BLM_PARAM_NIBP;
+        map["TrendID"] = BLM_TREND_PARAM_NIBP_SYS;
+        map["Value"] = _sysValue;
+        map["Status"] = _sysValue == InvData() ? 1 : 0;
+    }
+    else if (id == BLM_TREND_PARAM_NIBP_DIA)
+    {
+        map["ParamID"] = BLM_PARAM_NIBP;
+        map["TrendID"] = BLM_TREND_PARAM_NIBP_DIA;
+        map["Value"] = _diaValue;
+        map["Status"] = _diaValue == InvData() ? 1 : 0;
+    }
+    else if (id == BLM_TREND_PARAM_NIBP_MAP)
+    {
+        map["ParamID"] = BLM_PARAM_NIBP;
+        map["TrendID"] = BLM_TREND_PARAM_NIBP_MAP;
+        map["Value"] = _mapVaule;
+        map["Status"] = _mapVaule == InvData() ? 1 : 0;
+    }
+    return map;
 }
 
 /**************************************************************************************************

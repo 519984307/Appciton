@@ -47,6 +47,12 @@ public:
      */
     Config &getCurConfig();
 
+    /* reimplement */
+    Config *getSysConfig();
+
+    /* reimplement */
+    Config *getMachineConfig();
+
     /**
      * @brief getUserConfigInfos get user define config info
      * @return a list of the user define config info

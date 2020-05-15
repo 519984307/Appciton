@@ -177,6 +177,9 @@ public:
     // received package
     void receivePackage();
 
+    /* reimplement */
+    virtual QVariantMap getTrendVariant(int id);
+
 public:
     // 设置/获取平均时间
     void setAverageTime(AverageTime index);

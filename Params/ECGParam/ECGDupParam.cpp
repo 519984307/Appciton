@@ -19,6 +19,7 @@
 #include "IBPParam.h"
 #include "O2ParamInterface.h"
 #include "RESPAlarm.h"
+#include "Components/DataUploader/BLMMessageDefine.h"
 
 /**************************************************************************************************
  * 初始化参数。
@@ -105,6 +106,20 @@ UnitType ECGDupParam::getCurrentUnit(SubParamID id)
     }
 
     return UNIT_BPM;
+}
+
+QVariantMap ECGDupParam::getTrendVariant(int id)
+{
+    QVariantMap map;
+
+    if (id == BLM_TREND_PARAM_HR_PR)
+    {
+        map["ParamID"] = BLM_PARAM_ECG;
+        map["TrendID"] = BLM_TREND_PARAM_HR_PR;
+        map["Value"] = _hrValue;
+        map["Status"] = _hrValue == InvData() ? 1 : 0;
+    }
+    return map;
 }
 
 /**************************************************************************************************

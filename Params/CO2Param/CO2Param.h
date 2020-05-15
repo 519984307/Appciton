@@ -13,6 +13,7 @@
 #include "Param.h"
 #include "CO2Symbol.h"
 #include "Framework/Utility/Unit.h"
+#include "CO2ParamInterface.h"
 #include "AlarmDefine.h"
 
 class CO2TrendWidget;
@@ -20,7 +21,7 @@ class CO2WaveWidget;
 class CO2ProviderIFace;
 class CO2ParamPrivate;
 class OxyCRGCO2WaveWidget;
-class CO2Param: public Param
+class CO2Param: public Param, public Co2ParamInterface
 {
     Q_OBJECT
 
@@ -60,6 +61,8 @@ public:
 
     // 获取当前的单位。
     virtual UnitType getCurrentUnit(SubParamID id);
+
+    virtual QVariantMap getTrendVariant(int id);
 
     // 设置数据提供对象。
     void setProvider(CO2ProviderIFace *provider);
@@ -148,6 +151,9 @@ public:
      */
     void enableCompensation(CO2Compensation gas, bool enable);
     bool getCompensationEnabled(CO2Compensation gas);
+
+    /* reimplement */
+    CO2ModuleType getCo2ModuleType() const;
 
 signals:
     void updateZeroSta(bool sta);

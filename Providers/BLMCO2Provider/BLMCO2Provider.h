@@ -191,6 +191,9 @@ public:     // CO2ProviderIFace 的接口。
      */
     bool isConnectModel();
 
+    /* reimplement */
+    CO2ModuleType getCo2ModuleType() const;
+
 protected:
     virtual void disconnected(void);
     virtual void reconnected(void);
