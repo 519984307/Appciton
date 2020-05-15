@@ -1,3 +1,6 @@
+variables:
+    GIT_SUBMODULE_STRATEGY: recursive
+
 build_pc:
    stage: build
    script: ./Scripts/build_PC.sh
