@@ -1330,6 +1330,7 @@ HeightUnit,身高单位,Height Unit
 WeightUnit,体重单位,Weight Unit
 STUnit,ST段单位,ST Unit
 NIBPUnit,NIBP单位,NIBP Unit
+IBPUnit,IBP单位,IBP Unit
 TemperatureUnit,温度单位,Temperature Unit
 CVPUnit,中心静脉压单位,CVP Unit
 ICPUnit,颅内压单位,ICP Unit

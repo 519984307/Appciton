@@ -197,6 +197,18 @@ public:
     // 设置标名。
     void setEntitle(IBPLabel entitle, IBPChannel chn);
 
+    /**
+     * @brief getUnit
+     * @return
+     */
+    UnitType getUnit(void);
+
+    /**
+     * @brief setUnit  set unit
+     * @param type unit type
+     */
+    void setUnit(UnitType type);
+
     // get pressure name
     IBPLabel getEntitle(IBPChannel chn) const;
     IBPLabel getEntitle(IBPLimitAlarmType alarmType) const;

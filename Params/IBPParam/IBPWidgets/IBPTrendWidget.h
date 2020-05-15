@@ -16,6 +16,7 @@
 #include <QResizeEvent>
 #include <QStackedWidget>
 #include "Debug.h"
+#include "Framework/Utility/Unit.h"
 class IBPTrendWidget: public TrendWidget
 {
     Q_OBJECT
@@ -41,6 +42,12 @@ public:
 
     // 显示参数值
     void showValue(void);
+
+    /**
+     * @brief updateUnit  update IBP trend widget unit
+     * @param unit  unit type
+     */
+    void updateUnit(UnitType unit);
 
     // 构造与析构。
     IBPTrendWidget(const QString &trendName, const IBPLabel &entitle);

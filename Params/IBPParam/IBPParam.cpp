@@ -19,6 +19,7 @@
 #include "ECGDupParam.h"
 #include "IBPAlarm.h"
 #include "AlarmSourceManager.h"
+#include "IConfig.h"
 #include "Framework/TimeDate/TimeDate.h"
 
 IBPParam *IBPParam::_selfObj = NULL;
@@ -256,7 +257,7 @@ UnitType IBPParam::getCurrentUnit(SubParamID id)
     }
     else
     {
-        return UNIT_MMHG;
+        return getUnit();
     }
 }
 
@@ -965,6 +966,27 @@ void IBPParam::setEntitle(IBPLabel entitle, IBPChannel chn)
                            _chnData[IBP_CHN_2].paramData.pressureName,
                            measureType[IBP_CHN_1],
                            measureType[IBP_CHN_2]);
+}
+
+UnitType IBPParam::getUnit()
+{
+    int unit = UNIT_MMHG;
+    systemConfig.getNumValue("Unit|IBPUnit", unit);
+    return (UnitType)unit;
+}
+
+void IBPParam::setUnit(UnitType type)
+{
+    for (int i = 0; i < IBP_CHN_NR; i++)
+    {
+        if (_chnData[i].trendWidget)
+        {
+            _chnData[i].trendWidget->updateUnit(type);
+            _chnData[i].trendWidget->updateLimit();
+            IBPParamInfo data = _chnData[i].paramData;
+            _chnData[i].trendWidget->setData(data.sys, data.dia, data.mean);
+        }
+    }
 }
 
 IBPLabel IBPParam::getEntitle(IBPChannel chn) const

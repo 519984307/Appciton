@@ -41,13 +41,11 @@ void IBPTrendWidget::setData(int16_t sys, int16_t dia, int16_t map)
         }
         else
         {
-            int16_t calSys = sys;
-            int16_t calDia = dia;
-            int16_t calMap = map;
             setShowStacked(1);
-            _sysString = QString::number(calSys);
-            _diaString = QString::number(calDia);
-            _mapString = "(" + QString::number(calMap) + ")";
+            UnitType unit = ibpParam.getUnit();
+            _sysString = Unit::convert(unit, UNIT_MMHG, sys);
+            _diaString = Unit::convert(unit, UNIT_MMHG, dia);
+            _mapString = "(" + Unit::convert(unit, UNIT_MMHG, map) + ")";
         }
     }
     else
@@ -63,9 +61,9 @@ void IBPTrendWidget::setData(int16_t sys, int16_t dia, int16_t map)
         }
         else
         {
-            int16_t calMap = map;
             setShowStacked(2);
-            _veinString = QString::number(calMap);
+            UnitType unit = ibpParam.getUnit();
+            _veinString = Unit::convert(unit, UNIT_MMHG, map);
             _mapString = _veinString;
         }
     }
@@ -256,6 +254,11 @@ void IBPTrendWidget::showValue()
     {
         showNormalStatus(_stackedwidget->currentWidget()->layout(), psrc);
     }
+}
+
+void IBPTrendWidget::updateUnit(UnitType unit)
+{
+    setUnit(Unit::getSymbol(unit));
 }
 
 /**************************************************************************************************

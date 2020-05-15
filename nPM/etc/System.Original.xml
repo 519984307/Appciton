@@ -75,8 +75,7 @@
         <STUnit>11</STUnit>
         <PressureUnit>5</PressureUnit>
         <TemperatureUnit>1</TemperatureUnit>
-        <CVPUnit>5</CVPUnit>
-        <ICPUnit>5</ICPUnit>
+        <IBPUnit>5</IBPUnit>
         <CO2Unit>5</CO2Unit>
     </Unit>
     <SelectStarterLogo>2</SelectStarterLogo>
