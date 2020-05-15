@@ -21,4 +21,6 @@ public:
     MOCK_METHOD1(setPacermaker, void(ECGPaceMode));
     MOCK_METHOD0(getPacermaker, ECGPaceMode(void));
     MOCK_METHOD0(updatePacermaker, void(void));
+    MOCK_CONST_METHOD0(getLeadMode, ECGLeadMode(void));
+    MOCK_METHOD0(reset, void(void));
 };

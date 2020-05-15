@@ -19,4 +19,6 @@ public:
     MOCK_METHOD1(getConfig, Config *(PatientType));
     MOCK_METHOD0(getCurConfig, Config&(void));
     MOCK_METHOD1(loadConfig, void(PatientType));
+    MOCK_METHOD0(getSysConfig, Config*(void));
+    MOCK_METHOD0(getMachineConfig, Config*(void));
 };
