@@ -294,8 +294,27 @@ void TrendWidget::setLimit(int up, int down, int scale)
     }
     else
     {
-        upLimit->setText(QString::number(1.0 * up / scale, 'f', 1));
-        downLimit->setText(QString::number(1.0 * down / scale, 'f', 1));
+        // up limit
+        int integer = up / scale;
+        int decimal = qAbs(up % scale);
+        QString upLimitText = QString::number(integer) + "." + QString::number(decimal);
+        // dispaly negative limit
+        if (up < 0 && integer == 0)
+        {
+            upLimitText = QString("-") + upLimitText;
+        }
+        upLimit->setText(upLimitText);
+
+        // down limit
+        integer = down / scale;
+        decimal = qAbs(down % scale);
+        QString downLimitText = QString::number(integer) + "." + QString::number(decimal);
+        // dispaly negative limit
+        if (down < 0 && integer == 0)
+        {
+            downLimitText = QString("-") + downLimitText;
+        }
+        downLimit->setText(downLimitText);
     }
 }
 
