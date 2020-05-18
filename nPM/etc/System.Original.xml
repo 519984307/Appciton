@@ -316,8 +316,8 @@
                 <Scale>1</Scale>
             </mmHg>
             <kPa>
-                <Low Min="53" Max="352">100</Low>
-                <High Min="54" Max="353">293</High>
+                <Low Min="-67" Max="397">120</Low>
+                <High Min="-64" Max="400">213</High>
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
@@ -330,8 +330,8 @@
                 <Scale>1</Scale>
             </mmHg>
             <kPa>
-                <Low Min="13" Max="272">47</Low>
-                <High Min="14" Max="273">147</High>
+                <Low Min="-67" Max="397">67</Low>
+                <High Min="-64" Max="400">120</High>
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
@@ -344,8 +344,8 @@
                 <Scale>1</Scale>
             </mmHg>
             <kPa>
-                <Low Min="27" Max="299">67</Low>
-                <High Min="28" Max="300">160</High>
+                <Low Min="-67" Max="397">93</Low>
+                <High Min="-64" Max="400">146</High>
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
@@ -366,22 +366,22 @@
                 <Scale>1</Scale>
             </mmHg>
             <kPa>
-                <Low Min="53" Max="352">100</Low>
-                <High Min="54" Max="353">293</High>
+                <Low Min="-67" Max="397">13</Low>
+                <High Min="-64" Max="400">47</High>
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
             </PA_SYS>
             <PA_DIA Enable="1" Prio="2" Auto="1">
             <mmHg>
-                <Low Min="10" Max="204">0</Low>
-                <High Min="11" Max="205">16</High>
+                <Low Min="-50" Max="298">0</Low>
+                <High Min="-48" Max="300">16</High>
                 <Step>1</Step>
                 <Scale>1</Scale>
             </mmHg>
             <kPa>
-                <Low Min="13" Max="272">47</Low>
-                <High Min="14" Max="273">147</High>
+                <Low Min="-67" Max="397">0</Low>
+                <High Min="-64" Max="400">21</High>
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
@@ -394,8 +394,8 @@
                 <Scale>1</Scale>
             </mmHg>
             <kPa>
-                <Low Min="27" Max="299">67</Low>
-                <High Min="28" Max="300">160</High>
+                <Low Min="-67" Max="397">0</Low>
+                <High Min="-64" Max="400">27</High>
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
@@ -416,8 +416,8 @@
                 <Scale>1</Scale>
             </mmHg>
             <kPa>
-                <Low Min="27" Max="299">67</Low>
-                <High Min="28" Max="300">160</High>
+                <Low Min="-67" Max="397">0</Low>
+                <High Min="-64" Max="400">13</High>
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
@@ -438,8 +438,8 @@
                 <Scale>1</Scale>
             </mmHg>
             <kPa>
-                <Low Min="27" Max="299">67</Low>
-                <High Min="28" Max="300">160</High>
+                <Low Min="-67" Max="397">0</Low>
+                <High Min="-64" Max="400">13</High>
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
@@ -460,16 +460,16 @@
                 <Scale>1</Scale>
             </mmHg>
             <kPa>
-                <Low Min="27" Max="299">67</Low>
-                <High Min="28" Max="300">160</High>
+                <Low Min="-67" Max="397">0</Low>
+                <High Min="-64" Max="400">13</High>
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
             </RAP_MAP>
             <RAP_PR Enable="1" Prio="2" Auto="1">
             <bpm>
-                <Low Min="-50" Max="298">0</Low>
-                <High Min="-48" Max="300">10</High>
+                <Low Min="-50" Max="298">50</Low>
+                <High Min="-48" Max="300">121</High>
                 <Step>1</Step>
                 <Scale>1</Scale>
             </bpm>
@@ -482,8 +482,8 @@
                 <Scale>1</Scale>
             </mmHg>
             <kPa>
-                <Low Min="27" Max="299">67</Low>
-                <High Min="28" Max="300">160</High>
+                <Low Min="-67" Max="397">0</Low>
+                <High Min="-64" Max="400">13</High>
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
@@ -499,13 +499,13 @@
             <AUXP1_SYS Enable="1" Prio="2" Auto="1">
             <mmHg>
                 <Low Min="-50" Max="298">90</Low>
-                <High Min="-48" Max="300">160</High>+
+                <High Min="-48" Max="300">160</High>
                 <Step>1</Step>
                 <Scale>1</Scale>
             </mmHg>
             <kPa>
-                <Low Min="53" Max="352">100</Low>
-                <High Min="54" Max="353">293</High>
+                <Low Min="-67" Max="397">120</Low>
+                <High Min="-64" Max="400">213</High>
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
@@ -518,8 +518,8 @@
                 <Scale>1</Scale>
             </mmHg>
             <kPa>
-                <Low Min="13" Max="272">47</Low>
-                <High Min="14" Max="273">147</High>
+                <Low Min="-67" Max="397">67</Low>
+                <High Min="-64" Max="400">120</High>
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
@@ -532,8 +532,8 @@
                 <Scale>1</Scale>
             </mmHg>
             <kPa>
-                <Low Min="27" Max="299">67</Low>
-                <High Min="28" Max="300">160</High>
+                <Low Min="-67" Max="397">97</Low>
+                <High Min="-64" Max="400">147</High>
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
@@ -554,8 +554,8 @@
                 <Scale>1</Scale>
             </mmHg>
             <kPa>
-                <Low Min="53" Max="352">100</Low>
-                <High Min="54" Max="353">293</High>
+                <Low Min="-67" Max="397">120</Low>
+                <High Min="-64" Max="400">213</High>
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
@@ -568,8 +568,8 @@
                 <Scale>1</Scale>
             </mmHg>
             <kPa>
-                <Low Min="13" Max="272">47</Low>
-                <High Min="14" Max="273">147</High>
+                <Low Min="-67" Max="397">67</Low>
+                <High Min="-64" Max="400">120</High>
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
@@ -582,8 +582,8 @@
                 <Scale>1</Scale>
             </mmHg>
             <kPa>
-                <Low Min="27" Max="299">67</Low>
-                <High Min="28" Max="300">160</High>
+                <Low Min="-67" Max="397">93</Low>
+                <High Min="-64" Max="400">147</High>
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
