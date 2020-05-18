@@ -273,7 +273,7 @@ IBPTrendWidget::IBPTrendWidget(const QString &trendName, const IBPLabel &entitle
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_IBP));
     setPalette(palette);
     setName(IBPSymbol::convert(entitle));
-    setUnit("mmHg");
+    updateUnit(ibpParam.getUnit());
 
     // 设置上下限
     updateLimit();
