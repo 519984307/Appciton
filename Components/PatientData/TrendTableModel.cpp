@@ -1056,6 +1056,32 @@ void TrendTableModelPrivate::loadTrendData()
                 }
             }
             break;
+            case SUB_PARAM_CVP_MAP:
+            case SUB_PARAM_LAP_MAP:
+            case SUB_PARAM_RAP_MAP:
+            case SUB_PARAM_ICP_MAP:
+            {
+                ParamID paramId = paramInfo.getParamID(id);
+                UnitType type = paramManager.getSubParamUnit(paramId, id);
+                int mapData = pack->subparamValue.value(id, InvData());
+                QString mapStr = QString::number(mapData);
+                // CAP,LAP,RAP,ICP parameter data unit conversion
+                if (type != UNIT_MMHG && mapData != InvData())
+                {
+                    mapStr = Unit::convert(type, UNIT_MMHG, mapData, co2Param.getBaro());
+                }
+
+                dContent.dataStr = mapData == InvData() ? InvStr() : mapStr;
+                // 获得报警报警和报警最高等级
+                if (pack->subparamAlarm.value(id, false)
+                        && mapData != InvData())
+                {
+                    alarmed = true;
+                    prio = prio > alarmConfig.getLimitAlarmPriority(id) ?
+                                prio : alarmConfig.getLimitAlarmPriority(id);
+                }
+            }
+            break;
             case SUB_PARAM_ETCO2:
             case SUB_PARAM_ETN2O:
             case SUB_PARAM_ETAA1:

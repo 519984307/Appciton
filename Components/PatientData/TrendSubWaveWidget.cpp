@@ -584,27 +584,35 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
             barPainter.fillRect(dataRect, Qt::black);
         }
         TrendDataType value = _trendInfo.trendData.at(_cursorPosIndex).data;
-        if (value != InvData())
+        QString dataStr = QString::number(value);
+        // CAP,LAP,RAP,ICP parameter data unit conversion
+        switch (_id)
         {
-            QString valueStr;
-            if (_id == SUB_PARAM_PI)
-            {
-                valueStr = QString::number(((value * 1.0) / 100), 'f', 2);
-            }
-            else if (_id == SUB_PARAM_SPHB || _id == SUB_PARAM_SPMET)
-            {
-                valueStr = QString::number(((value * 1.0) / 10), 'f', 1);
-            }
-            else
-            {
-                valueStr = QString::number(value);
-            }
-            barPainter.drawText(dataRect, valueStr, option);
-        }
-        else
+        case SUB_PARAM_PI:
+            dataStr = QString::number(((value * 1.0) / 100), 'f', 2);
+            break;
+        case SUB_PARAM_SPHB:
+        case SUB_PARAM_SPMET:
+            dataStr = QString::number(((value * 1.0) / 10), 'f', 1);
+            break;
+        case SUB_PARAM_CVP_MAP:
+        case SUB_PARAM_LAP_MAP:
+        case SUB_PARAM_RAP_MAP:
+        case SUB_PARAM_ICP_MAP:
         {
-            barPainter.drawText(dataRect, "---", option);
+            ParamID paramId = paramInfo.getParamID(_id);
+            UnitType type = paramManager.getSubParamUnit(paramId, _id);
+            if (type != UNIT_MMHG && value != InvData())
+            {
+                dataStr = Unit::convert(type, UNIT_MMHG, value, co2Param.getBaro());
+            }
         }
+            break;
+        default:
+            break;
+        }
+        dataStr = value == InvData() ? InvStr() : dataStr;
+        barPainter.drawText(dataRect, dataStr, option);
     }
     else if (_type == TREND_GRAPH_TYPE_NIBP || _type == TREND_GRAPH_TYPE_ART_IBP)
     {
