@@ -20,7 +20,7 @@ public:
     {
         static const char *symbol[IBP_LABEL_NR] =
         {
-            "ART",  "PA", "CVP", "LAP", "RAP", "ICP", "AUXP1", "AUXP2"
+            "ART",  "PA", "CVP", "LAP", "RAP", "ICP", "P1", "P2"
         };
 
         return symbol[index];
