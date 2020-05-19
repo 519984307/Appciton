@@ -84,8 +84,6 @@ void IBPWaveWidget::setLimit(int low, int high)
 void IBPWaveWidget::setEntitle(IBPLabel entitle)
 {
     _name->setText(IBPSymbol::convert(entitle));
-    QString zoomStr = QString::number(ibpParam.getIBPScale(entitle).low) + "-" +
-                      QString::number(ibpParam.getIBPScale(entitle).high) + "mmHg";
     _entitle = entitle;
     setLimit(ibpParam.getIBPScale(getEntitle()).low, ibpParam.getIBPScale(getEntitle()).high);
 }
