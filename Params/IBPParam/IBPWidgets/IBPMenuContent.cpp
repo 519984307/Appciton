@@ -28,11 +28,13 @@
 #include "AlarmLimitWindow.h"
 #include "WindowManager.h"
 #include "IBPZeroWindow.h"
+#include <QDebug>
 
 #define AUTO_SCALE_UPDATE_TIME          (2 * 1000)
 #define ZERO_INTERVAL_TIME              (100)
 #define TIMEOUT_WAIT_NUMBER             (5000 / ZERO_INTERVAL_TIME)
 #define PRINT_WAVE_NUM (3)
+#define RULER_STEP                      (5)
 
 class IBPMenuContentPrivate
 {
@@ -65,6 +67,13 @@ public:
      * @brief updatePrintWaveIds
      */
     void updatePrintWaveIds();
+
+    /**
+     * @brief handleRulerCboChange  handle ruler combo box index change
+     * @param rulerLimit   ruler limit
+     * @param chn   IBP Channel id
+     */
+    void handleRulerCboChange(IBPRulerLimit rulerLimit, IBPChannel chn);
 
     IBPMenuContent *const q_ptr;
     QMap<MenuItem, ComboBox *> combos;
@@ -194,6 +203,50 @@ void IBPMenuContentPrivate::updatePrintWaveIds()
     }
 }
 
+void IBPMenuContentPrivate::handleRulerCboChange(IBPRulerLimit rulerLimit, IBPChannel chn)
+{
+    if (chn == IBP_CHN_NR)
+    {
+        qWarning() << Q_FUNC_INFO << "IBP channel Id is error!";
+        return;
+    }
+
+    SpinBox *upScale;     // up scale
+    SpinBox *downScale;   // down scale
+    IBPLabel curIbpLabel;
+    if (chn == IBP_CHN_1)
+    {
+        upScale = spinBoxs[ITEM_SBO_UP_SCALE_1];
+        downScale = spinBoxs[ITEM_SBO_DOWN_SCALE_1];
+        curIbpLabel = ibp1;
+    }
+    else
+    {
+        upScale = spinBoxs[ITEM_SBO_UP_SCALE_2];
+        downScale = spinBoxs[ITEM_SBO_DOWN_SCALE_2];
+        curIbpLabel = ibp2;
+    }
+
+    IBPScaleInfo scale = ibpParam.getScaleInfo(chn);
+    // setect manual ruler limit, get the scale info corresponding to IBP label
+    if (rulerLimit == IBP_RULER_LIMIT_MANUAL)
+    {
+        scale = ibpParam.getIBPScale(curIbpLabel);
+    }
+
+    // set upper sacle info
+    upScale->blockSignals(true);
+    upScale->setRange(scale.low + RULER_STEP, scale.high);
+    upScale->setValue(scale.high);
+    upScale->blockSignals(false);
+
+    // set lower sacle info
+    downScale->blockSignals(true);
+    downScale->setRange(scale.low, scale.high - RULER_STEP);
+    downScale->setValue(scale.low);
+    downScale->blockSignals(false);
+}
+
 IBPMenuContent::IBPMenuContent()
     : MenuContent(trs("IBPMenu"), trs("IBPMenuDesc")),
       d_ptr(new IBPMenuContentPrivate(this))
@@ -277,7 +330,7 @@ void IBPMenuContent::layoutExec()
     label = new QLabel(trs("UpperScale"));
     gLayout->addWidget(label, 2, 0);
     spinBox = new SpinBox();
-    spinBox->setStep(5);
+    spinBox->setStep(RULER_STEP);
     spinBox->setArrow(false);
     itemID = IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_1;
     spinBox->setProperty("Item", qVariantFromValue(itemID));
@@ -289,7 +342,7 @@ void IBPMenuContent::layoutExec()
     label = new QLabel(trs("LowerScale"));
     gLayout->addWidget(label, 3, 0);
     spinBox = new SpinBox();
-    spinBox->setStep(5);
+    spinBox->setStep(RULER_STEP);
     spinBox->setArrow(false);
     itemID = IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_1;
     spinBox->setProperty("Item", qVariantFromValue(itemID));
@@ -354,7 +407,7 @@ void IBPMenuContent::layoutExec()
     label = new QLabel(trs("UpperScale"));
     gLayout->addWidget(label, 2, 0);
     spinBox = new SpinBox();
-    spinBox->setStep(5);
+    spinBox->setStep(RULER_STEP);
     spinBox->setArrow(false);
     itemID = IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_2;
     spinBox->setProperty("Item", qVariantFromValue(itemID));
@@ -366,7 +419,7 @@ void IBPMenuContent::layoutExec()
     label = new QLabel(trs("LowerScale"));
     gLayout->addWidget(label, 3, 0);
     spinBox = new SpinBox();
-    spinBox->setStep(5);
+    spinBox->setStep(RULER_STEP);
     spinBox->setArrow(false);
     itemID = IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2;
     spinBox->setProperty("Item", qVariantFromValue(itemID));
@@ -489,24 +542,44 @@ void IBPMenuContent::onSpinBoxValueChanged(int value, int scale)
         {
             int low = d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_1]->getValue();
             ibpParam.setRulerLimit(low, value * scale, IBP_CHN_1);
+
+            // change down scale value range
+            int min = 0;
+            d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_1]->getRange(&min, 0);
+            d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_1]->setRange(min, value * scale - RULER_STEP);
             break;
         }
         case IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_1:
         {
             int high = d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_1]->getValue();
             ibpParam.setRulerLimit(value * scale, high, IBP_CHN_1);
+
+            // change up scale value range
+            int max = 0;
+            d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_1]->getRange(0, &max);
+            d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_1]->setRange(value * scale + RULER_STEP, max);
             break;
         }
         case IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_2:
         {
             int low = d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2]->getValue();
             ibpParam.setRulerLimit(low, value * scale, IBP_CHN_2);
+
+            // change down scale value range
+            int min = 0;
+            d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2]->getRange(&min, 0);
+            d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2]->setRange(min, value * scale - RULER_STEP);
             break;
         }
         case IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2:
         {
             int high = d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_2]->getValue();
             ibpParam.setRulerLimit(value * scale, high, IBP_CHN_2);
+
+            // change up scale value range
+            int max = 0;
+            d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_2]->getRange(0, &max);
+            d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_2]->setRange(value * scale + RULER_STEP, max);
             break;
         }
         default:
@@ -587,9 +660,8 @@ void IBPMenuContent::onComboBoxIndexChanged(int index)
                     d_ptr->autoTimerId = -1;
                 }
             }
-            IBPScaleInfo scale = ibpParam.getScaleInfo(IBP_CHN_1);
-            d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_1]->setValue(scale.high);
-            d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_1]->setValue(scale.low);
+
+            d_ptr->handleRulerCboChange(d_ptr->rulerLimit1, IBP_CHN_1);
             break;
         }
         case IBPMenuContentPrivate::ITEM_CBO_RULER_2:
@@ -621,9 +693,8 @@ void IBPMenuContent::onComboBoxIndexChanged(int index)
                     d_ptr->autoTimerId = -1;
                 }
             }
-            IBPScaleInfo scale = ibpParam.getScaleInfo(IBP_CHN_2);
-            d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_2]->setValue(scale.high);
-            d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2]->setValue(scale.low);
+
+            d_ptr->handleRulerCboChange(d_ptr->rulerLimit2, IBP_CHN_2);
             break;
         }
         case IBPMenuContentPrivate::ITEM_CBO_SWEEP_SPEED:
