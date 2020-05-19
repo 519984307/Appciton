@@ -655,7 +655,8 @@ void IBPMenuContent::onZeroButtonRelease()
 
 void IBPMenuContent::onAlarmBtnReleased()
 {
-    QString subParamName = paramInfo.getSubParamName(SUB_PARAM_ART_SYS, true);
+    SubParamID paramId = ibpParam.getSubParamID(d_ptr->ibp1);
+    QString subParamName = paramInfo.getSubParamName(paramId, true);
     AlarmLimitWindow w(subParamName);
     windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
 }
