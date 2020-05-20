@@ -33,8 +33,10 @@
 #define AUTO_SCALE_UPDATE_TIME          (2 * 1000)
 #define ZERO_INTERVAL_TIME              (100)
 #define TIMEOUT_WAIT_NUMBER             (5000 / ZERO_INTERVAL_TIME)
-#define PRINT_WAVE_NUM (3)
+#define PRINT_WAVE_NUM                  (3)
 #define RULER_STEP                      (5)
+#define IBP_RULER_MIN_VALUE             (-50)
+#define IBP_RULER_MAX_VALUE             (300)
 
 class IBPMenuContentPrivate
 {
@@ -236,13 +238,13 @@ void IBPMenuContentPrivate::handleRulerCboChange(IBPRulerLimit rulerLimit, IBPCh
 
     // set upper sacle info
     upScale->blockSignals(true);
-    upScale->setRange(scale.low + RULER_STEP, scale.high);
+    upScale->setRange(scale.low + RULER_STEP, IBP_RULER_MAX_VALUE);
     upScale->setValue(scale.high);
     upScale->blockSignals(false);
 
-    // set lower sacle info
+    // set down sacle info
     downScale->blockSignals(true);
-    downScale->setRange(scale.low, scale.high - RULER_STEP);
+    downScale->setRange(IBP_RULER_MIN_VALUE, scale.high - RULER_STEP);
     downScale->setValue(scale.low);
     downScale->blockSignals(false);
 }
@@ -544,9 +546,8 @@ void IBPMenuContent::onSpinBoxValueChanged(int value, int scale)
             ibpParam.setRulerLimit(low, value * scale, IBP_CHN_1);
 
             // change down scale value range
-            int min = 0;
-            d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_1]->getRange(&min, 0);
-            d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_1]->setRange(min, value * scale - RULER_STEP);
+            d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_1]->setRange(IBP_RULER_MIN_VALUE,
+                                                                                    value * scale - RULER_STEP);
             break;
         }
         case IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_1:
@@ -555,9 +556,8 @@ void IBPMenuContent::onSpinBoxValueChanged(int value, int scale)
             ibpParam.setRulerLimit(value * scale, high, IBP_CHN_1);
 
             // change up scale value range
-            int max = 0;
-            d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_1]->getRange(0, &max);
-            d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_1]->setRange(value * scale + RULER_STEP, max);
+            d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_1]->setRange(value * scale + RULER_STEP,
+                                                                                  IBP_RULER_MAX_VALUE);
             break;
         }
         case IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_2:
@@ -566,9 +566,8 @@ void IBPMenuContent::onSpinBoxValueChanged(int value, int scale)
             ibpParam.setRulerLimit(low, value * scale, IBP_CHN_2);
 
             // change down scale value range
-            int min = 0;
-            d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2]->getRange(&min, 0);
-            d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2]->setRange(min, value * scale - RULER_STEP);
+            d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2]->setRange(IBP_RULER_MIN_VALUE,
+                                                                                    value * scale - RULER_STEP);
             break;
         }
         case IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2:
@@ -577,9 +576,8 @@ void IBPMenuContent::onSpinBoxValueChanged(int value, int scale)
             ibpParam.setRulerLimit(value * scale, high, IBP_CHN_2);
 
             // change up scale value range
-            int max = 0;
-            d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_2]->getRange(0, &max);
-            d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_2]->setRange(value * scale + RULER_STEP, max);
+            d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_2]->setRange(value * scale + RULER_STEP,
+                                                                                  IBP_RULER_MAX_VALUE);
             break;
         }
         default:
