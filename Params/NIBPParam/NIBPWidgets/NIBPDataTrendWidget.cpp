@@ -146,11 +146,8 @@ void NIBPDataTrendWidget::showValue(void)
         _table->item(i, 0)->setTextColor(textColor);
         QLabel *l = qobject_cast<QLabel *>(_table->cellWidget(i, 1));
         l->setText("");
-        if (moduleStr != "BLM_N5")
-        {
-            l = qobject_cast<QLabel *>(_table->cellWidget(i, 2));
-            l->setText("");
-        }
+        l = qobject_cast<QLabel *>(_table->cellWidget(i, 2));
+        l->setText("");
     }
 
     for (int i = 0; i < _rowNR; i++)
@@ -260,16 +257,13 @@ void NIBPDataTrendWidget::showValue(void)
             }
 
             // PR
-            if (moduleStr != "BLM_N5")
+            if (!providerBuff.prAlarm)
             {
-                if (!providerBuff.prAlarm)
-                {
-                    valStr = color.arg(textColor.red())
-                            .arg(textColor.green())
-                            .arg(textColor.blue())
-                            .arg(QString::number(providerBuff.prvalue));
-                    prStr = prStr.arg(valStr);
-                }
+                valStr = color.arg(textColor.red())
+                         .arg(textColor.green())
+                         .arg(textColor.blue())
+                         .arg(QString::number(providerBuff.prvalue));
+                 prStr = prStr.arg(valStr);
             }
             textStr = color.arg(textColor.red()).arg(textColor.green()).arg(textColor.blue()).arg(textStr);
         }
@@ -277,13 +271,11 @@ void NIBPDataTrendWidget::showValue(void)
         l->setAlignment(Qt::AlignHCenter);
         l->setText(textStr);
         l->setTextInteractionFlags(Qt::NoTextInteraction);
-        if (moduleStr != "BLM_N5")
-        {
-            QLabel *prLbl = qobject_cast<QLabel *>(_table->cellWidget(i, 2));
-            prLbl->setAlignment(Qt::AlignHCenter);
-            prLbl->setText(prStr);
-            prLbl->setTextInteractionFlags(Qt::NoTextInteraction);
-        }
+        QLabel *prLbl = qobject_cast<QLabel *>(_table->cellWidget(i, 2));
+        prLbl->setAlignment(Qt::AlignHCenter);
+        prLbl->setText(prStr);
+        prLbl->setTextInteractionFlags(Qt::NoTextInteraction);
+
         if (t != _nibpNrendCacheMap.begin())
         {
             t = t - 1;
@@ -305,17 +297,10 @@ void NIBPDataTrendWidget::resizeEvent(QResizeEvent *e)
     _table->setRowCount(_rowNR);
     int eachColumnWidth = _table->width() / columnNR;
 
-    if (moduleStr != "BLM_N5")
-    {
-        _table->setColumnWidth(0, eachColumnWidth);
-        _table->setColumnWidth(1, eachColumnWidth *8/5);
-        _table->setColumnWidth(2, eachColumnWidth *2/5);
-    }
-    else
-    {
-        _table->setColumnWidth(0, eachColumnWidth);
-        _table->setColumnWidth(1, eachColumnWidth);
-    }
+    _table->setColumnWidth(0, eachColumnWidth);
+    _table->setColumnWidth(1, eachColumnWidth *8/5);
+    _table->setColumnWidth(2, eachColumnWidth *2/5);
+
     for (int i = 0; i < _rowNR; i++)
     {
         QColor textColor = colorManager.getColor(paramInfo.getParamName(PARAM_NIBP));
@@ -329,12 +314,9 @@ void NIBPDataTrendWidget::resizeEvent(QResizeEvent *e)
         _table->setCellWidget(i, 1, l);
         l->setText("");
 
-        if (moduleStr != "BLM_N5")
-        {
-            QLabel *prLbl = new QLabel();
-            _table->setCellWidget(i, 2, prLbl);
-            prLbl->setText("");
-        }
+        QLabel *prLbl = new QLabel();
+        _table->setCellWidget(i, 2, prLbl);
+        prLbl->setText("");
     }
 }
 
@@ -495,14 +477,6 @@ NIBPDataTrendWidget::NIBPDataTrendWidget()
       columnNR(3)
 {
     machineConfig.getStrValue("NIBP", moduleStr);
-    if (moduleStr != "BLM_N5")
-    {
-        columnNR = 3;
-    }
-    else
-    {
-        columnNR = 2;
-    }
     _nibpNrendCacheMap.clear();
     // 设置标题栏的相关信息。
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
