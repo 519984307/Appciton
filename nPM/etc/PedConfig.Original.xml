@@ -102,7 +102,7 @@
         <RulerLimit2>10</RulerLimit2>
         <SweepSpeed>2</SweepSpeed>
         <FilterMode>0</FilterMode>
-        <Sensitivity>2</Sensitivity>
+        <Sensitivity>1</Sensitivity>
         <Calibration>84</Calibration>
     </IBP>
     <NIBP>
