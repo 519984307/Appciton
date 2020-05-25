@@ -383,8 +383,8 @@ void IBPMenuContent::layoutExec()
     comboBox->addItems(QStringList()
                        << IBPSymbol::convert(IBP_SWEEP_SPEED_62_5)
                        << IBPSymbol::convert(IBP_SWEEP_SPEED_125)
-                       << IBPSymbol::convert(IBP_SWEEP_SPEED_250)
-                       << IBPSymbol::convert(IBP_SWEEP_SPEED_500));
+                       << IBPSymbol::convert(IBP_SWEEP_SPEED_250));
+//                       << IBPSymbol::convert(IBP_SWEEP_SPEED_500)
     itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_SWEEP_SPEED);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));

@@ -150,8 +150,8 @@ void ConfigEditIBPMenuContent::layoutExec()
     comboBox->addItems(QStringList()
                        << trs(IBPSymbol::convert(IBP_SWEEP_SPEED_62_5))
                        << trs(IBPSymbol::convert(IBP_SWEEP_SPEED_125))
-                       << trs(IBPSymbol::convert(IBP_SWEEP_SPEED_250))
-                       << trs(IBPSymbol::convert(IBP_SWEEP_SPEED_500)));
+                       << trs(IBPSymbol::convert(IBP_SWEEP_SPEED_250)));
+//                       << trs(IBPSymbol::convert(IBP_SWEEP_SPEED_500))
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditIBPMenuContentPrivate
                          ::ITEM_CBO_SWEEP_SPEED, comboBox);

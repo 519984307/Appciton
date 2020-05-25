@@ -100,7 +100,7 @@
         <ChannelPressureEntitle2>5</ChannelPressureEntitle2>
         <RulerLimit1>10</RulerLimit1>
         <RulerLimit2>10</RulerLimit2>
-        <SweepSpeed>1</SweepSpeed>
+        <SweepSpeed>2</SweepSpeed>
         <FilterMode>0</FilterMode>
         <Sensitivity>2</Sensitivity>
         <Calibration>84</Calibration>
