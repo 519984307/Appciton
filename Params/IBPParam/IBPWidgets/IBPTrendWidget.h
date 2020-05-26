@@ -50,7 +50,7 @@ public:
     void updateUnit(UnitType unit);
 
     // 构造与析构。
-    IBPTrendWidget(const QString &trendName, const IBPLabel &entitle);
+    IBPTrendWidget(const QString &trendName, const IBPChannel &ibpChn);
     ~IBPTrendWidget();
 
     QList<SubParamID> getShortTrendSubParams() const;
@@ -60,12 +60,15 @@ public:
 protected:
     virtual void setTextSize(void);
 
+    /* reimplment */
+    void loadConfig();
 private slots:
     void _releaseHandle(IWidget *);
 
 private slots:
 
 private:
+    IBPChannel _ibpChn;         // IBP channel ID
     IBPLabel _entitle;
     QLabel *_zeroWarn;          // 校零提示；
 

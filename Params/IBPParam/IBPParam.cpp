@@ -942,7 +942,15 @@ void IBPParam::setEntitle(IBPLabel entitle, IBPChannel chn)
     {
         return;
     }
-
+    // Save pressure label
+    if (chn == IBP_CHN_1)
+    {
+        currentConfig.setNumValue("IBP|ChannelPressureEntitle1", static_cast<int> (entitle));
+    }
+    else if (chn == IBP_CHN_2)
+    {
+        currentConfig.setNumValue("IBP|ChannelPressureEntitle2", static_cast<int> (entitle));
+    }
     _chnData[chn].waveWidget->setEntitle(entitle);
     _chnData[chn].trendWidget->setEntitle(entitle);
     _chnData[chn].trendWidget->updateLimit();
@@ -991,11 +999,17 @@ void IBPParam::setUnit(UnitType type)
 
 IBPLabel IBPParam::getEntitle(IBPChannel chn) const
 {
-    if (chn >= IBP_CHN_NR)
+    // Get the pressure name from the current configuration
+    int entitle = IBP_LABEL_NR;
+    if (chn == IBP_CHN_1)
     {
-        return IBP_LABEL_NR;
+        currentConfig.getNumValue("IBP|ChannelPressureEntitle1", entitle);
     }
-    return _chnData[chn].paramData.pressureName;
+    else if (chn == IBP_CHN_2)
+    {
+        currentConfig.getNumValue("IBP|ChannelPressureEntitle2", entitle);
+    }
+    return static_cast<IBPLabel>(entitle);
 }
 
 IBPLabel IBPParam::getEntitle(IBPLimitAlarmType alarmType) const

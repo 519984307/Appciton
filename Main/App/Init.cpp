@@ -590,23 +590,21 @@ static void _initProviderParam(void)
         alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_IBP);
         alertor.addOneShotSource(oneShotAlarmSource);
 
-        IBPTrendWidget *ibp1TrendWidget = new IBPTrendWidget("IBP1TrendWidget",
-                IBP_LABEL_ART);
+        IBPTrendWidget *ibp1TrendWidget = new IBPTrendWidget("IBP1TrendWidget", IBP_CHN_1);
         ibpParam.setIBPTrendWidget(ibp1TrendWidget, IBP_CHN_1);
         layoutManager.addLayoutWidget(ibp1TrendWidget, LAYOUT_NODE_PARAM_IBP1);
 
-        IBPTrendWidget *ibp2TrendWidget = new IBPTrendWidget("IBP2TrendWidget",
-                IBP_LABEL_PA);
+        IBPTrendWidget *ibp2TrendWidget = new IBPTrendWidget("IBP2TrendWidget", IBP_CHN_2);
         ibpParam.setIBPTrendWidget(ibp2TrendWidget, IBP_CHN_2);
         layoutManager.addLayoutWidget(ibp2TrendWidget, LAYOUT_NODE_PARAM_IBP2);
 
-        IBPWaveWidget *ibp1WaveWidget = new IBPWaveWidget(WAVE_ART, "IBP1WaveWidget",
-                IBP_LABEL_ART);
+        IBPWaveWidget *ibp1WaveWidget = new IBPWaveWidget(ibpParam.getWaveformID(ibpParam.getEntitle(IBP_CHN_1)),
+                                                          "IBP1WaveWidget", IBP_CHN_1);
         ibpParam.setWaveWidget(ibp1WaveWidget, IBP_CHN_1);
         layoutManager.addLayoutWidget(ibp1WaveWidget, LAYOUT_NODE_WAVE_IBP1);
 
-        IBPWaveWidget *ibp2WaveWidget = new IBPWaveWidget(WAVE_PA, "IBP2WaveWidget",
-                IBP_LABEL_PA);
+        IBPWaveWidget *ibp2WaveWidget = new IBPWaveWidget(ibpParam.getWaveformID(ibpParam.getEntitle(IBP_CHN_2)),
+                                                          "IBP2WaveWidget", IBP_CHN_2);
         ibpParam.setWaveWidget(ibp2WaveWidget, IBP_CHN_2);
         layoutManager.addLayoutWidget(ibp2WaveWidget, LAYOUT_NODE_WAVE_IBP2);
     }

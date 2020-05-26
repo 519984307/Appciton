@@ -123,9 +123,10 @@ void IBPWaveWidget::setRulerLimit(IBPRulerLimit ruler)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-IBPWaveWidget::IBPWaveWidget(WaveformID id, const QString &waveName, const IBPLabel &entitle)
-    : WaveWidget(waveName, IBPSymbol::convert(entitle)),
-      _entitle(entitle)
+IBPWaveWidget::IBPWaveWidget(WaveformID id, const QString &waveName, const IBPChannel &ibpChn)
+    : WaveWidget(waveName, IBPSymbol::convert(ibpParam.getEntitle(ibpChn))),
+      _ibpChn(ibpChn),
+      _entitle(ibpParam.getEntitle(ibpChn))
 {
     _autoRulerTracePeek = -10000;
     _autoRulerTraveVally = 10000;
@@ -203,6 +204,15 @@ void IBPWaveWidget::focusInEvent(QFocusEvent *e)
     {
         _name->setFocus();
     }
+}
+
+void IBPWaveWidget::loadConfig()
+{
+    const QPalette &palette = colorManager.getPalette(paramInfo->getParamName(PARAM_IBP));
+    setPalette(palette);
+    _ruler->setPalette(palette);
+
+    setEntitle(ibpParam.getEntitle(_ibpChn));
 }
 
 /**************************************************************************************************

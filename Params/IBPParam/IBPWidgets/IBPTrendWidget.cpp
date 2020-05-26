@@ -264,8 +264,9 @@ void IBPTrendWidget::updateUnit(UnitType unit)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-IBPTrendWidget::IBPTrendWidget(const QString &trendName, const IBPLabel &entitle)
-    : TrendWidget(trendName),  _entitle(entitle), _isZero(false), _sysAlarm(false),
+IBPTrendWidget::IBPTrendWidget(const QString &trendName, const IBPChannel &ibpChn)
+    : TrendWidget(trendName),  _ibpChn(ibpChn), _entitle(ibpParam.getEntitle(ibpChn)),
+      _isZero(false), _sysAlarm(false),
       _diaAlarm(false), _mapAlarm(false)
 {
     _sysString = InvStr();
@@ -275,7 +276,7 @@ IBPTrendWidget::IBPTrendWidget(const QString &trendName, const IBPLabel &entitle
 
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_IBP));
     setPalette(palette);
-    setName(IBPSymbol::convert(entitle));
+    setName(IBPSymbol::convert(_entitle));
     updateUnit(ibpParam.getUnit());
 
     // 设置上下限
@@ -432,6 +433,28 @@ void IBPTrendWidget::setTextSize()
     font = fontManager.numFont(fontsize - 20, false);
     font.setWeight(QFont::Normal);
     _zeroWarn->setFont(font);
+}
+
+void IBPTrendWidget::loadConfig()
+{
+    const QPalette &palette = colorManager.getPalette(paramInfo->getParamName(PARAM_IBP));
+    setPalette(palette);
+    _zeroWarn->setPalette(palette);
+    _ibpValue->setPalette(palette);
+    _sysValue->setPalette(palette);
+    _diaValue->setPalette(palette);
+    _mapValue->setPalette(palette);
+    _veinValue->setPalette(palette);
+
+    _entitle = ibpParam.getEntitle(_ibpChn);
+    setEntitle(_entitle);
+    updateUnit(ibpParam.getUnit());
+
+    // 设置上下限
+    updateLimit();
+
+    // 设置报警关闭标志
+    showAlarmOff();
 }
 
 void IBPTrendWidget::_releaseHandle(IWidget *iWidget)
