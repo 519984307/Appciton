@@ -314,6 +314,7 @@ short IBPParam::getSubParamValue(SubParamID id)
     case SUB_PARAM_AUXP1_PR:
     case SUB_PARAM_AUXP2_PR:
         type = PR;
+        break;
     default:
         return InvData();
     }

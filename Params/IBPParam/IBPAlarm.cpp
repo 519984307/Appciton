@@ -217,6 +217,7 @@ int IBPLimitAlarm::getValue(int id)
         {
             return ibpParam.getParamData(IBP_CHN_2).sys;
         }
+        break;
     case ART_LIMIT_ALARM_DIA_LOW:
     case ART_LIMIT_ALARM_DIA_HIGH:
     case PA_LIMIT_ALARM_DIA_LOW:
@@ -233,6 +234,7 @@ int IBPLimitAlarm::getValue(int id)
         {
             return ibpParam.getParamData(IBP_CHN_2).dia;
         }
+        break;
     case ART_LIMIT_ALARM_MEAN_LOW:
     case ART_LIMIT_ALARM_MEAN_HIGH:
     case PA_LIMIT_ALARM_MEAN_LOW:
@@ -257,6 +259,7 @@ int IBPLimitAlarm::getValue(int id)
         {
             return ibpParam.getParamData(IBP_CHN_2).mean;
         }
+        break;
     case ART_LIMIT_ALARM_PR_LOW:
     case ART_LIMIT_ALARM_PR_HIGH:
     case PA_LIMIT_ALARM_PR_LOW:
@@ -281,9 +284,11 @@ int IBPLimitAlarm::getValue(int id)
         {
             return ibpParam.getParamData(IBP_CHN_2).pr;
         }
+        break;
     default:
-        return -1;
+        break;
     }
+    return -1;
 }
 
 /**************************************************************************************************
