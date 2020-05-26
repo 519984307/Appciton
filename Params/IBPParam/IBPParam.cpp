@@ -24,7 +24,11 @@
 
 IBPParam *IBPParam::_selfObj = NULL;
 
-#define IBP_SCALE_NUM       13
+#define IBP_SCALE_NUM       15
+// each pressure name ruler high limit
+#define DEFAULT_ART_P1_P2_RULER_HIGH_LIMIT (150)
+#define DEFAULT_PA_RULER_HIGH_LIMIT (100)
+#define DEFAULT_CVP_RAP_LAP_ICP_RULER_HIGH_LIMIT (40)
 
 /**************************************************************************************************
  * 构造。
@@ -49,8 +53,9 @@ IBPParam::IBPParam() : Param(PARAM_IBP),  _provider(NULL),  _connectedProvider(f
     ibpScaleList.clear();
     IBPScaleInfo manualScale;
     ibpScaleList.append(manualScale);
-    int lowLimit[IBP_SCALE_NUM] = { -10, 0, 0, 0, 0, 0, 60, 30, 0, 0, 0, 0, 0};
-    int highLimit[IBP_SCALE_NUM] = {10, 20, 30, 40, 60, 80, 140, 140, 140, 160, 200, 240, 300};
+    int lowLimit[IBP_SCALE_NUM] = { -10, 0, 0, 0, 0, 0, 0, 60, 30, 0, 0, 0, 0, 0, 0};
+    int highLimit[IBP_SCALE_NUM] = {10, 20, 30, 40, 60, 80, 100, 140, 140, 140, 150, 160, 200, 240, 300};
+
     for (int i = 0; i < IBP_SCALE_NUM; i ++)
     {
         IBPScaleInfo subScale;
@@ -536,16 +541,16 @@ IBPScaleInfo IBPParam::getIBPScale(IBPLabel name)
     case IBP_LABEL_ART:
     case IBP_LABEL_AUXP1:
     case IBP_LABEL_AUXP2:
-        highLimit = 160;
+        highLimit = DEFAULT_ART_P1_P2_RULER_HIGH_LIMIT;
         break;
     case IBP_LABEL_PA:
-    case IBP_LABEL_CVP:
-        highLimit = 30;
+        highLimit = DEFAULT_PA_RULER_HIGH_LIMIT;
         break;
+    case IBP_LABEL_CVP:
     case IBP_LABEL_LAP:
     case IBP_LABEL_RAP:
     case IBP_LABEL_ICP:
-        highLimit = 20;
+        highLimit = DEFAULT_CVP_RAP_LAP_ICP_RULER_HIGH_LIMIT;
         break;
     default:
         break;
@@ -618,16 +623,16 @@ IBPRulerLimit IBPParam::getRulerLimit(IBPLabel name)
     case IBP_LABEL_ART:
     case IBP_LABEL_AUXP1:
     case IBP_LABEL_AUXP2:
-        ruler = IBP_RULER_LIMIT_0_160;
+        ruler = IBP_RULER_LIMIT_0_150;
         break;
     case IBP_LABEL_PA:
-    case IBP_LABEL_CVP:
-        ruler = IBP_RULER_LIMIT_0_30;
+        ruler = IBP_RULER_LIMIT_0_100;
         break;
+    case IBP_LABEL_CVP:
     case IBP_LABEL_LAP:
     case IBP_LABEL_RAP:
     case IBP_LABEL_ICP:
-        ruler = IBP_RULER_LIMIT_0_20;
+        ruler = IBP_RULER_LIMIT_0_40;
         break;
     default:
         break;

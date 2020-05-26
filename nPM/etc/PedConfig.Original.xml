@@ -98,8 +98,8 @@
     <IBP>
         <ChannelPressureEntitle1>0</ChannelPressureEntitle1>
         <ChannelPressureEntitle2>5</ChannelPressureEntitle2>
-        <RulerLimit1>10</RulerLimit1>
-        <RulerLimit2>10</RulerLimit2>
+        <RulerLimit1>11</RulerLimit1>
+        <RulerLimit2>4</RulerLimit2>
         <SweepSpeed>2</SweepSpeed>
         <FilterMode>0</FilterMode>
         <Sensitivity>1</Sensitivity>
