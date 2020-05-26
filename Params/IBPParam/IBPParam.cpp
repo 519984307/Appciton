@@ -181,6 +181,7 @@ void IBPParam::handDemoTrendData()
         ch2Trend->setZeroFlag(true);
         ch2Trend->setData(ch2Data.sys, ch2Data.dia, ch2Data.mean);
     }
+    ecgDupParam.updatePR(60, PR_SOURCE_IBP);
 }
 
 void IBPParam::exitDemo()
@@ -206,6 +207,7 @@ void IBPParam::exitDemo()
     {
         ch2Trend->setData(InvData(), InvData(), InvData());
     }
+    ecgDupParam.updatePR(InvData(), PR_SOURCE_IBP);
 }
 
 void IBPParam::showSubParamValue()
