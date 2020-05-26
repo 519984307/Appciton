@@ -207,26 +207,31 @@ void IBPMenuContentPrivate::updatePrintWaveIds()
 
 void IBPMenuContentPrivate::handleRulerCboChange(IBPRulerLimit rulerLimit, IBPChannel chn)
 {
-    if (chn == IBP_CHN_NR)
+    if (chn >= IBP_CHN_NR)
     {
         qWarning() << Q_FUNC_INFO << "IBP channel Id is error!";
         return;
     }
 
-    SpinBox *upScale;     // up scale
-    SpinBox *downScale;   // down scale
-    IBPLabel curIbpLabel;
+    SpinBox *upScale = NULL;     // up scale
+    SpinBox *downScale = NULL;   // down scale
+    IBPLabel curIbpLabel = IBP_LABEL_NR;
     if (chn == IBP_CHN_1)
     {
         upScale = spinBoxs[ITEM_SBO_UP_SCALE_1];
         downScale = spinBoxs[ITEM_SBO_DOWN_SCALE_1];
         curIbpLabel = ibp1;
     }
-    else
+    else if (chn == IBP_CHN_2)
     {
         upScale = spinBoxs[ITEM_SBO_UP_SCALE_2];
         downScale = spinBoxs[ITEM_SBO_DOWN_SCALE_2];
         curIbpLabel = ibp2;
+    }
+
+    if (upScale == NULL || downScale == NULL || curIbpLabel == IBP_LABEL_NR)
+    {
+        return;
     }
 
     IBPScaleInfo scale = ibpParam.getScaleInfo(chn);
