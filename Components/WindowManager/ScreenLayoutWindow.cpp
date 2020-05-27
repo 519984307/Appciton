@@ -126,6 +126,7 @@ void ScreenLayoutWindow::hideEvent(QHideEvent *ev)
 void ScreenLayoutWindow::showEvent(QShowEvent *ev)
 {
     ScreenLayoutModel *model = qobject_cast<ScreenLayoutModel *>(d_ptr->view->model());
+    model->updateWaveAndParamInfo();
     model->loadLayoutInfo();
     Dialog::showEvent(ev);
 }
