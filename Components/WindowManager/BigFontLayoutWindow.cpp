@@ -72,6 +72,7 @@ void BigFontLayoutWindow::hideEvent(QHideEvent *ev)
 void BigFontLayoutWindow::showEvent(QShowEvent *ev)
 {
     BigFontLayoutModel *model = qobject_cast<BigFontLayoutModel *>(d_ptr->tableView->model());
+    model->updateWaveAndParamInfo();
     model->loadLayoutInfo();
     Dialog::showEvent(ev);
 }
