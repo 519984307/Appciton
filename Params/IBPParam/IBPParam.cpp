@@ -157,10 +157,17 @@ void IBPParam::handDemoWaveform(WaveformID id, short data)
 void IBPParam::handDemoTrendData()
 {
     IBPParamInfo &ch1Data = _chnData[IBP_CHN_1].paramData;
-    ch1Data.sys = 120;
-    ch1Data.dia = 75;
-    ch1Data.mean = 90;
+    ch1Data.sys = 25;
+    ch1Data.dia = 9;
+    ch1Data.mean = 14;
     ch1Data.pr = 60;
+    if (getEntitle(IBP_CHN_1) == IBP_LABEL_ART)
+    {
+        ch1Data.sys = 120;
+        ch1Data.dia = 75;
+        ch1Data.mean = 90;
+        ch1Data.pr = 60;
+    }
     IBPTrendWidget *ch1Trend = _chnData[IBP_CHN_1].trendWidget;
 
     if (ch1Trend)
@@ -174,6 +181,13 @@ void IBPParam::handDemoTrendData()
     ch2Data.dia = 9;
     ch2Data.mean = 14;
     ch2Data.pr = 60;
+    if (getEntitle(IBP_CHN_2) == IBP_LABEL_ART)
+    {
+        ch1Data.sys = 120;
+        ch1Data.dia = 75;
+        ch1Data.mean = 9;
+        ch1Data.pr = 60;
+    }
     IBPTrendWidget *ch2Trend = _chnData[IBP_CHN_2].trendWidget;
 
     if (ch2Trend)
