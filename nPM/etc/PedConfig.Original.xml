@@ -97,7 +97,7 @@
     </TEMP>
     <IBP>
         <ChannelPressureEntitle1>0</ChannelPressureEntitle1>
-        <ChannelPressureEntitle2>5</ChannelPressureEntitle2>
+        <ChannelPressureEntitle2>1</ChannelPressureEntitle2>
         <RulerLimit1>11</RulerLimit1>
         <RulerLimit2>4</RulerLimit2>
         <SweepSpeed>2</SweepSpeed>
