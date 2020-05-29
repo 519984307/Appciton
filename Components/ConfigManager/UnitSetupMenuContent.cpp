@@ -117,6 +117,10 @@ void UnitSetupMenuContentPrivate::loadOptions()
         {
             index = 1;
         }
+        else if (unit == UNIT_CMH2O)
+        {
+            index = 2;
+        }
         combos[ITEM_CBO_IBP_UNIT]->setCurrentIndex(index);
     }
 
@@ -262,7 +266,8 @@ void UnitSetupMenuContent::layoutExec()
         comboBox = new ComboBox();
         comboBox->addItems(QStringList()
                            << trs(Unit::getSymbol(UnitType(UNIT_MMHG)))
-                           << trs(Unit::getSymbol(UnitType(UNIT_KPA))));
+                           << trs(Unit::getSymbol(UnitType(UNIT_KPA)))
+                           << trs(Unit::getSymbol(UnitType(UNIT_CMH2O))));
         itemID = UnitSetupMenuContentPrivate::ITEM_CBO_IBP_UNIT;
         comboBox->setProperty("Item", qVariantFromValue(itemID));
         connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -372,6 +377,10 @@ void UnitSetupMenuContent::onComboBoxIndexChanged(int index)
             else if (index == 1)
             {
                 index = UNIT_KPA;
+            }
+            else if (index == 2)
+            {
+                index = UNIT_CMH2O;
             }
             else
             {

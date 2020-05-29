@@ -422,11 +422,23 @@ void IBPTrendWidget::setTextSize()
     _ibpValue->setFont(font);
     _sysValue->setFont(font);
     _diaValue->setFont(font);
-    _mapValue->setFont(font);
 
+    if (ibpParam.getUnit() == UNIT_CMH2O)
+    {
+        font = fontManager.numFont(fontsize - 10, true);
+        _ibpValue->setFont(font);
+        _sysValue->setFont(font);
+        _diaValue->setFont(font);
+    }
     _veinValue->setFont(font);
 
     font = fontManager.numFont(fontsize - 10, true);
+    if (ibpParam.getUnit() == UNIT_CMH2O)
+    {
+        font = fontManager.numFont(fontsize - 20, true);
+        _sysValue->setFont(font);
+        _diaValue->setFont(font);
+    }
     font.setWeight(QFont::Black);
     _mapValue->setFont(font);
 
