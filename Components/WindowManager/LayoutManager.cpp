@@ -1784,14 +1784,20 @@ QRect LayoutManager::getMenuArea() const
     }
     else
     {
+        int displayWaveCount = d_ptr->waveRowCount;
+        if (displayWaveCount < 3)
+        {
+            displayWaveCount = 3;
+        }
         // 获得不遮挡第一道波形的菜单显示区域
-        int startYPos = r.height() / (d_ptr->waveRowCount + d_ptr->leftParamRowCount);
+        int startYPos = r.height() / (displayWaveCount + d_ptr->leftParamRowCount);
+
         r.moveTo(0, startYPos);
         QRect gr(d_ptr->contentView->mapToGlobal(r.topLeft()),
                  d_ptr->contentView->mapToGlobal(r.bottomRight()));
         gr.setWidth(gr.width() * d_ptr->waveAreaStretch / (d_ptr->waveAreaStretch + d_ptr->paramAreaStretch));
-        gr.setHeight(r.height() * (d_ptr->waveRowCount - 1 + d_ptr->leftParamRowCount)
-                     / (d_ptr->waveRowCount + d_ptr->leftParamRowCount));
+        gr.setHeight(r.height() * (displayWaveCount - 1 + d_ptr->leftParamRowCount)
+                     / (displayWaveCount + d_ptr->leftParamRowCount));
         return gr;
     }
 }
