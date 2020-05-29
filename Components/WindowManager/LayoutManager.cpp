@@ -1784,6 +1784,10 @@ QRect LayoutManager::getMenuArea() const
     }
     else
     {
+        /*
+         * The purpose is to solve the problem of incomplete display of the menu interface
+         * when the interface is less than 3 waveforms.
+         */
         int displayWaveCount = d_ptr->waveRowCount;
         if (displayWaveCount < 3)
         {
