@@ -414,10 +414,9 @@ void IBPTrendWidget::doRestoreNormalStatus()
 void IBPTrendWidget::setTextSize()
 {
     QRect r;
-
     r.setSize(QSize(((width() - nameLabel->width()) / 5), ((height() / 4) * 3)));
-    int fontSize = fontManager.adjustNumFontSize(r, true);
-    QFont font = fontManager.numFont(fontSize, true);
+    int fontsize = fontManager.adjustNumFontSize(r, true);
+    QFont font = fontManager.numFont(fontsize, true);
     font.setWeight(QFont::Black);
 
     _ibpValue->setFont(font);
@@ -426,12 +425,12 @@ void IBPTrendWidget::setTextSize()
 
     _veinValue->setFont(font);
 
-    font = fontManager.numFont(fontSize - 10, true);
+    font = fontManager.numFont(fontsize - 10, true);
     font.setWeight(QFont::Black);
     _mapValue->setFont(font);
     _zeroWarn->setFont(font);
 
-    font = fontManager.numFont(fontSize - 20, false);
+    font = fontManager.numFont(fontsize - 20, false);
     font.setWeight(QFont::Normal);
 }
 
