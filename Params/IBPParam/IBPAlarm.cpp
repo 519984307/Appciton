@@ -13,6 +13,8 @@
 #include "AlarmConfig.h"
 #include "IBPParam.h"
 #include "SystemManager.h"
+#include "Framework/Params/ParamManager.h"
+#include "FloatHandle.h"
 
 /**************************************************************************************************
  * alarm source name.
@@ -305,18 +307,7 @@ bool IBPLimitAlarm::isAlarmEnable(int id)
 int IBPLimitAlarm::getUpper(int id)
 {
     SubParamID subID = getSubParamID(id);
-    UnitType unit;
-    if (id == ART_LIMIT_ALARM_PR_LOW || id == PA_LIMIT_ALARM_PR_HIGH ||
-            id == CVP_LIMIT_ALARM_PR_LOW || id == LAP_LIMIT_ALARM_PR_HIGH ||
-            id == RAP_LIMIT_ALARM_PR_LOW || id == ICP_LIMIT_ALARM_PR_HIGH ||
-            id == AUXP1_LIMIT_ALARM_PR_LOW || id == AUXP2_LIMIT_ALARM_PR_HIGH)
-    {
-        unit = UNIT_BPM;
-    }
-    else
-    {
-        unit = UNIT_MMHG;
-    }
+    UnitType unit = paramManager->getSubParamUnit(PARAM_IBP, subID);
     return alarmConfig.getLimitAlarmConfig(subID, unit).highLimit;
 }
 
@@ -326,18 +317,7 @@ int IBPLimitAlarm::getUpper(int id)
 int IBPLimitAlarm::getLower(int id)
 {
     SubParamID subID = getSubParamID(id);
-    UnitType unit;
-    if (id == ART_LIMIT_ALARM_PR_LOW || id == PA_LIMIT_ALARM_PR_HIGH ||
-            id == CVP_LIMIT_ALARM_PR_LOW || id == LAP_LIMIT_ALARM_PR_HIGH ||
-            id == RAP_LIMIT_ALARM_PR_LOW || id == ICP_LIMIT_ALARM_PR_HIGH ||
-            id == AUXP1_LIMIT_ALARM_PR_LOW || id == AUXP2_LIMIT_ALARM_PR_HIGH)
-    {
-        unit = UNIT_BPM;
-    }
-    else
-    {
-        unit = UNIT_MMHG;
-    }
+    UnitType unit = paramManager->getSubParamUnit(PARAM_IBP, subID);
     return alarmConfig.getLimitAlarmConfig(subID, unit).lowLimit;
 }
 
@@ -366,27 +346,72 @@ int IBPLimitAlarm::getCompare(int value, int id)
     {
         return 0;
     }
+    // get sub param id
+    SubParamID subID = getSubParamID(id);
+    // get cur ibp unit
+    UnitType curUnit = paramManager->getSubParamUnit(PARAM_IBP, subID);
+    // get default unit
+    UnitType defUnit = paramInfo->getUnitOfSubParam(subID);
+    // get limit config
+    LimitAlarmConfig limitConfig = alarmConfig.getLimitAlarmConfig(subID, curUnit);
 
-    if (0 == id % 2)
+    if (curUnit == defUnit)
     {
-        if (value < getLower(id))
+        int low = limitConfig.lowLimit;
+        int high = limitConfig.highLimit;
+
+        if (0 == id % 2)
         {
-            return -1;
+            if (value < low)
+            {
+                return -1;
+            }
+            else
+            {
+                return 0;
+            }
         }
         else
         {
-            return 0;
+            if (value > high)
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
     else
     {
-        if (value > getUpper(id))
+        float low = static_cast<float>(limitConfig.lowLimit) / limitConfig.scale;
+        float high = static_cast<float>(limitConfig.highLimit) / limitConfig.scale;
+        float v = value * 1.0;
+        QString valueStr = Unit::convert(curUnit, defUnit, v);
+        v = valueStr.toDouble();
+
+        if (0 == id % 2)
         {
-            return 1;
+            if (isUpper(low, v))
+            {
+                return -1;
+            }
+            else
+            {
+                return 0;
+            }
         }
         else
         {
-            return 0;
+            if (isUpper(v, high))
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
 }

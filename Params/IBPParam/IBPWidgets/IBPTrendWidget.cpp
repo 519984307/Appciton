@@ -414,37 +414,25 @@ void IBPTrendWidget::doRestoreNormalStatus()
 void IBPTrendWidget::setTextSize()
 {
     QRect r;
-    r.setSize(QSize(((width() - nameLabel->width()) / 4), ((height() / 4) * 3)));
-    int fontsize = fontManager.adjustNumFontSize(r, true);
-    QFont font = fontManager.numFont(fontsize, true);
+
+    r.setSize(QSize(((width() - nameLabel->width()) / 5), ((height() / 4) * 3)));
+    int fontSize = fontManager.adjustNumFontSize(r, true);
+    QFont font = fontManager.numFont(fontSize, true);
     font.setWeight(QFont::Black);
 
     _ibpValue->setFont(font);
     _sysValue->setFont(font);
     _diaValue->setFont(font);
 
-    if (ibpParam.getUnit() == UNIT_CMH2O)
-    {
-        font = fontManager.numFont(fontsize - 10, true);
-        _ibpValue->setFont(font);
-        _sysValue->setFont(font);
-        _diaValue->setFont(font);
-    }
     _veinValue->setFont(font);
 
-    font = fontManager.numFont(fontsize - 10, true);
-    if (ibpParam.getUnit() == UNIT_CMH2O)
-    {
-        font = fontManager.numFont(fontsize - 20, true);
-        _sysValue->setFont(font);
-        _diaValue->setFont(font);
-    }
+    font = fontManager.numFont(fontSize - 10, true);
     font.setWeight(QFont::Black);
     _mapValue->setFont(font);
-
-    font = fontManager.numFont(fontsize - 20, false);
-    font.setWeight(QFont::Normal);
     _zeroWarn->setFont(font);
+
+    font = fontManager.numFont(fontSize - 20, false);
+    font.setWeight(QFont::Normal);
 }
 
 void IBPTrendWidget::loadConfig()
