@@ -320,6 +320,12 @@
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
+            <cmH2O>
+                <Low Min="-680" Max="4066">1224</Low>
+                <High Min="-666" Max="4080">2176</High>
+                <Step>14</Step>
+                <Scale>10</Scale>
+            </cmH2O>
             </ART_SYS>
             <ART_DIA Enable="1" Prio="2" Auto="1">
             <mmHg>
@@ -334,6 +340,12 @@
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
+            <cmH2O>
+                <Low Min="-680" Max="4066">680</Low>
+                <High Min="-666" Max="4080">1224</High>
+                <Step>14</Step>
+                <Scale>10</Scale>
+            </cmH2O>
             </ART_DIA>
             <ART_MAP Enable="1" Prio="2" Auto="1">
             <mmHg>
@@ -348,6 +360,12 @@
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
+            <cmH2O>
+                <Low Min="-680" Max="4066">952</Low>
+                <High Min="-666" Max="4080">1496</High>
+                <Step>14</Step>
+                <Scale>10</Scale>
+            </cmH2O>
             </ART_MAP>
             <ART_PR Enable="1" Prio="2" Auto="1">
             <bpm>
@@ -370,6 +388,12 @@
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
+            <cmH2O>
+                <Low Min="-680" Max="4066">136</Low>
+                <High Min="-666" Max="4080">476</High>
+                <Step>14</Step>
+                <Scale>10</Scale>
+            </cmH2O>
             </PA_SYS>
             <PA_DIA Enable="1" Prio="2" Auto="1">
             <mmHg>
@@ -384,6 +408,12 @@
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
+            <cmH2O>
+                <Low Min="-680" Max="4066">0</Low>
+                <High Min="-666" Max="4080">218</High>
+                <Step>14</Step>
+                <Scale>10</Scale>
+            </cmH2O>
             </PA_DIA>
             <PA_MAP Enable="1" Prio="2" Auto="1">
             <mmHg>
@@ -398,6 +428,12 @@
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
+            <cmH2O>
+                <Low Min="-680" Max="4066">0</Low>
+                <High Min="-666" Max="4080">272</High>
+                <Step>14</Step>
+                <Scale>10</Scale>
+            </cmH2O>
             </PA_MAP>
             <PA_PR Enable="1" Prio="2" Auto="1">
             <bpm>
@@ -420,6 +456,12 @@
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
+            <cmH2O>
+                <Low Min="-680" Max="4066">0</Low>
+                <High Min="-666" Max="4080">136</High>
+                <Step>14</Step>
+                <Scale>10</Scale>
+            </cmH2O>
             </CVP_MAP>
             <CVP_PR Enable="1" Prio="2" Auto="1">
             <bpm>
@@ -442,6 +484,12 @@
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
+            <cmH2O>
+                <Low Min="-680" Max="4066">0</Low>
+                <High Min="-666" Max="4080">136</High>
+                <Step>14</Step>
+                <Scale>10</Scale>
+            </cmH2O>
             </LAP_MAP>
             <LAP_PR Enable="1" Prio="2" Auto="1">
             <bpm>
@@ -464,6 +512,12 @@
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
+            <cmH2O>
+                <Low Min="-680" Max="4066">0</Low>
+                <High Min="-666" Max="4080">136</High>
+                <Step>14</Step>
+                <Scale>10</Scale>
+            </cmH2O>
             </RAP_MAP>
             <RAP_PR Enable="1" Prio="2" Auto="1">
             <bpm>
@@ -486,6 +540,12 @@
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
+            <cmH2O>
+                <Low Min="-680" Max="4066">0</Low>
+                <High Min="-666" Max="4080">136</High>
+                <Step>14</Step>
+                <Scale>10</Scale>
+            </cmH2O>
             </ICP_MAP>
             <ICP_PR Enable="1" Prio="2" Auto="1">
             <bpm>
@@ -508,6 +568,12 @@
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
+            <cmH2O>
+                <Low Min="-680" Max="4066">1224</Low>
+                <High Min="-666" Max="4080">2176</High>
+                <Step>14</Step>
+                <Scale>10</Scale>
+            </cmH2O>
             </AUXP1_SYS>
             <AUXP1_DIA Enable="1" Prio="2" Auto="1">
             <mmHg>
@@ -522,6 +588,12 @@
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
+            <cmH2O>
+                <Low Min="-680" Max="4066">680</Low>
+                <High Min="-666" Max="4080">1224</High>
+                <Step>14</Step>
+                <Scale>10</Scale>
+            </cmH2O>
             </AUXP1_DIA>
             <AUXP1_MAP Enable="1" Prio="2" Auto="1">
             <mmHg>
@@ -536,6 +608,12 @@
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
+            <cmH2O>
+                <Low Min="-680" Max="4066">952</Low>
+                <High Min="-666" Max="4080">1496</High>
+                <Step>14</Step>
+                <Scale>10</Scale>
+            </cmH2O>
             </AUXP1_MAP>
             <AUXP1_PR Enable="1" Prio="2" Auto="1">
             <bpm>
@@ -558,6 +636,12 @@
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
+            <cmH2O>
+                <Low Min="-680" Max="4066">1224</Low>
+                <High Min="-666" Max="4080">2176</High>
+                <Step>14</Step>
+                <Scale>10</Scale>
+            </cmH2O>
             </AUXP2_SYS>
             <AUXP2_DIA Enable="1" Prio="2" Auto="1">
             <mmHg>
@@ -572,6 +656,12 @@
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
+            <cmH2O>
+                <Low Min="-680" Max="4066">680</Low>
+                <High Min="-666" Max="4080">1224</High>
+                <Step>14</Step>
+                <Scale>10</Scale>
+            </cmH2O>
             </AUXP2_DIA>
             <AUXP2_MAP Enable="1" Prio="2" Auto="1">
             <mmHg>
@@ -586,6 +676,12 @@
                 <Step>1</Step>
                 <Scale>10</Scale>
             </kPa>
+            <cmH2O>
+                <Low Min="-680" Max="4066">952</Low>
+                <High Min="-666" Max="4080">1496</High>
+                <Step>14</Step>
+                <Scale>10</Scale>
+            </cmH2O>
             </AUXP2_MAP>
             <AUXP2_PR Enable="1" Prio="2" Auto="1">
             <bpm>
