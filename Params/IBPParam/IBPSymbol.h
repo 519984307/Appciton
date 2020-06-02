@@ -115,7 +115,7 @@ public:
     {
         static const char *symbol[IBP_ONESHOT_NR] =
         {
-            "IBP1LeadOff", "IBP2LeadOff",
+            "IBP1SensorOff", "IBP2SensorOff",
             "IBP1ZeroCalibSuccess",
             "IBP1MeasurePressureIsPulse",
             "IBP1ZeroCalibPressureBeyondMeasureRange",

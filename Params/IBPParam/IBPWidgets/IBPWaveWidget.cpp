@@ -51,7 +51,7 @@ void IBPWaveWidget::setLeadSta(int info)
 
     if (info)
     {
-        _leadSta->setText(trs("LeadOff"));
+        _leadSta->setText(trs("SensorOff"));
     }
     else
     {

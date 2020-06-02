@@ -654,8 +654,9 @@ CO2CommunicationStop,CO₂通讯停止,CO₂ Communication Stop
 CO2Calibrate,CO₂校准,CO₂ Calibrate
 CO2CalibrateMenu,CO₂校准,CO₂ Calibrate
 CO2CalibrateDesc,CO₂校准,CO₂ calibrate
-IBP1LeadOff,IBP通道1导联脱落,IBP1 lead off
-IBP2LeadOff,IBP通道2导联脱落,IBP2 lead off
+SensorOff,传感器脱落,Sensor Off
+IBP1SensorOff,IBP通道1传感器脱落,IBP1 sensor off
+IBP2SensorOff,IBP通道2传感器脱落,IBP2 sensor off
 IBP1ZeroCalibSuccess,IBP通道1校零成功,IBP1 zero success
 IBP1MeasurePressureIsPulse,IBP通道1测量压力是动脉,IBP1 zero is pluse
 IBP1ZeroCalibPressureBeyondMeasureRange,IBP通道1校零压力超出范围,IBP1 zero beyond range
