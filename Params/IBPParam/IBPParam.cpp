@@ -449,8 +449,7 @@ bool IBPParam::isConnected()
 /**************************************************************************************************
  * 设置实时数据。
  *************************************************************************************************/
-void IBPParam::setRealTimeData(unsigned short sys, unsigned short dia, unsigned short map,
-                               unsigned short pr, IBPChannel chn)
+void IBPParam::setRealTimeData(short sys, short dia, short map, short pr, IBPChannel chn)
 {
     if (chn >= IBP_CHN_NR)
     {

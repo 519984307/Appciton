@@ -89,8 +89,7 @@ public:
     bool isConnected(void);
 
     // 设置测量实时数据。
-    void setRealTimeData(unsigned short sys, unsigned short dia, unsigned short map,
-                         unsigned short pr, IBPChannel chn);
+    void setRealTimeData(short sys, short dia, short map, short pr, IBPChannel chn);
 
     // 设置波形值。
     void addWaveformData(short wave, bool invalid, IBPChannel chn);
