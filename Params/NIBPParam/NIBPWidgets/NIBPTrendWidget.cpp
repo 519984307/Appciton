@@ -672,8 +672,8 @@ NIBPTrendWidget::NIBPTrendWidget()
     setName(trs(paramInfo.getParamName(PARAM_NIBP)));
     setUnit(Unit::getSymbol(nibpParam.getUnit()));
 
-    // 设置上下限
-    updateLimit();
+    // load config, includes alarm limit and alarm status
+    loadConfig();
 
     // 设置布局
     d_ptr->layoutExec(contentLayout);
