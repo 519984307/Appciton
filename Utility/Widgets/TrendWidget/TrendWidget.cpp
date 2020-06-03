@@ -51,7 +51,7 @@ void TrendWidget::resizeEvent(QResizeEvent *e)
 {
     IWidget::resizeEvent(e);
 
-    int fontSize = fontManager.getFontSize(4);
+    int fontSize = fontManager.getFontSize(3);
     QFont font = fontManager.textFont(fontSize);
     nameLabel->setFont(font);
 
@@ -91,6 +91,9 @@ void TrendWidget::showAlarmOff()
         }
     }
     alarmOffIcon->setVisible(alarmOffVisabled);
+    // Alarm off icon is visible, set upper and lower alarm limit is not visible
+    upLimit->setVisible(!alarmOffVisabled);
+    downLimit->setVisible(!alarmOffVisabled);
 }
 
 /**************************************************************************************************
@@ -350,7 +353,7 @@ TrendWidget::TrendWidget(const QString &widgetName, bool vertical)
 
     alarmOffIcon = new QLabel(this);
     QPixmap icon("/usr/local/nPM/icons/AlarmOff.png");
-    icon = icon.scaled(32, 32);
+    icon = icon.scaled(30, 30);
     alarmOffIcon->setPixmap(icon);
     alarmOffIcon->setVisible(false);
 

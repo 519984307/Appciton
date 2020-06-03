@@ -15,7 +15,7 @@
 #include "ParamDefine.h"
 
 #define LAYOUT_COLUMN_COUNT 6
-#define LAYOUT_ROW_COUNT 8
+#define LAYOUT_ROW_COUNT 7
 #define LAYOUT_MAX_WAVE_ROW_NUM 6
 #define LAYOUT_WAVE_END_COLUMN 4
 
