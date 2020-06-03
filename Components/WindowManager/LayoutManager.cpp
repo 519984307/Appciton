@@ -1004,25 +1004,7 @@ void LayoutManagerPrivate::performBigFontLayout()
 
             QVBoxLayout *vLayout = new QVBoxLayout(nodeContainer);
             vLayout->setMargin(0);
-#ifdef BIG_FONT_LAYOUT_CO2_REPLACE_RESP
-            // co2 replace resp when co2 connecting.
-            if (paramName == QString(layoutNodeName(LAYOUT_NODE_PARAM_RESP)))
-            {
-                if (co2Param.isConnected())
-                {
-                    paramName = QString(layoutNodeName(LAYOUT_NODE_PARAM_CO2));
-                    waveName = QString(layoutNodeName(LAYOUT_NODE_WAVE_CO2));
-                }
-            }
-            else if (paramName == QString(layoutNodeName(LAYOUT_NODE_PARAM_CO2)))
-            {
-                if (!co2Param.isConnected())
-                {
-                    paramName = QString(layoutNodeName(LAYOUT_NODE_PARAM_RESP));
-                    waveName = QString(layoutNodeName(LAYOUT_NODE_WAVE_RESP));
-                }
-            }
-#endif
+
             IWidget *w = layoutWidgets.value(layoutNodeMap[paramName], NULL);
             if (w && widgetLayoutable[w->name()])
             {
