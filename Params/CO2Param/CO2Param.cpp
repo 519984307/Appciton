@@ -1174,7 +1174,7 @@ CO2Param::CO2Param()
     {
         path += Unit::getSymbol(UNIT_MMHG);
     }
-    else if (UNIT_KPA)
+    else if (UNIT_KPA == t)
     {
         path += Unit::getSymbol(UNIT_KPA);
     }
