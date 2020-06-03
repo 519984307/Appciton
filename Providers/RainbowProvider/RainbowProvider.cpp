@@ -1389,7 +1389,7 @@ void RainbowProviderPrivate::handleACK()
                 // tell the dispatch to change the baudrate
                 q_ptr->disPatchInfo.dispatcher->setPacketPortBaudrate(q_ptr->disPatchInfo.packetType,
                         DataDispatcher::BAUDRATE_57600);
-                QTimer::singleShot(50, q_ptr, SLOT(requestBoardInfo()));
+                QTimer::singleShot(100, q_ptr, SLOT(requestBoardInfo()));
                 qDebug() << "Rainbow baudrate has changed, update packet port baudrate.";
             }
             else if (q_ptr->plugInInfo.plugIn)
