@@ -36,7 +36,7 @@
 #define PRINT_WAVE_NUM                  (3)
 #define RULER_STEP                      (5)
 #define IBP_RULER_MIN_VALUE             (-50)
-#define IBP_RULER_MAX_VALUE             (300)
+#define IBP_RULER_MAX_VALUE             (350)
 
 class IBPMenuContentPrivate
 {
