@@ -51,7 +51,14 @@ void TrendWidget::resizeEvent(QResizeEvent *e)
 {
     IWidget::resizeEvent(e);
 
-    int fontSize = fontManager.getFontSize(3);
+    // Calculate the name label font size according to the trend height.
+    QRect r;
+    r.setSize(QSize(nameLabel->width(), height() / 3));
+    int fontSize = fontManager.adjustNumFontSize(r);
+    if (fontSize > fontManager.getFontSize(4))
+    {
+        fontSize = fontManager.getFontSize(4);
+    }
     QFont font = fontManager.textFont(fontSize);
     nameLabel->setFont(font);
 
