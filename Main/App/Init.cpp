@@ -203,6 +203,8 @@ static void _initComponents(void)
     // Softkeys
     softkeyManager.getInstance();
     layoutManager.addLayoutWidget(&softkeyManager);
+    QObject::connect(&layoutManager, SIGNAL(userInterfaceChange(UserFaceType)),
+                     &softkeyManager, SLOT(onUserFaceChanged(UserFaceType)));
 
     // 时间管理功能初始化。
     DateTimeWidget *timeWigdet = new DateTimeWidget();

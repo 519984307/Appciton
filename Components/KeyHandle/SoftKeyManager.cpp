@@ -17,7 +17,7 @@
 #include "MonitorSoftkeyAction.h"
 #include "ECG12LeadSoftkeyAction.h"
 #include "CalculateSoftkeyAction.h"
-#include "ECGParam.h"
+#include "SystemManager.h"
 #include "WindowManager.h"
 #include <QSignalMapper>
 #include <QDebug>
@@ -246,6 +246,20 @@ void SoftKeyManager::setFocusBaseKey(SoftBaseKeyType keyType)
                 break;
             }
         }
+    }
+}
+
+void SoftKeyManager::onUserFaceChanged(UserFaceType type)
+{
+    switch (type)
+    {
+    case UFACE_MONITOR_ECG_FULLSCREEN:
+        // Select ECG full screen mode, Cannot enter the window layout function
+        setKeyTypeAvailable(SOFT_BASE_KEY_WINDOWLAYOUT, false);
+        break;
+    default:
+        setKeyTypeAvailable(SOFT_BASE_KEY_WINDOWLAYOUT, true);
+        break;
     }
 }
 
