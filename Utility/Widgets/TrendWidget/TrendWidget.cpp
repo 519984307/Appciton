@@ -353,7 +353,7 @@ TrendWidget::TrendWidget(const QString &widgetName, bool vertical)
 
     alarmOffIcon = new QLabel(this);
     QPixmap icon("/usr/local/nPM/icons/AlarmOff.png");
-    icon = icon.scaled(30, 30);
+    icon = icon.scaled(32, 32);
     alarmOffIcon->setPixmap(icon);
     alarmOffIcon->setVisible(false);
 
