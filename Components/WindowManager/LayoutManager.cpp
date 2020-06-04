@@ -27,6 +27,7 @@
 #include "ECGDupParam.h"
 #include "SPO2Param.h"
 #include "PatientManager.h"
+#include "SoftKeyManager.h"
 
 // 第一道波形高度不低于30mm，设置31来计算避免误差造成高度不够
 #define FIRST_ECG_WAVE_HEIGHT qRound(31 / systemManager.getScreenPixelHPitch())
@@ -315,6 +316,8 @@ void LayoutManagerPrivate::doContentLayout()
     // the content widget should also be update in every layout
     contentWidgets.clear();
 
+    // window layout enable
+    bool windowLayoutEnable = true;
     switch (curUserFace)
     {
     case UFACE_MONITOR_STANDARD:
@@ -324,10 +327,14 @@ void LayoutManagerPrivate::doContentLayout()
         if (ecgParam.getLeadMode() == ECG_LEAD_MODE_12)
         {
             perform12LeadLayout();
+            // Select ECG full screen mode, Cannot enter the window layout function
+            windowLayoutEnable = false;
         }
         else if (ecgParam.getLeadMode() == ECG_LEAD_MODE_5)
         {
             perform7LeadLayout();
+            // Select ECG full screen mode, Cannot enter the window layout function
+            windowLayoutEnable = false;
         }
         else
         {
@@ -352,6 +359,8 @@ void LayoutManagerPrivate::doContentLayout()
         break;
     }
 
+    // update window layout enable
+    softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_WINDOWLAYOUT, windowLayoutEnable);
     contentLayout->activate();
 
     // update the focus order
