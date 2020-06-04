@@ -87,9 +87,14 @@ void TrendSubWaveWidget::setWidgetParam(SubParamID id, TrendGraphType type)
             _paramName = QString("%1/%2").arg(trs("SPO2")).arg(trs("SPO2_2"));
         }
     }
-    else if (_type == TREND_GRAPH_TYPE_ART_IBP || _type == TREND_GRAPH_TYPE_NIBP)
+    else if (_type == TREND_GRAPH_TYPE_NIBP)
     {
         QString str = paramInfo.getSubParamName(_id);
+        _paramName = str.left(str.length() - 4);
+    }
+    else if (_type == TREND_GRAPH_TYPE_ART_IBP)
+    {
+        QString str = trs(paramInfo.getSubParamName(_id));
         _paramName = str.left(str.length() - 4);
     }
     _paramUnit = trs(Unit::getSymbol(paramManager.getSubParamUnit(paramInfo.getParamID(_id), _id)));
