@@ -161,10 +161,6 @@ OTHER_FILES +=                                                                  
     nPM/etc/PatientInfo.xml                                                     \
 
 SOURCES +=                                                                      \
-    Components/DataUploader/BLMDataUploader.cpp \
-    Components/DataUploader/BLMMessageHandler.cpp \
-    Components/DataUploader/JSONParser.cpp \
-    Components/DataUploader/JSONSerializer.cpp \
     Utility/Config/IConfig.cpp                                                  \
     Utility/DataStorage/DataStorageDirManager.cpp                               \
     Utility/DataStorage/DataStorageDirManagerInterface.cpp                      \
@@ -434,6 +430,10 @@ SOURCES +=                                                                      
     Components/Freeze/FreezeManager.cpp                                         \
     Components/Freeze/FreezeWindow.cpp                                          \
     Components/Freeze/FreezeDataModel.cpp                                       \
+    Components/DataUploader/BLMDataUploader.cpp                                 \
+    Components/DataUploader/BLMMessageHandler.cpp                               \
+    Components/DataUploader/JSONParser.cpp                                      \
+    Components/DataUploader/JSONSerializer.cpp                                  \
 #################################################################################
     Params/AGParam/AGWidgets/AGTrendWidget.cpp                                  \
     Params/AGParam/AGWidgets/AGWaveRuler.cpp                                    \
@@ -560,15 +560,6 @@ SOURCES +=                                                                      
     Main/Starter.cpp \
 
 HEADERS +=                                                                      \
-    Components/DataUploader/BLMDataUploader.h \
-    Components/DataUploader/BLMMessageDefine.h \
-    Components/DataUploader/BLMMessageHandler.h \
-    Components/DataUploader/DataUploaderIFace.h \
-    Components/DataUploader/JSONParser.h \
-    Components/DataUploader/JSONSerializer.h \
-    Components/ParamManager/ParamPreProcessor.h \
-    Params/CO2Param/CO2ParamInterface.h \
-    Params/RESPParam/RESPParamInterface.h \
     Utility/Config/ConfigDefine.h                                               \
     Utility/Config/IConfig.h                                                    \
     Utility/DataStorage/DataStorageDefine.h                                     \
