@@ -185,45 +185,21 @@ public:     // IBPProviderIFace的接口
 
     // CO 测量控制
     virtual void measureCtrl(COInstCtl /*instctl*/);
-    virtual bool isMeasureCtrl(unsigned char */*packet*/)
-    {
-        return false;
-    }
 
     // CO 测量时间间隔设置
     virtual void setInterval(COMeasureInterval /*interval*/);
-    virtual bool isSetInterval(unsigned char */*packet*/)
-    {
-        return false;
-    }
 
     // Ti 输入模式设置
     virtual void setInputMode(COTiMode /*inputmode*/, unsigned short /*watertemp*/);
-    virtual bool isSetInputMode(unsigned char */*packet*/)
-    {
-        return false;
-    }
 
     // 注射液体积设定
     virtual void setVolume(unsigned char /*volume*/);
-    virtual bool isSetVolume(unsigned char */*packet*/)
-    {
-        return false;
-    }
 
     // 漂浮导管系数设定
     virtual void setDuctRatio(unsigned short /*ratio*/);
-    virtual bool isSetDuctRatio(unsigned char */*packet*/)
-    {
-        return false;
-    }
 
     // 血液动力计算参数设置
     virtual void setHemodymicParam(void);
-    virtual bool isSetHemodymicParam(unsigned char */*packet*/)
-    {
-        return false;
-    }
 
     // IBP 校零/校准时间设定
     virtual void setTimeZero(IBPChannel /*IBP1/2*/, IBPCalibration /*calibration*/,
@@ -237,10 +213,6 @@ public:     // IBPProviderIFace的接口
 
     // 血液动力学计算
     virtual void hemodymicCalc(void);
-    virtual bool isHemodymicCalc(unsigned char */*packet*/)
-    {
-        return false;
-    }
 
     // 获取波形采样率
     virtual int getIBPWaveformSample(void)

@@ -28,6 +28,7 @@
 #include "Framework/Language/Translator.h"
 #include "Framework/TimeDate/TimeDate.h"
 #include "Providers/SmartIBPProvider/SmartIBPProvider.h"
+#include "Providers/SmartCOProvider/SmartCOProvider.h"
 
 /**
  * @brief initLanguage initialize the language manager
@@ -626,6 +627,7 @@ static void _initProviderParam(void)
     // CO
     if (systemManager.isSupport(CONFIG_CO))
     {
+        paramManager.addProvider(new SmartCOProvider(QString()));
         paramManager.addParam(&coParam.construction());
 
         limitAlarmSource = new COLimitAlarm();

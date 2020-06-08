@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the Project project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2020/6/8
+ **/
+
 #pragma once
 #include <QString>
 #include "CODefine.h"
@@ -39,7 +49,7 @@ public:
     {
         static const char *symbol[CO_INST_NR] =
         {
-            "COEnd", "COStart", "COInterrupt"
+            "COEnd", "COStart"
         };
         return symbol[index];
     }

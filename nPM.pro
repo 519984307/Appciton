@@ -546,6 +546,7 @@ SOURCES +=                                                                      
     Providers/NeonateProvider/NeonateProvider.cpp                               \
     Providers/PluginProvider.cpp                                                \
     Providers/SmartIBPProvider/SmartIBPProvider.cpp                             \
+    Providers/SmartCOProvider/SmartCOProvider.cpp                               \
 #################################################################################
     Main/App/AppMain.cpp                                                        \
     Main/App/Init.cpp                                                           \
@@ -1024,6 +1025,7 @@ HEADERS +=                                                                      
     Providers/NeonateProvider/NeonateProvider.h                                 \
     Providers/PluginProvider.h                                                  \
     Providers/SmartIBPProvider/SmartIBPProvider.h                               \
+    Providers/SmartCOProvider/SmartCOProvider.h                                 \
 #################################################################################
     Main/App/Init.h                                                             \
     Main/IApplication.h                                                         \
@@ -1108,6 +1110,7 @@ DEPENDPATH +=                                                                   
     Providers/S5Provider                                                        \
     Providers/NeonateProvider                                                   \
     Providers/SmartIBPProvider                                                  \
+    Providers/SmartCOProvider                                                   \
     Params                                                                      \
     Params/AGParam                                                              \
     Params/AGParam/AGWidgets                                                    \
@@ -1213,6 +1216,7 @@ INCLUDEPATH +=                                                                  
     Providers/S5Provider                                                        \
     Providers/NeonateProvider                                                   \
     Providers/SmartIBPProvider                                                  \
+    Providers/SmartCOProvider                                                   \
     Params                                                                      \
     Params/AGParam                                                              \
     Params/AGParam/AGWidgets                                                    \

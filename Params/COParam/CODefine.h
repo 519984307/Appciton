@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the Project project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2020/6/8
+ **/
+
+
 #pragma once
 
 /**************************************************************************************************
@@ -10,7 +21,6 @@ enum COInstCtl
 {
     CO_INST_END                 =   0x00,
     CO_INST_START               =   0x01,
-    CO_INST_INTERRUPT           =   0x02,
     CO_INST_NR
 };
 
