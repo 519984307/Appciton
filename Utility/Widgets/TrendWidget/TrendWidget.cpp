@@ -294,8 +294,8 @@ void TrendWidget::setLimit(int up, int down, int scale)
     }
     else
     {
-        upLimit->setText(QString::number(up / scale) + "." + QString::number(up % scale));
-        downLimit->setText(QString::number(down / scale) + "." + QString::number(down % scale));
+        upLimit->setText(QString::number(1.0 * up / scale, 'f', 1));
+        downLimit->setText(QString::number(1.0 * down / scale, 'f', 1));
     }
 }
 
