@@ -35,6 +35,26 @@ public:
         : callSta(false),
           pulseTimerID(-1)
     {
+        QString data;
+        if (getContactType() == NORMALLY_CLOSED)
+        {
+            bool intSta = false;
+            data = QString::number(intSta);
+        }
+        else
+        {
+            bool intSta = true;
+            data = QString::number(intSta);
+        }
+
+        QFile callFile("/sys/class/pmos/nurse_call");
+        if (!callFile.open(QIODevice::ReadWrite))
+        {
+            qDebug() << "fail to open nurse_call file";
+            return;
+        }
+        callFile.write(data.toAscii());
+        callFile.close();
     }
 
     /**
@@ -108,6 +128,19 @@ void NurseCallManager::callNurse(AlarmType type, AlarmPriority prio, bool alarmS
             }
         }
     }
+
+    // 没有报警发生时，暂停脉冲信号
+    if (d_ptr->getSignalType() == NurseCallManagerPrivate::SIGNAL_TYPE_PULSE
+            && d_ptr->getAlarmLevelType(type, prio))
+    {
+        if (!alarmSta && d_ptr->pulseTimerID != -1 && d_ptr->callSta)
+        {
+            d_ptr->callSta = 0;
+            d_ptr->writeNurseCallSta(false);
+            killTimer(d_ptr->pulseTimerID);
+            d_ptr->pulseTimerID = -1;
+        }
+    }
 }
 
 void NurseCallManager::callNurse(AlarmType type, AlarmPriority prio)
@@ -133,10 +166,8 @@ void NurseCallManager::timerEvent(QTimerEvent *ev)
 {
     if (ev->timerId() == d_ptr->pulseTimerID)
     {
-        d_ptr->callSta = 0;
-        d_ptr->writeNurseCallSta(0);
-        killTimer(d_ptr->pulseTimerID);
-        d_ptr->pulseTimerID = -1;
+        d_ptr->callSta = !d_ptr->callSta;
+        d_ptr->writeNurseCallSta(d_ptr->callSta);
     }
 }
 
