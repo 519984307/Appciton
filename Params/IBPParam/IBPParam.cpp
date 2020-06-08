@@ -414,11 +414,9 @@ void IBPParam::setProvider(IBPProviderIFace *provider)
 
 void IBPParam::setConnected(bool isConnected)
 {
-    if (_connectedProvider == isConnected)
-    {
-        return;
-    }
     _connectedProvider = isConnected;
+    setLeadStatus(IBP_CHN_1, !isConnected);
+    setLeadStatus(IBP_CHN_2, !isConnected);
 }
 
 bool IBPParam::isConnected()

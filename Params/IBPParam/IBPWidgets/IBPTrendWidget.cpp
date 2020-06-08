@@ -437,7 +437,7 @@ void IBPTrendWidget::setTextSize()
 
 void IBPTrendWidget::loadConfig()
 {
-    const QPalette &palette = colorManager.getPalette(paramInfo->getParamName(PARAM_IBP));
+    const QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_IBP));
     setPalette(palette);
     _zeroWarn->setPalette(palette);
     _ibpValue->setPalette(palette);
