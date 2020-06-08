@@ -13,7 +13,7 @@
 #include "AlarmConfig.h"
 #include "IBPParam.h"
 #include "SystemManager.h"
-#include "Framework/Params/ParamManager.h"
+#include "ParamManager.h"
 #include "FloatHandle.h"
 
 /**************************************************************************************************
@@ -307,7 +307,7 @@ bool IBPLimitAlarm::isAlarmEnable(int id)
 int IBPLimitAlarm::getUpper(int id)
 {
     SubParamID subID = getSubParamID(id);
-    UnitType unit = paramManager->getSubParamUnit(PARAM_IBP, subID);
+    UnitType unit = paramManager.getSubParamUnit(PARAM_IBP, subID);
     return alarmConfig.getLimitAlarmConfig(subID, unit).highLimit;
 }
 
@@ -317,7 +317,7 @@ int IBPLimitAlarm::getUpper(int id)
 int IBPLimitAlarm::getLower(int id)
 {
     SubParamID subID = getSubParamID(id);
-    UnitType unit = paramManager->getSubParamUnit(PARAM_IBP, subID);
+    UnitType unit = paramManager.getSubParamUnit(PARAM_IBP, subID);
     return alarmConfig.getLimitAlarmConfig(subID, unit).lowLimit;
 }
 
@@ -349,9 +349,9 @@ int IBPLimitAlarm::getCompare(int value, int id)
     // get sub param id
     SubParamID subID = getSubParamID(id);
     // get cur ibp unit
-    UnitType curUnit = paramManager->getSubParamUnit(PARAM_IBP, subID);
+    UnitType curUnit = paramManager.getSubParamUnit(PARAM_IBP, subID);
     // get default unit
-    UnitType defUnit = paramInfo->getUnitOfSubParam(subID);
+    UnitType defUnit = paramInfo.getUnitOfSubParam(subID);
     // get limit config
     LimitAlarmConfig limitConfig = alarmConfig.getLimitAlarmConfig(subID, curUnit);
 
