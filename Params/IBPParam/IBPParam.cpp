@@ -203,9 +203,12 @@ void IBPParam::exitDemo()
     ch1Data.dia = InvData();
     ch1Data.mean = InvData();
     ch1Data.pr = InvData();
+    _chnData[IBP_CHN_1].needZero = true;
     IBPTrendWidget *ch1Trend = _chnData[IBP_CHN_1].trendWidget;
     if (ch1Trend)
     {
+        /* exit demo, need to zero again, set zero flag to false */
+        ch1Trend->setZeroFlag(false);
         ch1Trend->setData(InvData(), InvData(), InvData());
     }
 
@@ -214,9 +217,12 @@ void IBPParam::exitDemo()
     ch2Data.dia = InvData();
     ch2Data.mean = InvData();
     ch2Data.pr = InvData();
+    _chnData[IBP_CHN_2].needZero = true;
     IBPTrendWidget *ch2Trend = _chnData[IBP_CHN_2].trendWidget;
     if (ch2Trend)
     {
+        /* exit demo, need to zero again, set zero flag to false */
+        ch2Trend->setZeroFlag(false);
         ch2Trend->setData(InvData(), InvData(), InvData());
     }
     ecgDupParam.updatePR(InvData(), PR_SOURCE_IBP);
