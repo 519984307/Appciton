@@ -120,6 +120,13 @@ void IBPTrendWidget::setEntitle(IBPLabel entitle)
 {
     setName(IBPSymbol::convert(entitle));
     _entitle = entitle;
+    // 未校零，提示校零
+    if (!_isZero)
+    {
+        setShowStacked(0);
+        return;
+    }
+
     if (entitle >= IBP_LABEL_CVP && entitle <= IBP_LABEL_ICP)
     {
         setShowStacked(2);
