@@ -45,10 +45,8 @@ IBPParam::IBPParam() : Param(PARAM_IBP),  _provider(NULL),  _connectedProvider(f
         _chnData[i].lastZeroResult = false;
         _chnData[i].calibReply = false;
         _chnData[i].lastCalibResult = false;
+        _chnData[i].paramData.pressureName = getEntitle(static_cast<IBPChannel> (i));
     }
-
-    _chnData[IBP_CHN_1].paramData.pressureName = IBP_LABEL_ART;
-    _chnData[IBP_CHN_2].paramData.pressureName = IBP_LABEL_PA;
 
     ibpScaleList.clear();
     IBPScaleInfo manualScale;
