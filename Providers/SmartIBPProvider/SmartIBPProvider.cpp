@@ -370,7 +370,6 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
             ch1Val = (ch1Val - 0x320) / 8;
         }
 
-        chn1Data.sensorOff = ch1SensorOff;
         if (ch1SensorOff || ibpParam.channelNeedZero(IBP_CHN_1))
         {
             chn1Data.sys = InvData();
@@ -381,6 +380,12 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
         else
         {
             setChannelData(&chn1Data, ch1Type, ch1Val);
+        }
+
+        if (chn1Data.sensorOff != ch1SensorOff)
+        {
+            chn1Data.sensorOff = ch1SensorOff;
+            ibpParam.setLeadStatus(IBP_CHN_1, ch1SensorOff);
         }
 
         bool ch2SensorOff = data[5] & 0x40;
@@ -404,7 +409,6 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
             }
         }
 
-        chn2Data.sensorOff = ch2SensorOff;
         if (ch2SensorOff || ibpParam.channelNeedZero(IBP_CHN_2))
         {
             chn2Data.sys = InvData();
@@ -417,8 +421,11 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
             setChannelData(&chn2Data, ch2Type, ch2Val);
         }
 
-        ibpParam.setLeadStatus(IBP_CHN_1, ch1SensorOff);
-        ibpParam.setLeadStatus(IBP_CHN_2, ch2SensorOff);
+        if (chn2Data.sensorOff != ch2SensorOff)
+        {
+            chn2Data.sensorOff = ch2SensorOff;
+            ibpParam.setLeadStatus(IBP_CHN_2, ch2SensorOff);
+        }
 
         bool chn1WaveInvalid  = ch1SensorOff;
         if (ch1Wave == INVALID_MEASURE_VALUE)

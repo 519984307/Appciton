@@ -236,13 +236,22 @@ void WitleafProvider::handlePacket(unsigned char *data, int len)
         case IBP_RSP_CYCLE_REPORT:
         {
             unsigned char circleReport = data[3];
-            _status.ibp1LeadStatus = (circleReport & BIT0) ? true : false;
-            _status.ibp2LeadStatus = (circleReport & BIT1) ? true : false;
+            bool chn1LeadStatus = (circleReport & BIT0) ? true : false;
+            bool chn2LeadStatus = (circleReport & BIT1) ? true : false;
             _status.tbLeadStatus   = (circleReport & BIT2) ? true : false;
             _status.tiLeadStatus   = (circleReport & BIT3) ? true : false;
             _status.modulePowerStatus = (circleReport & BIT4) ? true : false;
-            ibpParam.setLeadStatus(IBP_CHN_1, _status.ibp1LeadStatus);
-            ibpParam.setLeadStatus(IBP_CHN_2, _status.ibp2LeadStatus);
+            if (_status.ibp1LeadStatus != chn1LeadStatus)
+            {
+                _status.ibp1LeadStatus = chn1LeadStatus;
+                ibpParam.setLeadStatus(IBP_CHN_1, _status.ibp1LeadStatus);
+            }
+
+            if (_status.ibp2LeadStatus != chn2LeadStatus)
+            {
+                _status.ibp2LeadStatus = chn2LeadStatus;
+                ibpParam.setLeadStatus(IBP_CHN_2, _status.ibp2LeadStatus);
+            }
             break;
         }
         case IBP_RSP_ZERO_RESULT:
@@ -543,6 +552,10 @@ WitleafProvider::WitleafProvider(): Provider("WITLEAF_IBP"), IBPProviderIFace(),
 {
     UartAttrDesc portAttr(115200, 8, 'O', 1);
     initPort(portAttr);
+
+    // init ibp lead status
+    _status.ibp1LeadStatus = true;
+    _status.ibp2LeadStatus = true;
 }
 
 /**************************************************************************************************
