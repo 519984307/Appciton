@@ -226,6 +226,13 @@ unsigned short COParam::getTi() const
     return pimpl->tiVal;
 }
 
+unsigned short COParam::getManualTi()
+{
+    int temp = 20;
+    currentConfig.getNumValue("CO|InjectionTemp", temp);
+    return temp;
+}
+
 /**************************************************************************************************
  * set injection volumn.
  *************************************************************************************************/
@@ -254,13 +261,6 @@ void COParam::measureCtrl(COMeasureCtrl ctrl)
     {
         pimpl->provider->measureCtrl(ctrl);
     }
-}
-
-COMeasureCtrl COParam::getMeasureCtrl()
-{
-    int ctrl = CO_MEASURE_STOP;
-    currentConfig.getNumValue("CO|MeasureMode", ctrl);
-    return (COMeasureCtrl)ctrl;
 }
 
 void COParam::startMeasure()
@@ -382,8 +382,6 @@ COParam::COParam() : Param(PARAM_CO), pimpl(new COParamPrivate())
 
     if (pimpl->tiSrc == CO_TI_SOURCE_MANUAL)
     {
-        int temp = InvData();
-        currentConfig.getNumValue("CO|InjectionTemp", temp);
-        pimpl->tiVal = temp;
+        pimpl->tiVal = getManualTi();
     }
 }

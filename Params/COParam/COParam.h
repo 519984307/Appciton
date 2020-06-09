@@ -109,7 +109,6 @@ public:
      * @param ctrl
      */
     void measureCtrl(COMeasureCtrl ctrl);
-    COMeasureCtrl getMeasureCtrl(void);
 
     /**
      * @brief startMeasure start co measure
@@ -161,6 +160,12 @@ public:
      * @return the current ti
      */
     unsigned short getTi(void) const;
+
+    /**
+     * @brief getManualTi get the manual ti value
+     * @return  the manual ti value
+     */
+    unsigned short getManualTi(void);
 
     /**
      * @brief getAvgCo get the average Cardiac output

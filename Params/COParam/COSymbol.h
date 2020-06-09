@@ -44,13 +44,4 @@ public:
         };
         return symbol[index];
     }
-
-    static const char *convert(COMeasureCtrl index)
-    {
-        static const char *symbol[CO_MEASURE_NR] =
-        {
-            "COEnd", "COStart"
-        };
-        return symbol[index];
-    }
 };

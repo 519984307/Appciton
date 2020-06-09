@@ -272,12 +272,11 @@ CalibrateFailed,校准失败,Calibrate Failed
 COMenu,C.O.,C.O.
 Auto,自动,Auto
 Manual,手动,Manual
-CORatio,C.O.系数,C.O.Ratio
-COStart,开始,Start
-COEnd,取消,End
-InjectionTempSource,注射液温度来源,Injection Temp Source
-InjectionTemp,注射液温度,Injection Temp
-InjectionVolumn,注射液体积,Injection Volumn
+ComputationConst,C.O.系数,Computation Constant
+InjectateTempSource,注射液温度来源,Injectate Temp Source
+InjectateTemp,注射液温度,Injectate Temp
+InjectateVolume,注射液体积,Injectate Volume
+COMeasure,C.O.测量,C.O. Measure
 MeasureMode,测量模式,Measure Mode
 TEMP,Temp,Temp
 T1,T1,T1

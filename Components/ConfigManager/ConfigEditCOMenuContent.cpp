@@ -28,16 +28,14 @@ class ConfigEditCOMenuContentPrivate
 public:
     enum MenuItem
     {
-        ITEM_CBO_CO_RATIO = 0,
-        ITEM_CBO_INJECT_TEMP_SOURCE,
-        ITEM_CBO_INJECTION_TEMP,
-        ITEM_CBO_INJECTION_VOLUMN,
-        ITEM_CBO_MEASURE_CONTROL,
+        ITEM_BTN_CO_CONST = 0,
+        ITEM_CBO_TI_SOURCE,
+        ITEM_BTN_MANUAL_TI,
+        ITEM_BTN_INJECTATE_VOLUME,
     };
 
     explicit ConfigEditCOMenuContentPrivate(Config *const config)
-        : measureSta(CO_MEASURE_STOP),
-          config(config)
+          : config(config)
     {
     }
 
@@ -46,47 +44,43 @@ public:
 
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, Button *> buttons;
-    COMeasureCtrl measureSta;              // 测量状态
     Config * const config;
 };
 
 void ConfigEditCOMenuContentPrivate::loadOptions()
 {
-    buttons[ITEM_CBO_CO_RATIO]->blockSignals(true);
-    buttons[ITEM_CBO_INJECTION_TEMP]->blockSignals(true);
-    buttons[ITEM_CBO_INJECTION_VOLUMN]->blockSignals(true);
-    buttons[ITEM_CBO_MEASURE_CONTROL]->blockSignals(true);
-    combos[ITEM_CBO_INJECT_TEMP_SOURCE]->blockSignals(true);
+    buttons[ITEM_BTN_CO_CONST]->blockSignals(true);
+    buttons[ITEM_BTN_MANUAL_TI]->blockSignals(true);
+    buttons[ITEM_BTN_INJECTATE_VOLUME]->blockSignals(true);
+    combos[ITEM_CBO_TI_SOURCE]->blockSignals(true);
 
     int number = 0;
     config->getNumValue("CO|Ratio", number);
-    buttons[ITEM_CBO_CO_RATIO]->setText(QString::number(static_cast<double>(number) / 1000));
+    buttons[ITEM_BTN_CO_CONST]->setText(QString::number(number * 1.0 / 1000, 'f', 3));
     number = 0;
     config->getNumValue("CO|InjectionTempSource", number);
-    combos[ITEM_CBO_INJECT_TEMP_SOURCE]->setCurrentIndex(number);
+    combos[ITEM_CBO_TI_SOURCE]->setCurrentIndex(number);
     number = 0;
-    if (combos[ITEM_CBO_INJECT_TEMP_SOURCE]->currentIndex() == CO_TI_SOURCE_AUTO)
+    if (combos[ITEM_CBO_TI_SOURCE]->currentIndex() == CO_TI_SOURCE_AUTO)
     {
-        buttons[ITEM_CBO_INJECTION_TEMP]->setEnabled(false);
+        buttons[ITEM_BTN_MANUAL_TI]->setEnabled(false);
     }
     else
     {
-        buttons[ITEM_CBO_INJECTION_TEMP]->setEnabled(true);
+        buttons[ITEM_BTN_MANUAL_TI]->setEnabled(true);
     }
+
+    number = 20;
     config->getNumValue("CO|InjectionTemp", number);
-    buttons[ITEM_CBO_INJECTION_TEMP]->setText(QString::number(static_cast<double>(number) / 10));
+    buttons[ITEM_BTN_MANUAL_TI]->setText(QString::number(number * 1.0 / 10, 'f', 1));
     number = 0;
     config->getNumValue("CO|InjectionVolumn", number);
-    buttons[ITEM_CBO_INJECTION_VOLUMN]->setText(QString::number(number));
-    number = 0;
-    config->getNumValue("CO|MeasureMode", number);
-    buttons[ITEM_CBO_MEASURE_CONTROL]->setText(trs(COSymbol::convert((COMeasureCtrl)number)));
+    buttons[ITEM_BTN_INJECTATE_VOLUME]->setText(QString::number(number));
 
-    buttons[ITEM_CBO_CO_RATIO]->blockSignals(false);
-    buttons[ITEM_CBO_INJECTION_TEMP]->blockSignals(false);
-    buttons[ITEM_CBO_INJECTION_VOLUMN]->blockSignals(false);
-    buttons[ITEM_CBO_MEASURE_CONTROL]->blockSignals(false);
-    combos[ITEM_CBO_INJECT_TEMP_SOURCE]->blockSignals(false);
+    buttons[ITEM_BTN_CO_CONST]->blockSignals(false);
+    buttons[ITEM_BTN_MANUAL_TI]->blockSignals(false);
+    buttons[ITEM_BTN_INJECTATE_VOLUME]->blockSignals(false);
+    combos[ITEM_CBO_TI_SOURCE]->blockSignals(false);
 }
 
 ConfigEditCOMenuContent::ConfigEditCOMenuContent(Config * const config)
@@ -105,15 +99,13 @@ void ConfigEditCOMenuContent::readyShow()
     d_ptr->loadOptions();
     bool isOnlyToRead = configManager.isReadOnly();
     d_ptr->combos[ConfigEditCOMenuContentPrivate::
-            ITEM_CBO_INJECT_TEMP_SOURCE]->setEnabled(!isOnlyToRead);
+            ITEM_CBO_TI_SOURCE]->setEnabled(!isOnlyToRead);
     d_ptr->buttons[ConfigEditCOMenuContentPrivate::
-            ITEM_CBO_CO_RATIO]->setEnabled(!isOnlyToRead);
+            ITEM_BTN_CO_CONST]->setEnabled(!isOnlyToRead);
     d_ptr->buttons[ConfigEditCOMenuContentPrivate::
-            ITEM_CBO_INJECTION_TEMP]->setEnabled(!isOnlyToRead);
+            ITEM_BTN_MANUAL_TI]->setEnabled(!isOnlyToRead);
     d_ptr->buttons[ConfigEditCOMenuContentPrivate::
-            ITEM_CBO_INJECTION_VOLUMN]->setEnabled(!isOnlyToRead);
-    d_ptr->buttons[ConfigEditCOMenuContentPrivate::
-            ITEM_CBO_MEASURE_CONTROL]->setEnabled(!isOnlyToRead);
+            ITEM_BTN_INJECTATE_VOLUME]->setEnabled(!isOnlyToRead);
 }
 
 void ConfigEditCOMenuContent::layoutExec()
@@ -124,63 +116,57 @@ void ConfigEditCOMenuContent::layoutExec()
     Button *button;
     QLabel *label;
     int itemID;
+    int count = 0;
 
     // Ratio
-    label = new QLabel(trs("CORatio"));
-    layout->addWidget(label, d_ptr->buttons.count() + d_ptr->combos.count(), 0);
+    label = new QLabel(trs("ComputationConst"));
+    layout->addWidget(label, count, 0);
     button = new Button("0.542");
     button ->setButtonStyle(Button::ButtonTextOnly);
-    itemID = static_cast<int>(ConfigEditCOMenuContentPrivate::ITEM_CBO_CO_RATIO);
+    itemID = static_cast<int>(ConfigEditCOMenuContentPrivate::ITEM_BTN_CO_CONST);
     button->setProperty("Item", qVariantFromValue(itemID));
     connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
-    layout->addWidget(button, d_ptr->buttons.count() + d_ptr->combos.count(), 1);
-    d_ptr->buttons.insert(ConfigEditCOMenuContentPrivate::ITEM_CBO_CO_RATIO, button);
+    layout->addWidget(button, count, 1);
+    d_ptr->buttons.insert(ConfigEditCOMenuContentPrivate::ITEM_BTN_CO_CONST, button);
+    count++;
 
     // temp source
-    label = new QLabel(trs("InjectionTempSource"));
-    layout->addWidget(label, d_ptr->buttons.count() + d_ptr->combos.count(), 0);
+    label = new QLabel(trs("InjectateTempSource"));
+    layout->addWidget(label, count, 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs(COSymbol::convert(CO_TI_SOURCE_AUTO))
                        << trs(COSymbol::convert(CO_TI_SOURCE_MANUAL)));
-    itemID = static_cast<int>(ConfigEditCOMenuContentPrivate::ITEM_CBO_INJECT_TEMP_SOURCE);
+    itemID = static_cast<int>(ConfigEditCOMenuContentPrivate::ITEM_CBO_TI_SOURCE);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->buttons.count() + d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(ConfigEditCOMenuContentPrivate::ITEM_CBO_INJECT_TEMP_SOURCE, comboBox);
+    layout->addWidget(comboBox, count, 1);
+    d_ptr->combos.insert(ConfigEditCOMenuContentPrivate::ITEM_CBO_TI_SOURCE, comboBox);
+    count++;
 
     // injection temp
-    label = new QLabel(trs("InjectionTemp"));
-    layout->addWidget(label, d_ptr->buttons.count() + d_ptr->combos.count(), 0);
+    label = new QLabel(QString("%1 (%2)").arg(trs("InjectateTemp")).arg(trs("celsius")));
+    layout->addWidget(label, count, 0);
     button = new Button("20");
     button ->setButtonStyle(Button::ButtonTextOnly);
-    itemID = static_cast<int>(ConfigEditCOMenuContentPrivate::ITEM_CBO_INJECTION_TEMP);
+    itemID = static_cast<int>(ConfigEditCOMenuContentPrivate::ITEM_BTN_MANUAL_TI);
     button->setProperty("Item", qVariantFromValue(itemID));
     connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
-    layout->addWidget(button, d_ptr->buttons.count() + d_ptr->combos.count(), 1);
-    d_ptr->buttons.insert(ConfigEditCOMenuContentPrivate::ITEM_CBO_INJECTION_TEMP, button);
+    layout->addWidget(button, count, 1);
+    d_ptr->buttons.insert(ConfigEditCOMenuContentPrivate::ITEM_BTN_MANUAL_TI, button);
+    count++;
 
     // injection volumn
-    label = new QLabel(trs("InjectionVolumn"));
-    layout->addWidget(label, d_ptr->buttons.count() + d_ptr->combos.count(), 0);
+    label = new QLabel(QString("%1 (ml)").arg(trs("InjectateVolume")));
+    layout->addWidget(label, count, 0);
     button = new Button("10");
     button ->setButtonStyle(Button::ButtonTextOnly);
-    itemID = static_cast<int>(ConfigEditCOMenuContentPrivate::ITEM_CBO_INJECTION_VOLUMN);
+    itemID = static_cast<int>(ConfigEditCOMenuContentPrivate::ITEM_BTN_INJECTATE_VOLUME);
     button->setProperty("Item", qVariantFromValue(itemID));
     connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
-    layout->addWidget(button, d_ptr->buttons.count() + d_ptr->combos.count(), 1);
-    d_ptr->buttons.insert(ConfigEditCOMenuContentPrivate::ITEM_CBO_INJECTION_VOLUMN, button);
-
-    // measure contrl
-    label = new QLabel(trs("MeasureControl"));
-    layout->addWidget(label, d_ptr->buttons.count() + d_ptr->combos.count(), 0);
-    button = new Button(trs("COStart"));
-    button ->setButtonStyle(Button::ButtonTextOnly);
-    itemID = static_cast<int>(ConfigEditCOMenuContentPrivate::ITEM_CBO_MEASURE_CONTROL);
-    button->setProperty("Item", qVariantFromValue(itemID));
-    connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
-    layout->addWidget(button, d_ptr->buttons.count() + d_ptr->combos.count(), 1);
-    d_ptr->buttons.insert(ConfigEditCOMenuContentPrivate::ITEM_CBO_MEASURE_CONTROL, button);
+    layout->addWidget(button, count, 1);
+    d_ptr->buttons.insert(ConfigEditCOMenuContentPrivate::ITEM_BTN_INJECTATE_VOLUME, button);
+    count++;
 
     // 添加报警设置链接
     Button *btn = new Button(QString("%1%2").
@@ -189,8 +175,9 @@ void ConfigEditCOMenuContent::layoutExec()
     btn->setButtonStyle(Button::ButtonTextOnly);
     layout->addWidget(btn, d_ptr->combos.count() + d_ptr->buttons.count(), 1);
     connect(btn, SIGNAL(released()), this, SLOT(onAlarmBtnReleased()));
+    count++;
 
-    layout->setRowStretch(d_ptr->combos.count() + d_ptr->buttons.count() + 1, 1);
+    layout->setRowStretch(count, 1);
 }
 
 void ConfigEditCOMenuContent::onComboBoxIndexChanged(int index)
@@ -198,21 +185,22 @@ void ConfigEditCOMenuContent::onComboBoxIndexChanged(int index)
     ComboBox *box = qobject_cast<ComboBox *>(sender());
     if (box)
     {
-        ConfigEditCOMenuContentPrivate::MenuItem item
-            = (ConfigEditCOMenuContentPrivate::MenuItem)box->property("Item").toInt();
+        int itemID = box->property("Item").toInt();
+        ConfigEditCOMenuContentPrivate::MenuItem item;
+        item = static_cast<ConfigEditCOMenuContentPrivate::MenuItem>(itemID);
         switch (item)
         {
-        case ConfigEditCOMenuContentPrivate::ITEM_CBO_INJECT_TEMP_SOURCE:
+        case ConfigEditCOMenuContentPrivate::ITEM_CBO_TI_SOURCE:
         {
             if (index == static_cast<int>(CO_TI_SOURCE_MANUAL))
             {
-                d_ptr->buttons.value(ConfigEditCOMenuContentPrivate::ITEM_CBO_INJECTION_TEMP)->setEnabled(true);
+                d_ptr->buttons.value(ConfigEditCOMenuContentPrivate::ITEM_BTN_MANUAL_TI)->setEnabled(true);
             }
             else if (index == static_cast<int>(CO_TI_SOURCE_AUTO))
             {
-                d_ptr->buttons.value(ConfigEditCOMenuContentPrivate::ITEM_CBO_INJECTION_TEMP)->setEnabled(false);
+                d_ptr->buttons.value(ConfigEditCOMenuContentPrivate::ITEM_BTN_MANUAL_TI)->setEnabled(false);
             }
-            int temp = d_ptr->buttons[ConfigEditCOMenuContentPrivate::ITEM_CBO_INJECTION_TEMP]->text().toFloat() * 10;
+            int temp = d_ptr->buttons[ConfigEditCOMenuContentPrivate::ITEM_BTN_MANUAL_TI]->text().toFloat() * 10;
             d_ptr->config->setNumValue("CO|InjectionTemp", (unsigned)temp);
             d_ptr->config->setNumValue("CO|InjectionTempSource", index);
             break;
@@ -228,11 +216,12 @@ void ConfigEditCOMenuContent::onButtonReleased()
     Button *button = qobject_cast<Button *>(sender());
     if (button)
     {
-        ConfigEditCOMenuContentPrivate::MenuItem item
-            = (ConfigEditCOMenuContentPrivate::MenuItem) button->property("Item").toInt();
+        int itemID = button->property("Item").toInt();;
+        ConfigEditCOMenuContentPrivate::MenuItem item;
+        item = static_cast<ConfigEditCOMenuContentPrivate::MenuItem>(itemID);
         switch (item)
         {
-        case ConfigEditCOMenuContentPrivate::ITEM_CBO_CO_RATIO:
+        case ConfigEditCOMenuContentPrivate::ITEM_BTN_CO_CONST:
         {
             // 调用数字键盘
             KeyInputPanel numberPad(KeyInputPanel::KEY_TYPE_NUMBER, true);
@@ -240,7 +229,7 @@ void ConfigEditCOMenuContent::onButtonReleased()
             QString rec("[0-9]");
             numberPad.setBtnEnable(rec);
             // 设置键盘标题
-            numberPad.setWindowTitle(trs("CORatio"));
+            numberPad.setWindowTitle(trs("ComputationConst"));
             // 最大输入长度
             numberPad.setMaxInputLength(5);
             // 固定为数字键盘
@@ -273,7 +262,7 @@ void ConfigEditCOMenuContent::onButtonReleased()
             }
             break;
         }
-        case ConfigEditCOMenuContentPrivate::ITEM_CBO_INJECTION_TEMP:
+        case ConfigEditCOMenuContentPrivate::ITEM_BTN_MANUAL_TI:
         {
             // 调用数字键盘
             KeyInputPanel numberPad(KeyInputPanel::KEY_TYPE_NUMBER, true);
@@ -281,7 +270,7 @@ void ConfigEditCOMenuContent::onButtonReleased()
             QString rec("[0-9]");
             numberPad.setBtnEnable(rec);
             // 设置键盘标题
-            numberPad.setWindowTitle(trs("InjectionTemp"));
+            numberPad.setWindowTitle(trs("InjectateTemp"));
             // 最大输入长度
             numberPad.setMaxInputLength(4);
             // 固定为数字键盘
@@ -315,15 +304,16 @@ void ConfigEditCOMenuContent::onButtonReleased()
             }
             break;
         }
-        case ConfigEditCOMenuContentPrivate::ITEM_CBO_INJECTION_VOLUMN:
+        case ConfigEditCOMenuContentPrivate::ITEM_BTN_INJECTATE_VOLUME:
         {
             // 调用数字键盘
-            KeyInputPanel numberPad(KeyInputPanel::KEY_TYPE_NUMBER, true);
+            KeyInputPanel numberPad(KeyInputPanel::KEY_TYPE_NUMBER, false);
             // 使能键盘的有效字符
             QString rec("[0-9]");
             numberPad.setBtnEnable(rec);
+            numberPad.setSpaceEnable(false);
             // 设置键盘标题
-            numberPad.setWindowTitle(trs("InjectionVolumn"));
+            numberPad.setWindowTitle(trs("InjectateVolume"));
             // 最大输入长度
             numberPad.setMaxInputLength(3);
             // 固定为数字键盘
@@ -352,21 +342,6 @@ void ConfigEditCOMenuContent::onButtonReleased()
                         messageBox.exec();
                     }
                 }
-            }
-            break;
-        }
-        case ConfigEditCOMenuContentPrivate::ITEM_CBO_MEASURE_CONTROL:
-        {
-            d_ptr->config->setNumValue("CO|MeasureMode", static_cast<int>(d_ptr->measureSta));
-            if (d_ptr->measureSta == CO_MEASURE_STOP)
-            {
-                button->setText(trs("COEnd"));
-                d_ptr->measureSta = CO_MEASURE_START;
-            }
-            else if (d_ptr->measureSta == CO_MEASURE_START)
-            {
-                button->setText(trs("COStart"));
-                d_ptr->measureSta = CO_MEASURE_STOP;
             }
             break;
         }
