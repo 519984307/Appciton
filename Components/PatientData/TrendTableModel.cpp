@@ -1241,8 +1241,7 @@ QString TrendTableModelPrivate::getParamName(int section)
     case SUB_PARAM_ICP_MAP:
     case SUB_PARAM_AUXP1_SYS:
     case SUB_PARAM_AUXP2_SYS:
-        str = paramInfo.getSubParamName(id);
-        str = str.left(str.length() - 4);
+        str = paramInfo.getIBPPressName(id);
         break;
     case SUB_PARAM_T1:
         str = paramInfo.getSubParamName(id);

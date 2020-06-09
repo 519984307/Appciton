@@ -483,12 +483,12 @@ const char *ParamInfo::getIBPPressName(SubParamID id)
     case SUB_PARAM_AUXP1_DIA:
     case SUB_PARAM_AUXP1_MAP:
     case SUB_PARAM_AUXP1_PR:
-        return "AUXP1";
+        return "P1";
     case SUB_PARAM_AUXP2_SYS:
     case SUB_PARAM_AUXP2_DIA:
     case SUB_PARAM_AUXP2_MAP:
     case SUB_PARAM_AUXP2_PR:
-        return "AUXP2";
+        return "P2";
     default:
         return "";
     }
@@ -544,9 +544,9 @@ const char *ParamInfo::getParamWaveformName(WaveformID id)
     case WAVE_ICP:
         return "ICP";
     case WAVE_AUXP1:
-        return "AUXP1";
+        return "P1";
     case WAVE_AUXP2:
-        return "AUXP2";
+        return "P2";
     default:
         break;
     }
