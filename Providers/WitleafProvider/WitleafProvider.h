@@ -196,7 +196,7 @@ public:     // IBPProviderIFace的接口
     virtual void setInjectionVolume(unsigned char /*volume*/);
 
     // 漂浮导管系数设定
-    virtual void setDuctRatio(unsigned short /*ratio*/);
+    virtual void setCatheterCoeff(unsigned short /*ratio*/);
 
     // IBP 校零/校准时间设定
     virtual void setTimeZero(IBPChannel /*IBP1/2*/, IBPCalibration /*calibration*/,

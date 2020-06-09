@@ -287,7 +287,7 @@ void WitleafProvider::handlePacket(unsigned char *data, int len)
             tbData <<= 8;
             tbData |= data[4];
 
-            coParam.realTimeTBData(tbData);
+            coParam.setTb(tbData);
             break;
         }
         case CO_RSP_MEASURE_RESULT:
@@ -300,7 +300,7 @@ void WitleafProvider::handlePacket(unsigned char *data, int len)
             ciData <<= 8;
             ciData |= data[6];
 
-            coParam.measureResultCO(coData, ciData);
+            coParam.setMeasureResult(coData, ciData);
             break;
         }
         case CO_RSP_HEMODYMIC_RESULT:
@@ -515,7 +515,7 @@ void WitleafProvider::setInjectionVolume(unsigned char volume)
  * 漂浮导管系数设定
  *
  *************************************************************************************************/
-void WitleafProvider::setDuctRatio(unsigned short ratio)
+void WitleafProvider::setCatheterCoeff(unsigned short ratio)
 {
     unsigned char data[2] = {(unsigned char)(ratio >> 8 & 0xff), (unsigned char)(ratio & 0xff)};
     sendCmd(2, PARAM_TYPE_CO, IBP_DATA_DC, CO_CMD_SET_DUCT_RATIO, data, NULL);

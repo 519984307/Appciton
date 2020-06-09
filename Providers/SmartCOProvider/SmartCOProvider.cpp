@@ -46,8 +46,8 @@ enum SmartCOMeasureCmdId {
 /* measurement status 1 flags defination */
 /* got measure result */
 #define SMART_CO_STAT1_GOT_RESULT   (1 << 7)
-/* floating pin is not connected */
-#define SMART_CO_STAT1_FLOAT_PIPE_DISCONNECT (1 << 6)
+/* Swan-Ganz catheter is not connected */
+#define SMART_CO_STAT1_CATHETER_DISCONNECT (1 << 6)
 /* injection temp sensor is disconnect */
 #define SMART_CO_STAT1_TI_SENSOR_DISCONNECT (1 << 5)
 /* data error */
@@ -78,7 +78,7 @@ class SmartCOProviderPrivate
 {
 public:
     explicit SmartCOProviderPrivate(SmartCOProvider * const q_ptr)
-        : q_ptr(q_ptr), tiSrc(CO_TI_SOURCE_AUTO), ratio(525)
+        : q_ptr(q_ptr), tiSrc(CO_TI_SOURCE_AUTO), catheterCoeff(525)
     {}
 
 
@@ -158,7 +158,7 @@ public:
 
     SmartCOProvider * const q_ptr;
     COTiSource tiSrc;   /* ti source */
-    unsigned short ratio; /* pipe ratio */
+    unsigned short catheterCoeff; /* swan-ganz catheter coefficient */
 };
 
 SmartCOProvider::SmartCOProvider(const QString &port)
@@ -252,9 +252,9 @@ void SmartCOProvider::dataArrived()
     }
 }
 
-void SmartCOProvider::setDuctRatio(unsigned short ratio)
+void SmartCOProvider::setCatheterCoeff(unsigned short coeff)
 {
-    pimpl->ratio = ratio;
+    pimpl->catheterCoeff = coeff;
 }
 
 void SmartCOProvider::setInjectionVolume(unsigned char vol)
@@ -302,7 +302,8 @@ void SmartCOProviderPrivate::handlePacket(quint8 ID, const quint8 *data, int len
 
     case RECV_MSG_REALTIME_WAVE:
     {
-        quint16 wave = (data[1] << 8) + data[0];
+        short wave = (data[1] << 8) + data[0];
+        coParam.addMeasureWaveData(wave);
     }
         break;
 
@@ -313,9 +314,10 @@ void SmartCOProviderPrivate::handlePacket(quint8 ID, const quint8 *data, int len
         short co = (data[5] << 8) + data[4];
 
         /* calc C.O. value, scaled by 10 */
-        int calcCO = co * ratio / 128 / 100;
+        int calcCO = co * catheterCoeff / 128 / 100;
         quint8 stat1 = data[6];
         quint8 stat2 = data[7];
+        qDebug() << tb << ti << co << hex << showbase << stat1 << stat2;
     }
         break;
     default:

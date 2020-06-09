@@ -43,7 +43,7 @@ protected:
     /* COProviderIFace */
 public:
     /* override */
-    void setDuctRatio(unsigned short ratio);
+    void setCatheterCoeff(unsigned short coeff);
 
     /* override */
     void setInjectionVolume(unsigned char vol);

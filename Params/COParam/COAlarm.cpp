@@ -77,13 +77,13 @@ int COLimitAlarm::getValue(int id)
     {
     case CO_LIMIT_ALARM_CO_LOW:
     case CO_LIMIT_ALARM_CO_HIGH:
-        return coParam.getCOData();
+        return coParam.getAvgCo();
     case CO_LIMIT_ALARM_CI_LOW:
     case CO_LIMIT_ALARM_CI_HIGH:
-        return coParam.getCIData();
+        return coParam.getAvgCi();
     case CO_LIMIT_ALARM_TB_LOW:
     case CO_LIMIT_ALARM_TB_HIGH:
-        return coParam.getTBData();
+        return coParam.getTb();
     default:
         return -1;
     }

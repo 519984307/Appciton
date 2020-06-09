@@ -31,7 +31,14 @@ public:
     virtual void setInjectionVolume(unsigned char /*volume*/){}
 
     // 漂浮导管系数设定, x1000
-    virtual void setDuctRatio(unsigned short /*ratio*/){}
+    virtual void setCatheterCoeff(unsigned short /*ratio*/){}
 
+    /* get the board type */
     virtual COModuleType getCOModuleType() { return CO_MODULE_NR; }
+
+    /**
+     * @brief getMeasureWaveRate the upload measure wave rate
+     * @return the wave data rate
+     */
+    virtual short getMeasureWaveRate() { return 25;}
 };

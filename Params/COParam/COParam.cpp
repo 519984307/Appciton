@@ -11,7 +11,10 @@
 #include "COParam.h"
 #include "COTrendWidget.h"
 #include "ConfigManager.h"
+#include <QVector>
 
+/* store 6 measure result at most */
+#define MAX_MEASURE_CACHE   6
 
 class COParamPrivate
 {
@@ -19,23 +22,31 @@ public:
     COParamPrivate()
         : provider(NULL),
           trendWidget(NULL),
-          coVal(NULL),
-          ciVal(NULL),
-          tbVal(NULL),
-          tiVal(NULL),
-          connectedProvider(false)
+          tiSrc(CO_TI_SOURCE_MANUAL),
+          coAvgVal(InvData()),
+          ciAvgVal(InvData()),
+          tbVal(InvData()),
+          tiVal(InvData()),
+          connectedProvider(false),
+          isMeasuring(false)
     {}
 
     COProviderIFace *provider;
 
     COTrendWidget *trendWidget;
 
-    short coVal;
-    short ciVal;
+    COTiSource tiSrc;
+
+    short coAvgVal;
+    short ciAvgVal;
     short tbVal;
     short tiVal;
 
     bool connectedProvider;
+    bool isMeasuring;
+
+    COMeasureData curMeasureData;
+    QVector<COMeasureData> cacheMeasureData;
 };
 
 /**************************************************************************************************
@@ -62,21 +73,21 @@ void COParam::handDemoWaveform(WaveformID /*id*/, short /*data*/)
  *************************************************************************************************/
 void COParam::handDemoTrendData()
 {
-    pimpl->coVal = 30;
-    pimpl->ciVal = 15;
+    pimpl->coAvgVal = 50;
+    pimpl->ciAvgVal = 18;
     pimpl->tbVal = 370;
 
     if (pimpl->trendWidget)
     {
-        pimpl->trendWidget->setMeasureResult(pimpl->coVal, pimpl->ciVal);
+        pimpl->trendWidget->setMeasureResult(pimpl->coAvgVal, pimpl->ciAvgVal);
         pimpl->trendWidget->setTBData(pimpl->tbVal);
     }
 }
 
 void COParam::exitDemo()
 {
-    pimpl->coVal = InvData();
-    pimpl->ciVal = InvData();
+    pimpl->coAvgVal = InvData();
+    pimpl->ciAvgVal = InvData();
     pimpl->tbVal = InvData();
 
     if (pimpl->trendWidget)
@@ -117,11 +128,11 @@ short COParam::getSubParamValue(SubParamID id)
     switch (id)
     {
     case SUB_PARAM_CO_CO:
-        return getCOData();
+        return getAvgCo();
     case SUB_PARAM_CO_CI:
-        return getCIData();
+        return getAvgCi();
     case SUB_PARAM_CO_TB:
-        return getTBData();
+        return getTb();
     default:
         return InvData();
     }
@@ -157,19 +168,16 @@ void COParam::setCOTrendWidget(COTrendWidget *trendWidget)
     pimpl->trendWidget = trendWidget;
 }
 
-/**************************************************************************************************
- * C.O.系数。
- *************************************************************************************************/
-void COParam::setCORatio(unsigned short coRatio)
+void COParam::setCatheterCoeff(unsigned short coef)
 {
-    currentConfig.setNumValue("CO|Ratio", (unsigned)coRatio);
+    currentConfig.setNumValue("CO|Ratio", (unsigned)coef);
     if (pimpl->provider)
     {
-        pimpl->provider->setDuctRatio(coRatio);
+        pimpl->provider->setCatheterCoeff(coef);
     }
 }
 
-unsigned short COParam::getCORatio()
+unsigned short COParam::getCatheterCoeff()
 {
     unsigned ratio = 0;
     currentConfig.getNumValue("CO|Ratio", ratio);
@@ -179,43 +187,50 @@ unsigned short COParam::getCORatio()
 /**************************************************************************************************
  * set source of injection temp.
  *************************************************************************************************/
-void COParam::setTempSource(COTiSource source, unsigned short temp)
+void COParam::setTiSource(COTiSource source, unsigned short temp)
 {
+    pimpl->tiSrc = source;
+
     currentConfig.setNumValue("CO|InjectionTempSource", static_cast<int>(source));
-    currentConfig.setNumValue("CO|InjectionTemp", static_cast<unsigned>(temp));
+    if (source == CO_TI_SOURCE_MANUAL)
+    {
+        currentConfig.setNumValue("CO|InjectionTemp", static_cast<int>(temp));
+        pimpl->tiVal = temp;
+    }
+    else
+    {
+        pimpl->tiVal = InvData();
+    }
+
     if (pimpl->provider)
     {
         pimpl->provider->setTiSource(source, temp);
     }
 }
 
-COTiSource COParam::getTempSource()
+COTiSource COParam::getTiSource() const
 {
-    int source = CO_TI_SOURCE_AUTO;
-    currentConfig.getNumValue("CO|InjectionTempSource", source);
-    return static_cast<COTiSource>(source);
+    return pimpl->tiSrc;
 }
 
-unsigned short COParam::getInjectionTemp()
+unsigned short COParam::getTi() const
 {
-    int temp = 0;
-    currentConfig.getNumValue("CO|InjectionTemp", temp);
-    return temp;
+    return pimpl->tiVal;
 }
 
 /**************************************************************************************************
  * set injection volumn.
  *************************************************************************************************/
-void COParam::setInjectionVolumn(unsigned char volumn)
+void COParam::setInjectionVolume(unsigned char volume)
 {
-    currentConfig.setNumValue("CO|InjectionVolumn", (unsigned)volumn);
+    currentConfig.setNumValue("CO|InjectionVolumn", (unsigned)volume);
     if (pimpl->provider)
     {
-        pimpl->provider->setInjectionVolume(volumn);
+        pimpl->provider->setInjectionVolume(volume);
     }
 }
 
-unsigned char COParam::getInjectionVolumn()
+unsigned char COParam::getInjectionVolume() const
 {
     int volumn = 0;
     currentConfig.getNumValue("CO|InjectionVolumn", volumn);
@@ -240,55 +255,100 @@ COMeasureCtrl COParam::getMeasureCtrl()
     return (COMeasureCtrl)ctrl;
 }
 
+void COParam::startMeasure()
+{
+    if (pimpl->isMeasuring)
+    {
+        /* already start */
+        return;
+    }
+    pimpl->isMeasuring = true;
+
+    if (pimpl->provider)
+    {
+        pimpl->provider->measureCtrl(CO_MEASURE_START);
+    }
+}
+
+bool COParam::isMeasuring() const
+{
+    return pimpl->isMeasuring;
+}
+
+void COParam::stopMeasure()
+{
+    if (!pimpl->isMeasuring)
+    {
+        /* haven't start yet */
+        return;
+    }
+    pimpl->isMeasuring = false;
+
+    if (pimpl->provider)
+    {
+        pimpl->provider->measureCtrl(CO_MEASURE_STOP);
+    }
+}
+
 /**************************************************************************************************
  * C.O. and C.I. data content.
  *************************************************************************************************/
-void COParam::measureResultCO(short coData, short ciData)
+void COParam::setMeasureResult(short co, short ci)
 {
-    pimpl->coVal = coData;
-    pimpl->ciVal = ciData;
-    if (NULL != pimpl->trendWidget)
-    {
-        pimpl->trendWidget->setMeasureResult(coData, ciData);
-    }
+    pimpl->curMeasureData.co = co;
+    pimpl->curMeasureData.ci = ci;
 
-    return;
+    /*  Once we got the result, current measurement should be already stopped */
+    pimpl->isMeasuring = false;
 }
 
 /**************************************************************************************************
  * temp blood data content.
  *************************************************************************************************/
-void COParam::realTimeTBData(short tbData)
+void COParam::setTb(short tb)
 {
-    pimpl->tbVal = tbData;
+    pimpl->tbVal = tb;
     if (NULL != pimpl->trendWidget)
     {
-        pimpl->trendWidget->setTBData(tbData);
+        pimpl->trendWidget->setTBData(tb);
     }
 
     return;
 }
 
+void COParam::setTi(short ti)
+{
+    if (pimpl->tiSrc == CO_TI_SOURCE_AUTO)
+    {
+        pimpl->tiVal = ti;
+    }
+}
+
+void COParam::addMeasureWaveData(short data)
+{
+    pimpl->curMeasureData.measureWave.append(data);
+}
+
 /**************************************************************************************************
  * get C.O. data.
  *************************************************************************************************/
-short COParam::getCOData()
+short COParam::getAvgCo() const
 {
-    return pimpl->coVal;
+    return pimpl->coAvgVal;
 }
 
 /**************************************************************************************************
  * get C.I. data.
  *************************************************************************************************/
-short COParam::getCIData()
+short COParam::getAvgCi() const
 {
-    return pimpl->ciVal;
+    return pimpl->ciAvgVal;
 }
 
 /**************************************************************************************************
  * get TB data.
  *************************************************************************************************/
-short COParam::getTBData()
+short COParam::getTb() const
 {
     return pimpl->tbVal;
 }
@@ -298,4 +358,15 @@ short COParam::getTBData()
  *************************************************************************************************/
 COParam::COParam() : Param(PARAM_CO), pimpl(new COParamPrivate())
 {
+    /* update the TI source */
+    int source = CO_TI_SOURCE_AUTO;
+    currentConfig.getNumValue("CO|InjectionTempSource", source);
+    pimpl->tiSrc = static_cast<COTiSource>(source);
+
+    if (pimpl->tiSrc == CO_TI_SOURCE_MANUAL)
+    {
+        int temp = InvData();
+        currentConfig.getNumValue("CO|InjectionTemp", temp);
+        pimpl->tiVal = temp;
+    }
 }

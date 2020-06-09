@@ -50,8 +50,9 @@ public:
 
 void COMenuContentPrivate::loadOptions()
 {
-    buttons[ITEM_CBO_CO_RATIO]->setText(QString::number(static_cast<double>(coParam.getCORatio() * 1.0 / 1000)));
-    combos[ITEM_CBO_INJECT_TEMP_SOURCE]->setCurrentIndex(coParam.getTempSource());
+    short coef = coParam.getCatheterCoeff();
+    buttons[ITEM_CBO_CO_RATIO]->setText(QString::number(coef * 1.0 / 1000, 'f', 3));
+    combos[ITEM_CBO_INJECT_TEMP_SOURCE]->setCurrentIndex(coParam.getTiSource());
     if (combos[ITEM_CBO_INJECT_TEMP_SOURCE]->currentIndex() == CO_TI_SOURCE_AUTO)
     {
         buttons[ITEM_CBO_INJECTION_TEMP]->setEnabled(false);
@@ -60,9 +61,9 @@ void COMenuContentPrivate::loadOptions()
     {
         buttons[ITEM_CBO_INJECTION_TEMP]->setEnabled(true);
     }
-    QString text = QString::number(static_cast<double>(coParam.getInjectionTemp() * 1.0 / 10));
+    QString text = QString::number(static_cast<double>(coParam.getTi() * 1.0 / 10));
     buttons[ITEM_CBO_INJECTION_TEMP]->setText(text);
-    buttons[ITEM_CBO_INJECTION_VOLUMN]->setText(QString::number(coParam.getInjectionVolumn()));
+    buttons[ITEM_CBO_INJECTION_VOLUMN]->setText(QString::number(coParam.getInjectionVolume()));
     buttons[ITEM_CBO_MEASURE_CONTROL]->setText(trs(COSymbol::convert(coParam.getMeasureCtrl())));
 }
 
@@ -179,7 +180,7 @@ void COMenuContent::onComboBoxIndexChanged(int index)
                 d_ptr->buttons.value(COMenuContentPrivate::ITEM_CBO_INJECTION_TEMP)->setEnabled(false);
             }
             int temp = d_ptr->buttons[COMenuContentPrivate::ITEM_CBO_INJECTION_TEMP]->text().toFloat() * 10;
-            coParam.setTempSource((COTiSource)index, temp);
+            coParam.setTiSource((COTiSource)index, temp);
             break;
         }
         default:
@@ -224,7 +225,7 @@ void COMenuContent::onButtonReleased()
                     if (actualValue >= 1 && actualValue <= 999)
                     {
                         button->setText(text);
-                        coParam.setCORatio(actualValue);
+                        coParam.setCatheterCoeff(actualValue);
                     }
                     else
                     {
@@ -265,7 +266,7 @@ void COMenuContent::onButtonReleased()
                     if (actualValue <= 270)
                     {
                         button->setText(text);
-                        coParam.setTempSource(CO_TI_SOURCE_MANUAL, actualValue);
+                        coParam.setTiSource(CO_TI_SOURCE_MANUAL, actualValue);
                     }
                     else
                     {
@@ -305,7 +306,7 @@ void COMenuContent::onButtonReleased()
                     if (value >= 1 && value <= 200)
                     {
                         button->setText(text);
-                        coParam.setInjectionVolumn((unsigned char)value);
+                        coParam.setInjectionVolume((unsigned char)value);
                     }
                     else
                     {

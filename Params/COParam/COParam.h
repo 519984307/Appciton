@@ -14,6 +14,19 @@
 #include "COProviderIFace.h"
 #include <QScopedPointer>
 
+template <typename T> class QVector;
+/**
+ * @brief The COMeasureData struct record the result of single measurement
+ */
+struct COMeasureData
+{
+    COMeasureData() : timestamp(0), co(InvData()), ci(InvData()) {}
+    unsigned timestamp; /* measure timestamp */
+    short co;   /* measure co value */
+    short ci;   /* measure ci value */
+    QVector<short> measureWave;
+};
+
 class COTrendWidget;
 class COMenu;
 class COParamPrivate;
@@ -50,39 +63,127 @@ public:
     void setCOTrendWidget(COTrendWidget *trendWidget);
 
 public:
-    // C.O.系数
-    void setCORatio(unsigned short coRatio);
-    unsigned short getCORatio(void);
+    /**
+     * @brief setCatheterCoeff set the Swan-Ganz catheter coefficient
+     * @param coef the coefficient
+     * @note
+     * The coeffficient should be multiplied by 1000, in range of (0~999)
+     */
+    void setCatheterCoeff(unsigned short coef);
 
-    // set source of injection temp.
-    void setTempSource(COTiSource source, unsigned short temp = 0);
-    COTiSource getTempSource(void);
-    unsigned short getInjectionTemp(void);
+    /**
+     * @brief getCatheterCoeff get the Swan-Ganz catheter coefficient
+     * @return the coefficient
+     * @note
+     * The coeffficient should be multiplied by 1000, in range of (0~999)
+     */
+    unsigned short getCatheterCoeff(void);
 
-    // set injection volumn.
-    void setInjectionVolumn(unsigned char volumn);
-    unsigned char getInjectionVolumn(void);
+    /**
+     * @brief setTiSource set the ti source
+     * @param source current source
+     * @param temp only use when the source is manual
+     */
+    void setTiSource(COTiSource source, unsigned short temp = 0);
 
-    // measure control start stop  and interrupt.
+    /**
+     * @brief getTiSource get current ti source
+     * @return The ti source
+     */
+    COTiSource getTiSource() const;
+
+    /**
+     * @brief setInjectionVolume set the injection volume
+     * @param volume volume of injection, in unit of ml
+     */
+    void setInjectionVolume(unsigned char volume);
+
+    /**
+     * @brief getInjectionVolume get the current injection volume
+     * @return the injection volume
+     */
+    unsigned char getInjectionVolume(void) const;
+
+    /**
+     * @brief measureCtrl measure contorl
+     * @param ctrl
+     */
     void measureCtrl(COMeasureCtrl ctrl);
     COMeasureCtrl getMeasureCtrl(void);
 
+    /**
+     * @brief startMeasure start co measure
+     */
+    void startMeasure();
+
+    /**
+     * @brief isMeasuring check whether co is in measuring state
+     * @return true when in measuring state, otherwise, false
+     */
+    bool isMeasuring() const;
+
+    /**
+     * @brief stopMeasure stop co measure
+     */
+    void stopMeasure();
+
 public:
-    // C.O. and C.I. data content.
-    void measureResultCO(short coData, short ciData);
+    /**
+     * @brief setMeasureResult set the measure result of single measurement
+     * @param co the cardiac output
+     * @param ci the cardiac index
+     */
+    void setMeasureResult(short co, short ci);
 
-    // temp blood data content.
-    void realTimeTBData(short tbData);
+    /**
+     * @brief setTb set the blood temperature
+     * @param tb the blood temperature
+     * @note
+     * The value should be unit of 0.1 celsius degree
+     */
+    void setTb(short tb);
 
-public:
-    // get C.O. data.
-    short getCOData(void);
+    /**
+     * @brief getTb get current blood temperature
+     * @return the blood temperature
+     */
+    short getTb(void) const;
 
-    // get C.I. data.
-    short getCIData(void);
+    /**
+     * @brief setTi set the injection temperature
+     * @param ti the injection temperature
+     * @note
+     * Use to update the TI by module when the TI source is auto
+     */
+    void setTi(short ti);
 
-    // get TB data.
-    short getTBData(void);
+    /**
+     * @brief getTi get the current ti value
+     * @return the current ti
+     */
+    unsigned short getTi(void) const;
+
+    /**
+     * @brief getAvgCo get the average Cardiac output
+     * @return  current cardiac output or InvData()
+     * @note
+     * Valid return value is already scaled by 10
+     */
+    short getAvgCo(void) const;
+
+    /**
+     * @brief getAvgCi get the average Cardiac index
+     * @return  current cardiac index of InvData()
+     * @note
+     * Valid return value is already scaled by 10
+     */
+    short getAvgCi(void) const;
+
+    /**
+     * @brief addMeasureWaveData add the measurement wave data
+     * @param data the wave data
+     */
+    void addMeasureWaveData(short data);
 
 private:
     COParam();
