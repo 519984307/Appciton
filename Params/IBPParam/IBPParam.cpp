@@ -183,7 +183,7 @@ void IBPParam::handDemoTrendData()
     {
         ch2Data.sys = 120;
         ch2Data.dia = 75;
-        ch2Data.mean = 9;
+        ch2Data.mean = 90;
         ch2Data.pr = 60;
     }
     IBPTrendWidget *ch2Trend = _chnData[IBP_CHN_2].trendWidget;
