@@ -55,10 +55,10 @@ void ConfigEditCOMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_TI_SOURCE]->blockSignals(true);
 
     int number = 0;
-    config->getNumValue("CO|Ratio", number);
+    config->getNumValue("CO|ComputationConst", number);
     buttons[ITEM_BTN_CO_CONST]->setText(QString::number(number * 1.0 / 1000, 'f', 3));
     number = 0;
-    config->getNumValue("CO|InjectionTempSource", number);
+    config->getNumValue("CO|TISource", number);
     combos[ITEM_CBO_TI_SOURCE]->setCurrentIndex(number);
     number = 0;
     if (combos[ITEM_CBO_TI_SOURCE]->currentIndex() == CO_TI_SOURCE_AUTO)
@@ -71,10 +71,10 @@ void ConfigEditCOMenuContentPrivate::loadOptions()
     }
 
     number = 20;
-    config->getNumValue("CO|InjectionTemp", number);
+    config->getNumValue("CO|InjectateTemp", number);
     buttons[ITEM_BTN_MANUAL_TI]->setText(QString::number(number * 1.0 / 10, 'f', 1));
     number = 0;
-    config->getNumValue("CO|InjectionVolumn", number);
+    config->getNumValue("CO|InjectateVolume", number);
     buttons[ITEM_BTN_INJECTATE_VOLUME]->setText(QString::number(number));
 
     buttons[ITEM_BTN_CO_CONST]->blockSignals(false);
@@ -118,7 +118,7 @@ void ConfigEditCOMenuContent::layoutExec()
     int itemID;
     int count = 0;
 
-    // Ratio
+    // Computation Constant
     label = new QLabel(trs("ComputationConst"));
     layout->addWidget(label, count, 0);
     button = new Button("0.542");
@@ -201,8 +201,8 @@ void ConfigEditCOMenuContent::onComboBoxIndexChanged(int index)
                 d_ptr->buttons.value(ConfigEditCOMenuContentPrivate::ITEM_BTN_MANUAL_TI)->setEnabled(false);
             }
             int temp = d_ptr->buttons[ConfigEditCOMenuContentPrivate::ITEM_BTN_MANUAL_TI]->text().toFloat() * 10;
-            d_ptr->config->setNumValue("CO|InjectionTemp", (unsigned)temp);
-            d_ptr->config->setNumValue("CO|InjectionTempSource", index);
+            d_ptr->config->setNumValue("CO|InjectateTemp", (unsigned)temp);
+            d_ptr->config->setNumValue("CO|TISource", index);
             break;
         }
         default:
@@ -249,7 +249,7 @@ void ConfigEditCOMenuContent::onButtonReleased()
                     if (actualValue >= 1 && actualValue <= 999)
                     {
                         button->setText(text);
-                        d_ptr->config->setNumValue("CO|Ratio", static_cast<int>(actualValue));
+                        d_ptr->config->setNumValue("CO|ComputationConst", static_cast<int>(actualValue));
                     }
                     else
                     {
@@ -290,8 +290,8 @@ void ConfigEditCOMenuContent::onButtonReleased()
                     if (actualValue <= 270)
                     {
                         button->setText(text);
-                        d_ptr->config->setNumValue("CO|InjectionTempSource", static_cast<int>(CO_TI_SOURCE_MANUAL));
-                        d_ptr->config->setNumValue("CO|InjectionTemp", static_cast<int>(actualValue));
+                        d_ptr->config->setNumValue("CO|TISource", static_cast<int>(CO_TI_SOURCE_MANUAL));
+                        d_ptr->config->setNumValue("CO|InjectateTemp", static_cast<int>(actualValue));
                     }
                     else
                     {
@@ -332,7 +332,7 @@ void ConfigEditCOMenuContent::onButtonReleased()
                     if (value >= 1 && value <= 200)
                     {
                         button->setText(text);
-                        d_ptr->config->setNumValue("CO|InjectionVolumn", static_cast<int>(value));
+                        d_ptr->config->setNumValue("CO|InjectateVolume", static_cast<int>(value));
                     }
                     else
                     {

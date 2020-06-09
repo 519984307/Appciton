@@ -178,7 +178,7 @@ void COParam::setCOTrendWidget(COTrendWidget *trendWidget)
 
 void COParam::setCatheterCoeff(unsigned short coef)
 {
-    currentConfig.setNumValue("CO|Ratio", (unsigned)coef);
+    currentConfig.setNumValue("CO|ComputationConst", (unsigned)coef);
     if (pimpl->provider)
     {
         pimpl->provider->setCatheterCoeff(coef);
@@ -188,7 +188,7 @@ void COParam::setCatheterCoeff(unsigned short coef)
 unsigned short COParam::getCatheterCoeff()
 {
     unsigned ratio = 0;
-    currentConfig.getNumValue("CO|Ratio", ratio);
+    currentConfig.getNumValue("CO|ComputationConst", ratio);
     return ratio;
 }
 
@@ -199,10 +199,10 @@ void COParam::setTiSource(COTiSource source, unsigned short temp)
 {
     pimpl->tiSrc = source;
 
-    currentConfig.setNumValue("CO|InjectionTempSource", static_cast<int>(source));
+    currentConfig.setNumValue("CO|TISource", static_cast<int>(source));
     if (source == CO_TI_SOURCE_MANUAL)
     {
-        currentConfig.setNumValue("CO|InjectionTemp", static_cast<int>(temp));
+        currentConfig.setNumValue("CO|InjectateTemp", static_cast<int>(temp));
         pimpl->tiVal = temp;
     }
     else
@@ -229,7 +229,7 @@ unsigned short COParam::getTi() const
 unsigned short COParam::getManualTi()
 {
     int temp = 20;
-    currentConfig.getNumValue("CO|InjectionTemp", temp);
+    currentConfig.getNumValue("CO|InjectateTemp", temp);
     return temp;
 }
 
@@ -238,7 +238,7 @@ unsigned short COParam::getManualTi()
  *************************************************************************************************/
 void COParam::setInjectionVolume(unsigned char volume)
 {
-    currentConfig.setNumValue("CO|InjectionVolumn", (unsigned)volume);
+    currentConfig.setNumValue("CO|InjectateVolume", (unsigned)volume);
     if (pimpl->provider)
     {
         pimpl->provider->setInjectionVolume(volume);
@@ -248,7 +248,7 @@ void COParam::setInjectionVolume(unsigned char volume)
 unsigned char COParam::getInjectionVolume() const
 {
     int volumn = 0;
-    currentConfig.getNumValue("CO|InjectionVolumn", volumn);
+    currentConfig.getNumValue("CO|InjectateVolume", volumn);
     return volumn;
 }
 
@@ -377,7 +377,7 @@ COParam::COParam() : Param(PARAM_CO), pimpl(new COParamPrivate())
 {
     /* update the TI source */
     int source = CO_TI_SOURCE_AUTO;
-    currentConfig.getNumValue("CO|InjectionTempSource", source);
+    currentConfig.getNumValue("CO|TISource", source);
     pimpl->tiSrc = static_cast<COTiSource>(source);
 
     if (pimpl->tiSrc == CO_TI_SOURCE_MANUAL)

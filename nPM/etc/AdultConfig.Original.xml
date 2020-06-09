@@ -141,10 +141,10 @@
 	<ApneaTime>0</ApneaTime>
     </CO2>
     <CO>
-        <Ratio>555</Ratio>
-        <InjectionTempSource>1</InjectionTempSource>
-        <InjectionTemp>232</InjectionTemp>
-        <InjectionVolumn>3</InjectionVolumn>
+        <ComputationConst>542</ComputationConst>
+        <TISource>1</TISource>
+        <InjectateTemp>20</InjectateTemp>
+        <InjectateVolume>3</InjectateVolume>
     </CO>
     <RESP>
         <RESPSweepMode>0</RESPSweepMode>
