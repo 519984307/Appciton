@@ -181,10 +181,10 @@ void IBPParam::handDemoTrendData()
     ch2Data.pr = 60;
     if (getEntitle(IBP_CHN_2) == IBP_LABEL_ART)
     {
-        ch1Data.sys = 120;
-        ch1Data.dia = 75;
-        ch1Data.mean = 9;
-        ch1Data.pr = 60;
+        ch2Data.sys = 120;
+        ch2Data.dia = 75;
+        ch2Data.mean = 9;
+        ch2Data.pr = 60;
     }
     IBPTrendWidget *ch2Trend = _chnData[IBP_CHN_2].trendWidget;
 
