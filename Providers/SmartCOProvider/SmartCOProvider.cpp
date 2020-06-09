@@ -29,7 +29,7 @@
 /* setting the injection volume, 1~10 */
 #define CMD_SET_INJECTION_VOLUME    0x82
 /* setting the injection temperature, manual mode only, unit 0.1 celsius degree */
-#define CMD_SET_INJECTION_TEMP  0x83
+#define CMD_SET_TI  0x83
 
 
 
@@ -37,8 +37,8 @@ enum SmartCOMeasureCmdId {
     SMART_CO_START_MEASURE = 0x10,
     SMART_CO_STOP_MEASURE = 0x11,
 
-    SMART_CO_TEMP_AUTO = 0x20,    /* auto detect injection temperature */
-    SMART_CO_TEMP_MANUAL = 0x21,  /* manual setting injection temperature */
+    SMART_CO_TI_AUTO = 0x20,    /* auto detect injection temperature */
+    SMART_CO_TI_MANUAL = 0x21,  /* manual setting injection temperature */
 
     SMART_CO_MODULE_VERSION = 0xff,
 };
@@ -77,7 +77,9 @@ enum SmartCOMeasureCmdId {
 class SmartCOProviderPrivate
 {
 public:
-    explicit SmartCOProviderPrivate(SmartCOProvider * const q_ptr) : q_ptr(q_ptr) {}
+    explicit SmartCOProviderPrivate(SmartCOProvider * const q_ptr)
+        : q_ptr(q_ptr), tiSrc(CO_TI_SOURCE_AUTO), ratio(525)
+    {}
 
 
     /**
@@ -155,6 +157,8 @@ public:
 
 
     SmartCOProvider * const q_ptr;
+    COTiSource tiSrc;   /* ti source */
+    unsigned short ratio; /* pipe ratio */
 };
 
 SmartCOProvider::SmartCOProvider(const QString &port)
@@ -248,19 +252,45 @@ void SmartCOProvider::dataArrived()
     }
 }
 
+void SmartCOProvider::setDuctRatio(unsigned short ratio)
+{
+    pimpl->ratio = ratio;
+}
+
+void SmartCOProvider::setInjectionVolume(unsigned char vol)
+{
+    pimpl->setInjectionVolumn(vol);
+}
+
+void SmartCOProvider::setTiSource(COTiSource src, unsigned short ti)
+{
+    quint8 cmdData = src == CO_TI_SOURCE_AUTO ? SMART_CO_TI_AUTO : SMART_CO_TI_MANUAL;
+    pimpl->sendCmd(CMD_MEASURE_SETTING, &cmdData, 1);
+    pimpl->tiSrc = src;
+
+    if (src == CO_TI_SOURCE_MANUAL)
+    {
+        /* send the manual ti value */
+        quint8 data[2];
+        data[0] = ti & 0xFF;
+        data[1] = (ti >> 8) & 0xFF;
+        pimpl->sendCmd(CMD_SET_TI, data, sizeof(data));
+    }
+}
+
 void SmartCOProviderPrivate::handlePacket(quint8 ID, const quint8 *data, int length)
 {
     Q_UNUSED(length)
 
-    // if (!q_ptr->isConnectedToParam)
-    // {
-    //     return;
-    // }
+    if (!q_ptr->isConnectedToParam)
+    {
+        return;
+    }
 
-    // if (!q_ptr->isConnected)
-    // {
-    //     coParam.setConnected(true);
-    // }
+    if (!q_ptr->isConnected)
+    {
+        coParam.setConnected(true);
+    }
 
     switch (ID) {
     case RECV_MSG_VERSION:
@@ -281,6 +311,9 @@ void SmartCOProviderPrivate::handlePacket(quint8 ID, const quint8 *data, int len
         short tb = (data[1] << 8) + data[0];
         short ti = (data[3] << 8) + data[2];
         short co = (data[5] << 8) + data[4];
+
+        /* calc C.O. value, scaled by 10 */
+        int calcCO = co * ratio / 128 / 100;
         quint8 stat1 = data[6];
         quint8 stat2 = data[7];
     }
@@ -296,7 +329,7 @@ void SmartCOProviderPrivate::setInjectionTemp(short temp)
     quint8 data[2];
     data[0] = temp & 0xFF;
     data[1] = (temp >> 8) & 0xFF;
-    sendCmd(CMD_SET_INJECTION_TEMP, data, sizeof(data));
+    sendCmd(CMD_SET_TI, data, sizeof(data));
 }
 
 void SmartCOProviderPrivate::setInjectionVolumn(quint8 volume)
@@ -306,7 +339,7 @@ void SmartCOProviderPrivate::setInjectionVolumn(quint8 volume)
 
 void SmartCOProviderPrivate::setInjectionTempMode(bool isAuto)
 {
-    quint8 data = isAuto ? SMART_CO_TEMP_AUTO : SMART_CO_TEMP_MANUAL;
+    quint8 data = isAuto ? SMART_CO_TI_AUTO : SMART_CO_TI_MANUAL;
     sendCmd(CMD_MEASURE_SETTING, &data, 1);
 }
 

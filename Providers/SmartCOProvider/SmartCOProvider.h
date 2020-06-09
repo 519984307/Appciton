@@ -40,6 +40,21 @@ public:
 protected:
     void dataArrived();
 
+    /* COProviderIFace */
+public:
+    /* override */
+    void setDuctRatio(unsigned short ratio);
+
+    /* override */
+    void setInjectionVolume(unsigned char vol);
+
+    /* override */
+    COModuleType getCOModuleType() {return CO_MODULE_SMART_CO;}
+
+    /* override */
+    void setTiSource(COTiSource src, unsigned short ti);
+
+
 private:
     const QScopedPointer<SmartCOProviderPrivate> pimpl;
     friend class SmartCOProviderPrivate;

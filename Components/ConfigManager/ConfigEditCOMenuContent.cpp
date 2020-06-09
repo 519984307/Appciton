@@ -36,7 +36,7 @@ public:
     };
 
     explicit ConfigEditCOMenuContentPrivate(Config *const config)
-        : measureSta(CO_INST_START),
+        : measureSta(CO_MEASURE_STOP),
           config(config)
     {
     }
@@ -46,7 +46,7 @@ public:
 
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, Button *> buttons;
-    COInstCtl measureSta;              // 测量状态
+    COMeasureCtrl measureSta;              // 测量状态
     Config * const config;
 };
 
@@ -65,7 +65,7 @@ void ConfigEditCOMenuContentPrivate::loadOptions()
     config->getNumValue("CO|InjectionTempSource", number);
     combos[ITEM_CBO_INJECT_TEMP_SOURCE]->setCurrentIndex(number);
     number = 0;
-    if (combos[ITEM_CBO_INJECT_TEMP_SOURCE]->currentIndex() == CO_TI_MODE_AUTO)
+    if (combos[ITEM_CBO_INJECT_TEMP_SOURCE]->currentIndex() == CO_TI_SOURCE_AUTO)
     {
         buttons[ITEM_CBO_INJECTION_TEMP]->setEnabled(false);
     }
@@ -80,7 +80,7 @@ void ConfigEditCOMenuContentPrivate::loadOptions()
     buttons[ITEM_CBO_INJECTION_VOLUMN]->setText(QString::number(number));
     number = 0;
     config->getNumValue("CO|MeasureMode", number);
-    buttons[ITEM_CBO_MEASURE_CONTROL]->setText(trs(COSymbol::convert((COInstCtl)number)));
+    buttons[ITEM_CBO_MEASURE_CONTROL]->setText(trs(COSymbol::convert((COMeasureCtrl)number)));
 
     buttons[ITEM_CBO_CO_RATIO]->blockSignals(false);
     buttons[ITEM_CBO_INJECTION_TEMP]->blockSignals(false);
@@ -141,8 +141,8 @@ void ConfigEditCOMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->buttons.count() + d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
-                       << trs(COSymbol::convert(CO_TI_MODE_AUTO))
-                       << trs(COSymbol::convert(CO_TI_MODE_MANUAL)));
+                       << trs(COSymbol::convert(CO_TI_SOURCE_AUTO))
+                       << trs(COSymbol::convert(CO_TI_SOURCE_MANUAL)));
     itemID = static_cast<int>(ConfigEditCOMenuContentPrivate::ITEM_CBO_INJECT_TEMP_SOURCE);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -204,11 +204,11 @@ void ConfigEditCOMenuContent::onComboBoxIndexChanged(int index)
         {
         case ConfigEditCOMenuContentPrivate::ITEM_CBO_INJECT_TEMP_SOURCE:
         {
-            if (index == static_cast<int>(CO_TI_MODE_MANUAL))
+            if (index == static_cast<int>(CO_TI_SOURCE_MANUAL))
             {
                 d_ptr->buttons.value(ConfigEditCOMenuContentPrivate::ITEM_CBO_INJECTION_TEMP)->setEnabled(true);
             }
-            else if (index == static_cast<int>(CO_TI_MODE_AUTO))
+            else if (index == static_cast<int>(CO_TI_SOURCE_AUTO))
             {
                 d_ptr->buttons.value(ConfigEditCOMenuContentPrivate::ITEM_CBO_INJECTION_TEMP)->setEnabled(false);
             }
@@ -301,7 +301,7 @@ void ConfigEditCOMenuContent::onButtonReleased()
                     if (actualValue <= 270)
                     {
                         button->setText(text);
-                        d_ptr->config->setNumValue("CO|InjectionTempSource", static_cast<int>(CO_TI_MODE_MANUAL));
+                        d_ptr->config->setNumValue("CO|InjectionTempSource", static_cast<int>(CO_TI_SOURCE_MANUAL));
                         d_ptr->config->setNumValue("CO|InjectionTemp", static_cast<int>(actualValue));
                     }
                     else
@@ -358,15 +358,15 @@ void ConfigEditCOMenuContent::onButtonReleased()
         case ConfigEditCOMenuContentPrivate::ITEM_CBO_MEASURE_CONTROL:
         {
             d_ptr->config->setNumValue("CO|MeasureMode", static_cast<int>(d_ptr->measureSta));
-            if (d_ptr->measureSta == CO_INST_START)
+            if (d_ptr->measureSta == CO_MEASURE_STOP)
             {
                 button->setText(trs("COEnd"));
-                d_ptr->measureSta = CO_INST_END;
+                d_ptr->measureSta = CO_MEASURE_START;
             }
-            else if (d_ptr->measureSta == CO_INST_END)
+            else if (d_ptr->measureSta == CO_MEASURE_START)
             {
                 button->setText(trs("COStart"));
-                d_ptr->measureSta = CO_INST_START;
+                d_ptr->measureSta = CO_MEASURE_STOP;
             }
             break;
         }

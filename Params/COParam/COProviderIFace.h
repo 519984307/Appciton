@@ -17,28 +17,21 @@
 class COProviderIFace
 {
 public:
+    virtual ~COProviderIFace() { }
     // CO 测量控制
-    virtual void measureCtrl(COInstCtl /*instctl*/){}
+    virtual void measureCtrl(COMeasureCtrl /*instctl*/){}
 
     // CO 测量时间间隔设置
-    virtual void setInterval(COMeasureInterval /*interval*/){}
+    virtual void setMeasureInterval(COMeasureInterval /*interval*/){}
 
-    // Ti 输入模式设置
-    virtual void setInputMode(COTiMode /*inputmode*/, unsigned short /*watertemp*/){}
+    // Ti 输入模式设置, need ti value when in manual mode
+    virtual void setTiSource(COTiSource /*inputmode*/, unsigned short /*ti*/){}
 
     // 注射液体积设定
-    virtual void setVolume(unsigned char /*volume*/){}
+    virtual void setInjectionVolume(unsigned char /*volume*/){}
 
-    // 漂浮导管系数设定
+    // 漂浮导管系数设定, x1000
     virtual void setDuctRatio(unsigned short /*ratio*/){}
 
-    // 血液动力计算参数设置
-    virtual void setHemodymicParam(void){}
-
-    // 血液动力学计算
-    virtual void hemodymicCalc(void){}
-
-public:
-    COProviderIFace() {  }
-    virtual ~COProviderIFace() { }
+    virtual COModuleType getCOModuleType() { return CO_MODULE_NR; }
 };

@@ -12,20 +12,16 @@
 #pragma once
 #include "Param.h"
 #include "COProviderIFace.h"
+#include <QScopedPointer>
 
 class COTrendWidget;
 class COMenu;
+class COParamPrivate;
 class COParam : public Param
 {
+    Q_OBJECT
 public:
-    static COParam &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new COParam();
-        }
-        return *_selfObj;
-    }
+    static COParam &getInstance();
     ~COParam();
 
 public:
@@ -53,14 +49,14 @@ public:
     // 设置界面对象
     void setCOTrendWidget(COTrendWidget *trendWidget);
 
-public:// Data sent by host
+public:
     // C.O.系数
     void setCORatio(u_int16_t coRatio);
     u_int16_t getCORatio(void);
 
     // set source of injection temp.
-    void setTempSource(COTiMode source, u_int16_t temp = 0);
-    COTiMode getTempSource(void);
+    void setTempSource(COTiSource source, u_int16_t temp = 0);
+    COTiSource getTempSource(void);
     u_int16_t getInjectionTemp(void);
 
     // set injection volumn.
@@ -68,38 +64,30 @@ public:// Data sent by host
     unsigned char getInjectionVolumn(void);
 
     // measure control start stop  and interrupt.
-    void measureCtrl(COInstCtl sta);
-    COInstCtl getMeasureCtrl(void);
+    void measureCtrl(COMeasureCtrl ctrl);
+    COMeasureCtrl getMeasureCtrl(void);
 
-public:// Data sent by module
+public:
     // C.O. and C.I. data content.
-    void measureResultCO(u_int16_t coData, u_int16_t ciData);
+    void measureResultCO(short coData, short ciData);
 
     // temp blood data content.
-    void realTimeTBData(u_int16_t tbData);
+    void realTimeTBData(short tbData);
 
 public:
     // get C.O. data.
-    u_int16_t getCOData(void);
+    short getCOData(void);
 
     // get C.I. data.
-    u_int16_t getCIData(void);
+    short getCIData(void);
 
     // get TB data.
-    u_int16_t getTBData(void);
-
+    short getTBData(void);
 
 private:
     COParam();
-    static COParam *_selfObj;
 
-    COProviderIFace *_provider;
-
-    COTrendWidget *_trendWidget;
-
-    u_int16_t _coData;
-    u_int16_t _ciData;
-    u_int16_t _tbData;
-    bool _connectedProvider;
+    QScopedPointer<COParamPrivate> pimpl;
 };
-#define coParam (COParam::construction())
+
+#define coParam (COParam::getInstance())

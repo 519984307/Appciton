@@ -145,7 +145,6 @@
         <InjectionTempSource>1</InjectionTempSource>
         <InjectionTemp>232</InjectionTemp>
         <InjectionVolumn>3</InjectionVolumn>
-        <MeasureMode>1</MeasureMode>
     </CO>
     <RESP>
         <RESPSweepMode>0</RESPSweepMode>

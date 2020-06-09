@@ -38,21 +38,21 @@ public:
         ITEM_CBO_MEASURE_CONTROL,
     };
 
-    COMenuContentPrivate() : measureSta(CO_INST_START){}
+    COMenuContentPrivate() : measureSta(CO_MEASURE_STOP){}
 
     // load settings
     void loadOptions();
 
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, Button *> buttons;
-    COInstCtl measureSta;              // 测量状态
+    COMeasureCtrl measureSta;              // 测量状态
 };
 
 void COMenuContentPrivate::loadOptions()
 {
     buttons[ITEM_CBO_CO_RATIO]->setText(QString::number(static_cast<double>(coParam.getCORatio() * 1.0 / 1000)));
     combos[ITEM_CBO_INJECT_TEMP_SOURCE]->setCurrentIndex(coParam.getTempSource());
-    if (combos[ITEM_CBO_INJECT_TEMP_SOURCE]->currentIndex() == CO_TI_MODE_AUTO)
+    if (combos[ITEM_CBO_INJECT_TEMP_SOURCE]->currentIndex() == CO_TI_SOURCE_AUTO)
     {
         buttons[ITEM_CBO_INJECTION_TEMP]->setEnabled(false);
     }
@@ -107,8 +107,8 @@ void COMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->buttons.count() + d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
-                       << trs(COSymbol::convert(CO_TI_MODE_AUTO))
-                       << trs(COSymbol::convert(CO_TI_MODE_MANUAL)));
+                       << trs(COSymbol::convert(CO_TI_SOURCE_AUTO))
+                       << trs(COSymbol::convert(CO_TI_SOURCE_MANUAL)));
     itemID = static_cast<int>(COMenuContentPrivate::ITEM_CBO_INJECT_TEMP_SOURCE);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -170,16 +170,16 @@ void COMenuContent::onComboBoxIndexChanged(int index)
         {
         case COMenuContentPrivate::ITEM_CBO_INJECT_TEMP_SOURCE:
         {
-            if (index == static_cast<int>(CO_TI_MODE_MANUAL))
+            if (index == static_cast<int>(CO_TI_SOURCE_MANUAL))
             {
                 d_ptr->buttons.value(COMenuContentPrivate::ITEM_CBO_INJECTION_TEMP)->setEnabled(true);
             }
-            else if (index == static_cast<int>(CO_TI_MODE_AUTO))
+            else if (index == static_cast<int>(CO_TI_SOURCE_AUTO))
             {
                 d_ptr->buttons.value(COMenuContentPrivate::ITEM_CBO_INJECTION_TEMP)->setEnabled(false);
             }
             int temp = d_ptr->buttons[COMenuContentPrivate::ITEM_CBO_INJECTION_TEMP]->text().toFloat() * 10;
-            coParam.setTempSource((COTiMode)index, temp);
+            coParam.setTempSource((COTiSource)index, temp);
             break;
         }
         default:
@@ -265,7 +265,7 @@ void COMenuContent::onButtonReleased()
                     if (actualValue <= 270)
                     {
                         button->setText(text);
-                        coParam.setTempSource(CO_TI_MODE_MANUAL, actualValue);
+                        coParam.setTempSource(CO_TI_SOURCE_MANUAL, actualValue);
                     }
                     else
                     {
@@ -321,15 +321,15 @@ void COMenuContent::onButtonReleased()
         case COMenuContentPrivate::ITEM_CBO_MEASURE_CONTROL:
         {
             coParam.measureCtrl(d_ptr->measureSta);
-            if (d_ptr->measureSta == CO_INST_START)
+            if (d_ptr->measureSta == CO_MEASURE_STOP)
             {
                 button->setText(trs("COEnd"));
-                d_ptr->measureSta = CO_INST_END;
+                d_ptr->measureSta = CO_MEASURE_START;
             }
-            else if (d_ptr->measureSta == CO_INST_END)
+            else if (d_ptr->measureSta == CO_MEASURE_START)
             {
                 button->setText(trs("COStart"));
-                d_ptr->measureSta = CO_INST_START;
+                d_ptr->measureSta = CO_MEASURE_STOP;
             }
             break;
         }

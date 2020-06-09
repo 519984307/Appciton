@@ -36,18 +36,18 @@ public:
         return symbol[index];
     }
 
-    static const char *convert(COTiMode index)
+    static const char *convert(COTiSource index)
     {
-        static const char *symbol[CO_TI_MODE_NR] =
+        static const char *symbol[CO_TI_SOURCE_NR] =
         {
             "Auto", "Manual"
         };
         return symbol[index];
     }
 
-    static const char *convert(COInstCtl index)
+    static const char *convert(COMeasureCtrl index)
     {
-        static const char *symbol[CO_INST_NR] =
+        static const char *symbol[CO_MEASURE_NR] =
         {
             "COEnd", "COStart"
         };

@@ -628,7 +628,7 @@ static void _initProviderParam(void)
     if (systemManager.isSupport(CONFIG_CO))
     {
         paramManager.addProvider(new SmartCOProvider(QString()));
-        paramManager.addParam(&coParam.construction());
+        paramManager.addParam(&coParam.getInstance());
 
         limitAlarmSource = new COLimitAlarm();
         alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_CO);
