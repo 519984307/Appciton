@@ -12,6 +12,7 @@
 #include "WitleafProvider.h"
 #include "IBPParam.h"
 #include "COParam.h"
+#include "AlarmSourceManager.h"
 
 #define     INVALID     0xff9d
 
@@ -120,6 +121,8 @@ void WitleafProvider::handlePacket(unsigned char *data, int len)
         ibpParam.setConnected(true);
     }
 
+    // 发送保活帧, 有数据时调用清除连接计数器。
+    feed();
     if (data[0] == PARAM_TYPE_IBP)
     {
         switch (data[2])
@@ -379,12 +382,23 @@ unsigned char WitleafProvider::calcCheckSum(const unsigned char *data, unsigned 
 
 void WitleafProvider::disconnected()
 {
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_IBP);
+    if (alarmSource)
+    {
+        alarmSource->clear();
+        alarmSource->setOneShotAlarm(IBP_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+    }
     coParam.setConnected(false);
     ibpParam.setConnected(false);
 }
 
 void WitleafProvider::reconnected()
 {
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_IBP);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(IBP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+    }
     coParam.setConnected(true);
     ibpParam.setConnected(true);
 }

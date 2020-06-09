@@ -248,6 +248,7 @@ enum IBPOneShotType
     IBP2_CALIB_NOT_ZERO,
     IBP2_CALIB_FAIL,
     IBP2_CALIB_NOT_SET_TIME,
+    IBP_ONESHOT_ALARM_COMMUNICATION_STOP,         // communication stop
     IBP_ONESHOT_NR,
 };
 

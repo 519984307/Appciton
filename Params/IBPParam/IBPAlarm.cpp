@@ -653,6 +653,10 @@ AlarmPriority IBPOneShotAlarm::getAlarmPriority(int id)
     {
         return ALARM_PRIO_MED;
     }
+    else if (id == IBP_ONESHOT_ALARM_COMMUNICATION_STOP)
+    {
+        return ALARM_PRIO_HIGH;
+    }
     else
     {
         return ALARM_PRIO_PROMPT;

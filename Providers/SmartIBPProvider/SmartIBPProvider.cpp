@@ -11,6 +11,7 @@
 #include "SmartIBPProvider.h"
 #include "IBPParam.h"
 #include "Debug/Debug.h"
+#include "AlarmSourceManager.h"
 
 #define MAX_PACKET_LENGTH       12      /* maximum packet length */
 #define MIN_PARSE_LENGTH        2       /* minimum length of data to start parse */
@@ -240,6 +241,12 @@ void SmartIBPProvider::sendVersion()
 
 void SmartIBPProvider::disconnected()
 {
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_IBP);
+    if (alarmSource)
+    {
+        alarmSource->clear();
+        alarmSource->setOneShotAlarm(IBP_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+    }
     if (isConnectedToParam)
     {
         ibpParam.setConnected(false);
@@ -251,6 +258,11 @@ void SmartIBPProvider::reconnected()
     if (isConnectedToParam)
     {
         ibpParam.setConnected(true);
+    }
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_IBP);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(IBP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
     }
 }
 
@@ -342,7 +354,8 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
     {
         ibpParam.setConnected(true);
     }
-
+    // 发送保活帧, 有数据时调用清除连接计数器。
+    q_ptr->feed();
     switch (data[0])
     {
     case MODULE_ID:

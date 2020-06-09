@@ -679,6 +679,7 @@ IBP2CalibrationPressureBeyondMeasureRange,IBP通道2校准压力超出范围,IBP
 IBP2NoZeroCalib,IBP通道2没有校零,IBP2 not zero calibration
 IBP2LeadOffCalibrationFail,IBP通道2校准失败,IBP2 calibration fail
 IBP2NoSetCalibrationTime,IBP通道2没有设置校准时间,IBP2 not set calibration time
+IBPCommunicationStop,IBP通信中断,IBP Communication Stop
 ARTSYSLow,ART收缩压低,ART SYS Low
 ARTSYSHigh,ART收缩压高,ART SYS High
 ARTDIALow,ART舒张压低,ART DIA Low

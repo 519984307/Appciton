@@ -139,6 +139,7 @@ public:
             "IBP2NoZeroCalib",
             "IBP2LeadOffCalibrationFail",
             "IBP2NoSetCalibrationTime",
+            "IBPCommunicationStop",
         };
         return symbol[index];
     }
