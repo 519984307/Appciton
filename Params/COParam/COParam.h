@@ -127,7 +127,6 @@ public:
      */
     void stopMeasure();
 
-public:
     /**
      * @brief setMeasureResult set the measure result of single measurement
      * @param co the cardiac output
@@ -184,6 +183,13 @@ public:
      * @param data the wave data
      */
     void addMeasureWaveData(short data);
+
+    /**
+     * @brief setOneshotAlarm set the oneshot alarm status
+     * @param t the oneshot alarm type
+     * @param f the oneshot alarm status
+     */
+    void setOneshotAlarm(COOneShotType t, bool f);
 
 private:
     COParam();

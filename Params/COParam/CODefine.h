@@ -80,7 +80,9 @@ enum COLimitAlarmType
  *************************************************************************************************/
 enum COOneShotType
 {
-    TB_SENSOR_LEAD_OFF,
-    TI_SENSOR_LEAD_OFF,
+    CO_ONESHOT_ALARM_TB_SENSOR_OFF,
+    CO_ONESHOT_ALARM_MEASURE_TIMEOUT,
+    CO_ONESHOT_ALARM_MEASURE_FAIL,
+    CO_ONESHOT_ALARM_COMMUNICATION_STOP,
     CO_ONESHOT_NR,
 };

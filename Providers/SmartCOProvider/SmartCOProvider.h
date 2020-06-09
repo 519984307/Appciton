@@ -54,6 +54,14 @@ public:
     /* override */
     void setTiSource(COTiSource src, unsigned short ti);
 
+    /* override */
+    void measureCtrl(COMeasureCtrl ctrl);
+
+    /* override */
+    bool isTiSensorOff() const;
+
+    /* override */
+    bool isTbSensorOff() const;
 
 private:
     const QScopedPointer<SmartCOProviderPrivate> pimpl;

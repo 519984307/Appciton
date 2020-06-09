@@ -16,6 +16,9 @@
 #define MIN_FRAME_LEN 4
 #define MAX_FRAME_LEN   13
 
+#define TB_MIN_VALUE    230
+#define TB_MAX_VALUE    430
+
 
 /* version message */
 #define RECV_MSG_VERSION        0xFF
@@ -78,7 +81,8 @@ class SmartCOProviderPrivate
 {
 public:
     explicit SmartCOProviderPrivate(SmartCOProvider * const q_ptr)
-        : q_ptr(q_ptr), tiSrc(CO_TI_SOURCE_AUTO), catheterCoeff(525)
+        : q_ptr(q_ptr), tiSrc(CO_TI_SOURCE_AUTO), catheterCoeff(542),
+          tbSensorEverConnected(false), tbSensorOff(true), tiSensorOff(true)
     {}
 
 
@@ -159,6 +163,9 @@ public:
     SmartCOProvider * const q_ptr;
     COTiSource tiSrc;   /* ti source */
     unsigned short catheterCoeff; /* swan-ganz catheter coefficient */
+    bool tbSensorEverConnected;
+    bool tbSensorOff;
+    bool tiSensorOff;
 };
 
 SmartCOProvider::SmartCOProvider(const QString &port)
@@ -195,6 +202,11 @@ void SmartCOProvider::disconnected()
     if (isConnectedToParam)
     {
         coParam.setConnected(false);
+        if (!plugInInfo.plugIn)
+        {
+            /* isn't a plugin */
+            coParam.setOneshotAlarm(CO_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+        }
     }
 }
 
@@ -203,6 +215,7 @@ void SmartCOProvider::reconnected()
     if (isConnectedToParam)
     {
         coParam.setConnected(true);
+        coParam.setOneshotAlarm(CO_ONESHOT_ALARM_COMMUNICATION_STOP, false);
     }
 }
 
@@ -278,6 +291,28 @@ void SmartCOProvider::setTiSource(COTiSource src, unsigned short ti)
     }
 }
 
+void SmartCOProvider::measureCtrl(COMeasureCtrl ctrl)
+{
+    if (ctrl == CO_MEASURE_START)
+    {
+        pimpl->startMeasure();
+    }
+    else
+    {
+        pimpl->stopMeasure();
+    }
+}
+
+bool SmartCOProvider::isTiSensorOff() const
+{
+    return pimpl->tiSensorOff;
+}
+
+bool SmartCOProvider::isTbSensorOff() const
+{
+    return pimpl->tbSensorOff;
+}
+
 void SmartCOProviderPrivate::handlePacket(quint8 ID, const quint8 *data, int length)
 {
     Q_UNUSED(length)
@@ -304,6 +339,7 @@ void SmartCOProviderPrivate::handlePacket(quint8 ID, const quint8 *data, int len
     {
         short wave = (data[1] << 8) + data[0];
         coParam.addMeasureWaveData(wave);
+    //    qDebug() << "wave" << wave;
     }
         break;
 
@@ -313,11 +349,52 @@ void SmartCOProviderPrivate::handlePacket(quint8 ID, const quint8 *data, int len
         short ti = (data[3] << 8) + data[2];
         short co = (data[5] << 8) + data[4];
 
-        /* calc C.O. value, scaled by 10 */
-        int calcCO = co * catheterCoeff / 128 / 100;
         quint8 stat1 = data[6];
         quint8 stat2 = data[7];
-        qDebug() << tb << ti << co << hex << showbase << stat1 << stat2;
+
+        tbSensorOff = stat1 & SMART_CO_STAT1_CATHETER_DISCONNECT;
+        tiSensorOff = stat1 & SMART_CO_STAT1_TI_SENSOR_DISCONNECT;
+        if (tbSensorOff)
+        {
+            if (tbSensorEverConnected)
+            {
+                coParam.setOneshotAlarm(CO_ONESHOT_ALARM_TB_SENSOR_OFF, true);
+            }
+        }
+        else
+        {
+            tbSensorEverConnected = true;
+            coParam.setOneshotAlarm(CO_ONESHOT_ALARM_TB_SENSOR_OFF, false);
+        }
+
+        if (stat1 & SMART_CO_STAT1_MEASURE_TIMEOUT)
+        {
+            coParam.setOneshotAlarm(CO_ONESHOT_ALARM_MEASURE_TIMEOUT, true);
+        }
+
+        if (stat2)
+        {
+            coParam.setOneshotAlarm(CO_ONESHOT_ALARM_MEASURE_FAIL, true);
+        }
+
+        if (stat1 & SMART_CO_STAT1_GOT_RESULT)
+        {
+            /* calc C.O. value, scaled by 10 */
+            int calcCO = co * catheterCoeff / 128 / 100;
+            coParam.setMeasureResult(calcCO, InvData());
+        }
+
+        if (tb >= TB_MIN_VALUE && tb <= TB_MAX_VALUE)
+        {
+            coParam.setTb(tb);
+        }
+
+        if (!tiSensorOff && tiSrc == CO_TI_SOURCE_AUTO)
+        {
+            coParam.setTi(ti);
+        }
+
+        // qDebug() << tb << ti << co << hex << showbase << stat1 << stat2;
     }
         break;
     default:
@@ -349,6 +426,9 @@ void SmartCOProviderPrivate::startMeasure()
 {
     quint8 data = SMART_CO_START_MEASURE;
     sendCmd(CMD_MEASURE_SETTING, &data, 1);
+
+    coParam.setOneshotAlarm(CO_ONESHOT_ALARM_MEASURE_TIMEOUT, false);
+    coParam.setOneshotAlarm(CO_ONESHOT_ALARM_MEASURE_FAIL, false);
 }
 
 void SmartCOProviderPrivate::stopMeasure()

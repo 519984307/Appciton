@@ -11,6 +11,8 @@
 #include "COParam.h"
 #include "COTrendWidget.h"
 #include "ConfigManager.h"
+#include "COAlarm.h"
+#include "AlarmSourceManager.h"
 #include <QVector>
 
 /* store 6 measure result at most */
@@ -144,6 +146,12 @@ short COParam::getSubParamValue(SubParamID id)
 void COParam::setProvider(COProviderIFace *provider)
 {
     pimpl->provider = provider;
+    if (provider)
+    {
+        provider->setCatheterCoeff(getCatheterCoeff());
+        provider->setInjectionVolume(getInjectionVolume());
+        provider->setTiSource(getTiSource(), getTi());
+    }
 }
 
 void COParam::setConnected(bool isConnected)
@@ -327,6 +335,15 @@ void COParam::setTi(short ti)
 void COParam::addMeasureWaveData(short data)
 {
     pimpl->curMeasureData.measureWave.append(data);
+}
+
+void COParam::setOneshotAlarm(COOneShotType t, bool f)
+{
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_CO);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(t, f);
+    }
 }
 
 /**************************************************************************************************

@@ -41,4 +41,16 @@ public:
      * @return the wave data rate
      */
     virtual short getMeasureWaveRate() { return 25;}
+
+    /**
+     * @brief isTiSensorOff get the ti sensor status
+     * @return true when sensor off, otherwise, false
+     */
+    virtual bool isTiSensorOff() const { return false;}
+
+    /**
+     * @brief isTbSensorOff get the tb sensor status
+     * @return true when sensor off, otherwise, false
+     */
+    virtual bool isTbSensorOff() const { return false;}
 };
