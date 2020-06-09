@@ -94,7 +94,7 @@ void TrendSubWaveWidget::setWidgetParam(SubParamID id, TrendGraphType type)
     }
     else if (_type == TREND_GRAPH_TYPE_ART_IBP)
     {
-        QString str = trs(paramInfo.getSubParamName(_id));
+        QString str = paramInfo.getSubParamName(_id);
         _paramName = str.left(str.length() - 4);
     }
     _paramUnit = trs(Unit::getSymbol(paramManager.getSubParamUnit(paramInfo.getParamID(_id), _id)));
