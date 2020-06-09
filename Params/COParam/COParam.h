@@ -26,7 +26,7 @@ public:
 
 public:
     // 处理DEMO数据。
-    virtual void handDemoWaveform(WaveformID id, int16_t data);
+    virtual void handDemoWaveform(WaveformID id, short data);
     virtual void handDemoTrendData(void);
     /* reimplement */
     virtual void exitDemo();
@@ -51,13 +51,13 @@ public:
 
 public:
     // C.O.系数
-    void setCORatio(u_int16_t coRatio);
-    u_int16_t getCORatio(void);
+    void setCORatio(unsigned short coRatio);
+    unsigned short getCORatio(void);
 
     // set source of injection temp.
-    void setTempSource(COTiSource source, u_int16_t temp = 0);
+    void setTempSource(COTiSource source, unsigned short temp = 0);
     COTiSource getTempSource(void);
-    u_int16_t getInjectionTemp(void);
+    unsigned short getInjectionTemp(void);
 
     // set injection volumn.
     void setInjectionVolumn(unsigned char volumn);
