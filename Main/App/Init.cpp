@@ -29,6 +29,7 @@
 #include "Framework/TimeDate/TimeDate.h"
 #include "Providers/SmartIBPProvider/SmartIBPProvider.h"
 #include "Providers/SmartCOProvider/SmartCOProvider.h"
+#include "COMeasureWindow.h"
 
 /**
  * @brief initLanguage initialize the language manager
@@ -639,6 +640,7 @@ static void _initProviderParam(void)
 
         COTrendWidget *coTrendWidget = new COTrendWidget();
         coParam.setCOTrendWidget(coTrendWidget);
+        coParam.setMeasureWindow(new COMeasureWindow());
         layoutManager.addLayoutWidget(coTrendWidget, LAYOUT_NODE_PARAM_CO);
     }
 

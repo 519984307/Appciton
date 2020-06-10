@@ -28,7 +28,7 @@ struct COMeasureData
 };
 
 class COTrendWidget;
-class COMenu;
+class COMeasureWindow;
 class COParamPrivate;
 class COParam : public Param
 {
@@ -61,6 +61,17 @@ public:
 
     // 设置界面对象
     void setCOTrendWidget(COTrendWidget *trendWidget);
+
+    /**
+     * @brief setMeasureWindow add CO measurement window
+     * @param w pointor to the window
+     */
+    void setMeasureWindow(COMeasureWindow *w);
+
+    /**
+     * @brief showMeasureWin show the measure window
+     */
+    void showMeasureWin();
 
 public:
     /**

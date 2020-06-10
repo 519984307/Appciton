@@ -330,7 +330,7 @@ void COMenuContent::onButtonReleased()
         }
         case COMenuContentPrivate::ITEM_BTN_CO_MEASURE:
         {
-            /* TODO: show co measure window */
+            coParam.showMeasureWin();
             break;
         }
         default:

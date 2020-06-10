@@ -13,6 +13,7 @@
 #include "ConfigManager.h"
 #include "COAlarm.h"
 #include "AlarmSourceManager.h"
+#include "COMeasureWindow.h"
 #include <QVector>
 
 /* store 6 measure result at most */
@@ -24,6 +25,7 @@ public:
     COParamPrivate()
         : provider(NULL),
           trendWidget(NULL),
+          measureWin(NULL),
           tiSrc(CO_TI_SOURCE_MANUAL),
           coAvgVal(InvData()),
           ciAvgVal(InvData()),
@@ -36,6 +38,7 @@ public:
     COProviderIFace *provider;
 
     COTrendWidget *trendWidget;
+    COMeasureWindow *measureWin;
 
     COTiSource tiSrc;
 
@@ -61,7 +64,12 @@ COParam &COParam::getInstance()
 }
 
 COParam::~COParam()
-{ }
+{
+    if (pimpl->measureWin)
+    {
+        pimpl->measureWin->deleteLater();
+    }
+}
 
 /**************************************************************************************************
  * 处理DEMO数据。
@@ -174,6 +182,24 @@ bool COParam::isConnected()
 void COParam::setCOTrendWidget(COTrendWidget *trendWidget)
 {
     pimpl->trendWidget = trendWidget;
+}
+
+void COParam::setMeasureWindow(COMeasureWindow *w)
+{
+    /* delete the old window */
+    if (pimpl->measureWin)
+    {
+        pimpl->measureWin->deleteLater();
+    }
+    pimpl->measureWin = w;
+}
+
+void COParam::showMeasureWin()
+{
+    if (pimpl->measureWin)
+    {
+        pimpl->measureWin->exec();
+    }
 }
 
 void COParam::setCatheterCoeff(unsigned short coef)
