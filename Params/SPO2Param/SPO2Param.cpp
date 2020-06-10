@@ -883,7 +883,7 @@ short SPO2Param::getPI()
 
 void SPO2Param::setSpCO(short spcoValue)
 {
-    //the rang of spco display is 0~99%
+    // the rang of spco display is 0~99%
     if (spcoValue > 99)
     {
         spcoValue = 99;
