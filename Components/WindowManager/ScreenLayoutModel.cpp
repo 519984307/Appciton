@@ -404,7 +404,7 @@ public:
         if (systemManager.isSupport(CONFIG_CO))
         {
             nodeName = layoutNodeName(LAYOUT_NODE_PARAM_CO);
-            paramNodeDescriptions[nodeName] = ParamNodeDescription(paramInfo.getParamName(PARAM_CO), PARAM_SPAN_TWO);
+            paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_CO), PARAM_SPAN_TWO, PARAM_CO);
         }
 
         nodeName = layoutNodeName(LAYOUT_NODE_PARAM_ECG);
