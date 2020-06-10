@@ -18,15 +18,16 @@
 #include <QDebug>
 #include "MeasureSettingWindow.h"
 #include "BaseDefine.h"
+#include "Framework/Utility/Unit.h"
 
 
 class COTrendWidgetPrivate
 {
 public:
     COTrendWidgetPrivate()
-        :coValue(NULL), ciName(NULL), ciValue(NULL),
-          tbName(NULL), tbValue(NULL), coStr(InvStr()),
-          ciStr(InvStr()), tbStr(InvStr())
+        :coValue(NULL), ciName(NULL), ciValue(NULL), tbName(NULL), tbValue(NULL),
+          // coStr(InvStr()), ciStr(InvStr()), tbStr(InvStr())
+          coStr("3.8"), ciStr("1.5"), tbStr("37.0")
     {}
 
     QLabel *coValue;
@@ -48,46 +49,49 @@ COTrendWidget::COTrendWidget()
 
     setName("C.O.");
 
-    // 设置报警关闭标志
-    showAlarmOff();
+    setUnit(trs(Unit::getSymbol(UNIT_LMin)));
 
-    pimpl->coValue = new QLabel();
-    pimpl->coValue->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    // // 设置报警关闭标志
+    // showAlarmOff();
+
+    pimpl->coValue = new QLabel(pimpl->coStr);
+    pimpl->coValue->setAlignment(Qt::AlignCenter);
     pimpl->coValue->setPalette(palette);
-    pimpl->coValue->setText(InvStr());
 
     pimpl->ciName = new QLabel("C.I.");
     pimpl->ciName->setPalette(palette);
     pimpl->ciName->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
-    pimpl->ciValue = new QLabel();
-    pimpl->ciValue->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
+    pimpl->ciValue = new QLabel(pimpl->ciStr);
+    pimpl->ciValue->setAlignment(Qt::AlignCenter);
     pimpl->ciValue->setPalette(palette);
-    pimpl->ciValue->setText(InvStr());
 
     pimpl->tbName = new QLabel("TB");
     pimpl->tbName->setPalette(palette);
     pimpl->tbName->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
-    pimpl->tbValue = new QLabel();
-    pimpl->tbValue->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
+    pimpl->tbValue = new QLabel(pimpl->tbStr);
+    pimpl->tbValue->setAlignment(Qt::AlignCenter);
     pimpl->tbValue->setPalette(palette);
-    pimpl->tbValue->setText(InvStr());
 
     QHBoxLayout *ciLayout = new QHBoxLayout();
-    ciLayout->addWidget(pimpl->ciName, 0, Qt::AlignCenter);
-    ciLayout->addWidget(pimpl->ciValue, 0, Qt::AlignCenter);
+    ciLayout->setContentsMargins(0, 0, 0, 0);
+    ciLayout->setSpacing(8);
+    ciLayout->addWidget(pimpl->ciName);
+    ciLayout->addWidget(pimpl->ciValue);
 
     QHBoxLayout *tbLayout = new QHBoxLayout();
-    tbLayout->addWidget(pimpl->tbName, 0, Qt::AlignCenter);
-    tbLayout->addWidget(pimpl->tbValue, 0, Qt::AlignCenter);
+    tbLayout->setContentsMargins(0, 0, 0, 0);
+    tbLayout->setSpacing(8);
+    tbLayout->addWidget(pimpl->tbName);
+    tbLayout->addWidget(pimpl->tbValue);
 
     QVBoxLayout *vLayout = new QVBoxLayout();
     vLayout->addLayout(ciLayout);
     vLayout->addLayout(tbLayout);
 
-    contentLayout->addWidget(pimpl->coValue);
-    contentLayout->addLayout(vLayout);
+    contentLayout->addWidget(pimpl->coValue, 3, Qt::AlignCenter);
+    contentLayout->addLayout(vLayout, 3);
 
     connect(this, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
 }
@@ -151,9 +155,9 @@ QList<SubParamID> COTrendWidget::getShortTrendSubParams() const
 void COTrendWidget::setTextSize()
 {
     QRect r;
-    int h = ((height()-nameLabel->height()) / 3);
-    int w = (width() - unitLabel->width());
-    r.setSize(QSize(w, (h * 2)));
+    int h = height();
+    int w = (width() - unitLabel->width()) / 2;
+    r.setSize(QSize(w, h));
 
     int fontsize = fontManager.adjustNumFontSize(r , true , "2222");
     QFont font = fontManager.numFont(fontsize , true);
@@ -161,14 +165,16 @@ void COTrendWidget::setTextSize()
 
     pimpl->coValue->setFont(font);
 
-    r.setSize(QSize(w, h));
+    r.setSize(QSize(w / 2, h / 2));
     fontsize = fontManager.adjustNumFontSize(r , true , "2222");
     font = fontManager.numFont(fontsize);
     font.setWeight(QFont::Black);
-    pimpl->ciName->setFont(font);
-    pimpl->tbName->setFont(font);
     pimpl->ciValue->setFont(font);
     pimpl->tbValue->setFont(font);
+
+    font = fontManager.textFont(fontManager.getFontSize(3));
+    pimpl->ciName->setFont(font);
+    pimpl->tbName->setFont(font);
 }
 
 /**************************************************************************************************

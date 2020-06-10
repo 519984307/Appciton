@@ -343,6 +343,7 @@ percent,%,%
 gdL,g/dL,g/dL
 mmolL,mmol/L,mmol/L
 mLdL,mL/dL,mL/dL
+LMin,L/min,L/min
 Defaults,恢复默认值,Defaults
 SureAllAlarmDefaults,"所有报警设置将恢复默认值,您确定进行吗?",All alarm settings will reset to the defaults. Are you sure to continue?
 SureAllDataErase,"所有历史数据会被擦除,您确定进行吗?","All historical data will be erased,Are you sure to continue?"
