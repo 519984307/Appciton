@@ -308,6 +308,11 @@ void COParam::setMeasureResult(short co, short ci)
 
     /*  Once we got the result, current measurement should be already stopped */
     pimpl->isMeasuring = false;
+
+    if (pimpl->trendWidget)
+    {
+        pimpl->trendWidget->setMeasureResult(co, ci);
+    }
 }
 
 /**************************************************************************************************

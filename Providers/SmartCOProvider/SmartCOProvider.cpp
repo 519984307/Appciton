@@ -388,10 +388,21 @@ void SmartCOProviderPrivate::handlePacket(quint8 ID, const quint8 *data, int len
         {
             coParam.setTb(tb);
         }
-
-        if (!tiSensorOff && tiSrc == CO_TI_SOURCE_AUTO)
+        else
         {
-            coParam.setTi(ti);
+            coParam.setTb(InvData());
+        }
+
+        if (tiSrc == CO_TI_SOURCE_AUTO)
+        {
+            if (!tiSensorOff)
+            {
+                coParam.setTi(ti);
+            }
+            else
+            {
+                coParam.setTi(InvData());
+            }
         }
 
         // qDebug() << tb << ti << co << hex << showbase << stat1 << stat2;

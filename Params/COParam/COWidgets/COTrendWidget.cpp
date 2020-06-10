@@ -26,8 +26,7 @@ class COTrendWidgetPrivate
 public:
     COTrendWidgetPrivate()
         :coValue(NULL), ciName(NULL), ciValue(NULL), tbName(NULL), tbValue(NULL),
-          // coStr(InvStr()), ciStr(InvStr()), tbStr(InvStr())
-          coStr("3.8"), ciStr("1.5"), tbStr("37.0")
+          coStr(InvStr()), ciStr(InvStr()), tbStr(InvStr())
     {}
 
     QLabel *coValue;
