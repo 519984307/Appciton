@@ -111,12 +111,8 @@ void COTrendWidget::setMeasureResult(short co, short ci)
     }
     else
     {
-        u_int16_t coInt = co / 100;
-        u_int16_t coDec = co % 100;
-        u_int16_t ciInt = ci / 10;
-        u_int16_t ciDec = ci % 10;
-        pimpl->coStr = QString::number(coInt) + "." + QString::number(coDec);
-        pimpl->ciStr = QString::number(ciInt) + "." + QString::number(ciDec);
+        pimpl->coStr = QString::number(co * 1.0 / 10, 'f', 1);
+        pimpl->ciStr = QString::number(co * 1.0 / 10, 'f', 1);
     }
     pimpl->coValue->setText(pimpl->coStr);
     pimpl->ciValue->setText(pimpl->ciStr);
@@ -135,9 +131,7 @@ void COTrendWidget::setTb(short tb)
     }
     else
     {
-        u_int16_t tbInt = tb / 100;
-        u_int16_t tbDec = tb % 100;
-        pimpl->tbStr = QString::number(tbInt) + "." + QString::number(tbDec);
+        pimpl->tbStr = QString::number(tb * 1.0 / 10, 'f', 1);
     }
 
     pimpl->tbValue->setText(pimpl->tbStr);
