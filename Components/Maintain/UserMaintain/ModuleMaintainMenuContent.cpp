@@ -197,7 +197,7 @@ void ModuleMaintainMenuContent::onButtonReleased()
                     if (value >= 80 && value <= 300)
                     {
                         button->setText(text);
-                        ibpParam.setCalibration(IBP_INPUT_1, value);
+                        ibpParam.setCalibration(IBP_CHN_1, value);
                     }
                     else
                     {
@@ -225,7 +225,7 @@ void ModuleMaintainMenuContent::onButtonReleased()
                     if (value >= 80 && value <= 300)
                     {
                         button->setText(text);
-                        ibpParam.setCalibration(IBP_INPUT_2, value);
+                        ibpParam.setCalibration(IBP_CHN_2, value);
                     }
                     else
                     {

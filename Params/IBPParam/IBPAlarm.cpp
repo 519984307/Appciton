@@ -13,6 +13,8 @@
 #include "AlarmConfig.h"
 #include "IBPParam.h"
 #include "SystemManager.h"
+#include "ParamManager.h"
+#include "FloatHandle.h"
 
 /**************************************************************************************************
  * alarm source name.
@@ -196,9 +198,9 @@ AlarmPriority IBPLimitAlarm::getAlarmPriority(int id)
  *************************************************************************************************/
 int IBPLimitAlarm::getValue(int id)
 {
-    IBPPressureName ibp1 = ibpParam.getEntitle(IBP_INPUT_1);
-    IBPPressureName ibp2 = ibpParam.getEntitle(IBP_INPUT_2);
-    IBPPressureName idName = ibpParam.getEntitle(static_cast<IBPLimitAlarmType>(id));
+    IBPLabel ibp1 = ibpParam.getEntitle(IBP_CHN_1);
+    IBPLabel ibp2 = ibpParam.getEntitle(IBP_CHN_2);
+    IBPLabel idName = ibpParam.getEntitle(static_cast<IBPLimitAlarmType>(id));
     switch (id)
     {
     case ART_LIMIT_ALARM_SYS_LOW:
@@ -211,12 +213,13 @@ int IBPLimitAlarm::getValue(int id)
     case AUXP2_LIMIT_ALARM_SYS_HIGH:
         if (idName == ibp1)
         {
-            return ibpParam.getParamData(IBP_INPUT_1).sys;
+            return ibpParam.getParamData(IBP_CHN_1).sys;
         }
         else if (idName == ibp2)
         {
-            return ibpParam.getParamData(IBP_INPUT_2).sys;
+            return ibpParam.getParamData(IBP_CHN_2).sys;
         }
+        break;
     case ART_LIMIT_ALARM_DIA_LOW:
     case ART_LIMIT_ALARM_DIA_HIGH:
     case PA_LIMIT_ALARM_DIA_LOW:
@@ -227,12 +230,13 @@ int IBPLimitAlarm::getValue(int id)
     case AUXP2_LIMIT_ALARM_DIA_HIGH:
         if (idName == ibp1)
         {
-            return ibpParam.getParamData(IBP_INPUT_1).dia;
+            return ibpParam.getParamData(IBP_CHN_1).dia;
         }
         else if (idName == ibp2)
         {
-            return ibpParam.getParamData(IBP_INPUT_2).dia;
+            return ibpParam.getParamData(IBP_CHN_2).dia;
         }
+        break;
     case ART_LIMIT_ALARM_MEAN_LOW:
     case ART_LIMIT_ALARM_MEAN_HIGH:
     case PA_LIMIT_ALARM_MEAN_LOW:
@@ -251,12 +255,13 @@ int IBPLimitAlarm::getValue(int id)
     case AUXP2_LIMIT_ALARM_MEAN_HIGH:
         if (idName == ibp1)
         {
-            return ibpParam.getParamData(IBP_INPUT_1).mean;
+            return ibpParam.getParamData(IBP_CHN_1).mean;
         }
         else if (idName == ibp2)
         {
-            return ibpParam.getParamData(IBP_INPUT_2).mean;
+            return ibpParam.getParamData(IBP_CHN_2).mean;
         }
+        break;
     case ART_LIMIT_ALARM_PR_LOW:
     case ART_LIMIT_ALARM_PR_HIGH:
     case PA_LIMIT_ALARM_PR_LOW:
@@ -275,15 +280,17 @@ int IBPLimitAlarm::getValue(int id)
     case AUXP2_LIMIT_ALARM_PR_HIGH:
         if (idName == ibp1)
         {
-            return ibpParam.getParamData(IBP_INPUT_1).pr;
+            return ibpParam.getParamData(IBP_CHN_1).pr;
         }
         else if (idName == ibp2)
         {
-            return ibpParam.getParamData(IBP_INPUT_2).pr;
+            return ibpParam.getParamData(IBP_CHN_2).pr;
         }
+        break;
     default:
-        return -1;
+        break;
     }
+    return -1;
 }
 
 /**************************************************************************************************
@@ -300,18 +307,7 @@ bool IBPLimitAlarm::isAlarmEnable(int id)
 int IBPLimitAlarm::getUpper(int id)
 {
     SubParamID subID = getSubParamID(id);
-    UnitType unit;
-    if (id == ART_LIMIT_ALARM_PR_LOW || id == PA_LIMIT_ALARM_PR_HIGH ||
-            id == CVP_LIMIT_ALARM_PR_LOW || id == LAP_LIMIT_ALARM_PR_HIGH ||
-            id == RAP_LIMIT_ALARM_PR_LOW || id == ICP_LIMIT_ALARM_PR_HIGH ||
-            id == AUXP1_LIMIT_ALARM_PR_LOW || id == AUXP2_LIMIT_ALARM_PR_HIGH)
-    {
-        unit = UNIT_BPM;
-    }
-    else
-    {
-        unit = UNIT_MMHG;
-    }
+    UnitType unit = paramManager.getSubParamUnit(PARAM_IBP, subID);
     return alarmConfig.getLimitAlarmConfig(subID, unit).highLimit;
 }
 
@@ -321,18 +317,7 @@ int IBPLimitAlarm::getUpper(int id)
 int IBPLimitAlarm::getLower(int id)
 {
     SubParamID subID = getSubParamID(id);
-    UnitType unit;
-    if (id == ART_LIMIT_ALARM_PR_LOW || id == PA_LIMIT_ALARM_PR_HIGH ||
-            id == CVP_LIMIT_ALARM_PR_LOW || id == LAP_LIMIT_ALARM_PR_HIGH ||
-            id == RAP_LIMIT_ALARM_PR_LOW || id == ICP_LIMIT_ALARM_PR_HIGH ||
-            id == AUXP1_LIMIT_ALARM_PR_LOW || id == AUXP2_LIMIT_ALARM_PR_HIGH)
-    {
-        unit = UNIT_BPM;
-    }
-    else
-    {
-        unit = UNIT_MMHG;
-    }
+    UnitType unit = paramManager.getSubParamUnit(PARAM_IBP, subID);
     return alarmConfig.getLimitAlarmConfig(subID, unit).lowLimit;
 }
 
@@ -341,10 +326,10 @@ int IBPLimitAlarm::getLower(int id)
  *************************************************************************************************/
 int IBPLimitAlarm::getCompare(int value, int id)
 {
-    IBPPressureName ibp1 = ibpParam.getEntitle(IBP_INPUT_1);
-    IBPPressureName ibp2 = ibpParam.getEntitle(IBP_INPUT_2);
+    IBPLabel ibp1 = ibpParam.getEntitle(IBP_CHN_1);
+    IBPLabel ibp2 = ibpParam.getEntitle(IBP_CHN_2);
     IBPLimitAlarmType type = static_cast<IBPLimitAlarmType>(id);
-    IBPPressureName idName = ibpParam.getEntitle(type);
+    IBPLabel idName = ibpParam.getEntitle(type);
     if (idName != ibp1 && idName != ibp2)
     {
         return 0;
@@ -361,27 +346,72 @@ int IBPLimitAlarm::getCompare(int value, int id)
     {
         return 0;
     }
+    // get sub param id
+    SubParamID subID = getSubParamID(id);
+    // get cur ibp unit
+    UnitType curUnit = paramManager.getSubParamUnit(PARAM_IBP, subID);
+    // get default unit
+    UnitType defUnit = paramInfo.getUnitOfSubParam(subID);
+    // get limit config
+    LimitAlarmConfig limitConfig = alarmConfig.getLimitAlarmConfig(subID, curUnit);
 
-    if (0 == id % 2)
+    if (curUnit == defUnit)
     {
-        if (value < getLower(id))
+        int low = limitConfig.lowLimit;
+        int high = limitConfig.highLimit;
+
+        if (0 == id % 2)
         {
-            return -1;
+            if (value < low)
+            {
+                return -1;
+            }
+            else
+            {
+                return 0;
+            }
         }
         else
         {
-            return 0;
+            if (value > high)
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
     else
     {
-        if (value > getUpper(id))
+        float low = static_cast<float>(limitConfig.lowLimit) / limitConfig.scale;
+        float high = static_cast<float>(limitConfig.highLimit) / limitConfig.scale;
+        float v = value * 1.0;
+        QString valueStr = Unit::convert(curUnit, defUnit, v);
+        v = valueStr.toDouble();
+
+        if (0 == id % 2)
         {
-            return 1;
+            if (isUpper(low, v))
+            {
+                return -1;
+            }
+            else
+            {
+                return 0;
+            }
         }
         else
         {
-            return 0;
+            if (isUpper(v, high))
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
 }
@@ -400,10 +430,10 @@ const char *IBPLimitAlarm::toString(int id)
 void IBPLimitAlarm::notifyAlarm(int id, bool flag)
 {
     SubParamID subID = getSubParamID(id);
-    IBPPressureName ibp1 = ibpParam.getEntitle(IBP_INPUT_1);
-    IBPPressureName ibp2 = ibpParam.getEntitle(IBP_INPUT_2);
+    IBPLabel ibp1 = ibpParam.getEntitle(IBP_CHN_1);
+    IBPLabel ibp2 = ibpParam.getEntitle(IBP_CHN_2);
     IBPLimitAlarmType type = static_cast<IBPLimitAlarmType>(id);
-    IBPPressureName idName = ibpParam.getEntitle(type);
+    IBPLabel idName = ibpParam.getEntitle(type);
 
     bool isAlarm;
     switch (type)
@@ -548,11 +578,11 @@ void IBPLimitAlarm::notifyAlarm(int id, bool flag)
     }
     if (idName == ibp1)
     {
-        ibpParam.noticeLimitAlarm(subID, isAlarm, IBP_INPUT_1);
+        ibpParam.noticeLimitAlarm(subID, isAlarm, IBP_CHN_1);
     }
     else if (idName == ibp2)
     {
-        ibpParam.noticeLimitAlarm(subID, isAlarm, IBP_INPUT_2);
+        ibpParam.noticeLimitAlarm(subID, isAlarm, IBP_CHN_2);
     }
 }
 
@@ -623,6 +653,10 @@ AlarmPriority IBPOneShotAlarm::getAlarmPriority(int id)
     {
         return ALARM_PRIO_MED;
     }
+    else if (id == IBP_ONESHOT_ALARM_COMMUNICATION_STOP)
+    {
+        return ALARM_PRIO_HIGH;
+    }
     else
     {
         return ALARM_PRIO_PROMPT;
@@ -650,11 +684,11 @@ bool IBPOneShotAlarm::isAlarmed(int id)
 
     if (id == IBP1_LEAD_OFF)
     {
-        return  ibpParam.getIBPLeadOff(IBP_INPUT_1);
+        return  ibpParam.isIBPLeadOff(IBP_CHN_1);
     }
     else if (id == IBP2_LEAD_OFF)
     {
-        return  ibpParam.getIBPLeadOff(IBP_INPUT_2);
+        return  ibpParam.isIBPLeadOff(IBP_CHN_2);
     }
     return AlarmOneShotIFace::isAlarmed(id);
 }

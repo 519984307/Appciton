@@ -171,6 +171,13 @@ void ScreenLayoutItemDelegate::drawDisplay(QPainter *painter, const QStyleOption
     QVariant val = d->curPaintingIndex.data(Qt::DisplayRole);
     if (val.canConvert<ScreenLayoutItemInfo>())
     {
+        QVariant brVal = d->curPaintingIndex.data(Qt::ForegroundRole);
+        if (brVal.isValid())
+        {
+            QBrush br = brVal.value<QBrush>();
+            painter->setPen(br.color());
+        }
+
         ScreenLayoutItemInfo info = qvariant_cast<ScreenLayoutItemInfo>(val);
         if (info.waveid != WAVE_NONE)
         {

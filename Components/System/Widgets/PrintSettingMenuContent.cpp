@@ -565,12 +565,12 @@ void PrintSettingMenuContentPrivate::wavesUpdate(QList<int> *waveIDs, QStringLis
     if (systemManager.isSupport(CONFIG_IBP))
     {
         // ibp
-        IBPPressureName ibpTitle = ibpParam.getEntitle(IBP_INPUT_1);
+        IBPLabel ibpTitle = ibpParam.getEntitle(IBP_CHN_1);
         waveID = ibpParam.getWaveformID(ibpTitle);
         waveIDs->append(waveID);
         waveNames->append(IBPSymbol::convert(ibpTitle));
 
-        ibpTitle = ibpParam.getEntitle(IBP_INPUT_2);
+        ibpTitle = ibpParam.getEntitle(IBP_CHN_2);
         waveID = ibpParam.getWaveformID(ibpTitle);
         waveIDs->append(waveID);
         waveNames->append(IBPSymbol::convert(ibpTitle));

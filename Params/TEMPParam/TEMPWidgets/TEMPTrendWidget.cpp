@@ -253,7 +253,7 @@ void TEMPTrendWidget::setTextSize()
     QRect r;
     int widgetWidth = width();
     int nameLabelWidth = nameLabel->width();
-    r.setSize(QSize((widgetWidth - nameLabelWidth * 3)/3, height()));
+    r.setSize(QSize((widgetWidth - nameLabelWidth * 3) / 4, height()));
     // 字体。
     int fontsize = fontManager.adjustNumFontSize(r, true, "3888");
     QFont font = fontManager.numFont(fontsize, true);
@@ -262,8 +262,8 @@ void TEMPTrendWidget::setTextSize()
     _t2Value->setFont(font);
     _tdValue->setFont(font);
 
-    // name
-    QFont nameFont = fontManager.textFont(fontManager.getFontSize(3));
+    // temp name font
+    QFont nameFont = fontManager.textFont(fontManager.getFontSize(2));
     _t1Name->setFont(nameFont);
     _t2Name->setFont(nameFont);
     _tdName->setFont(nameFont);
@@ -379,6 +379,8 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
     QWidget* groupBox0 = new QWidget();
     QHBoxLayout *hLayout0 = new QHBoxLayout(groupBox0);
     QVBoxLayout *vLayout = new QVBoxLayout();
+    // set layout spacing 0
+    vLayout->setSpacing(0);
 
     // T1
     _t1Name = new QLabel();
@@ -412,6 +414,8 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
     _t2DownLimit->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
     _t2DownLimit->setText("");
     vLayout = new QVBoxLayout();
+    // set layout spacing 0
+    vLayout->setSpacing(0);
     vLayout->addWidget(_t2Name);
     vLayout->addStretch();
     vLayout->addWidget(_t2UpLimit);

@@ -61,9 +61,6 @@ DEFINES += HIDE_PARAM_SWITCH
 #用于隐藏ST功能
 DEFINES += HIDE_ECG_ST_PVCS_SUBPARAM
 
-#隐藏IBP校零软按键
-DEFINES += HIDE_IBP_CALIBRATE_ZERO
-
 #隐藏ECG心率失常功能
 DEFINES += HIDE_ECG_ARRHYTHMIA_FUNCTION
 
@@ -117,12 +114,6 @@ DEFINES += DISABLE_FACTORY_MODULE_SELFTEST
 
 #失能ecg模块校准
 DEFINES += DISABLE_ECG_MODULE_CALIBRATION
-
-#大字体界面，co2模块替换resp模块
-DEFINES += BIG_FONT_LAYOUT_CO2_REPLACE_RESP
-
-#隐藏界面布局功能
-DEFINES += HIDE_SCREEN_LAYOUT
 
 #支持ECG监护模式下，关闭陷波滤波
 DEFINES += ECG_MONITOR_NOTIFY_FILTER_OFF
@@ -401,6 +392,7 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/FactoryCO2MenuContent.cpp               \
     Components/Maintain/FactoryMaintain/FactoryTempMenuContent.cpp              \
     Components/Maintain/FactoryMaintain/FactoryTestMenuContent.cpp              \
+    Components/Maintain/FactoryMaintain/IBPCalibrationMenuContent.cpp           \
     Components/CodeMarker/Widgets/CodeMarkerWindow.cpp                          \
     Components/ConfigManager/ConfigManager.cpp                                  \
     Components/ConfigManager/ConfigManagerInterface.cpp                         \
@@ -469,6 +461,7 @@ SOURCES +=                                                                      
     Params/IBPParam/IBPWidgets/IBPTrendWidget.cpp                               \
     Params/IBPParam/IBPWidgets/IBPWaveRuler.cpp                                 \
     Params/IBPParam/IBPWidgets/IBPMenuContent.cpp                               \
+    Params/IBPParam/IBPWidgets/IBPZeroWindow.cpp                                \
     Params/IBPParam/IBPAlarm.cpp                                                \
     Params/COParam/COAlarm.cpp                                                  \
     Params/COParam/COParam.cpp                                                  \
@@ -552,6 +545,7 @@ SOURCES +=                                                                      
     Providers/DataDispatcher.cpp                                                \
     Providers/NeonateProvider/NeonateProvider.cpp                               \
     Providers/PluginProvider.cpp                                                \
+    Providers/SmartIBPProvider/SmartIBPProvider.cpp                             \
 #################################################################################
     Main/App/AppMain.cpp                                                        \
     Main/App/Init.cpp                                                           \
@@ -835,6 +829,7 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/FactoryCO2MenuContent.h                 \
     Components/Maintain/FactoryMaintain/FactoryTempMenuContent.h                \
     Components/Maintain/FactoryMaintain/FactoryTestMenuContent.h                \
+    Components/Maintain/FactoryMaintain/IBPCalibrationMenuContent.h             \
     Components/CodeMarker/Widgets/CodeMarkerList.h                              \
     Components/CodeMarker/Widgets/CodeMarkerWindow.h                            \
     Components/ConfigManager/ConfigManager.h                                    \
@@ -919,6 +914,7 @@ HEADERS +=                                                                      
     Params/IBPParam/IBPSymbol.h                                                 \
     Params/IBPParam/IBPWidgets/IBPWaveRuler.h                                   \
     Params/IBPParam/IBPWidgets/IBPMenuContent.h                                 \
+    Params/IBPParam/IBPWidgets/IBPZeroWindow.h                                  \
     Params/IBPParam/IBPAlarm.h                                                  \
     Params/COParam/COAlarm.h                                                    \
     Params/COParam/COSymbol.h                                                   \
@@ -1027,6 +1023,7 @@ HEADERS +=                                                                      
     Providers/DataDispatcher.h                                                  \
     Providers/NeonateProvider/NeonateProvider.h                                 \
     Providers/PluginProvider.h                                                  \
+    Providers/SmartIBPProvider/SmartIBPProvider.h                               \
 #################################################################################
     Main/App/Init.h                                                             \
     Main/IApplication.h                                                         \
@@ -1110,6 +1107,7 @@ DEPENDPATH +=                                                                   
     Providers/RawData                                                           \
     Providers/S5Provider                                                        \
     Providers/NeonateProvider                                                   \
+    Providers/SmartIBPProvider                                                  \
     Params                                                                      \
     Params/AGParam                                                              \
     Params/AGParam/AGWidgets                                                    \
@@ -1214,6 +1212,7 @@ INCLUDEPATH +=                                                                  
     Providers/RawData                                                           \
     Providers/S5Provider                                                        \
     Providers/NeonateProvider                                                   \
+    Providers/SmartIBPProvider                                                  \
     Params                                                                      \
     Params/AGParam                                                              \
     Params/AGParam/AGWidgets                                                    \

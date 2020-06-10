@@ -51,7 +51,7 @@ void IBPWaveWidget::setLeadSta(int info)
 
     if (info)
     {
-        _leadSta->setText(trs("LeadOff"));
+        _leadSta->setText(trs("SensorOff"));
     }
     else
     {
@@ -72,19 +72,18 @@ void IBPWaveWidget::setLimit(int low, int high)
     _lowLimit = low;
     _highLimit = high;
     _ruler->setRuler(high, (high + low) / 2, low);
-    low = low * 10 + 1000;
-    high = high * 10 + 1000;
+
+    low *= 10;
+    high *= 10;
     setValueRange(low, high);
 }
 
 /**************************************************************************************************
  * 设置标名。
  *************************************************************************************************/
-void IBPWaveWidget::setEntitle(IBPPressureName entitle)
+void IBPWaveWidget::setEntitle(IBPLabel entitle)
 {
     _name->setText(IBPSymbol::convert(entitle));
-    QString zoomStr = QString::number(ibpParam.getIBPScale(entitle).low) + "-" +
-                      QString::number(ibpParam.getIBPScale(entitle).high) + "mmHg";
     _entitle = entitle;
     setLimit(ibpParam.getIBPScale(getEntitle()).low, ibpParam.getIBPScale(getEntitle()).high);
 }
@@ -92,7 +91,7 @@ void IBPWaveWidget::setEntitle(IBPPressureName entitle)
 /**************************************************************************************************
  * 获取标名。
  *************************************************************************************************/
-IBPPressureName IBPWaveWidget::getEntitle()
+IBPLabel IBPWaveWidget::getEntitle()
 {
     return _entitle;
 }
@@ -104,7 +103,7 @@ void IBPWaveWidget::setRulerLimit(IBPRulerLimit ruler)
         return;
     }
 
-    if (ruler == IBP_RULER_LIMIT_AOTU)
+    if (ruler == IBP_RULER_LIMIT_AUTO)
     {
         _isAutoRuler = true;
     }
@@ -122,9 +121,10 @@ void IBPWaveWidget::setRulerLimit(IBPRulerLimit ruler)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-IBPWaveWidget::IBPWaveWidget(WaveformID id, const QString &waveName, const IBPPressureName &entitle)
-    : WaveWidget(waveName, IBPSymbol::convert(entitle)),
-      _entitle(entitle)
+IBPWaveWidget::IBPWaveWidget(WaveformID id, const QString &waveName, const IBPChannel &ibpChn)
+    : WaveWidget(waveName, IBPSymbol::convert(ibpParam.getEntitle(ibpChn))),
+      _ibpChn(ibpChn),
+      _entitle(ibpParam.getEntitle(ibpChn))
 {
     _autoRulerTracePeek = -10000;
     _autoRulerTraveVally = 10000;
@@ -202,6 +202,15 @@ void IBPWaveWidget::focusInEvent(QFocusEvent *e)
     {
         _name->setFocus();
     }
+}
+
+void IBPWaveWidget::loadConfig()
+{
+    const QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_IBP));
+    setPalette(palette);
+    _ruler->setPalette(palette);
+
+    setEntitle(ibpParam.getEntitle(_ibpChn));
 }
 
 /**************************************************************************************************

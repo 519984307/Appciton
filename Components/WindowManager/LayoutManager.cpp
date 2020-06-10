@@ -378,62 +378,114 @@ void LayoutManagerPrivate::performStandardLayout()
     rightParamLayout->setMargin(0);
 
     OrderedMap<int, LayoutRow>::ConstIterator iter = layoutInfos.begin();
-    int insetRow = 0;
-    int lastWaveRow = 0;
+    int curWaveRow = 0;
+    int curRightParamRow = 0;
+    int curLeftParamRow = 0;
+    int rightLayoutColumn = 0;
+    bool hasVisableLeftParamWidget = false;
+    QVector<QVector<IWidget *> > rightParamsWidget;
+    QVector<QVector<int> > rightParamPos;
     for (; iter != layoutInfos.end(); ++iter)
     {
         LayoutRow::ConstIterator nodeIter = iter.value().constBegin();
         int row = iter.key();
+        bool hasWave = false;
+        bool hasRightParam = false;
+        bool hasLeftParam = false;
         for (; nodeIter != iter.value().constEnd(); ++nodeIter)
         {
-            IWidget *w = layoutWidgets.value(layoutNodeMap[nodeIter->name], NULL);
-            QWidget *qw = w;
-            if (!qw)
-            {
-                qw = createContainter();
-            }
-            if (w)
-            {
-                contentWidgets.append(w);
-            }
-
-            qw->setVisible(true);
-            qw->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
             if (nodeIter->pos < LAYOUT_WAVE_END_COLUMN)
             {
                 if (row < LAYOUT_MAX_WAVE_ROW_NUM)
                 {
-                    waveLayout->addWidget(qw, insetRow, nodeIter->pos, 1, nodeIter->span);
-                    waveLayout->setRowStretch(row, 1);
-                    if (w)
+                    IWidget *w = layoutWidgets.value(layoutNodeMap[nodeIter->name], NULL);
+                    if (!w)
                     {
-                        displayWaveforms.append(w->name());
+                       continue;
                     }
-                    lastWaveRow = insetRow;
+                    w->setVisible(true);
+                    w->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+                    waveLayout->addWidget(w, curWaveRow, nodeIter->pos, 1, nodeIter->span);
+                    displayWaveforms.append(w->name());
+                    contentWidgets.append(w);
+                    hasWave = true;
                 }
                 else
                 {
-                    leftParamLayout->addWidget(qw, insetRow - lastWaveRow - 1, nodeIter->pos, 1, nodeIter->span);
-                    leftParamLayout->setRowStretch(insetRow - lastWaveRow - 1, 1);
+                    IWidget *w = layoutWidgets.value(layoutNodeMap[nodeIter->name], NULL);
                     if (w)
                     {
+                        w->setVisible(true);
+                        w->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+                        leftParamLayout->addWidget(w, curLeftParamRow, nodeIter->pos, 1, nodeIter->span);
                         displayParams.append(w->name());
+                        contentWidgets.append(w);
+                        hasVisableLeftParamWidget = true;
                     }
+                    else
+                    {
+                        /* add container if the widget isn't exist or empty */
+                        QWidget *container = createContainter();
+                        container->setVisible(true);
+                        container->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+                        leftParamLayout->addWidget(container, curLeftParamRow, nodeIter->pos, 1, nodeIter->span);
+                    }
+                    hasLeftParam = true;
                 }
             }
             else
             {
-                rightParamLayout->addWidget(qw, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
-                rightParamLayout->setRowStretch(row, 1);
+                IWidget *w = layoutWidgets.value(layoutNodeMap[nodeIter->name], NULL);
                 if (w)
                 {
+                    w->setVisible(true);
+                    w->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+                    contentWidgets.append(w);
+
+                    /* store first, layout later */
+                    if (rightParamsWidget.count() < curRightParamRow + 1)
+                    {
+                        rightParamsWidget.append(QVector<IWidget *>());
+                        rightParamPos.append(QVector<int>());
+                        rightParamPos.append(QVector<int>());
+                    }
+                    rightParamsWidget[curRightParamRow].append(w);
+                    rightParamPos[curRightParamRow].append(nodeIter->pos - LAYOUT_WAVE_END_COLUMN);
                     displayParams.append(w->name());
+                    hasRightParam = true;
+
+                    if (rightLayoutColumn < rightParamsWidget[curRightParamRow].count())
+                    {
+                        rightLayoutColumn = rightParamsWidget[curRightParamRow].count();
+                    }
                 }
             }
         }
-        if (!(*iter).isEmpty())
+
+        if (hasWave)
         {
-            insetRow++;
+            curWaveRow++;
+        }
+
+        if (hasLeftParam)
+        {
+            curLeftParamRow++;
+        }
+
+        if (hasRightParam)
+        {
+            curRightParamRow++;
+        }
+    }
+
+    /* layout the right param */
+    for (int i = 0; i < curRightParamRow; i++)
+    {
+        /* if we has multi widgets at the same row, each widget should has equal space */
+        for (int j = 0; j < rightParamsWidget[i].count(); j++)
+        {
+            rightParamLayout->addWidget(rightParamsWidget[i].at(j), i, rightParamPos[i].at(j),
+                                        1, rightLayoutColumn / rightParamsWidget[i].count());
         }
     }
 
@@ -443,55 +495,63 @@ void LayoutManagerPrivate::performStandardLayout()
 
     // 计算波形行数和左参数区行数
     waveRowCount = waveLayout->rowCount();
-    if (leftParamLayout->count() != 0)
+    leftParamRowCount = hasVisableLeftParamWidget ? leftParamLayout->rowCount() : 0;
+    int rowHeightLeft;
+    int rowHeightRight;
+    int leftRowNum = waveRowCount + leftParamRowCount;
+    if (displayWaveforms.count() >= 2 && displayWaveforms.at(1).contains("ECG")
+            && (leftRowNum > curRightParamRow && leftRowNum < 7))
     {
-        leftParamRowCount = leftParamLayout->rowCount();
-    }
-    else
-    {
-        leftParamRowCount = 0;
-    }
+        /*
+         * The first two wave is ecg and we have the more row at the left region than the right region,
+         * set the ECG trend with the height of the first two ecg wave, the left row numbe should be lest
+         * than 7 to avoid the height is two small for trend widget
+         */
+        rowHeightLeft = qRound((contentView->height() - FIRST_ECG_WAVE_HEIGHT) * 1.0 / (leftRowNum - 1));
 
-    if (ecgParam.getLeadMode() == ECG_LEAD_MODE_3)
-    {
-        // 三导联时，不显示第二条波形
-        insetRow -= 1;
-    }
-
-    int rowH = qRound((contentView->height() - FIRST_ECG_WAVE_HEIGHT) * 1.0 / (insetRow - 1));  // 每行高度
-
-    // 设置右参数的各参数占比，第一道波形最小高度30mm
-    if (ecgParam.getLeadMode() != ECG_LEAD_MODE_3)
-    {
-        // 非3导联时，ECG参数控件合并第一二块区域
-        rightParamLayout->setRowStretch(0, FIRST_ECG_WAVE_HEIGHT + rowH);
-        // 左参数区和波形区的占比
-        leftLayout->setStretch(0, (waveRowCount - 1) * rowH + FIRST_ECG_WAVE_HEIGHT);
-        leftLayout->setStretch(1, leftParamRowCount * rowH);
-        waveLayout->setRowStretch(1, rowH);
-    }
-    else
-    {
-        // 3导联时，ECG参数只占一块
-        rightParamLayout->setRowStretch(0, FIRST_ECG_WAVE_HEIGHT);
-        leftLayout->setStretch(0, (waveRowCount - 2) * rowH + FIRST_ECG_WAVE_HEIGHT);
-        leftLayout->setStretch(1, leftParamRowCount * rowH);
-        waveLayout->setRowStretch(1, 0);
-    }
-    rightParamLayout->setRowStretch(1, 0);
-    for (int i = 2; i < rightParamLayout->rowCount(); i++)
-    {
-        if (rightParamLayout->rowStretch(i) != 0)
+        waveLayout->setRowStretch(0, FIRST_ECG_WAVE_HEIGHT);
+        rightParamLayout->setRowStretch(0, FIRST_ECG_WAVE_HEIGHT + rowHeightLeft);
+        if (curRightParamRow > 1)
         {
-            rightParamLayout->setRowStretch(i, rowH);
+            rowHeightRight = (contentView->height() - (FIRST_ECG_WAVE_HEIGHT + rowHeightLeft)) / (curRightParamRow - 1);
+        }
+        else
+        {
+            rowHeightRight = rowHeightLeft;
         }
     }
-
-    // 波形区的占比
-    waveLayout->setRowStretch(0, FIRST_ECG_WAVE_HEIGHT);
-    for (int i = 2; i < waveLayout->rowCount(); i++)
+    else
     {
-        waveLayout->setRowStretch(i, rowH);
+        rowHeightLeft = qRound((contentView->height() - FIRST_ECG_WAVE_HEIGHT) * 1.0 / (leftRowNum - 1));
+        rowHeightRight = qRound((contentView->height() - FIRST_ECG_WAVE_HEIGHT) * 1.0
+                                / (rightParamLayout->rowCount() - 1));
+
+        waveLayout->setRowStretch(0, FIRST_ECG_WAVE_HEIGHT);
+        rightParamLayout->setRowStretch(0, FIRST_ECG_WAVE_HEIGHT);
+    }
+
+    leftLayout->setStretch(0, (waveRowCount - 1) * rowHeightLeft + FIRST_ECG_WAVE_HEIGHT);
+    leftLayout->setStretch(1, leftParamRowCount * rowHeightLeft);
+    for (int i = 1; i < waveLayout->rowCount(); i++)
+    {
+        waveLayout->setRowStretch(i, rowHeightLeft);
+    }
+
+    if (hasVisableLeftParamWidget)
+    {
+        for (int i = 0; i < leftParamLayout->rowCount(); i++)
+        {
+            leftParamLayout->setRowStretch(i, rowHeightLeft);
+        }
+    }
+    else
+    {
+        leftParamContainer->setVisible(false);
+    }
+
+    for (int i = 1; i < rightParamLayout->rowCount(); i++)
+    {
+        rightParamLayout->setRowStretch(i, rowHeightRight);
     }
 }
 
@@ -944,25 +1004,7 @@ void LayoutManagerPrivate::performBigFontLayout()
 
             QVBoxLayout *vLayout = new QVBoxLayout(nodeContainer);
             vLayout->setMargin(0);
-#ifdef BIG_FONT_LAYOUT_CO2_REPLACE_RESP
-            // co2 replace resp when co2 connecting.
-            if (paramName == QString(layoutNodeName(LAYOUT_NODE_PARAM_RESP)))
-            {
-                if (co2Param.isConnected())
-                {
-                    paramName = QString(layoutNodeName(LAYOUT_NODE_PARAM_CO2));
-                    waveName = QString(layoutNodeName(LAYOUT_NODE_WAVE_CO2));
-                }
-            }
-            else if (paramName == QString(layoutNodeName(LAYOUT_NODE_PARAM_CO2)))
-            {
-                if (!co2Param.isConnected())
-                {
-                    paramName = QString(layoutNodeName(LAYOUT_NODE_PARAM_RESP));
-                    waveName = QString(layoutNodeName(LAYOUT_NODE_WAVE_RESP));
-                }
-            }
-#endif
+
             IWidget *w = layoutWidgets.value(layoutNodeMap[paramName], NULL);
             if (w && widgetLayoutable[w->name()])
             {
@@ -1480,6 +1522,8 @@ void LayoutManager::setUFaceType(UserFaceType type)
     updateLayout();
 
     systemConfig.setNumValue("UserFaceType", static_cast<int>(type));
+
+    emit userInterfaceChange(type);
 }
 
 UserFaceType LayoutManager::getUFaceType() const
@@ -1724,14 +1768,24 @@ QRect LayoutManager::getMenuArea() const
     }
     else
     {
+        /*
+         * The purpose is to solve the problem of incomplete display of the menu interface
+         * when the interface is less than 3 waveforms.
+         */
+        int displayWaveCount = d_ptr->waveRowCount;
+        if (displayWaveCount < 3)
+        {
+            displayWaveCount = 3;
+        }
         // 获得不遮挡第一道波形的菜单显示区域
-        int startYPos = r.height() / (d_ptr->waveRowCount + d_ptr->leftParamRowCount);
+        int startYPos = r.height() / (displayWaveCount + d_ptr->leftParamRowCount);
+
         r.moveTo(0, startYPos);
         QRect gr(d_ptr->contentView->mapToGlobal(r.topLeft()),
                  d_ptr->contentView->mapToGlobal(r.bottomRight()));
         gr.setWidth(gr.width() * d_ptr->waveAreaStretch / (d_ptr->waveAreaStretch + d_ptr->paramAreaStretch));
-        gr.setHeight(r.height() * (d_ptr->waveRowCount - 1 + d_ptr->leftParamRowCount)
-                     / (d_ptr->waveRowCount + d_ptr->leftParamRowCount));
+        gr.setHeight(r.height() * (displayWaveCount - 1 + d_ptr->leftParamRowCount)
+                     / (displayWaveCount + d_ptr->leftParamRowCount));
         return gr;
     }
 }

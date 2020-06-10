@@ -69,7 +69,7 @@ struct RecordWaveSegmentInfo
             int low;
             int high;
             bool isAuto;
-            IBPPressureName pressureName;
+            IBPLabel pressureName;
             UnitType unit;
         } ibp;
 

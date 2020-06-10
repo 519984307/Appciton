@@ -16,15 +16,25 @@
 class IBPSymbol
 {
 public:
-    static const char *convert(IBPPressureName index)
+    static const char *convert(IBPLabel index)
     {
-        static const char *symbol[IBP_PRESSURE_NR] =
+        static const char *symbol[IBP_LABEL_NR] =
         {
-            "ART",  "PA", "CVP", "LAP", "RAP", "ICP", "AUXP1", "AUXP2"
+            "ART",  "PA", "CVP", "LAP", "RAP", "ICP", "P1", "P2"
         };
 
         return symbol[index];
     }
+
+    static const char *convert(IBPModuleType type)
+    {
+        static const char *symbol[IBP_MODULE_NR] = {
+            "SMART_IBP", "WITLEAF_IBP"
+        };
+
+        return symbol[type];
+    }
+
 
     static const char *convert(IBPSweepSpeed index)
     {
@@ -105,7 +115,7 @@ public:
     {
         static const char *symbol[IBP_ONESHOT_NR] =
         {
-            "IBP1LeadOff", "IBP2LeadOff",
+            "IBP1SensorOff", "IBP2SensorOff",
             "IBP1ZeroCalibSuccess",
             "IBP1MeasurePressureIsPulse",
             "IBP1ZeroCalibPressureBeyondMeasureRange",
@@ -129,6 +139,7 @@ public:
             "IBP2NoZeroCalib",
             "IBP2LeadOffCalibrationFail",
             "IBP2NoSetCalibrationTime",
+            "IBPCommunicationStop",
         };
         return symbol[index];
     }

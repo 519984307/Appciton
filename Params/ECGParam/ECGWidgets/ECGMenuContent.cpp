@@ -647,6 +647,7 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
 
             // fall through, because the calculate lead changed
         }
+        break;
         case ECGMenuContentPrivate::ITEM_CBO_ECG1:
         {
             int waveIndex = 0;

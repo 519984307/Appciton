@@ -43,6 +43,7 @@
 #include "TimeManager.h"
 #include "ContinuousPageGenerator.h"
 #include "FreezeWindow.h"
+#include "IBPZeroWindow.h"
 #include "Alarm.h"
 #include <QPointer>
 
@@ -70,9 +71,7 @@ static KeyActionDesc _baseKeys[] =
     KeyActionDesc("", "eventReview", "Summary1.png", SoftkeyActionBase::eventReview),
     KeyActionDesc("", "TrendTable", "trend.png", SoftkeyActionBase::trendTable),
     KeyActionDesc("", "ChooseScreen", "screenSwitch.png", SoftkeyActionBase::switchSystemMode),
-#ifndef HIDE_SCREEN_LAYOUT
     KeyActionDesc("", "ScreenSetup", "interface.png",   SoftkeyActionBase::windowLayout),
-#endif
 #ifndef HIDE_PARAM_SWITCH
     KeyActionDesc("", "ParameterSwitch", "paraSwitch.png"),
 #endif
@@ -82,9 +81,7 @@ static KeyActionDesc _baseKeys[] =
 #endif
     KeyActionDesc("", "CO2ZeroCalib", "calib.png", SoftkeyActionBase::CO2Zero),
     KeyActionDesc("", co2StandbyHint, co2StandbyIcon, SoftkeyActionBase::CO2Handle),
-#ifndef HIDE_IBP_CALIBRATE_ZERO
-    KeyActionDesc("", trs("IBPZeroCalib"), "calib.png", SoftkeyActionBase::IBPZero),
-#endif
+    KeyActionDesc("", trs("IBPZero"), "calib.png", SoftkeyActionBase::IBPZero),
     KeyActionDesc("", "Calculation", "dosecalculation.png", SoftkeyActionBase::calculation),
     KeyActionDesc("", "ToneVolume", "keyBoard.png", SoftkeyActionBase::keyVolume),
     KeyActionDesc("", "SystemBrightness", "Brightness.png", SoftkeyActionBase::systemBrightness),
@@ -379,7 +376,10 @@ void SoftkeyActionBase::IBPZero(bool isPressed)
     {
         return;
     }
-    ibpParam.zeroCalibration(IBP_INPUT_1);
+
+    windowManager.closeAllWidows();
+    IBPZeroWindow w;
+    w.exec();
 }
 
 void SoftkeyActionBase::systemBrightness(bool isPressed)

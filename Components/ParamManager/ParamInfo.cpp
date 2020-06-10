@@ -483,12 +483,12 @@ const char *ParamInfo::getIBPPressName(SubParamID id)
     case SUB_PARAM_AUXP1_DIA:
     case SUB_PARAM_AUXP1_MAP:
     case SUB_PARAM_AUXP1_PR:
-        return "AUXP1";
+        return "P1";
     case SUB_PARAM_AUXP2_SYS:
     case SUB_PARAM_AUXP2_DIA:
     case SUB_PARAM_AUXP2_MAP:
     case SUB_PARAM_AUXP2_PR:
-        return "AUXP2";
+        return "P2";
     default:
         return "";
     }
@@ -544,9 +544,9 @@ const char *ParamInfo::getParamWaveformName(WaveformID id)
     case WAVE_ICP:
         return "ICP";
     case WAVE_AUXP1:
-        return "AUXP1";
+        return "P1";
     case WAVE_AUXP2:
-        return "AUXP2";
+        return "P2";
     default:
         break;
     }
@@ -766,6 +766,14 @@ UnitType ParamInfo::getUnitOfSubParam(SubParamID id, UnitType *t0, UnitType *t1)
     {
     case SUB_PARAM_HR_PR:
     case SUB_PARAM_ECG_PVCS:
+    case SUB_PARAM_ART_PR:
+    case SUB_PARAM_PA_PR:
+    case SUB_PARAM_CVP_PR:
+    case SUB_PARAM_LAP_PR:
+    case SUB_PARAM_RAP_PR:
+    case SUB_PARAM_ICP_PR:
+    case SUB_PARAM_AUXP1_PR:
+    case SUB_PARAM_AUXP2_PR:
         return UNIT_BPM;
 
     case SUB_PARAM_ST_I:
@@ -800,6 +808,26 @@ UnitType ParamInfo::getUnitOfSubParam(SubParamID id, UnitType *t0, UnitType *t1)
     case SUB_PARAM_NIBP_DIA:
     case SUB_PARAM_NIBP_MAP:
         *t0 = UNIT_KPA;
+        return UNIT_MMHG;
+
+    case SUB_PARAM_ART_SYS:
+    case SUB_PARAM_ART_DIA:
+    case SUB_PARAM_ART_MAP:
+    case SUB_PARAM_PA_SYS:
+    case SUB_PARAM_PA_DIA:
+    case SUB_PARAM_PA_MAP:
+    case SUB_PARAM_CVP_MAP:
+    case SUB_PARAM_LAP_MAP:
+    case SUB_PARAM_RAP_MAP:
+    case SUB_PARAM_ICP_MAP:
+    case SUB_PARAM_AUXP1_SYS:
+    case SUB_PARAM_AUXP1_DIA:
+    case SUB_PARAM_AUXP1_MAP:
+    case SUB_PARAM_AUXP2_SYS:
+    case SUB_PARAM_AUXP2_DIA:
+    case SUB_PARAM_AUXP2_MAP:
+        *t0 = UNIT_KPA;
+        *t1 = UNIT_CMH2O;
         return UNIT_MMHG;
 
     case SUB_PARAM_ETCO2:

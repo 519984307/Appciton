@@ -72,6 +72,7 @@ void BigFontLayoutWindow::hideEvent(QHideEvent *ev)
 void BigFontLayoutWindow::showEvent(QShowEvent *ev)
 {
     BigFontLayoutModel *model = qobject_cast<BigFontLayoutModel *>(d_ptr->tableView->model());
+    model->updateWaveAndParamInfo();
     model->loadLayoutInfo();
     Dialog::showEvent(ev);
 }
@@ -107,6 +108,8 @@ BigFontLayoutWindow::BigFontLayoutWindow()
 {
     QVBoxLayout *vLayout = new QVBoxLayout();
     setWindowLayout(vLayout);
+
+    vLayout->setContentsMargins(4, 4, 4, 8);
 
     d_ptr->tableView = new TableView();
     d_ptr->tableView->verticalHeader()->setVisible(false);

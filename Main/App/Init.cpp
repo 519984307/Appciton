@@ -27,6 +27,7 @@
 #include "Framework/Language/LanguageManager.h"
 #include "Framework/Language/Translator.h"
 #include "Framework/TimeDate/TimeDate.h"
+#include "Providers/SmartIBPProvider/SmartIBPProvider.h"
 
 /**
  * @brief initLanguage initialize the language manager
@@ -202,6 +203,8 @@ static void _initComponents(void)
     // Softkeys
     softkeyManager.getInstance();
     layoutManager.addLayoutWidget(&softkeyManager);
+    QObject::connect(&layoutManager, SIGNAL(userInterfaceChange(UserFaceType)),
+                     &softkeyManager, SLOT(onUserFaceChanged(UserFaceType)));
 
     // 时间管理功能初始化。
     DateTimeWidget *timeWigdet = new DateTimeWidget();
@@ -579,7 +582,7 @@ static void _initProviderParam(void)
     // IBP test
     if (systemManager.isSupport(CONFIG_IBP))
     {
-        paramManager.addProvider(new WitleafProvider());
+        paramManager.addProvider(new SmartIBPProvider(QString()));
         paramManager.addParam(&ibpParam.construction());
 
         limitAlarmSource = new IBPLimitAlarm();
@@ -589,24 +592,22 @@ static void _initProviderParam(void)
         alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_IBP);
         alertor.addOneShotSource(oneShotAlarmSource);
 
-        IBPTrendWidget *ibp1TrendWidget = new IBPTrendWidget("IBP1TrendWidget",
-                IBP_PRESSURE_ART);
-        ibpParam.setIBPTrendWidget(ibp1TrendWidget, IBP_INPUT_1);
+        IBPTrendWidget *ibp1TrendWidget = new IBPTrendWidget("IBP1TrendWidget", IBP_CHN_1);
+        ibpParam.setIBPTrendWidget(ibp1TrendWidget, IBP_CHN_1);
         layoutManager.addLayoutWidget(ibp1TrendWidget, LAYOUT_NODE_PARAM_IBP1);
 
-        IBPTrendWidget *ibp2TrendWidget = new IBPTrendWidget("IBP2TrendWidget",
-                IBP_PRESSURE_PA);
-        ibpParam.setIBPTrendWidget(ibp2TrendWidget, IBP_INPUT_2);
+        IBPTrendWidget *ibp2TrendWidget = new IBPTrendWidget("IBP2TrendWidget", IBP_CHN_2);
+        ibpParam.setIBPTrendWidget(ibp2TrendWidget, IBP_CHN_2);
         layoutManager.addLayoutWidget(ibp2TrendWidget, LAYOUT_NODE_PARAM_IBP2);
 
-        IBPWaveWidget *ibp1WaveWidget = new IBPWaveWidget(WAVE_ART, "IBP1WaveWidget",
-                IBP_PRESSURE_ART);
-        ibpParam.setWaveWidget(ibp1WaveWidget, IBP_INPUT_1);
+        IBPWaveWidget *ibp1WaveWidget = new IBPWaveWidget(ibpParam.getWaveformID(ibpParam.getEntitle(IBP_CHN_1)),
+                                                          "IBP1WaveWidget", IBP_CHN_1);
+        ibpParam.setWaveWidget(ibp1WaveWidget, IBP_CHN_1);
         layoutManager.addLayoutWidget(ibp1WaveWidget, LAYOUT_NODE_WAVE_IBP1);
 
-        IBPWaveWidget *ibp2WaveWidget = new IBPWaveWidget(WAVE_PA, "IBP2WaveWidget",
-                IBP_PRESSURE_PA);
-        ibpParam.setWaveWidget(ibp2WaveWidget, IBP_INPUT_2);
+        IBPWaveWidget *ibp2WaveWidget = new IBPWaveWidget(ibpParam.getWaveformID(ibpParam.getEntitle(IBP_CHN_2)),
+                                                          "IBP2WaveWidget", IBP_CHN_2);
+        ibpParam.setWaveWidget(ibp2WaveWidget, IBP_CHN_2);
         layoutManager.addLayoutWidget(ibp2WaveWidget, LAYOUT_NODE_WAVE_IBP2);
     }
 

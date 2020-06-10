@@ -50,7 +50,13 @@ ScreenLayoutWindow::ScreenLayoutWindow()
 {
     QVBoxLayout *layout = new QVBoxLayout();
     setWindowLayout(layout);
+    layout->setContentsMargins(4, 4, 4, 8);
+
     d_ptr->view = new TableView();
+    /* set the hightlight color to lightGray, make it look clear when selected */
+    QPalette pal = d_ptr->view->palette();
+    pal.setColor(QPalette::Highlight, Qt::lightGray);
+    d_ptr->view->setPalette(pal);
     d_ptr->view->verticalHeader()->setVisible(false);
     d_ptr->view->verticalHeader()->setResizeMode(QHeaderView::Stretch);
     d_ptr->view->horizontalHeader()->setVisible(false);
@@ -120,6 +126,7 @@ void ScreenLayoutWindow::hideEvent(QHideEvent *ev)
 void ScreenLayoutWindow::showEvent(QShowEvent *ev)
 {
     ScreenLayoutModel *model = qobject_cast<ScreenLayoutModel *>(d_ptr->view->model());
+    model->updateWaveAndParamInfo();
     model->loadLayoutInfo();
     Dialog::showEvent(ev);
 }

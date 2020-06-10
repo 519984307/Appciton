@@ -16,6 +16,7 @@
 #include <QResizeEvent>
 #include <QStackedWidget>
 #include "Debug.h"
+#include "Framework/Utility/Unit.h"
 class IBPTrendWidget: public TrendWidget
 {
     Q_OBJECT
@@ -28,7 +29,7 @@ public:
     void updateLimit(void);
 
     // 设置标名。
-    void setEntitle(IBPPressureName entitle);
+    void setEntitle(IBPLabel entitle);
 
     // IBP显示框设置
     void setShowStacked(int num);
@@ -42,8 +43,14 @@ public:
     // 显示参数值
     void showValue(void);
 
+    /**
+     * @brief updateUnit  update IBP trend widget unit
+     * @param unit  unit type
+     */
+    void updateUnit(UnitType unit);
+
     // 构造与析构。
-    IBPTrendWidget(const QString &trendName, const IBPPressureName &entitle);
+    IBPTrendWidget(const QString &trendName, const IBPChannel &ibpChn);
     ~IBPTrendWidget();
 
     QList<SubParamID> getShortTrendSubParams() const;
@@ -53,13 +60,16 @@ public:
 protected:
     virtual void setTextSize(void);
 
+    /* reimplment */
+    void loadConfig();
 private slots:
     void _releaseHandle(IWidget *);
 
 private slots:
 
 private:
-    IBPPressureName _entitle;
+    IBPChannel _ibpChn;         // IBP channel ID
+    IBPLabel _entitle;
     QLabel *_zeroWarn;          // 校零提示；
 
     QLabel *_ibpValue;          // 动脉压

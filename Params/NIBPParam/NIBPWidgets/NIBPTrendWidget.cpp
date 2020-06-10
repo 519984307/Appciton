@@ -23,6 +23,7 @@
 #include "Framework/TimeDate/TimeDate.h"
 
 #define stretchCount 1
+#define NIBP_LABEL_MIN_FONT_SIZE    (11)  // NIBP pressure label minimum display font size (11)
 class NIBPTrendWidgetPrivate
 {
 public:
@@ -321,21 +322,27 @@ void NIBPTrendWidgetPrivate::layoutExec(QHBoxLayout *layout)
     valueLayout = new QVBoxLayout(groupBox0);
     sysLayout = new QVBoxLayout();
     sysLayout->setSpacing(0);
+    sysLayout->addStretch();
     sysLayout->addWidget(sysLabel);
+    sysLayout->addStretch();
     sysLayout->addWidget(sysValue);
     diaLayout = new QVBoxLayout();
     diaLayout->setSpacing(0);
+    diaLayout->addStretch();
     diaLayout->addWidget(diaLabel);
+    diaLayout->addStretch();
     diaLayout->addWidget(diaValue);
     mapLayout = new QVBoxLayout();
+    mapLayout->setSpacing(0);
     mapLayout->addStretch();
     mapLayout->addWidget(mapLabel);
     mapLayout->addStretch();
     mapLayout->addWidget(mapValue);
-    mapLayout->addStretch();
     nibpValueLayout = new QVBoxLayout();
     nibpValueLayout->setSpacing(0);
+    nibpValueLayout->addStretch();
     nibpValueLayout->addWidget(nibpLabel);
+    nibpValueLayout->addStretch();
     nibpValueLayout->addWidget(nibpValue);
 
     QHBoxLayout *hLayout0 = new QHBoxLayout();
@@ -612,7 +619,7 @@ void NIBPTrendWidget::showModelText(const QString &text)
 void NIBPTrendWidget::setTextSize()
 {
     QRect r;
-    r.setSize(QSize(((width() - nameLabel->width()) / 4), ((height() / 5) * 3)));
+    r.setSize(QSize(((width() - nameLabel->width()) / 5), ((height() / 5) * 3)));
     int fontsize = fontManager.adjustNumFontSize(r, true);
     QFont font = fontManager.numFont(fontsize, true);
     font.setWeight(QFont::Black);
@@ -631,6 +638,12 @@ void NIBPTrendWidget::setTextSize()
     d_ptr->sysLabel->setFont(font);
     d_ptr->diaLabel->setFont(font);
     d_ptr->mapLabel->setFont(font);
+    bool visible = fontsize / 3.0 > NIBP_LABEL_MIN_FONT_SIZE ? true :false;
+    // The font size is too small, the pressure label is not visible.
+    d_ptr->nibpLabel->setVisible(visible);
+    d_ptr->sysLabel->setVisible(visible);
+    d_ptr->diaLabel->setVisible(visible);
+    d_ptr->mapLabel->setVisible(visible);
 
     r.setSize(QSize(width() - nameLabel->width(), height()));
     d_ptr->messageInvFontSize = fontManager.adjustNumFontSize(r, true);
@@ -659,8 +672,8 @@ NIBPTrendWidget::NIBPTrendWidget()
     setName(trs(paramInfo.getParamName(PARAM_NIBP)));
     setUnit(Unit::getSymbol(nibpParam.getUnit()));
 
-    // 设置上下限
-    updateLimit();
+    // load config, includes alarm limit and alarm status
+    loadConfig();
 
     // 设置布局
     d_ptr->layoutExec(contentLayout);

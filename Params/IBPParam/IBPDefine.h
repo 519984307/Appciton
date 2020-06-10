@@ -10,23 +10,28 @@
 
 #pragma once
 #include "BaseDefine.h"
-#define  IBP_AUTO_SCALE_INDEX               0
-#define  IBP_MANUAL_SCALE_INDEX             14
+
+enum IBPModuleType
+{
+    IBP_MODULE_SMART_IBP,
+    IBP_MODULE_WITLEAF,
+    IBP_MODULE_NR,
+};
 
 /**************************************************************************************************
  * IBP压力标名
  *************************************************************************************************/
-enum IBPPressureName
+enum IBPLabel
 {
-    IBP_PRESSURE_ART    =   0x00,               // 动脉压
-    IBP_PRESSURE_PA ,                           // 肺动脉压
-    IBP_PRESSURE_CVP,                           // 中心静脉压
-    IBP_PRESSURE_LAP,                           // 左心房压
-    IBP_PRESSURE_RAP,                           // 右心房压
-    IBP_PRESSURE_ICP,                           // 颅内压
-    IBP_PRESSURE_AUXP1,                         // 扩充压力P1
-    IBP_PRESSURE_AUXP2,                         // 扩充压力P2
-    IBP_PRESSURE_NR
+    IBP_LABEL_ART    =   0x00,               // 动脉压
+    IBP_LABEL_PA ,                           // 肺动脉压
+    IBP_LABEL_CVP,                           // 中心静脉压
+    IBP_LABEL_LAP,                           // 左心房压
+    IBP_LABEL_RAP,                           // 右心房压
+    IBP_LABEL_ICP,                           // 颅内压
+    IBP_LABEL_AUXP1,                         // 扩充压力P1
+    IBP_LABEL_AUXP2,                         // 扩充压力P2
+    IBP_LABEL_NR
 };
 
 /**
@@ -41,16 +46,12 @@ struct IBPScaleInfo
     bool isAuto;        // is automatically adjust or not
 };
 
-/**************************************************************************************************
- * IBP信号输入接口：
- *      IBP1(0x00)
- *      IBP2(0x01)
- *************************************************************************************************/
-enum IBPSignalInput
+/* IBP channel define */
+enum IBPChannel
 {
-    IBP_INPUT_1         =   0x00,
-    IBP_INPUT_2         =   0x01,
-    IBP_INPUT_NR
+    IBP_CHN_1         =   0x00,
+    IBP_CHN_2         =   0x01,
+    IBP_CHN_NR
 };
 
 /**************************************************************************************************
@@ -96,10 +97,10 @@ enum IBPSensitivity
  *      测量计算3(0x00): sys,map,dia
  *      测量计算1(0x01): map
  *************************************************************************************************/
-enum IBPAuxiliarySet
+enum IBPMeasueType
 {
-    IBP_MEASURE_CALC_3          =   0x00,
-    IBP_MEASURE_CALC_1          =   0x01,
+    IBP_MEASURE_SYS_DIA_MAP     =   0x00,
+    IBP_MEASURE_MAP             =   0x01,
     IBP_MEASURE_CALC_NR
 };
 
@@ -121,18 +122,37 @@ enum IBPSweepSpeed
 struct IBPParamInfo
 {
     IBPParamInfo()
-        : pressureName(IBP_PRESSURE_ART),
+        : pressureName(IBP_LABEL_ART),
         sys(InvData()),
         dia(InvData()),
         mean(InvData()),
         pr(InvData())
     {
     }
-    IBPPressureName pressureName;
-    unsigned short sys;
-    unsigned short dia;
-    unsigned short mean;
-    unsigned short pr;
+    IBPLabel pressureName;
+    short sys;
+    short dia;
+    short mean;
+    short pr;
+};
+
+enum IBPZeroResult
+{
+    IBP_ZERO_SUCCESS = 0,
+    IBP_ZERO_IS_PULSE = 1,
+    IBP_ZERO_BEYOND_RANGE = 2,
+    IBP_ZERO_FAIL = 4,
+    IBP_ZERO_NOT_SET_TIME = 5,
+};
+
+enum IBPCalibrationResult
+{
+    IBP_CALIBRATION_SUCCESS = 0,
+    IBP_CALIBRATION_IS_PULSE = 1,
+    IBP_CALIBRATION_BEYOND_RANGE = 2,
+    IBP_CALIBRATION_NOT_ZERO = 3,
+    IBP_CALIBRATION_FAIL = 4,
+    IBP_CALIBRATION_NOT_SET_TIME = 6,
 };
 
 /**************************************************************************************************
@@ -228,21 +248,24 @@ enum IBPOneShotType
     IBP2_CALIB_NOT_ZERO,
     IBP2_CALIB_FAIL,
     IBP2_CALIB_NOT_SET_TIME,
+    IBP_ONESHOT_ALARM_COMMUNICATION_STOP,         // communication stop
     IBP_ONESHOT_NR,
 };
 
 enum IBPRulerLimit
 {
-    IBP_RULER_LIMIT_AOTU,
+    IBP_RULER_LIMIT_AUTO,
     IBP_RULER_LIMIT_10_10,
     IBP_RULER_LIMIT_0_20,
     IBP_RULER_LIMIT_0_30,
     IBP_RULER_LIMIT_0_40,
     IBP_RULER_LIMIT_0_60,
     IBP_RULER_LIMIT_0_80,
+    IBP_RULER_LIMIT_0_100,
     IBP_RULER_LIMIT_60_140,
     IBP_RULER_LIMIT_30_140,
     IBP_RULER_LIMIT_0_140,
+    IBP_RULER_LIMIT_0_150,
     IBP_RULER_LIMIT_0_160,
     IBP_RULER_LIMIT_0_200,
     IBP_RULER_LIMIT_0_240,

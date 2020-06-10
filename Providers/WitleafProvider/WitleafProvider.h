@@ -155,29 +155,29 @@ public:     // IBPProviderIFace的接口
     }
 
     // IBP 平均时间设置
-    virtual void setAvergTime(IBPSignalInput /*IBP1/2*/, unsigned char /*time*/);
+    virtual void setAvergTime(IBPChannel /*IBP1/2*/, unsigned char /*time*/);
     virtual bool isSetAvergTime(unsigned char */*packet*/)
     {
         return false;
     }
 
     // IBP校准、校零设置
-    virtual void setZero(IBPSignalInput /*IBP1/2*/, IBPCalibration /*calibration*/, unsigned short /*pressure*/);
+    virtual void setZero(IBPChannel /*IBP1/2*/, IBPCalibration /*calibration*/, unsigned short /*pressure*/);
     virtual bool isSetZero(unsigned char */*packet*/)
     {
         return false;
     }
 
     // IBP滤波设置
-    virtual void setFilter(IBPSignalInput /*IBP1/2*/, IBPFilterMode /*filter*/);
+    virtual void setFilter(IBPChannel /*IBP1/2*/, IBPFilterMode /*filter*/);
     virtual bool isSetFilter(unsigned char */*packet*/)
     {
         return false;
     }
 
     // IBP表明设置
-    virtual void setIndicate(IBPPressureName /*pressurenameIBP1*/, IBPPressureName /*pressurenameIBP2*/,
-                             IBPAuxiliarySet /*auxiliarysetIBP1*/, IBPAuxiliarySet /*auxiliarysetIBP2*/);
+    virtual void setIndicate(IBPLabel /*pressurenameIBP1*/, IBPLabel /*pressurenameIBP2*/,
+                             IBPMeasueType /*auxiliarysetIBP1*/, IBPMeasueType /*auxiliarysetIBP2*/);
     virtual bool isSetIndicate(unsigned char */*packet*/)
     {
         return false;
@@ -226,7 +226,7 @@ public:     // IBPProviderIFace的接口
     }
 
     // IBP 校零/校准时间设定
-    virtual void setTimeZero(IBPSignalInput /*IBP1/2*/, IBPCalibration /*calibration*/,
+    virtual void setTimeZero(IBPChannel /*IBP1/2*/, IBPCalibration /*calibration*/,
                              unsigned char /*second*/, unsigned char /*minute*/,
                              unsigned char /*hour*/, unsigned char /*day*/,
                              unsigned char /*month*/, unsigned char /*year*/);
@@ -257,8 +257,11 @@ public:     // IBPProviderIFace的接口
     // 获取最大的波形值
     virtual int getIBPMaxWaveform(void)
     {
-        return 2600;
+        return 3000;
     }
+
+    /* reimplement */
+    IBPModuleType getIBPModuleType() const { return IBP_MODULE_WITLEAF; }
 
 public:
     WitleafProvider();
@@ -269,6 +272,7 @@ private:
     bool _checkPacketValid(const unsigned char *data, unsigned int len);
 
 private:
+    WitleafProvider(const WitleafProvider &other);  /* no implement, just stop cppcheck complain */
     static const int _minPacketLen = 6;          // 最小数据包长度: Start,Length,ParamType,DataType,DataID,CheckSum
     static const int _maxPacketLen = (1 << 9);   // 最大数据包长度: 1字节最大表示范围。
 

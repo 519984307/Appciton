@@ -83,14 +83,14 @@ RAP_MAP,RAP,RAP-MAP
 RAP_PR,RAP脉率,RAP-PR
 ICP_MAP,ICP,ICP-MAP
 ICP_PR,ICP脉率,ICP-PR
-AUXP1_SYS,AUXP1收缩压,AUXP1-SYS
-AUXP1_DIA,AUXP1舒张压,AUXP1-DIA
-AUXP1_MAP,AUXP1平均压,AUXP1-MAP
-AUXP1_PR,AUXP1脉率,AUXP1-PR
-AUXP2_SYS,AUXP2收缩压,AUXP2-SYS
-AUXP2_DIA,AUXP2舒张压,AUXP2-DIA
-AUXP2_MAP,AUXP2平均压,AUXP2-MAP
-AUXP2_PR,AUXP2脉率,AUXP2-PR
+AUXP1_SYS,P1收缩压,P1-SYS
+AUXP1_DIA,P1舒张压,P1-DIA
+AUXP1_MAP,P1平均压,P1-MAP
+AUXP1_PR,P1脉率,P1-PR
+AUXP2_SYS,P2收缩压,P2-SYS
+AUXP2_DIA,P2舒张压,P2-DIA
+AUXP2_MAP,P2平均压,P2-MAP
+AUXP2_PR,P2脉率,P2-PR
 CO_CO,心排量,C.O.
 CO_CI,心指数,C.I.
 TB,血温,TB
@@ -256,8 +256,19 @@ IBPSweepSpeed,波形速度,Sweep Speed
 PressureEntitle,压力标名,Label
 Sensitivity,灵敏度,Sensitivity
 FilterMode,滤波模式,Filter Mode
-IBPZeroCalib,IBP校零,IBP Zero
-IBPZeroStart,开始,Start
+IBPZero,IBP校零,IBP Zero
+ZeroChannel,校零通道,Zero Channel
+IBPZeroing,IBP校零中,IBP Zeroing
+ZeroFailed,校零失败,Zero Failed
+ZeroSuccessfully,校零成功,Zero Successfully
+Zero,校零,Zero
+IBPCalibrate,IBP校准,IBP Calibrate
+IBPCalibrateDesc,IBP校准,IBP Calibrate
+IBPCalibrating,IBP正在校准,IBP Calibrating
+CalibrateChannel,校准通道,Calibrate Channel
+CalibratePoint,校准点,Calibrate Point
+CalibrateSuccessfully,校准成功,Calibrate Successfully
+CalibrateFailed,校准失败,Calibrate Failed
 COMenu,C.O.,C.O.
 Auto,自动,Auto
 Manual,手动,Manual
@@ -643,8 +654,9 @@ CO2CommunicationStop,CO₂通讯停止,CO₂ Communication Stop
 CO2Calibrate,CO₂校准,CO₂ Calibrate
 CO2CalibrateMenu,CO₂校准,CO₂ Calibrate
 CO2CalibrateDesc,CO₂校准,CO₂ calibrate
-IBP1LeadOff,IBP通道1导联脱落,IBP1 lead off
-IBP2LeadOff,IBP通道2导联脱落,IBP2 lead off
+SensorOff,传感器脱落,Sensor Off
+IBP1SensorOff,IBP通道1传感器脱落,IBP1 sensor off
+IBP2SensorOff,IBP通道2传感器脱落,IBP2 sensor off
 IBP1ZeroCalibSuccess,IBP通道1校零成功,IBP1 zero success
 IBP1MeasurePressureIsPulse,IBP通道1测量压力是动脉,IBP1 zero is pluse
 IBP1ZeroCalibPressureBeyondMeasureRange,IBP通道1校零压力超出范围,IBP1 zero beyond range
@@ -667,6 +679,7 @@ IBP2CalibrationPressureBeyondMeasureRange,IBP通道2校准压力超出范围,IBP
 IBP2NoZeroCalib,IBP通道2没有校零,IBP2 not zero calibration
 IBP2LeadOffCalibrationFail,IBP通道2校准失败,IBP2 calibration fail
 IBP2NoSetCalibrationTime,IBP通道2没有设置校准时间,IBP2 not set calibration time
+IBPCommunicationStop,IBP通信中断,IBP Communication Stop
 ARTSYSLow,ART收缩压低,ART SYS Low
 ARTSYSHigh,ART收缩压高,ART SYS High
 ARTDIALow,ART舒张压低,ART DIA Low
@@ -677,7 +690,7 @@ ARTPRLow,ART脉率低,ART PR Low
 ARTPRHigh,ART脉率高,ART PR High
 PASYSLow,PA收缩压低,PA SYS Low
 PASYSHigh,PA收缩压高,PA SYS High
-PADIALow,PA收缩压低,PA DIA Low
+PADIALow,PA舒张压低,PA DIA Low
 PADIAHigh,PA舒张压高,PA DIA High
 PAMAPLow,PA平均压低,PA MAP Low
 PAMAPHigh,PA平均压高,PA MAP High
@@ -699,22 +712,22 @@ ICPMAPLow,ICP平均压低,ICP MAP Low
 ICPMAPHigh,ICP平均压高,ICP MAP High
 ICPPRLow,ICP脉率低,ICP PR Low
 ICPPRHigh,ICP脉率高,ICP PR High
-AUXP1SYSLow,AUXP1收缩压低,AUXP1 SYS Low
-AUXP1SYSHigh,AUXP1收缩压高,AUXP1 SYS High
-AUXP1DIALow,AUXP1收缩压低,AUXP1 DIA Low
-AUXP1DIAHigh,AUXP1舒张压高,AUXP1 DIA High
-AUXP1MAPLow,AUXP1平均压低,AUXP1 MAP Low
-AUXP1MAPHigh,AUXP1平均压高,AUXP1 MAP High
-AUXP1PRLow,AUXP1脉率低,AUXP1 PR Low
-AUXP1PRHigh,AUXP1脉率高,AUXP1 PR High
-AUXP2SYSLow,AUXP2收缩压低,AUXP2SYS Low
-AUXP2SYSHigh,AUXP2收缩压高,AUXP2 SYS High
-AUXP2DIALow,AUXP2收缩压低,AUXP2 DIA Low
-AUXP2DIAHigh,AUXP2舒张压高,AUXP2 DIA High
-AUXP2MAPLow,AUXP2平均压低,AUXP2 MAP Low
-AUXP2MAPHigh,AUXP2平均压高,AUXP2 MAP High
-AUXP2PRLow,AUXP2脉率低,AUXP2 PR Low
-AUXP2PRHigh,AUXP2脉率高,AUXP2 PR High
+AUXP1SYSLow,P1收缩压低,P1 SYS Low
+AUXP1SYSHigh,P1收缩压高,P1 SYS High
+AUXP1DIALow,P1舒张压低,P1 DIA Low
+AUXP1DIAHigh,P1舒张压高,P1 DIA High
+AUXP1MAPLow,P1平均压低,P1 MAP Low
+AUXP1MAPHigh,P1平均压高,P1 MAP High
+AUXP1PRLow,P1脉率低,P1 PR Low
+AUXP1PRHigh,P1脉率高,P1 PR High
+AUXP2SYSLow,P2收缩压低,P2SYS Low
+AUXP2SYSHigh,P2收缩压高,P2 SYS High
+AUXP2DIALow,P2舒张压低,P2 DIA Low
+AUXP2DIAHigh,P2舒张压高,P2 DIA High
+AUXP2MAPLow,P2平均压低,P2 MAP Low
+AUXP2MAPHigh,P2平均压高,P2 MAP High
+AUXP2PRLow,P2脉率低,P2 PR Low
+AUXP2PRHigh,P2脉率高,P2 PR High
 COCOLow,心排量低,CO Low
 COCOHigh,心排量高,CO High
 COCILow,心指数低,CI Low
@@ -1319,6 +1332,7 @@ HeightUnit,身高单位,Height Unit
 WeightUnit,体重单位,Weight Unit
 STUnit,ST段单位,ST Unit
 NIBPUnit,NIBP单位,NIBP Unit
+IBPUnit,IBP单位,IBP Unit
 TemperatureUnit,温度单位,Temperature Unit
 CVPUnit,中心静脉压单位,CVP Unit
 ICPUnit,颅内压单位,ICP Unit

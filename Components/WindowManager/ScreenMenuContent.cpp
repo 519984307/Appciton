@@ -28,9 +28,7 @@ class ScreenMenuContentPrivate
 public:
     ScreenMenuContentPrivate()
         : interfaceCbo(NULL),
-#ifndef HIDE_SCREEN_LAYOUT
-          layoutCbo(NULL),
-#endif
+          layoutBtn(NULL),
           paraColorBtn(NULL)
     {
         spo2Enable = systemManager.isSupport(CONFIG_SPO2) &&
@@ -41,10 +39,44 @@ public:
 
     void reloadScreenType();
 
+    /**
+     * @brief updateLayoutBtnState disable the layout button if current screen layout is not
+     *        standard or big font
+     * @param type
+     */
+    void updateLayoutBtnState(UserFaceType type)
+    {
+        if (type == UFACE_MONITOR_STANDARD || type == UFACE_MONITOR_BIGFONT)
+        {
+            layoutBtn->setEnabled(true);
+        }
+        else
+        {
+            layoutBtn->setEnabled(false);
+        }
+    }
+
+    /**
+     * @brief currentCboFaceType get the face type of specific combo index
+     * @return the face type
+     */
+    UserFaceType currentCboFaceType() const
+    {
+        QString text = interfaceCbo->currentText();
+        for (int i = UFACE_MONITOR_STANDARD; i < UFACE_NR; i++)
+        {
+            UserFaceType faceType = static_cast<UserFaceType>(i);
+            if (trs(SystemSymbol::convert(faceType)) == text)
+            {
+                return faceType;
+            }
+        }
+
+        return UFACE_NR;
+    }
+
     ComboBox *interfaceCbo;     // 界面选择
-#ifndef HIDE_SCREEN_LAYOUT
-    ComboBox *layoutCbo;        // 布局设置
-#endif
+    Button *layoutBtn;
     Button *paraColorBtn;
     bool spo2Enable;
 
@@ -106,18 +138,7 @@ void ScreenMenuContentPrivate::reloadScreenType()
     interfaceCbo->blockSignals(false);
     interfaceCbo->setCurrentIndex(index);
 
-#ifndef HIDE_SCREEN_LAYOUT
-    layoutCbo->blockSignals(true);
-    if (type == UFACE_MONITOR_BIGFONT)
-    {
-        layoutCbo->setCurrentIndex(SCREEN_LAYOUT_BIGFONT);
-    }
-    else
-    {
-        layoutCbo->setCurrentIndex(SCREEN_LAYOUT_STANDARD);
-    }
-    layoutCbo->blockSignals(false);
-#endif
+    updateLayoutBtnState(faceType);
 }
 
 ScreenMenuContent::ScreenMenuContent()
@@ -154,16 +175,12 @@ void ScreenMenuContent::layoutExec()
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboxIndexChanged(int)));
     d_ptr->interfaceCbo = comboBox;
 
-#ifndef HIDE_SCREEN_LAYOUT
     label = new QLabel(trs("ScreenLayout"));
     layout->addWidget(label, count, 0);
-    d_ptr->layoutCbo = new ComboBox;
-    d_ptr->layoutCbo->addItems(QStringList()
-                               << trs("StandardScreenLayout")
-                               << trs("BigFontScreenLayout"));
-    layout->addWidget(d_ptr->layoutCbo, count++, 1);
-    connect(d_ptr->layoutCbo, SIGNAL(activated(int)), this, SLOT(onComboxIndexChanged(int)));
-#endif
+    d_ptr->layoutBtn = new Button(trs("Edit"));
+    d_ptr->layoutBtn->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(d_ptr->layoutBtn, count++, 1);
+    connect(d_ptr->layoutBtn, SIGNAL(released()), this, SLOT(onBtnClick()));
 
     d_ptr->paraColorBtn = new Button(trs("ParameterColor"));
     d_ptr->paraColorBtn->setButtonStyle(Button::ButtonTextOnly);
@@ -173,72 +190,45 @@ void ScreenMenuContent::layoutExec()
     layout->setRowStretch(count, 1);
 }
 
-void ScreenMenuContent::hideEvent(QHideEvent *ev)
-{
-#ifndef HIDE_SCREEN_LAYOUT
-    d_ptr->layoutCbo->blockSignals(true);
-#endif
-    MenuContent::hideEvent(ev);
-}
-
 void ScreenMenuContent::onComboxIndexChanged(int index)
 {
-#ifdef HIDE_SCREEN_LAYOUT
     Q_UNUSED(index)
-#endif
     ComboBox *cbo = qobject_cast<ComboBox *>(sender());
     if (cbo == d_ptr->interfaceCbo)
     {
         // 通过比较类型字符串查找匹配界面
-        UserFaceType type = UFACE_MONITOR_STANDARD;
-        QString text = d_ptr->interfaceCbo->currentText();
-        for (int i = UFACE_MONITOR_STANDARD; i < UFACE_NR; i++)
-        {
-            UserFaceType faceType = static_cast<UserFaceType>(i);
-            if (trs(SystemSymbol::convert(faceType)) == text)
-            {
-                type = faceType;
-                break;
-            }
-        }
+        UserFaceType type = d_ptr->currentCboFaceType();
         if (type >= UFACE_NR)
         {
             return;
         }
         layoutManager.setUFaceType(type);
-#ifndef HIDE_SCREEN_LAYOUT
-        d_ptr->layoutCbo->blockSignals(true);
-        if (type == UFACE_MONITOR_BIGFONT)
-        {
-            d_ptr->layoutCbo->setCurrentIndex(ScreenMenuContentPrivate::SCREEN_LAYOUT_BIGFONT);
-        }
-        else
-        {
-            d_ptr->layoutCbo->setCurrentIndex(ScreenMenuContentPrivate::SCREEN_LAYOUT_STANDARD);
-        }
-        d_ptr->layoutCbo->blockSignals(false);
-#endif
+
+        d_ptr->updateLayoutBtnState(type);
     }
-#ifndef HIDE_SCREEN_LAYOUT
-    else if (cbo == d_ptr->layoutCbo)
+}
+
+void ScreenMenuContent::onBtnClick()
+{
+    Button *btn = qobject_cast<Button*>(sender());
+    if (btn == d_ptr->layoutBtn)
     {
-        if (index == ScreenMenuContentPrivate::SCREEN_LAYOUT_STANDARD)
+        UserFaceType type = d_ptr->currentCboFaceType();
+        if (type == UFACE_MONITOR_STANDARD)
         {
             windowManager.showWindow(ScreenLayoutWindow::getInstance(),
                                      WindowManager::ShowBehaviorNoAutoClose |
                                      WindowManager::ShowBehaviorCloseOthers);
         }
-        else if (index == ScreenMenuContentPrivate::SCREEN_LAYOUT_BIGFONT)
+        else if (type == UFACE_MONITOR_BIGFONT)
         {
             windowManager.showWindow(BigFontLayoutWindow::getInstance(),
                                      WindowManager::ShowBehaviorNoAutoClose |
                                      WindowManager::ShowBehaviorCloseOthers);
         }
     }
-#endif
-}
-
-void ScreenMenuContent::onBtnClick()
-{
-    windowManager.showWindow(new ParaColorWindow, WindowManager::ShowBehaviorCloseIfVisiable);
+    else if (btn == d_ptr->paraColorBtn)
+    {
+        windowManager.showWindow(new ParaColorWindow, WindowManager::ShowBehaviorCloseIfVisiable);
+    }
 }

@@ -26,7 +26,7 @@
  *************************************************************************************************/
 void IBPTrendWidget::setData(int16_t sys, int16_t dia, int16_t map)
 {
-    if ((_entitle < IBP_PRESSURE_CVP) || (_entitle > IBP_PRESSURE_ICP))
+    if ((_entitle < IBP_LABEL_CVP) || (_entitle > IBP_LABEL_ICP))
     {
         if (!_isZero)
         {
@@ -41,13 +41,11 @@ void IBPTrendWidget::setData(int16_t sys, int16_t dia, int16_t map)
         }
         else
         {
-            int16_t calSys = sys;
-            int16_t calDia = dia;
-            int16_t calMap = map;
             setShowStacked(1);
-            _sysString = QString::number(calSys);
-            _diaString = QString::number(calDia);
-            _mapString = "(" + QString::number(calMap) + ")";
+            UnitType unit = ibpParam.getUnit();
+            _sysString = Unit::convert(unit, UNIT_MMHG, sys);
+            _diaString = Unit::convert(unit, UNIT_MMHG, dia);
+            _mapString = "(" + Unit::convert(unit, UNIT_MMHG, map) + ")";
         }
     }
     else
@@ -63,9 +61,10 @@ void IBPTrendWidget::setData(int16_t sys, int16_t dia, int16_t map)
         }
         else
         {
-            int16_t calMap = map;
             setShowStacked(2);
-            _veinString = QString::number(calMap);
+            UnitType unit = ibpParam.getUnit();
+            _veinString = Unit::convert(unit, UNIT_MMHG, map);
+            _mapString = _veinString;
         }
     }
 
@@ -82,28 +81,28 @@ void IBPTrendWidget::updateLimit()
     SubParamID id;
     switch (_entitle)
     {
-    case IBP_PRESSURE_ART:
+    case IBP_LABEL_ART:
         id = SUB_PARAM_ART_SYS;
         break;
-    case IBP_PRESSURE_PA:
+    case IBP_LABEL_PA:
         id = SUB_PARAM_PA_SYS;
         break;
-    case IBP_PRESSURE_CVP:
+    case IBP_LABEL_CVP:
         id = SUB_PARAM_CVP_MAP;
         break;
-    case IBP_PRESSURE_LAP:
+    case IBP_LABEL_LAP:
         id = SUB_PARAM_LAP_MAP;
         break;
-    case IBP_PRESSURE_RAP:
+    case IBP_LABEL_RAP:
         id = SUB_PARAM_RAP_MAP;
         break;
-    case IBP_PRESSURE_ICP:
+    case IBP_LABEL_ICP:
         id = SUB_PARAM_ICP_MAP;
         break;
-    case IBP_PRESSURE_AUXP1:
+    case IBP_LABEL_AUXP1:
         id = SUB_PARAM_AUXP1_SYS;
         break;
-    case IBP_PRESSURE_AUXP2:
+    case IBP_LABEL_AUXP2:
         id = SUB_PARAM_AUXP2_SYS;
         break;
     default:
@@ -117,11 +116,18 @@ void IBPTrendWidget::updateLimit()
 /**************************************************************************************************
  * 设置标名。
  *************************************************************************************************/
-void IBPTrendWidget::setEntitle(IBPPressureName entitle)
+void IBPTrendWidget::setEntitle(IBPLabel entitle)
 {
     setName(IBPSymbol::convert(entitle));
     _entitle = entitle;
-    if (entitle >= IBP_PRESSURE_CVP && entitle <= IBP_PRESSURE_ICP)
+    // 未校零，提示校零
+    if (!_isZero)
+    {
+        setShowStacked(0);
+        return;
+    }
+
+    if (entitle >= IBP_LABEL_CVP && entitle <= IBP_LABEL_ICP)
     {
         setShowStacked(2);
     }
@@ -216,10 +222,10 @@ void IBPTrendWidget::showValue()
             showAlarmStatus(_sysValue);
             switch (_entitle)
             {
-            case IBP_PRESSURE_ART:
-            case IBP_PRESSURE_PA:
-            case IBP_PRESSURE_AUXP1:
-            case IBP_PRESSURE_AUXP2:
+            case IBP_LABEL_ART:
+            case IBP_LABEL_PA:
+            case IBP_LABEL_AUXP1:
+            case IBP_LABEL_AUXP2:
                 showAlarmParamLimit(_sysValue, _sysString, psrc);
                 break;
             default:
@@ -238,11 +244,12 @@ void IBPTrendWidget::showValue()
             showAlarmStatus(_veinValue);
             switch (_entitle)
             {
-            case IBP_PRESSURE_ICP:
-            case IBP_PRESSURE_LAP:
-            case IBP_PRESSURE_RAP:
-            case IBP_PRESSURE_CVP:
+            case IBP_LABEL_ICP:
+            case IBP_LABEL_LAP:
+            case IBP_LABEL_RAP:
+            case IBP_LABEL_CVP:
                 showAlarmParamLimit(_mapValue, _mapString, psrc);
+                showAlarmParamLimit(_veinValue, _veinString, psrc);
                 break;
             default:
                 break;
@@ -256,11 +263,17 @@ void IBPTrendWidget::showValue()
     }
 }
 
+void IBPTrendWidget::updateUnit(UnitType unit)
+{
+    setUnit(Unit::getSymbol(unit));
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-IBPTrendWidget::IBPTrendWidget(const QString &trendName, const IBPPressureName &entitle)
-    : TrendWidget(trendName),  _entitle(entitle), _isZero(false), _sysAlarm(false),
+IBPTrendWidget::IBPTrendWidget(const QString &trendName, const IBPChannel &ibpChn)
+    : TrendWidget(trendName),  _ibpChn(ibpChn), _entitle(ibpParam.getEntitle(ibpChn)),
+      _isZero(false), _sysAlarm(false),
       _diaAlarm(false), _mapAlarm(false)
 {
     _sysString = InvStr();
@@ -270,8 +283,8 @@ IBPTrendWidget::IBPTrendWidget(const QString &trendName, const IBPPressureName &
 
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_IBP));
     setPalette(palette);
-    setName(IBPSymbol::convert(entitle));
-    setUnit("mmHg");
+    setName(IBPSymbol::convert(_entitle));
+    updateUnit(ibpParam.getUnit());
 
     // 设置上下限
     updateLimit();
@@ -368,25 +381,25 @@ QList<SubParamID> IBPTrendWidget::getShortTrendSubParams() const
 {
     QList<SubParamID> list;
     switch (_entitle) {
-    case IBP_PRESSURE_ART:
+    case IBP_LABEL_ART:
         list << SUB_PARAM_ART_SYS << SUB_PARAM_ART_DIA << SUB_PARAM_ART_MAP;
         break;
-    case IBP_PRESSURE_PA:
+    case IBP_LABEL_PA:
         list << SUB_PARAM_PA_SYS << SUB_PARAM_PA_DIA << SUB_PARAM_PA_MAP;
         break;
-    case IBP_PRESSURE_CVP:
+    case IBP_LABEL_CVP:
         list << SUB_PARAM_CVP_MAP;
         break;
-    case IBP_PRESSURE_LAP:
+    case IBP_LABEL_LAP:
         list << SUB_PARAM_LAP_MAP;
         break;
-    case IBP_PRESSURE_RAP:
+    case IBP_LABEL_RAP:
         list << SUB_PARAM_RAP_MAP;
         break;
-    case IBP_PRESSURE_AUXP1:
+    case IBP_LABEL_AUXP1:
         list << SUB_PARAM_AUXP1_SYS << SUB_PARAM_AUXP1_DIA << SUB_PARAM_AUXP1_MAP;
         break;
-    case IBP_PRESSURE_AUXP2:
+    case IBP_LABEL_AUXP2:
         list << SUB_PARAM_AUXP2_SYS << SUB_PARAM_AUXP2_DIA << SUB_PARAM_AUXP2_MAP;
         break;
     default:
@@ -399,6 +412,7 @@ void IBPTrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_IBP));
     showNormalStatus(_stackedwidget->currentWidget()->layout(), psrc);
+    showNormalStatus(psrc);
 }
 
 /**************************************************************************************************
@@ -407,7 +421,7 @@ void IBPTrendWidget::doRestoreNormalStatus()
 void IBPTrendWidget::setTextSize()
 {
     QRect r;
-    r.setSize(QSize(((width() - nameLabel->width()) / 4), ((height() / 4) * 3)));
+    r.setSize(QSize(((width() - nameLabel->width()) / 5), ((height() / 4) * 3)));
     int fontsize = fontManager.adjustNumFontSize(r, true);
     QFont font = fontManager.numFont(fontsize, true);
     font.setWeight(QFont::Black);
@@ -415,17 +429,38 @@ void IBPTrendWidget::setTextSize()
     _ibpValue->setFont(font);
     _sysValue->setFont(font);
     _diaValue->setFont(font);
-    _mapValue->setFont(font);
 
     _veinValue->setFont(font);
 
     font = fontManager.numFont(fontsize - 10, true);
     font.setWeight(QFont::Black);
     _mapValue->setFont(font);
+    _zeroWarn->setFont(font);
 
     font = fontManager.numFont(fontsize - 20, false);
     font.setWeight(QFont::Normal);
-    _zeroWarn->setFont(font);
+}
+
+void IBPTrendWidget::loadConfig()
+{
+    const QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_IBP));
+    setPalette(palette);
+    _zeroWarn->setPalette(palette);
+    _ibpValue->setPalette(palette);
+    _sysValue->setPalette(palette);
+    _diaValue->setPalette(palette);
+    _mapValue->setPalette(palette);
+    _veinValue->setPalette(palette);
+
+    _entitle = ibpParam.getEntitle(_ibpChn);
+    setEntitle(_entitle);
+    updateUnit(ibpParam.getUnit());
+
+    // 设置上下限
+    updateLimit();
+
+    // 设置报警关闭标志
+    showAlarmOff();
 }
 
 void IBPTrendWidget::_releaseHandle(IWidget *iWidget)

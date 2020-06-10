@@ -105,6 +105,26 @@ public:
             destVal = QString::number(static_cast<int>(srcVal * 7.5 + 0.5));
         }
 
+        // cmH2O <---> mmHg
+        else if ((destUnit == UNIT_CMH2O) && (srcUnit == UNIT_MMHG))
+        {
+            destVal = QString::number(srcVal * 1.36, 'f', 1);
+        }
+        else if ((destUnit == UNIT_MMHG) && (srcUnit == UNIT_CMH2O))
+        {
+            destVal = QString::number(static_cast<int>(srcVal / 1.36 + 0.5));
+        }
+
+        // cmH2O <---> kPa
+        else if ((destUnit == UNIT_CMH2O) && (srcUnit == UNIT_KPA))
+        {
+            destVal = QString::number(srcVal / 0.098, 'f', 1);
+        }
+        else if ((destUnit == UNIT_KPA) && (srcUnit == UNIT_CMH2O))
+        {
+            destVal = QString::number(srcVal * 0.098, 'f', 1);
+        }
+
         // % <---> kPa
         else if ((destUnit == UNIT_PERCENT) && (srcUnit == UNIT_KPA))
         {

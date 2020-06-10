@@ -1007,10 +1007,14 @@ void TrendTableModelPrivate::loadTrendData()
             switch (id)
             {
             case SUB_PARAM_NIBP_SYS:
+            case SUB_PARAM_ART_SYS:
+            case SUB_PARAM_PA_SYS:
+            case SUB_PARAM_AUXP1_SYS:
+            case SUB_PARAM_AUXP2_SYS:
             {
-                ParamID paramId = paramInfo.getParamID(static_cast<SubParamID>(id));
-                UnitType type = paramManager.getSubParamUnit(paramId, static_cast<SubParamID>(id));
-                int sysData = pack->subparamValue.value(static_cast<SubParamID>(id), InvData());;
+                ParamID paramId = paramInfo.getParamID(id);
+                UnitType type = paramManager.getSubParamUnit(paramId, id);
+                int sysData = pack->subparamValue.value(id, InvData());
                 int diaData = pack->subparamValue.value(static_cast<SubParamID>(id + 1), InvData());
                 int mapData = pack->subparamValue.value(static_cast<SubParamID>(id + 2), InvData());
                 QString sysStr = QString::number(sysData);
@@ -1052,40 +1056,29 @@ void TrendTableModelPrivate::loadTrendData()
                 }
             }
             break;
-            case SUB_PARAM_ART_SYS:
-            case SUB_PARAM_PA_SYS:
-            case SUB_PARAM_AUXP1_SYS:
-            case SUB_PARAM_AUXP2_SYS:
+            case SUB_PARAM_CVP_MAP:
+            case SUB_PARAM_LAP_MAP:
+            case SUB_PARAM_RAP_MAP:
+            case SUB_PARAM_ICP_MAP:
             {
-                qint16 ibpSys = pack->subparamValue.value(static_cast<SubParamID>(id - 2), InvData());
-                qint16 ibpDia = pack->subparamValue.value(static_cast<SubParamID>(id - 1), InvData());
-                qint16 ibpMap = pack->subparamValue.value(id, InvData());
-                QString sysStr = ibpSys == InvData() ? "---" : QString::number(ibpSys);
-                QString diaStr = ibpDia == InvData() ? "---" : QString::number(ibpDia);
-                QString mapStr = ibpMap == InvData() ? "---" : QString::number(ibpMap);
-                dContent.dataStr = sysStr + "/" + diaStr + "\n(" + mapStr + ")";
+                ParamID paramId = paramInfo.getParamID(id);
+                UnitType type = paramManager.getSubParamUnit(paramId, id);
+                int mapData = pack->subparamValue.value(id, InvData());
+                QString mapStr = QString::number(mapData);
+                // CAP,LAP,RAP,ICP parameter data unit conversion
+                if (type != UNIT_MMHG && mapData != InvData())
+                {
+                    mapStr = Unit::convert(type, UNIT_MMHG, mapData, co2Param.getBaro());
+                }
 
+                dContent.dataStr = mapData == InvData() ? InvStr() : mapStr;
                 // 获得报警报警和报警最高等级
-                prio = ALARM_PRIO_PROMPT;
-                if (pack->subparamAlarm.value(static_cast<SubParamID>(id - 2), false))
+                if (pack->subparamAlarm.value(id, false)
+                        && mapData != InvData())
                 {
                     alarmed = true;
-                    prio = prio > alarmConfig.getLimitAlarmPriority(static_cast<SubParamID>(id - 2)) ?
-                                prio : alarmConfig.getLimitAlarmPriority(static_cast<SubParamID>(id - 2));
-                }
-
-                if (pack->subparamAlarm.value(static_cast<SubParamID>(id - 1), false))
-                {
-                    alarmed = true;
-                    prio = prio > alarmConfig.getLimitAlarmPriority(static_cast<SubParamID>(id - 1)) ?
-                                prio : alarmConfig.getLimitAlarmPriority(static_cast<SubParamID>(id - 1));
-                }
-
-                if (pack->subparamAlarm.value(static_cast<SubParamID>(id), false))
-                {
-                    alarmed = true;
-                    prio = prio > alarmConfig.getLimitAlarmPriority(static_cast<SubParamID>(id)) ?
-                                prio : alarmConfig.getLimitAlarmPriority(static_cast<SubParamID>(id));
+                    prio = prio > alarmConfig.getLimitAlarmPriority(id) ?
+                                prio : alarmConfig.getLimitAlarmPriority(id);
                 }
             }
             break;
@@ -1248,8 +1241,7 @@ QString TrendTableModelPrivate::getParamName(int section)
     case SUB_PARAM_ICP_MAP:
     case SUB_PARAM_AUXP1_SYS:
     case SUB_PARAM_AUXP2_SYS:
-        str = paramInfo.getSubParamName(id);
-        str = str.left(str.length() - 4);
+        str = paramInfo.getIBPPressName(id);
         break;
     case SUB_PARAM_T1:
         str = paramInfo.getSubParamName(id);
@@ -1345,8 +1337,8 @@ void TrendTableModelPrivate::loadTableTitle()
         case SUB_PARAM_AUXP1_SYS:
         case SUB_PARAM_AUXP2_SYS:
         {
-            SubParamID ibp1 = ibpParam.getSubParamID(ibpParam.getEntitle(IBP_INPUT_1));
-            SubParamID ibp2 = ibpParam.getSubParamID(ibpParam.getEntitle(IBP_INPUT_2));
+            SubParamID ibp1 = ibpParam.getSubParamID(ibpParam.getEntitle(IBP_CHN_1));
+            SubParamID ibp2 = ibpParam.getSubParamID(ibpParam.getEntitle(IBP_CHN_2));
             if (id != ibp1 && id != ibp2)
             {
                 continue;

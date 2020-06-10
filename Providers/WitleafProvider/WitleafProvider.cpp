@@ -12,6 +12,7 @@
 #include "WitleafProvider.h"
 #include "IBPParam.h"
 #include "COParam.h"
+#include "AlarmSourceManager.h"
 
 #define     INVALID     0xff9d
 
@@ -120,6 +121,8 @@ void WitleafProvider::handlePacket(unsigned char *data, int len)
         ibpParam.setConnected(true);
     }
 
+    // 发送保活帧, 有数据时调用清除连接计数器。
+    feed();
     if (data[0] == PARAM_TYPE_IBP)
     {
         switch (data[2])
@@ -145,7 +148,7 @@ void WitleafProvider::handlePacket(unsigned char *data, int len)
         }
         case IBP_RSP_ZERO_INFO:
         {
-            if (data[3] == IBP_INPUT_1)
+            if (data[3] == IBP_CHN_1)
             {
                 if (data[4] == IBP_CALIBRATION_ZERO)
                 {
@@ -200,7 +203,8 @@ void WitleafProvider::handlePacket(unsigned char *data, int len)
                 invalid = true;
                 waveValue = 0;
             }
-            ibpParam.addWaveformData(waveValue, invalid);
+            qint16 waveValueMmhg = (waveValue - 1000);
+            ibpParam.addWaveformData(waveValueMmhg, invalid, IBP_CHN_1);
 
             waveValue = data[6];
             waveValue <<= 8;
@@ -211,8 +215,8 @@ void WitleafProvider::handlePacket(unsigned char *data, int len)
                 invalid = true;
                 waveValue = 0;
             }
-
-            ibpParam.addWaveformData(waveValue, invalid, IBP_INPUT_2);
+            waveValueMmhg = (waveValue - 1000);
+            ibpParam.addWaveformData(waveValueMmhg, invalid, IBP_CHN_2);
             break;
         }
         case IBP_RSP_RESULT_DATA:
@@ -221,29 +225,39 @@ void WitleafProvider::handlePacket(unsigned char *data, int len)
             short dia = ((data[6] << 8) | data[7]) == INVALID ? InvData() : ((data[6] << 8) | data[7]) - 100;
             short mean = ((data[8] << 8) | data[9]) == INVALID ? InvData() : ((data[8] << 8) | data[9]) - 100;
             short pr = ((data[10] << 8) | data[11]) == INVALID ? InvData() : ((data[10] << 8) | data[11]) - 100;
-            ibpParam.setRealTimeData(sys, dia, mean, pr, IBP_INPUT_1);
+            ibpParam.setRealTimeData(sys, dia, mean, pr, IBP_CHN_1);
             sys = ((data[12] << 8) | data[13]) == INVALID ? InvData() : ((data[12] << 8) | data[13]) - 100;
             dia = ((data[14] << 8) | data[15]) == INVALID ? InvData() : ((data[14] << 8) | data[15]) - 100;
             mean = ((data[16] << 8) | data[17]) == INVALID ? InvData() : ((data[16] << 8) | data[17]) - 100;
             pr = ((data[18] << 8) | data[19]) == INVALID ? InvData() : ((data[18] << 8) | data[19]) - 100;
-            ibpParam.setRealTimeData(sys, dia, mean, pr, IBP_INPUT_2);
+            ibpParam.setRealTimeData(sys, dia, mean, pr, IBP_CHN_2);
             break;
         }
         case IBP_RSP_CYCLE_REPORT:
         {
             unsigned char circleReport = data[3];
-            _status.ibp1LeadStatus = (circleReport & BIT0) ? true : false;
-            _status.ibp2LeadStatus = (circleReport & BIT1) ? true : false;
+            bool chn1LeadStatus = (circleReport & BIT0) ? true : false;
+            bool chn2LeadStatus = (circleReport & BIT1) ? true : false;
             _status.tbLeadStatus   = (circleReport & BIT2) ? true : false;
             _status.tiLeadStatus   = (circleReport & BIT3) ? true : false;
             _status.modulePowerStatus = (circleReport & BIT4) ? true : false;
-            ibpParam.leadStatus(_status.ibp1LeadStatus, _status.ibp2LeadStatus);
+            if (_status.ibp1LeadStatus != chn1LeadStatus)
+            {
+                _status.ibp1LeadStatus = chn1LeadStatus;
+                ibpParam.setLeadStatus(IBP_CHN_1, _status.ibp1LeadStatus);
+            }
+
+            if (_status.ibp2LeadStatus != chn2LeadStatus)
+            {
+                _status.ibp2LeadStatus = chn2LeadStatus;
+                ibpParam.setLeadStatus(IBP_CHN_2, _status.ibp2LeadStatus);
+            }
             break;
         }
         case IBP_RSP_ZERO_RESULT:
         {
             IBPCalibration calib = (IBPCalibration)((data[3] >> 7) & 0x01);
-            IBPSignalInput IBP = (IBPSignalInput)((data[3] >> 6) & 0x01);
+            IBPChannel IBP = (IBPChannel)((data[3] >> 6) & 0x01);
             int info = 0;
             if (calib == IBP_CALIBRATION_ZERO)
             {
@@ -253,7 +267,7 @@ void WitleafProvider::handlePacket(unsigned char *data, int len)
             {
                 info = (data[3] >> 3) & 0x07;
             }
-            ibpParam.calibrationInfo(calib, IBP, info);
+            ibpParam.setCalibrationInfo(calib, IBP, info);
             break;
         }
         default:
@@ -377,12 +391,23 @@ unsigned char WitleafProvider::calcCheckSum(const unsigned char *data, unsigned 
 
 void WitleafProvider::disconnected()
 {
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_IBP);
+    if (alarmSource)
+    {
+        alarmSource->clear();
+        alarmSource->setOneShotAlarm(IBP_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+    }
     coParam.setConnected(false);
     ibpParam.setConnected(false);
 }
 
 void WitleafProvider::reconnected()
 {
+    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_IBP);
+    if (alarmSource)
+    {
+        alarmSource->setOneShotAlarm(IBP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+    }
     coParam.setConnected(true);
     ibpParam.setConnected(true);
 }
@@ -409,7 +434,7 @@ void WitleafProvider::moduleSelfCheck()
  *      字节1：0x00(IBP1), 0x01(IBP2);
  *      字节2：0x01~0x12:实际时间值,单位为秒
  *************************************************************************************************/
-void WitleafProvider::setAvergTime(IBPSignalInput IBP, unsigned char time)
+void WitleafProvider::setAvergTime(IBPChannel IBP, unsigned char time)
 {
     unsigned char data[2] = {IBP, time};
     sendCmd(2, PARAM_TYPE_IBP, IBP_DATA_DC, IBP_CMD_SET_AVERG_TIME, data, NULL);
@@ -418,7 +443,7 @@ void WitleafProvider::setAvergTime(IBPSignalInput IBP, unsigned char time)
 /**************************************************************************************************
  * IBP校准、校零设置
  *************************************************************************************************/
-void WitleafProvider::setZero(IBPSignalInput IBP, IBPCalibration calibration, unsigned short pressure)
+void WitleafProvider::setZero(IBPChannel IBP, IBPCalibration calibration, unsigned short pressure)
 {
     unsigned char data[4] = {IBP, calibration,
                              (unsigned char)((pressure >> 8) & 0xff),
@@ -429,7 +454,7 @@ void WitleafProvider::setZero(IBPSignalInput IBP, IBPCalibration calibration, un
 /**************************************************************************************************
  * IBP滤波设置
  *************************************************************************************************/
-void WitleafProvider::setFilter(IBPSignalInput IBP, IBPFilterMode filter)
+void WitleafProvider::setFilter(IBPChannel IBP, IBPFilterMode filter)
 {
     unsigned char data[2] = {IBP, filter};
     sendCmd(2, PARAM_TYPE_IBP, IBP_DATA_DC, IBP_CMD_SET_FILTER, data, NULL);
@@ -438,8 +463,8 @@ void WitleafProvider::setFilter(IBPSignalInput IBP, IBPFilterMode filter)
 /**************************************************************************************************
  * IBP表明设置
  *************************************************************************************************/
-void WitleafProvider::setIndicate(IBPPressureName pressurenameIBP1, IBPPressureName pressurenameIBP2,
-                                  IBPAuxiliarySet auxiliarysetIBP1, IBPAuxiliarySet auxiliarysetIBP2)
+void WitleafProvider::setIndicate(IBPLabel pressurenameIBP1, IBPLabel pressurenameIBP2,
+                                  IBPMeasueType auxiliarysetIBP1, IBPMeasueType auxiliarysetIBP2)
 {
     unsigned char indicate = 0;
     indicate = (pressurenameIBP1 & 0x07) | ((pressurenameIBP2 & 0x07) << 3) |
@@ -504,7 +529,7 @@ void WitleafProvider::setHemodymicParam() {}
 /**************************************************************************************************
  * IBP 校零/校准时间设定
  *************************************************************************************************/
-void WitleafProvider::setTimeZero(IBPSignalInput IBP, IBPCalibration calibration,
+void WitleafProvider::setTimeZero(IBPChannel IBP, IBPCalibration calibration,
                                   unsigned char second, unsigned char minute,
                                   unsigned char hour, unsigned char day,
                                   unsigned char month, unsigned char year)
@@ -527,6 +552,10 @@ WitleafProvider::WitleafProvider(): Provider("WITLEAF_IBP"), IBPProviderIFace(),
 {
     UartAttrDesc portAttr(115200, 8, 'O', 1);
     initPort(portAttr);
+
+    // init ibp lead status
+    _status.ibp1LeadStatus = true;
+    _status.ibp2LeadStatus = true;
 }
 
 /**************************************************************************************************

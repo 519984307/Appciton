@@ -66,6 +66,12 @@ public:
       */
      void setFocusBaseKey(SoftBaseKeyType keyType);
 
+public slots:
+    /**
+     * @brief onUserFaceChanged handle the user interface layout change event
+     */
+    void onUserFaceChanged(UserFaceType type);
+
 protected:
     void paintEvent(QPaintEvent *e);
     void resizeEvent(QResizeEvent *e);

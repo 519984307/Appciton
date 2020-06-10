@@ -17,7 +17,7 @@
 #include "MonitorSoftkeyAction.h"
 #include "ECG12LeadSoftkeyAction.h"
 #include "CalculateSoftkeyAction.h"
-#include "ECGParam.h"
+#include "SystemManager.h"
 #include "WindowManager.h"
 #include <QSignalMapper>
 #include <QDebug>
@@ -249,6 +249,23 @@ void SoftKeyManager::setFocusBaseKey(SoftBaseKeyType keyType)
     }
 }
 
+void SoftKeyManager::onUserFaceChanged(UserFaceType type)
+{
+    switch (type)
+    {
+    case UFACE_MONITOR_STANDARD:
+    case UFACE_MONITOR_BIGFONT:
+        /* Only select standard or big font screen mode to enter the window layout function.
+         * Consistent with the screen setting menu.
+         */
+        setKeyTypeAvailable(SOFT_BASE_KEY_WINDOWLAYOUT, true);
+        break;
+    default:
+        setKeyTypeAvailable(SOFT_BASE_KEY_WINDOWLAYOUT, false);
+        break;
+    }
+}
+
 
 void SoftKeyManager::refreshTouchKey()
 {
@@ -403,6 +420,11 @@ void SoftKeyManager::setContent(SoftKeyActionType type)
     {
         setKeyTypeAvailable(SOFT_BASE_KEY_CO2_CALIBRATION, false);
         setKeyTypeAvailable(SOFT_BASE_KEY_CO2_HANDLE, false);
+    }
+
+    if (!systemManager.isSupport(PARAM_IBP))
+    {
+        setKeyTypeAvailable(SOFT_BASE_KEY_IBP_ZERO, false);
     }
 
 #ifdef HIDE_CALCULATE_FUNCITON

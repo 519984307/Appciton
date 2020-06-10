@@ -15,7 +15,7 @@
 #include "ParamDefine.h"
 
 #define LAYOUT_COLUMN_COUNT 6
-#define LAYOUT_ROW_COUNT 8
+#define LAYOUT_ROW_COUNT 7
 #define LAYOUT_MAX_WAVE_ROW_NUM 6
 #define LAYOUT_WAVE_END_COLUMN 4
 
@@ -73,6 +73,11 @@ enum LayoutNodeType
     LAYOUT_NODE_NR,
 };
 
+/**
+ * @brief layoutNodeName get the layout node name
+ * @param nodeType the node type
+ * @return  the node name
+ */
 const char *layoutNodeName(LayoutNodeType nodeType);
 
 /**

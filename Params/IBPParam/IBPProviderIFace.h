@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the Project project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by lianghuan <lianghuan@blmed.cn>, 2020/6/8
+ **/
+
+
 #pragma once
 #include "PatientDefine.h"
 #include "IBPDefine.h"
@@ -16,24 +27,24 @@ public:
     virtual bool isModuleSelfCheck(unsigned char */*packet*/) {return false;}
 
     // IBP 平均时间设置
-    virtual void setAvergTime(IBPSignalInput /*IBP1/2*/, unsigned char /*time*/){}
+    virtual void setAvergTime(IBPChannel /*IBP1/2*/, unsigned char /*time*/){}
     virtual bool isSetAvergTime(unsigned char */*packet*/) {return false;}
 
     // IBP校准、校零设置
-    virtual void setZero(IBPSignalInput /*IBP1/2*/, IBPCalibration /*calibration*/, unsigned short /*pressure*/){}
+    virtual void setZero(IBPChannel /*IBP1/2*/, IBPCalibration /*calibration*/, unsigned short /*pressure*/){}
     virtual bool isSetZero(unsigned char */*packet*/) {return false;}
 
     // IBP滤波设置
-    virtual void setFilter(IBPSignalInput /*IBP1/2*/, IBPFilterMode /*filter*/){}
+    virtual void setFilter(IBPChannel /*IBP1/2*/, IBPFilterMode /*filter*/){}
     virtual bool isSetFilter(unsigned char */*packet*/) {return false;}
 
     // IBP表明设置
-    virtual void setIndicate(IBPPressureName /*pressurenameIBP1*/, IBPPressureName /*pressurenameIBP2*/,
-                             IBPAuxiliarySet /*auxiliarysetIBP1*/, IBPAuxiliarySet /*auxiliarysetIBP2*/){}
+    virtual void setIndicate(IBPLabel /*pressurenameIBP1*/, IBPLabel /*pressurenameIBP2*/,
+                             IBPMeasueType /*auxiliarysetIBP1*/, IBPMeasueType /*auxiliarysetIBP2*/){}
     virtual bool isSetIndicate(unsigned char */*packet*/) {return false;}
 
     // IBP 校零/校准时间设定
-    virtual void setTimeZero(IBPSignalInput /*IBP1/2*/, IBPCalibration /*calibration*/,
+    virtual void setTimeZero(IBPChannel /*IBP1/2*/, IBPCalibration /*calibration*/,
                              unsigned char /*second*/, unsigned char /*minute*/,
                              unsigned char /*hour*/, unsigned char /*day*/,
                              unsigned char /*month*/, unsigned char /*year*/){}
@@ -47,6 +58,12 @@ public:
 
     // 获取最大的波形值
     virtual int getIBPMaxWaveform(void) = 0;
+
+    /**
+     * @brief getIBPModuleType get the provide type
+     * @return the type of the provider
+     */
+    virtual IBPModuleType getIBPModuleType() const = 0;
 
 public:
     IBPProviderIFace() {  }

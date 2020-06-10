@@ -247,12 +247,12 @@ void ShortTrendWindowPrivate::loadParaList()
     }
     if (systemManager.isSupport(CONFIG_IBP))
     {
-        SubParamID ibp1 = ibpParam.getSubParamID(IBP_INPUT_1);
-        SubParamID ibp2 = ibpParam.getSubParamID(IBP_INPUT_2);
+        SubParamID ibp1 = ibpParam.getSubParamID(IBP_CHN_1);
+        SubParamID ibp2 = ibpParam.getSubParamID(IBP_CHN_2);
         paraList[ibp1] = paramInfo.getParamWaveformName(
-                             ibpParam.getWaveformID(ibpParam.getEntitle(IBP_INPUT_1)));
+                             ibpParam.getWaveformID(ibpParam.getEntitle(IBP_CHN_1)));
         paraList[ibp2] = paramInfo.getParamWaveformName(
-                             ibpParam.getWaveformID(ibpParam.getEntitle(IBP_INPUT_2)));
+                             ibpParam.getWaveformID(ibpParam.getEntitle(IBP_CHN_2)));
     }
     if (systemManager.isSupport(CONFIG_NIBP))
     {
@@ -314,15 +314,15 @@ QList<SubParamID> ShortTrendWindowPrivate::getSubParamID(SubParamID id)
         break;
     case PARAM_IBP:
     {
-        SubParamID ibp1 = ibpParam.getSubParamID(IBP_INPUT_1);
-        SubParamID ibp2 = ibpParam.getSubParamID(IBP_INPUT_2);
+        SubParamID ibp1 = ibpParam.getSubParamID(IBP_CHN_1);
+        SubParamID ibp2 = ibpParam.getSubParamID(IBP_CHN_2);
         if (id == ibp1)
         {
-            subparams = ibpParam.getShortTrendList(IBP_INPUT_1);
+            subparams = ibpParam.getShortTrendList(IBP_CHN_1);
         }
         else if (id == ibp2)
         {
-            subparams = ibpParam.getShortTrendList(IBP_INPUT_2);
+            subparams = ibpParam.getShortTrendList(IBP_CHN_2);
         }
         break;
     }

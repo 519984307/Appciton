@@ -150,6 +150,11 @@ signals:
     /* emit when the content layout changed */
     void layoutChanged();
 
+    /**
+     * @brief userInterfaceChange  user interface type change
+     * @param type
+     */
+    void userInterfaceChange(UserFaceType type);
 private:
     LayoutManagerPrivate * const d_ptr;
     LayoutManager();

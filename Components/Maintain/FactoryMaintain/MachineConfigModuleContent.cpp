@@ -19,6 +19,7 @@
 #include "TEMPSymbol.h"
 #include "SPO2Symbol.h"
 #include "CO2Symbol.h"
+#include "IBPSymbol.h"
 #ifdef Q_WS_QWS
 #include <QWSServer>
 #include "SystemManager.h"
@@ -173,7 +174,19 @@ void MachineConfigModuleContentPrivte::loadOptions()
 
     index = 0;
     machineConfig.getNumValue("IBPEnable", index);
-    combos[ITEM_CBO_IBP]->setCurrentIndex(index);
+    if (index == 0)
+    {
+        combos[ITEM_CBO_IBP]->setCurrentIndex(0);
+    }
+    else
+    {
+        machineConfig.getStrValue("IBP", moduleName);
+        index = combos[ITEM_CBO_IBP]->findText(trs(moduleName));
+        if (index > 0)
+        {
+            combos[ITEM_CBO_IBP]->setCurrentIndex(index);
+        }
+    }
     itemChangedMap[ITEM_CBO_IBP] = index;
 
 #ifdef ENABLE_O2_APNEASTIMULATION
@@ -238,8 +251,6 @@ void MachineConfigModuleContentPrivte::loadOptions()
     combos[ITEM_CBO_AG]->setEnabled(false);
     combos[ITEM_CBO_CO]->setCurrentIndex(0);
     combos[ITEM_CBO_CO]->setEnabled(false);
-    combos[ITEM_CBO_IBP]->setCurrentIndex(0);
-    combos[ITEM_CBO_IBP]->setEnabled(false);
     combos[ITEM_CBO_WIFI]->setCurrentIndex(0);
     combos[ITEM_CBO_WIFI]->setEnabled(false);
     combos[ITEM_CBO_ANALOG_OUTPUT]->setCurrentIndex(0);
@@ -430,7 +441,8 @@ void MachineConfigModuleContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs("On"));
+                    << trs(IBPSymbol::convert(IBP_MODULE_SMART_IBP))
+                    << trs(IBPSymbol::convert(IBP_MODULE_WITLEAF)));
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
                          ::ITEM_CBO_IBP, combo);
@@ -721,6 +733,11 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
         case MachineConfigModuleContentPrivte::ITEM_CBO_IBP:
         {
             enablePath = "IBPEnable";
+            modulePath = "IBP";
+            if (index > 0)
+            {
+                moduleName = IBPSymbol::convert(static_cast<IBPModuleType>(index - 1));
+            }
             break;
         }
 #ifdef ENABLE_O2_APNEASTIMULATION
