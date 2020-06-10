@@ -253,12 +253,15 @@ void SoftKeyManager::onUserFaceChanged(UserFaceType type)
 {
     switch (type)
     {
-    case UFACE_MONITOR_ECG_FULLSCREEN:
-        // Select ECG full screen mode, Cannot enter the window layout function
-        setKeyTypeAvailable(SOFT_BASE_KEY_WINDOWLAYOUT, false);
+    case UFACE_MONITOR_STANDARD:
+    case UFACE_MONITOR_BIGFONT:
+        /* Only select standard or big font screen mode to enter the window layout function.
+         * Consistent with the screen setting menu.
+         */
+        setKeyTypeAvailable(SOFT_BASE_KEY_WINDOWLAYOUT, true);
         break;
     default:
-        setKeyTypeAvailable(SOFT_BASE_KEY_WINDOWLAYOUT, true);
+        setKeyTypeAvailable(SOFT_BASE_KEY_WINDOWLAYOUT, false);
         break;
     }
 }
