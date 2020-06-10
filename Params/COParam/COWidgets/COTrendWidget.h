@@ -11,25 +11,36 @@
 
 #pragma once
 #include "TrendWidget.h"
-#include <QLabel>
+#include <QScopedPointer>
 
+class COTrendWidgetPrivate;
 class COTrendWidget: public TrendWidget
 {
     Q_OBJECT
-
 public:
-    // 构造和析构
-    explicit COTrendWidget(const QString &trendName);
+    COTrendWidget();
     ~COTrendWidget();
 
 public:
-    // display C.O. and C.I. data.
-    void setMeasureResult(u_int16_t coData, u_int16_t ciData);
+    /**
+     * @brief setMeasureResult set the displayed co and ci value
+     * @param co cardiac output
+     * @param ci cardiac index
+     * @note
+     * The co and ci value should has been scaled by 10
+     */
+    void setMeasureResult(short co, short ci);
 
-    // display temp blood data.
-    void setTBData(u_int16_t tbData);
+    /**
+     * @brief setTBData set the display TB value
+     * @param tb tb value
+     * @note
+     * The value should have been scaled by 10
+     */
+    void setTb(short tb);
 
     QList<SubParamID> getShortTrendSubParams() const;
+
 protected:
     virtual void setTextSize(void);
 
@@ -37,14 +48,5 @@ private slots:
     void _releaseHandle(IWidget *);
 
 private:
-    QLabel *_coValue;
-
-    QLabel *_ciName;
-    QLabel *_ciValue;
-    QLabel *_tbName;
-    QLabel *_tbValue;
-
-    QString _coStr;
-    QString _ciStr;
-    QString _tbStr;
+    const QScopedPointer<COTrendWidgetPrivate> pimpl;
 };

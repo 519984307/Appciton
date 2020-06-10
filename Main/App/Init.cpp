@@ -637,7 +637,7 @@ static void _initProviderParam(void)
         alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_CO);
         alertor.addOneShotSource(oneShotAlarmSource);
 
-        COTrendWidget *coTrendWidget = new COTrendWidget("COTrendWidget");
+        COTrendWidget *coTrendWidget = new COTrendWidget();
         coParam.setCOTrendWidget(coTrendWidget);
         layoutManager.addLayoutWidget(coTrendWidget, LAYOUT_NODE_PARAM_CO);
     }

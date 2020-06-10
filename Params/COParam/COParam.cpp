@@ -82,7 +82,7 @@ void COParam::handDemoTrendData()
     if (pimpl->trendWidget)
     {
         pimpl->trendWidget->setMeasureResult(pimpl->coAvgVal, pimpl->ciAvgVal);
-        pimpl->trendWidget->setTBData(pimpl->tbVal);
+        pimpl->trendWidget->setTb(pimpl->tbVal);
     }
 }
 
@@ -95,7 +95,7 @@ void COParam::exitDemo()
     if (pimpl->trendWidget)
     {
         pimpl->trendWidget->setMeasureResult(InvData(), InvData());
-        pimpl->trendWidget->setTBData(InvData());
+        pimpl->trendWidget->setTb(InvData());
     }
 }
 
@@ -318,7 +318,7 @@ void COParam::setTb(short tb)
     pimpl->tbVal = tb;
     if (NULL != pimpl->trendWidget)
     {
-        pimpl->trendWidget->setTBData(tb);
+        pimpl->trendWidget->setTb(tb);
     }
 
     return;

@@ -401,6 +401,12 @@ public:
             paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_O2)] = NODE_DESC("AG_O2", PARAM_SPAN_TWO, PARAM_AG);
         }
 
+        if (systemManager.isSupport(CONFIG_CO))
+        {
+            nodeName = layoutNodeName(LAYOUT_NODE_PARAM_CO);
+            paramNodeDescriptions[nodeName] = ParamNodeDescription(paramInfo.getParamName(PARAM_CO), PARAM_SPAN_TWO);
+        }
+
         nodeName = layoutNodeName(LAYOUT_NODE_PARAM_ECG);
         paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_ECG), PARAM_SPAN_TWO, PARAM_ECG);
         nodeName = layoutNodeName(LAYOUT_NODE_PARAM_SPO2);
