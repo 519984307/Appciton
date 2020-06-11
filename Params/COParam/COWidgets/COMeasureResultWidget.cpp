@@ -164,12 +164,12 @@ void COMeasureResultWidget::paintEvent(QPaintEvent *ev)
     p.drawRoundedRect(bgRecg, borderRadius, borderRadius);
 
     /* draw the wave */
-    QRect waveRect = QStyle::alignedRect(Qt::LayoutDirectionAuto, Qt::AlignCenter,
-                                         pimpl->wavePixmap.size(), this->rect());
-    p.drawPixmap(waveRect, pimpl->wavePixmap);
-
     if (pimpl->data.isValid())
     {
+        QRect waveRect = QStyle::alignedRect(Qt::LayoutDirectionAuto, Qt::AlignCenter,
+                                             pimpl->wavePixmap.size(), this->rect());
+        p.drawPixmap(waveRect, pimpl->wavePixmap);
+
         QFont f = p.font();
         int fontH = fontManager.textHeightInPixels(f);
         p.setPen(Qt::white);
@@ -250,7 +250,7 @@ void COMeasureResultWidgetPrivate::generateWavePixmap(const COMeasureData &measu
                                                       const QSize &size, const QColor &color)
 {
     wavePixmap = QPixmap(size);
-    wavePixmap.fill(Qt::black);
+    wavePixmap.fill(Qt::transparent);
 
     if (!measureData.isValid())
     {
