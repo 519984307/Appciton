@@ -43,7 +43,7 @@ public:
 COTrendWidget::COTrendWidget()
     : TrendWidget("COTrendWidget"), pimpl(new COTrendWidgetPrivate())
 {
-    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_AG));
+    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_CO));
     setPalette(palette);
 
     setName("C.O.");

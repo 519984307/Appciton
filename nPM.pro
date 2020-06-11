@@ -924,6 +924,7 @@ HEADERS +=                                                                      
     Params/COParam/COSymbol.h                                                   \
     Params/COParam/COProviderIFace.h                                            \
     Params/COParam/CODefine.h                                                   \
+    Params/COParam/COMeasureData.h                                              \
     Params/COParam/COParam.h                                                    \
     Params/COParam/COWidgets/COTrendWidget.h                                    \
     Params/COParam/COWidgets/COMenuContent.h                                    \

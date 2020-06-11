@@ -11,7 +11,7 @@
 #pragma once
 #include <QWidget>
 #include <QScopedPointer>
-
+#include <COMeasureData.h>
 
 class COMeasureResultWidgetPrivate;
 class COMeasureResultWidget : public QWidget
@@ -32,6 +32,12 @@ public:
      * @return true when in check state, otherwise, false
      */
     bool isChecked() const;
+
+    /**
+     * @brief setMeasureData set the measure data
+     * @param data the measure data
+     */
+    void setMeasureData(const COMeasureData &data);
 
 signals:
     void chechedStateChanged(bool checked);

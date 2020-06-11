@@ -10,16 +10,22 @@
 
 #include "COMeasureResultWidget.h"
 #include "Framework/UI/ThemeManager.h"
+#include "Framework/TimeDate/TimeDate.h"
+#include "FontManager.h"
 #include <QPainter>
 #include <QPixmap>
 #include <QStyle>
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QResizeEvent>
+#include <QDateTime>
 
 #define FOCUS_BORDER_WIDTH 2
 #define CHECK_ICON_SIZE QSize(24, 24)
 #define CHECK_ICON_COLOR Qt::green
+
+#define MAX_TB_WAVE_VALUE   200     /* in unit of 0.01 celsius degree */
+#define MAX_WAVE_DURATION   60      /* seconds, maximum lenght of wave to draw */
 
 class COMeasureResultWidgetPrivate
 {
@@ -36,10 +42,39 @@ public:
         p.end();
     }
 
+    /**
+     * @brief generateWavePixmap generate teh wave pixmap base on the measure data
+     * @param measureData  the measure data
+     * @param size the size of pixmap
+     * @param color wave color
+     */
+    void generateWavePixmap(const COMeasureData &measureData, const QSize &size, const QColor &color);
+
+    /**
+     * @brief mapYValue map the Y value
+     * @param h the h of the region
+     * @param maxVal the value at the top of the region
+     * @param val value to map
+     * @return  the mapped Y pos
+     */
+    int mapYValue(int h, int maxVal, int val)
+    {
+        if (val > maxVal)
+        {
+            return 0;
+        }
+        if (val <= 0)
+        {
+            return h - 1;
+        }
+        return h - 1 - val * h / maxVal;
+    }
+
     bool checked;
     bool pressed;
     QImage checkIcon;
     QPixmap wavePixmap;
+    COMeasureData data;
 };
 
 COMeasureResultWidget::COMeasureResultWidget(QWidget *parent)
@@ -52,6 +87,8 @@ COMeasureResultWidget::COMeasureResultWidget(QWidget *parent)
     pal.setColor(QPalette::Window, Qt::black);
     pal.setColor(QPalette::Active, QPalette::Window, Qt::darkGray);
     this->setPalette(pal);
+
+    setFont(fontManager.textFont(fontManager.getFontSize(2)));
 }
 
 COMeasureResultWidget::~COMeasureResultWidget()
@@ -75,8 +112,23 @@ bool COMeasureResultWidget::isChecked() const
     return pimpl->checked;
 }
 
+void COMeasureResultWidget::setMeasureData(const COMeasureData &data)
+{
+    pimpl->data = data;
+    QSize s = this->size();
+    s.setWidth(s.width() - themeManager.getBorderRadius());
+    s.setHeight(s.height()  - themeManager.getBorderRadius());
+    pimpl->generateWavePixmap(data, s, palette().color(QPalette::WindowText));
+    update();
+}
+
 void COMeasureResultWidget::resizeEvent(QResizeEvent *ev)
 {
+    QSize s = ev->size();
+    s.setWidth(s.width() - themeManager.getBorderRadius());
+    s.setHeight(s.height()  - themeManager.getBorderRadius());
+    pimpl->generateWavePixmap(pimpl->data, s, palette().color(QPalette::WindowText));
+    update();
 }
 
 void COMeasureResultWidget::paintEvent(QPaintEvent *ev)
@@ -110,6 +162,27 @@ void COMeasureResultWidget::paintEvent(QPaintEvent *ev)
     }
 
     p.drawRoundedRect(bgRecg, borderRadius, borderRadius);
+
+    /* draw the wave */
+    QRect waveRect = QStyle::alignedRect(Qt::LayoutDirectionAuto, Qt::AlignCenter,
+                                         pimpl->wavePixmap.size(), this->rect());
+    p.drawPixmap(waveRect, pimpl->wavePixmap);
+
+    if (pimpl->data.isValid())
+    {
+        QFont f = p.font();
+        int fontH = fontManager.textHeightInPixels(f);
+        p.setPen(Qt::white);
+        QString coStr = QString("C.O.: %1").arg(QString::number(pimpl->data.co * 1.0 / 10, 'f', 1));
+        QPoint textPos = this->contentsRect().topLeft();
+        textPos.rx() += borderRadius;
+        textPos.ry() += fontH;
+        p.drawText(textPos, coStr);
+
+        textPos.ry() += fontH;
+        QString timeStr = timeDate->getTime(pimpl->data.timestamp);
+        p.drawText(textPos, timeStr);
+    }
 
     if (pimpl->checked)
     {
@@ -172,3 +245,61 @@ void COMeasureResultWidget::mouseReleaseEvent(QMouseEvent *ev)
         setChecked(!pimpl->checked);
     }
 }
+
+void COMeasureResultWidgetPrivate::generateWavePixmap(const COMeasureData &measureData,
+                                                      const QSize &size, const QColor &color)
+{
+    wavePixmap = QPixmap(size);
+    wavePixmap.fill(Qt::black);
+
+    if (!measureData.isValid())
+    {
+        return;
+    }
+
+    int w = size.width();
+    int h = size.height();
+
+    QPainter p(&wavePixmap);
+    p.setPen(color);
+
+    /* draw the bottom line */
+    p.drawLine(0, h - 1, w - 1, h - 1);
+
+    if (measureData.measureWave.count() == 0)
+    {
+        return;
+    }
+
+    float deltaX = w * 1.0 / (MAX_WAVE_DURATION * measureData.dataRate);
+    int lastX = 0;
+    int lastY = mapYValue(h, MAX_TB_WAVE_VALUE, measureData.measureWave.at(0));
+    for (int i = 0; i < measureData.measureWave.count(); ++i)
+    {
+        int curX = deltaX * i;
+        if (curX >= w)
+        {
+            break;
+        }
+        int curY = mapYValue(h, MAX_TB_WAVE_VALUE, measureData.measureWave[i]);
+        if (curX == lastX)
+        {
+            /* current point is at the same x pos as the last point, no need to draw */
+            if (lastY > curY)
+            {
+                lastY = curY;
+            }
+            continue;
+        }
+        else
+        {
+            /* draw last X */
+            p.drawLine(lastX, h - 1, lastX, lastY);
+            lastX = curX;
+            lastY = curY;
+        }
+    }
+    /* draw the last line */
+    p.drawLine(lastX, h - 1, lastX, lastY);
+}
+

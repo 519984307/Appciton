@@ -49,9 +49,6 @@ public:
 
     bool connectedProvider;
     bool isMeasuring;
-
-    COMeasureData curMeasureData;
-    QVector<COMeasureData> cacheMeasureData;
 };
 
 /**************************************************************************************************
@@ -329,12 +326,17 @@ void COParam::stopMeasure()
  *************************************************************************************************/
 void COParam::setMeasureResult(short co, short ci)
 {
-    pimpl->curMeasureData.co = co;
-    pimpl->curMeasureData.ci = ci;
-
     /*  Once we got the result, current measurement should be already stopped */
     pimpl->isMeasuring = false;
 
+    if (pimpl->measureWin)
+    {
+        pimpl->measureWin->setMeasureResult(co, ci);
+    }
+}
+
+void COParam::setAverageResult(short co, short ci)
+{
     if (pimpl->trendWidget)
     {
         pimpl->trendWidget->setMeasureResult(co, ci);
@@ -363,11 +365,6 @@ void COParam::setTi(short ti)
     }
 }
 
-void COParam::addMeasureWaveData(short data)
-{
-    pimpl->curMeasureData.measureWave.append(data);
-}
-
 void COParam::setOneshotAlarm(COOneShotType t, bool f)
 {
     AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_CO);
@@ -391,6 +388,14 @@ short COParam::getAvgCo() const
 short COParam::getAvgCi() const
 {
     return pimpl->ciAvgVal;
+}
+
+void COParam::addMeasureWaveData(short data)
+{
+    if (pimpl->measureWin)
+    {
+        pimpl->measureWin->addMeasureWaveData(data);
+    }
 }
 
 /**************************************************************************************************

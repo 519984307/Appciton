@@ -31,6 +31,31 @@ public:
 
     ~COMeasureWindow();
 
+    /**
+     * @brief setMeasureResult
+     * @param co cardiac output
+     * #param ci cardiac index
+     */
+    void setMeasureResult(short co, short ci);
+
+
+    /**
+     * @brief setTb set the curent Tb
+     * @param tb blood temperature
+     * @note
+     * Only set the tb value when  in measurement
+     */
+    void setTb(short tb);
+
+    /**
+     * @brief addMeasureWaveData add measure wave data
+     * @param wave
+     */
+    void addMeasureWaveData(short wave);
+
+protected:
+    void showEvent(QShowEvent *ev);
+
 private:
     const QScopedPointer<COMeasureWindowPrivate> pimpl;
 };

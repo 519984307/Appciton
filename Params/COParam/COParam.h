@@ -14,18 +14,6 @@
 #include "COProviderIFace.h"
 #include <QScopedPointer>
 
-template <typename T> class QVector;
-/**
- * @brief The COMeasureData struct record the result of single measurement
- */
-struct COMeasureData
-{
-    COMeasureData() : timestamp(0), co(InvData()), ci(InvData()) {}
-    unsigned timestamp; /* measure timestamp */
-    short co;   /* measure co value */
-    short ci;   /* measure ci value */
-    QVector<short> measureWave;
-};
 
 class COTrendWidget;
 class COMeasureWindow;
@@ -143,6 +131,13 @@ public:
      * @param ci the cardiac index
      */
     void setMeasureResult(short co, short ci);
+
+    /**
+     * @brief setAverageResult set the average result
+     * @param co the average cardiac output
+     * @param ci teh average cardiac index
+     */
+    void setAverageResult(short co, short ci);
 
     /**
      * @brief setTb set the blood temperature
