@@ -48,10 +48,10 @@ static QPalette *_newPalette(const QColor &color)
 }
 
 // 修改palette颜色
-static void _changePalette(QPalette &palette, const QColor &color)
+static void _changePalette(QPalette *palette, const QColor &color)
 {
-    palette.setColor(QPalette::WindowText, color);
-    palette.setColor(QPalette::Window, Qt::black);
+    palette->setColor(QPalette::WindowText, color);
+    palette->setColor(QPalette::Window, Qt::black);
 }
 
 /**************************************************************************************************
@@ -71,7 +71,7 @@ QPalette &ColorManager::getPalette(const QString &param)
     }
     else
     {
-        _changePalette(*(it.value()), _loadColor(param));
+        _changePalette(it.value(), _loadColor(param));
     }
     return *it.value();
 }
@@ -83,35 +83,7 @@ QColor ColorManager::getColor(const QString &param)
 
 void ColorManager::updateColorPalatte(const ParamID &paramId)
 {
-    switch (paramId)
-    {
-        case PARAM_ECG:
-            emit paletteChanged(PARAM_ECG);
-            break;
-        case PARAM_AG:
-            emit paletteChanged(PARAM_AG);
-            break;
-        case PARAM_SPO2:
-            emit paletteChanged(PARAM_SPO2);
-            break;
-        case PARAM_NIBP:
-            emit paletteChanged(PARAM_NIBP);
-            break;
-        case PARAM_CO2:
-            emit paletteChanged(PARAM_CO2);
-            break;
-        case PARAM_RESP:
-            emit paletteChanged(PARAM_RESP);
-            break;
-        case PARAM_TEMP:
-            emit paletteChanged(PARAM_TEMP);
-            break;
-        case PARAM_IBP:
-            emit paletteChanged(PARAM_IBP);
-            break;
-        default:
-            break;
-    }
+    emit paletteChanged(paramId);
 }
 
 /**************************************************************************************************
@@ -121,7 +93,7 @@ void ColorManager::updateColorPalatte(const ParamID &paramId)
  *************************************************************************************************/
 QColor ColorManager::getHighlight(void)
 {
-    return QColor(227, 89, 42);// (98, 177, 213);
+    return QColor(227, 89, 42);  // (98, 177, 213);
 }
 
 /**************************************************************************************************

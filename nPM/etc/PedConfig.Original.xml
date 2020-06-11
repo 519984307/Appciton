@@ -1010,7 +1010,8 @@
         <IBPColor>Purple</IBPColor>
         <TEMPColor>Brown</TEMPColor>
 	<O2Color>Brown</O2Color>
-	<SPHBColor>Red</SPHBColor>
+        <COColor>Green</COColor>
+        <SPHBColor>Red</SPHBColor>
 	<SPMETColor>Yellow</SPMETColor>
         <!--do not modify-->
     </Display>

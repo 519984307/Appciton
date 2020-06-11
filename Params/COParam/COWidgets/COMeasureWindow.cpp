@@ -96,8 +96,7 @@ COMeasureWindow::COMeasureWindow()
     layout->addWidget(pimpl->settingBtn, 1, 3, 1, 1, Qt::AlignVCenter);
 
     int resultOnEachRow  = MAX_MEASURE_RESULT_NUM / 2;
-    // QColor color = colorManager.getColor(paramInfo.getParamName(PARAM_CO));
-    QColor color = Qt::green;
+    QColor color = colorManager.getColor(paramInfo.getParamName(PARAM_CO));
     for (int i = 0; i < MAX_MEASURE_RESULT_NUM; i++)
     {
         pimpl->resultWidget[i] = new COMeasureResultWidget();
