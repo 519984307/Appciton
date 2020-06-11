@@ -124,6 +124,9 @@ public:     // Provider的接口。
     virtual bool attachParam(Param *param);
     virtual void dataArrived(void);
 
+    /* reimplment */
+    void dataArrived(unsigned char *data, unsigned int length);
+
     // 协议命令解析
     void handlePacket(unsigned char *data, int len);
 
@@ -270,7 +273,17 @@ public:
 private:
     // 协议数据校验
     bool _checkPacketValid(const unsigned char *data, unsigned int len);
+    /**
+     * @brief pushData  push data to ring buff
+     * @param buff  data buff
+     * @param len  data len
+     */
+    void _pushData(unsigned char *buff, unsigned int len);
 
+    /**
+     * @brief parsePacketData parse packet data
+     */
+    void _parsePacketData();
 private:
     WitleafProvider(const WitleafProvider &other);  /* no implement, just stop cppcheck complain */
     static const int _minPacketLen = 6;          // 最小数据包长度: Start,Length,ParamType,DataType,DataID,CheckSum

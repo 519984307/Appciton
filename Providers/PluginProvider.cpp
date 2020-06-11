@@ -26,6 +26,8 @@
 #define SPO2_RAINBOW_EOM             (0xAF)  // rainbow spo2 packet end
 #define CO2_SOH_1            (0xAA)  // co2 packet header 1
 #define CO2_SOH_2            (0x55)  // co2 packet header 2
+#define IBP_SMART_FRAME_HEAD         (0xFF)  /* smart ibp frame head */
+#define IBP_MAX_PACKET_LENGTH        12      /* smart ibp maximum packet length */
 #define MIN_PACKET_LEN   5      // 最小数据包长度: SOH,Length,Type,FCS
 #define CO2_FRAME_LEN   21      // frame lenght of co2 packet
 #define PACKET_BUFF_SIZE 64
@@ -36,6 +38,8 @@
 #define BAUDRATE_SWITCH_DURATION       (500)
 #define WORKING_BAUDRATE_9600          (9600)
 #define WORKING_BAUDRATE_57600         (57600)
+#define WORKING_BAUDRATE_115200        (115200)
+
 #define MAX_PACKET_LEN          (40)
 
 class PluginProviderPrivate
@@ -78,7 +82,7 @@ public:
         ringBuff.push(buf, ret);
     }
 
-    unsigned char calcChecksum(const unsigned char *data, int len)
+    unsigned char calcSPO2Checksum(const unsigned char *data, int len)
     {
         unsigned char sum = 0;
         for (int i = 0; i < len; i++)
@@ -87,6 +91,25 @@ public:
         }
         sum = sum & 0xFF;
         return sum;
+    }
+
+    /**
+     * @brief calcIBPCheckSum calculate the IBP checksum
+     * @param data the data to calculate checksum
+     * @param len the data len
+     * @return the checksum
+     * @note when the checksum is 0xFF, need to minus 1 to avoid conflcting
+     * the FRAME_HEAD_BYTE
+     */
+    quint8 calcIBPCheckSum(quint8 *data, int len)
+    {
+        quint8 sum = 0;
+        for (int i = 0; i < len; i++)
+        {
+            sum += data[i];
+        }
+
+        return sum == IBP_SMART_FRAME_HEAD ? sum - 1 : sum;
     }
 
     /**
@@ -141,12 +164,24 @@ public:
     {
         if (type == PluginProvider::PLUGIN_TYPE_SPO2 && systemManager.isSupport(CONFIG_SPO2))
         {
-            Provider *provider = NULL;
-            provider = new RainbowProvider("RAINBOW_SPO2Plugin", true);
+            Provider *provider = new RainbowProvider("RAINBOW_SPO2Plugin", true);
             paramManager.addProvider(provider);
             if (systemManager.getCurWorkMode() != WORK_MODE_DEMO)
             {
                 provider->attachParam(paramManager.getParam(PARAM_SPO2));
+            }
+            dataHandlers[type] = provider;
+            return true;
+        }
+        else if (type == PluginProvider::PLUGIN_TYPE_IBP && systemManager.isSupport(CONFIG_IBP))
+        {
+            // get ibp provider
+            QString str;
+            machineConfig.getStrValue("IBP", str);
+            Provider *provider = paramManager.getProvider(str);
+            if (systemManager.getCurWorkMode() != WORK_MODE_DEMO)
+            {
+                provider->attachParam(paramManager.getParam(PARAM_IBP));
             }
             dataHandlers[type] = provider;
             return true;
@@ -174,7 +209,7 @@ public:
     }
 
     /**
-     * @brief sendRainbowBaudratetCmd send randbow spo2 baudrate command
+     * @brief sendRainbowBaudrateCmd send randbow spo2 baudrate command
      * @param baudrate the baudrate
      * @note
      * When the badurate is identical the rainbow current running baudrate,
@@ -192,7 +227,7 @@ public:
         {
             buff[index++] = data[i];
         }
-        buff[index++] = calcChecksum(data, sizeof(data));
+        buff[index++] = calcSPO2Checksum(data, sizeof(data));
         buff[index++] = SPO2_RAINBOW_EOM;
         uart->write(buff, index);
     }
@@ -273,18 +308,7 @@ bool PluginProvider::setPacketPortBaudrate(PluginProvider::PluginType type, Plug
 {
     if (type == PLUGIN_TYPE_SPO2)
     {
-        int index = 0;
-        unsigned char data[2] = {0x23, baud};
-        unsigned char buff[PACKET_BUFF_SIZE] = {0};
-        buff[index++] = SPO2_RAINBOW_SOH;
-        buff[index++] = sizeof(data);
-        for (unsigned int i = 0; i < sizeof(data); i++)
-        {
-            buff[index++] = data[i];
-        }
-        buff[index++] = d_ptr->calcChecksum(data, sizeof(data));
-        buff[index++] = SPO2_RAINBOW_EOM;
-        return d_ptr->uart->write(buff, index);
+        d_ptr->sendRainbowBaudrateCmd(baud);
     }
     return true;
 }
@@ -377,6 +401,11 @@ void PluginProvider::timerEvent(QTimerEvent *ev)
             d_ptr->curDetectBaudrate = WORKING_BAUDRATE_57600;
             updateUartBaud(d_ptr->curDetectBaudrate);
             d_ptr->sendRainbowBaudrateCmd(BAUDRATE_57600);
+        }
+        else if (d_ptr->curDetectBaudrate == WORKING_BAUDRATE_57600)
+        {
+            d_ptr->curDetectBaudrate = WORKING_BAUDRATE_115200;
+            updateUartBaud(d_ptr->curDetectBaudrate);
         }
         else
         {
@@ -475,7 +504,7 @@ void PluginProvider::dataArrived()
             }
 
             // 计算帧的校验码
-            unsigned char csum = d_ptr->calcChecksum(&buff[2], len);
+            unsigned char csum = d_ptr->calcSPO2Checksum(&buff[2], len);
 
             // 如果求和检验码匹配，则进一步处理数据包，否则丢弃最旧数据
             if (csum == buff[totalLen - 2])
@@ -493,7 +522,7 @@ void PluginProvider::dataArrived()
             }
             continue;
         }
-        else if ((d_ptr->ringBuff.at(0) == 0xAA) && (d_ptr->ringBuff.at(1) == 0x55))
+        else if ((d_ptr->ringBuff.at(0) == CO2_SOH_1) && (d_ptr->ringBuff.at(1) == CO2_SOH_2))
         {
             if (d_ptr->ringBuff.dataSize() >= CO2_FRAME_LEN)
             {
@@ -520,6 +549,42 @@ void PluginProvider::dataArrived()
                 break;
             }
         }
+        else if (d_ptr->ringBuff.at(0) == IBP_SMART_FRAME_HEAD)
+        {
+            // smart ibp plugin
+            quint8 length = d_ptr->ringBuff.at(1);
+            if (length != 0x06 && length != 0x0A)
+            {
+                /* possible length field value of packet from module is 0x06 0r 0x0A */
+                qDebug() << "IBP Plugin Provider Invalid Packet length:" << length;
+                d_ptr->ringBuff.pop(1);
+                continue;
+            }
+
+            if (d_ptr->ringBuff.dataSize() < length)
+            {
+                /* no enough data */
+                break;
+            }
+
+            quint8 buf[IBP_MAX_PACKET_LENGTH];
+            d_ptr->ringBuff.copy(0, buf, length + 2);
+            quint8 checksum = d_ptr->calcIBPCheckSum(buf + 1, length);
+            if (checksum == buf[length + 1])
+            {
+                /* packet is valid, pop the packet data */
+                d_ptr->ringBuff.pop(length + 2);
+
+                // The verification is successful, and the current plug-in is the IBP module
+                d_ptr->setupProvider(PLUGIN_TYPE_IBP);
+                break;
+            }
+            else
+            {
+                qDebug() << this->getName() << "IBP CheckSum failed!";
+                d_ptr->ringBuff.pop(1);
+            }
+        }
         else
         {
             d_ptr->ringBuff.pop(1);
@@ -538,6 +603,10 @@ void PluginProvider::startInitModule()
     {
         d_ptr->sendRainbowBaudrateCmd(BAUDRATE_57600);
     }
+    else if (d_ptr->workingProvider == d_ptr->dataHandlers[PLUGIN_TYPE_IBP])
+    {
+        updateUartBaud(WORKING_BAUDRATE_115200);
+    }
 }
 
 void PluginProvider::onWorkModeChanged(WorkMode curMode)
@@ -547,6 +616,11 @@ void PluginProvider::onWorkModeChanged(WorkMode curMode)
         if (d_ptr->dataHandlers[PLUGIN_TYPE_SPO2] != NULL)
         {
             d_ptr->dataHandlers[PLUGIN_TYPE_SPO2]->attachParam(paramManager.getParam(PARAM_SPO2));
+        }
+
+        if (d_ptr->dataHandlers[PLUGIN_TYPE_IBP] != NULL)
+        {
+            d_ptr->dataHandlers[PLUGIN_TYPE_IBP]->attachParam(paramManager.getParam(PARAM_IBP));
         }
         /* force disconnect the plugin, if the plugin is connected, the state will update in the timeEvent */
         d_ptr->lastPluginState = false;

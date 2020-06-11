@@ -579,10 +579,20 @@ static void _initProviderParam(void)
         oxyCRGWidget->setOxyCRGCO2Widget(co2OxyCRGWidget);
     }
 
-    // IBP test
+    // IBP
     if (systemManager.isSupport(CONFIG_IBP))
     {
-        paramManager.addProvider(new SmartIBPProvider(QString()));
+        QString str;
+        machineConfig.getStrValue("IBP", str);
+        if (str == "SMART_IBP")
+        {
+            paramManager.addProvider(new SmartIBPProvider());
+        }
+        else if (str == "WITLEAF_IBP")
+        {
+            paramManager.addProvider(new WitleafProvider());
+        }
+
         paramManager.addParam(&ibpParam.construction());
 
         limitAlarmSource = new IBPLimitAlarm();

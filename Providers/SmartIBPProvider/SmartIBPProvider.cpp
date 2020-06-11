@@ -104,6 +104,11 @@ public:
     }
 
     /**
+     * @brief parsePacketData parse packet data
+     */
+    void parsePacketData();
+
+    /**
      * @brief handlePacket handle packet data
      * @param data the packet data buffer
      * @param len length of the packet data
@@ -206,12 +211,22 @@ public:
         q_ptr->writeData(buf, sizeof(buf));
     }
 
+    /**
+     * @brief pushData  push data to ring buff
+     * @param buff  data buff
+     * @param len  data len
+     */
+    void pushData(unsigned char *buff, unsigned int len)
+    {
+        q_ptr->ringBuff.push(buff, len);
+    }
+
     SmartIBPProvider * const q_ptr;
     IBPChannelData chn1Data;        /* data of channel 1 */
     IBPChannelData chn2Data;        /* data of channel 2 */
 };
 
-SmartIBPProvider::SmartIBPProvider(const QString /*&port*/)
+SmartIBPProvider::SmartIBPProvider()
     :Provider("SMART_IBP"), pimpl(new SmartIBPProviderPrivate(this))
 {
     UartAttrDesc portAttr(115200, 8, 'N', 1);
@@ -295,48 +310,64 @@ int SmartIBPProvider::getIBPMaxWaveform()
     return 3000;
 }
 
+void SmartIBPProvider::dataArrived(unsigned char *data, unsigned int length)
+{
+    // push data to ringbuff
+    pimpl->pushData(data, length);
+    pimpl->parsePacketData();
+}
+
 void SmartIBPProvider::dataArrived()
 {
     readData();
+    pimpl->parsePacketData();
+}
+
+void SmartIBPProviderPrivate::parsePacketData()
+{
+    if (q_ptr->ringBuff.isEmpty())
+    {
+        return;
+    }
+
     quint8 buf[MAX_PACKET_LENGTH];
-    while (ringBuff.dataSize() > MIN_PARSE_LENGTH)
+    while (q_ptr->ringBuff.dataSize() > MIN_PARSE_LENGTH)
     {
         /* find frame head */
-        if (ringBuff.at(0) != FRAME_HEAD)
+        if (q_ptr->ringBuff.at(0) != FRAME_HEAD)
         {
-            ringBuff.pop(1);
+            q_ptr->ringBuff.pop(1);
             continue;
         }
 
-        quint8 length = ringBuff.at(1);
+        quint8 length = q_ptr->ringBuff.at(1);
         if (length != 0x06 && length != 0x0A)
         {
             /* possible length field value of packet from module is 0x06 0r 0x0A */
             qDebug() << "Invalid Packet length:" << length;
-            ringBuff.pop(1);
+            q_ptr->ringBuff.pop(1);
             continue;
         }
 
-        if (ringBuff.dataSize() < length)
+        if (q_ptr->ringBuff.dataSize() < length)
         {
             /* no enough data */
             break;
         }
 
-        ringBuff.copy(0, buf, length + 2);
-        quint8 checksum = pimpl->calcCheckSum(buf + 1, length);
+        q_ptr->ringBuff.copy(0, buf, length + 2);
+        quint8 checksum = calcCheckSum(buf + 1, length);
         if (checksum == buf[length + 1])
         {
             /* packet is valid, pop the packet data */
-            ringBuff.pop(length + 2);
+            q_ptr->ringBuff.pop(length + 2);
 
-            pimpl->handlePacket(buf + 2, length - 1);
-            // outHex(buf, length + 2);
+            handlePacket(buf + 2, length - 1);
         }
         else
         {
-            qDebug() << this->getName() << "CheckSum failed!";
-            ringBuff.pop(1);
+            qDebug() << q_ptr->getName() << "CheckSum failed!";
+            q_ptr->ringBuff.pop(1);
         }
     }
 }
