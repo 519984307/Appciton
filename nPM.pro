@@ -467,6 +467,8 @@ SOURCES +=                                                                      
     Params/COParam/COParam.cpp                                                  \
     Params/COParam/COWidgets/COTrendWidget.cpp                                  \
     Params/COParam/COWidgets/COMenuContent.cpp                                  \
+    Params/COParam/COWidgets/COMeasureResultWidget.cpp                          \
+    Params/COParam/COWidgets/COMeasureWidget.cpp                                \
     Params/COParam/COWidgets/COMeasureWindow.cpp                                \
     Params/NIBPParam/NIBPStateMachine/NIBPState.cpp                             \
     Params/NIBPParam/NIBPStateMachine/NIBPStateMachine.cpp                      \
@@ -925,6 +927,8 @@ HEADERS +=                                                                      
     Params/COParam/COParam.h                                                    \
     Params/COParam/COWidgets/COTrendWidget.h                                    \
     Params/COParam/COWidgets/COMenuContent.h                                    \
+    Params/COParam/COWidgets/COMeasureResultWidget.h                            \
+    Params/COParam/COWidgets/COMeasureWidget.h                                  \
     Params/COParam/COWidgets/COMeasureWindow.h                                  \
     Params/NIBPParam/NIBPStateMachine/NIBPState.h                               \
     Params/NIBPParam/NIBPStateMachine/NIBPStateMachine.h                        \
