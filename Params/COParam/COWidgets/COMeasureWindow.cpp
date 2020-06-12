@@ -12,19 +12,27 @@
 #include "Framework/Language/LanguageManager.h"
 #include "Framework/UI/Button.h"
 #include "COMeasureResultWidget.h"
+#include "Framework/Utility/Unit.h"
 #include "COMeasureWidget.h"
 #include "ColorManager.h"
 #include <QGridLayout>
 #include <QLabel>
-#include <QDateTime>
 #include <QBoxLayout>
 #include "COParam.h"
 #include "FontManager.h"
-#include <QTimer>
+#include "SystemManager.h"
+#include <QTimerEvent>
 
 /* support 6 measure reuslt at most */
 #define MAX_MEASURE_RESULT_NUM   6
 
+#define DEMO_TIMER_PERIOD   40  /* update the wave data at 25 HZ */
+
+#define WAVE_DURATION_AFTER_MEASURE (10 * 1000)
+
+#define CHECK_INJECT_PERIOD (100)
+
+#define COMPLETE_MESSAGE_SHOW_DURATION (1000)
 
 static short tbDemoWave[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -69,10 +77,11 @@ static short tbDemoWave[] = {
 class COMeasureWindowPrivate
 {
 public:
-    COMeasureWindowPrivate()
-        : ctrlBtn(NULL), settingBtn(NULL), saveBtn(NULL), printBtn(NULL),
-          calcBtn(NULL), measureWidget(NULL), coAvgLabel(NULL), coAvgVal(NULL),
-          ciAvgLabel(NULL), ciAvgVal(NULL), demoTimer(), demoDataReadIndex(0)
+    explicit COMeasureWindowPrivate(COMeasureWindow * const q_ptr)
+        : q_ptr(q_ptr), ctrlBtn(NULL), settingBtn(NULL), saveBtn(NULL), printBtn(NULL),
+          calcBtn(NULL), measureWidget(NULL), coAvgLabel(NULL), coAvgVal(NULL), ciAvgLabel(NULL),
+          ciAvgVal(NULL), demoDataReadIndex(0), demoTimerID(-1), waitStateTimerID(-1),
+          checkInjectTimerID(-1), noInjectCount(0), completeMessageTimerID(-1), isMeasuring(false)
     {
         for (int i = 0; i < MAX_MEASURE_RESULT_NUM; i++)
         {
@@ -80,6 +89,53 @@ public:
         }
     }
 
+    /**
+     * @brief stopTimer helper function to stop timer
+     * @param timerID pointer of the timer id
+     */
+    void stopTimer(int *timerID)
+    {
+        q_ptr->killTimer(*timerID);
+        *timerID = -1;
+    }
+
+    /**
+     * @brief handleMeasureResult handle the measure result when measure complete
+     */
+    void handleMeasureResult();
+
+    /**
+     * @brief startMeasure start the measuring
+     */
+    void startMeasure();
+
+    /**
+     * @brief stopMeasure stop the measuring
+     */
+    void stopMeasure();
+
+    /**
+     * @brief getAverageCo get the average co value from the checked result
+     * @return the average co
+     */
+    short getAverageCo() const;
+
+    /**
+     * @brief coValToStringHelper help function to convert the co value to string
+     * @param value the co related value
+     * @return  the string
+     */
+    QString coValToStringHelper(short value)
+    {
+        if (value == InvData())
+        {
+            return InvStr();
+        }
+
+        return QString::number(value * 1.0 / 10, 'f', 1);
+    }
+
+    COMeasureWindow * const q_ptr;
     Button *ctrlBtn;
     Button *settingBtn;
     Button *saveBtn;
@@ -92,12 +148,19 @@ public:
     QLabel *ciAvgLabel;
     QLabel *ciAvgVal;
 
-    QTimer *demoTimer;
-    int demoDataReadIndex;
+    int demoTimerID;        /* demo wave generate timer */
+    int waitStateTimerID;   /* timer to control the wait state */
+    int checkInjectTimerID; /* timer to check wether has injected  */
+    int noInjectCount;
+    int completeMessageTimerID; /* timer to control the display of complete message */
+
+    size_t demoDataReadIndex;   /* index of reading demo data */
+
+    bool isMeasuring;   /* record whether we are in measuring state */
 };
 
 COMeasureWindow::COMeasureWindow()
-    : Dialog(), pimpl(new COMeasureWindowPrivate())
+    : Dialog(), pimpl(new COMeasureWindowPrivate(this))
 {
     setFixedSize(themeManager.defaultWindowSize());
     setWindowTitle(trs("COMeasurement"));
@@ -116,23 +179,28 @@ COMeasureWindow::COMeasureWindow()
     pimpl->ctrlBtn = new Button(trs("Start"));
     pimpl->ctrlBtn->setButtonStyle(Button::ButtonTextOnly);
     layout->addWidget(pimpl->ctrlBtn, 0, 3, 1, 1, Qt::AlignVCenter);
+    connect(pimpl->ctrlBtn, SIGNAL(clicked(bool)), this, SLOT(btnClicked()));
 
     pimpl->settingBtn = new Button(trs("Setting"));
     pimpl->settingBtn->setButtonStyle(Button::ButtonTextOnly);
     layout->addWidget(pimpl->settingBtn, 1, 3, 1, 1, Qt::AlignVCenter);
+    connect(pimpl->settingBtn, SIGNAL(clicked(bool)), this, SLOT(btnClicked()));
 
     int resultOnEachRow  = MAX_MEASURE_RESULT_NUM / 2;
     for (int i = 0; i < MAX_MEASURE_RESULT_NUM; i++)
     {
-        pimpl->resultWidget[i] = new COMeasureResultWidget();
-        pal = pimpl->resultWidget[i]->palette();
+        COMeasureResultWidget *rw = new COMeasureResultWidget();
+        connect(rw, SIGNAL(chechedStateChanged(bool)), this, SLOT(onResultChecked()));
+        pal = rw->palette();
         pal.setColor(QPalette::WindowText, color);
-        pimpl->resultWidget[i]->setPalette(pal);
-        layout->addWidget(pimpl->resultWidget[i], 2 + i / resultOnEachRow, i % resultOnEachRow, 1, 1);
+        rw->setPalette(pal);
+        rw->setEnabled(false);
+        layout->addWidget(rw, 2 + i / resultOnEachRow, i % resultOnEachRow, 1, 1);
+        pimpl->resultWidget[i] = rw;
     }
 
     QBoxLayout *coLayout = new QHBoxLayout();
-    pimpl->coAvgLabel = new QLabel("C.O. Avg.\nL/min");
+    pimpl->coAvgLabel = new QLabel(QString("C.O. Avg.\n%1)").arg(Unit::getSymbol(UNIT_LMin)));
     pimpl->coAvgLabel->setFont(fontManager.textFont(fontManager.getFontSize(2)));
     coLayout->addWidget(pimpl->coAvgLabel);
     pimpl->coAvgVal = new QLabel(InvStr());
@@ -157,12 +225,15 @@ COMeasureWindow::COMeasureWindow()
     pimpl->saveBtn = new Button(trs("Save"));
     pimpl->saveBtn->setButtonStyle(Button::ButtonTextOnly);
     btnLayout->addWidget(pimpl->saveBtn, 2);
+    connect(pimpl->saveBtn, SIGNAL(clicked(bool)), this, SLOT(btnClicked()));
     pimpl->printBtn = new Button(trs("Print"));
     pimpl->printBtn->setButtonStyle(Button::ButtonTextOnly);
     btnLayout->addWidget(pimpl->printBtn, 2);
+    connect(pimpl->printBtn, SIGNAL(clicked(bool)), this, SLOT(btnClicked()));
     pimpl->calcBtn = new Button(trs("Calculate"));
     pimpl->calcBtn->setButtonStyle(Button::ButtonTextOnly);
     btnLayout->addWidget(pimpl->calcBtn, 2);
+    connect(pimpl->calcBtn, SIGNAL(clicked(bool)), this, SLOT(btnClicked()));
     btnLayout->addStretch(1);
 
     layout->addLayout(btnLayout, 4, 0, 1, 4);
@@ -170,11 +241,6 @@ COMeasureWindow::COMeasureWindow()
     pimpl->saveBtn->setEnabled(false);
     pimpl->calcBtn->setEnabled(false);
     pimpl->printBtn->setEnabled(false);
-
-    pimpl->measureWidget->setWaveDataRate(25);
-    pimpl->demoTimer = new QTimer(this);
-    pimpl->demoTimer->setInterval(40);
-    connect(pimpl->demoTimer, SIGNAL(timeout()), this, SLOT(timeout()));
 }
 
 COMeasureWindow::~COMeasureWindow()
@@ -183,47 +249,255 @@ COMeasureWindow::~COMeasureWindow()
 
 void COMeasureWindow::setMeasureResult(short co, short ci)
 {
+    /* got result */
+    pimpl->measureWidget->stopMeasure();
+    pimpl->measureWidget->setCo(co);
+    pimpl->measureWidget->setCi(ci);
+    pimpl->handleMeasureResult();
 }
 
 void COMeasureWindow::setTb(short tb)
 {
+    pimpl->measureWidget->setTb(tb);
 }
 
 void COMeasureWindow::addMeasureWaveData(short wave)
 {
+    pimpl->measureWidget->addMeasureWave(wave);
+    if (wave > 0 && pimpl->isMeasuring)
+    {
+        /* injection has started, stop injection check */
+        pimpl->stopTimer(&pimpl->checkInjectTimerID);
+        pimpl->noInjectCount = 0;
+        pimpl->measureWidget->setMessage(trs("MeasurementInProgress"));
+    }
 }
 
 void COMeasureWindow::showEvent(QShowEvent *ev)
 {
-    COMeasureData d;
-    d.timestamp = QDateTime::currentDateTime().toTime_t();
-    d.ci = 15;
-    d.co = 38;
-    d.dataRate = 25;
-    for (int i = 0; i < sizeof(tbDemoWave) / sizeof(tbDemoWave[0]); ++i)
+    Dialog::showEvent(ev);
+
+    if (!pimpl->measureWidget->getMeasureData().isValid())
     {
-        d.measureWave.append(tbDemoWave[i]);
+        /* load tb and ti if the measure data in the measure widget is invalid */
+        pimpl->measureWidget->setTb(coParam.getTb());
+        pimpl->measureWidget->setTi(coParam.getTi());
     }
 
-    pimpl->resultWidget[0]->setMeasureData(d);
-    pimpl->resultWidget[0]->setChecked(true);
-
-    pimpl->measureWidget->setTi(20);
-    pimpl->measureWidget->setTb(370);
-    pimpl->measureWidget->startMeasure();
-    pimpl->demoTimer->start();
+    if (!coParam.isConnected() && systemManager.getCurWorkMode() != WORK_MODE_DEMO)
+    {
+        /* module is not connected yet and not in demo mode */
+        pimpl->ctrlBtn->setEnabled(false);
+        pimpl->measureWidget->setMessage(trs("ModuleNotReady"));
+    }
+    else
+    {
+        pimpl->ctrlBtn->setEnabled(true);
+        if (!pimpl->isMeasuring && pimpl->waitStateTimerID == -1)
+        {
+            /* ready for new measurement */
+            pimpl->measureWidget->setMessage(trs("ReadyForNewMeasurement"));
+        }
+    }
 }
 
-void COMeasureWindow::timeout()
+void COMeasureWindow::timerEvent(QTimerEvent *ev)
 {
-    if (pimpl->demoDataReadIndex >= sizeof(tbDemoWave) / sizeof(tbDemoWave[0]))
+    if (pimpl->demoTimerID == ev->timerId())
     {
-        pimpl->measureWidget->stopMeasure();
-        pimpl->measureWidget->setCo(38);
-        pimpl->measureWidget->setCi(15);
-        pimpl->demoDataReadIndex = 0;
-        pimpl->demoTimer->stop();
+        if (pimpl->demoDataReadIndex >= sizeof(tbDemoWave) / sizeof(tbDemoWave[0]))
+        {
+            pimpl->measureWidget->stopMeasure();
+            pimpl->measureWidget->setCo(38);
+            pimpl->measureWidget->setCi(15);
+            pimpl->demoDataReadIndex = 0;
+            pimpl->stopTimer(&pimpl->demoTimerID);
+            pimpl->handleMeasureResult();
+        }
+
+        addMeasureWaveData(tbDemoWave[pimpl->demoDataReadIndex++]);
+    }
+    else if (pimpl->checkInjectTimerID == ev->timerId())
+    {
+        pimpl->noInjectCount += 1;
+        if (pimpl->noInjectCount == 5)
+        {
+            /* show message to notify injection */
+            pimpl->measureWidget->setMessage(trs("InjectNow"));
+        }
+    }
+    else if (pimpl->completeMessageTimerID == ev->timerId())
+    {
+        pimpl->stopTimer(&pimpl->completeMessageTimerID);
+        pimpl->waitStateTimerID = startTimer(WAVE_DURATION_AFTER_MEASURE);
+        pimpl->measureWidget->setMessage(trs("PleaseWait"));
+    }
+    else if (pimpl->waitStateTimerID == ev->timerId())
+    {
+        pimpl->stopTimer(&pimpl->waitStateTimerID);
+        /* we can start another round of measuring */
+        pimpl->ctrlBtn->setEnabled(true);
+        pimpl->measureWidget->setMessage(trs("ReadyForNewMeasurement"));
+    }
+}
+
+void COMeasureWindow::btnClicked()
+{
+    Button *btn = static_cast<Button *>(sender());
+    if (btn == pimpl->ctrlBtn)
+    {
+        if (!pimpl->isMeasuring)
+        {
+            /* control the module to enter measure state */
+            if (systemManager.getCurWorkMode() != WORK_MODE_DEMO)
+            {
+                coParam.startMeasure();
+            }
+            else
+            {
+                pimpl->demoTimerID = startTimer(DEMO_TIMER_PERIOD);
+            }
+
+            /* set the UI in measure state */
+            pimpl->startMeasure();
+        }
+        else
+        {
+            pimpl->stopMeasure();
+            /* control the module to exit measure state */
+            if (systemManager.getCurWorkMode() != WORK_MODE_DEMO)
+            {
+                coParam.stopMeasure();
+            }
+            else
+            {
+                pimpl->stopTimer(&pimpl->demoTimerID);
+            }
+        }
+    }
+    else if (btn == pimpl->settingBtn)
+    {
+    }
+    else if (btn == pimpl->saveBtn)
+    {
+    }
+    else if (btn == pimpl->printBtn)
+    {
+    }
+    else if (btn == pimpl->calcBtn)
+    {
+    }
+}
+
+void COMeasureWindow::onResultChecked()
+{
+    short avgCo = pimpl->getAverageCo();
+    pimpl->coAvgVal->setText(pimpl->coValToStringHelper(avgCo));
+
+    /* TODO: calculate ci base on the average co */
+}
+
+void COMeasureWindow::onWorkModeChanged()
+{
+    /* when the work mode change, clear all the reuslt and info */
+    pimpl->measureWidget->setTb(InvData());
+    pimpl->measureWidget->setTi(InvData());
+    pimpl->measureWidget->setCo(InvData());
+    pimpl->measureWidget->setCi(InvData());
+    for (int i = 0; i < MAX_MEASURE_RESULT_NUM; i++)
+    {
+        pimpl->resultWidget[i]->setMeasureData(COMeasureData());
+        pimpl->resultWidget[i]->setChecked(false);
+        pimpl->resultWidget[i]->setEnabled(false);
+    }
+    /* update average co and ci */
+    onResultChecked();
+}
+
+void COMeasureWindowPrivate::handleMeasureResult()
+{
+    stopMeasure();
+    COMeasureData data = measureWidget->getMeasureData();
+    if (data.isValid())
+    {
+        /* load the measure data to measure result widget */
+        /* first move the result */
+        for (int i = MAX_MEASURE_RESULT_NUM - 1; i > 0; --i)
+        {
+            bool isChecked = resultWidget[i-1]->isChecked();
+            bool isEnabled = resultWidget[i-1]->isEnabled();
+
+            resultWidget[i]->setMeasureData(resultWidget[i-1]->getMeasureData());
+            resultWidget[i]->blockSignals(true);
+            resultWidget[i]->setChecked(isChecked);
+            resultWidget[i]->blockSignals(false);
+            resultWidget[i]->setEnabled(isEnabled);
+        }
+
+        /* load current result */
+        resultWidget[0]->setMeasureData(data);
+        /* default check */
+        resultWidget[0]->setChecked(true);
+        /* default enable */
+        resultWidget[0]->setEnabled(true);
+    }
+}
+
+void COMeasureWindowPrivate::startMeasure()
+{
+    ctrlBtn->setText(trs("Stop"));
+    isMeasuring = true;
+    measureWidget->setWaveDataRate(coParam.getMeasureWaveRate());
+    /* load tb and ti */
+    measureWidget->setTb(coParam.getTb());
+    measureWidget->setTi(coParam.getTi());
+    measureWidget->setCo(InvData());
+    measureWidget->setCi(InvData());
+    measureWidget->startMeasure();
+    checkInjectTimerID = q_ptr->startTimer(CHECK_INJECT_PERIOD);
+}
+
+void COMeasureWindowPrivate::stopMeasure()
+{
+    isMeasuring = false;
+    ctrlBtn->setText(trs("Start"));
+    ctrlBtn->setEnabled(false);
+    measureWidget->stopMeasure();
+    if (checkInjectTimerID != -1)
+    {
+        stopTimer(&checkInjectTimerID);
+        noInjectCount = 0;
+    }
+    if (measureWidget->getMeasureData().isValid())
+    {
+        /* show message complete message for 1.5 second */
+        completeMessageTimerID = q_ptr->startTimer(1500);
+        measureWidget->setMessage(trs("MeasureCompteted"));
+    }
+    else
+    {
+        waitStateTimerID = q_ptr->startTimer(WAVE_DURATION_AFTER_MEASURE);
+        measureWidget->setMessage(trs("PleaseWait"));
+    }
+}
+
+short COMeasureWindowPrivate::getAverageCo() const
+{
+    int count = 0;
+    int coSum = 0;
+    for (int i = 0; i < MAX_MEASURE_RESULT_NUM; i++)
+    {
+        if (resultWidget[i]->isChecked() && resultWidget[i]->getMeasureData().isValid())
+        {
+            coSum += resultWidget[i]->getMeasureData().co;
+            count += 1;
+        }
     }
 
-    pimpl->measureWidget->addMeasureWave(tbDemoWave[pimpl->demoDataReadIndex++]);
+    if (count == 0)
+    {
+        return InvData();
+    }
+
+    return coSum / count;
 }

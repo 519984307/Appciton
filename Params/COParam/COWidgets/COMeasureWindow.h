@@ -54,11 +54,18 @@ public:
 
 
 protected:
+    /* override */
     void showEvent(QShowEvent *ev);
+    /* override */
+    void timerEvent(QTimerEvent *ev);
 
 private slots:
-    void timeout();
-
+    /* handle the button clicked signal */
+    void btnClicked();
+    /* handle the measure result checked signal */
+    void onResultChecked();
+    /* handle the measure result checked signal */
+    void onWorkModeChanged();
 
 private:
     const QScopedPointer<COMeasureWindowPrivate> pimpl;

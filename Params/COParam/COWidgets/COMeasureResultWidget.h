@@ -39,6 +39,12 @@ public:
      */
     void setMeasureData(const COMeasureData &data);
 
+    /**
+     * @brief getMeasureData get the measure data on this widget
+     * @return the measure data
+     */
+    const COMeasureData &getMeasureData() const;
+
 signals:
     void chechedStateChanged(bool checked);
 

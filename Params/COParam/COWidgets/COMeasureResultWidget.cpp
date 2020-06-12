@@ -122,6 +122,11 @@ void COMeasureResultWidget::setMeasureData(const COMeasureData &data)
     update();
 }
 
+const COMeasureData &COMeasureResultWidget::getMeasureData() const
+{
+    return pimpl->data;
+}
+
 void COMeasureResultWidget::resizeEvent(QResizeEvent *ev)
 {
     QSize s = ev->size();

@@ -13,6 +13,7 @@
 #include "Framework/Language/LanguageManager.h"
 #include "FontManager.h"
 #include "Framework/Utility/Unit.h"
+#include "Framework/TimeDate/TimeDate.h"
 #include <QPainter>
 #include <QDebug>
 
@@ -78,6 +79,7 @@ void COMeasureWidget::startMeasure()
     pimpl->maxTbWaveVal = 100;  /* reset to 1 celsius degree range */
     pimpl->waveData.clear();
     pimpl->isMeasuring = true;
+    pimpl->measureTime = timeDate->time();
     update();
 }
 
@@ -194,6 +196,17 @@ void COMeasureWidget::setMessage(const QString &str)
     update();
 }
 
+COMeasureData COMeasureWidget::getMeasureData() const
+{
+    COMeasureData data;
+    data.ci = pimpl->ci;
+    data.co = pimpl->co;
+    data.dataRate = pimpl->dataRate;
+    data.measureWave = pimpl->waveData;
+    data.timestamp = pimpl->measureTime;
+    return data;
+}
+
 void COMeasureWidget::paintEvent(QPaintEvent *ev)
 {
     Q_UNUSED(ev)
@@ -242,7 +255,10 @@ void COMeasureWidget::paintEvent(QPaintEvent *ev)
     /* draw the message */
     if (!pimpl->message.isEmpty())
     {
+        p.save();
+        p.setPen(Qt::red);
         p.drawText(bottomTextArea, Qt::AlignVCenter|Qt::AlignLeft, pimpl->message);
+        p.restore();
     }
 
     /* draw the trend */

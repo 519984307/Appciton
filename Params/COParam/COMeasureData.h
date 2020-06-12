@@ -20,7 +20,7 @@ struct COMeasureData
     COMeasureData()
         : timestamp(0), co(InvData()), ci(InvData()), dataRate(0) {}
 
-    bool isValid() const { return co != InvData() && ci != InvData();}
+    bool isValid() const { return co != InvData();}
 
     unsigned timestamp; /* measure timestamp */
     short co;   /* measure co value */

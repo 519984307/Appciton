@@ -374,6 +374,15 @@ void COParam::setOneshotAlarm(COOneShotType t, bool f)
     }
 }
 
+short COParam::getMeasureWaveRate() const
+{
+    if (pimpl->provider)
+    {
+        return pimpl->provider->getMeasureWaveRate();
+    }
+    return 25;
+}
+
 /**************************************************************************************************
  * get C.O. data.
  *************************************************************************************************/

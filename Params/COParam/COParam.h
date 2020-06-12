@@ -202,6 +202,12 @@ public:
      */
     void setOneshotAlarm(COOneShotType t, bool f);
 
+    /**
+     * @brief getMeasureWaveRate get the smaple rate of the measure wave
+     * @return the data rate of the measure data
+     */
+    short getMeasureWaveRate() const;
+
 private:
     COParam();
 

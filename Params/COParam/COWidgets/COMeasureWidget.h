@@ -76,6 +76,12 @@ public:
      */
     void setMessage(const QString &str);
 
+    /**
+     * @brief getMeasureData get the co measure data
+     * @return the co measure data
+     */
+    COMeasureData getMeasureData() const;
+
 protected:
     /* override */
     void paintEvent(QPaintEvent *ev);
