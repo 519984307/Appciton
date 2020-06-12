@@ -102,8 +102,8 @@ void ECGMenuContentPrivate::loadOptions()
         {
             continue;
         }
-        if (i == HR_SOURCE_IBP && !systemManager.isSupport(PARAM_IBP)
-                && !ibpParam.isConnected())
+        // ibp disconnected or not supported
+        if (i == HR_SOURCE_IBP && (!systemManager.isSupport(PARAM_IBP) || !ibpParam.isConnected()))
         {
             continue;
         }
