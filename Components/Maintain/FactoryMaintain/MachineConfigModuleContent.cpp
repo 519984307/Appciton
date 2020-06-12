@@ -441,8 +441,8 @@ void MachineConfigModuleContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs(IBPSymbol::convert(IBP_MODULE_SMART_IBP))
-                    << trs(IBPSymbol::convert(IBP_MODULE_WITLEAF)));
+                    << trs(IBPSymbol::convert(IBP_MODULE_SMART_IBP)));
+//                    << trs(IBPSymbol::convert(IBP_MODULE_WITLEAF))
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
                          ::ITEM_CBO_IBP, combo);
