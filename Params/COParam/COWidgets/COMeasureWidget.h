@@ -12,6 +12,7 @@
 
 #include <QWidget>
 #include <QScopedPointer>
+#include "COMeasureData.h"
 
 class COMeasureWidgetPrivate;
 class COMeasureWidget : public QWidget
@@ -21,7 +22,62 @@ public:
     explicit COMeasureWidget(QWidget *parent = NULL);
     ~COMeasureWidget();
 
+    /**
+     * @brief startMeasure switch to measure state
+     */
+    void startMeasure();
+
+    /**
+     * @brief stopMeasure stop measure
+     */
+    void stopMeasure();
+
+    /**
+     * @brief addMeasureWave add the measure wave data
+     * @param wave the wave data
+     * @note
+     * The wave data should in unit of 0.01 celsius degree
+     */
+    void addMeasureWave(short wave);
+
+    /**
+     * @brief setWaveDataRate set the sample rate of the wave data
+     * @param rate
+     */
+    void setWaveDataRate(short rate);
+
+    /**
+     * @brief setTi set the injectate temp
+     * @param ti
+     */
+    void setTi(short ti);
+
+    /**
+     * @brief setTb set the measure blood temp
+     * @param tb
+     */
+    void setTb(short tb);
+
+    /**
+     * @brief setCo set the measure cardiac output
+     * @param co
+     */
+    void setCo(short co);
+
+    /**
+     * @brief setCi set the measure cardiac index
+     * @param ci
+     */
+    void setCi(short ci);
+
+    /**
+     * @brief setMessage set the measure message
+     * @param str message string
+     */
+    void setMessage(const QString &str);
+
 protected:
+    /* override */
     void paintEvent(QPaintEvent *ev);
 
 private:

@@ -38,7 +38,6 @@ public:
      */
     void setMeasureResult(short co, short ci);
 
-
     /**
      * @brief setTb set the curent Tb
      * @param tb blood temperature
@@ -53,8 +52,13 @@ public:
      */
     void addMeasureWaveData(short wave);
 
+
 protected:
     void showEvent(QShowEvent *ev);
+
+private slots:
+    void timeout();
+
 
 private:
     const QScopedPointer<COMeasureWindowPrivate> pimpl;
