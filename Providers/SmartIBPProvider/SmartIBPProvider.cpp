@@ -317,6 +317,12 @@ void SmartIBPProvider::dataArrived(unsigned char *data, unsigned int length)
     pimpl->parsePacketData();
 }
 
+void SmartIBPProvider::updateIBPIsPlugin()
+{
+    plugInInfo.pluginType = PluginProvider::PLUGIN_TYPE_IBP;
+    plugInInfo.plugIn = PluginProvider::getPluginProvider("Plugin");
+}
+
 void SmartIBPProvider::dataArrived()
 {
     readData();

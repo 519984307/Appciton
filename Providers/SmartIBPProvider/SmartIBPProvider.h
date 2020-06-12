@@ -49,6 +49,11 @@ public:
     /* reimplment */
     void dataArrived(unsigned char *data, unsigned int length);
 
+    /**
+     * @brief updateIBPIsPlugin  update ibp is plugin module
+     */
+    void updateIBPIsPlugin();
+
 protected:
     void dataArrived();
 

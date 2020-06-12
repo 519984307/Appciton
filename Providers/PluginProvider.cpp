@@ -20,6 +20,7 @@
 #include "ParamManager.h"
 #include "RainbowProvider.h"
 #include "BLMCO2Provider.h"
+#include "SmartIBPProvider.h"
 #include "Debug.h"
 
 #define SPO2_RAINBOW_SOH             (0xA1)  // rainbow spo2 packet header
@@ -179,6 +180,12 @@ public:
             QString str;
             machineConfig.getStrValue("IBP", str);
             Provider *provider = paramManager.getProvider(str);
+            if (str == "SMART_IBP")
+            {
+                SmartIBPProvider *smartIBPProvider = qobject_cast<SmartIBPProvider *> (provider);
+                smartIBPProvider->updateIBPIsPlugin();
+            }
+
             if (systemManager.getCurWorkMode() != WORK_MODE_DEMO)
             {
                 provider->attachParam(paramManager.getParam(PARAM_IBP));
@@ -630,6 +637,11 @@ void PluginProvider::onWorkModeChanged(WorkMode curMode)
         if (d_ptr->dataHandlers[PLUGIN_TYPE_SPO2] != NULL)
         {
             d_ptr->dataHandlers[PLUGIN_TYPE_SPO2]->detachParam(paramManager.getParam(PARAM_SPO2));
+        }
+
+        if (d_ptr->dataHandlers[PLUGIN_TYPE_IBP] != NULL)
+        {
+            d_ptr->dataHandlers[PLUGIN_TYPE_IBP]->detachParam(paramManager.getParam(PARAM_IBP));
         }
     }
 }
