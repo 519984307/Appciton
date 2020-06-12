@@ -26,6 +26,7 @@
 #include <QApplication>
 #include <QTimer>
 #include "CO2Param.h"
+#include "IBPParam.h"
 #include "Framework/Language/LanguageManager.h"
 
 #define PREFER_SOFTKEY_WIDTH 97
@@ -422,7 +423,7 @@ void SoftKeyManager::setContent(SoftKeyActionType type)
         setKeyTypeAvailable(SOFT_BASE_KEY_CO2_HANDLE, false);
     }
 
-    if (!systemManager.isSupport(PARAM_IBP))
+    if (!systemManager.isSupport(PARAM_IBP) || !ibpParam.isConnected())
     {
         setKeyTypeAvailable(SOFT_BASE_KEY_IBP_ZERO, false);
     }

@@ -36,6 +36,8 @@
 
 #define MAX_CACHE_WAVE_NUM  4
 
+#define INV_PACKET_DATA_COUNT   (23)
+
 struct IBPChannelData
 {
     IBPChannelData()
@@ -69,7 +71,7 @@ class SmartIBPProviderPrivate
 {
 public:
     explicit SmartIBPProviderPrivate(SmartIBPProvider * const q_ptr)
-        : q_ptr(q_ptr)
+        : q_ptr(q_ptr), packetCounter(0)
     {
         chn1Data.sys = 0;
         chn1Data.dia = 0;
@@ -214,6 +216,8 @@ public:
     SmartIBPProvider * const q_ptr;
     IBPChannelData chn1Data;        /* data of channel 1 */
     IBPChannelData chn2Data;        /* data of channel 2 */
+
+    quint64 packetCounter;          // packet counter
 };
 
 SmartIBPProvider::SmartIBPProvider(const QString /*&port*/)
@@ -269,6 +273,7 @@ void SmartIBPProvider::reconnected()
     {
         alarmSource->setOneShotAlarm(IBP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
     }
+    pimpl->packetCounter = 0;
 }
 
 void SmartIBPProvider::setZero(IBPChannel IBP, IBPCalibration calibration, unsigned short value)
@@ -306,6 +311,7 @@ void SmartIBPProvider::dataArrived(unsigned char *data, unsigned int length)
     ringBuff.push(data, length);
 
     pimpl->parsePacketData();
+    pimpl->packetCounter++;
 }
 
 void SmartIBPProvider::setPlugin(PluginProvider::PluginType type, PluginProvider *provider)
@@ -388,6 +394,16 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
     }
     // 发送保活帧, 有数据时调用清除连接计数器。
     q_ptr->feed();
+
+    /*
+     *  When the IBP module is used as a plug-in,
+     *  the first 23 packets of data are invalid data and need to be discarded
+    */
+    if (q_ptr->plugInInfo.pluginType == PluginProvider::PLUGIN_TYPE_IBP
+            && packetCounter < INV_PACKET_DATA_COUNT)
+    {
+        return;
+    }
     switch (data[0])
     {
     case MODULE_ID:

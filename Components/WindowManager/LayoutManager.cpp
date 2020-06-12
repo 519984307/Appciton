@@ -26,6 +26,7 @@
 #include "CO2Param.h"
 #include "ECGDupParam.h"
 #include "SPO2Param.h"
+#include "IBPParam.h"
 #include "PatientManager.h"
 
 // 第一道波形高度不低于30mm，设置31来计算避免误差造成高度不够
@@ -1605,6 +1606,16 @@ void LayoutManager::updateLayout()
                     || node.name == layoutNodeName(LAYOUT_NODE_WAVE_CO2))
             {
                 if (!co2Param.isConnected())
+                {
+                    continue;
+                }
+            }
+            if (node.name == layoutNodeName(LAYOUT_NODE_PARAM_IBP1)
+                    || node.name == layoutNodeName(LAYOUT_NODE_WAVE_IBP1)
+                    || node.name == layoutNodeName(LAYOUT_NODE_PARAM_IBP2)
+                    || node.name == layoutNodeName(LAYOUT_NODE_WAVE_IBP2))
+            {
+                if (!ibpParam.isConnected())
                 {
                     continue;
                 }
