@@ -18,7 +18,7 @@ class SmartIBPProvider : public Provider, public IBPProviderIFace
 {
     Q_OBJECT
 public:
-    Q_INVOKABLE explicit SmartIBPProvider(const QString);
+    Q_INVOKABLE explicit SmartIBPProvider(const QString /*&port*/);
     ~SmartIBPProvider();
 
     /* reimplement */
@@ -45,6 +45,16 @@ public:
 
     /* reimplement */
     IBPModuleType getIBPModuleType() const { return IBP_MODULE_SMART_IBP; }
+
+    /* reimplment */
+    void dataArrived(unsigned char *data, unsigned int length);
+
+    /**
+     * @brief setPlugin  set plugin type and provider
+     * @param type      plugin type
+     * @param provider  plugin provider
+     */
+    void setPlugin(PluginProvider::PluginType type, PluginProvider *provider);
 
 protected:
     void dataArrived();
