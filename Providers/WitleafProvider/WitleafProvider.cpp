@@ -55,15 +55,54 @@ bool WitleafProvider::attachParam(Param *param)
 void WitleafProvider::dataArrived()
 {
     readData();     // 读取数据到RingBuff中
-    // parse packet data
-    _parsePacketData();
-}
 
-void WitleafProvider::dataArrived(unsigned char *data, unsigned int length)
-{
-    _pushData(data, length);
-    // parse packet data
-    _parsePacketData();
+    unsigned char buff[570];
+
+    while (ringBuff.dataSize() >= _minPacketLen)
+    {
+        if (ringBuff.at(0) != _STX)
+        {
+            // debug("discard (%s:%d)\n", qPrintable(getName()), ringBuff.at(0));
+            ringBuff.pop(1);
+            continue;
+        }
+
+        int len = ringBuff.at(1);
+        if ((len <= 0) || (len > 570))
+        {
+            ringBuff.pop(1);
+            break;
+        }
+
+        if (len > ringBuff.dataSize())  // 数据还不够，继续等待。
+        {
+            break;
+        }
+
+        // 数据包不会超过packet长度，当出现这种情况说明发生了不可预料的错误，直接丢弃该段数据。
+        if (len > static_cast<int>(sizeof(buff)))
+        {
+            ringBuff.pop(1);
+            continue;
+        }
+
+        // 将数据包读到buff中。
+        for (int i = 0; i < len; i++)
+        {
+            buff[i] = ringBuff.at(0);
+            ringBuff.pop(1);
+        }
+
+        if (_checkPacketValid(buff, len))
+        {
+            handlePacket(&buff[2], len - 3);
+        }
+        else
+        {
+            debug("FCS error (%s)\n", qPrintable(getName()));
+            ringBuff.pop(1);
+        }
+    }
 }
 
 /**************************************************************************************************
@@ -543,60 +582,4 @@ bool WitleafProvider::_checkPacketValid(const unsigned char *data, unsigned int 
         return false;
     }
     return true;
-}
-
-void WitleafProvider::_pushData(unsigned char *buff, unsigned int len)
-{
-    ringBuff.push(buff, len);
-}
-
-void WitleafProvider::_parsePacketData()
-{
-    unsigned char buff[570];
-
-    while (ringBuff.dataSize() >= _minPacketLen)
-    {
-        if (ringBuff.at(0) != _STX)
-        {
-            // debug("discard (%s:%d)\n", qPrintable(getName()), ringBuff.at(0));
-            ringBuff.pop(1);
-            continue;
-        }
-
-        int len = ringBuff.at(1);
-        if ((len <= 0) || (len > 570))
-        {
-            ringBuff.pop(1);
-            break;
-        }
-
-        if (len > ringBuff.dataSize())  // 数据还不够，继续等待。
-        {
-            break;
-        }
-
-        // 数据包不会超过packet长度，当出现这种情况说明发生了不可预料的错误，直接丢弃该段数据。
-        if (len > static_cast<int>(sizeof(buff)))
-        {
-            ringBuff.pop(1);
-            continue;
-        }
-
-        // 将数据包读到buff中。
-        for (int i = 0; i < len; i++)
-        {
-            buff[i] = ringBuff.at(0);
-            ringBuff.pop(1);
-        }
-
-        if (_checkPacketValid(buff, len))
-        {
-            handlePacket(&buff[2], len - 3);
-        }
-        else
-        {
-            debug("FCS error (%s)\n", qPrintable(getName()));
-            ringBuff.pop(1);
-        }
-    }
 }
