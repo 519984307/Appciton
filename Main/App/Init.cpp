@@ -586,7 +586,7 @@ static void _initProviderParam(void)
         machineConfig.getStrValue("IBP", str);
         if (str == "SMART_IBP")
         {
-            paramManager.addProvider(new SmartIBPProvider());
+            paramManager.addProvider(new SmartIBPProvider(QString()));
         }
         else if (str == "WITLEAF_IBP")
         {

@@ -183,7 +183,7 @@ public:
             if (str == "SMART_IBP")
             {
                 SmartIBPProvider *smartIBPProvider = qobject_cast<SmartIBPProvider *> (provider);
-                smartIBPProvider->updateIBPIsPlugin();
+                smartIBPProvider->setPlugin(PluginProvider::PLUGIN_TYPE_IBP, q_ptr);
             }
 
             if (systemManager.getCurWorkMode() != WORK_MODE_DEMO)

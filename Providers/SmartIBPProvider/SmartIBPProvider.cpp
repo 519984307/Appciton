@@ -211,22 +211,12 @@ public:
         q_ptr->writeData(buf, sizeof(buf));
     }
 
-    /**
-     * @brief pushData  push data to ring buff
-     * @param buff  data buff
-     * @param len  data len
-     */
-    void pushData(unsigned char *buff, unsigned int len)
-    {
-        q_ptr->ringBuff.push(buff, len);
-    }
-
     SmartIBPProvider * const q_ptr;
     IBPChannelData chn1Data;        /* data of channel 1 */
     IBPChannelData chn2Data;        /* data of channel 2 */
 };
 
-SmartIBPProvider::SmartIBPProvider()
+SmartIBPProvider::SmartIBPProvider(const QString /*&port*/)
     :Provider("SMART_IBP"), pimpl(new SmartIBPProviderPrivate(this))
 {
     UartAttrDesc portAttr(115200, 8, 'N', 1);
@@ -313,14 +303,19 @@ int SmartIBPProvider::getIBPMaxWaveform()
 void SmartIBPProvider::dataArrived(unsigned char *data, unsigned int length)
 {
     // push data to ringbuff
-    pimpl->pushData(data, length);
+    ringBuff.push(data, length);
+
     pimpl->parsePacketData();
 }
 
-void SmartIBPProvider::updateIBPIsPlugin()
+void SmartIBPProvider::setPlugin(PluginProvider::PluginType type, PluginProvider *provider)
 {
-    plugInInfo.pluginType = PluginProvider::PLUGIN_TYPE_IBP;
-    plugInInfo.plugIn = PluginProvider::getPluginProvider("Plugin");
+    if (type != PluginProvider::PLUGIN_TYPE_IBP || provider == NULL)
+    {
+        return;
+    }
+    plugInInfo.pluginType = type;
+    plugInInfo.plugIn = provider;
 }
 
 void SmartIBPProvider::dataArrived()
