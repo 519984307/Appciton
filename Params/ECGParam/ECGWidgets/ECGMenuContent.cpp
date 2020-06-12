@@ -29,6 +29,7 @@
 #include "ECGDupParam.h"
 #include "AlarmLimitWindow.h"
 #include "SPO2Param.h"
+#include "IBPParam.h"
 #include "NightModeManager.h"
 #include <QTimerEvent>
 
@@ -101,7 +102,8 @@ void ECGMenuContentPrivate::loadOptions()
         {
             continue;
         }
-        if (i == HR_SOURCE_IBP && !systemManager.isSupport(PARAM_IBP))
+        if (i == HR_SOURCE_IBP && !systemManager.isSupport(PARAM_IBP)
+                && !ibpParam.isConnected())
         {
             continue;
         }
@@ -369,6 +371,7 @@ ECGMenuContent::ECGMenuContent()
     : MenuContent(trs("ECGMenu"), trs("ECGMenuDesc")),
       d_ptr(new ECGMenuContentPrivate)
 {
+    connect(&ibpParam, SIGNAL(ibpConnectStatusUpdated(bool)), this, SLOT(updateHRPRSource()));
 }
 
 ECGMenuContent::~ECGMenuContent()
@@ -845,5 +848,10 @@ void ECGMenuContent::onPopupListItemFocusChanged(int volume)
         soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT ,
                                static_cast<SoundManager::VolumeLevel>(w->currentIndex()));
     }
+}
+
+void ECGMenuContent::updateHRPRSource()
+{
+    d_ptr->loadOptions();
 }
 

@@ -51,6 +51,10 @@ private slots:
      */
     void onPopupListItemFocusChanged(int volume);
 
+    /**
+     * @brief updateHRPRSource update HR/PR source
+     */
+    void updateHRPRSource();
 private:
     ECGMenuContentPrivate * const d_ptr;
 };
