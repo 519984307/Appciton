@@ -312,9 +312,9 @@ void COMeasureWindow::setTb(short tb)
 void COMeasureWindow::addMeasureWaveData(short wave)
 {
     pimpl->measureWidget->addMeasureWave(wave);
-    if (wave > 0 && pimpl->isMeasuring)
+    if (wave > 2 && pimpl->isMeasuring && pimpl->checkInjectTimerID != -1)
     {
-        /* injection has started, stop injection check */
+        /* consider injection has started when the wave value > 2, stop injection check */
         pimpl->stopTimer(&pimpl->checkInjectTimerID);
         pimpl->noInjectCount = 0;
         pimpl->measureWidget->setMessage(trs("MeasurementInProgress"));
