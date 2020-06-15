@@ -21,7 +21,6 @@
 #include "AlarmSourceManager.h"
 #include "IConfig.h"
 #include "Framework/TimeDate/TimeDate.h"
-#include "SoftKeyManager.h"
 
 IBPParam *IBPParam::_selfObj = NULL;
 
@@ -442,9 +441,6 @@ void IBPParam::setConnected(bool isConnected)
         {
             layoutManager.updateLayout();
         }
-        // 显示IBP相关的软按键
-        softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_IBP_ZERO, true);
-        softkeyManager.refreshPage();
     }
     else
     {
@@ -465,9 +461,6 @@ void IBPParam::setConnected(bool isConnected)
         {
             layoutManager.updateLayout();
         }
-        // 隐藏ibp相关的软按键
-        softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_IBP_ZERO, false);
-        softkeyManager.refreshPage();
     }
 
     emit ibpConnectStatusUpdated(isConnected);

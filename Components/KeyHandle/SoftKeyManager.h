@@ -72,6 +72,12 @@ public slots:
      */
     void onUserFaceChanged(UserFaceType type);
 
+    /**
+     * @brief setIBPZeroKeyAvailable  set IBP Zero key Available
+     * @param available  available
+     */
+    void setIBPZeroKeyAvailable(bool available);
+
 protected:
     void paintEvent(QPaintEvent *e);
     void resizeEvent(QResizeEvent *e);
