@@ -107,20 +107,26 @@ COTrendWidget::~COTrendWidget()
  *************************************************************************************************/
 void COTrendWidget::setMeasureResult(short co, short ci)
 {
-    if (co == InvData() || ci == InvData())
+    if (co == InvData())
     {
         pimpl->coStr = InvStr();
-        pimpl->ciStr = InvStr();
     }
     else
     {
         pimpl->coStr = QString::number(co * 1.0 / 10, 'f', 1);
+    }
+
+    if (ci == InvData())
+    {
+        pimpl->ciStr = InvStr();
+    }
+    else
+    {
         pimpl->ciStr = QString::number(co * 1.0 / 10, 'f', 1);
     }
+
     pimpl->coValue->setText(pimpl->coStr);
     pimpl->ciValue->setText(pimpl->ciStr);
-
-    return;
 }
 
 /**************************************************************************************************

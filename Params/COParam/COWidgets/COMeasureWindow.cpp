@@ -25,6 +25,7 @@
 #include <qmath.h>
 #include "PatientManager.h"
 #include "FloatHandle.h"
+#include "MeasureSettingWindow.h"
 
 /* support 6 measure reuslt at most */
 #define MAX_MEASURE_RESULT_NUM   6
@@ -502,9 +503,12 @@ void COMeasureWindow::btnClicked()
     }
     else if (btn == pimpl->settingBtn)
     {
+        MeasureSettingWindow *p = MeasureSettingWindow::getInstance();
+        p->popup(trs("COMenu"), QVariant(), WindowManagerInterface::ShowBehaviorHideOthers);
     }
     else if (btn == pimpl->saveBtn)
     {
+        coParam.setAverageResult(pimpl->getAverageCo(), pimpl->getAverageCi());
     }
     else if (btn == pimpl->printBtn)
     {
@@ -521,6 +525,11 @@ void COMeasureWindow::onResultChecked()
 
     short avgCi = pimpl->getAverageCi();
     pimpl->ciAvgVal->setText(pimpl->coValToStringHelper(avgCi));
+
+    if (avgCo != InvData())
+    {
+        pimpl->saveBtn->setEnabled(true);
+    }
 }
 
 void COMeasureWindow::onWorkModeChanged()
