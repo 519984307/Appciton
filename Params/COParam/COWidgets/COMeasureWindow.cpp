@@ -22,6 +22,9 @@
 #include "FontManager.h"
 #include "SystemManager.h"
 #include <QTimerEvent>
+#include <qmath.h>
+#include "PatientManager.h"
+#include "FloatHandle.h"
 
 /* support 6 measure reuslt at most */
 #define MAX_MEASURE_RESULT_NUM   6
@@ -80,8 +83,9 @@ public:
     explicit COMeasureWindowPrivate(COMeasureWindow * const q_ptr)
         : q_ptr(q_ptr), ctrlBtn(NULL), settingBtn(NULL), saveBtn(NULL), printBtn(NULL),
           calcBtn(NULL), measureWidget(NULL), coAvgLabel(NULL), coAvgVal(NULL), ciAvgLabel(NULL),
-          ciAvgVal(NULL), demoDataReadIndex(0), demoTimerID(-1), waitStateTimerID(-1),
-          checkInjectTimerID(-1), noInjectCount(0), completeMessageTimerID(-1), isMeasuring(false)
+          ciAvgVal(NULL), bsaLabel(NULL), bsaVal(NULL), demoTimerID(-1), waitStateTimerID(-1),
+          checkInjectTimerID(-1), noInjectCount(0), completeMessageTimerID(-1), demoDataReadIndex(0),
+          bsa(0.0f), isMeasuring(false)
     {
         for (int i = 0; i < MAX_MEASURE_RESULT_NUM; i++)
         {
@@ -121,6 +125,12 @@ public:
     short getAverageCo() const;
 
     /**
+     * @brief getAverageCi get the average ci value
+     * @return the average ci or InvData()
+     */
+    short getAverageCi() const;
+
+    /**
      * @brief coValToStringHelper help function to convert the co value to string
      * @param value the co related value
      * @return  the string
@@ -135,6 +145,18 @@ public:
         return QString::number(value * 1.0 / 10, 'f', 1);
     }
 
+    /**
+     * @brief calcBsa calculate the BSA
+     * @param height height in cm
+     * @param weight weight in kg
+     * @return the bsa in m^2
+     */
+    qreal calcBsa(qreal height, qreal weight)
+    {
+        /* use DuBois formula */
+        return 0.20247 * qPow(height / 100, 0.725) * qPow(weight, 0.425);
+    }
+
     COMeasureWindow * const q_ptr;
     Button *ctrlBtn;
     Button *settingBtn;
@@ -147,6 +169,8 @@ public:
     QLabel *coAvgVal;
     QLabel *ciAvgLabel;
     QLabel *ciAvgVal;
+    QLabel *bsaLabel;
+    QLabel *bsaVal;
 
     int demoTimerID;        /* demo wave generate timer */
     int waitStateTimerID;   /* timer to control the wait state */
@@ -155,6 +179,8 @@ public:
     int completeMessageTimerID; /* timer to control the display of complete message */
 
     size_t demoDataReadIndex;   /* index of reading demo data */
+
+    float bsa;                  /* body surface area */
 
     bool isMeasuring;   /* record whether we are in measuring state */
 };
@@ -199,25 +225,32 @@ COMeasureWindow::COMeasureWindow()
         pimpl->resultWidget[i] = rw;
     }
 
-    QBoxLayout *coLayout = new QHBoxLayout();
-    pimpl->coAvgLabel = new QLabel(QString("C.O. Avg.\n%1)").arg(Unit::getSymbol(UNIT_LMin)));
+    QGridLayout *valueLabelLayout = new QGridLayout;
+    pimpl->coAvgLabel = new QLabel(QString("C.O. Avg.\n(%1)").arg(Unit::getSymbol(UNIT_LMin)));
     pimpl->coAvgLabel->setFont(fontManager.textFont(fontManager.getFontSize(2)));
-    coLayout->addWidget(pimpl->coAvgLabel);
+    valueLabelLayout->addWidget(pimpl->coAvgLabel, 0, 0);
     pimpl->coAvgVal = new QLabel(InvStr());
     pimpl->coAvgVal->setAlignment(Qt::AlignCenter);
     pimpl->coAvgVal->setFont(fontManager.textFont(fontManager.getFontSize(5)));
-    coLayout->addWidget(pimpl->coAvgVal);
-    layout->addLayout(coLayout, 2, 3);
+    valueLabelLayout->addWidget(pimpl->coAvgVal, 0, 1);
 
-    QBoxLayout *ciLayout = new QHBoxLayout();
-    pimpl->ciAvgLabel = new QLabel(QString::fromUtf8("C.I. Avg.\nL/min/m²"));
+    pimpl->ciAvgLabel = new QLabel(QString::fromUtf8("C.I. Avg.\n(L/min/m²)"));
     pimpl->ciAvgLabel->setFont(fontManager.textFont(fontManager.getFontSize(2)));
-    ciLayout->addWidget(pimpl->ciAvgLabel);
+    valueLabelLayout->addWidget(pimpl->ciAvgLabel, 1, 0);
     pimpl->ciAvgVal = new QLabel(InvStr());
     pimpl->ciAvgVal->setAlignment(Qt::AlignCenter);
     pimpl->ciAvgVal->setFont(fontManager.textFont(fontManager.getFontSize(5)));
-    ciLayout->addWidget(pimpl->ciAvgVal);
-    layout->addLayout(ciLayout, 3, 3);
+    valueLabelLayout->addWidget(pimpl->ciAvgVal, 1, 1);
+
+    pimpl->bsaLabel = new QLabel(QString::fromUtf8("BSA (m²):"));
+    pimpl->bsaLabel->setFont(fontManager.textFont(fontManager.getFontSize(2)));
+    valueLabelLayout->addWidget(pimpl->bsaLabel, 2, 0);
+    pimpl->bsaVal = new QLabel(InvStr());
+    pimpl->bsaVal->setAlignment(Qt::AlignCenter);
+    pimpl->bsaVal->setFont(fontManager.textFont(fontManager.getFontSize(5)));
+    valueLabelLayout->addWidget(pimpl->bsaVal, 2, 1);
+
+    layout->addLayout(valueLabelLayout, 2, 3, 2, 1);
 
     QBoxLayout *btnLayout = new QHBoxLayout();
     btnLayout->addStretch(1);
@@ -298,6 +331,18 @@ void COMeasureWindow::showEvent(QShowEvent *ev)
             /* ready for new measurement */
             pimpl->measureWidget->setMessage(trs("ReadyForNewMeasurement"));
         }
+    }
+
+    /* calculate the bsa */
+    if (isEqual(patientManager.getHeight(), 0.0f) || isEqual(patientManager.getWeight(), 0.0f))
+    {
+        pimpl->bsa = 0.0f;
+        pimpl->bsaVal->setText(InvStr());
+    }
+    else
+    {
+        pimpl->bsa = pimpl->calcBsa(patientManager.getHeight(), patientManager.getWeight());
+        pimpl->bsaVal->setText(QString::number(pimpl->bsa, 'f', 3));
     }
 }
 
@@ -394,7 +439,8 @@ void COMeasureWindow::onResultChecked()
     short avgCo = pimpl->getAverageCo();
     pimpl->coAvgVal->setText(pimpl->coValToStringHelper(avgCo));
 
-    /* TODO: calculate ci base on the average co */
+    short avgCi = pimpl->getAverageCi();
+    pimpl->ciAvgLabel->setText(pimpl->coValToStringHelper(avgCi));
 }
 
 void COMeasureWindow::onWorkModeChanged()
@@ -500,4 +546,33 @@ short COMeasureWindowPrivate::getAverageCo() const
     }
 
     return coSum / count;
+}
+
+short COMeasureWindowPrivate::getAverageCi() const
+{
+    int count = 0;
+    int ciSum = 0;
+    /* try to caculate the ci from the module */
+    for (int i = 0; i < MAX_MEASURE_RESULT_NUM; i++)
+    {
+        if (resultWidget[i]->isChecked() && resultWidget[i]->getMeasureData().ci != InvData())
+        {
+            ciSum += resultWidget[i]->getMeasureData().ci;
+            count += 1;
+        }
+    }
+
+    if (count > 0)
+    {
+        return ciSum / count;
+    }
+
+    /* try to calculate with the average co */
+    int co = getAverageCo();
+    if (co != InvData())
+    {
+        return co / bsa;
+    }
+
+    return InvData();
 }
