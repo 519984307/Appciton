@@ -112,8 +112,11 @@ public:
      */
     void stopTimer(int *timerID)
     {
-        q_ptr->killTimer(*timerID);
-        *timerID = -1;
+        if (*timerID != -1)
+        {
+            q_ptr->killTimer(*timerID);
+            *timerID = -1;
+        }
     }
 
     /**
