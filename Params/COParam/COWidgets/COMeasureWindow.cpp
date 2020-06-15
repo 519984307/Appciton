@@ -292,7 +292,11 @@ void COMeasureWindow::setMeasureResult(short co, short ci)
 
 void COMeasureWindow::setTb(short tb)
 {
-    pimpl->measureWidget->setTb(tb);
+    /* only update tb value when in measuring state */
+    if (pimpl->isMeasuring)
+    {
+        pimpl->measureWidget->setTb(tb);
+    }
 }
 
 void COMeasureWindow::addMeasureWaveData(short wave)

@@ -358,7 +358,10 @@ void COParam::setTb(short tb)
         pimpl->trendWidget->setTb(tb);
     }
 
-    return;
+    if (NULL != pimpl->measureWin)
+    {
+        pimpl->measureWin->setTb(tb);
+    }
 }
 
 void COParam::setTi(short ti)
