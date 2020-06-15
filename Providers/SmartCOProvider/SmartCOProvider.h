@@ -63,6 +63,9 @@ public:
     /* override */
     bool isTbSensorOff() const;
 
+    /* override */
+    short getMeasureWaveRate() { return 125;}
+
 private:
     const QScopedPointer<SmartCOProviderPrivate> pimpl;
     friend class SmartCOProviderPrivate;
