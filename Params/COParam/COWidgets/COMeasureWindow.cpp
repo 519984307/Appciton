@@ -453,6 +453,7 @@ void COMeasureWindow::timerEvent(QTimerEvent *ev)
             setMeasureResult(38, 15);
         }
 
+        setTb(coParam.getTb() + tbDemoWave[pimpl->demoDataReadIndex] / 10);
         addMeasureWaveData(tbDemoWave[pimpl->demoDataReadIndex++]);
     }
     else if (pimpl->checkInjectTimerID == ev->timerId())
