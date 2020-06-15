@@ -450,11 +450,6 @@ void NIBPParam::setResult(int16_t sys, int16_t dia, int16_t map, int16_t pr, NIB
     _diaValue = dia;
     _mapVaule = map;
 
-    if (_prVaule <= 0)
-    {
-        _prVaule = InvData();
-    }
-
     if (_nibpDataTrendWidget != NULL)
     {
         _nibpDataTrendWidget->collectNIBPTrendData(_lastTime);
