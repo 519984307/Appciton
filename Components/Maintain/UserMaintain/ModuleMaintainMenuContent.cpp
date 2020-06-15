@@ -59,6 +59,10 @@ void ModuleMaintainMenuContentPrivate::loadOption()
 #ifdef DISABLE_ECG_MODULE_CALIBRATION
     buttons[ITEM_BTN_ECG_MODULE_CALIBRATION]->setEnabled(false);
 #endif
+
+    // update ibp calibration buttons enabled status
+    buttons[ITEM_BTN_IBP1_PRESSURE_CALIBRATION]->setEnabled(ibpParam.isConnected());
+    buttons[ITEM_BTN_IBP2_PRESSURE_CALIBRATION]->setEnabled(ibpParam.isConnected());
 }
 
 ModuleMaintainMenuContent::ModuleMaintainMenuContent()
