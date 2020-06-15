@@ -73,5 +73,6 @@ private slots:
     void onWorkModeChanged();
 
 private:
+    friend class COMeasureWindowPrivate;
     const QScopedPointer<COMeasureWindowPrivate> pimpl;
 };

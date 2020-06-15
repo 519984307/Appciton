@@ -283,9 +283,19 @@ COMeasureWindow::~COMeasureWindow()
 
 void COMeasureWindow::setMeasureResult(short co, short ci)
 {
+    if (!pimpl->isMeasuring)
+    {
+        return;
+    }
+
     /* got result */
     pimpl->measureWidget->stopMeasure();
     pimpl->measureWidget->setCo(co);
+    if (co != InvData() && ci == InvData() && !isEqual(pimpl->bsa, 0.0f))
+    {
+        /* calculate ci base on the co */
+        ci = co / pimpl->bsa;
+    }
     pimpl->measureWidget->setCi(ci);
     pimpl->handleMeasureResult();
 }
@@ -513,10 +523,14 @@ void COMeasureWindowPrivate::handleMeasureResult()
 
         /* load current result */
         resultWidget[0]->setMeasureData(data);
-        /* default check */
-        resultWidget[0]->setChecked(true);
         /* default enable */
         resultWidget[0]->setEnabled(true);
+        /* default check */
+        resultWidget[0]->blockSignals(true);
+        resultWidget[0]->setChecked(true);
+        resultWidget[0]->blockSignals(false);
+        /* force calculate the average value */
+        q_ptr->onResultChecked();
     }
 }
 
@@ -603,13 +617,6 @@ short COMeasureWindowPrivate::getAverageCi() const
     if (count > 0)
     {
         return ciSum / count;
-    }
-
-    /* try to calculate with the average co */
-    int co = getAverageCo();
-    if (co != InvData())
-    {
-        return co / bsa;
     }
 
     return InvData();

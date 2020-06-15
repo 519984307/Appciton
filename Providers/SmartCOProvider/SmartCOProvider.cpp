@@ -381,8 +381,9 @@ void SmartCOProviderPrivate::handlePacket(quint8 ID, const quint8 *data, int len
 
         if (stat1 & SMART_CO_STAT1_GOT_RESULT)
         {
+            /* the origin CO is already multiply by 128 */
             /* calc C.O. value, scaled by 10 */
-            int calcCO = co * catheterCoeff / 128 / 100;
+            int calcCO = co * catheterCoeff / (128 * 100);
             coParam.setMeasureResult(calcCO, InvData());
         }
 
