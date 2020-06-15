@@ -195,12 +195,9 @@ void COParam::setMeasureWindow(COMeasureWindow *w)
     pimpl->measureWin = w;
 }
 
-void COParam::showMeasureWin()
+COMeasureWindow *COParam::getMeasureWindow() const
 {
-    if (pimpl->measureWin)
-    {
-        pimpl->measureWin->exec();
-    }
+    return pimpl->measureWin;
 }
 
 void COParam::setCatheterCoeff(unsigned short coef)

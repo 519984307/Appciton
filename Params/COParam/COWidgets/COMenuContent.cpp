@@ -25,6 +25,7 @@
 #include "MainMenuWindow.h"
 #include "AlarmLimitWindow.h"
 #include "WindowManager.h"
+#include "COMeasureWindow.h"
 
 class COMenuContentPrivate
 {
@@ -330,7 +331,10 @@ void COMenuContent::onButtonReleased()
         }
         case COMenuContentPrivate::ITEM_BTN_CO_MEASURE:
         {
-            coParam.showMeasureWin();
+            COMeasureWindow *w = coParam.getMeasureWindow();
+            windowManager.showWindow(w, WindowManager::ShowBehaviorCloseOthers
+                                     | WindowManager::ShowBehaviorModal
+                                     | WindowManager::ShowBehaviorNoAutoClose);
             break;
         }
         default:

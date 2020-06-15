@@ -57,9 +57,10 @@ public:
     void setMeasureWindow(COMeasureWindow *w);
 
     /**
-     * @brief showMeasureWin show the measure window
+     * @brief getMeasureWindow get the param's measure window
+     * @return  pointer to the measure window
      */
-    void showMeasureWin();
+    COMeasureWindow *getMeasureWindow() const;
 
 public:
     /**
