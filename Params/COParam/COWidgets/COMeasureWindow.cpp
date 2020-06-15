@@ -497,7 +497,7 @@ void COMeasureWindow::btnClicked()
         }
         else
         {
-            pimpl->stopMeasure(COMeasureWindowPrivate::STOP_REASON_CANCEL);
+            cancel();
         }
     }
     else if (btn == pimpl->settingBtn)
