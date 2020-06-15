@@ -34,7 +34,9 @@ public:
     /**
      * @brief setMeasureResult
      * @param co cardiac output
-     * #param ci cardiac index
+     * @param ci cardiac index
+     * @note
+     * Once the result is set, measurement is compelted
      */
     void setMeasureResult(short co, short ci);
 
@@ -57,6 +59,26 @@ public:
      * @param off
      */
     void setSensorOff(bool off);
+
+    /**
+     * @brief start start measurement
+     */
+    void start();
+
+    /**
+     * @brief cancel cancel measurement
+     */
+    void cancel();
+
+    /**
+     * @brief timeout timeout the running measurement
+     */
+    void timeout();
+
+    /**
+     * @brief fail fail the running measurement
+     */
+    void fail();
 
 protected:
     /* override */

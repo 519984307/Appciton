@@ -37,6 +37,10 @@
 
 #define COMPLETE_MESSAGE_SHOW_DURATION (1000)
 
+#define MEASUREMENT_TIMEOUT_DURATION    (65000)  /* 65 seconds */
+
+#define STOP_MESSAGE_DISPLAY_DURATTION (1500)
+
 static short tbDemoWave[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -80,12 +84,21 @@ static short tbDemoWave[] = {
 class COMeasureWindowPrivate
 {
 public:
+    enum MeasureStopReason
+    {
+        STOP_REASON_COMPLETED,
+        STOP_REASON_CANCEL,
+        STOP_REASON_SENSOR_OFF,
+        STOP_REASON_TIMEOUT,
+        STOP_REASON_FAIL,
+    };
+
     explicit COMeasureWindowPrivate(COMeasureWindow * const q_ptr)
         : q_ptr(q_ptr), ctrlBtn(NULL), settingBtn(NULL), saveBtn(NULL), printBtn(NULL),
           calcBtn(NULL), measureWidget(NULL), coAvgLabel(NULL), coAvgVal(NULL), ciAvgLabel(NULL),
-          ciAvgVal(NULL), bsaLabel(NULL), bsaVal(NULL), demoTimerID(-1), waitStateTimerID(-1),
-          checkInjectTimerID(-1), noInjectCount(0), completeMessageTimerID(-1), demoDataReadIndex(0),
-          bsa(0.0f), isMeasuring(false), sensorOff(false)
+          ciAvgVal(NULL), bsaLabel(NULL), bsaVal(NULL), demoTimerID(-1), measureTimeoutTimerID(-1),
+          waitStateTimerID(-1), checkInjectTimerID(-1), noInjectCount(0), stopMessageTimerID(-1),
+          demoDataReadIndex(0), bsa(0.0f), isMeasuring(false), sensorOff(false)
     {
         for (int i = 0; i < MAX_MEASURE_RESULT_NUM; i++)
         {
@@ -116,7 +129,7 @@ public:
     /**
      * @brief stopMeasure stop the measuring
      */
-    void stopMeasure();
+    void stopMeasure(MeasureStopReason reason);
 
     /**
      * @brief getAverageCo get the average co value from the checked result
@@ -172,18 +185,24 @@ public:
     QLabel *bsaLabel;
     QLabel *bsaVal;
 
-    int demoTimerID;        /* demo wave generate timer */
-    int waitStateTimerID;   /* timer to control the wait state */
-    int checkInjectTimerID; /* timer to check wether has injected  */
+    int demoTimerID;            /* demo wave generate timer */
+    /*
+     * add a timer to check whether timeout. Usually, timeout message should from module,
+     * but we need a timer to handle the case when no timeout message from module,
+     * the timer is longer than the module timeout duration
+     */
+    int measureTimeoutTimerID;
+    int waitStateTimerID;       /* timer to control the wait state */
+    int checkInjectTimerID;     /* timer to check wether has injected  */
     int noInjectCount;
-    int completeMessageTimerID; /* timer to control the display of complete message */
+    int stopMessageTimerID;     /* timer to control the display of stop message */
 
     size_t demoDataReadIndex;   /* index of reading demo data */
 
     float bsa;                  /* body surface area */
 
-    bool isMeasuring;       /* record whether we are in measuring state */
-    bool sensorOff;         /* check whether in sensor state */
+    bool isMeasuring;           /* record whether we are in measuring state */
+    bool sensorOff;             /* check whether in sensor state */
 };
 
 COMeasureWindow::COMeasureWindow()
@@ -326,7 +345,40 @@ void COMeasureWindow::setSensorOff(bool off)
     if (pimpl->sensorOff != off)
     {
         pimpl->sensorOff = off;
-        pimpl->stopMeasure();
+        pimpl->stopMeasure(COMeasureWindowPrivate::STOP_REASON_SENSOR_OFF);
+    }
+}
+
+void COMeasureWindow::start()
+{
+    if (!pimpl->isMeasuring)
+    {
+        /* set the UI in measure state */
+        pimpl->startMeasure();
+    }
+}
+
+void COMeasureWindow::cancel()
+{
+    if (pimpl->isMeasuring)
+    {
+        pimpl->stopMeasure(COMeasureWindowPrivate::STOP_REASON_CANCEL);
+    }
+}
+
+void COMeasureWindow::timeout()
+{
+    if (pimpl->isMeasuring)
+    {
+        pimpl->stopMeasure(COMeasureWindowPrivate::STOP_REASON_TIMEOUT);
+    }
+}
+
+void COMeasureWindow::fail()
+{
+    if (pimpl->isMeasuring)
+    {
+        pimpl->stopMeasure(COMeasureWindowPrivate::STOP_REASON_FAIL);
     }
 }
 
@@ -393,12 +445,9 @@ void COMeasureWindow::timerEvent(QTimerEvent *ev)
     {
         if (pimpl->demoDataReadIndex >= sizeof(tbDemoWave) / sizeof(tbDemoWave[0]))
         {
-            pimpl->measureWidget->stopMeasure();
-            pimpl->measureWidget->setCo(38);
-            pimpl->measureWidget->setCi(15);
             pimpl->demoDataReadIndex = 0;
             pimpl->stopTimer(&pimpl->demoTimerID);
-            pimpl->handleMeasureResult();
+            setMeasureResult(38, 15);
         }
 
         addMeasureWaveData(tbDemoWave[pimpl->demoDataReadIndex++]);
@@ -412,9 +461,14 @@ void COMeasureWindow::timerEvent(QTimerEvent *ev)
             pimpl->measureWidget->setMessage(trs("InjectNow"));
         }
     }
-    else if (pimpl->completeMessageTimerID == ev->timerId())
+    else if (pimpl->measureTimeoutTimerID == ev->timerId())
     {
-        pimpl->stopTimer(&pimpl->completeMessageTimerID);
+        pimpl->stopMeasure(COMeasureWindowPrivate::STOP_REASON_TIMEOUT);
+    }
+    else if (pimpl->stopMessageTimerID == ev->timerId())
+    {
+        pimpl->stopTimer(&pimpl->stopMessageTimerID);
+        /* show wait message after stop message */
         pimpl->waitStateTimerID = startTimer(WAVE_DURATION_AFTER_MEASURE);
         pimpl->measureWidget->setMessage(trs("PleaseWait"));
     }
@@ -434,31 +488,12 @@ void COMeasureWindow::btnClicked()
     {
         if (!pimpl->isMeasuring)
         {
-            /* control the module to enter measure state */
-            if (systemManager.getCurWorkMode() != WORK_MODE_DEMO)
-            {
-                coParam.startMeasure();
-            }
-            else
-            {
-                pimpl->demoTimerID = startTimer(DEMO_TIMER_PERIOD);
-            }
-
             /* set the UI in measure state */
             pimpl->startMeasure();
         }
         else
         {
-            pimpl->stopMeasure();
-            /* control the module to exit measure state */
-            if (systemManager.getCurWorkMode() != WORK_MODE_DEMO)
-            {
-                coParam.stopMeasure();
-            }
-            else
-            {
-                pimpl->stopTimer(&pimpl->demoTimerID);
-            }
+            pimpl->stopMeasure(COMeasureWindowPrivate::STOP_REASON_CANCEL);
         }
     }
     else if (btn == pimpl->settingBtn)
@@ -503,7 +538,7 @@ void COMeasureWindow::onWorkModeChanged()
 
 void COMeasureWindowPrivate::handleMeasureResult()
 {
-    stopMeasure();
+    stopMeasure(STOP_REASON_COMPLETED);
     COMeasureData data = measureWidget->getMeasureData();
     if (data.isValid())
     {
@@ -546,9 +581,19 @@ void COMeasureWindowPrivate::startMeasure()
     measureWidget->setCi(InvData());
     measureWidget->startMeasure();
     checkInjectTimerID = q_ptr->startTimer(CHECK_INJECT_PERIOD);
+
+    /* control the module to enter measure state */
+    if (systemManager.getCurWorkMode() != WORK_MODE_DEMO)
+    {
+        coParam.startMeasure();
+    }
+    else
+    {
+        demoTimerID = q_ptr->startTimer(DEMO_TIMER_PERIOD);
+    }
 }
 
-void COMeasureWindowPrivate::stopMeasure()
+void COMeasureWindowPrivate::stopMeasure(MeasureStopReason reason)
 {
     isMeasuring = false;
     ctrlBtn->setText(trs("Start"));
@@ -560,22 +605,47 @@ void COMeasureWindowPrivate::stopMeasure()
         noInjectCount = 0;
     }
 
-    if (sensorOff)
+    if (measureTimeoutTimerID != -1)
+    {
+        stopTimer(&measureTimeoutTimerID);
+    }
+
+    if (reason == STOP_REASON_COMPLETED)
+    {
+        stopMessageTimerID = q_ptr->startTimer(STOP_MESSAGE_DISPLAY_DURATTION);
+        measureWidget->setMessage(trs("MeasureCompleted"));
+    }
+    else if (reason == STOP_REASON_CANCEL)
+    {
+        /* user cancel, just show the wait message */
+        stopMessageTimerID = q_ptr->startTimer(STOP_MESSAGE_DISPLAY_DURATTION);
+        measureWidget->setMessage(trs("MeasurementCancel"));
+    }
+    else if (reason == STOP_REASON_SENSOR_OFF)
     {
         /* stop because of senfor off */
         measureWidget->setMessage(trs("NoInjectateProbe"));
-        return;
     }
-    if (measureWidget->getMeasureData().isValid())
+    else if (reason == STOP_REASON_TIMEOUT)
     {
-        /* show message complete message for 1.5 second */
-        completeMessageTimerID = q_ptr->startTimer(1500);
-        measureWidget->setMessage(trs("MeasureCompleted"));
+        stopMessageTimerID = q_ptr->startTimer(STOP_MESSAGE_DISPLAY_DURATTION);
+        measureWidget->setMessage(trs("MeasurementTimeout"));
+    }
+    else if (reason == STOP_REASON_FAIL)
+    {
+        /* show the fail message for a while */
+        stopMessageTimerID = q_ptr->startTimer(STOP_MESSAGE_DISPLAY_DURATTION);
+        measureWidget->setMessage(trs("MeasurementFail"));
+    }
+
+    /* control the module to exit measure state */
+    if (systemManager.getCurWorkMode() != WORK_MODE_DEMO)
+    {
+        coParam.stopMeasure();
     }
     else
     {
-        waitStateTimerID = q_ptr->startTimer(WAVE_DURATION_AFTER_MEASURE);
-        measureWidget->setMessage(trs("PleaseWait"));
+        stopTimer(&demoTimerID);
     }
 }
 

@@ -376,6 +376,22 @@ void COParam::setOneshotAlarm(COOneShotType t, bool f)
     {
         alarmSource->setOneShotAlarm(t, f);
     }
+
+    if (pimpl->isMeasuring && pimpl->measureWin && f)
+    {
+        if (t == CO_ONESHOT_ALARM_MEASURE_TIMEOUT)
+        {
+            pimpl->measureWin->timeout();
+        }
+        else if (t == CO_ONESHOT_ALARM_MEASURE_FAIL)
+        {
+            pimpl->measureWin->fail();
+        }
+        else if (t == CO_ONESHOT_ALARM_COMMUNICATION_STOP)
+        {
+            pimpl->measureWin->fail();
+        }
+    }
 }
 
 short COParam::getMeasureWaveRate() const
