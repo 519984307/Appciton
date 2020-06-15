@@ -85,7 +85,7 @@ public:
           calcBtn(NULL), measureWidget(NULL), coAvgLabel(NULL), coAvgVal(NULL), ciAvgLabel(NULL),
           ciAvgVal(NULL), bsaLabel(NULL), bsaVal(NULL), demoTimerID(-1), waitStateTimerID(-1),
           checkInjectTimerID(-1), noInjectCount(0), completeMessageTimerID(-1), demoDataReadIndex(0),
-          bsa(0.0f), isMeasuring(false)
+          bsa(0.0f), isMeasuring(false), sensorOff(false)
     {
         for (int i = 0; i < MAX_MEASURE_RESULT_NUM; i++)
         {
@@ -182,14 +182,15 @@ public:
 
     float bsa;                  /* body surface area */
 
-    bool isMeasuring;   /* record whether we are in measuring state */
+    bool isMeasuring;       /* record whether we are in measuring state */
+    bool sensorOff;         /* check whether in sensor state */
 };
 
 COMeasureWindow::COMeasureWindow()
     : Dialog(), pimpl(new COMeasureWindowPrivate(this))
 {
     setFixedSize(themeManager.defaultWindowSize());
-    setWindowTitle(trs("COMeasurement"));
+    setWindowTitle(trs("COMeasure"));
 
     QGridLayout *layout = new QGridLayout();
     layout->setContentsMargins(4, 2, 4, 2);
@@ -242,7 +243,7 @@ COMeasureWindow::COMeasureWindow()
     pimpl->ciAvgVal->setFont(fontManager.textFont(fontManager.getFontSize(5)));
     valueLabelLayout->addWidget(pimpl->ciAvgVal, 1, 1);
 
-    pimpl->bsaLabel = new QLabel(QString::fromUtf8("BSA (m²):"));
+    pimpl->bsaLabel = new QLabel(QString::fromUtf8("BSA (m²)"));
     pimpl->bsaLabel->setFont(fontManager.textFont(fontManager.getFontSize(2)));
     valueLabelLayout->addWidget(pimpl->bsaLabel, 2, 0);
     pimpl->bsaVal = new QLabel(InvStr());
@@ -306,6 +307,15 @@ void COMeasureWindow::addMeasureWaveData(short wave)
     }
 }
 
+void COMeasureWindow::setSensorOff(bool off)
+{
+    if (pimpl->sensorOff != off)
+    {
+        pimpl->sensorOff = off;
+        pimpl->stopMeasure();
+    }
+}
+
 void COMeasureWindow::showEvent(QShowEvent *ev)
 {
     Dialog::showEvent(ev);
@@ -317,11 +327,28 @@ void COMeasureWindow::showEvent(QShowEvent *ev)
         pimpl->measureWidget->setTi(coParam.getTi());
     }
 
-    if (!coParam.isConnected() && systemManager.getCurWorkMode() != WORK_MODE_DEMO)
+    if (systemManager.getCurWorkMode() != WORK_MODE_DEMO)
     {
-        /* module is not connected yet and not in demo mode */
-        pimpl->ctrlBtn->setEnabled(false);
-        pimpl->measureWidget->setMessage(trs("ModuleNotReady"));
+        if (!coParam.isConnected())
+        {
+            /* module is not connected yet and not in demo mode */
+            pimpl->ctrlBtn->setEnabled(false);
+            pimpl->measureWidget->setMessage(trs("ModuleNotConnected"));
+        }
+        else if (pimpl->sensorOff)
+        {
+            pimpl->ctrlBtn->setEnabled(false);
+            pimpl->measureWidget->setMessage(trs("NoInjectateProbe"));
+        }
+        else
+        {
+            pimpl->ctrlBtn->setEnabled(true);
+            if (!pimpl->isMeasuring && pimpl->waitStateTimerID == -1)
+            {
+                /* ready for new measurement */
+                pimpl->measureWidget->setMessage(trs("ReadyForNewMeasurement"));
+            }
+        }
     }
     else
     {
@@ -440,7 +467,7 @@ void COMeasureWindow::onResultChecked()
     pimpl->coAvgVal->setText(pimpl->coValToStringHelper(avgCo));
 
     short avgCi = pimpl->getAverageCi();
-    pimpl->ciAvgLabel->setText(pimpl->coValToStringHelper(avgCi));
+    pimpl->ciAvgVal->setText(pimpl->coValToStringHelper(avgCi));
 }
 
 void COMeasureWindow::onWorkModeChanged()
@@ -491,7 +518,7 @@ void COMeasureWindowPrivate::handleMeasureResult()
 
 void COMeasureWindowPrivate::startMeasure()
 {
-    ctrlBtn->setText(trs("Stop"));
+    ctrlBtn->setText(trs("Cancel"));
     isMeasuring = true;
     measureWidget->setWaveDataRate(coParam.getMeasureWaveRate());
     /* load tb and ti */
@@ -514,11 +541,18 @@ void COMeasureWindowPrivate::stopMeasure()
         stopTimer(&checkInjectTimerID);
         noInjectCount = 0;
     }
+
+    if (sensorOff)
+    {
+        /* stop because of senfor off */
+        measureWidget->setMessage(trs("NoInjectateProbe"));
+        return;
+    }
     if (measureWidget->getMeasureData().isValid())
     {
         /* show message complete message for 1.5 second */
         completeMessageTimerID = q_ptr->startTimer(1500);
-        measureWidget->setMessage(trs("MeasureCompteted"));
+        measureWidget->setMessage(trs("MeasureCompleted"));
     }
     else
     {

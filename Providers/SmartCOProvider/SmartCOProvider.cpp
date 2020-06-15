@@ -367,6 +367,8 @@ void SmartCOProviderPrivate::handlePacket(quint8 ID, const quint8 *data, int len
             coParam.setOneshotAlarm(CO_ONESHOT_ALARM_TB_SENSOR_OFF, false);
         }
 
+        coParam.setSensorOff(tbSensorOff);
+
         if (stat1 & SMART_CO_STAT1_MEASURE_TIMEOUT)
         {
             coParam.setOneshotAlarm(CO_ONESHOT_ALARM_MEASURE_TIMEOUT, true);

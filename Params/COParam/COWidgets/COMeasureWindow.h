@@ -52,6 +52,11 @@ public:
      */
     void addMeasureWaveData(short wave);
 
+    /**
+     * @brief setSensorOff set sensor off state
+     * @param off
+     */
+    void setSensorOff(bool off);
 
 protected:
     /* override */

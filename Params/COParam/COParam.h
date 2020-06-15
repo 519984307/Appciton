@@ -208,6 +208,18 @@ public:
      */
     short getMeasureWaveRate() const;
 
+    /**
+     * @brief isSensorOff check whether the sensor is off
+     * @return true if sensor off
+     */
+    bool isSensorOff() const;
+
+    /**
+     * @brief setSensorOff set the sensor off status
+     * @param off true when offer
+     */
+    void setSensorOff(bool off);
+
 private:
     COParam();
 

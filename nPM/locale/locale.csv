@@ -278,6 +278,14 @@ InjectateTemp,注射液温度,Injectate Temp
 InjectateVolume,注射液体积,Injectate Volume
 COMeasure,C.O.测量,C.O. Measure
 MeasureMode,测量模式,Measure Mode
+ModuleNotConnected,模块未连接,Module Is Not Connected
+ReadyForNewMeasurement,可进行新测量,Ready For New Measurement
+InjectNow,立即注射,Inject Now
+PleaseWait,请等待...,Please Wait...
+MeasuementInProgress,正在测量...,Measurement In Progress...
+MeasureCompleted,测量完成,Measure Completed
+NoInjectateProbe,无注射探针,No Injectate Probe
+Save,保存,Save
 TEMP,Temp,Temp
 T1,T1,T1
 T2,T2,T2

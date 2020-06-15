@@ -32,7 +32,8 @@ public:
           tbVal(InvData()),
           tiVal(InvData()),
           connectedProvider(false),
-          isMeasuring(false)
+          isMeasuring(false),
+          sensorOff(true)
     {}
 
     COProviderIFace *provider;
@@ -49,6 +50,7 @@ public:
 
     bool connectedProvider;
     bool isMeasuring;
+    bool sensorOff;
 };
 
 /**************************************************************************************************
@@ -80,6 +82,7 @@ void COParam::handDemoWaveform(WaveformID /*id*/, short /*data*/)
  *************************************************************************************************/
 void COParam::handDemoTrendData()
 {
+    pimpl->sensorOff = false;
     pimpl->coAvgVal = 50;
     pimpl->ciAvgVal = 18;
     pimpl->tbVal = 370;
@@ -93,6 +96,7 @@ void COParam::handDemoTrendData()
 
 void COParam::exitDemo()
 {
+    pimpl->sensorOff = true;
     pimpl->coAvgVal = InvData();
     pimpl->ciAvgVal = InvData();
     pimpl->tbVal = InvData();
@@ -381,6 +385,20 @@ short COParam::getMeasureWaveRate() const
         return pimpl->provider->getMeasureWaveRate();
     }
     return 25;
+}
+
+bool COParam::isSensorOff() const
+{
+    return pimpl->sensorOff;
+}
+
+void COParam::setSensorOff(bool off)
+{
+    pimpl->sensorOff = off;
+    if (pimpl->measureWin)
+    {
+        pimpl->measureWin->setSensorOff(off);
+    }
 }
 
 /**************************************************************************************************
