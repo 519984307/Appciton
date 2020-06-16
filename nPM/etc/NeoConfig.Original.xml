@@ -683,7 +683,7 @@
 		    <Low Min="230" Max="449">360</Low>
 		    <High Min="231" Max="450">380</High>
 		    <Step>1</Step>
-		    <Scale>1</Scale>
+                    <Scale>10</Scale>
 		</celsius>
 		<fahrenheit>
 		    <Low Min="590" Max="1219">950</Low>
