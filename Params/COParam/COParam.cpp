@@ -14,6 +14,9 @@
 #include "COAlarm.h"
 #include "AlarmSourceManager.h"
 #include "COMeasureWindow.h"
+#include "TrendDataStorageManager.h"
+#include "Framework/TimeDate/TimeDate.h"
+#include "TrendCache.h"
 #include <QVector>
 
 /* store 6 measure result at most */
@@ -136,9 +139,9 @@ short COParam::getSubParamValue(SubParamID id)
     switch (id)
     {
     case SUB_PARAM_CO_CO:
-        return getAvgCo();
+        return pimpl->coAvgVal;
     case SUB_PARAM_CO_CI:
-        return getAvgCi();
+        return pimpl->ciAvgVal;
     case SUB_PARAM_CO_TB:
         return getTb();
     default:
@@ -356,11 +359,20 @@ void COParam::setMeasureResult(short co, short ci)
 
 void COParam::setAverageResult(short co, short ci)
 {
+    unsigned t = timeDate->time();
+    pimpl->coAvgVal = co;
+    pimpl->ciAvgVal = ci;
     if (pimpl->trendWidget)
     {
-        unsigned t = QDateTime::currentDateTime().toTime_t();
         pimpl->trendWidget->setMeasureResult(co, ci, t);
     }
+    /* collect trend data immediately */
+    trendCache.collectTrendData(t, true);
+    trendDataStorageManager.storeData(t, TrendDataStorageManager::CollectStatusCOResult);
+
+    /* clear the average value after it is collected */
+    pimpl->coAvgVal = InvData();
+    pimpl->ciAvgVal = InvData();
 }
 
 /**************************************************************************************************
@@ -434,22 +446,6 @@ void COParam::setSensorOff(bool off)
     {
         pimpl->measureWin->setSensorOff(off);
     }
-}
-
-/**************************************************************************************************
- * get C.O. data.
- *************************************************************************************************/
-short COParam::getAvgCo() const
-{
-    return pimpl->coAvgVal;
-}
-
-/**************************************************************************************************
- * get C.I. data.
- *************************************************************************************************/
-short COParam::getAvgCi() const
-{
-    return pimpl->ciAvgVal;
 }
 
 void COParam::addMeasureWaveData(short data)

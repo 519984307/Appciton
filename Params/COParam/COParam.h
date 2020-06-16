@@ -185,22 +185,6 @@ public:
     unsigned short getManualTi(void);
 
     /**
-     * @brief getAvgCo get the average Cardiac output
-     * @return  current cardiac output or InvData()
-     * @note
-     * Valid return value is already scaled by 10
-     */
-    short getAvgCo(void) const;
-
-    /**
-     * @brief getAvgCi get the average Cardiac index
-     * @return  current cardiac index of InvData()
-     * @note
-     * Valid return value is already scaled by 10
-     */
-    short getAvgCi(void) const;
-
-    /**
      * @brief addMeasureWaveData add the measurement wave data
      * @param data the wave data
      */
