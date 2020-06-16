@@ -77,7 +77,7 @@ void TrendTableSetWindow::trendGroupReleased(int g)
 {
     QString prefix = "TrendTable|TrendGroup";
     systemConfig.setNumValue(prefix, g);
-    TrendTableWindow::getInstance()->setTrendGroup(g);
+    TrendTableWindow::getInstance()->setTrendGroup(static_cast<TrendGroup>(g));
 }
 
 TrendTableSetWindow::TrendTableSetWindow()
@@ -107,9 +107,8 @@ TrendTableSetWindow::TrendTableSetWindow()
 
     label = new QLabel(trs("TrendGroup"));
     d_ptr->trendGroupCbo = new ComboBox();
-    d_ptr->trendGroupCbo->setEnabled(false);    // 暂时置灰趋势组选择功能(目前不支持IBP,AG参数功能)
     d_ptr->trendGroupCbo->addItem("Resp");
-    if (systemManager.isSupport(CONFIG_IBP))
+    if (systemManager.isSupport(CONFIG_IBP) || systemManager.isSupport(CONFIG_CO))
     {
         d_ptr->trendGroupCbo->addItem("IBP");
     }

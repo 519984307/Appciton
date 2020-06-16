@@ -79,7 +79,7 @@ public:
      * @param trendGroup 趋势组
      * @return 调整过的趋势组
      */
-    int addModuleCheck(int trendGroup);
+    TrendGroup addModuleCheck(TrendGroup trendGroup);
 
 public:
     struct TrendDataContent
@@ -142,7 +142,7 @@ TrendTableModel::TrendTableModel(QObject *parent)
     index = 0;
     QString groupPrefix = prefix + "TrendGroup";
     systemConfig.getNumValue(groupPrefix, index);
-    loadCurParam(d_ptr->addModuleCheck(index));
+    loadCurParam(d_ptr->addModuleCheck(static_cast<TrendGroup>(index)));
 }
 
 TrendTableModel::~TrendTableModel()
@@ -328,7 +328,7 @@ void TrendTableModel::setTimeInterval(int t)
     d_ptr->timeInterval = static_cast<ResolutionRatio>(t);
 }
 
-void TrendTableModel::loadCurParam(int trendGroup)
+void TrendTableModel::loadCurParam(TrendGroup trendGroup)
 {
     d_ptr->curList.clear();
 
@@ -378,7 +378,7 @@ void TrendTableModel::loadCurParam(int trendGroup)
             d_ptr->curList.append(list);
         }
     }
-    else if (trendGroup == TREND_GROUP_IBP)
+    else if (trendGroup == TREND_GROUP_IBP_CO)
     {
         if (d_ptr->orderMap.contains(PARAM_IBP))
         {
@@ -449,7 +449,7 @@ void TrendTableModel::updateData()
     endResetModel();
 }
 
-void TrendTableModel::leftPage(int &curSecCol)
+void TrendTableModel::leftPage(int curSecCol)
 {
     Q_UNUSED(curSecCol)
 
@@ -471,7 +471,7 @@ void TrendTableModel::leftPage(int &curSecCol)
     endResetModel();
 }
 
-void TrendTableModel::rightPage(int &curSecCol)
+void TrendTableModel::rightPage(int curSecCol)
 {
     Q_UNUSED(curSecCol)
 
@@ -494,7 +494,7 @@ void TrendTableModel::rightPage(int &curSecCol)
     endResetModel();
 }
 
-void TrendTableModel::leftMoveEvent(int &curSecCol)
+void TrendTableModel::leftMoveEvent(int curSecCol)
 {
     Q_UNUSED(curSecCol)
 
@@ -533,7 +533,7 @@ void TrendTableModel::leftMoveEvent(int &curSecCol)
     endResetModel();
 }
 
-void TrendTableModel::rightMoveEvent(int &curSecCol)
+void TrendTableModel::rightMoveEvent(int curSecCol)
 {
     Q_UNUSED(curSecCol)
 
@@ -572,31 +572,31 @@ void TrendTableModel::rightMoveEvent(int &curSecCol)
     endResetModel();
 }
 
-bool TrendTableModel::getDataTimeRange(unsigned &start, unsigned &end)
+bool TrendTableModel::getDataTimeRange(unsigned *start, unsigned *end)
 {
     if (d_ptr->trendDataPack.count() != 0)
     {
-        start = d_ptr->trendBlockList.first().extraData;
-        end = d_ptr->trendBlockList.last().extraData;
+        *start = d_ptr->trendBlockList.first().extraData;
+        *end = d_ptr->trendBlockList.last().extraData;
         return true;
     }
     return false;
 }
 
-void TrendTableModel::displayDataTimeRange(unsigned &start, unsigned &end)
+void TrendTableModel::displayDataTimeRange(unsigned *start, unsigned *end)
 {
     if (d_ptr->indexInfo.end <= d_ptr->indexInfo.start
             || d_ptr->indexInfo.end < 1
             || d_ptr->trendBlockList.count() < d_ptr->indexInfo.end)
     {
-        start = 0;
-        end = 0;
+        *start = 0;
+        *end = 0;
         qDebug() << Q_FUNC_INFO << "Trend table print time wrong";
         return;
     }
-    start = d_ptr->trendBlockList.at(
+    *start = d_ptr->trendBlockList.at(
                 d_ptr->trendIndexList.at(d_ptr->indexInfo.start)).extraData;
-    end = d_ptr->trendBlockList.at(
+    *end = d_ptr->trendBlockList.at(
                 d_ptr->trendIndexList.at(d_ptr->indexInfo.end - 1)).extraData;
 }
 
@@ -707,10 +707,10 @@ unsigned TrendTableModel::getColumnCount() const
     return COLUMN_COUNT;
 }
 
-void TrendTableModel::getCurIndexInfo(unsigned &curIndex, unsigned &totalIndex) const
+void TrendTableModel::getCurIndexInfo(unsigned *curIndex, unsigned *totalIndex) const
 {
-    curIndex = d_ptr->indexInfo.start;
-    totalIndex = d_ptr->indexInfo.total;
+    *curIndex = d_ptr->indexInfo.start;
+    *totalIndex = d_ptr->indexInfo.total;
 }
 
 QString TrendTableModel::getCurTableDate()
@@ -1192,6 +1192,23 @@ void TrendTableModelPrivate::loadTrendData()
                 }
             }
             break;
+            case SUB_PARAM_CO_CO:
+            case SUB_PARAM_CO_CI:
+            {
+                qint16 data = pack->subparamValue.value(id, InvData());
+                dContent.dataStr = data == InvData() ? "---" : QString::number(data / 10.0, 'f', 1);
+                prio = ALARM_PRIO_PROMPT;
+            }
+                break;
+            case SUB_PARAM_CO_TB:
+            {
+                UnitType type = paramManager.getSubParamUnit(paramInfo.getParamID(id), id);
+                qint16 tb = pack->subparamValue.value(id, InvData());
+                QString tbString = Unit::convert(type, paramInfo.getUnitOfSubParam(id), tb / 10.0f);
+                dContent.dataStr = tb == InvData() ? "---" : tbString;
+                prio = alarmConfig.getLimitAlarmPriority(id);
+            }
+                break;
             default:
             {
                 qint16 data = pack->subparamValue.value(id, InvData());
@@ -1277,46 +1294,46 @@ QString TrendTableModelPrivate::getParamName(int section)
     return str;
 }
 
-int TrendTableModelPrivate::addModuleCheck(int trendGroup)
+TrendGroup TrendTableModelPrivate::addModuleCheck(TrendGroup trendGroup)
 {
-    int index = trendGroup;
+    TrendGroup grp = trendGroup;
     // 加入模块支持条件判断
-    while (index >= 0)
+    while (grp != TREND_GROUP_INVALID)
     {
-        switch (index)
+        switch (grp)
         {
             case TREND_GROUP_RESP:
             {
                 if (!systemManager.isSupport(CONFIG_RESP))
                 {
-                    index = -1;
+                    grp = TREND_GROUP_INVALID;
                 }
-                return index;
+                break;
             }
             break;
-            case TREND_GROUP_IBP:
+            case TREND_GROUP_IBP_CO:
             {
-                if (!systemManager.isSupport(CONFIG_IBP))
+                if ((systemManager.isSupport(CONFIG_IBP) || systemManager.isSupport(CONFIG_CO)))
                 {
-                    index = TREND_GROUP_RESP;
-                    break;
+                    return grp;
                 }
-                return index;
+                grp = TREND_GROUP_RESP;
             }
             break;
             case TREND_GROUP_AG:
             {
-                if (!systemManager.isSupport(CONFIG_AG))
+                if (systemManager.isSupport(CONFIG_AG))
                 {
-                    index = TREND_GROUP_IBP;
-                    break;
+                    return grp;
                 }
-                return index;
+                grp = TREND_GROUP_IBP_CO;
             }
             break;
+        default:
+            return grp;
         }
     }
-    return index;
+    return grp;
 }
 
 void TrendTableModelPrivate::loadTableTitle()

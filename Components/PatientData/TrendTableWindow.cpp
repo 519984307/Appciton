@@ -102,7 +102,7 @@ void TrendTableWindow::setTimeInterval(int t)
     d_ptr->updateTable();
 }
 
-void TrendTableWindow::setTrendGroup(int g)
+void TrendTableWindow::setTrendGroup(TrendGroup g)
 {
     d_ptr->model->loadCurParam(g);
     d_ptr->updateTable();
@@ -128,7 +128,7 @@ void TrendTableWindow::updatePages()
     unsigned start;
     unsigned total;
     unsigned column = d_ptr->model->getColumnCount();
-    d_ptr->model->getCurIndexInfo(start, total);
+    d_ptr->model->getCurIndexInfo(&start, &total);
 
     unsigned coef = total / column;
     unsigned allPagesNum = (total % column == 0)?(coef):(coef + 1);
@@ -351,12 +351,12 @@ void TrendTableWindow::printWidgetRelease()
 {
     unsigned startLimit = 0;
     unsigned endLimit = 0;
-    if (d_ptr->model->getDataTimeRange(startLimit, endLimit))
+    if (d_ptr->model->getDataTimeRange(&startLimit, &endLimit))
     {
         TrendPrintWindow printWindow(d_ptr->model->getBlockEntryList());
         unsigned startTime = 0;
         unsigned endTime = 0;
-        d_ptr->model->displayDataTimeRange(startTime, endTime);
+        d_ptr->model->displayDataTimeRange(&startTime, &endTime);
         printWindow.printTimeRange(startLimit, endLimit);
         printWindow.initPrintTime(startTime, endTime);
         windowManager.showWindow(&printWindow,

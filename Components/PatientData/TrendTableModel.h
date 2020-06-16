@@ -44,7 +44,7 @@ public:
 
     void setTimeInterval(int t);
 
-    void loadCurParam(int trendGroup);
+    void loadCurParam(TrendGroup trendGroup);
 
     void setHistoryDataPath(QString path);
 
@@ -52,17 +52,17 @@ public:
 
     void updateData();
 
-    void leftPage(int &curSecCol);
+    void leftPage(int curSecCol);
 
-    void rightPage(int &curSecCol);
+    void rightPage(int curSecCol);
 
-    void leftMoveEvent(int &curSecCol);
+    void leftMoveEvent(int curSecCol);
 
-    void rightMoveEvent(int &curSecCol);
+    void rightMoveEvent(int curSecCol);
 
-    bool getDataTimeRange(unsigned &start, unsigned &end);
+    bool getDataTimeRange(unsigned *start, unsigned *end);
 
-    void displayDataTimeRange(unsigned &start, unsigned &end);
+    void displayDataTimeRange(unsigned *start, unsigned *end);
 
     void printTrendData(unsigned startTime, unsigned endTime);
 
@@ -82,7 +82,7 @@ public:
      * @param curIndex 当前索引
      * @param totalIndex 总索引
      */
-    void getCurIndexInfo(unsigned &curIndex, unsigned &totalIndex) const;
+    void getCurIndexInfo(unsigned *curIndex, unsigned *totalIndex) const;
 
     /**
      * @brief getCurTableTime 获取当前表格时间

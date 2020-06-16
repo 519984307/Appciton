@@ -167,7 +167,7 @@
 
     <TrendTable>
         <ResolutionRatio>1</ResolutionRatio>
-        <TrendGroup>2</TrendGroup>
+        <TrendGroup>0</TrendGroup>
     </TrendTable>
     <TrendGraph>
         <Ruler>
