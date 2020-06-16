@@ -91,9 +91,9 @@ AUXP2_SYS,P2收缩压,P2-SYS
 AUXP2_DIA,P2舒张压,P2-DIA
 AUXP2_MAP,P2平均压,P2-MAP
 AUXP2_PR,P2脉率,P2-PR
-CO_CO,心排量,C.O.
-CO_CI,心指数,C.I.
-TB,血温,TB
+CO_CO,C.O.,C.O.
+CO_CI,C.I.,C.I.
+TB,TB,TB
 SPO2,SpO₂,SpO₂
 SPO2_2,SpO₂ 2,SpO₂ 2
 SPO2_D,ΔSpO₂,ΔSpO₂
@@ -740,10 +740,6 @@ AUXP2MAPLow,P2平均压低,P2 MAP Low
 AUXP2MAPHigh,P2平均压高,P2 MAP High
 AUXP2PRLow,P2脉率低,P2 PR Low
 AUXP2PRHigh,P2脉率高,P2 PR High
-COCOLow,心排量低,CO Low
-COCOHigh,心排量高,CO High
-COCILow,心指数低,CI Low
-COCIHigh,心指数高,CI High
 COTBLow,血温低,TB Low
 COTBHigh,血温高,TB High
 NIBPSYSLow,收缩压低,NIBP SYS Low
