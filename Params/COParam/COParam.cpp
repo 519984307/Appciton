@@ -83,14 +83,10 @@ void COParam::handDemoWaveform(WaveformID /*id*/, short /*data*/)
 void COParam::handDemoTrendData()
 {
     pimpl->sensorOff = false;
-    pimpl->coAvgVal = 50;
-    pimpl->ciAvgVal = 18;
     pimpl->tbVal = 370;
 
     if (pimpl->trendWidget)
     {
-        pimpl->trendWidget->setMeasureResult(pimpl->coAvgVal, pimpl->ciAvgVal,
-                                             QDateTime::currentDateTime().toTime_t());
         pimpl->trendWidget->setTb(pimpl->tbVal);
     }
 }
