@@ -63,12 +63,6 @@ enum COTiSource
  *************************************************************************************************/
 enum COLimitAlarmType
 {
-    CO_LIMIT_ALARM_CO_LOW,
-    CO_LIMIT_ALARM_CO_HIGH,
-
-    CO_LIMIT_ALARM_CI_LOW,
-    CO_LIMIT_ALARM_CI_HIGH,
-
     CO_LIMIT_ALARM_TB_LOW,
     CO_LIMIT_ALARM_TB_HIGH,
 

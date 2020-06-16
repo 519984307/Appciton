@@ -20,8 +20,6 @@ public:
     {
         static const char *symbol[CO_LIMIT_ALARM_NR] =
         {
-            "COCOLow", "COCOHigh",
-            "COCILow", "COCIHigh",
             "COTBLow", "COTBHigh"
         };
         return symbol[index];
