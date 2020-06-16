@@ -823,7 +823,7 @@ short SPO2Param::getPVI()
 
 void SPO2Param::setSpMet(short value)
 {
-    // the rang of SPMet display is 0~99.9%
+    // according to technical requirements,the rang of SPMet display is 0~99.9%
     if (value > 999)
     {
         value = 999;
@@ -883,7 +883,7 @@ short SPO2Param::getPI()
 
 void SPO2Param::setSpCO(short spcoValue)
 {
-    // the rang of spco display is 0~99%
+    // according to technical requirements, the rang of spco display is 0~99%
     if (spcoValue > 99)
     {
         spcoValue = 99;
