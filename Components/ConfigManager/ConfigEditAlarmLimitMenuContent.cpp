@@ -72,7 +72,7 @@ void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
             }
         }
 
-        if (pids.contains(pid))
+        if (pids.contains(pid) && alarmConfig.hasLimitAlarm(subId))
         {
             AlarmDataInfo info;
             info.paramID = pid;

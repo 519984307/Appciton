@@ -86,7 +86,7 @@ void AlarmLimitWindowPrivate::loadoptions()
             }
         }
 
-        if (pids.contains(pid))
+        if (pids.contains(pid) && alarmConfig.hasLimitAlarm(subId))
         {
             AlarmDataInfo info;
             info.paramID = pid;
@@ -299,7 +299,7 @@ void AlarmLimitWindow::restoreDefaults()
             }
         }
 
-        if (pids.contains(pid))
+        if (pids.contains(pid) && alarmConfig.hasLimitAlarm(subId))
         {
             // default
             int status = 0;
