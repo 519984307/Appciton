@@ -725,52 +725,84 @@ QStringList RecordPageGenerator::getTrendStringList(const TrendDataPackage &tren
                 alarms[2] = trendData.subparamAlarm.value(SUB_PARAM_NIBP_MAP, false);
                 break;
             case SUB_PARAM_ART_SYS:
-                data[0] = trendData.subparamValue.value(SUB_PARAM_ART_SYS, InvData());
-                data[1] = trendData.subparamValue.value(SUB_PARAM_ART_DIA, InvData());
-                data[2] = trendData.subparamValue.value(SUB_PARAM_ART_MAP, InvData());
-                alarms[0] = trendData.subparamAlarm.value(SUB_PARAM_ART_SYS, false);
-                alarms[1] = trendData.subparamAlarm.value(SUB_PARAM_ART_DIA, false);
-                alarms[2] = trendData.subparamAlarm.value(SUB_PARAM_ART_MAP, false);
+                // Ibp trend data is only printed when the ibp module is connected.
+                if (ibpParam.isConnected())
+                {
+                    data[0] = trendData.subparamValue.value(SUB_PARAM_ART_SYS, InvData());
+                    data[1] = trendData.subparamValue.value(SUB_PARAM_ART_DIA, InvData());
+                    data[2] = trendData.subparamValue.value(SUB_PARAM_ART_MAP, InvData());
+                    alarms[0] = trendData.subparamAlarm.value(SUB_PARAM_ART_SYS, false);
+                    alarms[1] = trendData.subparamAlarm.value(SUB_PARAM_ART_DIA, false);
+                    alarms[2] = trendData.subparamAlarm.value(SUB_PARAM_ART_MAP, false);
+                }
                 break;
             case SUB_PARAM_PA_SYS:
-                data[0] = trendData.subparamValue.value(SUB_PARAM_PA_SYS, InvData());
-                data[1] = trendData.subparamValue.value(SUB_PARAM_PA_DIA, InvData());
-                data[2] = trendData.subparamValue.value(SUB_PARAM_PA_MAP, InvData());
-                alarms[0] = trendData.subparamAlarm.value(SUB_PARAM_PA_SYS, false);
-                alarms[1] = trendData.subparamAlarm.value(SUB_PARAM_PA_DIA, false);
-                alarms[2] = trendData.subparamAlarm.value(SUB_PARAM_PA_MAP, false);
+                // Ibp trend data is only printed when the ibp module is connected.
+                if (ibpParam.isConnected())
+                {
+                    data[0] = trendData.subparamValue.value(SUB_PARAM_PA_SYS, InvData());
+                    data[1] = trendData.subparamValue.value(SUB_PARAM_PA_DIA, InvData());
+                    data[2] = trendData.subparamValue.value(SUB_PARAM_PA_MAP, InvData());
+                    alarms[0] = trendData.subparamAlarm.value(SUB_PARAM_PA_SYS, false);
+                    alarms[1] = trendData.subparamAlarm.value(SUB_PARAM_PA_DIA, false);
+                    alarms[2] = trendData.subparamAlarm.value(SUB_PARAM_PA_MAP, false);
+                }
                 break;
             case SUB_PARAM_CVP_MAP:
-                data[0] = trendData.subparamValue.value(SUB_PARAM_CVP_MAP, InvData());
-                alarms[0] = trendData.subparamAlarm.value(SUB_PARAM_CVP_MAP, false);
+                // Ibp trend data is only printed when the ibp module is connected.
+                if (ibpParam.isConnected())
+                {
+                    data[0] = trendData.subparamValue.value(SUB_PARAM_CVP_MAP, InvData());
+                    alarms[0] = trendData.subparamAlarm.value(SUB_PARAM_CVP_MAP, false);
+                }
                 break;
             case SUB_PARAM_LAP_MAP:
-                data[0] = trendData.subparamValue.value(SUB_PARAM_LAP_MAP, InvData());
-                alarms[0] = trendData.subparamAlarm.value(SUB_PARAM_LAP_MAP, false);
+                // Ibp trend data is only printed when the ibp module is connected.
+                if (ibpParam.isConnected())
+                {
+                    data[0] = trendData.subparamValue.value(SUB_PARAM_LAP_MAP, InvData());
+                    alarms[0] = trendData.subparamAlarm.value(SUB_PARAM_LAP_MAP, false);
+                }
                 break;
             case SUB_PARAM_RAP_MAP:
-                data[0] = trendData.subparamValue.value(SUB_PARAM_RAP_MAP, InvData());
-                alarms[0] = trendData.subparamAlarm.value(SUB_PARAM_RAP_MAP, false);
+                // Ibp trend data is only printed when the ibp module is connected.
+                if (ibpParam.isConnected())
+                {
+                    data[0] = trendData.subparamValue.value(SUB_PARAM_RAP_MAP, InvData());
+                    alarms[0] = trendData.subparamAlarm.value(SUB_PARAM_RAP_MAP, false);
+                }
                 break;
             case SUB_PARAM_ICP_MAP:
-                data[0] = trendData.subparamValue.value(SUB_PARAM_ICP_MAP, InvData());
-                alarms[0] = trendData.subparamAlarm.value(SUB_PARAM_ICP_MAP, false);
+                // Ibp trend data is only printed when the ibp module is connected.
+                if (ibpParam.isConnected())
+                {
+                    data[0] = trendData.subparamValue.value(SUB_PARAM_ICP_MAP, InvData());
+                    alarms[0] = trendData.subparamAlarm.value(SUB_PARAM_ICP_MAP, false);
+                }
                 break;
             case SUB_PARAM_AUXP1_SYS:
-                data[0] = trendData.subparamValue.value(SUB_PARAM_AUXP1_SYS, InvData());
-                data[1] = trendData.subparamValue.value(SUB_PARAM_AUXP1_DIA, InvData());
-                data[2] = trendData.subparamValue.value(SUB_PARAM_AUXP1_MAP, InvData());
-                alarms[0] = trendData.subparamAlarm.value(SUB_PARAM_AUXP1_SYS, false);
-                alarms[1] = trendData.subparamAlarm.value(SUB_PARAM_AUXP1_DIA, false);
-                alarms[2] = trendData.subparamAlarm.value(SUB_PARAM_AUXP1_MAP, false);
+                // Ibp trend data is only printed when the ibp module is connected.
+                if (ibpParam.isConnected())
+                {
+                    data[0] = trendData.subparamValue.value(SUB_PARAM_AUXP1_SYS, InvData());
+                    data[1] = trendData.subparamValue.value(SUB_PARAM_AUXP1_DIA, InvData());
+                    data[2] = trendData.subparamValue.value(SUB_PARAM_AUXP1_MAP, InvData());
+                    alarms[0] = trendData.subparamAlarm.value(SUB_PARAM_AUXP1_SYS, false);
+                    alarms[1] = trendData.subparamAlarm.value(SUB_PARAM_AUXP1_DIA, false);
+                    alarms[2] = trendData.subparamAlarm.value(SUB_PARAM_AUXP1_MAP, false);
+                }
                 break;
             case SUB_PARAM_AUXP2_SYS:
-                data[0] = trendData.subparamValue.value(SUB_PARAM_AUXP2_SYS, InvData());
-                data[1] = trendData.subparamValue.value(SUB_PARAM_AUXP2_DIA, InvData());
-                data[2] = trendData.subparamValue.value(SUB_PARAM_AUXP2_MAP, InvData());
-                alarms[0] = trendData.subparamAlarm.value(SUB_PARAM_AUXP2_SYS, false);
-                alarms[1] = trendData.subparamAlarm.value(SUB_PARAM_AUXP2_DIA, false);
-                alarms[2] = trendData.subparamAlarm.value(SUB_PARAM_AUXP2_MAP, false);
+                // Ibp trend data is only printed when the ibp module is connected.
+                if (ibpParam.isConnected())
+                {
+                    data[0] = trendData.subparamValue.value(SUB_PARAM_AUXP2_SYS, InvData());
+                    data[1] = trendData.subparamValue.value(SUB_PARAM_AUXP2_DIA, InvData());
+                    data[2] = trendData.subparamValue.value(SUB_PARAM_AUXP2_MAP, InvData());
+                    alarms[0] = trendData.subparamAlarm.value(SUB_PARAM_AUXP2_SYS, false);
+                    alarms[1] = trendData.subparamAlarm.value(SUB_PARAM_AUXP2_DIA, false);
+                    alarms[2] = trendData.subparamAlarm.value(SUB_PARAM_AUXP2_MAP, false);
+                }
                 break;
             default:
                 handle = false;

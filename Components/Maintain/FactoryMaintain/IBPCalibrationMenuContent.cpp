@@ -59,6 +59,10 @@ void IBPCalibrationMenuContent::readyShow()
         /* fix calibrate point */
         pimpl->pointSpb->setEnabled(false);
     }
+    if (pimpl->calBtn)
+    {
+        pimpl->calBtn->setEnabled(ibpParam.isConnected());
+    }
 }
 
 void IBPCalibrationMenuContent::layoutExec()

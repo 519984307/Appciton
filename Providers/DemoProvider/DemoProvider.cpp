@@ -270,6 +270,14 @@ void DemoProvider::detachParam(Param *param)
         _demoWaveData[WAVE_ICP].param = NULL;
         _demoWaveData[WAVE_AUXP1].param = NULL;
         _demoWaveData[WAVE_AUXP2].param = NULL;
+        // reset ibp connected status
+        QString str;
+        machineConfig.getStrValue("IBP", str);
+        Provider *provider = paramManager.getProvider(str);
+        if (provider)
+        {
+            ibpParam.setConnected(provider->connected());
+        }
     }
     else if (id == PARAM_AG)
     {

@@ -58,7 +58,7 @@ public:
 
     explicit IBPMenuContentPrivate(IBPMenuContent *const q_ptr) :
         q_ptr(q_ptr),
-        oneGBox(NULL), twoGBox(NULL),
+        oneGBox(NULL), twoGBox(NULL), zeroBtn(NULL),
         autoTimerId(-1)
     {}
 
@@ -79,10 +79,10 @@ public:
 
     IBPMenuContent *const q_ptr;
     QMap<MenuItem, ComboBox *> combos;
-    QMap<MenuItem, Button *> buttons;
     QMap<MenuItem, SpinBox *> spinBoxs;
     QGroupBox *oneGBox;
     QGroupBox *twoGBox;
+    Button *zeroBtn;
     IBPLabel ibp1;
     IBPLabel ibp2;
     int autoTimerId;
@@ -150,6 +150,11 @@ void IBPMenuContentPrivate::loadOptions()
     {
         combos[ITEM_CBO_FILTER_MODE]->setCurrentIndex(ibpParam.getFilter());
         combos[ITEM_CBO_SENSITIVITY]->setCurrentIndex(ibpParam.getSensitivity());
+    }
+
+    if (zeroBtn)
+    {
+        zeroBtn->setEnabled(ibpParam.isConnected());
     }
 }
 
@@ -490,6 +495,7 @@ void IBPMenuContent::layoutExec()
     // zero
     Button *btn = new Button(trs("Zero"));
     btn->setButtonStyle(Button::ButtonTextOnly);
+    d_ptr->zeroBtn = btn;
     gLayout->addWidget(btn, row, 1);
     connect(btn, SIGNAL(released()), this, SLOT(onZeroButtonRelease()));
 
@@ -502,7 +508,7 @@ void IBPMenuContent::layoutExec()
     gLayout->addWidget(btn, row, 1);
     connect(btn, SIGNAL(released()), this, SLOT(onAlarmBtnReleased()));
 
-    gLayout->setRowStretch(d_ptr->combos.count() + d_ptr->buttons.count() + 1, 1);
+    gLayout->setRowStretch(d_ptr->combos.count() + 1, 1);
 
     layout->addLayout(gLayout);
 }

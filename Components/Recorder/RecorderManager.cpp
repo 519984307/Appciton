@@ -477,7 +477,7 @@ void RecorderManager::printWavesInit()
         waveIDs.append(WAVE_SPO2);
     }
 
-    if (systemManager.isSupport(CONFIG_IBP))
+    if (systemManager.isSupport(CONFIG_IBP) && ibpParam.isConnected())
     {
         // ibp
         IBPLabel ibpTitle = ibpParam.getEntitle(IBP_CHN_1);

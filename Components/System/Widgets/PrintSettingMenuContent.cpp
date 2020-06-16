@@ -562,7 +562,8 @@ void PrintSettingMenuContentPrivate::wavesUpdate(QList<int> *waveIDs, QStringLis
         waveNames->append(trs(paramInfo.getParamWaveformName(WAVE_SPO2)));
     }
 
-    if (systemManager.isSupport(CONFIG_IBP))
+    // add ibp waveform when the module is connected to the host
+    if (systemManager.isSupport(CONFIG_IBP) && ibpParam.isConnected())
     {
         // ibp
         IBPLabel ibpTitle = ibpParam.getEntitle(IBP_CHN_1);

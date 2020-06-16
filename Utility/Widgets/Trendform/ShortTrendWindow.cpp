@@ -245,7 +245,7 @@ void ShortTrendWindowPrivate::loadParaList()
     {
         paraList[SUB_PARAM_SPO2] = paramInfo.getSubParamName(SUB_PARAM_SPO2);
     }
-    if (systemManager.isSupport(CONFIG_IBP))
+    if (systemManager.isSupport(CONFIG_IBP) && ibpParam.isConnected())
     {
         SubParamID ibp1 = ibpParam.getSubParamID(IBP_CHN_1);
         SubParamID ibp2 = ibpParam.getSubParamID(IBP_CHN_2);
