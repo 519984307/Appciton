@@ -110,7 +110,7 @@ TrendTableSetWindow::TrendTableSetWindow()
     d_ptr->trendGroupCbo->addItem("Resp");
     if (systemManager.isSupport(CONFIG_IBP) || systemManager.isSupport(CONFIG_CO))
     {
-        d_ptr->trendGroupCbo->addItem("IBP");
+        d_ptr->trendGroupCbo->addItem("IBP/C.O.");
     }
     if (systemManager.isSupport(CONFIG_AG))
     {
