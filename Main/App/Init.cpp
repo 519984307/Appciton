@@ -594,6 +594,8 @@ static void _initProviderParam(void)
         }
 
         paramManager.addParam(&ibpParam.construction());
+        QObject::connect(&ibpParam, SIGNAL(ibpConnectStatusUpdated(bool)),
+                         &softkeyManager, SLOT(setIBPZeroKeyAvailable(bool)));
 
         limitAlarmSource = new IBPLimitAlarm();
         alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_IBP);

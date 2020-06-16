@@ -243,6 +243,33 @@ public:
 private slots:
     void onPaletteChanged(ParamID id);
 
+signals:
+    /**
+     * @brief ibpConnectStatusUpdated  and the signal function of the provider`s status updated
+     * @param isConnected  and if is connected
+     */
+    void ibpConnectStatusUpdated(bool isConnected);
+
+private:
+    /**
+     * @brief _getTrendWindowName  get trend window name by ibp chn
+     * @param chn  IBP Channel
+     * @return   trend window name
+     */
+    QString _getTrendWindowName(IBPChannel chn);
+
+    /**
+     * @brief _getWaveWindowName  get wave window name by ibp chn
+     * @param chn  IBP Channel
+     * @return   wave window name
+     */
+    QString _getWaveWindowName(IBPChannel chn);
+
+    /**
+     * @brief _resetAllChnData reset all ibp chn to invdata
+     */
+    void _resetAllChnData();
+
 private:
     IBPParam();
     static IBPParam *_selfObj;

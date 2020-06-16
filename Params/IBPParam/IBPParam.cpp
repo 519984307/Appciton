@@ -198,33 +198,8 @@ void IBPParam::handDemoTrendData()
 
 void IBPParam::exitDemo()
 {
-    IBPParamInfo &ch1Data = _chnData[IBP_CHN_1].paramData;
-    ch1Data.sys = InvData();
-    ch1Data.dia = InvData();
-    ch1Data.mean = InvData();
-    ch1Data.pr = InvData();
-    _chnData[IBP_CHN_1].needZero = true;
-    IBPTrendWidget *ch1Trend = _chnData[IBP_CHN_1].trendWidget;
-    if (ch1Trend)
-    {
-        /* exit demo, need to zero again, set zero flag to false */
-        ch1Trend->setZeroFlag(false);
-        ch1Trend->setData(InvData(), InvData(), InvData());
-    }
-
-    IBPParamInfo &ch2Data = _chnData[IBP_CHN_2].paramData;
-    ch2Data.sys = InvData();
-    ch2Data.dia = InvData();
-    ch2Data.mean = InvData();
-    ch2Data.pr = InvData();
-    _chnData[IBP_CHN_2].needZero = true;
-    IBPTrendWidget *ch2Trend = _chnData[IBP_CHN_2].trendWidget;
-    if (ch2Trend)
-    {
-        /* exit demo, need to zero again, set zero flag to false */
-        ch2Trend->setZeroFlag(false);
-        ch2Trend->setData(InvData(), InvData(), InvData());
-    }
+    // reset all ibp chn to invdata
+    _resetAllChnData();
     ecgDupParam.updatePR(InvData(), PR_SOURCE_IBP);
 }
 
@@ -440,7 +415,55 @@ void IBPParam::setProvider(IBPProviderIFace *provider)
 
 void IBPParam::setConnected(bool isConnected)
 {
+    if (_connectedProvider == isConnected)
+    {
+        return;
+    }
+
     _connectedProvider = isConnected;
+
+    QString ibpChn1Trend = _getTrendWindowName(IBP_CHN_1);
+    QString ibpChn2Trend = _getTrendWindowName(IBP_CHN_2);
+    QString ibpChn1Wave = _getWaveWindowName(IBP_CHN_1);
+    QString ibpChn2Wave = _getWaveWindowName(IBP_CHN_2);
+
+    int needUpdate = 0;
+    if (isConnected)
+    {
+        enable();
+
+        // update to show IBP info
+        needUpdate |= layoutManager.setWidgetLayoutable(ibpChn1Trend, true);
+        needUpdate |= layoutManager.setWidgetLayoutable(ibpChn2Trend, true);
+        needUpdate |= layoutManager.setWidgetLayoutable(ibpChn1Wave, true);
+        needUpdate |= layoutManager.setWidgetLayoutable(ibpChn2Wave, true);
+        if (needUpdate)
+        {
+            layoutManager.updateLayout();
+        }
+    }
+    else
+    {
+        disable();
+        //  reset all ibp chn to invdata
+        _resetAllChnData();
+        AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_IBP);
+        if (alarmSource)
+        {
+            alarmSource->clear();
+        }
+        // update to hide ibp info
+        needUpdate |= layoutManager.setWidgetLayoutable(ibpChn1Trend, false);
+        needUpdate |= layoutManager.setWidgetLayoutable(ibpChn2Trend, false);
+        needUpdate |= layoutManager.setWidgetLayoutable(ibpChn1Wave, false);
+        needUpdate |= layoutManager.setWidgetLayoutable(ibpChn2Wave, false);
+        if (needUpdate)
+        {
+            layoutManager.updateLayout();
+        }
+    }
+
+    emit ibpConnectStatusUpdated(isConnected);
 }
 
 bool IBPParam::isConnected()
@@ -1453,5 +1476,44 @@ void IBPParam::onPaletteChanged(ParamID id)
     {
         _chnData[i].waveWidget->updatePalette(pal);
         _chnData[i].trendWidget->updatePalette(pal);
+    }
+}
+
+QString IBPParam::_getTrendWindowName(IBPChannel chn)
+{
+    if (chn >= IBP_CHN_NR || _chnData[chn].trendWidget == NULL)
+    {
+        return QString();
+    }
+
+    return _chnData[chn].trendWidget->name();
+}
+
+QString IBPParam::_getWaveWindowName(IBPChannel chn)
+{
+    if (chn >= IBP_CHN_NR || _chnData[chn].waveWidget == NULL)
+    {
+        return QString();
+    }
+
+    return _chnData[chn].waveWidget->name();
+}
+
+void IBPParam::_resetAllChnData()
+{
+    for (int i = IBP_CHN_1; i < IBP_CHN_NR; ++i)
+    {
+        IBPParamInfo &chnData = _chnData[i].paramData;
+        chnData.sys = InvData();
+        chnData.dia = InvData();
+        chnData.mean = InvData();
+        chnData.pr = InvData();
+        _chnData[i].needZero = true;
+        IBPTrendWidget *chnTrend = _chnData[i].trendWidget;
+        if (chnTrend)
+        {
+            chnTrend->setZeroFlag(false);
+            chnTrend->setData(InvData(), InvData(), InvData());
+        }
     }
 }
