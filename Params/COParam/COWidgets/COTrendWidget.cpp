@@ -19,6 +19,7 @@
 #include "MeasureSettingWindow.h"
 #include "BaseDefine.h"
 #include "Framework/Utility/Unit.h"
+#include "Framework/TimeDate/TimeDate.h"
 
 
 class COTrendWidgetPrivate
@@ -26,7 +27,7 @@ class COTrendWidgetPrivate
 public:
     COTrendWidgetPrivate()
         :coValue(NULL), ciName(NULL), ciValue(NULL), tbName(NULL), tbValue(NULL),
-          coStr(InvStr()), ciStr(InvStr()), tbStr(InvStr())
+          measureTime(0), coStr(InvStr()), ciStr(InvStr()), tbStr(InvStr())
     {}
 
     QLabel *coValue;
@@ -34,6 +35,7 @@ public:
     QLabel *ciValue;
     QLabel *tbName;
     QLabel *tbValue;
+    QLabel *measureTime;
 
     QString coStr;
     QString ciStr;
@@ -86,10 +88,20 @@ COTrendWidget::COTrendWidget()
     tbLayout->addWidget(pimpl->tbValue);
 
     QVBoxLayout *vLayout = new QVBoxLayout();
+    vLayout->setSpacing(0);
     vLayout->addLayout(ciLayout);
     vLayout->addLayout(tbLayout);
 
-    contentLayout->addWidget(pimpl->coValue, 3, Qt::AlignCenter);
+    QVBoxLayout *coLayout = new QVBoxLayout();
+    coLayout->setSpacing(0);
+    coLayout->setContentsMargins(4, 8, 4, 4);
+    pimpl->measureTime = new QLabel();
+    pimpl->measureTime->setAlignment(Qt::AlignCenter);
+    pimpl->measureTime->setFixedHeight(fontManager.getFontSize(1));
+    coLayout->addWidget(pimpl->measureTime);
+    coLayout->addWidget(pimpl->coValue, 1);
+
+    contentLayout->addLayout(coLayout, 3);
     contentLayout->addLayout(vLayout, 3);
 
     connect(this, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
@@ -105,7 +117,7 @@ COTrendWidget::~COTrendWidget()
 /**************************************************************************************************
  * display C.O. and C.I. data.。
  *************************************************************************************************/
-void COTrendWidget::setMeasureResult(short co, short ci)
+void COTrendWidget::setMeasureResult(short co, short ci, unsigned t)
 {
     if (co == InvData())
     {
@@ -127,6 +139,14 @@ void COTrendWidget::setMeasureResult(short co, short ci)
 
     pimpl->coValue->setText(pimpl->coStr);
     pimpl->ciValue->setText(pimpl->ciStr);
+    if (pimpl->coStr == InvStr())
+    {
+        pimpl->measureTime->setText(QString());
+    }
+    else
+    {
+        pimpl->measureTime->setText(timeDate->getTime(t));
+    }
 }
 
 /**************************************************************************************************
@@ -169,6 +189,8 @@ void COTrendWidget::setTextSize()
     font.setWeight(QFont::Black);
 
     pimpl->coValue->setFont(font);
+
+    pimpl->measureTime->setFont(fontManager.textFont(fontManager.getFontSize(1)));
 
     r.setSize(QSize(w / 2, h / 2));
     fontsize = fontManager.adjustNumFontSize(r , true , "2222");

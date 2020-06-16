@@ -26,10 +26,11 @@ public:
      * @brief setMeasureResult set the displayed co and ci value
      * @param co cardiac output
      * @param ci cardiac index
+     * @param t the measure time
      * @note
      * The co and ci value should has been scaled by 10
      */
-    void setMeasureResult(short co, short ci);
+    void setMeasureResult(short co, short ci, unsigned t);
 
     /**
      * @brief setTBData set the display TB value

@@ -89,7 +89,8 @@ void COParam::handDemoTrendData()
 
     if (pimpl->trendWidget)
     {
-        pimpl->trendWidget->setMeasureResult(pimpl->coAvgVal, pimpl->ciAvgVal);
+        pimpl->trendWidget->setMeasureResult(pimpl->coAvgVal, pimpl->ciAvgVal,
+                                             QDateTime::currentDateTime().toTime_t());
         pimpl->trendWidget->setTb(pimpl->tbVal);
     }
 }
@@ -103,7 +104,7 @@ void COParam::exitDemo()
 
     if (pimpl->trendWidget)
     {
-        pimpl->trendWidget->setMeasureResult(InvData(), InvData());
+        pimpl->trendWidget->setMeasureResult(InvData(), InvData(), 0);
         pimpl->trendWidget->setTb(InvData());
     }
 }
@@ -340,7 +341,8 @@ void COParam::setAverageResult(short co, short ci)
 {
     if (pimpl->trendWidget)
     {
-        pimpl->trendWidget->setMeasureResult(co, ci);
+        unsigned t = QDateTime::currentDateTime().toTime_t();
+        pimpl->trendWidget->setMeasureResult(co, ci, t);
     }
 }
 
