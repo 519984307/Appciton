@@ -360,6 +360,8 @@ public:
 
     void loadItemInfos()
     {
+        waveIDMaps.clear();
+        paramNodeDescriptions.clear();
         // two ecg wave at most
         /* TODO: find the proper ECG Wave */
         waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_ECG1), WAVE_ECG_II);
