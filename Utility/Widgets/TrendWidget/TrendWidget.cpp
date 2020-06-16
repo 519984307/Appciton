@@ -92,6 +92,11 @@ void TrendWidget::showAlarmOff()
     QList<SubParamID>::ConstIterator iter = subParams.constBegin();
     for (; iter != subParams.end(); iter++)
     {
+        if (!alarmConfig.hasLimitAlarm(*iter))
+        {
+            continue;
+        }
+
         if (!alarmConfig.isLimitAlarmEnable(*iter))
         {
             alarmOffVisabled = true;

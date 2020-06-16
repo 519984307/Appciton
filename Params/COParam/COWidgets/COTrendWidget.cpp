@@ -53,8 +53,8 @@ COTrendWidget::COTrendWidget()
 
     setUnit(trs(Unit::getSymbol(UNIT_LPM)));
 
-    // // 设置报警关闭标志
-    // showAlarmOff();
+    // 设置报警关闭标志
+    showAlarmOff();
 
     pimpl->coValue = new QLabel(pimpl->coStr);
     pimpl->coValue->setAlignment(Qt::AlignCenter);
