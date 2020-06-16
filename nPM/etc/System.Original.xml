@@ -691,7 +691,7 @@
                 <Scale>1</Scale>
             </bpm>
             </AUXP2_PR>
-            <TB Enable="0" Prio="2" Auto="1">
+            <TB Enable="1" Prio="2" Auto="1">
             <celsius>
                 <Low Min="230" Max="449">360</Low>
                 <High Min="231" Max="450">380</High>
