@@ -679,19 +679,19 @@
 		</bpm>
 		</AUXP2_PR>
                 <TB Enable="1" Prio="1">
-		<celsius>
-		    <Low Min="230" Max="449">360</Low>
-		    <High Min="231" Max="450">380</High>
-		    <Step>1</Step>
+                <celsius>
+                    <Low Min="230" Max="429">360</Low>
+                    <High Min="231" Max="430">390</High>
+                    <Step>1</Step>
                     <Scale>10</Scale>
-		</celsius>
-		<fahrenheit>
-		    <Low Min="590" Max="1219">950</Low>
-		    <High Min="591" Max="1220">1000</High>
-		    <Step>1</Step>
-		    <Scale>10</Scale>
-		</fahrenheit>
-		</TB>
+                </celsius>
+                <fahrenheit>
+                    <Low Min="734" Max="1093">968</Low>
+                    <High Min="735" Max="1094">1022</High>
+                    <Step>1</Step>
+                    <Scale>10</Scale>
+                </fahrenheit>
+                </TB>
 		<ETCO2 Enable="1" Prio="1">
 		<percent>
 		    <Low Min="20" Max="249">20</Low>
