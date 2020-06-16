@@ -120,7 +120,7 @@ UnitType COParam::getCurrentUnit(SubParamID id)
     }
     else if (id == SUB_PARAM_CO_TB)
     {
-        return UNIT_TDC;
+        return UNIT_TC;
     }
     else
     {

@@ -736,6 +736,13 @@ UnitType ParamInfo::getUnitOfSubParam(SubParamID id)
     case SUB_PARAM_O2:
         return UNIT_PERCENT;
 
+    case SUB_PARAM_CO_CO:
+        return UNIT_LPM;
+    case SUB_PARAM_CO_CI:
+        return UNIT_LPMPSQM;
+    case SUB_PARAM_CO_TB:
+        return UNIT_TC;
+
     case SUB_PARAM_T1:
     case SUB_PARAM_T2:
         return UNIT_TC;
@@ -835,6 +842,13 @@ UnitType ParamInfo::getUnitOfSubParam(SubParamID id, UnitType *t0, UnitType *t1)
         *t0 = UNIT_MMHG;
         *t1 = UNIT_KPA;
         return UNIT_PERCENT;
+
+    case SUB_PARAM_CO_CO:
+        return UNIT_LPM;
+    case SUB_PARAM_CO_CI:
+        return UNIT_LPMPSQM;
+    case SUB_PARAM_CO_TB:
+        return UNIT_TC;
 
     case SUB_PARAM_T1:
     case SUB_PARAM_T2:

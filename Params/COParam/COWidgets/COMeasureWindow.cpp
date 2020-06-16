@@ -250,7 +250,7 @@ COMeasureWindow::COMeasureWindow()
     }
 
     QGridLayout *valueLabelLayout = new QGridLayout;
-    pimpl->coAvgLabel = new QLabel(QString("C.O. Avg.\n(%1)").arg(Unit::getSymbol(UNIT_LMin)));
+    pimpl->coAvgLabel = new QLabel(QString("C.O. Avg.\n(%1)").arg(trs(Unit::getSymbol(UNIT_LPM))));
     pimpl->coAvgLabel->setFont(fontManager.textFont(fontManager.getFontSize(2)));
     valueLabelLayout->addWidget(pimpl->coAvgLabel, 0, 0);
     pimpl->coAvgVal = new QLabel(InvStr());
@@ -258,7 +258,8 @@ COMeasureWindow::COMeasureWindow()
     pimpl->coAvgVal->setFont(fontManager.textFont(fontManager.getFontSize(5)));
     valueLabelLayout->addWidget(pimpl->coAvgVal, 0, 1);
 
-    pimpl->ciAvgLabel = new QLabel(QString::fromUtf8("C.I. Avg.\n(L/min/m²)"));
+    pimpl->ciAvgLabel = new QLabel(QString::fromUtf8("C.I. Avg.\n(%1)")
+                                   .arg(trs(Unit::getSymbol(UNIT_LPMPSQM))));
     pimpl->ciAvgLabel->setFont(fontManager.textFont(fontManager.getFontSize(2)));
     valueLabelLayout->addWidget(pimpl->ciAvgLabel, 1, 0);
     pimpl->ciAvgVal = new QLabel(InvStr());

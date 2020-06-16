@@ -50,7 +50,7 @@ COTrendWidget::COTrendWidget()
 
     setName("C.O.");
 
-    setUnit(trs(Unit::getSymbol(UNIT_LMin)));
+    setUnit(trs(Unit::getSymbol(UNIT_LPM)));
 
     // // 设置报警关闭标志
     // showAlarmOff();
