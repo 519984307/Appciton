@@ -250,11 +250,15 @@ void SmartIBPProvider::sendVersion()
 
 void SmartIBPProvider::disconnected()
 {
-    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_IBP);
-    if (alarmSource)
+    // When IBP is a plug-in module, there is no need to set a communication stop alarm
+    if (PluginProvider::getPluginProvider("Plugin") == NULL)
     {
-        alarmSource->clear();
-        alarmSource->setOneShotAlarm(IBP_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+        AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_IBP);
+        if (alarmSource)
+        {
+            alarmSource->clear();
+            alarmSource->setOneShotAlarm(IBP_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+        }
     }
     if (isConnectedToParam)
     {
@@ -268,10 +272,14 @@ void SmartIBPProvider::reconnected()
     {
         ibpParam.setConnected(true);
     }
-    AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_IBP);
-    if (alarmSource)
+    // When IBP is a plug-in module, there is no need to set a communication stop alarm
+    if (PluginProvider::getPluginProvider("Plugin") == NULL)
     {
-        alarmSource->setOneShotAlarm(IBP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+        AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_IBP);
+        if (alarmSource)
+        {
+            alarmSource->setOneShotAlarm(IBP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+        }
     }
     pimpl->packetCounter = 0;
 }
