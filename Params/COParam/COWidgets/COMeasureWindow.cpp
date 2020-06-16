@@ -430,16 +430,23 @@ void COMeasureWindow::showEvent(QShowEvent *ev)
         }
     }
 
-    /* calculate the bsa */
-    if (isEqual(patientManager.getHeight(), 0.0f) || isEqual(patientManager.getWeight(), 0.0f))
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
     {
-        pimpl->bsa = 0.0f;
-        pimpl->bsaVal->setText(InvStr());
+        pimpl->bsaVal->setText(QString::number(1.624f, 'f', 3));
     }
     else
     {
-        pimpl->bsa = pimpl->calcBsa(patientManager.getHeight(), patientManager.getWeight());
-        pimpl->bsaVal->setText(QString::number(pimpl->bsa, 'f', 3));
+        /* calculate the bsa */
+        if (isEqual(patientManager.getHeight(), 0.0f) || isEqual(patientManager.getWeight(), 0.0f))
+        {
+            pimpl->bsa = 0.0f;
+            pimpl->bsaVal->setText(InvStr());
+        }
+        else
+        {
+            pimpl->bsa = pimpl->calcBsa(patientManager.getHeight(), patientManager.getWeight());
+            pimpl->bsaVal->setText(QString::number(pimpl->bsa, 'f', 3));
+        }
     }
 }
 
@@ -451,7 +458,7 @@ void COMeasureWindow::timerEvent(QTimerEvent *ev)
         {
             pimpl->demoDataReadIndex = 0;
             pimpl->stopTimer(&pimpl->demoTimerID);
-            setMeasureResult(38, 15);
+            setMeasureResult(38, 23);
         }
 
         setTb(coParam.getTb() - tbDemoWave[pimpl->demoDataReadIndex] / 10);
