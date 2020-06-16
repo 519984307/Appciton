@@ -452,7 +452,7 @@ void IBPParam::setConnected(bool isConnected)
         {
             alarmSource->clear();
         }
-        // update to show ibp info
+        // update to hide ibp info
         needUpdate |= layoutManager.setWidgetLayoutable(ibpChn1Trend, false);
         needUpdate |= layoutManager.setWidgetLayoutable(ibpChn2Trend, false);
         needUpdate |= layoutManager.setWidgetLayoutable(ibpChn1Wave, false);
