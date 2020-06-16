@@ -27,7 +27,7 @@ class COTrendWidgetPrivate
 public:
     COTrendWidgetPrivate()
         :coValue(NULL), ciName(NULL), ciValue(NULL), tbName(NULL), tbValue(NULL),
-          measureTime(0), coStr(InvStr()), ciStr(InvStr()), tbStr(InvStr())
+          measureTime(0), coStr(InvStr()), ciStr(InvStr()), tbStr(InvStr()), isTbAlarm(false)
     {}
 
     QLabel *coValue;
@@ -40,6 +40,7 @@ public:
     QString coStr;
     QString ciStr;
     QString tbStr;
+    bool isTbAlarm;
 };
 
 COTrendWidget::COTrendWidget()
@@ -167,11 +168,33 @@ void COTrendWidget::setTb(short tb)
     return;
 }
 
+void COTrendWidget::setTbAlarm(bool flag)
+{
+    pimpl->isTbAlarm = flag;
+
+    updateAlarm(flag);
+}
+
 QList<SubParamID> COTrendWidget::getShortTrendSubParams() const
 {
     QList<SubParamID> list;
     list << SUB_PARAM_CO_CO << SUB_PARAM_CO_CI << SUB_PARAM_CO_TB;
     return list;
+}
+
+void COTrendWidget::showValue()
+{
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_CO));
+
+    if (pimpl->isTbAlarm && pimpl->tbStr != InvStr())
+    {
+        showAlarmStatus(pimpl->tbValue);
+        restoreNormalStatusLater();
+    }
+    else
+    {
+        showNormalStatus(psrc);
+    }
 }
 
 /**************************************************************************************************
@@ -202,6 +225,12 @@ void COTrendWidget::setTextSize()
     font = fontManager.textFont(fontManager.getFontSize(3));
     pimpl->ciName->setFont(font);
     pimpl->tbName->setFont(font);
+}
+
+void COTrendWidget::doRestoreNormalStatus()
+{
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_CO));
+    showNormalStatus(psrc);
 }
 
 /**************************************************************************************************

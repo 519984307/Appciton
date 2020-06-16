@@ -147,8 +147,11 @@ const char *COLimitAlarm::toString(int id)
  *************************************************************************************************/
 void COLimitAlarm::notifyAlarm(int id, bool flag)
 {
-    Q_UNUSED(id)
-    Q_UNUSED(flag)
+    SubParamID subID = getSubParamID(id);
+    if (id == CO_LIMIT_ALARM_TB_LOW || id == CO_LIMIT_ALARM_TB_HIGH)
+    {
+        coParam.notifyLimitAlarm(subID, flag);
+    }
 }
 
 /**************************************************************************************************

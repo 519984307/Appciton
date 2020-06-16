@@ -197,6 +197,27 @@ COMeasureWindow *COParam::getMeasureWindow() const
     return pimpl->measureWin;
 }
 
+void COParam::showSubParamValue()
+{
+    if (NULL != pimpl->trendWidget)
+    {
+        pimpl->trendWidget->showValue();
+    }
+}
+
+void COParam::notifyLimitAlarm(SubParamID id, bool alarm)
+{
+    if (pimpl->trendWidget == NULL)
+    {
+        return;
+    }
+
+    if (id == SUB_PARAM_CO_TB)
+    {
+        pimpl->trendWidget->setTbAlarm(alarm);
+    }
+}
+
 void COParam::setCatheterCoeff(unsigned short coef)
 {
     currentConfig.setNumValue("CO|ComputationConst", (unsigned)coef);

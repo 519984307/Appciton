@@ -62,6 +62,16 @@ public:
      */
     COMeasureWindow *getMeasureWindow() const;
 
+    /* override */
+    void showSubParamValue();
+
+    /**
+     * @brief notifyLimitAlarm notify the limit alarm
+     * @param id subparam id
+     * @param alarm true when alarm
+     */
+    void notifyLimitAlarm(SubParamID id, bool alarm);
+
 public:
     /**
      * @brief setCatheterCoeff set the Swan-Ganz catheter coefficient

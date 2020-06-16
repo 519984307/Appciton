@@ -40,10 +40,25 @@ public:
      */
     void setTb(short tb);
 
+    /**
+     * @brief setTbAlarm set the tb alarm flag
+     * @param flag true when alarm
+     */
+    void setTbAlarm(bool flag);
+
     QList<SubParamID> getShortTrendSubParams() const;
+
+    /**
+     * @brief showValue show value per second
+     * @note
+     * We will create blink effect here when alarm
+     */
+    void showValue();
 
 protected:
     virtual void setTextSize(void);
+    /* override */
+    void doRestoreNormalStatus();
 
 private slots:
     void _releaseHandle(IWidget *);
