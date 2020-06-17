@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the Project project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2020/6/8
+ **/
+
 #pragma once
 #include "PatientDefine.h"
 #include "CODefine.h"
@@ -7,36 +17,40 @@
 class COProviderIFace
 {
 public:
-
+    virtual ~COProviderIFace() { }
     // CO 测量控制
-    virtual void measureCtrl(COInstCtl /*instctl*/){}
-    virtual bool isMeasureCtrl(unsigned char */*packet*/) {return false;}
+    virtual void measureCtrl(COMeasureCtrl /*instctl*/){}
 
     // CO 测量时间间隔设置
-    virtual void setInterval(COMeasureInterval /*interval*/){}
-    virtual bool isSetInterval(unsigned char */*packet*/) {return false;}
+    virtual void setMeasureInterval(COMeasureInterval /*interval*/){}
 
-    // Ti 输入模式设置
-    virtual void setInputMode(COTiMode /*inputmode*/, unsigned short /*watertemp*/){}
-    virtual bool isSetInputMode(unsigned char */*packet*/) {return false;}
+    // Ti 输入模式设置, need ti value when in manual mode
+    virtual void setTiSource(COTiSource /*inputmode*/, unsigned short /*ti*/){}
 
     // 注射液体积设定
-    virtual void setVolume(unsigned char /*volume*/){}
-    virtual bool isSetVolume(unsigned char */*packet*/) {return false;}
+    virtual void setInjectionVolume(unsigned char /*volume*/){}
 
-    // 漂浮导管系数设定
-    virtual void setDuctRatio(unsigned short /*ratio*/){}
-    virtual bool isSetDuctRatio(unsigned char */*packet*/) {return false;}
+    // 漂浮导管系数设定, x1000
+    virtual void setCatheterCoeff(unsigned short /*ratio*/){}
 
-    // 血液动力计算参数设置
-    virtual void setHemodymicParam(void){}
-    virtual bool isSetHemodymicParam(unsigned char */*packet*/) {return false;}
+    /* get the board type */
+    virtual COModuleType getCOModuleType() { return CO_MODULE_NR; }
 
-    // 血液动力学计算
-    virtual void hemodymicCalc(void){}
-    virtual bool isHemodymicCalc(unsigned char */*packet*/) {return false;}
+    /**
+     * @brief getMeasureWaveRate the upload measure wave rate
+     * @return the wave data rate
+     */
+    virtual short getMeasureWaveRate() { return 25;}
 
-public:
-    COProviderIFace() {  }
-    virtual ~COProviderIFace() { }
+    /**
+     * @brief isTiSensorOff get the ti sensor status
+     * @return true when sensor off, otherwise, false
+     */
+    virtual bool isTiSensorOff() const { return false;}
+
+    /**
+     * @brief isTbSensorOff get the tb sensor status
+     * @return true when sensor off, otherwise, false
+     */
+    virtual bool isTbSensorOff() const { return false;}
 };

@@ -64,7 +64,7 @@ public:
     };
 
     MachineConfigModuleContentPrivte()
-                    : isSyncIBPCO(true)
+                    : isSyncIBPCO(false)
     {
     }
     /**
@@ -249,8 +249,6 @@ void MachineConfigModuleContentPrivte::loadOptions()
     combos[ITEM_CBO_ECG12]->setEnabled(false);
     combos[ITEM_CBO_AG]->setCurrentIndex(0);
     combos[ITEM_CBO_AG]->setEnabled(false);
-    combos[ITEM_CBO_CO]->setCurrentIndex(0);
-    combos[ITEM_CBO_CO]->setEnabled(false);
     combos[ITEM_CBO_WIFI]->setCurrentIndex(0);
     combos[ITEM_CBO_WIFI]->setEnabled(false);
     combos[ITEM_CBO_ANALOG_OUTPUT]->setCurrentIndex(0);

@@ -33,7 +33,7 @@ public:
      * @brief setTrendGroup 设置趋势组
      * @param g
      */
-    void setTrendGroup(int g);
+    void setTrendGroup(TrendGroup g);
 
     /**
      * @brief setHistoryDataPath 设置历史回顾数据路径

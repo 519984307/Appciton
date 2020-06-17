@@ -28,6 +28,8 @@
 #include "Framework/Language/Translator.h"
 #include "Framework/TimeDate/TimeDate.h"
 #include "Providers/SmartIBPProvider/SmartIBPProvider.h"
+#include "Providers/SmartCOProvider/SmartCOProvider.h"
+#include "COMeasureWindow.h"
 
 /**
  * @brief initLanguage initialize the language manager
@@ -626,7 +628,8 @@ static void _initProviderParam(void)
     // CO
     if (systemManager.isSupport(CONFIG_CO))
     {
-        paramManager.addParam(&coParam.construction());
+        paramManager.addProvider(new SmartCOProvider(QString()));
+        paramManager.addParam(&coParam.getInstance());
 
         limitAlarmSource = new COLimitAlarm();
         alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_CO);
@@ -635,8 +638,9 @@ static void _initProviderParam(void)
         alarmSourceManager.registerOneShotAlarmSource(oneShotAlarmSource, ONESHOT_ALARMSOURCE_CO);
         alertor.addOneShotSource(oneShotAlarmSource);
 
-        COTrendWidget *coTrendWidget = new COTrendWidget("COTrendWidget");
+        COTrendWidget *coTrendWidget = new COTrendWidget();
         coParam.setCOTrendWidget(coTrendWidget);
+        coParam.setMeasureWindow(new COMeasureWindow());
         layoutManager.addLayoutWidget(coTrendWidget, LAYOUT_NODE_PARAM_CO);
     }
 

@@ -25,45 +25,50 @@
 #include "MainMenuWindow.h"
 #include "AlarmLimitWindow.h"
 #include "WindowManager.h"
+#include "COMeasureWindow.h"
 
 class COMenuContentPrivate
 {
 public:
     enum MenuItem
     {
-        ITEM_CBO_CO_RATIO = 1,
-        ITEM_CBO_INJECT_TEMP_SOURCE,
-        ITEM_CBO_INJECTION_TEMP,
-        ITEM_CBO_INJECTION_VOLUMN,
-        ITEM_CBO_MEASURE_CONTROL,
+        ITEM_BTN_CO_CONST = 1,
+        ITEM_CBO_TI_SOURCE,
+        ITEM_BTN_MANUAL_TI,
+        ITEM_BTN_INJECTATE_VOLUME,
+        ITEM_BTN_CO_MEASURE,
     };
 
-    COMenuContentPrivate() : measureSta(CO_INST_START){}
+    COMenuContentPrivate() {}
 
     // load settings
     void loadOptions();
 
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, Button *> buttons;
-    COInstCtl measureSta;              // 测量状态
 };
 
 void COMenuContentPrivate::loadOptions()
 {
-    buttons[ITEM_CBO_CO_RATIO]->setText(QString::number(static_cast<double>(coParam.getCORatio() * 1.0 / 1000)));
-    combos[ITEM_CBO_INJECT_TEMP_SOURCE]->setCurrentIndex(coParam.getTempSource());
-    if (combos[ITEM_CBO_INJECT_TEMP_SOURCE]->currentIndex() == CO_TI_MODE_AUTO)
+    short coef = coParam.getCatheterCoeff();
+    buttons[ITEM_BTN_CO_CONST]->setText(QString::number(coef * 1.0 / 1000, 'f', 3));
+
+    combos[ITEM_CBO_TI_SOURCE]->blockSignals(true);
+    combos[ITEM_CBO_TI_SOURCE]->setCurrentIndex(coParam.getTiSource());
+    combos[ITEM_CBO_TI_SOURCE]->blockSignals(false);
+    if (combos[ITEM_CBO_TI_SOURCE]->currentIndex() == CO_TI_SOURCE_AUTO)
     {
-        buttons[ITEM_CBO_INJECTION_TEMP]->setEnabled(false);
+        buttons[ITEM_BTN_MANUAL_TI]->setEnabled(false);
     }
     else
     {
-        buttons[ITEM_CBO_INJECTION_TEMP]->setEnabled(true);
+        buttons[ITEM_BTN_MANUAL_TI]->setEnabled(true);
     }
-    QString text = QString::number(static_cast<double>(coParam.getInjectionTemp() * 1.0 / 10));
-    buttons[ITEM_CBO_INJECTION_TEMP]->setText(text);
-    buttons[ITEM_CBO_INJECTION_VOLUMN]->setText(QString::number(coParam.getInjectionVolumn()));
-    buttons[ITEM_CBO_MEASURE_CONTROL]->setText(trs(COSymbol::convert(coParam.getMeasureCtrl())));
+    short ti = coParam.getManualTi();
+    QString text = QString::number(ti * 1.0 / 10, 'f', 1);
+    buttons[ITEM_BTN_MANUAL_TI]->setText(text);
+
+    buttons[ITEM_BTN_INJECTATE_VOLUME]->setText(QString::number(coParam.getInjectionVolume()));
 }
 
 COMenuContent::COMenuContent()
@@ -90,73 +95,77 @@ void COMenuContent::layoutExec()
     Button *button;
     QLabel *label;
     int itemID;
+    int count = 0;
 
-    // Ratio
-    label = new QLabel(trs("CORatio"));
-    layout->addWidget(label, d_ptr->buttons.count() + d_ptr->combos.count(), 0);
-    button = new Button("0.542");
+    // computation constant
+    label = new QLabel(trs("ComputationConst"));
+    layout->addWidget(label, count, 0);
+    button = new Button();
     button ->setButtonStyle(Button::ButtonTextOnly);
-    itemID = static_cast<int>(COMenuContentPrivate::ITEM_CBO_CO_RATIO);
+    itemID = static_cast<int>(COMenuContentPrivate::ITEM_BTN_CO_CONST);
     button->setProperty("Item", qVariantFromValue(itemID));
     connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
-    layout->addWidget(button, d_ptr->buttons.count() + d_ptr->combos.count(), 1);
-    d_ptr->buttons.insert(COMenuContentPrivate::ITEM_CBO_CO_RATIO, button);
+    layout->addWidget(button, count, 1);
+    d_ptr->buttons.insert(COMenuContentPrivate::ITEM_BTN_CO_CONST, button);
+    count++;
 
-    // temp source
-    label = new QLabel(trs("InjectionTempSource"));
-    layout->addWidget(label, d_ptr->buttons.count() + d_ptr->combos.count(), 0);
+    // TI source
+    label = new QLabel(trs("InjectateTempSource"));
+    layout->addWidget(label, count, 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
-                       << trs(COSymbol::convert(CO_TI_MODE_AUTO))
-                       << trs(COSymbol::convert(CO_TI_MODE_MANUAL)));
-    itemID = static_cast<int>(COMenuContentPrivate::ITEM_CBO_INJECT_TEMP_SOURCE);
+                       << trs(COSymbol::convert(CO_TI_SOURCE_AUTO))
+                       << trs(COSymbol::convert(CO_TI_SOURCE_MANUAL)));
+    itemID = static_cast<int>(COMenuContentPrivate::ITEM_CBO_TI_SOURCE);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->buttons.count() + d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(COMenuContentPrivate::ITEM_CBO_INJECT_TEMP_SOURCE, comboBox);
+    layout->addWidget(comboBox, count, 1);
+    d_ptr->combos.insert(COMenuContentPrivate::ITEM_CBO_TI_SOURCE, comboBox);
+    count++;
 
-    // injection temp
-    label = new QLabel(trs("InjectionTemp"));
-    layout->addWidget(label, d_ptr->buttons.count() + d_ptr->combos.count(), 0);
+    // manual TI Temperature
+    label = new QLabel(QString("%1 (%2)").arg(trs("InjectateTemp")).arg(trs("celsius")));
+    layout->addWidget(label, count, 0);
     button = new Button("20");
     button ->setButtonStyle(Button::ButtonTextOnly);
-    itemID = static_cast<int>(COMenuContentPrivate::ITEM_CBO_INJECTION_TEMP);
+    itemID = static_cast<int>(COMenuContentPrivate::ITEM_BTN_MANUAL_TI);
     button->setProperty("Item", qVariantFromValue(itemID));
     connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
-    layout->addWidget(button, d_ptr->buttons.count() + d_ptr->combos.count(), 1);
-    d_ptr->buttons.insert(COMenuContentPrivate::ITEM_CBO_INJECTION_TEMP, button);
+    layout->addWidget(button, count, 1);
+    d_ptr->buttons.insert(COMenuContentPrivate::ITEM_BTN_MANUAL_TI, button);
+    count++;
 
-    // injection volumn
-    label = new QLabel(trs("InjectionVolumn"));
-    layout->addWidget(label, d_ptr->buttons.count() + d_ptr->combos.count(), 0);
+    // injection volume
+    label = new QLabel(QString("%1 (ml)").arg(trs("InjectateVolume")));
+    layout->addWidget(label, count, 0);
     button = new Button("10");
     button ->setButtonStyle(Button::ButtonTextOnly);
-    itemID = static_cast<int>(COMenuContentPrivate::ITEM_CBO_INJECTION_VOLUMN);
+    itemID = static_cast<int>(COMenuContentPrivate::ITEM_BTN_INJECTATE_VOLUME);
     button->setProperty("Item", qVariantFromValue(itemID));
     connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
-    layout->addWidget(button, d_ptr->buttons.count() + d_ptr->combos.count(), 1);
-    d_ptr->buttons.insert(COMenuContentPrivate::ITEM_CBO_INJECTION_VOLUMN, button);
+    layout->addWidget(button, count, 1);
+    d_ptr->buttons.insert(COMenuContentPrivate::ITEM_BTN_INJECTATE_VOLUME, button);
+    count++;
 
-    // measure contrl
-    label = new QLabel(trs("MeasureControl"));
-    layout->addWidget(label, d_ptr->buttons.count() + d_ptr->combos.count(), 0);
-    button = new Button(trs("COStart"));
-    button ->setButtonStyle(Button::ButtonTextOnly);
-    itemID = static_cast<int>(COMenuContentPrivate::ITEM_CBO_MEASURE_CONTROL);
+    button = new Button(trs("COMeasure"));
+    button->setButtonStyle(Button::ButtonTextOnly);
+    itemID = static_cast<int>(COMenuContentPrivate::ITEM_BTN_CO_MEASURE);
     button->setProperty("Item", qVariantFromValue(itemID));
     connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
-    layout->addWidget(button, d_ptr->buttons.count() + d_ptr->combos.count(), 1);
-    d_ptr->buttons.insert(COMenuContentPrivate::ITEM_CBO_MEASURE_CONTROL, button);
+    layout->addWidget(button, count, 1);
+    d_ptr->buttons.insert(COMenuContentPrivate::ITEM_BTN_CO_MEASURE, button);
+    count++;
 
     // 添加报警设置链接
     Button *btn = new Button(QString("%1%2").
                              arg(trs("AlarmSettingUp")).
                              arg(" >>"));
     btn->setButtonStyle(Button::ButtonTextOnly);
-    layout->addWidget(btn, d_ptr->combos.count() + d_ptr->buttons.count(), 1);
+    layout->addWidget(btn, count, 1);
     connect(btn, SIGNAL(released()), this, SLOT(onAlarmBtnReleased()));
+    count++;
 
-    layout->setRowStretch(d_ptr->combos.count() + d_ptr->buttons.count() + 1, 1);
+    layout->setRowStretch(count, 1);
 }
 
 void COMenuContent::onComboBoxIndexChanged(int index)
@@ -164,22 +173,23 @@ void COMenuContent::onComboBoxIndexChanged(int index)
     ComboBox *box = qobject_cast<ComboBox *>(sender());
     if (box)
     {
-        COMenuContentPrivate::MenuItem item
-                = (COMenuContentPrivate::MenuItem)box->property("Item").toInt();
+        int itemID = box->property("Item").toInt();
+        COMenuContentPrivate::MenuItem item = static_cast<COMenuContentPrivate::MenuItem>(itemID);
         switch (item)
         {
-        case COMenuContentPrivate::ITEM_CBO_INJECT_TEMP_SOURCE:
+        case COMenuContentPrivate::ITEM_CBO_TI_SOURCE:
         {
-            if (index == static_cast<int>(CO_TI_MODE_MANUAL))
+            COTiSource tiSrc = static_cast<COTiSource>(index);
+            if (tiSrc == CO_TI_SOURCE_MANUAL)
             {
-                d_ptr->buttons.value(COMenuContentPrivate::ITEM_CBO_INJECTION_TEMP)->setEnabled(true);
+                d_ptr->buttons.value(COMenuContentPrivate::ITEM_BTN_MANUAL_TI)->setEnabled(true);
             }
-            else if (index == static_cast<int>(CO_TI_MODE_AUTO))
+            else if (tiSrc == CO_TI_SOURCE_AUTO)
             {
-                d_ptr->buttons.value(COMenuContentPrivate::ITEM_CBO_INJECTION_TEMP)->setEnabled(false);
+                d_ptr->buttons.value(COMenuContentPrivate::ITEM_BTN_MANUAL_TI)->setEnabled(false);
             }
-            int temp = d_ptr->buttons[COMenuContentPrivate::ITEM_CBO_INJECTION_TEMP]->text().toFloat() * 10;
-            coParam.setTempSource((COTiMode)index, temp);
+            int temp = d_ptr->buttons[COMenuContentPrivate::ITEM_BTN_MANUAL_TI]->text().toFloat() * 10;
+            coParam.setTiSource(tiSrc, temp);
             break;
         }
         default:
@@ -193,10 +203,10 @@ void COMenuContent::onButtonReleased()
     Button *button = qobject_cast<Button *>(sender());
     if (button)
     {
-        COMenuContentPrivate::MenuItem item
-                 = (COMenuContentPrivate::MenuItem) button->property("Item").toInt();
+        int itemID = button->property("Item").toInt();
+        COMenuContentPrivate::MenuItem item = static_cast<COMenuContentPrivate::MenuItem>(itemID);
         switch (item) {
-        case COMenuContentPrivate::ITEM_CBO_CO_RATIO:
+        case COMenuContentPrivate::ITEM_BTN_CO_CONST:
         {
             // 调用数字键盘
             KeyInputPanel numberPad(KeyInputPanel::KEY_TYPE_NUMBER, true);
@@ -204,7 +214,7 @@ void COMenuContent::onButtonReleased()
             QString rec("[0-9]");
             numberPad.setBtnEnable(rec);
             // 设置键盘标题
-            numberPad.setWindowTitle(trs("CORatio"));
+            numberPad.setWindowTitle(trs("ComputationConst"));
             // 最大输入长度
             numberPad.setMaxInputLength(5);
             // 固定为数字键盘
@@ -224,7 +234,7 @@ void COMenuContent::onButtonReleased()
                     if (actualValue >= 1 && actualValue <= 999)
                     {
                         button->setText(text);
-                        coParam.setCORatio(actualValue);
+                        coParam.setCatheterCoeff(actualValue);
                     }
                     else
                     {
@@ -237,7 +247,7 @@ void COMenuContent::onButtonReleased()
             }
             break;
         }
-        case COMenuContentPrivate::ITEM_CBO_INJECTION_TEMP:
+        case COMenuContentPrivate::ITEM_BTN_MANUAL_TI:
         {
              // 调用数字键盘
             KeyInputPanel numberPad(KeyInputPanel::KEY_TYPE_NUMBER, true);
@@ -245,7 +255,7 @@ void COMenuContent::onButtonReleased()
             QString rec("[0-9]");
             numberPad.setBtnEnable(rec);
             // 设置键盘标题
-            numberPad.setWindowTitle(trs("InjectionTemp"));
+            numberPad.setWindowTitle(trs("InjectateTemp"));
             // 最大输入长度
             numberPad.setMaxInputLength(4);
             // 固定为数字键盘
@@ -265,7 +275,7 @@ void COMenuContent::onButtonReleased()
                     if (actualValue <= 270)
                     {
                         button->setText(text);
-                        coParam.setTempSource(CO_TI_MODE_MANUAL, actualValue);
+                        coParam.setTiSource(CO_TI_SOURCE_MANUAL, actualValue);
                     }
                     else
                     {
@@ -278,15 +288,16 @@ void COMenuContent::onButtonReleased()
             }
             break;
         }
-        case COMenuContentPrivate::ITEM_CBO_INJECTION_VOLUMN:
+        case COMenuContentPrivate::ITEM_BTN_INJECTATE_VOLUME:
         {
             // 调用数字键盘
-            KeyInputPanel numberPad(KeyInputPanel::KEY_TYPE_NUMBER, true);
+            KeyInputPanel numberPad(KeyInputPanel::KEY_TYPE_NUMBER, false);
             // 使能键盘的有效字符
             QString rec("[0-9]");
             numberPad.setBtnEnable(rec);
+            numberPad.setSpaceEnable(false);
             // 设置键盘标题
-            numberPad.setWindowTitle(trs("InjectionVolumn"));
+            numberPad.setWindowTitle(trs("InjectateVolume"));
             // 最大输入长度
             numberPad.setMaxInputLength(3);
             // 固定为数字键盘
@@ -305,7 +316,7 @@ void COMenuContent::onButtonReleased()
                     if (value >= 1 && value <= 200)
                     {
                         button->setText(text);
-                        coParam.setInjectionVolumn((unsigned char)value);
+                        coParam.setInjectionVolume((unsigned char)value);
                     }
                     else
                     {
@@ -318,19 +329,12 @@ void COMenuContent::onButtonReleased()
             }
             break;
         }
-        case COMenuContentPrivate::ITEM_CBO_MEASURE_CONTROL:
+        case COMenuContentPrivate::ITEM_BTN_CO_MEASURE:
         {
-            coParam.measureCtrl(d_ptr->measureSta);
-            if (d_ptr->measureSta == CO_INST_START)
-            {
-                button->setText(trs("COEnd"));
-                d_ptr->measureSta = CO_INST_END;
-            }
-            else if (d_ptr->measureSta == CO_INST_END)
-            {
-                button->setText(trs("COStart"));
-                d_ptr->measureSta = CO_INST_START;
-            }
+            COMeasureWindow *w = coParam.getMeasureWindow();
+            windowManager.showWindow(w, WindowManager::ShowBehaviorCloseOthers
+                                     | WindowManager::ShowBehaviorModal
+                                     | WindowManager::ShowBehaviorNoAutoClose);
             break;
         }
         default:
@@ -341,7 +345,7 @@ void COMenuContent::onButtonReleased()
 
 void COMenuContent::onAlarmBtnReleased()
 {
-    QString subParamName = paramInfo.getSubParamName(SUB_PARAM_CO_CO, true);
+    QString subParamName = paramInfo.getSubParamName(SUB_PARAM_CO_TB, true);
     AlarmLimitWindow w(subParamName);
     windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
 }

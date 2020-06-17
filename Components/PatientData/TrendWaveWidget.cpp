@@ -388,6 +388,9 @@ void TrendWaveWidget::loadTrendData(SubParamID subID)
     case SUB_PARAM_SPMET:
     case SUB_PARAM_SPCO:
     case SUB_PARAM_SPO2_D:
+    case SUB_PARAM_CO_CO:
+    case SUB_PARAM_CO_CI:
+    case SUB_PARAM_CO_TB:
     {
         TrendGraphData dataV1;
         AlarmEventInfo alarm;
@@ -500,25 +503,34 @@ void TrendWaveWidget::trendDataPack(int startIndex, int endIndex)
             {
                 data = _backend->getBlockData((quint32)i);
                 dataSeg = reinterpret_cast<TrendDataSegment *>(data.data());
-                // NIBP测量标志位保存在后一个时间间隔的数据中.
+                // NIBP测量标志位保存在后一个时间间隔的数据中, as well as C.O.
                 unsigned status = dataSeg->status;
-                if (status & TrendDataStorageManager::CollectStatusNIBP)
+                if (status & (TrendDataStorageManager::CollectStatusNIBP
+                              | TrendDataStorageManager::CollectStatusCOResult))
                 {
                     if (_trendDataPack.count())
                     {
-                        _trendDataPack.last()->status = status;
-                        _trendDataPack.last()->alarmFlag = dataSeg->eventFlag;
+                        _trendDataPack.last()->status |= status;
+                        _trendDataPack.last()->alarmFlag |= dataSeg->eventFlag;
                         for (int j = 0; j < dataSeg->trendValueNum; j++)
                         {
-                            if (dataSeg->values[j].subParamId == SUB_PARAM_NIBP_SYS ||
-                                    dataSeg->values[j].subParamId == SUB_PARAM_NIBP_DIA ||
-                                    dataSeg->values[j].subParamId == SUB_PARAM_NIBP_MAP)
+                            switch (dataSeg->values[j].subParamId)
+                            {
+                            case SUB_PARAM_NIBP_SYS:
+                            case SUB_PARAM_NIBP_MAP:
+                            case SUB_PARAM_NIBP_DIA:
+                            case SUB_PARAM_CO_CO:
+                            case SUB_PARAM_CO_CI:
                             {
                                 _trendDataPack.last()->subparamValue[(SubParamID)dataSeg->values[j].subParamId] =
                                         dataSeg->values[j].value;
 
                                 _trendDataPack.last()->subparamAlarm[(SubParamID)dataSeg->values[j].subParamId] =
                                         dataSeg->values[j].alarmFlag;
+                            }
+                                break;
+                            default:
+                                break;
                             }
                         }
                     }
@@ -1060,6 +1072,11 @@ TrendGraphType TrendWaveWidget::getTrendGraphType(SubParamID id)
     case SUB_PARAM_AUXP1_SYS:
     case SUB_PARAM_AUXP2_SYS:
         return TREND_GRAPH_TYPE_ART_IBP;
+    case SUB_PARAM_CO_CO:
+    case SUB_PARAM_CO_CI:
+        return TREND_GRAPH_TYPE_CO;
+    case SUB_PARAM_CO_TB:
+        return TREND_GRAPH_TYPE_NORMAL;
     default:
         return TREND_GRAPH_TYPE_NR;
     }

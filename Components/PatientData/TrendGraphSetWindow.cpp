@@ -274,12 +274,11 @@ TrendGraphSetWindow::TrendGraphSetWindow()
     QString groupPrefix = prefix + "TrendGroup";
     systemConfig.getNumValue(groupPrefix, index);
     d_ptr->trendGroupList = new DropList(trs("TrendGroup"));
-    d_ptr->trendGroupList->setEnabled(false);       // 暂时置灰趋势组选择功能(目前不支持IBP,AG参数功能)
     d_ptr->trendGroupList->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
     d_ptr->trendGroupList->addItem("Resp");
-    if (systemManager.isSupport(CONFIG_IBP))
+    if (systemManager.isSupport(CONFIG_IBP) || systemManager.isSupport(CONFIG_CO))
     {
-        d_ptr->trendGroupList->addItem("IBP");
+        d_ptr->trendGroupList->addItem("IBP/C.O.");
     }
     if (systemManager.isSupport(CONFIG_AG))
     {

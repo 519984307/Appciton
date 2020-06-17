@@ -59,6 +59,13 @@ bool AlarmConfig::hasLimitAlarmDisable()
     return false;
 }
 
+bool AlarmConfig::hasLimitAlarm(SubParamID subParamID)
+{
+    QString prefix = "AlarmSource|";
+    prefix += paramInfo.getSubParamName(subParamID, true);
+    return currentConfig.exist(prefix);
+}
+
 void AlarmConfig::setLimitAlarmEnable(SubParamID subParamId, bool enable)
 {
     if (isLimitAlarmEnable(subParamId) == enable)

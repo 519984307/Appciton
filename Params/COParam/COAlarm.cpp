@@ -46,12 +46,6 @@ SubParamID COLimitAlarm::getSubParamID(int id)
 {
     switch (id)
     {
-    case CO_LIMIT_ALARM_CO_LOW:
-    case CO_LIMIT_ALARM_CO_HIGH:
-        return SUB_PARAM_CO_CO;
-    case CO_LIMIT_ALARM_CI_LOW:
-    case CO_LIMIT_ALARM_CI_HIGH:
-        return SUB_PARAM_CO_CI;
     case CO_LIMIT_ALARM_TB_LOW:
     case CO_LIMIT_ALARM_TB_HIGH:
         return SUB_PARAM_CO_TB;
@@ -75,15 +69,9 @@ int COLimitAlarm::getValue(int id)
 {
     switch (id)
     {
-    case CO_LIMIT_ALARM_CO_LOW:
-    case CO_LIMIT_ALARM_CO_HIGH:
-        return coParam.getCOData();
-    case CO_LIMIT_ALARM_CI_LOW:
-    case CO_LIMIT_ALARM_CI_HIGH:
-        return coParam.getCIData();
     case CO_LIMIT_ALARM_TB_LOW:
     case CO_LIMIT_ALARM_TB_HIGH:
-        return coParam.getTBData();
+        return coParam.getTb();
     default:
         return -1;
     }
@@ -103,19 +91,7 @@ bool COLimitAlarm::isAlarmEnable(int id)
 int COLimitAlarm::getUpper(int id)
 {
     SubParamID subID = getSubParamID(id);
-    UnitType unit = UNIT_LPM;
-    if (subID == SUB_PARAM_CO_CO)
-    {
-        unit = UNIT_LPM;
-    }
-    else if (subID == SUB_PARAM_CO_CI)
-    {
-        unit = UNIT_LPMPSQM;
-    }
-    else if (subID == SUB_PARAM_CO_TB)
-    {
-        unit = UNIT_TDC;
-    }
+    UnitType unit = coParam.getCurrentUnit(subID);
     return alarmConfig.getLimitAlarmConfig(subID, unit).highLimit;
 }
 
@@ -125,19 +101,7 @@ int COLimitAlarm::getUpper(int id)
 int COLimitAlarm::getLower(int id)
 {
     SubParamID subID = getSubParamID(id);
-    UnitType unit = UNIT_LPM;
-    if (subID == SUB_PARAM_CO_CO)
-    {
-        unit = UNIT_LPM;
-    }
-    else if (subID == SUB_PARAM_CO_CI)
-    {
-        unit = UNIT_LPMPSQM;
-    }
-    else if (subID == SUB_PARAM_CO_TB)
-    {
-        unit = UNIT_TDC;
-    }
+    UnitType unit = coParam.getCurrentUnit(subID);
     return alarmConfig.getLimitAlarmConfig(subID, unit).lowLimit;
 }
 
@@ -183,8 +147,11 @@ const char *COLimitAlarm::toString(int id)
  *************************************************************************************************/
 void COLimitAlarm::notifyAlarm(int id, bool flag)
 {
-    Q_UNUSED(id)
-    Q_UNUSED(flag)
+    SubParamID subID = getSubParamID(id);
+    if (id == CO_LIMIT_ALARM_TB_LOW || id == CO_LIMIT_ALARM_TB_HIGH)
+    {
+        coParam.notifyLimitAlarm(subID, flag);
+    }
 }
 
 /**************************************************************************************************

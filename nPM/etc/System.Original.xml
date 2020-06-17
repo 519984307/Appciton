@@ -167,7 +167,7 @@
 
     <TrendTable>
         <ResolutionRatio>1</ResolutionRatio>
-        <TrendGroup>2</TrendGroup>
+        <TrendGroup>0</TrendGroup>
     </TrendTable>
     <TrendGraph>
         <Ruler>
@@ -693,30 +693,30 @@
             </AUXP2_PR>
             <CO_CO Enable="1" Prio="2" Auto="1">
             <lpm>
-                <Low Min="20" Max="1999">400</Low>
-                <High Min="21" Max="2000">700</High>
+                <Low Min="0" Max="99">0</Low>
+                <High Min="1" Max="100">100</High>
                 <Step>1</Step>
-                <Scale>100</Scale>
+                <Scale>10</Scale>
             </lpm>
             </CO_CO>
             <CO_CI Enable="1" Prio="2" Auto="1">
             <lpmpsqm>
-                <Low Min="22" Max="39">30</Low>
-                <High Min="23" Max="40">35</High>
+                <Low Min="0" Max="99">0</Low>
+                <High Min="1" Max="100">100</High>
                 <Step>1</Step>
                 <Scale>10</Scale>
             </lpmpsqm>
             </CO_CI>
-            <TB Enable="0" Prio="2" Auto="1">
+            <TB Enable="1" Prio="2" Auto="1">
             <celsius>
-                <Low Min="230" Max="449">360</Low>
-                <High Min="231" Max="450">380</High>
+                <Low Min="230" Max="429">350</Low>
+                <High Min="231" Max="430">400</High>
                 <Step>1</Step>
-                <Scale>1</Scale>
+                <Scale>10</Scale>
             </celsius>
             <fahrenheit>
-                <Low Min="590" Max="1219">950</Low>
-                <High Min="591" Max="1220">1000</High>
+                <Low Min="734" Max="1093">950</Low>
+                <High Min="735" Max="1094">1040</High>
                 <Step>1</Step>
                 <Scale>10</Scale>
             </fahrenheit>

@@ -60,7 +60,7 @@ public:
         {
             " ", "celsius", "fahrenheit", "celsius", "fahrenheit", "mmHg", "kPa", "percent",
             "rpm", "bpm", "μv", "mv", "kg", "lb", "cm", "mm", "inch", "ms", "PPM", "CPM", "mA",
-            "lpm", "lpmpsqm", "cmH2O", "gdL", "mmolL", "mLdL"
+            "lpm", "lpmpsqm", "cmH2O", "gdL", "mmolL", "mLdL",
         };
         return symbol[t];
     }

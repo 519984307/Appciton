@@ -71,6 +71,13 @@ public:
      */
     bool hasLimitAlarmDisable();
 
+    /**
+     * @brief hasLimitAlarm check whether has alarm config for sub param
+     * @param SubParamID the subp param id
+     * @return true if we has alarm config for the sub param
+     */
+    bool hasLimitAlarm(SubParamID subParamID);
+
     // set limit alarm enable or not
     void setLimitAlarmEnable(SubParamID subParamId, bool enable);
 

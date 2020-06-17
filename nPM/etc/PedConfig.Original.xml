@@ -141,11 +141,10 @@
         <ApneaTime>0</ApneaTime>
     </CO2>
     <CO>
-        <Ratio>555</Ratio>
-        <InjectionTempSource>1</InjectionTempSource>
-        <InjectionTemp>232</InjectionTemp>
-        <InjectionVolumn>3</InjectionVolumn>
-        <MeasureMode>1</MeasureMode>
+        <ComputationConst>542</ComputationConst>
+        <TISource>1</TISource>
+        <InjectateTemp>20</InjectateTemp>
+        <InjectateVolume>3</InjectateVolume>
     </CO>
     <RESP>
         <RESPSweepMode>0</RESPSweepMode>
@@ -672,32 +671,16 @@
 		    <Scale>1</Scale>
 		</bpm>
 		</AUXP2_PR>
-		<CO_CO Enable="1" Prio="1">
-		<lpm>
-		    <Low Min="20" Max="1999">400</Low>
-		    <High Min="21" Max="2000">700</High>
-		    <Step>1</Step>
-		    <Scale>100</Scale>
-		</lpm>
-		</CO_CO>
-		<CO_CI Enable="1" Prio="1">
-		<lpmpsqm>
-		    <Low Min="22" Max="39">30</Low>
-		    <High Min="23" Max="40">35</High>
-		    <Step>1</Step>
-		    <Scale>10</Scale>
-		</lpmpsqm>
-		</CO_CI>
-		<TB Enable="0" Prio="1">
+                <TB Enable="1" Prio="1">
 		<celsius>
-		    <Low Min="230" Max="449">360</Low>
-		    <High Min="231" Max="450">380</High>
+                    <Low Min="230" Max="429">360</Low>
+                    <High Min="231" Max="430">390</High>
 		    <Step>1</Step>
-		    <Scale>1</Scale>
+                    <Scale>10</Scale>
 		</celsius>
 		<fahrenheit>
-		    <Low Min="590" Max="1219">950</Low>
-		    <High Min="591" Max="1220">1000</High>
+                    <Low Min="734" Max="1093">968</Low>
+                    <High Min="735" Max="1094">1022</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</fahrenheit>
@@ -1011,7 +994,8 @@
         <IBPColor>Purple</IBPColor>
         <TEMPColor>Brown</TEMPColor>
 	<O2Color>Brown</O2Color>
-	<SPHBColor>Red</SPHBColor>
+        <COColor>Green</COColor>
+        <SPHBColor>Red</SPHBColor>
 	<SPMETColor>Yellow</SPMETColor>
         <!--do not modify-->
     </Display>

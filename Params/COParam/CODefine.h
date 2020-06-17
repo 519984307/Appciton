@@ -1,4 +1,21 @@
+/**
+ ** This file is part of the Project project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2020/6/8
+ **/
+
+
 #pragma once
+
+enum COModuleType
+{
+    CO_MODULE_SMART_CO,
+    CO_MODULE_NR
+};
 
 /**************************************************************************************************
  * CO测量控制：
@@ -6,12 +23,11 @@
  *      启动(0x01)
  *      中断(0x02)
  *************************************************************************************************/
-enum COInstCtl
+enum COMeasureCtrl
 {
-    CO_INST_END                 =   0x00,
-    CO_INST_START               =   0x01,
-    CO_INST_INTERRUPT           =   0x02,
-    CO_INST_NR
+    CO_MEASURE_START  = 0x00,
+    CO_MEASURE_STOP   = 0x01,
+    CO_MEASURE_NR
 };
 
 /**************************************************************************************************
@@ -35,11 +51,11 @@ enum COMeasureInterval
  *      自动TI输入(0x00)
  *      手动设置水温(0x01)
  *************************************************************************************************/
-enum COTiMode
+enum COTiSource
 {
-    CO_TI_MODE_AUTO             =   0x00,
-    CO_TI_MODE_MANUAL           =   0x01,
-    CO_TI_MODE_NR
+    CO_TI_SOURCE_AUTO             =   0x00,
+    CO_TI_SOURCE_MANUAL           =   0x01,
+    CO_TI_SOURCE_NR
 };
 
 /**************************************************************************************************
@@ -47,12 +63,6 @@ enum COTiMode
  *************************************************************************************************/
 enum COLimitAlarmType
 {
-    CO_LIMIT_ALARM_CO_LOW,
-    CO_LIMIT_ALARM_CO_HIGH,
-
-    CO_LIMIT_ALARM_CI_LOW,
-    CO_LIMIT_ALARM_CI_HIGH,
-
     CO_LIMIT_ALARM_TB_LOW,
     CO_LIMIT_ALARM_TB_HIGH,
 
@@ -64,7 +74,9 @@ enum COLimitAlarmType
  *************************************************************************************************/
 enum COOneShotType
 {
-    TB_SENSOR_LEAD_OFF,
-    TI_SENSOR_LEAD_OFF,
+    CO_ONESHOT_ALARM_TB_SENSOR_OFF,
+    CO_ONESHOT_ALARM_MEASURE_TIMEOUT,
+    CO_ONESHOT_ALARM_MEASURE_FAIL,
+    CO_ONESHOT_ALARM_COMMUNICATION_STOP,
     CO_ONESHOT_NR,
 };

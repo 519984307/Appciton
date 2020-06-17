@@ -18,64 +18,92 @@
 #include <QDebug>
 #include "MeasureSettingWindow.h"
 #include "BaseDefine.h"
+#include "Framework/Utility/Unit.h"
+#include "Framework/TimeDate/TimeDate.h"
 
-#define     INVALDATA     0xffff
 
-/**************************************************************************************************
- * 构造。
- *************************************************************************************************/
-COTrendWidget::COTrendWidget(const QString &trendName)
-    : TrendWidget(trendName)
+class COTrendWidgetPrivate
 {
-    _coStr = InvStr();
-    _ciStr = InvStr();
-    _tbStr = InvStr();
+public:
+    COTrendWidgetPrivate()
+        :coValue(NULL), ciName(NULL), ciValue(NULL), tbName(NULL), tbValue(NULL),
+          measureTime(0), coStr(InvStr()), ciStr(InvStr()), tbStr(InvStr()), isTbAlarm(false)
+    {}
 
-    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_AG));
+    QLabel *coValue;
+    QLabel *ciName;
+    QLabel *ciValue;
+    QLabel *tbName;
+    QLabel *tbValue;
+    QLabel *measureTime;
+
+    QString coStr;
+    QString ciStr;
+    QString tbStr;
+    bool isTbAlarm;
+};
+
+COTrendWidget::COTrendWidget()
+    : TrendWidget("COTrendWidget"), pimpl(new COTrendWidgetPrivate())
+{
+    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_CO));
     setPalette(palette);
 
     setName("C.O.");
 
+    setUnit(trs(Unit::getSymbol(UNIT_LPM)));
+
     // 设置报警关闭标志
     showAlarmOff();
 
-    _coValue = new QLabel();
-    _coValue->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-    _coValue->setPalette(palette);
-    _coValue->setText(InvStr());
+    pimpl->coValue = new QLabel(pimpl->coStr);
+    pimpl->coValue->setAlignment(Qt::AlignCenter);
+    pimpl->coValue->setPalette(palette);
 
-    _ciName = new QLabel("C.I.");
-    _ciName->setPalette(palette);
-    _ciName->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    pimpl->ciName = new QLabel("C.I.");
+    pimpl->ciName->setPalette(palette);
+    pimpl->ciName->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
-    _ciValue = new QLabel();
-    _ciValue->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
-    _ciValue->setPalette(palette);
-    _ciValue->setText(InvStr());
+    pimpl->ciValue = new QLabel(pimpl->ciStr);
+    pimpl->ciValue->setAlignment(Qt::AlignCenter);
+    pimpl->ciValue->setPalette(palette);
 
-    _tbName = new QLabel("TB");
-    _tbName->setPalette(palette);
-    _tbName->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    pimpl->tbName = new QLabel("TB");
+    pimpl->tbName->setPalette(palette);
+    pimpl->tbName->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
-    _tbValue = new QLabel();
-    _tbValue->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
-    _tbValue->setPalette(palette);
-    _tbValue->setText(InvStr());
+    pimpl->tbValue = new QLabel(pimpl->tbStr);
+    pimpl->tbValue->setAlignment(Qt::AlignCenter);
+    pimpl->tbValue->setPalette(palette);
 
     QHBoxLayout *ciLayout = new QHBoxLayout();
-    ciLayout->addWidget(_ciName, 0, Qt::AlignCenter);
-    ciLayout->addWidget(_ciValue, 0, Qt::AlignCenter);
+    ciLayout->setContentsMargins(0, 0, 0, 0);
+    ciLayout->setSpacing(8);
+    ciLayout->addWidget(pimpl->ciName);
+    ciLayout->addWidget(pimpl->ciValue);
 
     QHBoxLayout *tbLayout = new QHBoxLayout();
-    tbLayout->addWidget(_tbName, 0, Qt::AlignCenter);
-    tbLayout->addWidget(_tbValue, 0, Qt::AlignCenter);
+    tbLayout->setContentsMargins(0, 0, 0, 0);
+    tbLayout->setSpacing(8);
+    tbLayout->addWidget(pimpl->tbName);
+    tbLayout->addWidget(pimpl->tbValue);
 
     QVBoxLayout *vLayout = new QVBoxLayout();
+    vLayout->setSpacing(0);
     vLayout->addLayout(ciLayout);
     vLayout->addLayout(tbLayout);
 
-    contentLayout->addWidget(_coValue);
-    contentLayout->addLayout(vLayout);
+    QVBoxLayout *coLayout = new QVBoxLayout();
+    coLayout->setSpacing(0);
+    coLayout->setContentsMargins(4, 8, 4, 4);
+    pimpl->measureTime = new QLabel();
+    pimpl->measureTime->setAlignment(Qt::AlignCenter);
+    pimpl->measureTime->setFixedHeight(fontManager.getFontSize(1));
+    coLayout->addWidget(pimpl->measureTime);
+    coLayout->addWidget(pimpl->coValue, 1);
+
+    contentLayout->addLayout(coLayout, 3);
+    contentLayout->addLayout(vLayout, 3);
 
     connect(this, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
 }
@@ -90,53 +118,83 @@ COTrendWidget::~COTrendWidget()
 /**************************************************************************************************
  * display C.O. and C.I. data.。
  *************************************************************************************************/
-void COTrendWidget::setMeasureResult(u_int16_t coData, u_int16_t ciData)
+void COTrendWidget::setMeasureResult(short co, short ci, unsigned t)
 {
-    if (coData == INVALDATA || ciData == INVALDATA)
+    if (co == InvData())
     {
-        _coStr = InvStr();
-        _ciStr = InvStr();
+        pimpl->coStr = InvStr();
     }
     else
     {
-        u_int16_t coInt = coData / 100;
-        u_int16_t coDec = coData % 100;
-        u_int16_t ciInt = ciData / 10;
-        u_int16_t ciDec = ciData % 10;
-        _coStr = QString::number(coInt) + "." + QString::number(coDec);
-        _ciStr = QString::number(ciInt) + "." + QString::number(ciDec);
+        pimpl->coStr = QString::number(co * 1.0 / 10, 'f', 1);
     }
-    _coValue->setText(_coStr);
-    _ciValue->setText(_ciStr);
 
-    return;
+    if (ci == InvData())
+    {
+        pimpl->ciStr = InvStr();
+    }
+    else
+    {
+        pimpl->ciStr = QString::number(co * 1.0 / 10, 'f', 1);
+    }
+
+    pimpl->coValue->setText(pimpl->coStr);
+    pimpl->ciValue->setText(pimpl->ciStr);
+    if (pimpl->coStr == InvStr())
+    {
+        pimpl->measureTime->setText(QString());
+    }
+    else
+    {
+        pimpl->measureTime->setText(timeDate->getTime(t));
+    }
 }
 
 /**************************************************************************************************
  * display temp blood data。
  *************************************************************************************************/
-void COTrendWidget::setTBData(u_int16_t tbData)
+void COTrendWidget::setTb(short tb)
 {
-    if (tbData == INVALDATA)
+    if (tb == InvData())
     {
-        _tbStr = InvStr();
+        pimpl->tbStr = InvStr();
     }
     else
     {
-        u_int16_t tbInt = tbData / 100;
-        u_int16_t tbDec = tbData % 100;
-        _tbStr = QString::number(tbInt) + "." + QString::number(tbDec);
+        pimpl->tbStr = QString::number(tb * 1.0 / 10, 'f', 1);
     }
 
-    _tbValue->setText(_tbStr);
+    pimpl->tbValue->setText(pimpl->tbStr);
     return;
+}
+
+void COTrendWidget::setTbAlarm(bool flag)
+{
+    pimpl->isTbAlarm = flag;
+
+    updateAlarm(flag);
 }
 
 QList<SubParamID> COTrendWidget::getShortTrendSubParams() const
 {
     QList<SubParamID> list;
-    list << SUB_PARAM_CO_CO;
+    list << SUB_PARAM_CO_CO << SUB_PARAM_CO_CI << SUB_PARAM_CO_TB;
     return list;
+}
+
+void COTrendWidget::showValue()
+{
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_CO));
+
+    if (pimpl->isTbAlarm && pimpl->tbStr != InvStr())
+    {
+        showAlarmStatus(pimpl->tbValue);
+        restoreNormalStatusLater();
+    }
+    else
+    {
+        showNormalStatus(psrc);
+    }
 }
 
 /**************************************************************************************************
@@ -145,24 +203,34 @@ QList<SubParamID> COTrendWidget::getShortTrendSubParams() const
 void COTrendWidget::setTextSize()
 {
     QRect r;
-    int h = ((height()-nameLabel->height()) / 3);
-    int w = (width() - unitLabel->width());
-    r.setSize(QSize(w, (h * 2)));
+    int h = height();
+    int w = (width() - unitLabel->width()) / 2;
+    r.setSize(QSize(w, h));
 
     int fontsize = fontManager.adjustNumFontSize(r , true , "2222");
     QFont font = fontManager.numFont(fontsize , true);
     font.setWeight(QFont::Black);
 
-    _coValue->setFont(font);
+    pimpl->coValue->setFont(font);
 
-    r.setSize(QSize(w, h));
+    pimpl->measureTime->setFont(fontManager.textFont(fontManager.getFontSize(1)));
+
+    r.setSize(QSize(w / 2, h / 2));
     fontsize = fontManager.adjustNumFontSize(r , true , "2222");
     font = fontManager.numFont(fontsize);
     font.setWeight(QFont::Black);
-    _ciName->setFont(font);
-    _tbName->setFont(font);
-    _ciValue->setFont(font);
-    _tbValue->setFont(font);
+    pimpl->ciValue->setFont(font);
+    pimpl->tbValue->setFont(font);
+
+    font = fontManager.textFont(fontManager.getFontSize(3));
+    pimpl->ciName->setFont(font);
+    pimpl->tbName->setFont(font);
+}
+
+void COTrendWidget::doRestoreNormalStatus()
+{
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_CO));
+    showNormalStatus(psrc);
 }
 
 /**************************************************************************************************

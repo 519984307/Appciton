@@ -91,9 +91,9 @@ AUXP2_SYS,P2收缩压,P2-SYS
 AUXP2_DIA,P2舒张压,P2-DIA
 AUXP2_MAP,P2平均压,P2-MAP
 AUXP2_PR,P2脉率,P2-PR
-CO_CO,心排量,C.O.
-CO_CI,心指数,C.I.
-TB,血温,TB
+CO_CO,C.O.,C.O.
+CO_CI,C.I.,C.I.
+TB,TB,TB
 SPO2,SpO₂,SpO₂
 SPO2_2,SpO₂ 2,SpO₂ 2
 SPO2_D,ΔSpO₂,ΔSpO₂
@@ -272,13 +272,23 @@ CalibrateFailed,校准失败,Calibrate Failed
 COMenu,C.O.,C.O.
 Auto,自动,Auto
 Manual,手动,Manual
-CORatio,C.O.系数,C.O.Ratio
-COStart,开始,Start
-COEnd,取消,End
-InjectionTempSource,注射液温度来源,Injection Temp Source
-InjectionTemp,注射液温度,Injection Temp
-InjectionVolumn,注射液体积,Injection Volumn
+ComputationConst,C.O.系数,Computation Constant
+InjectateTempSource,注射液温度来源,Injectate Temp Source
+InjectateTemp,注射液温度,Injectate Temp
+InjectateVolume,注射液体积,Injectate Volume
+COMeasure,C.O.测量,C.O. Measure
 MeasureMode,测量模式,Measure Mode
+ModuleNotConnected,模块未连接,Module Is Not Connected
+ReadyForNewMeasurement,可进行新测量,Ready For New Measurement
+InjectNow,立即注射,Inject Now
+PleaseWait,请等待...,Please Wait...
+MeasurementInProgress,正在测量...,Measurement In Progress...
+MeasurementCancel,取消测量,Cancel Measurement
+MeasurementTimeout,测量超时,Measurement Timeout
+MeasurementFail,测量失败,Measurement Fail
+MeasureCompleted,测量完成,Measure Completed
+NoInjectateProbe,无注射探针,No Injectate Probe
+Save,保存,Save
 TEMP,Temp,Temp
 T1,T1,T1
 T2,T2,T2
@@ -297,7 +307,7 @@ RESPSetting,Resp设置,Resp Setting
 TEMPSetting,Temp设置,Temp Setting
 AGSetting,AG设置,AG Setting
 IBPSetting,IBP设置,IBP Setting
-COSetting,CO设置,CO Setting
+COSetting,C.O.设置,C.O. Setting
 SPO2Setting,SpO₂设置,SpO₂ Setting
 SPO2SeniorSetting,SpO₂高级参数设置,SpO₂ Senior Setting
 RRSource,RR来源,RR Source
@@ -344,6 +354,8 @@ percent,%,%
 gdL,g/dL,g/dL
 mmolL,mmol/L,mmol/L
 mLdL,mL/dL,mL/dL
+lpm,L/min,L/min
+lpmpsqm,L/min/m²,L/min/m²
 Defaults,恢复默认值,Defaults
 SureAllAlarmDefaults,"所有报警设置将恢复默认值,您确定进行吗?",All alarm settings will reset to the defaults. Are you sure to continue?
 SureAllDataErase,"所有历史数据会被擦除,您确定进行吗?","All historical data will be erased,Are you sure to continue?"
@@ -728,10 +740,6 @@ AUXP2MAPLow,P2平均压低,P2 MAP Low
 AUXP2MAPHigh,P2平均压高,P2 MAP High
 AUXP2PRLow,P2脉率低,P2 PR Low
 AUXP2PRHigh,P2脉率高,P2 PR High
-COCOLow,心排量低,CO Low
-COCOHigh,心排量高,CO High
-COCILow,心指数低,CI Low
-COCIHigh,心指数高,CI High
 COTBLow,血温低,TB Low
 COTBHigh,血温高,TB High
 NIBPSYSLow,收缩压低,NIBP SYS Low

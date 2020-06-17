@@ -769,6 +769,12 @@ void BigFontLayoutModelPrivate::loadItemInfos()
         paramNodeDescriptions[nodeName] = NODE_DESC("AG_O2", LAYOUT_NODE_WAVE_O2, PARAM_AG);
     }
 
+    if (systemManager.isSupport(CONFIG_CO))
+    {
+        nodeName = layoutNodeName(LAYOUT_NODE_PARAM_CO);
+        paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_CO), LAYOUT_NODE_NONE, PARAM_CO);
+    }
+
     nodeName = layoutNodeName(LAYOUT_NODE_PARAM_ECG);
     paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_ECG), LAYOUT_NODE_WAVE_ECG1, PARAM_ECG);
     nodeName = layoutNodeName(LAYOUT_NODE_PARAM_SPO2);

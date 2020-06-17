@@ -44,9 +44,9 @@
 	    </CO2>
 	    <CO>
 		<ratdio cAttr0="0" cMin="0" cMax="1000" cLen="4">555</ratdio>
-		<InjectionTempSource cAttr0="0" cMin="0" cMax="1" cLen="1">1</InjectionTempSource>
-		<InjectionTemp cAttr0="0" cMin="0" cMax="270" cLen="3">18</InjectionTemp>
-		<InjectionVolumn cAttr0="0" cMin="0" cMax="200" cLen="3">25</InjectionVolumn>
+		<TISource cAttr0="0" cMin="0" cMax="1" cLen="1">1</TISource>
+		<InjectateTemp cAttr0="0" cMin="0" cMax="270" cLen="3">18</InjectateTemp>
+		<InjectateVolume cAttr0="0" cMin="0" cMax="200" cLen="3">25</InjectateVolume>
 		<MeasureMode cAttr0="0" cMin="0" cMax="1" cLen="1">1</MeasureMode>
 	    </CO>
 	    <RESP>

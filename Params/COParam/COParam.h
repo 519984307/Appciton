@@ -12,25 +12,22 @@
 #pragma once
 #include "Param.h"
 #include "COProviderIFace.h"
+#include <QScopedPointer>
+
 
 class COTrendWidget;
-class COMenu;
+class COMeasureWindow;
+class COParamPrivate;
 class COParam : public Param
 {
+    Q_OBJECT
 public:
-    static COParam &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new COParam();
-        }
-        return *_selfObj;
-    }
+    static COParam &getInstance();
     ~COParam();
 
 public:
     // 处理DEMO数据。
-    virtual void handDemoWaveform(WaveformID id, int16_t data);
+    virtual void handDemoWaveform(WaveformID id, short data);
     virtual void handDemoTrendData(void);
     /* reimplement */
     virtual void exitDemo();
@@ -53,53 +50,175 @@ public:
     // 设置界面对象
     void setCOTrendWidget(COTrendWidget *trendWidget);
 
-public:// Data sent by host
-    // C.O.系数
-    void setCORatio(u_int16_t coRatio);
-    u_int16_t getCORatio(void);
+    /**
+     * @brief setMeasureWindow add CO measurement window
+     * @param w pointor to the window
+     */
+    void setMeasureWindow(COMeasureWindow *w);
 
-    // set source of injection temp.
-    void setTempSource(COTiMode source, u_int16_t temp = 0);
-    COTiMode getTempSource(void);
-    u_int16_t getInjectionTemp(void);
+    /**
+     * @brief getMeasureWindow get the param's measure window
+     * @return  pointer to the measure window
+     */
+    COMeasureWindow *getMeasureWindow() const;
 
-    // set injection volumn.
-    void setInjectionVolumn(unsigned char volumn);
-    unsigned char getInjectionVolumn(void);
+    /* override */
+    void showSubParamValue();
 
-    // measure control start stop  and interrupt.
-    void measureCtrl(COInstCtl sta);
-    COInstCtl getMeasureCtrl(void);
-
-public:// Data sent by module
-    // C.O. and C.I. data content.
-    void measureResultCO(u_int16_t coData, u_int16_t ciData);
-
-    // temp blood data content.
-    void realTimeTBData(u_int16_t tbData);
+    /**
+     * @brief notifyLimitAlarm notify the limit alarm
+     * @param id subparam id
+     * @param alarm true when alarm
+     */
+    void notifyLimitAlarm(SubParamID id, bool alarm);
 
 public:
-    // get C.O. data.
-    u_int16_t getCOData(void);
+    /**
+     * @brief setCatheterCoeff set the Swan-Ganz catheter coefficient
+     * @param coef the coefficient
+     * @note
+     * The coeffficient should be multiplied by 1000, in range of (0~999)
+     */
+    void setCatheterCoeff(unsigned short coef);
 
-    // get C.I. data.
-    u_int16_t getCIData(void);
+    /**
+     * @brief getCatheterCoeff get the Swan-Ganz catheter coefficient
+     * @return the coefficient
+     * @note
+     * The coeffficient should be multiplied by 1000, in range of (0~999)
+     */
+    unsigned short getCatheterCoeff(void);
 
-    // get TB data.
-    u_int16_t getTBData(void);
+    /**
+     * @brief setTiSource set the ti source
+     * @param source current source
+     * @param temp only use when the source is manual
+     */
+    void setTiSource(COTiSource source, unsigned short temp = 0);
 
+    /**
+     * @brief getTiSource get current ti source
+     * @return The ti source
+     */
+    COTiSource getTiSource() const;
+
+    /**
+     * @brief setInjectionVolume set the injection volume
+     * @param volume volume of injection, in unit of ml
+     */
+    void setInjectionVolume(unsigned char volume);
+
+    /**
+     * @brief getInjectionVolume get the current injection volume
+     * @return the injection volume
+     */
+    unsigned char getInjectionVolume(void) const;
+
+    /**
+     * @brief measureCtrl measure contorl
+     * @param ctrl
+     */
+    void measureCtrl(COMeasureCtrl ctrl);
+
+    /**
+     * @brief startMeasure start co measure
+     */
+    void startMeasure();
+
+    /**
+     * @brief isMeasuring check whether co is in measuring state
+     * @return true when in measuring state, otherwise, false
+     */
+    bool isMeasuring() const;
+
+    /**
+     * @brief stopMeasure stop co measure
+     */
+    void stopMeasure();
+
+    /**
+     * @brief setMeasureResult set the measure result of single measurement
+     * @param co the cardiac output
+     * @param ci the cardiac index
+     */
+    void setMeasureResult(short co, short ci);
+
+    /**
+     * @brief setAverageResult set the average result
+     * @param co the average cardiac output
+     * @param ci teh average cardiac index
+     */
+    void setAverageResult(short co, short ci);
+
+    /**
+     * @brief setTb set the blood temperature
+     * @param tb the blood temperature
+     * @note
+     * The value should be unit of 0.1 celsius degree
+     */
+    void setTb(short tb);
+
+    /**
+     * @brief getTb get current blood temperature
+     * @return the blood temperature
+     */
+    short getTb(void) const;
+
+    /**
+     * @brief setTi set the injection temperature
+     * @param ti the injection temperature
+     * @note
+     * Use to update the TI by module when the TI source is auto
+     */
+    void setTi(short ti);
+
+    /**
+     * @brief getTi get the current ti value
+     * @return the current ti
+     */
+    unsigned short getTi(void) const;
+
+    /**
+     * @brief getManualTi get the manual ti value
+     * @return  the manual ti value
+     */
+    unsigned short getManualTi(void);
+
+    /**
+     * @brief addMeasureWaveData add the measurement wave data
+     * @param data the wave data
+     */
+    void addMeasureWaveData(short data);
+
+    /**
+     * @brief setOneshotAlarm set the oneshot alarm status
+     * @param t the oneshot alarm type
+     * @param f the oneshot alarm status
+     */
+    void setOneshotAlarm(COOneShotType t, bool f);
+
+    /**
+     * @brief getMeasureWaveRate get the smaple rate of the measure wave
+     * @return the data rate of the measure data
+     */
+    short getMeasureWaveRate() const;
+
+    /**
+     * @brief isSensorOff check whether the sensor is off
+     * @return true if sensor off
+     */
+    bool isSensorOff() const;
+
+    /**
+     * @brief setSensorOff set the sensor off status
+     * @param off true when offer
+     */
+    void setSensorOff(bool off);
 
 private:
     COParam();
-    static COParam *_selfObj;
 
-    COProviderIFace *_provider;
-
-    COTrendWidget *_trendWidget;
-
-    u_int16_t _coData;
-    u_int16_t _ciData;
-    u_int16_t _tbData;
-    bool _connectedProvider;
+    QScopedPointer<COParamPrivate> pimpl;
 };
-#define coParam (COParam::construction())
+
+#define coParam (COParam::getInstance())

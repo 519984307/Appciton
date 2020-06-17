@@ -467,6 +467,9 @@ SOURCES +=                                                                      
     Params/COParam/COParam.cpp                                                  \
     Params/COParam/COWidgets/COTrendWidget.cpp                                  \
     Params/COParam/COWidgets/COMenuContent.cpp                                  \
+    Params/COParam/COWidgets/COMeasureResultWidget.cpp                          \
+    Params/COParam/COWidgets/COMeasureWidget.cpp                                \
+    Params/COParam/COWidgets/COMeasureWindow.cpp                                \
     Params/NIBPParam/NIBPStateMachine/NIBPState.cpp                             \
     Params/NIBPParam/NIBPStateMachine/NIBPStateMachine.cpp                      \
     Params/NIBPParam/NIBPStateMachine/NIBPMonitorStateMachine/NIBPMonitorErrorState.cpp \
@@ -546,6 +549,7 @@ SOURCES +=                                                                      
     Providers/NeonateProvider/NeonateProvider.cpp                               \
     Providers/PluginProvider.cpp                                                \
     Providers/SmartIBPProvider/SmartIBPProvider.cpp                             \
+    Providers/SmartCOProvider/SmartCOProvider.cpp                               \
 #################################################################################
     Main/App/AppMain.cpp                                                        \
     Main/App/Init.cpp                                                           \
@@ -920,9 +924,13 @@ HEADERS +=                                                                      
     Params/COParam/COSymbol.h                                                   \
     Params/COParam/COProviderIFace.h                                            \
     Params/COParam/CODefine.h                                                   \
+    Params/COParam/COMeasureData.h                                              \
     Params/COParam/COParam.h                                                    \
     Params/COParam/COWidgets/COTrendWidget.h                                    \
     Params/COParam/COWidgets/COMenuContent.h                                    \
+    Params/COParam/COWidgets/COMeasureResultWidget.h                            \
+    Params/COParam/COWidgets/COMeasureWidget.h                                  \
+    Params/COParam/COWidgets/COMeasureWindow.h                                  \
     Params/NIBPParam/NIBPStateMachine/NIBPState.h                               \
     Params/NIBPParam/NIBPStateMachine/NIBPStateMachine.h                        \
     Params/NIBPParam/NIBPStateMachine/NIBPStateMachineDefine.h                  \
@@ -1024,6 +1032,7 @@ HEADERS +=                                                                      
     Providers/NeonateProvider/NeonateProvider.h                                 \
     Providers/PluginProvider.h                                                  \
     Providers/SmartIBPProvider/SmartIBPProvider.h                               \
+    Providers/SmartCOProvider/SmartCOProvider.h                                 \
 #################################################################################
     Main/App/Init.h                                                             \
     Main/IApplication.h                                                         \
@@ -1108,6 +1117,7 @@ DEPENDPATH +=                                                                   
     Providers/S5Provider                                                        \
     Providers/NeonateProvider                                                   \
     Providers/SmartIBPProvider                                                  \
+    Providers/SmartCOProvider                                                   \
     Params                                                                      \
     Params/AGParam                                                              \
     Params/AGParam/AGWidgets                                                    \
@@ -1213,6 +1223,7 @@ INCLUDEPATH +=                                                                  
     Providers/S5Provider                                                        \
     Providers/NeonateProvider                                                   \
     Providers/SmartIBPProvider                                                  \
+    Providers/SmartCOProvider                                                   \
     Params                                                                      \
     Params/AGParam                                                              \
     Params/AGParam/AGWidgets                                                    \

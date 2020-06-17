@@ -287,7 +287,7 @@ void WitleafProvider::handlePacket(unsigned char *data, int len)
             tbData <<= 8;
             tbData |= data[4];
 
-            coParam.realTimeTBData(tbData);
+            coParam.setTb(tbData);
             break;
         }
         case CO_RSP_MEASURE_RESULT:
@@ -300,7 +300,7 @@ void WitleafProvider::handlePacket(unsigned char *data, int len)
             ciData <<= 8;
             ciData |= data[6];
 
-            coParam.measureResultCO(coData, ciData);
+            coParam.setMeasureResult(coData, ciData);
             break;
         }
         case CO_RSP_HEMODYMIC_RESULT:
@@ -476,7 +476,7 @@ void WitleafProvider::setIndicate(IBPLabel pressurenameIBP1, IBPLabel pressurena
 /**************************************************************************************************
  * CO 测量控制
  *************************************************************************************************/
-void WitleafProvider::measureCtrl(COInstCtl instctl)
+void WitleafProvider::measureCtrl(COMeasureCtrl instctl)
 {
     unsigned char data[1] = {instctl};
     sendCmd(1, PARAM_TYPE_CO, IBP_DATA_DC, CO_CMD_INST_CTL, data, NULL);
@@ -485,7 +485,7 @@ void WitleafProvider::measureCtrl(COInstCtl instctl)
 /**************************************************************************************************
  * CO 测量时间间隔设置
  *************************************************************************************************/
-void WitleafProvider::setInterval(COMeasureInterval interval)
+void WitleafProvider::setMeasureInterval(COMeasureInterval interval)
 {
     unsigned char data[1] = {interval};
     sendCmd(1, PARAM_TYPE_CO, IBP_DATA_DC, CO_CMD_SET_INTERVAL, data, NULL);
@@ -495,7 +495,7 @@ void WitleafProvider::setInterval(COMeasureInterval interval)
  * Ti 输入模式设置
  *      模块支持的水温设定范围为 0.0-27.0 摄氏度,下发范围为0~270.(放大十倍后下发数据)
  *************************************************************************************************/
-void WitleafProvider::setInputMode(COTiMode inputmode, unsigned short watertemp)
+void WitleafProvider::setTiSource(COTiSource inputmode, unsigned short watertemp)
 {
     unsigned char data[3] = {inputmode, (unsigned char)((watertemp >> 8) & 0xff), (unsigned char)(watertemp & 0xff)};
     sendCmd(3, PARAM_TYPE_CO, IBP_DATA_DC, CO_CMD_SET_INPUT_MODULE, data, NULL);
@@ -505,7 +505,7 @@ void WitleafProvider::setInputMode(COTiMode inputmode, unsigned short watertemp)
  * 注射液体积设定
  *      模块上电后默认为设定注射液体积是 10ml,模块支持的注射液体积为 1-200ml.
  *************************************************************************************************/
-void WitleafProvider::setVolume(unsigned char volume)
+void WitleafProvider::setInjectionVolume(unsigned char volume)
 {
     unsigned char data[1] = {volume};
     sendCmd(1, PARAM_TYPE_CO, IBP_DATA_DC, CO_CMD_SET_VOLUME, data, NULL);
@@ -515,16 +515,11 @@ void WitleafProvider::setVolume(unsigned char volume)
  * 漂浮导管系数设定
  *
  *************************************************************************************************/
-void WitleafProvider::setDuctRatio(unsigned short ratio)
+void WitleafProvider::setCatheterCoeff(unsigned short ratio)
 {
     unsigned char data[2] = {(unsigned char)(ratio >> 8 & 0xff), (unsigned char)(ratio & 0xff)};
     sendCmd(2, PARAM_TYPE_CO, IBP_DATA_DC, CO_CMD_SET_DUCT_RATIO, data, NULL);
 }
-
-/**************************************************************************************************
- * 血液动力计算参数设置
- *************************************************************************************************/
-void WitleafProvider::setHemodymicParam() {}
 
 /**************************************************************************************************
  * IBP 校零/校准时间设定
@@ -538,11 +533,6 @@ void WitleafProvider::setTimeZero(IBPChannel IBP, IBPCalibration calibration,
     unsigned char data[6] = {onechar, minute, hour, day, month, year};
     sendCmd(6, PARAM_TYPE_IBP, IBP_DATA_DC, IBP_CMD_SET_TIME_ZERO, data, NULL);
 }
-
-/**************************************************************************************************
- * 血液动力学计算
- *************************************************************************************************/
-void WitleafProvider::hemodymicCalc() {}
 
 /**************************************************************************************************
  * 构造。
