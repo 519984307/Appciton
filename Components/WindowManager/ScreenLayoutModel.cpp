@@ -48,7 +48,7 @@ const char *layoutNodeName(LayoutNodeType nodeType)
         "NIBP",
         "NIBPList",
         "TEMP",
-        "C.O.",
+        "CO",
         "ST",
         "PVCs",
         "O2",
@@ -404,7 +404,8 @@ public:
         if (systemManager.isSupport(CONFIG_CO))
         {
             nodeName = layoutNodeName(LAYOUT_NODE_PARAM_CO);
-            paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_CO), PARAM_SPAN_TWO, PARAM_CO);
+            QString displayName = trs(paramInfo.getParamName(PARAM_CO));
+            paramNodeDescriptions[nodeName] = NODE_DESC(displayName, PARAM_SPAN_TWO, PARAM_CO);
         }
 
         nodeName = layoutNodeName(LAYOUT_NODE_PARAM_ECG);
