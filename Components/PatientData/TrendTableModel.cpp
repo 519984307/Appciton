@@ -1308,7 +1308,7 @@ TrendGroup TrendTableModelPrivate::addModuleCheck(TrendGroup trendGroup)
                 {
                     grp = TREND_GROUP_INVALID;
                 }
-                break;
+                return grp;
             }
             break;
             case TREND_GROUP_IBP_CO:
