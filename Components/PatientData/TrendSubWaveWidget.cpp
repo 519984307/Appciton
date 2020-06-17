@@ -71,7 +71,8 @@ void TrendSubWaveWidget::setWidgetParam(SubParamID id, TrendGraphType type)
     }
 
     // 初始化参数名称和单位
-    if (_type == TREND_GRAPH_TYPE_NORMAL || _type == TREND_GRAPH_TYPE_AG_TEMP)
+    if (_type == TREND_GRAPH_TYPE_NORMAL || _type == TREND_GRAPH_TYPE_AG_TEMP
+            || _type == TREND_GRAPH_TYPE_CO)
     {
         _paramName = trs(paramInfo.getSubParamName(_id));
         if (_type == TREND_GRAPH_TYPE_AG_TEMP)
@@ -382,6 +383,27 @@ QList<QPainterPath> TrendSubWaveWidget::generatorPainterPath(const TrendGraphInf
         paths.append(path);
     }
     break;
+    case TREND_GRAPH_TYPE_CO:
+    {
+        QPainterPath path;
+
+        QVector<TrendGraphData>::ConstIterator iter = graphInfo.trendData.constBegin();
+        for (; iter != graphInfo.trendData.constEnd(); iter ++)
+        {
+            if (iter->data == InvData())
+            {
+                continue;
+            }
+            qreal x = _mapValue(_timeX, iter->timestamp);
+            qreal y = _mapValue(_valueY, iter->data);
+            /* add a circle */
+            QRectF boundRect(0.0, 0.0, 5.0, 5.0);
+            boundRect.moveCenter(QPointF(x, y));
+            path.addEllipse(boundRect);
+        }
+        paths.append(path);
+    }
+        break;
     case TREND_GRAPH_TYPE_AG_TEMP:
     {
         int trendNum = 2;       // 体温和co2有2个趋势参数
@@ -534,7 +556,14 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     for (iter = paths.constBegin(); iter != paths.constEnd(); iter++)
     {
         barPainter.save();
-        barPainter.drawPath(*iter);
+        if (_type == TREND_GRAPH_TYPE_CO)
+        {
+            barPainter.fillPath(*iter, _color);
+        }
+        else
+        {
+            barPainter.drawPath(*iter);
+        }
         barPainter.restore();
     }
     barPainter.restore();
@@ -598,6 +627,9 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
         case SUB_PARAM_SPHB:
         case SUB_PARAM_SPMET:
             dataStr = QString::number(((value * 1.0) / 10), 'f', 1);
+            break;
+        case SUB_PARAM_CO_TB:
+            dataStr = QString::number(value / 10.0f, 'f', 1);
             break;
         case SUB_PARAM_CVP_MAP:
         case SUB_PARAM_LAP_MAP:
@@ -775,6 +807,20 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
         trendStr = trendStr.arg(str1).arg(str2);
         barPainter.drawText(dataRect, trendStr, option);
     }
+    else if (_type == TREND_GRAPH_TYPE_CO)
+    {
+        if (_trendInfo.trendData.isEmpty())
+        {
+            return;
+        }
+
+        barPainter.fillRect(dataRect, Qt::black);
+
+        TrendDataType value = _trendInfo.trendData.at(_cursorPosIndex).data;
+        QString dataStr = QString::number(value / 10.0, 'f', 1);
+        dataStr = value == InvData() ? InvStr() : dataStr;
+        barPainter.drawText(dataRect, dataStr, option);
+    }
 }
 
 void TrendSubWaveWidget::showEvent(QShowEvent *e)
@@ -863,6 +909,8 @@ void TrendSubWaveWidget::_autoRulerCal()
         }
         break;
     }
+    case TREND_GRAPH_TYPE_CO:
+        break;
     default:
         break;
     }

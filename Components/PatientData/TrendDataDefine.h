@@ -110,6 +110,7 @@ enum TrendGraphType
     TREND_GRAPH_TYPE_NIBP,
     TREND_GRAPH_TYPE_ART_IBP,           // IBP动脉类型
     TREND_GRAPH_TYPE_AG_TEMP,
+    TREND_GRAPH_TYPE_CO,
     TREND_GRAPH_TYPE_NR,
 };
 
