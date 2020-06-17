@@ -32,6 +32,7 @@ public:
         ITEM_CBO_NIBP_COLOR,
         ITEM_CBO_CO2_COLOR,
         ITEM_CBO_TEMP_COLOR,
+        ITEM_CBO_CO_COLOR,
         ITEM_CBO_AG_COLOR,
         ITEM_CBO_IBP_COLOR,
     };
@@ -56,6 +57,7 @@ void ParaColorWindowPrivate::loadOptions()
                           << "NIBPColor"
                           << "CO2Color"
                           << "TEMPColor"
+                          << "COColor"
                           << "AGColor"
                           << "IBPColor";
 
@@ -211,6 +213,24 @@ void ParaColorWindow::layoutExec()
         d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_TEMP_COLOR, comboBox);
     }
 
+    // CO
+    if (systemManager.isSupport(CONFIG_CO))
+    {
+        label = new QLabel(trs("CO"));
+        comboBox = new ComboBox();
+        for (int i = 0; i < d_ptr->colorList.count(); i ++)
+        {
+            comboBox->addItem(trs(d_ptr->colorList.at(i)));
+        }
+        itemID = static_cast<int>(ParaColorWindowPrivate::ITEM_CBO_CO_COLOR);
+        comboBox->setProperty("Item", qVariantFromValue(itemID));
+        connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+        column = column >= 4 ? 0 : column;
+        layout->addWidget(label, d_ptr->combos.count() / 2, column++);
+        layout->addWidget(comboBox, d_ptr->combos.count() / 2, column++);
+        d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_CO_COLOR, comboBox);
+    }
+
     // AG color
     if (systemManager.isSupport(CONFIG_AG))
     {
@@ -252,7 +272,7 @@ void ParaColorWindow::layoutExec()
     layout->setColumnStretch(2, 1);
     layout->setColumnStretch(3, 2);
     layout->setSpacing(10);
-    layout->setRowStretch(d_ptr->combos.count() / 2, 1);
+    layout->setRowStretch((d_ptr->combos.count() + 1) / 2, 1);
 
     setWindowLayout(layout);
 }
@@ -308,6 +328,12 @@ void ParaColorWindow::onComboBoxIndexChanged(int index)
         {
             strPath = "Display|TEMPColor";
             id = PARAM_TEMP;
+            break;
+        }
+        case ParaColorWindowPrivate::ITEM_CBO_CO_COLOR:
+        {
+            strPath = "Display|COColor";
+            id = PARAM_CO;
             break;
         }
         case ParaColorWindowPrivate::ITEM_CBO_AG_COLOR:
