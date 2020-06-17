@@ -87,7 +87,7 @@
     <BLM_T5Port>DataDispatcher</BLM_T5Port>
     <WITLEAF_IBPPort>/dev/ttyS4</WITLEAF_IBPPort>
     <SMART_COPort>/dev/ttyS4</SMART_COPort>
-    <SMART_IBPPort>/dev/ttyS4</SMART_IBPPort>
+    <SMART_IBPPort>Plugin</SMART_IBPPort>
     <MASIMO_CO2Port>/dev/ttyPM2</MASIMO_CO2Port>
     <DataDispatcherPort>/dev/ttyPM3</DataDispatcherPort>
     <NEONATE_O2Port>/dev/ttyS5</NEONATE_O2Port>
