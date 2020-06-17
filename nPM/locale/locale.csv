@@ -288,6 +288,7 @@ MeasurementTimeout,测量超时,Measurement Timeout
 MeasurementFail,测量失败,Measurement Fail
 MeasureCompleted,测量完成,Measure Completed
 NoInjectateProbe,无注射探针,No Injectate Probe
+COCommunicationStop,C.O.通信中断,C.O. Communication Stop
 Save,保存,Save
 TEMP,Temp,Temp
 T1,T1,T1

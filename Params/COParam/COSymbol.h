@@ -29,7 +29,7 @@ public:
     {
         static const char *symbol[CO_ONESHOT_NR] =
         {
-            "TBLeadOff", "TILeadOff"
+            "NoInjectateProbe", "MeasurementTimeout", "MeasurementFail", "COCommunicationStop"
         };
         return symbol[index];
     }

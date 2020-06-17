@@ -207,6 +207,7 @@ void SmartCOProvider::disconnected()
             /* isn't a plugin */
             coParam.setOneshotAlarm(CO_ONESHOT_ALARM_COMMUNICATION_STOP, true);
         }
+        coParam.setTb(InvData());
     }
 }
 
@@ -326,6 +327,8 @@ void SmartCOProviderPrivate::handlePacket(quint8 ID, const quint8 *data, int len
     {
         coParam.setConnected(true);
     }
+
+    q_ptr->feed();
 
     switch (ID) {
     case RECV_MSG_VERSION:

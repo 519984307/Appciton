@@ -211,7 +211,10 @@ SubParamID COOneShotAlarm::getSubParamID(int id)
  *************************************************************************************************/
 AlarmPriority COOneShotAlarm::getAlarmPriority(int id)
 {
-    Q_UNUSED(id)
+    if (id == CO_ONESHOT_ALARM_COMMUNICATION_STOP)
+    {
+        return ALARM_PRIO_MED;
+    }
     return ALARM_PRIO_LOW;
 }
 
@@ -229,7 +232,7 @@ AlarmType COOneShotAlarm::getAlarmType(int id)
  *************************************************************************************************/
 bool COOneShotAlarm::isAlarmed(int id)
 {
-    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO && getAlarmType(id) == ALARM_TYPE_TECH)
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
     {
         return false;
     }
@@ -257,8 +260,11 @@ const char *COOneShotAlarm::toString(int id)
  *************************************************************************************************/
 bool COOneShotAlarm::isAlarmEnable(int id)
 {
-    Q_UNUSED(id)
-    return true;
+    if (id == CO_ONESHOT_ALARM_COMMUNICATION_STOP)
+    {
+        return true;
+    }
+    return false;
 }
 
 /**************************************************************************************************
