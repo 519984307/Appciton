@@ -86,7 +86,9 @@ void COParam::handDemoWaveform(WaveformID /*id*/, short /*data*/)
 void COParam::handDemoTrendData()
 {
     pimpl->sensorOff = false;
+    // demo value: tb, ti
     pimpl->tbVal = 370;
+    pimpl->tiVal = 20;
 
     if (pimpl->trendWidget)
     {
@@ -100,6 +102,7 @@ void COParam::exitDemo()
     pimpl->coAvgVal = InvData();
     pimpl->ciAvgVal = InvData();
     pimpl->tbVal = InvData();
+    pimpl->tiVal = InvData();
 
     if (pimpl->trendWidget)
     {
