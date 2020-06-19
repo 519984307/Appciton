@@ -1287,8 +1287,8 @@ static qreal mapWaveValue(const RecordWaveSegmentInfo &waveInfo, short wave)
     case WAVE_AUXP1:
     case WAVE_AUXP2:
     {
-        int max = waveInfo.waveInfo.ibp.high * 10 + 1000;
-        int min = waveInfo.waveInfo.ibp.low * 10 + 1000;
+        int max = waveInfo.waveInfo.ibp.high * 10;
+        int min = waveInfo.waveInfo.ibp.low * 10;
         waveData = (max - wave) * (endY -  startY) / (max -  min) + startY;
         break;
     }
