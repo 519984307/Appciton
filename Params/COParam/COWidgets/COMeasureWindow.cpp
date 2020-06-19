@@ -666,6 +666,8 @@ void COMeasureWindowPrivate::stopMeasure(MeasureStopReason reason)
     }
     else
     {
+        // Stoped measure resquires resetting the demo data index
+        demoDataReadIndex = 0;
         stopTimer(&demoTimerID);
     }
 }
