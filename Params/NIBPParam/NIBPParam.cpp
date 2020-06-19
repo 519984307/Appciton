@@ -449,6 +449,7 @@ void NIBPParam::setResult(int16_t sys, int16_t dia, int16_t map, int16_t pr, NIB
     _sysValue = sys;
     _diaValue = dia;
     _mapVaule = map;
+    _prVaule = pr;
 
     if (_nibpDataTrendWidget != NULL)
     {
