@@ -413,9 +413,9 @@ void COMeasureWindow::showEvent(QShowEvent *ev)
         }
         else
         {
-            pimpl->ctrlBtn->setEnabled(true);
             if (!pimpl->isMeasuring && pimpl->waitStateTimerID == -1)
             {
+                pimpl->ctrlBtn->setEnabled(true);
                 /* ready for new measurement */
                 pimpl->measureWidget->setMessage(trs("ReadyForNewMeasurement"));
             }
@@ -423,9 +423,9 @@ void COMeasureWindow::showEvent(QShowEvent *ev)
     }
     else
     {
-        pimpl->ctrlBtn->setEnabled(true);
         if (!pimpl->isMeasuring && pimpl->waitStateTimerID == -1)
         {
+            pimpl->ctrlBtn->setEnabled(true);
             /* ready for new measurement */
             pimpl->measureWidget->setMessage(trs("ReadyForNewMeasurement"));
         }
@@ -666,6 +666,8 @@ void COMeasureWindowPrivate::stopMeasure(MeasureStopReason reason)
     }
     else
     {
+        // Stoped measure resquires resetting the demo data index
+        demoDataReadIndex = 0;
         stopTimer(&demoTimerID);
     }
 }

@@ -147,10 +147,18 @@ const char *COLimitAlarm::toString(int id)
  *************************************************************************************************/
 void COLimitAlarm::notifyAlarm(int id, bool flag)
 {
-    SubParamID subID = getSubParamID(id);
-    if (id == CO_LIMIT_ALARM_TB_LOW || id == CO_LIMIT_ALARM_TB_HIGH)
+    switch (id)
     {
-        coParam.notifyLimitAlarm(subID, flag);
+    case CO_LIMIT_ALARM_TB_LOW:
+        _isTBAlarm |= flag;
+        break;
+    case CO_LIMIT_ALARM_TB_HIGH:
+        _isTBAlarm |= flag;
+        coParam.notifyLimitAlarm(getSubParamID(id), _isTBAlarm);
+        _isTBAlarm = false;
+        break;
+    default:
+        break;
     }
 }
 
@@ -166,6 +174,7 @@ COLimitAlarm::~COLimitAlarm()
  *************************************************************************************************/
 COLimitAlarm::COLimitAlarm()
 {
+    _isTBAlarm = false;
 }
 
 /**************************************************************************************************

@@ -135,7 +135,7 @@ void COTrendWidget::setMeasureResult(short co, short ci, unsigned t)
     }
     else
     {
-        pimpl->ciStr = QString::number(co * 1.0 / 10, 'f', 1);
+        pimpl->ciStr = QString::number(ci * 1.0 / 10, 'f', 1);
     }
 
     pimpl->coValue->setText(pimpl->coStr);

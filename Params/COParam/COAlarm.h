@@ -56,6 +56,9 @@ public:
 
     // constructor and destructor.
     virtual ~COLimitAlarm();
+
+private:
+    bool _isTBAlarm;
 };
 
 // one shot alarm
