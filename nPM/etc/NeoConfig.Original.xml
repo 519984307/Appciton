@@ -308,9 +308,9 @@
 		    <Scale>10</Scale>
 		</kPa>
 		<cmH2O>
-		    <Low Min="0" Max="4066">748</Low>
-		    <High Min="14" Max="4080">1224</High>
-		    <Step>14</Step>
+		    <Low Min="0" Max="4081">748</Low>
+		    <High Min="1" Max="4082">1224</High>
+		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</cmH2O>
 		</ART_SYS>
@@ -328,9 +328,9 @@
 		    <Scale>10</Scale>
 		</kPa>
 		<cmH2O>
-		    <Low Min="0" Max="4066">272</Low>
-		    <High Min="14" Max="4080">816</High>
-		    <Step>14</Step>
+		    <Low Min="0" Max="4081">272</Low>
+		    <High Min="1" Max="4082">816</High>
+		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</cmH2O>
 		</ART_DIA>
@@ -348,9 +348,9 @@
 		    <Scale>10</Scale>
 		</kPa>
 		<cmH2O>
-		    <Low Min="0" Max="4066">476</Low>
-		    <High Min="14" Max="4080">952</High>
-		    <Step>14</Step>
+		    <Low Min="0" Max="4081">476</Low>
+		    <High Min="1" Max="4082">952</High>
+		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</cmH2O>
 		</ART_MAP>
@@ -376,9 +376,9 @@
 		    <Scale>10</Scale>
 		</kPa>
 		<cmH2O>
-		    <Low Min="-82" Max="1618">326</Low>
-		    <High Min="-68" Max="1632">816</High>
-		    <Step>14</Step>
+		    <Low Min="-82" Max="1631">326</Low>
+		    <High Min="-81" Max="1632">816</High>
+		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</cmH2O>
 		</PA_SYS>
@@ -396,9 +396,9 @@
 		    <Scale>10</Scale>
 		</kPa>
 		<cmH2O>
-		    <Low Min="-82" Max="1618">-54</Low>
-		    <High Min="-68" Max="1632">54</High>
-		    <Step>14</Step>
+		    <Low Min="-82" Max="1631">-54</Low>
+		    <High Min="-81" Max="1632">54</High>
+		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</cmH2O>
 		</PA_DIA>
@@ -416,9 +416,9 @@
 		    <Scale>10</Scale>
 		</kPa>
 		<cmH2O>
-		    <Low Min="-82" Max="1618">163</Low>
-		    <High Min="-68" Max="1632">354</High>
-		    <Step>14</Step>
+		    <Low Min="-82" Max="1631">163</Low>
+		    <High Min="-81" Max="1632">354</High>
+		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</cmH2O>
 		</PA_MAP>
@@ -444,9 +444,9 @@
 		    <Scale>10</Scale>
 		</kPa>
 		<cmH2O>
-		    <Low Min="-136" Max="530">0</Low>
-		    <High Min="-122" Max="544">54</High>
-		    <Step>14</Step>
+		    <Low Min="-136" Max="543">0</Low>
+		    <High Min="-135" Max="544">54</High>
+		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</cmH2O>
 		</CVP_MAP>
@@ -472,9 +472,9 @@
 		    <Scale>10</Scale>
 		</kPa>
 		<cmH2O>
-		    <Low Min="-136" Max="530">0</Low>
-		    <High Min="-122" Max="544">54</High>
-		    <Step>14</Step>
+		    <Low Min="-136" Max="543">0</Low>
+		    <High Min="-135" Max="544">54</High>
+		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</cmH2O>
 		</LAP_MAP>
@@ -500,9 +500,9 @@
 		    <Scale>10</Scale>
 		</kPa>
 		<cmH2O>
-		    <Low Min="-136" Max="530">0</Low>
-		    <High Min="-122" Max="544">54</High>
-		    <Step>14</Step>
+		    <Low Min="-136" Max="543">0</Low>
+		    <High Min="-135" Max="544">54</High>
+		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</cmH2O>
 		</RAP_MAP>
@@ -528,9 +528,9 @@
 		    <Scale>10</Scale>
 		</kPa>
 		<cmH2O>
-		    <Low Min="-136" Max="530">0</Low>
-		    <High Min="-122" Max="544">54</High>
-		    <Step>14</Step>
+		    <Low Min="-136" Max="543">0</Low>
+		    <High Min="-135" Max="544">54</High>
+		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</cmH2O>
 		</ICP_MAP>
@@ -556,9 +556,9 @@
 		    <Scale>10</Scale>
 		</kPa>
 		<cmH2O>
-		    <Low Min="0" Max="4066">748</Low>
-		    <High Min="14" Max="4080">1224</High>
-		    <Step>14</Step>
+		    <Low Min="-684" Max="4081">748</Low>
+		    <High Min="-683" Max="4082">1224</High>
+		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</cmH2O>
 		</AUXP1_SYS>
@@ -576,9 +576,9 @@
 		    <Scale>10</Scale>
 		</kPa>
 		<cmH2O>
-		    <Low Min="0" Max="4066">272</Low>
-		    <High Min="14" Max="4080">816</High>
-		    <Step>14</Step>
+		    <Low Min="-684" Max="4081">272</Low>
+		    <High Min="-683" Max="4082">816</High>
+		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</cmH2O>
 		</AUXP1_DIA>
@@ -596,9 +596,9 @@
 		    <Scale>10</Scale>
 		</kPa>
 		<cmH2O>
-		    <Low Min="0" Max="4066">476</Low>
-		    <High Min="14" Max="4080">952</High>
-		    <Step>14</Step>
+		    <Low Min="-684" Max="4081">476</Low>
+		    <High Min="-683" Max="4082">952</High>
+		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</cmH2O>
 		</AUXP1_MAP>
@@ -624,9 +624,9 @@
 		    <Scale>10</Scale>
 		</kPa>
 		<cmH2O>
-		    <Low Min="0" Max="4066">748</Low>
-		    <High Min="14" Max="4080">1224</High>
-		    <Step>14</Step>
+		    <Low Min="-684" Max="4081">748</Low>
+		    <High Min="-683" Max="4082">1224</High>
+		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</cmH2O>
 		</AUXP2_SYS>
@@ -644,9 +644,9 @@
 		    <Scale>10</Scale>
 		</kPa>
 		<cmH2O>
-		    <Low Min="0" Max="4066">272</Low>
-		    <High Min="1" Max="4080">816</High>
-		    <Step>14</Step>
+		    <Low Min="-684" Max="4081">272</Low>
+		    <High Min="-683" Max="4082">816</High>
+		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</cmH2O>
 		</AUXP2_DIA>
@@ -664,9 +664,9 @@
 		    <Scale>10</Scale>
 		</kPa>
 		<cmH2O>
-		    <Low Min="0" Max="4066">476</Low>
-		    <High Min="1" Max="4080">952</High>
-		    <Step>14</Step>
+		    <Low Min="-684" Max="4081">476</Low>
+		    <High Min="-683" Max="4082">952</High>
+		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</cmH2O>
 		</AUXP2_MAP>
