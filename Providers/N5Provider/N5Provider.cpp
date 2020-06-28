@@ -251,7 +251,15 @@ static NIBPMeasureResultInfo getMeasureResultInfo(unsigned char *data)
     t = static_cast<short>(data[5] + (data[6] << 8));
     info.map = t;
     t = static_cast<short>(data[7] + (data[8] << 8));
-    info.pr = t;
+    if (t < 0)
+    {
+        info.pr = InvData();
+    }
+    else
+    {
+        info.pr = t;
+    }
+
     if (info.errCode != 0x00)
     {
         return info;

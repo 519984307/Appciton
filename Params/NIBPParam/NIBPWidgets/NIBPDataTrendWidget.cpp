@@ -259,10 +259,21 @@ void NIBPDataTrendWidget::showValue(void)
             // PR
             if (!providerBuff.prAlarm)
             {
-                valStr = color.arg(textColor.red())
-                         .arg(textColor.green())
-                         .arg(textColor.blue())
-                         .arg(QString::number(providerBuff.prvalue));
+                if (providerBuff.prvalue == InvData())
+                {
+                    valStr = color.arg(textColor.red())
+                             .arg(textColor.green())
+                             .arg(textColor.blue())
+                             .arg(InvStr());
+                }
+                else
+                {
+                    valStr = color.arg(textColor.red())
+                             .arg(textColor.green())
+                             .arg(textColor.blue())
+                             .arg(QString::number(providerBuff.prvalue));
+                }
+
                  prStr = prStr.arg(valStr);
             }
             textStr = color.arg(textColor.red()).arg(textColor.green()).arg(textColor.blue()).arg(textStr);
