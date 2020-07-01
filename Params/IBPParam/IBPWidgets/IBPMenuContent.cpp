@@ -58,12 +58,18 @@ public:
 
     explicit IBPMenuContentPrivate(IBPMenuContent *const q_ptr) :
         q_ptr(q_ptr),
+        curIBPUnit(UNIT_NONE),
         oneGBox(NULL), twoGBox(NULL), zeroBtn(NULL),
         autoTimerId(-1)
     {}
 
     // load settings
     void loadOptions();
+
+    /**
+     * @brief updateRulerScaleInfo  update ibp1 ibp2 ruler scale info
+     */
+    void updateRulerScaleInfo();
 
     /**
      * @brief updatePrintWaveIds
@@ -80,6 +86,7 @@ public:
     IBPMenuContent *const q_ptr;
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, SpinBox *> spinBoxs;
+    UnitType curIBPUnit;
     QGroupBox *oneGBox;
     QGroupBox *twoGBox;
     Button *zeroBtn;
@@ -143,6 +150,9 @@ void IBPMenuContentPrivate::loadOptions()
         }
     }
 
+    // update ibp1 ibp2 ruler scale info
+    updateRulerScaleInfo();
+
     combos[ITEM_CBO_RULER_1]->setCurrentIndex(rulerLimit1);
     combos[ITEM_CBO_RULER_2]->setCurrentIndex(rulerLimit2);
     combos[ITEM_CBO_SWEEP_SPEED]->setCurrentIndex(ibpParam.getSweepSpeed());
@@ -156,6 +166,52 @@ void IBPMenuContentPrivate::loadOptions()
     {
         zeroBtn->setEnabled(ibpParam.isConnected());
     }
+}
+
+void IBPMenuContentPrivate::updateRulerScaleInfo()
+{
+    if (curIBPUnit == ibpParam.getUnit())
+    {
+        return;
+    }
+    curIBPUnit = ibpParam.getUnit();
+
+    combos[ITEM_CBO_RULER_1]->blockSignals(true);
+    combos[ITEM_CBO_RULER_2]->blockSignals(true);
+
+    // clear ibp ruler info
+    combos[ITEM_CBO_RULER_1]->clear();
+    combos[ITEM_CBO_RULER_2]->clear();
+
+    for (int i = 0; i < ibpParam.ibpScaleList.count(); i++)
+    {
+        if (i == IBP_RULER_LIMIT_AUTO)
+        {
+            combos[ITEM_CBO_RULER_1]->addItem(trs("Auto"));
+            combos[ITEM_CBO_RULER_2]->addItem(trs("Auto"));
+        }
+        else if (i == IBP_RULER_LIMIT_MANUAL)
+        {
+            combos[ITEM_CBO_RULER_1]->addItem(trs("Manual"));
+            combos[ITEM_CBO_RULER_2]->addItem(trs("Manual"));
+        }
+        else
+        {
+            // get ruler info
+            QString lowRulerText = QString::number(ibpParam.ibpScaleList.at(i).low);
+            QString highRulerText = QString::number(ibpParam.ibpScaleList.at(i).high);
+            if (curIBPUnit != UNIT_MMHG)
+            {
+                lowRulerText = Unit::convert(curIBPUnit, UNIT_MMHG, ibpParam.ibpScaleList.at(i).low);
+                highRulerText = Unit::convert(curIBPUnit, UNIT_MMHG, ibpParam.ibpScaleList.at(i).high);
+            }
+            combos[ITEM_CBO_RULER_1]->addItem(lowRulerText + "~" + highRulerText);
+            combos[ITEM_CBO_RULER_2]->addItem(lowRulerText + "~" + highRulerText);
+        }
+    }
+
+    combos[ITEM_CBO_RULER_1]->blockSignals(false);
+    combos[ITEM_CBO_RULER_2]->blockSignals(false);
 }
 
 void IBPMenuContentPrivate::updatePrintWaveIds()
@@ -315,22 +371,6 @@ void IBPMenuContent::layoutExec()
     label = new QLabel(trs("Ruler"));
     gLayout->addWidget(label, 1, 0);
     comboBox = new ComboBox();
-    for (int i = 0; i < ibpParam.ibpScaleList.count(); i++)
-    {
-        if (i == 0)
-        {
-            comboBox->addItem(trs("Auto"));
-        }
-        else if (i == ibpParam.ibpScaleList.count() - 1)
-        {
-            comboBox->addItem(trs("Manual"));
-        }
-        else
-        {
-            comboBox->addItem(QString::number(ibpParam.ibpScaleList.at(i).low) + "~" +
-                              QString::number(ibpParam.ibpScaleList.at(i).high));
-        }
-    }
     itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_RULER_1);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -392,22 +432,6 @@ void IBPMenuContent::layoutExec()
     label = new QLabel(trs("Ruler"));
     gLayout->addWidget(label, 1, 0);
     comboBox = new ComboBox();
-    for (int i = 0; i < ibpParam.ibpScaleList.count(); i++)
-    {
-        if (i == 0)
-        {
-            comboBox->addItem(trs("Auto"));
-        }
-        else if (i == ibpParam.ibpScaleList.count() - 1)
-        {
-            comboBox->addItem(trs("Manual"));
-        }
-        else
-        {
-            comboBox->addItem(QString::number(ibpParam.ibpScaleList.at(i).low) + "~" +
-                              QString::number(ibpParam.ibpScaleList.at(i).high));
-        }
-    }
     itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_RULER_2);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -532,7 +556,7 @@ void IBPMenuContent::timerEvent(QTimerEvent *ev)
                 d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_1]->setValue(info.high);
             }
 
-            if (d_ptr->rulerLimit1 == IBP_RULER_LIMIT_AUTO)
+            if (d_ptr->rulerLimit2 == IBP_RULER_LIMIT_AUTO)
             {
                 info = ibpParam.getScaleInfo(IBP_CHN_2);
                 d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2]->setValue(info.low);
