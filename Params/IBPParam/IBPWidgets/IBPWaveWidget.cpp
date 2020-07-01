@@ -174,6 +174,11 @@ void IBPWaveWidget::updatePalette(const QPalette &pal)
     updateBackground();
 }
 
+void IBPWaveWidget::updateRulerRange()
+{
+    setLimit(ibpParam.getIBPScale(getEntitle()).low, ibpParam.getIBPScale(getEntitle()).high);
+}
+
 /**************************************************************************************************
  * 尺寸变化。
  *************************************************************************************************/

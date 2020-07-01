@@ -1037,6 +1037,8 @@ void IBPParam::setUnit(UnitType type)
             _chnData[i].trendWidget->updateLimit();
             IBPParamInfo data = _chnData[i].paramData;
             _chnData[i].trendWidget->setData(data.sys, data.dia, data.mean);
+            // Unit change, waveform scale range needs to be updated
+            _chnData[i].waveWidget->updateRulerRange();
         }
     }
 }
