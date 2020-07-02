@@ -38,6 +38,15 @@
 #define IBP_RULER_MIN_VALUE             (-50)
 #define IBP_RULER_MAX_VALUE             (350)
 
+struct ibpGroupData
+{
+    IBPLabel entitle;            // ibp entitle
+    IBPRulerLimit rulerLimit;    // ibp ruler limit
+
+    QStringList upScaleStrs;     // up scale string lists
+    QStringList downScaleStrs;   // down scale string lists
+};
+
 class IBPMenuContentPrivate
 {
 public:
@@ -78,10 +87,9 @@ public:
 
     /**
      * @brief handleRulerCboChange  handle ruler combo box index change
-     * @param rulerLimit   ruler limit
      * @param chn   IBP Channel id
      */
-    void handleRulerCboChange(IBPRulerLimit rulerLimit, IBPChannel chn);
+    void handleRulerCboChange(IBPChannel chn);
 
     IBPMenuContent *const q_ptr;
     QMap<MenuItem, ComboBox *> combos;
@@ -90,18 +98,17 @@ public:
     QGroupBox *oneGBox;
     QGroupBox *twoGBox;
     Button *zeroBtn;
-    IBPLabel ibp1;
-    IBPLabel ibp2;
     int autoTimerId;
-    IBPRulerLimit rulerLimit1;
-    IBPRulerLimit rulerLimit2;
+    ibpGroupData groupData[IBP_CHN_NR];
     QList<int> waveIdList;
 };
 
 void IBPMenuContentPrivate::loadOptions()
 {
-    ibp1 = ibpParam.getEntitle(IBP_CHN_1);
-    ibp2 = ibpParam.getEntitle(IBP_CHN_2);
+    IBPLabel ibp1 = ibpParam.getEntitle(IBP_CHN_1);
+    IBPLabel ibp2 = ibpParam.getEntitle(IBP_CHN_2);
+    groupData[IBP_CHN_1].entitle = ibp1;
+    groupData[IBP_CHN_2].entitle = ibp2;
 
     // 获取当前ibp的波形id
     waveIdList.clear();
@@ -110,9 +117,9 @@ void IBPMenuContentPrivate::loadOptions()
 
     combos[ITEM_CBO_ENTITLE_1]->setCurrentIndex(ibp1);
     combos[ITEM_CBO_ENTITLE_2]->setCurrentIndex(ibp2);
-    rulerLimit1 = ibpParam.getRulerLimit(IBP_CHN_1);
-    rulerLimit2 = ibpParam.getRulerLimit(IBP_CHN_2);
-    if (rulerLimit1 == IBP_RULER_LIMIT_MANUAL)
+    groupData[IBP_CHN_1].rulerLimit = ibpParam.getRulerLimit(IBP_CHN_1);
+    groupData[IBP_CHN_2].rulerLimit = ibpParam.getRulerLimit(IBP_CHN_2);
+    if (groupData[IBP_CHN_1].rulerLimit == IBP_RULER_LIMIT_MANUAL)
     {
         spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_1]->setEnabled(true);
         spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_1]->setEnabled(true);
@@ -123,7 +130,7 @@ void IBPMenuContentPrivate::loadOptions()
         spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_1]->setEnabled(false);
     }
 
-    if (rulerLimit2 == IBP_RULER_LIMIT_MANUAL)
+    if (groupData[IBP_CHN_2].rulerLimit == IBP_RULER_LIMIT_MANUAL)
     {
         spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_2]->setEnabled(true);
         spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2]->setEnabled(true);
@@ -134,7 +141,8 @@ void IBPMenuContentPrivate::loadOptions()
         spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2]->setEnabled(false);
     }
 
-    if (rulerLimit1 == IBP_RULER_LIMIT_AUTO || rulerLimit2 == IBP_RULER_LIMIT_AUTO)
+    if (groupData[IBP_CHN_1].rulerLimit == IBP_RULER_LIMIT_AUTO ||
+            groupData[IBP_CHN_2].rulerLimit == IBP_RULER_LIMIT_AUTO)
     {
         if (autoTimerId == -1)
         {
@@ -153,8 +161,8 @@ void IBPMenuContentPrivate::loadOptions()
     // update ibp1 ibp2 ruler scale info
     updateRulerScaleInfo();
 
-    combos[ITEM_CBO_RULER_1]->setCurrentIndex(rulerLimit1);
-    combos[ITEM_CBO_RULER_2]->setCurrentIndex(rulerLimit2);
+    combos[ITEM_CBO_RULER_1]->setCurrentIndex(groupData[IBP_CHN_1].rulerLimit);
+    combos[ITEM_CBO_RULER_2]->setCurrentIndex(groupData[IBP_CHN_2].rulerLimit);
     combos[ITEM_CBO_SWEEP_SPEED]->setCurrentIndex(ibpParam.getSweepSpeed());
     if (ibpParam.getMoudleType() == IBP_MODULE_WITLEAF)
     {
@@ -266,7 +274,7 @@ void IBPMenuContentPrivate::updatePrintWaveIds()
     }
 }
 
-void IBPMenuContentPrivate::handleRulerCboChange(IBPRulerLimit rulerLimit, IBPChannel chn)
+void IBPMenuContentPrivate::handleRulerCboChange(IBPChannel chn)
 {
     if (chn >= IBP_CHN_NR)
     {
@@ -276,30 +284,27 @@ void IBPMenuContentPrivate::handleRulerCboChange(IBPRulerLimit rulerLimit, IBPCh
 
     SpinBox *upScale = NULL;     // up scale
     SpinBox *downScale = NULL;   // down scale
-    IBPLabel curIbpLabel = IBP_LABEL_NR;
     if (chn == IBP_CHN_1)
     {
         upScale = spinBoxs[ITEM_SBO_UP_SCALE_1];
         downScale = spinBoxs[ITEM_SBO_DOWN_SCALE_1];
-        curIbpLabel = ibp1;
     }
     else if (chn == IBP_CHN_2)
     {
         upScale = spinBoxs[ITEM_SBO_UP_SCALE_2];
         downScale = spinBoxs[ITEM_SBO_DOWN_SCALE_2];
-        curIbpLabel = ibp2;
     }
 
-    if (upScale == NULL || downScale == NULL || curIbpLabel == IBP_LABEL_NR)
+    if (upScale == NULL || downScale == NULL)
     {
         return;
     }
 
     IBPScaleInfo scale = ibpParam.getScaleInfo(chn);
     // setect manual ruler limit, get the scale info corresponding to IBP label
-    if (rulerLimit == IBP_RULER_LIMIT_MANUAL)
+    if (groupData[chn].rulerLimit == IBP_RULER_LIMIT_MANUAL)
     {
-        scale = ibpParam.getIBPScale(curIbpLabel);
+        scale = ibpParam.getIBPScale(groupData[chn].entitle);
     }
 
     // set upper sacle info
@@ -549,14 +554,14 @@ void IBPMenuContent::timerEvent(QTimerEvent *ev)
         else
         {
             IBPScaleInfo info;
-            if (d_ptr->rulerLimit1 == IBP_RULER_LIMIT_AUTO)
+            if (d_ptr->groupData[IBP_CHN_1].rulerLimit == IBP_RULER_LIMIT_AUTO)
             {
                 info = ibpParam.getScaleInfo(IBP_CHN_1);
                 d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_1]->setValue(info.low);
                 d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_1]->setValue(info.high);
             }
 
-            if (d_ptr->rulerLimit2 == IBP_RULER_LIMIT_AUTO)
+            if (d_ptr->groupData[IBP_CHN_2].rulerLimit  == IBP_RULER_LIMIT_AUTO)
             {
                 info = ibpParam.getScaleInfo(IBP_CHN_2);
                 d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2]->setValue(info.low);
@@ -632,41 +637,41 @@ void IBPMenuContent::onComboBoxIndexChanged(int index)
         {
         case IBPMenuContentPrivate::ITEM_CBO_ENTITLE_1:
         {
-            if (index == static_cast<int>(d_ptr->ibp2))
+            if (index == d_ptr->groupData[IBP_CHN_2].entitle)
             {
                 box = d_ptr->combos.value(IBPMenuContentPrivate::ITEM_CBO_ENTITLE_2);
-                d_ptr->ibp2 = d_ptr->ibp1;
+                d_ptr->groupData[IBP_CHN_2].entitle = d_ptr->groupData[IBP_CHN_1].entitle;
                 box->blockSignals(true);
-                box->setCurrentIndex(static_cast<int>(d_ptr->ibp2));
-                ibpParam.setEntitle(d_ptr->ibp2, IBP_CHN_2);
+                box->setCurrentIndex(d_ptr->groupData[IBP_CHN_2].entitle);
+                ibpParam.setEntitle(d_ptr->groupData[IBP_CHN_2].entitle, IBP_CHN_2);
                 box->blockSignals(false);
             }
-            d_ptr->ibp1 = static_cast<IBPLabel>(index);
-            ibpParam.setEntitle(d_ptr->ibp1, IBP_CHN_1);
+            d_ptr->groupData[IBP_CHN_1].entitle = static_cast<IBPLabel>(index);
+            ibpParam.setEntitle(d_ptr->groupData[IBP_CHN_1].entitle, IBP_CHN_1);
             ComboBox *cbo = d_ptr->combos[IBPMenuContentPrivate::ITEM_CBO_RULER_1];
-            cbo->setCurrentIndex(ibpParam.getRulerLimit(d_ptr->ibp1));
+            cbo->setCurrentIndex(ibpParam.getRulerLimit(d_ptr->groupData[IBP_CHN_1].entitle));
             break;
         }
         case IBPMenuContentPrivate::ITEM_CBO_ENTITLE_2:
         {
-            if (index == static_cast<int>(d_ptr->ibp1))
+            if (index == d_ptr->groupData[IBP_CHN_1].entitle)
             {
                 box = d_ptr->combos.value(IBPMenuContentPrivate::ITEM_CBO_ENTITLE_1);
-                d_ptr->ibp1 = d_ptr->ibp2;
+                d_ptr->groupData[IBP_CHN_1].entitle = d_ptr->groupData[IBP_CHN_2].entitle;
                 box->blockSignals(true);
-                box->setCurrentIndex(static_cast<int>(d_ptr->ibp1));
-                ibpParam.setEntitle(d_ptr->ibp1, IBP_CHN_1);
+                box->setCurrentIndex(d_ptr->groupData[IBP_CHN_1].entitle);
+                ibpParam.setEntitle(d_ptr->groupData[IBP_CHN_1].entitle, IBP_CHN_1);
                 box->blockSignals(false);
             }
-            d_ptr->ibp2 = static_cast<IBPLabel>(index);
-            ibpParam.setEntitle(d_ptr->ibp2, IBP_CHN_2);
+            d_ptr->groupData[IBP_CHN_2].entitle = static_cast<IBPLabel>(index);
+            ibpParam.setEntitle(d_ptr->groupData[IBP_CHN_2].entitle, IBP_CHN_2);
             ComboBox *cbo = d_ptr->combos[IBPMenuContentPrivate::ITEM_CBO_RULER_2];
-            cbo->setCurrentIndex(ibpParam.getRulerLimit(d_ptr->ibp2));
+            cbo->setCurrentIndex(ibpParam.getRulerLimit(d_ptr->groupData[IBP_CHN_2].entitle));
             break;
         }
         case IBPMenuContentPrivate::ITEM_CBO_RULER_1:
         {
-            d_ptr->rulerLimit1 = static_cast<IBPRulerLimit>(index);
+            d_ptr->groupData[IBP_CHN_1].rulerLimit = static_cast<IBPRulerLimit>(index);
             ibpParam.setRulerLimit(static_cast<IBPRulerLimit>(index), IBP_CHN_1);
             if (index == IBP_RULER_LIMIT_MANUAL)
             {
@@ -687,19 +692,19 @@ void IBPMenuContent::onComboBoxIndexChanged(int index)
             }
             else
             {
-                if (d_ptr->rulerLimit2 != IBP_RULER_LIMIT_AUTO && d_ptr->autoTimerId != -1)
+                if (d_ptr->groupData[IBP_CHN_2].rulerLimit != IBP_RULER_LIMIT_AUTO && d_ptr->autoTimerId != -1)
                 {
                     killTimer(d_ptr->autoTimerId);
                     d_ptr->autoTimerId = -1;
                 }
             }
 
-            d_ptr->handleRulerCboChange(d_ptr->rulerLimit1, IBP_CHN_1);
+            d_ptr->handleRulerCboChange(IBP_CHN_1);
             break;
         }
         case IBPMenuContentPrivate::ITEM_CBO_RULER_2:
         {
-            d_ptr->rulerLimit2 = (IBPRulerLimit)index;
+            d_ptr->groupData[IBP_CHN_2].rulerLimit = (IBPRulerLimit)index;
             ibpParam.setRulerLimit(static_cast<IBPRulerLimit>(index), IBP_CHN_2);
             if (index == IBP_RULER_LIMIT_MANUAL)
             {
@@ -720,14 +725,14 @@ void IBPMenuContent::onComboBoxIndexChanged(int index)
             }
             else
             {
-                if (d_ptr->rulerLimit1 != IBP_RULER_LIMIT_AUTO && d_ptr->autoTimerId != -1)
+                if (d_ptr->groupData[IBP_CHN_1].rulerLimit != IBP_RULER_LIMIT_AUTO && d_ptr->autoTimerId != -1)
                 {
                     killTimer(d_ptr->autoTimerId);
                     d_ptr->autoTimerId = -1;
                 }
             }
 
-            d_ptr->handleRulerCboChange(d_ptr->rulerLimit2, IBP_CHN_2);
+            d_ptr->handleRulerCboChange(IBP_CHN_2);
             break;
         }
         case IBPMenuContentPrivate::ITEM_CBO_SWEEP_SPEED:
@@ -759,7 +764,7 @@ void IBPMenuContent::onZeroButtonRelease()
 
 void IBPMenuContent::onAlarmBtnReleased()
 {
-    SubParamID paramId = ibpParam.getSubParamID(d_ptr->ibp1);
+    SubParamID paramId = ibpParam.getSubParamID(d_ptr->groupData[IBP_CHN_1].entitle);
     QString subParamName = paramInfo.getSubParamName(paramId, true);
     AlarmLimitWindow w(subParamName);
     windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
