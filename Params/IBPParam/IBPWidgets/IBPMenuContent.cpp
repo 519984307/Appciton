@@ -38,7 +38,7 @@
 #define IBP_RULER_MIN_VALUE             (-50)
 #define IBP_RULER_MAX_VALUE             (350)
 
-struct ibpGroupData
+struct IBPGroupData
 {
     IBPLabel entitle;            // ibp entitle
     IBPRulerLimit rulerLimit;    // ibp ruler limit
@@ -127,7 +127,7 @@ public:
     QGroupBox *twoGBox;
     Button *zeroBtn;
     int autoTimerId;
-    ibpGroupData groupData[IBP_CHN_NR];
+    IBPGroupData groupData[IBP_CHN_NR];
     QList<int> waveIdList;
 };
 
