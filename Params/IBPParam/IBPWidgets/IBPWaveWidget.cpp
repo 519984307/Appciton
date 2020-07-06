@@ -176,7 +176,7 @@ void IBPWaveWidget::updatePalette(const QPalette &pal)
 
 void IBPWaveWidget::updateRulerRange()
 {
-    setLimit(ibpParam.getIBPScale(getEntitle()).low, ibpParam.getIBPScale(getEntitle()).high);
+    setLimit(ibpParam.getScaleInfo(_ibpChn).low, ibpParam.getScaleInfo(_ibpChn).high);
 }
 
 /**************************************************************************************************
