@@ -212,7 +212,7 @@ void IBPMenuContentPrivate::updateRulerCboScaleInfo()
                 comBox->addItem(lowRulerText + "~" + highRulerText);
             }
         }
-        comBox->setCurrentIndex(groupData[IBP_CHN_1].rulerLimit);
+        comBox->setCurrentIndex(groupData[chn].rulerLimit);
         comBox->blockSignals(false);
     }
 }
