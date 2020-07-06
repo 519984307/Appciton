@@ -111,6 +111,11 @@ public:
      */
     void handleScaleSboChange(IBPChannel chn, int value, bool upScaleSbo);
 
+    /**
+     * @brief handleAutoRuler  handle auto ruler
+     */
+    void handleAutoRuler();
+
     IBPMenuContent *const q_ptr;
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, SpinBox *> spinBoxs;
@@ -446,6 +451,88 @@ void IBPMenuContentPrivate::handleScaleSboChange(IBPChannel chn, int value, bool
     }
 }
 
+void IBPMenuContentPrivate::handleAutoRuler()
+{
+    for (int chn = IBP_CHN_1; chn < IBP_CHN_NR; ++chn)
+    {
+        if (groupData[chn].rulerLimit != IBP_RULER_LIMIT_AUTO)
+        {
+            continue;
+        }
+
+        SpinBox *upScale = groupData[chn].upScaleSbo;     // up scale
+        SpinBox *downScale = groupData[chn].downScaleSbo;   // down scale
+        if (upScale == NULL || downScale == NULL)
+        {
+            continue;
+        }
+
+        IBPScaleInfo scale = ibpParam.getScaleInfo(static_cast<IBPChannel>(chn));
+        // set upper sacle info
+        UnitType defUnit = paramInfo->getUnitOfSubParam(SUB_PARAM_ART_SYS);
+        int start = scale.low + RULER_STEP;
+        int end = IBP_RULER_MAX_VALUE;
+        groupData[chn].upScaleStrs.clear();
+        QStringList stringLists;
+        int curValue = 0;
+        for (int i = start; i <= end; i += RULER_STEP)
+        {
+            if (scale.high == i)
+            {
+                curValue = (i - start) / RULER_STEP;
+            }
+            // default unit mmhg
+            groupData[chn].upScaleStrs.append(QString::number(i));
+            if (curIBPUnit != defUnit)
+            {
+                stringLists.append(Unit::convert(curIBPUnit, defUnit, i));
+            }
+        }
+        upScale->blockSignals(true);
+        if (curIBPUnit != defUnit)
+        {
+            upScale->setStringList(stringLists);
+        }
+        else
+        {
+            upScale->setStringList(groupData[chn].upScaleStrs);
+        }
+        upScale->setValue(curValue);
+        upScale->blockSignals(false);
+
+        // set down sacle info
+        start = IBP_RULER_MIN_VALUE;
+        end = scale.high - RULER_STEP;
+        groupData[chn].downScaleStrs.clear();
+        curValue = 0;
+        stringLists.clear();
+        for (int i = start; i <= end; i += RULER_STEP)
+        {
+            if (scale.low == i)
+            {
+                curValue = (i - start) / RULER_STEP;
+            }
+            // default unit mmhg
+            groupData[chn].downScaleStrs.append(QString::number(i));
+            if (curIBPUnit != defUnit)
+            {
+                stringLists.append(Unit::convert(curIBPUnit, defUnit, i));
+            }
+        }
+        downScale->blockSignals(true);
+        if (curIBPUnit != defUnit)
+        {
+            downScale->setStringList(stringLists);
+        }
+        else
+        {
+            downScale->setStringList(groupData[chn].downScaleStrs);
+        }
+        downScale->setValue(curValue);
+        downScale->blockSignals(false);
+    }
+}
+
 IBPMenuContent::IBPMenuContent()
     : MenuContent(trs("IBPMenu"), trs("IBPMenuDesc")),
       d_ptr(new IBPMenuContentPrivate(this))
@@ -683,20 +770,7 @@ void IBPMenuContent::timerEvent(QTimerEvent *ev)
         }
         else
         {
-            IBPScaleInfo info;
-            if (d_ptr->groupData[IBP_CHN_1].rulerLimit == IBP_RULER_LIMIT_AUTO)
-            {
-                info = ibpParam.getScaleInfo(IBP_CHN_1);
-                d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_1]->setValue(info.low);
-                d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_1]->setValue(info.high);
-            }
-
-            if (d_ptr->groupData[IBP_CHN_2].rulerLimit  == IBP_RULER_LIMIT_AUTO)
-            {
-                info = ibpParam.getScaleInfo(IBP_CHN_2);
-                d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2]->setValue(info.low);
-                d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_2]->setValue(info.high);
-            }
+            d_ptr->handleAutoRuler();
         }
     }
 }
