@@ -273,7 +273,10 @@ static NIBPMeasureResultInfo getMeasureResultInfo(unsigned char *data)
     }
     else if (type == PATIENT_TYPE_PED)
     {
-        if (info.sys > 200 || info.sys < 40 || info.dia > 150 || info.dia < 10 || info.map > 165 || info.map < 20)
+        /* 标准中压力范围只有新生儿和“其他”两种，而“其他范围”包括了成人和小儿。“其他范围”中要求能够显示SYS为230的压力值，
+        不能根据DAVID的技术要求来限定小儿的测量范围。应UL检测所的要求，把小儿的限制范围改为与成人的一样。
+        (实际上小儿的SYS范围算法限定为最高240, 但是改上位机软件就能显示230了，就不改算法了) */
+        if (info.sys > 255 || info.sys < 40 || info.dia > 215 || info.dia < 10 || info.map > 235 || info.map < 20)
         {
             info.errCode = 0x06;
         }
