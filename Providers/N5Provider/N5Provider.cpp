@@ -273,7 +273,8 @@ static NIBPMeasureResultInfo getMeasureResultInfo(unsigned char *data)
     }
     else if (type == PATIENT_TYPE_PED)
     {
-        if (info.sys > 200 || info.sys < 40 || info.dia > 150 || info.dia < 10 || info.map > 165 || info.map < 20)
+        // 根据技术要求小儿与成人NIBP的数据测量范围一致
+        if (info.sys > 255 || info.sys < 40 || info.dia > 215 || info.dia < 10 || info.map > 235 || info.map < 20)
         {
             info.errCode = 0x06;
         }
