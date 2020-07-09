@@ -43,6 +43,7 @@ struct IBPGroupData
     IBPLabel entitle;            // ibp entitle
     IBPRulerLimit rulerLimit;    // ibp ruler limit
 
+    ComboBox *entitleCbo;        // ibp entitle combo box
     ComboBox *rulerCbo;          // ruler limit combo box
 
     SpinBox *upScaleSbo;         // up scale spb
@@ -80,6 +81,7 @@ public:
         {
             groupData[i].entitle = IBP_LABEL_NR;
             groupData[i].rulerLimit = IBP_RULER_LIMIT_AUTO;
+            groupData[i].entitleCbo = NULL;
             groupData[i].rulerCbo = NULL;
             groupData[i].upScaleSbo = NULL;
             groupData[i].downScaleSbo = NULL;
@@ -88,6 +90,13 @@ public:
 
     // load settings
     void loadOptions();
+
+    /**
+     * @brief handleEntitleCboChange  handle entitle combo box change
+     * @param chn  IBP Channel
+     * @param ibpEntitle  ibp entitle
+     */
+    void handleEntitleCboChange(IBPChannel chn, IBPLabel ibpEntitle);
 
     /**
      * @brief updateRulerCboScaleInfo  update ibp1 ibp2 ruler comboBox scale info
@@ -165,6 +174,50 @@ void IBPMenuContentPrivate::loadOptions()
     if (zeroBtn)
     {
         zeroBtn->setEnabled(ibpParam.isConnected());
+    }
+}
+
+void IBPMenuContentPrivate::handleEntitleCboChange(IBPChannel chn, IBPLabel ibpEntitle)
+{
+    if (chn >= IBP_CHN_NR)
+    {
+        qWarning() << Q_FUNC_INFO << "IBP channel Id is error!";
+        return;
+    }
+
+    IBPLabel oldIBPEntitle = groupData[chn].entitle;
+    /*
+     * Changed pressure entitle is consistent with other channel,
+     * then update the pressure entitle and ruler of other channel.
+     */
+    for (int i = 0; i < IBP_CHN_NR; ++i)
+    {
+        if (ibpEntitle == groupData[i].entitle && chn != i)
+        {
+            if (groupData[i].entitleCbo)
+            {
+                groupData[i].entitle = oldIBPEntitle;
+                groupData[i].entitleCbo->blockSignals(true);
+                groupData[i].entitleCbo->setCurrentIndex(oldIBPEntitle);
+                groupData[i].entitleCbo->blockSignals(false);
+            }
+            if (groupData[i].rulerCbo)
+            {
+                groupData[i].rulerLimit = ibpParam.getRulerLimit(oldIBPEntitle);
+                groupData[i].rulerCbo->setCurrentIndex(groupData[i].rulerLimit);
+            }
+            ibpParam.setEntitle(oldIBPEntitle, static_cast<IBPChannel>(i));
+            break;
+        }
+    }
+
+    // update select pressure entitle and ruler of current channel
+    groupData[chn].entitle = ibpEntitle;
+    ibpParam.setEntitle(groupData[chn].entitle, chn);
+    if (groupData[chn].rulerCbo)
+    {
+        groupData[chn].rulerLimit = ibpParam.getRulerLimit(groupData[chn].entitle);
+        groupData[chn].rulerCbo->setCurrentIndex(groupData[chn].rulerLimit);
     }
 }
 
@@ -588,6 +641,7 @@ void IBPMenuContent::layoutExec()
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     gLayout->addWidget(comboBox, 0, 1);
     d_ptr->combos.insert(IBPMenuContentPrivate::ITEM_CBO_ENTITLE_1, comboBox);
+    d_ptr->groupData[IBP_CHN_1].entitleCbo = comboBox;
 
     // 通道一标尺
     label = new QLabel(trs("Ruler"));
@@ -652,6 +706,7 @@ void IBPMenuContent::layoutExec()
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     gLayout->addWidget(comboBox, 0, 1);
     d_ptr->combos.insert(IBPMenuContentPrivate::ITEM_CBO_ENTITLE_2, comboBox);
+    d_ptr->groupData[IBP_CHN_2].entitleCbo = comboBox;
 
     // 通道二标尺
     label = new QLabel(trs("Ruler"));
@@ -818,39 +873,11 @@ void IBPMenuContent::onComboBoxIndexChanged(int index)
         switch (item)
         {
         case IBPMenuContentPrivate::ITEM_CBO_ENTITLE_1:
-        {
-            if (index == d_ptr->groupData[IBP_CHN_2].entitle)
-            {
-                box = d_ptr->combos.value(IBPMenuContentPrivate::ITEM_CBO_ENTITLE_2);
-                d_ptr->groupData[IBP_CHN_2].entitle = d_ptr->groupData[IBP_CHN_1].entitle;
-                box->blockSignals(true);
-                box->setCurrentIndex(d_ptr->groupData[IBP_CHN_2].entitle);
-                ibpParam.setEntitle(d_ptr->groupData[IBP_CHN_2].entitle, IBP_CHN_2);
-                box->blockSignals(false);
-            }
-            d_ptr->groupData[IBP_CHN_1].entitle = static_cast<IBPLabel>(index);
-            ibpParam.setEntitle(d_ptr->groupData[IBP_CHN_1].entitle, IBP_CHN_1);
-            ComboBox *cbo = d_ptr->groupData[IBP_CHN_1].rulerCbo;
-            cbo->setCurrentIndex(ibpParam.getRulerLimit(d_ptr->groupData[IBP_CHN_1].entitle));
+            d_ptr->handleEntitleCboChange(IBP_CHN_1, static_cast<IBPLabel>(index));
             break;
-        }
         case IBPMenuContentPrivate::ITEM_CBO_ENTITLE_2:
-        {
-            if (index == d_ptr->groupData[IBP_CHN_1].entitle)
-            {
-                box = d_ptr->combos.value(IBPMenuContentPrivate::ITEM_CBO_ENTITLE_1);
-                d_ptr->groupData[IBP_CHN_1].entitle = d_ptr->groupData[IBP_CHN_2].entitle;
-                box->blockSignals(true);
-                box->setCurrentIndex(d_ptr->groupData[IBP_CHN_1].entitle);
-                ibpParam.setEntitle(d_ptr->groupData[IBP_CHN_1].entitle, IBP_CHN_1);
-                box->blockSignals(false);
-            }
-            d_ptr->groupData[IBP_CHN_2].entitle = static_cast<IBPLabel>(index);
-            ibpParam.setEntitle(d_ptr->groupData[IBP_CHN_2].entitle, IBP_CHN_2);
-            ComboBox *cbo = d_ptr->groupData[IBP_CHN_2].rulerCbo;
-            cbo->setCurrentIndex(ibpParam.getRulerLimit(d_ptr->groupData[IBP_CHN_2].entitle));
+            d_ptr->handleEntitleCboChange(IBP_CHN_2, static_cast<IBPLabel>(index));
             break;
-        }
         case IBPMenuContentPrivate::ITEM_CBO_RULER_1:
         {
             d_ptr->updateRulerSboScaleInfo(IBP_CHN_1, static_cast<IBPRulerLimit> (index));
