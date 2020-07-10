@@ -569,7 +569,6 @@ void IBPParam::setWaveWidget(IBPWaveWidget *waveWidget, IBPChannel chn)
 
     _chnData[chn].waveWidget = waveWidget;
 
-    waveWidget->setLimit(getIBPScale(waveWidget->getEntitle()).low, getIBPScale(waveWidget->getEntitle()).high);
     _setWaveformSpeed(getSweepSpeed());
 }
 

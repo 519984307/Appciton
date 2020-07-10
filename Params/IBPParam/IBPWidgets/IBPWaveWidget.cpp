@@ -158,6 +158,9 @@ IBPWaveWidget::IBPWaveWidget(WaveformID id, const QString &waveName, const IBPCh
     addItem(_leadSta);
 
     setMargin(QMargins(WAVE_X_OFFSET, 2, 2, 2));
+
+    // load config
+    loadConfig();
 }
 
 /**************************************************************************************************
@@ -215,7 +218,10 @@ void IBPWaveWidget::loadConfig()
     setPalette(palette);
     _ruler->setPalette(palette);
 
+    // set ibp entitle
     setEntitle(ibpParam.getEntitle(_ibpChn));
+    // set ibp ruler limit
+    setRulerLimit(ibpParam.getRulerLimit(_ibpChn));
 }
 
 /**************************************************************************************************
