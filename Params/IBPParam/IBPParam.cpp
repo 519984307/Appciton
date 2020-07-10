@@ -585,7 +585,7 @@ QList<SubParamID> IBPParam::getShortTrendList(IBPChannel chn)
     return paraList;
 }
 
-IBPScaleInfo IBPParam::getIBPScale(IBPLabel name)
+IBPScaleInfo IBPParam::getIBPDefaultScale(IBPLabel name)
 {
     IBPScaleInfo info;
     int highLimit = 0;
@@ -614,6 +614,20 @@ IBPScaleInfo IBPParam::getIBPScale(IBPLabel name)
         if ((*it).high == highLimit)
         {
             info = (*it);
+            break;
+        }
+    }
+    return info;
+}
+
+IBPScaleInfo IBPParam::getIBPScale(IBPLabel name)
+{
+    IBPScaleInfo info;
+    for (int i = 0; i < IBP_CHN_NR; i++)
+    {
+        if (_chnData[i].paramData.pressureName == name)
+        {
+            info = _chnData[i].scale;
             break;
         }
     }

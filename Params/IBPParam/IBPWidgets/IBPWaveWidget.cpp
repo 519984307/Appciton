@@ -85,7 +85,7 @@ void IBPWaveWidget::setEntitle(IBPLabel entitle)
 {
     _name->setText(IBPSymbol::convert(entitle));
     _entitle = entitle;
-    setLimit(ibpParam.getIBPScale(getEntitle()).low, ibpParam.getIBPScale(getEntitle()).high);
+    setLimit(ibpParam.getIBPDefaultScale(getEntitle()).low, ibpParam.getIBPDefaultScale(getEntitle()).high);
 }
 
 /**************************************************************************************************
