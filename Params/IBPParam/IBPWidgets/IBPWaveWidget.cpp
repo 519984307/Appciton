@@ -106,17 +106,17 @@ void IBPWaveWidget::setRulerLimit(IBPRulerLimit ruler)
     if (ruler == IBP_RULER_LIMIT_AUTO)
     {
         _isAutoRuler = true;
+        // reset auto ruler time
+        _autoRulerTime = 0;
+        _autoRulerTracePeek = -10000;
+        _autoRulerTraveVally = 10000;
     }
     else if (ruler == IBP_RULER_LIMIT_MANUAL)
     {
         _isAutoRuler = false;
-        // reset auto ruler time
-        _autoRulerTime = 0;
     }
     else
     {
-        // reset auto ruler time
-        _autoRulerTime = 0;
         _isAutoRuler = false;
         setLimit(ibpParam.ibpScaleList.at(ruler).low, ibpParam.ibpScaleList.at(ruler).high);
     }
