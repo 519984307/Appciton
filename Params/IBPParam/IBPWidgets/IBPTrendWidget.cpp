@@ -154,6 +154,20 @@ void IBPTrendWidget::setShowStacked(int num)
 void IBPTrendWidget::setZeroFlag(bool isEnabled)
 {
     _isZero = isEnabled;
+
+    if (!_isZero)
+    {
+        return;
+    }
+    // After zero successfully, close the "Zero Required" prompt.
+    if (_entitle >= IBP_LABEL_CVP && _entitle <= IBP_LABEL_ICP)
+    {
+        setShowStacked(2);
+    }
+    else
+    {
+        setShowStacked(1);
+    }
 }
 
 /**************************************************************************************************
