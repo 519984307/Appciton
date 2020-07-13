@@ -264,9 +264,9 @@ void IBPWaveWidget::_autoRulerHandle(short data)
                 {
                     break;
                 }
-                else if (ruler == IBP_RULER_LIMIT_60_140)
+                else if (ruler == IBP_RULER_LIMIT_30_140)
                 {
-                    ruler = IBP_RULER_LIMIT_30_140;
+                    ruler = IBP_RULER_LIMIT_0_140;
                     break;
                 }
             }
