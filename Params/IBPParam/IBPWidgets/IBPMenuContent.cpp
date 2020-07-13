@@ -164,7 +164,9 @@ void IBPMenuContentPrivate::loadOptions()
     updateRulerSboScaleInfo(IBP_CHN_1, groupData[IBP_CHN_1].rulerLimit);
     updateRulerSboScaleInfo(IBP_CHN_2, groupData[IBP_CHN_2].rulerLimit);
 
+    combos[ITEM_CBO_SWEEP_SPEED]->blockSignals(true);
     combos[ITEM_CBO_SWEEP_SPEED]->setCurrentIndex(ibpParam.getSweepSpeed());
+    combos[ITEM_CBO_SWEEP_SPEED]->blockSignals(false);
     if (ibpParam.getMoudleType() == IBP_MODULE_WITLEAF)
     {
         combos[ITEM_CBO_FILTER_MODE]->setCurrentIndex(ibpParam.getFilter());
