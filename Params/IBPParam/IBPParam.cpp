@@ -141,7 +141,7 @@ void IBPParam::handDemoWaveform(WaveformID id, short data)
             IBPWaveWidget *waveWidget = _chnData[i].waveWidget;
             if (waveWidget)
             {
-                waveWidget->addData(data);
+                waveWidget->addWaveformData(data);
             }
         }
     }
