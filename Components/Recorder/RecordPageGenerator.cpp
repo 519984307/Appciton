@@ -1287,6 +1287,7 @@ static qreal mapWaveValue(const RecordWaveSegmentInfo &waveInfo, short wave)
     case WAVE_AUXP1:
     case WAVE_AUXP2:
     {
+        // IBP waveform scale range. Should be consistent with the scale of the IBPWaveWidget object
         int max = waveInfo.waveInfo.ibp.high * 10;
         int min = waveInfo.waveInfo.ibp.low * 10;
         waveData = (max - wave) * (endY -  startY) / (max -  min) + startY;
