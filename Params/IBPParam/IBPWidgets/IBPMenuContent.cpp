@@ -142,20 +142,22 @@ public:
 
 void IBPMenuContentPrivate::loadOptions()
 {
-    IBPLabel ibp1 = ibpParam.getEntitle(IBP_CHN_1);
-    IBPLabel ibp2 = ibpParam.getEntitle(IBP_CHN_2);
-    groupData[IBP_CHN_1].entitle = ibp1;
-    groupData[IBP_CHN_2].entitle = ibp2;
-
-    // 获取当前ibp的波形id
     waveIdList.clear();
-    waveIdList.append(ibpParam.getWaveformID(ibp1));
-    waveIdList.append(ibpParam.getWaveformID(ibp2));
+    for (int i = IBP_CHN_1; i < IBP_CHN_NR; ++i)
+    {
+        IBPChannel chn = static_cast<IBPChannel> (i);
+        IBPLabel entitle = ibpParam.getEntitle(chn);
+        groupData[chn].entitle = entitle;
+        waveIdList.append(ibpParam.getWaveformID(entitle));
+        if (groupData[chn].entitleCbo)
+        {
+            groupData[chn].entitleCbo->blockSignals(true);
+            groupData[chn].entitleCbo->setCurrentIndex(entitle);
+            groupData[chn].entitleCbo->blockSignals(false);
+        }
+        groupData[chn].rulerLimit = ibpParam.getRulerLimit(chn);
+    }
 
-    combos[ITEM_CBO_ENTITLE_1]->setCurrentIndex(ibp1);
-    combos[ITEM_CBO_ENTITLE_2]->setCurrentIndex(ibp2);
-    groupData[IBP_CHN_1].rulerLimit = ibpParam.getRulerLimit(IBP_CHN_1);
-    groupData[IBP_CHN_2].rulerLimit = ibpParam.getRulerLimit(IBP_CHN_2);
 
     // update ibp1 ibp2 ruler comboBox scale info
     updateRulerCboScaleInfo();
