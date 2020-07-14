@@ -155,8 +155,10 @@ void IBPTrendWidget::setZeroFlag(bool isEnabled)
 {
     _isZero = isEnabled;
 
+    // Zero failed or sensor off, show the "Zero Required" prompt.
     if (!_isZero)
     {
+        setShowStacked(0);
         return;
     }
     // After zero successfully, close the "Zero Required" prompt.
