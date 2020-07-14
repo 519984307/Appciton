@@ -189,7 +189,7 @@ public:
             chn->map = validPressureValue(chn, val) ? val : InvData();
             break;
         case DATA_TYPE_PR:
-            chn->pr = val == INVALID_MEASURE_VALUE ? InvData() : val;
+            chn->pr = val != INVALID_MEASURE_VALUE ? val : InvData();
             break;
         default:
             break;
