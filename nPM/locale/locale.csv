@@ -266,6 +266,7 @@ Zero,校零,Zero
 IBPCalibrate,IBP校准,IBP Calibrate
 IBPCalibrateDesc,IBP校准,IBP Calibrate
 IBPCalibrating,IBP正在校准,IBP Calibrating
+IBPZeroBeforeCalib,校准前，请先校零,Zero the sensor before calibration.
 CalibrateChannel,校准通道,Calibrate Channel
 CalibratePoint,校准点,Calibrate Point
 CalibrateSuccessfully,校准成功,Calibrate Successfully

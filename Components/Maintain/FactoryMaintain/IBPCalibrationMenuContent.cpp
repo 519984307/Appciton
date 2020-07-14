@@ -147,8 +147,16 @@ void IBPCalibrationMenuContent::timerEvent(QTimerEvent *ev)
 
 void IBPCalibrationMenuContent::startCalibrate()
 {
-    pimpl->infoLbl->setText(trs("IBPCalibrating"));
     pimpl->calChn = static_cast<IBPChannel>(pimpl->chnCbo->currentIndex());
+
+    // Get last zero result, true : start calibrating; false : Prompt needs to be zeroed first.
+    if (!ibpParam.getLastZeroResult(pimpl->calChn))
+    {
+        pimpl->infoLbl->setText(trs("IBPZeroBeforeCalib"));
+        return;
+    }
+
+    pimpl->infoLbl->setText(trs("IBPCalibrating"));
 
     ibpParam.setCalibration(pimpl->calChn, pimpl->pointSpb->getValue());
 
