@@ -484,8 +484,8 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
         }
 
         bool chn1WaveInvalid  = ch1SensorOff;
-        // When last ibp zero failed, set wave data to invaild.
-        if (ch1Wave == INVALID_MEASURE_VALUE || !ibpParam.getLastZeroResult(IBP_CHN_1))
+        // When ibp need zero, set wave data to invaild.
+        if (ch1Wave == INVALID_MEASURE_VALUE || ibpParam.channelNeedZero(IBP_CHN_1))
         {
             ch1Wave = q_ptr->getIBPBaseLine();
             chn1WaveInvalid = true;
@@ -498,8 +498,8 @@ void SmartIBPProviderPrivate::handlePacket(const quint8 *data, int len)
         addWaveHelper(ch1Wave, chn1WaveInvalid, IBP_CHN_1);
 
         bool chn2WaveInvalid  = ch2SensorOff;
-        // When last ibp zero failed, set wave data to invaild.
-        if (ch2Wave == INVALID_MEASURE_VALUE || !ibpParam.getLastZeroResult(IBP_CHN_2))
+        // When ibp need zero, set wave data to invaild.
+        if (ch2Wave == INVALID_MEASURE_VALUE || ibpParam.channelNeedZero(IBP_CHN_2))
         {
             ch2Wave = q_ptr->getIBPBaseLine();
             chn2WaveInvalid = true;
