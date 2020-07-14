@@ -35,8 +35,6 @@ public:
     enum MenuItem
     {
         ITEM_BTN_AG_MODULE_CALIBRATION,
-        ITEM_BTN_IBP1_PRESSURE_CALIBRATION,
-        ITEM_BTN_IBP2_PRESSURE_CALIBRATION,
         ITEM_BTN_CO2_MODULE_MAINTAIN,
         ITEM_BTN_ECG_MODULE_CALIBRATION,
 #ifdef  Q_WS_QWS
@@ -104,31 +102,6 @@ void ModuleMaintainMenuContent::layoutExec()
         d_ptr->buttons.insert(ModuleMaintainMenuContentPrivate::ITEM_BTN_AG_MODULE_CALIBRATION, button);
     }
 
-    if (systemManager && systemManager->isSupport(PARAM_IBP))
-    {
-        // IBP1 pressure calibration
-        label = new QLabel(trs("IBP1PressureCalibration"));
-        layout->addWidget(label, d_ptr->buttons.count(), 0);
-        button = new Button("80");
-        button->setButtonStyle(Button::ButtonTextOnly);
-        itemID = static_cast<int>(ModuleMaintainMenuContentPrivate::ITEM_BTN_IBP1_PRESSURE_CALIBRATION);
-        button->setProperty("Item", qVariantFromValue(itemID));
-        connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
-        layout->addWidget(button, d_ptr->buttons.count(), 1);
-        d_ptr->buttons.insert(ModuleMaintainMenuContentPrivate::ITEM_BTN_IBP1_PRESSURE_CALIBRATION, button);
-
-        // IBP2 pressure calibration
-        label = new QLabel(trs("IBP2PressureCalibration"));
-        layout->addWidget(label, d_ptr->buttons.count(), 0);
-        button = new Button("80");
-        button->setButtonStyle(Button::ButtonTextOnly);
-        itemID = static_cast<int>(ModuleMaintainMenuContentPrivate::ITEM_BTN_IBP2_PRESSURE_CALIBRATION);
-        button->setProperty("Item", qVariantFromValue(itemID));
-        connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
-        layout->addWidget(button, d_ptr->buttons.count(), 1);
-        d_ptr->buttons.insert(ModuleMaintainMenuContentPrivate::ITEM_BTN_IBP2_PRESSURE_CALIBRATION, button);
-    }
-
     // CO2 ModuleMaintenance
     label = new QLabel(trs("CO2ModuleMaintenance"));
     layout->addWidget(label, d_ptr->buttons.count(), 0);
@@ -185,62 +158,6 @@ void ModuleMaintainMenuContent::onButtonReleased()
         case ModuleMaintainMenuContentPrivate::ITEM_BTN_AG_MODULE_CALIBRATION:
 
             break;
-        case ModuleMaintainMenuContentPrivate::ITEM_BTN_IBP1_PRESSURE_CALIBRATION:
-        {
-            KeyInputPanel numberPad;
-            numberPad.setWindowTitle(trs("ServiceCalibrate"));
-            numberPad.setMaxInputLength(7);
-            numberPad.setInitString(button->text());
-            if (numberPad.exec())
-            {
-                QString text = numberPad.getStrValue();
-                bool ok = false;
-                quint16 value = text.toShort(&ok);
-                if (ok)
-                {
-                    if (value >= 80 && value <= 300)
-                    {
-                        button->setText(text);
-                        ibpParam.setCalibration(IBP_CHN_1, value);
-                    }
-                    else
-                    {
-                        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + " 80-300 ",
-                                              QStringList(trs("EnglishYESChineseSURE")));
-                        messageBox.exec();
-                    }
-                }
-            }
-            break;
-        }
-        case ModuleMaintainMenuContentPrivate::ITEM_BTN_IBP2_PRESSURE_CALIBRATION:
-        {
-            KeyInputPanel numberPad;
-            numberPad.setWindowTitle(trs("ServiceCalibrate"));
-            numberPad.setMaxInputLength(7);
-            numberPad.setInitString(button->text());
-            if (numberPad.exec())
-            {
-                QString text = numberPad.getStrValue();
-                bool ok = false;
-                quint16 value = text.toShort(&ok);
-                if (ok)
-                {
-                    if (value >= 80 && value <= 300)
-                    {
-                        button->setText(text);
-                        ibpParam.setCalibration(IBP_CHN_2, value);
-                    }
-                    else
-                    {
-                        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + " 80-300 ",
-                                              QStringList(trs("EnglishYESChineseSURE")));
-                        messageBox.exec();
-                    }
-                }
-            }
-            break;
-        }
         case ModuleMaintainMenuContentPrivate::ITEM_BTN_CO2_MODULE_MAINTAIN:
 
             break;
