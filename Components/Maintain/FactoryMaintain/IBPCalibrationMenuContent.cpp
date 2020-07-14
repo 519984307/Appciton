@@ -149,8 +149,8 @@ void IBPCalibrationMenuContent::startCalibrate()
 {
     pimpl->calChn = static_cast<IBPChannel>(pimpl->chnCbo->currentIndex());
 
-    // Get last zero result, true : start calibrating; false : Prompt needs to be zeroed first.
-    if (!ibpParam.getLastZeroResult(pimpl->calChn))
+    // IBP channel need zero, prompt needs to be zeroed first.
+    if (ibpParam.channelNeedZero(pimpl->calChn))
     {
         pimpl->infoLbl->setText(trs("IBPZeroBeforeCalib"));
         return;
