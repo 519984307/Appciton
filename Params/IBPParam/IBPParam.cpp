@@ -782,12 +782,7 @@ void IBPParam::setCalibrationInfo(IBPCalibration calib, IBPChannel chn, int cali
         {
         case IBP_ZERO_SUCCESS:
         {
-            IBPOneShotType oneShotAlarm = IBP1_ZERO_SUCCESS;
-            if (chn == IBP_CHN_2)
-            {
-                oneShotAlarm = IBP2_CALIB_SUCCESS;
-            }
-            alarmSource->setOneShotAlarm(oneShotAlarm, true);
+            alarmSource->setOneShotAlarm((IBP1_ZERO_SUCCESS + chn), true);
             _chnData[chn].needZero = false;
             _chnData[chn].lastZeroResult = true;
             if (_chnData[chn].trendWidget)
@@ -803,12 +798,7 @@ void IBPParam::setCalibrationInfo(IBPCalibration calib, IBPChannel chn, int cali
             {
                 _chnData[chn].trendWidget->setZeroFlag(false);
             }
-            IBPOneShotType oneShotAlarm = IBP1_ZERO_IS_PULSE;
-            if (chn == IBP_CHN_2)
-            {
-                oneShotAlarm = IBP2_ZERO_IS_PULSE;
-            }
-            alarmSource->setOneShotAlarm(oneShotAlarm, true);
+            alarmSource->setOneShotAlarm((IBP1_ZERO_IS_PULSE + chn), true);
             break;
         }
         case IBP_ZERO_BEYOND_RANGE:
@@ -818,12 +808,7 @@ void IBPParam::setCalibrationInfo(IBPCalibration calib, IBPChannel chn, int cali
             {
                 _chnData[chn].trendWidget->setZeroFlag(false);
             }
-            IBPOneShotType oneShotAlarm = IBP1_ZERO_BEYOND_RANGE;
-            if (chn == IBP_CHN_2)
-            {
-                oneShotAlarm = IBP2_ZERO_BEYOND_RANGE;
-            }
-            alarmSource->setOneShotAlarm(oneShotAlarm, true);
+            alarmSource->setOneShotAlarm((IBP1_ZERO_BEYOND_RANGE + chn), true);
             break;
         }
         case IBP_ZERO_FAIL:
@@ -833,12 +818,7 @@ void IBPParam::setCalibrationInfo(IBPCalibration calib, IBPChannel chn, int cali
             {
                 _chnData[chn].trendWidget->setZeroFlag(false);
             }
-            IBPOneShotType oneShotAlarm = IBP1_ZERO_FAIL;
-            if (chn == IBP_CHN_2)
-            {
-                oneShotAlarm = IBP2_ZERO_FAIL;
-            }
-            alarmSource->setOneShotAlarm(oneShotAlarm, true);
+            alarmSource->setOneShotAlarm((IBP1_ZERO_FAIL + chn), true);
             break;
         }
         case IBP_ZERO_NOT_SET_TIME:
@@ -848,12 +828,7 @@ void IBPParam::setCalibrationInfo(IBPCalibration calib, IBPChannel chn, int cali
             {
                 _chnData[chn].trendWidget->setZeroFlag(false);
             }
-            IBPOneShotType oneShotAlarm = IBP1_ZERO_NOT_SET_TIME;
-            if (chn == IBP_CHN_2)
-            {
-                oneShotAlarm = IBP2_ZERO_NOT_SET_TIME;
-            }
-            alarmSource->setOneShotAlarm(oneShotAlarm, true);
+            alarmSource->setOneShotAlarm((IBP1_ZERO_NOT_SET_TIME + chn), true);
             break;
         }
         default:
@@ -866,66 +841,24 @@ void IBPParam::setCalibrationInfo(IBPCalibration calib, IBPChannel chn, int cali
         switch (static_cast<IBPCalibrationResult>(calibinfo))
         {
         case IBP_CALIBRATION_SUCCESS:
-        {
-            IBPOneShotType oneShotAlarm = IBP1_CALIB_SUCCESS;
-            if (chn == IBP_CHN_2)
-            {
-                oneShotAlarm = IBP2_CALIB_SUCCESS;
-            }
-            alarmSource->setOneShotAlarm(oneShotAlarm, true);
+            alarmSource->setOneShotAlarm((IBP1_CALIB_SUCCESS + chn), true);
             _chnData[chn].lastCalibResult = true;
             break;
-        }
         case IBP_CALIBRATION_IS_PULSE:
-        {
-            IBPOneShotType oneShotAlarm = IBP1_CALIB_IS_PULSE;
-            if (chn == IBP_CHN_2)
-            {
-                oneShotAlarm = IBP2_CALIB_IS_PULSE;
-            }
-            alarmSource->setOneShotAlarm(oneShotAlarm, true);
+            alarmSource->setOneShotAlarm((IBP1_CALIB_IS_PULSE + chn), true);
             break;
-        }
         case IBP_CALIBRATION_BEYOND_RANGE:
-        {
-            IBPOneShotType oneShotAlarm = IBP1_CALIB_BEYOND_RANGE;
-            if (chn == IBP_CHN_2)
-            {
-                oneShotAlarm = IBP2_CALIB_BEYOND_RANGE;
-            }
-            alarmSource->setOneShotAlarm(oneShotAlarm, true);
+            alarmSource->setOneShotAlarm((IBP1_CALIB_BEYOND_RANGE + chn), true);
             break;
-        }
         case IBP_CALIBRATION_NOT_ZERO:
-        {
-            IBPOneShotType oneShotAlarm = IBP1_CALIB_NOT_ZERO;
-            if (chn == IBP_CHN_2)
-            {
-                oneShotAlarm = IBP2_CALIB_NOT_ZERO;
-            }
-            alarmSource->setOneShotAlarm(oneShotAlarm, true);
+            alarmSource->setOneShotAlarm((IBP1_CALIB_NOT_ZERO + chn), true);
             break;
-        }
         case IBP_CALIBRATION_FAIL:
-        {
-            IBPOneShotType oneShotAlarm = IBP1_CALIB_FAIL;
-            if (chn == IBP_CHN_2)
-            {
-                oneShotAlarm = IBP2_CALIB_FAIL;
-            }
-            alarmSource->setOneShotAlarm(oneShotAlarm, true);
+            alarmSource->setOneShotAlarm((IBP1_CALIB_FAIL + chn), true);
             break;
-        }
         case IBP_CALIBRATION_NOT_SET_TIME:
-        {
-            IBPOneShotType oneShotAlarm = IBP1_CALIB_NOT_SET_TIME;
-            if (chn == IBP_CHN_2)
-            {
-                oneShotAlarm = IBP2_CALIB_NOT_SET_TIME;
-            }
-            alarmSource->setOneShotAlarm(oneShotAlarm, true);
+            alarmSource->setOneShotAlarm((IBP1_CALIB_NOT_SET_TIME + chn), true);
             break;
-        }
         default:
             break;
         }
