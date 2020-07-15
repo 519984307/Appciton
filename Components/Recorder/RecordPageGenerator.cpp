@@ -945,10 +945,18 @@ static void drawIBPRuler(RecordPage *page, QPainter *painter, const RecordWaveSe
 
     int fontH = fontManager.textHeightInPixels(painter->font());
     QRect rect(RULER_TICK_LEN, waveInfo.startYOffset, page->width() - RULER_TICK_LEN, fontH);
-    painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, QString::number(waveInfo.waveInfo.ibp.high));
+    // unit convert
+    UnitType defUnit = paramInfo->getUnitOfSubParam(SUB_PARAM_ART_SYS);
+    QString lowScale = QString::number(waveInfo.waveInfo.ibp.low);
+    QString highScale = QString::number(waveInfo.waveInfo.ibp.high);
+    if (defUnit != waveInfo.waveInfo.ibp.unit)
+    {
+        lowScale = Unit::convert(waveInfo.waveInfo.ibp.unit, defUnit, waveInfo.waveInfo.ibp.low);
+        highScale = Unit::convert(waveInfo.waveInfo.ibp.unit, defUnit, waveInfo.waveInfo.ibp.high);
+    }
+    painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, highScale);
     rect.translate(0, waveInfo.endYOffset - waveInfo.startYOffset - fontH);
-    painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, QString::number(waveInfo.waveInfo.ibp.low));
-
+    painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, lowScale);
     rect.setY((waveInfo.endYOffset -  waveInfo.startYOffset - fontH) / 2 + waveInfo.startYOffset);
     rect.setHeight(fontH);
     painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, trs(Unit::getSymbol(waveInfo.waveInfo.ibp.unit)));
