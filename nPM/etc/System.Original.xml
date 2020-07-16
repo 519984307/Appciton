@@ -973,7 +973,7 @@
             </O2>
         </Ruler>
         <!--0:Resp  1:IBP  2:AG-->
-        <TrendGroup>2</TrendGroup>
+        <TrendGroup>0</TrendGroup>
         <!--0:5s  1:30s  2:1min-->
         <TimeInterval>1</TimeInterval>
         <!--0:1    1:2    2:3-->
