@@ -83,8 +83,9 @@ void TrendGraphWindow::setAllParamAutoRuler()
     }
 }
 
-void TrendGraphWindow::updateTrendGraph()
+void TrendGraphWindow::setTrendGroup(TrendGroup group)
 {
+    d_ptr->waveWidget->loadCurParam(group);
     d_ptr->waveWidget->trendWaveReset();
     d_ptr->waveWidget->updateTimeRange();
 }

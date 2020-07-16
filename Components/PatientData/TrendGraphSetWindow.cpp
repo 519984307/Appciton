@@ -137,7 +137,7 @@ void TrendGraphSetWindow::trendGroupReleased(int g)
     systemConfig.setNumValue(prefix, g);
     d_ptr->trendGroup = (TrendGroup)g;
     upDateTrendGroup();
-    TrendGraphWindow::getInstance()->updateTrendGraph();
+    TrendGraphWindow::getInstance()->setTrendGroup(d_ptr->trendGroup);
 }
 
 void TrendGraphSetWindow::timeIntervalReleased(int timeInterval)
@@ -237,8 +237,7 @@ TrendGraphSetWindow::TrendGraphSetWindow()
     QVBoxLayout *rulerLayout = new QVBoxLayout();
     for (int i = 0; i < count; i ++)
     {
-        RulerItem *item = NULL;
-        item = d_ptr->itemList.at(i);
+        RulerItem *item = d_ptr->itemList.at(i);
         rulerLayout->addWidget(item);
         item->label->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
         item->combo->addItem(trs("Off"));
