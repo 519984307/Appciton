@@ -582,7 +582,7 @@ void TrendWaveWidget::updateTimeRange()
 
 void TrendWaveWidget::loadCurParam(TrendGroup trendGroup)
 {
-    _subParams.clear();
+    _allSubParams.clear();
 
     QList<SubParamID> list;
 
@@ -590,28 +590,28 @@ void TrendWaveWidget::loadCurParam(TrendGroup trendGroup)
     {
         list = _allParamMap.values(PARAM_DUP_ECG);
         qSort(list);
-        _subParams.append(list);
+        _allSubParams.append(list);
     }
 
     if (_allParamMap.contains(PARAM_SPO2))
     {
         list = _allParamMap.values(PARAM_SPO2);
         qSort(list);
-        _subParams.append(list);
+        _allSubParams.append(list);
     }
 
     if (_allParamMap.contains(PARAM_NIBP))
     {
         list = _allParamMap.values(PARAM_NIBP);
         qSort(list);
-        _subParams.append(list);
+        _allSubParams.append(list);
     }
 
     if (_allParamMap.contains(PARAM_TEMP))
     {
         list = _allParamMap.values(PARAM_TEMP);
         qSort(list);
-        _subParams.append(list);
+        _allSubParams.append(list);
     }
 
     if (trendGroup == TREND_GROUP_RESP)
@@ -620,14 +620,14 @@ void TrendWaveWidget::loadCurParam(TrendGroup trendGroup)
         {
             list = _allParamMap.values(PARAM_DUP_RESP);
             qSort(list);
-            _subParams.append(list);
+            _allSubParams.append(list);
         }
 
         if (_allParamMap.contains(PARAM_CO2))
         {
             list = _allParamMap.values(PARAM_CO2);
             qSort(list);
-            _subParams.append(list);
+            _allSubParams.append(list);
         }
     }
     else if (trendGroup == TREND_GROUP_IBP_CO)
@@ -636,14 +636,14 @@ void TrendWaveWidget::loadCurParam(TrendGroup trendGroup)
         {
             list = _allParamMap.values(PARAM_IBP);
             qSort(list);
-            _subParams.append(list);
+            _allSubParams.append(list);
         }
 
         if (_allParamMap.contains(PARAM_CO))
         {
             list = _allParamMap.values(PARAM_CO);
             qSort(list);
-            _subParams.append(list);
+            _allSubParams.append(list);
         }
     }
     else if (trendGroup == TREND_GROUP_AG)
@@ -652,14 +652,14 @@ void TrendWaveWidget::loadCurParam(TrendGroup trendGroup)
         {
             list = _allParamMap.values(PARAM_AG);
             qSort(list);
-            _subParams.append(list);
+            _allSubParams.append(list);
         }
 
         if (_allParamMap.contains(PARAM_CO2))
         {
             list = _allParamMap.values(PARAM_CO2);
             qSort(list);
-            _subParams.append(list);
+            _allSubParams.append(list);
         }
     }
 }
@@ -831,6 +831,7 @@ void TrendWaveWidget::showEvent(QShowEvent *e)
     _getTrendData();
     _calculationPage();
     _cursorPosIndex = 0;
+    _updateDisplaySubParams();
     updateTimeRange();
     _loadEventInfoList();
     _updateEventIndex();
@@ -1301,6 +1302,28 @@ void TrendWaveWidget::_initAllParamData()
             break;
         }
         }
+    }
+}
+
+void TrendWaveWidget::_updateDisplaySubParams()
+{
+    _subParams.clear();
+    // add display sub paramid
+    for (int i = 0; i < _allSubParams.count(); i ++)
+    {
+        SubParamID subId = _allSubParams.at(i);
+        ParamID paramId = paramInfo->getParamID(subId);
+        if (paramId == PARAM_IBP)
+        {
+            // ibp display 2 chn
+            SubParamID ibp1 = ibpParam.getSubParamID(ibpParam.getEntitle(IBP_CHN_1));
+            SubParamID ibp2 = ibpParam.getSubParamID(ibpParam.getEntitle(IBP_CHN_2));
+            if (subId != ibp1 && subId != ibp2)
+            {
+                continue;
+            }
+        }
+        _subParams.append(subId);
     }
 }
 
