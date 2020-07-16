@@ -158,6 +158,11 @@ void IBPTrendWidget::setZeroFlag(bool isEnabled)
     // Zero failed or sensor off, show the "Zero Required" prompt.
     if (!_isZero)
     {
+        // reset value
+        _sysString = InvStr();
+        _diaString = InvStr();
+        _mapString = InvStr();
+        _veinString = InvStr();
         setShowStacked(0);
         return;
     }
