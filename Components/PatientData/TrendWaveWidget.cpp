@@ -1312,7 +1312,7 @@ void TrendWaveWidget::_updateDisplaySubParams()
     for (int i = 0; i < _allSubParams.count(); i ++)
     {
         SubParamID subId = _allSubParams.at(i);
-        ParamID paramId = paramInfo->getParamID(subId);
+        ParamID paramId = paramInfo.getParamID(subId);
         if (paramId == PARAM_IBP)
         {
             // ibp display 2 chn

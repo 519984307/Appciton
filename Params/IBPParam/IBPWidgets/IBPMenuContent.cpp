@@ -354,7 +354,7 @@ void IBPMenuContentPrivate::updateRulerSboScaleInfo(IBPChannel chn, IBPRulerLimi
     }
 
     // set upper sacle info
-    UnitType defUnit = paramInfo->getUnitOfSubParam(SUB_PARAM_ART_SYS);
+    UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_ART_SYS);
     int start = scale.low + RULER_STEP;
     int end = IBP_RULER_MAX_VALUE;
     groupData[chn].upScaleStrs.clear();
@@ -470,7 +470,7 @@ void IBPMenuContentPrivate::handleScaleSboChange(IBPChannel chn, int value, bool
         box = groupData[chn].upScaleSbo;
     }
 
-    UnitType defUnit = paramInfo->getUnitOfSubParam(SUB_PARAM_ART_SYS);
+    UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_ART_SYS);
     ibpParam.setRulerLimit(lowScale, highScale, chn);
 
     // add new scale info
@@ -530,7 +530,7 @@ void IBPMenuContentPrivate::handleAutoRuler()
 
         IBPScaleInfo scale = ibpParam.getScaleInfo(static_cast<IBPChannel>(chn));
         // set upper sacle info
-        UnitType defUnit = paramInfo->getUnitOfSubParam(SUB_PARAM_ART_SYS);
+        UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_ART_SYS);
         int start = scale.low + RULER_STEP;
         int end = IBP_RULER_MAX_VALUE;
         groupData[chn].upScaleStrs.clear();

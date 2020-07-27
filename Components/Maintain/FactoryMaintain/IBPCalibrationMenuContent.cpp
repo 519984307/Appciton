@@ -60,7 +60,7 @@ IBPCalibrationMenuContent::~IBPCalibrationMenuContent()
 void IBPCalibrationMenuContent::readyShow()
 {
     UnitType curUnit = ibpParam.getUnit();
-    UnitType defUnit = paramInfo->getUnitOfSubParam(SUB_PARAM_ART_SYS);
+    UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_ART_SYS);
     QStringList pressureStrList;
     // add pressure strings
     for (int i = IBP_PRESSURE_CALIBRATE_MIN; i <= IBP_PRESSURE_CALIBRATE_MAX; i += 5)

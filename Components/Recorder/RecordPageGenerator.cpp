@@ -946,7 +946,7 @@ static void drawIBPRuler(RecordPage *page, QPainter *painter, const RecordWaveSe
     int fontH = fontManager.textHeightInPixels(painter->font());
     QRect rect(RULER_TICK_LEN, waveInfo.startYOffset, page->width() - RULER_TICK_LEN, fontH);
     // unit convert
-    UnitType defUnit = paramInfo->getUnitOfSubParam(SUB_PARAM_ART_SYS);
+    UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_ART_SYS);
     QString lowScale = QString::number(waveInfo.waveInfo.ibp.low);
     QString highScale = QString::number(waveInfo.waveInfo.ibp.high);
     if (defUnit != waveInfo.waveInfo.ibp.unit)
