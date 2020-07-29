@@ -11,6 +11,7 @@
 #pragma once
 #include "Framework/UI/Dialog.h"
 #include "ParamInfo.h"
+#include "TrendDataDefine.h"
 
 class TrendGraphWindowPrivate;
 class TrendGraphWindow : public Dialog
@@ -36,9 +37,10 @@ public:
     void setAllParamAutoRuler(void);
 
     /**
-     * @brief updateTrendGraph 更新趋势组
+     * @brief setTrendGroup set trend group
+     * @param group  trend group
      */
-    void updateTrendGraph();
+    void setTrendGroup(TrendGroup group);
 
     /**
      * @brief timeIntervalChange 设置趋势图时间间隔

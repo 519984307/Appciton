@@ -91,6 +91,12 @@ public:
     void updateTimeRange(void);
 
     /**
+     * @brief loadCurParam load cur param info by trend group
+     * @param trendGroup trend group
+     */
+    void loadCurParam(TrendGroup trendGroup);
+
+    /**
      * @brief trendWaveReset 趋势波形复位
      */
     void trendWaveReset(void);
@@ -234,6 +240,14 @@ private:
      * @brief _onUpdateCursorTime 更新游标时间
      */
     void _onUpdateCursorTime();
+    /**
+     * @brief _initAllParamData init param data
+     */
+    void _initAllParamData();
+    /**
+     * @brief _updateDisplaySubParams update sub param id
+     */
+    void _updateDisplaySubParams();
 
     /**
      * @brief getTrendDataPackage 获取索引对应的趋势数据
@@ -266,9 +280,11 @@ private:
 
     unsigned _leftTime;                             // 趋势图左边时间 *
     unsigned _rightTime;                            // 趋势图右边时间 *
-
+    typedef QMultiMap<ParamID, SubParamID> TrendParamMap;
+    TrendParamMap _allParamMap;    // all param map
     QList<TrendSubWaveWidget *> _subWidgetList;     // 子波形窗口容器
-    QList<SubParamID> _subParams;                   // 子参数组
+    QList<SubParamID> _subParams;                   // sub params for display
+    QList<SubParamID> _allSubParams;                // all sub params
     QList<SubParamID> _curDisplaySubList;           // 当前显示子参数集合
     int _curIndex;
     TrendGraphInfo _trendGraphInfo;                 // 趋势图数据集合

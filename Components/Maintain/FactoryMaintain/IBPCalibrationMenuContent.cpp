@@ -20,6 +20,9 @@
 
 #define QUERY_CALIBRATE_INTERVAL    100   // ms
 #define MAX_CALIBRATION_DURATION    5000    // ms
+#define IBP_PRESSURE_CALIBRATE_MIN  (80)    // The range supported by pressure calibration is 80-300 mmHg
+#define IBP_PRESSURE_CALIBRATE_MAX  (300)
+#define IBP_DEFAULT_CALIBRATE_POINT  (200)  // IBP pressure default calibrate point 200
 
 class IBPCalibrationMenuContentPrivate
 {
@@ -28,6 +31,7 @@ public:
         : chnCbo(NULL),
           pointSpb(NULL),
           infoLbl(NULL),
+          calibratePointLabel(NULL),
           calBtn(NULL),
           calChn(IBP_CHN_1),
           timeElapsed(0),
@@ -36,6 +40,7 @@ public:
     ComboBox *chnCbo;   /* channel combox */
     SpinBox *pointSpb;  /* calibrate point spinbox */
     QLabel *infoLbl;    /* calibrate info label */
+    QLabel *calibratePointLabel;  /* calibrate point label */
     Button *calBtn;     /* calirabte button */
     IBPChannel calChn;  /* calibrate channel */
     int timeElapsed;    /* time elapsed since calibrate start */
@@ -54,6 +59,27 @@ IBPCalibrationMenuContent::~IBPCalibrationMenuContent()
 
 void IBPCalibrationMenuContent::readyShow()
 {
+    UnitType curUnit = ibpParam.getUnit();
+    UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_ART_SYS);
+    QStringList pressureStrList;
+    // add pressure strings
+    for (int i = IBP_PRESSURE_CALIBRATE_MIN; i <= IBP_PRESSURE_CALIBRATE_MAX; i += 5)
+    {
+        if (curUnit == defUnit)
+        {
+            // default unit mmhg
+            pressureStrList.append(QString::number(i));
+        }
+        else
+        {
+            pressureStrList.append(Unit::convert(curUnit, defUnit, i));
+        }
+    }
+    pimpl->pointSpb->setStringList(pressureStrList);
+    pimpl->pointSpb->setValue((IBP_DEFAULT_CALIBRATE_POINT - IBP_PRESSURE_CALIBRATE_MIN) / 5);
+    // add unit text
+    pimpl->calibratePointLabel->setText(trs("CalibratePoint") + "("  + Unit::getSymbol(curUnit) + ")");
+
     if (ibpParam.getMoudleType() == IBP_MODULE_SMART_IBP)
     {
         /* fix calibrate point */
@@ -90,11 +116,10 @@ void IBPCalibrationMenuContent::layoutExec()
 
     label = new QLabel(trs("CalibratePoint"));
     layout->addWidget(label, 1, 0);
+    pimpl->calibratePointLabel = label;
 
     spinbox = new SpinBox();
-    spinbox->setRange(100, 240);
-    spinbox->setValue(200);
-    spinbox->setStep(1);
+    spinbox->setSpinBoxStyle(SpinBox::SPIN_BOX_STYLE_STRING);
     layout->addWidget(spinbox, 1, 1);
     pimpl->pointSpb = spinbox;
 
@@ -147,8 +172,16 @@ void IBPCalibrationMenuContent::timerEvent(QTimerEvent *ev)
 
 void IBPCalibrationMenuContent::startCalibrate()
 {
-    pimpl->infoLbl->setText(trs("IBPCalibrating"));
     pimpl->calChn = static_cast<IBPChannel>(pimpl->chnCbo->currentIndex());
+
+    // IBP channel need zero, prompt needs to be zeroed first.
+    if (ibpParam.channelNeedZero(pimpl->calChn))
+    {
+        pimpl->infoLbl->setText(trs("IBPZeroBeforeCalib"));
+        return;
+    }
+
+    pimpl->infoLbl->setText(trs("IBPCalibrating"));
 
     ibpParam.setCalibration(pimpl->calChn, pimpl->pointSpb->getValue());
 

@@ -47,6 +47,10 @@ public:
      */
     void updatePalette(const QPalette &pal);
 
+    /**
+     * @brief updateLimit update ruler range
+     */
+    void updateRulerRange(void);
 protected:
     // 窗体大小调整事件
     virtual void resizeEvent(QResizeEvent *e);

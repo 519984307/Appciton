@@ -14,6 +14,10 @@
 #include <QPainter>
 #include "FontManager.h"
 
+// Ruler text size
+#define RULER_TEXT_MAX_WIDTH     (40)
+#define RULER_TEXT_MAX_HEITHT    (20)
+
 /**************************************************************************************************
  * 绘图函数。
  *************************************************************************************************/
@@ -22,6 +26,19 @@ void IBPWaveRuler::paintItem(QPainter &painter)
     if (_up == _low)
     {
         return;
+    }
+    // get cur unit type
+    UnitType curUnit = ibpParam.getUnit();
+    QString lowRulerText = QString::number(_low);
+    QString highRulerText = QString::number(_up);
+    QString midRulerText = QString::number(_mid);
+
+    // Unit change, get the ruler data corresponding to the unit
+    if (curUnit != UNIT_MMHG)
+    {
+        lowRulerText = Unit::convert(curUnit, UNIT_MMHG, _low);
+        highRulerText = Unit::convert(curUnit, UNIT_MMHG, _up);
+        midRulerText = Unit::convert(curUnit, UNIT_MMHG, _mid);
     }
 
     int xLeft = x();
@@ -35,15 +52,18 @@ void IBPWaveRuler::paintItem(QPainter &painter)
     painter.setPen(QPen(palette().windowText(), 1, Qt::DashLine));
 
     // 上标尺
-    painter.drawText(QRectF(xLeft, yUp, 30, 20), Qt::AlignCenter | Qt::AlignTop, QString::number(_up));
+    painter.drawText(QRectF(xLeft, yUp, RULER_TEXT_MAX_WIDTH, RULER_TEXT_MAX_HEITHT),
+                      Qt::AlignCenter | Qt::AlignTop, highRulerText);
     painter.drawLine(xLeft, yUp, xRight, yUp);
 
     // 中标尺
-    painter.drawText(QRectF(xLeft, yMid - 10, 30, 20), Qt::AlignCenter | Qt::AlignHCenter, QString::number((_low + _up) / 2));
-    painter.drawLine(xLeft + 30, yMid, xRight, yMid);
+    painter.drawText(QRectF(xLeft, yMid - 10, RULER_TEXT_MAX_WIDTH, RULER_TEXT_MAX_HEITHT),
+                      Qt::AlignCenter | Qt::AlignHCenter, midRulerText);
+    painter.drawLine(xLeft + RULER_TEXT_MAX_WIDTH, yMid, xRight, yMid);
 
     // 下标尺
-    painter.drawText(QRectF(xLeft, yLow - 20, 30, 20), Qt::AlignCenter | Qt::AlignBottom, QString::number(_low));
+    painter.drawText(QRectF(xLeft, yLow - 20, RULER_TEXT_MAX_WIDTH, RULER_TEXT_MAX_HEITHT),
+                      Qt::AlignCenter | Qt::AlignBottom, lowRulerText);
     painter.drawLine(xLeft, yLow, xRight, yLow);
 }
 

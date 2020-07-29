@@ -154,6 +154,27 @@ void IBPTrendWidget::setShowStacked(int num)
 void IBPTrendWidget::setZeroFlag(bool isEnabled)
 {
     _isZero = isEnabled;
+
+    // Zero failed or sensor off, show the "Zero Required" prompt.
+    if (!_isZero)
+    {
+        // reset value
+        _sysString = InvStr();
+        _diaString = InvStr();
+        _mapString = InvStr();
+        _veinString = InvStr();
+        setShowStacked(0);
+        return;
+    }
+    // After zero successfully, close the "Zero Required" prompt.
+    if (_entitle >= IBP_LABEL_CVP && _entitle <= IBP_LABEL_ICP)
+    {
+        setShowStacked(2);
+    }
+    else
+    {
+        setShowStacked(1);
+    }
 }
 
 /**************************************************************************************************

@@ -141,7 +141,7 @@ void IBPParam::handDemoWaveform(WaveformID id, short data)
             IBPWaveWidget *waveWidget = _chnData[i].waveWidget;
             if (waveWidget)
             {
-                waveWidget->addData(data);
+                waveWidget->addWaveformData(data);
             }
         }
     }
@@ -155,17 +155,24 @@ void IBPParam::handDemoWaveform(WaveformID id, short data)
 void IBPParam::handDemoTrendData()
 {
     IBPParamInfo &ch1Data = _chnData[IBP_CHN_1].paramData;
-    ch1Data.sys = 25;
-    ch1Data.dia = 9;
-    ch1Data.mean = 14;
+    ch1Data.sys = 15;
+    ch1Data.dia = 6;
+    ch1Data.mean = 9;
     ch1Data.pr = 60;
-    if (getEntitle(IBP_CHN_1) == IBP_LABEL_ART)
+    if (getEntitle(IBP_CHN_1) == IBP_LABEL_ART )
     {
         ch1Data.sys = 120;
         ch1Data.dia = 75;
         ch1Data.mean = 90;
         ch1Data.pr = 60;
     }
+    else if (getEntitle(IBP_CHN_1) == IBP_LABEL_PA)
+    {
+        ch1Data.sys = 25;
+        ch1Data.dia = 9;
+        ch1Data.mean = 14;
+    }
+
     IBPTrendWidget *ch1Trend = _chnData[IBP_CHN_1].trendWidget;
 
     if (ch1Trend)
@@ -175,9 +182,9 @@ void IBPParam::handDemoTrendData()
     }
 
     IBPParamInfo &ch2Data = _chnData[IBP_CHN_2].paramData;
-    ch2Data.sys = 25;
-    ch2Data.dia = 9;
-    ch2Data.mean = 14;
+    ch2Data.sys = 15;
+    ch2Data.dia = 6;
+    ch2Data.mean = 9;
     ch2Data.pr = 60;
     if (getEntitle(IBP_CHN_2) == IBP_LABEL_ART)
     {
@@ -185,6 +192,12 @@ void IBPParam::handDemoTrendData()
         ch2Data.dia = 75;
         ch2Data.mean = 90;
         ch2Data.pr = 60;
+    }
+    else if (getEntitle(IBP_CHN_2) == IBP_LABEL_PA)
+    {
+        ch2Data.sys = 25;
+        ch2Data.dia = 9;
+        ch2Data.mean = 14;
     }
     IBPTrendWidget *ch2Trend = _chnData[IBP_CHN_2].trendWidget;
 
@@ -556,7 +569,6 @@ void IBPParam::setWaveWidget(IBPWaveWidget *waveWidget, IBPChannel chn)
 
     _chnData[chn].waveWidget = waveWidget;
 
-    waveWidget->setLimit(getIBPScale(waveWidget->getEntitle()).low, getIBPScale(waveWidget->getEntitle()).high);
     _setWaveformSpeed(getSweepSpeed());
 }
 
@@ -573,7 +585,7 @@ QList<SubParamID> IBPParam::getShortTrendList(IBPChannel chn)
     return paraList;
 }
 
-IBPScaleInfo IBPParam::getIBPScale(IBPLabel name)
+IBPScaleInfo IBPParam::getIBPDefaultScale(IBPLabel name)
 {
     IBPScaleInfo info;
     int highLimit = 0;
@@ -602,6 +614,20 @@ IBPScaleInfo IBPParam::getIBPScale(IBPLabel name)
         if ((*it).high == highLimit)
         {
             info = (*it);
+            break;
+        }
+    }
+    return info;
+}
+
+IBPScaleInfo IBPParam::getIBPScale(IBPLabel name)
+{
+    IBPScaleInfo info;
+    for (int i = 0; i < IBP_CHN_NR; i++)
+    {
+        if (_chnData[i].paramData.pressureName == name)
+        {
+            info = _chnData[i].scale;
             break;
         }
     }
@@ -738,197 +764,104 @@ void IBPParam::setCalibration(IBPChannel chn, unsigned short value)
  *************************************************************************************************/
 void IBPParam::setCalibrationInfo(IBPCalibration calib, IBPChannel chn, int calibinfo)
 {
+    if (chn >= IBP_CHN_NR)
+    {
+        return;
+    }
     AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_IBP);
     if (alarmSource == NULL)
     {
         return;
     }
 
+    // IBP Zero calibration result
     if (calib == IBP_CALIBRATION_ZERO)
     {
-        if (chn == IBP_CHN_1)
+        _chnData[chn].zeroReply = true;
+        switch (static_cast<IBPZeroResult>(calibinfo))
         {
-            _chnData[chn].zeroReply = true;
+        case IBP_ZERO_SUCCESS:
+        {
+            alarmSource->setOneShotAlarm((IBP1_ZERO_SUCCESS + chn), true);
             _chnData[chn].needZero = false;
-            switch (static_cast<IBPZeroResult>(calibinfo))
+            _chnData[chn].lastZeroResult = true;
+            if (_chnData[chn].trendWidget)
             {
-            case IBP_ZERO_SUCCESS:
-            {
-                alarmSource->setOneShotAlarm(IBP1_ZERO_SUCCESS, true);
-                _chnData[chn].lastZeroResult = true;
-                if (_chnData[chn].trendWidget)
-                {
-                    _chnData[chn].trendWidget->setZeroFlag(true);
-                }
-                break;
+                _chnData[chn].trendWidget->setZeroFlag(true);
             }
-            case IBP_ZERO_IS_PULSE:
-            {
-                alarmSource->setOneShotAlarm(IBP1_ZERO_IS_PULSE, true);
-                break;
-            }
-            case IBP_ZERO_BEYOND_RANGE:
-            {
-                alarmSource->setOneShotAlarm(IBP1_ZERO_BEYOND_RANGE, true);
-                break;
-            }
-            case IBP_ZERO_FAIL:
-            {
-                alarmSource->setOneShotAlarm(IBP1_ZERO_FAIL, true);
-                break;
-            }
-            case IBP_ZERO_NOT_SET_TIME:
-            {
-                alarmSource->setOneShotAlarm(IBP1_ZERO_NOT_SET_TIME, true);
-                break;
-            }
-            default:
-            {
-                break;
-            }
-            }
+            break;
         }
-        else if (chn == IBP_CHN_2)
+        case IBP_ZERO_IS_PULSE:
         {
-            _chnData[chn].zeroReply = true;
-            _chnData[chn].needZero = false;
-            switch (static_cast<IBPZeroResult>(calibinfo))
+            _chnData[chn].needZero = true;
+            if (_chnData[chn].trendWidget)
             {
-            case IBP_ZERO_SUCCESS:
-            {
-                alarmSource->setOneShotAlarm(IBP2_ZERO_SUCCESS, true);
-                _chnData[chn].lastZeroResult = true;
-                if (_chnData[chn].trendWidget)
-                {
-                    _chnData[chn].trendWidget->setZeroFlag(true);
-                }
-                break;
+                _chnData[chn].trendWidget->setZeroFlag(false);
             }
-            case IBP_ZERO_IS_PULSE:
-            {
-                alarmSource->setOneShotAlarm(IBP2_ZERO_IS_PULSE, true);
-                break;
-            }
-            case IBP_ZERO_BEYOND_RANGE:
-            {
-                alarmSource->setOneShotAlarm(IBP2_ZERO_BEYOND_RANGE, true);
-                break;
-            }
-            case IBP_ZERO_FAIL:
-            {
-                alarmSource->setOneShotAlarm(IBP2_ZERO_FAIL, true);
-                break;
-            }
-            case IBP_ZERO_NOT_SET_TIME:
-            {
-                alarmSource->setOneShotAlarm(IBP2_ZERO_NOT_SET_TIME, true);
-                break;
-            }
-            default:
-            {
-                break;
-            }
-            }
+            alarmSource->setOneShotAlarm((IBP1_ZERO_IS_PULSE + chn), true);
+            break;
         }
-        else
+        case IBP_ZERO_BEYOND_RANGE:
         {
-            return;
+            _chnData[chn].needZero = true;
+            if (_chnData[chn].trendWidget)
+            {
+                _chnData[chn].trendWidget->setZeroFlag(false);
+            }
+            alarmSource->setOneShotAlarm((IBP1_ZERO_BEYOND_RANGE + chn), true);
+            break;
+        }
+        case IBP_ZERO_FAIL:
+        {
+            _chnData[chn].needZero = true;
+            if (_chnData[chn].trendWidget)
+            {
+                _chnData[chn].trendWidget->setZeroFlag(false);
+            }
+            alarmSource->setOneShotAlarm((IBP1_ZERO_FAIL + chn), true);
+            break;
+        }
+        case IBP_ZERO_NOT_SET_TIME:
+        {
+            _chnData[chn].needZero = true;
+            if (_chnData[chn].trendWidget)
+            {
+                _chnData[chn].trendWidget->setZeroFlag(false);
+            }
+            alarmSource->setOneShotAlarm((IBP1_ZERO_NOT_SET_TIME + chn), true);
+            break;
+        }
+        default:
+            break;
         }
     }
-    else if (calib == IBP_CALIBRATION_SET)
+    else if (calib == IBP_CALIBRATION_SET)   // IBP calibration results
     {
-        if (chn == IBP_CHN_1)
+        _chnData[chn].calibReply = true;
+        switch (static_cast<IBPCalibrationResult>(calibinfo))
         {
-            _chnData[chn].calibReply = true;
-            switch (static_cast<IBPCalibrationResult>(calibinfo))
-            {
-            case IBP_CALIBRATION_SUCCESS:
-            {
-                alarmSource->setOneShotAlarm(IBP1_CALIB_SUCCESS, true);
-                _chnData[chn].lastCalibResult = true;
-                break;
-            }
-            case IBP_CALIBRATION_IS_PULSE:
-            {
-                alarmSource->setOneShotAlarm(IBP1_CALIB_IS_PULSE, true);
-                break;
-            }
-            case IBP_CALIBRATION_BEYOND_RANGE:
-            {
-                alarmSource->setOneShotAlarm(IBP1_CALIB_BEYOND_RANGE, true);
-                break;
-            }
-            case IBP_CALIBRATION_NOT_ZERO:
-            {
-                alarmSource->setOneShotAlarm(IBP1_CALIB_NOT_ZERO, true);
-                break;
-            }
-            case IBP_CALIBRATION_FAIL:
-            {
-                alarmSource->setOneShotAlarm(IBP1_CALIB_FAIL, true);
-                break;
-            }
-            case IBP_CALIBRATION_NOT_SET_TIME:
-            {
-                alarmSource->setOneShotAlarm(IBP1_CALIB_NOT_SET_TIME, true);
-                break;
-            }
-            default:
-            {
-                break;
-            }
-            }
+        case IBP_CALIBRATION_SUCCESS:
+            alarmSource->setOneShotAlarm((IBP1_CALIB_SUCCESS + chn), true);
+            _chnData[chn].lastCalibResult = true;
+            break;
+        case IBP_CALIBRATION_IS_PULSE:
+            alarmSource->setOneShotAlarm((IBP1_CALIB_IS_PULSE + chn), true);
+            break;
+        case IBP_CALIBRATION_BEYOND_RANGE:
+            alarmSource->setOneShotAlarm((IBP1_CALIB_BEYOND_RANGE + chn), true);
+            break;
+        case IBP_CALIBRATION_NOT_ZERO:
+            alarmSource->setOneShotAlarm((IBP1_CALIB_NOT_ZERO + chn), true);
+            break;
+        case IBP_CALIBRATION_FAIL:
+            alarmSource->setOneShotAlarm((IBP1_CALIB_FAIL + chn), true);
+            break;
+        case IBP_CALIBRATION_NOT_SET_TIME:
+            alarmSource->setOneShotAlarm((IBP1_CALIB_NOT_SET_TIME + chn), true);
+            break;
+        default:
+            break;
         }
-        else if (chn == IBP_CHN_2)
-        {
-            _chnData[chn].calibReply = true;
-            switch (static_cast<IBPCalibrationResult>(calibinfo))
-            {
-            case IBP_CALIBRATION_SUCCESS:
-            {
-                _chnData[chn].lastCalibResult = true;
-                alarmSource->setOneShotAlarm(IBP2_CALIB_SUCCESS, true);
-                break;
-            }
-            case IBP_CALIBRATION_IS_PULSE:
-            {
-                alarmSource->setOneShotAlarm(IBP2_CALIB_IS_PULSE, true);
-                break;
-            }
-            case IBP_CALIBRATION_BEYOND_RANGE:
-            {
-                alarmSource->setOneShotAlarm(IBP2_CALIB_BEYOND_RANGE, true);
-                break;
-            }
-            case IBP_CALIBRATION_NOT_ZERO:
-            {
-                alarmSource->setOneShotAlarm(IBP2_CALIB_NOT_ZERO, true);
-                break;
-            }
-            case IBP_CALIBRATION_FAIL:
-            {
-                alarmSource->setOneShotAlarm(IBP2_CALIB_FAIL, true);
-                break;
-            }
-            case IBP_CALIBRATION_NOT_SET_TIME:
-            {
-                alarmSource->setOneShotAlarm(IBP2_CALIB_NOT_SET_TIME, true);
-                break;
-            }
-            default:
-            {
-                break;
-            }
-            }
-        }
-        else
-        {
-            return;
-        }
-    }
-    else
-    {
-        return;
     }
 }
 
@@ -1037,6 +970,8 @@ void IBPParam::setUnit(UnitType type)
             _chnData[i].trendWidget->updateLimit();
             IBPParamInfo data = _chnData[i].paramData;
             _chnData[i].trendWidget->setData(data.sys, data.dia, data.mean);
+            // Unit change, waveform scale range needs to be updated
+            _chnData[i].waveWidget->updateRulerRange();
         }
     }
 }

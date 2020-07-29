@@ -85,7 +85,7 @@ void IBPWaveWidget::setEntitle(IBPLabel entitle)
 {
     _name->setText(IBPSymbol::convert(entitle));
     _entitle = entitle;
-    setLimit(ibpParam.getIBPScale(getEntitle()).low, ibpParam.getIBPScale(getEntitle()).high);
+    setLimit(ibpParam.getIBPDefaultScale(getEntitle()).low, ibpParam.getIBPDefaultScale(getEntitle()).high);
 }
 
 /**************************************************************************************************
@@ -106,6 +106,10 @@ void IBPWaveWidget::setRulerLimit(IBPRulerLimit ruler)
     if (ruler == IBP_RULER_LIMIT_AUTO)
     {
         _isAutoRuler = true;
+        // reset auto ruler time
+        _autoRulerTime = 0;
+        _autoRulerTracePeek = -10000;
+        _autoRulerTraveVally = 10000;
     }
     else if (ruler == IBP_RULER_LIMIT_MANUAL)
     {
@@ -158,6 +162,9 @@ IBPWaveWidget::IBPWaveWidget(WaveformID id, const QString &waveName, const IBPCh
     addItem(_leadSta);
 
     setMargin(QMargins(WAVE_X_OFFSET, 2, 2, 2));
+
+    // load config
+    loadConfig();
 }
 
 /**************************************************************************************************
@@ -172,6 +179,11 @@ void IBPWaveWidget::updatePalette(const QPalette &pal)
     _ruler->setPalette(pal);
     setPalette(pal);
     updateBackground();
+}
+
+void IBPWaveWidget::updateRulerRange()
+{
+    setLimit(ibpParam.getScaleInfo(_ibpChn).low, ibpParam.getScaleInfo(_ibpChn).high);
 }
 
 /**************************************************************************************************
@@ -210,7 +222,10 @@ void IBPWaveWidget::loadConfig()
     setPalette(palette);
     _ruler->setPalette(palette);
 
+    // set ibp entitle
     setEntitle(ibpParam.getEntitle(_ibpChn));
+    // set ibp ruler limit
+    setRulerLimit(ibpParam.getRulerLimit(_ibpChn));
 }
 
 /**************************************************************************************************
@@ -239,19 +254,19 @@ void IBPWaveWidget::_autoRulerHandle(short data)
 
     // 开始寻找最合适的标尺。
     int ruler;
-    for (ruler = 1; ruler < ibpParam.ibpScaleList.count() - 1; ruler ++)
+    for (ruler = IBP_RULER_LIMIT_10_10; ruler < ibpParam.ibpScaleList.count() - 1; ruler ++)
     {
-        if ((_autoRulerTracePeek <= ibpParam.ibpScaleList.at(ruler).high * 10 + 1000))
+        if ((_autoRulerTracePeek <= ibpParam.ibpScaleList.at(ruler).high * 10))
         {
-            if ((ruler == 7) || (ruler == 8))
+            if ((ruler == IBP_RULER_LIMIT_30_140) || (ruler == IBP_RULER_LIMIT_60_140))
             {
-                if (_autoRulerTraveVally >= ibpParam.ibpScaleList.at(ruler).low * 10 + 1000)
+                if (_autoRulerTraveVally >= ibpParam.ibpScaleList.at(ruler).low * 10)
                 {
                     break;
                 }
-                else if (ruler == 8)
+                else if (ruler == IBP_RULER_LIMIT_30_140)
                 {
-                    ruler = 9;
+                    ruler = IBP_RULER_LIMIT_0_140;
                     break;
                 }
             }
@@ -263,9 +278,9 @@ void IBPWaveWidget::_autoRulerHandle(short data)
     }
 
     // ruler为新的增益。
-    if (ruler > 13)
+    if (ruler > IBP_RULER_LIMIT_0_300)
     {
-        ruler = 13;
+        ruler = IBP_RULER_LIMIT_0_300;
     }
 
     _autoRulerTracePeek = -10000;

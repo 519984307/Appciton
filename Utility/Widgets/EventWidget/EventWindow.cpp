@@ -1005,6 +1005,16 @@ void EventWindowPrivate::eventTrendUpdate()
             {
                 dataStr = QString::number(ctx.trendSegment->values[i].value * 1.0 / 10, 'f', 1);
             }
+            else if (paramInfo.getParamID(subId) == PARAM_IBP)
+            {
+                // unit convert
+                dataStr = QString::number(ctx.trendSegment->values[i].value);
+                UnitType defUnit = paramInfo.getUnitOfSubParam(subId);
+                if (type != defUnit)
+                {
+                    dataStr = Unit::convert(type, defUnit, ctx.trendSegment->values[i].value);
+                }
+            }
             else
             {
                 dataStr = QString::number(ctx.trendSegment->values[i].value);

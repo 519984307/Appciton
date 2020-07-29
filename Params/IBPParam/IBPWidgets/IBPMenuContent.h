@@ -29,7 +29,7 @@ protected:
     void timerEvent(QTimerEvent *ev);
 
 private slots:
-    void onSpinBoxValueChanged(int value, int scale);
+    void onSpinBoxValueChanged(int value, int /*scale*/);
     void onComboBoxIndexChanged(int index);
 
     /**

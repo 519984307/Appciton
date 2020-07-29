@@ -102,9 +102,15 @@ public:
     QList<SubParamID> getShortTrendList(IBPChannel chn);
 
     /**
-     * @brief getIBPScale get the IBP scale info
-     * @param name
-     * @return
+     * @brief getIBPScale get the IBP default scale info
+     * @param name  IBP label name
+     * @return  default scale info
+     */
+    IBPScaleInfo getIBPDefaultScale(IBPLabel name);
+    /**
+     * @brief getIBPScale get the IBP current scale info
+     * @param name  IBP label name
+     * @return  current scale info
      */
     IBPScaleInfo getIBPScale(IBPLabel name);
 
