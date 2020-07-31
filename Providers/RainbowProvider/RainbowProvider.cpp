@@ -662,6 +662,8 @@ void RainbowProvider::disconnected()
         alarmSource->setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, true);
     }
     spo2Param.setConnected(false, d_ptr->isPlugin);
+    /* clear then message on the wave widget when communication stop */
+    spo2Param.setNotify(false, " ", d_ptr->isPlugin);
 }
 
 void RainbowProvider::reconnected()

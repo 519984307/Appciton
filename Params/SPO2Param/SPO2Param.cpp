@@ -505,11 +505,11 @@ void SPO2Param::setProvider(SPO2ProviderIFace *provider, bool isPlugin)
          */
         if (isPlugin)
         {
-            d_ptr->isEverCheckFinger = true;
+            d_ptr->plugInIsEverCheckFinger = true;
         }
         else
         {
-            d_ptr->plugInIsEverCheckFinger = true;
+            d_ptr->isEverCheckFinger = true;
         }
 
         p->setSensitivityFastSat(static_cast<SensitivityMode>(getSensitivity()), getFastSat());
