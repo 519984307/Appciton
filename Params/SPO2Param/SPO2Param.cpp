@@ -498,6 +498,20 @@ void SPO2Param::setProvider(SPO2ProviderIFace *provider, bool isPlugin)
     machineConfig.getStrValue("SPO2", str);
     if (str == "MASIMO_SPO2" || str.contains("RAINBOW_SPO2") || isPlugin)
     {
+        /*
+         * According to the MX-5 preV&V communication protocol checklist/Data Tables,
+         * 1.9.3 Ensure the host does not implement additional logic using Masimo exception events.
+         * We set the isEverCheckFinger to true here to enable the check sensor alarm at at startup
+         */
+        if (isPlugin)
+        {
+            d_ptr->isEverCheckFinger = true;
+        }
+        else
+        {
+            d_ptr->plugInIsEverCheckFinger = true;
+        }
+
         p->setSensitivityFastSat(static_cast<SensitivityMode>(getSensitivity()), getFastSat());
         p->setAverageTime(getAverageTime());
         p->setLineFrequency(getLineFrequency());
