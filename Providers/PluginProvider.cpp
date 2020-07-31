@@ -34,6 +34,7 @@
 #define PACKET_BUFF_SIZE 64
 #define RING_BUFFER_LENGTH 4096
 #define READ_PLUGIN_PIN_INTERVAL        (200)   // 200ms读一次插件管脚
+#define CONNECTION_DELAY_INTERVAL      (600)    // plugin connection delay interval
 #define CHECK_CONNECT_TIMER_PERIOD         (200)   // 检查连接定时器周期
 #define MODULE_RESET_DURATION          (500)
 #define BAUDRATE_SWITCH_DURATION       (500)
@@ -55,6 +56,7 @@ public:
           pluginDetectTimerID(-1),
           baudrateSwitchTimerID(-1),
           ConnectionCheckTimerID(-1),
+          connetionDelayTime(0),
           moudleResetTimerID(-1),
           curDetectBaudrate(WORKING_BAUDRATE_9600),
           connLostTickCounter(0),
@@ -249,6 +251,7 @@ public:
     int pluginDetectTimerID;
     int baudrateSwitchTimerID;
     int ConnectionCheckTimerID;
+    int connetionDelayTime;        /* Connection delay time */
     int moudleResetTimerID;         /* module reset timer ID */
     unsigned int curDetectBaudrate;
     unsigned int connLostTickCounter;
@@ -334,6 +337,12 @@ void PluginProvider::timerEvent(QTimerEvent *ev)
         {
             return;
         }
+        // When plugin is connected, SW delays 600ms before updating connection and sending data.
+        if (d_ptr->isPluginConnected() && d_ptr->connetionDelayTime <= CONNECTION_DELAY_INTERVAL)
+        {
+            d_ptr->connetionDelayTime += READ_PLUGIN_PIN_INTERVAL;
+            return;
+        }
 
         /* plugin connectd state is changed or we need restart scanning */
         if (d_ptr->lastPluginState != d_ptr->isPluginConnected())
@@ -379,6 +388,8 @@ void PluginProvider::timerEvent(QTimerEvent *ev)
 
                 d_ptr->workingProvider = NULL;
                 qDebug() << Q_FUNC_INFO << "Plugin disconnected";
+                // reset delay time
+                d_ptr->connetionDelayTime = 0;
             }
 
             d_ptr->lastPluginState = hasPluginConnected;
