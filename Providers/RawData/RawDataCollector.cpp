@@ -161,7 +161,7 @@ void RawDataCollectorPrivate::handleECGRawData(const unsigned char *data, int le
             stream << 256 << ',';
             stream << ecgData << ',';
             stream << respData << ',';
-            stream << respCalc << ',';
+            stream << respCalc;
             stream << endl;
             // 2 byte lead status
             data += 2;
