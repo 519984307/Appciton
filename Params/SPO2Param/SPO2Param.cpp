@@ -1256,6 +1256,37 @@ void SPO2Param::setConnected(bool isConnected, bool isPlugin)
             layoutManager.updateLayout();
         }
         d_ptr->trendWidget->updateTrendWidget();
+
+        // SPO2 param is disconnected, we set value to invalid.
+        if (!isPlugin)
+        {
+            d_ptr->spo2Value = InvData();
+            d_ptr->piValue = InvData();
+
+            d_ptr->trendWidget->setSPO2Value(InvData());
+            d_ptr->trendWidget->setPIValue(InvData());
+            d_ptr->trendWidget->setBarValue(InvData());
+            d_ptr->waveWidget->resetWave();
+        }
+        else
+        {
+            d_ptr->plugInSpo2Value = InvData();
+            d_ptr->spo2DValue = InvData();
+            d_ptr->pviValue = InvData();
+            d_ptr->sphbValue = InvData();
+            d_ptr->spocValue = InvData();
+            d_ptr->spmetValue = InvData();
+            d_ptr->spcoValue = InvData();
+
+            d_ptr->trendWidget->setPluginSPO2Value(InvData());
+            d_ptr->trendWidget->setSPO2DeltaValue(InvData());
+            d_ptr->pviTrendWidget->setPVIValue(InvData());
+            d_ptr->sphbTrendWidget->setSPHBValue(InvData());
+            d_ptr->spocTrendWidget->setSPOCValue(InvData());
+            d_ptr->spmetTrendWidget->setSpMetValue(InvData());
+            d_ptr->spcoTrendWidget->setSPCOValue(InvData());
+            d_ptr->plugInWaveWidget->resetWave();
+        }
     }
 }
 
