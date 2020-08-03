@@ -27,7 +27,7 @@
  *************************************************************************************************/
 void CO2WaveWidget::resizeEvent(QResizeEvent *e)
 {
-    _name->move(0, 0);
+    _name->move(30, 0);
     _ruler->resize(RULER_X_OFFSET, 0,
                    width() - RULER_X_OFFSET,
                    height());

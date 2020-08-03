@@ -192,7 +192,7 @@ void IBPWaveWidget::updateRulerRange()
 void IBPWaveWidget::resizeEvent(QResizeEvent *e)
 {
     WaveWidget::resizeEvent(e);
-    _name->move(0, 0);
+    _name->move(30, 0);
     _leadSta->setFixedWidth(width() / 2);
     _leadSta->move((width() - _leadSta->width()) / 2,
                   qmargins().top() + (height() - qmargins().top()) / 2 - _leadSta->height() - 1);
