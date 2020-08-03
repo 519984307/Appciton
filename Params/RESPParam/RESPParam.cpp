@@ -242,6 +242,23 @@ void RESPParam::setConnected(bool isConnected)
     {
         return;
     }
+    if (!isConnected)
+    {
+        respDupParam.updateRR(InvData());
+        if (d_ptr->waveWidget)
+        {
+            d_ptr->waveWidget->resetWave();
+        }
+
+        if (d_ptr->oxyCRGRESPWave)
+        {
+            d_ptr->oxyCRGRESPWave->clearData();
+        }
+        if (d_ptr->oxyCRGRrHrTrend)
+        {
+            d_ptr->oxyCRGRrHrTrend->clearData();
+        }
+    }
     d_ptr->connectedProvider = isConnected;
 }
 
