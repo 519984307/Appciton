@@ -787,6 +787,27 @@ void ECGParam::setConnected(bool isConnected)
         return;
     }
 
+    // ECG param is disconnected, we set value to invalid.
+    if (!isConnected)
+    {
+        ecgParam.updateHR(InvData());
+        ecgDupParam.updateHR(InvData());
+        updatePVCS(InvData());
+
+        for (int i = ECG_ST_I; i < ECG_ST_NR; ++i)
+        {
+            updateST((ECGST)i, InvData());
+        }
+
+        for (int i = ECG_LEAD_I; i < ECG_LEAD_NR; ++i)
+        {
+            if (_waveWidget[i])
+            {
+                _waveWidget[i]->resetWave();
+            }
+        }
+    }
+
     _connectedProvider = isConnected;
 }
 

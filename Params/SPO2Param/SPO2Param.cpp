@@ -1256,6 +1256,19 @@ void SPO2Param::setConnected(bool isConnected, bool isPlugin)
             layoutManager.updateLayout();
         }
         d_ptr->trendWidget->updateTrendWidget();
+
+        // SPO2 param is disconnected, we set value to invalid.
+        if (!isPlugin)
+        {
+            d_ptr->spo2Value = InvData();
+            d_ptr->piValue = InvData();
+
+            d_ptr->trendWidget->setSPO2Value(InvData());
+            d_ptr->trendWidget->setPIValue(InvData());
+            d_ptr->trendWidget->setBarValue(InvData());
+            d_ptr->waveWidget->resetWave();
+        }
+        setPR(InvData());
     }
 }
 

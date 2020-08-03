@@ -184,6 +184,29 @@ void COParam::setConnected(bool isConnected)
     {
         return;
     }
+    // CO param is disconnected, we set value to invalid.
+    if (isConnected)
+    {
+        pimpl->coAvgVal = InvData();
+        pimpl->ciAvgVal = InvData();
+        pimpl->tbVal = InvData();
+        // Reset ti value
+        if (pimpl->tiSrc == CO_TI_SOURCE_MANUAL)
+        {
+            pimpl->tiVal = getManualTi();
+        }
+        else
+        {
+            pimpl->tiVal = InvData();
+        }
+
+        if (pimpl->trendWidget)
+        {
+            pimpl->trendWidget->setMeasureResult(InvData(), InvData(), 0);
+            pimpl->trendWidget->setTb(InvData());
+        }
+    }
+
     pimpl->connectedProvider = isConnected;
 }
 
