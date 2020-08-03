@@ -210,7 +210,7 @@ void SPO2WaveWidget::loadConfig(void)
 
 void SPO2WaveWidget::_adjustLabelLayout()
 {
-    _name->move(0, 0);
+    _name->move(30, 0);
 
     // 设定为固定的高度和宽度后，居中显示。
     _notify->move((width() - _notify->width()) / 2,

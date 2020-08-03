@@ -109,13 +109,13 @@ void ECGWaveWidget::_calcGainRange(void)
 
 void ECGWaveWidget::_adjustLabelLayout()
 {
-    _name->move(0, 0);
+    _name->move(30, 0);
 
-    _gain->move(100, 0);
+    _gain->move(130, 0);
 
-    _filterMode->move(200, 0);
+    _filterMode->move(230, 0);
 
-    _notchInfo->move(350, 0);
+    _notchInfo->move(380, 0);
 
     _notify->move((width() - _notify->width()) / 2,
                   qmargins().top() + (height() - qmargins().top()) / 2 - _notify->height() - 1);
