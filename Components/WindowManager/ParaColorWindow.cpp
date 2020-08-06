@@ -35,6 +35,7 @@ public:
         ITEM_CBO_CO_COLOR,
         ITEM_CBO_AG_COLOR,
         ITEM_CBO_IBP_COLOR,
+        ITEM_CBO_O2_COLOR,
     };
 
     ParaColorWindowPrivate() {}
@@ -59,7 +60,8 @@ void ParaColorWindowPrivate::loadOptions()
                           << "TEMPColor"
                           << "COColor"
                           << "AGColor"
-                          << "IBPColor";
+                          << "IBPColor"
+                          << "O2Color";
 
     for (int i = 0; i < strList.count(); i++)
     {
@@ -267,6 +269,24 @@ void ParaColorWindow::layoutExec()
         d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_IBP_COLOR, comboBox);
     }
 
+    // O2 color
+    if (systemManager.isSupport(CONFIG_O2))
+    {
+        label = new QLabel(trs("O2"));
+        comboBox = new ComboBox;
+        for (int i = 0; i < d_ptr->colorList.count(); i++)
+        {
+            comboBox->addItem(trs(d_ptr->colorList.at(i)));
+        }
+        itemID = ParaColorWindowPrivate::ITEM_CBO_O2_COLOR;
+        comboBox->setProperty("Item", qVariantFromValue(itemID));
+        connect(comboBox , SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+        column = column >= 4 ? 0 : column;
+        layout->addWidget(label, d_ptr->combos.count() / 2, column++);
+        layout->addWidget(comboBox, d_ptr->combos.count() / 2, column++);
+        d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_O2_COLOR, comboBox);
+    }
+
     layout->setColumnStretch(0, 1);
     layout->setColumnStretch(1, 2);
     layout->setColumnStretch(2, 1);
@@ -293,61 +313,67 @@ void ParaColorWindow::onComboBoxIndexChanged(int index)
                 = (ParaColorWindowPrivate::MenuItem)box->property("Item").toInt();
         switch (item)
         {
-        case ParaColorWindowPrivate::ITEM_CBO_ECG_COLOR:
-        {
-            strPath = "Display|ECGColor";
-            id = PARAM_ECG;
-            dupPath = "Display|ECGDUPColor";
-            break;
-        }
-        case ParaColorWindowPrivate::ITEM_CBO_SPO2_COLOR:
-        {
-            strPath = "Display|SPO2Color";
-            id = PARAM_SPO2;
-            break;
-        }
-        case ParaColorWindowPrivate::ITEM_CBO_NIBP_COLOR:
-        {
-            strPath = "Display|NIBPColor";
-            id = PARAM_NIBP;
-            break;
-        }
-        case ParaColorWindowPrivate::ITEM_CBO_CO2_COLOR:
-        {
-            strPath = "Display|CO2Color";
-            id = PARAM_CO2;
-            break;
-        }
-        case ParaColorWindowPrivate::ITEM_CBO_RESP_COLOR:
-        {
-            strPath = "Display|RESPColor";
-            id = PARAM_RESP;
-            break;
-        }
-        case ParaColorWindowPrivate::ITEM_CBO_TEMP_COLOR:
-        {
-            strPath = "Display|TEMPColor";
-            id = PARAM_TEMP;
-            break;
-        }
-        case ParaColorWindowPrivate::ITEM_CBO_CO_COLOR:
-        {
-            strPath = "Display|COColor";
-            id = PARAM_CO;
-            break;
-        }
-        case ParaColorWindowPrivate::ITEM_CBO_AG_COLOR:
-        {
-            strPath = "Display|AGColor";
-            id = PARAM_AG;
-            break;
-        }
-        case ParaColorWindowPrivate::ITEM_CBO_IBP_COLOR:
-        {
-            strPath = "Display|IBPColor";
-            id = PARAM_IBP;
-            break;
-        }
+            case ParaColorWindowPrivate::ITEM_CBO_ECG_COLOR:
+            {
+                strPath = "Display|ECGColor";
+                id = PARAM_ECG;
+                dupPath = "Display|ECGDUPColor";
+                break;
+            }
+            case ParaColorWindowPrivate::ITEM_CBO_SPO2_COLOR:
+            {
+                strPath = "Display|SPO2Color";
+                id = PARAM_SPO2;
+                break;
+            }
+            case ParaColorWindowPrivate::ITEM_CBO_NIBP_COLOR:
+            {
+                strPath = "Display|NIBPColor";
+                id = PARAM_NIBP;
+                break;
+            }
+            case ParaColorWindowPrivate::ITEM_CBO_CO2_COLOR:
+            {
+                strPath = "Display|CO2Color";
+                id = PARAM_CO2;
+                break;
+            }
+            case ParaColorWindowPrivate::ITEM_CBO_RESP_COLOR:
+            {
+                strPath = "Display|RESPColor";
+                id = PARAM_RESP;
+                break;
+            }
+            case ParaColorWindowPrivate::ITEM_CBO_TEMP_COLOR:
+            {
+                strPath = "Display|TEMPColor";
+                id = PARAM_TEMP;
+                break;
+            }
+            case ParaColorWindowPrivate::ITEM_CBO_CO_COLOR:
+            {
+                strPath = "Display|COColor";
+                id = PARAM_CO;
+                break;
+            }
+            case ParaColorWindowPrivate::ITEM_CBO_AG_COLOR:
+            {
+                strPath = "Display|AGColor";
+                id = PARAM_AG;
+                break;
+            }
+            case ParaColorWindowPrivate::ITEM_CBO_IBP_COLOR:
+            {
+                strPath = "Display|IBPColor";
+                id = PARAM_IBP;
+                break;
+            }
+            case ParaColorWindowPrivate::ITEM_CBO_O2_COLOR:
+            {
+                strPath = "Display|O2Color";
+                id = PARAM_O2;
+                break;
+            }
         }
         currentConfig.setStrValue(strPath, d_ptr->colorList.at(index));
         if (id == PARAM_ECG)

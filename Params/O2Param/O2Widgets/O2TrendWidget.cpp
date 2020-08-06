@@ -108,6 +108,12 @@ void O2TrendWidget::doRestoreNormalStatus()
     showNormalStatus(_o2Value, psrc);
 }
 
+void O2TrendWidget::updatePalette(const QPalette &pal)
+{
+    setPalette(pal);
+    _o2Value->setPalette(pal);
+}
+
 void O2TrendWidget::setTextSize()
 {
     QRect r = this->rect();

@@ -15,6 +15,7 @@
 #include "RunningStatusBar.h"
 #include "PatientManager.h"
 #include "ConfigManager.h"
+#include "SystemManager.h"
 
 class O2ParamPrivate
 {
@@ -308,6 +309,16 @@ void O2Param::updateVibrationTimeout()
 {
     d_ptr->updateVibrationTmr.stop();
     setVibration(d_ptr->motorSta);
+}
+
+void O2Param::onPaletteChanged(ParamID id)
+{
+    if (id != PARAM_O2 || !systemManager.isSupport(CONFIG_O2))
+    {
+        return;
+    }
+    QPalette pal = colorManager.getPalette(paramInfo.getParamName(PARAM_O2));
+    d_ptr->trendWidget->updatePalette(pal);
 }
 
 O2Param::O2Param() :
