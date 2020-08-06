@@ -36,6 +36,12 @@ public:
 
     virtual void doRestoreNormalStatus();
 
+    /**
+     * @brief updatePalette update the palette
+     * @param pal palette
+     */
+    virtual void updatePalette(const QPalette &pal);
+
 protected:
     virtual void setTextSize();
 

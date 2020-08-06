@@ -106,6 +106,12 @@ protected slots:
 
     void updateVibrationTimeout();
 
+    /**
+     * @brief onPaletteChanged update the palette
+     * @param id param id
+     */
+    void onPaletteChanged(ParamID id);
+
 private:
     O2Param();
     ~O2Param();
