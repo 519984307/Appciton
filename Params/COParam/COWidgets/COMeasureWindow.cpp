@@ -299,6 +299,9 @@ COMeasureWindow::COMeasureWindow()
     pimpl->saveBtn->setEnabled(false);
     pimpl->calcBtn->setEnabled(false);
     pimpl->printBtn->setEnabled(false);
+
+    // 绑定当前工作模式改变信号和滤波模式槽函数
+    connect(&systemManager, SIGNAL(workModeChanged(WorkMode)), this, SLOT(onWorkModeChanged(WorkMode)));
 }
 
 COMeasureWindow::~COMeasureWindow()
@@ -540,8 +543,9 @@ void COMeasureWindow::onResultChecked()
     }
 }
 
-void COMeasureWindow::onWorkModeChanged()
+void COMeasureWindow::onWorkModeChanged(WorkMode mode)
 {
+    Q_UNUSED(mode);
     /* when the work mode change, clear all the reuslt and info */
     pimpl->measureWidget->setTb(InvData());
     pimpl->measureWidget->setTi(InvData());

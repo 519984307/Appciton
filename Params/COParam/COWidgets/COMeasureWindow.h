@@ -12,6 +12,7 @@
 
 #include "Framework/UI/Dialog.h"
 #include <QScopedPointer>
+#include "SystemManagerInterface.h"
 
 
 class COMeasureWindowPrivate;
@@ -92,7 +93,7 @@ private slots:
     /* handle the measure result checked signal */
     void onResultChecked();
     /* handle the measure result checked signal */
-    void onWorkModeChanged();
+    void onWorkModeChanged(WorkMode mode);
 
 private:
     friend class COMeasureWindowPrivate;

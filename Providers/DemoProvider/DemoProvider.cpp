@@ -279,6 +279,14 @@ void DemoProvider::detachParam(Param *param)
             ibpParam.setConnected(provider->connected());
         }
     }
+    else if (id == PARAM_CO)
+    {
+        Provider *provider = paramManager.getProvider("SMART_CO");
+        if (provider)
+        {
+            coParam.setConnected(provider->connected());
+        }
+    }
     else if (id == PARAM_AG)
     {
         _demoWaveData[WAVE_N2O].param = NULL;
