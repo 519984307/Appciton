@@ -551,6 +551,8 @@ void COMeasureWindow::onWorkModeChanged(WorkMode mode)
     pimpl->measureWidget->setTi(InvData());
     pimpl->measureWidget->setCo(InvData());
     pimpl->measureWidget->setCi(InvData());
+    pimpl->measureWidget->stopMeasure();
+    pimpl->measureWidget->clearMeasureWave();
     for (int i = 0; i < MAX_MEASURE_RESULT_NUM; i++)
     {
         pimpl->resultWidget[i]->setMeasureData(COMeasureData());

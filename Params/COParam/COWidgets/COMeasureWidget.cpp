@@ -110,6 +110,17 @@ void COMeasureWidget::addMeasureWave(short wave)
     update();
 }
 
+void COMeasureWidget::clearMeasureWave()
+{
+    if (pimpl->isMeasuring)
+    {
+        return;
+    }
+    pimpl->waveData.clear();
+
+    update();
+}
+
 void COMeasureWidget::setWaveDataRate(short rate)
 {
     if (rate > 0)
