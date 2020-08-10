@@ -1518,30 +1518,30 @@ SPO2CableExpired,SpO₂线缆过期,SpO₂ Cable expired
 SPO22CableExpired,SpO₂ 2线缆过期,SpO₂ 2 Cable expired
 SPO2IncompatibleCable,SpO₂不兼容线缆,SpO₂ Incompatible cable
 SPO22IncompatibleCable,SpO₂ 2不兼容线缆,SpO₂ 2 Incompatible cable
-SPO2UnrecongnizedCable,SpO₂未识别线缆,SpO₂ Unrecongnized cable
-SPO22UnrecongnizedCable,SpO₂ 2未识别线缆,SpO₂ 2 Unrecongnized cable
-SPO2CableNearExpiration,SpO₂线缆即将到期,SpO₂ Cable near expiration
-SPO22CableNearExpiration,SpO₂ 2线缆即将到期,SpO₂ 2 Cable near expiration
+SPO2UnrecognizedCable,SpO₂未识别线缆,SpO₂ Unrecognized cable
+SPO22UnrecognizedCable,SpO₂ 2未识别线缆,SpO₂ 2 Unrecognized cable
+SPO2CableNearExpiration,SpO₂线缆即将过期,SpO₂ Cable near expiration
+SPO22CableNearExpiration,SpO₂ 2线缆即将过期,SpO₂ 2 Cable near expiration
 SPO2SensorExpired,SpO₂传感器已过期,SpO₂ Sensor expired
 SPO22SensorExpired,SpO₂ 2传感器已过期,SpO₂ 2 Sensor expired
 SPO2IncompatibleSensor,SpO₂传感器不兼容,SpO₂ Incompatible sensor
 SPO22IncompatibleSensor,SpO₂ 2传感器不兼容,SpO₂ 2 Incompatible sensor
-SPO2UnrecongnizedSensor,SpO₂未识别传感器,SpO₂ Unrecongnized sensor
-SPO22UnrecongnizedSensor,SpO₂ 2未识别传感器,SpO₂ 2 Unrecongnized sensor
+SPO2UnrecognizedSensor,SpO₂未识别传感器,SpO₂ Unrecognized sensor
+SPO22UnrecognizedSensor,SpO₂ 2未识别传感器,SpO₂ 2 Unrecognized sensor
 SPO2DefectiveSensor,SpO₂传感器故障,SpO₂ Defective sensor
 SPO22DefectiveSensor,SpO₂ 2传感器故障,SpO₂ 2 Defective sensor
 SPO2CheckCableAndSensorFault,SpO₂检查线缆和传感器故障,SpO₂ Check cable and sensor fault
 SPO22CheckCableAndSensorFault,SpO₂ 2检查线缆和传感器故障,SpO₂ 2 Check cable and sensor fault
-SPO2SensorNearExpiration,SpO₂传感器即将到期,SpO₂ Sensor near expiration
-SPO22SensorNearExpiration,SpO₂ 2传感器即将到期,SpO₂ 2 Sensor near expiration
+SPO2SensorNearExpiration,SpO₂传感器即将过期,SpO₂ Sensor near expiration
+SPO22SensorNearExpiration,SpO₂ 2传感器即将过期,SpO₂ 2 Sensor near expiration
 SPO2NoAdhesiveSensor,SpO₂无粘性传感器,SpO₂ No adhesive sensor
 SPO22NoAdhesiveSensor,SpO₂ 2无粘性传感器,SpO₂ 2 No adhesive sensor
-SPO2AdhesiveSensorExpiraton,SpO₂粘性传感器截止,SpO₂ Adhesive sensor expiraton
-SPO22AdhesiveSensorExpiraton,SpO₂ 2粘性传感器截止,SpO₂ 2 Adhesive sensor expiraton
+SPO2AdhesiveSensorExpiraton,SpO₂粘性传感器过期,SpO₂ Adhesive sensor expiration
+SPO22AdhesiveSensorExpiraton,SpO₂ 2粘性传感器过期,SpO₂ 2 Adhesive sensor expiration
 SPO2IncompatibleAdhesiveSensor,SpO₂不兼容的粘性传感器,SpO₂ Incompatible adhesive sensor
 SPO22IncompatibleAdhesiveSensor,SpO₂ 2不兼容的粘性传感器,SpO₂ 2 Incompatible adhesive sensor
-SPO2UnrecongnizedAdhesiveSensor,SpO₂未识别的粘性传感器,SpO₂ Unrecongnized adhesive sensor
-SPO22UnrecongnizedAdhesiveSensor,SpO₂ 2未识别的粘性传感器,SpO₂ 2 Unrecongnized adhesive sensor
+SPO2UnrecognizedAdhesiveSensor,SpO₂未识别的粘性传感器,SpO₂ Unrecognized adhesive sensor
+SPO22UnrecognizedAdhesiveSensor,SpO₂ 2未识别的粘性传感器,SpO₂ 2 Unrecognized adhesive sensor
 SPO2DefectiveAdhesiveSensor,SpO₂有缺陷的粘性传感器,SpO₂ Defective adhesive sensor
 SPO22DefectiveAdhesiveSensor,SpO₂ 2有缺陷的粘性传感器,SpO₂ 2 Defective adhesive sensor
 SPO2SensorIniting,SpO₂传感器初始化,SpO₂ Sensor initing
@@ -1550,8 +1550,8 @@ SPO2InterferenceDetected,SpO₂检测到干扰,SpO₂ Interference detected
 SPO22InterferenceDetected,SpO₂ 2检测到干扰,SpO₂ 2 Interference detected
 SPO2DemoMode,SpO₂演示模式,SpO₂ Demo mode
 SPO22DemoMode,SpO₂ 2演示模式,SpO₂ 2 Demo mode
-SPO2AdhesiveSensorNearExpiration,SpO₂粘性传感器即将到期,SpO₂ Adhesive sensor near expiration
-SPO22AdhesiveSensorNearExpiration,SpO₂ 2粘性传感器即将到期,SpO₂ 2 Adhesive sensor near expiration
+SPO2AdhesiveSensorNearExpiration,SpO₂粘性传感器即将过期,SpO₂ Adhesive sensor near expiration
+SPO22AdhesiveSensorNearExpiration,SpO₂ 2粘性传感器即将过期,SpO₂ 2 Adhesive sensor near expiration
 SPO2CheckSensorConnection,SpO₂检查传感器连接,SpO₂ Check sensor connection
 SPO22CheckSensorConnection,SpO₂ 2检查传感器连接,SpO₂ 2 Check sensor connection
 SPO2OnlyMode,仅限SpO₂模式,SpO₂ only mode
