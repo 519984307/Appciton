@@ -1556,8 +1556,8 @@ SPO2CheckSensorConnection,SpO₂检查传感器连接,SpO₂ Check sensor connec
 SPO22CheckSensorConnection,SpO₂ 2检查传感器连接,SpO₂ 2 Check sensor connection
 SPO2OnlyMode,仅限SpO₂模式,SpO₂ only mode
 SPO22OnlyMode,仅限SpO₂ 2模式,SpO₂ 2 only mode
-SPO2BoardFailure,SpO₂板卡错误,SpO₂ Board Failure
-SPO22BoardFailure,SpO₂ 2板卡错误,SpO₂ 2 Board Failure
+SPO2BoardFailure,SpO₂板卡故障,SpO₂ Board Failure
+SPO22BoardFailure,SpO₂ 2板卡故障,SpO₂ 2 Board Failure
 SPO2Program,SpO₂ 编程,SpO₂ Program 
 RequestEnterProgramMode,请求进入编程模式,Request Enter Program Mode
 Programming,正在编程,Programming
