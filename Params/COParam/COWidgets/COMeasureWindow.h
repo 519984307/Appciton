@@ -12,7 +12,6 @@
 
 #include "Framework/UI/Dialog.h"
 #include <QScopedPointer>
-#include "SystemManagerInterface.h"
 
 
 class COMeasureWindowPrivate;
