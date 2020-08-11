@@ -1542,8 +1542,8 @@ SPO2IncompatibleAdhesiveSensor,SpO₂不兼容的粘性传感器,SpO₂ Incompat
 SPO22IncompatibleAdhesiveSensor,SpO₂ 2不兼容的粘性传感器,SpO₂ 2 Incompatible adhesive sensor
 SPO2UnrecognizedAdhesiveSensor,SpO₂未识别的粘性传感器,SpO₂ Unrecognized adhesive sensor
 SPO22UnrecognizedAdhesiveSensor,SpO₂ 2未识别的粘性传感器,SpO₂ 2 Unrecognized adhesive sensor
-SPO2DefectiveAdhesiveSensor,SpO₂有缺陷的粘性传感器,SpO₂ Defective adhesive sensor
-SPO22DefectiveAdhesiveSensor,SpO₂ 2有缺陷的粘性传感器,SpO₂ 2 Defective adhesive sensor
+SPO2DefectiveAdhesiveSensor,SpO₂粘性传感器故障,SpO₂ Defective adhesive sensor
+SPO22DefectiveAdhesiveSensor,SpO₂ 2粘性传感器故障,SpO₂ 2 Defective adhesive sensor
 SPO2SensorIniting,SpO₂传感器初始化,SpO₂ Sensor initing
 SPO22SensorIniting,SpO₂ 2传感器初始化,SpO₂ 2 Sensor initing
 SPO2InterferenceDetected,SpO₂检测到干扰,SpO₂ Interference detected
