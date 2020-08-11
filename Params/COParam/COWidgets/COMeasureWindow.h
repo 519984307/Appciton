@@ -98,7 +98,7 @@ private slots:
     /* handle the measure result checked signal */
     void onResultChecked();
     /* handle the measure result checked signal */
-    void onWorkModeChanged(WorkMode mode);
+    void onWorkModeChanged();
 
 private:
     friend class COMeasureWindowPrivate;
