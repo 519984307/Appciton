@@ -281,7 +281,10 @@ void DemoProvider::detachParam(Param *param)
     }
     else if (id == PARAM_CO)
     {
-        Provider *provider = paramManager.getProvider("SMART_CO");
+        // reset co provider connected status
+        QString providerName;
+        machineConfig.getStrValue("CO", providerName);
+        Provider *provider = paramManager.getProvider(providerName);
         if (provider)
         {
             coParam.setConnected(provider->connected());
