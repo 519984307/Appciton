@@ -390,6 +390,18 @@ void COMeasureWindow::fail()
     }
 }
 
+void COMeasureWindow::exitDemo()
+{
+    /* exit demo mode, need to reset status, and stop timer. */
+    pimpl->ctrlBtn->setText(trs("Start"));
+    pimpl->isMeasuring = false;
+    pimpl->demoDataReadIndex = 0;
+    pimpl->stopTimer(&pimpl->demoTimerID);
+    pimpl->stopTimer(&pimpl->checkInjectTimerID);
+    pimpl->stopTimer(&pimpl->stopMessageTimerID);
+    pimpl->stopTimer(&pimpl->waitStateTimerID);
+}
+
 void COMeasureWindow::showEvent(QShowEvent *ev)
 {
     Dialog::showEvent(ev);
@@ -559,6 +571,8 @@ void COMeasureWindow::onWorkModeChanged(WorkMode mode)
         pimpl->resultWidget[i]->setChecked(false);
         pimpl->resultWidget[i]->setEnabled(false);
     }
+    /* clear all the result, set save btn enable false */
+    pimpl->saveBtn->setEnabled(false);
     /* update average co and ci */
     onResultChecked();
 }
