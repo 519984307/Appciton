@@ -361,15 +361,18 @@ void LayoutManagerPrivate::doContentLayout()
 
 void LayoutManagerPrivate::performStandardLayout()
 {
-    QVBoxLayout *leftLayout = new QVBoxLayout();
+    QWidget *leftContainer = createContainter();
+    QVBoxLayout *leftLayout = new QVBoxLayout(leftContainer);
     leftLayout->setContentsMargins(0, 0, 0, 0);
     QWidget *waveContainer = createContainter();
     QWidget *leftParamContainer = createContainter();
     leftLayout->addWidget(waveContainer);
     leftLayout->addWidget(leftParamContainer);
-    contentLayout->addLayout(leftLayout, waveAreaStretch);
+    leftContainer->setFixedWidth(contentView->width() * waveAreaStretch / (waveAreaStretch + paramAreaStretch));
+    contentLayout->addWidget(leftContainer);
     QWidget *rightParamContainer = createContainter();
-    contentLayout->addWidget(rightParamContainer, paramAreaStretch);
+    rightParamContainer->setFixedWidth(contentView->width() * paramAreaStretch / (waveAreaStretch + paramAreaStretch));
+    contentLayout->addWidget(rightParamContainer);
 
     QGridLayout *waveLayout = new QGridLayout(waveContainer);
     waveLayout->setMargin(0);
