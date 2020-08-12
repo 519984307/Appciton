@@ -322,27 +322,21 @@ void NIBPTrendWidgetPrivate::layoutExec(QHBoxLayout *layout)
     valueLayout = new QVBoxLayout(groupBox0);
     sysLayout = new QVBoxLayout();
     sysLayout->setSpacing(0);
-    sysLayout->addStretch();
     sysLayout->addWidget(sysLabel);
-    sysLayout->addStretch();
     sysLayout->addWidget(sysValue);
     diaLayout = new QVBoxLayout();
     diaLayout->setSpacing(0);
-    diaLayout->addStretch();
     diaLayout->addWidget(diaLabel);
-    diaLayout->addStretch();
     diaLayout->addWidget(diaValue);
     mapLayout = new QVBoxLayout();
-    mapLayout->setSpacing(0);
     mapLayout->addStretch();
     mapLayout->addWidget(mapLabel);
     mapLayout->addStretch();
     mapLayout->addWidget(mapValue);
+    mapLayout->addStretch();
     nibpValueLayout = new QVBoxLayout();
     nibpValueLayout->setSpacing(0);
-    nibpValueLayout->addStretch();
     nibpValueLayout->addWidget(nibpLabel);
-    nibpValueLayout->addStretch();
     nibpValueLayout->addWidget(nibpValue);
 
     QHBoxLayout *hLayout0 = new QHBoxLayout();
@@ -619,7 +613,7 @@ void NIBPTrendWidget::showModelText(const QString &text)
 void NIBPTrendWidget::setTextSize()
 {
     QRect r;
-    r.setSize(QSize(((width() - nameLabel->width()) / 5), ((height() / 5) * 3)));
+    r.setSize(QSize(((width() - nameLabel->width()) / 4), ((height() / 5) * 3)));
     int fontsize = fontManager.adjustNumFontSize(r, true);
     QFont font = fontManager.numFont(fontsize, true);
     font.setWeight(QFont::Black);
