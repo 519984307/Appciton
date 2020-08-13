@@ -121,6 +121,11 @@ void COParam::exitDemo()
         pimpl->trendWidget->setMeasureResult(InvData(), InvData(), 0);
         pimpl->trendWidget->setTb(InvData());
     }
+
+    if (pimpl->measureWin)
+    {
+        pimpl->measureWin->exitDemo();
+    }
 }
 
 /**************************************************************************************************

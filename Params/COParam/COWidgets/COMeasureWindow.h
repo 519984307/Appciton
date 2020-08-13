@@ -80,6 +80,11 @@ public:
      */
     void fail();
 
+    /**
+     * @brief exitDemo  exit demo
+     */
+    void exitDemo();
+
 protected:
     /* override */
     void showEvent(QShowEvent *ev);

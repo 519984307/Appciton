@@ -279,6 +279,17 @@ void DemoProvider::detachParam(Param *param)
             ibpParam.setConnected(provider->connected());
         }
     }
+    else if (id == PARAM_CO)
+    {
+        // reset co provider connected status
+        QString providerName;
+        machineConfig.getStrValue("CO", providerName);
+        Provider *provider = paramManager.getProvider(providerName);
+        if (provider)
+        {
+            coParam.setConnected(provider->connected());
+        }
+    }
     else if (id == PARAM_AG)
     {
         _demoWaveData[WAVE_N2O].param = NULL;

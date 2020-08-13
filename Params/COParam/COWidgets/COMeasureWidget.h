@@ -41,6 +41,11 @@ public:
     void addMeasureWave(short wave);
 
     /**
+     * @brief clearMeasureWave  clear the measure wave data
+     */
+    void clearMeasureWave();
+
+    /**
      * @brief setWaveDataRate set the sample rate of the wave data
      * @param rate
      */

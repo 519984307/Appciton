@@ -299,6 +299,9 @@ COMeasureWindow::COMeasureWindow()
     pimpl->saveBtn->setEnabled(false);
     pimpl->calcBtn->setEnabled(false);
     pimpl->printBtn->setEnabled(false);
+
+    // 绑定当前工作模式改变信号和滤波模式槽函数
+    connect(&systemManager, SIGNAL(workModeChanged(WorkMode)), this, SLOT(onWorkModeChanged()));
 }
 
 COMeasureWindow::~COMeasureWindow()
@@ -385,6 +388,18 @@ void COMeasureWindow::fail()
     {
         pimpl->stopMeasure(COMeasureWindowPrivate::STOP_REASON_FAIL);
     }
+}
+
+void COMeasureWindow::exitDemo()
+{
+    /* exit demo mode, need to reset status, and stop timer. */
+    pimpl->ctrlBtn->setText(trs("Start"));
+    pimpl->isMeasuring = false;
+    pimpl->demoDataReadIndex = 0;
+    pimpl->stopTimer(&pimpl->demoTimerID);
+    pimpl->stopTimer(&pimpl->checkInjectTimerID);
+    pimpl->stopTimer(&pimpl->stopMessageTimerID);
+    pimpl->stopTimer(&pimpl->waitStateTimerID);
 }
 
 void COMeasureWindow::showEvent(QShowEvent *ev)
@@ -547,12 +562,16 @@ void COMeasureWindow::onWorkModeChanged()
     pimpl->measureWidget->setTi(InvData());
     pimpl->measureWidget->setCo(InvData());
     pimpl->measureWidget->setCi(InvData());
+    pimpl->measureWidget->stopMeasure();
+    pimpl->measureWidget->clearMeasureWave();
     for (int i = 0; i < MAX_MEASURE_RESULT_NUM; i++)
     {
         pimpl->resultWidget[i]->setMeasureData(COMeasureData());
         pimpl->resultWidget[i]->setChecked(false);
         pimpl->resultWidget[i]->setEnabled(false);
     }
+    /* clear all the result, set save btn enable false */
+    pimpl->saveBtn->setEnabled(false);
     /* update average co and ci */
     onResultChecked();
 }
