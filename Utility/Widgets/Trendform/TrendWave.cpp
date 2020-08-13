@@ -26,6 +26,8 @@
 #include <QVector>
 
 #define DELTA_X 5   // 两值间的x轴像素值
+#define WIDTH_BETWEEN_NAME_AND_BORDER   (30)    // Width between name and border
+#define WIDTH_BETWEEN_NAME_AND_RULER    (50)    // width between name and ruler
 typedef QVector<float> YAxisValueBufType;
 
 class TrendWavePrivate
@@ -393,7 +395,7 @@ void TrendWavePrivate::updateBackground()
     }
     int fontHeight = fontManager.textHeightInPixels(font);
     int fontWidth = fontManager.textWidthInPixels(maxStr, font);
-    int drawTextX = waveRegion.left();
+    int drawTextX = waveRegion.left() + WIDTH_BETWEEN_NAME_AND_RULER;
     int drawTextY = waveRegion.top();
     painter.drawText(QRect(drawTextX, drawTextY, fontWidth, fontHeight), maxStr);
     drawTextY = waveRegion.bottom() - fontHeight;
@@ -401,7 +403,7 @@ void TrendWavePrivate::updateBackground()
     painter.drawText(QRect(drawTextX, drawTextY, fontWidth, fontHeight), minStr);
 
     // draw name
-    drawTextX = q_ptr->rect().left();
+    drawTextX = q_ptr->rect().left() + WIDTH_BETWEEN_NAME_AND_BORDER;
     drawTextY = q_ptr->rect().top();
     fontWidth = fontManager.textWidthInPixels(trs(name), font);
     painter.drawText(QRect(drawTextX, drawTextY, fontWidth, fontHeight), trs(name));
