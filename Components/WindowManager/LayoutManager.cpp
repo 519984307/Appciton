@@ -377,7 +377,7 @@ void LayoutManagerPrivate::performStandardLayout()
     QGridLayout *waveLayout = new QGridLayout(waveContainer);
     waveLayout->setMargin(0);
     QGridLayout *leftParamLayout = new QGridLayout(leftParamContainer);
-    leftParamLayout->setMargin(0);
+    leftParamLayout->setContentsMargins(8, 0, 0, 0);
     QGridLayout *rightParamLayout = new QGridLayout(rightParamContainer);
     rightParamLayout->setMargin(0);
 
@@ -1008,6 +1008,11 @@ void LayoutManagerPrivate::performBigFontLayout()
 
             QVBoxLayout *vLayout = new QVBoxLayout(nodeContainer);
             vLayout->setMargin(0);
+            // When big font layout is select, set the margin of the first column
+            if (column == 0)
+            {
+                vLayout->setContentsMargins(8, 0, 0, 0);
+            }
 
             IWidget *w = layoutWidgets.value(layoutNodeMap[paramName], NULL);
             if (w && widgetLayoutable[w->name()])
