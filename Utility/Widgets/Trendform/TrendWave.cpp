@@ -26,8 +26,8 @@
 #include <QVector>
 
 #define DELTA_X 5   // 两值间的x轴像素值
-#define WIDTH_BETWEEN_NAME_AND_BORDER   (30)    // Width between name and border
-#define WIDTH_BETWEEN_NAME_AND_RULER    (50)    // width between name and ruler
+#define WIDTH_BETWEEN_NAME_AND_BORDER   (8)     // Width between name and border
+#define WIDTH_BETWEEN_NAME_AND_RULER    (10)    // width between name and ruler
 typedef QVector<float> YAxisValueBufType;
 
 class TrendWavePrivate
