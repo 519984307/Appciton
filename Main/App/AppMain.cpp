@@ -228,17 +228,16 @@ static void _start(void)
 
     int type = 0;
     systemConfig.getNumValue("UserFaceType", type);
-    UserFaceType userFaceType = static_cast<UserFaceType>(type);
     /*
      * When spo2 is selected low configuration, and the current interface type is spo2,
      * reset to the standard interface.
      */
-    if (userFaceType == UFACE_MONITOR_SPO2 && !systemManager.isSupport(CONFIG_SPO2_HIGH_CONFIGURE))
+    if (type == UFACE_MONITOR_SPO2 && !systemManager.isSupport(CONFIG_SPO2_HIGH_CONFIGURE))
     {
-        userFaceType = UFACE_MONITOR_STANDARD;
-        systemConfig.setNumValue("UserFaceType", static_cast<int> (userFaceType));
+        type = UFACE_MONITOR_STANDARD;
+        systemConfig.setNumValue("UserFaceType", type);
     }
-    layoutManager.setUFaceType(userFaceType);
+    layoutManager.setUFaceType(static_cast<UserFaceType>(type));
 
 #else
     systemManager.loadInitBMode();
