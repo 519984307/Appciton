@@ -141,9 +141,6 @@ static void _storageThreadEntry(void)
     systemConfig.saveToDisk();
     currentConfig.saveToDisk();
 
-    static int loopCounter = 0;
-    loopCounter++;
-
     // 数据存储
     static bool cleanup = true;
     if (cleanup)
@@ -231,7 +228,17 @@ static void _start(void)
 
     int type = 0;
     systemConfig.getNumValue("UserFaceType", type);
-    layoutManager.setUFaceType(static_cast<UserFaceType>(type));
+    UserFaceType userFaceType = static_cast<UserFaceType>(type);
+    /*
+     * When spo2 is selected low configuration, and the current interface type is spo2,
+     * reset to the standard interface.
+     */
+    if (userFaceType == UFACE_MONITOR_SPO2 && !systemManager.isSupport(CONFIG_SPO2_HIGH_CONFIGURE))
+    {
+        userFaceType = UFACE_MONITOR_STANDARD;
+        systemConfig.setNumValue("UserFaceType", static_cast<int> (userFaceType));
+    }
+    layoutManager.setUFaceType(userFaceType);
 
 #else
     systemManager.loadInitBMode();
