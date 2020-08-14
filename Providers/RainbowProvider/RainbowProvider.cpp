@@ -1162,12 +1162,16 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     {
         unsigned short dspVersion = (data[0] << 8) | data[1];
         unsigned short mcuVersion = (data[6] << 8) | data[7];
-        unsigned short protocolVersion = (data[14] << 8) | data[15];
-        q_ptr->versionInfo = QString::number(dspVersion);
-        q_ptr->versionInfo += "-";
-        q_ptr->versionInfo += QString::number(mcuVersion);
-        q_ptr->versionInfo += "-";
-        q_ptr->versionInfo += QString::number(protocolVersion);
+//        unsigned short protocolVersion = (data[14] << 8) | data[15];
+        QString dspVer = QString("DSP: V%1.%2.%3.%4").arg((dspVersion & 0xF000) >> 12)
+                                                .arg((dspVersion & 0x0F00) >> 8)
+                                                .arg((dspVersion & 0x00F0) >> 4)
+                                                .arg(dspVersion & 0x000F);
+        QString mcuVer = QString("MCU: V%1.%2.%3.%4").arg((mcuVersion & 0xF000) >> 12)
+                                                .arg((mcuVersion & 0x0F00) >> 8)
+                                                .arg((mcuVersion & 0x00F0) >> 4)
+                                                .arg(mcuVersion & 0x000F);
+        q_ptr->versionInfo = dspVer + "\n" + mcuVer;
     }
         break;
     case RB_PARAM_MAX_ITEM:
