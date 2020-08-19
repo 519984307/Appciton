@@ -112,9 +112,15 @@ void SPO2TrendWidget::setSPO2DeltaValue(qint16 spo2)
 
 void SPO2TrendWidget::setPIValue(qint16 pi)
 {
-    if (pi >= 0)
+    if (0 <= pi && pi < 1000)
     {
+        // PI value range 0%-9.99%, set the resolution to 0.01
         _piString = QString::number(pi / (100 * 1.0), 'f', 2);
+    }
+    else if (pi >= 1000 && pi <= 10000)
+    {
+        // PI value range 10.0%-100%, set the resolution to 0.1
+        _piString = QString::number(pi / (100 * 1.0), 'f', 1);
     }
     else
     {
