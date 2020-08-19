@@ -21,13 +21,13 @@ class SPO2TrendWidget: public TrendWidget
 
 public:
     // 设置SPO2的值。
-    void setSPO2Value(int16_t spo2);
+    void setSPO2Value(qint16 spo2);
 
-    void setPluginSPO2Value(int16_t spo2);
+    void setPluginSPO2Value(qint16 spo2);
 
-    void setSPO2DeltaValue(int16_t spo2);
+    void setSPO2DeltaValue(qint16 spo2);
 
-    void setPIValue(int16_t pi);
+    void setPIValue(qint16 pi);
 
     // 刷新趋势参数上下限
     void updateLimit(void);
@@ -54,7 +54,7 @@ public:
      * @brief setBarValue 设置棒图值
      * @param value
      */
-    void setBarValue(int16_t value);
+    void setBarValue(qint16 value);
 
 public:
     virtual void doRestoreNormalStatus();

@@ -63,7 +63,7 @@ void SPO2TrendWidget::loadConfig()
 /**************************************************************************************************
  * 设置SPO2的值。
  *************************************************************************************************/
-void SPO2TrendWidget::setSPO2Value(int16_t spo2)
+void SPO2TrendWidget::setSPO2Value(qint16 spo2)
 {
     if (spo2 >= 0 && spo2Param.getPerfusionStatus())
     {
@@ -80,7 +80,7 @@ void SPO2TrendWidget::setSPO2Value(int16_t spo2)
     _spo2Value1->setText(_spo2String1);
 }
 
-void SPO2TrendWidget::setPluginSPO2Value(int16_t spo2)
+void SPO2TrendWidget::setPluginSPO2Value(qint16 spo2)
 {
     if (spo2 >= 0 && spo2Param.getPerfusionStatus(true))
     {
@@ -97,7 +97,7 @@ void SPO2TrendWidget::setPluginSPO2Value(int16_t spo2)
     _spo2Value2->setText(_spo2String2);
 }
 
-void SPO2TrendWidget::setSPO2DeltaValue(int16_t spo2)
+void SPO2TrendWidget::setSPO2DeltaValue(qint16 spo2)
 {
     if (spo2 >= 0)
     {
@@ -110,7 +110,7 @@ void SPO2TrendWidget::setSPO2DeltaValue(int16_t spo2)
     _spo2DeltaValue->setText(_spo2StringD);
 }
 
-void SPO2TrendWidget::setPIValue(int16_t pi)
+void SPO2TrendWidget::setPIValue(qint16 pi)
 {
     if (pi >= 0)
     {
@@ -350,7 +350,7 @@ void SPO2TrendWidget::updateTrendWidget()
     setTextSize();
 }
 
-void SPO2TrendWidget::setBarValue(int16_t value)
+void SPO2TrendWidget::setBarValue(qint16 value)
 {
     if (value == InvData())
     {
