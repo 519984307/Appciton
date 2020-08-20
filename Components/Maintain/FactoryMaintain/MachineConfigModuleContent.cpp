@@ -203,6 +203,15 @@ void MachineConfigModuleContentPrivte::loadOptions()
     machineConfig.getNumValue("TouchEnable", index);
     combos[ITEM_CBO_TSCREEN]->setCurrentIndex(index);
     itemChangedMap[ITEM_CBO_TSCREEN] = index;
+    if (systemManager.isOnlySupportTouchScreen())
+    {
+        combos[ITEM_CBO_TSCREEN]->setEnabled(false);
+    }
+    else
+    {
+        combos[ITEM_CBO_TSCREEN]->setEnabled(true);
+    }
+
 #endif
 
     index = 0;

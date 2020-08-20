@@ -90,22 +90,27 @@ int main(int argc, char *argv[])
 #if defined(Q_WS_QWS)
     // Change qws server background color to back
     QWSServer::setBackground(Qt::black);
-    int screenWidth = 0;
-    int ScreenHeight = 0;
-    machineConfig.getNumValue("ScreenWidth", screenWidth);
-    machineConfig.getNumValue("ScreenHeight", ScreenHeight);
-    QWSPointerCalibrationData calData;
-    calData.devPoints[QWSPointerCalibrationData::TopLeft] = QPoint(0, 0);
-    calData.devPoints[QWSPointerCalibrationData::TopRight] = QPoint(4095, 0);
-    calData.devPoints[QWSPointerCalibrationData::BottomRight] = QPoint(4095, 4095);
-    calData.devPoints[QWSPointerCalibrationData::BottomLeft] = QPoint(0, 4095);
-    calData.devPoints[QWSPointerCalibrationData::Center] = QPoint(2048, 2048);
-    calData.screenPoints[QWSPointerCalibrationData::TopLeft] = QPoint(0, 0);
-    calData.screenPoints[QWSPointerCalibrationData::TopRight] = QPoint(screenWidth, 0);
-    calData.screenPoints[QWSPointerCalibrationData::BottomRight] = QPoint(screenWidth, ScreenHeight);
-    calData.screenPoints[QWSPointerCalibrationData::BottomLeft] = QPoint(0, ScreenHeight);
-    calData.screenPoints[QWSPointerCalibrationData::Center] = QPoint(screenWidth/2, ScreenHeight/2);
-    QWSServer::mouseHandler()->calibrate(&calData);
+    int touchScreenType = 0;
+    machineConfig.getNumValue("TouchEnable", touchScreenType);
+    if (touchScreenType == TOUCHSCREEN_CAPACITIVE)
+    {
+        int screenWidth = 0;
+        int ScreenHeight = 0;
+        machineConfig.getNumValue("ScreenWidth", screenWidth);
+        machineConfig.getNumValue("ScreenHeight", ScreenHeight);
+        QWSPointerCalibrationData calData;
+        calData.devPoints[QWSPointerCalibrationData::TopLeft] = QPoint(0, 0);
+        calData.devPoints[QWSPointerCalibrationData::TopRight] = QPoint(4095, 0);
+        calData.devPoints[QWSPointerCalibrationData::BottomRight] = QPoint(4095, 4095);
+        calData.devPoints[QWSPointerCalibrationData::BottomLeft] = QPoint(0, 4095);
+        calData.devPoints[QWSPointerCalibrationData::Center] = QPoint(2048, 2048);
+        calData.screenPoints[QWSPointerCalibrationData::TopLeft] = QPoint(0, 0);
+        calData.screenPoints[QWSPointerCalibrationData::TopRight] = QPoint(screenWidth, 0);
+        calData.screenPoints[QWSPointerCalibrationData::BottomRight] = QPoint(screenWidth, ScreenHeight);
+        calData.screenPoints[QWSPointerCalibrationData::BottomLeft] = QPoint(0, ScreenHeight);
+        calData.screenPoints[QWSPointerCalibrationData::Center] = QPoint(screenWidth/2, ScreenHeight/2);
+        QWSServer::mouseHandler()->calibrate(&calData);
+    }
 
 #endif
 
