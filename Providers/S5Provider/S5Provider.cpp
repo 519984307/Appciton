@@ -71,6 +71,16 @@ bool S5Provider::attachParam(Param *param)
     {
         spo2Param.setProvider(this);
         Provider::attachParam(param);
+
+        // 退出演示模式的时候检测SPO2状态
+        if (!_isCableOff && !_isFingerOff && !_isLedError)
+        {
+            spo2Param.setNotify(false, trs("SPO2CheckSensor"));
+        }
+        else
+        {
+            spo2Param.setNotify(true, trs("SPO2CheckSensor"));
+        }
         return true;
     }
     return false;
