@@ -1234,7 +1234,7 @@ void SPO2Param::setConnected(bool isConnected, bool isPlugin)
     int needUpdate = 0;
     if (isConnected)
     {
-        if (isPlugin)
+        if (isPlugin && layoutManager.getUFaceType() == UFACE_MONITOR_SPO2)
         {
             // update to show SpO2 info
             needUpdate |= layoutManager.setWidgetLayoutable(wave, true);
@@ -1253,7 +1253,7 @@ void SPO2Param::setConnected(bool isConnected, bool isPlugin)
             alarmSource->clear();
         }
 
-        if (isPlugin)
+        if (isPlugin && layoutManager.getUFaceType() == UFACE_MONITOR_SPO2)
         {
             // update to show SpO2 info
             needUpdate |= layoutManager.setWidgetLayoutable(wave, false);
