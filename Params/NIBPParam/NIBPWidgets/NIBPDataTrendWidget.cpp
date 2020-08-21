@@ -372,11 +372,8 @@ void NIBPDataTrendWidget::clearListData()
         _table->item(i, 0)->setText("");
         QLabel *l = qobject_cast<QLabel *>(_table->cellWidget(i, 1));
         l->setText("");
-        if (moduleStr != "BLM_N5")
-        {
-            l = qobject_cast<QLabel *>(_table->cellWidget(i, 2));
-            l->setText("");
-        }
+        l = qobject_cast<QLabel *>(_table->cellWidget(i, 2));
+        l->setText("");
     }
 }
 
