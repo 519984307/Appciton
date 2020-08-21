@@ -1234,11 +1234,14 @@ void SPO2Param::setConnected(bool isConnected, bool isPlugin)
     int needUpdate = 0;
     if (isConnected)
     {
-        // update to show SpO2 info
-        needUpdate |= layoutManager.setWidgetLayoutable(wave, true);
-        if (needUpdate)
+        if (isPlugin && layoutManager.getUFaceType() == UFACE_MONITOR_SPO2)
         {
-            layoutManager.updateLayout();
+            // update to show SpO2 info
+            needUpdate |= layoutManager.setWidgetLayoutable(wave, true);
+            if (needUpdate)
+            {
+                layoutManager.updateLayout();
+            }
         }
         d_ptr->trendWidget->updateTrendWidget();
     }
@@ -1249,12 +1252,17 @@ void SPO2Param::setConnected(bool isConnected, bool isPlugin)
         {
             alarmSource->clear();
         }
-        // update to show SpO2 info
-        needUpdate |= layoutManager.setWidgetLayoutable(wave, false);
-        if (needUpdate)
+
+        if (isPlugin && layoutManager.getUFaceType() == UFACE_MONITOR_SPO2)
         {
-            layoutManager.updateLayout();
+            // update to show SpO2 info
+            needUpdate |= layoutManager.setWidgetLayoutable(wave, false);
+            if (needUpdate)
+            {
+                layoutManager.updateLayout();
+            }
         }
+
         d_ptr->trendWidget->updateTrendWidget();
 
         // SPO2 param is disconnected, we set value to invalid.
