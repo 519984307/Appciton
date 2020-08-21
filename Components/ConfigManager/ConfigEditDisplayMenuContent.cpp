@@ -16,6 +16,8 @@
 #include "ConfigManager.h"
 #include "SystemManager.h"
 
+#define ONE_PAGE_MAX_DISPLAY_LABEL_NUM  (8)
+
 class ConfigEditDisplayMenuContentPrivate
 {
 public:
@@ -28,7 +30,9 @@ public:
         ITEM_CBO_RESP_COLOR,
         ITEM_CBO_TEMP_COLOR,
         ITEM_CBO_AG_COLOR,
+        ITEM_CBO_CO_COLOR,
         ITEM_CBO_IBP_COLOR,
+        ITEM_CBO_O2_COLOR,
         ITEM_CBO_MAX,
     };
 
@@ -44,6 +48,7 @@ public:
     void paramStaInit();
 
     QMap <MenuItem, ComboBox *> combos;
+    QMap <MenuItem, QLabel *> labels;
     QStringList colorList;
     Config * const config;
     bool paramSupportMap[ITEM_CBO_MAX];
@@ -81,7 +86,9 @@ void ConfigEditDisplayMenuContentPrivate::loadOptions()
                           << "RESPColor"
                           << "TEMPColor"
                           << "AGColor"
-                          << "IBPColor";
+                          << "COColor"
+                          << "IBPColor"
+                          << "O2Color";
     QString color;
     bool isOnlyToRead = configManager.isReadOnly();
     for (int i = 0; i < strList.count(); i++)
@@ -95,6 +102,22 @@ void ConfigEditDisplayMenuContentPrivate::loadOptions()
         config->getStrValue(QString("Display|%1").arg(strList.at(i)), color);
         combos[item]->setCurrentIndex(colorList.indexOf(color));
         combos[item]->setEnabled(!isOnlyToRead);
+    }
+
+    int count = labels.count();
+    // Display up to 8 tags on each page
+    if (count > ONE_PAGE_MAX_DISPLAY_LABEL_NUM)
+    {
+        if (isOnlyToRead)
+        {
+            labels[ITEM_CBO_ECG_COLOR]->setFocusPolicy(Qt::StrongFocus);
+            labels[static_cast<MenuItem> (count - 1)]->setFocusPolicy(Qt::StrongFocus);
+        }
+        else
+        {
+            labels[ITEM_CBO_ECG_COLOR]->setFocusPolicy(Qt::NoFocus);
+            labels[static_cast<MenuItem> (count - 1)]->setFocusPolicy(Qt::NoFocus);
+        }
     }
 }
 
@@ -154,6 +177,15 @@ void ConfigEditDisplayMenuContentPrivate::paramStaInit()
         paramSupportMap[ITEM_CBO_SPO2_COLOR] = false;
     }
 
+    if (systemManager.isSupport(CONFIG_CO))
+    {
+        paramSupportMap[ITEM_CBO_CO_COLOR] = true;
+    }
+    else
+    {
+        paramSupportMap[ITEM_CBO_CO_COLOR] = false;
+    }
+
     if (systemManager.isSupport(CONFIG_IBP))
     {
         paramSupportMap[ITEM_CBO_IBP_COLOR] = true;
@@ -161,6 +193,15 @@ void ConfigEditDisplayMenuContentPrivate::paramStaInit()
     else
     {
         paramSupportMap[ITEM_CBO_IBP_COLOR] = false;
+    }
+
+    if (systemManager.isSupport(CONFIG_O2))
+    {
+        paramSupportMap[ITEM_CBO_O2_COLOR] = true;
+    }
+    else
+    {
+        paramSupportMap[ITEM_CBO_O2_COLOR] = false;
     }
 
     paramSupportMap[ITEM_CBO_ECG_COLOR] = true;
@@ -187,6 +228,8 @@ void ConfigEditDisplayMenuContent::layoutExec()
 
     // ecg color
     label = new QLabel(trs("ECG"));
+    d_ptr->labels.insert(ConfigEditDisplayMenuContentPrivate
+                         ::ITEM_CBO_ECG_COLOR, label);
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox;
     comboBox->addItems(trColorList);
@@ -203,6 +246,8 @@ void ConfigEditDisplayMenuContent::layoutExec()
     {
         // spo2 color
         label = new QLabel(trs("SPO2"));
+        d_ptr->labels.insert(ConfigEditDisplayMenuContentPrivate
+                             ::ITEM_CBO_SPO2_COLOR, label);
         layout->addWidget(label, d_ptr->combos.count(), 0);
         comboBox = new ComboBox;
         comboBox->addItems(trColorList);
@@ -220,6 +265,8 @@ void ConfigEditDisplayMenuContent::layoutExec()
     {
         // nibp color
         label = new QLabel(trs("NIBP"));
+        d_ptr->labels.insert(ConfigEditDisplayMenuContentPrivate
+                             ::ITEM_CBO_NIBP_COLOR, label);
         layout->addWidget(label, d_ptr->combos.count(), 0);
         comboBox = new ComboBox;
         comboBox->addItems(trColorList);
@@ -237,6 +284,8 @@ void ConfigEditDisplayMenuContent::layoutExec()
     {
         // CO2 color
         label = new QLabel(trs("CO2"));
+        d_ptr->labels.insert(ConfigEditDisplayMenuContentPrivate
+                             ::ITEM_CBO_CO2_COLOR, label);
         layout->addWidget(label, d_ptr->combos.count(), 0);
         comboBox = new ComboBox;
         comboBox->addItems(trColorList);
@@ -254,6 +303,8 @@ void ConfigEditDisplayMenuContent::layoutExec()
     {
         // RESP color
         label = new QLabel(trs("RESP"));
+        d_ptr->labels.insert(ConfigEditDisplayMenuContentPrivate
+                             ::ITEM_CBO_RESP_COLOR, label);
         layout->addWidget(label, d_ptr->combos.count(), 0);
         comboBox = new ComboBox;
         comboBox->addItems(trColorList);
@@ -271,6 +322,8 @@ void ConfigEditDisplayMenuContent::layoutExec()
     {
         // TEMP color
         label = new QLabel(trs("TEMP"));
+        d_ptr->labels.insert(ConfigEditDisplayMenuContentPrivate
+                             ::ITEM_CBO_TEMP_COLOR, label);
         layout->addWidget(label, d_ptr->combos.count(), 0);
         comboBox = new ComboBox;
         comboBox->addItems(trColorList);
@@ -288,6 +341,8 @@ void ConfigEditDisplayMenuContent::layoutExec()
     {
         // AG color
         label = new QLabel(trs("AG"));
+        d_ptr->labels.insert(ConfigEditDisplayMenuContentPrivate
+                             ::ITEM_CBO_AG_COLOR, label);
         layout->addWidget(label, d_ptr->combos.count(), 0);
         comboBox = new ComboBox;
         comboBox->addItems(trColorList);
@@ -300,11 +355,32 @@ void ConfigEditDisplayMenuContent::layoutExec()
         connect(comboBox , SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     }
 
+    id = ConfigEditDisplayMenuContentPrivate::ITEM_CBO_CO_COLOR;
+    if (d_ptr->paramSupportMap[id])
+    {
+        // IBP color
+        label = new QLabel(trs("CO"));
+        d_ptr->labels.insert(ConfigEditDisplayMenuContentPrivate
+                             ::ITEM_CBO_CO_COLOR, label);
+        layout->addWidget(label, d_ptr->combos.count(), 0);
+        comboBox = new ComboBox;
+        comboBox->addItems(trColorList);
+        layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+        d_ptr->combos.insert(ConfigEditDisplayMenuContentPrivate
+                             ::ITEM_CBO_CO_COLOR, comboBox);
+        itemID = ConfigEditDisplayMenuContentPrivate
+                ::ITEM_CBO_CO_COLOR;
+        comboBox->setProperty("Item", qVariantFromValue(itemID));
+        connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    }
+
     id = ConfigEditDisplayMenuContentPrivate::ITEM_CBO_IBP_COLOR;
     if (d_ptr->paramSupportMap[id])
     {
         // IBP color
         label = new QLabel(trs("IBP"));
+        d_ptr->labels.insert(ConfigEditDisplayMenuContentPrivate
+                             ::ITEM_CBO_IBP_COLOR, label);
         layout->addWidget(label, d_ptr->combos.count(), 0);
         comboBox = new ComboBox;
         comboBox->addItems(trColorList);
@@ -313,6 +389,25 @@ void ConfigEditDisplayMenuContent::layoutExec()
                              ::ITEM_CBO_IBP_COLOR, comboBox);
         itemID = ConfigEditDisplayMenuContentPrivate
                 ::ITEM_CBO_IBP_COLOR;
+        comboBox->setProperty("Item", qVariantFromValue(itemID));
+        connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    }
+
+    id = ConfigEditDisplayMenuContentPrivate::ITEM_CBO_O2_COLOR;
+    if (d_ptr->paramSupportMap[id])
+    {
+        // IBP color
+        label = new QLabel(trs("O2"));
+        d_ptr->labels.insert(ConfigEditDisplayMenuContentPrivate
+                             ::ITEM_CBO_O2_COLOR, label);
+        layout->addWidget(label, d_ptr->combos.count(), 0);
+        comboBox = new ComboBox;
+        comboBox->addItems(trColorList);
+        layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+        d_ptr->combos.insert(ConfigEditDisplayMenuContentPrivate
+                             ::ITEM_CBO_O2_COLOR, comboBox);
+        itemID = ConfigEditDisplayMenuContentPrivate
+                ::ITEM_CBO_O2_COLOR;
         comboBox->setProperty("Item", qVariantFromValue(itemID));
         connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     }
@@ -352,8 +447,14 @@ void ConfigEditDisplayMenuContent::onComboBoxIndexChanged(int index)
     case ConfigEditDisplayMenuContentPrivate::ITEM_CBO_TEMP_COLOR:
         str = "TEMPColor";
         break;
+    case ConfigEditDisplayMenuContentPrivate::ITEM_CBO_CO_COLOR:
+        str = "COColor";
+        break;
     case ConfigEditDisplayMenuContentPrivate::ITEM_CBO_IBP_COLOR:
         str = "IBPColor";
+        break;
+    case ConfigEditDisplayMenuContentPrivate::ITEM_CBO_O2_COLOR:
+        str = "O2Color";
         break;
     }
     d_ptr->config->setStrValue(QString("Display|%1").arg(str), d_ptr->colorList.at(index));
