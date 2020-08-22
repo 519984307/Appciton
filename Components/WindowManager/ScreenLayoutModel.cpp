@@ -382,10 +382,10 @@ public:
             // IBP's pressure name is identical to it's wave name
             nodeName = layoutNodeName(LAYOUT_NODE_PARAM_IBP1);
             waveformName = paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_NODE_WAVE_IBP1)]);
-            paramNodeDescriptions[nodeName] = NODE_DESC(waveformName, PARAM_SPAN_TWO, PARAM_NIBP);
+            paramNodeDescriptions[nodeName] = NODE_DESC(waveformName, PARAM_SPAN_TWO, PARAM_IBP);
             nodeName = layoutNodeName(LAYOUT_NODE_PARAM_IBP2);
             waveformName = paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_NODE_WAVE_IBP2)]);
-            paramNodeDescriptions[nodeName] = NODE_DESC(waveformName, PARAM_SPAN_TWO, PARAM_NIBP);
+            paramNodeDescriptions[nodeName] = NODE_DESC(waveformName, PARAM_SPAN_TWO, PARAM_IBP);
         }
 
         if (systemManager.isSupport(CONFIG_AG))
