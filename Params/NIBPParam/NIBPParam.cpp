@@ -416,52 +416,49 @@ bool NIBPParam::analysisResult(const unsigned char *packet, int /*len*/, short *
                                short *dia, short *map, short *pr, NIBPOneShotType *err)
 {
     NIBPMeasureResultInfo info = *reinterpret_cast<NIBPMeasureResultInfo *>(const_cast<unsigned char *>(packet));
-    if (*err)
-    {
-        *err = NIBP_ONESHOT_NONE;
-    }
 
     // 测量有错误，获取错误码。
     if (info.errCode != 0x00)
     {
-        if (*err)
+        if (err != NULL)
         {
             *err = (NIBPOneShotType)_provider->convertErrcode(info.errCode);
         }
         return true;
     }
-    // 测量无错，获取测量结果。
-    if (*sys)
-    {
-        *sys = info.sys;
-    }
-    if (*dia)
-    {
-        *dia = info.dia;
-    }
-    if (*map)
-    {
-        *map = info.map;
-    }
-    if (*pr)
-    {
-        *pr = info.pr;
-    }
 
-    if (*sys == InvData() || *dia == InvData() || *map == InvData())
+    short sysValue = info.sys;
+    short diaValue = info.dia;
+    short mapValue = info.map;
+    short prValue = info.pr;
+
+    if (sysValue == InvData() || diaValue == InvData() || mapValue == InvData())
     {
-        if (*sys)
-        {
-            *sys = InvData();
-        }
-        if (*dia)
-        {
-            *dia = InvData();
-        }
-        if (*map)
-        {
-            *map = InvData();
-        }
+        sysValue = InvData();
+        diaValue = InvData();
+        mapValue = InvData();
+    }
+    // 测量正确
+    if (err != NULL)
+    {
+        *err = NIBP_ONESHOT_NONE;
+    }
+    // 获取测量结果。
+    if (sys != NULL)
+    {
+        *sys = sysValue;
+    }
+    if (dia != NULL)
+    {
+        *dia = diaValue;
+    }
+    if (map != NULL)
+    {
+        *map = mapValue;
+    }
+    if (pr != NULL)
+    {
+        *pr = prValue;
     }
     return true;
 }
