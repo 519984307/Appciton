@@ -549,6 +549,7 @@ static void _initProviderParam(void)
         NIBPDataTrendWidget *nibpDataTrenWidget = new NIBPDataTrendWidget();
         nibpParam.setNIBPDataTrendWidget(nibpDataTrenWidget);
         layoutManager.addLayoutWidget(nibpDataTrenWidget, LAYOUT_NODE_PARAM_NIBPLIST);
+        QObject::connect(&alarmConfig, SIGNAL(alarmOff(SubParamID)), &nibpParam, SLOT(alarmOff(SubParamID)));
     }
 
     // CO2部分。

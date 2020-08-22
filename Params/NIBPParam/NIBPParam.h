@@ -131,8 +131,8 @@ public:
     void setNIBPDataTrendWidget(NIBPDataTrendWidget *trendWidget);
 
     // 解析测量结果。
-    bool analysisResult(const unsigned char *packet, int len, short &sys,
-                        short &dia, short &map, short &pr, NIBPOneShotType &err);
+    bool analysisResult(const unsigned char *packet, int len, short *sys,
+                        short *dia, short *map, short *pr, NIBPOneShotType *err);
 
     // 设置测量结果。
     void setResult(int16_t sys, int16_t dia, int16_t map, int16_t pr, NIBPOneShotType err);
@@ -337,6 +337,9 @@ public:
      * @return
      */
     bool isConnectedModule();
+
+public slots:
+    void alarmOff(SubParamID subParamId);
 
 signals:
     /**

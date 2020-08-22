@@ -84,6 +84,9 @@ public:
      */
     void clearListData();
 
+    /* reimplement */
+    void updateLimit();
+
     void updateUnit(UnitType unit);
 
     void getTrendNIBPlist();
@@ -125,4 +128,5 @@ private:
 
     QString moduleStr;
     int columnNR;
+    bool _showNIBPValue;   // show nibp trend data
 };

@@ -118,6 +118,7 @@ void NIBPDataTrendWidget::collectNIBPTrendData(unsigned t)
     }
 
     _nibpNrendCacheMap.insert(t, data);
+    _showNIBPValue = true;
 }
 
 /**************************************************************************************************
@@ -126,10 +127,12 @@ void NIBPDataTrendWidget::collectNIBPTrendData(unsigned t)
 void NIBPDataTrendWidget::showValue(void)
 {
     NIBPTrendCacheMap::iterator t = _nibpNrendCacheMap.end() - 1;
-    if (_nibpNrendCacheMap.end() == _nibpNrendCacheMap.begin())
+    if ((_nibpNrendCacheMap.end() == _nibpNrendCacheMap.begin()) || (_showNIBPValue == false))
     {
         return;
     }
+    _showNIBPValue = false;
+
     QString textStr;
     QString timeStr;
     QString prStr;
@@ -375,11 +378,18 @@ void NIBPDataTrendWidget::clearListData()
         l = qobject_cast<QLabel *>(_table->cellWidget(i, 2));
         l->setText("");
     }
+    _showNIBPValue = true;
+}
+
+void NIBPDataTrendWidget::updateLimit()
+{
+    _showNIBPValue = true;
 }
 
 void NIBPDataTrendWidget::updateUnit(UnitType unit)
 {
     setUnit(Unit::getSymbol(unit));
+    _showNIBPValue = true;
 }
 
 void NIBPDataTrendWidget::getTrendNIBPlist()
@@ -461,6 +471,7 @@ void NIBPDataTrendWidget::getTrendNIBPlist()
                 nibpTrendCacheData.map.priority = alarmSource->getAlarmPriority(NIBP_LIMIT_ALARM_MAP_HIGH);
 
                 _nibpNrendCacheMap.insert(t, nibpTrendCacheData);
+                _showNIBPValue = true;
             }
         }
     }
@@ -482,7 +493,8 @@ NIBPDataTrendWidget::NIBPDataTrendWidget()
       _tableItemHeight(20),
       backend(NULL),
       moduleStr("BLM_N5"),
-      columnNR(3)
+      columnNR(3),
+      _showNIBPValue(false)
 {
     machineConfig.getStrValue("NIBP", moduleStr);
     _nibpNrendCacheMap.clear();

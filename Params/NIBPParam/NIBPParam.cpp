@@ -412,29 +412,29 @@ void NIBPParam::setNIBPDataTrendWidget(NIBPDataTrendWidget *trendWidget)
 /**************************************************************************************************
  * 解析测量结果。
  *************************************************************************************************/
-bool NIBPParam::analysisResult(const unsigned char *packet, int /*len*/, short &sys,
-                               short &dia, short &map, short &pr, NIBPOneShotType &err)
+bool NIBPParam::analysisResult(const unsigned char *packet, int /*len*/, short *sys,
+                               short *dia, short *map, short *pr, NIBPOneShotType *err)
 {
     NIBPMeasureResultInfo info = *reinterpret_cast<NIBPMeasureResultInfo *>(const_cast<unsigned char *>(packet));
-    err = NIBP_ONESHOT_NONE;
+    *err = NIBP_ONESHOT_NONE;
 
     // 测量有错误，获取错误码。
     if (info.errCode != 0x00)
     {
-        err = (NIBPOneShotType)_provider->convertErrcode(info.errCode);
+        *err = (NIBPOneShotType)_provider->convertErrcode(info.errCode);
         return true;
     }
     // 测量无错，获取测量结果。
-    sys = info.sys;
-    dia = info.dia;
-    map = info.map;
-    pr = info.pr;
+    *sys = info.sys;
+    *dia = info.dia;
+    *map = info.map;
+    *pr = info.pr;
 
-    if (sys == InvData() || dia == InvData() || map == InvData())
+    if (*sys == InvData() || *dia == InvData() || *map == InvData())
     {
-        sys = InvData();
-        dia = InvData();
-        map = InvData();
+        *sys = InvData();
+        *dia = InvData();
+        *map = InvData();
     }
     return true;
 }
@@ -1463,6 +1463,12 @@ void NIBPParam::updateSubParamLimit(SubParamID id)
     {
         _trendWidget->updateLimit();
     }
+
+    if (id == SUB_PARAM_NIBP_SYS || id == SUB_PARAM_NIBP_DIA
+           || id == SUB_PARAM_NIBP_MAP)
+    {
+        _nibpDataTrendWidget->updateLimit();
+    }
 }
 
 void NIBPParam::enterMaintain(bool enter)
@@ -1527,6 +1533,15 @@ bool NIBPParam::getNeoDisState()
 bool NIBPParam::isConnectedModule()
 {
     return _connectedFlag;
+}
+
+void NIBPParam::alarmOff(SubParamID subParamId)
+{
+    if (subParamId == SUB_PARAM_NIBP_SYS || subParamId == SUB_PARAM_NIBP_DIA
+           || subParamId == SUB_PARAM_NIBP_MAP)
+    {
+        _nibpDataTrendWidget->updateLimit();
+    }
 }
 
 /**************************************************************************************************
