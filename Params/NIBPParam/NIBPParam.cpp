@@ -424,7 +424,10 @@ bool NIBPParam::analysisResult(const unsigned char *packet, int /*len*/, short *
     // 测量有错误，获取错误码。
     if (info.errCode != 0x00)
     {
-        *err = (NIBPOneShotType)_provider->convertErrcode(info.errCode);
+        if (*err)
+        {
+            *err = (NIBPOneShotType)_provider->convertErrcode(info.errCode);
+        }
         return true;
     }
     // 测量无错，获取测量结果。
