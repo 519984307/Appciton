@@ -416,7 +416,10 @@ bool NIBPParam::analysisResult(const unsigned char *packet, int /*len*/, short *
                                short *dia, short *map, short *pr, NIBPOneShotType *err)
 {
     NIBPMeasureResultInfo info = *reinterpret_cast<NIBPMeasureResultInfo *>(const_cast<unsigned char *>(packet));
-    *err = NIBP_ONESHOT_NONE;
+    if (*err)
+    {
+        *err = NIBP_ONESHOT_NONE;
+    }
 
     // 测量有错误，获取错误码。
     if (info.errCode != 0x00)
@@ -425,16 +428,37 @@ bool NIBPParam::analysisResult(const unsigned char *packet, int /*len*/, short *
         return true;
     }
     // 测量无错，获取测量结果。
-    *sys = info.sys;
-    *dia = info.dia;
-    *map = info.map;
-    *pr = info.pr;
+    if (*sys)
+    {
+        *sys = info.sys;
+    }
+    if (*dia)
+    {
+        *dia = info.dia;
+    }
+    if (*map)
+    {
+        *map = info.map;
+    }
+    if (*pr)
+    {
+        *pr = info.pr;
+    }
 
     if (*sys == InvData() || *dia == InvData() || *map == InvData())
     {
-        *sys = InvData();
-        *dia = InvData();
-        *map = InvData();
+        if (*sys)
+        {
+            *sys = InvData();
+        }
+        if (*dia)
+        {
+            *dia = InvData();
+        }
+        if (*map)
+        {
+            *map = InvData();
+        }
     }
     return true;
 }
@@ -1464,8 +1488,7 @@ void NIBPParam::updateSubParamLimit(SubParamID id)
         _trendWidget->updateLimit();
     }
 
-    if (id == SUB_PARAM_NIBP_SYS || id == SUB_PARAM_NIBP_DIA
-           || id == SUB_PARAM_NIBP_MAP)
+    if (id == SUB_PARAM_NIBP_SYS || id == SUB_PARAM_NIBP_DIA || id == SUB_PARAM_NIBP_MAP)
     {
         _nibpDataTrendWidget->updateNIBPList();
     }
@@ -1537,8 +1560,7 @@ bool NIBPParam::isConnectedModule()
 
 void NIBPParam::alarmOff(SubParamID subParamId)
 {
-    if (subParamId == SUB_PARAM_NIBP_SYS || subParamId == SUB_PARAM_NIBP_DIA
-           || subParamId == SUB_PARAM_NIBP_MAP)
+    if (subParamId == SUB_PARAM_NIBP_SYS || subParamId == SUB_PARAM_NIBP_DIA || subParamId == SUB_PARAM_NIBP_MAP)
     {
         _nibpDataTrendWidget->updateNIBPList();
     }

@@ -116,7 +116,7 @@ void NIBPDataTrendWidget::collectNIBPTrendData(unsigned t)
 
     if (NIBP_LIST_DISPLAY_ROW_COUNT <= _nibpNrendCacheMap.count())
     {
-        _nibpNrendCacheMap.remove(_nibpNrendCacheMap.begin().key());
+        _nibpNrendCacheMap.erase(_nibpNrendCacheMap.begin());
     }
 
     _nibpNrendCacheMap.insert(t, data);
@@ -128,8 +128,7 @@ void NIBPDataTrendWidget::collectNIBPTrendData(unsigned t)
  *************************************************************************************************/
 void NIBPDataTrendWidget::showValue(void)
 {
-    NIBPTrendCacheMap::iterator t = _nibpNrendCacheMap.end() - 1;
-    if ((_nibpNrendCacheMap.end() == _nibpNrendCacheMap.begin()) || (_updateNIBPList == false))
+    if ((_nibpNrendCacheMap.isEmpty()) || (_updateNIBPList == false))
     {
         return;
     }
@@ -145,6 +144,7 @@ void NIBPDataTrendWidget::showValue(void)
 
     QColor textColor = colorManager.getColor(paramInfo.getParamName(PARAM_NIBP));
 
+    NIBPTrendCacheMap::iterator t = _nibpNrendCacheMap.end() - 1;
     for (int i = 0; i < _rowNR; i++)
     {
         timeStr = timeDate->getTime(t.key());
