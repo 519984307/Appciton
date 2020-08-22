@@ -1467,7 +1467,7 @@ void NIBPParam::updateSubParamLimit(SubParamID id)
     if (id == SUB_PARAM_NIBP_SYS || id == SUB_PARAM_NIBP_DIA
            || id == SUB_PARAM_NIBP_MAP)
     {
-        _nibpDataTrendWidget->updateLimit();
+        _nibpDataTrendWidget->updateNIBPList();
     }
 }
 
@@ -1540,7 +1540,7 @@ void NIBPParam::alarmOff(SubParamID subParamId)
     if (subParamId == SUB_PARAM_NIBP_SYS || subParamId == SUB_PARAM_NIBP_DIA
            || subParamId == SUB_PARAM_NIBP_MAP)
     {
-        _nibpDataTrendWidget->updateLimit();
+        _nibpDataTrendWidget->updateNIBPList();
     }
 }
 

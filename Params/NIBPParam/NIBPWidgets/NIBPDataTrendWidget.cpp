@@ -120,7 +120,7 @@ void NIBPDataTrendWidget::collectNIBPTrendData(unsigned t)
     }
 
     _nibpNrendCacheMap.insert(t, data);
-    _showNIBPValue = true;
+    _updateNIBPList = true;
 }
 
 /**************************************************************************************************
@@ -129,11 +129,11 @@ void NIBPDataTrendWidget::collectNIBPTrendData(unsigned t)
 void NIBPDataTrendWidget::showValue(void)
 {
     NIBPTrendCacheMap::iterator t = _nibpNrendCacheMap.end() - 1;
-    if ((_nibpNrendCacheMap.end() == _nibpNrendCacheMap.begin()) || (_showNIBPValue == false))
+    if ((_nibpNrendCacheMap.end() == _nibpNrendCacheMap.begin()) || (_updateNIBPList == false))
     {
         return;
     }
-    _showNIBPValue = false;
+    _updateNIBPList = false;
 
     QString textStr;
     QString timeStr;
@@ -323,19 +323,19 @@ void NIBPDataTrendWidget::resizeEvent(QResizeEvent *e)
         if (l)
         {
             l->setFixedHeight(_tableItemHeight);
-            l->setFont(textFont);   // set label font
+            l->setFont(_textFont);   // set label font
         }
 
         l = qobject_cast<QLabel *>(_table->cellWidget(i, 2));
         if (l)
         {
             l->setFixedHeight(_tableItemHeight);
-            l->setFont(textFont);   // set label font
+            l->setFont(_textFont);   // set label font
         }
     }
 
     // show nibp value
-    _showNIBPValue = true;
+    _updateNIBPList = true;
 }
 
 void NIBPDataTrendWidget::setTextSize()
@@ -344,12 +344,12 @@ void NIBPDataTrendWidget::setTextSize()
     r.setWidth((width() - nameLabel->width()) / 2.5);
     // 字体。
     int fontsize = fontManager.adjustNumFontSize(r, true, "220/150/100");
-    textFont = fontManager.numFont(fontsize, true);
-    textFont.setWeight(QFont::Black);
+    _textFont = fontManager.numFont(fontsize, true);
+    _textFont.setWeight(QFont::Black);
 
-    _table->setFont(textFont);
+    _table->setFont(_textFont);
 
-    _tableItemHeight = fontManager.textHeightInPixels(textFont);
+    _tableItemHeight = fontManager.textHeightInPixels(_textFont);
     _table->setFixedWidth(width() - nameLabel->width());
 }
 
@@ -363,7 +363,7 @@ void NIBPDataTrendWidget::updatePalette(const QPalette &pal)
                                 "background-color:black;}")
                         .arg(color.red()).arg(color.green()).arg(color.blue());
     _table->horizontalHeader()->setStyleSheet(headStyle);
-    _showNIBPValue = true;
+    _updateNIBPList = true;
 }
 
 void NIBPDataTrendWidget::updateWidgetConfig()
@@ -386,15 +386,15 @@ void NIBPDataTrendWidget::clearListData()
     _nibpNrendCacheMap.clear();
 }
 
-void NIBPDataTrendWidget::updateLimit()
+void NIBPDataTrendWidget::updateNIBPList()
 {
-    _showNIBPValue = true;
+    _updateNIBPList = true;
 }
 
 void NIBPDataTrendWidget::updateUnit(UnitType unit)
 {
     setUnit(Unit::getSymbol(unit));
-    _showNIBPValue = true;
+    _updateNIBPList = true;
 }
 
 void NIBPDataTrendWidget::getTrendNIBPlist()
@@ -476,7 +476,7 @@ void NIBPDataTrendWidget::getTrendNIBPlist()
                 nibpTrendCacheData.map.priority = alarmSource->getAlarmPriority(NIBP_LIMIT_ALARM_MAP_HIGH);
 
                 _nibpNrendCacheMap.insert(t, nibpTrendCacheData);
-                _showNIBPValue = true;
+                _updateNIBPList = true;
             }
         }
     }
@@ -499,7 +499,7 @@ NIBPDataTrendWidget::NIBPDataTrendWidget()
       backend(NULL),
       moduleStr("BLM_N5"),
       columnNR(3),
-      _showNIBPValue(false)
+      _updateNIBPList(false)
 {
     machineConfig.getStrValue("NIBP", moduleStr);
     _nibpNrendCacheMap.clear();

@@ -84,8 +84,10 @@ public:
      */
     void clearListData();
 
-    /* reimplement */
-    void updateLimit();
+    /**
+     * @brief updateNIBPList update nibp list value
+     */
+    void updateNIBPList();
 
     void updateUnit(UnitType unit);
 
@@ -128,6 +130,6 @@ private:
 
     QString moduleStr;
     int columnNR;
-    QFont textFont;
-    bool _showNIBPValue;   // show nibp trend data
+    QFont _textFont;
+    bool _updateNIBPList;   // update nibp list data
 };
