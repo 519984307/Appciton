@@ -84,6 +84,11 @@ public:
      */
     void clearListData();
 
+    /**
+     * @brief updateNIBPList update nibp list value
+     */
+    void updateNIBPList();
+
     void updateUnit(UnitType unit);
 
     void getTrendNIBPlist();
@@ -125,4 +130,6 @@ private:
 
     QString moduleStr;
     int columnNR;
+    QFont _textFont;
+    bool _updateNIBPList;   // update nibp list data
 };

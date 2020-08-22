@@ -62,7 +62,7 @@ void NIBPMonitorGetResultState::handleNIBPEvent(NIBPEvent event, const unsigned 
             else
             {
                 nibpParam.setSTATMeasure(true);
-                nibpCountdownTime.STATMeasureStart(); // 只测量5分钟。
+                nibpCountdownTime.STATMeasureStart();  // 只测量5分钟。
             }
             break;
         }
@@ -84,7 +84,7 @@ void NIBPMonitorGetResultState::handleNIBPEvent(NIBPEvent event, const unsigned 
 
     case NIBP_EVENT_MONITOR_GET_RESULT:
     {
-        if (!nibpParam.analysisResult(args, argLen, sys, dia, map, pr, err))  // 不是测量结果。
+        if (!nibpParam.analysisResult(args, argLen, &sys, &dia, &map, &pr, &err))  // 不是测量结果。
         {
             return;
         }

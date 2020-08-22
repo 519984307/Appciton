@@ -28,6 +28,8 @@
 #include "NIBPAlarm.h"
 #include "IConfig.h"
 
+#define NIBP_LIST_DISPLAY_ROW_COUNT  (10)    // nibp list display row count
+
 /**************************************************************************************************
  * 释放事件，弹出菜单。
  *************************************************************************************************/
@@ -112,12 +114,13 @@ void NIBPDataTrendWidget::collectNIBPTrendData(unsigned t)
     data.valueIsDisplay = paramManager.isParamEnable(PARAM_NIBP);
     data.prvalue = nibpParam.getPR();
 
-    if (10 <= _nibpNrendCacheMap.count())
+    if (NIBP_LIST_DISPLAY_ROW_COUNT <= _nibpNrendCacheMap.count())
     {
-        _nibpNrendCacheMap.remove(_nibpNrendCacheMap.begin().key());
+        _nibpNrendCacheMap.erase(_nibpNrendCacheMap.begin());
     }
 
     _nibpNrendCacheMap.insert(t, data);
+    _updateNIBPList = true;
 }
 
 /**************************************************************************************************
@@ -125,11 +128,12 @@ void NIBPDataTrendWidget::collectNIBPTrendData(unsigned t)
  *************************************************************************************************/
 void NIBPDataTrendWidget::showValue(void)
 {
-    NIBPTrendCacheMap::iterator t = _nibpNrendCacheMap.end() - 1;
-    if (_nibpNrendCacheMap.end() == _nibpNrendCacheMap.begin())
+    if ((_nibpNrendCacheMap.isEmpty()) || (_updateNIBPList == false))
     {
         return;
     }
+    _updateNIBPList = false;
+
     QString textStr;
     QString timeStr;
     QString prStr;
@@ -140,20 +144,12 @@ void NIBPDataTrendWidget::showValue(void)
 
     QColor textColor = colorManager.getColor(paramInfo.getParamName(PARAM_NIBP));
 
-    for (int i = 0; i < _rowNR; i++)
-    {
-        _table->item(i, 0)->setText("");
-        _table->item(i, 0)->setTextColor(textColor);
-        QLabel *l = qobject_cast<QLabel *>(_table->cellWidget(i, 1));
-        l->setText("");
-        l = qobject_cast<QLabel *>(_table->cellWidget(i, 2));
-        l->setText("");
-    }
-
+    NIBPTrendCacheMap::iterator t = _nibpNrendCacheMap.end() - 1;
     for (int i = 0; i < _rowNR; i++)
     {
         timeStr = timeDate->getTime(t.key());
         _table->item(i, 0)->setText(timeStr);
+        _table->item(i, 0)->setTextColor(textColor);
         NIBPTrendCacheData providerBuff = t.value();
         if (providerBuff.sys.value == InvData() || providerBuff.dia.value == InvData() ||
                 providerBuff.map.value == InvData())
@@ -305,30 +301,41 @@ void NIBPDataTrendWidget::resizeEvent(QResizeEvent *e)
 {
     TrendWidget::resizeEvent(e);
     _rowNR = _table->height() / _tableItemHeight - 1;
-    _table->setRowCount(_rowNR);
     int eachColumnWidth = _table->width() / columnNR;
 
     _table->setColumnWidth(0, eachColumnWidth);
     _table->setColumnWidth(1, eachColumnWidth *8/5);
     _table->setColumnWidth(2, eachColumnWidth *2/5);
 
+    // hide nibp row data
+    for (int i = _rowNR; i < NIBP_LIST_DISPLAY_ROW_COUNT; ++i)
+    {
+        _table->setRowHidden(i, true);
+    }
+
+    // display nibp row data
     for (int i = 0; i < _rowNR; i++)
     {
-        QColor textColor = colorManager.getColor(paramInfo.getParamName(PARAM_NIBP));
+        _table->setRowHidden(i, false);
         _table->setRowHeight(i, _tableItemHeight);
-        QTableWidgetItem *item = new QTableWidgetItem();
-        item->setTextAlignment(Qt::AlignCenter);
-        item->setTextColor(textColor);
-        _table->setItem(i, 0, item);
 
-        QLabel *l = new QLabel();
-        _table->setCellWidget(i, 1, l);
-        l->setText("");
+        QLabel *l = qobject_cast<QLabel *>(_table->cellWidget(i, 1));
+        if (l)
+        {
+            l->setFixedHeight(_tableItemHeight);
+            l->setFont(_textFont);   // set label font
+        }
 
-        QLabel *prLbl = new QLabel();
-        _table->setCellWidget(i, 2, prLbl);
-        prLbl->setText("");
+        l = qobject_cast<QLabel *>(_table->cellWidget(i, 2));
+        if (l)
+        {
+            l->setFixedHeight(_tableItemHeight);
+            l->setFont(_textFont);   // set label font
+        }
     }
+
+    // show nibp value
+    _updateNIBPList = true;
 }
 
 void NIBPDataTrendWidget::setTextSize()
@@ -337,12 +344,12 @@ void NIBPDataTrendWidget::setTextSize()
     r.setWidth((width() - nameLabel->width()) / 2.5);
     // 字体。
     int fontsize = fontManager.adjustNumFontSize(r, true, "220/150/100");
-    QFont font = fontManager.numFont(fontsize, true);
-    font.setWeight(QFont::Black);
+    _textFont = fontManager.numFont(fontsize, true);
+    _textFont.setWeight(QFont::Black);
 
-    _table->setFont(font);
+    _table->setFont(_textFont);
 
-    _tableItemHeight = fontManager.textHeightInPixels(font);
+    _tableItemHeight = fontManager.textHeightInPixels(_textFont);
     _table->setFixedWidth(width() - nameLabel->width());
 }
 
@@ -356,6 +363,7 @@ void NIBPDataTrendWidget::updatePalette(const QPalette &pal)
                                 "background-color:black;}")
                         .arg(color.red()).arg(color.green()).arg(color.blue());
     _table->horizontalHeader()->setStyleSheet(headStyle);
+    _updateNIBPList = true;
 }
 
 void NIBPDataTrendWidget::updateWidgetConfig()
@@ -366,8 +374,8 @@ void NIBPDataTrendWidget::updateWidgetConfig()
 
 void NIBPDataTrendWidget::clearListData()
 {
-    _nibpNrendCacheMap.clear();
-    for (int i = 0; i < _rowNR; i++)
+    int dataCount = _nibpNrendCacheMap.count();
+    for (int i = 0; i < dataCount; i++)
     {
         _table->item(i, 0)->setText("");
         QLabel *l = qobject_cast<QLabel *>(_table->cellWidget(i, 1));
@@ -375,11 +383,18 @@ void NIBPDataTrendWidget::clearListData()
         l = qobject_cast<QLabel *>(_table->cellWidget(i, 2));
         l->setText("");
     }
+    _nibpNrendCacheMap.clear();
+}
+
+void NIBPDataTrendWidget::updateNIBPList()
+{
+    _updateNIBPList = true;
 }
 
 void NIBPDataTrendWidget::updateUnit(UnitType unit)
 {
     setUnit(Unit::getSymbol(unit));
+    _updateNIBPList = true;
 }
 
 void NIBPDataTrendWidget::getTrendNIBPlist()
@@ -461,6 +476,7 @@ void NIBPDataTrendWidget::getTrendNIBPlist()
                 nibpTrendCacheData.map.priority = alarmSource->getAlarmPriority(NIBP_LIMIT_ALARM_MAP_HIGH);
 
                 _nibpNrendCacheMap.insert(t, nibpTrendCacheData);
+                _updateNIBPList = true;
             }
         }
     }
@@ -482,7 +498,8 @@ NIBPDataTrendWidget::NIBPDataTrendWidget()
       _tableItemHeight(20),
       backend(NULL),
       moduleStr("BLM_N5"),
-      columnNR(3)
+      columnNR(3),
+      _updateNIBPList(false)
 {
     machineConfig.getStrValue("NIBP", moduleStr);
     _nibpNrendCacheMap.clear();
@@ -522,6 +539,26 @@ NIBPDataTrendWidget::NIBPDataTrendWidget()
     _table->setHorizontalHeaderLabels(titleList);
 
     _table->setSelectionMode(QAbstractItemView::NoSelection);
+
+    _table->setRowCount(NIBP_LIST_DISPLAY_ROW_COUNT);
+    // add label to table
+    for (int i = 0; i < NIBP_LIST_DISPLAY_ROW_COUNT; i++)
+    {
+        // time widget label
+        QTableWidgetItem *item = new QTableWidgetItem();
+        item->setTextAlignment(Qt::AlignCenter);
+        _table->setItem(i, 0, item);
+
+        // nibp list label
+        QLabel *label = new QLabel();
+        _table->setCellWidget(i, 1, label);
+        label->setAlignment(Qt::AlignCenter);
+
+        // pr label
+        label = new QLabel();
+        _table->setCellWidget(i, 2, label);
+        label->setAlignment(Qt::AlignCenter);
+    }
 
     // 布局。
     QHBoxLayout *mainLayout = new QHBoxLayout();
