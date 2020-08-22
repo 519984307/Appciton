@@ -128,5 +128,6 @@ private:
 
     QString moduleStr;
     int columnNR;
+    QFont textFont;
     bool _showNIBPValue;   // show nibp trend data
 };
