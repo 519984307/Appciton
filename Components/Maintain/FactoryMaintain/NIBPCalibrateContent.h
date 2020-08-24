@@ -88,6 +88,11 @@ private slots:
 
     void inCalibrateMode(void);
 
+    /**
+     * @brief onOverpressureReleased 过压保护开关
+     */
+    void onOverpressureReleased(int);
+
 private:
     NIBPCalibrateContent();
 
