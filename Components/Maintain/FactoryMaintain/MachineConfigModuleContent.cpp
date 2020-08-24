@@ -11,6 +11,7 @@
 #include <QGridLayout>
 #include <QMap>
 #include <QLabel>
+#include <QFile>
 #include "Framework/UI/ComboBox.h"
 #include "Framework/Language/LanguageManager.h"
 #include "IConfig.h"
@@ -60,6 +61,7 @@ public:
         ITEM_CBO_ANALOG_OUTPUT,
         ITEM_CBO_SYNC_DEFIBRILLATION,
         ITEM_CBO_SPO2_CONFIGURE,
+        ITEM_CBO_NETWORK_DEBUG,
         ITEM_CBO_MAX
     };
 
@@ -226,7 +228,6 @@ void MachineConfigModuleContentPrivte::loadOptions()
     index = 0;
     machineConfig.getNumValue("NIBPNEOMeasureEnable", index);
     combos[ITEM_CBO_NIBP_NEO_MEASURE]->setCurrentIndex(index);
-    itemInitMap = itemChangedMap;
 
     index = 0;
     machineConfig.getNumValue("HDMIEnable", index);
@@ -243,6 +244,20 @@ void MachineConfigModuleContentPrivte::loadOptions()
     index = 0;
     machineConfig.getNumValue("SyncDefibrillationEnable", index);
     combos[ITEM_CBO_SYNC_DEFIBRILLATION]->setCurrentIndex(index);
+
+    index = 0;
+    if (QFile::exists("/etc/init.d/S50telnet") && QFile::exists("/etc/init.d/S50dropbear"))
+    {
+        index = 1;
+    }
+    else
+    {
+        index = 0;
+    }
+    combos[ITEM_CBO_NETWORK_DEBUG]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_NETWORK_DEBUG] = index;
+
+
 
 #ifdef HIDE_MACHINE_CONFIG_ITEMS
     combos[ITEM_CBO_ECG12]->setCurrentIndex(0);
@@ -280,7 +295,28 @@ void MachineConfigModuleContentPrivte::loadOptions()
     machineConfig.getNumValue("SpO2ConfigureEnable", index);
     combos[ITEM_CBO_SPO2_CONFIGURE]->setCurrentIndex(index);
 
+    itemInitMap = itemChangedMap;
+
     setCombosBlockSignalStatus(false);
+}
+
+/**
+ * @brief setNetworkLogin set can login network or not
+ * @brief status allow login or not allowed
+ */
+
+static void setNetworkLogin(bool status)
+{
+    if (status)
+    {
+        QFile::rename("/etc/init.d/_S50dropbear", "/etc/init.d/S50dropbear");
+        QFile::rename("/etc/init.d/_S50telnet", "/etc/init.d/S50telnet");
+    }
+    else
+    {
+        QFile::rename("/etc/init.d/S50dropbear", "/etc/init.d/_S50dropbear");
+        QFile::rename("/etc/init.d/S50telnet", "/etc/init.d/_S50telnet");
+    }
 }
 
 void MachineConfigModuleContentPrivte::configUpdateHint()
@@ -651,6 +687,21 @@ void MachineConfigModuleContent::layoutExec()
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
+    label = new QLabel(trs("NetworkDebug"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    combo = new ComboBox;
+    combo->blockSignals(true);
+    combo->addItems(QStringList()
+                    << trs("Off")
+                    << trs("On"));
+    combo->blockSignals(false);
+    layout->addWidget(combo, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(MachineConfigModuleContentPrivte::ITEM_CBO_NETWORK_DEBUG, combo);
+    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_NETWORK_DEBUG;
+    combo->setProperty("Item", qVariantFromValue(itemId));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+
+
     layout->setRowStretch(d_ptr->combos.count(), 1);
 }
 
@@ -818,6 +869,13 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
             enablePath = "SpO2ConfigureEnable";
             break;
         }
+        case MachineConfigModuleContentPrivte::ITEM_CBO_NETWORK_DEBUG:
+        {
+            d_ptr->itemChangedMap[MachineConfigModuleContentPrivte::ITEM_CBO_NETWORK_DEBUG] = index;
+            setNetworkLogin(index);
+            break;
+        }
+
         default:
             return;
     }
