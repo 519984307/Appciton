@@ -30,6 +30,13 @@
 #include "Providers/SmartIBPProvider/SmartIBPProvider.h"
 #include "Providers/SmartCOProvider/SmartCOProvider.h"
 #include "COMeasureWindow.h"
+#if defined(Q_WS_QWS)
+#include <QWSMouseHandler>
+#include <QWSPointerCalibrationData>
+#include <QWSServer>
+#include <QDesktopWidget>
+#endif
+
 
 /**
  * @brief initLanguage initialize the language manager
@@ -259,6 +266,28 @@ static void _initComponents(void)
     if (systemManager.isSupport(CONFIG_TOUCH))
     {
         runningStatus.setTouchStatus(systemManager.isTouchScreenOn());
+    }
+
+    // 触摸屏校准
+    int touchScreenType = 0;
+    machineConfig.getNumValue("TouchEnable", touchScreenType);
+    if (touchScreenType == TOUCHSCREEN_CAPACITIVE)
+    {
+        QDesktopWidget *pDesk = QApplication::desktop();
+        int screenWidth = pDesk->width();
+        int ScreenHeight = pDesk->height();
+        QWSPointerCalibrationData calData;
+        calData.devPoints[QWSPointerCalibrationData::TopLeft] = QPoint(0, 0);
+        calData.devPoints[QWSPointerCalibrationData::TopRight] = QPoint(4095, 0);
+        calData.devPoints[QWSPointerCalibrationData::BottomRight] = QPoint(4095, 4095);
+        calData.devPoints[QWSPointerCalibrationData::BottomLeft] = QPoint(0, 4095);
+        calData.devPoints[QWSPointerCalibrationData::Center] = QPoint(2048, 2048);
+        calData.screenPoints[QWSPointerCalibrationData::TopLeft] = QPoint(0, 0);
+        calData.screenPoints[QWSPointerCalibrationData::TopRight] = QPoint(screenWidth, 0);
+        calData.screenPoints[QWSPointerCalibrationData::BottomRight] = QPoint(screenWidth, ScreenHeight);
+        calData.screenPoints[QWSPointerCalibrationData::BottomLeft] = QPoint(0, ScreenHeight);
+        calData.screenPoints[QWSPointerCalibrationData::Center] = QPoint(screenWidth/2, ScreenHeight/2);
+        QWSServer::mouseHandler()->calibrate(&calData);
     }
 #endif
     layoutManager.addLayoutWidget(&runningStatus);
