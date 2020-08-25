@@ -27,6 +27,7 @@
 #include "WindowManager.h"
 #include "SystemManagerInterface.h"
 #include "SoundManager.h"
+#include "SystemManager.h"
 
 
 class ModuleMaintainMenuContentPrivate
@@ -57,6 +58,15 @@ void ModuleMaintainMenuContentPrivate::loadOption()
 #ifdef DISABLE_ECG_MODULE_CALIBRATION
     buttons[ITEM_BTN_ECG_MODULE_CALIBRATION]->setEnabled(false);
 #endif
+
+#ifdef Q_WS_QWS
+    int touchScreenType = 0;
+    machineConfig.getNumValue("TouchEnable", touchScreenType);
+    if (touchScreenType == TOUCHSCREEN_CAPACITIVE)
+    {
+        buttons[ITEM_BTN_TOUCH_SCREEN_CALIBRATION]->setEnabled(false);
+    }
+#endif
 }
 
 ModuleMaintainMenuContent::ModuleMaintainMenuContent()
@@ -82,9 +92,9 @@ void ModuleMaintainMenuContent::layoutExec()
     Button *button;
     QLabel *label;
     int itemID;
-    SystemManagerInterface *systemManager = SystemManagerInterface::getSystemManager();
+    SystemManagerInterface *sysManager = SystemManagerInterface::getSystemManager();
 
-    if (systemManager && systemManager->isSupport(PARAM_AG))
+    if (sysManager && sysManager->isSupport(PARAM_AG))
     {
         // ag module calibration
         label = new QLabel(trs("AnaesthesiaModuleCalibration"));
@@ -133,7 +143,7 @@ void ModuleMaintainMenuContent::layoutExec()
     layout->addWidget(button, d_ptr->buttons.count(), 1);
     d_ptr->buttons.insert(ModuleMaintainMenuContentPrivate::ITEM_BTN_TOUCH_SCREEN_CALIBRATION, button);
 
-    if (systemManager && !systemManager->isSupport(CONFIG_TOUCH))
+    if (sysManager && !sysManager->isSupport(CONFIG_TOUCH))
     {
         // touch screen is not support
         button->setEnabled(false);
@@ -164,9 +174,9 @@ void ModuleMaintainMenuContent::onButtonReleased()
         case ModuleMaintainMenuContentPrivate::ITEM_BTN_TOUCH_SCREEN_CALIBRATION:
         {
             windowManager.closeAllWidows();
-            SystemManagerInterface *systemManager;
-            systemManager = SystemManagerInterface::getSystemManager();
-            if (systemManager && systemManager->isTouchScreenOn())
+            SystemManagerInterface *sysManager;
+            sysManager = SystemManagerInterface::getSystemManager();
+            if (sysManager && sysManager->isTouchScreenOn())
             {
                 QWSServer::instance()->closeMouse();
             }
@@ -176,7 +186,7 @@ void ModuleMaintainMenuContent::onButtonReleased()
             TSCalibrationWindow w;
             w.exec();
 
-            if (systemManager && systemManager->isTouchScreenOn())
+            if (sysManager && sysManager->isTouchScreenOn())
             {
                 QWSServer::instance()->openMouse();
             }
