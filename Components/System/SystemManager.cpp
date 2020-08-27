@@ -520,6 +520,15 @@ void SystemManager::enableBrightness(BrightnessLevel br)
 #ifdef Q_WS_X11
     Q_UNUSED(br)
 #else
+    if (d_ptr->backlightFd < 0)
+    {
+        return;
+    }
+
+    // br value takes the valid range.
+    br = br < BRT_LEVEL_0 ? BRT_LEVEL_0 : br;
+    br = br >= BRIGHTNESS_NR ? static_cast<BrightnessLevel>(BRIGHTNESS_NR - 1) : br;
+
     // add screen type select
     char *lightValue = NULL;
     char industrialLight[BRIGHTNESS_NR] = {1, 7, 15, 20, 25, 32, 38, 42, 46, 50,
@@ -535,16 +544,6 @@ void SystemManager::enableBrightness(BrightnessLevel br)
     else
     {
         lightValue = reinterpret_cast<char*>(&businessLight);
-    }
-
-    if (d_ptr->backlightFd < 0)
-    {
-        return;
-    }
-
-    if (br == BRT_LEVEL_NR)
-    {
-        return;
     }
 
     int brValue = *(lightValue + br);
