@@ -45,6 +45,7 @@
 #include "Framework/Language/LanguageManager.h"
 #include "Framework/TimeDate/TimeDate.h"
 #include "EventStorageManagerInterface.h"
+#include "NightModeManager.h"
 
 #define BACKLIGHT_DEV   "/sys/class/backlight/backlight/brightness"       // 背光控制文件接口
 #define BRIGHTNESS_NR       20
@@ -506,7 +507,7 @@ void SystemManager::setBrightness(BrightnessLevel br)
 
 void SystemManager::setAutoBrightness(BrightnessLevel br)
 {
-    if (d_ptr->isAutoBrightness)
+    if (d_ptr->isAutoBrightness && !nightModeManager.nightMode())
     {
         enableBrightness(br);
     }
