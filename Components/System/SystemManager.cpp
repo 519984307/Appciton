@@ -493,7 +493,8 @@ void SystemManager::setBrightness(BrightnessLevel br)
 {
     if (br != BRT_LEVEL_AUTO)
     {
-        enableBrightness(br);
+        int brValue = br * 2;
+        enableBrightness(static_cast<BrightnessLevel>(brValue));
         d_ptr->isAutoBrightness = false;
     }
     else
@@ -547,13 +548,6 @@ void SystemManager::enableBrightness(BrightnessLevel br)
     }
 
     int brValue = *(lightValue + br);
-    // Not automatic brightness.
-    if (!d_ptr->isAutoBrightness)
-    {
-        int lightLevel = br * 2;
-        lightLevel = lightLevel >= BRIGHTNESS_NR ? BRIGHTNESS_NR - 1 : lightLevel;
-        brValue = *(lightValue + lightLevel);
-    }
 
     QString str = QString::number(brValue);
 
