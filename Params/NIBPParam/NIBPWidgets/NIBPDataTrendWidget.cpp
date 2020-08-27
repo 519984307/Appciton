@@ -147,9 +147,18 @@ void NIBPDataTrendWidget::showValue(void)
     NIBPTrendCacheMap::iterator t = _nibpNrendCacheMap.end() - 1;
     for (int i = 0; i < _rowNR; i++)
     {
+        if (i == NIBP_LIST_DISPLAY_ROW_COUNT)
+        {
+            break;
+        }
         timeStr = timeDate->getTime(t.key());
-        _table->item(i, 0)->setText(timeStr);
-        _table->item(i, 0)->setTextColor(textColor);
+        QTableWidgetItem *tableItem = _table->item(i, 0);
+        if (tableItem)
+        {
+            tableItem->setText(timeStr);
+            tableItem->setTextColor(textColor);
+        }
+
         NIBPTrendCacheData providerBuff = t.value();
         if (providerBuff.sys.value == InvData() || providerBuff.dia.value == InvData() ||
                 providerBuff.map.value == InvData())
@@ -274,14 +283,20 @@ void NIBPDataTrendWidget::showValue(void)
             }
             textStr = color.arg(textColor.red()).arg(textColor.green()).arg(textColor.blue()).arg(textStr);
         }
-        QLabel *l = qobject_cast<QLabel *>(_table->cellWidget(i, 1));
-        l->setAlignment(Qt::AlignHCenter);
-        l->setText(textStr);
-        l->setTextInteractionFlags(Qt::NoTextInteraction);
-        QLabel *prLbl = qobject_cast<QLabel *>(_table->cellWidget(i, 2));
-        prLbl->setAlignment(Qt::AlignHCenter);
-        prLbl->setText(prStr);
-        prLbl->setTextInteractionFlags(Qt::NoTextInteraction);
+        QLabel *label = qobject_cast<QLabel *>(_table->cellWidget(i, 1));
+        if (label)
+        {
+            label->setAlignment(Qt::AlignHCenter);
+            label->setText(textStr);
+            label->setTextInteractionFlags(Qt::NoTextInteraction);
+        }
+        label = qobject_cast<QLabel *>(_table->cellWidget(i, 2));
+        if (label)
+        {
+            label->setAlignment(Qt::AlignHCenter);
+            label->setText(prStr);
+            label->setTextInteractionFlags(Qt::NoTextInteraction);
+        }
 
         if (t != _nibpNrendCacheMap.begin())
         {
@@ -377,11 +392,26 @@ void NIBPDataTrendWidget::clearListData()
     int dataCount = _nibpNrendCacheMap.count();
     for (int i = 0; i < dataCount; i++)
     {
-        _table->item(i, 0)->setText("");
+        if (i == NIBP_LIST_DISPLAY_ROW_COUNT)
+        {
+            break;
+        }
+        QTableWidgetItem* tableItem = _table->item(i, 0);
+        if (tableItem)
+        {
+            tableItem->setText("");
+        }
+
         QLabel *l = qobject_cast<QLabel *>(_table->cellWidget(i, 1));
-        l->setText("");
+        if (l)
+        {
+            l->setText("");
+        }
         l = qobject_cast<QLabel *>(_table->cellWidget(i, 2));
-        l->setText("");
+        if (l)
+        {
+            l->setText("");
+        }
     }
     _nibpNrendCacheMap.clear();
 }
@@ -475,6 +505,10 @@ void NIBPDataTrendWidget::getTrendNIBPlist()
                 nibpTrendCacheData.dia.priority = alarmSource->getAlarmPriority(NIBP_LIMIT_ALARM_DIA_HIGH);
                 nibpTrendCacheData.map.priority = alarmSource->getAlarmPriority(NIBP_LIMIT_ALARM_MAP_HIGH);
 
+                if (NIBP_LIST_DISPLAY_ROW_COUNT <= _nibpNrendCacheMap.count())
+                {
+                    _nibpNrendCacheMap.erase(_nibpNrendCacheMap.begin());
+                }
                 _nibpNrendCacheMap.insert(t, nibpTrendCacheData);
                 _updateNIBPList = true;
             }
