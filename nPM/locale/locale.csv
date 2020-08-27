@@ -586,20 +586,20 @@ ECGArrVENT,室性节律,VENT
 ECGArrIRR,心律不齐,IRR
 LeadOff,导联脱落,Lead Off
 ECGLeadOff,ECG导联脱落,ECG Lead Off
-ECGVLeadOff,ECGV导联脱落,ECG V Lead Off
-ECGV1LeadOff,ECGV1导联脱落,ECG V1 Lead Off
-ECGV2LeadOff,ECGV2导联脱落,ECG V2 Lead Off
-ECGV3LeadOff,ECGV3导联脱落,ECG V3 Lead Off
-ECGV4LeadOff,ECGV4导联脱落,ECG V4 Lead Off
-ECGV5LeadOff,ECGV5导联脱落,ECG V5 Lead Off
-ECGV6LeadOff,ECGV6导联脱落,ECG V6 Lead Off
-ECGCLeadOff,ECGC导联脱落,ECG C Lead Off
-ECGC1LeadOff,ECGC1导联脱落,ECG C1 Lead Off
-ECGC2LeadOff,ECGC2导联脱落,ECG C2 Lead Off
-ECGC3LeadOff,ECGC3导联脱落,ECG C3 Lead Off
-ECGC4LeadOff,ECGC4导联脱落,ECG C4 Lead Off
-ECGC5LeadOff,ECGC5导联脱落,ECG C5 Lead Off
-ECGC6LeadOff,ECGC6导联脱落,ECG C6 Lead Off
+ECGVLeadOff,ECG V导联脱落,ECG V Lead Off
+ECGV1LeadOff,ECG V1导联脱落,ECG V1 Lead Off
+ECGV2LeadOff,ECG V2导联脱落,ECG V2 Lead Off
+ECGV3LeadOff,ECG V3导联脱落,ECG V3 Lead Off
+ECGV4LeadOff,ECG V4导联脱落,ECG V4 Lead Off
+ECGV5LeadOff,ECG V5导联脱落,ECG V5 Lead Off
+ECGV6LeadOff,ECG V6导联脱落,ECG V6 Lead Off
+ECGCLeadOff,ECG C导联脱落,ECG C Lead Off
+ECGC1LeadOff,ECG C1导联脱落,ECG C1 Lead Off
+ECGC2LeadOff,ECG C2导联脱落,ECG C2 Lead Off
+ECGC3LeadOff,ECG C3导联脱落,ECG C3 Lead Off
+ECGC4LeadOff,ECG C4导联脱落,ECG C4 Lead Off
+ECGC5LeadOff,ECG C5导联脱落,ECG C5 Lead Off
+ECGC6LeadOff,ECG C6导联脱落,ECG C6 Lead Off
 ECGOverLoad,ECG过载,ECG Over Load
 ECGCommunicationStop,ECG通信中断,ECG Communication Stop
 ECGSendCommunicationStop,ECG发送通信中断,ECG Send Communication Stop
