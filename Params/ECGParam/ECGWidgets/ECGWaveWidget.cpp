@@ -310,6 +310,10 @@ void ECGWaveWidget::loadConfig(void)
 
         _name->setText(ECGSymbol::convert(ecgParam.waveIDToLeadID((WaveformID)getID()),
                                           ecgParam.getLeadConvention(), is12Lead, ecgParam.get12LDisplayFormat()));
+
+        ECGLead lead = ecgParam.waveIDToLeadID((WaveformID)getID());
+        // notify
+        ecgParam.updateECGNotifyMesg(lead, false);
     }
     else
     {
