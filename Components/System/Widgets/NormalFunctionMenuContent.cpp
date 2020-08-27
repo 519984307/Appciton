@@ -64,6 +64,12 @@ public:
     // load settings
     void loadOptions();
 
+    /**
+     * @brief blockComboBoxSignals  block combo box signals
+     * @param block
+     */
+    void blockComboBoxSignals(bool block);
+
     Button *demoBtn;
     Button *standbyBtn;
 
@@ -73,6 +79,7 @@ public:
 
 void NormalFunctionMenuContentPrivate::loadOptions()
 {
+    blockComboBoxSignals(true);
     int waveLength;
     currentConfig.getNumValue("Event|WaveLength", waveLength);
     if (waveLength == 8)
@@ -88,6 +95,12 @@ void NormalFunctionMenuContentPrivate::loadOptions()
         combos[ITEM_CBO_WAVE_LEN]->setCurrentIndex(2);
     }
 
+    int index = 0;
+    index = systemManager.getBrightness();
+    combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setCurrentIndex(index);
+
+    systemConfig.getNumValue("General|KeyPressVolume", index);
+    combos[ITEM_CBO_KEYPRESS_VOLUME]->setCurrentIndex(index);
     if (nightModeManager.nightMode())
     {
         combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setEnabled(false);
@@ -97,12 +110,6 @@ void NormalFunctionMenuContentPrivate::loadOptions()
     {
         combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setEnabled(true);
         combos[ITEM_CBO_KEYPRESS_VOLUME]->setEnabled(true);
-        int index = 0;
-        index = systemManager.getBrightness();
-        combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setCurrentIndex(index);
-
-        systemConfig.getNumValue("General|KeyPressVolume", index);
-        combos[ITEM_CBO_KEYPRESS_VOLUME]->setCurrentIndex(index);
     }
 
     if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
@@ -113,6 +120,8 @@ void NormalFunctionMenuContentPrivate::loadOptions()
     {
         standbyBtn->setEnabled(true);
     }
+
+    blockComboBoxSignals(false);
 
 #ifdef Q_WS_QWS
 #ifndef VITAVUE_15_INCHES
@@ -127,6 +136,18 @@ void NormalFunctionMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_TOUCH_SCREEN]->blockSignals(false);
 #endif
 #endif
+}
+
+void NormalFunctionMenuContentPrivate::blockComboBoxSignals(bool block)
+{
+    QMap<MenuItem, ComboBox *>::iterator it = combos.begin();
+    for (; it != combos.end(); ++it)
+    {
+        if (it.value())
+        {
+            it.value()->blockSignals(block);
+        }
+    }
 }
 
 NormalFunctionMenuContent::NormalFunctionMenuContent()

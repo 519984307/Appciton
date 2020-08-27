@@ -178,10 +178,11 @@ static void _initSystem(void)
 
     // 初始化夜间模式
     runningStatus.getInstance();
-    if (nightModeManager.nightMode())
-    {
-        nightModeManager.setNightMode(true);
-    }
+    nightModeManager.getInstance();
+//    if (nightModeManager.nightMode())
+//    {
+//        nightModeManager.setNightMode(true);
+//    }
 
     // 初始化护士呼叫
     NurseCallManager::getInstance();
