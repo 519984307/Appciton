@@ -525,10 +525,9 @@ void SystemManager::enableBrightness(BrightnessLevel br)
         return;
     }
 
-    if (br < BRT_LEVEL_0 || br >= BRIGHTNESS_NR)
-    {
-        return;
-    }
+    // br value takes the valid range.
+    br = br < BRT_LEVEL_0 ? BRT_LEVEL_0 : br;
+    br = br >= BRIGHTNESS_NR ? static_cast<BrightnessLevel>(BRIGHTNESS_NR - 1) : br;
 
     // add screen type select
     char *lightValue = NULL;
