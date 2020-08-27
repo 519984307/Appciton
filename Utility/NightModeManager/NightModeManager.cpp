@@ -161,7 +161,8 @@ void NightModeManager::setBrightness(BrightnessLevel level)
     }
 }
 
-void NightModeManager::setSoundVolume(SoundManagerInterface::SoundType soundType, SoundManagerInterface::VolumeLevel volumeLevel)
+void NightModeManager::setSoundVolume(SoundManagerInterface::SoundType soundType,
+                                      SoundManagerInterface::VolumeLevel volumeLevel)
 {
     if (d_ptr->isNightMode)
     {
@@ -189,7 +190,8 @@ void NightModeManager::setNibpStopMeasure(bool stopNibpMeasure)
 NightModeManagerPrivate::NightModeManagerPrivate()
     : isNightMode(0)
 {
-    int index = 0;
-    systemConfig.getNumValue("NightMode|EnterNightMode", index);
-    isNightMode = index;
+    // By default, it does not enter night mode.
+//    int index = 0;
+//    systemConfig.getNumValue("NightMode|EnterNightMode", index);
+//    isNightMode = index;
 }
