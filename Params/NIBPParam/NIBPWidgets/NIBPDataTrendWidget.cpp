@@ -390,12 +390,13 @@ void NIBPDataTrendWidget::updateWidgetConfig()
 void NIBPDataTrendWidget::clearListData()
 {
     int dataCount = _nibpNrendCacheMap.count();
+    if (dataCount > NIBP_LIST_DISPLAY_ROW_COUNT)
+    {
+        // The list can display up to 10 sets of measurement data.
+        dataCount = NIBP_LIST_DISPLAY_ROW_COUNT;
+    }
     for (int i = 0; i < dataCount; i++)
     {
-        if (i == NIBP_LIST_DISPLAY_ROW_COUNT)
-        {
-            break;
-        }
         QTableWidgetItem* tableItem = _table->item(i, 0);
         if (tableItem)
         {
@@ -505,6 +506,7 @@ void NIBPDataTrendWidget::getTrendNIBPlist()
                 nibpTrendCacheData.dia.priority = alarmSource->getAlarmPriority(NIBP_LIMIT_ALARM_DIA_HIGH);
                 nibpTrendCacheData.map.priority = alarmSource->getAlarmPriority(NIBP_LIMIT_ALARM_MAP_HIGH);
 
+                // The list can display up to 10 sets of measurement data.
                 if (NIBP_LIST_DISPLAY_ROW_COUNT <= _nibpNrendCacheMap.count())
                 {
                     _nibpNrendCacheMap.erase(_nibpNrendCacheMap.begin());
