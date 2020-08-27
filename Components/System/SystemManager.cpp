@@ -493,8 +493,7 @@ void SystemManager::setBrightness(BrightnessLevel br)
 {
     if (br != BRT_LEVEL_AUTO)
     {
-        int brValue = br * 2;
-        enableBrightness(static_cast<BrightnessLevel>(brValue));
+        enableBrightness(br);
         d_ptr->isAutoBrightness = false;
     }
     else
@@ -520,6 +519,16 @@ void SystemManager::enableBrightness(BrightnessLevel br)
 #ifdef Q_WS_X11
     Q_UNUSED(br)
 #else
+    if (d_ptr->backlightFd < 0)
+    {
+        return;
+    }
+
+    if (br < BRT_LEVEL_0 || br >= BRIGHTNESS_NR)
+    {
+        return;
+    }
+
     // add screen type select
     char *lightValue = NULL;
     char industrialLight[BRIGHTNESS_NR] = {1, 7, 15, 20, 25, 32, 38, 42, 46, 50,
@@ -537,17 +546,14 @@ void SystemManager::enableBrightness(BrightnessLevel br)
         lightValue = reinterpret_cast<char*>(&businessLight);
     }
 
-    if (d_ptr->backlightFd < 0)
-    {
-        return;
-    }
-
-    if (br == BRT_LEVEL_NR)
-    {
-        return;
-    }
-
     int brValue = *(lightValue + br);
+    // Not automatic brightness.
+    if (!d_ptr->isAutoBrightness)
+    {
+        int lightLevel = br * 2;
+        lightLevel = lightLevel >= BRIGHTNESS_NR ? BRIGHTNESS_NR - 1 : lightLevel;
+        brValue = *(lightValue + lightLevel);
+    }
 
     QString str = QString::number(brValue);
 
