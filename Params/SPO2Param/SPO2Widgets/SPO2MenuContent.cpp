@@ -566,6 +566,6 @@ void SPO2MenuContent::onPopupListItemFocusChanged(int volume)
 
 void SPO2MenuContent::onCCHDCheckBtnReleased()
 {
-    CCHDWindow *win = new CCHDWindow();
-    win->exec();
+    CCHDWindow win;
+    win.exec();
 }
