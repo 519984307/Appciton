@@ -86,13 +86,10 @@ void AlarmLimitWindowPrivate::loadoptions()
                 continue;
             }
         }
-        if (subId == SUB_PARAM_SPO2_2 || subId == SUB_PARAM_SPO2_D)
+        // spo2 plugin is not connected
+        if (!spo2Param.isConnected(true) && (subId == SUB_PARAM_SPO2_2 || subId == SUB_PARAM_SPO2_D))
         {
-            // spo2 plugin is not connected
-            if (!spo2Param.isConnected(true))
-            {
-                continue;
-            }
+            continue;
         }
         // not support spo2 high configure
         if (pid == PARAM_SPO2 && !systemManager.isSupport(CONFIG_SPO2_HIGH_CONFIGURE))

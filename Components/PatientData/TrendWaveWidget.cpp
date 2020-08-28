@@ -1325,13 +1325,10 @@ void TrendWaveWidget::_updateDisplaySubParams()
             }
         }
 
-        if (subId == SUB_PARAM_SPO2_2 || subId == SUB_PARAM_SPO2_D)
+        // spo2 plugin is not connected
+        if (!spo2Param.isConnected(true) && (subId == SUB_PARAM_SPO2_2 || subId == SUB_PARAM_SPO2_D))
         {
-            // spo2 plugin is not connected
-            if (!spo2Param.isConnected(true))
-            {
-                continue;
-            }
+            continue;
         }
 
         // not support spo2 high configure
