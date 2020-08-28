@@ -233,7 +233,8 @@ void PowerMangerPrivate::monitorRun()
             batteryBarWidget.setIconLow();  // 黄灯显示低电量
             if (powerList.at(POWER_LIST_MAX_COUNT - 2) != curVolume)
             {
-                windowManager.showWindow(lowBatteryMessage, WindowManager::ShowBehaviorNoAutoClose);
+                windowManager.showWindow(lowBatteryMessage, WindowManager::ShowBehaviorModal
+                                         | WindowManager::ShowBehaviorNoAutoClose);
             }
             shutdownTimer->stop();
             shutdownWarn(false);
