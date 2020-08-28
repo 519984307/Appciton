@@ -27,6 +27,7 @@
 #include "Framework/TimeDate/TimeDate.h"
 #include "PatientManager.h"
 #include "math.h"
+#include "SPO2Param.h"
 
 #define COLUMN_COUNT        7
 #define MAX_ROW_COUNT       9
@@ -1357,6 +1358,29 @@ void TrendTableModelPrivate::loadTableTitle()
             SubParamID ibp1 = ibpParam.getSubParamID(ibpParam.getEntitle(IBP_CHN_1));
             SubParamID ibp2 = ibpParam.getSubParamID(ibpParam.getEntitle(IBP_CHN_2));
             if (id != ibp1 && id != ibp2)
+            {
+                continue;
+            }
+            break;
+        }
+        case SUB_PARAM_SPO2_2:
+        case SUB_PARAM_SPO2_D:
+        {
+            // spo2 plugin is not connected
+            if (!spo2Param.isConnected(true))
+            {
+                continue;
+            }
+            break;
+        }
+        case SUB_PARAM_PVI:
+        case SUB_PARAM_SPHB:
+        case SUB_PARAM_SPOC:
+        case SUB_PARAM_SPMET:
+        case SUB_PARAM_SPCO:
+        {
+            // not support spo2 high configure
+            if (!systemManager.isSupport(CONFIG_SPO2_HIGH_CONFIGURE))
             {
                 continue;
             }
