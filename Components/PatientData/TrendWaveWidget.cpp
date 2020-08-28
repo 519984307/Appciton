@@ -29,6 +29,7 @@
 #include "EventDataParseContext.h"
 #include "Debug.h"
 #include "PatientManager.h"
+#include "SPO2Param.h"
 
 #define GRAPH_DISPLAY_DATA_NUMBER           4
 #define GRAPH_POINT_NUMBER                  120                     // 一屏数据量
@@ -1319,6 +1320,25 @@ void TrendWaveWidget::_updateDisplaySubParams()
             SubParamID ibp1 = ibpParam.getSubParamID(ibpParam.getEntitle(IBP_CHN_1));
             SubParamID ibp2 = ibpParam.getSubParamID(ibpParam.getEntitle(IBP_CHN_2));
             if (subId != ibp1 && subId != ibp2)
+            {
+                continue;
+            }
+        }
+
+        if (subId == SUB_PARAM_SPO2_2 || subId == SUB_PARAM_SPO2_D)
+        {
+            // spo2 plugin is not connected
+            if (!spo2Param.isConnected(true))
+            {
+                continue;
+            }
+        }
+
+        // not support spo2 high configure
+        if (paramId == PARAM_SPO2 && !systemManager.isSupport(CONFIG_SPO2_HIGH_CONFIGURE))
+        {
+            if (subId == SUB_PARAM_PVI || subId == SUB_PARAM_SPHB || subId == SUB_PARAM_SPOC ||
+                     subId == SUB_PARAM_SPMET || subId == SUB_PARAM_SPCO)
             {
                 continue;
             }

@@ -16,6 +16,7 @@
 #include "ParamManager.h"
 #include "FontManager.h"
 #include "CO2Param.h"
+#include "SPO2Param.h"
 #include "IConfig.h"
 #include "TrendDataStorageManager.h"
 #include "Framework/Language/LanguageManager.h"
@@ -86,6 +87,11 @@ void TrendSubWaveWidget::setWidgetParam(SubParamID id, TrendGraphType type)
         if (_id == SUB_PARAM_SPO2)
         {
             _paramName = QString("%1/%2").arg(trs("SPO2")).arg(trs("SPO2_2"));
+            // spo2 plugin is not connected
+            if (!spo2Param.isConnected(true))
+            {
+                _paramName = QString(trs("SPO2"));
+            }
         }
     }
     else if (_type == TREND_GRAPH_TYPE_NIBP)
