@@ -455,14 +455,6 @@ QList<QPainterPath> TrendSubWaveWidget::generatorPainterPath(const TrendGraphInf
 
             qreal x = _mapValue(_timeX, iter->timestamp);
             qreal data = iter->data;
-            if (_id == SUB_PARAM_PI)
-            {
-                data = data / 100;
-            }
-            else if (_id == SUB_PARAM_SPHB || _id == SUB_PARAM_SPMET)
-            {
-                data = data / 10;
-            }
             qreal y = _mapValue(_valueY, data);
 
             if (lastPointInvalid)
