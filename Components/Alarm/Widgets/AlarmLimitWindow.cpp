@@ -30,6 +30,7 @@
 #include <QTimer>
 #include <SystemManager.h>
 #include "MessageBox.h"
+#include "SPO2Param.h"
 
 #define TABLE_ROW_NUM 7
 
@@ -81,6 +82,20 @@ void AlarmLimitWindowPrivate::loadoptions()
             IBPLabel pressName2 = ibpParam.getEntitle(IBP_CHN_2);
             IBPLabel curPressName = ibpParam.getPressureName(subId);
             if (curPressName != pressName1 && curPressName != pressName2)
+            {
+                continue;
+            }
+        }
+        // spo2 plugin is not connected
+        if (!spo2Param.isConnected(true) && (subId == SUB_PARAM_SPO2_2 || subId == SUB_PARAM_SPO2_D))
+        {
+            continue;
+        }
+        // not support spo2 high configure
+        if (pid == PARAM_SPO2 && !systemManager.isSupport(CONFIG_SPO2_HIGH_CONFIGURE))
+        {
+            if (subId == SUB_PARAM_PVI || subId == SUB_PARAM_SPHB || subId == SUB_PARAM_SPOC ||
+                    subId == SUB_PARAM_SPMET || subId == SUB_PARAM_SPCO)
             {
                 continue;
             }
