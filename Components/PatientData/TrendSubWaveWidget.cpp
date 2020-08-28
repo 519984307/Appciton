@@ -86,11 +86,15 @@ void TrendSubWaveWidget::setWidgetParam(SubParamID id, TrendGraphType type)
         }
         if (_id == SUB_PARAM_SPO2)
         {
-            _paramName = QString("%1/%2").arg(trs("SPO2")).arg(trs("SPO2_2"));
-            // spo2 plugin is not connected
             if (!spo2Param.isConnected(true))
             {
+                // spo2 plugin is not connected
                 _paramName = QString(trs("SPO2"));
+            }
+            else
+            {
+                // spo2 plugin connected
+                _paramName = QString("%1/%2").arg(trs("SPO2")).arg(trs("SPO2_2"));
             }
         }
     }
@@ -790,6 +794,19 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
         }
         else if (paramId == PARAM_SPO2)
         {
+            // spo2 plugin is not connected.
+            if (!spo2Param.isConnected(true))
+            {
+                if (value1 != InvData())
+                {
+                    str1 = Unit::convert(type, UNIT_PERCENT, static_cast<int>(value1));
+                }
+                font.setPixelSize(60);
+                barPainter.setFont(font);
+                barPainter.drawText(dataRect, str1, option);
+                return;
+            }
+            // spo2 plugin connected.
             if (value1 != InvData())
             {
                 str1 = Unit::convert(type, UNIT_PERCENT, static_cast<int>(value1));
