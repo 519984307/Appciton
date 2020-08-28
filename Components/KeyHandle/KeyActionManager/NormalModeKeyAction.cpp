@@ -101,6 +101,12 @@ void NormalModeKeyAction::keyF3Pressed(bool multiBtnPress)
         return;
     }
 
+    // not support printer
+    if (!systemManager.isSupport(CONFIG_PRINTER))
+    {
+        return;
+    }
+
     // print
     if (recorderManager.isPrinting())
     {
