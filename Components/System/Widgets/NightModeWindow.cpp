@@ -69,8 +69,7 @@ void NightModeWindowPrivate::loadOptions()
     systemConfig.getNumValue("NightMode|StopNIBPMeasure", index);
     combos[ITEM_CBO_STOP_NIBP_MEASURE]->setCurrentIndex(index);
 
-    index = 0;
-    systemConfig.getNumValue("NightMode|EnterNightMode", index);
+    index = nightModeManager.nightMode();
     QString path;
     if (!index)
     {
@@ -258,8 +257,7 @@ void NightModeWindow::onComboBoxIndexChanged(int index)
 
 void NightModeWindow::OnBtnReleased()
 {
-    int index = 0;
-    systemConfig.getNumValue("NightMode|EnterNightMode", index);
+    int index = nightModeManager.nightMode();
     QString name;
     if (index)
     {
