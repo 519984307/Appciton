@@ -140,6 +140,10 @@ void MonitorInfoWindow::layoutExec()
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(MonitorInfoWindowPrivate
                        ::ITEM_LAB_MACHINE_TYPE, labelRight);
+#if 1
+    labelLeft->setVisible(false);
+    labelRight->setVisible(false);
+#endif
 
     labelLeft = new QLabel(trs("MACAddress"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
