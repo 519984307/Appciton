@@ -126,7 +126,7 @@ void NightModeWindow::layoutExec()
     label = new QLabel(trs("SystemBrightness"));
     glayout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
-    for (int i = BRT_LEVEL_0; i < BRT_LEVEL_NR; i++)
+    for (int i = BRT_LEVEL_0; i < BRT_LEVEL_AUTO; i++)
     {
         comboBox->addItem(QString::number(i + 1));
     }
