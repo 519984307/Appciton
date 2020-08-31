@@ -275,14 +275,14 @@
 		</NIBP_DIA>
 		<NIBP_MAP Enable="1" Prio="1">
 		<mmHg>
-		    <Low Min="20" Max="214">50</Low>
-		    <High Min="21" Max="215">120</High>
+		    <Low Min="20" Max="234">50</Low>
+		    <High Min="21" Max="235">120</High>
 		    <Step>1</Step>
 		    <Scale>1</Scale>
 		</mmHg>
 		<kPa>
-		    <Low Min="27" Max="286">67</Low>
-		    <High Min="28" Max="287">160</High>
+		    <Low Min="27" Max="312">67</Low>
+		    <High Min="28" Max="313">160</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</kPa>
