@@ -62,7 +62,7 @@
     </Alarms>
     <NightMode>
         <ScreenBrightness>0</ScreenBrightness>
-        <AlarmVolume>1</AlarmVolume>
+        <AlarmVolume>3</AlarmVolume>
         <HeartBeatVolume>0</HeartBeatVolume>
         <KeyPressVolume>0</KeyPressVolume>
         <NIBPCompletedTips>0</NIBPCompletedTips>

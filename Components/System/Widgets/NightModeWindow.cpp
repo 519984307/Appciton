@@ -32,10 +32,11 @@ public:
         ITEM_CBO_HEART_BEAT_VOLUME,
         ITEM_CBO_KEYPRESS_VOLUME_NUM,
         ITEM_CBO_NIBP_COMPLETED_TIPS,
+        ITEM_CBO_ALARM_VOLUME,
         ITEM_CBO_STOP_NIBP_MEASURE
     };
     NightModeWindowPrivate()
-        : enterNightMode(NULL)
+        : enterNightMode(NULL), minAlarmVol(3)
     {
     }
     /**
@@ -45,6 +46,7 @@ public:
 
     QMap <MenuItem, ComboBox*> combos;
     Button *enterNightMode;
+    int minAlarmVol;    // min alarm volume
 };
 
 void NightModeWindowPrivate::loadOptions()
@@ -64,6 +66,13 @@ void NightModeWindowPrivate::loadOptions()
     index = 0;
     systemConfig.getNumValue("NightMode|NIBPCompletedTips", index);
     combos[ITEM_CBO_NIBP_COMPLETED_TIPS]->setCurrentIndex(index);
+
+    index = 0;
+    systemConfig.getNumValue("Alarms|MinimumAlarmVolume", minAlarmVol);
+    systemConfig.getNumValue("NightMode|AlarmVolume", index);
+    index -= minAlarmVol;  // calculate cur index
+    index = index < 0 ? 0 : index;
+    combos[ITEM_CBO_ALARM_VOLUME]->setCurrentIndex(index);
 
     index = 0;
     systemConfig.getNumValue("NightMode|StopNIBPMeasure", index);
@@ -191,6 +200,21 @@ void NightModeWindow::layoutExec()
     d_ptr->combos.insert(NightModeWindowPrivate::
                          ITEM_CBO_NIBP_COMPLETED_TIPS , comboBox);
 
+    // night mode alarm volume
+    label = new QLabel(trs("SystemAlarmVolume"));
+    glayout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    systemConfig.getNumValue("Alarms|MinimumAlarmVolume", d_ptr->minAlarmVol);
+    for (int i = d_ptr->minAlarmVol; i <= SoundManager::VOLUME_LEV_5; i++)
+    {
+        comboBox->addItem(QString::number(i));
+    }
+    comboIndex = static_cast<int>(NightModeWindowPrivate::ITEM_CBO_ALARM_VOLUME);
+    comboBox->setProperty("Item", qVariantFromValue(comboIndex));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    glayout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(NightModeWindowPrivate::ITEM_CBO_ALARM_VOLUME, comboBox);
+
     // stop nibp measure
     label = new QLabel(trs("StopNIBPMeasure"));
     glayout->addWidget(label , d_ptr->combos.count() , 0);
@@ -246,6 +270,11 @@ void NightModeWindow::onComboBoxIndexChanged(int index)
         node = "NIBPCompletedTips";
         nightModeManager.setSoundVolume(SoundManager::SOUND_TYPE_NIBP_COMPLETE,
                                         static_cast<SoundManager::VolumeLevel>(index));
+        break;
+    case NightModeWindowPrivate::ITEM_CBO_ALARM_VOLUME:
+        index = index + d_ptr->minAlarmVol;
+        node = "AlarmVolume";
+        nightModeManager.setSoundVolume(SoundManager::SOUND_TYPE_ALARM, static_cast<SoundManager::VolumeLevel>(index));
         break;
     case NightModeWindowPrivate::ITEM_CBO_STOP_NIBP_MEASURE:
         node = "StopNIBPMeasure";
