@@ -16,6 +16,7 @@
 #include "Framework/TimeDate/TimeDate.h"
 #include <QPainter>
 #include <QDebug>
+#include "ParamInfo.h"
 
 class COMeasureWidgetPrivate
 {
@@ -23,7 +24,7 @@ public:
     COMeasureWidgetPrivate()
         : measureTime(0), tiStr(InvStr()), tbStr(InvStr()), coStr(InvStr()), ciStr(InvStr()),
           dataRate(25), ti(InvData()), tb(InvData()), co(InvData()), ci(InvData()),
-          startTb(InvData()), maxTbWaveVal(100), maxMeasureDuration(30), isMeasuring(false)
+          startTb(InvData()), maxTbWaveVal(100), maxMeasureDuration(30), curTbUnit(UNIT_TC), isMeasuring(false)
     {}
 
     /**
@@ -59,6 +60,7 @@ public:
     short startTb;          /* tb value of start measurement */
     short maxTbWaveVal;     /* 100 for 1 celsius degree, 200 for 2 celsius degree */
     short maxMeasureDuration;   /* defautl 30 seconds,  60 seconds at most */
+    UnitType curTbUnit;     // cur tb unit
     bool isMeasuring;
 };
 
@@ -140,7 +142,15 @@ void COMeasureWidget::setTi(short ti)
         }
         else
         {
-            pimpl->tiStr = QString::number(ti * 1.0 / 10, 'f', 1);
+            UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_CO_TB);
+            if (pimpl->curTbUnit == defUnit)
+            {
+                pimpl->tiStr = QString::number(ti * 1.0 / 10, 'f', 1);
+            }
+            else
+            {
+                pimpl->tiStr = Unit::convert(pimpl->curTbUnit, defUnit, ti * 1.0 / 10);
+            }
         }
         update();
     }
@@ -157,9 +167,25 @@ void COMeasureWidget::setTb(short tb)
         }
         else
         {
-            pimpl->tbStr = QString::number(tb * 1.0 / 10, 'f', 1);
+            UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_CO_TB);
+            if (pimpl->curTbUnit == defUnit)
+            {
+                pimpl->tbStr = QString::number(tb * 1.0 / 10, 'f', 1);
+            }
+            else
+            {
+                pimpl->tbStr = Unit::convert(pimpl->curTbUnit, defUnit, tb * 1.0 / 10);
+            }
         }
         update();
+    }
+}
+
+void COMeasureWidget::setTbUnit(UnitType unit)
+{
+    if (pimpl->curTbUnit != unit)
+    {
+        pimpl->curTbUnit = unit;
     }
 }
 
@@ -241,7 +267,8 @@ void COMeasureWidget::paintEvent(QPaintEvent *ev)
     QRect topTextArea(waveStartX, 0, waveWidth, topRuler);
     QRect bottomTextArea(waveStartX, bottomRuler, waveWidth, fontH * 3 / 2);
     /* draw the wave label */
-    p.drawText(topTextArea, Qt::AlignBottom|Qt::AlignLeft, QString("TB (%1)").arg(trs(Unit::getSymbol(UNIT_TC))));
+    p.drawText(topTextArea, Qt::AlignBottom|Qt::AlignLeft,
+               QString("TB (%1)").arg(trs(Unit::getSymbol(pimpl->curTbUnit))));
 
     /* draw the top ruler */
     p.drawLine(topTextArea.bottomLeft(), topTextArea.bottomRight());
@@ -251,15 +278,36 @@ void COMeasureWidget::paintEvent(QPaintEvent *ev)
 
     if (pimpl->waveData.count())
     {
+        UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_CO_TB);
+        float topTb = (pimpl->startTb * 10 - pimpl->maxTbWaveVal) * 1.0 / 100;
+        QString topTbStr;
+        if (pimpl->curTbUnit == defUnit)
+        {
+            topTbStr = QString::number(topTb, 'f', 1);
+        }
+        else
+        {
+            topTbStr = Unit::convert(pimpl->curTbUnit, defUnit, topTb);
+        }
         /* draw the value of the ruler */
         QString topRulerStr = QString("%1 (%2)")
-                .arg(QString::number((pimpl->startTb * 10 - pimpl->maxTbWaveVal) * 1.0 / 100, 'f', 1))
-                .arg(trs(Unit::getSymbol(UNIT_TC)));
+                .arg(topTbStr)
+                .arg(trs(Unit::getSymbol(pimpl->curTbUnit)));
         p.drawText(topTextArea, Qt::AlignBottom|Qt::AlignRight, topRulerStr);
 
+        float bottomTb = pimpl->startTb * 1.0 / 10;
+        QString bottomTbStr;
+        if (pimpl->curTbUnit == defUnit)
+        {
+            bottomTbStr = QString::number(bottomTb, 'f', 1);
+        }
+        else
+        {
+            bottomTbStr = Unit::convert(pimpl->curTbUnit, defUnit, bottomTb);
+        }
         QString bottomRulerStr = QString("%1 (%2)")
-                .arg(QString::number(pimpl->startTb * 1.0 / 10, 'f', 1))
-                .arg(trs(Unit::getSymbol(UNIT_TC)));
+                .arg(bottomTbStr)
+                .arg(trs(Unit::getSymbol(pimpl->curTbUnit)));
         p.drawText(bottomTextArea, Qt::AlignTop|Qt::AlignRight, bottomRulerStr);
     }
 
@@ -280,8 +328,8 @@ void COMeasureWidget::paintEvent(QPaintEvent *ev)
     QRect tiRect(tbRect.topRight(), ciRect.topRight());
     QRect coRect(tbRect.bottomLeft(), ciRect.bottomLeft());
     /* draw caption */
-    p.drawText(tbRect, Qt::AlignLeft|Qt::AlignTop, QString("TB (%1)").arg(trs(Unit::getSymbol(UNIT_TC))));
-    p.drawText(tiRect, Qt::AlignLeft|Qt::AlignTop, QString("Ti (%1)").arg(trs(Unit::getSymbol(UNIT_TC))));
+    p.drawText(tbRect, Qt::AlignLeft|Qt::AlignTop, QString("TB (%1)").arg(trs(Unit::getSymbol(pimpl->curTbUnit))));
+    p.drawText(tiRect, Qt::AlignLeft|Qt::AlignTop, QString("Ti (%1)").arg(trs(Unit::getSymbol(pimpl->curTbUnit))));
     p.drawText(coRect, Qt::AlignLeft|Qt::AlignTop, QString("C.O."));
     p.drawText(ciRect, Qt::AlignLeft|Qt::AlignTop, QString("C.I."));
     /* draw value */

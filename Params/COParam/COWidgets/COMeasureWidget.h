@@ -13,6 +13,7 @@
 #include <QWidget>
 #include <QScopedPointer>
 #include "COMeasureData.h"
+#include "Framework/Utility/Unit.h"
 
 class COMeasureWidgetPrivate;
 class COMeasureWidget : public QWidget
@@ -62,6 +63,12 @@ public:
      * @param tb
      */
     void setTb(short tb);
+
+    /**
+     * @brief setTbUnit  set Tb Unit
+     * @param unit  Unit type
+     */
+    void setTbUnit(UnitType unit);
 
     /**
      * @brief setCo set the measure cardiac output

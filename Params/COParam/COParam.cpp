@@ -274,9 +274,14 @@ UnitType COParam::getTbUnit()
     return static_cast<UnitType> (type);
 }
 
-void COParam::setTbUnit(UnitType type)
+void COParam::setTbUnit(UnitType unit)
 {
-    systemConfig.setNumValue("Unit|TemperatureUnit", static_cast<int>(type));
+    systemConfig.setNumValue("Unit|TemperatureUnit", static_cast<int>(unit));
+
+    if (pimpl->measureWin)
+    {
+        pimpl->measureWin->setTbUnit(unit);
+    }
 }
 
 void COParam::setCatheterCoeff(unsigned short coef)

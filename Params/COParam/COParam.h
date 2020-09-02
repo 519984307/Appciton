@@ -80,9 +80,9 @@ public:
 
     /**
      * @brief setTbUnit  set tb unit
-     * @param type unit type
+     * @param unit unit type
      */
-    void setTbUnit(UnitType type);
+    void setTbUnit(UnitType unit);
 public:
     /**
      * @brief setCatheterCoeff set the Swan-Ganz catheter coefficient
