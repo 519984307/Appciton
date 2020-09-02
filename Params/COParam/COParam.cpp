@@ -18,6 +18,7 @@
 #include "Framework/TimeDate/TimeDate.h"
 #include "TrendCache.h"
 #include <QVector>
+#include "IConfig.h"
 
 /* store 6 measure result at most */
 #define MAX_MEASURE_CACHE   6
@@ -143,7 +144,9 @@ UnitType COParam::getCurrentUnit(SubParamID id)
     }
     else if (id == SUB_PARAM_CO_TB)
     {
-        return UNIT_TC;
+        int unit = UNIT_TC;
+        systemConfig.getNumValue("Unit|TemperatureUnit", unit);
+        return static_cast<UnitType> (unit);
     }
     else
     {
@@ -262,6 +265,18 @@ void COParam::notifyLimitAlarm(SubParamID id, bool alarm)
     {
         pimpl->trendWidget->setTbAlarm(alarm);
     }
+}
+
+UnitType COParam::getTbUnit()
+{
+    int type = UNIT_TC;
+    systemConfig.getNumValue("Unit|TemperatureUnit", type);
+    return static_cast<UnitType> (type);
+}
+
+void COParam::setTbUnit(UnitType type)
+{
+    systemConfig.setNumValue("Unit|TemperatureUnit", static_cast<int>(type));
 }
 
 void COParam::setCatheterCoeff(unsigned short coef)
