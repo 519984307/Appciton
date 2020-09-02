@@ -13,6 +13,8 @@
 #include "AlarmConfig.h"
 #include "COParam.h"
 #include "SystemManager.h"
+#include "FloatHandle.h"
+#include "ParamManager.h"
 
 /**************************************************************************************************
  * alarm source name.
@@ -110,9 +112,26 @@ int COLimitAlarm::getLower(int id)
  *************************************************************************************************/
 int COLimitAlarm::getCompare(int value, int id)
 {
+    SubParamID subID = getSubParamID(id);
+    UnitType curUnit = paramManager.getSubParamUnit(PARAM_CO, subID);
+    UnitType defUnit = paramInfo.getUnitOfSubParam(subID);
+
+    LimitAlarmConfig limitConfig = alarmConfig.getLimitAlarmConfig(subID, curUnit);
+    float low = static_cast<float>(limitConfig.lowLimit) / limitConfig.scale;
+    float high = static_cast<float>(limitConfig.highLimit) / limitConfig.scale;
+    float v = value * 1.0 / 10;
+
+    QString valueStr;
+    // convert unit
+    if (curUnit != defUnit)
+    {
+        valueStr = Unit::convert(curUnit, defUnit, v);
+        v = valueStr.toDouble();
+    }
+
     if (0 == id % 2)
     {
-        if (value < getLower(id))
+        if (isUpper(low, v))
         {
             return -1;
         }
@@ -123,7 +142,7 @@ int COLimitAlarm::getCompare(int value, int id)
     }
     else
     {
-        if (value > getUpper(id))
+        if (isUpper(v, high))
         {
             return 1;
         }
