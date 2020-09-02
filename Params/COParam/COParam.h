@@ -73,16 +73,16 @@ public:
     void notifyLimitAlarm(SubParamID id, bool alarm);
 
     /**
-     * @brief getTbUnit  get tb unit
+     * @brief getUnit  get unit
      * @return   unit type
      */
-    UnitType getTbUnit();
+    UnitType getUnit();
 
     /**
-     * @brief setTbUnit  set tb unit
+     * @brief setUnit  set unit
      * @param unit unit type
      */
-    void setTbUnit(UnitType unit);
+    void setUnit(UnitType unit);
 public:
     /**
      * @brief setCatheterCoeff set the Swan-Ganz catheter coefficient

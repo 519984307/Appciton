@@ -369,7 +369,7 @@ void UnitSetupMenuContent::onComboBoxIndexChanged(int index)
                 index = UNIT_TF;
             }
             tempParam.setUnit(static_cast<UnitType>(index));
-            coParam.setTbUnit(static_cast<UnitType>(index));
+            coParam.setUnit(static_cast<UnitType>(index));
             break;
         case UnitSetupMenuContentPrivate::ITEM_CBO_IBP_UNIT:
             if (index == 0)

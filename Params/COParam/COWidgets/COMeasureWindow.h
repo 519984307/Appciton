@@ -50,10 +50,10 @@ public:
     void setTb(short tb);
 
     /**
-     * @brief setTbUnit  set Tb Unit
+     * @brief setUnit  set unit
      * @param unit  Unit type
      */
-    void setTbUnit(UnitType unit);
+    void setUnit(UnitType unit);
 
     /**
      * @brief addMeasureWaveData add measure wave data

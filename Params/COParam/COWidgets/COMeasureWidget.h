@@ -65,10 +65,10 @@ public:
     void setTb(short tb);
 
     /**
-     * @brief setTbUnit  set Tb Unit
+     * @brief setUnit  set Unit
      * @param unit  Unit type
      */
-    void setTbUnit(UnitType unit);
+    void setUnit(UnitType unit);
 
     /**
      * @brief setCo set the measure cardiac output

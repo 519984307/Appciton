@@ -161,7 +161,7 @@ void COTrendWidget::setTb(short tb)
     }
     else
     {
-        UnitType curUnit = coParam.getTbUnit();
+        UnitType curUnit = coParam.getUnit();
         UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_CO_TB);
         if (curUnit == defUnit)
         {

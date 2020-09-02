@@ -267,20 +267,20 @@ void COParam::notifyLimitAlarm(SubParamID id, bool alarm)
     }
 }
 
-UnitType COParam::getTbUnit()
+UnitType COParam::getUnit()
 {
     int type = UNIT_TC;
     systemConfig.getNumValue("Unit|TemperatureUnit", type);
     return static_cast<UnitType> (type);
 }
 
-void COParam::setTbUnit(UnitType unit)
+void COParam::setUnit(UnitType unit)
 {
     systemConfig.setNumValue("Unit|TemperatureUnit", static_cast<int>(unit));
 
     if (pimpl->measureWin)
     {
-        pimpl->measureWin->setTbUnit(unit);
+        pimpl->measureWin->setUnit(unit);
     }
 }
 
