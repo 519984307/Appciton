@@ -631,7 +631,18 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
             dataStr = QString::number(((value * 1.0) / 10), 'f', 1);
             break;
         case SUB_PARAM_CO_TB:
-            dataStr = QString::number(value / 10.0f, 'f', 1);
+        {
+            UnitType curUnit = paramManager.getSubParamUnit(paramInfo.getParamID(_id), _id);
+            UnitType defUnit = paramInfo.getUnitOfSubParam(_id);
+            if (curUnit == defUnit)
+            {
+                dataStr = QString::number(value / 10.0f, 'f', 1);
+            }
+            else
+            {
+                dataStr = Unit::convert(curUnit, defUnit, value / 10.0f);
+            }
+        }
             break;
         case SUB_PARAM_CVP_MAP:
         case SUB_PARAM_LAP_MAP:
