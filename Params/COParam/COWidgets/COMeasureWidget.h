@@ -55,14 +55,18 @@ public:
     /**
      * @brief setTi set the injectate temp
      * @param ti
+     * @param false : ti value is unchanged, no need to update;
+     *        true : need to update;
      */
-    void setTi(short ti);
+    void setTi(short ti, bool updateTi = false);
 
     /**
      * @brief setTb set the measure blood temp
      * @param tb
+     * @param false : tb value is unchanged, no need to update;
+     *        true : need to update;
      */
-    void setTb(short tb);
+    void setTb(short tb, bool updateTb = false);
 
     /**
      * @brief setUnit  set Unit

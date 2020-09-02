@@ -131,9 +131,9 @@ void COMeasureWidget::setWaveDataRate(short rate)
     }
 }
 
-void COMeasureWidget::setTi(short ti)
+void COMeasureWidget::setTi(short ti, bool updateTi)
 {
-    if (pimpl->ti != ti)
+    if (pimpl->ti != ti || updateTi)
     {
         pimpl->ti = ti;
         if (ti == InvData())
@@ -156,9 +156,9 @@ void COMeasureWidget::setTi(short ti)
     }
 }
 
-void COMeasureWidget::setTb(short tb)
+void COMeasureWidget::setTb(short tb, bool updateTb)
 {
-    if (pimpl->tb != tb)
+    if (pimpl->tb != tb || updateTb)
     {
         pimpl->tb = tb;
         if (tb == InvData())
@@ -186,6 +186,10 @@ void COMeasureWidget::setUnit(UnitType unit)
     if (pimpl->curUnit != unit)
     {
         pimpl->curUnit = unit;
+
+        // unit changed, update ti, tb value
+        setTi(pimpl->ti, true);
+        setTb(pimpl->tb, true);
     }
 }
 
