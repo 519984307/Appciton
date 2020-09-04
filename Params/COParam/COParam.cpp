@@ -88,11 +88,6 @@ void COParam::handDemoTrendData()
     pimpl->sensorOff = false;
     // demo value: tb, ti
     pimpl->tbVal = 370;
-    // Update the ti value when the ti source is automatic.
-    if (pimpl->tiSrc == CO_TI_SOURCE_AUTO)
-    {
-        pimpl->tiVal = 20;
-    }
 
     if (pimpl->trendWidget)
     {

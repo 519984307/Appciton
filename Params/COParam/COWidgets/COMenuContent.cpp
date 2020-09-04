@@ -54,7 +54,19 @@ void COMenuContentPrivate::loadOptions()
     buttons[ITEM_BTN_CO_CONST]->setText(QString::number(coef * 1.0 / 1000, 'f', 3));
 
     combos[ITEM_CBO_TI_SOURCE]->blockSignals(true);
-    combos[ITEM_CBO_TI_SOURCE]->setCurrentIndex(coParam.getTiSource());
+    // demo mode, update ti source and ti value
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        combos[ITEM_CBO_TI_SOURCE]->setCurrentIndex(CO_TI_SOURCE_MANUAL);
+        combos[ITEM_CBO_TI_SOURCE]->setEnabled(false);
+        int tiVal = buttons[ITEM_BTN_MANUAL_TI]->text().toFloat() * 10;
+        coParam.setTiSource(CO_TI_SOURCE_MANUAL, tiVal);
+    }
+    else
+    {
+        combos[ITEM_CBO_TI_SOURCE]->setEnabled(true);
+        combos[ITEM_CBO_TI_SOURCE]->setCurrentIndex(coParam.getTiSource());
+    }
     combos[ITEM_CBO_TI_SOURCE]->blockSignals(false);
     if (combos[ITEM_CBO_TI_SOURCE]->currentIndex() == CO_TI_SOURCE_AUTO)
     {
