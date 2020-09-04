@@ -109,7 +109,7 @@
         <StatFunction>1</StatFunction>
         <AutomaticRetry>0</AutomaticRetry>
         <InitialCuffInflation>4</InitialCuffInflation>
-	<SUNTECHInitialCuffInflation>3</SUNTECHInitialCuffInflation>
+	<SUNTECHInitialCuffInflation>4</SUNTECHInitialCuffInflation>
 	<CompleteTone>0</CompleteTone>
     </NIBP>
     <SPO2>
@@ -177,7 +177,7 @@
                 <RR_BR Enable="1" Prio="1">
 			<rpm>
 			    <Low Min="0" Max="149">12</Low>
-			    <High Min="3" Max="150">80</High>
+			    <High Min="1" Max="150">80</High>
 			    <Step>1</Step>
 			    <Scale>1</Scale>
 			</rpm>
@@ -894,28 +894,28 @@
 		</FIO2>
 		<T1 Enable="1" Prio="1">
 		<celsius>
-		    <Low Min="150" Max="490">350</Low>
-		    <High Min="151" Max="500">378</High>
+		    <Low Min="0" Max="499">350</Low>
+		    <High Min="1" Max="500">378</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</celsius>
 		<fahrenheit>
-		    <Low Min="590" Max="1219">950</Low>
-		    <High Min="591" Max="1220">1000</High>
+		    <Low Min="320" Max="1219">950</Low>
+		    <High Min="321" Max="1220">1000</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</fahrenheit>
 		</T1>
 		<T2 Enable="1" Prio="1">
 		<celsius>
-		    <Low Min="150" Max="490">350</Low>
-		    <High Min="151" Max="500">378</High>
+		    <Low Min="0" Max="499">350</Low>
+		    <High Min="1" Max="500">378</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</celsius>
 		<fahrenheit>
-		    <Low Min="590" Max="1219">950</Low>
-		    <High Min="591" Max="1220">1000</High>
+		    <Low Min="320" Max="1219">950</Low>
+		    <High Min="321" Max="1220">1000</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</fahrenheit>
