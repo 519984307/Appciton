@@ -184,16 +184,16 @@
 		</RR_BR>
 		<SPO2 Enable="1" Prio="1">
 		<percent>
-		    <Low Min="50" Max="98">85</Low>
-                    <High Min="52" Max="100">95</High>
+		    <Low Min="50" Max="99">85</Low>
+                    <High Min="51" Max="100">95</High>
 		    <Step>1</Step>
 		    <Scale>1</Scale>
 		</percent>
 		</SPO2>
 		<SPO2_2 Enable="1" Prio="1">
 		<percent>
-		    <Low Min="50" Max="98">85</Low>
-		    <High Min="52" Max="100">100</High>
+		    <Low Min="50" Max="99">85</Low>
+		    <High Min="51" Max="100">95</High>
 		    <Step>1</Step>
 		    <Scale>1</Scale>
 		</percent>
