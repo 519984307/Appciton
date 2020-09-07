@@ -49,6 +49,7 @@ NightModeManager::~NightModeManager()
 
 void NightModeManager::setNightMode(bool nightMode)
 {
+    int screenBrightness = 0;
     int heartBeatVolume = 0;
     int notificationVolume = 0;
     int nibpCompleteTone = 0;
@@ -64,7 +65,6 @@ void NightModeManager::setNightMode(bool nightMode)
     if (d_ptr->isNightMode)    //　夜间模式
     {
         // 屏幕亮度(读取夜间模式)
-        int screenBrightness = 0;
         systemConfig.getNumValue("NightMode|ScreenBrightness", screenBrightness);
         // set night mode brightness
         setBrightness(static_cast<BrightnessLevel>(screenBrightness));
@@ -108,14 +108,15 @@ void NightModeManager::setNightMode(bool nightMode)
     }
     else
     {
-        int b = 0;
         SystemManagerInterface *systemManager = SystemManagerInterface::getSystemManager();
         if (systemManager)
         {
             // reset normal mode brightness
-            systemManager->setBrightness(systemManager->getBrightness());
+            screenBrightness = systemManager->getBrightness();
+            systemManager->setBrightness(static_cast<BrightnessLevel>(screenBrightness));
         }
 
+        int b = 0;
         ConfigManagerInterface *configManagers = ConfigManagerInterface::getConfigManager();
         configManagers->getCurConfig().getNumValue("ECG|QRSVolume", b);
         heartBeatVolume = b;
