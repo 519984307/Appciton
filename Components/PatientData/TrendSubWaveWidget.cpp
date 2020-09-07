@@ -246,7 +246,7 @@ QPainterPath TrendSubWaveWidget::getTrendPainterPath(const QVector<TrendGraphDat
         }
         else if (paramId == PARAM_TEMP)
         {
-            QString vStr = Unit::convert(type, UNIT_TC, data / 10.0);
+            QString vStr = Unit::convert(type, UNIT_TC, data);
             v = vStr.toDouble();
         }
         else if (paramId == PARAM_SPO2)
