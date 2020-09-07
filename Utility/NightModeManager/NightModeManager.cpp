@@ -49,7 +49,6 @@ NightModeManager::~NightModeManager()
 
 void NightModeManager::setNightMode(bool nightMode)
 {
-    int screenBrightness = 0;
     int heartBeatVolume = 0;
     int notificationVolume = 0;
     int nibpCompleteTone = 0;
@@ -65,7 +64,10 @@ void NightModeManager::setNightMode(bool nightMode)
     if (d_ptr->isNightMode)    //　夜间模式
     {
         // 屏幕亮度(读取夜间模式)
+        int screenBrightness = 0;
         systemConfig.getNumValue("NightMode|ScreenBrightness", screenBrightness);
+        // set night mode brightness
+        setBrightness(static_cast<BrightnessLevel>(screenBrightness));
 
         // 心跳音量
         systemConfig.getNumValue("NightMode|HeartBeatVolume", heartBeatVolume);
@@ -108,7 +110,11 @@ void NightModeManager::setNightMode(bool nightMode)
     {
         int b = 0;
         SystemManagerInterface *systemManager = SystemManagerInterface::getSystemManager();
-        screenBrightness = systemManager->getBrightness();
+        if (systemManager)
+        {
+            // reset normal mode brightness
+            systemManager->setBrightness(systemManager->getBrightness());
+        }
 
         ConfigManagerInterface *configManagers = ConfigManagerInterface::getConfigManager();
         configManagers->getCurConfig().getNumValue("ECG|QRSVolume", b);
@@ -133,9 +139,6 @@ void NightModeManager::setNightMode(bool nightMode)
         }
     }
 
-    BrightnessLevel brightness = static_cast<BrightnessLevel>(screenBrightness);
-    SystemManagerInterface *systemManager = SystemManagerInterface::getSystemManager();
-    systemManager->enableBrightness(brightness);
     SoundManagerInterface *soundManager = SoundManagerInterface::getSoundManager();
     soundManager->setVolume(SoundManagerInterface::SOUND_TYPE_HEARTBEAT,
                            static_cast<SoundManagerInterface::VolumeLevel>(heartBeatVolume));
@@ -156,8 +159,13 @@ void NightModeManager::setBrightness(BrightnessLevel level)
 {
     if (d_ptr->isNightMode)
     {
+        // The brightness level of night mode should be the same as that of normal mode.
+        int brValue = level * 2;
         SystemManagerInterface *systemManager = SystemManagerInterface::getSystemManager();
-        systemManager->enableBrightness(level);
+        if (systemManager)
+        {
+            systemManager->enableBrightness(static_cast<BrightnessLevel>(brValue));
+        }
     }
 }
 
