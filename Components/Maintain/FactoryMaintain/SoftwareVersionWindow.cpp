@@ -29,7 +29,7 @@ void SoftwareVersionWindow::layoutExec()
     QGridLayout *glayout = new QGridLayout;
 
     QLabel *label = new QLabel;
-#if 1
+#if 0
     QPixmap picSrc = QPixmap("/usr/local/nPM/icons/betterLife.png");
     label->setPixmap(picSrc);
 #else

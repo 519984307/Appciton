@@ -589,6 +589,8 @@ void BLMCO2Provider::dataArrived(void)
 {
     if (isPlugin == true)
     {
+        readData();
+        ringBuff.clear();
         return;
     }
 
@@ -879,7 +881,6 @@ BLMCO2Provider::BLMCO2Provider(const QString &name)
       isPlugin(false)
 {
     UartAttrDesc portAttr(9600, 8, 'N', 1, _packetLen);
-    plugInInfo.pluginType = PluginProvider::PLUGIN_TYPE_CO2;
 
     if (!initPort(portAttr))
     {
@@ -891,15 +892,6 @@ BLMCO2Provider::BLMCO2Provider(const QString &name)
     _fico2Value = InvData();
 
     connect(&connectTmr, SIGNAL(timeout()), this, SLOT(connectTimeOut()));
-
-    if (name == QString::fromLatin1("MASIMO_CO2"))
-    {
-        plugInInfo.plugIn = PluginProvider::getPluginProvider("Plugin");
-        if (plugInInfo.plugIn)
-        {
-            plugInInfo.plugIn->connectProvider(plugInInfo.pluginType, this);
-        }
-    }
 }
 
 /**************************************************************************************************
@@ -928,4 +920,14 @@ CO2ModuleType BLMCO2Provider::getCo2ModuleType() const
     {
         return MODULE_CO2_NR;
     }
+}
+
+void BLMCO2Provider::setPlugin(PluginProvider::PluginType type, PluginProvider *provider)
+{
+    if (type != PluginProvider::PLUGIN_TYPE_CO2)
+    {
+        return;
+    }
+    plugInInfo.pluginType = type;
+    plugInInfo.plugIn = provider;
 }

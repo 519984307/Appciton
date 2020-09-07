@@ -194,6 +194,13 @@ public:     // CO2ProviderIFace 的接口。
     /* reimplement */
     CO2ModuleType getCo2ModuleType() const;
 
+    /**
+     * @brief setPlugin  set plugin type and provider
+     * @param type      plugin type
+     * @param provider  plugin provider
+     */
+    void setPlugin(PluginProvider::PluginType type, PluginProvider *provider);
+
 protected:
     virtual void disconnected(void);
     virtual void reconnected(void);

@@ -165,7 +165,29 @@ public:
 
     bool initPluginModule(PluginProvider::PluginType type)
     {
-        if (type == PluginProvider::PLUGIN_TYPE_SPO2 && systemManager.isSupport(CONFIG_SPO2))
+        if (type == PluginProvider::PLUGIN_TYPE_CO2 && systemManager.isSupport(CONFIG_CO2))
+        {
+            // co2 plugin connected
+            QString str;
+            machineConfig.getStrValue("CO2", str);
+            Provider *provider = paramManager.getProvider(str);
+            if (provider == NULL)
+            {
+                return false;
+            }
+            dataHandlers[type] = provider;
+            BLMCO2Provider *co2Provider = static_cast<BLMCO2Provider *>(provider);
+            if (co2Provider)
+            {
+                co2Provider->setPlugin(PluginProvider::PLUGIN_TYPE_CO2, q_ptr);
+                if (systemManager.getCurWorkMode() != WORK_MODE_DEMO)
+                {
+                    co2Provider->attachParam(paramManager.getParam(PARAM_CO2));
+                }
+            }
+            return true;
+        }
+        else if (type == PluginProvider::PLUGIN_TYPE_SPO2 && systemManager.isSupport(CONFIG_SPO2))
         {
             Provider *provider = new RainbowProvider("RAINBOW_SPO2Plugin", true);
             paramManager.addProvider(provider);
@@ -240,6 +262,11 @@ public:
         buff[index++] = SPO2_RAINBOW_EOM;
         uart->write(buff, index);
     }
+
+    /**
+     * @brief handlePluginDisconnected handle plugin disconnected
+     */
+    void handlePluginDisconnected();
 
     PluginProvider *const q_ptr;
     QString name;
@@ -386,6 +413,7 @@ void PluginProvider::timerEvent(QTimerEvent *ev)
                     d_ptr->ConnectionCheckTimerID = -1;
                 }
 
+                d_ptr->handlePluginDisconnected();
                 d_ptr->workingProvider = NULL;
                 qDebug() << Q_FUNC_INFO << "Plugin disconnected";
                 // reset delay time
@@ -449,6 +477,7 @@ void PluginProvider::timerEvent(QTimerEvent *ev)
                     killTimer(d_ptr->ConnectionCheckTimerID);
                     d_ptr->ConnectionCheckTimerID = -1;
                     qDebug() << Q_FUNC_INFO << "Communication stop";
+                    d_ptr->handlePluginDisconnected();
                 }
             }
         }
@@ -459,6 +488,7 @@ void PluginProvider::timerEvent(QTimerEvent *ev)
             d_ptr->workingProvider = NULL;
             killTimer(d_ptr->ConnectionCheckTimerID);
             d_ptr->ConnectionCheckTimerID = -1;
+            d_ptr->handlePluginDisconnected();
             qDebug() << Q_FUNC_INFO << "Plugin disconnect, communicaton stop";
         }
     }
@@ -640,6 +670,11 @@ void PluginProvider::onWorkModeChanged(WorkMode curMode)
         {
             d_ptr->dataHandlers[PLUGIN_TYPE_IBP]->attachParam(paramManager.getParam(PARAM_IBP));
         }
+
+        if (d_ptr->dataHandlers[PLUGIN_TYPE_CO2] != NULL)
+        {
+            d_ptr->dataHandlers[PLUGIN_TYPE_CO2]->attachParam(paramManager.getParam(PARAM_CO2));
+        }
         /* force disconnect the plugin, if the plugin is connected, the state will update in the timeEvent */
         d_ptr->lastPluginState = false;
     }
@@ -653,6 +688,38 @@ void PluginProvider::onWorkModeChanged(WorkMode curMode)
         if (d_ptr->dataHandlers[PLUGIN_TYPE_IBP] != NULL)
         {
             d_ptr->dataHandlers[PLUGIN_TYPE_IBP]->detachParam(paramManager.getParam(PARAM_IBP));
+        }
+
+        if (d_ptr->dataHandlers[PLUGIN_TYPE_CO2] != NULL)
+        {
+            d_ptr->dataHandlers[PLUGIN_TYPE_CO2]->detachParam(paramManager.getParam(PARAM_CO2));
+        }
+    }
+}
+
+void PluginProviderPrivate::handlePluginDisconnected()
+{
+    QMap<PluginProvider::PluginType, Provider *>::iterator it = dataHandlers.begin();
+    for (; it != dataHandlers.end(); ++it)
+    {
+        switch (it.key())
+        {
+        case PluginProvider::PLUGIN_TYPE_CO2:
+        {
+            BLMCO2Provider *co2Provider = static_cast<BLMCO2Provider *>(it.value());
+            if (co2Provider)
+            {
+                co2Provider->setPlugin(it.key(), NULL);
+                if (systemManager.getCurWorkMode() != WORK_MODE_DEMO)
+                {
+                    co2Provider->attachParam(paramManager.getParam(PARAM_CO2));
+                }
+            }
+            dataHandlers.erase(it);
+        }
+            break;
+        default:
+            break;
         }
     }
 }
