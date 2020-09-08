@@ -236,45 +236,26 @@ QPainterPath TrendSubWaveWidget::getTrendPainterPath(const QVector<TrendGraphDat
             continue;
         }
 
+        // Calculate trend waveform mapping coordinates
         qreal x = _mapValue(_timeX, iter->timestamp);
-        ParamID paramId = paramInfo.getParamID(_id);
-        UnitType type = paramManager.getSubParamUnit(paramId, _id);
-        qreal v = 0;
-        if (paramId == PARAM_CO2)
-        {
-            v = Unit::convert(type, UNIT_PERCENT, data / 10.0, co2Param.getBaro()).toDouble();
-        }
-        else if (paramId == PARAM_TEMP)
-        {
-            QString vStr = Unit::convert(type, UNIT_TC, data);
-            v = vStr.toDouble();
-        }
-        else if (paramId == PARAM_SPO2)
-        {
-            v = data;
-        }
-        else
-        {
-            v = data / 10;
-        }
-        qreal value = _mapValue(_valueY, v);
+        qreal y = _mapValue(_valueY, data);
 
         if (lastPointInvalid)
         {
-            path.moveTo(x, value);
+            path.moveTo(x, y);
             lastPointInvalid = false;
         }
         else
         {
-            if (!isEqual(lastPoint.y(), value))
+            if (!isEqual(lastPoint.y(), y))
             {
                 path.lineTo(lastPoint);
-                path.lineTo(x, value);
+                path.lineTo(x, y);
             }
         }
 
         lastPoint.rx() = x;
-        lastPoint.ry() = value;
+        lastPoint.ry() = y;
     }
 
     if (!lastPointInvalid)
