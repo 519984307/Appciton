@@ -613,6 +613,7 @@ void FactoryVersionInfoPrivate::getVersionString(QString version, QString *swVer
     version = version.remove(*suffixVersion);
     *suffixVersion = suffixVersion->remove(' ');
     *hwVersion = version.section(' ', -1, -1 , QString::SectionIncludeLeadingSep);
-    *swVersion = version.remove(*hwVersion);
+    // Delete the hw version from the end, then get the sw version
+    *swVersion = version.remove(version.lastIndexOf(*hwVersion), hwVersion->length());
     *hwVersion = hwVersion->remove(' ');
 }
