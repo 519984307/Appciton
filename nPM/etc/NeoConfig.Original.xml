@@ -694,8 +694,8 @@
                 </TB>
 		<ETCO2 Enable="1" Prio="1">
 		<percent>
-		    <Low Min="20" Max="249">20</Low>
-		    <High Min="21" Max="250">80</High>
+		    <Low Min="0" Max="249">10</Low>
+		    <High Min="1" Max="250">80</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</percent>
