@@ -163,9 +163,11 @@ void UpgradeWindow::exec()
     windowManager.setVisible(false);
     QRect r = windowManager.geometry();
     this->move(r.center() - this->rect().center());
+    windowManager.setAutoCloseAllWindows(false);
     if (QDialog::Rejected == QDialog::exec())
     {
         windowManager.setVisible(true);
+        windowManager.setAutoCloseAllWindows(true);
     }
 }
 

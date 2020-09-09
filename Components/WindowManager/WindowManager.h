@@ -65,6 +65,11 @@ public:
      */
     QImage captureScreen();
 
+    /**
+     * @brief setAutoCloseAllWindows  Whether to close all windows automatically
+     * @param isAuto true: close all windows automatically, false: do not close all windows automatically
+     */
+    void setAutoCloseAllWindows(bool isAuto);
 
 public slots:
     /**
