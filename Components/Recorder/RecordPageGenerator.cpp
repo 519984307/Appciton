@@ -663,6 +663,22 @@ QStringList RecordPageGenerator::getTrendStringList(const TrendDataPackage &tren
         }
 
         paramid = paramInfo.getParamID(subparamID);
+
+        // spo2 plugin is not connected
+        if (!spo2Param.isConnected(true) && (subparamID == SUB_PARAM_SPO2_2 || subparamID == SUB_PARAM_SPO2_D))
+        {
+            continue;
+        }
+        // not support spo2 high configure
+        if (paramid == PARAM_SPO2 && !systemManager.isSupport(CONFIG_SPO2_HIGH_CONFIGURE))
+        {
+            if (subparamID == SUB_PARAM_PVI || subparamID == SUB_PARAM_SPHB || subparamID == SUB_PARAM_SPOC ||
+                    subparamID == SUB_PARAM_SPMET || subparamID == SUB_PARAM_SPCO)
+            {
+                continue;
+            }
+        }
+
         if (!isPressSubParam(subparamID))
         {
             if (subparamID == SUB_PARAM_TD)
