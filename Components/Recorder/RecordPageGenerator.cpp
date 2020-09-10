@@ -149,9 +149,13 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
     infos.append(QString("%1: %2").arg(trs("PatientType")).arg(trs(PatientSymbol::convert(patInfo.type))));
     infos.append(QString("%1: %2").arg(trs("Blood")).arg(PatientSymbol::convert(patInfo.blood)));
 
-    QDateTime dt(patInfo.bornDate, QTime(12, 0)); /* dummy dt */
-    QString str;
-    str = QString("%1: %2").arg(trs("BornDate")).arg(timeDate->getDate(dt.toTime_t(), true));
+    QString str = QString("%1: ").arg(trs("BornDate"));
+    if (patInfo.bornDate.isValid())
+    {
+        QDateTime dt(patInfo.bornDate, QTime(12, 0)); /* dummy dt */
+        QString dateString = timeDate->getDate(dt.toTime_t(), true);
+        str += dateString;
+    }
     infos.append(str);
 
     str = QString("%1: ").arg(trs("Weight"));
