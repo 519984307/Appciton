@@ -107,6 +107,7 @@ bool ErrorLogExporter::exportLog(const QString &filename)
     if (file.open(QIODevice::ReadWrite | QIODevice::Text))
     {
         QTextStream stream(&file);
+        stream.setCodec("utf-8");
         int index = 0;
         int total = errorLog.count();
         ErrorLog::Summary summary = errorLog.getSummary();
