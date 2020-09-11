@@ -144,9 +144,7 @@ UnitType COParam::getCurrentUnit(SubParamID id)
     }
     else if (id == SUB_PARAM_CO_TB)
     {
-        int unit = UNIT_TC;
-        systemConfig.getNumValue("Unit|TemperatureUnit", unit);
-        return static_cast<UnitType> (unit);
+        return getUnit();
     }
     else
     {
@@ -276,13 +274,6 @@ UnitType COParam::getUnit()
 
 void COParam::setUnit(UnitType unit)
 {
-    if (pimpl->tiVal != InvData())
-    {
-        UnitType prevUnit = getUnit();
-        // update ti value
-        pimpl->tiVal = Unit::convert(unit, prevUnit, pimpl->tiVal * 1.0 / 10).toDouble() * 10;
-    }
-
     systemConfig.setNumValue("Unit|TemperatureUnit", static_cast<int>(unit));
 
     if (pimpl->measureWin)
