@@ -60,8 +60,6 @@ void COMenuContentPrivate::loadOptions()
     short coef = coParam.getCatheterCoeff();
     buttons[ITEM_BTN_CO_CONST]->setText(QString::number(coef * 1.0 / 1000, 'f', 3));
 
-    UnitType curUnit = coParam.getUnit();
-    UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_CO_TB);
     combos[ITEM_CBO_TI_SOURCE]->blockSignals(true);
     combos[ITEM_CBO_TI_SOURCE]->setCurrentIndex(coParam.getTiSource());
     combos[ITEM_CBO_TI_SOURCE]->blockSignals(false);
@@ -74,21 +72,12 @@ void COMenuContentPrivate::loadOptions()
         buttons[ITEM_BTN_MANUAL_TI]->setEnabled(true);
     }
     short ti = coParam.getManualTi();
-    QString text;
-    if (curUnit == defUnit)
-    {
-        text = QString::number(ti * 1.0 / 10, 'f', 1);
-    }
-    else
-    {
-        // convert unit
-        text = Unit::convert(curUnit, defUnit, ti * 1.0 / 10);
-    }
+    QString text = QString::number(ti * 1.0 / 10, 'f', 1);
     buttons[ITEM_BTN_MANUAL_TI]->setText(text);
 
     if (manualTiLabel)
     {
-        QString unitStr = Unit::getSymbol(curUnit);
+        QString unitStr = Unit::getSymbol(coParam.getUnit());
         manualTiLabel->setText(QString("%1 (%2)").arg(trs("InjectateTemp")).arg(trs(unitStr)));
     }
 
@@ -321,11 +310,6 @@ void COMenuContent::onButtonReleased()
                     {
                         button->setText(text);
                         quint32 actualValue = value * 10;
-                        if (curUnit != defUnit)
-                        {
-                            QString tiValue = Unit::convert(defUnit, curUnit, value);
-                            actualValue = tiValue.toDouble() * 10;
-                        }
                         coParam.setTiSource(CO_TI_SOURCE_MANUAL, actualValue);
                     }
                 }

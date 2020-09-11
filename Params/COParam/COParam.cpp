@@ -310,7 +310,24 @@ void COParam::setTiSource(COTiSource source, unsigned short temp)
     currentConfig.setNumValue("CO|TISource", static_cast<int>(source));
     if (source == CO_TI_SOURCE_MANUAL)
     {
-        currentConfig.setNumValue("CO|InjectateTemp", static_cast<int>(temp));
+        int fahrenheitTi = 0;   // fahrenheit unit ti value
+        int celsiusTi = 0;      // celsius unit ti value
+        UnitType curUnit = coParam.getUnit();
+        UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_CO_TB);
+        if (curUnit != defUnit)
+        {
+            // cur unit is fahrenheit
+            fahrenheitTi = static_cast<int>(temp);
+            celsiusTi = Unit::convert(defUnit, curUnit, temp * 1.0 / 10).toDouble() * 10;
+        }
+        else
+        {
+            // cur unit is celsius
+            fahrenheitTi = Unit::convert(UNIT_TF, defUnit, temp * 1.0 / 10).toDouble() * 10;
+            celsiusTi = static_cast<int>(temp);
+        }
+        currentConfig.setNumValue("CO|InjectateTemp|fahrenheit", fahrenheitTi);
+        currentConfig.setNumValue("CO|InjectateTemp|celsius", celsiusTi);
         pimpl->tiVal = temp;
     }
     else
@@ -337,7 +354,16 @@ unsigned short COParam::getTi() const
 unsigned short COParam::getManualTi()
 {
     int temp = 20;
-    currentConfig.getNumValue("CO|InjectateTemp", temp);
+    if (getUnit() != paramInfo.getUnitOfSubParam(SUB_PARAM_CO_TB))
+    {
+        // cur unit is fahrenheit
+        currentConfig.getNumValue("CO|InjectateTemp|fahrenheit", temp);
+    }
+    else
+    {
+        // cur unit is celsius
+        currentConfig.getNumValue("CO|InjectateTemp|celsius", temp);
+    }
     return temp;
 }
 
@@ -459,7 +485,18 @@ void COParam::setTi(short ti)
 {
     if (pimpl->tiSrc == CO_TI_SOURCE_AUTO)
     {
-        pimpl->tiVal = ti;
+        UnitType curUnit = getUnit();
+        UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_CO_TB);
+        if (curUnit != defUnit)
+        {
+            // cur unit is fahrenheit
+            pimpl->tiVal = Unit::convert(curUnit, defUnit, ti * 1.0 / 10).toDouble() * 10;
+        }
+        else
+        {
+            // cur unit is celsius
+            pimpl->tiVal = ti;
+        }
     }
 }
 

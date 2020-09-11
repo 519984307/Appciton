@@ -142,15 +142,7 @@ void COMeasureWidget::setTi(short ti, bool updateTi)
         }
         else
         {
-            UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_CO_TB);
-            if (pimpl->curUnit == defUnit)
-            {
-                pimpl->tiStr = QString::number(ti * 1.0 / 10, 'f', 1);
-            }
-            else
-            {
-                pimpl->tiStr = Unit::convert(pimpl->curUnit, defUnit, ti * 1.0 / 10);
-            }
+            pimpl->tiStr = QString::number(ti * 1.0 / 10, 'f', 1);
         }
         update();
     }

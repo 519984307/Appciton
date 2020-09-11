@@ -143,7 +143,10 @@
     <CO>
         <ComputationConst>542</ComputationConst>
         <TISource>1</TISource>
-        <InjectateTemp>20</InjectateTemp>
+        <InjectateTemp>
+            <celsius>20</celsius>
+            <fahrenheit>356</fahrenheit>    
+        </InjectateTemp>
         <InjectateVolume>3</InjectateVolume>
     </CO>
     <RESP>
