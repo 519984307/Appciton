@@ -276,6 +276,13 @@ UnitType COParam::getUnit()
 
 void COParam::setUnit(UnitType unit)
 {
+    if (pimpl->tiVal != InvData())
+    {
+        UnitType prevUnit = getUnit();
+        // update ti value
+        pimpl->tiVal = Unit::convert(unit, prevUnit, pimpl->tiVal * 1.0 / 10).toDouble() * 10;
+    }
+
     systemConfig.setNumValue("Unit|TemperatureUnit", static_cast<int>(unit));
 
     if (pimpl->measureWin)
@@ -354,16 +361,8 @@ unsigned short COParam::getTi() const
 unsigned short COParam::getManualTi()
 {
     int temp = 20;
-    if (getUnit() != paramInfo.getUnitOfSubParam(SUB_PARAM_CO_TB))
-    {
-        // cur unit is fahrenheit
-        currentConfig.getNumValue("CO|InjectateTemp|fahrenheit", temp);
-    }
-    else
-    {
-        // cur unit is celsius
-        currentConfig.getNumValue("CO|InjectateTemp|celsius", temp);
-    }
+    QString tiPrefix = QString("CO|InjectateTemp") + Unit::getSymbol(getUnit());
+    currentConfig.getNumValue(tiPrefix, temp);
     return temp;
 }
 
