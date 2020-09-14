@@ -602,10 +602,6 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
 void ECGParam::updateHR(short hr)
 {
     ecgDupParam.restartParamUpdateTime();
-    if (_hrValue == hr)
-    {
-        return;
-    }
 
     if (hr < 0)
     {
@@ -615,6 +611,11 @@ void ECGParam::updateHR(short hr)
     if (hr > getHRMaxValue() && hr != InvData())
     {
         hr = getHRMaxValue();
+    }
+
+    if (_hrValue == hr)
+    {
+        return;
     }
 
     _hrValue = hr;
