@@ -367,9 +367,19 @@ public:
         waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_ECG1), WAVE_ECG_II);
         waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_ECG2), WAVE_ECG_I);
 
-        waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_RESP), WAVE_RESP);
-        waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_SPO2), WAVE_SPO2);
-        waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_CO2), WAVE_CO2);
+        if (systemManager.isSupport(PARAM_SPO2))
+        {
+            waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_SPO2), WAVE_SPO2);
+        }
+        if (systemManager.isSupport(PARAM_RESP))
+        {
+            waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_RESP), WAVE_RESP);
+        }
+        if (systemManager.isSupport(PARAM_CO2))
+        {
+            waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_CO2), WAVE_CO2);
+        }
+
 
         const char *nodeName;
         if (systemManager.isSupport(CONFIG_IBP))
@@ -410,19 +420,34 @@ public:
 
         nodeName = layoutNodeName(LAYOUT_NODE_PARAM_ECG);
         paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_ECG), PARAM_SPAN_TWO, PARAM_ECG);
-        nodeName = layoutNodeName(LAYOUT_NODE_PARAM_SPO2);
-        paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_SPO2), PARAM_SPAN_TWO, PARAM_SPO2);
-        nodeName = layoutNodeName(LAYOUT_NODE_PARAM_RESP);
-        paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_RESP), PARAM_SPAN_TWO, PARAM_RESP);
 
-        nodeName = layoutNodeName(LAYOUT_NODE_PARAM_CO2);
-        paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_CO2), PARAM_SPAN_TWO, PARAM_CO2);
-        nodeName = layoutNodeName(LAYOUT_NODE_PARAM_NIBP);
-        paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_NIBP), PARAM_SPAN_TWO, PARAM_NIBP);
-        nodeName = layoutNodeName(LAYOUT_NODE_PARAM_NIBPLIST);
-        paramNodeDescriptions[nodeName] = NODE_DESC(trs("NIBPList"), PARAM_SPAN_TWO, PARAM_NIBP);
-        nodeName = layoutNodeName(LAYOUT_NODE_PARAM_TEMP);
-        paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_TEMP), PARAM_SPAN_TWO, PARAM_TEMP);
+        if (systemManager.isSupport(PARAM_SPO2))
+        {
+            nodeName = layoutNodeName(LAYOUT_NODE_PARAM_SPO2);
+            paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_SPO2), PARAM_SPAN_TWO, PARAM_SPO2);
+        }
+        if (systemManager.isSupport(PARAM_RESP))
+        {
+            nodeName = layoutNodeName(LAYOUT_NODE_PARAM_RESP);
+            paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_RESP), PARAM_SPAN_TWO, PARAM_RESP);
+        }
+        if (systemManager.isSupport(PARAM_CO2))
+        {
+            nodeName = layoutNodeName(LAYOUT_NODE_PARAM_CO2);
+            paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_CO2), PARAM_SPAN_TWO, PARAM_CO2);
+        }
+        if (systemManager.isSupport(PARAM_NIBP))
+        {
+            nodeName = layoutNodeName(LAYOUT_NODE_PARAM_NIBP);
+            paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_NIBP), PARAM_SPAN_TWO, PARAM_NIBP);
+            nodeName = layoutNodeName(LAYOUT_NODE_PARAM_NIBPLIST);
+            paramNodeDescriptions[nodeName] = NODE_DESC(trs("NIBPList"), PARAM_SPAN_TWO, PARAM_NIBP);
+        }
+        if (systemManager.isSupport(PARAM_TEMP))
+        {
+            nodeName = layoutNodeName(LAYOUT_NODE_PARAM_TEMP);
+            paramNodeDescriptions[nodeName] = NODE_DESC(paramInfo.getParamName(PARAM_TEMP), PARAM_SPAN_TWO, PARAM_TEMP);
+        }
 
 #ifndef HIDE_ECG_ST_PVCS_SUBPARAM
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_ST)] = NODE_DESC("ST", PARAM_SPAN_TWO, PARAM_ECG);
