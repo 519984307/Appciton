@@ -274,6 +274,20 @@ UnitType COParam::getUnit()
 
 void COParam::setUnit(UnitType unit)
 {
+    switch (unit)
+    {
+    case UNIT_TC:
+        // update ti value
+        pimpl->tiVal = Unit::convert(unit, UNIT_TF, pimpl->tiVal * 1.0 / 10).toDouble() * 10;
+        break;
+    case UNIT_TF:
+        // update ti value
+        pimpl->tiVal = Unit::convert(unit, UNIT_TC, pimpl->tiVal * 1.0 / 10).toDouble() * 10;
+        break;
+    default:
+        break;
+    }
+
     systemConfig.setNumValue("Unit|TemperatureUnit", static_cast<int>(unit));
 
     if (pimpl->measureWin)
@@ -352,7 +366,7 @@ unsigned short COParam::getTi() const
 unsigned short COParam::getManualTi()
 {
     int temp = 20;
-    QString tiPrefix = QString("CO|InjectateTemp") + Unit::getSymbol(getUnit());
+    QString tiPrefix = QString("CO|InjectateTemp|") + Unit::getSymbol(getUnit());
     currentConfig.getNumValue(tiPrefix, temp);
     return temp;
 }

@@ -414,13 +414,15 @@ void COMeasureWindow::showEvent(QShowEvent *ev)
 {
     Dialog::showEvent(ev);
 
-    pimpl->measureWidget->setUnit(coParam.getUnit());
     if (!pimpl->measureWidget->getMeasureData().isValid())
     {
         /* load tb and ti if the measure data in the measure widget is invalid */
         pimpl->measureWidget->setTb(coParam.getTb());
-        pimpl->measureWidget->setTi(coParam.getTi());
     }
+    // update ti value
+    pimpl->measureWidget->setTi(coParam.getTi());
+    // update unit
+    pimpl->measureWidget->setUnit(coParam.getUnit());
 
     if (systemManager.getCurWorkMode() != WORK_MODE_DEMO)
     {
