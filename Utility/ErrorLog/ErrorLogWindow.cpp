@@ -247,6 +247,11 @@ void ErrorLogWindow::exportReleased()
                 {
                     msg = trs("WarnLessUSBFreeSpace");
                 }
+                else if (status == DataExporterBase::Success)
+                {
+                    /* When the log is exported successfully and the window is automatically closed, do nothing.*/
+                    return;
+                }
                 else
                 {
                     msg = trs("TransferFailed");
