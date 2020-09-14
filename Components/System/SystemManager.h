@@ -111,9 +111,19 @@ public:
     // 按键协议解析。
     void parseKeyValue(const unsigned char *data, unsigned int len);
 
-    // 背光亮度设置/获取。
+    /**
+     * @brief setBrightness set brightness level
+     * @param br brightness level
+     * @note  It saves the screen brightness data in normal mode to the configuration.
+     */
     void setBrightness(BrightnessLevel br);
     void setAutoBrightness(BrightnessLevel br);
+    /**
+     * @brief enableBrightness write screen brightness data to the system board
+     * @param br brightness level
+     * @note It is only used to write screen brightness data,
+     *       and it will not save screen brightness data to the configuration.
+     */
     void enableBrightness(BrightnessLevel br);
     BrightnessLevel getBrightness(void);
 
