@@ -34,8 +34,7 @@
  * */
 #define DV_RELEASE_VERSION "DBA1"
 #define DV_RELEASE_VERSION_NEO "DAA1"    // 新生儿专用机器发布版本
-#define DV_SW_VERSION "DBA1.0.0.A.CN"
-#define DV_SW_VERSION_NEO "DAA1.0.0.A.CN"    // 新生儿专用机器软件版本
+
 SoftwareVersionWindow::SoftwareVersionWindow(): Dialog()
 {
     layoutExec();
@@ -58,6 +57,7 @@ void SoftwareVersionWindow::layoutExec()
     glayout->addWidget(label, 0, 0, 3, 1, Qt::AlignCenter);
     glayout->setColumnStretch(0, 1);
 
+    // Release Version
     label = new QLabel(QString("%1:").arg(trs("ReleaseVersion")));
     glayout->addWidget(label, 0, 1, Qt::AlignLeft | Qt::AlignHCenter);
     label = new QLabel;
@@ -66,29 +66,28 @@ void SoftwareVersionWindow::layoutExec()
     machineConfig.getNumValue("NeonateMachine", isNeoMachine);
     if (isNeoMachine)
     {
-        softwaveVersion = DV_RELEASE_VERSION_NEO;
+        softwaveVersion = DV_RELEASE_VERSION_NEO;     // DAA1
     }
     else
     {
-        softwaveVersion = DV_RELEASE_VERSION;
+        softwaveVersion = DV_RELEASE_VERSION;         // DBA1
     }
     label->setText(softwaveVersion);
     glayout->addWidget(label, 0, 2, Qt::AlignLeft | Qt::AlignHCenter);
 
+    // Software Version
     label = new QLabel(QString("%1:").arg(trs("SoftwareVersion")));
     glayout->addWidget(label, 1, 1, Qt::AlignLeft | Qt::AlignHCenter);
     label = new QLabel;
-    if (isNeoMachine)
-    {
-        softwaveVersion = DV_SW_VERSION_NEO;
-    }
-    else
-    {
-        softwaveVersion = DV_SW_VERSION;
-    }
+    QString gitVersion = QString(GIT_VERSION);         // V1.0.2.****-DV
+    gitVersion = gitVersion.section(".", 0, 2, QString::SectionIncludeTrailingSep);  // V1.0.2.
+    gitVersion.remove("V");                            // 1.0.2.
+    softwaveVersion.remove(3, 1);                      // DBA
+    softwaveVersion += gitVersion + QString("A.CN");   // DBA1.0.2.A.CN
     label->setText(softwaveVersion);
     glayout->addWidget(label, 1, 2, Qt::AlignLeft | Qt::AlignHCenter);
 
+    // Compile Time
     label = new QLabel(QString("%1:").arg(trs("CompileTime")));
     glayout->addWidget(label, 2, 1, Qt::AlignLeft | Qt::AlignHCenter);
     label = new QLabel;
