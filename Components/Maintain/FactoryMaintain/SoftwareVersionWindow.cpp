@@ -21,19 +21,17 @@
 /*
  * DV SW完整版本号命名规则
  * DV SW Version: DBA1.0.0.A.CN
- * D ------------------------ 产品类别设别号。“D”表示监护设备。
- * B ------------------------ 注册单元设别号。“B”表示产品属于B注册单元；新生儿专用机器为A注册单元。
- * A ------------------------ 产品设别号。 D6、D7、D8、D6S、D7S、D8S用“A”表示。
- * 1 ------------------------ 重大增强类软件更新设别号。从“1”开始。
- * 0 ------------------------ 轻微增强类软件更新设别号。从"0”开始。
- * 0 ------------------------ 纠正类软件更新设别号。从"0”开始。
+ * D ------------------------ 产品类别识别号。“D”表示监护设备。
+ * B ------------------------ 注册单元识别号。“B”表示产品属于B注册单元；新生儿专用机器为A注册单元。
+ * A ------------------------ 产品识别号。 D6、D7、D8、D6S、D7S、D8S用“A”表示。
+ * 1 ------------------------ 重大增强类软件更新识别号。从“1”开始。
+ * 0 ------------------------ 轻微增强类软件更新识别号。从"0”开始。
+ * 0 ------------------------ 纠正类软件更新识别号。从"0”开始。
  * A ------------------------ 软件构建识别号。 “A”表示主程序,“B”表示副程序,如有多个副程序,则用“B”、“C”、“D”......分别表示。
  * CN------------------------ 语种识别号。“CN”表示中文或通用,“EN”表示英文。具体按照公司内部“软件语种识别号规定”执行。
  *
  * 详细软件版本信息查看戴维产品技术要求
  * */
-#define DV_RELEASE_VERSION "DBA1"
-#define DV_RELEASE_VERSION_NEO "DAA1"    // 新生儿专用机器发布版本
 
 SoftwareVersionWindow::SoftwareVersionWindow(): Dialog()
 {
@@ -57,34 +55,21 @@ void SoftwareVersionWindow::layoutExec()
     glayout->addWidget(label, 0, 0, 3, 1, Qt::AlignCenter);
     glayout->setColumnStretch(0, 1);
 
+    QString softwareVersion = getSoftwareVersion();
+    QString releaseVersion = softwareVersion.section(".", 0, 0);   // Release Version: DBA1
+
     // Release Version
     label = new QLabel(QString("%1:").arg(trs("ReleaseVersion")));
     glayout->addWidget(label, 0, 1, Qt::AlignLeft | Qt::AlignHCenter);
     label = new QLabel;
-    QString softwaveVersion;
-    int isNeoMachine = 0;
-    machineConfig.getNumValue("NeonateMachine", isNeoMachine);
-    if (isNeoMachine)
-    {
-        softwaveVersion = DV_RELEASE_VERSION_NEO;     // DAA1
-    }
-    else
-    {
-        softwaveVersion = DV_RELEASE_VERSION;         // DBA1
-    }
-    label->setText(softwaveVersion);
+    label->setText(releaseVersion);
     glayout->addWidget(label, 0, 2, Qt::AlignLeft | Qt::AlignHCenter);
 
     // Software Version
     label = new QLabel(QString("%1:").arg(trs("SoftwareVersion")));
     glayout->addWidget(label, 1, 1, Qt::AlignLeft | Qt::AlignHCenter);
     label = new QLabel;
-    QString gitVersion = QString(GIT_VERSION);         // V1.0.2.****-DV
-    gitVersion = gitVersion.section(".", 0, 2, QString::SectionIncludeTrailingSep);  // V1.0.2.
-    gitVersion.remove("V");                            // 1.0.2.
-    softwaveVersion.remove(3, 1);                      // DBA
-    softwaveVersion += gitVersion + QString("A.CN");   // DBA1.0.2.A.CN
-    label->setText(softwaveVersion);
+    label->setText(softwareVersion);
     glayout->addWidget(label, 1, 2, Qt::AlignLeft | Qt::AlignHCenter);
 
     // Compile Time
@@ -97,4 +82,45 @@ void SoftwareVersionWindow::layoutExec()
     setWindowLayout(glayout);
 
     setFixedSize(600, 240);
+}
+
+QString SoftwareVersionWindow::getSoftwareVersion()
+{
+    QString softwareVersion;    // Software Version
+    QString verStr;
+    int isNeoMachine = 0;       // Neonate Machine status
+    machineConfig.getNumValue("NeonateMachine", isNeoMachine);
+    // Get Software Model ID
+    if (isNeoMachine)
+    {
+        machineConfig.getStrValue("SoftwareVersion|NeoSoftwareModel", verStr);     // Version Info: DA
+    }
+    else
+    {
+        machineConfig.getStrValue("SoftwareVersion|SoftwareModel", verStr);        // Version Info: DB
+    }
+    softwareVersion = verStr;                          // SW Version: DB or DA
+
+    // Get Product ID
+    verStr.clear();
+    machineConfig.getStrValue("SoftwareVersion|ProductID", verStr);     // Version Info:A
+    softwareVersion += verStr;                         // SW Version: DBA or DAA
+
+    // Get git Version
+    QString gitVersion = QString(GIT_VERSION);         // git version: V1.0.2.****-DV
+    gitVersion = gitVersion.section(".", 0, 2, QString::SectionIncludeTrailingSep);  // V1.0.2.
+    gitVersion.remove("V");                            // 1.0.2.
+    softwareVersion += gitVersion;                     // SW Version: DBA1.0.2.  or ..
+
+    // Get Software Bulid ID
+    verStr.clear();
+    machineConfig.getStrValue("SoftwareVersion|SoftwareBulidID", verStr);     // A
+    softwareVersion += verStr;                         //  SW Version: DBA1.0.2.A
+
+    // Get Language ID
+    verStr.clear();
+    machineConfig.getStrValue("SoftwareVersion|LanguageID", verStr);     // CN
+    softwareVersion += "." + verStr;                   //  SW Version: DBA1.0.2.A.CN
+
+    return softwareVersion;
 }

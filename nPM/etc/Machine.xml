@@ -51,7 +51,19 @@
     <NeonateMachine>0</NeonateMachine>
     <!--系统信息-->
     <SerialNumber>20180725222</SerialNumber>
-    <SoftwareVersion>0.0.0.1</SoftwareVersion>
+    <!--DV机器软件版本号, 详细软件版本信息查看戴维产品技术要求-->
+    <SoftwareVersion>
+        <!--多参数监护仪软件型号-->
+        <SoftwareModel>DB</SoftwareModel>
+        <!--新生儿专用机器软件型号-->
+        <NeoSoftwareModel>DA</NeoSoftwareModel>
+        <!--产品识别号。D6、D7、D8、D6S、D7S、D8S 用“A”表示-->
+        <ProductID>A</ProductID>
+        <!--软件构建识别号。 “A”表示主程序,“B”表示副程序...-->
+        <SoftwareBulidID>A</SoftwareBulidID>
+        <!--语种识别号。“CN”表示中文或通用,“EN”表示英文。...-->
+        <LanguageID>CN</LanguageID>
+    </SoftwareVersion>
     <!--参数信息-->
     <AllParams>ECG,SPO2,RESP,NIBP,CO2,IBP,AG,CO,TEMP,O2</AllParams>
     <!--数据记录使能选择-->

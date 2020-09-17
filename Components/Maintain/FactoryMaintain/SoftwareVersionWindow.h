@@ -21,4 +21,10 @@ public:
      * @brief layoutExec
      */
     void layoutExec();
+
+    /**
+     * @brief getSoftwareVersion get software version
+     * @return  software version
+     */
+    QString getSoftwareVersion();
 };
