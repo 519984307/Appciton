@@ -1288,11 +1288,23 @@ void SPO2Param::setConnected(bool isConnected, bool isPlugin)
         {
             d_ptr->spo2Value = InvData();
             d_ptr->piValue = InvData();
+            d_ptr->pviValue = InvData();
+            d_ptr->sphbValue = InvData();
+            d_ptr->spocValue = InvData();
+            d_ptr->spmetValue = InvData();
+            d_ptr->spcoValue = InvData();
 
             d_ptr->trendWidget->setSPO2Value(InvData());
             d_ptr->trendWidget->setPIValue(InvData());
             d_ptr->trendWidget->setBarValue(InvData());
             d_ptr->waveWidget->resetWave();
+
+            d_ptr->piTrendWidget->setPIValue(InvData());
+            d_ptr->pviTrendWidget->setPVIValue(InvData());
+            d_ptr->sphbTrendWidget->setSPHBValue(InvData());
+            d_ptr->spocTrendWidget->setSPOCValue(InvData());
+            d_ptr->spmetTrendWidget->setSpMetValue(InvData());
+            d_ptr->spcoTrendWidget->setSPCOValue(InvData());
         }
         setPR(InvData());
     }
