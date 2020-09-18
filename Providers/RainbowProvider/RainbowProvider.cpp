@@ -170,7 +170,6 @@ enum PerfusionIndexExceptions
 {
     PI_LOW_CONFIDENCE = 0X0001,  // Low PI Confidence
     PI_INVAILD = 0X0004,  // Invalid PI
-    PI_INVALID_SMOOTH_PI = 0X0008,  // Invalid Smooth PI
 };
 
 enum RespirationRateExceptions
@@ -991,8 +990,6 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
             temp = (data[4] << 8) + data[5];
             // SPO2 Low PI Confidence
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PI_CONFIDENCE, (temp & PI_LOW_CONFIDENCE), isPlugin);
-            // Invalid smooth pi
-            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_INVALID_SMOOTH_PI, (temp & PI_INVALID_SMOOTH_PI), isPlugin);
 
             bool valid = !(temp & PI_INVAILD);
             if (valid == true && !spo2BoardFailure)
