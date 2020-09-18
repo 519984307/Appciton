@@ -168,47 +168,58 @@ enum BaudRateType
 
 enum PerfusionIndexExceptions
 {
-    INVAILD_PI = 0X0004,  // invaild pi
+    PI_LOW_CONFIDENCE = 0X0001,  // Low PI Confidence
+    PI_INVAILD = 0X0004,  // Invalid PI
+    PI_INVALID_SMOOTH_PI = 0X0008,  // Invalid Smooth PI
 };
 
 enum RespirationRateExceptions
 {
-    INVAILD_RR = 0X0004,  // invaild respiration rate
+    INVAILD_RR = 0X0004,  // Invalid respiration rate
 };
 
 enum PulseRateExceptions
 {
-    INVAILD_PR = 0X0004,  // invaild pulse rate
+    PR_LOW_CONFIDENCE = 0X0001,  // Low PR Confidence
+    PR_INVAILD = 0X0004,  // Invalid pulse rate
 };
 
 enum Spo2Exceptions
 {
-    INVAILD_SPO2 = 0X0004,  // invaild functional spo2
+    SPO2_LOW_SIGNAL_IQ = 0X0001,  // spo2 low signal IQ
+    SPO2_INVAILD = 0X0004,  // Invalid functional spo2
 };
 
 enum SpCOExceptions
 {
-    INVAILD_SPCO = 0X0004,  // invaild spco
+    INVAILD_SPCO = 0X0004,  // Invalid spco
 };
 
 enum PVIExceptions
 {
-    INVAILD_PVI = 0X0004,
+    PVI_LOW_CONFIDENCE = 0X0001,  // Low PVI Confidence
+    PVI_INVAILD = 0X0004,    // Invalid PVI
 };
 
 enum SpHbExceptions
 {
-    INVAILD_SPHB = 0X0004,
+    SPHB_LOW_CONFIDENCE = 0X0001,  // Low SpHb Confidence
+    SPHB_LOW_PERFUSION_INDEX = 0X0002,  // Low SpHb Perfusion Index
+    SPHB_INVAILD = 0X0004,      // Invalid SpHb
 };
 
 enum SpMetExceptions
 {
-    INVAILD_SPMET = 0X0004,
+    SPMET_LOW_CONFIDENCE = 0X0001,  // Low SpMet Confidence
+    SPMET_LOW_PERFUSION_INDEX = 0X0002,  // Low SpMet Perfusion Index
+    SPMET_INVAILD = 0X0004,    // Invalid SpMet
 };
 
 enum SpOCExceptions
 {
-    INVAILD_SPOC = 0X0004,
+    SPOC_LOW_CONFIDENCE = 0X0001,  // Low SPOC Confidence
+    SPOC_LOW_PERFUSION_INDEX = 0X0002,  // Low SPOC Perfusion Index
+    SPOC_INVAILD = 0X0004,     // Invalid SpOC
 };
 
 enum RBProgramingError
@@ -240,6 +251,7 @@ public:
         , provider(SPO2_RAINBOW_FACTORY_ID_DAVID)
         , isPlugin(false)
         , inProgramMode(false)
+        , spo2BoardFailure(false)
         , programTimer(NULL)
         , cmdAckNum(0)
     {
@@ -383,6 +395,7 @@ public:
 
     bool isPlugin;
     bool inProgramMode;
+    bool spo2BoardFailure;   // Whether the spo2 board is faulty
     QTimer *programTimer;   /* timer to timeout every second during program */
     short cmdAckNum;    /* command ack num, some command need multi ack, because it send multi commnads */
 };
@@ -933,9 +946,12 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     case RB_PARAM_OF_SPO2:
     {
         temp = (data[4] << 8) + data[5];
-        bool valid = !(temp & INVAILD_SPO2);
 
-        if (valid == true)
+        // SPO2 Low Signal IQ
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SPO2_LOW_SIGNAL_IQ, (temp & SPO2_LOW_SIGNAL_IQ), isPlugin);
+
+        bool valid = !(temp & SPO2_INVAILD);
+        if (valid == true && !spo2BoardFailure)
         {
             temp = (data[0] << 8) + data[1];
             temp = ((temp % 10) < 5) ? (temp / 10) : (temp / 10 + 1);
@@ -952,8 +968,11 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         if (!isPlugin)
         {
             temp = (data[4] << 8) + data[5];
-            bool valid = !(temp & INVAILD_PR);
-            if (valid == true)
+            // SPO2 Low PR Confidence
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PR_CONFIDENCE, (temp & PR_LOW_CONFIDENCE), isPlugin);
+
+            bool valid = !(temp & PR_INVAILD);
+            if (valid == true && !spo2BoardFailure)
             {
                 temp = (data[0] << 8) + data[1];
                 prValue = temp;
@@ -970,8 +989,13 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         if (!isPlugin)
         {
             temp = (data[4] << 8) + data[5];
-            bool valid = !(temp & INVAILD_PI);
-            if (valid == true)
+            // SPO2 Low PI Confidence
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PI_CONFIDENCE, (temp & PI_LOW_CONFIDENCE), isPlugin);
+            // Invalid smooth pi
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_INVALID_SMOOTH_PI, (temp & PI_INVALID_SMOOTH_PI), isPlugin);
+
+            bool valid = !(temp & PI_INVAILD);
+            if (valid == true && !spo2BoardFailure)
             {
                 temp = (data[0] << 8) + data[1];
                 float value = temp * 1.0 / 1000 + 0.05;
@@ -988,7 +1012,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     {
         temp = (data[4] << 8) + data[5];
         bool valid = !(temp & INVAILD_SPCO);
-        if (valid)
+        if (valid && !spo2BoardFailure)
         {
             temp = (data[0] << 8) + data[1];
             float value = (temp % 10) > 5 ? (temp / 10 + 1) : (temp / 10);
@@ -1003,8 +1027,11 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     case RB_PARAM_OF_PVI:
     {
         temp = (data[4] << 8) + data[5];
-        bool valid = !(temp & INVAILD_PVI);
-        if (valid)
+        // SPO2 Low PVI Confidence
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PVI_CONFIDENCE, (temp & PVI_LOW_CONFIDENCE), isPlugin);
+
+        bool valid = !(temp & PVI_INVAILD);
+        if (valid && !spo2BoardFailure)
         {
             temp = (data[0] << 8) + data[1];
             spo2Param.setPVI(temp);
@@ -1018,8 +1045,14 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     case RB_PARAM_OF_SPHB:
     {
         temp = (data[4] << 8) + data[5];
-        bool valid = !(temp & INVAILD_SPHB);
-        if (valid)
+        // Low SPHB Confidence
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_SPHB_CONFIDENCE, (temp & SPHB_LOW_CONFIDENCE), isPlugin);
+        // Low SPHB Perfusion Index
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_SPHB_PERFUSION_INDEX,
+                                  (temp & SPHB_LOW_PERFUSION_INDEX), isPlugin);
+
+        bool valid = !(temp & SPHB_INVAILD);
+        if (valid && !spo2BoardFailure)
         {
             if (spo2Param.getSpHbUnit() == SPHB_UNIT_G_DL)
             {
@@ -1045,8 +1078,14 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     case RB_PARAM_OF_SPMET:
     {
         temp = (data[4] << 8) + data[5];
-        bool valid = !(temp & INVAILD_SPMET);
-        if (valid)
+        // Low SpMet Confidence
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_SPMET_CONFIDENCE, (temp & SPMET_LOW_CONFIDENCE), isPlugin);
+        // Low SpMet Perfusion Index
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_SPMET_PERFUSION_INDEX,
+                                  (temp & SPMET_LOW_PERFUSION_INDEX), isPlugin);
+
+        bool valid = !(temp & SPMET_INVAILD);
+        if (valid && !spo2BoardFailure)
         {
             temp = (data[0] << 8) + data[1];
             float value = temp * 1.0 / 10 + 0.5;
@@ -1061,8 +1100,13 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     case RB_PARAM_OF_SPOC:
     {
         temp = (data[4] << 8) + data[5];
-        bool valid = !(temp & INVAILD_SPOC);
-        if (valid)
+        // Low SPOC Confidence
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_SPOC_CONFIDENCE, (temp & SPOC_LOW_CONFIDENCE), isPlugin);
+        // Low SPOC Perfusion Index
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_SPOC_PERFUSION_INDEX,
+                                  (temp & SPOC_LOW_PERFUSION_INDEX), isPlugin);
+        bool valid = !(temp & SPOC_INVAILD);
+        if (valid && !spo2BoardFailure)
         {
             temp = (data[0] << 8) + data[1];
             float value = temp * 1.0 / 10 + 0.5;
@@ -1181,6 +1225,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         unsigned short tmp = (data[0] << 8) | data[1];
         if (tmp > 0)
         {
+            spo2BoardFailure = true;
             qWarning("Rainbow Board failure, reseting...");
             if (q_ptr->disPatchInfo.dispatcher)
             {
@@ -1192,6 +1237,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         }
         else
         {
+            spo2BoardFailure = false;
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_BOARD_FAILURE, false);
         }
     }
@@ -1231,6 +1277,12 @@ void RainbowProviderPrivate::handleWaveformInfo(unsigned char *data, int len)
 
     if (len < 3)
     {
+        return;
+    }
+    // SpO2 board failure, clear waveform data.
+    if (spo2BoardFailure)
+    {
+        spo2Param.clearWaveformData();
         return;
     }
 

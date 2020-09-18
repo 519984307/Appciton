@@ -974,6 +974,24 @@ void SPO2Param::addWaveformData(short wave, unsigned char waveFlag, bool isPlugi
     }
 }
 
+void SPO2Param::clearWaveformData(bool isPlugin)
+{
+    if (!isPlugin)
+    {
+        if (d_ptr->waveWidget != NULL)
+        {
+            d_ptr->waveWidget->resetWave();
+        }
+    }
+    else
+    {
+        if (d_ptr->plugInWaveWidget != NULL)
+        {
+            d_ptr->plugInWaveWidget->resetWave();
+        }
+    }
+}
+
 /**************************************************************************************************
  * 设置棒图值。
  *************************************************************************************************/

@@ -346,6 +346,10 @@ AlarmPriority SPO2OneShotAlarm::getAlarmPriority(int id)
     {
         return ALARM_PRIO_PROMPT;
     }
+    else if (id >= SPO2_ONESHOT_ALARM_SPO2_LOW_SIGNAL_IQ && id <= SPO2_ONESHOT_ALARM_LOW_PVI_CONFIDENCE)
+    {
+        return ALARM_PRIO_LOW;
+    }
     else
     {
         return ALARM_PRIO_MED;

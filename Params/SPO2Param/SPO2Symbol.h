@@ -134,7 +134,18 @@ public:
                 "SPO22AdhesiveSensorNearExpiration",
                 "SPO22CheckSensorConnection",
                 "SPO22OnlyMode",
-                "SPO22BoardFailure"
+                "SPO22BoardFailure",
+                "SPO22LowSignalIQ",
+                "SPO22LowPRConfidence",
+                "SPO22LowPIConfidence",
+                "SPO22InvalidSmoothPI",
+                "SPO22LowSpMetConfidence",
+                "SPO22LowSpMetPerfusionIndex",
+                "SPO22LowSpHbConfidence",
+                "SPO22LowSpHbPerfusionIndex",
+                "SPO22LowSpOCConfidence",
+                "SPO22LowSpOCPerfusionIndex",
+                "SPO22LowPVIConfidence",
             };
             return symbol[index];
         }
@@ -173,6 +184,18 @@ public:
                 "SPO2CheckSensorConnection",
                 "SPO2OnlyMode",
                 "SPO2BoardFailure",
+
+                "SPO2LowSignalIQ",
+                "SPO2LowPRConfidence",
+                "SPO2LowPIConfidence",
+                "SPO2InvalidSmoothPI",
+                "SPO2LowSpMetConfidence",
+                "SPO2LowSpMetPerfusionIndex",
+                "SPO2LowSpHbConfidence",
+                "SPO2LowSpHbPerfusionIndex",
+                "SPO2LowSpOCConfidence",
+                "SPO2LowSpOCPerfusionIndex",
+                "SPO2LowPVIConfidence",
             };
             return symbol[index];
         }

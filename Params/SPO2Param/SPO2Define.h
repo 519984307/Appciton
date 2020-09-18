@@ -100,6 +100,19 @@ enum SPO2OneShotType
     SPO2_ONESHOT_ALARM_CHECK_SENSOR_CONNECTION,          // check sensor connection
     SPO2_ONESHOT_ALARM_SPO2_ONLY_MODE,                   // spo2 only mode
     SPO2_ONESHOT_ALARM_BOARD_FAILURE,                    // spo2 board failure
+
+    SPO2_ONESHOT_ALARM_SPO2_LOW_SIGNAL_IQ,               // SPO2 Low Signal IQ
+    SPO2_ONESHOT_ALARM_LOW_PR_CONFIDENCE,                // Low PR Confidence
+    SPO2_ONESHOT_ALARM_LOW_PI_CONFIDENCE,                // Low PI Confidence
+    SPO2_ONESHOT_ALARM_INVALID_SMOOTH_PI,                // Invalid Smooth PI
+    SPO2_ONESHOT_ALARM_LOW_SPMET_CONFIDENCE,             // Low SpMet Confidence
+    SPO2_ONESHOT_ALARM_LOW_SPMET_PERFUSION_INDEX,        // Low SpMet Perfusion Index
+    SPO2_ONESHOT_ALARM_LOW_SPHB_CONFIDENCE,              // Low SpHb Confidence
+    SPO2_ONESHOT_ALARM_LOW_SPHB_PERFUSION_INDEX,         // Low SpHb Perfusion Index
+    SPO2_ONESHOT_ALARM_LOW_SPOC_CONFIDENCE,              // Low SPOC Confidence
+    SPO2_ONESHOT_ALARM_LOW_SPOC_PERFUSION_INDEX,         // Low SPOC Perfusion Index
+    SPO2_ONESHOT_ALARM_LOW_PVI_CONFIDENCE,               // Low PVI Confidence
+
     SPO2_ONESHOT_ALARM_SEND_COMMUNICATION_STOP,         // 发送通信中断
     SPO2_ONESHOT_NR
 };

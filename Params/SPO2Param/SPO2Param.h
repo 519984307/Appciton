@@ -132,6 +132,12 @@ public:
     // 设置波形值。
     void addWaveformData(short wave, unsigned char waveFlag = 0, bool isPlugin = false);
 
+    /**
+     * @brief clearWaveformData  clear waveform data
+     * @param isPlugin  plugin provider
+     */
+    void clearWaveformData(bool isPlugin = false);
+
     // 设置棒图值。
     void addBarData(short data);
 
